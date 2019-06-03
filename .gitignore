@@ -1,0 +1,16 @@
+/.vs
+/dinput8/x64
+/Eva/x64
+/ImGui
+/Mary/x64
+/x64
+/Zip
+*.bat
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+/Eva/ImGui_D3D11.cpp
+/Eva/ImGui_D3D11.h
+/Mary/ImGui_D3D11.cpp
+/Mary/ImGui_D3D11.h
