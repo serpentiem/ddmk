@@ -6,45 +6,32 @@ UpdateIcon_t UpdateIcon = 0;
 
 BYTE * StyleControllerProxy    = 0;
 BYTE * GunslingerGetStyleLevel = 0;
+BYTE * VergilDynamicStyle      = 0;
 
 static void UpdateStyle(BYTE * baseAddr, uint32 styleId)
 {
-	uint8 character = *(uint8 *)(baseAddr + 0x78);
-	bool unleash = ((character == CHAR_DANTE) || (character == CHAR_VERGIL)) ? true : false;
-	if (!unleash)
-	{
-		return;
-	}
-	uint32 & style = *(uint32 *)(baseAddr + 0x6338);
-	if (style == styleId)
-	{
-		if (Config.Game.StyleSwitcher.noDoubleTap)
-		{
-			return;
-		}
-		styleId = STYLE_QUICKSILVER;
-	}
+	uint8     character  = *(uint8   *)(baseAddr + 0x78);
+	uint32  & style      = *(uint32  *)(baseAddr + 0x6338);
+	uint32  & level      = *(uint32  *)(baseAddr + 0x6358);
+	float32 & experience = *(float32 *)(baseAddr + 0x6364);
+
 	BYTE * session = *(BYTE **)(appBaseAddr + 0xC90E30);
 	if (!session)
 	{
 		return;
 	}
-	if (styleId == STYLE_QUICKSILVER)
+	uint32  * sessionLevel      = (uint32  *)(session + 0x11C);
+	float32 * sessionExperience = (float32 *)(session + 0x134);
+
+	uint8 actorId    = GetActorId(baseAddr);
+	uint8 actorCount = GetActorCount();
+
+	bool unleash = ((character == CHAR_DANTE) || (character == CHAR_VERGIL)) ? true : false;
+	if (!unleash)
 	{
-		bool unlock = *(bool *)(session + 0x5E);
-		if (!unlock)
-		{
-			return;
-		}
+		return;
 	}
-	else if (styleId == STYLE_DOPPELGANGER)
-	{
-		bool unlock = *(bool *)(session + 0x5F);
-		if (!unlock)
-		{
-			return;
-		}
-	}
+
 	if (character == CHAR_VERGIL)
 	{
 		switch (styleId)
@@ -56,24 +43,47 @@ static void UpdateStyle(BYTE * baseAddr, uint32 styleId)
 			break;
 		}
 	}
-	uint8 actorId = GetActorId(baseAddr);
-	uint8 actorCount = GetActorCount();
 
-	// @Todo: Create proper session vars.
+	if (style == styleId)
+	{
+		if (Config.Game.StyleSwitcher.noDoubleTap)
+		{
+			return;
+		}
+		styleId = STYLE_QUICKSILVER;
+	}
 
-	uint32 & level = *(uint32 *)(baseAddr + 0x6358);
+	if (character == CHAR_DANTE)
+	{
+		if (styleId == STYLE_QUICKSILVER)
+		{
+			bool unlock = *(bool *)(session + 0x5E);
+			if (!unlock)
+			{
+				return;
+			}
+		}
+		else if (styleId == STYLE_DOPPELGANGER)
+		{
+			bool unlock = *(bool *)(session + 0x5F);
+			if (!unlock)
+			{
+				return;
+			}
+		}
+	}
+
 	if (actorId == ACTOR_ONE)
 	{
-		*(uint32 *)(session + 0x11C + (style * 4)) = level;
+		sessionLevel[style] = level;
 	}
-	level = *(uint32 *)(session + 0x11C + (styleId * 4));
+	level = sessionLevel[styleId];
 
-	float32 & experience = *(float32 *)(baseAddr + 0x6364);
 	if (actorId == ACTOR_ONE)
 	{
-		*(float32 *)(session + 0x134 + (style * 4)) = experience;
+		sessionExperience[style] = experience;
 	}
-	experience = *(float32 *)(session + 0x134 + (styleId * 4));
+	experience = sessionExperience[styleId];
 
 	style = styleId;
 
@@ -88,21 +98,26 @@ static void UpdateStyle(BYTE * baseAddr, uint32 styleId)
 			}
 		}
 	}
-	if ((styleId == STYLE_SWORDMASTER) || (styleId == STYLE_GUNSLINGER))
+
+	if (character == CHAR_DANTE)
 	{
-		UpdateExpertise(baseAddr);
-		if (actorId == ACTOR_ONE)
+		if ((styleId == STYLE_SWORDMASTER) || (styleId == STYLE_GUNSLINGER))
 		{
-			for (uint8 actor = ACTOR_TWO; actor < actorCount; actor++)
+			UpdateExpertise(baseAddr);
+			if (actorId == ACTOR_ONE)
 			{
-				bool isControlledByPlayer = *(bool *)(actorBaseAddr[actor] + 0x6480);
-				if (!isControlledByPlayer)
+				for (uint8 actor = ACTOR_TWO; actor < actorCount; actor++)
 				{
-					UpdateExpertise(actorBaseAddr[actor]);
+					bool isControlledByPlayer = *(bool *)(actorBaseAddr[actor] + 0x6480);
+					if (!isControlledByPlayer)
+					{
+						UpdateExpertise(actorBaseAddr[actor]);
+					}
 				}
 			}
 		}
 	}
+
 	if (actorId == ACTOR_ONE)
 	{
 		UpdateIcon();
@@ -241,6 +256,24 @@ void Game_StyleSwitcher_Init()
 		*(DWORD *)(func.sect0 + 0x15) = (0x11C + (STYLE_GUNSLINGER * 4));
 		GunslingerGetStyleLevel = func.addr;
 	}
+	{
+		BYTE sect0[] =
+		{
+			0x50,                                     //push rax
+			0x56,                                     //push rsi
+			0x48, 0x8B, 0x35, 0x00, 0x00, 0x00, 0x00, //mov rsi,[dmc3.exe+C90E30]
+			0x48, 0x85, 0xF6,                         //test rsi,rsi
+			0x74, 0x0C,                               //je short
+			0x8B, 0x86, 0xA4, 0x01, 0x00, 0x00,       //mov eax,[rsi+000001A4]
+			0x89, 0x81, 0x38, 0x63, 0x00, 0x00,       //mov [rcx+00006338],eax
+			0x5E,                                     //pop rsi
+			0x58,                                     //pop rax
+		};
+		FUNC func = CreateFunction(0, (appBaseAddr + 0x223D81), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteAddress((func.sect0 + 2), (appBaseAddr + 0xC90E30), 7);
+		VergilDynamicStyle = func.addr;
+	}
 }
 
 void Game_StyleSwitcher_Toggle(bool enable)
@@ -277,6 +310,8 @@ void Game_StyleSwitcher_Toggle(bool enable)
 		WriteAddress((appBaseAddr + 0x1F8A7D), (appBaseAddr + 0x1F8AAC), 2);
 		WriteAddress((appBaseAddr + 0x1F8AAA), (appBaseAddr + 0x1F8AAC), 2);
 		WriteAddress((appBaseAddr + 0x1F8AC4), (appBaseAddr + 0x1F8AC6), 2);
+		// Vergil Fixes
+		WriteJump((appBaseAddr + 0x223D77), VergilDynamicStyle, 5); // Force dynamic style
 	}
 	else
 	{
@@ -313,5 +348,12 @@ void Game_StyleSwitcher_Toggle(bool enable)
 		WriteAddress((appBaseAddr + 0x1F8A7D), (appBaseAddr + 0x1F8AF8), 2);
 		WriteAddress((appBaseAddr + 0x1F8AAA), (appBaseAddr + 0x1F8AF8), 2);
 		WriteAddress((appBaseAddr + 0x1F8AC4), (appBaseAddr + 0x1F8AF8), 2);
+		{
+			BYTE buffer[] =
+			{
+				0xC7, 0x81, 0x38, 0x63, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, //mov [rcx+00006338],00000002
+			};
+			vp_memcpy((appBaseAddr + 0x223D77), buffer, sizeof(buffer));
+		}
 	}
 }
