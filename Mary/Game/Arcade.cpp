@@ -5,9 +5,9 @@ void Game_Arcade_Toggle(bool enable)
 	Log("%s %u", FUNC_NAME, enable);
 	if (enable)
 	{
-		//Write<BYTE>((appBaseAddr + 0x2433FB), 0xEB);                         // Force New Game
-		//Write<BYTE>((appBaseAddr + 0x243299), 0xEB);                         // Ignore Mission Select Menu
-		//Write<BYTE>((appBaseAddr + 0x2411F5), 0xEB);                         // Force Start Mission
+		Write<BYTE>((appBaseAddr + 0x2433FB), 0xEB);                         // Force New Game
+		Write<BYTE>((appBaseAddr + 0x243299), 0xEB);                         // Ignore Mission Select Menu
+		Write<BYTE>((appBaseAddr + 0x2411F5), 0xEB);                         // Force Start Mission
 
 
 
