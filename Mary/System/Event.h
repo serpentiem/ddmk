@@ -5,9 +5,4 @@
 #include "Media.h"
 #include "../Vars.h"
 
-enum EVENT_
-{
-	EVENT_GAME = 1,
-};
-
 void System_Event_Init();

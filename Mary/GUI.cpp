@@ -1297,6 +1297,16 @@ void GUI_Main_Draw()
 	}
 }
 
+#define GUI_InputReadOnly(label, var)                                                                                  \
+{                                                                                                                      \
+	char buffer[64];                                                                                                   \
+	snprintf(buffer, sizeof(buffer), "%u", var);                                                                       \
+	ImGui::PushID(GUI_id);                                                                                             \
+	GUI_id++;                                                                                                          \
+	ImGui::InputText(label, buffer, sizeof(buffer), ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_ReadOnly); \
+	ImGui::PopID();                                                                                                    \
+}
+
 void GUI_Teleporter_Draw()
 {
 	static bool run = false;
@@ -1311,11 +1321,66 @@ void GUI_Teleporter_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("Teleporter", &GUI_Teleporter_show, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		ImGui::Text("yar!");
+		{
+			if (!InGame())
+			{
+				goto InvalidPointer;
+			}
+
+			BYTE * addr = *(BYTE **)(appBaseAddr + 0xCA8918);
+			if (!addr)
+			{
+				goto InvalidPointer;
+			}
+			addr = *(BYTE **)(addr + 0x40);
+			if (!addr)
+			{
+				goto InvalidPointer;
+
+			}
+			uint32 & currentRoom     = *(uint32 *)(addr + 0x18);
+			uint32 & currentPosition = *(uint32 *)(addr + 0x1C);
+			uint32 & event           = *(uint32 *)(addr + 0x20);
+
+			addr = *(BYTE **)(appBaseAddr + 0xCA8918);
+			if (!addr)
+			{
+
+				goto InvalidPointer;
+			}
+			addr = *(BYTE **)(addr + 0x60);
+			if (!addr)
+			{
+
+				goto InvalidPointer;
+
+			}
+			uint16 & nextRoom     = *(uint16 *)(addr + 0x164);
+			uint16 & nextPosition = *(uint16 *)(addr + 0x166);
+
+			ImGui::PushItemWidth(100);
+			ImGui::Text("Current");
+			GUI_InputReadOnly("", currentRoom);
+			GUI_InputReadOnly("", currentPosition);
+			ImGui::Text("Next");
+			GUI_InputEx<uint16>("", nextRoom);
+			GUI_InputEx<uint16>("", nextPosition);
+			if (GUI_Button("Teleport"))
+			{
+				event = EVENT_TELEPORT;
+			}
+			ImGui::PopItemWidth();
+			goto TeleporterEnd;
+		}
+		InvalidPointer:
+		ImGui::Text("Invalid Pointer!");
 	}
+	TeleporterEnd:
 	ImGui::End();
 	ImGui::PopStyleVar(3);
 }
+
+#undef GUI_InputReadOnly
 
 void GUI_CacheStats_Draw()
 {

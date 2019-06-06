@@ -1,5 +1,11 @@
 #pragma once
 
+enum EVENT_
+{
+	EVENT_GAME     = 1,
+	EVENT_TELEPORT = 2,
+};
+
 
 
 
