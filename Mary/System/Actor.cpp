@@ -111,7 +111,9 @@ static void CreateActor()
 
 			InternalCreateActor(ACTOR_TWO, (Config.Game.Style.enable) ? Config.Game.Style.Doppelganger.character : character);
 
-			Log("InternalCreateActor id %u character %u", ACTOR_TWO, character);
+			//MessageBoxA(0, "workeronis", 0, 0);
+
+			//Log("InternalCreateActor id %u character %u", ACTOR_TWO, character);
 		}
 	}
 }

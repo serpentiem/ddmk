@@ -13,8 +13,8 @@ void Game_Arcade_Toggle(bool enable)
 
 
 
-		//WriteAddress((appBaseAddr + 0x217991), (appBaseAddr + 0x217993), 2); // Force Costume
-		//WriteAddress((appBaseAddr + 0x21799A), (appBaseAddr + 0x21799C), 2); // ..
+		WriteAddress((appBaseAddr + 0x217991), (appBaseAddr + 0x217993), 2); // Force Costume
+		WriteAddress((appBaseAddr + 0x21799A), (appBaseAddr + 0x21799C), 2); // ..
 		Write<BYTE>((appBaseAddr + 0x1AA791), 0xEB);                         // Skip Orb Notifications
 	}
 	else

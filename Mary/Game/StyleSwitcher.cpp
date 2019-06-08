@@ -73,6 +73,8 @@ static void UpdateStyle(BYTE * baseAddr, uint32 styleId)
 		}
 	}
 
+	// @Todo: Merge!
+
 	if (actorId == ACTOR_ONE)
 	{
 		sessionLevel[style] = level;
@@ -312,6 +314,8 @@ void Game_StyleSwitcher_Toggle(bool enable)
 		WriteAddress((appBaseAddr + 0x1F8AC4), (appBaseAddr + 0x1F8AC6), 2);
 		// Vergil Fixes
 		WriteJump((appBaseAddr + 0x223D77), VergilDynamicStyle, 5); // Force dynamic style
+		// @Audit: Should this go to Actor.cpp?
+		vp_memset((appBaseAddr + 0x221E50), 0x90, 8);               // Disable Doppelganger base address reset
 	}
 	else
 	{
@@ -354,6 +358,13 @@ void Game_StyleSwitcher_Toggle(bool enable)
 				0xC7, 0x81, 0x38, 0x63, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, //mov [rcx+00006338],00000002
 			};
 			vp_memcpy((appBaseAddr + 0x223D77), buffer, sizeof(buffer));
+		}
+		{
+			BYTE buffer[] =
+			{
+				0x4D, 0x89, 0xB4, 0x24, 0x78, 0x64, 0x00, 0x00, //mov [r12+00006478],r14
+			};
+			vp_memcpy((appBaseAddr + 0x221E50), buffer, sizeof(buffer));
 		}
 	}
 }
