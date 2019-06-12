@@ -8,7 +8,7 @@ BYTE * StyleControllerProxy    = 0;
 BYTE * GunslingerGetStyleLevel = 0;
 BYTE * VergilDynamicStyle      = 0;
 
-static void UpdateStyle(BYTE * baseAddr, uint32 styleId)
+__declspec(noinline) static void UpdateStyle(BYTE * baseAddr, uint32 styleId)
 {
 	uint8     character  = *(uint8   *)(baseAddr + 0x78);
 	uint32  & style      = *(uint32  *)(baseAddr + 0x6338);
@@ -32,6 +32,20 @@ static void UpdateStyle(BYTE * baseAddr, uint32 styleId)
 		return;
 	}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	if (character == CHAR_VERGIL)
 	{
 		switch (styleId)
@@ -44,6 +58,7 @@ static void UpdateStyle(BYTE * baseAddr, uint32 styleId)
 		}
 	}
 
+
 	if (style == styleId)
 	{
 		if (Config.Game.StyleSwitcher.noDoubleTap)
@@ -53,27 +68,58 @@ static void UpdateStyle(BYTE * baseAddr, uint32 styleId)
 		styleId = STYLE_QUICKSILVER;
 	}
 
-	if (character == CHAR_DANTE)
+
+
+	// Quicksilver if used by another actor than ACTOR_ONE freezes the actor.
+
+
+
+	if ((actorId != ACTOR_ONE) && (styleId == STYLE_QUICKSILVER))
 	{
-		if (styleId == STYLE_QUICKSILVER)
-		{
-			bool unlock = *(bool *)(session + 0x5E);
-			if (!unlock)
-			{
-				return;
-			}
-		}
-		else if (styleId == STYLE_DOPPELGANGER)
-		{
-			bool unlock = *(bool *)(session + 0x5F);
-			if (!unlock)
-			{
-				return;
-			}
-		}
+		//styleId = STYLE_DOPPELGANGER;
+
+		return;
+
 	}
 
-	// @Todo: Merge!
+
+
+
+	
+
+
+
+
+
+	// @Todo:
+	// Fixing style id issue will also fix style level issue
+
+
+
+
+
+
+	//if (character == CHAR_DANTE)
+	//{
+	//	if (styleId == STYLE_QUICKSILVER)
+	//	{
+	//		bool unlock = *(bool *)(session + 0x5E);
+	//		if (!unlock)
+	//		{
+	//			return;
+	//		}
+	//	}
+	//	else if (styleId == STYLE_DOPPELGANGER)
+	//	{
+	//		bool unlock = *(bool *)(session + 0x5F);
+	//		if (!unlock)
+	//		{
+	//			return;
+	//		}
+	//	}
+	//}
+
+	//// @Todo: Merge!
 
 	if (actorId == ACTOR_ONE)
 	{
@@ -89,36 +135,56 @@ static void UpdateStyle(BYTE * baseAddr, uint32 styleId)
 
 	style = styleId;
 
-	if (actorId == ACTOR_ONE)
-	{
-		for (uint8 actor = ACTOR_TWO; actor < actorCount; actor++)
-		{
-			bool isControlledByPlayer = *(bool *)(actorBaseAddr[actor] + 0x6480);
-			if (!isControlledByPlayer)
-			{
-				*(uint32 *)(actorBaseAddr[actor] + 0x6338) = styleId;
-			}
-		}
-	}
 
-	if (character == CHAR_DANTE)
-	{
-		if ((styleId == STYLE_SWORDMASTER) || (styleId == STYLE_GUNSLINGER))
-		{
-			UpdateExpertise(baseAddr);
-			if (actorId == ACTOR_ONE)
-			{
-				for (uint8 actor = ACTOR_TWO; actor < actorCount; actor++)
-				{
-					bool isControlledByPlayer = *(bool *)(actorBaseAddr[actor] + 0x6480);
-					if (!isControlledByPlayer)
-					{
-						UpdateExpertise(actorBaseAddr[actor]);
-					}
-				}
-			}
-		}
-	}
+
+
+
+	uint64 size = sizeof(CAPCOM_GAMEPAD);
+
+
+
+	// @Todo: Add proper variables and checks.
+
+
+
+
+	//// @Todo: Add proper variable!
+
+	//if (actorId == ACTOR_ONE)
+	//{
+	//	for (uint8 actor = ACTOR_TWO; actor < actorCount; actor++)
+	//	{
+	//		bool isControlledByPlayer = *(bool *)(actorBaseAddr[actor] + 0x6480);
+	//		if (!isControlledByPlayer)
+	//		{
+	//			*(uint32 *)(actorBaseAddr[actor] + 0x6338) = styleId;
+	//		}
+	//	}
+	//}
+
+	//if (character == CHAR_DANTE)
+	//{
+	//	if ((styleId == STYLE_SWORDMASTER) || (styleId == STYLE_GUNSLINGER))
+	//	{
+	//		UpdateExpertise(baseAddr);
+
+
+
+	//		// @Todo: Actor two also requires dante check!
+
+	//		if (actorId == ACTOR_ONE)
+	//		{
+	//			for (uint8 actor = ACTOR_TWO; actor < actorCount; actor++)
+	//			{
+	//				bool isControlledByPlayer = *(bool *)(actorBaseAddr[actor] + 0x6480);
+	//				if (!isControlledByPlayer)
+	//				{
+	//					UpdateExpertise(actorBaseAddr[actor]);
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 
 	if (actorId == ACTOR_ONE)
 	{
@@ -141,6 +207,11 @@ static void StyleController()
 		CMD_EQUIP_SCREEN,
 	};
 	static bool execute[MAX_ACTOR][5] = {};
+
+
+	// @Fix: GetButtonState or loop is broken. Style is updated for other actors as well even if only actor one initiates the switch.
+
+
 	for (uint8 actor = 0; actor < actorCount; actor++)
 	{
 		for (uint8 style = 0; style < 4; style++)

@@ -1,6 +1,6 @@
 #include "GUI.h"
 
-bool debug   = false;
+bool debug   = true;
 bool restart = false;
 
 enum TAB_
@@ -29,6 +29,32 @@ bool GUI_CacheStats_show = false;
 
 void GUI_Game_Arcade()
 {
+
+
+	//static uint32 modeIndex = 0;
+	//static bool run = false;
+
+
+	//if (!run)
+	//{
+	//	run = true;
+	//	for (uint8 i = 0; i < countof(Game_Arcade_modeMap); i++)
+	//	{
+	//		if (Config.Game.Arcade.mode == Game_Arcade_modeMap[i])
+	//		{
+
+	//			modeIndex = i;
+	//			break;
+
+	//		}
+
+	//	}
+	//}
+
+
+
+
+
 	GUI_SECTION_HEADER_START(Game.Arcade);
 	if (Config.Game.Arcade.enable)
 	{
@@ -40,7 +66,7 @@ void GUI_Game_Arcade()
 	}
 	GUI_SECTION_HEADER_END(Game.Arcade);
 	ImGui::PushItemWidth(200);
-	GUI_Combo<uint8>
+	GUI_Combo<uint32>
 	(
 		Locale.Game.Arcade.Mission.label,
 		Locale.Game.Arcade.Mission.items,
@@ -49,13 +75,44 @@ void GUI_Game_Arcade()
 	);
 	if ((Config.Game.Arcade.mission != 0) && (Config.Game.Arcade.mission != 21))
 	{
-		GUI_Combo<uint8>
+
+
+		GUI_Combo<uint32>
 		(
 			Locale.Game.Arcade.Mode.label,
 			Locale.Game.Arcade.Mode.items,
 			countof(Locale.Game.Arcade.Mode.items),
 			Config.Game.Arcade.mode
 		);
+
+
+
+
+
+
+
+
+		//if (GUI_Combo<uint32>
+		//(
+		//	Locale.Game.Arcade.Mode.label,
+		//	Locale.Game.Arcade.Mode.items,
+		//	countof(Locale.Game.Arcade.Mode.items),
+		//	modeIndex,
+		//	0,
+		//	false
+		//))
+		//{
+		//	Config.Game.Arcade.mode = Game_Arcade_modeMap[modeIndex];
+		//	SaveConfig();
+		//}
+
+		//if (debug)
+		//{
+		//	ImGui::Text("index   %u", modeIndex);
+		//	ImGui::Text("true id %u", Config.Game.Arcade.mode);
+		//}
+
+
 		GUI_InputEx(Locale.Game.Arcade.room,     Config.Game.Arcade.room    );
 		ImGui::SameLine();
 		GUI_Checkbox(Locale.Game.Arcade.ignoreRoom, Config.Game.Arcade.ignoreRoom);
@@ -125,6 +182,7 @@ void GUI_Game_Arcade()
 	}
 	ImGui::PopItemWidth();
 	GUI_SECTION_FOOTER_START(Game.Arcade);
+	//run = false;
 	Game_Arcade_Toggle(DefaultConfig.Game.Arcade.enable);
 	GUI_SECTION_FOOTER_END;
 }

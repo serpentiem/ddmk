@@ -10,8 +10,8 @@ struct CONFIG
 		struct
 		{
 			bool   enable         = false;
-			uint8  mission        = 1;
-			uint8  mode           = MODE_NORMAL;
+			uint32 mission        = 1;
+			uint32 mode           = MODE_NORMAL;
 			uint16 room           = 0;
 			bool   ignoreRoom     = false;
 			uint16 position       = 0;

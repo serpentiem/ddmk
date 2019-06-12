@@ -16,6 +16,23 @@ static void ActivateDoppelganger(BYTE * baseAddr)
 	{
 		return;
 	}
+
+
+	/*
+	dmc3.exe+1F83D0 - 75 56                 - jne dmc3.exe+1F8428
+
+	
+	*/
+
+
+	Write<BYTE>((appBaseAddr + 0x1F83D0), 0xEB); // Force Actor Update
+
+
+
+
+
+
+
 	if (!Config.Game.Style.Doppelganger.useEXVersion)
 	{
 		UpdateFlux(baseAddr, DEVIL_FLUX_END);
@@ -92,6 +109,10 @@ static void DeactivateDoppelganger(BYTE * baseAddr)
 	{
 		return;
 	}
+
+	Write<BYTE>((appBaseAddr + 0x1F83D0), 0x75);
+
+
 	if (!Config.Game.Style.Doppelganger.useEXVersion)
 	{
 		*(uint32 *)(baseAddr + 0x3E6C) = 0;

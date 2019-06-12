@@ -10,6 +10,10 @@ extern bool System_Input_extend;
 
 extern WORD buttonMask[17];
 
+
+
+// @Todo: Inline!
+
 WORD GetButtonState(uint8 actorId);
 WORD GetBinding(uint8 commandId);
 void System_Input_Init();

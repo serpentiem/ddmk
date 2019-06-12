@@ -447,9 +447,19 @@ enum MODE_
 	MODE_HARD,
 	MODE_VERY_HARD,
 	MODE_DANTE_MUST_DIE,
-	MODE_HEAVEN_OR_HELL,
 	MAX_MODE,
 };
+
+
+
+
+
+
+
+
+
+
+
 enum CHAR_
 {
 	CHAR_DANTE,

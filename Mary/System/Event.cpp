@@ -6,7 +6,11 @@
 #include "Event.h"
 
 
+
 #pragma warning(disable: 4003) // Zero args for macro provided.
+
+#pragma warning(disable: 4102) // Unreferenced label.
+
 
 
 
@@ -60,7 +64,7 @@ uint32 mission = *(uint32 *)(appBaseAddr + 0xC8F250);
 
 
 
-// @Todo: Get rid of the comments by creating proper variables!
+
 
 static void Arcade_InitSession()
 {
@@ -69,73 +73,110 @@ static void Arcade_InitSession()
 		return;
 	}
 	BYTE * addr = (appBaseAddr + 0xC8F250);
-	*(uint8 *)addr = Config.Game.Arcade.mission;
-	if ((Config.Game.Arcade.mission != 0) && (Config.Game.Arcade.mission != 21))
+	uint32  & mission            = *(uint32  *)addr;
+	uint32  & mode               = *(uint32  *)(addr + 0xC  );
+	bool    & oneHitKill         = *(bool    *)(addr + 0x10 );
+	bool    & enableTutorial     = *(bool    *)(addr + 0x12 );
+	bool    & useGoldOrb         = *(bool    *)(addr + 0x13 );
+	bool    & bloodyPalace       = *(bool    *)(addr + 0x1C );
+	uint8   & goldOrbCount       = *(uint8   *)(addr + 0x35 );
+	bool    * unlock             =  (bool    *)(addr + 0x46 );
+	uint8   * equipment          =  (uint8   *)(addr + 0x84 );
+	uint8   & costume            = *(uint8   *)(addr + 0xD0 );
+	bool    & unlockDevilTrigger = *(bool    *)(addr + 0xD1 );
+	float32 & hitPoints          = *(float32 *)(addr + 0xD4 );
+	float32 & magicPoints        = *(float32 *)(addr + 0xD8 );
+	uint32  & style              = *(uint32  *)(addr + 0xDC );
+	uint32  * styleLevel         =  (uint32  *)(addr + 0xE0 );
+	float32 * styleExperience    =  (float32 *)(addr + 0xF8 );
+	uint32  * expertise          =  (uint32  *)(addr + 0x110);
+
+	mission = Config.Game.Arcade.mission;
+
+	ModeStart:
 	{
-		// @Todo: Create map!
-		if (Config.Game.Arcade.mode == MODE_HEAVEN_OR_HELL)
+		if ((Config.Game.Arcade.mission == 0) || (Config.Game.Arcade.mission == 21))
 		{
-			*(uint8 *)( addr + 0xC  ) = MODE_HARD; // mode
-			*(bool  *)( addr + 0x10 ) = true;      // one hit kill flag
+			goto ModeEnd;
+		}
+		if (Config.Game.Arcade.mode == 5)
+		{
+			mode = MODE_HARD;
+			oneHitKill = true;
 		}
 		else
 		{
-			*(uint8 *)(addr + 0xC) = Config.Game.Arcade.mode;
+			mode = Config.Game.Arcade.mode;
 		}
 	}
-	*(bool *)(addr + 0x12) = false; // enable tutorial
-	*(bool *)(addr + 0x13) = true;  // use gold orb
+	ModeEnd:
+
+	enableTutorial = false;
+	useGoldOrb = true;
+
 	if (Config.Game.Arcade.mission == 21)
 	{
-		*(bool *)(addr + 0x1C) = true; // bloody palace flag
+		bloodyPalace = true;
 	}
-	*(uint8  *)( addr + 0x35  ) = 3;          // gold orbs
-	*(bool   *)( addr + 0x46  ) = true;       // unlock rebellion
-	*(bool   *)( addr + 0x47  ) = true;       // unlock cerberus
-	*(bool   *)( addr + 0x48  ) = true;       // unlock agni rudra
-	*(bool   *)( addr + 0x49  ) = true;       // unknown
-	*(bool   *)( addr + 0x4A  ) = true;       // unlock nevan
-	*(bool   *)( addr + 0x4B  ) = true;       // unlock beowulf
-	*(bool   *)( addr + 0x4C  ) = true;       // unlock ebony ivory
-	*(bool   *)( addr + 0x4D  ) = true;       // unlock shotgun
-	*(bool   *)( addr + 0x4E  ) = true;       // unlock artemis
-	*(bool   *)( addr + 0x4F  ) = true;       // unlock spiral
-	*(bool   *)( addr + 0x50  ) = true;       // unknown
-	*(bool   *)( addr + 0x51  ) = true;       // unlock kalina ann
-	*(bool   *)( addr + 0x52  ) = true;       // unlock quuicksilver
-	*(bool   *)( addr + 0x53  ) = true;       // unlock doppelganger
-	*(uint8  *)( addr + 0xD0  ) =                Config.Game.Arcade.costume;
-	*(bool   *)( addr + 0xD1  ) = true;       // unlock devil trigger
-	*(float32  *)( addr + 0xD4  ) =                Config.Game.Arcade.hitPoints;
-	*(float32  *)( addr + 0xD8  ) =                Config.Game.Arcade.magicPoints;
-	*(uint32 *)( addr + 0xE0  ) = 2;          // swordmaster level
-	*(uint32 *)( addr + 0xE4  ) = 2;          // gunslinger level
-	*(uint32 *)( addr + 0xE8  ) = 2;          // trickster & dark slayer level
-	*(uint32 *)( addr + 0xEC  ) = 2;          // royalguard level
-	*(uint32 *)( addr + 0xF0  ) = 0;          // quicksilver level
-	*(uint32 *)( addr + 0xF4  ) = 0;          // doppelganger level
-	*(float32  *)( addr + 0xF8  ) = 0;          // swordmaster experience
-	*(float32  *)( addr + 0xFC  ) = 0;          // gunslinger experience
-	*(float32  *)( addr + 0x100 ) = 0;          // trickster experience
-	*(float32  *)( addr + 0x104 ) = 0;          // royalguard experience
-	*(float32  *)( addr + 0x108 ) = 0;          // quicksilver experience
-	*(float32  *)( addr + 0x10C ) = 0;          // doppelganger experience
-	*(uint32 *)( addr + 0x110 ) = 0xFFFFFFFF; // expertise
-	*(uint32 *)( addr + 0x114 ) = 0xFFFFFFFF; // expertise
-	*(uint32 *)( addr + 0x118 ) = 0xFFFFFFFF; // expertise
-	*(uint32 *)( addr + 0x11C ) = 0xFFFFFFFF; // expertise
-	*(uint32 *)( addr + 0x120 ) = 0xFFFFFFFF; // expertise
-	*(uint32 *)( addr + 0x124 ) = 0xFFFFFFFF; // expertise
-	*(uint32 *)( addr + 0x128 ) = 0xFFFFFFFF; // expertise
-	*(uint32 *)( addr + 0x12C ) = 0xFFFFFFFF; // expertise
+
+	goldOrbCount = 3;
+
+	memset(unlock, true, 14);
+
 	if (Config.Game.Arcade.character == CHAR_DANTE)
 	{
-		*(uint8  *)(addr + 0x84) = Config.Game.Arcade.equipment[0];
-		*(uint8  *)(addr + 0x85) = Config.Game.Arcade.equipment[1];
-		*(uint8  *)(addr + 0x86) = Config.Game.Arcade.equipment[2];
-		*(uint8  *)(addr + 0x87) = Config.Game.Arcade.equipment[3];
-		*(uint32 *)(addr + 0xDC) = Config.Game.Arcade.style;
+		vp_memcpy(equipment, Config.Game.Arcade.equipment, 4);
 	}
+
+
+
+	costume = Config.Game.Arcade.costume;
+
+	unlockDevilTrigger = true;
+
+	hitPoints = Config.Game.Arcade.hitPoints;
+	magicPoints = Config.Game.Arcade.magicPoints;
+
+	if (Config.Game.Arcade.character == CHAR_DANTE)
+	{
+		style = Config.Game.Arcade.style;
+	}
+
+
+
+	
+	memset(styleLevel, 0, (MAX_STYLE * 4));
+	for (uint8 styleId = 0; styleId < 4; styleId++)
+	{
+		styleLevel[styleId] = 2;
+	}
+
+
+
+
+
+	
+
+
+
+
+
+	memset(styleExperience, 0, (MAX_STYLE * 4));
+
+	memset(expertise, 0xFFFFFFFF, 32);
+
+
+
+
+
+
+	uint32 & controllerMagic = *(uint32 *)(appBaseAddr + 0x553000);
+
+	controllerMagic = 0;
+
+
+
+
 }
 
 static void Arcade_SetCharacter(BYTE * addr)
