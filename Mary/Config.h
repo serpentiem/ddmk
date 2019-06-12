@@ -92,6 +92,12 @@ struct CONFIG
 				uint8 levelMultiplier = 6;
 			}
 			CrazyCombo;
+			struct
+			{
+				float32 melee  = 12;
+				float32 ranged = 12;
+			}
+			WeaponSwitchTimeout;
 		}
 		Dante;
 		struct
@@ -233,19 +239,13 @@ struct CONFIG
 				bool chronoSwords = false;
 			}
 			SummonedSwords;
-		}
-		Vergil;
-		struct
-		{
-			bool enable = false;
 			struct
 			{
-				float32 melee = 12;
-				float32 ranged = 12;
+				float32 melee = 8;
 			}
-			Timeout;
+			WeaponSwitchTimeout;
 		}
-		Weapon;
+		Vergil;
 		struct
 		{
 			bool  enable = false;

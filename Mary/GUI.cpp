@@ -225,6 +225,8 @@ void GUI_Game_Dante()
 				Game_Dante_Artemis_ToggleInstant(Config.Game.Dante.Artemis.instant);
 				Game_Dante_AirHike_ToggleCoreAbility(Config.Game.Dante.AirHike.coreAbility);
 				Game_Dante_CrazyCombo_SetLevelMultiplier(Config.Game.Dante.CrazyCombo.levelMultiplier);
+				Game_Dante_WeaponSwitchTimeout_MeleeToggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
+				Game_Dante_WeaponSwitchTimeout_RangedToggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
 			}
 			else
 			{
@@ -235,6 +237,8 @@ void GUI_Game_Dante()
 				Game_Dante_Artemis_ToggleInstant(DefaultConfig.Game.Dante.Artemis.instant);
 				Game_Dante_AirHike_ToggleCoreAbility(DefaultConfig.Game.Dante.AirHike.coreAbility);
 				Game_Dante_CrazyCombo_SetLevelMultiplier(DefaultConfig.Game.Dante.CrazyCombo.levelMultiplier);
+				Game_Dante_WeaponSwitchTimeout_MeleeToggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.melee);
+				Game_Dante_WeaponSwitchTimeout_RangedToggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.ranged);
 			}
 		}
 	}
@@ -296,6 +300,17 @@ void GUI_Game_Dante()
 		Game_Dante_CrazyCombo_SetLevelMultiplier(Config.Game.Dante.CrazyCombo.levelMultiplier);
 	}
 	ImGui::PopItemWidth();
+	ImGui::PushItemWidth(150);
+	ImGui::Text(Locale.Game.Dante.WeaponSwitchTimeout.header);
+	if (GUI_InputEx<float32>(Locale.Game.Dante.WeaponSwitchTimeout.melee, Config.Game.Dante.WeaponSwitchTimeout.melee))
+	{
+		Game_Dante_WeaponSwitchTimeout_MeleeToggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
+	}
+	if (GUI_InputEx<float32>(Locale.Game.Dante.WeaponSwitchTimeout.ranged, Config.Game.Dante.WeaponSwitchTimeout.ranged))
+	{
+		Game_Dante_WeaponSwitchTimeout_RangedToggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
+	}
+	ImGui::PopItemWidth();
 	GUI_POP_DISABLE(!Config.Game.Dante.enable);
 	ImGui::Text("");
 	GUI_PUSH_DISABLE(ActorAvailable());
@@ -311,6 +326,8 @@ void GUI_Game_Dante()
 		Game_Dante_Artemis_ToggleInstant(DefaultConfig.Game.Dante.Artemis.instant);
 		Game_Dante_AirHike_ToggleCoreAbility(DefaultConfig.Game.Dante.AirHike.coreAbility);
 		Game_Dante_CrazyCombo_SetLevelMultiplier(DefaultConfig.Game.Dante.CrazyCombo.levelMultiplier);
+		Game_Dante_WeaponSwitchTimeout_MeleeToggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.melee);
+		Game_Dante_WeaponSwitchTimeout_RangedToggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.ranged);
 	}
 	GUI_POP_DISABLE(ActorAvailable());
 }
@@ -682,6 +699,10 @@ void GUI_Game_Style()
 		}
 	}
 	GUI_POP_DISABLE(ActorAvailable());
+
+	ImGui::Text("");
+
+
 	GUI_PUSH_DISABLE(!Config.Game.Style.enable);
 	ImGui::PushItemWidth(100);
 	ImGui::Text(Locale.Game.Style.Doppelganger.header);
@@ -794,11 +815,13 @@ void GUI_Game_Vergil()
 	{
 		Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(Config.Game.Vergil.ForceEdge.infiniteRoundTrip);
 		Game_Vergil_SummonedSwords_ToggleChronoSwords(Config.Game.Vergil.SummonedSwords.chronoSwords);
+		Game_Vergil_WeaponSwitchTimeout_MeleeToggle(Config.Game.Vergil.WeaponSwitchTimeout.melee);
 	}
 	else
 	{
 		Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(DefaultConfig.Game.Vergil.ForceEdge.infiniteRoundTrip);
 		Game_Vergil_SummonedSwords_ToggleChronoSwords(DefaultConfig.Game.Vergil.SummonedSwords.chronoSwords);
+		Game_Vergil_WeaponSwitchTimeout_MeleeToggle(DefaultConfig.Game.Vergil.WeaponSwitchTimeout.melee);
 	}
 	GUI_SECTION_HEADER_END(Game.Vergil);
 	ImGui::Text(Locale.Game.Vergil.ForceEdge.header);
@@ -811,33 +834,69 @@ void GUI_Game_Vergil()
 	{
 		Game_Vergil_SummonedSwords_ToggleChronoSwords(Config.Game.Vergil.SummonedSwords.chronoSwords);
 	}
+	ImGui::PushItemWidth(150);
+	ImGui::Text(Locale.Game.Vergil.WeaponSwitchTimeout.header);
+	if (GUI_InputEx<float32>(Locale.Game.Vergil.WeaponSwitchTimeout.melee, Config.Game.Vergil.WeaponSwitchTimeout.melee))
+	{
+		Game_Vergil_WeaponSwitchTimeout_MeleeToggle(Config.Game.Vergil.WeaponSwitchTimeout.melee);
+	}
+	ImGui::PopItemWidth();
 	GUI_SECTION_FOOTER_START(Game.Vergil);
 	Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(DefaultConfig.Game.Vergil.ForceEdge.infiniteRoundTrip);
 	Game_Vergil_SummonedSwords_ToggleChronoSwords(DefaultConfig.Game.Vergil.SummonedSwords.chronoSwords);
+	Game_Vergil_WeaponSwitchTimeout_MeleeToggle(Config.Game.Vergil.WeaponSwitchTimeout.melee);
 	GUI_SECTION_FOOTER_END;
 }
 
-void GUI_Game_Weapon()
-{
-	GUI_SECTION_HEADER_START(Game.Weapon);
-	if (Config.Game.Weapon.enable)
-	{
-		Game_Weapon_ToggleTimeout(Config.Game.Weapon.enable);
-	}
-	else
-	{
-		Game_Weapon_ToggleTimeout(DefaultConfig.Game.Weapon.enable);
-	}
-	GUI_SECTION_HEADER_END(Game.Weapon);
-	ImGui::Text(Locale.Game.Weapon.Timeout.header);
-	ImGui::PushItemWidth(150);
-	GUI_InputEx(Locale.Game.Weapon.Timeout.melee, Config.Game.Weapon.Timeout.melee);
-	GUI_InputEx(Locale.Game.Weapon.Timeout.ranged, Config.Game.Weapon.Timeout.ranged);
-	ImGui::PopItemWidth();
-	GUI_SECTION_FOOTER_START(Game.Weapon);
-	Game_Weapon_ToggleTimeout(DefaultConfig.Game.Weapon.enable);
-	GUI_SECTION_FOOTER_END;
-}
+//void GUI_Game_Weapon()
+//{
+//	GUI_SECTION_HEADER_START(Game.Weapon);
+//	if (Config.Game.Weapon.enable)
+//	{
+//		Game_Weapon_ToggleTimeout(Config.Game.Weapon.enable);
+//	}
+//	else
+//	{
+//		Game_Weapon_ToggleTimeout(DefaultConfig.Game.Weapon.enable);
+//	}
+//	GUI_SECTION_HEADER_END(Game.Weapon);
+//	
+//	ImGui::PushItemWidth(150);
+//
+//	//ImGui::Text(Locale.Game.Weapon.TimeoutDante.header);
+//
+//	//bool level = false;
+//
+//	//GUI_Checkbox("Reset Level", level);
+//
+//
+//	ImGui::Text("Timeout");
+//	ImGui::Text("Dante");
+//
+//
+//
+//	GUI_InputEx(Locale.Game.Weapon.TimeoutDante.melee, Config.Game.Weapon.Timeout.melee);
+//	GUI_InputEx(Locale.Game.Weapon.TimeoutDante.ranged, Config.Game.Weapon.Timeout.ranged);
+//
+//	//ImGui::Text(Locale.Game.Weapon.TimeoutVergil.header);
+//
+//	ImGui::Text("Vergil");
+//
+//	GUI_InputEx(Locale.Game.Weapon.TimeoutVergil.melee, Config.Game.Weapon.Timeout.melee);
+//
+//	
+//
+//	
+//
+//
+//
+//
+//
+//	ImGui::PopItemWidth();
+//	GUI_SECTION_FOOTER_START(Game.Weapon);
+//	Game_Weapon_ToggleTimeout(DefaultConfig.Game.Weapon.enable);
+//	GUI_SECTION_FOOTER_END;
+//}
 
 void GUI_Game_WeaponSwitcher()
 {
@@ -981,8 +1040,8 @@ void GUI_Game_Draw()
 		GUI_Game_Training();
 		ImGui::Text("");
 		GUI_Game_Vergil();
-		ImGui::Text("");
-		GUI_Game_Weapon();
+		//ImGui::Text("");
+		//GUI_Game_Weapon();
 		ImGui::Text("");
 		GUI_Game_WeaponSwitcher();
 	}

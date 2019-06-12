@@ -83,6 +83,8 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		Game_Dante_Artemis_ToggleInstant(Config.Game.Dante.Artemis.instant);
 		Game_Dante_AirHike_ToggleCoreAbility(Config.Game.Dante.AirHike.coreAbility);
 		Game_Dante_CrazyCombo_SetLevelMultiplier(Config.Game.Dante.CrazyCombo.levelMultiplier);
+		Game_Dante_WeaponSwitchTimeout_MeleeToggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
+		Game_Dante_WeaponSwitchTimeout_RangedToggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
 		Game_Mobility_Init();
 		Game_Mobility_Toggle(Config.Game.Mobility.enable);
 		Game_Other_Init();
@@ -100,8 +102,7 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		Game_Vergil_Init();
 		Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(Config.Game.Vergil.ForceEdge.infiniteRoundTrip);
 		Game_Vergil_SummonedSwords_ToggleChronoSwords(Config.Game.Vergil.SummonedSwords.chronoSwords);
-		Game_Weapon_Init();
-		Game_Weapon_ToggleTimeout(Config.Game.Weapon.enable);
+		Game_Vergil_WeaponSwitchTimeout_MeleeToggle(Config.Game.Vergil.WeaponSwitchTimeout.melee);
 		Game_WeaponSwitcher_Init();
 		Game_WeaponSwitcher_Toggle(Config.Game.WeaponSwitcher.enable);
 		if (Config.Game.WeaponSwitcher.enable)

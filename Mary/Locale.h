@@ -233,6 +233,13 @@ struct LOCALE
 				const char * levelMultiplier = "Level Multiplier";
 			}
 			CrazyCombo;
+			struct
+			{
+				const char * header = "Weapon Switch Timeout";
+				const char * melee = "Melee";
+				const char * ranged = "Ranged";
+			}
+			WeaponSwitchTimeout;
 			const char * reset = "Reset";
 		}
 		Dante;
@@ -480,23 +487,15 @@ struct LOCALE
 				const char * chronoSwords = "Chrono Swords";
 			}
 			SummonedSwords;
+			struct
+			{
+				const char * header = "Weapon Switch Timeout";
+				const char * melee = "Melee";
+			}
+			WeaponSwitchTimeout;
 			const char * reset = "Reset";
 		}
 		Vergil;
-		struct
-		{
-			const char * header = "Weapon";
-			const char * enable = "Enable";
-			struct
-			{
-				const char * header = "Timeout";
-				const char * melee = "Melee";
-				const char * ranged = "Ranged";
-			}
-			Timeout;
-			const char * reset = "Reset";
-		}
-		Weapon;
 		struct
 		{
 			const char * header = "Weapon Switcher";

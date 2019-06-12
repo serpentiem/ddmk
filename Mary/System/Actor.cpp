@@ -1,5 +1,11 @@
 #include "Actor.h"
 
+#pragma warning(disable: 4102) // Unreferenced label.
+
+
+
+
+
 bool System_Actor_enable = false;
 BYTE * actorBaseAddr[MAX_ACTOR] = {};
 bool updateModelAttributes[MAX_ACTOR] = {};
@@ -315,8 +321,50 @@ static void UpdateActor(BYTE * baseAddr)
 	}
 
 
-	Log("%s reached end!", FUNC_NAME);
 
+
+
+
+
+
+
+
+	
+
+
+
+
+
+	UpdateHardBaseAddrStart:
+	{
+		BYTE * addr = *(BYTE **)(appBaseAddr + 0xC90E28);
+		if (!addr)
+		{
+			goto UpdateHardBaseAddrEnd;
+		}
+		if (actorId == ACTOR_ONE)
+		{
+			*(BYTE **)(addr + 0x18) = baseAddr;
+		}
+		else if (actorId == ACTOR_TWO)
+		{
+			*(BYTE **)(addr + 0x20) = baseAddr;
+		}
+	}
+	UpdateHardBaseAddrEnd:
+
+
+
+
+
+
+
+
+
+
+
+
+	Log("%s reached end!", FUNC_NAME);
 }
 
 static void UpdateMotion(BYTE * baseAddr)
@@ -453,6 +501,20 @@ static void UpdateMotion(BYTE * baseAddr)
 		motionAddr[id[character][i]] = fileAddr[character][i];
 	}
 	Log("%s reached end!", FUNC_NAME);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 static void ActivateDevilForm(BYTE * baseAddr)
@@ -705,6 +767,12 @@ void System_Actor_Toggle()
 		WriteJump((appBaseAddr + 0x1DF2C4), UpdateActorProxy, 1);
 		WriteJump((appBaseAddr + 0x1E78AF), ActivateDevilFormProxy);
 		WriteJump((appBaseAddr + 0x1E78E6), DeactivateDevilFormProxy);
+
+		// @Audit: Put ActivateDoppelganger in here?
+
+
+
+
 		// Fixes
 		vp_memset((appBaseAddr + 0x1DF291), 0x90, 7);                     // Disable Actor Base Address Reset
 		vp_memset((appBaseAddr + 0x1DECCC), 0x90, 6);                     // Remove isDoppelganger Flag Update
