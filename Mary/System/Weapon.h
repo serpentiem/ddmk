@@ -8,7 +8,7 @@
 
 extern bool System_Weapon_enable;
 extern BYTE * weaponMetadata[MAX_ACTOR][MAX_WEAPON];
-extern bool System_Weapon_Ranged_resetLevel;
+//extern bool System_Weapon_Ranged_resetLevel;
 
 void System_Weapon_Ranged_UpdateLevels(BYTE * baseAddr);
 

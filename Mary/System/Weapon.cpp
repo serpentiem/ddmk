@@ -2,7 +2,7 @@
 
 bool System_Weapon_enable = false;
 BYTE * weaponMetadata[MAX_ACTOR][MAX_WEAPON] = {};
-bool System_Weapon_Ranged_resetLevel = false;
+//bool System_Weapon_Ranged_resetLevel = false;
 extern uint8 Game_WeaponSwitcher_Melee_index;
 extern uint8 Game_WeaponSwitcher_Ranged_index;
 
@@ -362,12 +362,12 @@ static void UpdateWeapon(BYTE * baseAddr)
 
 		System_Weapon_Ranged_UpdateLevels(baseAddr);
 
-		if (System_Weapon_Ranged_resetLevel)
-		{
-			uint32 * level = (uint32 *)(baseAddr + 0x64E4);
-			level[0] = 0;
-			level[1] = 1;
-		}
+		//if (System_Weapon_Ranged_resetLevel)
+		//{
+		//	uint32 * level = (uint32 *)(baseAddr + 0x64E4);
+		//	level[0] = 0;
+		//	level[1] = 0;
+		//}
 
 
 

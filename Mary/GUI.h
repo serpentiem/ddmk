@@ -26,7 +26,6 @@
 #include "Game/StyleSwitcher.h"
 #include "Game/Training.h"
 #include "Game/Vergil.h"
-#include "Game/Weapon.h"
 #include "Game/WeaponSwitcher.h"
 
 #include "Cosmetics/Color.h"

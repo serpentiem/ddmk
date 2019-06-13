@@ -234,8 +234,8 @@ HWND User::Hook::CreateWindowExW
 	LPVOID    parameter
 )
 {
-	x = 0;
-	y = 0;
+	//x = 0;
+	//y = 0;
 	Log
 	(
 		"%s "

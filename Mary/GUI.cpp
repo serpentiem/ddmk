@@ -1,6 +1,8 @@
 #include "GUI.h"
 
-bool debug   = true;
+#pragma warning(disable: 4102) // Unreferenced label.
+
+bool debug   = false;
 bool restart = false;
 
 enum TAB_
@@ -1304,18 +1306,56 @@ void GUI_Tools_Draw()
 	ImGui::PopStyleVar(3);
 }
 
+void GUI_Debug_Action()
+{
+	GUI_Hyperlink("Action");
+	ImGui::Text("");
+	ResetRangedWeaponLevelStart:
+	if (GUI_Button("Reset Ranged Weapon Level"))
+	{
+		BYTE * addr = *(BYTE **)(appBaseAddr + 0xC90E28);
+		if (!addr)
+		{
+			goto ResetRangedWeaponLevelEnd;
+		}
+		addr = *(BYTE **)(addr + 0x18);
+		if (!addr)
+		{
+			goto ResetRangedWeaponLevelEnd;
+		}
+		uint32 * level = (uint32 *)(addr + 0x64E4);
+		level[0] = 0;
+		level[1] = 0;
+	}
+	ResetRangedWeaponLevelEnd:
+	ResetEquipmentStart:
+	if (GUI_Button("Reset Equipment"))
+	{
+		BYTE * addr = *(BYTE **)(appBaseAddr + 0xC90E28);
+		if (!addr)
+		{
+			goto ResetRangedWeaponLevelEnd;
+		}
+		addr = *(BYTE **)(addr + 0x18);
+		if (!addr)
+		{
+			goto ResetRangedWeaponLevelEnd;
+		}
+		uint8 * equipment = (uint8 *)(addr + 0x6498);
+		equipment[0] = WEAPON_REBELLION;
+		equipment[1] = WEAPON_CERBERUS;
+		equipment[2] = WEAPON_EBONY_IVORY;
+		equipment[3] = WEAPON_SHOTGUN;
+	}
+	ResetEquipmentEnd:
+	return;
+}
+
 void GUI_Debug_Overlay()
 {
 	GUI_Hyperlink("Overlay");
 	ImGui::Text("");
 	GUI_Checkbox("Cache Stats", GUI_CacheStats_show);
-}
-
-void GUI_Debug_Weapon()
-{
-	GUI_Hyperlink("Weapon");
-	ImGui::Text("");
-	GUI_Checkbox("Reset Level", System_Weapon_Ranged_resetLevel);
 }
 
 void GUI_Debug_Draw()
@@ -1332,9 +1372,9 @@ void GUI_Debug_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Debug", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		GUI_Debug_Overlay();
+		GUI_Debug_Action();
 		ImGui::Text("");
-		GUI_Debug_Weapon();
+		GUI_Debug_Overlay();
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
