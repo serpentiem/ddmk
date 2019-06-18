@@ -6,9 +6,6 @@
 /x64
 /Zip
 *.bat
-*.sln
-*.vcxproj
-*.vcxproj.filters
 *.vcxproj.user
 /Eva/ImGui_D3D11.cpp
 /Eva/ImGui_D3D11.h

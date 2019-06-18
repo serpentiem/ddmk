@@ -1,6 +1,16 @@
 #pragma once
 #include "../Core/Core.h"
 
+
+#define Locale_Game_Dante_Rebellion_infiniteSwordPierce "Infinite Sword Pierce"
+
+#define Locale_Game_Arcade_Mission_label "Mission"
+#define Locale_Game_Arcade_Mission_items_0 "Cutscenes"
+#define Locale_Game_Arcade_Mission_items_1 "Mission 1"
+
+
+
+
 struct LOCALE
 {
 	struct
@@ -17,6 +27,84 @@ struct LOCALE
 	Main;
 	struct
 	{
+		const char * description =
+			"Game\n"
+			"\n"
+			"Arcade\n"
+			"\n"
+			"Allows you to jump from the main menu to a specific point in the game,\n"
+			"bypassing all prompts and setting all variables automagically.\n"
+			"\n"
+			"Boss Rush\n"
+			"\n"
+			"Go directly to a mission's boss battle.\n"
+			"\n"
+			"Dante\n"
+			"\n"
+			"Rebellion\n"
+			"\n"
+			"Infinite Sword Pierce\n"
+			"\n"
+			"Self-explanatory.\n"
+			"\n"
+			"Unlock Quick Drive\n"
+			"\n"
+			"Requires pl000_00_3.pac from the Demo to work.\n"
+			"Extract it with AFSExplorer and save it as demo_pl000_00_3.pac\n"
+			"in data\\dmc3\\GData.afs of your Devil May Cry HD Collection root directory.\n"
+			"\n"
+			"While in Swordmaster hold the Style button and press the Melee Attack button twice to trigger it.\n"
+			"\n"
+			"Ebony & Ivory\n"
+			"\n"
+			"Foursome Time\n"
+			"\n"
+			"Make Twosome Time fire two additional shots.\n"
+			"\n"
+			"Infinite Rain Storm\n"
+			"\n"
+			"Self-explanatory.\n"
+			"\n"
+			"Artemis\n"
+			"\n"
+			"Swap Normal Shot and Multi Lock\n"
+			"\n"
+			"Self-explanatory.\n"
+			"\n"
+			"Instant Full Charge\n"
+			"\n"
+			"Self-explanatory.\n"
+			"\n"
+			"Air Hike\n"
+			"\n"
+			"Core Ability\n"
+			"\n"
+			"If bought once for Rebellion, Air Hike will be accessible by\n"
+			"all melee weapons, effectively making it a core ability.\n"
+			"\n"
+			"Crazy Combo\n"
+			"\n"
+			"Level Multiplier\n"
+			"\n"
+			"Self-explanatory.\n"
+			"\n"
+			"Weapon Switch Timeout\n"
+			"\n"
+			"Self-explanatory.\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n"
+			"\n";
 		struct
 		{
 			const char * header = "Arcade";

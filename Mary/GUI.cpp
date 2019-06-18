@@ -18,16 +18,18 @@ enum TAB_
 
 uint8 activeTab = TAB_VOID;
 
-ImVec2 GUI_Game_size       = ImVec2(500, 500);
-ImVec2 GUI_Cosmetics_size  = ImVec2(300, 578);
-ImVec2 GUI_System_size     = ImVec2(300, 418);
-ImVec2 GUI_Tools_size      = ImVec2(300, 300);
-ImVec2 GUI_Debug_size      = ImVec2(300, 300);
-ImVec2 GUI_Teleporter_size = ImVec2(300, 300);
-ImVec2 GUI_CacheStats_size = ImVec2(300, 300);
+ImVec2 GUI_Game_size          = ImVec2(500, 500);
+ImVec2 GUI_Cosmetics_size     = ImVec2(300, 578);
+ImVec2 GUI_System_size        = ImVec2(300, 418);
+ImVec2 GUI_Tools_size         = ImVec2(300, 300);
+ImVec2 GUI_Debug_size         = ImVec2(300, 300);
+ImVec2 GUI_Teleporter_size    = ImVec2(300, 300);
+ImVec2 GUI_CacheStats_size    = ImVec2(300, 300);
+ImVec2 GUI_Documentation_size = ImVec2(700, 500);
 
-bool GUI_Teleporter_show = false;
-bool GUI_CacheStats_show = false;
+bool GUI_Teleporter_show    = false;
+bool GUI_CacheStats_show    = false;
+bool GUI_Documentation_show = false;
 
 void GUI_Game_Arcade()
 {
@@ -54,6 +56,14 @@ void GUI_Game_Arcade()
 	//}
 
 
+	
+	if (GUI_Hyperlink(Locale.Game.Arcade.header))
+	{
+		GUI_Documentation_show = true;
+
+		// Scroll to bla bla bla.
+
+	}
 
 
 
@@ -1593,6 +1603,42 @@ void GUI_CacheStats_Draw()
 	ImGui::PopStyleVar(3);
 }
 
+void GUI_Documentation_Draw()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		ImGui::SetNextWindowSize(ImVec2(GUI_Documentation_size.x + 16, GUI_Documentation_size.y + 16));
+		ImGui::SetNextWindowPos(ImVec2(516, 25));
+	}
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	if (ImGui::Begin("Documentation", &GUI_Documentation_show, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
+	{
+		
+		//ImVec2 pos = ImGui::GetCursorScreenPos();
+
+		ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + 200);
+
+		ImGui::Text(Locale.Game.description);
+
+		ImGui::PopTextWrapPos();
+
+
+
+
+
+
+
+
+
+	}
+	ImGui::End();
+	ImGui::PopStyleVar(3);
+}
+
 void DrawRestartOverlay()
 {
 	static ImVec2 size = {};
@@ -1634,10 +1680,22 @@ void GUI_Render()
 	{
 		GUI_CacheStats_Draw();
 	}
+	if (GUI_Documentation_show)
+	{
+		GUI_Documentation_Draw();
+	}
 	if (restart)
 	{
 		DrawRestartOverlay();
 	}
+
+
+	//static bool show = true;
+	//ImGui::ShowDemoWindow(&show);
+
+
+
+
 }
 
 void GUI_Init()
