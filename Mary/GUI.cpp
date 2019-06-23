@@ -2,9 +2,6 @@
 
 #pragma warning(disable: 4102) // Unreferenced label.
 
-bool debug   = false;
-bool restart = false;
-
 enum TAB_
 {
 	TAB_GAME,
@@ -15,6 +12,22 @@ enum TAB_
 	MAX_TAB,
 	TAB_VOID,
 };
+
+enum FONT_
+{
+	FONT_DEFAULT,
+	FONT_RESTART,
+	FONT_OVERLAY_8,
+	FONT_OVERLAY_16,
+	FONT_OVERLAY_24,
+	FONT_OVERLAY_32,
+	FONT_OVERLAY_40,
+	FONT_OVERLAY_48,
+	FONT_OVERLAY_56,
+	FONT_OVERLAY_64,
+};
+
+#define OVERLAY_FONT "C:\\Windows\\Fonts\\consola.ttf"
 
 uint8 activeTab = TAB_VOID;
 
@@ -27,9 +40,158 @@ ImVec2 GUI_Teleporter_size    = ImVec2(300, 300);
 ImVec2 GUI_CacheStats_size    = ImVec2(300, 300);
 ImVec2 GUI_Documentation_size = ImVec2(700, 500);
 
-bool GUI_Teleporter_show    = false;
-bool GUI_CacheStats_show    = false;
+bool GUI_Teleporter_show = false;
+
+//bool  GUI_Overlay_show       = false;
+//uint8 GUI_Overlay_fontIndex  = 2;
+//bool  GUI_Overlay_cacheStats = true;
+
+//float32 GUI_Overlay_CacheStats_color[] = { 1, 0, 0, 1 };
+
+//ImVec4 GUI_Overlay_CacheStats_color = ImVec4(1, 0, 0, 1);
+//ImVec4 GUI_Overlay_CacheStats_color = { 1, 0, 0, 1 };
+
+//ImVec4 GUI_Overlay_CacheStats_color = ImVec4(1, 0, 0, 1);
+
+
+
+//struct vec2
+//{
+//	float32 x;
+//	float32 y;
+//};
+//
+//struct vec3
+//{
+//	float32 x;
+//	float32 y;
+//	float32 z;
+//};
+//
+//struct vec4
+//{
+//	float32 r;
+//	float32 g;
+//	float32 b;
+//	float32 a;
+//};
+//
+//
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+uint32 GUI_Overlay_x = 0;
+uint32 GUI_Overlay_y = 0;
+
+
+
+
+
+
 bool GUI_Documentation_show = false;
+
+
+
+/*
+
+fontIndex
+
+x
+y
+
+color
+
+
+
+
+
+*/
+
+
+
+
+
+bool debug   = false;
+bool restart = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//bool GUI_hide = false;
+//bool GUI_invalidate = false;
+
+
+
+
+
+
+
+
+inline void BuildFonts()
+{
+	ImGuiIO & io = ImGui::GetIO();
+	io.Fonts->AddFontDefault();
+	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\consola.ttf", 128);
+	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 8);
+	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 16);
+	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 24);
+	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 32);
+	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 40);
+	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 48);
+	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 56);
+	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 64);
+	io.Fonts->Build();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void GUI_Game_Arcade()
 {
@@ -1363,9 +1525,28 @@ void GUI_Debug_Action()
 
 void GUI_Debug_Overlay()
 {
-	GUI_Hyperlink("Overlay");
+	GUI_Hyperlink(Locale.GUI.Overlay.header);
 	ImGui::Text("");
-	GUI_Checkbox("Cache Stats", GUI_CacheStats_show);
+	GUI_Checkbox(Locale.GUI.Overlay.show, Config.GUI.Overlay.show);
+	ImGui::Text("");
+	GUI_PUSH_DISABLE(!Config.GUI.Overlay.show);
+	ImGui::PushItemWidth(100);
+	GUI_Combo<uint8>
+	(
+		"",
+		Locale.GUI.Overlay.FontSize.items,
+		countof(Locale.GUI.Overlay.FontSize.items),
+		Config.GUI.Overlay.fontSizeIndex
+	);
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+	GUI_ColorEdit4("", Config.GUI.Overlay.color);
+	GUI_Checkbox(Locale.GUI.Overlay.cacheStats, Config.GUI.Overlay.cacheStats);
+	if (GUI_Button(Locale.GUI.Overlay.resetPosition))
+	{
+		ImGui::SetWindowPos("GUI_Overlay", ImVec2(0, 0));
+	}
+	GUI_POP_DISABLE(!Config.GUI.Overlay.show);
 }
 
 void GUI_Debug_Draw()
@@ -1549,57 +1730,75 @@ void GUI_Teleporter_Draw()
 
 #undef GUI_InputReadOnly
 
-void GUI_CacheStats_Draw()
+void GUI_Overlay_Draw()
 {
 	static bool run = false;
 	if (!run)
 	{
 		run = true;
 		ImGui::SetNextWindowSize(ImVec2(GUI_CacheStats_size.x + 16, GUI_CacheStats_size.y + 16));
-		ImGui::SetNextWindowPos(ImVec2(520, 500));
+		ImGui::SetNextWindowPos(ImVec2(Config.GUI.Overlay.x, Config.GUI.Overlay.y));
 	}
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
-	if (ImGui::Begin("GUI_CacheStats", &GUI_CacheStats_show, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+	if (ImGui::Begin("GUI_Overlay", &Config.GUI.Overlay.show, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		ImGui::Text("Cache Stats");
-		BYTE * cacheAddr[] =
 		{
-			(appBaseAddr + 0xCAE7D0),
-			(appBaseAddr + 0xCF1270),
-			(appBaseAddr + 0xCAB230),
-			(appBaseAddr + 0xCB9ED0),
-			(appBaseAddr + 0xCEFFD0),
-			(appBaseAddr + 0xCAA840),
-			(appBaseAddr + 0xCAA190),
-			(appBaseAddr + 0xCA8958),
-			(appBaseAddr + 0xCAB150),
-			(appBaseAddr + 0xCAAAE8),
-			(appBaseAddr + 0xCF0AA0),
-		};
-		const char * cacheStr[] =
-		{
-			"Generator",
-			"Value",
-			"Effect",
-			"Particle",
-			"Effect System",
-			"After Image, Effect System",
-			"PtclLine02, Generator",
-			"Heap Frame 1",
-			"Heap Frame 2",
-			"Texture Manager 1",
-			"Texture Manager 2",
-		};
-		for (uint8 i = 0; i < countof(cacheAddr); i++)
-		{
-			ImGui::Text("%u", *(uint32 *)cacheAddr[i]);
-			ImGui::SameLine(50);
-			ImGui::Text(cacheStr[i]);
+			ImVec2 pos = ImGui::GetWindowPos();
+			if ((Config.GUI.Overlay.x != pos.x) || (Config.GUI.Overlay.y != pos.y))
+			{
+				Config.GUI.Overlay.x = pos.x;
+				Config.GUI.Overlay.y = pos.y;
+				SaveConfig();
+				Log("Saved Overlay position.");
+			}
 		}
+		ImGuiIO & io = ImGui::GetIO();
+		ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_8 + Config.GUI.Overlay.fontSizeIndex]);
+		ImGui::PushStyleColor(ImGuiCol_Text, *(ImVec4 *)Config.GUI.Overlay.color);
+		if (Config.GUI.Overlay.cacheStats)
+		{
+			ImGui::Text(Locale.GUI.Overlay.cacheStats);
+			BYTE * cacheAddr[] =
+			{
+				(appBaseAddr + 0xCAE7D0),
+				(appBaseAddr + 0xCF1270),
+				(appBaseAddr + 0xCAB230),
+				(appBaseAddr + 0xCB9ED0),
+				(appBaseAddr + 0xCEFFD0),
+				(appBaseAddr + 0xCAA840),
+				(appBaseAddr + 0xCA8958),
+				(appBaseAddr + 0xCAB150),
+				(appBaseAddr + 0xCAAAE8),
+				(appBaseAddr + 0xCF0AA0),
+			};
+			const char * cacheStr[] =
+			{
+				"Generator",
+				"Value",
+				"Effect",
+				"Particle",
+				"Effect System",
+				"After Image, Effect System",
+				"Heap Frame 1",
+				"Heap Frame 2",
+				"Texture Manager 1",
+				"Texture Manager 2",
+			};
+			for (uint8 i = 0; i < countof(cacheAddr); i++)
+			{
+				ImGui::Text("%u", *(uint32 *)cacheAddr[i]);
+				ImGui::SameLine(100);
+				ImGui::Text(cacheStr[i]);
+			}
+		}
+		ImGui::PopStyleColor();
+		ImGui::PopFont();
 	}
 	ImGui::End();
+	ImGui::PopStyleColor();
 	ImGui::PopStyleVar(3);
 }
 
@@ -1617,23 +1816,9 @@ void GUI_Documentation_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("Documentation", &GUI_Documentation_show, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
 	{
-		
-		//ImVec2 pos = ImGui::GetCursorScreenPos();
-
 		ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + 200);
-
 		ImGui::Text(Locale.Game.description);
-
 		ImGui::PopTextWrapPos();
-
-
-
-
-
-
-
-
-
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
@@ -1676,9 +1861,9 @@ void GUI_Render()
 	{
 		GUI_Teleporter_Draw();
 	}
-	if (GUI_CacheStats_show)
+	if (Config.GUI.Overlay.show)
 	{
-		GUI_CacheStats_Draw();
+		GUI_Overlay_Draw();
 	}
 	if (GUI_Documentation_show)
 	{
@@ -1688,20 +1873,9 @@ void GUI_Render()
 	{
 		DrawRestartOverlay();
 	}
-
-
-	//static bool show = true;
-	//ImGui::ShowDemoWindow(&show);
-
-
-
-
 }
 
 void GUI_Init()
 {
-	ImGuiIO & io = ImGui::GetIO();
-	io.Fonts->AddFontDefault();
-	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\consola.ttf", 128);
-	io.Fonts->Build();
+	BuildFonts();
 }

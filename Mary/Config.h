@@ -391,6 +391,20 @@ struct CONFIG
 		Window;
 	}
 	System;
+	struct
+	{
+		struct
+		{
+			bool    show          = false;
+			float32 x             = 0;
+			float32 y             = 0;
+			uint8   fontSizeIndex = 2;
+			float32 color[4]      = { 1, 0, 0, 1 };
+			bool    cacheStats    = true;
+		}
+		Overlay;
+	}
+	GUI;
 };
 #pragma pack(pop)
 

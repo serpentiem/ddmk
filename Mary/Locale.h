@@ -813,6 +813,33 @@ struct LOCALE
 		const char * teleporter = "Teleporter";
 	}
 	Tools;
+	struct
+	{
+		struct
+		{
+			const char * header = "Overlay";
+			const char * show = "Show";
+			struct
+			{
+				const char * items[8] =
+				{
+					"8",
+					"16",
+					"24",
+					"32",
+					"40",
+					"48",
+					"56",
+					"64",
+				};
+			}
+			FontSize;
+			const char * cacheStats = "Cache Stats";
+			const char * resetPosition = "Reset Position";
+		}
+		Overlay;
+	}
+	GUI;
 	const char * restartRequired = "Restart required!";
 };
 

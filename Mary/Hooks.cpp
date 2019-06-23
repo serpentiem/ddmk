@@ -487,13 +487,49 @@ HRESULT DXGI::Hook::Present
 			flags
 		);
 	}
-	ImGui::D3D11::NewFrame();
-	Timestep();
-	ImGui::NewFrame();
-	GUI_Render();
-	ImGui::Render();
-	D3D11::deviceContext->OMSetRenderTargets(1, &D3D11::renderTargetView, 0);
-	ImGui::D3D11::RenderDrawData(ImGui::GetDrawData());
+
+
+
+
+
+
+
+
+
+
+
+
+	//if (GUI_hide)
+	//{
+	//	goto DrawEnd;
+	//}
+
+	//DrawStart:
+	//{
+		ImGui::D3D11::NewFrame();
+		Timestep();
+		ImGui::NewFrame();
+		GUI_Render();
+		ImGui::Render();
+		D3D11::deviceContext->OMSetRenderTargets(1, &D3D11::renderTargetView, 0);
+		ImGui::D3D11::RenderDrawData(ImGui::GetDrawData());
+	//}
+	//DrawEnd:
+
+	//if (GUI_invalidate)
+	//{
+	//	GUI_invalidate = false;
+	//	ImGui::D3D11::InvalidateDeviceObjects();
+	//	ImGui::D3D11::Init(D3D11::device, D3D11::deviceContext);
+	//	ImGui::D3D11::CreateDeviceObjects();
+	//}
+
+
+	//ImGui::D3D11::InvalidateDeviceObjects();
+
+
+
+
 	return DXGI::Present
 	(
 		swapChain,
