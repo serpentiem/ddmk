@@ -34,9 +34,6 @@
     </ClCompile>
     <ClCompile Include="Hooks.cpp" />
     <ClCompile Include="Config.cpp" />
-    <ClCompile Include="ImGui_D3D11.cpp" />
-    <ClCompile Include="ImGui_DirectInput8.cpp" />
-    <ClCompile Include="ImGui_User.cpp" />
     <ClCompile Include="Hotkeys.cpp" />
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="GUI.cpp" />
@@ -149,9 +146,6 @@
     </ClInclude>
     <ClInclude Include="Hooks.h" />
     <ClInclude Include="Config.h" />
-    <ClInclude Include="ImGui_D3D11.h" />
-    <ClInclude Include="ImGui_DirectInput8.h" />
-    <ClInclude Include="ImGui_User.h" />
     <ClInclude Include="Hotkeys.h" />
     <ClInclude Include="Pause.h" />
     <ClInclude Include="System\Message.h">

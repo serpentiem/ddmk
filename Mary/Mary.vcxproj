@@ -72,7 +72,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <CallingConvention>FastCall</CallingConvention>
-	  <ObjectFileName>$(IntDir)%(Directory)_%(Filename)</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(Directory)_%(Filename)</ObjectFileName>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -83,6 +83,9 @@
   <ItemGroup>
     <ClCompile Include="..\Core\Config.cpp" />
     <ClCompile Include="..\Core\GUI.cpp" />
+    <ClCompile Include="..\Core\ImGui_D3D11.cpp" />
+    <ClCompile Include="..\Core\ImGui_DirectInput8.cpp" />
+    <ClCompile Include="..\Core\ImGui_User.cpp" />
     <ClCompile Include="..\Core\Log.cpp" />
     <ClCompile Include="..\Core\Memory.cpp" />
     <ClCompile Include="..\Core\Utility.cpp" />
@@ -112,9 +115,6 @@
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Hooks.cpp" />
     <ClCompile Include="Hotkeys.cpp" />
-    <ClCompile Include="ImGui_D3D11.cpp" />
-    <ClCompile Include="ImGui_DirectInput8.cpp" />
-    <ClCompile Include="ImGui_User.cpp" />
     <ClCompile Include="Locale.cpp" />
     <ClCompile Include="Mary.cpp" />
     <ClCompile Include="Pause.cpp" />
@@ -135,6 +135,9 @@
     <ClInclude Include="..\Core\Core.h" />
     <ClInclude Include="..\Core\DataTypes.h" />
     <ClInclude Include="..\Core\GUI.h" />
+    <ClInclude Include="..\Core\ImGui_D3D11.h" />
+    <ClInclude Include="..\Core\ImGui_DirectInput8.h" />
+    <ClInclude Include="..\Core\ImGui_User.h" />
     <ClInclude Include="..\Core\Log.h" />
     <ClInclude Include="..\Core\Memory.h" />
     <ClInclude Include="..\Core\String.h" />
@@ -168,9 +171,6 @@
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Hooks.h" />
     <ClInclude Include="Hotkeys.h" />
-    <ClInclude Include="ImGui_D3D11.h" />
-    <ClInclude Include="ImGui_DirectInput8.h" />
-    <ClInclude Include="ImGui_User.h" />
     <ClInclude Include="Locale.h" />
     <ClInclude Include="Pause.h" />
     <ClInclude Include="System\Actor.h" />

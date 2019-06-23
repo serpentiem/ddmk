@@ -35,9 +35,6 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Hotkeys.cpp" />
-    <ClCompile Include="ImGui_D3D11.cpp" />
-    <ClCompile Include="ImGui_DirectInput8.cpp" />
-    <ClCompile Include="ImGui_User.cpp" />
     <ClCompile Include="Locale.cpp" />
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="System\Window.cpp">
@@ -125,6 +122,15 @@
     <ClCompile Include="Cosmetics\Other.cpp">
       <Filter>Cosmetics</Filter>
     </ClCompile>
+    <ClCompile Include="..\Core\ImGui_D3D11.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\ImGui_DirectInput8.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\ImGui_User.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -198,9 +204,6 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Hotkeys.h" />
-    <ClInclude Include="ImGui_D3D11.h" />
-    <ClInclude Include="ImGui_DirectInput8.h" />
-    <ClInclude Include="ImGui_User.h" />
     <ClInclude Include="Locale.h" />
     <ClInclude Include="Pause.h" />
     <ClInclude Include="System\Message.h">
@@ -292,5 +295,14 @@
       <Filter>Cosmetics</Filter>
     </ClInclude>
     <ClInclude Include="Vars.h" />
+    <ClInclude Include="..\Core\ImGui_D3D11.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\ImGui_DirectInput8.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\ImGui_User.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

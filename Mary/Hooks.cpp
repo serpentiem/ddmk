@@ -205,8 +205,8 @@ ATOM User::Hook::RegisterClassExW
 		run = true;
 		ImGui::CreateContext();
 		ImGui::GetIO().IniFilename = 0;
-		ImGui::User::Init();
-		ImGui::DirectInput8::Init();
+		ImGui_User_Init();
+		ImGui_DirectInput8_Init();
 		GUI_Init();
 		User::WindowProc = windowClass->lpfnWndProc;
 		windowClass->lpfnWndProc = WindowProc;
@@ -311,7 +311,7 @@ LRESULT User::Hook::WindowProc
 			DirectInput8::mainMouse->Acquire();
 		}
 	case WM_SETCURSOR:
-		ImGui::User::UpdateMouseCursor(window);
+		ImGui_User_UpdateMouseCursor(window);
 		break;
 	case WM_CHAR:
 		ImGui::GetIO().AddInputCharacter((uint16)wParameter);
@@ -438,7 +438,7 @@ HRESULT D3D11::Hook::CreateDeviceAndSwapChain
 	DXGI::swapChain      = *swapChain;
 	mainWindow           = swapChainDescription->OutputWindow;
 	System::Window::UpdateWindowSize((uint32)swapChainDescription->BufferDesc.Width, (uint32)swapChainDescription->BufferDesc.Height);
-	ImGui::D3D11::Init(D3D11::device, D3D11::deviceContext);
+	ImGui_D3D11_Init(D3D11::device, D3D11::deviceContext);
 
 	CreateRenderTarget();
 
@@ -506,13 +506,13 @@ HRESULT DXGI::Hook::Present
 
 	//DrawStart:
 	//{
-		ImGui::D3D11::NewFrame();
+		ImGui_D3D11_NewFrame();
 		Timestep();
 		ImGui::NewFrame();
 		GUI_Render();
 		ImGui::Render();
 		D3D11::deviceContext->OMSetRenderTargets(1, &D3D11::renderTargetView, 0);
-		ImGui::D3D11::RenderDrawData(ImGui::GetDrawData());
+		ImGui_D3D11_RenderDrawData(ImGui::GetDrawData());
 	//}
 	//DrawEnd:
 
@@ -645,7 +645,7 @@ DWORD DirectInput8::MouseOnUpdate(LPVOID paramter)
 		if (mainWindow && pause)
 		{
 			mainMouse->GetDeviceState(sizeof(DIMOUSESTATE2), &mainMouseState);
-			ImGui::DirectInput8::UpdateMouse(mainWindow, &mainMouseState);
+			ImGui_DirectInput8_UpdateMouse(mainWindow, &mainMouseState);
 		}
 		Sleep(Config.System.Input.Mouse.updateRate);
 	}
@@ -661,7 +661,7 @@ HRESULT DirectInput8::Hook::GetDeviceStateKeyboard
 )
 {
 	BYTE * state = (BYTE *)buffer;
-	ImGui::DirectInput8::UpdateKeyboard(state);
+	ImGui_DirectInput8_UpdateKeyboard(state);
 	Hotkeys::TogglePause(state);
 	if (pause)
 	{

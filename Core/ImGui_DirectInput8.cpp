@@ -1,6 +1,6 @@
 #include "ImGui_DirectInput8.h"
 
-void ImGui::DirectInput8::Init()
+void ImGui_DirectInput8_Init()
 {
 	LogFunction();
 	ImGuiIO & io = ImGui::GetIO();
@@ -27,7 +27,7 @@ void ImGui::DirectInput8::Init()
 	io.KeyMap[ImGuiKey_Z]          = DIK_Z;
 }
 
-void ImGui::DirectInput8::UpdateKeyboard(BYTE * buffer)
+void ImGui_DirectInput8_UpdateKeyboard(BYTE * buffer)
 {
 	ImGuiIO & io = ImGui::GetIO();
 	io.KeyCtrl  = ((buffer[DIK_LCONTROL] & 0x80) || (buffer[DIK_RCONTROL] & 0x80)) ? true : false;
@@ -43,7 +43,7 @@ void ImGui::DirectInput8::UpdateKeyboard(BYTE * buffer)
 	}
 }
 
-void ImGui::DirectInput8::UpdateMouse(HWND window, DIMOUSESTATE2 * state)
+void ImGui_DirectInput8_UpdateMouse(HWND window, DIMOUSESTATE2 * state)
 {
 	if (!window)
 	{

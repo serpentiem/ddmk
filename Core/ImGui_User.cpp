@@ -2,7 +2,7 @@
 
 LPSTR CursorMap[ImGuiMouseCursor_COUNT] = {};
 
-void ImGui::User::Init()
+void ImGui_User_Init()
 {
 	CursorMap[ImGuiMouseCursor_Arrow]      = IDC_ARROW;
 	CursorMap[ImGuiMouseCursor_TextInput]  = IDC_IBEAM;
@@ -14,7 +14,7 @@ void ImGui::User::Init()
 	CursorMap[ImGuiMouseCursor_Hand]       = IDC_HAND;
 }
 
-void ImGui::User::UpdateMouseCursor(HWND window)
+void ImGui_User_UpdateMouseCursor(HWND window)
 {
 	if (!window)
 	{
