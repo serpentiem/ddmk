@@ -1,7 +1,7 @@
 #pragma once
 #include "DataTypes.h"
 #include "String.h"
-#include "../Windows/Windows.h"
+#include "Windows.h"
 
 extern const char * Log_directory;
 extern const char * Log_file;
@@ -36,14 +36,10 @@ void Log(const char * format, Args ... args)
 	CloseHandle(file);
 }
 
-#ifdef __clang__
-char * GetFuncName(const char * prettyFunc);
-#define FUNC_NAME GetFuncName(__PRETTY_FUNCTION__)
-#else
 #define FUNC_NAME __FUNCTION__
-#endif
 
 #define LogFunction() Log(FUNC_NAME)
-#define LogFunctionBool(var) Log("%s %u", FUNC_NAME, var)
+#define LogFunctionUInt32(a) Log("%s %u", FUNC_NAME, a)
+#define LogFunctionBool(a) LogFunctionUInt32(a)
 
 void Log_Init();

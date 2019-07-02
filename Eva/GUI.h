@@ -35,3 +35,6 @@
 
 
 void GUI_Render();
+
+void GUI_Init();
+

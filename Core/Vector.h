@@ -1,4 +1,5 @@
 #pragma once
+#include "DataTypes.h"
 
 template <typename T>
 struct vector

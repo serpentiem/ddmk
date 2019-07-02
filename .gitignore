@@ -1,7 +1,7 @@
 /.vs
-/dinput8/x64
-/Eva/x64
-/Mary/x64
+/*/Win32
+/*/x64
+/Win32
 /x64
 /Zip
 *.bat

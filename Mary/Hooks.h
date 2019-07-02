@@ -1,49 +1,22 @@
 #pragma once
-
-
 #include "../Core/Core.h"
-
-
-
-#include "../Core/ImGui_User.h"
 #include "../Core/ImGui_D3D11.h"
 #include "../Core/ImGui_DirectInput8.h"
-
-
-#include "../Windows/Windows.h"
-
-
-
+#include "../Core/ImGui_User.h"
 
 #include <d3d11.h>
-#include <dxgi.h>
 #define DIRECTINPUT_VERSION 0x800
 #include <dinput.h>
+#include <dxgi.h>
+#include "../ImGui/imgui.h"
 #include <Xinput.h>
 
-
-
-
-
-
-#include "../ImGui/imgui.h"
-
-
-
-
-
-
-
-
-
 #include "Config.h"
-#include "System/Window.h"
-#include "Pause.h"
-#include "Hotkeys.h"
-#include "System/Message.h"
 #include "GUI.h"
+#include "Hotkeys.h"
+#include "Pause.h"
 
-namespace Hooks
-{
-	void Init();
-}
+#include "System/Message.h"
+#include "System/Window.h"
+
+void Hooks_Init();

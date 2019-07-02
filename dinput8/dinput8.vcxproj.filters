@@ -5,9 +5,6 @@
     <ClCompile Include="..\Core\Log.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\Core\Memory.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\Core\Utility.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -18,25 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Core\Core.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\Core\DataTypes.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Core\Log.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Core\Memory.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\Core\String.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Core\Utility.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Vector.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

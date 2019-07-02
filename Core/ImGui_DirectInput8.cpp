@@ -27,16 +27,16 @@ void ImGui_DirectInput8_Init()
 	io.KeyMap[ImGuiKey_Z]          = DIK_Z;
 }
 
-void ImGui_DirectInput8_UpdateKeyboard(BYTE * buffer)
+void ImGui_DirectInput8_UpdateKeyboard(BYTE * state)
 {
 	ImGuiIO & io = ImGui::GetIO();
-	io.KeyCtrl  = ((buffer[DIK_LCONTROL] & 0x80) || (buffer[DIK_RCONTROL] & 0x80)) ? true : false;
-	io.KeyShift = ((buffer[DIK_LSHIFT]   & 0x80) || (buffer[DIK_RSHIFT]   & 0x80)) ? true : false;
-	io.KeyAlt   = ((buffer[DIK_LALT]     & 0x80) || (buffer[DIK_RALT]     & 0x80)) ? true : false;
+	io.KeyCtrl  = ((state[DIK_LCONTROL] & 0x80) || (state[DIK_RCONTROL] & 0x80)) ? true : false;
+	io.KeyShift = ((state[DIK_LSHIFT]   & 0x80) || (state[DIK_RSHIFT]   & 0x80)) ? true : false;
+	io.KeyAlt   = ((state[DIK_LALT]     & 0x80) || (state[DIK_RALT]     & 0x80)) ? true : false;
 	memset(io.KeysDown, 0, 256);
 	for (uint32 i = 0; i < 256; i++)
 	{
-		if (buffer[i] & 0x80)
+		if (state[i] & 0x80)
 		{
 			io.KeysDown[i] = true;
 		}

@@ -1,5 +1,8 @@
 #include "../Core/Core.h"
-#include "../Windows/Windows.h"
+
+
+
+
 #include "Config.h"
 #include "Hooks.h"
 
@@ -32,11 +35,30 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		}
 		Config_Init();
 		LoadConfig();
-		Hooks::Init();
+		Hooks_Init();
+
+
+
+
+
+
+		System_Window_ToggleForceFocus(true);
+
+
+
+
+		return 1;
+
+
+
 
 		System_Actor_Init();
 		System_Event_Init();
-		System::Window::ToggleForceFocus(Config.System.Window.forceFocus);
+
+
+
+
+		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
 
 		Game_Arcade_Toggle(Config.Game.Arcade.enable);
 		Game_BossRush_Toggle(Config.Game.BossRush.enable);

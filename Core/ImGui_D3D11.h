@@ -3,10 +3,10 @@
 
 #pragma once
 #include "Core.h"
-#include "../Windows/Windows.h"
-#include "../ImGui/imgui.h"
+
 #include <d3d11.h>
 #include <d3dcompiler.h>
+#include "../ImGui/imgui.h"
 
 bool ImGui_D3D11_Init(ID3D11Device * device, ID3D11DeviceContext * device_context);
 void ImGui_D3D11_Shutdown();

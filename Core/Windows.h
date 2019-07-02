@@ -1,5 +1,6 @@
 #pragma once
-#include "../Core/DataTypes.h"
+#include "DataTypes.h"
+
 #define WINVER       0x0601
 #define _WIN32_WINNT 0x0601
 #define WIN32_LEAN_AND_MEAN

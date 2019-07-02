@@ -673,7 +673,7 @@ void GUI_Main_Draw()
 	if (!run)
 	{
 		run = true;
-		ImGui::SetNextWindowSize(ImVec2((float32)::System::Window::width, 25));
+		ImGui::SetNextWindowSize(ImVec2((float32)System_Window_width, 25));
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
 		ImGui::GetStyle().ScrollbarRounding = 0;
 	}
@@ -718,4 +718,9 @@ void GUI_Render()
 			GUI_Teleporter_Draw();
 		}
 	}
+}
+
+void GUI_Init()
+{
+	LogFunction();
 }

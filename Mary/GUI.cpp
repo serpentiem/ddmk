@@ -1418,7 +1418,7 @@ void GUI_System_Window()
 	ImGui::Text("");
 	if (GUI_Checkbox(Locale.System.Window.forceFocus, Config.System.Window.forceFocus))
 	{
-		::System::Window::ToggleForceFocus(Config.System.Window.forceFocus);
+		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
 	}
 }
 
@@ -1605,7 +1605,7 @@ void GUI_Main_Draw()
 	if (!run)
 	{
 		run = true;
-		ImGui::SetNextWindowSize(ImVec2((float32)::System::Window::width, 25));
+		ImGui::SetNextWindowSize(ImVec2((float32)System_Window_width, 25));
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
 		ImGui::GetStyle().ScrollbarRounding = 0;
 	}
@@ -1795,6 +1795,21 @@ void GUI_Overlay_Draw()
 			}
 		}
 		ImGui::PopStyleColor();
+
+
+
+
+		{
+			ImVec4 color = ImVec4(0, 1, 0, 1);
+			if (GetForegroundWindow() != mainWindow)
+			{
+				color = ImVec4(1, 0, 0, 1);
+			}
+			ImGui::PushStyleColor(ImGuiCol_Text, color);
+			ImGui::Text("Focus");
+			ImGui::PopStyleColor();
+		}
+		
 		ImGui::PopFont();
 	}
 	ImGui::End();

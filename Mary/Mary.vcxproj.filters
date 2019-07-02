@@ -2,21 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Mary.cpp" />
-    <ClCompile Include="..\Core\Config.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\GUI.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Log.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Memory.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Utility.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\ImGui\imgui.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
@@ -28,9 +13,6 @@
     </ClCompile>
     <ClCompile Include="..\ImGui\imgui_widgets.cpp">
       <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Windows\Windows.cpp">
-      <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="GUI.cpp" />
@@ -122,6 +104,12 @@
     <ClCompile Include="Cosmetics\Other.cpp">
       <Filter>Cosmetics</Filter>
     </ClCompile>
+    <ClCompile Include="..\Core\Config.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\GUI.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="..\Core\ImGui_D3D11.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -129,6 +117,18 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\Core\ImGui_User.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Log.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Memory.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Utility.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Windows.cpp">
       <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -145,41 +145,11 @@
     <Filter Include="System">
       <UniqueIdentifier>{7ef61810-c033-46db-9dce-0017a0319329}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Windows">
-      <UniqueIdentifier>{cc829638-9607-4e0e-8116-9e8b7e622bb2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Cosmetics">
       <UniqueIdentifier>{a0d2594e-6b7a-4dbb-b2e5-a2220ae5b4cf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Core\Config.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Core.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\DataTypes.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\GUI.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Log.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Memory.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\String.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Utility.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Vector.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\ImGui\imconfig.h">
       <Filter>ImGui</Filter>
     </ClInclude>
@@ -197,9 +167,6 @@
     </ClInclude>
     <ClInclude Include="..\ImGui\imstb_truetype.h">
       <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Windows\Windows.h">
-      <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="Config.h" />
     <ClInclude Include="GUI.h" />
@@ -295,6 +262,15 @@
       <Filter>Cosmetics</Filter>
     </ClInclude>
     <ClInclude Include="Vars.h" />
+    <ClInclude Include="..\Core\Config.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\DataTypes.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\GUI.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="..\Core\ImGui_D3D11.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -302,6 +278,24 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Core\ImGui_User.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Log.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Memory.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\String.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Utility.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Vector.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Windows.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

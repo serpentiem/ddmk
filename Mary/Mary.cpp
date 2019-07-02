@@ -1,5 +1,8 @@
 #include "../Core/Core.h"
-#include "../Windows/Windows.h"
+
+
+
+
 #include "Config.h"
 #include "Hooks.h"
 
@@ -50,7 +53,17 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		Config_Init();
 		Cosmetics_Color_AdjustConfig();
 		LoadConfig();
-		Hooks::Init();
+		Hooks_Init();
+
+
+		System_Window_ToggleForceFocus(true);
+
+
+		return 1;
+
+
+
+
 
 		System_Actor_Init();
 		System_Actor_Toggle();
@@ -70,7 +83,7 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		System_Media_ToggleSkipCutscenes(Config.System.Media.skipCutscenes);
 		System_Weapon_Init();
 		System_Weapon_Toggle();
-		System::Window::ToggleForceFocus(Config.System.Window.forceFocus);
+		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
 
 		Game_Arcade_Toggle(Config.Game.Arcade.enable);
 		Game_Attack_Init();

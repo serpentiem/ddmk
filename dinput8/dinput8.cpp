@@ -1,10 +1,18 @@
-#include "../Core/Core.h"
+#include "../Core/DataTypes.h"
+#include "../Core/Log.h"
+#include "../Core/String.h"
+#include "../Core/Utility.h"
 #include "../Windows/Windows.h"
 
 const char * Log_directory = "logs";
 const char * Log_file      = "dinput8.txt";
 
-uint64 mainChunkSize = 0;
+
+
+
+
+
+
 
 const char * libName  = "dinput8.dll";
 const char * funcName = "DirectInput8Create";
@@ -12,12 +20,25 @@ const char * funcName = "DirectInput8Create";
 HMODULE   lib[2]   = {};
 void    * procAddr = 0;
 
+
+
+
+
 extern "C" void Create()
 {
 	return ((void(__fastcall *)())procAddr)();
 }
 
-#pragma comment(linker, "/export:DirectInput8Create=Create")
+//#pragma comment(linker, "/export:DirectInput8Create=Create")
+
+
+
+
+
+
+
+
+
 
 bool Init()
 {
@@ -63,6 +84,10 @@ void Load()
 		{
 			"dmc3.exe",
 			"Mary.dll",
+		},
+		{
+			"dmc4.exe",
+			"Kyrie.dll",
 		}
 	};
 	const char * libName = 0;

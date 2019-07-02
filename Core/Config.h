@@ -1,7 +1,7 @@
 #pragma once
 #include "DataTypes.h"
 #include "Log.h"
-#include "../Windows/Windows.h"
+#include "Windows.h"
 
 extern const char   * Config_directory;
 extern const char   * Config_file;

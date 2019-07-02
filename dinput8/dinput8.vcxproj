@@ -43,7 +43,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -53,11 +55,12 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <CallingConvention>FastCall</CallingConvention>
+      <CallingConvention>StdCall</CallingConvention>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>$(ProjectDir)Exports.txt</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -78,18 +81,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Core\Log.cpp" />
-    <ClCompile Include="..\Core\Memory.cpp" />
     <ClCompile Include="..\Core\Utility.cpp" />
     <ClCompile Include="dinput8.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Core\Core.h" />
     <ClInclude Include="..\Core\DataTypes.h" />
     <ClInclude Include="..\Core\Log.h" />
-    <ClInclude Include="..\Core\Memory.h" />
     <ClInclude Include="..\Core\String.h" />
     <ClInclude Include="..\Core\Utility.h" />
-    <ClInclude Include="..\Core\Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
