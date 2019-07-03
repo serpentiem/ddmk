@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Core/Core.h"
+
 #include "../System/Actor.h"
 
 void Game_Vergil_Init();

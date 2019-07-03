@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Core/Core.h"
+
 #include "../Config.h"
 
 void Game_Other_Update();

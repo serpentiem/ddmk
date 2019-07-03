@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Core/Core.h"
+
 #include "../System/Cache.h"
 
 typedef void(* UpdateExpertise_t)(BYTE *);

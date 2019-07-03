@@ -1,9 +1,11 @@
 #pragma once
 #include "../../Core/Core.h"
+
 #include "../Config.h"
+#include "../Vars.h"
+
 #include "../System/Actor.h"
 #include "../System/State.h"
-#include "../Vars.h"
 
 typedef void(* ApplyDefaultModelAttributes_t)(BYTE *);
 typedef void(* ApplyBeowulfModelAttributes_t)(BYTE *);

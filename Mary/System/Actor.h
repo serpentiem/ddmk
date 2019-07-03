@@ -1,9 +1,11 @@
 #pragma once
 #include "../../Core/Core.h"
+
 #include "../Config.h"
+#include "../Vars.h"
+
 #include "Cache.h"
 #include "State.h"
-#include "../Vars.h"
 
 extern bool System_Actor_enable;
 extern BYTE * actorBaseAddr[MAX_ACTOR];

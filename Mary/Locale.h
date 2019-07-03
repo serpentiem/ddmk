@@ -1,16 +1,6 @@
 #pragma once
 #include "../Core/Core.h"
 
-
-#define Locale_Game_Dante_Rebellion_infiniteSwordPierce "Infinite Sword Pierce"
-
-#define Locale_Game_Arcade_Mission_label "Mission"
-#define Locale_Game_Arcade_Mission_items_0 "Cutscenes"
-#define Locale_Game_Arcade_Mission_items_1 "Mission 1"
-
-
-
-
 struct LOCALE
 {
 	struct

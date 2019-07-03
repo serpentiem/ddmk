@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Core/Core.h"
+
 #include "../Config.h"
 
 typedef void(* ApplyColor_t)(BYTE *, uint32);
