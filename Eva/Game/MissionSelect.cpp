@@ -1,6 +1,6 @@
 #include "MissionSelect.h"
 
-uint8 Game_MissionSelect_modeMask[4] =
+uint8 Game_MissionSelect_modeMap[4] =
 {
 	MODE_EASY,
 	MODE_NORMAL,

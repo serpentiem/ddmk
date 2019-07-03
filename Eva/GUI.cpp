@@ -33,25 +33,25 @@ void GUI_Game_Arcade()
 	if (!run)
 	{
 		run = true;
-		for (uint8 i = 0; i < countof(Game_Arcade_modeMask); i++)
+		for (uint8 i = 0; i < countof(Game_Arcade_modeMap); i++)
 		{
-			if (Config.Game.Arcade.mode == Game_Arcade_modeMask[i])
+			if (Config.Game.Arcade.mode == Game_Arcade_modeMap[i])
 			{
 				modeIndex = i;
 				break;
 			}
 		}
-		for (uint8 i = 0; i < countof(Game_Arcade_meleeWeaponMask); i++)
+		for (uint8 i = 0; i < countof(Game_Arcade_meleeWeaponMap); i++)
 		{
-			if (Config.Game.Arcade.meleeWeapon == Game_Arcade_meleeWeaponMask[i])
+			if (Config.Game.Arcade.meleeWeapon == Game_Arcade_meleeWeaponMap[i])
 			{
 				meleeWeaponIndex = i;
 				break;
 			}
 		}
-		for (uint8 i = 0; i < countof(Game_Arcade_rangedWeaponMask); i++)
+		for (uint8 i = 0; i < countof(Game_Arcade_rangedWeaponMap); i++)
 		{
-			if (Config.Game.Arcade.rangedWeapon == Game_Arcade_rangedWeaponMask[i])
+			if (Config.Game.Arcade.rangedWeapon == Game_Arcade_rangedWeaponMap[i])
 			{
 				rangedWeaponIndex = i;
 				break;
@@ -86,7 +86,7 @@ void GUI_Game_Arcade()
 		false
 	))
 	{
-		Config.Game.Arcade.mode = Game_Arcade_modeMask[modeIndex];
+		Config.Game.Arcade.mode = Game_Arcade_modeMap[modeIndex];
 		SaveConfig();
 	}
 	if (debug)
@@ -114,7 +114,7 @@ void GUI_Game_Arcade()
 		false
 	))
 	{
-		Config.Game.Arcade.meleeWeapon = Game_Arcade_meleeWeaponMask[meleeWeaponIndex];
+		Config.Game.Arcade.meleeWeapon = Game_Arcade_meleeWeaponMap[meleeWeaponIndex];
 		SaveConfig();
 	}
 	uint8 & weapon = Config.Game.Arcade.meleeWeapon;
@@ -143,7 +143,7 @@ void GUI_Game_Arcade()
 		false
 	))
 	{
-		Config.Game.Arcade.rangedWeapon = Game_Arcade_rangedWeaponMask[rangedWeaponIndex];
+		Config.Game.Arcade.rangedWeapon = Game_Arcade_rangedWeaponMap[rangedWeaponIndex];
 		SaveConfig();
 	}
 	if (debug)
@@ -305,9 +305,9 @@ void GUI_Game_MissionSelect()
 	if (!run)
 	{
 		run = true;
-		for (uint8 i = 0; i < countof(Game_MissionSelect_modeMask); i++)
+		for (uint8 i = 0; i < countof(Game_MissionSelect_modeMap); i++)
 		{
-			if (Config.Game.MissionSelect.mode == Game_MissionSelect_modeMask[i])
+			if (Config.Game.MissionSelect.mode == Game_MissionSelect_modeMap[i])
 			{
 				modeIndex = i;
 				break;
@@ -333,7 +333,7 @@ void GUI_Game_MissionSelect()
 		false
 	))
 	{
-		Config.Game.MissionSelect.mode = Game_MissionSelect_modeMask[modeIndex];
+		Config.Game.MissionSelect.mode = Game_MissionSelect_modeMap[modeIndex];
 		SaveConfig();
 	}
 	if (debug)
@@ -354,9 +354,9 @@ void GUI_Game_ResetMotionState()
 	if (!run)
 	{
 		run = true;
-		for (uint8 i = 0; i < countof(Game_ResetMotionState_buttonMask); i++)
+		for (uint8 i = 0; i < countof(Game_ResetMotionState_buttonMap); i++)
 		{
-			if (Config.Game.ResetMotionState.button == Game_ResetMotionState_buttonMask[i])
+			if (Config.Game.ResetMotionState.button == Game_ResetMotionState_buttonMap[i])
 			{
 				buttonIndex = i;
 				break;
@@ -375,7 +375,7 @@ void GUI_Game_ResetMotionState()
 		false
 	))
 	{
-		Config.Game.ResetMotionState.button = Game_ResetMotionState_buttonMask[buttonIndex];
+		Config.Game.ResetMotionState.button = Game_ResetMotionState_buttonMap[buttonIndex];
 		SaveConfig();
 	}
 	if (debug)
@@ -435,9 +435,9 @@ void GUI_Game_WeaponSwitcher()
 		run = true;
 		for (uint8 slot = 0; slot < 4; slot++)
 		{
-			for (uint8 i = 0; i < countof(Game_WeaponSwitcher_Melee_weaponMask); i++)
+			for (uint8 i = 0; i < countof(Game_WeaponSwitcher_Melee_weaponMap); i++)
 			{
-				if (Config.Game.WeaponSwitcher.Melee.weapon[slot] == Game_WeaponSwitcher_Melee_weaponMask[i])
+				if (Config.Game.WeaponSwitcher.Melee.weapon[slot] == Game_WeaponSwitcher_Melee_weaponMap[i])
 				{
 					Melee_weaponIndex[slot] = i;
 					break;
@@ -446,9 +446,9 @@ void GUI_Game_WeaponSwitcher()
 		}
 		for (uint8 slot = 0; slot < 4; slot++)
 		{
-			for (uint8 i = 0; i < countof(Game_WeaponSwitcher_Ranged_weaponMask); i++)
+			for (uint8 i = 0; i < countof(Game_WeaponSwitcher_Ranged_weaponMap); i++)
 			{
-				if (Config.Game.WeaponSwitcher.Ranged.weapon[slot] == Game_WeaponSwitcher_Ranged_weaponMask[i])
+				if (Config.Game.WeaponSwitcher.Ranged.weapon[slot] == Game_WeaponSwitcher_Ranged_weaponMap[i])
 				{
 					Ranged_weaponIndex[slot] = i;
 					break;
@@ -481,7 +481,7 @@ void GUI_Game_WeaponSwitcher()
 			Melee_weaponIndex[slot]
 		))
 		{
-			Config.Game.WeaponSwitcher.Melee.weapon[slot] = Game_WeaponSwitcher_Melee_weaponMask[Melee_weaponIndex[slot]];
+			Config.Game.WeaponSwitcher.Melee.weapon[slot] = Game_WeaponSwitcher_Melee_weaponMap[Melee_weaponIndex[slot]];
 			SaveConfig();
 		}
 		uint8 & weapon = Config.Game.WeaponSwitcher.Melee.weapon[slot];

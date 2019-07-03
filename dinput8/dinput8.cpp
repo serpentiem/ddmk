@@ -2,7 +2,6 @@
 #include "../Core/Log.h"
 #include "../Core/String.h"
 #include "../Core/Utility.h"
-#include "../Windows/Windows.h"
 
 const char * Log_directory = "logs";
 const char * Log_file      = "dinput8.txt";

@@ -5,7 +5,7 @@
 
 
 
-WORD Game_ResetMotionState_buttonMask[16] =
+WORD Game_ResetMotionState_buttonMap[16] =
 {
 	GAMEPAD_LEFT_TRIGGER,
 	GAMEPAD_RIGHT_TRIGGER,

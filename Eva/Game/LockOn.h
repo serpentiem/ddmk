@@ -1,7 +1,9 @@
 #pragma once
 #include "../../Core/Core.h"
+
 #include "../Config.h"
 #include "../Vars.h"
+
 #include "../System/Input.h"
 #include "../System/State.h"
 

@@ -1,20 +1,20 @@
 #include "Arcade.h"
 
-uint8 Game_Arcade_modeMask[4] =
+uint8 Game_Arcade_modeMap[4] =
 {
 	MODE_EASY,
 	MODE_NORMAL,
 	MODE_HARD,
 	MODE_DANTE_MUST_DIE,
 };
-uint8 Game_Arcade_meleeWeaponMask[4] =
+uint8 Game_Arcade_meleeWeaponMap[4] =
 {
 	WEAPON_FORCE_EDGE,
 	WEAPON_ALASTOR,
 	WEAPON_IFRIT,
 	WEAPON_SPARDA,
 };
-uint8 Game_Arcade_rangedWeaponMask[4] =
+uint8 Game_Arcade_rangedWeaponMap[4] =
 {
 	WEAPON_HANDGUN,
 	WEAPON_SHOTGUN,
@@ -24,7 +24,7 @@ uint8 Game_Arcade_rangedWeaponMask[4] =
 
 void Game_Arcade_Toggle(bool enable)
 {
-	Log("%s %u", FUNC_NAME, enable);
+	LogFunctionBool(enable);
 	if (enable)
 	{
 		WriteAddress((appBaseAddr + 0x3F8C2F), (appBaseAddr + 0x3F8C35), 6); // Force New Game

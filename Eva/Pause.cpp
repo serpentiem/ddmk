@@ -4,7 +4,7 @@ bool pause = false;
 
 void Pause(bool enable)
 {
-	Log("%s %u", FUNC_NAME, enable);
+	LogFunctionBool(enable);
 	if (enable)
 	{
 		ToggleCursor(true);

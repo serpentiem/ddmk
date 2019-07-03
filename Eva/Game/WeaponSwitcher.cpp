@@ -7,7 +7,7 @@
 
 
 
-uint8 Game_WeaponSwitcher_Melee_weaponMask[4] =
+uint8 Game_WeaponSwitcher_Melee_weaponMap[4] =
 {
 	WEAPON_FORCE_EDGE,
 	WEAPON_ALASTOR,
@@ -15,7 +15,7 @@ uint8 Game_WeaponSwitcher_Melee_weaponMask[4] =
 	WEAPON_SPARDA,
 };
 
-uint8 Game_WeaponSwitcher_Ranged_weaponMask[4] =
+uint8 Game_WeaponSwitcher_Ranged_weaponMap[4] =
 {
 	WEAPON_HANDGUN,
 	WEAPON_SHOTGUN,
@@ -71,7 +71,7 @@ static DWORD Thread(LPVOID parameter)
 			if (execute)
 			{
 				execute = false;
-				// add timeout!
+				// @Todo: Add timeout!
 				Melee_index++;
 				if (Melee_index >= Config.Game.WeaponSwitcher.Melee.count)
 				{
@@ -100,7 +100,7 @@ void Game_WeaponSwitcher_Init()
 
 void Game_WeaponSwitcher_Toggle(bool enable)
 {
-	Log("%s %u", FUNC_NAME, enable);
+	LogFunctionBool(enable);
 	if (enable)
 	{
 		Write<BYTE>((appBaseAddr + 0x2ED3FD), 0xEB);                  // Disable Quick Swap

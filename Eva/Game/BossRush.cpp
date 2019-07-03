@@ -2,7 +2,7 @@
 
 void Game_BossRush_Toggle(bool enable)
 {
-	LogFunction();
+	LogFunctionBool(enable);
 	if (enable)
 	{
 		Write<BYTE>((appBaseAddr + 0x3A7CC2), 0); // Darkness Mission 22

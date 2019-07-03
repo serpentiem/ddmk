@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Core/Core.h"
+
 #include "../Vars.h"
 
 void Game_Dante_Init();
