@@ -63,147 +63,36 @@ void vp_memcpy(void * dest, void * addr, uint32 size)
 	VirtualProtectEx(appProcess, dest, size, p, &p);
 }
 
-#define Feed()                                   \
-memcpy((payload + pos), buffer, sizeof(buffer)); \
-pos += sizeof(buffer);
 
-FUNC CreateFunction
-(
-	void   * funcAddr,
-	void   * jumpAddr,
-	bool     saveRegisters,
-	bool     noResult,
-	uint32   size0,
-	uint32   size1,
-	uint32   size2,
-	uint32   cacheSize
-)
-{
-	BYTE payload[2048];
-	uint32 pos = 0;
 
-	uint32 off0;
-	uint32 off1;
-	uint32 off2;
-	uint32 offJump;
 
-	off0 = pos;
-	pos += size0;
 
-	if (saveRegisters)
-	{
-		if (noResult)
-		{
-			BYTE buffer[] =
-			{
-				0x50, //push eax
-			};
-			Feed();
-		}
-		BYTE buffer[] =
-		{
-			0x51, //push ecx
-			0x52, //push edx
-			0x53, //push ebx
-			0x54, //push esp
-			0x55, //push ebp
-			0x56, //push esi
-			0x57, //push edi
-			0x9C, //pushfd
-		};
-		Feed();
-	}
 
-	off1 = pos;
-	pos += size1;
 
-	if (funcAddr)
-	{
-		BYTE buffer[] =
-		{
-			0xB8, 0x00, 0x00, 0x00, 0x00, //mov eax,funcAddr
-			0xFF, 0xD0,                   //call eax
-		};
-		*(void **)(buffer + 1) = funcAddr;
-		Feed();
-	}
-	if (saveRegisters)
-	{
-		BYTE buffer[] =
-		{
-			0x9D, //popfd
-			0x5F, //pop edi
-			0x5E, //pop esi
-			0x5D, //pop ebp
-			0x5C, //pop esp
-			0x5B, //pop ebx
-			0x5A, //pop edx
-			0x59, //pop ecx
-		};
-		Feed();
-		if (noResult)
-		{
-			BYTE buffer[] =
-			{
-				0x58, //pop eax
-			};
-			Feed();
-		}
-	}
 
-	off2 = pos;
-	pos += size2;
 
-	offJump = pos;
-	if (jumpAddr)
-	{
-		BYTE buffer[] =
-		{
-			0xE9, 0x00, 0x00, 0x00, 0x00, //jmp
-		};
-		Feed();
-	}
-	else
-	{
-		BYTE buffer[] =
-		{
-			0xC3, //ret
-		};
-		Feed();
-	}
 
-	FUNC func = {};
-	if (mainChunkPos % 0x10)
-	{
-		mainChunkPos += (0x10 - (mainChunkPos % 0x10));
-	}
-	func.addr = (mainChunk + mainChunkPos);
-	memcpy(func.addr, payload, pos);
-	mainChunkPos += pos;
 
-	if (jumpAddr)
-	{
-		WriteJump((func.addr + offJump), (BYTE *)jumpAddr);
-	}
 
-	func.sect0 = (func.addr + off0);
-	func.sect1 = (func.addr + off1);
-	func.sect2 = (func.addr + off2);
 
-	if (cacheSize)
-	{
-		if (mainChunkPos % 0x10)
-		{
-			mainChunkPos += (0x10 - (mainChunkPos % 0x10));
-		}
-		func.cache = (BYTE **)(mainChunk + mainChunkPos);
-		mainChunkPos += cacheSize;
-	}
 
-	return func;
-}
 
-#undef Feed
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 bool Memory_Init()
 {
