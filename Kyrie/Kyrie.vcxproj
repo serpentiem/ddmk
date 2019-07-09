@@ -102,6 +102,9 @@
     <ClCompile Include="Kyrie.cpp" />
     <ClCompile Include="Locale.cpp" />
     <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="System\Actor.cpp" />
+    <ClCompile Include="System\Media.cpp" />
+    <ClCompile Include="System\Path.cpp" />
     <ClCompile Include="System\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -129,7 +132,10 @@
     <ClInclude Include="Hotkeys.h" />
     <ClInclude Include="Locale.h" />
     <ClInclude Include="Pause.h" />
+    <ClInclude Include="System\Actor.h" />
+    <ClInclude Include="System\Media.h" />
     <ClInclude Include="System\Message.h" />
+    <ClInclude Include="System\Path.h" />
     <ClInclude Include="System\Window.h" />
     <ClInclude Include="Vars.h" />
   </ItemGroup>

@@ -89,6 +89,35 @@ inline void BuildFonts()
 
 
 
+void GUI_Game_Multiplayer()
+{
+	GUI_SECTION_HEADER(Game.Multiplayer);
+	ImGui::PushItemWidth(100);
+	GUI_Slider("", Config.Game.Multiplayer.actorCount, 1, (MAX_ACTOR - 1));
+	for (uint8 i = 0; i < (MAX_ACTOR - 1); i++)
+	{
+		bool skip = (i >= Config.Game.Multiplayer.actorCount) ? true : false;
+		GUI_PUSH_DISABLE(skip);
+		GUI_Combo<uint8>
+		(
+			"",
+			Locale.Game.Multiplayer.Character.items,
+			countof(Locale.Game.Multiplayer.Character.items),
+			Config.Game.Multiplayer.character[i]
+		);
+		//ImGui::SameLine();
+		//GUI_InputEx("", Config.Game.Multiplayer.costume[i]);
+		GUI_POP_DISABLE(skip);
+	}
+	GUI_InputEx<uint32>(Locale.Game.Multiplayer.spawnDelay, Config.Game.Multiplayer.spawnDelay, 100);
+	ImGui::PopItemWidth();
+	GUI_SECTION_FOOTER(Game.Multiplayer);
+}
+
+
+
+
+
 
 
 
@@ -110,6 +139,10 @@ void GUI_Game_Draw()
 	if (ImGui::Begin("GUI_Game", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
 		ImGui::Text("GUI_Game");
+
+		GUI_Game_Multiplayer();
+		ImGui::Text("");
+
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
@@ -131,6 +164,41 @@ void GUI_System_Draw()
 	if (ImGui::Begin("GUI_System", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
 		ImGui::Text("GUI_System");
+
+
+
+		ImGui::Text(Locale.System.Media.header);
+		ImGui::Text("");
+
+
+
+
+
+		if (GUI_Checkbox(Locale.System.Media.skipIntro, Config.System.Media.skipIntro))
+		{
+			System_Media_ToggleSkipIntro(Config.System.Media.skipIntro);
+		}
+		GUI_PUSH_DISABLE(!Config.System.Media.skipIntro);
+		ImGui::PushItemWidth(150);
+		GUI_Combo<uint8>
+		(
+			Locale.System.Media.skipIntroGameSelect.label,
+			Locale.System.Media.skipIntroGameSelect.items,
+			countof(Locale.System.Media.skipIntroGameSelect.items),
+			Config.System.Media.skipIntroGameSelect
+		);
+		ImGui::PopItemWidth();
+		GUI_POP_DISABLE(!Config.System.Media.skipIntro);
+
+
+
+
+
+
+
+
+
+
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);

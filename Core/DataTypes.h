@@ -13,3 +13,22 @@ typedef unsigned long      DWORD;
 typedef unsigned long long QWORD;
 typedef float              float32;
 typedef double             float64;
+
+//
+//
+//#ifdef _WIN64
+//typedef uint64 muint;
+//#else
+//typedef uint32 muint;
+//#endif
+//
+//typedef long max_uint;
+//
+//
+//
+
+
+
+
+
+

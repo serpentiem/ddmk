@@ -61,6 +61,15 @@
     <ClCompile Include="..\Core\Windows.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="System\Actor.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Path.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Media.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
@@ -129,6 +138,15 @@
     </ClInclude>
     <ClInclude Include="..\Core\Windows.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Actor.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Path.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Media.h">
+      <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

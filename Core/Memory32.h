@@ -188,8 +188,8 @@ FUNC CreateFunction
 			{
 				0xC2, 0x00, 0x00, //ret
 			};
-			uint16 & popCount = *(uint16 *)(buffer + 1);
-			popCount = (uint16)jumpAddr;
+			uint16 & size = *(uint16 *)(buffer + 1);
+			size = (uint16)(jumpAddr * 4);
 			Feed();
 		}
 	}

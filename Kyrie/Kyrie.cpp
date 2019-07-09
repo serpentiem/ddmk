@@ -2,6 +2,9 @@
 
 #include "Hooks.h"
 
+#include "System/Actor.h"
+#include "System/Media.h"
+#include "System/Path.h"
 #include "System/Window.h"
 
 const char * Log_directory = "logs";
@@ -23,6 +26,15 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		LoadConfig();
 		Hooks_Init();
 
+		System_Actor_Init();
+
+		System_Media_Init();
+		System_Media_ToggleSkipIntro(Config.System.Media.skipIntro);
+
+
+
+
+		System_Path_Init();
 		System_Window_Init();
 
 		Write<BYTE>((appBaseAddr + 0xB569  ), 0xEB); // Intro Button Infinite Timer

@@ -1,10 +1,24 @@
 #pragma once
 #include "../Core/Core.h"
+
 #include "Vars.h"
 
 #pragma pack(push, 1)
 struct CONFIG
 {
+	struct
+	{
+		struct
+		{
+
+			bool   enable                     = false;
+			uint8  actorCount                 = 1;
+			uint8  character[(MAX_ACTOR - 1)] = {};
+			uint32 spawnDelay                 = 3000;
+		}
+		Multiplayer;
+	}
+	Game;
 	struct
 	{
 		struct
@@ -17,6 +31,12 @@ struct CONFIG
 			Mouse;
 		}
 		Input;
+		struct
+		{
+			bool  skipIntro           = false;
+			uint8 skipIntroGameSelect = 0;
+		}
+		Media;
 		struct
 		{
 			bool borderless = true;
