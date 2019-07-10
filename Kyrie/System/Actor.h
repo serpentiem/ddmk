@@ -15,3 +15,4 @@ extern InitActor_t   InitActor[MAX_CHAR];
 extern SpawnActor_t  SpawnActor;
 
 void System_Actor_Init();
+void System_Actor_Toggle(bool enable);

@@ -64,6 +64,8 @@ struct FUNC
 
 
 
+// @Todo: Include return addr as well in popCount.
+// So 1 is the default ret and starting with 2 we get ret n.
 
 #define Feed()                                   \
 memcpy((payload + pos), buffer, sizeof(buffer)); \

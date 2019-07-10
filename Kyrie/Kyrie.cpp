@@ -28,6 +28,10 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 
 		System_Actor_Init();
 
+		System_Actor_Toggle(true);
+
+
+
 		System_Media_Init();
 		System_Media_ToggleSkipIntro(Config.System.Media.skipIntro);
 
