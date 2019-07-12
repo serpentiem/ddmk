@@ -48,7 +48,7 @@ static DWORD SpawnActorsThread(LPVOID parameter)
 			continue;
 		}
 		actorBaseAddr[(ACTOR_TWO + actor)] = addr;
-		if (!SpawnActor(13, addr, 0, 0))
+		if (!SpawnActor(SPAWN_TYPE_ACTOR, addr, 0, 0))
 		{
 			Log("SpawnActor failed. %u %u %X", actor, character, addr);
 			continue;
@@ -196,7 +196,7 @@ void System_Actor_Init()
 			0xB9, 0x3E, 0x00, 0x00, 0x00,             //mov ecx,0000003E
 			0xC3,                                     //ret
 		};
-		FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, (MAX_CHAR * 4));
+		FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, (MAX_CHAR * 4), true);
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		*(BYTE ***)(func.sect0 + 0xB) = actorBaseAddr;
 		*(uint8 *)(func.sect0 + 0x16) = MAX_ACTOR;
@@ -223,10 +223,24 @@ void System_Actor_Toggle(bool enable)
 	{
 		WriteJump((appBaseAddr + 0x116600), SpawnActorOneProxy);
 		WriteJump((appBaseAddr + 0x11660A), SpawnActorsProxy);
+		WriteCall((appBaseAddr + 0x9E05D ), GetLiveDataToSession); // OnUpdate Lady Kalina Ann
+		WriteCall((appBaseAddr + 0xB40AD ), GetLiveDataToSession); // OnUpdate Dante Nero Vergil Trish Lady
+		WriteCall((appBaseAddr + 0xB40ED ), GetLiveDataToSession); // OnUpdate Dante OnEvent Trish Jump Spark
+		WriteCall((appBaseAddr + 0x50FD4D), GetLiveDataToSession); // OnUpdate Nero
 	}
 	else
 	{
 		WriteCall((appBaseAddr + 0x116600), (appBaseAddr + 0x6C32E0));
 		WriteCall((appBaseAddr + 0x11660A), (appBaseAddr + 0x5F1C50));
+		{
+			BYTE buffer[] =
+			{
+				0xB9, 0x42, 0x00, 0x00, 0x00, //mov ecx,00000042
+			};
+			vp_memcpy((appBaseAddr + 0x9E05D ), buffer, sizeof(buffer));
+			vp_memcpy((appBaseAddr + 0xB40AD ), buffer, sizeof(buffer));
+			vp_memcpy((appBaseAddr + 0xB40ED ), buffer, sizeof(buffer));
+			vp_memcpy((appBaseAddr + 0x50FD4D), buffer, sizeof(buffer));
+		}
 	}
 }

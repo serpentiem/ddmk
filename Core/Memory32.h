@@ -64,8 +64,11 @@ struct FUNC
 
 
 
-// @Todo: Include return addr as well in popCount.
-// So 1 is the default ret and starting with 2 we get ret n.
+
+
+
+
+
 
 #define Feed()                                   \
 memcpy((payload + pos), buffer, sizeof(buffer)); \
@@ -81,7 +84,8 @@ FUNC CreateFunction
 	uint32   size0         = 0,
 	uint32   size1         = 0,
 	uint32   size2         = 0,
-	uint32   cacheSize     = 0
+	uint32   cacheSize     = 0,
+	bool     noReturn      = false
 )
 {
 	BYTE payload[2048];
@@ -93,18 +97,6 @@ FUNC CreateFunction
 	uint32 offJump;
 
 	bool updateJump = false;
-
-
-
-
-
-
-
-
-
-
-
-
 
 	off0 = pos;
 	pos += size0;
@@ -176,23 +168,26 @@ FUNC CreateFunction
 	offJump = pos;
 	if constexpr (typematch(T, int))
 	{
-		if (jumpAddr == 0)
+		if (!noReturn)
 		{
-			BYTE buffer[] =
+			if (jumpAddr == 0)
 			{
-				0xC3, //ret
-			};
-			Feed();
-		}
-		else
-		{
-			BYTE buffer[] =
+				BYTE buffer[] =
+				{
+					0xC3, //ret
+				};
+				Feed();
+			}
+			else
 			{
-				0xC2, 0x00, 0x00, //ret
-			};
-			uint16 & size = *(uint16 *)(buffer + 1);
-			size = (uint16)(jumpAddr * 4);
-			Feed();
+				BYTE buffer[] =
+				{
+					0xC2, 0x00, 0x00, //ret
+				};
+				uint16 & size = *(uint16 *)(buffer + 1);
+				size = (uint16)(jumpAddr * 4);
+				Feed();
+			}
 		}
 	}
 	else
@@ -205,11 +200,6 @@ FUNC CreateFunction
 		updateJump = true;
 	}
 
-
-
-
-
-
 	FUNC func = {};
 	if (mainChunkPos % 0x10)
 	{
@@ -219,29 +209,10 @@ FUNC CreateFunction
 	memcpy(func.addr, payload, pos);
 	mainChunkPos += pos;
 
-
-
-
-
-
-
-
 	if (updateJump)
 	{
 		WriteJump((func.addr + offJump), (BYTE *)jumpAddr);
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 
 	func.sect0 = (func.addr + off0);
 	func.sect1 = (func.addr + off1);

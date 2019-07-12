@@ -60,10 +60,25 @@ enum GAME_SELECT_
 
 
 
+enum LOAD_FILE_
+{
+	LOAD_FILE_UNKNOWN,
+	LOAD_FILE_FORCE_LOAD,
+	LOAD_FILE_QUEUE,
+};
 
 
 
+enum COSTUME_
+{
+	MAX_COSTUME = 2,
+};
 
+
+enum SPAWN_TYPE_
+{
+	SPAWN_TYPE_ACTOR = 13,
+};
 
 
 

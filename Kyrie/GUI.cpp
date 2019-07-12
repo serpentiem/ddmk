@@ -105,11 +105,11 @@ void GUI_Game_Multiplayer()
 			countof(Locale.Game.Multiplayer.Character.items),
 			Config.Game.Multiplayer.character[i]
 		);
-		//ImGui::SameLine();
-		//GUI_InputEx("", Config.Game.Multiplayer.costume[i]);
+		ImGui::SameLine();
+		GUI_InputEx<uint8>("", Config.Game.Multiplayer.costume[i]);
 		GUI_POP_DISABLE(skip);
 	}
-	GUI_InputEx<uint32>(Locale.Game.Multiplayer.spawnDelay, Config.Game.Multiplayer.spawnDelay, 100);
+	GUI_InputEx<uint32>(Locale.Game.Multiplayer.spawnDelay, Config.Game.Multiplayer.spawnDelay, 1000);
 	ImGui::PopItemWidth();
 	GUI_SECTION_FOOTER(Game.Multiplayer);
 }

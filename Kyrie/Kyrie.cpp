@@ -3,6 +3,7 @@
 #include "Hooks.h"
 
 #include "System/Actor.h"
+#include "System/File.h"
 #include "System/Media.h"
 #include "System/Path.h"
 #include "System/Window.h"
@@ -27,8 +28,13 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		Hooks_Init();
 
 		System_Actor_Init();
-
 		System_Actor_Toggle(true);
+
+		System_File_Init();
+		System_File_Toggle(true);
+
+
+
 
 
 
@@ -43,7 +49,7 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 
 		Write<BYTE>((appBaseAddr + 0xB569  ), 0xEB); // Intro Button Infinite Timer
 		//Write<BYTE>((appBaseAddr + 0xF362  ), 0xEB); // Skip Dialog
-		//Write<BYTE>((appBaseAddr + 0x1540E1), 0xEB); // Disable Timer
+		Write<BYTE>((appBaseAddr + 0x1540E1), 0xEB); // Disable Timer
 	}
 	return 1;
 }

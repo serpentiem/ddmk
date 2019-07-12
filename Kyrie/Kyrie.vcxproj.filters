@@ -70,6 +70,9 @@
     <ClCompile Include="System\Media.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="System\File.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
@@ -146,6 +149,9 @@
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="System\Media.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\File.h">
       <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
