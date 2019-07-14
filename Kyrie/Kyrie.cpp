@@ -5,6 +5,7 @@
 #include "System/Actor.h"
 #include "System/File.h"
 #include "System/Media.h"
+#include "System/Memory.h"
 #include "System/Path.h"
 #include "System/Window.h"
 
@@ -40,6 +41,11 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 
 		System_Media_Init();
 		System_Media_ToggleSkipIntro(Config.System.Media.skipIntro);
+
+		System_Memory_Init();
+		System_Memory_Toggle(true);
+
+
 
 
 

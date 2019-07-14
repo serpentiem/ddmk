@@ -71,7 +71,7 @@ enum LOAD_FILE_
 
 enum COSTUME_
 {
-	MAX_COSTUME = 2,
+	MAX_COSTUME = 3,
 };
 
 

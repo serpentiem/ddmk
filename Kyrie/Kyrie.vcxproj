@@ -105,6 +105,7 @@
     <ClCompile Include="System\Actor.cpp" />
     <ClCompile Include="System\File.cpp" />
     <ClCompile Include="System\Media.cpp" />
+    <ClCompile Include="System\Memory.cpp" />
     <ClCompile Include="System\Path.cpp" />
     <ClCompile Include="System\Window.cpp" />
   </ItemGroup>
@@ -136,6 +137,7 @@
     <ClInclude Include="System\Actor.h" />
     <ClInclude Include="System\File.h" />
     <ClInclude Include="System\Media.h" />
+    <ClInclude Include="System\Memory.h" />
     <ClInclude Include="System\Message.h" />
     <ClInclude Include="System\Path.h" />
     <ClInclude Include="System\Window.h" />

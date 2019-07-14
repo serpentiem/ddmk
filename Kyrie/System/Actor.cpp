@@ -2,6 +2,8 @@
 
 #pragma warning(disable: 4102) // Unreferenced label.
 
+// @Research: Costume Session Data Access.
+
 BYTE * actorBaseAddr[MAX_ACTOR] = {};
 
 CreateActor_t CreateActor[MAX_CHAR] = {};
@@ -23,6 +25,7 @@ static DWORD SpawnActorsThread(LPVOID parameter)
 {
 	LogFunction();
 	MultiplayerStart:
+	Log("MultiplayerStart");
 	if (!Config.Game.Multiplayer.enable)
 	{
 		goto MultiplayerEnd;
@@ -35,12 +38,14 @@ static DWORD SpawnActorsThread(LPVOID parameter)
 		{
 			character = 0;
 		}
+		Log("CreateActor %u %u", actor, character);
 		BYTE * addr = CreateActor[character]();
 		if (!addr)
 		{
 			Log("CreateActor failed. %u %u", actor, character);
 			continue;
 		}
+		Log("InitActor %u %u", actor, character);
 		addr = InitActor[character](addr);
 		if (!addr)
 		{
@@ -48,12 +53,14 @@ static DWORD SpawnActorsThread(LPVOID parameter)
 			continue;
 		}
 		actorBaseAddr[(ACTOR_TWO + actor)] = addr;
+		Log("SpawnActor %u %u", actor, character);
 		if (!SpawnActor(SPAWN_TYPE_ACTOR, addr, 0, 0))
 		{
 			Log("SpawnActor failed. %u %u %X", actor, character, addr);
 			continue;
 		}
 	}
+	Log("MultiplayerEnd");
 	MultiplayerEnd:
 	return 1;
 }
