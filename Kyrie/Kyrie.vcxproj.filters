@@ -76,6 +76,7 @@
     <ClCompile Include="System\Memory.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="Steam.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
@@ -160,5 +161,6 @@
     <ClInclude Include="System\Memory.h">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="Steam.h" />
   </ItemGroup>
 </Project>

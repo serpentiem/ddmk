@@ -1,6 +1,7 @@
 #include "../Core/Core.h"
 
 #include "Hooks.h"
+#include "Steam.h"
 
 #include "System/Actor.h"
 #include "System/File.h"
@@ -27,9 +28,25 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		Config_Init();
 		LoadConfig();
 		Hooks_Init();
+		if (!Steam_Init())
+		{
+			return 0;
+		}
+		Log("trish lady costume dlc unlocked %u", IsDLCInstalled(359496));
+		Log("crappy orb dlc unlocked %u", IsDLCInstalled(123));
+
+
+
+
+
 
 		System_Actor_Init();
 		System_Actor_Toggle(true);
+
+		
+
+
+
 
 		System_File_Init();
 		System_File_Toggle(true);

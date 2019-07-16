@@ -102,6 +102,7 @@
     <ClCompile Include="Kyrie.cpp" />
     <ClCompile Include="Locale.cpp" />
     <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="Steam.cpp" />
     <ClCompile Include="System\Actor.cpp" />
     <ClCompile Include="System\File.cpp" />
     <ClCompile Include="System\Media.cpp" />
@@ -134,6 +135,7 @@
     <ClInclude Include="Hotkeys.h" />
     <ClInclude Include="Locale.h" />
     <ClInclude Include="Pause.h" />
+    <ClInclude Include="Steam.h" />
     <ClInclude Include="System\Actor.h" />
     <ClInclude Include="System\File.h" />
     <ClInclude Include="System\Media.h" />

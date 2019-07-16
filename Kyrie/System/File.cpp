@@ -6,6 +6,8 @@ LoadFile_t LoadFile = 0;
 
 BYTE * LoadAssetsProxy = 0;
 
+// @Research: Disabled actor's costume is being applied to previous actor. Error either here or in Actor.cpp.
+
 const char * path[MAX_CHAR][4] =
 {
 	{
@@ -59,6 +61,11 @@ static void LoadAssets()
 		if (costume >= MAX_COSTUME)
 		{
 			costume = 0;
+		}
+		if (((character == CHAR_TRISH) || (character == CHAR_LADY)) && (costume == 1) && (IsDLCInstalled(DLC_TRISH_LADY_COSTUMES) == false))
+		{
+			costume = 0;
+			Log("Required DLC not installed. %u %u", character, DLC_TRISH_LADY_COSTUMES);
 		}
 		BYTE * addr = (appBaseAddr + 0xF23F18);
 		LoadFile(addr, path[character][1], LOAD_FILE_QUEUE);
@@ -120,7 +127,7 @@ void System_File_Toggle(bool enable)
 	}
 	else
 	{
-		Write<BYTE>((appBaseAddr + 0x10C88D), 0x68); // push dmc4.exe+F23F18
+		Write<BYTE>((appBaseAddr + 0x10C88D), 0x68);
 		Write<BYTE *>((appBaseAddr + 0x10C88D + 1), (appBaseAddr + 0xF23F18));
 	}
 }

@@ -2,6 +2,7 @@
 #include "../../Core/Core.h"
 
 #include "../Config.h"
+#include "../Steam.h"
 #include "../Vars.h"
 
 typedef BYTE *(* LoadFile_t)(BYTE *, const char *, uint32);

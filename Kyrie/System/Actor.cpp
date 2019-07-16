@@ -2,8 +2,6 @@
 
 #pragma warning(disable: 4102) // Unreferenced label.
 
-// @Research: Costume Session Data Access.
-
 BYTE * actorBaseAddr[MAX_ACTOR] = {};
 
 CreateActor_t CreateActor[MAX_CHAR] = {};
@@ -13,6 +11,33 @@ SpawnActor_t  SpawnActor            = 0;
 BYTE * SpawnActorOneProxy   = 0;
 BYTE * SpawnActorsProxy     = 0;
 BYTE * GetLiveDataToSession = 0;
+BYTE * GetCostumeProxy      = 0;
+
+uint8 GetActorId(BYTE * baseAddr)
+{
+	for (uint8 i = 0; i < MAX_ACTOR; i++)
+	{
+		if (actorBaseAddr[i] == baseAddr)
+		{
+			return i;
+		}
+	}
+	return 0;
+}
+
+uint8 GetActorCount()
+{
+	uint8 count = 0;
+	for (uint8 i = 0; i < MAX_ACTOR; i++)
+	{
+		if (!actorBaseAddr[i])
+		{
+			break;
+		}
+		count++;
+	}
+	return count;
+}
 
 static void SpawnActorOne(BYTE * baseAddr)
 {
@@ -69,6 +94,51 @@ static void CreateSpawnActorsThread()
 {
 	LogFunction();
 	CreateThread(0, 4096, SpawnActorsThread, 0, 0, 0);
+}
+
+static uint32 __fastcall GetCostume(BYTE * baseAddr)
+{
+	Log("%s %X", FUNC_NAME, baseAddr);
+	uint8 actor = GetActorId(baseAddr);
+	uint32 character = *(uint8 *)(baseAddr + 0x19AC);
+	if (character >= MAX_CHAR)
+	{
+		character = 0;
+	}
+	if (actor == ACTOR_ONE)
+	{
+		BYTE * session = *(BYTE **)(appBaseAddr + 0xF59F10);
+		if (!session)
+		{
+			return 0;
+		}
+		uint32 off[MAX_CHAR] =
+		{
+			0x1A0,
+			0x2A8,
+			0x398,
+			0x494,
+			0x59C,
+		};
+		return *(uint32 *)(session + off[character]);
+	}
+
+	// @Bug: id should be (actorId - 1).
+
+
+
+
+	uint8 costume = Config.Game.Multiplayer.costume[actor];
+	if (costume >= MAX_COSTUME)
+	{
+		costume = 0;
+	}
+	if (((character == CHAR_TRISH) || (character == CHAR_LADY)) && (costume == 1) && (IsDLCInstalled(DLC_TRISH_LADY_COSTUMES) == false))
+	{
+		costume = 0;
+		Log("Required DLC not installed. %u %u", character, DLC_TRISH_LADY_COSTUMES);
+	}
+	return (uint32)costume;
 }
 
 void System_Actor_Init()
@@ -217,10 +287,15 @@ void System_Actor_Init()
 		func.cache[CHAR_LADY]   = (func.sect0 + 0x6D);
 		GetLiveDataToSession = func.addr;
 	}
-	Log("CreateActor %X", CreateActor[CHAR_DANTE]);
-	Log("InitActor   %X", InitActor[CHAR_DANTE]);
-	Log("SpawnActor  %X", SpawnActor);
+	{
+		FUNC func = CreateFunction(GetCostume, 0, true, false);
+		GetCostumeProxy = func.addr;
+	}
+	Log("CreateActor          %X", CreateActor[CHAR_DANTE]);
+	Log("InitActor            %X", InitActor[CHAR_DANTE]);
+	Log("SpawnActor           %X", SpawnActor);
 	Log("GetLiveDataToSession %X", GetLiveDataToSession);
+	Log("GetCostume           %X", GetCostume);
 }
 
 void System_Actor_Toggle(bool enable)
@@ -234,6 +309,11 @@ void System_Actor_Toggle(bool enable)
 		WriteCall((appBaseAddr + 0xB40AD ), GetLiveDataToSession); // OnUpdate Dante Nero Vergil Trish Lady
 		WriteCall((appBaseAddr + 0xB40ED ), GetLiveDataToSession); // OnUpdate Dante OnEvent Trish Jump Spark
 		WriteCall((appBaseAddr + 0x50FD4D), GetLiveDataToSession); // OnUpdate Nero
+		WriteCall((appBaseAddr + 0x4D4675), GetCostumeProxy, 1);
+		WriteCall((appBaseAddr + 0x5108C5), GetCostumeProxy, 1);
+		WriteCall((appBaseAddr + 0xD8745 ), GetCostumeProxy, 1);
+		WriteCall((appBaseAddr + 0xB2C95 ), GetCostumeProxy, 1);
+		WriteCall((appBaseAddr + 0x9BFE5 ), GetCostumeProxy, 1);
 	}
 	else
 	{
@@ -248,6 +328,41 @@ void System_Actor_Toggle(bool enable)
 			vp_memcpy((appBaseAddr + 0xB40AD ), buffer, sizeof(buffer));
 			vp_memcpy((appBaseAddr + 0xB40ED ), buffer, sizeof(buffer));
 			vp_memcpy((appBaseAddr + 0x50FD4D), buffer, sizeof(buffer));
+		}
+		{
+			BYTE buffer[] =
+			{
+				0x8B, 0x80, 0xA0, 0x01, 0x00, 0x00, //mov eax,[eax+000001A0]
+			};
+			vp_memcpy((appBaseAddr + 0x4D4675), buffer, sizeof(buffer));
+		}
+		{
+			BYTE buffer[] =
+			{
+				0x8B, 0x80, 0xA8, 0x02, 0x00, 0x00, //mov eax,[eax+000002A8]
+			};
+			vp_memcpy((appBaseAddr + 0x5108C5), buffer, sizeof(buffer));
+		}
+		{
+			BYTE buffer[] =
+			{
+				0x8B, 0x80, 0x98, 0x03, 0x00, 0x00, //mov eax,[eax+00000398]
+			};
+			vp_memcpy((appBaseAddr + 0xD8745), buffer, sizeof(buffer));
+		}
+		{
+			BYTE buffer[] =
+			{
+				0x8B, 0x80, 0x94, 0x04, 0x00, 0x00, //mov eax,[eax+00000494]
+			};
+			vp_memcpy((appBaseAddr + 0xB2C95), buffer, sizeof(buffer));
+		}
+		{
+			BYTE buffer[] =
+			{
+				0x8B, 0x80, 0x9C, 0x05, 0x00, 0x00, //mov eax,[eax+0000059C]
+			};
+			vp_memcpy((appBaseAddr + 0x9BFE5), buffer, sizeof(buffer));
 		}
 	}
 }
