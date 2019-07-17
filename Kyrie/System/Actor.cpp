@@ -122,12 +122,14 @@ static uint32 __fastcall GetCostume(BYTE * baseAddr)
 		};
 		return *(uint32 *)(session + off[character]);
 	}
-
-	// @Bug: id should be (actorId - 1).
-
-
-
-
+	// GetActorId returns a number between 0 and 3.
+	// It is not 0, because we check for that above.
+	// It can only be 1, 2 or 3.
+	// So we just sub 1 to get the correct actor id for Config.
+	actor--;
+	// We don't have to check if the live character id matches
+	// the config character id, because at this point we have
+	// the correct actor id.
 	uint8 costume = Config.Game.Multiplayer.costume[actor];
 	if (costume >= MAX_COSTUME)
 	{

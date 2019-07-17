@@ -69,10 +69,7 @@ enum LOAD_FILE_
 
 
 
-enum COSTUME_
-{
-	MAX_COSTUME = 3,
-};
+
 
 
 enum SPAWN_TYPE_
@@ -87,6 +84,12 @@ enum DLC_
 };
 
 
+
+
+enum COSTUME_
+{
+	MAX_COSTUME = 4,
+};
 
 
 enum COSTUME_DANTE_

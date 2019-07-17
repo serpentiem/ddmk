@@ -6,38 +6,45 @@ LoadFile_t LoadFile = 0;
 
 BYTE * LoadAssetsProxy = 0;
 
-// @Research: Disabled actor's costume is being applied to previous actor. Error either here or in Actor.cpp.
+const char * basePath[MAX_CHAR] =
+{
+	"rom\\player\\uPlayerDante",
+	"rom\\player\\uPlayerNero",
+	"rom\\player\\uPlayerVergil",
+	"rom\\player\\uPlayerTrish",
+	"rom\\player\\uPlayerLady",
+};
 
-const char * path[MAX_CHAR][4] =
+const char * costumePath[MAX_CHAR][MAX_COSTUME] =
 {
 	{
-		"rom\\player\\uPlayerDante",
 		"rom\\player\\costume\\plmod_pl006",
 		"rom\\player\\costume\\plmod_pl006_ex00",
+		"rom\\player\\costume\\plmod_pl006",
 		"rom\\player\\costume\\plmod_pl006_ex01",
 	},
 	{
-		"rom\\player\\uPlayerNero",
 		"rom\\player\\costume\\plmod_pl000",
 		"rom\\player\\costume\\plmod_pl000_ex00",
+		"rom\\player\\costume\\plmod_pl000",
 		"rom\\player\\costume\\plmod_pl000_ex01",
 	},
 	{
-		"rom\\player\\uPlayerVergil",
 		"rom\\player\\costume\\plmod_pl030",
 		"rom\\player\\costume\\plmod_pl030_ex00",
+		"rom\\player\\costume\\plmod_pl030",
 		"rom\\player\\costume\\plmod_pl030_ex01",
 	},
 	{
-		"rom\\player\\uPlayerTrish",
 		"rom\\player\\costume\\plmod_pl007",
 		"rom\\player\\costume\\plmod_pl007_ex00",
+		"rom\\player\\costume\\plmod_pl007",
 		"rom\\player\\costume\\plmod_pl007_ex01",
 	},
 	{
-		"rom\\player\\uPlayerLady",
 		"rom\\player\\costume\\plmod_pl008",
 		"rom\\player\\costume\\plmod_pl008_ex00",
+		"rom\\player\\costume\\plmod_pl008",
 		"rom\\player\\costume\\plmod_pl008_ex01",
 	},
 };
@@ -68,9 +75,9 @@ static void LoadAssets()
 			Log("Required DLC not installed. %u %u", character, DLC_TRISH_LADY_COSTUMES);
 		}
 		BYTE * addr = (appBaseAddr + 0xF23F18);
-		LoadFile(addr, path[character][1], LOAD_FILE_QUEUE);
-		LoadFile(addr, path[character][(1 + costume)], LOAD_FILE_QUEUE);
-		LoadFile(addr, path[character][0], LOAD_FILE_QUEUE);
+		LoadFile(addr, costumePath[character][0], LOAD_FILE_QUEUE);
+		LoadFile(addr, costumePath[character][costume], LOAD_FILE_QUEUE);
+		LoadFile(addr, basePath[character], LOAD_FILE_QUEUE);
 	}
 	MultiplayerEnd:
 	return;
