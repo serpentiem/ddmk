@@ -8,10 +8,11 @@ CreateActor_t CreateActor[MAX_CHAR] = {};
 InitActor_t   InitActor  [MAX_CHAR] = {};
 SpawnActor_t  SpawnActor            = 0;
 
-BYTE * SpawnActorOneProxy   = 0;
-BYTE * SpawnActorsProxy     = 0;
-BYTE * GetLiveDataToSession = 0;
-BYTE * GetCostumeProxy      = 0;
+BYTE * SpawnActorOneProxy                  = 0;
+BYTE * SpawnActorsProxy                    = 0;
+BYTE * GetLiveDataToSession                = 0;
+BYTE * GetCostumeProxy                     = 0;
+BYTE * LadyExtraCostume0CreateObject3Proxy = 0;
 
 uint8 GetActorId(BYTE * baseAddr)
 {
@@ -141,6 +142,28 @@ static uint32 __fastcall GetCostume(BYTE * baseAddr)
 		Log("Required DLC not installed. %u %u", character, DLC_TRISH_LADY_COSTUMES);
 	}
 	return (uint32)costume;
+}
+
+static void __fastcall LadyExtraCostume0CreateObject3(BYTE * baseAddr)
+{
+	Log("%s %X", FUNC_NAME, baseAddr);
+	BYTE * addr = baseAddr;
+	if (!addr)
+	{
+		return;
+	}
+	addr = *(BYTE **)(addr + 0x106C0);
+	if (!addr)
+	{
+		return;
+	}
+	addr = *(BYTE **)(addr + 0x74);
+	if (!addr)
+	{
+		return;
+	}
+	float & value = *(float *)(addr + 0x3C);
+	value = 0;
 }
 
 void System_Actor_Init()
@@ -293,12 +316,29 @@ void System_Actor_Init()
 		FUNC func = CreateFunction(GetCostume, 0, true, false);
 		GetCostumeProxy = func.addr;
 	}
-	Log("CreateActor          %X", CreateActor[CHAR_DANTE]);
-	Log("InitActor            %X", InitActor[CHAR_DANTE]);
-	Log("SpawnActor           %X", SpawnActor);
-	Log("GetLiveDataToSession %X", GetLiveDataToSession);
-	Log("GetCostume           %X", GetCostume);
+	{
+		BYTE sect0[] =
+		{
+			0x89, 0x86, 0xC0, 0x06, 0x01, 0x00, //mov [esi+000106C0],eax
+		};
+		BYTE sect1[] =
+		{
+			0x8B, 0xCE, //mov ecx,esi
+		};
+		FUNC func = CreateFunction(LadyExtraCostume0CreateObject3, (appBaseAddr + 0x9C2E3), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		LadyExtraCostume0CreateObject3Proxy = func.addr;
+	}
+	Log("CreateActor                    %X", CreateActor[CHAR_DANTE]);
+	Log("InitActor                      %X", InitActor[CHAR_DANTE]);
+	Log("SpawnActor                     %X", SpawnActor);
+	Log("GetLiveDataToSession           %X", GetLiveDataToSession);
+	Log("GetCostume                     %X", GetCostume);
+	Log("LadyExtraCostume0CreateObject3 %X", LadyExtraCostume0CreateObject3);
 }
+
+// Only relevant for Arcade and Multiplayer
 
 void System_Actor_Toggle(bool enable)
 {
@@ -316,6 +356,7 @@ void System_Actor_Toggle(bool enable)
 		WriteCall((appBaseAddr + 0xD8745 ), GetCostumeProxy, 1);
 		WriteCall((appBaseAddr + 0xB2C95 ), GetCostumeProxy, 1);
 		WriteCall((appBaseAddr + 0x9BFE5 ), GetCostumeProxy, 1);
+		WriteJump((appBaseAddr + 0x9C2DD ), LadyExtraCostume0CreateObject3Proxy, 1);
 	}
 	else
 	{
@@ -365,6 +406,13 @@ void System_Actor_Toggle(bool enable)
 				0x8B, 0x80, 0x9C, 0x05, 0x00, 0x00, //mov eax,[eax+0000059C]
 			};
 			vp_memcpy((appBaseAddr + 0x9BFE5), buffer, sizeof(buffer));
+		}
+		{
+			BYTE buffer[] =
+			{
+				0x89, 0x86, 0xC0, 0x06, 0x01, 0x00, //mov [esi+000106C0],eax
+			};
+			vp_memcpy((appBaseAddr + 0x9C2DD), buffer, sizeof(buffer));
 		}
 	}
 }
