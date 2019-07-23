@@ -416,3 +416,22 @@ void System_Actor_Toggle(bool enable)
 		}
 	}
 }
+
+void System_Actor_ToggleDisableIdleTimer(bool enable)
+{
+	LogFunctionBool(enable);
+	if (enable)
+	{
+		vp_memset((appBaseAddr + 0x5573C1), 0x90, 5); // Lady
+	}
+	else
+	{
+		{
+			BYTE buffer[] =
+			{
+				0xF3, 0x0F, 0x5C, 0x46, 0x1C, //subss xmm0,[esi+1C]
+			};
+			vp_memcpy((appBaseAddr + 0x5573C1), buffer, sizeof(buffer));
+		}
+	}
+}

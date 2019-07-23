@@ -23,6 +23,11 @@ struct CONFIG
 	{
 		struct
 		{
+			bool disableIdleTimer = false;
+		}
+		Actor;
+		struct
+		{
 			struct
 			{
 				bool   hideCursor = true;
@@ -33,8 +38,8 @@ struct CONFIG
 		Input;
 		struct
 		{
-			bool  skipIntro           = false;
-			uint8 skipIntroGameSelect = 0;
+			bool   skipIntro     = false;
+			uint32 skipIntroGame = 0;
 		}
 		Media;
 		struct

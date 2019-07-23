@@ -9,7 +9,7 @@
 #include "Locale.h"
 #include "Pause.h"
 
-#include "System/Media.h"
+#include "System/Actor.h"
 #include "System/State.h"
 #include "System/Window.h"
 

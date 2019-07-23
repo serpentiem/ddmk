@@ -24,3 +24,15 @@ uint8 GetActorCount();
 
 void System_Actor_Init();
 void System_Actor_Toggle(bool enable);
+void System_Actor_ToggleDisableIdleTimer(bool enable);
+
+
+
+
+
+
+
+
+
+
+

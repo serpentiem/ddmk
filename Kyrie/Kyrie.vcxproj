@@ -104,8 +104,8 @@
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="Steam.cpp" />
     <ClCompile Include="System\Actor.cpp" />
+    <ClCompile Include="System\Event.cpp" />
     <ClCompile Include="System\File.cpp" />
-    <ClCompile Include="System\Media.cpp" />
     <ClCompile Include="System\Memory.cpp" />
     <ClCompile Include="System\Path.cpp" />
     <ClCompile Include="System\State.cpp" />
@@ -138,8 +138,8 @@
     <ClInclude Include="Pause.h" />
     <ClInclude Include="Steam.h" />
     <ClInclude Include="System\Actor.h" />
+    <ClInclude Include="System\Event.h" />
     <ClInclude Include="System\File.h" />
-    <ClInclude Include="System\Media.h" />
     <ClInclude Include="System\Memory.h" />
     <ClInclude Include="System\Message.h" />
     <ClInclude Include="System\Path.h" />

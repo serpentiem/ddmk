@@ -42,11 +42,17 @@ struct LOCALE
 	{
 		struct
 		{
+			const char * header = "Actor";
+			const char * disableIdleTimer = "Disable Idle Timer";
+		}
+		Actor;
+		struct
+		{
 			const char * header = "Media";
 			const char * skipIntro = "Skip Intro";
 			struct
 			{
-				const char * label = "Game Select";
+				const char * label = "Game";
 				const char * items[3] =
 				{
 					"Dante / Nero",
@@ -54,7 +60,7 @@ struct LOCALE
 					"Trish / Lady",
 				};
 			}
-			skipIntroGameSelect;
+			skipIntroGame;
 		}
 		Media;
 	}

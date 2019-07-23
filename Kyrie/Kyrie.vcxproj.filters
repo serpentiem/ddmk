@@ -67,9 +67,6 @@
     <ClCompile Include="System\Path.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Media.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="System\File.cpp">
       <Filter>System</Filter>
     </ClCompile>
@@ -78,6 +75,9 @@
     </ClCompile>
     <ClCompile Include="Steam.cpp" />
     <ClCompile Include="System\State.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Event.cpp">
       <Filter>System</Filter>
     </ClCompile>
   </ItemGroup>
@@ -155,9 +155,6 @@
     <ClInclude Include="System\Path.h">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="System\Media.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="System\File.h">
       <Filter>System</Filter>
     </ClInclude>
@@ -166,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="Steam.h" />
     <ClInclude Include="System\State.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Event.h">
       <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>

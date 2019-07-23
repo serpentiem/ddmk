@@ -176,16 +176,16 @@ void GUI_System_Draw()
 
 		if (GUI_Checkbox(Locale.System.Media.skipIntro, Config.System.Media.skipIntro))
 		{
-			System_Media_ToggleSkipIntro(Config.System.Media.skipIntro);
+			//System_Media_ToggleSkipIntro(Config.System.Media.skipIntro);
 		}
 		GUI_PUSH_DISABLE(!Config.System.Media.skipIntro);
 		ImGui::PushItemWidth(150);
-		GUI_Combo<uint8>
+		GUI_Combo<uint32>
 		(
-			Locale.System.Media.skipIntroGameSelect.label,
-			Locale.System.Media.skipIntroGameSelect.items,
-			countof(Locale.System.Media.skipIntroGameSelect.items),
-			Config.System.Media.skipIntroGameSelect
+			Locale.System.Media.skipIntroGame.label,
+			Locale.System.Media.skipIntroGame.items,
+			countof(Locale.System.Media.skipIntroGame.items),
+			Config.System.Media.skipIntroGame
 		);
 		ImGui::PopItemWidth();
 		GUI_POP_DISABLE(!Config.System.Media.skipIntro);
@@ -228,6 +228,26 @@ void GUI_Tools_Draw()
 }
 
 
+
+
+
+void GUI_Debug_Actor()
+{
+	GUI_Hyperlink(Locale.System.Actor.header);
+	ImGui::Text("");
+	if (GUI_Checkbox(Locale.System.Actor.disableIdleTimer, Config.System.Actor.disableIdleTimer))
+	{
+		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
+	}
+}
+
+
+
+
+
+
+
+
 void GUI_Debug_Draw()
 {
 	static bool run = false;
@@ -243,6 +263,8 @@ void GUI_Debug_Draw()
 	if (ImGui::Begin("GUI_Debug", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
 		ImGui::Text("GUI_Debug");
+		GUI_Debug_Actor();
+		ImGui::Text("");
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
