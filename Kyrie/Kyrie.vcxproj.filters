@@ -77,6 +77,9 @@
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="Steam.cpp" />
+    <ClCompile Include="System\State.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
@@ -162,5 +165,8 @@
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Steam.h" />
+    <ClInclude Include="System\State.h">
+      <Filter>System</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
