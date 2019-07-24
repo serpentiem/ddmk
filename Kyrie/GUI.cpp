@@ -91,27 +91,42 @@ inline void BuildFonts()
 
 void GUI_Game_Multiplayer()
 {
-	GUI_SECTION_HEADER(Game.Multiplayer);
-	ImGui::PushItemWidth(100);
-	GUI_Slider("", Config.Game.Multiplayer.actorCount, 1, (MAX_ACTOR - 1));
-	for (uint8 i = 0; i < (MAX_ACTOR - 1); i++)
+	GUI_Hyperlink(Locale.Game.Multiplayer.header);
+	ImGui::Text("");
+	GUI_PUSH_DISABLE(InMission() || ActorAvailable());
 	{
-		bool skip = (i >= Config.Game.Multiplayer.actorCount) ? true : false;
-		GUI_PUSH_DISABLE(skip);
-		GUI_Combo<uint8>
-		(
-			"",
-			Locale.Game.Multiplayer.Character.items,
-			countof(Locale.Game.Multiplayer.Character.items),
-			Config.Game.Multiplayer.character[i]
-		);
-		ImGui::SameLine();
-		GUI_InputEx<uint8>("", Config.Game.Multiplayer.costume[i]);
-		GUI_POP_DISABLE(skip);
+		GUI_Checkbox(Locale.Game.Multiplayer.enable, Config.Game.Multiplayer.enable);
+		ImGui::Text("");
+		GUI_PUSH_DISABLE(!Config.Game.Multiplayer.enable);
+		{
+			ImGui::PushItemWidth(100);
+			GUI_Slider("", Config.Game.Multiplayer.actorCount, 1, (MAX_ACTOR - 1));
+			for (uint8 i = 0; i < (MAX_ACTOR - 1); i++)
+			{
+				bool skip = (i >= Config.Game.Multiplayer.actorCount) ? true : false;
+				GUI_PUSH_DISABLE(skip);
+				GUI_Combo<uint8>
+				(
+					"",
+					Locale.Game.Multiplayer.Character.items,
+					countof(Locale.Game.Multiplayer.Character.items),
+					Config.Game.Multiplayer.character[i]
+				);
+				ImGui::SameLine();
+				GUI_InputEx<uint8>("", Config.Game.Multiplayer.costume[i]);
+				GUI_POP_DISABLE(skip);
+			}
+			ImGui::PopItemWidth();
+		}
+		GUI_POP_DISABLE(!Config.Game.Multiplayer.enable);
+		ImGui::Text("");
+		if (GUI_Button(Locale.Game.Multiplayer.reset))
+		{
+			memcpy(&Config.Game.Multiplayer, &DefaultConfig.Game.Multiplayer, sizeof(Config.Game.Multiplayer));
+			SaveConfig();
+		}
 	}
-	GUI_InputEx<uint32>(Locale.Game.Multiplayer.spawnDelay, Config.Game.Multiplayer.spawnDelay, 1000);
-	ImGui::PopItemWidth();
-	GUI_SECTION_FOOTER(Game.Multiplayer);
+	GUI_POP_DISABLE(InMission() || ActorAvailable());
 }
 
 

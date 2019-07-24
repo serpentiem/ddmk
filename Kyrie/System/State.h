@@ -4,3 +4,4 @@
 
 bool ActorAvailable();
 bool InGame();
+bool InMission();

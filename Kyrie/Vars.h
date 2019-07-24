@@ -138,6 +138,45 @@ enum COSTUME_LADY_
 
 
 
+/*
+
+MAIN_VECTOR_OBJ_
+
+
+ARC_OBJ
+
+
+
+
+
+
+
+*/
+
+
+struct MAIN_VECTOR_OBJECT
+{
+	BYTE   ** funcAddr;
+	void   *  unknown0;
+	uint32    unknown1;
+	BYTE   *  addr;
+	void   *  unknown2;
+	float     unknown3;
+};
+
+enum MAIN_VECTOR_
+{
+	MAIN_VECTOR_MISSION_SELECT = 1,
+	MAIN_VECTOR_MISSION_START  = 25,
+};
+
+
+
+
+
+
+
+
 
 
 
