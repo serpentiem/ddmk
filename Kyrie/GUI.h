@@ -10,6 +10,7 @@
 #include "Pause.h"
 
 #include "System/Actor.h"
+#include "System/Memory.h"
 #include "System/State.h"
 #include "System/Window.h"
 

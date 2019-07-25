@@ -5,6 +5,17 @@ struct LOCALE
 {
 	struct
 	{
+		const char * label[4] =
+		{
+			"Game",
+			"System",
+			"Tools",
+			"Debug",
+		};
+	}
+	Main;
+	struct
+	{
 		struct
 		{
 			const char * header = "Multiplayer";
@@ -29,23 +40,6 @@ struct LOCALE
 	Game;
 	struct
 	{
-		const char * label[4] =
-		{
-			"Game",
-			"System",
-			"Tools",
-			"Debug",
-		};
-	}
-	Main;
-	struct
-	{
-		struct
-		{
-			const char * header = "Actor";
-			const char * disableIdleTimer = "Disable Idle Timer";
-		}
-		Actor;
 		struct
 		{
 			const char * header = "Media";
@@ -65,6 +59,23 @@ struct LOCALE
 		Media;
 	}
 	System;
+	struct
+	{
+		struct
+		{
+			const char * header = "Actor";
+			const char * disableIdleTimer = "Disable Idle Timer";
+		}
+		Actor;
+		struct
+		{
+			const char * header = "Fixes";
+			const char * replaceMemoryAllocationFunctions = "Replace Memory Allocation Functions";
+		}
+		Fixes;
+	}
+	Debug;
+	const char * restart = "Restart App!";
 };
 
 extern LOCALE Locale;

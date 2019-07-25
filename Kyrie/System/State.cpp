@@ -47,8 +47,8 @@ bool InMission()
 		return false;
 	}
 	addr += 0x20;
-	MAIN_VECTOR_OBJECT * obj = (MAIN_VECTOR_OBJECT *)addr;
-	if (!obj[MAIN_VECTOR_MISSION_START].addr)
+	MVO * data = (MVO *)addr;
+	if (!data[MVDI_MISSION_START].addr)
 	{
 		return false;
 	}

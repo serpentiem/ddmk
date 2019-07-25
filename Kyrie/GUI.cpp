@@ -1,5 +1,7 @@
 #include "GUI.h"
 
+#pragma warning(disable: 4102) // Unreferenced label.
+
 
 enum TAB_
 {
@@ -51,11 +53,16 @@ ImVec2 GUI_System_size        = ImVec2(300, 418);
 ImVec2 GUI_Tools_size         = ImVec2(300, 300);
 ImVec2 GUI_Debug_size         = ImVec2(300, 300);
 
+ImVec2 GUI_Teleporter_size    = ImVec2(300, 300);
+
+
+
+
 bool debug   = false;
 bool restart = false;
 
 
-
+bool GUI_Teleporter_show = false;
 
 
 
@@ -93,7 +100,7 @@ void GUI_Game_Multiplayer()
 {
 	GUI_Hyperlink(Locale.Game.Multiplayer.header);
 	ImGui::Text("");
-	GUI_PUSH_DISABLE(InMission() || ActorAvailable());
+	GUI_PUSH_DISABLE(InMission());
 	{
 		GUI_Checkbox(Locale.Game.Multiplayer.enable, Config.Game.Multiplayer.enable);
 		ImGui::Text("");
@@ -126,7 +133,7 @@ void GUI_Game_Multiplayer()
 			SaveConfig();
 		}
 	}
-	GUI_POP_DISABLE(InMission() || ActorAvailable());
+	GUI_POP_DISABLE(InMission());
 }
 
 
@@ -235,7 +242,14 @@ void GUI_Tools_Draw()
 	if (ImGui::Begin("GUI_Tools", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
 		
-		ImGui::Text("GUI_Tools");
+		//ImGui::Text("GUI_Tools");
+
+		if (GUI_Hyperlink("Teleporter"))
+		{
+			GUI_Teleporter_show = true;
+		}
+
+
 
 	}
 	ImGui::End();
@@ -248,20 +262,25 @@ void GUI_Tools_Draw()
 
 void GUI_Debug_Actor()
 {
-	GUI_Hyperlink(Locale.System.Actor.header);
+	GUI_Hyperlink(Locale.Debug.Actor.header);
 	ImGui::Text("");
-	if (GUI_Checkbox(Locale.System.Actor.disableIdleTimer, Config.System.Actor.disableIdleTimer))
+	if (GUI_Checkbox(Locale.Debug.Actor.disableIdleTimer, Config.System.Actor.disableIdleTimer))
 	{
 		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
 	}
 }
 
+void GUI_Debug_Fixes()
+{
+	GUI_Hyperlink(Locale.Debug.Fixes.header);
+	ImGui::Text("");
+	if (GUI_Checkbox(Locale.Debug.Fixes.replaceMemoryAllocationFunctions, Config.System.Memory.replaceAllocationFunctions))
+	{
+		restart = true;
+	}
+}
 
-
-
-
-
-
+// @Todo: Add own size vars.
 
 void GUI_Debug_Draw()
 {
@@ -277,13 +296,44 @@ void GUI_Debug_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Debug", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		ImGui::Text("GUI_Debug");
 		GUI_Debug_Actor();
+		ImGui::Text("");
+		GUI_Debug_Fixes();
 		ImGui::Text("");
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -340,6 +390,15 @@ void GUI_Main_Draw()
 		ImGui::Separator();
 		ImGui::End();
 	}
+
+
+	
+
+
+
+
+
+
 	ImGui::PopStyleVar(4);
 	switch (activeTab)
 	{
@@ -363,6 +422,139 @@ void GUI_Main_Draw()
 
 
 
+
+
+
+#define GUI_InputReadOnly(label, var)                                                                                  \
+{                                                                                                                      \
+	char buffer[64];                                                                                                   \
+	snprintf(buffer, sizeof(buffer), "%u", var);                                                                       \
+	ImGui::PushID(GUI_id);                                                                                             \
+	GUI_id++;                                                                                                          \
+	ImGui::InputText(label, buffer, sizeof(buffer), ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_ReadOnly); \
+	ImGui::PopID();                                                                                                    \
+}
+
+void GUI_Teleporter_Draw()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		ImGui::SetNextWindowSize(ImVec2(GUI_Teleporter_size.x + 16, GUI_Teleporter_size.y + 16));
+		ImGui::SetNextWindowPos(ImVec2(500, 500));
+	}
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	if (ImGui::Begin("Teleporter", &GUI_Teleporter_show, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		{
+			if (!InGame())
+			{
+				goto InvalidPointer;
+			}
+			BYTE * addr = *(BYTE **)(appBaseAddr + 0xF59F00);
+			if (!addr)
+			{
+				goto InvalidPointer;
+			}
+			uint32 currentRoom = *(uint32 *)(addr + 0x154);
+			addr = *(BYTE **)(appBaseAddr + 0xF23F38);
+			if (!addr)
+			{
+				goto InvalidPointer;
+			}
+			addr = *(BYTE **)(addr + 0x3830);
+			if (!addr)
+			{
+				goto InvalidPointer;
+			}
+			uint32 & useDoor      = *(uint32 *)(addr + 0x84);
+			uint32 & nextRoom     = *(uint32 *)(addr + 0x88);
+			uint32 & nextPosition = *(uint32 *)(addr + 0x8C);
+			bool   & usePosition  = *(bool   *)(addr + 0xA0);
+			ImGui::PushItemWidth(100);
+			ImGui::Text("Current");
+			GUI_InputReadOnly("", currentRoom);
+			ImGui::Text("Next");
+			GUI_InputEx<uint32>("", nextRoom);
+			GUI_InputEx<uint32>("", nextPosition);
+			if (GUI_Button("Teleport"))
+			{
+				useDoor     = 1;
+				usePosition = true;
+			}
+			ImGui::PopItemWidth();
+			goto End;
+		}
+		InvalidPointer:
+		ImGui::Text("Invalid Pointer!");
+	}
+	End:
+	ImGui::End();
+	ImGui::PopStyleVar(3);
+}
+
+#undef GUI_InputReadOnly
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// @Todo: Update Mary and Eva as well.
+
+void DrawRestartOverlay()
+{
+	ImGuiIO & io = ImGui::GetIO();
+	static ImVec2 size = {};
+	ImVec2 position = {};
+	position.x = (io.DisplaySize.x - size.x) / 2;
+	position.y = (io.DisplaySize.y - size.y) / 2;
+	ImGui::SetNextWindowPos(position);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	if (ImGui::Begin("RestartOverlay", &restart, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		size = ImGui::GetWindowSize();
+		ImGui::PushFont(io.Fonts->Fonts[FONT_RESTART]);
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+		ImGui::Text(Locale.restart);
+		ImGui::PopStyleColor();
+		ImGui::PopFont();
+	}
+	ImGui::End();
+	ImGui::PopStyleVar(3);
+}
+
+
+
+
+
+
 void GUI_Render()
 {
 	GUI_id = 0;
@@ -370,6 +562,18 @@ void GUI_Render()
 	{
 		GUI_Main_Draw();
 	}
+
+	if (GUI_Teleporter_show)
+	{
+		GUI_Teleporter_Draw();
+	}
+
+
+	if (restart)
+	{
+		DrawRestartOverlay();
+	}
+
 }
 
 void GUI_Init()

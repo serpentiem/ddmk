@@ -63,7 +63,14 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		//System_Media_ToggleSkipIntro(Config.System.Media.skipIntro);
 
 		System_Memory_Init();
-		System_Memory_Toggle(true);
+		//System_Memory_Toggle(true);
+
+
+		System_Memory_ToggleReplaceAllocationFunctions(Config.System.Memory.replaceAllocationFunctions);
+
+
+
+
 
 
 

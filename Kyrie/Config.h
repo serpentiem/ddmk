@@ -44,6 +44,11 @@ struct CONFIG
 		Media;
 		struct
 		{
+			bool replaceAllocationFunctions = false;
+		}
+		Memory;
+		struct
+		{
 			bool borderless = true;
 		}
 		Window;

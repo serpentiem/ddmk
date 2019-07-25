@@ -138,23 +138,12 @@ enum COSTUME_LADY_
 
 
 
-/*
-
-MAIN_VECTOR_OBJ_
-
-
-ARC_OBJ
 
 
 
+// Main Vector Object
 
-
-
-
-*/
-
-
-struct MAIN_VECTOR_OBJECT
+struct MVO
 {
 	BYTE   ** funcAddr;
 	void   *  unknown0;
@@ -164,15 +153,13 @@ struct MAIN_VECTOR_OBJECT
 	float     unknown3;
 };
 
-enum MAIN_VECTOR_
+// Main Vector Data Index
+
+enum MVDI_
 {
-	MAIN_VECTOR_MISSION_SELECT = 1,
-	MAIN_VECTOR_MISSION_START  = 25,
+	MVDI_MISSION_SELECT = 1,
+	MVDI_MISSION_START  = 25,
 };
-
-
-
-
 
 
 
