@@ -11,6 +11,8 @@
 #include "System/Path.h"
 #include "System/Window.h"
 
+#include "Game/Training.h"
+
 const char * Log_directory = "logs";
 const char * Log_file      = "Kyrie.txt";
 
@@ -76,9 +78,26 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		System_Path_Init();
 		System_Window_Init();
 
+
+		if (Config.Game.Training.enable)
+		{
+			Game_Training_ToggleInfiniteHitPoints(Config.Game.Training.infiniteHitPoints);
+			Game_Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
+			Game_Training_ToggleDisableTimer(Config.Game.Training.disableTimer);
+		}
+
+
+		System_Actor_ToggleSpawnExtension(true);
+		System_Actor_ToggleCharacterDataConverter(true);
+
+
+
+
+
+
 		Write<BYTE>((appBaseAddr + 0xB569  ), 0xEB); // Intro Button Infinite Timer
 		//Write<BYTE>((appBaseAddr + 0xF362  ), 0xEB); // Skip Dialog
-		Write<BYTE>((appBaseAddr + 0x1540E1), 0xEB); // Disable Timer
+		//Write<BYTE>((appBaseAddr + 0x1540E1), 0xEB); // Disable Timer
 	}
 	return 1;
 }

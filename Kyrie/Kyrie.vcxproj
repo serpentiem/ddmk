@@ -98,6 +98,7 @@
     <ClCompile Include="..\ImGui\imgui_draw.cpp" />
     <ClCompile Include="..\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Game\Training.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Hooks.cpp" />
     <ClCompile Include="Hotkeys.cpp" />
@@ -134,6 +135,7 @@
     <ClInclude Include="..\ImGui\imstb_textedit.h" />
     <ClInclude Include="..\ImGui\imstb_truetype.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="Game\Training.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Hooks.h" />
     <ClInclude Include="Hotkeys.h" />

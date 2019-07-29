@@ -141,7 +141,40 @@ void GUI_Game_Multiplayer()
 }
 
 
-
+void GUI_Game_Training()
+{
+	GUI_SECTION_HEADER_START(Game.Training);
+	if (Config.Game.Training.enable)
+	{
+		Game_Training_ToggleInfiniteHitPoints   ( Config.Game.Training.infiniteHitPoints   );
+		Game_Training_ToggleInfiniteMagicPoints ( Config.Game.Training.infiniteMagicPoints );
+		Game_Training_ToggleDisableTimer        ( Config.Game.Training.disableTimer        );
+	}
+	else
+	{
+		Game_Training_ToggleInfiniteHitPoints   ( DefaultConfig.Game.Training.infiniteHitPoints   );
+		Game_Training_ToggleInfiniteMagicPoints ( DefaultConfig.Game.Training.infiniteMagicPoints );
+		Game_Training_ToggleDisableTimer        ( DefaultConfig.Game.Training.disableTimer        );
+	}
+	GUI_SECTION_HEADER_END(Game.Training);
+	if (GUI_Checkbox(Locale.Game.Training.infiniteHitPoints, Config.Game.Training.infiniteHitPoints))
+	{
+		Game_Training_ToggleInfiniteHitPoints(Config.Game.Training.infiniteHitPoints);
+	}
+	if (GUI_Checkbox(Locale.Game.Training.infiniteMagicPoints, Config.Game.Training.infiniteMagicPoints))
+	{
+		Game_Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
+	}
+	if (GUI_Checkbox(Locale.Game.Training.disableTimer, Config.Game.Training.disableTimer))
+	{
+		Game_Training_ToggleDisableTimer(Config.Game.Training.disableTimer);
+	}
+	GUI_SECTION_FOOTER_START(Game.Training);
+	Game_Training_ToggleInfiniteHitPoints   ( DefaultConfig.Game.Training.infiniteHitPoints   );
+	Game_Training_ToggleInfiniteMagicPoints ( DefaultConfig.Game.Training.infiniteMagicPoints );
+	Game_Training_ToggleDisableTimer        ( DefaultConfig.Game.Training.disableTimer        );
+	GUI_SECTION_FOOTER_END;
+}
 
 
 
@@ -164,9 +197,11 @@ void GUI_Game_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Game", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		ImGui::Text("GUI_Game");
+		//ImGui::Text("GUI_Game");
 
 		GUI_Game_Multiplayer();
+		ImGui::Text("");
+		GUI_Game_Training();
 		ImGui::Text("");
 
 	}
@@ -189,11 +224,14 @@ void GUI_System_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_System", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		ImGui::Text("GUI_System");
+		//ImGui::Text("GUI_System");
 
 
 
-		ImGui::Text(Locale.System.Media.header);
+		//ImGui::Text(Locale.System.Media.header);
+
+		GUI_Hyperlink(Locale.System.Media.header);
+
 		ImGui::Text("");
 
 

@@ -36,6 +36,16 @@ struct LOCALE
 			const char * reset = "Reset";
 		}
 		Multiplayer;
+		struct
+		{
+			const char * header = "Training";
+			const char * enable = "Enable";
+			const char * infiniteHitPoints = "Infinite Hit Points";
+			const char * infiniteMagicPoints = "Infinite Magic Points";
+			const char * disableTimer = "Disable Timer";
+			const char * reset = "Reset";
+		}
+		Training;
 	}
 	Game;
 	struct

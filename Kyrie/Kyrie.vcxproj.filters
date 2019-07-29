@@ -10,6 +10,9 @@
     <Filter Include="ImGui">
       <UniqueIdentifier>{b7142b3a-7508-4643-b239-15bf67bebe89}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{e42f4b13-5f4c-4a31-a017-93369713a80b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Config.cpp" />
@@ -81,6 +84,9 @@
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="Restart.cpp" />
+    <ClCompile Include="Game\Training.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
@@ -170,5 +176,8 @@
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Restart.h" />
+    <ClInclude Include="Game\Training.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

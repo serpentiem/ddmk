@@ -540,7 +540,6 @@ struct LOCALE
 		StyleSwitcher;
 		struct
 		{
-
 			const char * header = "Training";
 			const char * enable = "Enable";
 			const char * infiniteHitPoints = "Infinite Hit Points";

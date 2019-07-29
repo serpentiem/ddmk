@@ -16,5 +16,7 @@
 #include "System/State.h"
 #include "System/Window.h"
 
+#include "Game/Training.h"
+
 void GUI_Render();
 void GUI_Init();

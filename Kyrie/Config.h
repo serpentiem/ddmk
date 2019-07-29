@@ -10,11 +10,6 @@ struct CONFIG
 	{
 		struct
 		{
-			bool enable = false;
-		}
-		Arcade;
-		struct
-		{
 			bool   enable                     = false;
 			uint8  actorCount                 = 1;
 			uint8  character[(MAX_ACTOR - 1)] = {};
@@ -22,6 +17,14 @@ struct CONFIG
 			uint32 spawnDelay                 = 3000;
 		}
 		Multiplayer;
+		struct
+		{
+			bool enable              = false;
+			bool infiniteHitPoints   = false;
+			bool infiniteMagicPoints = false;
+			bool disableTimer        = false;
+		}
+		Training;
 	}
 	Game;
 	struct

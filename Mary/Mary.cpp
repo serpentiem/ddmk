@@ -108,6 +108,12 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		Game_Style_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
 		Game_StyleSwitcher_Init();
 		Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
+
+
+		// @Bug: If module is disabled, but any of these options are true, will cause problems.
+
+
+
 		Game_Training_ToggleInfiniteHitPoints(Config.Game.Training.infiniteHitPoints);
 		Game_Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
 		Game_Training_ToggleDisableTimer(Config.Game.Training.disableTimer);
