@@ -1,6 +1,6 @@
 #include "Hooks.h"
 
-#pragma warning(disable: 4102) // Unreferenced label.
+////#pragma warning(disable: 4102) // Unreferenced label.
 
 typedef ATOM(* User_RegisterClassExW_t)
 (

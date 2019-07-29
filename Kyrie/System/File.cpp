@@ -1,6 +1,6 @@
 #include "File.h"
 
-#pragma warning(disable: 4102) // Unreferenced label.
+bool System_File_enableLoadAssetsExtension = false;
 
 LoadFile_t LoadFile = 0;
 
@@ -52,11 +52,6 @@ const char * costumePath[MAX_CHAR][MAX_COSTUME] =
 static void LoadAssets()
 {
 	LogFunction();
-	MultiplayerStart:
-	if (!Config.Game.Multiplayer.enable)
-	{
-		goto MultiplayerEnd;
-	}
 	for (uint8 actor = 0; actor < Config.Game.Multiplayer.actorCount; actor++)
 	{
 		uint8 character = Config.Game.Multiplayer.character[actor];
@@ -79,8 +74,6 @@ static void LoadAssets()
 		LoadFile(addr, costumePath[character][costume], LOAD_FILE_QUEUE);
 		LoadFile(addr, basePath[character], LOAD_FILE_QUEUE);
 	}
-	MultiplayerEnd:
-	return;
 }
 
 void System_File_Init()
@@ -125,9 +118,10 @@ void System_File_Init()
 	Log("LoadAssets %X", LoadAssets);
 }
 
-void System_File_Toggle(bool enable)
+void System_File_ToggleLoadAssetsExtension(bool enable)
 {
 	LogFunctionBool(enable);
+	System_File_enableLoadAssetsExtension = enable;
 	if (enable)
 	{
 		WriteJump((appBaseAddr + 0x10C88D), LoadAssetsProxy);

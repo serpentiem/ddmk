@@ -56,6 +56,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <CallingConvention>FastCall</CallingConvention>
       <ObjectFileName>$(IntDir)%(Directory)_%(Filename)</ObjectFileName>
+      <DisableSpecificWarnings>4102;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -74,6 +75,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <CallingConvention>FastCall</CallingConvention>
       <ObjectFileName>$(IntDir)%(Directory)_%(Filename)</ObjectFileName>
+      <DisableSpecificWarnings>4102;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

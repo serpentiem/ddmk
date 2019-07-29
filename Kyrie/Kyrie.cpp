@@ -2,6 +2,7 @@
 
 #include "Hooks.h"
 #include "Steam.h"
+#include "Vars.h"
 
 #include "System/Actor.h"
 #include "System/Event.h"
@@ -32,8 +33,10 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		{
 			return 0;
 		}
-		Log("trish lady costume dlc unlocked %u", IsDLCInstalled(359496));
-		Log("crappy orb dlc unlocked %u", IsDLCInstalled(123));
+
+
+
+
 
 
 
@@ -41,37 +44,30 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 
 
 		System_Actor_Init();
-		System_Actor_Toggle(true);
+		if (Config.Game.Multiplayer.enable)
+		{
+			System_Actor_ToggleSpawnExtension(true);
+		}
+		if (Config.Game.Multiplayer.enable)
+		{
+			System_Actor_ToggleCharacterDataConverter(true);
+		}
+		if (Config.Game.Multiplayer.enable)
+		{
+			System_Actor_ToggleCostumeFixes(true);
+		}
 		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
-
-
-
 		System_Event_Init();
-
-
-
-
 		System_File_Init();
-		System_File_Toggle(true);
-
-
-
-
-
-
-		//System_Media_Init();
-		//System_Media_ToggleSkipIntro(Config.System.Media.skipIntro);
-
+		if (Config.Game.Multiplayer.enable)
+		{
+			System_File_ToggleLoadAssetsExtension(true);
+		}
 		System_Memory_Init();
-		//System_Memory_Toggle(true);
-
-
-		System_Memory_ToggleReplaceAllocationFunctions(Config.System.Memory.replaceAllocationFunctions);
-
-
-
-
-
+		if (Config.System.Memory.replaceAllocationFunctions)
+		{
+			System_Memory_ToggleReplaceAllocationFunctions(true);
+		}
 
 
 

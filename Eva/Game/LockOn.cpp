@@ -1,6 +1,6 @@
 #include "LockOn.h"
 
-#pragma warning(disable: 4102) // Unreferenced Label
+////#pragma warning(disable: 4102) // Unreferenced Label
 
 WORD Game_LockOn_buttonMap[16] =
 {

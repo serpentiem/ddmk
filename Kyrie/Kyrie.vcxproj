@@ -56,6 +56,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <CallingConvention>StdCall</CallingConvention>
       <ObjectFileName>$(IntDir)%(Directory)_%(Filename)</ObjectFileName>
+      <DisableSpecificWarnings>4102;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -74,6 +75,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <CallingConvention>StdCall</CallingConvention>
       <ObjectFileName>$(IntDir)%(Directory)_%(Filename)</ObjectFileName>
+      <DisableSpecificWarnings>4102;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -102,6 +104,7 @@
     <ClCompile Include="Kyrie.cpp" />
     <ClCompile Include="Locale.cpp" />
     <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="Restart.cpp" />
     <ClCompile Include="Steam.cpp" />
     <ClCompile Include="System\Actor.cpp" />
     <ClCompile Include="System\Event.cpp" />
@@ -136,6 +139,7 @@
     <ClInclude Include="Hotkeys.h" />
     <ClInclude Include="Locale.h" />
     <ClInclude Include="Pause.h" />
+    <ClInclude Include="Restart.h" />
     <ClInclude Include="Steam.h" />
     <ClInclude Include="System\Actor.h" />
     <ClInclude Include="System\Event.h" />

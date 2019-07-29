@@ -9,7 +9,7 @@
 
 #pragma warning(disable: 4003) // Zero args for macro provided.
 
-#pragma warning(disable: 4102) // Unreferenced label.
+//#pragma warning(disable: 4102) // Unreferenced label.
 
 
 

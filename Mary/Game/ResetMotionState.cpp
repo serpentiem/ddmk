@@ -1,6 +1,6 @@
 #include "ResetMotionState.h"
 
-#pragma warning(disable: 4102) // unreferenced label
+////#pragma warning(disable: 4102) // unreferenced label
 
 
 WORD Game_ResetMotionState_buttonMask[16] =

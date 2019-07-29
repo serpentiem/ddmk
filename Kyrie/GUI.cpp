@@ -1,6 +1,6 @@
 #include "GUI.h"
 
-#pragma warning(disable: 4102) // Unreferenced label.
+//#pragma warning(disable: 4102) // Unreferenced label.
 
 
 enum TAB_
@@ -59,7 +59,7 @@ ImVec2 GUI_Teleporter_size    = ImVec2(300, 300);
 
 
 bool debug   = false;
-bool restart = false;
+//bool restart = false;
 
 
 bool GUI_Teleporter_show = false;
@@ -102,7 +102,10 @@ void GUI_Game_Multiplayer()
 	ImGui::Text("");
 	GUI_PUSH_DISABLE(InMission());
 	{
-		GUI_Checkbox(Locale.Game.Multiplayer.enable, Config.Game.Multiplayer.enable);
+		if (GUI_Checkbox(Locale.Game.Multiplayer.enable, Config.Game.Multiplayer.enable))
+		{
+			EvaluateApplicationRestart();
+		}
 		ImGui::Text("");
 		GUI_PUSH_DISABLE(!Config.Game.Multiplayer.enable);
 		{
@@ -131,6 +134,7 @@ void GUI_Game_Multiplayer()
 		{
 			memcpy(&Config.Game.Multiplayer, &DefaultConfig.Game.Multiplayer, sizeof(Config.Game.Multiplayer));
 			SaveConfig();
+			EvaluateApplicationRestart();
 		}
 	}
 	GUI_POP_DISABLE(InMission());
@@ -276,7 +280,7 @@ void GUI_Debug_Fixes()
 	ImGui::Text("");
 	if (GUI_Checkbox(Locale.Debug.Fixes.replaceMemoryAllocationFunctions, Config.System.Memory.replaceAllocationFunctions))
 	{
-		restart = true;
+		EvaluateApplicationRestart();
 	}
 }
 

@@ -1,6 +1,6 @@
 #include "GUI.h"
 
-#pragma warning(disable: 4102) // Unreferenced label.
+//#pragma warning(disable: 4102) // Unreferenced label.
 
 enum TAB_
 {

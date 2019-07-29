@@ -80,6 +80,7 @@
     <ClCompile Include="System\Event.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="Restart.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
@@ -168,5 +169,6 @@
     <ClInclude Include="System\Event.h">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="Restart.h" />
   </ItemGroup>
 </Project>

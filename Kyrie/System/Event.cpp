@@ -1,6 +1,6 @@
 #include "Event.h"
 
-#pragma warning(disable: 4102) // Unreferenced label.
+//#pragma warning(disable: 4102) // Unreferenced label.
 
 static void MissionSelect_Init()
 {

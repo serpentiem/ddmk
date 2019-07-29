@@ -1,5 +1,7 @@
 #include "Memory.h"
 
+bool System_Memory_enableReplaceAllocationFunctions = false;
+
 BYTE * AllocProxy = 0;
 BYTE * FreeProxy  = 0;
 
@@ -41,6 +43,7 @@ void System_Memory_Init()
 void System_Memory_ToggleReplaceAllocationFunctions(bool enable)
 {
 	LogFunctionBool(enable);
+	System_Memory_enableReplaceAllocationFunctions = enable;
 	if (enable)
 	{
 		WriteJump((appBaseAddr + 0x7B05AA), AllocProxy);

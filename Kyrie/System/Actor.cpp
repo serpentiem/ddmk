@@ -1,6 +1,8 @@
 #include "Actor.h"
 
-#pragma warning(disable: 4102) // Unreferenced label.
+bool System_Actor_enableSpawnExtension         = false;
+bool System_Actor_enableCharacterDataConverter = false;
+bool System_Actor_enableCostumeFixes           = false;
 
 BYTE * actorBaseAddr[MAX_ACTOR] = {};
 
@@ -10,7 +12,7 @@ SpawnActor_t  SpawnActor            = 0;
 
 BYTE * SpawnActorOneProxy                  = 0;
 BYTE * SpawnActorsProxy                    = 0;
-BYTE * GetLiveDataToSession                = 0;
+BYTE * GetCharacterData                    = 0;
 BYTE * GetCostumeProxy                     = 0;
 BYTE * LadyExtraCostume0CreateObject3Proxy = 0;
 
@@ -310,7 +312,7 @@ void System_Actor_Init()
 		func.cache[CHAR_VERGIL] = (func.sect0 + 0x55);
 		func.cache[CHAR_TRISH]  = (func.sect0 + 0x61);
 		func.cache[CHAR_LADY]   = (func.sect0 + 0x6D);
-		GetLiveDataToSession = func.addr;
+		GetCharacterData = func.addr;
 	}
 	{
 		FUNC func = CreateFunction(GetCostume, 0, true, false);
@@ -333,24 +335,57 @@ void System_Actor_Init()
 	Log("CreateActor                    %X", CreateActor[CHAR_DANTE]);
 	Log("InitActor                      %X", InitActor[CHAR_DANTE]);
 	Log("SpawnActor                     %X", SpawnActor);
-	Log("GetLiveDataToSession           %X", GetLiveDataToSession);
+	Log("GetCharacterData               %X", GetCharacterData);
 	Log("GetCostume                     %X", GetCostume);
 	Log("LadyExtraCostume0CreateObject3 %X", LadyExtraCostume0CreateObject3);
 }
 
-// Only relevant for Arcade and Multiplayer
-
-void System_Actor_Toggle(bool enable)
+void System_Actor_ToggleSpawnExtension(bool enable)
 {
 	LogFunctionBool(enable);
+	System_Actor_enableSpawnExtension = enable;
 	if (enable)
 	{
 		WriteJump((appBaseAddr + 0x116600), SpawnActorOneProxy);
 		WriteJump((appBaseAddr + 0x11660A), SpawnActorsProxy);
-		WriteCall((appBaseAddr + 0x9E05D ), GetLiveDataToSession); // OnUpdate Lady Kalina Ann
-		WriteCall((appBaseAddr + 0xB40AD ), GetLiveDataToSession); // OnUpdate Dante Nero Vergil Trish Lady
-		WriteCall((appBaseAddr + 0xB40ED ), GetLiveDataToSession); // OnUpdate Dante OnEvent Trish Jump Spark
-		WriteCall((appBaseAddr + 0x50FD4D), GetLiveDataToSession); // OnUpdate Nero
+	}
+	else
+	{
+		WriteCall((appBaseAddr + 0x116600), (appBaseAddr + 0x6C32E0));
+		WriteCall((appBaseAddr + 0x11660A), (appBaseAddr + 0x5F1C50));
+	}
+}
+
+void System_Actor_ToggleCharacterDataConverter(bool enable)
+{
+	LogFunctionBool(enable);
+	System_Actor_enableCharacterDataConverter = enable;
+	if (enable)
+	{
+		WriteCall((appBaseAddr + 0x9E05D ), GetCharacterData); // OnUpdate Lady Kalina Ann
+		WriteCall((appBaseAddr + 0xB40AD ), GetCharacterData); // OnUpdate Dante Nero Vergil Trish Lady
+		WriteCall((appBaseAddr + 0xB40ED ), GetCharacterData); // OnUpdate Dante OnEvent Trish Jump Spark
+		WriteCall((appBaseAddr + 0x50FD4D), GetCharacterData); // OnUpdate Nero
+	}
+	else
+	{
+		BYTE buffer[] =
+		{
+			0xB9, 0x42, 0x00, 0x00, 0x00, //mov ecx,00000042
+		};
+		vp_memcpy((appBaseAddr + 0x9E05D ), buffer, sizeof(buffer));
+		vp_memcpy((appBaseAddr + 0xB40AD ), buffer, sizeof(buffer));
+		vp_memcpy((appBaseAddr + 0xB40ED ), buffer, sizeof(buffer));
+		vp_memcpy((appBaseAddr + 0x50FD4D), buffer, sizeof(buffer));
+	}
+}
+
+void System_Actor_ToggleCostumeFixes(bool enable)
+{
+	LogFunctionBool(enable);
+	System_Actor_enableCostumeFixes = enable;
+	if (enable)
+	{
 		WriteCall((appBaseAddr + 0x4D4675), GetCostumeProxy, 1);
 		WriteCall((appBaseAddr + 0x5108C5), GetCostumeProxy, 1);
 		WriteCall((appBaseAddr + 0xD8745 ), GetCostumeProxy, 1);
@@ -360,18 +395,6 @@ void System_Actor_Toggle(bool enable)
 	}
 	else
 	{
-		WriteCall((appBaseAddr + 0x116600), (appBaseAddr + 0x6C32E0));
-		WriteCall((appBaseAddr + 0x11660A), (appBaseAddr + 0x5F1C50));
-		{
-			BYTE buffer[] =
-			{
-				0xB9, 0x42, 0x00, 0x00, 0x00, //mov ecx,00000042
-			};
-			vp_memcpy((appBaseAddr + 0x9E05D ), buffer, sizeof(buffer));
-			vp_memcpy((appBaseAddr + 0xB40AD ), buffer, sizeof(buffer));
-			vp_memcpy((appBaseAddr + 0xB40ED ), buffer, sizeof(buffer));
-			vp_memcpy((appBaseAddr + 0x50FD4D), buffer, sizeof(buffer));
-		}
 		{
 			BYTE buffer[] =
 			{

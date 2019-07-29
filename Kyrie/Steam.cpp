@@ -1,6 +1,6 @@
 #include "Steam.h"
 
-#pragma warning(disable: 4102) // Unreferenced label.
+//#pragma warning(disable: 4102) // Unreferenced label.
 
 SteamApps_t      SteamApps      = 0;
 IsDLCInstalled_t IsDLCInstalled = 0;

@@ -10,6 +10,11 @@ struct CONFIG
 	{
 		struct
 		{
+			bool enable = false;
+		}
+		Arcade;
+		struct
+		{
 			bool   enable                     = false;
 			uint8  actorCount                 = 1;
 			uint8  character[(MAX_ACTOR - 1)] = {};
