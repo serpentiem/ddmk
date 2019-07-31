@@ -69,6 +69,20 @@ void EvaluateApplicationRestart()
 			goto True;
 		}
 	}
+	if (System_Input_enableExtension)
+	{
+		if (!Config.Game.Multiplayer.enable)
+		{
+			goto True;
+		}
+	}
+	else
+	{
+		if (Config.Game.Multiplayer.enable)
+		{
+			goto True;
+		}
+	}
 	if (System_Memory_enableReplaceAllocationFunctions)
 	{
 		if (!Config.System.Memory.replaceAllocationFunctions)

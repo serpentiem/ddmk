@@ -382,6 +382,19 @@ void GUI_Debug_Fixes()
 	{
 		EvaluateApplicationRestart();
 	}
+
+
+	if (GUI_Button("Toggle Input Extension false"))
+	{
+		System_Input_ToggleExtension(false);
+	}
+
+	if (GUI_Button("Toggle Input Extension true"))
+	{
+		System_Input_ToggleExtension(true);
+	}
+
+
 }
 
 // @Todo: Add own size vars.

@@ -7,6 +7,7 @@
 #include "System/Actor.h"
 #include "System/Event.h"
 #include "System/File.h"
+#include "System/Input.h"
 #include "System/Memory.h"
 #include "System/Path.h"
 #include "System/Window.h"
@@ -64,6 +65,11 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		if (Config.Game.Multiplayer.enable)
 		{
 			System_File_ToggleLoadAssetsExtension(true);
+		}
+		System_Input_Init();
+		if (Config.Game.Multiplayer.enable)
+		{
+			System_Input_ToggleExtension(true);
 		}
 		System_Memory_Init();
 		if (Config.System.Memory.replaceAllocationFunctions)

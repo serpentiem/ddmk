@@ -5,6 +5,7 @@
 
 #include "System/Actor.h"
 #include "System/File.h"
+#include "System/Input.h"
 #include "System/Memory.h"
 
 extern bool restart;
