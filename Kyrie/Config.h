@@ -57,7 +57,8 @@ struct CONFIG
 		Memory;
 		struct
 		{
-			bool borderless = true;
+			bool forceFocus = true;
+			bool borderless = false;
 		}
 		Window;
 	}

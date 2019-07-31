@@ -11,9 +11,37 @@ void System_Window_UpdateSize(uint32 width, uint32 height)
 	ImGui::GetIO().DisplaySize = ImVec2((float32)width, (float32)height);
 }
 
-void System_Window_ToggleBorderless(bool enable)
+void System_Window_Init()
 {
-	Log("%s %u", FUNC_NAME, enable);
+	LogFunction();
+	{
+		BYTE sect0[] =
+		{
+			0xFF, 0x15, 0x00, 0x00, 0x00, 0x00, //call dword ptr [dmc4.exe+B73360]
+		};
+		FUNC func = CreateFunction(System_Window_QueueToggleBorderless, (appBaseAddr + 0x69C432), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(BYTE **)(func.sect0 + 2) = (appBaseAddr + 0xB73360);
+		WriteJump((appBaseAddr + 0x69C42C), func.addr, 1);
+	}
+}
+
+void System_Window_ToggleForceFocus(bool enable)
+{
+	LogFunctionBool(enable);
+	if (enable)
+	{
+		Write<BYTE>((appBaseAddr + 0x6E3231), 1);
+	}
+	else
+	{
+		Write<BYTE>((appBaseAddr + 0x6E3231), 0);
+	}
+}
+
+static void ToggleBorderless(bool enable)
+{
+	LogFunctionBool(enable);
 	if (!mainWindow)
 	{
 		return;
@@ -22,7 +50,7 @@ void System_Window_ToggleBorderless(bool enable)
 	LONG style = init;
 	if (enable)
 	{
-		style = WS_VISIBLE | WS_CLIPSIBLINGS;
+		style = WS_OVERLAPPED | WS_MINIMIZEBOX | WS_CLIPSIBLINGS | WS_VISIBLE;
 	}
 	SetWindowLongA(mainWindow, GWL_STYLE, style);
 	POINT point = {};
@@ -34,25 +62,21 @@ void System_Window_ToggleBorderless(bool enable)
 	MoveWindow(mainWindow, point.x, point.y, (rect.right - rect.left), (rect.bottom - rect.top), 0);
 }
 
-void System_Window_Init()
+static DWORD ToggleBorderlessThread(LPVOID)
 {
 	LogFunction();
+	do
 	{
-		BYTE sect0[] =
-		{
-			0xFF, 0x15, 0x00, 0x00, 0x00, 0x00, //call dword ptr [dmc4.exe+B73360]
-		};
-		BYTE sect1[] =
-		{
-			0xB8, 0x00, 0x00, 0x00, 0x00, //mov eax,&Config.System.Window.borderless
-			0x0F, 0xB6, 0x00,             //movzx eax,byte ptr [eax]
-			0x50,                         //push eax
-		};
-		FUNC func = CreateFunction(System_Window_ToggleBorderless, (appBaseAddr + 0x69C432), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		*(BYTE **)(func.sect0 + 2) = (appBaseAddr + 0xB73360);
-		*(bool **)(func.sect1 + 1) = &Config.System.Window.borderless;
-		WriteJump((appBaseAddr + 0x69C42C), func.addr, 1);
+		Sleep(10);
 	}
+	while (!GUI_hide);
+	ToggleBorderless(Config.System.Window.borderless);
+	return 1;
+}
+
+void System_Window_QueueToggleBorderless()
+{
+	LogFunction();
+	GUI_Hide(1000);
+	CreateThread(0, 4096, ToggleBorderlessThread, 0, 0, 0);
 }

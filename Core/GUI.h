@@ -4,16 +4,11 @@
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_internal.h"
 
+extern bool   GUI_hide;
+extern uint32 GUI_hideTime;
+extern int    GUI_id;
 
-
-
-#pragma warning(disable: 4477) // float not cast properly
-
-
-
-
-
-extern int GUI_id;
+void GUI_Hide(uint32 milliseconds);
 
 template <typename T>
 bool GUI_Input(const char * label, T & var, bool hex = false)

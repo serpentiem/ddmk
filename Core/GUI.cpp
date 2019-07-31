@@ -1,6 +1,23 @@
 #include "GUI.h"
 
-int GUI_id = 0;
+bool   GUI_hide     = false;
+uint32 GUI_hideTime = 0;
+int    GUI_id       = 0;
+
+static DWORD HideThread(LPVOID)
+{
+	LogFunction();
+	GUI_hide = true;
+	Sleep(GUI_hideTime);
+	GUI_hide = false;
+	return 1;
+}
+
+void GUI_Hide(uint32 milliseconds)
+{
+	GUI_hideTime = milliseconds;
+	CreateThread(0, 4096, HideThread, 0, 0, 0);
+}
 
 bool GUI_Slider(const char * label, uint8 & var, uint8 min, uint8 max, bool save)
 {

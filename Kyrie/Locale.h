@@ -67,6 +67,14 @@ struct LOCALE
 			skipIntroGame;
 		}
 		Media;
+		struct
+		{
+			const char * header = "Window";
+			const char * forceFocus = "Force Focus";
+			const char * borderless = "Borderless";
+
+		}
+		Window;
 	}
 	System;
 	struct

@@ -96,6 +96,66 @@ inline void BuildFonts()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//uint32 hideMilliseconds = 0;
+//uint32 hideTime = 0;
+//uint32 * hideTimeAddr = 0;
+//
+//static DWORD HideThread(void * parameter)
+//{
+//	uint32 ms = *(uint32 *)parameter;
+//	Log("hiding for %u", ms);
+//	delete parameter;
+//	return 1;
+//}
+//
+//static void GUI_Hide(uint32 milliseconds)
+//{
+//	uint32 * addr = new uint32;
+//	*addr = milliseconds;
+//	CreateThread(0, 4096, HideThread, addr, 0, 0);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void GUI_Game_Multiplayer()
 {
 	GUI_Hyperlink(Locale.Game.Multiplayer.header);
@@ -210,6 +270,44 @@ void GUI_Game_Draw()
 }
 
 
+
+
+
+
+void GUI_System_Media()
+{
+	GUI_Hyperlink(Locale.System.Media.header);
+	ImGui::Text("");
+	GUI_Checkbox(Locale.System.Media.skipIntro, Config.System.Media.skipIntro);
+	GUI_PUSH_DISABLE(!Config.System.Media.skipIntro);
+	{
+		ImGui::PushItemWidth(150);
+		GUI_Combo<uint32>
+		(
+			Locale.System.Media.skipIntroGame.label,
+			Locale.System.Media.skipIntroGame.items,
+			countof(Locale.System.Media.skipIntroGame.items),
+			Config.System.Media.skipIntroGame
+		);
+		ImGui::PopItemWidth();
+	}
+	GUI_POP_DISABLE(!Config.System.Media.skipIntro);
+}
+
+void GUI_System_Window()
+{
+	GUI_Hyperlink(Locale.System.Window.header);
+	ImGui::Text("");
+	if (GUI_Checkbox(Locale.System.Window.forceFocus, Config.System.Window.forceFocus))
+	{
+		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
+	}
+	if (GUI_Checkbox(Locale.System.Window.borderless, Config.System.Window.borderless))
+	{
+		System_Window_QueueToggleBorderless();
+	}
+}
+
 void GUI_System_Draw()
 {
 	static bool run = false;
@@ -224,50 +322,14 @@ void GUI_System_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_System", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		//ImGui::Text("GUI_System");
-
-
-
-		//ImGui::Text(Locale.System.Media.header);
-
-		GUI_Hyperlink(Locale.System.Media.header);
-
+		GUI_System_Media();
 		ImGui::Text("");
-
-
-
-
-
-		if (GUI_Checkbox(Locale.System.Media.skipIntro, Config.System.Media.skipIntro))
-		{
-			//System_Media_ToggleSkipIntro(Config.System.Media.skipIntro);
-		}
-		GUI_PUSH_DISABLE(!Config.System.Media.skipIntro);
-		ImGui::PushItemWidth(150);
-		GUI_Combo<uint32>
-		(
-			Locale.System.Media.skipIntroGame.label,
-			Locale.System.Media.skipIntroGame.items,
-			countof(Locale.System.Media.skipIntroGame.items),
-			Config.System.Media.skipIntroGame
-		);
-		ImGui::PopItemWidth();
-		GUI_POP_DISABLE(!Config.System.Media.skipIntro);
-
-
-
-
-
-
-
-
-
-
+		GUI_System_Window();
+		ImGui::Text("");
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
 }
-
 
 void GUI_Tools_Draw()
 {
@@ -599,7 +661,22 @@ void DrawRestartOverlay()
 
 void GUI_Render()
 {
+
+
+	if (GUI_hide)
+	{
+		return;
+	}
+
+
+
 	GUI_id = 0;
+
+
+
+
+
+
 	if (pause)
 	{
 		GUI_Main_Draw();
@@ -615,6 +692,14 @@ void GUI_Render()
 	{
 		DrawRestartOverlay();
 	}
+
+
+	//if (GUI_hide)
+	//{
+	//	return;
+	//}
+
+
 
 }
 

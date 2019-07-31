@@ -9,4 +9,8 @@
 
 extern bool restart;
 
+// @Audit: Maybe these are more fitting.
+// Ascertain
+// Determine
+
 void EvaluateApplicationRestart();

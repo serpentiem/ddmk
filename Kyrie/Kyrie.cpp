@@ -78,6 +78,9 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		System_Path_Init();
 		System_Window_Init();
 
+		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
+
+
 
 		if (Config.Game.Training.enable)
 		{
@@ -87,8 +90,8 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		}
 
 
-		System_Actor_ToggleSpawnExtension(true);
-		System_Actor_ToggleCharacterDataConverter(true);
+		//System_Actor_ToggleSpawnExtension(true);
+		//System_Actor_ToggleCharacterDataConverter(true);
 
 
 
