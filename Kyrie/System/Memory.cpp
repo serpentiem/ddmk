@@ -57,3 +57,16 @@ void System_Memory_ToggleReplaceAllocationFunctions(bool enable)
 		Write<BYTE *>((appBaseAddr + 0x7B07B7 + 1), (appBaseAddr + 0xF24C20));
 	}
 }
+
+void System_Memory_EvaluateToggleReplaceAllocationFunctions()
+{
+	LogFunction();
+	if (Config.System.Memory.replaceAllocationFunctions)
+	{
+		System_Memory_ToggleReplaceAllocationFunctions(true);
+	}
+	else
+	{
+		System_Memory_ToggleReplaceAllocationFunctions(false);
+	}
+}

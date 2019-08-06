@@ -278,20 +278,10 @@ void GUI_System_Media()
 {
 	GUI_Hyperlink(Locale.System.Media.header);
 	ImGui::Text("");
-	GUI_Checkbox(Locale.System.Media.skipIntro, Config.System.Media.skipIntro);
-	GUI_PUSH_DISABLE(!Config.System.Media.skipIntro);
+	if (GUI_Checkbox(Locale.System.Media.skipIntro, Config.System.Media.skipIntro))
 	{
-		ImGui::PushItemWidth(150);
-		GUI_Combo<uint32>
-		(
-			Locale.System.Media.skipIntroGame.label,
-			Locale.System.Media.skipIntroGame.items,
-			countof(Locale.System.Media.skipIntroGame.items),
-			Config.System.Media.skipIntroGame
-		);
-		ImGui::PopItemWidth();
+		System_Event_EvaluateToggleReplaceAutosaveStart();
 	}
-	GUI_POP_DISABLE(!Config.System.Media.skipIntro);
 }
 
 void GUI_System_Window()
@@ -364,15 +354,8 @@ void GUI_Tools_Draw()
 
 
 
-void GUI_Debug_Actor()
-{
-	GUI_Hyperlink(Locale.Debug.Actor.header);
-	ImGui::Text("");
-	if (GUI_Checkbox(Locale.Debug.Actor.disableIdleTimer, Config.System.Actor.disableIdleTimer))
-	{
-		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
-	}
-}
+
+
 
 void GUI_Debug_Fixes()
 {
@@ -382,20 +365,35 @@ void GUI_Debug_Fixes()
 	{
 		EvaluateApplicationRestart();
 	}
-
-
-	if (GUI_Button("Toggle Input Extension false"))
-	{
-		System_Input_ToggleExtension(false);
-	}
-
-	if (GUI_Button("Toggle Input Extension true"))
-	{
-		System_Input_ToggleExtension(true);
-	}
-
-
 }
+
+void GUI_Debug_Timers()
+{
+	GUI_Hyperlink(Locale.Debug.Timers.header);
+	ImGui::Text("");
+	if (GUI_Checkbox(Locale.Debug.Timers.disableActorIdleTimer, Config.System.Actor.disableIdleTimer))
+	{
+		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
+	}
+	if (GUI_Checkbox(Locale.Debug.Timers.disableAutosaveMenuTimer, Config.System.Menu.Autosave.disableTimer))
+	{
+		System_Menu_Autosave_ToggleDisableTimer(Config.System.Menu.Autosave.disableTimer);
+	}
+	if (GUI_Checkbox(Locale.Debug.Timers.disableMainMenuTimer, Config.System.Menu.Main.disableTimer))
+	{
+		System_Menu_Main_ToggleDisableTimer(Config.System.Menu.Main.disableTimer);
+	}
+}
+
+
+
+
+
+
+
+
+
+
 
 // @Todo: Add own size vars.
 
@@ -413,9 +411,9 @@ void GUI_Debug_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Debug", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		GUI_Debug_Actor();
-		ImGui::Text("");
 		GUI_Debug_Fixes();
+		ImGui::Text("");
+		GUI_Debug_Timers();
 		ImGui::Text("");
 	}
 	ImGui::End();

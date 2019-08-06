@@ -132,3 +132,16 @@ void System_File_ToggleLoadAssetsExtension(bool enable)
 		Write<BYTE *>((appBaseAddr + 0x10C88D + 1), (appBaseAddr + 0xF23F18));
 	}
 }
+
+void System_File_EvaluateToggleLoadAssetsExtension()
+{
+	LogFunction();
+	if (Config.Game.Multiplayer.enable)
+	{
+		System_File_ToggleLoadAssetsExtension(true);
+	}
+	else
+	{
+		System_File_ToggleLoadAssetsExtension(false);
+	}
+}

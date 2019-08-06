@@ -112,7 +112,7 @@
     <ClCompile Include="System\File.cpp" />
     <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\Memory.cpp" />
-    <ClCompile Include="System\Path.cpp" />
+    <ClCompile Include="System\Menu.cpp" />
     <ClCompile Include="System\State.cpp" />
     <ClCompile Include="System\Window.cpp" />
   </ItemGroup>
@@ -149,8 +149,8 @@
     <ClInclude Include="System\File.h" />
     <ClInclude Include="System\Input.h" />
     <ClInclude Include="System\Memory.h" />
+    <ClInclude Include="System\Menu.h" />
     <ClInclude Include="System\Message.h" />
-    <ClInclude Include="System\Path.h" />
     <ClInclude Include="System\State.h" />
     <ClInclude Include="System\Window.h" />
     <ClInclude Include="Vars.h" />

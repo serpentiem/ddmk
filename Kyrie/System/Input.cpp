@@ -4,6 +4,10 @@ bool System_Input_enableExtension    = false;
 MGO  System_Input_gamepad[MAX_ACTOR] = {};
 
 BYTE * LinkGamepadsProxy = 0;
+
+
+// @Todo: Not a real proxy.
+
 BYTE * ExtendLoopProxy   = 0;
 
 static void LinkGamepads(BYTE * rootAddr)
@@ -64,6 +68,10 @@ void System_Input_Init()
 			WriteCall((func.sect1 + pos + 5), (appBaseAddr + 0x18DA40));
 			pos += sizeof(sect1);
 		}
+		
+		
+		
+		
 		ExtendLoopProxy = func.addr;
 	}
 	Log("LinkGamepads %X", LinkGamepadsProxy);

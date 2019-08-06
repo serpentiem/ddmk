@@ -356,6 +356,19 @@ void System_Actor_ToggleSpawnExtension(bool enable)
 	}
 }
 
+void System_Actor_EvaluateToggleSpawnExtension()
+{
+	LogFunction();
+	if (Config.Game.Multiplayer.enable)
+	{
+		System_Actor_ToggleSpawnExtension(true);
+	}
+	else
+	{
+		System_Actor_ToggleSpawnExtension(false);
+	}
+}
+
 void System_Actor_ToggleCharacterDataConverter(bool enable)
 {
 	LogFunctionBool(enable);
@@ -377,6 +390,19 @@ void System_Actor_ToggleCharacterDataConverter(bool enable)
 		vp_memcpy((appBaseAddr + 0xB40AD ), buffer, sizeof(buffer));
 		vp_memcpy((appBaseAddr + 0xB40ED ), buffer, sizeof(buffer));
 		vp_memcpy((appBaseAddr + 0x50FD4D), buffer, sizeof(buffer));
+	}
+}
+
+void System_Actor_EvaluateToggleCharacterDataConverter()
+{
+	LogFunction();
+	if (Config.Game.Multiplayer.enable)
+	{
+		System_Actor_ToggleCharacterDataConverter(true);
+	}
+	else
+	{
+		System_Actor_ToggleCharacterDataConverter(false);
 	}
 }
 
@@ -437,6 +463,19 @@ void System_Actor_ToggleCostumeFixes(bool enable)
 			};
 			vp_memcpy((appBaseAddr + 0x9C2DD), buffer, sizeof(buffer));
 		}
+	}
+}
+
+void System_Actor_EvaluateToggleCostumeFixes()
+{
+	LogFunction();
+	if (Config.Game.Multiplayer.enable)
+	{
+		System_Actor_ToggleCostumeFixes(true);
+	}
+	else
+	{
+		System_Actor_ToggleCostumeFixes(false);
 	}
 }
 

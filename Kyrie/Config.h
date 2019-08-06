@@ -10,6 +10,11 @@ struct CONFIG
 	{
 		struct
 		{
+			bool enable = false;
+		}
+		Arcade;
+		struct
+		{
 			bool   enable                     = false;
 			uint8  actorCount                 = 1;
 			uint8  character[(MAX_ACTOR - 1)] = {};
@@ -46,8 +51,7 @@ struct CONFIG
 		Input;
 		struct
 		{
-			bool   skipIntro     = false;
-			uint32 skipIntroGame = 0;
+			bool skipIntro = false;
 		}
 		Media;
 		struct
@@ -55,6 +59,20 @@ struct CONFIG
 			bool replaceAllocationFunctions = false;
 		}
 		Memory;
+		struct
+		{
+			struct
+			{
+				bool disableTimer = false;
+			}
+			Autosave;
+			struct
+			{
+				bool disableTimer = false;
+			}
+			Main;
+		}
+		Menu;
 		struct
 		{
 			bool forceFocus = true;

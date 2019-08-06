@@ -9,7 +9,7 @@
 #include "System/File.h"
 #include "System/Input.h"
 #include "System/Memory.h"
-#include "System/Path.h"
+#include "System/Menu.h"
 #include "System/Window.h"
 
 #include "Game/Training.h"
@@ -36,55 +36,25 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		{
 			return 0;
 		}
-
-
-
-
-
-
-
-
-
-
 		System_Actor_Init();
-		if (Config.Game.Multiplayer.enable)
-		{
-			System_Actor_ToggleSpawnExtension(true);
-		}
-		if (Config.Game.Multiplayer.enable)
-		{
-			System_Actor_ToggleCharacterDataConverter(true);
-		}
-		if (Config.Game.Multiplayer.enable)
-		{
-			System_Actor_ToggleCostumeFixes(true);
-		}
+		System_Actor_EvaluateToggleSpawnExtension();
+		System_Actor_EvaluateToggleCharacterDataConverter();
+		System_Actor_EvaluateToggleCostumeFixes();
 		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
-		System_Event_Init();
+		System_Event_EvaluateToggleReplaceAutosaveStart();
 		System_File_Init();
-		if (Config.Game.Multiplayer.enable)
-		{
-			System_File_ToggleLoadAssetsExtension(true);
-		}
-		System_Input_Init();
-		if (Config.Game.Multiplayer.enable)
-		{
-			System_Input_ToggleExtension(true);
-		}
+		System_File_EvaluateToggleLoadAssetsExtension();
 		System_Memory_Init();
-		if (Config.System.Memory.replaceAllocationFunctions)
-		{
-			System_Memory_ToggleReplaceAllocationFunctions(true);
-		}
-
-
-
-
-
-		System_Path_Init();
+		System_Memory_EvaluateToggleReplaceAllocationFunctions();
+		System_Menu_Autosave_ToggleDisableTimer(Config.System.Menu.Autosave.disableTimer);
+		System_Menu_Main_EvaluateToggleAutoConfirm();
+		System_Menu_Main_ToggleDisableTimer(Config.System.Menu.Main.disableTimer);
+		System_Menu_MissionStart_EvaluateToggleAutoConfirm();
 		System_Window_Init();
-
 		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
+
+
+
 
 
 
@@ -96,17 +66,18 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		}
 
 
-		//System_Actor_ToggleSpawnExtension(true);
-		//System_Actor_ToggleCharacterDataConverter(true);
 
 
 
 
 
 
-		Write<BYTE>((appBaseAddr + 0xB569  ), 0xEB); // Intro Button Infinite Timer
-		//Write<BYTE>((appBaseAddr + 0xF362  ), 0xEB); // Skip Dialog
-		//Write<BYTE>((appBaseAddr + 0x1540E1), 0xEB); // Disable Timer
+
+
+
+
+
+
 	}
 	return 1;
 }

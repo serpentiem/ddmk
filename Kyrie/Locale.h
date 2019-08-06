@@ -81,16 +81,18 @@ struct LOCALE
 	{
 		struct
 		{
-			const char * header = "Actor";
-			const char * disableIdleTimer = "Disable Idle Timer";
-		}
-		Actor;
-		struct
-		{
 			const char * header = "Fixes";
 			const char * replaceMemoryAllocationFunctions = "Replace Memory Allocation Functions";
 		}
 		Fixes;
+		struct
+		{
+			const char * header = "Timers";
+			const char * disableActorIdleTimer = "Disable Actor Idle Timer";
+			const char * disableAutosaveMenuTimer = "Disable Autosave Menu Timer";
+			const char * disableMainMenuTimer = "Disable Main Menu Timer";
+		}
+		Timers;
 	}
 	Debug;
 	const char * restart = "Restart App!";

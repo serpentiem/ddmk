@@ -22,8 +22,17 @@ function FeedGenericData()
 {
 	var items =
 	[
-		[ "Hit Points"  , 5, false, 0x78 ],
-		[ "Magic Points", 5, false, 0x7C ],
+		[ "Hit Points"                        , 5, false, 0x78 ],
+		[ "Magic Points"                      , 5, false, 0x7C ],
+		[ "Last Mission Human"                , 4, false, 0x84 ],
+		[ "Last Mission Devil Hunter"         , 4, false, 0x88 ],
+		[ "Last Mission Son of Sparda"        , 4, false, 0x8C ],
+		[ "Last Mission Dante Must Die"       , 4, false, 0x90 ],
+		[ "Last Mission Legendary Dark Knight", 4, false, 0x94 ],
+		[ "Last Mission Heaven or Hell"       , 4, false, 0x98 ],
+		[ "Last Mission Hell and Hell"        , 4, false, 0x9C ],
+		[ "Last Mode"                         , 4, false, 0xA0 ],
+		[ "Last Character"                    , 4, false, 0xA4 ],
 	];
 	for (var item = 0; item < items.length; item++)
 	{
