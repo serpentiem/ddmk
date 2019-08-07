@@ -347,25 +347,12 @@ void System_Actor_ToggleSpawnExtension(bool enable)
 	if (enable)
 	{
 		WriteJump((appBaseAddr + 0x116600), SpawnActorOneProxy);
-		WriteJump((appBaseAddr + 0x11660A), SpawnActorsProxy);
+		//WriteJump((appBaseAddr + 0x11660A), SpawnActorsProxy);
 	}
 	else
 	{
 		WriteCall((appBaseAddr + 0x116600), (appBaseAddr + 0x6C32E0));
 		WriteCall((appBaseAddr + 0x11660A), (appBaseAddr + 0x5F1C50));
-	}
-}
-
-void System_Actor_EvaluateToggleSpawnExtension()
-{
-	LogFunction();
-	if (Config.Game.Multiplayer.enable)
-	{
-		System_Actor_ToggleSpawnExtension(true);
-	}
-	else
-	{
-		System_Actor_ToggleSpawnExtension(false);
 	}
 }
 
@@ -390,19 +377,6 @@ void System_Actor_ToggleCharacterDataConverter(bool enable)
 		vp_memcpy((appBaseAddr + 0xB40AD ), buffer, sizeof(buffer));
 		vp_memcpy((appBaseAddr + 0xB40ED ), buffer, sizeof(buffer));
 		vp_memcpy((appBaseAddr + 0x50FD4D), buffer, sizeof(buffer));
-	}
-}
-
-void System_Actor_EvaluateToggleCharacterDataConverter()
-{
-	LogFunction();
-	if (Config.Game.Multiplayer.enable)
-	{
-		System_Actor_ToggleCharacterDataConverter(true);
-	}
-	else
-	{
-		System_Actor_ToggleCharacterDataConverter(false);
 	}
 }
 
@@ -463,19 +437,6 @@ void System_Actor_ToggleCostumeFixes(bool enable)
 			};
 			vp_memcpy((appBaseAddr + 0x9C2DD), buffer, sizeof(buffer));
 		}
-	}
-}
-
-void System_Actor_EvaluateToggleCostumeFixes()
-{
-	LogFunction();
-	if (Config.Game.Multiplayer.enable)
-	{
-		System_Actor_ToggleCostumeFixes(true);
-	}
-	else
-	{
-		System_Actor_ToggleCostumeFixes(false);
 	}
 }
 

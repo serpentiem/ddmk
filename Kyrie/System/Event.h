@@ -3,5 +3,5 @@
 
 #include "../Config.h"
 
-void System_Event_ToggleReplaceAutosaveStart(bool enable);
-void System_Event_EvaluateToggleReplaceAutosaveStart();
+void System_Event_Init();
+void System_Event_ToggleSkipIntro(bool enable);

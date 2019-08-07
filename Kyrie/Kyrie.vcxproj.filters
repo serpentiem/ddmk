@@ -87,9 +87,10 @@
     <ClCompile Include="System\Input.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Menu.cpp">
-      <Filter>System</Filter>
+    <ClCompile Include="Game\Arcade.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Speed.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
@@ -182,8 +183,9 @@
     <ClInclude Include="System\Input.h">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="System\Menu.h">
-      <Filter>System</Filter>
+    <ClInclude Include="Game\Arcade.h">
+      <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Speed.h" />
   </ItemGroup>
 </Project>

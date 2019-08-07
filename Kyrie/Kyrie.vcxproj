@@ -98,6 +98,7 @@
     <ClCompile Include="..\ImGui\imgui_draw.cpp" />
     <ClCompile Include="..\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Game\Arcade.cpp" />
     <ClCompile Include="Game\Training.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Hooks.cpp" />
@@ -106,13 +107,13 @@
     <ClCompile Include="Locale.cpp" />
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="Restart.cpp" />
+    <ClCompile Include="Speed.cpp" />
     <ClCompile Include="Steam.cpp" />
     <ClCompile Include="System\Actor.cpp" />
     <ClCompile Include="System\Event.cpp" />
     <ClCompile Include="System\File.cpp" />
     <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\Memory.cpp" />
-    <ClCompile Include="System\Menu.cpp" />
     <ClCompile Include="System\State.cpp" />
     <ClCompile Include="System\Window.cpp" />
   </ItemGroup>
@@ -136,6 +137,7 @@
     <ClInclude Include="..\ImGui\imstb_textedit.h" />
     <ClInclude Include="..\ImGui\imstb_truetype.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="Game\Arcade.h" />
     <ClInclude Include="Game\Training.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Hooks.h" />
@@ -143,13 +145,13 @@
     <ClInclude Include="Locale.h" />
     <ClInclude Include="Pause.h" />
     <ClInclude Include="Restart.h" />
+    <ClInclude Include="Speed.h" />
     <ClInclude Include="Steam.h" />
     <ClInclude Include="System\Actor.h" />
     <ClInclude Include="System\Event.h" />
     <ClInclude Include="System\File.h" />
     <ClInclude Include="System\Input.h" />
     <ClInclude Include="System\Memory.h" />
-    <ClInclude Include="System\Menu.h" />
     <ClInclude Include="System\Message.h" />
     <ClInclude Include="System\State.h" />
     <ClInclude Include="System\Window.h" />

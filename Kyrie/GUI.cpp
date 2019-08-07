@@ -63,6 +63,8 @@ bool debug   = false;
 
 
 bool GUI_Teleporter_show = false;
+bool GUI_Speed_show      = false;
+
 
 
 
@@ -149,7 +151,23 @@ inline void BuildFonts()
 
 
 
-
+void GUI_Game_Arcade()
+{
+	GUI_SECTION_HEADER_START(Game.Arcade);
+	Game_Arcade_Toggle(Config.Game.Arcade.enable);
+	GUI_SECTION_HEADER_END(Game.Arcade);
+	ImGui::PushItemWidth(200);
+	GUI_Combo<uint8>
+	(
+		"Character",
+		Locale.Game.Arcade.Character.items,
+		countof(Locale.Game.Arcade.Character.items),
+		Config.Game.Arcade.character
+	);
+	ImGui::PopItemWidth();
+	GUI_SECTION_FOOTER_START(Game.Arcade);
+	GUI_SECTION_FOOTER_END;
+}
 
 
 
@@ -257,13 +275,12 @@ void GUI_Game_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Game", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		//ImGui::Text("GUI_Game");
-
+		GUI_Game_Arcade();
+		ImGui::Text("");
 		GUI_Game_Multiplayer();
 		ImGui::Text("");
 		GUI_Game_Training();
 		ImGui::Text("");
-
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
@@ -274,15 +291,57 @@ void GUI_Game_Draw()
 
 
 
-void GUI_System_Media()
+//void GUI_System_Media()
+//{
+//	GUI_Hyperlink(Locale.System.Media.header);
+//	ImGui::Text("");
+//	if (GUI_Checkbox(Locale.System.Media.skipIntro, Config.System.Media.skipIntro))
+//	{
+//		System_Event_EvaluateToggleReplaceAutosaveStart();
+//	}
+//}
+
+//void GUI_System_Speed()
+//{
+//	GUI_Hyperlink(Locale.System.Speed.header);
+//	ImGui::Text("");
+//	ImGui::PushItemWidth(150);
+//	GUI_InputEx<float>(Locale.System.Speed.global, Config.System.Speed.global, 0.1f);
+//	GUI_InputEx<float>(Locale.System.Speed.menu, Config.System.Speed.menu, 0.1f);
+//	ImGui::PopItemWidth();
+//	ImGui::Text("");
+//	if (GUI_Button(Locale.System.Speed.reset))
+//	{
+//		memcpy(&Config.System.Speed, &DefaultConfig.System.Speed, sizeof(Config.System.Speed));
+//		SaveConfig();
+//	}
+//}
+
+
+
+// @Todo: Create Speed Tool, reorganize GUI!
+
+
+
+
+
+void GUI_System_Event()
 {
-	GUI_Hyperlink(Locale.System.Media.header);
+	GUI_Hyperlink("Event");
 	ImGui::Text("");
-	if (GUI_Checkbox(Locale.System.Media.skipIntro, Config.System.Media.skipIntro))
+	if (GUI_Checkbox("Skip Intro", Config.System.Event.skipIntro))
 	{
-		System_Event_EvaluateToggleReplaceAutosaveStart();
+		System_Event_ToggleSkipIntro(Config.System.Event.skipIntro);
 	}
 }
+
+
+
+
+
+
+
+
 
 void GUI_System_Window()
 {
@@ -312,8 +371,12 @@ void GUI_System_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_System", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		GUI_System_Media();
+		GUI_System_Event();
 		ImGui::Text("");
+		//GUI_System_Media();
+		//ImGui::Text("");
+		//GUI_System_Speed();
+		//ImGui::Text("");
 		GUI_System_Window();
 		ImGui::Text("");
 	}
@@ -335,13 +398,19 @@ void GUI_Tools_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Tools", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		
-		//ImGui::Text("GUI_Tools");
-
 		if (GUI_Hyperlink("Teleporter"))
 		{
 			GUI_Teleporter_show = true;
 		}
+
+
+		if (GUI_Hyperlink("Speed"))
+		{
+			GUI_Speed_show = true;
+		}
+
+
+
 
 
 
@@ -357,35 +426,38 @@ void GUI_Tools_Draw()
 
 
 
-void GUI_Debug_Fixes()
-{
-	GUI_Hyperlink(Locale.Debug.Fixes.header);
-	ImGui::Text("");
-	if (GUI_Checkbox(Locale.Debug.Fixes.replaceMemoryAllocationFunctions, Config.System.Memory.replaceAllocationFunctions))
-	{
-		EvaluateApplicationRestart();
-	}
-}
-
-void GUI_Debug_Timers()
-{
-	GUI_Hyperlink(Locale.Debug.Timers.header);
-	ImGui::Text("");
-	if (GUI_Checkbox(Locale.Debug.Timers.disableActorIdleTimer, Config.System.Actor.disableIdleTimer))
-	{
-		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
-	}
-	if (GUI_Checkbox(Locale.Debug.Timers.disableAutosaveMenuTimer, Config.System.Menu.Autosave.disableTimer))
-	{
-		System_Menu_Autosave_ToggleDisableTimer(Config.System.Menu.Autosave.disableTimer);
-	}
-	if (GUI_Checkbox(Locale.Debug.Timers.disableMainMenuTimer, Config.System.Menu.Main.disableTimer))
-	{
-		System_Menu_Main_ToggleDisableTimer(Config.System.Menu.Main.disableTimer);
-	}
-}
-
-
+//
+//
+//
+//void GUI_Debug_Fixes()
+//{
+//	GUI_Hyperlink(Locale.Debug.Fixes.header);
+//	ImGui::Text("");
+//	if (GUI_Checkbox(Locale.Debug.Fixes.replaceMemoryAllocationFunctions, Config.System.Memory.replaceAllocationFunctions))
+//	{
+//		EvaluateApplicationRestart();
+//	}
+//}
+//
+//void GUI_Debug_Timers()
+//{
+//	GUI_Hyperlink(Locale.Debug.Timers.header);
+//	ImGui::Text("");
+//	if (GUI_Checkbox(Locale.Debug.Timers.disableActorIdleTimer, Config.System.Actor.disableIdleTimer))
+//	{
+//		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
+//	}
+//	if (GUI_Checkbox(Locale.Debug.Timers.disableAutosaveMenuTimer, Config.System.Menu.Autosave.disableTimer))
+//	{
+//		System_Menu_Autosave_ToggleDisableTimer(Config.System.Menu.Autosave.disableTimer);
+//	}
+//	if (GUI_Checkbox(Locale.Debug.Timers.disableMainMenuTimer, Config.System.Menu.Main.disableTimer))
+//	{
+//		System_Menu_Main_ToggleDisableTimer(Config.System.Menu.Main.disableTimer);
+//	}
+//}
+//
+//
 
 
 
@@ -411,10 +483,13 @@ void GUI_Debug_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Debug", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		GUI_Debug_Fixes();
-		ImGui::Text("");
-		GUI_Debug_Timers();
-		ImGui::Text("");
+
+		ImGui::Text("Obsolete");
+
+		//GUI_Debug_Fixes();
+		//ImGui::Text("");
+		//GUI_Debug_Timers();
+		//ImGui::Text("");
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
@@ -531,6 +606,66 @@ void GUI_Main_Draw()
 		break;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void GUI_Speed_Draw()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		ImGui::SetNextWindowSize(ImVec2(GUI_Teleporter_size.x + 16, GUI_Teleporter_size.y + 16));
+		ImGui::SetNextWindowPos(ImVec2(500, 500));
+	}
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	if (ImGui::Begin("Speed", &GUI_Speed_show, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		ImGui::PushItemWidth(200);
+		GUI_InputEx<float>("Global", Config.Speed.global, 0.1f);
+		GUI_InputEx<float>("Menu"  , Config.Speed.menu  , 0.1f);
+		ImGui::PopItemWidth();
+		ImGui::Text("");
+		if (GUI_Button("Reset"))
+		{
+			memcpy(&Config.Speed, &DefaultConfig.Speed, sizeof(Config.Speed));
+			SaveConfig();
+		}
+	}
+	ImGui::End();
+	ImGui::PopStyleVar(3);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -697,6 +832,12 @@ void GUI_Render()
 	{
 		GUI_Teleporter_Draw();
 	}
+
+	if (GUI_Speed_show)
+	{
+		GUI_Speed_Draw();
+	}
+
 
 
 	if (restart)

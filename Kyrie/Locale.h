@@ -18,6 +18,40 @@ struct LOCALE
 	{
 		struct
 		{
+			const char * header = "Arcade";
+			const char * enable = "Enable";
+			struct
+			{
+				const char * label = "Character";
+				const char * items[5] =
+				{
+					"Dante",
+					"Nero",
+					"Vergil",
+					"Trish",
+					"Lady",
+				};
+			}
+			Character;
+
+
+
+
+
+
+
+
+
+
+
+
+
+			const char * reset = "Reset";
+
+		}
+		Arcade;
+		struct
+		{
 			const char * header = "Multiplayer";
 			const char * enable = "Enable";
 			struct
@@ -50,23 +84,32 @@ struct LOCALE
 	Game;
 	struct
 	{
-		struct
-		{
-			const char * header = "Media";
-			const char * skipIntro = "Skip Intro";
-			struct
-			{
-				const char * label = "Game";
-				const char * items[3] =
-				{
-					"Dante / Nero",
-					"Vergil",
-					"Trish / Lady",
-				};
-			}
-			skipIntroGame;
-		}
-		Media;
+		//struct
+		//{
+		//	const char * header = "Media";
+		//	const char * skipIntro = "Skip Intro";
+		//	struct
+		//	{
+		//		const char * label = "Game";
+		//		const char * items[3] =
+		//		{
+		//			"Dante / Nero",
+		//			"Vergil",
+		//			"Trish / Lady",
+		//		};
+		//	}
+		//	skipIntroGame;
+		//}
+		//Media;
+		//struct
+		//{
+		//	const char * header = "Speed";
+		//	const char * global = "Global";
+		//	const char * menu = "Menu";
+		//	const char * reset = "Reset";
+
+		//}
+		//Speed;
 		struct
 		{
 			const char * header = "Window";
@@ -77,24 +120,35 @@ struct LOCALE
 		Window;
 	}
 	System;
-	struct
-	{
-		struct
-		{
-			const char * header = "Fixes";
-			const char * replaceMemoryAllocationFunctions = "Replace Memory Allocation Functions";
-		}
-		Fixes;
-		struct
-		{
-			const char * header = "Timers";
-			const char * disableActorIdleTimer = "Disable Actor Idle Timer";
-			const char * disableAutosaveMenuTimer = "Disable Autosave Menu Timer";
-			const char * disableMainMenuTimer = "Disable Main Menu Timer";
-		}
-		Timers;
-	}
-	Debug;
+	//struct
+	//{
+	//	struct
+	//	{
+	//		const char * header = "Fixes";
+	//		const char * replaceMemoryAllocationFunctions = "Replace Memory Allocation Functions";
+	//	}
+	//	Fixes;
+	//	struct
+	//	{
+	//		const char * header = "Timers";
+	//		const char * disableActorIdleTimer = "Disable Actor Idle Timer";
+	//		const char * disableAutosaveMenuTimer = "Disable Autosave Menu Timer";
+	//		const char * disableMainMenuTimer = "Disable Main Menu Timer";
+	//	}
+	//	Timers;
+	//}
+	//Debug;
+
+
+
+
+
+
+
+
+
+
+
 	const char * restart = "Restart App!";
 };
 

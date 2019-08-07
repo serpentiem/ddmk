@@ -13,4 +13,3 @@ extern LoadFile_t LoadFile;
 
 void System_File_Init();
 void System_File_ToggleLoadAssetsExtension(bool enable);
-void System_File_EvaluateToggleLoadAssetsExtension();

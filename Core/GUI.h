@@ -21,7 +21,10 @@ bool GUI_Input(const char * label, T & var, bool hex = false)
 		if constexpr      (typematch(T, uint8  )) { sprintf(value, "%.2X", var); }
 		else if constexpr (typematch(T, uint16 )) { sprintf(value, "%.4X", var); }
 		else if constexpr (typematch(T, uint32 )) { sprintf(value, "%.8X", var); }
+		#pragma warning(push)
+		#pragma warning(disable: 4477)
 		else if constexpr (typematch(T, float32)) { sprintf(value, "%.8X", var); }
+		#pragma warning(pop)
 		flags |= ImGuiInputTextFlags_CharsHexadecimal;
 	}
 	else

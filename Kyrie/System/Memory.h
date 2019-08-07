@@ -7,4 +7,3 @@ extern bool System_Memory_enableReplaceAllocationFunctions;
 
 void System_Memory_Init();
 void System_Memory_ToggleReplaceAllocationFunctions(bool enable);
-void System_Memory_EvaluateToggleReplaceAllocationFunctions();

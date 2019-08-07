@@ -6,11 +6,37 @@
 #pragma pack(push, 1)
 struct CONFIG
 {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	struct
 	{
 		struct
 		{
-			bool enable = false;
+			bool    enable      = false;
+			uint32  mission     = 1;
+			uint32  mode        = MODE_DEVIL_HUNTER;
+			uint8   character   = CHAR_DANTE;
+			uint32  costume     = 0;
+			float32 hitPoints   = 6000;
+			float32 magicPoints = 3000;
 		}
 		Arcade;
 		struct
@@ -32,6 +58,22 @@ struct CONFIG
 		Training;
 	}
 	Game;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	struct
 	{
 		struct
@@ -41,38 +83,23 @@ struct CONFIG
 		Actor;
 		struct
 		{
+			bool skipIntro = false;
+		}
+		Event;
+		struct
+		{
 			struct
 			{
-				bool   hideCursor = true;
-				uint32 updateRate = 10;
+				bool hideCursor = true;
 			}
 			Mouse;
 		}
 		Input;
 		struct
 		{
-			bool skipIntro = false;
-		}
-		Media;
-		struct
-		{
 			bool replaceAllocationFunctions = false;
 		}
 		Memory;
-		struct
-		{
-			struct
-			{
-				bool disableTimer = false;
-			}
-			Autosave;
-			struct
-			{
-				bool disableTimer = false;
-			}
-			Main;
-		}
-		Menu;
 		struct
 		{
 			bool forceFocus = true;
@@ -81,6 +108,29 @@ struct CONFIG
 		Window;
 	}
 	System;
+
+
+
+
+
+	struct
+	{
+		float32 global = 1;
+		float32 menu   = 1;
+	}
+	Speed;
+
+
+
+
+
+
+
+
+
+
+
+
 };
 #pragma pack(pop)
 

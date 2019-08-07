@@ -58,6 +58,30 @@ enum GAME_SELECT_
 
 
 
+enum MODE_
+{
+	MODE_HUMAN,
+	MODE_DEVIL_HUNTER,
+	MODE_SON_OF_SPARDA,
+	MODE_DANTE_MUST_DIE,
+	MODE_LEGENDARY_DARK_KNIGHT,
+};
+
+
+// heaven or hell is hard mode with one hit kill flag
+
+// hell and hell is the same
+
+
+
+
+
+
+
+
+
+
+
 
 
 enum LOAD_FILE_
@@ -225,31 +249,60 @@ enum MTF_GAMEPAD_
 
 
 
+//
+//
+//// Character Base Data
+//
+//struct CBD
+//{
+//	bool   enable[8];
+//	uint32 meleeWeapon;
+//	uint32 rangedWeapon;
+//	uint32 boughtSkillsCount;
+//	uint32 proudSouls;
+//	DWORD  expertise[8];
+//	uint32 costume;
+//	bool   unlockCostume[4];
+//};
+//
+//// Character Base Data Enable Index
+//
+//enum CBDEI_
+//{
+//	CBDEI_DEVIL_TRIGGER = 0,
+//	CBDEI_AIR_HIKE      = 1,
+//	CBDEI_ENEMY_STEP    = 2,
+//	CBDEI_SPEED         = 3,
+//	CBDEI_GET_MORE_ORBS = 4,
+//	CBDEI_TRIGGER_HEART = 5,
+//	CBDEI_BURST_ATTACK  = 0,
+//	CBDEI_BLASTER       = 1,
+//};
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+enum STYLE_
+{
+	STYLE_SWORDMASTER,
+	STYLE_GUNSLINGER,
+	STYLE_TRICKSTER,
+	STYLE_ROYALGUARD,
+	STYLE_DARK_SLAYER,
+};
 
 
 
