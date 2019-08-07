@@ -17,21 +17,17 @@ static void Session_Init()
 		uint32 & mission = *(uint32 *)(live + 0x150);
 		uint32 & game    = *(uint32 *)(live + 0x1BC);
 		uint32 & mode    = *(uint32 *)(live + 0x240);
-
-
+		game    = Config.Game.Arcade.game;
+		mission = Config.Game.Arcade.mission;
+		mode    = Config.Game.Arcade.mode;
 
 		BYTE * session = *(BYTE **)(appBaseAddr + 0xF59F10);
 		if (!session)
 		{
 			goto ArcadeEnd;
 		}
-
-
 		float32 & hitPoints   = *(float32 *)(session + 0x78);
 		float32 & magicPoints = *(float32 *)(session + 0x7C);
-
-
-
 
 		uint8 & character = Config.Game.Arcade.character;
 		if (character >= MAX_CHAR)
@@ -132,27 +128,11 @@ static void Session_Init()
 			break;
 		}
 		}
-
-
-
-
-		hitPoints = 20000;
-		magicPoints = 10000;
-
-
-
-
-
-
-
-
-		mission = 9;
-		game = 2;
-		mode = 3;
+		hitPoints   = Config.Game.Arcade.hitPoints;
+		magicPoints = Config.Game.Arcade.magicPoints;
 	}
 	ArcadeEnd:;
 }
-
 
 static void SetCharacter(BYTE * baseAddr)
 {

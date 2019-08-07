@@ -58,7 +58,7 @@ ImVec2 GUI_Teleporter_size    = ImVec2(300, 300);
 
 
 
-bool debug   = false;
+bool debug   = true;
 //bool restart = false;
 
 
@@ -153,19 +153,123 @@ inline void BuildFonts()
 
 void GUI_Game_Arcade()
 {
+	static uint32 missionIndex = 0;
+	static uint32 modeIndex    = 0;
+	static bool   run          = false;
+	if (!run)
+	{
+		run = true;
+		for (uint8 i = 0; i < countof(Game_Arcade_missionMap); i++)
+		{
+			if (Config.Game.Arcade.mission == Game_Arcade_missionMap[i])
+			{
+				missionIndex = i;
+				break;
+			}
+		}
+		for (uint8 i = 0; i < countof(Game_Arcade_modeMap); i++)
+		{
+			if (Config.Game.Arcade.mission == Game_Arcade_modeMap[i])
+			{
+				modeIndex = i;
+				break;
+			}
+		}
+	}
 	GUI_SECTION_HEADER_START(Game.Arcade);
 	Game_Arcade_Toggle(Config.Game.Arcade.enable);
 	GUI_SECTION_HEADER_END(Game.Arcade);
 	ImGui::PushItemWidth(200);
+	GUI_Combo<uint32>
+	(
+		Locale.Game.Arcade.Game.label,
+		Locale.Game.Arcade.Game.items,
+		countof(Locale.Game.Arcade.Game.items),
+		Config.Game.Arcade.game
+	);
+	if (GUI_Combo<uint32>
+	(
+		Locale.Game.Arcade.Mission.label,
+		Locale.Game.Arcade.Mission.items,
+		countof(Locale.Game.Arcade.Mission.items),
+		missionIndex,
+		0,
+		false
+	))
+	{
+		Config.Game.Arcade.mission = Game_Arcade_missionMap[missionIndex];
+		SaveConfig();
+	}
+	if (debug)
+	{
+		ImGui::Text("index   %u", missionIndex);
+		ImGui::Text("true id %u", Config.Game.Arcade.mission);
+	}
+	if (GUI_Combo<uint32>
+	(
+		Locale.Game.Arcade.Mode.label,
+		Locale.Game.Arcade.Mode.items,
+		countof(Locale.Game.Arcade.Mode.items),
+		modeIndex,
+		0,
+		false
+	))
+	{
+		Config.Game.Arcade.mode = Game_Arcade_modeMap[modeIndex];
+		SaveConfig();
+	}
+	if (debug)
+	{
+		ImGui::Text("index   %u", modeIndex);
+		ImGui::Text("true id %u", Config.Game.Arcade.mode);
+	}
+
+
+
+
+
+	GUI_InputEx<uint32>(Locale.Game.Arcade.room, Config.Game.Arcade.room);
+	ImGui::SameLine();
+	GUI_Checkbox(Locale.Game.Arcade.ignoreRoom, Config.Game.Arcade.ignoreRoom);
+
+
+
+
+
+	GUI_InputEx<uint32>(Locale.Game.Arcade.position, Config.Game.Arcade.position);
+	ImGui::SameLine();
+	GUI_Checkbox(Locale.Game.Arcade.ignorePosition, Config.Game.Arcade.ignorePosition);
+
+
+
+	GUI_InputEx<float32>(Locale.Game.Arcade.hitPoints  , Config.Game.Arcade.hitPoints  , 1000);
+	GUI_InputEx<float32>(Locale.Game.Arcade.magicPoints, Config.Game.Arcade.magicPoints, 1000);
+
+
+
+
+
 	GUI_Combo<uint8>
 	(
-		"Character",
+		Locale.Game.Arcade.Character.label,
 		Locale.Game.Arcade.Character.items,
 		countof(Locale.Game.Arcade.Character.items),
 		Config.Game.Arcade.character
 	);
+
+
+
+
+
+
+
+
+
+
+
 	ImGui::PopItemWidth();
 	GUI_SECTION_FOOTER_START(Game.Arcade);
+	run = false;
 	GUI_SECTION_FOOTER_END;
 }
 

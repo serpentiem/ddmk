@@ -30,13 +30,18 @@ struct CONFIG
 	{
 		struct
 		{
-			bool    enable      = false;
-			uint32  mission     = 1;
-			uint32  mode        = MODE_DEVIL_HUNTER;
-			uint8   character   = CHAR_DANTE;
-			uint32  costume     = 0;
-			float32 hitPoints   = 6000;
-			float32 magicPoints = 3000;
+			bool    enable         = false;
+			uint32  game           = 0;
+			uint32  mission        = 1;
+			uint32  mode           = MODE_DEVIL_HUNTER;
+			uint32  room           = 0;
+			bool    ignoreRoom     = false;
+			uint32  position       = 0;
+			bool    ignorePosition = false;
+			uint8   character      = CHAR_DANTE;
+			uint32  costume        = 0;
+			float32 hitPoints      = 6000;
+			float32 magicPoints    = 3000;
 		}
 		Arcade;
 		struct
