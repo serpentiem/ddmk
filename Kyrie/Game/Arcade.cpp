@@ -3,7 +3,11 @@
 
 // @Todo: Create Auto Confirm for Bloody Palace Start Menu.
 // Get room and position events.
-// Add costume var.
+
+
+
+
+// Get start position for every mission.
 
 
 

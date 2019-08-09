@@ -169,7 +169,7 @@ void GUI_Game_Arcade()
 		}
 		for (uint8 i = 0; i < countof(Game_Arcade_modeMap); i++)
 		{
-			if (Config.Game.Arcade.mission == Game_Arcade_modeMap[i])
+			if (Config.Game.Arcade.mode == Game_Arcade_modeMap[i])
 			{
 				modeIndex = i;
 				break;
@@ -242,8 +242,7 @@ void GUI_Game_Arcade()
 
 
 
-	GUI_InputEx<float32>(Locale.Game.Arcade.hitPoints  , Config.Game.Arcade.hitPoints  , 1000);
-	GUI_InputEx<float32>(Locale.Game.Arcade.magicPoints, Config.Game.Arcade.magicPoints, 1000);
+
 
 
 
@@ -258,12 +257,13 @@ void GUI_Game_Arcade()
 	);
 
 
+	GUI_InputEx<uint32>(Locale.Game.Arcade.costume, Config.Game.Arcade.costume);
 
 
 
 
-
-
+	GUI_InputEx<float32>(Locale.Game.Arcade.hitPoints  , Config.Game.Arcade.hitPoints  , 1000);
+	GUI_InputEx<float32>(Locale.Game.Arcade.magicPoints, Config.Game.Arcade.magicPoints, 1000);
 
 
 

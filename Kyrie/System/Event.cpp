@@ -52,6 +52,15 @@ static void Session_Init()
 			memset(expertise, 0, 32);
 			memset(expertise, 0xFF, 16);
 			costume = Config.Game.Arcade.costume;
+			if (costume >= MAX_COSTUME)
+			{
+				costume = 0;
+			}
+			if (((character == CHAR_TRISH) || (character == CHAR_LADY)) && (costume == 1) && (IsDLCInstalled(DLC_TRISH_LADY_COSTUMES) == false))
+			{
+				costume = 0;
+				Log("Required DLC not installed. %u %u", character, DLC_TRISH_LADY_COSTUMES);
+			}
 		}
 		switch (character)
 		{
@@ -167,6 +176,49 @@ static void SetCharacter(BYTE * baseAddr)
 
 
 
+__declspec(noinline) static void PseudoLog(const char * message, BYTE * origin)
+//__declspec(noinline) static void PseudoLog()
+{
+	//LogFunction();
+
+
+	//if (_stricmp(message, "rSoundRequest") == 0)
+	//{
+	//	Log("sound request found mon.");
+	//}
+
+
+
+	if (_stricmp(message, "aRoom400") == 0)
+	{
+
+		Log("room request mon");
+
+
+	}
+
+
+
+
+
+
+}
+
+
+
+
+
+
+//BYTE * GetMapTableProxy = 0;
+
+
+
+GetMapTable_t GetMapTable = 0;
+
+
+
+
+
 
 
 
@@ -199,6 +251,42 @@ void System_Event_Init()
 
 
 
+	{
+		BYTE sect0[] =
+		{
+			0x57,                   //push edi
+			0x8B, 0x7C, 0x24, 0x08, //mov edi,[esp+08]
+		};
+		BYTE sect1[] =
+		{
+			0x8B, 0x44, 0x24, 0x28, //mov eax,[esp+28]
+			0x8B, 0x4C, 0x24, 0x2C, //mov ecx,[esp+2C]
+			0x50,                   //push eax
+			0x51,                   //push ecx
+		};
+		FUNC func = CreateFunction(PseudoLog, (appBaseAddr + 0x5F1545), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteJump((appBaseAddr + 0x5F1540), func.addr);
+
+		//Log("PseudoProxy %X", func.addr);
+
+
+
+
+
+		/*
+		dmc4.exe+5F1540 - 57                    - push edi
+		dmc4.exe+5F1541 - 8B 7C 24 08           - mov edi,[esp+08]
+		dmc4.exe+5F1545 - 85 FF                 - test edi,edi
+		dmc4.exe+5F1547 - 75 04                 - jne dmc4.exe+5F154D
+
+		*/
+
+	}
+
+
+
 
 	{
 
@@ -219,10 +307,31 @@ void System_Event_Init()
 
 
 
+	{
+		BYTE sect1[] =
+		{
+			0x83, 0xEC, 0x08,             //sub esp,08
+			0x51,                         //push ecx
+			0x56,                         //push esi
+			0x57,                         //push edi
+			0xB9, 0x02, 0x00, 0x00, 0x00, //mov ecx,00000002
+			0x8D, 0x74, 0x24, 0x38,       //lea esi,[esp+38]
+			0x8D, 0x7C, 0x24, 0x0C,       //lea edi,[esp+0C]
+			0xF3, 0xA5,                   //repe movsd
+			0x5F,                         //pop edi
+			0x5E,                         //pop esi
+			0x59,                         //pop ecx
+			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc4.exe+5F1540
+			0x83, 0xC4, 0x08,             //add esp,08
+		};
+		FUNC func = CreateFunction(0, 2, true, false, 0, sizeof(sect1));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall((func.sect1 + 0x18), (appBaseAddr + 0x5F1540));
+		GetMapTable = (GetMapTable_t)func.addr;
+	}
 
 
-
-
+	Log("GetMapTable %X", GetMapTable);
 
 
 

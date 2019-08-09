@@ -95,6 +95,7 @@ struct LOCALE
 				};
 			}
 			Character;
+			const char * costume = "Costume";
 			const char * hitPoints = "Hit Points";
 			const char * magicPoints = "Magic Points";
 			const char * reset = "Reset";
