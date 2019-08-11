@@ -1,5 +1,13 @@
 #include "Event.h"
 
+// @Todo:
+// bloody palace
+// mission 12
+// mission 19
+// auto confirm
+
+GetMapTable_t GetMapTable = 0;
+
 static void Session_Init()
 {
 	LogFunction();
@@ -146,84 +154,70 @@ static void Session_Init()
 static void SetCharacter(BYTE * baseAddr)
 {
 	LogFunction();
-
-
 	ArcadeStart:
 	{
 		if (!Config.Game.Arcade.enable)
 		{
 			goto ArcadeEnd;
 		}
-
-
 		uint8 & character = *(uint8 *)(baseAddr + 0x30);
-
 		character = Config.Game.Arcade.character;
-
-
-
-
-
-
 	}
 	ArcadeEnd:;
-
-
-
 }
 
-
-
-
-
-__declspec(noinline) static void PseudoLog(const char * message, BYTE * origin)
-//__declspec(noinline) static void PseudoLog()
+void SetMissionTableAndPosition(BYTE ** table, uint32 * position)
 {
-	//LogFunction();
-
-
-	//if (_stricmp(message, "rSoundRequest") == 0)
-	//{
-	//	Log("sound request found mon.");
-	//}
-
-
-
-	if (_stricmp(message, "aRoom400") == 0)
+	LogFunction();
+	ArcadeStart:
 	{
-
-		Log("room request mon");
-
-
+		if (!Config.Game.Arcade.enable)
+		{
+			goto ArcadeEnd;
+		}
+		if (!Config.Game.Arcade.ignoreRoom)
+		{
+			char room[64];
+			snprintf(room, sizeof(room), "aRoom%03u", Config.Game.Arcade.room);
+			*table = GetMapTable(room, (appBaseAddr + 0xC9C000));
+		}
+		if (!Config.Game.Arcade.ignorePosition)
+		{
+			*position = Config.Game.Arcade.position;
+		}
 	}
-
-
-
-
-
-
+	ArcadeEnd:
+	Log("&table    %X", table);
+	Log("table     %X", *table);
+	Log("&position %X", position);
+	Log("position  %u", *position);
 }
-
-
-
-
-
-
-//BYTE * GetMapTableProxy = 0;
-
-
-
-GetMapTable_t GetMapTable = 0;
-
-
-
-
-
-
-
 
 void System_Event_Init()
 {
+	LogFunction();
+	{
+		BYTE sect1[] =
+		{
+			0x83, 0xEC, 0x08,             //sub esp,08
+			0x51,                         //push ecx
+			0x56,                         //push esi
+			0x57,                         //push edi
+			0xB9, 0x02, 0x00, 0x00, 0x00, //mov ecx,00000002
+			0x8D, 0x74, 0x24, 0x38,       //lea esi,[esp+38]
+			0x8D, 0x7C, 0x24, 0x0C,       //lea edi,[esp+0C]
+			0xF3, 0xA5,                   //repe movsd
+			0x5F,                         //pop edi
+			0x5E,                         //pop esi
+			0x59,                         //pop ecx
+			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc4.exe+5F1540
+			0x83, 0xC4, 0x08,             //add esp,08
+		};
+		FUNC func = CreateFunction(0, 2, true, false, 0, sizeof(sect1));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall((func.sect1 + 0x18), (appBaseAddr + 0x5F1540));
+		GetMapTable = (GetMapTable_t)func.addr;
+	}
 	{
 		BYTE sect0[] =
 		{
@@ -248,97 +242,77 @@ void System_Event_Init()
 		*(BYTE **)(func.sect0 + 2)= (appBaseAddr + 0xF2424C);
 		WriteJump((appBaseAddr + 0x10C1F3), func.addr, 1);
 	}
-
-
-
 	{
+		DWORD off[21] =
+		{
+			0x5E5661, // done
+			0x5E57F1, // done
+			0x5E5AAE, // done
+			0x5E5C21, // done
+			0x5E5E01, // done
+			0x5E5FC1, // done
+			0x5E6161, // done
+			0x5E62D1, // done
+			0x5E64B1, // done
+			0x5E6631, // done
+			0x5E67B1, // done
+			0x5E6921, // done
+			0x5E6AF1, // done
+			0x5E6CA1, // done
+			0x5E6E51, // done
+			0x5E7031, // done
+			0x5E71CE, // done
+			0x5E739E, // done
+			0x5E751E, // done
+			0x5E766E, // done
+			0x5E5381, // done
+		};
+		DWORD funcAddrOff[21] =
+		{
+			0xF5D474, // done
+			0xF5D5B4, // done
+			0xF5D614, // done
+			0xF5D3D4, // done
+			0xF5D374, // done
+			0xF5D7F4, // done
+			0xF5D754, // done
+			0xF5DC78, // done
+			0xF5D1F4, // done
+			0xF5DD38, // done
+			0xF5D654, // done
+			0xF5D1D4, // done
+			0xF5DC78, // done
+			0xF5DC78, // done
+			0xF5D734, // done
+			0xF5D7F4, // done
+			0xF5DC98, // done
+			0xF5D5F4, // done
+			0xF5DDD8, // done
+			0xF5D5F4, // done
+			0xF5DA14, // done
+		};
 		BYTE sect0[] =
 		{
-			0x57,                   //push edi
-			0x8B, 0x7C, 0x24, 0x08, //mov edi,[esp+08]
+			0x68, 0x00, 0x00, 0x00, 0x00, //push
 		};
 		BYTE sect1[] =
 		{
-			0x8B, 0x44, 0x24, 0x28, //mov eax,[esp+28]
-			0x8B, 0x4C, 0x24, 0x2C, //mov ecx,[esp+2C]
-			0x50,                   //push eax
-			0x51,                   //push ecx
+			0x83, 0xEC, 0x08,       //sub esp,08
+			0x8D, 0x44, 0x24, 0x2C, //lea eax,[esp+2C]
+			0x89, 0x04, 0x24,       //mov [esp],eax
+			0x8D, 0x44, 0x24, 0x30, //lea eax,[esp+30]
+			0x89, 0x44, 0x24, 0x04, //mov [esp+04],eax
 		};
-		FUNC func = CreateFunction(PseudoLog, (appBaseAddr + 0x5F1545), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x5F1540), func.addr);
-
-		//Log("PseudoProxy %X", func.addr);
-
-
-
-
-
-		/*
-		dmc4.exe+5F1540 - 57                    - push edi
-		dmc4.exe+5F1541 - 8B 7C 24 08           - mov edi,[esp+08]
-		dmc4.exe+5F1545 - 85 FF                 - test edi,edi
-		dmc4.exe+5F1547 - 75 04                 - jne dmc4.exe+5F154D
-
-		*/
-
-	}
-
-
-
-
-	{
-
-
-
-
-
-
-		/*
-		dmc4.exe+10C1F3 - 8B 0D 4C423201        - mov ecx,[dmc4.exe+F2424C] { (0019D858) }
-		dmc4.exe+10C1F9 - 68 FFFF0000           - push 0000FFFF { 65535 }
-
-		*/
-
-
-
-	}
-
-
-
-	{
-		BYTE sect1[] =
+		for (uint8 i = 0; i < countof(off); i++)
 		{
-			0x83, 0xEC, 0x08,             //sub esp,08
-			0x51,                         //push ecx
-			0x56,                         //push esi
-			0x57,                         //push edi
-			0xB9, 0x02, 0x00, 0x00, 0x00, //mov ecx,00000002
-			0x8D, 0x74, 0x24, 0x38,       //lea esi,[esp+38]
-			0x8D, 0x7C, 0x24, 0x0C,       //lea edi,[esp+0C]
-			0xF3, 0xA5,                   //repe movsd
-			0x5F,                         //pop edi
-			0x5E,                         //pop esi
-			0x59,                         //pop ecx
-			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc4.exe+5F1540
-			0x83, 0xC4, 0x08,             //add esp,08
-		};
-		FUNC func = CreateFunction(0, 2, true, false, 0, sizeof(sect1));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((func.sect1 + 0x18), (appBaseAddr + 0x5F1540));
-		GetMapTable = (GetMapTable_t)func.addr;
+			FUNC func = CreateFunction(SetMissionTableAndPosition, (appBaseAddr + off[i] + 5), true, true, sizeof(sect0), sizeof(sect1));
+			memcpy(func.sect0, sect0, sizeof(sect0));
+			*(BYTE **)(func.sect0 + 1) = (appBaseAddr + funcAddrOff[i]);
+			memcpy(func.sect1, sect1, sizeof(sect1));
+			WriteJump((appBaseAddr + off[i]), func.addr);
+		}
 	}
-
-
 	Log("GetMapTable %X", GetMapTable);
-
-
-
-
-
-
-
 }
 
 void System_Event_ToggleSkipIntro(bool enable)

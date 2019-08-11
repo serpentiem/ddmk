@@ -1,17 +1,5 @@
 #include "Arcade.h"
 
-
-// @Todo: Create Auto Confirm for Bloody Palace Start Menu.
-// Get room and position events.
-
-
-
-
-// Get start position for every mission.
-
-
-
-
 uint32 Game_Arcade_missionMap[21] =
 {
 	1,
@@ -36,6 +24,7 @@ uint32 Game_Arcade_missionMap[21] =
 	20,
 	50,
 };
+uint8 Game_Arcade_missionIndex = 0;
 
 uint32 Game_Arcade_modeMap[7] =
 {
@@ -47,6 +36,7 @@ uint32 Game_Arcade_modeMap[7] =
 	MODE_SON_OF_SPARDA,
 	MODE_SON_OF_SPARDA,
 };
+uint8 Game_Arcade_modeIndex = 0;
 
 void Game_Arcade_Toggle(bool enable)
 {

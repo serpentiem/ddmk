@@ -153,9 +153,7 @@ inline void BuildFonts()
 
 void GUI_Game_Arcade()
 {
-	static uint32 missionIndex = 0;
-	static uint32 modeIndex    = 0;
-	static bool   run          = false;
+	static bool run = false;
 	if (!run)
 	{
 		run = true;
@@ -163,7 +161,7 @@ void GUI_Game_Arcade()
 		{
 			if (Config.Game.Arcade.mission == Game_Arcade_missionMap[i])
 			{
-				missionIndex = i;
+				Game_Arcade_missionIndex = i;
 				break;
 			}
 		}
@@ -171,7 +169,7 @@ void GUI_Game_Arcade()
 		{
 			if (Config.Game.Arcade.mode == Game_Arcade_modeMap[i])
 			{
-				modeIndex = i;
+				Game_Arcade_modeIndex = i;
 				break;
 			}
 		}
@@ -187,40 +185,40 @@ void GUI_Game_Arcade()
 		countof(Locale.Game.Arcade.Game.items),
 		Config.Game.Arcade.game
 	);
-	if (GUI_Combo<uint32>
+	if (GUI_Combo<uint8>
 	(
 		Locale.Game.Arcade.Mission.label,
 		Locale.Game.Arcade.Mission.items,
 		countof(Locale.Game.Arcade.Mission.items),
-		missionIndex,
+		Game_Arcade_missionIndex,
 		0,
 		false
 	))
 	{
-		Config.Game.Arcade.mission = Game_Arcade_missionMap[missionIndex];
+		Config.Game.Arcade.mission = Game_Arcade_missionMap[Game_Arcade_missionIndex];
 		SaveConfig();
 	}
 	if (debug)
 	{
-		ImGui::Text("index   %u", missionIndex);
+		ImGui::Text("index   %u", Game_Arcade_missionIndex);
 		ImGui::Text("true id %u", Config.Game.Arcade.mission);
 	}
-	if (GUI_Combo<uint32>
+	if (GUI_Combo<uint8>
 	(
 		Locale.Game.Arcade.Mode.label,
 		Locale.Game.Arcade.Mode.items,
 		countof(Locale.Game.Arcade.Mode.items),
-		modeIndex,
+		Game_Arcade_modeIndex,
 		0,
 		false
 	))
 	{
-		Config.Game.Arcade.mode = Game_Arcade_modeMap[modeIndex];
+		Config.Game.Arcade.mode = Game_Arcade_modeMap[Game_Arcade_modeIndex];
 		SaveConfig();
 	}
 	if (debug)
 	{
-		ImGui::Text("index   %u", modeIndex);
+		ImGui::Text("index   %u", Game_Arcade_modeIndex);
 		ImGui::Text("true id %u", Config.Game.Arcade.mode);
 	}
 
@@ -228,15 +226,39 @@ void GUI_Game_Arcade()
 
 
 
-	GUI_InputEx<uint32>(Locale.Game.Arcade.room, Config.Game.Arcade.room);
+	if (GUI_InputEx<uint32>(Locale.Game.Arcade.room, Config.Game.Arcade.room))
+	{
+		//UpdateMissionStartMapTables();
+		//UpdateMissionStartPositions();
+	}
 	ImGui::SameLine();
 	GUI_Checkbox(Locale.Game.Arcade.ignoreRoom, Config.Game.Arcade.ignoreRoom);
 
 
+	/*
+
+	call
+
+	//add esp,4
 
 
 
-	GUI_InputEx<uint32>(Locale.Game.Arcade.position, Config.Game.Arcade.position);
+
+
+
+
+
+
+	
+	
+	
+	*/
+
+
+	if (GUI_InputEx<uint32>(Locale.Game.Arcade.position, Config.Game.Arcade.position))
+	{
+		//UpdateMissionStartPositions();
+	}
 	ImGui::SameLine();
 	GUI_Checkbox(Locale.Game.Arcade.ignorePosition, Config.Game.Arcade.ignorePosition);
 
@@ -427,7 +449,15 @@ void GUI_Game_Draw()
 
 
 
-
+void GUI_System_Actor()
+{
+	GUI_Hyperlink("Actor");
+	ImGui::Text("");
+	if (GUI_Checkbox("Disable Idle Timer", Config.System.Actor.disableIdleTimer))
+	{
+		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
+	}
+}
 
 void GUI_System_Event()
 {
@@ -439,13 +469,15 @@ void GUI_System_Event()
 	}
 }
 
-
-
-
-
-
-
-
+void GUI_System_Memory()
+{
+	GUI_Hyperlink("Memory");
+	ImGui::Text("");
+	if (GUI_Checkbox("Replace Allocation Functions", Config.System.Memory.replaceAllocationFunctions))
+	{
+		EvaluateApplicationRestart();
+	}
+}
 
 void GUI_System_Window()
 {
@@ -475,12 +507,12 @@ void GUI_System_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_System", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
+		GUI_System_Actor();
+		ImGui::Text("");
 		GUI_System_Event();
 		ImGui::Text("");
-		//GUI_System_Media();
-		//ImGui::Text("");
-		//GUI_System_Speed();
-		//ImGui::Text("");
+		GUI_System_Memory();
+		ImGui::Text("");
 		GUI_System_Window();
 		ImGui::Text("");
 	}
@@ -589,6 +621,31 @@ void GUI_Debug_Draw()
 	{
 
 		ImGui::Text("Obsolete");
+
+
+		//if (GUI_Button("ResetMapTables"))
+		//{
+		//	ResetMissionStartMapTables();
+		//}
+
+		//if (GUI_Button("UpdateMapTables"))
+		//{
+		//	UpdateMissionStartMapTables();
+		//}
+
+
+
+		//if (GUI_Button("ResetPositions"))
+		//{
+		//	ResetMissionStartPositions();
+		//}
+		//if (GUI_Button("UpdatePositions"))
+		//{
+		//	UpdateMissionStartPositions();
+		//}
+
+
+
 
 		//GUI_Debug_Fixes();
 		//ImGui::Text("");

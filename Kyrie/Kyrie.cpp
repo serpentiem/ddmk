@@ -39,10 +39,8 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 			return 0;
 		}
 		System_Actor_Init();
-		//System_Actor_ToggleSpawnExtension(Config.Game.Multiplayer.enable);
-		System_Actor_ToggleSpawnExtension(true);
-		//System_Actor_ToggleCharacterDataConverter(Config.Game.Multiplayer.enable);
-		System_Actor_ToggleCharacterDataConverter(true);
+		System_Actor_ToggleSpawnExtension(Config.Game.Multiplayer.enable);
+		System_Actor_ToggleCharacterDataConverter(Config.Game.Multiplayer.enable);
 		System_Actor_ToggleCostumeFixes(Config.Game.Multiplayer.enable);
 		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
 		System_Event_Init();
