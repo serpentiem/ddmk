@@ -50,7 +50,7 @@ struct CONFIG
 			uint8  actorCount                 = 1;
 			uint8  character[(MAX_ACTOR - 1)] = {};
 			uint8  costume  [(MAX_ACTOR - 1)] = {};
-			uint32 spawnDelay                 = 3000;
+			uint32 spawnDelay                 = 1000;
 		}
 		Multiplayer;
 		struct

@@ -47,6 +47,8 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		System_Event_ToggleSkipIntro(Config.System.Event.skipIntro);
 		System_File_Init();
 		System_File_ToggleLoadAssetsExtension(Config.Game.Multiplayer.enable);
+		System_Input_Init();
+		System_Input_ToggleExtension(Config.Game.Multiplayer.enable);
 		System_Memory_Init();
 		System_Memory_ToggleReplaceAllocationFunctions(Config.System.Memory.replaceAllocationFunctions);
 		System_Window_Init();

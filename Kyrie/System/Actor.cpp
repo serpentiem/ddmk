@@ -347,7 +347,7 @@ void System_Actor_ToggleSpawnExtension(bool enable)
 	if (enable)
 	{
 		WriteJump((appBaseAddr + 0x116600), SpawnActorOneProxy);
-		//WriteJump((appBaseAddr + 0x11660A), SpawnActorsProxy);
+		WriteJump((appBaseAddr + 0x11660A), SpawnActorsProxy);
 	}
 	else
 	{
