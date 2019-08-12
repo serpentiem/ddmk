@@ -1,14 +1,8 @@
 #include "Event.h"
 
-// @Todo:
-// bloody palace
-// mission 12
-// mission 19
-// auto confirm
-
 GetMapTable_t GetMapTable = 0;
 
-static void Session_Init()
+static void InitSession()
 {
 	LogFunction();
 	ArcadeStart:
@@ -166,7 +160,7 @@ static void SetCharacter(BYTE * baseAddr)
 	ArcadeEnd:;
 }
 
-void SetMissionTableAndPosition(BYTE ** table, uint32 * position)
+static void SetMissionTableAndPosition(BYTE ** table, uint32 * position)
 {
 	LogFunction();
 	ArcadeStart:
@@ -223,7 +217,7 @@ void System_Event_Init()
 		{
 			0x80, 0xBE, 0x83, 0x06, 0x00, 0x00, 0x00, //cmp byte ptr [esi+00000683],00
 		};
-		FUNC func = CreateFunction(Session_Init, (appBaseAddr + 0x7B42C), true, true, sizeof(sect0));
+		FUNC func = CreateFunction(InitSession, (appBaseAddr + 0x7B42C), true, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteJump((appBaseAddr + 0x7B425), func.addr, 2);
 	}

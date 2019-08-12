@@ -8,4 +8,5 @@ extern uint8  Game_Arcade_missionIndex;
 extern uint32 Game_Arcade_modeMap[7];
 extern uint8  Game_Arcade_modeIndex;
 
+void Game_Arcade_Init();
 void Game_Arcade_Toggle(bool enable);

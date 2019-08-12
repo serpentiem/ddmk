@@ -52,6 +52,7 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		System_Window_Init();
 		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
 
+		Game_Arcade_Init();
 		Game_Arcade_Toggle(Config.Game.Arcade.enable);
 		if (Config.Game.Training.enable)
 		{

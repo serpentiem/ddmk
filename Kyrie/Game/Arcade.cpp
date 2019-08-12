@@ -38,28 +38,47 @@ uint32 Game_Arcade_modeMap[7] =
 };
 uint8 Game_Arcade_modeIndex = 0;
 
+BYTE * InitMainMenu = 0;
+
+void Game_Arcade_Init()
+{
+	LogFunction();
+	{
+		BYTE sect0[] =
+		{
+			0x83, 0xEC, 0x08,                   //sub esp,08
+			0x56,                               //push esi
+			0x57,                               //push edi
+			0x53,                               //push ebx
+			0x55,                               //push ebp
+			0x8B, 0x35, 0x00, 0x00, 0x00, 0x00, //mov esi,[dmc4.exe+F59F00]
+			0x31, 0xFF,                         //xor edi,edi
+			0xBB, 0x01, 0x00, 0x00, 0x00,       //mov ebx,00000001
+			0x8B, 0x2D, 0x00, 0x00, 0x00, 0x00, //mov ebp,[dmc4.exe+F59F10]
+		};
+		FUNC func = CreateFunction(0, (appBaseAddr + 0x7B2C9), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(BYTE **)(func.sect0 +    9) = (appBaseAddr + 0xF59F00);
+		*(BYTE **)(func.sect0 + 0x16) = (appBaseAddr + 0xF59F10);
+		InitMainMenu = func.addr;
+	}
+}
+
 void Game_Arcade_Toggle(bool enable)
 {
 	LogFunctionBool(enable);
 	if (enable)
 	{
-		// Main Menu Auto Confirm
-		WriteAddress((appBaseAddr + 0x7CC2D), (appBaseAddr + 0x7CC33), 6); // Press Any Button
-		Write<BYTE>((appBaseAddr + 0x7CFC2), 0xEB);                        // Level 1 Keyboard
-		Write<BYTE>((appBaseAddr + 0x7C00E), 0xEB);                        // Level 2 Keyboard
-		// Init Session
-		WriteAddress((appBaseAddr + 0x7B265), (appBaseAddr + 0x7B26B), 6); // Force Load Game Route
-		Write<BYTE>((appBaseAddr + 0x7B2AB), 0xEB);                        // Force Skip Mission Select
+		Write<BYTE *>((appBaseAddr + 0xC10570), InitMainMenu);
 		// Mission Start Menu Auto Confirm
 		WriteAddress((appBaseAddr + 0x77DED), (appBaseAddr + 0x77DF3), 6);
+		// Bloody Palace Menu Auto Confirm
+		WriteAddress((appBaseAddr + 0x46C32), (appBaseAddr + 0x46C38), 6);
 	}
 	else
 	{
-		WriteAddress((appBaseAddr + 0x7CC2D), (appBaseAddr + 0x7CCBA), 6);
-		Write<BYTE>((appBaseAddr + 0x7CFC2), 0x75);
-		Write<BYTE>((appBaseAddr + 0x7C00E), 0x75);
-		WriteAddress((appBaseAddr + 0x7B265), (appBaseAddr + 0x7B54B), 6);
-		Write<BYTE>((appBaseAddr + 0x7B2AB), 0x75);
+		Write<BYTE *>((appBaseAddr + 0xC10570), (appBaseAddr + 0x7B1A0));
 		WriteAddress((appBaseAddr + 0x77DED), (appBaseAddr + 0x77EE4), 6);
+		WriteAddress((appBaseAddr + 0x46C32), (appBaseAddr + 0x46CEC), 6);
 	}
 }
