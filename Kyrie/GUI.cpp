@@ -333,7 +333,24 @@ void GUI_Game_Multiplayer()
 			ImGui::PopItemWidth();
 		}
 		GUI_POP_DISABLE(!Config.Game.Multiplayer.enable);
-		ImGui::Text("");
+	}
+	GUI_POP_DISABLE(InMission());
+	ImGui::Text("");
+	ImGui::PushItemWidth(208);
+	if (GUI_Combo<uint8>
+	(
+		Locale.Game.Multiplayer.KeyboardActor.label,
+		Locale.Game.Multiplayer.KeyboardActor.items,
+		countof(Locale.Game.Multiplayer.KeyboardActor.items),
+		Config.Game.Multiplayer.keyboardActor
+	))
+	{
+		System_Input_UpdateKeyboardAddr();
+	}
+	ImGui::PopItemWidth();
+	ImGui::Text("");
+	GUI_PUSH_DISABLE(InMission());
+	{
 		if (GUI_Button(Locale.Game.Multiplayer.reset))
 		{
 			memcpy(&Config.Game.Multiplayer, &DefaultConfig.Game.Multiplayer, sizeof(Config.Game.Multiplayer));
@@ -343,7 +360,6 @@ void GUI_Game_Multiplayer()
 	}
 	GUI_POP_DISABLE(InMission());
 }
-
 
 void GUI_Game_Training()
 {
@@ -619,38 +635,7 @@ void GUI_Debug_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Debug", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-
 		ImGui::Text("Obsolete");
-
-
-		//if (GUI_Button("ResetMapTables"))
-		//{
-		//	ResetMissionStartMapTables();
-		//}
-
-		//if (GUI_Button("UpdateMapTables"))
-		//{
-		//	UpdateMissionStartMapTables();
-		//}
-
-
-
-		//if (GUI_Button("ResetPositions"))
-		//{
-		//	ResetMissionStartPositions();
-		//}
-		//if (GUI_Button("UpdatePositions"))
-		//{
-		//	UpdateMissionStartPositions();
-		//}
-
-
-
-
-		//GUI_Debug_Fixes();
-		//ImGui::Text("");
-		//GUI_Debug_Timers();
-		//ImGui::Text("");
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);

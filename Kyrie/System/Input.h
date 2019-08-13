@@ -3,8 +3,10 @@
 
 #include "../Vars.h"
 
-extern bool System_Input_enableExtension;
-extern MGO  System_Input_gamepad[MAX_ACTOR];
+#include "Actor.h"
 
+extern bool System_Input_enableExtension;
+
+void System_Input_UpdateKeyboardAddr();
 void System_Input_Init();
 void System_Input_ToggleExtension(bool enable);

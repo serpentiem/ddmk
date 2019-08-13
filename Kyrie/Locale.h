@@ -117,7 +117,18 @@ struct LOCALE
 				};
 			}
 			Character;
-			const char * spawnDelay = "Spawn Delay";
+			struct
+			{
+				const char * label = "Keyboard Actor";
+				const char * items[4] =
+				{
+					"ACTOR_ONE",
+					"ACTOR_TWO",
+					"ACTOR_THREE",
+					"ACTOR_FOUR",
+				};
+			}
+			KeyboardActor;
 			const char * reset = "Reset";
 		}
 		Multiplayer;
