@@ -195,40 +195,6 @@ inline void BuildFonts()
 
 void GUI_Game_Arcade()
 {
-
-
-	//static uint32 modeIndex = 0;
-	//static bool run = false;
-
-
-	//if (!run)
-	//{
-	//	run = true;
-	//	for (uint8 i = 0; i < countof(Game_Arcade_modeMap); i++)
-	//	{
-	//		if (Config.Game.Arcade.mode == Game_Arcade_modeMap[i])
-	//		{
-
-	//			modeIndex = i;
-	//			break;
-
-	//		}
-
-	//	}
-	//}
-
-
-	
-	if (GUI_Hyperlink(Locale.Game.Arcade.header))
-	{
-		GUI_Documentation_show = true;
-
-		// Scroll to bla bla bla.
-
-	}
-
-
-
 	GUI_SECTION_HEADER_START(Game.Arcade);
 	if (Config.Game.Arcade.enable)
 	{
@@ -1391,11 +1357,7 @@ void GUI_System_Input()
 {
 	GUI_Hyperlink(Locale.System.Input.header);
 	ImGui::Text("");
-	ImGui::Text(Locale.System.Input.Mouse.header);
-	ImGui::PushItemWidth(120);
-	GUI_Checkbox(Locale.System.Input.Mouse.hideCursor, Config.System.Input.Mouse.hideCursor);
-	GUI_InputEx(Locale.System.Input.Mouse.updateRate, Config.System.Input.Mouse.updateRate);
-	ImGui::PopItemWidth();
+	GUI_Checkbox("Hide Mouse Cursor", Config.System.Input.hideMouseCursor);
 }
 
 void GUI_System_Media()

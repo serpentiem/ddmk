@@ -105,11 +105,7 @@ struct CONFIG
 		Event;
 		struct
 		{
-			struct
-			{
-				bool hideCursor = true;
-			}
-			Mouse;
+			bool hideMouseCursor = true;
 		}
 		Input;
 		struct

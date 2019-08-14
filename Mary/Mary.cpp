@@ -52,19 +52,6 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		LoadConfig();
 		Hooks_Init();
 
-
-		System_Window_ToggleForceFocus(true);
-
-
-		return 1;
-
-
-
-		// @Update: Improve Toggles!
-
-
-
-
 		System_Actor_Init();
 		System_Actor_Toggle();
 		System_Animation_Init();
@@ -73,8 +60,6 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		System_Event_Init();
 		System_File_Init();
 
-		// only because config uses input enums,
-		// make standalone to avoid collision!
 		System_Input_extend = Config.Game.Multiplayer.enable;
 		System_Input_Init();
 
@@ -109,10 +94,8 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		Game_StyleSwitcher_Init();
 		Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
 
-
 		// @Bug: If module is disabled, but any of these options are true, will cause problems.
-
-
+		// @Todo: Add enable check to all multi-module sections.
 
 		Game_Training_ToggleInfiniteHitPoints(Config.Game.Training.infiniteHitPoints);
 		Game_Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
@@ -128,7 +111,6 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 			Config.Cosmetics.Weapon.instantModelUpdate = true;
 			SaveConfig();
 		}
-
 		Cosmetics_Color_Init();
 		Cosmetics_Color_Toggle(Config.Cosmetics.Color_enable);
 		Cosmetics_Dante_Init();

@@ -128,12 +128,7 @@ struct CONFIG
 	{
 		struct
 		{
-			struct
-			{
-				bool   hideCursor = true;
-				uint32 updateRate = 10;
-			}
-			Mouse;
+			bool hideMouseCursor = true;
 		}
 		Input;
 		struct

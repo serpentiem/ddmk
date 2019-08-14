@@ -49,7 +49,11 @@ MAX_MODE,
 
 void Game_Arcade_Toggle(bool enable)
 {
-	Log("%s %u", FUNC_NAME, enable);
+	//Log("%s %u", FUNC_NAME, enable);
+
+	LogFunction();
+
+
 	if (enable)
 	{
 		Write<BYTE>((appBaseAddr + 0x2433FB), 0xEB);                         // Force New Game

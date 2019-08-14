@@ -37,7 +37,7 @@ bool GUI_Camera_show     = false;
 bool GUI_Speed_show      = false;
 bool GUI_Teleporter_show = false;
 
-bool debug = true;
+bool debug = false;
 
 inline void BuildFonts()
 {
@@ -289,6 +289,13 @@ void GUI_System_Event()
 	}
 }
 
+void GUI_System_Input()
+{
+	GUI_Hyperlink("Input");
+	ImGui::Text("");
+	GUI_Checkbox("Hide Mouse Cursor", Config.System.Input.hideMouseCursor);
+}
+
 void GUI_System_Memory()
 {
 	GUI_Hyperlink("Memory");
@@ -330,6 +337,8 @@ void GUI_System_Draw()
 		GUI_System_Actor();
 		ImGui::Text("");
 		GUI_System_Event();
+		ImGui::Text("");
+		GUI_System_Input();
 		ImGui::Text("");
 		GUI_System_Memory();
 		ImGui::Text("");

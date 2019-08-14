@@ -1,7 +1,5 @@
 #include "Hooks.h"
 
-//#pragma warning(disable: 4102) // Unreferenced label.
-
 typedef ATOM(* User_RegisterClassExW_t)
 (
 	WNDCLASSEXW *
@@ -182,8 +180,8 @@ HWND User_Hook_CreateWindowExW
 	LPVOID    parameter
 )
 {
-	x = 0;
-	y = 0;
+	//x = 0;
+	//y = 0;
 	Log
 	(
 		"%s "
@@ -213,7 +211,7 @@ HWND User_Hook_CreateWindowExW
 		instance,
 		parameter
 	);
-	if (Config.System.Input.Mouse.hideCursor)
+	if (Config.System.Input.hideMouseCursor)
 	{
 		ToggleCursor(false);
 	}
@@ -556,7 +554,7 @@ static DWORD DirectInput8_UpdateMouseThread(LPVOID parameter)
 			DirectInput8_mouse->GetDeviceState(sizeof(DIMOUSESTATE2), &DirectInput8_mouseState);
 			ImGui_DirectInput8_UpdateMouse(mainWindow, &DirectInput8_mouseState);
 		}
-		Sleep(Config.System.Input.Mouse.updateRate);
+		Sleep(10);
 	}
 	while (true);
 	return 1;

@@ -34,27 +34,8 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		LoadConfig();
 		Hooks_Init();
 
-
-
-
-
-
-		System_Window_ToggleForceFocus(true);
-
-
-
-
-		return 1;
-
-
-
-
 		System_Actor_Init();
 		System_Event_Init();
-
-
-
-
 		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
 
 		Game_Arcade_Toggle(Config.Game.Arcade.enable);

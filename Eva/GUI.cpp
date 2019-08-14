@@ -548,18 +548,17 @@ void GUI_System_Input()
 {
 	GUI_Hyperlink(Locale.System.Input.header);
 	ImGui::Text("");
-	ImGui::Text(Locale.System.Input.Mouse.header);
-	ImGui::PushItemWidth(120);
-	GUI_Checkbox(Locale.System.Input.Mouse.hideCursor, Config.System.Input.Mouse.hideCursor);
-	GUI_InputEx(Locale.System.Input.Mouse.updateRate, Config.System.Input.Mouse.updateRate);
-	ImGui::PopItemWidth();
+	GUI_Checkbox("Hide Mouse Cursor", Config.System.Input.hideMouseCursor);
 }
 
 void GUI_System_Window()
 {
 	GUI_Hyperlink(Locale.System.Window.header);
 	ImGui::Text("");
-	GUI_Checkbox(Locale.System.Window.forceFocus, Config.System.Window.forceFocus);
+	if (GUI_Checkbox(Locale.System.Window.forceFocus, Config.System.Window.forceFocus))
+	{
+		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
+	}
 }
 
 void GUI_System_Draw()

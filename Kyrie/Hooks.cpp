@@ -165,8 +165,8 @@ HWND User_Hook_CreateWindowExW
 	LPVOID    parameter
 )
 {
-	x = 0;
-	y = 0;
+	//x = 0;
+	//y = 0;
 	Log
 	(
 		"%s "
@@ -196,7 +196,7 @@ HWND User_Hook_CreateWindowExW
 		instance,
 		parameter
 	);
-	if (Config.System.Input.Mouse.hideCursor)
+	if (Config.System.Input.hideMouseCursor)
 	{
 		ToggleCursor(false);
 	}
