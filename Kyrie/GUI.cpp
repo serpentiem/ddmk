@@ -1,8 +1,5 @@
 #include "GUI.h"
 
-//#pragma warning(disable: 4102) // Unreferenced label.
-
-
 enum TAB_
 {
 	TAB_GAME,
@@ -12,7 +9,6 @@ enum TAB_
 	MAX_TAB,
 	TAB_VOID,
 };
-
 
 enum FONT_
 {
@@ -30,47 +26,18 @@ enum FONT_
 
 #define OVERLAY_FONT "C:\\Windows\\Fonts\\consola.ttf"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 uint8 activeTab = TAB_VOID;
 
-ImVec2 GUI_Game_size          = ImVec2(500, 500);
-ImVec2 GUI_System_size        = ImVec2(300, 418);
-ImVec2 GUI_Tools_size         = ImVec2(300, 300);
-ImVec2 GUI_Debug_size         = ImVec2(300, 300);
+ImVec2 GUI_Game_size   = ImVec2(500, 500);
+ImVec2 GUI_System_size = ImVec2(300, 418);
+ImVec2 GUI_Tools_size  = ImVec2(300, 300);
+ImVec2 GUI_Debug_size  = ImVec2(300, 300);
 
-ImVec2 GUI_Teleporter_size    = ImVec2(300, 300);
-
-
-
-
-bool debug   = true;
-//bool restart = false;
-
-
-bool GUI_Teleporter_show = false;
+bool GUI_Camera_show     = false;
 bool GUI_Speed_show      = false;
+bool GUI_Teleporter_show = false;
 
-
-
-
-
-
-
+bool debug = true;
 
 inline void BuildFonts()
 {
@@ -87,69 +54,6 @@ inline void BuildFonts()
 	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 64);
 	io.Fonts->Build();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//uint32 hideMilliseconds = 0;
-//uint32 hideTime = 0;
-//uint32 * hideTimeAddr = 0;
-//
-//static DWORD HideThread(void * parameter)
-//{
-//	uint32 ms = *(uint32 *)parameter;
-//	Log("hiding for %u", ms);
-//	delete parameter;
-//	return 1;
-//}
-//
-//static void GUI_Hide(uint32 milliseconds)
-//{
-//	uint32 * addr = new uint32;
-//	*addr = milliseconds;
-//	CreateThread(0, 4096, HideThread, addr, 0, 0);
-//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void GUI_Game_Arcade()
 {
@@ -221,55 +125,12 @@ void GUI_Game_Arcade()
 		ImGui::Text("index   %u", Game_Arcade_modeIndex);
 		ImGui::Text("true id %u", Config.Game.Arcade.mode);
 	}
-
-
-
-
-
-	if (GUI_InputEx<uint32>(Locale.Game.Arcade.room, Config.Game.Arcade.room))
-	{
-		//UpdateMissionStartMapTables();
-		//UpdateMissionStartPositions();
-	}
+	GUI_InputEx<uint32>(Locale.Game.Arcade.room, Config.Game.Arcade.room);
 	ImGui::SameLine();
 	GUI_Checkbox(Locale.Game.Arcade.ignoreRoom, Config.Game.Arcade.ignoreRoom);
-
-
-	/*
-
-	call
-
-	//add esp,4
-
-
-
-
-
-
-
-
-
-	
-	
-	
-	*/
-
-
-	if (GUI_InputEx<uint32>(Locale.Game.Arcade.position, Config.Game.Arcade.position))
-	{
-		//UpdateMissionStartPositions();
-	}
+	GUI_InputEx<uint32>(Locale.Game.Arcade.position, Config.Game.Arcade.position);
 	ImGui::SameLine();
 	GUI_Checkbox(Locale.Game.Arcade.ignorePosition, Config.Game.Arcade.ignorePosition);
-
-
-
-
-
-
-
-
-
 	GUI_Combo<uint8>
 	(
 		Locale.Game.Arcade.Character.label,
@@ -277,28 +138,15 @@ void GUI_Game_Arcade()
 		countof(Locale.Game.Arcade.Character.items),
 		Config.Game.Arcade.character
 	);
-
-
 	GUI_InputEx<uint32>(Locale.Game.Arcade.costume, Config.Game.Arcade.costume);
-
-
-
-
 	GUI_InputEx<float32>(Locale.Game.Arcade.hitPoints  , Config.Game.Arcade.hitPoints  , 1000);
 	GUI_InputEx<float32>(Locale.Game.Arcade.magicPoints, Config.Game.Arcade.magicPoints, 1000);
-
-
-
 	ImGui::PopItemWidth();
 	GUI_SECTION_FOOTER_START(Game.Arcade);
 	run = false;
+	Game_Arcade_Toggle(DefaultConfig.Game.Arcade.enable);
 	GUI_SECTION_FOOTER_END;
 }
-
-
-
-
-
 
 void GUI_Game_Multiplayer()
 {
@@ -396,13 +244,6 @@ void GUI_Game_Training()
 	GUI_SECTION_FOOTER_END;
 }
 
-
-
-
-
-
-
-
 void GUI_Game_Draw()
 {
 	static bool run = false;
@@ -427,43 +268,6 @@ void GUI_Game_Draw()
 	ImGui::End();
 	ImGui::PopStyleVar(3);
 }
-
-
-
-
-
-
-//void GUI_System_Media()
-//{
-//	GUI_Hyperlink(Locale.System.Media.header);
-//	ImGui::Text("");
-//	if (GUI_Checkbox(Locale.System.Media.skipIntro, Config.System.Media.skipIntro))
-//	{
-//		System_Event_EvaluateToggleReplaceAutosaveStart();
-//	}
-//}
-
-//void GUI_System_Speed()
-//{
-//	GUI_Hyperlink(Locale.System.Speed.header);
-//	ImGui::Text("");
-//	ImGui::PushItemWidth(150);
-//	GUI_InputEx<float>(Locale.System.Speed.global, Config.System.Speed.global, 0.1f);
-//	GUI_InputEx<float>(Locale.System.Speed.menu, Config.System.Speed.menu, 0.1f);
-//	ImGui::PopItemWidth();
-//	ImGui::Text("");
-//	if (GUI_Button(Locale.System.Speed.reset))
-//	{
-//		memcpy(&Config.System.Speed, &DefaultConfig.System.Speed, sizeof(Config.System.Speed));
-//		SaveConfig();
-//	}
-//}
-
-
-
-// @Todo: Create Speed Tool, reorganize GUI!
-
-
 
 void GUI_System_Actor()
 {
@@ -550,76 +354,22 @@ void GUI_Tools_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Tools", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		if (GUI_Hyperlink("Teleporter"))
+		if (GUI_Hyperlink("Camera"))
 		{
-			GUI_Teleporter_show = true;
+			GUI_Camera_show = true;
 		}
-
-
 		if (GUI_Hyperlink("Speed"))
 		{
 			GUI_Speed_show = true;
 		}
-
-
-
-
-
-
+		if (GUI_Hyperlink("Teleporter"))
+		{
+			GUI_Teleporter_show = true;
+		}
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
 }
-
-
-
-
-
-
-
-
-//
-//
-//
-//void GUI_Debug_Fixes()
-//{
-//	GUI_Hyperlink(Locale.Debug.Fixes.header);
-//	ImGui::Text("");
-//	if (GUI_Checkbox(Locale.Debug.Fixes.replaceMemoryAllocationFunctions, Config.System.Memory.replaceAllocationFunctions))
-//	{
-//		EvaluateApplicationRestart();
-//	}
-//}
-//
-//void GUI_Debug_Timers()
-//{
-//	GUI_Hyperlink(Locale.Debug.Timers.header);
-//	ImGui::Text("");
-//	if (GUI_Checkbox(Locale.Debug.Timers.disableActorIdleTimer, Config.System.Actor.disableIdleTimer))
-//	{
-//		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
-//	}
-//	if (GUI_Checkbox(Locale.Debug.Timers.disableAutosaveMenuTimer, Config.System.Menu.Autosave.disableTimer))
-//	{
-//		System_Menu_Autosave_ToggleDisableTimer(Config.System.Menu.Autosave.disableTimer);
-//	}
-//	if (GUI_Checkbox(Locale.Debug.Timers.disableMainMenuTimer, Config.System.Menu.Main.disableTimer))
-//	{
-//		System_Menu_Main_ToggleDisableTimer(Config.System.Menu.Main.disableTimer);
-//	}
-//}
-//
-//
-
-
-
-
-
-
-
-
-
-// @Todo: Add own size vars.
 
 void GUI_Debug_Draw()
 {
@@ -627,7 +377,7 @@ void GUI_Debug_Draw()
 	if (!run)
 	{
 		run = true;
-		ImGui::SetNextWindowSize(ImVec2(GUI_Tools_size.x + 16, GUI_Tools_size.y + 16));
+		ImGui::SetNextWindowSize(ImVec2(GUI_Debug_size.x + 16, GUI_Debug_size.y + 16));
 		ImGui::SetNextWindowPos(ImVec2(0, 25));
 	}
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
@@ -640,38 +390,6 @@ void GUI_Debug_Draw()
 	ImGui::End();
 	ImGui::PopStyleVar(3);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void GUI_Main_Tab(const char * str, uint8 index)
 {
@@ -726,15 +444,6 @@ void GUI_Main_Draw()
 		ImGui::Separator();
 		ImGui::End();
 	}
-
-
-	
-
-
-
-
-
-
 	ImGui::PopStyleVar(4);
 	switch (activeTab)
 	{
@@ -753,19 +462,77 @@ void GUI_Main_Draw()
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+void GUI_Camera_Draw()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		ImGui::SetNextWindowPos(ImVec2(900, 100));
+	}
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	if (ImGui::Begin("Camera", &GUI_Camera_show, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		{
+			if (!InGame())
+			{
+				goto InvalidPointer;
+			}
+			BYTE * addr = *(BYTE **)(appBaseAddr + 0xF59F00);
+			if (!addr)
+			{
+				goto InvalidPointer;
+			}
+			addr = *(BYTE **)(addr + 0x140);
+			if (!addr)
+			{
+				goto InvalidPointer;
+			}
+			addr = *(BYTE **)(addr + 0x468);
+			if (!addr)
+			{
+				goto InvalidPointer;
+			}
+			float32 & height     = *(float32 *)(addr + 0xD0);
+			float32 & tilt       = *(float32 *)(addr + 0xD4);
+			float32 & zoom1      = *(float32 *)(addr + 0xD8);
+			float32 & zoomLockOn = *(float32 *)(addr + 0xDC);
+			float32 & zoom2      = *(float32 *)(addr + 0xE4);
+			ImGui::Text("Live");
+			ImGui::PushItemWidth(200);
+			GUI_InputEx<float32>("Height"      , height    , 10  );
+			GUI_InputEx<float32>("Tilt"        , tilt      , 0.1f);
+			GUI_InputEx<float32>("Zoom"        , zoom1     , 50  );
+			GUI_InputEx<float32>("Zoom Lock-On", zoomLockOn, 50  );
+			GUI_InputEx<float32>("Zoom"        , zoom2           );
+			ImGui::Text("");
+			ImGui::Text("Config");
+			GUI_InputEx<float32>("Height"      , Config.System.Camera.height    , 10  );
+			GUI_InputEx<float32>("Tilt"        , Config.System.Camera.tilt      , 0.1f);
+			GUI_InputEx<float32>("Zoom"        , Config.System.Camera.zoom1     , 50  );
+			GUI_InputEx<float32>("Zoom Lock-On", Config.System.Camera.zoomLockOn, 50  );
+			GUI_InputEx<float32>("Zoom"        , Config.System.Camera.zoom2           );
+			ImGui::PopItemWidth();
+			ImGui::Text("");
+			GUI_Checkbox("Apply Config", Config.System.Camera.apply);
+			GUI_PUSH_DISABLE(!Config.System.Camera.apply);
+			{
+				ImGui::PushItemWidth(100);
+				GUI_InputEx<uint32>("Rate", Config.System.Camera.rate, 100);
+				ImGui::PopItemWidth();
+			}
+			GUI_POP_DISABLE(!Config.System.Camera.apply);
+			goto End;
+		}
+		InvalidPointer:
+		ImGui::Text("Invalid Pointer!");
+	}
+	End:
+	ImGui::End();
+	ImGui::PopStyleVar(3);
+}
 
 void GUI_Speed_Draw()
 {
@@ -773,7 +540,6 @@ void GUI_Speed_Draw()
 	if (!run)
 	{
 		run = true;
-		ImGui::SetNextWindowSize(ImVec2(GUI_Teleporter_size.x + 16, GUI_Teleporter_size.y + 16));
 		ImGui::SetNextWindowPos(ImVec2(500, 500));
 	}
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
@@ -796,31 +562,6 @@ void GUI_Speed_Draw()
 	ImGui::PopStyleVar(3);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #define GUI_InputReadOnly(label, var)                                                                                  \
 {                                                                                                                      \
 	char buffer[64];                                                                                                   \
@@ -837,8 +578,7 @@ void GUI_Teleporter_Draw()
 	if (!run)
 	{
 		run = true;
-		ImGui::SetNextWindowSize(ImVec2(GUI_Teleporter_size.x + 16, GUI_Teleporter_size.y + 16));
-		ImGui::SetNextWindowPos(ImVec2(500, 500));
+		ImGui::SetNextWindowPos(ImVec2(700, 100));
 	}
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
@@ -894,32 +634,6 @@ void GUI_Teleporter_Draw()
 
 #undef GUI_InputReadOnly
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // @Todo: Update Mary and Eva as well.
 
 void DrawRestartOverlay()
@@ -946,64 +660,36 @@ void DrawRestartOverlay()
 	ImGui::PopStyleVar(3);
 }
 
-
-
-
-
-
 void GUI_Render()
 {
-
-
 	if (GUI_hide)
 	{
 		return;
 	}
-
-
-
 	GUI_id = 0;
-
-
-
-
-
-
 	if (pause)
 	{
 		GUI_Main_Draw();
 	}
-
-	if (GUI_Teleporter_show)
+	if (GUI_Camera_show)
 	{
-		GUI_Teleporter_Draw();
+		GUI_Camera_Draw();
 	}
-
 	if (GUI_Speed_show)
 	{
 		GUI_Speed_Draw();
 	}
-
-
-
+	if (GUI_Teleporter_show)
+	{
+		GUI_Teleporter_Draw();
+	}
 	if (restart)
 	{
 		DrawRestartOverlay();
 	}
-
-
-	//if (GUI_hide)
-	//{
-	//	return;
-	//}
-
-
-
 }
 
 void GUI_Init()
 {
 	BuildFonts();
 }
-
-

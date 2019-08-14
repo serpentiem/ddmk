@@ -91,6 +91,9 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Speed.cpp" />
+    <ClCompile Include="System\Camera.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
@@ -187,5 +190,8 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Speed.h" />
+    <ClInclude Include="System\Camera.h">
+      <Filter>System</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

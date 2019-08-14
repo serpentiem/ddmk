@@ -6,6 +6,7 @@
 #include "Vars.h"
 
 #include "System/Actor.h"
+#include "System/Camera.h"
 #include "System/Event.h"
 #include "System/File.h"
 #include "System/Input.h"
@@ -43,6 +44,7 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		System_Actor_ToggleCharacterDataConverter(Config.Game.Multiplayer.enable);
 		System_Actor_ToggleCostumeFixes(Config.Game.Multiplayer.enable);
 		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
+		System_Camera_Init();
 		System_Event_Init();
 		System_Event_ToggleSkipIntro(Config.System.Event.skipIntro);
 		System_File_Init();

@@ -89,6 +89,17 @@ struct CONFIG
 		Actor;
 		struct
 		{
+			bool    apply      = false;
+			float32 height     = 170;
+			float32 tilt       = 0.1f;
+			float32 zoom1      = 550;
+			float32 zoomLockOn = 520;
+			float32 zoom2      = 55;
+			uint32  rate       = 1000;
+		}
+		Camera;
+		struct
+		{
 			bool skipIntro = false;
 		}
 		Event;
