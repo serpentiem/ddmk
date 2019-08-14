@@ -306,6 +306,23 @@ void System_Event_Init()
 			WriteJump((appBaseAddr + off[i]), func.addr);
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	Log("GetMapTable %X", GetMapTable);
 }
 

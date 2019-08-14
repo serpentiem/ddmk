@@ -12,9 +12,11 @@ SpawnActor_t  SpawnActor            = 0;
 
 BYTE * SpawnActorOneProxy                  = 0;
 BYTE * SpawnActorsProxy                    = 0;
+BYTE * SetLeadActorProxy                   = 0;
 BYTE * GetCharacterData                    = 0;
 BYTE * GetCostumeProxy                     = 0;
 BYTE * LadyExtraCostume0CreateObject3Proxy = 0;
+BYTE * SecondJumpFix[2]                    = {};
 
 uint8 GetActorId(BYTE * baseAddr)
 {
@@ -97,6 +99,18 @@ static void CreateSpawnActorsThread()
 {
 	LogFunction();
 	CreateThread(0, 4096, SpawnActorsThread, 0, 0, 0);
+}
+
+static void __fastcall SetLeadActor(BYTE * baseAddr)
+{
+	Log("%s %X", FUNC_NAME, baseAddr);
+	BYTE * live = *(BYTE **)(appBaseAddr + 0xF59F00);
+	if (!live)
+	{
+		return;
+	}
+	BYTE * & leadActorBaseAddr = *(BYTE **)(live + 0x24);
+	leadActorBaseAddr = actorBaseAddr[ACTOR_ONE];
 }
 
 static uint32 __fastcall GetCostume(BYTE * baseAddr)
@@ -259,6 +273,16 @@ void System_Actor_Init()
 		SpawnActorsProxy = func.addr;
 	}
 	{
+		BYTE sect2[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc4.exe+1B0850
+		};
+		FUNC func = CreateFunction(SetLeadActor, (appBaseAddr + 0x4C9844), true, true, 0, 0, sizeof(sect2));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteCall(func.sect2, (appBaseAddr + 0x1B0850));
+		SetLeadActorProxy = func.addr;
+	}
+	{
 		BYTE sect0[] =
 		{
 			0x85, 0xC9,                               //test ecx,ecx
@@ -332,9 +356,31 @@ void System_Actor_Init()
 		memcpy(func.sect1, sect1, sizeof(sect1));
 		LadyExtraCostume0CreateObject3Proxy = func.addr;
 	}
+	{
+		BYTE sect0[] =
+		{
+			0x83, 0xC4, 0x04,             //add esp,04
+			0x57,                         //push edi
+			0x56,                         //push esi
+			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc4.exe+1B6260
+		};
+		DWORD off[] =
+		{
+			0x53A464,
+			0x53A496,
+		};
+		for (uint8 i = 0; i < countof(off); i++)
+		{
+			FUNC func = CreateFunction(0, (appBaseAddr + off[i]), false, true, sizeof(sect0));
+			memcpy(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), (appBaseAddr + 0x1B6260));
+			SecondJumpFix[i] = func.addr;
+		}
+	}
 	Log("CreateActor                    %X", CreateActor[CHAR_DANTE]);
 	Log("InitActor                      %X", InitActor[CHAR_DANTE]);
 	Log("SpawnActor                     %X", SpawnActor);
+	Log("SetLeadActor                   %X", SetLeadActor);
 	Log("GetCharacterData               %X", GetCharacterData);
 	Log("GetCostume                     %X", GetCostume);
 	Log("LadyExtraCostume0CreateObject3 %X", LadyExtraCostume0CreateObject3);
@@ -348,11 +394,40 @@ void System_Actor_ToggleSpawnExtension(bool enable)
 	{
 		WriteJump((appBaseAddr + 0x116600), SpawnActorOneProxy);
 		WriteJump((appBaseAddr + 0x11660A), SpawnActorsProxy);
+		WriteJump((appBaseAddr + 0x4C983F), SetLeadActorProxy);
+		WriteJump((appBaseAddr + 0x53A45F), SecondJumpFix[0]);
+		WriteJump((appBaseAddr + 0x53A491), SecondJumpFix[1]);
+		{
+			BYTE * addr = (appBaseAddr + 0x1B636C);
+			vp_memset(addr, 0x90, 8);
+			BYTE buffer[] =
+			{
+				0x8B, 0x44, 0x24, 0x18, //mov eax,[esp+18]
+			};
+			vp_memcpy(addr, buffer, sizeof(buffer));
+		}
+		Write<uint16>((appBaseAddr + 0x1B6457), 8);
+		Write<uint16>((appBaseAddr + 0x1B6460), 8);
 	}
 	else
 	{
 		WriteCall((appBaseAddr + 0x116600), (appBaseAddr + 0x6C32E0));
 		WriteCall((appBaseAddr + 0x11660A), (appBaseAddr + 0x5F1C50));
+		WriteCall((appBaseAddr + 0x4C983F), (appBaseAddr + 0x1B0850));
+		WriteCall((appBaseAddr + 0x53A45F), (appBaseAddr + 0x1B6260));
+		WriteCall((appBaseAddr + 0x53A491), (appBaseAddr + 0x1B6260));
+		{
+			BYTE * addr = (appBaseAddr + 0x1B636C);
+			BYTE buffer[] =
+			{
+				0xA1, 0x00, 0x00, 0x00, 0x00, //mov eax,[dmc4.exe+F59F00]
+				0x8B, 0x40, 0x24,             //mov eax,[eax+24]
+			};
+			vp_memcpy(addr, buffer, sizeof(buffer));
+			Write<BYTE *>((addr + 1), (appBaseAddr + 0xF59F00));
+		}
+		Write<uint16>((appBaseAddr + 0x1B6457), 4);
+		Write<uint16>((appBaseAddr + 0x1B6460), 4);
 	}
 }
 
