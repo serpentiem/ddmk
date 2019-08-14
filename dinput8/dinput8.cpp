@@ -85,7 +85,7 @@ void Load()
 			"Mary.dll",
 		},
 		{
-			"dmc4.exe",
+			"DevilMayCry4SpecialEdition.exe",
 			"Kyrie.dll",
 		}
 	};

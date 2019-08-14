@@ -69,6 +69,11 @@ static void LoadAssets()
 			costume = 0;
 			Log("Required DLC not installed. %u %u", character, DLC_TRISH_LADY_COSTUMES);
 		}
+		if (((character == CHAR_TRISH) || (character == CHAR_LADY)) && (costume == 2))
+		{
+			costume = 0;
+			Log("Trish and Lady have no Super Costumes.");
+		}
 		BYTE * addr = (appBaseAddr + 0xF23F18);
 		LoadFile(addr, costumePath[character][0], LOAD_FILE_QUEUE);
 		LoadFile(addr, costumePath[character][costume], LOAD_FILE_QUEUE);

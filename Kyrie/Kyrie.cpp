@@ -35,10 +35,8 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		LoadConfig();
 		Hooks_Init();
 		Speed_Init();
-		if (!Steam_Init())
-		{
-			return 0;
-		}
+		Steam_Init();
+
 		System_Actor_Init();
 		System_Actor_ToggleSpawnExtension(Config.Game.Multiplayer.enable);
 		System_Actor_ToggleCharacterDataConverter(Config.Game.Multiplayer.enable);

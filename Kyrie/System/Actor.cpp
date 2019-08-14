@@ -157,6 +157,11 @@ static uint32 __fastcall GetCostume(BYTE * baseAddr)
 		costume = 0;
 		Log("Required DLC not installed. %u %u", character, DLC_TRISH_LADY_COSTUMES);
 	}
+	if (((character == CHAR_TRISH) || (character == CHAR_LADY)) && (costume == 2))
+	{
+		costume = 0;
+		Log("Trish and Lady have no Super Costumes.");
+	}
 	return (uint32)costume;
 }
 
