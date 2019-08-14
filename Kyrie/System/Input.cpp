@@ -10,11 +10,12 @@ BYTE keyboard[MAX_ACTOR][KEYBOARD_SIZE] = {};
 
 BYTE * keyboardAddr[MAX_ACTOR] = {};
 
-BYTE * InitTier2GamepadsProxy   = 0;
-BYTE * InitKeyboardProxy        = 0;
-BYTE * Tier1GamepadsUpdateLoop  = 0;
-BYTE * UpdateActorInputGamepad  = 0;
-BYTE * UpdateActorInputKeyboard = 0;
+BYTE * InitTier2GamepadsProxy            = 0;
+BYTE * InitKeyboardProxy                 = 0;
+BYTE * Tier1GamepadsUpdateLoop           = 0;
+BYTE * UpdateActorInputGamepad           = 0;
+BYTE * UpdateActorInputKeyboardLeftStick = 0;
+BYTE * UpdateActorInputKeyboardButtons   = 0;
 
 void System_Input_UpdateKeyboardAddr()
 {
@@ -200,13 +201,57 @@ void System_Input_Init()
 		*(BYTE ***)(func.sect1 + 0x19) = actorBaseAddr;
 		*(uint8 *)(func.sect1 + 0x24) = MAX_ACTOR;
 		*(BYTE ***)(func.sect1 + 0x2E) = keyboardAddr;
-		UpdateActorInputKeyboard = func.addr;
+		UpdateActorInputKeyboardLeftStick = func.addr;
+	}
+	{
+		BYTE sect0[] =
+		{
+			0x8B, 0x35, 0x00, 0x00, 0x00, 0x00, //mov esi,[dmc4.exe+F242E4]
+		};
+		BYTE sect1[] =
+		{
+			0x50,                                     //push eax
+			0x51,                                     //push ecx
+			0x52,                                     //push edx
+			0x8B, 0xCD,                               //mov ecx,ebp
+			0x85, 0xC9,                               //test ecx,ecx
+			0x75, 0x04,                               //jne short
+			0x5A,                                     //pop edx
+			0x59,                                     //pop ecx
+			0x58,                                     //pop eax
+			0xC3,                                     //ret
+			0x31, 0xD2,                               //xor edx,edx
+			0x8B, 0x04, 0x95, 0x00, 0x00, 0x00, 0x00, //mov eax,[edx*4+actorBaseAddr]
+			0x39, 0xC1,                               //cmp ecx,eax
+			0x74, 0x0A,                               //je short
+			0x42,                                     //inc edx
+			0x83, 0xFA, 0x00,                         //cmp edx,MAX_ACTOR
+			0x72, 0xEF,                               //jb short
+			0x5A,                                     //pop edx
+			0x59,                                     //pop ecx
+			0x58,                                     //pop eax
+			0xC3,                                     //ret
+			0x8B, 0x34, 0x95, 0x00, 0x00, 0x00, 0x00, //mov esi,[edx*4+keyboardAddr]
+			0x5A,                                     //pop edx
+			0x59,                                     //pop ecx
+			0x58,                                     //pop eax
+			0xC3,                                     //ret
+		};
+		FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0), sizeof(sect1), 0, 0, true);
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(BYTE **)(func.sect0 + 2) = (appBaseAddr + 0xF242E4);
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		*(BYTE ***)(func.sect1 + 0x12) = actorBaseAddr;
+		*(uint8 *)(func.sect1 + 0x1D) = MAX_ACTOR;
+		*(BYTE ***)(func.sect1 + 0x27) = keyboardAddr;
+		UpdateActorInputKeyboardButtons = func.addr;
 	}
 
-	Log("InitTier2Gamepads        %X", InitTier2GamepadsProxy);
-	Log("Tier1GamepadsUpdateLoop  %X", Tier1GamepadsUpdateLoop);
-	Log("UpdateActorInputGamepad  %X", UpdateActorInputGamepad);
-	Log("UpdateActorInputKeyboard %X", UpdateActorInputKeyboard);
+	Log("InitTier2Gamepads                 %X", InitTier2GamepadsProxy);
+	Log("Tier1GamepadsUpdateLoop           %X", Tier1GamepadsUpdateLoop);
+	Log("UpdateActorInputGamepad           %X", UpdateActorInputGamepad);
+	Log("UpdateActorInputKeyboardLeftStick %X", UpdateActorInputKeyboardLeftStick);
+	Log("UpdateActorInputKeyboardButtons   %X", UpdateActorInputKeyboardButtons);
 
 	Log("gamepad         %X", gamepad);
 	for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
@@ -227,7 +272,9 @@ void System_Input_ToggleExtension(bool enable)
 		WriteJump((appBaseAddr + 0x6E9A9C), InitKeyboardProxy, 1);
 		WriteJump((appBaseAddr + 0x18CEE5), Tier1GamepadsUpdateLoop);
 		WriteCall((appBaseAddr + 0x4D0DC9), UpdateActorInputGamepad);
-		WriteCall((appBaseAddr + 0x4D0FC3), UpdateActorInputKeyboard, 1); // Left Right X
+		WriteCall((appBaseAddr + 0x4D0FC3), UpdateActorInputKeyboardLeftStick, 1); // X
+		WriteCall((appBaseAddr + 0x4D10C8), UpdateActorInputKeyboardLeftStick, 1); // Y
+		WriteCall((appBaseAddr + 0x4CA179), UpdateActorInputKeyboardButtons, 1);
 	}
 	else
 	{
@@ -264,6 +311,24 @@ void System_Input_ToggleExtension(bool enable)
 			BYTE buffer[] =
 			{
 				0x8B, 0x15, 0x00, 0x00, 0x00, 0x00, //mov edx,[dmc4.exe+F242E4]
+			};
+			vp_memcpy(addr, buffer, sizeof(buffer));
+			Write<BYTE *>((addr + 2), (appBaseAddr + 0xF242E4));
+		}
+		{
+			BYTE * addr = (appBaseAddr + 0x4D10C8);
+			BYTE buffer[] =
+			{
+				0x8B, 0x15, 0x00, 0x00, 0x00, 0x00, //mov edx,[dmc4.exe+F242E4]
+			};
+			vp_memcpy(addr, buffer, sizeof(buffer));
+			Write<BYTE *>((addr + 2), (appBaseAddr + 0xF242E4));
+		}
+		{
+			BYTE * addr = (appBaseAddr + 0x4CA179);
+			BYTE buffer[] =
+			{
+				0x8B, 0x35, 0x00, 0x00, 0x00, 0x00, //mov esi,[dmc4.exe+F242E4]
 			};
 			vp_memcpy(addr, buffer, sizeof(buffer));
 			Write<BYTE *>((addr + 2), (appBaseAddr + 0xF242E4));
