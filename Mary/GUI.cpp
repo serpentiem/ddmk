@@ -1,5 +1,15 @@
 #include "GUI.h"
 
+enum FONT_
+{
+	FONT_DEFAULT,
+	FONT_OVERLAY_8,
+	FONT_OVERLAY_16,
+	FONT_OVERLAY_32,
+	FONT_OVERLAY_64,
+	FONT_OVERLAY_128,
+};
+
 enum TAB_
 {
 	TAB_GAME,
@@ -11,21 +21,7 @@ enum TAB_
 	TAB_VOID,
 };
 
-enum FONT_
-{
-	FONT_DEFAULT,
-	FONT_RESTART,
-	FONT_OVERLAY_8,
-	FONT_OVERLAY_16,
-	FONT_OVERLAY_24,
-	FONT_OVERLAY_32,
-	FONT_OVERLAY_40,
-	FONT_OVERLAY_48,
-	FONT_OVERLAY_56,
-	FONT_OVERLAY_64,
-};
-
-#define OVERLAY_FONT "C:\\Windows\\Fonts\\consola.ttf"
+bool debug = false;
 
 uint8 activeTab = TAB_VOID;
 
@@ -38,108 +34,29 @@ ImVec2 GUI_Teleporter_size    = ImVec2(300, 300);
 ImVec2 GUI_CacheStats_size    = ImVec2(300, 300);
 ImVec2 GUI_Documentation_size = ImVec2(700, 500);
 
-bool GUI_Teleporter_show = false;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+bool GUI_Teleporter_show    = false;
+bool GUI_Documentation_show = false;
 
 uint32 GUI_Overlay_x = 0;
 uint32 GUI_Overlay_y = 0;
 
-
-
-
-
-
-bool GUI_Documentation_show = false;
-
-
-
-
-
-
-
-
-bool debug   = false;
-bool restart = false;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//bool GUI_hide = false;
-//bool GUI_invalidate = false;
-
-
-
-
-
-
-
-
-inline void BuildFonts()
+static void BuildFonts()
 {
 	ImGuiIO & io = ImGui::GetIO();
 	io.Fonts->AddFontDefault();
-	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\consola.ttf", 128);
-	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 8);
-	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 16);
-	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 24);
-	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 32);
-	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 40);
-	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 48);
-	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 56);
-	io.Fonts->AddFontFromFileTTF(OVERLAY_FONT, 64);
+	char overlayFont[512];
+	{
+		char buffer[64];
+		GetWindowsDirectoryA(buffer, sizeof(buffer));
+		snprintf(overlayFont, sizeof(overlayFont), "%s\\Fonts\\consola.ttf", buffer);
+	}
+	io.Fonts->AddFontFromFileTTF(overlayFont, 8);
+	io.Fonts->AddFontFromFileTTF(overlayFont, 16);
+	io.Fonts->AddFontFromFileTTF(overlayFont, 32);
+	io.Fonts->AddFontFromFileTTF(overlayFont, 64);
+	io.Fonts->AddFontFromFileTTF(overlayFont, 128);
 	io.Fonts->Build();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void GUI_Game_Arcade()
 {
@@ -1777,6 +1694,10 @@ void DrawRestartOverlay()
 
 void GUI_Render()
 {
+	if (GUI_hide)
+	{
+		return;
+	}
 	GUI_id = 0;
 	if (pause)
 	{

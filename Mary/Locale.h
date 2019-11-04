@@ -810,16 +810,13 @@ struct LOCALE
 			const char * show = "Show";
 			struct
 			{
-				const char * items[8] =
+				const char * items[5] =
 				{
 					"8",
 					"16",
-					"24",
 					"32",
-					"40",
-					"48",
-					"56",
 					"64",
+					"128",
 				};
 			}
 			FontSize;

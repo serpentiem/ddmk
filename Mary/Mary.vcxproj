@@ -121,6 +121,7 @@
     <ClCompile Include="Locale.cpp" />
     <ClCompile Include="Mary.cpp" />
     <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="Restart.cpp" />
     <ClCompile Include="System\Actor.cpp" />
     <ClCompile Include="System\Animation.cpp" />
     <ClCompile Include="System\Cache.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Hotkeys.h" />
     <ClInclude Include="Locale.h" />
     <ClInclude Include="Pause.h" />
+    <ClInclude Include="Restart.h" />
     <ClInclude Include="System\Actor.h" />
     <ClInclude Include="System\Animation.h" />
     <ClInclude Include="System\Cache.h" />

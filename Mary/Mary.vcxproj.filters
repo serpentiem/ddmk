@@ -131,6 +131,7 @@
     <ClCompile Include="..\Core\Windows.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Restart.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -298,5 +299,6 @@
     <ClInclude Include="..\Core\Windows.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Restart.h" />
   </ItemGroup>
 </Project>

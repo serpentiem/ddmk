@@ -8,6 +8,7 @@
 #include "Config.h"
 #include "Locale.h"
 #include "Pause.h"
+#include "Restart.h"
 
 #include "System/Actor.h"
 #include "System/Cache.h"
