@@ -1,7 +1,5 @@
 #include "GUI.h"
 
-//#pragma warning(disable: 4102) // Unreferenced label.
-
 enum TAB_
 {
 	TAB_GAME,
@@ -42,43 +40,7 @@ ImVec2 GUI_Documentation_size = ImVec2(700, 500);
 
 bool GUI_Teleporter_show = false;
 
-//bool  GUI_Overlay_show       = false;
-//uint8 GUI_Overlay_fontIndex  = 2;
-//bool  GUI_Overlay_cacheStats = true;
 
-//float32 GUI_Overlay_CacheStats_color[] = { 1, 0, 0, 1 };
-
-//ImVec4 GUI_Overlay_CacheStats_color = ImVec4(1, 0, 0, 1);
-//ImVec4 GUI_Overlay_CacheStats_color = { 1, 0, 0, 1 };
-
-//ImVec4 GUI_Overlay_CacheStats_color = ImVec4(1, 0, 0, 1);
-
-
-
-//struct vec2
-//{
-//	float32 x;
-//	float32 y;
-//};
-//
-//struct vec3
-//{
-//	float32 x;
-//	float32 y;
-//	float32 z;
-//};
-//
-//struct vec4
-//{
-//	float32 r;
-//	float32 g;
-//	float32 b;
-//	float32 a;
-//};
-//
-//
-//
-//
 
 
 
@@ -104,20 +66,6 @@ bool GUI_Documentation_show = false;
 
 
 
-/*
-
-fontIndex
-
-x
-y
-
-color
-
-
-
-
-
-*/
 
 
 
