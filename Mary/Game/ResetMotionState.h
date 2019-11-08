@@ -8,6 +8,6 @@
 #include "../System/Input.h"
 #include "../System/State.h"
 
-extern WORD Game_ResetMotionState_buttonMask[16];
+extern word Game_ResetMotionState_buttonMask[16];
 
 void Game_ResetMotionState_Init();

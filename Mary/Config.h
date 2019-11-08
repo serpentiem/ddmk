@@ -155,7 +155,7 @@ struct CONFIG
 		struct
 		{
 			bool   enable     = false;
-			WORD   button     = GAMEPAD_DPAD_UP;
+			word   button     = GAMEPAD_DPAD_UP;
 			uint32 updateRate = 10;
 		}
 		ResetMotionState;

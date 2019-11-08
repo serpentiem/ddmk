@@ -3,7 +3,7 @@
 ////#pragma warning(disable: 4102) // unreferenced label
 
 
-WORD Game_ResetMotionState_buttonMask[16] =
+word Game_ResetMotionState_buttonMask[16] =
 {
 	GAMEPAD_LEFT_TRIGGER,
 	GAMEPAD_RIGHT_TRIGGER,
@@ -24,13 +24,13 @@ WORD Game_ResetMotionState_buttonMask[16] =
 };
 
 
-//static void Reset(BYTE * baseAddr)
+//static void Reset(byte * baseAddr)
 //{
-//	DWORD & motionState = *(DWORD *)(baseAddr + 0x3E64);
+//	dword & motionState = *(dword *)(baseAddr + 0x3E64);
 //	motionState = 1;
 //}
 
-static DWORD Thread(LPVOID parameter)
+static dword Thread(LPVOID parameter)
 {
 	do
 	{
@@ -59,11 +59,11 @@ static DWORD Thread(LPVOID parameter)
 						//Reset(actorBaseAddr[actor]);
 
 
-						BYTE & motionState = *(BYTE *)(actorBaseAddr[actor] + 0x3E66);
+						byte & motionState = *(byte *)(actorBaseAddr[actor] + 0x3E66);
 						motionState = 0;
 
 
-						//DWORD & motionState = *(DWORD *)(baseAddr + 0x3E64);
+						//dword & motionState = *(dword *)(baseAddr + 0x3E64);
 						//motionState = 1;
 
 

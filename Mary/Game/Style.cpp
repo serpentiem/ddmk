@@ -1,15 +1,15 @@
 #include "Style.h"
 
-typedef void(* Relax_t)(BYTE *);
+typedef void(* Relax_t)(byte *);
 
 Relax_t Relax = 0;
 
-BYTE * ActivateDoppelgangerProxy       = 0;
-BYTE * DeactivateDoppelgangerProxy     = 0;
-BYTE * DoppelgangerRateControllerProxy = 0;
-BYTE * AdjustDevilSound                = 0;
+byte * ActivateDoppelgangerProxy       = 0;
+byte * DeactivateDoppelgangerProxy     = 0;
+byte * DoppelgangerRateControllerProxy = 0;
+byte * AdjustDevilSound                = 0;
 
-static void ActivateDoppelganger(BYTE * baseAddr)
+static void ActivateDoppelganger(byte * baseAddr)
 {
 	uint8 actor = GetActorId(baseAddr);
 	if (actor != ACTOR_ONE)
@@ -25,7 +25,7 @@ static void ActivateDoppelganger(BYTE * baseAddr)
 	*/
 
 
-	Write<BYTE>((appBaseAddr + 0x1F83D0), 0xEB); // Force Actor Update
+	Write<byte>((appBaseAddr + 0x1F83D0), 0xEB); // Force Actor Update
 
 
 
@@ -102,7 +102,7 @@ static void ActivateDoppelganger(BYTE * baseAddr)
 	}
 }
 
-static void DeactivateDoppelganger(BYTE * baseAddr)
+static void DeactivateDoppelganger(byte * baseAddr)
 {
 	uint8 actor = GetActorId(baseAddr);
 	if (actor != ACTOR_ONE)
@@ -110,7 +110,7 @@ static void DeactivateDoppelganger(BYTE * baseAddr)
 		return;
 	}
 
-	Write<BYTE>((appBaseAddr + 0x1F83D0), 0x75);
+	Write<byte>((appBaseAddr + 0x1F83D0), 0x75);
 
 
 	if (!Config.Game.Style.Doppelganger.useEXVersion)
@@ -134,7 +134,7 @@ static void DeactivateDoppelganger(BYTE * baseAddr)
 	*(bool   *)(actorBaseAddr[ACTOR_TWO] + 0x3E9B) = false;
 }
 
-static void DoppelgangerRateController(BYTE * baseAddr)
+static void DoppelgangerRateController(byte * baseAddr)
 {
 	static bool execute = false;
 	if ((GetButtonState(ACTOR_ONE) & GetBinding(CMD_LOCK_ON)) && (GetButtonState(ACTOR_ONE) & GetBinding(CMD_TAUNT)))
@@ -160,7 +160,7 @@ void Game_Style_Init()
 {
 	LogFunction();
 	{
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x8B, 0xD9,                         //mov rbx,rcx
 			0x31, 0xD2,                               //xor edx,edx
@@ -179,7 +179,7 @@ void Game_Style_Init()
 		Relax = (Relax_t)func.addr;
 	}
 	{
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x8B, 0xCF, //mov rcx,rdi
 		};
@@ -188,7 +188,7 @@ void Game_Style_Init()
 		ActivateDoppelgangerProxy = func.addr;
 	}
 	{
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x8B, 0xCB, //mov rcx,rbx
 		};
@@ -201,7 +201,7 @@ void Game_Style_Init()
 		DoppelgangerRateControllerProxy = func.addr;
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x80, 0xBF, 0x62, 0x63, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+00006362],01
 			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       //je dmcLauncher.exe+1F8FA1
@@ -228,23 +228,23 @@ void Game_Style_Doppelganger_ToggleUseEXVersion(bool enable)
 		WriteJump((appBaseAddr + 0x1F8F2C), AdjustDevilSound, 2);
 		// Fixes
 		Write<uint32>((appBaseAddr + 0x1E92BB), 0);                          // Disable Doppelganger Activation Devil Form
-		Write<BYTE>((appBaseAddr + 0x1EAA07), 0xEB);                         // Disable Doppelganger Melee Weapon Change Devil Form Update
-		Write<BYTE>((appBaseAddr + 0x1E7775), 0xEB);                         // Enable Devil Trigger Activation
-		Write<BYTE>((appBaseAddr + 0x1F94A1), 0xEB);                         // Enable Devil Trigger Deactivation
+		Write<byte>((appBaseAddr + 0x1EAA07), 0xEB);                         // Disable Doppelganger Melee Weapon Change Devil Form Update
+		Write<byte>((appBaseAddr + 0x1E7775), 0xEB);                         // Enable Devil Trigger Activation
+		Write<byte>((appBaseAddr + 0x1F94A1), 0xEB);                         // Enable Devil Trigger Deactivation
 		WriteAddress((appBaseAddr + 0x1E752B), (appBaseAddr + 0x1E752D), 2); // Enable Actor Two Devil Trigger
 		Write<uint32>((appBaseAddr + 0x1F7D3F), 0);                          // Bob Set Visible Flag
 	}
 	else
 	{
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0x80, 0xBF, 0x9B, 0x3E, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+00003E9B],01
 			};
 			vp_memcpy((appBaseAddr + 0x1E92E1), buffer, sizeof(buffer));
 		}
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0x80, 0xBB, 0x9B, 0x3E, 0x00, 0x00, 0x00, //cmp byte ptr [rbx+00003E9B],00
 			};
@@ -252,16 +252,16 @@ void Game_Style_Doppelganger_ToggleUseEXVersion(bool enable)
 		}
 		WriteCall((appBaseAddr + 0x1E25CD), (appBaseAddr + 0x1E8F00));
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0x80, 0xBF, 0x9B, 0x3E, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+00003E9B],01
 			};
 			vp_memcpy((appBaseAddr + 0x1F8F2C), buffer, sizeof(buffer));
 		}
 		Write<uint32>((appBaseAddr + 0x1E92BB), 1);
-		Write<BYTE>((appBaseAddr + 0x1EAA07), 0x75);
-		Write<BYTE>((appBaseAddr + 0x1E7775), 0x75);
-		Write<BYTE>((appBaseAddr + 0x1F94A1), 0x74);
+		Write<byte>((appBaseAddr + 0x1EAA07), 0x75);
+		Write<byte>((appBaseAddr + 0x1E7775), 0x75);
+		Write<byte>((appBaseAddr + 0x1F94A1), 0x74);
 		WriteAddress((appBaseAddr + 0x1E752B), (appBaseAddr + 0x1E7516), 2);
 		Write<uint32>((appBaseAddr + 0x1F7D3F), 1);
 	}

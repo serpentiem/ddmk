@@ -6,5 +6,5 @@
 #include "../ImGui/imgui.h"
 
 void ImGui_DirectInput8_Init();
-void ImGui_DirectInput8_UpdateKeyboard(BYTE * state);
+void ImGui_DirectInput8_UpdateKeyboard(byte * state);
 void ImGui_DirectInput8_UpdateMouse(HWND window, DIMOUSESTATE2 * state);

@@ -3,7 +3,7 @@
 
 #include "../System/Cache.h"
 
-typedef void(* UpdateExpertise_t)(BYTE *);
+typedef void(* UpdateExpertise_t)(byte *);
 
 extern UpdateExpertise_t UpdateExpertise;
 

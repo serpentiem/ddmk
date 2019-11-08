@@ -11,7 +11,7 @@ void SaveConfig()
 		Log("CreateFile failed. %s %X", Config_path, GetLastError());
 		return;
 	}
-	DWORD bytesWritten = 0;
+	dword bytesWritten = 0;
 	OVERLAPPED overlap = {};
 	WriteFile(file, Config_addr, (uint32)Config_size, &bytesWritten, &overlap);
 	CloseHandle(file);
@@ -36,7 +36,7 @@ void LoadConfig()
 		SaveConfig();
 		return;
 	}
-	DWORD bytesRead = 0;
+	dword bytesRead = 0;
 	OVERLAPPED overlap = {};
 	ReadFile(file, Config_addr, fi.nFileSizeLow, &bytesRead, &overlap);
 	CloseHandle(file);

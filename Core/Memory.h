@@ -4,20 +4,20 @@
 #include "Windows.h"
 
 extern uint32   appProcessId;
-extern BYTE   * appBaseAddr;
+extern byte   * appBaseAddr;
 extern HANDLE   appProcess;
 extern HWND     mainWindow;
-extern BYTE   * mainChunk;
+extern byte   * mainChunk;
 extern uint64   mainChunkSize;
 
 void * Alloc(uint64 size, void * pos, void * end);
 void * HighAlloc(uint64 size);
 
 template <typename T>
-void Write(BYTE * addr, T value, uint64 padSize = 0, BYTE padValue = 0x90)
+void Write(byte * addr, T value, uint64 padSize = 0, byte padValue = 0x90)
 {
 	uint64 size = sizeof(T);
-	DWORD p = 0;
+	dword p = 0;
 	VirtualProtectEx(appProcess, addr, (size + padSize), PAGE_EXECUTE_READWRITE, &p);
 	*(T *)addr = value;
 	if (padSize)
@@ -27,21 +27,21 @@ void Write(BYTE * addr, T value, uint64 padSize = 0, BYTE padValue = 0x90)
 	VirtualProtectEx(appProcess, addr, (size + padSize), p, &p);
 }
 
-void WriteAddress   ( BYTE * addr, BYTE * dest, uint64 size,        BYTE header   = 0,   uint64 padSize = 0, BYTE padValue = 0x90 );
-void WriteCall      ( BYTE * addr, BYTE * dest, uint64 padSize = 0, BYTE padValue = 0x90                                          );
-void WriteJump      ( BYTE * addr, BYTE * dest, uint64 padSize = 0, BYTE padValue = 0x90                                          );
-void WriteShortJump ( BYTE * addr, BYTE * dest, uint64 padSize = 0, BYTE padValue = 0x90                                          );
+void WriteAddress   ( byte * addr, byte * dest, uint64 size,        byte header   = 0,   uint64 padSize = 0, byte padValue = 0x90 );
+void WriteCall      ( byte * addr, byte * dest, uint64 padSize = 0, byte padValue = 0x90                                          );
+void WriteJump      ( byte * addr, byte * dest, uint64 padSize = 0, byte padValue = 0x90                                          );
+void WriteShortJump ( byte * addr, byte * dest, uint64 padSize = 0, byte padValue = 0x90                                          );
 
-void vp_memset (void * addr, BYTE   value, uint64 size);
+void vp_memset (void * addr, byte   value, uint64 size);
 void vp_memcpy (void * dest, void * addr,  uint64 size);
 
 struct FUNC
 {
-	BYTE *  addr;
-	BYTE *  sect0;
-	BYTE *  sect1;
-	BYTE *  sect2;
-	BYTE ** cache;
+	byte *  addr;
+	byte *  sect0;
+	byte *  sect1;
+	byte *  sect2;
+	byte ** cache;
 };
 
 FUNC CreateFunction

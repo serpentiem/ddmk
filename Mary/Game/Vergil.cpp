@@ -1,13 +1,13 @@
 #include "Vergil.h"
 
-BYTE * Levitate = 0;
-static BYTE * Melee_Timeout = 0; // And here I thought variables were static by default. :/
+byte * Levitate = 0;
+static byte * Melee_Timeout = 0; // And here I thought variables were static by default. :/
 
 void Game_Vergil_Init()
 {
 	LogFunction();
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&actorBaseAddr[ACTOR_ONE]
 			0x48, 0x8B, 0x00,                                           //mov rax,[rax]
@@ -20,12 +20,12 @@ void Game_Vergil_Init()
 		};
 		FUNC func = CreateFunction(0, (appBaseAddr + 0x1DB8FD), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		Write<BYTE **>((func.sect0 + 2), &actorBaseAddr[ACTOR_ONE]);
+		Write<byte **>((func.sect0 + 2), &actorBaseAddr[ACTOR_ONE]);
 		WriteAddress((func.sect0 + 0x1A), (appBaseAddr + 0x1DB8FD), 6);
 		Levitate = func.addr;
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rcx
 			0x8B, 0x09,                                                 //mov ecx,[rcx]
@@ -48,14 +48,14 @@ void Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(bool enable)
 	else
 	{
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0xF3, 0x0F, 0x5C, 0x47, 0x14, //subss xmm0,[rdi+14]
 			};
 			vp_memcpy((appBaseAddr + 0x1D86DD), buffer, sizeof(buffer));
 		}
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0xF3, 0x0F, 0x5C, 0x47, 0x14, //subss xmm0,[rdi+14]
 			};
@@ -73,7 +73,7 @@ void Game_Vergil_SummonedSwords_ToggleChronoSwords(bool enable)
 	}
 	else
 	{
-		BYTE buffer[] =
+		byte buffer[] =
 		{
 			0xF3, 0x0F, 0x5C, 0x43, 0x14, //subss xmm0,[rbx+14]
 		};
@@ -93,7 +93,7 @@ void Game_Vergil_WeaponSwitchTimeout_MeleeToggle(float32 var)
 	}
 	else
 	{
-		BYTE buffer[] =
+		byte buffer[] =
 		{
 			0x8B, 0x88, 0x48, 0x03, 0x00, 0x00, //mov ecx,[rax+00000348]
 		};

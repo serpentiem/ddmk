@@ -3,7 +3,7 @@
 
 #include "../Config.h"
 
-typedef void(* ApplyColor_t)(BYTE *, uint32);
+typedef void(* ApplyColor_t)(byte *, uint32);
 
 extern ApplyColor_t ApplyColor;
 

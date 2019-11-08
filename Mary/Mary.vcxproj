@@ -130,6 +130,7 @@
     <ClCompile Include="System\File.cpp" />
     <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\Media.cpp" />
+    <ClCompile Include="System\Sound.cpp" />
     <ClCompile Include="System\State.cpp" />
     <ClCompile Include="System\Weapon.cpp" />
     <ClCompile Include="System\Window.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="System\Input.h" />
     <ClInclude Include="System\Media.h" />
     <ClInclude Include="System\Message.h" />
+    <ClInclude Include="System\Sound.h" />
     <ClInclude Include="System\State.h" />
     <ClInclude Include="System\Weapon.h" />
     <ClInclude Include="System\Window.h" />

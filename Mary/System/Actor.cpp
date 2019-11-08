@@ -7,7 +7,7 @@
 
 
 bool System_Actor_enable = false;
-BYTE * actorBaseAddr[MAX_ACTOR] = {};
+byte * actorBaseAddr[MAX_ACTOR] = {};
 bool updateModelAttributes[MAX_ACTOR] = {};
 
 UpdateDevilForm_t UpdateDevilForm = 0;
@@ -17,14 +17,14 @@ typedef void(* InternalCreateActor_t)(uint8, uint8);
 
 InternalCreateActor_t InternalCreateActor = 0;
 
-BYTE * OnUpdate[2]              = {};
-BYTE * OnEvent[2]               = {};
-BYTE * CreateActorProxy         = 0;
-BYTE * UpdateActorProxy         = 0;
-BYTE * ActivateDevilFormProxy   = 0;
-BYTE * DeactivateDevilFormProxy = 0;
+byte * OnUpdate[2]              = {};
+byte * OnEvent[2]               = {};
+byte * CreateActorProxy         = 0;
+byte * UpdateActorProxy         = 0;
+byte * ActivateDevilFormProxy   = 0;
+byte * DeactivateDevilFormProxy = 0;
 
-uint8 GetActorId(BYTE * baseAddr)
+uint8 GetActorId(byte * baseAddr)
 {
 	for (uint8 i = 0; i < MAX_ACTOR; i++)
 	{
@@ -50,7 +50,7 @@ uint8 GetActorCount()
 	return count;
 }
 
-//static DWORD Multiplayer_SpawnActors(LPVOID parameter)
+//static dword Multiplayer_SpawnActors(LPVOID parameter)
 //{
 //	LogFunction();
 //	Sleep(Config.Game.Multiplayer.spawnDelay);
@@ -66,12 +66,12 @@ static void CreateActor()
 	LogFunction();
 	memset(actorBaseAddr, 0, sizeof(actorBaseAddr));
 	{
-		BYTE * addr = *(BYTE **)(appBaseAddr + 0xC90E28);
+		byte * addr = *(byte **)(appBaseAddr + 0xC90E28);
 		if (!addr)
 		{
 			goto sect0;
 		}
-		actorBaseAddr[ACTOR_ONE] = *(BYTE **)(addr + 0x18);
+		actorBaseAddr[ACTOR_ONE] = *(byte **)(addr + 0x18);
 	}
 	sect0:
 	if (Config.Game.Multiplayer.enable)
@@ -124,7 +124,7 @@ static void CreateActor()
 	}
 }
 
-static void UpdateActor(BYTE * baseAddr)
+static void UpdateActor(byte * baseAddr)
 {
 	//LogFunction();
 
@@ -155,7 +155,7 @@ static void UpdateActor(BYTE * baseAddr)
 	}
 	uint8 & costume = *(uint8 *)(baseAddr + 0x3E9E);
 	// Update File Structs
-	BYTE * structAddr[MAX_CHAR][MAX_BODY_COUNT] =
+	byte * structAddr[MAX_CHAR][MAX_BODY_COUNT] =
 	{
 		{                                        // Dante
 			( appBaseAddr + 0xC99D30          ), // Base
@@ -180,7 +180,7 @@ static void UpdateActor(BYTE * baseAddr)
 			( appBaseAddr + 0xC99D30 + 0x3EB8 ), // Nero Angelo
 		},
 	};
-	BYTE * stringAddr[MAX_CHAR][MAX_BODY_COUNT] =
+	byte * stringAddr[MAX_CHAR][MAX_BODY_COUNT] =
 	{
 		{
 			(appBaseAddr + 0x5B08C0), // obj\pl000.pac
@@ -205,7 +205,7 @@ static void UpdateActor(BYTE * baseAddr)
 			(appBaseAddr + 0x5B0A30), // obj\pl025.pac
 		},
 	};
-	BYTE * fileAddr[MAX_CHAR][MAX_BODY_COUNT] =
+	byte * fileAddr[MAX_CHAR][MAX_BODY_COUNT] =
 	{
 		{
 			cacheFile[pl000],
@@ -247,7 +247,7 @@ static void UpdateActor(BYTE * baseAddr)
 		{
 			costume = 0;
 		}
-		BYTE * costumeStringAddr[MAX_CHAR][MAX_COSTUME_COUNT] =
+		byte * costumeStringAddr[MAX_CHAR][MAX_COSTUME_COUNT] =
 		{
 			{
 				(appBaseAddr + 0x5B08C0), // obj\pl000.pac
@@ -273,7 +273,7 @@ static void UpdateActor(BYTE * baseAddr)
 				(appBaseAddr + 0x5B0960), // obj\pl026.pac
 			},
 		};
-		BYTE * costumeFileAddr[MAX_CHAR][MAX_COSTUME_COUNT] =
+		byte * costumeFileAddr[MAX_CHAR][MAX_COSTUME_COUNT] =
 		{
 			{
 				cacheFile[pl000],
@@ -313,8 +313,8 @@ static void UpdateActor(BYTE * baseAddr)
 	{
 		memset(structAddr[character][i], 0, 0x48);
 		uint32   & state  = *( uint32 *  )( structAddr[character][i] + 4    );
-		BYTE   * & string = *( BYTE   ** )( structAddr[character][i] + 0x18 );
-		BYTE   * & file   = *( BYTE   ** )( structAddr[character][i] + 0x20 );
+		byte   * & string = *( byte   ** )( structAddr[character][i] + 0x18 );
+		byte   * & file   = *( byte   ** )( structAddr[character][i] + 0x20 );
 		state  = 3;
 		string = stringAddr[character][i];
 		file   = fileAddr  [character][i];
@@ -337,18 +337,18 @@ static void UpdateActor(BYTE * baseAddr)
 
 	UpdateHardBaseAddrStart:
 	{
-		BYTE * addr = *(BYTE **)(appBaseAddr + 0xC90E28);
+		byte * addr = *(byte **)(appBaseAddr + 0xC90E28);
 		if (!addr)
 		{
 			goto UpdateHardBaseAddrEnd;
 		}
 		if (actorId == ACTOR_ONE)
 		{
-			*(BYTE **)(addr + 0x18) = baseAddr;
+			*(byte **)(addr + 0x18) = baseAddr;
 		}
 		else if (actorId == ACTOR_TWO)
 		{
-			*(BYTE **)(addr + 0x20) = baseAddr;
+			*(byte **)(addr + 0x20) = baseAddr;
 		}
 	}
 	UpdateHardBaseAddrEnd:
@@ -367,7 +367,7 @@ static void UpdateActor(BYTE * baseAddr)
 	Log("%s reached end!", FUNC_NAME);
 }
 
-static void UpdateMotion(BYTE * baseAddr)
+static void UpdateMotion(byte * baseAddr)
 {
 	LogFunction();
 	uint8 character = *(uint8 *)(baseAddr + 0x78);
@@ -375,9 +375,9 @@ static void UpdateMotion(BYTE * baseAddr)
 	{
 		character = 0;
 	}
-	BYTE ** motionAddr = (BYTE **)(baseAddr + 0x38A0);
+	byte ** motionAddr = (byte **)(baseAddr + 0x38A0);
 	memset(motionAddr, 0, (MAX_MOT * 8));
-	BYTE * fileAddr[MAX_CHAR][MAX_MOT] =
+	byte * fileAddr[MAX_CHAR][MAX_MOT] =
 	{
 		{
 			cacheFile[pl000_00_0],
@@ -517,7 +517,7 @@ static void UpdateMotion(BYTE * baseAddr)
 
 }
 
-static void ActivateDevilForm(BYTE * baseAddr)
+static void ActivateDevilForm(byte * baseAddr)
 {
 	LogFunction();
 	if (GetActorId(baseAddr) != ACTOR_ONE)
@@ -531,7 +531,7 @@ static void ActivateDevilForm(BYTE * baseAddr)
 	}
 }
 
-static void DeactivateDevilForm(BYTE * baseAddr)
+static void DeactivateDevilForm(byte * baseAddr)
 {
 	LogFunction();
 	if (GetActorId(baseAddr) != ACTOR_ONE)
@@ -550,7 +550,7 @@ void ResetDevilModel()
 	LogFunction();
 	// Loop Count
 	{
-		BYTE buffer[] =
+		byte buffer[] =
 		{
 			0x0F, 0x45, 0xC1, //cmovne eax,ecx
 		};
@@ -558,7 +558,7 @@ void ResetDevilModel()
 	}
 	// Sparda
 	{
-		BYTE buffer[] =
+		byte buffer[] =
 		{
 			0x0F, 0x85, 0xCB, 0x03, 0x00, 0x00, //jne dmc3.exe+21353F
 		};
@@ -566,7 +566,7 @@ void ResetDevilModel()
 	}
 	// Other Models
 	{
-		BYTE buffer[] =
+		byte buffer[] =
 		{
 			0x41, 0x0F, 0xBE, 0x0C, 0x0C, //movsx ecx,byte ptr [r12+rcx]
 		};
@@ -589,9 +589,9 @@ void UpdateDevilModel(uint8 model)
 	}
 	else
 	{
-		Write<WORD>((appBaseAddr + 0x21316E), 0xE990);
+		Write<word>((appBaseAddr + 0x21316E), 0xE990);
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0x31, 0xC9, //xor ecx,ecx
 				0xB1, 0x00, //mov cl,model
@@ -618,7 +618,7 @@ void System_Actor_Init()
 		UpdateFlux = (UpdateFlux_t)func.addr;
 	}
 	{
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x0F, 0xB6, 0xF1,                                     //movzx rsi,cl
 			0x48, 0x0F, 0xB6, 0xFA,                                     //movzx rdi,dl
@@ -646,7 +646,7 @@ void System_Actor_Init()
 		};
 		FUNC func = CreateFunction(0, 0, true, true, 0, sizeof(sect1));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		*(BYTE ***)(func.sect1 + 0xA) = actorBaseAddr;
+		*(byte ***)(func.sect1 + 0xA) = actorBaseAddr;
 		WriteCall((func.sect1 + 0x23), (appBaseAddr + 0x2EE060));
 		WriteCall((func.sect1 + 0x35), (appBaseAddr + 0x1DE820));
 		WriteCall((func.sect1 + 0x43), (appBaseAddr + 0x1BB390));
@@ -655,7 +655,7 @@ void System_Actor_Init()
 		InternalCreateActor = (InternalCreateActor_t)func.addr;
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x49, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov r8,actorBaseAddr
 			0x4D, 0x8B, 0x04, 0xC0,                                     //mov r8,[r8+rax*8]
@@ -663,22 +663,22 @@ void System_Actor_Init()
 		};
 		FUNC func = CreateFunction(0, (appBaseAddr + 0x1BA572), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(BYTE ***)(func.sect0 + 2) = actorBaseAddr;
+		*(byte ***)(func.sect0 + 2) = actorBaseAddr;
 		OnUpdate[0] = func.addr;
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x48, 0xBD, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rbp,actorBaseAddr
 			0x4A, 0x8B, 0x6C, 0xC5, 0x00,                               //mov rbp,[rbp+r8*8+00]
 		};
 		FUNC func = CreateFunction(0, (appBaseAddr + 0x1BC0CA), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(BYTE ***)(func.sect0 + 2) = actorBaseAddr;
+		*(byte ***)(func.sect0 + 2) = actorBaseAddr;
 		OnUpdate[1] = func.addr;
 	}
 	{
-		BYTE sect2[] =
+		byte sect2[] =
 		{
 			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1BB470
 		};
@@ -688,7 +688,7 @@ void System_Actor_Init()
 		CreateActorProxy = func.addr;
 	}
 	{
-		BYTE sect2[] =
+		byte sect2[] =
 		{
 			0xFF, 0x90, 0x80, 0x00, 0x00, 0x00, //call qword ptr [rax+00000080]
 		};
@@ -697,7 +697,7 @@ void System_Actor_Init()
 		UpdateActorProxy = func.addr;
 	}
 	{
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x8B, 0xCB, //mov rcx,rbx
 		};
@@ -706,11 +706,11 @@ void System_Actor_Init()
 		WriteJump((UpdateActorProxy + 0x52), func.addr);
 	}
 	{
-		//BYTE sect0[] =
+		//byte sect0[] =
 		//{
 		//	0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1F94D0
 		//};
-		//BYTE sect1[] =
+		//byte sect1[] =
 		//{
 		//	0x48, 0x8B, 0xCF, //mov rcx,rdi
 		//};
@@ -722,11 +722,11 @@ void System_Actor_Init()
 		ActivateDevilFormProxy = func.addr;
 	}
 	{
-		//BYTE sect0[] =
+		//byte sect0[] =
 		//{
 		//	0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1F94D0
 		//};
-		//BYTE sect1[] =
+		//byte sect1[] =
 		//{
 		//	0x48, 0x8B, 0xCF, //mov rcx,rdi
 		//};
@@ -753,16 +753,16 @@ void System_Actor_Toggle()
 		// OnUpdate
 		WriteJump((appBaseAddr + 0x1BA569), OnUpdate[0]);
 		vp_memset((appBaseAddr + 0x1BA5C5), 0x90, 4);
-		Write<BYTE>((appBaseAddr + 0x1BA5C9), 0x45);
-		Write<BYTE>((appBaseAddr + 0x1BA5CB), 0x9A);
+		Write<byte>((appBaseAddr + 0x1BA5C9), 0x45);
+		Write<byte>((appBaseAddr + 0x1BA5CB), 0x9A);
 		WriteJump((appBaseAddr + 0x1BC0C5), OnUpdate[1]);
 		// OnEvent
-		Write<BYTE>((appBaseAddr + 0x1BB397), 0x1C);
-		Write<BYTE>((appBaseAddr + 0x1BB399), 0x90);
-		Write<BYTE>((appBaseAddr + 0x1BB408), 0x03);
-		Write<BYTE>((appBaseAddr + 0x1BB409), 0x90);
-		Write<BYTE>((appBaseAddr + 0x1BB457), 0x03);
-		Write<BYTE>((appBaseAddr + 0x1BB458), 0x90);
+		Write<byte>((appBaseAddr + 0x1BB397), 0x1C);
+		Write<byte>((appBaseAddr + 0x1BB399), 0x90);
+		Write<byte>((appBaseAddr + 0x1BB408), 0x03);
+		Write<byte>((appBaseAddr + 0x1BB409), 0x90);
+		Write<byte>((appBaseAddr + 0x1BB457), 0x03);
+		Write<byte>((appBaseAddr + 0x1BB458), 0x90);
 		WriteJump((appBaseAddr + 0x23C79A), CreateActorProxy);
 		WriteJump((appBaseAddr + 0x1DF2C4), UpdateActorProxy, 1);
 		WriteJump((appBaseAddr + 0x1E78AF), ActivateDevilFormProxy);
@@ -781,37 +781,37 @@ void System_Actor_Toggle()
 	else
 	{
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0x4C, 0x8B, 0x44, 0xC1, 0x18, //mov r8,[rcx+rax*8+18]
 			};
 			vp_memcpy((appBaseAddr + 0x1BA569), buffer, sizeof(buffer));
 		}
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0x49, 0x8B, 0x42, 0x18, //mov rax,[r10+18]
 			};
 			vp_memcpy((appBaseAddr + 0x1BA5C5), buffer, sizeof(buffer));
 		}
-		Write<BYTE>((appBaseAddr + 0x1BA5C9), 0x44);
-		Write<BYTE>((appBaseAddr + 0x1BA5CB), 0x98);
+		Write<byte>((appBaseAddr + 0x1BA5C9), 0x44);
+		Write<byte>((appBaseAddr + 0x1BA5CB), 0x98);
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0x4A, 0x8B, 0x6C, 0xC0, 0x18, //mov rbp,[rax+r8*8+18]
 			};
 			vp_memcpy((appBaseAddr + 0x1BC0C5), buffer, sizeof(buffer));
 		}
-		Write<BYTE>((appBaseAddr + 0x1BB397), 0x5C);
-		Write<BYTE>((appBaseAddr + 0x1BB399), 0x18);
-		Write<BYTE>((appBaseAddr + 0x1BB408), 0x43);
-		Write<BYTE>((appBaseAddr + 0x1BB409), 0x18);
-		Write<BYTE>((appBaseAddr + 0x1BB457), 0x43);
-		Write<BYTE>((appBaseAddr + 0x1BB458), 0x18);
+		Write<byte>((appBaseAddr + 0x1BB397), 0x5C);
+		Write<byte>((appBaseAddr + 0x1BB399), 0x18);
+		Write<byte>((appBaseAddr + 0x1BB408), 0x43);
+		Write<byte>((appBaseAddr + 0x1BB409), 0x18);
+		Write<byte>((appBaseAddr + 0x1BB457), 0x43);
+		Write<byte>((appBaseAddr + 0x1BB458), 0x18);
 		WriteCall((appBaseAddr + 0x23C79A), (appBaseAddr + 0x1BB470));
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0xFF, 0x90, 0x80, 0x00, 0x00, 0x00, //call qword ptr [rax+00000080]
 			};
@@ -820,21 +820,21 @@ void System_Actor_Toggle()
 		WriteCall((appBaseAddr + 0x1E78AF), (appBaseAddr + 0x1F94D0));
 		WriteCall((appBaseAddr + 0x1E78E6), (appBaseAddr + 0x1F94D0));
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0x48, 0x89, 0x81, 0x78, 0x64, 0x00, 0x00, //mov [rcx+00006478],rax
 			};
 			vp_memcpy((appBaseAddr + 0x1DF291), buffer, sizeof(buffer));
 		}
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0x89, 0xB8, 0x1C, 0x01, 0x00, 0x00, //mov [rax+0000011C],edi
 			};
 			vp_memcpy((appBaseAddr + 0x1DECCC), buffer, sizeof(buffer));
 		}
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0x83, 0xBE, 0x38, 0x63, 0x00, 0x00, 0x05, //cmp dword ptr [rsi+00006338],05
 			};
@@ -845,7 +845,7 @@ void System_Actor_Toggle()
 
 //
 //
-//static DWORD ToggleThread(LPVOID parameter)
+//static dword ToggleThread(LPVOID parameter)
 //{
 //	static bool inQueue = false;
 //	if (inQueue)

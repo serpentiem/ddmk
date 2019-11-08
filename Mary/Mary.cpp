@@ -37,7 +37,7 @@ const char * Log_file      = "Mary.txt";
 
 uint64 mainChunkSize = (64 * 1024 * 1024);
 
-DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
+dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
@@ -121,8 +121,8 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		Cosmetics_Weapon_Init();
 		Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
 
-		//Write<WORD>((appBaseAddr + 0x88517), 0xF390); // Hit Points Sub Full
-		//Write<BYTE>((appBaseAddr + 0x1AA791), 0xEB);  // Skip Orb Notifications
+		//Write<word>((appBaseAddr + 0x88517), 0xF390); // Hit Points Sub Full
+		//Write<byte>((appBaseAddr + 0x1AA791), 0xEB);  // Skip Orb Notifications
 		//vp_memset((appBaseAddr + 0x1F2A38), 0x90, 5); // Idle Timer Sub Dante
 		//vp_memset((appBaseAddr + 0x1F29AE), 0x90, 5); // Idle Timer Sub Vergil
 	}

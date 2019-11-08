@@ -27,7 +27,7 @@ void ImGui_DirectInput8_Init()
 	io.KeyMap[ImGuiKey_Z]          = DIK_Z;
 }
 
-void ImGui_DirectInput8_UpdateKeyboard(BYTE * state)
+void ImGui_DirectInput8_UpdateKeyboard(byte * state)
 {
 	ImGuiIO & io = ImGui::GetIO();
 	io.KeyCtrl  = ((state[DIK_LCONTROL] & 0x80) || (state[DIK_RCONTROL] & 0x80)) ? true : false;

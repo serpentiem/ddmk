@@ -20,12 +20,12 @@
 
 
 #define InitVars(result)                              \
-BYTE * addr = *(BYTE **)(appBaseAddr + 0xCA8918);     \
+byte * addr = *(byte **)(appBaseAddr + 0xCA8918);     \
 if (!addr)                                            \
 {                                                     \
 	return result;                                    \
 }                                                     \
-addr = *(BYTE **)(addr + 0x40);                       \
+addr = *(byte **)(addr + 0x40);                       \
 if (!addr)                                            \
 {                                                     \
 	return result;                                    \
@@ -33,8 +33,8 @@ if (!addr)                                            \
 uint32 & room     = *(uint32 *)(addr + 0x18);         \
 uint32 & position = *(uint32 *)(addr + 0x1C);         \
                                                       \
-addr = *(BYTE **)(appBaseAddr + 0xCA8918);            \
-addr = *(BYTE **)(addr + 0x60);                       \
+addr = *(byte **)(appBaseAddr + 0xCA8918);            \
+addr = *(byte **)(addr + 0x60);                       \
 if (!addr)                                            \
 {                                                     \
 	return result;                                    \
@@ -42,17 +42,17 @@ if (!addr)                                            \
 uint16 & nextRoom     = *(uint16 *)(addr + 0x164);    \
 uint16 & nextPosition = *(uint16 *)(addr + 0x166);    \
                                                       \
-addr = *(BYTE **)(appBaseAddr + 0xC90E30);            \
+addr = *(byte **)(appBaseAddr + 0xC90E30);            \
 if (!addr)                                            \
 {                                                     \
 	return result;                                    \
 }                                                     \
-addr = *(BYTE **)(addr + 8);                          \
+addr = *(byte **)(addr + 8);                          \
 if (!addr)                                            \
 {                                                     \
 	return result;                                    \
 }                                                     \
-DWORD * flags = (DWORD *)addr;                        \
+dword * flags = (dword *)addr;                        \
                                                       \
 uint32 mission = *(uint32 *)(appBaseAddr + 0xC8F250);
 
@@ -72,7 +72,7 @@ static void Arcade_InitSession()
 	{
 		return;
 	}
-	BYTE * addr = (appBaseAddr + 0xC8F250);
+	byte * addr = (appBaseAddr + 0xC8F250);
 	uint32  & mission            = *(uint32  *)addr;
 	uint32  & mode               = *(uint32  *)(addr + 0xC  );
 	bool    & oneHitKill         = *(bool    *)(addr + 0x10 );
@@ -179,7 +179,7 @@ static void Arcade_InitSession()
 
 }
 
-static void Arcade_SetCharacter(BYTE * addr)
+static void Arcade_SetCharacter(byte * addr)
 {
 	if (!Config.Game.Arcade.enable)
 	{
@@ -329,23 +329,23 @@ static void BossRush_SetRoom()
 		{
 			nextRoom     = ROOM_LEVIATHAN;
 			nextPosition = POSITION_LEVIATHAN;
-			addr = *(BYTE **)(appBaseAddr + 0xC90E30);
+			addr = *(byte **)(appBaseAddr + 0xC90E30);
 			if (!addr)
 			{
 				break;
 			}
 			*(uint8 *)(addr + 0x6A) = 1;
-			addr = *(BYTE **)(appBaseAddr + 0xCA8918);
+			addr = *(byte **)(appBaseAddr + 0xCA8918);
 			if (!addr)
 			{
 				break;
 			}
-			addr = *(BYTE **)(addr + 0x60);
+			addr = *(byte **)(addr + 0x60);
 			if (!addr)
 			{
 				break;
 			}
-			*(BYTE *)(addr + 0x7DF) = 0x40;
+			*(byte *)(addr + 0x7DF) = 0x40;
 		}
 		break;
 	case 9:
@@ -534,18 +534,18 @@ static void BossRush_SetNextRoom()
 			nextRoom     = 403;
 			nextPosition = 2;
 			/*
-			addr = *(BYTE **)(appBaseAddr + 0xCA8918);
+			addr = *(byte **)(appBaseAddr + 0xCA8918);
 			if (!addr)
 			{
 				break;
 			}
-			addr = *(BYTE **)(addr + 0x60);
+			addr = *(byte **)(addr + 0x60);
 			if (!addr)
 			{
 				break;
 			}
-			*(WORD *)(addr + 0x38) = 0x3FE;
-			*(WORD *)(addr + 0x3C) = 0x1FF;
+			*(word *)(addr + 0x38) = 0x3FE;
+			*(word *)(addr + 0x3C) = 0x1FF;
 			*/
 			flags[14] = 0x3FE;
 			flags[15] = 0x1FF;
@@ -605,7 +605,7 @@ static void InitSession()
 	Arcade_InitSession();
 }
 
-static void SetCharacter(BYTE * addr)
+static void SetCharacter(byte * addr)
 {
 	LogFunction();
 	Arcade_SetCharacter(addr);
@@ -837,7 +837,7 @@ static void Actor_StageLoadComplete()
 	//		{
 	//			style = STYLE_TRICKSTER;
 	//			uint32 & level = *(uint32 *)(actorBaseAddr[actor] + 0x6358);
-	//			BYTE * session = *(BYTE **)(appBaseAddr + 0xC90E30);
+	//			byte * session = *(byte **)(appBaseAddr + 0xC90E30);
 	//			if (!session)
 	//			{
 	//				level = 2;
@@ -901,7 +901,7 @@ void System_Event_Init()
 {
 	LogFunction();
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+212760
 		};
@@ -911,11 +911,11 @@ void System_Event_Init()
 		WriteJump((appBaseAddr + 0x2432C6), func.addr);
 	}
 	{
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x8B, 0xC8, //mov rcx,rax
 		};
-		BYTE sect2[] =
+		byte sect2[] =
 		{
 			0x0F, 0xB6, 0x88, 0x65, 0x45, 0x00, 0x00, //movzx ecx,byte ptr [rax+00004565]
 		};
@@ -925,11 +925,11 @@ void System_Event_Init()
 		WriteJump((appBaseAddr + 0x243504), func.addr, 2);
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x66, 0x89, 0x82, 0x64, 0x01, 0x00, 0x00, //mov [rdx+00000164],ax
 		};
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x8B, 0xCA, //mov rcx,rdx
 		};
@@ -939,11 +939,11 @@ void System_Event_Init()
 		WriteJump((appBaseAddr + 0x1AA8C5), func.addr, 2);
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x66, 0x89, 0x90, 0x66, 0x01, 0x00, 0x00, //mov [rax+00000166],dx
 		};
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x8B, 0xC8, //mov rcx,rax
 		};
@@ -953,7 +953,7 @@ void System_Event_Init()
 		WriteJump((appBaseAddr + 0x1A5FFB), func.addr, 2);
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x66, 0x89, 0x81, 0x66, 0x01, 0x00, 0x00, //mov [rcx+00000166],ax
 		};
@@ -974,11 +974,11 @@ void System_Event_Init()
 
 
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x48, 0x89, 0x5C, 0x24, 0x08, //mov [rsp+08],rbx
 		};
-		BYTE sect2[] =
+		byte sect2[] =
 		{
 			0x48, 0x85, 0xC0,                                           //test rax,rax
 			0x74, 0x03,                                                 //je short
@@ -992,12 +992,12 @@ void System_Event_Init()
 		FUNC func = CreateFunction(SetTrack, (appBaseAddr + 0x32BA95), true, false, sizeof(sect0), 0, sizeof(sect2));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect2, sect2, sizeof(sect2));
-		*(DWORD **)(func.sect2 + 0xA) = &mediaError;
-		*(DWORD *)(func.sect2 + 0x15) = MEDIA_SKIP_TRACK;
+		*(dword **)(func.sect2 + 0xA) = &mediaError;
+		*(dword *)(func.sect2 + 0x15) = MEDIA_SKIP_TRACK;
 		WriteJump((appBaseAddr + 0x32BA90), func.addr);
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0xC7, 0x47, 0x20, 0x01, 0x00, 0x00, 0x00, //mov [rdi+20],00000001
 		};

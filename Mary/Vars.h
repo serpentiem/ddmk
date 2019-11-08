@@ -58,7 +58,7 @@ struct PS2_GAMEPAD
 	uint32 ready;
 	uint32 reserved[3];
 	uint8  vibration[4];
-	WORD   buttons[6];
+	word   buttons[6];
 	uint8  rightStickX;
 	uint8  rightStickY;
 	uint8  leftStickX;
@@ -76,7 +76,7 @@ struct PS2_GAMEPAD
 
 struct CAPCOM_GAMEPAD
 {
-	WORD   buttons[4];
+	word   buttons[4];
 	uint16 buttonsTimer[2];
 	uint16 rightStickDirection[4];
 	uint16 rightStickTimer[2];

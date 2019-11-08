@@ -1,18 +1,18 @@
 #include "Weapon.h"
 
-BYTE * ApplyModelAttributesProxy    = 0;
-BYTE * Melee_IsWeaponReadyProxy     = 0;
-BYTE * Melee_IsWeaponReadyRebellion = 0;
-BYTE * Melee_IsWeaponReadyCerberus  = 0;
-BYTE * Melee_IsWeaponReadyAgniRudra = 0;
-BYTE * Melee_IsWeaponReadyNevan     = 0;
-BYTE * Melee_IsWeaponReadyBeowulf   = 0;
-BYTE * Melee_DefaultSetWeaponProxy  = 0;
-BYTE * Ranged_IsWeaponReadyProxy    = 0;
-BYTE * Ranged_IsWeaponReadyArtemis  = 0;
-BYTE * Ranged_DefaultSetWeaponProxy = 0;
+byte * ApplyModelAttributesProxy    = 0;
+byte * Melee_IsWeaponReadyProxy     = 0;
+byte * Melee_IsWeaponReadyRebellion = 0;
+byte * Melee_IsWeaponReadyCerberus  = 0;
+byte * Melee_IsWeaponReadyAgniRudra = 0;
+byte * Melee_IsWeaponReadyNevan     = 0;
+byte * Melee_IsWeaponReadyBeowulf   = 0;
+byte * Melee_DefaultSetWeaponProxy  = 0;
+byte * Ranged_IsWeaponReadyProxy    = 0;
+byte * Ranged_IsWeaponReadyArtemis  = 0;
+byte * Ranged_DefaultSetWeaponProxy = 0;
 
-static void ApplyModelAttributes(BYTE * baseAddr)
+static void ApplyModelAttributes(byte * baseAddr)
 {
 	LogFunction();
 	if (!Config.Cosmetics.Weapon.instantModelUpdate)
@@ -36,9 +36,9 @@ static void ApplyModelAttributes(BYTE * baseAddr)
 	}
 }
 
-static bool Melee_IsWeaponReady(BYTE * baseAddr, uint8 weaponId)
+static bool Melee_IsWeaponReady(byte * baseAddr, uint8 weaponId)
 {
-	BYTE * actorBaseAddr = *(BYTE **)(baseAddr + 0x120);
+	byte * actorBaseAddr = *(byte **)(baseAddr + 0x120);
 	if (!actorBaseAddr)
 	{
 		return false;
@@ -129,7 +129,7 @@ static bool Melee_IsWeaponReady(BYTE * baseAddr, uint8 weaponId)
 	return false;
 }
 
-static void Melee_DefaultSetWeapon(BYTE * baseAddr)
+static void Melee_DefaultSetWeapon(byte * baseAddr)
 {
 	uint8 selectedWeapon = *(uint8 *)(baseAddr + 0x6490);
 	uint8 * equipment = (uint8 *)(baseAddr + 0x6498);
@@ -139,9 +139,9 @@ static void Melee_DefaultSetWeapon(BYTE * baseAddr)
 	updateModelAttributes[actor] = true;
 }
 
-static bool Ranged_IsWeaponReady(BYTE * baseAddr, uint8 weaponId)
+static bool Ranged_IsWeaponReady(byte * baseAddr, uint8 weaponId)
 {
-	BYTE * actorBaseAddr = *(BYTE **)(baseAddr + 0x120);
+	byte * actorBaseAddr = *(byte **)(baseAddr + 0x120);
 	if (!actorBaseAddr)
 	{
 		return false;
@@ -186,7 +186,7 @@ static bool Ranged_IsWeaponReady(BYTE * baseAddr, uint8 weaponId)
 	return false;
 }
 
-static void Ranged_DefaultSetWeapon(BYTE * baseAddr)
+static void Ranged_DefaultSetWeapon(byte * baseAddr)
 {
 	uint8 selectedWeapon = *(uint8 *)(baseAddr + 0x6494);
 	selectedWeapon -= 2;
@@ -199,7 +199,7 @@ void Cosmetics_Weapon_Init()
 {
 	LogFunction();
 	{
-		BYTE sect2[] =
+		byte sect2[] =
 		{
 			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1DFC20
 		};
@@ -214,19 +214,19 @@ void Cosmetics_Weapon_Init()
 		Melee_IsWeaponReadyProxy = func.addr;
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0xBA, 0x00, 0x00, 0x00, 0x00, //mov edx
 			0xE8, 0x00, 0x00, 0x00, 0x00, //call
 		};
-		BYTE ** addr[] =
+		byte ** addr[] =
 		{
 			&Melee_IsWeaponReadyRebellion,
 			&Melee_IsWeaponReadyCerberus,
 			&Melee_IsWeaponReadyAgniRudra,
 			&Melee_IsWeaponReadyNevan,
 		};
-		BYTE * jumpAddr[] =
+		byte * jumpAddr[] =
 		{
 			(appBaseAddr + 0x231633),
 			(appBaseAddr + 0x22FAD9),
@@ -242,7 +242,7 @@ void Cosmetics_Weapon_Init()
 			*addr[weapon] = func.addr;
 		}
 		{
-			BYTE sect0[] =
+			byte sect0[] =
 			{
 				0xBA, 0x04, 0x00, 0x00, 0x00,       //mov edx,WEAPON_BEOWULF
 				0xE8, 0x00, 0x00, 0x00, 0x00,       //call IsWeaponReadyProxy
@@ -259,12 +259,12 @@ void Cosmetics_Weapon_Init()
 		}
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x89, 0x9F, 0x90, 0x64, 0x00, 0x00, //mov [rdi+00006490],ebx
 
 		};
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x8B, 0xCF, //mov rcx,rdi
 		};
@@ -279,7 +279,7 @@ void Cosmetics_Weapon_Init()
 		Ranged_IsWeaponReadyProxy = func.addr;
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0xBA, 0x07, 0x00, 0x00, 0x00,       //mov edx,WEAPON_ARTEMIS
 			0xE8, 0x00, 0x00, 0x00, 0x00,       //call IsWeaponReady
@@ -295,11 +295,11 @@ void Cosmetics_Weapon_Init()
 		Ranged_IsWeaponReadyArtemis = func.addr;
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x89, 0x9F, 0x94, 0x64, 0x00, 0x00, //mov [rdi+00006494],ebx
 		};
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x8B, 0xCF, //mov rcx,rdi
 		};
@@ -335,7 +335,7 @@ void Cosmetics_Weapon_ToggleInstantModelUpdate(bool enable)
 		WriteCall((appBaseAddr + 0x22AD2D), (appBaseAddr + 0x1FD3E0));
 		WriteCall((appBaseAddr + 0x2295B7), (appBaseAddr + 0x1FDE10));
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0x89, 0x9F, 0x90, 0x64, 0x00, 0x00, //mov [rdi+00006490],ebx
 			};
@@ -344,7 +344,7 @@ void Cosmetics_Weapon_ToggleInstantModelUpdate(bool enable)
 		WriteAddress((appBaseAddr + 0x2292E0), (appBaseAddr + 0x2295C1), 6);
 		WriteCall((appBaseAddr + 0x22CBC8), (appBaseAddr + 0x1FDE10));
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0x89, 0x9F, 0x94, 0x64, 0x00, 0x00, //mov [rdi+00006494],ebx
 			};

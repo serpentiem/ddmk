@@ -30,7 +30,7 @@ void Log(const char * format, Args ... args)
 			return;
 		}
 	}
-	DWORD bytesWritten = 0;
+	dword bytesWritten = 0;
 	OVERLAPPED overlap = {};
 	WriteFile(file, buffer, (uint32)strlen(buffer), &bytesWritten, &overlap);
 	CloseHandle(file);

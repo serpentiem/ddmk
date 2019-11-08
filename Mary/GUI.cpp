@@ -1312,12 +1312,12 @@ void GUI_Debug_Action()
 	ResetRangedWeaponLevelStart:
 	if (GUI_Button("Reset Ranged Weapon Level"))
 	{
-		BYTE * addr = *(BYTE **)(appBaseAddr + 0xC90E28);
+		byte * addr = *(byte **)(appBaseAddr + 0xC90E28);
 		if (!addr)
 		{
 			goto ResetRangedWeaponLevelEnd;
 		}
-		addr = *(BYTE **)(addr + 0x18);
+		addr = *(byte **)(addr + 0x18);
 		if (!addr)
 		{
 			goto ResetRangedWeaponLevelEnd;
@@ -1330,12 +1330,12 @@ void GUI_Debug_Action()
 	ResetEquipmentStart:
 	if (GUI_Button("Reset Equipment"))
 	{
-		BYTE * addr = *(BYTE **)(appBaseAddr + 0xC90E28);
+		byte * addr = *(byte **)(appBaseAddr + 0xC90E28);
 		if (!addr)
 		{
 			goto ResetRangedWeaponLevelEnd;
 		}
-		addr = *(BYTE **)(addr + 0x18);
+		addr = *(byte **)(addr + 0x18);
 		if (!addr)
 		{
 			goto ResetRangedWeaponLevelEnd;
@@ -1502,12 +1502,12 @@ void GUI_Teleporter_Draw()
 				goto InvalidPointer;
 			}
 
-			BYTE * addr = *(BYTE **)(appBaseAddr + 0xCA8918);
+			byte * addr = *(byte **)(appBaseAddr + 0xCA8918);
 			if (!addr)
 			{
 				goto InvalidPointer;
 			}
-			addr = *(BYTE **)(addr + 0x40);
+			addr = *(byte **)(addr + 0x40);
 			if (!addr)
 			{
 				goto InvalidPointer;
@@ -1517,13 +1517,13 @@ void GUI_Teleporter_Draw()
 			uint32 & currentPosition = *(uint32 *)(addr + 0x1C);
 			uint32 & event           = *(uint32 *)(addr + 0x20);
 
-			addr = *(BYTE **)(appBaseAddr + 0xCA8918);
+			addr = *(byte **)(appBaseAddr + 0xCA8918);
 			if (!addr)
 			{
 
 				goto InvalidPointer;
 			}
-			addr = *(BYTE **)(addr + 0x60);
+			addr = *(byte **)(addr + 0x60);
 			if (!addr)
 			{
 
@@ -1588,7 +1588,7 @@ void GUI_Overlay_Draw()
 		if (Config.GUI.Overlay.cacheStats)
 		{
 			ImGui::Text(Locale.GUI.Overlay.cacheStats);
-			BYTE * cacheAddr[] =
+			byte * cacheAddr[] =
 			{
 				(appBaseAddr + 0xCAE7D0),
 				(appBaseAddr + 0xCF1270),

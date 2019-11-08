@@ -102,8 +102,8 @@ enum CACHE_FILES
 };
 
 extern bool System_Cache_enable;
-extern BYTE * cacheFile[MAX_CACHE_FILES];
-extern BYTE * demo_pl000_00_3;
+extern byte * cacheFile[MAX_CACHE_FILES];
+extern byte * demo_pl000_00_3;
 
-BYTE * PushFile(const char * str);
+byte * PushFile(const char * str);
 void System_Cache_Init();

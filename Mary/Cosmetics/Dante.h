@@ -7,8 +7,8 @@
 #include "../System/Actor.h"
 #include "../System/State.h"
 
-typedef void(* ApplyDefaultModelAttributes_t)(BYTE *);
-typedef void(* ApplyBeowulfModelAttributes_t)(BYTE *);
+typedef void(* ApplyDefaultModelAttributes_t)(byte *);
+typedef void(* ApplyBeowulfModelAttributes_t)(byte *);
 
 extern ApplyDefaultModelAttributes_t ApplyDefaultModelAttributes;
 extern ApplyBeowulfModelAttributes_t ApplyBeowulfModelAttributes;

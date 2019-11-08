@@ -1,9 +1,9 @@
 #include "Hotkeys.h"
 
-void Hotkeys_TogglePause(BYTE * state)
+void Hotkeys_TogglePause(byte * state)
 {
 	static bool execute = true;
-	BYTE keys[] =
+	byte keys[] =
 	{
 		DIK_LCONTROL,
 		DIK_D,

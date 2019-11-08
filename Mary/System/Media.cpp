@@ -2,14 +2,14 @@
 
 PlayTrack_t PlayTrack = 0;
 
-DWORD mediaError     = MEDIA_NO_ERROR;
+dword mediaError     = MEDIA_NO_ERROR;
 bool  mediaSkipTrack = false;
 
 void System_Media_Init()
 {
 	LogFunction();
 	{
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00, //lea rcx,[dmc3.exe+CF3700]
 			0xE8, 0x00, 0x00, 0x00, 0x00,             //call dmc3.exe+32BE20
@@ -37,20 +37,20 @@ void System_Media_ToggleSkipIntro(bool enable)
 		WriteAddress((appBaseAddr + 0x2383F2), (appBaseAddr + 0x2383F8), 6); // Skip Message
 		WriteAddress((appBaseAddr + 0x241789), (appBaseAddr + 0x24178B), 2); // Skip Video
 		vp_memset((appBaseAddr + 0x243531), 0x90, 2);                        // Disable Video Timer
-		Write<BYTE>((appBaseAddr + 0x238704), 0x00);                         // Hide Rebellion
+		Write<byte>((appBaseAddr + 0x238704), 0x00);                         // Hide Rebellion
 	}
 	else
 	{
 		WriteAddress((appBaseAddr + 0x2383F2), (appBaseAddr + 0x238527), 6);
 		WriteAddress((appBaseAddr + 0x241789), (appBaseAddr + 0x2417A6), 2);
 		{
-			BYTE payload[] =
+			byte payload[] =
 			{
 				0xFF, 0xC8, //dec eax
 			};
 			vp_memcpy((appBaseAddr + 0x243531), payload, sizeof(payload));
 		}
-		Write<BYTE>((appBaseAddr + 0x238704), 0x01);
+		Write<byte>((appBaseAddr + 0x238704), 0x01);
 	}
 }
 

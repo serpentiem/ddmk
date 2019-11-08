@@ -7,7 +7,7 @@ void Cosmetics_Dante_Init()
 {
 	LogFunction();
 	{
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x8B, 0xF1,                         //mov rsi,rcx
 			0x48, 0x8D, 0x8E, 0x00, 0x02, 0x00, 0x00, //lea rcx,[rsi+00000200]
@@ -44,7 +44,7 @@ void Cosmetics_Dante_Init()
 		ApplyDefaultModelAttributes = (ApplyDefaultModelAttributes_t)func.addr;
 	}
 	{
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x8B, 0xF1,                         //mov rsi,rcx
 			0x48, 0x8D, 0x8E, 0x00, 0x02, 0x00, 0x00, //lea rcx,[rsi+00000200]
@@ -91,8 +91,8 @@ void Cosmetics_Dante_Beowulf_LiveUpdate()
 		{
 			if (!System_Actor_enable)
 			{
-				BYTE * baseAddr = *(BYTE **)(appBaseAddr + 0xC90E28);
-				baseAddr = *(BYTE **)(baseAddr + 0x18);
+				byte * baseAddr = *(byte **)(appBaseAddr + 0xC90E28);
+				baseAddr = *(byte **)(baseAddr + 0x18);
 				uint8 character = *(uint8 *)(baseAddr + 0x78);
 				if (character == CHAR_DANTE)
 				{
@@ -118,8 +118,8 @@ void Cosmetics_Dante_Beowulf_LiveUpdate()
 		{
 			if (!System_Actor_enable)
 			{
-				BYTE * baseAddr = *(BYTE **)(appBaseAddr + 0xC90E28);
-				baseAddr = *(BYTE **)(baseAddr + 0x18);
+				byte * baseAddr = *(byte **)(appBaseAddr + 0xC90E28);
+				baseAddr = *(byte **)(baseAddr + 0x18);
 				uint8 character = *(uint8 *)(baseAddr + 0x78);
 				if (character == CHAR_DANTE)
 				{

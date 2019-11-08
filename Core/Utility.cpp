@@ -13,7 +13,7 @@ float32 hexstrtof(const char * str)
 		buffer[0] = str[(0 + (i * 2))];
 		buffer[1] = str[(1 + (i * 2))];
 		buffer[2] = 0;
-		*(BYTE *)((BYTE *)&value + (3 - i)) = (BYTE)strtoul(buffer, 0, 16);
+		*(byte *)((byte *)&value + (3 - i)) = (byte)strtoul(buffer, 0, 16);
 	}
 	return value;
 }

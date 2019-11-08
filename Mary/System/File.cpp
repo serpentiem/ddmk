@@ -27,8 +27,8 @@ bool ExtractFile(const char * str)
 	zip_stat(archive, buffer, 0, &stats);
 
 	SetLastError(0);
-	BYTE * addr = (BYTE *)VirtualAllocEx(appProcess, 0, stats.size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-	DWORD error = GetLastError();
+	byte * addr = (byte *)VirtualAllocEx(appProcess, 0, stats.size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	dword error = GetLastError();
 
 	if (!addr && error)
 	{
@@ -50,18 +50,18 @@ bool ExtractFile(const char * str)
 		return false;
 	}
 
-	DWORD bytesWritten = 0;
+	dword bytesWritten = 0;
 	OVERLAPPED overlap = {};
-	WriteFile(_file, addr, (DWORD)stats.size, &bytesWritten, &overlap);
+	WriteFile(_file, addr, (dword)stats.size, &bytesWritten, &overlap);
 	CloseHandle(_file);
 
 	Log("bytesWritten %u", bytesWritten);
-	Log("size         %u", (DWORD)stats.size);
+	Log("size         %u", (dword)stats.size);
 
 	return true;
 }
 
-BYTE * LoadFile(const char * str)
+byte * LoadFile(const char * str)
 {
 	Log("%s %s", FUNC_NAME, str);
 
@@ -78,8 +78,8 @@ BYTE * LoadFile(const char * str)
 	BY_HANDLE_FILE_INFORMATION fi = {};
 	GetFileInformationByHandle(file, &fi);
 	SetLastError(0);
-	BYTE * addr = (BYTE *)VirtualAllocEx(appProcess, 0, fi.nFileSizeLow, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-	DWORD error = GetLastError();
+	byte * addr = (byte *)VirtualAllocEx(appProcess, 0, fi.nFileSizeLow, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	dword error = GetLastError();
 	if (!addr && error)
 	{
 		CloseHandle(file);
@@ -87,7 +87,7 @@ BYTE * LoadFile(const char * str)
 		return 0;
 	}
 
-	DWORD bytesRead = 0;
+	dword bytesRead = 0;
 	OVERLAPPED overlap = {};
 	ReadFile(file, addr, fi.nFileSizeLow, &bytesRead, &overlap);
 	CloseHandle(file);
@@ -100,7 +100,7 @@ BYTE * LoadFile(const char * str)
 
 void * AdjustPointersProxy = 0;
 
-void AdjustPointers(BYTE * addr)
+void AdjustPointers(byte * addr)
 {
 	LogFunction();
 	if (addr[0] == 'P' && addr[1] == 'A' && addr[2] == 'C')
@@ -109,12 +109,12 @@ void AdjustPointers(BYTE * addr)
 		for (uint32 i = 0; i < count; i++)
 		{
 			uint32 off = *(uint32 *)(addr + 8 + (i * 4));
-			((void(*)(BYTE *))AdjustPointersProxy)((addr + off));
+			((void(*)(byte *))AdjustPointersProxy)((addr + off));
 			Log("%.16llX", (addr + off));
 		}
 		return;
 	}
-	((void(*)(BYTE *))AdjustPointersProxy)(addr);
+	((void(*)(byte *))AdjustPointersProxy)(addr);
 }
 
 void System_File_Init()
@@ -127,7 +127,7 @@ void System_File_Init()
 	// 2 Local
 
 	{
-		BYTE payload[] =
+		byte payload[] =
 		{
 			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Config.System.File.preferLocalFiles
 			0x8A, 0x00,                                                 //mov al,[rax]

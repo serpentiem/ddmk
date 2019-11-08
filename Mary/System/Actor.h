@@ -8,16 +8,16 @@
 #include "State.h"
 
 extern bool System_Actor_enable;
-extern BYTE * actorBaseAddr[MAX_ACTOR];
+extern byte * actorBaseAddr[MAX_ACTOR];
 extern bool updateModelAttributes[MAX_ACTOR];
 
-typedef void(* UpdateDevilForm_t)(BYTE *);
-typedef void(* UpdateFlux_t)(BYTE *, uint8);
+typedef void(* UpdateDevilForm_t)(byte *);
+typedef void(* UpdateFlux_t)(byte *, uint8);
 
 extern UpdateDevilForm_t UpdateDevilForm;
 extern UpdateFlux_t      UpdateFlux;
 
-uint8 GetActorId(BYTE * baseAddr);
+uint8 GetActorId(byte * baseAddr);
 uint8 GetActorCount();
 void ResetDevilModel();
 void UpdateDevilModel(uint8 model);

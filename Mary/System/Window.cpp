@@ -16,12 +16,12 @@ void System_Window_ToggleForceFocus(bool enable)
 	Log("%s %u", FUNC_NAME, enable);
 	if (enable)
 	{
-		Write<WORD>((appBaseAddr + 0x487F6), 0xE990);
+		Write<word>((appBaseAddr + 0x487F6), 0xE990);
 		WriteAddress((appBaseAddr + 0x41C0A), (appBaseAddr + 0x41C10), 6); // Enable Background Gamepad Input
 	}
 	else
 	{
-		Write<WORD>((appBaseAddr + 0x487F6), 0x850F);
+		Write<word>((appBaseAddr + 0x487F6), 0x850F);
 		WriteAddress((appBaseAddr + 0x41C0A), (appBaseAddr + 0x42016), 6);
 	}
 }

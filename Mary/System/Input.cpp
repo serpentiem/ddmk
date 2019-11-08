@@ -1,7 +1,7 @@
 #include "Input.h"
 
 bool System_Input_extend = false;
-WORD buttonMask[17] =
+word buttonMask[17] =
 {
 	GAMEPAD_VOID,
 	GAMEPAD_LEFT_TRIGGER,
@@ -22,14 +22,14 @@ WORD buttonMask[17] =
 	GAMEPAD_DPAD_LEFT,
 };
 
-WORD GetButtonState(uint8 actorId)
+word GetButtonState(uint8 actorId)
 {
 	return ((CAPCOM_GAMEPAD *)(appBaseAddr + 0xD54A10 + 0x550))[actorId].buttons[0];
 }
 
-WORD GetBinding(uint8 commandId)
+word GetBinding(uint8 commandId)
 {
-	return *(WORD *)(appBaseAddr + 0xD6CE88 + (commandId * 2));
+	return *(word *)(appBaseAddr + 0xD6CE88 + (commandId * 2));
 }
 
 void System_Input_Init()
@@ -47,21 +47,21 @@ void System_Input_Init()
 	Write<uint8>((appBaseAddr + 0x2AF91), 3);
 	{
 		vp_memset((appBaseAddr + 0x2AFAA), 0x90, 28);
-		BYTE buffer[] =
+		byte buffer[] =
 		{
 			0x44, 0x8B, 0xC7, //mov r8d,edi
 		};
 		vp_memcpy((appBaseAddr + 0x2AFAA), buffer, sizeof(buffer));
 	}
-	Write<DWORD>((appBaseAddr + 0x32CFB9), 0x63C);
+	Write<dword>((appBaseAddr + 0x32CFB9), 0x63C);
 	WriteAddress((appBaseAddr + 0x1EBD1E), (appBaseAddr + 0x1EBD24), 6);
 	// Redirect Input
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x0F, 0xB6, 0x93, 0x18, 0x01, 0x00, 0x00, //movzx edx,byte ptr [rbx+00000118]
 		};
-		BYTE * jumpAddr[] =
+		byte * jumpAddr[] =
 		{
 			(appBaseAddr + 0x32CC70),
 			(appBaseAddr + 0x32CC80),
@@ -70,7 +70,7 @@ void System_Input_Init()
 			(appBaseAddr + 0x32CC50),
 			(appBaseAddr + 0x32CC50),
 		};
-		BYTE * writeAddr[] =
+		byte * writeAddr[] =
 		{
 			(appBaseAddr + 0x1EBD2D),
 			(appBaseAddr + 0x1EBD42),

@@ -4,7 +4,7 @@ bool   GUI_hide     = false;
 uint32 GUI_hideTime = 0;
 int    GUI_id       = 0;
 
-static DWORD HideThread(LPVOID)
+static dword HideThread(LPVOID)
 {
 	LogFunction();
 	GUI_hide = true;

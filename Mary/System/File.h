@@ -7,6 +7,6 @@
 #include "../Config.h"
 
 bool ExtractFile(const char * str);
-BYTE * LoadFile(const char * str);
-void AdjustPointers(BYTE * addr);
+byte * LoadFile(const char * str);
+void AdjustPointers(byte * addr);
 void System_File_Init();

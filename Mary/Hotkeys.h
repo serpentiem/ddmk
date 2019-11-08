@@ -8,4 +8,4 @@
 
 #include "System/Message.h"
 
-void Hotkeys_TogglePause(BYTE * state);
+void Hotkeys_TogglePause(byte * state);

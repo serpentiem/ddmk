@@ -12,9 +12,9 @@ void Game_Speed_Update()
 	{
 		Write<float32>((appBaseAddr + 0x326950), Config.Game.Speed.Main.base);
 		*Game_Speed_turbo = Config.Game.Speed.Main.turbo;
-		WriteAddress((appBaseAddr + 0x23E639), (BYTE *)Game_Speed_turbo, 8);
+		WriteAddress((appBaseAddr + 0x23E639), (byte *)Game_Speed_turbo, 8);
 		*Game_Speed_actor = Config.Game.Speed.Main.actor;
-		WriteAddress((appBaseAddr + 0x1F8CA6), (BYTE *)Game_Speed_actor, 8);
+		WriteAddress((appBaseAddr + 0x1F8CA6), (byte *)Game_Speed_actor, 8);
 		Write<float32>((appBaseAddr + 0x326ADD), Config.Game.Speed.Main.enemy);
 	}
 	// Devil
@@ -36,9 +36,9 @@ void Game_Speed_Update()
 	// Quicksilver
 	{
 		*Game_Speed_Quicksilver_actor = Config.Game.Speed.Quicksilver.actor;
-		WriteAddress((appBaseAddr + 0x27A982), (BYTE *)Game_Speed_Quicksilver_actor, 8);
+		WriteAddress((appBaseAddr + 0x27A982), (byte *)Game_Speed_Quicksilver_actor, 8);
 		*Game_Speed_Quicksilver_enemy = Config.Game.Speed.Quicksilver.enemy;
-		WriteAddress((appBaseAddr + 0x27A98A), (BYTE *)Game_Speed_Quicksilver_enemy, 8);
+		WriteAddress((appBaseAddr + 0x27A98A), (byte *)Game_Speed_Quicksilver_enemy, 8);
 	}
 	// Live
 	if (ActorAvailable())
@@ -110,7 +110,7 @@ void Game_Speed_Reset()
 void Game_Speed_Init()
 {
 	LogFunction();
-	BYTE * addr = (BYTE *)HighAlloc(64);
+	byte * addr = (byte *)HighAlloc(64);
 	Game_Speed_turbo             = (float32 *)( addr       );
 	Game_Speed_actor             = (float32 *)( addr + 4   );
 	Game_Speed_Quicksilver_actor = (float32 *)( addr + 8   );

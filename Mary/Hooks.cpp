@@ -6,10 +6,10 @@ typedef ATOM(* User_RegisterClassExW_t)
 );
 typedef HWND(* User_CreateWindowExW_t)
 (
-	DWORD    ,
+	dword    ,
 	LPCWSTR  ,
 	LPCWSTR  ,
-	DWORD    ,
+	dword    ,
 	int      ,
 	int      ,
 	int      ,
@@ -37,10 +37,10 @@ ATOM User_Hook_RegisterClassExW
 );
 HWND User_Hook_CreateWindowExW
 (
-	DWORD     exStyle,
+	dword     exStyle,
 	LPCWSTR   className,
 	LPCWSTR   windowName,
-	DWORD     style,
+	dword     style,
 	int       x,
 	int       y,
 	int       width,
@@ -137,9 +137,9 @@ IDirectInput8W       * DirectInput8_deviceInterface = 0;
 IDirectInputDevice8W * DirectInput8_mouse           = 0;
 DIMOUSESTATE2          DirectInput8_mouseState      = {};
 
-static DWORD DirectInput8_CreateMouseThread(LPVOID parameter);
-static DWORD DirectInput8_UpdateMouseThread(LPVOID parameter);
-static DWORD DirectInput8_AcquireMouseThread(LPVOID parameter);
+static dword DirectInput8_CreateMouseThread(LPVOID parameter);
+static dword DirectInput8_UpdateMouseThread(LPVOID parameter);
+static dword DirectInput8_AcquireMouseThread(LPVOID parameter);
 
 ATOM User_Hook_RegisterClassExW
 (
@@ -166,10 +166,10 @@ ATOM User_Hook_RegisterClassExW
 
 HWND User_Hook_CreateWindowExW
 (
-	DWORD     exStyle,
+	dword     exStyle,
 	LPCWSTR   className,
 	LPCWSTR   windowName,
-	DWORD     style,
+	dword     style,
 	int       x,
 	int       y,
 	int       width,
@@ -370,7 +370,7 @@ HRESULT D3D11_Hook_CreateDeviceAndSwapChain
 		featureLevel,
 		deviceContext
 	);
-	DWORD error = GetLastError();
+	dword error = GetLastError();
 	D3D11_device = *device;
 	D3D11_deviceContext = *deviceContext;
 	DXGI_swapChain = *swapChain;
@@ -385,16 +385,16 @@ HRESULT D3D11_Hook_CreateDeviceAndSwapChain
 		{
 			goto InstallEnd;
 		}
-		BYTE ** funcAddr = *(BYTE ***)*swapChain;
+		byte ** funcAddr = *(byte ***)*swapChain;
 		if (!funcAddr)
 		{
 			goto InstallEnd;
 		}
 		DXGI_Present = (DXGI_Present_t)funcAddr[8];
-		Write<void *>((BYTE *)&funcAddr[8], DXGI_Hook_Present);
+		Write<void *>((byte *)&funcAddr[8], DXGI_Hook_Present);
 
 		DXGI_ResizeBuffers = (DXGI_ResizeBuffers_t)funcAddr[13];
-		Write<void *>((BYTE *)&funcAddr[13], DXGI_Hook_ResizeBuffers);
+		Write<void *>((byte *)&funcAddr[13], DXGI_Hook_ResizeBuffers);
 	}
 	InstallEnd:
 	SetLastError(error);
@@ -476,7 +476,7 @@ HRESULT DXGI_Hook_ResizeBuffers
 		newFormat,
 		swapChainFlags
 	);
-	DWORD error = GetLastError();
+	dword error = GetLastError();
 	CreateRenderTarget();
 	System_Window_UpdateSize((uint32)width, (uint32)height);
 	SetLastError(error);
@@ -486,11 +486,11 @@ HRESULT DXGI_Hook_ResizeBuffers
 HRESULT DirectInput8_Hook_GetDeviceStateKeyboard
 (
 	IDirectInputDevice8A * device,
-	DWORD                  bufferSize,
+	dword                  bufferSize,
 	LPVOID                 buffer
 )
 {
-	BYTE * state = (BYTE *)buffer;
+	byte * state = (byte *)buffer;
 	ImGui_DirectInput8_UpdateKeyboard(state);
 	Hotkeys_TogglePause(state);
 	if (pause)
@@ -500,7 +500,7 @@ HRESULT DirectInput8_Hook_GetDeviceStateKeyboard
 	return 0;
 }
 
-static DWORD DirectInput8_CreateMouseThread(LPVOID parameter)
+static dword DirectInput8_CreateMouseThread(LPVOID parameter)
 {
 	do
 	{
@@ -544,7 +544,7 @@ static DWORD DirectInput8_CreateMouseThread(LPVOID parameter)
 	return 1;
 }
 
-static DWORD DirectInput8_UpdateMouseThread(LPVOID parameter)
+static dword DirectInput8_UpdateMouseThread(LPVOID parameter)
 {
 	LogFunction();
 	do
@@ -560,7 +560,7 @@ static DWORD DirectInput8_UpdateMouseThread(LPVOID parameter)
 	return 1;
 }
 
-static DWORD DirectInput8_AcquireMouseThread(LPVOID parameter)
+static dword DirectInput8_AcquireMouseThread(LPVOID parameter)
 {
 	do
 	{
@@ -583,9 +583,9 @@ static DWORD DirectInput8_AcquireMouseThread(LPVOID parameter)
 	return 1;
 }
 
-DWORD XInput_Hook_GetState
+dword XInput_Hook_GetState
 (
-	DWORD          userIndex,
+	dword          userIndex,
 	XINPUT_STATE * state
 )
 {
@@ -600,23 +600,23 @@ void Hooks_Init()
 {
 	LogFunction();
 	{
-		BYTE * addr = (appBaseAddr + 0x34F308);
+		byte * addr = (appBaseAddr + 0x34F308);
 		User_RegisterClassExW = *(User_RegisterClassExW_t *)addr;
 		Write<void *>(addr, User_Hook_RegisterClassExW);
 	}
 	{
-		BYTE * addr = (appBaseAddr + 0x34F300);
+		byte * addr = (appBaseAddr + 0x34F300);
 		User_CreateWindowExW = *(User_CreateWindowExW_t *)addr;
 		Write<void *>(addr, User_Hook_CreateWindowExW);
 	}
 	{
-		BYTE * addr = (appBaseAddr + 0x34F650);
+		byte * addr = (appBaseAddr + 0x34F650);
 		D3D11_CreateDeviceAndSwapChain = *(D3D11_CreateDeviceAndSwapChain_t *)addr;
 		Write<void *>(addr, D3D11_Hook_CreateDeviceAndSwapChain);
 	}
-	Write<DWORD>((appBaseAddr + 0x47F58), DISCL_NONEXCLUSIVE | DISCL_FOREGROUND); // SetCooperativeLevelKeyboard
+	Write<dword>((appBaseAddr + 0x47F58), DISCL_NONEXCLUSIVE | DISCL_FOREGROUND); // SetCooperativeLevelKeyboard
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x48, 0x8B, 0x01,       //mov rax,[rcx]
 			0x50,                   //push rax
@@ -633,7 +633,7 @@ void Hooks_Init()
 			0x48, 0x8B, 0x55, 0x10, //mov rdx,[rbp+10]
 			0x4C, 0x8B, 0x45, 0x08, //mov r8,[rbp+08]
 		};
-		BYTE sect2[] =
+		byte sect2[] =
 		{
 			0x48, 0x8B, 0xE5, //mov rsp,rbp
 			0x5D,             //pop rbp
@@ -648,7 +648,7 @@ void Hooks_Init()
 		WriteJump((appBaseAddr + 0x41DA0), func.addr, 1);
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0xBA, 0x00, 0x01, 0x00, 0x00, //mov edx,00000100
 			0x50,                         //push rax
@@ -665,7 +665,7 @@ void Hooks_Init()
 			0x48, 0x8B, 0x55, 0x10,       //mov rdx,[rbp+10]
 			0x4C, 0x8B, 0x45, 0x08,       //mov r8,[rbp+08]
 		};
-		BYTE sect2[] =
+		byte sect2[] =
 		{
 			0x48, 0x8B, 0xE5, //mov rsp,rbp
 			0x5D,             //pop rbp
@@ -681,7 +681,7 @@ void Hooks_Init()
 	}
 	CreateThread(0, 4096, DirectInput8_CreateMouseThread, 0, 0, 0);
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x50,                         //push rax
 			0x51,                         //push rcx
@@ -695,7 +695,7 @@ void Hooks_Init()
 			0x48, 0x8B, 0x4D, 0x10,       //mov rcx,[rbp+10]
 			0x48, 0x8B, 0x55, 0x08,       //mov rdx,[rbp+08]
 		};
-		BYTE sect2[] =
+		byte sect2[] =
 		{
 			0x48, 0x8B, 0xE5,             //mov rsp,rbp
 			0x5D,                         //pop rbp
@@ -710,7 +710,7 @@ void Hooks_Init()
 		WriteJump((appBaseAddr + 0x41A83), func.addr);
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x50,                         //push rax
 			0x51,                         //push rcx
@@ -724,7 +724,7 @@ void Hooks_Init()
 			0x48, 0x8B, 0x4D, 0x10,       //mov rcx,[rbp+10]
 			0x48, 0x8B, 0x55, 0x08,       //mov rdx,[rbp+08]
 		};
-		BYTE sect2[] =
+		byte sect2[] =
 		{
 			0x48, 0x8B, 0xE5,             //mov rsp,rbp
 			0x5D,                         //pop rbp
@@ -739,7 +739,7 @@ void Hooks_Init()
 		WriteJump((appBaseAddr + 0x41AFA), func.addr);
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x50,                         //push rax
 			0x51,                         //push rcx
@@ -753,7 +753,7 @@ void Hooks_Init()
 			0x48, 0x8B, 0x4D, 0x10,       //mov rcx,[rbp+10]
 			0x48, 0x8B, 0x55, 0x08,       //mov rdx,[rbp+08]
 		};
-		BYTE sect2[] =
+		byte sect2[] =
 		{
 			0x48, 0x8B, 0xE5,             //mov rsp,rbp
 			0x5D,                         //pop rbp

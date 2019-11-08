@@ -2,13 +2,13 @@
 
 ApplyColor_t ApplyColor = 0;
 
-BYTE * AirHike = 0;
+byte * AirHike = 0;
 
 void Cosmetics_Color_Init()
 {
 	LogFunction();
 	{
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x48, 0x83, 0xEC, 0x50,                                     //sub rsp,50
 			0x0F, 0x29, 0x74, 0x24, 0x30,                               //movaps [rsp+30],xmm6
@@ -63,7 +63,7 @@ void Cosmetics_Color_Init()
 		ApplyColor = (ApplyColor_t)func.addr;
 	}
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0x48, 0x31, 0xC0,                                           //xor rax,rax
 			0x8A, 0x83, 0x90, 0x64, 0x00, 0x00,                         //mov al,[rbx+00006490]
@@ -90,7 +90,7 @@ void Cosmetics_Color_Init()
 		};
 		FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 40);
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(BYTE ***)(func.sect0 + 0x16) = func.cache;
+		*(byte ***)(func.sect0 + 0x16) = func.cache;
 		func.cache[0] = (func.addr + 0x21);
 		func.cache[1] = (func.addr + 0x29);
 		func.cache[2] = (func.addr + 0x31);
@@ -116,7 +116,7 @@ void Cosmetics_Color_UpdateRGB()
 	// Aura
 	// Dante
 	{
-		BYTE * addr[][3] =
+		byte * addr[][3] =
 		{
 			{
 				(appBaseAddr + 0x8CD1F),
@@ -155,7 +155,7 @@ void Cosmetics_Color_UpdateRGB()
 	// Vergil
 	// Open
 	{
-		BYTE * addr[] =
+		byte * addr[] =
 		{
 			(appBaseAddr + 0x8CD51),
 			(appBaseAddr + 0x8CD52),
@@ -169,7 +169,7 @@ void Cosmetics_Color_UpdateRGB()
 	// Vergil
 	// Close
 	{
-		BYTE * addr[] =
+		byte * addr[] =
 		{
 			(appBaseAddr + 0x90C5C),
 			(appBaseAddr + 0x90C5D),
@@ -183,7 +183,7 @@ void Cosmetics_Color_UpdateRGB()
 	// Nero Angelo
 	// Open
 	{
-		BYTE * addr[] =
+		byte * addr[] =
 		{
 			(appBaseAddr + 0x8E438),
 			(appBaseAddr + 0x8E439),
@@ -196,7 +196,7 @@ void Cosmetics_Color_UpdateRGB()
 	}
 	// Close
 	{
-		BYTE * addr[] =
+		byte * addr[] =
 		{
 			(appBaseAddr + 0x90C4E),
 			(appBaseAddr + 0x90C4F),
@@ -235,7 +235,7 @@ void Cosmetics_Color_UpdateRGB()
 	// Ultimate
 	// Open
 	{
-		BYTE * addr[] =
+		byte * addr[] =
 		{
 			(appBaseAddr + 0x8E843),
 			(appBaseAddr + 0x8E844),
@@ -248,7 +248,7 @@ void Cosmetics_Color_UpdateRGB()
 	}
 	// Close
 	{
-		BYTE * addr[] =
+		byte * addr[] =
 		{
 			(appBaseAddr + 0x9114B),
 			(appBaseAddr + 0x9114C),
@@ -267,7 +267,7 @@ void Cosmetics_Color_ResetRGB()
 	// Aura
 	// Dante
 	{
-		BYTE * addr[][3] =
+		byte * addr[][3] =
 		{
 			{
 				(appBaseAddr + 0x8CD1F),
@@ -306,7 +306,7 @@ void Cosmetics_Color_ResetRGB()
 	// Vergil
 	// Open
 	{
-		BYTE * addr[] =
+		byte * addr[] =
 		{
 			(appBaseAddr + 0x8CD51),
 			(appBaseAddr + 0x8CD52),
@@ -320,7 +320,7 @@ void Cosmetics_Color_ResetRGB()
 	// Vergil
 	// Close
 	{
-		BYTE * addr[] =
+		byte * addr[] =
 		{
 			(appBaseAddr + 0x90C5C),
 			(appBaseAddr + 0x90C5D),
@@ -334,7 +334,7 @@ void Cosmetics_Color_ResetRGB()
 	// Nero Angelo
 	// Open
 	{
-		BYTE * addr[] =
+		byte * addr[] =
 		{
 			(appBaseAddr + 0x8E438),
 			(appBaseAddr + 0x8E439),
@@ -347,7 +347,7 @@ void Cosmetics_Color_ResetRGB()
 	}
 	// Close
 	{
-		BYTE * addr[] =
+		byte * addr[] =
 		{
 			(appBaseAddr + 0x90C4E),
 			(appBaseAddr + 0x90C4F),
@@ -361,7 +361,7 @@ void Cosmetics_Color_ResetRGB()
 	// Ultimate
 	// Open
 	{
-		BYTE * addr[] =
+		byte * addr[] =
 		{
 			(appBaseAddr + 0x8E843),
 			(appBaseAddr + 0x8E844),
@@ -374,7 +374,7 @@ void Cosmetics_Color_ResetRGB()
 	}
 	// Close
 	{
-		BYTE * addr[] =
+		byte * addr[] =
 		{
 			(appBaseAddr + 0x9114B),
 			(appBaseAddr + 0x9114C),
@@ -395,7 +395,7 @@ void Cosmetics_Color_Toggle(bool enable)
 		WriteCall((appBaseAddr + 0x1F66DD), AirHike);
 		{
 			vp_memset((appBaseAddr + 0x8E330), 0x90, 16);
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0xC7, 0x80, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov [rax+000000E0]
 			};
@@ -407,7 +407,7 @@ void Cosmetics_Color_Toggle(bool enable)
 	{
 		WriteCall((appBaseAddr + 0x1F66DD), (appBaseAddr + 0x8CD00));
 		{
-			BYTE buffer[] =
+			byte buffer[] =
 			{
 				0x66, 0xC7, 0x80, 0xE0, 0x00, 0x00, 0x00, 0xFF, 0x00, //mov word ptr [rax+000000E0],00FF
 				0x40, 0x88, 0xB8, 0xE2, 0x00, 0x00, 0x00,             //mov [rax+000000E2],dil

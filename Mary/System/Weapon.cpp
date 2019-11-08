@@ -1,14 +1,14 @@
 #include "Weapon.h"
 
 bool System_Weapon_enable = false;
-BYTE * weaponMetadata[MAX_ACTOR][MAX_WEAPON] = {};
+byte * weaponMetadata[MAX_ACTOR][MAX_WEAPON] = {};
 //bool System_Weapon_Ranged_resetLevel = false;
 extern uint8 Game_WeaponSwitcher_Melee_index;
 extern uint8 Game_WeaponSwitcher_Ranged_index;
 
-typedef BYTE *(* RegisterWeapon_t)(BYTE *);
+typedef byte *(* RegisterWeapon_t)(byte *);
 
-BYTE * UpdateWeaponProxy = 0;
+byte * UpdateWeaponProxy = 0;
 RegisterWeapon_t RegisterRebellion       = 0;
 RegisterWeapon_t RegisterCerberus        = 0;
 RegisterWeapon_t RegisterAgniRudra       = 0;
@@ -25,11 +25,11 @@ RegisterWeapon_t RegisterKalinaAnnLady   = 0;
 RegisterWeapon_t RegisterForceEdge       = 0;
 RegisterWeapon_t RegisterNeroAngeloSword = 0;
 
-void System_Weapon_Ranged_UpdateLevels(BYTE * baseAddr)
+void System_Weapon_Ranged_UpdateLevels(byte * baseAddr)
 {
 	uint8 * weapon = (uint8 *)(baseAddr + 0x649A);
 	uint32 * level = (uint32 *)(baseAddr + 0x64E4);
-	BYTE * addr = *(BYTE **)(appBaseAddr + 0xC90E30);
+	byte * addr = *(byte **)(appBaseAddr + 0xC90E30);
 	if (!addr)
 	{
 		return;
@@ -48,7 +48,7 @@ void System_Weapon_Ranged_UpdateLevels(BYTE * baseAddr)
 	}
 }
 
-static void UpdateWeapon(BYTE * baseAddr)
+static void UpdateWeapon(byte * baseAddr)
 {
 	
 
@@ -73,7 +73,7 @@ static void UpdateWeapon(BYTE * baseAddr)
 
 	// Update File Structs
 	{
-		BYTE * structAddr[MAX_CHAR][MAX_WEAPON] =
+		byte * structAddr[MAX_CHAR][MAX_WEAPON] =
 		{
 			{                                      // Dante
 				(appBaseAddr + 0xC99D30 + 0x2760), // Rebellion
@@ -101,7 +101,7 @@ static void UpdateWeapon(BYTE * baseAddr)
 				(appBaseAddr + 0xC99D30 + 0x3498), // Nero Angelo Sword
 			},
 		};
-		BYTE * stringAddr[MAX_CHAR][MAX_WEAPON] =
+		byte * stringAddr[MAX_CHAR][MAX_WEAPON] =
 		{
 			{
 				(appBaseAddr + 0x5B0F50), // obj\plwp_sword.pac
@@ -131,7 +131,7 @@ static void UpdateWeapon(BYTE * baseAddr)
 				(appBaseAddr + 0x5B1070), // obj\plwp_nerosword.pac
 			},
 		};
-		BYTE * fileAddr[MAX_CHAR][MAX_WEAPON] =
+		byte * fileAddr[MAX_CHAR][MAX_WEAPON] =
 		{
 			{
 				cacheFile[plwp_sword],
@@ -164,13 +164,13 @@ static void UpdateWeapon(BYTE * baseAddr)
 		// Set Sword
 		if (character == CHAR_DANTE)
 		{
-			BYTE * swordStringAddr[] =
+			byte * swordStringAddr[] =
 			{
 				(appBaseAddr + 0x5B0F50), // obj\plwp_sword.pac
 				(appBaseAddr + 0x5B1040), // obj\plwp_sword2.pac
 				(appBaseAddr + 0x5B1050), // obj\plwp_sword3.pac
 			};
-			BYTE * swordFileAddr[] =
+			byte * swordFileAddr[] =
 			{
 				cacheFile[plwp_sword],
 				cacheFile[plwp_sword2],
@@ -213,8 +213,8 @@ static void UpdateWeapon(BYTE * baseAddr)
 		{
 			memset(structAddr[character][i], 0, 0x48);
 			uint32   & state  = *( uint32 *  )( structAddr[character][i] + 4    );
-			BYTE   * & string = *( BYTE   ** )( structAddr[character][i] + 0x18 );
-			BYTE   * & file   = *( BYTE   ** )( structAddr[character][i] + 0x20 );
+			byte   * & string = *( byte   ** )( structAddr[character][i] + 0x18 );
+			byte   * & file   = *( byte   ** )( structAddr[character][i] + 0x20 );
 			state  = 3;
 			string = stringAddr[character][i];
 			file   = fileAddr  [character][i];
@@ -337,7 +337,7 @@ static void UpdateWeapon(BYTE * baseAddr)
 
 		memset((baseAddr + 0x64A0), 0, 0x64);
 		uint8 * equipment = (uint8 *)(baseAddr + 0x6498);
-		BYTE ** metaData = (BYTE **)(baseAddr + 0x64A0);
+		byte ** metaData = (byte **)(baseAddr + 0x64A0);
 		for (uint8 i = 0; i < 4; i++)
 		{
 			if (equipment[i] == 0xFF)
@@ -419,7 +419,7 @@ void System_Weapon_Init()
 			&RegisterForceEdge,
 			&RegisterNeroAngeloSword,
 		};
-		BYTE * funcAddr[] =
+		byte * funcAddr[] =
 		{
 			(appBaseAddr + 0x2310B0), // Rebellion
 			(appBaseAddr + 0x22EC90), // Cerberus
@@ -435,7 +435,7 @@ void System_Weapon_Init()
 			(appBaseAddr + 0x2298E0), // Force Edge
 			(appBaseAddr + 0x22CF00), // Nero Angelo Sword
 		};
-		BYTE sect1[] =
+		byte sect1[] =
 		{
 			0x33, 0xD2, //xor edx,edx
 		};
@@ -446,7 +446,7 @@ void System_Weapon_Init()
 			*addr[weapon] = (RegisterWeapon_t)func.addr;
 		}
 		{
-			BYTE sect1[] =
+			byte sect1[] =
 			{
 				0x33, 0xD2, //xor edx,edx
 				0xB2, 0x09, //mov dl,09
@@ -456,7 +456,7 @@ void System_Weapon_Init()
 			RegisterKalinaAnn = (RegisterWeapon_t)func.addr;
 		}
 		{
-			BYTE sect1[] =
+			byte sect1[] =
 			{
 				0x33, 0xD2, //xor edx,edx
 				0xB2, 0x0A, //mov dl,0A

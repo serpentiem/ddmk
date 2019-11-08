@@ -1,11 +1,11 @@
 #include "Cache.h"
 
 bool System_Cache_enable = false;
-BYTE * cacheAddr = 0;
-BYTE * cacheFile[MAX_CACHE_FILES] = {};
-BYTE * demo_pl000_00_3 = 0;
+byte * cacheAddr = 0;
+byte * cacheFile[MAX_CACHE_FILES] = {};
+byte * demo_pl000_00_3 = 0;
 
-BYTE * PushFile(const char * str)
+byte * PushFile(const char * str)
 {
 	Log("%s %s", FUNC_NAME, str);
 	char buffer[64];
@@ -29,8 +29,8 @@ BYTE * PushFile(const char * str)
 	BY_HANDLE_FILE_INFORMATION fi = {};
 	GetFileInformationByHandle(file, &fi);
 	static uint64 pos = 0;
-	BYTE * addr = (cacheAddr + DEFAULT_CACHE_SIZE + pos);
-	DWORD bytesRead = 0;
+	byte * addr = (cacheAddr + DEFAULT_CACHE_SIZE + pos);
+	dword bytesRead = 0;
 	OVERLAPPED overlap = {};
 	ReadFile(file, addr, fi.nFileSizeLow, &bytesRead, &overlap);
 	pos += fi.nFileSizeLow;
@@ -150,8 +150,8 @@ static void CreateCache()
 		};
 		for (uint8 i = 0; i < MAX_CACHE_FILES; i++)
 		{
-			BYTE * addr = PushFile(str[i]);
-			DWORD error = GetLastError();
+			byte * addr = PushFile(str[i]);
+			dword error = GetLastError();
 			if (!addr && error)
 			{
 				Log("Critical error: Failed to load all required files!");
@@ -162,7 +162,7 @@ static void CreateCache()
 		}
 	}
 	{
-		BYTE * addr = PushFile("demo_pl000_00_3.pac");
+		byte * addr = PushFile("demo_pl000_00_3.pac");
 		if (addr)
 		{
 			AdjustPointers(addr);
@@ -182,17 +182,17 @@ void System_Cache_Init()
 	CreateDirectoryA("data\\dmc3\\GData.afs", 0);
 	// Set Cache Size
 	{
-		Write<DWORD>((appBaseAddr + 0x30195), (DEFAULT_CACHE_SIZE + CACHE_SIZE));
-		Write<DWORD>((appBaseAddr + 0x301AB), (DEFAULT_CACHE_SIZE + CACHE_SIZE));
+		Write<dword>((appBaseAddr + 0x30195), (DEFAULT_CACHE_SIZE + CACHE_SIZE));
+		Write<dword>((appBaseAddr + 0x301AB), (DEFAULT_CACHE_SIZE + CACHE_SIZE));
 	}
 	// Set FMOD Cache Size
 	{
-		Write<DWORD>((appBaseAddr + 0x32636), FMOD_CACHE_SIZE);
-		Write<DWORD>((appBaseAddr + 0x32659), FMOD_CACHE_SIZE);
+		Write<dword>((appBaseAddr + 0x32636), FMOD_CACHE_SIZE);
+		Write<dword>((appBaseAddr + 0x32659), FMOD_CACHE_SIZE);
 	}
 	// Get Cache Address
 	{
-		BYTE sect0[] =
+		byte sect0[] =
 		{
 			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmcLauncher.exe+490D0
 			0x51,                                                       //push rcx
@@ -203,7 +203,7 @@ void System_Cache_Init()
 		FUNC func = CreateFunction(0, (appBaseAddr + 0x3019E), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteCall(func.sect0, (appBaseAddr + 0x490D0));
-		*(BYTE ***)(func.sect0 + 8) = &cacheAddr;
+		*(byte ***)(func.sect0 + 8) = &cacheAddr;
 		WriteJump((appBaseAddr + 0x30199), func.addr);
 	}
 	// Hook Create Cache
@@ -215,7 +215,7 @@ void System_Cache_Init()
 	// 130 Effect Manager
 	{
 		uint16 count = 0x7FFF;
-		BYTE * addr = (BYTE *)HighAlloc((count * 0x10) + 8);
+		byte * addr = (byte *)HighAlloc((count * 0x10) + 8);
 		WriteAddress((appBaseAddr + 0x2C0387), addr, 7);
 		WriteAddress((appBaseAddr + 0x2C0460), addr, 7);
 		WriteAddress((appBaseAddr + 0x2C0639), addr, 7);
@@ -230,7 +230,7 @@ void System_Cache_Init()
 	// 100 Value Manager
 	{
 		uint16 count = 0x7FFF;
-		BYTE * addr = (BYTE *)HighAlloc((count * 0x10) + 8);
+		byte * addr = (byte *)HighAlloc((count * 0x10) + 8);
 		WriteAddress((appBaseAddr + 0x2C0376), addr, 7);
 		WriteAddress((appBaseAddr + 0x2C043E), addr, 7);
 		WriteAddress((appBaseAddr + 0x2C0663), addr, 7);
