@@ -10,6 +10,7 @@
 #include "System/Event.h"
 #include "System/File.h"
 #include "System/Media.h"
+#include "System/Sound.h"
 #include "System/Weapon.h"
 #include "System/Window.h"
 
@@ -66,6 +67,7 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 		System_Media_Init();
 		System_Media_ToggleSkipIntro(Config.System.Media.skipIntro);
 		System_Media_ToggleSkipCutscenes(Config.System.Media.skipCutscenes);
+		System_Sound_Init();
 		System_Weapon_Init();
 		System_Weapon_Toggle();
 		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);

@@ -3,7 +3,9 @@
 bool System_Cache_enable = false;
 byte * cacheAddr = 0;
 byte * cacheFile[MAX_CACHE_FILES] = {};
-byte * demo_pl000_00_3 = 0;
+byte * demo_pl000_00_3 = 0; // @Todo: Supply patch.
+
+// @Todo: Update with LoadFile.
 
 byte * PushFile(const char * str)
 {

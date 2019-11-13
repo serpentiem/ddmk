@@ -1,5 +1,7 @@
 #include "StyleSwitcher.h"
 
+// @Todo: Check cache dependency.
+
 typedef void(* UpdateIcon_t)();
 
 UpdateIcon_t UpdateIcon = 0;
