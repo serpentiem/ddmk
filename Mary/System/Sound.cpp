@@ -57,15 +57,51 @@ bool SaveFile(byte * addr, uint64 size, const char * fileName)
 	return true;
 }
 
+template <typename T>
+T Reverse(T * var)
+{
+	constexpr uint8 size = (uint8)sizeof(T);
+	T value = 0;
+	for (uint8 index = 0; index < size; index++)
+	{
+		((byte *)&value)[index] = ((byte *)var)[(size - 1 - index)];
+	}
+	return value;
+}
+
+
+
+
+
+
+
+
+
+enum CHANNEL_
+{
+	CHANNEL_SYSTEM,
+	CHANNEL_COMMON,
+	CHANNEL_STYLE_WEAPON,
+	CHANNEL_WEAPON1,
+	CHANNEL_WEAPON2,
+	CHANNEL_WEAPON3,
+	CHANNEL_WEAPON4,
+	CHANNEL_ENEMY,
+	CHANNEL_ROOM,
+	CHANNEL_MUSIC,
+	CHANNEL_DEMO,
+	MAX_CHANNEL = 16,
+};
+
 struct HEAD
 {
 	byte signature[4];
 	byte unknown[8];
 	uint32 size;
 	uint32 waveSize;
-	dword progOff;
-	dword smplOff;
-	dword vagiOff;
+	uint32 progOff;
+	uint32 smplOff;
+	uint32 vagiOff;
 };
 
 struct PROG_METADATA
@@ -109,44 +145,99 @@ struct VAGI_METADATA
 
 struct VAGI_ITEM
 {
-	dword off;
+	uint32 off;
 	uint32 size;
 	byte unknown[4];
 	uint32 sampleRate;
 };
 
-template <typename T>
-T Reverse(T * var)
+struct G_PROG
 {
-	constexpr uint8 size = (uint8)sizeof(T);
-	T value = 0;
-	for (uint8 index = 0; index < size; index++)
-	{
-		((byte *)&value)[index] = ((byte *)var)[(size - 1 - index)];
-	}
-	return value;
-}
-
-template <typename T>
-struct SPS
-{
-	T * addr;
-	#ifdef _WIN64
+	uint32 * off;
+	byte * addr;
 	uint64 pos;
 	uint64 count;
-	uint64 size;
-	#else
-	uint32 pos;
-	uint32 count;
-	uint32 size;
-	#endif
+	PROG_SECT_METADATA & Push(PROG_SECT_METADATA & sect)
+	{
+		off[count] = (uint32)pos;
+		PROG_SECT_METADATA & newSect = *(PROG_SECT_METADATA *)(addr + pos) = sect;
+		pos += sizeof(PROG_SECT_METADATA);
+		count++;
+		return newSect;
+	}
+	PROG_SECT_ITEM & Push(PROG_SECT_ITEM & item)
+	{
+		PROG_SECT_ITEM & newItem = *(PROG_SECT_ITEM *)(addr + pos) = item;
+		pos += sizeof(PROG_SECT_ITEM);
+		return newItem;
+	}
 };
 
-SPS<uint32   > g_progOff = {};
-SPS<byte     > g_prog    = {};
-SPS<SMPL_ITEM> g_smpl    = {};
-SPS<VAGI_ITEM> g_vagi    = {};
-SPS<byte     > g_wave    = {};
+struct G_SMPL
+{
+	SMPL_ITEM * addr;
+	uint64 count;
+	SMPL_ITEM & Push(SMPL_ITEM & item)
+	{
+		SMPL_ITEM & newItem = addr[count] = item;
+		count++;
+		return newItem;
+	}
+};
+
+struct G_VAGI
+{
+	VAGI_ITEM * addr;
+	uint64 count;
+	VAGI_ITEM & Push(VAGI_ITEM & item)
+	{
+		VAGI_ITEM & newItem = addr[count] = item;
+		count++;
+		return newItem;
+	}
+};
+
+struct G_WAVE
+{
+	byte * addr;
+	uint64 pos;
+	uint64 count;
+	byte * Push(byte * item, uint32 itemSize)
+	{
+		byte * newItem = (addr + pos);
+		memcpy(newItem, item, itemSize);
+		pos += itemSize;
+		count++;
+		return newItem;
+	}
+};
+
+uint64 posMap[MAX_CHANNEL] = {};
+
+G_PROG g_prog = {};
+G_SMPL g_smpl = {};
+G_VAGI g_vagi = {};
+G_WAVE g_wave = {};
+
+bool InitPosMap()
+{
+	byte * file = 0;
+	uint64 fileSize = 0;
+	file = LoadFile("SpuMap.bin", &fileSize);
+	if (!file)
+	{
+		printf("LoadFile failed.\n");
+		return false;
+	}
+	uint64 pos = 0x5020;
+	for (uint8 channel = 0; channel < MAX_CHANNEL; channel++)
+	{
+		posMap[channel] = pos;
+		pos += ((uint32 *)(file + 0x10))[channel];
+		printf("posMap[%u] %llX\n", channel, posMap[channel]);
+	}
+	return true;
+}
 
 static void Decompile(byte * archive)
 {
@@ -154,8 +245,9 @@ static void Decompile(byte * archive)
 	printf("fileCount %u\n", fileCount);
 	printf("\n");
 
-	uint16 smpl_count = (uint16)g_smpl.count;
-	uint16 vagi_count = (uint16)g_vagi.count;
+	uint16 smplCount = (uint16)g_smpl.count;
+	uint16 vagiCount = (uint16)g_vagi.count;
+
 	uint32 waveItemCount = 0;
 
 	for (uint8 fileIndex = 0; fileIndex < fileCount; fileIndex++)
@@ -189,32 +281,20 @@ static void Decompile(byte * archive)
 					}
 					printf("off %X\n", off);
 
-					g_progOff.addr[g_progOff.count] = (uint32)g_prog.pos;
-					g_progOff.count++;
-
 					PROG_SECT_METADATA & sect = *(PROG_SECT_METADATA *)(file + head.progOff + off);
-					PROG_SECT_METADATA & newSect = *(PROG_SECT_METADATA *)(g_prog.addr + g_prog.pos);
-					newSect = sect;
-					g_prog.pos += sizeof(PROG_SECT_METADATA);
-
-					printf("itemCount %u\n", sect.itemCount);
+					g_prog.Push(sect);
 
 					for (uint8 itemIndex = 0; itemIndex < sect.itemCount; itemIndex++)
 					{
 						PROG_SECT_ITEM & item = ((PROG_SECT_ITEM *)(file + head.progOff + off + sizeof(PROG_SECT_METADATA)))[itemIndex];
-						PROG_SECT_ITEM & newItem = *(PROG_SECT_ITEM *)(g_prog.addr + g_prog.pos);
-						newItem = item;
-						//newItem.id += smpl_count;
-						g_prog.pos += sizeof(PROG_SECT_ITEM);
+						PROG_SECT_ITEM & newItem = g_prog.Push(item);
+						//newItem.id += smplCount;
 					}
 				}
-
-				printf("\n");
-				printf("g_progOff addr  %llX\n", g_progOff.addr);
-				printf("g_progOff count %llu\n", g_progOff.count);
 				printf("\n");
 				printf("g_prog addr  %llX\n", g_prog.addr);
 				printf("g_prog pos   %llX\n", g_prog.pos);
+				printf("g_prog count %u\n", g_prog.count);
 				printf("\n");
 			}
 
@@ -226,10 +306,8 @@ static void Decompile(byte * archive)
 				for (uint32 itemIndex = 0; itemIndex < itemCount; itemIndex++)
 				{
 					SMPL_ITEM & item = ((SMPL_ITEM *)(file + head.smplOff + 0x10))[itemIndex];
-					SMPL_ITEM & newItem = g_smpl.addr[g_smpl.count];
-					newItem = item;
-					//newItem.id += vagi_count;
-					g_smpl.count++;
+					SMPL_ITEM & newItem = g_smpl.Push(item);
+					//newItem.id += vagiCount;
 				}
 				printf("\n");
 				printf("g_smpl addr  %llX\n", g_smpl.addr);
@@ -245,16 +323,14 @@ static void Decompile(byte * archive)
 				for (uint32 itemIndex = 0; itemIndex < itemCount; itemIndex++)
 				{
 					VAGI_ITEM & item = ((VAGI_ITEM *)(file + head.vagiOff + 0x10))[itemIndex];
-
-					// new item addr 0
-
-					g_vagi.addr[g_vagi.count] = item;
-					g_vagi.count++;
+					VAGI_ITEM & newItem = g_vagi.Push(item);
+					//newItem.off = 0;
 				}
 				printf("\n");
 				printf("g_vagi addr  %llX\n", g_vagi.addr);
 				printf("g_vagi count %llu\n", g_vagi.count);
 				printf("\n");
+
 				waveItemCount = itemCount;
 			}
 		}
@@ -273,13 +349,12 @@ static void Decompile(byte * archive)
 			for (uint32 itemIndex = 0; itemIndex < waveItemCount; itemIndex++)
 			{
 				byte * item = (file + pos);
-				uint32 itemSize = (Reverse((uint32 *)(file + pos + 0xC)) + 0x30);
-				printf("itemSize  %X\n", itemSize);
+				uint32 itemSize = (Reverse((uint32 *)(item + 0xC)) + 0x30);
 
-				memcpy((g_wave.addr + g_wave.pos), item, itemSize);
-				g_wave.pos += itemSize;
-				g_wave.count++;
+				printf("item     %llX\n", item);
+				printf("itemSize %X\n", itemSize);
 
+				g_wave.Push(item, itemSize);
 				pos += itemSize;
 			}
 			printf("\n");
@@ -288,93 +363,121 @@ static void Decompile(byte * archive)
 			printf("g_wave count %llu\n", g_wave.count);
 			printf("\n");
 		}
-		End:
-
-		system("pause");
-
-
+		End:;
 	}
 }
 
-static void Compile()
+void Compile()
 {
-	LogFunction();
-}
-
-static void Process()
-{
-	LogFunction();
-}
-
-void System_Sound_Init()
-{
-	LogFunction();
-
-	printf("g_progOff addr %llX\n", g_progOff.addr);
-	printf("g_prog    addr %llX\n", g_prog.addr);
-	printf("g_smpl    addr %llX\n", g_smpl.addr);
-	printf("g_vagi    addr %llX\n", g_vagi.addr);
-	printf("g_wave    addr %llX\n", g_wave.addr);
-
-	dword error = 0;
-	{
-		void * varAddr[] =
-		{
-			&g_progOff.addr,
-			&g_prog.addr,
-			&g_smpl.addr,
-			&g_vagi.addr,
-			&g_wave.addr,
-		};
-		uint64 size[] =
-		{
-			( 1 * 1024 * 1024),
-			( 8 * 1024 * 1024),
-			( 8 * 1024 * 1024),
-			( 8 * 1024 * 1024),
-			(64 * 1024 * 1024),
-		};
-		for (uint8 index = 0; index < countof(varAddr); index++)
-		{
-			void * & addr = *(void **)varAddr[index];
-			addr = VirtualAlloc(0, size[index], MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-			error = GetLastError();
-			if (!addr)
-			{
-				printf("VirtualAlloc failed. error %X\n", error);
-				return;
-			}
-		}
-	}
-
-	printf("g_progOff addr %llX\n", g_progOff.addr);
-	printf("g_prog    addr %llX\n", g_prog.addr);
-	printf("g_smpl    addr %llX\n", g_smpl.addr);
-	printf("g_vagi    addr %llX\n", g_vagi.addr);
-	printf("g_wave    addr %llX\n", g_wave.addr);
+	printf("Compile\n");
 	printf("\n");
+	dword error = 0;
 
-	const char * archiveName[] =
+	printf("Vagi\n");
+	printf("\n");
 	{
-		//"snd_com0.pac",
-		"snd_sty02.pac",
-		"snd_sty03.pac",
-		//"snd_sty04.pac",
-		//"snd_sty05.pac",
-	};
-	for (uint8 archiveIndex = 0; archiveIndex < countof(archiveName); archiveIndex++)
-	{
-		byte   * archive = 0;
-		uint64   size    = 0;
-		archive = LoadFile(archiveName[archiveIndex], &size);
-		if (!archive)
+		SetLastError(0);
+		byte * addr = (byte *)VirtualAlloc(0, (1 * 1024 * 1024), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+		error = GetLastError();
+		if (!addr)
 		{
+			printf("VirtualAlloc failed. error %X\n", error);
 			return;
 		}
-		Decompile(archive);
+		uint64 pos = 0;
+
+		auto Align = [&]()
+		{
+			constexpr uint64 boundary = 0x10;
+			uint64 remainder = (pos % boundary);
+			if (remainder)
+			{
+				uint64 size = (boundary - remainder);
+				memset((addr + pos), 0xFF, size);
+				pos += size;
+			}
+		};
+
+		HEAD & head = *(HEAD *)(addr + pos);
+		pos += sizeof(HEAD);
+		Align();
+
+		{
+			head.progOff = (uint32)pos;
+
+			PROG_METADATA & prog = *(PROG_METADATA *)(addr + pos);
+			pos += sizeof(PROG_METADATA);
+			Align();
+
+			uint32 * off = (uint32 *)(addr + pos);
+			for (uint64 sect = 0; sect < g_prog.count; sect++)
+			{
+				off[sect] = (g_prog.off[sect] + (uint32)(0x10 + (g_prog.count * sizeof(uint32))));
+				pos += sizeof(uint32);
+			}
+			memcpy((addr + pos), g_prog.addr, g_prog.pos);
+			pos += g_prog.pos;
+			Align();
+
+			prog.signature[0] = 'P';
+			prog.signature[1] = 'r';
+			prog.signature[2] = 'o';
+			prog.signature[3] = 'g';
+			prog.size = (uint32)(pos - head.progOff);
+			prog.last = (uint32)(g_prog.count - 1);
+		}
+
+		{
+			head.smplOff = (uint32)pos;
+
+			SMPL_METADATA & smpl = *(SMPL_METADATA *)(addr + pos);
+			pos += sizeof(SMPL_METADATA);
+			Align();
+
+			uint64 size = (g_smpl.count * sizeof(SMPL_ITEM));
+			memcpy((addr + pos), g_smpl.addr, size);
+			pos += size;
+			Align();
+
+			smpl.signature[0] = 'S';
+			smpl.signature[1] = 'm';
+			smpl.signature[2] = 'p';
+			smpl.signature[3] = 'l';
+			smpl.size = (uint32)(pos - head.smplOff);
+			smpl.last = (uint32)(g_smpl.count - 1);
+		}
+
+		{
+			head.vagiOff = (uint32)pos;
+
+			VAGI_METADATA & vagi = *(VAGI_METADATA *)(addr + pos);
+			pos += sizeof(VAGI_METADATA);
+			Align();
+
+			uint64 size = (g_vagi.count * sizeof(VAGI_ITEM));
+			memcpy((addr + pos), g_vagi.addr, size);
+			pos += size;
+			Align();
+
+			vagi.signature[0] = 'V';
+			vagi.signature[1] = 'a';
+			vagi.signature[2] = 'g';
+			vagi.signature[3] = 'i';
+			vagi.size = (uint32)(pos - head.vagiOff);
+			vagi.last = (uint32)(g_vagi.count - 1);
+		}
+
+
+		head.signature[0] = 'H';
+		head.signature[1] = 'e';
+		head.signature[2] = 'a';
+		head.signature[3] = 'd';
+
+
+
+		printf("addr %llX\n", addr);
+		printf("pos %llX\n", pos);
 	}
-	{
-		FUNC func = CreateFunction(Process);
-		WriteJump((appBaseAddr + 0x32901), func.addr);
-	}
+
+	system("pause");
 }
