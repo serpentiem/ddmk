@@ -1,4 +1,6 @@
 #pragma once
 #include "../../Core/Core.h"
 
-void System_Sound_Init();
+#include "../FMOD.h"
+
+bool System_Sound_Init();
