@@ -15,7 +15,7 @@ byte * LoadFile(const char * fileName, uint64 * p_size = 0)
 	error = GetLastError();
 	if (file == INVALID_HANDLE_VALUE)
 	{
-		printf("CreateFileA failed. error %X\n", error);
+		Log("CreateFileA failed. error %s %X", fileName, error);
 		return 0;
 	}
 	BY_HANDLE_FILE_INFORMATION fi = {};
@@ -25,7 +25,7 @@ byte * LoadFile(const char * fileName, uint64 * p_size = 0)
 	error = GetLastError();
 	if (!addr)
 	{
-		printf("VirtualAlloc failed. error %X\n", error);
+		Log("VirtualAlloc failed. error %X", error);
 		return 0;
 	}
 	dword bytesRead = 0;
@@ -47,7 +47,7 @@ bool SaveFile(byte * addr, uint64 size, const char * fileName)
 	error = GetLastError();
 	if (file == INVALID_HANDLE_VALUE)
 	{
-		printf("CreateFile failed. error %X\n", error);
+		Log("CreateFile failed. error %X", error);
 		return false;
 	}
 	dword bytesWritten = 0;
@@ -71,6 +71,14 @@ T Reverse(T * var)
 
 #pragma endregion
 
+#pragma region Global Definitions
+
+enum SOUND_
+{
+	MAX_SOUND = 10000,
+	MAX_SOUND_PER_CHANNEL = 625,
+};
+
 enum CHANNEL_
 {
 	CHANNEL_SYSTEM,
@@ -86,6 +94,30 @@ enum CHANNEL_
 	CHANNEL_DEMO,
 	MAX_CHANNEL = 16,
 };
+
+enum PROG_ID_ // @Research: Rather PROG_SECT_ID_? What is Prog anyway.
+{
+	PROG_ID_REBELLION,
+	PROG_ID_CERBERUS,
+	PROG_ID_AGNI_RUDRA, // @Todo: Add to convention.
+	PROG_ID_NEVAN,
+	PROG_ID_BEOWULF,
+	PROG_ID_EBONY_IVORY,
+	PROG_ID_SHOTGUN,
+	PROG_ID_ARTEMIS,
+	PROG_ID_SPIRAL,
+	PROG_ID_KALINA_ANN,
+	PROG_ID_SWORDMASTER = 100,
+	PROG_ID_GUNSLINGER,
+	PROG_ID_TRICKSTER,
+	PROG_ID_ROYALGUARD,
+	PROG_ID_QUICKSILVER,
+	PROG_ID_DOPPELGANGER,
+	MAX_PROG_ID = 108,
+};
+
+
+
 
 struct HEAD
 {
@@ -151,9 +183,20 @@ struct G_PROG
 	uint64 pos;
 	uint64 count;
 	uint32 * off;
-	PROG_SECT_METADATA & Push(PROG_SECT_METADATA & sect)
+	uint8 id[MAX_PROG_ID];
+
+	PROG_SECT_METADATA & Push(PROG_SECT_METADATA & sect, uint8 index) // @Research: Convention for identical names.
 	{
 		off[count] = (uint32)pos;
+
+
+		id[count] = index;
+
+
+
+
+
+
 		PROG_SECT_METADATA & newSect = *(PROG_SECT_METADATA *)(addr + pos) = sect;
 		pos += sizeof(PROG_SECT_METADATA);
 		count++;
@@ -230,34 +273,40 @@ struct SOUND_ITEM
 	FMOD_SOUND * sound;
 };
 
-uint64 posMap[MAX_CHANNEL] = {};
+G_PROG g_prog[MAX_CHANNEL] = {};
+G_SMPL g_smpl[MAX_CHANNEL] = {};
+G_VAGI g_vagi[MAX_CHANNEL] = {};
+G_WAVE g_wave[MAX_CHANNEL] = {};
 
-G_PROG g_prog = {};
-G_SMPL g_smpl = {};
-G_VAGI g_vagi = {};
-G_WAVE g_wave = {};
+uint64       posMap   [MAX_CHANNEL] = {};
+byte       * soundMap [MAX_CHANNEL] = {};
+SOUND_ITEM * soundItem[MAX_CHANNEL] = {};
 
-SOUND_ITEM * soundItem = 0;
+#pragma endregion
 
-#pragma region __COMPILE_DECOMPILE__
-
-static void Decompile(byte * archive)
+static void Decompile(byte * archive, uint8 channel, uint8 progId) // = 0xFF
 {
-	LogFunction();
+	Log("Decompile Start");
+	LogNewLine();
+	Log("archive %llX", archive);
+	Log("channel %u"  , channel);
 
 	uint32 & fileCount = *(uint32 *)(archive + 4);
-	printf("fileCount %u\n", fileCount);
-	printf("\n");
 
-	uint16 smplCount = (uint16)g_smpl.count;
-	uint16 vagiCount = (uint16)g_vagi.count;
+	Log("fileCount %u", fileCount);
+	LogNewLine();
 
+	uint16 smplCount = (uint16)g_smpl[channel].count;
+	uint16 vagiCount = (uint16)g_vagi[channel].count;
 	uint32 waveItemCount = 0;
 
 	for (uint8 fileIndex = 0; fileIndex < fileCount; fileIndex++)
 	{
-		dword off = ((dword *)(archive + 8))[fileIndex]; // @Todo: Change to fileOff and uint32.
-		byte * file = (archive + off);
+		uint32 fileOff = ((uint32 *)(archive + 8))[fileIndex];
+		byte * file = (archive + fileOff);
+
+		Log("file %u %llX", fileIndex, file);
+		LogNewLine();
 
 		Head:
 		{
@@ -269,12 +318,15 @@ static void Decompile(byte * archive)
 					goto Wave;
 				}
 			}
+			Log("Head");
+			LogNewLine();
+
 			HEAD & head = *(HEAD *)file;
 
-			printf("Prog\n");
+			Log("Prog");
 			{
 				PROG_METADATA & prog = *(PROG_METADATA *)(file + head.progOff);
-				printf("last %u\n", prog.last);
+				Log("last %u", prog.last);
 				uint32 sectCount = (prog.last + 1);
 				for (uint32 sectIndex = 0; sectIndex < sectCount; sectIndex++)
 				{
@@ -283,60 +335,57 @@ static void Decompile(byte * archive)
 					{
 						continue;
 					}
-					printf("off %X\n", off);
+					Log("off %X", off);
 
 					PROG_SECT_METADATA & sect = *(PROG_SECT_METADATA *)(file + head.progOff + off);
-					g_prog.Push(sect);
+					g_prog[channel].Push(sect, progId);
 
 					for (uint8 itemIndex = 0; itemIndex < sect.itemCount; itemIndex++)
 					{
 						PROG_SECT_ITEM & item = ((PROG_SECT_ITEM *)(file + head.progOff + off + sizeof(PROG_SECT_METADATA)))[itemIndex];
-						PROG_SECT_ITEM & newItem = g_prog.Push(item);
-						//newItem.id += smplCount;
+						PROG_SECT_ITEM & newItem = g_prog[channel].Push(item);
+						newItem.id += smplCount;
 					}
 				}
-				printf("\n");
-				printf("g_prog addr  %llX\n", g_prog.addr);
-				printf("g_prog pos   %llX\n", g_prog.pos);
-				printf("g_prog count %u\n", g_prog.count);
-				printf("\n");
+				Log("g_prog[%u] addr  %llX", channel, g_prog[channel].addr );
+				Log("g_prog[%u] pos   %llX", channel, g_prog[channel].pos  );
+				Log("g_prog[%u] count %u"  , channel, g_prog[channel].count);
 			}
+			LogNewLine();
 
-			printf("Smpl\n");
+			Log("Smpl");
 			{
 				SMPL_METADATA & smpl = *(SMPL_METADATA *)(file + head.smplOff);
-				printf("last %u\n", smpl.last);
+				Log("last %u", smpl.last);
 				uint32 itemCount = (smpl.last + 1);
 				for (uint32 itemIndex = 0; itemIndex < itemCount; itemIndex++)
 				{
 					SMPL_ITEM & item = ((SMPL_ITEM *)(file + head.smplOff + 0x10))[itemIndex];
-					SMPL_ITEM & newItem = g_smpl.Push(item);
-					//newItem.id += vagiCount;
+					SMPL_ITEM & newItem = g_smpl[channel].Push(item);
+					newItem.id += vagiCount;
 				}
-				printf("\n");
-				printf("g_smpl addr  %llX\n", g_smpl.addr);
-				printf("g_smpl count %llu\n", g_smpl.count);
-				printf("\n");
+				Log("g_smpl[%u] addr  %llX", channel, g_smpl[channel].addr );
+				Log("g_smpl[%u] count %llu", channel, g_smpl[channel].count);
 			}
+			LogNewLine();
 
-			printf("Vagi\n");
+			Log("Vagi");
 			{
 				VAGI_METADATA & vagi = *(VAGI_METADATA *)(file + head.vagiOff);
-				printf("last %u\n", vagi.last);
+				Log("last %u", vagi.last);
 				uint32 itemCount = (vagi.last + 1);
 				for (uint32 itemIndex = 0; itemIndex < itemCount; itemIndex++)
 				{
 					VAGI_ITEM & item = ((VAGI_ITEM *)(file + head.vagiOff + 0x10))[itemIndex];
-					VAGI_ITEM & newItem = g_vagi.Push(item);
-					//newItem.off = 0;
+					VAGI_ITEM & newItem = g_vagi[channel].Push(item);
+					newItem.off = 0;
 				}
-				printf("\n");
-				printf("g_vagi addr  %llX\n", g_vagi.addr);
-				printf("g_vagi count %llu\n", g_vagi.count);
-				printf("\n");
+				Log("g_vagi[%u] addr  %llX", channel, g_vagi[channel].addr );
+				Log("g_vagi[%u] count %llu", channel, g_vagi[channel].count);
 
 				waveItemCount = itemCount;
 			}
+			LogNewLine();
 		}
 		Wave:
 		{
@@ -348,45 +397,62 @@ static void Decompile(byte * archive)
 					goto End;
 				}
 			}
-			printf("waveItemCount %u\n", waveItemCount);
-			uint32 pos = 0;
+			Log("Wave");
+			Log("waveItemCount %u", waveItemCount);
+
+			uint32 filePos = 0;
 			for (uint32 itemIndex = 0; itemIndex < waveItemCount; itemIndex++)
 			{
-				byte * item = (file + pos);
+				byte * item = (file + filePos);
 				uint32 itemSize = (Reverse((uint32 *)(item + 0xC)) + 0x30);
 
-				printf("item     %llX\n", item);
-				printf("itemSize %X\n", itemSize);
+				Log("item     %llX", item);
+				Log("itemSize %X", itemSize);
 
-				g_wave.Push(item, itemSize);
-				pos += itemSize;
+				g_wave[channel].Push(item, itemSize);
+				filePos += itemSize;
 			}
-			printf("\n");
-			printf("g_wave addr  %llX\n", g_wave.addr);
-			printf("g_wave pos   %llX\n", g_wave.pos);
-			printf("g_wave count %llu\n", g_wave.count);
-			printf("\n");
+			Log("g_wave[%u] addr  %llX", channel, g_wave[channel].addr );
+			Log("g_wave[%u] pos   %X"  , channel, g_wave[channel].pos  );
+			Log("g_wave[%u] count %u"  , channel, g_wave[channel].count);
 		}
 		End:;
 	}
+	LogNewLine();
+	Log("Decompile End");
+	LogNewLine();
 }
 
-static void Compile()
+static void Compile(uint8 channel)
 {
-	LogFunction();
+	//LogFunction();
+
+	Log("Compile Start");
+	LogNewLine();
+
 
 	dword error = 0;
 
 	Head:
 	{
-		SetLastError(0);
-		byte * addr = (byte *)VirtualAlloc(0, (1 * 1024 * 1024), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-		error = GetLastError();
-		if (!addr)
-		{
-			printf("VirtualAlloc failed. error %X\n", error);
-			return;
-		}
+		//SetLastError(0);
+		//byte * addr = (byte *)VirtualAlloc(0, (1 * 1024 * 1024), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+		//error = GetLastError();
+		//if (!addr)
+		//{
+		//	Log("VirtualAlloc failed. error %X", error);
+		//	return;
+		//}
+
+
+		byte * & addr = soundMap[channel];
+
+
+
+
+
+
+
 		uint64 pos = 0;
 
 		auto Align = [&]()
@@ -413,13 +479,66 @@ static void Compile()
 			Align();
 
 			uint32 * off = (uint32 *)(addr + pos);
-			for (uint64 sect = 0; sect < g_prog.count; sect++)
+
+
+			for (uint8 sect = 0; sect < MAX_PROG_ID; sect++)
 			{
-				off[sect] = (g_prog.off[sect] + (uint32)(0x10 + (g_prog.count * sizeof(uint32))));
+				off[sect] = 0xFFFFFFFF;
 				pos += sizeof(uint32);
 			}
-			memcpy((addr + pos), g_prog.addr, g_prog.pos);
-			pos += g_prog.pos;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			// @Todo: Clear up!
+
+
+
+			for (uint64 sect = 0; sect < g_prog[channel].count; sect++)
+			{
+
+				
+				uint8 & id = g_prog[channel].id[sect];
+
+
+
+
+				// @Todo: AGAIN, CLEAN THIS UP!
+
+				// @Todo: Clarify!
+
+
+				//off[id] = (g_prog[channel].off[sect] + (uint32)(0x10 + (MAX_PROG_ID * sizeof(uint32)) + (g_prog[channel].count * sizeof(uint32))));
+				off[id] = (g_prog[channel].off[sect] + (uint32)((MAX_PROG_ID * sizeof(uint32)) + (g_prog[channel].count * sizeof(uint32))));
+				//pos += sizeof(uint32);
+			}
+
+
+
+
+
+
+			memcpy((addr + pos), g_prog[channel].addr, g_prog[channel].pos);
+			
+
+			//pos += (MAX_PROG_ID * sizeof(uint32));
+
+
+			pos += g_prog[channel].pos;
+
+			//constexpr uint32 fLast = 134;
+
+
 			Align();
 
 			prog.signature[0] = 'P';
@@ -427,7 +546,17 @@ static void Compile()
 			prog.signature[2] = 'o';
 			prog.signature[3] = 'g';
 			prog.size = (uint32)(pos - head.progOff);
-			prog.last = (uint32)(g_prog.count - 1);
+			//prog.last = (uint32)(g_prog[channel].count - 1);
+
+			prog.last = MAX_PROG_ID;
+
+			//prog.last = fLast;
+
+
+
+
+
+
 		}
 
 		{
@@ -437,8 +566,8 @@ static void Compile()
 			pos += sizeof(SMPL_METADATA);
 			Align();
 
-			uint64 size = (g_smpl.count * sizeof(SMPL_ITEM));
-			memcpy((addr + pos), g_smpl.addr, size);
+			uint64 size = (g_smpl[channel].count * sizeof(SMPL_ITEM));
+			memcpy((addr + pos), g_smpl[channel].addr, size);
 			pos += size;
 			Align();
 
@@ -447,7 +576,7 @@ static void Compile()
 			smpl.signature[2] = 'p';
 			smpl.signature[3] = 'l';
 			smpl.size = (uint32)(pos - head.smplOff);
-			smpl.last = (uint32)(g_smpl.count - 1);
+			smpl.last = (uint32)(g_smpl[channel].count - 1);
 		}
 
 		{
@@ -457,8 +586,8 @@ static void Compile()
 			pos += sizeof(VAGI_METADATA);
 			Align();
 
-			uint64 size = (g_vagi.count * sizeof(VAGI_ITEM));
-			memcpy((addr + pos), g_vagi.addr, size);
+			uint64 size = (g_vagi[channel].count * sizeof(VAGI_ITEM));
+			memcpy((addr + pos), g_vagi[channel].addr, size);
 			pos += size;
 			Align();
 
@@ -467,7 +596,34 @@ static void Compile()
 			vagi.signature[2] = 'g';
 			vagi.signature[3] = 'i';
 			vagi.size = (uint32)(pos - head.vagiOff);
-			vagi.last = (uint32)(g_vagi.count - 1);
+			vagi.last = (uint32)(g_vagi[channel].count - 1);
+
+
+			//uint32 vagiPos = 0x10;
+
+
+			//uint32 vagiPos = 0;
+
+			Log("Adjusting offsets.");
+
+			uint32 itemCount = (vagi.last + 1);
+			for (uint32 itemIndex = 0; itemIndex < itemCount; itemIndex++)
+			{
+				static uint32 pos = 0;
+				VAGI_ITEM & item = ((VAGI_ITEM *)(addr + head.vagiOff + 0x10))[itemIndex];
+				item.off = pos;
+				pos += item.size;
+			}
+
+
+
+
+
+
+
+
+
+
 		}
 
 
@@ -478,58 +634,137 @@ static void Compile()
 
 
 
-		printf("addr %llX\n", addr);
-		printf("pos %llX\n", pos);
+		Log("addr %llX", addr);
+		Log("pos %llX", pos);
 	}
 
 
 
 	Wave:
 	{
-		SetLastError(0);
-		soundItem = (SOUND_ITEM *)VirtualAlloc(0, (1 * 1024 * 1024), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-		error = GetLastError();
-		if (!soundItem)
-		{
-			printf("VirtualAlloc failed. error %X\n", error);
-			return;
-		}
-
-		
 		uint64 pos = posMap[CHANNEL_STYLE_WEAPON];
-		for (uint32 index = 0; index < g_wave.count; index++)
+		for (uint32 index = 0; index < g_wave[channel].count; index++)
 		{
-			printf("g_wave[%u] addr %llX\n", index, g_wave[index].addr);
-			printf("g_wave[%u] size %X\n", index, g_wave[index].size);
+			Log("g_wave[%u][%u] addr %llX", channel, index, g_wave[channel][index].addr);
+			Log("g_wave[%u][%u] size %X"  , channel, index, g_wave[channel][index].size);
 
-			FMOD_SYSTEM * FMOD_system = 0;
+			//FMOD_SYSTEM * FMOD_system = 0;
+
+			FMOD_SYSTEM * FMOD_system = *(FMOD_SYSTEM **)(appBaseAddr + 0x5DE3D0);
+
 
 			FMOD_CREATESOUNDEXINFO info = {};
 			info.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
-			info.length = g_wave[index].size;
+			info.length = g_wave[channel][index].size;
 
-			SOUND_ITEM & item = soundItem[index];
+			SOUND_ITEM & item = soundItem[channel][index];
 			item.pos = pos;
-			item.size = (uint64)g_wave[index].size;
 
-			FMOD_RESULT result = FMOD_System_CreateSound(FMOD_system, g_wave[index].addr, 0, &info, &item.sound);
 
-			if (result != 0)
+			uint64 adjustedSize = ((uint64)g_wave[channel][index].size - 0x20); // @Todo: Document!
+
+
+
+
+			//item.size = (uint64)g_wave[channel][index].size;
+
+			item.size = adjustedSize;
+
+
+
+
+			//item.size = (uint64)g_wave[index].size;
+
+
+
+
+			//FMOD_RESULT result = FMOD_System_CreateSound(FMOD_system, g_wave[index].addr, 0, &info, &item.sound);
+
+			//HoboBreak();
+
+			// it wants 0x10 for the vagi map
+
+
+
+
+			// true size when registering them
+
+			FMOD_RESULT result = FMOD_System_CreateSound
+			(
+				FMOD_system,
+				g_wave[channel][index].addr,
+				FMOD_CREATECOMPRESSEDSAMPLE | FMOD_OPENMEMORY | FMOD_LOWMEM,
+				&info,
+				&item.sound
+			);
+
+
+
+
+			//mode 0000000008000A00
+
+			//08000A00
+
+			//#define FMOD_CREATECOMPRESSEDSAMPLE    0x00000200
+			//#define FMOD_OPENMEMORY                0x00000800
+			//#define FMOD_LOWMEM                    0x08000000  /* Removes some features from samples to give a lower memory overhead, like Sound::getName.  See remarks. */
+			
+
+			//FMOD_OK,                        /* No errors. */
+
+
+
+
+			/*
+			dmc3.exe+329C8 - 48 8B 0D 01BA5A00     - mov rcx,[dmc3.exe+5DE3D0] { system
+			}
+
+
+
+			
+			*/
+
+			//true file size
+
+
+			if (result != FMOD_OK)
 			{
 				Log("FMOD_System_CreateSound failed. result %X", result);
 				return;
 			}
+
+			pos += item.size;
+
+
+
+
 		}
 	}
+
+	Log("soundMap [%u] %llX", channel, soundMap [channel]);
+	Log("soundItem[%u] %llX", channel, soundItem[channel]);
+
+
+
+
+
+
+
+	Log("Compile End");
+	LogNewLine();
+
 }
 
-#pragma endregion
+
+
+
+
 
 static bool InitPosMap()
 {
 	byte * file = 0;
 	uint64 fileSize = 0;
-	file = LoadFile("SpuMap.bin", &fileSize);
+	file = LoadFile("data\\dmc3\\GData.afs\\SpuMap.bin", &fileSize);
 	if (!file)
 	{
 		Log("LoadFile failed.");
@@ -545,71 +780,108 @@ static bool InitPosMap()
 	return true;
 }
 
+
+
+
+static void Process()
+{
+
+	Compile(CHANNEL_STYLE_WEAPON);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
 bool System_Sound_Init()
 {
 	LogFunction();
-
-	Log("g_prog off  %llX", g_prog.off);
-	Log("g_prog addr %llX", g_prog.addr);
-	Log("g_smpl addr %llX", g_smpl.addr);
-	Log("g_vagi addr %llX", g_vagi.addr);
-	Log("g_wave addr %llX", g_wave.addr);
-	Log("g_wave off  %llX", g_wave.off);
-	Log("g_wave size %llX", g_wave.size);
-
 	dword error = 0;
+	for (uint8 channel = 0; channel < MAX_CHANNEL; channel++)
 	{
-		void * varAddr[] =
+		struct VAR_PROC
 		{
-			&g_prog.off,
-			&g_prog.addr,
-			&g_smpl.addr,
-			&g_vagi.addr,
-			&g_wave.addr,
-			&g_wave.off,
-			&g_wave.size,
+			void * addr;
+			uint64 size;
 		};
-		uint64 size[] =
+		VAR_PROC var[] =
 		{
-			( 1 * 1024 * 1024),
-			( 8 * 1024 * 1024),
-			( 8 * 1024 * 1024),
-			( 8 * 1024 * 1024),
-			(64 * 1024 * 1024),
-			( 1 * 1024 * 1024),
-			( 1 * 1024 * 1024),
+			{ &g_prog[channel].addr, (1 * 1024 * 1024                          ) },
+			{ &g_prog[channel].off , (MAX_SOUND_PER_CHANNEL * sizeof(uint32)   ) },
+			{ &g_smpl[channel].addr, (MAX_SOUND_PER_CHANNEL * sizeof(SMPL_ITEM)) },
+			{ &g_vagi[channel].addr, (MAX_SOUND_PER_CHANNEL * sizeof(VAGI_ITEM)) },
+			{ &g_wave[channel].addr, (8 * 1024 * 1024                          ) },
+			{ &g_wave[channel].off , (MAX_SOUND_PER_CHANNEL * sizeof(uint32)   ) },
+			{ &g_wave[channel].size, (MAX_SOUND_PER_CHANNEL * sizeof(uint32)   ) },
+			{ &soundMap[channel]   , (1 * 1024 * 1024                          ) },
+			{ &soundItem[channel]  , (1 * 1024 * 1024                          ) }, // @Research: Use game's array.
 		};
-		for (uint8 index = 0; index < countof(varAddr); index++)
+		for (uint8 index = 0; index < countof(var); index++)
 		{
-			void * & addr = *(void **)varAddr[index];
-			addr = VirtualAlloc(0, size[index], MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+			void * & addr = *(void **)var[index].addr;
+			SetLastError(0);
+			addr = VirtualAllocEx(appProcess, 0, var[index].size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 			error = GetLastError();
 			if (!addr)
 			{
-				Log("VirtualAlloc failed. error %X\n", error);
+				Log("VirtualAllocEx failed. %u %u %X", channel, index, error);
 				return false;
 			}
 		}
+		Log("g_prog   [%u] addr %llX", channel, g_prog[channel].addr);
+		Log("g_prog   [%u] off  %llX", channel, g_prog[channel].off);
+		Log("g_smpl   [%u] addr %llX", channel, g_smpl[channel].addr);
+		Log("g_vagi   [%u] addr %llX", channel, g_vagi[channel].addr);
+		Log("g_wave   [%u] addr %llX", channel, g_wave[channel].addr);
+		Log("g_wave   [%u] off  %llX", channel, g_wave[channel].off);
+		Log("g_wave   [%u] size %llX", channel, g_wave[channel].size);
+		Log("soundMap [%u]      %llX", channel, soundMap[channel]);
+		Log("soundItem[%u]      %llX", channel, soundItem[channel]);
 	}
 
-	Log("g_prog off  %llX", g_prog.off);
-	Log("g_prog addr %llX", g_prog.addr);
-	Log("g_smpl addr %llX", g_smpl.addr);
-	Log("g_vagi addr %llX", g_vagi.addr);
-	Log("g_wave addr %llX", g_wave.addr);
-	Log("g_wave off  %llX", g_wave.off);
-	Log("g_wave size %llX", g_wave.size);
 
-	Log("\n");
+
+
+
+
+	/*
+	C:\Program Files (x86)\Steam\steamapps\common\Devil May Cry HD Collection\data\dmc3\GData.afs
+	*/
+
+
+
+
+	// Style Weapon
 
 	const char * archiveName[] =
 	{
-		//"snd_com0.pac",
-		"snd_sty02.pac",
-		"snd_sty03.pac",
-		//"snd_sty04.pac",
-		//"snd_sty05.pac",
+		"data\\dmc3\\GData.afs\\snd_sty02.pac",
+		"data\\dmc3\\GData.afs\\snd_sty03.pac",
+		"data\\dmc3\\GData.afs\\snd_sty04.pac",
+		"data\\dmc3\\GData.afs\\snd_sty05.pac",
 	};
+
+
+	uint8 id[64] =
+	{
+		102,
+		103,
+		104,
+		105,
+	};
+
+
+
+
 	for (uint8 archiveIndex = 0; archiveIndex < countof(archiveName); archiveIndex++)
 	{
 		byte   * archive = 0;
@@ -619,15 +891,87 @@ bool System_Sound_Init()
 		{
 			return false;
 		}
-		Decompile(archive);
+		Decompile(archive, CHANNEL_STYLE_WEAPON, id[archiveIndex]);
 	}
+
+
+
+
+
+
+
+
+
+
+
 
 	if (!InitPosMap())
 	{
 		return false;
 	}
 
-	Compile();
+	
+
+
+	// @Todo: Def free memory!
+
+
+	{
+		FUNC func = CreateFunction(Process);
+		WriteJump((appBaseAddr + 0x32901), func.addr);
+	}
+
+
+
+
+
+	{
+
+		// @Todo: edx also has to be adjusted.
+
+		byte sect0[] =
+		{
+			0x48, 0x8D, 0x3D, 0x00, 0x00, 0x00, 0x00,                   //lea rdi,[dmc3.exe+5DE5B0]
+			0x80, 0x79, 0x0C, 0x00,                                     //cmp byte ptr [rcx+0C],CHANNEL_STYLE_WEAPON
+			0x75, 0x0A,                                                 //jne short
+			0x48, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rdi,soundItem[CHANNEL_STYLE_WEAPON] // @Todo: Make dynamic!
+		};
+		FUNC func = CreateFunction(0, (appBaseAddr + 0x321E7), false, true, sizeof(sect0));
+
+		memcpy(func.sect0, sect0, sizeof(sect0));
+
+
+
+
+
+
+		WriteAddress(func.addr, (appBaseAddr + 0x5DE5B0), 7);
+
+
+		*(uint8 *)(func.addr + 0xA) = CHANNEL_STYLE_WEAPON;
+
+		*(SOUND_ITEM **)(func.addr + 0xF) = soundItem[CHANNEL_STYLE_WEAPON];
+
+		//WriteJump((func.addr + 0x17), (appBaseAddr + 0x321E7));
+
+		WriteJump((appBaseAddr + 0x321E0), func.addr, 2); // @Todo: Not always required, add toggle.
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	return true;
 }

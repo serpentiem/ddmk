@@ -1,5 +1,7 @@
 #include "FMOD.h"
 
+FMOD_System_CreateSound_t FMOD_System_CreateSound = 0;
+
 bool FMOD_Init()
 {
 	LogFunction();

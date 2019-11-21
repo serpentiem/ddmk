@@ -11,10 +11,10 @@ struct FMOD_CREATESOUNDEXINFO
 	int32 cbsize;
 	uint32 length;
 	byte unknown[224];
-	FMOD_CREATESOUNDEXINFO()
-	{
-		cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
-	}
+	//FMOD_CREATESOUNDEXINFO()
+	//{
+	//	cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
+	//}
 };
 
 typedef FMOD_RESULT(__fastcall * FMOD_System_CreateSound_t)
@@ -27,5 +27,14 @@ typedef FMOD_RESULT(__fastcall * FMOD_System_CreateSound_t)
 );
 
 extern FMOD_System_CreateSound_t FMOD_System_CreateSound;
+
+enum FMOD_
+{
+	FMOD_OK,
+};
+
+#define FMOD_CREATECOMPRESSEDSAMPLE 0x00000200
+#define FMOD_OPENMEMORY             0x00000800
+#define FMOD_LOWMEM                 0x08000000
 
 bool FMOD_Init();
