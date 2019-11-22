@@ -95,25 +95,25 @@ enum CHANNEL_
 	MAX_CHANNEL = 16,
 };
 
-enum PROG_ID_ // @Research: Rather PROG_SECT_ID_? What is Prog anyway.
+enum PROG_SECT_
 {
-	PROG_ID_REBELLION,
-	PROG_ID_CERBERUS,
-	PROG_ID_AGNI_RUDRA, // @Todo: Add to convention.
-	PROG_ID_NEVAN,
-	PROG_ID_BEOWULF,
-	PROG_ID_EBONY_IVORY,
-	PROG_ID_SHOTGUN,
-	PROG_ID_ARTEMIS,
-	PROG_ID_SPIRAL,
-	PROG_ID_KALINA_ANN,
-	PROG_ID_SWORDMASTER = 100,
-	PROG_ID_GUNSLINGER,
-	PROG_ID_TRICKSTER,
-	PROG_ID_ROYALGUARD,
-	PROG_ID_QUICKSILVER,
-	PROG_ID_DOPPELGANGER,
-	MAX_PROG_ID = 108,
+	PROG_SECT_REBELLION,
+	PROG_SECT_CERBERUS,
+	PROG_SECT_AGNI_RUDRA,
+	PROG_SECT_NEVAN,
+	PROG_SECT_BEOWULF,
+	PROG_SECT_EBONY_IVORY,
+	PROG_SECT_SHOTGUN,
+	PROG_SECT_ARTEMIS,
+	PROG_SECT_SPIRAL,
+	PROG_SECT_KALINA_ANN,
+	PROG_SECT_SWORDMASTER = 100,
+	PROG_SECT_GUNSLINGER,
+	PROG_SECT_TRICKSTER,
+	PROG_SECT_ROYALGUARD,
+	PROG_SECT_QUICKSILVER,
+	PROG_SECT_DOPPELGANGER,
+	MAX_PROG_SECT = 108,
 };
 
 
@@ -183,7 +183,7 @@ struct G_PROG
 	uint64 pos;
 	uint64 count;
 	uint32 * off;
-	uint8 id[MAX_PROG_ID];
+	uint8 id[MAX_PROG_SECT];
 
 	PROG_SECT_METADATA & Push(PROG_SECT_METADATA & sect, uint8 index) // @Research: Convention for identical names.
 	{
@@ -423,36 +423,16 @@ static void Decompile(byte * archive, uint8 channel, uint8 progId) // = 0xFF
 	LogNewLine();
 }
 
-static void Compile(uint8 channel)
+static void Compile(uint8 channel, uint8 maxProgSect)
 {
-	//LogFunction();
-
 	Log("Compile Start");
 	LogNewLine();
-
 
 	dword error = 0;
 
 	Head:
 	{
-		//SetLastError(0);
-		//byte * addr = (byte *)VirtualAlloc(0, (1 * 1024 * 1024), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-		//error = GetLastError();
-		//if (!addr)
-		//{
-		//	Log("VirtualAlloc failed. error %X", error);
-		//	return;
-		//}
-
-
 		byte * & addr = soundMap[channel];
-
-
-
-
-
-
-
 		uint64 pos = 0;
 
 		auto Align = [&]()
@@ -471,6 +451,7 @@ static void Compile(uint8 channel)
 		pos += sizeof(HEAD);
 		Align();
 
+		Prog:
 		{
 			head.progOff = (uint32)pos;
 
@@ -480,64 +461,25 @@ static void Compile(uint8 channel)
 
 			uint32 * off = (uint32 *)(addr + pos);
 
+			// @Optimize: Adjust datatypes with regards to MAX_PROG_SECT.
 
-			for (uint8 sect = 0; sect < MAX_PROG_ID; sect++)
+			for (uint8 sect = 0; sect < maxProgSect; sect++)
 			{
+				//Log("Def not accessing this. %u", sect);
 				off[sect] = 0xFFFFFFFF;
 				pos += sizeof(uint32);
 			}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-			// @Todo: Clear up!
-
-
-
 			for (uint64 sect = 0; sect < g_prog[channel].count; sect++)
 			{
-
-				
 				uint8 & id = g_prog[channel].id[sect];
-
-
-
-
-				// @Todo: AGAIN, CLEAN THIS UP!
-
-				// @Todo: Clarify!
-
-
-				//off[id] = (g_prog[channel].off[sect] + (uint32)(0x10 + (MAX_PROG_ID * sizeof(uint32)) + (g_prog[channel].count * sizeof(uint32))));
-				off[id] = (g_prog[channel].off[sect] + (uint32)((MAX_PROG_ID * sizeof(uint32)) + (g_prog[channel].count * sizeof(uint32))));
-				//pos += sizeof(uint32);
+				off[id] = g_prog[channel].off[sect];
+				off[id] += 0x10;
+				off[id] += (maxProgSect * sizeof(uint32));
 			}
 
-
-
-
-
-
 			memcpy((addr + pos), g_prog[channel].addr, g_prog[channel].pos);
-			
-
-			//pos += (MAX_PROG_ID * sizeof(uint32));
-
-
 			pos += g_prog[channel].pos;
-
-			//constexpr uint32 fLast = 134;
-
 
 			Align();
 
@@ -546,19 +488,10 @@ static void Compile(uint8 channel)
 			prog.signature[2] = 'o';
 			prog.signature[3] = 'g';
 			prog.size = (uint32)(pos - head.progOff);
-			//prog.last = (uint32)(g_prog[channel].count - 1);
-
-			prog.last = MAX_PROG_ID;
-
-			//prog.last = fLast;
-
-
-
-
-
-
+			prog.last = (maxProgSect == 0) ? 0 : (maxProgSect - 1);
 		}
 
+		Smpl:
 		{
 			head.smplOff = (uint32)pos;
 
@@ -579,6 +512,7 @@ static void Compile(uint8 channel)
 			smpl.last = (uint32)(g_smpl[channel].count - 1);
 		}
 
+		Vagi:
 		{
 			head.vagiOff = (uint32)pos;
 
@@ -586,8 +520,30 @@ static void Compile(uint8 channel)
 			pos += sizeof(VAGI_METADATA);
 			Align();
 
+			// @Optimize: Just go with itemCount.
+
 			uint64 size = (g_vagi[channel].count * sizeof(VAGI_ITEM));
 			memcpy((addr + pos), g_vagi[channel].addr, size);
+
+			// @Optimize: Change datatypes for count.
+			//Log("__UFF__ loop start addr %llX", addr);
+			//Log("__UFF__ loop start pos  %llX", pos);
+
+			for (uint64 itemIndex = 0; itemIndex < g_vagi[channel].count; itemIndex++)
+			{
+				static uint32 off = 0;
+				VAGI_ITEM & item = ((VAGI_ITEM *)(addr + pos))[itemIndex];
+				//Log("__UFF__ off   %X", off);
+				//LogNewLine();
+				
+				//Log("item      %llX", item);
+				//Log("item size %u", item.size);
+				//Log("item rate %u", item.sampleRate);
+
+				item.off = off;
+				off += item.size;
+			}
+
 			pos += size;
 			Align();
 
@@ -597,61 +553,30 @@ static void Compile(uint8 channel)
 			vagi.signature[3] = 'i';
 			vagi.size = (uint32)(pos - head.vagiOff);
 			vagi.last = (uint32)(g_vagi[channel].count - 1);
-
-
-			//uint32 vagiPos = 0x10;
-
-
-			//uint32 vagiPos = 0;
-
-			Log("Adjusting offsets.");
-
-			uint32 itemCount = (vagi.last + 1);
-			for (uint32 itemIndex = 0; itemIndex < itemCount; itemIndex++)
-			{
-				static uint32 pos = 0;
-				VAGI_ITEM & item = ((VAGI_ITEM *)(addr + head.vagiOff + 0x10))[itemIndex];
-				item.off = pos;
-				pos += item.size;
-			}
-
-
-
-
-
-
-
-
-
-
 		}
-
 
 		head.signature[0] = 'H';
 		head.signature[1] = 'e';
 		head.signature[2] = 'a';
 		head.signature[3] = 'd';
-
-
-
-		Log("addr %llX", addr);
-		Log("pos %llX", pos);
 	}
-
-
 
 	Wave:
 	{
+
+
+		// @Optimize: Adjust datatype for pos.
+
 		uint64 pos = posMap[CHANNEL_STYLE_WEAPON];
+
 		for (uint32 index = 0; index < g_wave[channel].count; index++)
 		{
+			// @Optimize: Create wave item reference.
+
 			Log("g_wave[%u][%u] addr %llX", channel, index, g_wave[channel][index].addr);
 			Log("g_wave[%u][%u] size %X"  , channel, index, g_wave[channel][index].size);
 
-			//FMOD_SYSTEM * FMOD_system = 0;
-
 			FMOD_SYSTEM * FMOD_system = *(FMOD_SYSTEM **)(appBaseAddr + 0x5DE3D0);
-
 
 			FMOD_CREATESOUNDEXINFO info = {};
 			info.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
@@ -660,32 +585,12 @@ static void Compile(uint8 channel)
 			SOUND_ITEM & item = soundItem[channel][index];
 			item.pos = pos;
 
+			// true size : size from metadata + 0x30
+			// vagi size : size from metadata + 0x10
 
-			uint64 adjustedSize = ((uint64)g_wave[channel][index].size - 0x20); // @Todo: Document!
+			// In this case vagi size is used, so true size - 0x20.
 
-
-
-
-			//item.size = (uint64)g_wave[channel][index].size;
-
-			item.size = adjustedSize;
-
-
-
-
-			//item.size = (uint64)g_wave[index].size;
-
-
-
-
-			//FMOD_RESULT result = FMOD_System_CreateSound(FMOD_system, g_wave[index].addr, 0, &info, &item.sound);
-
-			//HoboBreak();
-
-			// it wants 0x10 for the vagi map
-
-
-
+			item.size = (uint64)(g_wave[channel][index].size - 0x20);
 
 			// true size when registering them
 
@@ -697,36 +602,6 @@ static void Compile(uint8 channel)
 				&info,
 				&item.sound
 			);
-
-
-
-
-			//mode 0000000008000A00
-
-			//08000A00
-
-			//#define FMOD_CREATECOMPRESSEDSAMPLE    0x00000200
-			//#define FMOD_OPENMEMORY                0x00000800
-			//#define FMOD_LOWMEM                    0x08000000  /* Removes some features from samples to give a lower memory overhead, like Sound::getName.  See remarks. */
-			
-
-			//FMOD_OK,                        /* No errors. */
-
-
-
-
-			/*
-			dmc3.exe+329C8 - 48 8B 0D 01BA5A00     - mov rcx,[dmc3.exe+5DE3D0] { system
-			}
-
-
-
-			
-			*/
-
-			//true file size
-
-
 			if (result != FMOD_OK)
 			{
 				Log("FMOD_System_CreateSound failed. result %X", result);
@@ -734,10 +609,6 @@ static void Compile(uint8 channel)
 			}
 
 			pos += item.size;
-
-
-
-
 		}
 	}
 
@@ -786,7 +657,7 @@ static bool InitPosMap()
 static void Process()
 {
 
-	Compile(CHANNEL_STYLE_WEAPON);
+	Compile(CHANNEL_STYLE_WEAPON, MAX_PROG_SECT);
 
 
 }
@@ -873,10 +744,10 @@ bool System_Sound_Init()
 
 	uint8 id[64] =
 	{
-		102,
-		103,
-		104,
-		105,
+		PROG_SECT_TRICKSTER,
+		PROG_SECT_ROYALGUARD,
+		PROG_SECT_QUICKSILVER,
+		PROG_SECT_DOPPELGANGER,
 	};
 
 
