@@ -280,7 +280,15 @@ G_WAVE g_wave[MAX_CHANNEL] = {};
 
 uint64       posMap   [MAX_CHANNEL] = {};
 byte       * soundMap [MAX_CHANNEL] = {};
+
 SOUND_ITEM * soundItem[MAX_CHANNEL] = {};
+
+uint32 soundItemCount[MAX_CHANNEL] = {}; // @Todo: Merge!
+
+
+
+
+
 
 #pragma endregion
 
@@ -608,6 +616,7 @@ static void Compile(uint8 channel, uint8 maxProgSect)
 				return;
 			}
 
+			soundItemCount[channel]++; // @Todo: Merge!
 			pos += item.size;
 		}
 	}
@@ -724,45 +733,44 @@ bool System_Sound_Init()
 
 
 
-	/*
-	C:\Program Files (x86)\Steam\steamapps\common\Devil May Cry HD Collection\data\dmc3\GData.afs
-	*/
 
 
 
 
-	// Style Weapon
-
-	const char * archiveName[] =
+	struct DPS
 	{
-		"data\\dmc3\\GData.afs\\snd_sty02.pac",
-		"data\\dmc3\\GData.afs\\snd_sty03.pac",
-		"data\\dmc3\\GData.afs\\snd_sty04.pac",
-		"data\\dmc3\\GData.afs\\snd_sty05.pac",
+		const char * archiveName;
+		uint8 id;
 	};
-
-
-	uint8 id[64] =
+	DPS var[] =
 	{
-		PROG_SECT_TRICKSTER,
-		PROG_SECT_ROYALGUARD,
-		PROG_SECT_QUICKSILVER,
-		PROG_SECT_DOPPELGANGER,
+		{ "snd_wp00b.pac", PROG_SECT_REBELLION   , },
+		{ "snd_wp01b.pac", PROG_SECT_CERBERUS    , },
+		{ "snd_wp02b.pac", PROG_SECT_AGNI_RUDRA  , },
+		{ "snd_wp03b.pac", PROG_SECT_NEVAN       , },
+		{ "snd_wp04b.pac", PROG_SECT_BEOWULF     , },
+		{ "snd_wp05b.pac", PROG_SECT_EBONY_IVORY , },
+		{ "snd_wp06b.pac", PROG_SECT_SHOTGUN     , },
+		{ "snd_wp07b.pac", PROG_SECT_ARTEMIS     , },
+		{ "snd_wp08b.pac", PROG_SECT_SPIRAL      , },
+		{ "snd_wp09b.pac", PROG_SECT_KALINA_ANN  , },
+		{ "snd_sty02.pac", PROG_SECT_TRICKSTER   , },
+		{ "snd_sty03.pac", PROG_SECT_ROYALGUARD  , },
+		{ "snd_sty04.pac", PROG_SECT_QUICKSILVER , },
+		{ "snd_sty05.pac", PROG_SECT_DOPPELGANGER, },
 	};
-
-
-
-
-	for (uint8 archiveIndex = 0; archiveIndex < countof(archiveName); archiveIndex++)
+	char path[128] = {};
+	for (uint8 index = 0; index < countof(var); index++)
 	{
-		byte   * archive = 0;
-		uint64   size    = 0;
-		archive = LoadFile(archiveName[archiveIndex], &size);
+		snprintf(path, sizeof(path), "data\\dmc3\\GData.afs\\%s", var[index].archiveName);
+		byte * archive = 0;
+		uint64 size = 0;
+		archive = LoadFile(path, &size);
 		if (!archive)
 		{
 			return false;
 		}
-		Decompile(archive, CHANNEL_STYLE_WEAPON, id[archiveIndex]);
+		Decompile(archive, CHANNEL_STYLE_WEAPON, var[index].id);
 	}
 
 
@@ -796,45 +804,74 @@ bool System_Sound_Init()
 
 
 
+
+
+
+
+
+	// @Todo: There's probably a better way. Just skip the entire check.
+	// @Research: Weapon Switcher interaction.
+
+	Write<byte>((appBaseAddr + 0x33995C), 0xEB); // disable id check
+
+
+
+
 	{
+		byte sect0[] =
+		{
+			0x8B, 0x15, 0x00, 0x00, 0x00, 0x00,                         //mov edx,[dmc3.exe+5DE4F4]
+			0x80, 0x79, 0x0C, 0x00,                                     //cmp byte ptr [rcx+0C],CHANNEL_STYLE_WEAPON
+			0x75, 0x0C,                                                 //jne short
+			0x48, 0xBA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rdx,&soundItemCount[CHANNEL_STYLE_WEAPON]
+			0x8B, 0x12,                                                 //mov edx,[rdx]
+		};
+		FUNC func = CreateFunction(0, (appBaseAddr + 0x321CD), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteAddress(func.sect0, (appBaseAddr + 0x5DE4F4), 6);
+		*(uint8 *)(func.sect0 + 9) = CHANNEL_STYLE_WEAPON;
+		*(uint32 **)(func.sect0 + 0xE) = &soundItemCount[CHANNEL_STYLE_WEAPON];
+		// @Research: Toggle.
+		WriteJump((appBaseAddr + 0x321C7), func.addr, 1);
+	}
 
-		// @Todo: edx also has to be adjusted.
 
+	{
 		byte sect0[] =
 		{
 			0x48, 0x8D, 0x3D, 0x00, 0x00, 0x00, 0x00,                   //lea rdi,[dmc3.exe+5DE5B0]
 			0x80, 0x79, 0x0C, 0x00,                                     //cmp byte ptr [rcx+0C],CHANNEL_STYLE_WEAPON
-			0x75, 0x0A,                                                 //jne short
-			0x48, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rdi,soundItem[CHANNEL_STYLE_WEAPON] // @Todo: Make dynamic!
+			0x75, 0x0D,                                                 //jne short
+			0x48, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rdi,&soundItem[CHANNEL_STYLE_WEAPON]
+			0x48, 0x8B, 0x3F,                                           //mov rdi,[rdi]
 		};
 		FUNC func = CreateFunction(0, (appBaseAddr + 0x321E7), false, true, sizeof(sect0));
-
 		memcpy(func.sect0, sect0, sizeof(sect0));
-
-
-
-
-
-
 		WriteAddress(func.addr, (appBaseAddr + 0x5DE5B0), 7);
-
-
 		*(uint8 *)(func.addr + 0xA) = CHANNEL_STYLE_WEAPON;
-
-		*(SOUND_ITEM **)(func.addr + 0xF) = soundItem[CHANNEL_STYLE_WEAPON];
-
-		//WriteJump((func.addr + 0x17), (appBaseAddr + 0x321E7));
-
-		WriteJump((appBaseAddr + 0x321E0), func.addr, 2); // @Todo: Not always required, add toggle.
+		*(SOUND_ITEM ***)(func.addr + 0xF) = &soundItem[CHANNEL_STYLE_WEAPON];
+		// @Research: Toggle.
+		WriteJump((appBaseAddr + 0x321E0), func.addr, 2);
 	}
 
 
-
-
-
-
-
-
+	{
+		byte sect0[] =
+		{
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   //lea rcx,[dmc3.exe+D6E590]
+			0x3C, 0x00,                                                 //cmp al,CHANNEL_STYLE_WEAPON
+			0x75, 0x0D,                                                 //jne short
+			0x48, 0xBA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rdx,&soundMap[CHANNEL_STYLE_WEAPON]
+			0x48, 0x8B, 0x12,                                           //mov rdx,[rdx]
+		};
+		FUNC func = CreateFunction(0, (appBaseAddr + 0x339F02), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteAddress(func.sect0, (appBaseAddr + 0xD6E590), 7);
+		*(uint8 *)(func.sect0 + 8) = CHANNEL_STYLE_WEAPON;
+		*(byte ***)(func.sect0 + 0xD) = &soundMap[CHANNEL_STYLE_WEAPON];
+		// @Research: Toggle.
+		WriteJump((appBaseAddr + 0x339EFB), func.addr, 2);
+	}
 
 
 
