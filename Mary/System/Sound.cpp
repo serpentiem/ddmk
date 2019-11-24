@@ -1,5 +1,9 @@
 #include "Sound.h"
 
+// @Research: Enum typedefs.
+
+// @Todo: Put into Core.
+
 #pragma region __PRELIMINARY_STUFF__
 
 #define HoboBreak() \
@@ -107,17 +111,19 @@ enum PROG_SECT_
 	PROG_SECT_ARTEMIS,
 	PROG_SECT_SPIRAL,
 	PROG_SECT_KALINA_ANN,
+	PROG_SECT_YAMATO = 11,
+	PROG_SECT_BEOWULF_VERGIL,
+	PROG_SECT_FORCE_EDGE,
 	PROG_SECT_SWORDMASTER = 100,
 	PROG_SECT_GUNSLINGER,
 	PROG_SECT_TRICKSTER,
 	PROG_SECT_ROYALGUARD,
 	PROG_SECT_QUICKSILVER,
 	PROG_SECT_DOPPELGANGER,
-	MAX_PROG_SECT = 108,
+	PROG_SECT_BATTLE_OF_BROTHERS,
+	PROG_SECT_DARK_SLAYER,
+	MAX_PROG_SECT,
 };
-
-
-
 
 struct HEAD
 {
@@ -273,31 +279,46 @@ struct SOUND_ITEM
 	FMOD_SOUND * sound;
 };
 
-G_PROG g_prog[MAX_CHANNEL] = {};
-G_SMPL g_smpl[MAX_CHANNEL] = {};
-G_VAGI g_vagi[MAX_CHANNEL] = {};
-G_WAVE g_wave[MAX_CHANNEL] = {};
+struct G_ITEM
+{
+	SOUND_ITEM * addr;
+	uint32 count;
+	SOUND_ITEM & operator[](uint32 index)
+	{
+		return addr[index];
+	}
+};
 
-uint64       posMap   [MAX_CHANNEL] = {};
-byte       * soundMap [MAX_CHANNEL] = {};
+uint64 posMap[MAX_CHANNEL] = {};
 
-SOUND_ITEM * soundItem[MAX_CHANNEL] = {};
-
-uint32 soundItemCount[MAX_CHANNEL] = {}; // @Todo: Merge!
-
-
-
-
-
+G_PROG   g_prog[MAX_CHANNEL] = {};
+G_SMPL   g_smpl[MAX_CHANNEL] = {};
+G_VAGI   g_vagi[MAX_CHANNEL] = {};
+G_WAVE   g_wave[MAX_CHANNEL] = {};
+byte   * g_map [MAX_CHANNEL] = {};
+G_ITEM   g_item[MAX_CHANNEL] = {};
 
 #pragma endregion
 
-static void Decompile(byte * archive, uint8 channel, uint8 progId) // = 0xFF
+
+
+
+
+
+
+static void Decompile
+(
+	byte  * archive,
+	//uint8   character,
+	uint8   channel,
+	uint8   progId
+)
 {
 	Log("Decompile Start");
 	LogNewLine();
-	Log("archive %llX", archive);
-	Log("channel %u"  , channel);
+	Log("archive   %llX", archive  );
+	//Log("character %u"  , character);
+	Log("channel   %u"  , channel  );
 
 	uint32 & fileCount = *(uint32 *)(archive + 4);
 
@@ -334,6 +355,7 @@ static void Decompile(byte * archive, uint8 channel, uint8 progId) // = 0xFF
 			Log("Prog");
 			{
 				PROG_METADATA & prog = *(PROG_METADATA *)(file + head.progOff);
+				G_PROG & dest = g_prog[channel];
 				Log("last %u", prog.last);
 				uint32 sectCount = (prog.last + 1);
 				for (uint32 sectIndex = 0; sectIndex < sectCount; sectIndex++)
@@ -346,50 +368,52 @@ static void Decompile(byte * archive, uint8 channel, uint8 progId) // = 0xFF
 					Log("off %X", off);
 
 					PROG_SECT_METADATA & sect = *(PROG_SECT_METADATA *)(file + head.progOff + off);
-					g_prog[channel].Push(sect, progId);
+					dest.Push(sect, progId);
 
 					for (uint8 itemIndex = 0; itemIndex < sect.itemCount; itemIndex++)
 					{
 						PROG_SECT_ITEM & item = ((PROG_SECT_ITEM *)(file + head.progOff + off + sizeof(PROG_SECT_METADATA)))[itemIndex];
-						PROG_SECT_ITEM & newItem = g_prog[channel].Push(item);
+						PROG_SECT_ITEM & newItem = dest.Push(item);
 						newItem.id += smplCount;
 					}
 				}
-				Log("g_prog[%u] addr  %llX", channel, g_prog[channel].addr );
-				Log("g_prog[%u] pos   %llX", channel, g_prog[channel].pos  );
-				Log("g_prog[%u] count %u"  , channel, g_prog[channel].count);
+				Log("g_prog[%u] addr  %llX", channel, dest.addr );
+				Log("g_prog[%u] pos   %llX", channel, dest.pos  );
+				Log("g_prog[%u] count %llu", channel, dest.count);
 			}
 			LogNewLine();
 
 			Log("Smpl");
 			{
 				SMPL_METADATA & smpl = *(SMPL_METADATA *)(file + head.smplOff);
+				G_SMPL & dest = g_smpl[channel];
 				Log("last %u", smpl.last);
 				uint32 itemCount = (smpl.last + 1);
 				for (uint32 itemIndex = 0; itemIndex < itemCount; itemIndex++)
 				{
 					SMPL_ITEM & item = ((SMPL_ITEM *)(file + head.smplOff + 0x10))[itemIndex];
-					SMPL_ITEM & newItem = g_smpl[channel].Push(item);
+					SMPL_ITEM & newItem = dest.Push(item);
 					newItem.id += vagiCount;
 				}
-				Log("g_smpl[%u] addr  %llX", channel, g_smpl[channel].addr );
-				Log("g_smpl[%u] count %llu", channel, g_smpl[channel].count);
+				Log("g_smpl[%u] addr  %llX", channel, dest.addr );
+				Log("g_smpl[%u] count %llu", channel, dest.count);
 			}
 			LogNewLine();
 
 			Log("Vagi");
 			{
 				VAGI_METADATA & vagi = *(VAGI_METADATA *)(file + head.vagiOff);
+				G_VAGI & dest = g_vagi[channel];
 				Log("last %u", vagi.last);
 				uint32 itemCount = (vagi.last + 1);
 				for (uint32 itemIndex = 0; itemIndex < itemCount; itemIndex++)
 				{
 					VAGI_ITEM & item = ((VAGI_ITEM *)(file + head.vagiOff + 0x10))[itemIndex];
-					VAGI_ITEM & newItem = g_vagi[channel].Push(item);
+					VAGI_ITEM & newItem = dest.Push(item);
 					newItem.off = 0;
 				}
-				Log("g_vagi[%u] addr  %llX", channel, g_vagi[channel].addr );
-				Log("g_vagi[%u] count %llu", channel, g_vagi[channel].count);
+				Log("g_vagi[%u] addr  %llX", channel, dest.addr );
+				Log("g_vagi[%u] count %llu", channel, dest.count);
 
 				waveItemCount = itemCount;
 			}
@@ -406,8 +430,8 @@ static void Decompile(byte * archive, uint8 channel, uint8 progId) // = 0xFF
 				}
 			}
 			Log("Wave");
+			G_WAVE & dest = g_wave[channel];
 			Log("waveItemCount %u", waveItemCount);
-
 			uint32 filePos = 0;
 			for (uint32 itemIndex = 0; itemIndex < waveItemCount; itemIndex++)
 			{
@@ -417,12 +441,12 @@ static void Decompile(byte * archive, uint8 channel, uint8 progId) // = 0xFF
 				Log("item     %llX", item);
 				Log("itemSize %X", itemSize);
 
-				g_wave[channel].Push(item, itemSize);
+				dest.Push(item, itemSize);
 				filePos += itemSize;
 			}
-			Log("g_wave[%u] addr  %llX", channel, g_wave[channel].addr );
-			Log("g_wave[%u] pos   %X"  , channel, g_wave[channel].pos  );
-			Log("g_wave[%u] count %u"  , channel, g_wave[channel].count);
+			Log("g_wave[%u] addr  %llX", channel, dest.addr );
+			Log("g_wave[%u] pos   %X"  , channel, dest.pos  );
+			Log("g_wave[%u] count %u"  , channel, dest.count);
 		}
 		End:;
 	}
@@ -431,17 +455,49 @@ static void Decompile(byte * archive, uint8 channel, uint8 progId) // = 0xFF
 	LogNewLine();
 }
 
-static void Compile(uint8 channel, uint8 maxProgSect)
+static void Compile
+(
+	uint8 channel,
+	uint8 maxProgSect
+)
 {
 	Log("Compile Start");
 	LogNewLine();
 
 	dword error = 0;
 
+
+	
+
+
+
+
+
+
+	G_PROG   & progRoot = g_prog[channel];
+	G_SMPL   & smplRoot = g_smpl[channel];
+	G_VAGI   & vagiRoot = g_vagi[channel];
+	G_WAVE   & waveRoot = g_wave[channel];
+	byte   * & mapRoot  = g_map [channel];
+	G_ITEM   & itemRoot = g_item[channel];
+
+	
+
+
+
+
+
+
+
+	byte * & addr = mapRoot;
+	uint64 pos = 0;
+
+
+
+
 	Head:
 	{
-		byte * & addr = soundMap[channel];
-		uint64 pos = 0;
+
 
 		auto Align = [&]()
 		{
@@ -473,21 +529,32 @@ static void Compile(uint8 channel, uint8 maxProgSect)
 
 			for (uint8 sect = 0; sect < maxProgSect; sect++)
 			{
+
+				// if maxProgSect == 0
+
 				//Log("Def not accessing this. %u", sect);
 				off[sect] = 0xFFFFFFFF;
 				pos += sizeof(uint32);
 			}
 
-			for (uint64 sect = 0; sect < g_prog[channel].count; sect++)
+
+
+
+
+
+
+
+
+			for (uint64 sect = 0; sect < progRoot.count; sect++)
 			{
-				uint8 & id = g_prog[channel].id[sect];
-				off[id] = g_prog[channel].off[sect];
+				uint8 & id = progRoot.id[sect];
+				off[id] = progRoot.off[sect];
 				off[id] += 0x10;
 				off[id] += (maxProgSect * sizeof(uint32));
 			}
 
-			memcpy((addr + pos), g_prog[channel].addr, g_prog[channel].pos);
-			pos += g_prog[channel].pos;
+			memcpy((addr + pos), progRoot.addr, progRoot.pos);
+			pos += progRoot.pos;
 
 			Align();
 
@@ -507,8 +574,13 @@ static void Compile(uint8 channel, uint8 maxProgSect)
 			pos += sizeof(SMPL_METADATA);
 			Align();
 
-			uint64 size = (g_smpl[channel].count * sizeof(SMPL_ITEM));
-			memcpy((addr + pos), g_smpl[channel].addr, size);
+
+			
+
+
+
+			uint64 size = (smplRoot.count * sizeof(SMPL_ITEM));
+			memcpy((addr + pos), smplRoot.addr, size);
 			pos += size;
 			Align();
 
@@ -517,7 +589,7 @@ static void Compile(uint8 channel, uint8 maxProgSect)
 			smpl.signature[2] = 'p';
 			smpl.signature[3] = 'l';
 			smpl.size = (uint32)(pos - head.smplOff);
-			smpl.last = (uint32)(g_smpl[channel].count - 1);
+			smpl.last = (uint32)(smplRoot.count - 1);
 		}
 
 		Vagi:
@@ -528,16 +600,21 @@ static void Compile(uint8 channel, uint8 maxProgSect)
 			pos += sizeof(VAGI_METADATA);
 			Align();
 
+
+			
+
+
+
 			// @Optimize: Just go with itemCount.
 
-			uint64 size = (g_vagi[channel].count * sizeof(VAGI_ITEM));
-			memcpy((addr + pos), g_vagi[channel].addr, size);
+			uint64 size = (vagiRoot.count * sizeof(VAGI_ITEM));
+			memcpy((addr + pos), vagiRoot.addr, size);
 
 			// @Optimize: Change datatypes for count.
 			//Log("__UFF__ loop start addr %llX", addr);
 			//Log("__UFF__ loop start pos  %llX", pos);
 
-			for (uint64 itemIndex = 0; itemIndex < g_vagi[channel].count; itemIndex++)
+			for (uint64 itemIndex = 0; itemIndex < vagiRoot.count; itemIndex++)
 			{
 				static uint32 off = 0;
 				VAGI_ITEM & item = ((VAGI_ITEM *)(addr + pos))[itemIndex];
@@ -560,7 +637,7 @@ static void Compile(uint8 channel, uint8 maxProgSect)
 			vagi.signature[2] = 'g';
 			vagi.signature[3] = 'i';
 			vagi.size = (uint32)(pos - head.vagiOff);
-			vagi.last = (uint32)(g_vagi[channel].count - 1);
+			vagi.last = (uint32)(vagiRoot.count - 1);
 		}
 
 		head.signature[0] = 'H';
@@ -571,44 +648,47 @@ static void Compile(uint8 channel, uint8 maxProgSect)
 
 	Wave:
 	{
+		uint64 pos = posMap[channel];
 
-
-		// @Optimize: Adjust datatype for pos.
-
-		uint64 pos = posMap[CHANNEL_STYLE_WEAPON];
-
-		for (uint32 index = 0; index < g_wave[channel].count; index++)
+		for (uint32 index = 0; index < waveRoot.count; index++)
 		{
-			// @Optimize: Create wave item reference.
+			WAVE_ITEM waveItem = waveRoot[index];
 
-			Log("g_wave[%u][%u] addr %llX", channel, index, g_wave[channel][index].addr);
-			Log("g_wave[%u][%u] size %X"  , channel, index, g_wave[channel][index].size);
+			Log("g_wave[%u][%u] addr %llX", channel, index, waveItem.addr);
+			Log("g_wave[%u][%u] size %X"  , channel, index, waveItem.size);
 
 			FMOD_SYSTEM * FMOD_system = *(FMOD_SYSTEM **)(appBaseAddr + 0x5DE3D0);
 
 			FMOD_CREATESOUNDEXINFO info = {};
 			info.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
-			info.length = g_wave[channel][index].size;
+			info.length = waveItem.size;
 
-			SOUND_ITEM & item = soundItem[channel][index];
-			item.pos = pos;
+
+			SOUND_ITEM & soundItem = itemRoot[index];
+
+
+
+			
+
+
+			soundItem.pos = pos;
 
 			// true size : size from metadata + 0x30
 			// vagi size : size from metadata + 0x10
 
 			// In this case vagi size is used, so true size - 0x20.
 
-			item.size = (uint64)(g_wave[channel][index].size - 0x20);
+			soundItem.size = (uint64)(waveItem.size - 0x20);
 
 			// true size when registering them
 
 			FMOD_RESULT result = FMOD_System_CreateSound
 			(
 				FMOD_system,
-				g_wave[channel][index].addr,
+				waveItem.addr,
 				FMOD_CREATECOMPRESSEDSAMPLE | FMOD_OPENMEMORY | FMOD_LOWMEM,
 				&info,
-				&item.sound
+				&soundItem.sound
 			);
 			if (result != FMOD_OK)
 			{
@@ -616,13 +696,13 @@ static void Compile(uint8 channel, uint8 maxProgSect)
 				return;
 			}
 
-			soundItemCount[channel]++; // @Todo: Merge!
-			pos += item.size;
+			itemRoot.count++;
+			pos += soundItem.size;
 		}
 	}
 
-	Log("soundMap [%u] %llX", channel, soundMap [channel]);
-	Log("soundItem[%u] %llX", channel, soundItem[channel]);
+	Log("g_map [%u] %llX", channel, mapRoot);
+	Log("g_item[%u] %llX", channel, itemRoot.addr);
 
 
 
@@ -663,13 +743,13 @@ static bool InitPosMap()
 
 
 
+
+
 static void Process()
 {
-
 	Compile(CHANNEL_STYLE_WEAPON, MAX_PROG_SECT);
-
-
 }
+
 
 
 
@@ -685,15 +765,37 @@ static void Process()
 bool System_Sound_Init()
 {
 	LogFunction();
-	dword error = 0;
-	for (uint8 channel = 0; channel < MAX_CHANNEL; channel++)
+
+
+	if (!InitPosMap())
 	{
-		struct VAR_PROC
+		return false;
+	}
+
+
+
+
+
+	dword error = 0;
+
+
+
+
+
+	uint8 channelMap[] =
+	{
+		//CHANNEL_COMMON,
+		CHANNEL_STYLE_WEAPON,
+	};
+	for (uint8 channelIndex = 0; channelIndex < countof(channelMap); channelIndex++)
+	{
+		uint8 & channel = channelMap[channelIndex];
+		struct DPS
 		{
 			void * addr;
 			uint64 size;
 		};
-		VAR_PROC var[] =
+		DPS var[] =
 		{
 			{ &g_prog[channel].addr, (1 * 1024 * 1024                          ) },
 			{ &g_prog[channel].off , (MAX_SOUND_PER_CHANNEL * sizeof(uint32)   ) },
@@ -702,8 +804,8 @@ bool System_Sound_Init()
 			{ &g_wave[channel].addr, (8 * 1024 * 1024                          ) },
 			{ &g_wave[channel].off , (MAX_SOUND_PER_CHANNEL * sizeof(uint32)   ) },
 			{ &g_wave[channel].size, (MAX_SOUND_PER_CHANNEL * sizeof(uint32)   ) },
-			{ &soundMap[channel]   , (1 * 1024 * 1024                          ) },
-			{ &soundItem[channel]  , (1 * 1024 * 1024                          ) }, // @Research: Use game's array.
+			{ &g_map [channel]     , (1 * 1024 * 1024                          ) },
+			{ &g_item[channel].addr, (1 * 1024 * 1024                          ) },
 		};
 		for (uint8 index = 0; index < countof(var); index++)
 		{
@@ -713,19 +815,19 @@ bool System_Sound_Init()
 			error = GetLastError();
 			if (!addr)
 			{
-				Log("VirtualAllocEx failed. %u %u %X", channel, index, error);
+				Log("VirtualAllocEx failed. %u %u %X", index, channel, error);
 				return false;
 			}
 		}
-		Log("g_prog   [%u] addr %llX", channel, g_prog[channel].addr);
-		Log("g_prog   [%u] off  %llX", channel, g_prog[channel].off);
-		Log("g_smpl   [%u] addr %llX", channel, g_smpl[channel].addr);
-		Log("g_vagi   [%u] addr %llX", channel, g_vagi[channel].addr);
-		Log("g_wave   [%u] addr %llX", channel, g_wave[channel].addr);
-		Log("g_wave   [%u] off  %llX", channel, g_wave[channel].off);
-		Log("g_wave   [%u] size %llX", channel, g_wave[channel].size);
-		Log("soundMap [%u]      %llX", channel, soundMap[channel]);
-		Log("soundItem[%u]      %llX", channel, soundItem[channel]);
+		Log("g_prog[%u] addr %llX", channel, g_prog[channel].addr);
+		Log("g_prog[%u] off  %llX", channel, g_prog[channel].off );
+		Log("g_smpl[%u] addr %llX", channel, g_smpl[channel].addr);
+		Log("g_vagi[%u] addr %llX", channel, g_vagi[channel].addr);
+		Log("g_wave[%u] addr %llX", channel, g_wave[channel].addr);
+		Log("g_wave[%u] off  %llX", channel, g_wave[channel].off );
+		Log("g_wave[%u] size %llX", channel, g_wave[channel].size);
+		Log("g_map [%u]      %llX", channel, g_map [channel]     );
+		Log("g_item[%u] addr %llX", channel, g_item[channel].addr);
 	}
 
 
@@ -733,44 +835,51 @@ bool System_Sound_Init()
 
 
 
+	// @Todo: Try Style Section.
 
 
 
-
-	struct DPS
 	{
-		const char * archiveName;
-		uint8 id;
-	};
-	DPS var[] =
-	{
-		{ "snd_wp00b.pac", PROG_SECT_REBELLION   , },
-		{ "snd_wp01b.pac", PROG_SECT_CERBERUS    , },
-		{ "snd_wp02b.pac", PROG_SECT_AGNI_RUDRA  , },
-		{ "snd_wp03b.pac", PROG_SECT_NEVAN       , },
-		{ "snd_wp04b.pac", PROG_SECT_BEOWULF     , },
-		{ "snd_wp05b.pac", PROG_SECT_EBONY_IVORY , },
-		{ "snd_wp06b.pac", PROG_SECT_SHOTGUN     , },
-		{ "snd_wp07b.pac", PROG_SECT_ARTEMIS     , },
-		{ "snd_wp08b.pac", PROG_SECT_SPIRAL      , },
-		{ "snd_wp09b.pac", PROG_SECT_KALINA_ANN  , },
-		{ "snd_sty02.pac", PROG_SECT_TRICKSTER   , },
-		{ "snd_sty03.pac", PROG_SECT_ROYALGUARD  , },
-		{ "snd_sty04.pac", PROG_SECT_QUICKSILVER , },
-		{ "snd_sty05.pac", PROG_SECT_DOPPELGANGER, },
-	};
-	char path[128] = {};
-	for (uint8 index = 0; index < countof(var); index++)
-	{
-		snprintf(path, sizeof(path), "data\\dmc3\\GData.afs\\%s", var[index].archiveName);
-		byte * archive = 0;
-		uint64 size = 0;
-		archive = LoadFile(path, &size);
-		if (!archive)
+		struct DPS
 		{
-			return false;
+			const char * archiveName;
+			uint8 id;
+		};
+		DPS var[] =
+		{
+			{ "snd_wp00b.pac", PROG_SECT_REBELLION         , },
+			{ "snd_wp01b.pac", PROG_SECT_CERBERUS          , },
+			{ "snd_wp02b.pac", PROG_SECT_AGNI_RUDRA        , },
+			{ "snd_wp03b.pac", PROG_SECT_NEVAN             , },
+			{ "snd_wp04b.pac", PROG_SECT_BEOWULF           , },
+			{ "snd_wp05b.pac", PROG_SECT_EBONY_IVORY       , },
+			{ "snd_wp06b.pac", PROG_SECT_SHOTGUN           , },
+			{ "snd_wp07b.pac", PROG_SECT_ARTEMIS           , },
+			{ "snd_wp08b.pac", PROG_SECT_SPIRAL            , },
+			{ "snd_wp09b.pac", PROG_SECT_KALINA_ANN        , },
+			{ "snd_wp11b.pac", PROG_SECT_YAMATO            , },
+			{ "snd_wp12b.pac", PROG_SECT_BEOWULF_VERGIL    , },
+			{ "snd_wp13b.pac", PROG_SECT_FORCE_EDGE        , },
+			{ "snd_sty02.pac", PROG_SECT_TRICKSTER         , },
+			{ "snd_sty03.pac", PROG_SECT_ROYALGUARD        , },
+			{ "snd_sty04.pac", PROG_SECT_QUICKSILVER       , },
+			{ "snd_sty05.pac", PROG_SECT_DOPPELGANGER      , },
+			{ "snd_sty06.pac", PROG_SECT_BATTLE_OF_BROTHERS, },
+			{ "snd_sty07.pac", PROG_SECT_DARK_SLAYER       , },
+		};
+		char path[128] = {};
+		for (uint8 index = 0; index < countof(var); index++)
+		{
+			snprintf(path, sizeof(path), "data\\dmc3\\GData.afs\\%s", var[index].archiveName);
+			byte * archive = 0;
+			uint64 size = 0;
+			archive = LoadFile(path, &size);
+			if (!archive)
+			{
+				return false;
+			}
+			Decompile(archive, CHANNEL_STYLE_WEAPON, var[index].id);
 		}
-		Decompile(archive, CHANNEL_STYLE_WEAPON, var[index].id);
 	}
 
 
@@ -784,16 +893,11 @@ bool System_Sound_Init()
 
 
 
-	if (!InitPosMap())
-	{
-		return false;
-	}
 
 	
 
 
 	// @Todo: Def free memory!
-
 
 	{
 		FUNC func = CreateFunction(Process);
@@ -806,16 +910,14 @@ bool System_Sound_Init()
 
 
 
+	// Fixes
+
+	Write<byte>((appBaseAddr + 0x33995C), 0xEB); // Disable Id Check
 
 
 
-	// @Todo: There's probably a better way. Just skip the entire check.
-	// @Research: Weapon Switcher interaction.
 
-	Write<byte>((appBaseAddr + 0x33995C), 0xEB); // disable id check
-
-
-
+	// Write itemCount.
 
 	{
 		byte sect0[] =
@@ -823,18 +925,20 @@ bool System_Sound_Init()
 			0x8B, 0x15, 0x00, 0x00, 0x00, 0x00,                         //mov edx,[dmc3.exe+5DE4F4]
 			0x80, 0x79, 0x0C, 0x00,                                     //cmp byte ptr [rcx+0C],CHANNEL_STYLE_WEAPON
 			0x75, 0x0C,                                                 //jne short
-			0x48, 0xBA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rdx,&soundItemCount[CHANNEL_STYLE_WEAPON]
+			0x48, 0xBA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rdx,&g_item[CHANNEL_STYLE_WEAPON].count
 			0x8B, 0x12,                                                 //mov edx,[rdx]
 		};
 		FUNC func = CreateFunction(0, (appBaseAddr + 0x321CD), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteAddress(func.sect0, (appBaseAddr + 0x5DE4F4), 6);
 		*(uint8 *)(func.sect0 + 9) = CHANNEL_STYLE_WEAPON;
-		*(uint32 **)(func.sect0 + 0xE) = &soundItemCount[CHANNEL_STYLE_WEAPON];
+		*(uint32 **)(func.sect0 + 0xE) = &g_item[CHANNEL_STYLE_WEAPON].count;
 		// @Research: Toggle.
 		WriteJump((appBaseAddr + 0x321C7), func.addr, 1);
 	}
 
+
+	// Write item.
 
 	{
 		byte sect0[] =
@@ -842,40 +946,39 @@ bool System_Sound_Init()
 			0x48, 0x8D, 0x3D, 0x00, 0x00, 0x00, 0x00,                   //lea rdi,[dmc3.exe+5DE5B0]
 			0x80, 0x79, 0x0C, 0x00,                                     //cmp byte ptr [rcx+0C],CHANNEL_STYLE_WEAPON
 			0x75, 0x0D,                                                 //jne short
-			0x48, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rdi,&soundItem[CHANNEL_STYLE_WEAPON]
+			0x48, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rdi,&g_item[CHANNEL_STYLE_WEAPON].addr
 			0x48, 0x8B, 0x3F,                                           //mov rdi,[rdi]
 		};
 		FUNC func = CreateFunction(0, (appBaseAddr + 0x321E7), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteAddress(func.addr, (appBaseAddr + 0x5DE5B0), 7);
 		*(uint8 *)(func.addr + 0xA) = CHANNEL_STYLE_WEAPON;
-		*(SOUND_ITEM ***)(func.addr + 0xF) = &soundItem[CHANNEL_STYLE_WEAPON];
+		*(SOUND_ITEM ***)(func.addr + 0xF) = &g_item[CHANNEL_STYLE_WEAPON].addr;
 		// @Research: Toggle.
 		WriteJump((appBaseAddr + 0x321E0), func.addr, 2);
 	}
 
 
+
+
+	// Write map.
 	{
 		byte sect0[] =
 		{
 			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   //lea rcx,[dmc3.exe+D6E590]
 			0x3C, 0x00,                                                 //cmp al,CHANNEL_STYLE_WEAPON
 			0x75, 0x0D,                                                 //jne short
-			0x48, 0xBA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rdx,&soundMap[CHANNEL_STYLE_WEAPON]
+			0x48, 0xBA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rdx,&g_map[CHANNEL_STYLE_WEAPON]
 			0x48, 0x8B, 0x12,                                           //mov rdx,[rdx]
 		};
 		FUNC func = CreateFunction(0, (appBaseAddr + 0x339F02), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteAddress(func.sect0, (appBaseAddr + 0xD6E590), 7);
 		*(uint8 *)(func.sect0 + 8) = CHANNEL_STYLE_WEAPON;
-		*(byte ***)(func.sect0 + 0xD) = &soundMap[CHANNEL_STYLE_WEAPON];
+		*(byte ***)(func.sect0 + 0xD) = &g_map[CHANNEL_STYLE_WEAPON];
 		// @Research: Toggle.
 		WriteJump((appBaseAddr + 0x339EFB), func.addr, 2);
 	}
-
-
-
-
 
 
 
