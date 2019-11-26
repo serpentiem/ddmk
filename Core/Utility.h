@@ -17,3 +17,15 @@ struct integral_constant
 template <class T, class U> struct is_same       : integral_constant<bool, false> {};
 template <class T>          struct is_same<T, T> : integral_constant<bool, true>  {};
 #define typematch(a, b) is_same<a, b>::value
+
+template <typename T>
+T Reverse(T * var)
+{
+	constexpr uint8 size = (uint8)sizeof(T);
+	T value = 0;
+	for (uint8 index = 0; index < size; index++)
+	{
+		((byte *)&value)[index] = ((byte *)var)[(size - 1 - index)];
+	}
+	return value;
+}

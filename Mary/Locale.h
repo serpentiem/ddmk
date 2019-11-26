@@ -765,6 +765,13 @@ struct LOCALE
 		Camera;
 		struct
 		{
+			const char * header = "Event";
+			const char * skipIntro = "Skip Intro";
+			const char * skipCutscenes = "Skip Cutscenes";
+		}
+		Event;
+		struct
+		{
 			const char * header = "File";
 			const char * preferLocalFiles = "Prefer Local Files";
 		}
@@ -782,13 +789,6 @@ struct LOCALE
 			const char * reset = "Reset";
 		}
 		Input;
-		struct
-		{
-			const char * header = "Media";
-			const char * skipIntro = "Skip Intro";
-			const char * skipCutscenes = "Skip Cutscenes";
-		}
-		Media;
 		struct
 		{
 			const char * header = "Window";

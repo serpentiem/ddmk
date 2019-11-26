@@ -1,3 +1,10 @@
+
+// @Research: Need something better. So I'll periodically add requirements here.
+//            Colors, channels and better formatting. I don't want to create a log viewer, so I'm thinking html.
+//            Doesn't have to be super fast. It's fine if it loads within 1s in Chromium.
+
+// @Todo: Add LogWarning LogError and LogCriticalError.
+
 #pragma once
 #include "DataTypes.h"
 #include "String.h"
@@ -21,6 +28,8 @@ void Log(const char * format, Args ... args)
 	char buffer[2048];
 	snprintf(buffer, sizeof(buffer), "%s %s\n", timestamp, message);
 
+	// @Todo: Replace with AppendFile.
+
 	HANDLE file = CreateFileA(Log_path, FILE_APPEND_DATA, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (file == INVALID_HANDLE_VALUE)
 	{
@@ -35,6 +44,8 @@ void Log(const char * format, Args ... args)
 	WriteFile(file, buffer, (uint32)strlen(buffer), &bytesWritten, &overlap);
 	CloseHandle(file);
 }
+
+void LogNewLine();
 
 #define FUNC_NAME __FUNCTION__
 

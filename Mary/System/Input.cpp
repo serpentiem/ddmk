@@ -16,11 +16,17 @@ word buttonMask[17] =
 	GAMEPAD_LEFT_THUMB,
 	GAMEPAD_RIGHT_THUMB,
 	GAMEPAD_START,
-	GAMEPAD_DPAD_UP,
-	GAMEPAD_DPAD_RIGHT,
-	GAMEPAD_DPAD_DOWN,
-	GAMEPAD_DPAD_LEFT,
+	GAMEPAD_UP,
+	GAMEPAD_RIGHT,
+	GAMEPAD_DOWN,
+	GAMEPAD_LEFT,
 };
+
+
+
+// @Todo: Add GetStickState.
+
+// @Todo: Update with references.
 
 word GetButtonState(uint8 actorId)
 {

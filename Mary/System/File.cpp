@@ -1,24 +1,29 @@
 #include "File.h"
 
-bool ExtractFile(const char * str)
+
+
+
+
+bool ExtractGameFile(const char * fileName)
 {
-	Log("%s %s", FUNC_NAME, str);
+	char buffer[128];
+	snprintf(buffer, sizeof(buffer), "data\\dmc3\\dmc3-0.nbz");
 
 	zip_error result = {};
-	zip * archive = zip_open("data\\dmc3\\dmc3-0.nbz", 0, &result.zip_err);
+	zip * archive = zip_open(buffer, 0, &result.zip_err);
 	if (!archive)
 	{
-		Log("Unable to open archive.");
+		Log("zip_open failed. error %d", result.zip_err);
 		return false;
 	}
 
-	char buffer[64];
-	sprintf(buffer, "GData.afs/%s", str);
+	snprintf(buffer, sizeof(buffer), "GData.afs/%s", fileName);
+
 	zip_file * file = zip_fopen(archive, buffer, 0);
 	if (!file)
 	{
 		zip_close(archive);
-		Log("Unable to open file. %s", buffer);
+		Log("zip_fopen failed. error %d", result.zip_err);
 		return false;
 	}
 
@@ -26,15 +31,16 @@ bool ExtractFile(const char * str)
 	zip_stat_init(&stats);
 	zip_stat(archive, buffer, 0, &stats);
 
+	dword error = 0;
+
 	SetLastError(0);
 	byte * addr = (byte *)VirtualAllocEx(appProcess, 0, stats.size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-	dword error = GetLastError();
-
-	if (!addr && error)
+	error = GetLastError();
+	if (!addr)
 	{
 		zip_fclose(file);
 		zip_close(archive);
-		Log("VirtualAllocEx failed. error %X", GetLastError());
+		Log("VirtualAllocEx failed. error %X", error);
 		return false;
 	}
 
@@ -42,24 +48,22 @@ bool ExtractFile(const char * str)
 	zip_fclose(file);
 	zip_close(archive);
 
-	sprintf(buffer, "data\\dmc3\\GData.afs\\%s", str);
-	HANDLE _file = CreateFileA(buffer, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-	if (_file == INVALID_HANDLE_VALUE)
-	{
-		Log("Unable to retrieve valid handle. error %X", GetLastError());
-		return false;
-	}
+	snprintf(buffer, sizeof(buffer), "data\\dmc3\\GData.afs\\%s", fileName);
 
-	dword bytesWritten = 0;
-	OVERLAPPED overlap = {};
-	WriteFile(_file, addr, (dword)stats.size, &bytesWritten, &overlap);
-	CloseHandle(_file);
-
-	Log("bytesWritten %u", bytesWritten);
-	Log("size         %u", (dword)stats.size);
+	SaveFile(addr, (uint32)stats.size, buffer);
 
 	return true;
 }
+
+
+
+
+
+
+
+
+
+
 
 byte * LoadFile(const char * str)
 {
@@ -98,7 +102,32 @@ byte * LoadFile(const char * str)
 	return addr;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void * AdjustPointersProxy = 0;
+
+
+
+
+// Ugh.
 
 void AdjustPointers(byte * addr)
 {

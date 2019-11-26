@@ -26,10 +26,11 @@ enum GAMEPAD_
 	GAMEPAD_LEFT_THUMB     = 0x0200,
 	GAMEPAD_RIGHT_THUMB    = 0x0400,
 	GAMEPAD_START          = 0x0800,
-	GAMEPAD_DPAD_UP        = 0x1000,
-	GAMEPAD_DPAD_RIGHT     = 0x2000,
-	GAMEPAD_DPAD_DOWN      = 0x4000,
-	GAMEPAD_DPAD_LEFT      = 0x8000,
+	// Direction ids are the same for dpad, left stick and right stick.
+	GAMEPAD_UP             = 0x1000,
+	GAMEPAD_RIGHT          = 0x2000,
+	GAMEPAD_DOWN           = 0x4000,
+	GAMEPAD_LEFT           = 0x8000,
 };
 
 enum CMD_
@@ -216,6 +217,12 @@ enum POSITION_
 
 
 
+// MaxActor
+// ActorOne
+// ActorTwo
+// ActorThree
+// ActorFour
+
 
 
 enum MISSION_
@@ -254,12 +261,6 @@ enum BODY_COUNT_
 	BODY_COUNT_VERGIL = 4,
 	MAX_BODY_COUNT    = 7,
 };
-
-
-
-
-
-
 
 
 

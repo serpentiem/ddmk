@@ -25,5 +25,8 @@ bool FMOD_Init()
 		return false;
 	}
 	FMOD_System_CreateSound = (FMOD_System_CreateSound_t)proc;
+	// Set cache size.
+	Write<dword>((appBaseAddr + 0x32636), FMOD_CACHE_SIZE);
+	Write<dword>((appBaseAddr + 0x32659), FMOD_CACHE_SIZE);
 	return true;
 }

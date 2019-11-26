@@ -1211,6 +1211,20 @@ void GUI_System_Camera()
 	}
 }
 
+void GUI_System_Event()
+{
+	GUI_Hyperlink(Locale.System.Event.header);
+	ImGui::Text("");
+	if (GUI_Checkbox(Locale.System.Event.skipIntro, Config.System.Event.skipIntro))
+	{
+		System_Event_ToggleSkipIntro(Config.System.Event.skipIntro);
+	}
+	if (GUI_Checkbox(Locale.System.Event.skipCutscenes, Config.System.Event.skipCutscenes))
+	{
+		System_Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
+	}
+}
+
 void GUI_System_File()
 {
 	GUI_Hyperlink(Locale.System.File.header);
@@ -1223,20 +1237,6 @@ void GUI_System_Input()
 	GUI_Hyperlink(Locale.System.Input.header);
 	ImGui::Text("");
 	GUI_Checkbox("Hide Mouse Cursor", Config.System.Input.hideMouseCursor);
-}
-
-void GUI_System_Media()
-{
-	GUI_Hyperlink(Locale.System.Media.header);
-	ImGui::Text("");
-	if (GUI_Checkbox(Locale.System.Media.skipIntro, Config.System.Media.skipIntro))
-	{
-		System_Media_ToggleSkipIntro(Config.System.Media.skipIntro);
-	}
-	if (GUI_Checkbox(Locale.System.Media.skipCutscenes, Config.System.Media.skipCutscenes))
-	{
-		System_Media_ToggleSkipCutscenes(Config.System.Media.skipCutscenes);
-	}
 }
 
 void GUI_System_Window()
@@ -1265,11 +1265,11 @@ void GUI_System_Draw()
 	{
 		GUI_System_Camera();
 		ImGui::Text("");
+		GUI_System_Event();
+		ImGui::Text("");
 		GUI_System_File();
 		ImGui::Text("");
 		GUI_System_Input();
-		ImGui::Text("");
-		GUI_System_Media();
 		ImGui::Text("");
 		GUI_System_Window();
 	}

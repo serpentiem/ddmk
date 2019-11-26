@@ -8,3 +8,5 @@
 #include "Media.h"
 
 void System_Event_Init();
+void System_Event_ToggleSkipIntro(bool enable);
+void System_Event_ToggleSkipCutscenes(bool enable);

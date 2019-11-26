@@ -1,23 +1,9 @@
-//dmc3.exe+32BA90
 
-//afs/sound/Boss_05.adx
-
+// @Check: Replace macro with lambdas.
 
 #include "Event.h"
 
-
-
 #pragma warning(disable: 4003) // Zero args for macro provided.
-
-//#pragma warning(disable: 4102) // Unreferenced label.
-
-
-
-
-
-
-
-
 
 #define InitVars(result)                              \
 byte * addr = *(byte **)(appBaseAddr + 0xCA8918);     \
@@ -56,16 +42,6 @@ dword * flags = (dword *)addr;                        \
                                                       \
 uint32 mission = *(uint32 *)(appBaseAddr + 0xC8F250);
 
-
-
-
-
-
-
-
-
-
-
 static void Arcade_InitSession()
 {
 	if (!Config.Game.Arcade.enable)
@@ -73,7 +49,7 @@ static void Arcade_InitSession()
 		return;
 	}
 	byte * addr = (appBaseAddr + 0xC8F250);
-	uint32  & mission            = *(uint32  *)addr;
+	uint32  & mission            = *(uint32  *)(addr        );
 	uint32  & mode               = *(uint32  *)(addr + 0xC  );
 	bool    & oneHitKill         = *(bool    *)(addr + 0x10 );
 	bool    & enableTutorial     = *(bool    *)(addr + 0x12 );
@@ -566,39 +542,6 @@ static void BossRush_SetContinueRoom()
 	nextPosition = (uint16)position;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 static void InitSession()
 {
 	LogFunction();
@@ -630,6 +573,8 @@ static void SetContinueRoom()
 	BossRush_SetContinueRoom();
 }
 
+// @Check: Why are both enum and bool required?
+
 static const char * SetTrack(void *, const char * path, uint32, uint32)
 {
 	Log("%s %s", FUNC_NAME, path);
@@ -648,7 +593,13 @@ static const char * SetTrack(void *, const char * path, uint32, uint32)
 	{
 		return 0;
 	}
+
+	// Yup, crap.
+
 	InitVars(0);
+
+
+
 	switch (mission)
 	{
 	case 5:
@@ -689,33 +640,6 @@ static const char * SetTrack(void *, const char * path, uint32, uint32)
 	}
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 static void BossRush_StageLoadComplete()
 {
@@ -805,10 +729,6 @@ static void BossRush_StageLoadComplete()
 	}
 }
 
-
-
-
-
 static void Actor_StageLoadComplete()
 {
 	LogFunction();
@@ -870,32 +790,7 @@ static void StageLoadComplete()
 	BossRush_StageLoadComplete();
 }
 
-
-
-
-
 #undef InitVars
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void System_Event_Init()
 {
@@ -961,18 +856,7 @@ void System_Event_Init()
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteJump((appBaseAddr + 0x1AA3C5), func.addr, 2);
 	}
-
-
-
-
-
-
-
-
-
 	// @Audit: Not sure if this shouldn't be part of Media.cpp.
-
-
 	{
 		byte sect0[] =
 		{
@@ -1004,5 +888,47 @@ void System_Event_Init()
 		FUNC func = CreateFunction(StageLoadComplete, (appBaseAddr + 0x23D0AB), true, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteJump((appBaseAddr + 0x23D0A4), func.addr, 2);
+	}
+}
+
+void System_Event_ToggleSkipIntro(bool enable)
+{
+	LogFunctionBool(enable);
+	if (enable)
+	{
+		WriteAddress((appBaseAddr + 0x2383F2), (appBaseAddr + 0x2383F8), 6); // Skip Message
+		WriteAddress((appBaseAddr + 0x241789), (appBaseAddr + 0x24178B), 2); // Skip Video
+		vp_memset((appBaseAddr + 0x243531), 0x90, 2);                        // Disable Video Timer
+		Write<byte>((appBaseAddr + 0x238704), 0x00);                         // Hide Rebellion
+	}
+	else
+	{
+		WriteAddress((appBaseAddr + 0x2383F2), (appBaseAddr + 0x238527), 6);
+		WriteAddress((appBaseAddr + 0x241789), (appBaseAddr + 0x2417A6), 2);
+		{
+			byte payload[] =
+			{
+				0xFF, 0xC8, //dec eax
+			};
+			vp_memcpy((appBaseAddr + 0x243531), payload, sizeof(payload));
+		}
+		Write<byte>((appBaseAddr + 0x238704), 0x01);
+	}
+}
+
+void System_Event_ToggleSkipCutscenes(bool enable)
+{
+	LogFunctionBool(enable);
+	if (enable)
+	{
+		WriteAddress((appBaseAddr + 0x238CCA), (appBaseAddr + 0x238CD0), 6);
+		WriteAddress((appBaseAddr + 0x238CD8), (appBaseAddr + 0x238CDE), 6);
+		WriteAddress((appBaseAddr + 0x238CE3), (appBaseAddr + 0x238CE9), 6);
+	}
+	else
+	{
+		WriteAddress((appBaseAddr + 0x238CCA), (appBaseAddr + 0x238E62), 6);
+		WriteAddress((appBaseAddr + 0x238CD8), (appBaseAddr + 0x238E62), 6);
+		WriteAddress((appBaseAddr + 0x238CE3), (appBaseAddr + 0x238E62), 6);
 	}
 }

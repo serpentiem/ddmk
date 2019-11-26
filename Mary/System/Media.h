@@ -14,5 +14,3 @@ extern dword mediaError;
 extern bool  mediaSkipTrack;
 
 void System_Media_Init();
-void System_Media_ToggleSkipIntro(bool enable);
-void System_Media_ToggleSkipCutscenes(bool enable);

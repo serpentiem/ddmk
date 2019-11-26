@@ -1,3 +1,7 @@
+
+// @Research: Check if files truly and absolutely have to be within 32 bit addressspace.
+//            Seems stupid.
+
 #include "Cache.h"
 
 bool System_Cache_enable = false;
@@ -16,7 +20,7 @@ byte * PushFile(const char * str)
 	if (file == INVALID_HANDLE_VALUE)
 	{
 		Log("Unable to retrieve valid handle. error %X", GetLastError());
-		if (!ExtractFile(str))
+		if (!ExtractGameFile(str))
 		{
 			Log("Unable to extract file. %s", str);
 			return 0;
@@ -61,6 +65,13 @@ static void CreateCache()
 
 
 	memset((cacheAddr + DEFAULT_CACHE_SIZE), 0, CACHE_SIZE); // Purge Cache
+
+
+
+
+
+
+
 	// Push Files
 	{
 		const char * str[] =
@@ -176,21 +187,16 @@ static void CreateCache()
 void System_Cache_Init()
 {
 	LogFunction();
-	System_Cache_enable = MAGIC_6 ? true : false;
-	if (!System_Cache_enable)
-	{
-		return;
-	}
+	//System_Cache_enable = MAGIC_6 ? true : false;
+	//if (!System_Cache_enable)
+	//{
+	//	return;
+	//}
 	CreateDirectoryA("data\\dmc3\\GData.afs", 0);
 	// Set Cache Size
 	{
 		Write<dword>((appBaseAddr + 0x30195), (DEFAULT_CACHE_SIZE + CACHE_SIZE));
 		Write<dword>((appBaseAddr + 0x301AB), (DEFAULT_CACHE_SIZE + CACHE_SIZE));
-	}
-	// Set FMOD Cache Size
-	{
-		Write<dword>((appBaseAddr + 0x32636), FMOD_CACHE_SIZE);
-		Write<dword>((appBaseAddr + 0x32659), FMOD_CACHE_SIZE);
 	}
 	// Get Cache Address
 	{
@@ -213,6 +219,11 @@ void System_Cache_Init()
 		FUNC func = CreateFunction(CreateCache, (appBaseAddr + 0x2C5E6E));
 		WriteJump((appBaseAddr + 0x2C5E69), func.addr);
 	}
+
+
+	// @Todo: Create standalone function.
+
+
 	// Extend Vectors
 	// 130 Effect Manager
 	{

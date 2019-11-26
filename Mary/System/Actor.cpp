@@ -1,3 +1,7 @@
+
+// @Todo: Document and create new dependency chain.
+
+
 #include "Actor.h"
 
 ////#pragma warning(disable: 4102) // Unreferenced label.
@@ -17,8 +21,14 @@ typedef void(* InternalCreateActor_t)(uint8, uint8);
 
 InternalCreateActor_t InternalCreateActor = 0;
 
+
+// Use 1 and 2 instead.
+
 byte * OnUpdate[2]              = {};
 byte * OnEvent[2]               = {};
+
+
+
 byte * CreateActorProxy         = 0;
 byte * UpdateActorProxy         = 0;
 byte * ActivateDevilFormProxy   = 0;
@@ -26,11 +36,11 @@ byte * DeactivateDevilFormProxy = 0;
 
 uint8 GetActorId(byte * baseAddr)
 {
-	for (uint8 i = 0; i < MAX_ACTOR; i++)
+	for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
 	{
-		if (actorBaseAddr[i] == baseAddr)
+		if (actorBaseAddr[actor] == baseAddr)
 		{
-			return i;
+			return actor;
 		}
 	}
 	return 0;
@@ -39,9 +49,9 @@ uint8 GetActorId(byte * baseAddr)
 uint8 GetActorCount()
 {
 	uint8 count = 0;
-	for (uint8 i = 0; i < MAX_ACTOR; i++)
+	for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
 	{
-		if (!actorBaseAddr[i])
+		if (!actorBaseAddr[actor])
 		{
 			break;
 		}
@@ -50,20 +60,27 @@ uint8 GetActorCount()
 	return count;
 }
 
-//static dword Multiplayer_SpawnActors(LPVOID parameter)
-//{
-//	LogFunction();
-//	Sleep(Config.Game.Multiplayer.spawnDelay);
-//	for (uint8 i = 0; i < Config.Game.Multiplayer.actorCount; i++)
-//	{
-//		InternalCreateActor((i + 1), Config.Game.Multiplayer.character[i]);
-//	}
-//	return 1;
-//}
+
+
+
+
+// @Check: Run directly after ACTOR_ONE has been created.
 
 static void CreateActor()
 {
 	LogFunction();
+
+
+
+
+
+
+
+
+
+
+	// Update base addresses.
+
 	memset(actorBaseAddr, 0, sizeof(actorBaseAddr));
 	{
 		byte * addr = *(byte **)(appBaseAddr + 0xC90E28);
@@ -71,58 +88,91 @@ static void CreateActor()
 		{
 			goto sect0;
 		}
+
+		//byte * nativeActorBaseAddr 
+
+		//byte * & baseAddr
+
+		
+		byte ** baseAddr = (byte **)(addr + 0x18);
+
+		actorBaseAddr[ACTOR_ONE] = baseAddr[ACTOR_ONE];
+
+
+
+
+
+
+
+
 		actorBaseAddr[ACTOR_ONE] = *(byte **)(addr + 0x18);
 	}
 	sect0:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	if (Config.Game.Multiplayer.enable)
 	{
-		//CreateThread(0, 0x10000, Multiplayer_SpawnActors, 0, 0, 0);
-
-
-		for (uint8 i = 0; i < Config.Game.Multiplayer.actorCount; i++)
+		for (uint8 actor = 0; actor < Config.Game.Multiplayer.actorCount; actor++)
 		{
-
-			Log("Try Multiplayer CreateActor id %u character %u", (ACTOR_TWO + i), Config.Game.Multiplayer.character[i]);
-
-			// FAILS!
-
-			InternalCreateActor((ACTOR_TWO + i), Config.Game.Multiplayer.character[i]);
-
-			Log("Multiplayer CreateActor id %u character %u", (ACTOR_TWO + i), Config.Game.Multiplayer.character[i]);
-
-
-
-
-
+			InternalCreateActor((ACTOR_TWO + actor), Config.Game.Multiplayer.character[actor]);
 		}
-
-
-
-
-
-
-
 	}
 	else
 	{
+		// @Todo: Make reference.
 		uint8 character = *(uint8 *)(actorBaseAddr[ACTOR_ONE] + 0x78);
 		if (Config.Game.StyleSwitcher.enable || (character == CHAR_DANTE))
 		{
-
-
-			
-
-
-			Log("Try InternalCreateActor id %u character %u", ACTOR_TWO, character);
-
 			InternalCreateActor(ACTOR_TWO, (Config.Game.Style.enable) ? Config.Game.Style.Doppelganger.character : character);
-
-			//MessageBoxA(0, "workeronis", 0, 0);
-
-			//Log("InternalCreateActor id %u character %u", ACTOR_TWO, character);
 		}
 	}
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 static void UpdateActor(byte * baseAddr)
 {
@@ -757,6 +807,10 @@ void System_Actor_Toggle()
 		Write<byte>((appBaseAddr + 0x1BA5CB), 0x9A);
 		WriteJump((appBaseAddr + 0x1BC0C5), OnUpdate[1]);
 		// OnEvent
+
+		// @Document: WHAT THE FUCK
+
+
 		Write<byte>((appBaseAddr + 0x1BB397), 0x1C);
 		Write<byte>((appBaseAddr + 0x1BB399), 0x90);
 		Write<byte>((appBaseAddr + 0x1BB408), 0x03);

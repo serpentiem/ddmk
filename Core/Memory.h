@@ -57,3 +57,7 @@ FUNC CreateFunction
 );
 
 bool Memory_Init();
+
+#define HoboBreak() \
+MessageBoxA(0, "break", 0, 0); \
+MessageBoxA(0, "break", 0, 0);

@@ -85,6 +85,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Core\Config.cpp" />
+    <ClCompile Include="..\Core\File.cpp" />
     <ClCompile Include="..\Core\GUI.cpp" />
     <ClCompile Include="..\Core\ImGui_D3D11.cpp" />
     <ClCompile Include="..\Core\ImGui_DirectInput8.cpp" />
@@ -108,7 +109,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Core\Config.h" />
+    <ClInclude Include="..\Core\Core.h" />
     <ClInclude Include="..\Core\DataTypes.h" />
+    <ClInclude Include="..\Core\File.h" />
     <ClInclude Include="..\Core\GUI.h" />
     <ClInclude Include="..\Core\ImGui_D3D11.h" />
     <ClInclude Include="..\Core\ImGui_DirectInput8.h" />

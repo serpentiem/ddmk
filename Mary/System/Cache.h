@@ -9,7 +9,6 @@ enum CACHE_
 {
 	CACHE_SIZE         = (128 * 1024 * 1024),
 	DEFAULT_CACHE_SIZE = (260 * 1024 * 1024),
-	FMOD_CACHE_SIZE    = (128 * 1024 * 1024),
 };
 
 enum CACHE_FILES

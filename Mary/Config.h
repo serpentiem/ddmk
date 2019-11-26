@@ -155,7 +155,7 @@ struct CONFIG
 		struct
 		{
 			bool   enable     = false;
-			word   button     = GAMEPAD_DPAD_UP;
+			word   button     = GAMEPAD_UP;
 			uint32 updateRate = 10;
 		}
 		ResetMotionState;
@@ -366,6 +366,12 @@ struct CONFIG
 		Camera;
 		struct
 		{
+			bool skipIntro     = false;
+			bool skipCutscenes = false;
+		}
+		Event;
+		struct
+		{
 			bool preferLocalFiles = true;
 		}
 		File;
@@ -374,12 +380,6 @@ struct CONFIG
 			bool hideMouseCursor = true;
 		}
 		Input;
-		struct
-		{
-			bool skipIntro     = false;
-			bool skipCutscenes = false;
-		}
-		Media;
 		struct
 		{
 			bool forceFocus = true;

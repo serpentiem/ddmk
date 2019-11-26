@@ -86,6 +86,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Hooks.cpp" />
+    <ClCompile Include="..\Core\File.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -205,5 +208,11 @@
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Hooks.h" />
+    <ClInclude Include="..\Core\Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\File.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@ CONFIG Config;
 CONFIG DefaultConfig;
 
 const char * Config_directory = "configs";
-const char * Config_file = "Mary.bin";
+const char * Config_file      = "Mary.bin";
 
-void * Config_addr = &Config;
-uint64 Config_size = sizeof(CONFIG);
+byte * Config_addr = (byte *)&Config;
+uint32 Config_size = (uint32)sizeof(CONFIG); // @Research: Check sizeof.

@@ -1,80 +1,5 @@
 #include "Sound.h"
 
-// @Research: Enum typedefs.
-
-// @Todo: Put into Core.
-
-#pragma region __PRELIMINARY_STUFF__
-
-#define HoboBreak() \
-MessageBoxA(0, "break", 0, 0); \
-MessageBoxA(0, "break", 0, 0);
-
-byte * LoadFile(const char * fileName, uint64 * p_size = 0)
-{
-	byte * addr = 0;
-	dword error = 0;
-	SetLastError(0);
-	HANDLE file = CreateFileA(fileName, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	error = GetLastError();
-	if (file == INVALID_HANDLE_VALUE)
-	{
-		Log("CreateFileA failed. error %s %X", fileName, error);
-		return 0;
-	}
-	BY_HANDLE_FILE_INFORMATION fi = {};
-	GetFileInformationByHandle(file, &fi);
-	SetLastError(0);
-	addr = (byte *)VirtualAlloc(0, fi.nFileSizeLow, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-	error = GetLastError();
-	if (!addr)
-	{
-		Log("VirtualAlloc failed. error %X", error);
-		return 0;
-	}
-	dword bytesRead = 0;
-	OVERLAPPED overlap = {};
-	ReadFile(file, addr, fi.nFileSizeLow, &bytesRead, &overlap);
-	CloseHandle(file);
-	if (p_size)
-	{
-		*p_size = (uint64)fi.nFileSizeLow;
-	}
-	return addr;
-}
-
-bool SaveFile(byte * addr, uint64 size, const char * fileName)
-{
-	dword error = 0;
-	SetLastError(0);
-	HANDLE file = CreateFileA(fileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-	error = GetLastError();
-	if (file == INVALID_HANDLE_VALUE)
-	{
-		Log("CreateFile failed. error %X", error);
-		return false;
-	}
-	dword bytesWritten = 0;
-	OVERLAPPED overlap = {};
-	WriteFile(file, addr, (uint32)size, &bytesWritten, &overlap);
-	CloseHandle(file);
-	return true;
-}
-
-template <typename T>
-T Reverse(T * var)
-{
-	constexpr uint8 size = (uint8)sizeof(T);
-	T value = 0;
-	for (uint8 index = 0; index < size; index++)
-	{
-		((byte *)&value)[index] = ((byte *)var)[(size - 1 - index)];
-	}
-	return value;
-}
-
-#pragma endregion
-
 #pragma region Global Definitions
 
 enum SOUND_
@@ -299,12 +224,6 @@ byte   * g_map [MAX_CHANNEL] = {};
 G_ITEM   g_item[MAX_CHANNEL] = {};
 
 #pragma endregion
-
-
-
-
-
-
 
 static void Decompile
 (
@@ -723,7 +642,7 @@ static void Compile
 static bool InitPosMap()
 {
 	byte * file = 0;
-	uint64 fileSize = 0;
+	uint32 fileSize = 0;
 	file = LoadFile("data\\dmc3\\GData.afs\\SpuMap.bin", &fileSize);
 	if (!file)
 	{
@@ -811,6 +730,7 @@ bool System_Sound_Init()
 		{
 			void * & addr = *(void **)var[index].addr;
 			SetLastError(0);
+			// @Todo: Add custom allocator.
 			addr = VirtualAllocEx(appProcess, 0, var[index].size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 			error = GetLastError();
 			if (!addr)
@@ -831,11 +751,6 @@ bool System_Sound_Init()
 	}
 
 
-
-
-
-
-	// @Todo: Try Style Section.
 
 
 
@@ -872,7 +787,7 @@ bool System_Sound_Init()
 		{
 			snprintf(path, sizeof(path), "data\\dmc3\\GData.afs\\%s", var[index].archiveName);
 			byte * archive = 0;
-			uint64 size = 0;
+			uint32 size = 0;
 			archive = LoadFile(path, &size);
 			if (!archive)
 			{

@@ -50,6 +50,9 @@
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Locale.cpp" />
+    <ClCompile Include="..\Core\File.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -130,5 +133,11 @@
     </ClInclude>
     <ClInclude Include="Locale.h" />
     <ClInclude Include="Vars.h" />
+    <ClInclude Include="..\Core\Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\File.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

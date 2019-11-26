@@ -11,6 +11,14 @@ bool Game_Dante_Rebellion_quickDrive = false;
 void Game_Dante_Init()
 {
 	LogFunction();
+
+	//g_proc.pos = 64;
+
+	//Log("g_proc addr %llX", &g_proc);
+
+
+
+
 	{
 		FUNC func = CreateFunction((appBaseAddr + 0x212A90), 0);
 		UpdateExpertise = (UpdateExpertise_t)func.addr;
