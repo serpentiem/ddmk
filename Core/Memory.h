@@ -61,3 +61,18 @@ bool Memory_Init();
 #define HoboBreak() \
 MessageBoxA(0, "break", 0, 0); \
 MessageBoxA(0, "break", 0, 0);
+
+template <typename T>
+void Align(T & pos, T boundary, byte * addr = 0, uint8 pad = 0)
+{
+	T remainder = (pos % boundary);
+	if (remainder)
+	{
+		T size = (boundary - remainder);
+		if (addr)
+		{
+			memset((addr + pos), pad, size);
+		}
+		pos += size;
+	}
+}

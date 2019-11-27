@@ -6,61 +6,132 @@
 
 bool System_Cache_enable = false;
 byte * cacheAddr = 0;
+uint32 cachePos = DEFAULT_CACHE_SIZE;
+
+
 byte * cacheFile[MAX_CACHE_FILES] = {};
 byte * demo_pl000_00_3 = 0; // @Todo: Supply patch.
 
-// @Todo: Update with LoadFile.
 
-byte * PushFile(const char * str)
+
+
+byte * PushGameFile(const char * fileName)
 {
-	Log("%s %s", FUNC_NAME, str);
-	char buffer[64];
-	sprintf(buffer, "data\\dmc3\\GData.afs\\%s", str);
-	HANDLE file = CreateFileA(buffer, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	if (file == INVALID_HANDLE_VALUE)
-	{
-		Log("Unable to retrieve valid handle. error %X", GetLastError());
-		if (!ExtractGameFile(str))
-		{
-			Log("Unable to extract file. %s", str);
-			return 0;
-		}
-		file = CreateFileA(buffer, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-		if (file == INVALID_HANDLE_VALUE)
-		{
-			Log("Unable to retrieve valid handle. error %X", GetLastError());
-			return 0;
-		}
-	}
-	BY_HANDLE_FILE_INFORMATION fi = {};
-	GetFileInformationByHandle(file, &fi);
-	static uint64 pos = 0;
-	byte * addr = (cacheAddr + DEFAULT_CACHE_SIZE + pos);
-	dword bytesRead = 0;
-	OVERLAPPED overlap = {};
-	ReadFile(file, addr, fi.nFileSizeLow, &bytesRead, &overlap);
-	pos += fi.nFileSizeLow;
-	if (pos % 0x800)
-	{
-		pos += (0x800 - (pos % 0x800));
-	}
-	CloseHandle(file);
+	LogFunction();
 
-	Log("file      %s",      str             );
-	Log("addr      %.16llX", addr            );
-	Log("bytesRead %u",      bytesRead       );
-	Log("size      %u",      fi.nFileSizeLow );
-	Log("pos       %llX",    pos             );
+	byte * addr = (cacheAddr + cachePos);
 
-	SetLastError(0);
+	//char buffer[128];
+	//snprintf(buffer, sizeof(buffer), "data\\dmc3\\GData.afs\\%s", fileName);
+
+	byte * file = 0;
+	uint32 fileSize = 0;
+
+	//file = LoadGameFile(fileName, &fileSize, addr);
+	//if (!file)
+	//{
+	//	if (!ExtractGameFile(fileName))
+	//	{
+	//		return 0;
+	//	}
+	//	file = LoadGameFile(fileName, &fileSize, addr);
+	//	if (!file)
+	//	{
+	//		return 0;
+	//	}
+	//}
+
+	file = LoadGameFile(fileName, &fileSize, addr);
+	if (!file)
+	{
+		return 0;
+	}
+
+
+
+	cachePos += fileSize;
+
+	Log("cachePos %X", cachePos);
+
+	Align<uint32>(cachePos, 0x800);
+
+	Log("file     %.16llX %s", file, fileName);
+	Log("fileSize %X", fileSize);
+	Log("cachePos %X", cachePos);
+
 	return addr;
 }
+
+
+
+
+
+
+
+// @Todo: Update with LoadFile.
+
+//byte * PushFile(const char * str)
+//{
+//	Log("%s %s", FUNC_NAME, str);
+//	char buffer[64];
+//	sprintf(buffer, "data\\dmc3\\GData.afs\\%s", str);
+//	HANDLE file = CreateFileA(buffer, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+//	if (file == INVALID_HANDLE_VALUE)
+//	{
+//		Log("Unable to retrieve valid handle. error %X", GetLastError());
+//		if (!ExtractGameFile(str))
+//		{
+//			Log("Unable to extract file. %s", str);
+//			return 0;
+//		}
+//		file = CreateFileA(buffer, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+//		if (file == INVALID_HANDLE_VALUE)
+//		{
+//			Log("Unable to retrieve valid handle. error %X", GetLastError());
+//			return 0;
+//		}
+//	}
+//	BY_HANDLE_FILE_INFORMATION fi = {};
+//	GetFileInformationByHandle(file, &fi);
+//
+//	static uint64 pos = 0;
+//	byte * addr = (cacheAddr + DEFAULT_CACHE_SIZE + pos);
+//
+//
+//
+//	dword bytesRead = 0;
+//	OVERLAPPED overlap = {};
+//	ReadFile(file, addr, fi.nFileSizeLow, &bytesRead, &overlap);
+//
+//
+//
+//	pos += fi.nFileSizeLow;
+//	if (pos % 0x800)
+//	{
+//		pos += (0x800 - (pos % 0x800));
+//	}
+//
+//
+//
+//	CloseHandle(file);
+//
+//	Log("file      %s",      str             );
+//	Log("addr      %.16llX", addr            );
+//	Log("bytesRead %u",      bytesRead       );
+//	Log("size      %u",      fi.nFileSizeLow );
+//	Log("pos       %llX",    pos             );
+//
+//	SetLastError(0);
+//	return addr;
+//}
 
 static void CreateCache()
 {
 	LogFunction();
 
 	Log("cacheAddr %llX", cacheAddr);
+
+	Log("cachePos %X", cachePos);
 
 
 
@@ -163,7 +234,7 @@ static void CreateCache()
 		};
 		for (uint8 i = 0; i < MAX_CACHE_FILES; i++)
 		{
-			byte * addr = PushFile(str[i]);
+			byte * addr = PushGameFile(str[i]);
 			dword error = GetLastError();
 			if (!addr && error)
 			{
@@ -175,7 +246,7 @@ static void CreateCache()
 		}
 	}
 	{
-		byte * addr = PushFile("demo_pl000_00_3.pac");
+		byte * addr = PushGameFile("demo_pl000_00_3.pac");
 		if (addr)
 		{
 			AdjustPointers(addr);

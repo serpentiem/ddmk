@@ -1,8 +1,8 @@
 #include "File.h"
 
+typedef void(* InternalAdjustPointers_t)(byte *);
 
-
-
+InternalAdjustPointers_t InternalAdjustPointers = 0;
 
 bool ExtractGameFile(const char * fileName)
 {
@@ -55,100 +55,65 @@ bool ExtractGameFile(const char * fileName)
 	return true;
 }
 
+// @Todo: Make archive check optional.
 
-
-
-
-
-
-
-
-
-
-byte * LoadFile(const char * str)
+byte * LoadGameFile(const char * fileName, uint32 * size, byte * dest)
 {
-	Log("%s %s", FUNC_NAME, str);
+	byte * file = 0;
 
-	char buffer[64];
-	sprintf(buffer, "data\\dmc3\\GData.afs\\%s", str);
+	char buffer[128];
+	snprintf(buffer, sizeof(buffer), "data\\dmc3\\GData.afs\\%s", fileName);
 
-	HANDLE file = CreateFileA(buffer, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	if (file == INVALID_HANDLE_VALUE)
+	file = LoadFile(buffer, size, dest);
+	if (!file)
 	{
-		Log("Unable to retrieve valid handle. error %X", GetLastError());
-		return 0;
+		if (!ExtractGameFile(fileName))
+		{
+			return 0;
+		}
+		file = LoadFile(buffer, size, dest);
+		if (!file)
+		{
+			return 0;
+		}
 	}
 
-	BY_HANDLE_FILE_INFORMATION fi = {};
-	GetFileInformationByHandle(file, &fi);
-	SetLastError(0);
-	byte * addr = (byte *)VirtualAllocEx(appProcess, 0, fi.nFileSizeLow, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-	dword error = GetLastError();
-	if (!addr && error)
-	{
-		CloseHandle(file);
-		Log("VirtualAllocEx failed. error %X", GetLastError());
-		return 0;
-	}
-
-	dword bytesRead = 0;
-	OVERLAPPED overlap = {};
-	ReadFile(file, addr, fi.nFileSizeLow, &bytesRead, &overlap);
-	CloseHandle(file);
-
-	Log("bytesRead %u", bytesRead);
-	Log("size      %u", fi.nFileSizeLow);
-
-	return addr;
+	return file;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void * AdjustPointersProxy = 0;
-
-
-
-
-// Ugh.
 
 void AdjustPointers(byte * addr)
 {
 	LogFunction();
-	if (addr[0] == 'P' && addr[1] == 'A' && addr[2] == 'C')
 	{
-		uint32 count = *(uint32 *)(addr + 4);
-		for (uint32 i = 0; i < count; i++)
+		byte signature[] = { 'P','A','C' };
+		for (uint8 index = 0; index < countof(signature); index++)
 		{
-			uint32 off = *(uint32 *)(addr + 8 + (i * 4));
-			((void(*)(byte *))AdjustPointersProxy)((addr + off));
-			Log("%.16llX", (addr + off));
+			if (addr[index] != signature[index])
+			{
+				Log("Not a PAC.");
+				Log("addr %.16llX", addr);
+				goto sect0;
+			}
+		}
+		uint32 & fileCount = *(uint32 *)(addr + 4);
+		for (uint32 fileIndex = 0; fileIndex < fileCount; fileIndex++)
+		{
+			uint32 & fileOff = ((uint32 *)(addr + 8))[fileIndex];
+			InternalAdjustPointers((addr + fileOff));
+			Log("%.16llX", (addr + fileOff));
 		}
 		return;
 	}
-	((void(*)(byte *))AdjustPointersProxy)(addr);
+	sect0:
+	//HoboBreak();
+	InternalAdjustPointers(addr);
 }
 
 void System_File_Init()
 {
 	LogFunction();
+
+	// @Todo: Turn into enum.
 
 	// Modes
 	// 0 Memory
@@ -179,6 +144,6 @@ void System_File_Init()
 	}
 	{
 		FUNC func = CreateFunction((appBaseAddr + 0x1B9FA0));
-		AdjustPointersProxy = func.addr;
+		InternalAdjustPointers = (InternalAdjustPointers_t)func.addr;
 	}
 }

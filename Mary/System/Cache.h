@@ -104,5 +104,9 @@ extern bool System_Cache_enable;
 extern byte * cacheFile[MAX_CACHE_FILES];
 extern byte * demo_pl000_00_3;
 
-byte * PushFile(const char * str);
+//byte * PushFile(const char * str);
+
+
+
+
 void System_Cache_Init();

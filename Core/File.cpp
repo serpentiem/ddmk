@@ -1,8 +1,8 @@
 #include "File.h"
 
-byte * LoadFile(const char * fileName, uint32 * size)
+byte * LoadFile(const char * fileName, uint32 * size, byte * dest)
 {
-	byte * addr = 0;
+	byte * addr = dest;
 	dword error = 0;
 	SetLastError(0);
 	HANDLE file = CreateFileA(fileName, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
@@ -15,13 +15,16 @@ byte * LoadFile(const char * fileName, uint32 * size)
 	BY_HANDLE_FILE_INFORMATION fi = {};
 	GetFileInformationByHandle(file, &fi);
 	SetLastError(0);
-	// @Todo: Create custom allocator.
-	addr = (byte *)VirtualAlloc(0, fi.nFileSizeLow, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-	error = GetLastError();
 	if (!addr)
 	{
-		Log("VirtualAlloc failed. error %X", error);
-		return 0;
+		// @Todo: Create custom allocator.
+		addr = (byte *)VirtualAlloc(0, fi.nFileSizeLow, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+		error = GetLastError();
+		if (!addr)
+		{
+			Log("VirtualAlloc failed. error %X", error);
+			return 0;
+		}
 	}
 	dword bytesRead = 0;
 	OVERLAPPED overlap = {};

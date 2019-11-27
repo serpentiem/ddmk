@@ -6,7 +6,7 @@
 #include "Log.h"
 #include "Windows.h"
 
-byte * LoadFile(const char * fileName, uint32 * size = 0);
+byte * LoadFile(const char * fileName, uint32 * size = 0, byte * dest = 0);
 
 // @Philosophy: Put destination first.
 

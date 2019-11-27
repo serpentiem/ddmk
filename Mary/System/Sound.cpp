@@ -418,21 +418,40 @@ static void Compile
 	{
 
 
-		auto Align = [&]()
-		{
-			constexpr uint64 boundary = 0x10;
-			uint64 remainder = (pos % boundary);
-			if (remainder)
-			{
-				uint64 size = (boundary - remainder);
-				memset((addr + pos), 0xFF, size);
-				pos += size;
-			}
-		};
+		// @Check: Add to Core.
+
+
+		//Align<uint64>(pos, 0x10, addr, 0xFF);
+		//
+
+
+
+
+
+
+
+		//auto Align = [&]()
+		//{
+		//	constexpr uint64 boundary = 0x10;
+		//	uint64 remainder = (pos % boundary);
+		//	if (remainder)
+		//	{
+		//		uint64 size = (boundary - remainder);
+		//		memset((addr + pos), 0xFF, size);
+		//		pos += size;
+		//	}
+		//};
+
+
+
 
 		HEAD & head = *(HEAD *)(addr + pos);
 		pos += sizeof(HEAD);
-		Align();
+
+
+		// @Check: Add boundary variable.
+
+		Align<uint64>(pos, 0x10, addr, 0xFF);
 
 		Prog:
 		{
@@ -440,7 +459,7 @@ static void Compile
 
 			PROG_METADATA & prog = *(PROG_METADATA *)(addr + pos);
 			pos += sizeof(PROG_METADATA);
-			Align();
+			Align<uint64>(pos, 0x10, addr, 0xFF);
 
 			uint32 * off = (uint32 *)(addr + pos);
 
@@ -475,7 +494,7 @@ static void Compile
 			memcpy((addr + pos), progRoot.addr, progRoot.pos);
 			pos += progRoot.pos;
 
-			Align();
+			Align<uint64>(pos, 0x10, addr, 0xFF);
 
 			prog.signature[0] = 'P';
 			prog.signature[1] = 'r';
@@ -491,7 +510,7 @@ static void Compile
 
 			SMPL_METADATA & smpl = *(SMPL_METADATA *)(addr + pos);
 			pos += sizeof(SMPL_METADATA);
-			Align();
+			Align<uint64>(pos, 0x10, addr, 0xFF);
 
 
 			
@@ -501,7 +520,7 @@ static void Compile
 			uint64 size = (smplRoot.count * sizeof(SMPL_ITEM));
 			memcpy((addr + pos), smplRoot.addr, size);
 			pos += size;
-			Align();
+			Align<uint64>(pos, 0x10, addr, 0xFF);
 
 			smpl.signature[0] = 'S';
 			smpl.signature[1] = 'm';
@@ -517,7 +536,7 @@ static void Compile
 
 			VAGI_METADATA & vagi = *(VAGI_METADATA *)(addr + pos);
 			pos += sizeof(VAGI_METADATA);
-			Align();
+			Align<uint64>(pos, 0x10, addr, 0xFF);
 
 
 			
@@ -549,7 +568,7 @@ static void Compile
 			}
 
 			pos += size;
-			Align();
+			Align<uint64>(pos, 0x10, addr, 0xFF);
 
 			vagi.signature[0] = 'V';
 			vagi.signature[1] = 'a';
@@ -641,12 +660,9 @@ static void Compile
 
 static bool InitPosMap()
 {
-	byte * file = 0;
-	uint32 fileSize = 0;
-	file = LoadFile("data\\dmc3\\GData.afs\\SpuMap.bin", &fileSize);
+	byte * file = LoadGameFile("SpuMap.bin");
 	if (!file)
 	{
-		Log("LoadFile failed.");
 		return false;
 	}
 	uint64 pos = 0x5020;
@@ -786,9 +802,7 @@ bool System_Sound_Init()
 		for (uint8 index = 0; index < countof(var); index++)
 		{
 			snprintf(path, sizeof(path), "data\\dmc3\\GData.afs\\%s", var[index].archiveName);
-			byte * archive = 0;
-			uint32 size = 0;
-			archive = LoadFile(path, &size);
+			byte * archive = LoadGameFile(var[index].archiveName);
 			if (!archive)
 			{
 				return false;

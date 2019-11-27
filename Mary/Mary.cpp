@@ -105,7 +105,7 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 
 
-		//Game_Dante_Init();
+		Game_Dante_Init();
 
 
 
@@ -136,8 +136,8 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 		//Game_Style_Init();
 		//Game_Style_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
-		//Game_StyleSwitcher_Init();
-		//Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
+		Game_StyleSwitcher_Init();
+		Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
 
 		////// @Bug: If module is disabled, but any of these options are true, will cause problems.
 		////// @Todo: Add enable check to all multi-module sections.
@@ -149,22 +149,22 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 		////Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(Config.Game.Vergil.ForceEdge.infiniteRoundTrip);
 		////Game_Vergil_SummonedSwords_ToggleChronoSwords(Config.Game.Vergil.SummonedSwords.chronoSwords);
 		////Game_Vergil_WeaponSwitchTimeout_MeleeToggle(Config.Game.Vergil.WeaponSwitchTimeout.melee);
-		//Game_WeaponSwitcher_Init();
-		//Game_WeaponSwitcher_Toggle(Config.Game.WeaponSwitcher.enable);
-		//if (Config.Game.WeaponSwitcher.enable)
-		//{
-		//	Config.Cosmetics.Weapon.instantModelUpdate = true;
-		//	SaveConfig();
-		//}
-		//Cosmetics_Color_Init();
-		//Cosmetics_Color_Toggle(Config.Cosmetics.Color_enable);
-		//Cosmetics_Dante_Init();
-		//Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.hideBeowulf);
-		//Cosmetics_Other_Init();
-		//Cosmetics_Other_ToggleNoDevilForm(Config.Cosmetics.Other.noDevilForm);
-		//Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.hideBeowulf);
-		//Cosmetics_Weapon_Init();
-		//Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
+		Game_WeaponSwitcher_Init();
+		Game_WeaponSwitcher_Toggle(Config.Game.WeaponSwitcher.enable);
+		if (Config.Game.WeaponSwitcher.enable)
+		{
+			Config.Cosmetics.Weapon.instantModelUpdate = true;
+			SaveConfig();
+		}
+		Cosmetics_Color_Init();
+		Cosmetics_Color_Toggle(Config.Cosmetics.Color_enable);
+		Cosmetics_Dante_Init();
+		Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.hideBeowulf);
+		Cosmetics_Other_Init();
+		Cosmetics_Other_ToggleNoDevilForm(Config.Cosmetics.Other.noDevilForm);
+		Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.hideBeowulf);
+		Cosmetics_Weapon_Init();
+		Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
 
 		//Write<word>((appBaseAddr + 0x88517), 0xF390); // Hit Points Sub Full
 		//Write<byte>((appBaseAddr + 0x1AA791), 0xEB);  // Skip Orb Notifications

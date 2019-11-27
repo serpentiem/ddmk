@@ -3,4 +3,6 @@
 
 #include "../FMOD.h"
 
+#include "File.h"
+
 bool System_Sound_Init();
