@@ -38,3 +38,19 @@ bool InGame()
 	}
 	return true;
 }
+
+bool HUD_IsVisible()
+{
+	if (!InGame())
+	{
+		return false;
+	}
+	byte ** addr = (byte **)(appBaseAddr + 0xCF2520);
+	byte * item = addr[44];
+	if (!item)
+	{
+		return false;
+	}
+	uint8 & alpha = *(uint8 *)(item + 0x6920);
+	return (alpha > 0) ? true : false;
+}

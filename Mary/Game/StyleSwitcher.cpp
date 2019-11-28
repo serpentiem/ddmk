@@ -1,6 +1,7 @@
-#include "StyleSwitcher.h"
 
 // @Todo: Check cache dependency.
+
+#include "StyleSwitcher.h"
 
 typedef void(* UpdateIcon_t)();
 
@@ -10,8 +11,26 @@ byte * StyleControllerProxy    = 0;
 byte * GunslingerGetStyleLevel = 0;
 byte * VergilDynamicStyle      = 0;
 
+
+
+
+
+bool updateIcon = false;
+
+
+
+
+
+
+
+
+
+
 __declspec(noinline) static void UpdateStyle(byte * baseAddr, uint32 styleId)
 {
+
+	// @Research: Check references.
+
 	uint8     character  = *(uint8   *)(baseAddr + 0x78);
 	uint32  & style      = *(uint32  *)(baseAddr + 0x6338);
 	uint32  & level      = *(uint32  *)(baseAddr + 0x6358);
@@ -27,6 +46,9 @@ __declspec(noinline) static void UpdateStyle(byte * baseAddr, uint32 styleId)
 
 	uint8 actorId    = GetActorId(baseAddr);
 	uint8 actorCount = GetActorCount();
+
+
+	// @Todo: Add section.
 
 	bool unleash = ((character == CHAR_DANTE) || (character == CHAR_VERGIL)) ? true : false;
 	if (!unleash)
@@ -72,16 +94,12 @@ __declspec(noinline) static void UpdateStyle(byte * baseAddr, uint32 styleId)
 
 
 
-	// Quicksilver if used by another actor than ACTOR_ONE freezes the actor.
-
-
+	// @Research: If Quicksilver is used by anyone other than ACTOR_ONE, it freezes that actor.
 
 	if ((actorId != ACTOR_ONE) && (styleId == STYLE_QUICKSILVER))
 	{
 		//styleId = STYLE_DOPPELGANGER;
-
 		return;
-
 	}
 
 
@@ -141,7 +159,7 @@ __declspec(noinline) static void UpdateStyle(byte * baseAddr, uint32 styleId)
 
 
 
-	uint64 size = sizeof(CAPCOM_GAMEPAD);
+	//uint64 size = sizeof(CAPCOM_GAMEPAD);
 
 
 
@@ -190,8 +208,33 @@ __declspec(noinline) static void UpdateStyle(byte * baseAddr, uint32 styleId)
 
 	if (actorId == ACTOR_ONE)
 	{
-		UpdateIcon();
+		updateIcon = true;
 	}
+}
+
+dword UpdateIconThread(void * parameter)
+{
+	LogFunction();
+	do
+	{
+		LoopStart:
+		{
+			if (!updateIcon)
+			{
+				goto LoopEnd;
+			}
+			if (!HUD_IsVisible())
+			{
+				goto LoopEnd;
+			}
+			updateIcon = false;
+			UpdateIcon();
+		}
+		LoopEnd:
+		Sleep(10);
+	}
+	while (true);
+	return 1;
 }
 
 static void StyleController()
@@ -349,6 +392,19 @@ void Game_StyleSwitcher_Init()
 		WriteAddress((func.sect0 + 2), (appBaseAddr + 0xC90E30), 7);
 		VergilDynamicStyle = func.addr;
 	}
+
+
+
+	CreateThread(0, 4096, UpdateIconThread, 0, 0, 0);
+
+
+
+
+
+
+
+
+
 }
 
 void Game_StyleSwitcher_Toggle(bool enable)

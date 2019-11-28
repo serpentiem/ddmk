@@ -1,3 +1,6 @@
+
+// @Todo: Update #includes.
+
 #pragma once
 #include "../../Core/Core.h"
 
@@ -5,3 +8,4 @@
 
 bool ActorAvailable();
 bool InGame();
+bool HUD_IsVisible();
