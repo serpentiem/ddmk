@@ -21,11 +21,14 @@
 
 #include "Game/Arcade.h"
 #include "Game/Dante.h"
+
+#include "Game/Doppelganger.h"
+
 #include "Game/Mobility.h"
 #include "Game/Other.h"
 #include "Game/ResetMotionState.h"
 #include "Game/Speed.h"
-#include "Game/Style.h"
+//#include "Game/Style.h"
 #include "Game/StyleSwitcher.h"
 #include "Game/Training.h"
 #include "Game/Vergil.h"

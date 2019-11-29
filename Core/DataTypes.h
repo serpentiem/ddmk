@@ -13,3 +13,8 @@ typedef unsigned long      dword;
 typedef unsigned long long qword;
 typedef float              float32;
 typedef double             float64;
+
+typedef unsigned char      byte8;
+typedef unsigned short     byte16;
+typedef unsigned long      byte32;
+typedef unsigned long long byte64;

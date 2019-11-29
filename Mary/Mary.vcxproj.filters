@@ -32,9 +32,6 @@
     <ClCompile Include="System\Cache.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Event.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Arcade.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -81,9 +78,6 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Game\Other.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Style.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Cosmetics\Vergil.cpp">
@@ -139,6 +133,13 @@
     <ClCompile Include="..\Core\File.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Doppelganger.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Quicksilver.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -191,9 +192,6 @@
     <ClInclude Include="System\Cache.h">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="System\Event.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Arcade.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -240,9 +238,6 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Other.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Style.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Cosmetics\Vergil.h">
@@ -317,5 +312,12 @@
     <ClInclude Include="..\Core\File.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Doppelganger.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Quicksilver.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h" />
   </ItemGroup>
 </Project>

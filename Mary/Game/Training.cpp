@@ -1,3 +1,6 @@
+
+// @Todo: Reset Magic Points if infinite option is active.
+
 #include "Training.h"
 
 void Game_Training_ToggleInfiniteHitPoints(bool enable)

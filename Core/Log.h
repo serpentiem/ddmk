@@ -5,6 +5,10 @@
 
 // @Todo: Add LogWarning LogError and LogCriticalError.
 
+
+
+
+
 #pragma once
 #include "DataTypes.h"
 #include "String.h"
@@ -50,6 +54,18 @@ void LogNewLine();
 #define FUNC_NAME __FUNCTION__
 
 #define LogFunction() Log(FUNC_NAME)
+
+
+
+
+#define LogFunctionStart() Log("%s Start", FUNC_NAME)
+#define LogFunctionEnd() Log("%s End", FUNC_NAME)
+
+
+
+
+
+
 #define LogFunctionUInt32(a) Log("%s %u", FUNC_NAME, a)
 #define LogFunctionBool(a) LogFunctionUInt32(a)
 

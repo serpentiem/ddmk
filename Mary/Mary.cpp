@@ -1,6 +1,9 @@
 #include "../Core/Core.h"
 
 #include "Config.h"
+
+#include "Event.h"
+
 #include "FMOD.h"
 #include "Hooks.h"
 
@@ -8,7 +11,10 @@
 #include "System/Animation.h"
 #include "System/Cache.h"
 #include "System/Camera.h"
-#include "System/Event.h"
+//#include "System/Event.h"
+
+
+
 #include "System/File.h"
 #include "System/Media.h"
 #include "System/Sound.h"
@@ -18,11 +24,14 @@
 #include "Game/Arcade.h"
 #include "Game/Attack.h"
 #include "Game/Dante.h"
+
+#include "Game/Doppelganger.h"
+
 #include "Game/Mobility.h"
 #include "Game/Other.h"
 #include "Game/ResetMotionState.h"
 #include "Game/Speed.h"
-#include "Game/Style.h"
+//#include "Game/Style.h"
 #include "Game/StyleSwitcher.h"
 #include "Game/Training.h"
 #include "Game/Vergil.h"
@@ -69,9 +78,9 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 		System_Camera_ToggleInvertX(Config.System.Camera.invertX);
 
-		System_Event_Init();
-		System_Event_ToggleSkipIntro(Config.System.Event.skipIntro);
-		System_Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
+		Event_Init();
+		Event_ToggleSkipIntro(Config.System.Event.skipIntro);
+		Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
 
 
 
@@ -106,6 +115,10 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 
 		Game_Dante_Init();
+
+		Game_Doppelganger_Init();
+		Game_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
+
 
 
 

@@ -104,6 +104,11 @@ struct CONFIG
 		struct
 		{
 			bool enable = false;
+		}
+		Doppelganger;
+		struct
+		{
+			bool enable = false;
 			struct MOBILITY
 			{
 				struct

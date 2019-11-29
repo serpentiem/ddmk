@@ -12,10 +12,21 @@ extern byte * actorBaseAddr[MAX_ACTOR];
 extern bool updateModelAttributes[MAX_ACTOR];
 
 typedef void(* UpdateDevilForm_t)(byte *);
-typedef void(* UpdateFlux_t)(byte *, uint8);
+typedef void(* UpdateFlux_t     )(byte *, uint8);
+typedef void(* Relax_t          )(byte *);
 
 extern UpdateDevilForm_t UpdateDevilForm;
 extern UpdateFlux_t      UpdateFlux;
+extern Relax_t           Relax;
+
+
+
+
+
+
+
+
+
 
 uint8 GetActorId(byte * baseAddr);
 uint8 GetActorCount();

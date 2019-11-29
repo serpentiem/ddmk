@@ -1,53 +1,115 @@
-
-// @Check: Replace macro with lambdas.
-
 #include "Event.h"
 
-#pragma warning(disable: 4003) // Zero args for macro provided.
+#pragma region Global Definitions
 
-#define InitVars(result)                              \
-byte * addr = *(byte **)(appBaseAddr + 0xCA8918);     \
-if (!addr)                                            \
-{                                                     \
-	return result;                                    \
-}                                                     \
-addr = *(byte **)(addr + 0x40);                       \
-if (!addr)                                            \
-{                                                     \
-	return result;                                    \
-}                                                     \
-uint32 & room     = *(uint32 *)(addr + 0x18);         \
-uint32 & position = *(uint32 *)(addr + 0x1C);         \
-                                                      \
-addr = *(byte **)(appBaseAddr + 0xCA8918);            \
-addr = *(byte **)(addr + 0x60);                       \
-if (!addr)                                            \
-{                                                     \
-	return result;                                    \
-}                                                     \
-uint16 & nextRoom     = *(uint16 *)(addr + 0x164);    \
-uint16 & nextPosition = *(uint16 *)(addr + 0x166);    \
-                                                      \
-addr = *(byte **)(appBaseAddr + 0xC90E30);            \
-if (!addr)                                            \
-{                                                     \
-	return result;                                    \
-}                                                     \
-addr = *(byte **)(addr + 8);                          \
-if (!addr)                                            \
-{                                                     \
-	return result;                                    \
-}                                                     \
-dword * flags = (dword *)addr;                        \
-                                                      \
-uint32 mission = *(uint32 *)(appBaseAddr + 0xC8F250);
+struct VARS
+{
+	bool     init;
+	uint32 * room;
+	uint32 * position;
+	uint16 * nextRoom;
+	uint16 * nextPosition;
+	byte32 * flags;
+	uint32 * mission;
+	VARS()
+	{
+		Log("VARS ctor");
+		{
+			byte ** addr = *(byte ***)(appBaseAddr + 0xCA8918);
+			if (!addr)
+			{
+				return;
+			}
+			if (!addr[8])
+			{
+				return;
+			}
+			room     = (uint32 *)(addr[8] + 0x18);
+			position = (uint32 *)(addr[8] + 0x1C);
+			if (!addr[12])
+			{
+				return;
+			}
+			nextRoom     = (uint16 *)(addr[12] + 0x164);
+			nextPosition = (uint16 *)(addr[12] + 0x166);
+		}
+		{
+			byte ** addr = *(byte ***)(appBaseAddr + 0xC90E30);
+			if (!addr)
+			{
+				return;
+			}
+			if (!addr[1])
+			{
+				return;
+			}
+			flags = (byte32 *)addr[1];
+		}
+		mission = (uint32 *)(appBaseAddr + 0xC8F250);
+		init = true;
+	}
+};
+
+#pragma endregion
+
+#pragma region System Events
+
+#pragma region Actor
+
+static void Actor_StageLoadComplete()
+{
+	LogFunctionStart();
+
+	// Update Ids
+	for (uint8 actor = 0; actor < GetActorCount(); actor++)
+	{
+		uint8 & id = *(uint8 *)(actorBaseAddr[actor] + 0x118);
+		id = actor;
+		Log("Actor id %u", id);
+	}
+	//// Fix Style Level
+	//if (Config.Game.Multiplayer.enable)
+	//{
+	//	for (uint8 actor = 0; actor < GetActorCount(); actor++)
+	//	{
+	//		uint32 & style = *(uint32 *)(actorBaseAddr[actor] + 0x6338);
+	//		if (style == STYLE_DOPPELGANGER)
+	//		{
+	//			style = STYLE_TRICKSTER;
+	//			uint32 & level = *(uint32 *)(actorBaseAddr[actor] + 0x6358);
+	//			byte * session = *(byte **)(appBaseAddr + 0xC90E30);
+	//			if (!session)
+	//			{
+	//				level = 2;
+	//				continue;
+	//			}
+	//			level = *(uint32 *)(session + 0x11C + (style * 4));
+	//		}
+	//	}
+	//}
+
+	// Set Doppelganger Flags
+	uint8 character = *(uint8 *)(actorBaseAddr[ACTOR_ONE] + 0x78);
+	if (!Config.Game.Multiplayer.enable && (Config.Game.StyleSwitcher.enable || (character == CHAR_DANTE)))
+	{
+		bool & isDoppelganger = *(bool *)(actorBaseAddr[ACTOR_TWO] + 0x11C);
+		isDoppelganger = true;
+		uint8 & shadow = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x3A18);
+		shadow = 0;
+		*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x6338) = *(uint32 *)(actorBaseAddr[ACTOR_ONE] + 0x6338);
+	}
+
+	LogFunctionEnd();
+}
+
+#pragma endregion
+
+#pragma region Arcade
 
 static void Arcade_InitSession()
 {
-	if (!Config.Game.Arcade.enable)
-	{
-		return;
-	}
+	LogFunctionStart();
+
 	byte * addr = (appBaseAddr + 0xC8F250);
 	uint32  & mission            = *(uint32  *)(addr        );
 	uint32  & mode               = *(uint32  *)(addr + 0xC  );
@@ -75,6 +137,7 @@ static void Arcade_InitSession()
 		{
 			goto ModeEnd;
 		}
+		// @Todo: Create modeMap.
 		if (Config.Game.Arcade.mode == 5)
 		{
 			mode = MODE_HARD;
@@ -153,25 +216,33 @@ static void Arcade_InitSession()
 
 
 
+	LogFunctionEnd();
 }
 
 static void Arcade_SetCharacter(byte * addr)
 {
-	if (!Config.Game.Arcade.enable)
-	{
-		return;
-	}
+	LogFunctionStart();
 	uint8 & character = *(uint8 *)(addr + 0x4565);
 	character = Config.Game.Arcade.character;
+	LogFunctionEnd();
 }
 
 static void Arcade_SetRoom()
 {
-	if (!Config.Game.Arcade.enable)
+	LogFunctionStart();
+
+	VARS vars = {};
+	if (!vars.init)
 	{
 		return;
 	}
-	InitVars();
+	uint32 & room         = *vars.room;
+	uint32 & position     = *vars.position;
+	uint16 & nextRoom     = *vars.nextRoom;
+	uint16 & nextPosition = *vars.nextPosition;
+	byte32 * flags        = vars.flags;
+	uint32 & mission      = *vars.mission;
+
 	if (!Config.Game.Arcade.ignoreRoom)
 	{
 		nextRoom = Config.Game.Arcade.room;
@@ -182,84 +253,67 @@ static void Arcade_SetRoom()
 	}
 	if (mission == 21)
 	{
-		uint16 room[] =
+		struct DPS
 		{
-			423, //floor 1
-			424, //floor 2
-			425, //floor 3
-			426, //floor 4
-			427, //floor 5
-			428, //floor 6
-			429, //floor 7
-			430, //floor 8
-			431, //floor 9
-			432, //floor 10
-			433, //cerberus
-			434, //gigapede
-			435, //agni rudra
-			436, //nevan
-			437, //beowulf
-			438, //geryon
-			439, //doppelganger
-			440, //heart of leviathan
-			441, //damned chessmen
-			442, //vergil 1
-			443, //vergil 2
-			444, //vergil 3
-			445, //lady
-			446, //arkham
-			422, //jester 1
-			448, //jester 2
-			449, //jester 3
+			uint16 room;
+			uint16 position;
 		};
-		uint16 position[] =
+		DPS var[] =
 		{
-			0, //floor 1
-			0, //floor 2
-			0, //floor 3
-			0, //floor 4
-			0, //floor 5
-			0, //floor 6
-			0, //floor 7
-			0, //floor 8
-			0, //floor 9
-			0, //floor 10
-			0, //cerberus
-			0, //gigapede
-			0, //agni rudra
-			0, //nevan
-			0, //beowulf
-			2, //geryon
-			0, //doppelganger
-			0, //heart of leviathan
-			0, //damned chessmen
-			0, //vergil 1
-			0, //vergil 2
-			0, //vergil 3
-			2, //lady
-			0, //arkham
-			0, //jester 1
-			0, //jester 2
-			0, //jester 3
+			{ 423, 0 }, // floor 1
+			{ 424, 0 }, // floor 2
+			{ 425, 0 }, // floor 3
+			{ 426, 0 }, // floor 4
+			{ 427, 0 }, // floor 5
+			{ 428, 0 }, // floor 6
+			{ 429, 0 }, // floor 7
+			{ 430, 0 }, // floor 8
+			{ 431, 0 }, // floor 9
+			{ 432, 0 }, // floor 10
+			{ 433, 0 }, // cerberus
+			{ 434, 0 }, // gigapede
+			{ 435, 0 }, // agni rudra
+			{ 436, 0 }, // nevan
+			{ 437, 0 }, // beowulf
+			{ 438, 2 }, // geryon
+			{ 439, 0 }, // doppelganger
+			{ 440, 0 }, // heart of leviathan
+			{ 441, 0 }, // damned chessmen
+			{ 442, 0 }, // vergil 1
+			{ 443, 0 }, // vergil 2
+			{ 444, 0 }, // vergil 3
+			{ 445, 2 }, // lady
+			{ 446, 0 }, // arkham
+			{ 422, 0 }, // jester 1
+			{ 448, 0 }, // jester 2
+			{ 449, 0 }, // jester 3
 		};
-		nextRoom     = room    [Config.Game.Arcade.BloodyPalace.floor];
-		nextPosition = position[Config.Game.Arcade.BloodyPalace.floor];
+		nextRoom     = var[Config.Game.Arcade.BloodyPalace.floor].room;
+		nextPosition = var[Config.Game.Arcade.BloodyPalace.floor].position;
 	}
-
-	Log("arcade too");
-
+	LogFunctionEnd();
 }
+
+#pragma endregion
+
+#pragma region BossRush
 
 static void BossRush_SetRoom()
 {
-	if (!Config.Game.BossRush.enable)
+	LogFunctionStart();
+
+	VARS vars = {};
+	if (!vars.init)
 	{
 		return;
 	}
+	uint32 & room         = *vars.room;
+	uint32 & position     = *vars.position;
+	uint16 & nextRoom     = *vars.nextRoom;
+	uint16 & nextPosition = *vars.nextPosition;
+	byte32 * flags        = vars.flags;
+	uint32 & mission      = *vars.mission;
 
-	
-
-	InitVars();
 	switch (mission)
 	{
 	case 3:
@@ -305,7 +359,7 @@ static void BossRush_SetRoom()
 		{
 			nextRoom     = ROOM_LEVIATHAN;
 			nextPosition = POSITION_LEVIATHAN;
-			addr = *(byte **)(appBaseAddr + 0xC90E30);
+			byte * addr = *(byte **)(appBaseAddr + 0xC90E30);
 			if (!addr)
 			{
 				break;
@@ -412,30 +466,24 @@ static void BossRush_SetRoom()
 		break;
 	}
 
-
-
-	Log("reach here");
-
-
-
-
-
-
-
-
+	LogFunctionEnd();
 }
 
 static void BossRush_SetNextRoom()
 {
-	if (!Config.Game.BossRush.enable)
+	LogFunctionStart();
+
+	VARS vars = {};
+	if (!vars.init)
 	{
 		return;
 	}
-
-	Log("yup br");
-
-	InitVars();
-	
+	uint32 & room         = *vars.room;
+	uint32 & position     = *vars.position;
+	uint16 & nextRoom     = *vars.nextRoom;
+	uint16 & nextPosition = *vars.nextPosition;
+	byte32 * flags        = vars.flags;
+	uint32 & mission      = *vars.mission;
 
 	switch (mission)
 	{
@@ -509,96 +557,53 @@ static void BossRush_SetNextRoom()
 		case ROOM_DOPPELGANGER_REBORN:
 			nextRoom     = 403;
 			nextPosition = 2;
-			/*
-			addr = *(byte **)(appBaseAddr + 0xCA8918);
-			if (!addr)
-			{
-				break;
-			}
-			addr = *(byte **)(addr + 0x60);
-			if (!addr)
-			{
-				break;
-			}
-			*(word *)(addr + 0x38) = 0x3FE;
-			*(word *)(addr + 0x3C) = 0x1FF;
-			*/
 			flags[14] = 0x3FE;
 			flags[15] = 0x1FF;
 			break;
 		}
 		break;
 	}
+
+	LogFunctionEnd();
 }
 
 static void BossRush_SetContinueRoom()
 {
-	if (!Config.Game.BossRush.enable)
+	LogFunctionStart();
+
+	VARS vars = {};
+	if (!vars.init)
 	{
 		return;
 	}
-	InitVars();
+	uint32 & room         = *vars.room;
+	uint32 & position     = *vars.position;
+	uint16 & nextRoom     = *vars.nextRoom;
+	uint16 & nextPosition = *vars.nextPosition;
+	byte32 * flags        = vars.flags;
+	uint32 & mission      = *vars.mission;
+
 	nextRoom     = (uint16)room;
 	nextPosition = (uint16)position;
+
+	LogFunctionEnd();
 }
 
-static void InitSession()
+static const char * BossRush_SetTrack(const char * path)
 {
-	LogFunction();
-	Arcade_InitSession();
-}
+	LogFunctionStart();
 
-static void SetCharacter(byte * addr)
-{
-	LogFunction();
-	Arcade_SetCharacter(addr);
-}
-
-static void SetRoom()
-{
-	LogFunction();
-	Arcade_SetRoom();
-	BossRush_SetRoom();
-}
-
-static void SetNextRoom()
-{
-	LogFunction();
-	BossRush_SetNextRoom();
-}
-
-static void SetContinueRoom()
-{
-	LogFunction();
-	BossRush_SetContinueRoom();
-}
-
-// @Check: Why are both enum and bool required?
-
-static const char * SetTrack(void *, const char * path, uint32, uint32)
-{
-	Log("%s %s", FUNC_NAME, path);
-	mediaError = MEDIA_NO_ERROR;
-	if (_stricmp(path, "afs/sound/continue.adx") == 0)
-	{
-		mediaSkipTrack = false;
-	}
-	if (mediaSkipTrack)
-	{
-		mediaSkipTrack = false;
-		mediaError = MEDIA_SKIP_TRACK;
-		return 0;
-	}
-	if (!Config.Game.BossRush.enable)
+	VARS vars = {};
+	if (!vars.init)
 	{
 		return 0;
 	}
-
-	// Yup, crap.
-
-	InitVars(0);
-
-
+	uint32 & room         = *vars.room;
+	uint32 & position     = *vars.position;
+	uint16 & nextRoom     = *vars.nextRoom;
+	uint16 & nextPosition = *vars.nextPosition;
+	byte32 * flags        = vars.flags;
+	uint32 & mission      = *vars.mission;
 
 	switch (mission)
 	{
@@ -638,16 +643,28 @@ static const char * SetTrack(void *, const char * path, uint32, uint32)
 		}
 		break;
 	}
+
+	LogFunctionEnd();
+
 	return 0;
 }
 
 static void BossRush_StageLoadComplete()
 {
-	if (!Config.Game.BossRush.enable)
+	LogFunctionStart();
+
+	VARS vars = {};
+	if (!vars.init)
 	{
 		return;
 	}
-	InitVars();
+	uint32 & room         = *vars.room;
+	uint32 & position     = *vars.position;
+	uint16 & nextRoom     = *vars.nextRoom;
+	uint16 & nextPosition = *vars.nextPosition;
+	byte32 * flags        = vars.flags;
+	uint32 & mission      = *vars.mission;
+
 	switch (mission)
 	{
 	case 3:
@@ -727,74 +744,271 @@ static void BossRush_StageLoadComplete()
 		}
 		break;
 	}
+
+	LogFunctionEnd();
 }
 
-static void Actor_StageLoadComplete()
+#pragma endregion
+
+static void InitSession()
 {
-	LogFunction();
-	if (!System_Actor_enable)
+	LogFunctionStart();
+	if (Config.Game.Arcade.enable)
 	{
-		return;
+		Arcade_InitSession();
+	}
+	LogFunctionEnd();
+}
+
+static void SetCharacter(byte * addr)
+{
+	LogFunctionStart();
+	if (Config.Game.Arcade.enable)
+	{
+		Arcade_SetCharacter(addr);
+	}
+	LogFunctionEnd();
+}
+
+static void SetRoom()
+{
+	LogFunctionStart();
+	if (Config.Game.Arcade.enable)
+	{
+		Arcade_SetRoom();
+	}
+	if (Config.Game.BossRush.enable)
+	{
+		BossRush_SetRoom();
+	}
+	LogFunctionEnd();
+}
+
+static void SetNextRoom()
+{
+	LogFunctionStart();
+	if (Config.Game.BossRush.enable)
+	{
+		BossRush_SetNextRoom();
+	}
+	LogFunctionEnd();
+}
+
+static void SetContinueRoom()
+{
+	LogFunctionStart();
+	if (Config.Game.BossRush.enable)
+	{
+		BossRush_SetContinueRoom();
+	}
+	LogFunctionEnd();
+}
+
+// @Check: Why are both enum and bool required?
+
+static const char * SetTrack(void *, const char * path, uint32, uint32)
+{
+	Log("%s %s", FUNC_NAME, path);
+
+	mediaError = MEDIA_NO_ERROR;
+	if (_stricmp(path, "afs/sound/continue.adx") == 0)
+	{
+		mediaSkipTrack = false;
+	}
+	if (mediaSkipTrack)
+	{
+		mediaSkipTrack = false;
+		mediaError = MEDIA_SKIP_TRACK;
+		return 0;
+	}
+	if (Config.Game.BossRush.enable)
+	{
+		return BossRush_SetTrack(path);
 	}
 
-	
-
-
-	// Update Ids
-	for (uint8 actor = 0; actor < GetActorCount(); actor++)
-	{
-		uint8 & id = *(uint8 *)(actorBaseAddr[actor] + 0x118);
-		id = actor;
-		Log("Actor id %u", id);
-	}
-	//// Fix Style Level
-	//if (Config.Game.Multiplayer.enable)
-	//{
-	//	for (uint8 actor = 0; actor < GetActorCount(); actor++)
-	//	{
-	//		uint32 & style = *(uint32 *)(actorBaseAddr[actor] + 0x6338);
-	//		if (style == STYLE_DOPPELGANGER)
-	//		{
-	//			style = STYLE_TRICKSTER;
-	//			uint32 & level = *(uint32 *)(actorBaseAddr[actor] + 0x6358);
-	//			byte * session = *(byte **)(appBaseAddr + 0xC90E30);
-	//			if (!session)
-	//			{
-	//				level = 2;
-	//				continue;
-	//			}
-	//			level = *(uint32 *)(session + 0x11C + (style * 4));
-	//		}
-	//	}
-	//}
-
-
-
-
-	// Set Doppelganger Flags
-	uint8 character = *(uint8 *)(actorBaseAddr[ACTOR_ONE] + 0x78);
-	if (!Config.Game.Multiplayer.enable && (Config.Game.StyleSwitcher.enable || (character == CHAR_DANTE)))
-	{
-		bool & isDoppelganger = *(bool *)(actorBaseAddr[ACTOR_TWO] + 0x11C);
-		isDoppelganger = true;
-		uint8 & shadow = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x3A18);
-		shadow = 0;
-		*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x6338) = *(uint32 *)(actorBaseAddr[ACTOR_ONE] + 0x6338);
-	}
+	return 0;
 }
 
 static void StageLoadComplete()
 {
-	LogFunction();
-	Actor_StageLoadComplete();
-	BossRush_StageLoadComplete();
+	LogFunctionStart();
+	// @Todo: Too broad. Separate into smaller chunks.
+	if (System_Actor_enable)
+	{
+		Actor_StageLoadComplete();
+	}
+	if (Config.Game.BossRush.enable)
+	{
+		BossRush_StageLoadComplete();
+	}
+	LogFunctionEnd();
 }
 
-#undef InitVars
+#pragma endregion
 
-void System_Event_Init()
+#pragma region Game Events
+
+
+
+
+static void Doppelganger_Activate(byte * baseAddr)
+{
+	Log("%s %llX", FUNC_NAME, baseAddr);
+
+	uint8 actor = GetActorId(baseAddr);
+	if (actor != ACTOR_ONE)
+	{
+		return;
+	}
+
+	// @Todo: Feed to watchdog.
+	Write<byte>((appBaseAddr + 0x1F83D0), 0xEB); // Force Actor Update
+
+	if (!Config.Game.Style.Doppelganger.useEXVersion)
+	{
+		UpdateFlux(baseAddr, DEVIL_FLUX_END);
+		return;
+	}
+	bool devil = *(bool *)(baseAddr + 0x3E9B);
+	if (devil)
+	{
+		UpdateFlux(baseAddr, DEVIL_FLUX_END);
+	}
+	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = *(uint32 *)(baseAddr + 0x3E6C);
+	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = *(uint32 *)(baseAddr + 0x3E70);
+	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = *(uint32 *)(baseAddr + 0x3E88);
+	*(bool   *)(actorBaseAddr[ACTOR_TWO] + 0x3E9B) = *(bool   *)(baseAddr + 0x3E9B);
+	uint8 character = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x78);
+	if (character == CHAR_BOB)
+	{
+		if (devil)
+		{
+			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = DEVIL_BOB_YAMATO;
+			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = DEVIL_BOB_YAMATO;
+			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = DEVIL_BOB_YAMATO;
+		}
+		else
+		{
+			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
+			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
+			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
+		}
+	}
+	else if (character == CHAR_LADY)
+	{
+		*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
+		*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
+		*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
+		*(bool   *)(actorBaseAddr[ACTOR_TWO] + 0x3E9B) = false;
+	}
+	else if (character == CHAR_VERGIL)
+	{
+		uint8 devilForm[] =
+		{
+			DEVIL_VERGIL_YAMATO,
+			DEVIL_VERGIL_BEOWULF,
+			DEVIL_VERGIL_FORCE_EDGE,
+		};
+		uint8 selectedWeapon = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x6488);
+		if (selectedWeapon > 2)
+		{
+			selectedWeapon = 0;
+		}
+		if (devil)
+		{
+			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = devilForm[selectedWeapon];
+			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = devilForm[selectedWeapon];
+			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = devilForm[selectedWeapon];
+		}
+		else
+		{
+			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
+			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
+			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
+		}
+	}
+	if (character != CHAR_LADY)
+	{
+		UpdateDevilForm(actorBaseAddr[ACTOR_TWO]);
+	}
+}
+
+static void Doppelganger_Deactivate(byte * baseAddr)
+{
+	Log("%s %llX", FUNC_NAME, baseAddr);
+
+	uint8 actor = GetActorId(baseAddr);
+	if (actor != ACTOR_ONE)
+	{
+		return;
+	}
+
+	// @Todo: Create Watchdog.
+	Write<byte>((appBaseAddr + 0x1F83D0), 0x75);
+
+	if (!Config.Game.Style.Doppelganger.useEXVersion)
+	{
+		*(uint32 *)(baseAddr + 0x3E6C) = 0;
+		*(uint32 *)(baseAddr + 0x3E70) = 0;
+		*(uint32 *)(baseAddr + 0x3E88) = 0;
+		UpdateDevilForm(baseAddr);
+		UpdateFlux(baseAddr, DEVIL_FLUX_END);
+		Relax(baseAddr);
+		return;
+	}
+	bool devil = *(bool *)(baseAddr + 0x3E9B);
+	if (devil)
+	{
+		UpdateFlux(baseAddr, DEVIL_FLUX_START);
+	}
+	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
+	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
+	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
+	*(bool   *)(actorBaseAddr[ACTOR_TWO] + 0x3E9B) = false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Event_Init()
 {
 	LogFunction();
+	#pragma region System Events
 	{
 		byte sect0[] =
 		{
@@ -889,9 +1103,126 @@ void System_Event_Init()
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteJump((appBaseAddr + 0x23D0A4), func.addr, 2);
 	}
+	#pragma endregion
+	#pragma region Game Events
+
+
+
+
+
+
+	{
+		byte sect0[] =
+		{
+			0x50, //push rax
+		};
+		byte sect1[] =
+		{
+			0x48, 0x8B, 0xCF, //mov rcx,rdi
+		};
+		byte sect2[] =
+		{
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Config.Game.Doppelganger.enable
+			0x8A, 0x00,                                                 //mov al,[rax]
+			0x84, 0xC0,                                                 //test al,al
+			0x74, 0x06,                                                 //je short
+			0x58,                                                       //pop rax
+			0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+1E930E
+			0x58,                                                       //pop rax
+			0x80, 0xBF, 0x9B, 0x3E, 0x00, 0x00, 0x01,                   //cmp byte ptr [rdi+00003E9B],01
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+1E930E
+			0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+1E92EA
+		};
+		// @Todo: Update CreateFunction. Add noReturn.
+		FUNC func = CreateFunction(Doppelganger_Activate, 0, true, false, sizeof(sect0), sizeof(sect1), sizeof(sect2));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		*(bool **)(func.sect2 + 2) = &Config.Game.Doppelganger.enable;
+		WriteAddress((func.sect2 + 0x11), (appBaseAddr + 0x1E930E), 5);
+		WriteAddress((func.sect2 + 0x1E), (appBaseAddr + 0x1E930E), 6);
+		WriteAddress((func.sect2 + 0x24), (appBaseAddr + 0x1E92EA), 5);
+		WriteJump((appBaseAddr + 0x1E92E1), func.addr, 2);
+	}
+	{
+		byte sect0[] =
+		{
+			0x50, //push rax
+		};
+		byte sect1[] =
+		{
+			0x48, 0x8B, 0xCB, //mov rcx,rbx
+		};
+		byte sect2[] =
+		{
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Config.Game.Doppelganger.enable
+			0x8A, 0x00,                                                 //mov al,[rax]
+			0x84, 0xC0,                                                 //test al,al
+			0x74, 0x06,                                                 //je short
+			0x58,                                                       //pop rax
+			0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+1E2B63
+			0x58,                                                       //pop rax
+			0x80, 0xBB, 0x9B, 0x3E, 0x00, 0x00, 0x00,                   //cmp byte ptr [rbx+00003E9B],00
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+1E2B63
+			0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+1E2B2D
+		};
+		FUNC func = CreateFunction(Doppelganger_Deactivate, 0, true, false, sizeof(sect0), sizeof(sect1), sizeof(sect2));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		*(bool **)(func.sect2 + 2) = &Config.Game.Doppelganger.enable;
+		WriteAddress((func.sect2 + 0x11), (appBaseAddr + 0x1E2B63), 5);
+		WriteAddress((func.sect2 + 0x1E), (appBaseAddr + 0x1E2B63), 6);
+		WriteAddress((func.sect2 + 0x24), (appBaseAddr + 0x1E2B2D), 5);
+		WriteJump((appBaseAddr + 0x1E2B24), func.addr, 2);
+	}
+
+
+
+
+
+
+
+
+	#pragma endregion
+
+
+
+
+
+
+
+
+
 }
 
-void System_Event_ToggleSkipIntro(bool enable)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Event_ToggleSkipIntro(bool enable)
 {
 	LogFunctionBool(enable);
 	if (enable)
@@ -916,7 +1247,7 @@ void System_Event_ToggleSkipIntro(bool enable)
 	}
 }
 
-void System_Event_ToggleSkipCutscenes(bool enable)
+void Event_ToggleSkipCutscenes(bool enable)
 {
 	LogFunctionBool(enable);
 	if (enable)

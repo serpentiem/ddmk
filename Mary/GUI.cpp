@@ -670,6 +670,9 @@ void GUI_Game_Speed()
 
 #undef GUI_InputExSpeed
 
+
+// @Todo: Create Proper Sections.
+
 void GUI_Game_Style()
 {
 	GUI_Hyperlink(Locale.Game.Style.header);
@@ -687,16 +690,19 @@ void GUI_Game_Style()
 			if (Config.Game.Style.enable)
 			{
 
-				Game_Style_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
+				//Game_Style_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
 				
 
-
+				Game_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
 				
 
 			}
 			else
 			{
-				Game_Style_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Style.Doppelganger.useEXVersion);
+
+				Game_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Style.Doppelganger.useEXVersion);
+
+				//Game_Style_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Style.Doppelganger.useEXVersion);
 				
 
 
@@ -713,7 +719,10 @@ void GUI_Game_Style()
 	ImGui::Text(Locale.Game.Style.Doppelganger.header);
 	if (GUI_Checkbox(Locale.Game.Style.Doppelganger.useEXVersion, Config.Game.Style.Doppelganger.useEXVersion))
 	{
-		Game_Style_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
+		//Game_Style_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
+
+		Game_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
+
 	}
 	GUI_Combo<uint8>
 	(
@@ -732,7 +741,13 @@ void GUI_Game_Style()
 		SaveConfig();
 		System_Actor_Toggle();
 		
-		Game_Style_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Style.Doppelganger.useEXVersion);
+		//Game_Style_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Style.Doppelganger.useEXVersion);
+
+
+
+
+		Game_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Style.Doppelganger.useEXVersion);
+
 
 	}
 	GUI_POP_DISABLE(ActorAvailable());
@@ -1217,11 +1232,11 @@ void GUI_System_Event()
 	ImGui::Text("");
 	if (GUI_Checkbox(Locale.System.Event.skipIntro, Config.System.Event.skipIntro))
 	{
-		System_Event_ToggleSkipIntro(Config.System.Event.skipIntro);
+		Event_ToggleSkipIntro(Config.System.Event.skipIntro);
 	}
 	if (GUI_Checkbox(Locale.System.Event.skipCutscenes, Config.System.Event.skipCutscenes))
 	{
-		System_Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
+		Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
 	}
 }
 

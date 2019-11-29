@@ -16,6 +16,9 @@ bool updateModelAttributes[MAX_ACTOR] = {};
 
 UpdateDevilForm_t UpdateDevilForm = 0;
 UpdateFlux_t      UpdateFlux      = 0;
+Relax_t           Relax           = 0;
+
+
 
 typedef void(* InternalCreateActor_t)(uint8, uint8);
 
@@ -567,6 +570,9 @@ static void UpdateMotion(byte * baseAddr)
 
 }
 
+
+
+
 static void ActivateDevilForm(byte * baseAddr)
 {
 	LogFunction();
@@ -594,6 +600,24 @@ static void DeactivateDevilForm(byte * baseAddr)
 		UpdateFlux(baseAddr, DEVIL_FLUX_END);
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void ResetDevilModel()
 {
@@ -667,6 +691,42 @@ void System_Actor_Init()
 		FUNC func = CreateFunction((appBaseAddr + 0x1F94D0), 0);
 		UpdateFlux = (UpdateFlux_t)func.addr;
 	}
+
+
+
+
+	{
+		byte sect1[] =
+		{
+			0x48, 0x8B, 0xD9,                         //mov rbx,rcx
+			0x31, 0xD2,                               //xor edx,edx
+			0xE8, 0x00, 0x00, 0x00, 0x00,             //call dmc3.exe+1F92C0
+			0x48, 0x8B, 0x83, 0xE8, 0x3D, 0x00, 0x00, //mov rax,[rbx+00003DE8]
+			0x8B, 0x80, 0xF0, 0x01, 0x00, 0x00,       //mov eax,[rax+000001F0]
+			0x89, 0x83, 0xC4, 0x3E, 0x00, 0x00,       //mov [rbx+00003EC4],eax
+			0x31, 0xD2,                               //xor edx,edx
+			0x48, 0x8B, 0xCB,                         //mov rcx,rbx
+			0xE8, 0x00, 0x00, 0x00, 0x00,             //call dmc3.exe+1F97F0
+		};
+		FUNC func = CreateFunction(0, 0, true, true, 0, sizeof(sect1));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall((func.sect1 + 5), (appBaseAddr + 0x1F92C0));
+		WriteCall((func.sect1 + 0x22), (appBaseAddr + 0x1F97F0));
+		Relax = (Relax_t)func.addr;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 	{
 		byte sect1[] =
 		{
