@@ -323,6 +323,26 @@ struct LOCALE
 		Dante;
 		struct
 		{
+			const char * header = "Doppelganger";
+			const char * enable = "Enable";
+			const char * useEXVersion = "Use EX Version";
+			struct
+			{
+				const char * label = "Character";
+				const char * items[4] =
+				{
+					"Dante",
+					"Bob",
+					"Lady",
+					"Vergil",
+				};
+			}
+			Character;
+			const char * reset = "Reset";
+		}
+		Doppelganger;
+		struct
+		{
 			const char * header = "Mobility";
 			const char * enable = "Enable";
 			struct
@@ -467,31 +487,6 @@ struct LOCALE
 			const char * reset = "Reset";
 		}
 		Speed;
-		struct
-		{
-			const char * header = "Style";
-			const char * enable = "Enable";
-			struct
-			{
-				const char * header = "Doppelganger";
-				const char * useEXVersion = "Use EX Version";
-				struct
-				{
-					const char * label = "Character";
-					const char * items[4] =
-					{
-						"Dante",
-						"Bob",
-						"Lady",
-						"Vergil",
-					};
-				}
-				Character;
-			}
-			Doppelganger;
-			const char * reset = "Reset";
-		}
-		Style;
 		struct
 		{
 			const char * header = "Style Switcher";

@@ -103,7 +103,9 @@ struct CONFIG
 		Dante;
 		struct
 		{
-			bool enable = false;
+			bool  enable       = false;
+			bool  useEXVersion = false;
+			uint8 character    = CHAR_DANTE;
 		}
 		Doppelganger;
 		struct
@@ -207,17 +209,6 @@ struct CONFIG
 			Quicksilver;
 		}
 		Speed;
-		struct
-		{
-			bool enable = false;
-			struct
-			{
-				bool  useEXVersion = false;
-				uint8 character    = CHAR_DANTE;
-			}
-			Doppelganger;
-		}
-		Style;
 		struct
 		{
 			bool enable               = false;
@@ -412,10 +403,11 @@ struct CONFIG
 extern CONFIG Config;
 extern CONFIG DefaultConfig;
 
+// @Todo: Redo.
+
 #define MAGIC_6                                 \
 Config.Game.Dante.Rebellion.unlockQuickDrive || \
 Config.Game.Multiplayer.enable ||               \
 Config.Game.ResetMotionState.enable ||          \
-Config.Game.Style.enable ||                     \
 Config.Game.StyleSwitcher.enable ||             \
 Config.Game.WeaponSwitcher.enable

@@ -117,7 +117,7 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 		Game_Dante_Init();
 
 		Game_Doppelganger_Init();
-		Game_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
+		Game_Doppelganger_ToggleUseEXVersion(Config.Game.Doppelganger.useEXVersion);
 
 
 

@@ -848,8 +848,18 @@ static void StageLoadComplete()
 
 #pragma region Game Events
 
-
-
+inline void Doppelganger_ToggleForceActorUpdate(bool enable)
+{
+	LogFunctionBool(enable);
+	if (enable)
+	{
+		Write<byte>((appBaseAddr + 0x1F83D0), 0xEB);
+	}
+	else
+	{
+		Write<byte>((appBaseAddr + 0x1F83D0), 0x75);
+	}
+}
 
 static void Doppelganger_Activate(byte * baseAddr)
 {
@@ -861,10 +871,9 @@ static void Doppelganger_Activate(byte * baseAddr)
 		return;
 	}
 
-	// @Todo: Feed to watchdog.
-	Write<byte>((appBaseAddr + 0x1F83D0), 0xEB); // Force Actor Update
+	Doppelganger_ToggleForceActorUpdate(true);
 
-	if (!Config.Game.Style.Doppelganger.useEXVersion)
+	if (!Config.Game.Doppelganger.useEXVersion)
 	{
 		UpdateFlux(baseAddr, DEVIL_FLUX_END);
 		return;
@@ -943,10 +952,9 @@ static void Doppelganger_Deactivate(byte * baseAddr)
 		return;
 	}
 
-	// @Todo: Create Watchdog.
-	Write<byte>((appBaseAddr + 0x1F83D0), 0x75);
+	Doppelganger_ToggleForceActorUpdate(false);
 
-	if (!Config.Game.Style.Doppelganger.useEXVersion)
+	if (!Config.Game.Doppelganger.useEXVersion)
 	{
 		*(uint32 *)(baseAddr + 0x3E6C) = 0;
 		*(uint32 *)(baseAddr + 0x3E70) = 0;
@@ -967,43 +975,29 @@ static void Doppelganger_Deactivate(byte * baseAddr)
 	*(bool   *)(actorBaseAddr[ACTOR_TWO] + 0x3E9B) = false;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+byte32 Doppelganger_Watchdog(void * parameter)
+{
+	LogFunction();
+	do
+	{
+		LoopStart:
+		{
+			bool state = ActorAvailable();
+			static bool savedState = state;
+			if (savedState != state)
+			{
+				savedState = state;
+				Doppelganger_ToggleForceActorUpdate(false);
+			}
+		}
+		LoopEnd:
+		Sleep(100);
+	}
+	while (true);
+	return 1;
+}
 
 #pragma endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void Event_Init()
 {
@@ -1105,12 +1099,6 @@ void Event_Init()
 	}
 	#pragma endregion
 	#pragma region Game Events
-
-
-
-
-
-
 	{
 		byte sect0[] =
 		{
@@ -1176,51 +1164,9 @@ void Event_Init()
 		WriteAddress((func.sect2 + 0x24), (appBaseAddr + 0x1E2B2D), 5);
 		WriteJump((appBaseAddr + 0x1E2B24), func.addr, 2);
 	}
-
-
-
-
-
-
-
-
+	CreateThread(0, 4096, Doppelganger_Watchdog, 0, 0, 0);
 	#pragma endregion
-
-
-
-
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void Event_ToggleSkipIntro(bool enable)
 {

@@ -337,6 +337,88 @@ void GUI_Game_Dante()
 	GUI_POP_DISABLE(ActorAvailable());
 }
 
+void GUI_Game_Doppelganger()
+{
+	GUI_Hyperlink(Locale.Game.Doppelganger.header);
+	ImGui::Text("");
+	GUI_PUSH_DISABLE(ActorAvailable());
+	if (GUI_Checkbox(Locale.Game.Doppelganger.enable, Config.Game.Doppelganger.enable))
+	{
+		if (!System_Cache_enable)
+		{
+			restart = true;
+		}
+		else
+		{
+			System_Actor_Toggle();
+			if (Config.Game.Doppelganger.enable)
+			{
+				Game_Doppelganger_ToggleUseEXVersion(Config.Game.Doppelganger.useEXVersion);
+			}
+			else
+			{
+				Game_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Doppelganger.useEXVersion);
+			}
+		}
+	}
+	GUI_POP_DISABLE(ActorAvailable());
+	ImGui::Text("");
+
+	GUI_PUSH_DISABLE(!Config.Game.Doppelganger.enable);
+	{
+		ImGui::PushItemWidth(100);
+		if (GUI_Checkbox(Locale.Game.Doppelganger.useEXVersion, Config.Game.Doppelganger.useEXVersion))
+		{
+			Game_Doppelganger_ToggleUseEXVersion(Config.Game.Doppelganger.useEXVersion);
+		}
+		GUI_Combo<uint8>
+		(
+			Locale.Game.Doppelganger.Character.label,
+			Locale.Game.Doppelganger.Character.items,
+			countof(Locale.Game.Doppelganger.Character.items),
+			Config.Game.Doppelganger.character
+		);
+		ImGui::PopItemWidth();
+	}
+	GUI_POP_DISABLE(!Config.Game.Doppelganger.enable);
+
+	ImGui::Text("");
+
+	GUI_PUSH_DISABLE(ActorAvailable());
+
+	if (GUI_Button(Locale.Game.Doppelganger.reset))
+	{
+		memcpy(&Config.Game.Doppelganger, &DefaultConfig.Game.Doppelganger, sizeof(Config.Game.Doppelganger));
+		SaveConfig();
+		System_Actor_Toggle();
+		Game_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Doppelganger.useEXVersion);
+	}
+
+	GUI_POP_DISABLE(ActorAvailable());
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define GUI_InputEx2(branch)                                                           \
 ImGui::PushItemWidth(29);                                                          \
 GUI_InputEx<uint8>("", Config.Game.Mobility.Human.branch, 0);                          \
@@ -671,87 +753,7 @@ void GUI_Game_Speed()
 #undef GUI_InputExSpeed
 
 
-// @Todo: Create Proper Sections.
 
-void GUI_Game_Style()
-{
-	GUI_Hyperlink(Locale.Game.Style.header);
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Checkbox(Locale.Game.Style.enable, Config.Game.Style.enable))
-	{
-		if (!System_Cache_enable)
-		{
-			restart = true;
-		}
-		else
-		{
-			System_Actor_Toggle();
-			if (Config.Game.Style.enable)
-			{
-
-				//Game_Style_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
-				
-
-				Game_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
-				
-
-			}
-			else
-			{
-
-				Game_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Style.Doppelganger.useEXVersion);
-
-				//Game_Style_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Style.Doppelganger.useEXVersion);
-				
-
-
-			}
-		}
-	}
-	GUI_POP_DISABLE(ActorAvailable());
-
-	ImGui::Text("");
-
-
-	GUI_PUSH_DISABLE(!Config.Game.Style.enable);
-	ImGui::PushItemWidth(100);
-	ImGui::Text(Locale.Game.Style.Doppelganger.header);
-	if (GUI_Checkbox(Locale.Game.Style.Doppelganger.useEXVersion, Config.Game.Style.Doppelganger.useEXVersion))
-	{
-		//Game_Style_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
-
-		Game_Doppelganger_ToggleUseEXVersion(Config.Game.Style.Doppelganger.useEXVersion);
-
-	}
-	GUI_Combo<uint8>
-	(
-		Locale.Game.Style.Doppelganger.Character.label,
-		Locale.Game.Style.Doppelganger.Character.items,
-		countof(Locale.Game.Style.Doppelganger.Character.items),
-		Config.Game.Style.Doppelganger.character
-	);
-	ImGui::PopItemWidth();
-	GUI_POP_DISABLE(!Config.Game.Style.enable);
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Button(Locale.Game.Style.reset))
-	{
-		memcpy(&Config.Game.Style, &DefaultConfig.Game.Style, sizeof(Config.Game.Style));
-		SaveConfig();
-		System_Actor_Toggle();
-		
-		//Game_Style_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Style.Doppelganger.useEXVersion);
-
-
-
-
-		Game_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Style.Doppelganger.useEXVersion);
-
-
-	}
-	GUI_POP_DISABLE(ActorAvailable());
-}
 
 void GUI_Game_StyleSwitcher()
 {
@@ -1043,6 +1045,8 @@ void GUI_Game_Draw()
 		ImGui::Text("");
 		GUI_Game_Dante();
 		ImGui::Text("");
+		GUI_Game_Doppelganger();
+		ImGui::Text("");
 		GUI_Game_Mobility();
 		ImGui::Text("");
 		GUI_Game_Multiplayer();
@@ -1053,8 +1057,8 @@ void GUI_Game_Draw()
 		ImGui::Text("");
 		GUI_Game_Speed();
 		ImGui::Text("");
-		GUI_Game_Style();
-		ImGui::Text("");
+		//GUI_Game_Style();
+		//ImGui::Text("");
 		GUI_Game_StyleSwitcher();
 		ImGui::Text("");
 		GUI_Game_Training();

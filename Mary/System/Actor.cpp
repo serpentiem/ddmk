@@ -149,11 +149,14 @@ static void CreateActor()
 	}
 	else
 	{
+
+		// @Todo: Check dependency chain.
+
 		// @Todo: Make reference.
 		uint8 character = *(uint8 *)(actorBaseAddr[ACTOR_ONE] + 0x78);
 		if (Config.Game.StyleSwitcher.enable || (character == CHAR_DANTE))
 		{
-			InternalCreateActor(ACTOR_TWO, (Config.Game.Style.enable) ? Config.Game.Style.Doppelganger.character : character);
+			InternalCreateActor(ACTOR_TWO, (Config.Game.Doppelganger.enable) ? Config.Game.Doppelganger.character : character);
 		}
 	}
 
@@ -174,7 +177,7 @@ static void CreateActor()
 
 
 
-
+// @Todo: Jesus, simplify!
 
 
 static void UpdateActor(byte * baseAddr)

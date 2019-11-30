@@ -1,3 +1,15 @@
+
+
+// @Reproduce: Activate Doppelganger, trigger devil, deactivate Doppelganger.
+
+
+
+
+
+
+
+
+
 #include "Doppelganger.h"
 
 byte * DoppelgangerRateControllerProxy = 0;
