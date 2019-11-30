@@ -45,7 +45,10 @@ __declspec(noinline) static void UpdateStyle(byte * baseAddr, uint32 styleId)
 	float32 * sessionExperience = (float32 *)(session + 0x134);
 
 	uint8 actorId    = GetActorId(baseAddr);
-	uint8 actorCount = GetActorCount();
+
+
+
+	//uint8 actorCount = GetActorCount();
 
 
 	// @Todo: Add section.
@@ -141,46 +144,64 @@ __declspec(noinline) static void UpdateStyle(byte * baseAddr, uint32 styleId)
 
 	//// @Todo: Merge!
 
+
+
+
+
+
 	if (actorId == ACTOR_ONE)
 	{
 		sessionLevel[style] = level;
-	}
-	level = sessionLevel[styleId];
-
-	if (actorId == ACTOR_ONE)
-	{
 		sessionExperience[style] = experience;
 	}
+
+
+
+
+
+
+	level      = sessionLevel     [styleId];
 	experience = sessionExperience[styleId];
-
-	style = styleId;
-
+	style      = styleId;
 
 
 
 
-	//uint64 size = sizeof(CAPCOM_GAMEPAD);
+	// @Todo: Block Quicksilver and Doppelganger.
+	
+	UpdateStyle2Start:
+	{
+		if (actorId != ACTOR_ONE)
+		{
+			goto UpdateStyle2End;
+		}
+		if (!actorBaseAddr[ACTOR_TWO])
+		{
+			goto UpdateStyle2End;
+		}
+		uint32 & style2                = *(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x6338);
+		bool   & isControlledByPlayer2 = *(bool   *)(actorBaseAddr[ACTOR_TWO] + 0x6480);
+		if (!isControlledByPlayer2)
+		{
+			style2 = styleId;
+		}
+	}
+	UpdateStyle2End:
 
 
 
-	// @Todo: Add proper variables and checks.
 
 
 
 
-	//// @Todo: Add proper variable!
 
-	//if (actorId == ACTOR_ONE)
-	//{
-	//	for (uint8 actor = ACTOR_TWO; actor < actorCount; actor++)
-	//	{
-	//		bool isControlledByPlayer = *(bool *)(actorBaseAddr[actor] + 0x6480);
-	//		if (!isControlledByPlayer)
-	//		{
-	//			*(uint32 *)(actorBaseAddr[actor] + 0x6338) = styleId;
-	//		}
-	//	}
-	//}
+
+
+
+
+
+
+
 
 	//if (character == CHAR_DANTE)
 	//{
