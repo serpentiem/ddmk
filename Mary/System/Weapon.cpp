@@ -470,6 +470,41 @@ void System_Weapon_Init()
 		FUNC func = CreateFunction(UpdateWeapon, (appBaseAddr + 0x1DF2D2));
 		UpdateWeaponProxy = func.addr;
 	}
+
+
+
+
+
+	// Add actor id check to Vergil's weapon cycle;
+	// Required fix for EX Doppelganger;
+	// Shouldn't have side effects, that's why no toggle.
+	{
+		byte sect0[] =
+		{
+			0x8B, 0x83, 0x1C, 0x01, 0x00, 0x00, //mov eax,[rbx+0000011C]
+			0x85, 0xC0,                         //test eax,eax
+			0x75, 0x05,                         //jne short
+			0xE9, 0x00, 0x00, 0x00, 0x00,       //jmp dmc3.exe+280160
+		};
+		FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteAddress((func.sect0 + 0xA), (appBaseAddr + 0x280160), 5);
+		WriteCall((appBaseAddr + 0x1E6EF3), func.addr); // Forward
+		WriteCall((appBaseAddr + 0x1E6FE5), func.addr); // Backward
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 void System_Weapon_Toggle()

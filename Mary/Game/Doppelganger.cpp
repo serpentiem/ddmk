@@ -15,6 +15,10 @@
 byte * DoppelgangerRateControllerProxy = 0;
 byte * AdjustDevilSound                = 0;
 
+byte * CycleWeaponForward = 0;
+
+
+
 static void DoppelgangerRateController(byte * baseAddr)
 {
 	static bool execute = false;
@@ -59,6 +63,20 @@ void Game_Doppelganger_Init()
 		WriteJump((func.sect0 + 0x1A), (appBaseAddr + 0x1F8F35));
 		AdjustDevilSound = func.addr;
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 void Game_Doppelganger_ToggleUseEXVersion(bool enable)
@@ -73,8 +91,10 @@ void Game_Doppelganger_ToggleUseEXVersion(bool enable)
 		Write<byte>((appBaseAddr + 0x1EAA07), 0xEB);                         // Disable Doppelganger Melee Weapon Change Devil Form Update
 		Write<byte>((appBaseAddr + 0x1E7775), 0xEB);                         // Enable Devil Trigger Activation
 		Write<byte>((appBaseAddr + 0x1F94A1), 0xEB);                         // Enable Devil Trigger Deactivation
-		WriteAddress((appBaseAddr + 0x1E752B), (appBaseAddr + 0x1E752D), 2); // Enable Actor Two Devil Trigger
+		WriteAddress((appBaseAddr + 0x1E752B), (appBaseAddr + 0x1E752D), 2); // Enable ACTOR_TWO Devil Trigger
 		Write<uint32>((appBaseAddr + 0x1F7D3F), 0);                          // Bob Set Visible Flag
+		Write<byte8>((appBaseAddr + 0x1F92E0), 0x00);                        // Devil Form: Disable Doppelganger check
+		Write<byte8>((appBaseAddr + 0x1F92F8), 0xEB);                        // Devil Form: Disable actor id check
 	}
 	else
 	{
@@ -92,5 +112,7 @@ void Game_Doppelganger_ToggleUseEXVersion(bool enable)
 		Write<byte>((appBaseAddr + 0x1F94A1), 0x74);
 		WriteAddress((appBaseAddr + 0x1E752B), (appBaseAddr + 0x1E7516), 2);
 		Write<uint32>((appBaseAddr + 0x1F7D3F), 1);
+		Write<byte8>((appBaseAddr + 0x1F92E0), 0x0D);
+		Write<byte8>((appBaseAddr + 0x1F92F8), 0x75);
 	}
 }
