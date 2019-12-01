@@ -128,12 +128,12 @@ void System_File_Init()
 			0x84, 0xC0,                                                 //test al,al
 			0x74, 0x0F,                                                 //je short
 			0xBA, 0x02, 0x00, 0x00, 0x00,                               //mov edx,00000002
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmcLauncher.exe+327430
+			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+327430
 			0x48, 0x85, 0xC0,                                           //test rax,rax
 			0x75, 0x10,                                                 //jne short
 			0x8D, 0x56, 0x01,                                           //lea edx,[rsi+01]
 			0x48, 0x8D, 0x8C, 0x24, 0x60, 0x01, 0x00, 0x00,             //lea rcx,[rsp+00000160]
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmcLauncher.exe+327430
+			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+327430
 		};
 		FUNC func = CreateFunction(0, (appBaseAddr + 0x2FDB1), false, true, sizeof(payload));
 		memcpy(func.sect0, payload, sizeof(payload));
@@ -142,6 +142,8 @@ void System_File_Init()
 		WriteCall((func.sect0 + 0x2A), (appBaseAddr + 0x327430));
 		WriteJump((appBaseAddr + 0x2FDAC), func.addr);
 	}
+	// @Todo: Move up, cause helper func.
+
 	{
 		FUNC func = CreateFunction((appBaseAddr + 0x1B9FA0));
 		InternalAdjustPointers = (InternalAdjustPointers_t)func.addr;

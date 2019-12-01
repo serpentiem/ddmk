@@ -833,7 +833,7 @@ static void StageLoadComplete()
 {
 	LogFunctionStart();
 	// @Todo: Too broad. Separate into smaller chunks.
-	if (System_Actor_enable)
+	if (System_Actor_enableArrayExtension)
 	{
 		Actor_StageLoadComplete();
 	}
@@ -998,6 +998,106 @@ byte32 Doppelganger_Watchdog(void * parameter)
 }
 
 #pragma endregion
+
+
+
+
+
+
+// @Todo: Put into Event.
+//
+//static void ActivateDevilForm(byte * baseAddr)
+//{
+//	LogFunction();
+//	if (GetActorId(baseAddr) != ACTOR_ONE)
+//	{
+//		return;
+//	}
+//	bool doppelganger = *(bool *)(baseAddr + 0x6362);
+//	if (!doppelganger)
+//	{
+//		UpdateFlux(baseAddr, DEVIL_FLUX_START);
+//	}
+//}
+//
+//static void DeactivateDevilForm(byte * baseAddr)
+//{
+//	LogFunction();
+//	if (GetActorId(baseAddr) != ACTOR_ONE)
+//	{
+//		return;
+//	}
+//	bool doppelganger = *(bool *)(baseAddr + 0x6362);
+//	if (!doppelganger)
+//	{
+//		UpdateFlux(baseAddr, DEVIL_FLUX_END);
+//	}
+//}
+
+
+
+
+// @Todo: Put into Event.
+
+//WriteJump((appBaseAddr + 0x1E78AF), ActivateDevilFormProxy);
+//WriteJump((appBaseAddr + 0x1E78E6), DeactivateDevilFormProxy);
+
+//WriteCall((appBaseAddr + 0x1E78AF), (appBaseAddr + 0x1F94D0));
+//WriteCall((appBaseAddr + 0x1E78E6), (appBaseAddr + 0x1F94D0));
+
+//byte * ActivateDevilFormProxy   = 0;
+//byte * DeactivateDevilFormProxy = 0;
+
+
+//{
+//	//byte sect0[] =
+//	//{
+//	//	0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1F94D0
+//	//};
+//	//byte sect1[] =
+//	//{
+//	//	0x48, 0x8B, 0xCF, //mov rcx,rdi
+//	//};
+//	//FUNC func = CreateFunction(ActivateDevilForm, (appBaseAddr + 0x1E78B4), true, true, sizeof(sect0), sizeof(sect1));
+//	FUNC func = CreateFunction(ActivateDevilForm, (appBaseAddr + 0x1E78B4));
+//	//memcpy(func.sect0, sect0, sizeof(sect0));
+//	//memcpy(func.sect1, sect1, sizeof(sect1));
+//	//WriteCall(func.sect0, (appBaseAddr + 0x1F94D0));
+//	ActivateDevilFormProxy = func.addr;
+//}
+//{
+//	//byte sect0[] =
+//	//{
+//	//	0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1F94D0
+//	//};
+//	//byte sect1[] =
+//	//{
+//	//	0x48, 0x8B, 0xCF, //mov rcx,rdi
+//	//};
+//	//FUNC func = CreateFunction(DeactivateDevilForm, (appBaseAddr + 0x1E78EB), true, true, sizeof(sect0), sizeof(sect1));
+//	FUNC func = CreateFunction(DeactivateDevilForm, (appBaseAddr + 0x1E78EB));
+//	//memcpy(func.sect0, sect0, sizeof(sect0));
+//	//memcpy(func.sect1, sect1, sizeof(sect1));
+//	//WriteCall(func.sect0, (appBaseAddr + 0x1F94D0));
+//	DeactivateDevilFormProxy = func.addr;
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void Event_Init()
 {

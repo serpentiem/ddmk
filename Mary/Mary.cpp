@@ -72,9 +72,27 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 
 		System_Actor_Init();
-		System_Actor_Toggle();
+		//System_Actor_Toggle();
+
+
+		System_Actor_ToggleArrayExtension(true);
+		System_Actor_ToggleCreateActor(true);
+		System_Actor_ToggleUpdateActor(true);
+		System_Actor_ToggleDoppelgangerFixes(true);
+
+
+
+
+
 		System_Animation_Init();
-		System_Cache_Init();
+
+
+
+
+		System_File_Init();
+
+
+		System_Cache_Init(); // requires file first!
 
 		System_Camera_ToggleInvertX(Config.System.Camera.invertX);
 
@@ -85,7 +103,7 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 
 
-		System_File_Init();
+		
 
 
 

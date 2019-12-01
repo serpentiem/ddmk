@@ -1,15 +1,23 @@
 
-// @Research: Check if files truly and absolutely have to be within 32 bit addressspace.
-//            Seems stupid.
+// @Todo: Proper documentation for why 32 bits.
 
 #include "Cache.h"
 
 bool System_Cache_enable = false;
+
+
+
 byte * cacheAddr = 0;
-uint32 cachePos = DEFAULT_CACHE_SIZE;
+
+
+
+uint32 cachePos = (CACHE_SIZE / 2);
 
 
 byte * cacheFile[MAX_CACHE_FILES] = {};
+
+
+
 byte * demo_pl000_00_3 = 0; // @Todo: Supply patch.
 
 
@@ -20,34 +28,14 @@ byte * PushGameFile(const char * fileName)
 	LogFunction();
 
 	byte * addr = (cacheAddr + cachePos);
-
-	//char buffer[128];
-	//snprintf(buffer, sizeof(buffer), "data\\dmc3\\GData.afs\\%s", fileName);
-
 	byte * file = 0;
 	uint32 fileSize = 0;
-
-	//file = LoadGameFile(fileName, &fileSize, addr);
-	//if (!file)
-	//{
-	//	if (!ExtractGameFile(fileName))
-	//	{
-	//		return 0;
-	//	}
-	//	file = LoadGameFile(fileName, &fileSize, addr);
-	//	if (!file)
-	//	{
-	//		return 0;
-	//	}
-	//}
 
 	file = LoadGameFile(fileName, &fileSize, addr);
 	if (!file)
 	{
 		return 0;
 	}
-
-
 
 	cachePos += fileSize;
 
@@ -68,63 +56,6 @@ byte * PushGameFile(const char * fileName)
 
 
 
-// @Todo: Update with LoadFile.
-
-//byte * PushFile(const char * str)
-//{
-//	Log("%s %s", FUNC_NAME, str);
-//	char buffer[64];
-//	sprintf(buffer, "data\\dmc3\\GData.afs\\%s", str);
-//	HANDLE file = CreateFileA(buffer, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-//	if (file == INVALID_HANDLE_VALUE)
-//	{
-//		Log("Unable to retrieve valid handle. error %X", GetLastError());
-//		if (!ExtractGameFile(str))
-//		{
-//			Log("Unable to extract file. %s", str);
-//			return 0;
-//		}
-//		file = CreateFileA(buffer, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-//		if (file == INVALID_HANDLE_VALUE)
-//		{
-//			Log("Unable to retrieve valid handle. error %X", GetLastError());
-//			return 0;
-//		}
-//	}
-//	BY_HANDLE_FILE_INFORMATION fi = {};
-//	GetFileInformationByHandle(file, &fi);
-//
-//	static uint64 pos = 0;
-//	byte * addr = (cacheAddr + DEFAULT_CACHE_SIZE + pos);
-//
-//
-//
-//	dword bytesRead = 0;
-//	OVERLAPPED overlap = {};
-//	ReadFile(file, addr, fi.nFileSizeLow, &bytesRead, &overlap);
-//
-//
-//
-//	pos += fi.nFileSizeLow;
-//	if (pos % 0x800)
-//	{
-//		pos += (0x800 - (pos % 0x800));
-//	}
-//
-//
-//
-//	CloseHandle(file);
-//
-//	Log("file      %s",      str             );
-//	Log("addr      %.16llX", addr            );
-//	Log("bytesRead %u",      bytesRead       );
-//	Log("size      %u",      fi.nFileSizeLow );
-//	Log("pos       %llX",    pos             );
-//
-//	SetLastError(0);
-//	return addr;
-//}
-
 static void CreateCache()
 {
 	LogFunction();
@@ -135,9 +66,21 @@ static void CreateCache()
 
 
 
-	memset((cacheAddr + DEFAULT_CACHE_SIZE), 0, CACHE_SIZE); // Purge Cache
 
 
+
+
+
+	//memset((cacheAddr + cachePos), 0, (CACHE_SIZE / 2));
+
+
+	//memset(cacheAddr, 0, CACHE_SIZE);
+
+
+
+
+
+	
 
 
 
@@ -241,8 +184,14 @@ static void CreateCache()
 				Log("Critical error: Failed to load all required files!");
 				return;
 			}
+
+			//HoboBreak();
+
 			AdjustPointers(addr);
 			cacheFile[i] = addr;
+
+			//return;
+
 		}
 	}
 	{
@@ -264,32 +213,124 @@ void System_Cache_Init()
 	//	return;
 	//}
 	CreateDirectoryA("data\\dmc3\\GData.afs", 0);
-	// Set Cache Size
+
+
+	byte * addr = 0;
+
+
 	{
-		Write<dword>((appBaseAddr + 0x30195), (DEFAULT_CACHE_SIZE + CACHE_SIZE));
-		Write<dword>((appBaseAddr + 0x301AB), (DEFAULT_CACHE_SIZE + CACHE_SIZE));
+
+		byte * pos = (byte *)4096;
+		byte * end = (byte *)0x7FFFFFFF;
+
+
+
+
+
+		addr = (byte *)Alloc(CACHE_SIZE, pos, end);
+
 	}
-	// Get Cache Address
+
+
+	{
+		byte * pos = (byte *)(addr + CACHE_SIZE);
+		byte * end = (byte *)0x7FFFFFFF;
+		byte * heapAddr = (byte *)Alloc((8 * 1024 * 1024), pos, end);
+		Log("heapAddr %llX", heapAddr);
+	}
+
+
+
+
+	//byte * addr = (byte *)Alloc(CACHE_SIZE,)
+
+
+
+
+	//byte * addr = (byte *)VirtualAlloc(0, CACHE_SIZE, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+
+	if (!addr)
+	{
+		Log("greedy cunt");
+		return;
+	}
+
+
+
+
+	Log("greedy addr %llX", addr);
+
+
 	{
 		byte sect0[] =
 		{
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmcLauncher.exe+490D0
-			0x51,                                                       //push rcx
-			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rcx,&cacheAddr
-			0x48, 0x89, 0x01,                                           //mov [rcx],rax
-			0x59,                                                       //pop rcx
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,addr
 		};
-		FUNC func = CreateFunction(0, (appBaseAddr + 0x3019E), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteCall(func.sect0, (appBaseAddr + 0x490D0));
-		*(byte ***)(func.sect0 + 8) = &cacheAddr;
-		WriteJump((appBaseAddr + 0x30199), func.addr);
+		*(byte **)(sect0 + 2) = addr;
+		vp_memcpy((appBaseAddr + 0x30194), sect0, sizeof(sect0));
 	}
-	// Hook Create Cache
-	{
-		FUNC func = CreateFunction(CreateCache, (appBaseAddr + 0x2C5E6E));
-		WriteJump((appBaseAddr + 0x2C5E69), func.addr);
-	}
+
+	cacheAddr = addr;
+
+
+	//return;
+
+
+	//HoboBreak();
+
+
+	//return;
+
+	
+	
+	CreateCache();
+
+
+
+
+
+
+	//Write<uint32>((appBaseAddr + 0x301AB), (CACHE_SIZE / 2));
+	//Write<uint32>((appBaseAddr + 0x301AB), CACHE_SIZE);
+
+
+
+	//// Set Cache Size
+	//{
+	//	Write<dword>((appBaseAddr + 0x30195), (DEFAULT_CACHE_SIZE + CACHE_SIZE));
+	//	Write<dword>((appBaseAddr + 0x301AB), (DEFAULT_CACHE_SIZE + CACHE_SIZE));
+	//}
+
+
+
+	// Get Cache Address
+	//{
+	//	byte sect0[] =
+	//	{
+	//		0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+490D0
+	//		0x51,                                                       //push rcx
+	//		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rcx,&cacheAddr
+	//		0x48, 0x89, 0x01,                                           //mov [rcx],rax
+	//		0x59,                                                       //pop rcx
+	//	};
+	//	FUNC func = CreateFunction(0, (appBaseAddr + 0x3019E), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteCall(func.sect0, (appBaseAddr + 0x490D0));
+	//	*(byte ***)(func.sect0 + 8) = &cacheAddr;
+	//	WriteJump((appBaseAddr + 0x30199), func.addr);
+	//}
+
+
+
+
+	//CreateCache();
+
+
+	//// Hook Create Cache
+	//{
+	//	FUNC func = CreateFunction(CreateCache, (appBaseAddr + 0x2C5E6E));
+	//	WriteJump((appBaseAddr + 0x2C5E69), func.addr);
+	//}
 
 
 	// @Todo: Create standalone function.
@@ -328,6 +369,6 @@ void System_Cache_Init()
 		Write<uint16>((appBaseAddr + 0x32503C), count);
 	}
 
-	Log("System_Cache_Init reached end!");
+	//Log("System_Cache_Init reached end!");
 
 }

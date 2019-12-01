@@ -287,9 +287,19 @@ static void UpdateWeapon(byte * baseAddr)
 			WEAPON_COUNT_LADY,
 			WEAPON_COUNT_VERGIL,
 		};
+
+		// @Todo: What the actual fuck.
+
 		for (uint8 i = 0; i < count[character]; i++)
 		{
-			weaponMetadata[actor][id[character][i]] = RegisterWeapon[character][i](baseAddr);
+
+			byte * _addr = RegisterWeapon[character][i](baseAddr);
+
+			Log("weapon metadata addr %llX", _addr);
+
+
+
+			weaponMetadata[actor][id[character][i]] = _addr;
 		}
 
 
@@ -509,6 +519,9 @@ void System_Weapon_Init()
 
 void System_Weapon_Toggle()
 {
+
+	return;
+
 	System_Weapon_enable = MAGIC_6 ? true : false;
 	Log("%s %u", FUNC_NAME, System_Weapon_enable);
 	if (System_Weapon_enable)

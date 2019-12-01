@@ -40,7 +40,7 @@ static dword Thread(LPVOID parameter)
 			{
 				goto LoopEnd;
 			}
-			if (!System_Actor_enable)
+			if (!System_Actor_enableArrayExtension)
 			{
 				goto LoopEnd;
 			}

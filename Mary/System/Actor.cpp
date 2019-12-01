@@ -1,41 +1,25 @@
-
-// @Todo: Document and create new dependency chain.
-
-
 #include "Actor.h"
 
-////#pragma warning(disable: 4102) // Unreferenced label.
+#pragma region Global Stuff
 
+bool System_Actor_enableArrayExtension    = false;
+bool System_Actor_enableCreateActor       = false;
+bool System_Actor_enableUpdateActor       = false;
+bool System_Actor_enableDoppelgangerFixes = false;
 
-
-
-
-bool System_Actor_enable = false;
 byte * actorBaseAddr[MAX_ACTOR] = {};
 bool updateModelAttributes[MAX_ACTOR] = {};
-
-UpdateDevilForm_t UpdateDevilForm = 0;
-UpdateFlux_t      UpdateFlux      = 0;
-Relax_t           Relax           = 0;
-
-
 
 typedef void(* InternalCreateActor_t)(uint8, uint8);
 
 InternalCreateActor_t InternalCreateActor = 0;
+UpdateDevilForm_t     UpdateDevilForm     = 0;
+UpdateFlux_t          UpdateFlux          = 0;
+Relax_t               Relax               = 0;
 
-
-// Use 1 and 2 instead.
-
-byte * OnUpdate[2]              = {};
-byte * OnEvent[2]               = {};
-
-
-
-byte * CreateActorProxy         = 0;
-byte * UpdateActorProxy         = 0;
-byte * ActivateDevilFormProxy   = 0;
-byte * DeactivateDevilFormProxy = 0;
+byte * OnUpdate[2] = {};
+byte * CreateActorProxy = 0;
+byte * UpdateActorProxy = 0;
 
 uint8 GetActorId(byte * baseAddr)
 {
@@ -62,10 +46,6 @@ uint8 GetActorCount()
 	}
 	return count;
 }
-
-
-
-
 
 // @Check: Run directly after ACTOR_ONE has been created.
 
@@ -573,55 +553,6 @@ static void UpdateMotion(byte * baseAddr)
 
 }
 
-
-
-
-static void ActivateDevilForm(byte * baseAddr)
-{
-	LogFunction();
-	if (GetActorId(baseAddr) != ACTOR_ONE)
-	{
-		return;
-	}
-	bool doppelganger = *(bool *)(baseAddr + 0x6362);
-	if (!doppelganger)
-	{
-		UpdateFlux(baseAddr, DEVIL_FLUX_START);
-	}
-}
-
-static void DeactivateDevilForm(byte * baseAddr)
-{
-	LogFunction();
-	if (GetActorId(baseAddr) != ACTOR_ONE)
-	{
-		return;
-	}
-	bool doppelganger = *(bool *)(baseAddr + 0x6362);
-	if (!doppelganger)
-	{
-		UpdateFlux(baseAddr, DEVIL_FLUX_END);
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void ResetDevilModel()
 {
 	LogFunction();
@@ -739,20 +670,20 @@ void System_Actor_Init()
 			0x49, 0x8B, 0x4C, 0xF4, 0xF8,                               //mov rcx,[r12+rsi*8-08]
 			0x48, 0x8D, 0x89, 0x10, 0x64, 0x00, 0x00,                   //lea rcx,[rcx+00006410]
 			0xBA, 0x3C, 0x00, 0x00, 0x00,                               //mov edx,0000003C
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmcLauncher.exe+2EE060
+			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+2EE060
 			0x8B, 0xCF,                                                 //mov ecx,edi
 			0xBA, 0x01, 0x00, 0x00, 0x00,                               //mov edx,00000001
 			0x41, 0xB8, 0x01, 0x00, 0x00, 0x00,                         //mov r8d,00000001
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmcLauncher.exe+1DE820
+			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+1DE820
 			0x49, 0x89, 0x04, 0xF4,                                     //mov [r12+rsi*8],rax
 			0x49, 0x8B, 0xCC,                                           //mov rcx,r12
 			0x8B, 0xD6,                                                 //mov edx,esi
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmcLauncher.exe+1BB390
+			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+1BB390
 			0x49, 0x8B, 0x0C, 0xF4,                                     //mov rcx,[r12+rsi*8]
-			0x48, 0x8B, 0x15, 0x00, 0x00, 0x00, 0x00,                   //mov rdx,[dmcLauncher.exe+C90E28]
+			0x48, 0x8B, 0x15, 0x00, 0x00, 0x00, 0x00,                   //mov rdx,[dmc3.exe+C90E28]
 			0x48, 0x8B, 0x52, 0x08,                                     //mov rdx,[rdx+08]
 			0x48, 0x81, 0xC2, 0x6C, 0x01, 0x00, 0x00,                   //add rdx,0000016C
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmcLauncher.exe+1DF240
+			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+1DF240
 			0x49, 0x8B, 0x4C, 0xF4, 0xF8,                               //mov rcx,[r12+rsi*8-08]
 			0x49, 0x8B, 0x04, 0xF4,                                     //mov rax,[r12+rsi*8]
 			0x48, 0x89, 0x81, 0x78, 0x64, 0x00, 0x00,                   //mov [rcx+00006478],rax
@@ -800,6 +731,12 @@ void System_Actor_Init()
 		WriteCall(func.sect2, (appBaseAddr + 0x1BB470));
 		CreateActorProxy = func.addr;
 	}
+
+
+	// @Todo: Write UpdateMotion first so we can use the proxy addr.
+
+
+
 	{
 		byte sect2[] =
 		{
@@ -818,82 +755,38 @@ void System_Actor_Init()
 		memcpy(func.sect1, sect1, sizeof(sect1));
 		WriteJump((UpdateActorProxy + 0x52), func.addr);
 	}
-	{
-		//byte sect0[] =
-		//{
-		//	0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1F94D0
-		//};
-		//byte sect1[] =
-		//{
-		//	0x48, 0x8B, 0xCF, //mov rcx,rdi
-		//};
-		//FUNC func = CreateFunction(ActivateDevilForm, (appBaseAddr + 0x1E78B4), true, true, sizeof(sect0), sizeof(sect1));
-		FUNC func = CreateFunction(ActivateDevilForm, (appBaseAddr + 0x1E78B4));
-		//memcpy(func.sect0, sect0, sizeof(sect0));
-		//memcpy(func.sect1, sect1, sizeof(sect1));
-		//WriteCall(func.sect0, (appBaseAddr + 0x1F94D0));
-		ActivateDevilFormProxy = func.addr;
-	}
-	{
-		//byte sect0[] =
-		//{
-		//	0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1F94D0
-		//};
-		//byte sect1[] =
-		//{
-		//	0x48, 0x8B, 0xCF, //mov rcx,rdi
-		//};
-		//FUNC func = CreateFunction(DeactivateDevilForm, (appBaseAddr + 0x1E78EB), true, true, sizeof(sect0), sizeof(sect1));
-		FUNC func = CreateFunction(DeactivateDevilForm, (appBaseAddr + 0x1E78EB));
-		//memcpy(func.sect0, sect0, sizeof(sect0));
-		//memcpy(func.sect1, sect1, sizeof(sect1));
-		//WriteCall(func.sect0, (appBaseAddr + 0x1F94D0));
-		DeactivateDevilFormProxy = func.addr;
-	}
+
 }
 
-void System_Actor_Toggle()
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+void System_Actor_ToggleArrayExtension(bool enable)
 {
-	//LogFunction();
-	System_Actor_enable = MAGIC_6 ? true : false;
-
-	Log("%s %u", FUNC_NAME, System_Actor_enable);
-
-
-
-	if (System_Actor_enable)
+	LogFunctionBool(enable);
+	System_Actor_enableArrayExtension = enable;
+	if (enable)
 	{
 		// OnUpdate
 		WriteJump((appBaseAddr + 0x1BA569), OnUpdate[0]);
 		vp_memset((appBaseAddr + 0x1BA5C5), 0x90, 4);
-		Write<byte>((appBaseAddr + 0x1BA5C9), 0x45);
-		Write<byte>((appBaseAddr + 0x1BA5CB), 0x9A);
+		Write<byte8>((appBaseAddr + 0x1BA5C9), 0x45);
+		Write<byte8>((appBaseAddr + 0x1BA5CB), 0x9A);
 		WriteJump((appBaseAddr + 0x1BC0C5), OnUpdate[1]);
 		// OnEvent
-
-		// @Document: WHAT THE FUCK
-
-
-		Write<byte>((appBaseAddr + 0x1BB397), 0x1C);
-		Write<byte>((appBaseAddr + 0x1BB399), 0x90);
-		Write<byte>((appBaseAddr + 0x1BB408), 0x03);
-		Write<byte>((appBaseAddr + 0x1BB409), 0x90);
-		Write<byte>((appBaseAddr + 0x1BB457), 0x03);
-		Write<byte>((appBaseAddr + 0x1BB458), 0x90);
-		WriteJump((appBaseAddr + 0x23C79A), CreateActorProxy);
-		WriteJump((appBaseAddr + 0x1DF2C4), UpdateActorProxy, 1);
-		WriteJump((appBaseAddr + 0x1E78AF), ActivateDevilFormProxy);
-		WriteJump((appBaseAddr + 0x1E78E6), DeactivateDevilFormProxy);
-
-		// @Audit: Put ActivateDoppelganger in here?
-
-
-
-
-		// Fixes
-		vp_memset((appBaseAddr + 0x1DF291), 0x90, 7);                     // Disable Actor Base Address Reset
-		vp_memset((appBaseAddr + 0x1DECCC), 0x90, 6);                     // Remove isDoppelganger Flag Update
-		WriteJump((appBaseAddr + 0x2134A9), (appBaseAddr + 0x214B2E), 2); // Skip Create Doppelganger
+		Write<byte8>((appBaseAddr + 0x1BB397), 0x1C);
+		Write<byte8>((appBaseAddr + 0x1BB399), 0x90);
+		Write<byte16>((appBaseAddr + 0x1BB408), 0x9003);
+		Write<byte16>((appBaseAddr + 0x1BB457), 0x9003);
 	}
 	else
 	{
@@ -911,8 +804,8 @@ void System_Actor_Toggle()
 			};
 			vp_memcpy((appBaseAddr + 0x1BA5C5), buffer, sizeof(buffer));
 		}
-		Write<byte>((appBaseAddr + 0x1BA5C9), 0x44);
-		Write<byte>((appBaseAddr + 0x1BA5CB), 0x98);
+		Write<byte8>((appBaseAddr + 0x1BA5C9), 0x44);
+		Write<byte8>((appBaseAddr + 0x1BA5CB), 0x98);
 		{
 			byte buffer[] =
 			{
@@ -920,22 +813,67 @@ void System_Actor_Toggle()
 			};
 			vp_memcpy((appBaseAddr + 0x1BC0C5), buffer, sizeof(buffer));
 		}
-		Write<byte>((appBaseAddr + 0x1BB397), 0x5C);
-		Write<byte>((appBaseAddr + 0x1BB399), 0x18);
-		Write<byte>((appBaseAddr + 0x1BB408), 0x43);
-		Write<byte>((appBaseAddr + 0x1BB409), 0x18);
-		Write<byte>((appBaseAddr + 0x1BB457), 0x43);
-		Write<byte>((appBaseAddr + 0x1BB458), 0x18);
+		Write<byte8>((appBaseAddr + 0x1BB397), 0x5C);
+		Write<byte8>((appBaseAddr + 0x1BB399), 0x18);
+		Write<byte16>((appBaseAddr + 0x1BB408), 0x1843);
+		Write<byte16>((appBaseAddr + 0x1BB457), 0x1843);
+	}
+}
+
+void System_Actor_ToggleCreateActor(bool enable)
+{
+	LogFunctionBool(enable);
+	System_Actor_enableCreateActor = enable;
+	if (enable)
+	{
+		WriteJump((appBaseAddr + 0x23C79A), CreateActorProxy);
+	}
+	else
+	{
 		WriteCall((appBaseAddr + 0x23C79A), (appBaseAddr + 0x1BB470));
+	}
+}
+
+void System_Actor_ToggleUpdateActor(bool enable)
+{
+	LogFunctionBool(enable);
+	System_Actor_enableUpdateActor = enable;
+	if (enable)
+	{
+		WriteJump((appBaseAddr + 0x1DF2C4), UpdateActorProxy, 1);
+	}
+	else
+	{
+		byte buffer[] =
 		{
+			0xFF, 0x90, 0x80, 0x00, 0x00, 0x00, //call qword ptr [rax+00000080]
+		};
+		vp_memcpy((appBaseAddr + 0x1DF2C4), buffer, sizeof(buffer));
+	}
+}
+
+void System_Actor_ToggleDoppelgangerFixes(bool enable)
+{
+	LogFunctionBool(enable);
+	System_Actor_enableDoppelgangerFixes = enable;
+	if (enable)
+	{
+		vp_memset((appBaseAddr + 0x1DF291), 0x90, 7); // Disable linked actor base address reset.
+		// Make IsDoppelganger check always return false.
+		{
+			byte * addr = (appBaseAddr + 0x1F78B0);
+			vp_memset(addr, 0x90, 7);
 			byte buffer[] =
 			{
-				0xFF, 0x90, 0x80, 0x00, 0x00, 0x00, //call qword ptr [rax+00000080]
+				0x30, 0xC0, //xor al,al
+				0xC3,       //ret
 			};
-			vp_memcpy((appBaseAddr + 0x1DF2C4), buffer, sizeof(buffer));
+			vp_memcpy(addr, buffer, sizeof(buffer));
 		}
-		WriteCall((appBaseAddr + 0x1E78AF), (appBaseAddr + 0x1F94D0));
-		WriteCall((appBaseAddr + 0x1E78E6), (appBaseAddr + 0x1F94D0));
+		Write<byte16>((appBaseAddr + 0x2134A3), 0xE990); // Skip clone creation.
+	}
+	else
+	{
 		{
 			byte buffer[] =
 			{
@@ -946,47 +884,10 @@ void System_Actor_Toggle()
 		{
 			byte buffer[] =
 			{
-				0x89, 0xB8, 0x1C, 0x01, 0x00, 0x00, //mov [rax+0000011C],edi
+				0x83, 0xB9, 0x1C, 0x01, 0x00, 0x00, 0x01, //cmp dword ptr [rcx+0000011C],01
 			};
-			vp_memcpy((appBaseAddr + 0x1DECCC), buffer, sizeof(buffer));
+			vp_memcpy((appBaseAddr + 0x1F78B0), buffer, sizeof(buffer));
 		}
-		{
-			byte buffer[] =
-			{
-				0x83, 0xBE, 0x38, 0x63, 0x00, 0x00, 0x05, //cmp dword ptr [rsi+00006338],05
-			};
-			vp_memcpy((appBaseAddr + 0x2134A9), buffer, sizeof(buffer));
-		}
+		Write<byte16>((appBaseAddr + 0x2134A3), 0x840F);
 	}
 }
-
-//
-//
-//static dword ToggleThread(LPVOID parameter)
-//{
-//	static bool inQueue = false;
-//	if (inQueue)
-//	{
-//		Log("Already queued!");
-//		return 1;
-//	}
-//	inQueue = true;
-//	do
-//	{
-//		if (!ActorAvailable())
-//		{
-//			break;
-//		}
-//		Sleep(100);
-//	}
-//	while (true);
-//	inQueue = false;
-//	System_Actor_Toggle();
-//	return 1;
-//}
-//
-//void System_Actor_QueueToggle()
-//{
-//	LogFunction();
-//	CreateThread(0, 4096, ToggleThread, 0, 0, 0);
-//}

@@ -220,7 +220,7 @@ void GUI_Game_Dante()
 		}
 		else
 		{
-			System_Actor_Toggle();
+			//System_Actor_Toggle();
 			if (Config.Game.Dante.enable)
 			{
 				Game_Dante_Rebellion_ToggleInfiniteSwordPierce(Config.Game.Dante.Rebellion.infiniteSwordPierce);
@@ -264,7 +264,7 @@ void GUI_Game_Dante()
 		}
 		else
 		{
-			System_Actor_Toggle();
+			//System_Actor_Toggle();
 		}
 	}
 	if (System_Cache_enable && !demo_pl000_00_3)
@@ -323,7 +323,7 @@ void GUI_Game_Dante()
 	{
 		memcpy(&Config.Game.Dante, &DefaultConfig.Game.Dante, sizeof(Config.Game.Dante));
 		SaveConfig();
-		System_Actor_Toggle();
+		//System_Actor_Toggle();
 		Game_Dante_Rebellion_ToggleInfiniteSwordPierce(DefaultConfig.Game.Dante.Rebellion.infiniteSwordPierce);
 		Game_Dante_EbonyIvory_ToggleFoursomeTime(DefaultConfig.Game.Dante.EbonyIvory.foursomeTime);
 		Game_Dante_EbonyIvory_ToggleInfiniteRainStorm(DefaultConfig.Game.Dante.EbonyIvory.infiniteRainStorm);
@@ -350,7 +350,7 @@ void GUI_Game_Doppelganger()
 		}
 		else
 		{
-			System_Actor_Toggle();
+			//System_Actor_Toggle();
 			if (Config.Game.Doppelganger.enable)
 			{
 				Game_Doppelganger_ToggleUseEXVersion(Config.Game.Doppelganger.useEXVersion);
@@ -390,7 +390,7 @@ void GUI_Game_Doppelganger()
 	{
 		memcpy(&Config.Game.Doppelganger, &DefaultConfig.Game.Doppelganger, sizeof(Config.Game.Doppelganger));
 		SaveConfig();
-		System_Actor_Toggle();
+		//System_Actor_Toggle();
 		Game_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Doppelganger.useEXVersion);
 	}
 
@@ -469,7 +469,7 @@ void GUI_Game_Multiplayer()
 		}
 		else
 		{
-			System_Actor_Toggle();
+			//System_Actor_Toggle();
 		}
 	}
 	GUI_POP_DISABLE(ActorAvailable());
@@ -505,7 +505,7 @@ void GUI_Game_Multiplayer()
 		// under specific conditions.
 		if (System_Cache_enable)
 		{
-			System_Actor_Toggle();
+			//System_Actor_Toggle();
 		}
 		if (System_Input_extend)
 		{
@@ -577,7 +577,7 @@ void GUI_Game_ResetMotionState()
 		}
 		else
 		{
-			System_Actor_Toggle();
+			//System_Actor_Toggle();
 		}
 	}
 	GUI_POP_DISABLE(ActorAvailable());
@@ -622,7 +622,7 @@ void GUI_Game_ResetMotionState()
 		SaveConfig();
 		if (System_Cache_enable)
 		{
-			System_Actor_Toggle();
+			//System_Actor_Toggle();
 		}
 	}
 	GUI_POP_DISABLE(ActorAvailable());
@@ -650,7 +650,7 @@ void GUI_Game_ResetMotionState()
 //		}
 //		else
 //		{
-//			System_Actor_Toggle();
+//			//System_Actor_Toggle();
 //		}
 //	}
 //	GUI_POP_DISABLE(ActorAvailable());
@@ -696,7 +696,7 @@ void GUI_Game_ResetMotionState()
 //		SaveConfig();
 //		if (System_Cache_enable)
 //		{
-//			System_Actor_Toggle();
+//			//System_Actor_Toggle();
 //		}
 //	}
 //	GUI_POP_DISABLE(ActorAvailable());
@@ -768,7 +768,7 @@ void GUI_Game_StyleSwitcher()
 		}
 		else
 		{
-			System_Actor_Toggle();
+			//System_Actor_Toggle();
 			if (Config.Game.StyleSwitcher.enable)
 			{
 				Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
@@ -789,7 +789,7 @@ void GUI_Game_StyleSwitcher()
 	{
 		memcpy(&Config.Game.StyleSwitcher, &DefaultConfig.Game.StyleSwitcher, sizeof(Config.Game.StyleSwitcher));
 		SaveConfig();
-		System_Actor_Toggle();
+		//System_Actor_Toggle();
 		Game_StyleSwitcher_Toggle(DefaultConfig.Game.StyleSwitcher.enable);
 	}
 	GUI_POP_DISABLE(ActorAvailable());
@@ -938,7 +938,7 @@ void GUI_Game_WeaponSwitcher()
 		}
 		else
 		{
-			System_Actor_Toggle();
+			//System_Actor_Toggle();
 			System_Weapon_Toggle();
 			if (Config.Game.WeaponSwitcher.enable)
 			{
@@ -1018,7 +1018,7 @@ void GUI_Game_WeaponSwitcher()
 	{
 		memcpy(&Config.Game.WeaponSwitcher, &DefaultConfig.Game.WeaponSwitcher, sizeof(Config.Game.WeaponSwitcher));
 		SaveConfig();
-		System_Actor_Toggle();
+		//System_Actor_Toggle();
 		System_Weapon_Toggle();
 		Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
 	}
