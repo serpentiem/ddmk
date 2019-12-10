@@ -28,6 +28,6 @@ void ResetDevilModel();
 void UpdateDevilModel(uint8 model);
 void System_Actor_Init();
 void System_Actor_ToggleArrayExtension(bool enable);
-void System_Actor_ToggleCreateActor(bool enable);
+void System_Actor_ToggleCreateActorOne(bool enable);
 void System_Actor_ToggleUpdateActor(bool enable);
 void System_Actor_ToggleDoppelgangerFixes(bool enable);

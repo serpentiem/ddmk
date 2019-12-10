@@ -139,7 +139,7 @@ void Game_LockOn_Init()
 
 void Game_LockOn_Toggle(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		vp_memset((appBaseAddr + 0x2CB655), 0x90, 7);                        // Remove Write Instructions

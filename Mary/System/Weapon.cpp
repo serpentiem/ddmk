@@ -1,14 +1,17 @@
 #include "Weapon.h"
 
-bool System_Weapon_enable = false;
+bool System_Weapon_enableUpdateWeapon      = false;
+bool System_Weapon_enableDoppelgangerFixes = false;
+
 byte * weaponMetadata[MAX_ACTOR][MAX_WEAPON] = {};
-//bool System_Weapon_Ranged_resetLevel = false;
+
 extern uint8 Game_WeaponSwitcher_Melee_index;
 extern uint8 Game_WeaponSwitcher_Ranged_index;
 
 typedef byte *(* RegisterWeapon_t)(byte *);
 
 byte * UpdateWeaponProxy = 0;
+
 RegisterWeapon_t RegisterRebellion       = 0;
 RegisterWeapon_t RegisterCerberus        = 0;
 RegisterWeapon_t RegisterAgniRudra       = 0;
@@ -24,6 +27,9 @@ RegisterWeapon_t RegisterKalinaAnn       = 0;
 RegisterWeapon_t RegisterKalinaAnnLady   = 0;
 RegisterWeapon_t RegisterForceEdge       = 0;
 RegisterWeapon_t RegisterNeroAngeloSword = 0;
+
+byte8 * CycleDante  = 0;
+byte8 * CycleVergil = 0;
 
 void System_Weapon_Ranged_UpdateLevels(byte * baseAddr)
 {
@@ -48,276 +54,217 @@ void System_Weapon_Ranged_UpdateLevels(byte * baseAddr)
 	}
 }
 
-static void UpdateWeapon(byte * baseAddr)
+struct FileItemHelper
 {
-	
+	uint16 fileItemId;
+	uint16 stringItemId;
+	uint16 cacheFileId;
+	void Update()
+	{
+		FILE_ITEM   * fileItemAddr   = (FILE_ITEM   *)(appBaseAddr + 0xC99D30); // dmc3.exe+1DF696 - 48 8D 0D 93A6AB00 - lea rcx,[dmc3.exe+C99D30]
+		STRING_ITEM * stringItemAddr = (STRING_ITEM *)(appBaseAddr + 0x5B0F50); // dmc3.exe+1B922E - 48 8D 05 5B7E3F00 - lea rax,[dmc3.exe+5B1090]
 
+		FILE_ITEM   & fileItem   = fileItemAddr[fileItemId];
+		STRING_ITEM & stringItem = stringItemAddr[stringItemId];
+
+		memset(&fileItem, 0, sizeof(FILE_ITEM));
+
+		fileItem.status     = FILE_ITEM_READY;
+		fileItem.stringItem = &stringItem;
+		fileItem.file       = cacheFile[cacheFileId];
+	};
+};
+
+static FileItemHelper fileItemHelperDante[] =
+{
+	{ 140, 0, plwp_sword    },
+	{ 141, 1, plwp_nunchaku },
+	{ 142, 2, plwp_2sword   },
+	{ 143, 3, plwp_guitar   },
+	{ 144, 4, plwp_fight    },
+	{ 145, 5, plwp_gun      },
+	{ 146, 6, plwp_shotgun  },
+	{ 147, 7, plwp_laser    },
+	{ 148, 8, plwp_rifle    },
+	{ 149, 9, plwp_ladygun  },
+};
+
+static FileItemHelper fileItemHelperBob[] =
+{
+	{ 169, 14, plwp_vergilsword },
+};
+
+static FileItemHelper fileItemHelperLady[] =
+{
+	{ 179, 9 , plwp_ladygun  },
+	{ 180, 10, plwp_ladygun1 },
+};
+
+static FileItemHelper fileItemHelperVergil[] =
+{
+	{ 196, 11, plwp_newvergilsword },
+	{ 189, 17, plwp_newvergilfight },
+	{ 198, 13, plwp_forceedge      },
+	{ 187, 18, plwp_nerosword      },
+};
+
+static FileItemHelper * fileItemHelper[] =
+{
+	fileItemHelperDante,
+	fileItemHelperBob,
+	fileItemHelperLady,
+	fileItemHelperVergil,
+};
+
+static uint8 fileItemHelperCount[] =
+{
+	countof(fileItemHelperDante),
+	countof(fileItemHelperBob),
+	countof(fileItemHelperLady),
+	countof(fileItemHelperVergil),
+};
+
+struct SwordHelper
+{
+	uint16 stringItemId;
+	uint16 cacheFileId;
+};
+
+static SwordHelper swordHelper[] =
+{
+	{ 0 , plwp_sword  },
+	{ 15, plwp_sword2 },
+	{ 16, plwp_sword3 },
+};
+
+static void UpdateSword(byte8 * baseAddr)
+{
+	auto data = fileItemHelperDante;
+	uint8 sword = 0;
+
+	bool unlockDevilTrigger = *(bool *)(appBaseAddr + 0xC8F250 + 0xD1);
+	uint8 costume = *(uint8 *)(baseAddr + 0x3E9E);
+
+	if (Config.Game.WeaponSwitcher.enable && (Config.Game.WeaponSwitcher.sword != 0))
+	{
+		sword = (Config.Game.WeaponSwitcher.sword - 1);
+	}
+	else
+	{
+		if (unlockDevilTrigger)
+		{
+			sword = 1;
+		}
+		switch (costume)
+		{
+		case COSTUME_DANTE_DMC1:
+		case COSTUME_DANTE_DMC1_COATLESS:
+		case COSTUME_DANTE_SPARDA:
+		case COSTUME_DANTE_SPARDA_INFINITE_MP:
+			sword = 2;
+			break;
+		}
+	}
+
+	fileItemHelperDante[0].stringItemId = swordHelper[sword].stringItemId;
+	fileItemHelperDante[0].cacheFileId  = swordHelper[sword].cacheFileId;
+}
+
+struct RegisterWeaponHelper
+{
+	RegisterWeapon_t * func;
+	uint8 id;
+};
+
+static RegisterWeaponHelper registerWeaponHelperDante[] =
+{
+	{ &RegisterRebellion , WEAPON_REBELLION   },
+	{ &RegisterCerberus  , WEAPON_CERBERUS    },
+	{ &RegisterAgniRudra , WEAPON_AGNI_RUDRA  },
+	{ &RegisterNevan     , WEAPON_NEVAN       },
+	{ &RegisterBeowulf   , WEAPON_BEOWULF     },
+	{ &RegisterEbonyIvory, WEAPON_EBONY_IVORY },
+	{ &RegisterShotgun   , WEAPON_SHOTGUN     },
+	{ &RegisterArtemis   , WEAPON_ARTEMIS     },
+	{ &RegisterSpiral    , WEAPON_SPIRAL      },
+	{ &RegisterKalinaAnn , WEAPON_KALINA_ANN  },
+};
+
+static RegisterWeaponHelper registerWeaponHelperBob[] =
+{
+	{ &RegisterYamatoBob, WEAPON_YAMATO_BOB },
+};
+
+static RegisterWeaponHelper registerWeaponHelperLady[] =
+{
+	{ &RegisterKalinaAnn    , WEAPON_KALINA_ANN      },
+	{ &RegisterKalinaAnnLady, WEAPON_KALINA_ANN_LADY },
+};
+
+static RegisterWeaponHelper registerWeaponHelperVergil[] =
+{
+	{ &RegisterYamato   , WEAPON_YAMATO         },
+	{ &RegisterBeowulf  , WEAPON_BEOWULF_VERGIL },
+	{ &RegisterForceEdge, WEAPON_FORCE_EDGE     },
+};
+
+static RegisterWeaponHelper * registerWeaponHelper[] =
+{
+	registerWeaponHelperDante,
+	registerWeaponHelperBob,
+	registerWeaponHelperLady,
+	registerWeaponHelperVergil,
+};
+
+static uint8 registerWeaponHelperCount[] =
+{
+	countof(registerWeaponHelperDante),
+	countof(registerWeaponHelperBob),
+	countof(registerWeaponHelperLady),
+	countof(registerWeaponHelperVergil),
+};
+
+static void UpdateWeapon(byte8 * baseAddr)
+{
 	Log("%s %llX", FUNC_NAME, baseAddr);
 
-
+	uint8 actor = GetActorId(baseAddr);
 
 	uint8 character = *(uint8 *)(baseAddr + 0x78);
 	if (character >= MAX_CHAR)
 	{
 		character = 0;
 	}
-	uint8 actor = GetActorId(baseAddr);
+	bool specialCostume = *(bool *)(baseAddr + 0x3E9F);
 
-	Log("actorId %u", actor);
-
-
-	Log("reached here");
-
-
-
-
-	// Update File Structs
+	// Update File Items
 	{
-		byte * structAddr[MAX_CHAR][MAX_WEAPON] =
-		{
-			{                                      // Dante
-				(appBaseAddr + 0xC99D30 + 0x2760), // Rebellion
-				(appBaseAddr + 0xC99D30 + 0x27A8), // Cerberus
-				(appBaseAddr + 0xC99D30 + 0x27F0), // Agni & Rudra
-				(appBaseAddr + 0xC99D30 + 0x2838), // Nevan
-				(appBaseAddr + 0xC99D30 + 0x2880), // Beowulf
-				(appBaseAddr + 0xC99D30 + 0x28C8), // Ebony & Ivory
-				(appBaseAddr + 0xC99D30 + 0x2910), // Shotgun
-				(appBaseAddr + 0xC99D30 + 0x2958), // Artemis
-				(appBaseAddr + 0xC99D30 + 0x29A0), // Spiral
-				(appBaseAddr + 0xC99D30 + 0x29E8), // Kalina Ann
-			},
-			{                                      // Bob
-				(appBaseAddr + 0xC99D30 + 0x2F88), // Yamato
-			},
-			{                                      // Lady
-				(appBaseAddr + 0xC99D30 + 0x3258), // obj\plwp_ladygun.pac
-				(appBaseAddr + 0xC99D30 + 0x32A0), // obj\plwp_ladygun1.pac
-			},
-			{                                      // Vergil
-				(appBaseAddr + 0xC99D30 + 0x3720), // Yamato
-				(appBaseAddr + 0xC99D30 + 0x3528), // Beowulf
-				(appBaseAddr + 0xC99D30 + 0x37B0), // Force Edge
-				(appBaseAddr + 0xC99D30 + 0x3498), // Nero Angelo Sword
-			},
-		};
-		byte * stringAddr[MAX_CHAR][MAX_WEAPON] =
-		{
-			{
-				(appBaseAddr + 0x5B0F50), // obj\plwp_sword.pac
-				(appBaseAddr + 0x5B0F60), // obj\plwp_nunchaku.pac
-				(appBaseAddr + 0x5B0F70), // obj\plwp_2sword.pac
-				(appBaseAddr + 0x5B0F80), // obj\plwp_guitar.pac
-				(appBaseAddr + 0x5B0F90), // obj\plwp_fight.pac
-				(appBaseAddr + 0x5B0FA0), // obj\plwp_gun.pac
-				(appBaseAddr + 0x5B0FB0), // obj\plwp_shotgun.pac
-				(appBaseAddr + 0x5B0FC0), // obj\plwp_laser.pac
-				(appBaseAddr + 0x5B0FD0), // obj\plwp_rifle.pac
-				(appBaseAddr + 0x5B0FE0), // obj\plwp_ladygun.pac
-			},
-			{
-				(appBaseAddr + 0x5B1030), // obj\plwp_vergilsword.pac
-			},
-			{
-				(appBaseAddr + 0x5B0FE0), // obj\plwp_ladygun.pac
-				(appBaseAddr + 0x5B0FF0), // obj\plwp_ladygun1.pac
-				(appBaseAddr + 0x5B1010), // obj\plwp_ladygun3.pac
-				(appBaseAddr + 0x5B1080), // obj\plwp_grenade.pac
-			},
-			{
-				(appBaseAddr + 0x5B1000), // obj\plwp_newvergilsword.pac
-				(appBaseAddr + 0x5B1060), // obj\plwp_newvergilfight.pac
-				(appBaseAddr + 0x5B1020), // obj\plwp_forceedge.pac
-				(appBaseAddr + 0x5B1070), // obj\plwp_nerosword.pac
-			},
-		};
-		byte * fileAddr[MAX_CHAR][MAX_WEAPON] =
-		{
-			{
-				cacheFile[plwp_sword],
-				cacheFile[plwp_nunchaku],
-				cacheFile[plwp_2sword],
-				cacheFile[plwp_guitar],
-				cacheFile[plwp_fight],
-				cacheFile[plwp_gun],
-				cacheFile[plwp_shotgun],
-				cacheFile[plwp_laser],
-				cacheFile[plwp_rifle],
-				cacheFile[plwp_ladygun],
-			},
-			{
-				cacheFile[plwp_vergilsword],
-			},
-			{
-				cacheFile[plwp_ladygun],
-				cacheFile[plwp_ladygun1],
-				cacheFile[plwp_ladygun3],
-				cacheFile[plwp_grenade],
-			},
-			{
-				cacheFile[plwp_newvergilsword],
-				cacheFile[plwp_newvergilfight],
-				cacheFile[plwp_forceedge],
-				cacheFile[plwp_nerosword],
-			},
-		};
-		// Set Sword
 		if (character == CHAR_DANTE)
 		{
-			byte * swordStringAddr[] =
-			{
-				(appBaseAddr + 0x5B0F50), // obj\plwp_sword.pac
-				(appBaseAddr + 0x5B1040), // obj\plwp_sword2.pac
-				(appBaseAddr + 0x5B1050), // obj\plwp_sword3.pac
-			};
-			byte * swordFileAddr[] =
-			{
-				cacheFile[plwp_sword],
-				cacheFile[plwp_sword2],
-				cacheFile[plwp_sword3],
-			};
-			if (Config.Game.WeaponSwitcher.enable && (Config.Game.WeaponSwitcher.sword != 0))
-			{
-				stringAddr[CHAR_DANTE][0] = swordStringAddr[(Config.Game.WeaponSwitcher.sword - 1)];
-				fileAddr[CHAR_DANTE][0] = swordFileAddr[(Config.Game.WeaponSwitcher.sword - 1)];
-			}
-			else
-			{
-				bool unlockDevilTrigger = *(bool *)(appBaseAddr + 0xC8F250 + 0xD1);
-				if (unlockDevilTrigger)
-				{
-					stringAddr[CHAR_DANTE][0] = swordStringAddr[1];
-					fileAddr[CHAR_DANTE][0] = swordFileAddr[1];
-				}
-				uint8 costume = *(uint8 *)(baseAddr + 0x3E9E);
-				switch (costume)
-				{
-				case COSTUME_DANTE_DMC1:
-				case COSTUME_DANTE_DMC1_COATLESS:
-				case COSTUME_DANTE_SPARDA:
-				case COSTUME_DANTE_SPARDA_INFINITE_MP:
-					stringAddr[CHAR_DANTE][0] = swordStringAddr[2];
-					fileAddr[CHAR_DANTE][0] = swordFileAddr[2];
-					break;
-				}
-			}
+			UpdateSword(baseAddr);
 		}
-		uint8 count[] =
+		auto & count = fileItemHelperCount[character];
+		for (uint8 index = 0; index < count; index++)
 		{
-			WEAPON_COUNT_DANTE,
-			WEAPON_COUNT_BOB,
-			WEAPON_COUNT_LADY,
-			4,
-		};
-		for (uint8 i = 0; i < count[character]; i++)
-		{
-			memset(structAddr[character][i], 0, 0x48);
-			uint32   & state  = *( uint32 *  )( structAddr[character][i] + 4    );
-			byte   * & string = *( byte   ** )( structAddr[character][i] + 0x18 );
-			byte   * & file   = *( byte   ** )( structAddr[character][i] + 0x20 );
-			state  = 3;
-			string = stringAddr[character][i];
-			file   = fileAddr  [character][i];
+			fileItemHelper[character][index].Update();
 		}
-
-		Log("reached here memset");
-
 	}
+
 	// Register Weapons
 	{
-		memset(weaponMetadata[actor], 0, (MAX_WEAPON * 8));
-		RegisterWeapon_t RegisterWeapon[MAX_CHAR][MAX_WEAPON] =
+		auto & count = registerWeaponHelperCount[character];
+		for (uint8 index = 0; index < count; index++)
 		{
-			{
-				RegisterRebellion,
-				RegisterCerberus,
-				RegisterAgniRudra,
-				RegisterNevan,
-				RegisterBeowulf,
-				RegisterEbonyIvory,
-				RegisterShotgun,
-				RegisterArtemis,
-				RegisterSpiral,
-				RegisterKalinaAnn,
-			},
-			{
-				RegisterYamatoBob,
-			},
-			{
-				RegisterKalinaAnn,
-				RegisterKalinaAnnLady,
-			},
-			{
-				RegisterYamato,
-				RegisterBeowulf,
-				RegisterForceEdge,
-			},
-		};
-		uint8 id[MAX_CHAR][MAX_WEAPON] =
-		{
-			{
-				WEAPON_REBELLION,
-				WEAPON_CERBERUS,
-				WEAPON_AGNI_RUDRA,
-				WEAPON_NEVAN,
-				WEAPON_BEOWULF,
-				WEAPON_EBONY_IVORY,
-				WEAPON_SHOTGUN,
-				WEAPON_ARTEMIS,
-				WEAPON_SPIRAL,
-				WEAPON_KALINA_ANN,
-			},
-			{
-				WEAPON_YAMATO_BOB,
-			},
-			{
-				WEAPON_KALINA_ANN,
-				WEAPON_KALINA_ANN_LADY,
-			},
-			{
-				WEAPON_YAMATO,
-				WEAPON_BEOWULF_VERGIL,
-				WEAPON_FORCE_EDGE,
-			},
-		};
-		uint8 count[] =
-		{
-			WEAPON_COUNT_DANTE,
-			WEAPON_COUNT_BOB,
-			WEAPON_COUNT_LADY,
-			WEAPON_COUNT_VERGIL,
-		};
-
-		// @Todo: What the actual fuck.
-
-		for (uint8 i = 0; i < count[character]; i++)
-		{
-
-			byte * _addr = RegisterWeapon[character][i](baseAddr);
-
-			Log("weapon metadata addr %llX", _addr);
-
-
-
-			weaponMetadata[actor][id[character][i]] = _addr;
+			auto & RegisterWeapon = *registerWeaponHelper[character][index].func;
+			auto & id = registerWeaponHelper[character][index].id;
+			weaponMetadata[actor][id] = RegisterWeapon(baseAddr);
 		}
-
-
-		Log("reached here register");
-
-
-
-
-		bool specialCostume = *(bool *)(baseAddr + 0x3E9F);
 		if ((character == CHAR_VERGIL) && specialCostume)
 		{
 			RegisterNeroAngeloSword(baseAddr);
 		}
-
-		Log("reached here nero");
-
-
 	}
+
 	// Update Live Variables
 	{
 		if (Config.Game.WeaponSwitcher.enable && character == CHAR_DANTE)
@@ -339,12 +286,6 @@ static void UpdateWeapon(byte * baseAddr)
 				equipment[selectedWeapon] = Config.Game.WeaponSwitcher.Ranged.weapon[Game_WeaponSwitcher_Ranged_index];
 			}
 		}
-
-
-
-
-		
-
 		memset((baseAddr + 0x64A0), 0, 0x64);
 		uint8 * equipment = (uint8 *)(baseAddr + 0x6498);
 		byte ** metaData = (byte **)(baseAddr + 0x64A0);
@@ -358,55 +299,13 @@ static void UpdateWeapon(byte * baseAddr)
 		}
 		*(uint32 *)(baseAddr + 0x64D8) = 4;
 
-
-
-		
-		//LogFunctionBool(enable);
-
-
-
-
-
-
-
-
 		System_Weapon_Ranged_UpdateLevels(baseAddr);
-
-		//if (System_Weapon_Ranged_resetLevel)
-		//{
-		//	uint32 * level = (uint32 *)(baseAddr + 0x64E4);
-		//	level[0] = 0;
-		//	level[1] = 0;
-		//}
-
-
-
-
-
-		
-
-
-
-		Log("reached here live update");
-
-
-
-
-
-
-
 	}
+
 	if (character == CHAR_DANTE)
 	{
 		UpdateExpertise(baseAddr);
 	}
-
-	
-
-	Log("%s reached end!", FUNC_NAME);
-
-
-
 }
 
 void System_Weapon_Init()
@@ -480,14 +379,19 @@ void System_Weapon_Init()
 		FUNC func = CreateFunction(UpdateWeapon, (appBaseAddr + 0x1DF2D2));
 		UpdateWeaponProxy = func.addr;
 	}
-
-
-
-
-
-	// Add actor id check to Vergil's weapon cycle;
-	// Required fix for EX Doppelganger;
-	// Shouldn't have side effects, that's why no toggle.
+	{
+		byte sect0[] =
+		{
+			0x8B, 0x87, 0x1C, 0x01, 0x00, 0x00, //mov eax,[rdi+0000011C]
+			0x85, 0xC0,                         //test eax,eax
+			0x75, 0x05,                         //jne short
+			0xE9, 0x00, 0x00, 0x00, 0x00,       //jmp dmc3.exe+280120
+		};
+		FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteJump((func.sect0 + 0xA), (appBaseAddr + 0x280120));
+		CycleDante = func.addr;
+	}
 	{
 		byte sect0[] =
 		{
@@ -498,38 +402,42 @@ void System_Weapon_Init()
 		};
 		FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteAddress((func.sect0 + 0xA), (appBaseAddr + 0x280160), 5);
-		WriteCall((appBaseAddr + 0x1E6EF3), func.addr); // Forward
-		WriteCall((appBaseAddr + 0x1E6FE5), func.addr); // Backward
+		WriteJump((func.sect0 + 0xA), (appBaseAddr + 0x280160));
+		CycleVergil = func.addr;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
-void System_Weapon_Toggle()
+void System_Weapon_ToggleUpdateWeapon(bool enable)
 {
-
-	return;
-
-	System_Weapon_enable = MAGIC_6 ? true : false;
-	Log("%s %u", FUNC_NAME, System_Weapon_enable);
-	if (System_Weapon_enable)
+	LogFunction(enable);
+	System_Weapon_enableUpdateWeapon = enable;
+	if (enable)
 	{
 		WriteJump((appBaseAddr + 0x1DF2CD), UpdateWeaponProxy);
 	}
 	else
 	{
 		WriteCall((appBaseAddr + 0x1DF2CD), (appBaseAddr + 0x1DED20));
+	}
+}
+
+void System_Weapon_ToggleDoppelgangerFixes(bool enable)
+{
+	LogFunction(enable);
+	System_Weapon_enableDoppelgangerFixes = enable;
+	if (enable)
+	{
+		// Add Doppelganger check to weapon cycle functions.
+		WriteCall((appBaseAddr + 0x1EA9D4), CycleDante ); // Melee
+		WriteCall((appBaseAddr + 0x1EAAC1), CycleDante ); // Ranged
+		WriteCall((appBaseAddr + 0x1E6EF3), CycleVergil); // Forward
+		WriteCall((appBaseAddr + 0x1E6FE5), CycleVergil); // Backward
+	}
+	else
+	{
+		WriteCall((appBaseAddr + 0x1EA9D4), (appBaseAddr + 0x280120));
+		WriteCall((appBaseAddr + 0x1EAAC1), (appBaseAddr + 0x280120));
+		WriteCall((appBaseAddr + 0x1E6EF3), (appBaseAddr + 0x280160));
+		WriteCall((appBaseAddr + 0x1E6FE5), (appBaseAddr + 0x280160));
 	}
 }

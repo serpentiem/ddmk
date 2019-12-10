@@ -51,6 +51,8 @@ static void SpawnActorOne(BYTE * baseAddr)
 	actorBaseAddr[ACTOR_ONE] = baseAddr;
 }
 
+// @Todo: Rename to CreateActor.
+
 static DWORD SpawnActorsThread(LPVOID parameter)
 {
 	LogFunction();

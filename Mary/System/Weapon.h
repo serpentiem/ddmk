@@ -9,11 +9,11 @@
 
 #include "../Game/Dante.h"
 
-extern bool System_Weapon_enable;
+extern bool System_Weapon_enableUpdateWeapon;
+extern bool System_Weapon_enableDoppelgangerFixes;
 extern byte * weaponMetadata[MAX_ACTOR][MAX_WEAPON];
-//extern bool System_Weapon_Ranged_resetLevel;
 
 void System_Weapon_Ranged_UpdateLevels(byte * baseAddr);
-
 void System_Weapon_Init();
-void System_Weapon_Toggle();
+void System_Weapon_ToggleUpdateWeapon(bool enable);
+void System_Weapon_ToggleDoppelgangerFixes(bool enable);

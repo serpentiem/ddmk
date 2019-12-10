@@ -4,7 +4,7 @@ bool pause = false;
 
 void Pause(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		ToggleCursor(true);

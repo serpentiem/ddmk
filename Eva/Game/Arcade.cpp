@@ -24,7 +24,7 @@ uint8 Game_Arcade_rangedWeaponMap[4] =
 
 void Game_Arcade_Toggle(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		WriteAddress((appBaseAddr + 0x3F8C2F), (appBaseAddr + 0x3F8C35), 6); // Force New Game

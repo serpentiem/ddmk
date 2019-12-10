@@ -40,7 +40,7 @@ void Game_Dante_Init()
 
 void Game_Dante_ForceEdge_ToggleUnlockStinger(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		WriteAddress((appBaseAddr + 0x2EAF0B), (appBaseAddr + 0x2EAF11), 6);
@@ -53,7 +53,7 @@ void Game_Dante_ForceEdge_ToggleUnlockStinger(bool enable)
 
 void Game_Dante_ForceEdge_ToggleUnlockRoundTrip(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		WriteAddress((appBaseAddr + 0x2EB29C), (appBaseAddr + 0x2EB29E), 2); // Initiator
@@ -74,7 +74,7 @@ void Game_Dante_ForceEdge_ToggleUnlockRoundTrip(bool enable)
 
 void Game_Dante_Sparda_ToggleUnlockDevilTrigger(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		WriteJump((appBaseAddr + 0x2C5656), SpardaIdFix);
@@ -97,7 +97,7 @@ void Game_Dante_Sparda_ToggleUnlockDevilTrigger(bool enable)
 
 void Game_Dante_Sparda_ToggleForceLoadAssets(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		{
@@ -126,7 +126,7 @@ void Game_Dante_Sparda_ToggleForceLoadAssets(bool enable)
 
 void Game_Dante_Yamato_ToggleUnlock(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		WriteAddress((appBaseAddr + 0x2CDE98), (appBaseAddr + 0x2CDE9A), 2); // Fix Model
@@ -159,7 +159,7 @@ void Game_Dante_Yamato_Acquire()
 
 void Game_Dante_AirHike_ToggleCoreAbility(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		Write<BYTE>((appBaseAddr + 0x2EC755), 0xEB);

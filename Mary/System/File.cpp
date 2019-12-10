@@ -1,6 +1,6 @@
 #include "File.h"
 
-typedef void(* InternalAdjustPointers_t)(byte *);
+typedef void(* InternalAdjustPointers_t)(byte8 *);
 
 InternalAdjustPointers_t InternalAdjustPointers = 0;
 
@@ -34,7 +34,7 @@ bool ExtractGameFile(const char * fileName)
 	dword error = 0;
 
 	SetLastError(0);
-	byte * addr = (byte *)VirtualAllocEx(appProcess, 0, stats.size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	byte8 * addr = (byte8 *)VirtualAllocEx(appProcess, 0, stats.size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	error = GetLastError();
 	if (!addr)
 	{
@@ -57,9 +57,9 @@ bool ExtractGameFile(const char * fileName)
 
 // @Todo: Make archive check optional.
 
-byte * LoadGameFile(const char * fileName, uint32 * size, byte * dest)
+byte8 * LoadGameFile(const char * fileName, uint32 * size, byte8 * dest)
 {
-	byte * file = 0;
+	byte8 * file = 0;
 
 	char buffer[128];
 	snprintf(buffer, sizeof(buffer), "data\\dmc3\\GData.afs\\%s", fileName);
@@ -81,11 +81,11 @@ byte * LoadGameFile(const char * fileName, uint32 * size, byte * dest)
 	return file;
 }
 
-void AdjustPointers(byte * addr)
+void AdjustPointers(byte8 * addr)
 {
 	LogFunction();
 	{
-		byte signature[] = { 'P','A','C' };
+		byte8 signature[] = { 'P','A','C' };
 		for (uint8 index = 0; index < countof(signature); index++)
 		{
 			if (addr[index] != signature[index])
@@ -121,7 +121,7 @@ void System_File_Init()
 	// 2 Local
 
 	{
-		byte payload[] =
+		byte8 payload[] =
 		{
 			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Config.System.File.preferLocalFiles
 			0x8A, 0x00,                                                 //mov al,[rax]

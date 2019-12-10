@@ -2,7 +2,7 @@
 
 void Game_Training_ToggleInfiniteHitPoints(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		vp_memset((appBaseAddr + 0x4FA0A), 0x90, 3);
@@ -31,7 +31,7 @@ void Game_Training_ToggleInfiniteHitPoints(bool enable)
 
 void Game_Training_ToggleInfiniteMagicPoints(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		vp_memset((appBaseAddr + 0x2ECD80), 0x90, 7); // Devil Default
@@ -110,7 +110,7 @@ void Game_Training_ToggleInfiniteMagicPoints(bool enable)
 
 void Game_Training_ToggleDisableTimer(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		vp_memset((appBaseAddr + 0x252374), 0x90, 2);  // Sub Timer

@@ -4,7 +4,7 @@
 //            Doesn't have to be super fast. It's fine if it loads within 1s in Chromium.
 
 // @Todo: Add LogWarning LogError and LogCriticalError.
-
+// @Todo: Add Warning and Error levels.
 
 
 
@@ -12,6 +12,7 @@
 #pragma once
 #include "DataTypes.h"
 #include "String.h"
+#include "Utility.h"
 #include "Windows.h"
 
 extern const char * Log_directory;
@@ -49,24 +50,31 @@ void Log(const char * format, Args ... args)
 	CloseHandle(file);
 }
 
-void LogNewLine();
+#define LogNewLine() Log("")
 
 #define FUNC_NAME __FUNCTION__
 
-#define LogFunction() Log(FUNC_NAME)
+template <typename T>
+void LogFunctionHelper(const char * funcName, T var)
+{
+	if constexpr (typematch(T, byte8 *))
+	{
+		Log("%s %llX", funcName, var);
+	}
+	else
+	{
+		Log("%s %u", funcName, var);
+	}
+}
 
+inline void LogFunctionHelper(const char * funcName)
+{
+	Log(funcName);
+}
 
-
+#define LogFunction(...) LogFunctionHelper(FUNC_NAME, __VA_ARGS__)
 
 #define LogFunctionStart() Log("%s Start", FUNC_NAME)
 #define LogFunctionEnd() Log("%s End", FUNC_NAME)
-
-
-
-
-
-
-#define LogFunctionUInt32(a) Log("%s %u", FUNC_NAME, a)
-#define LogFunctionBool(a) LogFunctionUInt32(a)
 
 void Log_Init();

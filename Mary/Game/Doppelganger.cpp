@@ -81,7 +81,7 @@ void Game_Doppelganger_Init()
 
 void Game_Doppelganger_ToggleUseEXVersion(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		WriteCall((appBaseAddr + 0x1E25CD), DoppelgangerRateControllerProxy);
@@ -93,6 +93,7 @@ void Game_Doppelganger_ToggleUseEXVersion(bool enable)
 		Write<byte>((appBaseAddr + 0x1F94A1), 0xEB);                         // Enable Devil Trigger Deactivation
 		WriteAddress((appBaseAddr + 0x1E752B), (appBaseAddr + 0x1E752D), 2); // Enable ACTOR_TWO Devil Trigger
 		Write<uint32>((appBaseAddr + 0x1F7D3F), 0);                          // Bob Set Visible Flag
+		// @Todo: Review.
 		Write<byte8>((appBaseAddr + 0x1F92E0), 0x00);                        // Devil Form: Disable Doppelganger check
 		Write<byte8>((appBaseAddr + 0x1F92F8), 0xEB);                        // Devil Form: Disable actor id check
 	}

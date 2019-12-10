@@ -13,7 +13,7 @@ void System_Window_UpdateSize(uint32 width, uint32 height)
 
 void System_Window_ToggleForceFocus(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		Write<WORD>((appBaseAddr + 0x1807B), 0xE990);

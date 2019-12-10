@@ -76,7 +76,7 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 
 		System_Actor_ToggleArrayExtension(true);
-		System_Actor_ToggleCreateActor(true);
+		System_Actor_ToggleCreateActorOne(true);
 		System_Actor_ToggleUpdateActor(true);
 		System_Actor_ToggleDoppelgangerFixes(true);
 
@@ -93,6 +93,10 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 
 		System_Cache_Init(); // requires file first!
+		System_Cache_ToggleExtendVectors(true);
+
+
+
 
 		System_Camera_ToggleInvertX(Config.System.Camera.invertX);
 
@@ -118,13 +122,47 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 		System_Media_Init();
 
 
+		
+
 
 
 
 		System_Sound_Init();
 
 		System_Weapon_Init();
-		System_Weapon_Toggle();
+
+
+
+
+
+		System_Weapon_ToggleUpdateWeapon(true);
+		System_Weapon_ToggleDoppelgangerFixes(true);
+
+
+
+
+
+
+		//System_Weapon_ToggleDoppelgangerFixes(false);
+
+
+
+		//System_Weapon_Toggle();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
 
 		Game_Arcade_Toggle(Config.Game.Arcade.enable);

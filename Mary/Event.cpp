@@ -89,15 +89,15 @@ static void Actor_StageLoadComplete()
 	//}
 
 	// Set Doppelganger Flags
-	uint8 character = *(uint8 *)(actorBaseAddr[ACTOR_ONE] + 0x78);
-	if (!Config.Game.Multiplayer.enable && (Config.Game.StyleSwitcher.enable || (character == CHAR_DANTE)))
-	{
-		bool & isDoppelganger = *(bool *)(actorBaseAddr[ACTOR_TWO] + 0x11C);
-		isDoppelganger = true;
-		uint8 & shadow = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x3A18);
-		shadow = 0;
-		*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x6338) = *(uint32 *)(actorBaseAddr[ACTOR_ONE] + 0x6338);
-	}
+	//uint8 character = *(uint8 *)(actorBaseAddr[ACTOR_ONE] + 0x78);
+	//if (!Config.Game.Multiplayer.enable && (Config.Game.StyleSwitcher.enable || (character == CHAR_DANTE)))
+	//{
+	//	bool & isDoppelganger = *(bool *)(actorBaseAddr[ACTOR_TWO] + 0x11C);
+	//	isDoppelganger = true;
+	//	uint8 & shadow = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x3A18);
+	//	shadow = 0;
+	//	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x6338) = *(uint32 *)(actorBaseAddr[ACTOR_ONE] + 0x6338);
+	//}
 
 	LogFunctionEnd();
 }
@@ -850,7 +850,7 @@ static void StageLoadComplete()
 
 inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		Write<byte>((appBaseAddr + 0x1F83D0), 0xEB);
@@ -1270,7 +1270,7 @@ void Event_Init()
 
 void Event_ToggleSkipIntro(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		WriteAddress((appBaseAddr + 0x2383F2), (appBaseAddr + 0x2383F8), 6); // Skip Message
@@ -1295,7 +1295,7 @@ void Event_ToggleSkipIntro(bool enable)
 
 void Event_ToggleSkipCutscenes(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		WriteAddress((appBaseAddr + 0x238CCA), (appBaseAddr + 0x238CD0), 6);

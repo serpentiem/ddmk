@@ -7,21 +7,7 @@
 
 enum CACHE_
 {
-	//CACHE_SIZE         = (128 * 1024 * 1024),
-	//DEFAULT_CACHE_SIZE = (260 * 1024 * 1024),
-
-	//DEFAULT_CACHE_SIZE
-
-
-	//CACHE_START = (512 * 1024 * 1024),
-
 	CACHE_SIZE = (1 * 1024 * 1024 * 1024),
-	//CACHE_SIZE = (512 * 1024 * 1024),
-
-
-
-
-
 };
 
 enum CACHE_FILES
@@ -113,13 +99,11 @@ enum CACHE_FILES
 	MAX_CACHE_FILES,
 };
 
-extern bool System_Cache_enable;
-extern byte * cacheFile[MAX_CACHE_FILES];
-extern byte * demo_pl000_00_3;
+extern bool System_Cache_enableExtendVectors;
 
-//byte * PushFile(const char * str);
+extern byte8 * cacheFile[MAX_CACHE_FILES];
+extern byte8 * demo_pl000_00_3;
 
-
-
-
+byte8 * PushGameFile(const char * fileName);
 void System_Cache_Init();
+void System_Cache_ToggleExtendVectors(bool enable);

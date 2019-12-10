@@ -214,11 +214,11 @@ void GUI_Game_Dante()
 	GUI_PUSH_DISABLE(ActorAvailable());
 	if (GUI_Checkbox(Locale.Game.Dante.enable, Config.Game.Dante.enable))
 	{
-		if (!System_Cache_enable)
-		{
-			restart = true;
-		}
-		else
+		//if (!System_Cache_enable)
+		//{
+		//	restart = true;
+		//}
+		//else
 		{
 			//System_Actor_Toggle();
 			if (Config.Game.Dante.enable)
@@ -258,16 +258,16 @@ void GUI_Game_Dante()
 	GUI_PUSH_DISABLE(ActorAvailable());
 	if (GUI_Checkbox(Locale.Game.Dante.Rebellion.unlockQuickDrive, Config.Game.Dante.Rebellion.unlockQuickDrive))
 	{
-		if (!System_Cache_enable)
-		{
-			restart = true;
-		}
-		else
+		//if (!System_Cache_enable)
+		//{
+		//	restart = true;
+		//}
+		//else
 		{
 			//System_Actor_Toggle();
 		}
 	}
-	if (System_Cache_enable && !demo_pl000_00_3)
+	if (!demo_pl000_00_3)
 	{
 		ImGui::SameLine();
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
@@ -344,11 +344,11 @@ void GUI_Game_Doppelganger()
 	GUI_PUSH_DISABLE(ActorAvailable());
 	if (GUI_Checkbox(Locale.Game.Doppelganger.enable, Config.Game.Doppelganger.enable))
 	{
-		if (!System_Cache_enable)
-		{
-			restart = true;
-		}
-		else
+		//if (!System_Cache_enable)
+		//{
+		//	restart = true;
+		//}
+		//else
 		{
 			//System_Actor_Toggle();
 			if (Config.Game.Doppelganger.enable)
@@ -463,11 +463,11 @@ void GUI_Game_Multiplayer()
 	GUI_PUSH_DISABLE(ActorAvailable());
 	if (GUI_Checkbox(Locale.Game.Multiplayer.enable, Config.Game.Multiplayer.enable))
 	{
-		if (!System_Cache_enable || !System_Input_extend)
-		{
-			restart = true;
-		}
-		else
+		//if (!System_Cache_enable || !System_Input_extend)
+		//{
+		//	restart = true;
+		//}
+		//else
 		{
 			//System_Actor_Toggle();
 		}
@@ -503,10 +503,10 @@ void GUI_Game_Multiplayer()
 		SaveConfig();
 		// Technically not needed, but sometimes I want to test how a function behaves
 		// under specific conditions.
-		if (System_Cache_enable)
-		{
-			//System_Actor_Toggle();
-		}
+		//if (System_Cache_enable)
+		//{
+		//	//System_Actor_Toggle();
+		//}
 		if (System_Input_extend)
 		{
 			restart = true;
@@ -571,11 +571,11 @@ void GUI_Game_ResetMotionState()
 	GUI_PUSH_DISABLE(ActorAvailable());
 	if (GUI_Checkbox(Locale.Game.ResetMotionState.enable, Config.Game.ResetMotionState.enable))
 	{
-		if (!System_Cache_enable)
-		{
-			restart = true;
-		}
-		else
+		//if (!System_Cache_enable)
+		//{
+		//	restart = true;
+		//}
+		//else
 		{
 			//System_Actor_Toggle();
 		}
@@ -620,10 +620,10 @@ void GUI_Game_ResetMotionState()
 		run = false;
 		memcpy(&Config.Game.ResetMotionState, &DefaultConfig.Game.ResetMotionState, sizeof(Config.Game.ResetMotionState));
 		SaveConfig();
-		if (System_Cache_enable)
-		{
-			//System_Actor_Toggle();
-		}
+		//if (System_Cache_enable)
+		//{
+		//	//System_Actor_Toggle();
+		//}
 	}
 	GUI_POP_DISABLE(ActorAvailable());
 }
@@ -762,11 +762,11 @@ void GUI_Game_StyleSwitcher()
 	GUI_PUSH_DISABLE(ActorAvailable());
 	if (GUI_Checkbox(Locale.Game.StyleSwitcher.enable, Config.Game.StyleSwitcher.enable))
 	{
-		if (!System_Cache_enable)
-		{
-			restart = true;
-		}
-		else
+		//if (!System_Cache_enable)
+		//{
+		//	restart = true;
+		//}
+		//else
 		{
 			//System_Actor_Toggle();
 			if (Config.Game.StyleSwitcher.enable)
@@ -932,14 +932,14 @@ void GUI_Game_WeaponSwitcher()
 			Config.Cosmetics.Weapon.instantModelUpdate = true;
 			SaveConfig();
 		}
-		if (!System_Cache_enable)
-		{
-			restart = true;
-		}
-		else
+		//if (!System_Cache_enable)
+		//{
+		//	restart = true;
+		//}
+		//else
 		{
 			//System_Actor_Toggle();
-			System_Weapon_Toggle();
+			//System_Weapon_Toggle();
 			if (Config.Game.WeaponSwitcher.enable)
 			{
 				Game_WeaponSwitcher_Toggle(Config.Game.WeaponSwitcher.enable);
@@ -1019,7 +1019,7 @@ void GUI_Game_WeaponSwitcher()
 		memcpy(&Config.Game.WeaponSwitcher, &DefaultConfig.Game.WeaponSwitcher, sizeof(Config.Game.WeaponSwitcher));
 		SaveConfig();
 		//System_Actor_Toggle();
-		System_Weapon_Toggle();
+		//System_Weapon_Toggle();
 		Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
 	}
 	GUI_POP_DISABLE(ActorAvailable());

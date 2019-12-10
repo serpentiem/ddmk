@@ -100,7 +100,7 @@ void Game_WeaponSwitcher_Init()
 
 void Game_WeaponSwitcher_Toggle(bool enable)
 {
-	LogFunctionBool(enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		Write<BYTE>((appBaseAddr + 0x2ED3FD), 0xEB);                  // Disable Quick Swap
