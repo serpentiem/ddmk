@@ -1,3 +1,6 @@
+
+// @Todo: Create Helpers.
+
 #include "Event.h"
 
 #pragma region Global Definitions
@@ -59,6 +62,8 @@ struct VARS
 static void Actor_StageLoadComplete()
 {
 	LogFunctionStart();
+
+	// @Research: Not necessarily required anymore.
 
 	// Update Ids
 	for (uint8 actor = 0; actor < GetActorCount(); actor++)
@@ -848,6 +853,38 @@ static void StageLoadComplete()
 
 #pragma region Game Events
 
+static void DevilForm_Activate(byte8 * baseAddr)
+{
+	LogFunction(baseAddr);
+	uint8 actor = GetActorId(baseAddr);
+	bool doppelganger = *(bool *)(baseAddr + 0x6362);
+	if (actor != ACTOR_ONE)
+	{
+		return;
+	}
+	if (doppelganger)
+	{
+		return;
+	}
+	UpdateFlux(baseAddr, DEVIL_FLUX_START);
+}
+
+static void DevilForm_Deactivate(byte * baseAddr)
+{
+	LogFunction(baseAddr);
+	uint8 actor = GetActorId(baseAddr);
+	bool doppelganger = *(bool *)(baseAddr + 0x6362);
+	if (actor != ACTOR_ONE)
+	{
+		return;
+	}
+	if (doppelganger)
+	{
+		return;
+	}
+	UpdateFlux(baseAddr, DEVIL_FLUX_END);
+}
+
 inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 {
 	LogFunction(enable);
@@ -883,6 +920,9 @@ static void Doppelganger_Activate(byte * baseAddr)
 	{
 		UpdateFlux(baseAddr, DEVIL_FLUX_END);
 	}
+
+	uint8 & shadow = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x3A18) = 0;
+
 	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = *(uint32 *)(baseAddr + 0x3E6C);
 	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = *(uint32 *)(baseAddr + 0x3E70);
 	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = *(uint32 *)(baseAddr + 0x3E88);
@@ -999,106 +1039,6 @@ byte32 Doppelganger_Watchdog(void * parameter)
 
 #pragma endregion
 
-
-
-
-
-
-// @Todo: Put into Event.
-//
-//static void ActivateDevilForm(byte * baseAddr)
-//{
-//	LogFunction();
-//	if (GetActorId(baseAddr) != ACTOR_ONE)
-//	{
-//		return;
-//	}
-//	bool doppelganger = *(bool *)(baseAddr + 0x6362);
-//	if (!doppelganger)
-//	{
-//		UpdateFlux(baseAddr, DEVIL_FLUX_START);
-//	}
-//}
-//
-//static void DeactivateDevilForm(byte * baseAddr)
-//{
-//	LogFunction();
-//	if (GetActorId(baseAddr) != ACTOR_ONE)
-//	{
-//		return;
-//	}
-//	bool doppelganger = *(bool *)(baseAddr + 0x6362);
-//	if (!doppelganger)
-//	{
-//		UpdateFlux(baseAddr, DEVIL_FLUX_END);
-//	}
-//}
-
-
-
-
-// @Todo: Put into Event.
-
-//WriteJump((appBaseAddr + 0x1E78AF), ActivateDevilFormProxy);
-//WriteJump((appBaseAddr + 0x1E78E6), DeactivateDevilFormProxy);
-
-//WriteCall((appBaseAddr + 0x1E78AF), (appBaseAddr + 0x1F94D0));
-//WriteCall((appBaseAddr + 0x1E78E6), (appBaseAddr + 0x1F94D0));
-
-//byte * ActivateDevilFormProxy   = 0;
-//byte * DeactivateDevilFormProxy = 0;
-
-
-//{
-//	//byte sect0[] =
-//	//{
-//	//	0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1F94D0
-//	//};
-//	//byte sect1[] =
-//	//{
-//	//	0x48, 0x8B, 0xCF, //mov rcx,rdi
-//	//};
-//	//FUNC func = CreateFunction(ActivateDevilForm, (appBaseAddr + 0x1E78B4), true, true, sizeof(sect0), sizeof(sect1));
-//	FUNC func = CreateFunction(ActivateDevilForm, (appBaseAddr + 0x1E78B4));
-//	//memcpy(func.sect0, sect0, sizeof(sect0));
-//	//memcpy(func.sect1, sect1, sizeof(sect1));
-//	//WriteCall(func.sect0, (appBaseAddr + 0x1F94D0));
-//	ActivateDevilFormProxy = func.addr;
-//}
-//{
-//	//byte sect0[] =
-//	//{
-//	//	0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1F94D0
-//	//};
-//	//byte sect1[] =
-//	//{
-//	//	0x48, 0x8B, 0xCF, //mov rcx,rdi
-//	//};
-//	//FUNC func = CreateFunction(DeactivateDevilForm, (appBaseAddr + 0x1E78EB), true, true, sizeof(sect0), sizeof(sect1));
-//	FUNC func = CreateFunction(DeactivateDevilForm, (appBaseAddr + 0x1E78EB));
-//	//memcpy(func.sect0, sect0, sizeof(sect0));
-//	//memcpy(func.sect1, sect1, sizeof(sect1));
-//	//WriteCall(func.sect0, (appBaseAddr + 0x1F94D0));
-//	DeactivateDevilFormProxy = func.addr;
-//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void Event_Init()
 {
 	LogFunction();
@@ -1199,6 +1139,14 @@ void Event_Init()
 	}
 	#pragma endregion
 	#pragma region Game Events
+	{
+		FUNC func = CreateFunction(DevilForm_Activate, (appBaseAddr + 0x1E78B4));
+		WriteJump((appBaseAddr + 0x1E78AF), func.addr);
+	}
+	{
+		FUNC func = CreateFunction(DevilForm_Deactivate, (appBaseAddr + 0x1E78EB));
+		WriteJump((appBaseAddr + 0x1E78E6), func.addr);
+	}
 	{
 		byte sect0[] =
 		{
