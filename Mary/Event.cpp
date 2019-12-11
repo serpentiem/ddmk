@@ -66,12 +66,12 @@ static void Actor_StageLoadComplete()
 	// @Research: Not necessarily required anymore.
 
 	// Update Ids
-	for (uint8 actor = 0; actor < GetActorCount(); actor++)
-	{
-		uint8 & id = *(uint8 *)(actorBaseAddr[actor] + 0x118);
-		id = actor;
-		Log("Actor id %u", id);
-	}
+	//for (uint8 actor = 0; actor < GetActorCount(); actor++)
+	//{
+	//	uint8 & id = *(uint8 *)(actorBaseAddr[actor] + 0x118);
+	//	id = actor;
+	//	Log("Actor id %u", id);
+	//}
 	//// Fix Style Level
 	//if (Config.Game.Multiplayer.enable)
 	//{

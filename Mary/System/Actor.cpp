@@ -8,7 +8,7 @@ bool System_Actor_enableDoppelgangerFixes = false;
 byte * actorBaseAddr[MAX_ACTOR] = {};
 bool updateModelAttributes[MAX_ACTOR] = {};
 
-typedef void(* InternalCreateActor_t)(uint8, uint8);
+typedef byte8 *(* InternalCreateActor_t)(uint8 character, uint8 actor, bool isDoppelganger);
 
 InternalCreateActor_t InternalCreateActor = 0;
 UpdateDevilForm_t     UpdateDevilForm     = 0;
@@ -51,17 +51,20 @@ static void CreateActors()
 	LogFunction();
 	if (Config.Game.Multiplayer.enable)
 	{
-		for (uint8 actor = 0; actor < Config.Game.Multiplayer.actorCount; actor++)
+		for (uint8 index = 0; index < Config.Game.Multiplayer.actorCount; index++)
 		{
-			InternalCreateActor((ACTOR_TWO + actor), Config.Game.Multiplayer.character[actor]);
+			uint8 actor = (ACTOR_TWO + index);
+			auto & character = Config.Game.Multiplayer.character[index];
+			InternalCreateActor(character, actor, false);
 		}
 	}
 	else
 	{
-		uint8 character = *(uint8 *)(actorBaseAddr[ACTOR_ONE] + 0x78);
-		if (Config.Game.StyleSwitcher.enable || (character == CHAR_DANTE))
+		uint8 & characterActorOne = *(uint8 *)(actorBaseAddr[ACTOR_ONE] + 0x78);
+		if (Config.Game.StyleSwitcher.enable || (characterActorOne == CHAR_DANTE))
 		{
-			InternalCreateActor(ACTOR_TWO, (Config.Game.Doppelganger.enable) ? Config.Game.Doppelganger.character : character);
+			uint8 character = (Config.Game.Doppelganger.enable) ? Config.Game.Doppelganger.character : characterActorOne;
+			InternalCreateActor(character, ACTOR_TWO, false);
 		}
 	}
 }
@@ -429,38 +432,45 @@ void System_Actor_Init()
 	{
 		byte sect1[] =
 		{
+			0x48, 0x31, 0xC0,                                           //xor rax,rax
+			0x84, 0xD2,                                                 //test dl,dl
+			0x74, 0x77,                                                 //je short
+			0x48, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rbx,actorBaseAddr
 			0x48, 0x0F, 0xB6, 0xF1,                                     //movzx rsi,cl
 			0x48, 0x0F, 0xB6, 0xFA,                                     //movzx rdi,dl
-			0x49, 0xBC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov r12,actorBaseAddr
-			0x49, 0x8B, 0x4C, 0xF4, 0xF8,                               //mov rcx,[r12+rsi*8-08]
+			0x4D, 0x0F, 0xB6, 0xE0,                                     //movzx r12,r8l
+			0x48, 0x8B, 0x4C, 0xFB, 0xF8,                               //mov rcx,[rbx+rdi*8-08]
+			0x48, 0x85, 0xC9,                                           //test rcx,rcx
+			0x74, 0x57,                                                 //je short
 			0x48, 0x8D, 0x89, 0x10, 0x64, 0x00, 0x00,                   //lea rcx,[rcx+00006410]
 			0xBA, 0x3C, 0x00, 0x00, 0x00,                               //mov edx,0000003C
 			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+2EE060
-			0x8B, 0xCF,                                                 //mov ecx,edi
-			0xBA, 0x01, 0x00, 0x00, 0x00,                               //mov edx,00000001
-			0x41, 0xB8, 0x01, 0x00, 0x00, 0x00,                         //mov r8d,00000001
+			0x8B, 0xCE,                                                 //mov ecx,esi
+			0x8B, 0xD7,                                                 //mov edx,edi
+			0x45, 0x8B, 0xC4,                                           //mov r8d,r12d
 			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+1DE820
-			0x49, 0x89, 0x04, 0xF4,                                     //mov [r12+rsi*8],rax
-			0x49, 0x8B, 0xCC,                                           //mov rcx,r12
-			0x8B, 0xD6,                                                 //mov edx,esi
+			0x4C, 0x8B, 0xE8,                                           //mov r13,rax
+			0x48, 0x89, 0x04, 0xFB,                                     //mov [rbx+rdi*8],rax
+			0x48, 0x8B, 0xCB,                                           //mov rcx,rbx
+			0x8B, 0xD7,                                                 //mov edx,edi
 			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+1BB390
-			0x49, 0x8B, 0x0C, 0xF4,                                     //mov rcx,[r12+rsi*8]
+			0x49, 0x8B, 0xCD,                                           //mov rcx,r13
 			0x48, 0x8B, 0x15, 0x00, 0x00, 0x00, 0x00,                   //mov rdx,[dmc3.exe+C90E28]
 			0x48, 0x8B, 0x52, 0x08,                                     //mov rdx,[rdx+08]
 			0x48, 0x81, 0xC2, 0x6C, 0x01, 0x00, 0x00,                   //add rdx,0000016C
 			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+1DF240
-			0x49, 0x8B, 0x4C, 0xF4, 0xF8,                               //mov rcx,[r12+rsi*8-08]
-			0x49, 0x8B, 0x04, 0xF4,                                     //mov rax,[r12+rsi*8]
-			0x48, 0x89, 0x81, 0x78, 0x64, 0x00, 0x00,                   //mov [rcx+00006478],rax
+			0x48, 0x8B, 0x4C, 0xFB, 0xF8,                               //mov rcx,[rbx+rdi*8-08]
+			0x4C, 0x89, 0xA9, 0x78, 0x64, 0x00, 0x00,                   //mov [rcx+00006478],r13
+			0x49, 0x8B, 0xC5,                                           //mov rax,r13
 		};
-		FUNC func = CreateFunction(0, 0, true, true, 0, sizeof(sect1));
+		FUNC func = CreateFunction(0, 0, true, false, 0, sizeof(sect1));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		*(byte ***)(func.sect1 + 0xA) = actorBaseAddr;
-		WriteCall((func.sect1 + 0x23), (appBaseAddr + 0x2EE060));
-		WriteCall((func.sect1 + 0x35), (appBaseAddr + 0x1DE820));
-		WriteCall((func.sect1 + 0x43), (appBaseAddr + 0x1BB390));
-		WriteAddress((func.sect1 + 0x4C), (appBaseAddr + 0xC90E28), 7);
-		WriteCall((func.sect1 + 0x5E), (appBaseAddr + 0x1DF240));
+		*(byte8 ***)(func.sect1 + 9) = actorBaseAddr;
+		WriteCall((func.sect1 + 0x33), (appBaseAddr + 0x2EE060));
+		WriteCall((func.sect1 + 0x3F), (appBaseAddr + 0x1DE820));
+		WriteCall((func.sect1 + 0x50), (appBaseAddr + 0x1BB390));
+		WriteAddress((func.sect1 + 0x58), (appBaseAddr + 0xC90E28), 7);
+		WriteCall((func.sect1 + 0x6A), (appBaseAddr + 0x1DF240));
 		InternalCreateActor = (InternalCreateActor_t)func.addr;
 	}
 	{
