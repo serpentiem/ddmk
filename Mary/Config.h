@@ -329,6 +329,7 @@ struct CONFIG
 				};
 			}
 			NeroAngelo;
+			float32 doppelganger[4] = { 16, 16, 16, 48 };
 		}
 		Color;
 		struct

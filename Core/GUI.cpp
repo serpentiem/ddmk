@@ -136,6 +136,8 @@ bool GUI_Button(const char * label, const ImVec2 & size)
 	return update;
 }
 
+// @Todo: Obsolete.
+
 bool GUI_ColorEdit4(const char * label, float32 * var, bool save)
 {
 	bool update = false;
@@ -152,3 +154,32 @@ bool GUI_ColorEdit4(const char * label, float32 * var, bool save)
 	}
 	return update;
 }
+
+bool GUI_ColorEdit4(float32 * var, bool save)
+{
+	bool update = false;
+	ImGui::PushID(GUI_id);
+	GUI_id++;
+	if (ImGui::ColorEdit4("", var, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaPreview))
+	{
+		update = true;
+	}
+	ImGui::PopID();
+	if (update && save)
+	{
+		SaveConfig();
+	}
+	return update;
+}
+
+
+
+
+
+
+
+
+
+
+
+

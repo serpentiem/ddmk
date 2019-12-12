@@ -61,50 +61,24 @@ struct VARS
 
 static void Actor_StageLoadComplete()
 {
-	LogFunctionStart();
 
-	// @Research: Not necessarily required anymore.
+	HoboBreak();
 
-	// Update Ids
-	//for (uint8 actor = 0; actor < GetActorCount(); actor++)
-	//{
-	//	uint8 & id = *(uint8 *)(actorBaseAddr[actor] + 0x118);
-	//	id = actor;
-	//	Log("Actor id %u", id);
-	//}
-	//// Fix Style Level
-	//if (Config.Game.Multiplayer.enable)
-	//{
-	//	for (uint8 actor = 0; actor < GetActorCount(); actor++)
-	//	{
-	//		uint32 & style = *(uint32 *)(actorBaseAddr[actor] + 0x6338);
-	//		if (style == STYLE_DOPPELGANGER)
-	//		{
-	//			style = STYLE_TRICKSTER;
-	//			uint32 & level = *(uint32 *)(actorBaseAddr[actor] + 0x6358);
-	//			byte * session = *(byte **)(appBaseAddr + 0xC90E30);
-	//			if (!session)
-	//			{
-	//				level = 2;
-	//				continue;
-	//			}
-	//			level = *(uint32 *)(session + 0x11C + (style * 4));
-	//		}
-	//	}
-	//}
-
-	// Set Doppelganger Flags
-	//uint8 character = *(uint8 *)(actorBaseAddr[ACTOR_ONE] + 0x78);
-	//if (!Config.Game.Multiplayer.enable && (Config.Game.StyleSwitcher.enable || (character == CHAR_DANTE)))
-	//{
-	//	bool & isDoppelganger = *(bool *)(actorBaseAddr[ACTOR_TWO] + 0x11C);
-	//	isDoppelganger = true;
-	//	uint8 & shadow = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x3A18);
-	//	shadow = 0;
-	//	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x6338) = *(uint32 *)(actorBaseAddr[ACTOR_ONE] + 0x6338);
-	//}
-
-	LogFunctionEnd();
+	if (Config.Game.Multiplayer.enable)
+	{
+		return;
+	}
+	uint8 count = GetActorCount();
+	for (uint8 actor = ACTOR_TWO; actor < count; actor++)
+	{
+		auto & baseAddr = actorBaseAddr[actor];
+		if (!baseAddr)
+		{
+			continue;
+		}
+		bool & isDoppelganger = *(bool *)(baseAddr + 0x11C) = true;
+		uint8 & shadow = *(uint8 *)(baseAddr + 0x3A18) = 0;
+	}
 }
 
 #pragma endregion
@@ -921,7 +895,7 @@ static void Doppelganger_Activate(byte * baseAddr)
 		UpdateFlux(baseAddr, DEVIL_FLUX_END);
 	}
 
-	uint8 & shadow = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x3A18) = 0;
+	//uint8 & shadow = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x3A18) = 0;
 
 	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = *(uint32 *)(baseAddr + 0x3E6C);
 	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = *(uint32 *)(baseAddr + 0x3E70);

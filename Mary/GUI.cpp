@@ -1084,6 +1084,21 @@ for (uint8 i = 0; i < countof(var); i++)                      \
 }                                                             \
 ImGui::Text(label);
 
+struct vector3
+{
+	float32 x;
+	float32 y;
+	float32 z;
+	vector3()
+	{
+		memset(this, 0, sizeof(*this));
+	}
+	operator float32 *()
+	{
+		return (float32 *)this;
+	}
+};
+
 void GUI_Cosmetics_Color()
 {
 	GUI_Hyperlink(Locale.Cosmetics.Color.header);
@@ -1101,6 +1116,10 @@ void GUI_Cosmetics_Color()
 	}
 	ImGui::Text("");
 	GUI_PUSH_DISABLE(!Config.Cosmetics.Color_enable);
+
+
+	ImGui::Text("Dante");
+
 	ColorPalette
 	(
 		Locale.Cosmetics.Color.Dante.Aura.label,
@@ -1139,6 +1158,29 @@ void GUI_Cosmetics_Color()
 		Locale.Cosmetics.Color.NeroAngelo.Aura.items,
 		Config.Cosmetics.Color.NeroAngelo.aura
 	);
+
+
+	//ImGui::Text("Doppelganger");
+	//GUI_ColorEdit4(Config.Cosmetics.Color.doppelganger);
+	//ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
+	//static bool enable = false;
+	//ImGui::Checkbox("", &enable);
+
+	//GUI_Checkbox("Apply", enable);
+
+
+
+
+	//ImGui::SameLine();
+	//ImGui::Text("Doppelganger");
+
+
+
+
+
+
+
+
 	GUI_POP_DISABLE(!Config.Cosmetics.Color_enable);
 	ImGui::Text("");
 	if (GUI_Button(Locale.Cosmetics.Color.reset))
@@ -1148,6 +1190,18 @@ void GUI_Cosmetics_Color()
 		SaveConfig();
 		Cosmetics_Color_Toggle(DefaultConfig.Cosmetics.Color_enable);
 	}
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 #undef ColorPalette

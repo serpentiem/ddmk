@@ -54,7 +54,7 @@ void System_Weapon_Ranged_UpdateLevels(byte * baseAddr)
 	}
 }
 
-struct FileItemHelper
+struct Weapon_FileItemHelper
 {
 	uint16 fileItemId;
 	uint16 stringItemId;
@@ -75,7 +75,7 @@ struct FileItemHelper
 	};
 };
 
-static FileItemHelper fileItemHelperDante[] =
+static Weapon_FileItemHelper fileItemHelperDante[] =
 {
 	{ 140, 0, plwp_sword    },
 	{ 141, 1, plwp_nunchaku },
@@ -89,18 +89,18 @@ static FileItemHelper fileItemHelperDante[] =
 	{ 149, 9, plwp_ladygun  },
 };
 
-static FileItemHelper fileItemHelperBob[] =
+static Weapon_FileItemHelper fileItemHelperBob[] =
 {
 	{ 169, 14, plwp_vergilsword },
 };
 
-static FileItemHelper fileItemHelperLady[] =
+static Weapon_FileItemHelper fileItemHelperLady[] =
 {
 	{ 179, 9 , plwp_ladygun  },
 	{ 180, 10, plwp_ladygun1 },
 };
 
-static FileItemHelper fileItemHelperVergil[] =
+static Weapon_FileItemHelper fileItemHelperVergil[] =
 {
 	{ 196, 11, plwp_newvergilsword },
 	{ 189, 17, plwp_newvergilfight },
@@ -108,7 +108,7 @@ static FileItemHelper fileItemHelperVergil[] =
 	{ 187, 18, plwp_nerosword      },
 };
 
-static FileItemHelper * fileItemHelper[] =
+static Weapon_FileItemHelper * Weapon_FileItemHelper[] =
 {
 	fileItemHelperDante,
 	fileItemHelperBob,
@@ -226,7 +226,7 @@ static uint8 registerWeaponHelperCount[] =
 
 static void UpdateWeapon(byte8 * baseAddr)
 {
-	Log("%s %llX", FUNC_NAME, baseAddr);
+	Log("%s Start %llX", FUNC_NAME, baseAddr);
 
 	uint8 actor = GetActorId(baseAddr);
 
@@ -246,7 +246,7 @@ static void UpdateWeapon(byte8 * baseAddr)
 		auto & count = fileItemHelperCount[character];
 		for (uint8 index = 0; index < count; index++)
 		{
-			fileItemHelper[character][index].Update();
+			Weapon_FileItemHelper[character][index].Update();
 		}
 	}
 
@@ -306,6 +306,8 @@ static void UpdateWeapon(byte8 * baseAddr)
 	{
 		UpdateExpertise(baseAddr);
 	}
+
+	LogFunctionEnd();
 }
 
 void System_Weapon_Init()
@@ -382,8 +384,8 @@ void System_Weapon_Init()
 	{
 		byte sect0[] =
 		{
-			0x8B, 0x87, 0x1C, 0x01, 0x00, 0x00, //mov eax,[rdi+0000011C]
-			0x85, 0xC0,                         //test eax,eax
+			0x8A, 0x87, 0x18, 0x01, 0x00, 0x00, //mov al,[rdi+00000118]
+			0x84, 0xC0,                         //test al,al
 			0x75, 0x05,                         //jne short
 			0xE9, 0x00, 0x00, 0x00, 0x00,       //jmp dmc3.exe+280120
 		};
@@ -395,8 +397,8 @@ void System_Weapon_Init()
 	{
 		byte sect0[] =
 		{
-			0x8B, 0x83, 0x1C, 0x01, 0x00, 0x00, //mov eax,[rbx+0000011C]
-			0x85, 0xC0,                         //test eax,eax
+			0x8A, 0x83, 0x18, 0x01, 0x00, 0x00, //mov al,[rbx+00000118]
+			0x84, 0xC0,                         //test al,al
 			0x75, 0x05,                         //jne short
 			0xE9, 0x00, 0x00, 0x00, 0x00,       //jmp dmc3.exe+280160
 		};
@@ -427,7 +429,7 @@ void System_Weapon_ToggleDoppelgangerFixes(bool enable)
 	System_Weapon_enableDoppelgangerFixes = enable;
 	if (enable)
 	{
-		// Add Doppelganger check to weapon cycle functions.
+		// Add actor id check to weapon cycle functions.
 		WriteCall((appBaseAddr + 0x1EA9D4), CycleDante ); // Melee
 		WriteCall((appBaseAddr + 0x1EAAC1), CycleDante ); // Ranged
 		WriteCall((appBaseAddr + 0x1E6EF3), CycleVergil); // Forward

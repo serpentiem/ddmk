@@ -61,11 +61,8 @@ static void CreateActors()
 	else
 	{
 		uint8 & characterActorOne = *(uint8 *)(actorBaseAddr[ACTOR_ONE] + 0x78);
-		if (Config.Game.StyleSwitcher.enable || (characterActorOne == CHAR_DANTE))
-		{
-			uint8 character = (Config.Game.Doppelganger.enable) ? Config.Game.Doppelganger.character : characterActorOne;
-			InternalCreateActor(character, ACTOR_TWO, false);
-		}
+		uint8 character = (Config.Game.Doppelganger.enable) ? Config.Game.Doppelganger.character : characterActorOne;
+		InternalCreateActor(character, ACTOR_TWO, false);
 	}
 }
 
@@ -259,6 +256,19 @@ static void UpdateActor(byte8 * baseAddr)
 
 	UpdateBaseAddress(baseAddr);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 	LogFunctionEnd();
 }
 
@@ -426,6 +436,27 @@ void UpdateDevilModel(uint8 model)
 	Write<uint8>((appBaseAddr + 0x1F943B), model);
 }
 
+bool ApplyShading(byte8 * baseAddr, uint8 shade)
+{
+
+	return false;
+
+	uint8 & character = *(uint8 *)(baseAddr + 0x78);
+	if (Config.Game.Multiplayer.enable)
+	{
+		return false;
+	}
+	if (baseAddr == actorBaseAddr[ACTOR_ONE])
+	{
+		return false;
+	}
+	if (character == CHAR_BOB)
+	{
+		return false;
+	}
+	return true;
+}
+
 void System_Actor_Init()
 {
 	LogFunction();
@@ -555,6 +586,24 @@ void System_Actor_Init()
 		FUNC func = CreateFunction(UpdateMotion, (appBaseAddr + 0x1DF2CA), true, true, 0, sizeof(sect1));
 		memcpy(func.sect1, sect1, sizeof(sect1));
 		WriteJump((UpdateActorProxy + 0x52), func.addr);
+	}
+	{
+		byte8 sect0[] =
+		{
+			0x50, //push rax
+		};
+		byte8 sect2[] =
+		{
+			0x84, 0xC0,                   //test al,al
+			0x74, 0x05,                   //je short
+			0xBA, 0x06, 0x00, 0x00, 0x00, //mov edx,00000006
+			0x58,                         //pop rax
+			0x48, 0x89, 0x5C, 0x24, 0x18, //mov [rsp+18],rbx
+		};
+		FUNC func = CreateFunction(ApplyShading, (appBaseAddr + 0x1FCB15), true, false, sizeof(sect0), 0, sizeof(sect2));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		//WriteJump((appBaseAddr + 0x1FCB10), func.addr);
 	}
 }
 

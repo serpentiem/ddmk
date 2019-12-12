@@ -149,6 +149,7 @@ bool GUI_Combo(const char * label, const char ** items, T count, T & var, T pos 
 }
 bool GUI_Button(const char * label, const ImVec2 & size = ImVec2());
 bool GUI_ColorEdit4(const char * label, float32 * var, bool save = true);
+bool GUI_ColorEdit4(float32 * var, bool save = true);
 
 #define GUI_PUSH_DISABLE(condition)                                           \
 if (condition)                                                                \

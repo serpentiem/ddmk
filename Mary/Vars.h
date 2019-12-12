@@ -580,6 +580,11 @@ enum FILE_ITEM_STATUS_
 	FILE_ITEM_READY = 3,
 };
 
+constexpr uint64 fileItemSize = sizeof(FILE_ITEM);
+
+
+
+
 //
 //
 //
