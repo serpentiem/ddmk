@@ -7,7 +7,5 @@
 #include "../System/Actor.h"
 #include "../System/Weapon.h"
 
-#include "Dante.h"
-
 void Game_WeaponSwitcher_Init();
 void Game_WeaponSwitcher_Toggle(bool enable);

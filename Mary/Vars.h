@@ -554,7 +554,8 @@ enum WEAPON_COUNT_
 
 
 
-//dmc3.exe+5B0868 string item start
+
+
 
 
 struct STRING_ITEM
@@ -580,68 +581,20 @@ enum FILE_ITEM_STATUS_
 	FILE_ITEM_READY = 3,
 };
 
-constexpr uint64 fileItemSize = sizeof(FILE_ITEM);
 
 
 
 
-//
-//
-//
-//
-//
-//
-//
-//
-//template <typename T1, typename T2, typename T3>
-//struct vector3
-//{
-//	T1 x;
-//	T2 y;
-//	T3 z;
-//};
-//
-//
-//
 
-//
-//
-//
-//
-//struct FILE_DATABASE_ITEM_AUX
-//{
-//	FILE_DATABASE_ITEM * item;
-//	STRING_ITEM * stringItem;
-//	byte8 * file;
-//	FILE_DATABASE_ITEM_AUX()
-//	{
-//		memset(this, 0, sizeof(*this));
-//	}
-//
-//	//FILE_DATABASE_ITEM_AUX
-//	//(
-//	//	vector3<byte8 *, byte8 *, byte8 *> var
-//	//)
-//	//{
-//	//	item = (FILE_DATABASE_ITEM *)var.x;
-//	//	stringItem = (STRING_ITEM *)var.y;
-//	//	file = var.z;
-//	//}
-//
-//
-//
-//	FILE_DATABASE_ITEM_AUX
-//	(
-//		byte8 * _item,
-//		byte8 * _stringItem,
-//		byte8 * _file
-//	)
-//	{
-//		item = (FILE_DATABASE_ITEM *)_item;
-//		stringItem = (STRING_ITEM *)_stringItem;
-//		file = _file;
-//	}
-//};
+
+
+
+
+
+
+
+
+
 
 
 

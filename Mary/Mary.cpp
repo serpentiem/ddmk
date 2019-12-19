@@ -41,7 +41,7 @@
 #include "Cosmetics/Dante.h"
 #include "Cosmetics/Other.h"
 #include "Cosmetics/Vergil.h"
-#include "Cosmetics/Weapon.h"
+//#include "Cosmetics/Weapon.h"
 
 const char * Log_directory = "logs";
 const char * Log_file      = "Mary.txt";
@@ -137,6 +137,7 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 		System_Weapon_ToggleUpdateWeapon(true);
 		System_Weapon_ToggleDoppelgangerFixes(true);
+		System_Weapon_ToggleModelFixes(true);
 
 
 
@@ -185,8 +186,8 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 		////Game_Dante_Artemis_ToggleInstant(Config.Game.Dante.Artemis.instant);
 		////Game_Dante_AirHike_ToggleCoreAbility(Config.Game.Dante.AirHike.coreAbility);
 		////Game_Dante_CrazyCombo_SetLevelMultiplier(Config.Game.Dante.CrazyCombo.levelMultiplier);
-		//Game_Dante_WeaponSwitchTimeout_MeleeToggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
-		//Game_Dante_WeaponSwitchTimeout_RangedToggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
+		//Game_Dante_WeaponSwitchTimeout_Melee_Toggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
+		//Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
 		////Game_Mobility_Init();
 		////Game_Mobility_Toggle(Config.Game.Mobility.enable);
 		////Game_Other_Init();
@@ -232,8 +233,8 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 		Cosmetics_Other_Init();
 		Cosmetics_Other_ToggleNoDevilForm(Config.Cosmetics.Other.noDevilForm);
 		Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.hideBeowulf);
-		Cosmetics_Weapon_Init();
-		Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
+		//Cosmetics_Weapon_Init();
+		//Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
 
 		//Write<word>((appBaseAddr + 0x88517), 0xF390); // Hit Points Sub Full
 		//Write<byte>((appBaseAddr + 0x1AA791), 0xEB);  // Skip Orb Notifications

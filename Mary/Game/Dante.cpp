@@ -1,7 +1,5 @@
 #include "Dante.h"
 
-UpdateExpertise_t UpdateExpertise = 0;
-
 byte * RainStorm      = 0;
 byte * Melee_Timeout  = 0;
 byte * Ranged_Timeout = 0;
@@ -11,18 +9,6 @@ bool Game_Dante_Rebellion_quickDrive = false;
 void Game_Dante_Init()
 {
 	LogFunction();
-
-	//g_proc.pos = 64;
-
-	//Log("g_proc addr %llX", &g_proc);
-
-
-
-
-	{
-		FUNC func = CreateFunction((appBaseAddr + 0x212A90), 0);
-		UpdateExpertise = (UpdateExpertise_t)func.addr;
-	}
 	{
 		byte sect0[] =
 		{
@@ -201,7 +187,7 @@ void Game_Dante_CrazyCombo_SetLevelMultiplier(uint8 multiplier)
 	Write<uint8>((appBaseAddr + 0x589A5E), multiplier);
 }
 
-void Game_Dante_WeaponSwitchTimeout_MeleeToggle(float32 var)
+void Game_Dante_WeaponSwitchTimeout_Melee_Toggle(float32 var)
 {
 	Log("%s %.0f", FUNC_NAME, var);
 	if (var != 12)
@@ -218,7 +204,7 @@ void Game_Dante_WeaponSwitchTimeout_MeleeToggle(float32 var)
 	}
 }
 
-void Game_Dante_WeaponSwitchTimeout_RangedToggle(float32 var)
+void Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(float32 var)
 {
 	Log("%s %.0f", FUNC_NAME, var);
 	if (var != 12)

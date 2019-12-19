@@ -62,7 +62,25 @@ struct VARS
 static void Actor_StageLoadComplete()
 {
 
-	HoboBreak();
+	return;
+
+
+	auto & baseAddr = actorBaseAddr[ACTOR_TWO];
+
+	
+	if (!baseAddr)
+	{
+		return;
+	}
+
+	ApplyColor(baseAddr, 6, 0);
+
+	return;
+
+
+
+
+	//HoboBreak();
 
 	if (Config.Game.Multiplayer.enable)
 	{
@@ -830,8 +848,8 @@ static void StageLoadComplete()
 static void DevilForm_Activate(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
-	uint8 actor = GetActorId(baseAddr);
-	bool doppelganger = *(bool *)(baseAddr + 0x6362);
+	auto actor = GetActorId(baseAddr);
+	auto & doppelganger = *(bool *)(baseAddr + 0x6362);
 	if (actor != ACTOR_ONE)
 	{
 		return;
@@ -846,8 +864,8 @@ static void DevilForm_Activate(byte8 * baseAddr)
 static void DevilForm_Deactivate(byte * baseAddr)
 {
 	LogFunction(baseAddr);
-	uint8 actor = GetActorId(baseAddr);
-	bool doppelganger = *(bool *)(baseAddr + 0x6362);
+	auto actor = GetActorId(baseAddr);
+	auto & doppelganger = *(bool *)(baseAddr + 0x6362);
 	if (actor != ACTOR_ONE)
 	{
 		return;

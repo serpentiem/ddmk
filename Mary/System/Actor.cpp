@@ -5,8 +5,7 @@ bool System_Actor_enableCreateActor       = false;
 bool System_Actor_enableUpdateActor       = false;
 bool System_Actor_enableDoppelgangerFixes = false;
 
-byte * actorBaseAddr[MAX_ACTOR] = {};
-bool updateModelAttributes[MAX_ACTOR] = {};
+byte8 * actorBaseAddr[MAX_ACTOR] = {};
 
 typedef byte8 *(* InternalCreateActor_t)(uint8 character, uint8 actor, bool isDoppelganger);
 
@@ -19,6 +18,8 @@ byte * OnUpdate[2] = {};
 
 byte8 * CreateActorOneProxy = 0;
 byte8 * UpdateActorProxy    = 0;
+
+ApplyColor_t ApplyColor = 0;
 
 uint8 GetActorId(byte * baseAddr)
 {
@@ -95,7 +96,7 @@ struct FileItemHelper
 	};
 };
 
-static FileItemHelper fileItemHelperDante[] =
+FileItemHelper fileItemHelperDante[] =
 {
 	{ 0  , 0 , pl000 },
 	{ 200, 13, pl005 },
@@ -106,18 +107,18 @@ static FileItemHelper fileItemHelperDante[] =
 	{ 205, 18, pl017 },
 };
 
-static FileItemHelper fileItemHelperBob[] =
+FileItemHelper fileItemHelperBob[] =
 {
 	{ 1  , 6 , pl001 },
 	{ 207, 19, pl010 },
 };
 
-static FileItemHelper fileItemHelperLady[] =
+FileItemHelper fileItemHelperLady[] =
 {
 	{ 2, 7, pl002 },
 };
 
-static FileItemHelper fileItemHelperVergil[] =
+FileItemHelper fileItemHelperVergil[] =
 {
 	{ 3  , 8 , pl021 },
 	{ 221, 21, pl010 },
@@ -125,7 +126,7 @@ static FileItemHelper fileItemHelperVergil[] =
 	{ 223, 23, pl025 },
 };
 
-static FileItemHelper * fileItemHelper[] =
+FileItemHelper * fileItemHelper[] =
 {
 	fileItemHelperDante,
 	fileItemHelperBob,
@@ -133,7 +134,7 @@ static FileItemHelper * fileItemHelper[] =
 	fileItemHelperVergil,
 };
 
-static uint8 fileItemHelperCount[] =
+uint8 fileItemHelperCount[] =
 {
 	countof(fileItemHelperDante),
 	countof(fileItemHelperBob),
@@ -436,26 +437,71 @@ void UpdateDevilModel(uint8 model)
 	Write<uint8>((appBaseAddr + 0x1F943B), model);
 }
 
-bool ApplyShading(byte8 * baseAddr, uint8 shade)
+//bool ApplyShading(byte8 * baseAddr, uint8 shade)
+//{
+//
+//	return false;
+//
+//	uint8 & character = *(uint8 *)(baseAddr + 0x78);
+//	if (Config.Game.Multiplayer.enable)
+//	{
+//		return false;
+//	}
+//	if (baseAddr == actorBaseAddr[ACTOR_ONE])
+//	{
+//		return false;
+//	}
+//	if (character == CHAR_BOB)
+//	{
+//		return false;
+//	}
+//	return true;
+//}
+
+
+
+void UpdateActorAttributes(byte8 * baseAddr)
 {
-
-	return false;
-
-	uint8 & character = *(uint8 *)(baseAddr + 0x78);
+	LogFunction(baseAddr);
+	auto & character      = *(uint8  *)(baseAddr + 0x78  );
+	auto & isDoppelganger = *(uint32 *)(baseAddr + 0x11C );
+	auto & visible        = *(uint32 *)(baseAddr + 0x120 );
+	auto & shadow         = *(uint32 *)(baseAddr + 0x3A18);
 	if (Config.Game.Multiplayer.enable)
 	{
-		return false;
+		return;
 	}
 	if (baseAddr == actorBaseAddr[ACTOR_ONE])
 	{
-		return false;
+		return;
 	}
 	if (character == CHAR_BOB)
 	{
-		return false;
+		return;
 	}
-	return true;
+
+	ApplyColor(baseAddr, 6, 0);
+
+	
+
+
+
+	isDoppelganger = 1;
+	visible = 0;
+	shadow = 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 void System_Actor_Init()
 {
@@ -587,24 +633,57 @@ void System_Actor_Init()
 		memcpy(func.sect1, sect1, sizeof(sect1));
 		WriteJump((UpdateActorProxy + 0x52), func.addr);
 	}
+
+
+
+
+
+
 	{
-		byte8 sect0[] =
+		FUNC func = CreateFunction((appBaseAddr + 0x1FCB10));
+		ApplyColor = (ApplyColor_t)func.addr;
+	}
+
+
+	{
+		byte8 sect1[] =
 		{
-			0x50, //push rax
+			0x48, 0x8B, 0xCB, //mov rcx,rbx
 		};
 		byte8 sect2[] =
 		{
-			0x84, 0xC0,                   //test al,al
-			0x74, 0x05,                   //je short
-			0xBA, 0x06, 0x00, 0x00, 0x00, //mov edx,00000006
-			0x58,                         //pop rax
-			0x48, 0x89, 0x5C, 0x24, 0x18, //mov [rsp+18],rbx
+			0x48, 0x8B, 0x5C, 0x24, 0x58, //mov rbx,[rsp+58]
 		};
-		FUNC func = CreateFunction(ApplyShading, (appBaseAddr + 0x1FCB15), true, false, sizeof(sect0), 0, sizeof(sect2));
-		memcpy(func.sect0, sect0, sizeof(sect0));
+		FUNC func = CreateFunction(UpdateActorAttributes, (appBaseAddr + 0x1F7D8C), true, true, 0, sizeof(sect1), sizeof(sect2));
+		memcpy(func.sect1, sect1, sizeof(sect1));
 		memcpy(func.sect2, sect2, sizeof(sect2));
-		//WriteJump((appBaseAddr + 0x1FCB10), func.addr);
+		WriteJump((appBaseAddr + 0x1F7D87), func.addr);
+		//dmc3.exe+1F7D87 - 48 8B 5C 24 58        - mov rbx,[rsp+58]
+		//dmc3.exe+1F7D8C - 48 83 C4 40           - add rsp,40
 	}
+
+
+
+
+
+	//{
+		//byte8 sect0[] =
+		//{
+		//	0x50, //push rax
+		//};
+		//byte8 sect2[] =
+		//{
+		//	0x84, 0xC0,                   //test al,al
+		//	0x74, 0x05,                   //je short
+		//	0xBA, 0x06, 0x00, 0x00, 0x00, //mov edx,00000006
+		//	0x58,                         //pop rax
+		//	0x48, 0x89, 0x5C, 0x24, 0x18, //mov [rsp+18],rbx
+		//};
+		//FUNC func = CreateFunction(ApplyShading, (appBaseAddr + 0x1FCB15), true, false, sizeof(sect0), 0, sizeof(sect2));
+		//memcpy(func.sect0, sect0, sizeof(sect0));
+		//memcpy(func.sect2, sect2, sizeof(sect2));
+		//WriteJump((appBaseAddr + 0x1FCB10), func.addr);
+	//}
 }
 
 void System_Actor_ToggleArrayExtension(bool enable)
@@ -708,6 +787,8 @@ void System_Actor_ToggleDoppelgangerFixes(bool enable)
 			vp_memcpy(addr, buffer, sizeof(buffer));
 		}
 		Write<byte16>((appBaseAddr + 0x2134A3), 0xE990); // Skip clone creation.
+		Write<byte8>((appBaseAddr + 0x1F92E0), 0x00); // Devil Form: Disable Doppelganger check.
+		Write<byte8>((appBaseAddr + 0x1F92F8), 0xEB); // Devil Form: Disable isDoppelganger check.
 	}
 	else
 	{
@@ -726,5 +807,7 @@ void System_Actor_ToggleDoppelgangerFixes(bool enable)
 			vp_memcpy((appBaseAddr + 0x1F78B0), buffer, sizeof(buffer));
 		}
 		Write<byte16>((appBaseAddr + 0x2134A3), 0x840F);
+		Write<byte8>((appBaseAddr + 0x1F92E0), 0x0D);
+		Write<byte8>((appBaseAddr + 0x1F92F8), 0x75);
 	}
 }

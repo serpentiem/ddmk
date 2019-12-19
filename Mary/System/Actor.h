@@ -11,8 +11,7 @@ extern bool System_Actor_enableCreateActor;
 extern bool System_Actor_enableUpdateActor;
 extern bool System_Actor_enableDoppelgangerFixes;
 
-extern byte * actorBaseAddr[MAX_ACTOR];
-extern bool updateModelAttributes[MAX_ACTOR];
+extern byte8 * actorBaseAddr[MAX_ACTOR];
 
 typedef void(* UpdateDevilForm_t)(byte *       );
 typedef void(* UpdateFlux_t     )(byte *, uint8);
@@ -21,6 +20,20 @@ typedef void(* Relax_t          )(byte *       );
 extern UpdateDevilForm_t UpdateDevilForm;
 extern UpdateFlux_t      UpdateFlux;
 extern Relax_t           Relax;
+
+
+
+// @Todo: Put into Color.
+
+typedef void(* ApplyColor_t)(byte8 * baseAddr, uint32 preset, byte32 customColor);
+
+extern ApplyColor_t ApplyColor;
+
+
+
+
+
+
 
 uint8 GetActorId(byte * baseAddr);
 uint8 GetActorCount();

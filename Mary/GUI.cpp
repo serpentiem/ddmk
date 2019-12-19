@@ -230,8 +230,8 @@ void GUI_Game_Dante()
 				Game_Dante_Artemis_ToggleInstant(Config.Game.Dante.Artemis.instant);
 				Game_Dante_AirHike_ToggleCoreAbility(Config.Game.Dante.AirHike.coreAbility);
 				Game_Dante_CrazyCombo_SetLevelMultiplier(Config.Game.Dante.CrazyCombo.levelMultiplier);
-				Game_Dante_WeaponSwitchTimeout_MeleeToggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
-				Game_Dante_WeaponSwitchTimeout_RangedToggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
+				Game_Dante_WeaponSwitchTimeout_Melee_Toggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
+				Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
 			}
 			else
 			{
@@ -242,8 +242,8 @@ void GUI_Game_Dante()
 				Game_Dante_Artemis_ToggleInstant(DefaultConfig.Game.Dante.Artemis.instant);
 				Game_Dante_AirHike_ToggleCoreAbility(DefaultConfig.Game.Dante.AirHike.coreAbility);
 				Game_Dante_CrazyCombo_SetLevelMultiplier(DefaultConfig.Game.Dante.CrazyCombo.levelMultiplier);
-				Game_Dante_WeaponSwitchTimeout_MeleeToggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.melee);
-				Game_Dante_WeaponSwitchTimeout_RangedToggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.ranged);
+				Game_Dante_WeaponSwitchTimeout_Melee_Toggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.melee);
+				Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.ranged);
 			}
 		}
 	}
@@ -309,11 +309,11 @@ void GUI_Game_Dante()
 	ImGui::Text(Locale.Game.Dante.WeaponSwitchTimeout.header);
 	if (GUI_InputEx<float32>(Locale.Game.Dante.WeaponSwitchTimeout.melee, Config.Game.Dante.WeaponSwitchTimeout.melee))
 	{
-		Game_Dante_WeaponSwitchTimeout_MeleeToggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
+		Game_Dante_WeaponSwitchTimeout_Melee_Toggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
 	}
 	if (GUI_InputEx<float32>(Locale.Game.Dante.WeaponSwitchTimeout.ranged, Config.Game.Dante.WeaponSwitchTimeout.ranged))
 	{
-		Game_Dante_WeaponSwitchTimeout_RangedToggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
+		Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
 	}
 	ImGui::PopItemWidth();
 	GUI_POP_DISABLE(!Config.Game.Dante.enable);
@@ -331,8 +331,8 @@ void GUI_Game_Dante()
 		Game_Dante_Artemis_ToggleInstant(DefaultConfig.Game.Dante.Artemis.instant);
 		Game_Dante_AirHike_ToggleCoreAbility(DefaultConfig.Game.Dante.AirHike.coreAbility);
 		Game_Dante_CrazyCombo_SetLevelMultiplier(DefaultConfig.Game.Dante.CrazyCombo.levelMultiplier);
-		Game_Dante_WeaponSwitchTimeout_MeleeToggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.melee);
-		Game_Dante_WeaponSwitchTimeout_RangedToggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.ranged);
+		Game_Dante_WeaponSwitchTimeout_Melee_Toggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.melee);
+		Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.ranged);
 	}
 	GUI_POP_DISABLE(ActorAvailable());
 }
@@ -948,7 +948,7 @@ void GUI_Game_WeaponSwitcher()
 			{
 				Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
 			}
-			Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
+			//Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
 		}
 	}
 	GUI_POP_DISABLE(ActorAvailable());
@@ -1101,6 +1101,64 @@ struct vector3
 
 void GUI_Cosmetics_Color()
 {
+
+	// 0 flash greyish white fast
+	// 1 flash light red fast
+	// 2 flash turquoise fast
+	// 3 flash custom color long
+	// 4 flash custom color medium
+	// 5 flash custom color fast
+	// 6 apply doppelganger color
+	// 7 reset color
+
+
+
+	/*
+
+
+
+
+
+	*/
+
+
+
+
+
+
+
+	static uint32 preset     [2] = {};
+	static byte32 customColor[2] = {};
+	static const char * label[2] =
+	{
+		"Actor 1",
+		"Actor 2",
+	};
+	for (uint8 actor = 0; actor < 2; actor++)
+	{
+		auto & baseAddr = actorBaseAddr[actor];
+		if (!baseAddr)
+		{
+			continue;
+		}
+		GUI_InputEx<uint32>("Preset", preset[actor], 1, true, false);
+		GUI_Input<byte32>("Custom Color", customColor[actor], true);
+		if (GUI_Button(label[actor]))
+		{
+			ApplyColor(baseAddr, preset[actor], customColor[actor]);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
 	GUI_Hyperlink(Locale.Cosmetics.Color.header);
 	ImGui::Text("");
 	if (GUI_Checkbox(Locale.Cosmetics.Color.enable, Config.Cosmetics.Color_enable))
@@ -1242,7 +1300,7 @@ void GUI_Cosmetics_Weapon()
 	ImGui::Text("");
 	if (GUI_Checkbox(Locale.Cosmetics.Weapon.instantModelUpdate, Config.Cosmetics.Weapon.instantModelUpdate))
 	{
-		Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
+		//Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
 	}
 }
 

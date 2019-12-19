@@ -7,11 +7,11 @@
 #include "../System/Actor.h"
 #include "../System/State.h"
 
-typedef void(* ApplyDefaultModelAttributes_t)(byte *);
-typedef void(* ApplyBeowulfModelAttributes_t)(byte *);
+typedef void(* Cosmetics_Dante_ApplyDefaultModelAttributes_t)(byte8 * baseAddr);
+typedef void(* Cosmetics_Dante_ApplyBeowulfModelAttributes_t)(byte8 * baseAddr);
 
-extern ApplyDefaultModelAttributes_t ApplyDefaultModelAttributes;
-extern ApplyBeowulfModelAttributes_t ApplyBeowulfModelAttributes;
+extern Cosmetics_Dante_ApplyDefaultModelAttributes_t Cosmetics_Dante_ApplyDefaultModelAttributes;
+extern Cosmetics_Dante_ApplyBeowulfModelAttributes_t Cosmetics_Dante_ApplyBeowulfModelAttributes;
 
 void Cosmetics_Dante_Init();
 void Cosmetics_Dante_Beowulf_LiveUpdate();

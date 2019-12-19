@@ -55,7 +55,7 @@ static void Melee_UpdateWeapon(byte * baseAddr)
 	equipment[selectedWeapon] = weapon;
 	uint8 actor = GetActorId(baseAddr);
 	byte ** metadata = (byte **)(baseAddr + 0x64A0);
-	metadata[selectedWeapon] = weaponMetadata[actor][weapon];
+	metadata[selectedWeapon] = System_Weapon_weaponMetadata[actor][weapon];
 	uint32 * flags = (uint32 *)(baseAddr + 0x64C8);
 	if (flags[selectedWeapon])
 	{
@@ -63,8 +63,8 @@ static void Melee_UpdateWeapon(byte * baseAddr)
 	}
 	uint8 & model = *(uint8 *)(baseAddr + 0x64F0);
 	model = weapon;
-	UpdateExpertise(baseAddr);
-	updateModelAttributes[actor] = true;
+	System_Weapon_Dante_UpdateExpertise(baseAddr);
+	//updateModelAttributes[actor] = true;
 	Melee_UpdateIcon();
 	PlayCycleAnimation(WEAPON_ICON_SIDE_RIGHT, 0);
 }
@@ -112,12 +112,17 @@ static void Ranged_UpdateWeapon(byte * baseAddr)
 	equipment[selectedWeapon] = weapon;
 	uint8 actor = GetActorId(baseAddr);
 	byte ** metadata = (byte **)(baseAddr + 0x64B0);
-	metadata[selectedWeapon] = weaponMetadata[actor][weapon];
+	metadata[selectedWeapon] = System_Weapon_weaponMetadata[actor][weapon];
 	selectedWeapon += 2;
 	uint8 & model = *(uint8 *)(baseAddr + 0x64F1);
 	model = weapon;
-	UpdateExpertise(baseAddr);
-	System_Weapon_Ranged_UpdateLevels(baseAddr);
+	System_Weapon_Dante_Ranged_UpdateLevels(baseAddr);
+	System_Weapon_Dante_UpdateExpertise(baseAddr);
+
+	
+
+
+	
 	Ranged_UpdateIcon();
 	PlayCycleAnimation(WEAPON_ICON_SIDE_LEFT, 0);
 }

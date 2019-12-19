@@ -1,67 +1,10 @@
 #include "Color.h"
 
-ApplyColor_t ApplyColor = 0;
-
 byte * AirHike = 0;
 
 void Cosmetics_Color_Init()
 {
 	LogFunction();
-	{
-		byte sect1[] =
-		{
-			0x48, 0x83, 0xEC, 0x50,                                     //sub rsp,50
-			0x0F, 0x29, 0x74, 0x24, 0x30,                               //movaps [rsp+30],xmm6
-			0x48, 0x8B, 0xF1,                                           //mov rsi,rcx
-			0x8B, 0xFA,                                                 //mov edi,edx
-			0x4C, 0x8D, 0xA6, 0x00, 0x02, 0x00, 0x00,                   //lea r12,[rsi+00000200]
-			0xF3, 0x0F, 0x10, 0x35, 0x00, 0x00, 0x00, 0x00,             //movss xmm6,[dmc3.exe+35D56C]
-			0xC7, 0x86, 0x24, 0x3A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov [rsi+00003A24],00000000
-			0x89, 0xBE, 0x28, 0x3A, 0x00, 0x00,                         //mov [rsi+00003A28],edi
-			0xBB, 0x03, 0x00, 0x00, 0x00,                               //mov ebx,00000003
-			0x49, 0x8B, 0xCC,                                           //mov rcx,r12
-			0x49, 0x8B, 0x04, 0x24,                                     //mov rax,[r12]
-			0xFF, 0x50, 0x20,                                           //call qword ptr [rax+20]
-			0x3C, 0x01,                                                 //cmp al,01
-			0x75, 0x29,                                                 //jne short
-			0x49, 0x8B, 0xCC,                                           //mov rcx,r12
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+89DE0
-			0x48, 0x8B, 0xC8,                                           //mov rcx,rax
-			0x8B, 0x96, 0x28, 0x3A, 0x00, 0x00,                         //mov edx,[rsi+00003A28]
-			0x0F, 0x28, 0xD6,                                           //movaps xmm2,xmm6
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+2F6730
-			0x49, 0x8B, 0xCC,                                           //mov rcx,r12
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+89DE0
-			0x48, 0x8B, 0xC8,                                           //mov rcx,rax
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+2F6DA0
-			0x49, 0x81, 0xC4, 0x80, 0x07, 0x00, 0x00,                   //add r12,00000780
-			0x83, 0xEB, 0x01,                                           //sub ebx,01
-			0x75, 0xBD,                                                 //jne short
-			0x48, 0x8B, 0xCE,                                           //mov rcx,rsi
-			0x31, 0xD2,                                                 //xor edx,edx
-			0x48, 0x8B, 0x06,                                           //mov rax,[rsi]
-			0xFF, 0x50, 0x58,                                           //call qword ptr [rax+58]
-			0x31, 0xDB,                                                 //xor ebx,ebx
-			0x48, 0x8B, 0x8C, 0xDE, 0xA0, 0x64, 0x00, 0x00,             //mov rcx,[rsi+rbx*8+000064A0]
-			0x48, 0x85, 0xC9,                                           //test rcx,rcx
-			0x74, 0x08,                                                 //je short
-			0x31, 0xD2,                                                 //xor edx,edx
-			0x48, 0x8B, 0x01,                                           //mov rax,[rcx]
-			0xFF, 0x50, 0x58,                                           //call qword ptr [rax+58]
-			0x83, 0xC3, 0x01,                                           //add ebx,01
-			0x83, 0xFB, 0x04,                                           //cmp ebx,04
-			0x72, 0xE3,                                                 //jb short
-			0x0F, 0x28, 0x74, 0x24, 0x30,                               //movaps xmm6,[rsp+30]
-		};
-		FUNC func = CreateFunction(0, 0, true, true, 0, sizeof(sect1));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteAddress((func.sect1 + 0x15), (appBaseAddr + 0x35D56C), 8);
-		WriteCall((func.sect1 + 0x43), (appBaseAddr + 0x89DE0));
-		WriteCall((func.sect1 + 0x54), (appBaseAddr + 0x2F6730));
-		WriteCall((func.sect1 + 0x5C), (appBaseAddr + 0x89DE0));
-		WriteCall((func.sect1 + 0x64), (appBaseAddr + 0x2F6DA0));
-		ApplyColor = (ApplyColor_t)func.addr;
-	}
 	{
 		byte sect0[] =
 		{

@@ -29,3 +29,6 @@ T Reverse(T * var)
 	}
 	return value;
 }
+
+#define PrivateStart namespace {
+#define PrivateEnd }

@@ -38,7 +38,7 @@
 #include "Cosmetics/Dante.h"
 #include "Cosmetics/Other.h"
 #include "Cosmetics/Vergil.h"
-#include "Cosmetics/Weapon.h"
+//#include "Cosmetics/Weapon.h"
 
 void GUI_Render();
 void GUI_Init();

@@ -1,7 +1,7 @@
 #include "Dante.h"
 
-ApplyDefaultModelAttributes_t ApplyDefaultModelAttributes = 0;
-ApplyBeowulfModelAttributes_t ApplyBeowulfModelAttributes = 0;
+Cosmetics_Dante_ApplyDefaultModelAttributes_t Cosmetics_Dante_ApplyDefaultModelAttributes = 0;
+Cosmetics_Dante_ApplyBeowulfModelAttributes_t Cosmetics_Dante_ApplyBeowulfModelAttributes = 0;
 
 void Cosmetics_Dante_Init()
 {
@@ -41,7 +41,7 @@ void Cosmetics_Dante_Init()
 		WriteCall((func.sect1 + 0x49), (appBaseAddr + 0x2F7350));
 		WriteCall((func.sect1 + 0x55), (appBaseAddr + 0x89DE0));
 		WriteCall((func.sect1 + 0x62), (appBaseAddr + 0x2F74E0));
-		ApplyDefaultModelAttributes = (ApplyDefaultModelAttributes_t)func.addr;
+		Cosmetics_Dante_ApplyDefaultModelAttributes = (Cosmetics_Dante_ApplyDefaultModelAttributes_t)func.addr;
 	}
 	{
 		byte sect1[] =
@@ -78,93 +78,99 @@ void Cosmetics_Dante_Init()
 		WriteCall((func.sect1 + 0x49), (appBaseAddr + 0x2F74E0));
 		WriteCall((func.sect1 + 0x55), (appBaseAddr + 0x89DE0));
 		WriteCall((func.sect1 + 0x62), (appBaseAddr + 0x2F7350));
-		ApplyBeowulfModelAttributes = (ApplyBeowulfModelAttributes_t)func.addr;
+		Cosmetics_Dante_ApplyBeowulfModelAttributes = (Cosmetics_Dante_ApplyBeowulfModelAttributes_t)func.addr;
 	}
 }
+
+
+
+
+// Ugh.
+// @Todo: Update.
 
 void Cosmetics_Dante_Beowulf_LiveUpdate()
 {
 	LogFunction();
-	if (Config.Cosmetics.Dante.hideBeowulf)
-	{
-		if (ActorAvailable())
-		{
-			if (!System_Actor_enableArrayExtension)
-			{
-				byte * baseAddr = *(byte **)(appBaseAddr + 0xC90E28);
-				baseAddr = *(byte **)(baseAddr + 0x18);
-				uint8 character = *(uint8 *)(baseAddr + 0x78);
-				if (character == CHAR_DANTE)
-				{
-					ApplyDefaultModelAttributes(baseAddr);
-				}
-			}
-			else
-			{
-				for (uint8 actor = 0; actor < GetActorCount(); actor++)
-				{
-					uint8 character = *(uint8 *)(actorBaseAddr[actor] + 0x78);
-					if (character == CHAR_DANTE)
-					{
-						ApplyDefaultModelAttributes(actorBaseAddr[actor]);
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		if (ActorAvailable())
-		{
-			if (!System_Actor_enableArrayExtension)
-			{
-				byte * baseAddr = *(byte **)(appBaseAddr + 0xC90E28);
-				baseAddr = *(byte **)(baseAddr + 0x18);
-				uint8 character = *(uint8 *)(baseAddr + 0x78);
-				if (character == CHAR_DANTE)
-				{
-					uint8 * equipment = (uint8 *)(baseAddr + 0x6498);
-					for (uint8 slot = 0; slot < 2; slot++)
-					{
-						if (equipment[slot] == WEAPON_BEOWULF)
-						{
-							ApplyBeowulfModelAttributes(baseAddr);
-						}
-					}
-				}
-			}
-			else
-			{
-				for (uint8 actor = 0; actor < GetActorCount(); actor++)
-				{
-					uint8 character = *(uint8 *)(actorBaseAddr[actor] + 0x78);
-					if (character == CHAR_DANTE)
-					{
-						if (!Config.Game.WeaponSwitcher.enable)
-						{
-							uint8 * equipment = (uint8 *)(actorBaseAddr[actor] + 0x6498);
-							for (uint8 slot = 0; slot < 2; slot++)
-							{
-								if (equipment[slot] == WEAPON_BEOWULF)
-								{
-									ApplyBeowulfModelAttributes(actorBaseAddr[actor]);
-								}
-							}
-						}
-						else
-						{
-							uint8 selectedWeapon = *(uint8 *)(actorBaseAddr[actor] + 0x6490);
-							uint8 * equipment = (uint8 *)(actorBaseAddr[actor] + 0x6498);
-							if (equipment[selectedWeapon] == WEAPON_BEOWULF)
-							{
-								ApplyBeowulfModelAttributes(actorBaseAddr[actor]);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+	//if (Config.Cosmetics.Dante.hideBeowulf)
+	//{
+	//	if (ActorAvailable())
+	//	{
+	//		if (!System_Actor_enableArrayExtension)
+	//		{
+	//			byte * baseAddr = *(byte **)(appBaseAddr + 0xC90E28);
+	//			baseAddr = *(byte **)(baseAddr + 0x18);
+	//			uint8 character = *(uint8 *)(baseAddr + 0x78);
+	//			if (character == CHAR_DANTE)
+	//			{
+	//				ApplyDefaultModelAttributes(baseAddr);
+	//			}
+	//		}
+	//		else
+	//		{
+	//			for (uint8 actor = 0; actor < GetActorCount(); actor++)
+	//			{
+	//				uint8 character = *(uint8 *)(actorBaseAddr[actor] + 0x78);
+	//				if (character == CHAR_DANTE)
+	//				{
+	//					ApplyDefaultModelAttributes(actorBaseAddr[actor]);
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	if (ActorAvailable())
+	//	{
+	//		if (!System_Actor_enableArrayExtension)
+	//		{
+	//			byte * baseAddr = *(byte **)(appBaseAddr + 0xC90E28);
+	//			baseAddr = *(byte **)(baseAddr + 0x18);
+	//			uint8 character = *(uint8 *)(baseAddr + 0x78);
+	//			if (character == CHAR_DANTE)
+	//			{
+	//				uint8 * equipment = (uint8 *)(baseAddr + 0x6498);
+	//				for (uint8 slot = 0; slot < 2; slot++)
+	//				{
+	//					if (equipment[slot] == WEAPON_BEOWULF)
+	//					{
+	//						ApplyBeowulfModelAttributes(baseAddr);
+	//					}
+	//				}
+	//			}
+	//		}
+	//		else
+	//		{
+	//			for (uint8 actor = 0; actor < GetActorCount(); actor++)
+	//			{
+	//				uint8 character = *(uint8 *)(actorBaseAddr[actor] + 0x78);
+	//				if (character == CHAR_DANTE)
+	//				{
+	//					if (!Config.Game.WeaponSwitcher.enable)
+	//					{
+	//						uint8 * equipment = (uint8 *)(actorBaseAddr[actor] + 0x6498);
+	//						for (uint8 slot = 0; slot < 2; slot++)
+	//						{
+	//							if (equipment[slot] == WEAPON_BEOWULF)
+	//							{
+	//								ApplyBeowulfModelAttributes(actorBaseAddr[actor]);
+	//							}
+	//						}
+	//					}
+	//					else
+	//					{
+	//						uint8 selectedWeapon = *(uint8 *)(actorBaseAddr[actor] + 0x6490);
+	//						uint8 * equipment = (uint8 *)(actorBaseAddr[actor] + 0x6498);
+	//						if (equipment[selectedWeapon] == WEAPON_BEOWULF)
+	//						{
+	//							ApplyBeowulfModelAttributes(actorBaseAddr[actor]);
+	//						}
+	//					}
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 }
 
 void Cosmetics_Dante_ToggleHideBeowulf(bool enable)
@@ -180,5 +186,4 @@ void Cosmetics_Dante_ToggleHideBeowulf(bool enable)
 		WriteAddress((appBaseAddr + 0x22968A), (appBaseAddr + 0x2296BD), 2);
 		WriteAddress((appBaseAddr + 0x214BDA), (appBaseAddr + 0x214CB9), 6);
 	}
-	Cosmetics_Dante_Beowulf_LiveUpdate();
 }

@@ -72,10 +72,11 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <CallingConvention>FastCall</CallingConvention>
       <ObjectFileName>$(IntDir)%(Directory)_%(Filename)</ObjectFileName>
       <DisableSpecificWarnings>4102;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -103,7 +104,6 @@
     <ClCompile Include="Cosmetics\Dante.cpp" />
     <ClCompile Include="Cosmetics\Other.cpp" />
     <ClCompile Include="Cosmetics\Vergil.cpp" />
-    <ClCompile Include="Cosmetics\Weapon.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FMOD.cpp" />
     <ClCompile Include="Game\Arcade.cpp" />
@@ -164,7 +164,6 @@
     <ClInclude Include="Cosmetics\Dante.h" />
     <ClInclude Include="Cosmetics\Other.h" />
     <ClInclude Include="Cosmetics\Vergil.h" />
-    <ClInclude Include="Cosmetics\Weapon.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FMOD.h" />
     <ClInclude Include="Game\Arcade.h" />

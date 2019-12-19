@@ -47,9 +47,6 @@
     <ClCompile Include="Cosmetics\Dante.cpp">
       <Filter>Cosmetics</Filter>
     </ClCompile>
-    <ClCompile Include="Cosmetics\Weapon.cpp">
-      <Filter>Cosmetics</Filter>
-    </ClCompile>
     <ClCompile Include="Game\WeaponSwitcher.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -205,9 +202,6 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Cosmetics\Dante.h">
-      <Filter>Cosmetics</Filter>
-    </ClInclude>
-    <ClInclude Include="Cosmetics\Weapon.h">
       <Filter>Cosmetics</Filter>
     </ClInclude>
     <ClInclude Include="Game\WeaponSwitcher.h">

@@ -7,13 +7,20 @@
 #include "Actor.h"
 #include "Cache.h"
 
-#include "../Game/Dante.h"
+#include "../Cosmetics/Dante.h"
 
 extern bool System_Weapon_enableUpdateWeapon;
 extern bool System_Weapon_enableDoppelgangerFixes;
-extern byte * weaponMetadata[MAX_ACTOR][MAX_WEAPON];
+extern bool System_Weapon_enableModelFixes;
 
-void System_Weapon_Ranged_UpdateLevels(byte * baseAddr);
+extern byte8 * System_Weapon_weaponMetadata[MAX_ACTOR][MAX_WEAPON];
+
+typedef void(* System_Weapon_Dante_UpdateExpertise_t)(byte8 * baseAddr);
+
+extern System_Weapon_Dante_UpdateExpertise_t System_Weapon_Dante_UpdateExpertise;
+
+void System_Weapon_Dante_Ranged_UpdateLevels(byte8 * baseAddr);
 void System_Weapon_Init();
 void System_Weapon_ToggleUpdateWeapon(bool enable);
 void System_Weapon_ToggleDoppelgangerFixes(bool enable);
+void System_Weapon_ToggleModelFixes(bool enable);
