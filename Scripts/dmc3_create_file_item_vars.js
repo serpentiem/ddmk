@@ -114,7 +114,7 @@ for (var index = 0; index < 250; index++)
 		}
 		else if (size == 2)
 		{
-			c += "4 Bytes";
+			c += "2 Bytes";
 		}
 		else if (size == 4)
 		{
