@@ -282,12 +282,12 @@ struct CONFIG
 	Game;
 	struct
 	{
-		bool Color_enable = false;
 		struct
 		{
+			bool enable = false;
 			struct
 			{
-				float32 aura[5][4] =
+				float32 dante[5][4] =
 				{
 					{ 128,   0,   0, 200 },
 					{  96, 128, 144, 200 },
@@ -295,41 +295,40 @@ struct CONFIG
 					{ 112,  64, 160, 200 },
 					{ 128, 128, 128, 200 },
 				};
-				float32 airHike[5][4] =
+				float32 vergil[1][4] =
 				{
-					{ 128,   0,   0, 200 },
-					{  96, 128, 144, 200 },
-					{ 160,  64,  16, 200 },
-					{ 112,  64, 160, 200 },
-					{ 128, 128, 128, 200 },
+					{ 32, 64, 128, 200 },
 				};
+				float32 neroAngelo[1][4] =
+				{
+					{ 64, 0, 255, 200 },
+				};
+			}
+			Aura;
+			struct
+			{
 				float32 trickster[1][4] =
 				{
-					{ 255,   0,   0, 200 },
+					{ 255, 0, 0, 200 },
 				};
 				float32 royalguard[1][4] =
 				{
-					{ 143, 112,  48, 200 },
+					{ 143, 112, 48, 200 },
 				};
 			}
-			Dante;
+			Style;
 			struct
 			{
-				float32 aura[1][4] =
+				float32 dante[5][4] =
 				{
-					{  32,  64, 128, 200 },
+					{ 128,   0,   0, 200 },
+					{  96, 128, 144, 200 },
+					{ 160,  64,  16, 200 },
+					{ 112,  64, 160, 200 },
+					{ 128, 128, 128, 200 },
 				};
 			}
-			Vergil;
-			struct
-			{
-				float32 aura[1][4] =
-				{
-					{  64,   0, 255, 200 },
-				};
-			}
-			NeroAngelo;
-			float32 doppelganger[4] = { 16, 16, 16, 48 };
+			AirHike;
 		}
 		Color;
 		struct
@@ -356,6 +355,12 @@ struct CONFIG
 	Cosmetics;
 	struct
 	{
+		struct
+		{
+			bool forceSingleActor = false;
+			bool disableIdleTimer = false;
+		}
+		Actor;
 		struct
 		{
 			bool invertX = false;

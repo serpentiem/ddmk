@@ -50,6 +50,15 @@ uint8 GetActorCount()
 static void CreateActors()
 {
 	LogFunction();
+
+	if (Config.System.Actor.forceSingleActor)
+	{
+		return;
+	}
+
+
+
+
 	if (Config.Game.Multiplayer.enable)
 	{
 		for (uint8 index = 0; index < Config.Game.Multiplayer.actorCount; index++)

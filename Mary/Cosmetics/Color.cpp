@@ -1,12 +1,125 @@
 #include "Color.h"
 
-byte * AirHike = 0;
+byte8 *  AirHike      = 0;
+byte8 ** AirHikeCache = 0;
+
+struct ColorHelper
+{
+	uint32 off[3];
+	uint32 & operator[](uint8 index)
+	{
+		return off[index];
+	}
+};
+
+PrivateStart;
+
+ColorHelper colorHelperAuraDante[] =
+{
+	{ 0x8CD1F, 0x8CD20, 0x8CD24 },
+	{ 0x8CD29, 0x8CD2A, 0x8CD2E },
+	{ 0x8CD33, 0x8CD34, 0x8CD38 },
+	{ 0x8CD3D, 0x8CD3E, 0x8CD42 },
+	{ 0x8CD47, 0x8CD48, 0x8CD4C },
+};
+
+ColorHelper colorHelperAuraVergil[] =
+{
+	{ 0x8CD51, 0x8CD52, 0x8CD56 }, // Open
+	{ 0x90C5C, 0x90C5D, 0x90C62 }, // Close
+};
+
+ColorHelper colorHelperAuraNeroAngelo[] =
+{
+	{ 0x8E438, 0x8E439, 0x8E43D }, // Open
+	{ 0x90C4E, 0x90C4F, 0x90C54 }, // Close
+};
+
+ColorHelper colorHelperStyleTrickster[] =
+{
+	{ 0x8E336, 0x8E337, 0x8E338 },
+};
+
+ColorHelper colorHelperStyleRoyalguard[] =
+{
+	{ 0x8E843, 0x8E844, 0x8E84B }, // Open
+	{ 0x9114B, 0x9114C, 0x91153 }, // Close
+};
+
+ColorHelper * colorHelper[] =
+{
+	colorHelperAuraDante,
+	colorHelperAuraVergil,
+	colorHelperAuraNeroAngelo,
+	colorHelperStyleTrickster,
+	colorHelperStyleRoyalguard,
+};
+
+uint8 colorHelperCount[] =
+{
+	countof(colorHelperAuraDante),
+	countof(colorHelperAuraVergil),
+	countof(colorHelperAuraNeroAngelo),
+	countof(colorHelperStyleTrickster),
+	countof(colorHelperStyleRoyalguard),
+};
+
+PrivateEnd;
+
+void Cosmetics_Color_AdjustConfig()
+{
+	LogFunction();
+
+	constexpr uint8 count = ((sizeof(Config.Cosmetics.Color) - 1) / 4);
+
+	float32 * addr        = (float32 *)((byte8 *)&Config.Cosmetics.Color        + 1);
+	float32 * defaultAddr = (float32 *)((byte8 *)&DefaultConfig.Cosmetics.Color + 1);
+
+	for (uint8 index = 0; index < count; index++)
+	{
+		addr       [index] /= 255;
+		defaultAddr[index] /= 255;
+	}
+}
+
+void Cosmetics_Color_UpdateColors(CONFIG & config)
+{
+	LogFunction();
+	float32(*addr[])[4] =
+	{
+		config.Cosmetics.Color.Aura.dante,
+		config.Cosmetics.Color.Aura.vergil,
+		config.Cosmetics.Color.Aura.neroAngelo,
+		config.Cosmetics.Color.Style.trickster,
+		config.Cosmetics.Color.Style.royalguard,
+	};
+	for (uint8 helperIndex = 0; helperIndex < countof(colorHelper); helperIndex++)
+	{
+		for (uint8 itemIndex = 0; itemIndex < colorHelperCount[helperIndex]; itemIndex++)
+		{
+			for (uint8 colorIndex = 0; colorIndex < 3; colorIndex++)
+			{
+				auto & off = colorHelper[helperIndex][itemIndex][colorIndex];
+				auto color = (uint8)(addr[helperIndex][itemIndex][colorIndex] * 255);
+				Write<uint8>((appBaseAddr + off), color);
+			}
+		}
+	}
+	for (uint8 itemIndex = 0; itemIndex < 5; itemIndex++)
+	{
+		for (uint8 colorIndex = 0; colorIndex < 3; colorIndex++)
+		{
+			auto color = (uint8)(config.Cosmetics.Color.AirHike.dante[itemIndex][colorIndex] * 255);
+			Write<uint8>((AirHikeCache[itemIndex] + 1 + colorIndex), color);
+		}
+	}
+}
 
 void Cosmetics_Color_Init()
 {
 	LogFunction();
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x48, 0x31, 0xC0,                                           //xor rax,rax
 			0x8A, 0x83, 0x90, 0x64, 0x00, 0x00,                         //mov al,[rbx+00006490]
@@ -33,306 +146,20 @@ void Cosmetics_Color_Init()
 		};
 		FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 40);
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte ***)(func.sect0 + 0x16) = func.cache;
-		func.cache[0] = (func.addr + 0x21);
-		func.cache[1] = (func.addr + 0x29);
-		func.cache[2] = (func.addr + 0x31);
-		func.cache[3] = (func.addr + 0x39);
-		func.cache[4] = (func.addr + 0x41);
+		*(byte8 ***)(func.sect0 + 0x16) = func.cache;
+		func.cache[0] = (func.sect0 + 0x21);
+		func.cache[1] = (func.sect0 + 0x29);
+		func.cache[2] = (func.sect0 + 0x31);
+		func.cache[3] = (func.sect0 + 0x39);
+		func.cache[4] = (func.sect0 + 0x41);
 		AirHike = func.addr;
-	}
-}
-
-void Cosmetics_Color_AdjustConfig()
-{
-	LogFunction();
-	for (uint8 i = 0; i < sizeof(Config.Cosmetics.Color) / 4; i++)
-	{
-		((float32 *)&Config.Cosmetics.Color)[i] /= 255;
-		((float32 *)&DefaultConfig.Cosmetics.Color)[i] /= 255;
-	}
-}
-
-void Cosmetics_Color_UpdateRGB()
-{
-	LogFunction();
-	// Aura
-	// Dante
-	{
-		byte * addr[][3] =
-		{
-			{
-				(appBaseAddr + 0x8CD1F),
-				(appBaseAddr + 0x8CD20),
-				(appBaseAddr + 0x8CD24),
-			},
-			{
-				(appBaseAddr + 0x8CD29),
-				(appBaseAddr + 0x8CD2A),
-				(appBaseAddr + 0x8CD2E),
-			},
-			{
-				(appBaseAddr + 0x8CD33),
-				(appBaseAddr + 0x8CD34),
-				(appBaseAddr + 0x8CD38),
-			},
-			{
-				(appBaseAddr + 0x8CD3D),
-				(appBaseAddr + 0x8CD3E),
-				(appBaseAddr + 0x8CD42),
-			},
-			{
-				(appBaseAddr + 0x8CD47),
-				(appBaseAddr + 0x8CD48),
-				(appBaseAddr + 0x8CD4C),
-			},
-		};
-		for (uint8 devil = 0; devil < countof(addr); devil++)
-		{
-			for (uint8 i = 0; i < 3; i++)
-			{
-				Write<uint8>(addr[devil][i], (uint8)(Config.Cosmetics.Color.Dante.aura[devil][i] * 255));
-			}
-		}
-	}
-	// Vergil
-	// Open
-	{
-		byte * addr[] =
-		{
-			(appBaseAddr + 0x8CD51),
-			(appBaseAddr + 0x8CD52),
-			(appBaseAddr + 0x8CD56),
-		};
-		for (uint8 i = 0; i < countof(addr); i++)
-		{
-			Write<uint8>(addr[i], (uint8)(Config.Cosmetics.Color.Vergil.aura[0][i] * 255));
-		}
-	}
-	// Vergil
-	// Close
-	{
-		byte * addr[] =
-		{
-			(appBaseAddr + 0x90C5C),
-			(appBaseAddr + 0x90C5D),
-			(appBaseAddr + 0x90C62),
-		};
-		for (uint8 i = 0; i < countof(addr); i++)
-		{
-			Write<uint8>(addr[i], (uint8)(Config.Cosmetics.Color.Vergil.aura[0][i] * 255));
-		}
-	}
-	// Nero Angelo
-	// Open
-	{
-		byte * addr[] =
-		{
-			(appBaseAddr + 0x8E438),
-			(appBaseAddr + 0x8E439),
-			(appBaseAddr + 0x8E43D),
-		};
-		for (uint8 i = 0; i < countof(addr); i++)
-		{
-			Write<uint8>(addr[i], (uint8)(Config.Cosmetics.Color.NeroAngelo.aura[0][i] * 255));
-		}
-	}
-	// Close
-	{
-		byte * addr[] =
-		{
-			(appBaseAddr + 0x90C4E),
-			(appBaseAddr + 0x90C4F),
-			(appBaseAddr + 0x90C54),
-		};
-		for (uint8 i = 0; i < countof(addr); i++)
-		{
-			Write<uint8>(addr[i], (uint8)(Config.Cosmetics.Color.NeroAngelo.aura[0][i] * 255));
-		}
-	}
-	// Air Hike
-	{
-		uint32 off[] =
-		{
-			0x22,
-			0x2A,
-			0x32,
-			0x3A,
-			0x42,
-		};
-		for (uint8 devil = 0; devil < countof(off); devil++)
-		{
-			for (uint8 i = 0; i < 3; i++)
-			{
-				Write<uint8>((AirHike + off[devil] + i), (uint8)(Config.Cosmetics.Color.Dante.airHike[devil][i] * 255));
-			}
-		}
-	}
-	// Sky Star
-	{
-		for (uint8 i = 0; i < 3; i++)
-		{
-			Write<uint8>((appBaseAddr + 0x8E336 + i), (uint8)(Config.Cosmetics.Color.Dante.trickster[0][i] * 255));
-		}
-	}
-	// Ultimate
-	// Open
-	{
-		byte * addr[] =
-		{
-			(appBaseAddr + 0x8E843),
-			(appBaseAddr + 0x8E844),
-			(appBaseAddr + 0x8E84B),
-		};
-		for (uint8 i = 0; i < countof(addr); i++)
-		{
-			Write<uint8>(addr[i], (uint8)(Config.Cosmetics.Color.Dante.royalguard[0][i] * 255));
-		}
-	}
-	// Close
-	{
-		byte * addr[] =
-		{
-			(appBaseAddr + 0x9114B),
-			(appBaseAddr + 0x9114C),
-			(appBaseAddr + 0x91153),
-		};
-		for (uint8 i = 0; i < countof(addr); i++)
-		{
-			Write<uint8>(addr[i], (uint8)(Config.Cosmetics.Color.Dante.royalguard[0][i] * 255));
-		}
-	}
-}
-
-void Cosmetics_Color_ResetRGB()
-{
-	LogFunction();
-	// Aura
-	// Dante
-	{
-		byte * addr[][3] =
-		{
-			{
-				(appBaseAddr + 0x8CD1F),
-				(appBaseAddr + 0x8CD20),
-				(appBaseAddr + 0x8CD24),
-			},
-			{
-				(appBaseAddr + 0x8CD29),
-				(appBaseAddr + 0x8CD2A),
-				(appBaseAddr + 0x8CD2E),
-			},
-			{
-				(appBaseAddr + 0x8CD33),
-				(appBaseAddr + 0x8CD34),
-				(appBaseAddr + 0x8CD38),
-			},
-			{
-				(appBaseAddr + 0x8CD3D),
-				(appBaseAddr + 0x8CD3E),
-				(appBaseAddr + 0x8CD42),
-			},
-			{
-				(appBaseAddr + 0x8CD47),
-				(appBaseAddr + 0x8CD48),
-				(appBaseAddr + 0x8CD4C),
-			},
-		};
-		for (uint8 devil = 0; devil < countof(addr); devil++)
-		{
-			for (uint8 i = 0; i < 3; i++)
-			{
-				Write<uint8>(addr[devil][i], (uint8)(DefaultConfig.Cosmetics.Color.Dante.aura[devil][i] * 255));
-			}
-		}
-	}
-	// Vergil
-	// Open
-	{
-		byte * addr[] =
-		{
-			(appBaseAddr + 0x8CD51),
-			(appBaseAddr + 0x8CD52),
-			(appBaseAddr + 0x8CD56),
-		};
-		for (uint8 i = 0; i < countof(addr); i++)
-		{
-			Write<uint8>(addr[i], (uint8)(DefaultConfig.Cosmetics.Color.Vergil.aura[0][i] * 255));
-		}
-	}
-	// Vergil
-	// Close
-	{
-		byte * addr[] =
-		{
-			(appBaseAddr + 0x90C5C),
-			(appBaseAddr + 0x90C5D),
-			(appBaseAddr + 0x90C62),
-		};
-		for (uint8 i = 0; i < countof(addr); i++)
-		{
-			Write<uint8>(addr[i], (uint8)(DefaultConfig.Cosmetics.Color.Vergil.aura[0][i] * 255));
-		}
-	}
-	// Nero Angelo
-	// Open
-	{
-		byte * addr[] =
-		{
-			(appBaseAddr + 0x8E438),
-			(appBaseAddr + 0x8E439),
-			(appBaseAddr + 0x8E43D),
-		};
-		for (uint8 i = 0; i < countof(addr); i++)
-		{
-			Write<uint8>(addr[i], (uint8)(DefaultConfig.Cosmetics.Color.NeroAngelo.aura[0][i] * 255));
-		}
-	}
-	// Close
-	{
-		byte * addr[] =
-		{
-			(appBaseAddr + 0x90C4E),
-			(appBaseAddr + 0x90C4F),
-			(appBaseAddr + 0x90C54),
-		};
-		for (uint8 i = 0; i < countof(addr); i++)
-		{
-			Write<uint8>(addr[i], (uint8)(DefaultConfig.Cosmetics.Color.NeroAngelo.aura[0][i] * 255));
-		}
-	}
-	// Ultimate
-	// Open
-	{
-		byte * addr[] =
-		{
-			(appBaseAddr + 0x8E843),
-			(appBaseAddr + 0x8E844),
-			(appBaseAddr + 0x8E84B),
-		};
-		for (uint8 i = 0; i < countof(addr); i++)
-		{
-			Write<uint8>(addr[i], (uint8)(DefaultConfig.Cosmetics.Color.Dante.royalguard[0][i] * 255));
-		}
-	}
-	// Close
-	{
-		byte * addr[] =
-		{
-			(appBaseAddr + 0x9114B),
-			(appBaseAddr + 0x9114C),
-			(appBaseAddr + 0x91153),
-		};
-		for (uint8 i = 0; i < countof(addr); i++)
-		{
-			Write<uint8>(addr[i], (uint8)(DefaultConfig.Cosmetics.Color.Dante.royalguard[0][i] * 255));
-		}
+		AirHikeCache = func.cache;
 	}
 }
 
 void Cosmetics_Color_Toggle(bool enable)
 {
-	Log("%s %u", FUNC_NAME, enable);
+	LogFunction(enable);
 	if (enable)
 	{
 		WriteCall((appBaseAddr + 0x1F66DD), AirHike);
@@ -344,7 +171,6 @@ void Cosmetics_Color_Toggle(bool enable)
 			};
 			vp_memcpy((appBaseAddr + 0x8E330), buffer, sizeof(buffer));
 		}
-		Cosmetics_Color_UpdateRGB();
 	}
 	else
 	{
@@ -357,6 +183,5 @@ void Cosmetics_Color_Toggle(bool enable)
 			};
 			vp_memcpy((appBaseAddr + 0x8E330), buffer, sizeof(buffer));
 		}
-		Cosmetics_Color_ResetRGB();
 	}
 }

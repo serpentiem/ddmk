@@ -221,18 +221,31 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 		////Game_Vergil_WeaponSwitchTimeout_MeleeToggle(Config.Game.Vergil.WeaponSwitchTimeout.melee);
 		Game_WeaponSwitcher_Init();
 		Game_WeaponSwitcher_Toggle(Config.Game.WeaponSwitcher.enable);
-		if (Config.Game.WeaponSwitcher.enable)
-		{
-			Config.Cosmetics.Weapon.instantModelUpdate = true;
-			SaveConfig();
-		}
+		//if (Config.Game.WeaponSwitcher.enable)
+		//{
+		//	Config.Cosmetics.Weapon.instantModelUpdate = true;
+		//	SaveConfig();
+		//}
+
+
+
+
 		Cosmetics_Color_Init();
-		Cosmetics_Color_Toggle(Config.Cosmetics.Color_enable);
+		Cosmetics_Color_Toggle(Config.Cosmetics.Color.enable);
+		Cosmetics_Color_UpdateColors(Config);
+
+
+
+
+
 		Cosmetics_Dante_Init();
-		Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.hideBeowulf);
-		Cosmetics_Other_Init();
-		Cosmetics_Other_ToggleNoDevilForm(Config.Cosmetics.Other.noDevilForm);
-		Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.hideBeowulf);
+
+
+
+		//Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.hideBeowulf);
+		//Cosmetics_Other_Init();
+		//Cosmetics_Other_ToggleNoDevilForm(Config.Cosmetics.Other.noDevilForm);
+		//Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.hideBeowulf);
 		//Cosmetics_Weapon_Init();
 		//Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
 

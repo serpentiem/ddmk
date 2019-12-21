@@ -1073,196 +1073,114 @@ void GUI_Game_Draw()
 	ImGui::PopStyleVar(3);
 }
 
-#define ColorPalette(label, items, var)                       \
-for (uint8 i = 0; i < countof(var); i++)                      \
-{                                                             \
-	if (GUI_ColorEdit4(items[i], var[i]))                     \
-	{                                                         \
-		Cosmetics_Color_UpdateRGB();                          \
-	}                                                         \
-	ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x); \
-}                                                             \
-ImGui::Text(label);
+//#define ColorPalette(label, items, var)                       \
+//for (uint8 i = 0; i < countof(var); i++)                      \
+//{                                                             \
+//	if (GUI_ColorEdit4(items[i], var[i]))                     \
+//	{                                                         \
+//Cosmetics_Color_UpdateColors(Config); \
+//	}                                                         \
+//	ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x); \
+//}                                                             \
+//ImGui::Text(label);
 
-struct vector3
-{
-	float32 x;
-	float32 y;
-	float32 z;
-	vector3()
-	{
-		memset(this, 0, sizeof(*this));
-	}
-	operator float32 *()
-	{
-		return (float32 *)this;
-	}
-};
+//struct vector3
+//{
+//	float32 x;
+//	float32 y;
+//	float32 z;
+//	vector3()
+//	{
+//		memset(this, 0, sizeof(*this));
+//	}
+//	operator float32 *()
+//	{
+//		return (float32 *)this;
+//	}
+//};
 
 void GUI_Cosmetics_Color()
 {
-
-	// 0 flash greyish white fast
-	// 1 flash light red fast
-	// 2 flash turquoise fast
-	// 3 flash custom color long
-	// 4 flash custom color medium
-	// 5 flash custom color fast
-	// 6 apply doppelganger color
-	// 7 reset color
-
-
-
-	/*
-
-
-
-
-
-	*/
-
-
-
-
-
-
-
-	static uint32 preset     [2] = {};
-	static byte32 customColor[2] = {};
-	static const char * label[2] =
+	auto ColorPalette = []
+	(
+		const char * label,
+		const char ** items,
+		float32(*var)[4],
+		uint8 count
+	)
 	{
-		"Actor 1",
-		"Actor 2",
+		for (uint8 index = 0; index < count; index++)
+		{
+			if (GUI_ColorEdit4(items[index], var[index]))
+			{
+				Cosmetics_Color_UpdateColors(Config);
+			}
+			ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
+		}
+		ImGui::Text(label);
 	};
-	for (uint8 actor = 0; actor < 2; actor++)
+	GUI_SECTION_HEADER_START(Cosmetics.Color);
+	if (Config.Cosmetics.Color.enable)
 	{
-		auto & baseAddr = actorBaseAddr[actor];
-		if (!baseAddr)
-		{
-			continue;
-		}
-		GUI_InputEx<uint32>("Preset", preset[actor], 1, true, false);
-		GUI_Input<byte32>("Custom Color", customColor[actor], true);
-		if (GUI_Button(label[actor]))
-		{
-			ApplyColor(baseAddr, preset[actor], customColor[actor]);
-		}
+		Cosmetics_Color_Toggle(Config.Cosmetics.Color.enable);
+		Cosmetics_Color_UpdateColors(Config);
 	}
-
-
-
-
-
-
-
-
-
-
-
-	GUI_Hyperlink(Locale.Cosmetics.Color.header);
-	ImGui::Text("");
-	if (GUI_Checkbox(Locale.Cosmetics.Color.enable, Config.Cosmetics.Color_enable))
+	else
 	{
-		if (Config.Cosmetics.Color_enable)
-		{
-			Cosmetics_Color_Toggle(Config.Cosmetics.Color_enable);
-		}
-		else
-		{
-			Cosmetics_Color_Toggle(DefaultConfig.Cosmetics.Color_enable);
-		}
+		Cosmetics_Color_Toggle(DefaultConfig.Cosmetics.Color.enable);
+		Cosmetics_Color_UpdateColors(DefaultConfig);
 	}
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(!Config.Cosmetics.Color_enable);
-
-
-	ImGui::Text("Dante");
-
+	GUI_SECTION_HEADER_END(Cosmetics.Color);
+	ImGui::Text(Locale.Cosmetics.Color.Aura.header);
 	ColorPalette
 	(
-		Locale.Cosmetics.Color.Dante.Aura.label,
-		Locale.Cosmetics.Color.Dante.Aura.items,
-		Config.Cosmetics.Color.Dante.aura
+		Locale.Cosmetics.Color.Aura.Dante.label,
+		Locale.Cosmetics.Color.Aura.Dante.items,
+		Config.Cosmetics.Color.Aura.dante,
+		countof(Config.Cosmetics.Color.Aura.dante)
 	);
 	ColorPalette
 	(
-		Locale.Cosmetics.Color.Dante.AirHike.label,
-		Locale.Cosmetics.Color.Dante.AirHike.items,
-		Config.Cosmetics.Color.Dante.airHike
+		Locale.Cosmetics.Color.Aura.Vergil.label,
+		Locale.Cosmetics.Color.Aura.Vergil.items,
+		Config.Cosmetics.Color.Aura.vergil,
+		countof(Config.Cosmetics.Color.Aura.vergil)
 	);
 	ColorPalette
 	(
-		Locale.Cosmetics.Color.Dante.Trickster.label,
-		Locale.Cosmetics.Color.Dante.Trickster.items,
-		Config.Cosmetics.Color.Dante.trickster
+		Locale.Cosmetics.Color.Aura.NeroAngelo.label,
+		Locale.Cosmetics.Color.Aura.NeroAngelo.items,
+		Config.Cosmetics.Color.Aura.neroAngelo,
+		countof(Config.Cosmetics.Color.Aura.neroAngelo)
+	);
+	ImGui::Text(Locale.Cosmetics.Color.Style.header);
+	ColorPalette
+	(
+		Locale.Cosmetics.Color.Style.Trickster.label,
+		Locale.Cosmetics.Color.Style.Trickster.items,
+		Config.Cosmetics.Color.Style.trickster,
+		countof(Config.Cosmetics.Color.Style.trickster)
 	);
 	ColorPalette
 	(
-		Locale.Cosmetics.Color.Dante.Royalguard.label,
-		Locale.Cosmetics.Color.Dante.Royalguard.items,
-		Config.Cosmetics.Color.Dante.royalguard
+		Locale.Cosmetics.Color.Style.Royalguard.label,
+		Locale.Cosmetics.Color.Style.Royalguard.items,
+		Config.Cosmetics.Color.Style.royalguard,
+		countof(Config.Cosmetics.Color.Style.royalguard)
 	);
-	ImGui::Text(Locale.Cosmetics.Color.Vergil.header);
+	ImGui::Text(Locale.Cosmetics.Color.AirHike.header);
 	ColorPalette
 	(
-		Locale.Cosmetics.Color.Vergil.Aura.label,
-		Locale.Cosmetics.Color.Vergil.Aura.items,
-		Config.Cosmetics.Color.Vergil.aura
+		Locale.Cosmetics.Color.AirHike.Dante.label,
+		Locale.Cosmetics.Color.AirHike.Dante.items,
+		Config.Cosmetics.Color.AirHike.dante,
+		countof(Config.Cosmetics.Color.AirHike.dante)
 	);
-	ImGui::Text(Locale.Cosmetics.Color.NeroAngelo.header);
-	ColorPalette
-	(
-		Locale.Cosmetics.Color.NeroAngelo.Aura.label,
-		Locale.Cosmetics.Color.NeroAngelo.Aura.items,
-		Config.Cosmetics.Color.NeroAngelo.aura
-	);
-
-
-	//ImGui::Text("Doppelganger");
-	//GUI_ColorEdit4(Config.Cosmetics.Color.doppelganger);
-	//ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
-	//static bool enable = false;
-	//ImGui::Checkbox("", &enable);
-
-	//GUI_Checkbox("Apply", enable);
-
-
-
-
-	//ImGui::SameLine();
-	//ImGui::Text("Doppelganger");
-
-
-
-
-
-
-
-
-	GUI_POP_DISABLE(!Config.Cosmetics.Color_enable);
-	ImGui::Text("");
-	if (GUI_Button(Locale.Cosmetics.Color.reset))
-	{
-		memcpy(&Config.Cosmetics.Color, &DefaultConfig.Cosmetics.Color, sizeof(Config.Cosmetics.Color));
-		Config.Cosmetics.Color_enable = DefaultConfig.Cosmetics.Color_enable;
-		SaveConfig();
-		Cosmetics_Color_Toggle(DefaultConfig.Cosmetics.Color_enable);
-	}
-
-
-
-
-
-
-
-
-
-
-
-
+	GUI_SECTION_FOOTER_START(Cosmetics.Color);
+	Cosmetics_Color_Toggle(DefaultConfig.Cosmetics.Color.enable);
+	Cosmetics_Color_UpdateColors(DefaultConfig);
+	GUI_SECTION_FOOTER_END;
 }
-
-#undef ColorPalette
 
 void GUI_Cosmetics_Dante()
 {
@@ -1294,15 +1212,15 @@ void GUI_Cosmetics_Vergil()
 	}
 }
 
-void GUI_Cosmetics_Weapon()
-{
-	GUI_Hyperlink(Locale.Cosmetics.Weapon.header);
-	ImGui::Text("");
-	if (GUI_Checkbox(Locale.Cosmetics.Weapon.instantModelUpdate, Config.Cosmetics.Weapon.instantModelUpdate))
-	{
-		//Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
-	}
-}
+//void GUI_Cosmetics_Weapon()
+//{
+//	GUI_Hyperlink(Locale.Cosmetics.Weapon.header);
+//	ImGui::Text("");
+//	if (GUI_Checkbox(Locale.Cosmetics.Weapon.instantModelUpdate, Config.Cosmetics.Weapon.instantModelUpdate))
+//	{
+//		//Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
+//	}
+//}
 
 void GUI_Cosmetics_Draw()
 {
@@ -1325,11 +1243,21 @@ void GUI_Cosmetics_Draw()
 		GUI_Cosmetics_Other();
 		ImGui::Text("");
 		GUI_Cosmetics_Vergil();
-		ImGui::Text("");
-		GUI_Cosmetics_Weapon();
+		//ImGui::Text("");
+		//GUI_Cosmetics_Weapon();
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
+}
+
+void GUI_System_Actor()
+{
+	GUI_Hyperlink(Locale.System.Actor.header);
+	ImGui::Text("");
+	GUI_Checkbox(Locale.System.Actor.forceSingleActor, Config.System.Actor.forceSingleActor);
+	if (GUI_Checkbox(Locale.System.Actor.disableIdleTimer, Config.System.Actor.disableIdleTimer))
+	{
+	}
 }
 
 void GUI_System_Camera()
@@ -1394,12 +1322,14 @@ void GUI_System_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_System", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
+		GUI_System_Actor();
+		ImGui::Text("");
 		GUI_System_Camera();
 		ImGui::Text("");
 		GUI_System_Event();
 		ImGui::Text("");
-		GUI_System_File();
-		ImGui::Text("");
+		//GUI_System_File();
+		//ImGui::Text("");
 		GUI_System_Input();
 		ImGui::Text("");
 		GUI_System_Window();

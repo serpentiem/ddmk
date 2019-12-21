@@ -37,6 +37,18 @@ extern ApplyColor_t ApplyColor;
 
 uint8 GetActorId(byte * baseAddr);
 uint8 GetActorCount();
+
+
+
+
+
+
+
+
+
+
+
+
 void ResetDevilModel();
 void UpdateDevilModel(uint8 model);
 void System_Actor_Init();

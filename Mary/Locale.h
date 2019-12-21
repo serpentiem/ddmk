@@ -640,10 +640,10 @@ struct LOCALE
 			const char * enable = "Enable";
 			struct
 			{
-				const char * header = "Dante";
+				const char * header = "Aura";
 				struct
 				{
-					const char * label = "Aura";
+					const char * label = "Dante";
 					const char * items[5] =
 					{
 						"Rebellion",
@@ -653,20 +653,31 @@ struct LOCALE
 						"Beowulf",
 					};
 				}
-				Aura;
+				Dante;
 				struct
 				{
-					const char * label = "Air Hike";
-					const char * items[5] =
+					const char * label = "Vergil";
+					const char * items[1] =
 					{
-						"Rebellion",
-						"Cerberus",
-						"Agni & Rudra",
-						"Nevan",
-						"Beowulf",
+						"Yamato",
+					};
+
+				}
+				Vergil;
+				struct
+				{
+					const char * label = "Nero Angelo";
+					const char * items[1] =
+					{
+						"Yamato",
 					};
 				}
-				AirHike;
+				NeroAngelo;
+			}
+			Aura;
+			struct
+			{
+				const char * header = "Style";
 				struct
 				{
 					const char * label = "Trickster";
@@ -686,35 +697,25 @@ struct LOCALE
 				}
 				Royalguard;
 			}
-			Dante;
+			Style;
 			struct
 			{
-				const char * header = "Vergil";
+				const char * header = "Air Hike";
 				struct
 				{
-					const char * label = "Aura";
-					const char * items[1] =
+					const char * label = "Dante";
+					const char * items[5] =
 					{
-						"",
+						"Rebellion",
+						"Cerberus",
+						"Agni & Rudra",
+						"Nevan",
+						"Beowulf",
 					};
 				}
-				Aura;
+				Dante;
 			}
-			Vergil;
-			struct
-			{
-				const char * header = "Nero Angelo";
-				struct
-				{
-					const char * label = "Aura";
-					const char * items[1] =
-					{
-						"",
-					};
-				}
-				Aura;
-			}
-			NeroAngelo;
+			AirHike;
 			const char * reset = "Reset";
 		}
 		Color;
@@ -746,12 +747,25 @@ struct LOCALE
 	Cosmetics;
 	struct
 	{
+		//struct
+		//{
+		//	const char * header = "Cache";
+		//	const char * enable = "Enable";
+		//}
+		//Cache;
+
+
 		struct
 		{
-			const char * header = "Cache";
-			const char * enable = "Enable";
+
+			const char * header = "Actor";
+			const char * forceSingleActor = "Force Single Actor";
+			const char * disableIdleTimer = "Disable Idle Timer";
+
+
 		}
-		Cache;
+		Actor;
+
 		struct
 		{
 			const char * header = "Camera";

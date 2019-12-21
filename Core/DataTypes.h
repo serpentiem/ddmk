@@ -18,3 +18,20 @@ typedef unsigned char      byte8;
 typedef unsigned short     byte16;
 typedef unsigned long      byte32;
 typedef unsigned long long byte64;
+
+//template <typename T>
+//struct Vector3
+//{
+//	T a;
+//	T b;
+//	T c;
+//};
+//
+//template <typename T>
+//struct Vector4
+//{
+//	T a;
+//	T b;
+//	T c;
+//	T d;
+//};
