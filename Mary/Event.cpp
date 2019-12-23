@@ -3,57 +3,9 @@
 
 #include "Event.h"
 
-#pragma region Global Definitions
 
-struct VARS
-{
-	bool     init;
-	uint32 * room;
-	uint32 * position;
-	uint16 * nextRoom;
-	uint16 * nextPosition;
-	byte32 * flags;
-	uint32 * mission;
-	VARS()
-	{
-		Log("VARS ctor");
-		{
-			byte ** addr = *(byte ***)(appBaseAddr + 0xCA8918);
-			if (!addr)
-			{
-				return;
-			}
-			if (!addr[8])
-			{
-				return;
-			}
-			room     = (uint32 *)(addr[8] + 0x18);
-			position = (uint32 *)(addr[8] + 0x1C);
-			if (!addr[12])
-			{
-				return;
-			}
-			nextRoom     = (uint16 *)(addr[12] + 0x164);
-			nextPosition = (uint16 *)(addr[12] + 0x166);
-		}
-		{
-			byte ** addr = *(byte ***)(appBaseAddr + 0xC90E30);
-			if (!addr)
-			{
-				return;
-			}
-			if (!addr[1])
-			{
-				return;
-			}
-			flags = (byte32 *)addr[1];
-		}
-		mission = (uint32 *)(appBaseAddr + 0xC8F250);
-		init = true;
-	}
-};
 
-#pragma endregion
+
 
 #pragma region System Events
 

@@ -8,7 +8,13 @@
 #include "Config.h"
 #include "Locale.h"
 #include "Pause.h"
+
+
+
 #include "Restart.h"
+
+#include "Speed.h"
+
 
 #include "System/Actor.h"
 #include "System/Cache.h"
@@ -27,7 +33,7 @@
 #include "Game/Mobility.h"
 #include "Game/Other.h"
 #include "Game/ResetMotionState.h"
-#include "Game/Speed.h"
+//#include "Game/Speed.h"
 //#include "Game/Style.h"
 #include "Game/StyleSwitcher.h"
 #include "Game/Training.h"

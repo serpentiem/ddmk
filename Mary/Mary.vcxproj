@@ -114,7 +114,6 @@
     <ClCompile Include="Game\Other.cpp" />
     <ClCompile Include="Game\Quicksilver.cpp" />
     <ClCompile Include="Game\ResetMotionState.cpp" />
-    <ClCompile Include="Game\Speed.cpp" />
     <ClCompile Include="Game\StyleSwitcher.cpp" />
     <ClCompile Include="Game\Training.cpp" />
     <ClCompile Include="Game\Vergil.cpp" />
@@ -126,6 +125,7 @@
     <ClCompile Include="Mary.cpp" />
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="Restart.cpp" />
+    <ClCompile Include="Speed.cpp" />
     <ClCompile Include="System\Actor.cpp" />
     <ClCompile Include="System\Animation.cpp" />
     <ClCompile Include="System\Cache.cpp" />
@@ -133,6 +133,7 @@
     <ClCompile Include="System\File.cpp" />
     <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\Media.cpp" />
+    <ClCompile Include="System\Motion.cpp" />
     <ClCompile Include="System\Sound.cpp" />
     <ClCompile Include="System\State.cpp" />
     <ClCompile Include="System\Weapon.cpp" />
@@ -174,7 +175,6 @@
     <ClInclude Include="Game\Other.h" />
     <ClInclude Include="Game\Quicksilver.h" />
     <ClInclude Include="Game\ResetMotionState.h" />
-    <ClInclude Include="Game\Speed.h" />
     <ClInclude Include="Game\StyleSwitcher.h" />
     <ClInclude Include="Game\Training.h" />
     <ClInclude Include="Game\Vergil.h" />
@@ -185,6 +185,7 @@
     <ClInclude Include="Locale.h" />
     <ClInclude Include="Pause.h" />
     <ClInclude Include="Restart.h" />
+    <ClInclude Include="Speed.h" />
     <ClInclude Include="System\Actor.h" />
     <ClInclude Include="System\Animation.h" />
     <ClInclude Include="System\Cache.h" />
@@ -193,6 +194,7 @@
     <ClInclude Include="System\Input.h" />
     <ClInclude Include="System\Media.h" />
     <ClInclude Include="System\Message.h" />
+    <ClInclude Include="System\Motion.h" />
     <ClInclude Include="System\Sound.h" />
     <ClInclude Include="System\State.h" />
     <ClInclude Include="System\Weapon.h" />

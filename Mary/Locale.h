@@ -5,16 +5,92 @@ struct LOCALE
 {
 	struct
 	{
-		const char * label[5] =
+		const char * label[4] =
 		{
+			"System",
 			"Game",
 			"Cosmetics",
-			"System",
 			"Tools",
-			"Debug",
 		};
 	}
 	Main;
+	struct
+	{
+		const char * header = "Speed";
+		struct
+		{
+			const char * header = "Main";
+			const char * base = "Base";
+			const char * turbo = "Turbo";
+			const char * actor = "Actor";
+			const char * enemy = "Enemy";
+		}
+		Main;
+		struct
+		{
+			const char * header = "Devil";
+			struct
+			{
+				const char * header = "Dante";
+				const char * label[6] =
+				{
+					"Rebellion",
+					"Cerberus",
+					"Agni & Rudra",
+					"Nevan",
+					"Beowulf",
+					"Sparda",
+				};
+			}
+			Dante;
+			struct
+			{
+				const char * header = "Vergil";
+				const char * label[3] =
+				{
+					"Yamato",
+					"Beowulf",
+					"Force Edge",
+				};
+			}
+			Vergil;
+			struct
+			{
+				const char * header = "Nero Angelo";
+				const char * label[3] =
+				{
+					"Yamato",
+					"Beowulf",
+					"Force Edge",
+				};
+			}
+			NeroAngelo;
+		}
+		Devil;
+		struct
+		{
+			const char * header = "Quicksilver";
+			const char * actor = "Actor";
+			const char * enemy = "Enemy";
+		}
+		Quicksilver;
+		const char * reset = "Reset";
+	}
+	Speed;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	struct
 	{
 		const char * description =
@@ -439,56 +515,6 @@ struct LOCALE
 		ResetMotionState;
 		struct
 		{
-			const char * header = "Speed";
-			const char * enable = "Enable";
-			struct
-			{
-				const char * header = "Main";
-				const char * base = "Base";
-				const char * turbo = "Turbo";
-				const char * actor = "Actor";
-				const char * enemy = "Enemy";
-			}
-			Main;
-			struct
-			{
-				const char * header = "Dante";
-				const char * rebellion = "Rebellion";
-				const char * cerberus = "Cerberus";
-				const char * agniRudra = "Agni & Rudra";
-				const char * nevan = "Nevan";
-				const char * beowulf = "Beowulf";
-				const char * sparda = "Sparda";
-			}
-			Dante;
-			struct
-			{
-				const char * header = "Vergil";
-				const char * yamato = "Yamato";
-				const char * beowulf = "Beowulf";
-				const char * forceEdge = "Force Edge";
-			}
-			Vergil;
-			struct
-			{
-				const char * header = "Nero Angelo";
-				const char * yamato = "Yamato";
-				const char * beowulf = "Beowulf";
-				const char * forceEdge = "Force Edge";
-			}
-			NeroAngelo;
-			struct
-			{
-				const char * header = "Quicksilver";
-				const char * actor = "Actor";
-				const char * enemy = "Enemy";
-			}
-			Quicksilver;
-			const char * reset = "Reset";
-		}
-		Speed;
-		struct
-		{
 			const char * header = "Style Switcher";
 			const char * enable = "Enable";
 			const char * noDoubleTap = "No Double Tap";
@@ -808,15 +834,10 @@ struct LOCALE
 	System;
 	struct
 	{
-		const char * teleporter = "Teleporter";
-	}
-	Tools;
-	struct
-	{
 		struct
 		{
 			const char * header = "Overlay";
-			const char * show = "Show";
+			const char * enable = "Enable";
 			struct
 			{
 				const char * items[5] =
@@ -829,12 +850,31 @@ struct LOCALE
 				};
 			}
 			FontSize;
-			const char * cacheStats = "Cache Stats";
-			const char * resetPosition = "Reset Position";
+			const char * heapFrame = "Heap Frame";
+			const char * focus = "Focus";
+			const char * reset = "Reset";
 		}
 		Overlay;
+		struct
+		{
+			const char * header = "Repair";
+			const char * resetEquipment = "Reset Equipment";
+			const char * resetRangedWeaponLevels = "Reset Ranged Weapon Levels";
+		}
+		Repair;
+		struct
+		{
+			const char * header = "Speed";
+			const char * reset = "Reset";
+		}
+		Speed;
+		struct
+		{
+			const char * header = "Teleporter";
+		}
+		Teleporter;
 	}
-	GUI;
+	Tools;
 	const char * restartRequired = "Restart required!";
 };
 

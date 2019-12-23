@@ -7,16 +7,21 @@
 #include "FMOD.h"
 #include "Hooks.h"
 
+
+#include "Speed.h"
+
+
+
 #include "System/Actor.h"
 #include "System/Animation.h"
 #include "System/Cache.h"
 #include "System/Camera.h"
-//#include "System/Event.h"
 
 
 
 #include "System/File.h"
 #include "System/Media.h"
+#include "System/Motion.h"
 #include "System/Sound.h"
 #include "System/Weapon.h"
 #include "System/Window.h"
@@ -30,8 +35,9 @@
 #include "Game/Mobility.h"
 #include "Game/Other.h"
 #include "Game/ResetMotionState.h"
-#include "Game/Speed.h"
-//#include "Game/Style.h"
+//#include "Game/Speed.h"
+
+
 #include "Game/StyleSwitcher.h"
 #include "Game/Training.h"
 #include "Game/Vergil.h"
@@ -41,7 +47,9 @@
 #include "Cosmetics/Dante.h"
 #include "Cosmetics/Other.h"
 #include "Cosmetics/Vergil.h"
-//#include "Cosmetics/Weapon.h"
+
+
+
 
 const char * Log_directory = "logs";
 const char * Log_file      = "Mary.txt";
@@ -65,13 +73,41 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 		FMOD_Init();
 
+		Event_Init();
+
+		Speed_Init();
 
 
 
-
-
+		Speed_Update(Config);
 
 		System_Actor_Init();
+		System_Animation_Init();
+		System_File_Init();
+		System_Cache_Init();
+		System_Input_Init();
+		System_Media_Init();
+		System_Motion_Init();
+		System_Sound_Init();
+		System_Weapon_Init();
+
+		Game_Dante_Init();
+		Game_Doppelganger_Init();
+
+		Cosmetics_Color_Init();
+		Cosmetics_Dante_Init();
+
+
+
+
+
+
+
+
+
+
+
+
 		//System_Actor_Toggle();
 
 
@@ -84,15 +120,15 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 
 
-		System_Animation_Init();
+		
 
 
 
 
-		System_File_Init();
+		
 
 
-		System_Cache_Init(); // requires file first!
+		
 		System_Cache_ToggleExtendVectors(true);
 
 
@@ -100,7 +136,7 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 		System_Camera_ToggleInvertX(Config.System.Camera.invertX);
 
-		Event_Init();
+		
 		Event_ToggleSkipIntro(Config.System.Event.skipIntro);
 		Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
 
@@ -114,22 +150,12 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 
 		System_Input_extend = Config.Game.Multiplayer.enable;
-		System_Input_Init();
+		
 
 
 		// @Todo: Move to Event.
 
-		System_Media_Init();
 
-
-		
-
-
-
-
-		System_Sound_Init();
-
-		System_Weapon_Init();
 
 
 
@@ -171,9 +197,7 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 
 
-		Game_Dante_Init();
 
-		Game_Doppelganger_Init();
 		Game_Doppelganger_ToggleUseEXVersion(Config.Game.Doppelganger.useEXVersion);
 
 
@@ -212,9 +236,20 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 		////// @Bug: If module is disabled, but any of these options are true, will cause problems.
 		////// @Todo: Add enable check to all multi-module sections.
 
+		//Game_Training_Init();
+
+
+
+
 		Game_Training_ToggleInfiniteHitPoints(Config.Game.Training.infiniteHitPoints);
 		Game_Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
 		Game_Training_ToggleDisableTimer(Config.Game.Training.disableTimer);
+
+
+
+
+
+
 		////Game_Vergil_Init();
 		////Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(Config.Game.Vergil.ForceEdge.infiniteRoundTrip);
 		////Game_Vergil_SummonedSwords_ToggleChronoSwords(Config.Game.Vergil.SummonedSwords.chronoSwords);
@@ -230,15 +265,13 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 
 
-		Cosmetics_Color_Init();
+		
 		Cosmetics_Color_Toggle(Config.Cosmetics.Color.enable);
 		Cosmetics_Color_UpdateColors(Config);
 
 
 
 
-
-		Cosmetics_Dante_Init();
 
 
 

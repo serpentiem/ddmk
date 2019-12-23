@@ -12,11 +12,10 @@ enum FONT_
 
 enum TAB_
 {
+	TAB_SYSTEM,
 	TAB_GAME,
 	TAB_COSMETICS,
-	TAB_SYSTEM,
 	TAB_TOOLS,
-	TAB_DEBUG,
 	MAX_TAB,
 	TAB_VOID,
 };
@@ -25,20 +24,19 @@ bool debug = false;
 
 uint8 activeTab = TAB_VOID;
 
-ImVec2 GUI_Game_size          = ImVec2(500, 500);
-ImVec2 GUI_Cosmetics_size     = ImVec2(300, 578);
-ImVec2 GUI_System_size        = ImVec2(300, 418);
-ImVec2 GUI_Tools_size         = ImVec2(300, 300);
-ImVec2 GUI_Debug_size         = ImVec2(300, 300);
-ImVec2 GUI_Teleporter_size    = ImVec2(300, 300);
-ImVec2 GUI_CacheStats_size    = ImVec2(300, 300);
-ImVec2 GUI_Documentation_size = ImVec2(700, 500);
+bool GUI_Overlay_run = false;
 
-bool GUI_Teleporter_show    = false;
-bool GUI_Documentation_show = false;
+ImVec2 GUI_System_size     = ImVec2(300, 500);
+ImVec2 GUI_Game_size       = ImVec2(500, 500);
+ImVec2 GUI_Cosmetics_size  = ImVec2(300, 578);
+ImVec2 GUI_Tools_size      = ImVec2(300, 500);
+ImVec2 GUI_Speed_size      = ImVec2(400, 400);
+ImVec2 GUI_Teleporter_size = ImVec2(120, 180);
+ImVec2 GUI_Overlay_size    = ImVec2(300, 300);
+ImVec2 GUI_Debug_size      = ImVec2(300, 300);
 
-uint32 GUI_Overlay_x = 0;
-uint32 GUI_Overlay_y = 0;
+bool GUI_Speed_show      = false;
+bool GUI_Teleporter_show = false;
 
 static void BuildFonts()
 {
@@ -702,55 +700,44 @@ void GUI_Game_ResetMotionState()
 //	GUI_POP_DISABLE(ActorAvailable());
 //}
 
-#define GUI_InputExSpeed(branch)                                                  \
-if (GUI_InputEx<float32>(Locale.Game.Speed.branch, Config.Game.Speed.branch, 0.1f)) \
-{                                                                             \
-	Game_Speed_Update();                                                      \
-}
-
-void GUI_Game_Speed()
-{
-	GUI_SECTION_HEADER_START(Game.Speed);
-	if (Config.Game.Speed.enable)
-	{
-		Game_Speed_Toggle(Config.Game.Speed.enable);
-	}
-	else
-	{
-		Game_Speed_Toggle(DefaultConfig.Game.Speed.enable);
-	}
-	GUI_SECTION_HEADER_END(Game.Speed);
-	ImGui::PushItemWidth(150);
-	ImGui::Text(Locale.Game.Speed.Main.header);
-	GUI_InputExSpeed(Main.base);
-	GUI_InputExSpeed(Main.turbo);
-	GUI_InputExSpeed(Main.actor);
-	GUI_InputExSpeed(Main.enemy);
-	ImGui::Text(Locale.Game.Speed.Dante.header);
-	GUI_InputExSpeed(Dante.rebellion);
-	GUI_InputExSpeed(Dante.cerberus);
-	GUI_InputExSpeed(Dante.agniRudra);
-	GUI_InputExSpeed(Dante.nevan);
-	GUI_InputExSpeed(Dante.beowulf);
-	GUI_InputExSpeed(Dante.sparda);
-	ImGui::Text(Locale.Game.Speed.Vergil.header);
-	GUI_InputExSpeed(Vergil.yamato);
-	GUI_InputExSpeed(Vergil.beowulf);
-	GUI_InputExSpeed(Vergil.forceEdge);
-	ImGui::Text(Locale.Game.Speed.NeroAngelo.header);
-	GUI_InputExSpeed(NeroAngelo.yamato);
-	GUI_InputExSpeed(NeroAngelo.beowulf);
-	GUI_InputExSpeed(NeroAngelo.forceEdge);
-	ImGui::Text(Locale.Game.Speed.Quicksilver.header);
-	GUI_InputExSpeed(Quicksilver.actor);
-	GUI_InputExSpeed(Quicksilver.enemy);
-	ImGui::PopItemWidth();
-	GUI_SECTION_FOOTER_START(Game.Speed);
-	Game_Speed_Toggle(DefaultConfig.Game.Speed.enable);
-	GUI_SECTION_FOOTER_END;
-}
-
-#undef GUI_InputExSpeed
+//#define GUI_InputExSpeed(branch)                                                  \
+//if (GUI_InputEx<float32>(Locale.Game.Speed.branch, Config.Game.Speed.branch, 0.1f)) \
+//{                                                                             \
+//	Game_Speed_Update();                                                      \
+//}
+//
+//void GUI_Game_Speed()
+//{
+//	GUI_SECTION_HEADER_START(Game.Speed);
+//	if (Config.Game.Speed.enable)
+//	{
+//		Game_Speed_Toggle(Config.Game.Speed.enable);
+//	}
+//	else
+//	{
+//		Game_Speed_Toggle(DefaultConfig.Game.Speed.enable);
+//	}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//	GUI_SECTION_HEADER_END(Game.Speed);
+//
+//
+//
+//	GUI_SECTION_FOOTER_START(Game.Speed);
+//	Game_Speed_Toggle(DefaultConfig.Game.Speed.enable);
+//	GUI_SECTION_FOOTER_END;
+//}
+//
+//#undef GUI_InputExSpeed
 
 
 
@@ -769,13 +756,16 @@ void GUI_Game_StyleSwitcher()
 		//else
 		{
 			//System_Actor_Toggle();
+
+
+
 			if (Config.Game.StyleSwitcher.enable)
 			{
-				Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
+				Game_StyleSwitcher_Toggle(true);
 			}
 			else
 			{
-				Game_StyleSwitcher_Toggle(DefaultConfig.Game.StyleSwitcher.enable);
+				Game_StyleSwitcher_Toggle(false);
 			}
 		}
 	}
@@ -1055,8 +1045,8 @@ void GUI_Game_Draw()
 		ImGui::Text("");
 		GUI_Game_ResetMotionState();
 		ImGui::Text("");
-		GUI_Game_Speed();
-		ImGui::Text("");
+		//GUI_Game_Speed();
+		//ImGui::Text("");
 		//GUI_Game_Style();
 		//ImGui::Text("");
 		GUI_Game_StyleSwitcher();
@@ -1328,8 +1318,8 @@ void GUI_System_Draw()
 		ImGui::Text("");
 		GUI_System_Event();
 		ImGui::Text("");
-		//GUI_System_File();
-		//ImGui::Text("");
+		GUI_System_File();
+		ImGui::Text("");
 		GUI_System_Input();
 		ImGui::Text("");
 		GUI_System_Window();
@@ -1338,9 +1328,127 @@ void GUI_System_Draw()
 	ImGui::PopStyleVar(3);
 }
 
+void GUI_Tools_Overlay()
+{
+	GUI_SECTION_HEADER(Tools.Overlay);
+	ImGui::PushItemWidth(100);
+	GUI_Combo<uint8>
+	(
+		"",
+		Locale.Tools.Overlay.FontSize.items,
+		countof(Locale.Tools.Overlay.FontSize.items),
+		Config.Tools.Overlay.fontSizeIndex
+	);
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+	GUI_ColorEdit4("", Config.Tools.Overlay.color);
+	GUI_Checkbox(Locale.Tools.Overlay.heapFrame, Config.Tools.Overlay.heapFrame);
+	GUI_Checkbox(Locale.Tools.Overlay.focus, Config.Tools.Overlay.focus);
+	GUI_SECTION_FOOTER_START(Tools.Overlay);
+	GUI_Overlay_run = false;
+	GUI_SECTION_FOOTER_END;
+}
+
+void GUI_Tools_Repair()
+{
+	GUI_Hyperlink(Locale.Tools.Repair.header);
+	ImGui::Text("");
+	auto ResetEquipment = []()
+	{
+		if (!InGame())
+		{
+			return;
+		}
+		auto count = GetActorCount();
+		for (uint8 actor = 0; actor < count; actor++)
+		{
+			auto & baseAddr = actorBaseAddr[actor];
+			if (!baseAddr)
+			{
+				continue;
+			}
+			auto & character = *(uint8 *)(baseAddr + 0x78);
+			auto equipment = (uint8 *)(baseAddr + 0x6498);
+			vp_memset(equipment, 0, 8);
+			switch (character)
+			{
+			case CHAR_DANTE:
+				equipment[0] = WEAPON_REBELLION;
+				equipment[1] = WEAPON_CERBERUS;
+				equipment[2] = WEAPON_EBONY_IVORY;
+				equipment[3] = WEAPON_SHOTGUN;
+				break;
+			case CHAR_BOB:
+				equipment[0] = WEAPON_YAMATO_BOB;
+				break;
+			case CHAR_LADY:
+				equipment[2] = WEAPON_KALINA_ANN;
+				equipment[4] = 11;
+				break;
+			case CHAR_VERGIL:
+				equipment[0] = WEAPON_YAMATO;
+				equipment[1] = WEAPON_BEOWULF_VERGIL;
+				equipment[2] = WEAPON_FORCE_EDGE;
+				break;
+			}
+		}
+	};
+	auto ResetRangedWeaponLevels = []()
+	{
+		if (!InGame())
+		{
+			return;
+		}
+		auto count = GetActorCount();
+		for (uint8 actor = 0; actor < count; actor++)
+		{
+			auto & baseAddr = actorBaseAddr[actor];
+			if (!baseAddr)
+			{
+				continue;
+			}
+			auto level = (uint32 *)(baseAddr + 0x64E4);
+			level[0] = 0;
+			level[1] = 0;
+		}
+	};
+	if (GUI_Button(Locale.Tools.Repair.resetEquipment))
+	{
+		ResetEquipment();
+	}
+	if (GUI_Button(Locale.Tools.Repair.resetRangedWeaponLevels))
+	{
+		ResetRangedWeaponLevels();
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void GUI_Tools_Speed()
+{
+	if (GUI_Hyperlink(Locale.Tools.Speed.header))
+	{
+		GUI_Speed_show = true;
+	}
+}
+
 void GUI_Tools_Teleporter()
 {
-	if (GUI_Hyperlink("Teleporter"))
+	if (GUI_Hyperlink(Locale.Tools.Teleporter.header))
 	{
 		GUI_Teleporter_show = true;
 	}
@@ -1360,104 +1468,110 @@ void GUI_Tools_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Tools", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
+		GUI_Tools_Overlay();
+		ImGui::Text("");
+		GUI_Tools_Repair();
+		ImGui::Text("");
+		GUI_Tools_Speed();
+		ImGui::Text("");
 		GUI_Tools_Teleporter();
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
 }
 
-void GUI_Debug_Action()
-{
-	GUI_Hyperlink("Action");
-	ImGui::Text("");
-	ResetRangedWeaponLevelStart:
-	if (GUI_Button("Reset Ranged Weapon Level"))
-	{
-		byte * addr = *(byte **)(appBaseAddr + 0xC90E28);
-		if (!addr)
-		{
-			goto ResetRangedWeaponLevelEnd;
-		}
-		addr = *(byte **)(addr + 0x18);
-		if (!addr)
-		{
-			goto ResetRangedWeaponLevelEnd;
-		}
-		uint32 * level = (uint32 *)(addr + 0x64E4);
-		level[0] = 0;
-		level[1] = 0;
-	}
-	ResetRangedWeaponLevelEnd:
-	ResetEquipmentStart:
-	if (GUI_Button("Reset Equipment"))
-	{
-		byte * addr = *(byte **)(appBaseAddr + 0xC90E28);
-		if (!addr)
-		{
-			goto ResetRangedWeaponLevelEnd;
-		}
-		addr = *(byte **)(addr + 0x18);
-		if (!addr)
-		{
-			goto ResetRangedWeaponLevelEnd;
-		}
-		uint8 * equipment = (uint8 *)(addr + 0x6498);
-		equipment[0] = WEAPON_REBELLION;
-		equipment[1] = WEAPON_CERBERUS;
-		equipment[2] = WEAPON_EBONY_IVORY;
-		equipment[3] = WEAPON_SHOTGUN;
-	}
-	ResetEquipmentEnd:
-	return;
-}
+//void GUI_Debug_Action()
+//{
+//	GUI_Hyperlink("Action");
+//	ImGui::Text("");
+//	ResetRangedWeaponLevelStart:
+//	if (GUI_Button("Reset Ranged Weapon Level"))
+//	{
+//		byte * addr = *(byte **)(appBaseAddr + 0xC90E28);
+//		if (!addr)
+//		{
+//			goto ResetRangedWeaponLevelEnd;
+//		}
+//		addr = *(byte **)(addr + 0x18);
+//		if (!addr)
+//		{
+//			goto ResetRangedWeaponLevelEnd;
+//		}
+//		uint32 * level = (uint32 *)(addr + 0x64E4);
+//		level[0] = 0;
+//		level[1] = 0;
+//	}
+//	ResetRangedWeaponLevelEnd:
+//	ResetEquipmentStart:
+//	if (GUI_Button("Reset Equipment"))
+//	{
+//		byte * addr = *(byte **)(appBaseAddr + 0xC90E28);
+//		if (!addr)
+//		{
+//			goto ResetRangedWeaponLevelEnd;
+//		}
+//		addr = *(byte **)(addr + 0x18);
+//		if (!addr)
+//		{
+//			goto ResetRangedWeaponLevelEnd;
+//		}
+//		uint8 * equipment = (uint8 *)(addr + 0x6498);
+//		equipment[0] = WEAPON_REBELLION;
+//		equipment[1] = WEAPON_CERBERUS;
+//		equipment[2] = WEAPON_EBONY_IVORY;
+//		equipment[3] = WEAPON_SHOTGUN;
+//	}
+//	ResetEquipmentEnd:
+//	return;
+//}
 
-void GUI_Debug_Overlay()
-{
-	GUI_Hyperlink(Locale.GUI.Overlay.header);
-	ImGui::Text("");
-	GUI_Checkbox(Locale.GUI.Overlay.show, Config.GUI.Overlay.show);
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(!Config.GUI.Overlay.show);
-	ImGui::PushItemWidth(100);
-	GUI_Combo<uint8>
-	(
-		"",
-		Locale.GUI.Overlay.FontSize.items,
-		countof(Locale.GUI.Overlay.FontSize.items),
-		Config.GUI.Overlay.fontSizeIndex
-	);
-	ImGui::PopItemWidth();
-	ImGui::SameLine();
-	GUI_ColorEdit4("", Config.GUI.Overlay.color);
-	GUI_Checkbox(Locale.GUI.Overlay.cacheStats, Config.GUI.Overlay.cacheStats);
-	if (GUI_Button(Locale.GUI.Overlay.resetPosition))
-	{
-		ImGui::SetWindowPos("GUI_Overlay", ImVec2(0, 0));
-	}
-	GUI_POP_DISABLE(!Config.GUI.Overlay.show);
-}
+//void GUI_Debug_Overlay()
+//{
+//	GUI_Hyperlink(Locale.GUI.Overlay.header);
+//	ImGui::Text("");
+//	GUI_Checkbox(Locale.GUI.Overlay.show, Config.GUI.Overlay.show);
+//	ImGui::Text("");
+//	GUI_PUSH_DISABLE(!Config.GUI.Overlay.show);
+//	ImGui::PushItemWidth(100);
+//	GUI_Combo<uint8>
+//	(
+//		"",
+//		Locale.GUI.Overlay.FontSize.items,
+//		countof(Locale.GUI.Overlay.FontSize.items),
+//		Config.GUI.Overlay.fontSizeIndex
+//	);
+//	ImGui::PopItemWidth();
+//	ImGui::SameLine();
+//	GUI_ColorEdit4("", Config.GUI.Overlay.color);
+//	GUI_Checkbox(Locale.GUI.Overlay.cacheStats, Config.GUI.Overlay.cacheStats);
+//	if (GUI_Button(Locale.GUI.Overlay.resetPosition))
+//	{
+//		ImGui::SetWindowPos("GUI_Overlay", ImVec2(0, 0));
+//	}
+//	GUI_POP_DISABLE(!Config.GUI.Overlay.show);
+//}
 
-void GUI_Debug_Draw()
-{
-	static bool run = false;
-	if (!run)
-	{
-		run = true;
-		ImGui::SetNextWindowSize(ImVec2(GUI_Tools_size.x + 16, GUI_Tools_size.y + 16));
-		ImGui::SetNextWindowPos(ImVec2(0, 25));
-	}
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
-	if (ImGui::Begin("GUI_Debug", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
-	{
-		GUI_Debug_Action();
-		ImGui::Text("");
-		GUI_Debug_Overlay();
-	}
-	ImGui::End();
-	ImGui::PopStyleVar(3);
-}
+//void GUI_Debug_Draw()
+//{
+//	static bool run = false;
+//	if (!run)
+//	{
+//		run = true;
+//		ImGui::SetNextWindowSize(ImVec2(GUI_Tools_size.x + 16, GUI_Tools_size.y + 16));
+//		ImGui::SetNextWindowPos(ImVec2(0, 25));
+//	}
+//	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+//	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+//	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+//	if (ImGui::Begin("GUI_Debug", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+//	{
+//		GUI_Debug_Action();
+//		//ImGui::Text("");
+//		//GUI_Debug_Overlay();
+//	}
+//	ImGui::End();
+//	ImGui::PopStyleVar(3);
+//}
 
 void GUI_Main_Tab(const char * str, uint8 index)
 {
@@ -1515,33 +1629,194 @@ void GUI_Main_Draw()
 	ImGui::PopStyleVar(4);
 	switch (activeTab)
 	{
+	case TAB_SYSTEM:
+		GUI_System_Draw();
+		break;
 	case TAB_GAME:
 		GUI_Game_Draw();
 		break;
 	case TAB_COSMETICS:
 		GUI_Cosmetics_Draw();
 		break;
-	case TAB_SYSTEM:
-		GUI_System_Draw();
-		break;
 	case TAB_TOOLS:
 		GUI_Tools_Draw();
-		break;
-	case TAB_DEBUG:
-		GUI_Debug_Draw();
 		break;
 	}
 }
 
-#define GUI_InputReadOnly(label, var)                                                                                  \
-{                                                                                                                      \
-	char buffer[64];                                                                                                   \
-	snprintf(buffer, sizeof(buffer), "%u", var);                                                                       \
-	ImGui::PushID(GUI_id);                                                                                             \
-	GUI_id++;                                                                                                          \
-	ImGui::InputText(label, buffer, sizeof(buffer), ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_ReadOnly); \
-	ImGui::PopID();                                                                                                    \
+
+
+
+
+
+ImVec2 Teleporter_size = {};
+
+
+
+
+
+
+void GUI_Speed_Draw()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		ImGui::SetNextWindowSize(ImVec2((GUI_Speed_size.x + 16), (GUI_Speed_size.y + 16)));
+		ImGui::SetNextWindowPos(ImVec2(530, 40));
+	}
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	if (ImGui::Begin("Speed", &GUI_Speed_show, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse))
+	{
+
+		{
+			auto pos = ImGui::GetWindowPos();
+			ImGui::Text("%f %f", pos.x, pos.y);
+		}
+
+		{
+			auto & size = Teleporter_size;
+			ImGui::Text("%f %f", size.x, size.y);
+		}
+		
+
+
+
+
+
+		auto InputExSpeed = []
+		(
+			const char * label,
+			float32    & var
+		)
+		{
+			if (GUI_InputEx<float32>(label, var, 0.1f))
+			{
+				Speed_Update(Config);
+			}
+		};
+		auto InputExSpeedMulti = [&]
+		(
+			const char ** label,
+			float32    *  var,
+			uint8         count
+		)
+		{
+			for (uint8 index = 0; index < count; index++)
+			{
+				InputExSpeed(label[index], var[index]);
+			}
+		};
+		ImGui::PushItemWidth(200);
+		ImGui::Text(Locale.Speed.Main.header);
+		InputExSpeed
+		(
+			Locale.Speed.Main.base,
+			Config.Speed.Main.base
+		);
+		InputExSpeed
+		(
+			Locale.Speed.Main.turbo,
+			Config.Speed.Main.turbo
+		);
+		InputExSpeed
+		(
+			Locale.Speed.Main.actor,
+			Config.Speed.Main.actor
+		);
+		InputExSpeed
+		(
+			Locale.Speed.Main.enemy,
+			Config.Speed.Main.enemy
+		);
+		ImGui::Text(Locale.Speed.Devil.header);
+		ImGui::Text(Locale.Speed.Devil.Dante.header);
+		InputExSpeedMulti
+		(
+			Locale.Speed.Devil.Dante.label,
+			Config.Speed.Devil.dante,
+			countof(Config.Speed.Devil.dante)
+		);
+		ImGui::Text(Locale.Speed.Devil.Vergil.header);
+		InputExSpeedMulti
+		(
+			Locale.Speed.Devil.Vergil.label,
+			Config.Speed.Devil.vergil,
+			countof(Config.Speed.Devil.vergil)
+		);
+		ImGui::Text(Locale.Speed.Devil.NeroAngelo.header);
+		InputExSpeedMulti
+		(
+			Locale.Speed.Devil.NeroAngelo.label,
+			Config.Speed.Devil.neroAngelo,
+			countof(Config.Speed.Devil.neroAngelo)
+		);
+		ImGui::Text(Locale.Speed.Quicksilver.header);
+		InputExSpeed
+		(
+			Locale.Speed.Quicksilver.actor,
+			Config.Speed.Quicksilver.actor
+		);
+		InputExSpeed
+		(
+			Locale.Speed.Quicksilver.enemy,
+			Config.Speed.Quicksilver.enemy
+		);
+		ImGui::PopItemWidth();
+		ImGui::Text("");
+		if (GUI_Button("Reset"))
+		{
+			memcpy(&Config.Speed, &DefaultConfig.Speed, sizeof(Config.Speed));
+			SaveConfig();
+			Speed_Update(DefaultConfig);
+		}
+	}
+	ImGui::End();
+	ImGui::PopStyleVar(3);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//
+//
+//#define GUI_InputReadOnly(label, var)                                                                                  \
+//{                                                                                                                      \
+//	char buffer[64];                                                                                                   \
+//	snprintf(buffer, sizeof(buffer), "%u", var);                                                                       \
+//	ImGui::PushID(GUI_id);                                                                                             \
+//	GUI_id++;                                                                                                          \
+//	ImGui::InputText(label, buffer, sizeof(buffer), ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_ReadOnly); \
+//	ImGui::PopID();                                                                                                    \
+//}
+//
+//
+
+
+
+
+
+
+
+
+
 
 void GUI_Teleporter_Draw()
 {
@@ -1550,54 +1825,95 @@ void GUI_Teleporter_Draw()
 	{
 		run = true;
 		ImGui::SetNextWindowSize(ImVec2(GUI_Teleporter_size.x + 16, GUI_Teleporter_size.y + 16));
-		ImGui::SetNextWindowPos(ImVec2(500, 500));
+		ImGui::SetNextWindowPos(ImVec2(580, 500));
 	}
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("Teleporter", &GUI_Teleporter_show, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
 	{
+
+
+
+
+
+
+
+
+		{
+			Teleporter_size = ImGui::GetWindowSize();
+			
+
+		}
+
+
 		{
 			if (!InGame())
 			{
 				goto InvalidPointer;
 			}
 
-			byte * addr = *(byte **)(appBaseAddr + 0xCA8918);
-			if (!addr)
+
+			VARS vars;
+
+			if (!vars.init)
 			{
 				goto InvalidPointer;
 			}
-			addr = *(byte **)(addr + 0x40);
-			if (!addr)
-			{
-				goto InvalidPointer;
 
-			}
-			uint32 & currentRoom     = *(uint32 *)(addr + 0x18);
-			uint32 & currentPosition = *(uint32 *)(addr + 0x1C);
-			uint32 & event           = *(uint32 *)(addr + 0x20);
+			
+			
+			uint32 & room         = *vars.room;
+			uint32 & position     = *vars.position;
+			uint32 & event        = *vars.event;
+			uint16 & nextRoom     = *vars.nextRoom;
+			uint16 & nextPosition = *vars.nextPosition;
 
-			addr = *(byte **)(appBaseAddr + 0xCA8918);
-			if (!addr)
-			{
 
-				goto InvalidPointer;
-			}
-			addr = *(byte **)(addr + 0x60);
-			if (!addr)
-			{
+			//byte32 * flags        = vars.flags;
+			//uint32 & mission      = *vars.mission;
 
-				goto InvalidPointer;
 
-			}
-			uint16 & nextRoom     = *(uint16 *)(addr + 0x164);
-			uint16 & nextPosition = *(uint16 *)(addr + 0x166);
+
+
+
+
+
+			//byte * addr = *(byte **)(appBaseAddr + 0xCA8918);
+			//if (!addr)
+			//{
+			//	goto InvalidPointer;
+			//}
+			//addr = *(byte **)(addr + 0x40);
+			//if (!addr)
+			//{
+			//	goto InvalidPointer;
+
+			//}
+			//uint32 & currentRoom     = *(uint32 *)(addr + 0x18);
+			//uint32 & currentPosition = *(uint32 *)(addr + 0x1C);
+			//uint32 & event           = *(uint32 *)(addr + 0x20);
+
+			//addr = *(byte **)(appBaseAddr + 0xCA8918);
+			//if (!addr)
+			//{
+
+			//	goto InvalidPointer;
+			//}
+			//addr = *(byte **)(addr + 0x60);
+			//if (!addr)
+			//{
+
+			//	goto InvalidPointer;
+
+			//}
+			//uint16 & nextRoom     = *(uint16 *)(addr + 0x164);
+			//uint16 & nextPosition = *(uint16 *)(addr + 0x166);
 
 			ImGui::PushItemWidth(100);
 			ImGui::Text("Current");
-			GUI_InputReadOnly("", currentRoom);
-			GUI_InputReadOnly("", currentPosition);
+			GUI_Input("", room, false, ImGuiInputTextFlags_ReadOnly);
+			GUI_Input("", position, false, ImGuiInputTextFlags_ReadOnly);
 			ImGui::Text("Next");
 			GUI_InputEx<uint16>("", nextRoom);
 			GUI_InputEx<uint16>("", nextPosition);
@@ -1616,77 +1932,43 @@ void GUI_Teleporter_Draw()
 	ImGui::PopStyleVar(3);
 }
 
-#undef GUI_InputReadOnly
+//#undef GUI_InputReadOnly
+
+
+
 
 void GUI_Overlay_Draw()
 {
-	static bool run = false;
-	if (!run)
+	if (!GUI_Overlay_run)
 	{
-		run = true;
-		ImGui::SetNextWindowSize(ImVec2(GUI_CacheStats_size.x + 16, GUI_CacheStats_size.y + 16));
-		ImGui::SetNextWindowPos(ImVec2(Config.GUI.Overlay.x, Config.GUI.Overlay.y));
+		GUI_Overlay_run = true;
+		ImGui::SetNextWindowSize(ImVec2(GUI_Overlay_size.x + 16, GUI_Overlay_size.y + 16));
+		ImGui::SetNextWindowPos(ImVec2(Config.Tools.Overlay.x, Config.Tools.Overlay.y));
 	}
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
-	if (ImGui::Begin("GUI_Overlay", &Config.GUI.Overlay.show, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::Begin("GUI_Overlay", &Config.Tools.Overlay.enable, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		{
 			ImVec2 pos = ImGui::GetWindowPos();
-			if ((Config.GUI.Overlay.x != pos.x) || (Config.GUI.Overlay.y != pos.y))
+			if ((Config.Tools.Overlay.x != pos.x) || (Config.Tools.Overlay.y != pos.y))
 			{
-				Config.GUI.Overlay.x = pos.x;
-				Config.GUI.Overlay.y = pos.y;
+				Config.Tools.Overlay.x = pos.x;
+				Config.Tools.Overlay.y = pos.y;
 				SaveConfig();
-				Log("Saved Overlay position.");
 			}
 		}
 		ImGuiIO & io = ImGui::GetIO();
-		ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_8 + Config.GUI.Overlay.fontSizeIndex]);
-		ImGui::PushStyleColor(ImGuiCol_Text, *(ImVec4 *)Config.GUI.Overlay.color);
-		if (Config.GUI.Overlay.cacheStats)
+		ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_8 + Config.Tools.Overlay.fontSizeIndex]);
+		ImGui::PushStyleColor(ImGuiCol_Text, *(ImVec4 *)Config.Tools.Overlay.color);
+		if (Config.Tools.Overlay.heapFrame)
 		{
-			ImGui::Text(Locale.GUI.Overlay.cacheStats);
-			byte * cacheAddr[] =
-			{
-				(appBaseAddr + 0xCAE7D0),
-				(appBaseAddr + 0xCF1270),
-				(appBaseAddr + 0xCAB230),
-				(appBaseAddr + 0xCB9ED0),
-				(appBaseAddr + 0xCEFFD0),
-				(appBaseAddr + 0xCAA840),
-				(appBaseAddr + 0xCA8958),
-				(appBaseAddr + 0xCAB150),
-				(appBaseAddr + 0xCAAAE8),
-				(appBaseAddr + 0xCF0AA0),
-			};
-			const char * cacheStr[] =
-			{
-				"Generator",
-				"Value",
-				"Effect",
-				"Particle",
-				"Effect System",
-				"After Image, Effect System",
-				"Heap Frame 1",
-				"Heap Frame 2",
-				"Texture Manager 1",
-				"Texture Manager 2",
-			};
-			for (uint8 i = 0; i < countof(cacheAddr); i++)
-			{
-				ImGui::Text("%u", *(uint32 *)cacheAddr[i]);
-				ImGui::SameLine(100);
-				ImGui::Text(cacheStr[i]);
-			}
+			auto & value = *(uint32 *)(appBaseAddr + 0xCA8958);
+			ImGui::Text("%s %u", Locale.Tools.Overlay.heapFrame, value);
 		}
-		ImGui::PopStyleColor();
-
-
-
-
+		if (Config.Tools.Overlay.focus)
 		{
 			ImVec4 color = ImVec4(0, 1, 0, 1);
 			if (GetForegroundWindow() != mainWindow)
@@ -1694,10 +1976,10 @@ void GUI_Overlay_Draw()
 				color = ImVec4(1, 0, 0, 1);
 			}
 			ImGui::PushStyleColor(ImGuiCol_Text, color);
-			ImGui::Text("Focus");
+			ImGui::Text(Locale.Tools.Overlay.focus);
 			ImGui::PopStyleColor();
 		}
-		
+		ImGui::PopStyleColor();
 		ImGui::PopFont();
 	}
 	ImGui::End();
@@ -1705,27 +1987,27 @@ void GUI_Overlay_Draw()
 	ImGui::PopStyleVar(3);
 }
 
-void GUI_Documentation_Draw()
-{
-	static bool run = false;
-	if (!run)
-	{
-		run = true;
-		ImGui::SetNextWindowSize(ImVec2(GUI_Documentation_size.x + 16, GUI_Documentation_size.y + 16));
-		ImGui::SetNextWindowPos(ImVec2(516, 25));
-	}
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
-	if (ImGui::Begin("Documentation", &GUI_Documentation_show, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
-	{
-		ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + 200);
-		ImGui::Text(Locale.Game.description);
-		ImGui::PopTextWrapPos();
-	}
-	ImGui::End();
-	ImGui::PopStyleVar(3);
-}
+//void GUI_Documentation_Draw()
+//{
+//	static bool run = false;
+//	if (!run)
+//	{
+//		run = true;
+//		ImGui::SetNextWindowSize(ImVec2(GUI_Documentation_size.x + 16, GUI_Documentation_size.y + 16));
+//		ImGui::SetNextWindowPos(ImVec2(516, 25));
+//	}
+//	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+//	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+//	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+//	if (ImGui::Begin("Documentation", &GUI_Documentation_show, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
+//	{
+//		ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + 200);
+//		ImGui::Text(Locale.Game.description);
+//		ImGui::PopTextWrapPos();
+//	}
+//	ImGui::End();
+//	ImGui::PopStyleVar(3);
+//}
 
 void DrawRestartOverlay()
 {
@@ -1764,18 +2046,22 @@ void GUI_Render()
 	{
 		GUI_Main_Draw();
 	}
+	if (Config.Tools.Overlay.enable)
+	{
+		GUI_Overlay_Draw();
+	}
+	if (GUI_Speed_show)
+	{
+		GUI_Speed_Draw();
+	}
 	if (GUI_Teleporter_show)
 	{
 		GUI_Teleporter_Draw();
 	}
-	if (Config.GUI.Overlay.show)
-	{
-		GUI_Overlay_Draw();
-	}
-	if (GUI_Documentation_show)
-	{
-		GUI_Documentation_Draw();
-	}
+	//if (GUI_Documentation_show)
+	//{
+	//	GUI_Documentation_Draw();
+	//}
 	if (restart)
 	{
 		DrawRestartOverlay();

@@ -10,6 +10,86 @@ struct CONFIG
 	{
 		struct
 		{
+			float32 base  = 1;
+			float32 turbo = 1.2f;
+			float32 actor = 1;
+			float32 enemy = 1;
+		}
+		Main;
+		struct
+		{
+			float32 dante[6] =
+			{
+				1.1f,
+				1.2f,
+				1.05f,
+				1.1f,
+				1.05f,
+				1.1f,
+			};
+			float32 vergil[3] =
+			{
+				1.2f,
+				1.2f,
+				1.2f,
+			};
+			float32 neroAngelo[3] =
+			{
+				1,
+				1,
+				1,
+			};
+		}
+		Devil;
+		struct
+		{
+			float32 actor = 1.05f;
+			float32 enemy = 0.33f;
+		}
+		Quicksilver;
+	}
+	Speed;
+	struct
+	{
+		struct
+		{
+			bool forceSingleActor = false;
+			bool disableIdleTimer = false;
+		}
+		Actor;
+		struct
+		{
+			bool invertX = false;
+		}
+		Camera;
+		struct
+		{
+			bool skipIntro     = false;
+			bool skipCutscenes = false;
+		}
+		Event;
+		// @Todo: Remove.
+		struct
+		{
+			bool preferLocalFiles = true;
+		}
+		File;
+		struct
+		{
+			bool hideMouseCursor = true;
+		}
+		Input;
+		struct
+		{
+			bool forceFocus = true;
+		}
+		Window;
+	}
+	System;
+	struct
+	{
+		struct
+		{
 			bool   enable         = false;
 			uint32 mission        = 1;
 			uint32 mode           = MODE_NORMAL;
@@ -168,49 +248,6 @@ struct CONFIG
 		ResetMotionState;
 		struct
 		{
-			bool enable = false;
-			struct
-			{
-				float32 base  = 1;
-				float32 turbo = 1.2f;
-				float32 actor = 1;
-				float32 enemy = 1;
-			}
-			Main;
-			struct
-			{
-				float32 rebellion = 1.1f;
-				float32 cerberus  = 1.2f;
-				float32 agniRudra = 1.05f;
-				float32 nevan     = 1.1f;
-				float32 beowulf   = 1.05f;
-				float32 sparda    = 1.1f;
-			}
-			Dante;
-			struct
-			{
-				float32 yamato    = 1.2f;
-				float32 beowulf   = 1.2f;
-				float32 forceEdge = 1.2f;
-			}
-			Vergil;
-			struct
-			{
-				float32 yamato    = 1;
-				float32 beowulf   = 1;
-				float32 forceEdge = 1;
-			}
-			NeroAngelo;
-			struct
-			{
-				float32 actor = 1.05f;
-				float32 enemy = 0.33f;
-			}
-			Quicksilver;
-		}
-		Speed;
-		struct
-		{
 			bool enable               = false;
 			bool noDoubleTap          = false;
 		}
@@ -357,63 +394,19 @@ struct CONFIG
 	{
 		struct
 		{
-			bool forceSingleActor = false;
-			bool disableIdleTimer = false;
-		}
-		Actor;
-		struct
-		{
-			bool invertX = false;
-		}
-		Camera;
-		struct
-		{
-			bool skipIntro     = false;
-			bool skipCutscenes = false;
-		}
-		Event;
-		struct
-		{
-			bool preferLocalFiles = true;
-		}
-		File;
-		struct
-		{
-			bool hideMouseCursor = true;
-		}
-		Input;
-		struct
-		{
-			bool forceFocus = true;
-		}
-		Window;
-	}
-	System;
-	struct
-	{
-		struct
-		{
-			bool    show          = false;
+			bool    enable        = false;
 			float32 x             = 0;
 			float32 y             = 0;
 			uint8   fontSizeIndex = 2;
 			float32 color[4]      = { 1, 0, 0, 1 };
-			bool    cacheStats    = true;
+			bool    heapFrame     = true;
+			bool    focus         = true;
 		}
 		Overlay;
 	}
-	GUI;
+	Tools;
 };
 #pragma pack(pop)
 
 extern CONFIG Config;
 extern CONFIG DefaultConfig;
-
-// @Todo: Redo.
-
-#define MAGIC_6                                 \
-Config.Game.Dante.Rebellion.unlockQuickDrive || \
-Config.Game.Multiplayer.enable ||               \
-Config.Game.ResetMotionState.enable ||          \
-Config.Game.StyleSwitcher.enable ||             \
-Config.Game.WeaponSwitcher.enable

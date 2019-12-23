@@ -84,6 +84,8 @@ void * HighAlloc(uint64 size)
 	return Alloc(size, pos, end);
 }
 
+// @Todo: Add template support or use void *.
+
 void WriteAddress(byte * addr, byte * dest, uint64 size, byte header, uint64 padSize, byte padValue)
 {
 	dword p = 0;

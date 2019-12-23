@@ -71,9 +71,6 @@
     <ClCompile Include="Game\Mobility.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Speed.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Other.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -137,6 +134,10 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Event.cpp" />
+    <ClCompile Include="System\Motion.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Speed.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -228,9 +229,6 @@
     <ClInclude Include="Game\Mobility.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Speed.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Other.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -313,5 +311,9 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Event.h" />
+    <ClInclude Include="System\Motion.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Speed.h" />
   </ItemGroup>
 </Project>

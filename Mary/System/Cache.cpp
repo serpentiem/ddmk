@@ -153,6 +153,8 @@ static void CreateCache()
 	}
 }
 
+// @Todo: Recheck.
+
 void System_Cache_Init()
 {
 	LogFunction();

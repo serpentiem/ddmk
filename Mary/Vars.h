@@ -584,8 +584,126 @@ enum FILE_ITEM_STATUS_
 
 
 
+enum MotionRebellion
+{
+	Combo1Part1 = 3,
+	Combo1Part2,
+	Combo1Part3,
+	Combo2Part2,
+	StingerLevel2 = 14,
+};
 
 
+enum SpeedDevil
+{
+	DanteRebellion,
+	DanteCerberus,
+	DanteAgniRudra,
+	DanteNevan,
+	DanteBeowulf,
+	DanteSparda,
+	VergilYamato,
+	VergilBeowulf,
+	VergilForceEdge,
+	NeroAngeloYamato,
+	NeroAngeloBeowulf,
+	NeroAngeloForceEdge,
+};
+
+
+// SpeedDevil::DanteRebellion
+
+
+// SpeedDevilDanteRebellion
+// SpeedDevilVergilYamato
+// SpeedDevilNeroAngeloYamato
+
+
+
+
+enum SPEED_DEVIL_
+{
+	SPEED_DEVIL_DANTE_REBELLION,
+	SPEED_DEVIL_DANTE_CERBERUS,
+	SPEED_DEVIL_DANTE_AGNI_RUDRA,
+	SPEED_DEVIL_DANTE_NEVAN,
+	SPEED_DEVIL_DANTE_BEOWULF,
+	SPEED_DEVIL_DANTE_SPARDA,
+	SPEED_DEVIL_VERGIL_YAMATO = 8,
+	SPEED_DEVIL_VERGIL_BEOWULF,
+	SPEED_DEVIL_VERGIL_FORCE_EDGE,
+	SPEED_DEVIL_NERO_ANGELO_YAMATO,
+	SPEED_DEVIL_NERO_ANGELO_BEOWULF,
+	SPEED_DEVIL_NERO_ANGELO_FORCE_EDGE,
+};
+
+
+
+
+//extern byte8 * appBaseAddr;
+
+
+struct VARS
+{
+	bool     init;
+	uint32 * room;
+	uint32 * position;
+	uint32 * event;
+	uint16 * nextRoom;
+	uint16 * nextPosition;
+	byte32 * flags;
+	uint32 * mission;
+	VARS()
+	{
+		memset(this, 0, sizeof(*this));
+		{
+			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xCA8918);
+			if (!addr)
+			{
+				return;
+			}
+			if (!addr[8])
+			{
+				return;
+			}
+			room     = (uint32 *)(addr[8] + 0x18);
+			position = (uint32 *)(addr[8] + 0x1C);
+			event    = (uint32 *)(addr[8] + 0x20);
+			if (!addr[12])
+			{
+				return;
+			}
+			nextRoom     = (uint16 *)(addr[12] + 0x164);
+			nextPosition = (uint16 *)(addr[12] + 0x166);
+		}
+		{
+			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xC90E30);
+			if (!addr)
+			{
+				return;
+			}
+			if (!addr[1])
+			{
+				return;
+			}
+			flags = (byte32 *)addr[1];
+		}
+		mission = (uint32 *)(appBaseAddr + 0xC8F250);
+		init = true;
+	}
+};
+
+
+
+
+
+
+enum FILE_MODE_
+{
+	FILE_MODE_MEMORY,
+	FILE_MODE_ARCHIVE,
+	FILE_MODE_LOCAL,
+};
 
 
 

@@ -11,7 +11,7 @@ extern int    GUI_id;
 void GUI_Hide(uint32 milliseconds);
 
 template <typename T>
-bool GUI_Input(const char * label, T & var, bool hex = false)
+bool GUI_Input(const char * label, T & var, bool hex = false, ImGuiInputTextFlags extraFlags = 0)
 {
 	bool update = false;
 	char value[64];
@@ -35,6 +35,7 @@ bool GUI_Input(const char * label, T & var, bool hex = false)
 		else if constexpr (typematch(T, float32 )) { sprintf(value, "%.3f", var); }
 		flags |= ImGuiInputTextFlags_CharsDecimal;
 	}
+	flags |= extraFlags;
 	ImGui::PushID(GUI_id);
 	GUI_id++;
 	if (ImGui::InputText(label, value, sizeof(value), flags))
@@ -150,6 +151,19 @@ bool GUI_Combo(const char * label, const char ** items, T count, T & var, T pos 
 bool GUI_Button(const char * label, const ImVec2 & size = ImVec2());
 bool GUI_ColorEdit4(const char * label, float32 * var, bool save = true);
 bool GUI_ColorEdit4(float32 * var, bool save = true);
+
+
+
+
+
+
+
+
+
+
+
+
+// @Todo: Look into the possibility of templates for these macros.
 
 #define GUI_PUSH_DISABLE(condition)                                           \
 if (condition)                                                                \
