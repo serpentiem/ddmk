@@ -248,7 +248,7 @@ void GUI_Game_Dante()
 	{
 		ImGui::SameLine();
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
-		ImGui::TextWrapped("demo_pl000_00_3.pac");
+		ImGui::Text("demo_pl000_00_3.pac");
 		ImGui::PopStyleColor();
 	}
 	ImGui::Text(Locale.Game.Dante.EbonyIvory.header);
@@ -442,61 +442,36 @@ void GUI_Game_Mobility()
 
 void GUI_Game_Multiplayer()
 {
-	GUI_Hyperlink(Locale.Game.Multiplayer.header);
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Checkbox(Locale.Game.Multiplayer.enable, Config.Game.Multiplayer.enable))
+	auto Toggle = [](bool enable)
 	{
-		//if (!System_Cache_enable || !System_Input_extend)
-		//{
-		//	restart = true;
-		//}
-		//else
-		{
-			//System_Actor_Toggle();
-		}
-	}
-	GUI_POP_DISABLE(ActorAvailable());
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(!Config.Game.Multiplayer.enable);
+		System_Input_ToggleRangeExtension  (enable);
+		System_Input_ToggleMultiplayerFixes(enable);
+	};
+	GUI_SECTION_HEADER_START(Game.Multiplayer);
+	Toggle(Config.Game.Multiplayer.enable);
+	GUI_SECTION_HEADER_END(Game.Multiplayer);
+	constexpr uint8 count = (MAX_ACTOR - 1);
 	ImGui::PushItemWidth(100);
-	GUI_Slider("", Config.Game.Multiplayer.actorCount, 1, (MAX_ACTOR - 1));
-	for (uint8 i = 0; i < (MAX_ACTOR - 1); i++)
+	GUI_Slider("", Config.Game.Multiplayer.actorCount, 1, count);
+	for (uint8 index = 0; index < count; index++)
 	{
-		bool skip = (i >= Config.Game.Multiplayer.actorCount) ? true : false;
+		bool skip = (index >= Config.Game.Multiplayer.actorCount) ? true : false;
 		GUI_PUSH_DISABLE(skip);
 		GUI_Combo<uint8>
 		(
 			"",
 			Locale.Game.Multiplayer.Character.items,
 			countof(Locale.Game.Multiplayer.Character.items),
-			Config.Game.Multiplayer.character[i]
+			Config.Game.Multiplayer.character[index]
 		);
 		ImGui::SameLine();
-		GUI_InputEx("", Config.Game.Multiplayer.costume[i]);
+		GUI_InputEx("", Config.Game.Multiplayer.costume[index]);
 		GUI_POP_DISABLE(skip);
 	}
-	//GUI_InputEx<uint32>(Locale.Game.Multiplayer.spawnDelay, Config.Game.Multiplayer.spawnDelay, 100);
 	ImGui::PopItemWidth();
-	GUI_POP_DISABLE(!Config.Game.Multiplayer.enable);
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Button(Locale.Game.Multiplayer.reset))
-	{
-		memcpy(&Config.Game.Multiplayer, &DefaultConfig.Game.Multiplayer, sizeof(Config.Game.Multiplayer));
-		SaveConfig();
-		// Technically not needed, but sometimes I want to test how a function behaves
-		// under specific conditions.
-		//if (System_Cache_enable)
-		//{
-		//	//System_Actor_Toggle();
-		//}
-		//if (System_Input_extend)
-		//{
-		//	restart = true;
-		//}
-	}
-	GUI_POP_DISABLE(ActorAvailable());
+	GUI_SECTION_FOOTER_START(Game.Multiplayer);
+	Toggle(DefaultConfig.Game.Multiplayer.enable);
+	GUI_SECTION_FOOTER_END;
 }
 
 void GUI_Game_Other()
@@ -1201,99 +1176,6 @@ void GUI_Tools_Draw()
 	ImGui::PopStyleVar(3);
 }
 
-//void GUI_Debug_Action()
-//{
-//	GUI_Hyperlink("Action");
-//	ImGui::Text("");
-//	ResetRangedWeaponLevelStart:
-//	if (GUI_Button("Reset Ranged Weapon Level"))
-//	{
-//		byte * addr = *(byte **)(appBaseAddr + 0xC90E28);
-//		if (!addr)
-//		{
-//			goto ResetRangedWeaponLevelEnd;
-//		}
-//		addr = *(byte **)(addr + 0x18);
-//		if (!addr)
-//		{
-//			goto ResetRangedWeaponLevelEnd;
-//		}
-//		uint32 * level = (uint32 *)(addr + 0x64E4);
-//		level[0] = 0;
-//		level[1] = 0;
-//	}
-//	ResetRangedWeaponLevelEnd:
-//	ResetEquipmentStart:
-//	if (GUI_Button("Reset Equipment"))
-//	{
-//		byte * addr = *(byte **)(appBaseAddr + 0xC90E28);
-//		if (!addr)
-//		{
-//			goto ResetRangedWeaponLevelEnd;
-//		}
-//		addr = *(byte **)(addr + 0x18);
-//		if (!addr)
-//		{
-//			goto ResetRangedWeaponLevelEnd;
-//		}
-//		uint8 * equipment = (uint8 *)(addr + 0x6498);
-//		equipment[0] = WEAPON_REBELLION;
-//		equipment[1] = WEAPON_CERBERUS;
-//		equipment[2] = WEAPON_EBONY_IVORY;
-//		equipment[3] = WEAPON_SHOTGUN;
-//	}
-//	ResetEquipmentEnd:
-//	return;
-//}
-
-//void GUI_Debug_Overlay()
-//{
-//	GUI_Hyperlink(Locale.GUI.Overlay.header);
-//	ImGui::Text("");
-//	GUI_Checkbox(Locale.GUI.Overlay.show, Config.GUI.Overlay.show);
-//	ImGui::Text("");
-//	GUI_PUSH_DISABLE(!Config.GUI.Overlay.show);
-//	ImGui::PushItemWidth(100);
-//	GUI_Combo<uint8>
-//	(
-//		"",
-//		Locale.GUI.Overlay.FontSize.items,
-//		countof(Locale.GUI.Overlay.FontSize.items),
-//		Config.GUI.Overlay.fontSizeIndex
-//	);
-//	ImGui::PopItemWidth();
-//	ImGui::SameLine();
-//	GUI_ColorEdit4("", Config.GUI.Overlay.color);
-//	GUI_Checkbox(Locale.GUI.Overlay.cacheStats, Config.GUI.Overlay.cacheStats);
-//	if (GUI_Button(Locale.GUI.Overlay.resetPosition))
-//	{
-//		ImGui::SetWindowPos("GUI_Overlay", ImVec2(0, 0));
-//	}
-//	GUI_POP_DISABLE(!Config.GUI.Overlay.show);
-//}
-
-//void GUI_Debug_Draw()
-//{
-//	static bool run = false;
-//	if (!run)
-//	{
-//		run = true;
-//		ImGui::SetNextWindowSize(ImVec2(GUI_Tools_size.x + 16, GUI_Tools_size.y + 16));
-//		ImGui::SetNextWindowPos(ImVec2(0, 25));
-//	}
-//	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-//	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-//	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
-//	if (ImGui::Begin("GUI_Debug", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
-//	{
-//		GUI_Debug_Action();
-//		//ImGui::Text("");
-//		//GUI_Debug_Overlay();
-//	}
-//	ImGui::End();
-//	ImGui::PopStyleVar(3);
-//}
-
 void GUI_Main_Tab(const char * str, uint8 index)
 {
 	ImVec2 pos = ImGui::GetCursorPos();
@@ -1370,7 +1252,8 @@ void GUI_Main_Draw()
 
 
 
-ImVec2 Teleporter_size = {};
+
+
 
 
 
@@ -1391,16 +1274,15 @@ void GUI_Speed_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("Speed", &GUI_Speed_show, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse))
 	{
-
+		if (debug)
 		{
 			auto pos = ImGui::GetWindowPos();
 			ImGui::Text("%f %f", pos.x, pos.y);
 		}
 
-		{
-			auto & size = Teleporter_size;
-			ImGui::Text("%f %f", size.x, size.y);
-		}
+
+
+
 		
 
 
@@ -1415,6 +1297,7 @@ void GUI_Speed_Draw()
 		{
 			if (GUI_InputEx<float32>(label, var, 0.1f))
 			{
+				var = (floorf(var * 1000) / 1000);
 				Speed_Update(Config);
 			}
 		};
@@ -1515,27 +1398,6 @@ void GUI_Speed_Draw()
 
 
 
-//
-//
-//
-//#define GUI_InputReadOnly(label, var)                                                                                  \
-//{                                                                                                                      \
-//	char buffer[64];                                                                                                   \
-//	snprintf(buffer, sizeof(buffer), "%u", var);                                                                       \
-//	ImGui::PushID(GUI_id);                                                                                             \
-//	GUI_id++;                                                                                                          \
-//	ImGui::InputText(label, buffer, sizeof(buffer), ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_ReadOnly); \
-//	ImGui::PopID();                                                                                                    \
-//}
-//
-//
-
-
-
-
-
-
-
 
 
 
@@ -1551,94 +1413,31 @@ void GUI_Teleporter_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
-	if (ImGui::Begin("Teleporter", &GUI_Teleporter_show, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::Begin(Locale.Tools.Teleporter.header, &GUI_Teleporter_show, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
 	{
-
-
-
-
-
-
-
-
-		{
-			Teleporter_size = ImGui::GetWindowSize();
-			
-
-		}
-
-
 		{
 			if (!InGame())
 			{
 				goto InvalidPointer;
 			}
-
-
 			VARS vars;
-
 			if (!vars.init)
 			{
 				goto InvalidPointer;
 			}
-
-			
-			
 			uint32 & room         = *vars.room;
 			uint32 & position     = *vars.position;
 			uint32 & event        = *vars.event;
 			uint16 & nextRoom     = *vars.nextRoom;
 			uint16 & nextPosition = *vars.nextPosition;
-
-
-			//byte32 * flags        = vars.flags;
-			//uint32 & mission      = *vars.mission;
-
-
-
-
-
-
-
-			//byte * addr = *(byte **)(appBaseAddr + 0xCA8918);
-			//if (!addr)
-			//{
-			//	goto InvalidPointer;
-			//}
-			//addr = *(byte **)(addr + 0x40);
-			//if (!addr)
-			//{
-			//	goto InvalidPointer;
-
-			//}
-			//uint32 & currentRoom     = *(uint32 *)(addr + 0x18);
-			//uint32 & currentPosition = *(uint32 *)(addr + 0x1C);
-			//uint32 & event           = *(uint32 *)(addr + 0x20);
-
-			//addr = *(byte **)(appBaseAddr + 0xCA8918);
-			//if (!addr)
-			//{
-
-			//	goto InvalidPointer;
-			//}
-			//addr = *(byte **)(addr + 0x60);
-			//if (!addr)
-			//{
-
-			//	goto InvalidPointer;
-
-			//}
-			//uint16 & nextRoom     = *(uint16 *)(addr + 0x164);
-			//uint16 & nextPosition = *(uint16 *)(addr + 0x166);
-
 			ImGui::PushItemWidth(100);
-			ImGui::Text("Current");
+			ImGui::Text(Locale.Tools.Teleporter.current);
 			GUI_Input("", room, false, ImGuiInputTextFlags_ReadOnly);
 			GUI_Input("", position, false, ImGuiInputTextFlags_ReadOnly);
-			ImGui::Text("Next");
+			ImGui::Text(Locale.Tools.Teleporter.next);
 			GUI_InputEx<uint16>("", nextRoom);
 			GUI_InputEx<uint16>("", nextPosition);
-			if (GUI_Button("Teleport"))
+			if (GUI_Button(Locale.Tools.Teleporter.teleport))
 			{
 				event = EVENT_TELEPORT;
 			}
@@ -1646,14 +1445,15 @@ void GUI_Teleporter_Draw()
 			goto TeleporterEnd;
 		}
 		InvalidPointer:
-		ImGui::Text("Invalid Pointer!");
+		ImGui::Text(Locale.Tools.Teleporter.invalidPointer);
+		TeleporterEnd:;
 	}
-	TeleporterEnd:
 	ImGui::End();
 	ImGui::PopStyleVar(3);
 }
 
-//#undef GUI_InputReadOnly
+
+
 
 
 
@@ -1708,28 +1508,6 @@ void GUI_Overlay_Draw()
 	ImGui::PopStyleVar(3);
 }
 
-//void GUI_Documentation_Draw()
-//{
-//	static bool run = false;
-//	if (!run)
-//	{
-//		run = true;
-//		ImGui::SetNextWindowSize(ImVec2(GUI_Documentation_size.x + 16, GUI_Documentation_size.y + 16));
-//		ImGui::SetNextWindowPos(ImVec2(516, 25));
-//	}
-//	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-//	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-//	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
-//	if (ImGui::Begin("Documentation", &GUI_Documentation_show, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
-//	{
-//		ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + 200);
-//		ImGui::Text(Locale.Game.description);
-//		ImGui::PopTextWrapPos();
-//	}
-//	ImGui::End();
-//	ImGui::PopStyleVar(3);
-//}
-
 void DrawRestartOverlay()
 {
 	static ImVec2 size = {};
@@ -1779,10 +1557,6 @@ void GUI_Render()
 	{
 		GUI_Teleporter_Draw();
 	}
-	//if (GUI_Documentation_show)
-	//{
-	//	GUI_Documentation_Draw();
-	//}
 	if (restart)
 	{
 		DrawRestartOverlay();

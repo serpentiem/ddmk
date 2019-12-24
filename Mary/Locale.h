@@ -874,6 +874,10 @@ struct LOCALE
 		struct
 		{
 			const char * header = "Teleporter";
+			const char * current = "Current";
+			const char * next = "Next";
+			const char * teleport = "Teleport";
+			const char * invalidPointer = "Invalid Pointer!";
 		}
 		Teleporter;
 	}

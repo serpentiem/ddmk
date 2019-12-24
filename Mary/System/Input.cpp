@@ -59,6 +59,7 @@ void System_Input_ToggleRangeExtension(bool enable)
 			byte8 buffer[] =
 			{
 				0x44, 0x8B, 0xC7, //mov r8d,edi
+				0xEB, 0x17,       //jmp dmc3.exe+2AFC6
 			};
 			vp_memcpy(addr, buffer, sizeof(buffer));
 		}

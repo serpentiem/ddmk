@@ -156,8 +156,8 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 		// @Todo: Move to Event.
 
 
-		System_Input_ToggleRangeExtension(true);
-		System_Input_ToggleMultiplayerFixes(true);
+		//System_Input_ToggleRangeExtension(true);
+		//System_Input_ToggleMultiplayerFixes(true);
 		
 
 
