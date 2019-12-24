@@ -1,3 +1,6 @@
+
+// @Todo: Auto vars.
+
 #include "Actor.h"
 
 bool System_Actor_enableArrayExtension    = false;
@@ -5,7 +8,7 @@ bool System_Actor_enableCreateActor       = false;
 bool System_Actor_enableUpdateActor       = false;
 bool System_Actor_enableDoppelgangerFixes = false;
 
-byte8 * actorBaseAddr[MAX_ACTOR] = {};
+byte8 * System_Actor_actorBaseAddr[MAX_ACTOR] = {};
 
 typedef byte8 *(* InternalCreateActor_t)(uint8 character, uint8 actor, bool isDoppelganger);
 
@@ -19,70 +22,7 @@ byte * OnUpdate[2] = {};
 byte8 * CreateActorOneProxy = 0;
 byte8 * UpdateActorProxy    = 0;
 
-ApplyColor_t ApplyColor = 0;
-
-uint8 GetActorId(byte * baseAddr)
-{
-	for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
-	{
-		if (actorBaseAddr[actor] == baseAddr)
-		{
-			return actor;
-		}
-	}
-	return 0;
-}
-
-uint8 GetActorCount()
-{
-	uint8 count = 0;
-	for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
-	{
-		if (!actorBaseAddr[actor])
-		{
-			break;
-		}
-		count++;
-	}
-	return count;
-}
-
-static void CreateActors()
-{
-	LogFunction();
-
-	if (Config.System.Actor.forceSingleActor)
-	{
-		return;
-	}
-
-
-
-
-	if (Config.Game.Multiplayer.enable)
-	{
-		for (uint8 index = 0; index < Config.Game.Multiplayer.actorCount; index++)
-		{
-			uint8 actor = (ACTOR_TWO + index);
-			auto & character = Config.Game.Multiplayer.character[index];
-			InternalCreateActor(character, actor, false);
-		}
-	}
-	else
-	{
-		uint8 & characterActorOne = *(uint8 *)(actorBaseAddr[ACTOR_ONE] + 0x78);
-		uint8 character = (Config.Game.Doppelganger.enable) ? Config.Game.Doppelganger.character : characterActorOne;
-		InternalCreateActor(character, ACTOR_TWO, false);
-	}
-}
-
-static void CreateActorOne(byte8 * baseAddr)
-{
-	LogFunction(baseAddr);
-	memset(actorBaseAddr, 0, sizeof(actorBaseAddr));
-	actorBaseAddr[ACTOR_ONE] = baseAddr;
-	CreateActors();
-}
+PrivateStart;
 
 struct FileItemHelper
 {
@@ -157,7 +97,7 @@ struct CostumeHelper
 	uint16 cacheFileId;
 };
 
-static CostumeHelper costumeHelperDante[] =
+CostumeHelper costumeHelperDante[] =
 {
 	{ 0, pl000 },
 	{ 1, pl011 },
@@ -169,17 +109,17 @@ static CostumeHelper costumeHelperDante[] =
 	{ 5, pl018 },
 };
 
-static CostumeHelper costumeHelperBob[] =
+CostumeHelper costumeHelperBob[] =
 {
 	{ 6, pl001 },
 };
 
-static CostumeHelper costumeHelperLady[] =
+CostumeHelper costumeHelperLady[] =
 {
 	{ 7, pl002 },
 };
 
-static CostumeHelper costumeHelperVergil[] =
+CostumeHelper costumeHelperVergil[] =
 {
 	{ 8 , pl021 },
 	{ 9 , pl023 },
@@ -188,7 +128,7 @@ static CostumeHelper costumeHelperVergil[] =
 	{ 10, pl026 },
 };
 
-static CostumeHelper * costumeHelper[] =
+CostumeHelper * costumeHelper[] =
 {
 	costumeHelperDante,
 	costumeHelperBob,
@@ -196,7 +136,7 @@ static CostumeHelper * costumeHelper[] =
 	costumeHelperVergil,
 };
 
-static uint8 costumeHelperCount[] =
+uint8 costumeHelperCount[] =
 {
 	countof(costumeHelperDante),
 	countof(costumeHelperBob),
@@ -204,7 +144,157 @@ static uint8 costumeHelperCount[] =
 	countof(costumeHelperVergil),
 };
 
-static void UpdateCostume(byte8 * baseAddr)
+struct MotionHelper
+{
+	uint8 motionId;
+	uint16 cacheFileId;
+};
+
+MotionHelper motionHelperDante[] =
+{
+	{ MOT_DANTE_BASE                  , pl000_00_0  },
+	{ MOT_DANTE_DAMAGE                , pl000_00_1  },
+	{ MOT_DANTE_TAUNTS                , pl000_00_2  },
+	{ MOT_DANTE_REBELLION             , pl000_00_3  },
+	{ MOT_DANTE_CERBERUS              , pl000_00_4  },
+	{ MOT_DANTE_AGNI_RUDRA            , pl000_00_5  },
+	{ MOT_DANTE_NEVAN                 , pl000_00_6  },
+	{ MOT_DANTE_BEOWULF               , pl000_00_7  },
+	{ MOT_DANTE_EBONY_IVORY           , pl000_00_8  },
+	{ MOT_DANTE_SHOTGUN               , pl000_00_9  },
+	{ MOT_DANTE_ARTEMIS               , pl000_00_10 },
+	{ MOT_DANTE_SPIRAL                , pl000_00_11 },
+	{ MOT_DANTE_KALINA_ANN            , pl000_00_12 },
+	{ MOT_DANTE_SWORDMASTER_REBELLION , pl000_00_13 },
+	{ MOT_DANTE_SWORDMASTER_CERBERUS  , pl000_00_14 },
+	{ MOT_DANTE_SWORDMASTER_AGNI_RUDRA, pl000_00_15 },
+	{ MOT_DANTE_SWORDMASTER_NEVAN     , pl000_00_16 },
+	{ MOT_DANTE_SWORDMASTER_BEOWULF   , pl000_00_17 },
+	{ MOT_DANTE_GUNSLINGER_EBONY_IVORY, pl000_00_18 },
+	{ MOT_DANTE_GUNSLINGER_SHOTGUN    , pl000_00_19 },
+	{ MOT_DANTE_GUNSLINGER_ARTEMIS    , pl000_00_20 },
+	{ MOT_DANTE_GUNSLINGER_SPIRAL     , pl000_00_21 },
+	{ MOT_DANTE_GUNSLINGER_KALINA_ANN , pl000_00_22 },
+	{ MOT_DANTE_TRICKSTER             , pl000_00_23 },
+	{ MOT_DANTE_ROYALGUARD            , pl000_00_24 },
+	{ MOT_DANTE_QUICKSILVER           , pl000_00_25 },
+	{ MOT_DANTE_DOPPELGANGER          , pl000_00_26 },
+};
+
+MotionHelper motionHelperBob[] =
+{
+	{ MOT_BOB_BASE       , pl001_00_0  },
+	{ MOT_BOB_DAMAGE     , pl001_00_1  },
+	{ MOT_BOB_TAUNTS     , pl001_00_2  },
+	{ MOT_BOB_MELEE_STYLE, pl001_00_31 },
+};
+
+MotionHelper motionHelperLady[] =
+{
+	{ MOT_LADY_BASE      , pl002_00_0  },
+	{ MOT_LADY_DAMAGE    , pl002_00_1  },
+	{ MOT_LADY_TAUNTS    , pl002_00_2  },
+	{ MOT_LADY_KALINA_ANN, pl000_00_12 },
+};
+
+MotionHelper motionHelperVergil[] =
+{
+	{ MOT_VERGIL_BASE                  , pl021_00_0 },
+	{ MOT_VERGIL_DAMAGE                , pl021_00_1 },
+	{ MOT_VERGIL_TAUNTS                , pl021_00_2 },
+	{ MOT_VERGIL_YAMATO                , pl021_00_3 },
+	{ MOT_VERGIL_BEOWULF               , pl021_00_4 },
+	{ MOT_VERGIL_FORCE_EDGE            , pl021_00_5 },
+	{ MOT_VERGIL_DARK_SLAYER           , pl021_00_6 },
+	{ MOT_VERGIL_NERO_ANGELO_YAMATO    , pl021_00_7 },
+	{ MOT_VERGIL_NERO_ANGELO_BEOWULF   , pl021_00_8 },
+	{ MOT_VERGIL_NERO_ANGELO_FORCE_EDGE, pl021_00_9 },
+};
+
+MotionHelper * motionHelper[] =
+{
+	motionHelperDante,
+	motionHelperBob,
+	motionHelperLady,
+	motionHelperVergil,
+};
+
+uint8 motionHelperCount[] =
+{
+	countof(motionHelperDante),
+	countof(motionHelperBob),
+	countof(motionHelperLady),
+	countof(motionHelperVergil),
+};
+
+PrivateEnd;
+
+uint8 GetActorId(byte * baseAddr)
+{
+	for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
+	{
+		if (System_Actor_actorBaseAddr[actor] == baseAddr)
+		{
+			return actor;
+		}
+	}
+	return 0;
+}
+
+uint8 GetActorCount()
+{
+	uint8 count = 0;
+	for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
+	{
+		if (!System_Actor_actorBaseAddr[actor])
+		{
+			break;
+		}
+		count++;
+	}
+	return count;
+}
+
+PrivateStart;
+
+void CreateActors()
+{
+	LogFunction();
+
+	if (Config.System.Actor.forceSingleActor)
+	{
+		return;
+	}
+
+
+
+
+	if (Config.Game.Multiplayer.enable)
+	{
+		for (uint8 index = 0; index < Config.Game.Multiplayer.actorCount; index++)
+		{
+			uint8 actor = (ACTOR_TWO + index);
+			auto & character = Config.Game.Multiplayer.character[index];
+			InternalCreateActor(character, actor, false);
+		}
+	}
+	else
+	{
+		uint8 & characterActorOne = *(uint8 *)(System_Actor_actorBaseAddr[ACTOR_ONE] + 0x78);
+		uint8 character = (Config.Game.Doppelganger.enable) ? Config.Game.Doppelganger.character : characterActorOne;
+		InternalCreateActor(character, ACTOR_TWO, false);
+	}
+}
+
+void CreateActorOne(byte8 * baseAddr)
+{
+	LogFunction(baseAddr);
+	memset(System_Actor_actorBaseAddr, 0, sizeof(System_Actor_actorBaseAddr));
+	System_Actor_actorBaseAddr[ACTOR_ONE] = baseAddr;
+	CreateActors();
+}
+
+void UpdateCostume(byte8 * baseAddr)
 {
 	uint8 actor = GetActorId(baseAddr);
 	uint8 character = *(uint8 *)(baseAddr + 0x78);
@@ -225,7 +315,7 @@ static void UpdateCostume(byte8 * baseAddr)
 	fileItemHelper[character][0].cacheFileId  = costumeHelper[character][costume].cacheFileId;
 }
 
-static void UpdateBaseAddress(byte8 * baseAddr)
+void UpdateBaseAddress(byte8 * baseAddr)
 {
 	uint8 actor = GetActorId(baseAddr);
 	byte8 ** data = *(byte8 ***)(appBaseAddr + 0xC90E28);
@@ -244,7 +334,7 @@ static void UpdateBaseAddress(byte8 * baseAddr)
 	}
 }
 
-static void UpdateActor(byte8 * baseAddr)
+void UpdateActor(byte8 * baseAddr)
 {
 	Log("%s %llX", FUNC_NAME, baseAddr);
 
@@ -282,90 +372,7 @@ static void UpdateActor(byte8 * baseAddr)
 	LogFunctionEnd();
 }
 
-struct MotionHelper
-{
-	uint8 motionId;
-	uint16 cacheFileId;
-};
-
-static MotionHelper motionHelperDante[] =
-{
-	{ MOT_DANTE_BASE                  , pl000_00_0  },
-	{ MOT_DANTE_DAMAGE                , pl000_00_1  },
-	{ MOT_DANTE_TAUNTS                , pl000_00_2  },
-	{ MOT_DANTE_REBELLION             , pl000_00_3  },
-	{ MOT_DANTE_CERBERUS              , pl000_00_4  },
-	{ MOT_DANTE_AGNI_RUDRA            , pl000_00_5  },
-	{ MOT_DANTE_NEVAN                 , pl000_00_6  },
-	{ MOT_DANTE_BEOWULF               , pl000_00_7  },
-	{ MOT_DANTE_EBONY_IVORY           , pl000_00_8  },
-	{ MOT_DANTE_SHOTGUN               , pl000_00_9  },
-	{ MOT_DANTE_ARTEMIS               , pl000_00_10 },
-	{ MOT_DANTE_SPIRAL                , pl000_00_11 },
-	{ MOT_DANTE_KALINA_ANN            , pl000_00_12 },
-	{ MOT_DANTE_SWORDMASTER_REBELLION , pl000_00_13 },
-	{ MOT_DANTE_SWORDMASTER_CERBERUS  , pl000_00_14 },
-	{ MOT_DANTE_SWORDMASTER_AGNI_RUDRA, pl000_00_15 },
-	{ MOT_DANTE_SWORDMASTER_NEVAN     , pl000_00_16 },
-	{ MOT_DANTE_SWORDMASTER_BEOWULF   , pl000_00_17 },
-	{ MOT_DANTE_GUNSLINGER_EBONY_IVORY, pl000_00_18 },
-	{ MOT_DANTE_GUNSLINGER_SHOTGUN    , pl000_00_19 },
-	{ MOT_DANTE_GUNSLINGER_ARTEMIS    , pl000_00_20 },
-	{ MOT_DANTE_GUNSLINGER_SPIRAL     , pl000_00_21 },
-	{ MOT_DANTE_GUNSLINGER_KALINA_ANN , pl000_00_22 },
-	{ MOT_DANTE_TRICKSTER             , pl000_00_23 },
-	{ MOT_DANTE_ROYALGUARD            , pl000_00_24 },
-	{ MOT_DANTE_QUICKSILVER           , pl000_00_25 },
-	{ MOT_DANTE_DOPPELGANGER          , pl000_00_26 },
-};
-
-static MotionHelper motionHelperBob[] =
-{
-	{ MOT_BOB_BASE       , pl001_00_0  },
-	{ MOT_BOB_DAMAGE     , pl001_00_1  },
-	{ MOT_BOB_TAUNTS     , pl001_00_2  },
-	{ MOT_BOB_MELEE_STYLE, pl001_00_31 },
-};
-
-static MotionHelper motionHelperLady[] =
-{
-	{ MOT_LADY_BASE      , pl002_00_0  },
-	{ MOT_LADY_DAMAGE    , pl002_00_1  },
-	{ MOT_LADY_TAUNTS    , pl002_00_2  },
-	{ MOT_LADY_KALINA_ANN, pl000_00_12 },
-};
-
-static MotionHelper motionHelperVergil[] =
-{
-	{ MOT_VERGIL_BASE                  , pl021_00_0 },
-	{ MOT_VERGIL_DAMAGE                , pl021_00_1 },
-	{ MOT_VERGIL_TAUNTS                , pl021_00_2 },
-	{ MOT_VERGIL_YAMATO                , pl021_00_3 },
-	{ MOT_VERGIL_BEOWULF               , pl021_00_4 },
-	{ MOT_VERGIL_FORCE_EDGE            , pl021_00_5 },
-	{ MOT_VERGIL_DARK_SLAYER           , pl021_00_6 },
-	{ MOT_VERGIL_NERO_ANGELO_YAMATO    , pl021_00_7 },
-	{ MOT_VERGIL_NERO_ANGELO_BEOWULF   , pl021_00_8 },
-	{ MOT_VERGIL_NERO_ANGELO_FORCE_EDGE, pl021_00_9 },
-};
-
-static MotionHelper * motionHelper[] =
-{
-	motionHelperDante,
-	motionHelperBob,
-	motionHelperLady,
-	motionHelperVergil,
-};
-
-static uint8 motionHelperCount[] =
-{
-	countof(motionHelperDante),
-	countof(motionHelperBob),
-	countof(motionHelperLady),
-	countof(motionHelperVergil),
-};
-
-static void UpdateMotion(byte8 * baseAddr)
+void UpdateMotion(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 	uint8 character = *(uint8 *)(baseAddr + 0x78);
@@ -384,6 +391,10 @@ static void UpdateMotion(byte8 * baseAddr)
 		motion[motionId] = cacheFile[cacheFileId];
 	}
 }
+
+PrivateEnd;
+
+// @Todo: Review.
 
 void ResetDevilModel()
 {
@@ -446,29 +457,6 @@ void UpdateDevilModel(uint8 model)
 	Write<uint8>((appBaseAddr + 0x1F943B), model);
 }
 
-//bool ApplyShading(byte8 * baseAddr, uint8 shade)
-//{
-//
-//	return false;
-//
-//	uint8 & character = *(uint8 *)(baseAddr + 0x78);
-//	if (Config.Game.Multiplayer.enable)
-//	{
-//		return false;
-//	}
-//	if (baseAddr == actorBaseAddr[ACTOR_ONE])
-//	{
-//		return false;
-//	}
-//	if (character == CHAR_BOB)
-//	{
-//		return false;
-//	}
-//	return true;
-//}
-
-
-
 void UpdateActorAttributes(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
@@ -480,7 +468,7 @@ void UpdateActorAttributes(byte8 * baseAddr)
 	{
 		return;
 	}
-	if (baseAddr == actorBaseAddr[ACTOR_ONE])
+	if (baseAddr == System_Actor_actorBaseAddr[ACTOR_ONE])
 	{
 		return;
 	}
@@ -489,7 +477,7 @@ void UpdateActorAttributes(byte8 * baseAddr)
 		return;
 	}
 
-	ApplyColor(baseAddr, 6, 0);
+	Cosmetics_Color_ApplyColor(baseAddr, 6, 0);
 
 	
 
@@ -521,7 +509,7 @@ void System_Actor_Init()
 			0x48, 0x31, 0xC0,                                           //xor rax,rax
 			0x84, 0xD2,                                                 //test dl,dl
 			0x74, 0x77,                                                 //je short
-			0x48, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rbx,actorBaseAddr
+			0x48, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rbx,System_Actor_actorBaseAddr
 			0x48, 0x0F, 0xB6, 0xF1,                                     //movzx rsi,cl
 			0x48, 0x0F, 0xB6, 0xFA,                                     //movzx rdi,dl
 			0x4D, 0x0F, 0xB6, 0xE0,                                     //movzx r12,r8l
@@ -551,7 +539,7 @@ void System_Actor_Init()
 		};
 		FUNC func = CreateFunction(0, 0, true, false, 0, sizeof(sect1));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		*(byte8 ***)(func.sect1 + 9) = actorBaseAddr;
+		*(byte8 ***)(func.sect1 + 9) = System_Actor_actorBaseAddr;
 		WriteCall((func.sect1 + 0x33), (appBaseAddr + 0x2EE060));
 		WriteCall((func.sect1 + 0x3F), (appBaseAddr + 0x1DE820));
 		WriteCall((func.sect1 + 0x50), (appBaseAddr + 0x1BB390));
@@ -595,7 +583,7 @@ void System_Actor_Init()
 		};
 		FUNC func = CreateFunction(0, (appBaseAddr + 0x1BA572), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte ***)(func.sect0 + 2) = actorBaseAddr;
+		*(byte ***)(func.sect0 + 2) = System_Actor_actorBaseAddr;
 		OnUpdate[0] = func.addr;
 	}
 	{
@@ -606,7 +594,7 @@ void System_Actor_Init()
 		};
 		FUNC func = CreateFunction(0, (appBaseAddr + 0x1BC0CA), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte ***)(func.sect0 + 2) = actorBaseAddr;
+		*(byte ***)(func.sect0 + 2) = System_Actor_actorBaseAddr;
 		OnUpdate[1] = func.addr;
 	}
 	{
@@ -643,15 +631,6 @@ void System_Actor_Init()
 		WriteJump((UpdateActorProxy + 0x52), func.addr);
 	}
 
-
-
-
-
-
-	{
-		FUNC func = CreateFunction((appBaseAddr + 0x1FCB10));
-		ApplyColor = (ApplyColor_t)func.addr;
-	}
 
 
 	{

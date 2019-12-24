@@ -17,7 +17,7 @@ static void Actor_StageLoadComplete()
 	return;
 
 
-	auto & baseAddr = actorBaseAddr[ACTOR_TWO];
+	auto & baseAddr = System_Actor_actorBaseAddr[ACTOR_TWO];
 
 	
 	if (!baseAddr)
@@ -25,7 +25,7 @@ static void Actor_StageLoadComplete()
 		return;
 	}
 
-	ApplyColor(baseAddr, 6, 0);
+	Cosmetics_Color_ApplyColor(baseAddr, 6, 0);
 
 	return;
 
@@ -41,7 +41,7 @@ static void Actor_StageLoadComplete()
 	uint8 count = GetActorCount();
 	for (uint8 actor = ACTOR_TWO; actor < count; actor++)
 	{
-		auto & baseAddr = actorBaseAddr[actor];
+		auto & baseAddr = System_Actor_actorBaseAddr[actor];
 		if (!baseAddr)
 		{
 			continue;
@@ -842,6 +842,8 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 	}
 }
 
+// @Todo: Ugh, update.
+
 static void Doppelganger_Activate(byte * baseAddr)
 {
 	Log("%s %llX", FUNC_NAME, baseAddr);
@@ -854,7 +856,7 @@ static void Doppelganger_Activate(byte * baseAddr)
 
 	Doppelganger_ToggleForceActorUpdate(true);
 
-	if (!Config.Game.Doppelganger.useEXVersion)
+	if (!Config.Game.Doppelganger.enableDevilTrigger)
 	{
 		UpdateFlux(baseAddr, DEVIL_FLUX_END);
 		return;
@@ -867,32 +869,32 @@ static void Doppelganger_Activate(byte * baseAddr)
 
 	//uint8 & shadow = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x3A18) = 0;
 
-	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = *(uint32 *)(baseAddr + 0x3E6C);
-	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = *(uint32 *)(baseAddr + 0x3E70);
-	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = *(uint32 *)(baseAddr + 0x3E88);
-	*(bool   *)(actorBaseAddr[ACTOR_TWO] + 0x3E9B) = *(bool   *)(baseAddr + 0x3E9B);
-	uint8 character = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x78);
+	*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E6C) = *(uint32 *)(baseAddr + 0x3E6C);
+	*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E70) = *(uint32 *)(baseAddr + 0x3E70);
+	*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = *(uint32 *)(baseAddr + 0x3E88);
+	*(bool   *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E9B) = *(bool   *)(baseAddr + 0x3E9B);
+	uint8 character = *(uint8 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x78);
 	if (character == CHAR_BOB)
 	{
 		if (devil)
 		{
-			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = DEVIL_BOB_YAMATO;
-			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = DEVIL_BOB_YAMATO;
-			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = DEVIL_BOB_YAMATO;
+			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E6C) = DEVIL_BOB_YAMATO;
+			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E70) = DEVIL_BOB_YAMATO;
+			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = DEVIL_BOB_YAMATO;
 		}
 		else
 		{
-			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
-			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
-			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
+			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
+			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
+			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
 		}
 	}
 	else if (character == CHAR_LADY)
 	{
-		*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
-		*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
-		*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
-		*(bool   *)(actorBaseAddr[ACTOR_TWO] + 0x3E9B) = false;
+		*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
+		*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
+		*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
+		*(bool   *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E9B) = false;
 	}
 	else if (character == CHAR_VERGIL)
 	{
@@ -902,27 +904,27 @@ static void Doppelganger_Activate(byte * baseAddr)
 			DEVIL_VERGIL_BEOWULF,
 			DEVIL_VERGIL_FORCE_EDGE,
 		};
-		uint8 selectedWeapon = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x6488);
+		uint8 selectedWeapon = *(uint8 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x6488);
 		if (selectedWeapon > 2)
 		{
 			selectedWeapon = 0;
 		}
 		if (devil)
 		{
-			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = devilForm[selectedWeapon];
-			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = devilForm[selectedWeapon];
-			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = devilForm[selectedWeapon];
+			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E6C) = devilForm[selectedWeapon];
+			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E70) = devilForm[selectedWeapon];
+			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = devilForm[selectedWeapon];
 		}
 		else
 		{
-			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
-			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
-			*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
+			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
+			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
+			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
 		}
 	}
 	if (character != CHAR_LADY)
 	{
-		UpdateDevilForm(actorBaseAddr[ACTOR_TWO]);
+		UpdateDevilForm(System_Actor_actorBaseAddr[ACTOR_TWO]);
 	}
 }
 
@@ -938,7 +940,7 @@ static void Doppelganger_Deactivate(byte * baseAddr)
 
 	Doppelganger_ToggleForceActorUpdate(false);
 
-	if (!Config.Game.Doppelganger.useEXVersion)
+	if (!Config.Game.Doppelganger.enableDevilTrigger)
 	{
 		*(uint32 *)(baseAddr + 0x3E6C) = 0;
 		*(uint32 *)(baseAddr + 0x3E70) = 0;
@@ -953,10 +955,10 @@ static void Doppelganger_Deactivate(byte * baseAddr)
 	{
 		UpdateFlux(baseAddr, DEVIL_FLUX_START);
 	}
-	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
-	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
-	*(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
-	*(bool   *)(actorBaseAddr[ACTOR_TWO] + 0x3E9B) = false;
+	*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
+	*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
+	*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
+	*(bool   *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E9B) = false;
 }
 
 byte32 Doppelganger_Watchdog(void * parameter)

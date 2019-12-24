@@ -1,9 +1,7 @@
 #include "ResetMotionState.h"
 
-////#pragma warning(disable: 4102) // unreferenced label
-
-
-word Game_ResetMotionState_buttonMask[16] =
+uint8 Game_ResetMotionState_buttonIndex = 0;
+byte16 Game_ResetMotionState_buttonMap[16] =
 {
 	GAMEPAD_LEFT_TRIGGER,
 	GAMEPAD_RIGHT_TRIGGER,
@@ -23,14 +21,9 @@ word Game_ResetMotionState_buttonMask[16] =
 	GAMEPAD_LEFT,
 };
 
+PrivateStart;
 
-//static void Reset(byte * baseAddr)
-//{
-//	dword & motionState = *(dword *)(baseAddr + 0x3E64);
-//	motionState = 1;
-//}
-
-static dword Thread(LPVOID parameter)
+uint32 Thread(LPVOID parameter)
 {
 	do
 	{
@@ -40,35 +33,19 @@ static dword Thread(LPVOID parameter)
 			{
 				goto LoopEnd;
 			}
-			if (!System_Actor_enableArrayExtension)
-			{
-				goto LoopEnd;
-			}
 			if (!InGame())
 			{
 				goto LoopEnd;
 			}
 			static bool execute[MAX_ACTOR] = {};
-			uint8 actorCount = GetActorCount();
-			for (uint8 actor = 0; actor < actorCount; actor++)
+			auto count = GetActorCount();
+			for (uint8 actor = 0; actor < count; actor++)
 			{
-				if (GetButtonState(actor) & Config.Game.ResetMotionState.button)
+				if (System_Input_GetButtonState(actor) & Config.Game.ResetMotionState.button)
 				{
 					if (execute[actor])
 					{
-						//Reset(actorBaseAddr[actor]);
-
-
-						byte & motionState = *(byte *)(actorBaseAddr[actor] + 0x3E66);
-						motionState = 0;
-
-
-						//dword & motionState = *(dword *)(baseAddr + 0x3E64);
-						//motionState = 1;
-
-
-
-
+						auto & motionState = *(byte8 *)(System_Actor_actorBaseAddr[actor] + 0x3E66) = 0;
 						execute[actor] = false;
 					}
 				}
@@ -79,11 +56,13 @@ static dword Thread(LPVOID parameter)
 			}
 		}
 		LoopEnd:
-		Sleep(Config.Game.ResetMotionState.updateRate);
+		Sleep(10);
 	}
 	while (true);
 	return 1;
 }
+
+PrivateEnd;
 
 void Game_ResetMotionState_Init()
 {

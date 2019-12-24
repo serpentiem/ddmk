@@ -4,4 +4,4 @@
 #include "../System/Input.h"
 
 void Game_Doppelganger_Init();
-void Game_Doppelganger_ToggleUseEXVersion(bool enable);
+void Game_Doppelganger_ToggleEnableDevilTrigger(bool enable);

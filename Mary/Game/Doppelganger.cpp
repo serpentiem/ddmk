@@ -1,12 +1,17 @@
+
+// @Todo: Auto vars and add Input namespace.
+
 #include "Doppelganger.h"
 
-byte * DoppelgangerRateControllerProxy = 0;
-byte * AdjustDevilSound                = 0;
+PrivateStart;
 
-static void DoppelgangerRateController(byte * baseAddr)
+byte8 * DoppelgangerRateControllerProxy = 0;
+byte8 * AdjustDevilSound                = 0;
+
+void DoppelgangerRateController(byte8 * baseAddr)
 {
 	static bool execute = false;
-	if ((GetButtonState(ACTOR_ONE) & GetBinding(CMD_LOCK_ON)) && (GetButtonState(ACTOR_ONE) & GetBinding(CMD_TAUNT)))
+	if ((System_Input_GetButtonState(ACTOR_ONE) & System_Input_GetBinding(CMD_LOCK_ON)) && (System_Input_GetButtonState(ACTOR_ONE) & System_Input_GetBinding(CMD_TAUNT)))
 	{
 		if (execute)
 		{
@@ -25,6 +30,8 @@ static void DoppelgangerRateController(byte * baseAddr)
 	}
 }
 
+PrivateEnd;
+
 void Game_Doppelganger_Init()
 {
 	LogFunction();
@@ -33,7 +40,7 @@ void Game_Doppelganger_Init()
 		DoppelgangerRateControllerProxy = func.addr;
 	}
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x80, 0xBF, 0x62, 0x63, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+00006362],01
 			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       //je dmc3.exe+1F8FA1
@@ -49,7 +56,7 @@ void Game_Doppelganger_Init()
 	}
 }
 
-void Game_Doppelganger_ToggleUseEXVersion(bool enable)
+void Game_Doppelganger_ToggleEnableDevilTrigger(bool enable)
 {
 	LogFunction(enable);
 	if (enable)

@@ -20,7 +20,7 @@ enum TAB_
 	TAB_VOID,
 };
 
-bool debug = false;
+constexpr bool debug = true;
 
 uint8 activeTab = TAB_VOID;
 
@@ -207,64 +207,43 @@ void GUI_Game_BossRush()
 
 void GUI_Game_Dante()
 {
-	GUI_Hyperlink(Locale.Game.Dante.header);
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Checkbox(Locale.Game.Dante.enable, Config.Game.Dante.enable))
+	auto Toggle = [](CONFIG & config)
 	{
-		//if (!System_Cache_enable)
-		//{
-		//	restart = true;
-		//}
-		//else
-		{
-			//System_Actor_Toggle();
-			if (Config.Game.Dante.enable)
-			{
-				Game_Dante_Rebellion_ToggleInfiniteSwordPierce(Config.Game.Dante.Rebellion.infiniteSwordPierce);
-				Game_Dante_EbonyIvory_ToggleFoursomeTime(Config.Game.Dante.EbonyIvory.foursomeTime);
-				Game_Dante_EbonyIvory_ToggleInfiniteRainStorm(Config.Game.Dante.EbonyIvory.infiniteRainStorm);
-				Game_Dante_Artemis_ToggleSwap(Config.Game.Dante.Artemis.swap);
-				Game_Dante_Artemis_ToggleInstant(Config.Game.Dante.Artemis.instant);
-				Game_Dante_AirHike_ToggleCoreAbility(Config.Game.Dante.AirHike.coreAbility);
-				Game_Dante_CrazyCombo_SetLevelMultiplier(Config.Game.Dante.CrazyCombo.levelMultiplier);
-				Game_Dante_WeaponSwitchTimeout_Melee_Toggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
-				Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
-			}
-			else
-			{
-				Game_Dante_Rebellion_ToggleInfiniteSwordPierce(DefaultConfig.Game.Dante.Rebellion.infiniteSwordPierce);
-				Game_Dante_EbonyIvory_ToggleFoursomeTime(DefaultConfig.Game.Dante.EbonyIvory.foursomeTime);
-				Game_Dante_EbonyIvory_ToggleInfiniteRainStorm(DefaultConfig.Game.Dante.EbonyIvory.infiniteRainStorm);
-				Game_Dante_Artemis_ToggleSwap(DefaultConfig.Game.Dante.Artemis.swap);
-				Game_Dante_Artemis_ToggleInstant(DefaultConfig.Game.Dante.Artemis.instant);
-				Game_Dante_AirHike_ToggleCoreAbility(DefaultConfig.Game.Dante.AirHike.coreAbility);
-				Game_Dante_CrazyCombo_SetLevelMultiplier(DefaultConfig.Game.Dante.CrazyCombo.levelMultiplier);
-				Game_Dante_WeaponSwitchTimeout_Melee_Toggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.melee);
-				Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.ranged);
-			}
-		}
+		Game_Dante_Rebellion_ToggleInfiniteSwordPierce(config.Game.Dante.Rebellion.infiniteSwordPierce);
+		Game_Dante_EbonyIvory_ToggleFoursomeTime      (config.Game.Dante.EbonyIvory.foursomeTime      );
+		Game_Dante_EbonyIvory_ToggleInfiniteRainStorm (config.Game.Dante.EbonyIvory.infiniteRainStorm );
+		Game_Dante_Artemis_ToggleSwap                 (config.Game.Dante.Artemis.swap                 );
+		Game_Dante_Artemis_ToggleInstant              (config.Game.Dante.Artemis.instant              );
+		Game_Dante_AirHike_ToggleCoreAbility          (config.Game.Dante.AirHike.coreAbility          );
+		Game_Dante_CrazyCombo_SetLevelMultiplier      (config.Game.Dante.CrazyCombo.levelMultiplier   );
+		Game_Dante_WeaponSwitchTimeout_Melee_Toggle   (config.Game.Dante.WeaponSwitchTimeout.melee    );
+		Game_Dante_WeaponSwitchTimeout_Ranged_Toggle  (config.Game.Dante.WeaponSwitchTimeout.ranged   );
+	};
+	GUI_SECTION_HEADER_START(Game.Dante);
+	if (Config.Game.Dante.enable)
+	{
+		Toggle(Config);
 	}
-	GUI_POP_DISABLE(ActorAvailable());
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(!Config.Game.Dante.enable);
+	else
+	{
+		Toggle(DefaultConfig);
+	}
+	GUI_SECTION_HEADER_END(Game.Dante);
 	ImGui::Text(Locale.Game.Dante.Rebellion.header);
-	if (GUI_Checkbox(Locale.Game.Dante.Rebellion.infiniteSwordPierce, Config.Game.Dante.Rebellion.infiniteSwordPierce))
+	if (GUI_Checkbox
+	(
+		Locale.Game.Dante.Rebellion.infiniteSwordPierce,
+		Config.Game.Dante.Rebellion.infiniteSwordPierce
+	))
 	{
 		Game_Dante_Rebellion_ToggleInfiniteSwordPierce(Config.Game.Dante.Rebellion.infiniteSwordPierce);
 	}
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Checkbox(Locale.Game.Dante.Rebellion.unlockQuickDrive, Config.Game.Dante.Rebellion.unlockQuickDrive))
-	{
-		//if (!System_Cache_enable)
-		//{
-		//	restart = true;
-		//}
-		//else
-		{
-			//System_Actor_Toggle();
-		}
-	}
+	GUI_Checkbox
+	(
+		Locale.Game.Dante.Rebellion.unlockQuickDrive,
+		Config.Game.Dante.Rebellion.unlockQuickDrive
+	);
+	// @Todo: Add namespace.
 	if (!demo_pl000_00_3)
 	{
 		ImGui::SameLine();
@@ -272,160 +251,133 @@ void GUI_Game_Dante()
 		ImGui::TextWrapped("demo_pl000_00_3.pac");
 		ImGui::PopStyleColor();
 	}
-	GUI_POP_DISABLE(ActorAvailable());
 	ImGui::Text(Locale.Game.Dante.EbonyIvory.header);
-	if (GUI_Checkbox(Locale.Game.Dante.EbonyIvory.foursomeTime, Config.Game.Dante.EbonyIvory.foursomeTime))
+	if (GUI_Checkbox
+	(
+		Locale.Game.Dante.EbonyIvory.foursomeTime,
+		Config.Game.Dante.EbonyIvory.foursomeTime
+	))
 	{
 		Game_Dante_EbonyIvory_ToggleFoursomeTime(Config.Game.Dante.EbonyIvory.foursomeTime);
 	}
-	if (GUI_Checkbox(Locale.Game.Dante.EbonyIvory.infiniteRainStorm, Config.Game.Dante.EbonyIvory.infiniteRainStorm))
+	if (GUI_Checkbox
+	(
+		Locale.Game.Dante.EbonyIvory.infiniteRainStorm,
+		Config.Game.Dante.EbonyIvory.infiniteRainStorm
+	))
 	{
 		Game_Dante_EbonyIvory_ToggleInfiniteRainStorm(Config.Game.Dante.EbonyIvory.infiniteRainStorm);
 	}
 	ImGui::Text(Locale.Game.Dante.Artemis.header);
-	if (GUI_Checkbox(Locale.Game.Dante.Artemis.swap, Config.Game.Dante.Artemis.swap))
+	if (GUI_Checkbox
+	(
+		Locale.Game.Dante.Artemis.swap,
+		Config.Game.Dante.Artemis.swap
+	))
 	{
 		Game_Dante_Artemis_ToggleSwap(Config.Game.Dante.Artemis.swap);
 	}
-	if (GUI_Checkbox(Locale.Game.Dante.Artemis.instant, Config.Game.Dante.Artemis.instant))
+	if (GUI_Checkbox
+	(
+		Locale.Game.Dante.Artemis.instant,
+		Config.Game.Dante.Artemis.instant
+	))
 	{
 		Game_Dante_Artemis_ToggleInstant(Config.Game.Dante.Artemis.instant);
 	}
 	ImGui::Text(Locale.Game.Dante.AirHike.header);
-	if (GUI_Checkbox(Locale.Game.Dante.AirHike.coreAbility, Config.Game.Dante.AirHike.coreAbility))
+	if (GUI_Checkbox
+	(
+		Locale.Game.Dante.AirHike.coreAbility,
+		Config.Game.Dante.AirHike.coreAbility
+	))
 	{
 		Game_Dante_AirHike_ToggleCoreAbility(Config.Game.Dante.AirHike.coreAbility);
 	}
 	ImGui::PushItemWidth(100);
 	ImGui::Text(Locale.Game.Dante.CrazyCombo.header);
-	if (GUI_InputEx(Locale.Game.Dante.CrazyCombo.levelMultiplier, Config.Game.Dante.CrazyCombo.levelMultiplier))
+	if (GUI_InputEx
+	(
+		Locale.Game.Dante.CrazyCombo.levelMultiplier,
+		Config.Game.Dante.CrazyCombo.levelMultiplier
+	))
 	{
 		Game_Dante_CrazyCombo_SetLevelMultiplier(Config.Game.Dante.CrazyCombo.levelMultiplier);
 	}
 	ImGui::PopItemWidth();
 	ImGui::PushItemWidth(150);
 	ImGui::Text(Locale.Game.Dante.WeaponSwitchTimeout.header);
-	if (GUI_InputEx<float32>(Locale.Game.Dante.WeaponSwitchTimeout.melee, Config.Game.Dante.WeaponSwitchTimeout.melee))
+	if (GUI_InputEx<float32>
+	(
+		Locale.Game.Dante.WeaponSwitchTimeout.melee,
+		Config.Game.Dante.WeaponSwitchTimeout.melee
+	))
 	{
 		Game_Dante_WeaponSwitchTimeout_Melee_Toggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
 	}
-	if (GUI_InputEx<float32>(Locale.Game.Dante.WeaponSwitchTimeout.ranged, Config.Game.Dante.WeaponSwitchTimeout.ranged))
+	if (GUI_InputEx<float32>
+	(
+		Locale.Game.Dante.WeaponSwitchTimeout.ranged,
+		Config.Game.Dante.WeaponSwitchTimeout.ranged
+	))
 	{
 		Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
 	}
 	ImGui::PopItemWidth();
-	GUI_POP_DISABLE(!Config.Game.Dante.enable);
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Button(Locale.Game.Dante.reset))
-	{
-		memcpy(&Config.Game.Dante, &DefaultConfig.Game.Dante, sizeof(Config.Game.Dante));
-		SaveConfig();
-		//System_Actor_Toggle();
-		Game_Dante_Rebellion_ToggleInfiniteSwordPierce(DefaultConfig.Game.Dante.Rebellion.infiniteSwordPierce);
-		Game_Dante_EbonyIvory_ToggleFoursomeTime(DefaultConfig.Game.Dante.EbonyIvory.foursomeTime);
-		Game_Dante_EbonyIvory_ToggleInfiniteRainStorm(DefaultConfig.Game.Dante.EbonyIvory.infiniteRainStorm);
-		Game_Dante_Artemis_ToggleSwap(DefaultConfig.Game.Dante.Artemis.swap);
-		Game_Dante_Artemis_ToggleInstant(DefaultConfig.Game.Dante.Artemis.instant);
-		Game_Dante_AirHike_ToggleCoreAbility(DefaultConfig.Game.Dante.AirHike.coreAbility);
-		Game_Dante_CrazyCombo_SetLevelMultiplier(DefaultConfig.Game.Dante.CrazyCombo.levelMultiplier);
-		Game_Dante_WeaponSwitchTimeout_Melee_Toggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.melee);
-		Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(DefaultConfig.Game.Dante.WeaponSwitchTimeout.ranged);
-	}
-	GUI_POP_DISABLE(ActorAvailable());
+	GUI_SECTION_FOOTER_START(Game.Dante);
+	Toggle(DefaultConfig);
+	GUI_SECTION_FOOTER_END;
 }
 
 void GUI_Game_Doppelganger()
 {
-	GUI_Hyperlink(Locale.Game.Doppelganger.header);
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Checkbox(Locale.Game.Doppelganger.enable, Config.Game.Doppelganger.enable))
+	GUI_SECTION_HEADER_START(Game.Doppelganger);
+	if (Config.Game.Doppelganger.enable)
 	{
-		//if (!System_Cache_enable)
-		//{
-		//	restart = true;
-		//}
-		//else
-		{
-			//System_Actor_Toggle();
-			if (Config.Game.Doppelganger.enable)
-			{
-				Game_Doppelganger_ToggleUseEXVersion(Config.Game.Doppelganger.useEXVersion);
-			}
-			else
-			{
-				Game_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Doppelganger.useEXVersion);
-			}
-		}
+		Game_Doppelganger_ToggleEnableDevilTrigger(Config.Game.Doppelganger.enableDevilTrigger);
 	}
-	GUI_POP_DISABLE(ActorAvailable());
-	ImGui::Text("");
-
-	GUI_PUSH_DISABLE(!Config.Game.Doppelganger.enable);
+	else
 	{
-		ImGui::PushItemWidth(100);
-		if (GUI_Checkbox(Locale.Game.Doppelganger.useEXVersion, Config.Game.Doppelganger.useEXVersion))
-		{
-			Game_Doppelganger_ToggleUseEXVersion(Config.Game.Doppelganger.useEXVersion);
-		}
-		GUI_Combo<uint8>
-		(
-			Locale.Game.Doppelganger.Character.label,
-			Locale.Game.Doppelganger.Character.items,
-			countof(Locale.Game.Doppelganger.Character.items),
-			Config.Game.Doppelganger.character
-		);
-		ImGui::PopItemWidth();
+		Game_Doppelganger_ToggleEnableDevilTrigger(DefaultConfig.Game.Doppelganger.enableDevilTrigger);
 	}
-	GUI_POP_DISABLE(!Config.Game.Doppelganger.enable);
-
-	ImGui::Text("");
-
-	GUI_PUSH_DISABLE(ActorAvailable());
-
-	if (GUI_Button(Locale.Game.Doppelganger.reset))
+	GUI_SECTION_HEADER_END(Game.Doppelganger);
+	ImGui::PushItemWidth(100);
+	GUI_Combo<uint8>
+	(
+		Locale.Game.Doppelganger.Character.label,
+		Locale.Game.Doppelganger.Character.items,
+		countof(Locale.Game.Doppelganger.Character.items),
+		Config.Game.Doppelganger.character
+	);
+	ImGui::PopItemWidth();
+	if (GUI_Checkbox
+	(
+		Locale.Game.Doppelganger.enableDevilTrigger,
+		Config.Game.Doppelganger.enableDevilTrigger
+	))
 	{
-		memcpy(&Config.Game.Doppelganger, &DefaultConfig.Game.Doppelganger, sizeof(Config.Game.Doppelganger));
-		SaveConfig();
-		//System_Actor_Toggle();
-		Game_Doppelganger_ToggleUseEXVersion(DefaultConfig.Game.Doppelganger.useEXVersion);
+		Game_Doppelganger_ToggleEnableDevilTrigger(Config.Game.Doppelganger.enableDevilTrigger);
 	}
-
-	GUI_POP_DISABLE(ActorAvailable());
+	GUI_SECTION_FOOTER_START(Game.Doppelganger);
+	Game_Doppelganger_ToggleEnableDevilTrigger(DefaultConfig.Game.Doppelganger.enableDevilTrigger);
+	GUI_SECTION_FOOTER_END;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#define GUI_InputEx2(branch)                                                           \
-ImGui::PushItemWidth(29);                                                          \
-GUI_InputEx<uint8>("", Config.Game.Mobility.Human.branch, 0);                          \
-ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);                          \
-GUI_InputEx<uint8>(Locale.Game.Mobility.branch, Config.Game.Mobility.Devil.branch, 0); \
-ImGui::PopItemWidth();
 
 void GUI_Game_Mobility()
 {
+	auto InputExMobility = []
+	(
+		const char * label,
+		uint8 & human,
+		uint8 & devil
+	)
+	{
+		ImGui::PushItemWidth(29);
+		GUI_InputEx<uint8>("", human, 0);
+		ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
+		GUI_InputEx<uint8>(label, devil, 0);
+		ImGui::PopItemWidth();
+	};
 	GUI_SECTION_HEADER_START(Game.Mobility);
 	if (Config.Game.Mobility.enable)
 	{
@@ -437,22 +389,56 @@ void GUI_Game_Mobility()
 	}
 	GUI_SECTION_HEADER_END(Game.Mobility);
 	ImGui::Text(Locale.Game.Mobility.Dante.header);
-	GUI_InputEx2(Dante.airHike);
-	GUI_InputEx2(Dante.dash[0]);
-	GUI_InputEx2(Dante.dash[1]);
-	GUI_InputEx2(Dante.dash[2]);
-	GUI_InputEx2(Dante.skyStar);
-	GUI_InputEx2(Dante.airTrick);
+	InputExMobility
+	(
+		Locale.Game.Mobility.Dante.airHike,
+		Config.Game.Mobility.Human.Dante.airHike,
+		Config.Game.Mobility.Devil.Dante.airHike
+	);
+	for (uint8 index = 0; index < countof(Config.Game.Mobility.Human.Dante.dash); index++)
+	{
+		InputExMobility
+		(
+			Locale.Game.Mobility.Dante.dash[index],
+			Config.Game.Mobility.Human.Dante.dash[index],
+			Config.Game.Mobility.Devil.Dante.dash[index]
+		);
+	}
+	InputExMobility
+	(
+		Locale.Game.Mobility.Dante.skyStar,
+		Config.Game.Mobility.Human.Dante.skyStar,
+		Config.Game.Mobility.Devil.Dante.skyStar
+	);
+	InputExMobility
+	(
+		Locale.Game.Mobility.Dante.airTrick,
+		Config.Game.Mobility.Human.Dante.airTrick,
+		Config.Game.Mobility.Devil.Dante.airTrick
+	);
 	ImGui::Text(Locale.Game.Mobility.Vergil.header);
-	GUI_InputEx2(Vergil.airTrick);
-	GUI_InputEx2(Vergil.trickUp);
-	GUI_InputEx2(Vergil.trickDown);
+	InputExMobility
+	(
+		Locale.Game.Mobility.Vergil.airTrick,
+		Config.Game.Mobility.Human.Vergil.airTrick,
+		Config.Game.Mobility.Devil.Vergil.airTrick
+	);
+	InputExMobility
+	(
+		Locale.Game.Mobility.Vergil.trickUp,
+		Config.Game.Mobility.Human.Vergil.trickUp,
+		Config.Game.Mobility.Devil.Vergil.trickUp
+	);
+	InputExMobility
+	(
+		Locale.Game.Mobility.Vergil.trickDown,
+		Config.Game.Mobility.Human.Vergil.trickDown,
+		Config.Game.Mobility.Devil.Vergil.trickDown
+	);
 	GUI_SECTION_FOOTER_START(Game.Mobility);
 	Game_Mobility_Toggle(DefaultConfig.Game.Mobility.enable);
 	GUI_SECTION_FOOTER_END;
 }
-
-#undef GUI_InputEx2
 
 void GUI_Game_Multiplayer()
 {
@@ -505,18 +491,12 @@ void GUI_Game_Multiplayer()
 		//{
 		//	//System_Actor_Toggle();
 		//}
-		if (System_Input_extend)
-		{
-			restart = true;
-		}
+		//if (System_Input_extend)
+		//{
+		//	restart = true;
+		//}
 	}
 	GUI_POP_DISABLE(ActorAvailable());
-}
-
-#define GUI_InputExOther(branch, step)                                            \
-if (GUI_InputEx<float32>(Locale.Game.Other.branch, Config.Game.Other.branch, step)) \
-{                                                                             \
-	Game_Other_Update();                                                      \
 }
 
 void GUI_Game_Other()
@@ -532,425 +512,216 @@ void GUI_Game_Other()
 	}
 	GUI_SECTION_HEADER_END(Game.Other);
 	ImGui::PushItemWidth(150);
-	GUI_InputExOther(orbReach, 100);
+	GUI_InputEx<float32>
+	(
+		Locale.Game.Other.orbReach,
+		Config.Game.Other.orbReach,
+		100
+	);
 	ImGui::Text(Locale.Game.Other.MagicPointsDepletionRate.header);
-	GUI_InputExOther(MagicPointsDepletionRate.devil, 1);
-	GUI_InputExOther(MagicPointsDepletionRate.quicksilver, 1);
-	GUI_InputExOther(MagicPointsDepletionRate.doppelganger, 1);
+	GUI_InputEx<float32>
+	(
+		Locale.Game.Other.MagicPointsDepletionRate.devil,
+		Config.Game.Other.MagicPointsDepletionRate.devil,
+		1
+	);
+	GUI_InputEx<float32>
+	(
+		Locale.Game.Other.MagicPointsDepletionRate.quicksilver,
+		Config.Game.Other.MagicPointsDepletionRate.quicksilver,
+		1
+	);
+	GUI_InputEx<float32>
+	(
+		Locale.Game.Other.MagicPointsDepletionRate.doppelganger,
+		Config.Game.Other.MagicPointsDepletionRate.doppelganger,
+		1
+	);
 	ImGui::PopItemWidth();
 	GUI_SECTION_FOOTER_START(Game.Other);
 	Game_Other_Toggle(DefaultConfig.Game.Other.enable);
 	GUI_SECTION_FOOTER_END;
 }
 
-#undef GUI_InputExOther
-
-
-
-
 void GUI_Game_ResetMotionState()
 {
-	static uint8 buttonIndex = 0;
-	static bool  run         = false;
+	static bool run = false;
 	if (!run)
 	{
 		run = true;
-		for (uint8 i = 0; i < countof(Game_ResetMotionState_buttonMask); i++)
+		auto & buttonIndex = Game_ResetMotionState_buttonIndex;
+		auto & buttonMap   = Game_ResetMotionState_buttonMap;
+		for (uint8 index = 0; index < countof(buttonMap); index++)
 		{
-			if (Config.Game.ResetMotionState.button == Game_ResetMotionState_buttonMask[i])
+			if (buttonMap[index] == Config.Game.ResetMotionState.button)
 			{
-				buttonIndex = i;
+				buttonIndex = index;
 				break;
 			}
 		}
 	}
-	GUI_Hyperlink(Locale.Game.ResetMotionState.header);
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Checkbox(Locale.Game.ResetMotionState.enable, Config.Game.ResetMotionState.enable))
-	{
-		//if (!System_Cache_enable)
-		//{
-		//	restart = true;
-		//}
-		//else
-		{
-			//System_Actor_Toggle();
-		}
-	}
-	GUI_POP_DISABLE(ActorAvailable());
-	ImGui::Text("");
-
-
-
-
-	GUI_PUSH_DISABLE(!Config.Game.ResetMotionState.enable);
+	GUI_SECTION_HEADER(Game.ResetMotionState);
 	ImGui::PushItemWidth(150);
 	if (GUI_Combo<uint8>
-		(
+	(
 		Locale.Game.ResetMotionState.Button.label,
 		Locale.Game.ResetMotionState.Button.items,
 		countof(Locale.Game.ResetMotionState.Button.items),
-		buttonIndex,
+		Game_ResetMotionState_buttonIndex,
 		0,
 		false
-		))
+	))
 	{
-		Config.Game.ResetMotionState.button = Game_ResetMotionState_buttonMask[buttonIndex];
+		auto & buttonIndex = Game_ResetMotionState_buttonIndex;
+		auto & buttonMap   = Game_ResetMotionState_buttonMap;
+		Config.Game.ResetMotionState.button = buttonMap[buttonIndex];
 		SaveConfig();
 	}
+	ImGui::PopItemWidth();
 	if (debug)
 	{
-		ImGui::Text("index   %u", buttonIndex);
-		ImGui::Text("true id %X", Config.Game.ResetMotionState.button);
+		ImGui::Text("index %u", Game_ResetMotionState_buttonIndex);
+		ImGui::Text("true  %X", Config.Game.ResetMotionState.button);
 	}
-	GUI_InputEx<uint32>(Locale.Game.ResetMotionState.updateRate, Config.Game.ResetMotionState.updateRate);
-	ImGui::PopItemWidth();
-	GUI_POP_DISABLE(!Config.Game.ResetMotionState.enable);
-
-
-
-
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Button(Locale.Game.ResetMotionState.reset))
-	{
-		run = false;
-		memcpy(&Config.Game.ResetMotionState, &DefaultConfig.Game.ResetMotionState, sizeof(Config.Game.ResetMotionState));
-		SaveConfig();
-		//if (System_Cache_enable)
-		//{
-		//	//System_Actor_Toggle();
-		//}
-	}
-	GUI_POP_DISABLE(ActorAvailable());
+	GUI_SECTION_FOOTER_START(Game.ResetMotionState);
+	run = false;
+	GUI_SECTION_FOOTER_END;
 }
-
-
-
-
-
-
-//
-//
-//
-//
-//void GUI_Game::ResetMotionState()
-//{
-//	GUI_Hyperlink(Locale.Game.ResetMotionState.header);
-//	ImGui::Text("");
-//	GUI_PUSH_DISABLE(ActorAvailable());
-//	if (GUI_Checkbox(Locale.Game.ResetMotionState.enable, Config.Game.ResetMotionState.enable))
-//	{
-//		if (!System_Cache_enable)
-//		{
-//			restart = true;
-//		}
-//		else
-//		{
-//			//System_Actor_Toggle();
-//		}
-//	}
-//	GUI_POP_DISABLE(ActorAvailable());
-//	ImGui::Text("");
-//	GUI_PUSH_DISABLE(!Config.Game.ResetMotionState.enable);
-//	static uint8 index = 0;
-//	static bool run = false;
-//	if (!run)
-//	{
-//		run = true;
-//		for (uint8 i = 0; i < countof(buttonMask); i++)
-//		{
-//			if (buttonMask[i] == Config.Game.ResetMotionState.button)
-//			{
-//				index = i;
-//				break;
-//			}
-//		}
-//	}
-//	ImGui::PushItemWidth(150);
-//	if (GUI_Combo<uint8>
-//	(
-//		Locale.Game.ResetMotionState.GUI_Button.label,
-//		Locale.Game.ResetMotionState.GUI_Button.items,
-//		countof(Locale.Game.ResetMotionState.GUI_Button.items),
-//		index,
-//		0,
-//		false
-//	))
-//	{
-//		Config.Game.ResetMotionState.button = buttonMask[index];
-//		SaveConfig();
-//	}
-//	GUI_InputEx(Locale.Game.ResetMotionState.updateRate, Config.Game.ResetMotionState.updateRate);
-//	ImGui::PopItemWidth();
-//	GUI_POP_DISABLE(!Config.Game.ResetMotionState.enable);
-//	ImGui::Text("");
-//	GUI_PUSH_DISABLE(ActorAvailable());
-//	if (GUI_Button(Locale.Game.ResetMotionState.reset))
-//	{
-//		run = false;
-//		memcpy(&Config.Game.ResetMotionState, &DefaultConfig.Game.ResetMotionState, sizeof(Config.Game.ResetMotionState));
-//		SaveConfig();
-//		if (System_Cache_enable)
-//		{
-//			//System_Actor_Toggle();
-//		}
-//	}
-//	GUI_POP_DISABLE(ActorAvailable());
-//}
-
-//#define GUI_InputExSpeed(branch)                                                  \
-//if (GUI_InputEx<float32>(Locale.Game.Speed.branch, Config.Game.Speed.branch, 0.1f)) \
-//{                                                                             \
-//	Game_Speed_Update();                                                      \
-//}
-//
-//void GUI_Game_Speed()
-//{
-//	GUI_SECTION_HEADER_START(Game.Speed);
-//	if (Config.Game.Speed.enable)
-//	{
-//		Game_Speed_Toggle(Config.Game.Speed.enable);
-//	}
-//	else
-//	{
-//		Game_Speed_Toggle(DefaultConfig.Game.Speed.enable);
-//	}
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//	GUI_SECTION_HEADER_END(Game.Speed);
-//
-//
-//
-//	GUI_SECTION_FOOTER_START(Game.Speed);
-//	Game_Speed_Toggle(DefaultConfig.Game.Speed.enable);
-//	GUI_SECTION_FOOTER_END;
-//}
-//
-//#undef GUI_InputExSpeed
-
-
-
 
 void GUI_Game_StyleSwitcher()
 {
-	GUI_Hyperlink(Locale.Game.StyleSwitcher.header);
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Checkbox(Locale.Game.StyleSwitcher.enable, Config.Game.StyleSwitcher.enable))
+	GUI_SECTION_HEADER_START(Game.StyleSwitcher);
+	if (Config.Game.StyleSwitcher.enable)
 	{
-		//if (!System_Cache_enable)
-		//{
-		//	restart = true;
-		//}
-		//else
-		{
-			//System_Actor_Toggle();
-
-
-
-			if (Config.Game.StyleSwitcher.enable)
-			{
-				Game_StyleSwitcher_Toggle(true);
-			}
-			else
-			{
-				Game_StyleSwitcher_Toggle(false);
-			}
-		}
+		Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
 	}
-	GUI_POP_DISABLE(ActorAvailable());
-	GUI_PUSH_DISABLE(!Config.Game.StyleSwitcher.enable);
-	GUI_Checkbox(Locale.Game.StyleSwitcher.noDoubleTap, Config.Game.StyleSwitcher.noDoubleTap);
-	GUI_POP_DISABLE(!Config.Game.StyleSwitcher.enable);
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Button(Locale.Game.StyleSwitcher.reset))
+	else
 	{
-		memcpy(&Config.Game.StyleSwitcher, &DefaultConfig.Game.StyleSwitcher, sizeof(Config.Game.StyleSwitcher));
-		SaveConfig();
-		//System_Actor_Toggle();
 		Game_StyleSwitcher_Toggle(DefaultConfig.Game.StyleSwitcher.enable);
 	}
-	GUI_POP_DISABLE(ActorAvailable());
+	GUI_SECTION_HEADER_END(Game.StyleSwitcher);
+	GUI_Checkbox
+	(
+		Locale.Game.StyleSwitcher.noDoubleTap,
+		Config.Game.StyleSwitcher.noDoubleTap
+	);
+	GUI_SECTION_FOOTER_START(Game.StyleSwitcher);
+	Game_StyleSwitcher_Toggle(DefaultConfig.Game.StyleSwitcher.enable);
+	GUI_SECTION_FOOTER_END;
 }
 
 void GUI_Game_Training()
 {
+	auto Toggle = [](CONFIG & config)
+	{
+		Game_Training_ToggleInfiniteHitPoints  (config.Game.Training.infiniteHitPoints  );
+		Game_Training_ToggleInfiniteMagicPoints(config.Game.Training.infiniteMagicPoints);
+		Game_Training_ToggleDisableTimer       (config.Game.Training.disableTimer       );
+	};
 	GUI_SECTION_HEADER_START(Game.Training);
 	if (Config.Game.Training.enable)
 	{
-		Game_Training_ToggleInfiniteHitPoints   ( Config.Game.Training.infiniteHitPoints   );
-		Game_Training_ToggleInfiniteMagicPoints ( Config.Game.Training.infiniteMagicPoints );
-		Game_Training_ToggleDisableTimer        ( Config.Game.Training.disableTimer        );
+		Toggle(Config);
 	}
 	else
 	{
-		Game_Training_ToggleInfiniteHitPoints   ( DefaultConfig.Game.Training.infiniteHitPoints   );
-		Game_Training_ToggleInfiniteMagicPoints ( DefaultConfig.Game.Training.infiniteMagicPoints );
-		Game_Training_ToggleDisableTimer        ( DefaultConfig.Game.Training.disableTimer        );
+		Toggle(DefaultConfig);
 	}
 	GUI_SECTION_HEADER_END(Game.Training);
-	if (GUI_Checkbox(Locale.Game.Training.infiniteHitPoints, Config.Game.Training.infiniteHitPoints))
+	if (GUI_Checkbox
+	(
+		Locale.Game.Training.infiniteHitPoints,
+		Config.Game.Training.infiniteHitPoints
+	))
 	{
 		Game_Training_ToggleInfiniteHitPoints(Config.Game.Training.infiniteHitPoints);
 	}
-	if (GUI_Checkbox(Locale.Game.Training.infiniteMagicPoints, Config.Game.Training.infiniteMagicPoints))
+	if (GUI_Checkbox
+	(
+		Locale.Game.Training.infiniteMagicPoints,
+		Config.Game.Training.infiniteMagicPoints
+	))
 	{
 		Game_Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
 	}
-	if (GUI_Checkbox(Locale.Game.Training.disableTimer, Config.Game.Training.disableTimer))
+	if (GUI_Checkbox
+	(
+		Locale.Game.Training.disableTimer,
+		Config.Game.Training.disableTimer
+	))
 	{
 		Game_Training_ToggleDisableTimer(Config.Game.Training.disableTimer);
 	}
 	GUI_SECTION_FOOTER_START(Game.Training);
-	Game_Training_ToggleInfiniteHitPoints   ( DefaultConfig.Game.Training.infiniteHitPoints   );
-	Game_Training_ToggleInfiniteMagicPoints ( DefaultConfig.Game.Training.infiniteMagicPoints );
-	Game_Training_ToggleDisableTimer        ( DefaultConfig.Game.Training.disableTimer        );
+	Toggle(DefaultConfig);
 	GUI_SECTION_FOOTER_END;
 }
 
 void GUI_Game_Vergil()
 {
+	auto Toggle = [](CONFIG & config)
+	{
+		Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(config.Game.Vergil.ForceEdge.infiniteRoundTrip);
+		Game_Vergil_SummonedSwords_ToggleChronoSwords(config.Game.Vergil.SummonedSwords.chronoSwords);
+		Game_Vergil_WeaponSwitchTimeout_MeleeToggle  (config.Game.Vergil.WeaponSwitchTimeout.melee  );
+	};
 	GUI_SECTION_HEADER_START(Game.Vergil);
 	if (Config.Game.Vergil.enable)
 	{
-		Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(Config.Game.Vergil.ForceEdge.infiniteRoundTrip);
-		Game_Vergil_SummonedSwords_ToggleChronoSwords(Config.Game.Vergil.SummonedSwords.chronoSwords);
-		Game_Vergil_WeaponSwitchTimeout_MeleeToggle(Config.Game.Vergil.WeaponSwitchTimeout.melee);
+		Toggle(Config);
 	}
 	else
 	{
-		Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(DefaultConfig.Game.Vergil.ForceEdge.infiniteRoundTrip);
-		Game_Vergil_SummonedSwords_ToggleChronoSwords(DefaultConfig.Game.Vergil.SummonedSwords.chronoSwords);
-		Game_Vergil_WeaponSwitchTimeout_MeleeToggle(DefaultConfig.Game.Vergil.WeaponSwitchTimeout.melee);
+		Toggle(DefaultConfig);
 	}
 	GUI_SECTION_HEADER_END(Game.Vergil);
 	ImGui::Text(Locale.Game.Vergil.ForceEdge.header);
-	if (GUI_Checkbox(Locale.Game.Vergil.ForceEdge.infiniteRoundTrip, Config.Game.Vergil.ForceEdge.infiniteRoundTrip))
+	if (GUI_Checkbox
+	(
+		Locale.Game.Vergil.ForceEdge.infiniteRoundTrip,
+		Config.Game.Vergil.ForceEdge.infiniteRoundTrip
+	))
 	{
 		Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(Config.Game.Vergil.ForceEdge.infiniteRoundTrip);
 	}
 	ImGui::Text(Locale.Game.Vergil.SummonedSwords.header);
-	if (GUI_Checkbox(Locale.Game.Vergil.SummonedSwords.chronoSwords, Config.Game.Vergil.SummonedSwords.chronoSwords))
+	if (GUI_Checkbox
+	(
+		Locale.Game.Vergil.SummonedSwords.chronoSwords,
+		Config.Game.Vergil.SummonedSwords.chronoSwords
+	))
 	{
 		Game_Vergil_SummonedSwords_ToggleChronoSwords(Config.Game.Vergil.SummonedSwords.chronoSwords);
 	}
-	ImGui::PushItemWidth(150);
 	ImGui::Text(Locale.Game.Vergil.WeaponSwitchTimeout.header);
-	if (GUI_InputEx<float32>(Locale.Game.Vergil.WeaponSwitchTimeout.melee, Config.Game.Vergil.WeaponSwitchTimeout.melee))
+	ImGui::PushItemWidth(150);
+	if (GUI_InputEx<float32>
+	(
+		Locale.Game.Vergil.WeaponSwitchTimeout.melee,
+		Config.Game.Vergil.WeaponSwitchTimeout.melee
+	))
 	{
 		Game_Vergil_WeaponSwitchTimeout_MeleeToggle(Config.Game.Vergil.WeaponSwitchTimeout.melee);
 	}
 	ImGui::PopItemWidth();
 	GUI_SECTION_FOOTER_START(Game.Vergil);
-	Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(DefaultConfig.Game.Vergil.ForceEdge.infiniteRoundTrip);
-	Game_Vergil_SummonedSwords_ToggleChronoSwords(DefaultConfig.Game.Vergil.SummonedSwords.chronoSwords);
-	Game_Vergil_WeaponSwitchTimeout_MeleeToggle(Config.Game.Vergil.WeaponSwitchTimeout.melee);
+	Toggle(DefaultConfig);
 	GUI_SECTION_FOOTER_END;
 }
 
-//void GUI_Game_Weapon()
-//{
-//	GUI_SECTION_HEADER_START(Game.Weapon);
-//	if (Config.Game.Weapon.enable)
-//	{
-//		Game_Weapon_ToggleTimeout(Config.Game.Weapon.enable);
-//	}
-//	else
-//	{
-//		Game_Weapon_ToggleTimeout(DefaultConfig.Game.Weapon.enable);
-//	}
-//	GUI_SECTION_HEADER_END(Game.Weapon);
-//	
-//	ImGui::PushItemWidth(150);
-//
-//	//ImGui::Text(Locale.Game.Weapon.TimeoutDante.header);
-//
-//	//bool level = false;
-//
-//	//GUI_Checkbox("Reset Level", level);
-//
-//
-//	ImGui::Text("Timeout");
-//	ImGui::Text("Dante");
-//
-//
-//
-//	GUI_InputEx(Locale.Game.Weapon.TimeoutDante.melee, Config.Game.Weapon.Timeout.melee);
-//	GUI_InputEx(Locale.Game.Weapon.TimeoutDante.ranged, Config.Game.Weapon.Timeout.ranged);
-//
-//	//ImGui::Text(Locale.Game.Weapon.TimeoutVergil.header);
-//
-//	ImGui::Text("Vergil");
-//
-//	GUI_InputEx(Locale.Game.Weapon.TimeoutVergil.melee, Config.Game.Weapon.Timeout.melee);
-//
-//	
-//
-//	
-//
-//
-//
-//
-//
-//	ImGui::PopItemWidth();
-//	GUI_SECTION_FOOTER_START(Game.Weapon);
-//	Game_Weapon_ToggleTimeout(DefaultConfig.Game.Weapon.enable);
-//	GUI_SECTION_FOOTER_END;
-//}
-
 void GUI_Game_WeaponSwitcher()
 {
-	GUI_Hyperlink(Locale.Game.WeaponSwitcher.header);
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Checkbox(Locale.Game.WeaponSwitcher.enable, Config.Game.WeaponSwitcher.enable))
+	GUI_SECTION_HEADER_START(Game.WeaponSwitcher);
+	if (Config.Game.WeaponSwitcher.enable)
 	{
-		if (Config.Game.WeaponSwitcher.enable)
-		{
-			Config.Cosmetics.Weapon.instantModelUpdate = true;
-			SaveConfig();
-		}
-		//if (!System_Cache_enable)
-		//{
-		//	restart = true;
-		//}
-		//else
-		{
-			//System_Actor_Toggle();
-			//System_Weapon_Toggle();
-			if (Config.Game.WeaponSwitcher.enable)
-			{
-				Game_WeaponSwitcher_Toggle(Config.Game.WeaponSwitcher.enable);
-			}
-			else
-			{
-				Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
-			}
-			//Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
-		}
+		Game_WeaponSwitcher_Toggle(Config.Game.WeaponSwitcher.enable);
 	}
-	GUI_POP_DISABLE(ActorAvailable());
-	ImGui::Text("");
+	else
+	{
+		Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
+	}
+	GUI_SECTION_HEADER_END(Game.WeaponSwitcher);
 	ImGui::PushItemWidth(200);
-
-	GUI_PUSH_DISABLE(!Config.Game.WeaponSwitcher.enable);
-	
-
-
-
-	GUI_PUSH_DISABLE(ActorAvailable());
 	if (GUI_Combo<uint8>
 	(
 		Locale.Game.WeaponSwitcher.Devil.label,
@@ -961,7 +732,6 @@ void GUI_Game_WeaponSwitcher()
 	{
 		UpdateDevilModel(Config.Game.WeaponSwitcher.devil);
 	}
-	GUI_POP_DISABLE(ActorAvailable());
 	GUI_Combo<uint8>
 	(
 		Locale.Game.WeaponSwitcher.Sword.label,
@@ -1001,18 +771,9 @@ void GUI_Game_WeaponSwitcher()
 		GUI_POP_DISABLE(skip);
 	}
 	ImGui::PopItemWidth();
-	GUI_POP_DISABLE(!Config.Game.WeaponSwitcher.enable);
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(ActorAvailable());
-	if (GUI_Button(Locale.Game.WeaponSwitcher.reset))
-	{
-		memcpy(&Config.Game.WeaponSwitcher, &DefaultConfig.Game.WeaponSwitcher, sizeof(Config.Game.WeaponSwitcher));
-		SaveConfig();
-		//System_Actor_Toggle();
-		//System_Weapon_Toggle();
-		Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
-	}
-	GUI_POP_DISABLE(ActorAvailable());
+	GUI_SECTION_FOOTER_START(Game.WeaponSwitcher);
+	Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
+	GUI_SECTION_FOOTER_END;
 }
 
 void GUI_Game_Draw()
@@ -1045,49 +806,17 @@ void GUI_Game_Draw()
 		ImGui::Text("");
 		GUI_Game_ResetMotionState();
 		ImGui::Text("");
-		//GUI_Game_Speed();
-		//ImGui::Text("");
-		//GUI_Game_Style();
-		//ImGui::Text("");
 		GUI_Game_StyleSwitcher();
 		ImGui::Text("");
 		GUI_Game_Training();
 		ImGui::Text("");
 		GUI_Game_Vergil();
-		//ImGui::Text("");
-		//GUI_Game_Weapon();
 		ImGui::Text("");
 		GUI_Game_WeaponSwitcher();
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
 }
-
-//#define ColorPalette(label, items, var)                       \
-//for (uint8 i = 0; i < countof(var); i++)                      \
-//{                                                             \
-//	if (GUI_ColorEdit4(items[i], var[i]))                     \
-//	{                                                         \
-//Cosmetics_Color_UpdateColors(Config); \
-//	}                                                         \
-//	ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x); \
-//}                                                             \
-//ImGui::Text(label);
-
-//struct vector3
-//{
-//	float32 x;
-//	float32 y;
-//	float32 z;
-//	vector3()
-//	{
-//		memset(this, 0, sizeof(*this));
-//	}
-//	operator float32 *()
-//	{
-//		return (float32 *)this;
-//	}
-//};
 
 void GUI_Cosmetics_Color()
 {
@@ -1202,16 +931,6 @@ void GUI_Cosmetics_Vergil()
 	}
 }
 
-//void GUI_Cosmetics_Weapon()
-//{
-//	GUI_Hyperlink(Locale.Cosmetics.Weapon.header);
-//	ImGui::Text("");
-//	if (GUI_Checkbox(Locale.Cosmetics.Weapon.instantModelUpdate, Config.Cosmetics.Weapon.instantModelUpdate))
-//	{
-//		//Cosmetics_Weapon_ToggleInstantModelUpdate(Config.Cosmetics.Weapon.instantModelUpdate);
-//	}
-//}
-
 void GUI_Cosmetics_Draw()
 {
 	static bool run = false;
@@ -1233,8 +952,6 @@ void GUI_Cosmetics_Draw()
 		GUI_Cosmetics_Other();
 		ImGui::Text("");
 		GUI_Cosmetics_Vergil();
-		//ImGui::Text("");
-		//GUI_Cosmetics_Weapon();
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
@@ -1285,7 +1002,11 @@ void GUI_System_Input()
 {
 	GUI_Hyperlink(Locale.System.Input.header);
 	ImGui::Text("");
-	GUI_Checkbox("Hide Mouse Cursor", Config.System.Input.hideMouseCursor);
+	GUI_Checkbox
+	(
+		Locale.System.Input.hideMouseCursor,
+		Config.System.Input.hideMouseCursor
+	);
 }
 
 void GUI_System_Window()
@@ -1362,7 +1083,7 @@ void GUI_Tools_Repair()
 		auto count = GetActorCount();
 		for (uint8 actor = 0; actor < count; actor++)
 		{
-			auto & baseAddr = actorBaseAddr[actor];
+			auto & baseAddr = System_Actor_actorBaseAddr[actor];
 			if (!baseAddr)
 			{
 				continue;
@@ -1402,7 +1123,7 @@ void GUI_Tools_Repair()
 		auto count = GetActorCount();
 		for (uint8 actor = 0; actor < count; actor++)
 		{
-			auto & baseAddr = actorBaseAddr[actor];
+			auto & baseAddr = System_Actor_actorBaseAddr[actor];
 			if (!baseAddr)
 			{
 				continue;

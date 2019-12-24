@@ -33,6 +33,8 @@ enum GAMEPAD_
 	GAMEPAD_LEFT           = 0x8000,
 };
 
+// @Todo: Rename to Binding.
+
 enum CMD_
 {
 	CMD_VOID,

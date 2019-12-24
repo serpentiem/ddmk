@@ -149,11 +149,17 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 
 
-		System_Input_extend = Config.Game.Multiplayer.enable;
+		//System_Input_extend = Config.Game.Multiplayer.enable;
 		
 
 
 		// @Todo: Move to Event.
+
+
+		System_Input_ToggleRangeExtension(true);
+		System_Input_ToggleMultiplayerFixes(true);
+		
+
 
 
 
@@ -198,7 +204,10 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 
 
-		Game_Doppelganger_ToggleUseEXVersion(Config.Game.Doppelganger.useEXVersion);
+		//Game_Doppelganger_ToggleUseEXVersion(Config.Game.Doppelganger.useEXVersion);
+
+
+		Game_Doppelganger_ToggleEnableDevilTrigger(Config.Game.Doppelganger.enableDevilTrigger);
 
 
 

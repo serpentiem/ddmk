@@ -9,6 +9,8 @@
 #include "System/State.h"
 #include "System/Weapon.h"
 
+#include "Cosmetics/Color.h"
+
 void Event_Init();
 void Event_ToggleSkipIntro(bool enable);
 void Event_ToggleSkipCutscenes(bool enable);

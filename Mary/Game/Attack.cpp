@@ -1,3 +1,6 @@
+
+// @Todo: Rename to Action or Move.
+
 #include "Attack.h"
 
 extern bool Game_Dante_Rebellion_quickDrive;
@@ -21,7 +24,7 @@ static void SetMove(byte * baseAddr)
 
 
 
-	if ((character == CHAR_DANTE) && (style == STYLE_SWORDMASTER) && (GetButtonState(actor) & GetBinding(CMD_STYLE_ACTION)) && (move == 2))
+	if ((character == CHAR_DANTE) && (style == STYLE_SWORDMASTER) && (System_Input_GetButtonState(actor) & System_Input_GetBinding(CMD_STYLE_ACTION)) && (move == 2))
 	{
 		move = 13;
 		Game_Dante_Rebellion_quickDrive = true;

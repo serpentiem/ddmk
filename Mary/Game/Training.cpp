@@ -29,7 +29,7 @@ void Game_Training_ToggleInfiniteMagicPoints(bool enable)
 			auto count = GetActorCount();
 			for (uint8 actor = 0; actor < count; actor++)
 			{
-				auto & baseAddr = actorBaseAddr[actor];
+				auto & baseAddr = System_Actor_actorBaseAddr[actor];
 				if (!baseAddr)
 				{
 					continue;

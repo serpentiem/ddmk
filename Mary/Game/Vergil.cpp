@@ -9,7 +9,7 @@ void Game_Vergil_Init()
 	{
 		byte sect0[] =
 		{
-			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&actorBaseAddr[ACTOR_ONE]
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&System_Actor_actorBaseAddr[ACTOR_ONE]
 			0x48, 0x8B, 0x00,                                           //mov rax,[rax]
 			0x48, 0x85, 0xC0,                                           //test rax,rax
 			0x74, 0x0E,                                                 //je short
@@ -20,7 +20,7 @@ void Game_Vergil_Init()
 		};
 		FUNC func = CreateFunction(0, (appBaseAddr + 0x1DB8FD), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		Write<byte **>((func.sect0 + 2), &actorBaseAddr[ACTOR_ONE]);
+		Write<byte **>((func.sect0 + 2), &System_Actor_actorBaseAddr[ACTOR_ONE]);
 		WriteAddress((func.sect0 + 0x1A), (appBaseAddr + 0x1DB8FD), 6);
 		Levitate = func.addr;
 	}

@@ -1,5 +1,7 @@
 #include "Color.h"
 
+Cosmetics_Color_ApplyColor_t Cosmetics_Color_ApplyColor = 0;
+
 byte8 *  AirHike      = 0;
 byte8 ** AirHikeCache = 0;
 
@@ -118,6 +120,11 @@ void Cosmetics_Color_UpdateColors(CONFIG & config)
 void Cosmetics_Color_Init()
 {
 	LogFunction();
+	// @Todo: Create permanent color wrapper.
+	{
+		FUNC func = CreateFunction((appBaseAddr + 0x1FCB10));
+		Cosmetics_Color_ApplyColor = (Cosmetics_Color_ApplyColor_t)func.addr;
+	}
 	{
 		byte8 sect0[] =
 		{
@@ -156,6 +163,8 @@ void Cosmetics_Color_Init()
 		AirHikeCache = func.cache;
 	}
 }
+
+// @Todo: Review.
 
 void Cosmetics_Color_Toggle(bool enable)
 {

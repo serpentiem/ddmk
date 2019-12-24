@@ -6,12 +6,16 @@
 
 #include "Cache.h"
 
+#include "../Cosmetics/Color.h"
+
 extern bool System_Actor_enableArrayExtension;
 extern bool System_Actor_enableCreateActor;
 extern bool System_Actor_enableUpdateActor;
 extern bool System_Actor_enableDoppelgangerFixes;
 
-extern byte8 * actorBaseAddr[MAX_ACTOR];
+extern byte8 * System_Actor_actorBaseAddr[MAX_ACTOR];
+
+// @Todo: Add namespace.
 
 typedef void(* UpdateDevilForm_t)(byte *       );
 typedef void(* UpdateFlux_t     )(byte *, uint8);
@@ -21,33 +25,8 @@ extern UpdateDevilForm_t UpdateDevilForm;
 extern UpdateFlux_t      UpdateFlux;
 extern Relax_t           Relax;
 
-
-
-// @Todo: Put into Color.
-
-typedef void(* ApplyColor_t)(byte8 * baseAddr, uint32 preset, byte32 customColor);
-
-extern ApplyColor_t ApplyColor;
-
-
-
-
-
-
-
 uint8 GetActorId(byte * baseAddr);
 uint8 GetActorCount();
-
-
-
-
-
-
-
-
-
-
-
 
 void ResetDevilModel();
 void UpdateDevilModel(uint8 model);

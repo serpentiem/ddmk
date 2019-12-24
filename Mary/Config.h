@@ -68,7 +68,6 @@ struct CONFIG
 			bool skipCutscenes = false;
 		}
 		Event;
-		// @Todo: Remove.
 		struct
 		{
 			bool preferLocalFiles = true;
@@ -183,9 +182,9 @@ struct CONFIG
 		Dante;
 		struct
 		{
-			bool  enable       = false;
-			bool  useEXVersion = false;
-			uint8 character    = CHAR_DANTE;
+			bool  enable             = false;
+			uint8 character          = CHAR_DANTE;
+			bool  enableDevilTrigger = false;
 		}
 		Doppelganger;
 		struct

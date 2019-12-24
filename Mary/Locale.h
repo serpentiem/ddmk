@@ -82,7 +82,61 @@ struct LOCALE
 
 
 
+	struct
+	{
+		//struct
+		//{
+		//	const char * header = "Cache";
+		//	const char * enable = "Enable";
+		//}
+		//Cache;
 
+
+		struct
+		{
+
+			const char * header = "Actor";
+			const char * forceSingleActor = "Force Single Actor";
+			const char * disableIdleTimer = "Disable Idle Timer";
+
+
+		}
+		Actor;
+
+		struct
+		{
+			const char * header = "Camera";
+			const char * invertX = "Invert X";
+		}
+		Camera;
+		struct
+		{
+			const char * header = "Event";
+			const char * skipIntro = "Skip Intro";
+			const char * skipCutscenes = "Skip Cutscenes";
+		}
+		Event;
+		struct
+		{
+			const char * header = "File";
+			const char * preferLocalFiles = "Prefer Local Files";
+		}
+		File;
+		struct
+		{
+			const char * header = "Input";
+			const char * hideMouseCursor = "Hide Mouse Cursor";
+			const char * reset = "Reset";
+		}
+		Input;
+		struct
+		{
+			const char * header = "Window";
+			const char * forceFocus = "Force Focus";
+		}
+		Window;
+	}
+	System;
 
 
 
@@ -401,7 +455,7 @@ struct LOCALE
 		{
 			const char * header = "Doppelganger";
 			const char * enable = "Enable";
-			const char * useEXVersion = "Use EX Version";
+			//const char * useEXVersion = "Use EX Version";
 			struct
 			{
 				const char * label = "Character";
@@ -414,6 +468,12 @@ struct LOCALE
 				};
 			}
 			Character;
+
+			const char * enableDevilTrigger = "Enable Devil Trigger";
+
+
+
+
 			const char * reset = "Reset";
 		}
 		Doppelganger;
@@ -771,67 +831,10 @@ struct LOCALE
 		Weapon;
 	}
 	Cosmetics;
-	struct
-	{
-		//struct
-		//{
-		//	const char * header = "Cache";
-		//	const char * enable = "Enable";
-		//}
-		//Cache;
 
 
-		struct
-		{
-
-			const char * header = "Actor";
-			const char * forceSingleActor = "Force Single Actor";
-			const char * disableIdleTimer = "Disable Idle Timer";
 
 
-		}
-		Actor;
-
-		struct
-		{
-			const char * header = "Camera";
-			const char * invertX = "Invert X";
-		}
-		Camera;
-		struct
-		{
-			const char * header = "Event";
-			const char * skipIntro = "Skip Intro";
-			const char * skipCutscenes = "Skip Cutscenes";
-		}
-		Event;
-		struct
-		{
-			const char * header = "File";
-			const char * preferLocalFiles = "Prefer Local Files";
-		}
-		File;
-		struct
-		{
-			const char * header = "Input";
-			struct
-			{
-				const char * header = "Mouse";
-				const char * hideCursor = "Hide Cursor";
-				const char * updateRate = "Update Rate";
-			}
-			Mouse;
-			const char * reset = "Reset";
-		}
-		Input;
-		struct
-		{
-			const char * header = "Window";
-			const char * forceFocus = "Force Focus";
-		}
-		Window;
-	}
-	System;
 	struct
 	{
 		struct

@@ -175,12 +175,12 @@ __declspec(noinline) static void UpdateStyle(byte * baseAddr, uint32 styleId)
 		{
 			goto UpdateStyle2End;
 		}
-		if (!actorBaseAddr[ACTOR_TWO])
+		if (!System_Actor_actorBaseAddr[ACTOR_TWO])
 		{
 			goto UpdateStyle2End;
 		}
-		uint32 & style2                = *(uint32 *)(actorBaseAddr[ACTOR_TWO] + 0x6338);
-		bool   & isControlledByPlayer2 = *(bool   *)(actorBaseAddr[ACTOR_TWO] + 0x6480);
+		uint32 & style2                = *(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x6338);
+		bool   & isControlledByPlayer2 = *(bool   *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x6480);
 		if (!isControlledByPlayer2)
 		{
 			style2 = styleId;
@@ -282,11 +282,11 @@ static void StyleController()
 	{
 		for (uint8 style = 0; style < 4; style++)
 		{
-			if (GetButtonState(actor) & GetBinding(commandId[style]))
+			if (System_Input_GetButtonState(actor) & System_Input_GetBinding(commandId[style]))
 			{
 				if (execute[actor][style])
 				{
-					UpdateStyle(actorBaseAddr[actor], style);
+					UpdateStyle(System_Actor_actorBaseAddr[actor], style);
 					execute[actor][style] = false;
 				}
 			}
@@ -299,11 +299,11 @@ static void StyleController()
 		{
 			continue;
 		}
-		if ((GetButtonState(actor) & GetBinding(CMD_CHANGE_TARGET)) && (GetButtonState(actor) & GetBinding(CMD_DEFAULT_CAMERA)))
+		if ((System_Input_GetButtonState(actor) & System_Input_GetBinding(CMD_CHANGE_TARGET)) && (System_Input_GetButtonState(actor) & System_Input_GetBinding(CMD_DEFAULT_CAMERA)))
 		{
 			if (execute[actor][4])
 			{
-				UpdateStyle(actorBaseAddr[actor], STYLE_DOPPELGANGER);
+				UpdateStyle(System_Actor_actorBaseAddr[actor], STYLE_DOPPELGANGER);
 				execute[actor][4] = false;
 			}
 		}
