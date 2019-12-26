@@ -18,7 +18,7 @@ static void SetMove(byte * baseAddr)
 
 	//loop
 
-	uint8 actor = GetActorId(baseAddr);
+	uint8 actor = System_Actor_GetActorId(baseAddr);
 
 
 

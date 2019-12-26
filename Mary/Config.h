@@ -240,9 +240,8 @@ struct CONFIG
 		Other;
 		struct
 		{
-			bool   enable     = false;
-			word   button     = GAMEPAD_UP;
-			uint32 updateRate = 10;
+			bool   enable = false;
+			byte16 button = GAMEPAD_UP;
 		}
 		ResetMotionState;
 		struct
@@ -295,7 +294,6 @@ struct CONFIG
 					WEAPON_NEVAN,
 					WEAPON_BEOWULF,
 				};
-				float32 timeout = 12;
 			}
 			Melee;
 			struct
@@ -309,7 +307,6 @@ struct CONFIG
 					WEAPON_SPIRAL,
 					WEAPON_KALINA_ANN,
 				};
-				float32 timeout = 12;
 			}
 			Ranged;
 		}
@@ -320,7 +317,6 @@ struct CONFIG
 	{
 		struct
 		{
-			bool enable = false;
 			struct
 			{
 				float32 dante[5][4] =
@@ -351,6 +347,10 @@ struct CONFIG
 				{
 					{ 143, 112, 48, 200 },
 				};
+				float32 doppelganger[1][4] =
+				{
+					{ 16, 16, 16, 48 },
+				};
 			}
 			Style;
 			struct
@@ -374,6 +374,11 @@ struct CONFIG
 		Dante;
 		struct
 		{
+			bool noColor = false;
+		}
+		Doppelganger;
+		struct
+		{
 			bool noDevilForm = false;
 		}
 		Other;
@@ -382,11 +387,6 @@ struct CONFIG
 			bool hideBeowulf = false;
 		}
 		Vergil;
-		struct
-		{
-			bool instantModelUpdate = false;
-		}
-		Weapon;
 	}
 	Cosmetics;
 	struct

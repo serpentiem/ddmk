@@ -1,5 +1,9 @@
 #include "Training.h"
 
+
+
+
+
 void Game_Training_ToggleInfiniteHitPoints(bool enable)
 {
 	LogFunction(enable);
@@ -26,7 +30,7 @@ void Game_Training_ToggleInfiniteMagicPoints(bool enable)
 		vp_memset((appBaseAddr + 0x1E788A), 0x90, 4); // Charge
 		if (InGame())
 		{
-			auto count = GetActorCount();
+			auto count = System_Actor_GetActorCount();
 			for (uint8 actor = 0; actor < count; actor++)
 			{
 				auto & baseAddr = System_Actor_actorBaseAddr[actor];
@@ -34,7 +38,7 @@ void Game_Training_ToggleInfiniteMagicPoints(bool enable)
 				{
 					continue;
 				}
-				float32 & magicPoints = *(float32 *)(baseAddr + 0x3EB8);
+				float32 & magicPoints    = *(float32 *)(baseAddr + 0x3EB8);
 				float32 & maxMagicPoints = *(float32 *)(baseAddr + 0x3EBC);
 				magicPoints = maxMagicPoints;
 			}

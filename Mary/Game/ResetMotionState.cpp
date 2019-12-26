@@ -21,6 +21,20 @@ byte16 Game_ResetMotionState_buttonMap[16] =
 	GAMEPAD_LEFT,
 };
 
+void Game_ResetMotionState_UpdateButtonIndex()
+{
+	auto & buttonIndex = Game_ResetMotionState_buttonIndex;
+	auto & buttonMap   = Game_ResetMotionState_buttonMap;
+	for (uint8 index = 0; index < countof(buttonMap); index++)
+	{
+		if (buttonMap[index] == Config.Game.ResetMotionState.button)
+		{
+			buttonIndex = index;
+			break;
+		}
+	}
+}
+
 PrivateStart;
 
 uint32 Thread(LPVOID parameter)
@@ -38,7 +52,7 @@ uint32 Thread(LPVOID parameter)
 				goto LoopEnd;
 			}
 			static bool execute[MAX_ACTOR] = {};
-			auto count = GetActorCount();
+			auto count = System_Actor_GetActorCount();
 			for (uint8 actor = 0; actor < count; actor++)
 			{
 				if (System_Input_GetButtonState(actor) & Config.Game.ResetMotionState.button)

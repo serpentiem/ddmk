@@ -11,7 +11,7 @@ void SaveConfig()
 void LoadConfig()
 {
 	LogFunction();
-	byte * file = 0;
+	byte8 * file = 0;
 	uint32 size = 0;
 	file = LoadFile(Config_path, &size);
 	if (!file)

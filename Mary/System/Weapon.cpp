@@ -1,5 +1,9 @@
 #include "Weapon.h"
 
+
+
+
+
 bool System_Weapon_enableUpdateWeapon      = false;
 bool System_Weapon_enableDoppelgangerFixes = false;
 bool System_Weapon_enableModelFixes        = false;
@@ -252,7 +256,7 @@ void UpdateWeapon(byte8 * baseAddr)
 {
 	Log("%s Start %llX", FUNC_NAME, baseAddr);
 
-	auto actor = GetActorId(baseAddr);
+	auto actor = System_Actor_GetActorId(baseAddr);
 
 	auto   character            = *(uint8 * )(baseAddr + 0x78  );
 	auto & specialCostume       = *(bool  * )(baseAddr + 0x3E9F);
@@ -338,7 +342,7 @@ void UpdateWeapon(byte8 * baseAddr)
 
 void Dante_Melee_UpdateModelAttributes(byte8 * baseAddr, uint8 weaponId)
 {
-	auto actor = GetActorId(baseAddr);
+	auto actor = System_Actor_GetActorId(baseAddr);
 	auto & lastWeaponId = Dante_Melee_lastWeaponId[actor];
 	if (lastWeaponId != weaponId)
 	{

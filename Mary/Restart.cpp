@@ -1,5 +1,8 @@
 #include "Restart.h"
 
+
+
+
 bool restart = false;
 
 void EvaluateApplicationRestart()

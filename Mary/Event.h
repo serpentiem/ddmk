@@ -9,6 +9,8 @@
 #include "System/State.h"
 #include "System/Weapon.h"
 
+#include "Game/Arcade.h"
+
 #include "Cosmetics/Color.h"
 
 void Event_Init();

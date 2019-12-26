@@ -3,6 +3,12 @@
 
 #include "Cache.h"
 
+
+constexpr bool debug = false;
+
+
+
+
 bool System_Cache_enableExtendVectors = false;
 
 byte8 * cacheAddr = 0;
@@ -16,7 +22,14 @@ constexpr uint16 vectorItemCount = 4096;
 
 byte8 * PushGameFile(const char * fileName)
 {
-	LogFunction();
+
+	if constexpr (debug)
+	{
+		LogFunction();
+
+	}
+
+	
 
 	byte8 * addr = (cacheAddr + cachePos);
 	byte8 * file = 0;
@@ -30,13 +43,23 @@ byte8 * PushGameFile(const char * fileName)
 
 	cachePos += fileSize;
 
-	Log("cachePos %X", cachePos);
+
+	if constexpr (debug)
+	{
+		Log("cachePos %X", cachePos);
+	}
+	
 
 	Align<uint32>(cachePos, 0x800);
 
-	Log("file     %.16llX %s", file, fileName);
-	Log("fileSize %X", fileSize);
-	Log("cachePos %X", cachePos);
+	if constexpr (debug)
+	{
+		Log("file     %.16llX %s", file, fileName);
+		Log("fileSize %X", fileSize);
+		Log("cachePos %X", cachePos);
+	}
+
+
 
 	return addr;
 }

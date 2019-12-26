@@ -15,23 +15,21 @@ extern bool System_Actor_enableDoppelgangerFixes;
 
 extern byte8 * System_Actor_actorBaseAddr[MAX_ACTOR];
 
-// @Todo: Add namespace.
+typedef void(* System_Actor_UpdateDevilForm_t)(byte8 *       );
+typedef void(* System_Actor_UpdateFlux_t     )(byte8 *, uint8);
+typedef void(* System_Actor_Relax_t          )(byte8 *       );
 
-typedef void(* UpdateDevilForm_t)(byte *       );
-typedef void(* UpdateFlux_t     )(byte *, uint8);
-typedef void(* Relax_t          )(byte *       );
+extern System_Actor_UpdateDevilForm_t System_Actor_UpdateDevilForm;
+extern System_Actor_UpdateFlux_t      System_Actor_UpdateFlux;
+extern System_Actor_Relax_t           System_Actor_Relax;
 
-extern UpdateDevilForm_t UpdateDevilForm;
-extern UpdateFlux_t      UpdateFlux;
-extern Relax_t           Relax;
-
-uint8 GetActorId(byte * baseAddr);
-uint8 GetActorCount();
-
-void ResetDevilModel();
-void UpdateDevilModel(uint8 model);
+uint8 System_Actor_GetActorId(byte8 * baseAddr);
+uint8 System_Actor_GetActorCount();
+void System_Actor_ResetDevilModel();
+void System_Actor_UpdateDevilModel(uint8 model);
 void System_Actor_Init();
 void System_Actor_ToggleArrayExtension(bool enable);
 void System_Actor_ToggleCreateActorOne(bool enable);
 void System_Actor_ToggleUpdateActor(bool enable);
 void System_Actor_ToggleDoppelgangerFixes(bool enable);
+void System_Actor_ToggleDisableIdleTimer(bool enable);

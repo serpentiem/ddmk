@@ -3,6 +3,10 @@
 
 #include "StyleSwitcher.h"
 
+
+
+
+
 typedef void(* UpdateIcon_t)();
 
 UpdateIcon_t UpdateIcon = 0;
@@ -44,7 +48,7 @@ __declspec(noinline) static void UpdateStyle(byte * baseAddr, uint32 styleId)
 	uint32  * sessionLevel      = (uint32  *)(session + 0x11C);
 	float32 * sessionExperience = (float32 *)(session + 0x134);
 
-	uint8 actorId    = GetActorId(baseAddr);
+	uint8 actorId    = System_Actor_GetActorId(baseAddr);
 
 
 
@@ -143,6 +147,13 @@ __declspec(noinline) static void UpdateStyle(byte * baseAddr, uint32 styleId)
 	//}
 
 	//// @Todo: Merge!
+
+
+	if ((styleId == STYLE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
+	{
+		return;
+	}
+
 
 
 
@@ -260,7 +271,7 @@ dword UpdateIconThread(void * parameter)
 
 static void StyleController()
 {
-	uint8 actorCount = GetActorCount();
+	uint8 actorCount = System_Actor_GetActorCount();
 	if (actorCount < 1)
 	{
 		return;

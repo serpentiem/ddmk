@@ -1,5 +1,10 @@
 #include "WeaponSwitcher.h"
 
+
+
+
+
+
 byte * Melee_UpdateWeaponProxy  = 0;
 byte * Ranged_UpdateWeaponProxy = 0;
 uint8 Game_WeaponSwitcher_Melee_index  = 0;
@@ -53,7 +58,7 @@ static void Melee_UpdateWeapon(byte * baseAddr)
 	uint8 * equipment = (uint8 *)(baseAddr + 0x6498);
 	uint8 & weapon = Config.Game.WeaponSwitcher.Melee.weapon[index];
 	equipment[selectedWeapon] = weapon;
-	uint8 actor = GetActorId(baseAddr);
+	uint8 actor = System_Actor_GetActorId(baseAddr);
 	byte ** metadata = (byte **)(baseAddr + 0x64A0);
 	metadata[selectedWeapon] = System_Weapon_weaponMetadata[actor][weapon];
 	uint32 * flags = (uint32 *)(baseAddr + 0x64C8);
@@ -110,7 +115,7 @@ static void Ranged_UpdateWeapon(byte * baseAddr)
 	uint8 * equipment = (uint8 *)(baseAddr + 0x649A);
 	uint8 & weapon = Config.Game.WeaponSwitcher.Ranged.weapon[index];
 	equipment[selectedWeapon] = weapon;
-	uint8 actor = GetActorId(baseAddr);
+	uint8 actor = System_Actor_GetActorId(baseAddr);
 	byte ** metadata = (byte **)(baseAddr + 0x64B0);
 	metadata[selectedWeapon] = System_Weapon_weaponMetadata[actor][weapon];
 	selectedWeapon += 2;
@@ -275,7 +280,7 @@ void Game_WeaponSwitcher_Toggle(bool enable)
 	{
 		WriteJump((appBaseAddr + 0x1EA980), Melee_UpdateWeaponProxy, 2);
 		WriteJump((appBaseAddr + 0x1EAA6D), Ranged_UpdateWeaponProxy, 2);
-		UpdateDevilModel(Config.Game.WeaponSwitcher.devil);
+		System_Actor_UpdateDevilModel(Config.Game.WeaponSwitcher.devil);
 	}
 	else
 	{
@@ -293,6 +298,6 @@ void Game_WeaponSwitcher_Toggle(bool enable)
 			};
 			vp_memcpy((appBaseAddr + 0x1EAA6D), buffer, sizeof(buffer));
 		}
-		ResetDevilModel();
+		System_Actor_ResetDevilModel();
 	}
 }

@@ -2,7 +2,6 @@
 
 Cosmetics_Color_ApplyColor_t Cosmetics_Color_ApplyColor = 0;
 
-byte8 *  AirHike      = 0;
 byte8 ** AirHikeCache = 0;
 
 struct ColorHelper
@@ -48,6 +47,11 @@ ColorHelper colorHelperStyleRoyalguard[] =
 	{ 0x9114B, 0x9114C, 0x91153 }, // Close
 };
 
+ColorHelper colorHelperStyleDoppelganger[] =
+{
+	{ 0x1FCD79, 0x1FCD7A, 0x1FCD7B },
+};
+
 ColorHelper * colorHelper[] =
 {
 	colorHelperAuraDante,
@@ -55,6 +59,7 @@ ColorHelper * colorHelper[] =
 	colorHelperAuraNeroAngelo,
 	colorHelperStyleTrickster,
 	colorHelperStyleRoyalguard,
+	colorHelperStyleDoppelganger,
 };
 
 uint8 colorHelperCount[] =
@@ -64,6 +69,7 @@ uint8 colorHelperCount[] =
 	countof(colorHelperAuraNeroAngelo),
 	countof(colorHelperStyleTrickster),
 	countof(colorHelperStyleRoyalguard),
+	countof(colorHelperStyleDoppelganger),
 };
 
 PrivateEnd;
@@ -72,10 +78,10 @@ void Cosmetics_Color_AdjustConfig()
 {
 	LogFunction();
 
-	constexpr uint8 count = ((sizeof(Config.Cosmetics.Color) - 1) / 4);
+	constexpr uint8 count = (sizeof(Config.Cosmetics.Color) / 4);
 
-	float32 * addr        = (float32 *)((byte8 *)&Config.Cosmetics.Color        + 1);
-	float32 * defaultAddr = (float32 *)((byte8 *)&DefaultConfig.Cosmetics.Color + 1);
+	float32 * addr        = (float32 *)&Config.Cosmetics.Color;
+	float32 * defaultAddr = (float32 *)&DefaultConfig.Cosmetics.Color;
 
 	for (uint8 index = 0; index < count; index++)
 	{
@@ -94,6 +100,7 @@ void Cosmetics_Color_UpdateColors(CONFIG & config)
 		config.Cosmetics.Color.Aura.neroAngelo,
 		config.Cosmetics.Color.Style.trickster,
 		config.Cosmetics.Color.Style.royalguard,
+		config.Cosmetics.Color.Style.doppelganger,
 	};
 	for (uint8 helperIndex = 0; helperIndex < countof(colorHelper); helperIndex++)
 	{
@@ -106,6 +113,11 @@ void Cosmetics_Color_UpdateColors(CONFIG & config)
 				Write<uint8>((appBaseAddr + off), color);
 			}
 		}
+	}
+	// Doppelganger alpha.
+	{
+		auto color = (uint8)(config.Cosmetics.Color.Style.doppelganger[0][3] * 255);
+		Write<uint8>((appBaseAddr + 0x1FCD7C), color);
 	}
 	for (uint8 itemIndex = 0; itemIndex < 5; itemIndex++)
 	{
@@ -159,38 +171,16 @@ void Cosmetics_Color_Init()
 		func.cache[2] = (func.sect0 + 0x31);
 		func.cache[3] = (func.sect0 + 0x39);
 		func.cache[4] = (func.sect0 + 0x41);
-		AirHike = func.addr;
 		AirHikeCache = func.cache;
+		WriteCall((appBaseAddr + 0x1F66DD), func.addr);
 	}
-}
-
-// @Todo: Review.
-
-void Cosmetics_Color_Toggle(bool enable)
-{
-	LogFunction(enable);
-	if (enable)
 	{
-		WriteCall((appBaseAddr + 0x1F66DD), AirHike);
+		auto addr = (appBaseAddr + 0x8E330); // Sky Star
+		vp_memset(addr, 0x90, 16);
+		byte8 buffer[] =
 		{
-			vp_memset((appBaseAddr + 0x8E330), 0x90, 16);
-			byte buffer[] =
-			{
-				0xC7, 0x80, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov [rax+000000E0]
-			};
-			vp_memcpy((appBaseAddr + 0x8E330), buffer, sizeof(buffer));
-		}
-	}
-	else
-	{
-		WriteCall((appBaseAddr + 0x1F66DD), (appBaseAddr + 0x8CD00));
-		{
-			byte buffer[] =
-			{
-				0x66, 0xC7, 0x80, 0xE0, 0x00, 0x00, 0x00, 0xFF, 0x00, //mov word ptr [rax+000000E0],00FF
-				0x40, 0x88, 0xB8, 0xE2, 0x00, 0x00, 0x00,             //mov [rax+000000E2],dil
-			};
-			vp_memcpy((appBaseAddr + 0x8E330), buffer, sizeof(buffer));
-		}
+			0xC7, 0x80, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov [rax+000000E0],color
+		};
+		vp_memcpy(addr, buffer, sizeof(buffer));
 	}
 }

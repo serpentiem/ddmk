@@ -411,29 +411,29 @@ enum MOT_
 
 
 
-
-
-enum BUTTON_
-{
-	BUTTON_LEFT_TRIGGER_L2   = 0x0001,
-	BUTTON_RIGHT_TRIGGER_R2  = 0x0002,
-	BUTTON_LEFT_SHOULDER_L1  = 0x0004,
-	BUTTON_RIGHT_SHOULDER_R1 = 0x0008,
-	BUTTON_Y_TRIANGLE        = 0x0010,
-	BUTTON_B_CIRCLE          = 0x0020,
-	BUTTON_A_CROSS           = 0x0040,
-	BUTTON_X_SQUARE          = 0x0080,
-	BUTTON_BACK_SELECT       = 0x0100,
-	BUTTON_LEFT_THUMB_L3     = 0x0200,
-	BUTTON_RIGHT_THUMB_R3    = 0x0400,
-	BUTTON_START             = 0x0800,
-	BUTTON_DPAD_UP           = 0x1000,
-	BUTTON_DPAD_RIGHT        = 0x2000,
-	BUTTON_DPAD_DOWN         = 0x4000,
-	BUTTON_DPAD_LEFT         = 0x8000,
-};
-
-
+//
+//
+//enum BUTTON_
+//{
+//	BUTTON_LEFT_TRIGGER_L2   = 0x0001,
+//	BUTTON_RIGHT_TRIGGER_R2  = 0x0002,
+//	BUTTON_LEFT_SHOULDER_L1  = 0x0004,
+//	BUTTON_RIGHT_SHOULDER_R1 = 0x0008,
+//	BUTTON_Y_TRIANGLE        = 0x0010,
+//	BUTTON_B_CIRCLE          = 0x0020,
+//	BUTTON_A_CROSS           = 0x0040,
+//	BUTTON_X_SQUARE          = 0x0080,
+//	BUTTON_BACK_SELECT       = 0x0100,
+//	BUTTON_LEFT_THUMB_L3     = 0x0200,
+//	BUTTON_RIGHT_THUMB_R3    = 0x0400,
+//	BUTTON_START             = 0x0800,
+//	BUTTON_DPAD_UP           = 0x1000,
+//	BUTTON_DPAD_RIGHT        = 0x2000,
+//	BUTTON_DPAD_DOWN         = 0x4000,
+//	BUTTON_DPAD_LEFT         = 0x8000,
+//};
+//
+//
 
 
 
@@ -585,6 +585,20 @@ enum FILE_ITEM_STATUS_
 
 
 
+// CFileItem
+
+// EFileItem
+
+// COMBO_1_PART_1
+
+
+
+
+
+
+
+
+
 
 enum MotionRebellion
 {
@@ -707,14 +721,26 @@ enum FILE_MODE_
 	FILE_MODE_LOCAL,
 };
 
+// FileMode::Memory
+// FILE_MODE_MEMORY
+// FileMode::Archive
+// FileMode::Local
 
 
+// FileModeLocal
+
+// MotionDanteRebellionCombo1Part1
+
+// MOTION_DANTE_REBELLION_COMBO_1_PART_1 3
+// MOTION_DANTE_REBELLION_COMBO_1_PART_2 4
+// MOTION_DANTE_REBELLION_COMBO_1_PART_3 5
+// MOTION_DANTE_REBELLION_COMBO_2_PART_2 6
 
 
+// using enum MotionDanteRebellion;
+// Combo1Part1
 
-
-
-
+// if (move == Combo1Part1)
 
 
 

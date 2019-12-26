@@ -51,6 +51,10 @@
 
 
 
+
+
+
+
 const char * Log_directory = "logs";
 const char * Log_file      = "Mary.txt";
 
@@ -68,7 +72,23 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 		}
 		Config_Init();
 		Cosmetics_Color_AdjustConfig();
+
+		
+
+
+
+
 		LoadConfig();
+
+
+		//Config_UpdateLogChannel();
+
+
+
+
+
+
+
 		Hooks_Init();
 
 		FMOD_Init();
@@ -117,7 +137,7 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 		System_Actor_ToggleDoppelgangerFixes(true);
 
 
-
+		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
 
 
 		
@@ -198,6 +218,9 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
 
+
+		Game_Arcade_UpdateModeIndex();
+
 		Game_Arcade_Toggle(Config.Game.Arcade.enable);
 		//Game_Attack_Init();
 
@@ -227,7 +250,7 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 		////Game_Other_Toggle(Config.Game.Other.enable);
 		////Game_ResetMotionState_Init();
 
-
+		Game_ResetMotionState_UpdateButtonIndex();
 
 
 		// @Todo: Move to root.
@@ -275,7 +298,7 @@ dword DllMain(HINSTANCE instance, dword reason, LPVOID reserved)
 
 
 		
-		Cosmetics_Color_Toggle(Config.Cosmetics.Color.enable);
+		//Cosmetics_Color_Toggle(Config.Cosmetics.Color.enable);
 		Cosmetics_Color_UpdateColors(Config);
 
 

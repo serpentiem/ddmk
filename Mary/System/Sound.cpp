@@ -1,4 +1,15 @@
+
+// @Todo: Auto vars and update types.
+// @Todo: Add Private.
+
+
 #include "Sound.h"
+
+
+constexpr bool debug = false;
+
+
+
 
 #pragma region Global Definitions
 
@@ -228,33 +239,38 @@ G_ITEM   g_item[MAX_CHANNEL] = {};
 static void Decompile
 (
 	byte  * archive,
-	//uint8   character,
 	uint8   channel,
 	uint8   progId
 )
 {
-	Log("Decompile Start");
-	LogNewLine();
-	Log("archive   %llX", archive  );
-	//Log("character %u"  , character);
-	Log("channel   %u"  , channel  );
+	if constexpr (debug)
+	{
+		LogFunctionStart();
+	}
 
 	uint32 & fileCount = *(uint32 *)(archive + 4);
-
-	Log("fileCount %u", fileCount);
-	LogNewLine();
-
 	uint16 smplCount = (uint16)g_smpl[channel].count;
 	uint16 vagiCount = (uint16)g_vagi[channel].count;
 	uint32 waveItemCount = 0;
+
+	if constexpr (debug)
+	{
+		Log("archive   %llX", archive);
+		Log("channel   %u"  , channel);
+		Log("fileCount %u", fileCount);
+		Log("");
+	}
 
 	for (uint8 fileIndex = 0; fileIndex < fileCount; fileIndex++)
 	{
 		uint32 fileOff = ((uint32 *)(archive + 8))[fileIndex];
 		byte * file = (archive + fileOff);
 
-		Log("file %u %llX", fileIndex, file);
-		LogNewLine();
+		if constexpr (debug)
+		{
+			Log("file %u %llX", fileIndex, file);
+			Log("");
+		}
 
 		Head:
 		{
@@ -266,16 +282,27 @@ static void Decompile
 					goto Wave;
 				}
 			}
-			Log("Head");
-			LogNewLine();
+
+			if constexpr (debug)
+			{
+				Log("Head");
+				Log("");
+			}
 
 			HEAD & head = *(HEAD *)file;
 
-			Log("Prog");
+			if constexpr (debug)
+			{
+				Log("Prog");
+			}
+
 			{
 				PROG_METADATA & prog = *(PROG_METADATA *)(file + head.progOff);
 				G_PROG & dest = g_prog[channel];
-				Log("last %u", prog.last);
+				if constexpr (debug)
+				{
+					Log("last %u", prog.last);
+				}
 				uint32 sectCount = (prog.last + 1);
 				for (uint32 sectIndex = 0; sectIndex < sectCount; sectIndex++)
 				{
@@ -284,8 +311,10 @@ static void Decompile
 					{
 						continue;
 					}
-					Log("off %X", off);
-
+					if constexpr (debug)
+					{
+						Log("off %X", off);
+					}
 					PROG_SECT_METADATA & sect = *(PROG_SECT_METADATA *)(file + head.progOff + off);
 					dest.Push(sect, progId);
 
@@ -296,17 +325,25 @@ static void Decompile
 						newItem.id += smplCount;
 					}
 				}
-				Log("g_prog[%u] addr  %llX", channel, dest.addr );
-				Log("g_prog[%u] pos   %llX", channel, dest.pos  );
-				Log("g_prog[%u] count %llu", channel, dest.count);
+				if constexpr (debug)
+				{
+					Log("g_prog[%u] addr  %llX", channel, dest.addr );
+					Log("g_prog[%u] pos   %llX", channel, dest.pos  );
+					Log("g_prog[%u] count %llu", channel, dest.count);
+				}
 			}
-			LogNewLine();
-
-			Log("Smpl");
+			if constexpr (debug)
+			{
+				Log("");
+				Log("Smpl");
+			}
 			{
 				SMPL_METADATA & smpl = *(SMPL_METADATA *)(file + head.smplOff);
 				G_SMPL & dest = g_smpl[channel];
-				Log("last %u", smpl.last);
+				if constexpr (debug)
+				{
+					Log("last %u", smpl.last);
+				}
 				uint32 itemCount = (smpl.last + 1);
 				for (uint32 itemIndex = 0; itemIndex < itemCount; itemIndex++)
 				{
@@ -314,16 +351,24 @@ static void Decompile
 					SMPL_ITEM & newItem = dest.Push(item);
 					newItem.id += vagiCount;
 				}
-				Log("g_smpl[%u] addr  %llX", channel, dest.addr );
-				Log("g_smpl[%u] count %llu", channel, dest.count);
+				if constexpr (debug)
+				{
+					Log("g_smpl[%u] addr  %llX", channel, dest.addr );
+					Log("g_smpl[%u] count %llu", channel, dest.count);
+				}
 			}
-			LogNewLine();
-
-			Log("Vagi");
+			if constexpr (debug)
+			{
+				Log("");
+				Log("Vagi");
+			}
 			{
 				VAGI_METADATA & vagi = *(VAGI_METADATA *)(file + head.vagiOff);
 				G_VAGI & dest = g_vagi[channel];
-				Log("last %u", vagi.last);
+				if constexpr (debug)
+				{
+					Log("last %u", vagi.last);
+				}
 				uint32 itemCount = (vagi.last + 1);
 				for (uint32 itemIndex = 0; itemIndex < itemCount; itemIndex++)
 				{
@@ -331,12 +376,17 @@ static void Decompile
 					VAGI_ITEM & newItem = dest.Push(item);
 					newItem.off = 0;
 				}
-				Log("g_vagi[%u] addr  %llX", channel, dest.addr );
-				Log("g_vagi[%u] count %llu", channel, dest.count);
-
+				if constexpr (debug)
+				{
+					Log("g_vagi[%u] addr  %llX", channel, dest.addr );
+					Log("g_vagi[%u] count %llu", channel, dest.count);
+				}
 				waveItemCount = itemCount;
 			}
-			LogNewLine();
+			if constexpr (debug)
+			{
+				Log("");
+			}
 		}
 		Wave:
 		{
@@ -348,30 +398,38 @@ static void Decompile
 					goto End;
 				}
 			}
-			Log("Wave");
 			G_WAVE & dest = g_wave[channel];
-			Log("waveItemCount %u", waveItemCount);
+			if constexpr (debug)
+			{
+				Log("Wave");
+				Log("waveItemCount %u", waveItemCount);
+			}
 			uint32 filePos = 0;
 			for (uint32 itemIndex = 0; itemIndex < waveItemCount; itemIndex++)
 			{
 				byte * item = (file + filePos);
 				uint32 itemSize = (Reverse((uint32 *)(item + 0xC)) + 0x30);
-
-				Log("item     %llX", item);
-				Log("itemSize %X", itemSize);
-
+				if constexpr (debug)
+				{
+					Log("item     %llX", item);
+					Log("itemSize %X", itemSize);
+				}
 				dest.Push(item, itemSize);
 				filePos += itemSize;
 			}
-			Log("g_wave[%u] addr  %llX", channel, dest.addr );
-			Log("g_wave[%u] pos   %X"  , channel, dest.pos  );
-			Log("g_wave[%u] count %u"  , channel, dest.count);
+			if constexpr (debug)
+			{
+				Log("g_wave[%u] addr  %llX", channel, dest.addr );
+				Log("g_wave[%u] pos   %X"  , channel, dest.pos  );
+				Log("g_wave[%u] count %u"  , channel, dest.count);
+			}
 		}
 		End:;
 	}
-	LogNewLine();
-	Log("Decompile End");
-	LogNewLine();
+	if constexpr (debug)
+	{
+		LogFunctionEnd();
+	}
 }
 
 static void Compile
@@ -380,8 +438,13 @@ static void Compile
 	uint8 maxProgSect
 )
 {
-	Log("Compile Start");
-	LogNewLine();
+	if constexpr (debug)
+	{
+		LogFunctionStart();
+	}
+
+
+
 
 	dword error = 0;
 
@@ -557,7 +620,7 @@ static void Compile
 				static uint32 off = 0;
 				VAGI_ITEM & item = ((VAGI_ITEM *)(addr + pos))[itemIndex];
 				//Log("__UFF__ off   %X", off);
-				//LogNewLine();
+				//Log("");
 				
 				//Log("item      %llX", item);
 				//Log("item size %u", item.size);
@@ -592,8 +655,13 @@ static void Compile
 		{
 			WAVE_ITEM waveItem = waveRoot[index];
 
-			Log("g_wave[%u][%u] addr %llX", channel, index, waveItem.addr);
-			Log("g_wave[%u][%u] size %X"  , channel, index, waveItem.size);
+			if constexpr (debug)
+			{
+				Log("g_wave[%u][%u] addr %llX", channel, index, waveItem.addr);
+				Log("g_wave[%u][%u] size %X"  , channel, index, waveItem.size);
+			}
+
+
 
 			FMOD_SYSTEM * FMOD_system = *(FMOD_SYSTEM **)(appBaseAddr + 0x5DE3D0);
 
@@ -639,18 +707,24 @@ static void Compile
 		}
 	}
 
-	Log("g_map [%u] %llX", channel, mapRoot);
-	Log("g_item[%u] %llX", channel, itemRoot.addr);
+	if constexpr (debug)
+	{
+		Log("g_map [%u] %llX", channel, mapRoot);
+		Log("g_item[%u] %llX", channel, itemRoot.addr);
+
+	}
 
 
 
 
+	
 
 
 
-	Log("Compile End");
-	LogNewLine();
-
+	if constexpr (debug)
+	{
+		LogFunctionEnd();
+	}
 }
 
 
@@ -670,7 +744,10 @@ static bool InitPosMap()
 	{
 		posMap[channel] = pos;
 		pos += ((uint32 *)(file + 0x10))[channel];
-		Log("posMap[%u] %llX", channel, posMap[channel]);
+		if constexpr (debug)
+		{
+			Log("posMap[%u] %llX", channel, posMap[channel]);
+		}
 	}
 	return true;
 }
@@ -755,15 +832,18 @@ bool System_Sound_Init()
 				return false;
 			}
 		}
-		Log("g_prog[%u] addr %llX", channel, g_prog[channel].addr);
-		Log("g_prog[%u] off  %llX", channel, g_prog[channel].off );
-		Log("g_smpl[%u] addr %llX", channel, g_smpl[channel].addr);
-		Log("g_vagi[%u] addr %llX", channel, g_vagi[channel].addr);
-		Log("g_wave[%u] addr %llX", channel, g_wave[channel].addr);
-		Log("g_wave[%u] off  %llX", channel, g_wave[channel].off );
-		Log("g_wave[%u] size %llX", channel, g_wave[channel].size);
-		Log("g_map [%u]      %llX", channel, g_map [channel]     );
-		Log("g_item[%u] addr %llX", channel, g_item[channel].addr);
+		if constexpr (debug)
+		{
+			Log("g_prog[%u] addr %llX", channel, g_prog[channel].addr);
+			Log("g_prog[%u] off  %llX", channel, g_prog[channel].off );
+			Log("g_smpl[%u] addr %llX", channel, g_smpl[channel].addr);
+			Log("g_vagi[%u] addr %llX", channel, g_vagi[channel].addr);
+			Log("g_wave[%u] addr %llX", channel, g_wave[channel].addr);
+			Log("g_wave[%u] off  %llX", channel, g_wave[channel].off );
+			Log("g_wave[%u] size %llX", channel, g_wave[channel].size);
+			Log("g_map [%u]      %llX", channel, g_map [channel]     );
+			Log("g_item[%u] addr %llX", channel, g_item[channel].addr);
+		}
 	}
 
 
@@ -771,6 +851,9 @@ bool System_Sound_Init()
 
 
 	{
+
+		// @Todo: Move helper to global namespace.
+
 		struct DPS
 		{
 			const char * archiveName;

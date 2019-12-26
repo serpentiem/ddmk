@@ -1,3 +1,6 @@
+
+// @Todo: Put common strings in their own space.
+
 #pragma once
 #include "../Core/Core.h"
 
@@ -5,6 +8,7 @@ struct LOCALE
 {
 	struct
 	{
+		// @Todo: Change to header.
 		const char * label[4] =
 		{
 			"System",
@@ -77,32 +81,24 @@ struct LOCALE
 		const char * reset = "Reset";
 	}
 	Speed;
-
-
-
-
-
 	struct
 	{
-		//struct
-		//{
-		//	const char * header = "Cache";
-		//	const char * enable = "Enable";
-		//}
-		//Cache;
-
-
+		const char * header = "Teleporter";
+		const char * current = "Current";
+		const char * next = "Next";
+		const char * teleport = "Teleport";
+		const char * invalidPointer = "Invalid Pointer!";
+	}
+	Teleporter;
+	struct
+	{
 		struct
 		{
-
 			const char * header = "Actor";
 			const char * forceSingleActor = "Force Single Actor";
 			const char * disableIdleTimer = "Disable Idle Timer";
-
-
 		}
 		Actor;
-
 		struct
 		{
 			const char * header = "Camera";
@@ -126,7 +122,6 @@ struct LOCALE
 		{
 			const char * header = "Input";
 			const char * hideMouseCursor = "Hide Mouse Cursor";
-			const char * reset = "Reset";
 		}
 		Input;
 		struct
@@ -137,94 +132,8 @@ struct LOCALE
 		Window;
 	}
 	System;
-
-
-
-
-
-
-
-
 	struct
 	{
-		const char * description =
-			"Game\n"
-			"\n"
-			"Arcade\n"
-			"\n"
-			"Allows you to jump from the main menu to a specific point in the game,\n"
-			"bypassing all prompts and setting all variables automagically.\n"
-			"\n"
-			"Boss Rush\n"
-			"\n"
-			"Go directly to a mission's boss battle.\n"
-			"\n"
-			"Dante\n"
-			"\n"
-			"Rebellion\n"
-			"\n"
-			"Infinite Sword Pierce\n"
-			"\n"
-			"Self-explanatory.\n"
-			"\n"
-			"Unlock Quick Drive\n"
-			"\n"
-			"Requires pl000_00_3.pac from the Demo to work.\n"
-			"Extract it with AFSExplorer and save it as demo_pl000_00_3.pac\n"
-			"in data\\dmc3\\GData.afs of your Devil May Cry HD Collection root directory.\n"
-			"\n"
-			"While in Swordmaster hold the Style button and press the Melee Attack button twice to trigger it.\n"
-			"\n"
-			"Ebony & Ivory\n"
-			"\n"
-			"Foursome Time\n"
-			"\n"
-			"Make Twosome Time fire two additional shots.\n"
-			"\n"
-			"Infinite Rain Storm\n"
-			"\n"
-			"Self-explanatory.\n"
-			"\n"
-			"Artemis\n"
-			"\n"
-			"Swap Normal Shot and Multi Lock\n"
-			"\n"
-			"Self-explanatory.\n"
-			"\n"
-			"Instant Full Charge\n"
-			"\n"
-			"Self-explanatory.\n"
-			"\n"
-			"Air Hike\n"
-			"\n"
-			"Core Ability\n"
-			"\n"
-			"If bought once for Rebellion, Air Hike will be accessible by\n"
-			"all melee weapons, effectively making it a core ability.\n"
-			"\n"
-			"Crazy Combo\n"
-			"\n"
-			"Level Multiplier\n"
-			"\n"
-			"Self-explanatory.\n"
-			"\n"
-			"Weapon Switch Timeout\n"
-			"\n"
-			"Self-explanatory.\n"
-			"\n"
-			"\n"
-			"\n"
-			"\n"
-			"\n"
-			"\n"
-			"\n"
-			"\n"
-			"\n"
-			"\n"
-			"\n"
-			"\n"
-			"\n"
-			"\n";
 		struct
 		{
 			const char * header = "Arcade";
@@ -455,7 +364,6 @@ struct LOCALE
 		{
 			const char * header = "Doppelganger";
 			const char * enable = "Enable";
-			//const char * useEXVersion = "Use EX Version";
 			struct
 			{
 				const char * label = "Character";
@@ -468,12 +376,7 @@ struct LOCALE
 				};
 			}
 			Character;
-
 			const char * enableDevilTrigger = "Enable Devil Trigger";
-
-
-
-
 			const char * reset = "Reset";
 		}
 		Doppelganger;
@@ -521,7 +424,6 @@ struct LOCALE
 				};
 			}
 			Character;
-			const char * spawnDelay = "Spawn Delay";
 			const char * reset = "Reset";
 		}
 		Multiplayer;
@@ -569,7 +471,6 @@ struct LOCALE
 				};
 			}
 			Button;
-			const char * updateRate = "Update Rate";
 			const char * reset = "Reset";
 		}
 		ResetMotionState;
@@ -578,44 +479,6 @@ struct LOCALE
 			const char * header = "Style Switcher";
 			const char * enable = "Enable";
 			const char * noDoubleTap = "No Double Tap";
-			struct
-			{
-				const char * items[17] =
-				{
-					"Void",
-					"Left Trigger",
-					"Right Trigger",
-					"Left Shoulder",
-					"Right Shoulder",
-					"Y",
-					"B",
-					"A",
-					"X",
-					"Back",
-					"Left Thumb",
-					"Right Thumb",
-					"Start",
-					"D-Pad Up",
-					"D-Pad Right",
-					"D-Pad Down",
-					"D-Pad Left",
-				};
-			}
-			Button;
-			struct
-			{
-				const char * items[6] =
-				{
-					"Swordmaster",
-					"Gunslinger",
-					"Trickster",
-					"Royalguard",
-					"Quicksilver",
-					"Doppelganger",
-				};
-			}
-			Style;
-			const char * updateRate = "Update Rate";
 			const char * reset = "Reset";
 		}
 		StyleSwitcher;
@@ -687,13 +550,11 @@ struct LOCALE
 			struct
 			{
 				const char * header = "Melee";
-				const char * timeout = "Timeout";
 			}
 			Melee;
 			struct
 			{
 				const char * header = "Ranged";
-				const char * timeout = "Timeout";
 			}
 			Ranged;
 			struct
@@ -723,7 +584,6 @@ struct LOCALE
 		struct
 		{
 			const char * header = "Color";
-			const char * enable = "Enable";
 			struct
 			{
 				const char * header = "Aura";
@@ -782,6 +642,15 @@ struct LOCALE
 					};
 				}
 				Royalguard;
+				struct
+				{
+					const char * label = "Doppelganger";
+					const char * items[1] =
+					{
+						"Color"
+					};
+				}
+				Doppelganger;
 			}
 			Style;
 			struct
@@ -813,6 +682,12 @@ struct LOCALE
 		Dante;
 		struct
 		{
+			const char * header = "Doppelganger";
+			const char * noColor = "No Color";
+		}
+		Doppelganger;
+		struct
+		{
 			const char * header = "Other";
 			const char * noDevilForm = "No Devil Form";
 		}
@@ -823,18 +698,8 @@ struct LOCALE
 			const char * hideBeowulf = "Hide Beowulf";
 		}
 		Vergil;
-		struct
-		{
-			const char * header = "Weapon";
-			const char * instantModelUpdate = "Instant Model Update";
-		}
-		Weapon;
 	}
 	Cosmetics;
-
-
-
-
 	struct
 	{
 		struct
@@ -868,21 +733,15 @@ struct LOCALE
 		struct
 		{
 			const char * header = "Speed";
-			const char * reset = "Reset";
 		}
 		Speed;
 		struct
 		{
 			const char * header = "Teleporter";
-			const char * current = "Current";
-			const char * next = "Next";
-			const char * teleport = "Teleport";
-			const char * invalidPointer = "Invalid Pointer!";
 		}
 		Teleporter;
 	}
 	Tools;
-	const char * restartRequired = "Restart required!";
 };
 
 extern LOCALE Locale;

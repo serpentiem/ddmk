@@ -1,5 +1,9 @@
 #include "Vergil.h"
 
+
+
+
+
 byte * Levitate = 0;
 static byte * Melee_Timeout = 0; // And here I thought variables were static by default. :/
 

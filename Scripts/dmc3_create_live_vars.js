@@ -74,6 +74,7 @@ var items =
 	[ "motion flags 3"              , 2, false, 0x39B4                  ],
 	[ "motion flags 4"              , 2, false, 0x39B6                  ],
 	[ "motion flags 5"              , 2, false, 0x39B8                  ],
+	[ "shadow"                      , 4, false, 0x3A28                  ],
 	[ "color"                       , 4, true , 0x3A28                  ],
 	[ "charged shot air"            , 2, false, 0x3E1A                  ],
 	[ "charged shot"                , 2, false, 0x3E22                  ],
@@ -229,7 +230,7 @@ for (var actor = 0; actor < 4; actor++)
 		{
 			c += "<ByteLength>" + size + "</ByteLength>\n";
 		}
-		c += "<Address>Mary.actorBaseAddr+" + (actor * 8).toString(16).toUpperCase() + "</Address>\n"
+		c += "<Address>System_Actor_actorBaseAddr+" + (actor * 8).toString(16).toUpperCase() + "</Address>\n"
 		c += "<Offsets>\n";
 		c += "<Offset>" + off.toString(16).toUpperCase() + "</Offset>\n";
 		c += "</Offsets>\n";

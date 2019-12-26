@@ -1,10 +1,14 @@
 #include "Motion.h"
 
+
+
+
+
 bool System_Motion_update[MAX_ACTOR] = {};
 
 void SetUpdateFlag(byte8 * baseAddr)
 {
-	auto actor = GetActorId(baseAddr);
+	auto actor = System_Actor_GetActorId(baseAddr);
 	System_Motion_update[actor] = true;
 }
 

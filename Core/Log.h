@@ -6,9 +6,6 @@
 // @Todo: Add LogWarning LogError and LogCriticalError.
 // @Todo: Add Warning and Error levels.
 
-
-
-
 #pragma once
 #include "DataTypes.h"
 #include "String.h"
@@ -44,15 +41,16 @@ void Log(const char * format, Args ... args)
 			return;
 		}
 	}
-	dword bytesWritten = 0;
+	byte32 bytesWritten = 0;
 	OVERLAPPED overlap = {};
 	WriteFile(file, buffer, (uint32)strlen(buffer), &bytesWritten, &overlap);
 	CloseHandle(file);
 }
 
-#define LogNewLine() Log("")
-
-#define FUNC_NAME __FUNCTION__
+inline void LogFunctionHelper(const char * funcName)
+{
+	Log(funcName);
+}
 
 template <typename T>
 void LogFunctionHelper(const char * funcName, T var)
@@ -67,10 +65,7 @@ void LogFunctionHelper(const char * funcName, T var)
 	}
 }
 
-inline void LogFunctionHelper(const char * funcName)
-{
-	Log(funcName);
-}
+#define FUNC_NAME __FUNCTION__
 
 #define LogFunction(...) LogFunctionHelper(FUNC_NAME, __VA_ARGS__)
 

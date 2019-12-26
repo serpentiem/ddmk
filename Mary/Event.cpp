@@ -1,7 +1,14 @@
 
+
+
+// @Todo: Define Private.
+
 // @Todo: Create Helpers.
 
 #include "Event.h"
+
+
+
 
 
 
@@ -11,23 +18,56 @@
 
 #pragma region Actor
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 static void Actor_StageLoadComplete()
 {
 
-	return;
 
+	// Adjust style.
 
-	auto & baseAddr = System_Actor_actorBaseAddr[ACTOR_TWO];
-
-	
-	if (!baseAddr)
 	{
-		return;
+		auto & baseAddr1 = System_Actor_actorBaseAddr[ACTOR_ONE];
+		if (!baseAddr1)
+		{
+			goto sect0;
+		}
+		auto & style = *(uint32 *)(baseAddr1 + 0x6338);
+		if ((style == STYLE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
+		{
+			style = STYLE_TRICKSTER;
+		}
 	}
+	sect0:
+	
 
-	Cosmetics_Color_ApplyColor(baseAddr, 6, 0);
+
+
 
 	return;
+
+
+	//return;
+
+
+	//auto & baseAddr = System_Actor_actorBaseAddr[ACTOR_TWO];
+	//if (!baseAddr)
+	//{
+	//	return;
+	//}
+	//Cosmetics_Color_ApplyColor(baseAddr, 6, 0);
+	//return;
 
 
 
@@ -38,7 +78,7 @@ static void Actor_StageLoadComplete()
 	{
 		return;
 	}
-	uint8 count = GetActorCount();
+	auto count = System_Actor_GetActorCount();
 	for (uint8 actor = ACTOR_TWO; actor < count; actor++)
 	{
 		auto & baseAddr = System_Actor_actorBaseAddr[actor];
@@ -46,8 +86,8 @@ static void Actor_StageLoadComplete()
 		{
 			continue;
 		}
-		bool & isDoppelganger = *(bool *)(baseAddr + 0x11C) = true;
-		uint8 & shadow = *(uint8 *)(baseAddr + 0x3A18) = 0;
+		auto & isDoppelganger = *(bool *)(baseAddr + 0x11C) = true;
+		auto & shadow = *(uint8 *)(baseAddr + 0x3A18) = 0;
 	}
 }
 
@@ -58,6 +98,8 @@ static void Actor_StageLoadComplete()
 static void Arcade_InitSession()
 {
 	LogFunctionStart();
+
+	// @Todo: Auto and specifiy VARS.
 
 	byte * addr = (appBaseAddr + 0xC8F250);
 	uint32  & mission            = *(uint32  *)(addr        );
@@ -86,8 +128,7 @@ static void Arcade_InitSession()
 		{
 			goto ModeEnd;
 		}
-		// @Todo: Create modeMap.
-		if (Config.Game.Arcade.mode == 5)
+		if (Game_Arcade_modeIndex == 5)
 		{
 			mode = MODE_HARD;
 			oneHitKill = true;
@@ -127,7 +168,14 @@ static void Arcade_InitSession()
 
 	if (Config.Game.Arcade.character == CHAR_DANTE)
 	{
-		style = Config.Game.Arcade.style;
+		if ((Config.Game.Arcade.style == STYLE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
+		{
+			style = STYLE_TRICKSTER;
+		}
+		else
+		{
+			style = Config.Game.Arcade.style;
+		}
 	}
 
 
@@ -800,7 +848,7 @@ static void StageLoadComplete()
 static void DevilForm_Activate(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
-	auto actor = GetActorId(baseAddr);
+	auto actor = System_Actor_GetActorId(baseAddr);
 	auto & doppelganger = *(bool *)(baseAddr + 0x6362);
 	if (actor != ACTOR_ONE)
 	{
@@ -810,13 +858,13 @@ static void DevilForm_Activate(byte8 * baseAddr)
 	{
 		return;
 	}
-	UpdateFlux(baseAddr, DEVIL_FLUX_START);
+	System_Actor_UpdateFlux(baseAddr, DEVIL_FLUX_START);
 }
 
 static void DevilForm_Deactivate(byte * baseAddr)
 {
 	LogFunction(baseAddr);
-	auto actor = GetActorId(baseAddr);
+	auto actor = System_Actor_GetActorId(baseAddr);
 	auto & doppelganger = *(bool *)(baseAddr + 0x6362);
 	if (actor != ACTOR_ONE)
 	{
@@ -826,8 +874,34 @@ static void DevilForm_Deactivate(byte * baseAddr)
 	{
 		return;
 	}
-	UpdateFlux(baseAddr, DEVIL_FLUX_END);
+	System_Actor_UpdateFlux(baseAddr, DEVIL_FLUX_END);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Doppelganger_UpdateShadow()
+{
+
+}
+
+
+
+
+
+
+
+
+
 
 inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 {
@@ -848,24 +922,63 @@ static void Doppelganger_Activate(byte * baseAddr)
 {
 	Log("%s %llX", FUNC_NAME, baseAddr);
 
-	uint8 actor = GetActorId(baseAddr);
+	uint8 actor = System_Actor_GetActorId(baseAddr);
 	if (actor != ACTOR_ONE)
 	{
 		return;
 	}
 
+
 	Doppelganger_ToggleForceActorUpdate(true);
+
+
+	auto & noColor = Config.Cosmetics.Doppelganger.noColor;
+	auto & baseAddr1 = System_Actor_actorBaseAddr[ACTOR_ONE];
+	auto & baseAddr2 = System_Actor_actorBaseAddr[ACTOR_TWO];
+	if (!baseAddr1 || !baseAddr2)
+	{
+		return;
+	}
+	auto & shadow1 = *(uint32 *)(baseAddr1 + 0x3A18) = (noColor) ? 1 : 0;
+	auto & shadow2 = *(uint32 *)(baseAddr2 + 0x3A18) = (noColor) ? 1 : 0;
+
+
+
+
+
+
+
+
+
+
 
 	if (!Config.Game.Doppelganger.enableDevilTrigger)
 	{
-		UpdateFlux(baseAddr, DEVIL_FLUX_END);
+		System_Actor_UpdateFlux(baseAddr, DEVIL_FLUX_END);
 		return;
 	}
 	bool devil = *(bool *)(baseAddr + 0x3E9B);
 	if (devil)
 	{
-		UpdateFlux(baseAddr, DEVIL_FLUX_END);
+		System_Actor_UpdateFlux(baseAddr, DEVIL_FLUX_END);
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	//uint8 & shadow = *(uint8 *)(actorBaseAddr[ACTOR_TWO] + 0x3A18) = 0;
 
@@ -924,7 +1037,7 @@ static void Doppelganger_Activate(byte * baseAddr)
 	}
 	if (character != CHAR_LADY)
 	{
-		UpdateDevilForm(System_Actor_actorBaseAddr[ACTOR_TWO]);
+		System_Actor_UpdateDevilForm(System_Actor_actorBaseAddr[ACTOR_TWO]);
 	}
 }
 
@@ -932,7 +1045,7 @@ static void Doppelganger_Deactivate(byte * baseAddr)
 {
 	Log("%s %llX", FUNC_NAME, baseAddr);
 
-	uint8 actor = GetActorId(baseAddr);
+	uint8 actor = System_Actor_GetActorId(baseAddr);
 	if (actor != ACTOR_ONE)
 	{
 		return;
@@ -945,15 +1058,15 @@ static void Doppelganger_Deactivate(byte * baseAddr)
 		*(uint32 *)(baseAddr + 0x3E6C) = 0;
 		*(uint32 *)(baseAddr + 0x3E70) = 0;
 		*(uint32 *)(baseAddr + 0x3E88) = 0;
-		UpdateDevilForm(baseAddr);
-		UpdateFlux(baseAddr, DEVIL_FLUX_END);
-		Relax(baseAddr);
+		System_Actor_UpdateDevilForm(baseAddr);
+		System_Actor_UpdateFlux(baseAddr, DEVIL_FLUX_END);
+		System_Actor_Relax(baseAddr);
 		return;
 	}
 	bool devil = *(bool *)(baseAddr + 0x3E9B);
 	if (devil)
 	{
-		UpdateFlux(baseAddr, DEVIL_FLUX_START);
+		System_Actor_UpdateFlux(baseAddr, DEVIL_FLUX_START);
 	}
 	*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
 	*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;

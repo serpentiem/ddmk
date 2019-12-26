@@ -1,95 +1,39 @@
 #include "Arcade.h"
 
-
-
-
-/*
-
-enum MODE_
+uint8 Game_Arcade_modeIndex = 0;
+uint32 Game_Arcade_modeMap[6] =
 {
-MODE_EASY,
-MODE_NORMAL,
-MODE_HARD,
-MODE_VERY_HARD,
-MODE_DANTE_MUST_DIE,
-MODE_HEAVEN_OR_HELL,
-MAX_MODE,
+	MODE_EASY,
+	MODE_NORMAL,
+	MODE_HARD,
+	MODE_VERY_HARD,
+	MODE_DANTE_MUST_DIE,
+	MODE_HARD,
 };
-*/
 
-//uint32 Game_Arcade_modeMap[6] =
-//{
-//	
-//	MODE_EASY,
-//	MODE_NORMAL,
-//	MODE_HARD,
-//	MODE_VERY_HARD,
-//	MODE_DANTE_MUST_DIE,
-//	MODE_HARD,
-//};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void Game_Arcade_UpdateModeIndex()
+{
+	auto & modeIndex = Game_Arcade_modeIndex;
+	auto & modeMap   = Game_Arcade_modeMap;
+	for (uint8 index = 0; index < countof(modeMap); index++)
+	{
+		if (modeMap[index] == Config.Game.Arcade.mode)
+		{
+			modeIndex = index;
+			break;
+		}
+	}
+}
 
 void Game_Arcade_Toggle(bool enable)
 {
-	//Log("%s %u", FUNC_NAME, enable);
-
-	LogFunction();
-
-
-	if (enable)
-	{
-		Write<byte>((appBaseAddr + 0x2433FB), 0xEB);                         // Force New Game
-		Write<byte>((appBaseAddr + 0x243299), 0xEB);                         // Ignore Mission Select Menu
-		Write<byte>((appBaseAddr + 0x2411F5), 0xEB);                         // Force Start Mission
-
-
-
-
-
-
-
-		WriteAddress((appBaseAddr + 0x217991), (appBaseAddr + 0x217993), 2); // Force Costume
-		WriteAddress((appBaseAddr + 0x21799A), (appBaseAddr + 0x21799C), 2); // ..
-		Write<byte>((appBaseAddr + 0x1AA791), 0xEB);                         // Skip Orb Notifications
-	}
-	else
-	{
-		Write<byte>((appBaseAddr + 0x2433FB), 0x74);
-		Write<byte>((appBaseAddr + 0x243299), 0x74);
-		Write<byte>((appBaseAddr + 0x2411F5), 0x74);
-
-
-
-
-
-
-
-
-
-
-
-
-
-		WriteAddress((appBaseAddr + 0x217991), (appBaseAddr + 0x2179A2), 2);
-		WriteAddress((appBaseAddr + 0x21799A), (appBaseAddr + 0x2179A2), 2);
-		Write<byte>((appBaseAddr + 0x1AA791), 0x75);
-	}
+	LogFunction(enable);
+	Write<byte8>((appBaseAddr + 0x2433FB), (enable) ? 0xEB : 0x74); // Force new game.
+	Write<byte8>((appBaseAddr + 0x243299), (enable) ? 0xEB : 0x74); // Skip mission select menu.
+	Write<byte8>((appBaseAddr + 0x2411F5), (enable) ? 0xEB : 0x74); // Force start mission.
+	// Force costume.
+	WriteAddress((appBaseAddr + 0x217991), (enable) ? (appBaseAddr + 0x217993) : (appBaseAddr + 0x2179A2), 2);
+	WriteAddress((appBaseAddr + 0x21799A), (enable) ? (appBaseAddr + 0x21799C) : (appBaseAddr + 0x2179A2), 2);
+	// @Todo: Lazy solution, update proper vars!
+	Write<byte8>((appBaseAddr + 0x1AA791), (enable) ? 0xEB : 0x75); // Skip orb notifications.
 }

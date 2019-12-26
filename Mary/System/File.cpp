@@ -1,5 +1,11 @@
 #include "File.h"
 
+
+constexpr bool debug = false;
+
+
+
+
 typedef void(* InternalAdjustPointers_t)(byte8 *);
 
 InternalAdjustPointers_t InternalAdjustPointers = 0;
@@ -83,15 +89,24 @@ byte8 * LoadGameFile(const char * fileName, uint32 * size, byte8 * dest)
 
 void AdjustPointers(byte8 * addr)
 {
-	LogFunction();
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
+
+
+	
 	{
 		byte8 signature[] = { 'P','A','C' };
 		for (uint8 index = 0; index < countof(signature); index++)
 		{
 			if (addr[index] != signature[index])
 			{
-				Log("Not a PAC.");
-				Log("addr %.16llX", addr);
+				if constexpr (debug)
+				{
+					Log("Not a PAC.");
+					Log("addr %.16llX", addr);
+				}
 				goto sect0;
 			}
 		}
@@ -100,7 +115,10 @@ void AdjustPointers(byte8 * addr)
 		{
 			uint32 & fileOff = ((uint32 *)(addr + 8))[fileIndex];
 			InternalAdjustPointers((addr + fileOff));
-			Log("%.16llX", (addr + fileOff));
+			if constexpr (debug)
+			{
+				Log("%.16llX", (addr + fileOff));
+			}
 		}
 		return;
 	}

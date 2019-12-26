@@ -69,7 +69,7 @@ void Game_Doppelganger_ToggleEnableDevilTrigger(bool enable)
 		Write<byte>((appBaseAddr + 0x1E7775), 0xEB);                         // Enable Devil Trigger Activation
 		Write<byte>((appBaseAddr + 0x1F94A1), 0xEB);                         // Enable Devil Trigger Deactivation
 		WriteAddress((appBaseAddr + 0x1E752B), (appBaseAddr + 0x1E752D), 2); // Enable ACTOR_TWO Devil Trigger
-		Write<uint32>((appBaseAddr + 0x1F7D3F), 0);                          // Bob Set Visible Flag
+		//Write<uint32>((appBaseAddr + 0x1F7D3F), 0);                          // Bob Set Visible Flag
 	}
 	else
 	{
@@ -86,6 +86,6 @@ void Game_Doppelganger_ToggleEnableDevilTrigger(bool enable)
 		Write<byte>((appBaseAddr + 0x1E7775), 0x75);
 		Write<byte>((appBaseAddr + 0x1F94A1), 0x74);
 		WriteAddress((appBaseAddr + 0x1E752B), (appBaseAddr + 0x1E7516), 2);
-		Write<uint32>((appBaseAddr + 0x1F7D3F), 1);
+		//Write<uint32>((appBaseAddr + 0x1F7D3F), 1);
 	}
 }

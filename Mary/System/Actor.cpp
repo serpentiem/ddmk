@@ -10,19 +10,24 @@ bool System_Actor_enableDoppelgangerFixes = false;
 
 byte8 * System_Actor_actorBaseAddr[MAX_ACTOR] = {};
 
-typedef byte8 *(* InternalCreateActor_t)(uint8 character, uint8 actor, bool isDoppelganger);
+System_Actor_UpdateDevilForm_t     System_Actor_UpdateDevilForm     = 0;
+System_Actor_UpdateFlux_t          System_Actor_UpdateFlux          = 0;
+System_Actor_Relax_t               System_Actor_Relax               = 0;
 
-InternalCreateActor_t InternalCreateActor = 0;
-UpdateDevilForm_t     UpdateDevilForm     = 0;
-UpdateFlux_t          UpdateFlux          = 0;
-Relax_t               Relax               = 0;
-
-byte * OnUpdate[2] = {};
+byte8 * OnUpdate[2] = {};
 
 byte8 * CreateActorOneProxy = 0;
 byte8 * UpdateActorProxy    = 0;
 
 PrivateStart;
+
+
+
+
+
+typedef byte8 *(* InternalCreateActor_t)(uint8 character, uint8 actor, bool isDoppelganger);
+
+InternalCreateActor_t InternalCreateActor = 0;
 
 struct FileItemHelper
 {
@@ -229,7 +234,7 @@ uint8 motionHelperCount[] =
 
 PrivateEnd;
 
-uint8 GetActorId(byte * baseAddr)
+uint8 System_Actor_GetActorId(byte * baseAddr)
 {
 	for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
 	{
@@ -241,7 +246,7 @@ uint8 GetActorId(byte * baseAddr)
 	return 0;
 }
 
-uint8 GetActorCount()
+uint8 System_Actor_GetActorCount()
 {
 	uint8 count = 0;
 	for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
@@ -260,6 +265,8 @@ PrivateStart;
 void CreateActors()
 {
 	LogFunction();
+
+	// @Todo: Move to actor one.
 
 	if (Config.System.Actor.forceSingleActor)
 	{
@@ -296,7 +303,7 @@ void CreateActorOne(byte8 * baseAddr)
 
 void UpdateCostume(byte8 * baseAddr)
 {
-	uint8 actor = GetActorId(baseAddr);
+	uint8 actor = System_Actor_GetActorId(baseAddr);
 	uint8 character = *(uint8 *)(baseAddr + 0x78);
 	if (character >= MAX_CHAR)
 	{
@@ -317,7 +324,7 @@ void UpdateCostume(byte8 * baseAddr)
 
 void UpdateBaseAddress(byte8 * baseAddr)
 {
-	uint8 actor = GetActorId(baseAddr);
+	uint8 actor = System_Actor_GetActorId(baseAddr);
 	byte8 ** data = *(byte8 ***)(appBaseAddr + 0xC90E28);
 	if (!data)
 	{
@@ -396,7 +403,7 @@ PrivateEnd;
 
 // @Todo: Review.
 
-void ResetDevilModel()
+void System_Actor_ResetDevilModel()
 {
 	LogFunction();
 	// Loop Count
@@ -429,10 +436,10 @@ void ResetDevilModel()
 	Write<uint8>((appBaseAddr + 0x1F943B), DEVIL_DANTE_SPARDA);
 }
 
-void UpdateDevilModel(uint8 model)
+void System_Actor_UpdateDevilModel(uint8 model)
 {
 	LogFunction();
-	ResetDevilModel();
+	System_Actor_ResetDevilModel();
 	vp_memset((appBaseAddr + 0x2130E5), 0x90, 3);
 	if (model == DEVIL_DANTE_SPARDA)
 	{
@@ -457,6 +464,9 @@ void UpdateDevilModel(uint8 model)
 	Write<uint8>((appBaseAddr + 0x1F943B), model);
 }
 
+PrivateStart;
+
+
 void UpdateActorAttributes(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
@@ -464,32 +474,26 @@ void UpdateActorAttributes(byte8 * baseAddr)
 	auto & isDoppelganger = *(uint32 *)(baseAddr + 0x11C );
 	auto & visible        = *(uint32 *)(baseAddr + 0x120 );
 	auto & shadow         = *(uint32 *)(baseAddr + 0x3A18);
+
+
+
 	if (Config.Game.Multiplayer.enable)
 	{
 		return;
 	}
-	if (baseAddr == System_Actor_actorBaseAddr[ACTOR_ONE])
+	if (baseAddr != System_Actor_actorBaseAddr[ACTOR_TWO])
 	{
 		return;
 	}
-	if (character == CHAR_BOB)
-	{
-		return;
-	}
-
-	Cosmetics_Color_ApplyColor(baseAddr, 6, 0);
-
-	
-
-
-
 	isDoppelganger = 1;
-	visible = 0;
-	shadow = 0;
+	if (Config.Cosmetics.Doppelganger.noColor)
+	{
+		return;
+	}
+	Cosmetics_Color_ApplyColor(baseAddr, 6, 0);
 }
 
-
-
+PrivateEnd;
 
 
 
@@ -549,11 +553,11 @@ void System_Actor_Init()
 	}
 	{
 		FUNC func = CreateFunction((appBaseAddr + 0x1FB020), 0);
-		UpdateDevilForm = (UpdateDevilForm_t)func.addr;
+		System_Actor_UpdateDevilForm = (System_Actor_UpdateDevilForm_t)func.addr;
 	}
 	{
 		FUNC func = CreateFunction((appBaseAddr + 0x1F94D0), 0);
-		UpdateFlux = (UpdateFlux_t)func.addr;
+		System_Actor_UpdateFlux = (System_Actor_UpdateFlux_t)func.addr;
 	}
 	{
 		byte sect1[] =
@@ -572,7 +576,7 @@ void System_Actor_Init()
 		memcpy(func.sect1, sect1, sizeof(sect1));
 		WriteCall((func.sect1 + 5), (appBaseAddr + 0x1F92C0));
 		WriteCall((func.sect1 + 0x22), (appBaseAddr + 0x1F97F0));
-		Relax = (Relax_t)func.addr;
+		System_Actor_Relax = (System_Actor_Relax_t)func.addr;
 	}
 	{
 		byte sect0[] =
@@ -646,32 +650,7 @@ void System_Actor_Init()
 		memcpy(func.sect1, sect1, sizeof(sect1));
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x1F7D87), func.addr);
-		//dmc3.exe+1F7D87 - 48 8B 5C 24 58        - mov rbx,[rsp+58]
-		//dmc3.exe+1F7D8C - 48 83 C4 40           - add rsp,40
 	}
-
-
-
-
-
-	//{
-		//byte8 sect0[] =
-		//{
-		//	0x50, //push rax
-		//};
-		//byte8 sect2[] =
-		//{
-		//	0x84, 0xC0,                   //test al,al
-		//	0x74, 0x05,                   //je short
-		//	0xBA, 0x06, 0x00, 0x00, 0x00, //mov edx,00000006
-		//	0x58,                         //pop rax
-		//	0x48, 0x89, 0x5C, 0x24, 0x18, //mov [rsp+18],rbx
-		//};
-		//FUNC func = CreateFunction(ApplyShading, (appBaseAddr + 0x1FCB15), true, false, sizeof(sect0), 0, sizeof(sect2));
-		//memcpy(func.sect0, sect0, sizeof(sect0));
-		//memcpy(func.sect2, sect2, sizeof(sect2));
-		//WriteJump((appBaseAddr + 0x1FCB10), func.addr);
-	//}
 }
 
 void System_Actor_ToggleArrayExtension(bool enable)
@@ -760,6 +739,17 @@ void System_Actor_ToggleDoppelgangerFixes(bool enable)
 {
 	LogFunction(enable);
 	System_Actor_enableDoppelgangerFixes = enable;
+
+	// Disable Bob visibility exception.
+	WriteAddress((appBaseAddr + 0x1F83D5), (enable) ? (appBaseAddr + 0x1F83D7) : (appBaseAddr + 0x1F8428), 2);
+
+
+	/*
+	dmc3.exe+1F83D5 - 74 51                 - je dmc3.exe+1F8428
+	dmc3.exe+1F83D7 - 48 8B 0D 4A8AA900     - mov rcx,[dmc3.exe+C90E28] { (01A44800) }
+	*/
+
+
 	if (enable)
 	{
 		vp_memset((appBaseAddr + 0x1DF291), 0x90, 7); // Disable linked actor base address reset.
@@ -775,6 +765,7 @@ void System_Actor_ToggleDoppelgangerFixes(bool enable)
 			vp_memcpy(addr, buffer, sizeof(buffer));
 		}
 		Write<byte16>((appBaseAddr + 0x2134A3), 0xE990); // Skip clone creation.
+		// @Todo: Clarify.
 		Write<byte8>((appBaseAddr + 0x1F92E0), 0x00); // Devil Form: Disable Doppelganger check.
 		Write<byte8>((appBaseAddr + 0x1F92F8), 0xEB); // Devil Form: Disable isDoppelganger check.
 	}
@@ -797,5 +788,24 @@ void System_Actor_ToggleDoppelgangerFixes(bool enable)
 		Write<byte16>((appBaseAddr + 0x2134A3), 0x840F);
 		Write<byte8>((appBaseAddr + 0x1F92E0), 0x0D);
 		Write<byte8>((appBaseAddr + 0x1F92F8), 0x75);
+	}
+}
+
+void System_Actor_ToggleDisableIdleTimer(bool enable)
+{
+	LogFunction(enable);
+	if (enable)
+	{
+		vp_memset((appBaseAddr + 0x1F2A38), 0x90, 5); // Dante
+		vp_memset((appBaseAddr + 0x1F29AE), 0x90, 5); // Vergil
+	}
+	else
+	{
+		byte8 buffer[] =
+		{
+			0xF3, 0x0F, 0x5C, 0x4B, 0x14, //subss xmm1,[rbx+14]
+		};
+		vp_memcpy((appBaseAddr + 0x1F2A38), buffer, sizeof(buffer));
+		vp_memcpy((appBaseAddr + 0x1F29AE), buffer, sizeof(buffer));
 	}
 }
