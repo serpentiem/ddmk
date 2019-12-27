@@ -74,7 +74,7 @@ var items =
 	[ "motion flags 3"              , 2, false, 0x39B4                  ],
 	[ "motion flags 4"              , 2, false, 0x39B6                  ],
 	[ "motion flags 5"              , 2, false, 0x39B8                  ],
-	[ "shadow"                      , 4, false, 0x3A28                  ],
+	[ "shadow"                      , 4, false, 0x3A18                  ],
 	[ "color"                       , 4, true , 0x3A28                  ],
 	[ "charged shot air"            , 2, false, 0x3E1A                  ],
 	[ "charged shot"                , 2, false, 0x3E22                  ],

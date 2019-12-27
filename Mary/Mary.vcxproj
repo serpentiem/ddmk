@@ -72,11 +72,11 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <CallingConvention>FastCall</CallingConvention>
       <ObjectFileName>$(IntDir)%(Directory)_%(Filename)</ObjectFileName>
       <DisableSpecificWarnings>4102;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <EnableModules>true</EnableModules>
+      <EnableModules>false</EnableModules>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -138,6 +138,7 @@
     <ClCompile Include="System\State.cpp" />
     <ClCompile Include="System\Weapon.cpp" />
     <ClCompile Include="System\Window.cpp" />
+    <ClCompile Include="Update.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Core\Config.h" />
@@ -199,6 +200,7 @@
     <ClInclude Include="System\State.h" />
     <ClInclude Include="System\Weapon.h" />
     <ClInclude Include="System\Window.h" />
+    <ClInclude Include="Update.h" />
     <ClInclude Include="Vars.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

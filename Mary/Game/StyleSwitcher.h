@@ -10,5 +10,8 @@
 
 #include "Dante.h"
 
+extern uint64 Game_StyleSwitcher_counter;
+
+void Game_StyleSwitcher_Controller();
 void Game_StyleSwitcher_Init();
 void Game_StyleSwitcher_Toggle(bool enable);

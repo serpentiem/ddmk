@@ -1,250 +1,159 @@
-
-// @Todo: Check cache dependency.
-
 #include "StyleSwitcher.h"
 
+uint64 Game_StyleSwitcher_counter = 0;
 
+PrivateStart;
 
-
+// @Todo: Add to System HUD.
 
 typedef void(* UpdateIcon_t)();
 
 UpdateIcon_t UpdateIcon = 0;
 
-byte * StyleControllerProxy    = 0;
-byte * GunslingerGetStyleLevel = 0;
-byte * VergilDynamicStyle      = 0;
-
-
-
-
+byte8 * StyleControllerProxy    = 0;
+byte8 * GunslingerGetStyleLevel = 0;
+byte8 * VergilDynamicStyle      = 0;
 
 bool updateIcon = false;
 
-
-
-
-
-
-
-
-
-
-__declspec(noinline) static void UpdateStyle(byte * baseAddr, uint32 styleId)
+void UpdateStyle(byte8 * baseAddr, uint32 index)
 {
+	auto actor = System_Actor_GetActorId(baseAddr);
 
-	// @Research: Check references.
+	auto & character  = *(uint8   *)(baseAddr + 0x78);
+	auto & style      = *(uint32  *)(baseAddr + 0x6338);
+	auto & level      = *(uint32  *)(baseAddr + 0x6358);
+	auto & experience = *(float32 *)(baseAddr + 0x6364);
 
-	uint8     character  = *(uint8   *)(baseAddr + 0x78);
-	uint32  & style      = *(uint32  *)(baseAddr + 0x6338);
-	uint32  & level      = *(uint32  *)(baseAddr + 0x6358);
-	float32 & experience = *(float32 *)(baseAddr + 0x6364);
-
-	byte * session = *(byte **)(appBaseAddr + 0xC90E30);
+	auto session = *(byte **)(appBaseAddr + 0xC90E30);
 	if (!session)
 	{
 		return;
 	}
-	uint32  * sessionLevel      = (uint32  *)(session + 0x11C);
-	float32 * sessionExperience = (float32 *)(session + 0x134);
+	auto sessionLevel      = (uint32  *)(session + 0x11C);
+	auto sessionExperience = (float32 *)(session + 0x134);
 
-	uint8 actorId    = System_Actor_GetActorId(baseAddr);
-
-
-
-	//uint8 actorCount = GetActorCount();
-
-
-	// @Todo: Add section.
-
-	bool unleash = ((character == CHAR_DANTE) || (character == CHAR_VERGIL)) ? true : false;
-	if (!unleash)
+	if (!((character == CHAR_DANTE) || (character == CHAR_VERGIL)))
 	{
 		return;
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	if (character == CHAR_VERGIL)
 	{
-		switch (styleId)
+		switch (index)
 		{
 		case STYLE_SWORDMASTER:
 		case STYLE_GUNSLINGER:
 		case STYLE_ROYALGUARD:
-			styleId = STYLE_DARK_SLAYER;
+			index = STYLE_DARK_SLAYER;
 			break;
 		}
 	}
 
-
-	if (style == styleId)
+	if (style == index)
 	{
 		if (Config.Game.StyleSwitcher.noDoubleTap)
 		{
 			return;
 		}
-		styleId = STYLE_QUICKSILVER;
+		index = STYLE_QUICKSILVER;
 	}
 
-
-
-	// @Research: If Quicksilver is used by anyone other than ACTOR_ONE, it freezes that actor.
-
-	if ((actorId != ACTOR_ONE) && (styleId == STYLE_QUICKSILVER))
-	{
-		//styleId = STYLE_DOPPELGANGER;
-		return;
-	}
-
-
-
-
-	
-
-
-
-
-
-	// @Todo:
-	// Fixing style id issue will also fix style level issue
-
-
-
-
-
-
-	//if (character == CHAR_DANTE)
-	//{
-	//	if (styleId == STYLE_QUICKSILVER)
-	//	{
-	//		bool unlock = *(bool *)(session + 0x5E);
-	//		if (!unlock)
-	//		{
-	//			return;
-	//		}
-	//	}
-	//	else if (styleId == STYLE_DOPPELGANGER)
-	//	{
-	//		bool unlock = *(bool *)(session + 0x5F);
-	//		if (!unlock)
-	//		{
-	//			return;
-	//		}
-	//	}
-	//}
-
-	//// @Todo: Merge!
-
-
-	if ((styleId == STYLE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
+	if ((index == STYLE_QUICKSILVER) && (actor != ACTOR_ONE))
 	{
 		return;
 	}
 
-
-
-
-
-
-
-	if (actorId == ACTOR_ONE)
+	if ((index == STYLE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
 	{
-		sessionLevel[style] = level;
+		return;
+	}
+
+	// @Todo: Check if array for unlocked styles.
+
+	if (character == CHAR_DANTE)
+	{
+		if (index == STYLE_QUICKSILVER)
+		{
+			auto & unlock = *(bool *)(session + 0x5E);
+			if (!unlock)
+			{
+				return;
+			}
+		}
+		else if (index == STYLE_DOPPELGANGER)
+		{
+			auto & unlock = *(bool *)(session + 0x5F);
+			if (!unlock)
+			{
+				return;
+			}
+		}
+	}
+
+	if (actor == ACTOR_ONE)
+	{
+		sessionLevel     [style] = level;
 		sessionExperience[style] = experience;
 	}
 
+	level      = sessionLevel     [index];
+	experience = sessionExperience[index];
+	style      = index;
 
-
-
-
-
-	level      = sessionLevel     [styleId];
-	experience = sessionExperience[styleId];
-	style      = styleId;
-
-
-
-
-	// @Todo: Block Quicksilver and Doppelganger.
-	
-	UpdateStyle2Start:
+	if ((index == STYLE_SWORDMASTER) || (index == STYLE_GUNSLINGER))
 	{
-		if (actorId != ACTOR_ONE)
+		System_Weapon_Dante_UpdateExpertise(baseAddr);
+	}
+
+	UpdateActor2Start:
+	{
+		auto & baseAddr2 = System_Actor_actorBaseAddr[ACTOR_TWO];
+		if (!baseAddr2)
 		{
-			goto UpdateStyle2End;
+			goto UpdateActor2End;
 		}
-		if (!System_Actor_actorBaseAddr[ACTOR_TWO])
+		auto & character2            = *(uint8  *)(baseAddr2 + 0x78  );
+		auto & style2                = *(uint32 *)(baseAddr2 + 0x6338);
+		auto & isControlledByPlayer2 = *(bool   *)(baseAddr2 + 0x6480);
+
+		if (Config.System.Actor.forceSingleActor)
 		{
-			goto UpdateStyle2End;
+			goto UpdateActor2End;
 		}
-		uint32 & style2                = *(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x6338);
-		bool   & isControlledByPlayer2 = *(bool   *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x6480);
+		if (actor != ACTOR_ONE)
+		{
+			goto UpdateActor2End;
+		}
+		if (character != character2)
+		{
+			goto UpdateActor2End;
+		}
+		if ((index == STYLE_QUICKSILVER) /*|| (index == STYLE_DOPPELGANGER)*/)
+		{
+			goto UpdateActor2End;
+		}
 		if (!isControlledByPlayer2)
 		{
-			style2 = styleId;
+			style2 = index;
+			if ((index == STYLE_SWORDMASTER) || (index == STYLE_GUNSLINGER))
+			{
+				System_Weapon_Dante_UpdateExpertise(baseAddr2);
+			}
 		}
 	}
-	UpdateStyle2End:
+	UpdateActor2End:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//if (character == CHAR_DANTE)
-	//{
-	//	if ((styleId == STYLE_SWORDMASTER) || (styleId == STYLE_GUNSLINGER))
-	//	{
-	//		UpdateExpertise(baseAddr);
-
-
-
-	//		// @Todo: Actor two also requires dante check!
-
-	//		if (actorId == ACTOR_ONE)
-	//		{
-	//			for (uint8 actor = ACTOR_TWO; actor < actorCount; actor++)
-	//			{
-	//				bool isControlledByPlayer = *(bool *)(actorBaseAddr[actor] + 0x6480);
-	//				if (!isControlledByPlayer)
-	//				{
-	//					UpdateExpertise(actorBaseAddr[actor]);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-
-	if (actorId == ACTOR_ONE)
+	if (actor == ACTOR_ONE)
 	{
 		updateIcon = true;
 	}
+	Game_StyleSwitcher_counter++;
 }
 
-dword UpdateIconThread(void * parameter)
+// @Todo: Move to Update.
+
+uint32 UpdateIconThread(void * parameter)
 {
 	LogFunction();
 	do
@@ -269,13 +178,18 @@ dword UpdateIconThread(void * parameter)
 	return 1;
 }
 
-static void StyleController()
+PrivateEnd;
+
+void Game_StyleSwitcher_Controller()
 {
-	uint8 actorCount = System_Actor_GetActorCount();
-	if (actorCount < 1)
-	{
-		return;
-	}
+	//uint8 actorCount = System_Actor_GetActorCount();
+	//if (actorCount < 1)
+	//{
+	//	return;
+	//}
+
+	// @Todo: Change to bindings.
+
 	uint8 commandId[] =
 	{
 		CMD_MAP_SCREEN,
@@ -288,8 +202,12 @@ static void StyleController()
 
 	// @Fix: GetButtonState or loop is broken. Style is updated for other actors as well even if only actor one initiates the switch.
 
+	// @Todo: Create helper;
 
-	for (uint8 actor = 0; actor < actorCount; actor++)
+	auto count = System_Actor_GetActorCount();
+
+
+	for (uint8 actor = 0; actor < count; actor++)
 	{
 		for (uint8 style = 0; style < 4; style++)
 		{
@@ -306,6 +224,16 @@ static void StyleController()
 				execute[actor][style] = true;
 			}
 		}
+
+
+
+
+
+
+
+
+
+
 		if (Config.Game.Multiplayer.enable)
 		{
 			continue;
@@ -325,9 +253,14 @@ static void StyleController()
 	}
 }
 
+
+
+
+
 void Game_StyleSwitcher_Init()
 {
 	LogFunction();
+	// @Todo: Add to System HUD I guess.
 	{
 		byte sect1[] =
 		{
@@ -379,16 +312,16 @@ void Game_StyleSwitcher_Init()
 		WriteCall    ((func.sect1 + 0xA6), (appBaseAddr + 0x89E30));
 		UpdateIcon = (UpdateIcon_t)func.addr;
 	}
-	{
-		byte sect0[] =
-		{
-			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+23B060
-		};
-		FUNC func = CreateFunction(StyleController, (appBaseAddr + 0x23D4B7), true, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteCall(func.sect0, (appBaseAddr + 0x23B060));
-		StyleControllerProxy = func.addr;
-	}
+	//{
+	//	byte sect0[] =
+	//	{
+	//		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+23B060
+	//	};
+	//	FUNC func = CreateFunction(StyleController, (appBaseAddr + 0x23D4B7), true, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteCall(func.sect0, (appBaseAddr + 0x23B060));
+	//	StyleControllerProxy = func.addr;
+	//}
 	{
 		byte sect0[] =
 		{
@@ -424,20 +357,10 @@ void Game_StyleSwitcher_Init()
 		WriteAddress((func.sect0 + 2), (appBaseAddr + 0xC90E30), 7);
 		VergilDynamicStyle = func.addr;
 	}
-
-
-
-	CreateThread(0, 4096, UpdateIconThread, 0, 0, 0);
-
-
-
-
-
-
-
-
-
+	//CreateThread(0, 4096, UpdateIconThread, 0, 0, 0);
 }
+
+// @Todo: Update.
 
 void Game_StyleSwitcher_Toggle(bool enable)
 {
@@ -445,7 +368,7 @@ void Game_StyleSwitcher_Toggle(bool enable)
 	if (enable)
 	{
 		Write<byte>((appBaseAddr + 0x1E8F98), 0xEB); // Bypass Character Check
-		WriteJump((appBaseAddr + 0x23D4B2), StyleControllerProxy);
+		//WriteJump((appBaseAddr + 0x23D4B2), StyleControllerProxy);
 		Write<byte>((appBaseAddr + 0x23B111), 0);
 		Write<byte>((appBaseAddr + 0x23B15E), 0);
 		Write<byte>((appBaseAddr + 0x23B1A2), 0);
@@ -476,12 +399,13 @@ void Game_StyleSwitcher_Toggle(bool enable)
 		// Vergil Fixes
 		WriteJump((appBaseAddr + 0x223D77), VergilDynamicStyle, 5); // Force dynamic style
 		// @Audit: Should this go to Actor.cpp?
-		vp_memset((appBaseAddr + 0x221E50), 0x90, 8);               // Disable Doppelganger base address reset
+		// @Todo: Check when this is triggered.
+		vp_memset((appBaseAddr + 0x221E50), 0x90, 8); // Disable linked actor base address reset.
 	}
 	else
 	{
 		Write<byte>((appBaseAddr + 0x1E8F98), 0x74);
-		WriteCall((appBaseAddr + 0x23D4B2), (appBaseAddr + 0x23B060));
+		//WriteCall((appBaseAddr + 0x23D4B2), (appBaseAddr + 0x23B060));
 		Write<byte>((appBaseAddr + 0x23B111), 1);
 		Write<byte>((appBaseAddr + 0x23B15E), 1);
 		Write<byte>((appBaseAddr + 0x23B1A2), 1);

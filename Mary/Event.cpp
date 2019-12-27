@@ -10,7 +10,7 @@
 
 
 
-
+//CRITICAL_SECTION Doppelganger_critSectWatchdog;
 
 
 
@@ -845,6 +845,9 @@ static void StageLoadComplete()
 
 #pragma region Game Events
 
+
+// @Todo: Private and debug.
+
 static void DevilForm_Activate(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
@@ -889,19 +892,9 @@ static void DevilForm_Deactivate(byte * baseAddr)
 
 
 
-void Doppelganger_UpdateShadow()
-{
-
-}
 
 
-
-
-
-
-
-
-
+// @Todo: Update with ternary operator.
 
 inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 {
@@ -917,6 +910,7 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 }
 
 // @Todo: Ugh, update.
+// @Todo: Debug only.
 
 static void Doppelganger_Activate(byte * baseAddr)
 {
@@ -1074,33 +1068,83 @@ static void Doppelganger_Deactivate(byte * baseAddr)
 	*(bool   *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E9B) = false;
 }
 
-byte32 Doppelganger_Watchdog(void * parameter)
-{
-	LogFunction();
-	do
-	{
-		LoopStart:
-		{
-			bool state = ActorAvailable();
-			static bool savedState = state;
-			if (savedState != state)
-			{
-				savedState = state;
-				Doppelganger_ToggleForceActorUpdate(false);
-			}
-		}
-		LoopEnd:
-		Sleep(100);
-	}
-	while (true);
-	return 1;
-}
+
+
+
+
+
+
+
 
 #pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+void ClearActorPool()
+{
+	LogFunction();
+	Doppelganger_ToggleForceActorUpdate(false);
+}
+
+void SetActorPool()
+{
+	LogFunction();
+}
+
+
+
+
 
 void Event_Init()
 {
 	LogFunction();
+	{
+		byte8 sect0[] =
+		{
+			0x48, 0x89, 0x0D, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rcx
+		};
+		FUNC func = CreateFunction(ClearActorPool, (appBaseAddr + 0x23B39A), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
+		WriteJump((appBaseAddr + 0x23B393), func.addr, 2);
+		/*
+		dmc3.exe+23B393 - 48 89 0D 8E5AA500 - mov [dmc3.exe+C90E28],rcx
+		dmc3.exe+23B39A - 48 89 0D 975AA500 - mov [dmc3.exe+C90E38],rcx
+		*/
+	}
+	{
+		byte8 sect0[] =
+		{
+			0x48, 0x89, 0x15, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rdx
+		};
+		FUNC func = CreateFunction(SetActorPool, (appBaseAddr + 0x23E69F), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
+		WriteJump((appBaseAddr + 0x23E698), func.addr, 2);
+		/*
+		dmc3.exe+23E698 - 48 89 15 8927A500 - mov [dmc3.exe+C90E28],rdx
+		dmc3.exe+23E69F - 48 8D 83 D06A0000 - lea rax,[rbx+00006AD0]
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
 	#pragma region System Events
 	{
 		byte sect0[] =
@@ -1271,7 +1315,7 @@ void Event_Init()
 		WriteAddress((func.sect2 + 0x24), (appBaseAddr + 0x1E2B2D), 5);
 		WriteJump((appBaseAddr + 0x1E2B24), func.addr, 2);
 	}
-	CreateThread(0, 4096, Doppelganger_Watchdog, 0, 0, 0);
+	//CreateThread(0, 4096, Doppelganger_Watchdog, 0, 0, 0);
 	#pragma endregion
 }
 

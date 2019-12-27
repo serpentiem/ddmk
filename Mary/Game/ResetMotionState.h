@@ -11,5 +11,5 @@
 extern uint8 Game_ResetMotionState_buttonIndex;
 extern byte16 Game_ResetMotionState_buttonMap[16];
 
+void Game_ResetMotionState_Controller();
 void Game_ResetMotionState_UpdateButtonIndex();
-void Game_ResetMotionState_Init();

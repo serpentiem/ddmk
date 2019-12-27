@@ -608,6 +608,7 @@ void GUI_Game_Multiplayer()
 		System_Input_ToggleRangeExtension  (enable);
 		System_Input_ToggleMultiplayerFixes(enable);
 	};
+	GUI_PUSH_DISABLE(ActorAvailable());
 	GUI_SECTION_HEADER_START(Game.Multiplayer);
 	Toggle(Config.Game.Multiplayer.enable);
 	GUI_SECTION_HEADER_END(Game.Multiplayer);
@@ -633,6 +634,7 @@ void GUI_Game_Multiplayer()
 	GUI_SECTION_FOOTER_START(Game.Multiplayer);
 	Toggle(DefaultConfig.Game.Multiplayer.enable);
 	GUI_SECTION_FOOTER_END;
+	GUI_POP_DISABLE(ActorAvailable());
 }
 
 void GUI_Game_Other()
@@ -832,6 +834,7 @@ void GUI_Game_Vergil()
 
 void GUI_Game_WeaponSwitcher()
 {
+	GUI_PUSH_DISABLE(ActorAvailable());
 	GUI_SECTION_HEADER_START(Game.WeaponSwitcher);
 	if (Config.Game.WeaponSwitcher.enable)
 	{
@@ -895,6 +898,7 @@ void GUI_Game_WeaponSwitcher()
 	GUI_SECTION_FOOTER_START(Game.WeaponSwitcher);
 	Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
 	GUI_SECTION_FOOTER_END;
+	GUI_POP_DISABLE(ActorAvailable());
 }
 
 void GUI_Game_Draw()
@@ -984,6 +988,10 @@ void GUI_Cosmetics_Color()
 	};
 	auto UpdateDoppelgangerColor = []()
 	{
+		if (Config.Game.Multiplayer.enable)
+		{
+			return;
+		}
 		if (Config.Cosmetics.Doppelganger.noColor)
 		{
 			return;
@@ -1068,11 +1076,40 @@ void GUI_Cosmetics_Color()
 
 void GUI_Cosmetics_Dante()
 {
+	auto UpdateModelAttributes = []()
+	{
+		auto count = System_Actor_GetActorCount();
+		for (uint8 actor = 0; actor < count; actor++)
+		{
+			auto & baseAddr = System_Actor_actorBaseAddr[actor];
+			if (!baseAddr)
+			{
+				continue;
+			}
+			auto & character      = *(uint8 *)(baseAddr + 0x78  );
+			auto & selectedWeapon = *(uint8 *)(baseAddr + 0x6490);
+			auto   equipment      =  (uint8 *)(baseAddr + 0x6498);
+			auto & weapon = equipment[selectedWeapon];
+			if (character != CHAR_DANTE)
+			{
+				continue;
+			}
+			if ((weapon == WEAPON_BEOWULF) && !Config.Cosmetics.Dante.hideBeowulf)
+			{
+				Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
+			}
+			else
+			{
+				Cosmetics_Dante_ApplyDefaultModelAttributes(baseAddr);
+			}
+		}
+	};
 	GUI_Hyperlink(Locale.Cosmetics.Dante.header);
 	ImGui::Text("");
 	if (GUI_Checkbox(Locale.Cosmetics.Dante.hideBeowulf, Config.Cosmetics.Dante.hideBeowulf))
 	{
 		Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.hideBeowulf);
+		UpdateModelAttributes();
 	}
 }
 
@@ -1157,10 +1194,6 @@ void GUI_Cosmetics_Draw()
 	ImGui::End();
 	ImGui::PopStyleVar(3);
 }
-
-
-
-
 
 void GUI_Tools_Overlay()
 {
@@ -1643,6 +1676,7 @@ void GUI_Overlay_Draw()
 			ImGui::Text(Locale.Tools.Overlay.focus);
 			ImGui::PopStyleColor();
 		}
+		ImGui::Text("%llu", Game_StyleSwitcher_counter);
 		ImGui::PopStyleColor();
 		ImGui::PopFont();
 	}

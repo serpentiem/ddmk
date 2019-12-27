@@ -35,51 +35,27 @@ void Game_ResetMotionState_UpdateButtonIndex()
 	}
 }
 
-PrivateStart;
-
-uint32 Thread(LPVOID parameter)
+void Game_ResetMotionState_Controller()
 {
-	do
+	if (!Config.Game.ResetMotionState.enable)
 	{
-		LoopStart:
+		return;
+	}
+	static bool execute[MAX_ACTOR] = {};
+	auto count = System_Actor_GetActorCount();
+	for (uint8 actor = 0; actor < count; actor++)
+	{
+		if (System_Input_GetButtonState(actor) & Config.Game.ResetMotionState.button)
 		{
-			if (!Config.Game.ResetMotionState.enable)
+			if (execute[actor])
 			{
-				goto LoopEnd;
-			}
-			if (!InGame())
-			{
-				goto LoopEnd;
-			}
-			static bool execute[MAX_ACTOR] = {};
-			auto count = System_Actor_GetActorCount();
-			for (uint8 actor = 0; actor < count; actor++)
-			{
-				if (System_Input_GetButtonState(actor) & Config.Game.ResetMotionState.button)
-				{
-					if (execute[actor])
-					{
-						auto & motionState = *(byte8 *)(System_Actor_actorBaseAddr[actor] + 0x3E66) = 0;
-						execute[actor] = false;
-					}
-				}
-				else
-				{
-					execute[actor] = true;
-				}
+				auto & motionState = *(byte8 *)(System_Actor_actorBaseAddr[actor] + 0x3E66) = 0;
+				execute[actor] = false;
 			}
 		}
-		LoopEnd:
-		Sleep(10);
+		else
+		{
+			execute[actor] = true;
+		}
 	}
-	while (true);
-	return 1;
-}
-
-PrivateEnd;
-
-void Game_ResetMotionState_Init()
-{
-	LogFunction();
-	CreateThread(0, 4096, Thread, 0, 0, 0);
 }

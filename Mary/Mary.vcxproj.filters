@@ -138,6 +138,7 @@
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="Speed.cpp" />
+    <ClCompile Include="Update.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -315,5 +316,6 @@
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Speed.h" />
+    <ClInclude Include="Update.h" />
   </ItemGroup>
 </Project>

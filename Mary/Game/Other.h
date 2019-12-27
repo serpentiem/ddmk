@@ -3,6 +3,8 @@
 
 #include "../Config.h"
 
+// @Todo: Update.
+
 void Game_Other_Update();
 void Game_Other_Reset();
 void Game_Other_Init();

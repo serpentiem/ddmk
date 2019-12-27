@@ -234,7 +234,7 @@ uint8 motionHelperCount[] =
 
 PrivateEnd;
 
-uint8 System_Actor_GetActorId(byte * baseAddr)
+uint8 System_Actor_GetActorId(byte8 * baseAddr)
 {
 	for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
 	{
@@ -266,12 +266,7 @@ void CreateActors()
 {
 	LogFunction();
 
-	// @Todo: Move to actor one.
 
-	if (Config.System.Actor.forceSingleActor)
-	{
-		return;
-	}
 
 
 
@@ -298,6 +293,10 @@ void CreateActorOne(byte8 * baseAddr)
 	LogFunction(baseAddr);
 	memset(System_Actor_actorBaseAddr, 0, sizeof(System_Actor_actorBaseAddr));
 	System_Actor_actorBaseAddr[ACTOR_ONE] = baseAddr;
+	if (Config.System.Actor.forceSingleActor)
+	{
+		return;
+	}
 	CreateActors();
 }
 
