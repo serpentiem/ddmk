@@ -139,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="Speed.cpp" />
     <ClCompile Include="Update.cpp" />
+    <ClCompile Include="System\HUD.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -317,5 +320,8 @@
     </ClInclude>
     <ClInclude Include="Speed.h" />
     <ClInclude Include="Update.h" />
+    <ClInclude Include="System\HUD.h">
+      <Filter>System</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -12,6 +12,7 @@
 #include "System/Cache.h"
 #include "System/Camera.h"
 #include "System/File.h"
+#include "System/HUD.h"
 #include "System/Input.h"
 #include "System/Media.h"
 #include "System/Motion.h"
@@ -75,6 +76,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		System_Cache_Init();
 		System_Cache_ToggleExtendVectors(true);
 		System_Camera_ToggleInvertX(Config.System.Camera.invertX);
+		System_HUD_Init();
 		System_Input_Init();
 		System_Input_ToggleRangeExtension  (Config.Game.Multiplayer.enable);
 		System_Input_ToggleMultiplayerFixes(Config.Game.Multiplayer.enable);

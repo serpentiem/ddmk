@@ -131,6 +131,7 @@
     <ClCompile Include="System\Cache.cpp" />
     <ClCompile Include="System\Camera.cpp" />
     <ClCompile Include="System\File.cpp" />
+    <ClCompile Include="System\HUD.cpp" />
     <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\Media.cpp" />
     <ClCompile Include="System\Motion.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="System\Cache.h" />
     <ClInclude Include="System\Camera.h" />
     <ClInclude Include="System\File.h" />
+    <ClInclude Include="System\HUD.h" />
     <ClInclude Include="System\Input.h" />
     <ClInclude Include="System\Media.h" />
     <ClInclude Include="System\Message.h" />

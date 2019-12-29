@@ -5,6 +5,7 @@
 #include "../Vars.h"
 
 #include "../System/Actor.h"
+#include "../System/HUD.h"
 #include "../System/Input.h"
 #include "../System/State.h"
 

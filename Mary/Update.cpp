@@ -4,6 +4,7 @@ void InGameMenuAccess()
 {
 	Game_StyleSwitcher_Controller();
 	Game_ResetMotionState_Controller();
+	System_HUD_Update();
 }
 
 void Update_Init()

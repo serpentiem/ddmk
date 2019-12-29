@@ -20,7 +20,7 @@ enum TAB_
 	TAB_VOID,
 };
 
-constexpr bool debug = true;
+constexpr bool debug = false;
 
 uint8 activeTab = TAB_VOID;
 
