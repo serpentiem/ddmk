@@ -10,6 +10,11 @@ struct CONFIG
 	{
 		struct
 		{
+			uint32 target = 60;
+		}
+		FrameRate;
+		struct
+		{
 			float32 base  = 1;
 			float32 turbo = 1.2f;
 			float32 actor = 1;

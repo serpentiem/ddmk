@@ -20,7 +20,7 @@ enum TAB_
 	TAB_VOID,
 };
 
-constexpr bool debug = false;
+constexpr bool debug = true;
 
 uint8 activeTab = TAB_VOID;
 
@@ -184,16 +184,27 @@ void GUI_System_Draw()
 
 void GUI_Game_Arcade()
 {
-	GUI_SECTION_HEADER_START(Game.Arcade);
-	if (Config.Game.Arcade.enable)
+	ImGui::Text(Locale.Game.Arcade.header);
+	ImGui::SameLine();
+	GUI_Tooltip(Locale.Game.Arcade.description);
+	ImGui::Text("");
+	if (GUI_Checkbox
+	(
+		Locale.Game.Arcade.enable,
+		Config.Game.Arcade.enable
+	))
 	{
-		Game_Arcade_Toggle(Config.Game.Arcade.enable);
+		if (Config.Game.Arcade.enable)
+		{
+			Game_Arcade_Toggle(Config.Game.Arcade.enable);
+		}
+		else
+		{
+			Game_Arcade_Toggle(DefaultConfig.Game.Arcade.enable);
+		}
 	}
-	else
-	{
-		Game_Arcade_Toggle(DefaultConfig.Game.Arcade.enable);
-	}
-	GUI_SECTION_HEADER_END(Game.Arcade);
+	ImGui::Text("");
+	GUI_PUSH_DISABLE(!Config.Game.Arcade.enable);
 	ImGui::PushItemWidth(200);
 	GUI_Combo<uint32>
 	(
@@ -330,7 +341,17 @@ void GUI_Game_Arcade()
 
 void GUI_Game_BossRush()
 {
-	GUI_SECTION_HEADER(Game.BossRush);
+	ImGui::Text(Locale.Game.BossRush.header);
+	ImGui::SameLine();
+	GUI_Tooltip(Locale.Game.BossRush.description);
+	ImGui::Text("");
+	GUI_Checkbox
+	(
+		Locale.Game.BossRush.enable,
+		Config.Game.BossRush.enable
+	);
+	ImGui::Text("");
+	GUI_PUSH_DISABLE(!Config.Game.BossRush.enable);
 	ImGui::Text(Locale.Game.BossRush.Mission5.header);
 	GUI_Checkbox
 	(
@@ -401,6 +422,8 @@ void GUI_Game_Dante()
 		Locale.Game.Dante.Rebellion.unlockQuickDrive,
 		Config.Game.Dante.Rebellion.unlockQuickDrive
 	);
+	ImGui::SameLine();
+	GUI_Tooltip(Locale.Game.Dante.Rebellion.unlockQuickDriveDescription);
 	{
 		ImGui::SameLine();
 		auto color = ImVec4(0, 1, 0, 1);
@@ -421,6 +444,8 @@ void GUI_Game_Dante()
 	{
 		Game_Dante_EbonyIvory_ToggleFoursomeTime(Config.Game.Dante.EbonyIvory.foursomeTime);
 	}
+	ImGui::SameLine();
+	GUI_Tooltip(Locale.Game.Dante.EbonyIvory.foursomeTimeDescription);
 	if (GUI_Checkbox
 	(
 		Locale.Game.Dante.EbonyIvory.infiniteRainStorm,
@@ -455,6 +480,8 @@ void GUI_Game_Dante()
 	{
 		Game_Dante_AirHike_ToggleCoreAbility(Config.Game.Dante.AirHike.coreAbility);
 	}
+	ImGui::SameLine();
+	GUI_Tooltip(Locale.Game.Dante.AirHike.coreAbilityDescription);
 	ImGui::PushItemWidth(100);
 	ImGui::Text(Locale.Game.Dante.CrazyCombo.header);
 	if (GUI_InputEx
@@ -539,16 +566,27 @@ void GUI_Game_Mobility()
 		GUI_InputEx<uint8>(label, devil, 0);
 		ImGui::PopItemWidth();
 	};
-	GUI_SECTION_HEADER_START(Game.Mobility);
-	if (Config.Game.Mobility.enable)
+	ImGui::Text(Locale.Game.Mobility.header);
+	ImGui::SameLine();
+	GUI_Tooltip(Locale.Game.Mobility.description);
+	ImGui::Text("");
+	if (GUI_Checkbox
+	(
+		Locale.Game.Mobility.enable,
+		Config.Game.Mobility.enable
+	))
 	{
-		Game_Mobility_Toggle(Config.Game.Mobility.enable);
+		if (Config.Game.Mobility.enable)
+		{
+			Game_Mobility_Toggle(Config.Game.Mobility.enable);
+		}
+		else
+		{
+			Game_Mobility_Toggle(DefaultConfig.Game.Mobility.enable);
+		}
 	}
-	else
-	{
-		Game_Mobility_Toggle(DefaultConfig.Game.Mobility.enable);
-	}
-	GUI_SECTION_HEADER_END(Game.Mobility);
+	ImGui::Text("");
+	GUI_PUSH_DISABLE(!Config.Game.Mobility.enable);
 	ImGui::Text(Locale.Game.Mobility.Dante.header);
 	InputExMobility
 	(
@@ -609,9 +647,20 @@ void GUI_Game_Multiplayer()
 		System_Input_ToggleMultiplayerFixes(enable);
 	};
 	GUI_PUSH_DISABLE(ActorAvailable());
-	GUI_SECTION_HEADER_START(Game.Multiplayer);
-	Toggle(Config.Game.Multiplayer.enable);
-	GUI_SECTION_HEADER_END(Game.Multiplayer);
+	ImGui::Text(Locale.Game.Multiplayer.header);
+	ImGui::SameLine();
+	GUI_Tooltip(Locale.Game.Multiplayer.description);
+	ImGui::Text("");
+	if (GUI_Checkbox
+	(
+		Locale.Game.Multiplayer.enable,
+		Config.Game.Multiplayer.enable
+	))
+	{
+		Toggle(Config.Game.Multiplayer.enable);
+	}
+	ImGui::Text("");
+	GUI_PUSH_DISABLE(!Config.Game.Multiplayer.enable);
 	constexpr uint8 count = (MAX_ACTOR - 1);
 	ImGui::PushItemWidth(100);
 	GUI_Slider("", Config.Game.Multiplayer.actorCount, 1, count);
@@ -816,6 +865,8 @@ void GUI_Game_Vergil()
 	{
 		Game_Vergil_SummonedSwords_ToggleChronoSwords(Config.Game.Vergil.SummonedSwords.chronoSwords);
 	}
+	ImGui::SameLine();
+	GUI_Tooltip(Locale.Game.Vergil.SummonedSwords.chronoSwordsDescription);
 	ImGui::Text(Locale.Game.Vergil.WeaponSwitchTimeout.header);
 	ImGui::PushItemWidth(150);
 	if (GUI_InputEx<float32>
@@ -1450,16 +1501,6 @@ void GUI_Speed_Draw()
 			auto pos = ImGui::GetWindowPos();
 			ImGui::Text("%f %f", pos.x, pos.y);
 		}
-
-
-
-
-		
-
-
-
-
-
 		auto InputExSpeed = []
 		(
 			const char * label,
@@ -1468,7 +1509,7 @@ void GUI_Speed_Draw()
 		{
 			if (GUI_InputEx<float32>(label, var, 0.1f))
 			{
-				var = (floorf(var * 1000) / 1000);
+				var = (ceilf(var * 10000) / 10000);
 				Speed_Update(Config);
 			}
 		};
@@ -1485,17 +1526,40 @@ void GUI_Speed_Draw()
 			}
 		};
 		ImGui::PushItemWidth(200);
+		ImGui::Text(Locale.Speed.FrameRate.header);
+		if (GUI_InputEx<uint32>
+		(
+			Locale.Speed.FrameRate.target,
+			Config.Speed.FrameRate.target
+		))
+		{
+			Speed_Update(Config);
+		}
+		ImGui::SameLine();
+		GUI_Tooltip(Locale.Speed.FrameRate.hint, 300);
+		if constexpr (debug)
+		{
+			ImGui::Text("Multiplier %.3f", Speed_FrameRate_multiplier);
+		}
 		ImGui::Text(Locale.Speed.Main.header);
 		InputExSpeed
 		(
 			Locale.Speed.Main.base,
 			Config.Speed.Main.base
 		);
+		ImGui::SameLine(300);
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
+		ImGui::Text("%.3f", (DefaultConfig.Speed.Main.base * Speed_FrameRate_multiplier));
+		ImGui::PopStyleColor();
 		InputExSpeed
 		(
 			Locale.Speed.Main.turbo,
 			Config.Speed.Main.turbo
 		);
+		ImGui::SameLine(300);
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
+		ImGui::Text("%.3f", (DefaultConfig.Speed.Main.turbo * Speed_FrameRate_multiplier));
+		ImGui::PopStyleColor();
 		InputExSpeed
 		(
 			Locale.Speed.Main.actor,
@@ -1541,7 +1605,7 @@ void GUI_Speed_Draw()
 		);
 		ImGui::PopItemWidth();
 		ImGui::Text("");
-		if (GUI_Button("Reset"))
+		if (GUI_Button(Locale.Speed.reset))
 		{
 			memcpy(&Config.Speed, &DefaultConfig.Speed, sizeof(Config.Speed));
 			SaveConfig();
@@ -1676,7 +1740,26 @@ void GUI_Overlay_Draw()
 			ImGui::Text(Locale.Tools.Overlay.focus);
 			ImGui::PopStyleColor();
 		}
-		ImGui::Text("%llu", Game_StyleSwitcher_counter);
+		//ImGui::Text("%llu", Game_StyleSwitcher_counter);
+
+
+		ImGui::Text("%.3f FPS", (ImGui::GetIO().Framerate));
+
+
+		
+
+		//ImGui::Text("%f value", GUI_value);
+		//ImGui::Text("%f valueRounded", GUI_valueRounded);
+
+
+
+
+
+		/*
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		*/
+
+
 		ImGui::PopStyleColor();
 		ImGui::PopFont();
 	}

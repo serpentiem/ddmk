@@ -23,6 +23,14 @@ struct LOCALE
 		const char * header = "Speed";
 		struct
 		{
+			const char * header = "Frame Rate";
+			const char * hint = "Requires restart. The numbers in green are the recommended values for the target frame rate.";
+			const char * target = "Target";
+			const char * multiplier = "Multiplier";
+		}
+		FrameRate;
+		struct
+		{
 			const char * header = "Main";
 			const char * base = "Base";
 			const char * turbo = "Turbo";
@@ -137,6 +145,7 @@ struct LOCALE
 		struct
 		{
 			const char * header = "Arcade";
+			const char * description = "Allows you to jump from the main menu to a specific point in the game, bypassing all prompts and setting all variables automagically.";
 			const char * enable = "Enable";
 			struct
 			{
@@ -284,6 +293,7 @@ struct LOCALE
 		struct
 		{
 			const char * header = "Boss Rush";
+			const char * description = "Go directly to the mission's boss battle(s).";
 			const char * enable = "Enable";
 			struct
 			{
@@ -322,12 +332,14 @@ struct LOCALE
 				const char * header = "Rebellion";
 				const char * infiniteSwordPierce = "Infinite Sword Pierce";
 				const char * unlockQuickDrive = "Unlock Quick Drive";
+				const char * unlockQuickDriveDescription = "While in Swordmaster hold the Style button and press the Melee Attack button twice to trigger it.";
 			}
 			Rebellion;
 			struct
 			{
 				const char * header = "Ebony & Ivory";
 				const char * foursomeTime = "Foursome Time";
+				const char * foursomeTimeDescription = "Make Twosome Time fire two additional shots.";
 				const char * infiniteRainStorm = "Infinite Rain Storm";
 			}
 			EbonyIvory;
@@ -342,6 +354,7 @@ struct LOCALE
 			{
 				const char * header = "Air Hike";
 				const char * coreAbility = "Core Ability";
+				const char * coreAbilityDescription = "If bought once for Rebellion, Air Hike will be accessible by all melee weapons, effectively making it a core ability.";
 			}
 			AirHike;
 			struct
@@ -383,6 +396,7 @@ struct LOCALE
 		struct
 		{
 			const char * header = "Mobility";
+			const char * description = "Control the number of times a move can be used. Different values can be set for human and devil form.";
 			const char * enable = "Enable";
 			struct
 			{
@@ -412,6 +426,7 @@ struct LOCALE
 		struct
 		{
 			const char * header = "Multiplayer";
+			const char * description = "The second row sets the costume.";
 			const char * enable = "Enable";
 			struct
 			{
@@ -506,6 +521,7 @@ struct LOCALE
 			{
 				const char * header = "Summoned Swords";
 				const char * chronoSwords = "Chrono Swords";
+				const char * chronoSwordsDescription = "Summoned Swords will not fire straight away at the target but continue to levitate as long as Quicksilver is active.";
 			}
 			SummonedSwords;
 			struct

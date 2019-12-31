@@ -1,5 +1,7 @@
 #include "Hooks.h"
 
+constexpr bool debug = true;
+
 typedef ATOM(* User_RegisterClassExW_t)
 (
 	WNDCLASSEXW *
@@ -391,6 +393,12 @@ HRESULT D3D11_Hook_CreateDeviceAndSwapChain
 			goto InstallEnd;
 		}
 		DXGI_Present = (DXGI_Present_t)funcAddr[8];
+
+		if constexpr (debug)
+		{
+			Log("DXGI_Present %llX", DXGI_Present);
+		}
+
 		Write<void *>((byte *)&funcAddr[8], DXGI_Hook_Present);
 
 		DXGI_ResizeBuffers = (DXGI_ResizeBuffers_t)funcAddr[13];
@@ -424,6 +432,12 @@ HRESULT DXGI_Hook_Present
 			flags
 		);
 	}
+
+	if constexpr (debug)
+	{
+		syncInterval = 0;
+	}
+
 	ImGui_D3D11_NewFrame();
 	Timestep();
 	ImGui::NewFrame();
@@ -612,6 +626,12 @@ void Hooks_Init()
 	{
 		byte * addr = (appBaseAddr + 0x34F650);
 		D3D11_CreateDeviceAndSwapChain = *(D3D11_CreateDeviceAndSwapChain_t *)addr;
+
+		if constexpr (debug)
+		{
+			Log("D3D11_CreateDeviceAndSwapChain %llX", D3D11_CreateDeviceAndSwapChain);
+		}
+
 		Write<void *>(addr, D3D11_Hook_CreateDeviceAndSwapChain);
 	}
 	Write<dword>((appBaseAddr + 0x47F58), DISCL_NONEXCLUSIVE | DISCL_FOREGROUND); // SetCooperativeLevelKeyboard

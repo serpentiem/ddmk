@@ -152,16 +152,29 @@ bool GUI_Button(const char * label, const ImVec2 & size = ImVec2());
 bool GUI_ColorEdit4(const char * label, float32 * var, bool save = true);
 bool GUI_ColorEdit4(float32 * var, bool save = true);
 
+inline void GUI_Tooltip(const char * text)
+{
+	ImGui::TextDisabled("(?)");
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::Text(text);
+		ImGui::EndTooltip();
+	}
+}
 
-
-
-
-
-
-
-
-
-
+inline void GUI_Tooltip(const char * text, float32 x)
+{
+	ImGui::TextDisabled("(?)");
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(x);
+		ImGui::Text(text);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
 
 // @Todo: Look into the possibility of templates for these macros.
 

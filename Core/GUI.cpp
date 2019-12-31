@@ -171,15 +171,3 @@ bool GUI_ColorEdit4(float32 * var, bool save)
 	}
 	return update;
 }
-
-
-
-
-
-
-
-
-
-
-
-
