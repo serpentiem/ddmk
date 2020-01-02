@@ -9,6 +9,7 @@
 #include "Locale.h"
 #include "Pause.h"
 
+#include "System/Graphics.h"
 #include "System/Window.h"
 
 void GUI_Render();

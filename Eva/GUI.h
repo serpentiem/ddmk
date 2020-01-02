@@ -8,8 +8,10 @@
 #include "Config.h"
 #include "Locale.h"
 #include "Pause.h"
+//#include "Speed.h"
 #include "Vars.h"
 
+#include "System/Graphics.h"
 #include "System/State.h"
 #include "System/Window.h"
 

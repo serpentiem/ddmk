@@ -89,6 +89,9 @@
     <ClCompile Include="..\Core\File.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="System\Graphics.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -213,6 +216,9 @@
     </ClInclude>
     <ClInclude Include="..\Core\File.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Graphics.h">
+      <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

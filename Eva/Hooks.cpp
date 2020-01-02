@@ -1,5 +1,7 @@
 #include "Hooks.h"
 
+constexpr bool debug = true;
+
 typedef ATOM(* User_RegisterClassExW_t)
 (
 	WNDCLASSEXW *
@@ -180,8 +182,8 @@ HWND User_Hook_CreateWindowExW
 	LPVOID    parameter
 )
 {
-	//x = 0;
-	//y = 0;
+	x = 0;
+	y = 0;
 	Log
 	(
 		"%s "
@@ -408,6 +410,14 @@ HRESULT DXGI_Hook_Present
 	UINT             flags
 )
 {
+
+	//if constexpr (debug)
+	//{
+	//	syncInterval = 0;
+	//}
+
+
+
 	static bool run = false;
 	if (!run)
 	{
@@ -424,6 +434,29 @@ HRESULT DXGI_Hook_Present
 			flags
 		);
 	}
+
+
+
+	if (Config.System.Graphics.vSync != 0)
+	{
+		syncInterval = (Config.System.Graphics.vSync - 1);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	ImGui_D3D11_NewFrame();
 	Timestep();
 	ImGui::NewFrame();

@@ -1,6 +1,9 @@
 #include "GUI.h"
 
 
+constexpr bool debug = true;
+
+
 enum TAB_
 {
 	TAB_GAME,
@@ -31,7 +34,11 @@ enum FONT_
 
 
 
+bool GUI_Speed_show      = false;
 
+
+
+ImVec2 GUI_Speed_size      = ImVec2(400, 400);
 
 
 
@@ -51,7 +58,7 @@ ImVec2 GUI_System_size        = ImVec2(300, 418);
 ImVec2 GUI_Tools_size         = ImVec2(300, 300);
 ImVec2 GUI_Debug_size         = ImVec2(300, 300);
 
-bool debug   = false;
+//bool debug   = false;
 bool restart = false;
 
 
@@ -83,7 +90,52 @@ inline void BuildFonts()
 
 
 
+void GUI_System_Graphics()
+{
+	ImGui::Text("%.2f FPS", (ImGui::GetIO().Framerate));
+	ImGui::Text("");
+	GUI_Hyperlink(Locale.System.Graphics.header);
+	ImGui::Text("");
+	ImGui::PushItemWidth(150);
+	GUI_InputEx<uint32>
+	(
+		Locale.System.Graphics.frameRate,
+		Config.System.Graphics.frameRate
+	);
+	ImGui::SameLine();
+	GUI_Tooltip(Locale.System.Graphics.frameRateHint);
+	GUI_Combo<uint8>
+	(
+		Locale.System.Graphics.VSync.label,
+		Locale.System.Graphics.VSync.items,
+		countof(Locale.System.Graphics.VSync.items),
+		Config.System.Graphics.vSync
+	);
+	ImGui::PopItemWidth();
+}
 
+void GUI_System_Draw()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		ImGui::SetNextWindowSize(ImVec2(GUI_System_size.x + 16, GUI_System_size.y + 16));
+		ImGui::SetNextWindowPos(ImVec2(0, 25));
+	}
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	if (ImGui::Begin("GUI_System", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+	{
+		//ImGui::Text("GUI_System");
+
+		GUI_System_Graphics();
+
+	}
+	ImGui::End();
+	ImGui::PopStyleVar(3);
+}
 
 
 
@@ -116,25 +168,7 @@ void GUI_Game_Draw()
 }
 
 
-void GUI_System_Draw()
-{
-	static bool run = false;
-	if (!run)
-	{
-		run = true;
-		ImGui::SetNextWindowSize(ImVec2(GUI_System_size.x + 16, GUI_System_size.y + 16));
-		ImGui::SetNextWindowPos(ImVec2(0, 25));
-	}
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
-	if (ImGui::Begin("GUI_System", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
-	{
-		ImGui::Text("GUI_System");
-	}
-	ImGui::End();
-	ImGui::PopStyleVar(3);
-}
+
 
 
 void GUI_Tools_Draw()
@@ -258,6 +292,40 @@ void GUI_Main_Draw()
 
 
 
+void GUI_Speed_Draw()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		ImGui::SetNextWindowSize(ImVec2((GUI_Speed_size.x + 16), (GUI_Speed_size.y + 16)));
+		ImGui::SetNextWindowPos(ImVec2(530, 40));
+	}
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	if (ImGui::Begin("Speed", &GUI_Speed_show, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse))
+	{
+		if constexpr (debug)
+		{
+			auto pos = ImGui::GetWindowPos();
+			ImGui::Text("%f %f", pos.x, pos.y);
+		}
+
+		ImGui::Text("%.3f FPS", (ImGui::GetIO().Framerate));
+
+
+	}
+	ImGui::End();
+	ImGui::PopStyleVar(3);
+}
+
+
+
+
+
+
+
 void GUI_Render()
 {
 	GUI_id = 0;
@@ -265,6 +333,15 @@ void GUI_Render()
 	{
 		GUI_Main_Draw();
 	}
+
+	if (GUI_Speed_show)
+	{
+		GUI_Speed_Draw();
+	}
+
+
+
+
 }
 
 void GUI_Init()

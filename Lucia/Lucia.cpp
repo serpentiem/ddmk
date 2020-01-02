@@ -2,6 +2,7 @@
 
 #include "Hooks.h"
 
+#include "System/Graphics.h"
 #include "System/Window.h"
 
 const char * Log_directory = "logs";
@@ -23,7 +24,8 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		LoadConfig();
 		Hooks_Init();
 
-		System_Window_ToggleForceFocus(true);
+		System_Graphics_UpdateFrameRate(Config);
+		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
 	}
 	return 1;
 }

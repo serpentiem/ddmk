@@ -13,6 +13,92 @@ struct LOCALE
 		};
 	}
 	Main;
+
+
+
+
+
+
+	struct
+	{
+		struct
+		{
+			const char * header = "Graphics";
+			const char * frameRate = "Frame Rate";
+			const char * frameRateHint = "Requires restart.";
+			struct
+			{
+				const char * label = "V-Sync";
+				const char * items[3] =
+				{
+					"Auto",
+					"Force Off",
+					"Force On",
+				};
+			}
+			VSync;
+		}
+		Graphics;
+		struct
+		{
+			const char * header = "Input";
+			struct
+			{
+				const char * header = "Mouse";
+				const char * hideCursor = "Hide Cursor";
+				const char * updateRate = "Update Rate";
+			}
+			Mouse;
+			const char * reset = "Reset";
+		}
+		Input;
+		struct
+		{
+			const char * header = "Window";
+			const char * forceFocus = "Force Focus";
+		}
+		Window;
+	}
+	System;
+
+
+
+
+
+
+
+
+
+
+	//struct
+	//{
+	//	const char * header = "Speed";
+	//	struct
+	//	{
+	//		const char * header = "Frame Rate";
+	//		const char * target = "Target";
+	//		const char * multiplier = "Multiplier";
+	//	}
+	//	FrameRate;
+	//	const char * reset = "Reset";
+	//}
+	//Speed;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	struct
 	{
 		struct
@@ -317,29 +403,6 @@ struct LOCALE
 		WeaponSwitcher;
 	}
 	Game;
-	struct
-	{
-		struct
-		{
-			const char * header = "Input";
-			struct
-			{
-				const char * header = "Mouse";
-				const char * hideCursor = "Hide Cursor";
-				const char * updateRate = "Update Rate";
-			}
-			Mouse;
-			const char * reset = "Reset";
-		}
-		Input;
-		struct
-		{
-			const char * header = "Window";
-			const char * forceFocus = "Force Focus";
-		}
-		Window;
-	}
-	System;
 	struct
 	{
 		const char * teleporter = "Teleporter";

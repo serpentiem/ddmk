@@ -23,14 +23,6 @@ struct LOCALE
 		const char * header = "Speed";
 		struct
 		{
-			const char * header = "Frame Rate";
-			const char * hint = "Requires restart. The numbers in green are the recommended values for the target frame rate.";
-			const char * target = "Target";
-			const char * multiplier = "Multiplier";
-		}
-		FrameRate;
-		struct
-		{
 			const char * header = "Main";
 			const char * base = "Base";
 			const char * turbo = "Turbo";
@@ -126,6 +118,24 @@ struct LOCALE
 			const char * preferLocalFiles = "Prefer Local Files";
 		}
 		File;
+		struct
+		{
+			const char * header = "Graphics";
+			const char * frameRate = "Frame Rate";
+			const char * frameRateHint = "Requires restart.";
+			struct
+			{
+				const char * label = "V-Sync";
+				const char * items[3] =
+				{
+					"Auto",
+					"Force Off",
+					"Force On",
+				};
+			}
+			VSync;
+		}
+		Graphics;
 		struct
 		{
 			const char * header = "Input";
@@ -693,6 +703,26 @@ struct LOCALE
 		struct
 		{
 			const char * header = "Dante";
+
+			struct
+			{
+				const char * header = "Rebellion";
+				
+				struct
+				{
+					const char * label = "Model";
+					const char * items[5] =
+					{
+						"Auto",
+						"Level 1",
+						"Level 2",
+						"Force Edge",
+						"Yamato",
+					};
+				}
+				Model;
+			}
+			Rebellion;
 			const char * hideBeowulf = "Hide Beowulf";
 		}
 		Dante;

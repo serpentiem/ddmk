@@ -28,7 +28,7 @@ bool GUI_Overlay_run = false;
 
 ImVec2 GUI_System_size     = ImVec2(300, 500);
 ImVec2 GUI_Game_size       = ImVec2(500, 500);
-ImVec2 GUI_Cosmetics_size  = ImVec2(300, 578);
+ImVec2 GUI_Cosmetics_size  = ImVec2(300, 500);
 ImVec2 GUI_Tools_size      = ImVec2(300, 500);
 ImVec2 GUI_Speed_size      = ImVec2(400, 400);
 ImVec2 GUI_Teleporter_size = ImVec2(120, 180);
@@ -124,6 +124,28 @@ void GUI_System_File()
 	);
 }
 
+void GUI_System_Graphics()
+{
+	GUI_Hyperlink(Locale.System.Graphics.header);
+	ImGui::Text("");
+	ImGui::PushItemWidth(150);
+	GUI_InputEx<uint32>
+	(
+		Locale.System.Graphics.frameRate,
+		Config.System.Graphics.frameRate
+	);
+	ImGui::SameLine();
+	GUI_Tooltip(Locale.System.Graphics.frameRateHint);
+	GUI_Combo<uint8>
+	(
+		Locale.System.Graphics.VSync.label,
+		Locale.System.Graphics.VSync.items,
+		countof(Locale.System.Graphics.VSync.items),
+		Config.System.Graphics.vSync
+	);
+	ImGui::PopItemWidth();
+}
+
 void GUI_System_Input()
 {
 	GUI_Hyperlink(Locale.System.Input.header);
@@ -169,6 +191,8 @@ void GUI_System_Draw()
 		GUI_System_Event();
 		ImGui::Text("");
 		GUI_System_File();
+		ImGui::Text("");
+		GUI_System_Graphics();
 		ImGui::Text("");
 		GUI_System_Input();
 		ImGui::Text("");
@@ -1157,7 +1181,24 @@ void GUI_Cosmetics_Dante()
 	};
 	GUI_Hyperlink(Locale.Cosmetics.Dante.header);
 	ImGui::Text("");
-	if (GUI_Checkbox(Locale.Cosmetics.Dante.hideBeowulf, Config.Cosmetics.Dante.hideBeowulf))
+	ImGui::Text("Rebellion");
+	static uint8 index = 0;
+	ImGui::PushItemWidth(150);
+	GUI_Combo<uint8>
+	(
+		Locale.Cosmetics.Dante.Rebellion.Model.label,
+		Locale.Cosmetics.Dante.Rebellion.Model.items,
+		countof(Locale.Cosmetics.Dante.Rebellion.Model.items),
+		index
+	);
+	ImGui::PopItemWidth();
+	ImGui::Text("Beowulf");
+	if (GUI_Checkbox
+	(
+		"Hide Model",
+		//Locale.Cosmetics.Dante.hideBeowulf,
+		Config.Cosmetics.Dante.hideBeowulf
+	))
 	{
 		Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.hideBeowulf);
 		UpdateModelAttributes();
@@ -1174,6 +1215,7 @@ void GUI_Cosmetics_Doppelganger()
 		Config.Cosmetics.Doppelganger.noColor
 	))
 	{
+		// @Todo: Creater helper function.
 		{
 			if (Config.Game.Multiplayer.enable)
 			{
@@ -1526,21 +1568,21 @@ void GUI_Speed_Draw()
 			}
 		};
 		ImGui::PushItemWidth(200);
-		ImGui::Text(Locale.Speed.FrameRate.header);
-		if (GUI_InputEx<uint32>
-		(
-			Locale.Speed.FrameRate.target,
-			Config.Speed.FrameRate.target
-		))
-		{
-			Speed_Update(Config);
-		}
-		ImGui::SameLine();
-		GUI_Tooltip(Locale.Speed.FrameRate.hint, 300);
-		if constexpr (debug)
-		{
-			ImGui::Text("Multiplier %.3f", Speed_FrameRate_multiplier);
-		}
+		//ImGui::Text(Locale.Speed.FrameRate.header);
+		//if (GUI_InputEx<uint32>
+		//(
+		//	Locale.Speed.FrameRate.target,
+		//	Config.Speed.FrameRate.target
+		//))
+		//{
+		//	Speed_Update(Config);
+		//}
+		//ImGui::SameLine();
+		//GUI_Tooltip(Locale.Speed.FrameRate.hint, 300);
+		//if constexpr (debug)
+		//{
+		//	ImGui::Text("Multiplier %.3f", Speed_FrameRate_multiplier);
+		//}
 		ImGui::Text(Locale.Speed.Main.header);
 		InputExSpeed
 		(
@@ -1549,7 +1591,7 @@ void GUI_Speed_Draw()
 		);
 		ImGui::SameLine(300);
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
-		ImGui::Text("%.3f", (DefaultConfig.Speed.Main.base * Speed_FrameRate_multiplier));
+		ImGui::Text("%.3f", (DefaultConfig.Speed.Main.base * System_Graphics_frameRateMultiplier));
 		ImGui::PopStyleColor();
 		InputExSpeed
 		(
@@ -1558,7 +1600,7 @@ void GUI_Speed_Draw()
 		);
 		ImGui::SameLine(300);
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
-		ImGui::Text("%.3f", (DefaultConfig.Speed.Main.turbo * Speed_FrameRate_multiplier));
+		ImGui::Text("%.3f", (DefaultConfig.Speed.Main.turbo * System_Graphics_frameRateMultiplier));
 		ImGui::PopStyleColor();
 		InputExSpeed
 		(

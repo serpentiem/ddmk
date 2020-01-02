@@ -1,7 +1,5 @@
 #include "Speed.h"
 
-float32 Speed_FrameRate_multiplier = 1;
-
 float32 * Speed_turbo             = 0;
 float32 * Speed_actor             = 0;
 float32 * Speed_Quicksilver_actor = 0;
@@ -11,22 +9,11 @@ void Speed_Update(CONFIG & config)
 {
 	LogFunction();
 
-	Speed_FrameRate_multiplier = ((float32)60 / (float32)Config.Speed.FrameRate.target);
-
 	*Speed_turbo             = config.Speed.Main.turbo;
 	*Speed_actor             = config.Speed.Main.actor;
 	*Speed_Quicksilver_actor = config.Speed.Quicksilver.actor;
 	*Speed_Quicksilver_enemy = config.Speed.Quicksilver.enemy;
 
-	// Frame Rate
-	{
-		auto addr = (float64 *)(appBaseAddr + 0x505E38);
-		constexpr uint64 size = 8;
-		byte32 protection = 0;
-		VirtualProtectEx(appProcess, addr, size, PAGE_EXECUTE_READWRITE, &protection);
-		*addr *= Speed_FrameRate_multiplier;
-		VirtualProtectEx(appProcess, addr, size, protection, &protection);
-	}
 	// Main
 	{
 		Write<float32>((appBaseAddr + 0x326950), config.Speed.Main.base);

@@ -19,6 +19,7 @@
 #include "System/Actor.h"
 #include "System/Cache.h"
 #include "System/Camera.h"
+#include "System/Graphics.h"
 #include "System/Input.h"
 #include "System/Media.h"
 #include "System/State.h"

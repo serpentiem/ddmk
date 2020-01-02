@@ -10,11 +10,6 @@ struct CONFIG
 	{
 		struct
 		{
-			uint32 target = 60;
-		}
-		FrameRate;
-		struct
-		{
 			float32 base  = 1;
 			float32 turbo = 1.2f;
 			float32 actor = 1;
@@ -78,6 +73,12 @@ struct CONFIG
 			bool preferLocalFiles = true;
 		}
 		File;
+		struct
+		{
+			uint32 frameRate = 60;
+			uint8  vSync     = 0;
+		}
+		Graphics;
 		struct
 		{
 			bool hideMouseCursor = true;

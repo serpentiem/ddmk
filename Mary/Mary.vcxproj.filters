@@ -130,9 +130,6 @@
     <ClCompile Include="Game\Doppelganger.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Quicksilver.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="System\Motion.cpp">
       <Filter>System</Filter>
@@ -140,6 +137,9 @@
     <ClCompile Include="Speed.cpp" />
     <ClCompile Include="Update.cpp" />
     <ClCompile Include="System\HUD.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Graphics.cpp">
       <Filter>System</Filter>
     </ClCompile>
   </ItemGroup>
@@ -311,9 +311,6 @@
     <ClInclude Include="Game\Doppelganger.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Quicksilver.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Event.h" />
     <ClInclude Include="System\Motion.h">
       <Filter>System</Filter>
@@ -321,6 +318,9 @@
     <ClInclude Include="Speed.h" />
     <ClInclude Include="Update.h" />
     <ClInclude Include="System\HUD.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Graphics.h">
       <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>

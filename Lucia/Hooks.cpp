@@ -182,8 +182,8 @@ HWND User_Hook_CreateWindowExW
 	LPVOID    parameter
 )
 {
-	//x = 0;
-	//y = 0;
+	x = 0;
+	y = 0;
 	Log
 	(
 		"%s "
@@ -213,7 +213,7 @@ HWND User_Hook_CreateWindowExW
 		instance,
 		parameter
 	);
-	if (Config.System.Input.Mouse.hideCursor)
+	if (Config.System.Input.hideMouseCursor)
 	{
 		ToggleCursor(false);
 	}
@@ -410,6 +410,14 @@ HRESULT DXGI_Hook_Present
 	UINT             flags
 )
 {
+
+	if (Config.System.Graphics.vSync != 0)
+	{
+		syncInterval = (Config.System.Graphics.vSync - 1);
+	}
+
+
+
 	static bool run = false;
 	if (!run)
 	{

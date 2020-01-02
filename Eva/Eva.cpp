@@ -2,9 +2,11 @@
 
 #include "Config.h"
 #include "Hooks.h"
+//#include "Speed.h"
 
 #include "System/Actor.h"
 #include "System/Event.h"
+#include "System/Graphics.h"
 #include "System/Window.h"
 
 #include "Game/Arcade.h"
@@ -34,8 +36,15 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		LoadConfig();
 		Hooks_Init();
 
+		//Speed_Init();
+		//Speed_Update(Config);
+
 		System_Actor_Init();
 		System_Event_Init();
+
+		System_Graphics_UpdateFrameRate(Config);
+
+
 		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
 
 		Game_Arcade_Toggle(Config.Game.Arcade.enable);

@@ -433,10 +433,23 @@ HRESULT DXGI_Hook_Present
 		);
 	}
 
-	if constexpr (debug)
+	//if constexpr (debug)
+	//{
+	//	syncInterval = 0;
+	//}
+
+
+	if (Config.System.Graphics.vSync != 0)
 	{
-		syncInterval = 0;
+		syncInterval = (Config.System.Graphics.vSync - 1);
 	}
+
+
+
+
+
+
+
 
 	ImGui_D3D11_NewFrame();
 	Timestep();

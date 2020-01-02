@@ -9,13 +9,20 @@ struct CONFIG
 	{
 		struct
 		{
-			struct
-			{
-				bool hideCursor = true;
-			}
-			Mouse;
+			uint32 frameRate = 60;
+			uint8  vSync     = 0;
+		}
+		Graphics;
+		struct
+		{
+			bool hideMouseCursor = true;
 		}
 		Input;
+		struct
+		{
+			bool forceFocus = true;
+		}
+		Window;
 	}
 	System;
 };

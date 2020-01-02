@@ -10,6 +10,26 @@ struct CONFIG
 	{
 		struct
 		{
+			uint32 frameRate = 60;
+			uint8  vSync     = 0;
+		}
+		Graphics;
+		struct
+		{
+			bool hideMouseCursor = true;
+		}
+		Input;
+		struct
+		{
+			bool forceFocus = true;
+		}
+		Window;
+	}
+	System;
+	struct
+	{
+		struct
+		{
 			bool   enable               = false;
 			uint8  mission              = 1;
 			uint8  mode                 = MODE_NORMAL;
@@ -124,20 +144,6 @@ struct CONFIG
 		WeaponSwitcher;
 	}
 	Game;
-	struct
-	{
-		struct
-		{
-			bool hideMouseCursor = true;
-		}
-		Input;
-		struct
-		{
-			bool forceFocus = true;
-		}
-		Window;
-	}
-	System;
 };
 #pragma pack(pop)
 

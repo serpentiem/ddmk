@@ -1,3 +1,8 @@
+
+// @Todo: More auto.
+// @Research: Move sword model logic to Cosmetics and add Yamato.
+
+
 #include "Weapon.h"
 
 
@@ -192,11 +197,13 @@ byte8 * Dante_Ranged_SetWeaponProxy = 0;
 
 void Dante_UpdateSword(byte8 * baseAddr)
 {
-	auto data = fileItemHelperDante;
+	//auto data = fileItemHelperDante;
 	uint8 sword = 0;
 
 	bool unlockDevilTrigger = *(bool *)(appBaseAddr + 0xC8F250 + 0xD1);
 	uint8 costume = *(uint8 *)(baseAddr + 0x3E9E);
+
+	// @Todo: Should be in Cosmetics.
 
 	if (Config.Game.WeaponSwitcher.enable && (Config.Game.WeaponSwitcher.sword != 0))
 	{

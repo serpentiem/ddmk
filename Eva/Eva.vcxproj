@@ -115,6 +115,7 @@
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="System\Actor.cpp" />
     <ClCompile Include="System\Event.cpp" />
+    <ClCompile Include="System\Graphics.cpp" />
     <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\State.cpp" />
     <ClCompile Include="System\Window.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="Pause.h" />
     <ClInclude Include="System\Actor.h" />
     <ClInclude Include="System\Event.h" />
+    <ClInclude Include="System\Graphics.h" />
     <ClInclude Include="System\Input.h" />
     <ClInclude Include="System\Message.h" />
     <ClInclude Include="System\State.h" />

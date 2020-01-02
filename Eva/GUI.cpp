@@ -4,7 +4,7 @@
 
 
 
-bool debug = false;
+constexpr bool debug = true;
 
 enum TAB_
 {
@@ -22,7 +22,123 @@ ImVec2 GUI_System_size     = ImVec2(300, 300);
 ImVec2 GUI_Tools_size      = ImVec2(300, 300);
 ImVec2 GUI_Teleporter_size = ImVec2(300, 300);
 
+
+bool GUI_Speed_show      = false;
+
+
+
+ImVec2 GUI_Speed_size      = ImVec2(400, 400);
+
+
+
+
+
+
+
+
 bool GUI_Teleporter_show = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void GUI_System_Graphics()
+{
+	GUI_Hyperlink(Locale.System.Graphics.header);
+	ImGui::Text("");
+	ImGui::PushItemWidth(150);
+	GUI_InputEx<uint32>
+		(
+			Locale.System.Graphics.frameRate,
+			Config.System.Graphics.frameRate
+			);
+	ImGui::SameLine();
+	GUI_Tooltip(Locale.System.Graphics.frameRateHint);
+	GUI_Combo<uint8>
+		(
+			Locale.System.Graphics.VSync.label,
+			Locale.System.Graphics.VSync.items,
+			countof(Locale.System.Graphics.VSync.items),
+			Config.System.Graphics.vSync
+			);
+	ImGui::PopItemWidth();
+}
+
+void GUI_System_Input()
+{
+	GUI_Hyperlink(Locale.System.Input.header);
+	ImGui::Text("");
+	GUI_Checkbox("Hide Mouse Cursor", Config.System.Input.hideMouseCursor);
+}
+
+void GUI_System_Window()
+{
+	GUI_Hyperlink(Locale.System.Window.header);
+	ImGui::Text("");
+	if (GUI_Checkbox(Locale.System.Window.forceFocus, Config.System.Window.forceFocus))
+	{
+		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
+	}
+}
+
+void GUI_System_Draw()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		ImGui::SetNextWindowSize(ImVec2(GUI_System_size.x + 16, GUI_System_size.y + 16));
+		ImGui::SetNextWindowPos(ImVec2(0, 25));
+	}
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	if (ImGui::Begin("GUI_System", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+	{
+		GUI_System_Graphics();
+		ImGui::Text("");
+		GUI_System_Input();
+		ImGui::Text("");
+		GUI_System_Window();
+	}
+	ImGui::End();
+	ImGui::PopStyleVar(3);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void GUI_Game_Arcade()
 {
@@ -524,6 +640,13 @@ void GUI_Game_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Game", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
+
+
+		ImGui::Text("%.3f FPS", ImGui::GetIO().Framerate);
+
+
+
+
 		GUI_Game_Arcade();
 		ImGui::Text("");
 		GUI_Game_BossRush();
@@ -544,43 +667,14 @@ void GUI_Game_Draw()
 	ImGui::PopStyleVar(3);
 }
 
-void GUI_System_Input()
-{
-	GUI_Hyperlink(Locale.System.Input.header);
-	ImGui::Text("");
-	GUI_Checkbox("Hide Mouse Cursor", Config.System.Input.hideMouseCursor);
-}
 
-void GUI_System_Window()
-{
-	GUI_Hyperlink(Locale.System.Window.header);
-	ImGui::Text("");
-	if (GUI_Checkbox(Locale.System.Window.forceFocus, Config.System.Window.forceFocus))
-	{
-		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
-	}
-}
 
-void GUI_System_Draw()
+void GUI_Tools_Speed()
 {
-	static bool run = false;
-	if (!run)
+	if (GUI_Hyperlink("Speed"))
 	{
-		run = true;
-		ImGui::SetNextWindowSize(ImVec2(GUI_System_size.x + 16, GUI_System_size.y + 16));
-		ImGui::SetNextWindowPos(ImVec2(0, 25));
+		GUI_Speed_show = true;
 	}
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
-	if (ImGui::Begin("GUI_System", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
-	{
-		GUI_System_Input();
-		ImGui::Text("");
-		GUI_System_Window();
-	}
-	ImGui::End();
-	ImGui::PopStyleVar(3);
 }
 
 void GUI_Tools_Teleporter()
@@ -605,6 +699,7 @@ void GUI_Tools_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Tools", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
+		GUI_Tools_Speed();
 		GUI_Tools_Teleporter();
 	}
 	ImGui::End();
@@ -706,16 +801,125 @@ void GUI_Main_Draw()
 	}
 }
 
+
+
+
+
+void GUI_Speed_Draw()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		ImGui::SetNextWindowSize(ImVec2((GUI_Speed_size.x + 16), (GUI_Speed_size.y + 16)));
+		ImGui::SetNextWindowPos(ImVec2(530, 40));
+	}
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	if (ImGui::Begin("Speed", &GUI_Speed_show, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse))
+	{
+		if constexpr (debug)
+		{
+			auto pos = ImGui::GetWindowPos();
+			ImGui::Text("%f %f", pos.x, pos.y);
+		}
+
+
+
+
+		//ImGui::PushItemWidth(200);
+		//ImGui::Text(Locale.Speed.FrameRate.header);
+		//if (GUI_InputEx<uint32>
+		//	(
+		//		Locale.Speed.FrameRate.target,
+		//		Config.Speed.FrameRate.target
+		//	))
+		//{
+		//	Speed_Update(Config);
+		//}
+		//if constexpr (debug)
+		//{
+		//	ImGui::Text("Multiplier %.3f", Speed_FrameRate_multiplier);
+		//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+		ImGui::Text("%.3f FPS", (ImGui::GetIO().Framerate));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	}
+	ImGui::End();
+	ImGui::PopStyleVar(3);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void GUI_Render()
 {
 	GUI_id = 0;
 	if (pause)
 	{
 		GUI_Main_Draw();
+
+
+		if (GUI_Speed_show)
+		{
+			GUI_Speed_Draw();
+		}
+
+
+
+
 		if (GUI_Teleporter_show)
 		{
 			GUI_Teleporter_Draw();
 		}
+
+
 	}
 }
 
