@@ -142,6 +142,9 @@
     <ClCompile Include="System\Graphics.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="Cosmetics\Model.cpp">
+      <Filter>Cosmetics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -322,6 +325,9 @@
     </ClInclude>
     <ClInclude Include="System\Graphics.h">
       <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Cosmetics\Model.h">
+      <Filter>Cosmetics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

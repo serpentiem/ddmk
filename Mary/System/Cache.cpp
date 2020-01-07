@@ -1,10 +1,7 @@
-
-// @Todo: Supply pl000_00_3.pac patch.
-
 #include "Cache.h"
 
 
-constexpr bool debug = false;
+constexpr bool debug = true;
 
 
 
