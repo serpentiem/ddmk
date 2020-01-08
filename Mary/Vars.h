@@ -744,6 +744,21 @@ enum FILE_MODE_
 
 
 
+enum Object_
+{
+	Object_Rebellion,
+	Object_Rebellion2,
+	Object_ForceEdgeDante,
+	Object_Yamato,
+	Object_ForceEdge,
+	Object_NeroAngeloSword,
+	Object_Count,
+};
+
+
+
+
+
 
 
 

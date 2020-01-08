@@ -385,6 +385,19 @@ struct CONFIG
 		Doppelganger;
 		struct
 		{
+			uint8 index[Object_Count] =
+			{
+				Object_Rebellion,
+				Object_Rebellion2,
+				Object_ForceEdgeDante,
+				Object_Yamato,
+				Object_ForceEdge,
+				Object_NeroAngeloSword,
+			};
+		}
+		Object;
+		struct
+		{
 			bool noDevilForm = false;
 		}
 		Other;

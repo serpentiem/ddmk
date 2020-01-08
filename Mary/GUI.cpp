@@ -28,7 +28,7 @@ bool GUI_Overlay_run = false;
 
 ImVec2 GUI_System_size     = ImVec2(300, 500);
 ImVec2 GUI_Game_size       = ImVec2(500, 500);
-ImVec2 GUI_Cosmetics_size  = ImVec2(300, 500);
+ImVec2 GUI_Cosmetics_size  = ImVec2(400, 500);
 ImVec2 GUI_Tools_size      = ImVec2(300, 500);
 ImVec2 GUI_Speed_size      = ImVec2(400, 400);
 ImVec2 GUI_Teleporter_size = ImVec2(120, 180);
@@ -1240,6 +1240,30 @@ void GUI_Cosmetics_Doppelganger()
 	}
 }
 
+void GUI_Cosmetics_Object()
+{
+	GUI_Hyperlink(Locale.Cosmetics.Object.header);
+	ImGui::Text("");
+	ImGui::PushItemWidth(200);
+	for (uint8 object = 0; object < Object_Count; object++)
+	{
+		GUI_Combo<uint8>
+		(
+			Locale.Cosmetics.Object.label[object],
+			Locale.Cosmetics.Object.items,
+			countof(Locale.Cosmetics.Object.items),
+			Config.Cosmetics.Object.index[object]
+		);
+	}
+	ImGui::PopItemWidth();
+	ImGui::Text("");
+	if (GUI_Button(Locale.Cosmetics.Object.reset))
+	{
+		memcpy(&Config.Cosmetics.Object, &DefaultConfig.Cosmetics.Object, sizeof(Config.Cosmetics.Object));
+		SaveConfig();
+	}
+}
+
 void GUI_Cosmetics_Other()
 {
 	GUI_Hyperlink(Locale.Cosmetics.Other.header);
@@ -1279,6 +1303,8 @@ void GUI_Cosmetics_Draw()
 		GUI_Cosmetics_Dante();
 		ImGui::Text("");
 		GUI_Cosmetics_Doppelganger();
+		ImGui::Text("");
+		GUI_Cosmetics_Object();
 		ImGui::Text("");
 		GUI_Cosmetics_Other();
 		ImGui::Text("");

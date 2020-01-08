@@ -734,6 +734,30 @@ struct LOCALE
 		Doppelganger;
 		struct
 		{
+			const char * header = "Object";
+			const char * label[6] =
+			{
+				"Rebellion",
+				"Rebellion 2",
+				"Force Edge Dante",
+				"Yamato",
+				"Force Edge",
+				"Nero Angelo Sword",
+			};
+			const char * items[6] =
+			{
+				"Rebellion",
+				"Rebellion 2",
+				"Force Edge Dante",
+				"Yamato",
+				"Force Edge",
+				"Nero Angelo Sword",
+			};
+			const char * reset = "Reset";
+		}
+		Object;
+		struct
+		{
 			const char * header = "Other";
 			const char * noDevilForm = "No Devil Form";
 		}
