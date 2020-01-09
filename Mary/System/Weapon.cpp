@@ -334,7 +334,7 @@ void UpdateWeapon(byte8 * baseAddr)
 			auto & weaponId = equipment[selectedMeleeWeapon];
 			auto & lastWeaponId = Dante_Melee_lastWeaponId[actor];
 			lastWeaponId = weaponId;
-			if ((weaponId == WEAPON_BEOWULF) && !Config.Cosmetics.Dante.hideBeowulf)
+			if ((weaponId == WEAPON_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
 			{
 				Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
 			}
@@ -354,7 +354,7 @@ void Dante_Melee_UpdateModelAttributes(byte8 * baseAddr, uint8 weaponId)
 	if (lastWeaponId != weaponId)
 	{
 		lastWeaponId = weaponId;
-		if ((weaponId == WEAPON_BEOWULF) && !Config.Cosmetics.Dante.hideBeowulf)
+		if ((weaponId == WEAPON_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
 		{
 			Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
 		}

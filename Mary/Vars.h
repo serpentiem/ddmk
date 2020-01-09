@@ -746,6 +746,8 @@ enum FILE_MODE_
 
 enum Object_
 {
+	Object_Dante,
+	Object_Lady,
 	Object_Rebellion,
 	Object_Rebellion2,
 	Object_ForceEdgeDante,

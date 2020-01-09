@@ -375,7 +375,11 @@ struct CONFIG
 		Color;
 		struct
 		{
-			bool hideBeowulf = false;
+			struct
+			{
+				bool hideModel = false;
+			}
+			Beowulf;
 		}
 		Dante;
 		struct
@@ -387,6 +391,8 @@ struct CONFIG
 		{
 			uint8 index[Object_Count] =
 			{
+				Object_Dante,
+				Object_Lady,
 				Object_Rebellion,
 				Object_Rebellion2,
 				Object_ForceEdgeDante,
@@ -403,7 +409,11 @@ struct CONFIG
 		Other;
 		struct
 		{
-			bool hideBeowulf = false;
+			struct
+			{
+				bool hideModel = false;
+			}
+			Beowulf;
 		}
 		Vergil;
 	}

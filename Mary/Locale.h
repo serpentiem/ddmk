@@ -703,27 +703,12 @@ struct LOCALE
 		struct
 		{
 			const char * header = "Dante";
-
 			struct
 			{
-				const char * header = "Rebellion";
-				
-				struct
-				{
-					const char * label = "Model";
-					const char * items[5] =
-					{
-						"Auto",
-						"Level 1",
-						"Level 2",
-						"Force Edge",
-						"Yamato",
-					};
-				}
-				Model;
+				const char * header = "Beowulf";
+				const char * hideModel = "Hide Model";
 			}
-			Rebellion;
-			const char * hideBeowulf = "Hide Beowulf";
+			Beowulf;
 		}
 		Dante;
 		struct
@@ -735,8 +720,10 @@ struct LOCALE
 		struct
 		{
 			const char * header = "Object";
-			const char * label[6] =
+			const char * label[8] =
 			{
+				"Dante",
+				"Lady",
 				"Rebellion",
 				"Rebellion 2",
 				"Force Edge Dante",
@@ -744,8 +731,10 @@ struct LOCALE
 				"Force Edge",
 				"Nero Angelo Sword",
 			};
-			const char * items[6] =
+			const char * items[8] =
 			{
+				"Dante",
+				"Lady",
 				"Rebellion",
 				"Rebellion 2",
 				"Force Edge Dante",
@@ -765,7 +754,12 @@ struct LOCALE
 		struct
 		{
 			const char * header = "Vergil";
-			const char * hideBeowulf = "Hide Beowulf";
+			struct
+			{
+				const char * header = "Beowulf";
+				const char * hideModel = "Hide Model";
+			}
+			Beowulf;
 		}
 		Vergil;
 	}

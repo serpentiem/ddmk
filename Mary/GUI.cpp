@@ -1169,7 +1169,7 @@ void GUI_Cosmetics_Dante()
 			{
 				continue;
 			}
-			if ((weapon == WEAPON_BEOWULF) && !Config.Cosmetics.Dante.hideBeowulf)
+			if ((weapon == WEAPON_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
 			{
 				Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
 			}
@@ -1181,26 +1181,14 @@ void GUI_Cosmetics_Dante()
 	};
 	GUI_Hyperlink(Locale.Cosmetics.Dante.header);
 	ImGui::Text("");
-	ImGui::Text("Rebellion");
-	static uint8 index = 0;
-	ImGui::PushItemWidth(150);
-	GUI_Combo<uint8>
-	(
-		Locale.Cosmetics.Dante.Rebellion.Model.label,
-		Locale.Cosmetics.Dante.Rebellion.Model.items,
-		countof(Locale.Cosmetics.Dante.Rebellion.Model.items),
-		index
-	);
-	ImGui::PopItemWidth();
-	ImGui::Text("Beowulf");
+	ImGui::Text(Locale.Cosmetics.Dante.Beowulf.header);
 	if (GUI_Checkbox
 	(
-		"Hide Model",
-		//Locale.Cosmetics.Dante.hideBeowulf,
-		Config.Cosmetics.Dante.hideBeowulf
+		Locale.Cosmetics.Dante.Beowulf.hideModel,
+		Config.Cosmetics.Dante.Beowulf.hideModel
 	))
 	{
-		Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.hideBeowulf);
+		Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.Beowulf.hideModel);
 		UpdateModelAttributes();
 	}
 }
@@ -1278,9 +1266,13 @@ void GUI_Cosmetics_Vergil()
 {
 	GUI_Hyperlink(Locale.Cosmetics.Vergil.header);
 	ImGui::Text("");
-	if (GUI_Checkbox(Locale.Cosmetics.Vergil.hideBeowulf, Config.Cosmetics.Vergil.hideBeowulf))
+	if (GUI_Checkbox
+	(
+		Locale.Cosmetics.Vergil.Beowulf.hideModel,
+		Config.Cosmetics.Vergil.Beowulf.hideModel
+	))
 	{
-		Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.hideBeowulf);
+		Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.Beowulf.hideModel);
 	}
 }
 

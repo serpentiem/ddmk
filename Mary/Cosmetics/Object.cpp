@@ -5,6 +5,8 @@
 
 uint8 g_cacheFileIndex[Object_Count] =
 {
+	pl000,
+	pl002,
 	plwp_sword,
 	plwp_sword2,
 	plwp_sword3,

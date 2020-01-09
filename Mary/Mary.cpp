@@ -127,11 +127,11 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Cosmetics_Color_Init();
 		Cosmetics_Color_UpdateColors(Config);
 		Cosmetics_Dante_Init();
-		Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.hideBeowulf);
+		Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.Beowulf.hideModel);
 		Cosmetics_Object_Init();
 		Cosmetics_Other_Init();
 		Cosmetics_Other_ToggleNoDevilForm(Config.Cosmetics.Other.noDevilForm);
-		Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.hideBeowulf);
+		Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.Beowulf.hideModel);
 	}
 	return 1;
 }
