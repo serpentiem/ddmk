@@ -39,7 +39,7 @@ struct FileItemHelper
 
 		fileItem.status     = FILE_ITEM_READY;
 		fileItem.stringItem = &stringItem;
-		fileItem.file       = cacheFile[cacheFileId];
+		fileItem.file       = System_Cache_file[cacheFileId];
 	};
 };
 

@@ -46,7 +46,7 @@ struct FileItemHelper
 
 		fileItem.status     = FILE_ITEM_READY;
 		fileItem.stringItem = &stringItem;
-		fileItem.file       = cacheFile[cacheFileId];
+		fileItem.file       = System_Cache_file[cacheFileId];
 	};
 };
 
@@ -394,7 +394,7 @@ void UpdateMotion(byte8 * baseAddr)
 		auto & motionId    = motionHelper[character][index].motionId;
 		auto & cacheFileId = motionHelper[character][index].cacheFileId;
 
-		motion[motionId] = cacheFile[cacheFileId];
+		motion[motionId] = System_Cache_file[cacheFileId];
 	}
 }
 

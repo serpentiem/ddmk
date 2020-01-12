@@ -135,6 +135,7 @@
     <ClCompile Include="System\HUD.cpp" />
     <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\Media.cpp" />
+    <ClCompile Include="System\Memory.cpp" />
     <ClCompile Include="System\Motion.cpp" />
     <ClCompile Include="System\Sound.cpp" />
     <ClCompile Include="System\State.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="System\HUD.h" />
     <ClInclude Include="System\Input.h" />
     <ClInclude Include="System\Media.h" />
+    <ClInclude Include="System\Memory.h" />
     <ClInclude Include="System\Message.h" />
     <ClInclude Include="System\Motion.h" />
     <ClInclude Include="System\Sound.h" />

@@ -1,16 +1,10 @@
 #pragma once
 #include "../../Core/Core.h"
 
-#include "../Config.h"
-
 #include "File.h"
+#include "Memory.h"
 
-enum CACHE_
-{
-	CACHE_SIZE = (1 * 1024 * 1024 * 1024),
-};
-
-enum CACHE_FILES
+enum CACHE_FILE_
 {
 	pl000,
 	pl001,
@@ -96,14 +90,11 @@ enum CACHE_FILES
 	plwp_sword2,
 	plwp_sword3,
 	plwp_vergilsword,
-	MAX_CACHE_FILES,
+	MAX_CACHE_FILE,
 };
 
-extern bool System_Cache_enableExtendVectors;
-
-extern byte8 * cacheFile[MAX_CACHE_FILES];
+extern byte8 * System_Cache_file[MAX_CACHE_FILE];
 extern byte8 * demo_pl000_00_3;
 
-byte8 * PushGameFile(const char * fileName);
+byte8 * System_Cache_PushFile(const char * fileName);
 void System_Cache_Init();
-void System_Cache_ToggleExtendVectors(bool enable);

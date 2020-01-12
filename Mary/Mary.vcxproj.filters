@@ -145,6 +145,9 @@
     <ClCompile Include="Cosmetics\Object.cpp">
       <Filter>Cosmetics</Filter>
     </ClCompile>
+    <ClCompile Include="System\Memory.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -328,6 +331,9 @@
     </ClInclude>
     <ClInclude Include="Cosmetics\Object.h">
       <Filter>Cosmetics</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Memory.h">
+      <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

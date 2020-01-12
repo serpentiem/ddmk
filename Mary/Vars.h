@@ -761,6 +761,42 @@ enum Object_
 
 
 
+struct MEMORY_OBJECT
+{
+	byte8 * addr;
+	byte8 * end;
+	uint32 last;
+	uint32 boundary;
+	uint32 size;
+	uint32 pipe;
+	uint32 count;
+	byte8 padding[4];
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

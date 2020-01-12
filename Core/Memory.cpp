@@ -9,6 +9,11 @@ uint64        mainChunkPos = 0;
 SYSTEM_INFO   si           = {};
 uint64        appSize      = 0;
 
+
+// @Research: Why Ex again?
+
+// @Todo: Size should be 32 bit.
+
 void * Alloc(uint64 size, void * pos, void * end)
 {
 	void * addr = 0;
@@ -306,13 +311,43 @@ bool Memory_Init()
 {
 	LogFunction();
 	appProcessId = GetCurrentProcessId();
+
+	// @Research: Why 32 again?
+
 	MODULEENTRY32 me32 = {};
+
 	me32.dwSize = sizeof(MODULEENTRY32);
+
+
+	// ex is useless unless for other processes.
+
+
+
+
+
+
+
+
+
+
 	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, appProcessId);
+
 	Module32First(snapshot, &me32);
+
 	appBaseAddr = me32.modBaseAddr;
+
+
+
+
 	Log("%u %s %llX", appProcessId, me32.szModule, appBaseAddr);
+
+
+
 	appProcess = OpenProcess(PROCESS_ALL_ACCESS, false, appProcessId);
+
+
+
+
 	if (!appProcess)
 	{
 		Log("OpenProcess failed. %X", GetLastError());

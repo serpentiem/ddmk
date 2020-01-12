@@ -1,67 +1,15 @@
 #include "Cache.h"
 
-
 constexpr bool debug = true;
 
-
-
-
-bool System_Cache_enableExtendVectors = false;
-
-byte8 * cacheAddr = 0;
-uint32 cachePos = (CACHE_SIZE / 2);
-byte8 * cacheFile[MAX_CACHE_FILES] = {};
+byte8 * System_Cache_file[MAX_CACHE_FILE] = {};
 byte8 * demo_pl000_00_3 = 0;
 
-byte8 * vectorEffectManager = 0;
-byte8 * vectorValueManager  = 0;
-constexpr uint16 vectorItemCount = 4096;
+PrivateStart;
 
-byte8 * PushGameFile(const char * fileName)
-{
+uint32 g_pos = 0;
 
-	if constexpr (debug)
-	{
-		LogFunction();
-
-	}
-
-	
-
-	byte8 * addr = (cacheAddr + cachePos);
-	byte8 * file = 0;
-	uint32 fileSize = 0;
-
-	file = LoadGameFile(fileName, &fileSize, addr);
-	if (!file)
-	{
-		return 0;
-	}
-
-	cachePos += fileSize;
-
-
-	if constexpr (debug)
-	{
-		Log("cachePos %X", cachePos);
-	}
-	
-
-	Align<uint32>(cachePos, 0x800);
-
-	if constexpr (debug)
-	{
-		Log("file     %.16llX %s", file, fileName);
-		Log("fileSize %X", fileSize);
-		Log("cachePos %X", cachePos);
-	}
-
-
-
-	return addr;
-}
-
-const char * cacheFileName[] =
+const char * g_fileName[MAX_CACHE_FILE] =
 {
 	"pl000.pac",
 	"pl001.pac",
@@ -149,112 +97,69 @@ const char * cacheFileName[] =
 	"plwp_vergilsword.pac",
 };
 
-static void CreateCache()
+PrivateEnd;
+
+byte8 * System_Cache_PushFile(const char * fileName)
+{
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
+
+	auto addr = (System_Memory_addr + (512 * 1024 * 1024));
+
+	byte8 * file = 0;
+	uint32 fileSize = 0;
+
+	// @Todo: Rename to System_File_LoadFile.
+
+	file = LoadGameFile(fileName, &fileSize, addr);
+	if (!file)
+	{
+		Log("LoadGameFile failed.");
+		return 0;
+	}
+
+	g_pos += fileSize;
+
+	if constexpr (debug)
+	{
+		Log("g_pos %X", g_pos);
+	}
+	Align<uint32>(g_pos, 0x800);
+	if constexpr (debug)
+	{
+		Log("file     %.16llX %s", file, fileName);
+		Log("fileSize %X", fileSize);
+		Log("g_pos %X", g_pos);
+	}
+
+	return addr;
+}
+
+void System_Cache_Init()
 {
 	LogFunction();
-	for (uint8 id = 0; id < MAX_CACHE_FILES; id++)
+
+	CreateDirectoryA("data\\dmc3\\GData.afs", 0);
+
+	for (uint8 index = 0; index < MAX_CACHE_FILE; index++)
 	{
-		byte8 * file = PushGameFile(cacheFileName[id]);
+		auto file = System_Cache_PushFile(g_fileName[index]);
 		if (!file)
 		{
-			Log("PushGameFile failed.");
+			Log("System_Cache_PushFile failed.");
 			return;
 		}
 		AdjustPointers(file);
-		cacheFile[id] = file;
+		System_Cache_file[index] = file;
 	}
 	{
-		byte8 * file = PushGameFile("demo_pl000_00_3.pac");
+		auto file = System_Cache_PushFile("demo_pl000_00_3.pac");
 		if (file)
 		{
 			AdjustPointers(file);
 			demo_pl000_00_3 = file;
 		}
-	}
-}
-
-// @Todo: Recheck.
-
-void System_Cache_Init()
-{
-	LogFunction();
-	CreateDirectoryA("data\\dmc3\\GData.afs", 0);
-	byte8 * pos = (byte8 *)0x10000;
-	byte8 * end = (byte8 *)0x7FFFFFFF;
-	cacheAddr = (byte8 *)Alloc(CACHE_SIZE, pos, end);
-	if (!cacheAddr)
-	{
-		Log("Alloc failed.");
-		return;
-	}
-	byte8 sect0[] =
-	{
-		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,addr
-	};
-	*(byte8 **)(sect0 + 2) = cacheAddr;
-	vp_memcpy((appBaseAddr + 0x30194), sect0, sizeof(sect0));
-	CreateCache();
-	{
-		constexpr uint64 size = ((vectorItemCount * 0x10) + 8);
-		vectorEffectManager = (byte8 *)HighAlloc(size);
-		vectorValueManager = (byte8 *)HighAlloc(size);
-		if (!vectorEffectManager || !vectorValueManager)
-		{
-			Log("HighAlloc failed.");
-			return;
-		}
-	}
-}
-
-void System_Cache_ToggleExtendVectors(bool enable)
-{
-	LogFunction(enable);
-	System_Cache_enableExtendVectors = enable;
-	byte8 * addr = 0;
-	uint16 count = 0;
-	{
-		if (enable)
-		{
-			addr = vectorEffectManager;
-			count = vectorItemCount;
-		}
-		else
-		{
-			addr = (appBaseAddr + 0xCAB230);
-			count = 304;
-		}
-		WriteAddress((appBaseAddr + 0x2C0387), addr, 7);
-		WriteAddress((appBaseAddr + 0x2C0460), addr, 7);
-		WriteAddress((appBaseAddr + 0x2C0639), addr, 7);
-		WriteAddress((appBaseAddr + 0x2E3B2E), addr, 7);
-		WriteAddress((appBaseAddr + 0x2E3BAE), addr, 7);
-		WriteAddress((appBaseAddr + 0x2E826E), addr, 7);
-		Write<uint32>((appBaseAddr + 0x2E86D2), count);
-		Write<uint32>((appBaseAddr + 0x2E8712), count);
-		Write<uint32>((appBaseAddr + 0x2E876E), count);
-		Write<uint32>((appBaseAddr + 0x2E87AC), count);
-	}
-	{
-		if (enable)
-		{
-			addr = vectorValueManager;
-			count = vectorItemCount;
-		}
-		else
-		{
-			addr = (appBaseAddr + 0xCF1270);
-			count = 256;
-		}
-		WriteAddress((appBaseAddr + 0x2C0376), addr, 7);
-		WriteAddress((appBaseAddr + 0x2C043E), addr, 7);
-		WriteAddress((appBaseAddr + 0x2C0663), addr, 7);
-		WriteAddress((appBaseAddr + 0x2E824A), addr, 7);
-		WriteAddress((appBaseAddr + 0x32447E), addr, 7);
-		WriteAddress((appBaseAddr + 0x3244FE), addr, 7);
-		WriteAddress((appBaseAddr + 0x324804), addr, 7);
-		Write<uint32>((appBaseAddr + 0x324F42), count);
-		Write<uint32>((appBaseAddr + 0x324F83), count);
-		Write<uint32>((appBaseAddr + 0x324FFE), count);
-		Write<uint32>((appBaseAddr + 0x32503C), count);
 	}
 }

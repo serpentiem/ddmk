@@ -42,7 +42,7 @@ void Cosmetics_Object_Init()
 	for (uint8 object = 0; object < Object_Count; object++)
 	{
 		auto & cacheFileIndex = g_cacheFileIndex[object];
-		auto archive = cacheFile[cacheFileIndex];
+		auto archive = System_Cache_file[cacheFileIndex];
 		auto fileOff = (uint32 *)(archive + 8);
 		g_model  [object] = (archive + fileOff[1]);
 		g_texture[object] = (archive + fileOff[0]);

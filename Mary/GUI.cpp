@@ -1322,6 +1322,13 @@ void GUI_Tools_Overlay()
 	GUI_ColorEdit4("", Config.Tools.Overlay.color);
 	GUI_Checkbox(Locale.Tools.Overlay.heapFrame, Config.Tools.Overlay.heapFrame);
 	GUI_Checkbox(Locale.Tools.Overlay.focus, Config.Tools.Overlay.focus);
+
+	GUI_Checkbox
+	(
+		Locale.Tools.Overlay.memory,
+		Config.Tools.Overlay.memory
+	);
+
 	GUI_SECTION_FOOTER_START(Tools.Overlay);
 	GUI_Overlay_run = false;
 	GUI_SECTION_FOOTER_END;
@@ -1804,6 +1811,35 @@ void GUI_Overlay_Draw()
 
 
 		ImGui::Text("%.3f FPS", (ImGui::GetIO().Framerate));
+
+
+		if (Config.Tools.Overlay.memory)
+		{
+			uint32 off[] =
+			{
+				0xCA8910,
+				0xCA8938,
+				0xCA8960,
+			};
+			for (uint8 index = 0; index < countof(off); index++)
+			{
+				MEMORY_OBJECT & object = *(MEMORY_OBJECT *)(appBaseAddr + off[index]);
+				ImGui::Text("__%.4u__", index);
+				ImGui::Text("addr     %llX", object.addr);
+				ImGui::Text("end      %llX", object.end);
+				ImGui::Text("last     %X", object.last);
+				ImGui::Text("boundary %X", object.boundary);
+				ImGui::Text("size     %X", object.size);
+				ImGui::Text("pipe     %u", object.pipe);
+				ImGui::Text("count    %u", object.count);
+			}
+		}
+
+
+
+
+
+
 
 
 		
