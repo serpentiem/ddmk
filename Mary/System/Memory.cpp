@@ -1,10 +1,3 @@
-
-
-// @Todo: Vector relations.
-
-
-
-
 #include "Memory.h"
 
 bool System_Memory_enableExtendVectors = false;
@@ -24,33 +17,12 @@ void System_Memory_Init()
 {
 	LogFunction();
 
-	// @Todo: Scope and constexpr.
-
-
-
-	//uint64 pos = 0x10000;
-	//uint64 end = 0x7FFFFFFF;
-	// @Todo: Allocator!
-	//System_Memory_addr = (byte8 *)Alloc((1 * 1024 * 1024 * 1024), (void *)pos, (void *)end);
-
-
-	//System_Memory_addr = Alloc((1 * 1024 * 1024 * 1024), pos, end);
-	//System_Memory_addr = Alloc((1 * 1024 * 1024 * 1024), pos, end);
-
 	System_Memory_addr = LowAlloc((1 * 1024 * 1024 * 1024));
 	if (!System_Memory_addr)
 	{
 		Log("LowAlloc failed.");
 		return;
 	}
-
-
-
-
-
-
-
-
 
 	{
 		byte8 sect0[] =
@@ -66,11 +38,6 @@ void System_Memory_Init()
 		// dmc3.exe+3019E - 48 8B D0    - mov rdx,rax
 	}
 
-
-	
-
-
-
 	// Increase main memory from 260 MB to 300 MB.
 	{
 		constexpr uint32 size = (300 * 1024 * 1024);
@@ -85,23 +52,11 @@ void System_Memory_Init()
 		Write<uint32>((appBaseAddr + 0x2C6082), size);
 	}
 
-
-
-
-
-
-
-
-
-	// @Todo: 32 bit.
-
 	{
-		constexpr uint64 size = ((vectorItemCount * 0x10) + 8);
+		constexpr uint32 size = ((vectorItemCount * 0x10) + 8);
 
-		// @Todo: Proper allocators! >_>
-
-		vectorEffectManager = (byte8 *)HighAlloc(size);
-		vectorValueManager = (byte8 *)HighAlloc(size);
+		vectorEffectManager = HighAlloc(size);
+		vectorValueManager  = HighAlloc(size);
 		if (!vectorEffectManager || !vectorValueManager)
 		{
 			Log("HighAlloc failed.");
@@ -110,9 +65,7 @@ void System_Memory_Init()
 	}
 }
 
-
-
-
+// @Research: Vector relations.
 
 void System_Memory_ToggleExtendVectors(bool enable)
 {

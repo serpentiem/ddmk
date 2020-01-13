@@ -376,7 +376,7 @@ HRESULT D3D11_Hook_CreateDeviceAndSwapChain
 	D3D11_device = *device;
 	D3D11_deviceContext = *deviceContext;
 	DXGI_swapChain = *swapChain;
-	mainWindow = swapChainDescription->OutputWindow;
+	appWindow = swapChainDescription->OutputWindow;
 	// @Audit: Remove cast?
 	System_Window_UpdateSize((uint32)swapChainDescription->BufferDesc.Width, (uint32)swapChainDescription->BufferDesc.Height);
 	ImGui_D3D11_Init(D3D11_device, D3D11_deviceContext);
@@ -514,7 +514,7 @@ static DWORD DirectInput8_CreateMouseThread(LPVOID parameter)
 {
 	do
 	{
-		if (mainWindow)
+		if (appWindow)
 		{
 			break;
 		}
@@ -535,7 +535,7 @@ static DWORD DirectInput8_CreateMouseThread(LPVOID parameter)
 		Log("CreateDevice %X %X", result, GetLastError());
 		goto Return;
 	}
-	result = DirectInput8_mouse->SetCooperativeLevel(mainWindow, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
+	result = DirectInput8_mouse->SetCooperativeLevel(appWindow, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 	if (result != DI_OK)
 	{
 		Log("SetCooperativeLevel %X %X", result, GetLastError());
@@ -559,10 +559,10 @@ static DWORD DirectInput8_UpdateMouseThread(LPVOID parameter)
 	LogFunction();
 	do
 	{
-		if (mainWindow && pause)
+		if (appWindow && pause)
 		{
 			DirectInput8_mouse->GetDeviceState(sizeof(DIMOUSESTATE2), &DirectInput8_mouseState);
-			ImGui_DirectInput8_UpdateMouse(mainWindow, &DirectInput8_mouseState);
+			ImGui_DirectInput8_UpdateMouse(appWindow, &DirectInput8_mouseState);
 		}
 		Sleep(10);
 	}
@@ -576,7 +576,7 @@ static DWORD DirectInput8_AcquireMouseThread(LPVOID parameter)
 	{
 		LoopStart:
 		{
-			if (GetForegroundWindow() != mainWindow)
+			if (GetForegroundWindow() != appWindow)
 			{
 				goto LoopEnd;
 			}

@@ -21,7 +21,7 @@ void Hotkeys_TogglePause(BYTE * state)
 		if (execute)
 		{
 			pause = !pause;
-			PostMessageA(mainWindow, DM_PAUSE, 0, 0);
+			PostMessageA(appWindow, DM_PAUSE, 0, 0);
 			execute = false;
 		}
 	}
@@ -71,7 +71,7 @@ void Hotkeys_TogglePause(BYTE * state)
 //	{
 //		if (execute)
 //		{
-//			PostMessageA(mainWindow, WM_QUIT, 0, 0);
+//			PostMessageA(appWindow, WM_QUIT, 0, 0);
 //			execute = false;
 //		}
 //	}

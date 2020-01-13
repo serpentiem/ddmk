@@ -427,7 +427,6 @@ struct CONFIG
 			float32 y             = 0;
 			uint8   fontSizeIndex = 2;
 			float32 color[4]      = { 1, 0, 0, 1 };
-			bool    heapFrame     = true;
 			bool    focus         = true;
 			bool    memory        = true;
 		}

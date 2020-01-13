@@ -782,7 +782,6 @@ struct LOCALE
 				};
 			}
 			FontSize;
-			const char * heapFrame = "Heap Frame";
 			const char * focus = "Focus";
 			const char * memory = "Memory";
 			const char * reset = "Reset";

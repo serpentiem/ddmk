@@ -20,7 +20,7 @@
 const char * Log_directory = "logs";
 const char * Log_file      = "Eva.txt";
 
-uint64 mainChunkSize = (64 * 1024 * 1024);
+uint32 Memory_size = (64 * 1024 * 1024);
 
 DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 {

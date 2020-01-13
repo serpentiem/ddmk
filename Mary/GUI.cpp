@@ -1320,15 +1320,16 @@ void GUI_Tools_Overlay()
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 	GUI_ColorEdit4("", Config.Tools.Overlay.color);
-	GUI_Checkbox(Locale.Tools.Overlay.heapFrame, Config.Tools.Overlay.heapFrame);
-	GUI_Checkbox(Locale.Tools.Overlay.focus, Config.Tools.Overlay.focus);
-
+	GUI_Checkbox
+	(
+		Locale.Tools.Overlay.focus,
+		Config.Tools.Overlay.focus
+	);
 	GUI_Checkbox
 	(
 		Locale.Tools.Overlay.memory,
 		Config.Tools.Overlay.memory
 	);
-
 	GUI_SECTION_FOOTER_START(Tools.Overlay);
 	GUI_Overlay_run = false;
 	GUI_SECTION_FOOTER_END;
@@ -1791,11 +1792,11 @@ void GUI_Overlay_Draw()
 		ImGuiIO & io = ImGui::GetIO();
 		ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_8 + Config.Tools.Overlay.fontSizeIndex]);
 		ImGui::PushStyleColor(ImGuiCol_Text, *(ImVec4 *)Config.Tools.Overlay.color);
-		if (Config.Tools.Overlay.heapFrame)
-		{
-			auto & value = *(uint32 *)(appBaseAddr + 0xCA8958);
-			ImGui::Text("%s %u", Locale.Tools.Overlay.heapFrame, value);
-		}
+		//if (Config.Tools.Overlay.heapFrame)
+		//{
+		//	auto & value = *(uint32 *)(appBaseAddr + 0xCA8958);
+		//	ImGui::Text("%s %u", Locale.Tools.Overlay.heapFrame, value);
+		//}
 		if (Config.Tools.Overlay.focus)
 		{
 			ImVec4 color = ImVec4(0, 1, 0, 1);
