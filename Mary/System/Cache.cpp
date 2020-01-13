@@ -106,14 +106,14 @@ byte8 * System_Cache_PushFile(const char * fileName)
 		LogFunction();
 	}
 
-	auto addr = (System_Memory_addr + (512 * 1024 * 1024));
+	auto addr = (System_Memory_addr + (512 * 1024 * 1024) + g_pos);
 
 	byte8 * file = 0;
 	uint32 fileSize = 0;
 
 	// @Todo: Rename to System_File_LoadFile.
 
-	file = LoadGameFile(fileName, &fileSize, addr);
+	file = System_File_LoadFile(fileName, &fileSize, addr);
 	if (!file)
 	{
 		Log("LoadGameFile failed.");
@@ -151,14 +151,14 @@ void System_Cache_Init()
 			Log("System_Cache_PushFile failed.");
 			return;
 		}
-		AdjustPointers(file);
+		System_File_AdjustPointers(file);
 		System_Cache_file[index] = file;
 	}
 	{
 		auto file = System_Cache_PushFile("demo_pl000_00_3.pac");
 		if (file)
 		{
-			AdjustPointers(file);
+			System_File_AdjustPointers(file);
 			demo_pl000_00_3 = file;
 		}
 	}

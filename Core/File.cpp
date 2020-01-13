@@ -1,5 +1,8 @@
 #include "File.h"
 
+// @Todo: Types.
+
+
 byte * LoadFile(const char * fileName, uint32 * size, byte * dest)
 {
 	byte * addr = dest;

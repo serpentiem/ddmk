@@ -734,7 +734,7 @@ static void Compile
 
 static bool InitPosMap()
 {
-	byte * file = LoadGameFile("SpuMap.bin");
+	byte * file = System_File_LoadFile("SpuMap.bin");
 	if (!file)
 	{
 		return false;
@@ -824,7 +824,7 @@ bool System_Sound_Init()
 			void * & addr = *(void **)var[index].addr;
 			SetLastError(0);
 			// @Todo: Add custom allocator.
-			addr = VirtualAllocEx(appProcess, 0, var[index].size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+			addr = VirtualAlloc(0, var[index].size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 			error = GetLastError();
 			if (!addr)
 			{
@@ -885,7 +885,7 @@ bool System_Sound_Init()
 		for (uint8 index = 0; index < countof(var); index++)
 		{
 			snprintf(path, sizeof(path), "data\\dmc3\\GData.afs\\%s", var[index].archiveName);
-			byte * archive = LoadGameFile(var[index].archiveName);
+			byte * archive = System_File_LoadFile(var[index].archiveName);
 			if (!archive)
 			{
 				return false;

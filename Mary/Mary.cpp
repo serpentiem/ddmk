@@ -43,7 +43,7 @@
 const char * Log_directory = "logs";
 const char * Log_file      = "Mary.txt";
 
-uint64 mainChunkSize = (64 * 1024 * 1024);
+uint32 mainChunkSize = (64 * 1024 * 1024);
 
 uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {
@@ -56,6 +56,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		LoadConfig();
 		if (!Memory_Init())
 		{
+
+			Log("FAILED.");
+
 			return 0;
 		}
 
@@ -72,16 +75,17 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		//System_Actor_ToggleArrayExtension(true);
 		//System_Actor_ToggleCreateActorOne(true);
 		//System_Actor_ToggleUpdateActor(true);
-		//System_Actor_ToggleDoppelgangerFixes(true);
-		//System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
+		System_Actor_ToggleDoppelgangerFixes(true);
+		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
 		//System_Animation_Init();
 
 
 
-		// Order is required.
-		System_Memory_Init();
-		System_File_Init();
-		System_Cache_Init();
+		//// Order is required.
+		//System_Memory_Init();
+		//System_Memory_ToggleExtendVectors(true);
+		//System_File_Init();
+		//System_Cache_Init();
 
 
 

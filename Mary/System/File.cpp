@@ -1,16 +1,26 @@
 #include "File.h"
 
 
-constexpr bool debug = false;
+constexpr bool debug = true;
 
-
+PrivateStart;
 
 
 typedef void(* InternalAdjustPointers_t)(byte8 *);
 
 InternalAdjustPointers_t InternalAdjustPointers = 0;
 
-bool ExtractGameFile(const char * fileName)
+PrivateEnd;
+
+
+
+
+
+
+
+
+
+bool System_File_ExtractFile(const char * fileName)
 {
 	char buffer[128];
 	snprintf(buffer, sizeof(buffer), "data\\dmc3\\dmc3-0.nbz");
@@ -40,7 +50,9 @@ bool ExtractGameFile(const char * fileName)
 	dword error = 0;
 
 	SetLastError(0);
-	byte8 * addr = (byte8 *)VirtualAllocEx(appProcess, 0, stats.size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	// @Todo: Allocator!
+
+	byte8 * addr = (byte8 *)VirtualAlloc(0, stats.size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	error = GetLastError();
 	if (!addr)
 	{
@@ -63,7 +75,7 @@ bool ExtractGameFile(const char * fileName)
 
 // @Todo: Make archive check optional.
 
-byte8 * LoadGameFile(const char * fileName, uint32 * size, byte8 * dest)
+byte8 * System_File_LoadFile(const char * fileName, uint32 * size, byte8 * dest)
 {
 	byte8 * file = 0;
 
@@ -73,13 +85,16 @@ byte8 * LoadGameFile(const char * fileName, uint32 * size, byte8 * dest)
 	file = LoadFile(buffer, size, dest);
 	if (!file)
 	{
-		if (!ExtractGameFile(fileName))
+		Log("LoadFile failed.");
+		if (!System_File_ExtractFile(fileName))
 		{
+			Log("System_File_ExtractFile failed.");
 			return 0;
 		}
 		file = LoadFile(buffer, size, dest);
 		if (!file)
 		{
+			Log("LoadFile failed.");
 			return 0;
 		}
 	}
@@ -87,7 +102,7 @@ byte8 * LoadGameFile(const char * fileName, uint32 * size, byte8 * dest)
 	return file;
 }
 
-void AdjustPointers(byte8 * addr)
+void System_File_AdjustPointers(byte8 * addr)
 {
 	if constexpr (debug)
 	{

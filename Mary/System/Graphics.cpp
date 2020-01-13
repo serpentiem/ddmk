@@ -11,7 +11,7 @@ void System_Graphics_UpdateFrameRate(CONFIG & config)
 	auto addr = (float64 *)(appBaseAddr + 0x505E38);
 	constexpr uint64 size = 8;
 	byte32 protection = 0;
-	VirtualProtectEx(appProcess, addr, size, PAGE_EXECUTE_READWRITE, &protection);
+	VirtualProtect(addr, size, PAGE_EXECUTE_READWRITE, &protection);
 	*addr *= System_Graphics_frameRateMultiplier;
-	VirtualProtectEx(appProcess, addr, size, protection, &protection);
+	VirtualProtect(addr, size, protection, &protection);
 }

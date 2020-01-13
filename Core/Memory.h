@@ -1,59 +1,106 @@
 #pragma once
 #include "DataTypes.h"
 #include "Log.h"
+#include "Utility.h"
 #include "Windows.h"
 
-extern uint32   appProcessId;
-extern byte   * appBaseAddr;
-extern HANDLE   appProcess;
-extern HWND     mainWindow;
-extern byte   * mainChunk;
-extern uint64   mainChunkSize;
+extern byte8 * appBaseAddr;
+extern HWND mainWindow;
 
-void * Alloc(uint64 size, void * pos, void * end);
-void * HighAlloc(uint64 size);
+struct FUNC
+{
+	byte8 *  addr;
+	byte8 *  sect0;
+	byte8 *  sect1;
+	byte8 *  sect2;
+	byte8 ** cache;
+};
+
+byte8 * Alloc
+(
+	uint32 size,
+	uint64 pos,
+	uint64 end
+);
+
+byte8 * HighAlloc(uint32 size);
 
 template <typename T>
-void Write(byte * addr, T value, uint64 padSize = 0, byte padValue = 0x90)
+void Write
+(
+	byte8  * addr,
+	T        value,
+	uint32   padSize  = 0,
+	byte8    padValue = 0x90
+)
 {
-	uint64 size = sizeof(T);
-	dword p = 0;
-	VirtualProtectEx(appProcess, addr, (size + padSize), PAGE_EXECUTE_READWRITE, &p);
+	constexpr uint32 size = sizeof(T);
+	byte32 protection = 0;
+	VirtualProtect(addr, (size + padSize), PAGE_EXECUTE_READWRITE, &protection);
 	*(T *)addr = value;
 	if (padSize)
 	{
 		memset((addr + size), padValue, padSize);
 	}
-	VirtualProtectEx(appProcess, addr, (size + padSize), p, &p);
+	VirtualProtect(addr, (size + padSize), protection, &protection);
 }
 
-void WriteAddress   ( byte * addr, byte * dest, uint64 size,        byte header   = 0,   uint64 padSize = 0, byte padValue = 0x90 );
-void WriteCall      ( byte * addr, byte * dest, uint64 padSize = 0, byte padValue = 0x90                                          );
-void WriteJump      ( byte * addr, byte * dest, uint64 padSize = 0, byte padValue = 0x90                                          );
-void WriteShortJump ( byte * addr, byte * dest, uint64 padSize = 0, byte padValue = 0x90                                          );
+void WriteAddress
+(
+	byte8  * addr,
+	byte8  * dest,
+	uint32   size,
+	byte8    header   = 0,
+	uint32   padSize  = 0,
+	byte8    padValue = 0x90
+);
 
-void vp_memset (void * addr, byte   value, uint64 size);
-void vp_memcpy (void * dest, void * addr,  uint64 size);
-
-struct FUNC
+inline void WriteCall
+(
+	byte8  * addr,
+	byte8  * dest,
+	uint32   padSize  = 0,
+	byte8    padValue = 0x90
+)
 {
-	byte *  addr;
-	byte *  sect0;
-	byte *  sect1;
-	byte *  sect2;
-	byte ** cache;
-};
+	WriteAddress(addr, dest, 5, 0xE8, padSize, padValue);
+}
+
+inline void WriteJump
+(
+	byte8  * addr,
+	byte8  * dest,
+	uint32   padSize = 0,
+	byte8    padValue = 0x90
+)
+{
+	WriteAddress(addr, dest, 5, 0xE9, padSize, padValue);
+}
+
+void vp_memset
+(
+	void   * addr,
+	byte8    value,
+	uint32   size
+);
+
+void vp_memcpy
+(
+	void   * dest,
+	void   * addr,
+	uint32   size
+);
 
 FUNC CreateFunction
 (
 	void   * funcAddr      = 0,
-	void   * jumpAddr      = 0,
+	byte8  * jumpAddr      = 0,
 	bool     saveRegisters = true,
 	bool     noResult      = true,
-	uint64   size0         = 0,
-	uint64   size1         = 0,
-	uint64   size2         = 0,
-	uint64   cacheSize     = 0
+	uint32   size0         = 0,
+	uint32   size1         = 0,
+	uint32   size2         = 0,
+	uint32   cacheSize     = 0
 );
 
 bool Memory_Init();
@@ -63,7 +110,7 @@ MessageBoxA(0, "break", 0, 0); \
 MessageBoxA(0, "break", 0, 0);
 
 template <typename T>
-void Align(T & pos, T boundary, byte * addr = 0, uint8 pad = 0)
+bool Align(T & pos, T boundary, byte * addr = 0, uint8 pad = 0)
 {
 	T remainder = (pos % boundary);
 	if (remainder)
@@ -74,5 +121,7 @@ void Align(T & pos, T boundary, byte * addr = 0, uint8 pad = 0)
 			memset((addr + pos), pad, size);
 		}
 		pos += size;
+		return true;
 	}
+	return false;
 }

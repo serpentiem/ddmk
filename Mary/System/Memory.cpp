@@ -1,3 +1,10 @@
+
+
+// @Todo: Vector relations.
+
+
+
+
 #include "Memory.h"
 
 bool System_Memory_enableExtendVectors = false;
@@ -24,7 +31,12 @@ void System_Memory_Init()
 	uint64 pos = 0x10000;
 	uint64 end = 0x7FFFFFFF;
 	// @Todo: Allocator!
-	System_Memory_addr = (byte8 *)Alloc((1 * 1024 * 1024 * 1024), (void *)pos, (void *)end);
+	//System_Memory_addr = (byte8 *)Alloc((1 * 1024 * 1024 * 1024), (void *)pos, (void *)end);
+
+
+	System_Memory_addr = Alloc((1 * 1024 * 1024 * 1024), pos, end);
+
+
 	if (!System_Memory_addr)
 	{
 		Log("Alloc failed.");
@@ -96,6 +108,10 @@ void System_Memory_Init()
 		}
 	}
 }
+
+
+
+
 
 void System_Memory_ToggleExtendVectors(bool enable)
 {
