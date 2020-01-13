@@ -1799,7 +1799,7 @@ void GUI_Overlay_Draw()
 		if (Config.Tools.Overlay.focus)
 		{
 			ImVec4 color = ImVec4(0, 1, 0, 1);
-			if (GetForegroundWindow() != mainWindow)
+			if (GetForegroundWindow() != appWindow)
 			{
 				color = ImVec4(1, 0, 0, 1);
 			}

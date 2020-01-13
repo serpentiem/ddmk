@@ -1,11 +1,11 @@
 #pragma once
 #include "DataTypes.h"
 #include "Log.h"
-#include "Utility.h"
 #include "Windows.h"
 
 extern byte8 * appBaseAddr;
-extern HWND mainWindow;
+extern uint32  appSize;
+extern HWND    appWindow;
 
 struct FUNC
 {
@@ -16,14 +16,34 @@ struct FUNC
 	byte8 ** cache;
 };
 
-byte8 * Alloc
+byte8 * Alloc(uint32 size);
+
+byte8 * AllocEx
 (
 	uint32 size,
 	uint64 pos,
 	uint64 end
 );
 
-byte8 * HighAlloc(uint32 size);
+inline byte8 * LowAlloc(uint32 size)
+{
+	return AllocEx
+	(
+		size,
+		0x10000,
+		0x7FFFFFFF
+	);
+}
+
+inline byte8 * HighAlloc(uint32 size)
+{
+	return AllocEx
+	(
+		size,
+		(uint64)(appBaseAddr + appSize),
+		(uint64)(appBaseAddr + 0x7FFFFFFF)
+	);
+}
 
 template <typename T>
 void Write
@@ -37,10 +57,12 @@ void Write
 	constexpr uint32 size = sizeof(T);
 	byte32 protection = 0;
 	VirtualProtect(addr, (size + padSize), PAGE_EXECUTE_READWRITE, &protection);
-	*(T *)addr = value;
-	if (padSize)
 	{
-		memset((addr + size), padValue, padSize);
+		*(T *)addr = value;
+		if (padSize)
+		{
+			memset((addr + size), padValue, padSize);
+		}
 	}
 	VirtualProtect(addr, (size + padSize), protection, &protection);
 }
@@ -70,7 +92,7 @@ inline void WriteJump
 (
 	byte8  * addr,
 	byte8  * dest,
-	uint32   padSize = 0,
+	uint32   padSize  = 0,
 	byte8    padValue = 0x90
 )
 {

@@ -1,28 +1,50 @@
-
-// @Todo: Better names.
-// For example: TargetAlloc or RangeAlloc.
-
 #include "Memory.h"
 
 constexpr bool debug = true;
 
 byte8 * appBaseAddr = 0;
-HWND mainWindow = 0;
+uint32  appSize     = 0;
+HWND    appWindow   = 0;
 
-SYSTEM_INFO si = {};
-uint32 appSize = 0;
+extern uint32 Memory_size;
 
-byte8 * mainChunk = 0;
-extern uint32 mainChunkSize;
-uint32 mainChunkPos = 0;
+PrivateStart;
 
-byte8 * Alloc
+SYSTEM_INFO   si     = {};
+byte8       * g_addr = 0;
+uint32        g_pos  = 0;
+
+PrivateEnd;
+
+byte8 * Alloc(uint32 size)
+{
+	byte8 * addr = 0;
+	byte32 error = 0;
+
+	SetLastError(0);
+	addr = (byte8 *)VirtualAlloc(0, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+	error = GetLastError();
+	if (!addr)
+	{
+		Log("VirtualAlloc failed. %X", error);
+		return 0;
+	}
+
+	return addr;
+}
+
+byte8 * AllocEx
 (
 	uint32 size,
 	uint64 pos,
 	uint64 end
 )
 {
+	MEMORY_BASIC_INFORMATION mbi = {};
+	bool match = false;
+	byte8 * addr = 0;
+	byte32 error = 0;
+
 	if constexpr (debug)
 	{
 		LogFunction();
@@ -30,9 +52,6 @@ byte8 * Alloc
 		Log("pos  %llX", pos);
 		Log("end  %llX", end);
 	}
-
-	MEMORY_BASIC_INFORMATION mbi;
-	bool match = false;
 
 	do
 	{
@@ -62,9 +81,7 @@ byte8 * Alloc
 		return 0;
 	}
 
-	byte8 * addr = (byte8 *)mbi.BaseAddress;
-	byte32 error = 0;
-
+	addr = (byte8 *)mbi.BaseAddress;
 	SetLastError(0);
 	addr = (byte8 *)VirtualAlloc(addr, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 	error = GetLastError();
@@ -75,18 +92,13 @@ byte8 * Alloc
 	}
 
 	VirtualQuery(addr, &mbi, sizeof(mbi));
-	Log("addr  %llX", addr);
-	Log("state %X", mbi.State);
+	if constexpr (debug)
+	{
+		Log("addr  %llX", addr);
+		Log("state %X", mbi.State);
+	}
 
 	return addr;
-}
-
-byte8 * HighAlloc(uint32 size)
-{
-	LogFunction();
-	auto pos = (uint64)(appBaseAddr + appSize);
-	auto end = (uint64)(appBaseAddr + 0x7FFFFFFF);
-	return Alloc(size, pos, end);
 }
 
 void WriteAddress
@@ -152,26 +164,6 @@ void vp_memcpy
 	VirtualProtect(dest, size, protection, &protection);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// @Todo: Add lambda.
-
-#define Feed()                                   \
-memcpy((payload + pos), buffer, sizeof(buffer)); \
-pos += sizeof(buffer);
-
 FUNC CreateFunction
 (
 	void   * funcAddr,
@@ -186,11 +178,17 @@ FUNC CreateFunction
 {
 	byte8 payload[2048];
 	uint32 pos = 0;
-
 	uint32 off0;
 	uint32 off1;
 	uint32 off2;
 	uint32 offJump;
+	FUNC func = {};
+
+	auto Feed = [&](byte8 * buffer, uint32 size)
+	{
+		memcpy((payload + pos), buffer, size);
+		pos += size;
+	};
 
 	off0 = pos;
 	pos += size0;
@@ -203,7 +201,7 @@ FUNC CreateFunction
 			{
 				0x50, //push rax
 			};
-			Feed();
+			Feed(buffer, sizeof(buffer));
 		}
 		byte8 buffer[] =
 		{
@@ -227,7 +225,7 @@ FUNC CreateFunction
 			0x40, 0x80, 0xE4, 0xF0, //and spl,F0
 			0x48, 0x83, 0xEC, 0x20, //sub rsp,20
 		};
-		Feed();
+		Feed(buffer, sizeof(buffer));
 	}
 
 	off1 = pos;
@@ -241,7 +239,7 @@ FUNC CreateFunction
 			0xFF, 0xD0,                                                 //call rax
 		};
 		*(void **)(buffer + 2) = funcAddr;
-		Feed();
+		Feed(buffer, sizeof(buffer));
 	}
 	if (saveRegisters)
 	{
@@ -265,14 +263,14 @@ FUNC CreateFunction
 			0x5A,             //pop rdx
 			0x59,             //pop rcx
 		};
-		Feed();
+		Feed(buffer, sizeof(buffer));
 		if (noResult)
 		{
 			byte8 buffer[] =
 			{
 				0x58, //pop rax
 			};
-			Feed();
+			Feed(buffer, sizeof(buffer));
 		}
 	}
 
@@ -286,7 +284,7 @@ FUNC CreateFunction
 		{
 			0xE9, 0x00, 0x00, 0x00, 0x00, //jmp
 		};
-		Feed();
+		Feed(buffer, sizeof(buffer));
 	}
 	else
 	{
@@ -294,32 +292,16 @@ FUNC CreateFunction
 		{
 			0xC3, //ret
 		};
-		Feed();
+		Feed(buffer, sizeof(buffer));
 	}
 
-	FUNC func = {};
-
-	// @Todo: Align.
-
-	//if (mainChunkPos % 0x10)
-	//{
-	//	mainChunkPos += (0x10 - (mainChunkPos % 0x10));
-	//}
-
-	Align<uint32>(mainChunkPos, 0x10);
-
-
-
-
-
-
-	func.addr = (mainChunk + mainChunkPos);
+	Align<uint32>(g_pos, 0x10);
+	func.addr = (g_addr + g_pos);
 	memcpy(func.addr, payload, pos);
-	mainChunkPos += pos;
+	g_pos += pos;
 
 	if (jumpAddr)
 	{
-		//WriteJump((func.addr + offJump), (byte *)jumpAddr);
 		WriteJump((func.addr + offJump), jumpAddr);
 	}
 
@@ -329,21 +311,13 @@ FUNC CreateFunction
 
 	if (cacheSize)
 	{
-		//if (mainChunkPos % 0x10)
-		//{
-		//	mainChunkPos += (0x10 - (mainChunkPos % 0x10));
-		//}
-
-		Align<uint32>(mainChunkPos, 0x10);
-
-		func.cache = (byte8 **)(mainChunk + mainChunkPos);
-		mainChunkPos += cacheSize;
+		Align<uint32>(g_pos, 0x10);
+		func.cache = (byte8 **)(g_addr + g_pos);
+		g_pos += cacheSize;
 	}
 
 	return func;
 }
-
-#undef Feed
 
 bool Memory_Init()
 {
@@ -359,41 +333,21 @@ bool Memory_Init()
 	Log("%u %s", me.th32ProcessID, me.szModule);
 	Log("%llX %llX", appBaseAddr, (appBaseAddr + appSize));
 
-
-
-
-
-
-
-
-	if (!mainChunkSize)
+	if (!Memory_size)
 	{
-		Log("No chunk desired.");
 		return true;
 	}
 
-
-
 	GetSystemInfo(&si);
 
-
-
-
-	mainChunk = HighAlloc(mainChunkSize);
-
-
-	if (!mainChunk)
+	g_addr = HighAlloc(Memory_size);
+	if (!g_addr)
 	{
 		Log("HighAlloc failed.");
 		return false;
 	}
 
+	memset(g_addr, 0xCC, Memory_size);
 
-
-
-
-
-
-	memset(mainChunk, 0xCC, mainChunkSize);
 	return true;
 }

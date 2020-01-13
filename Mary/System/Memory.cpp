@@ -28,18 +28,19 @@ void System_Memory_Init()
 
 
 
-	uint64 pos = 0x10000;
-	uint64 end = 0x7FFFFFFF;
+	//uint64 pos = 0x10000;
+	//uint64 end = 0x7FFFFFFF;
 	// @Todo: Allocator!
 	//System_Memory_addr = (byte8 *)Alloc((1 * 1024 * 1024 * 1024), (void *)pos, (void *)end);
 
 
-	System_Memory_addr = Alloc((1 * 1024 * 1024 * 1024), pos, end);
+	//System_Memory_addr = Alloc((1 * 1024 * 1024 * 1024), pos, end);
+	//System_Memory_addr = Alloc((1 * 1024 * 1024 * 1024), pos, end);
 
-
+	System_Memory_addr = LowAlloc((1 * 1024 * 1024 * 1024));
 	if (!System_Memory_addr)
 	{
-		Log("Alloc failed.");
+		Log("LowAlloc failed.");
 		return;
 	}
 
