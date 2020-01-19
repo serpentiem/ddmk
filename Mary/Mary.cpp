@@ -91,11 +91,11 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		System_HUD_Init();
 
 		System_Input_Init();
-		//System_Input_ToggleRangeExtension  (Config.Game.Multiplayer.enable);
-		//System_Input_ToggleMultiplayerFixes(Config.Game.Multiplayer.enable);
+		System_Input_ToggleRangeExtension  (Config.Game.Multiplayer.enable);
+		System_Input_ToggleMultiplayerFixes(Config.Game.Multiplayer.enable);
 
-		System_Input_ToggleRangeExtension  (true);
-		System_Input_ToggleMultiplayerFixes(true);
+		//System_Input_ToggleRangeExtension  (true);
+		//System_Input_ToggleMultiplayerFixes(true);
 
 
 

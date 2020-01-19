@@ -1306,8 +1306,8 @@ void GUI_Cosmetics_Draw()
 		GUI_Cosmetics_Dante();
 		ImGui::Text("");
 		GUI_Cosmetics_Doppelganger();
-		ImGui::Text("");
-		GUI_Cosmetics_Object();
+		//ImGui::Text("");
+		//GUI_Cosmetics_Object();
 		ImGui::Text("");
 		GUI_Cosmetics_Other();
 		ImGui::Text("");
