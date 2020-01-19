@@ -64,3 +64,24 @@ void Cosmetics_Object_Init()
 		// dmc3.exe+304B1B - 48 8B 45 50       - mov rax,[rbp+50]
 	}
 }
+
+void Cosmetics_Object_ToggleDisableObjectPartitionUpdates(bool enable)
+{
+	LogFunction(enable);
+
+
+	// Disable Motion
+
+
+
+}
+
+
+
+
+
+
+
+
+
+

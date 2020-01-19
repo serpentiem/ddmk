@@ -1,6 +1,6 @@
 #include "Cache.h"
 
-constexpr bool debug = true;
+constexpr bool debug = false;
 
 byte8 * System_Cache_file[MAX_CACHE_FILE] = {};
 byte8 * demo_pl000_00_3 = 0;

@@ -148,6 +148,7 @@
     <ClCompile Include="System\Memory.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -335,5 +336,6 @@
     <ClInclude Include="System\Memory.h">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
 </Project>

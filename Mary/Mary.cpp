@@ -76,6 +76,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		System_Actor_ToggleCreateActorOne(true);
 		System_Actor_ToggleUpdateActor(true);
 		System_Actor_ToggleDoppelgangerFixes(true);
+		System_Actor_ToggleModelFixes(true);
 		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
 		System_Animation_Init();
 
@@ -88,9 +89,16 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		System_Camera_ToggleInvertX(Config.System.Camera.invertX);
 		System_Graphics_UpdateFrameRate(Config);
 		System_HUD_Init();
+
 		System_Input_Init();
-		System_Input_ToggleRangeExtension  (Config.Game.Multiplayer.enable);
-		System_Input_ToggleMultiplayerFixes(Config.Game.Multiplayer.enable);
+		//System_Input_ToggleRangeExtension  (Config.Game.Multiplayer.enable);
+		//System_Input_ToggleMultiplayerFixes(Config.Game.Multiplayer.enable);
+
+		System_Input_ToggleRangeExtension  (true);
+		System_Input_ToggleMultiplayerFixes(true);
+
+
+
 		System_Media_Init();
 		System_Motion_Init();
 		System_Sound_Init();

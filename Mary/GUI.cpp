@@ -20,7 +20,7 @@ enum TAB_
 	TAB_VOID,
 };
 
-constexpr bool debug = true;
+constexpr bool debug = false;
 
 uint8 activeTab = TAB_VOID;
 
@@ -30,11 +30,13 @@ ImVec2 GUI_System_size     = ImVec2(300, 500);
 ImVec2 GUI_Game_size       = ImVec2(500, 500);
 ImVec2 GUI_Cosmetics_size  = ImVec2(400, 500);
 ImVec2 GUI_Tools_size      = ImVec2(300, 500);
+
+ImVec2 GUI_Camera_size     = ImVec2(400, 400);
 ImVec2 GUI_Speed_size      = ImVec2(400, 400);
 ImVec2 GUI_Teleporter_size = ImVec2(120, 180);
 ImVec2 GUI_Overlay_size    = ImVec2(300, 300);
-ImVec2 GUI_Debug_size      = ImVec2(300, 300);
 
+bool GUI_Camera_show     = false;
 bool GUI_Speed_show      = false;
 bool GUI_Teleporter_show = false;
 
@@ -527,6 +529,10 @@ void GUI_Game_Dante()
 	{
 		Game_Dante_WeaponSwitchTimeout_Melee_Toggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
 	}
+	if constexpr (debug)
+	{
+		ImGui::Text("%f", Config.Game.Dante.WeaponSwitchTimeout.melee);
+	}
 	if (GUI_InputEx<float32>
 	(
 		Locale.Game.Dante.WeaponSwitchTimeout.ranged,
@@ -534,6 +540,10 @@ void GUI_Game_Dante()
 	))
 	{
 		Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
+	}
+	if constexpr (debug)
+	{
+		ImGui::Text("%f", Config.Game.Dante.WeaponSwitchTimeout.ranged);
 	}
 	ImGui::PopItemWidth();
 	GUI_SECTION_FOOTER_START(Game.Dante);
@@ -1266,6 +1276,7 @@ void GUI_Cosmetics_Vergil()
 {
 	GUI_Hyperlink(Locale.Cosmetics.Vergil.header);
 	ImGui::Text("");
+	ImGui::Text(Locale.Cosmetics.Vergil.Beowulf.header);
 	if (GUI_Checkbox
 	(
 		Locale.Cosmetics.Vergil.Beowulf.hideModel,
@@ -1417,7 +1428,13 @@ void GUI_Tools_Repair()
 
 
 
-
+void GUI_Tools_Camera()
+{
+	if (GUI_Hyperlink("Camera"))
+	{
+		GUI_Camera_show = true;
+	}
+}
 
 
 
@@ -1454,6 +1471,8 @@ void GUI_Tools_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Tools", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
+		GUI_Tools_Camera();
+		ImGui::Text("");
 		GUI_Tools_Overlay();
 		ImGui::Text("");
 		GUI_Tools_Repair();
@@ -1542,7 +1561,86 @@ void GUI_Main_Draw()
 
 
 
-
+void GUI_Camera_Draw()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		ImGui::SetNextWindowPos(ImVec2(900, 100));
+	}
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	if (ImGui::Begin("Camera", &GUI_Camera_show, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		{
+			if (!InGame())
+			{
+				goto InvalidPointer;
+			}
+			// @Todo: Add to vars.
+			auto addr = *(byte8 **)(appBaseAddr + 0xC8FBD0);
+			if (!addr)
+			{
+				goto InvalidPointer;
+			}
+			addr = *(byte8 **)(addr + 0x498);
+			if (!addr)
+			{
+				goto InvalidPointer;
+			}
+			auto & height     = *(float32 *)(addr + 0xD0 );
+			auto & tilt       = *(float32 *)(addr + 0xD4 );
+			auto & zoom       = *(float32 *)(addr + 0xD8 );
+			auto & zoomLockOn = *(float32 *)(addr + 0xE0 );
+			ImGui::Text(Locale.Camera.live);
+			ImGui::PushItemWidth(200);
+			GUI_InputEx<float32>(Locale.Camera.height    , height    , 10  );
+			GUI_InputEx<float32>(Locale.Camera.tilt      , tilt      , 0.1f);
+			GUI_InputEx<float32>(Locale.Camera.zoom      , zoom      , 50  );
+			GUI_InputEx<float32>(Locale.Camera.zoomLockOn, zoomLockOn, 50  );
+			ImGui::Text("");
+			ImGui::Text(Locale.Camera.config);
+			GUI_InputEx<float32>(Locale.Camera.height    , Config.Camera.height    , 10  );
+			GUI_InputEx<float32>(Locale.Camera.tilt      , Config.Camera.tilt      , 0.1f);
+			GUI_InputEx<float32>(Locale.Camera.zoom      , Config.Camera.zoom      , 50  );
+			GUI_InputEx<float32>(Locale.Camera.zoomLockOn, Config.Camera.zoomLockOn, 50  );
+			ImGui::PopItemWidth();
+			ImGui::Text("");
+			GUI_Checkbox
+			(
+				Locale.Camera.applyConfig,
+				Config.Camera.applyConfig
+			);
+			GUI_PUSH_DISABLE(!Config.Camera.applyConfig);
+			{
+				ImGui::PushItemWidth(100);
+				GUI_InputEx<uint32>
+				(
+					Locale.Camera.rate,
+					Config.Camera.rate,
+					100
+				);
+				ImGui::PopItemWidth();
+			}
+			GUI_POP_DISABLE(!Config.Camera.applyConfig);
+			ImGui::Text("");
+			if (GUI_Button(Locale.Camera.reset))
+			{
+				memcpy(&Config.Camera, &DefaultConfig.Camera, sizeof(Config.Camera));
+				SaveConfig();
+				Camera_Update(DefaultConfig);
+			}
+			goto End;
+		}
+		InvalidPointer:
+		ImGui::Text("Invalid Pointer!");
+	}
+	End:
+	ImGui::End();
+	ImGui::PopStyleVar(3);
+}
 
 
 
@@ -1838,7 +1936,7 @@ void GUI_Overlay_Draw()
 
 
 
-
+		//ImGui::Text("Delta %f", Update_delta);
 
 
 
@@ -1905,6 +2003,10 @@ void GUI_Render()
 	if (Config.Tools.Overlay.enable)
 	{
 		GUI_Overlay_Draw();
+	}
+	if (GUI_Camera_show)
+	{
+		GUI_Camera_Draw();
 	}
 	if (GUI_Speed_show)
 	{

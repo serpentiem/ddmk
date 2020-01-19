@@ -1,15 +1,12 @@
 #include "GUI.h"
 
 
-constexpr bool debug = true;
+constexpr bool debug = false;
 
 
 enum TAB_
 {
-	TAB_GAME,
 	TAB_SYSTEM,
-	TAB_TOOLS,
-	TAB_DEBUG,
 	MAX_TAB,
 	TAB_VOID,
 };
@@ -92,8 +89,8 @@ inline void BuildFonts()
 
 void GUI_System_Graphics()
 {
-	ImGui::Text("%.2f FPS", (ImGui::GetIO().Framerate));
-	ImGui::Text("");
+	//ImGui::Text("%.2f FPS", (ImGui::GetIO().Framerate));
+	//ImGui::Text("");
 	GUI_Hyperlink(Locale.System.Graphics.header);
 	ImGui::Text("");
 	ImGui::PushItemWidth(150);
@@ -272,17 +269,8 @@ void GUI_Main_Draw()
 	ImGui::PopStyleVar(4);
 	switch (activeTab)
 	{
-	case TAB_GAME:
-		GUI_Game_Draw();
-		break;
 	case TAB_SYSTEM:
 		GUI_System_Draw();
-		break;
-	case TAB_TOOLS:
-		GUI_Tools_Draw();
-		break;
-	case TAB_DEBUG:
-		GUI_Debug_Draw();
 		break;
 	}
 }

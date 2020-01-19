@@ -5,6 +5,7 @@
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_internal.h"
 
+#include "Camera.h"
 #include "Config.h"
 #include "Locale.h"
 #include "Pause.h"
@@ -14,6 +15,10 @@
 #include "Restart.h"
 
 #include "Speed.h"
+
+
+#include "Update.h"
+
 
 
 #include "System/Actor.h"

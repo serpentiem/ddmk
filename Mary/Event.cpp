@@ -853,14 +853,14 @@ static void DevilForm_Activate(byte8 * baseAddr)
 	LogFunction(baseAddr);
 	auto actor = System_Actor_GetActorId(baseAddr);
 	auto & doppelganger = *(bool *)(baseAddr + 0x6362);
-	if (actor != ACTOR_ONE)
-	{
-		return;
-	}
-	if (doppelganger)
-	{
-		return;
-	}
+	//if (actor != ACTOR_ONE)
+	//{
+	//	return;
+	//}
+	//if (doppelganger)
+	//{
+	//	return;
+	//}
 	System_Actor_UpdateFlux(baseAddr, DEVIL_FLUX_START);
 }
 
@@ -869,14 +869,14 @@ static void DevilForm_Deactivate(byte * baseAddr)
 	LogFunction(baseAddr);
 	auto actor = System_Actor_GetActorId(baseAddr);
 	auto & doppelganger = *(bool *)(baseAddr + 0x6362);
-	if (actor != ACTOR_ONE)
-	{
-		return;
-	}
-	if (doppelganger)
-	{
-		return;
-	}
+	//if (actor != ACTOR_ONE)
+	//{
+	//	return;
+	//}
+	//if (doppelganger)
+	//{
+	//	return;
+	//}
 	System_Actor_UpdateFlux(baseAddr, DEVIL_FLUX_END);
 }
 

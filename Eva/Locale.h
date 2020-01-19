@@ -7,8 +7,8 @@ struct LOCALE
 	{
 		const char * label[3] =
 		{
-			"Game",
 			"System",
+			"Game",
 			"Tools",
 		};
 	}

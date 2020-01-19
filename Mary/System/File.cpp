@@ -1,7 +1,7 @@
 #include "File.h"
 
 
-constexpr bool debug = true;
+constexpr bool debug = false;
 
 PrivateStart;
 

@@ -7,6 +7,7 @@ bool System_Actor_enableArrayExtension    = false;
 bool System_Actor_enableCreateActor       = false;
 bool System_Actor_enableUpdateActor       = false;
 bool System_Actor_enableDoppelgangerFixes = false;
+bool System_Actor_enableModelFixes        = false;
 
 byte8 * System_Actor_actorBaseAddr[MAX_ACTOR] = {};
 
@@ -787,6 +788,19 @@ void System_Actor_ToggleDoppelgangerFixes(bool enable)
 		Write<byte16>((appBaseAddr + 0x2134A3), 0x840F);
 		Write<byte8>((appBaseAddr + 0x1F92E0), 0x0D);
 		Write<byte8>((appBaseAddr + 0x1F92F8), 0x75);
+	}
+}
+
+void System_Actor_ToggleModelFixes(bool enable)
+{
+	LogFunction(enable);
+	if (enable)
+	{
+		vp_memset((appBaseAddr + 0x215577), 0x90, 5); // Disable Object Partition Update Dante
+	}
+	else
+	{
+		WriteCall((appBaseAddr + 0x215577), (appBaseAddr + 0x2169F0));
 	}
 }
 

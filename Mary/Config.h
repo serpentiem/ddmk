@@ -8,6 +8,16 @@ struct CONFIG
 {
 	struct
 	{
+		float32 height      = 140;
+		float32 tilt        = 0.25f;
+		float32 zoom        = 460;
+		float32 zoomLockOn  = 400;
+		bool    applyConfig = false;
+		uint32  rate        = 1000;
+	}
+	Camera;
+	struct
+	{
 		struct
 		{
 			float32 base  = 1;

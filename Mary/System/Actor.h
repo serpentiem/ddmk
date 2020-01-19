@@ -12,6 +12,7 @@ extern bool System_Actor_enableArrayExtension;
 extern bool System_Actor_enableCreateActor;
 extern bool System_Actor_enableUpdateActor;
 extern bool System_Actor_enableDoppelgangerFixes;
+extern bool System_Actor_enableModelFixes;
 
 extern byte8 * System_Actor_actorBaseAddr[MAX_ACTOR];
 
@@ -32,4 +33,5 @@ void System_Actor_ToggleArrayExtension(bool enable);
 void System_Actor_ToggleCreateActorOne(bool enable);
 void System_Actor_ToggleUpdateActor(bool enable);
 void System_Actor_ToggleDoppelgangerFixes(bool enable);
+void System_Actor_ToggleModelFixes(bool enable);
 void System_Actor_ToggleDisableIdleTimer(bool enable);

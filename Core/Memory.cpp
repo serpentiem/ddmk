@@ -1,6 +1,6 @@
 #include "Memory.h"
 
-constexpr bool debug = true;
+constexpr bool debug = false;
 
 byte8 * appBaseAddr = 0;
 uint32  appSize     = 0;

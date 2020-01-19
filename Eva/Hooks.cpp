@@ -1,6 +1,6 @@
 #include "Hooks.h"
 
-constexpr bool debug = true;
+constexpr bool debug = false;
 
 typedef ATOM(* User_RegisterClassExW_t)
 (

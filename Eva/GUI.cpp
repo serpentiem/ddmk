@@ -4,12 +4,12 @@
 
 
 
-constexpr bool debug = true;
+constexpr bool debug = false;
 
 enum TAB_
 {
-	TAB_GAME,
 	TAB_SYSTEM,
+	TAB_GAME,
 	TAB_TOOLS,
 	MAX_TAB,
 	TAB_VOID,
@@ -642,7 +642,7 @@ void GUI_Game_Draw()
 	{
 
 
-		ImGui::Text("%.3f FPS", ImGui::GetIO().Framerate);
+		//ImGui::Text("%.3f FPS", ImGui::GetIO().Framerate);
 
 
 
@@ -699,7 +699,7 @@ void GUI_Tools_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Tools", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		GUI_Tools_Speed();
+		//GUI_Tools_Speed();
 		GUI_Tools_Teleporter();
 	}
 	ImGui::End();
@@ -906,10 +906,10 @@ void GUI_Render()
 		GUI_Main_Draw();
 
 
-		if (GUI_Speed_show)
-		{
-			GUI_Speed_Draw();
-		}
+		//if (GUI_Speed_show)
+		//{
+		//	GUI_Speed_Draw();
+		//}
 
 
 

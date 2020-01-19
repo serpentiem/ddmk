@@ -300,9 +300,8 @@ void Game_StyleSwitcher_Toggle(bool enable)
 		WriteAddress((appBaseAddr + 0x1F8AC4), (appBaseAddr + 0x1F8AC6), 2);
 		// Vergil Fixes
 		WriteJump((appBaseAddr + 0x223D77), VergilDynamicStyle, 5); // Force dynamic style
-		// @Audit: Should this go to Actor.cpp?
-		// @Todo: Check when this is triggered.
-		vp_memset((appBaseAddr + 0x221E50), 0x90, 8); // Disable linked actor base address reset.
+		// @Audit: Should this go to Actor.cpp? Yup, Doppelganger fix.
+		vp_memset((appBaseAddr + 0x221E50), 0x90, 8); // Update Actor Vergil; Disable linked actor base address reset.
 	}
 	else
 	{

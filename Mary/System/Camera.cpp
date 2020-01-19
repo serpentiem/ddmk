@@ -1,9 +1,5 @@
 #include "Camera.h"
 
-
-
-
-
 void System_Camera_ToggleInvertX(bool enable)
 {
 	LogFunction(enable);

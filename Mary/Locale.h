@@ -20,6 +20,21 @@ struct LOCALE
 	Main;
 	struct
 	{
+		const char * header = "Camera";
+		const char * live = "Live";
+		const char * config = "Config";
+		const char * height = "Height";
+		const char * tilt = "Tilt";
+		const char * zoom = "Zoom";
+		const char * zoomLockOn = "Zoom Lock-On";
+		const char * fov = "FOV";
+		const char * applyConfig = "Apply Config";
+		const char * rate = "Rate";
+		const char * reset = "Reset";
+	}
+	Camera;
+	struct
+	{
 		const char * header = "Speed";
 		struct
 		{
