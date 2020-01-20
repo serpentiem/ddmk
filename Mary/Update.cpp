@@ -65,31 +65,33 @@ void Update_Init()
 	Windows_GetTicksPerSecond(&ticksPerSecond);
 	ticksPerMillisecond = (ticksPerSecond / 1000);
 	Windows_GetTickCount(&savedTickCount);
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x48, 0x8D, 0x4C, 0x24, 0x20, //lea rcx,[rsp+20]
+	//	};
+	//	auto func = CreateFunction(MainLoop, (appBaseAddr + 0x2C5EB5), true, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteJump((appBaseAddr + 0x2C5EB0), func.addr);
+	//	/*
+	//	dmc3.exe+2C5EB0 - 48 8D 4C 24 20 - lea rcx,[rsp+20]
+	//	dmc3.exe+2C5EB5 - FF 15 1D930800 - call qword ptr [dmc3.exe+34F1D8]
+	//	*/
+	//}
+
+	// In Game Menu Access
 	{
 		byte8 sect0[] =
 		{
-			0x48, 0x8D, 0x4C, 0x24, 0x20, //lea rcx,[rsp+20]
+			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+23B060
 		};
-		auto func = CreateFunction(MainLoop, (appBaseAddr + 0x2C5EB5), true, true, sizeof(sect0));
+		auto func = CreateFunction(MainLoop, (appBaseAddr + 0x23D4B7), true, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteJump((appBaseAddr + 0x2C5EB0), func.addr);
+		WriteCall(func.sect0, (appBaseAddr + 0x23B060));
+		WriteJump((appBaseAddr + 0x23D4B2), func.addr);
 		/*
-		dmc3.exe+2C5EB0 - 48 8D 4C 24 20 - lea rcx,[rsp+20]
-		dmc3.exe+2C5EB5 - FF 15 1D930800 - call qword ptr [dmc3.exe+34F1D8]
-		*/
-	}
-	{
-		//byte8 sect0[] =
-		//{
-		//	0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+23B060
-		//};
-		//FUNC func = CreateFunction(InGameMenuAccess, (appBaseAddr + 0x23D4B7), true, true, sizeof(sect0));
-		//memcpy(func.sect0, sect0, sizeof(sect0));
-		//WriteCall(func.sect0, (appBaseAddr + 0x23B060));
-		//WriteJump((appBaseAddr + 0x23D4B2), func.addr);
-		/*
-		dmc3.exe+23D4B2 - E8 A9DBFFFF           - call dmc3.exe+23B060
-		dmc3.exe+23D4B7 - 84 C0                 - test al,al
+		dmc3.exe+23D4B2 - E8 A9DBFFFF - call dmc3.exe+23B060
+		dmc3.exe+23D4B7 - 84 C0       - test al,al
 		*/
 	}
 }
