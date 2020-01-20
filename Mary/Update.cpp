@@ -59,6 +59,8 @@ void MainLoop()
 	InGameEnd:;
 }
 
+// Wow, same crap.
+
 void Update_Init()
 {
 	LogFunction();
@@ -83,7 +85,7 @@ void Update_Init()
 		//{
 		//	0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+23B060
 		//};
-		//FUNC func = CreateFunction(InGameMenuAccess, (appBaseAddr + 0x23D4B7), true, true, sizeof(sect0));
+		//FUNC func = CreateFunction(MainLoop, (appBaseAddr + 0x23D4B7), true, true, sizeof(sect0));
 		//memcpy(func.sect0, sect0, sizeof(sect0));
 		//WriteCall(func.sect0, (appBaseAddr + 0x23B060));
 		//WriteJump((appBaseAddr + 0x23D4B2), func.addr);
