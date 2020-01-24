@@ -501,8 +501,7 @@ PrivateEnd;
 
 
 
-
-
+// @Research: Clarify. Does this really create the actor or does it create an additional actor?
 
 void System_Actor_Init()
 {

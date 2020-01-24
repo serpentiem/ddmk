@@ -1,4 +1,5 @@
 #pragma once
+#include "../Core/DataTypes.h"
 
 enum EVENT_
 {
@@ -6,10 +7,28 @@ enum EVENT_
 	EVENT_TELEPORT = 2,
 };
 
+enum COSTUME_DANTE_
+{
+	COSTUME_DANTE_DEFAULT,
+	COSTUME_DANTE_DEFAULT_COATLESS,
+	COSTUME_DANTE_DEFAULT_TORN,
+	COSTUME_DANTE_DMC1,
+	COSTUME_DANTE_DMC1_COATLESS,
+	COSTUME_DANTE_SPARDA,
+	COSTUME_DANTE_DEFAULT_TORN_INFINITE_MP,
+	COSTUME_DANTE_SPARDA_INFINITE_MP,
+	MAX_COSTUME_DANTE,
+};
 
-
-
-
+enum COSTUME_VERGIL_
+{
+	COSTUME_VERGIL_DEFAULT,
+	COSTUME_VERGIL_DEFAULT_COATLESS,
+	COSTUME_VERGIL_DEFAULT_INFINITE_MP,
+	COSTUME_VERGIL_SPARDA,
+	COSTUME_VERGIL_SPARDA_INFINITE_MP,
+	MAX_COSTUME_VERGIL,
+};
 
 enum GAMEPAD_
 {
@@ -33,7 +52,7 @@ enum GAMEPAD_
 	GAMEPAD_LEFT           = 0x8000,
 };
 
-// @Todo: Rename to Binding.
+// @Todo: Rename to Binding or Action.
 
 enum CMD_
 {
@@ -55,44 +74,6 @@ enum CMD_
 	CMD_TAUNT,
 	MAX_CMD,
 };
-
-struct PS2_GAMEPAD
-{
-	uint32 ready;
-	uint32 reserved[3];
-	uint8  vibration[4];
-	word   buttons[6];
-	uint8  rightStickX;
-	uint8  rightStickY;
-	uint8  leftStickX;
-	uint8  leftStickY;
-	uint32 unknown[3];
-	uint16 rightStickDirection[4];
-	uint16 leftStickDirection[4];
-	uint16 rightStickDirectionFast[2];
-	uint16 leftStickDirectionFast[2];
-	uint16 rightStickPosition;
-	uint16 leftStickPosition;
-	uint16 rightStickDifference;
-	uint16 leftStickDifference;
-};
-
-struct CAPCOM_GAMEPAD
-{
-	word   buttons[4];
-	uint16 buttonsTimer[2];
-	uint16 rightStickDirection[4];
-	uint16 rightStickTimer[2];
-	uint16 rightStickPosition[2];
-	uint16 leftStickDirection[4];
-	uint16 leftStickTimer[2];
-	uint16 leftStickPosition[2];
-};
-
-
-
-
-
 
 enum ROOM_
 {
@@ -193,47 +174,6 @@ enum POSITION_
 #define TRACK_ARKHAM_2            "afs/sound/Hine_02.adx"
 #define TRACK_VERGIL_3            "afs/sound/Versil_03.adx"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// MaxActor
-// ActorOne
-// ActorTwo
-// ActorThree
-// ActorFour
-
-
-
-enum MISSION_
-{
-	MAX_MISSION = 22,
-};
-
-
-
 enum ACTOR_
 {
 	ACTOR_ONE,
@@ -243,93 +183,11 @@ enum ACTOR_
 	MAX_ACTOR,
 };
 
-
 enum DEVIL_FLUX_
 {
 	DEVIL_FLUX_START = 1,
 	DEVIL_FLUX_END   = 2,
 };
-
-
-
-
-
-
-enum BODY_COUNT_
-{
-	BODY_COUNT_DANTE  = 7,
-	BODY_COUNT_BOB    = 2,
-	BODY_COUNT_LADY   = 1,
-	BODY_COUNT_VERGIL = 4,
-	MAX_BODY_COUNT    = 7,
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-enum COSTUME_DANTE_
-{
-	COSTUME_DANTE_DEFAULT,
-	COSTUME_DANTE_DEFAULT_COATLESS,
-	COSTUME_DANTE_DEFAULT_TORN,
-	COSTUME_DANTE_DMC1,
-	COSTUME_DANTE_DMC1_COATLESS,
-	COSTUME_DANTE_SPARDA,
-	COSTUME_DANTE_DEFAULT_TORN_INFINITE_MP,
-	COSTUME_DANTE_SPARDA_INFINITE_MP,
-	MAX_COSTUME_DANTE,
-};
-enum COSTUME_BOB_
-{
-	COSTUME_BOB_DEFAULT,
-	MAX_COSTUME_BOB,
-};
-enum COSTUME_LADY_
-{
-	COSTUME_LADY_DEFAULT,
-	MAX_COSTUME_LADY,
-};
-enum COSTUME_VERGIL_
-{
-	COSTUME_VERGIL_DEFAULT,
-	COSTUME_VERGIL_DEFAULT_COATLESS,
-	COSTUME_VERGIL_DEFAULT_INFINITE_MP,
-	COSTUME_VERGIL_SPARDA,
-	COSTUME_VERGIL_SPARDA_INFINITE_MP,
-	MAX_COSTUME_VERGIL,
-};
-enum COSTUME_COUNT_
-{
-	COSTUME_COUNT_DANTE  = MAX_COSTUME_DANTE,
-	COSTUME_COUNT_BOB    = MAX_COSTUME_BOB,
-	COSTUME_COUNT_LADY   = MAX_COSTUME_LADY,
-	COSTUME_COUNT_VERGIL = MAX_COSTUME_VERGIL,
-	MAX_COSTUME_COUNT    = MAX_COSTUME_DANTE,
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 enum MOT_DANTE_
 {
@@ -362,6 +220,7 @@ enum MOT_DANTE_
 	MOT_DANTE_DOPPELGANGER,
 	MAX_MOT_DANTE,
 };
+
 enum MOT_BOB_
 {
 	MOT_BOB_BASE,
@@ -370,6 +229,7 @@ enum MOT_BOB_
 	MOT_BOB_MELEE_STYLE = 31,
 	MAX_MOT_BOB         = 4,
 };
+
 enum MOT_LADY_
 {
 	MOT_LADY_BASE,
@@ -378,6 +238,7 @@ enum MOT_LADY_
 	MOT_LADY_KALINA_ANN = 12,
 	MAX_MOT_LADY        = 4,
 };
+
 enum MOT_VERGIL_
 {
 	MOT_VERGIL_BASE,
@@ -392,6 +253,7 @@ enum MOT_VERGIL_
 	MOT_VERGIL_NERO_ANGELO_FORCE_EDGE,
 	MAX_MOT_VERGIL,
 };
+
 enum MOT_
 {
 	MOT_DANTE  = MAX_MOT_DANTE,
@@ -400,48 +262,6 @@ enum MOT_
 	MOT_VERGIL = MAX_MOT_VERGIL,
 	MAX_MOT    = 32,
 };
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-//enum BUTTON_
-//{
-//	BUTTON_LEFT_TRIGGER_L2   = 0x0001,
-//	BUTTON_RIGHT_TRIGGER_R2  = 0x0002,
-//	BUTTON_LEFT_SHOULDER_L1  = 0x0004,
-//	BUTTON_RIGHT_SHOULDER_R1 = 0x0008,
-//	BUTTON_Y_TRIANGLE        = 0x0010,
-//	BUTTON_B_CIRCLE          = 0x0020,
-//	BUTTON_A_CROSS           = 0x0040,
-//	BUTTON_X_SQUARE          = 0x0080,
-//	BUTTON_BACK_SELECT       = 0x0100,
-//	BUTTON_LEFT_THUMB_L3     = 0x0200,
-//	BUTTON_RIGHT_THUMB_R3    = 0x0400,
-//	BUTTON_START             = 0x0800,
-//	BUTTON_DPAD_UP           = 0x1000,
-//	BUTTON_DPAD_RIGHT        = 0x2000,
-//	BUTTON_DPAD_DOWN         = 0x4000,
-//	BUTTON_DPAD_LEFT         = 0x8000,
-//};
-//
-//
-
-
-
-
-
-
-
-
 
 enum MODE_
 {
@@ -452,16 +272,6 @@ enum MODE_
 	MODE_DANTE_MUST_DIE,
 	MAX_MODE,
 };
-
-
-
-
-
-
-
-
-
-
 
 enum CHAR_
 {
@@ -482,12 +292,10 @@ enum DEVIL_DANTE_
 	DEVIL_DANTE_SPARDA,
 };
 
-
 enum DEVIL_BOB_
 {
 	DEVIL_BOB_YAMATO = 1,
 };
-
 
 enum DEVIL_VERGIL_
 {
@@ -495,17 +303,6 @@ enum DEVIL_VERGIL_
 	DEVIL_VERGIL_BEOWULF    = 2,
 	DEVIL_VERGIL_FORCE_EDGE = 1,
 };
-
-
-
-
-
-
-
-
-
-
-
 
 enum STYLE_
 {
@@ -518,6 +315,7 @@ enum STYLE_
 	MAX_STYLE,
 	STYLE_DARK_SLAYER = 2,
 };
+
 enum WEAPON_
 {
 	WEAPON_REBELLION,
@@ -537,28 +335,88 @@ enum WEAPON_
 	WEAPON_YAMATO_BOB,
 	MAX_WEAPON,
 };
+
 enum WEAPON_ICON_SIDE_
 {
 	WEAPON_ICON_SIDE_LEFT,
 	WEAPON_ICON_SIDE_RIGHT,
 };
 
-
-enum WEAPON_COUNT_
+enum FILE_ITEM_STATUS_
 {
-	WEAPON_COUNT_DANTE  = 10,
-	WEAPON_COUNT_BOB    = 1,
-	WEAPON_COUNT_LADY   = 2,
-	WEAPON_COUNT_VERGIL = 3,
+	FILE_ITEM_READY = 3,
 };
 
+enum SPEED_DEVIL_
+{
+	SPEED_DEVIL_DANTE_REBELLION,
+	SPEED_DEVIL_DANTE_CERBERUS,
+	SPEED_DEVIL_DANTE_AGNI_RUDRA,
+	SPEED_DEVIL_DANTE_NEVAN,
+	SPEED_DEVIL_DANTE_BEOWULF,
+	SPEED_DEVIL_DANTE_SPARDA,
+	SPEED_DEVIL_VERGIL_YAMATO = 8,
+	SPEED_DEVIL_VERGIL_BEOWULF,
+	SPEED_DEVIL_VERGIL_FORCE_EDGE,
+	SPEED_DEVIL_NERO_ANGELO_YAMATO,
+	SPEED_DEVIL_NERO_ANGELO_BEOWULF,
+	SPEED_DEVIL_NERO_ANGELO_FORCE_EDGE,
+};
 
+enum FILE_MODE_
+{
+	FILE_MODE_MEMORY,
+	FILE_MODE_ARCHIVE,
+	FILE_MODE_LOCAL,
+};
 
+enum Object_
+{
+	Object_Dante,
+	Object_Lady,
+	Object_Rebellion,
+	Object_Rebellion2,
+	Object_ForceEdgeDante,
+	Object_Yamato,
+	Object_ForceEdge,
+	Object_NeroAngeloSword,
+	Object_Count,
+};
 
+// @Todo: Update types.
 
+struct PS2_GAMEPAD
+{
+	uint32 ready;
+	uint32 reserved[3];
+	uint8  vibration[4];
+	word   buttons[6];
+	uint8  rightStickX;
+	uint8  rightStickY;
+	uint8  leftStickX;
+	uint8  leftStickY;
+	uint32 unknown[3];
+	uint16 rightStickDirection[4];
+	uint16 leftStickDirection[4];
+	uint16 rightStickDirectionFast[2];
+	uint16 leftStickDirectionFast[2];
+	uint16 rightStickPosition;
+	uint16 leftStickPosition;
+	uint16 rightStickDifference;
+	uint16 leftStickDifference;
+};
 
-
-
+struct CAPCOM_GAMEPAD
+{
+	word   buttons[4];
+	uint16 buttonsTimer[2];
+	uint16 rightStickDirection[4];
+	uint16 rightStickTimer[2];
+	uint16 rightStickPosition[2];
+	uint16 leftStickDirection[4];
+	uint16 leftStickTimer[2];
+	uint16 leftStickPosition[2];
+};
 
 struct STRING_ITEM
 {
@@ -578,86 +436,13 @@ struct FILE_ITEM
 	byte8         unknown[32];
 };
 
-enum FILE_ITEM_STATUS_
-{
-	FILE_ITEM_READY = 3,
-};
+// @Todo: Specifiy and auto vars.
 
-
-
-// CFileItem
-
-// EFileItem
-
-// COMBO_1_PART_1
-
-
-
-
-
-
-
-
-
-
-enum MotionRebellion
-{
-	Combo1Part1 = 3,
-	Combo1Part2,
-	Combo1Part3,
-	Combo2Part2,
-	StingerLevel2 = 14,
-};
-
-
-enum SpeedDevil
-{
-	DanteRebellion,
-	DanteCerberus,
-	DanteAgniRudra,
-	DanteNevan,
-	DanteBeowulf,
-	DanteSparda,
-	VergilYamato,
-	VergilBeowulf,
-	VergilForceEdge,
-	NeroAngeloYamato,
-	NeroAngeloBeowulf,
-	NeroAngeloForceEdge,
-};
-
-
-// SpeedDevil::DanteRebellion
-
-
-// SpeedDevilDanteRebellion
-// SpeedDevilVergilYamato
-// SpeedDevilNeroAngeloYamato
-
-
-
-
-enum SPEED_DEVIL_
-{
-	SPEED_DEVIL_DANTE_REBELLION,
-	SPEED_DEVIL_DANTE_CERBERUS,
-	SPEED_DEVIL_DANTE_AGNI_RUDRA,
-	SPEED_DEVIL_DANTE_NEVAN,
-	SPEED_DEVIL_DANTE_BEOWULF,
-	SPEED_DEVIL_DANTE_SPARDA,
-	SPEED_DEVIL_VERGIL_YAMATO = 8,
-	SPEED_DEVIL_VERGIL_BEOWULF,
-	SPEED_DEVIL_VERGIL_FORCE_EDGE,
-	SPEED_DEVIL_NERO_ANGELO_YAMATO,
-	SPEED_DEVIL_NERO_ANGELO_BEOWULF,
-	SPEED_DEVIL_NERO_ANGELO_FORCE_EDGE,
-};
-
-
-
-
-//extern byte8 * appBaseAddr;
-
+// EVENT_VARS
+// LIVE_VARS
+// CHAR_VARS
+// ACTOR_VARS
+// CAMERA_VARS
 
 struct VARS
 {
@@ -709,58 +494,6 @@ struct VARS
 	}
 };
 
-
-
-
-
-
-enum FILE_MODE_
-{
-	FILE_MODE_MEMORY,
-	FILE_MODE_ARCHIVE,
-	FILE_MODE_LOCAL,
-};
-
-// FileMode::Memory
-// FILE_MODE_MEMORY
-// FileMode::Archive
-// FileMode::Local
-
-
-// FileModeLocal
-
-// MotionDanteRebellionCombo1Part1
-
-// MOTION_DANTE_REBELLION_COMBO_1_PART_1 3
-// MOTION_DANTE_REBELLION_COMBO_1_PART_2 4
-// MOTION_DANTE_REBELLION_COMBO_1_PART_3 5
-// MOTION_DANTE_REBELLION_COMBO_2_PART_2 6
-
-
-// using enum MotionDanteRebellion;
-// Combo1Part1
-
-// if (move == Combo1Part1)
-
-
-
-enum Object_
-{
-	Object_Dante,
-	Object_Lady,
-	Object_Rebellion,
-	Object_Rebellion2,
-	Object_ForceEdgeDante,
-	Object_Yamato,
-	Object_ForceEdge,
-	Object_NeroAngeloSword,
-	Object_Count,
-};
-
-
-
-
-
 struct MEMORY_OBJECT
 {
 	byte8 * addr;
@@ -773,30 +506,50 @@ struct MEMORY_OBJECT
 	byte8 padding[4];
 };
 
+#define __DDMK_OBSOLETE__
+#ifndef __DDMK_OBSOLETE__
 
+enum BODY_COUNT_
+{
+	BODY_COUNT_DANTE  = 7,
+	BODY_COUNT_BOB    = 2,
+	BODY_COUNT_LADY   = 1,
+	BODY_COUNT_VERGIL = 4,
+	MAX_BODY_COUNT    = 7,
+};
 
+enum MISSION_
+{
+	MAX_MISSION = 22,
+};
 
+enum COSTUME_BOB_
+{
+	COSTUME_BOB_DEFAULT,
+	MAX_COSTUME_BOB,
+};
 
+enum COSTUME_LADY_
+{
+	COSTUME_LADY_DEFAULT,
+	MAX_COSTUME_LADY,
+};
 
+enum COSTUME_COUNT_
+{
+	COSTUME_COUNT_DANTE  = MAX_COSTUME_DANTE,
+	COSTUME_COUNT_BOB    = MAX_COSTUME_BOB,
+	COSTUME_COUNT_LADY   = MAX_COSTUME_LADY,
+	COSTUME_COUNT_VERGIL = MAX_COSTUME_VERGIL,
+	MAX_COSTUME_COUNT    = MAX_COSTUME_DANTE,
+};
 
+enum WEAPON_COUNT_
+{
+	WEAPON_COUNT_DANTE  = 10,
+	WEAPON_COUNT_BOB    = 1,
+	WEAPON_COUNT_LADY   = 2,
+	WEAPON_COUNT_VERGIL = 3,
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif

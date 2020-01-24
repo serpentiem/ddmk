@@ -182,10 +182,20 @@ void Game_Dante_AirHike_ToggleCoreAbility(bool enable)
 void Game_Dante_CrazyCombo_SetLevelMultiplier(uint8 multiplier)
 {
 	LogFunction();
+
+	// @Todo: The fuck?! Add descriptions!
+
 	Write<uint8>((appBaseAddr + 0x5898DE), multiplier);
 	Write<uint8>((appBaseAddr + 0x58999E), multiplier);
 	Write<uint8>((appBaseAddr + 0x589A5E), multiplier);
+
+	/*
+	dmc3.exe+589AAE
+	*/
+
 }
+
+// @Todo: Move to Init.
 
 void Game_Dante_WeaponSwitchTimeout_Melee_Toggle(float32 var)
 {
