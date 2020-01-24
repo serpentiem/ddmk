@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Config.h"
 
+#include "System/Actor.h"
 #include "System/HUD.h"
 #include "System/State.h"
 
