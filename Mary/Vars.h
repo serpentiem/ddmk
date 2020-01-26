@@ -506,6 +506,132 @@ struct MEMORY_OBJECT
 	byte8 padding[4];
 };
 
+#define _Merge(a, b) a##b
+#define Merge(a, b) _Merge(a, b)
+
+#define _(size) struct { byte8 Merge(padding, __LINE__)[size]; }
+
+#pragma pack(push, 1)
+
+struct MOTION_DATA
+{
+	uint8 index;
+	uint8 group;
+};
+
+struct INPUT_BUFFER
+{
+	_(4);
+	uint8 level;
+	_(7);
+};
+
+struct ACTOR_DATA
+{
+	_(120);
+	uint8 character;
+	_(7);
+	float32 x;
+	float32 y;
+	float32 z;
+	_(52);
+	uint16 direction;
+	_(86);
+	uint8 actor;
+	_(3);
+	bool isDoppelganger;
+	_(3);
+	uint8 visible;
+	_(14207);
+	byte8 * motionArchive[32];
+	_(16);
+	MOTION_DATA motionData[5];
+	_(94);
+	uint8 shadow;
+	_(15);
+	byte32 color;
+	_(980);
+	byte32 motionState1[4];
+	_(80);
+	byte32 motionState2[3];
+	uint8 baseModel;
+	_(3);
+	uint8 baseModelMirror1;
+	_(23);
+	uint8 baseModelMirror2;
+	_(18);
+	bool devil;
+	_(2);
+	uint8 costume;
+	bool specialCostume;
+	_(24);
+	float32 magicPoints;
+	float32 maxMagicPoints;
+	_(228);
+	uint8 move;
+	uint8 lastMove;
+	_(70);
+	byte32 expertise[16];
+	_(192);
+	float32 maxHitPoints;
+	_(44);
+	float32 hitPoints;
+	_(8712);
+	byte8 * targetBaseAddr;
+	_(8);
+	uint8 style;
+	_(31);
+	uint8 styleLevel;
+	_(3);
+	uint8 dashCount;
+	uint8 skyStarCount;
+	uint8 airTrickCount;
+	uint8 trickUpCount;
+	uint8 trickDownCount;
+	bool quicksilver;
+	bool doppelganger;
+	_(1);
+	float32 styleExperience;
+	_(236);
+	bool controlLinkedActor;
+	_(35);
+	byte8 * linkedActorBaseAddr;
+	_(8);
+	uint8 selectedMeleeWeaponVergil;
+	_(4);
+	uint8 activeWeapon;
+	_(2);
+	uint8 selectedMeleeWeapon;
+	_(3);
+	uint8 selectedRangedWeapon;
+	_(3);
+	uint8 equipment[4];
+	_(4);
+	byte8 * weaponMetadata[4];
+	_(8);
+	byte32 weaponFlags[4];
+	_(24);
+	uint8 activeMeleeWeapon;
+	uint8 activeRangedWeapon;
+	_(2);
+	float32 weaponTimer[4];
+	_(12);
+	uint8 styleRank;
+	_(3);
+	float32 styleMeter;
+	_(348);
+	INPUT_BUFFER inputBuffer[58];
+};
+
+#pragma pack(pop)
+
+#undef _
+
+#undef Merge
+#undef _Merge
+
+
+
 #define __DDMK_OBSOLETE__
 #ifndef __DDMK_OBSOLETE__
 

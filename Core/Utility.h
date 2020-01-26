@@ -32,3 +32,8 @@ T Reverse(T * var)
 
 #define PrivateStart namespace {
 #define PrivateEnd }
+
+#ifdef offsetof
+#undef offsetof
+#endif
+#define offsetof(s, m) (uint32)(&(*(s *)0).m)

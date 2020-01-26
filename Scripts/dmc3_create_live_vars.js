@@ -34,6 +34,7 @@ var items =
 	[ "x"                           , 4, false, 0x80  , "Float"         ],
 	[ "y"                           , 4, false, 0x84  , "Float"         ],
 	[ "z"                           , 4, false, 0x88  , "Float"         ],
+	[ "direction"                   , 2, false, 0xC0                    ],
 	[ "actor id"                    , 1, false, 0x118                   ],
 	[ "is doppelganger"             , 1, false, 0x11C                   ],
 	[ "visible"                     , 1, false, 0x120                   ],

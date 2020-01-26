@@ -99,6 +99,7 @@
     <ClCompile Include="..\ImGui\imgui_demo.cpp" />
     <ClCompile Include="..\ImGui\imgui_draw.cpp" />
     <ClCompile Include="..\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Assert.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Cosmetics\Color.cpp" />

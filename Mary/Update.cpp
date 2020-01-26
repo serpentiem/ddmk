@@ -4,20 +4,7 @@ uint64 ticksPerSecond      = 0;
 uint64 ticksPerMillisecond = 0;
 uint64 savedTickCount      = 0;
 
-// uint64 counter = 0;
-
-//void InGameMenuAccess()
-//{
-//	Game_StyleSwitcher_Controller();
-//	Game_ResetMotionState_Controller();
-//	System_HUD_Update();
-//}
-
-// @Todo: Add actor data structs.
-
-
 bool millionStab = false;
-
 
 void VergilMillionStab()
 {
