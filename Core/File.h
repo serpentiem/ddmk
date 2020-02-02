@@ -1,18 +1,19 @@
-
-// @Todo: Add AppendFile.
-
 #pragma once
 #include "DataTypes.h"
 #include "Log.h"
+#include "Memory.h"
 #include "Windows.h"
 
-byte * LoadFile(const char * fileName, uint32 * size = 0, byte * dest = 0);
-
-// @Philosophy: Put destination first.
+byte8 * LoadFile
+(
+	const char * filename,
+	uint32     * size = 0,
+	byte8      * dest = 0
+);
 
 bool SaveFile
 (
-	byte * addr,
-	uint32 size,
-	const char * fileName
+	const char * filename,
+	byte8      * addr,
+	uint32       size
 );

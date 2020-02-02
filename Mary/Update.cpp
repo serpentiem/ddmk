@@ -6,6 +6,10 @@ uint64 savedTickCount      = 0;
 
 bool millionStab = false;
 
+// As soon as millionStab is true, start daemon and check for state.
+
+// Consider all actors for millionStab.
+
 void VergilMillionStab()
 {
 	auto addr = *(byte8 ***)(appBaseAddr + 0xC90E28);
@@ -18,136 +22,58 @@ void VergilMillionStab()
 		return;
 	}
 
-	auto baseAddr = addr[3];
+	ACTOR_DATA * actorData[2] = {};
 
-	auto & motionGroup           = *(uint8  *)(baseAddr + 0x39B3);
-	auto & motionIndex           = *(uint8  *)(baseAddr + 0x39B2);
-	auto & move                  = *(uint8  *)(baseAddr + 0x3FA4);
-	auto & meleeInputBufferLevel = *(uint8  *)(baseAddr + 0x6738);
+	actorData[0] = (ACTOR_DATA *)addr[3];
+	actorData[1] = (ACTOR_DATA *)addr[4];
 
-
-	if (move == 39) // Force Edge Stinger Level 2
+	if (actorData[0]->move != 39)
 	{
-		if (motionGroup == 5)
-		{
-			if (motionIndex == 11)
-			{
-				if (meleeInputBufferLevel >= 6)
-				{
-					Log("Trigger Million Stab!");
-					if (!millionStab)
-					{
-						millionStab = true;
-
-
-						addr[3] = System_Actor_actorBaseAddr[ACTOR_ONE];
-						addr[4] = System_Actor_actorBaseAddr[ACTOR_TWO];
-
-
-
-
-
-
-						baseAddr = addr[3];
-
-
-
-						
-						auto & x1 = *(float32 *)(baseAddr + 0x80);
-						auto & y1 = *(float32 *)(baseAddr + 0x84);
-						auto & z1 = *(float32 *)(baseAddr + 0x88);
-
-						auto & x2 = *(float32 *)(addr[4] + 0x80);
-						auto & y2 = *(float32 *)(addr[4] + 0x84);
-						auto & z2 = *(float32 *)(addr[4] + 0x88);
-
-						auto x = x2;
-						auto y = y2;
-						auto z = z2;
-
-						x2 = x1;
-						y2 = y1;
-						z2 = z1;
-
-						x1 = x;
-						y1 = y;
-						z1 = z;
-
-
-
-						auto & actorId1 = *(uint8 *)(baseAddr + 0x118) = 0;
-						auto & actorId2 = *(uint8 *)(addr[4] + 0x118) = 1;
-
-
-						auto & motionState1          = *(byte32 *)(baseAddr + 0x3E00);
-						auto & motionState2          = *(byte32 *)(baseAddr + 0x3E04);
-						auto & motionState3          = *(byte32 *)(baseAddr + 0x3E08);
-						auto & motionState4          = *(byte32 *)(baseAddr + 0x3E0C);
-						auto & motionState5          = *(byte32 *)(baseAddr + 0x3E60);
-						auto & motionState6          = *(byte32 *)(baseAddr + 0x3E64);
-						auto & motionState7          = *(byte32 *)(baseAddr + 0x3E68);
-						auto & move                  = *(uint8  *)(baseAddr + 0x3FA4);
-
-
-						motionState1 = 0x11;
-						motionState2 = 1;
-						motionState3 = 0x11;
-						motionState4 = 0x11;
-
-						motionState5 = 0x401;
-						motionState6 = 0x10001;
-						motionState7 = 0x10001;
-
-						move = 14;
-
-
-
-
-
-
-
-
-
-
-
-					}
-
-
-
-
-
-
-
-
-
-
-				}
-
-
-
-
-
-
-			}
-		}
-
-
-
-
+		return;
+	}
+	if (actorData[0]->motionData[1].group != 5)
+	{
+		return;
+	}
+	if (actorData[0]->motionData[1].index != 11)
+	{
+		return;
+	}
+	if (actorData[0]->inputBuffer[16].level < 6)
+	{
+		return;
 	}
 
+	float32 x = actorData[0]->x;
+	float32 y = actorData[0]->y;
+	float32 z = actorData[0]->z;
+	uint16 direction = actorData[0]->direction;
 
+	actorData[0]->x = actorData[1]->x;
+	actorData[0]->y = actorData[1]->y;
+	actorData[0]->z = actorData[1]->z;
+	actorData[0]->direction = actorData[1]->direction;
 
+	actorData[1]->x = x;
+	actorData[1]->y = y;
+	actorData[1]->z = z;
+	actorData[1]->direction = direction;
 
+	actorData[1]->motionState1[0] = 0x11;
+	actorData[1]->motionState1[1] = 1;
+	actorData[1]->motionState1[2] = 0x11;
+	actorData[1]->motionState1[3] = 0x11;
 
+	actorData[1]->motionState2[0] = 0x401;
+	actorData[1]->motionState2[1] = 0x10001;
+	actorData[1]->motionState2[2] = 0x10001;
 
+	actorData[1]->move = 14;
 
+	auto baseAddr = addr[3];
 
-
-
-
-
-
+	addr[3] = addr[4];
+	addr[4] = baseAddr;
 }
 
 

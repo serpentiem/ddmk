@@ -6,6 +6,8 @@ void System_Graphics_UpdateFrameRate(CONFIG & config)
 {
 	LogFunction();
 
+	// @Research: Actually seems to be 59.94 like on PS2.
+
 	System_Graphics_frameRateMultiplier = ((float32)60 / (float32)config.System.Graphics.frameRate);
 
 	auto addr = (float64 *)(appBaseAddr + 0x505E38);

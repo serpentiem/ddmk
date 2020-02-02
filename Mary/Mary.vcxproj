@@ -130,7 +130,6 @@
     <ClCompile Include="Speed.cpp" />
     <ClCompile Include="System\Actor.cpp" />
     <ClCompile Include="System\Animation.cpp" />
-    <ClCompile Include="System\Cache.cpp" />
     <ClCompile Include="System\Camera.cpp" />
     <ClCompile Include="System\File.cpp" />
     <ClCompile Include="System\Graphics.cpp" />
@@ -195,7 +194,6 @@
     <ClInclude Include="Speed.h" />
     <ClInclude Include="System\Actor.h" />
     <ClInclude Include="System\Animation.h" />
-    <ClInclude Include="System\Cache.h" />
     <ClInclude Include="System\Camera.h" />
     <ClInclude Include="System\File.h" />
     <ClInclude Include="System\Graphics.h" />

@@ -5,7 +5,11 @@ char Config_path[64];
 void SaveConfig()
 {
 	LogFunction();
-	SaveFile(Config_addr, Config_size, Config_path);
+	//SaveFile(Config_addr, Config_size, Config_path);
+
+
+	SaveFile(Config_path, Config_addr, Config_size);
+
 }
 
 void LoadConfig()

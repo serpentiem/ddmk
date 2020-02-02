@@ -6,6 +6,8 @@
 extern bool System_Input_enableRangeExtension;
 extern bool System_Input_enableMultiplayerFixes;
 
+// @Todo: Change to controller and add actor input one as well.
+
 inline byte16 System_Input_GetButtonState(uint8 actor)
 {
 	auto & gamepad = ((CAPCOM_GAMEPAD *)(appBaseAddr + 0xD54A10 + 0x550))[actor];
@@ -17,6 +19,8 @@ inline byte16 System_Input_GetBinding(uint8 index)
 	auto bindings = (byte16 *)(appBaseAddr + 0xD6CE88);
 	return bindings[index];
 }
+
+
 
 void System_Input_Init();
 void System_Input_ToggleRangeExtension(bool enable);

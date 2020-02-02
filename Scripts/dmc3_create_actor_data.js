@@ -101,6 +101,7 @@ var items =
 	[ "styleRank"                , "uint8"       , 1 , 0x6510 ],
 	[ "styleMeter"               , "float32"     , 1 , 0x6514 ],
 	[ "inputBuffer"              , "INPUT_BUFFER", 58, 0x6674 ],
+	[ "buttonInput"              , "byte16"      , 4 , 0x74E0 ],
 ];
 
 var c = "";
@@ -136,7 +137,7 @@ for (var index = 0; index < items.length; index++)
 	{
 		c += "[" + count.toString() + "]";
 	}
-	c += ";\n";
+	c += "; // 0x" + off.toString(16).toUpperCase() + "\n";
 	
 	c_assert += "static_assert(offsetof(ACTOR_DATA, " + name + ") == 0x" + off.toString(16).toUpperCase() + ");\n";
 	

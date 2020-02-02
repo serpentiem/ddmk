@@ -9,6 +9,12 @@ float32 hexstrtof(const char * str);
 
 #define countof(var) (sizeof(var) / sizeof(var[0]))
 
+//template <typename T>
+//constexpr uint32 countof(T & var)
+//{
+//	return (uint32)(sizeof(var) / sizeof(var[0]));
+//}
+
 template <class T, T _value>
 struct integral_constant
 {

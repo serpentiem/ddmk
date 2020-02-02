@@ -4,6 +4,9 @@
 // @Todo: Update.
 
 
+// @Todo: Should really be motion.
+
+
 extern bool Game_Dante_Rebellion_quickDrive;
 
 static uint32 PlayAnimation(byte * baseAddr, uint8 file, uint8 index)
@@ -22,7 +25,8 @@ static uint32 PlayAnimation(byte * baseAddr, uint8 file, uint8 index)
 		return 0;
 	}
 	byte ** motionAddr = (byte **)(baseAddr + 0x38A0);
-	motionAddr[MOT_DANTE_REBELLION] = System_Cache_file[pl000_00_3];
+	//motionAddr[MOT_DANTE_REBELLION] = System_Cache_file[pl000_00_3];
+	motionAddr[MOT_DANTE_REBELLION] = System_File_cacheFile[pl000_00_3];
 	if (!Game_Dante_Rebellion_quickDrive)
 	{
 		return 0;

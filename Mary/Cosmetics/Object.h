@@ -4,6 +4,6 @@
 #include "../Config.h"
 #include "../Vars.h"
 
-#include "../System/Cache.h"
+#include "../System/File.h"
 
 void Cosmetics_Object_Init();

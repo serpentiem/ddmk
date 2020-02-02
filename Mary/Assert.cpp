@@ -11,7 +11,7 @@ static_assert(offsetof(ACTOR_DATA, x) == 0x80);
 static_assert(offsetof(ACTOR_DATA, y) == 0x84);
 static_assert(offsetof(ACTOR_DATA, z) == 0x88);
 static_assert(offsetof(ACTOR_DATA, direction) == 0xC0);
-static_assert(offsetof(ACTOR_DATA, actor) == 0x118);
+static_assert(offsetof(ACTOR_DATA, actorId) == 0x118);
 static_assert(offsetof(ACTOR_DATA, isDoppelganger) == 0x11C);
 static_assert(offsetof(ACTOR_DATA, visible) == 0x120);
 static_assert(offsetof(ACTOR_DATA, motionArchive) == 0x38A0);

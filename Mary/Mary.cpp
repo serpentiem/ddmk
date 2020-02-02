@@ -9,7 +9,7 @@
 
 #include "System/Actor.h"
 #include "System/Animation.h"
-#include "System/Cache.h"
+//#include "System/Cache.h"
 #include "System/Camera.h"
 #include "System/File.h"
 #include "System/Graphics.h"
@@ -62,6 +62,20 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 			return 0;
 		}
 
+
+
+		vp_memset((appBaseAddr + 0x5505B5), 0, 23); // Remove FMODGetCodecDescription label.
+
+
+
+
+
+
+
+
+
+
+
 		Event_Init();
 		Event_ToggleSkipIntro    (Config.System.Event.skipIntro    );
 		Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
@@ -83,8 +97,21 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		// Order is required.
 		System_Memory_Init();
 		System_Memory_ToggleExtendVectors(true);
+
+
+
+
 		System_File_Init();
-		System_Cache_Init();
+		//System_Cache_Init();
+
+
+
+
+
+
+
+
+
 
 		System_Camera_ToggleInvertX(Config.System.Camera.invertX);
 		System_Graphics_UpdateFrameRate(Config);
@@ -94,8 +121,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		//System_Input_ToggleRangeExtension  (Config.Game.Multiplayer.enable);
 		//System_Input_ToggleMultiplayerFixes(Config.Game.Multiplayer.enable);
 
-		//System_Input_ToggleRangeExtension  (true);
-		//System_Input_ToggleMultiplayerFixes(true);
+		System_Input_ToggleRangeExtension  (true);
+		System_Input_ToggleMultiplayerFixes(true);
 
 
 

@@ -1,4 +1,15 @@
 
+
+// @Todo: Create Archive module.
+// @Todo: Create Edit and Restore functions.
+// @Todo: Merge with Weapon module.
+// @Todo: Create session data struct.
+// @Todo: 
+// @Todo: 
+// @Todo: 
+
+
+
 // @Todo: Auto vars.
 
 #include "Actor.h"
@@ -30,125 +41,106 @@ typedef byte8 *(* InternalCreateActor_t)(uint8 character, uint8 actor, bool isDo
 
 InternalCreateActor_t InternalCreateActor = 0;
 
-struct FileItemHelper
-{
-	uint16 fileItemId;
-	uint16 stringItemId;
-	uint16 cacheFileId;
-	void Update()
-	{
-		FILE_ITEM   * fileItemAddr   = (FILE_ITEM   *)(appBaseAddr + 0xC99D30); // dmc3.exe+1DF64B - 48 8D 0D DEA6AB00 - lea rcx,[dmc3.exe+C99D30]
-		STRING_ITEM * stringItemAddr = (STRING_ITEM *)(appBaseAddr + 0x5B08C0); // dmc3.exe+1B8F9A - 48 8D 05 CF793F00 - lea rax,[dmc3.exe+5B0970]
 
-		FILE_ITEM   & fileItem   = fileItemAddr[fileItemId];
-		STRING_ITEM & stringItem = stringItemAddr[stringItemId];
 
-		memset(&fileItem, 0, sizeof(FILE_ITEM));
 
-		fileItem.status     = FILE_ITEM_READY;
-		fileItem.stringItem = &stringItem;
-		fileItem.file       = System_Cache_file[cacheFileId];
-	};
-};
+// FILE_ITEM
 
-FileItemHelper fileItemHelperDante[] =
-{
-	{ 0  , 0 , pl000 },
-	{ 200, 13, pl005 },
-	{ 201, 14, pl006 },
-	{ 202, 15, pl007 },
-	{ 203, 16, pl008 },
-	{ 204, 17, pl009 },
-	{ 205, 18, pl017 },
-};
 
-FileItemHelper fileItemHelperBob[] =
-{
-	{ 1  , 6 , pl001 },
-	{ 207, 19, pl010 },
-};
+// UpdateFileItem(FILE_ITEM ** fileItem, STRING_ITEM ** stringItem
 
-FileItemHelper fileItemHelperLady[] =
-{
-	{ 2, 7, pl002 },
-};
 
-FileItemHelper fileItemHelperVergil[] =
-{
-	{ 3  , 8 , pl021 },
-	{ 221, 21, pl010 },
-	{ 222, 22, pl014 },
-	{ 223, 23, pl025 },
-};
+//
+//
+//struct FileItemHelper
+//{
+//	uint16 fileItemId;
+//	uint16 stringItemId;
+//	uint16 cacheFileId;
+//	void Update()
+//	{
+//		FILE_ITEM   * fileItemAddr   = (FILE_ITEM   *)(appBaseAddr + 0xC99D30); // dmc3.exe+1DF64B - 48 8D 0D DEA6AB00 - lea rcx,[dmc3.exe+C99D30]
+//		STRING_ITEM * stringItemAddr = (STRING_ITEM *)(appBaseAddr + 0x5B08C0); // dmc3.exe+1B8F9A - 48 8D 05 CF793F00 - lea rax,[dmc3.exe+5B0970]
+//
+//		FILE_ITEM   & fileItem   = fileItemAddr[fileItemId];
+//		STRING_ITEM & stringItem = stringItemAddr[stringItemId];
+//
+//		memset(&fileItem, 0, sizeof(FILE_ITEM));
+//
+//		fileItem.status     = FILE_ITEM_READY;
+//		fileItem.stringItem = &stringItem;
+//		fileItem.file       = System_Cache_file[cacheFileId];
+//	};
+//};
 
-FileItemHelper * fileItemHelper[] =
-{
-	fileItemHelperDante,
-	fileItemHelperBob,
-	fileItemHelperLady,
-	fileItemHelperVergil,
-};
 
-uint8 fileItemHelperCount[] =
-{
-	countof(fileItemHelperDante),
-	countof(fileItemHelperBob),
-	countof(fileItemHelperLady),
-	countof(fileItemHelperVergil),
-};
 
-struct CostumeHelper
-{
-	uint16 stringItemId;
-	uint16 cacheFileId;
-};
+// Merge all of them.
 
-CostumeHelper costumeHelperDante[] =
-{
-	{ 0, pl000 },
-	{ 1, pl011 },
-	{ 2, pl013 },
-	{ 3, pl015 },
-	{ 4, pl016 },
-	{ 5, pl018 },
-	{ 2, pl013 },
-	{ 5, pl018 },
-};
+// OHHHHHH
 
-CostumeHelper costumeHelperBob[] =
-{
-	{ 6, pl001 },
-};
+// just put it before create main actor
 
-CostumeHelper costumeHelperLady[] =
-{
-	{ 7, pl002 },
-};
+// put that shit in event
 
-CostumeHelper costumeHelperVergil[] =
-{
-	{ 8 , pl021 },
-	{ 9 , pl023 },
-	{ 8 , pl021 },
-	{ 10, pl026 },
-	{ 10, pl026 },
-};
 
-CostumeHelper * costumeHelper[] =
-{
-	costumeHelperDante,
-	costumeHelperBob,
-	costumeHelperLady,
-	costumeHelperVergil,
-};
+//
+//
+//struct CostumeHelper
+//{
+//	uint16 stringItemId;
+//	uint16 cacheFileId;
+//};
+//
+//CostumeHelper costumeHelperDante[] =
+//{
+//	{ 0, pl000 },
+//	{ 1, pl011 },
+//	{ 2, pl013 },
+//	{ 3, pl015 },
+//	{ 4, pl016 },
+//	{ 5, pl018 },
+//	{ 2, pl013 },
+//	{ 5, pl018 },
+//};
+//
+//CostumeHelper costumeHelperBob[] =
+//{
+//	{ 6, pl001 },
+//};
+//
+//CostumeHelper costumeHelperLady[] =
+//{
+//	{ 7, pl002 },
+//};
+//
+//CostumeHelper costumeHelperVergil[] =
+//{
+//	{ 8 , pl021 },
+//	{ 9 , pl023 },
+//	{ 8 , pl021 },
+//	{ 10, pl026 },
+//	{ 10, pl026 },
+//};
+//
+//CostumeHelper * costumeHelper[] =
+//{
+//	costumeHelperDante,
+//	costumeHelperBob,
+//	costumeHelperLady,
+//	costumeHelperVergil,
+//};
+//
+//uint8 costumeHelperCount[] =
+//{
+//	countof(costumeHelperDante),
+//	countof(costumeHelperBob),
+//	countof(costumeHelperLady),
+//	countof(costumeHelperVergil),
+//};
 
-uint8 costumeHelperCount[] =
-{
-	countof(costumeHelperDante),
-	countof(costumeHelperBob),
-	countof(costumeHelperLady),
-	countof(costumeHelperVergil),
-};
+
+
 
 struct MotionHelper
 {
@@ -235,6 +227,8 @@ uint8 motionHelperCount[] =
 
 PrivateEnd;
 
+// @Todo: Obsolete.
+
 uint8 System_Actor_GetActorId(byte8 * baseAddr)
 {
 	for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
@@ -301,26 +295,26 @@ void CreateActorOne(byte8 * baseAddr)
 	CreateActors();
 }
 
-void UpdateCostume(byte8 * baseAddr)
-{
-	uint8 actor = System_Actor_GetActorId(baseAddr);
-	uint8 character = *(uint8 *)(baseAddr + 0x78);
-	if (character >= MAX_CHAR)
-	{
-		character = 0;
-	}
-	uint8 & costume = *(uint8 *)(baseAddr + 0x3E9E);
-	if (Config.Game.Multiplayer.enable && (actor != ACTOR_ONE))
-	{
-		costume = Config.Game.Multiplayer.costume[(actor - 1)];
-	}
-	if (costume >= costumeHelperCount[character])
-	{
-		costume = 0;
-	}
-	fileItemHelper[character][0].stringItemId = costumeHelper[character][costume].stringItemId;
-	fileItemHelper[character][0].cacheFileId  = costumeHelper[character][costume].cacheFileId;
-}
+//void UpdateCostume(byte8 * baseAddr)
+//{
+//	uint8 actor = System_Actor_GetActorId(baseAddr);
+//	uint8 character = *(uint8 *)(baseAddr + 0x78);
+//	if (character >= MAX_CHAR)
+//	{
+//		character = 0;
+//	}
+//	uint8 & costume = *(uint8 *)(baseAddr + 0x3E9E);
+//	if (Config.Game.Multiplayer.enable && (actor != ACTOR_ONE))
+//	{
+//		costume = Config.Game.Multiplayer.costume[(actor - 1)];
+//	}
+//	if (costume >= costumeHelperCount[character])
+//	{
+//		costume = 0;
+//	}
+//	fileItemHelper[character][0].stringItemId = costumeHelper[character][costume].stringItemId;
+//	fileItemHelper[character][0].cacheFileId  = costumeHelper[character][costume].cacheFileId;
+//}
 
 void UpdateBaseAddress(byte8 * baseAddr)
 {
@@ -351,20 +345,20 @@ void UpdateActor(byte8 * baseAddr)
 		character = 0;
 	}
 
-	// Update File Items
-	{
-		UpdateCostume(baseAddr);
-		auto & count = fileItemHelperCount[character];
-		for (uint8 index = 0; index < count; index++)
-		{
-			fileItemHelper[character][index].Update();
-		}
-	}
+	//// Update File Items
+	//{
+	//	UpdateCostume(baseAddr);
+	//	auto & count = fileItemHelperCount[character];
+	//	for (uint8 index = 0; index < count; index++)
+	//	{
+	//		fileItemHelper[character][index].Update();
+	//	}
+	//}
 
-	UpdateBaseAddress(baseAddr);
+	//UpdateBaseAddress(baseAddr);
 
 
-
+	System_File_UpdateFileItems((ACTOR_DATA *)baseAddr);
 
 
 
@@ -395,7 +389,11 @@ void UpdateMotion(byte8 * baseAddr)
 		auto & motionId    = motionHelper[character][index].motionId;
 		auto & cacheFileId = motionHelper[character][index].cacheFileId;
 
-		motion[motionId] = System_Cache_file[cacheFileId];
+		//motion[motionId] = System_Cache_file[cacheFileId];
+
+		motion[motionId] = System_File_cacheFile[cacheFileId];
+
+
 	}
 }
 
@@ -470,6 +468,37 @@ PrivateStart;
 void UpdateActorAttributes(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
+
+
+
+	//auto & ad = (*(ACTOR_DATA *)baseAddr);
+	//auto & ad = *(ACTOR_DATA *)baseAddr;
+
+
+	//auto & ad = *((ACTOR_DATA *)baseAddr);
+
+	//auto & ad = *(ACTOR_DATA *)baseAddr;
+
+	//ad.isDoppelganger = true;
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	auto & character      = *(uint8  *)(baseAddr + 0x78  );
 	auto & isDoppelganger = *(uint32 *)(baseAddr + 0x11C );
 	auto & visible        = *(uint32 *)(baseAddr + 0x120 );
@@ -497,11 +526,22 @@ PrivateEnd;
 
 
 
+// Modify
+// Restore
+// Update
+// Edit
 
 
 
 
 // @Research: Clarify. Does this really create the actor or does it create an additional actor?
+
+// Yup, definitely crap.
+
+// Nope, both.
+
+
+
 
 void System_Actor_Init()
 {
@@ -516,26 +556,32 @@ void System_Actor_Init()
 			0x48, 0x0F, 0xB6, 0xF1,                                     //movzx rsi,cl
 			0x48, 0x0F, 0xB6, 0xFA,                                     //movzx rdi,dl
 			0x4D, 0x0F, 0xB6, 0xE0,                                     //movzx r12,r8l
+
 			0x48, 0x8B, 0x4C, 0xFB, 0xF8,                               //mov rcx,[rbx+rdi*8-08]
 			0x48, 0x85, 0xC9,                                           //test rcx,rcx
 			0x74, 0x57,                                                 //je short
+
 			0x48, 0x8D, 0x89, 0x10, 0x64, 0x00, 0x00,                   //lea rcx,[rcx+00006410]
 			0xBA, 0x3C, 0x00, 0x00, 0x00,                               //mov edx,0000003C
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+2EE060
+			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+2EE060 // __NOPE__
+
 			0x8B, 0xCE,                                                 //mov ecx,esi
 			0x8B, 0xD7,                                                 //mov edx,edi
 			0x45, 0x8B, 0xC4,                                           //mov r8d,r12d
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+1DE820
+			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+1DE820 // __TRUE__ create actor object
 			0x4C, 0x8B, 0xE8,                                           //mov r13,rax
 			0x48, 0x89, 0x04, 0xFB,                                     //mov [rbx+rdi*8],rax
+
 			0x48, 0x8B, 0xCB,                                           //mov rcx,rbx
 			0x8B, 0xD7,                                                 //mov edx,edi
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+1BB390
+			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+1BB390 // __NOPE__
+
 			0x49, 0x8B, 0xCD,                                           //mov rcx,r13
 			0x48, 0x8B, 0x15, 0x00, 0x00, 0x00, 0x00,                   //mov rdx,[dmc3.exe+C90E28]
 			0x48, 0x8B, 0x52, 0x08,                                     //mov rdx,[rdx+08]
 			0x48, 0x81, 0xC2, 0x6C, 0x01, 0x00, 0x00,                   //add rdx,0000016C
-			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+1DF240
+			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+1DF240 // __TRUE__ register actor files
+
 			0x48, 0x8B, 0x4C, 0xFB, 0xF8,                               //mov rcx,[rbx+rdi*8-08]
 			0x4C, 0x89, 0xA9, 0x78, 0x64, 0x00, 0x00,                   //mov [rcx+00006478],r13
 			0x49, 0x8B, 0xC5,                                           //mov rax,r13
@@ -548,6 +594,9 @@ void System_Actor_Init()
 		WriteCall((func.sect1 + 0x50), (appBaseAddr + 0x1BB390));
 		WriteAddress((func.sect1 + 0x58), (appBaseAddr + 0xC90E28), 7);
 		WriteCall((func.sect1 + 0x6A), (appBaseAddr + 0x1DF240));
+
+		// More like queue an additional actor.
+
 		InternalCreateActor = (InternalCreateActor_t)func.addr;
 	}
 	{
@@ -665,10 +714,30 @@ void System_Actor_ToggleArrayExtension(bool enable)
 		Write<byte8>((appBaseAddr + 0x1BA5CB), 0x9A);
 		WriteJump((appBaseAddr + 0x1BC0C5), OnUpdate[1]);
 		// OnEvent
+
+
+		// What event? Sheesh.
+
+		// @Todo: Put into on demand edits.
+
+
+		// Actor Heap Stuff
+
 		Write<byte8>((appBaseAddr + 0x1BB397), 0x1C);
 		Write<byte8>((appBaseAddr + 0x1BB399), 0x90);
+
+
+
 		Write<byte16>((appBaseAddr + 0x1BB408), 0x9003);
+
+
+
 		Write<byte16>((appBaseAddr + 0x1BB457), 0x9003);
+
+
+
+
+
 	}
 	else
 	{

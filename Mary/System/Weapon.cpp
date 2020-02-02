@@ -3,7 +3,20 @@
 // @Research: Move sword model logic to Cosmetics and add Yamato.
 
 
+
+// constexpr stringItemOff[] =
+// {
+// 0x4EB278, // font\lei20_4c.bin
+// };
+
+
+
+
 #include "Weapon.h"
+
+
+
+
 
 
 
@@ -22,88 +35,92 @@ extern uint8 Game_WeaponSwitcher_Ranged_index;
 
 PrivateStart;
 
-struct FileItemHelper
-{
-	uint16 fileItemId;
-	uint16 stringItemId;
-	uint16 cacheFileId;
-	void Update()
-	{
-		FILE_ITEM   * fileItemAddr   = (FILE_ITEM   *)(appBaseAddr + 0xC99D30); // dmc3.exe+1DF696 - 48 8D 0D 93A6AB00 - lea rcx,[dmc3.exe+C99D30]
-		STRING_ITEM * stringItemAddr = (STRING_ITEM *)(appBaseAddr + 0x5B0F50); // dmc3.exe+1B922E - 48 8D 05 5B7E3F00 - lea rax,[dmc3.exe+5B1090]
-
-		FILE_ITEM   & fileItem   = fileItemAddr[fileItemId];
-		STRING_ITEM & stringItem = stringItemAddr[stringItemId];
-
-		memset(&fileItem, 0, sizeof(FILE_ITEM));
-
-		fileItem.status     = FILE_ITEM_READY;
-		fileItem.stringItem = &stringItem;
-		fileItem.file       = System_Cache_file[cacheFileId];
-	};
-};
-
-FileItemHelper fileItemHelperDante[] =
-{
-	{ 140, 0, plwp_sword    },
-	{ 141, 1, plwp_nunchaku },
-	{ 142, 2, plwp_2sword   },
-	{ 143, 3, plwp_guitar   },
-	{ 144, 4, plwp_fight    },
-	{ 145, 5, plwp_gun      },
-	{ 146, 6, plwp_shotgun  },
-	{ 147, 7, plwp_laser    },
-	{ 148, 8, plwp_rifle    },
-	{ 149, 9, plwp_ladygun  },
-};
-
-FileItemHelper fileItemHelperBob[] =
-{
-	{ 169, 14, plwp_vergilsword },
-};
-
-FileItemHelper fileItemHelperLady[] =
-{
-	{ 179, 9 , plwp_ladygun  },
-	{ 180, 10, plwp_ladygun1 },
-};
-
-FileItemHelper fileItemHelperVergil[] =
-{
-	{ 196, 11, plwp_newvergilsword },
-	{ 189, 17, plwp_newvergilfight },
-	{ 198, 13, plwp_forceedge      },
-	{ 187, 18, plwp_nerosword      },
-};
-
-FileItemHelper * fileItemHelper[] =
-{
-	fileItemHelperDante,
-	fileItemHelperBob,
-	fileItemHelperLady,
-	fileItemHelperVergil,
-};
-
-uint8 fileItemHelperCount[] =
-{
-	countof(fileItemHelperDante),
-	countof(fileItemHelperBob),
-	countof(fileItemHelperLady),
-	countof(fileItemHelperVergil),
-};
-
-struct SwordHelper
-{
-	uint16 stringItemId;
-	uint16 cacheFileId;
-};
-
-SwordHelper swordHelper[] =
-{
-	{ 0 , plwp_sword  },
-	{ 15, plwp_sword2 },
-	{ 16, plwp_sword3 },
-};
+//struct FileItemHelper
+//{
+//	uint16 fileItemId;
+//	uint16 stringItemId;
+//	uint16 cacheFileId;
+//	void Update()
+//	{
+//		FILE_ITEM   * fileItemAddr   = (FILE_ITEM   *)(appBaseAddr + 0xC99D30); // dmc3.exe+1DF696 - 48 8D 0D 93A6AB00 - lea rcx,[dmc3.exe+C99D30]
+//
+//
+//
+//
+//		STRING_ITEM * stringItemAddr = (STRING_ITEM *)(appBaseAddr + 0x5B0F50); // dmc3.exe+1B922E - 48 8D 05 5B7E3F00 - lea rax,[dmc3.exe+5B1090]
+//
+//		FILE_ITEM   & fileItem   = fileItemAddr[fileItemId];
+//		STRING_ITEM & stringItem = stringItemAddr[stringItemId];
+//
+//		memset(&fileItem, 0, sizeof(FILE_ITEM));
+//
+//		fileItem.status     = FILE_ITEM_READY;
+//		fileItem.stringItem = &stringItem;
+//		fileItem.file       = System_Cache_file[cacheFileId];
+//	};
+//};
+//
+//FileItemHelper fileItemHelperDante[] =
+//{
+//	{ 140, 0, plwp_sword    },
+//	{ 141, 1, plwp_nunchaku },
+//	{ 142, 2, plwp_2sword   },
+//	{ 143, 3, plwp_guitar   },
+//	{ 144, 4, plwp_fight    },
+//	{ 145, 5, plwp_gun      },
+//	{ 146, 6, plwp_shotgun  },
+//	{ 147, 7, plwp_laser    },
+//	{ 148, 8, plwp_rifle    },
+//	{ 149, 9, plwp_ladygun  },
+//};
+//
+//FileItemHelper fileItemHelperBob[] =
+//{
+//	{ 169, 14, plwp_vergilsword },
+//};
+//
+//FileItemHelper fileItemHelperLady[] =
+//{
+//	{ 179, 9 , plwp_ladygun  },
+//	{ 180, 10, plwp_ladygun1 },
+//};
+//
+//FileItemHelper fileItemHelperVergil[] =
+//{
+//	{ 196, 11, plwp_newvergilsword },
+//	{ 189, 17, plwp_newvergilfight },
+//	{ 198, 13, plwp_forceedge      },
+//	{ 187, 18, plwp_nerosword      },
+//};
+//
+//FileItemHelper * fileItemHelper[] =
+//{
+//	fileItemHelperDante,
+//	fileItemHelperBob,
+//	fileItemHelperLady,
+//	fileItemHelperVergil,
+//};
+//
+//uint8 fileItemHelperCount[] =
+//{
+//	countof(fileItemHelperDante),
+//	countof(fileItemHelperBob),
+//	countof(fileItemHelperLady),
+//	countof(fileItemHelperVergil),
+//};
+//
+//struct SwordHelper
+//{
+//	uint16 stringItemId;
+//	uint16 cacheFileId;
+//};
+//
+//SwordHelper swordHelper[] =
+//{
+//	{ 0 , plwp_sword  },
+//	{ 15, plwp_sword2 },
+//	{ 16, plwp_sword3 },
+//};
 
 typedef byte8 *(* RegisterWeapon_t)(byte8 *);
 
@@ -195,40 +212,40 @@ byte8 * IsWeaponReadyArtemis   = 0;
 byte8 * Dante_Melee_SetWeaponProxy  = 0;
 byte8 * Dante_Ranged_SetWeaponProxy = 0;
 
-void Dante_UpdateSword(byte8 * baseAddr)
-{
-	//auto data = fileItemHelperDante;
-	uint8 sword = 0;
-
-	bool unlockDevilTrigger = *(bool *)(appBaseAddr + 0xC8F250 + 0xD1);
-	uint8 costume = *(uint8 *)(baseAddr + 0x3E9E);
-
-	// @Todo: Should be in Cosmetics.
-
-	if (Config.Game.WeaponSwitcher.enable && (Config.Game.WeaponSwitcher.sword != 0))
-	{
-		sword = (Config.Game.WeaponSwitcher.sword - 1);
-	}
-	else
-	{
-		if (unlockDevilTrigger)
-		{
-			sword = 1;
-		}
-		switch (costume)
-		{
-		case COSTUME_DANTE_DMC1:
-		case COSTUME_DANTE_DMC1_COATLESS:
-		case COSTUME_DANTE_SPARDA:
-		case COSTUME_DANTE_SPARDA_INFINITE_MP:
-			sword = 2;
-			break;
-		}
-	}
-
-	fileItemHelperDante[0].stringItemId = swordHelper[sword].stringItemId;
-	fileItemHelperDante[0].cacheFileId  = swordHelper[sword].cacheFileId;
-}
+//void Dante_UpdateSword(byte8 * baseAddr)
+//{
+//	//auto data = fileItemHelperDante;
+//	uint8 sword = 0;
+//
+//	bool unlockDevilTrigger = *(bool *)(appBaseAddr + 0xC8F250 + 0xD1);
+//	uint8 costume = *(uint8 *)(baseAddr + 0x3E9E);
+//
+//	// @Todo: Should be in Cosmetics.
+//
+//	if (Config.Game.WeaponSwitcher.enable && (Config.Game.WeaponSwitcher.sword != 0))
+//	{
+//		sword = (Config.Game.WeaponSwitcher.sword - 1);
+//	}
+//	else
+//	{
+//		if (unlockDevilTrigger)
+//		{
+//			sword = 1;
+//		}
+//		switch (costume)
+//		{
+//		case COSTUME_DANTE_DMC1:
+//		case COSTUME_DANTE_DMC1_COATLESS:
+//		case COSTUME_DANTE_SPARDA:
+//		case COSTUME_DANTE_SPARDA_INFINITE_MP:
+//			sword = 2;
+//			break;
+//		}
+//	}
+//
+//	fileItemHelperDante[0].stringItemId = swordHelper[sword].stringItemId;
+//	fileItemHelperDante[0].cacheFileId  = swordHelper[sword].cacheFileId;
+//}
 
 PrivateEnd;
 
@@ -277,18 +294,18 @@ void UpdateWeapon(byte8 * baseAddr)
 		character = 0;
 	}
 
-	// Update File Items
-	{
-		if (character == CHAR_DANTE)
-		{
-			Dante_UpdateSword(baseAddr);
-		}
-		auto & count = fileItemHelperCount[character];
-		for (uint8 index = 0; index < count; index++)
-		{
-			fileItemHelper[character][index].Update();
-		}
-	}
+	//// Update File Items
+	//{
+	//	if (character == CHAR_DANTE)
+	//	{
+	//		Dante_UpdateSword(baseAddr);
+	//	}
+	//	auto & count = fileItemHelperCount[character];
+	//	for (uint8 index = 0; index < count; index++)
+	//	{
+	//		fileItemHelper[character][index].Update();
+	//	}
+	//}
 
 	// Register Weapons
 	{
@@ -309,6 +326,10 @@ void UpdateWeapon(byte8 * baseAddr)
 	{
 		if ((character == CHAR_DANTE) && Config.Game.WeaponSwitcher.enable)
 		{
+
+			// @Todo: Should be 8 due to padding.
+			// @Research: Extension.
+
 			memset(equipment, 0xFF, 4);
 			memset((equipment + 4), 0, 4);
 			equipment[selectedMeleeWeapon ] = Config.Game.WeaponSwitcher.Melee.weapon [Game_WeaponSwitcher_Melee_index ];

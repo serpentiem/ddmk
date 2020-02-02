@@ -1,59 +1,71 @@
 #include "File.h"
 
-// @Todo: Types.
-
-
-byte * LoadFile(const char * fileName, uint32 * size, byte * dest)
+byte8 * LoadFile
+(
+	const char * filename,
+	uint32     * size,
+	byte8      * dest
+)
 {
-	byte * addr = dest;
-	dword error = 0;
+	byte8 * addr = dest;
+	HANDLE file = 0;
+	BY_HANDLE_FILE_INFORMATION fi = {};
+	uint32 bytesRead = 0;
+	byte32 error = 0;
+
 	SetLastError(0);
-	HANDLE file = CreateFileA(fileName, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	file = CreateFileA(filename, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	error = GetLastError();
 	if (file == INVALID_HANDLE_VALUE)
 	{
-		Log("CreateFile failed. %s error %X", fileName, error);
+		Log("CreateFile failed. %X %s", error, filename);
 		return 0;
 	}
-	BY_HANDLE_FILE_INFORMATION fi = {};
+
 	GetFileInformationByHandle(file, &fi);
-	SetLastError(0);
+
 	if (!addr)
 	{
-		// @Todo: Create custom allocator.
-		addr = (byte *)VirtualAlloc(0, fi.nFileSizeLow, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-		error = GetLastError();
+		addr = Alloc(fi.nFileSizeLow);
 		if (!addr)
 		{
-			Log("VirtualAlloc failed. error %X", error);
+			Log("Alloc failed.");
 			return 0;
 		}
 	}
-	dword bytesRead = 0;
-	OVERLAPPED overlap = {};
-	ReadFile(file, addr, fi.nFileSizeLow, &bytesRead, &overlap);
+	ReadFile(file, addr, fi.nFileSizeLow, &bytesRead, 0);
 	CloseHandle(file);
+
 	if (size)
 	{
 		*size = fi.nFileSizeLow;
 	}
+
 	return addr;
 }
 
-bool SaveFile(byte * addr, uint32 size, const char * fileName)
+bool SaveFile
+(
+	const char * filename,
+	byte8      * addr,
+	uint32       size
+)
 {
-	dword error = 0;
+	HANDLE file = 0;
+	uint32 bytesWritten = 0;
+	byte32 error = 0;
+
 	SetLastError(0);
-	HANDLE file = CreateFileA(fileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+	file = CreateFileA(filename, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 	error = GetLastError();
 	if (file == INVALID_HANDLE_VALUE)
 	{
-		Log("CreateFile failed. %s error %X", fileName, error);
+		Log("CreateFile failed. %X %s", error, filename);
 		return false;
 	}
-	dword bytesWritten = 0;
-	OVERLAPPED overlap = {};
-	WriteFile(file, addr, size, &bytesWritten, &overlap);
+
+	WriteFile(file, addr, size, &bytesWritten, 0);
 	CloseHandle(file);
+
 	return true;
 }

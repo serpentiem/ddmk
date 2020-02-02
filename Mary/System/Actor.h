@@ -4,7 +4,7 @@
 #include "../Config.h"
 #include "../Vars.h"
 
-#include "Cache.h"
+#include "File.h"
 
 #include "../Cosmetics/Color.h"
 

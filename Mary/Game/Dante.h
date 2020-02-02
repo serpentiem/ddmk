@@ -1,7 +1,7 @@
 #pragma once
 #include "../../Core/Core.h"
 
-#include "../System/Cache.h"
+#include "../System/File.h"
 
 void Game_Dante_Init();
 void Game_Dante_Rebellion_ToggleInfiniteSwordPierce(bool enable);

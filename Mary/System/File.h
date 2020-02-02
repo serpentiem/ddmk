@@ -5,8 +5,23 @@
 #include "../../Zip/zip.h"
 
 #include "../Config.h"
+#include "../Vars.h"
 
-bool System_File_ExtractFile(const char * fileName);
-byte8 * System_File_LoadFile(const char * fileName, uint32 * size = 0, byte8 * dest = 0);
-void System_File_AdjustPointers(byte8 * addr);
+#include "Memory.h"
+
+extern byte8 * System_File_cacheFile[MAX_CACHE_FILE];
+extern byte8 * demo_pl000_00_3;
+
+bool System_File_ExtractFile(const char * filename);
+byte8 * System_File_LoadFile
+(
+	const char * filename,
+	uint32     * size        = 0,
+	byte8      * dest        = 0,
+	bool         skipArchive = false
+);
+void System_File_AdjustPointers(byte8 * archive);
+byte8 * System_File_PushFile(const char * filename);
+void System_File_UpdateFileItems(ACTOR_DATA * actorData);
+void System_File_UpdateMotion(ACTOR_DATA * actorData);
 void System_File_Init();

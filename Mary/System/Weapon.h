@@ -5,7 +5,7 @@
 #include "../Vars.h"
 
 #include "Actor.h"
-#include "Cache.h"
+#include "File.h"
 
 #include "../Cosmetics/Dante.h"
 

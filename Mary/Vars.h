@@ -1,5 +1,298 @@
+
+// @Todo: Update types.
+
 #pragma once
 #include "../Core/DataTypes.h"
+
+enum CACHE_FILE_
+{
+	// Dante
+	pl000,
+	pl011,
+	pl013,
+	pl015,
+	pl016,
+	pl018,
+	pl005,
+	pl006,
+	pl007,
+	pl008,
+	pl009,
+	pl017,
+	plwp_sword,
+	plwp_nunchaku,
+	plwp_2sword,
+	plwp_guitar,
+	plwp_fight,
+	plwp_gun,
+	plwp_shotgun,
+	plwp_laser,
+	plwp_rifle,
+	plwp_ladygun,
+	plwp_sword2,
+	plwp_sword3,
+	pl000_00_0,
+	pl000_00_1,
+	pl000_00_2,
+	pl000_00_3,
+	pl000_00_4,
+	pl000_00_5,
+	pl000_00_6,
+	pl000_00_7,
+	pl000_00_8,
+	pl000_00_9,
+	pl000_00_10,
+	pl000_00_11,
+	pl000_00_12,
+	pl000_00_13,
+	pl000_00_14,
+	pl000_00_15,
+	pl000_00_16,
+	pl000_00_17,
+	pl000_00_18,
+	pl000_00_19,
+	pl000_00_20,
+	pl000_00_21,
+	pl000_00_22,
+	pl000_00_23,
+	pl000_00_24,
+	pl000_00_25,
+	pl000_00_26,
+	// Bob
+	pl001,
+	plwp_vergilsword,
+	pl001_00_0,
+	pl001_00_1,
+	pl001_00_2,
+	pl001_00_31,
+	// Lady
+	pl002,
+	pl002_00_0,
+	pl002_00_1,
+	pl002_00_2,
+	// Vergil
+	pl021,
+	pl023,
+	pl026,
+	pl010,
+	pl014,
+	pl025,
+	plwp_newvergilsword,
+	plwp_newvergilfight,
+	plwp_forceedge,
+	plwp_nerosword,
+	pl021_00_0,
+	pl021_00_1,
+	pl021_00_2,
+	pl021_00_3,
+	pl021_00_4,
+	pl021_00_5,
+	pl021_00_6,
+	pl021_00_7,
+	pl021_00_8,
+	pl021_00_9,
+	MAX_CACHE_FILE,
+};
+
+constexpr const char * cacheFilename[MAX_CACHE_FILE] =
+{
+	// Dante
+	"pl000.pac",
+	"pl011.pac",
+	"pl013.pac",
+	"pl015.pac",
+	"pl016.pac",
+	"pl018.pac",
+	"pl005.pac",
+	"pl006.pac",
+	"pl007.pac",
+	"pl008.pac",
+	"pl009.pac",
+	"pl017.pac",
+	"plwp_sword.pac",
+	"plwp_nunchaku.pac",
+	"plwp_2sword.pac",
+	"plwp_guitar.pac",
+	"plwp_fight.pac",
+	"plwp_gun.pac",
+	"plwp_shotgun.pac",
+	"plwp_laser.pac",
+	"plwp_rifle.pac",
+	"plwp_ladygun.pac",
+	"plwp_sword2.pac",
+	"plwp_sword3.pac",
+	"pl000_00_0.pac",
+	"pl000_00_1.pac",
+	"pl000_00_2.pac",
+	"pl000_00_3.pac",
+	"pl000_00_4.pac",
+	"pl000_00_5.pac",
+	"pl000_00_6.pac",
+	"pl000_00_7.pac",
+	"pl000_00_8.pac",
+	"pl000_00_9.pac",
+	"pl000_00_10.pac",
+	"pl000_00_11.pac",
+	"pl000_00_12.pac",
+	"pl000_00_13.pac",
+	"pl000_00_14.pac",
+	"pl000_00_15.pac",
+	"pl000_00_16.pac",
+	"pl000_00_17.pac",
+	"pl000_00_18.pac",
+	"pl000_00_19.pac",
+	"pl000_00_20.pac",
+	"pl000_00_21.pac",
+	"pl000_00_22.pac",
+	"pl000_00_23.pac",
+	"pl000_00_24.pac",
+	"pl000_00_25.pac",
+	"pl000_00_26.pac",
+	// Bob
+	"pl001.pac",
+	"plwp_vergilsword.pac",
+	"pl001_00_0.pac",
+	"pl001_00_1.pac",
+	"pl001_00_2.pac",
+	"pl001_00_31.pac",
+	// Lady
+	"pl002.pac",
+	"pl002_00_0.pac",
+	"pl002_00_1.pac",
+	"pl002_00_2.pac",
+	// Vergil
+	"pl021.pac",
+	"pl023.pac",
+	"pl026.pac",
+	"pl010.pac",
+	"pl014.pac",
+	"pl025.pac",
+	"plwp_newvergilsword.pac",
+	"plwp_newvergilfight.pac",
+	"plwp_forceedge.pac",
+	"plwp_nerosword.pac",
+	"pl021_00_0.pac",
+	"pl021_00_1.pac",
+	"pl021_00_2.pac",
+	"pl021_00_3.pac",
+	"pl021_00_4.pac",
+	"pl021_00_5.pac",
+	"pl021_00_6.pac",
+	"pl021_00_7.pac",
+	"pl021_00_8.pac",
+	"pl021_00_9.pac",
+};
+
+constexpr uint32 stringItemOff[MAX_CACHE_FILE] =
+{
+	0x4EA570, // obj\pl000.pac
+	0x4EA580, // obj\pl011.pac
+	0x4EA590, // obj\pl013.pac
+	0x4EA5A0, // obj\pl015.pac
+	0x4EA5B0, // obj\pl016.pac
+	0x4EA5C0, // obj\pl018.pac
+	0x4EA620, // obj\pl005.pac
+	0x4EA630, // obj\pl006.pac
+	0x4EA640, // obj\pl007.pac
+	0x4EA650, // obj\pl008.pac
+	0x4EA660, // obj\pl009.pac
+	0x4EA670, // obj\pl017.pac
+	0x4EB050, // obj\plwp_sword.pac
+	0x4EB068, // obj\plwp_nunchaku.pac
+	0x4EB080, // obj\plwp_2sword.pac
+	0x4EB098, // obj\plwp_guitar.pac
+	0x4EB0B0, // obj\plwp_fight.pac
+	0x4EB0C8, // obj\plwp_gun.pac
+	0x4EB0E0, // obj\plwp_shotgun.pac
+	0x4EB0F8, // obj\plwp_laser.pac
+	0x4EB110, // obj\plwp_rifle.pac
+	0x4EB128, // obj\plwp_ladygun.pac
+	0x4EB1C8, // obj\plwp_sword2.pac
+	0x4EB1E0, // obj\plwp_sword3.pac
+	0x4EA6B0, // motion\pl000\pl000_00_0.pac
+	0x4EA6D0, // motion\pl000\pl000_00_1.pac
+	0x4EA6F0, // motion\pl000\pl000_00_2.pac
+	0x4EA710, // motion\pl000\pl000_00_3.pac
+	0x4EA730, // motion\pl000\pl000_00_4.pac
+	0x4EA750, // motion\pl000\pl000_00_5.pac
+	0x4EA770, // motion\pl000\pl000_00_6.pac
+	0x4EA790, // motion\pl000\pl000_00_7.pac
+	0x4EA7B0, // motion\pl000\pl000_00_8.pac
+	0x4EA7D0, // motion\pl000\pl000_00_9.pac
+	0x4EA7F0, // motion\pl000\pl000_00_10.pac
+	0x4EA810, // motion\pl000\pl000_00_11.pac
+	0x4EA830, // motion\pl000\pl000_00_12.pac
+	0x4EA850, // motion\pl000\pl000_00_13.pac
+	0x4EA870, // motion\pl000\pl000_00_14.pac
+	0x4EA890, // motion\pl000\pl000_00_15.pac
+	0x4EA8B0, // motion\pl000\pl000_00_16.pac
+	0x4EA8D0, // motion\pl000\pl000_00_17.pac
+	0x4EA8F0, // motion\pl000\pl000_00_18.pac
+	0x4EA910, // motion\pl000\pl000_00_19.pac
+	0x4EA930, // motion\pl000\pl000_00_20.pac
+	0x4EA950, // motion\pl000\pl000_00_21.pac
+	0x4EA970, // motion\pl000\pl000_00_22.pac
+	0x4EA990, // motion\pl000\pl000_00_23.pac
+	0x4EA9B0, // motion\pl000\pl000_00_24.pac
+	0x4EA9D0, // motion\pl000\pl000_00_25.pac
+	0x4EA9F0, // motion\pl000\pl000_00_26.pac
+	// Bob
+	0x4EA5D0, // obj\pl001.pac
+	0x4EB1A8, // obj\plwp_vergilsword.pac
+	0x4EAAB0, // motion\pl001\pl001_00_0.pac
+	0x4EAAD0, // motion\pl001\pl001_00_1.pac
+	0x4EAAF0, // motion\pl001\pl001_00_2.pac
+	0x4EAE90, // motion\pl001\pl001_00_31.pac
+	// Lady
+	0x4EA5E0, // obj\pl002.pac
+	0x4EAFF0, // motion\pl002\pl002_00_0.pac
+	0x4EB010, // motion\pl002\pl002_00_1.pac
+	0x4EB030, // motion\pl002\pl002_00_2.pac
+	// Vergil
+	0x4EA5F0, // obj\pl021.pac
+	0x4EA600, // obj\pl023.pac
+	0x4EA610, // obj\pl026.pac
+	0x4EA680, // obj\pl010.pac
+	0x4EA690, // obj\pl014.pac
+	0x4EA6A0, // obj\pl025.pac
+	0x4EB158, // obj\plwp_newvergilsword.pac
+	0x4EB1F8, // obj\plwp_newvergilfight.pac
+	0x4EB190, // obj\plwp_forceedge.pac
+	0x4EB218, // obj\plwp_nerosword.pac
+	0x4EAEB0, // motion\pl021\pl021_00_0.pac
+	0x4EAED0, // motion\pl021\pl021_00_1.pac
+	0x4EAEF0, // motion\pl021\pl021_00_2.pac
+	0x4EAF10, // motion\pl021\pl021_00_3.pac
+	0x4EAF30, // motion\pl021\pl021_00_4.pac
+	0x4EAF50, // motion\pl021\pl021_00_5.pac
+	0x4EAF70, // motion\pl021\pl021_00_6.pac
+	0x4EAF90, // motion\pl021\pl021_00_7.pac
+	0x4EAFB0, // motion\pl021\pl021_00_8.pac
+	0x4EAFD0, // motion\pl021\pl021_00_9.pac
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 enum EVENT_
 {
@@ -420,12 +713,16 @@ struct CAPCOM_GAMEPAD
 
 struct STRING_ITEM
 {
+
+	// @Todo: Add _(8);
 	byte8 unknown[8];
 	const char * string;
 };
 
 struct FILE_ITEM
 {
+	// @Todo: Same as above.
+
 	uint32        category;
 	uint32        status;
 	uint16        id;
@@ -537,9 +834,9 @@ struct ACTOR_DATA
 	_(52);
 	uint16 direction;
 	_(86);
-	uint8 actor;
+	uint8 actorId;
 	_(3);
-	bool isDoppelganger;
+	bool isDoppelganger; // 0x11C
 	_(3);
 	uint8 visible;
 	_(14207);

@@ -29,9 +29,6 @@
     <ClCompile Include="System\Camera.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Cache.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Arcade.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -55,9 +52,6 @@
     </ClCompile>
     <ClCompile Include="System\Animation.cpp">
       <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Attack.cpp">
-      <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Game\ResetMotionState.cpp">
       <Filter>Game</Filter>
@@ -150,6 +144,9 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Assert.cpp" />
+    <ClCompile Include="Game\Attack.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -197,9 +194,6 @@
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="System\Camera.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="System\Cache.h">
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Game\Arcade.h">
