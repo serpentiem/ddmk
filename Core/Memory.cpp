@@ -247,22 +247,26 @@ FUNC CreateFunction
 			};
 			Feed(buffer, sizeof(buffer));
 		}
+		if (count)
 		{
 			byte8 buffer[] =
 			{
 				0x48, 0x81, 0xEC, 0x00, 0x00, 0x00, 0x00, //sub rsp
 			};
-			uint32 sub = 0;
-			if (count)
+			auto & sub = *(uint32 *)(buffer + 3) += (count * 8);
+			if (count & (1 << 0))
 			{
-				sub += (count * 8);
-				if (count & (1 << 0))
-				{
-					sub += 8;
-				}
+				sub += 8;
 			}
 			sub += 0x20;
-			*(uint32 *)(buffer + 3) = sub;
+			Feed(buffer, sizeof(buffer));
+		}
+		else
+		{
+			byte8 buffer[] =
+			{
+				0x48, 0x83, 0xEC, 0x20, //sub rsp,20
+			};
 			Feed(buffer, sizeof(buffer));
 		}
 		if (count)
