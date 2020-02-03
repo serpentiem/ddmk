@@ -122,7 +122,8 @@ FUNC CreateFunction
 	uint32   size0         = 0,
 	uint32   size1         = 0,
 	uint32   size2         = 0,
-	uint32   cacheSize     = 0
+	uint32   cacheSize     = 0,
+	uint32   count         = 0
 );
 
 bool Memory_Init();

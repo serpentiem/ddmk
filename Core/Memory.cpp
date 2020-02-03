@@ -173,7 +173,8 @@ FUNC CreateFunction
 	uint32   size0,
 	uint32   size1,
 	uint32   size2,
-	uint32   cacheSize
+	uint32   cacheSize,
+	uint32   count
 )
 {
 	byte8 payload[2048];
@@ -203,29 +204,78 @@ FUNC CreateFunction
 			};
 			Feed(buffer, sizeof(buffer));
 		}
-		byte8 buffer[] =
+		if (count)
 		{
-			0x51,                   //push rcx
-			0x52,                   //push rdx
-			0x53,                   //push rbx
-			0x54,                   //push rsp
-			0x55,                   //push rbp
-			0x56,                   //push rsi
-			0x57,                   //push rdi
-			0x41, 0x50,             //push r8
-			0x41, 0x51,             //push r9
-			0x41, 0x52,             //push r10
-			0x41, 0x53,             //push r11
-			0x41, 0x54,             //push r12
-			0x41, 0x55,             //push r13
-			0x41, 0x56,             //push r14
-			0x41, 0x57,             //push r15
-			0x9C,                   //pushfq
-			0x48, 0x8B, 0xEC,       //mov rbp,rsp
-			0x40, 0x80, 0xE4, 0xF0, //and spl,F0
-			0x48, 0x83, 0xEC, 0x20, //sub rsp,20
-		};
-		Feed(buffer, sizeof(buffer));
+			byte8 buffer[] =
+			{
+				0x48, 0x8B, 0xC4, //mov rax,rsp
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+		{
+			byte8 buffer[] =
+			{
+				0x51,                   //push rcx
+				0x52,                   //push rdx
+				0x53,                   //push rbx
+				0x54,                   //push rsp
+				0x55,                   //push rbp
+				0x56,                   //push rsi
+				0x57,                   //push rdi
+				0x41, 0x50,             //push r8
+				0x41, 0x51,             //push r9
+				0x41, 0x52,             //push r10
+				0x41, 0x53,             //push r11
+				0x41, 0x54,             //push r12
+				0x41, 0x55,             //push r13
+				0x41, 0x56,             //push r14
+				0x41, 0x57,             //push r15
+				0x9C,                   //pushfq
+				0x48, 0x8B, 0xEC,       //mov rbp,rsp
+				0x40, 0x80, 0xE4, 0xF0, //and spl,F0
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+		{
+			byte8 buffer[] =
+			{
+				0x48, 0x81, 0xEC, 0x00, 0x00, 0x00, 0x00, //sub rsp
+			};
+			uint32 sub = 0;
+			if (count)
+			{
+				sub += (count * 8);
+				if (count & (1 << 0))
+				{
+					sub += 8;
+				}
+			}
+			sub += 0x20;
+			*(uint32 *)(buffer + 3) = sub;
+			Feed(buffer, sizeof(buffer));
+		}
+		if (count)
+		{
+			byte8 buffer[] =
+			{
+				0x51,                         //push rcx
+				0x56,                         //push rsi
+				0x57,                         //push rdi
+				0xB9, 0x00, 0x00, 0x00, 0x00, //mov ecx,count
+				0x48, 0x8D, 0x70, 0x28,       //lea rsi,[rax+28] return addr + shadow space
+				0x48, 0x8D, 0x7C, 0x24, 0x38, //lea rdi,[rsp+38] rcx + rsi + rdi + shadow space
+				0xF3, 0x48, 0xA5,             //repe movsq
+				0x5F,                         //pop rdi
+				0x5E,                         //pop rsi
+				0x59,                         //pop rcx
+			};
+			*(uint32 *)(buffer + 4) = count;
+			if (noResult)
+			{
+				*(uint8 *)(buffer + 0xB) += 8;
+			}
+			Feed(buffer, sizeof(buffer));
+		}
 	}
 
 	off1 = pos;
