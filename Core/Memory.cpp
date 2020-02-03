@@ -206,11 +206,22 @@ FUNC CreateFunction
 		}
 		if (count)
 		{
-			byte8 buffer[] =
+			if (noResult)
 			{
-				0x48, 0x8B, 0xC4, //mov rax,rsp
-			};
-			Feed(buffer, sizeof(buffer));
+				byte8 buffer[] =
+				{
+					0x48, 0x8D, 0x44, 0x24, 0x08, //lea rax,[rsp+08]
+				};
+				Feed(buffer, sizeof(buffer));
+			}
+			else
+			{
+				byte8 buffer[] =
+				{
+					0x48, 0x8B, 0xC4, //mov rax,rsp
+				};
+				Feed(buffer, sizeof(buffer));
+			}
 		}
 		{
 			byte8 buffer[] =
@@ -263,17 +274,13 @@ FUNC CreateFunction
 				0x57,                         //push rdi
 				0xB9, 0x00, 0x00, 0x00, 0x00, //mov ecx,count
 				0x48, 0x8D, 0x70, 0x28,       //lea rsi,[rax+28] return addr + shadow space
-				0x48, 0x8D, 0x7C, 0x24, 0x38, //lea rdi,[rsp+38] rcx + rsi + rdi + shadow space
+				0x48, 0x8D, 0x7C, 0x24, 0x38, //lea rdi,[rsp+38] rdi + rsi + rcx + shadow space
 				0xF3, 0x48, 0xA5,             //repe movsq
 				0x5F,                         //pop rdi
 				0x5E,                         //pop rsi
 				0x59,                         //pop rcx
 			};
 			*(uint32 *)(buffer + 4) = count;
-			if (noResult)
-			{
-				*(uint8 *)(buffer + 0xB) += 8;
-			}
 			Feed(buffer, sizeof(buffer));
 		}
 	}
