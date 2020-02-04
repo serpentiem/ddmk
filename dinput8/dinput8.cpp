@@ -6,22 +6,11 @@
 const char * Log_directory = "logs";
 const char * Log_file      = "dinput8.txt";
 
-
-
-
-
-
-
-
 const char * libName  = "dinput8.dll";
 const char * funcName = "DirectInput8Create";
 
 HMODULE   lib[2]   = {};
 void    * procAddr = 0;
-
-
-
-
 
 extern "C" void Create()
 {
@@ -29,15 +18,6 @@ extern "C" void Create()
 }
 
 //#pragma comment(linker, "/export:DirectInput8Create=Create")
-
-
-
-
-
-
-
-
-
 
 bool Init()
 {

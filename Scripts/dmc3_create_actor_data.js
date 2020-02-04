@@ -53,7 +53,7 @@ var items =
 	[ "y"                        , "float32"     , 1 , 0x84   ],
 	[ "z"                        , "float32"     , 1 , 0x88   ],
 	[ "direction"                , "uint16"      , 1 , 0xC0   ],
-	[ "actor"                    , "uint8"       , 1 , 0x118  ],
+	[ "actorId"                  , "uint8"       , 1 , 0x118  ],
 	[ "isDoppelganger"           , "bool"        , 1 , 0x11C  ],
 	[ "visible"                  , "uint8"       , 1 , 0x120  ],
 	[ "motionArchive"            , "byte8 *"     , 32, 0x38A0 ],
@@ -102,6 +102,7 @@ var items =
 	[ "styleMeter"               , "float32"     , 1 , 0x6514 ],
 	[ "inputBuffer"              , "INPUT_BUFFER", 58, 0x6674 ],
 	[ "buttonInput"              , "byte16"      , 4 , 0x74E0 ],
+	[ "modelData"                , "MODEL_DATA"  , 6 , 0xB630 ],
 ];
 
 var c = "";

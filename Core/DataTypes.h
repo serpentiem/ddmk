@@ -18,6 +18,14 @@ typedef unsigned long long byte64;
 typedef float  float32;
 typedef double float64;
 
+struct vec4
+{
+	float32 x;
+	float32 y;
+	float32 z;
+	float32 a;
+};
+
 //#define __DDMK_OBSOLETE__
 #ifndef __DDMK_OBSOLETE__
 

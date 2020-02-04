@@ -22,6 +22,11 @@ byte8 * System_File_LoadFile
 );
 void System_File_AdjustPointers(byte8 * archive);
 byte8 * System_File_PushFile(const char * filename);
+__declspec(noinline) byte8 * System_File_GetFile
+(
+	byte8  * archive,
+	uint32   fileIndex
+);
 void System_File_UpdateFileItems(ACTOR_DATA * actorData);
 void System_File_UpdateMotion(ACTOR_DATA * actorData);
 void System_File_Init();

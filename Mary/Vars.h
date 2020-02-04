@@ -823,111 +823,120 @@ struct INPUT_BUFFER
 	_(7);
 };
 
+struct MODEL_DATA
+{
+	uint8 count;
+	_(15);
+	vec4 vertex[3];
+	_(16);
+};
+
 struct ACTOR_DATA
 {
 	_(120);
-	uint8 character;
+	uint8 character; // 0x78
 	_(7);
-	float32 x;
-	float32 y;
-	float32 z;
+	float32 x; // 0x80
+	float32 y; // 0x84
+	float32 z; // 0x88
 	_(52);
-	uint16 direction;
+	uint16 direction; // 0xC0
 	_(86);
-	uint8 actorId;
+	uint8 actorId; // 0x118
 	_(3);
 	bool isDoppelganger; // 0x11C
 	_(3);
-	uint8 visible;
+	uint8 visible; // 0x120
 	_(14207);
-	byte8 * motionArchive[32];
+	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
-	MOTION_DATA motionData[5];
+	MOTION_DATA motionData[5]; // 0x39B0
 	_(94);
-	uint8 shadow;
+	uint8 shadow; // 0x3A18
 	_(15);
-	byte32 color;
+	byte32 color; // 0x3A28
 	_(980);
-	byte32 motionState1[4];
+	byte32 motionState1[4]; // 0x3E00
 	_(80);
-	byte32 motionState2[3];
-	uint8 baseModel;
+	byte32 motionState2[3]; // 0x3E60
+	uint8 baseModel; // 0x3E6C
 	_(3);
-	uint8 baseModelMirror1;
+	uint8 baseModelMirror1; // 0x3E70
 	_(23);
-	uint8 baseModelMirror2;
+	uint8 baseModelMirror2; // 0x3E88
 	_(18);
-	bool devil;
+	bool devil; // 0x3E9B
 	_(2);
-	uint8 costume;
-	bool specialCostume;
+	uint8 costume; // 0x3E9E
+	bool specialCostume; // 0x3E9F
 	_(24);
-	float32 magicPoints;
-	float32 maxMagicPoints;
+	float32 magicPoints; // 0x3EB8
+	float32 maxMagicPoints; // 0x3EBC
 	_(228);
-	uint8 move;
-	uint8 lastMove;
+	uint8 move; // 0x3FA4
+	uint8 lastMove; // 0x3FA5
 	_(70);
-	byte32 expertise[16];
+	byte32 expertise[16]; // 0x3FEC
 	_(192);
-	float32 maxHitPoints;
+	float32 maxHitPoints; // 0x40EC
 	_(44);
-	float32 hitPoints;
+	float32 hitPoints; // 0x411C
 	_(8712);
-	byte8 * targetBaseAddr;
+	byte8 * targetBaseAddr; // 0x6328
 	_(8);
-	uint8 style;
+	uint8 style; // 0x6338
 	_(31);
-	uint8 styleLevel;
+	uint8 styleLevel; // 0x6358
 	_(3);
-	uint8 dashCount;
-	uint8 skyStarCount;
-	uint8 airTrickCount;
-	uint8 trickUpCount;
-	uint8 trickDownCount;
-	bool quicksilver;
-	bool doppelganger;
+	uint8 dashCount; // 0x635C
+	uint8 skyStarCount; // 0x635D
+	uint8 airTrickCount; // 0x635E
+	uint8 trickUpCount; // 0x635F
+	uint8 trickDownCount; // 0x6360
+	bool quicksilver; // 0x6361
+	bool doppelganger; // 0x6362
 	_(1);
-	float32 styleExperience;
+	float32 styleExperience; // 0x6364
 	_(236);
-	bool controlLinkedActor;
+	bool controlLinkedActor; // 0x6454
 	_(35);
-	byte8 * linkedActorBaseAddr;
+	byte8 * linkedActorBaseAddr; // 0x6478
 	_(8);
-	uint8 selectedMeleeWeaponVergil;
+	uint8 selectedMeleeWeaponVergil; // 0x6488
 	_(4);
-	uint8 activeWeapon;
+	uint8 activeWeapon; // 0x648D
 	_(2);
-	uint8 selectedMeleeWeapon;
+	uint8 selectedMeleeWeapon; // 0x6490
 	_(3);
-	uint8 selectedRangedWeapon;
+	uint8 selectedRangedWeapon; // 0x6494
 	_(3);
-	uint8 equipment[4];
+	uint8 equipment[4]; // 0x6498
 	_(4);
-	byte8 * weaponMetadata[4];
+	byte8 * weaponMetadata[4]; // 0x64A0
 	_(8);
-	byte32 weaponFlags[4];
+	byte32 weaponFlags[4]; // 0x64C8
 	_(24);
-	uint8 activeMeleeWeapon;
-	uint8 activeRangedWeapon;
+	uint8 activeMeleeWeapon; // 0x64F0
+	uint8 activeRangedWeapon; // 0x64F1
 	_(2);
-	float32 weaponTimer[4];
+	float32 weaponTimer[4]; // 0x64F4
 	_(12);
-	uint8 styleRank;
+	uint8 styleRank; // 0x6510
 	_(3);
-	float32 styleMeter;
+	float32 styleMeter; // 0x6514
 	_(348);
-	INPUT_BUFFER inputBuffer[58];
+	INPUT_BUFFER inputBuffer[58]; // 0x6674
+	_(2996);
+	byte16 buttonInput[4]; // 0x74E0
+	_(16712);
+	MODEL_DATA modelData[6]; // 0xB630
 };
 
 #pragma pack(pop)
 
 #undef _
-
 #undef Merge
 #undef _Merge
-
-
 
 #define __DDMK_OBSOLETE__
 #ifndef __DDMK_OBSOLETE__

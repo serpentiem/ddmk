@@ -416,6 +416,63 @@ byte8 * System_File_PushFile(const char * filename)
 	return addr;
 }
 
+
+
+#pragma pack(push, 1)
+
+struct ARCHIVE_DATA
+{
+	byte8 signature[4];
+	uint32 fileCount;
+	//uint32 * fileOff;
+
+	//uint32(fileOff[]);
+
+	//uint32 fileOff[0];
+	uint32 fileOff[];
+
+
+
+};
+
+#pragma pack(pop)
+
+
+
+
+
+byte8 * System_File_GetFile
+(
+	byte8  * archive,
+	uint32   fileIndex
+)
+{
+	auto archiveData = (ARCHIVE_DATA *)archive;
+
+	if (fileIndex >= archiveData->fileCount)
+	{
+		return 0;
+	}
+
+	if (!archiveData->fileOff[fileIndex])
+	{
+		return 0;
+	}
+
+	return (archive + archiveData->fileOff[fileIndex]);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 void System_File_UpdateFileItems(ACTOR_DATA * actorData)
 {
 	for (uint8 helperIndex = 0; helperIndex < countof(fileItemHelper); helperIndex++)

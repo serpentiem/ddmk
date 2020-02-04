@@ -45,6 +45,25 @@ const char * Log_file      = "Mary.txt";
 
 uint32 Memory_size = (64 * 1024 * 1024);
 
+
+
+//#pragma comment(linker, "/export:DirectInput8Create=Create")
+//_Init_thread_epoch
+
+//#pragma comment(linker "/export:")
+
+//extern "C" __declspec(dllexport) void func_epoch()
+//{
+//	return;
+//}
+//
+//#pragma comment(linker, "/export:_Init_thread_epoch=func_epoch")
+
+
+
+
+
+
 uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {
 	if (reason == DLL_PROCESS_ATTACH)

@@ -31,6 +31,21 @@ byte8 * OnUpdate[2] = {};
 byte8 * CreateActorOneProxy = 0;
 byte8 * UpdateActorProxy    = 0;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 PrivateStart;
 
 
@@ -526,6 +541,481 @@ PrivateEnd;
 
 
 
+
+
+
+
+
+
+typedef void (__fastcall * func_8B470_t)
+(
+	byte8  * dest,
+	uint32   flag
+);
+
+typedef void (__fastcall * func_89960_t)
+(
+	byte8 * dest,
+	byte8 * modelFile,
+	byte8 * textureFile
+);
+
+typedef byte8 * (__fastcall * func_89DE0_t)
+(
+	byte8 * dest
+);
+
+typedef void (__fastcall * func_8BC60_t)
+(
+	byte8 * dest,
+	byte8 * addr,
+	byte8 * shadowFile
+);
+
+typedef void (__fastcall * func_305D80_t)
+(
+	byte8 * dest
+);
+
+typedef void (__fastcall * func_8A000_t)
+(
+	byte8  * dest,
+	uint64   unknown,
+	byte8  * addr
+);
+
+typedef uint32 (__fastcall * func_2C9F40_t)
+(
+	byte8 * clothFile
+);
+
+typedef void (__fastcall * func_2CA1D0_t)
+(
+	byte8  * dest,
+	byte8  * addr,
+	byte8  * clothFile,
+	byte32   index
+);
+
+typedef void (__fastcall * func_2CA2F0_t)
+(
+	byte8  * dest,
+	byte8  * addr,
+	byte8  * unknown,
+	byte8  * modelData,
+	uint32   count
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+func_8B470_t  func_8B470  = 0;
+func_89960_t  func_89960  = 0;
+func_89DE0_t  func_89DE0  = 0;
+func_8BC60_t  func_8BC60  = 0;
+func_305D80_t func_305D80 = 0;
+func_8A000_t  func_8A000  = 0;
+func_2C9F40_t func_2C9F40 = 0;
+func_2CA1D0_t func_2CA1D0 = 0;
+func_2CA2F0_t func_2CA2F0 = 0;
+
+/*
+[rax + 150] dmc3.exe+8A000
+[rdx +   8] dmc3.exe+89DE0
+[rdx +  68] dmc3.exe+211C10
+[rdi +   8] dmc3.exe+8BC60
+[ r8 +  38] dmc3.exe+8B470
+[ r9 +  50] dmc3.exe+89960
+*/
+
+void HumanDante(byte8 * baseAddr)
+{
+	byte8 * textureFile = 0;
+	byte8 * modelFile   = 0;
+	byte8 * shadowFile  = 0;
+	byte8 * clothFile   = 0;
+	byte8 * addr = 0;
+	uint32 count = 0;
+
+
+
+	textureFile = System_File_GetFile(System_File_cacheFile[pl000], 0);
+	modelFile   = System_File_GetFile(System_File_cacheFile[pl000], 1);
+	func_8B470((baseAddr + 0x200), 1);
+	func_89960((baseAddr + 0x200), modelFile, textureFile);
+
+
+
+
+
+	shadowFile = System_File_GetFile(System_File_cacheFile[pl000], 8);
+	addr = func_89DE0((baseAddr + 0x200));
+	func_8BC60((baseAddr + 0x9AD0), addr, shadowFile);
+
+	addr = func_89DE0((baseAddr + 0x200));
+	func_305D80(addr);
+
+
+
+	auto actorData = (ACTOR_DATA *)baseAddr;
+	auto g_vertex = (vec4 *)(appBaseAddr + 0x58B260);
+	auto & md = actorData->modelData;
+
+	md[0].count = 4;
+	md[0].vertex[0] = g_vertex[0];
+	md[0].vertex[1] = g_vertex[1];
+	md[0].vertex[2] = g_vertex[2];
+
+	md[1].count = 4;
+	md[1].vertex[0] = g_vertex[3];
+	md[1].vertex[1] = g_vertex[4];
+	md[1].vertex[2] = g_vertex[5];
+
+	md[2].count = 4;
+	md[2].vertex[0] = g_vertex[6];
+	md[2].vertex[1] = g_vertex[7];
+	md[2].vertex[2] = g_vertex[8];
+
+	md[3].count = 4;
+	md[3].vertex[0] = g_vertex[9];
+	md[3].vertex[1] = g_vertex[10];
+	md[3].vertex[2] = g_vertex[11];
+
+	md[4].count = 4;
+	md[4].vertex[0] = g_vertex[12];
+	md[4].vertex[1] = g_vertex[13];
+	md[4].vertex[2] = g_vertex[14];
+
+	md[5].count = 4;
+	md[5].vertex[0] = g_vertex[15];
+	md[5].vertex[1] = g_vertex[16];
+	md[5].vertex[2] = g_vertex[17];
+
+
+
+
+
+
+
+	// No Coat
+
+	//textureFile = System_File_GetFile(System_File_cacheFile[pl011], 0 );
+	//modelFile   = System_File_GetFile(System_File_cacheFile[pl011], 12);
+	//func_8B470((baseAddr + 0x7540), 1);
+	//func_89960((baseAddr + 0x7540), modelFile, textureFile);
+
+	//*(uint8 *)(baseAddr + 0x9AC0) = 1;
+
+
+	//func_8A000((baseAddr + 0x7540), 0, (baseAddr + 0xA0D0));
+
+	//md[0].count = 4;
+	//md[0].vertex[0] = g_vertex[23];
+	//md[0].vertex[1] = g_vertex[24];
+	//md[0].vertex[2] = g_vertex[25];
+
+
+
+
+
+	//clothFile = System_File_GetFile(System_File_cacheFile[pl011], 13);
+	//count = func_2C9F40(clothFile);
+	//for (uint32 index = 0; index < count; index++)
+	//{
+	//	byte8 * dest = (baseAddr + 0xA210);
+	//	func_2CA1D0(dest, (baseAddr + 0xA0D0), clothFile, index);
+	//	dest += 0xF0;
+	//}
+
+	//func_2CA2F0
+	//(
+	//	(baseAddr + 0xA210),
+	//	(baseAddr + 0x1880),
+	//	(appBaseAddr + 0x58B054),
+	//	(baseAddr + 0xB630),
+	//	1
+	//);
+
+
+	//actorData->costume = 1;
+
+	// DonDanteCoatless
+
+	// DonDanteBase
+
+	// DonAmuletDante
+
+	// DonAmuletVergil
+
+
+
+
+
+	// Coat
+
+
+	textureFile = System_File_GetFile(System_File_cacheFile[pl000], 0 );
+	// rax 0000000020010050
+	// nrax 0000000020010050
+
+	modelFile   = System_File_GetFile(System_File_cacheFile[pl000], 12);
+	// rax 000000002014A070
+	// nrax 000000002014A070
+
+
+	/*
+	dmc3.exe+214FAB - 4D 8D AE 40750000     - lea r13,[r14+00007540]
+	*/
+
+
+	// rcx 00000000045F43B0
+	// rdx 0000000000000001
+	// nrcx 00000000045F43B0
+	// nrdx 0000000000000001
+	func_8B470((baseAddr + 0x7540), 1);
+
+
+
+
+
+	// rcx 00000000045F43B0
+	// rdx 000000002014A070
+	// r8  0000000020010050
+	// nrcx 00000000045F43B0
+	// nrdx 000000002014A070
+	// nr8  0000000020010050
+	func_89960((baseAddr + 0x7540), modelFile, textureFile);
+
+
+
+
+	// rcx 00000000045F43B0
+	// rdx 0000000000000000
+	// r8  00000000045F6F40
+	// nrcx 00000000045F43B0
+	// nrdx 0000000000000000
+	// nr8  00000000045F6F40
+	func_8A000((baseAddr + 0x7540), 0, (baseAddr + 0xA0D0));
+
+
+
+
+
+
+	auto g_coatVertex = (vec4 *)(appBaseAddr + 0x35D580);
+
+	auto addr2 = *(byte8 **)(baseAddr + 0xA0D0);
+	// rax 0000000004622A70
+	// nrax 0000000004622A70
+
+	addr2 = *(byte8 **)(addr2 + 0x108);
+	// rcx 0000000004622AB0
+	// nrcx 0000000004622AB0
+
+
+
+
+	auto coatVertex = (vec4 *)addr2;
+
+	coatVertex[0] = g_coatVertex[0];
+	coatVertex[1] = g_coatVertex[1];
+	coatVertex[2] = g_coatVertex[2];
+	coatVertex[3] = g_coatVertex[3];
+
+
+
+
+	md[0].count = 4;
+	md[0].vertex[0] = g_vertex[0];
+	md[0].vertex[1] = g_vertex[1];
+	md[0].vertex[2] = g_vertex[2];
+
+	md[1].count = 4;
+	md[1].vertex[0] = g_vertex[3];
+	md[1].vertex[1] = g_vertex[4];
+	md[1].vertex[2] = g_vertex[5];
+
+	md[2].count = 4;
+	md[2].vertex[0] = g_vertex[6];
+	md[2].vertex[1] = g_vertex[7];
+	md[2].vertex[2] = g_vertex[8];
+
+	md[3].count = 4;
+	md[3].vertex[0] = g_vertex[9];
+	md[3].vertex[1] = g_vertex[10];
+	md[3].vertex[2] = g_vertex[11];
+
+	md[4].count = 4;
+	md[4].vertex[0] = g_vertex[12];
+	md[4].vertex[1] = g_vertex[13];
+	md[4].vertex[2] = g_vertex[14];
+
+	md[5].count = 4;
+	md[5].vertex[0] = g_vertex[15];
+	md[5].vertex[1] = g_vertex[16];
+	md[5].vertex[2] = g_vertex[17];
+
+
+
+
+
+	clothFile = System_File_GetFile(System_File_cacheFile[pl000], 13);
+	// rax 0000000020152BE0
+	// nrax 0000000020152BE0
+
+	count = func_2C9F40(clothFile);
+	// rax 0000000000000001
+	// nrax 0000000000000001
+
+
+
+
+	for (uint32 index = 0; index < count; index++)
+	{
+		byte8 * dest = (baseAddr + 0xA210);
+
+
+		// rcx 00000000045F7080
+		// rdx 00000000045F6F40
+		// r8  0000000020152BE0
+		// r9  0000000000000000
+		// nrcx 00000000045F7080
+		// nrdx 00000000045F6F40
+		// nr8  0000000020152BE0
+		// nr9  0000000000000000
+		func_2CA1D0(dest, (baseAddr + 0xA0D0), clothFile, index);
+
+
+
+		dest += 0xF0;
+	}
+
+
+	// rcx    00000000045F7080
+	// rdx    00000000045EE6F0
+	// r8     00007FF6181CB380
+	// r9     00000000045F84A0
+	// rsp+20 0000000000000006
+	// nrcx    00000000045F7080
+	// nrdx    00000000045EE6F0
+	// nr8     00007FF6181CB380
+	// nr9     00000000045F84A0
+	// nrsp+20 0000000000000006
+	func_2CA2F0
+	(
+		(baseAddr + 0xA210),
+		(baseAddr + 0x1880),
+		(appBaseAddr + 0x58B380),
+		(baseAddr + 0xB630),
+		6
+	);
+
+
+
+
+
+	auto coatShadowFile = System_File_GetFile(System_File_cacheFile[pl000], 14);
+	// rax 0000000020152EE0
+	// nrax 0000000020152EE0
+
+
+
+
+
+
+	addr = func_89DE0((baseAddr + 0x7540));
+	// rax 00000000045F4430
+	// nrax 00000000045F4430
+
+
+	// rcx 00000000045F6B80
+	// rdx 00000000045F4430
+	// r8  0000000020152EE0
+	// nrcx 00000000045F6B80
+	// nrdx 00000000045F4430
+	// nr8  0000000020152EE0
+	func_8BC60((baseAddr + 0x9D10), addr, coatShadowFile);
+
+
+
+
+
+	// rcx 00000000045F43B0
+	// nrcx 00000000045F43B0
+	addr = func_89DE0((baseAddr + 0x7540));
+	// rax 00000000045F4430
+	// nrax 00000000045F4430
+
+
+	// rcx 00000000045F4430
+	// nrcx 00000000045F4430
+	func_305D80(addr);
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Modify
 // Restore
 // Update
@@ -699,6 +1189,65 @@ void System_Actor_Init()
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x1F7D87), func.addr);
 	}
+
+
+
+
+	{
+		auto func = CreateFunction(HumanDante);
+		Log("HumanDante %llX", func.addr);
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x8B470));
+		func_8B470 = (func_8B470_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x89960));
+		func_89960 = (func_89960_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x89DE0), 0, true, false);
+		func_89DE0 = (func_89DE0_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x8BC60));
+		func_8BC60 = (func_8BC60_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x305D80));
+		func_305D80 = (func_305D80_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x8A000));
+		func_8A000 = (func_8A000_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x2C9F40), 0, true, false);
+		func_2C9F40 = (func_2C9F40_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x2CA1D0));
+		func_2CA1D0 = (func_2CA1D0_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x2CA2F0), 0, true, true, 0, 0, 0, 0, 1);
+		func_2CA2F0 = (func_2CA2F0_t)func.addr;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 void System_Actor_ToggleArrayExtension(bool enable)

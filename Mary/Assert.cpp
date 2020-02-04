@@ -59,5 +59,7 @@ static_assert(offsetof(ACTOR_DATA, weaponTimer) == 0x64F4);
 static_assert(offsetof(ACTOR_DATA, styleRank) == 0x6510);
 static_assert(offsetof(ACTOR_DATA, styleMeter) == 0x6514);
 static_assert(offsetof(ACTOR_DATA, inputBuffer) == 0x6674);
+static_assert(offsetof(ACTOR_DATA, buttonInput) == 0x74E0);
+static_assert(offsetof(ACTOR_DATA, modelData) == 0xB630);
 
 #pragma warning(pop)
