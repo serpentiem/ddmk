@@ -877,18 +877,29 @@ void DevilCerberus(byte8 * baseAddr)
 	byte8 * clothFile   = 0;
 
 	uint32 r13d = 2;
+	// r13 0000000000000002
+	// nr13 
+
 	uint64 r13 = r13d;
 
 	uint32 edi = r13d;
 
 
 	byte8 * rsi = baseAddr;
+	// rsi 00000000045ECE70
+	// nrsi 
 
 
 	uint32 r14d = 3;
+	// r14 0000000000000003
+	// nr14 
+
 	uint64 r14 = r14d;
 
 	uint32 r15d = 0x24;
+	// r15 0000000000000024
+	// nr15 
+
 	uint64 r15 = r15d;
 
 
@@ -896,13 +907,21 @@ void DevilCerberus(byte8 * baseAddr)
 
 
 	{
-		*(uint32 *)(baseAddr + 0x3E74 + (edi * 4)) = 1;
+		*(uint32 *)(rsi + 0x3E74 + (edi * 4)) = 1;
+		// rsi 00000000045ECE70
+		// rdi 0000000000000002
+		// nrsi 
+		// nrdi 
+
+
 
 		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
-		// rax 
+		// rax 00000000207BA020
+		// nrax 00000000207BA020
 
 		modelFile   = System_File_GetFile(System_File_cacheFile[pl006], 1);
-		// rax 
+		// rax 00000000207E5820
+		// nrax 00000000207E5820
 
 		r12 = baseAddr;
 
@@ -910,37 +929,50 @@ void DevilCerberus(byte8 * baseAddr)
 
 		r12 += 0x200;
 
-		// rcx 
-		// rdx 
+		// rcx 00000000045EDF70
+		// rdx 0000000000000001
+		// nrcx 00000000045EDF70
+		// nrdx 0000000000000001
 		func_8B470(r12, 1);
 
-		// rcx 
-		// rdx 
-		// r8  
+		// rcx 00000000045EDF70
+		// rdx 00000000207E5820
+		// r8  00000000207BA020
+		// nrcx 00000000045EDF70
+		// nrdx 00000000207E5820
+		// nr8  00000000207BA020
 		func_89960(r12, modelFile, textureFile);
 
 
 		// 0 0
 		// 1 0x18
 		// 2 0x30
+
+		// rax 0000000000000030
+		// r13 0000000000000002
 		*(uint8 *)(rsi + 0xB609) = 0x30;
 		*(uint8 *)(rsi + 0xB608) = (uint8)r13d;
 
 
-		// rcx 
-		// rdx 
+		// rcx 00000000045ECE70
+		// rdx 0000000000000002
+		// nrcx 00000000045ECE70
+		// nrdx 0000000000000002
 		func_1EF040(rsi, r13d);
 	}
 
 	{
 		shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 4);
-		// rax 
+		// rax 000000002080C3F0
+		// nrax 000000002080C3F0
 
 		// r13 no longer valid here!
 
-		// rcx 
+		// rcx 00000000045EDF70
+		// nrcx 00000000045EDF70
 		addr = func_89DE0(r12);
-		// rax 
+		// rax 00000000045EDFF0
+		// nrax 00000000045EDFF0
 
 		rbx = (edi * 0xC0);
 
@@ -948,18 +980,24 @@ void DevilCerberus(byte8 * baseAddr)
 
 		rcx += rbx;
 
-		// rcx 
-		// rdx 
-		// r8  
+		// rcx 00000000045F6AC0
+		// rdx 00000000045EDFF0
+		// r8  000000002080C3F0
+		// nrcx 00000000045F6AC0
+		// nrdx 00000000045EDFF0
+		// nr8  000000002080C3F0
 		func_8BC60(rcx, addr, shadowFile);
 
 
-		// rcx 
+		// rcx 00000000045EDF70
+		// nrcx 00000000045EDF70
 		addr = func_89DE0(r12);
-		// rax 
+		// rax 00000000045EDFF0
+		// nrax 00000000045EDFF0
 
 
-		// rcx 
+		// rcx 00000000045EDFF0
+		// nrcx 00000000045EDFF0
 		func_305D80(addr);
 	}
 
@@ -967,10 +1005,12 @@ void DevilCerberus(byte8 * baseAddr)
 
 	{
 		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
-		// rax 
+		// rax 00000000207BA020
+		// nrax 00000000207BA020
 
 		modelFile = System_File_GetFile(System_File_cacheFile[pl006], 2);
-		// rax 
+		// rax 000000002080A520
+		// nrax 000000002080A520
 
 		
 
@@ -980,13 +1020,18 @@ void DevilCerberus(byte8 * baseAddr)
 		r12 += (r13d * 0x780);
 		r12 += 0x7540;
 
-		// rcx 
-		// rdx 
+		// rcx 00000000045F5A30
+		// rdx 0000000000000001
+		// nrcx 00000000045F5A30
+		// nrdx 0000000000000001
 		func_8B470(r12, 1);
 
-		// rcx 
-		// rdx 
-		// r8  
+		// rcx 00000000045F5A30
+		// rdx 000000002080A520
+		// r8  00000000207BA020
+		// nrcx 00000000045F5A30
+		// nrdx 000000002080A520
+		// nr8  00000000207BA020
 		func_89960(r12, modelFile, textureFile);
 
 		// 1 0
@@ -1009,9 +1054,12 @@ void DevilCerberus(byte8 * baseAddr)
 
 		byte8 * r8 = rcx;
 
-		// rcx 
-		// rdx 
-		// r8  
+		// rcx 00000000045F5A30
+		// rdx 0000000000000000
+		// r8  00000000045F7290
+		// nrcx 00000000045F5A30
+		// nrdx 0000000000000000
+		// nr8  00000000045F7290
 		func_8A000(r12, 0, r8);
 
 
@@ -1021,30 +1069,41 @@ void DevilCerberus(byte8 * baseAddr)
 
 
 		shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 5);
-		// rax 
+		// rax 000000002080FAC0
+		// nrax 000000002080FAC0
 
 		uint64 rbx = (r13 * 0xC0);
 
-		// rcx 
+		// rcx 00000000045F5A30
+		// nrcx 
 		addr = func_89DE0(r12);
-		// rax 
+		// rax 00000000045F5AB0
+		// nrax 
 
 		rcx = (baseAddr + 0x9D10);
 	
 		rcx += rbx;
 
-		// rcx 
-		// rdx 
-		// r8  
+		// rcx 00000000045F6DC0
+		// rdx 00000000045F5AB0
+		// r8  000000002080FAC0
+		// nrcx 00000000045F6D00
+		// nrdx 00000000045F5AB0
+		// nr8  000000002080FAC0
 		func_8BC60(rcx, addr, shadowFile);
 
-		// rcx 
+		// rcx 00000000045F5A30
+		// nrcx 00000000045F5A30
 		addr = func_89DE0(r12);
-		// rax 
+		// rax 00000000045F5AB0
+		// nrax 00000000045F5AB0
 
-		// rcx 
+		// rcx 00000000045F5AB0
+		// nrcx 00000000045F5AB0
 		func_305D80(addr);
 
+		// rsi 00000000045ECE70
+		// r13 0000000000000003
 		*(uint8 *)(rsi + r13 + 0x9AC0) = 1;
 	}
 
@@ -1058,22 +1117,29 @@ void DevilCerberus(byte8 * baseAddr)
 
 
 	clothFile = System_File_GetFile(System_File_cacheFile[pl006], 3);
-	// rax 
+	// rax 000000002080C240
+	// nrax 000000002080C240
 
 	// r12 no longer valid here!
 
-	// rcx 
+	// rcx 000000002080C240
+	// nrcx 000000002080C240
 	uint32 count = func_2C9F40(clothFile);
-	// rax 
+	// rax 0000000000000001
+	// nrax 0000000000000001
 
 
 	byte8 * dest = (baseAddr + 0xA540);
 	for (uint32 index = 0; index < count; index++)
 	{
-		// rcx 
-		// rdx 
-		// r8  
-		// r9  
+		// rcx 00000000045F7590
+		// rdx 00000000045F7290
+		// r8  000000002080C240
+		// r9  0000000000000000
+		// nrcx 00000000045F73B0
+		// nrdx 00000000045F7290
+		// nr8  000000002080C240
+		// nr9  0000000000000000
 		func_2CA1D0(dest, rsp50, clothFile, index);
 
 		dest += 0xF0;
@@ -1091,18 +1157,32 @@ void DevilCerberus(byte8 * baseAddr)
 
 	uint32 ebp = 2;
 
-	uint32 r13d = 1; // slot
+	r13d = 1; // slot
 
 	uint64 r8 = (ebp * 0x300);
 
+	// r8 0000000000000600
+	// nr8 
+
 	{
 		uint32 eax = (r15 + 1);
+		// eax 0000000000000025
+		// neax 
 
 		byte8 * rdx = (baseAddr + 0xAA00);
+		// rdx 00000000045F7870
+		// nrdx 
 
 		rdx += r8;
+		// rdx 00000000045F7E70
+		// nrdx 00000000045F7E70
 
 		byte8 * rax = (baseAddr + (eax * 8) + 0xA300);
+
+		// __WRONG__
+
+		// rax 0000000004619E70
+		// nrax 
 
 		*(byte8 **)(rax + 0x100) = rdx;
 
@@ -1113,16 +1193,31 @@ void DevilCerberus(byte8 * baseAddr)
 		coat[3] = g_coatVertex[3];
 
 		eax = *(uint8 *)(baseAddr + 0xB609);
+		// eax 0000000000000030
+		// neax 0000000000000030
 
 		eax += 3;
+		// eax 0000000000000033
+		// neax 
 
 		byte8 * rcx = (baseAddr + (eax * 8) + 0x1880);
 
+		// __WRONG__
+
+		// rcx 0000000004605670
+		// nrcx 000000000460DE70
+
 		rax = *(byte8 **)(rcx + 0x110);
+		// rax 000000000465E730
+		// nrax 
 
 		*(byte8 **)(rdx + 0x30) = rax;
+		// rdx 00000000045F7E70
+		// nrdx 
 
 		*(uint32 *)(rdx + 0x28) = r13d;
+		// rdx 00000000045F7E70
+		// nrdx 
 	}
 
 	
@@ -1130,14 +1225,26 @@ void DevilCerberus(byte8 * baseAddr)
 
 	{
 		uint32 eax = (r15 + 2);
+		// eax 0000000000000026
+		// neax 
 
 		byte8 * rdx = (baseAddr + 0xAAC0);
+		// rdx 00000000045F7930
+		// nrdx 
 
 		rdx += r8;
+		// rdx 00000000045F7F30
+		// nrdx 
 
 		byte8 * rax = (baseAddr + (eax * 8) + 0xA300);
+		// rax 000000000461A270
+		// nrax 
 
 		*(byte8 **)(rax + 0x100) = rdx;
+		// rax 000000000461A270
+		// rdx 00000000045F7F30
+		// nrax 
+		// nrdx 
 
 		vec4 * coat = (vec4 *)(rdx + 0x80);
 		coat[0] = g_coatVertex[0];
@@ -1146,28 +1253,56 @@ void DevilCerberus(byte8 * baseAddr)
 		coat[3] = g_coatVertex[3];
 
 		eax = *(uint8 *)(baseAddr + 0xB609);
+		// eax 0000000000000030
+		// neax 
 
 		eax += 6;
+		// eax 0000000000000036
+		// neax 
 
 		byte8 * rcx = (baseAddr + (eax * 8) + 0x1880);
+		// rcx 0000000004606270
+		// nrcx 
 
 		rax = *(byte8 **)(rcx + 0x110);
+		// rax 000000000465E7F0
+		// nrax 
 
 		*(byte8 **)(rdx + 0x30) = rax;
+		// rax 000000000465E7F0
+		// rdx 00000000045F7F30
+		// nrax 
+		// nrdx 
 
 		*(uint32 *)(rdx + 0x28) = r13d;
+		// rdx  00000000045F7F30
+		// r13d 0000000000000001
+		// nrdx  
+		// nr13d 
 	}
 
 	{
 		uint32 eax = (r15 + 8);
+		// eax 000000000000002C
+		// neax 
 
 		byte8 * rdx = (baseAddr + 0xAB80);
+		// rdx 00000000045F79F0
+		// nrdx 
 
 		rdx += r8;
+		// rdx 00000000045F7FF0
+		// nrdx 
 
 		byte8 * rax = (baseAddr + (eax * 8) + 0xA300);
+		// rax 000000000461BA70
+		// nrax 
 
 		*(byte8 **)(rax + 0x100) = rdx;
+		// rax 000000000461BA70
+		// rdx 00000000045F7FF0
+		// nrax 
+		// nrdx 
 
 		vec4 * coat = (vec4 *)(rdx + 0x80);
 		coat[0] = g_coatVertex[0];
@@ -1176,23 +1311,47 @@ void DevilCerberus(byte8 * baseAddr)
 		coat[3] = g_coatVertex[3];
 
 		eax = *(uint8 *)(baseAddr + 0xB609);
+		// eax 0000000000000030
+		// neax 
 
 		eax += 10;
+		// eax 000000000000003A
+		// neax 
 
 		byte8 * rcx = (baseAddr + (eax * 8) + 0x1880);
+		// rcx 0000000004607270
+		// nrcx 
 
 		rax = *(byte8 **)(rcx + 0x110);
+		// rax 000000000465E8F0
+		// nrax 
 
 		*(byte8 **)(rdx + 0x30) = rax;
+		// rax 000000000465E8F0
+		// rdx 00000000045F7FF0
+		// nrax 
+		// nrdx 
 
 		*(uint32 *)(rdx + 0x28) = r13d;
+		// rdx  00000000045F7FF0
+		// r13d 0000000000000001
+		// nrdx  
+		// nr13d 
 	}
 
 
 
-	*(uint8 *)(baseAddr + 0xB60C) = (uint8)ebp;
-	*(uint8 *)(baseAddr + 0xB60A) = (uint8)r14;
-	*(uint8 *)(baseAddr + 0xB60B) = (uint8)r15;
+	*(uint8 *)(rsi + 0xB60C) = (uint8)ebp;
+	// ebp 0000000000000002
+	// nebp 
+
+	*(uint8 *)(rsi + 0xB60A) = (uint8)r14;
+	// r14 0000000000000003
+	// nr14 
+
+	*(uint8 *)(rsi + 0xB60B) = (uint8)r15;
+	// nr15 
+
 }
 
 
@@ -1736,19 +1895,14 @@ void System_Actor_Init()
 		auto func = CreateFunction(HumanDante);
 		Log("HumanDante %llX", func.addr);
 	}
-
-
 	{
 		auto func = CreateFunction(HumanVergil);
 		Log("HumanVergil %llX", func.addr);
-
-
-
 		//WriteCall((appBaseAddr + 0x220A30), func.addr); // Vergil Human Model Texture Update
-
-
-
-
+	}
+	{
+		auto func = CreateFunction(DevilCerberus);
+		Log("DevilCerberus %llX", func.addr);
 	}
 
 
