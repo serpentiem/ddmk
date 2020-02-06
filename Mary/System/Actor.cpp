@@ -856,114 +856,244 @@ void HumanDante(byte8 * baseAddr)
 
 
 
-void DevilCerberus(byte8 * baseAddr, uint8 assetIndex)
+void DevilCerberus(byte8 * baseAddr)
 {
-	auto actorData = (ACTOR_DATA *)baseAddr;
 
-	actorData->baseModelAsset[assetIndex] = 1;
+	
+	auto g_coatVertex = (vec4 *)(appBaseAddr + 0x35D580);
 
-
-
-	auto textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
-	auto modelFile   = System_File_GetFile(System_File_cacheFile[pl006], 1);
-
-	byte8 * dest = (baseAddr + (assetIndex * 0x780) + 0x200);
-	func_8B470(dest, 1);
-	func_89960(dest, modelFile, textureFile);
-
-	// 0
-	// 0x18
-	// 0x30
-
-	*(uint8 *)(baseAddr + 0xB608) = assetIndex;
-	*(uint8 *)(baseAddr + 0xB609) = (assetIndex * 0x18);
-
-	func_1EF040(baseAddr, (uint32)assetIndex);
-
-	auto shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 4);
-
-	byte8 * addr = func_89DE0(dest);
-	func_8BC60((baseAddr + 0x9AD0 + (assetIndex * 0xC0)), addr, shadowFile);
-	addr = func_89DE0(dest);
-	func_305D80(addr);
+	byte8 * r12 = 0;
+	byte8 * addr = 0;
+	uint32 rbx = 0;
+	byte8 * rcx = 0;
+	
+	byte8 * rsp50 = 0;
 
 
 
-	textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
-	modelFile   = System_File_GetFile(System_File_cacheFile[pl006], 2);
+	byte8 * textureFile = 0;
+	byte8 * modelFile   = 0;
+	byte8 * shadowFile  = 0;
+	byte8 * clothFile   = 0;
+
+	uint32 r13d = 2;
+	uint64 r13 = r13d;
+
+	uint32 edi = r13d;
 
 
-	dest = (baseAddr + 0x7540 + (assetIndex * 0x780));
+	byte8 * rsi = baseAddr;
 
-	func_8B470(dest, 1);
 
-	func_89960(dest, modelFile, textureFile);
+	uint32 r14d = 3;
+	uint64 r14 = r14d;
 
-	// 1 0
-	// 2 0x24
-	//dest = (0x24 + 0x1460);
-	//addr = ((0x24 + 0x1460) * 8);
+	uint32 r15d = 0x24;
+	uint64 r15 = r15d;
 
-	//func_8A000()
 
-	func_8A000(dest, 0, (baseAddr + ((0x24 + 0x1460) * 8)));
 
-	shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 5);
 
-	addr = func_89DE0(dest);
 
-	func_8BC60((baseAddr + 0x9D10), addr, shadowFile);
+	{
+		*(uint32 *)(baseAddr + 0x3E74 + (edi * 4)) = 1;
 
-	addr = func_89DE0(dest);
+		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
+		// rax 
 
-	func_305D80(addr);
+		modelFile   = System_File_GetFile(System_File_cacheFile[pl006], 1);
+		// rax 
 
-	*(uint8 *)(baseAddr + 0x9AC0 + assetIndex) = 1;
+		r12 = baseAddr;
 
-	auto clothFile = System_File_GetFile(System_File_cacheFile[pl006], 3);
+		r12 += (edi * 0x780);
 
+		r12 += 0x200;
+
+		// rcx 
+		// rdx 
+		func_8B470(r12, 1);
+
+		// rcx 
+		// rdx 
+		// r8  
+		func_89960(r12, modelFile, textureFile);
+
+
+		// 0 0
+		// 1 0x18
+		// 2 0x30
+		*(uint8 *)(rsi + 0xB609) = 0x30;
+		*(uint8 *)(rsi + 0xB608) = (uint8)r13d;
+
+
+		// rcx 
+		// rdx 
+		func_1EF040(rsi, r13d);
+	}
+
+	{
+		shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 4);
+		// rax 
+
+		// r13 no longer valid here!
+
+		// rcx 
+		addr = func_89DE0(r12);
+		// rax 
+
+		rbx = (edi * 0xC0);
+
+		rcx = (rsi + 0x9AD0);
+
+		rcx += rbx;
+
+		// rcx 
+		// rdx 
+		// r8  
+		func_8BC60(rcx, addr, shadowFile);
+
+
+		// rcx 
+		addr = func_89DE0(r12);
+		// rax 
+
+
+		// rcx 
+		func_305D80(addr);
+	}
+
+
+
+	{
+		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
+		// rax 
+
+		modelFile = System_File_GetFile(System_File_cacheFile[pl006], 2);
+		// rax 
+
+		
+
+		r13d = r14d;
+
+		r12 = baseAddr;
+		r12 += (r13d * 0x780);
+		r12 += 0x7540;
+
+		// rcx 
+		// rdx 
+		func_8B470(r12, 1);
+
+		// rcx 
+		// rdx 
+		// r8  
+		func_89960(r12, modelFile, textureFile);
+
+		// 1 0
+		// 2 0x24
+
+		
+
+
+		uint32 eax = r15d;
+
+		uint64 rax = eax;
+
+		rax += 0x1460;
+
+		byte8 * rcx = (rsi + (rax * 8));
+	
+
+		rsp50 = rcx;
+
+
+		byte8 * r8 = rcx;
+
+		// rcx 
+		// rdx 
+		// r8  
+		func_8A000(r12, 0, r8);
+
+
+
+
+
+
+
+		shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 5);
+		// rax 
+
+		uint64 rbx = (r13 * 0xC0);
+
+		// rcx 
+		addr = func_89DE0(r12);
+		// rax 
+
+		rcx = (baseAddr + 0x9D10);
+	
+		rcx += rbx;
+
+		// rcx 
+		// rdx 
+		// r8  
+		func_8BC60(rcx, addr, shadowFile);
+
+		// rcx 
+		addr = func_89DE0(r12);
+		// rax 
+
+		// rcx 
+		func_305D80(addr);
+
+		*(uint8 *)(rsi + r13 + 0x9AC0) = 1;
+	}
+
+
+
+
+
+
+
+
+
+
+	clothFile = System_File_GetFile(System_File_cacheFile[pl006], 3);
+	// rax 
+
+	// r12 no longer valid here!
+
+	// rcx 
 	uint32 count = func_2C9F40(clothFile);
+	// rax 
 
 
-	dest = (baseAddr + 0xA540);
-
+	byte8 * dest = (baseAddr + 0xA540);
 	for (uint32 index = 0; index < count; index++)
 	{
-		func_2CA1D0(dest, (baseAddr + ((0x24 + 0x1460) * 8)), clothFile, index);
+		// rcx 
+		// rdx 
+		// r8  
+		// r9  
+		func_2CA1D0(dest, rsp50, clothFile, index);
+
 		dest += 0xF0;
 	}
 
 
-	// ebp  assetIndex
-	// r13d slotId
-
-
-	auto g_coatVertex = (vec4 *)(appBaseAddr + 0x35D580);
-	//auto coatVertex = (vec4 *)(baseAddr + 0xAA00);
-
-	//coatVertex[0] = g_coatVertex[0];
-	//coatVertex[1] = g_coatVertex[1];
-	//coatVertex[2] = g_coatVertex[2];
-	//coatVertex[3] = g_coatVertex[3];
-	//addr = (baseAddr + 0xA300 + ((0x24 + 1) * 8));
-	//dest = (baseAddr + 0xAA00 + ((0x24 + 1) * 8));
-	//*(byte8 **)(addr + 0x100) = dest;
-
-
-	//uint32 slotId = 1;
 
 
 
-	uint64 r14 = 3;
 
 
-	uint32 ebp  = assetIndex;
+	
+
+
+
+	uint32 ebp = 2;
 
 	uint32 r13d = 1; // slot
 
 	uint64 r8 = (ebp * 0x300);
-
-	uint64 r15 = 0x24;
 
 	{
 		uint32 eax = (r15 + 1);
