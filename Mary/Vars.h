@@ -91,6 +91,7 @@ enum CACHE_FILE_
 	pl021_00_7,
 	pl021_00_8,
 	pl021_00_9,
+	em034,
 	MAX_CACHE_FILE,
 };
 
@@ -181,6 +182,7 @@ constexpr const char * cacheFilename[MAX_CACHE_FILE] =
 	"pl021_00_7.pac",
 	"pl021_00_8.pac",
 	"pl021_00_9.pac",
+	"em034.pac",
 };
 
 constexpr uint32 stringItemOff[MAX_CACHE_FILE] =
@@ -859,12 +861,10 @@ struct ACTOR_DATA
 	byte32 motionState1[4]; // 0x3E00
 	_(80);
 	byte32 motionState2[3]; // 0x3E60
-	uint8 baseModel; // 0x3E6C
-	_(3);
-	uint8 baseModelMirror1; // 0x3E70
-	_(23);
-	uint8 baseModelMirror2; // 0x3E88
-	_(18);
+	uint8 baseModel[2]; // 0x3E6C
+	_(6);
+	uint8 baseModelAsset[3]; // 0x3E74
+	_(36);
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E

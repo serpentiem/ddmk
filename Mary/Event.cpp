@@ -101,6 +101,9 @@ static void Arcade_InitSession()
 
 	// @Todo: Auto and specifiy VARS.
 
+	// @Todo: Create SESSION_DATA struct.
+
+
 	byte * addr = (appBaseAddr + 0xC8F250);
 	uint32  & mission            = *(uint32  *)(addr        );
 	uint32  & mode               = *(uint32  *)(addr + 0xC  );

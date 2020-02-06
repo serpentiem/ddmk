@@ -608,10 +608,20 @@ typedef void (__fastcall * func_2CA2F0_t)
 	uint32   count
 );
 
+typedef void(__fastcall * func_1EF040_t)
+(
+	byte8  * baseAddr,
+	uint32   index
+);
 
 
 
 
+
+/*
+dmc3.exe+2141A7 - E8 94AEFDFF           - call dmc3.exe+1EF040
+
+*/
 
 
 
@@ -629,6 +639,7 @@ func_8A000_t  func_8A000  = 0;
 func_2C9F40_t func_2C9F40 = 0;
 func_2CA1D0_t func_2CA1D0 = 0;
 func_2CA2F0_t func_2CA2F0 = 0;
+func_1EF040_t func_1EF040 = 0;
 
 /*
 [rax + 150] dmc3.exe+8A000
@@ -832,9 +843,253 @@ void HumanDante(byte8 * baseAddr)
 	coatShadowFile = System_File_GetFile(System_File_cacheFile[pl000], 14);
 	addr = func_89DE0((baseAddr + 0x7540));
 	func_8BC60((baseAddr + 0x9D10), addr, coatShadowFile);
+
+
+
 	addr = func_89DE0((baseAddr + 0x7540));
 	func_305D80(addr);
 }
+
+
+
+
+
+
+
+void DevilCerberus(byte8 * baseAddr, uint8 assetIndex)
+{
+	auto actorData = (ACTOR_DATA *)baseAddr;
+
+	actorData->baseModelAsset[assetIndex] = 1;
+
+
+
+	auto textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
+	auto modelFile   = System_File_GetFile(System_File_cacheFile[pl006], 1);
+
+	byte8 * dest = (baseAddr + (assetIndex * 0x780) + 0x200);
+	func_8B470(dest, 1);
+	func_89960(dest, modelFile, textureFile);
+
+	// 0
+	// 0x18
+	// 0x30
+
+	*(uint8 *)(baseAddr + 0xB608) = assetIndex;
+	*(uint8 *)(baseAddr + 0xB609) = (assetIndex * 0x18);
+
+	func_1EF040(baseAddr, (uint32)assetIndex);
+
+	auto shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 4);
+
+	byte8 * addr = func_89DE0(dest);
+	func_8BC60((baseAddr + 0x9AD0 + (assetIndex * 0xC0)), addr, shadowFile);
+	addr = func_89DE0(dest);
+	func_305D80(addr);
+
+
+
+	textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
+	modelFile   = System_File_GetFile(System_File_cacheFile[pl006], 2);
+
+
+	dest = (baseAddr + 0x7540 + (assetIndex * 0x780));
+
+	func_8B470(dest, 1);
+
+	func_89960(dest, modelFile, textureFile);
+
+	// 1 0
+	// 2 0x24
+	//dest = (0x24 + 0x1460);
+	//addr = ((0x24 + 0x1460) * 8);
+
+	//func_8A000()
+
+	func_8A000(dest, 0, (baseAddr + ((0x24 + 0x1460) * 8)));
+
+	shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 5);
+
+	addr = func_89DE0(dest);
+
+	func_8BC60((baseAddr + 0x9D10), addr, shadowFile);
+
+	addr = func_89DE0(dest);
+
+	func_305D80(addr);
+
+	*(uint8 *)(baseAddr + 0x9AC0 + assetIndex) = 1;
+
+	auto clothFile = System_File_GetFile(System_File_cacheFile[pl006], 3);
+
+	uint32 count = func_2C9F40(clothFile);
+
+
+	dest = (baseAddr + 0xA540);
+
+	for (uint32 index = 0; index < count; index++)
+	{
+		func_2CA1D0(dest, (baseAddr + ((0x24 + 0x1460) * 8)), clothFile, index);
+		dest += 0xF0;
+	}
+
+
+	// ebp  assetIndex
+	// r13d slotId
+
+
+	auto g_coatVertex = (vec4 *)(appBaseAddr + 0x35D580);
+	//auto coatVertex = (vec4 *)(baseAddr + 0xAA00);
+
+	//coatVertex[0] = g_coatVertex[0];
+	//coatVertex[1] = g_coatVertex[1];
+	//coatVertex[2] = g_coatVertex[2];
+	//coatVertex[3] = g_coatVertex[3];
+	//addr = (baseAddr + 0xA300 + ((0x24 + 1) * 8));
+	//dest = (baseAddr + 0xAA00 + ((0x24 + 1) * 8));
+	//*(byte8 **)(addr + 0x100) = dest;
+
+
+	//uint32 slotId = 1;
+
+
+
+	uint64 r14 = 3;
+
+
+	uint32 ebp  = assetIndex;
+
+	uint32 r13d = 1; // slot
+
+	uint64 r8 = (ebp * 0x300);
+
+	uint64 r15 = 0x24;
+
+	{
+		uint32 eax = (r15 + 1);
+
+		byte8 * rdx = (baseAddr + 0xAA00);
+
+		rdx += r8;
+
+		byte8 * rax = (baseAddr + (eax * 8) + 0xA300);
+
+		*(byte8 **)(rax + 0x100) = rdx;
+
+		vec4 * coat = (vec4 *)(rdx + 0x80);
+		coat[0] = g_coatVertex[0];
+		coat[1] = g_coatVertex[1];
+		coat[2] = g_coatVertex[2];
+		coat[3] = g_coatVertex[3];
+
+		eax = *(uint8 *)(baseAddr + 0xB609);
+
+		eax += 3;
+
+		byte8 * rcx = (baseAddr + (eax * 8) + 0x1880);
+
+		rax = *(byte8 **)(rcx + 0x110);
+
+		*(byte8 **)(rdx + 0x30) = rax;
+
+		*(uint32 *)(rdx + 0x28) = r13d;
+	}
+
+	
+
+
+	{
+		uint32 eax = (r15 + 2);
+
+		byte8 * rdx = (baseAddr + 0xAAC0);
+
+		rdx += r8;
+
+		byte8 * rax = (baseAddr + (eax * 8) + 0xA300);
+
+		*(byte8 **)(rax + 0x100) = rdx;
+
+		vec4 * coat = (vec4 *)(rdx + 0x80);
+		coat[0] = g_coatVertex[0];
+		coat[1] = g_coatVertex[1];
+		coat[2] = g_coatVertex[2];
+		coat[3] = g_coatVertex[3];
+
+		eax = *(uint8 *)(baseAddr + 0xB609);
+
+		eax += 6;
+
+		byte8 * rcx = (baseAddr + (eax * 8) + 0x1880);
+
+		rax = *(byte8 **)(rcx + 0x110);
+
+		*(byte8 **)(rdx + 0x30) = rax;
+
+		*(uint32 *)(rdx + 0x28) = r13d;
+	}
+
+	{
+		uint32 eax = (r15 + 8);
+
+		byte8 * rdx = (baseAddr + 0xAB80);
+
+		rdx += r8;
+
+		byte8 * rax = (baseAddr + (eax * 8) + 0xA300);
+
+		*(byte8 **)(rax + 0x100) = rdx;
+
+		vec4 * coat = (vec4 *)(rdx + 0x80);
+		coat[0] = g_coatVertex[0];
+		coat[1] = g_coatVertex[1];
+		coat[2] = g_coatVertex[2];
+		coat[3] = g_coatVertex[3];
+
+		eax = *(uint8 *)(baseAddr + 0xB609);
+
+		eax += 10;
+
+		byte8 * rcx = (baseAddr + (eax * 8) + 0x1880);
+
+		rax = *(byte8 **)(rcx + 0x110);
+
+		*(byte8 **)(rdx + 0x30) = rax;
+
+		*(uint32 *)(rdx + 0x28) = r13d;
+	}
+
+
+
+	*(uint8 *)(baseAddr + 0xB60C) = (uint8)ebp;
+	*(uint8 *)(baseAddr + 0xB60A) = (uint8)r14;
+	*(uint8 *)(baseAddr + 0xB60B) = (uint8)r15;
+}
+
+
+
+
+
+/*
+[rax + 150] dmc3.exe+8A000
+[rdx +   8] dmc3.exe+89DE0
+[rdx +  68] dmc3.exe+211C10
+[rdi +   8] dmc3.exe+8BC60
+[ r8 +  38] dmc3.exe+8B470
+[ r9 +  50] dmc3.exe+89960
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -857,8 +1112,8 @@ void HumanVergil(byte8 * baseAddr)
 
 
 
-	textureFile = System_File_GetFile(System_File_cacheFile[pl021], 0);
-	modelFile   = System_File_GetFile(System_File_cacheFile[pl021], 1);
+	textureFile = System_File_GetFile(System_File_cacheFile[em034], 31);
+	modelFile   = System_File_GetFile(System_File_cacheFile[em034], 32);
 	func_8B470((baseAddr + 0x200), 1);
 	func_89960((baseAddr + 0x200), modelFile, textureFile);
 
@@ -1133,14 +1388,9 @@ void HumanVergil(byte8 * baseAddr)
 
 
 
-/*
-[rax + 150] dmc3.exe+8A000
-[rdx +   8] dmc3.exe+89DE0
-[rdx +  68] dmc3.exe+211C10
-[rdi +   8] dmc3.exe+8BC60
-[ r8 +  38] dmc3.exe+8B470
-[ r9 +  50] dmc3.exe+89960
-*/
+
+
+
 
 
 
@@ -1361,6 +1611,14 @@ void System_Actor_Init()
 	{
 		auto func = CreateFunction(HumanVergil);
 		Log("HumanVergil %llX", func.addr);
+
+
+
+		//WriteCall((appBaseAddr + 0x220A30), func.addr); // Vergil Human Model Texture Update
+
+
+
+
 	}
 
 
@@ -1402,10 +1660,10 @@ void System_Actor_Init()
 		auto func = CreateFunction((appBaseAddr + 0x2CA2F0), 0, true, true, 0, 0, 0, 0, 1);
 		func_2CA2F0 = (func_2CA2F0_t)func.addr;
 	}
-
-
-
-
+	{
+		auto func = CreateFunction((appBaseAddr + 0x1EF040));
+		func_1EF040 = (func_1EF040_t)func.addr;
+	}
 
 
 
@@ -1418,6 +1676,8 @@ void System_Actor_Init()
 
 
 }
+
+#pragma region Ignore
 
 void System_Actor_ToggleArrayExtension(bool enable)
 {
@@ -1608,3 +1868,5 @@ void System_Actor_ToggleDisableIdleTimer(bool enable)
 		vp_memcpy((appBaseAddr + 0x1F29AE), buffer, sizeof(buffer));
 	}
 }
+
+#pragma endregion
