@@ -856,530 +856,370 @@ void HumanDante(byte8 * baseAddr)
 
 
 
-void DevilCerberus(byte8 * baseAddr)
+void DevilCerberusSlot1(byte8 * baseAddr)
 {
-
-	
 	auto g_coatVertex = (vec4 *)(appBaseAddr + 0x35D580);
 
-	byte8 * r12 = 0;
-	byte8 * addr = 0;
-	uint32 rbx = 0;
-	byte8 * rcx = 0;
-	
-	byte8 * rsp50 = 0;
-
-
+	uint32   rbx   = 0;
+	byte8  * rcx   = 0;
+	byte8  * r12   = 0;
+	byte8  * rsp50 = 0;
 
 	byte8 * textureFile = 0;
 	byte8 * modelFile   = 0;
 	byte8 * shadowFile  = 0;
 	byte8 * clothFile   = 0;
+	byte8 * addr        = 0;
 
-	uint32 r13d = 1; // devil id or slot id
-	// r13 0000000000000002
-	// nr13 
-
-	uint64 r13 = r13d;
-
-	uint32 edi = r13d;
-
-
-	byte8 * rsi = baseAddr;
-	// rsi 00000000045ECE70
-	// nrsi 
-
-
-
-
-	uint32 r14d = 1; // asset count I guess
-	// r14 0000000000000003 // number of registered objects
-	// nr14 
-
-	uint64 r14 = r14d;
-
-
+	uint32   r13d  = 1; // slot
+	uint64   r13   = r13d;
+	byte8  * rsi   = baseAddr;
+	uint32   edi   = r13d;
+	uint32   r14d  = 1; // number of registered objects
+	uint64   r14   = r14d;
 	// 1 0
 	// 2 0x24
-
-	uint32 r15d = 0;
-
-
-
-
-
-
-	uint64 r15 = r15d;
-
-	uint32 ebp = r13d; // another counter
-
-
-
-
-
+	uint32 r15d = 0; // slot offset
+	uint64 r15  = r15d;
+	uint32 ebp  = r13d; // another counter
 
 	{
 		*(uint32 *)(rsi + 0x3E74 + (edi * 4)) = 1;
 
-
-
 		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
-		// rax 00000000207BA020
-		// nrax 00000000207BA020
-
 		modelFile   = System_File_GetFile(System_File_cacheFile[pl006], 1);
-		// rax 00000000207E5820
-		// nrax 00000000207E5820
 
 		r12 = baseAddr;
-
 		r12 += (edi * 0x780);
-
 		r12 += 0x200;
 
-		// rcx 00000000045ED7F0
-		// rdx 0000000000000001
-		// nrcx 00000000045ED7F0
-		// nrdx 0000000000000001
 		func_8B470(r12, 1);
 
-		// rcx 00000000045ED7F0
-		// rdx 00000000207E5820
-		// r8  00000000207BA020
-		// nrcx 00000000045ED7F0
-		// nrdx 00000000207E5820
-		// nr8  00000000207BA020
 		func_89960(r12, modelFile, textureFile);
-
 
 		// 0 0
 		// 1 0x18
 		// 2 0x30
-
-		// rax 0000000000000030
-		// r13 0000000000000002
 		*(uint8 *)(rsi + 0xB609) = 0x18;
 		*(uint8 *)(rsi + 0xB608) = (uint8)r13d;
 
-
-		// rcx 00000000045ECE70
-		// rdx 0000000000000001
-		// nrcx 00000000045ECE70
-		// nrdx 0000000000000001
 		func_1EF040(rsi, r13d);
 	}
 
 	{
 		shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 4);
-		// rax 000000002080C3F0
-		// nrax 000000002080C3F0
-
-		// r13 no longer valid here!
-
-		// rcx 00000000045ED7F0
-		// nrcx 00000000045ED7F0
 		addr = func_89DE0(r12);
-		// rax 00000000045ED870
-		// nrax 00000000045ED870
-
 		rbx = (edi * 0xC0);
-
 		rcx = (rsi + 0x9AD0);
-
 		rcx += rbx;
-
-		// rcx 00000000045F6A00
-		// rdx 00000000045ED870
-		// r8  000000002080C3F0
-		// nrcx 00000000045F6A00
-		// nrdx 00000000045ED870
-		// nr8  000000002080C3F0
 		func_8BC60(rcx, addr, shadowFile);
-
-
-		// rcx 00000000045ED7F0
-		// nrcx 00000000045ED7F0
 		addr = func_89DE0(r12);
-		// rax 00000000045ED870
-		// nrax 00000000045ED870
-
-
-		// rcx 00000000045ED870
-		// nrcx 00000000045ED870
 		func_305D80(addr);
 	}
-
-
 
 	{
 		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
-		// rax 00000000207BA020
-		// nrax 00000000207BA020
-
 		modelFile = System_File_GetFile(System_File_cacheFile[pl006], 2);
-		// rax 000000002080A520
-		// nrax 000000002080A520
-
-		
-
 		r13d = r14d;
-
 		r12 = baseAddr;
 		r12 += (r13d * 0x780);
 		r12 += 0x7540;
-
-		// rcx 00000000045F4B30
-		// rdx 0000000000000001
-		// nrcx 00000000045F4B30
-		// nrdx 0000000000000001
 		func_8B470(r12, 1);
-
-		// rcx 00000000045F4B30
-		// rdx 000000002080A520
-		// r8  00000000207BA020
-		// nrcx 00000000045F4B30
-		// nrdx 000000002080A520
-		// nr8  00000000207BA020
 		func_89960(r12, modelFile, textureFile);
-
-		// 1 0
-		// 2 0x24
-
-		
-
-
 		uint32 eax = r15d;
-
 		uint64 rax = eax;
-
 		rax += 0x1460;
-
 		byte8 * rcx = (rsi + (rax * 8));
-	
-
 		rsp50 = rcx;
-
-
 		byte8 * r8 = rcx;
-
-		// rcx 00000000045F4B30
-		// rdx 0000000000000000
-		// r8  00000000045F7170
-		// nrcx 00000000045F4B30
-		// nrdx 0000000000000000
-		// nr8  00000000045F7170
 		func_8A000(r12, 0, r8);
-
-
-
-
-
-
-
 		shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 5);
-		// rax 000000002080FAC0
-		// nrax 000000002080FAC0
-
-
 		r13d = r14d;
 		r13 = r14;
-
-
-
-
 		uint64 rbx = (r13 * 0xC0);
-
-		// rcx 00000000045F4B30
-		// nrcx 00000000045F4B30
 		addr = func_89DE0(r12);
-		// rax 00000000045F4BB0
-		// nrax 00000000045F4BB0
-
 		rcx = (baseAddr + 0x9D10);
-	
 		rcx += rbx;
-
-		// rcx 00000000045F6C40
-		// rdx 00000000045F4BB0
-		// r8  000000002080FAC0
-		// nrcx 00000000045F6C40
-		// nrdx 00000000045F4BB0
-		// nr8  000000002080FAC0
 		func_8BC60(rcx, addr, shadowFile);
-
-		// rcx 00000000045F4B30
-		// nrcx 00000000045F4B30
 		addr = func_89DE0(r12);
-		// rax 00000000045F4BB0
-		// nrax 00000000045F4BB0
-
-		// rcx 00000000045F4BB0
-		// nrcx 00000000045F4BB0
 		func_305D80(addr);
-
-		// rsi 00000000045ECE70
-		// r13 0000000000000003
 		*(uint8 *)(rsi + r13 + 0x9AC0) = 1;
 	}
 
-
-
-
-
-
-
-
-
-
 	clothFile = System_File_GetFile(System_File_cacheFile[pl006], 3);
-	// rax 000000002080C240
-	// nrax 000000002080C240
-
-	// r12 no longer valid here!
-
-	// rcx 000000002080C240
-	// nrcx 00007FF609550D50
 	uint32 count = func_2C9F40(clothFile);
-	// rax 0000000000000001
-	// nrax 0000000000000001
-
-
 	ebp = 0;
-
-
 	byte8 * dest = (rsi + 0xA540);
-
 	dest += (ebp * 0xF0);
-
-
 	for (uint32 index = 0; index < count; index++)
 	{
-		// rcx 00000000045F73B0
-		// rdx 00000000045F7170
-		// r8  000000002080C240
-		// r9  0000000000000000
-		// nrcx 00000000045F73B0
-		// nrdx 00000000045F7170
-		// nr8  000000002080C240
-		// nr9  0000000000000000
 		func_2CA1D0(dest, rsp50, clothFile, index);
-
 		dest += 0xF0;
 	}
 
-
-
-
-
-
-
-	
-
-
-
-	
-
 	r13d = 1; // local id
-
 	uint64 r8 = (ebp * 0x300);
-
-	// r8 0000000000000600
-	// nr8 
-
-
-
-
-
-
-
-
-
-
 
 	{
 		uint32 eax = (r15 + 1);
 		byte8 * rdx = (baseAddr + 0xAA00);
 		rdx += r8;
-		// rdx 00000000045F7870
-		// nrdx 00000000045F7870
-
 		byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
-		// rax 0000000004610E70
-		// nrax 0000000004610E70
-
-		// rax 0000000004610E70
-		// rdx 00000000045F7870
-		// nrax 0000000004610E70
-		// nrdx 00000000045F7870
 		*(byte8 **)(rax + 0x100) = rdx;
-
 		vec4 * coat = (vec4 *)(rdx + 0x80);
 		coat[0] = g_coatVertex[0];
 		coat[1] = g_coatVertex[1];
 		coat[2] = g_coatVertex[2];
 		coat[3] = g_coatVertex[3];
-
 		eax = *(uint8 *)(baseAddr + 0xB609);
-		// eax 0000000000000018
-		// neax 0000000000000018
-
 		eax += 3;
-
 		byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
-		// rcx 00000000045FF670
-		// nrcx 00000000045FF670
-
-		// rcx 00000000045FF670
-		// nrcx 
 		rax = *(byte8 **)(rcx + 0x110);
-		// rax 0000000004648F30
-		// nrax 0000000004648F30
-
-		// rax 0000000004648F30
-		// rdx 00000000045F7870
-		// nrax 0000000004648F30
-		// nrdx 00000000045F7870
 		*(byte8 **)(rdx + 0x30) = rax;
-
-		// rdx  00000000045F7870
-		// r13d 0000000000000001
-		// nrdx  00000000045F7870
-		// nr13d 0000000000000001
 		*(uint32 *)(rdx + 0x28) = r13d;
 	}
-
-	
-
-
-
-
-
 
 	{
 		uint32 eax = (r15 + 2);
 		byte8 * rdx = (baseAddr + 0xAAC0);
 		rdx += r8;
-		// rdx 00000000045F7930
-		// nrdx 00000000045F7930
-
 		byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
-		// rax 0000000004611270
-		// nrax 0000000004611270
-
-		// rax 0000000004611270
-		// rdx 00000000045F7930
-		// nrax 0000000004611270
-		// nrdx 00000000045F7930
 		*(byte8 **)(rax + 0x100) = rdx;
-
 		vec4 * coat = (vec4 *)(rdx + 0x80);
 		coat[0] = g_coatVertex[0];
 		coat[1] = g_coatVertex[1];
 		coat[2] = g_coatVertex[2];
 		coat[3] = g_coatVertex[3];
-
 		eax = *(uint8 *)(baseAddr + 0xB609);
-		// eax 0000000000000018
-		// neax 0000000000000018
-
 		eax += 6;
-
 		byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
-		// rcx 0000000004600270
-		// nrcx 0000000004600270
-
-		// rcx 0000000004600270
-		// nrcx 0000000004600270
 		rax = *(byte8 **)(rcx + 0x110);
-		// rax 0000000004648FF0
-		// nrax 0000000004648FF0
-
-		// rax 0000000004648FF0
-		// rdx 00000000045F7930
-		// nrax 0000000004648FF0
-		// nrdx 00000000045F7930
 		*(byte8 **)(rdx + 0x30) = rax;
-
-		// rdx  00000000045F7930
-		// r13d 0000000000000001
-		// nrdx  00000000045F7930
-		// nr13d 0000000000000001
 		*(uint32 *)(rdx + 0x28) = r13d;
 	}
-
-
-
-
-
-
-
 
 	{
 		uint32 eax = (r15 + 8);
 		byte8 * rdx = (baseAddr + 0xAB80);
 		rdx += r8;
-		// rdx 00000000045F79F0
-		// nrdx 00000000045F79F0
-
 		byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
-		// rax 0000000004612A70
-		// nrax 0000000004612A70
-
-		// rax 0000000004612A70
-		// rdx 00000000045F79F0
-		// nrax 0000000004612A70
-		// nrdx 00000000045F79F0
 		*(byte8 **)(rax + 0x100) = rdx;
-
 		vec4 * coat = (vec4 *)(rdx + 0x80);
 		coat[0] = g_coatVertex[0];
 		coat[1] = g_coatVertex[1];
 		coat[2] = g_coatVertex[2];
 		coat[3] = g_coatVertex[3];
-
 		eax = *(uint8 *)(baseAddr + 0xB609);
-		// eax 0000000000000018
-		// neax 0000000000000018
-
 		eax += 10;
-
 		byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
-		// rcx 0000000004601270
-		// nrcx 0000000004601270
-
-		// rcx 0000000004601270
-		// nrcx 0000000004601270
 		rax = *(byte8 **)(rcx + 0x110);
-		// rax 00000000046490F0
-		// nrax 00000000046490F0
-
-		// rax 00000000046490F0
-		// rdx 00000000045F79F0
-		// nrax 00000000046490F0
-		// nrdx 00000000045F79F0
 		*(byte8 **)(rdx + 0x30) = rax;
-
-		// rdx  00000000045F79F0
-		// r13d 0000000000000001
-		// nrdx  00000000045F79F0
-		// nr13d 0000000000000001
 		*(uint32 *)(rdx + 0x28) = r13d;
 	}
 
-
-
 	*(uint8 *)(rsi + 0xB60C) = (uint8)ebp;
-	// ebp 0000000000000002
-	// nebp 
-
 	*(uint8 *)(rsi + 0xB60A) = (uint8)r14;
-	// r14 0000000000000003
-	// nr14 
-
 	*(uint8 *)(rsi + 0xB60B) = (uint8)r15;
-	// nr15 
-
 }
+
+
+
+
+
+
+
+void DevilCerberusSlot2(byte8 * baseAddr)
+{
+	auto g_coatVertex = (vec4 *)(appBaseAddr + 0x35D580);
+
+	byte8 * textureFile = 0;
+	byte8 * modelFile   = 0;
+	byte8 * shadowFile  = 0;
+	byte8 * clothFile   = 0;
+	byte8 * addr        = 0;
+
+	uint32 slot    = 2;
+	// 1 0
+	// 2 0x24
+	uint32 slotOff = 0x24;
+	uint32 objectCounter = 3;
+	byte8 * slotBaseAddr = (baseAddr + (slot * 0x780) + 0x200);
+	uint32 localCounter = 2;
+	byte8 * saneAddr = 0;
+
+	{
+		*(uint32 *)(baseAddr + 0x3E74 + (slot * 4)) = 1;
+		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
+		modelFile   = System_File_GetFile(System_File_cacheFile[pl006], 1);
+		func_8B470(slotBaseAddr, 1);
+		func_89960(slotBaseAddr, modelFile, textureFile);
+		// 0 0
+		// 1 0x18
+		// 2 0x30
+		*(uint8 *)(baseAddr + 0xB609) = 0x30;
+		*(uint8 *)(baseAddr + 0xB608) = (uint8)slot;
+		func_1EF040(baseAddr, slot);
+	}
+
+	{
+		shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 4);
+		addr = func_89DE0(slotBaseAddr);
+		uint32 rbx = (slot * 0xC0);
+		byte8 * rcx = (baseAddr + 0x9AD0);
+		rcx += rbx;
+		func_8BC60(rcx, addr, shadowFile);
+		addr = func_89DE0(slotBaseAddr);
+		func_305D80(addr);
+	}
+
+	{
+		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
+		modelFile = System_File_GetFile(System_File_cacheFile[pl006], 2);
+		byte8 * r12 = baseAddr;
+		r12 += (objectCounter * 0x780);
+		r12 += 0x7540;
+		func_8B470(r12, 1);
+		func_89960(r12, modelFile, textureFile);
+		uint32 eax = slotOff;
+		uint64 rax = eax;
+		rax += 0x1460;
+		byte8 * rcx = (baseAddr + (rax * 8));
+		saneAddr = rcx;
+		byte8 * r8 = rcx;
+		func_8A000(r12, 0, r8);
+		shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 5);
+		uint64 rbx = (objectCounter * 0xC0);
+		addr = func_89DE0(r12);
+		rcx = (baseAddr + 0x9D10);
+		rcx += rbx;
+		func_8BC60(rcx, addr, shadowFile);
+		addr = func_89DE0(r12);
+		func_305D80(addr);
+		*(uint8 *)(baseAddr + objectCounter + 0x9AC0) = 1;
+	}
+
+	clothFile = System_File_GetFile(System_File_cacheFile[pl006], 3);
+	uint32 count = func_2C9F40(clothFile);
+	byte8 * dest = (baseAddr + 0xA540);
+	dest += (localCounter * 0xF0);
+	for (uint32 index = 0; index < count; index++)
+	{
+		func_2CA1D0(dest, saneAddr, clothFile, index);
+		dest += 0xF0;
+	}
+
+	uint64 r8 = (localCounter * 0x300);
+
+	{
+		uint32 eax = (slotOff + 1);
+		byte8 * rdx = (baseAddr + 0xAA00);
+		rdx += r8;
+		byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
+		*(byte8 **)(rax + 0x100) = rdx;
+		vec4 * coat = (vec4 *)(rdx + 0x80);
+		coat[0] = g_coatVertex[0];
+		coat[1] = g_coatVertex[1];
+		coat[2] = g_coatVertex[2];
+		coat[3] = g_coatVertex[3];
+		eax = *(uint8 *)(baseAddr + 0xB609);
+		eax += 3;
+		byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
+		rax = *(byte8 **)(rcx + 0x110);
+		*(byte8 **)(rdx + 0x30) = rax;
+		*(uint32 *)(rdx + 0x28) = 1;
+	}
+
+	{
+		uint32 eax = (slotOff + 2);
+		byte8 * rdx = (baseAddr + 0xAAC0);
+		rdx += r8;
+		byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
+		*(byte8 **)(rax + 0x100) = rdx;
+		vec4 * coat = (vec4 *)(rdx + 0x80);
+		coat[0] = g_coatVertex[0];
+		coat[1] = g_coatVertex[1];
+		coat[2] = g_coatVertex[2];
+		coat[3] = g_coatVertex[3];
+		eax = *(uint8 *)(baseAddr + 0xB609);
+		eax += 6;
+		byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
+		rax = *(byte8 **)(rcx + 0x110);
+		*(byte8 **)(rdx + 0x30) = rax;
+		*(uint32 *)(rdx + 0x28) = 1;
+	}
+
+	{
+		uint32 eax = (slotOff + 8);
+		byte8 * rdx = (baseAddr + 0xAB80);
+		rdx += r8;
+		byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
+		*(byte8 **)(rax + 0x100) = rdx;
+		vec4 * coat = (vec4 *)(rdx + 0x80);
+		coat[0] = g_coatVertex[0];
+		coat[1] = g_coatVertex[1];
+		coat[2] = g_coatVertex[2];
+		coat[3] = g_coatVertex[3];
+		eax = *(uint8 *)(baseAddr + 0xB609);
+		eax += 10;
+		byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
+		rax = *(byte8 **)(rcx + 0x110);
+		*(byte8 **)(rdx + 0x30) = rax;
+		*(uint32 *)(rdx + 0x28) = 1;
+	}
+
+	*(uint8 *)(baseAddr + 0xB60C) = (uint8)localCounter;
+	*(uint8 *)(baseAddr + 0xB60A) = (uint8)objectCounter;
+	*(uint8 *)(baseAddr + 0xB60B) = (uint8)slotOff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1928,8 +1768,12 @@ void System_Actor_Init()
 		//WriteCall((appBaseAddr + 0x220A30), func.addr); // Vergil Human Model Texture Update
 	}
 	{
-		auto func = CreateFunction(DevilCerberus);
-		Log("DevilCerberus %llX", func.addr);
+		auto func = CreateFunction(DevilCerberusSlot1);
+		Log("DevilCerberus1 %llX", func.addr);
+	}
+	{
+		auto func = CreateFunction(DevilCerberusSlot2);
+		Log("DevilCerberus2 %llX", func.addr);
 	}
 
 
