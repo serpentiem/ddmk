@@ -8,6 +8,9 @@
 
 #include "../Cosmetics/Color.h"
 
+
+extern uint32 devilCounter;
+
 extern bool System_Actor_enableArrayExtension;
 extern bool System_Actor_enableCreateActor;
 extern bool System_Actor_enableUpdateActor;

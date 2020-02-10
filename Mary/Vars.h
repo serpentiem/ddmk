@@ -833,6 +833,12 @@ struct MODEL_DATA
 	_(16);
 };
 
+constexpr uint32 mdsize = (uint32)sizeof(MODEL_DATA);
+
+
+
+
+
 struct ACTOR_DATA
 {
 	_(120);
@@ -930,7 +936,17 @@ struct ACTOR_DATA
 	byte16 buttonInput[4]; // 0x74E0
 	_(16712);
 	MODEL_DATA modelData[6]; // 0xB630
+	_(212976);
 };
+
+
+
+
+
+
+constexpr uint32 adsize = (uint32)sizeof(ACTOR_DATA);
+
+
 
 #pragma pack(pop)
 

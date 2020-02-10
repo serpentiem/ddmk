@@ -33,6 +33,7 @@ var GetByteSize = function(str)
 		[ "float32"     , 4  ],
 		[ "INPUT_BUFFER", 12 ],
 		[ "MOTION_DATA" , 2  ],
+		[ "MODEL_DATA"  , 80 ],
 	];
 	for (var index = 0; index < sizes.length; index++)
 	{
@@ -141,8 +142,16 @@ for (var index = 0; index < items.length; index++)
 	
 	c_assert += "static_assert(offsetof(ACTOR_DATA, " + name + ") == 0x" + off.toString(16).toUpperCase() + ");\n";
 	
-	
 	pos += size;
+}
+
+console.log("pos 0x" + pos.toString(16).toUpperCase());
+
+var diff = (0x3F800 - pos);
+
+if (diff)
+{
+	c += "\t_(" + diff.toString() + ");\n";
 }
 
 c += "};\n";

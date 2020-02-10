@@ -1809,7 +1809,7 @@ void GUI_Teleporter_Draw()
 	{
 		run = true;
 		ImGui::SetNextWindowSize(ImVec2(GUI_Teleporter_size.x + 16, GUI_Teleporter_size.y + 16));
-		ImGui::SetNextWindowPos(ImVec2(580, 500));
+		ImGui::SetNextWindowPos(ImVec2(10, 530));
 	}
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
@@ -1934,6 +1934,8 @@ void GUI_Overlay_Draw()
 			}
 		}
 
+
+		ImGui::Text("devilCounter %u", devilCounter);
 
 
 		//ImGui::Text("Delta %f", Update_delta);
