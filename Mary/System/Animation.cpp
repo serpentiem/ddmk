@@ -53,6 +53,6 @@ void System_Animation_Init()
 		FUNC func = CreateFunction(PlayAnimation, (appBaseAddr + 0x1EFB95), true, false, sizeof(sect0), 0, sizeof(sect2));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect2, sect2, sizeof(sect2));
-		WriteJump((appBaseAddr + 0x1EFB90), func.addr);
+		//WriteJump((appBaseAddr + 0x1EFB90), func.addr);
 	}
 }

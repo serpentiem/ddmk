@@ -27,6 +27,8 @@ extern System_Actor_UpdateDevilForm_t System_Actor_UpdateDevilForm;
 extern System_Actor_UpdateFlux_t      System_Actor_UpdateFlux;
 extern System_Actor_Relax_t           System_Actor_Relax;
 
+void DanteLady(byte8 * baseAddr, uint32 slot);
+
 uint8 System_Actor_GetActorId(byte8 * baseAddr);
 uint8 System_Actor_GetActorCount();
 void System_Actor_ResetDevilModel();

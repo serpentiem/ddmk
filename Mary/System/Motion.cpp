@@ -46,6 +46,6 @@ void System_Motion_Init()
 		FUNC func = CreateFunction(SetUpdateFlag, (appBaseAddr + 0x1EFC8D), true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x1EFC86), func.addr, 2);
+		//WriteJump((appBaseAddr + 0x1EFC86), func.addr, 2);
 	}
 }
