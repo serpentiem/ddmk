@@ -3,6 +3,12 @@
 // @Todo: Merge with Weapon module.
 // @Todo: Create session data struct.
 // @Todo: Auto vars.
+// @Todo: Compile offset list and function range.
+//        Because we also have to clear those objects.
+//        Increase counter by 2 for objects with only
+//        1 asset as well to be able to replace them on demand.
+//        Slot 2 will always come after slot 1.
+//        Don't use a counter at all. Just use the slot + internal offset.
 
 #include "Actor.h"
 
@@ -955,24 +961,387 @@ void DanteLady(byte8 * baseAddr, uint32 slot)
 
 void DevilRebellion(byte8 * baseAddr, uint32 slot)
 {
-	byte8 * dest        = 0;
+	auto g_coatVertex = (vec4 *)(appBaseAddr + 0x35D580);
+
 	byte8 * textureFile = 0;
 	byte8 * modelFile   = 0;
+	byte8 * shadowFile  = 0;
+	byte8 * physicsFile = 0;
 
-	dest = (g_slotAddr + (slot * 0x780));
+	byte8 * addr  = 0;
+	byte8 * dest  = 0;
+	byte8 * dest2 = 0;
 
-	memset(dest, 0, 0x780);
-	func_89270(dest);
+	// 1 0
+	// 2 0x24
+	uint32 slotOff = 0x24;
+
+	// 0 0
+	// 1 0x18
+	// 2 0x30
+	uint32 triOff = 0x30;
+
+	// @Todo: Remove.
+	uint32 objectCounter = 3;
+	uint32 localCounter = 2;
+	byte8 * saneAddr = 0;
+	uint32 count = 0;
+	uint32 objectCount = 0; // @Todo: Replace with index.
+	uint32 localCount = 0;
+
+	*(uint32 *)(baseAddr + 0x3E74 + (slot * 4)) = 0;
+
+	// base
+
+	dest = (baseAddr + 0x200 + (slot * 0x780));
 
 	textureFile = System_File_GetFile(System_File_cacheFile[pl005], 0);
 	modelFile   = System_File_GetFile(System_File_cacheFile[pl005], 1);
 
+	// rcx 
+	// rdx 
 	func_8B470(dest, 1);
+
+	// rcx 
+	// rdx 
+	// r8  
 	func_89960(dest, modelFile, textureFile);
+
+	// rcx 
+	// rdx 
+	// r8  
 	func_1EF040(baseAddr, slot);
 
-	vp_memset((baseAddr + 0xB600), 0, 48);
+	shadowFile = System_File_GetFile(System_File_cacheFile[pl005], 6);
+
+	// rcx 
+	addr = func_89DE0(dest);
+	// rax 
+
+	// rcx 
+	// rdx 
+	// r8  
+	func_8BC60((baseAddr + 0x9AD0 + (slot * 0xC0)), addr, shadowFile);
+
+	// rcx 
+	addr = func_89DE0(dest);
+	// rax 
+
+	// rcx 
+	func_305D80(addr);
+
+	// coat
+
+	dest = (baseAddr + 0x7540 + (objectCount * 0x780));
+	dest2 = (baseAddr + ((0x1460 + slotOff) * 8));
+
+	textureFile = System_File_GetFile(System_File_cacheFile[pl005], 0);
+	modelFile   = System_File_GetFile(System_File_cacheFile[pl005], 2);
+
+	// rcx 
+	// rdx 
+	func_8B470(dest, 1);
+
+	// rcx 
+	// rdx 
+	// r8  
+	func_89960(dest, modelFile, textureFile);	
+
+	// rcx 
+	// rdx 
+	// r8  
+	func_8A000(dest, 0, dest2);
+
+	shadowFile = System_File_GetFile(System_File_cacheFile[pl005], 7);
+
+	// rcx 
+	addr = func_89DE0(dest);
+	// rax 
+
+	// rcx 
+	// rdx 
+	// r8  
+	func_8BC60((baseAddr + 0x9D10 + (objectCount * 0xC0)), addr, shadowFile);
+
+	// rcx 
+	addr = func_89DE0(dest);
+	// rax 
+
+	// rcx 
+	func_305D80(addr);
+
+	physicsFile = System_File_GetFile(System_File_cacheFile[pl005], 3);
+
+	// rcx 
+	count = func_2C9F40(physicsFile);
+	// rax 
+
+	dest = (baseAddr + 0xA540 + (localCount * 0xF0));
+	for (uint32 index = 0; index < count; index++)
+	{
+		// rcx 
+		// rdx 
+		// r8  
+		// r9  
+		func_2CA1D0(dest, dest2, physicsFile, index);
+
+		dest += 0xF0;
+	}
+
+	// wing
+
+	dest = (baseAddr + 0x7540 + (objectCount * 0x780));
+	dest2 = (baseAddr + ((0x1460 + slotOff) * 8));
+
+	textureFile = System_File_GetFile(System_File_cacheFile[pl005], 0);
+	modelFile   = System_File_GetFile(System_File_cacheFile[pl005], 4);
+
+	// rcx 
+	// rdx 
+	func_8B470(dest, 1);
+
+	// rcx 
+	// rdx 
+	// r8  
+	func_89960(dest, modelFile, textureFile);
+
+	// rcx 
+	// rdx 
+	// r8  
+	func_8A000(dest, 0, dest2);
+
+	shadowFile = System_File_GetFile(System_File_cacheFile[pl005], 9);
+
+	// rcx 
+	addr = func_89DE0(dest);
+	// rax 
+
+	// rcx 
+	// rdx 
+	// r8  
+	func_8BC60((baseAddr + 0x9D10 + (objectCount * 0xC0)), addr, shadowFile);
+
+	// rcx 
+	addr = func_89DE0(dest);
+	// rax 
+
+	// rcx 
+	func_305D80(addr);
+
+	dest = (baseAddr + 0xA540 + (localCount * 0xF0));
+	physicsFile = System_File_GetFile(System_File_cacheFile[pl005], 5);
+
+	// rcx 
+	count = func_2C9F40(physicsFile);
+	// rax 
+
+	for (uint32 index = 0; index < count; index++)
+	{
+		// rcx 
+		// rdx 
+		// r8  
+		// r9  
+		func_2CA1D0(dest, dest2, physicsFile, index);
+
+		dest += 0xF0;
+	}
+
+	{
+		uint32 eax = triOff;
+		eax += 0x310;
+
+		// rcx    
+		// rdx    
+		// r8     
+		// r9     
+		// rsp+20 
+		func_2CA2F0
+		(
+			(baseAddr + 0xA540 + (objectCount * 0xF0)),
+			(baseAddr + (eax * 8)),
+			(appBaseAddr + 0x58B380),
+			(baseAddr + 0xB630),
+			6
+		);
+	}
+
+
+
+	return;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	{
+		uint64 r8 = (localCount * 0x300);
+		{
+			byte8 * rdx = (baseAddr + 0xAA00);
+			/*
+			dmc3.exe+21477E - 48 8D 96 00AA0000 - lea rdx,[rsi+0000AA00]
+			*/
+			rdx += r8;
+
+
+			uint32 eax = (slotOff + 1);
+			byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
+			*(byte8 **)(rax + 0x100) = rdx;
+
+			vec4 * coat = (vec4 *)(rdx + 0x80);
+			coat[0] = g_coatVertex[0];
+			coat[1] = g_coatVertex[1];
+			coat[2] = g_coatVertex[2];
+			coat[3] = g_coatVertex[3];
+
+			eax = triOff; // 0x30
+			eax += 3;
+			byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
+			rax = *(byte8 **)(rcx + 0x110);
+
+			*(byte8 **)(rdx + 0x30) = rax;
+			*(uint32 *)(rdx + 0x28) = 1;
+		}
+		{
+			byte8 * rdx = (baseAddr + 0xAAC0);
+			rdx += r8;
+
+			uint32 eax = (slotOff + 0xC);
+			byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
+			*(byte8 **)(rax + 0x100) = rdx;
+
+			vec4 * coat = (vec4 *)(rdx + 0x80);
+			coat[0] = g_coatVertex[0];
+			coat[1] = g_coatVertex[1];
+			coat[2] = g_coatVertex[2];
+			coat[3] = g_coatVertex[3];
+
+			eax = triOff; // 0x30
+			eax += 2;
+			byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
+			rax = *(byte8 **)(rcx + 0x110);
+
+			*(byte8 **)(rdx + 0x30) = rax;
+			*(uint32 *)(rdx + 0x28) = 1;
+		}
+	}
+
+
+
+
+
+
+
+	{
+		uint64 r8 = (localCount * 0x300); // 0x900
+		{
+			byte8 * rdx = (baseAddr + 0xAA00);
+			rdx += r8;
+
+			uint32 eax = (slotOff + 1);
+			byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
+			*(byte8 **)(rax + 0x100) = rdx;
+
+			vec4 * coat = (vec4 *)(rdx + 0x80);
+			coat[0] = g_coatVertex[0];
+			coat[1] = g_coatVertex[1];
+			coat[2] = g_coatVertex[2];
+			coat[3] = g_coatVertex[3];
+
+			eax = triOff; // 0x30
+			eax += 2;
+			byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
+			rax = *(byte8 **)(rcx + 0x110);
+
+			*(byte8 **)(rdx + 0x30) = rax;
+			*(uint32 *)(rdx + 0x28) = 1;
+		}
+		{
+			byte8 * rdx = (baseAddr + 0xAAC0);
+			rdx += r8;
+
+			uint32 eax = (slotOff + 2);
+			byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
+			*(byte8 **)(rax + 0x100) = rdx;
+
+			vec4 * coat = (vec4 *)(rdx + 0x80);
+			coat[0] = g_coatVertex[0];
+			coat[1] = g_coatVertex[1];
+			coat[2] = g_coatVertex[2];
+			coat[3] = g_coatVertex[3];
+
+			eax = triOff; // 0x30
+			eax += 0xE;
+			byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
+			rax = *(byte8 **)(rcx + 0x110);
+
+			*(byte8 **)(rdx + 0x30) = rax;
+			*(uint32 *)(rdx + 0x28) = 1;
+		}
+	}
+
+	*(uint8 *)(baseAddr + 0xB600) = 0;
+	*(uint8 *)(baseAddr + 0xB601) = 0;
+	*(uint8 *)(baseAddr + 0xB602) = 0;
+	*(uint8 *)(baseAddr + 0xB603) = 0;
+	*(uint8 *)(baseAddr + 0xB604) = 0;
+	*(uint8 *)(baseAddr + 0xB605) = 0;
+	*(uint8 *)(baseAddr + 0xB606) = 0;
+	*(uint8 *)(baseAddr + 0xB607) = 0;
 }
+
+
+
+/*
+[rax + 150] dmc3.exe+8A000
+[rdx +   8] dmc3.exe+89DE0
+[rdx +  68] dmc3.exe+211C10
+[rdi +   8] dmc3.exe+8BC60
+[ r8 +  38] dmc3.exe+8B470
+[ r9 +  50] dmc3.exe+89960
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void DevilCerberus(byte8 * baseAddr, uint32 slot)
 {
@@ -1009,6 +1378,166 @@ void DevilAgniRudra(byte8 * baseAddr, uint32 slot)
 
 	vp_memset((baseAddr + 0xB600), 0, 48);
 }
+
+
+
+
+void ApplyModel(byte8 * baseAddr, uint32 slot)
+{
+	auto g_coatVertex = (vec4 *)(appBaseAddr + 0x35D580);
+
+	byte8 * textureFile = 0;
+	byte8 * modelFile   = 0;
+	byte8 * shadowFile  = 0;
+	byte8 * clothFile   = 0;
+	byte8 * addr        = 0;
+
+	//uint32 slot    = 2;
+	// 1 0
+	// 2 0x24
+	uint32 slotOff = 0x24;
+	uint32 objectCounter = 3;
+	
+	uint32 localCounter = 2;
+	byte8 * saneAddr = 0;
+
+	// 0 0
+	// 1 0x18
+	// 2 0x30
+	uint32 triOff = 0x30;
+
+	auto slotBaseAddr = (baseAddr + 0x200 + (slot * 0x780));
+	{
+		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
+		modelFile   = System_File_GetFile(System_File_cacheFile[pl006], 1);
+		func_8B470(slotBaseAddr, 1);
+		func_89960(slotBaseAddr, modelFile, textureFile);
+		func_1EF040(baseAddr, slot);
+	}
+
+	func_1EF040(baseAddr, slot);
+	*(uint32 *)(baseAddr + 0x3E74 + (slot * 4)) = 1;
+
+	*(uint8 *)(baseAddr + 0xB608) = (uint8)slot;
+	*(uint8 *)(baseAddr + 0xB609) = triOff;
+	*(uint8 *)(baseAddr + 0xB60A) = (uint8)objectCounter;
+	*(uint8 *)(baseAddr + 0xB60B) = (uint8)slotOff;
+	*(uint8 *)(baseAddr + 0xB60C) = (uint8)localCounter;
+
+	{
+		shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 4);
+		addr = func_89DE0(slotBaseAddr);
+		uint32 rbx = (slot * 0xC0);
+		byte8 * rcx = (baseAddr + 0x9AD0);
+		rcx += rbx;
+		func_8BC60(rcx, addr, shadowFile);
+		addr = func_89DE0(slotBaseAddr);
+		func_305D80(addr);
+	}
+
+	{
+		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
+		modelFile = System_File_GetFile(System_File_cacheFile[pl006], 2);
+		byte8 * r12 = baseAddr;
+		r12 += (objectCounter * 0x780);
+		r12 += 0x7540;
+		func_8B470(r12, 1);
+		func_89960(r12, modelFile, textureFile);
+		uint32 eax = slotOff;
+		uint64 rax = eax;
+		rax += 0x1460;
+		byte8 * rcx = (baseAddr + (rax * 8));
+		saneAddr = rcx;
+		byte8 * r8 = rcx;
+		func_8A000(r12, 0, r8);
+		shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 5);
+		uint64 rbx = (objectCounter * 0xC0);
+		addr = func_89DE0(r12);
+		rcx = (baseAddr + 0x9D10);
+		rcx += rbx;
+		func_8BC60(rcx, addr, shadowFile);
+		addr = func_89DE0(r12);
+		func_305D80(addr);
+		*(uint8 *)(baseAddr + objectCounter + 0x9AC0) = 1;
+	}
+
+	clothFile = System_File_GetFile(System_File_cacheFile[pl006], 3);
+	uint32 count = func_2C9F40(clothFile);
+	byte8 * dest = (baseAddr + 0xA540);
+	dest += (localCounter * 0xF0);
+	for (uint32 index = 0; index < count; index++)
+	{
+		func_2CA1D0(dest, saneAddr, clothFile, index);
+		dest += 0xF0;
+	}
+
+	uint64 r8 = (localCounter * 0x300);
+
+	{
+		uint32 eax = (slotOff + 1);
+		byte8 * rdx = (baseAddr + 0xAA00);
+		rdx += r8;
+		byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
+		*(byte8 **)(rax + 0x100) = rdx;
+		vec4 * coat = (vec4 *)(rdx + 0x80);
+		coat[0] = g_coatVertex[0];
+		coat[1] = g_coatVertex[1];
+		coat[2] = g_coatVertex[2];
+		coat[3] = g_coatVertex[3];
+		eax = triOff;
+		eax += 3;
+		byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
+		rax = *(byte8 **)(rcx + 0x110);
+		*(byte8 **)(rdx + 0x30) = rax;
+		*(uint32 *)(rdx + 0x28) = 1;
+	}
+
+	{
+		uint32 eax = (slotOff + 2);
+		byte8 * rdx = (baseAddr + 0xAAC0);
+		rdx += r8;
+		byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
+		*(byte8 **)(rax + 0x100) = rdx;
+		vec4 * coat = (vec4 *)(rdx + 0x80);
+		coat[0] = g_coatVertex[0];
+		coat[1] = g_coatVertex[1];
+		coat[2] = g_coatVertex[2];
+		coat[3] = g_coatVertex[3];
+		eax = triOff;
+		eax += 6;
+		byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
+		rax = *(byte8 **)(rcx + 0x110);
+		*(byte8 **)(rdx + 0x30) = rax;
+		*(uint32 *)(rdx + 0x28) = 1;
+	}
+
+	{
+		uint32 eax = (slotOff + 8);
+		byte8 * rdx = (baseAddr + 0xAB80);
+		rdx += r8;
+		byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
+		*(byte8 **)(rax + 0x100) = rdx;
+		vec4 * coat = (vec4 *)(rdx + 0x80);
+		coat[0] = g_coatVertex[0];
+		coat[1] = g_coatVertex[1];
+		coat[2] = g_coatVertex[2];
+		coat[3] = g_coatVertex[3];
+		eax = triOff;
+		eax += 10;
+		byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
+		rax = *(byte8 **)(rcx + 0x110);
+		*(byte8 **)(rdx + 0x30) = rax;
+		*(uint32 *)(rdx + 0x28) = 1;
+	}
+
+
+	*(uint8 *)(baseAddr + 0xB608) = (uint8)slot;
+	*(uint8 *)(baseAddr + 0xB609) = triOff;
+	*(uint8 *)(baseAddr + 0xB60A) = (uint8)objectCounter;
+	*(uint8 *)(baseAddr + 0xB60B) = (uint8)slotOff;
+	*(uint8 *)(baseAddr + 0xB60C) = (uint8)localCounter;
+}
+
 
 
 
@@ -1220,211 +1749,6 @@ void DevilAgniRudra(byte8 * baseAddr, uint32 slot)
 //
 //
 //
-//void ApplyModel(byte8 * baseAddr, uint32 slot)
-//{
-//	auto g_coatVertex = (vec4 *)(appBaseAddr + 0x35D580);
-//
-//	byte8 * textureFile = 0;
-//	byte8 * modelFile   = 0;
-//	byte8 * shadowFile  = 0;
-//	byte8 * clothFile   = 0;
-//	byte8 * addr        = 0;
-//
-//	//uint32 slot    = 2;
-//	// 1 0
-//	// 2 0x24
-//	uint32 slotOff = 0x24;
-//	uint32 objectCounter = 3;
-//	
-//	uint32 localCounter = 2;
-//	byte8 * saneAddr = 0;
-//
-//	// 0 0
-//	// 1 0x18
-//	// 2 0x30
-//	uint32 triOff = 0x30;
-//
-//
-//
-//
-//
-//	auto slotBaseAddr = (baseAddr + 0x200 + (slot * 0x780));
-//	{
-//		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
-//		modelFile   = System_File_GetFile(System_File_cacheFile[pl006], 1);
-//		func_8B470(slotBaseAddr, 1);
-//		func_89960(slotBaseAddr, modelFile, textureFile);
-//		func_1EF040(baseAddr, slot);
-//	}
-//
-//
-//	return;
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//	//func_1EF040(baseAddr, slot);
-//	//*(uint32 *)(baseAddr + 0x3E74 + (slot * 4)) = 1;
-//
-//	//*(uint8 *)(baseAddr + 0xB608) = (uint8)slot;
-//	//*(uint8 *)(baseAddr + 0xB609) = triOff;
-//	//*(uint8 *)(baseAddr + 0xB60A) = (uint8)objectCounter;
-//	//*(uint8 *)(baseAddr + 0xB60B) = (uint8)slotOff;
-//	//*(uint8 *)(baseAddr + 0xB60C) = (uint8)localCounter;
-//
-//
-//	
-//
-//
-//
-//
-//
-//
-//
-//	//{
-//	//	shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 4);
-//	//	addr = func_89DE0(slotBaseAddr);
-//	//	uint32 rbx = (slot * 0xC0);
-//	//	byte8 * rcx = (baseAddr + 0x9AD0);
-//	//	rcx += rbx;
-//	//	func_8BC60(rcx, addr, shadowFile);
-//	//	addr = func_89DE0(slotBaseAddr);
-//	//	func_305D80(addr);
-//
-//	//	// slotBaseAddr not used any further
-//
-//	//}
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//	//{
-//	//	textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
-//	//	modelFile = System_File_GetFile(System_File_cacheFile[pl006], 2);
-//	//	byte8 * r12 = baseAddr;
-//	//	r12 += (objectCounter * 0x780);
-//	//	r12 += 0x7540;
-//	//	func_8B470(r12, 1);
-//	//	func_89960(r12, modelFile, textureFile);
-//	//	uint32 eax = slotOff;
-//	//	uint64 rax = eax;
-//	//	rax += 0x1460;
-//	//	byte8 * rcx = (baseAddr + (rax * 8));
-//	//	saneAddr = rcx;
-//	//	byte8 * r8 = rcx;
-//	//	func_8A000(r12, 0, r8);
-//	//	shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 5);
-//	//	uint64 rbx = (objectCounter * 0xC0);
-//	//	addr = func_89DE0(r12);
-//	//	rcx = (baseAddr + 0x9D10);
-//	//	rcx += rbx;
-//	//	func_8BC60(rcx, addr, shadowFile);
-//	//	addr = func_89DE0(r12);
-//	//	func_305D80(addr);
-//	//	*(uint8 *)(baseAddr + objectCounter + 0x9AC0) = 1;
-//	//}
-//
-//	//clothFile = System_File_GetFile(System_File_cacheFile[pl006], 3);
-//	//uint32 count = func_2C9F40(clothFile);
-//	//byte8 * dest = (baseAddr + 0xA540);
-//	//dest += (localCounter * 0xF0);
-//	//for (uint32 index = 0; index < count; index++)
-//	//{
-//	//	func_2CA1D0(dest, saneAddr, clothFile, index);
-//	//	dest += 0xF0;
-//	//}
-//
-//	//uint64 r8 = (localCounter * 0x300);
-//
-//	//{
-//	//	uint32 eax = (slotOff + 1);
-//	//	byte8 * rdx = (baseAddr + 0xAA00);
-//	//	rdx += r8;
-//	//	byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
-//	//	*(byte8 **)(rax + 0x100) = rdx;
-//	//	vec4 * coat = (vec4 *)(rdx + 0x80);
-//	//	coat[0] = g_coatVertex[0];
-//	//	coat[1] = g_coatVertex[1];
-//	//	coat[2] = g_coatVertex[2];
-//	//	coat[3] = g_coatVertex[3];
-//	//	eax = triOff;
-//	//	eax += 3;
-//	//	byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
-//	//	rax = *(byte8 **)(rcx + 0x110);
-//	//	*(byte8 **)(rdx + 0x30) = rax;
-//	//	*(uint32 *)(rdx + 0x28) = 1;
-//	//}
-//
-//	//{
-//	//	uint32 eax = (slotOff + 2);
-//	//	byte8 * rdx = (baseAddr + 0xAAC0);
-//	//	rdx += r8;
-//	//	byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
-//	//	*(byte8 **)(rax + 0x100) = rdx;
-//	//	vec4 * coat = (vec4 *)(rdx + 0x80);
-//	//	coat[0] = g_coatVertex[0];
-//	//	coat[1] = g_coatVertex[1];
-//	//	coat[2] = g_coatVertex[2];
-//	//	coat[3] = g_coatVertex[3];
-//	//	eax = triOff;
-//	//	eax += 6;
-//	//	byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
-//	//	rax = *(byte8 **)(rcx + 0x110);
-//	//	*(byte8 **)(rdx + 0x30) = rax;
-//	//	*(uint32 *)(rdx + 0x28) = 1;
-//	//}
-//
-//	//{
-//	//	uint32 eax = (slotOff + 8);
-//	//	byte8 * rdx = (baseAddr + 0xAB80);
-//	//	rdx += r8;
-//	//	byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
-//	//	*(byte8 **)(rax + 0x100) = rdx;
-//	//	vec4 * coat = (vec4 *)(rdx + 0x80);
-//	//	coat[0] = g_coatVertex[0];
-//	//	coat[1] = g_coatVertex[1];
-//	//	coat[2] = g_coatVertex[2];
-//	//	coat[3] = g_coatVertex[3];
-//	//	eax = triOff;
-//	//	eax += 10;
-//	//	byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
-//	//	rax = *(byte8 **)(rcx + 0x110);
-//	//	*(byte8 **)(rdx + 0x30) = rax;
-//	//	*(uint32 *)(rdx + 0x28) = 1;
-//	//}
-//
-//
-//	//*(uint8 *)(baseAddr + 0xB608) = (uint8)slot;
-//	//*(uint8 *)(baseAddr + 0xB609) = triOff;
-//	//*(uint8 *)(baseAddr + 0xB60A) = (uint8)objectCounter;
-//	//*(uint8 *)(baseAddr + 0xB60B) = (uint8)slotOff;
-//	//*(uint8 *)(baseAddr + 0xB60C) = (uint8)localCounter;
-//}
 
 
 
@@ -1475,18 +1799,6 @@ void DevilAgniRudra(byte8 * baseAddr, uint32 slot)
 
 
 
-
-
-
-
-/*
-[rax + 150] dmc3.exe+8A000
-[rdx +   8] dmc3.exe+89DE0
-[rdx +  68] dmc3.exe+211C10
-[rdi +   8] dmc3.exe+8BC60
-[ r8 +  38] dmc3.exe+8B470
-[ r9 +  50] dmc3.exe+89960
-*/
 
 
 
@@ -2147,7 +2459,7 @@ void System_Actor_Init()
 	{
 		auto func = CreateFunction(HumanDante);
 		Log("HumanDante %llX", func.addr);
-		WriteCall((appBaseAddr + 0x212CB3), func.addr);
+		//WriteCall((appBaseAddr + 0x212CB3), func.addr);
 	}
 	{
 		auto func = CreateFunction(HumanVergil);
