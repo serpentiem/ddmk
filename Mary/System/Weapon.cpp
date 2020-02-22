@@ -517,23 +517,23 @@ void Dante_Melee_SetWeapon(byte8 * baseAddr)
 	auto & model          = *(uint8 *)(baseAddr + 0x64F0);
 	model = equipment[selectedWeapon];
 
-	auto & active = *(uint8 *)(baseAddr + 0x3E6C);
-	auto & queue  = *(uint8 *)(baseAddr + 0x3E70);
+	//auto & active = *(uint8 *)(baseAddr + 0x3E6C);
+	//auto & queue  = *(uint8 *)(baseAddr + 0x3E70);
 
-	uint32 slot = 0;
+	//uint32 slot = 0;
 
-	if (active == 1)
-	{
-		slot = 2;
-		DanteLady(baseAddr, slot);
-		//queue = 2;
-	}
-	if (active == 2)
-	{
-		slot = 1;
-		DanteLady(baseAddr, slot);	
-		//queue = 1;
-	}
+	//if (active == 1)
+	//{
+	//	slot = 2;
+	//	DanteLady(baseAddr, slot);
+	//	//queue = 2;
+	//}
+	//if (active == 2)
+	//{
+	//	slot = 1;
+	//	DanteLady(baseAddr, slot);	
+	//	//queue = 1;
+	//}
 	
 }
 
