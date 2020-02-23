@@ -553,6 +553,10 @@ PrivateEnd;
 
 void System_Actor_ResetDevilModel()
 {
+
+	return;
+
+
 	LogFunction();
 	// Loop Count
 	{
@@ -586,6 +590,9 @@ void System_Actor_ResetDevilModel()
 
 void System_Actor_UpdateDevilModel(uint8 model)
 {
+
+	return;
+
 	LogFunction();
 	System_Actor_ResetDevilModel();
 	vp_memset((appBaseAddr + 0x2130E5), 0x90, 3);
@@ -1567,6 +1574,469 @@ struct DevilRebellionHelper : DevilHelper
 	}
 };
 
+struct DevilCerberusHelper : DevilHelper
+{
+	void Update
+	(
+		byte8 * baseAddr,
+		uint8   slot
+	)
+	{
+		byte8 * file = 0;
+
+		byte8 * dest  = 0;
+		byte8 * dest2 = 0;
+
+		auto & modelData = *(DEVIL_MODEL_DATA_CERBERUS *)(baseAddr + 0xB608);
+
+		file = System_File_cacheFile[pl006];
+
+		slotOff      = (slot * 0x18);
+		devilSlotOff = (slot == 1) ? 0 : 0x24;
+
+		subModelIndex      = (slot == 1) ? 1 : 3;
+		devilSubModelIndex = (slot == 1) ? 0 : 2;
+
+		((uint32 *)(baseAddr + 0x3E74))[slot] = 1;
+
+		modelData.slot    = slot;
+		modelData.slotOff = slotOff;
+
+		// Base
+
+		dest = (baseAddr + 0x200 + (slot * 0x780));
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 1),
+			System_File_GetFile(file, 0)
+		);
+
+		func_1EF040(baseAddr, slot);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9AD0 + (slot * 0xC0)),
+			System_File_GetFile(file, 4)
+		);
+
+		// Wings
+
+		dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+		dest2 = (baseAddr + ((0x1460 + devilSlotOff) * 8));
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 2),
+			System_File_GetFile(file, 0)
+		);
+
+		func_8A000(dest, 0, dest2);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
+			System_File_GetFile(file, 5)
+		);
+
+		dest = (baseAddr + 0xA540 + (devilSubModelIndex * 0xF0));
+
+		RegisterPhysics
+		(
+			dest,
+			dest2,
+			System_File_GetFile(file, 3)
+		);
+
+		CopyVertices(baseAddr, 0, 1, 3 );
+		CopyVertices(baseAddr, 1, 2, 6 );
+		CopyVertices(baseAddr, 2, 8, 10);
+
+		modelData.wings.subModelIndex      = subModelIndex;
+		modelData.wings.devilSlotOff       = devilSlotOff;
+		modelData.wings.devilSubModelIndex = devilSubModelIndex;
+	}
+};
+
+struct DevilAgniRudraHelper : DevilHelper
+{
+	void Update
+	(
+		byte8 * baseAddr,
+		uint8   slot
+	)
+	{
+		byte8 * file = 0;
+
+		byte8 * dest  = 0;
+		byte8 * dest2 = 0;
+
+		auto & modelData = *(DEVIL_MODEL_DATA_CERBERUS *)(baseAddr + 0xB60D);
+
+		file = System_File_cacheFile[pl007];
+
+		slotOff      = (slot * 0x18);
+		devilSlotOff = (slot == 1) ? 0 : 0x24;
+
+		subModelIndex      = (slot == 1) ? 1 : 3;
+		devilSubModelIndex = (slot == 1) ? 0 : 2;
+
+		((uint32 *)(baseAddr + 0x3E74))[slot] = 2;
+
+		modelData.slot    = slot;
+		modelData.slotOff = slotOff;
+
+		// Base
+
+		dest = (baseAddr + 0x200 + (slot * 0x780));
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 1),
+			System_File_GetFile(file, 0)
+		);
+
+		func_1EF040(baseAddr, slot);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9AD0 + (slot * 0xC0)),
+			System_File_GetFile(file, 2)
+		);
+	}
+};
+
+struct DevilNevanHelper : DevilHelper
+{
+	void Update
+	(
+		byte8 * baseAddr,
+		uint8   slot
+	)
+	{
+		byte8 * file = 0;
+
+		byte8 * dest  = 0;
+		byte8 * dest2 = 0;
+
+		auto & modelData = *(DEVIL_MODEL_DATA_REBELLION *)(baseAddr + 0xB60F);
+
+		file = System_File_cacheFile[pl008];
+
+		slotOff      = (slot * 0x18);
+		devilSlotOff = (slot == 1) ? 0 : 0x24;
+
+		subModelIndex      = (slot == 1) ? 1 : 3;
+		devilSubModelIndex = (slot == 1) ? 0 : 2;
+
+		((uint32 *)(baseAddr + 0x3E74))[slot] = 3;
+
+		modelData.slot    = slot;
+		modelData.slotOff = slotOff;
+
+		// Base
+
+		dest = (baseAddr + 0x200 + (slot * 0x780));
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 1),
+			System_File_GetFile(file, 0)
+		);
+
+		func_1EF040(baseAddr, slot);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9AD0 + (slot * 0xC0)),
+			System_File_GetFile(file, 6)
+		);
+
+		// Coat
+
+		dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+		dest2 = (baseAddr + ((0x1460 + devilSlotOff) * 8));
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 2),
+			System_File_GetFile(file, 0)
+		);
+
+		func_8A000(dest, 0, dest2);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
+			System_File_GetFile(file, 7)
+		);
+
+		dest = (baseAddr + 0xA540 + (devilSubModelIndex * 0xF0));
+
+		RegisterPhysics
+		(
+			dest,
+			dest2,
+			System_File_GetFile(file, 3)
+		);
+
+		CopyVertices(baseAddr, 0, 1 , 3);
+		CopyVertices(baseAddr, 1, 12, 2);
+
+		modelData.coat.subModelIndex      = subModelIndex;
+		modelData.coat.devilSlotOff       = devilSlotOff;
+		modelData.coat.devilSubModelIndex = devilSubModelIndex;
+
+		subModelIndex++;
+		devilSubModelIndex++;
+
+		// Wings
+
+		dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+		dest2 = (baseAddr + ((0x1460 + devilSlotOff + 9) * 8));
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 4),
+			System_File_GetFile(file, 0)
+		);
+
+		func_8A000(dest, 0, dest2);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
+			System_File_GetFile(file, 8)
+		);
+
+		dest = (baseAddr + 0xA540 + (devilSubModelIndex * 0xF0));
+
+		RegisterPhysics
+		(
+			dest,
+			dest2,
+			System_File_GetFile(file, 5)
+		);
+
+		func_2CA2F0
+		(
+			dest,
+			(baseAddr + ((slotOff + 0x310) * 8)),
+			(appBaseAddr + 0x58B380),
+			(baseAddr + 0xB630),
+			6
+		);
+
+		CopyVertices(baseAddr, 0, (9 + 1), 2 );
+		CopyVertices(baseAddr, 1, (9 + 2), 14);
+
+		modelData.wings.subModelIndex      = subModelIndex;
+		modelData.wings.devilSlotOff       = (devilSlotOff + 9);
+		modelData.wings.devilSubModelIndex = devilSubModelIndex;
+	}
+};
+
+struct DevilBeowulfHelper : DevilHelper
+{
+	void Update
+	(
+		byte8 * baseAddr,
+		uint8   slot
+	)
+	{
+		byte8 * file = 0;
+
+		byte8 * dest  = 0;
+		byte8 * dest2 = 0;
+
+		auto & modelData = *(DEVIL_MODEL_DATA_CERBERUS *)(baseAddr + 0xB617);
+
+		file = System_File_cacheFile[pl009];
+
+		slotOff      = (slot * 0x18);
+		devilSlotOff = (slot == 1) ? 0 : 0x24;
+
+		subModelIndex      = (slot == 1) ? 1 : 3;
+		devilSubModelIndex = (slot == 1) ? 0 : 2;
+
+		((uint32 *)(baseAddr + 0x3E74))[slot] = 4;
+
+		modelData.slot    = slot;
+		modelData.slotOff = slotOff;
+
+		// Base
+
+		dest = (baseAddr + 0x200 + (slot * 0x780));
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 1),
+			System_File_GetFile(file, 0)
+		);
+
+		func_1EF040(baseAddr, slot);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9AD0 + (slot * 0xC0)),
+			System_File_GetFile(file, 4)
+		);
+
+		// Wings
+
+		dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+		dest2 = (baseAddr + ((0x1460 + devilSlotOff) * 8));
+		//dest2 = (baseAddr + ((0xA300 + devilSlotOff) * 8));
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 2),
+			System_File_GetFile(file, 0)
+		);
+
+		func_8A000(dest, 0, dest2);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
+			System_File_GetFile(file, 5)
+		);
+
+		dest = (baseAddr + 0xA540 + (devilSubModelIndex * 0xF0));
+
+		RegisterPhysics
+		(
+			dest,
+			dest2,
+			System_File_GetFile(file, 3)
+		);
+
+		CopyVertices(baseAddr, 0, 1, 3 );
+		CopyVertices(baseAddr, 1, 2, 6 );
+		CopyVertices(baseAddr, 2, 8, 10);
+
+		modelData.wings.subModelIndex      = subModelIndex;
+		modelData.wings.devilSlotOff       = devilSlotOff;
+		modelData.wings.devilSubModelIndex = devilSubModelIndex;
+	}
+};
+
+struct DevilSpardaHelper : DevilHelper
+{
+	void Update
+	(
+		byte8 * baseAddr,
+		uint8   slot
+	)
+	{
+		byte8 * file = 0;
+
+		byte8 * dest  = 0;
+		byte8 * dest2 = 0;
+
+		auto & modelData = *(DEVIL_MODEL_DATA_CERBERUS *)(baseAddr + 0xB61C);
+
+		file = System_File_cacheFile[pl017];
+
+		slotOff      = (slot * 0x18);
+		devilSlotOff = (slot == 1) ? 0 : 0x24;
+
+		subModelIndex      = (slot == 1) ? 1 : 3;
+		devilSubModelIndex = (slot == 1) ? 0 : 2;
+
+		((uint32 *)(baseAddr + 0x3E74))[slot] = 5;
+
+		modelData.slot    = slot;
+		modelData.slotOff = slotOff;
+
+		// Base
+
+		dest = (baseAddr + 0x200 + (slot * 0x780));
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 1),
+			System_File_GetFile(file, 0)
+		);
+
+		func_1EF040(baseAddr, slot);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9AD0 + (slot * 0xC0)),
+			System_File_GetFile(file, 4)
+		);
+
+		// Wings
+
+		dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+		dest2 = (baseAddr + ((0x1460 + devilSlotOff) * 8));
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 2),
+			System_File_GetFile(file, 0)
+		);
+
+		func_8A000(dest, 0, dest2);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
+			System_File_GetFile(file, 5)
+		);
+
+		dest = (baseAddr + 0xA540 + (devilSubModelIndex * 0xF0));
+
+		RegisterPhysics
+		(
+			dest,
+			dest2,
+			System_File_GetFile(file, 3)
+		);
+
+		//CopyVertices(baseAddr, 0, 1, 3 );
+		//CopyVertices(baseAddr, 1, 2, 6 );
+		//CopyVertices(baseAddr, 2, 8, 10);
+
+		modelData.wings.subModelIndex      = subModelIndex;
+		modelData.wings.devilSlotOff       = devilSlotOff;
+		modelData.wings.devilSubModelIndex = devilSubModelIndex;
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1589,6 +2059,56 @@ __declspec(noinline) void DevilRebellion
 {
 	DevilRebellionHelper devilRebellionHelper;
 	devilRebellionHelper.Update(baseAddr, slot);
+}
+
+__declspec(noinline) void DevilCerberus
+(
+	byte8 * baseAddr,
+	uint8   slot
+)
+{
+	DevilCerberusHelper devilCerberusHelper;
+	devilCerberusHelper.Update(baseAddr, slot);
+}
+
+__declspec(noinline) void DevilAgniRudra
+(
+	byte8 * baseAddr,
+	uint8   slot
+)
+{
+	DevilAgniRudraHelper devilAgniRudraHelper;
+	devilAgniRudraHelper.Update(baseAddr, slot);
+}
+
+__declspec(noinline) void DevilNevan
+(
+	byte8 * baseAddr,
+	uint8   slot
+)
+{
+	DevilNevanHelper devilNevanHelper;
+	devilNevanHelper.Update(baseAddr, slot);
+}
+
+__declspec(noinline) void DevilBeowulf
+(
+	byte8 * baseAddr,
+	uint8   slot
+)
+{
+	DevilBeowulfHelper devilBeowulfHelper;
+	devilBeowulfHelper.Update(baseAddr, slot);
+}
+
+__declspec(noinline) void DevilSparda
+(
+	byte8 * baseAddr,
+	uint8   slot
+)
+{
+	DevilSpardaHelper devilSpardaHelper;
+	devilSpardaHelper.Update(baseAddr, slot);
 }
 
 
@@ -1805,7 +2325,7 @@ __declspec(noinline) void DevilRebellion
 
 
 
-void DevilBeowulf
+void oldDevilBeowulf
 (
 	byte8 * baseAddr,
 	uint8   slot
@@ -1973,7 +2493,7 @@ void DevilBeowulf
 
 
 
-void DevilCerberus
+void old_DevilCerberus
 (
 	byte8 * baseAddr,
 	uint8   slot
@@ -2217,23 +2737,23 @@ void DevilCerberus
 
 
 
-void DevilAgniRudra(byte8 * baseAddr, uint32 slot)
-{
-	byte8 * dest        = 0;
-	byte8 * textureFile = 0;
-	byte8 * modelFile   = 0;
-
-	dest = (g_slotAddr + (slot * 0x780));
-
-	textureFile = System_File_GetFile(System_File_cacheFile[pl007], 0);
-	modelFile   = System_File_GetFile(System_File_cacheFile[pl007], 1);
-
-	func_8B470(dest, 1);
-	func_89960(dest, modelFile, textureFile);
-	func_1EF040(baseAddr, slot);
-
-	vp_memset((baseAddr + 0xB600), 0, 48);
-}
+//void DevilAgniRudra(byte8 * baseAddr, uint32 slot)
+//{
+//	byte8 * dest        = 0;
+//	byte8 * textureFile = 0;
+//	byte8 * modelFile   = 0;
+//
+//	dest = (g_slotAddr + (slot * 0x780));
+//
+//	textureFile = System_File_GetFile(System_File_cacheFile[pl007], 0);
+//	modelFile   = System_File_GetFile(System_File_cacheFile[pl007], 1);
+//
+//	func_8B470(dest, 1);
+//	func_89960(dest, modelFile, textureFile);
+//	func_1EF040(baseAddr, slot);
+//
+//	vp_memset((baseAddr + 0xB600), 0, 48);
+//}
 
 
 
@@ -2423,30 +2943,90 @@ __declspec(noinline) void ApplyDevilRebellion(uint8 slot)
 {
 	auto baseAddr = *(byte8 **)(appBaseAddr + 0xC90E28);
 	baseAddr = *(byte8 **)(baseAddr + 0x18);
-
-
 	ResetSlot((baseAddr + 0x200 + (slot * 0x780)));
-	//ResetSlot((baseAddr + 0x7540 + (1 * 0x780)));
-	//ResetSlot((baseAddr + 0x7540 + (2 * 0x780)));
-
-
+	ResetSlot((baseAddr + 0x7540 + (((slot == 1) ? 1 : 3) * 0x780)));
+	ResetSlot((baseAddr + 0x7540 + (((slot == 1) ? 2 : 4) * 0x780)));
 	DevilRebellion(baseAddr, slot);
+}
 
+__declspec(noinline) void ApplyDevilCerberus (uint8 slot)
+{
+	auto baseAddr = *(byte8 **)(appBaseAddr + 0xC90E28);
+	baseAddr = *(byte8 **)(baseAddr + 0x18);
+	ResetSlot((baseAddr + 0x200 + (slot * 0x780)));
+	ResetSlot((baseAddr + 0x7540 + (((slot == 1) ? 1 : 3) * 0x780)));
+	ResetSlot((baseAddr + 0x7540 + (((slot == 1) ? 2 : 4) * 0x780)));
+	DevilCerberus(baseAddr, slot);
+}
 
+__declspec(noinline) void ApplyDevilAgniRudra(uint8 slot)
+{
+	auto baseAddr = *(byte8 **)(appBaseAddr + 0xC90E28);
+	baseAddr = *(byte8 **)(baseAddr + 0x18);
+	ResetSlot((baseAddr + 0x200 + (slot * 0x780)));
+	ResetSlot((baseAddr + 0x7540 + (((slot == 1) ? 1 : 3) * 0x780)));
+	ResetSlot((baseAddr + 0x7540 + (((slot == 1) ? 2 : 4) * 0x780)));
+	DevilAgniRudra(baseAddr, slot);
+}
 
+__declspec(noinline) void ApplyDevilNevan(uint8 slot)
+{
+	auto baseAddr = *(byte8 **)(appBaseAddr + 0xC90E28);
+	baseAddr = *(byte8 **)(baseAddr + 0x18);
+	ResetSlot((baseAddr + 0x200 + (slot * 0x780)));
+	ResetSlot((baseAddr + 0x7540 + (((slot == 1) ? 1 : 3) * 0x780)));
+	ResetSlot((baseAddr + 0x7540 + (((slot == 1) ? 2 : 4) * 0x780)));
+	DevilNevan(baseAddr, slot);
+}
 
+__declspec(noinline) void ApplyDevilBeowulf(uint8 slot)
+{
+	auto baseAddr = *(byte8 **)(appBaseAddr + 0xC90E28);
+	baseAddr = *(byte8 **)(baseAddr + 0x18);
+	ResetSlot((baseAddr + 0x200 + (slot * 0x780)));
+	ResetSlot((baseAddr + 0x7540 + (((slot == 1) ? 1 : 3) * 0x780)));
+	ResetSlot((baseAddr + 0x7540 + (((slot == 1) ? 2 : 4) * 0x780)));
+	DevilBeowulf(baseAddr, slot);
+}
 
+__declspec(noinline) void ApplyDevilSparda(uint8 slot)
+{
+	auto baseAddr = *(byte8 **)(appBaseAddr + 0xC90E28);
+	baseAddr = *(byte8 **)(baseAddr + 0x18);
+	ResetSlot((baseAddr + 0x200 + (slot * 0x780)));
+	ResetSlot((baseAddr + 0x7540 + (((slot == 1) ? 1 : 3) * 0x780)));
+	ResetSlot((baseAddr + 0x7540 + (((slot == 1) ? 2 : 4) * 0x780)));
+	DevilSparda(baseAddr, slot);
 }
 
 
 
 
 
-void ApplyDevilCerberus (uint8 slot){}
-void ApplyDevilAgniRudra(uint8 slot){}
-void ApplyDevilNevan    (uint8 slot){}
-void ApplyDevilBeowulf  (uint8 slot){}
-void ApplyDevilSparda   (uint8 slot){}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void ApplyDevilAgniRudra(uint8 slot){}
+//void ApplyDevilNevan    (uint8 slot){}
+//void ApplyDevilBeowulf  (uint8 slot){}
+//void ApplyDevilSparda   (uint8 slot){}
 
 
 

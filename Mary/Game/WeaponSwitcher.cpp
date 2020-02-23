@@ -72,6 +72,55 @@ static void Melee_UpdateWeapon(byte * baseAddr)
 	//updateModelAttributes[actor] = true;
 	Melee_UpdateIcon();
 	PlayCycleAnimation(WEAPON_ICON_SIDE_RIGHT, 0);
+
+
+	auto & active = *(uint8 *)(baseAddr + 0x3E6C);
+	auto & queue  = *(uint8 *)(baseAddr + 0x3E70);
+
+	uint8 slot = 0;
+
+	if (active == 1)
+	{
+		slot = 2;
+	}
+	if (active == 2)
+	{
+		slot = 1;
+	}
+
+	queue = slot;
+
+
+	switch (weapon)
+	{
+	case WEAPON_REBELLION:
+		ApplyDevilRebellion(slot);
+		break;
+	case WEAPON_CERBERUS:
+		ApplyDevilCerberus(slot);
+		break;
+	case WEAPON_AGNI_RUDRA:
+		ApplyDevilAgniRudra(slot);
+		break;
+	case WEAPON_NEVAN:
+		ApplyDevilNevan(slot);
+		break;
+	case WEAPON_BEOWULF:
+		ApplyDevilBeowulf(slot);
+		break;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 static uint8 Ranged_GetActiveWeaponSlot(byte * baseAddr)
