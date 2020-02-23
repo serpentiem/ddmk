@@ -29,6 +29,24 @@ extern System_Actor_Relax_t           System_Actor_Relax;
 
 void DanteLady(byte8 * baseAddr, uint32 slot);
 
+
+
+void ApplyDevilRebellion(uint8 slot);
+void ApplyDevilCerberus (uint8 slot);
+void ApplyDevilAgniRudra(uint8 slot);
+void ApplyDevilNevan    (uint8 slot);
+void ApplyDevilBeowulf  (uint8 slot);
+void ApplyDevilSparda   (uint8 slot);
+
+
+
+
+
+
+
+
+
+
 uint8 System_Actor_GetActorId(byte8 * baseAddr);
 uint8 System_Actor_GetActorCount();
 void System_Actor_ResetDevilModel();

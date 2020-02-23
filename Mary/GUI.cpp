@@ -1092,6 +1092,74 @@ void GUI_Cosmetics_Color()
 		}
 		Cosmetics_Color_ApplyColor(baseAddr, 6, 0);
 	};
+
+
+
+
+	
+	static uint8 slot[6] = {};
+	if (GUI_Button("DevilRebellion"))
+	{
+		ApplyDevilRebellion(slot[0]);
+	}
+	if (GUI_Button("DevilCerberus"))
+	{
+		ApplyDevilCerberus(slot[1]);
+	}
+	if (GUI_Button("DevilAgniRudra"))
+	{
+		ApplyDevilAgniRudra(slot[2]);
+	}
+	if (GUI_Button("DevilNevan"))
+	{
+		ApplyDevilNevan(slot[3]);
+	}
+	if (GUI_Button("DevilBeowulf"))
+	{
+		ApplyDevilBeowulf(slot[4]);
+	}
+	if (GUI_Button("DevilSparda"))
+	{
+		ApplyDevilSparda(slot[5]);
+	}
+	for (uint8 index = 0; index < countof(slot); index++)
+	{
+		GUI_InputEx<uint8>("Slot", slot[index]);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	ImGui::Text("");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	GUI_Hyperlink(Locale.Cosmetics.Color.header);
 	ImGui::Text("");
 	ImGui::Text(Locale.Cosmetics.Color.Aura.header);

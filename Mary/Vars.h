@@ -944,6 +944,10 @@ struct ACTOR_DATA
 
 
 
+
+
+
+
 constexpr uint32 adsize = (uint32)sizeof(ACTOR_DATA);
 
 
