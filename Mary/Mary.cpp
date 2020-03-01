@@ -4,6 +4,7 @@
 #include "Event.h"
 #include "FMOD.h"
 #include "Hooks.h"
+#include "Internal.h"
 #include "Speed.h"
 #include "Update.h"
 
@@ -100,6 +101,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
 		FMOD_Init();
 		Hooks_Init();
+		Internal_Init();
 		Speed_Init();
 		Speed_Update(Config);
 		Update_Init();

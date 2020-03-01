@@ -1,3 +1,7 @@
+
+// @Todo: Remove garbage.
+// @Todo: Update with ACTOR_DATA.
+// @Todo: Modularize InternalCreateActor.
 // @Todo: Create Archive module.
 // @Todo: Create Edit and Restore functions.
 // @Todo: Merge with Weapon module.
@@ -37,111 +41,111 @@ uint32 devilCounter = 0;
 
 
 
-typedef void (__fastcall * func_8B470_t)
-(
-	byte8  * dest,
-	uint32   flag
-);
-
-typedef void (__fastcall * func_89960_t)
-(
-	byte8 * dest,
-	byte8 * modelFile,
-	byte8 * textureFile
-);
-
-typedef byte8 * (__fastcall * func_89DE0_t)
-(
-	byte8 * dest
-);
-
-typedef void (__fastcall * func_8BC60_t)
-(
-	byte8 * dest,
-	byte8 * addr,
-	byte8 * shadowFile
-);
-
-typedef void (__fastcall * func_305D80_t)
-(
-	byte8 * dest
-);
-
-typedef void (__fastcall * func_8A000_t)
-(
-	byte8 * dest,
-	byte8 * motionArchive,
-	byte8 * addr
-);
-
-// @Research: Maybe add const.
-
-typedef uint32 (__fastcall * func_2C9F40_t)
-(
-	byte8 * clothFile
-);
-
-typedef void (__fastcall * func_2CA1D0_t)
-(
-	byte8  * dest,
-	byte8  * addr,
-	byte8  * clothFile,
-	uint32   index
-);
-
-typedef void (__fastcall * func_2CA2F0_t)
-(
-	byte8  * dest,
-	byte8  * addr,
-	byte8  * unknown,
-	byte8  * modelData,
-	uint32   count
-);
-
-typedef void(__fastcall * func_1EF040_t)
-(
-	byte8  * baseAddr,
-	uint32   index
-);
-
-typedef void(__fastcall * func_897B0_t)(byte8 * dest);
-typedef void(__fastcall * func_89450_t)(byte8 * dest);
-typedef void(__fastcall * func_89270_t)(byte8 * dest);
-
-typedef byte8 *(__fastcall * func_1DE820_t)
-(
-	uint8 characterId,
-	uint8 actorId,
-	bool  isDoppelganger
-);
-
-typedef void (__fastcall * func_1DF240_t)
-(
-	byte8 * baseAddr,
-	byte8 * sessionData
-);
-
-typedef void(__fastcall * func_1F92C0_t)(byte8 * dest, byte32 flag);
-
-typedef void(__fastcall * func_1F97F0_t)(byte8 * dest, byte32 flag);
-
-func_897B0_t func_897B0 = 0;
-func_89450_t func_89450 = 0;
-func_89270_t func_89270 = 0;
-func_1F92C0_t func_1F92C0 = 0;
-func_1F97F0_t func_1F97F0 = 0;
-func_8B470_t  func_8B470  = 0;
-func_89960_t  func_89960  = 0;
-func_89DE0_t  func_89DE0  = 0;
-func_8BC60_t  func_8BC60  = 0;
-func_305D80_t func_305D80 = 0;
-func_8A000_t  func_8A000  = 0;
-func_2C9F40_t func_2C9F40 = 0;
-func_2CA1D0_t func_2CA1D0 = 0;
-func_2CA2F0_t func_2CA2F0 = 0;
-func_1EF040_t func_1EF040 = 0;
-func_1DE820_t func_1DE820 = 0;
-func_1DF240_t func_1DF240 = 0;
+//typedef void (__fastcall * func_8B470_t)
+//(
+//	byte8  * dest,
+//	uint32   flag
+//);
+//
+//typedef void (__fastcall * func_89960_t)
+//(
+//	byte8 * dest,
+//	byte8 * modelFile,
+//	byte8 * textureFile
+//);
+//
+//typedef byte8 * (__fastcall * func_89DE0_t)
+//(
+//	byte8 * dest
+//);
+//
+//typedef void (__fastcall * func_8BC60_t)
+//(
+//	byte8 * dest,
+//	byte8 * addr,
+//	byte8 * shadowFile
+//);
+//
+//typedef void (__fastcall * func_305D80_t)
+//(
+//	byte8 * dest
+//);
+//
+//typedef void (__fastcall * func_8A000_t)
+//(
+//	byte8 * dest,
+//	byte8 * motionArchive,
+//	byte8 * addr
+//);
+//
+//// @Research: Maybe add const.
+//
+//typedef uint32 (__fastcall * func_2C9F40_t)
+//(
+//	byte8 * clothFile
+//);
+//
+//typedef void (__fastcall * func_2CA1D0_t)
+//(
+//	byte8  * dest,
+//	byte8  * addr,
+//	byte8  * clothFile,
+//	uint32   index
+//);
+//
+//typedef void (__fastcall * func_2CA2F0_t)
+//(
+//	byte8  * dest,
+//	byte8  * addr,
+//	byte8  * unknown,
+//	byte8  * modelData,
+//	uint32   count
+//);
+//
+//typedef void(__fastcall * func_1EF040_t)
+//(
+//	byte8  * baseAddr,
+//	uint32   index
+//);
+//
+//typedef void(__fastcall * func_897B0_t)(byte8 * dest);
+//typedef void(__fastcall * func_89450_t)(byte8 * dest);
+//typedef void(__fastcall * func_89270_t)(byte8 * dest);
+//
+//typedef byte8 *(__fastcall * func_1DE820_t)
+//(
+//	uint8 characterId,
+//	uint8 actorId,
+//	bool  isDoppelganger
+//);
+//
+//typedef void (__fastcall * func_1DF240_t)
+//(
+//	byte8 * baseAddr,
+//	byte8 * sessionData
+//);
+//
+//typedef void(__fastcall * func_1F92C0_t)(byte8 * dest, byte32 flag);
+//
+//typedef void(__fastcall * func_1F97F0_t)(byte8 * dest, byte32 flag);
+//
+//func_897B0_t func_897B0 = 0;
+//func_89450_t func_89450 = 0;
+//func_89270_t func_89270 = 0;
+//func_1F92C0_t func_1F92C0 = 0;
+//func_1F97F0_t func_1F97F0 = 0;
+//func_8B470_t  func_8B470  = 0;
+//func_89960_t  func_89960  = 0;
+//func_89DE0_t  func_89DE0  = 0;
+//func_8BC60_t  func_8BC60  = 0;
+//func_305D80_t func_305D80 = 0;
+//func_8A000_t  func_8A000  = 0;
+//func_2C9F40_t func_2C9F40 = 0;
+//func_2CA1D0_t func_2CA1D0 = 0;
+//func_2CA2F0_t func_2CA2F0 = 0;
+//func_1EF040_t func_1EF040 = 0;
+//func_1DE820_t func_1DE820 = 0;
+//func_1DF240_t func_1DF240 = 0;
 
 //void CreateClone()
 //{
@@ -705,7 +709,13 @@ PrivateEnd;
 
 
 
-void HumanDante(byte8 * baseAddr)
+// @Research: Need a Prefix. Maybe Don.
+// Need character modifier.
+
+
+
+
+void old_HumanDante(byte8 * baseAddr)
 {
 	byte8 * textureFile = 0;
 	byte8 * modelFile   = 0;
@@ -1298,6 +1308,8 @@ void prev_DevilRebellion
 
 
 
+// @Todo: Consider renaming and move to Vars.
+
 struct DEVIL_MODEL_DATA
 {
 	uint8 slot;
@@ -1342,6 +1354,41 @@ struct DEVIL_MODEL_DATA_SPARDA : DEVIL_MODEL_DATA
 
 
 
+// Should be structure.
+
+// modelFile
+// textureFile
+// shadowFile
+
+
+// union!
+
+// coatModelFile
+// coatTextureFile
+// coatShadowFile
+// coatPhysicsFile
+
+
+
+// wingsModelFile
+// wingsTextureFile
+// wingsShadowFile
+// wingsPhysicsFile
+
+// MODEL_FILE_DATA
+
+// MODEL_FILE_DATA modelFileDataDanteDefault
+// MODEL_FILE_DATA modelFileDataDanteCoatless
+// MODEL_FILE_DATA modelFileDataDanteTornCoat
+// MODEL_FILE_DATA modelFileDataDanteDevilMayCry1
+// MODEL_FILE_DATA modelFileDataDante
+// MODEL_FILE_DATA modelFileDataDante
+// MODEL_FILE_DATA modelFileDataDante
+// MODEL_FILE_DATA modelFileDataDante
+
+// MODEL_FILE_DATA modelFileDataDante[MAX_COSTUME_DANTE];
+
+// DEVIL_MODEL_FILE_DATA devilModelFileDataDante[MAX_DEVIL_DANTE];
 
 
 
@@ -1352,6 +1399,14 @@ struct DEVIL_MODEL_DATA_SPARDA : DEVIL_MODEL_DATA
 
 
 
+
+
+
+
+
+// @Todo: Create Base Helper
+
+// @Todo: Set file addresses in Init.
 
 
 struct DevilHelper
@@ -2029,11 +2084,105 @@ struct DevilSpardaHelper : DevilHelper
 
 
 
+// @Research: Consider adding parameters to the devil archetype functions.
+
+// So yea....
+
+
+// model, texture
 
 
 
 
+// shadowFile, physicsFile
 
+
+
+void HumanDante
+(
+	byte8 * baseAddr,
+	uint8   slot
+)
+{
+	byte8 * file = 0;
+
+	byte8 * dest  = 0;
+	byte8 * dest2 = 0;
+
+	auto & modelData = *(DEVIL_MODEL_DATA_CERBERUS *)(baseAddr + 0xB617);
+
+	file = System_File_cacheFile[pl009];
+
+	slotOff      = (slot * 0x18);
+	devilSlotOff = (slot == 1) ? 0 : 0x24;
+
+	subModelIndex      = (slot == 1) ? 1 : 3;
+	devilSubModelIndex = (slot == 1) ? 0 : 2;
+
+	((uint32 *)(baseAddr + 0x3E74))[slot] = 4;
+
+	modelData.slot    = slot;
+	modelData.slotOff = slotOff;
+
+	// Base
+
+	dest = (baseAddr + 0x200 + (slot * 0x780));
+
+	RegisterModel
+	(
+		dest,
+		System_File_GetFile(file, 1),
+		System_File_GetFile(file, 0)
+	);
+
+	func_1EF040(baseAddr, slot);
+
+	RegisterShadow
+	(
+		dest,
+		(baseAddr + 0x9AD0 + (slot * 0xC0)),
+		System_File_GetFile(file, 4)
+	);
+
+	// Wings
+
+	dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+	dest2 = (baseAddr + ((0x1460 + devilSlotOff) * 8));
+	//dest2 = (baseAddr + ((0xA300 + devilSlotOff) * 8));
+
+	RegisterModel
+	(
+		dest,
+		System_File_GetFile(file, 2),
+		System_File_GetFile(file, 0)
+	);
+
+	func_8A000(dest, 0, dest2);
+
+	RegisterShadow
+	(
+		dest,
+		(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
+		System_File_GetFile(file, 5)
+	);
+
+	dest = (baseAddr + 0xA540 + (devilSubModelIndex * 0xF0));
+
+	RegisterPhysics
+	(
+		dest,
+		dest2,
+		System_File_GetFile(file, 3)
+	);
+
+	CopyVertices(baseAddr, 0, 1, 3 );
+	CopyVertices(baseAddr, 1, 2, 6 );
+	CopyVertices(baseAddr, 2, 8, 10);
+
+	modelData.wings.subModelIndex      = subModelIndex;
+	modelData.wings.devilSlotOff       = devilSlotOff;
+	modelData.wings.devilSubModelIndex = devilSubModelIndex;
+}
 
 
 
@@ -3990,84 +4139,7 @@ void System_Actor_Init()
 
 
 
-	{
-		auto func = CreateFunction((appBaseAddr + 0x8B470));
-		func_8B470 = (func_8B470_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x89960));
-		func_89960 = (func_89960_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x89DE0), 0, true, false);
-		func_89DE0 = (func_89DE0_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x8BC60));
-		func_8BC60 = (func_8BC60_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x305D80));
-		func_305D80 = (func_305D80_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x8A000));
-		func_8A000 = (func_8A000_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x2C9F40), 0, true, false);
-		func_2C9F40 = (func_2C9F40_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x2CA1D0));
-		func_2CA1D0 = (func_2CA1D0_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x2CA2F0), 0, true, true, 0, 0, 0, 0, 1);
-		func_2CA2F0 = (func_2CA2F0_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x1EF040));
-		func_1EF040 = (func_1EF040_t)func.addr;
-	}
 
-
-	{
-		auto func = CreateFunction((appBaseAddr + 0x1DE820), 0, true, false);
-		func_1DE820 = (func_1DE820_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x1DF240));
-		func_1DF240 = (func_1DF240_t)func.addr;
-	}
-
-
-	{
-		auto func = CreateFunction((appBaseAddr + 0x897B0));
-		func_897B0 = (func_897B0_t)func.addr;
-	}
-
-	{
-		auto func = CreateFunction((appBaseAddr + 0x89450));
-		func_89450 = (func_89450_t)func.addr;
-	}
-
-	{
-		auto func = CreateFunction((appBaseAddr + 0x89270));
-		func_89270 = (func_89270_t)func.addr;
-	}
-
-
-
-	{
-		auto func = CreateFunction((appBaseAddr + 0x1F92C0));
-		func_1F92C0 = (func_1F92C0_t)func.addr;
-	}
-
-	{
-		auto func = CreateFunction((appBaseAddr + 0x1F97F0));
-		func_1F97F0 = (func_1F97F0_t)func.addr;
-	}
 
 
 	//{

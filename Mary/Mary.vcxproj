@@ -137,6 +137,7 @@ p4.exe</Command>
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Hooks.cpp" />
     <ClCompile Include="Hotkeys.cpp" />
+    <ClCompile Include="Internal.cpp" />
     <ClCompile Include="Locale.cpp" />
     <ClCompile Include="Mary.cpp" />
     <ClCompile Include="Pause.cpp" />
@@ -202,6 +203,7 @@ p4.exe</Command>
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Hooks.h" />
     <ClInclude Include="Hotkeys.h" />
+    <ClInclude Include="Internal.h" />
     <ClInclude Include="Locale.h" />
     <ClInclude Include="Pause.h" />
     <ClInclude Include="Restart.h" />

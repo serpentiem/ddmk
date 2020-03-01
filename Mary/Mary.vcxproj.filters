@@ -147,6 +147,7 @@
     <ClCompile Include="Game\Attack.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Internal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -332,5 +333,6 @@
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Internal.h" />
   </ItemGroup>
 </Project>

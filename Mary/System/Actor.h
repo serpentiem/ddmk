@@ -2,6 +2,7 @@
 #include "../../Core/Core.h"
 
 #include "../Config.h"
+#include "../Internal.h"
 #include "../Vars.h"
 
 #include "File.h"
@@ -18,6 +19,8 @@ extern bool System_Actor_enableDoppelgangerFixes;
 extern bool System_Actor_enableModelFixes;
 
 extern byte8 * System_Actor_actorBaseAddr[MAX_ACTOR];
+
+// @Todo: Move to Internal.
 
 typedef void(* System_Actor_UpdateDevilForm_t)(byte8 *       );
 typedef void(* System_Actor_UpdateFlux_t     )(byte8 *, uint8);
