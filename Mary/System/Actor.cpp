@@ -1,4 +1,6 @@
 
+// @Todo: Rename and move structures to header.
+// @Todo: Add ModelHelper and change DevilHelper to DevilModelHelper.
 // @Todo: Remove garbage.
 // @Todo: Update with ACTOR_DATA.
 // @Todo: Modularize InternalCreateActor.
@@ -41,136 +43,6 @@ uint32 devilCounter = 0;
 
 
 
-//typedef void (__fastcall * func_8B470_t)
-//(
-//	byte8  * dest,
-//	uint32   flag
-//);
-//
-//typedef void (__fastcall * func_89960_t)
-//(
-//	byte8 * dest,
-//	byte8 * modelFile,
-//	byte8 * textureFile
-//);
-//
-//typedef byte8 * (__fastcall * func_89DE0_t)
-//(
-//	byte8 * dest
-//);
-//
-//typedef void (__fastcall * func_8BC60_t)
-//(
-//	byte8 * dest,
-//	byte8 * addr,
-//	byte8 * shadowFile
-//);
-//
-//typedef void (__fastcall * func_305D80_t)
-//(
-//	byte8 * dest
-//);
-//
-//typedef void (__fastcall * func_8A000_t)
-//(
-//	byte8 * dest,
-//	byte8 * motionArchive,
-//	byte8 * addr
-//);
-//
-//// @Research: Maybe add const.
-//
-//typedef uint32 (__fastcall * func_2C9F40_t)
-//(
-//	byte8 * clothFile
-//);
-//
-//typedef void (__fastcall * func_2CA1D0_t)
-//(
-//	byte8  * dest,
-//	byte8  * addr,
-//	byte8  * clothFile,
-//	uint32   index
-//);
-//
-//typedef void (__fastcall * func_2CA2F0_t)
-//(
-//	byte8  * dest,
-//	byte8  * addr,
-//	byte8  * unknown,
-//	byte8  * modelData,
-//	uint32   count
-//);
-//
-//typedef void(__fastcall * func_1EF040_t)
-//(
-//	byte8  * baseAddr,
-//	uint32   index
-//);
-//
-//typedef void(__fastcall * func_897B0_t)(byte8 * dest);
-//typedef void(__fastcall * func_89450_t)(byte8 * dest);
-//typedef void(__fastcall * func_89270_t)(byte8 * dest);
-//
-//typedef byte8 *(__fastcall * func_1DE820_t)
-//(
-//	uint8 characterId,
-//	uint8 actorId,
-//	bool  isDoppelganger
-//);
-//
-//typedef void (__fastcall * func_1DF240_t)
-//(
-//	byte8 * baseAddr,
-//	byte8 * sessionData
-//);
-//
-//typedef void(__fastcall * func_1F92C0_t)(byte8 * dest, byte32 flag);
-//
-//typedef void(__fastcall * func_1F97F0_t)(byte8 * dest, byte32 flag);
-//
-//func_897B0_t func_897B0 = 0;
-//func_89450_t func_89450 = 0;
-//func_89270_t func_89270 = 0;
-//func_1F92C0_t func_1F92C0 = 0;
-//func_1F97F0_t func_1F97F0 = 0;
-//func_8B470_t  func_8B470  = 0;
-//func_89960_t  func_89960  = 0;
-//func_89DE0_t  func_89DE0  = 0;
-//func_8BC60_t  func_8BC60  = 0;
-//func_305D80_t func_305D80 = 0;
-//func_8A000_t  func_8A000  = 0;
-//func_2C9F40_t func_2C9F40 = 0;
-//func_2CA1D0_t func_2CA1D0 = 0;
-//func_2CA2F0_t func_2CA2F0 = 0;
-//func_1EF040_t func_1EF040 = 0;
-//func_1DE820_t func_1DE820 = 0;
-//func_1DF240_t func_1DF240 = 0;
-
-//void CreateClone()
-//{
-//
-//	auto addr = *(byte8 **)(appBaseAddr + 0xC90E28);
-//	if (!addr)
-//	{
-//		return;
-//	}
-//	addr = *(byte8 **)(addr + 8);
-//	if (!addr)
-//	{
-//		return;
-//	}
-//	auto sessionData = (byte8 *)(addr + 0x16C);
-//
-//	auto baseAddr = func_1DE820(CHAR_DANTE, 0, false);
-//	func_1DF240(baseAddr, sessionData);
-//
-//
-//	Log("clone %llX", baseAddr);
-//
-//}
-
-
 
 PrivateStart;
 
@@ -178,103 +50,6 @@ typedef byte8 *(* InternalCreateActor_t)(uint8 character, uint8 actor, bool isDo
 
 InternalCreateActor_t InternalCreateActor = 0;
 
-
-
-
-// FILE_ITEM
-
-
-// UpdateFileItem(FILE_ITEM ** fileItem, STRING_ITEM ** stringItem
-
-
-//
-//
-//struct FileItemHelper
-//{
-//	uint16 fileItemId;
-//	uint16 stringItemId;
-//	uint16 cacheFileId;
-//	void Update()
-//	{
-//		FILE_ITEM   * fileItemAddr   = (FILE_ITEM   *)(appBaseAddr + 0xC99D30); // dmc3.exe+1DF64B - 48 8D 0D DEA6AB00 - lea rcx,[dmc3.exe+C99D30]
-//		STRING_ITEM * stringItemAddr = (STRING_ITEM *)(appBaseAddr + 0x5B08C0); // dmc3.exe+1B8F9A - 48 8D 05 CF793F00 - lea rax,[dmc3.exe+5B0970]
-//
-//		FILE_ITEM   & fileItem   = fileItemAddr[fileItemId];
-//		STRING_ITEM & stringItem = stringItemAddr[stringItemId];
-//
-//		memset(&fileItem, 0, sizeof(FILE_ITEM));
-//
-//		fileItem.status     = FILE_ITEM_READY;
-//		fileItem.stringItem = &stringItem;
-//		fileItem.file       = System_Cache_file[cacheFileId];
-//	};
-//};
-
-
-
-// Merge all of them.
-
-// OHHHHHH
-
-// just put it before create main actor
-
-// put that shit in event
-
-
-//
-//
-//struct CostumeHelper
-//{
-//	uint16 stringItemId;
-//	uint16 cacheFileId;
-//};
-//
-//CostumeHelper costumeHelperDante[] =
-//{
-//	{ 0, pl000 },
-//	{ 1, pl011 },
-//	{ 2, pl013 },
-//	{ 3, pl015 },
-//	{ 4, pl016 },
-//	{ 5, pl018 },
-//	{ 2, pl013 },
-//	{ 5, pl018 },
-//};
-//
-//CostumeHelper costumeHelperBob[] =
-//{
-//	{ 6, pl001 },
-//};
-//
-//CostumeHelper costumeHelperLady[] =
-//{
-//	{ 7, pl002 },
-//};
-//
-//CostumeHelper costumeHelperVergil[] =
-//{
-//	{ 8 , pl021 },
-//	{ 9 , pl023 },
-//	{ 8 , pl021 },
-//	{ 10, pl026 },
-//	{ 10, pl026 },
-//};
-//
-//CostumeHelper * costumeHelper[] =
-//{
-//	costumeHelperDante,
-//	costumeHelperBob,
-//	costumeHelperLady,
-//	costumeHelperVergil,
-//};
-//
-//uint8 costumeHelperCount[] =
-//{
-//	countof(costumeHelperDante),
-//	countof(costumeHelperBob),
-//	countof(costumeHelperLady),
-//	countof(costumeHelperVergil),
-//};
 
 
 
@@ -449,26 +224,7 @@ void CreateActorOne(byte8 * baseAddr)
 
 }
 
-//void UpdateCostume(byte8 * baseAddr)
-//{
-//	uint8 actor = System_Actor_GetActorId(baseAddr);
-//	uint8 character = *(uint8 *)(baseAddr + 0x78);
-//	if (character >= MAX_CHAR)
-//	{
-//		character = 0;
-//	}
-//	uint8 & costume = *(uint8 *)(baseAddr + 0x3E9E);
-//	if (Config.Game.Multiplayer.enable && (actor != ACTOR_ONE))
-//	{
-//		costume = Config.Game.Multiplayer.costume[(actor - 1)];
-//	}
-//	if (costume >= costumeHelperCount[character])
-//	{
-//		costume = 0;
-//	}
-//	fileItemHelper[character][0].stringItemId = costumeHelper[character][costume].stringItemId;
-//	fileItemHelper[character][0].cacheFileId  = costumeHelper[character][costume].cacheFileId;
-//}
+
 
 void UpdateBaseAddress(byte8 * baseAddr)
 {
@@ -693,621 +449,6 @@ PrivateEnd;
 
 
 
-
-/*
-[rax + 150] dmc3.exe+8A000
-[rdx +   8] dmc3.exe+89DE0
-[rdx +  68] dmc3.exe+211C10
-[rdi +   8] dmc3.exe+8BC60
-[ r8 +  38] dmc3.exe+8B470
-[ r9 +  50] dmc3.exe+89960
-*/
-
-
-
-//byte8 * g_modelAddr = 0;
-
-
-
-// @Research: Need a Prefix. Maybe Don.
-// Need character modifier.
-
-
-
-
-void old_HumanDante(byte8 * baseAddr)
-{
-	byte8 * textureFile = 0;
-	byte8 * modelFile   = 0;
-	byte8 * shadowFile  = 0;
-	byte8 * clothFile   = 0;
-	byte8 * addr = 0;
-	uint32 count = 0;
-	auto actorData = (ACTOR_DATA *)baseAddr;
-	auto & md = actorData->modelData;
-	vec4 * g_vertex     = 0;
-	vec4 * g_coatVertex = 0;
-	//byte8 * coatShadowFile = 0;
-	byte8 * addr2 = 0;
-	byte8 * coatShadowFile = 0;
-
-
-
-
-	textureFile = System_File_GetFile(System_File_cacheFile[pl021], 0);
-	modelFile   = System_File_GetFile(System_File_cacheFile[pl021], 1);
-	func_8B470((baseAddr + 0x200), 1);
-	func_89960((baseAddr + 0x200), modelFile, textureFile);
-
-
-
-
-
-	//memcpy(g_modelAddr, (baseAddr + 0x200), 0x780);
-
-
-
-	return;
-
-
-	#pragma region courteous
-
-
-
-	shadowFile = System_File_GetFile(System_File_cacheFile[pl000], 8);
-	addr = func_89DE0((baseAddr + 0x200));
-	func_8BC60((baseAddr + 0x9AD0), addr, shadowFile);
-
-	addr = func_89DE0((baseAddr + 0x200));
-	func_305D80(addr);
-
-	g_vertex = (vec4 *)(appBaseAddr + 0x58B260);
-
-	md[0].count = 4;
-	md[0].vertex[0] = g_vertex[0];
-	md[0].vertex[1] = g_vertex[1];
-	md[0].vertex[2] = g_vertex[2];
-
-	md[1].count = 4;
-	md[1].vertex[0] = g_vertex[3];
-	md[1].vertex[1] = g_vertex[4];
-	md[1].vertex[2] = g_vertex[5];
-
-	md[2].count = 4;
-	md[2].vertex[0] = g_vertex[6];
-	md[2].vertex[1] = g_vertex[7];
-	md[2].vertex[2] = g_vertex[8];
-
-	md[3].count = 4;
-	md[3].vertex[0] = g_vertex[9];
-	md[3].vertex[1] = g_vertex[10];
-	md[3].vertex[2] = g_vertex[11];
-
-	md[4].count = 4;
-	md[4].vertex[0] = g_vertex[12];
-	md[4].vertex[1] = g_vertex[13];
-	md[4].vertex[2] = g_vertex[14];
-
-	md[5].count = 4;
-	md[5].vertex[0] = g_vertex[15];
-	md[5].vertex[1] = g_vertex[16];
-	md[5].vertex[2] = g_vertex[17];
-
-
-
-
-
-
-
-	// No Coat
-
-	//textureFile = System_File_GetFile(System_File_cacheFile[pl011], 0 );
-	//modelFile   = System_File_GetFile(System_File_cacheFile[pl011], 12);
-	//func_8B470((baseAddr + 0x7540), 1);
-	//func_89960((baseAddr + 0x7540), modelFile, textureFile);
-	//*(uint8 *)(baseAddr + 0x9AC0) = 1;
-	//func_8A000((baseAddr + 0x7540), 0, (baseAddr + 0xA0D0));
-
-	//md[0].count = 4;
-	//md[0].vertex[0] = g_vertex[23];
-	//md[0].vertex[1] = g_vertex[24];
-	//md[0].vertex[2] = g_vertex[25];
-
-
-
-	//	byte8 * dest = (baseAddr + 0xA210);
-	//clothFile = System_File_GetFile(System_File_cacheFile[pl011], 13);
-	//count = func_2C9F40(clothFile);
-	//for (uint32 index = 0; index < count; index++)
-	//{
-	
-	//	func_2CA1D0(dest, (baseAddr + 0xA0D0), clothFile, index);
-	//	dest += 0xF0;
-	//}
-
-	//func_2CA2F0
-	//(
-	//	(baseAddr + 0xA210),
-	//	(baseAddr + 0x1880),
-	//	(appBaseAddr + 0x58B054),
-	//	(baseAddr + 0xB630),
-	//	1
-	//);
-
-
-	//actorData->costume = 1;
-	// DonDanteCoatless
-	// DonDanteBase
-	// DonAmuletDante
-	// DonAmuletVergil
-
-
-
-
-
-	// Coat
-
-
-	textureFile = System_File_GetFile(System_File_cacheFile[pl000], 0 );
-	modelFile   = System_File_GetFile(System_File_cacheFile[pl000], 12);
-	func_8B470((baseAddr + 0x7540), 1);
-	func_89960((baseAddr + 0x7540), modelFile, textureFile);
-	func_8A000((baseAddr + 0x7540), 0, (baseAddr + 0xA0D0));
-
-	g_coatVertex = (vec4 *)(appBaseAddr + 0x35D580);
-	addr2 = *(byte8 **)(baseAddr + 0xA0D0);
-	addr2 = *(byte8 **)(addr2 + 0x108);
-
-	auto coatVertex = (vec4 *)addr2;
-
-	coatVertex[0] = g_coatVertex[0];
-	coatVertex[1] = g_coatVertex[1];
-	coatVertex[2] = g_coatVertex[2];
-	coatVertex[3] = g_coatVertex[3];
-
-	md[0].count = 4;
-	md[0].vertex[0] = g_vertex[0];
-	md[0].vertex[1] = g_vertex[1];
-	md[0].vertex[2] = g_vertex[2];
-
-	md[1].count = 4;
-	md[1].vertex[0] = g_vertex[3];
-	md[1].vertex[1] = g_vertex[4];
-	md[1].vertex[2] = g_vertex[5];
-
-	md[2].count = 4;
-	md[2].vertex[0] = g_vertex[6];
-	md[2].vertex[1] = g_vertex[7];
-	md[2].vertex[2] = g_vertex[8];
-
-	md[3].count = 4;
-	md[3].vertex[0] = g_vertex[9];
-	md[3].vertex[1] = g_vertex[10];
-	md[3].vertex[2] = g_vertex[11];
-
-	md[4].count = 4;
-	md[4].vertex[0] = g_vertex[12];
-	md[4].vertex[1] = g_vertex[13];
-	md[4].vertex[2] = g_vertex[14];
-
-	md[5].count = 4;
-	md[5].vertex[0] = g_vertex[15];
-	md[5].vertex[1] = g_vertex[16];
-	md[5].vertex[2] = g_vertex[17];
-
-	clothFile = System_File_GetFile(System_File_cacheFile[pl000], 13);
-	count = func_2C9F40(clothFile);
-
-
-	byte8 * dest = (baseAddr + 0xA210);
-
-	for (uint32 index = 0; index < count; index++)
-	{
-		
-		func_2CA1D0(dest, (baseAddr + 0xA0D0), clothFile, index);
-		dest += 0xF0;
-	}
-
-	func_2CA2F0
-	(
-		(baseAddr + 0xA210),
-		(baseAddr + 0x1880),
-		(appBaseAddr + 0x58B380),
-		(baseAddr + 0xB630),
-		6
-	);
-
-
-	// Can be merged into a Register or Apply Shadow function.
-
-	coatShadowFile = System_File_GetFile(System_File_cacheFile[pl000], 14);
-	addr = func_89DE0((baseAddr + 0x7540));
-	func_8BC60((baseAddr + 0x9D10), addr, coatShadowFile);
-
-
-
-	addr = func_89DE0((baseAddr + 0x7540));
-	func_305D80(addr);
-	#pragma endregion
-
-}
-
-
-
-
-byte8 * g_slotAddr = 0;
-byte8 * g_upperBodyAddr = 0;
-byte8 * g_lowerBodyAddr = 0;
-
-void DanteLady(byte8 * baseAddr, uint32 slot)
-{
-	byte8 * dest        = 0;
-	byte8 * textureFile = 0;
-	byte8 * modelFile   = 0;
-
-	dest = (baseAddr + 0x200 + (slot * 0x780));
-
-	memset(dest, 0, 0x780);
-	func_89270(dest);
-
-	if (slot == 1)
-	{
-		textureFile = System_File_GetFile(System_File_cacheFile[pl002], 0);
-		modelFile   = System_File_GetFile(System_File_cacheFile[pl002], 1);
-	}
-	else
-	{
-		textureFile = System_File_GetFile(System_File_cacheFile[em034], 31);
-		modelFile   = System_File_GetFile(System_File_cacheFile[em034], 32);
-	}
-
-	func_8B470(dest, 1);
-	func_89960(dest, modelFile, textureFile);
-	func_1EF040(baseAddr, slot);
-}
-
-
-
-
-void prev_DevilRebellion
-(
-	byte8 * baseAddr,
-	uint8   slot
-)
-{
-	auto g_vertices = (vec4 *)(appBaseAddr + 0x35D580);
-
-	byte8 * textureFile = 0;
-	byte8 * modelFile = 0;
-	byte8 * shadowFile = 0;
-	byte8 * physicsFile = 0;
-
-	byte8 * addr = 0;
-	byte8 * dest = 0;
-	byte8 * dest2 = 0;
-
-	uint8 slotOff = 0;
-	uint8 devilSlotOff = 0;
-
-	uint8 subModelCount = 0;
-	uint8 devilSubModelCount = 0;
-
-	uint32 count = 0;
-	vec4 * vertices = 0;
-
-	slotOff = (slot * 0x18);
-	devilSlotOff = (slot == 1) ? 0 : 0x24;
-
-	subModelCount = (slot == 1) ? 1 : 3;
-	devilSubModelCount = (slot == 1) ? 0 : 2;
-
-	*(uint32 *)(baseAddr + 0x3E74 + (slot * 4)) = 0;
-
-	// base
-
-	dest = (baseAddr + 0x200 + (slot * 0x780));
-
-	textureFile = System_File_GetFile(System_File_cacheFile[pl005], 0);
-	modelFile = System_File_GetFile(System_File_cacheFile[pl005], 1);
-
-	// rcx 00000000046EDF70 / 00000000046EDF70
-	// rdx 0000000000000001 / 0000000000000001
-	func_8B470(dest, 1);
-
-	// rcx 00000000046EDF70 / 00000000046EDF70
-	// rdx 0000000020885030 / 0000000020885030
-	// r8  0000000020859830 / 0000000020859830
-	func_89960(dest, modelFile, textureFile);
-
-	// rcx 00000000046ECE70 / 00000000046ECE70
-	// rdx 0000000000000002 / 0000000000000002
-	func_1EF040(baseAddr, slot);
-
-	shadowFile = System_File_GetFile(System_File_cacheFile[pl005], 6);
-
-	// rcx 00000000046EDF70 / 00000000046EDF70
-	addr = func_89DE0(dest);
-	// rax 00000000046EDFF0 / 00000000046EDFF0
-
-	// rcx 00000000046F6AC0 / 00000000046F6AC0
-	// rdx 00000000046EDFF0 / 00000000046EDFF0
-	// r8  00000000208B3920 / 00000000208B3920
-	func_8BC60((baseAddr + 0x9AD0 + (slot * 0xC0)), addr, shadowFile);
-
-	// rcx 00000000046EDF70 / 00000000046EDF70
-	addr = func_89DE0(dest);
-	// rax 00000000046EDFF0 / 00000000046EDFF0
-
-	// rcx 00000000046EDFF0 / 00000000046EDFF0
-	func_305D80(addr);
-
-
-
-
-
-	// coat
-
-	dest = (baseAddr + 0x7540 + (subModelCount * 0x780));
-	dest2 = (baseAddr + ((0x1460 + devilSlotOff) * 8));
-
-	textureFile = System_File_GetFile(System_File_cacheFile[pl005], 0);
-	modelFile = System_File_GetFile(System_File_cacheFile[pl005], 2);
-
-	// rcx 00000000046F5A30 / 00000000046F5A30
-	// rdx 0000000000000001 / 0000000000000001
-	func_8B470(dest, 1);
-
-	// rcx 00000000046F5A30 / 00000000046F5A30
-	// rdx 00000000208A6B50 / 00000000208A6B50
-	// r8  0000000020859830 / 0000000020859830
-	func_89960(dest, modelFile, textureFile);
-
-	// rcx 00000000046F5A30 / 00000000046F5A30
-	// rdx 0000000000000000 / 0000000000000000
-	// r8  00000000046F7290 / 00000000046F7290
-	func_8A000(dest, 0, dest2);
-
-	shadowFile = System_File_GetFile(System_File_cacheFile[pl005], 7);
-
-	// rcx 00000000046F5A30 / 00000000046F5A30
-	addr = func_89DE0(dest);
-	// rax 00000000046F5AB0 / 00000000046F5AB0
-
-	// rcx 00000000046F6DC0 / 00000000046F6DC0
-	// rdx 00000000046F5AB0 / 00000000046F5AB0
-	// r8  00000000208B7280 / 00000000208B7280
-	func_8BC60((baseAddr + 0x9D10 + (subModelCount * 0xC0)), addr, shadowFile);
-
-	// rcx 00000000046F5A30 / 00000000046F5A30
-	addr = func_89DE0(dest);
-	// rax 00000000046F5AB0 / 00000000046F5AB0
-
-	// rcx 00000000046F5AB0 / 00000000046F5AB0
-	func_305D80(addr);
-
-	physicsFile = System_File_GetFile(System_File_cacheFile[pl005], 3);
-
-	// rcx 00000000208AC6F0 / 00000000208AC6F0
-	count = func_2C9F40(physicsFile);
-	// rax 0000000000000001 / 0000000000000001
-
-	dest = (baseAddr + 0xA540 + (devilSubModelCount * 0xF0));
-	for (uint32 index = 0; index < count; index++)
-	{
-		// rcx 00000000046F7590 / 00000000046F7590
-		// rdx 00000000046F7290 / 00000000046F7290
-		// r8  00000000208AC6F0 / 00000000208AC6F0
-		// r9  0000000000000000 / 0000000000000000
-		func_2CA1D0(dest, dest2, physicsFile, index);
-
-		dest += 0xF0;
-	}
-
-
-
-
-
-
-	{
-		{
-			dest = (baseAddr + 0xAA00 + (devilSubModelCount * 0x300));
-
-			addr = *(byte8 **)(baseAddr + ((devilSlotOff + 1) * 8) + 0xA300); // addr 0000000004719E70 / 0000000004719E70
-			*(byte8 **)(addr + 0x100) = dest;                            // dest 00000000046F7E70 / 00000000046F7E70
-
-			vertices = (vec4 *)(dest + 0x80);
-			vertices[0] = g_vertices[0];
-			vertices[1] = g_vertices[1];
-			vertices[2] = g_vertices[2];
-			vertices[3] = g_vertices[3];
-
-			addr = *(byte8 **)(baseAddr + ((slotOff + 3) * 8) + 0x1880); // addr 0000000004705670 / 0000000004705670
-			addr = *(byte8 **)(addr + 0x110);                           // addr 0000000004760730 / 0000000004760730
-
-			*(byte8 **)(dest + 0x30) = addr; // dest 00000000046F7E70 / 00000000046F7E70
-			*(uint32 *)(dest + 0x28) = 1;    // dest 00000000046F7E70 / 00000000046F7E70
-		}
-
-		{
-			dest = (baseAddr + 0xAAC0 + (devilSubModelCount * 0x300));
-
-			addr = *(byte8 **)(baseAddr + ((devilSlotOff + 12) * 8) + 0xA300); // addr 000000000471CA70 / 000000000471CA70
-			*(byte8 **)(addr + 0x100) = dest;                             // dest 00000000046F7F30 / 00000000046F7F30
-
-			vertices = (vec4 *)(dest + 0x80);
-			vertices[0] = g_vertices[0];
-			vertices[1] = g_vertices[1];
-			vertices[2] = g_vertices[2];
-			vertices[3] = g_vertices[3];
-
-			addr = *(byte8 **)(baseAddr + ((slotOff + 2) * 8) + 0x1880); // addr 0000000004705270 / 0000000004705270
-			addr = *(byte8 **)(addr + 0x110);                           // addr 00000000047606F0 / 00000000047606F0
-
-			*(byte8 **)(dest + 0x30) = addr; // dest 00000000046F7F30 / 00000000046F7F30
-			*(uint32 *)(dest + 0x28) = 1;    // dest 00000000046F7F30 / 00000000046F7F30
-		}
-	}
-
-	subModelCount++; // should be g_subModelCount
-	devilSubModelCount++; // put devil at the end
-
-	devilSlotOff += 9;
-
-
-	// wing
-
-	dest = (baseAddr + 0x7540 + (subModelCount * 0x780));
-	/*
-	dmc3.exe+214890 - 41 83 C7 09    - add r15d,09
-	dmc3.exe+2148DE - 41 8B C7       - mov eax,r15d
-	dmc3.exe+2148E3 - 48 05 60140000 - add rax,00001460
-	dmc3.exe+2148E9 - 48 8D 0C C6    - lea rcx,[rsi+rax*8]
-	dmc3.exe+2148F6 - 4C 8B C1       - mov r8,rcx
-	*/
-	dest2 = (baseAddr + ((0x1460 + devilSlotOff) * 8));
-
-
-
-
-	textureFile = System_File_GetFile(System_File_cacheFile[pl005], 0);
-	modelFile = System_File_GetFile(System_File_cacheFile[pl005], 4);
-
-	// rcx 00000000046F61B0 / 00000000046F61B0
-	// rdx 0000000000000001 / 0000000000000001
-	func_8B470(dest, 1);
-
-	// rcx 00000000046F61B0 / 00000000046F61B0
-	// rdx 00000000208AC850 / 00000000208AC850
-	// r8  0000000020859830 / 0000000020859830
-	func_89960(dest, modelFile, textureFile);
-
-	// rcx 00000000046F61B0 / 00000000046F61B0
-	// rdx 0000000000000000 / 0000000000000000
-	// r8  00000000046F72D8 / 00000000046F72D8
-	func_8A000(dest, 0, dest2);
-
-	shadowFile = System_File_GetFile(System_File_cacheFile[pl005], 8);
-
-	// rcx 00000000046F61B0 / 00000000046F61B0
-	addr = func_89DE0(dest);
-	// rax 00000000046F6230 / 00000000046F6230
-
-	// rcx 00000000046F6E80 / 00000000046F6E80
-	// rdx 00000000046F6230 / 00000000046F6230
-	// r8  00000000208B8A00 / 00000000208B8A00
-	func_8BC60((baseAddr + 0x9D10 + (subModelCount * 0xC0)), addr, shadowFile);
-
-	// rcx 00000000046F61B0 / 00000000046F61B0
-	addr = func_89DE0(dest);
-	// rax 00000000046F6230 / 00000000046F6230
-
-	// rcx 00000000046F6230 / 00000000046F6230
-	func_305D80(addr);
-
-	dest = (baseAddr + 0xA540 + (devilSubModelCount * 0xF0));
-	physicsFile = System_File_GetFile(System_File_cacheFile[pl005], 5);
-
-	// rcx 00000000208B36A0 / 00000000208B36A0
-	count = func_2C9F40(physicsFile);
-	// rax 0000000000000001 / 0000000000000001
-
-	for (uint32 index = 0; index < count; index++)
-	{
-		// rcx 00000000046F7680 / 00000000046F7680
-		// rdx 00000000046F72D8 / 00000000046F72D8
-		// r8  00000000208B36A0 / 00000000208B36A0
-		// r9  0000000000000000 / 0000000000000000
-		func_2CA1D0(dest, dest2, physicsFile, index);
-
-		dest += 0xF0;
-	}
-
-	{
-		uint32 eax = slotOff;
-		eax += 0x310;
-
-		// rcx    00000000046F7680 / 00000000046F7680
-		// rdx    00000000046EE870 / 00000000046EE870
-		// r8     00007FF7362FB380 / 00007FF7362FB380
-		// r9     00000000046F84A0 / 00000000046F84A0
-		// rsp+20 06 00 00 00 / 06 00 00 00
-		func_2CA2F0
-		(
-			(baseAddr + 0xA540 + (devilSubModelCount * 0xF0)),
-			(baseAddr + (eax * 8)),
-			(appBaseAddr + 0x58B380),
-			(baseAddr + 0xB630),
-			6
-		);
-	}
-
-
-
-
-
-
-
-
-	{
-		{
-			dest = (baseAddr + 0xAA00 + (devilSubModelCount * 0x300));
-
-			addr = *(byte8 **)(baseAddr + ((devilSlotOff + 1) * 8) + 0xA300); // addr 000000000471C270 / 000000000471C270
-			*(byte8 **)(addr + 0x100) = dest;                            // dest 00000000046F8170 / 00000000046F8170
-
-			vertices = (vec4 *)(dest + 0x80);
-			vertices[0] = g_vertices[0];
-			vertices[1] = g_vertices[1];
-			vertices[2] = g_vertices[2];
-			vertices[3] = g_vertices[3];
-
-			addr = *(byte8 **)(baseAddr + ((slotOff + 2) * 8) + 0x1880); // addr 0000000004705270 / 0000000004705270
-			addr = *(byte8 **)(addr + 0x110);                           // addr 00000000047606F0 / 00000000047606F0
-
-			*(byte8 **)(dest + 0x30) = addr; // dest 00000000046F8170 / 00000000046F8170
-			*(uint32 *)(dest + 0x28) = 1;    // dest 00000000046F8170 / 00000000046F8170
-		}
-		{
-			dest = (baseAddr + 0xAAC0 + (devilSubModelCount * 0x300));
-
-			addr = *(byte8 **)(baseAddr + ((devilSlotOff + 2) * 8) + 0xA300); // addr 000000000471C670 / 000000000471C670
-			*(byte8 **)(addr + 0x100) = dest;                            // dest 00000000046F8230 / 00000000046F8230
-
-			vertices = (vec4 *)(dest + 0x80);
-			vertices[0] = g_vertices[0];
-			vertices[1] = g_vertices[1];
-			vertices[2] = g_vertices[2];
-			vertices[3] = g_vertices[3];
-
-			addr = *(byte8 **)(baseAddr + ((slotOff + 14) * 8) + 0x1880); // addr 0000000004708270 / 0000000004708270
-			addr = *(byte8 **)(addr + 0x110);                            // addr 00000000047609F0 / 00000000047609F0
-
-			*(byte8 **)(dest + 0x30) = addr; // dest 00000000046F8230 / 00000000046F8230
-			*(uint32 *)(dest + 0x28) = 1;    // dest 00000000046F8230 / 00000000046F8230
-		}
-	}
-
-
-
-
-
-
-
-	auto modelData = (uint8 *)(baseAddr + 0xB600);
-
-	modelData[0] = slot;
-	modelData[1] = slotOff;
-	modelData[2] = subModelCount;
-	modelData[3] = devilSlotOff;
-	modelData[4] = devilSubModelCount;
-	modelData[5] = (devilSubModelCount + 2);
-	modelData[6] = (devilSlotOff + 9);
-	modelData[7] = subModelCount;
-}
-
-
-
-
 // @Todo: Consider renaming and move to Vars.
 
 struct DEVIL_MODEL_DATA
@@ -1354,41 +495,181 @@ struct DEVIL_MODEL_DATA_SPARDA : DEVIL_MODEL_DATA
 
 
 
-// Should be structure.
-
-// modelFile
-// textureFile
-// shadowFile
 
 
-// union!
+struct ModelHelper
+{
+	uint8 slotOff       = 0;
+	uint8 subModelIndex = 0;
 
-// coatModelFile
-// coatTextureFile
-// coatShadowFile
-// coatPhysicsFile
+	inline void RegisterModel
+	(
+		byte8 * dest,
+		byte8 * modelFile,
+		byte8 * textureFile
+	)
+	{
+		func_8B470(dest, 1);
+		func_89960(dest, modelFile, textureFile);
+	}
+
+	inline void RegisterShadow
+	(
+		byte8 * dest,
+		byte8 * buffer,
+		byte8 * file
+	)
+	{
+		byte8 * addr = 0;
+
+		addr = func_89DE0(dest);
+		func_8BC60(buffer, addr, file);
+		addr = func_89DE0(dest);
+		func_305D80(addr);
+	}
+
+	inline void RegisterPhysics
+	(
+		byte8 * dest,
+		byte8 * buffer,
+		byte8 * file
+	)
+	{
+		uint32 count = 0;
+
+		count = func_2C9F40(file);
+		for (uint32 index = 0; index < count; index++)
+		{
+			func_2CA1D0(dest, buffer, file, index);
+			dest += 0xF0;
+		}
+	}
+
+	inline void CopyModelData
+	(
+		byte8 * baseAddr
+	)
+	{
+		auto g_vertices = (vec4 *)(appBaseAddr + 0x58B260);
+
+		auto modelData = (MODEL_DATA *)(baseAddr + 0xB630);
+
+		for (uint8 index = 0; index < 6; index++)
+		{
+			uint8 off = (index * 3);
+			modelData[index].count = 4;
+			modelData[index].vertices[0] = g_vertices[(off + 0)];
+			modelData[index].vertices[1] = g_vertices[(off + 1)];
+			modelData[index].vertices[2] = g_vertices[(off + 2)];
+		}
+	};
+
+	inline void CopyVertices
+	(
+		byte8 * dest
+	)
+	{
+		auto g_vertices = (vec4 *)(appBaseAddr + 0x35D580);
+
+		byte8 * addr     = 0;
+		vec4  * vertices = 0;
+
+		addr = *(byte8 **)dest;
+		vertices = *(vec4 **)(addr + 0x108);
+
+		vertices[0] = g_vertices[0];
+		vertices[1] = g_vertices[1];
+		vertices[2] = g_vertices[2];
+		vertices[3] = g_vertices[3];
+	};
+};
+
+struct ModelHelperDanteDefault : ModelHelper
+{
+	void Update
+	(
+		byte8 * baseAddr,
+		uint8   slot
+	)
+	{
+		byte8 * file = 0;
+
+		byte8 * dest  = 0;
+		byte8 * dest2 = 0;
+
+		file = System_File_cacheFile[pl000];
+
+		slotOff       = (slot * 0x18);
+		subModelIndex = 0;
+
+		// Base
+
+		dest = (baseAddr + 0x200 + (slot * 0x780));
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 1),
+			System_File_GetFile(file, 0)
+		);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9AD0 + (slot * 0xC0)),
+			System_File_GetFile(file, 8)
+		);
+
+		CopyModelData(baseAddr);
+
+		// Coat
+
+		dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+		dest2 = (baseAddr + 0xA0D0);
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 12),
+			System_File_GetFile(file, 0)
+		);
+
+		func_8A000(dest, 0, dest2);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
+			System_File_GetFile(file, 14)
+		);
+
+		dest = (baseAddr + 0xA210);
+
+		RegisterPhysics
+		(
+			dest,
+			dest2,
+			System_File_GetFile(file, 13)
+		);
+
+		func_2CA2F0
+		(
+			dest,
+			(baseAddr + 0x1880),
+			(appBaseAddr + 0x58B380),
+			(baseAddr + 0xB630),
+			6
+		);
+
+		CopyVertices(dest2);
+	}
+};
+
+
+ModelHelperDanteDefault modelHelperDanteDefault;
 
 
 
-// wingsModelFile
-// wingsTextureFile
-// wingsShadowFile
-// wingsPhysicsFile
-
-// MODEL_FILE_DATA
-
-// MODEL_FILE_DATA modelFileDataDanteDefault
-// MODEL_FILE_DATA modelFileDataDanteCoatless
-// MODEL_FILE_DATA modelFileDataDanteTornCoat
-// MODEL_FILE_DATA modelFileDataDanteDevilMayCry1
-// MODEL_FILE_DATA modelFileDataDante
-// MODEL_FILE_DATA modelFileDataDante
-// MODEL_FILE_DATA modelFileDataDante
-// MODEL_FILE_DATA modelFileDataDante
-
-// MODEL_FILE_DATA modelFileDataDante[MAX_COSTUME_DANTE];
-
-// DEVIL_MODEL_FILE_DATA devilModelFileDataDante[MAX_DEVIL_DANTE];
 
 
 
@@ -1399,14 +680,6 @@ struct DEVIL_MODEL_DATA_SPARDA : DEVIL_MODEL_DATA
 
 
 
-
-
-
-
-
-// @Todo: Create Base Helper
-
-// @Todo: Set file addresses in Init.
 
 
 struct DevilHelper
@@ -1510,11 +783,22 @@ struct DevilRebellionHelper : DevilHelper
 
 		file = System_File_cacheFile[pl005];
 
+
+
+
+
+
+		// @Todo: Generalize!
+
 		slotOff      = (slot * 0x18);
 		devilSlotOff = (slot == 1) ? 0 : 0x24;
 
 		subModelIndex      = (slot == 1) ? 1 : 3;
 		devilSubModelIndex = (slot == 1) ? 0 : 2;
+
+
+
+
 
 		((uint32 *)(baseAddr + 0x3E74))[slot] = 0;
 
@@ -2084,115 +1368,18 @@ struct DevilSpardaHelper : DevilHelper
 
 
 
-// @Research: Consider adding parameters to the devil archetype functions.
-
-// So yea....
-
-
-// model, texture
 
 
 
 
-// shadowFile, physicsFile
-
-
-
-void HumanDante
+__declspec(noinline) void HumanDante
 (
 	byte8 * baseAddr,
-	uint8   slot
+	uint8 slot
 )
 {
-	byte8 * file = 0;
-
-	byte8 * dest  = 0;
-	byte8 * dest2 = 0;
-
-	auto & modelData = *(DEVIL_MODEL_DATA_CERBERUS *)(baseAddr + 0xB617);
-
-	file = System_File_cacheFile[pl009];
-
-	slotOff      = (slot * 0x18);
-	devilSlotOff = (slot == 1) ? 0 : 0x24;
-
-	subModelIndex      = (slot == 1) ? 1 : 3;
-	devilSubModelIndex = (slot == 1) ? 0 : 2;
-
-	((uint32 *)(baseAddr + 0x3E74))[slot] = 4;
-
-	modelData.slot    = slot;
-	modelData.slotOff = slotOff;
-
-	// Base
-
-	dest = (baseAddr + 0x200 + (slot * 0x780));
-
-	RegisterModel
-	(
-		dest,
-		System_File_GetFile(file, 1),
-		System_File_GetFile(file, 0)
-	);
-
-	func_1EF040(baseAddr, slot);
-
-	RegisterShadow
-	(
-		dest,
-		(baseAddr + 0x9AD0 + (slot * 0xC0)),
-		System_File_GetFile(file, 4)
-	);
-
-	// Wings
-
-	dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
-	dest2 = (baseAddr + ((0x1460 + devilSlotOff) * 8));
-	//dest2 = (baseAddr + ((0xA300 + devilSlotOff) * 8));
-
-	RegisterModel
-	(
-		dest,
-		System_File_GetFile(file, 2),
-		System_File_GetFile(file, 0)
-	);
-
-	func_8A000(dest, 0, dest2);
-
-	RegisterShadow
-	(
-		dest,
-		(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
-		System_File_GetFile(file, 5)
-	);
-
-	dest = (baseAddr + 0xA540 + (devilSubModelIndex * 0xF0));
-
-	RegisterPhysics
-	(
-		dest,
-		dest2,
-		System_File_GetFile(file, 3)
-	);
-
-	CopyVertices(baseAddr, 0, 1, 3 );
-	CopyVertices(baseAddr, 1, 2, 6 );
-	CopyVertices(baseAddr, 2, 8, 10);
-
-	modelData.wings.subModelIndex      = subModelIndex;
-	modelData.wings.devilSlotOff       = devilSlotOff;
-	modelData.wings.devilSubModelIndex = devilSubModelIndex;
+	modelHelperDanteDefault.Update(baseAddr, slot);
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2260,822 +1447,6 @@ __declspec(noinline) void DevilSparda
 	devilSpardaHelper.Update(baseAddr, slot);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-//__declspec(noinline) void old_DevilRebellion
-//(
-//	byte8 * baseAddr,
-//	uint8   slot
-//)
-//{
-//	auto & modelData = *(DEVIL_MODEL_DATA_REBELLION *)(baseAddr + 0xB600);
-//
-//	byte8 * file = 0;
-//
-//	byte8 * addr  = 0;
-//	byte8 * dest  = 0;
-//	byte8 * dest2 = 0;
-//
-//	uint8 slotOff      = 0;
-//	uint8 devilSlotOff = 0;
-//
-//	uint8 subModelIndex      = 0;
-//	uint8 devilSubModelIndex = 0;
-//
-//	uint32 count = 0;
-//
-//	auto CopyVertices = [&]
-//	(
-//		uint8 baseIndex,
-//		uint8 devilIndex,
-//		uint8 index
-//	)
-//	{
-//		auto g_vertices = (vec4 *)(appBaseAddr + 0x35D580);
-//
-//		vec4 * vertices = 0;
-//
-//		dest = (baseAddr + 0xAA00 + (baseIndex * 0xC0) + (devilSubModelIndex * 0x300));
-//
-//		addr = *(byte8 **)(baseAddr + 0xA300 + ((devilSlotOff + devilIndex) * 8));
-//		*(byte8 **)(addr + 0x100) = dest;
-//
-//		vertices = (vec4 *)(dest + 0x80);
-//		vertices[0] = g_vertices[0];
-//		vertices[1] = g_vertices[1];
-//		vertices[2] = g_vertices[2];
-//		vertices[3] = g_vertices[3];
-//
-//		*(uint32 *)(dest + 0x28) = 1;
-//		addr = *(byte8 **)(baseAddr + 0x1880 + ((slotOff + index) * 8));
-//		addr = *(byte8 **)(addr + 0x110);
-//		*(byte8 **)(dest + 0x30) = addr;
-//	};
-//
-//	file = System_File_cacheFile[pl005];
-//
-//	slotOff      = (slot * 0x18);
-//	devilSlotOff = (slot == 1) ? 0 : 0x24;
-//
-//	subModelIndex      = (slot == 1) ? 1 : 3;
-//	devilSubModelIndex = (slot == 1) ? 0 : 2;
-//
-//	((uint32 *)(baseAddr + 0x3E74))[slot] = 0;
-//
-//	modelData.slot    = slot;
-//	modelData.slotOff = slotOff;
-//
-//	// Base
-//
-//	dest = (baseAddr + 0x200 + (slot * 0x780));
-//
-//	RegisterModel
-//	(
-//		dest,
-//		System_File_GetFile(file, 1),
-//		System_File_GetFile(file, 0)
-//	);
-//
-//	func_1EF040(baseAddr, slot);
-//
-//	RegisterShadow
-//	(
-//		dest,
-//		(baseAddr + 0x9AD0 + (slot * 0xC0)),
-//		System_File_GetFile(file, 6)
-//	);
-//
-//	// Coat
-//
-//	dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
-//	dest2 = (baseAddr + ((0x1460 + devilSlotOff) * 8));
-//
-//	RegisterModel
-//	(
-//		dest,
-//		System_File_GetFile(file, 2),
-//		System_File_GetFile(file, 0)
-//	);
-//
-//	func_8A000(dest, 0, dest2);
-//
-//	RegisterShadow
-//	(
-//		dest,
-//		(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
-//		System_File_GetFile(file, 7)
-//	);
-//
-//	dest = (baseAddr + 0xA540 + (devilSubModelIndex * 0xF0));
-//
-//	RegisterPhysics
-//	(
-//		dest,
-//		dest2,
-//		System_File_GetFile(file, 3)
-//	);
-//
-//	CopyVertices(0, 1 , 3);
-//	CopyVertices(1, 12, 2);
-//
-//	modelData.coat.subModelIndex      = subModelIndex;
-//	modelData.coat.devilSlotOff       = devilSlotOff;
-//	modelData.coat.devilSubModelIndex = devilSubModelIndex;
-//
-//	subModelIndex++;
-//	devilSubModelIndex++;
-//
-//	// Wings
-//
-//	dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
-//	dest2 = (baseAddr + ((0x1460 + devilSlotOff + 9) * 8));
-//
-//	RegisterModel
-//	(
-//		dest,
-//		System_File_GetFile(file, 4),
-//		System_File_GetFile(file, 0)
-//	);
-//
-//	func_8A000(dest, 0, dest2);
-//
-//	RegisterShadow
-//	(
-//		dest,
-//		(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
-//		System_File_GetFile(file, 8)
-//	);
-//
-//	dest = (baseAddr + 0xA540 + (devilSubModelIndex * 0xF0));
-//
-//	RegisterPhysics
-//	(
-//		dest,
-//		dest2,
-//		System_File_GetFile(file, 5)
-//	);
-//
-//	func_2CA2F0
-//	(
-//		dest,
-//		(baseAddr + ((slotOff + 0x310) * 8)),
-//		(appBaseAddr + 0x58B380),
-//		(baseAddr + 0xB630),
-//		6
-//	);
-//
-//	CopyVertices(0, (9 + 1), 2 );
-//	CopyVertices(1, (9 + 2), 14);
-//
-//	modelData.wings.subModelIndex      = subModelIndex;
-//	modelData.wings.devilSlotOff       = (devilSlotOff + 9);
-//	modelData.wings.devilSubModelIndex = devilSubModelIndex;
-//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-[rax + 150] dmc3.exe+8A000
-[rdx +   8] dmc3.exe+89DE0
-[rdx +  68] dmc3.exe+211C10
-[rdi +   8] dmc3.exe+8BC60
-[ r8 +  38] dmc3.exe+8B470
-[ r9 +  50] dmc3.exe+89960
-*/
-
-
-
-
-
-
-
-void oldDevilBeowulf
-(
-	byte8 * baseAddr,
-	uint8   slot
-)
-{
-	auto g_vertices = (vec4 *)(appBaseAddr + 0x35D580);
-
-	auto modelData = (uint8 *)(baseAddr + 0xB617);
-
-	byte8 * file        = 0;
-	byte8 * textureFile = 0;
-	byte8 * modelFile   = 0;
-	byte8 * shadowFile  = 0;
-	byte8 * physicsFile = 0;
-
-	byte8 * addr  = 0;
-	byte8 * dest  = 0;
-	byte8 * dest2 = 0;
-
-	uint8 slotOff      = 0;
-	uint8 devilSlotOff = 0;
-
-	uint8 subModelCount      = 0;
-	uint8 devilSubModelCount = 0;
-
-	uint32 count = 0;
-
-	vec4 * vertices = 0;
-
-	
-
-	file = System_File_cacheFile[pl009];
-
-	slotOff      = (slot * 0x18);
-	devilSlotOff = (slot == 1) ? 0 : 0x24;
-
-	subModelCount      = (slot == 1) ? 1 : 3;
-	devilSubModelCount = (slot == 1) ? 0 : 2;
-
-	((uint32 *)(baseAddr + 0x3E74))[slot] = 4;
-
-	// base
-
-	dest = (baseAddr + 0x200 + (slot * 0x780));
-
-	textureFile = System_File_GetFile(file, 0);
-	modelFile = System_File_GetFile(file, 1);
-
-	
-
-	func_8B470(dest, 1);
-	func_89960(dest, modelFile, textureFile);
-	func_1EF040(baseAddr, slot);
-
-	shadowFile = System_File_GetFile(file, 4);
-	addr = func_89DE0(dest);
-	func_8BC60((baseAddr + 0x9AD0 + (slot * 0xC0)), addr, shadowFile);
-	addr = func_89DE0(dest);
-	func_305D80(addr);
-
-	// wings
-
-	dest  = (baseAddr + 0x7540 + (subModelCount * 0x780));
-	dest2 = (baseAddr + 0xA300 + (devilSlotOff * 8));
-
-	textureFile = System_File_GetFile(file, 0);
-	modelFile   = System_File_GetFile(file, 2);
-
-	
-
-	func_8B470(dest, 1);
-	func_89960(dest, modelFile, textureFile);
-	func_8A000(dest, 0, dest2);
-	dest = (baseAddr + 0xA540 + (devilSubModelCount * 0xF0));
-	physicsFile = System_File_GetFile(file, 3);
-	count = func_2C9F40(physicsFile);
-	for (uint32 index = 0; index < count; index++)
-	{
-		func_2CA1D0(dest, dest2, physicsFile, index);
-		dest += 0xF0;
-	}
-
-	{
-		dest = (baseAddr + 0xAA00 + (devilSubModelCount * 0x300));
-
-		addr = *(byte8 **)(baseAddr + 0xA300 + ((devilSlotOff + 1) * 8));
-		*(byte8 **)(addr + 0x100) = dest;
-
-		vertices = (vec4 *)(dest + 0x80);
-		vertices[0] = g_vertices[0];
-		vertices[1] = g_vertices[1];
-		vertices[2] = g_vertices[2];
-		vertices[3] = g_vertices[3];
-
-		*(uint32 *)(dest + 0x28) = 1;
-		addr = *(byte8 **)(baseAddr + 0x1880 + ((slotOff + 3) * 8));
-		addr = *(byte8 **)(addr + 0x110);
-		*(byte8 **)(dest + 0x30) = addr;
-	}
-
-	{
-		dest = (baseAddr + 0xAAC0 + (devilSubModelCount * 0x300));
-
-		addr = *(byte8 **)(baseAddr + 0xA300 + ((devilSlotOff + 2) * 8));
-		*(byte8 **)(addr + 0x100) = dest;
-
-		vertices = (vec4 *)(dest + 0x80);
-		vertices[0] = g_vertices[0];
-		vertices[1] = g_vertices[1];
-		vertices[2] = g_vertices[2];
-		vertices[3] = g_vertices[3];
-
-		*(uint32 *)(dest + 0x28) = 1;
-		addr = *(byte8 **)(baseAddr + 0x1880 + ((slotOff + 6) * 8));
-		addr = *(byte8 **)(addr + 0x110);
-		*(byte8 **)(dest + 0x30) = addr;
-	}
-
-	{
-		dest = (baseAddr + 0xAB80 + (devilSubModelCount * 0x300));
-
-		addr = *(byte8 **)(baseAddr + 0xA300 + ((devilSlotOff + 8) * 8));
-		*(byte8 **)(addr + 0x100) = dest;
-
-		vertices = (vec4 *)(dest + 0x80);
-		vertices[0] = g_vertices[0];
-		vertices[1] = g_vertices[1];
-		vertices[2] = g_vertices[2];
-		vertices[3] = g_vertices[3];
-
-		*(uint32 *)(dest + 0x28) = 1;
-		addr = *(byte8 **)(baseAddr + 0x1880 + ((slotOff + 10) * 8));
-		addr = *(byte8 **)(addr + 0x110);
-		*(byte8 **)(dest + 0x30) = addr;
-	}
-
-	// @Todo: Merge into ApplyShadow or RegisterShadow function.
-
-	shadowFile = System_File_GetFile(file, 5);
-	dest = (baseAddr + 0x7540 + (subModelCount * 0x780));
-	addr = func_89DE0(dest);
-	func_8BC60((baseAddr + 0x9D10 + (subModelCount * 0xC0)), addr, shadowFile);
-	addr = func_89DE0(dest);
-	func_305D80(addr);
-
-	modelData[0] = slot;
-	modelData[1] = slotOff;
-	modelData[2] = subModelCount;
-	modelData[3] = devilSlotOff;
-	modelData[4] = devilSubModelCount;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void old_DevilCerberus
-(
-	byte8 * baseAddr,
-	uint8   slot
-)
-{
-	auto g_vertices = (vec4 *)(appBaseAddr + 0x35D580);
-
-	auto modelData = (uint8 *)(baseAddr + 0xB617);
-
-	byte8 * textureFile = 0;
-	byte8 * modelFile = 0;
-	byte8 * shadowFile = 0;
-	byte8 * physicsFile = 0;
-
-	byte8 * addr = 0;
-	byte8 * dest = 0;
-	byte8 * dest2 = 0;
-
-	uint8 slotOff = 0;
-	uint8 devilSlotOff = 0;
-
-	uint8 subModelCount = 0;
-	uint8 devilSubModelCount = 0;
-
-	uint32 count = 0;
-	vec4 * vertices = 0;
-
-	byte8 * file = 0;
-
-
-	auto Connect = [&]
-	(
-		uint32 baseOff,
-		uint32 devilOff,
-		uint32 off
-	)
-	{
-		dest = (baseAddr + baseOff + (devilSubModelCount * 0x300));
-
-		addr = *(byte8 **)(baseAddr + 0xA300 + (devilOff * 8));
-		*(byte8 **)(addr + 0x100) = dest;
-
-		vertices = (vec4 *)(dest + 0x80);
-		vertices[0] = g_vertices[0];
-		vertices[1] = g_vertices[1];
-		vertices[2] = g_vertices[2];
-		vertices[3] = g_vertices[3];
-
-		*(uint32 *)(dest + 0x28) = 1;
-		addr = *(byte8 **)(baseAddr + 0x1880 + (off * 8));
-		addr = *(byte8 **)(addr + 0x110);
-		*(byte8 **)(dest + 0x30) = addr;
-	};
-
-
-	
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	file = System_File_cacheFile[pl006];
-
-	slotOff      = (slot * 0x18);
-	devilSlotOff = (slot == 1) ? 0 : 0x24;
-
-	subModelCount      = (slot == 1) ? 1 : 3;
-	devilSubModelCount = (slot == 1) ? 0 : 2;
-
-	((uint32 *)(baseAddr + 0x3E74))[slot] = 1;
-
-
-
-
-	// base
-
-	dest = (baseAddr + 0x200 + (slot * 0x780));
-	textureFile = System_File_GetFile(file, 0);
-	modelFile   = System_File_GetFile(file, 1);
-	func_8B470(dest, 1);
-	func_89960(dest, modelFile, textureFile);
-	func_1EF040(baseAddr, slot);
-
-	shadowFile = System_File_GetFile(file, 4);
-	addr = func_89DE0(dest);
-	func_8BC60((baseAddr + 0x9AD0 + (slot * 0xC0)), addr, shadowFile);
-	addr = func_89DE0(dest);
-	func_305D80(addr);
-
-	// wings
-
-	dest  = (baseAddr + 0x7540 + (subModelCount * 0x780));
-	dest2 = (baseAddr + 0x1460 + (devilSlotOff * 8));
-	textureFile = System_File_GetFile(file, 0);
-	modelFile   = System_File_GetFile(file, 2);
-	func_8B470(dest, 1);
-	func_89960(dest, modelFile, textureFile);
-	func_8A000(dest, 0, dest2);
-
-
-	// @Todo: Merge into ApplyShadow or RegisterShadow function.
-
-	shadowFile = System_File_GetFile(file, 5);
-	addr = func_89DE0(dest);
-	func_8BC60((baseAddr + 0x9D10 + (subModelCount * 0xC0)), addr, shadowFile);
-	addr = func_89DE0(dest);
-	func_305D80(addr);
-
-	dest = (baseAddr + 0xA540 + (devilSubModelCount * 0xF0));
-	physicsFile = System_File_GetFile(file, 3);
-	count = func_2C9F40(physicsFile);
-	for (uint32 index = 0; index < count; index++)
-	{
-		func_2CA1D0(dest, dest2, physicsFile, index);
-		dest += 0xF0;
-	}
-
-	// @Todo: Create lambda for these.
-
-
-	
-
-	Connect(0xAA00, (devilSlotOff + 1), (slotOff + 3 ));
-	Connect(0xAAC0, (devilSlotOff + 2), (slotOff + 6 ));
-	Connect(0xAB80, (devilSlotOff + 8), (slotOff + 10));
-
-
-
-
-
-	//{
-	//	dest = (baseAddr + 0xAA00 + (devilSubModelCount * 0x300));
-
-	//	addr = *(byte8 **)(baseAddr + 0xA300 + ((devilSlotOff + 1) * 8));
-	//	*(byte8 **)(addr + 0x100) = dest;
-
-	//	vertices = (vec4 *)(dest + 0x80);
-	//	vertices[0] = g_vertices[0];
-	//	vertices[1] = g_vertices[1];
-	//	vertices[2] = g_vertices[2];
-	//	vertices[3] = g_vertices[3];
-
-	//	*(uint32 *)(dest + 0x28) = 1;
-	//	addr = *(byte8 **)(baseAddr + 0x1880 + ((slotOff + 3) * 8));
-	//	addr = *(byte8 **)(addr + 0x110);
-	//	*(byte8 **)(dest + 0x30) = addr;
-	//}
-
-	//{
-	//	dest = (baseAddr + 0xAAC0 + (devilSubModelCount * 0x300));
-
-	//	addr = *(byte8 **)(baseAddr + 0xA300 + ((devilSlotOff + 2) * 8));
-	//	*(byte8 **)(addr + 0x100) = dest;
-
-	//	vertices = (vec4 *)(dest + 0x80);
-	//	vertices[0] = g_vertices[0];
-	//	vertices[1] = g_vertices[1];
-	//	vertices[2] = g_vertices[2];
-	//	vertices[3] = g_vertices[3];
-
-	//	*(uint32 *)(dest + 0x28) = 1;
-	//	addr = *(byte8 **)(baseAddr + 0x1880 + ((slotOff + 6) * 8));
-	//	addr = *(byte8 **)(addr + 0x110);
-	//	*(byte8 **)(dest + 0x30) = addr;
-	//}
-
-	//{
-	//	dest = (baseAddr + 0xAB80 + (devilSubModelCount * 0x300));
-
-	//	addr = *(byte8 **)(baseAddr + 0xA300 + ((devilSlotOff + 8) * 8));
-	//	*(byte8 **)(addr + 0x100) = dest;
-
-	//	vertices = (vec4 *)(dest + 0x80);
-	//	vertices[0] = g_vertices[0];
-	//	vertices[1] = g_vertices[1];
-	//	vertices[2] = g_vertices[2];
-	//	vertices[3] = g_vertices[3];
-
-	//	*(uint32 *)(dest + 0x28) = 1;
-	//	addr = *(byte8 **)(baseAddr + 0x1880 + ((slotOff + 10) * 8));
-	//	addr = *(byte8 **)(addr + 0x110);
-	//	*(byte8 **)(dest + 0x30) = addr;
-	//}
-
-	modelData[0] = slot;
-	modelData[1] = slotOff;
-	modelData[2] = subModelCount;
-	modelData[3] = devilSlotOff;
-	modelData[4] = devilSubModelCount;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//void DevilAgniRudra(byte8 * baseAddr, uint32 slot)
-//{
-//	byte8 * dest        = 0;
-//	byte8 * textureFile = 0;
-//	byte8 * modelFile   = 0;
-//
-//	dest = (g_slotAddr + (slot * 0x780));
-//
-//	textureFile = System_File_GetFile(System_File_cacheFile[pl007], 0);
-//	modelFile   = System_File_GetFile(System_File_cacheFile[pl007], 1);
-//
-//	func_8B470(dest, 1);
-//	func_89960(dest, modelFile, textureFile);
-//	func_1EF040(baseAddr, slot);
-//
-//	vp_memset((baseAddr + 0xB600), 0, 48);
-//}
-
-
-
-
-void ApplyModel(byte8 * baseAddr, uint32 slot)
-{
-	auto g_coatVertex = (vec4 *)(appBaseAddr + 0x35D580);
-
-	byte8 * textureFile = 0;
-	byte8 * modelFile   = 0;
-	byte8 * shadowFile  = 0;
-	byte8 * clothFile   = 0;
-	byte8 * addr        = 0;
-
-	//uint32 slot    = 2;
-	// 1 0
-	// 2 0x24
-	uint32 slotOff = 0x24;
-	uint32 objectCounter = 3;
-	
-	uint32 localCounter = 2;
-	byte8 * saneAddr = 0;
-
-	// 0 0
-	// 1 0x18
-	// 2 0x30
-	uint32 triOff = 0x30;
-
-	//auto slotBaseAddr = (baseAddr + 0x200 + (slot * 0x780));
-	//{
-	//	textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
-	//	modelFile   = System_File_GetFile(System_File_cacheFile[pl006], 1);
-	//	func_8B470(slotBaseAddr, 1);
-	//	func_89960(slotBaseAddr, modelFile, textureFile);
-	//	func_1EF040(baseAddr, slot);
-	//}
-
-	//func_1EF040(baseAddr, slot);
-	//*(uint32 *)(baseAddr + 0x3E74 + (slot * 4)) = 1;
-
-	//*(uint8 *)(baseAddr + 0xB608) = (uint8)slot;
-	//*(uint8 *)(baseAddr + 0xB609) = triOff;
-	//*(uint8 *)(baseAddr + 0xB60A) = (uint8)objectCounter;
-	//*(uint8 *)(baseAddr + 0xB60B) = (uint8)slotOff;
-	//*(uint8 *)(baseAddr + 0xB60C) = (uint8)localCounter;
-
-	//{
-	//	shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 4);
-	//	addr = func_89DE0(slotBaseAddr);
-	//	uint32 rbx = (slot * 0xC0);
-	//	byte8 * rcx = (baseAddr + 0x9AD0);
-	//	rcx += rbx;
-	//	func_8BC60(rcx, addr, shadowFile);
-	//	addr = func_89DE0(slotBaseAddr);
-	//	func_305D80(addr);
-	//}
-
-	//{
-		//textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
-		//modelFile = System_File_GetFile(System_File_cacheFile[pl006], 2);
-		//byte8 * r12 = baseAddr;
-		//r12 += (objectCounter * 0x780);
-		//r12 += 0x7540;
-		//func_8B470(r12, 1);
-		//func_89960(r12, modelFile, textureFile);
-
-
-		//uint32 eax = slotOff;
-		//uint64 rax = eax;
-		//rax += 0x1460;
-		//byte8 * rcx = (baseAddr + (rax * 8));
-		//saneAddr = rcx;
-		//byte8 * r8 = rcx;
-		//func_8A000(r12, 0, r8);
-
-
-
-	//	shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 5);
-	//	uint64 rbx = (objectCounter * 0xC0);
-	//	addr = func_89DE0(r12);
-	//	rcx = (baseAddr + 0x9D10);
-	//	rcx += rbx;
-
-
-	//	func_8BC60(rcx, addr, shadowFile);
-
-
-
-	//	addr = func_89DE0(r12);
-
-
-	//	func_305D80(addr);
-
-
-	//	*(uint8 *)(baseAddr + objectCounter + 0x9AC0) = 1;
-	//}
-
-	//clothFile = System_File_GetFile(System_File_cacheFile[pl006], 3);
-	//uint32 count = func_2C9F40(clothFile);
-	//byte8 * dest = (baseAddr + 0xA540);
-	//dest += (localCounter * 0xF0);
-	//for (uint32 index = 0; index < count; index++)
-	//{
-	//	func_2CA1D0(dest, saneAddr, clothFile, index);
-	//	dest += 0xF0;
-	//}
-
-	//uint64 r8 = (localCounter * 0x300);
-
-	//{
-	//	uint32 eax = (slotOff + 1);
-	//	byte8 * rdx = (baseAddr + 0xAA00);
-	//	rdx += r8;
-	//	byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
-	//	*(byte8 **)(rax + 0x100) = rdx;
-	//	vec4 * coat = (vec4 *)(rdx + 0x80);
-	//	coat[0] = g_coatVertex[0];
-	//	coat[1] = g_coatVertex[1];
-	//	coat[2] = g_coatVertex[2];
-	//	coat[3] = g_coatVertex[3];
-	//	eax = triOff;
-	//	eax += 3;
-	//	byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
-	//	rax = *(byte8 **)(rcx + 0x110);
-	//	*(byte8 **)(rdx + 0x30) = rax;
-	//	*(uint32 *)(rdx + 0x28) = 1;
-	//}
-
-	//{
-	//	uint32 eax = (slotOff + 2);
-	//	byte8 * rdx = (baseAddr + 0xAAC0);
-	//	rdx += r8;
-	//	byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
-	//	*(byte8 **)(rax + 0x100) = rdx;
-	//	vec4 * coat = (vec4 *)(rdx + 0x80);
-	//	coat[0] = g_coatVertex[0];
-	//	coat[1] = g_coatVertex[1];
-	//	coat[2] = g_coatVertex[2];
-	//	coat[3] = g_coatVertex[3];
-	//	eax = triOff;
-	//	eax += 6;
-	//	byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
-	//	rax = *(byte8 **)(rcx + 0x110);
-	//	*(byte8 **)(rdx + 0x30) = rax;
-	//	*(uint32 *)(rdx + 0x28) = 1;
-	//}
-
-	//{
-	//	uint32 eax = (slotOff + 8);
-	//	byte8 * rdx = (baseAddr + 0xAB80);
-	//	rdx += r8;
-	//	byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
-	//	*(byte8 **)(rax + 0x100) = rdx;
-	//	vec4 * coat = (vec4 *)(rdx + 0x80);
-	//	coat[0] = g_coatVertex[0];
-	//	coat[1] = g_coatVertex[1];
-	//	coat[2] = g_coatVertex[2];
-	//	coat[3] = g_coatVertex[3];
-	//	eax = triOff;
-	//	eax += 10;
-	//	byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
-	//	rax = *(byte8 **)(rcx + 0x110);
-	//	*(byte8 **)(rdx + 0x30) = rax;
-	//	*(uint32 *)(rdx + 0x28) = 1;
-	//}
-
-
-	//*(uint8 *)(baseAddr + 0xB608) = (uint8)slot;
-	//*(uint8 *)(baseAddr + 0xB609) = triOff;
-	//*(uint8 *)(baseAddr + 0xB60A) = (uint8)objectCounter;
-	//*(uint8 *)(baseAddr + 0xB60B) = (uint8)slotOff;
-	//*(uint8 *)(baseAddr + 0xB60C) = (uint8)localCounter;
-}
 
 
 
@@ -3148,312 +1519,6 @@ __declspec(noinline) void ApplyDevilSparda(uint8 slot)
 	DevilSparda(baseAddr, slot);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//void ApplyDevilAgniRudra(uint8 slot){}
-//void ApplyDevilNevan    (uint8 slot){}
-//void ApplyDevilBeowulf  (uint8 slot){}
-//void ApplyDevilSparda   (uint8 slot){}
-
-
-
-
-
-#pragma region Garbage
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-//void DevilCerberusSlot1(byte8 * baseAddr)
-//{
-//	auto g_coatVertex = (vec4 *)(appBaseAddr + 0x35D580);
-//
-//	uint32   rbx   = 0;
-//	byte8  * rcx   = 0;
-//	byte8  * r12   = 0;
-//	byte8  * rsp50 = 0;
-//
-//	byte8 * textureFile = 0;
-//	byte8 * modelFile   = 0;
-//	byte8 * shadowFile  = 0;
-//	byte8 * clothFile   = 0;
-//	byte8 * addr        = 0;
-//
-//	uint32   r13d  = 1; // slot
-//	uint64   r13   = r13d;
-//	byte8  * rsi   = baseAddr;
-//	uint32   edi   = r13d;
-//	uint32   r14d  = 1; // number of registered objects
-//	uint64   r14   = r14d;
-//	// 1 0
-//	// 2 0x24
-//	uint32 r15d = 0; // slot offset
-//	uint64 r15  = r15d;
-//	uint32 ebp  = r13d; // another counter
-//
-//	{
-//		*(uint32 *)(rsi + 0x3E74 + (edi * 4)) = 1;
-//
-//		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
-//		modelFile   = System_File_GetFile(System_File_cacheFile[pl006], 1);
-//
-//		r12 = baseAddr;
-//		r12 += (edi * 0x780);
-//		r12 += 0x200;
-//
-//		func_8B470(r12, 1);
-//
-//		func_89960(r12, modelFile, textureFile);
-//
-//		// 0 0
-//		// 1 0x18
-//		// 2 0x30
-//		*(uint8 *)(rsi + 0xB609) = 0x18;
-//		*(uint8 *)(rsi + 0xB608) = (uint8)r13d;
-//
-//		func_1EF040(rsi, r13d);
-//	}
-//
-//	{
-//		shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 4);
-//		addr = func_89DE0(r12);
-//		rbx = (edi * 0xC0);
-//		rcx = (rsi + 0x9AD0);
-//		rcx += rbx;
-//		func_8BC60(rcx, addr, shadowFile);
-//		addr = func_89DE0(r12);
-//		func_305D80(addr);
-//	}
-//
-//	{
-//		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
-//		modelFile = System_File_GetFile(System_File_cacheFile[pl006], 2);
-//		r13d = r14d;
-//		r12 = baseAddr;
-//		r12 += (r13d * 0x780);
-//		r12 += 0x7540;
-//		func_8B470(r12, 1);
-//		func_89960(r12, modelFile, textureFile);
-//		uint32 eax = r15d;
-//		uint64 rax = eax;
-//		rax += 0x1460;
-//		byte8 * rcx = (rsi + (rax * 8));
-//		rsp50 = rcx;
-//		byte8 * r8 = rcx;
-//		func_8A000(r12, 0, r8);
-//		shadowFile = System_File_GetFile(System_File_cacheFile[pl006], 5);
-//		r13d = r14d;
-//		r13 = r14;
-//		uint64 rbx = (r13 * 0xC0);
-//		addr = func_89DE0(r12);
-//		rcx = (baseAddr + 0x9D10);
-//		rcx += rbx;
-//		func_8BC60(rcx, addr, shadowFile);
-//		addr = func_89DE0(r12);
-//		func_305D80(addr);
-//		*(uint8 *)(rsi + r13 + 0x9AC0) = 1;
-//	}
-//
-//	clothFile = System_File_GetFile(System_File_cacheFile[pl006], 3);
-//	uint32 count = func_2C9F40(clothFile);
-//	ebp = 0;
-//	byte8 * dest = (rsi + 0xA540);
-//	dest += (ebp * 0xF0);
-//	for (uint32 index = 0; index < count; index++)
-//	{
-//		func_2CA1D0(dest, rsp50, clothFile, index);
-//		dest += 0xF0;
-//	}
-//
-//	r13d = 1; // local id
-//	uint64 r8 = (ebp * 0x300);
-//
-//	{
-//		uint32 eax = (r15 + 1);
-//		byte8 * rdx = (baseAddr + 0xAA00);
-//		rdx += r8;
-//		byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
-//		*(byte8 **)(rax + 0x100) = rdx;
-//		vec4 * coat = (vec4 *)(rdx + 0x80);
-//		coat[0] = g_coatVertex[0];
-//		coat[1] = g_coatVertex[1];
-//		coat[2] = g_coatVertex[2];
-//		coat[3] = g_coatVertex[3];
-//		eax = *(uint8 *)(baseAddr + 0xB609);
-//		eax += 3;
-//		byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
-//		rax = *(byte8 **)(rcx + 0x110);
-//		*(byte8 **)(rdx + 0x30) = rax;
-//		*(uint32 *)(rdx + 0x28) = r13d;
-//	}
-//
-//	{
-//		uint32 eax = (r15 + 2);
-//		byte8 * rdx = (baseAddr + 0xAAC0);
-//		rdx += r8;
-//		byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
-//		*(byte8 **)(rax + 0x100) = rdx;
-//		vec4 * coat = (vec4 *)(rdx + 0x80);
-//		coat[0] = g_coatVertex[0];
-//		coat[1] = g_coatVertex[1];
-//		coat[2] = g_coatVertex[2];
-//		coat[3] = g_coatVertex[3];
-//		eax = *(uint8 *)(baseAddr + 0xB609);
-//		eax += 6;
-//		byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
-//		rax = *(byte8 **)(rcx + 0x110);
-//		*(byte8 **)(rdx + 0x30) = rax;
-//		*(uint32 *)(rdx + 0x28) = r13d;
-//	}
-//
-//	{
-//		uint32 eax = (r15 + 8);
-//		byte8 * rdx = (baseAddr + 0xAB80);
-//		rdx += r8;
-//		byte8 * rax = *(byte8 **)(baseAddr + (eax * 8) + 0xA300);
-//		*(byte8 **)(rax + 0x100) = rdx;
-//		vec4 * coat = (vec4 *)(rdx + 0x80);
-//		coat[0] = g_coatVertex[0];
-//		coat[1] = g_coatVertex[1];
-//		coat[2] = g_coatVertex[2];
-//		coat[3] = g_coatVertex[3];
-//		eax = *(uint8 *)(baseAddr + 0xB609);
-//		eax += 10;
-//		byte8 * rcx = *(byte8 **)(baseAddr + (eax * 8) + 0x1880);
-//		rax = *(byte8 **)(rcx + 0x110);
-//		*(byte8 **)(rdx + 0x30) = rax;
-//		*(uint32 *)(rdx + 0x28) = r13d;
-//	}
-//
-//	*(uint8 *)(rsi + 0xB60C) = (uint8)ebp;
-//	*(uint8 *)(rsi + 0xB60A) = (uint8)r14;
-//	*(uint8 *)(rsi + 0xB60B) = (uint8)r15;
-//}
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//ACTOR_DATA g_actorData;
-//
-//void CopyActorData(ACTOR_DATA * actorData)
-//{
-//	memset(&g_actorData, 0, sizeof(ACTOR_DATA));
-//	vp_memcpy(&g_actorData, actorData, sizeof(ACTOR_DATA));
-//}
-//
-//
-//
-//
-//byte8 * cerberusAddr = 0;
-//
-//
-//
-//
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void HumanVergil(byte8 * baseAddr)
 {
 	byte8 * textureFile = 0;
@@ -3484,35 +1549,35 @@ void HumanVergil(byte8 * baseAddr)
 	g_vertex = (vec4 *)(appBaseAddr + 0x58B260);
 	auto md = (MODEL_DATA *)(baseAddr + 0xB640);
 
-	md[0].count = 4;
-	md[0].vertex[0] = g_vertex[0];
-	md[0].vertex[1] = g_vertex[1];
-	md[0].vertex[2] = g_vertex[2];
+	//md[0].count = 4;
+	//md[0].vertex[0] = g_vertex[0];
+	//md[0].vertex[1] = g_vertex[1];
+	//md[0].vertex[2] = g_vertex[2];
 
-	md[1].count = 4;
-	md[1].vertex[0] = g_vertex[3];
-	md[1].vertex[1] = g_vertex[4];
-	md[1].vertex[2] = g_vertex[5];
+	//md[1].count = 4;
+	//md[1].vertex[0] = g_vertex[3];
+	//md[1].vertex[1] = g_vertex[4];
+	//md[1].vertex[2] = g_vertex[5];
 
-	md[2].count = 4;
-	md[2].vertex[0] = g_vertex[6];
-	md[2].vertex[1] = g_vertex[7];
-	md[2].vertex[2] = g_vertex[8];
+	//md[2].count = 4;
+	//md[2].vertex[0] = g_vertex[6];
+	//md[2].vertex[1] = g_vertex[7];
+	//md[2].vertex[2] = g_vertex[8];
 
-	md[3].count = 4;
-	md[3].vertex[0] = g_vertex[9];
-	md[3].vertex[1] = g_vertex[10];
-	md[3].vertex[2] = g_vertex[11];
+	//md[3].count = 4;
+	//md[3].vertex[0] = g_vertex[9];
+	//md[3].vertex[1] = g_vertex[10];
+	//md[3].vertex[2] = g_vertex[11];
 
-	md[4].count = 4;
-	md[4].vertex[0] = g_vertex[12];
-	md[4].vertex[1] = g_vertex[13];
-	md[4].vertex[2] = g_vertex[14];
+	//md[4].count = 4;
+	//md[4].vertex[0] = g_vertex[12];
+	//md[4].vertex[1] = g_vertex[13];
+	//md[4].vertex[2] = g_vertex[14];
 
-	md[5].count = 4;
-	md[5].vertex[0] = g_vertex[15];
-	md[5].vertex[1] = g_vertex[16];
-	md[5].vertex[2] = g_vertex[17];
+	//md[5].count = 4;
+	//md[5].vertex[0] = g_vertex[15];
+	//md[5].vertex[1] = g_vertex[16];
+	//md[5].vertex[2] = g_vertex[17];
 
 
 
@@ -3615,35 +1680,35 @@ void HumanVergil(byte8 * baseAddr)
 
 
 
-	md[0].count = 4;
-	md[0].vertex[0] = g_vertex[0];
-	md[0].vertex[1] = g_vertex[1];
-	md[0].vertex[2] = g_vertex[2];
+	//md[0].count = 4;
+	//md[0].vertex[0] = g_vertex[0];
+	//md[0].vertex[1] = g_vertex[1];
+	//md[0].vertex[2] = g_vertex[2];
 
-	md[1].count = 4;
-	md[1].vertex[0] = g_vertex[3];
-	md[1].vertex[1] = g_vertex[4];
-	md[1].vertex[2] = g_vertex[5];
+	//md[1].count = 4;
+	//md[1].vertex[0] = g_vertex[3];
+	//md[1].vertex[1] = g_vertex[4];
+	//md[1].vertex[2] = g_vertex[5];
 
-	md[2].count = 4;
-	md[2].vertex[0] = g_vertex[6];
-	md[2].vertex[1] = g_vertex[7];
-	md[2].vertex[2] = g_vertex[8];
+	//md[2].count = 4;
+	//md[2].vertex[0] = g_vertex[6];
+	//md[2].vertex[1] = g_vertex[7];
+	//md[2].vertex[2] = g_vertex[8];
 
-	md[3].count = 4;
-	md[3].vertex[0] = g_vertex[9];
-	md[3].vertex[1] = g_vertex[10];
-	md[3].vertex[2] = g_vertex[11];
+	//md[3].count = 4;
+	//md[3].vertex[0] = g_vertex[9];
+	//md[3].vertex[1] = g_vertex[10];
+	//md[3].vertex[2] = g_vertex[11];
 
-	md[4].count = 4;
-	md[4].vertex[0] = g_vertex[12];
-	md[4].vertex[1] = g_vertex[13];
-	md[4].vertex[2] = g_vertex[14];
+	//md[4].count = 4;
+	//md[4].vertex[0] = g_vertex[12];
+	//md[4].vertex[1] = g_vertex[13];
+	//md[4].vertex[2] = g_vertex[14];
 
-	md[5].count = 4;
-	md[5].vertex[0] = g_vertex[15];
-	md[5].vertex[1] = g_vertex[16];
-	md[5].vertex[2] = g_vertex[17];
+	//md[5].count = 4;
+	//md[5].vertex[0] = g_vertex[15];
+	//md[5].vertex[1] = g_vertex[16];
+	//md[5].vertex[2] = g_vertex[17];
 
 
 
@@ -3742,184 +1807,6 @@ void HumanVergil(byte8 * baseAddr)
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//void Simple1(byte8 * baseAddr, uint32 slot)
-//{
-//	return;
-//
-//	byte8 * textureFile = 0;
-//	byte8 * modelFile   = 0;
-//	byte8 * shadowFile  = 0;
-//	byte8 * clothFile   = 0;
-//	byte8 * addr        = 0;
-//	auto slotBaseAddr = (baseAddr + 0x200 + (slot * 0x780));
-//
-//	func_897B0(slotBaseAddr);
-//	func_89450(slotBaseAddr);
-//	vp_memset(slotBaseAddr, 0, 0x780);
-//	func_89270(slotBaseAddr);
-//
-//	{
-//		textureFile = System_File_GetFile(System_File_cacheFile[pl006], 0);
-//		modelFile   = System_File_GetFile(System_File_cacheFile[pl006], 1);
-//		func_8B470(slotBaseAddr, 1);
-//		func_89960(slotBaseAddr, modelFile, textureFile);
-//		func_1EF040(baseAddr, slot);
-//	}
-//
-//	//func_1F92C0(baseAddr, 1);
-//	//func_1F97F0(baseAddr, 1);
-//
-//
-//}
-//
-//void Simple(byte8 * baseAddr, uint32 slot, uint16 cacheFileId)
-//{
-//	byte8 * textureFile = 0;
-//	byte8 * modelFile   = 0;
-//	byte8 * shadowFile  = 0;
-//	byte8 * clothFile   = 0;
-//	byte8 * addr        = 0;
-//	auto slotBaseAddr = (baseAddr + 0x200 + (slot * 0x780));
-//
-//	func_897B0(slotBaseAddr);
-//	func_89450(slotBaseAddr);
-//	vp_memset(slotBaseAddr, 0, 0x780);
-//	func_89270(slotBaseAddr);
-//
-//	{
-//		textureFile = System_File_GetFile(System_File_cacheFile[cacheFileId], 0);
-//		modelFile   = System_File_GetFile(System_File_cacheFile[cacheFileId], 1);
-//		func_8B470(slotBaseAddr, 1);
-//		func_89960(slotBaseAddr, modelFile, textureFile);
-//		func_1EF040(baseAddr, slot);
-//	}
-//
-//	devilCounter++;
-//
-//
-//	//func_1F92C0(baseAddr, 1);
-//	//func_1F97F0(baseAddr, 1);
-//
-//}
-//
-//
-//
-//
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Modify
-// Restore
-// Update
-// Edit
-
-
-
-
-// @Research: Clarify. Does this really create the actor or does it create an additional actor?
-
-// Yup, definitely crap.
-
-// Nope, both.
-
-//
-//
-//void QueueSlot1()
-//{
-//	LogFunction();
-//	auto baseAddr = *(byte8 **)(appBaseAddr + 0xC90E28);
-//	baseAddr = *(byte8 **)(baseAddr + 0x18);
-//	//byte8 buffer[64] = {};
-//	//vp_memcpy(buffer, (baseAddr + 0x3E00), 20);
-//	//Simple1(baseAddr, 1);
-//	//vp_memcpy((baseAddr + 0x3E00), buffer, 20);
-//}
-//
-//void QueueSlot2()
-//{
-//	LogFunction();
-//	auto baseAddr = *(byte8 **)(appBaseAddr + 0xC90E28);
-//	baseAddr = *(byte8 **)(baseAddr + 0x18);
-//	//byte8 buffer[64] = {};
-//	//vp_memcpy(buffer, (baseAddr + 0x3E00), 20);
-//	//Simple2(baseAddr, 2);
-//	//vp_memcpy((baseAddr + 0x3E00), buffer, 20);
-//}
-//
-//
-//void UpdateSlot()
-//{
-//	LogFunction();
-//	auto baseAddr = *(byte8 **)(appBaseAddr + 0xC90E28);
-//	baseAddr = *(byte8 **)(baseAddr + 0x18);
-//	auto & activeModel = *(uint32 *)(baseAddr + 0x3E6C);
-//
-//	if (activeModel == 1)
-//	{
-//		Simple(baseAddr, 2, pl006);
-//		return;
-//	}
-//
-//	if (activeModel == 2)
-//	{
-//		Simple(baseAddr, 1, pl009);
-//		return;
-//	}
-//
-//
-//
-//
-//
-//
-//
-//}
-//
-
-#pragma endregion
-
-
-byte8 * DanteLadyProxy      = 0;
-byte8 * DevilRebellionProxy = 0;
-byte8 * DevilCerberusProxy  = 0;
-byte8 * DevilAgniRudraProxy = 0;
-byte8 * DevilBeowulfProxy = 0;
-
-
-
-
-
-
 
 
 
@@ -4093,11 +1980,11 @@ void System_Actor_Init()
 
 	#pragma endregion
 
-	//{
-	//	auto func = CreateFunction(HumanDante);
-	//	Log("HumanDante %llX", func.addr);
-	//	//WriteCall((appBaseAddr + 0x212CB3), func.addr);
-	//}
+	{
+		auto func = CreateFunction(HumanDante);
+		Log("HumanDante %llX", func.addr);
+		//WriteCall((appBaseAddr + 0x212CB3), func.addr);
+	}
 	//{
 	//	auto func = CreateFunction(HumanVergil);
 	//	Log("HumanVergil %llX", func.addr);
@@ -4148,11 +2035,11 @@ void System_Actor_Init()
 	//	Log("DanteLadyProxy %llX", DanteLadyProxy);
 	//}
 
-	{
-		auto func = CreateFunction(DevilRebellion);
-		DevilRebellionProxy = func.addr;
-		Log("DevilRebellionProxy %llX", DevilRebellionProxy);
-	}
+	//{
+	//	auto func = CreateFunction(DevilRebellion);
+	//	DevilRebellionProxy = func.addr;
+	//	Log("DevilRebellionProxy %llX", DevilRebellionProxy);
+	//}
 
 	//{
 	//	auto func = CreateFunction(DevilBeowulf);

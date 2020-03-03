@@ -585,6 +585,7 @@ enum DEVIL_DANTE_
 	DEVIL_DANTE_NEVAN,
 	DEVIL_DANTE_BEOWULF,
 	DEVIL_DANTE_SPARDA,
+	MAX_DEVIL_DANTE,
 };
 
 enum DEVIL_BOB_
@@ -829,11 +830,11 @@ struct MODEL_DATA
 {
 	uint8 count;
 	_(15);
-	vec4 vertex[3];
+	vec4 vertices[3];
 	_(16);
 };
 
-constexpr uint32 mdsize = (uint32)sizeof(MODEL_DATA);
+//constexpr uint32 mdsize = (uint32)sizeof(MODEL_DATA);
 
 
 
