@@ -495,12 +495,27 @@ struct DEVIL_MODEL_DATA_SPARDA : DEVIL_MODEL_DATA
 
 
 
+enum MODEL_
+{
+	MODEL_BASE,
+	MODEL_COAT,
+	MODEL_WINGS,
+	MAX_MODEL,
+};
+
+
+
 
 
 struct ModelHelper
 {
-	uint8 slotOff       = 0;
-	uint8 subModelIndex = 0;
+	byte8 * modelFile  [MAX_MODEL];
+	byte8 * textureFile[MAX_MODEL];
+	byte8 * shadowFile [MAX_MODEL];
+	byte8 * physicsFile[MAX_MODEL];
+
+	uint8 modelIndex;
+	uint8 subModelIndex;
 
 	inline void RegisterModel
 	(
@@ -545,14 +560,12 @@ struct ModelHelper
 		}
 	}
 
-	inline void CopyModelData
+	inline void CopyBaseVertices
 	(
-		byte8 * baseAddr
+		MODEL_DATA * modelData
 	)
 	{
 		auto g_vertices = (vec4 *)(appBaseAddr + 0x58B260);
-
-		auto modelData = (MODEL_DATA *)(baseAddr + 0xB630);
 
 		for (uint8 index = 0; index < 6; index++)
 		{
@@ -564,7 +577,7 @@ struct ModelHelper
 		}
 	};
 
-	inline void CopyVertices
+	inline void CopyCoatVertices
 	(
 		byte8 * dest
 	)
@@ -582,7 +595,159 @@ struct ModelHelper
 		vertices[2] = g_vertices[2];
 		vertices[3] = g_vertices[3];
 	};
+
+	inline void CopyAmuletVertices
+	(
+		MODEL_DATA * modelData
+	)
+	{
+		auto g_vertices = (vec4 *)(appBaseAddr + 0x58B260);
+
+		modelData[0].count = 4;
+		modelData[0].vertices[0] = g_vertices[23];
+		modelData[0].vertices[1] = g_vertices[24];
+		modelData[0].vertices[2] = g_vertices[25];
+	};
 };
+
+struct ModelHelperDante : ModelHelper
+{
+	void Base(byte8 * baseAddr)
+	{
+		byte8      * dest      = 0;
+		MODEL_DATA * modelData = 0;
+
+		dest = (baseAddr + 0x200 + (modelIndex * 0x780));
+		modelData = (MODEL_DATA *)(baseAddr + 0xB630);
+
+		RegisterModel
+		(
+			dest,
+			modelFile[MODEL_BASE],
+			textureFile[MODEL_BASE]
+		);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9AD0 + (modelIndex * 0xC0)),
+			shadowFile[MODEL_BASE]
+		);
+
+		CopyBaseVertices(modelData);
+	}
+
+	void Coat(byte8 * baseAddr)
+	{
+		byte8 * dest  = 0;
+		byte8 * dest2 = 0;
+
+		dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+		dest2 = (baseAddr + 0xA0D0);
+
+		RegisterModel
+		(
+			dest,
+			modelFile[MODEL_COAT],
+			textureFile[MODEL_COAT]
+		);
+
+		func_8A000(dest, 0, dest2);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
+			shadowFile[MODEL_COAT]
+		);
+
+		dest = (baseAddr + 0xA210);
+
+		RegisterPhysics
+		(
+			dest,
+			dest2,
+			physicsFile[MODEL_COAT]
+		);
+
+		func_2CA2F0
+		(
+			dest,
+			(baseAddr + 0x1880),
+			(appBaseAddr + 0x58B380),
+			(baseAddr + 0xB630),
+			6
+		);
+
+		CopyCoatVertices(dest2);
+	}
+
+	void Amulet(byte8 * baseAddr)
+	{
+		byte8      * dest      = 0;
+		byte8      * dest2     = 0;
+		MODEL_DATA * modelData = 0;
+
+		dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+		dest2 = (baseAddr + 0xA0D0);
+		modelData = (MODEL_DATA *)(baseAddr + 0xB630);
+
+		RegisterModel
+		(
+			dest,
+			modelFile[MODEL_COAT],
+			textureFile[MODEL_COAT]
+		);
+
+		func_8A000(dest, 0, dest2);
+
+		dest = (baseAddr + 0xA210);
+
+		RegisterPhysics
+		(
+			dest,
+			dest2,
+			physicsFile[MODEL_COAT]
+		);
+
+		func_2CA2F0
+		(
+			dest,
+			// @Research: Should be ((slotOff + 0x310) * 8)
+			(baseAddr + 0x1880),
+			(appBaseAddr + 0x58B380),
+			(baseAddr + 0xB630),
+			1
+		);
+
+		CopyAmuletVertices(modelData);
+	}
+};
+
+
+
+
+ModelHelperDante modelHelperDanteDefault;
+
+void func()
+{
+	modelHelperDanteDefault.physicsFile[MODEL_COAT] = System_File_cacheFile[pl011];
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 struct ModelHelperDanteDefault : ModelHelper
 {
@@ -604,23 +769,37 @@ struct ModelHelperDanteDefault : ModelHelper
 
 		// Base
 
-		dest = (baseAddr + 0x200 + (slot * 0x780));
+		//dest = (baseAddr + 0x200 + (slot * 0x780));
 
-		RegisterModel
-		(
-			dest,
-			System_File_GetFile(file, 1),
-			System_File_GetFile(file, 0)
-		);
+		//RegisterModel
+		//(
+		//	dest,
+		//	System_File_GetFile(file, 1),
+		//	System_File_GetFile(file, 0)
+		//);
 
-		RegisterShadow
-		(
-			dest,
-			(baseAddr + 0x9AD0 + (slot * 0xC0)),
-			System_File_GetFile(file, 8)
-		);
+		//RegisterShadow
+		//(
+		//	dest,
+		//	(baseAddr + 0x9AD0 + (slot * 0xC0)),
+		//	System_File_GetFile(file, 8)
+		//);
 
-		CopyModelData(baseAddr);
+		//CopyBaseVertices(baseAddr);
+
+
+		Base(baseAddr);
+
+
+
+
+
+
+
+
+
+
+
 
 		// Coat
 
@@ -665,9 +844,173 @@ struct ModelHelperDanteDefault : ModelHelper
 	}
 };
 
+// @Todo: Change slot to modelIndex and slotOff to modelOff.
 
-ModelHelperDanteDefault modelHelperDanteDefault;
+struct ModelHelperDanteDefaultNoCoat : ModelHelper
+{
+	void Update
+	(
+		byte8 * baseAddr,
+		uint8   slot
+	)
+	{
+		byte8 * file = 0;
 
+		byte8 * dest  = 0;
+		byte8 * dest2 = 0;
+
+		file = System_File_cacheFile[pl011];
+
+		slotOff       = (slot * 0x18);
+		subModelIndex = 0;
+
+		// Base
+
+		dest = (baseAddr + 0x200 + (slot * 0x780));
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 1),
+			System_File_GetFile(file, 0)
+		);
+
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9AD0 + (slot * 0xC0)),
+			System_File_GetFile(file, 8)
+		);
+
+		CopyModelData(baseAddr);
+
+
+
+
+
+		// Amulet
+
+		dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+		dest2 = (baseAddr + 0xA0D0);
+
+		RegisterModel
+		(
+			dest,
+			System_File_GetFile(file, 12),
+			System_File_GetFile(file, 0)
+		);
+
+		func_8A000(dest, 0, dest2);
+
+		CopyAmuletModelData(baseAddr);
+
+		dest = (baseAddr + 0xA210);
+
+		RegisterPhysics
+		(
+			dest,
+			dest2,
+			System_File_GetFile(file, 13)
+		);
+
+		func_2CA2F0
+		(
+			dest,
+			// @Research: Should be ((slotOff + 0x310) * 8)
+			(baseAddr + 0x1880),
+			(appBaseAddr + 0x58B380),
+			(baseAddr + 0xB630),
+			6
+		);
+	}
+};
+
+// MODEL_BASE
+// MODEL_COAT
+// MODEL_WINGS
+// MAX_MODEL
+
+byte8 * modelFile;
+byte8 * textureFile;
+byte8 * shadowFile;
+
+byte8 * coatModelFile;
+byte8 * coatTextureFile;
+byte8 * coatShadowFile;
+
+byte8 * wingsModelFile;
+byte8 * wingsTextureFile;
+byte8 * wingsShadowFile;
+
+byte8 * amuletModelFile;
+byte8 * amuletTextureFile;
+byte8 * amuletShadowFile;
+
+
+
+struct RAFA
+{
+	enum
+	{
+		MODEL_BASE,
+		MODEL_COAT,
+		MODEL_WINGS,
+		MAX_MODEL,
+	};
+
+	uint8 model;
+
+
+};
+
+
+
+void func()
+{
+	RAFA rafa;
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ModelHelperDanteDefault       modelHelperDanteDefault;
+ModelHelperDanteDefaultNoCoat modelHelperDanteDefaultNoCoat;
 
 
 
@@ -901,6 +1244,7 @@ struct DevilRebellionHelper : DevilHelper
 			(baseAddr + ((slotOff + 0x310) * 8)),
 			(appBaseAddr + 0x58B380),
 			(baseAddr + 0xB630),
+			// @Research: Should be 1.
 			6
 		);
 
@@ -1378,7 +1722,7 @@ __declspec(noinline) void HumanDante
 	uint8 slot
 )
 {
-	modelHelperDanteDefault.Update(baseAddr, slot);
+	modelHelperDanteDefaultNoCoat.Update(baseAddr, slot);
 }
 
 
