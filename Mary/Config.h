@@ -397,21 +397,304 @@ struct CONFIG
 			bool noColor = false;
 		}
 		Doppelganger;
+
+
 		struct
 		{
-			uint8 index[Object_Count] =
+			struct
 			{
-				Object_Dante,
-				Object_Lady,
-				Object_Rebellion,
-				Object_Rebellion2,
-				Object_ForceEdgeDante,
-				Object_Yamato,
-				Object_ForceEdge,
-				Object_NeroAngeloSword,
-			};
+				MODEL_FILE_DATA modelFile[MAX_MODEL] =
+				{
+					{ pl000, 1  },
+					{ pl000, 12 },
+				};
+				MODEL_FILE_DATA textureFile[MAX_MODEL] =
+				{
+					{ pl000, 0 },
+					{ pl000, 0 },
+				};
+				MODEL_FILE_DATA shadowFile[MAX_MODEL] =
+				{
+					{ pl000, 0 },
+					{ pl000, 0 },
+				};
+				MODEL_FILE_DATA physicsFile[MAX_MODEL] =
+				{
+					{ pl000, 0 },
+					{ pl000, 0 },
+				};
+			}
+			DanteDefault;
+			struct
+			{
+				MODEL_FILE_DATA modelFile[MAX_MODEL] =
+				{
+					{ pl011, 1  },
+					{ pl011, 12 },
+				};
+				MODEL_FILE_DATA textureFile[MAX_MODEL] =
+				{
+					{ pl011, 0 },
+					{ pl011, 0 },
+				};
+				MODEL_FILE_DATA shadowFile[MAX_MODEL] =
+				{
+					{ pl011, 0 },
+					{ pl011, 0 },
+				};
+				MODEL_FILE_DATA physicsFile[MAX_MODEL] =
+				{
+					{ pl011, 0 },
+					{ pl011, 0 },
+				};
+			}
+			DanteDefaultNoCoat;
+			struct
+			{
+				MODEL_FILE_DATA modelFile[MAX_MODEL] =
+				{
+					{ pl013, 1  },
+					{ pl013, 12 },
+				};
+				MODEL_FILE_DATA textureFile[MAX_MODEL] =
+				{
+					{ pl013, 0 },
+					{ pl013, 0 },
+				};
+				MODEL_FILE_DATA shadowFile[MAX_MODEL] =
+				{
+					{ pl013, 0 },
+					{ pl013, 0 },
+				};
+				MODEL_FILE_DATA physicsFile[MAX_MODEL] =
+				{
+					{ pl013, 0 },
+					{ pl013, 0 },
+				};
+			}
+			DanteDefaultTorn;
+			struct
+			{
+				MODEL_FILE_DATA modelFile[MAX_MODEL] =
+				{
+					{ pl015, 1  },
+					{ pl015, 12 },
+				};
+				MODEL_FILE_DATA textureFile[MAX_MODEL] =
+				{
+					{ pl015, 0 },
+					{ pl015, 0 },
+				};
+				MODEL_FILE_DATA shadowFile[MAX_MODEL] =
+				{
+					{ pl015, 0 },
+					{ pl015, 0 },
+				};
+				MODEL_FILE_DATA physicsFile[MAX_MODEL] =
+				{
+					{ pl015, 0 },
+					{ pl015, 0 },
+				};
+			}
+			DanteDMC1;
+			struct
+			{
+				MODEL_FILE_DATA modelFile[MAX_MODEL] =
+				{
+					{ pl016, 1  },
+					{ pl016, 12 },
+				};
+				MODEL_FILE_DATA textureFile[MAX_MODEL] =
+				{
+					{ pl016, 0 },
+					{ pl016, 0 },
+				};
+				MODEL_FILE_DATA shadowFile[MAX_MODEL] =
+				{
+					{ pl016, 0 },
+					{ pl016, 0 },
+				};
+				MODEL_FILE_DATA physicsFile[MAX_MODEL] =
+				{
+					{ pl016, 0 },
+					{ pl016, 0 },
+				};
+			}
+			DanteDMC1NoCoat;
+			struct
+			{
+				MODEL_FILE_DATA modelFile[MAX_MODEL] =
+				{
+					{ pl018, 1  },
+					{ pl018, 12 },
+				};
+				MODEL_FILE_DATA textureFile[MAX_MODEL] =
+				{
+					{ pl018, 0 },
+					{ pl018, 0 },
+				};
+				MODEL_FILE_DATA shadowFile[MAX_MODEL] =
+				{
+					{ pl018, 0 },
+					{ pl018, 0 },
+				};
+				MODEL_FILE_DATA physicsFile[MAX_MODEL] =
+				{
+					{ pl018, 0 },
+					{ pl018, 0 },
+				};
+			}
+			DanteSparda;
 		}
-		Object;
+		ModelHelper;
+		struct
+		{
+			struct
+			{
+				MODEL_FILE_DATA modelFile[MAX_MODEL] =
+				{
+					{ pl005, 1  },
+					{ pl005, 12 },
+				};
+				MODEL_FILE_DATA textureFile[MAX_MODEL] =
+				{
+					{ pl005, 0 },
+					{ pl005, 0 },
+				};
+				MODEL_FILE_DATA shadowFile[MAX_MODEL] =
+				{
+					{ pl005, 0 },
+					{ pl005, 0 },
+				};
+				MODEL_FILE_DATA physicsFile[MAX_MODEL] =
+				{
+					{ pl005, 0 },
+					{ pl005, 0 },
+				};
+			}
+			DanteRebellion;
+			struct
+			{
+				MODEL_FILE_DATA modelFile[MAX_MODEL] =
+				{
+					{ pl006, 1  },
+					{ pl006, 12 },
+				};
+				MODEL_FILE_DATA textureFile[MAX_MODEL] =
+				{
+					{ pl006, 0 },
+					{ pl006, 0 },
+				};
+				MODEL_FILE_DATA shadowFile[MAX_MODEL] =
+				{
+					{ pl006, 0 },
+					{ pl006, 0 },
+				};
+				MODEL_FILE_DATA physicsFile[MAX_MODEL] =
+				{
+					{ pl006, 0 },
+					{ pl006, 0 },
+				};
+			}
+			DanteCerberus;
+			struct
+			{
+				MODEL_FILE_DATA modelFile[MAX_MODEL] =
+				{
+					{ pl007, 1  },
+					{ pl007, 12 },
+				};
+				MODEL_FILE_DATA textureFile[MAX_MODEL] =
+				{
+					{ pl007, 0 },
+					{ pl007, 0 },
+				};
+				MODEL_FILE_DATA shadowFile[MAX_MODEL] =
+				{
+					{ pl007, 0 },
+					{ pl007, 0 },
+				};
+				MODEL_FILE_DATA physicsFile[MAX_MODEL] =
+				{
+					{ pl007, 0 },
+					{ pl007, 0 },
+				};
+			}
+			DanteAgniRudra;
+			struct
+			{
+				MODEL_FILE_DATA modelFile[MAX_MODEL] =
+				{
+					{ pl008, 1  },
+					{ pl008, 12 },
+				};
+				MODEL_FILE_DATA textureFile[MAX_MODEL] =
+				{
+					{ pl008, 0 },
+					{ pl008, 0 },
+				};
+				MODEL_FILE_DATA shadowFile[MAX_MODEL] =
+				{
+					{ pl008, 0 },
+					{ pl008, 0 },
+				};
+				MODEL_FILE_DATA physicsFile[MAX_MODEL] =
+				{
+					{ pl008, 0 },
+					{ pl008, 0 },
+				};
+			}
+			DanteNevan;
+			struct
+			{
+				MODEL_FILE_DATA modelFile[MAX_MODEL] =
+				{
+					{ pl009, 1  },
+					{ pl009, 12 },
+				};
+				MODEL_FILE_DATA textureFile[MAX_MODEL] =
+				{
+					{ pl009, 0 },
+					{ pl009, 0 },
+				};
+				MODEL_FILE_DATA shadowFile[MAX_MODEL] =
+				{
+					{ pl009, 0 },
+					{ pl009, 0 },
+				};
+				MODEL_FILE_DATA physicsFile[MAX_MODEL] =
+				{
+					{ pl009, 0 },
+					{ pl009, 0 },
+				};
+			}
+			DanteBeowulf;
+			struct
+			{
+				MODEL_FILE_DATA modelFile[MAX_MODEL] =
+				{
+					{ pl017, 1  },
+					{ pl017, 12 },
+				};
+				MODEL_FILE_DATA textureFile[MAX_MODEL] =
+				{
+					{ pl017, 0 },
+					{ pl017, 0 },
+				};
+				MODEL_FILE_DATA shadowFile[MAX_MODEL] =
+				{
+					{ pl017, 0 },
+					{ pl017, 0 },
+				};
+				MODEL_FILE_DATA physicsFile[MAX_MODEL] =
+				{
+					{ pl017, 0 },
+					{ pl017, 0 },
+				};
+			}
+			DanteSparda;
+		}
+		DevilModelHelper;
 		struct
 		{
 			bool noDevilForm = false;

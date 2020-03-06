@@ -858,8 +858,11 @@ struct DEVIL_MODEL_DATA
 	DEVIL_SUBMODEL_DATA subModelData[2];
 };
 
-
-
+struct MODEL_FILE_DATA
+{
+	uint16 cacheFileId;
+	uint8 index;
+};
 
 
 
