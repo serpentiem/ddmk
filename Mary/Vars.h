@@ -826,6 +826,16 @@ struct INPUT_BUFFER
 	_(7);
 };
 
+
+
+enum MODEL_
+{
+	MODEL_BASE,
+	MODEL_COAT,
+	MODEL_WINGS,
+	MAX_MODEL,
+};
+
 struct MODEL_DATA
 {
 	uint8 count;
@@ -833,6 +843,33 @@ struct MODEL_DATA
 	vec4 vertices[3];
 	_(16);
 };
+
+struct DEVIL_SUBMODEL_DATA
+{
+	uint8 subModelIndex;
+	uint8 devilModelOff;
+	uint8 devilSubModelIndex;
+};
+
+struct DEVIL_MODEL_DATA
+{
+	uint8 modelIndex;
+	uint8 modelOff;
+	DEVIL_SUBMODEL_DATA subModelData[2];
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //constexpr uint32 mdsize = (uint32)sizeof(MODEL_DATA);
 
