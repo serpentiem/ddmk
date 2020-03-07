@@ -9,7 +9,40 @@
 
 #include "Memory.h"
 
-extern byte8 * System_File_cacheFile[MAX_CACHE_FILE];
+struct CacheFile
+{
+	byte8 * file;
+
+	CacheFile()
+	{
+		memset(this, 0, sizeof(*this));
+	}
+
+	CacheFile(byte8 * addr)
+	{
+		file = addr;
+	}
+
+	operator byte8 *()
+	{
+		return file;
+	}
+
+	byte8 * operator[](uint8 index)
+	{
+		return System_File_GetFile(file, index);
+	}
+};
+
+extern CacheFile System_File_cacheFile[MAX_CACHE_FILE];
+
+
+
+
+
+
+
+//extern byte8 * System_File_cacheFile[MAX_CACHE_FILE];
 extern byte8 * demo_pl000_00_3;
 
 bool System_File_ExtractFile(const char * filename);

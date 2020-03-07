@@ -553,6 +553,54 @@ struct ModelHelper
 		Reset((baseAddr + 0x200 ));
 		Reset((baseAddr + 0x7540));
 	}
+
+	inline void UpdateModelFile
+	(
+		MODEL_FILE_DATA & modelFileData,
+		uint8             part
+	)
+	{
+		auto & cacheFileId = modelFileData.modelFile[part].cacheFileId;
+		auto & index       = modelFileData.modelFile[part].index;
+
+		modelFile[part] = System_File_cacheFile[cacheFileId][index];
+	}
+
+	inline void UpdateTextureFile
+	(
+		MODEL_FILE_DATA & modelFileData,
+		uint8             part
+	)
+	{
+		auto & cacheFileId = modelFileData.textureFile[part].cacheFileId;
+		auto & index       = modelFileData.textureFile[part].index;
+
+		textureFile[part] = System_File_cacheFile[cacheFileId][index];
+	}
+
+	inline void UpdateShadowFile
+	(
+		MODEL_FILE_DATA & modelFileData,
+		uint8             part
+	)
+	{
+		auto & cacheFileId = modelFileData.shadowFile[part].cacheFileId;
+		auto & index       = modelFileData.shadowFile[part].index;
+
+		shadowFile[part] = System_File_cacheFile[cacheFileId][index];
+	}
+
+	inline void UpdatePhysicsFile
+	(
+		MODEL_FILE_DATA & modelFileData,
+		uint8             part
+	)
+	{
+		auto & cacheFileId = modelFileData.physicsFile[part].cacheFileId;
+		auto & index       = modelFileData.physicsFile[part].index;
+
+		physicsFile[part] = System_File_cacheFile[cacheFileId][index];
+	}
 };
 
 struct DevilModelHelper : ModelHelper
@@ -609,6 +657,29 @@ struct DevilModelHelper : ModelHelper
 template <uint8 id>
 struct ModelHelperDante : ModelHelper
 {
+	void Init()
+	{
+		auto & modelFileData = Config.Cosmetics.modelHelperDante[id];
+
+		UpdateModelFile  (modelFileData, MODEL_BASE);
+		UpdateTextureFile(modelFileData, MODEL_BASE);
+		UpdateShadowFile (modelFileData, MODEL_BASE);
+
+		UpdateModelFile  (modelFileData, MODEL_COAT);
+		UpdateTextureFile(modelFileData, MODEL_COAT);
+		if constexpr
+		(
+			(id == COSTUME_DANTE_DEFAULT     ) ||
+			(id == COSTUME_DANTE_DEFAULT_TORN) ||
+			(id == COSTUME_DANTE_DMC1        ) ||
+			(id == COSTUME_DANTE_SPARDA      )
+		)
+		{
+			UpdateShadowFile(modelFileData, MODEL_COAT);
+		}
+		UpdatePhysicsFile(modelFileData, MODEL_COAT);
+	}
+
 	void Update(byte8 * baseAddr)
 	{
 		MODEL_DATA * modelData = 0;
@@ -749,6 +820,32 @@ constexpr uint32 devilModelDataOffDante[MAX_DEVIL_DANTE] =
 template <uint8 id>
 struct DevilModelHelperDante : DevilModelHelper
 {
+	void Init()
+	{
+		auto & modelFileData = Config.Cosmetics.modelHelperDante[id];
+
+		UpdateModelFile  (modelFileData, MODEL_BASE);
+		UpdateTextureFile(modelFileData, MODEL_BASE);
+		UpdateShadowFile (modelFileData, MODEL_BASE);
+
+		if constexpr
+		(
+			(id == DEVIL_DANTE_REBELLION) ||
+			(id == DEVIL_DANTE_NEVAN    )
+		)
+		{
+			UpdateModelFile  (modelFileData, MODEL_COAT);
+			UpdateTextureFile(modelFileData, MODEL_COAT);
+			UpdateShadowFile (modelFileData, MODEL_COAT);
+			UpdatePhysicsFile(modelFileData, MODEL_COAT);
+		}
+
+		UpdateModelFile  (modelFileData, MODEL_WINGS);
+		UpdateTextureFile(modelFileData, MODEL_WINGS);
+		UpdateShadowFile (modelFileData, MODEL_WINGS);
+		UpdatePhysicsFile(modelFileData, MODEL_WINGS);
+	}
+
 	void Update
 	(
 		byte8 * baseAddr,
@@ -950,13 +1047,182 @@ DevilModelHelperDante<DEVIL_DANTE_SPARDA    > devilModelHelperDanteSparda;
 
 
 
-inline void ResetSlot(byte8 * dest)
+
+
+
+
+
+
+
+
+
+void System_Actor_AdjustConfig(CONFIG & config)
 {
-	func_897B0(dest);
-	func_89450(dest);
-	memset(dest, 0, 0x780);
-	func_89270(dest);
+	#pragma region Dante
+	{
+		auto & modelFileData = config.Cosmetics.modelHelperDante[COSTUME_DANTE_DEFAULT];
+
+		modelFileData.modelFile  [MODEL_BASE] = { pl000, 1 };
+		modelFileData.textureFile[MODEL_BASE] = { pl000, 0 };
+		modelFileData.shadowFile [MODEL_BASE] = { pl000, 8 };
+
+		modelFileData.modelFile  [MODEL_COAT] = { pl000, 12 };
+		modelFileData.textureFile[MODEL_COAT] = { pl000, 0  };
+		modelFileData.shadowFile [MODEL_COAT] = { pl000, 14 };
+		modelFileData.physicsFile[MODEL_COAT] = { pl000, 13 };
+	}
+	{
+		auto & modelFileData = config.Cosmetics.modelHelperDante[COSTUME_DANTE_DEFAULT_NO_COAT];
+
+		modelFileData.modelFile  [MODEL_BASE] = { pl011, 1 };
+		modelFileData.textureFile[MODEL_BASE] = { pl011, 0 };
+		modelFileData.shadowFile [MODEL_BASE] = { pl011, 8 };
+
+		modelFileData.modelFile  [MODEL_COAT] = { pl011, 12 };
+		modelFileData.textureFile[MODEL_COAT] = { pl011, 0  };
+		modelFileData.physicsFile[MODEL_COAT] = { pl011, 13 };
+	}
+	{
+		auto & modelFileData = config.Cosmetics.modelHelperDante[COSTUME_DANTE_DEFAULT_TORN];
+
+		modelFileData.modelFile  [MODEL_BASE] = { pl013, 1 };
+		modelFileData.textureFile[MODEL_BASE] = { pl013, 0 };
+		modelFileData.shadowFile [MODEL_BASE] = { pl013, 8 };
+
+		modelFileData.modelFile  [MODEL_COAT] = { pl013, 12 };
+		modelFileData.textureFile[MODEL_COAT] = { pl013, 0  };
+		modelFileData.shadowFile [MODEL_COAT] = { pl013, 14 };
+		modelFileData.physicsFile[MODEL_COAT] = { pl013, 13 };
+	}
+	{
+		auto & modelFileData = config.Cosmetics.modelHelperDante[COSTUME_DANTE_DMC1];
+
+		modelFileData.modelFile  [MODEL_BASE] = { pl015, 1 };
+		modelFileData.textureFile[MODEL_BASE] = { pl015, 0 };
+		modelFileData.shadowFile [MODEL_BASE] = { pl015, 8 };
+
+		modelFileData.modelFile  [MODEL_COAT] = { pl015, 12 };
+		modelFileData.textureFile[MODEL_COAT] = { pl015, 0  };
+		modelFileData.shadowFile [MODEL_COAT] = { pl015, 14 };
+		modelFileData.physicsFile[MODEL_COAT] = { pl015, 13 };
+	}
+	{
+		auto & modelFileData = config.Cosmetics.modelHelperDante[COSTUME_DANTE_DMC1_NO_COAT];
+
+		modelFileData.modelFile  [MODEL_BASE] = { pl016, 1 };
+		modelFileData.textureFile[MODEL_BASE] = { pl016, 0 };
+		modelFileData.shadowFile [MODEL_BASE] = { pl016, 8 };
+
+		modelFileData.modelFile  [MODEL_COAT] = { pl016, 12 };
+		modelFileData.textureFile[MODEL_COAT] = { pl016, 0  };
+		modelFileData.shadowFile [MODEL_COAT] = { pl016, 14 };
+		modelFileData.physicsFile[MODEL_COAT] = { pl016, 13 };
+	}
+	{
+		auto & modelFileData = config.Cosmetics.modelHelperDante[COSTUME_DANTE_SPARDA];
+
+		modelFileData.modelFile  [MODEL_BASE] = { pl018, 1 };
+		modelFileData.textureFile[MODEL_BASE] = { pl018, 0 };
+		modelFileData.shadowFile [MODEL_BASE] = { pl018, 8 };
+
+		modelFileData.modelFile  [MODEL_COAT] = { pl018, 12 };
+		modelFileData.textureFile[MODEL_COAT] = { pl018, 0  };
+		modelFileData.shadowFile [MODEL_COAT] = { pl018, 14 };
+		modelFileData.physicsFile[MODEL_COAT] = { pl018, 13 };
+	}
+	{
+		auto & modelFileData = config.Cosmetics.devilModelHelperDante[DEVIL_DANTE_REBELLION];
+
+		modelFileData.modelFile  [MODEL_BASE] = { pl005, 1 };
+		modelFileData.textureFile[MODEL_BASE] = { pl005, 0 };
+		modelFileData.shadowFile [MODEL_BASE] = { pl005, 6 };
+
+		modelFileData.modelFile  [MODEL_COAT] = { pl005, 2 };
+		modelFileData.textureFile[MODEL_COAT] = { pl005, 0 };
+		modelFileData.shadowFile [MODEL_COAT] = { pl005, 7 };
+		modelFileData.physicsFile[MODEL_COAT] = { pl005, 3 };
+
+		modelFileData.modelFile  [MODEL_WINGS] = { pl005, 4 };
+		modelFileData.textureFile[MODEL_WINGS] = { pl005, 0 };
+		modelFileData.shadowFile [MODEL_WINGS] = { pl005, 8 };
+		modelFileData.physicsFile[MODEL_WINGS] = { pl005, 5 };
+	}
+	{
+		auto & modelFileData = config.Cosmetics.devilModelHelperDante[DEVIL_DANTE_CERBERUS];
+
+		modelFileData.modelFile  [MODEL_BASE] = { pl006, 1 };
+		modelFileData.textureFile[MODEL_BASE] = { pl006, 0 };
+		modelFileData.shadowFile [MODEL_BASE] = { pl006, 4 };
+
+		modelFileData.modelFile  [MODEL_WINGS] = { pl006, 2 };
+		modelFileData.textureFile[MODEL_WINGS] = { pl006, 0 };
+		modelFileData.shadowFile [MODEL_WINGS] = { pl006, 5 };
+		modelFileData.physicsFile[MODEL_WINGS] = { pl006, 3 };
+	}
+	{
+		auto & modelFileData = config.Cosmetics.devilModelHelperDante[DEVIL_DANTE_AGNI_RUDRA];
+
+		modelFileData.modelFile  [MODEL_BASE] = { pl007, 1 };
+		modelFileData.textureFile[MODEL_BASE] = { pl007, 0 };
+		modelFileData.shadowFile [MODEL_BASE] = { pl007, 2 };
+	}
+	{
+		auto & modelFileData = config.Cosmetics.devilModelHelperDante[DEVIL_DANTE_NEVAN];
+
+		modelFileData.modelFile  [MODEL_BASE] = { pl008, 1 };
+		modelFileData.textureFile[MODEL_BASE] = { pl008, 0 };
+		modelFileData.shadowFile [MODEL_BASE] = { pl008, 6 };
+
+		modelFileData.modelFile  [MODEL_COAT] = { pl008, 2 };
+		modelFileData.textureFile[MODEL_COAT] = { pl008, 0 };
+		modelFileData.shadowFile [MODEL_COAT] = { pl008, 7 };
+		modelFileData.physicsFile[MODEL_COAT] = { pl008, 3 };
+
+		modelFileData.modelFile  [MODEL_WINGS] = { pl008, 4 };
+		modelFileData.textureFile[MODEL_WINGS] = { pl008, 0 };
+		modelFileData.shadowFile [MODEL_WINGS] = { pl008, 8 };
+		modelFileData.physicsFile[MODEL_WINGS] = { pl008, 5 };
+	}
+	{
+		auto & modelFileData = config.Cosmetics.devilModelHelperDante[DEVIL_DANTE_BEOWULF];
+
+		modelFileData.modelFile  [MODEL_BASE] = { pl009, 1 };
+		modelFileData.textureFile[MODEL_BASE] = { pl009, 0 };
+		modelFileData.shadowFile [MODEL_BASE] = { pl009, 4 };
+
+		modelFileData.modelFile  [MODEL_WINGS] = { pl009, 2 };
+		modelFileData.textureFile[MODEL_WINGS] = { pl009, 0 };
+		modelFileData.shadowFile [MODEL_WINGS] = { pl009, 5 };
+		modelFileData.physicsFile[MODEL_WINGS] = { pl009, 3 };
+	}
+	{
+		auto & modelFileData = config.Cosmetics.devilModelHelperDante[DEVIL_DANTE_SPARDA];
+
+		modelFileData.modelFile  [MODEL_BASE] = { pl017, 1 };
+		modelFileData.textureFile[MODEL_BASE] = { pl017, 0 };
+		modelFileData.shadowFile [MODEL_BASE] = { pl017, 4 };
+
+		modelFileData.modelFile  [MODEL_WINGS] = { pl017, 2 };
+		modelFileData.textureFile[MODEL_WINGS] = { pl017, 0 };
+		modelFileData.shadowFile [MODEL_WINGS] = { pl017, 5 };
+		modelFileData.physicsFile[MODEL_WINGS] = { pl017, 3 };
+	}
+	#pragma endregion
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1257,9 +1523,63 @@ void HumanVergil(byte8 * baseAddr)
 
 
 
+
+
+void * modelHelperDante[] =
+{
+	&modelHelperDanteDefault,
+	&modelHelperDanteDefaultNoCoat,
+	&modelHelperDanteDefaultTorn,
+	&modelHelperDanteDMC1,
+	&modelHelperDanteDMC1NoCoat,
+	&modelHelperDanteSparda,
+};
+
+void * devilModelHelperDante[] =
+{
+	&devilModelHelperDanteRebellion,
+	&devilModelHelperDanteCerberus,
+	&devilModelHelperDanteAgniRudra,
+	&devilModelHelperDanteNevan,
+	&devilModelHelperDanteBeowulf,
+	&devilModelHelperDanteSparda,
+};
+
+
+
+
+
+
+
+
 void System_Actor_Init()
 {
 	LogFunction();
+	{
+		for (uint8 index = 0; index < countof(modelHelperDante); index++)
+		{
+			((ModelHelperDante<0> *)modelHelperDante[index])->Init();
+		}
+		for (uint8 index = 0; index < countof(devilModelHelperDante); index++)
+		{
+			((DevilModelHelperDante<0> *)devilModelHelperDante[index])->Init();
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	#pragma region Later
@@ -1424,11 +1744,11 @@ void System_Actor_Init()
 
 	#pragma endregion
 
-	{
-		auto func = CreateFunction(HumanDante);
-		Log("HumanDante %llX", func.addr);
-		//WriteCall((appBaseAddr + 0x212CB3), func.addr);
-	}
+	//{
+	//	auto func = CreateFunction(HumanDante);
+	//	Log("HumanDante %llX", func.addr);
+	//	//WriteCall((appBaseAddr + 0x212CB3), func.addr);
+	//}
 	//{
 	//	auto func = CreateFunction(HumanVergil);
 	//	Log("HumanVergil %llX", func.addr);

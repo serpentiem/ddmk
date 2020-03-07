@@ -30,21 +30,13 @@ extern System_Actor_UpdateDevilForm_t System_Actor_UpdateDevilForm;
 extern System_Actor_UpdateFlux_t      System_Actor_UpdateFlux;
 extern System_Actor_Relax_t           System_Actor_Relax;
 
-void DanteLady(byte8 * baseAddr, uint32 slot);
-
-
-
-void ApplyDevilRebellion(uint8 slot);
-void ApplyDevilCerberus (uint8 slot);
-void ApplyDevilAgniRudra(uint8 slot);
-void ApplyDevilNevan    (uint8 slot);
-void ApplyDevilBeowulf  (uint8 slot);
-void ApplyDevilSparda   (uint8 slot);
 
 
 
 
 
+
+void System_Actor_AdjustConfig(CONFIG & config);
 
 
 

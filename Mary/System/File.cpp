@@ -2,7 +2,15 @@
 
 constexpr bool debug = false;
 
-byte8 * System_File_cacheFile[MAX_CACHE_FILE] = {};
+//byte8 * System_File_cacheFile[MAX_CACHE_FILE] = {};
+
+
+CacheFile System_File_cacheFile[MAX_CACHE_FILE];
+
+
+
+
+
 byte8 * demo_pl000_00_3 = 0;
 
 PrivateStart;

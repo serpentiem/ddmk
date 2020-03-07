@@ -72,7 +72,14 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Log_Init();
 		Log("Session started.");
 		Config_Init();
-		Cosmetics_Color_AdjustConfig();
+
+
+		System_Actor_AdjustConfig(Config);
+		System_Actor_AdjustConfig(DefaultConfig);
+
+		Cosmetics_Color_AdjustConfig(Config);
+		Cosmetics_Color_AdjustConfig(DefaultConfig);
+
 		LoadConfig();
 		if (!Memory_Init())
 		{

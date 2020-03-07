@@ -74,19 +74,15 @@ uint8 colorHelperCount[] =
 
 PrivateEnd;
 
-void Cosmetics_Color_AdjustConfig()
+void Cosmetics_Color_AdjustConfig(CONFIG & config)
 {
 	LogFunction();
 
 	constexpr uint8 count = (sizeof(Config.Cosmetics.Color) / 4);
 
-	float32 * addr        = (float32 *)&Config.Cosmetics.Color;
-	float32 * defaultAddr = (float32 *)&DefaultConfig.Cosmetics.Color;
-
 	for (uint8 index = 0; index < count; index++)
 	{
-		addr       [index] /= 255;
-		defaultAddr[index] /= 255;
+		((float32 *)&config.Cosmetics.Color)[index] /= 255;
 	}
 }
 
