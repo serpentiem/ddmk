@@ -390,6 +390,296 @@ struct CONFIG
 				bool hideModel = false;
 			}
 			Beowulf;
+
+
+
+
+			MODEL_HELPER_FILE_HELPER modelHelperFileHelper[MAX_COSTUME_DANTE][MODEL_HELPER_MAX_PART] =
+			{
+				// Default
+				{
+					// Base
+					{
+						{ pl000, 1 },
+						{ pl000, 0 },
+						{ pl000, 8 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ pl000, 12 },
+						{ pl000, 0  },
+						{ pl000, 14 },
+						{ pl000, 13 },
+					},
+				},
+				// Default No Coat
+				{
+					// Base
+					{
+						{ pl011, 1 },
+						{ pl011, 0 },
+						{ pl011, 8 },
+						{ 0    , 0 },
+					},
+					// Amulet
+					{
+						{ pl011, 12 },
+						{ pl011, 0  },
+						{ 0    , 0  },
+						{ pl011, 13 },
+					},
+				},
+				// Default Torn
+				{
+					// Base
+					{
+						{ pl013, 1 },
+						{ pl013, 0 },
+						{ pl013, 8 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ pl013, 12 },
+						{ pl013, 0  },
+						{ pl013, 14 },
+						{ pl013, 13 },
+					},
+				},
+				// DMC1
+				{
+					// Base
+					{
+						{ pl015, 1 },
+						{ pl015, 0 },
+						{ pl015, 8 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ pl015, 12 },
+						{ pl015, 0  },
+						{ pl015, 14 },
+						{ pl015, 13 },
+					},
+				},
+				// DMC1 No Coat
+				{
+					// Base
+					{
+						{ pl016, 1 },
+						{ pl016, 0 },
+						{ pl016, 8 },
+						{ 0    , 0 },
+					},
+					// Amulet
+					{
+						{ pl016, 12 },
+						{ pl016, 0  },
+						{ 0    , 0  },
+						{ pl016, 13 },
+					},
+				},
+				// Sparda
+				{
+					// Base
+					{
+						{ pl018, 1 },
+						{ pl018, 0 },
+						{ pl018, 8 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ pl018, 12 },
+						{ pl018, 0  },
+						{ pl018, 14 },
+						{ pl018, 13 },
+					},
+				},
+				// Default Torn Infinite Magic Points
+				{
+					// Base
+					{
+						{ pl013, 1 },
+						{ pl013, 0 },
+						{ pl013, 8 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ pl013, 12 },
+						{ pl013, 0  },
+						{ pl013, 14 },
+						{ pl013, 13 },
+					},
+				},
+				// Sparda Infinite Magic Points
+				{
+					// Base
+					{
+						{ pl018, 1 },
+						{ pl018, 0 },
+						{ pl018, 8 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ pl018, 12 },
+						{ pl018, 0  },
+						{ pl018, 14 },
+						{ pl018, 13 },
+					},
+				},
+			};
+			DEVIL_MODEL_HELPER_FILE_HELPER devilModelHelperFileHelper[MAX_DEVIL_DANTE][DEVIL_MODEL_HELPER_MAX_PART] =
+			{
+				// Rebellion
+				{
+					// Base
+					{
+						{ pl005, 1 },
+						{ pl005, 0 },
+						{ pl005, 6 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ pl005, 2 },
+						{ pl005, 0 },
+						{ pl005, 7 },
+						{ pl005, 3 },
+					},
+					// Wings
+					{
+						{ pl005, 4 },
+						{ pl005, 0 },
+						{ pl005, 8 },
+						{ pl005, 5 },
+					},
+				},
+				// Cerberus
+				{
+					// Base
+					{
+						{ pl006, 1 },
+						{ pl006, 0 },
+						{ pl006, 4 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+					},
+					// Wings
+					{
+						{ pl006, 2 },
+						{ pl006, 0 },
+						{ pl006, 5 },
+						{ pl006, 3 },
+					},
+				},
+				// Agni Rudra
+				{
+					// Base
+					{
+						{ pl007, 1 },
+						{ pl007, 0 },
+						{ pl007, 2 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+					},
+					// Wings
+					{
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+					},
+				},
+				// Nevan
+				{
+					// Base
+					{
+						{ pl008, 1 },
+						{ pl008, 0 },
+						{ pl008, 6 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ pl008, 2 },
+						{ pl008, 0 },
+						{ pl008, 7 },
+						{ pl008, 3 },
+					},
+					// Wings
+					{
+						{ pl008, 4 },
+						{ pl008, 0 },
+						{ pl008, 8 },
+						{ pl008, 5 },
+					},
+				},
+				// Beowulf
+				{
+					// Base
+					{
+						{ pl009, 1 },
+						{ pl009, 0 },
+						{ pl009, 4 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+					},
+					// Wings
+					{
+						{ pl009, 2 },
+						{ pl009, 0 },
+						{ pl009, 5 },
+						{ pl009, 3 },
+					},
+				},
+				// Sparda
+				{
+					// Base
+					{
+						{ pl017, 1 },
+						{ pl017, 0 },
+						{ pl017, 4 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+					},
+					// Wings
+					{
+						{ pl017, 2 },
+						{ pl017, 0 },
+						{ pl017, 5 },
+						{ pl017, 3 },
+					},
+				},
+			};
 		}
 		Dante;
 		struct
@@ -413,11 +703,11 @@ struct CONFIG
 
 
 
-		MODEL_FILE_DATA modelHelperDante [MAX_COSTUME_DANTE ];
-		MODEL_FILE_DATA modelHelperVergil[MAX_COSTUME_VERGIL];
-		
-		MODEL_FILE_DATA devilModelHelperDante [MAX_DEVIL_DANTE ];
-		MODEL_FILE_DATA devilModelHelperVergil[MAX_DEVIL_VERGIL];
+		//MODEL_FILE_DATA modelHelperDante [MAX_COSTUME_DANTE ];
+		//MODEL_FILE_DATA modelHelperVergil[MAX_COSTUME_VERGIL];
+		//
+		//MODEL_FILE_DATA devilModelHelperDante [MAX_DEVIL_DANTE ];
+		//MODEL_FILE_DATA devilModelHelperVergil[MAX_DEVIL_VERGIL];
 
 
 
