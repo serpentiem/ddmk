@@ -8,6 +8,7 @@
 #include "File.h"
 
 #include "../Cosmetics/Color.h"
+#include "../Cosmetics/Model.h"
 
 
 extern uint32 devilCounter;
@@ -21,6 +22,23 @@ extern bool System_Actor_enableModelFixes;
 extern byte8 * System_Actor_actorBaseAddr[MAX_ACTOR];
 
 // @Todo: Move to Internal.
+
+
+
+
+//typedef void(__fastcall * UpdateModel_t)(byte8 * baseAddr);
+
+
+
+
+
+
+
+
+
+
+
+
 
 typedef void(* System_Actor_UpdateDevilForm_t)(byte8 *       );
 typedef void(* System_Actor_UpdateFlux_t     )(byte8 *, uint8);
@@ -36,7 +54,7 @@ extern System_Actor_Relax_t           System_Actor_Relax;
 
 
 
-void System_Actor_AdjustConfig(CONFIG & config);
+//void System_Actor_AdjustConfig(CONFIG & config);
 
 
 

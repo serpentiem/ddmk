@@ -118,6 +118,7 @@ p4.exe</Command>
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Cosmetics\Color.cpp" />
     <ClCompile Include="Cosmetics\Dante.cpp" />
+    <ClCompile Include="Cosmetics\Model.cpp" />
     <ClCompile Include="Cosmetics\Object.cpp" />
     <ClCompile Include="Cosmetics\Other.cpp" />
     <ClCompile Include="Cosmetics\Vergil.cpp" />
@@ -184,6 +185,7 @@ p4.exe</Command>
     <ClInclude Include="Config.h" />
     <ClInclude Include="Cosmetics\Color.h" />
     <ClInclude Include="Cosmetics\Dante.h" />
+    <ClInclude Include="Cosmetics\Model.h" />
     <ClInclude Include="Cosmetics\Object.h" />
     <ClInclude Include="Cosmetics\Other.h" />
     <ClInclude Include="Cosmetics\Vergil.h" />

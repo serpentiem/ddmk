@@ -390,11 +390,7 @@ struct CONFIG
 				bool hideModel = false;
 			}
 			Beowulf;
-
-
-
-
-			MODEL_HELPER_FILE_HELPER modelHelperFileHelper[MAX_COSTUME_DANTE][MODEL_HELPER_MAX_PART] =
+			MODEL_FILE_HELPER modelFileHelper[MAX_COSTUME_DANTE][MODEL_MAX_PART] =
 			{
 				// Default
 				{
@@ -533,7 +529,7 @@ struct CONFIG
 					},
 				},
 			};
-			DEVIL_MODEL_HELPER_FILE_HELPER devilModelHelperFileHelper[MAX_DEVIL_DANTE][DEVIL_MODEL_HELPER_MAX_PART] =
+			DEVIL_MODEL_FILE_HELPER devilModelFileHelper[MAX_DEVIL_DANTE][DEVIL_MODEL_MAX_PART] =
 			{
 				// Rebellion
 				{
@@ -687,46 +683,6 @@ struct CONFIG
 			bool noColor = false;
 		}
 		Doppelganger;
-		//struct
-		//{
-		//	MODEL_FILE_DATA DanteDefault;
-		//	MODEL_FILE_DATA DanteDefaultNoCoat;
-		//	MODEL_FILE_DATA DanteDefaultTorn;
-		//	MODEL_FILE_DATA DanteDMC1;
-		//	MODEL_FILE_DATA DanteDMC1NoCoat;
-		//	MODEL_FILE_DATA DanteSparda;
-		//	MODEL_FILE_DATA VergilDefault;
-		//	MODEL_FILE_DATA VergilDefaultNoCoat;
-		//	MODEL_FILE_DATA VergilSparda;
-		//}
-		//ModelHelper;
-
-
-
-		//MODEL_FILE_DATA modelHelperDante [MAX_COSTUME_DANTE ];
-		//MODEL_FILE_DATA modelHelperVergil[MAX_COSTUME_VERGIL];
-		//
-		//MODEL_FILE_DATA devilModelHelperDante [MAX_DEVIL_DANTE ];
-		//MODEL_FILE_DATA devilModelHelperVergil[MAX_DEVIL_VERGIL];
-
-
-
-
-
-
-		//struct
-		//{
-		//	MODEL_FILE_DATA DanteRebellion;
-		//	MODEL_FILE_DATA DanteCerberus;
-		//	MODEL_FILE_DATA DanteAgniRudra;
-		//	MODEL_FILE_DATA DanteNevan;
-		//	MODEL_FILE_DATA DanteBeowulf;
-		//	MODEL_FILE_DATA DanteSparda;
-		//	MODEL_FILE_DATA VergilYamato;
-		//	MODEL_FILE_DATA VergilBeowulf;
-		//	MODEL_FILE_DATA VergilNeroAngelo;
-		//}
-		//DevilModelHelper;
 		struct
 		{
 			bool noDevilForm = false;

@@ -148,6 +148,9 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Internal.cpp" />
+    <ClCompile Include="Cosmetics\Model.cpp">
+      <Filter>Cosmetics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -334,5 +337,8 @@
     </ClInclude>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Internal.h" />
+    <ClInclude Include="Cosmetics\Model.h">
+      <Filter>Cosmetics</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

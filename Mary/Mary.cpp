@@ -37,7 +37,11 @@
 
 #include "Cosmetics/Color.h"
 #include "Cosmetics/Dante.h"
-#include "Cosmetics/Object.h"
+//#include "Cosmetics/Object.h"
+
+
+#include "Cosmetics/Model.h"
+
 #include "Cosmetics/Other.h"
 #include "Cosmetics/Vergil.h"
 
@@ -74,8 +78,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Config_Init();
 
 
-		System_Actor_AdjustConfig(Config);
-		System_Actor_AdjustConfig(DefaultConfig);
+		//System_Actor_AdjustConfig(Config);
+		//System_Actor_AdjustConfig(DefaultConfig);
 
 		Cosmetics_Color_AdjustConfig(Config);
 		Cosmetics_Color_AdjustConfig(DefaultConfig);
@@ -199,7 +203,10 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Cosmetics_Color_UpdateColors(Config);
 		Cosmetics_Dante_Init();
 		Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.Beowulf.hideModel);
-		Cosmetics_Object_Init();
+		//Cosmetics_Object_Init();
+
+		Cosmetics_Model_Init();
+
 		Cosmetics_Other_Init();
 		Cosmetics_Other_ToggleNoDevilForm(Config.Cosmetics.Other.noDevilForm);
 		Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.Beowulf.hideModel);

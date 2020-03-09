@@ -1,9 +1,7 @@
-
-// @Todo: Change clothFile to file.
-// @Todo: Add descriptions.
-
 #pragma once
 #include "../Core/Core.h"
+
+#include "Vars.h"
 
 // Reset Model Data
 
@@ -54,24 +52,24 @@ typedef void (__fastcall * func_8A000_t)
 
 typedef uint32 (__fastcall * func_2C9F40_t)
 (
-	byte8 * clothFile
+	byte8 * physicsFile
 );
 
 typedef void (__fastcall * func_2CA1D0_t)
 (
 	byte8  * dest,
 	byte8  * addr,
-	byte8  * clothFile,
+	byte8  * physicsFile,
 	uint32   index
 );
 
 typedef void (__fastcall * func_2CA2F0_t)
 (
-	byte8  * dest,
-	byte8  * addr,
-	byte8  * unknown,
-	byte8  * modelData,
-	uint32   count
+	byte8      * dest,
+	byte8      * addr,
+	byte8      * unknown,
+	MODEL_DATA * modelData,
+	uint32       count
 );
 
 typedef void(__fastcall * func_1EF040_t)
