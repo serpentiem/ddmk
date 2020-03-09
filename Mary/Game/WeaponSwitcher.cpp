@@ -91,24 +91,24 @@ static void Melee_UpdateWeapon(byte * baseAddr)
 	queue = slot;
 
 
-	switch (weapon)
-	{
-	case WEAPON_REBELLION:
-		ApplyDevilRebellion(slot);
-		break;
-	case WEAPON_CERBERUS:
-		ApplyDevilCerberus(slot);
-		break;
-	case WEAPON_AGNI_RUDRA:
-		ApplyDevilAgniRudra(slot);
-		break;
-	case WEAPON_NEVAN:
-		ApplyDevilNevan(slot);
-		break;
-	case WEAPON_BEOWULF:
-		ApplyDevilBeowulf(slot);
-		break;
-	}
+	//switch (weapon)
+	//{
+	//case WEAPON_REBELLION:
+	//	ApplyDevilRebellion(slot);
+	//	break;
+	//case WEAPON_CERBERUS:
+	//	ApplyDevilCerberus(slot);
+	//	break;
+	//case WEAPON_AGNI_RUDRA:
+	//	ApplyDevilAgniRudra(slot);
+	//	break;
+	//case WEAPON_NEVAN:
+	//	ApplyDevilNevan(slot);
+	//	break;
+	//case WEAPON_BEOWULF:
+	//	ApplyDevilBeowulf(slot);
+	//	break;
+	//}
 
 
 

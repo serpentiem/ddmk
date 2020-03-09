@@ -20,25 +20,28 @@ byte8 * g_texture[Object_Count] = {};
 
 void SetObject(byte8 * baseAddr)
 {
-	auto & model   = *(byte8 **)(baseAddr + 0x108);
-	auto & texture = *(byte8 **)(baseAddr + 0x110);
+	//auto & model   = *(byte8 **)(baseAddr + 0x108);
+	//auto & texture = *(byte8 **)(baseAddr + 0x110);
 
-	for (uint8 object = 0; object < Object_Count; object++)
-	{
-		auto & objectIndex = Config.Cosmetics.Object.index[object];
+	//for (uint8 object = 0; object < Object_Count; object++)
+	//{
+	//	auto & objectIndex = Config.Cosmetics.Object.index[object];
 
-		if (model == g_model[object])
-		{
-			model   = g_model  [objectIndex];
-			texture = g_texture[objectIndex];
-			break;
-		}
-	}
+	//	if (model == g_model[object])
+	//	{
+	//		model   = g_model  [objectIndex];
+	//		texture = g_texture[objectIndex];
+	//		break;
+	//	}
+	//}
 }
 
 void Cosmetics_Object_Init()
 {
 	LogFunction();
+
+	return;
+
 	for (uint8 object = 0; object < Object_Count; object++)
 	{
 		auto & cacheFileIndex = g_cacheFileIndex[object];

@@ -1012,10 +1012,10 @@ static void Doppelganger_Activate(byte * baseAddr)
 		{
 			DEVIL_VERGIL_YAMATO,
 			DEVIL_VERGIL_BEOWULF,
-			DEVIL_VERGIL_FORCE_EDGE,
+			//DEVIL_VERGIL_FORCE_EDGE,
 		};
 		uint8 selectedWeapon = *(uint8 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x6488);
-		if (selectedWeapon > 2)
+		if (selectedWeapon > 1)
 		{
 			selectedWeapon = 0;
 		}

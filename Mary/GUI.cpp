@@ -1097,35 +1097,35 @@ void GUI_Cosmetics_Color()
 
 
 	
-	static uint8 slot[6] = {};
-	if (GUI_Button("DevilRebellion"))
-	{
-		ApplyDevilRebellion(slot[0]);
-	}
-	if (GUI_Button("DevilCerberus"))
-	{
-		ApplyDevilCerberus(slot[1]);
-	}
-	if (GUI_Button("DevilAgniRudra"))
-	{
-		ApplyDevilAgniRudra(slot[2]);
-	}
-	if (GUI_Button("DevilNevan"))
-	{
-		ApplyDevilNevan(slot[3]);
-	}
-	if (GUI_Button("DevilBeowulf"))
-	{
-		ApplyDevilBeowulf(slot[4]);
-	}
-	if (GUI_Button("DevilSparda"))
-	{
-		ApplyDevilSparda(slot[5]);
-	}
-	for (uint8 index = 0; index < countof(slot); index++)
-	{
-		GUI_InputEx<uint8>("Slot", slot[index]);
-	}
+	//static uint8 slot[6] = {};
+	//if (GUI_Button("DevilRebellion"))
+	//{
+	//	ApplyDevilRebellion(slot[0]);
+	//}
+	//if (GUI_Button("DevilCerberus"))
+	//{
+	//	ApplyDevilCerberus(slot[1]);
+	//}
+	//if (GUI_Button("DevilAgniRudra"))
+	//{
+	//	ApplyDevilAgniRudra(slot[2]);
+	//}
+	//if (GUI_Button("DevilNevan"))
+	//{
+	//	ApplyDevilNevan(slot[3]);
+	//}
+	//if (GUI_Button("DevilBeowulf"))
+	//{
+	//	ApplyDevilBeowulf(slot[4]);
+	//}
+	//if (GUI_Button("DevilSparda"))
+	//{
+	//	ApplyDevilSparda(slot[5]);
+	//}
+	//for (uint8 index = 0; index < countof(slot); index++)
+	//{
+	//	GUI_InputEx<uint8>("Slot", slot[index]);
+	//}
 
 
 
@@ -1310,24 +1310,24 @@ void GUI_Cosmetics_Object()
 {
 	GUI_Hyperlink(Locale.Cosmetics.Object.header);
 	ImGui::Text("");
-	ImGui::PushItemWidth(200);
-	for (uint8 object = 0; object < Object_Count; object++)
-	{
-		GUI_Combo<uint8>
-		(
-			Locale.Cosmetics.Object.label[object],
-			Locale.Cosmetics.Object.items,
-			countof(Locale.Cosmetics.Object.items),
-			Config.Cosmetics.Object.index[object]
-		);
-	}
-	ImGui::PopItemWidth();
-	ImGui::Text("");
-	if (GUI_Button(Locale.Cosmetics.Object.reset))
-	{
-		memcpy(&Config.Cosmetics.Object, &DefaultConfig.Cosmetics.Object, sizeof(Config.Cosmetics.Object));
-		SaveConfig();
-	}
+	//ImGui::PushItemWidth(200);
+	//for (uint8 object = 0; object < Object_Count; object++)
+	//{
+	//	GUI_Combo<uint8>
+	//	(
+	//		Locale.Cosmetics.Object.label[object],
+	//		Locale.Cosmetics.Object.items,
+	//		countof(Locale.Cosmetics.Object.items),
+	//		Config.Cosmetics.Object.index[object]
+	//	);
+	//}
+	//ImGui::PopItemWidth();
+	//ImGui::Text("");
+	//if (GUI_Button(Locale.Cosmetics.Object.reset))
+	//{
+	//	memcpy(&Config.Cosmetics.Object, &DefaultConfig.Cosmetics.Object, sizeof(Config.Cosmetics.Object));
+	//	SaveConfig();
+	//}
 }
 
 void GUI_Cosmetics_Other()

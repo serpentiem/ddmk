@@ -245,9 +245,9 @@ void UpdateSword(ACTOR_DATA * actorData)
 		switch (actorData->costume)
 		{
 		case COSTUME_DANTE_DMC1:
-		case COSTUME_DANTE_DMC1_COATLESS:
+		case COSTUME_DANTE_DMC1_NO_COAT:
 		case COSTUME_DANTE_SPARDA:
-		case COSTUME_DANTE_SPARDA_INFINITE_MP:
+		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
 			sword = 2;
 			break;
 		}
