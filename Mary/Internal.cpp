@@ -18,6 +18,14 @@ func_1DF240_t func_1DF240 = 0;
 func_1F92C0_t func_1F92C0 = 0;
 func_1F97F0_t func_1F97F0 = 0;
 
+
+func_2EE3D0_t func_2EE3D0 = 0;
+func_1FAF40_t func_1FAF40 = 0;
+
+func_1EEF80_t func_1EEF80 = 0;
+
+
+
 void Internal_Init()
 {
 	LogFunction();
@@ -89,4 +97,30 @@ void Internal_Init()
 		auto func = CreateFunction((appBaseAddr + 0x1F97F0));
 		func_1F97F0 = (func_1F97F0_t)func.addr;
 	}
+
+
+
+	{
+		auto func = CreateFunction((appBaseAddr + 0x2EE3D0));
+		func_2EE3D0 = (func_2EE3D0_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x1FAF40));
+		func_1FAF40 = (func_1FAF40_t)func.addr;
+	}
+
+
+
+	{
+		auto func = CreateFunction((appBaseAddr + 0x1EEF80));
+		func_1EEF80 = (func_1EEF80_t)func.addr;
+	}
+
+
+
+
+
+
+
+
 }

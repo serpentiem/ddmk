@@ -105,6 +105,52 @@ typedef void(__fastcall * func_1F97F0_t)
 	byte32   flag
 );
 
+
+typedef void(__fastcall * func_2EE3D0_t)
+(
+	byte8 * dest
+);
+
+typedef void(__fastcall * func_1FAF40_t)
+(
+	byte8 * baseAddr
+);
+
+typedef void(__fastcall * func_1EEF80_t)
+(
+	byte8 * baseAddr
+);
+
+
+
+
+
+/*
+dmc3.exe+212D6A - 33 D2                 - xor edx,edx
+dmc3.exe+212D6C - 48 8B CE              - mov rcx,rsi
+dmc3.exe+212D6F - E8 CCC2FDFF           - call dmc3.exe+1EF040
+dmc3.exe+212D74 - 48 8B CE              - mov rcx,rsi
+dmc3.exe+212D77 - E8 04C2FDFF           - call dmc3.exe+1EEF80
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 extern func_897B0_t  func_897B0;
 extern func_89450_t  func_89450;
 extern func_89270_t  func_89270;
@@ -122,5 +168,12 @@ extern func_1DE820_t func_1DE820;
 extern func_1DF240_t func_1DF240;
 extern func_1F92C0_t func_1F92C0;
 extern func_1F97F0_t func_1F97F0;
+
+
+extern func_2EE3D0_t func_2EE3D0;
+extern func_1FAF40_t func_1FAF40;
+
+extern func_1EEF80_t func_1EEF80;
+
 
 void Internal_Init();

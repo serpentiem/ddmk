@@ -186,7 +186,7 @@ var items =
 	[ "artemis charge flags 2"      , 4, true , 0xB880                  ],
 ];
 
-for (var actor = 0; actor < 4; actor++)
+for (var actor = 0; actor < 2; actor++)
 {
 	c += "<CheatEntry>\n";
 	c += "<Description>\"" + lz(actor) + "\"</Description>\n";
@@ -235,9 +235,10 @@ for (var actor = 0; actor < 4; actor++)
 		{
 			c += "<ByteLength>" + size + "</ByteLength>\n";
 		}
-		c += "<Address>System_Actor_actorBaseAddr+" + (actor * 8).toString(16).toUpperCase() + "</Address>\n"
+		c += "<Address>dmc3.exe+C90E28</Address>\n"
 		c += "<Offsets>\n";
 		c += "<Offset>" + off.toString(16).toUpperCase() + "</Offset>\n";
+		c += "<Offset>" + (0x18 + (actor * 8)).toString(16).toUpperCase() + "</Offset>\n";
 		c += "</Offsets>\n";
 		c += "</CheatEntry>\n";
 	}

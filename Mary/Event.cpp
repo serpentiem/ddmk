@@ -1109,34 +1109,34 @@ void SetActorPool()
 void Event_Init()
 {
 	LogFunction();
-	{
-		byte8 sect0[] =
-		{
-			0x48, 0x89, 0x0D, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rcx
-		};
-		FUNC func = CreateFunction(ClearActorPool, (appBaseAddr + 0x23B39A), true, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-		WriteJump((appBaseAddr + 0x23B393), func.addr, 2);
-		/*
-		dmc3.exe+23B393 - 48 89 0D 8E5AA500 - mov [dmc3.exe+C90E28],rcx
-		dmc3.exe+23B39A - 48 89 0D 975AA500 - mov [dmc3.exe+C90E38],rcx
-		*/
-	}
-	{
-		byte8 sect0[] =
-		{
-			0x48, 0x89, 0x15, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rdx
-		};
-		FUNC func = CreateFunction(SetActorPool, (appBaseAddr + 0x23E69F), true, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-		WriteJump((appBaseAddr + 0x23E698), func.addr, 2);
-		/*
-		dmc3.exe+23E698 - 48 89 15 8927A500 - mov [dmc3.exe+C90E28],rdx
-		dmc3.exe+23E69F - 48 8D 83 D06A0000 - lea rax,[rbx+00006AD0]
-		*/
-	}
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x48, 0x89, 0x0D, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rcx
+	//	};
+	//	FUNC func = CreateFunction(ClearActorPool, (appBaseAddr + 0x23B39A), true, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
+	//	//WriteJump((appBaseAddr + 0x23B393), func.addr, 2);
+	//	/*
+	//	dmc3.exe+23B393 - 48 89 0D 8E5AA500 - mov [dmc3.exe+C90E28],rcx
+	//	dmc3.exe+23B39A - 48 89 0D 975AA500 - mov [dmc3.exe+C90E38],rcx
+	//	*/
+	//}
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x48, 0x89, 0x15, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rdx
+	//	};
+	//	FUNC func = CreateFunction(SetActorPool, (appBaseAddr + 0x23E69F), true, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
+	//	//WriteJump((appBaseAddr + 0x23E698), func.addr, 2);
+	//	/*
+	//	dmc3.exe+23E698 - 48 89 15 8927A500 - mov [dmc3.exe+C90E28],rdx
+	//	dmc3.exe+23E69F - 48 8D 83 D06A0000 - lea rax,[rbx+00006AD0]
+	//	*/
+	//}
 
 
 
@@ -1210,114 +1210,118 @@ void Event_Init()
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteJump((appBaseAddr + 0x1AA3C5), func.addr, 2);
 	}
+
+
+
+
 	// @Audit: Not sure if this shouldn't be part of Media.cpp.
-	{
-		byte sect0[] =
-		{
-			0x48, 0x89, 0x5C, 0x24, 0x08, //mov [rsp+08],rbx
-		};
-		byte sect2[] =
-		{
-			0x48, 0x85, 0xC0,                                           //test rax,rax
-			0x74, 0x03,                                                 //je short
-			0x48, 0x8B, 0xD0,                                           //mov rdx,rax
-			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&mediaError
-			0x8B, 0x00,                                                 //mov eax,[rax]
-			0x3D, 0x00, 0x00, 0x00, 0x00,                               //cmp eax,MEDIA_SKIP_TRACK
-			0x75, 0x01,                                                 //jne short
-			0xC3,                                                       //ret
-		};
-		FUNC func = CreateFunction(SetTrack, (appBaseAddr + 0x32BA95), true, false, sizeof(sect0), 0, sizeof(sect2));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		*(dword **)(func.sect2 + 0xA) = &mediaError;
-		*(dword *)(func.sect2 + 0x15) = MEDIA_SKIP_TRACK;
-		WriteJump((appBaseAddr + 0x32BA90), func.addr);
-	}
-	{
-		byte sect0[] =
-		{
-			0xC7, 0x47, 0x20, 0x01, 0x00, 0x00, 0x00, //mov [rdi+20],00000001
-		};
-		FUNC func = CreateFunction(StageLoadComplete, (appBaseAddr + 0x23D0AB), true, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteJump((appBaseAddr + 0x23D0A4), func.addr, 2);
-	}
+	//{
+	//	byte sect0[] =
+	//	{
+	//		0x48, 0x89, 0x5C, 0x24, 0x08, //mov [rsp+08],rbx
+	//	};
+	//	byte sect2[] =
+	//	{
+	//		0x48, 0x85, 0xC0,                                           //test rax,rax
+	//		0x74, 0x03,                                                 //je short
+	//		0x48, 0x8B, 0xD0,                                           //mov rdx,rax
+	//		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&mediaError
+	//		0x8B, 0x00,                                                 //mov eax,[rax]
+	//		0x3D, 0x00, 0x00, 0x00, 0x00,                               //cmp eax,MEDIA_SKIP_TRACK
+	//		0x75, 0x01,                                                 //jne short
+	//		0xC3,                                                       //ret
+	//	};
+	//	FUNC func = CreateFunction(SetTrack, (appBaseAddr + 0x32BA95), true, false, sizeof(sect0), 0, sizeof(sect2));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect2, sect2, sizeof(sect2));
+	//	*(dword **)(func.sect2 + 0xA) = &mediaError;
+	//	*(dword *)(func.sect2 + 0x15) = MEDIA_SKIP_TRACK;
+	//	//WriteJump((appBaseAddr + 0x32BA90), func.addr);
+	//}
+	//{
+	//	byte sect0[] =
+	//	{
+	//		0xC7, 0x47, 0x20, 0x01, 0x00, 0x00, 0x00, //mov [rdi+20],00000001
+	//	};
+	//	FUNC func = CreateFunction(StageLoadComplete, (appBaseAddr + 0x23D0AB), true, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteJump((appBaseAddr + 0x23D0A4), func.addr, 2);
+	//}
 	#pragma endregion
 	#pragma region Game Events
-	{
-		FUNC func = CreateFunction(DevilForm_Activate, (appBaseAddr + 0x1E78B4));
-		WriteJump((appBaseAddr + 0x1E78AF), func.addr);
-	}
-	{
-		FUNC func = CreateFunction(DevilForm_Deactivate, (appBaseAddr + 0x1E78EB));
-		WriteJump((appBaseAddr + 0x1E78E6), func.addr);
-	}
-	{
-		byte sect0[] =
-		{
-			0x50, //push rax
-		};
-		byte sect1[] =
-		{
-			0x48, 0x8B, 0xCF, //mov rcx,rdi
-		};
-		byte sect2[] =
-		{
-			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Config.Game.Doppelganger.enable
-			0x8A, 0x00,                                                 //mov al,[rax]
-			0x84, 0xC0,                                                 //test al,al
-			0x74, 0x06,                                                 //je short
-			0x58,                                                       //pop rax
-			0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+1E930E
-			0x58,                                                       //pop rax
-			0x80, 0xBF, 0x9B, 0x3E, 0x00, 0x00, 0x01,                   //cmp byte ptr [rdi+00003E9B],01
-			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+1E930E
-			0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+1E92EA
-		};
-		// @Todo: Update CreateFunction. Add noReturn.
-		FUNC func = CreateFunction(Doppelganger_Activate, 0, true, false, sizeof(sect0), sizeof(sect1), sizeof(sect2));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		*(bool **)(func.sect2 + 2) = &Config.Game.Doppelganger.enable;
-		WriteAddress((func.sect2 + 0x11), (appBaseAddr + 0x1E930E), 5);
-		WriteAddress((func.sect2 + 0x1E), (appBaseAddr + 0x1E930E), 6);
-		WriteAddress((func.sect2 + 0x24), (appBaseAddr + 0x1E92EA), 5);
-		WriteJump((appBaseAddr + 0x1E92E1), func.addr, 2);
-	}
-	{
-		byte sect0[] =
-		{
-			0x50, //push rax
-		};
-		byte sect1[] =
-		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
-		};
-		byte sect2[] =
-		{
-			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Config.Game.Doppelganger.enable
-			0x8A, 0x00,                                                 //mov al,[rax]
-			0x84, 0xC0,                                                 //test al,al
-			0x74, 0x06,                                                 //je short
-			0x58,                                                       //pop rax
-			0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+1E2B63
-			0x58,                                                       //pop rax
-			0x80, 0xBB, 0x9B, 0x3E, 0x00, 0x00, 0x00,                   //cmp byte ptr [rbx+00003E9B],00
-			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+1E2B63
-			0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+1E2B2D
-		};
-		FUNC func = CreateFunction(Doppelganger_Deactivate, 0, true, false, sizeof(sect0), sizeof(sect1), sizeof(sect2));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		*(bool **)(func.sect2 + 2) = &Config.Game.Doppelganger.enable;
-		WriteAddress((func.sect2 + 0x11), (appBaseAddr + 0x1E2B63), 5);
-		WriteAddress((func.sect2 + 0x1E), (appBaseAddr + 0x1E2B63), 6);
-		WriteAddress((func.sect2 + 0x24), (appBaseAddr + 0x1E2B2D), 5);
-		WriteJump((appBaseAddr + 0x1E2B24), func.addr, 2);
-	}
+	//{
+	//	FUNC func = CreateFunction(DevilForm_Activate, (appBaseAddr + 0x1E78B4));
+	//	WriteJump((appBaseAddr + 0x1E78AF), func.addr);
+	//}
+	//{
+	//	FUNC func = CreateFunction(DevilForm_Deactivate, (appBaseAddr + 0x1E78EB));
+	//	WriteJump((appBaseAddr + 0x1E78E6), func.addr);
+	//}
+	//{
+	//	byte sect0[] =
+	//	{
+	//		0x50, //push rax
+	//	};
+	//	byte sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCF, //mov rcx,rdi
+	//	};
+	//	byte sect2[] =
+	//	{
+	//		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Config.Game.Doppelganger.enable
+	//		0x8A, 0x00,                                                 //mov al,[rax]
+	//		0x84, 0xC0,                                                 //test al,al
+	//		0x74, 0x06,                                                 //je short
+	//		0x58,                                                       //pop rax
+	//		0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+1E930E
+	//		0x58,                                                       //pop rax
+	//		0x80, 0xBF, 0x9B, 0x3E, 0x00, 0x00, 0x01,                   //cmp byte ptr [rdi+00003E9B],01
+	//		0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+1E930E
+	//		0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+1E92EA
+	//	};
+	//	// @Todo: Update CreateFunction. Add noReturn.
+	//	FUNC func = CreateFunction(Doppelganger_Activate, 0, true, false, sizeof(sect0), sizeof(sect1), sizeof(sect2));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	memcpy(func.sect2, sect2, sizeof(sect2));
+	//	*(bool **)(func.sect2 + 2) = &Config.Game.Doppelganger.enable;
+	//	WriteAddress((func.sect2 + 0x11), (appBaseAddr + 0x1E930E), 5);
+	//	WriteAddress((func.sect2 + 0x1E), (appBaseAddr + 0x1E930E), 6);
+	//	WriteAddress((func.sect2 + 0x24), (appBaseAddr + 0x1E92EA), 5);
+	//	WriteJump((appBaseAddr + 0x1E92E1), func.addr, 2);
+	//}
+	//{
+	//	byte sect0[] =
+	//	{
+	//		0x50, //push rax
+	//	};
+	//	byte sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCB, //mov rcx,rbx
+	//	};
+	//	byte sect2[] =
+	//	{
+	//		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Config.Game.Doppelganger.enable
+	//		0x8A, 0x00,                                                 //mov al,[rax]
+	//		0x84, 0xC0,                                                 //test al,al
+	//		0x74, 0x06,                                                 //je short
+	//		0x58,                                                       //pop rax
+	//		0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+1E2B63
+	//		0x58,                                                       //pop rax
+	//		0x80, 0xBB, 0x9B, 0x3E, 0x00, 0x00, 0x00,                   //cmp byte ptr [rbx+00003E9B],00
+	//		0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+1E2B63
+	//		0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+1E2B2D
+	//	};
+	//	FUNC func = CreateFunction(Doppelganger_Deactivate, 0, true, false, sizeof(sect0), sizeof(sect1), sizeof(sect2));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	memcpy(func.sect2, sect2, sizeof(sect2));
+	//	*(bool **)(func.sect2 + 2) = &Config.Game.Doppelganger.enable;
+	//	WriteAddress((func.sect2 + 0x11), (appBaseAddr + 0x1E2B63), 5);
+	//	WriteAddress((func.sect2 + 0x1E), (appBaseAddr + 0x1E2B63), 6);
+	//	WriteAddress((func.sect2 + 0x24), (appBaseAddr + 0x1E2B2D), 5);
+	//	WriteJump((appBaseAddr + 0x1E2B24), func.addr, 2);
+	//}
 	//CreateThread(0, 4096, Doppelganger_Watchdog, 0, 0, 0);
 	#pragma endregion
 }
