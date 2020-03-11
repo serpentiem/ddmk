@@ -129,7 +129,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 		//System_Actor_ToggleDoppelgangerFixes(true);
-		//System_Actor_ToggleModelFixes(true);
+		System_Actor_ToggleModelFixes(true);
 		//System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
 		//System_Animation_Init();
 

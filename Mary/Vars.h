@@ -318,7 +318,7 @@ enum COSTUME_DANTE_
 enum COSTUME_VERGIL_
 {
 	COSTUME_VERGIL_DEFAULT,
-	COSTUME_VERGIL_DEFAULT_COATLESS,
+	COSTUME_VERGIL_DEFAULT_NO_COAT,
 	COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS,
 	COSTUME_VERGIL_SPARDA,
 	COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS,
@@ -868,16 +868,16 @@ struct MODEL_DATA
 
 struct DEVIL_SUBMODEL_DATA
 {
-	uint8 subModelIndex;
+	uint8 submodelIndex;
 	uint8 devilModelOff;
-	uint8 devilSubModelIndex;
+	uint8 devilSubmodelIndex;
 };
 
 struct DEVIL_MODEL_DATA
 {
 	uint8 modelIndex;
 	uint8 modelOff;
-	DEVIL_SUBMODEL_DATA subModelData[2];
+	DEVIL_SUBMODEL_DATA submodelData[2];
 };
 
 //struct MODEL_FILE_DATA_SINGLE

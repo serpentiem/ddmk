@@ -2,6 +2,8 @@
 
 PrivateStart;
 
+#pragma region Functions
+
 inline void RegisterModel
 (
 	byte8 * dest,
@@ -93,13 +95,59 @@ inline void CopyCoatVertices(byte8 * dest)
 	vertices[3] = g_vertices[3];
 }
 
-template <uint8 id>
-void UpdateModelTemplateDante(byte8 * baseAddr)
+#pragma endregion
+
+
+
+
+
+
+
+enum SUBMODEL_
+{
+	SUBMODEL_COAT_DANTE,
+	SUBMODEL_COAT_VERGIL,
+	SUBMODEL_AMULET_DANTE,
+	SUBMODEL_AMULET_VERGIL,
+	SUBMODEL_NONE = 0xFF,
+};
+
+enum DEVIL_SUBMODEL_
+{
+	DEVIL_SUBMODEL_COAT_DANTE_REBELLION,
+	DEVIL_SUBMODEL_COAT_DANTE_NEVAN,
+	DEVIL_SUBMODEL_COAT_VERGIL_YAMATO,
+	DEVIL_SUBMODEL_WINGS_DANTE_REBELLION,
+	DEVIL_SUBMODEL_WINGS_DANTE_CERBERUS,
+	DEVIL_SUBMODEL_WINGS_DANTE_NEVAN,
+	DEVIL_SUBMODEL_WINGS_DANTE_BEOWULF,
+	DEVIL_SUBMODEL_WINGS_DANTE_SPARDA,
+	DEVIL_SUBMODEL_WINGS_VERGIL_BEOWULF,
+	DEVIL_SUBMODEL_NONE = 0xFF,
+};
+
+
+
+// UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT, Config.Cosmetics.Vergil.modelFileHelper[COSTUME_VERGIL_DEFAULT]>
+
+// UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_REBELLION, Config.Cosmetics.Vergil.devilModelFileHelper[DEVIL_VERGIL_YAMATO]>
+
+
+
+
+template
+<
+	uint8 id0,
+	uint8 id1,
+	uint8 id2,
+	uint8 id3
+>
+void UpdateModelTemplate(byte8 * baseAddr)
 {
 	uint8 modelIndex = 0;
 	uint8 modelOff   = 0;
 
-	uint8 subModelIndex = 0;
+	uint8 submodelIndex = 0;
 
 	MODEL_DATA * modelData = 0;
 
@@ -108,10 +156,31 @@ void UpdateModelTemplateDante(byte8 * baseAddr)
 
 	modelData = (MODEL_DATA *)(baseAddr + 0xB630);
 
+
+
+	MODEL_FILE_HELPER * modelFileHelper = 0;
+
+
+	if constexpr (id2 == CHAR_DANTE)
+	{
+		modelFileHelper = Config.Cosmetics.Dante.modelFileHelper[id1];
+	}
+	else if constexpr (id2 == CHAR_VERGIL)
+	{
+		modelFileHelper = Config.Cosmetics.Vergil.modelFileHelper[id1];
+	}
+
+
 	// Base
 
 	{
-		auto & fileHelper = Config.Cosmetics.Dante.modelFileHelper[id][MODEL_PART_BASE];
+		auto & fileHelper = modelFileHelper[MODEL_PART_BASE];
+
+
+
+
+
+
 
 		dest = (baseAddr + 0x200 + (modelIndex * 0x780));
 
@@ -136,15 +205,15 @@ void UpdateModelTemplateDante(byte8 * baseAddr)
 
 	if constexpr
 	(
-		(id == COSTUME_DANTE_DEFAULT     ) ||
-		(id == COSTUME_DANTE_DEFAULT_TORN) ||
-		(id == COSTUME_DANTE_DMC1        ) ||
-		(id == COSTUME_DANTE_SPARDA      )
+		(id1 == COSTUME_DANTE_DEFAULT     ) ||
+		(id1 == COSTUME_DANTE_DEFAULT_TORN) ||
+		(id1 == COSTUME_DANTE_DMC1        ) ||
+		(id1 == COSTUME_DANTE_SPARDA      )
 	)
 	{
-		auto & fileHelper = Config.Cosmetics.Dante.modelFileHelper[id][MODEL_PART_COAT];
+		auto & fileHelper = modelFileHelper[MODEL_PART_COAT];
 
-		dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+		dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
 		dest2 = (baseAddr + 0xA0D0);
 
 		RegisterModel
@@ -159,11 +228,11 @@ void UpdateModelTemplateDante(byte8 * baseAddr)
 		RegisterShadow
 		(
 			dest,
-			(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
+			(baseAddr + 0x9D10 + (submodelIndex * 0xC0)),
 			System_File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
 		);
 
-		((uint8 *)(baseAddr + 0x9AC0))[subModelIndex] = 1;
+		((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
 
 		dest = (baseAddr + 0xA210);
 
@@ -190,13 +259,13 @@ void UpdateModelTemplateDante(byte8 * baseAddr)
 
 	if constexpr
 	(
-		(id == COSTUME_DANTE_DEFAULT_NO_COAT) ||
-		(id == COSTUME_DANTE_DMC1_NO_COAT   )
+		(id1 == COSTUME_DANTE_DEFAULT_NO_COAT) ||
+		(id1 == COSTUME_DANTE_DMC1_NO_COAT   )
 	)
 	{
-		auto & fileHelper = Config.Cosmetics.Dante.modelFileHelper[id][MODEL_PART_COAT];
+		auto & fileHelper = modelFileHelper[MODEL_PART_COAT];
 
-		dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+		dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
 		dest2 = (baseAddr + 0xA0D0);
 
 		RegisterModel
@@ -208,7 +277,7 @@ void UpdateModelTemplateDante(byte8 * baseAddr)
 
 		func_8A000(dest, 0, dest2);
 
-		((uint8 *)(baseAddr + 0x9AC0))[subModelIndex] = 1;
+		((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
 
 		dest = (baseAddr + 0xA210);
 
@@ -252,13 +321,13 @@ void UpdateDevilModelTemplateDante
 	uint8 modelIndex = 0;
 	uint8 modelOff   = 0;
 
-	uint8 subModelIndex = 0;
+	uint8 submodelIndex = 0;
 
 	MODEL_DATA * modelData = 0;
 
 	uint8 devilModelOff = 0;
 	
-	uint8 devilSubModelIndex = 0;
+	uint8 devilSubmodelIndex = 0;
 
 	DEVIL_MODEL_DATA * devilModelData = 0;
 
@@ -280,7 +349,7 @@ void UpdateDevilModelTemplateDante
 	
 		vec4 * vertices = 0;
 	
-		dest = (baseAddr + 0xAA00 + (index0 * 0xC0) + (devilSubModelIndex * 0x300));
+		dest = (baseAddr + 0xAA00 + (index0 * 0xC0) + (devilSubmodelIndex * 0x300));
 	
 		addr = *(byte8 **)(baseAddr + 0xA300 + ((devilModelOff + index1) * 8));
 		*(byte8 **)(addr + 0x100) = dest;
@@ -300,13 +369,13 @@ void UpdateDevilModelTemplateDante
 	modelIndex = (slot == 1) ? 1 : 2;
 	modelOff   = (slot == 1) ? 0x18 : 0x30;
 
-	subModelIndex = (slot == 1) ? 1 : 3;
+	submodelIndex = (slot == 1) ? 1 : 3;
 
 	modelData = (MODEL_DATA *)(baseAddr + 0xB630);
 
 	devilModelOff = (slot == 1) ? 0 : 0x24;
 
-	devilSubModelIndex = (slot == 1) ? 0 : 2;
+	devilSubmodelIndex = (slot == 1) ? 0 : 2;
 
 	devilModelData = (DEVIL_MODEL_DATA *)(baseAddr + devilModelDataOffDante[id]);
 
@@ -350,7 +419,7 @@ void UpdateDevilModelTemplateDante
 	{
 		auto & fileHelper = Config.Cosmetics.Dante.devilModelFileHelper[id][DEVIL_MODEL_PART_COAT];
 
-		dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+		dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
 		dest2 = (baseAddr + ((0x1460 + devilModelOff) * 8));
 
 		RegisterModel
@@ -370,13 +439,13 @@ void UpdateDevilModelTemplateDante
 		RegisterShadow
 		(
 			dest,
-			(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
+			(baseAddr + 0x9D10 + (submodelIndex * 0xC0)),
 			System_File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
 		);
 
 		
 
-		((uint8 *)(baseAddr + 0x9AC0))[subModelIndex] = 1;
+		((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
 
 
 
@@ -384,7 +453,7 @@ void UpdateDevilModelTemplateDante
 
 
 
-		dest = (baseAddr + 0xA540 + (devilSubModelIndex * 0xF0));
+		dest = (baseAddr + 0xA540 + (devilSubmodelIndex * 0xF0));
 
 		RegisterPhysics
 		(
@@ -405,12 +474,12 @@ void UpdateDevilModelTemplateDante
 		CopyVertices(baseAddr, 0, 1 , 3);
 		CopyVertices(baseAddr, 1, 12, 2);
 
-		devilModelData->subModelData[0].subModelIndex      = subModelIndex;
-		devilModelData->subModelData[0].devilModelOff      = devilModelOff;
-		devilModelData->subModelData[0].devilSubModelIndex = devilSubModelIndex;
+		devilModelData->submodelData[0].submodelIndex      = submodelIndex;
+		devilModelData->submodelData[0].devilModelOff      = devilModelOff;
+		devilModelData->submodelData[0].devilSubmodelIndex = devilSubmodelIndex;
 
-		subModelIndex++;
-		devilSubModelIndex++;
+		submodelIndex++;
+		devilSubmodelIndex++;
 	}
 
 	// Wings
@@ -436,7 +505,7 @@ void UpdateDevilModelTemplateDante
 
 		auto & fileHelper = Config.Cosmetics.Dante.devilModelFileHelper[id][DEVIL_MODEL_PART_WINGS];
 
-		dest = (baseAddr + 0x7540 + (subModelIndex * 0x780));
+		dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
 
 		if constexpr (id == DEVIL_DANTE_BEOWULF)
 		{
@@ -459,13 +528,13 @@ void UpdateDevilModelTemplateDante
 		RegisterShadow
 		(
 			dest,
-			(baseAddr + 0x9D10 + (subModelIndex * 0xC0)),
+			(baseAddr + 0x9D10 + (submodelIndex * 0xC0)),
 			System_File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
 		);
 
-		((uint8 *)(baseAddr + 0x9AC0))[subModelIndex] = 1;
+		((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
 
-		dest = (baseAddr + 0xA540 + (devilSubModelIndex * 0xF0));
+		dest = (baseAddr + 0xA540 + (devilSubmodelIndex * 0xF0));
 
 		RegisterPhysics
 		(
@@ -476,7 +545,7 @@ void UpdateDevilModelTemplateDante
 
 		if constexpr ((id == DEVIL_DANTE_REBELLION) || (id == DEVIL_DANTE_NEVAN))
 		{
-			dest = (baseAddr + 0xA540 + (devilSubModelIndex * 0xF0));
+			dest = (baseAddr + 0xA540 + (devilSubmodelIndex * 0xF0));
 
 			func_2CA2F0
 			(
@@ -490,9 +559,9 @@ void UpdateDevilModelTemplateDante
 			CopyVertices(baseAddr, 0, 1, 2 );
 			CopyVertices(baseAddr, 1, 2, 14);
 
-			devilModelData->subModelData[1].subModelIndex      = subModelIndex;
-			devilModelData->subModelData[1].devilModelOff      = devilModelOff;
-			devilModelData->subModelData[1].devilSubModelIndex = devilSubModelIndex;
+			devilModelData->submodelData[1].submodelIndex      = submodelIndex;
+			devilModelData->submodelData[1].devilModelOff      = devilModelOff;
+			devilModelData->submodelData[1].devilSubmodelIndex = devilSubmodelIndex;
 		}
 		else if constexpr ((id == DEVIL_DANTE_CERBERUS) || (id == DEVIL_DANTE_BEOWULF))
 		{
@@ -500,25 +569,47 @@ void UpdateDevilModelTemplateDante
 			CopyVertices(baseAddr, 1, 2, 6 );
 			CopyVertices(baseAddr, 2, 8, 10);
 
-			devilModelData->subModelData[0].subModelIndex      = subModelIndex;
-			devilModelData->subModelData[0].devilModelOff      = devilModelOff;
-			devilModelData->subModelData[0].devilSubModelIndex = devilSubModelIndex;
+			devilModelData->submodelData[0].submodelIndex      = submodelIndex;
+			devilModelData->submodelData[0].devilModelOff      = devilModelOff;
+			devilModelData->submodelData[0].devilSubmodelIndex = devilSubmodelIndex;
 		}
 	}
 }
 
 PrivateEnd;
 
+//Cosmetics_Model_UpdateModel_t Cosmetics_Model_UpdateModelDante[MAX_COSTUME_DANTE] =
+//{
+//	UpdateModelTemplate<COSTUME_DANTE_DEFAULT        , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_DEFAULT        ]>,
+//	UpdateModelTemplate<COSTUME_DANTE_DEFAULT_NO_COAT, Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_DEFAULT_NO_COAT]>,
+//	UpdateModelTemplate<COSTUME_DANTE_DEFAULT_TORN   , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_DEFAULT_TORN   ]>,
+//	UpdateModelTemplate<COSTUME_DANTE_DMC1           , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_DMC1           ]>,
+//	UpdateModelTemplate<COSTUME_DANTE_DMC1_NO_COAT   , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_DMC1_NO_COAT   ]>,
+//	UpdateModelTemplate<COSTUME_DANTE_SPARDA         , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_SPARDA         ]>,
+//	UpdateModelTemplate<COSTUME_DANTE_DEFAULT_TORN   , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_DEFAULT_TORN   ]>,
+//	UpdateModelTemplate<COSTUME_DANTE_SPARDA         , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_SPARDA         ]>,
+//};
+
+
 Cosmetics_Model_UpdateModel_t Cosmetics_Model_UpdateModelDante[MAX_COSTUME_DANTE] =
 {
-	UpdateModelTemplateDante<COSTUME_DANTE_DEFAULT>,
-	UpdateModelTemplateDante<COSTUME_DANTE_DEFAULT_NO_COAT>,
-	UpdateModelTemplateDante<COSTUME_DANTE_DEFAULT_TORN>,
-	UpdateModelTemplateDante<COSTUME_DANTE_DMC1>,
-	UpdateModelTemplateDante<COSTUME_DANTE_DMC1_NO_COAT>,
-	UpdateModelTemplateDante<COSTUME_DANTE_SPARDA>,
-	UpdateModelTemplateDante<COSTUME_DANTE_DEFAULT_TORN>,
-	UpdateModelTemplateDante<COSTUME_DANTE_SPARDA>,
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT        , CHAR_DANTE, COSTUME_DANTE_DEFAULT        >,
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT_NO_COAT, CHAR_DANTE, COSTUME_DANTE_DEFAULT_NO_COAT>,
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT_TORN   , CHAR_DANTE, COSTUME_DANTE_DEFAULT_TORN   >,
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DMC1           , CHAR_DANTE, COSTUME_DANTE_DMC1           >,
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DMC1_NO_COAT   , CHAR_DANTE, COSTUME_DANTE_DMC1_NO_COAT   >,
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_SPARDA         , CHAR_DANTE, COSTUME_DANTE_SPARDA         >,
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT_TORN   , CHAR_DANTE, COSTUME_DANTE_DEFAULT_TORN   >,
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_SPARDA         , CHAR_DANTE, COSTUME_DANTE_SPARDA         >,
+};
+
+Cosmetics_Model_UpdateModel_t Cosmetics_Model_UpdateModelDanteVergil[MAX_COSTUME_VERGIL] =
+{
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT_TORN   , CHAR_VERGIL, COSTUME_VERGIL_DEFAULT        >,
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT_NO_COAT, CHAR_VERGIL, COSTUME_VERGIL_DEFAULT_NO_COAT>,
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT_TORN   , CHAR_VERGIL, COSTUME_VERGIL_DEFAULT        >,
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_SPARDA         , CHAR_VERGIL, COSTUME_VERGIL_SPARDA         >,
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_SPARDA         , CHAR_VERGIL, COSTUME_VERGIL_SPARDA         >,
 };
 
 Cosmetics_Model_UpdateDevilModel_t Cosmetics_Model_UpdateDevilModelDante[MAX_DEVIL_DANTE] =
@@ -539,6 +630,12 @@ void Cosmetics_Model_Init()
 	{
 		auto func = CreateFunction(Cosmetics_Model_UpdateModelDante[index]);
 		Log("Cosmetics_Model_UpdateModelDante[%u] %llX", index, func.addr);
+	}
+
+	for (uint8 index = 0; index < countof(Cosmetics_Model_UpdateModelDanteVergil); index++)
+	{
+		auto func = CreateFunction(Cosmetics_Model_UpdateModelDanteVergil[index]);
+		Log("Cosmetics_Model_UpdateModelDanteVergil[%u] %llX", index, func.addr);
 	}
 
 	for (uint8 index = 0; index < countof(Cosmetics_Model_UpdateDevilModelDante); index++)

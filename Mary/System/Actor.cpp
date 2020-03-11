@@ -493,11 +493,15 @@ void UpdateActorDante(byte8 * baseAddr)
 
 
 
+	Cosmetics_Model_UpdateModelDanteVergil[COSTUME_VERGIL_DEFAULT_NO_COAT](baseAddr);
 
 
 
+	//Cosmetics_Model_UpdateModelDante[0](baseAddr);
 
-	Cosmetics_Model_UpdateModelDante[0](baseAddr);
+	//Cosmetics_Model_UpdateModel[0]
+
+
 
 	
 	Cosmetics_Model_UpdateDevilModelDante[0](baseAddr, 2);

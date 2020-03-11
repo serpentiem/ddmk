@@ -695,6 +695,145 @@ struct CONFIG
 				bool hideModel = false;
 			}
 			Beowulf;
+			MODEL_FILE_HELPER modelFileHelper[MAX_COSTUME_VERGIL][MODEL_MAX_PART] =
+			{
+				// Default
+				{
+					// Base
+					{
+						{ pl021, 1 },
+						{ pl021, 0 },
+						{ pl021, 8 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ pl021, 12 },
+						{ pl021, 0  },
+						{ pl021, 14 },
+						{ pl021, 13 },
+					},
+				},
+				// Default No Coat
+				{
+					// Base
+					{
+						{ pl023, 1 },
+						{ pl023, 0 },
+						{ pl023, 8 },
+						{ 0    , 0 },
+					},
+					// Amulet
+					{
+						{ pl023, 12 },
+						{ pl023, 0  },
+						{ 0    , 0  },
+						{ pl023, 13 },
+					},
+				},
+				// Default Infinite Magic Points
+				{
+					// Base
+					{
+						{ pl021, 1 },
+						{ pl021, 0 },
+						{ pl021, 8 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ pl021, 12 },
+						{ pl021, 0  },
+						{ pl021, 14 },
+						{ pl021, 13 },
+					},
+				},
+				// Sparda
+				{
+					// Base
+					{
+						{ pl026, 1 },
+						{ pl026, 0 },
+						{ pl026, 8 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ pl026, 12 },
+						{ pl026, 0  },
+						{ pl026, 14 },
+						{ pl026, 13 },
+					},
+				},
+				// Sparda Infinite Magic Points
+				{
+					// Base
+					{
+						{ pl026, 1 },
+						{ pl026, 0 },
+						{ pl026, 8 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ pl026, 12 },
+						{ pl026, 0  },
+						{ pl026, 14 },
+						{ pl026, 13 },
+					},
+				},
+			};
+			DEVIL_MODEL_FILE_HELPER devilModelFileHelper[MAX_DEVIL_VERGIL][DEVIL_MODEL_MAX_PART] =
+			{
+				// Yamato
+				{
+					// Base
+					{
+						{ pl010, 1 },
+						{ pl010, 0 },
+						{ pl010, 7 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ pl010, 2 },
+						{ pl010, 0 },
+						{ pl010, 8 },
+						{ pl010, 3 },
+					},
+					// Wings
+					{
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+					},
+				},
+				// Beowulf
+				{
+					// Base
+					{
+						{ pl014, 1 },
+						{ pl014, 0 },
+						{ pl014, 4 },
+						{ 0    , 0 },
+					},
+					// Coat
+					{
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+						{ 0, 0 },
+					},
+					// Wings
+					{
+						{ pl014, 2 },
+						{ pl014, 0 },
+						{ pl014, 5 },
+						{ pl014, 3 },
+					},
+				},
+			};
 		}
 		Vergil;
 	}
