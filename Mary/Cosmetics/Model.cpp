@@ -149,6 +149,8 @@ void UpdateModelTemplate(byte8 * baseAddr)
 
 	uint8 submodelIndex = 0;
 
+	MODEL_FILE_HELPER * modelFileHelper = 0;
+
 	MODEL_DATA * modelData = 0;
 
 	byte8 * dest  = 0;
@@ -156,31 +158,19 @@ void UpdateModelTemplate(byte8 * baseAddr)
 
 	modelData = (MODEL_DATA *)(baseAddr + 0xB630);
 
-
-
-	MODEL_FILE_HELPER * modelFileHelper = 0;
-
-
 	if constexpr (id2 == CHAR_DANTE)
 	{
-		modelFileHelper = Config.Cosmetics.Dante.modelFileHelper[id1];
+		modelFileHelper = Config.Cosmetics.Dante.modelFileHelper[id3];
 	}
 	else if constexpr (id2 == CHAR_VERGIL)
 	{
-		modelFileHelper = Config.Cosmetics.Vergil.modelFileHelper[id1];
+		modelFileHelper = Config.Cosmetics.Vergil.modelFileHelper[id3];
 	}
-
 
 	// Base
 
 	{
 		auto & fileHelper = modelFileHelper[MODEL_PART_BASE];
-
-
-
-
-
-
 
 		dest = (baseAddr + 0x200 + (modelIndex * 0x780));
 
@@ -311,8 +301,19 @@ constexpr uint32 devilModelDataOffDante[MAX_DEVIL_DANTE] =
 	0xB61C,
 };
 
-template <uint8 id>
-void UpdateDevilModelTemplateDante
+constexpr uint32 devilModelDataOffVergil[MAX_DEVIL_VERGIL] =
+{
+	0xB640,
+	0xB640,
+};
+
+template <
+	uint8 character          ,
+	uint8 devil              ,
+	uint8 fileHelperCharacter,
+	uint8 fileHelperDevil
+>
+void UpdateDevilModelTemplate
 (
 	byte8 * baseAddr,
 	uint8   slot
@@ -328,6 +329,8 @@ void UpdateDevilModelTemplateDante
 	uint8 devilModelOff = 0;
 	
 	uint8 devilSubmodelIndex = 0;
+
+	DEVIL_MODEL_FILE_HELPER * devilModelFileHelper = 0;
 
 	DEVIL_MODEL_DATA * devilModelData = 0;
 
@@ -377,9 +380,25 @@ void UpdateDevilModelTemplateDante
 
 	devilSubmodelIndex = (slot == 1) ? 0 : 2;
 
-	devilModelData = (DEVIL_MODEL_DATA *)(baseAddr + devilModelDataOffDante[id]);
+	if constexpr (fileHelperCharacter == CHAR_DANTE)
+	{
+		devilModelFileHelper = Config.Cosmetics.Dante.devilModelFileHelper[fileHelperDevil];
+	}
+	else if constexpr (fileHelperCharacter == CHAR_VERGIL)
+	{
+		devilModelFileHelper = Config.Cosmetics.Vergil.devilModelFileHelper[fileHelperDevil];
+	}
 
-	((uint32 *)(baseAddr + 0x3E74))[slot] = id;
+	if constexpr (character == CHAR_DANTE)
+	{
+		devilModelData = (DEVIL_MODEL_DATA *)(baseAddr + devilModelDataOffDante[devil]);
+	}
+	else if constexpr (character == CHAR_VERGIL)
+	{
+		devilModelData = (DEVIL_MODEL_DATA *)(baseAddr + devilModelDataOffVergil[devil]);
+	}
+
+	((uint32 *)(baseAddr + 0x3E74))[slot] = devil;
 
 	devilModelData->modelIndex = modelIndex;
 	devilModelData->modelOff   = modelOff;
@@ -387,7 +406,7 @@ void UpdateDevilModelTemplateDante
 	// Base
 
 	{
-		auto & fileHelper = Config.Cosmetics.Dante.devilModelFileHelper[id][DEVIL_MODEL_PART_BASE];
+		auto & fileHelper = devilModelFileHelper[DEVIL_MODEL_PART_BASE];
 
 		dest = (baseAddr + 0x200 + (slot * 0x780));
 
@@ -408,16 +427,22 @@ void UpdateDevilModelTemplateDante
 		);
 	}
 
-	if constexpr (id == DEVIL_DANTE_AGNI_RUDRA)
+
+
+
+
+
+
+	if constexpr (devil == DEVIL_DANTE_AGNI_RUDRA)
 	{
 		return;
 	}
 
 	// Coat
 
-	if constexpr ((id == DEVIL_DANTE_REBELLION) || (id == DEVIL_DANTE_NEVAN))
+	if constexpr ((devil == DEVIL_DANTE_REBELLION) || (devil == DEVIL_DANTE_NEVAN))
 	{
-		auto & fileHelper = Config.Cosmetics.Dante.devilModelFileHelper[id][DEVIL_MODEL_PART_COAT];
+		auto & fileHelper = devilModelFileHelper[DEVIL_MODEL_PART_COAT];
 
 		dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
 		dest2 = (baseAddr + ((0x1460 + devilModelOff) * 8));
@@ -431,11 +456,6 @@ void UpdateDevilModelTemplateDante
 
 		func_8A000(dest, 0, dest2);
 
-		
-
-
-
-
 		RegisterShadow
 		(
 			dest,
@@ -443,15 +463,7 @@ void UpdateDevilModelTemplateDante
 			System_File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
 		);
 
-		
-
 		((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
-
-
-
-
-
-
 
 		dest = (baseAddr + 0xA540 + (devilSubmodelIndex * 0xF0));
 
@@ -461,15 +473,6 @@ void UpdateDevilModelTemplateDante
 			dest2,
 			System_File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
 		);
-
-		//func_2CA2F0
-		//(
-		//	dest,
-		//	(baseAddr + ((modelOff + 0x310) * 8)),
-		//	(appBaseAddr + 0x58B380),
-		//	modelData,
-		//	6
-		//);
 
 		CopyVertices(baseAddr, 0, 1 , 3);
 		CopyVertices(baseAddr, 1, 12, 2);
@@ -482,32 +485,55 @@ void UpdateDevilModelTemplateDante
 		devilSubmodelIndex++;
 	}
 
+
+
+	//if constexpr (fileHelperCharacter == CHAR_VERGIL)
+	//{
+	//	return;
+	//}
+
+
+
+
+	return;
+
+
+
+
+
+
+
+
+
+
+	// WRONG! dis be the coat
+
 	// Wings
 
 	{
 		if constexpr
 		(
-			(id == DEVIL_DANTE_REBELLION) ||
-			(id == DEVIL_DANTE_NEVAN    )
+			(devil == DEVIL_DANTE_REBELLION) ||
+			(devil == DEVIL_DANTE_NEVAN    )
 		)
 		{
 			devilModelOff += 9;
 		}
 
-		if constexpr (id == DEVIL_DANTE_REBELLION)
+		if constexpr (devil == DEVIL_DANTE_REBELLION)
 		{
 			*(byte8 *)(baseAddr + 0xB878) = 0xFF;
 		}
-		else if constexpr (id == DEVIL_DANTE_NEVAN)
+		else if constexpr (devil == DEVIL_DANTE_NEVAN)
 		{
 			*(byte8 *)(baseAddr + 0xB879) = 0xFF;
 		}
 
-		auto & fileHelper = Config.Cosmetics.Dante.devilModelFileHelper[id][DEVIL_MODEL_PART_WINGS];
+		auto & fileHelper = devilModelFileHelper[DEVIL_MODEL_PART_WINGS];
 
 		dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
 
-		if constexpr (id == DEVIL_DANTE_BEOWULF)
+		if constexpr (devil == DEVIL_DANTE_BEOWULF)
 		{
 			dest2 = (baseAddr + ((0xA300 + devilModelOff) * 8));
 		}
@@ -543,7 +569,7 @@ void UpdateDevilModelTemplateDante
 			System_File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
 		);
 
-		if constexpr ((id == DEVIL_DANTE_REBELLION) || (id == DEVIL_DANTE_NEVAN))
+		if constexpr ((devil == DEVIL_DANTE_REBELLION) || (devil == DEVIL_DANTE_NEVAN))
 		{
 			dest = (baseAddr + 0xA540 + (devilSubmodelIndex * 0xF0));
 
@@ -563,7 +589,7 @@ void UpdateDevilModelTemplateDante
 			devilModelData->submodelData[1].devilModelOff      = devilModelOff;
 			devilModelData->submodelData[1].devilSubmodelIndex = devilSubmodelIndex;
 		}
-		else if constexpr ((id == DEVIL_DANTE_CERBERUS) || (id == DEVIL_DANTE_BEOWULF))
+		else if constexpr ((devil == DEVIL_DANTE_CERBERUS) || (devil == DEVIL_DANTE_BEOWULF))
 		{
 			CopyVertices(baseAddr, 0, 1, 3 );
 			CopyVertices(baseAddr, 1, 2, 6 );
@@ -614,12 +640,18 @@ Cosmetics_Model_UpdateModel_t Cosmetics_Model_UpdateModelDanteVergil[MAX_COSTUME
 
 Cosmetics_Model_UpdateDevilModel_t Cosmetics_Model_UpdateDevilModelDante[MAX_DEVIL_DANTE] =
 {
-	UpdateDevilModelTemplateDante<DEVIL_DANTE_REBELLION>,
-	UpdateDevilModelTemplateDante<DEVIL_DANTE_CERBERUS>,
-	UpdateDevilModelTemplateDante<DEVIL_DANTE_AGNI_RUDRA>,
-	UpdateDevilModelTemplateDante<DEVIL_DANTE_NEVAN>,
-	UpdateDevilModelTemplateDante<DEVIL_DANTE_BEOWULF>,
-	UpdateDevilModelTemplateDante<DEVIL_DANTE_SPARDA>,
+	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_REBELLION , CHAR_DANTE, DEVIL_DANTE_REBELLION >,
+	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_CERBERUS  , CHAR_DANTE, DEVIL_DANTE_CERBERUS  >,
+	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_AGNI_RUDRA, CHAR_DANTE, DEVIL_DANTE_AGNI_RUDRA>,
+	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_NEVAN     , CHAR_DANTE, DEVIL_DANTE_NEVAN     >,
+	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_BEOWULF   , CHAR_DANTE, DEVIL_DANTE_BEOWULF   >,
+	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_SPARDA    , CHAR_DANTE, DEVIL_DANTE_SPARDA    >,
+};
+
+Cosmetics_Model_UpdateDevilModel_t Cosmetics_Model_UpdateDevilModelDanteVergil[MAX_DEVIL_VERGIL] =
+{
+	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_REBELLION, CHAR_VERGIL, DEVIL_VERGIL_YAMATO >,
+	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_BEOWULF  , CHAR_VERGIL, DEVIL_VERGIL_BEOWULF>,
 };
 
 void Cosmetics_Model_Init()
