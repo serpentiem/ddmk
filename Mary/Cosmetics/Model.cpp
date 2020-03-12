@@ -97,38 +97,463 @@ inline void CopyCoatVertices(byte8 * dest)
 
 #pragma endregion
 
-
-
-
-
-
-
-enum SUBMODEL_
+MODEL_FILE_HELPER Dante_modelFileHelper[MAX_COSTUME_DANTE][MODEL_MAX_PART] =
 {
-	SUBMODEL_COAT_DANTE,
-	SUBMODEL_COAT_VERGIL,
-	SUBMODEL_AMULET_DANTE,
-	SUBMODEL_AMULET_VERGIL,
-	SUBMODEL_NONE = 0xFF,
+	// Default
+	{
+		// Base
+		{
+			{ pl000, 1 },
+			{ pl000, 0 },
+			{ pl000, 8 },
+			{ 0    , 0 },
+		},
+		// Amulet
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+		// Coat
+		{
+			{ pl000, 12 },
+			{ pl000, 0  },
+			{ pl000, 14 },
+			{ pl000, 13 },
+		},
+	},
+	// Default No Coat
+	{
+		// Base
+		{
+			{ pl011, 1 },
+			{ pl011, 0 },
+			{ pl011, 8 },
+			{ 0    , 0 },
+		},
+		// Amulet
+		{
+			{ pl011, 12 },
+			{ pl011, 0  },
+			{ 0    , 0  },
+			{ pl011, 13 },
+		},
+		// Coat
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+	},
+	// Default Torn
+	{
+		// Base
+		{
+			{ pl013, 1 },
+			{ pl013, 0 },
+			{ pl013, 8 },
+			{ 0    , 0 },
+		},
+		// Amulet
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+		// Coat
+		{
+			{ pl013, 12 },
+			{ pl013, 0  },
+			{ pl013, 14 },
+			{ pl013, 13 },
+		},
+	},
+	// DMC1
+	{
+		// Base
+		{
+			{ pl015, 1 },
+			{ pl015, 0 },
+			{ pl015, 8 },
+			{ 0    , 0 },
+		},
+		// Amulet
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+		// Coat
+		{
+			{ pl015, 12 },
+			{ pl015, 0  },
+			{ pl015, 14 },
+			{ pl015, 13 },
+		},
+	},
+	// DMC1 No Coat
+	{
+		// Base
+		{
+			{ pl016, 1 },
+			{ pl016, 0 },
+			{ pl016, 8 },
+			{ 0    , 0 },
+		},
+		// Amulet
+		{
+			{ pl016, 12 },
+			{ pl016, 0  },
+			{ 0    , 0  },
+			{ pl016, 13 },
+		},
+		// Coat
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+	},
+	// Sparda
+	{
+		// Base
+		{
+			{ pl018, 1 },
+			{ pl018, 0 },
+			{ pl018, 8 },
+			{ 0    , 0 },
+		},
+		// Coat
+		{
+			{ pl018, 12 },
+			{ pl018, 0  },
+			{ pl018, 14 },
+			{ pl018, 13 },
+		},
+		// Amulet
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+	},
 };
 
-enum DEVIL_SUBMODEL_
+DEVIL_MODEL_FILE_HELPER Dante_devilModelFileHelper[MAX_DEVIL_DANTE][DEVIL_MODEL_MAX_PART] =
 {
-	DEVIL_SUBMODEL_COAT_DANTE_REBELLION,
-	DEVIL_SUBMODEL_COAT_DANTE_NEVAN,
-	DEVIL_SUBMODEL_COAT_VERGIL_YAMATO,
-	DEVIL_SUBMODEL_WINGS_DANTE_REBELLION,
-	DEVIL_SUBMODEL_WINGS_DANTE_CERBERUS,
-	DEVIL_SUBMODEL_WINGS_DANTE_NEVAN,
-	DEVIL_SUBMODEL_WINGS_DANTE_BEOWULF,
-	DEVIL_SUBMODEL_WINGS_DANTE_SPARDA,
-	DEVIL_SUBMODEL_WINGS_VERGIL_BEOWULF,
-	DEVIL_SUBMODEL_NONE = 0xFF,
+	// Rebellion
+	{
+		// Base
+		{
+			{ pl005, 1 },
+			{ pl005, 0 },
+			{ pl005, 6 },
+			{ 0    , 0 },
+		},
+		// Wings
+		{
+			{ pl005, 4 },
+			{ pl005, 0 },
+			{ pl005, 8 },
+			{ pl005, 5 },
+		},
+		// Coat
+		{
+			{ pl005, 2 },
+			{ pl005, 0 },
+			{ pl005, 7 },
+			{ pl005, 3 },
+		},
+	},
+	// Cerberus
+	{
+		// Base
+		{
+			{ pl006, 1 },
+			{ pl006, 0 },
+			{ pl006, 4 },
+			{ 0    , 0 },
+		},
+		// Wings
+		{
+			{ pl006, 2 },
+			{ pl006, 0 },
+			{ pl006, 5 },
+			{ pl006, 3 },
+		},
+		// Coat
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+	},
+	// Agni Rudra
+	{
+		// Base
+		{
+			{ pl007, 1 },
+			{ pl007, 0 },
+			{ pl007, 2 },
+			{ 0    , 0 },
+		},
+		// Wings
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+		// Coat
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+	},
+	// Nevan
+	{
+		// Base
+		{
+			{ pl008, 1 },
+			{ pl008, 0 },
+			{ pl008, 6 },
+			{ 0    , 0 },
+		},
+		// Wings
+		{
+			{ pl008, 4 },
+			{ pl008, 0 },
+			{ pl008, 8 },
+			{ pl008, 5 },
+		},
+		// Coat
+		{
+			{ pl008, 2 },
+			{ pl008, 0 },
+			{ pl008, 7 },
+			{ pl008, 3 },
+		},
+	},
+	// Beowulf
+	{
+		// Base
+		{
+			{ pl009, 1 },
+			{ pl009, 0 },
+			{ pl009, 4 },
+			{ 0    , 0 },
+		},
+		// Wings
+		{
+			{ pl009, 2 },
+			{ pl009, 0 },
+			{ pl009, 5 },
+			{ pl009, 3 },
+		},
+		// Coat
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+	},
+	// Sparda
+	{
+		// Base
+		{
+			{ pl017, 1 },
+			{ pl017, 0 },
+			{ pl017, 4 },
+			{ 0    , 0 },
+		},
+		// Wings
+		{
+			{ pl017, 2 },
+			{ pl017, 0 },
+			{ pl017, 5 },
+			{ pl017, 3 },
+		},
+		// Coat
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+	},
+};
+
+MODEL_FILE_HELPER Vergil_modelFileHelper[MAX_COSTUME_VERGIL][MODEL_MAX_PART] =
+{
+	// Default
+	{
+		// Base
+		{
+			{ pl021, 1 },
+			{ pl021, 0 },
+			{ pl021, 8 },
+			{ 0    , 0 },
+		},
+		// Amulet
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+		// Coat
+		{
+			{ pl021, 12 },
+			{ pl021, 0  },
+			{ pl021, 14 },
+			{ pl021, 13 },
+		},
+	},
+	// Default No Coat
+	{
+		// Base
+		{
+			{ pl023, 1 },
+			{ pl023, 0 },
+			{ pl023, 8 },
+			{ 0    , 0 },
+		},
+		// Amulet
+		{
+			{ pl023, 12 },
+			{ pl023, 0  },
+			{ 0    , 0  },
+			{ pl023, 13 },
+		},
+		// Coat
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+	},
+	// Sparda
+	{
+		// Base
+		{
+			{ pl026, 1 },
+			{ pl026, 0 },
+			{ pl026, 8 },
+			{ 0    , 0 },
+		},
+		// Amulet
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+		// Coat
+		{
+			{ pl026, 12 },
+			{ pl026, 0  },
+			{ pl026, 14 },
+			{ pl026, 13 },
+		},
+	},
+};
+
+DEVIL_MODEL_FILE_HELPER Vergil_devilModelFileHelper[MAX_DEVIL_VERGIL][DEVIL_MODEL_MAX_PART] =
+{
+	// Yamato
+	{
+		// Base
+		{
+			{ pl010, 1 },
+			{ pl010, 0 },
+			{ pl010, 7 },
+			{ 0    , 0 },
+		},
+		// Wings
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+		// Coat
+		{
+			{ pl010, 5  },
+			{ pl010, 0  },
+			{ pl010, 10 },
+			{ pl010, 6  },
+		},
+	},
+	// Beowulf
+	{
+		// Base
+		{
+			{ pl014, 1 },
+			{ pl014, 0 },
+			{ pl014, 4 },
+			{ 0    , 0 },
+		},
+		// Wings
+		{
+			{ pl014, 2 },
+			{ pl014, 0 },
+			{ pl014, 5 },
+			{ pl014, 3 },
+		},
+		// Coat
+		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+	},
 };
 
 
 
-// UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT, Config.Cosmetics.Vergil.modelFileHelper[COSTUME_VERGIL_DEFAULT]>
+
+
+
+
+
+//enum SUBMODEL_
+//{
+//	SUBMODEL_COAT_DANTE,
+//	SUBMODEL_COAT_VERGIL,
+//	SUBMODEL_AMULET_DANTE,
+//	SUBMODEL_AMULET_VERGIL,
+//	SUBMODEL_NONE = 0xFF,
+//};
+//
+//enum DEVIL_SUBMODEL_
+//{
+//	DEVIL_SUBMODEL_COAT_DANTE_REBELLION,
+//	DEVIL_SUBMODEL_COAT_DANTE_NEVAN,
+//	DEVIL_SUBMODEL_COAT_VERGIL_YAMATO,
+//	DEVIL_SUBMODEL_WINGS_DANTE_REBELLION,
+//	DEVIL_SUBMODEL_WINGS_DANTE_CERBERUS,
+//	DEVIL_SUBMODEL_WINGS_DANTE_NEVAN,
+//	DEVIL_SUBMODEL_WINGS_DANTE_BEOWULF,
+//	DEVIL_SUBMODEL_WINGS_DANTE_SPARDA,
+//	DEVIL_SUBMODEL_WINGS_VERGIL_BEOWULF,
+//	DEVIL_SUBMODEL_NONE = 0xFF,
+//};
+
+
+
+// UpdateModelTemplate<CHAR_DANTE, LOGIC_COSTUME_DANTE_DEFAULT, Config.Cosmetics.Vergil.modelFileHelper[LOGIC_COSTUME_VERGIL_DEFAULT]>
 
 // UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_REBELLION, Config.Cosmetics.Vergil.devilModelFileHelper[DEVIL_VERGIL_YAMATO]>
 
@@ -137,10 +562,10 @@ enum DEVIL_SUBMODEL_
 
 template
 <
-	uint8 id0,
-	uint8 id1,
-	uint8 id2,
-	uint8 id3
+	uint8 character,
+	uint8 costume,
+	uint8 fileHelperCharacter,
+	uint8 fileHelperCostume
 >
 void UpdateModelTemplate(byte8 * baseAddr)
 {
@@ -156,16 +581,18 @@ void UpdateModelTemplate(byte8 * baseAddr)
 	byte8 * dest  = 0;
 	byte8 * dest2 = 0;
 
-	modelData = (MODEL_DATA *)(baseAddr + 0xB630);
+	if constexpr (fileHelperCharacter == CHAR_DANTE)
+	{
+		//modelFileHelper = Config.Cosmetics.Dante.modelFileHelper[fileHelperCostume];
+		modelFileHelper = Dante_modelFileHelper[fileHelperCostume];
+	}
+	else if constexpr (fileHelperCharacter == CHAR_VERGIL)
+	{
+		//modelFileHelper = Config.Cosmetics.Vergil.modelFileHelper[fileHelperCostume];
+		modelFileHelper = Vergil_modelFileHelper[fileHelperCostume];
+	}
 
-	if constexpr (id2 == CHAR_DANTE)
-	{
-		modelFileHelper = Config.Cosmetics.Dante.modelFileHelper[id3];
-	}
-	else if constexpr (id2 == CHAR_VERGIL)
-	{
-		modelFileHelper = Config.Cosmetics.Vergil.modelFileHelper[id3];
-	}
+	modelData = (MODEL_DATA *)(baseAddr + 0xB630);
 
 	// Base
 
@@ -191,14 +618,59 @@ void UpdateModelTemplate(byte8 * baseAddr)
 		CopyBaseVertices(modelData);
 	}
 
+	// Amulet
+
+	if constexpr
+	(
+		(costume == COSTUME_DANTE_DEFAULT_NO_COAT) ||
+		(costume == COSTUME_DANTE_DMC1_NO_COAT   )
+	)
+	{
+		auto & fileHelper = modelFileHelper[MODEL_PART_AMULET];
+
+		dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
+		dest2 = (baseAddr + 0xA0D0);
+
+		RegisterModel
+		(
+			dest,
+			System_File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
+			System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
+		);
+
+		func_8A000(dest, 0, dest2);
+
+		((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
+
+		dest = (baseAddr + 0xA210);
+
+		RegisterPhysics
+		(
+			dest,
+			dest2,
+			System_File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
+		);
+
+		func_2CA2F0
+		(
+			dest,
+			(baseAddr + ((modelOff + 0x310) * 8)),
+			(appBaseAddr + 0x58B380),
+			modelData,
+			1
+		);
+
+		CopyAmuletVertices(modelData);
+	}
+
 	// Coat
 
 	if constexpr
 	(
-		(id1 == COSTUME_DANTE_DEFAULT     ) ||
-		(id1 == COSTUME_DANTE_DEFAULT_TORN) ||
-		(id1 == COSTUME_DANTE_DMC1        ) ||
-		(id1 == COSTUME_DANTE_SPARDA      )
+		(costume == COSTUME_DANTE_DEFAULT     ) ||
+		(costume == COSTUME_DANTE_DEFAULT_TORN) ||
+		(costume == COSTUME_DANTE_DMC1        ) ||
+		(costume == COSTUME_DANTE_SPARDA      )
 	)
 	{
 		auto & fileHelper = modelFileHelper[MODEL_PART_COAT];
@@ -243,51 +715,6 @@ void UpdateModelTemplate(byte8 * baseAddr)
 		);
 
 		CopyCoatVertices(dest2);
-	}
-
-	// Amulet
-
-	if constexpr
-	(
-		(id1 == COSTUME_DANTE_DEFAULT_NO_COAT) ||
-		(id1 == COSTUME_DANTE_DMC1_NO_COAT   )
-	)
-	{
-		auto & fileHelper = modelFileHelper[MODEL_PART_COAT];
-
-		dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
-		dest2 = (baseAddr + 0xA0D0);
-
-		RegisterModel
-		(
-			dest,
-			System_File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
-			System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
-		);
-
-		func_8A000(dest, 0, dest2);
-
-		((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
-
-		dest = (baseAddr + 0xA210);
-
-		RegisterPhysics
-		(
-			dest,
-			dest2,
-			System_File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
-		);
-
-		func_2CA2F0
-		(
-			dest,
-			(baseAddr + ((modelOff + 0x310) * 8)),
-			(appBaseAddr + 0x58B380),
-			modelData,
-			1
-		);
-
-		CopyAmuletVertices(modelData);
 	}
 }
 
@@ -382,11 +809,13 @@ void UpdateDevilModelTemplate
 
 	if constexpr (fileHelperCharacter == CHAR_DANTE)
 	{
-		devilModelFileHelper = Config.Cosmetics.Dante.devilModelFileHelper[fileHelperDevil];
+		//devilModelFileHelper = Config.Cosmetics.Dante.devilModelFileHelper[fileHelperDevil];
+		devilModelFileHelper = Dante_devilModelFileHelper[fileHelperDevil];
 	}
 	else if constexpr (fileHelperCharacter == CHAR_VERGIL)
 	{
-		devilModelFileHelper = Config.Cosmetics.Vergil.devilModelFileHelper[fileHelperDevil];
+		//devilModelFileHelper = Config.Cosmetics.Vergil.devilModelFileHelper[fileHelperDevil];
+		devilModelFileHelper = Vergil_devilModelFileHelper[fileHelperDevil];
 	}
 
 	if constexpr (character == CHAR_DANTE)
@@ -427,63 +856,70 @@ void UpdateDevilModelTemplate
 		);
 	}
 
+	//if constexpr (devil == DEVIL_DANTE_AGNI_RUDRA)
+	//{
+	//	return;
+	//}
+
+
+	//return;
 
 
 
 
-
-
-	if constexpr (devil == DEVIL_DANTE_AGNI_RUDRA)
-	{
-		return;
-	}
+	// WRONG dis be wings mon!
 
 	// Coat
 
-	if constexpr ((devil == DEVIL_DANTE_REBELLION) || (devil == DEVIL_DANTE_NEVAN))
-	{
-		auto & fileHelper = devilModelFileHelper[DEVIL_MODEL_PART_COAT];
 
-		dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
-		dest2 = (baseAddr + ((0x1460 + devilModelOff) * 8));
 
-		RegisterModel
-		(
-			dest,
-			System_File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
-			System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
-		);
 
-		func_8A000(dest, 0, dest2);
+	// Wings
 
-		RegisterShadow
-		(
-			dest,
-			(baseAddr + 0x9D10 + (submodelIndex * 0xC0)),
-			System_File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
-		);
+	//if constexpr ((devil == DEVIL_DANTE_REBELLION) || (devil == DEVIL_DANTE_NEVAN))
+	//{
+	//	auto & fileHelper = devilModelFileHelper[DEVIL_MODEL_PART_COAT];
 
-		((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
+	//	dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
+	//	dest2 = (baseAddr + ((0x1460 + devilModelOff) * 8));
 
-		dest = (baseAddr + 0xA540 + (devilSubmodelIndex * 0xF0));
+	//	RegisterModel
+	//	(
+	//		dest,
+	//		System_File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
+	//		System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
+	//	);
 
-		RegisterPhysics
-		(
-			dest,
-			dest2,
-			System_File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
-		);
+	//	func_8A000(dest, 0, dest2);
 
-		CopyVertices(baseAddr, 0, 1 , 3);
-		CopyVertices(baseAddr, 1, 12, 2);
+	//	RegisterShadow
+	//	(
+	//		dest,
+	//		(baseAddr + 0x9D10 + (submodelIndex * 0xC0)),
+	//		System_File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
+	//	);
 
-		devilModelData->submodelData[0].submodelIndex      = submodelIndex;
-		devilModelData->submodelData[0].devilModelOff      = devilModelOff;
-		devilModelData->submodelData[0].devilSubmodelIndex = devilSubmodelIndex;
+	//	((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
 
-		submodelIndex++;
-		devilSubmodelIndex++;
-	}
+	//	dest = (baseAddr + 0xA540 + (devilSubmodelIndex * 0xF0));
+
+	//	RegisterPhysics
+	//	(
+	//		dest,
+	//		dest2,
+	//		System_File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
+	//	);
+
+	//	CopyVertices(baseAddr, 0, 1 , 3);
+	//	CopyVertices(baseAddr, 1, 12, 2);
+
+	//	devilModelData->submodelData[0].submodelIndex      = submodelIndex;
+	//	devilModelData->submodelData[0].devilModelOff      = devilModelOff;
+	//	devilModelData->submodelData[0].devilSubmodelIndex = devilSubmodelIndex;
+
+	//	submodelIndex++;
+	//	devilSubmodelIndex++;
+	//}
 
 
 
@@ -495,7 +931,7 @@ void UpdateDevilModelTemplate
 
 
 
-	return;
+	//return;
 
 
 
@@ -506,41 +942,43 @@ void UpdateDevilModelTemplate
 
 
 
-	// WRONG! dis be the coat
+	// Coat
 
-	// Wings
+
 
 	{
-		if constexpr
-		(
-			(devil == DEVIL_DANTE_REBELLION) ||
-			(devil == DEVIL_DANTE_NEVAN    )
-		)
-		{
-			devilModelOff += 9;
-		}
+		//if constexpr
+		//(
+		//	(devil == DEVIL_DANTE_REBELLION) ||
+		//	(devil == DEVIL_DANTE_NEVAN    )
+		//)
+		//{
+		//	devilModelOff += 9;
+		//}
 
-		if constexpr (devil == DEVIL_DANTE_REBELLION)
-		{
-			*(byte8 *)(baseAddr + 0xB878) = 0xFF;
-		}
-		else if constexpr (devil == DEVIL_DANTE_NEVAN)
-		{
-			*(byte8 *)(baseAddr + 0xB879) = 0xFF;
-		}
+		//if constexpr (devil == DEVIL_DANTE_REBELLION)
+		//{
+		//	*(byte8 *)(baseAddr + 0xB878) = 0xFF;
+		//}
+		//else if constexpr (devil == DEVIL_DANTE_NEVAN)
+		//{
+		//	*(byte8 *)(baseAddr + 0xB879) = 0xFF;
+		//}
 
-		auto & fileHelper = devilModelFileHelper[DEVIL_MODEL_PART_WINGS];
+		auto & fileHelper = devilModelFileHelper[DEVIL_MODEL_PART_COAT];
 
 		dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
+		dest2 = (baseAddr + ((0x1460 + devilModelOff) * 8));
 
-		if constexpr (devil == DEVIL_DANTE_BEOWULF)
-		{
-			dest2 = (baseAddr + ((0xA300 + devilModelOff) * 8));
-		}
-		else
-		{
-			dest2 = (baseAddr + ((0x1460 + devilModelOff) * 8));
-		}
+
+		//if constexpr (devil == DEVIL_DANTE_BEOWULF)
+		//{
+		//	dest2 = (baseAddr + ((0xA300 + devilModelOff) * 8));
+		//}
+		//else
+		//{
+		//	dest2 = (baseAddr + ((0x1460 + devilModelOff) * 8));
+		//}
 
 		RegisterModel
 		(
@@ -589,33 +1027,20 @@ void UpdateDevilModelTemplate
 			devilModelData->submodelData[1].devilModelOff      = devilModelOff;
 			devilModelData->submodelData[1].devilSubmodelIndex = devilSubmodelIndex;
 		}
-		else if constexpr ((devil == DEVIL_DANTE_CERBERUS) || (devil == DEVIL_DANTE_BEOWULF))
-		{
-			CopyVertices(baseAddr, 0, 1, 3 );
-			CopyVertices(baseAddr, 1, 2, 6 );
-			CopyVertices(baseAddr, 2, 8, 10);
+		//else if constexpr ((devil == DEVIL_DANTE_CERBERUS) || (devil == DEVIL_DANTE_BEOWULF))
+		//{
+		//	CopyVertices(baseAddr, 0, 1, 3 );
+		//	CopyVertices(baseAddr, 1, 2, 6 );
+		//	CopyVertices(baseAddr, 2, 8, 10);
 
-			devilModelData->submodelData[0].submodelIndex      = submodelIndex;
-			devilModelData->submodelData[0].devilModelOff      = devilModelOff;
-			devilModelData->submodelData[0].devilSubmodelIndex = devilSubmodelIndex;
-		}
+		//	devilModelData->submodelData[0].submodelIndex      = submodelIndex;
+		//	devilModelData->submodelData[0].devilModelOff      = devilModelOff;
+		//	devilModelData->submodelData[0].devilSubmodelIndex = devilSubmodelIndex;
+		//}
 	}
 }
 
 PrivateEnd;
-
-//Cosmetics_Model_UpdateModel_t Cosmetics_Model_UpdateModelDante[MAX_COSTUME_DANTE] =
-//{
-//	UpdateModelTemplate<COSTUME_DANTE_DEFAULT        , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_DEFAULT        ]>,
-//	UpdateModelTemplate<COSTUME_DANTE_DEFAULT_NO_COAT, Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_DEFAULT_NO_COAT]>,
-//	UpdateModelTemplate<COSTUME_DANTE_DEFAULT_TORN   , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_DEFAULT_TORN   ]>,
-//	UpdateModelTemplate<COSTUME_DANTE_DMC1           , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_DMC1           ]>,
-//	UpdateModelTemplate<COSTUME_DANTE_DMC1_NO_COAT   , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_DMC1_NO_COAT   ]>,
-//	UpdateModelTemplate<COSTUME_DANTE_SPARDA         , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_SPARDA         ]>,
-//	UpdateModelTemplate<COSTUME_DANTE_DEFAULT_TORN   , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_DEFAULT_TORN   ]>,
-//	UpdateModelTemplate<COSTUME_DANTE_SPARDA         , Config.Cosmetics.Dante.modelFileHelper[COSTUME_DANTE_SPARDA         ]>,
-//};
-
 
 Cosmetics_Model_UpdateModel_t Cosmetics_Model_UpdateModelDante[MAX_COSTUME_DANTE] =
 {
@@ -625,16 +1050,12 @@ Cosmetics_Model_UpdateModel_t Cosmetics_Model_UpdateModelDante[MAX_COSTUME_DANTE
 	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DMC1           , CHAR_DANTE, COSTUME_DANTE_DMC1           >,
 	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DMC1_NO_COAT   , CHAR_DANTE, COSTUME_DANTE_DMC1_NO_COAT   >,
 	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_SPARDA         , CHAR_DANTE, COSTUME_DANTE_SPARDA         >,
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT_TORN   , CHAR_DANTE, COSTUME_DANTE_DEFAULT_TORN   >,
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_SPARDA         , CHAR_DANTE, COSTUME_DANTE_SPARDA         >,
 };
 
 Cosmetics_Model_UpdateModel_t Cosmetics_Model_UpdateModelDanteVergil[MAX_COSTUME_VERGIL] =
 {
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT_TORN   , CHAR_VERGIL, COSTUME_VERGIL_DEFAULT        >,
+	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT        , CHAR_VERGIL, COSTUME_VERGIL_DEFAULT        >,
 	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT_NO_COAT, CHAR_VERGIL, COSTUME_VERGIL_DEFAULT_NO_COAT>,
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT_TORN   , CHAR_VERGIL, COSTUME_VERGIL_DEFAULT        >,
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_SPARDA         , CHAR_VERGIL, COSTUME_VERGIL_SPARDA         >,
 	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_SPARDA         , CHAR_VERGIL, COSTUME_VERGIL_SPARDA         >,
 };
 

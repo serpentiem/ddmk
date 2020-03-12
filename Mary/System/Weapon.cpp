@@ -234,10 +234,10 @@ byte8 * Dante_Ranged_SetWeaponProxy = 0;
 //		}
 //		switch (costume)
 //		{
-//		case COSTUME_DANTE_DMC1:
-//		case COSTUME_DANTE_DMC1_COATLESS:
-//		case COSTUME_DANTE_SPARDA:
-//		case COSTUME_DANTE_SPARDA_INFINITE_MP:
+//		case LOGIC_COSTUME_DANTE_DMC1:
+//		case LOGIC_COSTUME_DANTE_DMC1_COATLESS:
+//		case LOGIC_COSTUME_DANTE_SPARDA:
+//		case LOGIC_COSTUME_DANTE_SPARDA_INFINITE_MP:
 //			sword = 2;
 //			break;
 //		}
