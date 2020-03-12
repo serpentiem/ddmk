@@ -118,7 +118,7 @@ struct CONFIG
 			}
 			BloodyPalace;
 			uint8  character    = CHAR_DANTE;
-			uint8  costume      = 1;
+			uint8  costume      = 0;
 			uint32 style        = STYLE_TRICKSTER;
 			uint8  equipment[4] =
 			{
