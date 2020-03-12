@@ -482,10 +482,10 @@ DEVIL_MODEL_FILE_HELPER Vergil_devilModelFileHelper[MAX_DEVIL_VERGIL][DEVIL_MODE
 		},
 		// Wings
 		{
-			{ 0, 0 },
-			{ 0, 0 },
-			{ 0, 0 },
-			{ 0, 0 },
+			{ pl010, 2 },
+			{ pl010, 0 },
+			{ pl010, 8 },
+			{ pl010, 3 },
 		},
 		// Coat
 		{
@@ -494,6 +494,12 @@ DEVIL_MODEL_FILE_HELPER Vergil_devilModelFileHelper[MAX_DEVIL_VERGIL][DEVIL_MODE
 			{ pl010, 10 },
 			{ pl010, 6  },
 		},
+		//{
+		//	{ pl005, 4 },
+		//	{ pl005, 0 },
+		//	{ pl005, 8 },
+		//	{ pl005, 5 },
+		//},
 	},
 	// Beowulf
 	{
@@ -877,50 +883,58 @@ void UpdateDevilModelTemplate
 	// Wings
 
 	//if constexpr ((devil == DEVIL_DANTE_REBELLION) || (devil == DEVIL_DANTE_NEVAN))
-	//{
-	//	auto & fileHelper = devilModelFileHelper[DEVIL_MODEL_PART_COAT];
+	{
+		auto & fileHelper = devilModelFileHelper[DEVIL_MODEL_PART_WINGS];
 
-	//	dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
-	//	dest2 = (baseAddr + ((0x1460 + devilModelOff) * 8));
+		dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
+		dest2 = (baseAddr + ((0x1460 + devilModelOff) * 8));
 
-	//	RegisterModel
-	//	(
-	//		dest,
-	//		System_File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
-	//		System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
-	//	);
+		RegisterModel
+		(
+			dest,
+			System_File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
+			System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
+		);
 
-	//	func_8A000(dest, 0, dest2);
+		func_8A000(dest, 0, dest2);
 
-	//	RegisterShadow
-	//	(
-	//		dest,
-	//		(baseAddr + 0x9D10 + (submodelIndex * 0xC0)),
-	//		System_File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
-	//	);
+		RegisterShadow
+		(
+			dest,
+			(baseAddr + 0x9D10 + (submodelIndex * 0xC0)),
+			System_File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
+		);
 
-	//	((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
+		((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
 
-	//	dest = (baseAddr + 0xA540 + (devilSubmodelIndex * 0xF0));
+		dest = (baseAddr + 0xA540 + (devilSubmodelIndex * 0xF0));
 
-	//	RegisterPhysics
-	//	(
-	//		dest,
-	//		dest2,
-	//		System_File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
-	//	);
+		RegisterPhysics
+		(
+			dest,
+			dest2,
+			System_File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
+		);
 
-	//	CopyVertices(baseAddr, 0, 1 , 3);
-	//	CopyVertices(baseAddr, 1, 12, 2);
+		CopyVertices(baseAddr, 0, 1 , 3);
+		CopyVertices(baseAddr, 1, 12, 2);
 
-	//	devilModelData->submodelData[0].submodelIndex      = submodelIndex;
-	//	devilModelData->submodelData[0].devilModelOff      = devilModelOff;
-	//	devilModelData->submodelData[0].devilSubmodelIndex = devilSubmodelIndex;
 
-	//	submodelIndex++;
-	//	devilSubmodelIndex++;
-	//}
+	}
 
+
+	devilModelData->submodelData[devilSubmodelIndex].submodelIndex      = submodelIndex;
+	devilModelData->submodelData[devilSubmodelIndex].devilModelOff      = devilModelOff;
+	devilModelData->submodelData[devilSubmodelIndex].devilSubmodelIndex = devilSubmodelIndex;
+
+	submodelIndex++;
+	devilModelOff += 25;
+	devilSubmodelIndex++;
+
+
+
+
+	//return;
 
 
 	//if constexpr (fileHelperCharacter == CHAR_VERGIL)
@@ -937,7 +951,7 @@ void UpdateDevilModelTemplate
 
 
 
-
+	//return;
 
 
 
@@ -969,6 +983,9 @@ void UpdateDevilModelTemplate
 
 		dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
 		dest2 = (baseAddr + ((0x1460 + devilModelOff) * 8));
+		//dest2 = (baseAddr + ((0x1482 + devilModelOff) * 8));
+
+		//dest2 = (baseAddr + ((0xA300 + devilModelOff) * 8));
 
 
 		//if constexpr (devil == DEVIL_DANTE_BEOWULF)
@@ -989,6 +1006,9 @@ void UpdateDevilModelTemplate
 
 		func_8A000(dest, 0, dest2);
 
+		
+
+
 		RegisterShadow
 		(
 			dest,
@@ -1007,8 +1027,8 @@ void UpdateDevilModelTemplate
 			System_File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
 		);
 
-		if constexpr ((devil == DEVIL_DANTE_REBELLION) || (devil == DEVIL_DANTE_NEVAN))
-		{
+		////if constexpr ((devil == DEVIL_DANTE_REBELLION) || (devil == DEVIL_DANTE_NEVAN))
+		//{
 			dest = (baseAddr + 0xA540 + (devilSubmodelIndex * 0xF0));
 
 			func_2CA2F0
@@ -1022,11 +1042,14 @@ void UpdateDevilModelTemplate
 
 			CopyVertices(baseAddr, 0, 1, 2 );
 			CopyVertices(baseAddr, 1, 2, 14);
+		//}
 
-			devilModelData->submodelData[1].submodelIndex      = submodelIndex;
-			devilModelData->submodelData[1].devilModelOff      = devilModelOff;
-			devilModelData->submodelData[1].devilSubmodelIndex = devilSubmodelIndex;
-		}
+		devilModelData->submodelData[devilSubmodelIndex].submodelIndex      = submodelIndex;
+		devilModelData->submodelData[devilSubmodelIndex].devilModelOff      = devilModelOff;
+		devilModelData->submodelData[devilSubmodelIndex].devilSubmodelIndex = devilSubmodelIndex;
+
+
+
 		//else if constexpr ((devil == DEVIL_DANTE_CERBERUS) || (devil == DEVIL_DANTE_BEOWULF))
 		//{
 		//	CopyVertices(baseAddr, 0, 1, 3 );
