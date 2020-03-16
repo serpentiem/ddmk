@@ -4,7 +4,7 @@
 #include "../Config.h"
 #include "../Vars.h"
 
-#include "Actor.h"
+//#include "Actor.h"
 #include "File.h"
 
 #include "../Cosmetics/Dante.h"

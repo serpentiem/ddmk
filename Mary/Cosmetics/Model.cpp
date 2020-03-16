@@ -494,12 +494,6 @@ DEVIL_MODEL_FILE_HELPER Vergil_devilModelFileHelper[MAX_DEVIL_VERGIL][DEVIL_MODE
 			{ pl010, 10 },
 			{ pl010, 6  },
 		},
-		//{
-		//	{ pl005, 4 },
-		//	{ pl005, 0 },
-		//	{ pl005, 8 },
-		//	{ pl005, 5 },
-		//},
 	},
 	// Beowulf
 	{
@@ -512,17 +506,17 @@ DEVIL_MODEL_FILE_HELPER Vergil_devilModelFileHelper[MAX_DEVIL_VERGIL][DEVIL_MODE
 		},
 		// Wings
 		{
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+			{ 0, 0 },
+		},
+		// Coat
+		{
 			{ pl014, 2 },
 			{ pl014, 0 },
 			{ pl014, 5 },
 			{ pl014, 3 },
-		},
-		// Coat
-		{
-			{ 0, 0 },
-			{ 0, 0 },
-			{ 0, 0 },
-			{ 0, 0 },
 		},
 	},
 };
@@ -869,7 +863,11 @@ void UpdateDevilModelTemplate
 
 	// Wings
 
-	if constexpr ((devil == DEVIL_DANTE_REBELLION) || (devil == DEVIL_DANTE_NEVAN))
+	if constexpr
+	(
+		(devil == DEVIL_DANTE_REBELLION) ||
+		(devil == DEVIL_DANTE_NEVAN    )
+	)
 	{
 		auto & fileHelper = devilModelFileHelper[DEVIL_MODEL_PART_WINGS];
 
@@ -915,6 +913,14 @@ void UpdateDevilModelTemplate
 		devilSubmodelIndex++;
 	}
 
+
+	//devilModelData->submodelData[1].submodelIndex      = 0;
+	//devilModelData->submodelData[1].devilModelOff      = 0;
+	//devilModelData->submodelData[1].devilSubmodelIndex = 0;
+
+
+	//return;
+
 	// Coat
 
 	{
@@ -931,7 +937,7 @@ void UpdateDevilModelTemplate
 			System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
 		);
 
-		func_8A000(dest, 0, dest2);
+		//func_8A000(dest, 0, dest2);
 
 		RegisterShadow
 		(

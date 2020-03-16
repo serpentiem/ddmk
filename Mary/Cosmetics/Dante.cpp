@@ -1,3 +1,6 @@
+
+// @Todo: Internalize and inline.
+
 #include "Dante.h"
 
 Cosmetics_Dante_ApplyDefaultModelAttributes_t Cosmetics_Dante_ApplyDefaultModelAttributes = 0;

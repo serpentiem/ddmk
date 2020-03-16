@@ -122,6 +122,8 @@ PrivateStart;
 //	{ 16, plwp_sword3 },
 //};
 
+// @Todo: Array, sheesh.
+
 typedef byte8 *(* RegisterWeapon_t)(byte8 *);
 
 RegisterWeapon_t RegisterWeaponRebellion       = 0;
@@ -276,11 +278,20 @@ void System_Weapon_Dante_Ranged_UpdateLevels(byte8 * baseAddr)
 
 PrivateStart;
 
-void UpdateWeapon(byte8 * baseAddr)
+__declspec(deprecated) void UpdateWeapon(byte8 * baseAddr)
 {
 	Log("%s Start %llX", FUNC_NAME, baseAddr);
 
-	auto actor = System_Actor_GetActorId(baseAddr);
+	//auto actor = System_Actor_GetActorId(baseAddr);
+
+
+	auto & actorData = *(ACTOR_DATA *)baseAddr;
+
+	auto actor = actorData.actorId;
+
+
+
+
 
 	auto   character            = *(uint8 * )(baseAddr + 0x78  );
 	auto & specialCostume       = *(bool  * )(baseAddr + 0x3E9F);
@@ -346,6 +357,9 @@ void UpdateWeapon(byte8 * baseAddr)
 			}
 			metadata[index] = System_Weapon_weaponMetadata[actor][weaponId];
 		}
+
+		// @Research: Different for Vergil!
+
 		*(uint32 *)(baseAddr + 0x64D8) = 4;
 
 		if (character == CHAR_DANTE)
@@ -370,7 +384,9 @@ void UpdateWeapon(byte8 * baseAddr)
 
 void Dante_Melee_UpdateModelAttributes(byte8 * baseAddr, uint8 weaponId)
 {
-	auto actor = System_Actor_GetActorId(baseAddr);
+	auto & actorData = *(ACTOR_DATA *)baseAddr;
+	auto actor = actorData.actorId;
+
 	auto & lastWeaponId = Dante_Melee_lastWeaponId[actor];
 	if (lastWeaponId != weaponId)
 	{
@@ -574,12 +590,14 @@ void System_Weapon_Init()
 			(appBaseAddr + 0x227870), // Agni & Rudra
 			(appBaseAddr + 0x22A1E0), // Nevan
 			(appBaseAddr + 0x228CF0), // Beowulf
-			(appBaseAddr + 0x22D960), // Yamato
-			(appBaseAddr + 0x231A30), // Yamato Bob
 			(appBaseAddr + 0x22B0C0), // Ebony & Ivory
 			(appBaseAddr + 0x2306B0), // Shotgun
 			(appBaseAddr + 0x22C4A0), // Artemis
 			(appBaseAddr + 0x2300A0), // Spiral
+
+			(appBaseAddr + 0x231A30), // Yamato Bob
+
+			(appBaseAddr + 0x22D960), // Yamato
 			(appBaseAddr + 0x2298E0), // Force Edge
 			(appBaseAddr + 0x22CF00), // Nero Angelo Sword
 		};

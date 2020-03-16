@@ -1,3 +1,8 @@
+
+
+// @Todo: Add WEAPON_NONE and add weapon menu for Vergil.
+
+
 #include "Arcade.h"
 
 uint8 Game_Arcade_modeIndex = 0;

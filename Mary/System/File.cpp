@@ -253,6 +253,8 @@ void UpdateSword(ACTOR_DATA * actorData)
 		}
 	}
 
+	sword = 2;
+
 	auto cacheFileId = swordMap[sword];
 	fileItem[140].file = System_File_cacheFile[cacheFileId];
 }
