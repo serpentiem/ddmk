@@ -122,10 +122,10 @@ struct CONFIG
 			uint32 style        = STYLE_TRICKSTER;
 			uint8  equipment[4] =
 			{
-				WEAPON_REBELLION,
-				WEAPON_CERBERUS,
-				WEAPON_EBONY_IVORY,
-				WEAPON_SHOTGUN,
+				WEAPON_DANTE_REBELLION,
+				WEAPON_DANTE_CERBERUS,
+				WEAPON_DANTE_EBONY_IVORY,
+				WEAPON_DANTE_SHOTGUN,
 			};
 			float32 hitPoints   = 6000;
 			float32 magicPoints = 3000;
@@ -304,11 +304,11 @@ struct CONFIG
 				uint8 count     = 5;
 				uint8 weapon[5] =
 				{
-					WEAPON_REBELLION,
-					WEAPON_CERBERUS,
-					WEAPON_AGNI_RUDRA,
-					WEAPON_NEVAN,
-					WEAPON_BEOWULF,
+					WEAPON_DANTE_REBELLION,
+					WEAPON_DANTE_CERBERUS,
+					WEAPON_DANTE_AGNI_RUDRA,
+					WEAPON_DANTE_NEVAN,
+					WEAPON_DANTE_BEOWULF,
 				};
 			}
 			Melee;
@@ -317,11 +317,11 @@ struct CONFIG
 				uint8 count     = 5;
 				uint8 weapon[5] =
 				{
-					WEAPON_EBONY_IVORY,
-					WEAPON_SHOTGUN,
-					WEAPON_ARTEMIS,
-					WEAPON_SPIRAL,
-					WEAPON_KALINA_ANN,
+					WEAPON_DANTE_EBONY_IVORY,
+					WEAPON_DANTE_SHOTGUN,
+					WEAPON_DANTE_ARTEMIS,
+					WEAPON_DANTE_SPIRAL,
+					WEAPON_DANTE_KALINA_ANN,
 				};
 			}
 			Ranged;

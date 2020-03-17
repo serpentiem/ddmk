@@ -124,77 +124,77 @@ PrivateStart;
 
 // @Todo: Array, sheesh.
 
-typedef byte8 *(* RegisterWeapon_t)(byte8 *);
-
-RegisterWeapon_t RegisterWeaponRebellion       = 0;
-RegisterWeapon_t RegisterWeaponCerberus        = 0;
-RegisterWeapon_t RegisterWeaponAgniRudra       = 0;
-RegisterWeapon_t RegisterWeaponNevan           = 0;
-RegisterWeapon_t RegisterWeaponBeowulf         = 0;
-RegisterWeapon_t RegisterWeaponYamato          = 0;
-RegisterWeapon_t RegisterWeaponYamatoBob       = 0;
-RegisterWeapon_t RegisterWeaponEbonyIvory      = 0;
-RegisterWeapon_t RegisterWeaponShotgun         = 0;
-RegisterWeapon_t RegisterWeaponArtemis         = 0;
-RegisterWeapon_t RegisterWeaponSpiral          = 0;
-RegisterWeapon_t RegisterWeaponKalinaAnn       = 0;
-RegisterWeapon_t RegisterWeaponKalinaAnnLady   = 0;
-RegisterWeapon_t RegisterWeaponForceEdge       = 0;
-RegisterWeapon_t RegisterWeaponNeroAngeloSword = 0;
-
-struct RegisterWeaponHelper
-{
-	RegisterWeapon_t * func;
-	uint8 id;
-};
-
-RegisterWeaponHelper registerWeaponHelperDante[] =
-{
-	{ &RegisterWeaponRebellion , WEAPON_REBELLION   },
-	{ &RegisterWeaponCerberus  , WEAPON_CERBERUS    },
-	{ &RegisterWeaponAgniRudra , WEAPON_AGNI_RUDRA  },
-	{ &RegisterWeaponNevan     , WEAPON_NEVAN       },
-	{ &RegisterWeaponBeowulf   , WEAPON_BEOWULF     },
-	{ &RegisterWeaponEbonyIvory, WEAPON_EBONY_IVORY },
-	{ &RegisterWeaponShotgun   , WEAPON_SHOTGUN     },
-	{ &RegisterWeaponArtemis   , WEAPON_ARTEMIS     },
-	{ &RegisterWeaponSpiral    , WEAPON_SPIRAL      },
-	{ &RegisterWeaponKalinaAnn , WEAPON_KALINA_ANN  },
-};
-
-RegisterWeaponHelper registerWeaponHelperBob[] =
-{
-	{ &RegisterWeaponYamatoBob, WEAPON_YAMATO_BOB },
-};
-
-RegisterWeaponHelper registerWeaponHelperLady[] =
-{
-	{ &RegisterWeaponKalinaAnn    , WEAPON_KALINA_ANN      },
-	{ &RegisterWeaponKalinaAnnLady, WEAPON_KALINA_ANN_LADY },
-};
-
-RegisterWeaponHelper registerWeaponHelperVergil[] =
-{
-	{ &RegisterWeaponYamato   , WEAPON_YAMATO         },
-	{ &RegisterWeaponBeowulf  , WEAPON_BEOWULF_VERGIL },
-	{ &RegisterWeaponForceEdge, WEAPON_FORCE_EDGE     },
-};
-
-RegisterWeaponHelper * registerWeaponHelper[] =
-{
-	registerWeaponHelperDante,
-	registerWeaponHelperBob,
-	registerWeaponHelperLady,
-	registerWeaponHelperVergil,
-};
-
-uint8 registerWeaponHelperCount[] =
-{
-	countof(registerWeaponHelperDante),
-	countof(registerWeaponHelperBob),
-	countof(registerWeaponHelperLady),
-	countof(registerWeaponHelperVergil),
-};
+//typedef byte8 *(* RegisterWeapon_t)(byte8 *);
+//
+//RegisterWeapon_t RegisterWeaponRebellion       = 0;
+//RegisterWeapon_t RegisterWeaponCerberus        = 0;
+//RegisterWeapon_t RegisterWeaponAgniRudra       = 0;
+//RegisterWeapon_t RegisterWeaponNevan           = 0;
+//RegisterWeapon_t RegisterWeaponBeowulf         = 0;
+//RegisterWeapon_t RegisterWeaponYamato          = 0;
+//RegisterWeapon_t RegisterWeaponYamatoBob       = 0;
+//RegisterWeapon_t RegisterWeaponEbonyIvory      = 0;
+//RegisterWeapon_t RegisterWeaponShotgun         = 0;
+//RegisterWeapon_t RegisterWeaponArtemis         = 0;
+//RegisterWeapon_t RegisterWeaponSpiral          = 0;
+//RegisterWeapon_t RegisterWeaponKalinaAnn       = 0;
+//RegisterWeapon_t RegisterWeaponKalinaAnnLady   = 0;
+//RegisterWeapon_t RegisterWeaponForceEdge       = 0;
+//RegisterWeapon_t RegisterWeaponNeroAngeloSword = 0;
+//
+//struct RegisterWeaponHelper
+//{
+//	RegisterWeapon_t * func;
+//	uint8 id;
+//};
+//
+//RegisterWeaponHelper registerWeaponHelperDante[] =
+//{
+//	{ &RegisterWeaponRebellion , WEAPON_REBELLION   },
+//	{ &RegisterWeaponCerberus  , WEAPON_CERBERUS    },
+//	{ &RegisterWeaponAgniRudra , WEAPON_AGNI_RUDRA  },
+//	{ &RegisterWeaponNevan     , WEAPON_NEVAN       },
+//	{ &RegisterWeaponBeowulf   , WEAPON_BEOWULF     },
+//	{ &RegisterWeaponEbonyIvory, WEAPON_EBONY_IVORY },
+//	{ &RegisterWeaponShotgun   , WEAPON_SHOTGUN     },
+//	{ &RegisterWeaponArtemis   , WEAPON_ARTEMIS     },
+//	{ &RegisterWeaponSpiral    , WEAPON_SPIRAL      },
+//	{ &RegisterWeaponKalinaAnn , WEAPON_KALINA_ANN  },
+//};
+//
+//RegisterWeaponHelper registerWeaponHelperBob[] =
+//{
+//	{ &RegisterWeaponYamatoBob, WEAPON_YAMATO_BOB },
+//};
+//
+//RegisterWeaponHelper registerWeaponHelperLady[] =
+//{
+//	{ &RegisterWeaponKalinaAnn    , WEAPON_KALINA_ANN      },
+//	{ &RegisterWeaponKalinaAnnLady, WEAPON_KALINA_ANN_LADY },
+//};
+//
+//RegisterWeaponHelper registerWeaponHelperVergil[] =
+//{
+//	{ &RegisterWeaponYamato   , WEAPON_YAMATO         },
+//	{ &RegisterWeaponBeowulf  , WEAPON_BEOWULF_VERGIL },
+//	{ &RegisterWeaponForceEdge, WEAPON_FORCE_EDGE     },
+//};
+//
+//RegisterWeaponHelper * registerWeaponHelper[] =
+//{
+//	registerWeaponHelperDante,
+//	registerWeaponHelperBob,
+//	registerWeaponHelperLady,
+//	registerWeaponHelperVergil,
+//};
+//
+//uint8 registerWeaponHelperCount[] =
+//{
+//	countof(registerWeaponHelperDante),
+//	countof(registerWeaponHelperBob),
+//	countof(registerWeaponHelperLady),
+//	countof(registerWeaponHelperVergil),
+//};
 
 byte8 * UpdateWeaponProxy = 0;
 
@@ -319,19 +319,19 @@ __declspec(deprecated) void UpdateWeapon(byte8 * baseAddr)
 	//}
 
 	// Register Weapons
-	{
-		auto & count = registerWeaponHelperCount[character];
-		for (uint8 index = 0; index < count; index++)
-		{
-			auto & RegisterWeapon = *registerWeaponHelper[character][index].func;
-			auto & id = registerWeaponHelper[character][index].id;
-			System_Weapon_weaponMetadata[actor][id] = RegisterWeapon(baseAddr);
-		}
-		if ((character == CHAR_VERGIL) && specialCostume)
-		{
-			RegisterWeaponNeroAngeloSword(baseAddr);
-		}
-	}
+	//{
+	//	auto & count = registerWeaponHelperCount[character];
+	//	for (uint8 index = 0; index < count; index++)
+	//	{
+	//		auto & RegisterWeapon = *registerWeaponHelper[character][index].func;
+	//		auto & id = registerWeaponHelper[character][index].id;
+	//		System_Weapon_weaponMetadata[actor][id] = RegisterWeapon(baseAddr);
+	//	}
+	//	if ((character == CHAR_VERGIL) && specialCostume)
+	//	{
+	//		RegisterWeaponNeroAngeloSword(baseAddr);
+	//	}
+	//}
 
 	// Update Live Variables
 	{
@@ -369,7 +369,7 @@ __declspec(deprecated) void UpdateWeapon(byte8 * baseAddr)
 			auto & weaponId = equipment[selectedMeleeWeapon];
 			auto & lastWeaponId = Dante_Melee_lastWeaponId[actor];
 			lastWeaponId = weaponId;
-			if ((weaponId == WEAPON_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
+			if ((weaponId == WEAPON_DANTE_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
 			{
 				Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
 			}
@@ -391,7 +391,7 @@ void Dante_Melee_UpdateModelAttributes(byte8 * baseAddr, uint8 weaponId)
 	if (lastWeaponId != weaponId)
 	{
 		lastWeaponId = weaponId;
-		if ((weaponId == WEAPON_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
+		if ((weaponId == WEAPON_DANTE_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
 		{
 			Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
 		}
@@ -416,7 +416,7 @@ bool Dante_Melee_IsWeaponReady(byte8 * baseAddr, uint8 weaponId)
 	auto & selectedWeapon = *(uint8  *)(actorBaseAddr + 0x6490);
 	auto   equipment      =  (uint8  *)(actorBaseAddr + 0x6498);
 
-	if (weaponId == WEAPON_BEOWULF)
+	if (weaponId == WEAPON_DANTE_BEOWULF)
 	{
 		if (character == CHAR_VERGIL)
 		{
@@ -429,7 +429,7 @@ bool Dante_Melee_IsWeaponReady(byte8 * baseAddr, uint8 weaponId)
 				return true;
 			}
 			uint8 index = (uint8)(actorModel - 1);
-			if (equipment[index] == WEAPON_BEOWULF)
+			if (equipment[index] == WEAPON_DANTE_BEOWULF)
 			{
 				return true;
 			}
@@ -566,198 +566,198 @@ PrivateEnd;
 void System_Weapon_Init()
 {
 	LogFunction();
-	{
-		RegisterWeapon_t * addr[] =
-		{
-			&RegisterWeaponRebellion,
-			&RegisterWeaponCerberus,
-			&RegisterWeaponAgniRudra,
-			&RegisterWeaponNevan,
-			&RegisterWeaponBeowulf,
-			&RegisterWeaponYamato,
-			&RegisterWeaponYamatoBob,
-			&RegisterWeaponEbonyIvory,
-			&RegisterWeaponShotgun,
-			&RegisterWeaponArtemis,
-			&RegisterWeaponSpiral,
-			&RegisterWeaponForceEdge,
-			&RegisterWeaponNeroAngeloSword,
-		};
-		byte8 * funcAddr[] =
-		{
-			(appBaseAddr + 0x2310B0), // Rebellion
-			(appBaseAddr + 0x22EC90), // Cerberus
-			(appBaseAddr + 0x227870), // Agni & Rudra
-			(appBaseAddr + 0x22A1E0), // Nevan
-			(appBaseAddr + 0x228CF0), // Beowulf
-			(appBaseAddr + 0x22B0C0), // Ebony & Ivory
-			(appBaseAddr + 0x2306B0), // Shotgun
-			(appBaseAddr + 0x22C4A0), // Artemis
-			(appBaseAddr + 0x2300A0), // Spiral
+	//{
+	//	RegisterWeapon_t * addr[] =
+	//	{
+	//		&RegisterWeaponRebellion,
+	//		&RegisterWeaponCerberus,
+	//		&RegisterWeaponAgniRudra,
+	//		&RegisterWeaponNevan,
+	//		&RegisterWeaponBeowulf,
+	//		&RegisterWeaponYamato,
+	//		&RegisterWeaponYamatoBob,
+	//		&RegisterWeaponEbonyIvory,
+	//		&RegisterWeaponShotgun,
+	//		&RegisterWeaponArtemis,
+	//		&RegisterWeaponSpiral,
+	//		&RegisterWeaponForceEdge,
+	//		&RegisterWeaponNeroAngeloSword,
+	//	};
+	//	byte8 * funcAddr[] =
+	//	{
+	//		(appBaseAddr + 0x2310B0), // Rebellion
+	//		(appBaseAddr + 0x22EC90), // Cerberus
+	//		(appBaseAddr + 0x227870), // Agni & Rudra
+	//		(appBaseAddr + 0x22A1E0), // Nevan
+	//		(appBaseAddr + 0x228CF0), // Beowulf
+	//		(appBaseAddr + 0x22B0C0), // Ebony & Ivory
+	//		(appBaseAddr + 0x2306B0), // Shotgun
+	//		(appBaseAddr + 0x22C4A0), // Artemis
+	//		(appBaseAddr + 0x2300A0), // Spiral
 
-			(appBaseAddr + 0x231A30), // Yamato Bob
+	//		(appBaseAddr + 0x231A30), // Yamato Bob
 
-			(appBaseAddr + 0x22D960), // Yamato
-			(appBaseAddr + 0x2298E0), // Force Edge
-			(appBaseAddr + 0x22CF00), // Nero Angelo Sword
-		};
-		byte8 sect1[] =
-		{
-			0x33, 0xD2, //xor edx,edx
-		};
-		for (uint8 index = 0; index < countof(addr); index++)
-		{
-			FUNC func = CreateFunction(funcAddr[index], 0, true, false, 0, sizeof(sect1));
-			memcpy(func.sect1, sect1, sizeof(sect1));
-			*addr[index] = (RegisterWeapon_t)func.addr;
-		}
-		{
-			byte8 sect1[] =
-			{
-				0x33, 0xD2, //xor edx,edx
-				0xB2, 0x09, //mov dl,09
-			};
-			FUNC func = CreateFunction((appBaseAddr + 0x22BA30), 0, true, false, 0, sizeof(sect1));
-			memcpy(func.sect1, sect1, sizeof(sect1));
-			RegisterWeaponKalinaAnn = (RegisterWeapon_t)func.addr;
-		}
-		{
-			byte8 sect1[] =
-			{
-				0x33, 0xD2, //xor edx,edx
-				0xB2, 0x0A, //mov dl,0A
-			};
-			FUNC func = CreateFunction((appBaseAddr + 0x22BA30), 0, true, false, 0, sizeof(sect1));
-			memcpy(func.sect1, sect1, sizeof(sect1));
-			RegisterWeaponKalinaAnnLady = (RegisterWeapon_t)func.addr;
-		}
-	}
-	{
-		FUNC func = CreateFunction((appBaseAddr + 0x212A90));
-		System_Weapon_Dante_UpdateExpertise = (System_Weapon_Dante_UpdateExpertise_t)func.addr;
-	}
-	{
-		FUNC func = CreateFunction(UpdateWeapon, (appBaseAddr + 0x1DF2D2));
-		UpdateWeaponProxy = func.addr;
-	}
-	{
-		byte8 sect0[] =
-		{
-			0x8A, 0x87, 0x18, 0x01, 0x00, 0x00, //mov al,[rdi+00000118]
-			0x84, 0xC0,                         //test al,al
-			0x75, 0x05,                         //jne short
-			0xE9, 0x00, 0x00, 0x00, 0x00,       //jmp dmc3.exe+280120
-		};
-		FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteJump((func.sect0 + 0xA), (appBaseAddr + 0x280120));
-		CycleDante = func.addr;
-	}
-	{
-		byte8 sect0[] =
-		{
-			0x8A, 0x83, 0x18, 0x01, 0x00, 0x00, //mov al,[rbx+00000118]
-			0x84, 0xC0,                         //test al,al
-			0x75, 0x05,                         //jne short
-			0xE9, 0x00, 0x00, 0x00, 0x00,       //jmp dmc3.exe+280160
-		};
-		FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteJump((func.sect0 + 0xA), (appBaseAddr + 0x280160));
-		CycleVergil = func.addr;
-	}
-	{
-		byte8 ** addr[] =
-		{
-			&IsWeaponReadyRebellion,
-			&IsWeaponReadyCerberus,
-			&IsWeaponReadyAgniRudra,
-			&IsWeaponReadyNevan,
-		};
-		byte8 * jumpAddr[] =
-		{
-			(appBaseAddr + 0x231633),
-			(appBaseAddr + 0x22FAD9),
-			(appBaseAddr + 0x2288A9),
-			(appBaseAddr + 0x22AD32),
-		};
-		byte8 sect1[] =
-		{
-			0xB2, 0x00, //mov dl
-		};
-		for (uint8 index = 0; index < countof(addr); index++)
-		{
-			FUNC func = CreateFunction(Dante_Melee_IsWeaponReady, jumpAddr[index], true, false, 0, sizeof(sect1));
-			memcpy(func.sect1, sect1, sizeof(sect1));
-			*(uint8 *)(func.sect1 + 1) = index;
-			*addr[index] = func.addr;
-		}
-	}
-	{
-		byte8 sect1[] =
-		{
-			0xB2, 0x00, //mov dl
-		};
-		byte8 sect2[] =
-		{
-			0x84, 0xC0,                   //test al,al
-			0x74, 0x05,                   //je short
-			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
-		};
-		FUNC func = CreateFunction(Dante_Melee_IsWeaponReady, (appBaseAddr + 0x2295BC), true, false, 0, sizeof(sect1), sizeof(sect2));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		*(uint8 *)(func.sect1 + 1) = WEAPON_BEOWULF;
-		WriteCall((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-		IsWeaponReadyBeowulf = func.addr;
-	}
-	{
-		byte8 sect1[] =
-		{
-			0xB2, 0x00, //mov dl
-		};
-		byte8 sect2[] =
-		{
-			0x84, 0xC0,                   //test al,al
-			0x74, 0x05,                   //je short
-			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
-		};
-		FUNC func = CreateFunction(Dante_Ranged_IsWeaponReady, (appBaseAddr + 0x22CBCD), true, false, 0, sizeof(sect1), sizeof(sect2));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		*(uint8 *)(func.sect1 + 1) = WEAPON_ARTEMIS;
-		WriteCall((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-		IsWeaponReadyArtemis = func.addr;
-	}
-	{
-		byte8 sect0[] =
-		{
-			0x89, 0x9F, 0x90, 0x64, 0x00, 0x00, //mov [rdi+00006490],ebx
+	//		(appBaseAddr + 0x22D960), // Yamato
+	//		(appBaseAddr + 0x2298E0), // Force Edge
+	//		(appBaseAddr + 0x22CF00), // Nero Angelo Sword
+	//	};
+	//	byte8 sect1[] =
+	//	{
+	//		0x33, 0xD2, //xor edx,edx
+	//	};
+	//	for (uint8 index = 0; index < countof(addr); index++)
+	//	{
+	//		FUNC func = CreateFunction(funcAddr[index], 0, true, false, 0, sizeof(sect1));
+	//		memcpy(func.sect1, sect1, sizeof(sect1));
+	//		*addr[index] = (RegisterWeapon_t)func.addr;
+	//	}
+	//	{
+	//		byte8 sect1[] =
+	//		{
+	//			0x33, 0xD2, //xor edx,edx
+	//			0xB2, 0x09, //mov dl,09
+	//		};
+	//		FUNC func = CreateFunction((appBaseAddr + 0x22BA30), 0, true, false, 0, sizeof(sect1));
+	//		memcpy(func.sect1, sect1, sizeof(sect1));
+	//		RegisterWeaponKalinaAnn = (RegisterWeapon_t)func.addr;
+	//	}
+	//	{
+	//		byte8 sect1[] =
+	//		{
+	//			0x33, 0xD2, //xor edx,edx
+	//			0xB2, 0x0A, //mov dl,0A
+	//		};
+	//		FUNC func = CreateFunction((appBaseAddr + 0x22BA30), 0, true, false, 0, sizeof(sect1));
+	//		memcpy(func.sect1, sect1, sizeof(sect1));
+	//		RegisterWeaponKalinaAnnLady = (RegisterWeapon_t)func.addr;
+	//	}
+	//}
+	//{
+	//	FUNC func = CreateFunction((appBaseAddr + 0x212A90));
+	//	System_Weapon_Dante_UpdateExpertise = (System_Weapon_Dante_UpdateExpertise_t)func.addr;
+	//}
+	//{
+	//	FUNC func = CreateFunction(UpdateWeapon, (appBaseAddr + 0x1DF2D2));
+	//	UpdateWeaponProxy = func.addr;
+	//}
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x8A, 0x87, 0x18, 0x01, 0x00, 0x00, //mov al,[rdi+00000118]
+	//		0x84, 0xC0,                         //test al,al
+	//		0x75, 0x05,                         //jne short
+	//		0xE9, 0x00, 0x00, 0x00, 0x00,       //jmp dmc3.exe+280120
+	//	};
+	//	FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteJump((func.sect0 + 0xA), (appBaseAddr + 0x280120));
+	//	CycleDante = func.addr;
+	//}
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x8A, 0x83, 0x18, 0x01, 0x00, 0x00, //mov al,[rbx+00000118]
+	//		0x84, 0xC0,                         //test al,al
+	//		0x75, 0x05,                         //jne short
+	//		0xE9, 0x00, 0x00, 0x00, 0x00,       //jmp dmc3.exe+280160
+	//	};
+	//	FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteJump((func.sect0 + 0xA), (appBaseAddr + 0x280160));
+	//	CycleVergil = func.addr;
+	//}
+	//{
+	//	byte8 ** addr[] =
+	//	{
+	//		&IsWeaponReadyRebellion,
+	//		&IsWeaponReadyCerberus,
+	//		&IsWeaponReadyAgniRudra,
+	//		&IsWeaponReadyNevan,
+	//	};
+	//	byte8 * jumpAddr[] =
+	//	{
+	//		(appBaseAddr + 0x231633),
+	//		(appBaseAddr + 0x22FAD9),
+	//		(appBaseAddr + 0x2288A9),
+	//		(appBaseAddr + 0x22AD32),
+	//	};
+	//	byte8 sect1[] =
+	//	{
+	//		0xB2, 0x00, //mov dl
+	//	};
+	//	for (uint8 index = 0; index < countof(addr); index++)
+	//	{
+	//		FUNC func = CreateFunction(Dante_Melee_IsWeaponReady, jumpAddr[index], true, false, 0, sizeof(sect1));
+	//		memcpy(func.sect1, sect1, sizeof(sect1));
+	//		*(uint8 *)(func.sect1 + 1) = index;
+	//		*addr[index] = func.addr;
+	//	}
+	//}
+	//{
+	//	byte8 sect1[] =
+	//	{
+	//		0xB2, 0x00, //mov dl
+	//	};
+	//	byte8 sect2[] =
+	//	{
+	//		0x84, 0xC0,                   //test al,al
+	//		0x74, 0x05,                   //je short
+	//		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
+	//	};
+	//	FUNC func = CreateFunction(Dante_Melee_IsWeaponReady, (appBaseAddr + 0x2295BC), true, false, 0, sizeof(sect1), sizeof(sect2));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	memcpy(func.sect2, sect2, sizeof(sect2));
+	//	*(uint8 *)(func.sect1 + 1) = WEAPON_BEOWULF;
+	//	WriteCall((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+	//	IsWeaponReadyBeowulf = func.addr;
+	//}
+	//{
+	//	byte8 sect1[] =
+	//	{
+	//		0xB2, 0x00, //mov dl
+	//	};
+	//	byte8 sect2[] =
+	//	{
+	//		0x84, 0xC0,                   //test al,al
+	//		0x74, 0x05,                   //je short
+	//		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
+	//	};
+	//	FUNC func = CreateFunction(Dante_Ranged_IsWeaponReady, (appBaseAddr + 0x22CBCD), true, false, 0, sizeof(sect1), sizeof(sect2));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	memcpy(func.sect2, sect2, sizeof(sect2));
+	//	*(uint8 *)(func.sect1 + 1) = WEAPON_ARTEMIS;
+	//	WriteCall((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+	//	IsWeaponReadyArtemis = func.addr;
+	//}
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x89, 0x9F, 0x90, 0x64, 0x00, 0x00, //mov [rdi+00006490],ebx
 
-		};
-		byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xCF, //mov rcx,rdi
-		};
-		FUNC func = CreateFunction(Dante_Melee_SetWeapon, (appBaseAddr + 0x1EA9E4), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		Dante_Melee_SetWeaponProxy = func.addr;
-	}
-	{
-		byte8 sect0[] =
-		{
-			0x89, 0x9F, 0x94, 0x64, 0x00, 0x00, //mov [rdi+00006494],ebx
-		};
-		byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xCF, //mov rcx,rdi
-		};
-		FUNC func = CreateFunction(Dante_Ranged_SetWeapon, (appBaseAddr + 0x1EAAD1), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		Dante_Ranged_SetWeaponProxy = func.addr;
-	}
+	//	};
+	//	byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCF, //mov rcx,rdi
+	//	};
+	//	FUNC func = CreateFunction(Dante_Melee_SetWeapon, (appBaseAddr + 0x1EA9E4), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	Dante_Melee_SetWeaponProxy = func.addr;
+	//}
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x89, 0x9F, 0x94, 0x64, 0x00, 0x00, //mov [rdi+00006494],ebx
+	//	};
+	//	byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCF, //mov rcx,rdi
+	//	};
+	//	FUNC func = CreateFunction(Dante_Ranged_SetWeapon, (appBaseAddr + 0x1EAAD1), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	Dante_Ranged_SetWeaponProxy = func.addr;
+	//}
 }
 
 void System_Weapon_ToggleUpdateWeapon(bool enable)

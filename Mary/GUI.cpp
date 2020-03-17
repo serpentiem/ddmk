@@ -75,7 +75,7 @@ void GUI_System_Actor()
 		Config.System.Actor.disableIdleTimer
 	))
 	{
-		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
+		//System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
 	}
 }
 
@@ -210,6 +210,32 @@ void GUI_System_Draw()
 
 void GUI_Game_Arcade()
 {
+
+
+	//static uint8 character = CHAR_DANTE;
+
+	if (GUI_Button("CreateActor"))
+	{
+		auto baseAddr = CreateActor(CHAR_DANTE, ACTOR_TWO);
+		Log("baseAddr %llX", baseAddr);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	ImGui::Text(Locale.Game.Arcade.header);
 	ImGui::SameLine();
 	GUI_Tooltip(Locale.Game.Arcade.description);
@@ -939,7 +965,7 @@ void GUI_Game_WeaponSwitcher()
 		Config.Game.WeaponSwitcher.devil
 	))
 	{
-		System_Actor_UpdateDevilModel(Config.Game.WeaponSwitcher.devil);
+		//System_Actor_UpdateDevilModel(Config.Game.WeaponSwitcher.devil);
 	}
 	GUI_Combo<uint8>
 	(
@@ -1247,7 +1273,7 @@ void GUI_Cosmetics_Dante()
 			{
 				continue;
 			}
-			if ((weapon == WEAPON_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
+			if ((weapon == WEAPON_DANTE_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
 			{
 				Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
 			}
@@ -1425,38 +1451,38 @@ void GUI_Tools_Repair()
 			return;
 		}
 		auto count = System_Actor_GetActorCount();
-		for (uint8 actor = 0; actor < count; actor++)
-		{
-			auto & baseAddr = System_Actor_actorBaseAddr[actor];
-			if (!baseAddr)
-			{
-				continue;
-			}
-			auto & character = *(uint8 *)(baseAddr + 0x78);
-			auto equipment = (uint8 *)(baseAddr + 0x6498);
-			vp_memset(equipment, 0, 8);
-			switch (character)
-			{
-			case CHAR_DANTE:
-				equipment[0] = WEAPON_REBELLION;
-				equipment[1] = WEAPON_CERBERUS;
-				equipment[2] = WEAPON_EBONY_IVORY;
-				equipment[3] = WEAPON_SHOTGUN;
-				break;
-			case CHAR_BOB:
-				equipment[0] = WEAPON_YAMATO_BOB;
-				break;
-			case CHAR_LADY:
-				equipment[2] = WEAPON_KALINA_ANN;
-				equipment[4] = 11;
-				break;
-			case CHAR_VERGIL:
-				equipment[0] = WEAPON_YAMATO;
-				equipment[1] = WEAPON_BEOWULF_VERGIL;
-				equipment[2] = WEAPON_FORCE_EDGE;
-				break;
-			}
-		}
+		//for (uint8 actor = 0; actor < count; actor++)
+		//{
+		//	auto & baseAddr = System_Actor_actorBaseAddr[actor];
+		//	if (!baseAddr)
+		//	{
+		//		continue;
+		//	}
+		//	auto & character = *(uint8 *)(baseAddr + 0x78);
+		//	auto equipment = (uint8 *)(baseAddr + 0x6498);
+		//	vp_memset(equipment, 0, 8);
+		//	switch (character)
+		//	{
+		//	case CHAR_DANTE:
+		//		equipment[0] = WEAPON_DANTE_REBELLION;
+		//		equipment[1] = WEAPON_DANTE_CERBERUS;
+		//		equipment[2] = WEAPON_EBONY_IVORY;
+		//		equipment[3] = WEAPON_SHOTGUN;
+		//		break;
+		//	case CHAR_BOB:
+		//		equipment[0] = WEAPON_YAMATO_BOB;
+		//		break;
+		//	case CHAR_LADY:
+		//		equipment[2] = WEAPON_KALINA_ANN;
+		//		equipment[4] = 11;
+		//		break;
+		//	case CHAR_VERGIL:
+		//		equipment[0] = WEAPON_YAMATO;
+		//		equipment[1] = WEAPON_BEOWULF_VERGIL;
+		//		equipment[2] = WEAPON_FORCE_EDGE;
+		//		break;
+		//	}
+		//}
 	};
 	auto ResetRangedWeaponLevels = []()
 	{
@@ -2003,7 +2029,7 @@ void GUI_Overlay_Draw()
 		}
 
 
-		ImGui::Text("devilCounter %u", devilCounter);
+		//ImGui::Text("devilCounter %u", devilCounter);
 
 
 		//ImGui::Text("Delta %f", Update_delta);

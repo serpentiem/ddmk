@@ -20,6 +20,7 @@ func_1FAF40_t func_1FAF40 = 0;
 func_1EEF80_t func_1EEF80 = 0;
 func_2EE060_t func_2EE060 = 0;
 func_1DE820_t func_1DE820 = 0;
+func_1BB390_t func_1BB390 = 0;
 func_217B90_t func_217B90 = 0;
 func_223CB0_t func_223CB0 = 0;
 func_1DFC20_t func_1DFC20 = 0;
@@ -117,8 +118,12 @@ void Internal_Init()
 		func_2EE060 = (func_2EE060_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x1DE820));
+		auto func = CreateFunction((appBaseAddr + 0x1DE820), 0, true, false);
 		func_1DE820 = (func_1DE820_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x1BB390));
+		func_1BB390 = (func_1BB390_t)func.addr;
 	}
 	{
 		auto func = CreateFunction((appBaseAddr + 0x217B90));
@@ -133,55 +138,55 @@ void Internal_Init()
 		func_1DFC20 = (func_1DFC20_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x2310B0));
+		auto func = CreateFunction((appBaseAddr + 0x2310B0), 0, true, false);
 		func_2310B0 = (func_2310B0_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x22EC90));
+		auto func = CreateFunction((appBaseAddr + 0x22EC90), 0, true, false);
 		func_22EC90 = (func_22EC90_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x227870));
+		auto func = CreateFunction((appBaseAddr + 0x227870), 0, true, false);
 		func_227870 = (func_227870_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x22A1E0));
+		auto func = CreateFunction((appBaseAddr + 0x22A1E0), 0, true, false);
 		func_22A1E0 = (func_22A1E0_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x228CF0));
+		auto func = CreateFunction((appBaseAddr + 0x228CF0), 0, true, false);
 		func_228CF0 = (func_228CF0_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x22B0C0));
+		auto func = CreateFunction((appBaseAddr + 0x22B0C0), 0, true, false);
 		func_22B0C0 = (func_22B0C0_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x2306B0));
+		auto func = CreateFunction((appBaseAddr + 0x2306B0), 0, true, false);
 		func_2306B0 = (func_2306B0_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x22C4A0));
+		auto func = CreateFunction((appBaseAddr + 0x22C4A0), 0, true, false);
 		func_22C4A0 = (func_22C4A0_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x2300A0));
+		auto func = CreateFunction((appBaseAddr + 0x2300A0), 0, true, false);
 		func_2300A0 = (func_2300A0_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x22BA30));
+		auto func = CreateFunction((appBaseAddr + 0x22BA30), 0, true, false);
 		func_22BA30 = (func_22BA30_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x22D960));
+		auto func = CreateFunction((appBaseAddr + 0x22D960), 0, true, false);
 		func_22D960 = (func_22D960_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x2298E0));
+		auto func = CreateFunction((appBaseAddr + 0x2298E0), 0, true, false);
 		func_2298E0 = (func_2298E0_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x22CF00));
+		auto func = CreateFunction((appBaseAddr + 0x22CF00), 0, true, false);
 		func_22CF00 = (func_22CF00_t)func.addr;
 	}
 }

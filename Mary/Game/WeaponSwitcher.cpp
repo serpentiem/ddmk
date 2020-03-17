@@ -329,7 +329,7 @@ void Game_WeaponSwitcher_Toggle(bool enable)
 	{
 		WriteJump((appBaseAddr + 0x1EA980), Melee_UpdateWeaponProxy, 2);
 		WriteJump((appBaseAddr + 0x1EAA6D), Ranged_UpdateWeaponProxy, 2);
-		System_Actor_UpdateDevilModel(Config.Game.WeaponSwitcher.devil);
+		//System_Actor_UpdateDevilModel(Config.Game.WeaponSwitcher.devil);
 	}
 	else
 	{
@@ -347,6 +347,6 @@ void Game_WeaponSwitcher_Toggle(bool enable)
 			};
 			vp_memcpy((appBaseAddr + 0x1EAA6D), buffer, sizeof(buffer));
 		}
-		System_Actor_ResetDevilModel();
+		//System_Actor_ResetDevilModel();
 	}
 }
