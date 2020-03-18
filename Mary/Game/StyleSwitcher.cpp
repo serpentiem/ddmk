@@ -98,43 +98,43 @@ void UpdateStyle(byte8 * baseAddr, uint32 index)
 		System_Weapon_Dante_UpdateExpertise(baseAddr);
 	}
 
-	UpdateActor2Start:
-	{
-		auto & baseAddr2 = System_Actor_actorBaseAddr[ACTOR_TWO];
-		if (!baseAddr2)
-		{
-			goto UpdateActor2End;
-		}
-		auto & character2            = *(uint8  *)(baseAddr2 + 0x78  );
-		auto & style2                = *(uint32 *)(baseAddr2 + 0x6338);
-		auto & isControlledByPlayer2 = *(bool   *)(baseAddr2 + 0x6480);
+	//UpdateActor2Start:
+	//{
+	//	auto & baseAddr2 = System_Actor_actorBaseAddr[ACTOR_TWO];
+	//	if (!baseAddr2)
+	//	{
+	//		goto UpdateActor2End;
+	//	}
+	//	auto & character2            = *(uint8  *)(baseAddr2 + 0x78  );
+	//	auto & style2                = *(uint32 *)(baseAddr2 + 0x6338);
+	//	auto & isControlledByPlayer2 = *(bool   *)(baseAddr2 + 0x6480);
 
-		if (Config.System.Actor.forceSingleActor)
-		{
-			goto UpdateActor2End;
-		}
-		if (actor != ACTOR_ONE)
-		{
-			goto UpdateActor2End;
-		}
-		if (character != character2)
-		{
-			goto UpdateActor2End;
-		}
-		if ((index == STYLE_QUICKSILVER) /*|| (index == STYLE_DOPPELGANGER)*/)
-		{
-			goto UpdateActor2End;
-		}
-		if (!isControlledByPlayer2)
-		{
-			style2 = index;
-			if ((index == STYLE_SWORDMASTER) || (index == STYLE_GUNSLINGER))
-			{
-				System_Weapon_Dante_UpdateExpertise(baseAddr2);
-			}
-		}
-	}
-	UpdateActor2End:
+	//	if (Config.System.Actor.forceSingleActor)
+	//	{
+	//		goto UpdateActor2End;
+	//	}
+	//	if (actor != ACTOR_ONE)
+	//	{
+	//		goto UpdateActor2End;
+	//	}
+	//	if (character != character2)
+	//	{
+	//		goto UpdateActor2End;
+	//	}
+	//	if ((index == STYLE_QUICKSILVER) /*|| (index == STYLE_DOPPELGANGER)*/)
+	//	{
+	//		goto UpdateActor2End;
+	//	}
+	//	if (!isControlledByPlayer2)
+	//	{
+	//		style2 = index;
+	//		if ((index == STYLE_SWORDMASTER) || (index == STYLE_GUNSLINGER))
+	//		{
+	//			System_Weapon_Dante_UpdateExpertise(baseAddr2);
+	//		}
+	//	}
+	//}
+	//UpdateActor2End:
 
 	if (actor == ACTOR_ONE)
 	{
@@ -180,7 +180,7 @@ void Game_StyleSwitcher_Controller()
 			{
 				if (execute[actor][style])
 				{
-					UpdateStyle(System_Actor_actorBaseAddr[actor], style);
+					//UpdateStyle(System_Actor_actorBaseAddr[actor], style);
 					execute[actor][style] = false;
 				}
 			}
@@ -207,7 +207,7 @@ void Game_StyleSwitcher_Controller()
 		{
 			if (execute[actor][4])
 			{
-				UpdateStyle(System_Actor_actorBaseAddr[actor], STYLE_DOPPELGANGER);
+				//UpdateStyle(System_Actor_actorBaseAddr[actor], STYLE_DOPPELGANGER);
 				execute[actor][4] = false;
 			}
 		}

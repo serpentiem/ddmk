@@ -24,7 +24,7 @@ void Game_Vergil_Init()
 		};
 		FUNC func = CreateFunction(0, (appBaseAddr + 0x1DB8FD), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		Write<byte **>((func.sect0 + 2), &System_Actor_actorBaseAddr[ACTOR_ONE]);
+		//Write<byte **>((func.sect0 + 2), &System_Actor_actorBaseAddr[ACTOR_ONE]);
 		WriteAddress((func.sect0 + 0x1A), (appBaseAddr + 0x1DB8FD), 6);
 		Levitate = func.addr;
 	}

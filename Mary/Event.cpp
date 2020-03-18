@@ -1,11 +1,125 @@
-
-
-
 // @Todo: Define Private.
-
 // @Todo: Create Helpers.
 
 #include "Event.h"
+
+
+
+
+/*
+dmc3.exe+23C779 - E8 A220FAFF           - call dmc3.exe+1DE820 Main
+dmc3.exe+2134DE - E8 3DB3FCFF           - call dmc3.exe+1DE820 Doppelganger
+dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
+
+
+
+
+
+
+
+
+
+
+
+
+
+dmc3.exe+1BB02D - 48 8B 05 F45DAD00     - mov rax,[dmc3.exe+C90E28] { (01A44800) }
+dmc3.exe+1BB034 - 33 F6                 - xor esi,esi
+dmc3.exe+1BB036 - 0FB6 8D 88000000      - movzx ecx,byte ptr [rbp+00000088]
+dmc3.exe+1BB03D - 8B FE                 - mov edi,esi
+dmc3.exe+1BB03F - C7 44 24 6C 0000803F  - mov [rsp+6C],3F800000 { (0) }
+dmc3.exe+1BB047 - 48 8B 4C C8 18        - mov rcx,[rax+rcx*8+18]
+
+
+
+
+*/
+
+
+bool spawnActors = false;
+
+
+
+PrivateStart;
+
+void WritePool()
+{
+	LogFunction();
+}
+
+void ClearPool()
+{
+	LogFunction();
+
+	System_Actor_mainActorBaseAddr = 0;
+	System_Actor_mainCloneBaseAddr = 0;
+
+	memset(System_Actor_actorBaseAddr, 0, (MAX_ACTOR * 8));
+	memset(System_Actor_cloneBaseAddr, 0, (MAX_ACTOR * 8));
+}
+
+void CreateMainActor(byte8 * baseAddr)
+{
+	LogFunction(baseAddr);
+	System_Actor_mainActorBaseAddr = baseAddr;
+	auto & isDefault = *(bool *)(baseAddr + 0xB8C0) = true;
+	spawnActors = true;
+}
+
+void CreateMainClone(byte8 * baseAddr)
+{
+	LogFunction(baseAddr);
+	System_Actor_mainCloneBaseAddr = baseAddr;
+}
+
+PrivateEnd;
+
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma region FUCK
+
+
+
+
+void func()
+{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -37,19 +151,19 @@ static void Actor_StageLoadComplete()
 
 	// Adjust style.
 
-	{
-		auto & baseAddr1 = System_Actor_actorBaseAddr[ACTOR_ONE];
-		if (!baseAddr1)
-		{
-			goto sect0;
-		}
-		auto & style = *(uint32 *)(baseAddr1 + 0x6338);
-		if ((style == STYLE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
-		{
-			style = STYLE_TRICKSTER;
-		}
-	}
-	sect0:
+	//{
+	//	auto & baseAddr1 = System_Actor_actorBaseAddr[ACTOR_ONE];
+	//	if (!baseAddr1)
+	//	{
+	//		goto sect0;
+	//	}
+	//	auto & style = *(uint32 *)(baseAddr1 + 0x6338);
+	//	if ((style == STYLE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
+	//	{
+	//		style = STYLE_TRICKSTER;
+	//	}
+	//}
+	//sect0:
 	
 
 
@@ -78,17 +192,17 @@ static void Actor_StageLoadComplete()
 	{
 		return;
 	}
-	auto count = System_Actor_GetActorCount();
-	for (uint8 actor = ACTOR_TWO; actor < count; actor++)
-	{
-		auto & baseAddr = System_Actor_actorBaseAddr[actor];
-		if (!baseAddr)
-		{
-			continue;
-		}
-		auto & isDoppelganger = *(bool *)(baseAddr + 0x11C) = true;
-		auto & shadow = *(uint8 *)(baseAddr + 0x3A18) = 0;
-	}
+	//auto count = System_Actor_GetActorCount();
+	//for (uint8 actor = ACTOR_TWO; actor < count; actor++)
+	//{
+	//	auto & baseAddr = System_Actor_actorBaseAddr[actor];
+	//	if (!baseAddr)
+	//	{
+	//		continue;
+	//	}
+	//	auto & isDoppelganger = *(bool *)(baseAddr + 0x11C) = true;
+	//	auto & shadow = *(uint8 *)(baseAddr + 0x3A18) = 0;
+	//}
 }
 
 #pragma endregion
@@ -123,9 +237,9 @@ static void Arcade_InitSession()
 	float32 * styleExperience    =  (float32 *)(addr + 0xF8 );
 	uint32  * expertise          =  (uint32  *)(addr + 0x110);
 
-	//mission = Config.Game.Arcade.mission;
+	mission = Config.Game.Arcade.mission;
 
-	mission = 17;
+	//mission = 17;
 
 
 	ModeStart:
@@ -1088,22 +1202,40 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 
 
 
+#pragma endregion
 
 
 
 
 
 
-void ClearActorPool()
-{
-	LogFunction();
-	Doppelganger_ToggleForceActorUpdate(false);
-}
 
-void SetActorPool()
-{
-	LogFunction();
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1112,34 +1244,153 @@ void SetActorPool()
 void Event_Init()
 {
 	LogFunction();
-	//{
-	//	byte8 sect0[] =
-	//	{
-	//		0x48, 0x89, 0x0D, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rcx
-	//	};
-	//	FUNC func = CreateFunction(ClearActorPool, (appBaseAddr + 0x23B39A), true, true, sizeof(sect0));
-	//	memcpy(func.sect0, sect0, sizeof(sect0));
-	//	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-	//	//WriteJump((appBaseAddr + 0x23B393), func.addr, 2);
-	//	/*
-	//	dmc3.exe+23B393 - 48 89 0D 8E5AA500 - mov [dmc3.exe+C90E28],rcx
-	//	dmc3.exe+23B39A - 48 89 0D 975AA500 - mov [dmc3.exe+C90E38],rcx
-	//	*/
-	//}
-	//{
-	//	byte8 sect0[] =
-	//	{
-	//		0x48, 0x89, 0x15, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rdx
-	//	};
-	//	FUNC func = CreateFunction(SetActorPool, (appBaseAddr + 0x23E69F), true, true, sizeof(sect0));
-	//	memcpy(func.sect0, sect0, sizeof(sect0));
-	//	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-	//	//WriteJump((appBaseAddr + 0x23E698), func.addr, 2);
-	//	/*
-	//	dmc3.exe+23E698 - 48 89 15 8927A500 - mov [dmc3.exe+C90E28],rdx
-	//	dmc3.exe+23E69F - 48 8D 83 D06A0000 - lea rax,[rbx+00006AD0]
-	//	*/
-	//}
+
+	{
+		byte8 sect0[] =
+		{
+			0x48, 0x89, 0x15, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rdx
+		};
+		auto func = CreateFunction(WritePool, (appBaseAddr + 0x23E69F), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
+		WriteJump((appBaseAddr + 0x23E698), func.addr, 2);
+		/*
+		dmc3.exe+23E698 - 48 89 15 8927A500 - mov [dmc3.exe+C90E28],rdx
+		dmc3.exe+23E69F - 48 8D 83 D06A0000 - lea rax,[rbx+00006AD0]
+		*/
+	}
+	{
+		byte8 sect0[] =
+		{
+			0x48, 0x89, 0x0D, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rcx
+		};
+		auto func = CreateFunction(ClearPool, (appBaseAddr + 0x23B39A), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
+		WriteJump((appBaseAddr + 0x23B393), func.addr, 2);
+		/*
+		dmc3.exe+23B393 - 48 89 0D 8E5AA500 - mov [dmc3.exe+C90E28],rcx
+		dmc3.exe+23B39A - 48 89 0D 975AA500 - mov [dmc3.exe+C90E38],rcx
+		*/
+	}
+
+	{
+		byte8 sect0[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1DE820
+		};
+		byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xC8, //mov rcx,rax
+		};
+		auto func = CreateFunction(CreateMainActor, (appBaseAddr + 0x23C77E), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
+		WriteJump((appBaseAddr + 0x23C779), func.addr);
+		/*
+		dmc3.exe+23C779 - E8 A220FAFF       - call dmc3.exe+1DE820
+		dmc3.exe+23C77E - 48 89 87 B82C0000 - mov [rdi+00002CB8],rax
+		*/
+	}
+	{
+		byte8 sect0[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1DE820
+		};
+		byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xC8, //mov rcx,rax
+		};
+		auto func = CreateFunction(CreateMainClone, (appBaseAddr + 0x2134E3), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
+		WriteJump((appBaseAddr + 0x2134DE), func.addr);
+		/*
+		dmc3.exe+2134DE - E8 3DB3FCFF       - call dmc3.exe+1DE820
+		dmc3.exe+2134E3 - 48 89 86 78640000 - mov [rsi+00006478],rax
+		*/
+	}
+	{
+		byte8 sect0[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1DE820
+		};
+		byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xC8, //mov rcx,rax
+		};
+		auto func = CreateFunction(CreateMainClone, (appBaseAddr + 0x211E88), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
+		WriteJump((appBaseAddr + 0x211E83), func.addr);
+		/*
+		dmc3.exe+211E83 - E8 98C9FCFF       - call dmc3.exe+1DE820
+		dmc3.exe+211E88 - 48 89 83 78640000 - mov [rbx+00006478],rax
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/*
+dmc3.exe+23C779 - E8 A220FAFF           - call dmc3.exe+1DE820 Main
+dmc3.exe+2134DE - E8 3DB3FCFF           - call dmc3.exe+1DE820 Doppelganger
+dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
+	*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

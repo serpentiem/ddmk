@@ -937,7 +937,7 @@ void UpdateDevilModelTemplate
 			System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
 		);
 
-		//func_8A000(dest, 0, dest2);
+		func_8A000(dest, 0, dest2);
 
 		RegisterShadow
 		(

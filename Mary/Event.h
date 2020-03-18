@@ -13,6 +13,8 @@
 
 #include "Cosmetics/Color.h"
 
+extern bool spawnActors;
+
 void Event_Init();
 void Event_ToggleSkipIntro(bool enable);
 void Event_ToggleSkipCutscenes(bool enable);

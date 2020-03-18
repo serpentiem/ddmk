@@ -49,7 +49,7 @@ void Game_ResetMotionState_Controller()
 		{
 			if (execute[actor])
 			{
-				auto & motionState = *(byte8 *)(System_Actor_actorBaseAddr[actor] + 0x3E66) = 0;
+				//auto & motionState = *(byte8 *)(System_Actor_actorBaseAddr[actor] + 0x3E66) = 0;
 				execute[actor] = false;
 			}
 		}

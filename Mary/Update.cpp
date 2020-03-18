@@ -80,16 +80,58 @@ void VergilMillionStab()
 
 void MainLoop()
 {
-	uint64 tickCount           = 0;
-	uint32 elapsedMilliseconds = 0;
+	//uint64 tickCount           = 0;
+	//uint32 elapsedMilliseconds = 0;
 
-	Windows_GetTickCount(&tickCount);
-	elapsedMilliseconds = (uint32)((tickCount - savedTickCount) / ticksPerMillisecond);
+	//Windows_GetTickCount(&tickCount);
+	//elapsedMilliseconds = (uint32)((tickCount - savedTickCount) / ticksPerMillisecond);
 
-	if (elapsedMilliseconds >= 1000)
+	//if (elapsedMilliseconds >= 1000)
+	//{
+	//	savedTickCount = tickCount;
+	//}
+
+
+	if (spawnActors)
 	{
-		savedTickCount = tickCount;
+		spawnActors = false;
+
+		Log("Spawn Actors.");
+
+		System_Actor_actorBaseAddr[ACTOR_TWO] = CreateActor(CHAR_DANTE, ACTOR_TWO);
+
+		Log("System_Actor_actorBaseAddr %llX", System_Actor_actorBaseAddr[ACTOR_TWO]);
+
+
+
+		//auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E28);
+
+		//g_pool[3] = System_Actor_actorBaseAddr[ACTOR_ONE];
+
+
+
+
+
+
+
 	}
+
+
+
+
+
+	return;
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -104,38 +146,92 @@ void MainLoop()
 
 
 
-	InGameStart:
-	{
-		//if (!InGame())
-		//{
-		//	goto InGameEnd;
-		//}
-		if (Config.Game.StyleSwitcher.enable)
-		{
-			Game_StyleSwitcher_Controller();
-		}
-		if (Config.Game.ResetMotionState.enable)
-		{
-			Game_ResetMotionState_Controller();
-		}
-		System_HUD_Update();
+	//InGameStart:
+	//{
+	//	//if (!InGame())
+	//	//{
+	//	//	goto InGameEnd;
+	//	//}
+	//	if (Config.Game.StyleSwitcher.enable)
+	//	{
+	//		Game_StyleSwitcher_Controller();
+	//	}
+	//	if (Config.Game.ResetMotionState.enable)
+	//	{
+	//		Game_ResetMotionState_Controller();
+	//	}
+	//	System_HUD_Update();
 
-		CameraStart:
-		{
-			if (!Config.Camera.applyConfig)
-			{
-				goto CameraEnd;
-			}
-			uint32 remainder = (elapsedMilliseconds % Config.Camera.rate);
-			if (!remainder)
-			{
-				Camera_Update(Config);
-			}
-		}
-		CameraEnd:;
-	}
-	InGameEnd:;
+	//	CameraStart:
+	//	{
+	//		if (!Config.Camera.applyConfig)
+	//		{
+	//			goto CameraEnd;
+	//		}
+	//		uint32 remainder = (elapsedMilliseconds % Config.Camera.rate);
+	//		if (!remainder)
+	//		{
+	//			Camera_Update(Config);
+	//		}
+	//	}
+	//	CameraEnd:;
+	//}
+	//InGameEnd:;
 }
+
+
+/*
+dmc3.exe+1E2495 - movzx r8d,byte ptr [rbx+00000118]
+dmc3.exe+1E8866 - movzx r8d,byte ptr [rcx+00000118]
+dmc3.exe+1E9869 - movzx eax,byte ptr [rdi+00000118]
+dmc3.exe+1EACB6 - movzx r8d,byte ptr [rcx+00000118]
+dmc3.exe+1F8401 - movzx edx,byte ptr [rdi+00000118]
+dmc3.exe+1F840D - movzx r8d,byte ptr [rdi+00000118]
+dmc3.exe+1F90BD - movzx edx,byte ptr [rdi+00000118]
+dmc3.exe+21295A - movzx eax,byte ptr [rdi+00000118]
+dmc3.exe+2129B2 - movzx eax,byte ptr [rdi+00000118]
+dmc3.exe+215457 - movzx eax,byte ptr [rdi+00000118]
+dmc3.exe+21547C - movzx eax,byte ptr [rdi+00000118]
+dmc3.exe+2154EE - movzx eax,byte ptr [rdi+00000118]
+dmc3.exe+215B7A - movzx eax,byte ptr [rdi+00000118]
+dmc3.exe+22821B - movzx eax,byte ptr [rdi+00000118]
+dmc3.exe+22847C - movzx eax,byte ptr [rdi+00000118]
+dmc3.exe+22889D - movzx edx,byte ptr [rdi+00000118]
+dmc3.exe+229E82 - movzx edx,byte ptr [rbx+00000118]
+dmc3.exe+229F38 - movzx r8d,byte ptr [rbx+00000118]
+dmc3.exe+22AA2F - movzx r8d,byte ptr [rbx+00000118]
+dmc3.exe+22AAF8 - movzx eax,byte ptr [rbx+00000118]
+dmc3.exe+22AD26 - movzx edx,byte ptr [rbx+00000118]
+dmc3.exe+22BFA1 - movzx eax,byte ptr [rdi+00000118]
+dmc3.exe+22BFDC - movzx r8d,byte ptr [rdi+00000118]
+dmc3.exe+22F6E3 - movzx r8d,byte ptr [rbx+00000118]
+dmc3.exe+22F93B - movzx eax,byte ptr [rbx+00000118]
+dmc3.exe+22FA95 - movzx edx,byte ptr [rbx+00000118]
+dmc3.exe+230439 - movzx eax,byte ptr [rbx+00000118]
+dmc3.exe+23046F - movzx r8d,byte ptr [rbx+00000118]
+dmc3.exe+230C00 - movzx eax,byte ptr [rbx+00000118]
+dmc3.exe+230C51 - movzx r8d,byte ptr [rbx+00000118]
+dmc3.exe+231624 - movzx edx,byte ptr [rbx+00000118]
+dmc3.exe+2316DA - movzx r8d,byte ptr [rbx+00000118]
+*/
+
+
+
+/*
+dmc3.exe+1BE7A9 - 48 8B 0D 7826AD00 - mov rcx,[dmc3.exe+C90E28]
+dmc3.exe+1BE7B3 - E8 C810FFFF       - call dmc3.exe+1AF880
+*/
+
+
+
+
+
+
+
+
+
+
+
 
 // Wow, same crap.
 

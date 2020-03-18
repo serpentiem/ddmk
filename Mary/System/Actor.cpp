@@ -24,7 +24,7 @@ bool System_Actor_enableUpdateActor       = false;
 bool System_Actor_enableDoppelgangerFixes = false;
 bool System_Actor_enableModelFixes        = false;
 
-byte8 * System_Actor_actorBaseAddr[MAX_ACTOR] = {};
+//byte8 * System_Actor_actorBaseAddr[MAX_ACTOR] = {};
 
 //System_Actor_UpdateDevilForm_t     System_Actor_UpdateDevilForm     = 0;
 //System_Actor_UpdateFlux_t          System_Actor_UpdateFlux          = 0;
@@ -140,27 +140,27 @@ PrivateEnd;
 
 __declspec(deprecated("Use ACTOR_DATA instead.")) uint8 System_Actor_GetActorId(byte8 * baseAddr)
 {
-	for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
-	{
-		if (System_Actor_actorBaseAddr[actor] == baseAddr)
-		{
-			return actor;
-		}
-	}
+	//for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
+	//{
+	//	if (System_Actor_actorBaseAddr[actor] == baseAddr)
+	//	{
+	//		return actor;
+	//	}
+	//}
 	return 0;
 }
 
 uint8 System_Actor_GetActorCount()
 {
 	uint8 count = 0;
-	for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
-	{
-		if (!System_Actor_actorBaseAddr[actor])
-		{
-			break;
-		}
-		count++;
-	}
+	//for (uint8 actor = 0; actor < MAX_ACTOR; actor++)
+	//{
+	//	if (!System_Actor_actorBaseAddr[actor])
+	//	{
+	//		break;
+	//	}
+	//	count++;
+	//}
 	return count;
 }
 
@@ -626,80 +626,25 @@ byte8 * CreateActor
 {
 	auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E28);
 
-	byte8 * mainActorBaseAddr = 0;
-	byte8 * sessionData       = 0;
+	byte8 * sessionData = 0;
 
 	byte8 * baseAddr = 0;
 
-	mainActorBaseAddr = g_pool[3];
-
-	//sessionData = *(byte8 **)g_pool[1];
-	//sessionData = (sessionData + 0x16C);
-
 	sessionData = (g_pool[1] + 0x16C);
 
-
-	func_2EE060((mainActorBaseAddr + 0x6410), 0x3C);
+	//func_2EE060((mainActorBaseAddr + 0x6410), 0x3C);
 
 	baseAddr = func_1DE820(character, actor, false);
 
-	/*
-dmc3.exe+2134FF - E8 8C7EFAFF           - call dmc3.exe+1BB390
+	//func_1BB390(g_pool, actor);
 
-	*/
-
-	g_pool[(3 + actor)] = baseAddr;
-
-
-
-
-
-	func_1BB390(g_pool, actor);
-
-
-
-
-	// InitActorDante
-	func_217B90(baseAddr, sessionData);
-
+	func_217B90(baseAddr, sessionData); // InitActorDante
 	UpdateActorDante(baseAddr);
-	//UpdateActorDante(baseAddr);
 	UpdateWeaponDante(baseAddr);
-
-
-
 
 	func_1DFC20(baseAddr);
 
-
-
-
-
-	//func_1BB390(pool[3], actor);
-
-	//byte8 * sessionData = *(byte8 **)pool[1];
-	// addr 5F06D8
-
-	// Init I guess.
-
-	//func_1DF240(baseAddr, (sessionData + 0x16C));
-	// addr 5F0844
-
-
-
-
-	
-
-
 	return baseAddr;
-
-
-
-
-
-
-
-
 }
 
 void HumanVergil(byte8 * baseAddr)
@@ -992,13 +937,130 @@ void HumanVergil(byte8 * baseAddr)
 
 }
 
+
+
+
+
+
+
+
+
+
+byte8 * System_Actor_mainActorBaseAddr = 0;
+byte8 * System_Actor_mainCloneBaseAddr = 0;
+
+byte8 ** System_Actor_actorBaseAddr = 0;
+byte8 ** System_Actor_cloneBaseAddr = 0;
+
+
+
+//byte8 *(addr[4]) = 0;
+
+
+
+
+
+
+
+
+void System_Actor_ToggleArrayExtension(bool enable)
+{
+	LogFunction(enable);
+
+	// Increase ACTOR_DATA size.
+
+	{
+		constexpr uint32 defaultSize = 0xB8C0;
+		constexpr uint32 size        = (defaultSize + 0x10);
+
+		Write<uint32>((appBaseAddr + 0x1DE5FA), (enable) ? size : defaultSize);
+		Write<uint32>((appBaseAddr + 0x1DE67A), (enable) ? size : defaultSize);
+		Write<uint32>((appBaseAddr + 0x1DE8B4), (enable) ? size : defaultSize);
+		Write<uint32>((appBaseAddr + 0x1DEBE2), (enable) ? size : defaultSize);
+	}
+
+	// Redirect pool and remove offset.
+
+	{
+		Write<byte8>((appBaseAddr + 0x1BC0B5), (enable) ? 0x8D : 0x8B);
+		WriteAddress((appBaseAddr + 0x1BC0B4), (enable) ? (byte8 *)System_Actor_actorBaseAddr : (appBaseAddr + 0xC90E28), 7);
+		Write<byte8>((appBaseAddr + 0x1BC0C9), (enable) ? 0 : 0x18);
+
+		Write<byte8>((appBaseAddr + 0x1F90C5), (enable) ? 0x8D : 0x8B);
+		WriteAddress((appBaseAddr + 0x1F90C4), (enable) ? (byte8 *)System_Actor_actorBaseAddr : (appBaseAddr + 0xC90E28), 7);
+		Write<byte8>((appBaseAddr + 0x1BA56D), (enable) ? 0 : 0x18);
+		Write<byte8>((appBaseAddr + 0x1BA5C8), (enable) ? 0 : 0x18);
+	}
+
+
+
+	{
+		byte8 sect0[] =
+		{
+			0x80, 0xBB, 0xC0, 0xB8, 0x00, 0x00, 0x01, //cmp byte ptr [rbx+0000B8C0],01
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+1BC0A0
+			0xC3,                                     //ret
+		};
+		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1BC0A0), 6);
+		WriteCall((appBaseAddr + 0x1E889E), func.addr);
+		WriteCall((appBaseAddr + 0x1E8965), func.addr);
+	}
+	{
+		byte8 sect0[] =
+		{
+			0x80, 0xBF, 0xC0, 0xB8, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+0000B8C0],01
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+1BA560
+			0xC3,                                     //ret
+		};
+		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1BA560), 6);
+		WriteCall((appBaseAddr + 0x1F90CB), func.addr);
+	}
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
 void System_Actor_Init()
 {
 	LogFunction();
 
 
 	RegisterWeapon_Init();
-	
+
+
+	System_Actor_actorBaseAddr = (byte8 **)HighAlloc((MAX_ACTOR * 8));
+	System_Actor_cloneBaseAddr = (byte8 **)HighAlloc((MAX_ACTOR * 8));
+
+	System_Actor_actorBaseAddr[ACTOR_ONE] = (byte8 *)0x12345678;
+	System_Actor_cloneBaseAddr[ACTOR_ONE] = (byte8 *)0xDEADBEEF;
+
+	Log("actorBaseAddr %llX", System_Actor_actorBaseAddr);
+	Log("cloneBaseAddr %llX", System_Actor_cloneBaseAddr);
+
+
+
+
+
+
+
+
+
 
 
 	
@@ -1006,6 +1068,82 @@ void System_Actor_Init()
 	//Log("CreateActor %llX", func.addr);
 
 	Log("CreateActor %llX", CreateActor);
+
+
+
+
+	{
+		constexpr uint32 size = 374;
+		auto func = CreateFunction(0, 0, false, true, size);
+		memcpy(func.sect0, (appBaseAddr + 0x1BC0A0), size);
+
+		
+
+
+
+		WriteAddress((func.sect0 + 0x14), (byte8 *)System_Actor_actorBaseAddr, 7);
+		*(byte8 *)(func.sect0 + 0x15) = 0x8D;
+
+
+
+		//System_Actor_actorBaseAddr[ACTOR_TWO] = 0;
+
+
+
+		*(byte8 *)(func.sect0 + 0x29) = 0;
+
+
+
+
+
+
+
+
+
+
+		WriteCall((func.sect0 + 0x2D), (appBaseAddr + 0x1EBB40));
+		WriteCall((func.sect0 + 0x41), (appBaseAddr + 0x1F78B0));
+		WriteCall((func.sect0 + 0x5C), (appBaseAddr + 0x1BBCD0));
+		WriteCall((func.sect0 + 0x72), (appBaseAddr + 0x1F78B0));
+		WriteCall((func.sect0 + 0x7E), (appBaseAddr + 0x1BA120));
+		WriteAddress((func.sect0 + 0x9C), (appBaseAddr + 0x4C6094), 8);
+		WriteCall((func.sect0 + 0xB0), (appBaseAddr + 0x1BA120));
+		WriteCall((func.sect0 + 0xB7), (appBaseAddr + 0x1BB880));
+		WriteAddress((func.sect0 + 0xC8), (appBaseAddr + 0xCF2D90), 7);
+		WriteCall((func.sect0 + 0xCF), (appBaseAddr + 0x326960));
+		WriteCall((func.sect0 + 0x150), (appBaseAddr + 0x1BBCD0));
+		WriteCall((func.sect0 + 0x158), (appBaseAddr + 0x1BB7A0));
+
+
+
+
+
+
+
+
+
+		Log("func_1BCA0 whatever %llX", func.addr);
+
+
+
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1381,10 +1519,91 @@ void System_Actor_Init()
 
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //#pragma region Ignore
 //
+
+
+
+//byte8 * actorBaseAddr[MAX_ACTOR];
+
+
+
+
+
+
+
+
+
+
+
 //void System_Actor_ToggleArrayExtension(bool enable)
 //{
+	//LogFunction(enable);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //	LogFunction(enable);
 //	System_Actor_enableArrayExtension = enable;
 //	if (enable)
@@ -1394,6 +1613,9 @@ void System_Actor_Init()
 //		vp_memset((appBaseAddr + 0x1BA5C5), 0x90, 4);
 //		Write<byte8>((appBaseAddr + 0x1BA5C9), 0x45);
 //		Write<byte8>((appBaseAddr + 0x1BA5CB), 0x9A);
+
+
+
 //		WriteJump((appBaseAddr + 0x1BC0C5), OnUpdate[1]);
 //		// OnEvent
 //

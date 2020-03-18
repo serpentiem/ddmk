@@ -101,6 +101,8 @@ byte8 * AllocEx
 	return addr;
 }
 
+// @Todo: Change dest type to void * and add byte8 * cast.
+
 void WriteAddress
 (
 	byte8  * addr,
@@ -163,6 +165,8 @@ void vp_memcpy
 	}
 	VirtualProtect(dest, size, protection, &protection);
 }
+
+// @Todo: Add noReturn argument.
 
 FUNC CreateFunction
 (

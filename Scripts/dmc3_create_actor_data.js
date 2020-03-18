@@ -108,6 +108,8 @@ var items =
 	[ "inputBuffer"              , "INPUT_BUFFER", 58, 0x6674 ],
 	[ "buttonInput"              , "byte16"      , 4 , 0x74E0 ],
 	[ "modelData"                , "MODEL_DATA"  , 6 , 0xB630 ],
+	[ "isDefaultActor"           , "bool"        , 1 , 0xB8C0 ],
+	[ "isDefaultClone"           , "bool"        , 1 , 0xB8C1 ],
 ];
 
 var c = "";
@@ -152,7 +154,7 @@ for (var index = 0; index < items.length; index++)
 
 console.log("pos 0x" + pos.toString(16).toUpperCase());
 
-var diff = (0x3F800 - pos);
+var diff = (0xB8C0 - pos);
 
 if (diff)
 {

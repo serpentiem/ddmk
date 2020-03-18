@@ -19,7 +19,7 @@ extern bool System_Actor_enableUpdateActor;
 extern bool System_Actor_enableDoppelgangerFixes;
 extern bool System_Actor_enableModelFixes;
 
-extern byte8 * System_Actor_actorBaseAddr[MAX_ACTOR];
+//extern byte8 * System_Actor_actorBaseAddr[MAX_ACTOR];
 
 // @Todo: Move to Internal.
 
@@ -27,6 +27,25 @@ extern byte8 * System_Actor_actorBaseAddr[MAX_ACTOR];
 
 
 //typedef void(__fastcall * UpdateModel_t)(byte8 * baseAddr);
+
+
+
+
+
+extern byte8 * System_Actor_mainActorBaseAddr;
+extern byte8 * System_Actor_mainCloneBaseAddr;
+
+extern byte8 ** System_Actor_actorBaseAddr;
+extern byte8 ** System_Actor_cloneBaseAddr;
+
+
+
+
+
+
+
+
+
 
 
 
@@ -69,7 +88,7 @@ uint8 System_Actor_GetActorCount();
 //void System_Actor_ResetDevilModel();
 //void System_Actor_UpdateDevilModel(uint8 model);
 void System_Actor_Init();
-//void System_Actor_ToggleArrayExtension(bool enable);
+void System_Actor_ToggleArrayExtension(bool enable);
 //void System_Actor_ToggleCreateActorOne(bool enable);
 //void System_Actor_ToggleUpdateActor(bool enable);
 //void System_Actor_ToggleDoppelgangerFixes(bool enable);

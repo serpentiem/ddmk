@@ -1111,12 +1111,12 @@ void GUI_Cosmetics_Color()
 		{
 			return;
 		}
-		auto & baseAddr = System_Actor_actorBaseAddr[ACTOR_TWO];
-		if (!baseAddr)
-		{
-			return;
-		}
-		Cosmetics_Color_ApplyColor(baseAddr, 6, 0);
+		//auto & baseAddr = System_Actor_actorBaseAddr[ACTOR_TWO];
+		//if (!baseAddr)
+		//{
+		//	return;
+		//}
+		//Cosmetics_Color_ApplyColor(baseAddr, 6, 0);
 	};
 
 
@@ -1260,27 +1260,27 @@ void GUI_Cosmetics_Dante()
 		auto count = System_Actor_GetActorCount();
 		for (uint8 actor = 0; actor < count; actor++)
 		{
-			auto & baseAddr = System_Actor_actorBaseAddr[actor];
-			if (!baseAddr)
-			{
-				continue;
-			}
-			auto & character      = *(uint8 *)(baseAddr + 0x78  );
-			auto & selectedWeapon = *(uint8 *)(baseAddr + 0x6490);
-			auto   equipment      =  (uint8 *)(baseAddr + 0x6498);
-			auto & weapon = equipment[selectedWeapon];
-			if (character != CHAR_DANTE)
-			{
-				continue;
-			}
-			if ((weapon == WEAPON_DANTE_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
-			{
-				Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
-			}
-			else
-			{
-				Cosmetics_Dante_ApplyDefaultModelAttributes(baseAddr);
-			}
+			//auto & baseAddr = System_Actor_actorBaseAddr[actor];
+			//if (!baseAddr)
+			//{
+			//	continue;
+			//}
+			//auto & character      = *(uint8 *)(baseAddr + 0x78  );
+			//auto & selectedWeapon = *(uint8 *)(baseAddr + 0x6490);
+			//auto   equipment      =  (uint8 *)(baseAddr + 0x6498);
+			//auto & weapon = equipment[selectedWeapon];
+			//if (character != CHAR_DANTE)
+			//{
+			//	continue;
+			//}
+			//if ((weapon == WEAPON_DANTE_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
+			//{
+			//	Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
+			//}
+			//else
+			//{
+			//	Cosmetics_Dante_ApplyDefaultModelAttributes(baseAddr);
+			//}
 		}
 	};
 	GUI_Hyperlink(Locale.Cosmetics.Dante.header);
@@ -1307,27 +1307,27 @@ void GUI_Cosmetics_Doppelganger()
 		Config.Cosmetics.Doppelganger.noColor
 	))
 	{
-		// @Todo: Creater helper function.
-		{
-			if (Config.Game.Multiplayer.enable)
-			{
-				goto sect0;
-			}
-			if (!InGame())
-			{
-				goto sect0;
-			}
-			auto & noColor = Config.Cosmetics.Doppelganger.noColor;
-			auto & baseAddr1 = System_Actor_actorBaseAddr[ACTOR_ONE];
-			auto & baseAddr2 = System_Actor_actorBaseAddr[ACTOR_TWO];
-			if (!baseAddr1 || !baseAddr2)
-			{
-				goto sect0;
-			}
-			auto & shadow1 = *(uint32 *)(baseAddr1 + 0x3A18) = (noColor) ? 1 : 0;
-			auto & shadow2 = *(uint32 *)(baseAddr2 + 0x3A18) = (noColor) ? 1 : 0;
-			Cosmetics_Color_ApplyColor(baseAddr2, (Config.Cosmetics.Doppelganger.noColor) ? 7 : 6, 0);
-		}
+		//// @Todo: Creater helper function.
+		//{
+		//	if (Config.Game.Multiplayer.enable)
+		//	{
+		//		goto sect0;
+		//	}
+		//	if (!InGame())
+		//	{
+		//		goto sect0;
+		//	}
+		//	auto & noColor = Config.Cosmetics.Doppelganger.noColor;
+		//	auto & baseAddr1 = System_Actor_actorBaseAddr[ACTOR_ONE];
+		//	auto & baseAddr2 = System_Actor_actorBaseAddr[ACTOR_TWO];
+		//	if (!baseAddr1 || !baseAddr2)
+		//	{
+		//		goto sect0;
+		//	}
+		//	auto & shadow1 = *(uint32 *)(baseAddr1 + 0x3A18) = (noColor) ? 1 : 0;
+		//	auto & shadow2 = *(uint32 *)(baseAddr2 + 0x3A18) = (noColor) ? 1 : 0;
+		//	Cosmetics_Color_ApplyColor(baseAddr2, (Config.Cosmetics.Doppelganger.noColor) ? 7 : 6, 0);
+		//}
 		sect0:;
 	}
 }
@@ -1490,18 +1490,18 @@ void GUI_Tools_Repair()
 		{
 			return;
 		}
-		auto count = System_Actor_GetActorCount();
-		for (uint8 actor = 0; actor < count; actor++)
-		{
-			auto & baseAddr = System_Actor_actorBaseAddr[actor];
-			if (!baseAddr)
-			{
-				continue;
-			}
-			auto level = (uint32 *)(baseAddr + 0x64E4);
-			level[0] = 0;
-			level[1] = 0;
-		}
+		//auto count = System_Actor_GetActorCount();
+		//for (uint8 actor = 0; actor < count; actor++)
+		//{
+		//	auto & baseAddr = System_Actor_actorBaseAddr[actor];
+		//	if (!baseAddr)
+		//	{
+		//		continue;
+		//	}
+		//	auto level = (uint32 *)(baseAddr + 0x64E4);
+		//	level[0] = 0;
+		//	level[1] = 0;
+		//}
 	};
 	if (GUI_Button(Locale.Tools.Repair.resetEquipment))
 	{
