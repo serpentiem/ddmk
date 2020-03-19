@@ -861,7 +861,7 @@ struct VARS
 	{
 		memset(this, 0, sizeof(*this));
 		{
-			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xCA8918);
+			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xCA8918); // EVENT_DATA
 			if (!addr)
 			{
 				return;
@@ -877,11 +877,11 @@ struct VARS
 			{
 				return;
 			}
-			nextRoom     = (uint16 *)(addr[12] + 0x164);
+			nextRoom     = (uint16 *)(addr[12] + 0x164); // NEXT_EVENT_DATA
 			nextPosition = (uint16 *)(addr[12] + 0x166);
 		}
 		{
-			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xC90E30);
+			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xC90E30); // MISSION_DATA
 			if (!addr)
 			{
 				return;
@@ -892,7 +892,7 @@ struct VARS
 			}
 			flags = (byte32 *)addr[1];
 		}
-		mission = (uint32 *)(appBaseAddr + 0xC8F250);
+		mission = (uint32 *)(appBaseAddr + 0xC8F250); // SESSION_DATA
 		init = true;
 	}
 };
@@ -908,6 +908,19 @@ struct MEMORY_OBJECT
 	uint32 count;
 	byte8 padding[4];
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #define _Merge(a, b) a##b
 #define Merge(a, b) _Merge(a, b)
@@ -1046,21 +1059,14 @@ typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
 
 
 
-//constexpr uint32 mdsize = (uint32)sizeof(MODEL_DATA);
-
-
-
-
 
 struct ACTOR_DATA
 {
 	_(120);
 	uint8 character; // 0x78
 	_(7);
-	float32 x; // 0x80
-	float32 y; // 0x84
-	float32 z; // 0x88
-	_(52);
+	vec4 position; // 0x80
+	_(48);
 	uint16 direction; // 0xC0
 	_(86);
 	uint8 actorId; // 0x118
@@ -1080,10 +1086,20 @@ struct ACTOR_DATA
 	byte32 motionState1[4]; // 0x3E00
 	_(80);
 	byte32 motionState2[3]; // 0x3E60
-	uint8 baseModel[2]; // 0x3E6C
+	uint8 activeModel; // 0x3E6C
+	_(3);
+	uint8 queuedModel; // 0x3E70
+	_(3);
+	uint8 modelIndex[3]; // 0x3E74
+	_(9);
+	uint8 modelState; // 0x3E80
+	_(3);
+	bool lockOn; // 0x3E84
+	_(3);
+	uint8 modelIndexMirror; // 0x3E88
+	_(11);
+	uint8 devilState; // 0x3E94
 	_(6);
-	uint8 baseModelAsset[3]; // 0x3E74
-	_(36);
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
@@ -1149,13 +1165,9 @@ struct ACTOR_DATA
 	byte16 buttonInput[4]; // 0x74E0
 	_(16712);
 	MODEL_DATA modelData[6]; // 0xB630
-	_(212976);
+	_(176);
+	bool isDefault; // 0xB8C0
 };
-
-
-
-
-
 
 
 
@@ -1170,6 +1182,22 @@ constexpr uint32 adsize = (uint32)sizeof(ACTOR_DATA);
 #undef _
 #undef Merge
 #undef _Merge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #define __DDMK_OBSOLETE__
 #ifndef __DDMK_OBSOLETE__

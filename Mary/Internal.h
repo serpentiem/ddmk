@@ -11,10 +11,10 @@ typedef void(__fastcall * func_89960_t)(byte8 * dest, byte8 * modelFile, byte8 *
 typedef byte8 *(__fastcall * func_89DE0_t)(byte8 * dest);
 typedef void(__fastcall * func_8BC60_t)(byte8 * dest, byte8 * addr, byte8 * shadowFile);
 typedef void(__fastcall * func_305D80_t)(byte8 * dest);
-typedef void(__fastcall * func_8A000_t)(byte8 * dest, byte8 * motionArchive, byte8 * addr);
+typedef void(__fastcall * func_8A000_t)(byte8 * dest, byte8 * motionFile, byte8 * addr);
 typedef uint32(__fastcall * func_2C9F40_t)(byte8 * physicsFile);
 typedef void(__fastcall * func_2CA1D0_t)(byte8 * dest, byte8 * addr, byte8 * physicsFile, uint32 index);
-typedef void(__fastcall * func_2CA2F0_t)(byte8 * dest, byte8 * addr, byte8 * unknown, MODEL_DATA * modelData, uint32 count);
+typedef void(__fastcall * func_2CA2F0_t)(byte8 * dest, byte8 * addr, byte8 *, MODEL_DATA * modelData, uint32 count);
 typedef void(__fastcall * func_1EF040_t)(byte8 * baseAddr, uint32 index);
 typedef void(__fastcall * func_1F92C0_t)(byte8 * dest, byte32 flag);
 typedef void(__fastcall * func_1F97F0_t)(byte8 * dest, byte32 flag);
@@ -22,7 +22,7 @@ typedef void(__fastcall * func_2EE3D0_t)(byte8 * dest);
 typedef void(__fastcall * func_1FAF40_t)(byte8 * baseAddr);
 typedef void(__fastcall * func_1EEF80_t)(byte8 * baseAddr);
 typedef bool(__fastcall * func_2EE060_t)(byte8 * dest, uint32 size);
-typedef byte8 *(__fastcall * func_1DE820_t)(uint32 character, uint32 actor, bool isDoppelganger);
+typedef byte8 *(__fastcall * func_1DE820_t)(uint32 character, uint32 actor, bool isClone);
 typedef void(__fastcall * func_1BB390_t)(byte8 ** pool, uint32 actor);
 typedef void(__fastcall * func_217B90_t)(byte8 * baseAddr, byte8 * sessionData);
 typedef void(__fastcall * func_223CB0_t)(byte8 * baseAddr, byte8 * sessionData);
@@ -40,6 +40,7 @@ typedef byte8 *(__fastcall * func_22BA30_t)(byte8 * baseAddr, uint32 id);
 typedef byte8 *(__fastcall * func_22D960_t)(byte8 * baseAddr, uint32 id);
 typedef byte8 *(__fastcall * func_2298E0_t)(byte8 * baseAddr, uint32 id);
 typedef byte8 *(__fastcall * func_22CF00_t)(byte8 * baseAddr, uint32 id);
+typedef void(__fastcall * func_23E560_t)(byte8 * eventData, uint32 position);
 
 extern func_897B0_t func_897B0;
 extern func_89450_t func_89450;
@@ -78,5 +79,6 @@ extern func_22BA30_t func_22BA30;
 extern func_22D960_t func_22D960;
 extern func_2298E0_t func_2298E0;
 extern func_22CF00_t func_22CF00;
+extern func_23E560_t func_23E560;
 
 void Internal_Init();

@@ -31,6 +31,7 @@ var GetByteSize = function(str)
 		[ "byte8 *"     , 8  ],
 		[ "bool"        , 1  ],
 		[ "float32"     , 4  ],
+		[ "vec4"        , 16 ],
 		[ "INPUT_BUFFER", 12 ],
 		[ "MOTION_DATA" , 2  ],
 		[ "MODEL_DATA"  , 80 ],
@@ -50,9 +51,7 @@ var GetByteSize = function(str)
 var items =
 [
 	[ "character"                , "uint8"       , 1 , 0x78   ],
-	[ "x"                        , "float32"     , 1 , 0x80   ],
-	[ "y"                        , "float32"     , 1 , 0x84   ],
-	[ "z"                        , "float32"     , 1 , 0x88   ],
+	[ "position"                 , "vec4"        , 1 , 0x80   ],
 	[ "direction"                , "uint16"      , 1 , 0xC0   ],
 	[ "actorId"                  , "uint8"       , 1 , 0x118  ],
 	[ "isDoppelganger"           , "bool"        , 1 , 0x11C  ],
@@ -108,8 +107,8 @@ var items =
 	[ "inputBuffer"              , "INPUT_BUFFER", 58, 0x6674 ],
 	[ "buttonInput"              , "byte16"      , 4 , 0x74E0 ],
 	[ "modelData"                , "MODEL_DATA"  , 6 , 0xB630 ],
-	[ "isDefaultActor"           , "bool"        , 1 , 0xB8C0 ],
-	[ "isDefaultClone"           , "bool"        , 1 , 0xB8C1 ],
+	[ "isDefault"                , "bool"        , 1 , 0xB8C0 ],
+	[ "characterModel"           , "uint8"       , 1 , 0xB8C1 ],
 ];
 
 var c = "";
@@ -154,12 +153,12 @@ for (var index = 0; index < items.length; index++)
 
 console.log("pos 0x" + pos.toString(16).toUpperCase());
 
-var diff = (0xB8C0 - pos);
+// var diff = (0xB8C0 - pos);
 
-if (diff)
-{
-	c += "\t_(" + diff.toString() + ");\n";
-}
+// if (diff)
+// {
+	// c += "\t_(" + diff.toString() + ");\n";
+// }
 
 c += "};\n";
 c += "\n";

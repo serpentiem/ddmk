@@ -963,68 +963,28 @@ byte8 ** System_Actor_cloneBaseAddr = 0;
 
 
 
+
+
+
+
+
+
 void System_Actor_ToggleArrayExtension(bool enable)
 {
 	LogFunction(enable);
 
-	// Increase ACTOR_DATA size.
-
-	{
-		constexpr uint32 defaultSize = 0xB8C0;
-		constexpr uint32 size        = (defaultSize + 0x10);
-
-		Write<uint32>((appBaseAddr + 0x1DE5FA), (enable) ? size : defaultSize);
-		Write<uint32>((appBaseAddr + 0x1DE67A), (enable) ? size : defaultSize);
-		Write<uint32>((appBaseAddr + 0x1DE8B4), (enable) ? size : defaultSize);
-		Write<uint32>((appBaseAddr + 0x1DEBE2), (enable) ? size : defaultSize);
-	}
-
 	// Redirect pool and remove offset.
-
 	{
-		Write<byte8>((appBaseAddr + 0x1BC0B5), (enable) ? 0x8D : 0x8B);
-		WriteAddress((appBaseAddr + 0x1BC0B4), (enable) ? (byte8 *)System_Actor_actorBaseAddr : (appBaseAddr + 0xC90E28), 7);
-		Write<byte8>((appBaseAddr + 0x1BC0C9), (enable) ? 0 : 0x18);
-
-		Write<byte8>((appBaseAddr + 0x1F90C5), (enable) ? 0x8D : 0x8B);
-		WriteAddress((appBaseAddr + 0x1F90C4), (enable) ? (byte8 *)System_Actor_actorBaseAddr : (appBaseAddr + 0xC90E28), 7);
-		Write<byte8>((appBaseAddr + 0x1BA56D), (enable) ? 0 : 0x18);
+		// func_1BA560
+		WriteAddress((appBaseAddr + 0x1BA560), (enable) ? (byte8 *)System_Actor_actorBaseAddr : (appBaseAddr + 0xC90E28), 7);
+		Write<byte8>((appBaseAddr + 0x1BA561), (enable) ? 0x8D : 0x8B);
+		Write<byte8>((appBaseAddr + 0x1BA574), (enable) ? 0 : 0x18);
 		Write<byte8>((appBaseAddr + 0x1BA5C8), (enable) ? 0 : 0x18);
+		// func_1BC0A0
+		WriteAddress((appBaseAddr + 0x1BC0B4), (enable) ? (byte8 *)System_Actor_actorBaseAddr : (appBaseAddr + 0xC90E28), 7);
+		Write<byte8>((appBaseAddr + 0x1BC0B5), (enable) ? 0x8D : 0x8B);
+		Write<byte8>((appBaseAddr + 0x1BC0C9), (enable) ? 0 : 0x18);
 	}
-
-
-
-	{
-		byte8 sect0[] =
-		{
-			0x80, 0xBB, 0xC0, 0xB8, 0x00, 0x00, 0x01, //cmp byte ptr [rbx+0000B8C0],01
-			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+1BC0A0
-			0xC3,                                     //ret
-		};
-		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1BC0A0), 6);
-		WriteCall((appBaseAddr + 0x1E889E), func.addr);
-		WriteCall((appBaseAddr + 0x1E8965), func.addr);
-	}
-	{
-		byte8 sect0[] =
-		{
-			0x80, 0xBF, 0xC0, 0xB8, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+0000B8C0],01
-			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+1BA560
-			0xC3,                                     //ret
-		};
-		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1BA560), 6);
-		WriteCall((appBaseAddr + 0x1F90CB), func.addr);
-	}
-
-
-
-
-
-
 }
 
 
@@ -1039,6 +999,100 @@ void System_Actor_ToggleArrayExtension(bool enable)
 void System_Actor_Init()
 {
 	LogFunction();
+
+	// Increase ACTOR_DATA size.
+	{
+		constexpr uint32 size = (0xB8C0 + 0x10);
+		Write<uint32>((appBaseAddr + 0x1DE5FA), size);
+		Write<uint32>((appBaseAddr + 0x1DE67A), size);
+		Write<uint32>((appBaseAddr + 0x1DE8B4), size);
+		Write<uint32>((appBaseAddr + 0x1DEBE2), size);
+	}
+
+	// Fix func_1BA560.
+	{
+		auto addr = (appBaseAddr + 0x1BA560);
+		{
+			byte8 buffer[55];
+			memcpy(buffer, addr, sizeof(buffer));
+			vp_memset(addr, 0x90, 64);
+			vp_memcpy((addr + 7), buffer, sizeof(buffer));
+		}
+		byte8 buffer[] =
+		{
+			0x48, 0x8B, 0x0D, 0x00, 0x00, 0x00, 0x00, //mov rcx,[dmc3.exe+C90E28]
+		};
+		vp_memcpy(addr, buffer, sizeof(buffer));
+		WriteAddress(addr, (appBaseAddr + 0xC90E28), 7);
+	}
+
+	// Add isDefault check to func_1BA560 and func_1BC0A0 calls.
+	{
+		byte8 sect0[] =
+		{
+			0x80, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+0000B8C0],01
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+1BA560
+			0xC3,                                     //ret
+		};
+		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(byte32 *)(func.sect0 + 2) = offsetof(ACTOR_DATA, isDefault);
+		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1BA560), 6);
+		WriteCall((appBaseAddr + 0x1F8408), func.addr);
+		WriteCall((appBaseAddr + 0x1F90CB), func.addr);
+	}
+	{
+		byte8 sect0[] =
+		{
+			0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rbx+0000B8C0],01
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+1BC0A0
+			0xC3,                                     //ret
+		};
+		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(byte32 *)(func.sect0 + 2) = offsetof(ACTOR_DATA, isDefault);
+		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1BC0A0), 6);
+		WriteCall((appBaseAddr + 0x1E24A6), func.addr);
+		WriteCall((appBaseAddr + 0x1E889E), func.addr);
+		WriteCall((appBaseAddr + 0x1E8965), func.addr);
+	}
+	{
+		byte8 sect0[] =
+		{
+			0x80, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+0000B8C0],01
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+1BC0A0
+			0xC3,                                     //ret
+		};
+		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(byte32 *)(func.sect0 + 2) = offsetof(ACTOR_DATA, isDefault);
+		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1BC0A0), 6);
+		WriteCall((appBaseAddr + 0x1EACE2), func.addr);
+		WriteCall((appBaseAddr + 0x1EAD30), func.addr);
+		WriteCall((appBaseAddr + 0x1F841E), func.addr);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	RegisterWeapon_Init();

@@ -1,3 +1,6 @@
+
+// @Todo: Change memset args.
+
 #include "Windows.h"
 
 void ToggleCursor(bool enable)

@@ -10,71 +10,71 @@ bool millionStab = false;
 
 // Consider all actors for millionStab.
 
-void VergilMillionStab()
-{
-	auto addr = *(byte8 ***)(appBaseAddr + 0xC90E28);
-	if (!addr)
-	{
-		return;
-	}
-	if (!addr[3])
-	{
-		return;
-	}
-
-	ACTOR_DATA * actorData[2] = {};
-
-	actorData[0] = (ACTOR_DATA *)addr[3];
-	actorData[1] = (ACTOR_DATA *)addr[4];
-
-	if (actorData[0]->move != 39)
-	{
-		return;
-	}
-	if (actorData[0]->motionData[1].group != 5)
-	{
-		return;
-	}
-	if (actorData[0]->motionData[1].index != 11)
-	{
-		return;
-	}
-	if (actorData[0]->inputBuffer[16].level < 6)
-	{
-		return;
-	}
-
-	float32 x = actorData[0]->x;
-	float32 y = actorData[0]->y;
-	float32 z = actorData[0]->z;
-	uint16 direction = actorData[0]->direction;
-
-	actorData[0]->x = actorData[1]->x;
-	actorData[0]->y = actorData[1]->y;
-	actorData[0]->z = actorData[1]->z;
-	actorData[0]->direction = actorData[1]->direction;
-
-	actorData[1]->x = x;
-	actorData[1]->y = y;
-	actorData[1]->z = z;
-	actorData[1]->direction = direction;
-
-	actorData[1]->motionState1[0] = 0x11;
-	actorData[1]->motionState1[1] = 1;
-	actorData[1]->motionState1[2] = 0x11;
-	actorData[1]->motionState1[3] = 0x11;
-
-	actorData[1]->motionState2[0] = 0x401;
-	actorData[1]->motionState2[1] = 0x10001;
-	actorData[1]->motionState2[2] = 0x10001;
-
-	actorData[1]->move = 14;
-
-	auto baseAddr = addr[3];
-
-	addr[3] = addr[4];
-	addr[4] = baseAddr;
-}
+//void VergilMillionStab()
+//{
+//	auto addr = *(byte8 ***)(appBaseAddr + 0xC90E28);
+//	if (!addr)
+//	{
+//		return;
+//	}
+//	if (!addr[3])
+//	{
+//		return;
+//	}
+//
+//	ACTOR_DATA * actorData[2] = {};
+//
+//	actorData[0] = (ACTOR_DATA *)addr[3];
+//	actorData[1] = (ACTOR_DATA *)addr[4];
+//
+//	if (actorData[0]->move != 39)
+//	{
+//		return;
+//	}
+//	if (actorData[0]->motionData[1].group != 5)
+//	{
+//		return;
+//	}
+//	if (actorData[0]->motionData[1].index != 11)
+//	{
+//		return;
+//	}
+//	if (actorData[0]->inputBuffer[16].level < 6)
+//	{
+//		return;
+//	}
+//
+//	float32 x = actorData[0]->x;
+//	float32 y = actorData[0]->y;
+//	float32 z = actorData[0]->z;
+//	uint16 direction = actorData[0]->direction;
+//
+//	actorData[0]->x = actorData[1]->x;
+//	actorData[0]->y = actorData[1]->y;
+//	actorData[0]->z = actorData[1]->z;
+//	actorData[0]->direction = actorData[1]->direction;
+//
+//	actorData[1]->x = x;
+//	actorData[1]->y = y;
+//	actorData[1]->z = z;
+//	actorData[1]->direction = direction;
+//
+//	actorData[1]->motionState1[0] = 0x11;
+//	actorData[1]->motionState1[1] = 1;
+//	actorData[1]->motionState1[2] = 0x11;
+//	actorData[1]->motionState1[3] = 0x11;
+//
+//	actorData[1]->motionState2[0] = 0x401;
+//	actorData[1]->motionState2[1] = 0x10001;
+//	actorData[1]->motionState2[2] = 0x10001;
+//
+//	actorData[1]->move = 14;
+//
+//	auto baseAddr = addr[3];
+//
+//	addr[3] = addr[4];
+//	addr[4] = baseAddr;
+//}
 
 
 
@@ -98,9 +98,9 @@ void MainLoop()
 
 		Log("Spawn Actors.");
 
-		System_Actor_actorBaseAddr[ACTOR_TWO] = CreateActor(CHAR_DANTE, ACTOR_TWO);
+		System_Actor_actorBaseAddr[ACTOR_ONE] = CreateActor(CHAR_DANTE, ACTOR_ONE);
 
-		Log("System_Actor_actorBaseAddr %llX", System_Actor_actorBaseAddr[ACTOR_TWO]);
+		Log("System_Actor_actorBaseAddr %llX", System_Actor_actorBaseAddr[ACTOR_ONE]);
 
 
 
@@ -109,9 +109,51 @@ void MainLoop()
 		//g_pool[3] = System_Actor_actorBaseAddr[ACTOR_ONE];
 
 
+		
+		auto & actorData     = *(ACTOR_DATA *)System_Actor_actorBaseAddr[ACTOR_ONE];
+		auto & mainActorData = *(ACTOR_DATA *)System_Actor_mainActorBaseAddr;
+
+
+		
+		//actorData.x = mainActorData.x;
+		//actorData.y = mainActorData.y;
+		//actorData.z = mainActorData.z;
+
+
+		actorData.position  = mainActorData.position;
+		actorData.direction = mainActorData.direction;
 
 
 
+
+
+
+
+
+
+
+		
+		{
+			//auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E10);
+
+			//auto eventData = g_pool[8];
+			//auto & position = *(uint32 *)(eventData + 0x1C);
+
+			//func_23E560(eventData, position);
+
+
+
+
+
+
+
+		}
+
+
+
+		/*
+dmc3.exe+C90E10
+		*/
 
 
 	}
@@ -135,7 +177,7 @@ void MainLoop()
 
 
 
-	VergilMillionStab();
+	//VergilMillionStab();
 
 
 

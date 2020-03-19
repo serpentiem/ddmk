@@ -63,6 +63,9 @@ void CreateMainActor(byte8 * baseAddr)
 	LogFunction(baseAddr);
 	System_Actor_mainActorBaseAddr = baseAddr;
 	auto & isDefault = *(bool *)(baseAddr + 0xB8C0) = true;
+
+	//auto & actorId = *(uint8 *)(baseAddr + 0x118) = ACTOR_TWO;
+
 	spawnActors = true;
 }
 
@@ -70,6 +73,7 @@ void CreateMainClone(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 	System_Actor_mainCloneBaseAddr = baseAddr;
+	auto & isDefault = *(bool *)(baseAddr + 0xB8C0) = true;
 }
 
 PrivateEnd;
@@ -375,6 +379,9 @@ static void Arcade_SetRoom()
 			uint16 room;
 			uint16 position;
 		};
+
+		// @Todo: Ugh, constexpr please.
+
 		DPS var[] =
 		{
 			{ 423, 0 }, // floor 1
@@ -482,7 +489,7 @@ static void BossRush_SetRoom()
 				break;
 			}
 			*(uint8 *)(addr + 0x6A) = 1;
-			addr = *(byte **)(appBaseAddr + 0xCA8918);
+			addr = *(byte **)(appBaseAddr + 0xCA8918); // wrong, should be dmc3.exe+C90E10.
 			if (!addr)
 			{
 				break;
