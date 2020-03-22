@@ -1010,6 +1010,7 @@ typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
 
 
 
+
 struct ACTOR_DATA
 {
 	_(120);
@@ -1046,8 +1047,7 @@ struct ACTOR_DATA
 	_(3);
 	uint8 queuedModel; // 0x3E70
 	_(3);
-	uint8 modelIndex[3]; // 0x3E74
-	_(9);
+	uint32 modelIndex[3]; // 0x3E74
 	uint8 modelState; // 0x3E80
 	_(3);
 	bool lockOn; // 0x3E84
@@ -1134,8 +1134,6 @@ struct ACTOR_DATA
 	bool noCollision; // 0xB8C2
 	bool hide; // 0xB8C3
 };
-
-
 
 
 

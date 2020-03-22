@@ -863,10 +863,73 @@ void System_Actor_Init()
 
 
 
+	// Add noCollision check to actor collision manager.
+
+	{
+		byte8 sect0[] =
+		{
+			0x51,                                                       //push rcx
+			0x52,                                                       //push rdx
+			0x56,                                                       //push rsi
+			0x48, 0x8B, 0x89, 0xD0, 0x00, 0x00, 0x00,                   //mov rcx,[rcx+000000D0]
+			0x48, 0x81, 0xE9, 0x50, 0x72, 0x00, 0x00,                   //sub rcx,00007250
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&System_Actor_mainActorBaseAddr
+			0x48, 0x8B, 0x00,                                           //mov rax,[rax]
+			0x48, 0x39, 0xC1,                                           //cmp rcx,rax
+			0x74, 0x54,                                                 //je short
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&System_Actor_mainCloneBaseAddr
+			0x48, 0x8B, 0x00,                                           //mov rax,[rax]
+			0x48, 0x39, 0xC1,                                           //cmp rcx,rax
+			0x74, 0x42,                                                 //je short
+			0x48, 0x31, 0xD2,                                           //xor rdx,rdx
+			0x48, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rsi,System_Actor_actorBaseAddr
+			0x48, 0x8B, 0x04, 0xD6,                                     //mov rax,[rsi+rdx*8]
+			0x48, 0x39, 0xC1,                                           //cmp rcx,rax
+			0x74, 0x2C,                                                 //je short
+			0xFE, 0xC2,                                                 //inc dl
+			0x80, 0xFA, 0x00,                                           //cmp dl,MAX_ACTOR
+			0x72, 0xF0,                                                 //jb short
+			0x48, 0x31, 0xD2,                                           //xor rdx,rdx
+			0x48, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rsi,System_Actor_cloneBaseAddr
+			0x48, 0x8B, 0x04, 0xD6,                                     //mov rax,[rsi+rdx*8]
+			0x48, 0x39, 0xC1,                                           //cmp rcx,rax
+			0x74, 0x0F,                                                 //je short
+			0xFE, 0xC2,                                                 //inc dl
+			0x80, 0xFA, 0x00,                                           //cmp dl,MAX_ACTOR
+			0x72, 0xF0,                                                 //jb short
+			0x5E,                                                       //pop rsi
+			0x5A,                                                       //pop rdx
+			0x59,                                                       //pop rcx
+			0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+2CC090
+			0x5E,                                                       //pop rsi
+			0x5A,                                                       //pop rdx
+			0x59,                                                       //pop rcx
+			0x80, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x01,                   //cmp byte ptr [rax+0000B8C2],01
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+2CC090
+			0xC3,                                                       //ret
+		};
+		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(byte8 ***)(func.sect0 + 0x13) = &System_Actor_mainActorBaseAddr;
+		*(byte8 ***)(func.sect0 + 0x25) = &System_Actor_mainCloneBaseAddr;
+		*(byte8 ***)(func.sect0 + 0x3A) = System_Actor_actorBaseAddr;
+		*(uint8 *)(func.sect0 + 0x4F) = MAX_ACTOR;
+		*(byte8 ***)(func.sect0 + 0x57) = System_Actor_cloneBaseAddr;
+		*(uint8 *)(func.sect0 + 0x6C) = MAX_ACTOR;
+		WriteAddress((func.sect0 + 0x72), (appBaseAddr + 0x2CC090), 5);
+		*(byte32 *)(func.sect0 + 0x7C) = offsetof(ACTOR_DATA, noCollision);
+		WriteAddress((func.sect0 + 0x81), (appBaseAddr + 0x2CC090), 6);
+		WriteCall((appBaseAddr + 0x5B5BC), func.addr);
+		WriteCall((appBaseAddr + 0x5B5CB), func.addr);
+		WriteCall((appBaseAddr + 0x5B5EA), func.addr);
+		WriteCall((appBaseAddr + 0x5B609), func.addr);
+		WriteCall((appBaseAddr + 0x5BA21), func.addr);
+		WriteCall((appBaseAddr + 0x5BA34), func.addr);
+	}
 
 
 
-
+	// @Todo: Add noCollision check to hit points collision manager.
 
 
 
