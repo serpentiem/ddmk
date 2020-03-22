@@ -212,11 +212,11 @@ void GUI_Game_Arcade()
 {
 
 
-	//static uint8 character = CHAR_DANTE;
+	//static uint8 character = CHAR_LOGIC_DANTE;
 
 	if (GUI_Button("CreateActor"))
 	{
-		auto baseAddr = CreateActor(CHAR_DANTE, ACTOR_TWO);
+		auto baseAddr = CreateActor(CHAR_LOGIC_DANTE, ACTOR_TWO);
 		Log("baseAddr %llX", baseAddr);
 	}
 
@@ -335,7 +335,7 @@ void GUI_Game_Arcade()
 			Config.Game.Arcade.costume
 		);
 	}
-	if ((Config.Game.Arcade.mission != 0) && (Config.Game.Arcade.character == CHAR_DANTE))
+	if ((Config.Game.Arcade.mission != 0) && (Config.Game.Arcade.character == CHAR_LOGIC_DANTE))
 	{
 		GUI_Combo<uint32>
 		(
@@ -1269,7 +1269,7 @@ void GUI_Cosmetics_Dante()
 			//auto & selectedWeapon = *(uint8 *)(baseAddr + 0x6490);
 			//auto   equipment      =  (uint8 *)(baseAddr + 0x6498);
 			//auto & weapon = equipment[selectedWeapon];
-			//if (character != CHAR_DANTE)
+			//if (character != CHAR_LOGIC_DANTE)
 			//{
 			//	continue;
 			//}
@@ -1463,20 +1463,20 @@ void GUI_Tools_Repair()
 		//	vp_memset(equipment, 0, 8);
 		//	switch (character)
 		//	{
-		//	case CHAR_DANTE:
+		//	case CHAR_LOGIC_DANTE:
 		//		equipment[0] = WEAPON_DANTE_REBELLION;
 		//		equipment[1] = WEAPON_DANTE_CERBERUS;
 		//		equipment[2] = WEAPON_EBONY_IVORY;
 		//		equipment[3] = WEAPON_SHOTGUN;
 		//		break;
-		//	case CHAR_BOB:
+		//	case CHAR_LOGIC_BOB:
 		//		equipment[0] = WEAPON_YAMATO_BOB;
 		//		break;
-		//	case CHAR_LADY:
+		//	case CHAR_LOGIC_LADY:
 		//		equipment[2] = WEAPON_KALINA_ANN;
 		//		equipment[4] = 11;
 		//		break;
-		//	case CHAR_VERGIL:
+		//	case CHAR_LOGIC_VERGIL:
 		//		equipment[0] = WEAPON_YAMATO;
 		//		equipment[1] = WEAPON_BEOWULF_VERGIL;
 		//		equipment[2] = WEAPON_FORCE_EDGE;

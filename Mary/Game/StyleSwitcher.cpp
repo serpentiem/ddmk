@@ -25,19 +25,19 @@ void UpdateStyle(byte8 * baseAddr, uint32 index)
 	auto sessionLevel      = (uint32  *)(session + 0x11C);
 	auto sessionExperience = (float32 *)(session + 0x134);
 
-	if (!((character == CHAR_DANTE) || (character == CHAR_VERGIL)))
+	if (!((character == CHAR_LOGIC_DANTE) || (character == CHAR_LOGIC_VERGIL)))
 	{
 		return;
 	}
 
-	if (character == CHAR_VERGIL)
+	if (character == CHAR_LOGIC_VERGIL)
 	{
 		switch (index)
 		{
-		case STYLE_SWORDMASTER:
-		case STYLE_GUNSLINGER:
-		case STYLE_ROYALGUARD:
-			index = STYLE_DARK_SLAYER;
+		case STYLE_DANTE_SWORDMASTER:
+		case STYLE_DANTE_GUNSLINGER:
+		case STYLE_DANTE_ROYALGUARD:
+			index = STYLE_VERGIL_DARK_SLAYER;
 			break;
 		}
 	}
@@ -48,24 +48,24 @@ void UpdateStyle(byte8 * baseAddr, uint32 index)
 		{
 			return;
 		}
-		index = STYLE_QUICKSILVER;
+		index = STYLE_DANTE_QUICKSILVER;
 	}
 
-	if ((index == STYLE_QUICKSILVER) && (actor != ACTOR_ONE))
+	if ((index == STYLE_DANTE_QUICKSILVER) && (actor != ACTOR_ONE))
 	{
 		return;
 	}
 
-	if ((index == STYLE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
+	if ((index == STYLE_DANTE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
 	{
 		return;
 	}
 
 	// @Todo: Check if array for unlocked styles.
 
-	if (character == CHAR_DANTE)
+	if (character == CHAR_LOGIC_DANTE)
 	{
-		if (index == STYLE_QUICKSILVER)
+		if (index == STYLE_DANTE_QUICKSILVER)
 		{
 			auto & unlock = *(bool *)(session + 0x5E);
 			if (!unlock)
@@ -73,7 +73,7 @@ void UpdateStyle(byte8 * baseAddr, uint32 index)
 				return;
 			}
 		}
-		else if (index == STYLE_DOPPELGANGER)
+		else if (index == STYLE_DANTE_DOPPELGANGER)
 		{
 			auto & unlock = *(bool *)(session + 0x5F);
 			if (!unlock)
@@ -93,7 +93,7 @@ void UpdateStyle(byte8 * baseAddr, uint32 index)
 	experience = sessionExperience[index];
 	style      = index;
 
-	if ((index == STYLE_SWORDMASTER) || (index == STYLE_GUNSLINGER))
+	if ((index == STYLE_DANTE_SWORDMASTER) || (index == STYLE_DANTE_GUNSLINGER))
 	{
 		System_Weapon_Dante_UpdateExpertise(baseAddr);
 	}
@@ -121,14 +121,14 @@ void UpdateStyle(byte8 * baseAddr, uint32 index)
 	//	{
 	//		goto UpdateActor2End;
 	//	}
-	//	if ((index == STYLE_QUICKSILVER) /*|| (index == STYLE_DOPPELGANGER)*/)
+	//	if ((index == STYLE_DANTE_QUICKSILVER) /*|| (index == STYLE_DANTE_DOPPELGANGER)*/)
 	//	{
 	//		goto UpdateActor2End;
 	//	}
 	//	if (!isControlledByPlayer2)
 	//	{
 	//		style2 = index;
-	//		if ((index == STYLE_SWORDMASTER) || (index == STYLE_GUNSLINGER))
+	//		if ((index == STYLE_DANTE_SWORDMASTER) || (index == STYLE_DANTE_GUNSLINGER))
 	//		{
 	//			System_Weapon_Dante_UpdateExpertise(baseAddr2);
 	//		}
@@ -207,7 +207,7 @@ void Game_StyleSwitcher_Controller()
 		{
 			if (execute[actor][4])
 			{
-				//UpdateStyle(System_Actor_actorBaseAddr[actor], STYLE_DOPPELGANGER);
+				//UpdateStyle(System_Actor_actorBaseAddr[actor], STYLE_DANTE_DOPPELGANGER);
 				execute[actor][4] = false;
 			}
 		}
@@ -239,7 +239,7 @@ void Game_StyleSwitcher_Init()
 		FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteAddress(func.sect0, (appBaseAddr + 0xC90E30), 7);
-		*(dword *)(func.sect0 + 0x15) = (0x11C + (STYLE_GUNSLINGER * 4));
+		*(dword *)(func.sect0 + 0x15) = (0x11C + (STYLE_DANTE_GUNSLINGER * 4));
 		GunslingerGetStyleLevel = func.addr;
 	}
 	{

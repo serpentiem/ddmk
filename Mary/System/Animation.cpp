@@ -16,7 +16,7 @@ static uint32 PlayAnimation(byte * baseAddr, uint8 file, uint8 index)
 		return 0;
 	}
 	uint8 character = *(uint8 *)(baseAddr + 0x78);
-	if (character != CHAR_DANTE)
+	if (character != CHAR_LOGIC_DANTE)
 	{
 		return 0;
 	}

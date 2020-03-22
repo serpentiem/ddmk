@@ -1,3 +1,6 @@
+
+// @Todo: Replace CHAR_LOGIC_.
+
 #include "Model.h"
 
 PrivateStart;
@@ -553,9 +556,9 @@ DEVIL_MODEL_FILE_HELPER Vergil_devilModelFileHelper[MAX_DEVIL_VERGIL][DEVIL_MODE
 
 
 
-// UpdateModelTemplate<CHAR_DANTE, LOGIC_COSTUME_DANTE_DEFAULT, Config.Cosmetics.Vergil.modelFileHelper[LOGIC_COSTUME_VERGIL_DEFAULT]>
+// UpdateModelTemplate<CHAR_LOGIC_DANTE, LOGIC_COSTUME_DANTE_DEFAULT, Config.Cosmetics.Vergil.modelFileHelper[LOGIC_COSTUME_VERGIL_DEFAULT]>
 
-// UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_REBELLION, Config.Cosmetics.Vergil.devilModelFileHelper[DEVIL_VERGIL_YAMATO]>
+// UpdateDevilModelTemplate<CHAR_LOGIC_DANTE, DEVIL_DANTE_REBELLION, Config.Cosmetics.Vergil.devilModelFileHelper[DEVIL_VERGIL_YAMATO]>
 
 
 
@@ -581,12 +584,12 @@ void UpdateModelTemplate(byte8 * baseAddr)
 	byte8 * dest  = 0;
 	byte8 * dest2 = 0;
 
-	if constexpr (fileHelperCharacter == CHAR_DANTE)
+	if constexpr (fileHelperCharacter == CHAR_LOGIC_DANTE)
 	{
 		//modelFileHelper = Config.Cosmetics.Dante.modelFileHelper[fileHelperCostume];
 		modelFileHelper = Dante_modelFileHelper[fileHelperCostume];
 	}
-	else if constexpr (fileHelperCharacter == CHAR_VERGIL)
+	else if constexpr (fileHelperCharacter == CHAR_LOGIC_VERGIL)
 	{
 		//modelFileHelper = Config.Cosmetics.Vergil.modelFileHelper[fileHelperCostume];
 		modelFileHelper = Vergil_modelFileHelper[fileHelperCostume];
@@ -807,22 +810,22 @@ void UpdateDevilModelTemplate
 
 	devilSubmodelIndex = (slot == 1) ? 0 : 2;
 
-	if constexpr (fileHelperCharacter == CHAR_DANTE)
+	if constexpr (fileHelperCharacter == CHAR_LOGIC_DANTE)
 	{
 		//devilModelFileHelper = Config.Cosmetics.Dante.devilModelFileHelper[fileHelperDevil];
 		devilModelFileHelper = Dante_devilModelFileHelper[fileHelperDevil];
 	}
-	else if constexpr (fileHelperCharacter == CHAR_VERGIL)
+	else if constexpr (fileHelperCharacter == CHAR_LOGIC_VERGIL)
 	{
 		//devilModelFileHelper = Config.Cosmetics.Vergil.devilModelFileHelper[fileHelperDevil];
 		devilModelFileHelper = Vergil_devilModelFileHelper[fileHelperDevil];
 	}
 
-	if constexpr (character == CHAR_DANTE)
+	if constexpr (character == CHAR_LOGIC_DANTE)
 	{
 		devilModelData = (DEVIL_MODEL_DATA *)(baseAddr + devilModelDataOffDante[devil]);
 	}
-	else if constexpr (character == CHAR_VERGIL)
+	else if constexpr (character == CHAR_LOGIC_VERGIL)
 	{
 		devilModelData = (DEVIL_MODEL_DATA *)(baseAddr + devilModelDataOffVergil[devil]);
 	}
@@ -1011,40 +1014,71 @@ PrivateEnd;
 
 Cosmetics_Model_UpdateModel_t Cosmetics_Model_UpdateModelDante[MAX_COSTUME_DANTE] =
 {
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT        , CHAR_DANTE, COSTUME_DANTE_DEFAULT        >,
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT_NO_COAT, CHAR_DANTE, COSTUME_DANTE_DEFAULT_NO_COAT>,
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT_TORN   , CHAR_DANTE, COSTUME_DANTE_DEFAULT_TORN   >,
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DMC1           , CHAR_DANTE, COSTUME_DANTE_DMC1           >,
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DMC1_NO_COAT   , CHAR_DANTE, COSTUME_DANTE_DMC1_NO_COAT   >,
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_SPARDA         , CHAR_DANTE, COSTUME_DANTE_SPARDA         >,
+	UpdateModelTemplate<CHAR_LOGIC_DANTE, COSTUME_DANTE_DEFAULT        , CHAR_LOGIC_DANTE, COSTUME_DANTE_DEFAULT        >,
+	UpdateModelTemplate<CHAR_LOGIC_DANTE, COSTUME_DANTE_DEFAULT_NO_COAT, CHAR_LOGIC_DANTE, COSTUME_DANTE_DEFAULT_NO_COAT>,
+	UpdateModelTemplate<CHAR_LOGIC_DANTE, COSTUME_DANTE_DEFAULT_TORN   , CHAR_LOGIC_DANTE, COSTUME_DANTE_DEFAULT_TORN   >,
+	UpdateModelTemplate<CHAR_LOGIC_DANTE, COSTUME_DANTE_DMC1           , CHAR_LOGIC_DANTE, COSTUME_DANTE_DMC1           >,
+	UpdateModelTemplate<CHAR_LOGIC_DANTE, COSTUME_DANTE_DMC1_NO_COAT   , CHAR_LOGIC_DANTE, COSTUME_DANTE_DMC1_NO_COAT   >,
+	UpdateModelTemplate<CHAR_LOGIC_DANTE, COSTUME_DANTE_SPARDA         , CHAR_LOGIC_DANTE, COSTUME_DANTE_SPARDA         >,
 };
 
 Cosmetics_Model_UpdateModel_t Cosmetics_Model_UpdateModelDanteVergil[MAX_COSTUME_VERGIL] =
 {
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT        , CHAR_VERGIL, COSTUME_VERGIL_DEFAULT        >,
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_DEFAULT_NO_COAT, CHAR_VERGIL, COSTUME_VERGIL_DEFAULT_NO_COAT>,
-	UpdateModelTemplate<CHAR_DANTE, COSTUME_DANTE_SPARDA         , CHAR_VERGIL, COSTUME_VERGIL_SPARDA         >,
+	UpdateModelTemplate<CHAR_LOGIC_DANTE, COSTUME_DANTE_DEFAULT        , CHAR_LOGIC_VERGIL, COSTUME_VERGIL_DEFAULT        >,
+	UpdateModelTemplate<CHAR_LOGIC_DANTE, COSTUME_DANTE_DEFAULT_NO_COAT, CHAR_LOGIC_VERGIL, COSTUME_VERGIL_DEFAULT_NO_COAT>,
+	UpdateModelTemplate<CHAR_LOGIC_DANTE, COSTUME_DANTE_SPARDA         , CHAR_LOGIC_VERGIL, COSTUME_VERGIL_SPARDA         >,
 };
 
 Cosmetics_Model_UpdateDevilModel_t Cosmetics_Model_UpdateDevilModelDante[MAX_DEVIL_DANTE] =
 {
-	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_REBELLION , CHAR_DANTE, DEVIL_DANTE_REBELLION >,
-	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_CERBERUS  , CHAR_DANTE, DEVIL_DANTE_CERBERUS  >,
-	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_AGNI_RUDRA, CHAR_DANTE, DEVIL_DANTE_AGNI_RUDRA>,
-	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_NEVAN     , CHAR_DANTE, DEVIL_DANTE_NEVAN     >,
-	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_BEOWULF   , CHAR_DANTE, DEVIL_DANTE_BEOWULF   >,
-	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_SPARDA    , CHAR_DANTE, DEVIL_DANTE_SPARDA    >,
+	UpdateDevilModelTemplate<CHAR_LOGIC_DANTE, DEVIL_DANTE_REBELLION , CHAR_LOGIC_DANTE, DEVIL_DANTE_REBELLION >,
+	UpdateDevilModelTemplate<CHAR_LOGIC_DANTE, DEVIL_DANTE_CERBERUS  , CHAR_LOGIC_DANTE, DEVIL_DANTE_CERBERUS  >,
+	UpdateDevilModelTemplate<CHAR_LOGIC_DANTE, DEVIL_DANTE_AGNI_RUDRA, CHAR_LOGIC_DANTE, DEVIL_DANTE_AGNI_RUDRA>,
+	UpdateDevilModelTemplate<CHAR_LOGIC_DANTE, DEVIL_DANTE_NEVAN     , CHAR_LOGIC_DANTE, DEVIL_DANTE_NEVAN     >,
+	UpdateDevilModelTemplate<CHAR_LOGIC_DANTE, DEVIL_DANTE_BEOWULF   , CHAR_LOGIC_DANTE, DEVIL_DANTE_BEOWULF   >,
+	UpdateDevilModelTemplate<CHAR_LOGIC_DANTE, DEVIL_DANTE_SPARDA    , CHAR_LOGIC_DANTE, DEVIL_DANTE_SPARDA    >,
 };
 
 Cosmetics_Model_UpdateDevilModel_t Cosmetics_Model_UpdateDevilModelDanteVergil[MAX_DEVIL_VERGIL] =
 {
-	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_REBELLION, CHAR_VERGIL, DEVIL_VERGIL_YAMATO >,
-	UpdateDevilModelTemplate<CHAR_DANTE, DEVIL_DANTE_BEOWULF  , CHAR_VERGIL, DEVIL_VERGIL_BEOWULF>,
+	UpdateDevilModelTemplate<CHAR_LOGIC_DANTE, DEVIL_DANTE_REBELLION, CHAR_LOGIC_VERGIL, DEVIL_VERGIL_YAMATO >,
+	UpdateDevilModelTemplate<CHAR_LOGIC_DANTE, DEVIL_DANTE_BEOWULF  , CHAR_LOGIC_VERGIL, DEVIL_VERGIL_BEOWULF>,
 };
 
 void Cosmetics_Model_Init()
 {
 	LogFunction();
+
+	// Add character check to Dante's Update Model Partition function.
+
+	{
+		byte8 sect0[] =
+		{
+			0x80, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, //cmp byte ptr [rdi+0000B8C1],00
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       //je dmc3.exe+2169F0
+			0xC3,                                     //ret
+		};
+		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(byte32 *)(func.sect0 + 2) = offsetof(ACTOR_DATA, character);
+		*(uint8 *)(func.sect0 + 6) = CHAR_DANTE;
+		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x2169F0), 6);
+		WriteCall((appBaseAddr + 0x215577), func.addr);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	for (uint8 index = 0; index < countof(Cosmetics_Model_UpdateModelDante); index++)
 	{

@@ -196,7 +196,7 @@ void UpdateCostume(ACTOR_DATA * actorData)
 
 	switch (actorData->character)
 	{
-	case CHAR_DANTE:
+	case CHAR_LOGIC_DANTE:
 	{
 		if (actorData->costume >= countof(costumeMapDante))
 		{
@@ -207,7 +207,7 @@ void UpdateCostume(ACTOR_DATA * actorData)
 		fileItem[0].stringItem = &stringItem[cacheFileId];
 		break;
 	}
-	case CHAR_VERGIL:
+	case CHAR_LOGIC_VERGIL:
 	{
 		if (actorData->costume >= countof(costumeMapVergil))
 		{
@@ -227,7 +227,7 @@ void UpdateSword(ACTOR_DATA * actorData)
 	auto fileItem = (FILE_ITEM *)(appBaseAddr + 0xC99D30);
 	uint8 sword = 0;
 
-	if (actorData->character != CHAR_DANTE)
+	if (actorData->character != CHAR_LOGIC_DANTE)
 	{
 		return;
 	}
@@ -244,10 +244,10 @@ void UpdateSword(ACTOR_DATA * actorData)
 		}
 		switch (actorData->costume)
 		{
-		case LOGIC_COSTUME_DANTE_DMC1:
-		case LOGIC_COSTUME_DANTE_DMC1_NO_COAT:
-		case LOGIC_COSTUME_DANTE_SPARDA:
-		case LOGIC_COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
+		case COSTUME_LOGIC_DANTE_DMC1:
+		case COSTUME_LOGIC_DANTE_DMC1_NO_COAT:
+		case COSTUME_LOGIC_DANTE_SPARDA:
+		case COSTUME_LOGIC_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
 			sword = 2;
 			break;
 		}
@@ -495,9 +495,9 @@ void System_File_UpdateFileItems(ACTOR_DATA * actorData)
 
 void System_File_UpdateMotion(ACTOR_DATA * actorData)
 {
-	memset(&actorData->motionArchive, 0, (MAX_MOT * 8));
+	memset(&actorData->motionFile, 0, (MAX_MOT * 8));
 	auto character = actorData->character;
-	if (character >= MAX_CHAR)
+	if (character >= MAX_CHAR_LOGIC)
 	{
 		character = 0;
 	}
@@ -506,7 +506,7 @@ void System_File_UpdateMotion(ACTOR_DATA * actorData)
 	{
 		auto & motionId    = motionHelper[character][index].motionId;
 		auto & cacheFileId = motionHelper[character][index].cacheFileId;
-		actorData->motionArchive[motionId] = System_File_cacheFile[cacheFileId];
+		actorData->motionFile[motionId] = System_File_cacheFile[cacheFileId];
 	}
 }
 

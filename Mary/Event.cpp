@@ -62,6 +62,7 @@ void CreateMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 	System_Actor_mainActorBaseAddr = baseAddr;
+	//System_Actor_mainCloneBaseAddr = baseAddr;
 	auto & isDefault = *(bool *)(baseAddr + 0xB8C0) = true;
 
 	//auto & actorId = *(uint8 *)(baseAddr + 0x118) = ACTOR_TWO;
@@ -162,9 +163,9 @@ static void Actor_StageLoadComplete()
 	//		goto sect0;
 	//	}
 	//	auto & style = *(uint32 *)(baseAddr1 + 0x6338);
-	//	if ((style == STYLE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
+	//	if ((style == STYLE_DANTE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
 	//	{
-	//		style = STYLE_TRICKSTER;
+	//		style = STYLE_DANTE_TRICKSTER;
 	//	}
 	//}
 	//sect0:
@@ -276,7 +277,7 @@ static void Arcade_InitSession()
 
 	memset(unlock, true, 14);
 
-	if (Config.Game.Arcade.character == CHAR_DANTE)
+	if (Config.Game.Arcade.character == CHAR_LOGIC_DANTE)
 	{
 		vp_memcpy(equipment, Config.Game.Arcade.equipment, 4);
 	}
@@ -290,11 +291,11 @@ static void Arcade_InitSession()
 	hitPoints = Config.Game.Arcade.hitPoints;
 	magicPoints = Config.Game.Arcade.magicPoints;
 
-	if (Config.Game.Arcade.character == CHAR_DANTE)
+	if (Config.Game.Arcade.character == CHAR_LOGIC_DANTE)
 	{
-		if ((Config.Game.Arcade.style == STYLE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
+		if ((Config.Game.Arcade.style == STYLE_DANTE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
 		{
-			style = STYLE_TRICKSTER;
+			style = STYLE_DANTE_TRICKSTER;
 		}
 		else
 		{
@@ -1108,7 +1109,7 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 //	*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = *(uint32 *)(baseAddr + 0x3E88);
 //	*(bool   *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E9B) = *(bool   *)(baseAddr + 0x3E9B);
 //	uint8 character = *(uint8 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x78);
-//	//if (character == CHAR_BOB)
+//	//if (character == CHAR_LOGIC_BOB)
 //	//{
 //	//	if (devil)
 //	//	{
@@ -1123,14 +1124,14 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 //	//		*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
 //	//	}
 //	//}
-//	if (character == CHAR_LADY)
+//	if (character == CHAR_LOGIC_LADY)
 //	{
 //		*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
 //		*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
 //		*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
 //		*(bool   *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E9B) = false;
 //	}
-//	else if (character == CHAR_VERGIL)
+//	else if (character == CHAR_LOGIC_VERGIL)
 //	{
 //		uint8 devilForm[] =
 //		{
@@ -1156,7 +1157,7 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 //			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
 //		}
 //	}
-//	if (character != CHAR_LADY)
+//	if (character != CHAR_LOGIC_LADY)
 //	{
 //		//System_Actor_UpdateDevilForm(System_Actor_actorBaseAddr[ACTOR_TWO]);
 //	}

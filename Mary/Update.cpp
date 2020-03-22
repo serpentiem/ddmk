@@ -10,71 +10,61 @@ bool millionStab = false;
 
 // Consider all actors for millionStab.
 
-//void VergilMillionStab()
-//{
-//	auto addr = *(byte8 ***)(appBaseAddr + 0xC90E28);
-//	if (!addr)
-//	{
-//		return;
-//	}
-//	if (!addr[3])
-//	{
-//		return;
-//	}
-//
-//	ACTOR_DATA * actorData[2] = {};
-//
-//	actorData[0] = (ACTOR_DATA *)addr[3];
-//	actorData[1] = (ACTOR_DATA *)addr[4];
-//
-//	if (actorData[0]->move != 39)
-//	{
-//		return;
-//	}
-//	if (actorData[0]->motionData[1].group != 5)
-//	{
-//		return;
-//	}
-//	if (actorData[0]->motionData[1].index != 11)
-//	{
-//		return;
-//	}
-//	if (actorData[0]->inputBuffer[16].level < 6)
-//	{
-//		return;
-//	}
-//
-//	float32 x = actorData[0]->x;
-//	float32 y = actorData[0]->y;
-//	float32 z = actorData[0]->z;
-//	uint16 direction = actorData[0]->direction;
-//
-//	actorData[0]->x = actorData[1]->x;
-//	actorData[0]->y = actorData[1]->y;
-//	actorData[0]->z = actorData[1]->z;
-//	actorData[0]->direction = actorData[1]->direction;
-//
-//	actorData[1]->x = x;
-//	actorData[1]->y = y;
-//	actorData[1]->z = z;
-//	actorData[1]->direction = direction;
-//
-//	actorData[1]->motionState1[0] = 0x11;
-//	actorData[1]->motionState1[1] = 1;
-//	actorData[1]->motionState1[2] = 0x11;
-//	actorData[1]->motionState1[3] = 0x11;
-//
-//	actorData[1]->motionState2[0] = 0x401;
-//	actorData[1]->motionState2[1] = 0x10001;
-//	actorData[1]->motionState2[2] = 0x10001;
-//
-//	actorData[1]->move = 14;
-//
-//	auto baseAddr = addr[3];
-//
-//	addr[3] = addr[4];
-//	addr[4] = baseAddr;
-//}
+void VergilMillionStab()
+{
+	auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E28);
+
+	auto mainBaseAddr = System_Actor_mainActorBaseAddr;
+	auto & mainActorData = *(ACTOR_DATA *)mainBaseAddr;
+
+	auto baseAddr = System_Actor_actorBaseAddr[ACTOR_TWO];
+	auto & actorData = *(ACTOR_DATA *)baseAddr;
+
+	if (mainActorData.move != 39)
+	{
+		return;
+	}
+	if (mainActorData.motionData[1].group != 5)
+	{
+		return;
+	}
+	if (mainActorData.motionData[1].index != 11)
+	{
+		return;
+	}
+	//if (mainActorData.inputData[16].level < 6)
+	if (mainActorData.inputData[16].flags[4] < 6)
+	{
+		return;
+	}
+
+
+	
+
+	//auto position = mainActorData.position;
+	//auto direction = mainActorData.direction;
+
+	//mainActorData.position  = actorData.position;
+	//mainActorData.direction = actorData.direction;
+	mainActorData.actorId   = ACTOR_TWO;
+
+	//actorData.position  = position;
+	//actorData.direction = direction;
+	actorData.actorId   = ACTOR_ONE;
+
+	actorData.motionState1[0] = 0x11;
+	actorData.motionState1[1] = 0x11;
+	actorData.motionState1[2] = 0x11;
+	actorData.motionState1[3] = 0x11;
+
+	actorData.motionState2[0] = 0x401;
+	actorData.motionState2[1] = 0xB0001;
+	actorData.motionState2[2] = 0xB0001;
+
+	actorData.move = 14;
+
+	g_pool[3] = baseAddr;
+}
 
 
 
@@ -98,9 +88,9 @@ void MainLoop()
 
 		Log("Spawn Actors.");
 
-		System_Actor_actorBaseAddr[ACTOR_ONE] = CreateActor(CHAR_DANTE, ACTOR_ONE);
+		System_Actor_actorBaseAddr[ACTOR_TWO] = CreateActor(CHAR_LOGIC_DANTE, ACTOR_TWO);
 
-		Log("System_Actor_actorBaseAddr %llX", System_Actor_actorBaseAddr[ACTOR_ONE]);
+		//Log("System_Actor_actorBaseAddr %llX", System_Actor_actorBaseAddr[ACTOR_TWO]);
 
 
 
@@ -110,7 +100,7 @@ void MainLoop()
 
 
 		
-		auto & actorData     = *(ACTOR_DATA *)System_Actor_actorBaseAddr[ACTOR_ONE];
+		auto & actorData     = *(ACTOR_DATA *)System_Actor_actorBaseAddr[ACTOR_TWO];
 		auto & mainActorData = *(ACTOR_DATA *)System_Actor_mainActorBaseAddr;
 
 
@@ -126,7 +116,11 @@ void MainLoop()
 
 
 
-
+		actorData.character = CHAR_VERGIL;
+		actorData.equipment[0] = WEAPON_DANTE_REBELLION;
+		actorData.equipment[1] = WEAPON_VOID;
+		actorData.equipment[2] = WEAPON_VOID;
+		actorData.equipment[3] = WEAPON_VOID;
 
 
 
@@ -159,7 +153,7 @@ dmc3.exe+C90E10
 	}
 
 
-
+	VergilMillionStab();
 
 
 	return;
@@ -177,7 +171,7 @@ dmc3.exe+C90E10
 
 
 
-	//VergilMillionStab();
+	
 
 
 

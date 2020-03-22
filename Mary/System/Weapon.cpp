@@ -300,7 +300,7 @@ __declspec(deprecated) void UpdateWeapon(byte8 * baseAddr)
 	auto   equipment            =  (uint8 * )(baseAddr + 0x6498);
 	auto   metadata             =  (byte8 **)(baseAddr + 0x64A0);
 
-	if (character >= MAX_CHAR)
+	if (character >= MAX_CHAR_LOGIC)
 	{
 		character = 0;
 	}
@@ -335,7 +335,7 @@ __declspec(deprecated) void UpdateWeapon(byte8 * baseAddr)
 
 	// Update Live Variables
 	{
-		if ((character == CHAR_DANTE) && Config.Game.WeaponSwitcher.enable)
+		if ((character == CHAR_LOGIC_DANTE) && Config.Game.WeaponSwitcher.enable)
 		{
 
 			// @Todo: Should be 8 due to padding.
@@ -362,7 +362,7 @@ __declspec(deprecated) void UpdateWeapon(byte8 * baseAddr)
 
 		*(uint32 *)(baseAddr + 0x64D8) = 4;
 
-		if (character == CHAR_DANTE)
+		if (character == CHAR_LOGIC_DANTE)
 		{
 			System_Weapon_Dante_Ranged_UpdateLevels(baseAddr);
 			System_Weapon_Dante_UpdateExpertise(baseAddr);
@@ -418,7 +418,7 @@ bool Dante_Melee_IsWeaponReady(byte8 * baseAddr, uint8 weaponId)
 
 	if (weaponId == WEAPON_DANTE_BEOWULF)
 	{
-		if (character == CHAR_VERGIL)
+		if (character == CHAR_LOGIC_VERGIL)
 		{
 			return true;
 		}

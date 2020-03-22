@@ -117,9 +117,10 @@ struct CONFIG
 				uint8 floor = 0;
 			}
 			BloodyPalace;
-			uint8  character    = CHAR_DANTE;
+			// @Todo: Update!
+			uint8  character    = CHAR_LOGIC_DANTE;
 			uint8  costume      = 0;
-			uint32 style        = STYLE_TRICKSTER;
+			uint32 style        = STYLE_DANTE_TRICKSTER;
 			uint8  equipment[4] =
 			{
 				WEAPON_DANTE_REBELLION,
@@ -199,7 +200,7 @@ struct CONFIG
 		struct
 		{
 			bool  enable             = false;
-			uint8 character          = CHAR_DANTE;
+			uint8 character          = CHAR_LOGIC_DANTE;
 			bool  enableDevilTrigger = false;
 		}
 		Doppelganger;

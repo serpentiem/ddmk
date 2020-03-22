@@ -35,9 +35,12 @@ extern bool System_Actor_enableModelFixes;
 extern byte8 * System_Actor_mainActorBaseAddr;
 extern byte8 * System_Actor_mainCloneBaseAddr;
 
-extern byte8 ** System_Actor_actorBaseAddr;
-extern byte8 ** System_Actor_cloneBaseAddr;
+//extern byte8 ** System_Actor_actorBaseAddr;
+//extern byte8 ** System_Actor_cloneBaseAddr;
 
+
+extern byte8 * System_Actor_actorBaseAddr[MAX_ACTOR];
+extern byte8 * System_Actor_cloneBaseAddr[MAX_ACTOR];
 
 
 
@@ -92,5 +95,5 @@ void System_Actor_ToggleArrayExtension(bool enable);
 //void System_Actor_ToggleCreateActorOne(bool enable);
 //void System_Actor_ToggleUpdateActor(bool enable);
 //void System_Actor_ToggleDoppelgangerFixes(bool enable);
-void System_Actor_ToggleModelFixes(bool enable);
+//void System_Actor_ToggleModelFixes(bool enable);
 //void System_Actor_ToggleDisableIdleTimer(bool enable);

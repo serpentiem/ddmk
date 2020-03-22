@@ -1,8 +1,133 @@
-
-// @Todo: Update types.
-
 #pragma once
 #include "../Core/DataTypes.h"
+
+enum ACTOR_
+{
+	ACTOR_ONE,
+	ACTOR_TWO,
+	ACTOR_THREE,
+	ACTOR_FOUR,
+	MAX_ACTOR,
+};
+
+enum MODE_
+{
+	MODE_EASY,
+	MODE_NORMAL,
+	MODE_HARD,
+	MODE_VERY_HARD,
+	MODE_DANTE_MUST_DIE,
+	MAX_MODE,
+};
+
+enum CHAR_
+{
+	CHAR_DANTE,
+	CHAR_VERGIL,
+	MAX_CHAR,
+};
+
+enum CHAR_LOGIC_
+{
+	CHAR_LOGIC_DANTE,
+	CHAR_LOGIC_BOB,
+	CHAR_LOGIC_LADY,
+	CHAR_LOGIC_VERGIL,
+	MAX_CHAR_LOGIC,
+};
+
+enum COSTUME_LOGIC_DANTE_
+{
+	COSTUME_LOGIC_DANTE_DEFAULT,
+	COSTUME_LOGIC_DANTE_DEFAULT_NO_COAT,
+	COSTUME_LOGIC_DANTE_DEFAULT_TORN,
+	COSTUME_LOGIC_DANTE_DMC1,
+	COSTUME_LOGIC_DANTE_DMC1_NO_COAT,
+	COSTUME_LOGIC_DANTE_SPARDA,
+	COSTUME_LOGIC_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS,
+	COSTUME_LOGIC_DANTE_SPARDA_INFINITE_MAGIC_POINTS,
+	MAX_COSTUME_LOGIC_DANTE,
+};
+
+enum COSTUME_LOGIC_VERGIL_
+{
+	COSTUME_LOGIC_VERGIL_DEFAULT,
+	COSTUME_LOGIC_VERGIL_DEFAULT_NO_COAT,
+	COSTUME_LOGIC_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS,
+	COSTUME_LOGIC_VERGIL_SPARDA,
+	COSTUME_LOGIC_VERGIL_SPARDA_INFINITE_MAGIC_POINTS,
+	MAX_COSTUME_LOGIC_VERGIL,
+};
+
+enum STYLE_DANTE_
+{
+	STYLE_DANTE_SWORDMASTER,
+	STYLE_DANTE_GUNSLINGER,
+	STYLE_DANTE_TRICKSTER,
+	STYLE_DANTE_ROYALGUARD,
+	STYLE_DANTE_QUICKSILVER,
+	STYLE_DANTE_DOPPELGANGER,
+	MAX_STYLE_DANTE,
+};
+
+enum STYLE_VERGIL_
+{
+	STYLE_VERGIL_DARK_SLAYER = 2,
+	MAX_STYLE_VERGIL = 1,
+};
+
+enum STYLE_
+{
+	MAX_STYLE = 6,
+};
+
+enum WEAPON_DANTE_
+{
+	WEAPON_DANTE_REBELLION,
+	WEAPON_DANTE_CERBERUS,
+	WEAPON_DANTE_AGNI_RUDRA,
+	WEAPON_DANTE_NEVAN,
+	WEAPON_DANTE_BEOWULF,
+	WEAPON_DANTE_EBONY_IVORY,
+	WEAPON_DANTE_SHOTGUN,
+	WEAPON_DANTE_ARTEMIS,
+	WEAPON_DANTE_SPIRAL,
+	WEAPON_DANTE_KALINA_ANN,
+	MAX_WEAPON_DANTE,
+};
+
+enum WEAPON_VERGIL_
+{
+	WEAPON_VERGIL_YAMATO = 11,
+	WEAPON_VERGIL_BEOWULF,
+	WEAPON_VERGIL_FORCE_EDGE,
+	MAX_WEAPON_VERGIL = 3,
+};
+
+enum WEAPON_
+{
+	MAX_WEAPON = 16,
+	WEAPON_VOID = 255,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 enum COSTUME_DANTE_
 {
@@ -369,7 +494,7 @@ constexpr uint32 stringItemOff[MAX_CACHE_FILE] =
 
 
 
-
+// @Todo: Add missing events.
 
 enum EVENT_
 {
@@ -377,28 +502,16 @@ enum EVENT_
 	EVENT_TELEPORT = 2,
 };
 
-enum LOGIC_COSTUME_DANTE_
-{
-	LOGIC_COSTUME_DANTE_DEFAULT,
-	LOGIC_COSTUME_DANTE_DEFAULT_NO_COAT,
-	LOGIC_COSTUME_DANTE_DEFAULT_TORN,
-	LOGIC_COSTUME_DANTE_DMC1,
-	LOGIC_COSTUME_DANTE_DMC1_NO_COAT,
-	LOGIC_COSTUME_DANTE_SPARDA,
-	LOGIC_COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS,
-	LOGIC_COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS,
-	MAX_LOGIC_COSTUME_DANTE,
-};
 
-enum LOGIC_COSTUME_VERGIL_
-{
-	LOGIC_COSTUME_VERGIL_DEFAULT,
-	LOGIC_COSTUME_VERGIL_DEFAULT_NO_COAT,
-	LOGIC_COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS,
-	LOGIC_COSTUME_VERGIL_SPARDA,
-	LOGIC_COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS,
-	MAX_LOGIC_COSTUME_VERGIL,
-};
+
+
+
+
+
+
+
+
+
 
 enum GAMEPAD_
 {
@@ -444,6 +557,635 @@ enum CMD_
 	CMD_TAUNT,
 	MAX_CMD,
 };
+
+
+
+
+
+
+
+
+
+
+// @Research: Change to MOTION_FILE and add single ids if necessary.
+
+enum MOT_DANTE_
+{
+	MOT_DANTE_BASE,
+	MOT_DANTE_DAMAGE,
+	MOT_DANTE_TAUNTS,
+	MOT_DANTE_REBELLION,
+	MOT_DANTE_CERBERUS,
+	MOT_DANTE_AGNI_RUDRA,
+	MOT_DANTE_NEVAN,
+	MOT_DANTE_BEOWULF,
+	MOT_DANTE_EBONY_IVORY,
+	MOT_DANTE_SHOTGUN,
+	MOT_DANTE_ARTEMIS,
+	MOT_DANTE_SPIRAL,
+	MOT_DANTE_KALINA_ANN,
+	MOT_DANTE_SWORDMASTER_REBELLION,
+	MOT_DANTE_SWORDMASTER_CERBERUS,
+	MOT_DANTE_SWORDMASTER_AGNI_RUDRA,
+	MOT_DANTE_SWORDMASTER_NEVAN,
+	MOT_DANTE_SWORDMASTER_BEOWULF,
+	MOT_DANTE_GUNSLINGER_EBONY_IVORY,
+	MOT_DANTE_GUNSLINGER_SHOTGUN,
+	MOT_DANTE_GUNSLINGER_ARTEMIS,
+	MOT_DANTE_GUNSLINGER_SPIRAL,
+	MOT_DANTE_GUNSLINGER_KALINA_ANN,
+	MOT_DANTE_TRICKSTER,
+	MOT_DANTE_ROYALGUARD,
+	MOT_DANTE_QUICKSILVER,
+	MOT_DANTE_DOPPELGANGER,
+	MAX_MOT_DANTE,
+};
+
+enum MOT_BOB_
+{
+	MOT_BOB_BASE,
+	MOT_BOB_DAMAGE,
+	MOT_BOB_TAUNTS,
+	MOT_BOB_MELEE_STYLE = 31,
+	MAX_MOT_BOB         = 4,
+};
+
+
+
+
+
+
+
+
+
+enum MOT_LADY_
+{
+	MOT_LADY_BASE,
+	MOT_LADY_DAMAGE,
+	MOT_LADY_TAUNTS,
+	MOT_LADY_KALINA_ANN = 12,
+	MAX_MOT_LADY        = 4,
+};
+
+enum MOT_VERGIL_
+{
+	MOT_VERGIL_BASE,
+	MOT_VERGIL_DAMAGE,
+	MOT_VERGIL_TAUNTS,
+	MOT_VERGIL_YAMATO,
+	MOT_VERGIL_BEOWULF,
+	MOT_VERGIL_FORCE_EDGE,
+	MOT_VERGIL_DARK_SLAYER,
+	MOT_VERGIL_NERO_ANGELO_YAMATO,
+	MOT_VERGIL_NERO_ANGELO_BEOWULF,
+	MOT_VERGIL_NERO_ANGELO_FORCE_EDGE,
+	MAX_MOT_VERGIL,
+};
+
+enum MOT_
+{
+	//MOT_DANTE  = MAX_MOT_DANTE,
+	//MOT_BOB    = MAX_MOT_BOB,
+	//MOT_LADY   = MAX_MOT_LADY,
+	//MOT_VERGIL = MAX_MOT_VERGIL,
+	MAX_MOT    = 32,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+enum WEAPON_ICON_SIDE_
+{
+	WEAPON_ICON_SIDE_LEFT,
+	WEAPON_ICON_SIDE_RIGHT,
+};
+
+enum FILE_ITEM_STATUS_
+{
+	FILE_ITEM_READY = 3,
+};
+
+enum SPEED_DEVIL_
+{
+	SPEED_DEVIL_DANTE_REBELLION,
+	SPEED_DEVIL_DANTE_CERBERUS,
+	SPEED_DEVIL_DANTE_AGNI_RUDRA,
+	SPEED_DEVIL_DANTE_NEVAN,
+	SPEED_DEVIL_DANTE_BEOWULF,
+	SPEED_DEVIL_DANTE_SPARDA,
+	SPEED_DEVIL_VERGIL_YAMATO = 8,
+	SPEED_DEVIL_VERGIL_BEOWULF,
+	SPEED_DEVIL_VERGIL_FORCE_EDGE,
+	SPEED_DEVIL_NERO_ANGELO_YAMATO,
+	SPEED_DEVIL_NERO_ANGELO_BEOWULF,
+	SPEED_DEVIL_NERO_ANGELO_FORCE_EDGE,
+};
+
+enum FILE_MODE_
+{
+	FILE_MODE_MEMORY,
+	FILE_MODE_ARCHIVE,
+	FILE_MODE_LOCAL,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#define _Merge(a, b) a##b
+#define Merge(a, b) _Merge(a, b)
+
+#define _(size) struct { byte8 Merge(padding, __LINE__)[size]; }
+
+#pragma pack(push, 1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// @Todo: Update types.
+
+struct PS2_GAMEPAD
+{
+	uint32 ready;
+	// @Todo: Add _.
+	uint32 reserved[3];
+	uint8  vibration[4];
+	word   buttons[6];
+	uint8  rightStickX;
+	uint8  rightStickY;
+	uint8  leftStickX;
+	uint8  leftStickY;
+	// @Todo: Add _.
+	uint32 unknown[3];
+	uint16 rightStickDirection[4];
+	uint16 leftStickDirection[4];
+	uint16 rightStickDirectionFast[2];
+	uint16 leftStickDirectionFast[2];
+	uint16 rightStickPosition;
+	uint16 leftStickPosition;
+	uint16 rightStickDifference;
+	uint16 leftStickDifference;
+};
+
+// @Todo: Change to ENGINE_GAMEPAD.
+
+struct CAPCOM_GAMEPAD
+{
+	word   buttons[4];
+	uint16 buttonsTimer[2];
+	uint16 rightStickDirection[4];
+	uint16 rightStickTimer[2];
+	uint16 rightStickPosition[2];
+	uint16 leftStickDirection[4];
+	uint16 leftStickTimer[2];
+	uint16 leftStickPosition[2];
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct STRING_ITEM
+{
+
+	// @Todo: Add _(8);
+	byte8 unknown[8];
+	const char * string;
+};
+
+struct FILE_ITEM
+{
+	// @Todo: Same as above.
+
+	uint32        category;
+	uint32        status;
+	uint16        id;
+	byte8         padding[6];
+	void        * callback;
+	STRING_ITEM * stringItem;
+	byte8       * file;
+	byte8         unknown[32];
+};
+
+
+
+
+
+
+// @Todo: Specifiy and auto vars.
+
+// EVENT_VARS
+// LIVE_VARS
+// CHAR_VARS
+// ACTOR_VARS
+// CAMERA_VARS
+
+struct VARS
+{
+	bool     init;
+	uint32 * room;
+	uint32 * position;
+	uint32 * event;
+	uint16 * nextRoom;
+	uint16 * nextPosition;
+	byte32 * flags;
+	uint32 * mission;
+	VARS()
+	{
+		memset(this, 0, sizeof(*this));
+		{
+			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xCA8918); // EVENT_DATA
+			if (!addr)
+			{
+				return;
+			}
+			if (!addr[8])
+			{
+				return;
+			}
+			room     = (uint32 *)(addr[8] + 0x18);
+			position = (uint32 *)(addr[8] + 0x1C);
+			event    = (uint32 *)(addr[8] + 0x20);
+			if (!addr[12])
+			{
+				return;
+			}
+			nextRoom     = (uint16 *)(addr[12] + 0x164); // NEXT_EVENT_DATA
+			nextPosition = (uint16 *)(addr[12] + 0x166);
+		}
+		{
+			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xC90E30); // MISSION_DATA
+			if (!addr)
+			{
+				return;
+			}
+			if (!addr[1])
+			{
+				return;
+			}
+			flags = (byte32 *)addr[1];
+		}
+		mission = (uint32 *)(appBaseAddr + 0xC8F250); // SESSION_DATA
+		init = true;
+	}
+};
+
+struct MEMORY_OBJECT
+{
+	byte8 * addr;
+	byte8 * end;
+	uint32 last;
+	uint32 boundary;
+	uint32 size;
+	uint32 pipe;
+	uint32 count;
+	byte8 padding[4];
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct MOTION_DATA
+{
+	uint8 index;
+	uint8 group;
+};
+
+
+
+
+
+
+
+
+
+struct INPUT_DATA
+{
+	byte8 flags[8];
+	float32 value;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct MODEL_DATA
+{
+	uint8 count;
+	_(15);
+	vec4 vertices[3];
+	_(16);
+};
+
+struct DEVIL_SUBMODEL_DATA
+{
+	uint8 submodelIndex;
+	uint8 devilModelOff;
+	uint8 devilSubmodelIndex;
+};
+
+struct DEVIL_MODEL_DATA
+{
+	uint8 modelIndex;
+	uint8 modelOff;
+	DEVIL_SUBMODEL_DATA submodelData[2];
+};
+
+
+
+
+
+
+
+
+
+
+struct MODEL_FILE_HELPER
+{
+	struct Data
+	{
+		uint16 cacheFileId;
+		uint8  fileIndex;
+	};
+	Data model;
+	Data texture;
+	Data shadow;
+	Data physics;
+};
+
+typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
+
+
+
+
+
+
+
+
+struct ACTOR_DATA
+{
+	_(120);
+	uint8 characterLogic; // 0x78
+	_(7);
+	vec4 position; // 0x80
+	_(48);
+	uint16 direction; // 0xC0
+	_(86);
+	uint8 actorId; // 0x118
+	_(3);
+	bool isDoppelganger; // 0x11C
+	_(3);
+	uint8 visible; // 0x120
+	_(14207);
+	byte8 * motionFile[32]; // 0x38A0
+	_(16);
+	MOTION_DATA motionData[5]; // 0x39B0
+	_(94);
+	uint8 shadow; // 0x3A18
+	_(15);
+	byte32 color; // 0x3A28
+	_(980);
+	byte32 motionState1[4]; // 0x3E00
+	_(10);
+	uint16 chargedShotAir; // 0x3E1A
+	_(6);
+	uint16 chargedShot; // 0x3E22
+	_(20);
+	float32 idleTimer; // 0x3E38
+	_(36);
+	byte32 motionState2[3]; // 0x3E60
+	uint8 activeModel; // 0x3E6C
+	_(3);
+	uint8 queuedModel; // 0x3E70
+	_(3);
+	uint8 modelIndex[3]; // 0x3E74
+	_(9);
+	uint8 modelState; // 0x3E80
+	_(3);
+	bool lockOn; // 0x3E84
+	_(3);
+	uint8 modelIndexMirror; // 0x3E88
+	_(11);
+	uint8 devilState; // 0x3E94
+	_(6);
+	bool devil; // 0x3E9B
+	_(2);
+	uint8 costume; // 0x3E9E
+	bool specialCostume; // 0x3E9F
+	_(24);
+	float32 magicPoints; // 0x3EB8
+	float32 maxMagicPoints; // 0x3EBC
+	_(228);
+	uint8 move; // 0x3FA4
+	uint8 lastMove; // 0x3FA5
+	_(6);
+	uint8 chainCount; // 0x3FAC
+	_(63);
+	byte32 expertise[16]; // 0x3FEC
+	_(192);
+	float32 maxHitPoints; // 0x40EC
+	_(44);
+	float32 hitPoints; // 0x411C
+	_(8712);
+	byte8 * targetBaseAddr; // 0x6328
+	_(8);
+	uint8 style; // 0x6338
+	_(31);
+	uint8 styleLevel; // 0x6358
+	_(3);
+	uint8 dashCount; // 0x635C
+	uint8 skyStarCount; // 0x635D
+	uint8 airTrickCount; // 0x635E
+	uint8 trickUpCount; // 0x635F
+	uint8 trickDownCount; // 0x6360
+	bool quicksilver; // 0x6361
+	bool doppelganger; // 0x6362
+	_(1);
+	float32 styleExperience; // 0x6364
+	_(236);
+	bool controlLinkedActor; // 0x6454
+	_(35);
+	byte8 * linkedActorBaseAddr; // 0x6478
+	_(8);
+	uint8 selectedMeleeWeaponVergil; // 0x6488
+	_(4);
+	uint8 activeWeapon; // 0x648D
+	_(2);
+	uint8 selectedMeleeWeapon; // 0x6490
+	_(3);
+	uint8 selectedRangedWeapon; // 0x6494
+	_(3);
+	uint8 equipment[4]; // 0x6498
+	_(4);
+	byte8 * weaponMetadata[4]; // 0x64A0
+	_(8);
+	byte32 weaponFlags[4]; // 0x64C8
+	_(24);
+	uint8 activeMeleeWeapon; // 0x64F0
+	uint8 activeRangedWeapon; // 0x64F1
+	_(2);
+	float32 weaponTimer[4]; // 0x64F4
+	_(12);
+	uint8 styleRank; // 0x6510
+	_(3);
+	float32 styleMeter; // 0x6514
+	_(348);
+	INPUT_DATA inputData[58]; // 0x6674
+	_(2868);
+	vec4 interactionData[8]; // 0x7460
+	byte16 buttonInput[4]; // 0x74E0
+	_(16712);
+	MODEL_DATA modelData[6]; // 0xB630
+	_(88);
+	float32 artemisChargeValue[2]; // 0xB868
+	_(12);
+	byte32 artemisChargeFlags[2]; // 0xB87C
+	_(60);
+	bool isDefault; // 0xB8C0
+	uint8 character; // 0xB8C1
+	bool noCollision; // 0xB8C2
+	bool hide; // 0xB8C3
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+constexpr uint32 adsize = (uint32)sizeof(ACTOR_DATA);
+
+
+
+#pragma pack(pop)
+
+#undef _
+#undef Merge
+#undef _Merge
+
+
+
+/*
+
+INTERACTION_DATA
+
+
+_(528);
+
+vec4 force[8];
+
+actorData.interactionData.force[3].x
+
+
+actorData.forceData[3].x
+
+
+
+
+
+
+*/
+
+
+
+#pragma region Review
+
+// @Research: Consider boss ids.
 
 enum ROOM_
 {
@@ -544,65 +1286,13 @@ enum POSITION_
 #define TRACK_ARKHAM_2            "afs/sound/Hine_02.adx"
 #define TRACK_VERGIL_3            "afs/sound/Versil_03.adx"
 
-
-
-
-
-enum ACTOR_
-{
-	ACTOR_ONE,
-	ACTOR_TWO,
-	ACTOR_THREE,
-	ACTOR_FOUR,
-	MAX_ACTOR,
-};
-
 enum DEVIL_FLUX_
 {
 	DEVIL_FLUX_START = 1,
 	DEVIL_FLUX_END   = 2,
 };
 
-enum MOT_DANTE_
-{
-	MOT_DANTE_BASE,
-	MOT_DANTE_DAMAGE,
-	MOT_DANTE_TAUNTS,
-	MOT_DANTE_REBELLION,
-	MOT_DANTE_CERBERUS,
-	MOT_DANTE_AGNI_RUDRA,
-	MOT_DANTE_NEVAN,
-	MOT_DANTE_BEOWULF,
-	MOT_DANTE_EBONY_IVORY,
-	MOT_DANTE_SHOTGUN,
-	MOT_DANTE_ARTEMIS,
-	MOT_DANTE_SPIRAL,
-	MOT_DANTE_KALINA_ANN,
-	MOT_DANTE_SWORDMASTER_REBELLION,
-	MOT_DANTE_SWORDMASTER_CERBERUS,
-	MOT_DANTE_SWORDMASTER_AGNI_RUDRA,
-	MOT_DANTE_SWORDMASTER_NEVAN,
-	MOT_DANTE_SWORDMASTER_BEOWULF,
-	MOT_DANTE_GUNSLINGER_EBONY_IVORY,
-	MOT_DANTE_GUNSLINGER_SHOTGUN,
-	MOT_DANTE_GUNSLINGER_ARTEMIS,
-	MOT_DANTE_GUNSLINGER_SPIRAL,
-	MOT_DANTE_GUNSLINGER_KALINA_ANN,
-	MOT_DANTE_TRICKSTER,
-	MOT_DANTE_ROYALGUARD,
-	MOT_DANTE_QUICKSILVER,
-	MOT_DANTE_DOPPELGANGER,
-	MAX_MOT_DANTE,
-};
 
-enum MOT_BOB_
-{
-	MOT_BOB_BASE,
-	MOT_BOB_DAMAGE,
-	MOT_BOB_TAUNTS,
-	MOT_BOB_MELEE_STYLE = 31,
-	MAX_MOT_BOB         = 4,
-};
 
 
 
@@ -611,587 +1301,7 @@ enum MOT_BOB_
 
 
 
-
-enum MOT_LADY_
-{
-	MOT_LADY_BASE,
-	MOT_LADY_DAMAGE,
-	MOT_LADY_TAUNTS,
-	MOT_LADY_KALINA_ANN = 12,
-	MAX_MOT_LADY        = 4,
-};
-
-enum MOT_VERGIL_
-{
-	MOT_VERGIL_BASE,
-	MOT_VERGIL_DAMAGE,
-	MOT_VERGIL_TAUNTS,
-	MOT_VERGIL_YAMATO,
-	MOT_VERGIL_BEOWULF,
-	MOT_VERGIL_FORCE_EDGE,
-	MOT_VERGIL_DARK_SLAYER,
-	MOT_VERGIL_NERO_ANGELO_YAMATO,
-	MOT_VERGIL_NERO_ANGELO_BEOWULF,
-	MOT_VERGIL_NERO_ANGELO_FORCE_EDGE,
-	MAX_MOT_VERGIL,
-};
-
-enum MOT_
-{
-	MOT_DANTE  = MAX_MOT_DANTE,
-	MOT_BOB    = MAX_MOT_BOB,
-	MOT_LADY   = MAX_MOT_LADY,
-	MOT_VERGIL = MAX_MOT_VERGIL,
-	MAX_MOT    = 32,
-};
-
-
-
-
-
-
-
-
-
-
-
-enum MODE_
-{
-	MODE_EASY,
-	MODE_NORMAL,
-	MODE_HARD,
-	MODE_VERY_HARD,
-	MODE_DANTE_MUST_DIE,
-	MAX_MODE,
-};
-
-enum CHAR_
-{
-	CHAR_DANTE,
-	CHAR_BOB,
-	CHAR_LADY,
-	CHAR_VERGIL,
-	MAX_CHAR,
-};
-
-
-
-enum STYLE_
-{
-	STYLE_SWORDMASTER,
-	STYLE_GUNSLINGER,
-	STYLE_TRICKSTER,
-	STYLE_ROYALGUARD,
-	STYLE_QUICKSILVER,
-	STYLE_DOPPELGANGER,
-	MAX_STYLE,
-	STYLE_DARK_SLAYER = 2,
-};
-
-
-
-
-
-
-
-
-
-enum WEAPON_
-{
-	WEAPON_DANTE_REBELLION,
-	WEAPON_DANTE_CERBERUS,
-	WEAPON_DANTE_AGNI_RUDRA,
-	WEAPON_DANTE_NEVAN,
-	WEAPON_DANTE_BEOWULF,
-	WEAPON_DANTE_EBONY_IVORY,
-	WEAPON_DANTE_SHOTGUN,
-	WEAPON_DANTE_ARTEMIS,
-	WEAPON_DANTE_SPIRAL,
-	WEAPON_DANTE_KALINA_ANN,
-	MAX_WEAPON_DANTE,
-	WEAPON_VERGIL_YAMATO,
-	WEAPON_VERGIL_BEOWULF,
-	WEAPON_VERGIL_FORCE_EDGE,
-	MAX_WEAPON_VERGIL = 3,
-	MAX_WEAPON = 16,
-	WEAPON_VOID = 255,
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-enum WEAPON_ICON_SIDE_
-{
-	WEAPON_ICON_SIDE_LEFT,
-	WEAPON_ICON_SIDE_RIGHT,
-};
-
-enum FILE_ITEM_STATUS_
-{
-	FILE_ITEM_READY = 3,
-};
-
-enum SPEED_DEVIL_
-{
-	SPEED_DEVIL_DANTE_REBELLION,
-	SPEED_DEVIL_DANTE_CERBERUS,
-	SPEED_DEVIL_DANTE_AGNI_RUDRA,
-	SPEED_DEVIL_DANTE_NEVAN,
-	SPEED_DEVIL_DANTE_BEOWULF,
-	SPEED_DEVIL_DANTE_SPARDA,
-	SPEED_DEVIL_VERGIL_YAMATO = 8,
-	SPEED_DEVIL_VERGIL_BEOWULF,
-	SPEED_DEVIL_VERGIL_FORCE_EDGE,
-	SPEED_DEVIL_NERO_ANGELO_YAMATO,
-	SPEED_DEVIL_NERO_ANGELO_BEOWULF,
-	SPEED_DEVIL_NERO_ANGELO_FORCE_EDGE,
-};
-
-enum FILE_MODE_
-{
-	FILE_MODE_MEMORY,
-	FILE_MODE_ARCHIVE,
-	FILE_MODE_LOCAL,
-};
-
-enum Object_
-{
-	Object_Dante,
-	Object_Lady,
-	Object_Rebellion,
-	Object_Rebellion2,
-	Object_ForceEdgeDante,
-	Object_Yamato,
-	Object_ForceEdge,
-	Object_NeroAngeloSword,
-	Object_Count,
-};
-
-// @Todo: Update types.
-
-struct PS2_GAMEPAD
-{
-	uint32 ready;
-	uint32 reserved[3];
-	uint8  vibration[4];
-	word   buttons[6];
-	uint8  rightStickX;
-	uint8  rightStickY;
-	uint8  leftStickX;
-	uint8  leftStickY;
-	uint32 unknown[3];
-	uint16 rightStickDirection[4];
-	uint16 leftStickDirection[4];
-	uint16 rightStickDirectionFast[2];
-	uint16 leftStickDirectionFast[2];
-	uint16 rightStickPosition;
-	uint16 leftStickPosition;
-	uint16 rightStickDifference;
-	uint16 leftStickDifference;
-};
-
-struct CAPCOM_GAMEPAD
-{
-	word   buttons[4];
-	uint16 buttonsTimer[2];
-	uint16 rightStickDirection[4];
-	uint16 rightStickTimer[2];
-	uint16 rightStickPosition[2];
-	uint16 leftStickDirection[4];
-	uint16 leftStickTimer[2];
-	uint16 leftStickPosition[2];
-};
-
-struct STRING_ITEM
-{
-
-	// @Todo: Add _(8);
-	byte8 unknown[8];
-	const char * string;
-};
-
-struct FILE_ITEM
-{
-	// @Todo: Same as above.
-
-	uint32        category;
-	uint32        status;
-	uint16        id;
-	byte8         padding[6];
-	void        * callback;
-	STRING_ITEM * stringItem;
-	byte8       * file;
-	byte8         unknown[32];
-};
-
-// @Todo: Specifiy and auto vars.
-
-// EVENT_VARS
-// LIVE_VARS
-// CHAR_VARS
-// ACTOR_VARS
-// CAMERA_VARS
-
-struct VARS
-{
-	bool     init;
-	uint32 * room;
-	uint32 * position;
-	uint32 * event;
-	uint16 * nextRoom;
-	uint16 * nextPosition;
-	byte32 * flags;
-	uint32 * mission;
-	VARS()
-	{
-		memset(this, 0, sizeof(*this));
-		{
-			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xCA8918); // EVENT_DATA
-			if (!addr)
-			{
-				return;
-			}
-			if (!addr[8])
-			{
-				return;
-			}
-			room     = (uint32 *)(addr[8] + 0x18);
-			position = (uint32 *)(addr[8] + 0x1C);
-			event    = (uint32 *)(addr[8] + 0x20);
-			if (!addr[12])
-			{
-				return;
-			}
-			nextRoom     = (uint16 *)(addr[12] + 0x164); // NEXT_EVENT_DATA
-			nextPosition = (uint16 *)(addr[12] + 0x166);
-		}
-		{
-			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xC90E30); // MISSION_DATA
-			if (!addr)
-			{
-				return;
-			}
-			if (!addr[1])
-			{
-				return;
-			}
-			flags = (byte32 *)addr[1];
-		}
-		mission = (uint32 *)(appBaseAddr + 0xC8F250); // SESSION_DATA
-		init = true;
-	}
-};
-
-struct MEMORY_OBJECT
-{
-	byte8 * addr;
-	byte8 * end;
-	uint32 last;
-	uint32 boundary;
-	uint32 size;
-	uint32 pipe;
-	uint32 count;
-	byte8 padding[4];
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#define _Merge(a, b) a##b
-#define Merge(a, b) _Merge(a, b)
-
-#define _(size) struct { byte8 Merge(padding, __LINE__)[size]; }
-
-#pragma pack(push, 1)
-
-struct MOTION_DATA
-{
-	uint8 index;
-	uint8 group;
-};
-
-struct INPUT_BUFFER
-{
-	_(4);
-	uint8 level;
-	_(7);
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct MODEL_DATA
-{
-	uint8 count;
-	_(15);
-	vec4 vertices[3];
-	_(16);
-};
-
-struct DEVIL_SUBMODEL_DATA
-{
-	uint8 submodelIndex;
-	uint8 devilModelOff;
-	uint8 devilSubmodelIndex;
-};
-
-struct DEVIL_MODEL_DATA
-{
-	uint8 modelIndex;
-	uint8 modelOff;
-	DEVIL_SUBMODEL_DATA submodelData[2];
-};
-
-//struct MODEL_FILE_DATA_SINGLE
-//{
-//	uint16 cacheFileId;
-//	uint8 index;
-//};
-//
-//struct MODEL_FILE_DATA
-//{
-//	MODEL_FILE_DATA_SINGLE modelFile  [MAX_MODEL];
-//	MODEL_FILE_DATA_SINGLE textureFile[MAX_MODEL];
-//	MODEL_FILE_DATA_SINGLE shadowFile [MAX_MODEL];
-//	MODEL_FILE_DATA_SINGLE physicsFile[MAX_MODEL];
-//};
-
-
-
-
-
-
-
-
-
-struct MODEL_FILE_HELPER
-{
-	struct Data
-	{
-		uint16 cacheFileId;
-		uint8  fileIndex;
-	};
-	Data model;
-	Data texture;
-	Data shadow;
-	Data physics;
-};
-
-typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
-
-
-
-//typedef MODEL_HELPER_FILE_HELPER DEVIL_MODEL_HELPER_FILE_HELPER;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct ACTOR_DATA
-{
-	_(120);
-	uint8 character; // 0x78
-	_(7);
-	vec4 position; // 0x80
-	_(48);
-	uint16 direction; // 0xC0
-	_(86);
-	uint8 actorId; // 0x118
-	_(3);
-	bool isDoppelganger; // 0x11C
-	_(3);
-	uint8 visible; // 0x120
-	_(14207);
-	byte8 * motionArchive[32]; // 0x38A0
-	_(16);
-	MOTION_DATA motionData[5]; // 0x39B0
-	_(94);
-	uint8 shadow; // 0x3A18
-	_(15);
-	byte32 color; // 0x3A28
-	_(980);
-	byte32 motionState1[4]; // 0x3E00
-	_(80);
-	byte32 motionState2[3]; // 0x3E60
-	uint8 activeModel; // 0x3E6C
-	_(3);
-	uint8 queuedModel; // 0x3E70
-	_(3);
-	uint8 modelIndex[3]; // 0x3E74
-	_(9);
-	uint8 modelState; // 0x3E80
-	_(3);
-	bool lockOn; // 0x3E84
-	_(3);
-	uint8 modelIndexMirror; // 0x3E88
-	_(11);
-	uint8 devilState; // 0x3E94
-	_(6);
-	bool devil; // 0x3E9B
-	_(2);
-	uint8 costume; // 0x3E9E
-	bool specialCostume; // 0x3E9F
-	_(24);
-	float32 magicPoints; // 0x3EB8
-	float32 maxMagicPoints; // 0x3EBC
-	_(228);
-	uint8 move; // 0x3FA4
-	uint8 lastMove; // 0x3FA5
-	_(70);
-	byte32 expertise[16]; // 0x3FEC
-	_(192);
-	float32 maxHitPoints; // 0x40EC
-	_(44);
-	float32 hitPoints; // 0x411C
-	_(8712);
-	byte8 * targetBaseAddr; // 0x6328
-	_(8);
-	uint8 style; // 0x6338
-	_(31);
-	uint8 styleLevel; // 0x6358
-	_(3);
-	uint8 dashCount; // 0x635C
-	uint8 skyStarCount; // 0x635D
-	uint8 airTrickCount; // 0x635E
-	uint8 trickUpCount; // 0x635F
-	uint8 trickDownCount; // 0x6360
-	bool quicksilver; // 0x6361
-	bool doppelganger; // 0x6362
-	_(1);
-	float32 styleExperience; // 0x6364
-	_(236);
-	bool controlLinkedActor; // 0x6454
-	_(35);
-	byte8 * linkedActorBaseAddr; // 0x6478
-	_(8);
-	uint8 selectedMeleeWeaponVergil; // 0x6488
-	_(4);
-	uint8 activeWeapon; // 0x648D
-	_(2);
-	uint8 selectedMeleeWeapon; // 0x6490
-	_(3);
-	uint8 selectedRangedWeapon; // 0x6494
-	_(3);
-	uint8 equipment[4]; // 0x6498
-	_(4);
-	byte8 * weaponMetadata[4]; // 0x64A0
-	_(8);
-	byte32 weaponFlags[4]; // 0x64C8
-	_(24);
-	uint8 activeMeleeWeapon; // 0x64F0
-	uint8 activeRangedWeapon; // 0x64F1
-	_(2);
-	float32 weaponTimer[4]; // 0x64F4
-	_(12);
-	uint8 styleRank; // 0x6510
-	_(3);
-	float32 styleMeter; // 0x6514
-	_(348);
-	INPUT_BUFFER inputBuffer[58]; // 0x6674
-	_(2996);
-	byte16 buttonInput[4]; // 0x74E0
-	_(16712);
-	MODEL_DATA modelData[6]; // 0xB630
-	_(176);
-	bool isDefault; // 0xB8C0
-};
-
-
-
-
-
-constexpr uint32 adsize = (uint32)sizeof(ACTOR_DATA);
-
-
-
-#pragma pack(pop)
-
-#undef _
-#undef Merge
-#undef _Merge
-
-
-
-
-
-
-
-
-
-
+#pragma endregion
 
 
 
@@ -1257,5 +1367,52 @@ enum WEAPON_COUNT_
 	WEAPON_COUNT_LADY   = 2,
 	WEAPON_COUNT_VERGIL = 3,
 };
+
+
+struct MODEL_FILE_DATA_SINGLE
+{
+	uint16 cacheFileId;
+	uint8 index;
+};
+
+struct MODEL_FILE_DATA
+{
+	MODEL_FILE_DATA_SINGLE modelFile  [MAX_MODEL];
+	MODEL_FILE_DATA_SINGLE textureFile[MAX_MODEL];
+	MODEL_FILE_DATA_SINGLE shadowFile [MAX_MODEL];
+	MODEL_FILE_DATA_SINGLE physicsFile[MAX_MODEL];
+};
+
+enum Object_
+{
+	Object_Dante,
+	Object_Lady,
+	Object_Rebellion,
+	Object_Rebellion2,
+	Object_ForceEdgeDante,
+	Object_Yamato,
+	Object_ForceEdge,
+	Object_NeroAngeloSword,
+	Object_Count,
+};
+
+
+
+struct INPUT_BUFFER
+{
+	_(4);
+	uint8 level;
+	_(7);
+};
+
+struct CHARGE_DATA
+{
+	byte32 flags[2];
+	float32 value;
+};
+
+
+
+
 
 #endif
