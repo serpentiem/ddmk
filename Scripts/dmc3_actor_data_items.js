@@ -1,4 +1,4 @@
-ACTOR_DATA_ITEMS =
+module.exports =
 [
 	[ "characterLogic"           , "uint8"       , 1 , 0x78   ],
 	[ "position"                 , "vec4"        , 1 , 0x80   ],

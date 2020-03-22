@@ -1,3 +1,81 @@
+var items =
+[
+	[ "characterLogic"           , "uint8"       , 1 , 0x78   ],
+	[ "position"                 , "vec4"        , 1 , 0x80   ],
+	[ "direction"                , "uint16"      , 1 , 0xC0   ],
+	[ "actorId"                  , "uint8"       , 1 , 0x118  ],
+	[ "isDoppelganger"           , "bool"        , 1 , 0x11C  ],
+	[ "visible"                  , "uint8"       , 1 , 0x120  ],
+	[ "motionFile"               , "byte8 *"     , 32, 0x38A0 ],
+	[ "motionData"               , "MOTION_DATA" , 5 , 0x39B0 ],
+	[ "shadow"                   , "uint8"       , 1 , 0x3A18 ],
+	[ "color"                    , "byte32"      , 1 , 0x3A28 ],
+	[ "motionState1"             , "byte32"      , 4 , 0x3E00 ],
+	[ "chargedShotAir"           , "uint16"      , 1 , 0x3E1A ],
+	[ "chargedShot"              , "uint16"      , 1 , 0x3E22 ],
+	[ "idleTimer"                , "float32"     , 1 , 0x3E38 ],
+	[ "motionState2"             , "byte32"      , 3 , 0x3E60 ],
+	[ "activeModel"              , "uint8"       , 1 , 0x3E6C ],
+	[ "queuedModel"              , "uint8"       , 1 , 0x3E70 ],
+	[ "modelIndex"               , "uint32"      , 3 , 0x3E74 ],
+	[ "modelState"               , "uint8"       , 1 , 0x3E80 ],
+	[ "lockOn"                   , "bool"        , 1 , 0x3E84 ],
+	[ "modelIndexMirror"         , "uint8"       , 1 , 0x3E88 ],
+	[ "devilState"               , "uint8"       , 1 , 0x3E94 ],
+	[ "devil"                    , "bool"        , 1 , 0x3E9B ],
+	[ "costume"                  , "uint8"       , 1 , 0x3E9E ],
+	[ "specialCostume"           , "bool"        , 1 , 0x3E9F ],
+	[ "magicPoints"              , "float32"     , 1 , 0x3EB8 ],
+	[ "maxMagicPoints"           , "float32"     , 1 , 0x3EBC ],
+	[ "move"                     , "uint8"       , 1 , 0x3FA4 ],
+	[ "lastMove"                 , "uint8"       , 1 , 0x3FA5 ],
+	[ "chainCount"               , "uint8"       , 1 , 0x3FAC ],
+	[ "expertise"                , "byte32"      , 16, 0x3FEC ],
+	[ "maxHitPoints"             , "float32"     , 1 , 0x40EC ],
+	[ "hitPoints"                , "float32"     , 1 , 0x411C ],
+	[ "targetBaseAddr"           , "byte8 *"     , 1 , 0x6328 ],
+	[ "style"                    , "uint8"       , 1 , 0x6338 ],
+	[ "styleLevel"               , "uint8"       , 1 , 0x6358 ],
+	[ "dashCount"                , "uint8"       , 1 , 0x635C ],
+	[ "skyStarCount"             , "uint8"       , 1 , 0x635D ],
+	[ "airTrickCount"            , "uint8"       , 1 , 0x635E ],
+	[ "trickUpCount"             , "uint8"       , 1 , 0x635F ],
+	[ "trickDownCount"           , "uint8"       , 1 , 0x6360 ],
+	[ "quicksilver"              , "bool"        , 1 , 0x6361 ],
+	[ "doppelganger"             , "bool"        , 1 , 0x6362 ],
+	[ "styleExperience"          , "float32"     , 1 , 0x6364 ],
+	[ "controlLinkedActor"       , "bool"        , 1 , 0x6454 ],
+	[ "linkedActorBaseAddr"      , "byte8 *"     , 1 , 0x6478 ],
+	[ "selectedMeleeWeaponVergil", "uint8"       , 1 , 0x6488 ],
+	[ "activeWeapon"             , "uint8"       , 1 , 0x648D ],
+	[ "selectedMeleeWeapon"      , "uint8"       , 1 , 0x6490 ],
+	[ "selectedRangedWeapon"     , "uint8"       , 1 , 0x6494 ],
+	[ "equipment"                , "uint8"       , 4 , 0x6498 ],
+	[ "weaponMetadata"           , "byte8 *"     , 4 , 0x64A0 ],
+	[ "weaponFlags"              , "byte32"      , 4 , 0x64C8 ],
+	[ "activeMeleeWeapon"        , "uint8"       , 1 , 0x64F0 ],
+	[ "activeRangedWeapon"       , "uint8"       , 1 , 0x64F1 ],
+	[ "weaponTimer"              , "float32"     , 4 , 0x64F4 ],
+	[ "styleRank"                , "uint8"       , 1 , 0x6510 ],
+	[ "styleMeter"               , "float32"     , 1 , 0x6514 ],
+	[ "inputData"                , "INPUT_DATA"  , 58, 0x6674 ],
+	[ "interactionData"          , "vec4"        , 8 , 0x7460 ],
+	[ "buttonInput"              , "byte16"      , 4 , 0x74E0 ],
+	[ "modelData"                , "MODEL_DATA"  , 6 , 0xB630 ],
+	[ "artemisChargeValue"       , "float32"     , 2 , 0xB868 ],
+	[ "artemisChargeFlags"       , "byte32"      , 2 , 0xB87C ],
+	[ "isDefault"                , "bool"        , 1 , 0xB8C0 ],
+	[ "character"                , "uint8"       , 1 , 0xB8C1 ],
+	[ "noCollision"              , "bool"        , 1 , 0xB8C2 ],
+	[ "hide"                     , "bool"        , 1 , 0xB8C3 ],
+];
+
+var c = "";
+var c_assert = "";
+var pos = 0;
+
+var fs = require("fs");
+
 var lz = function(n)
 {
 	var str = "";
@@ -97,137 +175,116 @@ var GetVariableType = function(str)
 	return "";
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // var items =
-// // [
-	// // [ "characterlogic"           , "uint8"       , 1 , 0x78   ],
-	// // [ "position"                 , "vec4"        , 1 , 0x80   ],
-	// // [ "direction"                , "uint16"      , 1 , 0xc0   ],
-	// // [ "actorid"                  , "uint8"       , 1 , 0x118  ],
-	// // [ "isdoppelganger"           , "bool"        , 1 , 0x11c  ],
-	// // [ "visible"                  , "uint8"       , 1 , 0x120  ],
-	// // [ "motionfile"               , "byte8 *"     , 32, 0x38a0 ],
-	// // [ "motiondata"               , "motion_data" , 5 , 0x39b0 ],
-	// // [ "shadow"                   , "uint8"       , 1 , 0x3a18 ],
-	// // [ "color"                    , "byte32"      , 1 , 0x3a28 ],
-	// // [ "motionstate1"             , "byte32"      , 4 , 0x3e00 ],
-	// // [ "chargedshotair"           , "uint16"      , 1 , 0x3e1a ],
-	// // [ "chargedshot"              , "uint16"      , 1 , 0x3e22 ],
-	// // [ "idletimer"                , "float32"     , 1 , 0x3e38 ],
-	// // [ "motionstate2"             , "byte32"      , 3 , 0x3e60 ],
-	// // [ "activemodel"              , "uint8"       , 1 , 0x3e6c ],
-	// // [ "queuedmodel"              , "uint8"       , 1 , 0x3e70 ],
-	// // [ "modelindex"               , "uint8"       , 3 , 0x3e74 ],
-	// // [ "modelstate"               , "uint8"       , 1 , 0x3e80 ],
-	// // [ "lockon"                   , "bool"        , 1 , 0x3e84 ],
-	// // [ "modelindexmirror"         , "uint8"       , 1 , 0x3e88 ],
-	// // [ "devilstate"               , "uint8"       , 1 , 0x3e94 ],
-	// // [ "devil"                    , "bool"        , 1 , 0x3e9b ],
-	// // [ "costume"                  , "uint8"       , 1 , 0x3e9e ],
-	// // [ "specialcostume"           , "bool"        , 1 , 0x3e9f ],
-	// // [ "magicpoints"              , "float32"     , 1 , 0x3eb8 ],
-	// // [ "maxmagicpoints"           , "float32"     , 1 , 0x3ebc ],
-	// // [ "move"                     , "uint8"       , 1 , 0x3fa4 ],
-	// // [ "lastmove"                 , "uint8"       , 1 , 0x3fa5 ],
-	// // [ "chaincount"               , "uint8"       , 1 , 0x3fac ],
-	// // [ "expertise"                , "byte32"      , 16, 0x3fec ],
-	// // [ "maxhitpoints"             , "float32"     , 1 , 0x40ec ],
-	// // [ "hitpoints"                , "float32"     , 1 , 0x411c ],
-	// // [ "targetbaseaddr"           , "byte8 *"     , 1 , 0x6328 ],
-	// // [ "style"                    , "uint8"       , 1 , 0x6338 ],
-	// // [ "stylelevel"               , "uint8"       , 1 , 0x6358 ],
-	// // [ "dashcount"                , "uint8"       , 1 , 0x635c ],
-	// // [ "skystarcount"             , "uint8"       , 1 , 0x635d ],
-	// // [ "airtrickcount"            , "uint8"       , 1 , 0x635e ],
-	// // [ "trickupcount"             , "uint8"       , 1 , 0x635f ],
-	// // [ "trickdowncount"           , "uint8"       , 1 , 0x6360 ],
-	// // [ "quicksilver"              , "bool"        , 1 , 0x6361 ],
-	// // [ "doppelganger"             , "bool"        , 1 , 0x6362 ],
-	// // [ "styleexperience"          , "float32"     , 1 , 0x6364 ],
-	// // [ "controllinkedactor"       , "bool"        , 1 , 0x6454 ],
-	// // [ "linkedactorbaseaddr"      , "byte8 *"     , 1 , 0x6478 ],
-	// // [ "selectedmeleeweaponvergil", "uint8"       , 1 , 0x6488 ],
-	// // [ "activeweapon"             , "uint8"       , 1 , 0x648d ],
-	// // [ "selectedmeleeweapon"      , "uint8"       , 1 , 0x6490 ],
-	// // [ "selectedrangedweapon"     , "uint8"       , 1 , 0x6494 ],
-	// // [ "equipment"                , "uint8"       , 4 , 0x6498 ],
-	// // [ "weaponmetadata"           , "byte8 *"     , 4 , 0x64a0 ],
-	// // [ "weaponflags"              , "byte32"      , 4 , 0x64c8 ],
-	// // [ "activemeleeweapon"        , "uint8"       , 1 , 0x64f0 ],
-	// // [ "activerangedweapon"       , "uint8"       , 1 , 0x64f1 ],
-	// // [ "weapontimer"              , "float32"     , 4 , 0x64f4 ],
-	// // [ "stylerank"                , "uint8"       , 1 , 0x6510 ],
-	// // [ "stylemeter"               , "float32"     , 1 , 0x6514 ],
-	// // [ "inputdata"                , "input_data"  , 58, 0x6674 ],
-	// // [ "interactiondata"          , "vec4"        , 8 , 0x7460 ],
-	// // [ "buttoninput"              , "byte16"      , 4 , 0x74e0 ],
-	// // [ "modeldata"                , "model_data"  , 6 , 0xb630 ],
-	// // [ "artemischargevalue"       , "float32"     , 2 , 0xb868 ],
-	// // [ "artemischargeflags"       , "byte32"      , 2 , 0xb87c ],
-	// // [ "isdefault"                , "bool"        , 1 , 0xb8c0 ],
-	// // [ "character"                , "uint8"       , 1 , 0xb8c1 ],
-	// // [ "nocollision"              , "bool"        , 1 , 0xb8c2 ],
-	// // [ "hide"                     , "bool"        , 1 , 0xb8c3 ],
-// // ];
-
-
-
-
-
-
-
-
-
-var script = document.createElement("script");
-script.type = "text/javascript";
-script.src = "file:///C:/Users/serpentiem/source/repos/ddmk/Scripts/dmc3_actor_data_items.js";
-
-
-script.onload = function()
+var AddCheatEntry = function
+(
+	description,
+	hex,
+	type,
+	size,
+	off,
+	actor,
+	systemActor
+)
 {
-	console.log("stuff");
+	c += "<CheatEntry>\n";
+	c += "<Description>\"" + description + "\"</Description>\n";
+	if (hex)
+	{
+		c += "<ShowAsHex>1</ShowAsHex>\n";
+	}
+	c += "<VariableType>" + type + "</VariableType>\n";
+	if (type == "Array of byte")
+	{
+		c += "<ByteLength>" + size + "</ByteLength>\n";
+	}
+	if (systemActor)
+	{
+		c += "<Address>Mary.System_Actor_actorBaseAddr+" + (actor * 8).toString(16).toUpperCase() + "</Address>\n";
+	}
+	else
+	{
+		c += "<Address>dmc3.exe+C90E28</Address>\n"
+	}
+	c += "<Offsets>\n";
+	c += "<Offset>" + off.toString(16).toUpperCase() + "</Offset>\n";
+	if (!systemActor)
+	{
+		c += "<Offset>" + (0x18 + (actor * 8)).toString(16).toUpperCase() + "</Offset>\n";
+	}
+	c += "</Offsets>\n";
+	c += "</CheatEntry>\n";
 }
 
-document.head.appendChild(script);
+var CreateData = function
+(
+	groupName,
+	actorCount,
+	systemActor
+)
+{
+	c += "<CheatEntry>\n";
+	c += "<Description>\"" + groupName + "\"</Description>\n";
+	c += "<Options moHideChildren=\"1\"/>\n";
+	c += "<GroupHeader>1</GroupHeader>\n";
+	c += "<CheatEntries>\n";
 
+	for (var actor = 0; actor < actorCount; actor++)
+	{
+		c += "<CheatEntry>\n";
+		c += "<Description>\"" + lz(actor) + "\"</Description>\n";
+		c += "<Options moHideChildren=\"1\"/>\n";
+		c += "<GroupHeader>1</GroupHeader>\n";
+		c += "<CheatEntries>\n";
+		
+		for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
+		{
+			var name   = items[itemIndex][0];
+			var type   = items[itemIndex][1];
+			var count  = items[itemIndex][2];
+			var _off   = items[itemIndex][3];
+			
+			for (var index = 0; index < count; index++)
+			{
+				var description = name;
+				if (count > 1)
+				{
+					description = name + " " + lz(index);
+				}
+				var off = (_off + (index * GetTypeSize(type)));
+				
+				if (type == "vec4")
+				{
+					AddCheatEntry(description + " x", false, "Float", 0, (off + 0  ), actor, systemActor);
+					AddCheatEntry(description + " y", false, "Float", 0, (off + 4  ), actor, systemActor);
+					AddCheatEntry(description + " z", false, "Float", 0, (off + 8  ), actor, systemActor);
+					AddCheatEntry(description + " a", false, "Float", 0, (off + 0xC), actor, systemActor);
+					continue;
+				}
+				else if (type == "INPUT_DATA")
+				{
+					continue;
+				}
+				else if (type == "MOTION_DATA")
+				{
+					continue;
+				}
+				else if (type == "MODEL_DATA")
+				{
+					continue;
+				}
+				
+				AddCheatEntry(description, GetShowAsHex(type), GetVariableType(type), 0, off, actor, systemActor);
+			}
+		}
+		c += "</CheatEntries>\n";
+		c += "</CheatEntry>\n";
+	}
 
+	c += "</CheatEntries>\n";
+	c += "</CheatEntry>\n";
+}
 
-
-var c = "";
-var c_assert = "";
-var pos = 0;
+// Cpp
 
 c += "#define _(size) struct { byte8 padding[size]; }\n";
 c += "\n";
@@ -238,10 +295,6 @@ c += "{\n";
 
 for (var index = 0; index < items.length; index++)
 {
-	
-	
-	var items = ACTOR_DATA_ITEMS;
-	
 	var name  = items[index][0];
 	var type  = items[index][1];
 	var count = items[index][2];
@@ -271,17 +324,26 @@ for (var index = 0; index < items.length; index++)
 
 console.log("pos 0x" + pos.toString(16).toUpperCase());
 
-// var diff = (0xB8C0 - pos);
-
-// if (diff)
-// {
-	// c += "\t_(" + diff.toString() + ");\n";
-// }
-
 c += "};\n";
 c += "\n";
 c += "#pragma pack(pop)\n";
 c += "\n";
 c += "#undef _\n";
 
-document.body.innerHTML = "<plaintext>" + c + "\n" + c_assert;
+fs.writeFileSync("actorData.cpp", c + "\n" + c_assert);
+
+// Cheat Engine
+
+c = "";
+
+c += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+c += "<CheatTable>\n";
+c += "<CheatEntries>\n";
+
+CreateData("__LIVE__"                  , 2, false);
+CreateData("System_Actor_actorBaseAddr", 4, true );
+
+c += "</CheatEntries>\n";
+c += "</CheatTable>\n";
+
+fs.writeFileSync("actorData.txt", c);
