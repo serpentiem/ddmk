@@ -649,21 +649,26 @@ byte8 * CreateActor
 
 
 
+vector<byte8 *, 128> Actor_actorBaseAddr;
 
 
 
 
 
 
-byte8 * System_Actor_mainActorBaseAddr = 0;
-byte8 * System_Actor_mainCloneBaseAddr = 0;
-
-//byte8 ** System_Actor_actorBaseAddr = 0;
-//byte8 ** System_Actor_cloneBaseAddr = 0;
 
 
-byte8 * System_Actor_actorBaseAddr[MAX_ACTOR] = {};
-byte8 * System_Actor_cloneBaseAddr[MAX_ACTOR] = {};
+
+
+//byte8 * System_Actor_mainActorBaseAddr = 0;
+//byte8 * System_Actor_mainCloneBaseAddr = 0;
+//
+////byte8 ** System_Actor_actorBaseAddr = 0;
+////byte8 ** System_Actor_cloneBaseAddr = 0;
+//
+//
+//byte8 * System_Actor_actorBaseAddr[MAX_ACTOR] = {};
+//byte8 * System_Actor_cloneBaseAddr[MAX_ACTOR] = {};
 
 
 
@@ -686,39 +691,72 @@ byte8 * System_Actor_cloneBaseAddr[MAX_ACTOR] = {};
 
 
 
-byte8 * redirect_1BA560 = 0;
-byte8 * redirect_1BC0A0 = 0;
+//byte8 * redirect_1BA560 = 0;
+//byte8 * redirect_1BC0A0 = 0;
+//
+//void System_Actor_ToggleArrayExtension(bool enable)
+//{
+//	LogFunction(enable);
+//
+//	// Redirect arrays.
+//
+//	if (enable)
+//	{
+//		WriteJump((appBaseAddr + 0x1BA569), redirect_1BA560);
+//		WriteJump((appBaseAddr + 0x1BC0C5), redirect_1BC0A0);
+//	}
+//	else
+//	{
+//		{
+//			byte8 buffer[] =
+//			{
+//				0x4C, 0x8B, 0x44, 0xC1, 0x18, //mov r8,[rcx+rax*8+18]
+//			};
+//			vp_memcpy((appBaseAddr + 0x1BA569), buffer, sizeof(buffer));
+//		}
+//		{
+//			byte8 buffer[] =
+//			{
+//				0x4A, 0x8B, 0x6C, 0xC0, 0x18, //mov rbp,[rax+r8*8+18]
+//			};
+//			vp_memcpy((appBaseAddr + 0x1BC0C5), buffer, sizeof(buffer));
+//		}
+//	}
+//	Write<byte16>((appBaseAddr + 0x1BA5C7), (enable) ? 0x9002 : 0x1842);
+//}
 
-void System_Actor_ToggleArrayExtension(bool enable)
-{
-	LogFunction(enable);
 
-	// Redirect arrays.
 
-	if (enable)
-	{
-		WriteJump((appBaseAddr + 0x1BA569), redirect_1BA560);
-		WriteJump((appBaseAddr + 0x1BC0C5), redirect_1BC0A0);
-	}
-	else
-	{
-		{
-			byte8 buffer[] =
-			{
-				0x4C, 0x8B, 0x44, 0xC1, 0x18, //mov r8,[rcx+rax*8+18]
-			};
-			vp_memcpy((appBaseAddr + 0x1BA569), buffer, sizeof(buffer));
-		}
-		{
-			byte8 buffer[] =
-			{
-				0x4A, 0x8B, 0x6C, 0xC0, 0x18, //mov rbp,[rax+r8*8+18]
-			};
-			vp_memcpy((appBaseAddr + 0x1BC0C5), buffer, sizeof(buffer));
-		}
-	}
-	Write<byte16>((appBaseAddr + 0x1BA5C7), (enable) ? 0x9002 : 0x1842);
-}
+
+//vector<byte8 *> actorBaseAddr;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void System_Actor_Init()
 {
@@ -726,7 +764,7 @@ void System_Actor_Init()
 
 	// Increase ACTOR_DATA size.
 	{
-		constexpr uint32 size = (0xB8C0 + 0x10);
+		constexpr uint32 size = (0xB8C0 + 64);
 		Write<uint32>((appBaseAddr + 0x1DE5FA), size);
 		Write<uint32>((appBaseAddr + 0x1DE67A), size);
 		Write<uint32>((appBaseAddr + 0x1DE8B4), size);
@@ -791,93 +829,99 @@ void System_Actor_Init()
 
 
 	// Add isDefault check to func_1BA560 and func_1BC0A0 calls.
-	{
-		byte8 sect0[] =
-		{
-			0x80, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+0000B8C0],01
-			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+1BA560
-			0xC3,                                     //ret
-		};
-		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte32 *)(func.sect0 + 2) = offsetof(ACTOR_DATA, isDefault);
-		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1BA560), 6);
-		WriteCall((appBaseAddr + 0x1F8408), func.addr);
-		WriteCall((appBaseAddr + 0x1F90CB), func.addr);
-	}
-	{
-		byte8 sect0[] =
-		{
-			0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rbx+0000B8C0],01
-			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+1BC0A0
-			0xC3,                                     //ret
-		};
-		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte32 *)(func.sect0 + 2) = offsetof(ACTOR_DATA, isDefault);
-		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1BC0A0), 6);
-		WriteCall((appBaseAddr + 0x1E24A6), func.addr);
-		WriteCall((appBaseAddr + 0x1E889E), func.addr);
-		WriteCall((appBaseAddr + 0x1E8965), func.addr);
-	}
-	{
-		byte8 sect0[] =
-		{
-			0x80, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+0000B8C0],01
-			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+1BC0A0
-			0xC3,                                     //ret
-		};
-		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte32 *)(func.sect0 + 2) = offsetof(ACTOR_DATA, isDefault);
-		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1BC0A0), 6);
-		WriteCall((appBaseAddr + 0x1EACE2), func.addr);
-		WriteCall((appBaseAddr + 0x1EAD30), func.addr);
-		WriteCall((appBaseAddr + 0x1F841E), func.addr);
-	}
-	// Redirect arrays.
-	{
-		byte8 sect0[] =
-		{
-			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rcx,System_Actor_actorBaseAddr
-			0x4C, 0x8B, 0x04, 0xC1,                                     //mov r8,[rcx+rax*8]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1BA56E), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte8 ***)(func.sect0 + 2) = System_Actor_actorBaseAddr;
-		redirect_1BA560 = func.addr;
-	}
-	{
-		byte8 sect0[] =
-		{
-			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,System_Actor_actorBaseAddr
-			0x4A, 0x8B, 0x2C, 0xC0,                                     //mov rbp,[rax+r8*8]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1BC0CA), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte8 ***)(func.sect0 + 2) = System_Actor_actorBaseAddr;
-		redirect_1BC0A0 = func.addr;
-	}
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x80, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+0000B8C0],01
+	//		0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+1BA560
+	//		0xC3,                                     //ret
+	//	};
+	//	auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*(byte32 *)(func.sect0 + 2) = offsetof(ACTOR_DATA, isDefault);
+	//	WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1BA560), 6);
+	//	WriteCall((appBaseAddr + 0x1F8408), func.addr);
+	//	WriteCall((appBaseAddr + 0x1F90CB), func.addr);
+	//}
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rbx+0000B8C0],01
+	//		0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+1BC0A0
+	//		0xC3,                                     //ret
+	//	};
+	//	auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*(byte32 *)(func.sect0 + 2) = offsetof(ACTOR_DATA, isDefault);
+	//	WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1BC0A0), 6);
+	//	WriteCall((appBaseAddr + 0x1E24A6), func.addr);
+	//	WriteCall((appBaseAddr + 0x1E889E), func.addr);
+	//	WriteCall((appBaseAddr + 0x1E8965), func.addr);
+	//}
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x80, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+0000B8C0],01
+	//		0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+1BC0A0
+	//		0xC3,                                     //ret
+	//	};
+	//	auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*(byte32 *)(func.sect0 + 2) = offsetof(ACTOR_DATA, isDefault);
+	//	WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1BC0A0), 6);
+	//	WriteCall((appBaseAddr + 0x1EACE2), func.addr);
+	//	WriteCall((appBaseAddr + 0x1EAD30), func.addr);
+	//	WriteCall((appBaseAddr + 0x1F841E), func.addr);
+	//}
+	//// Redirect arrays.
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rcx,System_Actor_actorBaseAddr
+	//		0x4C, 0x8B, 0x04, 0xC1,                                     //mov r8,[rcx+rax*8]
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x1BA56E), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*(byte8 ***)(func.sect0 + 2) = System_Actor_actorBaseAddr;
+	//	redirect_1BA560 = func.addr;
+	//}
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,System_Actor_actorBaseAddr
+	//		0x4A, 0x8B, 0x2C, 0xC0,                                     //mov rbp,[rax+r8*8]
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x1BC0CA), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*(byte8 ***)(func.sect0 + 2) = System_Actor_actorBaseAddr;
+	//	redirect_1BC0A0 = func.addr;
+	//}
 
 
 
 
 
-	// Add noCollision check to actor collision manager.
+	
 
+
+
+
+	// Add noCollision check to actor collision function.
 	{
 		byte8 sect0[] =
 		{
 			0x51,                                                       //push rcx
 			0x52,                                                       //push rdx
 			0x56,                                                       //push rsi
-			0x48, 0x8B, 0x89, 0xD0, 0x00, 0x00, 0x00,                   //mov rcx,[rcx+000000D0]
+			0x48, 0x8B, 0x8A, 0xD0, 0x00, 0x00, 0x00,                   //mov rcx,[rdx+000000D0]
+			0x48, 0x85, 0xC9,                                           //test rcx,rcx
+			0x74, 0x65,                                                 //je short
 			0x48, 0x81, 0xE9, 0x50, 0x72, 0x00, 0x00,                   //sub rcx,00007250
-			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&System_Actor_mainActorBaseAddr
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,System_Actor_mainActorBaseAddr
 			0x48, 0x8B, 0x00,                                           //mov rax,[rax]
 			0x48, 0x39, 0xC1,                                           //cmp rcx,rax
 			0x74, 0x54,                                                 //je short
-			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&System_Actor_mainCloneBaseAddr
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,System_Actor_mainCloneBaseAddr
 			0x48, 0x8B, 0x00,                                           //mov rax,[rax]
 			0x48, 0x39, 0xC1,                                           //cmp rcx,rax
 			0x74, 0x42,                                                 //je short
@@ -900,36 +944,143 @@ void System_Actor_Init()
 			0x5E,                                                       //pop rsi
 			0x5A,                                                       //pop rdx
 			0x59,                                                       //pop rcx
-			0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+2CC090
+			0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+5B460
 			0x5E,                                                       //pop rsi
 			0x5A,                                                       //pop rdx
 			0x59,                                                       //pop rcx
 			0x80, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x01,                   //cmp byte ptr [rax+0000B8C2],01
-			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+2CC090
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+5B460
 			0xC3,                                                       //ret
 		};
 		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte8 ***)(func.sect0 + 0x13) = &System_Actor_mainActorBaseAddr;
-		*(byte8 ***)(func.sect0 + 0x25) = &System_Actor_mainCloneBaseAddr;
-		*(byte8 ***)(func.sect0 + 0x3A) = System_Actor_actorBaseAddr;
-		*(uint8 *)(func.sect0 + 0x4F) = MAX_ACTOR;
-		*(byte8 ***)(func.sect0 + 0x57) = System_Actor_cloneBaseAddr;
-		*(uint8 *)(func.sect0 + 0x6C) = MAX_ACTOR;
-		WriteAddress((func.sect0 + 0x72), (appBaseAddr + 0x2CC090), 5);
-		*(byte32 *)(func.sect0 + 0x7C) = offsetof(ACTOR_DATA, noCollision);
-		WriteAddress((func.sect0 + 0x81), (appBaseAddr + 0x2CC090), 6);
-		WriteCall((appBaseAddr + 0x5B5BC), func.addr);
-		WriteCall((appBaseAddr + 0x5B5CB), func.addr);
-		WriteCall((appBaseAddr + 0x5B5EA), func.addr);
-		WriteCall((appBaseAddr + 0x5B609), func.addr);
-		WriteCall((appBaseAddr + 0x5BA21), func.addr);
-		WriteCall((appBaseAddr + 0x5BA34), func.addr);
+		*(byte8 ***)(func.sect0 + 0x18) = &System_Actor_mainActorBaseAddr;
+		*(byte8 ***)(func.sect0 + 0x2A) = &System_Actor_mainCloneBaseAddr;
+		*(byte8 ***)(func.sect0 + 0x3F) = System_Actor_actorBaseAddr;
+		*(uint8 *)(func.sect0 + 0x54) = MAX_ACTOR;
+		*(byte8 ***)(func.sect0 + 0x5C) = System_Actor_cloneBaseAddr;
+		*(uint8 *)(func.sect0 + 0x71) = MAX_ACTOR;
+		WriteAddress((func.sect0 + 0x77), (appBaseAddr + 0x5B460), 5);
+		*(byte32 *)(func.sect0 + 0x81) = offsetof(ACTOR_DATA, noCollision);
+		WriteAddress((func.sect0 + 0x86), (appBaseAddr + 0x5B460), 6);
+		WriteCall((appBaseAddr + 0x5B7F9), func.addr);
+		WriteCall((appBaseAddr + 0x5B81C), func.addr);
+		WriteCall((appBaseAddr + 0x5B83F), func.addr);
+		WriteCall((appBaseAddr + 0x5B862), func.addr);
+		WriteCall((appBaseAddr + 0x5B885), func.addr);
+		WriteCall((appBaseAddr + 0x5B8AB), func.addr);
 	}
 
 
 
-	// @Todo: Add noCollision check to hit points collision manager.
+	{
+		byte8 * mugen[MAX_ACTOR][(MAX_CHAR - 1)] =
+		{
+			{0,1},
+			{},
+			{},
+			{},
+		};
+	}
+
+	
+
+
+
+
+
+
+	
+
+	// Add noCollision check to attack collision function.
+
+
+
+
+	{
+		byte8 sect0[] =
+		{
+			0x51,                                                       //push rcx
+			0x52,                                                       //push rdx
+			0x56,                                                       //push rsi
+			0x49, 0x8B, 0xC9,                                           //mov rcx,r9
+			0x48, 0x85, 0xC9,                                           //test rcx,rcx
+			0x74, 0x65,                                                 //je short
+			0x48, 0x81, 0xE9, 0xC0, 0x40, 0x00, 0x00,                   //sub rcx,000040C0
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,System_Actor_mainActorBaseAddr
+			0x48, 0x8B, 0x00,                                           //mov rax,[rax]
+			0x48, 0x39, 0xC1,                                           //cmp rcx,rax
+			0x74, 0x54,                                                 //je short
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,System_Actor_mainCloneBaseAddr
+			0x48, 0x8B, 0x00,                                           //mov rax,[rax]
+			0x48, 0x39, 0xC1,                                           //cmp rcx,rax
+			0x74, 0x42,                                                 //je short
+			0x48, 0x31, 0xD2,                                           //xor rdx,rdx
+			0x48, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rsi,System_Actor_actorBaseAddr
+			0x48, 0x8B, 0x04, 0xD6,                                     //mov rax,[rsi+rdx*8]
+			0x48, 0x39, 0xC1,                                           //cmp rcx,rax
+			0x74, 0x2C,                                                 //je short
+			0xFE, 0xC2,                                                 //inc dl
+			0x80, 0xFA, 0x00,                                           //cmp dl,MAX_ACTOR
+			0x72, 0xF0,                                                 //jb short
+			0x48, 0x31, 0xD2,                                           //xor rdx,rdx
+			0x48, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rsi,System_Actor_cloneBaseAddr
+			0x48, 0x8B, 0x04, 0xD6,                                     //mov rax,[rsi+rdx*8]
+			0x48, 0x39, 0xC1,                                           //cmp rcx,rax
+			0x74, 0x0F,                                                 //je short
+			0xFE, 0xC2,                                                 //inc dl
+			0x80, 0xFA, 0x00,                                           //cmp dl,MAX_ACTOR
+			0x72, 0xF0,                                                 //jb short
+			0x5E,                                                       //pop rsi
+			0x5A,                                                       //pop rdx
+			0x59,                                                       //pop rcx
+			0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+88190
+			0x5E,                                                       //pop rsi
+			0x5A,                                                       //pop rdx
+			0x59,                                                       //pop rcx
+			0x80, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x01,                   //cmp byte ptr [rax+0000B8C2],01
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+88190
+			0xC3,                                                       //ret
+		};
+		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(byte8 ***)(func.sect0 + 0x14) = &System_Actor_mainActorBaseAddr;
+		*(byte8 ***)(func.sect0 + 0x26) = &System_Actor_mainCloneBaseAddr;
+		*(byte8 ***)(func.sect0 + 0x3B) = System_Actor_actorBaseAddr;
+		*(uint8 *)(func.sect0 + 0x50) = MAX_ACTOR;
+		*(byte8 ***)(func.sect0 + 0x58) = System_Actor_cloneBaseAddr;
+		*(uint8 *)(func.sect0 + 0x6D) = MAX_ACTOR;
+		WriteAddress((func.sect0 + 0x73), (appBaseAddr + 0x88190), 5);
+		*(byte32 *)(func.sect0 + 0x7D) = offsetof(ACTOR_DATA, noCollision);
+		WriteAddress((func.sect0 + 0x82), (appBaseAddr + 0x88190), 6);
+		Write<byte8 *>((appBaseAddr + 0x4C89F8), func.addr);
+	}
+
+
+
+
+
+
+
+
+	/*
+	System_Actor_actionActorBaseAddr
+	System_Actor_phaseActorBaseAddr
+	System_Actor_shiftActorBaseAddr
+	System_Actor_phaseShiftActorBaseAddr
+	System_Actor_actorBaseAddrCharacter
+	System_Actor_swapActorBaseAddr
+	System_Actor_switchActorBaseAddr
+	System_Actor_tagActorBaseAddr
+	*/
+
+
+	/*
+	System_Actor_extraActorBaseAddr
+	System_Actor_auxActorBaseAddr
+	*/
+
+	// System_Actor_phaseShiftBaseAddr
 
 
 

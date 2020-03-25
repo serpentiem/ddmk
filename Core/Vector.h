@@ -2,7 +2,7 @@
 #include "DataTypes.h"
 
 template <typename T>
-struct vector
+struct old_vector
 {
 	T data[256];
 	uint64 count = 0;

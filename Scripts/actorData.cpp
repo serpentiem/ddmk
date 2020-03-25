@@ -120,10 +120,24 @@ struct ACTOR_DATA
 	_(12);
 	byte32 artemisChargeFlags[2]; // 0xB87C
 	_(60);
-	bool isDefault; // 0xB8C0
-	uint8 character; // 0xB8C1
-	bool noCollision; // 0xB8C2
-	bool hide; // 0xB8C3
+	uint8 character; // 0xB8C0
+	bool noActorCollision; // 0xB8C1
+	bool noEnemyCollision; // 0xB8C2
+	_(5);
+	byte8 * parentBaseAddr; // 0xB8C8
+	byte8 * childBaseAddr[4]; // 0xB8D0
+	bool hide; // 0xB8F0
+	uint8 gamepad; // 0xB8F1
+	byte16 buttonMask; // 0xB8F2
+	byte16 leftStickMask; // 0xB8F4
+	_(2);
+	uint8 styleMap[6][2]; // 0xB8F8
+	uint8 meleeWeaponCount; // 0xB904
+	_(3);
+	uint8 meleeWeaponMap[5]; // 0xB908
+	uint8 rangedWeaponCount; // 0xB90D
+	_(2);
+	uint8 rangedWeaponMap[5]; // 0xB910
 };
 
 #pragma pack(pop)
@@ -194,7 +208,17 @@ static_assert(offsetof(ACTOR_DATA, buttonInput) == 0x74E0);
 static_assert(offsetof(ACTOR_DATA, modelData) == 0xB630);
 static_assert(offsetof(ACTOR_DATA, artemisChargeValue) == 0xB868);
 static_assert(offsetof(ACTOR_DATA, artemisChargeFlags) == 0xB87C);
-static_assert(offsetof(ACTOR_DATA, isDefault) == 0xB8C0);
-static_assert(offsetof(ACTOR_DATA, character) == 0xB8C1);
-static_assert(offsetof(ACTOR_DATA, noCollision) == 0xB8C2);
-static_assert(offsetof(ACTOR_DATA, hide) == 0xB8C3);
+static_assert(offsetof(ACTOR_DATA, character) == 0xB8C0);
+static_assert(offsetof(ACTOR_DATA, noActorCollision) == 0xB8C1);
+static_assert(offsetof(ACTOR_DATA, noEnemyCollision) == 0xB8C2);
+static_assert(offsetof(ACTOR_DATA, parentBaseAddr) == 0xB8C8);
+static_assert(offsetof(ACTOR_DATA, childBaseAddr) == 0xB8D0);
+static_assert(offsetof(ACTOR_DATA, hide) == 0xB8F0);
+static_assert(offsetof(ACTOR_DATA, gamepad) == 0xB8F1);
+static_assert(offsetof(ACTOR_DATA, buttonMask) == 0xB8F2);
+static_assert(offsetof(ACTOR_DATA, leftStickMask) == 0xB8F4);
+static_assert(offsetof(ACTOR_DATA, styleMap) == 0xB8F8);
+static_assert(offsetof(ACTOR_DATA, meleeWeaponCount) == 0xB904);
+static_assert(offsetof(ACTOR_DATA, meleeWeaponMap) == 0xB908);
+static_assert(offsetof(ACTOR_DATA, rangedWeaponCount) == 0xB90D);
+static_assert(offsetof(ACTOR_DATA, rangedWeaponMap) == 0xB910);
