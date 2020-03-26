@@ -121,7 +121,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 		System_Actor_Init();
-		System_Actor_ToggleArrayExtension(true);
+		//System_Actor_ToggleArrayExtension(true);
 		//System_Actor_ToggleCreateActorOne(true);
 
 

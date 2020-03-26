@@ -37,25 +37,25 @@ void Game_ResetMotionState_UpdateButtonIndex()
 
 void Game_ResetMotionState_Controller()
 {
-	if (!Config.Game.ResetMotionState.enable)
-	{
-		return;
-	}
-	static bool execute[MAX_ACTOR] = {};
-	auto count = System_Actor_GetActorCount();
-	for (uint8 actor = 0; actor < count; actor++)
-	{
-		if (System_Input_GetButtonState(actor) & Config.Game.ResetMotionState.button)
-		{
-			if (execute[actor])
-			{
-				//auto & motionState = *(byte8 *)(System_Actor_actorBaseAddr[actor] + 0x3E66) = 0;
-				execute[actor] = false;
-			}
-		}
-		else
-		{
-			execute[actor] = true;
-		}
-	}
+	//if (!Config.Game.ResetMotionState.enable)
+	//{
+	//	return;
+	//}
+	//static bool execute[MAX_ACTOR] = {};
+	//auto count = System_Actor_GetActorCount();
+	//for (uint8 actor = 0; actor < count; actor++)
+	//{
+	//	if (System_Input_GetButtonState(actor) & Config.Game.ResetMotionState.button)
+	//	{
+	//		if (execute[actor])
+	//		{
+	//			//auto & motionState = *(byte8 *)(System_Actor_actorBaseAddr[actor] + 0x3E66) = 0;
+	//			execute[actor] = false;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		execute[actor] = true;
+	//	}
+	//}
 }

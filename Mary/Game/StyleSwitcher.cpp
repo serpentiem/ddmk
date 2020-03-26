@@ -10,212 +10,212 @@ byte8 * VergilDynamicStyle      = 0;
 
 void UpdateStyle(byte8 * baseAddr, uint32 index)
 {
-	auto actor = System_Actor_GetActorId(baseAddr);
+	//auto actor = System_Actor_GetActorId(baseAddr);
 
-	auto & character  = *(uint8   *)(baseAddr + 0x78);
-	auto & style      = *(uint32  *)(baseAddr + 0x6338);
-	auto & level      = *(uint32  *)(baseAddr + 0x6358);
-	auto & experience = *(float32 *)(baseAddr + 0x6364);
+	//auto & character  = *(uint8   *)(baseAddr + 0x78);
+	//auto & style      = *(uint32  *)(baseAddr + 0x6338);
+	//auto & level      = *(uint32  *)(baseAddr + 0x6358);
+	//auto & experience = *(float32 *)(baseAddr + 0x6364);
 
-	auto session = *(byte **)(appBaseAddr + 0xC90E30);
-	if (!session)
-	{
-		return;
-	}
-	auto sessionLevel      = (uint32  *)(session + 0x11C);
-	auto sessionExperience = (float32 *)(session + 0x134);
-
-	if (!((character == CHAR_LOGIC_DANTE) || (character == CHAR_LOGIC_VERGIL)))
-	{
-		return;
-	}
-
-	if (character == CHAR_LOGIC_VERGIL)
-	{
-		switch (index)
-		{
-		case STYLE_DANTE_SWORDMASTER:
-		case STYLE_DANTE_GUNSLINGER:
-		case STYLE_DANTE_ROYALGUARD:
-			index = STYLE_VERGIL_DARK_SLAYER;
-			break;
-		}
-	}
-
-	if (style == index)
-	{
-		if (Config.Game.StyleSwitcher.noDoubleTap)
-		{
-			return;
-		}
-		index = STYLE_DANTE_QUICKSILVER;
-	}
-
-	if ((index == STYLE_DANTE_QUICKSILVER) && (actor != ACTOR_ONE))
-	{
-		return;
-	}
-
-	if ((index == STYLE_DANTE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
-	{
-		return;
-	}
-
-	// @Todo: Check if array for unlocked styles.
-
-	if (character == CHAR_LOGIC_DANTE)
-	{
-		if (index == STYLE_DANTE_QUICKSILVER)
-		{
-			auto & unlock = *(bool *)(session + 0x5E);
-			if (!unlock)
-			{
-				return;
-			}
-		}
-		else if (index == STYLE_DANTE_DOPPELGANGER)
-		{
-			auto & unlock = *(bool *)(session + 0x5F);
-			if (!unlock)
-			{
-				return;
-			}
-		}
-	}
-
-	if (actor == ACTOR_ONE)
-	{
-		sessionLevel     [style] = level;
-		sessionExperience[style] = experience;
-	}
-
-	level      = sessionLevel     [index];
-	experience = sessionExperience[index];
-	style      = index;
-
-	if ((index == STYLE_DANTE_SWORDMASTER) || (index == STYLE_DANTE_GUNSLINGER))
-	{
-		System_Weapon_Dante_UpdateExpertise(baseAddr);
-	}
-
-	//UpdateActor2Start:
+	//auto session = *(byte **)(appBaseAddr + 0xC90E30);
+	//if (!session)
 	//{
-	//	auto & baseAddr2 = System_Actor_actorBaseAddr[ACTOR_TWO];
-	//	if (!baseAddr2)
-	//	{
-	//		goto UpdateActor2End;
-	//	}
-	//	auto & character2            = *(uint8  *)(baseAddr2 + 0x78  );
-	//	auto & style2                = *(uint32 *)(baseAddr2 + 0x6338);
-	//	auto & isControlledByPlayer2 = *(bool   *)(baseAddr2 + 0x6480);
+	//	return;
+	//}
+	//auto sessionLevel      = (uint32  *)(session + 0x11C);
+	//auto sessionExperience = (float32 *)(session + 0x134);
 
-	//	if (Config.System.Actor.forceSingleActor)
+	//if (!((character == CHAR_LOGIC_DANTE) || (character == CHAR_LOGIC_VERGIL)))
+	//{
+	//	return;
+	//}
+
+	//if (character == CHAR_LOGIC_VERGIL)
+	//{
+	//	switch (index)
 	//	{
-	//		goto UpdateActor2End;
+	//	case STYLE_DANTE_SWORDMASTER:
+	//	case STYLE_DANTE_GUNSLINGER:
+	//	case STYLE_DANTE_ROYALGUARD:
+	//		index = STYLE_VERGIL_DARK_SLAYER;
+	//		break;
 	//	}
-	//	if (actor != ACTOR_ONE)
+	//}
+
+	//if (style == index)
+	//{
+	//	if (Config.Game.StyleSwitcher.noDoubleTap)
 	//	{
-	//		goto UpdateActor2End;
+	//		return;
 	//	}
-	//	if (character != character2)
+	//	index = STYLE_DANTE_QUICKSILVER;
+	//}
+
+	//if ((index == STYLE_DANTE_QUICKSILVER) && (actor != ACTOR_ONE))
+	//{
+	//	return;
+	//}
+
+	//if ((index == STYLE_DANTE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
+	//{
+	//	return;
+	//}
+
+	//// @Todo: Check if array for unlocked styles.
+
+	//if (character == CHAR_LOGIC_DANTE)
+	//{
+	//	if (index == STYLE_DANTE_QUICKSILVER)
 	//	{
-	//		goto UpdateActor2End;
-	//	}
-	//	if ((index == STYLE_DANTE_QUICKSILVER) /*|| (index == STYLE_DANTE_DOPPELGANGER)*/)
-	//	{
-	//		goto UpdateActor2End;
-	//	}
-	//	if (!isControlledByPlayer2)
-	//	{
-	//		style2 = index;
-	//		if ((index == STYLE_DANTE_SWORDMASTER) || (index == STYLE_DANTE_GUNSLINGER))
+	//		auto & unlock = *(bool *)(session + 0x5E);
+	//		if (!unlock)
 	//		{
-	//			System_Weapon_Dante_UpdateExpertise(baseAddr2);
+	//			return;
+	//		}
+	//	}
+	//	else if (index == STYLE_DANTE_DOPPELGANGER)
+	//	{
+	//		auto & unlock = *(bool *)(session + 0x5F);
+	//		if (!unlock)
+	//		{
+	//			return;
 	//		}
 	//	}
 	//}
-	//UpdateActor2End:
 
-	if (actor == ACTOR_ONE)
-	{
-		System_HUD_updateStyleIcon = true;
-	}
-	Game_StyleSwitcher_counter++;
+	//if (actor == ACTOR_ONE)
+	//{
+	//	sessionLevel     [style] = level;
+	//	sessionExperience[style] = experience;
+	//}
+
+	//level      = sessionLevel     [index];
+	//experience = sessionExperience[index];
+	//style      = index;
+
+	//if ((index == STYLE_DANTE_SWORDMASTER) || (index == STYLE_DANTE_GUNSLINGER))
+	//{
+	//	System_Weapon_Dante_UpdateExpertise(baseAddr);
+	//}
+
+	////UpdateActor2Start:
+	////{
+	////	auto & baseAddr2 = System_Actor_actorBaseAddr[ACTOR_TWO];
+	////	if (!baseAddr2)
+	////	{
+	////		goto UpdateActor2End;
+	////	}
+	////	auto & character2            = *(uint8  *)(baseAddr2 + 0x78  );
+	////	auto & style2                = *(uint32 *)(baseAddr2 + 0x6338);
+	////	auto & isControlledByPlayer2 = *(bool   *)(baseAddr2 + 0x6480);
+
+	////	if (Config.System.Actor.forceSingleActor)
+	////	{
+	////		goto UpdateActor2End;
+	////	}
+	////	if (actor != ACTOR_ONE)
+	////	{
+	////		goto UpdateActor2End;
+	////	}
+	////	if (character != character2)
+	////	{
+	////		goto UpdateActor2End;
+	////	}
+	////	if ((index == STYLE_DANTE_QUICKSILVER) /*|| (index == STYLE_DANTE_DOPPELGANGER)*/)
+	////	{
+	////		goto UpdateActor2End;
+	////	}
+	////	if (!isControlledByPlayer2)
+	////	{
+	////		style2 = index;
+	////		if ((index == STYLE_DANTE_SWORDMASTER) || (index == STYLE_DANTE_GUNSLINGER))
+	////		{
+	////			System_Weapon_Dante_UpdateExpertise(baseAddr2);
+	////		}
+	////	}
+	////}
+	////UpdateActor2End:
+
+	//if (actor == ACTOR_ONE)
+	//{
+	//	System_HUD_updateStyleIcon = true;
+	//}
+	//Game_StyleSwitcher_counter++;
 }
 
 PrivateEnd;
 
 void Game_StyleSwitcher_Controller()
 {
-	//uint8 actorCount = System_Actor_GetActorCount();
-	//if (actorCount < 1)
+	////uint8 actorCount = System_Actor_GetActorCount();
+	////if (actorCount < 1)
+	////{
+	////	return;
+	////}
+
+	//// @Todo: Change to bindings.
+
+	//uint8 commandId[] =
 	//{
-	//	return;
+	//	CMD_MAP_SCREEN,
+	//	CMD_FILE_SCREEN,
+	//	CMD_ITEM_SCREEN,
+	//	CMD_EQUIP_SCREEN,
+	//};
+	//static bool execute[MAX_ACTOR][5] = {};
+
+
+	//// @Fix: GetButtonState or loop is broken. Style is updated for other actors as well even if only actor one initiates the switch.
+
+	//// @Todo: Create helper;
+
+	//auto count = System_Actor_GetActorCount();
+
+
+	//for (uint8 actor = 0; actor < count; actor++)
+	//{
+	//	for (uint8 style = 0; style < 4; style++)
+	//	{
+	//		if (System_Input_GetButtonState(actor) & System_Input_GetBinding(commandId[style]))
+	//		{
+	//			if (execute[actor][style])
+	//			{
+	//				//UpdateStyle(System_Actor_actorBaseAddr[actor], style);
+	//				execute[actor][style] = false;
+	//			}
+	//		}
+	//		else
+	//		{
+	//			execute[actor][style] = true;
+	//		}
+	//	}
+
+
+
+
+
+
+
+
+
+
+	//	if (Config.Game.Multiplayer.enable)
+	//	{
+	//		continue;
+	//	}
+	//	if ((System_Input_GetButtonState(actor) & System_Input_GetBinding(CMD_CHANGE_TARGET)) && (System_Input_GetButtonState(actor) & System_Input_GetBinding(CMD_DEFAULT_CAMERA)))
+	//	{
+	//		if (execute[actor][4])
+	//		{
+	//			//UpdateStyle(System_Actor_actorBaseAddr[actor], STYLE_DANTE_DOPPELGANGER);
+	//			execute[actor][4] = false;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		execute[actor][4] = true;
+	//	}
 	//}
-
-	// @Todo: Change to bindings.
-
-	uint8 commandId[] =
-	{
-		CMD_MAP_SCREEN,
-		CMD_FILE_SCREEN,
-		CMD_ITEM_SCREEN,
-		CMD_EQUIP_SCREEN,
-	};
-	static bool execute[MAX_ACTOR][5] = {};
-
-
-	// @Fix: GetButtonState or loop is broken. Style is updated for other actors as well even if only actor one initiates the switch.
-
-	// @Todo: Create helper;
-
-	auto count = System_Actor_GetActorCount();
-
-
-	for (uint8 actor = 0; actor < count; actor++)
-	{
-		for (uint8 style = 0; style < 4; style++)
-		{
-			if (System_Input_GetButtonState(actor) & System_Input_GetBinding(commandId[style]))
-			{
-				if (execute[actor][style])
-				{
-					//UpdateStyle(System_Actor_actorBaseAddr[actor], style);
-					execute[actor][style] = false;
-				}
-			}
-			else
-			{
-				execute[actor][style] = true;
-			}
-		}
-
-
-
-
-
-
-
-
-
-
-		if (Config.Game.Multiplayer.enable)
-		{
-			continue;
-		}
-		if ((System_Input_GetButtonState(actor) & System_Input_GetBinding(CMD_CHANGE_TARGET)) && (System_Input_GetButtonState(actor) & System_Input_GetBinding(CMD_DEFAULT_CAMERA)))
-		{
-			if (execute[actor][4])
-			{
-				//UpdateStyle(System_Actor_actorBaseAddr[actor], STYLE_DANTE_DOPPELGANGER);
-				execute[actor][4] = false;
-			}
-		}
-		else
-		{
-			execute[actor][4] = true;
-		}
-	}
 }
 
 

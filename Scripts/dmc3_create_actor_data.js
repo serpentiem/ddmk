@@ -69,8 +69,7 @@ var items =
 var extra = 
 [
 	[ "character"         , "uint8"   ],
-	[ "noActorCollision"  , "bool"    ],
-	[ "noEnemyCollision"  , "bool"    ],
+	[ "noCollision"       , "bool"    ],
 	[ "parentBaseAddr"    , "byte8 *" ],
 	[ "childBaseAddr[4]"  , "byte8 *" ],
 	[ "hide"              , "bool"    ],

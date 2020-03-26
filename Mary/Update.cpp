@@ -10,61 +10,61 @@ bool millionStab = false;
 
 // Consider all actors for millionStab.
 
-void VergilMillionStab()
-{
-	auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E28);
-
-	auto mainBaseAddr = System_Actor_mainActorBaseAddr;
-	auto & mainActorData = *(ACTOR_DATA *)mainBaseAddr;
-
-	auto baseAddr = System_Actor_actorBaseAddr[ACTOR_TWO];
-	auto & actorData = *(ACTOR_DATA *)baseAddr;
-
-	if (mainActorData.move != 39)
-	{
-		return;
-	}
-	if (mainActorData.motionData[1].group != 5)
-	{
-		return;
-	}
-	if (mainActorData.motionData[1].index != 11)
-	{
-		return;
-	}
-	//if (mainActorData.inputData[16].level < 6)
-	if (mainActorData.inputData[16].flags[4] < 6)
-	{
-		return;
-	}
-
-
-	
-
-	//auto position = mainActorData.position;
-	//auto direction = mainActorData.direction;
-
-	//mainActorData.position  = actorData.position;
-	//mainActorData.direction = actorData.direction;
-	mainActorData.actorId   = ACTOR_TWO;
-
-	//actorData.position  = position;
-	//actorData.direction = direction;
-	actorData.actorId   = ACTOR_ONE;
-
-	actorData.motionState1[0] = 0x11;
-	actorData.motionState1[1] = 0x11;
-	actorData.motionState1[2] = 0x11;
-	actorData.motionState1[3] = 0x11;
-
-	actorData.motionState2[0] = 0x401;
-	actorData.motionState2[1] = 0xB0001;
-	actorData.motionState2[2] = 0xB0001;
-
-	actorData.move = 14;
-
-	g_pool[3] = baseAddr;
-}
+//void VergilMillionStab()
+//{
+//	auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E28);
+//
+//	auto mainBaseAddr = System_Actor_mainActorBaseAddr;
+//	auto & mainActorData = *(ACTOR_DATA *)mainBaseAddr;
+//
+//	auto baseAddr = System_Actor_actorBaseAddr[ACTOR_TWO];
+//	auto & actorData = *(ACTOR_DATA *)baseAddr;
+//
+//	if (mainActorData.move != 39)
+//	{
+//		return;
+//	}
+//	if (mainActorData.motionData[1].group != 5)
+//	{
+//		return;
+//	}
+//	if (mainActorData.motionData[1].index != 11)
+//	{
+//		return;
+//	}
+//	//if (mainActorData.inputData[16].level < 6)
+//	if (mainActorData.inputData[16].flags[4] < 6)
+//	{
+//		return;
+//	}
+//
+//
+//	
+//
+//	//auto position = mainActorData.position;
+//	//auto direction = mainActorData.direction;
+//
+//	//mainActorData.position  = actorData.position;
+//	//mainActorData.direction = actorData.direction;
+//	mainActorData.actorId   = ACTOR_TWO;
+//
+//	//actorData.position  = position;
+//	//actorData.direction = direction;
+//	actorData.actorId   = ACTOR_ONE;
+//
+//	actorData.motionState1[0] = 0x11;
+//	actorData.motionState1[1] = 0x11;
+//	actorData.motionState1[2] = 0x11;
+//	actorData.motionState1[3] = 0x11;
+//
+//	actorData.motionState2[0] = 0x401;
+//	actorData.motionState2[1] = 0xB0001;
+//	actorData.motionState2[2] = 0xB0001;
+//
+//	actorData.move = 14;
+//
+//	g_pool[3] = baseAddr;
+//}
 
 
 
@@ -82,78 +82,78 @@ void MainLoop()
 	//}
 
 
-	if (spawnActors)
-	{
-		spawnActors = false;
-
-		Log("Spawn Actors.");
-
-		System_Actor_actorBaseAddr[ACTOR_TWO] = CreateActor(CHAR_LOGIC_DANTE, ACTOR_TWO);
-
-		//Log("System_Actor_actorBaseAddr %llX", System_Actor_actorBaseAddr[ACTOR_TWO]);
-
-
-
-		//auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E28);
-
-		//g_pool[3] = System_Actor_actorBaseAddr[ACTOR_ONE];
-
-
-		
-		auto & actorData     = *(ACTOR_DATA *)System_Actor_actorBaseAddr[ACTOR_TWO];
-		auto & mainActorData = *(ACTOR_DATA *)System_Actor_mainActorBaseAddr;
-
-
-		
-		//actorData.x = mainActorData.x;
-		//actorData.y = mainActorData.y;
-		//actorData.z = mainActorData.z;
-
-
-		actorData.position  = mainActorData.position;
-		actorData.direction = mainActorData.direction;
-
-
-
-
-		actorData.character = CHAR_VERGIL;
-		actorData.equipment[0] = WEAPON_DANTE_REBELLION;
-		actorData.equipment[1] = WEAPON_VOID;
-		actorData.equipment[2] = WEAPON_VOID;
-		actorData.equipment[3] = WEAPON_VOID;
-
-
-
-
-
-		
-		{
-			//auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E10);
-
-			//auto eventData = g_pool[8];
-			//auto & position = *(uint32 *)(eventData + 0x1C);
-
-			//func_23E560(eventData, position);
-
-
-
-
-
-
-
-		}
-
-
-
-		/*
-dmc3.exe+C90E10
-		*/
-
-
-	}
-
-
-	VergilMillionStab();
+//	if (spawnActors)
+//	{
+//		spawnActors = false;
+//
+//		Log("Spawn Actors.");
+//
+//		System_Actor_actorBaseAddr[ACTOR_TWO] = CreateActor(CHAR_LOGIC_DANTE, ACTOR_TWO);
+//
+//		//Log("System_Actor_actorBaseAddr %llX", System_Actor_actorBaseAddr[ACTOR_TWO]);
+//
+//
+//
+//		//auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E28);
+//
+//		//g_pool[3] = System_Actor_actorBaseAddr[ACTOR_ONE];
+//
+//
+//		
+//		auto & actorData     = *(ACTOR_DATA *)System_Actor_actorBaseAddr[ACTOR_TWO];
+//		auto & mainActorData = *(ACTOR_DATA *)System_Actor_mainActorBaseAddr;
+//
+//
+//		
+//		//actorData.x = mainActorData.x;
+//		//actorData.y = mainActorData.y;
+//		//actorData.z = mainActorData.z;
+//
+//
+//		actorData.position  = mainActorData.position;
+//		actorData.direction = mainActorData.direction;
+//
+//
+//
+//
+//		actorData.character = CHAR_VERGIL;
+//		actorData.equipment[0] = WEAPON_DANTE_REBELLION;
+//		actorData.equipment[1] = WEAPON_VOID;
+//		actorData.equipment[2] = WEAPON_VOID;
+//		actorData.equipment[3] = WEAPON_VOID;
+//
+//
+//
+//
+//
+//		
+//		{
+//			//auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E10);
+//
+//			//auto eventData = g_pool[8];
+//			//auto & position = *(uint32 *)(eventData + 0x1C);
+//
+//			//func_23E560(eventData, position);
+//
+//
+//
+//
+//
+//
+//
+//		}
+//
+//
+//
+//		/*
+//dmc3.exe+C90E10
+//		*/
+//
+//
+//	}
+//
+//
+//	VergilMillionStab();
 
 
 	return;

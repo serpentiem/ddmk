@@ -8,24 +8,24 @@ bool System_Motion_update[MAX_ACTOR] = {};
 
 void SetUpdateFlag(byte8 * baseAddr)
 {
-	auto actor = System_Actor_GetActorId(baseAddr);
-	System_Motion_update[actor] = true;
+	//auto actor = System_Actor_GetActorId(baseAddr);
+	//System_Motion_update[actor] = true;
 
 
-	//auto & motionGroup = *(uint8 *)(baseAddr + 0x39B3);
-	//auto & motionIndex = *(uint8 *)(baseAddr + 0x39B2);
+	////auto & motionGroup = *(uint8 *)(baseAddr + 0x39B3);
+	////auto & motionIndex = *(uint8 *)(baseAddr + 0x39B2);
 
-	//if (motionGroup == MOT_VERGIL_FORCE_EDGE)
-	//{
-	//	if (motionIndex == 11)
-	//	{
+	////if (motionGroup == MOT_VERGIL_FORCE_EDGE)
+	////{
+	////	if (motionIndex == 11)
+	////	{
 
-	//		motionGroup = MOT_VERGIL_YAMATO;
-	//		motionIndex = 12;
+	////		motionGroup = MOT_VERGIL_YAMATO;
+	////		motionIndex = 12;
 
 
-	//	}
-	//}
+	////	}
+	////}
 
 
 

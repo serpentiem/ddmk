@@ -51,30 +51,61 @@ void ClearPool()
 {
 	LogFunction();
 
-	System_Actor_mainActorBaseAddr = 0;
-	System_Actor_mainCloneBaseAddr = 0;
+	System_Actor_actorBaseAddr.Clear();
 
-	memset(System_Actor_actorBaseAddr, 0, (MAX_ACTOR * 8));
-	memset(System_Actor_cloneBaseAddr, 0, (MAX_ACTOR * 8));
+
+	//System_Actor_mainActorBaseAddr = 0;
+	//System_Actor_mainCloneBaseAddr = 0;
+
+	//memset(System_Actor_actorBaseAddr, 0, (MAX_ACTOR * 8));
+	//memset(System_Actor_cloneBaseAddr, 0, (MAX_ACTOR * 8));
 }
+
+
+
+
+
 
 void CreateMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
-	System_Actor_mainActorBaseAddr = baseAddr;
+	System_Actor_actorBaseAddr[0] = baseAddr;
+	System_Actor_actorBaseAddr.count = 2;
+
+	
+	
+	auto & actorData = *(ACTOR_DATA *)baseAddr;
+
+	actorData.noCollision = true;
+
+
+
+
+
+	//auto addr = System_Actor_actorBaseAddr[0];
+
+
+
+
+
+	//System_Actor_mainActorBaseAddr = baseAddr;
 	//System_Actor_mainCloneBaseAddr = baseAddr;
-	auto & isDefault = *(bool *)(baseAddr + 0xB8C0) = true;
+	//auto & isDefault = *(bool *)(baseAddr + 0xB8C0) = true;
 
 	//auto & actorId = *(uint8 *)(baseAddr + 0x118) = ACTOR_TWO;
 
-	spawnActors = true;
+	//spawnActors = true;
 }
 
 void CreateMainClone(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
-	System_Actor_mainCloneBaseAddr = baseAddr;
-	auto & isDefault = *(bool *)(baseAddr + 0xB8C0) = true;
+	System_Actor_actorBaseAddr[1] = baseAddr;
+
+
+
+	//System_Actor_mainCloneBaseAddr = baseAddr;
+	//auto & isDefault = *(bool *)(baseAddr + 0xB8C0) = true;
 }
 
 PrivateEnd;
@@ -958,10 +989,10 @@ static void StageLoadComplete()
 {
 	LogFunctionStart();
 	// @Todo: Too broad. Separate into smaller chunks.
-	if (System_Actor_enableArrayExtension)
-	{
-		Actor_StageLoadComplete();
-	}
+	//if (System_Actor_enableArrayExtension)
+	//{
+	//	Actor_StageLoadComplete();
+	//}
 	if (Config.Game.BossRush.enable)
 	{
 		BossRush_StageLoadComplete();

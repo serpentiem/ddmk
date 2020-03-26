@@ -1008,6 +1008,16 @@ typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
 
 
 
+
+
+
+
+
+
+
+
+
+
 struct ACTOR_DATA
 {
 	_(120);
@@ -1017,7 +1027,7 @@ struct ACTOR_DATA
 	_(48);
 	uint16 direction; // 0xC0
 	_(86);
-	uint8 index; // 0x118
+	uint8 actorId; // 0x118
 	_(3);
 	bool isDoppelganger; // 0x11C
 	_(3);
@@ -1055,7 +1065,7 @@ struct ACTOR_DATA
 	_(6);
 	bool devil; // 0x3E9B
 	_(2);
-	uint8 costumeLogic; // 0x3E9E
+	uint8 costume; // 0x3E9E
 	bool specialCostume; // 0x3E9F
 	_(24);
 	float32 magicPoints; // 0x3EB8
@@ -1088,9 +1098,9 @@ struct ACTOR_DATA
 	_(1);
 	float32 styleExperience; // 0x6364
 	_(236);
-	bool controlClone; // 0x6454
+	bool controlLinkedActor; // 0x6454
 	_(35);
-	byte8 * cloneBaseAddr; // 0x6478
+	byte8 * linkedActorBaseAddr; // 0x6478
 	_(8);
 	uint8 selectedMeleeWeaponVergil; // 0x6488
 	_(4);
@@ -1100,7 +1110,8 @@ struct ACTOR_DATA
 	_(3);
 	uint8 selectedRangedWeapon; // 0x6494
 	_(3);
-	uint8 equipment[8]; // 0x6498
+	uint8 equipment[4]; // 0x6498
+	_(4);
 	byte8 * weaponMetadata[4]; // 0x64A0
 	_(8);
 	byte32 weaponFlags[4]; // 0x64C8
@@ -1126,14 +1137,26 @@ struct ACTOR_DATA
 	byte32 artemisChargeFlags[2]; // 0xB87C
 	_(60);
 	uint8 character; // 0xB8C0
-	_(15);
-	bool noActorCollision; // 0xB8D0
-	bool noEnemyCollision; // 0xB8D1
-	bool noEnemyAttackCollision; // 0xB8D2
-	_(5);
-	byte8 * parentBaseAddr; // 0xB8D8
-	byte8 * childBaseAddr[4]; // 0xB8E0
+	bool noCollision; // 0xB8C1
+	_(6);
+	byte8 * parentBaseAddr; // 0xB8C8
+	byte8 * childBaseAddr[4]; // 0xB8D0
+	bool hide; // 0xB8F0
+	uint8 gamepad; // 0xB8F1
+	byte16 buttonMask; // 0xB8F2
+	byte16 leftStickMask; // 0xB8F4
+	_(2);
+	uint8 styleMap[6][2]; // 0xB8F8
+	uint8 meleeWeaponCount; // 0xB904
+	_(3);
+	uint8 meleeWeaponMap[5]; // 0xB908
+	uint8 rangedWeaponCount; // 0xB90D
+	_(2);
+	uint8 rangedWeaponMap[5]; // 0xB910
 };
+
+
+
 
 
 

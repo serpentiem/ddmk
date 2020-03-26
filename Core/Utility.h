@@ -43,3 +43,5 @@ T Reverse(T * var)
 #undef offsetof
 #endif
 #define offsetof(s, m) (uint32)(&(*(s *)0).m)
+
+#define __COMMA__ ,

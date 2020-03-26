@@ -121,9 +121,8 @@ struct ACTOR_DATA
 	byte32 artemisChargeFlags[2]; // 0xB87C
 	_(60);
 	uint8 character; // 0xB8C0
-	bool noActorCollision; // 0xB8C1
-	bool noEnemyCollision; // 0xB8C2
-	_(5);
+	bool noCollision; // 0xB8C1
+	_(6);
 	byte8 * parentBaseAddr; // 0xB8C8
 	byte8 * childBaseAddr[4]; // 0xB8D0
 	bool hide; // 0xB8F0
@@ -209,8 +208,7 @@ static_assert(offsetof(ACTOR_DATA, modelData) == 0xB630);
 static_assert(offsetof(ACTOR_DATA, artemisChargeValue) == 0xB868);
 static_assert(offsetof(ACTOR_DATA, artemisChargeFlags) == 0xB87C);
 static_assert(offsetof(ACTOR_DATA, character) == 0xB8C0);
-static_assert(offsetof(ACTOR_DATA, noActorCollision) == 0xB8C1);
-static_assert(offsetof(ACTOR_DATA, noEnemyCollision) == 0xB8C2);
+static_assert(offsetof(ACTOR_DATA, noCollision) == 0xB8C1);
 static_assert(offsetof(ACTOR_DATA, parentBaseAddr) == 0xB8C8);
 static_assert(offsetof(ACTOR_DATA, childBaseAddr) == 0xB8D0);
 static_assert(offsetof(ACTOR_DATA, hide) == 0xB8F0);

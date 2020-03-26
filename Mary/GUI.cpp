@@ -1255,46 +1255,46 @@ void GUI_Cosmetics_Color()
 
 void GUI_Cosmetics_Dante()
 {
-	auto UpdateModelAttributes = []()
-	{
-		auto count = System_Actor_GetActorCount();
-		for (uint8 actor = 0; actor < count; actor++)
-		{
-			//auto & baseAddr = System_Actor_actorBaseAddr[actor];
-			//if (!baseAddr)
-			//{
-			//	continue;
-			//}
-			//auto & character      = *(uint8 *)(baseAddr + 0x78  );
-			//auto & selectedWeapon = *(uint8 *)(baseAddr + 0x6490);
-			//auto   equipment      =  (uint8 *)(baseAddr + 0x6498);
-			//auto & weapon = equipment[selectedWeapon];
-			//if (character != CHAR_LOGIC_DANTE)
-			//{
-			//	continue;
-			//}
-			//if ((weapon == WEAPON_DANTE_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
-			//{
-			//	Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
-			//}
-			//else
-			//{
-			//	Cosmetics_Dante_ApplyDefaultModelAttributes(baseAddr);
-			//}
-		}
-	};
-	GUI_Hyperlink(Locale.Cosmetics.Dante.header);
-	ImGui::Text("");
-	ImGui::Text(Locale.Cosmetics.Dante.Beowulf.header);
-	if (GUI_Checkbox
-	(
-		Locale.Cosmetics.Dante.Beowulf.hideModel,
-		Config.Cosmetics.Dante.Beowulf.hideModel
-	))
-	{
-		Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.Beowulf.hideModel);
-		UpdateModelAttributes();
-	}
+	//auto UpdateModelAttributes = []()
+	//{
+	//	auto count = System_Actor_GetActorCount();
+	//	for (uint8 actor = 0; actor < count; actor++)
+	//	{
+	//		//auto & baseAddr = System_Actor_actorBaseAddr[actor];
+	//		//if (!baseAddr)
+	//		//{
+	//		//	continue;
+	//		//}
+	//		//auto & character      = *(uint8 *)(baseAddr + 0x78  );
+	//		//auto & selectedWeapon = *(uint8 *)(baseAddr + 0x6490);
+	//		//auto   equipment      =  (uint8 *)(baseAddr + 0x6498);
+	//		//auto & weapon = equipment[selectedWeapon];
+	//		//if (character != CHAR_LOGIC_DANTE)
+	//		//{
+	//		//	continue;
+	//		//}
+	//		//if ((weapon == WEAPON_DANTE_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
+	//		//{
+	//		//	Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
+	//		//}
+	//		//else
+	//		//{
+	//		//	Cosmetics_Dante_ApplyDefaultModelAttributes(baseAddr);
+	//		//}
+	//	}
+	//};
+	//GUI_Hyperlink(Locale.Cosmetics.Dante.header);
+	//ImGui::Text("");
+	//ImGui::Text(Locale.Cosmetics.Dante.Beowulf.header);
+	//if (GUI_Checkbox
+	//(
+	//	Locale.Cosmetics.Dante.Beowulf.hideModel,
+	//	Config.Cosmetics.Dante.Beowulf.hideModel
+	//))
+	//{
+	//	Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.Beowulf.hideModel);
+	//	UpdateModelAttributes();
+	//}
 }
 
 void GUI_Cosmetics_Doppelganger()
@@ -1446,43 +1446,43 @@ void GUI_Tools_Repair()
 	ImGui::Text("");
 	auto ResetEquipment = []()
 	{
-		if (!InGame())
-		{
-			return;
-		}
-		auto count = System_Actor_GetActorCount();
-		//for (uint8 actor = 0; actor < count; actor++)
+		//if (!InGame())
 		//{
-		//	auto & baseAddr = System_Actor_actorBaseAddr[actor];
-		//	if (!baseAddr)
-		//	{
-		//		continue;
-		//	}
-		//	auto & character = *(uint8 *)(baseAddr + 0x78);
-		//	auto equipment = (uint8 *)(baseAddr + 0x6498);
-		//	vp_memset(equipment, 0, 8);
-		//	switch (character)
-		//	{
-		//	case CHAR_LOGIC_DANTE:
-		//		equipment[0] = WEAPON_DANTE_REBELLION;
-		//		equipment[1] = WEAPON_DANTE_CERBERUS;
-		//		equipment[2] = WEAPON_EBONY_IVORY;
-		//		equipment[3] = WEAPON_SHOTGUN;
-		//		break;
-		//	case CHAR_LOGIC_BOB:
-		//		equipment[0] = WEAPON_YAMATO_BOB;
-		//		break;
-		//	case CHAR_LOGIC_LADY:
-		//		equipment[2] = WEAPON_KALINA_ANN;
-		//		equipment[4] = 11;
-		//		break;
-		//	case CHAR_LOGIC_VERGIL:
-		//		equipment[0] = WEAPON_YAMATO;
-		//		equipment[1] = WEAPON_BEOWULF_VERGIL;
-		//		equipment[2] = WEAPON_FORCE_EDGE;
-		//		break;
-		//	}
+		//	return;
 		//}
+		//auto count = System_Actor_GetActorCount();
+		////for (uint8 actor = 0; actor < count; actor++)
+		////{
+		////	auto & baseAddr = System_Actor_actorBaseAddr[actor];
+		////	if (!baseAddr)
+		////	{
+		////		continue;
+		////	}
+		////	auto & character = *(uint8 *)(baseAddr + 0x78);
+		////	auto equipment = (uint8 *)(baseAddr + 0x6498);
+		////	vp_memset(equipment, 0, 8);
+		////	switch (character)
+		////	{
+		////	case CHAR_LOGIC_DANTE:
+		////		equipment[0] = WEAPON_DANTE_REBELLION;
+		////		equipment[1] = WEAPON_DANTE_CERBERUS;
+		////		equipment[2] = WEAPON_EBONY_IVORY;
+		////		equipment[3] = WEAPON_SHOTGUN;
+		////		break;
+		////	case CHAR_LOGIC_BOB:
+		////		equipment[0] = WEAPON_YAMATO_BOB;
+		////		break;
+		////	case CHAR_LOGIC_LADY:
+		////		equipment[2] = WEAPON_KALINA_ANN;
+		////		equipment[4] = 11;
+		////		break;
+		////	case CHAR_LOGIC_VERGIL:
+		////		equipment[0] = WEAPON_YAMATO;
+		////		equipment[1] = WEAPON_BEOWULF_VERGIL;
+		////		equipment[2] = WEAPON_FORCE_EDGE;
+		////		break;
+		////	}
+		////}
 	};
 	auto ResetRangedWeaponLevels = []()
 	{

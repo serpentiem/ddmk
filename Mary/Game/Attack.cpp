@@ -7,28 +7,28 @@ extern bool Game_Dante_Rebellion_quickDrive;
 
 static void SetMove(byte * baseAddr)
 {
-	if (!Config.Game.Dante.Rebellion.unlockQuickDrive)
-	{
-		return;
-	}
-	uint8 character = *(uint8 *)(baseAddr + 0x78);
-	uint32 style = *(uint32 *)(baseAddr + 0x6338);
-	uint8 & move = *(uint8 *)(baseAddr + 0x3FA4);
+	//if (!Config.Game.Dante.Rebellion.unlockQuickDrive)
+	//{
+	//	return;
+	//}
+	//uint8 character = *(uint8 *)(baseAddr + 0x78);
+	//uint32 style = *(uint32 *)(baseAddr + 0x6338);
+	//uint8 & move = *(uint8 *)(baseAddr + 0x3FA4);
 
 
-	//loop
+	////loop
 
-	uint8 actor = System_Actor_GetActorId(baseAddr);
-
-
+	////uint8 actor = System_Actor_GetActorId(baseAddr);
 
 
 
-	if ((character == CHAR_LOGIC_DANTE) && (style == STYLE_DANTE_SWORDMASTER) && (System_Input_GetButtonState(actor) & System_Input_GetBinding(CMD_STYLE_ACTION)) && (move == 2))
-	{
-		move = 13;
-		Game_Dante_Rebellion_quickDrive = true;
-	}
+
+
+	//if ((character == CHAR_LOGIC_DANTE) && (style == STYLE_DANTE_SWORDMASTER) && (System_Input_GetButtonState(actor) & System_Input_GetBinding(CMD_STYLE_ACTION)) && (move == 2))
+	//{
+	//	move = 13;
+	//	Game_Dante_Rebellion_quickDrive = true;
+	//}
 }
 
 void Game_Attack_Init()

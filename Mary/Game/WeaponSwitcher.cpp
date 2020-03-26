@@ -35,80 +35,80 @@ static uint8 Melee_GetActiveWeaponSlot(byte * baseAddr)
 
 static void Melee_UpdateWeapon(byte * baseAddr)
 {
-	uint8 & index = Game_WeaponSwitcher_Melee_index;
-	index++;
-	if (index >= Config.Game.WeaponSwitcher.Melee.count)
-	{
-		index = 0;
-	}
-	uint8 activeSlot = Melee_GetActiveWeaponSlot(baseAddr);
-	uint8 & selectedWeapon = *(uint8 *)(baseAddr + 0x6490);
-	if (activeSlot == 0)
-	{
-		selectedWeapon = 1;
-	}
-	else if (activeSlot == 1)
-	{
-		selectedWeapon = 0;
-	}
-	else
-	{
-		selectedWeapon = !selectedWeapon;
-	}
-	uint8 * equipment = (uint8 *)(baseAddr + 0x6498);
-	uint8 & weapon = Config.Game.WeaponSwitcher.Melee.weapon[index];
-	equipment[selectedWeapon] = weapon;
-	uint8 actor = System_Actor_GetActorId(baseAddr);
-	byte ** metadata = (byte **)(baseAddr + 0x64A0);
-	metadata[selectedWeapon] = System_Weapon_weaponMetadata[actor][weapon];
-	uint32 * flags = (uint32 *)(baseAddr + 0x64C8);
-	if (flags[selectedWeapon])
-	{
-		flags[selectedWeapon] = 3;
-	}
-	uint8 & model = *(uint8 *)(baseAddr + 0x64F0);
-	model = weapon;
-	System_Weapon_Dante_UpdateExpertise(baseAddr);
-	//updateModelAttributes[actor] = true;
-	Melee_UpdateIcon();
-	PlayCycleAnimation(WEAPON_ICON_SIDE_RIGHT, 0);
-
-
-	auto & active = *(uint8 *)(baseAddr + 0x3E6C);
-	auto & queue  = *(uint8 *)(baseAddr + 0x3E70);
-
-	uint8 slot = 0;
-
-	if (active == 1)
-	{
-		slot = 2;
-	}
-	if (active == 2)
-	{
-		slot = 1;
-	}
-
-	queue = slot;
-
-
-	//switch (weapon)
+	//uint8 & index = Game_WeaponSwitcher_Melee_index;
+	//index++;
+	//if (index >= Config.Game.WeaponSwitcher.Melee.count)
 	//{
-	//case WEAPON_REBELLION:
-	//	ApplyDevilRebellion(slot);
-	//	break;
-	//case WEAPON_CERBERUS:
-	//	ApplyDevilCerberus(slot);
-	//	break;
-	//case WEAPON_AGNI_RUDRA:
-	//	ApplyDevilAgniRudra(slot);
-	//	break;
-	//case WEAPON_NEVAN:
-	//	ApplyDevilNevan(slot);
-	//	break;
-	//case WEAPON_BEOWULF:
-	//	ApplyDevilBeowulf(slot);
-	//	break;
+	//	index = 0;
 	//}
+	//uint8 activeSlot = Melee_GetActiveWeaponSlot(baseAddr);
+	//uint8 & selectedWeapon = *(uint8 *)(baseAddr + 0x6490);
+	//if (activeSlot == 0)
+	//{
+	//	selectedWeapon = 1;
+	//}
+	//else if (activeSlot == 1)
+	//{
+	//	selectedWeapon = 0;
+	//}
+	//else
+	//{
+	//	selectedWeapon = !selectedWeapon;
+	//}
+	//uint8 * equipment = (uint8 *)(baseAddr + 0x6498);
+	//uint8 & weapon = Config.Game.WeaponSwitcher.Melee.weapon[index];
+	//equipment[selectedWeapon] = weapon;
+	//uint8 actor = System_Actor_GetActorId(baseAddr);
+	//byte ** metadata = (byte **)(baseAddr + 0x64A0);
+	//metadata[selectedWeapon] = System_Weapon_weaponMetadata[actor][weapon];
+	//uint32 * flags = (uint32 *)(baseAddr + 0x64C8);
+	//if (flags[selectedWeapon])
+	//{
+	//	flags[selectedWeapon] = 3;
+	//}
+	//uint8 & model = *(uint8 *)(baseAddr + 0x64F0);
+	//model = weapon;
+	//System_Weapon_Dante_UpdateExpertise(baseAddr);
+	////updateModelAttributes[actor] = true;
+	//Melee_UpdateIcon();
+	//PlayCycleAnimation(WEAPON_ICON_SIDE_RIGHT, 0);
+
+
+	//auto & active = *(uint8 *)(baseAddr + 0x3E6C);
+	//auto & queue  = *(uint8 *)(baseAddr + 0x3E70);
+
+	//uint8 slot = 0;
+
+	//if (active == 1)
+	//{
+	//	slot = 2;
+	//}
+	//if (active == 2)
+	//{
+	//	slot = 1;
+	//}
+
+	//queue = slot;
+
+
+	////switch (weapon)
+	////{
+	////case WEAPON_REBELLION:
+	////	ApplyDevilRebellion(slot);
+	////	break;
+	////case WEAPON_CERBERUS:
+	////	ApplyDevilCerberus(slot);
+	////	break;
+	////case WEAPON_AGNI_RUDRA:
+	////	ApplyDevilAgniRudra(slot);
+	////	break;
+	////case WEAPON_NEVAN:
+	////	ApplyDevilNevan(slot);
+	////	break;
+	////case WEAPON_BEOWULF:
+	////	ApplyDevilBeowulf(slot);
+	////	break;
+	////}
 
 
 
@@ -140,45 +140,45 @@ static uint8 Ranged_GetActiveWeaponSlot(byte * baseAddr)
 
 static void Ranged_UpdateWeapon(byte * baseAddr)
 {
-	uint8 & index = Game_WeaponSwitcher_Ranged_index;
-	index++;
-	if (index >= Config.Game.WeaponSwitcher.Ranged.count)
-	{
-		index = 0;
-	}
-	uint8 activeSlot = Ranged_GetActiveWeaponSlot(baseAddr);
-	uint8 & selectedWeapon = *(uint8 *)(baseAddr + 0x6494);
-	selectedWeapon -= 2;
-	if (activeSlot == 0)
-	{
-		selectedWeapon = 1;
-	}
-	else if (activeSlot == 1)
-	{
-		selectedWeapon = 0;
-	}
-	else
-	{
-		selectedWeapon = !selectedWeapon;
-	}
-	uint8 * equipment = (uint8 *)(baseAddr + 0x649A);
-	uint8 & weapon = Config.Game.WeaponSwitcher.Ranged.weapon[index];
-	equipment[selectedWeapon] = weapon;
-	uint8 actor = System_Actor_GetActorId(baseAddr);
-	byte ** metadata = (byte **)(baseAddr + 0x64B0);
-	metadata[selectedWeapon] = System_Weapon_weaponMetadata[actor][weapon];
-	selectedWeapon += 2;
-	uint8 & model = *(uint8 *)(baseAddr + 0x64F1);
-	model = weapon;
-	System_Weapon_Dante_Ranged_UpdateLevels(baseAddr);
-	System_Weapon_Dante_UpdateExpertise(baseAddr);
+	//uint8 & index = Game_WeaponSwitcher_Ranged_index;
+	//index++;
+	//if (index >= Config.Game.WeaponSwitcher.Ranged.count)
+	//{
+	//	index = 0;
+	//}
+	//uint8 activeSlot = Ranged_GetActiveWeaponSlot(baseAddr);
+	//uint8 & selectedWeapon = *(uint8 *)(baseAddr + 0x6494);
+	//selectedWeapon -= 2;
+	//if (activeSlot == 0)
+	//{
+	//	selectedWeapon = 1;
+	//}
+	//else if (activeSlot == 1)
+	//{
+	//	selectedWeapon = 0;
+	//}
+	//else
+	//{
+	//	selectedWeapon = !selectedWeapon;
+	//}
+	//uint8 * equipment = (uint8 *)(baseAddr + 0x649A);
+	//uint8 & weapon = Config.Game.WeaponSwitcher.Ranged.weapon[index];
+	//equipment[selectedWeapon] = weapon;
+	//uint8 actor = System_Actor_GetActorId(baseAddr);
+	//byte ** metadata = (byte **)(baseAddr + 0x64B0);
+	//metadata[selectedWeapon] = System_Weapon_weaponMetadata[actor][weapon];
+	//selectedWeapon += 2;
+	//uint8 & model = *(uint8 *)(baseAddr + 0x64F1);
+	//model = weapon;
+	//System_Weapon_Dante_Ranged_UpdateLevels(baseAddr);
+	//System_Weapon_Dante_UpdateExpertise(baseAddr);
 
-	
+	//
 
 
-	
-	Ranged_UpdateIcon();
-	PlayCycleAnimation(WEAPON_ICON_SIDE_LEFT, 0);
+	//
+	//Ranged_UpdateIcon();
+	//PlayCycleAnimation(WEAPON_ICON_SIDE_LEFT, 0);
 }
 
 void Game_WeaponSwitcher_Init()
