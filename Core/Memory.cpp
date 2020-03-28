@@ -251,6 +251,10 @@ FUNC CreateFunction
 			};
 			Feed(buffer, sizeof(buffer));
 		}
+
+
+		// @Todo: Merge and set 4 as default argument.
+
 		if (count)
 		{
 			byte8 buffer[] =
@@ -273,6 +277,16 @@ FUNC CreateFunction
 			};
 			Feed(buffer, sizeof(buffer));
 		}
+
+
+
+
+
+
+		// @Research: rbp might be a better fit, will result in wide offset though.
+
+		// @Todo: if count > 4
+
 		if (count)
 		{
 			byte8 buffer[] =

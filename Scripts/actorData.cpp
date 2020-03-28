@@ -110,7 +110,9 @@ struct ACTOR_DATA
 	float32 styleMeter; // 0x6514
 	_(348);
 	INPUT_DATA inputData[58]; // 0x6674
-	_(2868);
+	_(2344);
+	uint32 collisionIndex; // 0x7254
+	_(520);
 	vec4 interactionData[8]; // 0x7460
 	byte16 buttonInput[4]; // 0x74E0
 	_(16712);
@@ -202,6 +204,7 @@ static_assert(offsetof(ACTOR_DATA, weaponTimer) == 0x64F4);
 static_assert(offsetof(ACTOR_DATA, styleRank) == 0x6510);
 static_assert(offsetof(ACTOR_DATA, styleMeter) == 0x6514);
 static_assert(offsetof(ACTOR_DATA, inputData) == 0x6674);
+static_assert(offsetof(ACTOR_DATA, collisionIndex) == 0x7254);
 static_assert(offsetof(ACTOR_DATA, interactionData) == 0x7460);
 static_assert(offsetof(ACTOR_DATA, buttonInput) == 0x74E0);
 static_assert(offsetof(ACTOR_DATA, modelData) == 0xB630);

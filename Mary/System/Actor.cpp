@@ -766,6 +766,267 @@ byte8 * CreateActor
 //
 
 
+/*
+dmc3.exe+5B460 - 4D 85 C0              - test r8,r8
+
+*/
+
+
+//constexpr uint32 s = sizeof(void);
+
+
+
+
+
+
+
+
+uint8 hook_5B460
+(
+	void *,
+	byte8 * destination,
+	byte8 * source,
+	uint32,
+	uint32
+)
+{
+	{
+		if (!destination)
+		{
+			goto sect0;
+		}
+		auto addr = *(byte8 **)(destination + 0xD0);
+		if (!addr)
+		{
+			goto sect0;
+		}
+		addr -= 0x7250;
+
+		for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
+		{
+			auto baseAddr = System_Actor_actorBaseAddr[index];
+			auto & actorData = *(ACTOR_DATA *)baseAddr;
+			if (!baseAddr)
+			{
+				continue;
+			}
+			if (addr == baseAddr)
+			{
+				if (actorData.noCollision)
+				{
+					return 0;
+				}
+			}
+		}
+	}
+	sect0:;
+
+
+
+	//{
+	//	if (!source)
+	//	{
+	//		goto sect1;
+	//	}
+	//	auto addr = *(byte8 **)(source + 0xD0);
+	//	if (!addr)
+	//	{
+	//		goto sect1;
+	//	}
+	//	addr -= 0x7250;
+
+	//	for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
+	//	{
+	//		auto baseAddr = System_Actor_actorBaseAddr[index];
+	//		auto & actorData = *(ACTOR_DATA *)baseAddr;
+	//		if (!baseAddr)
+	//		{
+	//			continue;
+	//		}
+	//		if (addr == baseAddr)
+	//		{
+	//			if (actorData.noCollision)
+	//			{
+	//				return 0;
+	//			}
+	//		}
+	//	}
+	//}
+	//sect1:;
+
+	
+	return 1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
+	//{
+	//	auto baseAddr = System_Actor_actorBaseAddr[index];
+	//	auto & actorData = *(ACTOR_DATA *)baseAddr;
+	//	if (!baseAddr)
+	//	{
+	//		continue;
+	//	}
+	//	if (destination == actorData.collisionData)
+	//	{
+	//		if (actorData.noCollision)
+	//		{
+	//			return 0;
+	//		}
+	//	}
+	//}
+
+	//for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
+	//{
+	//	auto baseAddr = System_Actor_actorBaseAddr[index];
+	//	auto & actorData = *(ACTOR_DATA *)baseAddr;
+	//	if (!baseAddr)
+	//	{
+	//		continue;
+	//	}
+	//	if (source == actorData.collisionData)
+	//	{
+	//		if (actorData.noCollision)
+	//		{
+	//			return 0;
+	//		}
+	//	}
+	//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//return 10;
+}
+
+
+
+
+
+
+
+	// if destination is one of us, check collision flag
+
+	// if source is one of us, check collision flag
+
+
+
+
+
+/*
+dmc3.exe+2CC090 - 4C 8B 89 D0000000     - mov r9,[rcx+000000D0] { rbx addr
+ }
+
+*/
+
+
+bool hook_2CC090(byte8 * collisionData)
+{
+	byte8 * baseAddr = 0;
+
+
+
+
+
+
+	baseAddr = *(byte8 **)(collisionData + 0xD0);
+	baseAddr -= 0x7250;
+
+	for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
+	{
+		auto actorBaseAddr = System_Actor_actorBaseAddr[index];
+		auto & actorData = *(ACTOR_DATA *)actorBaseAddr;
+		if (!actorBaseAddr)
+		{
+			continue;
+		}
+		if (baseAddr == actorBaseAddr)
+		{
+			if (actorData.noCollision)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+
+bool hook_5C320(byte8 * collisionData)
+{
+
+
+
+	byte8 * baseAddr = 0;
+
+	//baseAddr = *(byte8 **)(collisionData + 0xD0);
+	//baseAddr -= 0x7250;
+
+	baseAddr = (collisionData - 0x7250);
+
+
+	for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
+	{
+		auto actorBaseAddr = System_Actor_actorBaseAddr[index];
+		auto & actorData = *(ACTOR_DATA *)actorBaseAddr;
+		if (!actorBaseAddr)
+		{
+			continue;
+		}
+		if (baseAddr == actorBaseAddr)
+		{
+			if (actorData.noCollision)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+
+
+
+
+
+
+
+
+
+
+
+
+
+	return true;
+}
+
+
+
+/*
+dmc3.exe+5C320 - 48 89 5C 24 08        - mov [rsp+08],rbx { __NOT_IT_EITHER__
+ }
+
+*/
+
 
 
 vector<byte8 *, 128> System_Actor_actorBaseAddr;
@@ -776,7 +1037,7 @@ void System_Actor_Init()
 
 	// Increase ACTOR_DATA size.
 	{
-		constexpr uint32 size = (0xB8C0 + 64);
+		constexpr uint32 size = (0xB8C0 + 512);
 		Write<uint32>((appBaseAddr + 0x1DE5FA), size);
 		Write<uint32>((appBaseAddr + 0x1DE67A), size);
 		Write<uint32>((appBaseAddr + 0x1DE8B4), size);
@@ -785,88 +1046,237 @@ void System_Actor_Init()
 
 
 
+
+	{
+		byte8 sect2[] =
+		{
+			0x84, 0xC0,                   //test al,al
+			0x75, 0x01,                   //jne short
+			0xC3,                         //ret
+			0x48, 0x89, 0x5C, 0x24, 0x08, //mov [rsp+08],rbx
+			0xE9, 0x00, 0x00, 0x00, 0x00, //jmp dmc3.exe+5C325
+		};
+		auto func = CreateFunction(hook_5C320, 0, true, false, 0, 0, sizeof(sect2));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteAddress((func.sect2 + 0xA), (appBaseAddr + 0x5C325), 5);
+		//WriteJump((appBaseAddr + 0x5C320), func.addr);
+	}
+
+
+
+
+
 	{
 		byte8 sect0[] =
 		{
-			0x51,                                                       //push rcx
-			0x52,                                                       //push rdx
-			0x56,                                                       //push rsi
-			0x48, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rsi,System_Actor_actorBaseAddr
-			0x48, 0x85, 0xD2,                                           //test rdx,rdx
-			0x74, 0x2A,                                                 //je short
-			0x48, 0x8B, 0x8A, 0xD0, 0x00, 0x00, 0x00,                   //mov rcx,[rdx+000000D0]
-			0x48, 0x85, 0xC9,                                           //test rcx,rcx
-			0x74, 0x1E,                                                 //je short
-			0x48, 0x81, 0xE9, 0x50, 0x72, 0x00, 0x00,                   //sub rcx,00007250
-			0x31, 0xD2,                                                 //xor edx,edx
-			0x48, 0x8B, 0x44, 0xD6, 0x00,                               //mov rax,[rsi+rdx*8+08]
-			0x48, 0x85, 0xC0,                                           //test rax,rax
-			0x74, 0x05,                                                 //je short
-			0x48, 0x39, 0xC1,                                           //cmp rcx,rax
-			0x74, 0x3D,                                                 //je short
-			0xFF, 0xC2,                                                 //inc edx
-			0x3B, 0x16,                                                 //cmp edx,[rsi]
-			0x72, 0xEB,                                                 //jb short
-			0x4D, 0x85, 0xC0,                                           //test r8,r8
-			0x74, 0x2A,                                                 //je short
-			0x49, 0x8B, 0x88, 0xD0, 0x00, 0x00, 0x00,                   //mov rcx,[r8+000000D0]
-			0x48, 0x85, 0xC9,                                           //test rcx,rcx
-			0x74, 0x1E,                                                 //je short
-			0x48, 0x81, 0xE9, 0x50, 0x72, 0x00, 0x00,                   //sub rcx,00007250
-			0x31, 0xD2,                                                 //xor edx,edx
-			0x48, 0x8B, 0x44, 0xD6, 0x00,                               //mov rax,[rsi+rdx*8+08]
-			0x48, 0x85, 0xC0,                                           //test rax,rax
-			0x74, 0x05,                                                 //je short
-			0x48, 0x39, 0xC1,                                           //cmp rcx,rax
-			0x74, 0x0E,                                                 //je short
-			0xFF, 0xC2,                                                 //inc edx
-			0x3B, 0x16,                                                 //cmp edx,[rsi]
-			0x72, 0xEB,                                                 //jb short
-			0x5E,                                                       //pop rsi
-			0x5A,                                                       //pop rdx
-			0x59,                                                       //pop rcx
-			0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+5B460
-			0x5E,                                                       //pop rsi
-			0x5A,                                                       //pop rdx
-			0x59,                                                       //pop rcx
-			0x80, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x01,                   //cmp byte ptr [rax+0000B8C0],01
-			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+5B460
-			0xC3,                                                       //ret
+			0x0F, 0x29, 0x81, 0x80, 0x02, 0x00, 0x00, //movaps [rcx+00000280],xmm0
 		};
-		auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-
-
-
-		//*(void **)(func.sect0 + 5) = System_Actor_actorBaseAddr;
-
-
-		//*(vector<byte8 *, 128> **)(func.sect0 + 5) = &System_Actor_actorBaseAddr;
-		
-
-
-
-		
-
-		*(void **)(func.sect0 + 5) = &System_Actor_actorBaseAddr;
+		byte8 sect2[] =
+		{
+			0x84, 0xC0,                         //test al,al
+			0x0F, 0x85, 0x88, 0xC3, 0x06, 0x00, //jne dmc3.exe+5C390
+			0xE9, 0xCA, 0xC3, 0x06, 0x00,       //jmp dmc3.exe+5C3D7
+		};
 
 
 
 
 
 
-		*(byte8 *)(func.sect0 + 0x2B) = (byte8)offsetof(vector<byte8 * __COMMA__ 128>, data);
-		*(byte8 *)(func.sect0 + 0x5A) = (byte8)offsetof(vector<byte8 * __COMMA__ 128>, data);
-		WriteAddress((func.sect0 + 0x6E), (appBaseAddr + 0x5B460), 5);
-		*(byte32 *)(func.sect0 + 0x78) = offsetof(ACTOR_DATA, noCollision);
-		WriteAddress((func.sect0 + 0x7D), (appBaseAddr + 0x5B460), 6);
-		WriteCall((appBaseAddr + 0x5B7F9), func.addr);
-		WriteCall((appBaseAddr + 0x5B81C), func.addr);
-		WriteCall((appBaseAddr + 0x5B83F), func.addr);
-		WriteCall((appBaseAddr + 0x5B862), func.addr);
-		WriteCall((appBaseAddr + 0x5B885), func.addr);
-		WriteCall((appBaseAddr + 0x5B8AB), func.addr);
+
+
+
+
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+	{
+		byte8 sect2[] =
+		{
+			0x84, 0xC0,                               //test al,al
+			0x75, 0x01,                               //jne short
+			0xC3,                                     //ret
+			0x4C, 0x8B, 0x89, 0xD0, 0x00, 0x00, 0x00, //mov r9,[rcx+000000D0]
+			0xE9, 0x00, 0x00, 0x00, 0x00,             //jmp dmc3.exe+2CC097
+		};
+		auto func = CreateFunction(hook_2CC090, 0, true, false, 0, 0, sizeof(sect2));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteAddress((func.sect2 + 0xC), (appBaseAddr + 0x2CC097), 5);
+		//WriteJump((appBaseAddr + 0x2CC090), func.addr, 2);
+
+
+
+
+
+		/*
+dmc3.exe+2CC090 - 4C 8B 89 D0000000     - mov r9,[rcx+000000D0] { rbx addr
+ }
+
+		*/
+
+
+		//WriteAddress((func.sect2 + 2), (appBaseAddr + 0x2CC090), 6);
+		//WriteCall((appBaseAddr + 0x5B5BC), func.addr);
+		//WriteCall((appBaseAddr + 0x5B5CB), func.addr);
+		//WriteCall((appBaseAddr + 0x5B5EA), func.addr);
+		//WriteCall((appBaseAddr + 0x5B609), func.addr);
+		//WriteCall((appBaseAddr + 0x5BA21), func.addr);
+		//WriteCall((appBaseAddr + 0x5BA34), func.addr);
+	}
+
+
+
+
+
+	Write<byte32>((appBaseAddr + 0x1EBD19), 0xB8F1);
+
+
+
+
+
+	/*
+dmc3.exe+1EBD19
+	*/
+
+
+
+
+
+
+
+
+	{
+		byte8 sect2[] =
+		{
+			0x84, 0xC0,                         //test al,al
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00, //jne dmc3.exe+5B460
+			0xC3,                               //ret
+		};
+		auto func = CreateFunction(hook_5B460, 0, true, false, 0, 0, sizeof(sect2), 0, 1);
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x5B460), 6);
+		//WriteCall((appBaseAddr + 0x5B7F9), func.addr);
+		//WriteCall((appBaseAddr + 0x5B81C), func.addr);
+		//WriteCall((appBaseAddr + 0x5B83F), func.addr);
+		//WriteCall((appBaseAddr + 0x5B862), func.addr);
+		//WriteCall((appBaseAddr + 0x5B885), func.addr);
+		//WriteCall((appBaseAddr + 0x5B8AB), func.addr);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x51,                                                       //push rcx
+	//		0x52,                                                       //push rdx
+	//		0x56,                                                       //push rsi
+	//		0x48, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rsi,System_Actor_actorBaseAddr
+	//		0x48, 0x85, 0xD2,                                           //test rdx,rdx
+	//		0x74, 0x2A,                                                 //je short
+	//		0x48, 0x8B, 0x8A, 0xD0, 0x00, 0x00, 0x00,                   //mov rcx,[rdx+000000D0]
+	//		0x48, 0x85, 0xC9,                                           //test rcx,rcx
+	//		0x74, 0x1E,                                                 //je short
+	//		0x48, 0x81, 0xE9, 0x50, 0x72, 0x00, 0x00,                   //sub rcx,00007250
+	//		0x31, 0xD2,                                                 //xor edx,edx
+	//		0x48, 0x8B, 0x44, 0xD6, 0x00,                               //mov rax,[rsi+rdx*8+08]
+	//		0x48, 0x85, 0xC0,                                           //test rax,rax
+	//		0x74, 0x05,                                                 //je short
+	//		0x48, 0x39, 0xC1,                                           //cmp rcx,rax
+	//		0x74, 0x3D,                                                 //je short
+	//		0xFF, 0xC2,                                                 //inc edx
+	//		0x3B, 0x16,                                                 //cmp edx,[rsi]
+	//		0x72, 0xEB,                                                 //jb short
+	//		0x4D, 0x85, 0xC0,                                           //test r8,r8
+	//		0x74, 0x2A,                                                 //je short
+	//		0x49, 0x8B, 0x88, 0xD0, 0x00, 0x00, 0x00,                   //mov rcx,[r8+000000D0]
+	//		0x48, 0x85, 0xC9,                                           //test rcx,rcx
+	//		0x74, 0x1E,                                                 //je short
+	//		0x48, 0x81, 0xE9, 0x50, 0x72, 0x00, 0x00,                   //sub rcx,00007250
+	//		0x31, 0xD2,                                                 //xor edx,edx
+	//		0x48, 0x8B, 0x44, 0xD6, 0x00,                               //mov rax,[rsi+rdx*8+08]
+	//		0x48, 0x85, 0xC0,                                           //test rax,rax
+	//		0x74, 0x05,                                                 //je short
+	//		0x48, 0x39, 0xC1,                                           //cmp rcx,rax
+	//		0x74, 0x0E,                                                 //je short
+	//		0xFF, 0xC2,                                                 //inc edx
+	//		0x3B, 0x16,                                                 //cmp edx,[rsi]
+	//		0x72, 0xEB,                                                 //jb short
+	//		0x5E,                                                       //pop rsi
+	//		0x5A,                                                       //pop rdx
+	//		0x59,                                                       //pop rcx
+	//		0xE9, 0x00, 0x00, 0x00, 0x00,                               //jmp dmc3.exe+5B460
+	//		0x5E,                                                       //pop rsi
+	//		0x5A,                                                       //pop rdx
+	//		0x59,                                                       //pop rcx
+	//		0x80, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x01,                   //cmp byte ptr [rax+0000B8C0],01
+	//		0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+5B460
+	//		0xC3,                                                       //ret
+	//	};
+	//	auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+
+
+
+	//	//*(void **)(func.sect0 + 5) = System_Actor_actorBaseAddr;
+
+
+	//	//*(vector<byte8 *, 128> **)(func.sect0 + 5) = &System_Actor_actorBaseAddr;
+	//	
+
+
+
+	//	
+
+	//	*(void **)(func.sect0 + 5) = &System_Actor_actorBaseAddr;
+
+
+
+
+
+
+	//	*(byte8 *)(func.sect0 + 0x2B) = (byte8)offsetof(vector<byte8 * __COMMA__ 128>, data);
+	//	*(byte8 *)(func.sect0 + 0x5A) = (byte8)offsetof(vector<byte8 * __COMMA__ 128>, data);
+	//	WriteAddress((func.sect0 + 0x6E), (appBaseAddr + 0x5B460), 5);
+	//	*(byte32 *)(func.sect0 + 0x78) = offsetof(ACTOR_DATA, noCollision);
+	//	WriteAddress((func.sect0 + 0x7D), (appBaseAddr + 0x5B460), 6);
+	//	WriteCall((appBaseAddr + 0x5B7F9), func.addr);
+	//	WriteCall((appBaseAddr + 0x5B81C), func.addr);
+	//	WriteCall((appBaseAddr + 0x5B83F), func.addr);
+	//	WriteCall((appBaseAddr + 0x5B862), func.addr);
+	//	WriteCall((appBaseAddr + 0x5B885), func.addr);
+	//	WriteCall((appBaseAddr + 0x5B8AB), func.addr);
+	//}
 
 
 
@@ -1182,7 +1592,7 @@ void System_Actor_Init()
 
 
 
-	//RegisterWeapon_Init();
+	RegisterWeapon_Init();
 
 
 	////System_Actor_actorBaseAddr = (byte8 **)HighAlloc((MAX_ACTOR * 8));
@@ -1208,7 +1618,7 @@ void System_Actor_Init()
 	//auto func = CreateFunction(CreateActor);
 	//Log("CreateActor %llX", func.addr);
 
-	Log("CreateActor %llX", CreateActor);
+	//Log("CreateActor %llX", CreateActor);
 
 
 

@@ -1203,6 +1203,15 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
+<Description>"collisionIndex"</Description>
+<VariableType>4 Bytes</VariableType>
+<Address>dmc3.exe+C90E28</Address>
+<Offsets>
+<Offset>7254</Offset>
+<Offset>18</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
 <Description>"interactionData 0000 x"</Description>
 <VariableType>Float</VariableType>
 <Address>dmc3.exe+C90E28</Address>
@@ -3085,6 +3094,15 @@
 <Address>dmc3.exe+C90E28</Address>
 <Offsets>
 <Offset>6514</Offset>
+<Offset>20</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"collisionIndex"</Description>
+<VariableType>4 Bytes</VariableType>
+<Address>dmc3.exe+C90E28</Address>
+<Offsets>
+<Offset>7254</Offset>
 <Offset>20</Offset>
 </Offsets>
 </CheatEntry>
@@ -4857,6 +4875,14 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
+<Description>"collisionIndex"</Description>
+<VariableType>4 Bytes</VariableType>
+<Address>Mary.Actor_actorBaseAddr+0</Address>
+<Offsets>
+<Offset>7254</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
 <Description>"interactionData 0000 x"</Description>
 <VariableType>Float</VariableType>
 <Address>Mary.Actor_actorBaseAddr+0</Address>
@@ -6540,6 +6566,14 @@
 <Address>Mary.Actor_actorBaseAddr+8</Address>
 <Offsets>
 <Offset>6514</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"collisionIndex"</Description>
+<VariableType>4 Bytes</VariableType>
+<Address>Mary.Actor_actorBaseAddr+8</Address>
+<Offsets>
+<Offset>7254</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>
@@ -8229,6 +8263,14 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
+<Description>"collisionIndex"</Description>
+<VariableType>4 Bytes</VariableType>
+<Address>Mary.Actor_actorBaseAddr+10</Address>
+<Offsets>
+<Offset>7254</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
 <Description>"interactionData 0000 x"</Description>
 <VariableType>Float</VariableType>
 <Address>Mary.Actor_actorBaseAddr+10</Address>
@@ -9912,6 +9954,14 @@
 <Address>Mary.Actor_actorBaseAddr+18</Address>
 <Offsets>
 <Offset>6514</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"collisionIndex"</Description>
+<VariableType>4 Bytes</VariableType>
+<Address>Mary.Actor_actorBaseAddr+18</Address>
+<Offsets>
+<Offset>7254</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>

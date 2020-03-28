@@ -1008,16 +1008,6 @@ typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
 
 
 
-
-
-
-
-
-
-
-
-
-
 struct ACTOR_DATA
 {
 	_(120);
@@ -1126,7 +1116,9 @@ struct ACTOR_DATA
 	float32 styleMeter; // 0x6514
 	_(348);
 	INPUT_DATA inputData[58]; // 0x6674
-	_(2868);
+	_(2344);
+	uint32 collisionIndex; // 0x7254
+	_(520);
 	vec4 interactionData[8]; // 0x7460
 	byte16 buttonInput[4]; // 0x74E0
 	_(16712);
@@ -1154,7 +1146,6 @@ struct ACTOR_DATA
 	_(2);
 	uint8 rangedWeaponMap[5]; // 0xB910
 };
-
 
 
 

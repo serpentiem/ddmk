@@ -74,9 +74,8 @@ void CreateMainActor(byte8 * baseAddr)
 
 	
 	
-	auto & actorData = *(ACTOR_DATA *)baseAddr;
-
-	actorData.noCollision = true;
+	//auto & actorData = *(ACTOR_DATA *)baseAddr;
+	//actorData.noCollision = true;
 
 
 
@@ -94,7 +93,7 @@ void CreateMainActor(byte8 * baseAddr)
 
 	//auto & actorId = *(uint8 *)(baseAddr + 0x118) = ACTOR_TWO;
 
-	//spawnActors = true;
+	spawnActors = true;
 }
 
 void CreateMainClone(byte8 * baseAddr)
@@ -1274,6 +1273,24 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 
 
 
+void ActorInitComplete(byte8 * baseAddr)
+{
+	LogFunction(baseAddr);
+
+	if (baseAddr == System_Actor_actorBaseAddr[0])
+	{
+		return;
+	}
+	if (baseAddr == System_Actor_actorBaseAddr[1])
+	{
+		return;
+	}
+
+	auto & actorData = *(ACTOR_DATA *)baseAddr;
+	actorData.shadow = 1;
+	actorData.collisionIndex = 1;
+}
+
 
 
 
@@ -1283,6 +1300,52 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 void Event_Init()
 {
 	LogFunction();
+
+
+
+
+	{
+		byte8 sect0[] =
+		{
+			0x66, 0xC7, 0x43, 0x08, 0x01, 0x00, //mov word ptr [rbx+08],0001
+		};
+		byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCB, //mov rcx,rbx
+		};
+		auto func = CreateFunction(ActorInitComplete, (appBaseAddr + 0x1F7D87), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteJump((appBaseAddr + 0x1F7D81), func.addr, 1);
+		/*
+		dmc3.exe+1F7D81 - 66 C7 43 08 0100 - mov word ptr [rbx+08],0001
+		dmc3.exe+1F7D87 - 48 8B 5C 24 58   - mov rbx,[rsp+58]
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	{
 		byte8 sect0[] =

@@ -6,6 +6,8 @@
 #pragma warning(disable: 4302)
 #pragma warning(disable: 4311)
 
+
+
 static_assert(offsetof(ACTOR_DATA, characterLogic) == 0x78);
 static_assert(offsetof(ACTOR_DATA, position) == 0x80);
 static_assert(offsetof(ACTOR_DATA, direction) == 0xC0);
@@ -65,6 +67,7 @@ static_assert(offsetof(ACTOR_DATA, weaponTimer) == 0x64F4);
 static_assert(offsetof(ACTOR_DATA, styleRank) == 0x6510);
 static_assert(offsetof(ACTOR_DATA, styleMeter) == 0x6514);
 static_assert(offsetof(ACTOR_DATA, inputData) == 0x6674);
+static_assert(offsetof(ACTOR_DATA, collisionIndex) == 0x7254);
 static_assert(offsetof(ACTOR_DATA, interactionData) == 0x7460);
 static_assert(offsetof(ACTOR_DATA, buttonInput) == 0x74E0);
 static_assert(offsetof(ACTOR_DATA, modelData) == 0xB630);
@@ -83,5 +86,8 @@ static_assert(offsetof(ACTOR_DATA, meleeWeaponCount) == 0xB904);
 static_assert(offsetof(ACTOR_DATA, meleeWeaponMap) == 0xB908);
 static_assert(offsetof(ACTOR_DATA, rangedWeaponCount) == 0xB90D);
 static_assert(offsetof(ACTOR_DATA, rangedWeaponMap) == 0xB910);
+
+
+
 
 #pragma warning(pop)

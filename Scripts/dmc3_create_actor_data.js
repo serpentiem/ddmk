@@ -1,5 +1,6 @@
 var items =
 [
+	[ "init"                     , "bool"       , 8      ],
 	[ "characterLogic"           , "uint8"      , 0x78   ],
 	[ "position"                 , "vec4"       , 0x80   ],
 	[ "direction"                , "uint16"     , 0xC0   ],
@@ -59,6 +60,7 @@ var items =
 	[ "styleRank"                , "uint8"      , 0x6510 ],
 	[ "styleMeter"               , "float32"    , 0x6514 ],
 	[ "inputData[58]"            , "INPUT_DATA" , 0x6674 ],
+	[ "collisionIndex"           , "uint32"     , 0x7254 ],
 	[ "interactionData[8]"       , "vec4"       , 0x7460 ],
 	[ "buttonInput[4]"           , "byte16"     , 0x74E0 ],
 	[ "modelData[6]"             , "MODEL_DATA" , 0xB630 ],
@@ -69,7 +71,6 @@ var items =
 var extra = 
 [
 	[ "character"         , "uint8"   ],
-	[ "noCollision"       , "bool"    ],
 	[ "parentBaseAddr"    , "byte8 *" ],
 	[ "childBaseAddr[4]"  , "byte8 *" ],
 	[ "hide"              , "bool"    ],
