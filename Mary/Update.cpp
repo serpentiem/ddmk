@@ -106,7 +106,7 @@ void MainLoop()
 		auto & actorData = *(ACTOR_DATA *)baseAddr;
 
 		actorData.character = CHAR_VERGIL;
-		actorData.noCollision = true;
+		//actorData.noCollision = true;
 
 
 		auto & mainActorData = *(ACTOR_DATA *)System_Actor_actorBaseAddr[0];

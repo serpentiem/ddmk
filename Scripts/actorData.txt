@@ -12,6 +12,15 @@
 <GroupHeader>1</GroupHeader>
 <CheatEntries>
 <CheatEntry>
+<Description>"init"</Description>
+<VariableType>Byte</VariableType>
+<Address>dmc3.exe+C90E28</Address>
+<Offsets>
+<Offset>8</Offset>
+<Offset>18</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
 <Description>"characterLogic"</Description>
 <VariableType>Byte</VariableType>
 <Address>dmc3.exe+C90E28</Address>
@@ -1587,15 +1596,6 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
-<Description>"noCollision"</Description>
-<VariableType>Byte</VariableType>
-<Address>dmc3.exe+C90E28</Address>
-<Offsets>
-<Offset>B8C1</Offset>
-<Offset>18</Offset>
-</Offsets>
-</CheatEntry>
-<CheatEntry>
 <Description>"parentBaseAddr"</Description>
 <ShowAsHex>1</ShowAsHex>
 <VariableType>8 Bytes</VariableType>
@@ -1655,11 +1655,29 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
-<Description>"gamepad"</Description>
+<Description>"hideWeapons"</Description>
 <VariableType>Byte</VariableType>
 <Address>dmc3.exe+C90E28</Address>
 <Offsets>
 <Offset>B8F1</Offset>
+<Offset>18</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"hideSummonedSwords"</Description>
+<VariableType>Byte</VariableType>
+<Address>dmc3.exe+C90E28</Address>
+<Offsets>
+<Offset>B8F2</Offset>
+<Offset>18</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"gamepad"</Description>
+<VariableType>Byte</VariableType>
+<Address>dmc3.exe+C90E28</Address>
+<Offsets>
+<Offset>B8F3</Offset>
 <Offset>18</Offset>
 </Offsets>
 </CheatEntry>
@@ -1669,7 +1687,7 @@
 <VariableType>2 Bytes</VariableType>
 <Address>dmc3.exe+C90E28</Address>
 <Offsets>
-<Offset>B8F2</Offset>
+<Offset>B8F4</Offset>
 <Offset>18</Offset>
 </Offsets>
 </CheatEntry>
@@ -1679,7 +1697,7 @@
 <VariableType>2 Bytes</VariableType>
 <Address>dmc3.exe+C90E28</Address>
 <Offsets>
-<Offset>B8F4</Offset>
+<Offset>B8F6</Offset>
 <Offset>18</Offset>
 </Offsets>
 </CheatEntry>
@@ -1907,6 +1925,15 @@
 <GroupHeader>1</GroupHeader>
 <CheatEntries>
 <CheatEntry>
+<Description>"init"</Description>
+<VariableType>Byte</VariableType>
+<Address>dmc3.exe+C90E28</Address>
+<Offsets>
+<Offset>8</Offset>
+<Offset>20</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
 <Description>"characterLogic"</Description>
 <VariableType>Byte</VariableType>
 <Address>dmc3.exe+C90E28</Address>
@@ -3482,15 +3509,6 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
-<Description>"noCollision"</Description>
-<VariableType>Byte</VariableType>
-<Address>dmc3.exe+C90E28</Address>
-<Offsets>
-<Offset>B8C1</Offset>
-<Offset>20</Offset>
-</Offsets>
-</CheatEntry>
-<CheatEntry>
 <Description>"parentBaseAddr"</Description>
 <ShowAsHex>1</ShowAsHex>
 <VariableType>8 Bytes</VariableType>
@@ -3550,11 +3568,29 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
-<Description>"gamepad"</Description>
+<Description>"hideWeapons"</Description>
 <VariableType>Byte</VariableType>
 <Address>dmc3.exe+C90E28</Address>
 <Offsets>
 <Offset>B8F1</Offset>
+<Offset>20</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"hideSummonedSwords"</Description>
+<VariableType>Byte</VariableType>
+<Address>dmc3.exe+C90E28</Address>
+<Offsets>
+<Offset>B8F2</Offset>
+<Offset>20</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"gamepad"</Description>
+<VariableType>Byte</VariableType>
+<Address>dmc3.exe+C90E28</Address>
+<Offsets>
+<Offset>B8F3</Offset>
 <Offset>20</Offset>
 </Offsets>
 </CheatEntry>
@@ -3564,7 +3600,7 @@
 <VariableType>2 Bytes</VariableType>
 <Address>dmc3.exe+C90E28</Address>
 <Offsets>
-<Offset>B8F2</Offset>
+<Offset>B8F4</Offset>
 <Offset>20</Offset>
 </Offsets>
 </CheatEntry>
@@ -3574,7 +3610,7 @@
 <VariableType>2 Bytes</VariableType>
 <Address>dmc3.exe+C90E28</Address>
 <Offsets>
-<Offset>B8F4</Offset>
+<Offset>B8F6</Offset>
 <Offset>20</Offset>
 </Offsets>
 </CheatEntry>
@@ -3809,6 +3845,14 @@
 <GroupHeader>1</GroupHeader>
 <CheatEntries>
 <CheatEntry>
+<Description>"init"</Description>
+<VariableType>Byte</VariableType>
+<Address>Mary.Actor_actorBaseAddr+0</Address>
+<Offsets>
+<Offset>8</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
 <Description>"characterLogic"</Description>
 <VariableType>Byte</VariableType>
 <Address>Mary.Actor_actorBaseAddr+0</Address>
@@ -5217,14 +5261,6 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
-<Description>"noCollision"</Description>
-<VariableType>Byte</VariableType>
-<Address>Mary.Actor_actorBaseAddr+0</Address>
-<Offsets>
-<Offset>B8C1</Offset>
-</Offsets>
-</CheatEntry>
-<CheatEntry>
 <Description>"parentBaseAddr"</Description>
 <ShowAsHex>1</ShowAsHex>
 <VariableType>8 Bytes</VariableType>
@@ -5278,11 +5314,27 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
-<Description>"gamepad"</Description>
+<Description>"hideWeapons"</Description>
 <VariableType>Byte</VariableType>
 <Address>Mary.Actor_actorBaseAddr+0</Address>
 <Offsets>
 <Offset>B8F1</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"hideSummonedSwords"</Description>
+<VariableType>Byte</VariableType>
+<Address>Mary.Actor_actorBaseAddr+0</Address>
+<Offsets>
+<Offset>B8F2</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"gamepad"</Description>
+<VariableType>Byte</VariableType>
+<Address>Mary.Actor_actorBaseAddr+0</Address>
+<Offsets>
+<Offset>B8F3</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>
@@ -5291,7 +5343,7 @@
 <VariableType>2 Bytes</VariableType>
 <Address>Mary.Actor_actorBaseAddr+0</Address>
 <Offsets>
-<Offset>B8F2</Offset>
+<Offset>B8F4</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>
@@ -5300,7 +5352,7 @@
 <VariableType>2 Bytes</VariableType>
 <Address>Mary.Actor_actorBaseAddr+0</Address>
 <Offsets>
-<Offset>B8F4</Offset>
+<Offset>B8F6</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>
@@ -5503,6 +5555,14 @@
 <GroupHeader>1</GroupHeader>
 <CheatEntries>
 <CheatEntry>
+<Description>"init"</Description>
+<VariableType>Byte</VariableType>
+<Address>Mary.Actor_actorBaseAddr+8</Address>
+<Offsets>
+<Offset>8</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
 <Description>"characterLogic"</Description>
 <VariableType>Byte</VariableType>
 <Address>Mary.Actor_actorBaseAddr+8</Address>
@@ -6911,14 +6971,6 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
-<Description>"noCollision"</Description>
-<VariableType>Byte</VariableType>
-<Address>Mary.Actor_actorBaseAddr+8</Address>
-<Offsets>
-<Offset>B8C1</Offset>
-</Offsets>
-</CheatEntry>
-<CheatEntry>
 <Description>"parentBaseAddr"</Description>
 <ShowAsHex>1</ShowAsHex>
 <VariableType>8 Bytes</VariableType>
@@ -6972,11 +7024,27 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
-<Description>"gamepad"</Description>
+<Description>"hideWeapons"</Description>
 <VariableType>Byte</VariableType>
 <Address>Mary.Actor_actorBaseAddr+8</Address>
 <Offsets>
 <Offset>B8F1</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"hideSummonedSwords"</Description>
+<VariableType>Byte</VariableType>
+<Address>Mary.Actor_actorBaseAddr+8</Address>
+<Offsets>
+<Offset>B8F2</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"gamepad"</Description>
+<VariableType>Byte</VariableType>
+<Address>Mary.Actor_actorBaseAddr+8</Address>
+<Offsets>
+<Offset>B8F3</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>
@@ -6985,7 +7053,7 @@
 <VariableType>2 Bytes</VariableType>
 <Address>Mary.Actor_actorBaseAddr+8</Address>
 <Offsets>
-<Offset>B8F2</Offset>
+<Offset>B8F4</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>
@@ -6994,7 +7062,7 @@
 <VariableType>2 Bytes</VariableType>
 <Address>Mary.Actor_actorBaseAddr+8</Address>
 <Offsets>
-<Offset>B8F4</Offset>
+<Offset>B8F6</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>
@@ -7197,6 +7265,14 @@
 <GroupHeader>1</GroupHeader>
 <CheatEntries>
 <CheatEntry>
+<Description>"init"</Description>
+<VariableType>Byte</VariableType>
+<Address>Mary.Actor_actorBaseAddr+10</Address>
+<Offsets>
+<Offset>8</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
 <Description>"characterLogic"</Description>
 <VariableType>Byte</VariableType>
 <Address>Mary.Actor_actorBaseAddr+10</Address>
@@ -8605,14 +8681,6 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
-<Description>"noCollision"</Description>
-<VariableType>Byte</VariableType>
-<Address>Mary.Actor_actorBaseAddr+10</Address>
-<Offsets>
-<Offset>B8C1</Offset>
-</Offsets>
-</CheatEntry>
-<CheatEntry>
 <Description>"parentBaseAddr"</Description>
 <ShowAsHex>1</ShowAsHex>
 <VariableType>8 Bytes</VariableType>
@@ -8666,11 +8734,27 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
-<Description>"gamepad"</Description>
+<Description>"hideWeapons"</Description>
 <VariableType>Byte</VariableType>
 <Address>Mary.Actor_actorBaseAddr+10</Address>
 <Offsets>
 <Offset>B8F1</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"hideSummonedSwords"</Description>
+<VariableType>Byte</VariableType>
+<Address>Mary.Actor_actorBaseAddr+10</Address>
+<Offsets>
+<Offset>B8F2</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"gamepad"</Description>
+<VariableType>Byte</VariableType>
+<Address>Mary.Actor_actorBaseAddr+10</Address>
+<Offsets>
+<Offset>B8F3</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>
@@ -8679,7 +8763,7 @@
 <VariableType>2 Bytes</VariableType>
 <Address>Mary.Actor_actorBaseAddr+10</Address>
 <Offsets>
-<Offset>B8F2</Offset>
+<Offset>B8F4</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>
@@ -8688,7 +8772,7 @@
 <VariableType>2 Bytes</VariableType>
 <Address>Mary.Actor_actorBaseAddr+10</Address>
 <Offsets>
-<Offset>B8F4</Offset>
+<Offset>B8F6</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>
@@ -8891,6 +8975,14 @@
 <GroupHeader>1</GroupHeader>
 <CheatEntries>
 <CheatEntry>
+<Description>"init"</Description>
+<VariableType>Byte</VariableType>
+<Address>Mary.Actor_actorBaseAddr+18</Address>
+<Offsets>
+<Offset>8</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
 <Description>"characterLogic"</Description>
 <VariableType>Byte</VariableType>
 <Address>Mary.Actor_actorBaseAddr+18</Address>
@@ -10299,14 +10391,6 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
-<Description>"noCollision"</Description>
-<VariableType>Byte</VariableType>
-<Address>Mary.Actor_actorBaseAddr+18</Address>
-<Offsets>
-<Offset>B8C1</Offset>
-</Offsets>
-</CheatEntry>
-<CheatEntry>
 <Description>"parentBaseAddr"</Description>
 <ShowAsHex>1</ShowAsHex>
 <VariableType>8 Bytes</VariableType>
@@ -10360,11 +10444,27 @@
 </Offsets>
 </CheatEntry>
 <CheatEntry>
-<Description>"gamepad"</Description>
+<Description>"hideWeapons"</Description>
 <VariableType>Byte</VariableType>
 <Address>Mary.Actor_actorBaseAddr+18</Address>
 <Offsets>
 <Offset>B8F1</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"hideSummonedSwords"</Description>
+<VariableType>Byte</VariableType>
+<Address>Mary.Actor_actorBaseAddr+18</Address>
+<Offsets>
+<Offset>B8F2</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<Description>"gamepad"</Description>
+<VariableType>Byte</VariableType>
+<Address>Mary.Actor_actorBaseAddr+18</Address>
+<Offsets>
+<Offset>B8F3</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>
@@ -10373,7 +10473,7 @@
 <VariableType>2 Bytes</VariableType>
 <Address>Mary.Actor_actorBaseAddr+18</Address>
 <Offsets>
-<Offset>B8F2</Offset>
+<Offset>B8F4</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>
@@ -10382,7 +10482,7 @@
 <VariableType>2 Bytes</VariableType>
 <Address>Mary.Actor_actorBaseAddr+18</Address>
 <Offsets>
-<Offset>B8F4</Offset>
+<Offset>B8F6</Offset>
 </Offsets>
 </CheatEntry>
 <CheatEntry>

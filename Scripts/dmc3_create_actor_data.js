@@ -74,6 +74,8 @@ var extra =
 	[ "parentBaseAddr"    , "byte8 *" ],
 	[ "childBaseAddr[4]"  , "byte8 *" ],
 	[ "hide"              , "bool"    ],
+	[ "hideWeapons"       , "bool"    ],
+	[ "hideSummonedSwords", "bool"    ],
 	[ "gamepad"           , "uint8"   ],
 	[ "buttonMask"        , "byte16"  ],
 	[ "leftStickMask"     , "byte16"  ],

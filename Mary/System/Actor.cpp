@@ -515,7 +515,7 @@ void UpdateActorDante(byte8 * baseAddr)
 
 
 
-	Cosmetics_Model_UpdateModelDanteVergil[0](baseAddr);
+	Cosmetics_Model_UpdateModelDante[0](baseAddr);
 	//Cosmetics_Model_UpdateDevilModelDante[0](baseAddr, 1);
 
 	Cosmetics_Model_UpdateDevilModelDante[0](baseAddr, 1);
@@ -781,144 +781,144 @@ dmc3.exe+5B460 - 4D 85 C0              - test r8,r8
 
 
 
-uint8 hook_5B460
-(
-	void *,
-	byte8 * destination,
-	byte8 * source,
-	uint32,
-	uint32
-)
-{
-	{
-		if (!destination)
-		{
-			goto sect0;
-		}
-		auto addr = *(byte8 **)(destination + 0xD0);
-		if (!addr)
-		{
-			goto sect0;
-		}
-		addr -= 0x7250;
-
-		for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
-		{
-			auto baseAddr = System_Actor_actorBaseAddr[index];
-			auto & actorData = *(ACTOR_DATA *)baseAddr;
-			if (!baseAddr)
-			{
-				continue;
-			}
-			if (addr == baseAddr)
-			{
-				if (actorData.noCollision)
-				{
-					return 0;
-				}
-			}
-		}
-	}
-	sect0:;
-
-
-
-	//{
-	//	if (!source)
-	//	{
-	//		goto sect1;
-	//	}
-	//	auto addr = *(byte8 **)(source + 0xD0);
-	//	if (!addr)
-	//	{
-	//		goto sect1;
-	//	}
-	//	addr -= 0x7250;
-
-	//	for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
-	//	{
-	//		auto baseAddr = System_Actor_actorBaseAddr[index];
-	//		auto & actorData = *(ACTOR_DATA *)baseAddr;
-	//		if (!baseAddr)
-	//		{
-	//			continue;
-	//		}
-	//		if (addr == baseAddr)
-	//		{
-	//			if (actorData.noCollision)
-	//			{
-	//				return 0;
-	//			}
-	//		}
-	//	}
-	//}
-	//sect1:;
-
-	
-	return 1;
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
-	//{
-	//	auto baseAddr = System_Actor_actorBaseAddr[index];
-	//	auto & actorData = *(ACTOR_DATA *)baseAddr;
-	//	if (!baseAddr)
-	//	{
-	//		continue;
-	//	}
-	//	if (destination == actorData.collisionData)
-	//	{
-	//		if (actorData.noCollision)
-	//		{
-	//			return 0;
-	//		}
-	//	}
-	//}
-
-	//for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
-	//{
-	//	auto baseAddr = System_Actor_actorBaseAddr[index];
-	//	auto & actorData = *(ACTOR_DATA *)baseAddr;
-	//	if (!baseAddr)
-	//	{
-	//		continue;
-	//	}
-	//	if (source == actorData.collisionData)
-	//	{
-	//		if (actorData.noCollision)
-	//		{
-	//			return 0;
-	//		}
-	//	}
-	//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//return 10;
-}
+//uint8 hook_5B460
+//(
+//	void *,
+//	byte8 * destination,
+//	byte8 * source,
+//	uint32,
+//	uint32
+//)
+//{
+//	{
+//		if (!destination)
+//		{
+//			goto sect0;
+//		}
+//		auto addr = *(byte8 **)(destination + 0xD0);
+//		if (!addr)
+//		{
+//			goto sect0;
+//		}
+//		addr -= 0x7250;
+//
+//		for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
+//		{
+//			auto baseAddr = System_Actor_actorBaseAddr[index];
+//			auto & actorData = *(ACTOR_DATA *)baseAddr;
+//			if (!baseAddr)
+//			{
+//				continue;
+//			}
+//			if (addr == baseAddr)
+//			{
+//				if (actorData.noCollision)
+//				{
+//					return 0;
+//				}
+//			}
+//		}
+//	}
+//	sect0:;
+//
+//
+//
+//	//{
+//	//	if (!source)
+//	//	{
+//	//		goto sect1;
+//	//	}
+//	//	auto addr = *(byte8 **)(source + 0xD0);
+//	//	if (!addr)
+//	//	{
+//	//		goto sect1;
+//	//	}
+//	//	addr -= 0x7250;
+//
+//	//	for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
+//	//	{
+//	//		auto baseAddr = System_Actor_actorBaseAddr[index];
+//	//		auto & actorData = *(ACTOR_DATA *)baseAddr;
+//	//		if (!baseAddr)
+//	//		{
+//	//			continue;
+//	//		}
+//	//		if (addr == baseAddr)
+//	//		{
+//	//			if (actorData.noCollision)
+//	//			{
+//	//				return 0;
+//	//			}
+//	//		}
+//	//	}
+//	//}
+//	//sect1:;
+//
+//	
+//	return 1;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//	//for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
+//	//{
+//	//	auto baseAddr = System_Actor_actorBaseAddr[index];
+//	//	auto & actorData = *(ACTOR_DATA *)baseAddr;
+//	//	if (!baseAddr)
+//	//	{
+//	//		continue;
+//	//	}
+//	//	if (destination == actorData.collisionData)
+//	//	{
+//	//		if (actorData.noCollision)
+//	//		{
+//	//			return 0;
+//	//		}
+//	//	}
+//	//}
+//
+//	//for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
+//	//{
+//	//	auto baseAddr = System_Actor_actorBaseAddr[index];
+//	//	auto & actorData = *(ACTOR_DATA *)baseAddr;
+//	//	if (!baseAddr)
+//	//	{
+//	//		continue;
+//	//	}
+//	//	if (source == actorData.collisionData)
+//	//	{
+//	//		if (actorData.noCollision)
+//	//		{
+//	//			return 0;
+//	//		}
+//	//	}
+//	//}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//	//return 10;
+//}
 
 
 
@@ -941,83 +941,83 @@ dmc3.exe+2CC090 - 4C 8B 89 D0000000     - mov r9,[rcx+000000D0] { rbx addr
 */
 
 
-bool hook_2CC090(byte8 * collisionData)
-{
-	byte8 * baseAddr = 0;
-
-
-
-
-
-
-	baseAddr = *(byte8 **)(collisionData + 0xD0);
-	baseAddr -= 0x7250;
-
-	for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
-	{
-		auto actorBaseAddr = System_Actor_actorBaseAddr[index];
-		auto & actorData = *(ACTOR_DATA *)actorBaseAddr;
-		if (!actorBaseAddr)
-		{
-			continue;
-		}
-		if (baseAddr == actorBaseAddr)
-		{
-			if (actorData.noCollision)
-			{
-				return false;
-			}
-		}
-	}
-	return true;
-}
-
-
-bool hook_5C320(byte8 * collisionData)
-{
-
-
-
-	byte8 * baseAddr = 0;
-
-	//baseAddr = *(byte8 **)(collisionData + 0xD0);
-	//baseAddr -= 0x7250;
-
-	baseAddr = (collisionData - 0x7250);
-
-
-	for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
-	{
-		auto actorBaseAddr = System_Actor_actorBaseAddr[index];
-		auto & actorData = *(ACTOR_DATA *)actorBaseAddr;
-		if (!actorBaseAddr)
-		{
-			continue;
-		}
-		if (baseAddr == actorBaseAddr)
-		{
-			if (actorData.noCollision)
-			{
-				return false;
-			}
-		}
-	}
-	return true;
-
-
-
-
-
-
-
-
-
-
-
-
-
-	return true;
-}
+//bool hook_2CC090(byte8 * collisionData)
+//{
+//	byte8 * baseAddr = 0;
+//
+//
+//
+//
+//
+//
+//	baseAddr = *(byte8 **)(collisionData + 0xD0);
+//	baseAddr -= 0x7250;
+//
+//	for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
+//	{
+//		auto actorBaseAddr = System_Actor_actorBaseAddr[index];
+//		auto & actorData = *(ACTOR_DATA *)actorBaseAddr;
+//		if (!actorBaseAddr)
+//		{
+//			continue;
+//		}
+//		if (baseAddr == actorBaseAddr)
+//		{
+//			if (actorData.noCollision)
+//			{
+//				return false;
+//			}
+//		}
+//	}
+//	return true;
+//}
+//
+//
+//bool hook_5C320(byte8 * collisionData)
+//{
+//
+//
+//
+//	byte8 * baseAddr = 0;
+//
+//	//baseAddr = *(byte8 **)(collisionData + 0xD0);
+//	//baseAddr -= 0x7250;
+//
+//	baseAddr = (collisionData - 0x7250);
+//
+//
+//	for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
+//	{
+//		auto actorBaseAddr = System_Actor_actorBaseAddr[index];
+//		auto & actorData = *(ACTOR_DATA *)actorBaseAddr;
+//		if (!actorBaseAddr)
+//		{
+//			continue;
+//		}
+//		if (baseAddr == actorBaseAddr)
+//		{
+//			if (actorData.noCollision)
+//			{
+//				return false;
+//			}
+//		}
+//	}
+//	return true;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//	return true;
+//}
 
 
 
@@ -1047,20 +1047,37 @@ void System_Actor_Init()
 
 
 
+
 	{
-		byte8 sect2[] =
+		byte8 sect0[] =
 		{
-			0x84, 0xC0,                   //test al,al
-			0x75, 0x01,                   //jne short
-			0xC3,                         //ret
-			0x48, 0x89, 0x5C, 0x24, 0x08, //mov [rsp+08],rbx
-			0xE9, 0x00, 0x00, 0x00, 0x00, //jmp dmc3.exe+5C325
+			0x48, 0x8B, 0xD9,                         //mov rbx,rcx
+			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rcx+0000B8C0],01
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       //je dmc3.exe+1DFD56
+			0x83, 0xB9, 0x20, 0x01, 0x00, 0x00, 0x00, //cmp dword ptr [rcx+00000120],00
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       //je dmc3.exe+1DFD56
 		};
-		auto func = CreateFunction(hook_5C320, 0, true, false, 0, 0, sizeof(sect2));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		WriteAddress((func.sect2 + 0xA), (appBaseAddr + 0x5C325), 5);
-		//WriteJump((appBaseAddr + 0x5C320), func.addr);
+		auto func = CreateFunction(0, (appBaseAddr + 0x1DFD22), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(byte32 *)(func.sect0 + 5) = offsetof(ACTOR_DATA, hide);
+		WriteAddress((func.sect0 + 0xA), (appBaseAddr + 0x1DFD56), 6);
+		WriteAddress((func.sect0 + 0x17), (appBaseAddr + 0x1DFD56), 6);
+		WriteJump((appBaseAddr + 0x1DFD16), func.addr, 2);
+		/*
+		dmc3.exe+1DFD16 - 83 B9 20010000 00 - cmp dword ptr [rcx+00000120],00
+		dmc3.exe+1DFD1D - 48 8B D9          - mov rbx,rcx
+		dmc3.exe+1DFD20 - 74 34             - je dmc3.exe+1DFD56
+		dmc3.exe+1DFD22 - 48 63 81 6C3E0000 - movsxd  rax,dword ptr [rcx+00003E6C]
+		*/
 	}
+
+
+
+
+
+
+
+
 
 
 
@@ -1069,76 +1086,160 @@ void System_Actor_Init()
 	{
 		byte8 sect0[] =
 		{
-			0x0F, 0x29, 0x81, 0x80, 0x02, 0x00, 0x00, //movaps [rcx+00000280],xmm0
+			0x80, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rax+0000B8C0],01
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       //je dmc3.exe+1FDE7F
+			0x83, 0xB8, 0x20, 0x01, 0x00, 0x00, 0x00, //cmp dword ptr [rax+00000120],00
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       //je dmc3.exe+1FDE7F
 		};
-		byte8 sect2[] =
-		{
-			0x84, 0xC0,                         //test al,al
-			0x0F, 0x85, 0x88, 0xC3, 0x06, 0x00, //jne dmc3.exe+5C390
-			0xE9, 0xCA, 0xC3, 0x06, 0x00,       //jmp dmc3.exe+5C3D7
-		};
-
-
-
-
-
-
-
-
-
-
+		auto func = CreateFunction(0, (appBaseAddr + 0x1FDE29), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(byte32 *)(func.sect0 + 2) = offsetof(ACTOR_DATA, hideWeapons);
+		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1FDE7F), 6);
+		WriteAddress((func.sect0 + 0x14), (appBaseAddr + 0x1FDE7F), 6);
+		WriteJump((appBaseAddr + 0x1FDE20), func.addr, 2);
+		/*
+		dmc3.exe+1FDE20 - 83 B8 20010000 00 - cmp dword ptr [rax+00000120],00
+		dmc3.exe+1FDE27 - 74 56             - je dmc3.exe+1FDE7F
+		dmc3.exe+1FDE29 - 48 89 5C 24 30    - mov [rsp+30],rbx
+		*/
 	}
-
-
-
-
-
-
-
-
 
 
 
 
 	{
-		byte8 sect2[] =
+		byte8 sect0[] =
 		{
-			0x84, 0xC0,                               //test al,al
-			0x75, 0x01,                               //jne short
-			0xC3,                                     //ret
-			0x4C, 0x8B, 0x89, 0xD0, 0x00, 0x00, 0x00, //mov r9,[rcx+000000D0]
-			0xE9, 0x00, 0x00, 0x00, 0x00,             //jmp dmc3.exe+2CC097
+			0x80, 0xBA, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rdx+0000B8C0],01
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       //je dmc3.exe+1DB099
+			0x83, 0xBA, 0x20, 0x01, 0x00, 0x00, 0x00, //cmp dword ptr [rdx+00000120],00
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       //je dmc3.exe+1DB099
 		};
-		auto func = CreateFunction(hook_2CC090, 0, true, false, 0, 0, sizeof(sect2));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		WriteAddress((func.sect2 + 0xC), (appBaseAddr + 0x2CC097), 5);
-		//WriteJump((appBaseAddr + 0x2CC090), func.addr, 2);
-
-
-
-
-
+		auto func = CreateFunction(0, (appBaseAddr + 0x1DAF36), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(byte32 *)(func.sect0 + 2) = offsetof(ACTOR_DATA, hideSummonedSwords);
+		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1DB099), 6);
+		WriteAddress((func.sect0 + 0x14), (appBaseAddr + 0x1DB099), 6);
+		WriteJump((appBaseAddr + 0x1DAF29), func.addr, 2);
 		/*
-dmc3.exe+2CC090 - 4C 8B 89 D0000000     - mov r9,[rcx+000000D0] { rbx addr
- }
-
+		dmc3.exe+1DAF29 - 83 BA 20010000 00 - cmp dword ptr [rdx+00000120],00
+		dmc3.exe+1DAF30 - 0F84 63010000     - je dmc3.exe+1DB099
+		dmc3.exe+1DAF36 - C6 81 E80D0000 00 - mov byte ptr [rcx+00000DE8],00
 		*/
-
-
-		//WriteAddress((func.sect2 + 2), (appBaseAddr + 0x2CC090), 6);
-		//WriteCall((appBaseAddr + 0x5B5BC), func.addr);
-		//WriteCall((appBaseAddr + 0x5B5CB), func.addr);
-		//WriteCall((appBaseAddr + 0x5B5EA), func.addr);
-		//WriteCall((appBaseAddr + 0x5B609), func.addr);
-		//WriteCall((appBaseAddr + 0x5BA21), func.addr);
-		//WriteCall((appBaseAddr + 0x5BA34), func.addr);
 	}
 
 
 
 
 
-	Write<byte32>((appBaseAddr + 0x1EBD19), 0xB8F1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//{
+	//	byte8 sect2[] =
+	//	{
+	//		0x84, 0xC0,                   //test al,al
+	//		0x75, 0x01,                   //jne short
+	//		0xC3,                         //ret
+	//		0x48, 0x89, 0x5C, 0x24, 0x08, //mov [rsp+08],rbx
+	//		0xE9, 0x00, 0x00, 0x00, 0x00, //jmp dmc3.exe+5C325
+	//	};
+	//	auto func = CreateFunction(hook_5C320, 0, true, false, 0, 0, sizeof(sect2));
+	//	memcpy(func.sect2, sect2, sizeof(sect2));
+	//	WriteAddress((func.sect2 + 0xA), (appBaseAddr + 0x5C325), 5);
+	//	//WriteJump((appBaseAddr + 0x5C320), func.addr);
+	//}
+
+
+
+
+
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0x0F, 0x29, 0x81, 0x80, 0x02, 0x00, 0x00, //movaps [rcx+00000280],xmm0
+	//	};
+	//	byte8 sect2[] =
+	//	{
+	//		0x84, 0xC0,                         //test al,al
+	//		0x0F, 0x85, 0x88, 0xC3, 0x06, 0x00, //jne dmc3.exe+5C390
+	//		0xE9, 0xCA, 0xC3, 0x06, 0x00,       //jmp dmc3.exe+5C3D7
+	//	};
+
+
+
+
+
+
+
+
+
+
+	//}
+
+
+
+
+
+
+
+
+
+
+
+
+//	{
+//		byte8 sect2[] =
+//		{
+//			0x84, 0xC0,                               //test al,al
+//			0x75, 0x01,                               //jne short
+//			0xC3,                                     //ret
+//			0x4C, 0x8B, 0x89, 0xD0, 0x00, 0x00, 0x00, //mov r9,[rcx+000000D0]
+//			0xE9, 0x00, 0x00, 0x00, 0x00,             //jmp dmc3.exe+2CC097
+//		};
+//		auto func = CreateFunction(hook_2CC090, 0, true, false, 0, 0, sizeof(sect2));
+//		memcpy(func.sect2, sect2, sizeof(sect2));
+//		WriteAddress((func.sect2 + 0xC), (appBaseAddr + 0x2CC097), 5);
+//		//WriteJump((appBaseAddr + 0x2CC090), func.addr, 2);
+//
+//
+//
+//
+//
+//		/*
+//dmc3.exe+2CC090 - 4C 8B 89 D0000000     - mov r9,[rcx+000000D0] { rbx addr
+// }
+//
+//		*/
+//
+//
+//		//WriteAddress((func.sect2 + 2), (appBaseAddr + 0x2CC090), 6);
+//		//WriteCall((appBaseAddr + 0x5B5BC), func.addr);
+//		//WriteCall((appBaseAddr + 0x5B5CB), func.addr);
+//		//WriteCall((appBaseAddr + 0x5B5EA), func.addr);
+//		//WriteCall((appBaseAddr + 0x5B609), func.addr);
+//		//WriteCall((appBaseAddr + 0x5BA21), func.addr);
+//		//WriteCall((appBaseAddr + 0x5BA34), func.addr);
+//	}
+
+
+
+
+
+	Write<byte32>((appBaseAddr + 0x1EBD19), offsetof(ACTOR_DATA, gamepad));
 
 
 
@@ -1155,23 +1256,23 @@ dmc3.exe+1EBD19
 
 
 
-	{
-		byte8 sect2[] =
-		{
-			0x84, 0xC0,                         //test al,al
-			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00, //jne dmc3.exe+5B460
-			0xC3,                               //ret
-		};
-		auto func = CreateFunction(hook_5B460, 0, true, false, 0, 0, sizeof(sect2), 0, 1);
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x5B460), 6);
-		//WriteCall((appBaseAddr + 0x5B7F9), func.addr);
-		//WriteCall((appBaseAddr + 0x5B81C), func.addr);
-		//WriteCall((appBaseAddr + 0x5B83F), func.addr);
-		//WriteCall((appBaseAddr + 0x5B862), func.addr);
-		//WriteCall((appBaseAddr + 0x5B885), func.addr);
-		//WriteCall((appBaseAddr + 0x5B8AB), func.addr);
-	}
+	//{
+	//	byte8 sect2[] =
+	//	{
+	//		0x84, 0xC0,                         //test al,al
+	//		0x0F, 0x85, 0x00, 0x00, 0x00, 0x00, //jne dmc3.exe+5B460
+	//		0xC3,                               //ret
+	//	};
+	//	auto func = CreateFunction(hook_5B460, 0, true, false, 0, 0, sizeof(sect2), 0, 1);
+	//	memcpy(func.sect2, sect2, sizeof(sect2));
+	//	WriteAddress((func.sect2 + 2), (appBaseAddr + 0x5B460), 6);
+	//	//WriteCall((appBaseAddr + 0x5B7F9), func.addr);
+	//	//WriteCall((appBaseAddr + 0x5B81C), func.addr);
+	//	//WriteCall((appBaseAddr + 0x5B83F), func.addr);
+	//	//WriteCall((appBaseAddr + 0x5B862), func.addr);
+	//	//WriteCall((appBaseAddr + 0x5B885), func.addr);
+	//	//WriteCall((appBaseAddr + 0x5B8AB), func.addr);
+	//}
 
 
 

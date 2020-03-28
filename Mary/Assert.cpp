@@ -8,6 +8,7 @@
 
 
 
+static_assert(offsetof(ACTOR_DATA, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA, characterLogic) == 0x78);
 static_assert(offsetof(ACTOR_DATA, position) == 0x80);
 static_assert(offsetof(ACTOR_DATA, direction) == 0xC0);
@@ -74,18 +75,20 @@ static_assert(offsetof(ACTOR_DATA, modelData) == 0xB630);
 static_assert(offsetof(ACTOR_DATA, artemisChargeValue) == 0xB868);
 static_assert(offsetof(ACTOR_DATA, artemisChargeFlags) == 0xB87C);
 static_assert(offsetof(ACTOR_DATA, character) == 0xB8C0);
-static_assert(offsetof(ACTOR_DATA, noCollision) == 0xB8C1);
 static_assert(offsetof(ACTOR_DATA, parentBaseAddr) == 0xB8C8);
 static_assert(offsetof(ACTOR_DATA, childBaseAddr) == 0xB8D0);
 static_assert(offsetof(ACTOR_DATA, hide) == 0xB8F0);
-static_assert(offsetof(ACTOR_DATA, gamepad) == 0xB8F1);
-static_assert(offsetof(ACTOR_DATA, buttonMask) == 0xB8F2);
-static_assert(offsetof(ACTOR_DATA, leftStickMask) == 0xB8F4);
+static_assert(offsetof(ACTOR_DATA, hideWeapons) == 0xB8F1);
+static_assert(offsetof(ACTOR_DATA, hideSummonedSwords) == 0xB8F2);
+static_assert(offsetof(ACTOR_DATA, gamepad) == 0xB8F3);
+static_assert(offsetof(ACTOR_DATA, buttonMask) == 0xB8F4);
+static_assert(offsetof(ACTOR_DATA, leftStickMask) == 0xB8F6);
 static_assert(offsetof(ACTOR_DATA, styleMap) == 0xB8F8);
 static_assert(offsetof(ACTOR_DATA, meleeWeaponCount) == 0xB904);
 static_assert(offsetof(ACTOR_DATA, meleeWeaponMap) == 0xB908);
 static_assert(offsetof(ACTOR_DATA, rangedWeaponCount) == 0xB90D);
 static_assert(offsetof(ACTOR_DATA, rangedWeaponMap) == 0xB910);
+
 
 
 

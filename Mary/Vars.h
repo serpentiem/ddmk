@@ -1007,10 +1007,11 @@ typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
 
 
 
-
 struct ACTOR_DATA
 {
-	_(120);
+	_(8);
+	bool init; // 0x8
+	_(111);
 	uint8 characterLogic; // 0x78
 	_(7);
 	vec4 position; // 0x80
@@ -1129,15 +1130,15 @@ struct ACTOR_DATA
 	byte32 artemisChargeFlags[2]; // 0xB87C
 	_(60);
 	uint8 character; // 0xB8C0
-	bool noCollision; // 0xB8C1
-	_(6);
+	_(7);
 	byte8 * parentBaseAddr; // 0xB8C8
 	byte8 * childBaseAddr[4]; // 0xB8D0
 	bool hide; // 0xB8F0
-	uint8 gamepad; // 0xB8F1
-	byte16 buttonMask; // 0xB8F2
-	byte16 leftStickMask; // 0xB8F4
-	_(2);
+	bool hideWeapons; // 0xB8F1
+	bool hideSummonedSwords; // 0xB8F2
+	uint8 gamepad; // 0xB8F3
+	byte16 buttonMask; // 0xB8F4
+	byte16 leftStickMask; // 0xB8F6
 	uint8 styleMap[6][2]; // 0xB8F8
 	uint8 meleeWeaponCount; // 0xB904
 	_(3);
@@ -1146,7 +1147,6 @@ struct ACTOR_DATA
 	_(2);
 	uint8 rangedWeaponMap[5]; // 0xB910
 };
-
 
 
 
