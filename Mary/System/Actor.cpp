@@ -515,7 +515,7 @@ void UpdateActorDante(byte8 * baseAddr)
 
 
 
-	Cosmetics_Model_UpdateModelDanteVergil[0](baseAddr);
+	Cosmetics_Model_UpdateModelDante[0](baseAddr);
 	//Cosmetics_Model_UpdateDevilModelDante[0](baseAddr, 1);
 
 	Cosmetics_Model_UpdateDevilModelDante[0](baseAddr, 1);

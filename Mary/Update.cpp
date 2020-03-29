@@ -21,18 +21,18 @@ __declspec(noinline) void VergilMillionStab(byte8 * baseAddr)
 	{
 		return;
 	}
-	//if (actorData.motionData[1].group != 5)
-	//{
-	//	return;
-	//}
-	//if (actorData.motionData[1].index != 11)
-	//{
-	//	return;
-	//}
-	//if (actorData.inputData[16].flags[4] < 6)
-	//{
-	//	return;
-	//}
+	if (actorData.motionData[1].group != 5)
+	{
+		return;
+	}
+	if (actorData.motionData[1].index != 11)
+	{
+		return;
+	}
+	if (actorData.inputData[16].flags[4] < 6)
+	{
+		return;
+	}
 	if (!actorData.childBaseAddr[0])
 	{
 		return;
@@ -41,19 +41,50 @@ __declspec(noinline) void VergilMillionStab(byte8 * baseAddr)
 
 
 
-	actorData.collisionIndex = 1;
-	actorData.hide = true;
-	actorData.hideWeapons = true;
-	actorData.hideSummonedSwords = false;
+	//actorData.collisionIndex = 1;
+	//actorData.hide = true;
+	//actorData.hideWeapons = true;
+	//actorData.hideSummonedSwords = false;
 	actorData.buttonMask = 0;
 
 
 
 
-	childActorData.collisionIndex = 1;
-	childActorData.hide = false;
-	childActorData.hideWeapons = false;
-	childActorData.hideSummonedSwords = false;
+
+
+
+	childActorData.motionState1[0] = 0x11;
+	childActorData.motionState1[1] = 0xD;
+	childActorData.motionState1[2] = 0x11;
+	childActorData.motionState1[3] = 0x11;
+
+	childActorData.motionState2[0] = 0x401;
+	childActorData.motionState2[1] = 0xB0001;
+	childActorData.motionState2[2] = 0xA0001;
+
+	childActorData.move = 14;
+
+
+	childActorData.inputData[16].flags[4] = 6;
+
+
+	//if (actorData.inputData[16].flags[4] < 6)
+	//{
+	//	return;
+	//}
+
+
+	childActorData.buttonMask = GAMEPAD_RIGHT_SHOULDER | GAMEPAD_Y;
+
+
+	//childActorData.lastMove = 8;
+	//childActorData.chainCount = 2;
+
+
+	//childActorData.collisionIndex = 1;
+	//childActorData.hide = false;
+	//childActorData.hideWeapons = false;
+	//childActorData.hideSummonedSwords = false;
 
 	
 
@@ -99,9 +130,9 @@ void MainLoop()
 		
 		auto & actorData = *(ACTOR_DATA *)baseAddr;
 
-		actorData.hide = true;
-		actorData.hideWeapons = true;
-		actorData.hideSummonedSwords = true;
+		//actorData.hide = true;
+		//actorData.hideWeapons = true;
+		//actorData.hideSummonedSwords = true;
 
 		actorData.equipment[0] = WEAPON_DANTE_REBELLION;
 		actorData.equipment[1] = WEAPON_DANTE_CERBERUS;
@@ -116,7 +147,7 @@ void MainLoop()
 
 		actorData.parentBaseAddr = System_Actor_actorBaseAddr[0];
 
-		actorData.buttonMask = 0xFFFF;
+		//actorData.buttonMask = 0xFFFF;
 
 		//auto & mainActorData = *(ACTOR_DATA *)System_Actor_actorBaseAddr[0];
 
