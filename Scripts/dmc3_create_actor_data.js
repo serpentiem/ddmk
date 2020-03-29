@@ -62,7 +62,11 @@ var items =
 	[ "inputData[58]"            , "INPUT_DATA" , 0x6674 ],
 	[ "collisionIndex"           , "uint32"     , 0x7254 ],
 	[ "interactionData[8]"       , "vec4"       , 0x7460 ],
-	[ "buttonInput[4]"           , "byte16"     , 0x74E0 ],
+	[ "buttons[4]"               , "byte16"     , 0x74E0 ],
+	[ "rightStick[2]"            , "byte16"     , 0x74F8 ],
+	[ "leftStick[2]"             , "byte16"     , 0x7508 ],
+	[ "cameraDirection"          , "uint16"     , 0x750C ],
+	[ "leftStickDirection[2]"    , "uint32"     , 0x751C ],
 	[ "modelData[6]"             , "MODEL_DATA" , 0xB630 ],
 	[ "artemisChargeValue[2]"    , "float32"    , 0xB868 ],
 	[ "artemisChargeFlags[2]"    , "byte32"     , 0xB87C ],
@@ -335,7 +339,7 @@ var AddCheatEntry = function
 	}
 	if (isVector)
 	{
-		c += "<Address>Mary.Actor_actorBaseAddr+" + (actor * 8).toString(16).toUpperCase() + "</Address>\n";
+		c += "<Address>Mary.System_Actor_actorBaseAddr+8+" + (actor * 8).toString(16).toUpperCase() + "</Address>\n";
 	}
 	else
 	{

@@ -515,7 +515,7 @@ void UpdateActorDante(byte8 * baseAddr)
 
 
 
-	Cosmetics_Model_UpdateModelDante[0](baseAddr);
+	Cosmetics_Model_UpdateModelDanteVergil[0](baseAddr);
 	//Cosmetics_Model_UpdateDevilModelDante[0](baseAddr, 1);
 
 	Cosmetics_Model_UpdateDevilModelDante[0](baseAddr, 1);
@@ -1128,6 +1128,79 @@ void System_Actor_Init()
 		*/
 	}
 
+
+
+
+
+
+
+
+
+	{
+		byte8 sect0[] =
+		{
+			0x66, 0x23, 0x83, 0x00, 0x00, 0x00, 0x00, //and ax,[rbx+0000B8C0]
+			0x66, 0x89, 0x83, 0xE0, 0x74, 0x00, 0x00, //mov [rbx+000074E0],ax
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD3B), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA, buttonMask);
+		WriteJump((appBaseAddr + 0x1EBD34), func.addr, 2);
+		/*
+		dmc3.exe+1EBD34 - 66 89 83 E0740000 - mov [rbx+000074E0],ax
+		dmc3.exe+1EBD3B - 48 8D 0D CE8CB600 - lea rcx,[dmc3.exe+D54A10]
+		*/
+	}
+
+
+	{
+		byte8 sect0[] =
+		{
+			0x66, 0x23, 0x83, 0x00, 0x00, 0x00, 0x00, //and ax,[rbx+0000B8C0]
+			0x66, 0x89, 0x83, 0xE2, 0x74, 0x00, 0x00, //mov [rbx+000074E2],ax
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD5B), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA, buttonMask);
+		WriteJump((appBaseAddr + 0x1EBD54), func.addr, 2);
+		/*
+		dmc3.exe+1EBD54 - 66 89 83 E2740000 - mov [rbx+000074E2],ax
+		dmc3.exe+1EBD5B - 66 23 CA          - and cx,dx
+		*/
+	}
+
+	{
+		byte8 sect0[] =
+		{
+			0x66, 0x23, 0x8B, 0x00, 0x00, 0x00, 0x00, //and cx,[rbx+0000B8C0]
+			0x66, 0x89, 0x8B, 0xE4, 0x74, 0x00, 0x00, //mov [rbx+000074E4],cx
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD6B), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA, buttonMask);
+		WriteJump((appBaseAddr + 0x1EBD64), func.addr, 2);
+		/*
+		dmc3.exe+1EBD64 - 66 89 8B E4740000 - mov [rbx+000074E4],cx
+		dmc3.exe+1EBD6B - 66 23 D0          - and dx,ax
+		*/
+	}
+
+
+	{
+		byte8 sect0[] =
+		{
+			0x66, 0x23, 0x93, 0x00, 0x00, 0x00, 0x00, //and dx,[rbx+0000B8C0]
+			0x66, 0x89, 0x93, 0xE6, 0x74, 0x00, 0x00, //mov [rbx+000074E6],dx
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD7C), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA, buttonMask);
+		WriteJump((appBaseAddr + 0x1EBD75), func.addr, 2);
+		/*
+		dmc3.exe+1EBD75 - 66 89 93 E6740000 - mov [rbx+000074E6],dx
+		dmc3.exe+1EBD7C - 33 D2             - xor edx,edx
+		*/
+	}
 
 
 

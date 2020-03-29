@@ -1007,6 +1007,9 @@ typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
 
 
 
+
+
+
 struct ACTOR_DATA
 {
 	_(8);
@@ -1121,8 +1124,15 @@ struct ACTOR_DATA
 	uint32 collisionIndex; // 0x7254
 	_(520);
 	vec4 interactionData[8]; // 0x7460
-	byte16 buttonInput[4]; // 0x74E0
-	_(16712);
+	byte16 buttons[4]; // 0x74E0
+	_(16);
+	byte16 rightStick[2]; // 0x74F8
+	_(12);
+	byte16 leftStick[2]; // 0x7508
+	uint16 cameraDirection; // 0x750C
+	_(14);
+	uint32 leftStickDirection[2]; // 0x751C
+	_(16652);
 	MODEL_DATA modelData[6]; // 0xB630
 	_(88);
 	float32 artemisChargeValue[2]; // 0xB868

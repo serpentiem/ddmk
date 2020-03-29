@@ -10,61 +10,55 @@ bool millionStab = false;
 
 // Consider all actors for millionStab.
 
-//void VergilMillionStab()
-//{
-//	auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E28);
-//
-//	auto mainBaseAddr = System_Actor_mainActorBaseAddr;
-//	auto & mainActorData = *(ACTOR_DATA *)mainBaseAddr;
-//
-//	auto baseAddr = System_Actor_actorBaseAddr[ACTOR_TWO];
-//	auto & actorData = *(ACTOR_DATA *)baseAddr;
-//
-//	if (mainActorData.move != 39)
-//	{
-//		return;
-//	}
-//	if (mainActorData.motionData[1].group != 5)
-//	{
-//		return;
-//	}
-//	if (mainActorData.motionData[1].index != 11)
-//	{
-//		return;
-//	}
-//	//if (mainActorData.inputData[16].level < 6)
-//	if (mainActorData.inputData[16].flags[4] < 6)
-//	{
-//		return;
-//	}
-//
-//
-//	
-//
-//	//auto position = mainActorData.position;
-//	//auto direction = mainActorData.direction;
-//
-//	//mainActorData.position  = actorData.position;
-//	//mainActorData.direction = actorData.direction;
-//	mainActorData.actorId   = ACTOR_TWO;
-//
-//	//actorData.position  = position;
-//	//actorData.direction = direction;
-//	actorData.actorId   = ACTOR_ONE;
-//
-//	actorData.motionState1[0] = 0x11;
-//	actorData.motionState1[1] = 0x11;
-//	actorData.motionState1[2] = 0x11;
-//	actorData.motionState1[3] = 0x11;
-//
-//	actorData.motionState2[0] = 0x401;
-//	actorData.motionState2[1] = 0xB0001;
-//	actorData.motionState2[2] = 0xB0001;
-//
-//	actorData.move = 14;
-//
-//	g_pool[3] = baseAddr;
-//}
+__declspec(noinline) void VergilMillionStab(byte8 * baseAddr)
+{
+	auto & actorData = *(ACTOR_DATA *)baseAddr;
+	if (actorData.characterLogic != CHAR_LOGIC_VERGIL)
+	{
+		return;
+	}
+	if (actorData.move != 39)
+	{
+		return;
+	}
+	//if (actorData.motionData[1].group != 5)
+	//{
+	//	return;
+	//}
+	//if (actorData.motionData[1].index != 11)
+	//{
+	//	return;
+	//}
+	//if (actorData.inputData[16].flags[4] < 6)
+	//{
+	//	return;
+	//}
+	if (!actorData.childBaseAddr[0])
+	{
+		return;
+	}
+	auto & childActorData = *(ACTOR_DATA *)actorData.childBaseAddr[0];
+
+
+
+	actorData.collisionIndex = 1;
+	actorData.hide = true;
+	actorData.hideWeapons = true;
+	actorData.hideSummonedSwords = false;
+	actorData.buttonMask = 0;
+
+
+
+
+	childActorData.collisionIndex = 1;
+	childActorData.hide = false;
+	childActorData.hideWeapons = false;
+	childActorData.hideSummonedSwords = false;
+
+	
+
+
+}
 
 
 
@@ -105,47 +99,77 @@ void MainLoop()
 		
 		auto & actorData = *(ACTOR_DATA *)baseAddr;
 
+		actorData.hide = true;
+		actorData.hideWeapons = true;
+		actorData.hideSummonedSwords = true;
+
+		actorData.equipment[0] = WEAPON_DANTE_REBELLION;
+		actorData.equipment[1] = WEAPON_DANTE_CERBERUS;
+		actorData.equipment[2] = WEAPON_VOID;
+		actorData.equipment[3] = WEAPON_VOID;
+
+
+
 		actorData.character = CHAR_VERGIL;
 		//actorData.noCollision = true;
 
 
-		auto & mainActorData = *(ACTOR_DATA *)System_Actor_actorBaseAddr[0];
+		actorData.parentBaseAddr = System_Actor_actorBaseAddr[0];
+
+		actorData.buttonMask = 0xFFFF;
+
+		//auto & mainActorData = *(ACTOR_DATA *)System_Actor_actorBaseAddr[0];
 
 		//actorData.position = mainActorData.position;
 		//actorData.direction = mainActorData.direction;
 
 		//actorData.collisionIndex = 1;
 
-		actorData.gamepad = 1;
+		//actorData.gamepad = 1;
 
 
-
+		(*(ACTOR_DATA *)System_Actor_actorBaseAddr[0]).childBaseAddr[0] = baseAddr;
 
 
 	}
 //
 //
-//	VergilMillionStab();
+
+	//VergilMillionStab();
 
 
-	for (uint32 index = 2; index < System_Actor_actorBaseAddr.count; index++)
+	for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
 	{
 		auto baseAddr = System_Actor_actorBaseAddr[index];
-		auto & actorData = *(ACTOR_DATA *)baseAddr;
-		auto & mainActorData = *(ACTOR_DATA *)System_Actor_actorBaseAddr[0];
+
 
 		if (!baseAddr)
 		{
 			continue;
 		}
-		actorData.position = mainActorData.position;
-		actorData.direction = mainActorData.direction;
+
+		VergilMillionStab(baseAddr);
 
 
 
 
+		auto & actorData = *(ACTOR_DATA *)baseAddr;
+		
+
+		if (!actorData.parentBaseAddr)
+		{
+			continue;
+		}
+
+		auto & parentActorData = *(ACTOR_DATA *)actorData.parentBaseAddr;
 
 
+
+		actorData.position = parentActorData.position;
+		actorData.direction = parentActorData.direction;
+
+
+		
 
 
 	}

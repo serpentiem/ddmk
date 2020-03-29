@@ -8,6 +8,8 @@
 
 
 
+
+
 static_assert(offsetof(ACTOR_DATA, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA, characterLogic) == 0x78);
 static_assert(offsetof(ACTOR_DATA, position) == 0x80);
@@ -70,7 +72,11 @@ static_assert(offsetof(ACTOR_DATA, styleMeter) == 0x6514);
 static_assert(offsetof(ACTOR_DATA, inputData) == 0x6674);
 static_assert(offsetof(ACTOR_DATA, collisionIndex) == 0x7254);
 static_assert(offsetof(ACTOR_DATA, interactionData) == 0x7460);
-static_assert(offsetof(ACTOR_DATA, buttonInput) == 0x74E0);
+static_assert(offsetof(ACTOR_DATA, buttons) == 0x74E0);
+static_assert(offsetof(ACTOR_DATA, rightStick) == 0x74F8);
+static_assert(offsetof(ACTOR_DATA, leftStick) == 0x7508);
+static_assert(offsetof(ACTOR_DATA, cameraDirection) == 0x750C);
+static_assert(offsetof(ACTOR_DATA, leftStickDirection) == 0x751C);
 static_assert(offsetof(ACTOR_DATA, modelData) == 0xB630);
 static_assert(offsetof(ACTOR_DATA, artemisChargeValue) == 0xB868);
 static_assert(offsetof(ACTOR_DATA, artemisChargeFlags) == 0xB87C);

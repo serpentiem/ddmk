@@ -73,6 +73,15 @@ void CreateMainActor(byte8 * baseAddr)
 	System_Actor_actorBaseAddr.count = 2;
 
 	
+	auto & actorData = *(ACTOR_DATA *)baseAddr;
+
+	actorData.buttonMask = 0xFFFF;
+
+	
+
+
+
+
 	
 	//auto & actorData = *(ACTOR_DATA *)baseAddr;
 	//actorData.noCollision = true;
