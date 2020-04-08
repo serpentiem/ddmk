@@ -3,19 +3,15 @@ const CHAR_VERGIL = 3;
 
 const ACTOR_DATA_SIZE = 0xB8C0;
 
-var base =
+var items =
 [
-	[ "init"          , "bool"  , 8     ],
-	[ "character"     , "uint32", 0x78  ],
-	[ "position"      , "vec4"  , 0x80  ],
-	[ "direction"     , "uint16", 0xC0  ],
-	[ "id"            , "uint8" , 0x118 ],
-	[ "isDoppelganger", "bool"  , 0x11C ],
-	[ "visible"       , "uint32", 0x120 ],
-];
-
-var char =
-[
+	[ "init"                     , "bool"                      , 8                   ],
+	[ "character"                , "uint32"                    , 0x78                ],
+	[ "position"                 , "vec4"                      , 0x80                ],
+	[ "direction"                , "uint16"                    , 0xC0                ],
+	[ "id"                       , "uint8"                     , 0x118               ],
+	[ "isClone"                  , "bool"                      , 0x11C               ],
+	[ "visible"                  , "uint32"                    , 0x120               ],
 	[ "modelData[3]"             , "MODEL_DATA"                , 0x200               ],
 	[ "motionArchive[32]"        , "byte8 *"                   , 0x38A0              ],
 	[ "motionData[5]"            , "MOTION_DATA"               , 0x39B0              ],
@@ -177,11 +173,12 @@ var Align = function(boundary)
 
 // Cpp
 
-c += "struct ACTOR_DATA_BASE;\r\n";
-c += "struct ACTOR_DATA_EXTRA;\r\n";
-c += "struct ACTOR_DATA_CHAR_VOID;\r\n";
-c += "struct ACTOR_DATA_CHAR_DANTE;\r\n";
-c += "struct ACTOR_DATA_CHAR_VERGIL;\r\n";
+// c += "struct ACTOR_DATA_BASE;\r\n";
+// c += "struct ACTOR_DATA_CHAR_VOID;\r\n";
+// c += "struct ACTOR_DATA_CHAR_DANTE;\r\n";
+// c += "struct ACTOR_DATA_CHAR_VERGIL;\r\n";
+// c += "struct ACTOR_DATA_EXTRA;\r\n";
+
 c += "struct ACTOR_DATA;\r\n";
 c += "struct ACTOR_DATA_DANTE;\r\n";
 c += "struct ACTOR_DATA_VERGIL;\r\n";
@@ -191,261 +188,360 @@ c += "\r\n";
 // c += "\n";
 // c += "#pragma pack(push, 1)\n";
 // c += "\n";
-c += "struct ACTOR_DATA_BASE\r\n";
-c += "{\r\n";
+// c += "struct ACTOR_DATA_BASE\r\n";
+// c += "{\r\n";
 
-pos = 0;
+// pos = 0;
 
-for (var index = 0; index < base.length; index++)
+// for (var index = 0; index < base.length; index++)
+// {
+// 	var name = base[index][0];
+// 	var type = base[index][1];
+// 	var off  = base[index][2];
+	
+// 	{
+// 		var diff = (off - pos);
+// 		if (diff)
+// 		{
+// 			c += "\t_(" + diff.toString() + ");\r\n";
+// 			pos += diff;
+// 		}
+// 	}
+	
+// 	c += "\t" + type + " " + name + "; // 0x" + off.toString(16).toUpperCase() + "\r\n";
+	
+// 	//c_assert += "static_assert(offsetof(ACTOR_DATA_BASE, " + name + ") == 0x" + off + ");\r\n";
+// 	c_assert += "static_assert(offsetof(ACTOR_DATA_BASE, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
+	
+	
+	
+// 	var size = GetTypeSize(type);
+	
+// 	{
+// 		var match = name.match(/\[\d+?\]/g);
+// 		if (match)
+// 		{
+// 			for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
+// 			{
+// 				var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
+// 				size *= count;
+// 			}
+// 		}
+// 	}
+	
+// 	pos += size;
+// }
+
+// {
+// 	var diff = (512 - pos);
+// 	if (diff)
+// 	{
+// 		c += "\t_(" + diff.toString() + ");\r\n";
+// 	}
+// }
+
+// c += "};\r\n";
+
+// c += "\r\n";
+// c_assert += "\r\n";
+
+// c += "struct ACTOR_DATA_CHAR_VOID\r\n";
+// c += "{\r\n";
+
+// pos = 512;
+
+// {
+// 	var diff = (ACTOR_DATA_SIZE - pos);
+// 	if (diff)
+// 	{
+// 		c += "\t_(" + diff.toString() + ");\r\n";
+// 	}
+// }
+
+// c += "};\r\n";
+
+// c += "\r\n";
+
+
+
+
+
+
+
+
+
+function AddActorData
+(
+	structName,
+	data,
+	id
+)
 {
-	var name = base[index][0];
-	var type = base[index][1];
-	var off  = base[index][2];
-	
+	for (var index = 0; index < data.length; index++)
 	{
-		var diff = (off - pos);
-		if (diff)
+		var name      = data[index][0];
+		var type      = data[index][1];
+		var off       = data[index][2];
+		var character = data[index][3];
+		
+		if ((character != undefined) && (character != id))
 		{
-			c += "\t_(" + diff.toString() + ");\r\n";
-			pos += diff;
+			continue;
 		}
-	}
-	
-	c += "\t" + type + " " + name + "; // 0x" + off.toString(16).toUpperCase() + "\r\n";
-	
-	//c_assert += "static_assert(offsetof(ACTOR_DATA_BASE, " + name + ") == 0x" + off + ");\r\n";
-	c_assert += "static_assert(offsetof(ACTOR_DATA_BASE, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
-	
-	
-	
-	var size = GetTypeSize(type);
-	
-	{
-		var match = name.match(/\[\d+?\]/g);
-		if (match)
-		{
-			for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
-			{
-				var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
-				size *= count;
-			}
-		}
-	}
-	
-	pos += size;
-}
-
-{
-	var diff = (ACTOR_DATA_SIZE - pos);
-	if (diff)
-	{
-		c += "\t_(" + diff.toString() + ");\r\n";
-	}
-}
-
-c += "};\r\n";
-
-c += "\r\n";
-c_assert += "\r\n";
-
-c += "struct ACTOR_DATA_EXTRA\r\n";
-c += "{\r\n";
-
-pos = ACTOR_DATA_SIZE;
-
-for (var index = 0; index < extra.length; index++)
-{
-	var name = extra[index][0];
-	var type = extra[index][1];
-
-	var size = GetTypeSize(type);
-
-	{
-		var match = name.match(/\[\d+?\]/g);
-		if (match)
-		{
-			for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
-			{
-				var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
-				size *= count;
-			}
-		}
-	}
-
-	{
+		
 		var lastPos = pos;
-
-		if (name.match(/\[/))
+		
+		if (off != undefined)
 		{
-			Align(4);
-		}
-		if (type.match(/\*/))
-		{
-			Align(8);
-		}
-
-		var diff = (pos - lastPos);
-		if (diff)
-		{
-			c += "\t_(" + diff.toString() + ");\r\n";
-		}
-	}
-
-	c += "\t" + type + " " + name + "; // 0x" + pos.toString(16).toUpperCase() + "\r\n";
-
-	//c_assert += "static_assert(offsetof(ACTOR_DATA_EXTRA, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
-	c_assert += "static_assert(offsetof(ACTOR_DATA_EXTRA, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
-
-	pos += size;
-}
-
-c += "};\r\n";
-
-c += "\r\n";
-c_assert += "\r\n";
-
-c += "struct ACTOR_DATA_CHAR_VOID\r\n";
-c += "{\r\n";
-
-pos = 512;
-
-{
-	var diff = (ACTOR_DATA_SIZE - pos);
-	if (diff)
-	{
-		c += "\t_(" + diff.toString() + ");\r\n";
-	}
-}
-
-c += "};\r\n";
-
-c += "\r\n";
-
-c += "struct ACTOR_DATA_CHAR_DANTE\r\n";
-c += "{\r\n";
-
-pos = 512;
-
-for (var index = 0; index < char.length; index++)
-{
-	var name      = char[index][0];
-	var type      = char[index][1];
-	var off       = char[index][2];
-	var character = char[index][3];
-	
-	if ((character != undefined) && (character != CHAR_DANTE))
-	{
-		continue;
-	}
-	
-	{
-		var diff = (off - pos);
-		if (diff)
-		{
-			c += "\t_(" + diff.toString() + ");\r\n";
-			pos += diff;
-		}
-	}
-	
-	c += "\t" + type + " " + name + "; // 0x" + off.toString(16).toUpperCase() + "\r\n";
-	
-	//c_assert += "static_assert(offsetof(ACTOR_DATA_CHAR_DANTE, " + name + ") == 0x" + off + ");\r\n";
-	c_assert += "static_assert(offsetof(ACTOR_DATA_CHAR_DANTE, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
-	
-	var size = GetTypeSize(type);
-	
-	{
-		var match = name.match(/\[\d+?\]/g);
-		if (match)
-		{
-			for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
+			var diff = (off - pos);
+			if (diff)
 			{
-				var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
-				size *= count;
+				c += "\t_(" + diff.toString() + ");\r\n";
+			}
+			pos = off;
+		}
+		else
+		{
+			if (type.match(/\*/))
+			{
+				Align(8);
+			}
+			else if (name.match(/\[/))
+			{
+				Align(4);
+			}
+			var diff = (pos - lastPos);
+			if (diff)
+			{
+				c += "\t_(" + diff.toString() + ");\r\n";
 			}
 		}
+		
+		c += "\t" + type + " " + name + "; // 0x" + pos.toString(16).toUpperCase() + "\r\n";
+		
+		c_assert += "static_assert(offsetof(" + structName + ", " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
+		
+		var size = GetTypeSize(type);
+		
+		{
+			var match = name.match(/\[\d+?\]/g);
+			if (match)
+			{
+				for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
+				{
+					var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
+					size *= count;
+				}
+			}
+		}
+		
+		pos += size;
 	}
-	
-	pos += size;
 }
 
+function CreateActorData
+(
+	structName,
+	id
+)
 {
-	var diff = (ACTOR_DATA_SIZE - pos);
-	if (diff)
-	{
-		c += "\t_(" + diff.toString() + ");\r\n";
-	}
-}
-
-c += "};\r\n";
-
-c += "\r\n";
-c_assert += "\r\n";
-
-c += "struct ACTOR_DATA_CHAR_VERGIL\r\n";
-c += "{\r\n";
-
-pos = 512;
-
-for (var index = 0; index < char.length; index++)
-{
-	var name      = char[index][0];
-	var type      = char[index][1];
-	var off       = char[index][2];
-	var character = char[index][3];
+	c += "struct " + structName + "\r\n";
+	c += "{\r\n";
 	
-	if ((character != undefined) && (character != CHAR_VERGIL))
-	{
-		continue;
-	}
+	pos = 0;
+	
+	AddActorData(structName, items, id);
 	
 	{
-		var diff = (off - pos);
+		var diff = (ACTOR_DATA_SIZE - pos);
 		if (diff)
 		{
 			c += "\t_(" + diff.toString() + ");\r\n";
-			pos += diff;
 		}
 	}
 	
-	c += "\t" + type + " " + name + "; // 0x" + off.toString(16).toUpperCase() + "\r\n";
+	pos = ACTOR_DATA_SIZE;
 	
-	//c_assert += "static_assert(offsetof(ACTOR_DATA_CHAR_VERGIL, " + name + ") == 0x" + off + ");\r\n";
-	c_assert += "static_assert(offsetof(ACTOR_DATA_CHAR_VERGIL, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
+	AddActorData(structName, extra, id);
 	
-	var size = GetTypeSize(type);
-	
-	{
-		var match = name.match(/\[\d+?\]/g);
-		if (match)
-		{
-			for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
-			{
-				var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
-				size *= count;
-			}
-		}
-	}
-	
-	pos += size;
+	c += "};\r\n";
 }
 
-{
-	var diff = (ACTOR_DATA_SIZE - pos);
-	if (diff)
-	{
-		c += "\t_(" + diff.toString() + ");\r\n";
-	}
-}
+CreateActorData("ACTOR_DATA_DANTE", CHAR_DANTE);
+CreateActorData("ACTOR_DATA_VERGIL", CHAR_DANTE);
 
-c += "};\r\n";
-c_assert += "\r\n";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// c += "};\r\n";
+
+// c += "\r\n";
+// c_assert += "\r\n";
+
+// c += "struct ACTOR_DATA_CHAR_VERGIL\r\n";
+// c += "{\r\n";
+
+// pos = 0;
+
+// for (var index = 0; index < char.length; index++)
+// {
+// 	var name      = char[index][0];
+// 	var type      = char[index][1];
+// 	var off       = char[index][2];
+// 	var character = char[index][3];
+	
+// 	if ((character != undefined) && (character != CHAR_VERGIL))
+// 	{
+// 		continue;
+// 	}
+	
+// 	{
+// 		var diff = (off - pos);
+// 		if (diff)
+// 		{
+// 			c += "\t_(" + diff.toString() + ");\r\n";
+// 			pos += diff;
+// 		}
+// 	}
+	
+// 	c += "\t" + type + " " + name + "; // 0x" + off.toString(16).toUpperCase() + "\r\n";
+	
+// 	//c_assert += "static_assert(offsetof(ACTOR_DATA_CHAR_VERGIL, " + name + ") == 0x" + off + ");\r\n";
+// 	c_assert += "static_assert(offsetof(ACTOR_DATA_VERGIL, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
+	
+// 	var size = GetTypeSize(type);
+	
+// 	{
+// 		var match = name.match(/\[\d+?\]/g);
+// 		if (match)
+// 		{
+// 			for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
+// 			{
+// 				var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
+// 				size *= count;
+// 			}
+// 		}
+// 	}
+	
+// 	pos += size;
+// }
+
+// {
+// 	var diff = (ACTOR_DATA_SIZE - pos);
+// 	if (diff)
+// 	{
+// 		c += "\t_(" + diff.toString() + ");\r\n";
+// 	}
+// }
+
+// c += "};\r\n";
+// c_assert += "\r\n";
+
+
+
+
+
+// c += "struct ACTOR_DATA_EXTRA\r\n";
+// c += "{\r\n";
+
+// pos = 0;
+
+// for (var index = 0; index < extra.length; index++)
+// {
+// 	var name = extra[index][0];
+// 	var type = extra[index][1];
+
+// 	var size = GetTypeSize(type);
+
+// 	{
+// 		var match = name.match(/\[\d+?\]/g);
+// 		if (match)
+// 		{
+// 			for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
+// 			{
+// 				var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
+// 				size *= count;
+// 			}
+// 		}
+// 	}
+
+// 	{
+// 		var lastPos = pos;
+
+// 		if (name.match(/\[/))
+// 		{
+// 			Align(4);
+// 		}
+// 		if (type.match(/\*/))
+// 		{
+// 			Align(8);
+// 		}
+
+// 		var diff = (pos - lastPos);
+// 		if (diff)
+// 		{
+// 			c += "\t_(" + diff.toString() + ");\r\n";
+// 		}
+// 	}
+
+// 	c += "\t" + type + " " + name + "; // 0x" + pos.toString(16).toUpperCase() + "\r\n";
+
+// 	//c_assert += "static_assert(offsetof(ACTOR_DATA_EXTRA, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
+// 	c_assert += "static_assert(offsetof(ACTOR_DATA_EXTRA, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
+
+// 	pos += size;
+// }
+
+// c += "};\r\n";
+
+// c += "\r\n";
+// c_assert += "\r\n";
+
+
+
+
+
+
+
+
+
+
+
+
 //c += "#pragma pack(pop)\r\n";
 //c += "\r\n";
 //c += "#undef _\r\n";
 
 c += "\r\n";
-c += "struct ACTOR_DATA : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VOID, ACTOR_DATA_EXTRA\r\n";
+//c += "struct ACTOR_DATA : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VOID, ACTOR_DATA_EXTRA\r\n";
+c += "struct ACTOR_DATA\r\n";
 c += "{\r\n";
 c += "\toperator ACTOR_DATA_DANTE &()\r\n";
 c += "\t{\r\n";
@@ -460,7 +556,8 @@ c += "};\r\n";
 
 c += "\r\n";
 
-c += "struct ACTOR_DATA_DANTE : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_DANTE, ACTOR_DATA_EXTRA\r\n";
+//c += "struct ACTOR_DATA_DANTE : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_DANTE, ACTOR_DATA_EXTRA\r\n";
+c += "struct ACTOR_DATA_DANTE\r\n";
 c += "{\r\n";
 c += "\toperator ACTOR_DATA &()\r\n";
 c += "\t{\r\n";
@@ -470,7 +567,8 @@ c += "};\r\n";
 
 c += "\r\n";
 
-c += "struct ACTOR_DATA_VERGIL : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VERGIL, ACTOR_DATA_EXTRA\r\n";
+//c += "struct ACTOR_DATA_VERGIL : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VERGIL, ACTOR_DATA_EXTRA\r\n";
+c += "struct ACTOR_DATA_VERGIL\r\n";
 c += "{\r\n";
 c += "\toperator ACTOR_DATA &()\r\n";
 c += "\t{\r\n";
@@ -480,61 +578,11 @@ c += "};\r\n";
 
 //c += "\r\n";
 
-c_assert += "static_assert((sizeof(ACTOR_DATA_BASE) + sizeof(ACTOR_DATA_CHAR_VOID)) == 0xB8C0);\r\n";
-c_assert += "static_assert((sizeof(ACTOR_DATA_BASE) + sizeof(ACTOR_DATA_CHAR_DANTE)) == 0xB8C0);\r\n";
-c_assert += "static_assert((sizeof(ACTOR_DATA_BASE) + sizeof(ACTOR_DATA_CHAR_VERGIL)) == 0xB8C0);\r\n";
+//c_assert += "static_assert((sizeof(ACTOR_DATA_BASE) + sizeof(ACTOR_DATA_CHAR_VOID)) == 0xB8C0);\r\n";
+//c_assert += "static_assert((sizeof(ACTOR_DATA_BASE) + sizeof(ACTOR_DATA_CHAR_DANTE)) == 0xB8C0);\r\n";
+//c_assert += "static_assert((sizeof(ACTOR_DATA_BASE) + sizeof(ACTOR_DATA_CHAR_VERGIL)) == 0xB8C0);\r\n";
 
 fs.writeFileSync("actorData.cpp", c + "\r\n" + c_assert);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -628,193 +676,37 @@ var AddCheatEntry = function
 	{
 		c += "<ByteLength>" + size + "</ByteLength>\r\n";
 	}
-	//if (isVector)
-	{
-		c += "<Address>Mary.System_Actor_actorBaseAddr+8+" + (actor * 8).toString(16).toUpperCase() + "</Address>\r\n";
-	}
-	// else
-	// {
-	// 	c += "<Address>dmc3.exe+C90E28</Address>\r\n"
-	// }
+	c += "<Address>Mary.System_Actor_actorBaseAddr+8+" + (actor * 8).toString(16).toUpperCase() + "</Address>\r\n";
 	c += "<Offsets>\r\n";
 	c += "<Offset>" + off.toString(16).toUpperCase() + "</Offset>\r\n";
-	// if (!isVector)
-	// {
-	// 	c += "<Offset>" + (0x18 + (actor * 8)).toString(16).toUpperCase() + "</Offset>\r\n";
-	// }
 	c += "</Offsets>\r\n";
 	c += "</CheatEntry>\r\n";
 }
 
-c = "";
-
-c += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
-c += "<CheatTable>\r\n";
-c += "<CheatEntries>\r\n";
-
-c += "<CheatEntry>\r\n";
-c += "<Description>\"__ACTOR__\"</Description>\r\n";
-c += "<Options moHideChildren=\"1\"/>\r\n";
-c += "<GroupHeader>1</GroupHeader>\r\n";
-c += "<CheatEntries>\r\n";
-
-for (var actor = 0; actor < 4; actor++)
+function AddActorDataCE
+(
+	data,
+	id,
+	actor
+)
 {
-	c += "<CheatEntry>\r\n";
-	c += "<Description>\"" + lz(actor) + "\"</Description>\r\n";
-	c += "<Options moHideChildren=\"1\"/>\r\n";
-	c += "<GroupHeader>1</GroupHeader>\r\n";
-	c += "<CheatEntries>\r\n";
-	
-	pos = 0;
-	
-	for (var itemIndex = 0; itemIndex < base.length; itemIndex++)
+	for (var index = 0; index < data.length; index++)
 	{
-		var name = base[itemIndex][0];
-		var type = base[itemIndex][1];
-		var _off = base[itemIndex][2];
-
-		var count = 1;
-
+		var name      = data[index][0];
+		var type      = data[index][1];
+		var off       = data[index][2];
+		var character = data[index][3];
+		
+		if ((character != undefined) && (character != id))
 		{
-			var match = name.match(/\[\d+?\]/g);
-			if (match)
-			{
-				for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
-				{
-					count *= parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
-				}
-			}
+			continue;
 		}
-
-		for (var index = 0; index < count; index++)
+		
+		if (off != undefined)
 		{
-			var description = name.split("[")[0];
-			if (count > 1)
-			{
-				description += " " + lz(index);
-			}
-			var off = (_off + (index * GetTypeSize(type)));
-			
-			if (type == "vec4")
-			{
-				AddCheatEntry(description + " x", false, "Float", 0, (off + 0  ), actor);
-				AddCheatEntry(description + " y", false, "Float", 0, (off + 4  ), actor);
-				AddCheatEntry(description + " z", false, "Float", 0, (off + 8  ), actor);
-				AddCheatEntry(description + " a", false, "Float", 0, (off + 0xC), actor);
-				continue;
-			}
-			else if (type == "INPUT_DATA")
-			{
-				continue;
-			}
-			else if (type == "MOTION_DATA")
-			{
-				continue;
-			}
-			else if (type == "MODEL_METADATA")
-			{
-				continue;
-			}
-			else if (type == "MODEL_DATA")
-			{
-				continue;
-			}
-			else if (type == "DEVIL_MODEL_METADATA_DANTE")
-			{
-				continue;
-			}
-			
-			AddCheatEntry(description, GetShowAsHex(type), GetVariableType(type), 0, off, actor);
+			pos = off;
 		}
-	}
-	
-	pos = 512;
-	
-	for (var itemIndex = 0; itemIndex < char.length; itemIndex++)
-	{
-		var name = char[itemIndex][0];
-		var type = char[itemIndex][1];
-		var _off = char[itemIndex][2];
-
-		var count = 1;
-
-		{
-			var match = name.match(/\[\d+?\]/g);
-			if (match)
-			{
-				for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
-				{
-					count *= parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
-				}
-			}
-		}
-
-		for (var index = 0; index < count; index++)
-		{
-			var description = name.split("[")[0];
-			if (count > 1)
-			{
-				description += " " + lz(index);
-			}
-			var off = (_off + (index * GetTypeSize(type)));
-			
-			if (type == "vec4")
-			{
-				AddCheatEntry(description + " x", false, "Float", 0, (off + 0  ), actor);
-				AddCheatEntry(description + " y", false, "Float", 0, (off + 4  ), actor);
-				AddCheatEntry(description + " z", false, "Float", 0, (off + 8  ), actor);
-				AddCheatEntry(description + " a", false, "Float", 0, (off + 0xC), actor);
-				continue;
-			}
-			else if (type == "INPUT_DATA")
-			{
-				continue;
-			}
-			else if (type == "MOTION_DATA")
-			{
-				continue;
-			}
-			else if (type == "MODEL_METADATA")
-			{
-				continue;
-			}
-			else if (type == "MODEL_DATA")
-			{
-				continue;
-			}
-			else if (type == "DEVIL_MODEL_METADATA_DANTE")
-			{
-				continue;
-			}
-			
-			AddCheatEntry(description, GetShowAsHex(type), GetVariableType(type), 0, off, actor);
-		}
-	}
-	
-	pos = 0xB8C0;
-	
-	for (var itemIndex = 0; itemIndex < extra.length; itemIndex++)
-	{
-		var name = extra[itemIndex][0];
-		var type = extra[itemIndex][1];
-	
-		var size = GetTypeSize(type);
-		var count = 1;
-	
-		{
-			var match = name.match(/\[\d+?\]/g);
-			if (match)
-			{
-				for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
-				{
-					var value = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
-					//size *= value;
-					count *= value;
-				}
-			}
-		}
-	
+		else
 		{
 			if (type.match(/\*/))
 			{
@@ -825,27 +717,36 @@ for (var actor = 0; actor < 4; actor++)
 				Align(4);
 			}
 		}
-	
-		for (var index = 0; index < count; index++)
+		
+		var count = 1;
+		
+		{
+			var match = name.match(/\[\d+?\]/g);
+			if (match)
+			{
+				for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
+				{
+					count *= parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
+				}
+			}
+		}
+		
+		var size = GetTypeSize(type);
+		
+		for (var entryIndex = 0; entryIndex < count; entryIndex++)
 		{
 			var description = name.split("[")[0];
 			if (count > 1)
 			{
-				description += " " + lz(index);
+				description += " " + lz(entryIndex);
 			}
-			//var off = (pos + (index * size));
-	
-			var off = pos;
-	
-	
-			pos += size;
-	
+			
 			if (type == "vec4")
 			{
-				AddCheatEntry(description + " x", false, "Float", 0, (off + 0  ), actor);
-				AddCheatEntry(description + " y", false, "Float", 0, (off + 4  ), actor);
-				AddCheatEntry(description + " z", false, "Float", 0, (off + 8  ), actor);
-				AddCheatEntry(description + " a", false, "Float", 0, (off + 0xC), actor);
+				AddCheatEntry(description + " x", false, "Float", 0, (pos + 0  ), actor);
+				AddCheatEntry(description + " y", false, "Float", 0, (pos + 4  ), actor);
+				AddCheatEntry(description + " z", false, "Float", 0, (pos + 8  ), actor);
+				AddCheatEntry(description + " a", false, "Float", 0, (pos + 0xC), actor);
 				continue;
 			}
 			else if (type == "INPUT_DATA")
@@ -864,17 +765,62 @@ for (var actor = 0; actor < 4; actor++)
 			{
 				continue;
 			}
+			else if (type == "DEVIL_MODEL_METADATA_DANTE")
+			{
+				continue;
+			}
 			
-			AddCheatEntry(description, GetShowAsHex(type), GetVariableType(type), 0, off, actor);
+			AddCheatEntry(description, GetShowAsHex(type), GetVariableType(type), 0, pos, actor);
+			
+			pos += size;
 		}
+	}
+}
+
+function CreateActorDataCE
+(
+	groupName,
+	id
+)
+{
+	c += "<CheatEntry>\r\n";
+	c += "<Description>\"" + groupName + "\"</Description>\r\n";
+	c += "<Options moHideChildren=\"1\"/>\r\n";
+	c += "<GroupHeader>1</GroupHeader>\r\n";
+	c += "<CheatEntries>\r\n";
+	
+	for (var actor = 0; actor < 4; actor++)
+	{
+		c += "<CheatEntry>\r\n";
+		c += "<Description>\"" + lz(actor) + "\"</Description>\r\n";
+		c += "<Options moHideChildren=\"1\"/>\r\n";
+		c += "<GroupHeader>1</GroupHeader>\r\n";
+		c += "<CheatEntries>\r\n";
+		
+		pos = 0;
+		
+		AddActorDataCE(items, id, actor);
+		
+		pos = ACTOR_DATA_SIZE;
+		
+		AddActorDataCE(extra, id, actor);
+		
+		c += "</CheatEntries>\r\n";
+		c += "</CheatEntry>\r\n";
 	}
 	
 	c += "</CheatEntries>\r\n";
 	c += "</CheatEntry>\r\n";
 }
 
-c += "</CheatEntries>\r\n";
-c += "</CheatEntry>\r\n";
+c = "";
+
+c += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
+c += "<CheatTable>\r\n";
+c += "<CheatEntries>\r\n";
+
+CreateActorDataCE("__DANTE__", CHAR_DANTE);
+CreateActorDataCE("__VERGIL__", CHAR_VERGIL);
 
 c += "</CheatEntries>\r\n";
 c += "</CheatTable>\r\n";
