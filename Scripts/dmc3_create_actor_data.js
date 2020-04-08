@@ -1,93 +1,110 @@
-var items =
+const CHAR_DANTE  = 0;
+const CHAR_VERGIL = 3;
+
+const ACTOR_DATA_SIZE = 0xB8C0;
+
+var base =
 [
-	[ "init"                     , "bool"       , 8      ],
-	[ "characterLogic"           , "uint8"      , 0x78   ],
-	[ "position"                 , "vec4"       , 0x80   ],
-	[ "direction"                , "uint16"     , 0xC0   ],
-	[ "actorId"                  , "uint8"      , 0x118  ],
-	[ "isDoppelganger"           , "bool"       , 0x11C  ],
-	[ "visible"                  , "uint8"      , 0x120  ],
-	[ "motionFile[32]"           , "byte8 *"    , 0x38A0 ],
-	[ "motionData[5]"            , "MOTION_DATA", 0x39B0 ],
-	[ "shadow"                   , "uint8"      , 0x3A18 ],
-	[ "color"                    , "byte32"     , 0x3A28 ],
-	[ "motionState1[4]"          , "byte32"     , 0x3E00 ],
-	[ "chargedShotAir"           , "uint16"     , 0x3E1A ],
-	[ "chargedShot"              , "uint16"     , 0x3E22 ],
-	[ "idleTimer"                , "float32"    , 0x3E38 ],
-	[ "motionState2[3]"          , "byte32"     , 0x3E60 ],
-	[ "activeModel"              , "uint8"      , 0x3E6C ],
-	[ "queuedModel"              , "uint8"      , 0x3E70 ],
-	[ "modelIndex[3]"            , "uint32"     , 0x3E74 ],
-	[ "modelState"               , "uint8"      , 0x3E80 ],
-	[ "lockOn"                   , "bool"       , 0x3E84 ],
-	[ "modelIndexMirror"         , "uint8"      , 0x3E88 ],
-	[ "devilState"               , "uint8"      , 0x3E94 ],
-	[ "devil"                    , "bool"       , 0x3E9B ],
-	[ "costume"                  , "uint8"      , 0x3E9E ],
-	[ "specialCostume"           , "bool"       , 0x3E9F ],
-	[ "magicPoints"              , "float32"    , 0x3EB8 ],
-	[ "maxMagicPoints"           , "float32"    , 0x3EBC ],
-	[ "move"                     , "uint8"      , 0x3FA4 ],
-	[ "lastMove"                 , "uint8"      , 0x3FA5 ],
-	[ "chainCount"               , "uint8"      , 0x3FAC ],
-	[ "expertise[16]"            , "byte32"     , 0x3FEC ],
-	[ "maxHitPoints"             , "float32"    , 0x40EC ],
-	[ "hitPoints"                , "float32"    , 0x411C ],
-	[ "targetBaseAddr"           , "byte8 *"    , 0x6328 ],
-	[ "style"                    , "uint8"      , 0x6338 ],
-	[ "styleLevel"               , "uint8"      , 0x6358 ],
-	[ "dashCount"                , "uint8"      , 0x635C ],
-	[ "skyStarCount"             , "uint8"      , 0x635D ],
-	[ "airTrickCount"            , "uint8"      , 0x635E ],
-	[ "trickUpCount"             , "uint8"      , 0x635F ],
-	[ "trickDownCount"           , "uint8"      , 0x6360 ],
-	[ "quicksilver"              , "bool"       , 0x6361 ],
-	[ "doppelganger"             , "bool"       , 0x6362 ],
-	[ "styleExperience"          , "float32"    , 0x6364 ],
-	[ "controlLinkedActor"       , "bool"       , 0x6454 ],
-	[ "linkedActorBaseAddr"      , "byte8 *"    , 0x6478 ],
-	[ "selectedMeleeWeaponVergil", "uint8"      , 0x6488 ],
-	[ "activeWeapon"             , "uint8"      , 0x648D ],
-	[ "selectedMeleeWeapon"      , "uint8"      , 0x6490 ],
-	[ "selectedRangedWeapon"     , "uint8"      , 0x6494 ],
-	[ "equipment[4]"             , "uint8"      , 0x6498 ],
-	[ "weaponMetadata[4]"        , "byte8 *"    , 0x64A0 ],
-	[ "weaponFlags[4]"           , "byte32"     , 0x64C8 ],
-	[ "activeMeleeWeapon"        , "uint8"      , 0x64F0 ],
-	[ "activeRangedWeapon"       , "uint8"      , 0x64F1 ],
-	[ "weaponTimer[4]"           , "float32"    , 0x64F4 ],
-	[ "styleRank"                , "uint8"      , 0x6510 ],
-	[ "styleMeter"               , "float32"    , 0x6514 ],
-	[ "inputData[58]"            , "INPUT_DATA" , 0x6674 ],
-	[ "collisionIndex"           , "uint32"     , 0x7254 ],
-	[ "interactionData[8]"       , "vec4"       , 0x7460 ],
-	[ "buttons[4]"               , "byte16"     , 0x74E0 ],
-	[ "rightStick[2]"            , "byte16"     , 0x74F8 ],
-	[ "leftStick[2]"             , "byte16"     , 0x7508 ],
-	[ "cameraDirection"          , "uint16"     , 0x750C ],
-	[ "leftStickDirection[2]"    , "uint32"     , 0x751C ],
-	[ "modelData[6]"             , "MODEL_DATA" , 0xB630 ],
-	[ "artemisChargeValue[2]"    , "float32"    , 0xB868 ],
-	[ "artemisChargeFlags[2]"    , "byte32"     , 0xB87C ],
+	[ "init"          , "bool"  , 8     ],
+	[ "character"     , "uint32", 0x78  ],
+	[ "position"      , "vec4"  , 0x80  ],
+	[ "direction"     , "uint16", 0xC0  ],
+	[ "id"            , "uint8" , 0x118 ],
+	[ "isDoppelganger", "bool"  , 0x11C ],
+	[ "visible"       , "uint32", 0x120 ],
 ];
 
-var extra = 
+var char =
 [
-	[ "character"         , "uint8"   ],
-	[ "parentBaseAddr"    , "byte8 *" ],
-	[ "childBaseAddr[4]"  , "byte8 *" ],
-	[ "hide"              , "bool"    ],
-	[ "hideWeapons"       , "bool"    ],
-	[ "hideSummonedSwords", "bool"    ],
-	[ "gamepad"           , "uint8"   ],
-	[ "buttonMask"        , "byte16"  ],
-	[ "leftStickMask"     , "byte16"  ],
-	[ "styleMap[6][2]"    , "uint8"   ],
-	[ "meleeWeaponCount"  , "uint8"   ],
-	[ "meleeWeaponMap[5]" , "uint8"   ],
-	[ "rangedWeaponCount" , "uint8"   ],
-	[ "rangedWeaponMap[5]", "uint8"   ],
+	[ "modelData[3]"             , "MODEL_DATA"                , 0x200               ],
+	[ "motionArchive[32]"        , "byte8 *"                   , 0x38A0              ],
+	[ "motionData[5]"            , "MOTION_DATA"               , 0x39B0              ],
+	[ "shadow"                   , "uint32"                    , 0x3A18              ],
+	[ "color"                    , "byte32"                    , 0x3A28              ],
+	[ "motionState1[6]"          , "byte32"                    , 0x3E00              ],
+	[ "chargedShotAir"           , "uint16"                    , 0x3E1A, CHAR_DANTE  ],
+	[ "chargedShot"              , "uint16"                    , 0x3E22, CHAR_DANTE  ],
+	[ "motionTimer"              , "float32"                   , 0x3E34              ],
+	[ "idleTimer"                , "float32"                   , 0x3E38              ],
+	[ "motionState2[3]"          , "byte32"                    , 0x3E60              ],
+	[ "activeModel"              , "uint8"                     , 0x3E6C              ],
+	[ "queuedModel"              , "uint8"                     , 0x3E70              ],
+	[ "modelIndex[3]"            , "uint32"                    , 0x3E74              ],
+	[ "modelState"               , "uint8"                     , 0x3E80              ],
+	[ "lockOn"                   , "bool"                      , 0x3E84              ],
+	[ "modelIndexMirror"         , "uint8"                     , 0x3E88              ],
+	[ "devilState"               , "uint8"                     , 0x3E94              ],
+	[ "devil"                    , "bool"                      , 0x3E9B              ],
+	[ "nativeCostume"            , "uint8"                     , 0x3E9E              ],
+	[ "spardaCostume"            , "bool"                      , 0x3E9F              ],
+	[ "magicPoints"              , "float32"                   , 0x3EB8              ],
+	[ "maxMagicPoints"           , "float32"                   , 0x3EBC              ],
+	[ "cameraDirection"          , "uint16"                    , 0x3ED8              ],
+	[ "move"                     , "uint8"                     , 0x3FA4              ],
+	[ "lastMove"                 , "uint8"                     , 0x3FA5              ],
+	[ "chainCount"               , "uint8"                     , 0x3FAC              ],
+	[ "expertise[16]"            , "byte32"                    , 0x3FEC              ],
+	[ "maxHitPoints"             , "float32"                   , 0x40EC              ],
+	[ "hitPoints"                , "float32"                   , 0x411C              ],
+	[ "targetBaseAddr"           , "byte8 *"                   , 0x6328              ],
+	[ "nativeStyle"              , "uint8"                     , 0x6338              ],
+	[ "styleLevel"               , "uint8"                     , 0x6358              ],
+	[ "dashCount"                , "uint8"                     , 0x635C, CHAR_DANTE  ],
+	[ "skyStarCount"             , "uint8"                     , 0x635D, CHAR_DANTE  ],
+	[ "airTrickCount"            , "uint8"                     , 0x635E              ],
+	[ "trickUpCount"             , "uint8"                     , 0x635F              ],
+	[ "trickDownCount"           , "uint8"                     , 0x6360              ],
+	[ "quicksilver"              , "bool"                      , 0x6361, CHAR_DANTE  ],
+	[ "doppelganger"             , "bool"                      , 0x6362, CHAR_DANTE  ],
+	[ "styleExperience"          , "float32"                   , 0x6364              ],
+	[ "cloneIsActive"            , "bool"                      , 0x6454, CHAR_DANTE  ],
+	[ "cloneBaseAddr"            , "byte8 *"                   , 0x6478, CHAR_DANTE  ],
+	[ "cloneIsControlledByPlayer", "bool"                      , 0x6480, CHAR_DANTE  ],
+	[ "weaponIndex[2]"           , "uint32"                    , 0x6484, CHAR_VERGIL ],
+	[ "activeWeapon"             , "uint8"                     , 0x648D, CHAR_DANTE  ],
+	[ "weaponIndex[2]"           , "uint32"                    , 0x6490, CHAR_DANTE  ],
+	[ "weaponMap[5]"             , "uint8"                     , 0x6498              ],
+	[ "weaponData[5]"            , "byte8 *"                   , 0x64A0              ],
+	[ "weaponFlags[5]"           , "byte32"                    , 0x64C8              ],
+	[ "weaponTimer[5]"           , "float32"                   , 0x64F4              ],
+	[ "weaponTimeout[2]"         , "float32"                   , 0x6508              ],
+	[ "styleRank"                , "uint8"                     , 0x6510              ],
+	[ "styleMeter"               , "float32"                   , 0x6514              ],
+	[ "inputData[58]"            , "INPUT_DATA"                , 0x6674              ],
+	[ "collisionIndex"           , "uint32"                    , 0x7254              ],
+	[ "interactionData[8]"       , "vec4"                      , 0x7460              ],
+	[ "buttons[4]"               , "byte16"                    , 0x74E0              ],
+	[ "rightStick[2]"            , "byte16"                    , 0x74F8              ],
+	[ "leftStick[2]"             , "byte16"                    , 0x7508              ],
+	[ "actorCameraDirection"     , "uint16"                    , 0x750C              ],
+	[ "leftStickDirection[2]"    , "uint32"                    , 0x751C              ],
+	[ "devilModelMetadata"       , "DEVIL_MODEL_METADATA_DANTE", 0xB600, CHAR_DANTE  ],
+	[ "modelMetadata[6]"         , "MODEL_METADATA"            , 0xB630, CHAR_DANTE  ],
+	[ "modelMetadata[6]"         , "MODEL_METADATA"            , 0xB640, CHAR_VERGIL ],
+	[ "artemisChargeValue[2]"    , "float32"                   , 0xB868, CHAR_DANTE  ],
+	[ "artemisChargeFlags[2]"    , "byte32"                    , 0xB87C, CHAR_DANTE  ],
+];
+
+var extra =
+[
+	[ "characterModel"     , "uint8"   ],
+	[ "parentBaseAddr"     , "byte8 *" ],
+	[ "childBaseAddr[4]"   , "byte8 *" ],
+	[ "gamepad"            , "uint8"   ],
+	[ "buttonMask"         , "byte16"  ],
+	[ "copyPosition"       , "bool"    ],
+	[ "style"              , "uint8"   ],
+	[ "styleMap[5][2]"     , "uint8"   ],
+	[ "meleeWeapon"        , "uint8"   ],
+	[ "meleeWeaponMap[5]"  , "uint8"   ],
+	[ "meleeWeaponData[5]" , "byte8 *" ],
+	[ "meleeWeaponCount"   , "uint8"   ],
+	[ "meleeWeaponIndex"   , "uint8"   ],
+	[ "rangedWeapon"       , "uint8"   ],
+	[ "rangedWeaponMap[5]" , "uint8"   ],
+	[ "rangedWeaponData[5]", "byte8 *" ],
+	[ "rangedWeaponCount"  , "uint8"   ],
+	[ "rangedWeaponIndex"  , "uint8"   ],
 ];
 
 var c = "";
@@ -118,21 +135,23 @@ var GetTypeSize = function(str)
 {
 	var sizes =
 	[
-		[ "uint8"       , 1  ],
-		[ "uint16"      , 2  ],
-		[ "uint32"      , 4  ],
-		[ "uint64"      , 8  ],
-		[ "byte8"       , 1  ],
-		[ "byte16"      , 2  ],
-		[ "byte32"      , 4  ],
-		[ "byte64"      , 8  ],
-		[ "byte8 *"     , 8  ],
-		[ "bool"        , 1  ],
-		[ "float32"     , 4  ],
-		[ "vec4"        , 16 ],
-		[ "INPUT_DATA"  , 12 ],
-		[ "MOTION_DATA" , 2  ],
-		[ "MODEL_DATA"  , 80 ],
+		[ "uint8"                     , 1    ],
+		[ "uint16"                    , 2    ],
+		[ "uint32"                    , 4    ],
+		[ "uint64"                    , 8    ],
+		[ "byte8"                     , 1    ],
+		[ "byte16"                    , 2    ],
+		[ "byte32"                    , 4    ],
+		[ "byte64"                    , 8    ],
+		[ "byte8 *"                   , 8    ],
+		[ "bool"                      , 1    ],
+		[ "float32"                   , 4    ],
+		[ "vec4"                      , 16   ],
+		[ "INPUT_DATA"                , 12   ],
+		[ "MOTION_DATA"               , 2    ],
+		[ "MODEL_METADATA"            , 80   ],
+		[ "MODEL_DATA"                , 1920 ],
+		[ "DEVIL_MODEL_METADATA_DANTE", 33   ],
 	];
 	for (var index = 0; index < sizes.length; index++)
 	{
@@ -158,21 +177,49 @@ var Align = function(boundary)
 
 // Cpp
 
-c += "#define _(size) struct { byte8 padding[size]; }\n";
-c += "\n";
-c += "#pragma pack(push, 1)\n";
-c += "\n";
-c += "struct ACTOR_DATA\n";
-c += "{\n";
+c += "struct ACTOR_DATA_BASE;\r\n";
+c += "struct ACTOR_DATA_EXTRA;\r\n";
+c += "struct ACTOR_DATA_CHAR_VOID;\r\n";
+c += "struct ACTOR_DATA_CHAR_DANTE;\r\n";
+c += "struct ACTOR_DATA_CHAR_VERGIL;\r\n";
+c += "struct ACTOR_DATA;\r\n";
+c += "struct ACTOR_DATA_DANTE;\r\n";
+c += "struct ACTOR_DATA_VERGIL;\r\n";
+c += "\r\n";
 
-for (var index = 0; index < items.length; index++)
+// c += "#define _(size) struct { byte8 padding[size]; }\n";
+// c += "\n";
+// c += "#pragma pack(push, 1)\n";
+// c += "\n";
+c += "struct ACTOR_DATA_BASE\r\n";
+c += "{\r\n";
+
+pos = 0;
+
+for (var index = 0; index < base.length; index++)
 {
-	var name = items[index][0];
-	var type = items[index][1];
-	var off  = items[index][2];
-
+	var name = base[index][0];
+	var type = base[index][1];
+	var off  = base[index][2];
+	
+	{
+		var diff = (off - pos);
+		if (diff)
+		{
+			c += "\t_(" + diff.toString() + ");\r\n";
+			pos += diff;
+		}
+	}
+	
+	c += "\t" + type + " " + name + "; // 0x" + off.toString(16).toUpperCase() + "\r\n";
+	
+	//c_assert += "static_assert(offsetof(ACTOR_DATA_BASE, " + name + ") == 0x" + off + ");\r\n";
+	c_assert += "static_assert(offsetof(ACTOR_DATA_BASE, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
+	
+	
+	
 	var size = GetTypeSize(type);
-
+	
 	{
 		var match = name.match(/\[\d+?\]/g);
 		if (match)
@@ -184,32 +231,27 @@ for (var index = 0; index < items.length; index++)
 			}
 		}
 	}
-
-	{
-		var diff = (off - pos);
-		if (diff)
-		{
-			c += "\t_(" + diff.toString() + ");\n";
-			pos += diff;
-		}
-	}
-
-	c += "\t" + type + " " + name + "; // 0x" + pos.toString(16).toUpperCase() + "\n";
-
-	c_assert += "static_assert(offsetof(ACTOR_DATA, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\n";
-
+	
 	pos += size;
 }
 
 {
-	var diff = (0xB8C0 - pos);
+	var diff = (ACTOR_DATA_SIZE - pos);
 	if (diff)
 	{
-		c += "\t_(" + diff.toString() + ");\n";
+		c += "\t_(" + diff.toString() + ");\r\n";
 	}
 }
 
-pos = 0xB8C0;
+c += "};\r\n";
+
+c += "\r\n";
+c_assert += "\r\n";
+
+c += "struct ACTOR_DATA_EXTRA\r\n";
+c += "{\r\n";
+
+pos = ACTOR_DATA_SIZE;
 
 for (var index = 0; index < extra.length; index++)
 {
@@ -245,24 +287,274 @@ for (var index = 0; index < extra.length; index++)
 		var diff = (pos - lastPos);
 		if (diff)
 		{
-			c += "\t_(" + diff.toString() + ");\n";
+			c += "\t_(" + diff.toString() + ");\r\n";
 		}
 	}
 
-	c += "\t" + type + " " + name + "; // 0x" + pos.toString(16).toUpperCase() + "\n";
+	c += "\t" + type + " " + name + "; // 0x" + pos.toString(16).toUpperCase() + "\r\n";
 
-	c_assert += "static_assert(offsetof(ACTOR_DATA, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\n";
+	//c_assert += "static_assert(offsetof(ACTOR_DATA_EXTRA, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
+	c_assert += "static_assert(offsetof(ACTOR_DATA_EXTRA, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
 
 	pos += size;
 }
 
-c += "};\n";
-c += "\n";
-c += "#pragma pack(pop)\n";
-c += "\n";
-c += "#undef _\n";
+c += "};\r\n";
 
-fs.writeFileSync("actorData.cpp", c + "\n" + c_assert);
+c += "\r\n";
+c_assert += "\r\n";
+
+c += "struct ACTOR_DATA_CHAR_VOID\r\n";
+c += "{\r\n";
+
+pos = 512;
+
+{
+	var diff = (ACTOR_DATA_SIZE - pos);
+	if (diff)
+	{
+		c += "\t_(" + diff.toString() + ");\r\n";
+	}
+}
+
+c += "};\r\n";
+
+c += "\r\n";
+
+c += "struct ACTOR_DATA_CHAR_DANTE\r\n";
+c += "{\r\n";
+
+pos = 512;
+
+for (var index = 0; index < char.length; index++)
+{
+	var name      = char[index][0];
+	var type      = char[index][1];
+	var off       = char[index][2];
+	var character = char[index][3];
+	
+	if ((character != undefined) && (character != CHAR_DANTE))
+	{
+		continue;
+	}
+	
+	{
+		var diff = (off - pos);
+		if (diff)
+		{
+			c += "\t_(" + diff.toString() + ");\r\n";
+			pos += diff;
+		}
+	}
+	
+	c += "\t" + type + " " + name + "; // 0x" + off.toString(16).toUpperCase() + "\r\n";
+	
+	//c_assert += "static_assert(offsetof(ACTOR_DATA_CHAR_DANTE, " + name + ") == 0x" + off + ");\r\n";
+	c_assert += "static_assert(offsetof(ACTOR_DATA_CHAR_DANTE, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
+	
+	var size = GetTypeSize(type);
+	
+	{
+		var match = name.match(/\[\d+?\]/g);
+		if (match)
+		{
+			for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
+			{
+				var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
+				size *= count;
+			}
+		}
+	}
+	
+	pos += size;
+}
+
+{
+	var diff = (ACTOR_DATA_SIZE - pos);
+	if (diff)
+	{
+		c += "\t_(" + diff.toString() + ");\r\n";
+	}
+}
+
+c += "};\r\n";
+
+c += "\r\n";
+c_assert += "\r\n";
+
+c += "struct ACTOR_DATA_CHAR_VERGIL\r\n";
+c += "{\r\n";
+
+pos = 512;
+
+for (var index = 0; index < char.length; index++)
+{
+	var name      = char[index][0];
+	var type      = char[index][1];
+	var off       = char[index][2];
+	var character = char[index][3];
+	
+	if ((character != undefined) && (character != CHAR_VERGIL))
+	{
+		continue;
+	}
+	
+	{
+		var diff = (off - pos);
+		if (diff)
+		{
+			c += "\t_(" + diff.toString() + ");\r\n";
+			pos += diff;
+		}
+	}
+	
+	c += "\t" + type + " " + name + "; // 0x" + off.toString(16).toUpperCase() + "\r\n";
+	
+	//c_assert += "static_assert(offsetof(ACTOR_DATA_CHAR_VERGIL, " + name + ") == 0x" + off + ");\r\n";
+	c_assert += "static_assert(offsetof(ACTOR_DATA_CHAR_VERGIL, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
+	
+	var size = GetTypeSize(type);
+	
+	{
+		var match = name.match(/\[\d+?\]/g);
+		if (match)
+		{
+			for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
+			{
+				var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
+				size *= count;
+			}
+		}
+	}
+	
+	pos += size;
+}
+
+{
+	var diff = (ACTOR_DATA_SIZE - pos);
+	if (diff)
+	{
+		c += "\t_(" + diff.toString() + ");\r\n";
+	}
+}
+
+c += "};\r\n";
+c_assert += "\r\n";
+//c += "#pragma pack(pop)\r\n";
+//c += "\r\n";
+//c += "#undef _\r\n";
+
+c += "\r\n";
+c += "struct ACTOR_DATA : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VOID, ACTOR_DATA_EXTRA\r\n";
+c += "{\r\n";
+c += "\toperator ACTOR_DATA_DANTE &()\r\n";
+c += "\t{\r\n";
+c += "\t\treturn *reinterpret_cast<ACTOR_DATA_DANTE *>(this);\r\n";
+c += "\t}\r\n";
+c += "\r\n";
+c += "\toperator ACTOR_DATA_VERGIL &()\r\n";
+c += "\t{\r\n";
+c += "\t\treturn *reinterpret_cast<ACTOR_DATA_VERGIL *>(this);\r\n";
+c += "\t}\r\n";
+c += "};\r\n";
+
+c += "\r\n";
+
+c += "struct ACTOR_DATA_DANTE : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_DANTE, ACTOR_DATA_EXTRA\r\n";
+c += "{\r\n";
+c += "\toperator ACTOR_DATA &()\r\n";
+c += "\t{\r\n";
+c += "\t\treturn *reinterpret_cast<ACTOR_DATA *>(this);\r\n";
+c += "\t}\r\n";
+c += "};\r\n";
+
+c += "\r\n";
+
+c += "struct ACTOR_DATA_VERGIL : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VERGIL, ACTOR_DATA_EXTRA\r\n";
+c += "{\r\n";
+c += "\toperator ACTOR_DATA &()\r\n";
+c += "\t{\r\n";
+c += "\t\treturn *reinterpret_cast<ACTOR_DATA *>(this);\r\n";
+c += "\t}\r\n";
+c += "};\r\n";
+
+//c += "\r\n";
+
+c_assert += "static_assert((sizeof(ACTOR_DATA_BASE) + sizeof(ACTOR_DATA_CHAR_VOID)) == 0xB8C0);\r\n";
+c_assert += "static_assert((sizeof(ACTOR_DATA_BASE) + sizeof(ACTOR_DATA_CHAR_DANTE)) == 0xB8C0);\r\n";
+c_assert += "static_assert((sizeof(ACTOR_DATA_BASE) + sizeof(ACTOR_DATA_CHAR_VERGIL)) == 0xB8C0);\r\n";
+
+fs.writeFileSync("actorData.cpp", c + "\r\n" + c_assert);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Cheat Engine
 
@@ -322,204 +614,269 @@ var AddCheatEntry = function
 	type,
 	size,
 	off,
-	actor,
-	isVector
+	actor
 )
 {
-	c += "<CheatEntry>\n";
-	c += "<Description>\"" + description + "\"</Description>\n";
+	c += "<CheatEntry>\r\n";
+	c += "<Description>\"" + description + "\"</Description>\r\n";
 	if (hex)
 	{
-		c += "<ShowAsHex>1</ShowAsHex>\n";
+		c += "<ShowAsHex>1</ShowAsHex>\r\n";
 	}
-	c += "<VariableType>" + type + "</VariableType>\n";
+	c += "<VariableType>" + type + "</VariableType>\r\n";
 	if (type == "Array of byte")
 	{
-		c += "<ByteLength>" + size + "</ByteLength>\n";
+		c += "<ByteLength>" + size + "</ByteLength>\r\n";
 	}
-	if (isVector)
+	//if (isVector)
 	{
-		c += "<Address>Mary.System_Actor_actorBaseAddr+8+" + (actor * 8).toString(16).toUpperCase() + "</Address>\n";
+		c += "<Address>Mary.System_Actor_actorBaseAddr+8+" + (actor * 8).toString(16).toUpperCase() + "</Address>\r\n";
 	}
-	else
-	{
-		c += "<Address>dmc3.exe+C90E28</Address>\n"
-	}
-	c += "<Offsets>\n";
-	c += "<Offset>" + off.toString(16).toUpperCase() + "</Offset>\n";
-	if (!isVector)
-	{
-		c += "<Offset>" + (0x18 + (actor * 8)).toString(16).toUpperCase() + "</Offset>\n";
-	}
-	c += "</Offsets>\n";
-	c += "</CheatEntry>\n";
-}
-
-var CreateData = function
-(
-	groupName,
-	actorCount,
-	isVector
-)
-{
-	c += "<CheatEntry>\n";
-	c += "<Description>\"" + groupName + "\"</Description>\n";
-	c += "<Options moHideChildren=\"1\"/>\n";
-	c += "<GroupHeader>1</GroupHeader>\n";
-	c += "<CheatEntries>\n";
-
-	for (var actor = 0; actor < actorCount; actor++)
-	{
-		c += "<CheatEntry>\n";
-		c += "<Description>\"" + lz(actor) + "\"</Description>\n";
-		c += "<Options moHideChildren=\"1\"/>\n";
-		c += "<GroupHeader>1</GroupHeader>\n";
-		c += "<CheatEntries>\n";
-		
-		for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
-		{
-			var name = items[itemIndex][0];
-			var type = items[itemIndex][1];
-			var _off = items[itemIndex][2];
-
-			var count = 1;
-
-			{
-				var match = name.match(/\[\d+?\]/g);
-				if (match)
-				{
-					for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
-					{
-						count *= parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
-					}
-				}
-			}
-
-			for (var index = 0; index < count; index++)
-			{
-				var description = name.split("[")[0];
-				if (count > 1)
-				{
-					description += " " + lz(index);
-				}
-				var off = (_off + (index * GetTypeSize(type)));
-				
-				if (type == "vec4")
-				{
-					AddCheatEntry(description + " x", false, "Float", 0, (off + 0  ), actor, isVector);
-					AddCheatEntry(description + " y", false, "Float", 0, (off + 4  ), actor, isVector);
-					AddCheatEntry(description + " z", false, "Float", 0, (off + 8  ), actor, isVector);
-					AddCheatEntry(description + " a", false, "Float", 0, (off + 0xC), actor, isVector);
-					continue;
-				}
-				else if (type == "INPUT_DATA")
-				{
-					continue;
-				}
-				else if (type == "MOTION_DATA")
-				{
-					continue;
-				}
-				else if (type == "MODEL_DATA")
-				{
-					continue;
-				}
-				
-				AddCheatEntry(description, GetShowAsHex(type), GetVariableType(type), 0, off, actor, isVector);
-			}
-		}
-
-		pos = 0xB8C0;
-
-		for (var itemIndex = 0; itemIndex < extra.length; itemIndex++)
-		{
-			var name = extra[itemIndex][0];
-			var type = extra[itemIndex][1];
-
-			var size = GetTypeSize(type);
-			var count = 1;
-
-			{
-				var match = name.match(/\[\d+?\]/g);
-				if (match)
-				{
-					for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
-					{
-						var value = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
-						//size *= value;
-						count *= value;
-					}
-				}
-			}
-
-			{
-				if (type.match(/\*/))
-				{
-					Align(8);
-				}
-				else if (name.match(/\[/))
-				{
-					Align(4);
-				}
-			}
-
-			for (var index = 0; index < count; index++)
-			{
-				var description = name.split("[")[0];
-				if (count > 1)
-				{
-					description += " " + lz(index);
-				}
-				//var off = (pos + (index * size));
-
-				var off = pos;
-
-
-				pos += size;
-
-				if (type == "vec4")
-				{
-					AddCheatEntry(description + " x", false, "Float", 0, (off + 0  ), actor, isVector);
-					AddCheatEntry(description + " y", false, "Float", 0, (off + 4  ), actor, isVector);
-					AddCheatEntry(description + " z", false, "Float", 0, (off + 8  ), actor, isVector);
-					AddCheatEntry(description + " a", false, "Float", 0, (off + 0xC), actor, isVector);
-					continue;
-				}
-				else if (type == "INPUT_DATA")
-				{
-					continue;
-				}
-				else if (type == "MOTION_DATA")
-				{
-					continue;
-				}
-				else if (type == "MODEL_DATA")
-				{
-					continue;
-				}
-				
-				AddCheatEntry(description, GetShowAsHex(type), GetVariableType(type), 0, off, actor, isVector);
-			}
-		}
-
-		c += "</CheatEntries>\n";
-		c += "</CheatEntry>\n";
-	}
-
-	c += "</CheatEntries>\n";
-	c += "</CheatEntry>\n";
+	// else
+	// {
+	// 	c += "<Address>dmc3.exe+C90E28</Address>\r\n"
+	// }
+	c += "<Offsets>\r\n";
+	c += "<Offset>" + off.toString(16).toUpperCase() + "</Offset>\r\n";
+	// if (!isVector)
+	// {
+	// 	c += "<Offset>" + (0x18 + (actor * 8)).toString(16).toUpperCase() + "</Offset>\r\n";
+	// }
+	c += "</Offsets>\r\n";
+	c += "</CheatEntry>\r\n";
 }
 
 c = "";
 
-c += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-c += "<CheatTable>\n";
-c += "<CheatEntries>\n";
+c += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
+c += "<CheatTable>\r\n";
+c += "<CheatEntries>\r\n";
 
-CreateData("__LIVE__"           , 2, false);
-CreateData("Actor_actorBaseAddr", 4, true );
+c += "<CheatEntry>\r\n";
+c += "<Description>\"__ACTOR__\"</Description>\r\n";
+c += "<Options moHideChildren=\"1\"/>\r\n";
+c += "<GroupHeader>1</GroupHeader>\r\n";
+c += "<CheatEntries>\r\n";
 
-c += "</CheatEntries>\n";
-c += "</CheatTable>\n";
+for (var actor = 0; actor < 4; actor++)
+{
+	c += "<CheatEntry>\r\n";
+	c += "<Description>\"" + lz(actor) + "\"</Description>\r\n";
+	c += "<Options moHideChildren=\"1\"/>\r\n";
+	c += "<GroupHeader>1</GroupHeader>\r\n";
+	c += "<CheatEntries>\r\n";
+	
+	pos = 0;
+	
+	for (var itemIndex = 0; itemIndex < base.length; itemIndex++)
+	{
+		var name = base[itemIndex][0];
+		var type = base[itemIndex][1];
+		var _off = base[itemIndex][2];
+
+		var count = 1;
+
+		{
+			var match = name.match(/\[\d+?\]/g);
+			if (match)
+			{
+				for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
+				{
+					count *= parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
+				}
+			}
+		}
+
+		for (var index = 0; index < count; index++)
+		{
+			var description = name.split("[")[0];
+			if (count > 1)
+			{
+				description += " " + lz(index);
+			}
+			var off = (_off + (index * GetTypeSize(type)));
+			
+			if (type == "vec4")
+			{
+				AddCheatEntry(description + " x", false, "Float", 0, (off + 0  ), actor);
+				AddCheatEntry(description + " y", false, "Float", 0, (off + 4  ), actor);
+				AddCheatEntry(description + " z", false, "Float", 0, (off + 8  ), actor);
+				AddCheatEntry(description + " a", false, "Float", 0, (off + 0xC), actor);
+				continue;
+			}
+			else if (type == "INPUT_DATA")
+			{
+				continue;
+			}
+			else if (type == "MOTION_DATA")
+			{
+				continue;
+			}
+			else if (type == "MODEL_METADATA")
+			{
+				continue;
+			}
+			else if (type == "MODEL_DATA")
+			{
+				continue;
+			}
+			else if (type == "DEVIL_MODEL_METADATA_DANTE")
+			{
+				continue;
+			}
+			
+			AddCheatEntry(description, GetShowAsHex(type), GetVariableType(type), 0, off, actor);
+		}
+	}
+	
+	pos = 512;
+	
+	for (var itemIndex = 0; itemIndex < char.length; itemIndex++)
+	{
+		var name = char[itemIndex][0];
+		var type = char[itemIndex][1];
+		var _off = char[itemIndex][2];
+
+		var count = 1;
+
+		{
+			var match = name.match(/\[\d+?\]/g);
+			if (match)
+			{
+				for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
+				{
+					count *= parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
+				}
+			}
+		}
+
+		for (var index = 0; index < count; index++)
+		{
+			var description = name.split("[")[0];
+			if (count > 1)
+			{
+				description += " " + lz(index);
+			}
+			var off = (_off + (index * GetTypeSize(type)));
+			
+			if (type == "vec4")
+			{
+				AddCheatEntry(description + " x", false, "Float", 0, (off + 0  ), actor);
+				AddCheatEntry(description + " y", false, "Float", 0, (off + 4  ), actor);
+				AddCheatEntry(description + " z", false, "Float", 0, (off + 8  ), actor);
+				AddCheatEntry(description + " a", false, "Float", 0, (off + 0xC), actor);
+				continue;
+			}
+			else if (type == "INPUT_DATA")
+			{
+				continue;
+			}
+			else if (type == "MOTION_DATA")
+			{
+				continue;
+			}
+			else if (type == "MODEL_METADATA")
+			{
+				continue;
+			}
+			else if (type == "MODEL_DATA")
+			{
+				continue;
+			}
+			else if (type == "DEVIL_MODEL_METADATA_DANTE")
+			{
+				continue;
+			}
+			
+			AddCheatEntry(description, GetShowAsHex(type), GetVariableType(type), 0, off, actor);
+		}
+	}
+	
+	pos = 0xB8C0;
+	
+	for (var itemIndex = 0; itemIndex < extra.length; itemIndex++)
+	{
+		var name = extra[itemIndex][0];
+		var type = extra[itemIndex][1];
+	
+		var size = GetTypeSize(type);
+		var count = 1;
+	
+		{
+			var match = name.match(/\[\d+?\]/g);
+			if (match)
+			{
+				for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
+				{
+					var value = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
+					//size *= value;
+					count *= value;
+				}
+			}
+		}
+	
+		{
+			if (type.match(/\*/))
+			{
+				Align(8);
+			}
+			else if (name.match(/\[/))
+			{
+				Align(4);
+			}
+		}
+	
+		for (var index = 0; index < count; index++)
+		{
+			var description = name.split("[")[0];
+			if (count > 1)
+			{
+				description += " " + lz(index);
+			}
+			//var off = (pos + (index * size));
+	
+			var off = pos;
+	
+	
+			pos += size;
+	
+			if (type == "vec4")
+			{
+				AddCheatEntry(description + " x", false, "Float", 0, (off + 0  ), actor);
+				AddCheatEntry(description + " y", false, "Float", 0, (off + 4  ), actor);
+				AddCheatEntry(description + " z", false, "Float", 0, (off + 8  ), actor);
+				AddCheatEntry(description + " a", false, "Float", 0, (off + 0xC), actor);
+				continue;
+			}
+			else if (type == "INPUT_DATA")
+			{
+				continue;
+			}
+			else if (type == "MOTION_DATA")
+			{
+				continue;
+			}
+			else if (type == "MODEL_METADATA")
+			{
+				continue;
+			}
+			else if (type == "MODEL_DATA")
+			{
+				continue;
+			}
+			
+			AddCheatEntry(description, GetShowAsHex(type), GetVariableType(type), 0, off, actor);
+		}
+	}
+	
+	c += "</CheatEntries>\r\n";
+	c += "</CheatEntry>\r\n";
+}
+
+c += "</CheatEntries>\r\n";
+c += "</CheatEntry>\r\n";
+
+c += "</CheatEntries>\r\n";
+c += "</CheatTable>\r\n";
 
 fs.writeFileSync("actorData.txt", c);
