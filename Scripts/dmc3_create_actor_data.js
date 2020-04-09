@@ -10,7 +10,7 @@ var items =
 	[ "position"                 , "vec4"                      , 0x80                ],
 	[ "direction"                , "uint16"                    , 0xC0                ],
 	[ "id"                       , "uint8"                     , 0x118               ],
-	[ "isClone"                  , "bool"                      , 0x11C               ],
+	[ "isClone"                  , "bool"                      , 0x11C               ], // @Research: Pretty much just a bool, but has size of uint32.
 	[ "visible"                  , "uint32"                    , 0x120               ],
 	[ "modelData[3]"             , "MODEL_DATA"                , 0x200               ],
 	[ "motionArchive[32]"        , "byte8 *"                   , 0x38A0              ],
@@ -23,9 +23,9 @@ var items =
 	[ "motionTimer"              , "float32"                   , 0x3E34              ],
 	[ "idleTimer"                , "float32"                   , 0x3E38              ],
 	[ "motionState2[3]"          , "byte32"                    , 0x3E60              ],
-	[ "activeModel"              , "uint8"                     , 0x3E6C              ],
-	[ "queuedModel"              , "uint8"                     , 0x3E70              ],
-	[ "modelIndex[3]"            , "uint32"                    , 0x3E74              ],
+	[ "activeModel"              , "uint32"                    , 0x3E6C              ],
+	[ "queuedModel"              , "uint32"                    , 0x3E70              ],
+	[ "modelIndex[3]"            , "uint32"                    , 0x3E74              ], // @Research: Index aint wrong, but maybe it's more of an id.
 	[ "modelState"               , "uint8"                     , 0x3E80              ],
 	[ "lockOn"                   , "bool"                      , 0x3E84              ],
 	[ "modelIndexMirror"         , "uint8"                     , 0x3E88              ],
@@ -43,13 +43,13 @@ var items =
 	[ "maxHitPoints"             , "float32"                   , 0x40EC              ],
 	[ "hitPoints"                , "float32"                   , 0x411C              ],
 	[ "targetBaseAddr"           , "byte8 *"                   , 0x6328              ],
-	[ "nativeStyle"              , "uint8"                     , 0x6338              ],
-	[ "styleLevel"               , "uint8"                     , 0x6358              ],
+	[ "nativeStyle"              , "uint32"                    , 0x6338              ],
+	[ "styleLevel"               , "uint32"                    , 0x6358              ],
 	[ "dashCount"                , "uint8"                     , 0x635C, CHAR_DANTE  ],
 	[ "skyStarCount"             , "uint8"                     , 0x635D, CHAR_DANTE  ],
 	[ "airTrickCount"            , "uint8"                     , 0x635E              ],
-	[ "trickUpCount"             , "uint8"                     , 0x635F              ],
-	[ "trickDownCount"           , "uint8"                     , 0x6360              ],
+	[ "trickUpCount"             , "uint8"                     , 0x635F, CHAR_VERGIL ],
+	[ "trickDownCount"           , "uint8"                     , 0x6360, CHAR_VERGIL ],
 	[ "quicksilver"              , "bool"                      , 0x6361, CHAR_DANTE  ],
 	[ "doppelganger"             , "bool"                      , 0x6362, CHAR_DANTE  ],
 	[ "styleExperience"          , "float32"                   , 0x6364              ],
@@ -179,7 +179,7 @@ var Align = function(boundary)
 // c += "struct ACTOR_DATA_CHAR_VERGIL;\r\n";
 // c += "struct ACTOR_DATA_EXTRA;\r\n";
 
-c += "struct ACTOR_DATA;\r\n";
+//c += "struct ACTOR_DATA;\r\n";
 c += "struct ACTOR_DATA_DANTE;\r\n";
 c += "struct ACTOR_DATA_VERGIL;\r\n";
 c += "\r\n";
@@ -368,7 +368,30 @@ function CreateActorData
 }
 
 CreateActorData("ACTOR_DATA_DANTE", CHAR_DANTE);
-CreateActorData("ACTOR_DATA_VERGIL", CHAR_DANTE);
+
+c = c.substring(0, (c.length - 4));
+
+
+
+//c += "\r\n";
+//c += "struct ACTOR_DATA : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VOID, ACTOR_DATA_EXTRA\r\n";
+//c += "struct ACTOR_DATA\r\n";
+//c += "{\r\n";
+
+
+c += "\r\n";
+c += "\toperator ACTOR_DATA_VERGIL &()\r\n";
+c += "\t{\r\n";
+c += "\t\treturn *reinterpret_cast<ACTOR_DATA_VERGIL *>(this);\r\n";
+c += "\t}\r\n";
+
+c += "};\r\n";
+
+
+
+
+c_assert += "\r\n";
+c += "\r\n";
 
 
 
@@ -380,6 +403,25 @@ CreateActorData("ACTOR_DATA_VERGIL", CHAR_DANTE);
 
 
 
+CreateActorData("ACTOR_DATA_VERGIL", CHAR_VERGIL);
+
+
+c = c.substring(0, (c.length - 4));
+
+
+c += "\r\n";
+c += "\toperator ACTOR_DATA_DANTE &()\r\n";
+c += "\t{\r\n";
+c += "\t\treturn *reinterpret_cast<ACTOR_DATA_DANTE *>(this);\r\n";
+c += "\t}\r\n";
+
+c += "};\r\n";
+
+c += "\r\n";
+
+c += "typedef ACTOR_DATA_DANTE ACTOR_DATA;\r\n";
+
+//c += "\r\n";
 
 
 
@@ -539,42 +581,42 @@ CreateActorData("ACTOR_DATA_VERGIL", CHAR_DANTE);
 //c += "\r\n";
 //c += "#undef _\r\n";
 
-c += "\r\n";
-//c += "struct ACTOR_DATA : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VOID, ACTOR_DATA_EXTRA\r\n";
-c += "struct ACTOR_DATA\r\n";
-c += "{\r\n";
-c += "\toperator ACTOR_DATA_DANTE &()\r\n";
-c += "\t{\r\n";
-c += "\t\treturn *reinterpret_cast<ACTOR_DATA_DANTE *>(this);\r\n";
-c += "\t}\r\n";
-c += "\r\n";
-c += "\toperator ACTOR_DATA_VERGIL &()\r\n";
-c += "\t{\r\n";
-c += "\t\treturn *reinterpret_cast<ACTOR_DATA_VERGIL *>(this);\r\n";
-c += "\t}\r\n";
-c += "};\r\n";
+// c += "\r\n";
+// //c += "struct ACTOR_DATA : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VOID, ACTOR_DATA_EXTRA\r\n";
+// c += "struct ACTOR_DATA\r\n";
+// c += "{\r\n";
+// c += "\toperator ACTOR_DATA_DANTE &()\r\n";
+// c += "\t{\r\n";
+// c += "\t\treturn *reinterpret_cast<ACTOR_DATA_DANTE *>(this);\r\n";
+// c += "\t}\r\n";
+// c += "\r\n";
+// c += "\toperator ACTOR_DATA_VERGIL &()\r\n";
+// c += "\t{\r\n";
+// c += "\t\treturn *reinterpret_cast<ACTOR_DATA_VERGIL *>(this);\r\n";
+// c += "\t}\r\n";
+// c += "};\r\n";
 
-c += "\r\n";
+// c += "\r\n";
 
-//c += "struct ACTOR_DATA_DANTE : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_DANTE, ACTOR_DATA_EXTRA\r\n";
-c += "struct ACTOR_DATA_DANTE\r\n";
-c += "{\r\n";
-c += "\toperator ACTOR_DATA &()\r\n";
-c += "\t{\r\n";
-c += "\t\treturn *reinterpret_cast<ACTOR_DATA *>(this);\r\n";
-c += "\t}\r\n";
-c += "};\r\n";
+// //c += "struct ACTOR_DATA_DANTE : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_DANTE, ACTOR_DATA_EXTRA\r\n";
+// c += "struct ACTOR_DATA_DANTE\r\n";
+// c += "{\r\n";
+// c += "\toperator ACTOR_DATA &()\r\n";
+// c += "\t{\r\n";
+// c += "\t\treturn *reinterpret_cast<ACTOR_DATA *>(this);\r\n";
+// c += "\t}\r\n";
+// c += "};\r\n";
 
-c += "\r\n";
+// c += "\r\n";
 
-//c += "struct ACTOR_DATA_VERGIL : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VERGIL, ACTOR_DATA_EXTRA\r\n";
-c += "struct ACTOR_DATA_VERGIL\r\n";
-c += "{\r\n";
-c += "\toperator ACTOR_DATA &()\r\n";
-c += "\t{\r\n";
-c += "\t\treturn *reinterpret_cast<ACTOR_DATA *>(this);\r\n";
-c += "\t}\r\n";
-c += "};\r\n";
+// //c += "struct ACTOR_DATA_VERGIL : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VERGIL, ACTOR_DATA_EXTRA\r\n";
+// c += "struct ACTOR_DATA_VERGIL\r\n";
+// c += "{\r\n";
+// c += "\toperator ACTOR_DATA &()\r\n";
+// c += "\t{\r\n";
+// c += "\t\treturn *reinterpret_cast<ACTOR_DATA *>(this);\r\n";
+// c += "\t}\r\n";
+// c += "};\r\n";
 
 //c += "\r\n";
 
@@ -654,6 +696,8 @@ var GetVariableType = function(str)
 	}
 	return "";
 }
+
+// @Todo: Create general CreateCheatEntry function.
 
 var AddCheatEntry = function
 (
