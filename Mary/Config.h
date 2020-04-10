@@ -118,7 +118,7 @@ struct CONFIG
 			}
 			BloodyPalace;
 			// @Todo: Update!
-			uint8  character    = CHAR_LOGIC_DANTE;
+			uint8  character    = CHAR_DANTE;
 			uint8  costume      = 0;
 			uint32 style        = STYLE_DANTE_TRICKSTER;
 			uint8  equipment[4] =
@@ -200,7 +200,7 @@ struct CONFIG
 		struct
 		{
 			bool  enable             = false;
-			uint8 character          = CHAR_LOGIC_DANTE;
+			uint8 character          = CHAR_DANTE;
 			bool  enableDevilTrigger = false;
 		}
 		Doppelganger;
@@ -238,8 +238,8 @@ struct CONFIG
 		{
 			bool  enable                      = false;
 			uint8 actorCount                  = 1;
-			uint8 character [(MAX_ACTOR - 1)] = {};
-			uint8 costume   [(MAX_ACTOR - 1)] = {};
+			uint8 character [3] = {};
+			uint8 costume   [3] = {};
 		}
 		Multiplayer;
 		struct

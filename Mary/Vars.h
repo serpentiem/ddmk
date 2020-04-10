@@ -1,15 +1,6 @@
 #pragma once
 #include "../Core/DataTypes.h"
 
-enum ACTOR_
-{
-	ACTOR_ONE,
-	ACTOR_TWO,
-	ACTOR_THREE,
-	ACTOR_FOUR,
-	MAX_ACTOR,
-};
-
 enum MODE_
 {
 	MODE_EASY,
@@ -23,43 +14,45 @@ enum MODE_
 enum CHAR_
 {
 	CHAR_DANTE,
+	CHAR_BOB,
+	CHAR_LADY,
 	CHAR_VERGIL,
 	MAX_CHAR,
 };
 
-enum CHAR_LOGIC_
+enum COSTUME_
 {
-	CHAR_LOGIC_DANTE,
-	CHAR_LOGIC_BOB,
-	CHAR_LOGIC_LADY,
-	CHAR_LOGIC_VERGIL,
-	MAX_CHAR_LOGIC,
+	COSTUME_DANTE_DEFAULT,
+	COSTUME_DANTE_DEFAULT_NO_COAT,
+	COSTUME_DANTE_DEFAULT_TORN,
+	COSTUME_DANTE_DMC1,
+	COSTUME_DANTE_DMC1_NO_COAT,
+	COSTUME_DANTE_SPARDA,
+	COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS,
+	COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS,
+	COSTUME_VERGIL_DEFAULT = 0,
+	COSTUME_VERGIL_DEFAULT_NO_COAT,
+	COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS,
+	COSTUME_VERGIL_SPARDA,
+	COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS,
+	MAX_COSTUME = 8,
 };
 
-enum COSTUME_LOGIC_DANTE_
+enum DEVIL_
 {
-	COSTUME_LOGIC_DANTE_DEFAULT,
-	COSTUME_LOGIC_DANTE_DEFAULT_NO_COAT,
-	COSTUME_LOGIC_DANTE_DEFAULT_TORN,
-	COSTUME_LOGIC_DANTE_DMC1,
-	COSTUME_LOGIC_DANTE_DMC1_NO_COAT,
-	COSTUME_LOGIC_DANTE_SPARDA,
-	COSTUME_LOGIC_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS,
-	COSTUME_LOGIC_DANTE_SPARDA_INFINITE_MAGIC_POINTS,
-	MAX_COSTUME_LOGIC_DANTE,
+	DEVIL_DANTE_REBELLION,
+	DEVIL_DANTE_CERBERUS,
+	DEVIL_DANTE_AGNI_RUDRA,
+	DEVIL_DANTE_NEVAN,
+	DEVIL_DANTE_BEOWULF,
+	DEVIL_DANTE_SPARDA,
+	DEVIL_VERGIL_YAMATO,
+	DEVIL_VERGIL_BEOWULF = 4,
+	DEVIL_VERGIL_NERO_ANGELO = 6,
+	MAX_DEVIL = 7,
 };
 
-enum COSTUME_LOGIC_VERGIL_
-{
-	COSTUME_LOGIC_VERGIL_DEFAULT,
-	COSTUME_LOGIC_VERGIL_DEFAULT_NO_COAT,
-	COSTUME_LOGIC_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS,
-	COSTUME_LOGIC_VERGIL_SPARDA,
-	COSTUME_LOGIC_VERGIL_SPARDA_INFINITE_MAGIC_POINTS,
-	MAX_COSTUME_LOGIC_VERGIL,
-};
-
-enum STYLE_DANTE_
+enum STYLE_
 {
 	STYLE_DANTE_SWORDMASTER,
 	STYLE_DANTE_GUNSLINGER,
@@ -67,21 +60,11 @@ enum STYLE_DANTE_
 	STYLE_DANTE_ROYALGUARD,
 	STYLE_DANTE_QUICKSILVER,
 	STYLE_DANTE_DOPPELGANGER,
-	MAX_STYLE_DANTE,
-};
-
-enum STYLE_VERGIL_
-{
 	STYLE_VERGIL_DARK_SLAYER = 2,
-	MAX_STYLE_VERGIL = 1,
-};
-
-enum STYLE_
-{
 	MAX_STYLE = 6,
 };
 
-enum WEAPON_DANTE_
+enum WEAPON_
 {
 	WEAPON_DANTE_REBELLION,
 	WEAPON_DANTE_CERBERUS,
@@ -93,86 +76,69 @@ enum WEAPON_DANTE_
 	WEAPON_DANTE_ARTEMIS,
 	WEAPON_DANTE_SPIRAL,
 	WEAPON_DANTE_KALINA_ANN,
-	MAX_WEAPON_DANTE,
-};
-
-enum WEAPON_VERGIL_
-{
 	WEAPON_VERGIL_YAMATO = 11,
 	WEAPON_VERGIL_BEOWULF,
 	WEAPON_VERGIL_FORCE_EDGE,
-	MAX_WEAPON_VERGIL = 3,
-};
-
-enum WEAPON_
-{
-	MAX_WEAPON = 16,
 	WEAPON_VOID = 255,
+	MAX_WEAPON = 16,
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-enum COSTUME_DANTE_
+enum MOTION_GROUP_
 {
-	COSTUME_DANTE_DEFAULT,
-	COSTUME_DANTE_DEFAULT_NO_COAT,
-	COSTUME_DANTE_DEFAULT_TORN,
-	COSTUME_DANTE_DMC1,
-	COSTUME_DANTE_DMC1_NO_COAT,
-	COSTUME_DANTE_SPARDA,
-	MAX_COSTUME_DANTE,
+	MOTION_GROUP_DANTE_BASE,
+	MOTION_GROUP_DANTE_DAMAGE,
+	MOTION_GROUP_DANTE_TAUNTS,
+	MOTION_GROUP_DANTE_REBELLION,
+	MOTION_GROUP_DANTE_CERBERUS,
+	MOTION_GROUP_DANTE_AGNI_RUDRA,
+	MOTION_GROUP_DANTE_NEVAN,
+	MOTION_GROUP_DANTE_BEOWULF,
+	MOTION_GROUP_DANTE_EBONY_IVORY,
+	MOTION_GROUP_DANTE_SHOTGUN,
+	MOTION_GROUP_DANTE_ARTEMIS,
+	MOTION_GROUP_DANTE_SPIRAL,
+	MOTION_GROUP_DANTE_KALINA_ANN,
+	MOTION_GROUP_DANTE_SWORDMASTER_REBELLION,
+	MOTION_GROUP_DANTE_SWORDMASTER_CERBERUS,
+	MOTION_GROUP_DANTE_SWORDMASTER_AGNI_RUDRA,
+	MOTION_GROUP_DANTE_SWORDMASTER_NEVAN,
+	MOTION_GROUP_DANTE_SWORDMASTER_BEOWULF,
+	MOTION_GROUP_DANTE_GUNSLINGER_EBONY_IVORY,
+	MOTION_GROUP_DANTE_GUNSLINGER_SHOTGUN,
+	MOTION_GROUP_DANTE_GUNSLINGER_ARTEMIS,
+	MOTION_GROUP_DANTE_GUNSLINGER_SPIRAL,
+	MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN,
+	MOTION_GROUP_DANTE_TRICKSTER,
+	MOTION_GROUP_DANTE_ROYALGUARD,
+	MOTION_GROUP_DANTE_QUICKSILVER,
+	MOTION_GROUP_DANTE_DOPPELGANGER,
+	MOTION_GROUP_BOB_BASE = 0,
+	MOTION_GROUP_BOB_DAMAGE,
+	MOTION_GROUP_BOB_TAUNTS,
+	MOTION_GROUP_BOB_MELEE_STYLE = 31,
+	MOTION_GROUP_LADY_BASE = 0,
+	MOTION_GROUP_LADY_DAMAGE,
+	MOTION_GROUP_LADY_TAUNTS,
+	MOTION_GROUP_LADY_KALINA_ANN = 12,
+	MOTION_GROUP_VERGIL_BASE = 0,
+	MOTION_GROUP_VERGIL_DAMAGE,
+	MOTION_GROUP_VERGIL_TAUNTS,
+	MOTION_GROUP_VERGIL_YAMATO,
+	MOTION_GROUP_VERGIL_BEOWULF,
+	MOTION_GROUP_VERGIL_FORCE_EDGE,
+	MOTION_GROUP_VERGIL_DARK_SLAYER,
+	MOTION_GROUP_VERGIL_NERO_ANGELO_YAMATO,
+	MOTION_GROUP_VERGIL_NERO_ANGELO_BEOWULF,
+	MOTION_GROUP_VERGIL_NERO_ANGELO_FORCE_EDGE,
+	MAX_MOTION_GROUP = 32,
 };
-
-enum COSTUME_VERGIL_
-{
-	COSTUME_VERGIL_DEFAULT,
-	COSTUME_VERGIL_DEFAULT_NO_COAT,
-	COSTUME_VERGIL_SPARDA,
-	MAX_COSTUME_VERGIL,
-};
-
-enum DEVIL_DANTE_
-{
-	DEVIL_DANTE_REBELLION,
-	DEVIL_DANTE_CERBERUS,
-	DEVIL_DANTE_AGNI_RUDRA,
-	DEVIL_DANTE_NEVAN,
-	DEVIL_DANTE_BEOWULF,
-	DEVIL_DANTE_SPARDA,
-	MAX_DEVIL_DANTE,
-};
-
-enum DEVIL_VERGIL_
-{
-	DEVIL_VERGIL_YAMATO,
-	DEVIL_VERGIL_BEOWULF,
-	MAX_DEVIL_VERGIL,
-};
-
 
 enum MODEL_PART_
 {
 	MODEL_PART_BASE,
 	MODEL_PART_AMULET,
 	MODEL_PART_COAT,
-	MODEL_MAX_PART,
+	MAX_MODEL_PART,
 };
 
 enum DEVIL_MODEL_PART_
@@ -180,29 +146,8 @@ enum DEVIL_MODEL_PART_
 	DEVIL_MODEL_PART_BASE,
 	DEVIL_MODEL_PART_WINGS,
 	DEVIL_MODEL_PART_COAT,
-	DEVIL_MODEL_MAX_PART,
+	MAX_DEVIL_MODEL_PART,
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 enum CACHE_FILE_
 {
@@ -567,96 +512,6 @@ enum CMD_
 
 
 
-// @Research: Change to MOTION_FILE and add single ids if necessary.
-
-enum MOT_DANTE_
-{
-	MOT_DANTE_BASE,
-	MOT_DANTE_DAMAGE,
-	MOT_DANTE_TAUNTS,
-	MOT_DANTE_REBELLION,
-	MOT_DANTE_CERBERUS,
-	MOT_DANTE_AGNI_RUDRA,
-	MOT_DANTE_NEVAN,
-	MOT_DANTE_BEOWULF,
-	MOT_DANTE_EBONY_IVORY,
-	MOT_DANTE_SHOTGUN,
-	MOT_DANTE_ARTEMIS,
-	MOT_DANTE_SPIRAL,
-	MOT_DANTE_KALINA_ANN,
-	MOT_DANTE_SWORDMASTER_REBELLION,
-	MOT_DANTE_SWORDMASTER_CERBERUS,
-	MOT_DANTE_SWORDMASTER_AGNI_RUDRA,
-	MOT_DANTE_SWORDMASTER_NEVAN,
-	MOT_DANTE_SWORDMASTER_BEOWULF,
-	MOT_DANTE_GUNSLINGER_EBONY_IVORY,
-	MOT_DANTE_GUNSLINGER_SHOTGUN,
-	MOT_DANTE_GUNSLINGER_ARTEMIS,
-	MOT_DANTE_GUNSLINGER_SPIRAL,
-	MOT_DANTE_GUNSLINGER_KALINA_ANN,
-	MOT_DANTE_TRICKSTER,
-	MOT_DANTE_ROYALGUARD,
-	MOT_DANTE_QUICKSILVER,
-	MOT_DANTE_DOPPELGANGER,
-	MAX_MOT_DANTE,
-};
-
-enum MOT_BOB_
-{
-	MOT_BOB_BASE,
-	MOT_BOB_DAMAGE,
-	MOT_BOB_TAUNTS,
-	MOT_BOB_MELEE_STYLE = 31,
-	MAX_MOT_BOB         = 4,
-};
-
-
-
-
-
-
-
-
-
-enum MOT_LADY_
-{
-	MOT_LADY_BASE,
-	MOT_LADY_DAMAGE,
-	MOT_LADY_TAUNTS,
-	MOT_LADY_KALINA_ANN = 12,
-	MAX_MOT_LADY        = 4,
-};
-
-enum MOT_VERGIL_
-{
-	MOT_VERGIL_BASE,
-	MOT_VERGIL_DAMAGE,
-	MOT_VERGIL_TAUNTS,
-	MOT_VERGIL_YAMATO,
-	MOT_VERGIL_BEOWULF,
-	MOT_VERGIL_FORCE_EDGE,
-	MOT_VERGIL_DARK_SLAYER,
-	MOT_VERGIL_NERO_ANGELO_YAMATO,
-	MOT_VERGIL_NERO_ANGELO_BEOWULF,
-	MOT_VERGIL_NERO_ANGELO_FORCE_EDGE,
-	MAX_MOT_VERGIL,
-};
-
-enum MOT_
-{
-	//MOT_DANTE  = MAX_MOT_DANTE,
-	//MOT_BOB    = MAX_MOT_BOB,
-	//MOT_LADY   = MAX_MOT_LADY,
-	//MOT_VERGIL = MAX_MOT_VERGIL,
-	MAX_MOT    = 32,
-};
-
-
-
-
-
-
-
 
 
 
@@ -950,14 +805,14 @@ struct INPUT_DATA
 
 
 
+// @Todo: Add MODEL_DATA for 0x780.
 
 
 
 
 
 
-
-struct MODEL_DATA
+struct MODEL_METADATA
 {
 	uint8 count;
 	_(15);
@@ -965,19 +820,111 @@ struct MODEL_DATA
 	_(16);
 };
 
-struct DEVIL_SUBMODEL_DATA
+//
+//struct DEVIL_MODEL_METADATA_DANTE_REBELLION : DEVIL_MODEL_METADATA
+//{
+//	DEVIL_SUBMODEL_METADATA submodelMetadata[2];
+//};
+//
+//struct DEVIL_MODEL_METADATA_DANTE_CERBERUS : DEVIL_MODEL_METADATA
+//{
+//	DEVIL_SUBMODEL_METADATA submodelMetadata;
+//};
+
+
+struct DEVIL_MODEL_METADATA;
+struct DEVIL_SUBMODEL_METADATA;
+struct DEVIL_MODEL_METADATA_ONE;
+struct DEVIL_MODEL_METADATA_TWO;
+
+struct DEVIL_MODEL_METADATA
+{
+	uint8 modelIndex;
+	uint8 modelOff;
+
+	operator DEVIL_MODEL_METADATA_TWO &()
+	{
+		return *(DEVIL_MODEL_METADATA_TWO *)this;
+	}
+};
+
+struct DEVIL_SUBMODEL_METADATA
 {
 	uint8 submodelIndex;
 	uint8 devilModelOff;
 	uint8 devilSubmodelIndex;
 };
 
-struct DEVIL_MODEL_DATA
+struct DEVIL_MODEL_METADATA_ONE : DEVIL_MODEL_METADATA
 {
-	uint8 modelIndex;
-	uint8 modelOff;
-	DEVIL_SUBMODEL_DATA submodelData[2];
+	DEVIL_SUBMODEL_METADATA submodelMetadata[1];
 };
+
+struct DEVIL_MODEL_METADATA_TWO : DEVIL_MODEL_METADATA
+{
+	DEVIL_SUBMODEL_METADATA submodelMetadata[2];
+};
+
+struct DEVIL_MODEL_METADATA_DANTE
+{
+	DEVIL_MODEL_METADATA_TWO rebellion;
+	DEVIL_MODEL_METADATA_ONE cerberus;
+	DEVIL_MODEL_METADATA agniRudra;
+	DEVIL_MODEL_METADATA_TWO nevan;
+	DEVIL_MODEL_METADATA_ONE beowulf;
+	DEVIL_MODEL_METADATA_ONE sparda;
+
+	DEVIL_MODEL_METADATA_TWO & operator[](uint8 index)
+	{
+		switch (index)
+		{
+		case DEVIL_DANTE_REBELLION:
+			return rebellion;
+		case DEVIL_DANTE_CERBERUS:
+			return cerberus;
+		case DEVIL_DANTE_AGNI_RUDRA:
+			return agniRudra;
+		case DEVIL_DANTE_NEVAN:
+			return nevan;
+		case DEVIL_DANTE_BEOWULF:
+			return beowulf;
+		case DEVIL_DANTE_SPARDA:
+			return sparda;
+		}
+	}
+};
+
+constexpr uint32 devilModelMetadataDanteSize = (uint32)sizeof(DEVIL_MODEL_METADATA_DANTE);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1008,46 +955,67 @@ typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
 
 
 
+struct MODEL_DATA
+{
+	_(1364);
+	float32 motionLength1[2];
+	_(56);
+	float32 motionLength2[2];
+	_(280);
+	float32 motionTimer[2];
+	_(196);
+};
+
+static_assert(offsetof(MODEL_DATA, motionLength1) == 0x554);
+static_assert(offsetof(MODEL_DATA, motionLength2) == 0x594);
+static_assert(offsetof(MODEL_DATA, motionTimer) == 0x6B4);
+static_assert(sizeof(MODEL_DATA) == 0x780);
 
 
-struct ACTOR_DATA
+
+struct ACTOR_DATA_DANTE;
+struct ACTOR_DATA_VERGIL;
+
+struct ACTOR_DATA_DANTE
 {
 	_(8);
 	bool init; // 0x8
 	_(111);
-	uint8 characterLogic; // 0x78
-	_(7);
+	uint32 character; // 0x78
+	_(4);
 	vec4 position; // 0x80
 	_(48);
 	uint16 direction; // 0xC0
 	_(86);
-	uint8 actorId; // 0x118
+	uint8 id; // 0x118
 	_(3);
-	bool isDoppelganger; // 0x11C
+	bool isClone; // 0x11C
 	_(3);
-	uint8 visible; // 0x120
-	_(14207);
-	byte8 * motionFile[32]; // 0x38A0
+	uint32 visible; // 0x120
+	_(220);
+	MODEL_DATA modelData[3]; // 0x200
+	_(8224);
+	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
 	MOTION_DATA motionData[5]; // 0x39B0
 	_(94);
-	uint8 shadow; // 0x3A18
-	_(15);
+	uint32 shadow; // 0x3A18
+	_(12);
 	byte32 color; // 0x3A28
-	_(980);
-	byte32 motionState1[4]; // 0x3E00
-	_(10);
+	_(932);
+	byte8 * actionData[6]; // 0x3DD0
+	byte32 motionState1[6]; // 0x3E00
+	_(2);
 	uint16 chargedShotAir; // 0x3E1A
 	_(6);
 	uint16 chargedShot; // 0x3E22
-	_(20);
+	_(16);
+	float32 motionTimer; // 0x3E34
 	float32 idleTimer; // 0x3E38
 	_(36);
 	byte32 motionState2[3]; // 0x3E60
-	uint8 activeModel; // 0x3E6C
-	_(3);
-	uint8 queuedModel; // 0x3E70
-	_(3);
+	uint32 activeModel; // 0x3E6C
+	uint32 queuedModel; // 0x3E70
 	uint32 modelIndex[3]; // 0x3E74
 	uint8 modelState; // 0x3E80
 	_(3);
@@ -1060,11 +1028,13 @@ struct ACTOR_DATA
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
-	bool specialCostume; // 0x3E9F
+	bool spardaCostume; // 0x3E9F
 	_(24);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
-	_(228);
+	_(24);
+	uint16 cameraDirection; // 0x3ED8
+	_(202);
 	uint8 move; // 0x3FA4
 	uint8 lastMove; // 0x3FA5
 	_(6);
@@ -1078,43 +1048,33 @@ struct ACTOR_DATA
 	_(8712);
 	byte8 * targetBaseAddr; // 0x6328
 	_(8);
-	uint8 style; // 0x6338
-	_(31);
-	uint8 styleLevel; // 0x6358
-	_(3);
+	uint32 style; // 0x6338
+	_(28);
+	uint32 styleLevel; // 0x6358
 	uint8 dashCount; // 0x635C
 	uint8 skyStarCount; // 0x635D
 	uint8 airTrickCount; // 0x635E
-	uint8 trickUpCount; // 0x635F
-	uint8 trickDownCount; // 0x6360
+	_(2);
 	bool quicksilver; // 0x6361
 	bool doppelganger; // 0x6362
 	_(1);
 	float32 styleExperience; // 0x6364
 	_(236);
-	bool controlLinkedActor; // 0x6454
+	bool cloneIsActive; // 0x6454
 	_(35);
-	byte8 * linkedActorBaseAddr; // 0x6478
-	_(8);
-	uint8 selectedMeleeWeaponVergil; // 0x6488
-	_(4);
+	byte8 * cloneBaseAddr; // 0x6478
+	bool cloneIsControlledByPlayer; // 0x6480
+	_(12);
 	uint8 activeWeapon; // 0x648D
 	_(2);
-	uint8 selectedMeleeWeapon; // 0x6490
+	uint32 weaponIndex[2]; // 0x6490
+	uint8 weaponMap[5]; // 0x6498
 	_(3);
-	uint8 selectedRangedWeapon; // 0x6494
-	_(3);
-	uint8 equipment[4]; // 0x6498
-	_(4);
-	byte8 * weaponMetadata[4]; // 0x64A0
-	_(8);
-	byte32 weaponFlags[4]; // 0x64C8
+	byte8 * weaponData[5]; // 0x64A0
+	byte32 weaponFlags[5]; // 0x64C8
 	_(24);
-	uint8 activeMeleeWeapon; // 0x64F0
-	uint8 activeRangedWeapon; // 0x64F1
-	_(2);
-	float32 weaponTimer[4]; // 0x64F4
-	_(12);
+	float32 weaponTimer[5]; // 0x64F4
+	float32 weaponTimeout[2]; // 0x6508
 	uint8 styleRank; // 0x6510
 	_(3);
 	float32 styleMeter; // 0x6514
@@ -1129,35 +1089,178 @@ struct ACTOR_DATA
 	byte16 rightStick[2]; // 0x74F8
 	_(12);
 	byte16 leftStick[2]; // 0x7508
-	uint16 cameraDirection; // 0x750C
+	uint16 actorCameraDirection; // 0x750C
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
-	_(16652);
-	MODEL_DATA modelData[6]; // 0xB630
+	_(16604);
+	DEVIL_MODEL_METADATA_DANTE devilModelMetadata; // 0xB600
+	_(15);
+	MODEL_METADATA modelMetadata[6]; // 0xB630
 	_(88);
 	float32 artemisChargeValue[2]; // 0xB868
 	_(12);
 	byte32 artemisChargeFlags[2]; // 0xB87C
 	_(60);
-	uint8 character; // 0xB8C0
+	uint8 characterModel; // 0xB8C0
 	_(7);
 	byte8 * parentBaseAddr; // 0xB8C8
 	byte8 * childBaseAddr[4]; // 0xB8D0
-	bool hide; // 0xB8F0
-	bool hideWeapons; // 0xB8F1
-	bool hideSummonedSwords; // 0xB8F2
-	uint8 gamepad; // 0xB8F3
-	byte16 buttonMask; // 0xB8F4
-	byte16 leftStickMask; // 0xB8F6
-	uint8 styleMap[6][2]; // 0xB8F8
-	uint8 meleeWeaponCount; // 0xB904
+	uint8 gamepad; // 0xB8F0
+	byte16 buttonMask; // 0xB8F1
+	bool copyPosition; // 0xB8F3
+	uint8 newStyle; // 0xB8F4
 	_(3);
-	uint8 meleeWeaponMap[5]; // 0xB908
-	uint8 rangedWeaponCount; // 0xB90D
-	_(2);
-	uint8 rangedWeaponMap[5]; // 0xB910
+	uint8 styleMap[5][2]; // 0xB8F8
+	_(6);
+	byte8 * newWeaponData[16]; // 0xB908
+	uint8 meleeWeaponMap[5]; // 0xB988
+	uint8 meleeWeaponCount; // 0xB98D
+	uint8 meleeWeaponIndex; // 0xB98E
+	_(1);
+	uint8 rangedWeaponMap[5]; // 0xB990
+	uint8 rangedWeaponCount; // 0xB995
+	uint8 rangedWeaponIndex; // 0xB996
+
+	operator ACTOR_DATA_VERGIL &()
+	{
+		return *reinterpret_cast<ACTOR_DATA_VERGIL *>(this);
+	}
 };
 
+struct ACTOR_DATA_VERGIL
+{
+	_(8);
+	bool init; // 0x8
+	_(111);
+	uint32 character; // 0x78
+	_(4);
+	vec4 position; // 0x80
+	_(48);
+	uint16 direction; // 0xC0
+	_(86);
+	uint8 id; // 0x118
+	_(3);
+	bool isClone; // 0x11C
+	_(3);
+	uint32 visible; // 0x120
+	_(220);
+	MODEL_DATA modelData[3]; // 0x200
+	_(8224);
+	byte8 * motionArchive[32]; // 0x38A0
+	_(16);
+	MOTION_DATA motionData[5]; // 0x39B0
+	_(94);
+	uint32 shadow; // 0x3A18
+	_(12);
+	byte32 color; // 0x3A28
+	_(932);
+	byte8 * actionData[6]; // 0x3DD0
+	byte32 motionState1[6]; // 0x3E00
+	_(28);
+	float32 motionTimer; // 0x3E34
+	float32 idleTimer; // 0x3E38
+	_(36);
+	byte32 motionState2[3]; // 0x3E60
+	uint32 activeModel; // 0x3E6C
+	uint32 queuedModel; // 0x3E70
+	uint32 modelIndex[3]; // 0x3E74
+	uint8 modelState; // 0x3E80
+	_(3);
+	bool lockOn; // 0x3E84
+	_(3);
+	uint8 modelIndexMirror; // 0x3E88
+	_(11);
+	uint8 devilState; // 0x3E94
+	_(6);
+	bool devil; // 0x3E9B
+	_(2);
+	uint8 costume; // 0x3E9E
+	bool spardaCostume; // 0x3E9F
+	_(24);
+	float32 magicPoints; // 0x3EB8
+	float32 maxMagicPoints; // 0x3EBC
+	_(24);
+	uint16 cameraDirection; // 0x3ED8
+	_(202);
+	uint8 move; // 0x3FA4
+	uint8 lastMove; // 0x3FA5
+	_(6);
+	uint8 chainCount; // 0x3FAC
+	_(63);
+	byte32 expertise[16]; // 0x3FEC
+	_(192);
+	float32 maxHitPoints; // 0x40EC
+	_(44);
+	float32 hitPoints; // 0x411C
+	_(8712);
+	byte8 * targetBaseAddr; // 0x6328
+	_(8);
+	uint32 style; // 0x6338
+	_(28);
+	uint32 styleLevel; // 0x6358
+	_(2);
+	uint8 airTrickCount; // 0x635E
+	uint8 trickUpCount; // 0x635F
+	uint8 trickDownCount; // 0x6360
+	_(3);
+	float32 styleExperience; // 0x6364
+	_(284);
+	uint32 weaponIndex[2]; // 0x6484
+	_(12);
+	uint8 weaponMap[5]; // 0x6498
+	_(3);
+	byte8 * weaponData[5]; // 0x64A0
+	byte32 weaponFlags[5]; // 0x64C8
+	_(24);
+	float32 weaponTimer[5]; // 0x64F4
+	float32 weaponTimeout[2]; // 0x6508
+	uint8 styleRank; // 0x6510
+	_(3);
+	float32 styleMeter; // 0x6514
+	_(348);
+	INPUT_DATA inputData[58]; // 0x6674
+	_(2344);
+	uint32 collisionIndex; // 0x7254
+	_(520);
+	vec4 interactionData[8]; // 0x7460
+	byte16 buttons[4]; // 0x74E0
+	_(16);
+	byte16 rightStick[2]; // 0x74F8
+	_(12);
+	byte16 leftStick[2]; // 0x7508
+	uint16 actorCameraDirection; // 0x750C
+	_(14);
+	uint32 leftStickDirection[2]; // 0x751C
+	_(16668);
+	MODEL_METADATA modelMetadata[6]; // 0xB640
+	_(160);
+	uint8 characterModel; // 0xB8C0
+	_(7);
+	byte8 * parentBaseAddr; // 0xB8C8
+	byte8 * childBaseAddr[4]; // 0xB8D0
+	uint8 gamepad; // 0xB8F0
+	byte16 buttonMask; // 0xB8F1
+	bool copyPosition; // 0xB8F3
+	uint8 newStyle; // 0xB8F4
+	_(3);
+	uint8 styleMap[5][2]; // 0xB8F8
+	_(6);
+	byte8 * newWeaponData[16]; // 0xB908
+	uint8 meleeWeaponMap[5]; // 0xB988
+	uint8 meleeWeaponCount; // 0xB98D
+	uint8 meleeWeaponIndex; // 0xB98E
+	_(1);
+	uint8 rangedWeaponMap[5]; // 0xB990
+	uint8 rangedWeaponCount; // 0xB995
+	uint8 rangedWeaponIndex; // 0xB996
+
+	operator ACTOR_DATA_DANTE &()
+	{
+		return *reinterpret_cast<ACTOR_DATA_DANTE *>(this);
+	}
+};
+
+typedef ACTOR_DATA_DANTE ACTOR_DATA;
 
 
 
@@ -1166,7 +1269,33 @@ struct ACTOR_DATA
 
 
 
-constexpr uint32 adsize = (uint32)sizeof(ACTOR_DATA);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//constexpr uint32 baseSize = (uint32)sizeof(ACTOR_DATA_BASE);
+//constexpr uint32 voidSize = (uint32)sizeof(ACTOR_DATA_CHAR_VOID);
+
+
+
+
+
+
+constexpr uint32 adsizeDante = (uint32)sizeof(ACTOR_DATA_DANTE);
+constexpr uint32 adsizeVergil = (uint32)sizeof(ACTOR_DATA_VERGIL);
 
 
 
@@ -1330,6 +1459,25 @@ enum DEVIL_FLUX_
 #define __DDMK_OBSOLETE__
 #ifndef __DDMK_OBSOLETE__
 
+
+enum ACTOR_
+{
+	ACTOR_ONE,
+	ACTOR_TWO,
+	ACTOR_THREE,
+	ACTOR_FOUR,
+	MAX_ACTOR,
+};
+
+
+
+
+
+
+
+
+
+
 enum MODEL_
 {
 	MODEL_BASE,
@@ -1428,6 +1576,427 @@ struct CHARGE_DATA
 	byte32 flags[2];
 	float32 value;
 };
+
+enum STYLE_
+{
+	MAX_STYLE = 6,
+};
+
+// @Research: Use native instead of logic.
+
+enum NATIVE_STYLE_DANTE_
+{
+	NATIVE_STYLE_DANTE_SWORDMASTER,
+	NATIVE_STYLE_DANTE_GUNSLINGER,
+	NATIVE_STYLE_DANTE_TRICKSTER,
+	NATIVE_STYLE_DANTE_ROYALGUARD,
+	NATIVE_STYLE_DANTE_QUICKSILVER,
+	NATIVE_STYLE_DANTE_DOPPELGANGER,
+	MAX_NATIVE_STYLE_DANTE,
+};
+
+enum NATIVE_STYLE_VERGIL_
+{
+	NATIVE_STYLE_VERGIL_DARK_SLAYER = 2,
+	MAX_NATIVE_STYLE_VERGIL = 1,
+};
+
+
+
+
+
+
+enum NATIVE_WEAPON_DANTE_
+{
+	NATIVE_WEAPON_DANTE_REBELLION,
+	NATIVE_WEAPON_DANTE_CERBERUS,
+	NATIVE_WEAPON_DANTE_AGNI_RUDRA,
+	NATIVE_WEAPON_DANTE_NEVAN,
+	NATIVE_WEAPON_DANTE_BEOWULF,
+	NATIVE_WEAPON_DANTE_EBONY_IVORY,
+	NATIVE_WEAPON_DANTE_SHOTGUN,
+	NATIVE_WEAPON_DANTE_ARTEMIS,
+	NATIVE_WEAPON_DANTE_SPIRAL,
+	NATIVE_WEAPON_DANTE_KALINA_ANN,
+	MAX_NATIVE_WEAPON_DANTE,
+};
+
+enum NATIVE_WEAPON_VERGIL_
+{
+	NATIVE_WEAPON_VERGIL_YAMATO = 11,
+	NATIVE_WEAPON_VERGIL_BEOWULF,
+	NATIVE_WEAPON_VERGIL_FORCE_EDGE,
+	MAX_NATIVE_WEAPON_VERGIL = 3,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+enum WEAPON_
+{
+	MAX_WEAPON = 16,
+	WEAPON_VOID = 255,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// NATIVE_COSTUME_DANTE_
+// MAX_NATIVE_COSTUME_DANTE
+
+
+// original
+// native
+// logic
+// prime
+
+
+
+
+
+
+
+
+enum DEVIL_VERGIL_
+{
+	DEVIL_VERGIL_YAMATO,
+	DEVIL_VERGIL_BEOWULF = 4,
+	DEVIL_VERGIL_NERO_ANGELO = 6,
+	MAX_DEVIL_VERGIL,
+};
+
+
+
+
+
+constexpr uint8 costumeMapDante[MAX_COSTUME_DANTE] =
+{
+	NATIVE_COSTUME_DANTE_DEFAULT,
+	NATIVE_COSTUME_DANTE_DEFAULT_NO_COAT,
+	NATIVE_COSTUME_DANTE_DEFAULT_TORN,
+	NATIVE_COSTUME_DANTE_DMC1,
+	NATIVE_COSTUME_DANTE_DMC1_NO_COAT,
+	NATIVE_COSTUME_DANTE_SPARDA,
+};
+
+constexpr uint8 costumeMapVergil[MAX_COSTUME_VERGIL] =
+{
+	NATIVE_COSTUME_VERGIL_DEFAULT,
+	NATIVE_COSTUME_VERGIL_DEFAULT_NO_COAT,
+	NATIVE_COSTUME_VERGIL_SPARDA,
+};
+
+enum COSTUME_DANTE_
+{
+	COSTUME_DANTE_DEFAULT,
+	COSTUME_DANTE_DEFAULT_NO_COAT,
+	COSTUME_DANTE_DEFAULT_TORN,
+	COSTUME_DANTE_DMC1,
+	COSTUME_DANTE_DMC1_NO_COAT,
+	COSTUME_DANTE_SPARDA,
+	MAX_COSTUME_DANTE,
+};
+
+enum COSTUME_VERGIL_
+{
+	COSTUME_VERGIL_DEFAULT,
+	COSTUME_VERGIL_DEFAULT_NO_COAT,
+	COSTUME_VERGIL_SPARDA,
+	MAX_COSTUME_VERGIL,
+};
+
+
+
+
+enum COSTUME_VERGIL_
+{
+	COSTUME_VERGIL_DEFAULT,
+	COSTUME_VERGIL_DEFAULT_NO_COAT,
+	COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS,
+	COSTUME_VERGIL_SPARDA,
+	COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS,
+	MAX_COSTUME_VERGIL,
+};
+
+
+
+
+enum NATIVE_STYLE_VERGIL_
+{
+	NATIVE_STYLE_VERGIL_DARK_SLAYER = 2,
+	MAX_NATIVE_STYLE_VERGIL = 1,
+};
+
+enum STYLE_VERGIL_
+{
+	STYLE_VERGIL_DARK_SLAYER,
+	STYLE_VERGIL_ROYALGUARD,
+	MAX_STYLE_VERGIL,
+};
+
+
+
+
+
+
+
+
+
+
+
+enum STYLE_
+{
+	STYLE_DANTE_SWORDMASTER,
+	STYLE_DANTE_GUNSLINGER,
+	STYLE_DANTE_TRICKSTER,
+	STYLE_DANTE_ROYALGUARD,
+	STYLE_DANTE_QUICKSILVER,
+	STYLE_DANTE_DOPPELGANGER,
+	STYLE_VERGIL_DARK_SLAYER = 2,
+	MAX_STYLE = 6,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+enum WEAPON_
+{
+	WEAPON_VOID = 255,
+};
+
+enum NATIVE_MELEE_WEAPON_DANTE_
+{
+	NATIVE_MELEE_WEAPON_DANTE_REBELLION,
+	NATIVE_MELEE_WEAPON_DANTE_CERBERUS,
+	NATIVE_MELEE_WEAPON_DANTE_AGNI_RUDRA,
+	NATIVE_MELEE_WEAPON_DANTE_NEVAN,
+	NATIVE_MELEE_WEAPON_DANTE_BEOWULF,
+	MAX_NATIVE_MELEE_WEAPON_DANTE,
+};
+
+enum NATIVE_RANGED_WEAPON_DANTE_
+{
+	NATIVE_RANGED_WEAPON_DANTE_EBONY_IVORY = 5,
+	NATIVE_RANGED_WEAPON_DANTE_SHOTGUN,
+	NATIVE_RANGED_WEAPON_DANTE_ARTEMIS,
+	NATIVE_RANGED_WEAPON_DANTE_SPIRAL,
+	NATIVE_RANGED_WEAPON_DANTE_KALINA_ANN,
+	MAX_NATIVE_RANGED_WEAPON_DANTE = 5,
+};
+
+enum MELEE_WEAPON_DANTE_
+{
+	MELEE_WEAPON_DANTE_REBELLION,
+	MELEE_WEAPON_DANTE_CERBERUS,
+	MELEE_WEAPON_DANTE_AGNI_RUDRA,
+	MELEE_WEAPON_DANTE_NEVAN,
+	MELEE_WEAPON_DANTE_BEOWULF,
+	MELEE_WEAPON_DANTE_YAMATO,
+	MAX_MELEE_WEAPON_DANTE,
+};
+
+enum RANGED_WEAPON_DANTE_
+{
+	RANGED_WEAPON_DANTE_EBONY_IVORY,
+	RANGED_WEAPON_DANTE_SHOTGUN,
+	RANGED_WEAPON_DANTE_ARTEMIS,
+	RANGED_WEAPON_DANTE_SPIRAL,
+	RANGED_WEAPON_DANTE_KALINA_ANN,
+	RANGED_WEAPON_DANTE_SUMMONED_SWORDS,
+	MAX_RANGED_WEAPON_DANTE,
+};
+
+constexpr uint8 rangedWeaponMapDante[MAX_RANGED_WEAPON_DANTE] =
+{
+	NATIVE_RANGED_WEAPON_DANTE_EBONY_IVORY,
+	NATIVE_RANGED_WEAPON_DANTE_SHOTGUN,
+	NATIVE_RANGED_WEAPON_DANTE_ARTEMIS,
+	NATIVE_RANGED_WEAPON_DANTE_SPIRAL,
+	NATIVE_RANGED_WEAPON_DANTE_KALINA_ANN,
+	WEAPON_VOID,
+};
+
+enum NATIVE_MELEE_WEAPON_VERGIL_
+{
+	NATIVE_MELEE_WEAPON_VERGIL_YAMATO = 11,
+	NATIVE_MELEE_WEAPON_VERGIL_BEOWULF,
+	NATIVE_MELEE_WEAPON_VERGIL_FORCE_EDGE,
+	MAX_NATIVE_MELEE_WEAPON_VERGIL = 3,
+};
+
+enum MELEE_WEAPON_VERGIL_
+{
+	MELEE_WEAPON_VERGIL_YAMATO,
+	MELEE_WEAPON_VERGIL_BEOWULF,
+	MELEE_WEAPON_VERGIL_FORCE_EDGE,
+	MAX_MELEE_WEAPON_VERGIL,
+};
+
+
+
+
+enum NEW_MELEE_WEAPON_VERGIL_
+{
+	NEW_MELEE_WEAPON_VERGIL_YAMATO = 11,
+	NEW_MELEE_WEAPON_VERGIL_BEOWULF,
+	NEW_MELEE_WEAPON_VERGIL_FORCE_EDGE,
+	//MAX_NEW_MELEE_WEAPON_VERGIL = 3,
+};
+
+
+
+
+
+
+
+
+
+
+//enum MOTION_GROUP_BOB_
+//{
+//	MOTION_GROUP_BOB_BASE,
+//	MOTION_GROUP_BOB_DAMAGE,
+//	MOTION_GROUP_BOB_TAUNTS,
+//	MOTION_GROUP_BOB_MELEE_STYLE = 31,
+//	MAX_MOTION_GROUP_BOB         = 4,
+//};
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//enum MOTION_GROUP_LADY_
+//{
+//	MOTION_GROUP_LADY_BASE,
+//	MOTION_GROUP_LADY_DAMAGE,
+//	MOTION_GROUP_LADY_TAUNTS,
+//	MOTION_GROUP_LADY_KALINA_ANN = 12,
+//	MAX_MOTION_GROUP_LADY        = 4,
+//};
+
+enum MOTION_GROUP_VERGIL_
+{
+	MOTION_GROUP_VERGIL_BASE,
+	MOTION_GROUP_VERGIL_DAMAGE,
+	MOTION_GROUP_VERGIL_TAUNTS,
+	MOTION_GROUP_VERGIL_YAMATO,
+	MOTION_GROUP_VERGIL_BEOWULF,
+	MOTION_GROUP_VERGIL_FORCE_EDGE,
+	MOTION_GROUP_VERGIL_DARK_SLAYER,
+	MOTION_GROUP_VERGIL_NERO_ANGELO_YAMATO,
+	MOTION_GROUP_VERGIL_NERO_ANGELO_BEOWULF,
+	MOTION_GROUP_VERGIL_NERO_ANGELO_FORCE_EDGE,
+	MAX_MOTION_GROUP_VERGIL,
+};
+
+enum MOTION_GROUP_
+{
+	//MOTION_GROUP_DANTE  = MAX_MOTION_GROUP_DANTE,
+	//MOTION_GROUP_BOB    = MAX_MOTION_GROUP_BOB,
+	//MOTION_GROUP_LADY   = MAX_MOTION_GROUP_LADY,
+	//MOTION_GROUP_VERGIL = MAX_MOTION_GROUP_VERGIL,
+	MAX_MOT    = 32,
+};
+
+
+
+
+
+
+
+
+
+
+
 
 
 

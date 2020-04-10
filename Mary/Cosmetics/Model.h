@@ -14,9 +14,10 @@ typedef void(__fastcall * Cosmetics_Model_UpdateDevilModel_t)
 	uint8   slot
 );
 
-extern Cosmetics_Model_UpdateModel_t      Cosmetics_Model_UpdateModelDante           [MAX_COSTUME_DANTE ];
-extern Cosmetics_Model_UpdateModel_t      Cosmetics_Model_UpdateModelDanteVergil     [MAX_COSTUME_VERGIL];
-extern Cosmetics_Model_UpdateDevilModel_t Cosmetics_Model_UpdateDevilModelDante      [MAX_DEVIL_DANTE   ];
-extern Cosmetics_Model_UpdateDevilModel_t Cosmetics_Model_UpdateDevilModelDanteVergil[MAX_DEVIL_VERGIL  ];
+extern Cosmetics_Model_UpdateModel_t Cosmetics_Model_UpdateModelDante      [MAX_COSTUME];
+extern Cosmetics_Model_UpdateModel_t Cosmetics_Model_UpdateModelDanteVergil[MAX_COSTUME];
+
+extern Cosmetics_Model_UpdateDevilModel_t Cosmetics_Model_UpdateDevilModelDante      [MAX_DEVIL];
+extern Cosmetics_Model_UpdateDevilModel_t Cosmetics_Model_UpdateDevilModelDanteVergil[MAX_DEVIL];
 
 void Cosmetics_Model_Init();

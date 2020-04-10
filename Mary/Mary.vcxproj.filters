@@ -151,6 +151,9 @@
     <ClCompile Include="Cosmetics\Model.cpp">
       <Filter>Cosmetics</Filter>
     </ClCompile>
+    <ClCompile Include="System\ActorObsolete.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

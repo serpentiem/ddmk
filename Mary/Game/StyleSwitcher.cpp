@@ -25,12 +25,12 @@ void UpdateStyle(byte8 * baseAddr, uint32 index)
 	//auto sessionLevel      = (uint32  *)(session + 0x11C);
 	//auto sessionExperience = (float32 *)(session + 0x134);
 
-	//if (!((character == CHAR_LOGIC_DANTE) || (character == CHAR_LOGIC_VERGIL)))
+	//if (!((character == CHAR_DANTE) || (character == CHAR_VERGIL)))
 	//{
 	//	return;
 	//}
 
-	//if (character == CHAR_LOGIC_VERGIL)
+	//if (character == CHAR_VERGIL)
 	//{
 	//	switch (index)
 	//	{
@@ -63,7 +63,7 @@ void UpdateStyle(byte8 * baseAddr, uint32 index)
 
 	//// @Todo: Check if array for unlocked styles.
 
-	//if (character == CHAR_LOGIC_DANTE)
+	//if (character == CHAR_DANTE)
 	//{
 	//	if (index == STYLE_DANTE_QUICKSILVER)
 	//	{

@@ -5,6 +5,6 @@
 
 #include "Actor.h"
 
-extern bool System_Motion_update[MAX_ACTOR];
+//extern bool System_Motion_update[MAX_ACTOR];
 
 void System_Motion_Init();

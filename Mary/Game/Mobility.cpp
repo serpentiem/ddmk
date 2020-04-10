@@ -16,7 +16,7 @@ byte * TrickDownReset      = 0;
 static bool AirHike(byte * baseAddr)
 {
 	uint8 character = *(uint8 *)(baseAddr + 0x78);
-	if (character != CHAR_LOGIC_DANTE)
+	if (character != CHAR_DANTE)
 	{
 		return false;
 	}

@@ -145,6 +145,9 @@ p4.exe</Command>
     <ClCompile Include="Restart.cpp" />
     <ClCompile Include="Speed.cpp" />
     <ClCompile Include="System\Actor.cpp" />
+    <ClCompile Include="System\ActorObsolete.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="System\Animation.cpp" />
     <ClCompile Include="System\Camera.cpp" />
     <ClCompile Include="System\File.cpp" />

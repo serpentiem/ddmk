@@ -66,6 +66,99 @@ void ClearPool()
 
 
 
+
+
+
+
+
+void Arcade_CreateMainActor(byte8 * baseAddr)
+{
+	LogFunction(baseAddr);
+
+	// Unlock Files
+
+
+
+	/*
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable>
+  <CheatEntries>
+    <CheatEntry>
+      <ID>76541</ID>
+      <Description>"0000"</Description>
+      <LastState Value="00000000" RealAddress="005F07F4"/>
+      <ShowAsHex>1</ShowAsHex>
+      <VariableType>4 Bytes</VariableType>
+      <Address>dmc3.exe+C90E28</Address>
+      <Offsets>
+        <Offset>11C</Offset>
+        <Offset>8</Offset>
+      </Offsets>
+    </CheatEntry>
+  </CheatEntries>
+</CheatTable>
+
+	*/
+	
+
+
+
+	// Weapons
+	{
+		auto addr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E28);
+		if (!addr)
+		{
+			return;
+		}
+		addr = *reinterpret_cast<byte8 **>(addr + 0x30);
+		if (!addr)
+		{
+			return;
+		}
+		auto unlock = reinterpret_cast<byte8 *>(addr + 0x7E2);
+		memset(unlock, 0xFF, 8);
+
+
+
+
+		//unlock[2] = 0xFF;
+		//unlock[3] = 0xFF;
+		//unlock[4] = 0xFF;
+		/*
+		dmc3.exe+2A9F6D - 48 8B 05 B46E9E00    - mov rax,[dmc3.exe+C90E28]
+		dmc3.exe+2A9F74 - 48 8B 50 30          - mov rdx,[rax+30]
+		dmc3.exe+2A9F7C - 41 84 84 10 E2070000 - test [r8+rdx+000007E2],al
+		*/
+	}
+
+	//// Styles
+	//{
+	//	auto addr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E28);
+	//	if (!addr)
+	//	{
+	//		return;
+	//	}
+	//	addr = *reinterpret_cast<byte8 **>(addr + 8);
+	//	if (!addr)
+	//	{
+	//		return;
+	//	}
+	//	auto level = reinterpret_cast<uint32 *>(addr + 0x11C);
+	//	level[0] = 2;
+	//	level[1] = 2;
+	//	level[2] = 2;
+	//	level[3] = 2;
+	//}
+}
+
+
+
+
+
+
+
+
+
 void CreateMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
@@ -78,7 +171,7 @@ void CreateMainActor(byte8 * baseAddr)
 	actorData.buttonMask = 0xFFFF;
 
 	
-
+	Arcade_CreateMainActor(baseAddr);
 
 
 
@@ -102,7 +195,7 @@ void CreateMainActor(byte8 * baseAddr)
 
 	//auto & actorId = *(uint8 *)(baseAddr + 0x118) = ACTOR_TWO;
 
-	spawnActors = true;
+	//spawnActors = true;
 }
 
 void CreateMainClone(byte8 * baseAddr)
@@ -314,9 +407,9 @@ static void Arcade_InitSession()
 
 	goldOrbCount = 3;
 
-	memset(unlock, true, 14);
+	//memset(unlock, true, 14);
 
-	if (Config.Game.Arcade.character == CHAR_LOGIC_DANTE)
+	if (Config.Game.Arcade.character == CHAR_DANTE)
 	{
 		vp_memcpy(equipment, Config.Game.Arcade.equipment, 4);
 	}
@@ -330,7 +423,7 @@ static void Arcade_InitSession()
 	hitPoints = Config.Game.Arcade.hitPoints;
 	magicPoints = Config.Game.Arcade.magicPoints;
 
-	if (Config.Game.Arcade.character == CHAR_LOGIC_DANTE)
+	if (Config.Game.Arcade.character == CHAR_DANTE)
 	{
 		if ((Config.Game.Arcade.style == STYLE_DANTE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
 		{
@@ -346,10 +439,15 @@ static void Arcade_InitSession()
 
 	
 	memset(styleLevel, 0, (MAX_STYLE * 4));
-	for (uint8 styleId = 0; styleId < 4; styleId++)
-	{
-		styleLevel[styleId] = 2;
-	}
+	//for (uint8 styleId = 0; styleId < 4; styleId++)
+	//{
+	//	styleLevel[styleId] = 2;
+	//}
+
+	styleLevel[0] = 2;
+	styleLevel[1] = 2;
+	styleLevel[2] = 2;
+	styleLevel[3] = 2;
 
 
 
@@ -363,9 +461,10 @@ static void Arcade_InitSession()
 
 	memset(styleExperience, 0, (MAX_STYLE * 4));
 
-	memset(expertise, 0xFFFFFFFF, 32);
+	//memset(expertise, 0xFFFFFFFF, 32);
+	//memset(expertise, 0xFFFFFFFF, 32);
 
-
+	memset(expertise, 0xFF, (8 * 4));
 
 
 
@@ -1148,7 +1247,7 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 //	*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = *(uint32 *)(baseAddr + 0x3E88);
 //	*(bool   *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E9B) = *(bool   *)(baseAddr + 0x3E9B);
 //	uint8 character = *(uint8 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x78);
-//	//if (character == CHAR_LOGIC_BOB)
+//	//if (character == CHAR_BOB)
 //	//{
 //	//	if (devil)
 //	//	{
@@ -1163,14 +1262,14 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 //	//		*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
 //	//	}
 //	//}
-//	if (character == CHAR_LOGIC_LADY)
+//	if (character == CHAR_LADY)
 //	{
 //		*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E6C) = 0;
 //		*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E70) = 0;
 //		*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
 //		*(bool   *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E9B) = false;
 //	}
-//	else if (character == CHAR_LOGIC_VERGIL)
+//	else if (character == CHAR_VERGIL)
 //	{
 //		uint8 devilForm[] =
 //		{
@@ -1196,7 +1295,7 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 //			*(uint32 *)(System_Actor_actorBaseAddr[ACTOR_TWO] + 0x3E88) = 0;
 //		}
 //	}
-//	if (character != CHAR_LOGIC_LADY)
+//	if (character != CHAR_LADY)
 //	{
 //		//System_Actor_UpdateDevilForm(System_Actor_actorBaseAddr[ACTOR_TWO]);
 //	}

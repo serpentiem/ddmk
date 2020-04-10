@@ -4,7 +4,7 @@
 
 
 
-bool System_Motion_update[MAX_ACTOR] = {};
+//bool System_Motion_update[MAX_ACTOR] = {};
 
 void SetUpdateFlag(byte8 * baseAddr)
 {

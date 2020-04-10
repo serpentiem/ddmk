@@ -13,7 +13,7 @@ extern bool System_Weapon_enableUpdateWeapon;
 extern bool System_Weapon_enableDoppelgangerFixes;
 extern bool System_Weapon_enableModelFixes;
 
-extern byte8 * System_Weapon_weaponMetadata[MAX_ACTOR][MAX_WEAPON];
+//extern byte8 * System_Weapon_weaponMetadata[MAX_ACTOR][MAX_WEAPON];
 
 typedef void(* System_Weapon_Dante_UpdateExpertise_t)(byte8 * baseAddr);
 

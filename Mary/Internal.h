@@ -14,8 +14,8 @@ typedef void(__fastcall * func_305D80_t)(byte8 * dest);
 typedef void(__fastcall * func_8A000_t)(byte8 * dest, byte8 * motionFile, byte8 * addr);
 typedef uint32(__fastcall * func_2C9F40_t)(byte8 * physicsFile);
 typedef void(__fastcall * func_2CA1D0_t)(byte8 * dest, byte8 * addr, byte8 * physicsFile, uint32 index);
-typedef void(__fastcall * func_2CA2F0_t)(byte8 * dest, byte8 * addr, byte8 *, MODEL_DATA * modelData, uint32 count);
-typedef void(__fastcall * func_1EF040_t)(byte8 * baseAddr, uint32 index);
+typedef void(__fastcall * func_2CA2F0_t)(byte8 * dest, byte8 * addr, byte8 *, MODEL_METADATA * modelData, uint32 count);
+typedef void(__fastcall * func_1EF040_t)(byte8 * baseAddr, uint32 index); // no hint sadly
 typedef void(__fastcall * func_1F92C0_t)(byte8 * dest, byte32 flag);
 typedef void(__fastcall * func_1F97F0_t)(byte8 * dest, byte32 flag);
 typedef void(__fastcall * func_2EE3D0_t)(byte8 * dest);

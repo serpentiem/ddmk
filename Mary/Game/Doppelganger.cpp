@@ -10,24 +10,24 @@ byte8 * AdjustDevilSound                = 0;
 
 void DoppelgangerRateController(byte8 * baseAddr)
 {
-	static bool execute = false;
-	if ((System_Input_GetButtonState(ACTOR_ONE) & System_Input_GetBinding(CMD_LOCK_ON)) && (System_Input_GetButtonState(ACTOR_ONE) & System_Input_GetBinding(CMD_TAUNT)))
-	{
-		if (execute)
-		{
-			uint32 & rate = *(uint32 *)(baseAddr + 0x6450);
-			rate++;
-			if (rate > 2)
-			{
-				rate = 0;
-			}
-			execute = false;
-		}
-	}
-	else
-	{
-		execute = true;
-	}
+	//static bool execute = false;
+	//if ((System_Input_GetButtonState(ACTOR_ONE) & System_Input_GetBinding(CMD_LOCK_ON)) && (System_Input_GetButtonState(ACTOR_ONE) & System_Input_GetBinding(CMD_TAUNT)))
+	//{
+	//	if (execute)
+	//	{
+	//		uint32 & rate = *(uint32 *)(baseAddr + 0x6450);
+	//		rate++;
+	//		if (rate > 2)
+	//		{
+	//			rate = 0;
+	//		}
+	//		execute = false;
+	//	}
+	//}
+	//else
+	//{
+	//	execute = true;
+	//}
 }
 
 PrivateEnd;

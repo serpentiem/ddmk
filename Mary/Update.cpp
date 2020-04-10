@@ -13,7 +13,7 @@ bool millionStab = false;
 __declspec(noinline) void VergilMillionStab(byte8 * baseAddr)
 {
 	auto & actorData = *(ACTOR_DATA *)baseAddr;
-	if (actorData.characterLogic != CHAR_LOGIC_VERGIL)
+	if (actorData.character != CHAR_VERGIL)
 	{
 		return;
 	}
@@ -107,15 +107,17 @@ void MainLoop()
 	//}
 
 
+	//return;
+
 	if (spawnActors)
 	{
 		spawnActors = false;
 
 		Log("Spawn Actors.");
 
-		//System_Actor_actorBaseAddr[ACTOR_TWO] = CreateActor(CHAR_LOGIC_DANTE, ACTOR_TWO);
+		//System_Actor_actorBaseAddr[ACTOR_TWO] = CreateActor(CHAR_DANTE, ACTOR_TWO);
 
-		auto baseAddr = CreateActor(CHAR_LOGIC_DANTE, 0);
+		auto baseAddr = CreateActor(CHAR_DANTE, 0);
 
 		System_Actor_actorBaseAddr.Push(baseAddr);
 
@@ -134,14 +136,14 @@ void MainLoop()
 		//actorData.hideWeapons = true;
 		//actorData.hideSummonedSwords = true;
 
-		actorData.equipment[0] = WEAPON_DANTE_REBELLION;
-		actorData.equipment[1] = WEAPON_DANTE_CERBERUS;
-		actorData.equipment[2] = WEAPON_VOID;
-		actorData.equipment[3] = WEAPON_VOID;
+		actorData.weaponMap[0] = WEAPON_DANTE_REBELLION;
+		actorData.weaponMap[1] = WEAPON_DANTE_CERBERUS;
+		actorData.weaponMap[2] = WEAPON_VOID;
+		actorData.weaponMap[3] = WEAPON_VOID;
 
 
 
-		actorData.character = CHAR_VERGIL;
+		//actorData.character = CHAR_VERGIL;
 		//actorData.noCollision = true;
 
 
@@ -159,7 +161,7 @@ void MainLoop()
 		//actorData.gamepad = 1;
 
 
-		(*(ACTOR_DATA *)System_Actor_actorBaseAddr[0]).childBaseAddr[0] = baseAddr;
+		//(*(ACTOR_DATA *)System_Actor_actorBaseAddr[0]).childBaseAddr[0] = baseAddr;
 
 
 	}

@@ -26,7 +26,7 @@ bool System_Weapon_enableUpdateWeapon      = false;
 bool System_Weapon_enableDoppelgangerFixes = false;
 bool System_Weapon_enableModelFixes        = false;
 
-byte8 * System_Weapon_weaponMetadata[MAX_ACTOR][MAX_WEAPON] = {};
+//byte8 * System_Weapon_weaponMetadata[MAX_ACTOR][MAX_WEAPON] = {};
 
 System_Weapon_Dante_UpdateExpertise_t System_Weapon_Dante_UpdateExpertise = 0;
 
@@ -201,7 +201,7 @@ byte8 * UpdateWeaponProxy = 0;
 byte8 * CycleDante  = 0;
 byte8 * CycleVergil = 0;
 
-uint8 Dante_Melee_lastWeaponId[MAX_ACTOR] = {};
+//uint8 Dante_Melee_lastWeaponId[MAX_ACTOR] = {};
 
 byte8 * IsWeaponReadyProxy     = 0;
 byte8 * IsWeaponReadyRebellion = 0;
@@ -278,131 +278,148 @@ void System_Weapon_Dante_Ranged_UpdateLevels(byte8 * baseAddr)
 
 PrivateStart;
 
-__declspec(deprecated) void UpdateWeapon(byte8 * baseAddr)
-{
-	Log("%s Start %llX", FUNC_NAME, baseAddr);
+//__declspec(deprecated) void UpdateWeapon(byte8 * baseAddr)
+//{
+//	Log("%s Start %llX", FUNC_NAME, baseAddr);
+//
+//	//auto actor = System_Actor_GetActorId(baseAddr);
+//
+//
+//	auto & actorData = *(ACTOR_DATA *)baseAddr;
+//
+//	//auto actor = actorData.actorId;
+//
+//
+//
+//
+//
+//	auto   character            = *(uint8 * )(baseAddr + 0x78  );
+//	auto & specialCostume       = *(bool  * )(baseAddr + 0x3E9F);
+//	auto & selectedMeleeWeapon  = *(uint8 * )(baseAddr + 0x6490);
+//	auto & selectedRangedWeapon = *(uint8 * )(baseAddr + 0x6494);
+//	auto   equipment            =  (uint8 * )(baseAddr + 0x6498);
+//	auto   metadata             =  (byte8 **)(baseAddr + 0x64A0);
+//
+//	//if (character >= MAX_CHAR_LOGIC)
+//	//{
+//	//	character = 0;
+//	//}
+//
+//	//// Update File Items
+//	//{
+//	//	if (character == CHAR_DANTE)
+//	//	{
+//	//		Dante_UpdateSword(baseAddr);
+//	//	}
+//	//	auto & count = fileItemHelperCount[character];
+//	//	for (uint8 index = 0; index < count; index++)
+//	//	{
+//	//		fileItemHelper[character][index].Update();
+//	//	}
+//	//}
+//
+//	// Register Weapons
+//	//{
+//	//	auto & count = registerWeaponHelperCount[character];
+//	//	for (uint8 index = 0; index < count; index++)
+//	//	{
+//	//		auto & RegisterWeapon = *registerWeaponHelper[character][index].func;
+//	//		auto & id = registerWeaponHelper[character][index].id;
+//	//		System_Weapon_weaponMetadata[actor][id] = RegisterWeapon(baseAddr);
+//	//	}
+//	//	if ((character == CHAR_VERGIL) && specialCostume)
+//	//	{
+//	//		RegisterWeaponNeroAngeloSword(baseAddr);
+//	//	}
+//	//}
+//
+//	// Update Live Variables
+//	{
+//		if ((character == CHAR_DANTE) && Config.Game.WeaponSwitcher.enable)
+//		{
+//
+//			// @Todo: Should be 8 due to padding.
+//			// @Research: Extension.
+//
+//			memset(equipment, 0xFF, 4);
+//			memset((equipment + 4), 0, 4);
+//			equipment[selectedMeleeWeapon ] = Config.Game.WeaponSwitcher.Melee.weapon [Game_WeaponSwitcher_Melee_index ];
+//			equipment[selectedRangedWeapon] = Config.Game.WeaponSwitcher.Ranged.weapon[Game_WeaponSwitcher_Ranged_index];
+//		}
+//
+//		memset(metadata, 0, 100);
+//		for (uint8 index = 0; index < 4; index++)
+//		{
+//			uint8 & weaponId = equipment[index];
+//			if (weaponId == 0xFF)
+//			{
+//				continue;
+//			}
+//			metadata[index] = System_Weapon_weaponMetadata[actor][weaponId];
+//		}
+//
+//		// @Research: Different for Vergil!
+//
+//		*(uint32 *)(baseAddr + 0x64D8) = 4;
+//
+//		if (character == CHAR_DANTE)
+//		{
+//			System_Weapon_Dante_Ranged_UpdateLevels(baseAddr);
+//			System_Weapon_Dante_UpdateExpertise(baseAddr);
+//			auto & weaponId = equipment[selectedMeleeWeapon];
+//			auto & lastWeaponId = Dante_Melee_lastWeaponId[actor];
+//			lastWeaponId = weaponId;
+//			if ((weaponId == WEAPON_DANTE_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
+//			{
+//				Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
+//			}
+//			else
+//			{
+//				Cosmetics_Dante_ApplyDefaultModelAttributes(baseAddr);
+//			}
+//		}
+//	}
+//	LogFunctionEnd();
+//}
 
-	//auto actor = System_Actor_GetActorId(baseAddr);
+//void Dante_Melee_UpdateModelAttributes(byte8 * baseAddr, uint8 weaponId)
+//{
+//	auto & actorData = *(ACTOR_DATA *)baseAddr;
+//	auto actor = actorData.actorId;
+//
+//	auto & lastWeaponId = Dante_Melee_lastWeaponId[actor];
+//	if (lastWeaponId != weaponId)
+//	{
+//		lastWeaponId = weaponId;
+//		if ((weaponId == WEAPON_DANTE_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
+//		{
+//			Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
+//		}
+//		else
+//		{
+//			Cosmetics_Dante_ApplyDefaultModelAttributes(baseAddr);
+//		}
+//	}
+//}
+
+// @Todo: Remove weaponId. It's not required, the weaponBaseAddr should have it at 0x18.
+
+// @Research: IsReady is ambiguous.
+// IsActive
+// ShouldShow
+// Show
+// CondShow
+// IsActive
+// IsBusy
+// ShowModel
+// GetDisplayState
 
 
-	auto & actorData = *(ACTOR_DATA *)baseAddr;
-
-	auto actor = actorData.actorId;
 
 
 
 
-
-	auto   character            = *(uint8 * )(baseAddr + 0x78  );
-	auto & specialCostume       = *(bool  * )(baseAddr + 0x3E9F);
-	auto & selectedMeleeWeapon  = *(uint8 * )(baseAddr + 0x6490);
-	auto & selectedRangedWeapon = *(uint8 * )(baseAddr + 0x6494);
-	auto   equipment            =  (uint8 * )(baseAddr + 0x6498);
-	auto   metadata             =  (byte8 **)(baseAddr + 0x64A0);
-
-	if (character >= MAX_CHAR_LOGIC)
-	{
-		character = 0;
-	}
-
-	//// Update File Items
-	//{
-	//	if (character == CHAR_DANTE)
-	//	{
-	//		Dante_UpdateSword(baseAddr);
-	//	}
-	//	auto & count = fileItemHelperCount[character];
-	//	for (uint8 index = 0; index < count; index++)
-	//	{
-	//		fileItemHelper[character][index].Update();
-	//	}
-	//}
-
-	// Register Weapons
-	//{
-	//	auto & count = registerWeaponHelperCount[character];
-	//	for (uint8 index = 0; index < count; index++)
-	//	{
-	//		auto & RegisterWeapon = *registerWeaponHelper[character][index].func;
-	//		auto & id = registerWeaponHelper[character][index].id;
-	//		System_Weapon_weaponMetadata[actor][id] = RegisterWeapon(baseAddr);
-	//	}
-	//	if ((character == CHAR_VERGIL) && specialCostume)
-	//	{
-	//		RegisterWeaponNeroAngeloSword(baseAddr);
-	//	}
-	//}
-
-	// Update Live Variables
-	{
-		if ((character == CHAR_LOGIC_DANTE) && Config.Game.WeaponSwitcher.enable)
-		{
-
-			// @Todo: Should be 8 due to padding.
-			// @Research: Extension.
-
-			memset(equipment, 0xFF, 4);
-			memset((equipment + 4), 0, 4);
-			equipment[selectedMeleeWeapon ] = Config.Game.WeaponSwitcher.Melee.weapon [Game_WeaponSwitcher_Melee_index ];
-			equipment[selectedRangedWeapon] = Config.Game.WeaponSwitcher.Ranged.weapon[Game_WeaponSwitcher_Ranged_index];
-		}
-
-		memset(metadata, 0, 100);
-		for (uint8 index = 0; index < 4; index++)
-		{
-			uint8 & weaponId = equipment[index];
-			if (weaponId == 0xFF)
-			{
-				continue;
-			}
-			metadata[index] = System_Weapon_weaponMetadata[actor][weaponId];
-		}
-
-		// @Research: Different for Vergil!
-
-		*(uint32 *)(baseAddr + 0x64D8) = 4;
-
-		if (character == CHAR_LOGIC_DANTE)
-		{
-			System_Weapon_Dante_Ranged_UpdateLevels(baseAddr);
-			System_Weapon_Dante_UpdateExpertise(baseAddr);
-			auto & weaponId = equipment[selectedMeleeWeapon];
-			auto & lastWeaponId = Dante_Melee_lastWeaponId[actor];
-			lastWeaponId = weaponId;
-			if ((weaponId == WEAPON_DANTE_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
-			{
-				Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
-			}
-			else
-			{
-				Cosmetics_Dante_ApplyDefaultModelAttributes(baseAddr);
-			}
-		}
-	}
-	LogFunctionEnd();
-}
-
-void Dante_Melee_UpdateModelAttributes(byte8 * baseAddr, uint8 weaponId)
-{
-	auto & actorData = *(ACTOR_DATA *)baseAddr;
-	auto actor = actorData.actorId;
-
-	auto & lastWeaponId = Dante_Melee_lastWeaponId[actor];
-	if (lastWeaponId != weaponId)
-	{
-		lastWeaponId = weaponId;
-		if ((weaponId == WEAPON_DANTE_BEOWULF) && !Config.Cosmetics.Dante.Beowulf.hideModel)
-		{
-			Cosmetics_Dante_ApplyBeowulfModelAttributes(baseAddr);
-		}
-		else
-		{
-			Cosmetics_Dante_ApplyDefaultModelAttributes(baseAddr);
-		}
-	}
-}
-
-bool Dante_Melee_IsWeaponReady(byte8 * baseAddr, uint8 weaponId)
+__declspec(deprecated) bool Dante_Melee_IsWeaponReady(byte8 * baseAddr, uint8 weaponId)
 {
 	auto actorBaseAddr = *(byte8 **)(baseAddr + 0x120);
 	if (!actorBaseAddr)
@@ -418,7 +435,7 @@ bool Dante_Melee_IsWeaponReady(byte8 * baseAddr, uint8 weaponId)
 
 	if (weaponId == WEAPON_DANTE_BEOWULF)
 	{
-		if (character == CHAR_LOGIC_VERGIL)
+		if (character == CHAR_VERGIL)
 		{
 			return true;
 		}
@@ -428,6 +445,7 @@ bool Dante_Melee_IsWeaponReady(byte8 * baseAddr, uint8 weaponId)
 			{
 				return true;
 			}
+			// @Todo: Ignore equipment check. Rather change to devil model check.
 			uint8 index = (uint8)(actorModel - 1);
 			if (equipment[index] == WEAPON_DANTE_BEOWULF)
 			{
@@ -458,7 +476,7 @@ bool Dante_Melee_IsWeaponReady(byte8 * baseAddr, uint8 weaponId)
 		}
 		if (motionGroup == (weaponId + off))
 		{
-			Dante_Melee_UpdateModelAttributes(actorBaseAddr, weaponId);
+			//Dante_Melee_UpdateModelAttributes(actorBaseAddr, weaponId);
 			return true;
 		}
 		else if (motionGroup == motionGroupId[index])
@@ -469,14 +487,79 @@ bool Dante_Melee_IsWeaponReady(byte8 * baseAddr, uint8 weaponId)
 
 	if (equipment[selectedWeapon] == weaponId)
 	{
-		Dante_Melee_UpdateModelAttributes(actorBaseAddr, weaponId);
+		//Dante_Melee_UpdateModelAttributes(actorBaseAddr, weaponId);
 		return true;
 	}
 
 	return false;
 }
 
-bool Dante_Ranged_IsWeaponReady(byte8 * baseAddr, uint8 weaponId)
+bool IsWeaponActive(byte8 * baseAddr, uint8 weapon)
+{
+	auto & actorData = *(ACTOR_DATA *)baseAddr;
+	if (actorData.motionData[1].group == (MOT_DANTE_REBELLION + weapon))
+	{
+		return true;
+	}
+	if (actorData.motionData[1].group == (MOT_DANTE_SWORDMASTER_REBELLION + weapon))
+	{
+		return true;
+	}
+	return false;
+}
+
+//void func(uint8 weapon)
+//{
+//
+//
+//
+//
+//	for (uint8 index = 0; index < MAX_WEAPON_DANTE; index++)
+//	{
+//		if (index == weapon)
+//		{
+//			continue;
+//		}
+//
+//		IsWeaponActive(0, weapon);
+//
+//
+//
+//
+//
+//	}
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// @Todo: Update!
+
+__declspec(deprecated) bool Dante_Ranged_IsWeaponReady(byte8 * baseAddr, uint8 weaponId)
 {
 	auto actorBaseAddr = *(byte8 **)(baseAddr + 0x120);
 	if (!actorBaseAddr)
@@ -817,6 +900,7 @@ void System_Weapon_ToggleModelFixes(bool enable)
 		WriteCall((appBaseAddr + 0x22FAD4), (appBaseAddr + 0x1FD3E0));
 		WriteCall((appBaseAddr + 0x2288A4), (appBaseAddr + 0x1FD3E0));
 		WriteCall((appBaseAddr + 0x22AD2D), (appBaseAddr + 0x1FD3E0));
+
 		WriteCall((appBaseAddr + 0x2295B7), (appBaseAddr + 0x1FDE10));
 		WriteCall((appBaseAddr + 0x22CBC8), (appBaseAddr + 0x1FDE10));
 		{
