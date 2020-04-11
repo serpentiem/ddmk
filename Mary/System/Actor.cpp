@@ -1,14 +1,10 @@
 #include "Actor.h"
 
-bool System_Actor_enableArrayExtension    = false;
-bool System_Actor_enableCreateActor       = false;
-bool System_Actor_enableUpdateActor       = false;
-bool System_Actor_enableDoppelgangerFixes = false;
-bool System_Actor_enableModelFixes        = false;
-
 vector<byte8 *, 128> System_Actor_actorBaseAddr;
 
 PrivateStart;
+
+// @Todo: Create functions instead and add stringItemOff.
 
 struct MotionHelper
 {
@@ -18,97 +14,102 @@ struct MotionHelper
 
 MotionHelper motionHelperDante[] =
 {
-	{ MOT_DANTE_BASE                  , pl000_00_0  },
-	{ MOT_DANTE_DAMAGE                , pl000_00_1  },
-	{ MOT_DANTE_TAUNTS                , pl000_00_2  },
-	{ MOT_DANTE_REBELLION             , pl000_00_3  },
-	{ MOT_DANTE_CERBERUS              , pl000_00_4  },
-	{ MOT_DANTE_AGNI_RUDRA            , pl000_00_5  },
-	{ MOT_DANTE_NEVAN                 , pl000_00_6  },
-	{ MOT_DANTE_BEOWULF               , pl000_00_7  },
-	{ MOT_DANTE_EBONY_IVORY           , pl000_00_8  },
-	{ MOT_DANTE_SHOTGUN               , pl000_00_9  },
-	{ MOT_DANTE_ARTEMIS               , pl000_00_10 },
-	{ MOT_DANTE_SPIRAL                , pl000_00_11 },
-	{ MOT_DANTE_KALINA_ANN            , pl000_00_12 },
-	{ MOT_DANTE_SWORDMASTER_REBELLION , pl000_00_13 },
-	{ MOT_DANTE_SWORDMASTER_CERBERUS  , pl000_00_14 },
-	{ MOT_DANTE_SWORDMASTER_AGNI_RUDRA, pl000_00_15 },
-	{ MOT_DANTE_SWORDMASTER_NEVAN     , pl000_00_16 },
-	{ MOT_DANTE_SWORDMASTER_BEOWULF   , pl000_00_17 },
-	{ MOT_DANTE_GUNSLINGER_EBONY_IVORY, pl000_00_18 },
-	{ MOT_DANTE_GUNSLINGER_SHOTGUN    , pl000_00_19 },
-	{ MOT_DANTE_GUNSLINGER_ARTEMIS    , pl000_00_20 },
-	{ MOT_DANTE_GUNSLINGER_SPIRAL     , pl000_00_21 },
-	{ MOT_DANTE_GUNSLINGER_KALINA_ANN , pl000_00_22 },
-	{ MOT_DANTE_TRICKSTER             , pl000_00_23 },
-	{ MOT_DANTE_ROYALGUARD            , pl000_00_24 },
-	{ MOT_DANTE_QUICKSILVER           , pl000_00_25 },
-	{ MOT_DANTE_DOPPELGANGER          , pl000_00_26 },
+	{ MOTION_GROUP_DANTE_BASE                  , pl000_00_0  },
+	{ MOTION_GROUP_DANTE_DAMAGE                , pl000_00_1  },
+	{ MOTION_GROUP_DANTE_TAUNTS                , pl000_00_2  },
+	{ MOTION_GROUP_DANTE_REBELLION             , pl000_00_3  },
+	{ MOTION_GROUP_DANTE_CERBERUS              , pl000_00_4  },
+	{ MOTION_GROUP_DANTE_AGNI_RUDRA            , pl000_00_5  },
+	{ MOTION_GROUP_DANTE_NEVAN                 , pl000_00_6  },
+	{ MOTION_GROUP_DANTE_BEOWULF               , pl000_00_7  },
+	{ MOTION_GROUP_DANTE_EBONY_IVORY           , pl000_00_8  },
+	{ MOTION_GROUP_DANTE_SHOTGUN               , pl000_00_9  },
+	{ MOTION_GROUP_DANTE_ARTEMIS               , pl000_00_10 },
+	{ MOTION_GROUP_DANTE_SPIRAL                , pl000_00_11 },
+	{ MOTION_GROUP_DANTE_KALINA_ANN            , pl000_00_12 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_REBELLION , pl000_00_13 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_CERBERUS  , pl000_00_14 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_AGNI_RUDRA, pl000_00_15 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_NEVAN     , pl000_00_16 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_BEOWULF   , pl000_00_17 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_EBONY_IVORY, pl000_00_18 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_SHOTGUN    , pl000_00_19 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_ARTEMIS    , pl000_00_20 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_SPIRAL     , pl000_00_21 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN , pl000_00_22 },
+	{ MOTION_GROUP_DANTE_TRICKSTER             , pl000_00_23 },
+	{ MOTION_GROUP_DANTE_ROYALGUARD            , pl000_00_24 },
+	{ MOTION_GROUP_DANTE_QUICKSILVER           , pl000_00_25 },
+	{ MOTION_GROUP_DANTE_DOPPELGANGER          , pl000_00_26 },
 };
 
 MotionHelper motionHelperBob[] =
 {
-	{ MOT_BOB_BASE       , pl001_00_0  },
-	{ MOT_BOB_DAMAGE     , pl001_00_1  },
-	{ MOT_BOB_TAUNTS     , pl001_00_2  },
-	{ MOT_BOB_MELEE_STYLE, pl001_00_31 },
+	{ MOTION_GROUP_BOB_BASE       , pl001_00_0  },
+	{ MOTION_GROUP_BOB_DAMAGE     , pl001_00_1  },
+	{ MOTION_GROUP_BOB_TAUNTS     , pl001_00_2  },
+	{ MOTION_GROUP_BOB_MELEE_STYLE, pl001_00_31 },
 };
 
 MotionHelper motionHelperLady[] =
 {
-	{ MOT_LADY_BASE      , pl002_00_0  },
-	{ MOT_LADY_DAMAGE    , pl002_00_1  },
-	{ MOT_LADY_TAUNTS    , pl002_00_2  },
-	{ MOT_LADY_KALINA_ANN, pl000_00_12 },
+	{ MOTION_GROUP_LADY_BASE      , pl002_00_0  },
+	{ MOTION_GROUP_LADY_DAMAGE    , pl002_00_1  },
+	{ MOTION_GROUP_LADY_TAUNTS    , pl002_00_2  },
+	{ MOTION_GROUP_LADY_KALINA_ANN, pl000_00_12 },
 };
 
 MotionHelper motionHelperVergil[] =
 {
-	{ MOT_VERGIL_BASE                  , pl021_00_0 },
-	{ MOT_VERGIL_DAMAGE                , pl021_00_1 },
-	{ MOT_VERGIL_TAUNTS                , pl021_00_2 },
-	{ MOT_VERGIL_YAMATO                , pl021_00_3 },
-	{ MOT_VERGIL_BEOWULF               , pl021_00_4 },
-	{ MOT_VERGIL_FORCE_EDGE            , pl021_00_5 },
-	{ MOT_VERGIL_DARK_SLAYER           , pl021_00_6 },
-	{ MOT_VERGIL_NERO_ANGELO_YAMATO    , pl021_00_7 },
-	{ MOT_VERGIL_NERO_ANGELO_BEOWULF   , pl021_00_8 },
-	{ MOT_VERGIL_NERO_ANGELO_FORCE_EDGE, pl021_00_9 },
+	{ MOTION_GROUP_VERGIL_BASE                  , pl021_00_0 },
+	{ MOTION_GROUP_VERGIL_DAMAGE                , pl021_00_1 },
+	{ MOTION_GROUP_VERGIL_TAUNTS                , pl021_00_2 },
+	{ MOTION_GROUP_VERGIL_YAMATO                , pl021_00_3 },
+	{ MOTION_GROUP_VERGIL_BEOWULF               , pl021_00_4 },
+	{ MOTION_GROUP_VERGIL_FORCE_EDGE            , pl021_00_5 },
+	{ MOTION_GROUP_VERGIL_DARK_SLAYER           , pl021_00_6 },
+	{ MOTION_GROUP_VERGIL_NERO_ANGELO_YAMATO    , pl021_00_7 },
+	{ MOTION_GROUP_VERGIL_NERO_ANGELO_BEOWULF   , pl021_00_8 },
+	{ MOTION_GROUP_VERGIL_NERO_ANGELO_FORCE_EDGE, pl021_00_9 },
 };
 
 PrivateEnd;
 
 
 
-bool IsWeaponActive(byte8 * baseAddr, uint8 weapon)
-{
-	auto & actorData = *(ACTOR_DATA *)baseAddr;
-	if (actorData.motionData[1].group == (MOT_DANTE_REBELLION + weapon))
-	{
-		return true;
-	}
-	if (actorData.motionData[1].group == (MOT_DANTE_SWORDMASTER_REBELLION + weapon))
-	{
-		return true;
-	}
-	return false;
-}
+
+
+
+
+
+
+
+
+
+
+//bool IsWeaponActive(byte8 * baseAddr, uint8 weapon)
+//{
+//	auto & actorData = *(ACTOR_DATA *)baseAddr;
+//	if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_REBELLION + weapon))
+//	{
+//		return true;
+//	}
+//	if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_SWORDMASTER_REBELLION + weapon))
+//	{
+//		return true;
+//	}
+//	return false;
+//}
 
 
 
 
 bool IsWeaponActiveDante
 (
-	byte8 * baseAddr,
+	ACTOR_DATA_DANTE & actorData,
 	uint8 weapon
 )
 {
-	if (!baseAddr)
-	{
-		return false;
-	}
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
 	if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_REBELLION + weapon))
 	{
 		return true;
@@ -122,15 +123,10 @@ bool IsWeaponActiveDante
 
 bool IsWeaponActiveVergil
 (
-	byte8 * baseAddr,
+	ACTOR_DATA_VERGIL & actorData,
 	uint8 weapon
 )
 {
-	if (!baseAddr)
-	{
-		return false;
-	}
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
 	if (actorData.motionData[1].group == (MOTION_GROUP_VERGIL_YAMATO + weapon - WEAPON_VERGIL_YAMATO))
 	{
 		return true;
@@ -138,44 +134,131 @@ bool IsWeaponActiveVergil
 	return false;
 }
 
-bool IsWeaponReadyDante
+bool IsMeleeWeaponReadyDante
 (
-	byte8 * baseAddr,
+	ACTOR_DATA_DANTE & actorData,
 	uint8 weapon
 )
 {
-	if (!baseAddr)
-	{
-		return false;
-	}
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	auto meleeWeaponMap = actorData.weaponMap;
+	auto & meleeWeaponIndex = actorData.weaponIndex[0];
 
-	if (IsWeaponActiveDante(baseAddr, weapon))
+	if (IsWeaponActiveDante(actorData, weapon))
 	{
 		return true;
 	}
 
-	for (uint8 index = 0; index < 4; index++)
+	for (uint8 index = 0; index < 2; index++)
 	{
-		auto & id = actorData.weaponMap[index];
-		if (id == weapon)
+		if (meleeWeaponMap[index] == weapon)
 		{
 			continue;
 		}
-		if (IsWeaponActiveDante(baseAddr, id))
+		if (IsWeaponActiveDante(actorData, meleeWeaponMap[index]))
 		{
 			return false;
 		}
 	}
 
-	auto & index = actorData.weaponIndex[0];
-	if (actorData.weaponMap[index] == weapon)
+	if (meleeWeaponMap[meleeWeaponIndex] == weapon)
 	{
 		return true;
 	}
 
 	return false;
 }
+
+bool IsRangedWeaponReadyDante
+(
+	ACTOR_DATA_DANTE & actorData,
+	uint8 weapon
+)
+{
+	auto rangedWeaponMap = reinterpret_cast<uint8 *>(&actorData.weaponMap[2]);
+	auto rangedWeaponIndex = (actorData.weaponIndex[1] - 2);
+
+	if (IsWeaponActiveDante(actorData, weapon))
+	{
+		return true;
+	}
+
+	for (uint8 index = 0; index < 2; index++)
+	{
+		if (rangedWeaponMap[index] == weapon)
+		{
+			continue;
+		}
+		if (IsWeaponActiveDante(actorData, rangedWeaponMap[index]))
+		{
+			return false;
+		}
+	}
+
+	if (rangedWeaponMap[rangedWeaponIndex] == weapon)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool IsMeleeWeaponReadyVergil
+(
+	ACTOR_DATA_VERGIL & actorData,
+	uint8 weapon
+)
+{
+	auto meleeWeaponMap = actorData.weaponMap;
+	auto & meleeWeaponIndex = actorData.weaponIndex[0];
+
+	if (IsWeaponActiveVergil(actorData, weapon))
+	{
+		return true;
+	}
+
+	for (uint8 index = 0; index < 3; index++)
+	{
+		if (meleeWeaponMap[index] == weapon)
+		{
+			continue;
+		}
+		if (IsWeaponActiveVergil(actorData, meleeWeaponMap[index]))
+		{
+			return false;
+		}
+	}
+
+	if (meleeWeaponMap[meleeWeaponIndex] == weapon)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//auto lol = IsMeleeWeaponReadyTemplate<ACTOR_DATA_DANTE, CHAR_DANTE>;
+
+//using IsMeleeWeaponReadyTemplate<ACTOR_DATA_DANTE, CHAR_DANTE> = lol;
+
+
 
 
 
@@ -239,6 +322,10 @@ void UpdateActorDante(byte8 * baseAddr)
 	Cosmetics_Model_UpdateDevilModelDante[DEVIL_DANTE_REBELLION](baseAddr, 1);
 	Cosmetics_Model_UpdateDevilModelDante[DEVIL_DANTE_CERBERUS](baseAddr, 2);
 
+
+
+
+
 	for (uint8 index = 0; index < countof(motionHelperDante); index++)
 	{
 		auto & motionId    = motionHelperDante[index].motionId;
@@ -246,6 +333,10 @@ void UpdateActorDante(byte8 * baseAddr)
 
 		actorData.motionArchive[motionId] = System_File_cacheFile[cacheFileId];
 	}
+
+
+
+
 
 	func_1EF040(baseAddr, 0);
 

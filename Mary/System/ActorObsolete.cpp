@@ -1,5 +1,11 @@
 
 
+//bool System_Actor_enableArrayExtension    = false;
+//bool System_Actor_enableCreateActor       = false;
+//bool System_Actor_enableUpdateActor       = false;
+//bool System_Actor_enableDoppelgangerFixes = false;
+//bool System_Actor_enableModelFixes        = false;
+
 
 
 

@@ -973,6 +973,7 @@ static_assert(sizeof(MODEL_DATA) == 0x780);
 
 
 
+
 struct ACTOR_DATA_DANTE;
 struct ACTOR_DATA_VERGIL;
 
@@ -1074,7 +1075,7 @@ struct ACTOR_DATA_DANTE
 	byte32 weaponFlags[5]; // 0x64C8
 	_(24);
 	float32 weaponTimer[5]; // 0x64F4
-	float32 weaponTimeout[2]; // 0x6508
+	float32 weaponSwitchTimeout[2]; // 0x6508
 	uint8 styleRank; // 0x6510
 	_(3);
 	float32 styleMeter; // 0x6514
@@ -1110,16 +1111,19 @@ struct ACTOR_DATA_DANTE
 	bool copyPosition; // 0xB8F3
 	uint8 newStyle; // 0xB8F4
 	_(3);
-	uint8 styleMap[5][2]; // 0xB8F8
-	_(6);
-	byte8 * newWeaponData[16]; // 0xB908
-	uint8 meleeWeaponMap[5]; // 0xB988
-	uint8 meleeWeaponCount; // 0xB98D
-	uint8 meleeWeaponIndex; // 0xB98E
-	_(1);
-	uint8 rangedWeaponMap[5]; // 0xB990
-	uint8 rangedWeaponCount; // 0xB995
-	uint8 rangedWeaponIndex; // 0xB996
+	uint8 newStyleMap[5][2]; // 0xB8F8
+	_(2);
+	uint8 newMeleeWeaponMap[5]; // 0xB904
+	_(7);
+	byte8 * newMeleeWeaponData[5]; // 0xB910
+	uint8 newMeleeWeaponCount; // 0xB938
+	uint8 newMeleeWeaponIndex; // 0xB939
+	_(2);
+	uint8 newRangedWeaponMap[5]; // 0xB93C
+	_(7);
+	byte8 * newRangedWeaponData[5]; // 0xB948
+	uint8 newRangedWeaponCount; // 0xB970
+	uint8 newRangedWeaponIndex; // 0xB971
 
 	operator ACTOR_DATA_VERGIL &()
 	{
@@ -1213,7 +1217,7 @@ struct ACTOR_DATA_VERGIL
 	byte32 weaponFlags[5]; // 0x64C8
 	_(24);
 	float32 weaponTimer[5]; // 0x64F4
-	float32 weaponTimeout[2]; // 0x6508
+	float32 weaponSwitchTimeout[2]; // 0x6508
 	uint8 styleRank; // 0x6510
 	_(3);
 	float32 styleMeter; // 0x6514
@@ -1243,16 +1247,19 @@ struct ACTOR_DATA_VERGIL
 	bool copyPosition; // 0xB8F3
 	uint8 newStyle; // 0xB8F4
 	_(3);
-	uint8 styleMap[5][2]; // 0xB8F8
-	_(6);
-	byte8 * newWeaponData[16]; // 0xB908
-	uint8 meleeWeaponMap[5]; // 0xB988
-	uint8 meleeWeaponCount; // 0xB98D
-	uint8 meleeWeaponIndex; // 0xB98E
-	_(1);
-	uint8 rangedWeaponMap[5]; // 0xB990
-	uint8 rangedWeaponCount; // 0xB995
-	uint8 rangedWeaponIndex; // 0xB996
+	uint8 newStyleMap[5][2]; // 0xB8F8
+	_(2);
+	uint8 newMeleeWeaponMap[5]; // 0xB904
+	_(7);
+	byte8 * newMeleeWeaponData[5]; // 0xB910
+	uint8 newMeleeWeaponCount; // 0xB938
+	uint8 newMeleeWeaponIndex; // 0xB939
+	_(2);
+	uint8 newRangedWeaponMap[5]; // 0xB93C
+	_(7);
+	byte8 * newRangedWeaponData[5]; // 0xB948
+	uint8 newRangedWeaponCount; // 0xB970
+	uint8 newRangedWeaponIndex; // 0xB971
 
 	operator ACTOR_DATA_DANTE &()
 	{
