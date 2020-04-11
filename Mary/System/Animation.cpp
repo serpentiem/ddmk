@@ -25,14 +25,14 @@ static uint32 PlayAnimation(byte * baseAddr, uint8 file, uint8 index)
 		return 0;
 	}
 	byte ** motionAddr = (byte **)(baseAddr + 0x38A0);
-	//motionAddr[MOT_DANTE_REBELLION] = System_Cache_file[pl000_00_3];
-	motionAddr[MOT_DANTE_REBELLION] = System_File_cacheFile[pl000_00_3];
+	//motionAddr[MOTION_GROUP_DANTE_REBELLION] = System_Cache_file[pl000_00_3];
+	motionAddr[MOTION_GROUP_DANTE_REBELLION] = System_File_cacheFile[pl000_00_3];
 	if (!Game_Dante_Rebellion_quickDrive)
 	{
 		return 0;
 	}
 	Game_Dante_Rebellion_quickDrive = false;
-	motionAddr[MOT_DANTE_REBELLION] = demo_pl000_00_3;
+	motionAddr[MOTION_GROUP_DANTE_REBELLION] = demo_pl000_00_3;
 	return 30;
 }
 

@@ -174,6 +174,8 @@ void CreateMainActor(byte8 * baseAddr)
 	Arcade_CreateMainActor(baseAddr);
 
 
+	//actorData.buttonMask = 0xFFF
+
 
 	
 	//auto & actorData = *(ACTOR_DATA *)baseAddr;

@@ -15,6 +15,8 @@ float32 hexstrtof(const char * str);
 //	return (uint32)(sizeof(var) / sizeof(var[0]));
 //}
 
+// @Todo: Update.
+
 template <class T, T _value>
 struct integral_constant
 {
@@ -44,4 +46,4 @@ T Reverse(T * var)
 #endif
 #define offsetof(s, m) (uint32)(&(*(s *)0).m)
 
-#define __COMMA__ ,
+//#define __COMMA__ ,

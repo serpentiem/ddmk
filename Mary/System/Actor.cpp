@@ -104,63 +104,124 @@ PrivateEnd;
 
 
 
-bool IsWeaponActiveDante
+
+
+//bool IsWeaponActiveDante
+//(
+//	ACTOR_DATA_DANTE & actorData,
+//	uint8 weapon
+//)
+//{
+//	if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_REBELLION + weapon))
+//	{
+//		return true;
+//	}
+//	if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_SWORDMASTER_REBELLION + weapon))
+//	{
+//		return true;
+//	}
+//	return false;
+//}
+//
+//bool IsWeaponActiveVergil
+//(
+//	ACTOR_DATA_VERGIL & actorData,
+//	uint8 weapon
+//)
+//{
+//	if (actorData.motionData[1].group == (MOTION_GROUP_VERGIL_YAMATO + weapon - WEAPON_VERGIL_YAMATO))
+//	{
+//		return true;
+//	}
+//	return false;
+//}
+
+
+
+
+template <typename T>
+bool IsWeaponActive
 (
-	ACTOR_DATA_DANTE & actorData,
+	T & actorData,
 	uint8 weapon
 )
 {
-	if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_REBELLION + weapon))
+	if constexpr (typematch(T, ACTOR_DATA_DANTE))
 	{
-		return true;
+		if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_REBELLION + weapon))
+		{
+			return true;
+		}
+		if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_SWORDMASTER_REBELLION + weapon))
+		{
+			return true;
+		}
 	}
-	if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_SWORDMASTER_REBELLION + weapon))
+	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
 	{
-		return true;
+		if (actorData.motionData[1].group == (MOTION_GROUP_VERGIL_YAMATO + weapon - WEAPON_VERGIL_YAMATO))
+		{
+			return true;
+		}
 	}
 	return false;
 }
 
-bool IsWeaponActiveVergil
+template
+<
+	typename T,
+	uint8 weaponType = WEAPON_TYPE_MELEE
+>
+bool IsWeaponReady
 (
-	ACTOR_DATA_VERGIL & actorData,
+	T & actorData,
 	uint8 weapon
 )
 {
-	if (actorData.motionData[1].group == (MOTION_GROUP_VERGIL_YAMATO + weapon - WEAPON_VERGIL_YAMATO))
+	uint8 * weaponMap = 0;
+	uint8 weaponCount = 0;
+	uint8 weaponIndex = 0;
+
+	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	{
+		if constexpr (weaponType == WEAPON_TYPE_MELEE)
+		{
+			weaponMap = actorData.weaponMap;
+			weaponCount = 2;
+			weaponIndex = actorData.weaponIndex[0];
+		}
+		else
+		{
+			weaponMap = reinterpret_cast<uint8 *>(&actorData.weaponMap[2]);
+			weaponCount = 2;
+			weaponIndex = (actorData.weaponIndex[1] - 2);
+		}
+	}
+	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	{
+		weaponMap = actorData.weaponMap;
+		weaponCount = 3;
+		weaponIndex = actorData.weaponIndex[0];
+	}
+
+	if (IsWeaponActive<T>(actorData, weapon))
 	{
 		return true;
 	}
-	return false;
-}
 
-bool IsMeleeWeaponReadyDante
-(
-	ACTOR_DATA_DANTE & actorData,
-	uint8 weapon
-)
-{
-	auto meleeWeaponMap = actorData.weaponMap;
-	auto & meleeWeaponIndex = actorData.weaponIndex[0];
-
-	if (IsWeaponActiveDante(actorData, weapon))
+	for (uint8 index = 0; index < weaponCount; index++)
 	{
-		return true;
-	}
-
-	for (uint8 index = 0; index < 2; index++)
-	{
-		if (meleeWeaponMap[index] == weapon)
+		if (weaponMap[index] == weapon)
 		{
 			continue;
 		}
-		if (IsWeaponActiveDante(actorData, meleeWeaponMap[index]))
+		if (IsWeaponActive<T>(actorData, weaponMap[index]))
 		{
 			return false;
 		}
 	}
 
-	if (meleeWeaponMap[meleeWeaponIndex] == weapon)
+	if (weaponMap[weaponIndex] == weapon)
 	{
 		return true;
 	}
@@ -168,75 +229,172 @@ bool IsMeleeWeaponReadyDante
 	return false;
 }
 
-bool IsRangedWeaponReadyDante
-(
-	ACTOR_DATA_DANTE & actorData,
-	uint8 weapon
-)
+auto IsMeleeWeaponReadyDante = IsWeaponReady<ACTOR_DATA_DANTE>;
+auto IsRangedWeaponReadyDante = IsWeaponReady<ACTOR_DATA_DANTE, WEAPON_TYPE_RANGED>;
+auto IsMeleeWeaponReadyVergil = IsWeaponReady<ACTOR_DATA_VERGIL>;
+
+
+
+
+
+
+
+//bool IsMeleeWeaponReadyDante
+//(
+//	ACTOR_DATA_DANTE & actorData,
+//	uint8 weapon
+//)
+//{
+//	auto meleeWeaponMap = actorData.weaponMap;
+//	auto & meleeWeaponIndex = actorData.weaponIndex[0];
+//
+//	if (IsWeaponActiveDante(actorData, weapon))
+//	{
+//		return true;
+//	}
+//
+//	for (uint8 index = 0; index < 2; index++)
+//	{
+//		if (meleeWeaponMap[index] == weapon)
+//		{
+//			continue;
+//		}
+//		if (IsWeaponActiveDante(actorData, meleeWeaponMap[index]))
+//		{
+//			return false;
+//		}
+//	}
+//
+//	if (meleeWeaponMap[meleeWeaponIndex] == weapon)
+//	{
+//		return true;
+//	}
+//
+//	return false;
+//}
+//
+//bool IsRangedWeaponReadyDante
+//(
+//	ACTOR_DATA_DANTE & actorData,
+//	uint8 weapon
+//)
+//{
+//	auto rangedWeaponMap = reinterpret_cast<uint8 *>(&actorData.weaponMap[2]);
+//	auto rangedWeaponIndex = (actorData.weaponIndex[1] - 2);
+//
+//	if (IsWeaponActiveDante(actorData, weapon))
+//	{
+//		return true;
+//	}
+//
+//	for (uint8 index = 0; index < 2; index++)
+//	{
+//		if (rangedWeaponMap[index] == weapon)
+//		{
+//			continue;
+//		}
+//		if (IsWeaponActiveDante(actorData, rangedWeaponMap[index]))
+//		{
+//			return false;
+//		}
+//	}
+//
+//	if (rangedWeaponMap[rangedWeaponIndex] == weapon)
+//	{
+//		return true;
+//	}
+//
+//	return false;
+//}
+//
+//bool IsMeleeWeaponReadyVergil
+//(
+//	ACTOR_DATA_VERGIL & actorData,
+//	uint8 weapon
+//)
+//{
+//	auto meleeWeaponMap = actorData.weaponMap;
+//	auto & meleeWeaponIndex = actorData.weaponIndex[0];
+//
+//	if (IsWeaponActiveVergil(actorData, weapon))
+//	{
+//		return true;
+//	}
+//
+//	for (uint8 index = 0; index < 3; index++)
+//	{
+//		if (meleeWeaponMap[index] == weapon)
+//		{
+//			continue;
+//		}
+//		if (IsWeaponActiveVergil(actorData, meleeWeaponMap[index]))
+//		{
+//			return false;
+//		}
+//	}
+//
+//	if (meleeWeaponMap[meleeWeaponIndex] == weapon)
+//	{
+//		return true;
+//	}
+//
+//	return false;
+//}
+
+
+
+
+
+
+template
+<
+	typename T,
+	uint8 weaponType = WEAPON_TYPE_MELEE
+>
+bool IsWeaponReadyProxy(byte8 * baseAddr)
 {
-	auto rangedWeaponMap = reinterpret_cast<uint8 *>(&actorData.weaponMap[2]);
-	auto rangedWeaponIndex = (actorData.weaponIndex[1] - 2);
-
-	if (IsWeaponActiveDante(actorData, weapon))
+	auto & weapon = *reinterpret_cast<uint8 *>(baseAddr + 0x112);
+	auto actorBaseAddr = *reinterpret_cast<byte8 **>(baseAddr + 0x120);
+	if (!actorBaseAddr)
 	{
-		return true;
+		return false;
 	}
-
-	for (uint8 index = 0; index < 2; index++)
-	{
-		if (rangedWeaponMap[index] == weapon)
-		{
-			continue;
-		}
-		if (IsWeaponActiveDante(actorData, rangedWeaponMap[index]))
-		{
-			return false;
-		}
-	}
-
-	if (rangedWeaponMap[rangedWeaponIndex] == weapon)
-	{
-		return true;
-	}
-
-	return false;
+	auto & actorData = *reinterpret_cast<T *>(actorBaseAddr);
+	return IsWeaponReady<T, weaponType>(actorData, weapon);
 }
 
-bool IsMeleeWeaponReadyVergil
-(
-	ACTOR_DATA_VERGIL & actorData,
-	uint8 weapon
-)
-{
-	auto meleeWeaponMap = actorData.weaponMap;
-	auto & meleeWeaponIndex = actorData.weaponIndex[0];
-
-	if (IsWeaponActiveVergil(actorData, weapon))
-	{
-		return true;
-	}
-
-	for (uint8 index = 0; index < 3; index++)
-	{
-		if (meleeWeaponMap[index] == weapon)
-		{
-			continue;
-		}
-		if (IsWeaponActiveVergil(actorData, meleeWeaponMap[index]))
-		{
-			return false;
-		}
-	}
-
-	if (meleeWeaponMap[meleeWeaponIndex] == weapon)
-	{
-		return true;
-	}
-
-	return false;
-}
+auto IsMeleeWeaponReadyProxyDante = IsWeaponReadyProxy<ACTOR_DATA_DANTE>;
+auto IsRangedWeaponReadyProxyDante = IsWeaponReadyProxy<ACTOR_DATA_DANTE, WEAPON_TYPE_RANGED>;
+auto IsMeleeWeaponReadyProxyVergil = IsWeaponReadyProxy<ACTOR_DATA_VERGIL>;
 
 
+
+
+
+
+//bool IsMeleeWeaponReadyProxyDante(byte8 * baseAddr)
+//{
+//	auto actorBaseAddr = reinterpret_cast<byte8 *>(baseAddr + 0x120);
+//	if (!actorBaseAddr)
+//	{
+//		return false;
+//	}
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorBaseAddr);
+//	auto & weapon = *reinterpret_cast<uint8 *>(baseAddr + 0x112);
+//	return IsMeleeWeaponReadyDante(actorData, weapon);
+//}
+//
+//bool IsMeleeWeaponReadyProxyDante(byte8 * baseAddr)
+//{
+//	auto actorBaseAddr = reinterpret_cast<byte8 *>(baseAddr + 0x120);
+//	if (!actorBaseAddr)
+//	{
+//		return false;
+//	}
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorBaseAddr);
+//	auto & weapon = *reinterpret_cast<uint8 *>(baseAddr + 0x112);
+//	return IsMeleeWeaponReadyDante(actorData, weapon);
+//}
 
 
 
@@ -435,6 +593,101 @@ void System_Actor_Init()
 
 	RegisterWeapon_Init();
 
+
+
+	Log("IsMeleeWeaponReadyDante  %llX", IsMeleeWeaponReadyDante);
+	Log("IsRangedWeaponReadyDante %llX", IsRangedWeaponReadyDante);
+	Log("IsMeleeWeaponReadyVergil %llX", IsMeleeWeaponReadyVergil);
+
+
+	/*
+	dmc3.exe+2288D3 Dante Agni & Rudra
+	dmc3.exe+2295B7 Dante Vergil Beowulf
+	dmc3.exe+229E9D Vergil Force Edge
+	dmc3.exe+22AD86 Dante Nevan
+	dmc3.exe+22B723 Dante Ebony & Ivory Air
+	dmc3.exe+22B753 Dante Ebony & Ivory
+	dmc3.exe+22C186 Dante Lady Kalina Ann
+	dmc3.exe+22C1A5 Dante Kalina Ann Grapple
+	dmc3.exe+22CBC8 Dante Artemis
+	dmc3.exe+22D432 Vergil Nero Angelo Sword
+	dmc3.exe+22E09A Vergil Yamato
+	dmc3.exe+22FB1C Dante Cerberus
+	dmc3.exe+2304BF Dante Spiral
+	dmc3.exe+230DD3 Dante Shotgun Shot
+	dmc3.exe+230E16 Dante Shotgun
+	dmc3.exe+23163F Dante Rebellion
+	dmc3.exe+232005 Bob Yamato Combo 1 Part 3
+	dmc3.exe+232056 Bob Yamato
+	*/
+
+	{
+		byte8 sect2[] =
+		{
+			0x84, 0xC0,                   //test al,al
+			0x74, 0x05,                   //je short
+			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
+			0xC3,                         //ret
+		};
+
+
+		{
+			auto func = CreateFunction(IsMeleeWeaponReadyProxyDante, 0, true, false, 0, 0, sizeof(sect2));
+			memcpy(func.sect2, sect2, sizeof(sect2));
+			WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+			WriteJump((appBaseAddr + 0x23163F), func.addr);
+		}
+
+
+		//auto func = CreateFunction(IsMeleeWeaponReadyProxyDante, 0, true, false, 0, 0, sizeof(sect2));
+		//memcpy(func.sect2, sect2, sizeof(sect2));
+		//WriteCall((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+		//WriteJump((appBaseAddr + 0x23163F), func.addr);
+
+
+
+
+
+
+	}
+
+
+	//{
+
+	//	byte8 sect2[] =
+	//	{
+	//		0x84, 0xC0,                   //test al,al
+	//		0x74, 0x05,                   //je short
+	//		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
+	//		0xC3,                         //ret
+	//	};
+
+	//	auto func = CreateFunction()
+
+
+
+
+
+	//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// @Research: Lady has different actor_data size. Geez, quite the turn.
+
 	// Increase ACTOR_DATA size.
 	{
 		constexpr uint32 size = (0xB8C0 + 512);
@@ -453,7 +706,7 @@ void System_Actor_Init()
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD3B), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA, buttonMask);
-		WriteJump((appBaseAddr + 0x1EBD34), func.addr, 2);
+		//WriteJump((appBaseAddr + 0x1EBD34), func.addr, 2);
 		/*
 		dmc3.exe+1EBD34 - 66 89 83 E0740000 - mov [rbx+000074E0],ax
 		dmc3.exe+1EBD3B - 48 8D 0D CE8CB600 - lea rcx,[dmc3.exe+D54A10]
@@ -470,7 +723,7 @@ void System_Actor_Init()
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD5B), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA, buttonMask);
-		WriteJump((appBaseAddr + 0x1EBD54), func.addr, 2);
+		//WriteJump((appBaseAddr + 0x1EBD54), func.addr, 2);
 		/*
 		dmc3.exe+1EBD54 - 66 89 83 E2740000 - mov [rbx+000074E2],ax
 		dmc3.exe+1EBD5B - 66 23 CA          - and cx,dx
@@ -486,7 +739,7 @@ void System_Actor_Init()
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD6B), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA, buttonMask);
-		WriteJump((appBaseAddr + 0x1EBD64), func.addr, 2);
+		//WriteJump((appBaseAddr + 0x1EBD64), func.addr, 2);
 		/*
 		dmc3.exe+1EBD64 - 66 89 8B E4740000 - mov [rbx+000074E4],cx
 		dmc3.exe+1EBD6B - 66 23 D0          - and dx,ax
@@ -503,12 +756,12 @@ void System_Actor_Init()
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD7C), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA, buttonMask);
-		WriteJump((appBaseAddr + 0x1EBD75), func.addr, 2);
+		//WriteJump((appBaseAddr + 0x1EBD75), func.addr, 2);
 		/*
 		dmc3.exe+1EBD75 - 66 89 93 E6740000 - mov [rbx+000074E6],dx
 		dmc3.exe+1EBD7C - 33 D2             - xor edx,edx
 		*/
 	}
 
-	Write<byte32>((appBaseAddr + 0x1EBD19), offsetof(ACTOR_DATA, gamepad));
+	//Write<byte32>((appBaseAddr + 0x1EBD19), offsetof(ACTOR_DATA, gamepad));
 }

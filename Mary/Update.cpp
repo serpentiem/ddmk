@@ -95,6 +95,9 @@ __declspec(noinline) void VergilMillionStab(byte8 * baseAddr)
 
 void MainLoop()
 {
+
+	return;
+
 	//uint64 tickCount           = 0;
 	//uint32 elapsedMilliseconds = 0;
 
