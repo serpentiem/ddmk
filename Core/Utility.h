@@ -9,12 +9,6 @@ float32 hexstrtof(const char * str);
 
 #define countof(var) (sizeof(var) / sizeof(var[0]))
 
-//template <typename T>
-//constexpr uint32 countof(T & var)
-//{
-//	return (uint32)(sizeof(var) / sizeof(var[0]));
-//}
-
 // @Todo: Update.
 
 template <class T, T _value>
@@ -46,4 +40,28 @@ T Reverse(T * var)
 #endif
 #define offsetof(s, m) (uint32)(&(*(s *)0).m)
 
-//#define __COMMA__ ,
+template <uint8 count> struct GetDataTypeByValueHelper {};
+
+template <> struct GetDataTypeByValueHelper<8 > { typedef uint8  type; };
+template <> struct GetDataTypeByValueHelper<16> { typedef uint16 type; };
+template <> struct GetDataTypeByValueHelper<32> { typedef uint32 type; };
+template <> struct GetDataTypeByValueHelper<64> { typedef uint64 type; };
+
+template <uint64 value>
+struct GetBitCount
+{
+	enum : uint8
+	{
+		COUNT =
+		(value < (1ull << 8 )) ? 8  :
+		(value < (1ull << 16)) ? 16 :
+		(value < (1ull << 32)) ? 32 :
+		64
+	};
+};
+
+template <uint64 value> struct GetDataTypeByValue : GetDataTypeByValueHelper<GetBitCount<value>::COUNT> {};
+
+// @Todo: Take count's datatype for index.
+
+#define for_each(name, count) for (GetDataTypeByValue<count>::type name = 0; name < count; name++)

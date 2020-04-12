@@ -1,5 +1,487 @@
 
 
+
+
+	if constexpr (weaponType == WEAPON_TYPE_MELEE)
+	{
+		return (reinterpret_cast<IsWeaponReady_t>(IsMeleeWeaponReady[actorData.character]))(actorData, weapon);
+	}
+
+	return (reinterpret_cast<IsWeaponReady_t>(IsRangedWeaponReady[actorData.character]))(actorData, weapon);
+
+
+
+	
+
+	
+
+
+//// ShowWeaponModel_off
+
+
+
+
+
+
+//constexpr uint32 func_1FDE10_off[][2] =
+//{
+//	{ 0x2288D3, 0x2288D8 }, // Dante Agni & Rudra
+//	{ 0x2295B7, 0x2295BC }, // Dante Vergil Beowulf
+//	{ 0x229E9D, 0        }, // Vergil Force Edge
+//	{ 0x22AD86, 0x22AD8B }, // Dante Nevan
+//	{ 0x22B723, 0        }, // Dante Ebony & Ivory Air
+//	{ 0x22B753, 0        }, // Dante Ebony & Ivory
+//	{ 0x22C186, 0        }, // Dante Lady Kalina Ann
+//	{ 0x22C1A5, 0        }, // Dante Kalina Ann Grapple
+//	{ 0x22CBC8, 0x22CBCD }, // Dante Artemis
+//	{ 0x22D432, 0x22D437 }, // Vergil Nero Angelo Sword
+//	{ 0x22E09A, 0x22E09F }, // Vergil Yamato
+//	{ 0x22FB1C, 0x22FB21 }, // Dante Cerberus
+//	{ 0x2304BF, 0        }, // Dante Spiral
+//	{ 0x230DD3, 0        }, // Dante Shotgun Shot
+//	{ 0x230E16, 0        }, // Dante Shotgun
+//	{ 0x23163F, 0        }, // Dante Rebellion
+//	{ 0x232005, 0        }, // Bob Yamato Combo 1 Part 3
+//	{ 0x232056, 0        }, // Bob Yamato
+//};
+
+
+
+
+//auto IsMeleeWeaponReadyProxy = IsWeaponReadyProxy<ACTOR_DATA_DANTE>;
+//auto IsRangedWeaponReadyProxy = IsWeaponReadyProxy<ACTOR_DATA_DANTE, WEAPON_TYPE_RANGED>;
+//auto IsMeleeWeaponReadyProxyDante = IsWeaponReadyProxy<ACTOR_DATA_DANTE>;
+//auto IsRangedWeaponReadyProxyDante = IsWeaponReadyProxy<ACTOR_DATA_DANTE, WEAPON_TYPE_RANGED>;
+//auto IsMeleeWeaponReadyProxyVergil = IsWeaponReadyProxy<ACTOR_DATA_VERGIL>;
+
+
+
+
+	//if (actorData.character == CHAR_DANTE)
+	//{
+	//	return IsWeaponReady<ACTOR_DATA_DANTE, weaponType>(actorData, weapon);
+	//}
+	//else if (actorData.character == CHAR_VERGIL)
+	//{
+	//	return IsWeaponReady<ACTOR_DATA_VERGIL, weaponType>(actorData, weapon);
+	//}
+
+	//return true;
+
+	
+
+
+
+
+		auto & items = func_1FDE10_off;
+		for_each(index, countof(items))
+		{
+			auto addr     = (appBaseAddr + items[index][0]);
+			auto jumpAddr = (appBaseAddr + items[index][1]);
+
+
+
+
+
+
+			//auto func = CreateFunction()
+
+
+			//auto func = CreateFunction(IsWeaponReadyProxyDante,)
+
+
+
+
+
+
+		}
+
+
+
+		auto & items = func_1FDE10_off;
+		for (uint8 index = 0; index < countof(items); index++)
+		{
+			auto addr     = (appBaseAddr + items[index][0]);
+			auto jumpAddr = (appBaseAddr + items[index][1]);
+
+			// foreach(uint8, index, countof(items))
+			// for_each(uint8, index, countof(items))
+
+			
+			
+			//std::for_each(0, 1, 0);
+
+			auto n = *reinterpret_cast<uint64 *>(4);
+
+			// for_each(index, count)
+			
+			// for_each(name, start, end)
+
+			/*
+			for_each(index, 0, countof(items))
+			{
+				
+
+
+				
+			}
+
+
+
+			*/
+
+
+
+
+
+
+
+			//auto & addr = items[index][0];
+
+
+
+
+			//auto addr = func_1FDE10_off[index][0];
+			//auto jumpAddr = func_1FDE10_off[index][1];
+
+
+
+
+		}
+
+
+
+
+
+		{
+			auto func = CreateFunction(IsMeleeWeaponReadyProxyDante, 0, true, false, 0, 0, sizeof(sect2));
+			memcpy(func.sect2, sect2, sizeof(sect2));
+			WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+			WriteJump((appBaseAddr + 0x23163F), func.addr);
+		}
+
+
+		//auto func = CreateFunction(IsMeleeWeaponReadyProxyDante, 0, true, false, 0, 0, sizeof(sect2));
+		//memcpy(func.sect2, sect2, sizeof(sect2));
+		//WriteCall((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+		//WriteJump((appBaseAddr + 0x23163F), func.addr);
+
+
+
+
+
+
+	}
+
+
+	//{
+
+	//	byte8 sect2[] =
+	//	{
+	//		0x84, 0xC0,                   //test al,al
+	//		0x74, 0x05,                   //je short
+	//		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
+	//		0xC3,                         //ret
+	//	};
+
+	//	auto func = CreateFunction()
+
+
+
+
+
+	//}
+
+
+
+
+
+
+
+
+
+
+
+
+//auto IsMeleeWeaponReadyDante = IsWeaponReady<ACTOR_DATA_DANTE>;
+//auto IsRangedWeaponReadyDante = IsWeaponReady<ACTOR_DATA_DANTE, WEAPON_TYPE_RANGED>;
+
+
+
+
+//auto IsMeleeWeaponReadyVergil = IsWeaponReady<ACTOR_DATA_VERGIL>;
+
+//
+//template <typename T>
+//typedef bool(__fastcall * IsWeaponReady_t)(T & actorData, uint8 weapon);
+//
+////IsWeaponReady_t IsWeaponReady
+
+//template <typename T>
+//struct IsWeaponReady_t
+//{
+//	typedef bool(__fastcall * type)(T & actorData, uint8 weapon);
+//};
+//
+//void func()
+//{
+//	
+//	IsWeaponReady_t<ACTOR_DATA_DANTE>::type;
+//
+//
+//
+//}
+//
+
+
+
+
+
+
+//bool IsWeaponActive(byte8 * baseAddr, uint8 weapon)
+//{
+//	auto & actorData = *(ACTOR_DATA *)baseAddr;
+//	if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_REBELLION + weapon))
+//	{
+//		return true;
+//	}
+//	if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_SWORDMASTER_REBELLION + weapon))
+//	{
+//		return true;
+//	}
+//	return false;
+//}
+
+
+
+
+
+
+//bool IsWeaponActiveDante
+//(
+//	ACTOR_DATA_DANTE & actorData,
+//	uint8 weapon
+//)
+//{
+//	if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_REBELLION + weapon))
+//	{
+//		return true;
+//	}
+//	if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_SWORDMASTER_REBELLION + weapon))
+//	{
+//		return true;
+//	}
+//	return false;
+//}
+//
+//bool IsWeaponActiveVergil
+//(
+//	ACTOR_DATA_VERGIL & actorData,
+//	uint8 weapon
+//)
+//{
+//	if (actorData.motionData[1].group == (MOTION_GROUP_VERGIL_YAMATO + weapon - WEAPON_VERGIL_YAMATO))
+//	{
+//		return true;
+//	}
+//	return false;
+//}
+
+
+
+
+
+
+
+//bool IsMeleeWeaponReadyDante
+//(
+//	ACTOR_DATA_DANTE & actorData,
+//	uint8 weapon
+//)
+//{
+//	auto meleeWeaponMap = actorData.weaponMap;
+//	auto & meleeWeaponIndex = actorData.weaponIndex[0];
+//
+//	if (IsWeaponActiveDante(actorData, weapon))
+//	{
+//		return true;
+//	}
+//
+//	for (uint8 index = 0; index < 2; index++)
+//	{
+//		if (meleeWeaponMap[index] == weapon)
+//		{
+//			continue;
+//		}
+//		if (IsWeaponActiveDante(actorData, meleeWeaponMap[index]))
+//		{
+//			return false;
+//		}
+//	}
+//
+//	if (meleeWeaponMap[meleeWeaponIndex] == weapon)
+//	{
+//		return true;
+//	}
+//
+//	return false;
+//}
+//
+//bool IsRangedWeaponReadyDante
+//(
+//	ACTOR_DATA_DANTE & actorData,
+//	uint8 weapon
+//)
+//{
+//	auto rangedWeaponMap = reinterpret_cast<uint8 *>(&actorData.weaponMap[2]);
+//	auto rangedWeaponIndex = (actorData.weaponIndex[1] - 2);
+//
+//	if (IsWeaponActiveDante(actorData, weapon))
+//	{
+//		return true;
+//	}
+//
+//	for (uint8 index = 0; index < 2; index++)
+//	{
+//		if (rangedWeaponMap[index] == weapon)
+//		{
+//			continue;
+//		}
+//		if (IsWeaponActiveDante(actorData, rangedWeaponMap[index]))
+//		{
+//			return false;
+//		}
+//	}
+//
+//	if (rangedWeaponMap[rangedWeaponIndex] == weapon)
+//	{
+//		return true;
+//	}
+//
+//	return false;
+//}
+//
+//bool IsMeleeWeaponReadyVergil
+//(
+//	ACTOR_DATA_VERGIL & actorData,
+//	uint8 weapon
+//)
+//{
+//	auto meleeWeaponMap = actorData.weaponMap;
+//	auto & meleeWeaponIndex = actorData.weaponIndex[0];
+//
+//	if (IsWeaponActiveVergil(actorData, weapon))
+//	{
+//		return true;
+//	}
+//
+//	for (uint8 index = 0; index < 3; index++)
+//	{
+//		if (meleeWeaponMap[index] == weapon)
+//		{
+//			continue;
+//		}
+//		if (IsWeaponActiveVergil(actorData, meleeWeaponMap[index]))
+//		{
+//			return false;
+//		}
+//	}
+//
+//	if (meleeWeaponMap[meleeWeaponIndex] == weapon)
+//	{
+//		return true;
+//	}
+//
+//	return false;
+//}
+
+
+
+//bool IsMeleeWeaponReadyProxyDante(byte8 * baseAddr)
+//{
+//	auto actorBaseAddr = reinterpret_cast<byte8 *>(baseAddr + 0x120);
+//	if (!actorBaseAddr)
+//	{
+//		return false;
+//	}
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorBaseAddr);
+//	auto & weapon = *reinterpret_cast<uint8 *>(baseAddr + 0x112);
+//	return IsMeleeWeaponReadyDante(actorData, weapon);
+//}
+//
+//bool IsMeleeWeaponReadyProxyDante(byte8 * baseAddr)
+//{
+//	auto actorBaseAddr = reinterpret_cast<byte8 *>(baseAddr + 0x120);
+//	if (!actorBaseAddr)
+//	{
+//		return false;
+//	}
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorBaseAddr);
+//	auto & weapon = *reinterpret_cast<uint8 *>(baseAddr + 0x112);
+//	return IsMeleeWeaponReadyDante(actorData, weapon);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//auto lol = IsMeleeWeaponReadyTemplate<ACTOR_DATA_DANTE, CHAR_DANTE>;
+
+//using IsMeleeWeaponReadyTemplate<ACTOR_DATA_DANTE, CHAR_DANTE> = lol;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //bool System_Actor_enableArrayExtension    = false;
 //bool System_Actor_enableCreateActor       = false;
 //bool System_Actor_enableUpdateActor       = false;
