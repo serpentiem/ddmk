@@ -143,7 +143,7 @@ bool IsWeaponReady
 	{
 		weaponMap = actorData.weaponMap;
 		weaponCount = 3;
-		weaponIndex = actorData.weaponIndex[0];
+		weaponIndex = actorData.weaponIndex[1];
 	}
 
 	if (IsWeaponActive<T>(actorData, weapon))
