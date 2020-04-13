@@ -204,33 +204,27 @@ bool IsWeaponReadyProxy(byte8 * baseAddr)
 	}
 	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(actorBaseAddr);
 
-
-	//auto character = actorData.character;
-	//if (character >= MAX_CHAR)
-	//{
-	//	character = 0;
-	//}
-
-
 	IsWeaponReady_t func = 0;
+
+	auto character = actorData.character;
+	if (character >= MAX_CHAR)
+	{
+		character = 0;
+	}
 
 	if constexpr (weaponType == WEAPON_TYPE_MELEE)
 	{
-		func = reinterpret_cast<IsWeaponReady_t>(IsMeleeWeaponReady[actorData.character]);
+		func = reinterpret_cast<IsWeaponReady_t>(IsMeleeWeaponReady[character]);
 	}
 	else
 	{
-		func = reinterpret_cast<IsWeaponReady_t>(IsRangedWeaponReady[actorData.character]);
+		func = reinterpret_cast<IsWeaponReady_t>(IsRangedWeaponReady[character]);
 	}
-
 
 	if (func == 0)
 	{
 		return true;
 	}
-
-
-
 
 	return func(actorData, weapon);
 }
@@ -275,6 +269,96 @@ constexpr IsWeaponReadyProxyHelper_t IsWeaponReadyProxyHelper[] =
 	{ 0x232005, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato Combo 1 Part 3
 	{ 0x232056, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato
 };
+
+byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
+
+void ToggleUpdateWeapon(bool enable)
+{
+	LogFunction(enable);
+
+	for_all(index, countof(IsWeaponReadyProxyHelper))
+	{
+		auto & item = IsWeaponReadyProxyHelper[index];
+
+		byte8 * addr = 0;
+		byte8 * jumpAddr = 0;
+
+		addr = (appBaseAddr + item.off[0]);
+		jumpAddr = (item.off[1]) ? (appBaseAddr + item.off[1]) : 0;
+
+		if (enable)
+		{
+			WriteJump(addr, IsWeaponReadyProxyFuncAddr[index]);
+		}
+		else
+		{
+			if (jumpAddr)
+			{
+				WriteCall(addr, (appBaseAddr + 0x1FDE10));
+			}
+			else
+			{
+				WriteJump(addr, (appBaseAddr + 0x1FDE10));
+			}
+		}
+	}
+
+	auto WriteHelper = [&]
+	(
+		uint32 callOff,
+		uint32 jumpOff,
+		uint32 jumpDestOff
+	)
+	{
+		if (enable)
+		{
+			WriteJump((appBaseAddr + callOff), (appBaseAddr + callOff + 5));
+			WriteAddress((appBaseAddr + jumpOff), (appBaseAddr + jumpOff + 2), 2);
+		}
+		else
+		{
+			WriteCall((appBaseAddr + callOff), (appBaseAddr + 0x1FD3E0));
+			WriteAddress((appBaseAddr + jumpOff), (appBaseAddr + jumpDestOff), 2);
+		}
+	};
+	
+	WriteHelper(0x2288A4, 0x2288CE, 0x2288D8); // Dante Agni & Rudra
+	/*
+	dmc3.exe+2288A4 - E8 374BFDFF - call dmc3.exe+1FD3E0
+	dmc3.exe+2288CE - 74 08       - je dmc3.exe+2288D8
+	*/
+	WriteHelper(0x229E8C, 0x229E93, 0x229EA2); // Vergil Force Edge
+	/*
+	dmc3.exe+229E8C - E8 4F35FDFF - call dmc3.exe+1FD3E0
+	dmc3.exe+229E93 - 74 0D       - je dmc3.exe+229EA2
+	*/
+	WriteHelper(0x22AD2D, 0x22AD39, 0x22AD8B); // Dante Nevan
+	/*
+	dmc3.exe+22AD2D - E8 AE26FDFF - call dmc3.exe+1FD3E0
+	dmc3.exe+22AD39 - 74 50       - je dmc3.exe+22AD8B
+	*/
+	WriteHelper(0x22FAD4, 0x22FADB, 0x22FB21); // Dante Cerberus
+	/*
+	dmc3.exe+22FAD4 - E8 07D9FCFF - call dmc3.exe+1FD3E0
+	dmc3.exe+22FADB - 74 44       - je dmc3.exe+22FB21
+	*/
+	WriteHelper(0x23162E, 0x231635, 0x231644); // Dante Rebellion
+	/*
+	dmc3.exe+23162E - E8 ADBDFCFF - call dmc3.exe+1FD3E0
+	dmc3.exe+231635 - 74 0D       - je dmc3.exe+231644
+	*/
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -463,15 +547,16 @@ void System_Actor_Init()
 			0x74, 0x05,                   //je short
 			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
 		};
-		for (uint8 index = 0; index < countof(IsWeaponReadyProxyHelper); index++)
+		//for (uint8 index = 0; index < countof(IsWeaponReadyProxyHelper); index++)
+
+		//for_each(index, 0, countof(IsWeaponReadyProxyHelper))
+		for_all(index, countof(IsWeaponReadyProxyHelper))
 		{
 			auto & item = IsWeaponReadyProxyHelper[index];
 
-			byte8 * addr = 0;
 			byte8 * jumpAddr = 0;
 			FUNC func = {};
 
-			addr = (appBaseAddr + item.off[0]);
 			jumpAddr = (item.off[1]) ? (appBaseAddr + item.off[1]) : 0;
 			func = CreateFunction
 			(
@@ -492,7 +577,7 @@ void System_Actor_Init()
 			{
 				WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
 			}
-			WriteJump(addr, func.addr);
+			IsWeaponReadyProxyFuncAddr[index] = func.addr;
 		}
 	}
 

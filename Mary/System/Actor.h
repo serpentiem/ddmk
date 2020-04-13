@@ -47,3 +47,13 @@ byte8 * CreateActor
 );
 
 void System_Actor_Init();
+
+
+
+void ToggleUpdateWeapon(bool enable);
+
+
+
+
+
+

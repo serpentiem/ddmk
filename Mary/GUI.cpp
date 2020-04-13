@@ -222,7 +222,13 @@ void GUI_Game_Arcade()
 
 
 
-
+	{
+		static bool enable = false;
+		if (GUI_Checkbox("Toggle Update Weapon", enable))
+		{
+			ToggleUpdateWeapon(enable);
+		}
+	}
 
 
 

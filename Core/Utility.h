@@ -7,7 +7,7 @@
 
 float32 hexstrtof(const char * str);
 
-#define countof(var) (sizeof(var) / sizeof(var[0]))
+//#define countof(var) (sizeof(var) / sizeof(var[0]))
 
 // @Todo: Update.
 
@@ -62,6 +62,14 @@ struct GetBitCount
 
 template <uint64 value> struct GetDataTypeByValue : GetDataTypeByValueHelper<GetBitCount<value>::COUNT> {};
 
-// @Todo: Take count's datatype for index.
+template <typename T>
+constexpr auto countof(T & var)
+{
+	constexpr auto count = (sizeof(var) / sizeof(var[0]));
+	constexpr GetDataTypeByValue<count>::type value = count;
+	return value;
+}
 
-#define for_each(name, count) for (GetDataTypeByValue<count>::type name = 0; name < count; name++)
+#define for_each(name, start, end) for (decltype(end) name = start; name < end; name++)
+
+#define for_all(name, end) for (decltype(end) name = 0; name < end; name++)
