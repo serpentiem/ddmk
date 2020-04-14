@@ -88,6 +88,10 @@ bool IsWeaponActive
 	uint8 weapon
 )
 {
+	if (!(actorData.motionState2[1] & 0x10000))
+	{
+		return false;
+	}
 	if constexpr (typematch(T, ACTOR_DATA_DANTE))
 	{
 		if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_REBELLION + weapon))
@@ -102,6 +106,10 @@ bool IsWeaponActive
 	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
 	{
 		if (actorData.motionData[1].group == (MOTION_GROUP_VERGIL_YAMATO + weapon - WEAPON_VERGIL_YAMATO))
+		{
+			return true;
+		}
+		if ((weapon == WEAPON_VERGIL_YAMATO) && (actorData.motionData[1].group == MOTION_GROUP_VERGIL_FORCE_EDGE))
 		{
 			return true;
 		}
@@ -163,9 +171,25 @@ bool IsWeaponReady
 		}
 	}
 
+	if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	{
+		if (actorData.weaponIndex[0] != actorData.weaponIndex[1])
+		{
+			actorData.weaponIndex[0] = actorData.weaponIndex[1];
+		}
+	}
+
 	if (weaponMap[weaponIndex] == weapon)
 	{
 		return true;
+	}
+
+	if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	{
+		if ((weapon == WEAPON_VERGIL_YAMATO) && (weaponMap[weaponIndex] == WEAPON_VERGIL_FORCE_EDGE))
+		{
+			return true;
+		}
 	}
 
 	return false;
@@ -519,7 +543,8 @@ inline byte16 GetBinding(uint8 index)
 
 
 // @Todo: Add devil support and Nero Angelo exceptions.
-
+// @Todo: Check for WEAPON_VOID and increment counter.
+// @Todo: Check if same weapon.
 
 bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
 {
@@ -573,9 +598,6 @@ bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
 			func_1F92C0(actorData, 1);
 			func_1F97F0(actorData, true);
 		}
-
-
-
 	}
 	sect0:;
 
@@ -678,7 +700,197 @@ bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
 
 
 
+bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
+{
+	if (actorData.devilState == 2)
+	{
+		return true;
+	}
+	if (actorData.moveOnly)
+	{
+		return false;
+	}
 
+	
+	{
+		if (!(actorData.buttons[2] & GetBinding(CMD_CHANGE_DEVIL_ARMS)))
+		{
+			goto sect0;
+		}
+		if (0 < actorData.weaponSwitchTimeout[0])
+		{
+			goto sect0;
+		}
+		auto addr = actorData.actionData[3];
+		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x2F4);
+		actorData.weaponSwitchTimeout[0] = timeout;
+
+
+		auto & meleeWeaponIndex = actorData.weaponIndex[0];
+
+		if (meleeWeaponIndex < 1)
+		{
+			meleeWeaponIndex++;
+		}
+		else
+		{
+			meleeWeaponIndex = 0;
+		}
+
+		
+
+
+
+
+
+
+		////actorData.weaponSwitchTimeout[1] = timeout;
+
+		//auto & queuedWeaponIndex = actorData.weaponIndex[1];
+		//queuedWeaponIndex++;
+		//if (queuedWeaponIndex >= 3)
+		//{
+		//	queuedWeaponIndex = 0;
+		//}
+
+		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+
+		func_280120(hud, 1, meleeWeaponIndex);
+
+
+
+
+
+		// @Todo: In the future just update the weapon icon and use 0.
+		//func_280160
+		//(
+		//	hud,
+		//	(queuedWeaponIndex < 2) ? 1 : 0,
+		//	(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
+		//	1
+		//);
+		//*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
+		func_1EB0E0(actorData, 4);
+
+		if (actorData.devil || (actorData.devilState == 1))
+		{
+			func_1F92C0(actorData, 1);
+			func_1F97F0(actorData, true);
+		}
+	}
+	sect0:;
+
+
+
+
+
+
+	{
+		if (!(actorData.buttons[2] & GetBinding(CMD_CHANGE_GUN)))
+		{
+			goto sect1;
+		}
+		if (0 < actorData.weaponSwitchTimeout[1])
+		{
+			goto sect1;
+		}
+		auto addr = actorData.actionData[3];
+		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x2F4);
+		actorData.weaponSwitchTimeout[1] = timeout;
+
+
+		//auto & meleeWeaponIndex = actorData.weaponIndex[0];
+
+		//if (meleeWeaponIndex < 1)
+		//{
+		//	meleeWeaponIndex++;
+		//}
+		//else
+		//{
+		//	meleeWeaponIndex = 0;
+		//}
+
+		// @Research: Make use of the fact that we only have 2 values.
+		// The cmp instruction might be faster than the add instruction.
+
+		auto & rangedWeaponIndex = actorData.weaponIndex[1];
+
+		if (rangedWeaponIndex < 3)
+		{
+			rangedWeaponIndex++;
+		}
+		else
+		{
+			rangedWeaponIndex = 2;
+		}
+
+
+
+
+
+		////actorData.weaponSwitchTimeout[1] = timeout;
+
+		//auto & queuedWeaponIndex = actorData.weaponIndex[1];
+		//queuedWeaponIndex++;
+		//if (queuedWeaponIndex >= 3)
+		//{
+		//	queuedWeaponIndex = 0;
+		//}
+
+		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+
+		func_280120(hud, 0, (rangedWeaponIndex - 2));
+
+		func_1EB0E0(actorData, 7);
+		func_1EB0E0(actorData, 9);
+
+
+		if (!(actorData.motionState2[1] & 0x10000))
+		{
+			actorData.activeWeapon = actorData.weaponMap[rangedWeaponIndex];
+		}
+
+
+
+		// @Todo: In the future just update the weapon icon and use 0.
+		//func_280160
+		//(
+		//	hud,
+		//	(queuedWeaponIndex < 2) ? 1 : 0,
+		//	(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
+		//	1
+		//);
+		//*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
+		
+
+		//if (actorData.devil || (actorData.devilState == 1))
+		//{
+		//	func_1F92C0(actorData, 1);
+		//	func_1F97F0(actorData, true);
+		//}
+	}
+	sect1:;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//return false;
+	return true;
+}
 
 
 
@@ -698,23 +910,13 @@ void System_Actor_Init()
 
 
 	{
-
-
 		auto func = CreateFunction(WeaponSwitchVergil, 0, true, false);
 		WriteCall((appBaseAddr + 0x1E25E1), func.addr);
-
-
-
-
-		/*
-dmc3.exe+1E25E1 - E8 EA470000           - call __WEAPON_SWITCH_VERGIL__
-
-		*/
 	}
-
-
-
-
+	{
+		auto func = CreateFunction(WeaponSwitchDante, 0, true, false);
+		WriteCall((appBaseAddr + 0x1E25EB), func.addr);
+	}
 
 
 

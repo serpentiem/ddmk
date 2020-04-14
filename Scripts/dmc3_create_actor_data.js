@@ -99,10 +99,12 @@ var extra =
 	[ "newMeleeWeaponData[5]" , "byte8 *" ],
 	[ "newMeleeWeaponCount"   , "uint8"   ],
 	[ "newMeleeWeaponIndex"   , "uint8"   ],
+	[ "newMeleeWeaponUpdate"  , "bool"    ],
 	[ "newRangedWeaponMap[5]" , "uint8"   ],
 	[ "newRangedWeaponData[5]", "byte8 *" ],
 	[ "newRangedWeaponCount"  , "uint8"   ],
 	[ "newRangedWeaponIndex"  , "uint8"   ],
+	[ "newRangedWeaponUpdate" , "bool"    ],
 ];
 
 var c = "";
