@@ -31,6 +31,7 @@ var items =
 	[ "lockOn"                   , "bool"                      , 0x3E84              ],
 	[ "activeModelIndexMirror"   , "uint32"                    , 0x3E88              ],
 	[ "activeDevilModel"         , "uint32"                    , 0x3E8C              ],
+	[ "airRaid"                  , "uint32"                    , 0x3E90              ], // @Research: Behaves like bool, but has size of uint32.
 	[ "devilState"               , "uint8"                     , 0x3E94              ],
 	[ "devil"                    , "bool"                      , 0x3E9B              ],
 	[ "costume"                  , "uint8"                     , 0x3E9E              ],
@@ -38,6 +39,7 @@ var items =
 	[ "magicPoints"              , "float32"                   , 0x3EB8              ],
 	[ "maxMagicPoints"           , "float32"                   , 0x3EBC              ],
 	[ "cameraDirection"          , "uint16"                    , 0x3ED8              ],
+	[ "moveOnly"                 , "bool"                      , 0x3F19              ],
 	[ "move"                     , "uint8"                     , 0x3FA4              ],
 	[ "lastMove"                 , "uint8"                     , 0x3FA5              ],
 	[ "chainCount"               , "uint8"                     , 0x3FAC              ],
