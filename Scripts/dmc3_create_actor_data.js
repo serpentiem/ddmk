@@ -32,7 +32,7 @@ var items =
 	[ "activeModelIndexMirror"   , "uint32"                    , 0x3E88              ],
 	[ "activeDevilModel"         , "uint32"                    , 0x3E8C              ],
 	[ "airRaid"                  , "uint32"                    , 0x3E90              ], // @Research: Behaves like bool, but has size of uint32.
-	[ "devilState"               , "uint8"                     , 0x3E94              ],
+	[ "devilState"               , "uint32"                    , 0x3E94              ],
 	[ "devil"                    , "bool"                      , 0x3E9B              ],
 	[ "costume"                  , "uint8"                     , 0x3E9E              ],
 	[ "sparda"                   , "bool"                      , 0x3E9F              ], // @Research: Nero Angelo for Vergil.

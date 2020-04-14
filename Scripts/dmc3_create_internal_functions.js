@@ -14,7 +14,7 @@ var items =
 	[ 0x8A000 , "void"   , "byte8 * dest, byte8 * motionFile, byte8 * addr"                           , ""                            , "" ],
 	[ 0x2C9F40, "uint32" , "byte8 * physicsFile"                                                      , "0, true, false"              , "" ],
 	[ 0x2CA1D0, "void"   , "byte8 * dest, byte8 * addr, byte8 * physicsFile, uint32 index"            , ""                            , "" ],
-	[ 0x2CA2F0, "void"   , "byte8 * dest, byte8 * addr, byte8 *, MODEL_DATA * modelData, uint32 count", "0, true, true, 0, 0, 0, 0, 1", "" ],
+	[ 0x2CA2F0, "void"   , "byte8 * dest, byte8 * addr, byte8 *, MODEL_METADATA * modelData, uint32 count", "0, true, true, 0, 0, 0, 0, 1", "" ],
 	[ 0x1EF040, "void"   , "byte8 * baseAddr, uint32 index"                                           , ""                            , "" ],
 	//[ 0x1F92C0, "void"   , "byte8 * dest, byte32 flag"                                                , ""                            , "" ],
 	//[ 0x1F97F0, "void"   , "byte8 * dest, byte32 flag"                                                , ""                            , "" ],
@@ -47,9 +47,19 @@ var items =
 	[ 0x23E560, "void"   , "byte8 * eventData, uint32 position"                                       , ""                            , "" ],
 	
 	[ 0x280120, "void"   , "byte8 * baseAddr, uint32 side, uint32 index"                              , ""                            , "Weapon Switch Animation Dante"       ],
-	[ 0x280160, "void"   , "byte8 * baseAddr, uint32 side, uint32 index"                              , ""                            , "Weapon Switch Animation Vergil"      ],
+	
+	
+	
+	
+	[ 0x280160, "void"   , "byte8 *, uint32 group, uint32 index, uint32 motion"                              , ""                            , "Weapon Switch Animation Vergil"      ],
+	
+	
+	
 	[ 0x1EB0E0, "void"   , "ACTOR_DATA & actorData, uint32 index"                                     , ""                            , "Call after Weapon Switch Animation." ],
-	[ 0x1F92C0, "void"   , "ACTOR_DATA & actorData, uint32 index"                                     , ""                            , "Queue devil model update."           ],
+	
+	
+	
+	[ 0x1F92C0, "void"   , "ACTOR_DATA & actorData, uint32 phase"                                     , ""                            , "Queue devil model update."           ], // @Research: Works like bool, but has size of uint32.
 	[ 0x1F97F0, "void"   , "ACTOR_DATA & actorData, bool playMotion"                                  , ""                            , "Update devil model and play motion." ],
 	
 	

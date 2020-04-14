@@ -223,6 +223,30 @@ void GUI_Game_Arcade()
 
 
 	{
+		static uint32 arg[3] = {};
+		GUI_InputEx<uint32>("arg1", arg[0]);
+		GUI_InputEx<uint32>("arg2", arg[1]);
+		GUI_InputEx<uint32>("arg3", arg[2]);
+		if (GUI_Button("Switch"))
+		{
+			auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+			auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+			func_280160(hud, arg[0], arg[1], arg[2]);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	{
 		static bool enable = false;
 		if (GUI_Checkbox("Toggle Update Weapon", enable))
 		{

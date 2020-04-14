@@ -983,6 +983,11 @@ static_assert(sizeof(MODEL_DATA) == 0x780);
 
 
 
+
+
+
+
+
 struct ACTOR_DATA_DANTE;
 struct ACTOR_DATA_VERGIL;
 
@@ -1024,27 +1029,30 @@ struct ACTOR_DATA_DANTE
 	float32 idleTimer; // 0x3E38
 	_(36);
 	byte32 motionState2[3]; // 0x3E60
-	uint32 activeModel; // 0x3E6C
-	uint32 queuedModel; // 0x3E70
-	uint32 modelIndex[3]; // 0x3E74
+	uint32 activeModelIndex; // 0x3E6C
+	uint32 queuedModelIndex; // 0x3E70
+	uint32 modelMap[3]; // 0x3E74
 	uint8 modelState; // 0x3E80
 	_(3);
 	bool lockOn; // 0x3E84
 	_(3);
-	uint8 modelIndexMirror; // 0x3E88
-	_(11);
+	uint32 activeModelIndexMirror; // 0x3E88
+	uint32 activeDevilModel; // 0x3E8C
+	uint32 airRaid; // 0x3E90
 	uint8 devilState; // 0x3E94
 	_(6);
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
-	bool spardaCostume; // 0x3E9F
+	bool sparda; // 0x3E9F
 	_(24);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
 	_(24);
 	uint16 cameraDirection; // 0x3ED8
-	_(202);
+	_(63);
+	bool moveOnly; // 0x3F19
+	_(138);
 	uint8 move; // 0x3FA4
 	uint8 lastMove; // 0x3FA5
 	_(6);
@@ -1174,27 +1182,30 @@ struct ACTOR_DATA_VERGIL
 	float32 idleTimer; // 0x3E38
 	_(36);
 	byte32 motionState2[3]; // 0x3E60
-	uint32 activeModel; // 0x3E6C
-	uint32 queuedModel; // 0x3E70
-	uint32 modelIndex[3]; // 0x3E74
+	uint32 activeModelIndex; // 0x3E6C
+	uint32 queuedModelIndex; // 0x3E70
+	uint32 modelMap[3]; // 0x3E74
 	uint8 modelState; // 0x3E80
 	_(3);
 	bool lockOn; // 0x3E84
 	_(3);
-	uint8 modelIndexMirror; // 0x3E88
-	_(11);
+	uint32 activeModelIndexMirror; // 0x3E88
+	uint32 activeDevilModel; // 0x3E8C
+	uint32 airRaid; // 0x3E90
 	uint8 devilState; // 0x3E94
 	_(6);
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
-	bool spardaCostume; // 0x3E9F
+	bool sparda; // 0x3E9F
 	_(24);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
 	_(24);
 	uint16 cameraDirection; // 0x3ED8
-	_(202);
+	_(63);
+	bool moveOnly; // 0x3F19
+	_(138);
 	uint8 move; // 0x3FA4
 	uint8 lastMove; // 0x3FA5
 	_(6);
@@ -1277,6 +1288,7 @@ struct ACTOR_DATA_VERGIL
 };
 
 typedef ACTOR_DATA_DANTE ACTOR_DATA;
+
 
 
 

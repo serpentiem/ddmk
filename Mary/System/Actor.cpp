@@ -510,12 +510,169 @@ byte8 * CreateActor
 }
 
 
+inline byte16 GetBinding(uint8 index)
+{
+	return (reinterpret_cast<byte16 *>(appBaseAddr + 0xD6CE88))[index];
+}
+
+
+
+
+// @Todo: Add devil support and Nero Angelo exceptions.
+
+
+bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
+{
+	if (actorData.devilState == 2)
+	{
+		return true;
+	}
+	if (actorData.moveOnly)
+	{
+		return false;
+	}
+
+	
+	{
+		if (!(actorData.buttons[2] & GetBinding(CMD_CHANGE_DEVIL_ARMS)))
+		{
+			goto sect0;
+		}
+		if (0 < actorData.weaponSwitchTimeout[0])
+		{
+			goto sect0;
+		}
+		auto addr = actorData.actionData[3];
+		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x348);
+		actorData.weaponSwitchTimeout[0] = timeout;
+		actorData.weaponSwitchTimeout[1] = timeout;
+
+		auto & queuedWeaponIndex = actorData.weaponIndex[1];
+		queuedWeaponIndex++;
+		if (queuedWeaponIndex >= 3)
+		{
+			queuedWeaponIndex = 0;
+		}
+
+		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+
+		// @Todo: In the future just update the weapon icon and use 0.
+		func_280160
+		(
+			hud,
+			(queuedWeaponIndex < 2) ? 1 : 0,
+			(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
+			1
+		);
+		*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
+		func_1EB0E0(actorData, 4);
+
+		if (actorData.devil || (actorData.devilState == 1))
+		{
+			func_1F92C0(actorData, 1);
+			func_1F97F0(actorData, true);
+		}
+
+
+
+	}
+	sect0:;
+
+
+
+
+
+	{
+		if (!(actorData.buttons[2] & GetBinding(CMD_CHANGE_GUN)))
+		{
+			goto sect1;
+		}
+		if (0 < actorData.weaponSwitchTimeout[1])
+		{
+			goto sect1;
+		}
+		auto addr = actorData.actionData[3];
+		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x348);
+		actorData.weaponSwitchTimeout[0] = timeout;
+		actorData.weaponSwitchTimeout[1] = timeout;
+
+		auto & queuedWeaponIndex = actorData.weaponIndex[1];
+
+
+		if (queuedWeaponIndex > 0)
+		{
+			queuedWeaponIndex--;
+		}
+		else
+		{
+			queuedWeaponIndex = 2;
+		}
+
+		//queuedWeaponIndex--;
+
+
+		
+		//queuedWeaponIndex = (queuedWeaponIndex > 0) ? queuedWeaponIndex-- : 2;
 
 
 
 
 
 
+
+
+
+
+		//if (queuedWeaponIndex >= 3)
+		//{
+		//	queuedWeaponIndex = 0;
+		//}
+
+		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+
+		// @Todo: In the future just update the weapon icon and use 0.
+		func_280160
+		(
+			hud,
+			(queuedWeaponIndex < 2) ? 1 : 0,
+			(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
+			0
+		);
+		*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
+		func_1EB0E0(actorData, 4);
+
+		if (actorData.devil || (actorData.devilState == 1))
+		{
+			func_1F92C0(actorData, 1);
+			func_1F97F0(actorData, true);
+		}
+
+
+
+	}
+	sect1:;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//return false;
+	return true;
+}
 
 
 
@@ -537,6 +694,35 @@ byte8 * CreateActor
 void System_Actor_Init()
 {
 	LogFunction();
+
+
+
+	{
+
+
+		auto func = CreateFunction(WeaponSwitchVergil, 0, true, false);
+		WriteCall((appBaseAddr + 0x1E25E1), func.addr);
+
+
+
+
+		/*
+dmc3.exe+1E25E1 - E8 EA470000           - call __WEAPON_SWITCH_VERGIL__
+
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
 
 	RegisterWeapon_Init();
 
