@@ -66,6 +66,36 @@ var items =
 	
 	
 	
+	//dmc3.exe+8AC80
+	
+	[ 0x8AC80, "void"   , "MODEL_DATA & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool", "0, true, true, 0, 0, 0, 0, 1"                            , "Play Motion" ],
+	
+	
+	
+	
+	
+	/*
+dmc3.exe+5A432 - 4C 8D 04 02           - lea r8,[rdx+rax] { add off
+ }
+dmc3.exe+5A436 - 48 8B 4B 70           - mov rcx,[rbx+70]
+dmc3.exe+5A43A - 41 8B D2              - mov edx,r10d
+dmc3.exe+5A43D - 44 0FB6 CD            - movzx r9d,bpl
+dmc3.exe+5A441 - 40 88 74 24 20        - mov [rsp+20],sil
+dmc3.exe+5A446 - 48 8B 01              - mov rax,[rcx]
+dmc3.exe+5A449 - FF 50 08              - call qword ptr [rax+08] { dmc3.exe+8AF20
+ }
+	*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/*
 	
 	

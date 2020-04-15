@@ -2,8 +2,6 @@
 #include "../Core/Core.h"
 
 #include "Vars.h"
-
-
 typedef void(__fastcall * func_897B0_t)(byte8 * dest);
 typedef void(__fastcall * func_89450_t)(byte8 * dest);
 typedef void(__fastcall * func_89270_t)(byte8 * dest);
@@ -41,10 +39,11 @@ typedef byte8 *(__fastcall * func_2298E0_t)(byte8 * baseAddr, uint32 id);
 typedef byte8 *(__fastcall * func_22CF00_t)(byte8 * baseAddr, uint32 id);
 typedef void(__fastcall * func_23E560_t)(byte8 * eventData, uint32 position);
 typedef void(__fastcall * func_280120_t)(byte8 * baseAddr, uint32 side, uint32 index); // Weapon Switch Animation Dante
-typedef void(__fastcall * func_280160_t)(byte8 *, uint32, uint32, uint32); // Weapon Switch Animation Vergil
+typedef void(__fastcall * func_280160_t)(byte8 *, uint32 group, uint32 index, uint32 motion); // Weapon Switch Animation Vergil
 typedef void(__fastcall * func_1EB0E0_t)(ACTOR_DATA & actorData, uint32 index); // Call after Weapon Switch Animation.
-typedef void(__fastcall * func_1F92C0_t)(ACTOR_DATA & actorData, uint32 index); // Queue devil model update.
+typedef void(__fastcall * func_1F92C0_t)(ACTOR_DATA & actorData, uint32 phase); // Queue devil model update.
 typedef void(__fastcall * func_1F97F0_t)(ACTOR_DATA & actorData, bool playMotion); // Update devil model and play motion.
+typedef void(__fastcall * func_8AC80_t)(MODEL_DATA & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool); // Play Motion
 
 extern func_897B0_t func_897B0;
 extern func_89450_t func_89450;
@@ -87,8 +86,7 @@ extern func_280160_t func_280160;
 extern func_1EB0E0_t func_1EB0E0;
 extern func_1F92C0_t func_1F92C0;
 extern func_1F97F0_t func_1F97F0;
-
-
+extern func_8AC80_t func_8AC80;
 
 
 

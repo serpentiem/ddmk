@@ -88,7 +88,7 @@ bool IsWeaponActive
 	uint8 weapon
 )
 {
-	if (!(actorData.motionState2[1] & 0x10000))
+	if (!(actorData.motionState2[1] & MOTION_STATE_BUSY))
 	{
 		return false;
 	}
@@ -847,10 +847,67 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 		func_1EB0E0(actorData, 9);
 
 
-		if (!(actorData.motionState2[1] & 0x10000))
+		if (!(actorData.motionState2[1] & MOTION_STATE_BUSY))
 		{
-			actorData.activeWeapon = actorData.weaponMap[rangedWeaponIndex];
+
+
+
+			if (actorData.buttons[0] & GetBinding(CMD_LOCK_ON))
+			{
+				actorData.activeWeapon = actorData.weaponMap[rangedWeaponIndex];
+
+
+
+
+				uint8 id = (pl000_00_3 + actorData.activeWeapon);
+				auto index = actorData.motionData[1].index;
+				auto motionFile = System_File_cacheFile[id][index];
+
+
+
+
+
+				func_8AC80(actorData.modelData[0], 0, motionFile, 0, false);
+				func_8AC80(actorData.modelData[0], 1, motionFile, 0, false);
+
+
+				//actorData.motionData[0].group = (MOTION_GROUP_DANTE_REBELLION + actorData.activeWeapon);
+
+
+
+				//actorData.motionData[1].group = (MOTION_GROUP_DANTE_REBELLION + actorData.activeWeapon);
+
+				//actorData.motionData[0] = actorData.motionData[1];
+
+
+
+
+
+			}
+
+
+
+
+			
+
+
+
+
+
+
 		}
+
+
+		
+		
+
+
+
+
+
+
+
+
 
 
 
@@ -906,6 +963,42 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 void System_Actor_Init()
 {
 	LogFunction();
+
+
+
+	// Add missing lower body update when switching ranged weapons with Dante.
+
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0xE8, 0x00, 0x00, 0x00, 0x00,                   //call dmc3.exe+1F99F0
+	//		0x48, 0x8B, 0xCB,                               //mov rcx,rbx
+	//		0x31, 0xD2,                                     //xor edx,edx
+	//		0x45, 0x31, 0xC9,                               //xor r9d,r9d
+	//		0xF3, 0x0F, 0x10, 0x15, 0x00, 0x00, 0x00, 0x00, //movss xmm2,[dmc3.exe+4C6068]
+	//		0xE8, 0x00, 0x00, 0x00, 0x00,                   //call dmc3.exe+1F99F0
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x1F4F98), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteAddress(func.sect0, (appBaseAddr + 0x1F99F0), 5);
+	//	WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0x4C6068), 8);
+	//	WriteAddress((func.sect0 + 0x15), (appBaseAddr + 0x1F99F0), 5);
+	//	//WriteJump((appBaseAddr + 0x1F4F93), func.addr);
+	//	/*
+	//	dmc3.exe+1F4F93 - E8 584A0000       - call dmc3.exe+1F99F0
+	//	dmc3.exe+1F4F98 - 80 BB AE3E0000 01 - cmp byte ptr [rbx+00003EAE],01
+	//	*/
+	//}
+
+
+
+
+
+
+
+
+
+
 
 
 
