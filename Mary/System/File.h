@@ -11,11 +11,11 @@
 
 
 
-__declspec(noinline) byte8 * System_File_GetFile
-(
-	byte8  * archive,
-	uint32   fileIndex
-);
+//__declspec(noinline) byte8 * System_File_GetFile
+//(
+//	byte8  * archive,
+//	uint32   fileIndex
+//);
 
 
 
@@ -23,9 +23,46 @@ __declspec(noinline) byte8 * System_File_GetFile
 
 
 
+// @Todo: Move to Vars.
+
+#pragma pack(push, 1)
+
+struct ARCHIVE_DATA
+{
+	byte8 signature[4];
+	uint32 fileCount;
+	uint32 fileOff[128];
+};
+
+#pragma pack(pop)
 
 
 
+
+
+//byte8 * System_File_GetFile
+//(
+//	byte8  * archive,
+//	uint32   fileIndex
+//)
+//{
+//
+//	// @Todo: Reference.
+//
+//	auto archiveData = (ARCHIVE_DATA *)archive;
+//
+//	if (fileIndex >= archiveData->fileCount)
+//	{
+//		return 0;
+//	}
+//
+//	if (!archiveData->fileOff[fileIndex])
+//	{
+//		return 0;
+//	}
+//
+//	return (archive + archiveData->fileOff[fileIndex]);
+//}
 
 struct CacheFile
 {
@@ -46,13 +83,28 @@ struct CacheFile
 		return file;
 	}
 
-	byte8 * operator[](uint8 index)
+	byte8 * operator[](uint32 index)
 	{
-		return System_File_GetFile(file, index);
+		auto & archiveData = *reinterpret_cast<ARCHIVE_DATA *>(file);
+		if (index >= archiveData.fileCount)
+		{
+			return 0;
+		}
+		if (!archiveData.fileOff[index])
+		{
+			return 0;
+		}
+		return (file + archiveData.fileOff[index]);
 	}
 };
 
 extern CacheFile System_File_cacheFile[MAX_CACHE_FILE];
+
+
+
+
+
+
 
 
 

@@ -38,7 +38,11 @@ T Reverse(T * var)
 #ifdef offsetof
 #undef offsetof
 #endif
-#define offsetof(s, m) (uint32)(&(*(s *)0).m)
+#ifdef _CRT_USE_BUILTIN_OFFSETOF
+#define offsetof(s, m) __builtin_offsetof(s, m)
+#else
+#define offsetof(s, m) reinterpret_cast<uint64>(&(*reinterpret_cast<s *>(0)).m)
+#endif
 
 template <uint8 count> struct GetDataTypeByValueHelper {};
 

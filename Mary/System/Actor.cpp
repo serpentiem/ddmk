@@ -534,17 +534,16 @@ byte8 * CreateActor
 }
 
 
-inline byte16 GetBinding(uint8 index)
+inline byte16 GetBinding(uint8 action)
 {
-	return (reinterpret_cast<byte16 *>(appBaseAddr + 0xD6CE88))[index];
+	return (reinterpret_cast<byte16 *>(appBaseAddr + 0xD6CE8A))[action];
 }
 
 
 
 
 // @Todo: Add devil support and Nero Angelo exceptions.
-// @Todo: Check for WEAPON_VOID and increment counter.
-// @Todo: Check if same weapon.
+// @Todo: Check for WEAPON_VOID and same weapon.
 
 bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
 {
@@ -559,7 +558,7 @@ bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
 
 	
 	{
-		if (!(actorData.buttons[2] & GetBinding(CMD_CHANGE_DEVIL_ARMS)))
+		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_DEVIL_ARMS)))
 		{
 			goto sect0;
 		}
@@ -606,7 +605,7 @@ bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
 
 
 	{
-		if (!(actorData.buttons[2] & GetBinding(CMD_CHANGE_GUN)))
+		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_GUN)))
 		{
 			goto sect1;
 		}
@@ -631,25 +630,8 @@ bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
 			queuedWeaponIndex = 2;
 		}
 
-		//queuedWeaponIndex--;
 
 
-		
-		//queuedWeaponIndex = (queuedWeaponIndex > 0) ? queuedWeaponIndex-- : 2;
-
-
-
-
-
-
-
-
-
-
-		//if (queuedWeaponIndex >= 3)
-		//{
-		//	queuedWeaponIndex = 0;
-		//}
 
 		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
 		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
@@ -676,23 +658,6 @@ bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
 	}
 	sect1:;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//return false;
 	return true;
 }
 
@@ -711,22 +676,21 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 		return false;
 	}
 
-	
 	{
-		if (!(actorData.buttons[2] & GetBinding(CMD_CHANGE_DEVIL_ARMS)))
-		{
-			goto sect0;
-		}
-		if (0 < actorData.weaponSwitchTimeout[0])
-		{
-			goto sect0;
-		}
-		auto addr = actorData.actionData[3];
-		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x2F4);
-		actorData.weaponSwitchTimeout[0] = timeout;
-
-
 		auto & meleeWeaponIndex = actorData.weaponIndex[0];
+		auto & meleeWeaponSwitchTimeout = actorData.weaponSwitchTimeout[0];
+
+		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_DEVIL_ARMS)))
+		{
+			goto sect0;
+		}
+		if (0 < meleeWeaponSwitchTimeout)
+		{
+			goto sect0;
+		}
+
+		auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
+		meleeWeaponSwitchTimeout = timeout;
 
 		if (meleeWeaponIndex < 1)
 		{
@@ -737,40 +701,11 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 			meleeWeaponIndex = 0;
 		}
 
-		
-
-
-
-
-
-
-		////actorData.weaponSwitchTimeout[1] = timeout;
-
-		//auto & queuedWeaponIndex = actorData.weaponIndex[1];
-		//queuedWeaponIndex++;
-		//if (queuedWeaponIndex >= 3)
-		//{
-		//	queuedWeaponIndex = 0;
-		//}
-
 		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
 		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
 
 		func_280120(hud, 1, meleeWeaponIndex);
 
-
-
-
-
-		// @Todo: In the future just update the weapon icon and use 0.
-		//func_280160
-		//(
-		//	hud,
-		//	(queuedWeaponIndex < 2) ? 1 : 0,
-		//	(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
-		//	1
-		//);
-		//*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
 		func_1EB0E0(actorData, 4);
 
 		if (actorData.devil || (actorData.devilState == 1))
@@ -781,40 +716,21 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 	}
 	sect0:;
 
-
-
-
-
-
 	{
-		if (!(actorData.buttons[2] & GetBinding(CMD_CHANGE_GUN)))
-		{
-			goto sect1;
-		}
-		if (0 < actorData.weaponSwitchTimeout[1])
-		{
-			goto sect1;
-		}
-		auto addr = actorData.actionData[3];
-		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x2F4);
-		actorData.weaponSwitchTimeout[1] = timeout;
-
-
-		//auto & meleeWeaponIndex = actorData.weaponIndex[0];
-
-		//if (meleeWeaponIndex < 1)
-		//{
-		//	meleeWeaponIndex++;
-		//}
-		//else
-		//{
-		//	meleeWeaponIndex = 0;
-		//}
-
-		// @Research: Make use of the fact that we only have 2 values.
-		// The cmp instruction might be faster than the add instruction.
-
 		auto & rangedWeaponIndex = actorData.weaponIndex[1];
+		auto & rangedWeaponSwitchTimeout = actorData.weaponSwitchTimeout[1];
+
+		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_GUN)))
+		{
+			goto sect1;
+		}
+		if (0 < rangedWeaponSwitchTimeout)
+		{
+			goto sect1;
+		}
+
+		auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
+		rangedWeaponSwitchTimeout = timeout;
 
 		if (rangedWeaponIndex < 3)
 		{
@@ -825,19 +741,6 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 			rangedWeaponIndex = 2;
 		}
 
-
-
-
-
-		////actorData.weaponSwitchTimeout[1] = timeout;
-
-		//auto & queuedWeaponIndex = actorData.weaponIndex[1];
-		//queuedWeaponIndex++;
-		//if (queuedWeaponIndex >= 3)
-		//{
-		//	queuedWeaponIndex = 0;
-		//}
-
 		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
 		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
 
@@ -846,106 +749,28 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 		func_1EB0E0(actorData, 7);
 		func_1EB0E0(actorData, 9);
 
-
 		if (!(actorData.motionState2[1] & MOTION_STATE_BUSY))
 		{
-
-
-
-			if (actorData.buttons[0] & GetBinding(CMD_LOCK_ON))
+			if (actorData.buttons[0] & GetBinding(ACTION_LOCK_ON))
 			{
+				auto & modelData = actorData.modelData[actorData.activeModelIndex];
+
+				uint8 id = 0;
+				uint8 index = 0;
+				byte8 * motionFile = 0;
+
 				actorData.activeWeapon = actorData.weaponMap[rangedWeaponIndex];
 
+				id = (pl000_00_3 + actorData.activeWeapon);
+				index = actorData.motionData[1].index;
+				motionFile = System_File_cacheFile[id][index];
 
-
-
-				uint8 id = (pl000_00_3 + actorData.activeWeapon);
-				auto index = actorData.motionData[1].index;
-				auto motionFile = System_File_cacheFile[id][index];
-
-
-
-
-
-				func_8AC80(actorData.modelData[0], 0, motionFile, 0, false);
-				func_8AC80(actorData.modelData[0], 1, motionFile, 0, false);
-
-
-				//actorData.motionData[0].group = (MOTION_GROUP_DANTE_REBELLION + actorData.activeWeapon);
-
-
-
-				//actorData.motionData[1].group = (MOTION_GROUP_DANTE_REBELLION + actorData.activeWeapon);
-
-				//actorData.motionData[0] = actorData.motionData[1];
-
-
-
-
-
+				func_8AC80(modelData, BODY_PART_LOWER, motionFile, 0, false);
 			}
-
-
-
-
-			
-
-
-
-
-
-
 		}
-
-
-		
-		
-
-
-
-
-
-
-
-
-
-
-
-		// @Todo: In the future just update the weapon icon and use 0.
-		//func_280160
-		//(
-		//	hud,
-		//	(queuedWeaponIndex < 2) ? 1 : 0,
-		//	(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
-		//	1
-		//);
-		//*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
-		
-
-		//if (actorData.devil || (actorData.devilState == 1))
-		//{
-		//	func_1F92C0(actorData, 1);
-		//	func_1F97F0(actorData, true);
-		//}
 	}
 	sect1:;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//return false;
 	return true;
 }
 

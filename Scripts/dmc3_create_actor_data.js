@@ -14,7 +14,8 @@ var items =
 	[ "visible"                  , "uint32"                    , 0x120               ],
 	[ "modelData[3]"             , "MODEL_DATA"                , 0x200               ],
 	[ "motionArchive[32]"        , "byte8 *"                   , 0x38A0              ],
-	[ "motionData[5]"            , "MOTION_DATA"               , 0x39B0              ],
+	[ "motionData[2]"            , "MOTION_DATA"               , 0x39B0              ],
+	[ "motionDataMirror[3]"      , "MOTION_DATA"               , 0x39B4              ],
 	[ "shadow"                   , "uint32"                    , 0x3A18              ],
 	[ "color"                    , "byte32"                    , 0x3A28              ],
 	[ "actionData[6]"            , "byte8 *"                   , 0x3DD0              ],
@@ -803,6 +804,9 @@ function AddActorDataCE
 			}
 			else if (type == "MOTION_DATA")
 			{
+				AddCheatEntry(description + " index", false, "Byte", 0, (pos + 0), actor);
+				AddCheatEntry(description + " group", false, "Byte", 0, (pos + 1), actor);
+				pos += size;
 				continue;
 			}
 			else if (type == "MODEL_METADATA")
