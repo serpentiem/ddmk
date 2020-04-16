@@ -544,6 +544,7 @@ inline byte16 GetBinding(uint8 action)
 
 // @Todo: Add devil support and Nero Angelo exceptions.
 // @Todo: Check for WEAPON_VOID and same weapon.
+// @Todo: Create templates.
 
 bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
 {
@@ -776,18 +777,136 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 
 
 
+// HUDIconHelper
+
+
+// texture
+// model
+
+//constexpr uint8 HUDIconMap
+
+
+
+struct HUDIconHelper
+{
+	byte8 * model;
+	byte8 * texture;
+};
+
+//HUDIconHelper hudIconHelper
+
+
+HUDIconHelper styleIconDante[MAX_STYLE] = {};
+HUDIconHelper styleIconVergil[MAX_STYLE] = {};
+HUDIconHelper weaponIcon[MAX_WEAPON] = {};
+
+constexpr uint8 styleIconMapDante[MAX_STYLE] =
+{
+	20,
+	22,
+	18,
+	24,
+	26,
+	28,
+};
+
+constexpr uint8 weaponIconMapDante[] =
+{
+	42,
+	44,
+	46,
+	48,
+	50,
+	30,
+	32,
+	34,
+	36,
+	38,
+};
+
+constexpr uint8 weaponIconMapVergil[] =
+{
+	42,
+	44,
+	30,
+};
 
 
 
 
 
-//#include <algorithm>
+void UpdateStyleIconDante(ACTOR_DATA_DANTE & actorData, uint8 style)
+{
+	auto g_pool = reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2520);
+
+	auto styleIcon = (g_pool[44] + 0x3B80);
+
+	func_897B0(styleIcon);
+	func_89450(styleIcon);
+	memset(styleIcon, 0, 0x780);
+	func_89270(styleIcon);
+
+	auto map = reinterpret_cast<uint8 *>(appBaseAddr + 0x4E9070);
+
+	auto & effect = *reinterpret_cast<uint8 *>(g_pool[44] + 0x690E) = map[style];
+
+	//effect = map[style];
+
+
+
+
+	func_89960(styleIcon, styleIconDante[style].model, styleIconDante[style].texture);
+	func_89E30(styleIcon, 1);
+}
+
+
+
+
+
 
 
 
 void System_Actor_Init()
 {
 	LogFunction();
+
+
+	Log("UpdateStyleIconDante %llX", UpdateStyleIconDante);
+
+
+
+
+	
+	// Init Icons
+	{
+		for_all(index, countof(styleIconMapDante))
+		{
+			auto & fileIndex = styleIconMapDante[index];
+			styleIconDante[index].model   = System_File_cacheFile[id100][(fileIndex + 1)];
+			styleIconDante[index].texture = System_File_cacheFile[id100][(fileIndex + 0)];
+		}
+
+		styleIconVergil[STYLE_VERGIL_DARK_SLAYER].model   = System_File_cacheFile[id100V][(18 + 1)];
+		styleIconVergil[STYLE_VERGIL_DARK_SLAYER].texture = System_File_cacheFile[id100V][(18 + 0)];
+
+		for_all(index, countof(weaponIconMapDante))
+		{
+			auto & fileIndex = weaponIconMapDante[index];
+			weaponIcon[(WEAPON_DANTE_REBELLION + index)].model   = System_File_cacheFile[id100][(fileIndex + 1)];
+			weaponIcon[(WEAPON_DANTE_REBELLION + index)].texture = System_File_cacheFile[id100][(fileIndex + 0)];
+		}
+
+		for_all(index, countof(weaponIconMapVergil))
+		{
+			auto & fileIndex = weaponIconMapVergil[index];
+			weaponIcon[(WEAPON_VERGIL_YAMATO + index)].model   = System_File_cacheFile[id100V][(fileIndex + 1)];
+			weaponIcon[(WEAPON_VERGIL_YAMATO + index)].texture = System_File_cacheFile[id100V][(fileIndex + 0)];
+		}
+	}
+
+
+
+
 
 
 

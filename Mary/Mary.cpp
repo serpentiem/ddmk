@@ -115,7 +115,14 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Internal_Init();
 		//Speed_Init();
 		//Speed_Update(Config);
-		Update_Init();
+		//Update_Init();
+
+
+		// Order is required.
+		System_Memory_Init();
+		System_Memory_ToggleExtendVectors(true);
+		System_File_Init();
+
 
 
 
@@ -139,14 +146,12 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		//System_Animation_Init();
 
-		// Order is required.
-		System_Memory_Init();
-		System_Memory_ToggleExtendVectors(true);
 
 
 
 
-		System_File_Init();
+
+		
 		//System_Cache_Init();
 
 
@@ -158,7 +163,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-		System_Camera_ToggleInvertX(Config.System.Camera.invertX);
+		//System_Camera_ToggleInvertX(Config.System.Camera.invertX);
 		//System_Graphics_UpdateFrameRate(Config);
 		//System_HUD_Init();
 
@@ -178,10 +183,12 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		//System_Weapon_ToggleUpdateWeapon(true);
 		//System_Weapon_ToggleDoppelgangerFixes(true);
 		//System_Weapon_ToggleModelFixes(true);
+
 		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
 
 		Game_Arcade_UpdateModeIndex();
 		Game_Arcade_Toggle(Config.Game.Arcade.enable);
+
 		//Game_Attack_Init();
 		//Game_Dante_Init();
 		//Game_Dante_Rebellion_ToggleInfiniteSwordPierce(Config.Game.Dante.Rebellion.infiniteSwordPierce);
@@ -202,9 +209,13 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		//Game_ResetMotionState_UpdateButtonIndex();
 		//Game_StyleSwitcher_Init();
 		//Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
+
 		Game_Training_ToggleInfiniteHitPoints  (Config.Game.Training.infiniteHitPoints  );
 		Game_Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
 		Game_Training_ToggleDisableTimer       (Config.Game.Training.disableTimer       );
+
+
+
 		//Game_Vergil_Init();
 		//Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(Config.Game.Vergil.ForceEdge.infiniteRoundTrip);
 		//Game_Vergil_SummonedSwords_ToggleChronoSwords(Config.Game.Vergil.SummonedSwords.chronoSwords);
@@ -218,7 +229,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		//Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.Beowulf.hideModel);
 		//Cosmetics_Object_Init();
 
-		Cosmetics_Model_Init();
+		//Cosmetics_Model_Init();
 
 		//Cosmetics_Other_Init();
 		//Cosmetics_Other_ToggleNoDevilForm(Config.Cosmetics.Other.noDevilForm);

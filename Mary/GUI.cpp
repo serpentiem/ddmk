@@ -246,6 +246,8 @@ void GUI_Game_Arcade()
 
 
 
+
+
 	{
 		static bool enable = false;
 		if (GUI_Checkbox("Toggle Update Weapon", enable))
@@ -1941,6 +1943,31 @@ void GUI_Teleporter_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin(Locale.Tools.Teleporter.header, &GUI_Teleporter_show, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
 	{
+
+
+
+		{
+			static uint8 style = 0;
+			GUI_InputEx<uint8>("Style", style);
+
+			if (GUI_Button("Update Style Icon"))
+			{
+				auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(System_Actor_actorBaseAddr[0]);
+				UpdateStyleIconDante(actorData, style);
+			}
+		}
+
+
+
+
+
+
+
+
+
+
+
+
 		if constexpr (debug)
 		{
 			auto pos = ImGui::GetWindowPos();

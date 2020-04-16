@@ -52,6 +52,8 @@ void System_Actor_Init();
 
 void ToggleUpdateWeapon(bool enable);
 
+void UpdateStyleIconDante(ACTOR_DATA_DANTE & actorData, uint8 style);
+
 
 
 

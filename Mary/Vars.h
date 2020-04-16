@@ -257,6 +257,8 @@ enum CACHE_FILE_
 	pl021_00_8,
 	pl021_00_9,
 	em034,
+	id100,
+	id100V,
 	MAX_CACHE_FILE,
 };
 
@@ -348,6 +350,8 @@ constexpr const char * cacheFilename[MAX_CACHE_FILE] =
 	"pl021_00_8.pac",
 	"pl021_00_9.pac",
 	"em034.pac",
+	"id100.pac",
+	"id100V.pac",
 };
 
 constexpr uint32 stringItemOff[MAX_CACHE_FILE] =

@@ -19,6 +19,20 @@ void System_HUD_Update()
 	System_HUD_UpdateStyleIcon();
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void System_HUD_Init()
 {
 	LogFunction();

@@ -52,6 +52,30 @@ var items =
 	[ 0x1F92C0, "void"   , "ACTOR_DATA & actorData, uint32 phase"                                     , ""                            , "Queue devil model update."           ], // @Research: Works like bool, but has size of uint32.
 	[ 0x1F97F0, "void"   , "ACTOR_DATA & actorData, bool playMotion"                                  , ""                            , "Update devil model and play motion." ],
 	[ 0x8AC80, "void"   , "MODEL_DATA & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool", "0, true, true, 0, 0, 0, 0, 1" , "Play Motion"                         ],
+	
+	
+	
+	[ 0x89E30, "void"   , "byte8 * baseAddr, uint32 index", "" , "Call after icon update."                         ],
+	
+	
+	/*
+	
+	dmc3.exe+89E30
+	
+	*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 ];
 
 for (var index = 0; index < items.length; index++)

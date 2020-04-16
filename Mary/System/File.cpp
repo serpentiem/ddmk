@@ -469,12 +469,18 @@ void System_File_Init()
 {
 	LogFunction();
 
+	// @Todo: Internal!
+
 	{
 		FUNC func = CreateFunction((appBaseAddr + 0x1B9FA0));
 		InternalAdjustPointers = (InternalAdjustPointers_t)func.addr;
 	}
 
 	CreateDirectoryA("data\\dmc3\\GData.afs", 0);
+
+
+	
+	// @Todo: External bool function. Terminate if fail.
 
 	for (uint16 cacheFileId = 0; cacheFileId < MAX_CACHE_FILE; cacheFileId++)
 	{
@@ -487,6 +493,10 @@ void System_File_Init()
 		System_File_AdjustPointers(file);
 		System_File_cacheFile[cacheFileId] = file;
 	}
+
+
+	return;
+
 
 	for (uint32 index = 0; index < countof(stringItemOff); index++)
 	{
