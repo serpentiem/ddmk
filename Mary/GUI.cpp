@@ -1949,16 +1949,55 @@ void GUI_Teleporter_Draw()
 		{
 			static uint8 style = 0;
 			GUI_InputEx<uint8>("Style", style);
-
 			if (GUI_Button("Update Style Icon"))
 			{
-				auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(System_Actor_actorBaseAddr[0]);
-				UpdateStyleIconDante(actorData, style);
+				UpdateStyleIcon(style, styleIconDante[style].model, styleIconDante[style].texture);
+			}
+		}
+
+
+		{
+			static uint8 index = 0;
+			static uint8 weapon = 0;
+			GUI_InputEx<uint8>("Index", index);
+			GUI_InputEx<uint8>("Weapon", weapon);
+			if (GUI_Button("Update Weapon Icon"))
+			{
+				UpdateWeaponIcon(index, weaponIcon[weapon].model, weaponIcon[weapon].texture);
 			}
 		}
 
 
 
+
+
+
+
+
+
+
+
+
+		{
+			static uint32 off = 0;
+			if (GUI_Button("Hide"))
+			{
+				auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+				auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+				auto dest = (hud + off);
+				auto & visible = *reinterpret_cast<bool *>(dest + 0x18) = false;
+			}
+			ImGui::SameLine();
+			if (GUI_Button("Show"))
+			{
+				auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+				auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+				auto dest = (hud + off);
+				auto & visible = *reinterpret_cast<bool *>(dest + 0x18) = true;
+			}
+			ImGui::SameLine();
+			GUI_InputEx<uint32>("Offset", off, 1, true, false);
+		}
 
 
 

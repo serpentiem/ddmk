@@ -787,11 +787,11 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 
 
 
-struct HUDIconHelper
-{
-	byte8 * model;
-	byte8 * texture;
-};
+//struct HUDIconHelper
+//{
+//	byte8 * model;
+//	byte8 * texture;
+//};
 
 //HUDIconHelper hudIconHelper
 
@@ -835,11 +835,23 @@ constexpr uint8 weaponIconMapVergil[] =
 
 
 
-void UpdateStyleIconDante(ACTOR_DATA_DANTE & actorData, uint8 style)
+void UpdateStyleIcon
+(
+	uint8 style,
+	byte8 * model,
+	byte8 * texture
+)
 {
-	auto g_pool = reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2520);
+	auto addr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E28);
+	if (!addr)
+	{
+		return;
+	}
+	addr -= 0x180;
+	auto top    = *reinterpret_cast<byte8 **>(addr + 0x1B070);
+	auto bottom = *reinterpret_cast<byte8 **>(addr + 0x1B078);
 
-	auto styleIcon = (g_pool[44] + 0x3B80);
+	auto styleIcon = (top + 0x3B80);
 
 	func_897B0(styleIcon);
 	func_89450(styleIcon);
@@ -848,16 +860,151 @@ void UpdateStyleIconDante(ACTOR_DATA_DANTE & actorData, uint8 style)
 
 	auto map = reinterpret_cast<uint8 *>(appBaseAddr + 0x4E9070);
 
-	auto & effect = *reinterpret_cast<uint8 *>(g_pool[44] + 0x690E) = map[style];
+	auto & effect = *reinterpret_cast<uint8 *>(top + 0x690E) = map[style];
 
-	//effect = map[style];
-
-
+	
 
 
-	func_89960(styleIcon, styleIconDante[style].model, styleIconDante[style].texture);
+
+
+
+	func_89960(styleIcon, model, texture);
 	func_89E30(styleIcon, 1);
 }
+
+
+
+
+
+
+// @Todo: Move to vars.
+
+enum HUD_TOP
+{
+	TOP_HIT_POINTS_FRAME,
+	TOP_HIT_POINTS_BAR,
+	TOP_HIT_POINTS_BACKGROUND,
+	BOTTOM_HIT_POINTS_FRAME,
+	BOTTOM_HIT_POINTS_BAR,
+	BOTTOM_HIT_POINTS_BACKGROUND,
+	MAGIC_ORBS,
+	STYLE_ICON,
+	RED_ORB_COUNTER,
+	UNKNOWN_1,
+	UNKNOWN_2,
+	FLUX,
+	UNKNOWN_3,
+};
+
+enum HUD_BOTTOM
+{
+	RANGED_WEAPON_1,
+	RANGED_WEAPON_2,
+	MELEE_WEAPON_1,
+	MELEE_WEAPON_2,
+};
+
+constexpr uint32 hudTopOff[] =
+{
+	0x700,
+	0xE80,
+	0x1600,
+	0x1D80,
+	0x2500,
+	0x2C80,
+	0x3400,
+	0x3B80,
+	0x4300,
+	0x4A80,
+	0x5200,
+	0x5980,
+	0x6100,
+};
+
+constexpr uint32 hudBottomOff[] =
+{
+	0x880,
+	0x1000,
+	0x1780,
+	0x1F00,
+};
+
+
+
+void UpdateWeaponIcon(uint8 index, byte8 * model, byte8 * texture)
+{
+	auto addr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E28);
+	if (!addr)
+	{
+		return;
+	}
+	addr -= 0x180;
+	auto top    = *reinterpret_cast<byte8 **>(addr + 0x1B070);
+	auto bottom = *reinterpret_cast<byte8 **>(addr + 0x1B078);
+
+	auto dest = (bottom + hudBottomOff[index]);
+
+	func_897B0(dest);
+	func_89450(dest);
+	memset(dest, 0, 0x780);
+	func_89270(dest);
+
+	func_89960(dest, model, texture);
+	func_89E30(dest, 1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Reset(uint32 off)
+{
+
+
+	auto g_pool = reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2520);
+
+	auto dest = (g_pool[44] + off);
+
+	//func_897B0(dest);
+	//func_89450(dest);
+	//memset(dest, 0, 0x780);
+	//func_89270(dest);
+
+
+	auto & visible = *reinterpret_cast<bool *>(dest + 0x18) = false;
+
+
+
+}
+
+
+
+
+
+
+
 
 
 
@@ -871,9 +1018,16 @@ void System_Actor_Init()
 	LogFunction();
 
 
-	Log("UpdateStyleIconDante %llX", UpdateStyleIconDante);
+	Log("UpdateStyleIcon %llX", UpdateStyleIcon);
+	Log("UpdateWeaponIcon %llX", UpdateWeaponIcon);
 
 
+
+	{
+		Write<byte8>((appBaseAddr + 0x27E800), 0xEB);
+		Write<byte8>((appBaseAddr + 0x27DF3E), 0xEB);
+		Write<byte16>((appBaseAddr + 0x280DB9), 0xE990);
+	}
 
 
 	
@@ -905,7 +1059,10 @@ void System_Actor_Init()
 	}
 
 
-
+	for_all(index, countof(weaponIcon))
+	{
+		Log("%u %llX", index, weaponIcon[index].model);
+	}
 
 
 

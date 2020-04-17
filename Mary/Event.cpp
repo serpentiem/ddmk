@@ -1465,7 +1465,7 @@ void Event_Init()
 		auto func = CreateFunction(WritePool, (appBaseAddr + 0x23E69F), true, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-		WriteJump((appBaseAddr + 0x23E698), func.addr, 2);
+		//WriteJump((appBaseAddr + 0x23E698), func.addr, 2);
 		/*
 		dmc3.exe+23E698 - 48 89 15 8927A500 - mov [dmc3.exe+C90E28],rdx
 		dmc3.exe+23E69F - 48 8D 83 D06A0000 - lea rax,[rbx+00006AD0]
