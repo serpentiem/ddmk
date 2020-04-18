@@ -27,7 +27,7 @@ T Reverse(T * var)
 	T value = 0;
 	for (uint8 index = 0; index < size; index++)
 	{
-		((byte *)&value)[index] = ((byte *)var)[(size - 1 - index)];
+		((byte8 *)&value)[index] = ((byte8 *)var)[(size - 1 - index)];
 	}
 	return value;
 }

@@ -8,10 +8,10 @@ typedef ATOM(* User_RegisterClassExW_t)
 );
 typedef HWND(* User_CreateWindowExW_t)
 (
-	dword    ,
+	byte32    ,
 	LPCWSTR  ,
 	LPCWSTR  ,
-	dword    ,
+	byte32    ,
 	int      ,
 	int      ,
 	int      ,
@@ -39,10 +39,10 @@ ATOM User_Hook_RegisterClassExW
 );
 HWND User_Hook_CreateWindowExW
 (
-	dword     exStyle,
+	byte32     exStyle,
 	LPCWSTR   className,
 	LPCWSTR   windowName,
-	dword     style,
+	byte32     style,
 	int       x,
 	int       y,
 	int       width,
@@ -139,9 +139,9 @@ IDirectInput8W       * DirectInput8_deviceInterface = 0;
 IDirectInputDevice8W * DirectInput8_mouse           = 0;
 DIMOUSESTATE2          DirectInput8_mouseState      = {};
 
-static dword DirectInput8_CreateMouseThread(LPVOID parameter);
-static dword DirectInput8_UpdateMouseThread(LPVOID parameter);
-static dword DirectInput8_AcquireMouseThread(LPVOID parameter);
+static byte32 DirectInput8_CreateMouseThread(LPVOID parameter);
+static byte32 DirectInput8_UpdateMouseThread(LPVOID parameter);
+static byte32 DirectInput8_AcquireMouseThread(LPVOID parameter);
 
 ATOM User_Hook_RegisterClassExW
 (
@@ -168,10 +168,10 @@ ATOM User_Hook_RegisterClassExW
 
 HWND User_Hook_CreateWindowExW
 (
-	dword     exStyle,
+	byte32     exStyle,
 	LPCWSTR   className,
 	LPCWSTR   windowName,
-	dword     style,
+	byte32     style,
 	int       x,
 	int       y,
 	int       width,
@@ -372,7 +372,7 @@ HRESULT D3D11_Hook_CreateDeviceAndSwapChain
 		featureLevel,
 		deviceContext
 	);
-	dword error = GetLastError();
+	byte32 error = GetLastError();
 	D3D11_device = *device;
 	D3D11_deviceContext = *deviceContext;
 	DXGI_swapChain = *swapChain;
@@ -503,7 +503,7 @@ HRESULT DXGI_Hook_ResizeBuffers
 		newFormat,
 		swapChainFlags
 	);
-	dword error = GetLastError();
+	byte32 error = GetLastError();
 	CreateRenderTarget();
 	System_Window_UpdateSize((uint32)width, (uint32)height);
 	SetLastError(error);
@@ -513,7 +513,7 @@ HRESULT DXGI_Hook_ResizeBuffers
 HRESULT DirectInput8_Hook_GetDeviceStateKeyboard
 (
 	IDirectInputDevice8A * device,
-	dword                  bufferSize,
+	byte32                  bufferSize,
 	LPVOID                 buffer
 )
 {
@@ -527,7 +527,7 @@ HRESULT DirectInput8_Hook_GetDeviceStateKeyboard
 	return 0;
 }
 
-static dword DirectInput8_CreateMouseThread(LPVOID parameter)
+static byte32 DirectInput8_CreateMouseThread(LPVOID parameter)
 {
 	do
 	{
@@ -571,7 +571,7 @@ static dword DirectInput8_CreateMouseThread(LPVOID parameter)
 	return 1;
 }
 
-static dword DirectInput8_UpdateMouseThread(LPVOID parameter)
+static byte32 DirectInput8_UpdateMouseThread(LPVOID parameter)
 {
 	LogFunction();
 	do
@@ -587,7 +587,7 @@ static dword DirectInput8_UpdateMouseThread(LPVOID parameter)
 	return 1;
 }
 
-static dword DirectInput8_AcquireMouseThread(LPVOID parameter)
+static byte32 DirectInput8_AcquireMouseThread(LPVOID parameter)
 {
 	do
 	{
@@ -610,9 +610,9 @@ static dword DirectInput8_AcquireMouseThread(LPVOID parameter)
 	return 1;
 }
 
-dword XInput_Hook_GetState
+byte32 XInput_Hook_GetState
 (
-	dword          userIndex,
+	byte32          userIndex,
 	XINPUT_STATE * state
 )
 {
@@ -647,7 +647,7 @@ void Hooks_Init()
 
 		Write<void *>(addr, D3D11_Hook_CreateDeviceAndSwapChain);
 	}
-	Write<dword>((appBaseAddr + 0x47F58), DISCL_NONEXCLUSIVE | DISCL_FOREGROUND); // SetCooperativeLevelKeyboard
+	Write<byte32>((appBaseAddr + 0x47F58), DISCL_NONEXCLUSIVE | DISCL_FOREGROUND); // SetCooperativeLevelKeyboard
 	{
 		byte sect0[] =
 		{

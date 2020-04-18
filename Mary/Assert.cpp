@@ -2,10 +2,6 @@
 
 #include "Vars.h"
 
-#pragma warning(push)
-#pragma warning(disable: 4302)
-#pragma warning(disable: 4311)
-
 static_assert(offsetof(ACTOR_DATA_DANTE, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_DANTE, character) == 0x78);
 static_assert(offsetof(ACTOR_DATA_DANTE, position) == 0x80);
@@ -16,6 +12,7 @@ static_assert(offsetof(ACTOR_DATA_DANTE, visible) == 0x120);
 static_assert(offsetof(ACTOR_DATA_DANTE, modelData) == 0x200);
 static_assert(offsetof(ACTOR_DATA_DANTE, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_DANTE, motionData) == 0x39B0);
+static_assert(offsetof(ACTOR_DATA_DANTE, motionDataMirror) == 0x39B4);
 static_assert(offsetof(ACTOR_DATA_DANTE, shadow) == 0x3A18);
 static_assert(offsetof(ACTOR_DATA_DANTE, color) == 0x3A28);
 static_assert(offsetof(ACTOR_DATA_DANTE, actionData) == 0x3DD0);
@@ -37,6 +34,7 @@ static_assert(offsetof(ACTOR_DATA_DANTE, devilState) == 0x3E94);
 static_assert(offsetof(ACTOR_DATA_DANTE, devil) == 0x3E9B);
 static_assert(offsetof(ACTOR_DATA_DANTE, costume) == 0x3E9E);
 static_assert(offsetof(ACTOR_DATA_DANTE, sparda) == 0x3E9F);
+static_assert(offsetof(ACTOR_DATA_DANTE, useHolyWater) == 0x3EA4);
 static_assert(offsetof(ACTOR_DATA_DANTE, magicPoints) == 0x3EB8);
 static_assert(offsetof(ACTOR_DATA_DANTE, maxMagicPoints) == 0x3EBC);
 static_assert(offsetof(ACTOR_DATA_DANTE, cameraDirection) == 0x3ED8);
@@ -92,10 +90,12 @@ static_assert(offsetof(ACTOR_DATA_DANTE, newMeleeWeaponMap) == 0xB904);
 static_assert(offsetof(ACTOR_DATA_DANTE, newMeleeWeaponData) == 0xB910);
 static_assert(offsetof(ACTOR_DATA_DANTE, newMeleeWeaponCount) == 0xB938);
 static_assert(offsetof(ACTOR_DATA_DANTE, newMeleeWeaponIndex) == 0xB939);
+static_assert(offsetof(ACTOR_DATA_DANTE, newMeleeWeaponUpdate) == 0xB93A);
 static_assert(offsetof(ACTOR_DATA_DANTE, newRangedWeaponMap) == 0xB93C);
 static_assert(offsetof(ACTOR_DATA_DANTE, newRangedWeaponData) == 0xB948);
 static_assert(offsetof(ACTOR_DATA_DANTE, newRangedWeaponCount) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_DANTE, newRangedWeaponIndex) == 0xB971);
+static_assert(offsetof(ACTOR_DATA_DANTE, newRangedWeaponUpdate) == 0xB972);
 
 static_assert(offsetof(ACTOR_DATA_VERGIL, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_VERGIL, character) == 0x78);
@@ -107,6 +107,7 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, visible) == 0x120);
 static_assert(offsetof(ACTOR_DATA_VERGIL, modelData) == 0x200);
 static_assert(offsetof(ACTOR_DATA_VERGIL, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, motionData) == 0x39B0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, motionDataMirror) == 0x39B4);
 static_assert(offsetof(ACTOR_DATA_VERGIL, shadow) == 0x3A18);
 static_assert(offsetof(ACTOR_DATA_VERGIL, color) == 0x3A28);
 static_assert(offsetof(ACTOR_DATA_VERGIL, actionData) == 0x3DD0);
@@ -126,6 +127,7 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, devilState) == 0x3E94);
 static_assert(offsetof(ACTOR_DATA_VERGIL, devil) == 0x3E9B);
 static_assert(offsetof(ACTOR_DATA_VERGIL, costume) == 0x3E9E);
 static_assert(offsetof(ACTOR_DATA_VERGIL, sparda) == 0x3E9F);
+static_assert(offsetof(ACTOR_DATA_VERGIL, useHolyWater) == 0x3EA4);
 static_assert(offsetof(ACTOR_DATA_VERGIL, magicPoints) == 0x3EB8);
 static_assert(offsetof(ACTOR_DATA_VERGIL, maxMagicPoints) == 0x3EBC);
 static_assert(offsetof(ACTOR_DATA_VERGIL, cameraDirection) == 0x3ED8);
@@ -172,9 +174,9 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, newMeleeWeaponMap) == 0xB904);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newMeleeWeaponData) == 0xB910);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newMeleeWeaponCount) == 0xB938);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newMeleeWeaponIndex) == 0xB939);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newMeleeWeaponUpdate) == 0xB93A);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newRangedWeaponMap) == 0xB93C);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newRangedWeaponData) == 0xB948);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newRangedWeaponCount) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newRangedWeaponIndex) == 0xB971);
-
-#pragma warning(pop)
+static_assert(offsetof(ACTOR_DATA_VERGIL, newRangedWeaponUpdate) == 0xB972);

@@ -1,12 +1,12 @@
 #include "Other.h"
 
-byte * DanteAuraFix = 0;
+byte8 * DanteAuraFix = 0;
 
 void Cosmetics_Other_Init()
 {
 	LogFunction();
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x49, 0x63, 0x86, 0x6C, 0x3E, 0x00, 0x00,       //movsxd rax,dword ptr [r14+00003E6C]
 			0x48, 0x31, 0xC9,                               //xor rcx,rcx
@@ -24,16 +24,16 @@ void Cosmetics_Other_ToggleNoDevilForm(bool enable)
 	Log("%s %u", FUNC_NAME, enable);
 	if (enable)
 	{
-		Write<word>((appBaseAddr + 0x1F733C), 0xE990);       // Model
-		Write<byte>((appBaseAddr + 0x1F539A), 0x88);         // Motion
+		Write<byte16>((appBaseAddr + 0x1F733C), 0xE990);       // Model
+		Write<byte8>((appBaseAddr + 0x1F539A), 0x88);         // Motion
 		WriteJump((appBaseAddr + 0x90B60), DanteAuraFix, 2);
 	}
 	else
 	{
-		Write<word>((appBaseAddr + 0x1F733C), 0x840F);
-		Write<byte>((appBaseAddr + 0x1F539A), 0x6C);
+		Write<byte16>((appBaseAddr + 0x1F733C), 0x840F);
+		Write<byte8>((appBaseAddr + 0x1F539A), 0x6C);
 		{
-			byte buffer[] =
+			byte8 buffer[] =
 			{
 				0x49, 0x63, 0x86, 0x6C, 0x3E, 0x00, 0x00, //movsxd rax,dword ptr [r14+00003E6C]
 			};

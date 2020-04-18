@@ -391,6 +391,15 @@ c += "\t{\r\n";
 c += "\t\treturn *reinterpret_cast<ACTOR_DATA_VERGIL *>(this);\r\n";
 c += "\t}\r\n";
 
+c += "\r\n";
+c += "\toperator byte8 *()\r\n";
+c += "\t{\r\n";
+c += "\t\treturn reinterpret_cast<byte8 *>(this);\r\n";
+c += "\t}\r\n";
+
+
+
+
 c += "};\r\n";
 
 
@@ -419,6 +428,12 @@ c += "\r\n";
 c += "\toperator ACTOR_DATA_DANTE &()\r\n";
 c += "\t{\r\n";
 c += "\t\treturn *reinterpret_cast<ACTOR_DATA_DANTE *>(this);\r\n";
+c += "\t}\r\n";
+
+c += "\r\n";
+c += "\toperator byte8 *()\r\n";
+c += "\t{\r\n";
+c += "\t\treturn reinterpret_cast<byte8 *>(this);\r\n";
 c += "\t}\r\n";
 
 c += "};\r\n";

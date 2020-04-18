@@ -4,12 +4,12 @@
 
 bool ActorAvailable()
 {
-	byte * addr = *(byte **)(appBaseAddr + 0xC90E28);
+	byte8 * addr = *(byte8 **)(appBaseAddr + 0xC90E28);
 	if (!addr)
 	{
 		return false;
 	}
-	addr = *(byte **)(addr + 0x18);
+	addr = *(byte8 **)(addr + 0x18);
 	if (!addr)
 	{
 		return false;
@@ -23,17 +23,17 @@ bool InGame()
 	{
 		return false;
 	}
-	byte * addr = *(byte **)(appBaseAddr + 0xCA8918);
+	byte8 * addr = *(byte8 **)(appBaseAddr + 0xCA8918);
 	if (!addr)
 	{
 		return false;
 	}
-	addr = *(byte **)(addr + 0x40);
+	addr = *(byte8 **)(addr + 0x40);
 	if (!addr)
 	{
 		return false;
 	}
-	dword event = *(dword *)(addr + 0x20);
+	byte32 event = *(byte32 *)(addr + 0x20);
 	if (event != EVENT_GAME)
 	{
 		return false;
@@ -47,8 +47,8 @@ bool HUD_IsVisible()
 	{
 		return false;
 	}
-	byte ** addr = (byte **)(appBaseAddr + 0xCF2520);
-	byte * item = addr[44];
+	byte8 ** addr = (byte8 **)(appBaseAddr + 0xCF2520);
+	byte8 * item = addr[44];
 	if (!item)
 	{
 		return false;

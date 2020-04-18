@@ -1,8 +1,8 @@
 #include "Dante.h"
 
-byte * RainStorm      = 0;
-byte * Melee_Timeout  = 0;
-byte * Ranged_Timeout = 0;
+byte8 * RainStorm      = 0;
+byte8 * Melee_Timeout  = 0;
+byte8 * Ranged_Timeout = 0;
 
 bool Game_Dante_Rebellion_quickDrive = false;
 
@@ -10,7 +10,7 @@ void Game_Dante_Init()
 {
 	LogFunction();
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x66, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, //mov ax,[dmc3.exe+D6CE88+E]
 			0x66, 0x85, 0x83, 0xE0, 0x74, 0x00, 0x00, //test [rbx+000074E0],ax
@@ -23,7 +23,7 @@ void Game_Dante_Init()
 		RainStorm = func.addr;
 	}
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rcx
 			0x8B, 0x09,                                                 //mov ecx,[rcx]
@@ -34,7 +34,7 @@ void Game_Dante_Init()
 		Melee_Timeout = func.addr;
 	}
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rcx
 			0x8B, 0x09,                                                 //mov ecx,[rcx]
@@ -60,35 +60,35 @@ void Game_Dante_Rebellion_ToggleInfiniteSwordPierce(bool enable)
 	else
 	{
 		{
-			byte buffer[] =
+			byte8 buffer[] =
 			{
 				0xF3, 0x0F, 0x5C, 0x4B, 0x14, //subss xmm1,[rbx+14]
 			};
 			vp_memcpy((appBaseAddr + 0x1CC9A4), buffer, sizeof(buffer));
 		}
 		{
-			byte buffer[] =
+			byte8 buffer[] =
 			{
 				0xF3, 0x0F, 0x5C, 0xC1, //subss xmm0,xmm1
 			};
 			vp_memcpy((appBaseAddr + 0x1CDA1B), buffer, sizeof(buffer));
 		}
 		{
-			byte buffer[] =
+			byte8 buffer[] =
 			{
 				0xF3, 0x0F, 0x5C, 0x4B, 0x14, //subss xmm1,[rbx+14]
 			};
 			vp_memcpy((appBaseAddr + 0x1CDD64), buffer, sizeof(buffer));
 		}
 		{
-			byte buffer[] =
+			byte8 buffer[] =
 			{
 				0xF3, 0x0F, 0x5C, 0xCA, //subss xmm1,xmm2
 			};
 			vp_memcpy((appBaseAddr + 0x1CDDCE), buffer, sizeof(buffer));
 		}
 		{
-			byte buffer[] =
+			byte8 buffer[] =
 			{
 				0xF3, 0x0F, 0x5C, 0x47, 0x14, //subss xmm0,[rdi+14]
 			};
@@ -121,7 +121,7 @@ void Game_Dante_EbonyIvory_ToggleInfiniteRainStorm(bool enable)
 	}
 	else
 	{
-		byte buffer[] =
+		byte8 buffer[] =
 		{
 			0x0F, 0xA3, 0xC1, //bt ecx,eax
 			0x72, 0x0C,       //jb dmc3.exe+20CC20
@@ -135,21 +135,21 @@ void Game_Dante_Artemis_ToggleSwap(bool enable)
 	Log("%s %u", FUNC_NAME, enable);
 	if (enable)
 	{
-		byte buffer[] =
+		byte8 buffer[] =
 		{
 			0xC6, 0x87, 0x80, 0xB8, 0x00, 0x00, 0x01, //mov byte ptr [rdi+0000B880],01
 		};
 		vp_memcpy((appBaseAddr + 0x215C78), buffer, sizeof(buffer));
-		Write<byte>((appBaseAddr + 0x215CDA), 0x00);
+		Write<byte8>((appBaseAddr + 0x215CDA), 0x00);
 	}
 	else
 	{
-		byte buffer[] =
+		byte8 buffer[] =
 		{
 			0x44, 0x88, 0xB7, 0x80, 0xB8, 0x00, 0x00, //mov [rdi+0000B880],r14l
 		};
 		vp_memcpy((appBaseAddr + 0x215C78), buffer, sizeof(buffer));
-		Write<byte>((appBaseAddr + 0x215CDA), 0x01);
+		Write<byte8>((appBaseAddr + 0x215CDA), 0x01);
 	}
 }
 
@@ -171,11 +171,11 @@ void Game_Dante_AirHike_ToggleCoreAbility(bool enable)
 	Log("%s %u", FUNC_NAME, enable);
 	if (enable)
 	{
-		Write<byte>((appBaseAddr + 0x1E9B0E), 0xEB);
+		Write<byte8>((appBaseAddr + 0x1E9B0E), 0xEB);
 	}
 	else
 	{
-		Write<byte>((appBaseAddr + 0x1E9B0E), 0x74);
+		Write<byte8>((appBaseAddr + 0x1E9B0E), 0x74);
 	}
 }
 
@@ -206,7 +206,7 @@ void Game_Dante_WeaponSwitchTimeout_Melee_Toggle(float32 var)
 	}
 	else
 	{
-		byte buffer[] =
+		byte8 buffer[] =
 		{
 			0x8B, 0x88, 0xF4, 0x02, 0x00, 0x00, //mov ecx,[rax+000002F4]
 		};
@@ -223,7 +223,7 @@ void Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(float32 var)
 	}
 	else
 	{
-		byte buffer[] =
+		byte8 buffer[] =
 		{
 			0x8B, 0x88, 0xF4, 0x02, 0x00, 0x00, //mov ecx,[rax+000002F4]
 		};

@@ -197,7 +197,7 @@ void CreateMainActor(byte8 * baseAddr)
 
 	//auto & actorId = *(uint8 *)(baseAddr + 0x118) = ACTOR_TWO;
 
-	//spawnActors = true;
+	spawnActors = true;
 }
 
 void CreateMainClone(byte8 * baseAddr)
@@ -357,7 +357,7 @@ static void Arcade_InitSession()
 	// @Todo: Create SESSION_DATA struct.
 
 
-	byte * addr = (appBaseAddr + 0xC8F250);
+	byte8 * addr = (appBaseAddr + 0xC8F250);
 	uint32  & mission            = *(uint32  *)(addr        );
 	uint32  & mode               = *(uint32  *)(addr + 0xC  );
 	bool    & oneHitKill         = *(bool    *)(addr + 0x10 );
@@ -481,7 +481,7 @@ static void Arcade_InitSession()
 	LogFunctionEnd();
 }
 
-static void Arcade_SetCharacter(byte * addr)
+static void Arcade_SetCharacter(byte8 * addr)
 {
 	LogFunctionStart();
 	uint8 & character = *(uint8 *)(addr + 0x4565);
@@ -624,23 +624,23 @@ static void BossRush_SetRoom()
 		{
 			nextRoom     = ROOM_LEVIATHAN;
 			nextPosition = POSITION_LEVIATHAN;
-			byte * addr = *(byte **)(appBaseAddr + 0xC90E30);
+			byte8 * addr = *(byte8 **)(appBaseAddr + 0xC90E30);
 			if (!addr)
 			{
 				break;
 			}
 			*(uint8 *)(addr + 0x6A) = 1;
-			addr = *(byte **)(appBaseAddr + 0xCA8918); // wrong, should be dmc3.exe+C90E10.
+			addr = *(byte8 **)(appBaseAddr + 0xCA8918); // wrong, should be dmc3.exe+C90E10.
 			if (!addr)
 			{
 				break;
 			}
-			addr = *(byte **)(addr + 0x60);
+			addr = *(byte8 **)(addr + 0x60);
 			if (!addr)
 			{
 				break;
 			}
-			*(byte *)(addr + 0x7DF) = 0x40;
+			*(byte8 *)(addr + 0x7DF) = 0x40;
 		}
 		break;
 	case 9:
@@ -1025,7 +1025,7 @@ static void InitSession()
 	LogFunctionEnd();
 }
 
-static void SetCharacter(byte * addr)
+static void SetCharacter(byte8 * addr)
 {
 	LogFunctionStart();
 	if (Config.Game.Arcade.enable)
@@ -1169,11 +1169,11 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 	LogFunction(enable);
 	if (enable)
 	{
-		Write<byte>((appBaseAddr + 0x1F83D0), 0xEB);
+		Write<byte8>((appBaseAddr + 0x1F83D0), 0xEB);
 	}
 	else
 	{
-		Write<byte>((appBaseAddr + 0x1F83D0), 0x75);
+		Write<byte8>((appBaseAddr + 0x1F83D0), 0x75);
 	}
 }
 
@@ -1616,7 +1616,7 @@ dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
 
 	#pragma region System Events
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+212760
 		};
@@ -1626,11 +1626,11 @@ dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
 		WriteJump((appBaseAddr + 0x2432C6), func.addr);
 	}
 	{
-		byte sect1[] =
+		byte8 sect1[] =
 		{
 			0x48, 0x8B, 0xC8, //mov rcx,rax
 		};
-		byte sect2[] =
+		byte8 sect2[] =
 		{
 			0x0F, 0xB6, 0x88, 0x65, 0x45, 0x00, 0x00, //movzx ecx,byte ptr [rax+00004565]
 		};
@@ -1640,11 +1640,11 @@ dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
 		WriteJump((appBaseAddr + 0x243504), func.addr, 2);
 	}
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x66, 0x89, 0x82, 0x64, 0x01, 0x00, 0x00, //mov [rdx+00000164],ax
 		};
-		byte sect1[] =
+		byte8 sect1[] =
 		{
 			0x48, 0x8B, 0xCA, //mov rcx,rdx
 		};
@@ -1654,11 +1654,11 @@ dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
 		WriteJump((appBaseAddr + 0x1AA8C5), func.addr, 2);
 	}
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x66, 0x89, 0x90, 0x66, 0x01, 0x00, 0x00, //mov [rax+00000166],dx
 		};
-		byte sect1[] =
+		byte8 sect1[] =
 		{
 			0x48, 0x8B, 0xC8, //mov rcx,rax
 		};
@@ -1668,7 +1668,7 @@ dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
 		WriteJump((appBaseAddr + 0x1A5FFB), func.addr, 2);
 	}
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x66, 0x89, 0x81, 0x66, 0x01, 0x00, 0x00, //mov [rcx+00000166],ax
 		};
@@ -1800,20 +1800,20 @@ void Event_ToggleSkipIntro(bool enable)
 		WriteAddress((appBaseAddr + 0x2383F2), (appBaseAddr + 0x2383F8), 6); // Skip Message
 		WriteAddress((appBaseAddr + 0x241789), (appBaseAddr + 0x24178B), 2); // Skip Video
 		vp_memset((appBaseAddr + 0x243531), 0x90, 2);                        // Disable Video Timer
-		Write<byte>((appBaseAddr + 0x238704), 0x00);                         // Hide Rebellion
+		Write<byte8>((appBaseAddr + 0x238704), 0x00);                         // Hide Rebellion
 	}
 	else
 	{
 		WriteAddress((appBaseAddr + 0x2383F2), (appBaseAddr + 0x238527), 6);
 		WriteAddress((appBaseAddr + 0x241789), (appBaseAddr + 0x2417A6), 2);
 		{
-			byte payload[] =
+			byte8 payload[] =
 			{
 				0xFF, 0xC8, //dec eax
 			};
 			vp_memcpy((appBaseAddr + 0x243531), payload, sizeof(payload));
 		}
-		Write<byte>((appBaseAddr + 0x238704), 0x01);
+		Write<byte8>((appBaseAddr + 0x238704), 0x01);
 	}
 }
 

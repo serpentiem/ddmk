@@ -15,17 +15,17 @@ void System_Window_UpdateSize(uint32 width, uint32 height)
 	ImGui::GetIO().DisplaySize = ImVec2((float32)width, (float32)height);
 }
 
+
+
+
+
 void System_Window_ToggleForceFocus(bool enable)
 {
-	Log("%s %u", FUNC_NAME, enable);
-	if (enable)
-	{
-		Write<word>((appBaseAddr + 0x487F6), 0xE990);
-		WriteAddress((appBaseAddr + 0x41C0A), (appBaseAddr + 0x41C10), 6); // Enable Background Gamepad Input
-	}
-	else
-	{
-		Write<word>((appBaseAddr + 0x487F6), 0x850F);
-		WriteAddress((appBaseAddr + 0x41C0A), (appBaseAddr + 0x42016), 6);
-	}
+	LogFunction(enable);
+	Write<byte16>((appBaseAddr + 0x487F6), (enable) ? 0xE990 : 0x850F);
+	// Enable Background Gamepad Input
+	WriteAddress((appBaseAddr + 0x41C0A), (enable) ? (appBaseAddr + 0x41C10) : (appBaseAddr + 0x42016), 6);
 }
+
+
+

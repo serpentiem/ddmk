@@ -239,7 +239,7 @@ void Game_StyleSwitcher_Init()
 		FUNC func = CreateFunction(0, 0, false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteAddress(func.sect0, (appBaseAddr + 0xC90E30), 7);
-		*(dword *)(func.sect0 + 0x15) = (0x11C + (STYLE_DANTE_GUNSLINGER * 4));
+		*(byte32 *)(func.sect0 + 0x15) = (0x11C + (STYLE_DANTE_GUNSLINGER * 4));
 		GunslingerGetStyleLevel = func.addr;
 	}
 	{
@@ -269,19 +269,19 @@ void Game_StyleSwitcher_Toggle(bool enable)
 	Log("%s %u", FUNC_NAME, enable);
 	if (enable)
 	{
-		Write<byte>((appBaseAddr + 0x1E8F98), 0xEB); // Bypass Character Check
+		Write<byte8>((appBaseAddr + 0x1E8F98), 0xEB); // Bypass Character Check
 		//WriteJump((appBaseAddr + 0x23D4B2), StyleControllerProxy);
-		Write<byte>((appBaseAddr + 0x23B111), 0);
-		Write<byte>((appBaseAddr + 0x23B15E), 0);
-		Write<byte>((appBaseAddr + 0x23B1A2), 0);
-		Write<byte>((appBaseAddr + 0x23B1E6), 0);
+		Write<byte8>((appBaseAddr + 0x23B111), 0);
+		Write<byte8>((appBaseAddr + 0x23B15E), 0);
+		Write<byte8>((appBaseAddr + 0x23B1A2), 0);
+		Write<byte8>((appBaseAddr + 0x23B1E6), 0);
 		// Gunslinger Fixes
 		WriteCall((appBaseAddr + 0x204E38), GunslingerGetStyleLevel, 1);
 		WriteCall((appBaseAddr + 0x205586), GunslingerGetStyleLevel, 1);
 		WriteCall((appBaseAddr + 0x208A90), GunslingerGetStyleLevel, 1);
 		WriteCall((appBaseAddr + 0x208F13), GunslingerGetStyleLevel, 1);
 		WriteAddress((appBaseAddr + 0x1E6AAD), (appBaseAddr + 0x1E6AB3), 6 ); // Allow Charged Shot
-		Write<byte>((appBaseAddr + 0x1E7F5F), 0xEB);                          // Allow Wild Stomp
+		Write<byte8>((appBaseAddr + 0x1E7F5F), 0xEB);                          // Allow Wild Stomp
 		WriteAddress((appBaseAddr + 0x21607C), (appBaseAddr + 0x216082), 6 ); // Allow Charging
 		// Force Style Updates
 		WriteAddress((appBaseAddr + 0x1F87BB), (appBaseAddr + 0x1F87DC), 6);
@@ -305,14 +305,14 @@ void Game_StyleSwitcher_Toggle(bool enable)
 	}
 	else
 	{
-		Write<byte>((appBaseAddr + 0x1E8F98), 0x74);
+		Write<byte8>((appBaseAddr + 0x1E8F98), 0x74);
 		//WriteCall((appBaseAddr + 0x23D4B2), (appBaseAddr + 0x23B060));
-		Write<byte>((appBaseAddr + 0x23B111), 1);
-		Write<byte>((appBaseAddr + 0x23B15E), 1);
-		Write<byte>((appBaseAddr + 0x23B1A2), 1);
-		Write<byte>((appBaseAddr + 0x23B1E6), 1);
+		Write<byte8>((appBaseAddr + 0x23B111), 1);
+		Write<byte8>((appBaseAddr + 0x23B15E), 1);
+		Write<byte8>((appBaseAddr + 0x23B1A2), 1);
+		Write<byte8>((appBaseAddr + 0x23B1E6), 1);
 		{
-			byte buffer[] =
+			byte8 buffer[] =
 			{
 				0x8B, 0x8B, 0x58, 0x63, 0x00, 0x00, //mov ecx,[rbx+00006358]
 			};
@@ -322,7 +322,7 @@ void Game_StyleSwitcher_Toggle(bool enable)
 			vp_memcpy((appBaseAddr + 0x208F13), buffer, sizeof(buffer));
 		}
 		WriteAddress((appBaseAddr + 0x1E6AAD), (appBaseAddr + 0x1E64A9), 6);
-		Write<byte>((appBaseAddr + 0x1E7F5F), 0x74);
+		Write<byte8>((appBaseAddr + 0x1E7F5F), 0x74);
 		WriteAddress((appBaseAddr + 0x21607C), (appBaseAddr + 0x216572), 6);
 		WriteAddress((appBaseAddr + 0x1F87BB), (appBaseAddr + 0x1F8AC6), 6);
 		WriteAddress((appBaseAddr + 0x1F87C4), (appBaseAddr + 0x1F8AAC), 6);
@@ -339,14 +339,14 @@ void Game_StyleSwitcher_Toggle(bool enable)
 		WriteAddress((appBaseAddr + 0x1F8AAA), (appBaseAddr + 0x1F8AF8), 2);
 		WriteAddress((appBaseAddr + 0x1F8AC4), (appBaseAddr + 0x1F8AF8), 2);
 		{
-			byte buffer[] =
+			byte8 buffer[] =
 			{
 				0xC7, 0x81, 0x38, 0x63, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, //mov [rcx+00006338],00000002
 			};
 			vp_memcpy((appBaseAddr + 0x223D77), buffer, sizeof(buffer));
 		}
 		{
-			byte buffer[] =
+			byte8 buffer[] =
 			{
 				0x4D, 0x89, 0xB4, 0x24, 0x78, 0x64, 0x00, 0x00, //mov [r12+00006478],r14
 			};

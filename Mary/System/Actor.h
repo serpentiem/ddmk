@@ -10,34 +10,6 @@
 #include "../Cosmetics/Color.h"
 #include "../Cosmetics/Model.h"
 
-template <typename T, uint32 n>
-struct vector
-{
-	uint32 count;
-	T data[n];
-	void Push(T var)
-	{
-		data[count] = var;
-		count++;
-	}
-	void Clear()
-	{
-		memset(this, 0, sizeof(*this));
-	}
-	void operator+=(T var)
-	{
-		Push(var);
-	}
-	T & operator[](uint32 index)
-	{
-		return data[index];
-	}
-	vector()
-	{
-		Clear();
-	}
-};
-
 extern vector<byte8 *, 128> System_Actor_actorBaseAddr;
 
 byte8 * CreateActor
@@ -81,6 +53,10 @@ extern HUDIconHelper weaponIcon[MAX_WEAPON];
 
 void Reset(uint32 off);
 
+
+ACTOR_DATA_DANTE & CreateActorDante();
+
+ACTOR_DATA_VERGIL & CreateActorVergil();
 
 
 

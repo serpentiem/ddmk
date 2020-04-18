@@ -96,7 +96,7 @@ __declspec(noinline) void VergilMillionStab(byte8 * baseAddr)
 void MainLoop()
 {
 
-	return;
+	//return;
 
 	//uint64 tickCount           = 0;
 	//uint32 elapsedMilliseconds = 0;
@@ -118,11 +118,26 @@ void MainLoop()
 
 		Log("Spawn Actors.");
 
+		auto & actorData = CreateActorVergil();
+
+		System_Actor_actorBaseAddr.Push(actorData);
+
+
+		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(System_Actor_actorBaseAddr[0]);
+
+
+		actorData.collisionIndex = 1;
+
+		actorData.position = parentActorData.position;
+
+
+
+
 		//System_Actor_actorBaseAddr[ACTOR_TWO] = CreateActor(CHAR_DANTE, ACTOR_TWO);
 
-		auto baseAddr = CreateActor(CHAR_DANTE, 0);
+		//auto baseAddr = CreateActor(CHAR_DANTE, 0);
 
-		System_Actor_actorBaseAddr.Push(baseAddr);
+		//System_Actor_actorBaseAddr.Push(baseAddr);
 
 		Log("count %u", System_Actor_actorBaseAddr.count);
 
@@ -133,16 +148,16 @@ void MainLoop()
 
 
 		
-		auto & actorData = *(ACTOR_DATA *)baseAddr;
+		//auto & actorData = *(ACTOR_DATA *)baseAddr;
 
 		//actorData.hide = true;
 		//actorData.hideWeapons = true;
 		//actorData.hideSummonedSwords = true;
 
-		actorData.weaponMap[0] = WEAPON_DANTE_REBELLION;
-		actorData.weaponMap[1] = WEAPON_DANTE_CERBERUS;
-		actorData.weaponMap[2] = WEAPON_VOID;
-		actorData.weaponMap[3] = WEAPON_VOID;
+		//actorData.weaponMap[0] = WEAPON_DANTE_REBELLION;
+		//actorData.weaponMap[1] = WEAPON_DANTE_CERBERUS;
+		//actorData.weaponMap[2] = WEAPON_VOID;
+		//actorData.weaponMap[3] = WEAPON_VOID;
 
 
 
@@ -150,7 +165,7 @@ void MainLoop()
 		//actorData.noCollision = true;
 
 
-		actorData.parentBaseAddr = System_Actor_actorBaseAddr[0];
+		//actorData.parentBaseAddr = System_Actor_actorBaseAddr[0];
 
 		//actorData.buttonMask = 0xFFFF;
 
@@ -168,6 +183,14 @@ void MainLoop()
 
 
 	}
+
+
+	return;
+
+
+
+
+
 //
 //
 

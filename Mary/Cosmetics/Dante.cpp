@@ -10,7 +10,7 @@ void Cosmetics_Dante_Init()
 {
 	LogFunction();
 	{
-		byte sect1[] =
+		byte8 sect1[] =
 		{
 			0x48, 0x8B, 0xF1,                         //mov rsi,rcx
 			0x48, 0x8D, 0x8E, 0x00, 0x02, 0x00, 0x00, //lea rcx,[rsi+00000200]
@@ -47,7 +47,7 @@ void Cosmetics_Dante_Init()
 		Cosmetics_Dante_ApplyDefaultModelAttributes = (Cosmetics_Dante_ApplyDefaultModelAttributes_t)func.addr;
 	}
 	{
-		byte sect1[] =
+		byte8 sect1[] =
 		{
 			0x48, 0x8B, 0xF1,                         //mov rsi,rcx
 			0x48, 0x8D, 0x8E, 0x00, 0x02, 0x00, 0x00, //lea rcx,[rsi+00000200]

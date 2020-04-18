@@ -26,12 +26,30 @@ struct vec4
 	float32 a;
 };
 
-//#define __DDMK_OBSOLETE__
-#ifndef __DDMK_OBSOLETE__
-
-typedef unsigned char      byte;
-typedef unsigned short     word;
-typedef unsigned long      dword;
-typedef unsigned long long qword;
-
-#endif
+template <typename T, uint32 n>
+struct vector
+{
+	uint32 count;
+	T data[n];
+	void Push(T var)
+	{
+		data[count] = var;
+		count++;
+	}
+	void Clear()
+	{
+		memset(this, 0, sizeof(*this));
+	}
+	void operator+=(T var)
+	{
+		Push(var);
+	}
+	T & operator[](uint32 index)
+	{
+		return data[index];
+	}
+	vector()
+	{
+		Clear();
+	}
+};

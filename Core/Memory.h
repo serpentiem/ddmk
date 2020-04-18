@@ -133,7 +133,7 @@ MessageBoxA(0, "break", 0, 0); \
 MessageBoxA(0, "break", 0, 0);
 
 template <typename T>
-bool Align(T & pos, T boundary, byte * addr = 0, uint8 pad = 0)
+bool Align(T & pos, T boundary, byte8 * addr = 0, uint8 pad = 0)
 {
 	T remainder = (pos % boundary);
 	if (remainder)

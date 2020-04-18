@@ -7,7 +7,7 @@
 extern const char   * Config_directory;
 extern const char   * Config_file;
 extern       char     Config_path[64];
-extern       byte   * Config_addr;
+extern       byte8   * Config_addr;
 extern       uint32   Config_size;
 
 void SaveConfig();

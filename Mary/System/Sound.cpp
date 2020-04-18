@@ -63,8 +63,8 @@ enum PROG_SECT_
 
 struct HEAD
 {
-	byte signature[4];
-	byte unknown[8];
+	byte8 signature[4];
+	byte8 unknown[8];
 	uint32 size;
 	uint32 waveSize;
 	uint32 progOff;
@@ -74,7 +74,7 @@ struct HEAD
 
 struct PROG_METADATA
 {
-	byte signature[4];
+	byte8 signature[4];
 	uint32 size;
 	uint32 last;
 };
@@ -82,31 +82,31 @@ struct PROG_METADATA
 struct PROG_SECT_METADATA
 {
 	uint8 itemCount;
-	byte unknown[7];
+	byte8 unknown[7];
 };
 
 struct PROG_SECT_ITEM
 {
-	byte unknown[12];
+	byte8 unknown[12];
 	uint16 id;
 };
 
 struct SMPL_METADATA
 {
-	byte signature[4];
+	byte8 signature[4];
 	uint32 size;
 	uint32 last;
 };
 
 struct SMPL_ITEM
 {
-	byte unknown[10];
+	byte8 unknown[10];
 	uint16 id;
 };
 
 struct VAGI_METADATA
 {
-	byte signature[4];
+	byte8 signature[4];
 	uint32 size;
 	uint32 last;
 };
@@ -115,13 +115,13 @@ struct VAGI_ITEM
 {
 	uint32 off;
 	uint32 size;
-	byte unknown[4];
+	byte8 unknown[4];
 	uint32 sampleRate;
 };
 
 struct G_PROG
 {
-	byte * addr;
+	byte8 * addr;
 	uint64 pos;
 	uint64 count;
 	uint32 * off;
@@ -178,22 +178,22 @@ struct G_VAGI
 
 struct WAVE_ITEM
 {
-	byte * addr;
+	byte8 * addr;
 	uint32 size;
 };
 
 struct G_WAVE
 {
-	byte * addr;
+	byte8 * addr;
 	uint32 pos;
 	uint32 count;
 	uint32 * off;
 	uint32 * size;
-	byte * Push(byte * item, uint32 itemSize)
+	byte8 * Push(byte8 * item, uint32 itemSize)
 	{
 		off[count] = pos;
 		size[count] = itemSize;
-		byte * newItem = (addr + pos);
+		byte8 * newItem = (addr + pos);
 		memcpy(newItem, item, itemSize);
 		pos += itemSize;
 		count++;
@@ -231,14 +231,14 @@ G_PROG   g_prog[MAX_CHANNEL] = {};
 G_SMPL   g_smpl[MAX_CHANNEL] = {};
 G_VAGI   g_vagi[MAX_CHANNEL] = {};
 G_WAVE   g_wave[MAX_CHANNEL] = {};
-byte   * g_map [MAX_CHANNEL] = {};
+byte8   * g_map [MAX_CHANNEL] = {};
 G_ITEM   g_item[MAX_CHANNEL] = {};
 
 #pragma endregion
 
 static void Decompile
 (
-	byte  * archive,
+	byte8  * archive,
 	uint8   channel,
 	uint8   progId
 )
@@ -264,7 +264,7 @@ static void Decompile
 	for (uint8 fileIndex = 0; fileIndex < fileCount; fileIndex++)
 	{
 		uint32 fileOff = ((uint32 *)(archive + 8))[fileIndex];
-		byte * file = (archive + fileOff);
+		byte8 * file = (archive + fileOff);
 
 		if constexpr (debug)
 		{
@@ -274,7 +274,7 @@ static void Decompile
 
 		Head:
 		{
-			byte signature[] = { 'H','e','a','d' };
+			byte8 signature[] = { 'H','e','a','d' };
 			for (uint8 index = 0; index < countof(signature); index++)
 			{
 				if (file[index] != signature[index])
@@ -390,7 +390,7 @@ static void Decompile
 		}
 		Wave:
 		{
-			byte signature[] = { 'V','A','G','p' };
+			byte8 signature[] = { 'V','A','G','p' };
 			for (uint8 index = 0; index < countof(signature); index++)
 			{
 				if (file[index] != signature[index])
@@ -407,7 +407,7 @@ static void Decompile
 			uint32 filePos = 0;
 			for (uint32 itemIndex = 0; itemIndex < waveItemCount; itemIndex++)
 			{
-				byte * item = (file + filePos);
+				byte8 * item = (file + filePos);
 				uint32 itemSize = (Reverse((uint32 *)(item + 0xC)) + 0x30);
 				if constexpr (debug)
 				{
@@ -446,7 +446,7 @@ static void Compile
 
 
 
-	dword error = 0;
+	byte32 error = 0;
 
 
 	
@@ -460,7 +460,7 @@ static void Compile
 	G_SMPL   & smplRoot = g_smpl[channel];
 	G_VAGI   & vagiRoot = g_vagi[channel];
 	G_WAVE   & waveRoot = g_wave[channel];
-	byte   * & mapRoot  = g_map [channel];
+	byte8   * & mapRoot  = g_map [channel];
 	G_ITEM   & itemRoot = g_item[channel];
 
 	
@@ -471,7 +471,7 @@ static void Compile
 
 
 
-	byte * & addr = mapRoot;
+	byte8 * & addr = mapRoot;
 	uint64 pos = 0;
 
 
@@ -734,7 +734,7 @@ static void Compile
 
 static bool InitPosMap()
 {
-	byte * file = System_File_LoadFile("SpuMap.bin");
+	byte8 * file = System_File_LoadFile("SpuMap.bin");
 	if (!file)
 	{
 		return false;
@@ -788,7 +788,7 @@ bool System_Sound_Init()
 
 
 
-	dword error = 0;
+	byte32 error = 0;
 
 
 
@@ -885,7 +885,7 @@ bool System_Sound_Init()
 		for (uint8 index = 0; index < countof(var); index++)
 		{
 			snprintf(path, sizeof(path), "data\\dmc3\\GData.afs\\%s", var[index].archiveName);
-			byte * archive = System_File_LoadFile(var[index].archiveName);
+			byte8 * archive = System_File_LoadFile(var[index].archiveName);
 			if (!archive)
 			{
 				return false;
@@ -924,7 +924,7 @@ bool System_Sound_Init()
 
 	// Fixes
 
-	Write<byte>((appBaseAddr + 0x33995C), 0xEB); // Disable Id Check
+	Write<byte8>((appBaseAddr + 0x33995C), 0xEB); // Disable Id Check
 
 
 
@@ -932,10 +932,10 @@ bool System_Sound_Init()
 	// Write itemCount.
 
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x8B, 0x15, 0x00, 0x00, 0x00, 0x00,                         //mov edx,[dmc3.exe+5DE4F4]
-			0x80, 0x79, 0x0C, 0x00,                                     //cmp byte ptr [rcx+0C],CHANNEL_STYLE_WEAPON
+			0x80, 0x79, 0x0C, 0x00,                                     //cmp byte8 ptr [rcx+0C],CHANNEL_STYLE_WEAPON
 			0x75, 0x0C,                                                 //jne short
 			0x48, 0xBA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rdx,&g_item[CHANNEL_STYLE_WEAPON].count
 			0x8B, 0x12,                                                 //mov edx,[rdx]
@@ -953,10 +953,10 @@ bool System_Sound_Init()
 	// Write item.
 
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x48, 0x8D, 0x3D, 0x00, 0x00, 0x00, 0x00,                   //lea rdi,[dmc3.exe+5DE5B0]
-			0x80, 0x79, 0x0C, 0x00,                                     //cmp byte ptr [rcx+0C],CHANNEL_STYLE_WEAPON
+			0x80, 0x79, 0x0C, 0x00,                                     //cmp byte8 ptr [rcx+0C],CHANNEL_STYLE_WEAPON
 			0x75, 0x0D,                                                 //jne short
 			0x48, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rdi,&g_item[CHANNEL_STYLE_WEAPON].addr
 			0x48, 0x8B, 0x3F,                                           //mov rdi,[rdi]
@@ -975,7 +975,7 @@ bool System_Sound_Init()
 
 	// Write map.
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   //lea rcx,[dmc3.exe+D6E590]
 			0x3C, 0x00,                                                 //cmp al,CHANNEL_STYLE_WEAPON
@@ -987,7 +987,7 @@ bool System_Sound_Init()
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteAddress(func.sect0, (appBaseAddr + 0xD6E590), 7);
 		*(uint8 *)(func.sect0 + 8) = CHANNEL_STYLE_WEAPON;
-		*(byte ***)(func.sect0 + 0xD) = &g_map[CHANNEL_STYLE_WEAPON];
+		*(byte8 ***)(func.sect0 + 0xD) = &g_map[CHANNEL_STYLE_WEAPON];
 		// @Research: Toggle.
 		WriteJump((appBaseAddr + 0x339EFB), func.addr, 2);
 	}

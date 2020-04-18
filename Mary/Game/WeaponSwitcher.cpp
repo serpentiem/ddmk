@@ -5,8 +5,8 @@
 
 
 
-byte * Melee_UpdateWeaponProxy  = 0;
-byte * Ranged_UpdateWeaponProxy = 0;
+byte8 * Melee_UpdateWeaponProxy  = 0;
+byte8 * Ranged_UpdateWeaponProxy = 0;
 uint8 Game_WeaponSwitcher_Melee_index  = 0;
 uint8 Game_WeaponSwitcher_Ranged_index = 0;
 
@@ -18,7 +18,7 @@ Melee_UpdateIcon_t   Melee_UpdateIcon   = 0;
 Ranged_UpdateIcon_t  Ranged_UpdateIcon  = 0;
 PlayCycleAnimation_t PlayCycleAnimation = 0;
 
-static uint8 Melee_GetActiveWeaponSlot(byte * baseAddr)
+static uint8 Melee_GetActiveWeaponSlot(byte8 * baseAddr)
 {
 	uint8 motion = *(uint8 *)(baseAddr + 0x39B3);
 	uint8 * equipment = (uint8 *)(baseAddr + 0x6498);
@@ -33,7 +33,7 @@ static uint8 Melee_GetActiveWeaponSlot(byte * baseAddr)
 	return 0xFF;
 }
 
-static void Melee_UpdateWeapon(byte * baseAddr)
+static void Melee_UpdateWeapon(byte8 * baseAddr)
 {
 	//uint8 & index = Game_WeaponSwitcher_Melee_index;
 	//index++;
@@ -59,7 +59,7 @@ static void Melee_UpdateWeapon(byte * baseAddr)
 	//uint8 & weapon = Config.Game.WeaponSwitcher.Melee.weapon[index];
 	//equipment[selectedWeapon] = weapon;
 	//uint8 actor = System_Actor_GetActorId(baseAddr);
-	//byte ** metadata = (byte **)(baseAddr + 0x64A0);
+	//byte8 ** metadata = (byte8 **)(baseAddr + 0x64A0);
 	//metadata[selectedWeapon] = System_Weapon_weaponMetadata[actor][weapon];
 	//uint32 * flags = (uint32 *)(baseAddr + 0x64C8);
 	//if (flags[selectedWeapon])
@@ -123,7 +123,7 @@ static void Melee_UpdateWeapon(byte * baseAddr)
 
 }
 
-static uint8 Ranged_GetActiveWeaponSlot(byte * baseAddr)
+static uint8 Ranged_GetActiveWeaponSlot(byte8 * baseAddr)
 {
 	uint8 motion = *(uint8 *)(baseAddr + 0x39B3);
 	uint8 * equipment = (uint8 *)(baseAddr + 0x649A);
@@ -138,7 +138,7 @@ static uint8 Ranged_GetActiveWeaponSlot(byte * baseAddr)
 	return 0xFF;
 }
 
-static void Ranged_UpdateWeapon(byte * baseAddr)
+static void Ranged_UpdateWeapon(byte8 * baseAddr)
 {
 	//uint8 & index = Game_WeaponSwitcher_Ranged_index;
 	//index++;
@@ -165,7 +165,7 @@ static void Ranged_UpdateWeapon(byte * baseAddr)
 	//uint8 & weapon = Config.Game.WeaponSwitcher.Ranged.weapon[index];
 	//equipment[selectedWeapon] = weapon;
 	//uint8 actor = System_Actor_GetActorId(baseAddr);
-	//byte ** metadata = (byte **)(baseAddr + 0x64B0);
+	//byte8 ** metadata = (byte8 **)(baseAddr + 0x64B0);
 	//metadata[selectedWeapon] = System_Weapon_weaponMetadata[actor][weapon];
 	//selectedWeapon += 2;
 	//uint8 & model = *(uint8 *)(baseAddr + 0x64F1);
@@ -185,7 +185,7 @@ void Game_WeaponSwitcher_Init()
 {
 	LogFunction();
 	{
-		byte sect1[] =
+		byte8 sect1[] =
 		{
 			0x4C, 0x8B, 0xC2,                         //mov r8,rdx
 			0x48, 0x8B, 0xD1,                         //mov rdx,rcx
@@ -207,7 +207,7 @@ void Game_WeaponSwitcher_Init()
 		PlayCycleAnimation = (PlayCycleAnimation_t)func.addr;
 	}
 	{
-		byte sect1[] =
+		byte8 sect1[] =
 		{
 			0x4C, 0x8B, 0x25, 0x00, 0x00, 0x00, 0x00,             //mov r12,[dmc3.exe+CF2680]
 			0x4D, 0x8B, 0x64, 0x24, 0x30,                         //mov r12,[r12+30]
@@ -224,8 +224,8 @@ void Game_WeaponSwitcher_Init()
 			0x49, 0x8D, 0x8C, 0x24, 0x80, 0x17, 0x00, 0x00,       //lea rcx,[r12+00001780]
 			0x4C, 0x8B, 0x2D, 0x00, 0x00, 0x00, 0x00,             //mov r13,[dmc3.exe+C90E28]
 			0x4D, 0x8B, 0x6D, 0x18,                               //mov r13,[r13+18]
-			0x49, 0x0F, 0xB6, 0x85, 0x90, 0x64, 0x00, 0x00,       //movzx rax,byte ptr [r13+00006490]
-			0x4A, 0x0F, 0xB6, 0x84, 0x28, 0x98, 0x64, 0x00, 0x00, //movzx rax,byte ptr [rax+r13+00006498]
+			0x49, 0x0F, 0xB6, 0x85, 0x90, 0x64, 0x00, 0x00,       //movzx rax,byte8 ptr [r13+00006490]
+			0x4A, 0x0F, 0xB6, 0x84, 0x28, 0x98, 0x64, 0x00, 0x00, //movzx rax,byte8 ptr [rax+r13+00006498]
 			0x4D, 0x8B, 0xAC, 0x24, 0xC8, 0x00, 0x00, 0x00,       //mov r13,[r12+000000C8]
 			0x4D, 0x8B, 0x6D, 0x20,                               //mov r13,[r13+20]
 			0x41, 0x8B, 0x94, 0xC5, 0xB4, 0x00, 0x00, 0x00,       //mov edx,[r13+rax*8+000000B4]
@@ -249,7 +249,7 @@ void Game_WeaponSwitcher_Init()
 		Melee_UpdateIcon = (Melee_UpdateIcon_t)func.addr;
 	}
 	{
-		byte sect1[] =
+		byte8 sect1[] =
 		{
 			0x4C, 0x8B, 0x25, 0x00, 0x00, 0x00, 0x00,             //mov r12,[dmc3.exe+CF2680]
 			0x4D, 0x8B, 0x64, 0x24, 0x30,                         //mov r12,[r12+30]
@@ -266,9 +266,9 @@ void Game_WeaponSwitcher_Init()
 			0x49, 0x8D, 0x8C, 0x24, 0x80, 0x08, 0x00, 0x00,       //lea rcx,[r12+00000880]
 			0x4C, 0x8B, 0x2D, 0x00, 0x00, 0x00, 0x00,             //mov r13,[dmc3.exe+C90E28]
 			0x4D, 0x8B, 0x6D, 0x18,                               //mov r13,[r13+18]
-			0x49, 0x0F, 0xB6, 0x85, 0x94, 0x64, 0x00, 0x00,       //movzx rax,byte ptr [r13+00006494]
+			0x49, 0x0F, 0xB6, 0x85, 0x94, 0x64, 0x00, 0x00,       //movzx rax,byte8 ptr [r13+00006494]
 			0x48, 0x83, 0xE8, 0x02,                               //sub rax,02
-			0x4A, 0x0F, 0xB6, 0x84, 0x28, 0x9A, 0x64, 0x00, 0x00, //movzx rax,byte ptr [rax+r13+0000649A]
+			0x4A, 0x0F, 0xB6, 0x84, 0x28, 0x9A, 0x64, 0x00, 0x00, //movzx rax,byte8 ptr [rax+r13+0000649A]
 			0x48, 0x83, 0xE8, 0x05,                               //sub rax,05
 			0x4D, 0x8B, 0xAC, 0x24, 0xC8, 0x00, 0x00, 0x00,       //mov r13,[r12+000000C8]
 			0x4D, 0x8B, 0x6D, 0x20,                               //mov r13,[r13+20]
@@ -293,11 +293,11 @@ void Game_WeaponSwitcher_Init()
 		Ranged_UpdateIcon = (Ranged_UpdateIcon_t)func.addr;
 	}
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0xBA, 0x04, 0x00, 0x00, 0x00, //mov edx,00000004
 		};
-		byte sect1[] =
+		byte8 sect1[] =
 		{
 			0x48, 0x8B, 0xCF, //mov rcx,rdi
 		};
@@ -307,11 +307,11 @@ void Game_WeaponSwitcher_Init()
 		Melee_UpdateWeaponProxy = func.addr;
 	}
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0xBA, 0x07, 0x00, 0x00, 0x00, //mov edx,00000007
 		};
-		byte sect1[] =
+		byte8 sect1[] =
 		{
 			0x48, 0x8B, 0xCF, //mov rcx,rdi
 		};
@@ -334,14 +334,14 @@ void Game_WeaponSwitcher_Toggle(bool enable)
 	else
 	{
 		{
-			byte buffer[] =
+			byte8 buffer[] =
 			{
 				0x48, 0x63, 0x9F, 0x90, 0x64, 0x00, 0x00, //movsxd rbx,dword ptr [rdi+00006490]
 			};
 			vp_memcpy((appBaseAddr + 0x1EA980), buffer, sizeof(buffer));
 		}
 		{
-			byte buffer[] =
+			byte8 buffer[] =
 			{
 				0x48, 0x63, 0x9F, 0x94, 0x64, 0x00, 0x00, //movsxd rbx,dword ptr [rdi+00006494]
 			};

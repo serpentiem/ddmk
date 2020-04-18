@@ -282,9 +282,6 @@
     <ClInclude Include="..\Core\Utility.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Core\Vector.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\Core\Windows.h">
       <Filter>Core</Filter>
     </ClInclude>

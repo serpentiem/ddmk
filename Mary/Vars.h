@@ -644,7 +644,7 @@ struct PS2_GAMEPAD
 	// @Todo: Add _.
 	uint32 reserved[3];
 	uint8  vibration[4];
-	word   buttons[6];
+	byte16   buttons[6];
 	uint8  rightStickX;
 	uint8  rightStickY;
 	uint8  leftStickX;
@@ -665,7 +665,7 @@ struct PS2_GAMEPAD
 
 struct CAPCOM_GAMEPAD
 {
-	word   buttons[4];
+	byte16   buttons[4];
 	uint16 buttonsTimer[2];
 	uint16 rightStickDirection[4];
 	uint16 rightStickTimer[2];
@@ -1006,6 +1006,8 @@ static_assert(sizeof(MODEL_DATA) == 0x780);
 
 
 
+
+
 struct ACTOR_DATA_DANTE;
 struct ACTOR_DATA_VERGIL;
 
@@ -1030,7 +1032,8 @@ struct ACTOR_DATA_DANTE
 	_(8224);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
-	MOTION_DATA motionData[5]; // 0x39B0
+	MOTION_DATA motionData[2]; // 0x39B0
+	MOTION_DATA motionDataMirror[3]; // 0x39B4
 	_(94);
 	uint32 shadow; // 0x3A18
 	_(12);
@@ -1057,13 +1060,15 @@ struct ACTOR_DATA_DANTE
 	uint32 activeModelIndexMirror; // 0x3E88
 	uint32 activeDevilModel; // 0x3E8C
 	uint32 airRaid; // 0x3E90
-	uint8 devilState; // 0x3E94
-	_(6);
+	uint32 devilState; // 0x3E94
+	_(3);
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
 	bool sparda; // 0x3E9F
-	_(24);
+	_(4);
+	bool useHolyWater; // 0x3EA4
+	_(19);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
 	_(24);
@@ -1153,16 +1158,23 @@ struct ACTOR_DATA_DANTE
 	byte8 * newMeleeWeaponData[5]; // 0xB910
 	uint8 newMeleeWeaponCount; // 0xB938
 	uint8 newMeleeWeaponIndex; // 0xB939
-	_(2);
+	bool newMeleeWeaponUpdate; // 0xB93A
+	_(1);
 	uint8 newRangedWeaponMap[5]; // 0xB93C
 	_(7);
 	byte8 * newRangedWeaponData[5]; // 0xB948
 	uint8 newRangedWeaponCount; // 0xB970
 	uint8 newRangedWeaponIndex; // 0xB971
+	bool newRangedWeaponUpdate; // 0xB972
 
 	operator ACTOR_DATA_VERGIL &()
 	{
 		return *reinterpret_cast<ACTOR_DATA_VERGIL *>(this);
+	}
+
+	operator byte8 *()
+	{
+		return reinterpret_cast<byte8 *>(this);
 	}
 };
 
@@ -1187,7 +1199,8 @@ struct ACTOR_DATA_VERGIL
 	_(8224);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
-	MOTION_DATA motionData[5]; // 0x39B0
+	MOTION_DATA motionData[2]; // 0x39B0
+	MOTION_DATA motionDataMirror[3]; // 0x39B4
 	_(94);
 	uint32 shadow; // 0x3A18
 	_(12);
@@ -1210,13 +1223,15 @@ struct ACTOR_DATA_VERGIL
 	uint32 activeModelIndexMirror; // 0x3E88
 	uint32 activeDevilModel; // 0x3E8C
 	uint32 airRaid; // 0x3E90
-	uint8 devilState; // 0x3E94
-	_(6);
+	uint32 devilState; // 0x3E94
+	_(3);
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
 	bool sparda; // 0x3E9F
-	_(24);
+	_(4);
+	bool useHolyWater; // 0x3EA4
+	_(19);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
 	_(24);
@@ -1292,20 +1307,48 @@ struct ACTOR_DATA_VERGIL
 	byte8 * newMeleeWeaponData[5]; // 0xB910
 	uint8 newMeleeWeaponCount; // 0xB938
 	uint8 newMeleeWeaponIndex; // 0xB939
-	_(2);
+	bool newMeleeWeaponUpdate; // 0xB93A
+	_(1);
 	uint8 newRangedWeaponMap[5]; // 0xB93C
 	_(7);
 	byte8 * newRangedWeaponData[5]; // 0xB948
 	uint8 newRangedWeaponCount; // 0xB970
 	uint8 newRangedWeaponIndex; // 0xB971
+	bool newRangedWeaponUpdate; // 0xB972
 
 	operator ACTOR_DATA_DANTE &()
 	{
 		return *reinterpret_cast<ACTOR_DATA_DANTE *>(this);
 	}
+
+	operator byte8 *()
+	{
+		return reinterpret_cast<byte8 *>(this);
+	}
 };
 
 typedef ACTOR_DATA_DANTE ACTOR_DATA;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1606,7 +1649,7 @@ enum Object_
 	Object_ForceEdgeDante,
 	Object_Yamato,
 	Object_ForceEdge,
-	Object_NeroAngeloSword,
+	Object_NeroAngeloSbyte16,
 	Object_Count,
 };
 
@@ -1634,7 +1677,7 @@ enum STYLE_
 
 enum NATIVE_STYLE_DANTE_
 {
-	NATIVE_STYLE_DANTE_SWORDMASTER,
+	NATIVE_STYLE_DANTE_Sbyte16MASTER,
 	NATIVE_STYLE_DANTE_GUNSLINGER,
 	NATIVE_STYLE_DANTE_TRICKSTER,
 	NATIVE_STYLE_DANTE_ROYALGUARD,
@@ -1871,7 +1914,7 @@ enum STYLE_VERGIL_
 
 enum STYLE_
 {
-	STYLE_DANTE_SWORDMASTER,
+	STYLE_DANTE_Sbyte16MASTER,
 	STYLE_DANTE_GUNSLINGER,
 	STYLE_DANTE_TRICKSTER,
 	STYLE_DANTE_ROYALGUARD,
@@ -1935,7 +1978,7 @@ enum RANGED_WEAPON_DANTE_
 	RANGED_WEAPON_DANTE_ARTEMIS,
 	RANGED_WEAPON_DANTE_SPIRAL,
 	RANGED_WEAPON_DANTE_KALINA_ANN,
-	RANGED_WEAPON_DANTE_SUMMONED_SWORDS,
+	RANGED_WEAPON_DANTE_SUMMONED_Sbyte16S,
 	MAX_RANGED_WEAPON_DANTE,
 };
 

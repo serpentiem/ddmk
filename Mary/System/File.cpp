@@ -432,7 +432,15 @@ byte8 * System_File_PushFile(const char * filename)
 
 
 
-
+void System_File_UpdateFileItemsLite()
+{
+	for (uint8 helperIndex = 0; helperIndex < countof(fileItemHelper); helperIndex++)
+	{
+		fileItemHelper[helperIndex].Update();
+	}
+	//UpdateCostume(actorData);
+	//UpdateSword(actorData);
+}
 
 
 

@@ -256,7 +256,7 @@ void System_Weapon_Dante_Ranged_UpdateLevels(byte8 * baseAddr)
 	uint8  * weapon = (uint8  *)(baseAddr + 0x649A);
 	uint32 * level  = (uint32 *)(baseAddr + 0x64E4);
 
-	byte * addr = *(byte **)(appBaseAddr + 0xC90E30);
+	byte8 * addr = *(byte8 **)(appBaseAddr + 0xC90E30);
 	if (!addr)
 	{
 		return;

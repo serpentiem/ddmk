@@ -5,7 +5,7 @@
 
 extern bool Game_Dante_Rebellion_quickDrive;
 
-static void SetMove(byte * baseAddr)
+static void SetMove(byte8 * baseAddr)
 {
 	//if (!Config.Game.Dante.Rebellion.unlockQuickDrive)
 	//{
@@ -35,7 +35,7 @@ void Game_Attack_Init()
 {
 	LogFunction();
 	{
-		byte sect2[] =
+		byte8 sect2[] =
 		{
 			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1E0800
 		};

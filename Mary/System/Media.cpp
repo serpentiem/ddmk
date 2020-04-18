@@ -6,14 +6,14 @@
 
 PlayTrack_t PlayTrack = 0;
 
-dword mediaError     = MEDIA_NO_ERROR;
+byte32 mediaError     = MEDIA_NO_ERROR;
 bool  mediaSkipTrack = false;
 
 void System_Media_Init()
 {
 	LogFunction();
 	{
-		byte sect1[] =
+		byte8 sect1[] =
 		{
 			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00, //lea rcx,[dmc3.exe+CF3700]
 			0xE8, 0x00, 0x00, 0x00, 0x00,             //call dmc3.exe+32BE20

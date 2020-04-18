@@ -65,9 +65,9 @@ void Game_Doppelganger_ToggleEnableDevilTrigger(bool enable)
 		WriteJump((appBaseAddr + 0x1F8F2C), AdjustDevilSound, 2);
 		// Fixes
 		Write<uint32>((appBaseAddr + 0x1E92BB), 0);                          // Disable Doppelganger Activation Devil Form
-		Write<byte>((appBaseAddr + 0x1EAA07), 0xEB);                         // Disable Doppelganger Melee Weapon Change Devil Form Update
-		Write<byte>((appBaseAddr + 0x1E7775), 0xEB);                         // Enable Devil Trigger Activation
-		Write<byte>((appBaseAddr + 0x1F94A1), 0xEB);                         // Enable Devil Trigger Deactivation
+		Write<byte8>((appBaseAddr + 0x1EAA07), 0xEB);                         // Disable Doppelganger Melee Weapon Change Devil Form Update
+		Write<byte8>((appBaseAddr + 0x1E7775), 0xEB);                         // Enable Devil Trigger Activation
+		Write<byte8>((appBaseAddr + 0x1F94A1), 0xEB);                         // Enable Devil Trigger Deactivation
 		WriteAddress((appBaseAddr + 0x1E752B), (appBaseAddr + 0x1E752D), 2); // Enable ACTOR_TWO Devil Trigger
 		//Write<uint32>((appBaseAddr + 0x1F7D3F), 0);                          // Bob Set Visible Flag
 	}
@@ -75,16 +75,16 @@ void Game_Doppelganger_ToggleEnableDevilTrigger(bool enable)
 	{
 		WriteCall((appBaseAddr + 0x1E25CD), (appBaseAddr + 0x1E8F00));
 		{
-			byte buffer[] =
+			byte8 buffer[] =
 			{
 				0x80, 0xBF, 0x9B, 0x3E, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+00003E9B],01
 			};
 			vp_memcpy((appBaseAddr + 0x1F8F2C), buffer, sizeof(buffer));
 		}
 		Write<uint32>((appBaseAddr + 0x1E92BB), 1);
-		Write<byte>((appBaseAddr + 0x1EAA07), 0x75);
-		Write<byte>((appBaseAddr + 0x1E7775), 0x75);
-		Write<byte>((appBaseAddr + 0x1F94A1), 0x74);
+		Write<byte8>((appBaseAddr + 0x1EAA07), 0x75);
+		Write<byte8>((appBaseAddr + 0x1E7775), 0x75);
+		Write<byte8>((appBaseAddr + 0x1F94A1), 0x74);
 		WriteAddress((appBaseAddr + 0x1E752B), (appBaseAddr + 0x1E7516), 2);
 		//Write<uint32>((appBaseAddr + 0x1F7D3F), 1);
 	}

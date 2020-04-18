@@ -10,7 +10,7 @@ enum MEDIA_
 	MEDIA_SKIP_TRACK,
 };
 
-extern dword mediaError;
+extern byte32 mediaError;
 extern bool  mediaSkipTrack;
 
 void System_Media_Init();

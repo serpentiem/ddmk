@@ -176,7 +176,6 @@ p4.exe</Command>
     <ClInclude Include="..\Core\Memory.h" />
     <ClInclude Include="..\Core\String.h" />
     <ClInclude Include="..\Core\Utility.h" />
-    <ClInclude Include="..\Core\Vector.h" />
     <ClInclude Include="..\Core\Windows.h" />
     <ClInclude Include="..\ImGui\imconfig.h" />
     <ClInclude Include="..\ImGui\imgui.h" />

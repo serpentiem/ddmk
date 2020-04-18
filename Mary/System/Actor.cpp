@@ -15,7 +15,7 @@ struct MotionHelper
 	uint16 cacheFileId;
 };
 
-MotionHelper motionHelperDante[] =
+constexpr MotionHelper motionHelperDante[] =
 {
 	{ MOTION_GROUP_DANTE_BASE                  , pl000_00_0  },
 	{ MOTION_GROUP_DANTE_DAMAGE                , pl000_00_1  },
@@ -46,7 +46,7 @@ MotionHelper motionHelperDante[] =
 	{ MOTION_GROUP_DANTE_DOPPELGANGER          , pl000_00_26 },
 };
 
-MotionHelper motionHelperBob[] =
+constexpr MotionHelper motionHelperBob[] =
 {
 	{ MOTION_GROUP_BOB_BASE       , pl001_00_0  },
 	{ MOTION_GROUP_BOB_DAMAGE     , pl001_00_1  },
@@ -54,7 +54,7 @@ MotionHelper motionHelperBob[] =
 	{ MOTION_GROUP_BOB_MELEE_STYLE, pl001_00_31 },
 };
 
-MotionHelper motionHelperLady[] =
+constexpr MotionHelper motionHelperLady[] =
 {
 	{ MOTION_GROUP_LADY_BASE      , pl002_00_0  },
 	{ MOTION_GROUP_LADY_DAMAGE    , pl002_00_1  },
@@ -62,7 +62,7 @@ MotionHelper motionHelperLady[] =
 	{ MOTION_GROUP_LADY_KALINA_ANN, pl000_00_12 },
 };
 
-MotionHelper motionHelperVergil[] =
+constexpr MotionHelper motionHelperVergil[] =
 {
 	{ MOTION_GROUP_VERGIL_BASE                  , pl021_00_0 },
 	{ MOTION_GROUP_VERGIL_DAMAGE                , pl021_00_1 },
@@ -397,13 +397,8 @@ void UpdateActorDante(byte8 * baseAddr)
 {
 	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
 
-	//static_assert(offsetof(ACTOR_DATA, devilModelMetadata.rebellion.submodelMetadata[0].submodelIndex) == 0xB602);
-	//static_assert(offsetof(ACTOR_DATA, devilModelMetadata.rebellion.submodelMetadata[1].submodelIndex) == 0xB605);
-	//static_assert(offsetof(ACTOR_DATA, devilModelMetadata.cerberus.submodelMetadata[0].submodelIndex) == 0xB60A);
-	//static_assert(offsetof(ACTOR_DATA, devilModelMetadata.nevan.submodelMetadata[0].submodelIndex) == 0xB611);
-	//static_assert(offsetof(ACTOR_DATA, devilModelMetadata.nevan.submodelMetadata[1].submodelIndex) == 0xB614);
-	//static_assert(offsetof(ACTOR_DATA, devilModelMetadata.beowulf.submodelMetadata[0].submodelIndex) == 0xB619);
-	//static_assert(offsetof(ACTOR_DATA, devilModelMetadata.sparda.submodelMetadata[0].submodelIndex) == 0xB61E);
+
+
 
 	actorData.devilModelMetadata.rebellion.submodelMetadata[0].submodelIndex = 255;
 	actorData.devilModelMetadata.rebellion.submodelMetadata[1].submodelIndex = 255;
@@ -413,18 +408,16 @@ void UpdateActorDante(byte8 * baseAddr)
 	actorData.devilModelMetadata.beowulf.submodelMetadata[0].submodelIndex = 255;
 	actorData.devilModelMetadata.sparda.submodelMetadata[0].submodelIndex = 255;
 
-	//*(byte8 *)(baseAddr + 0xB602) = 0xFF;
-	//*(byte8 *)(baseAddr + 0xB605) = 0xFF;
-	//*(byte8 *)(baseAddr + 0xB60A) = 0xFF;
-	//*(byte8 *)(baseAddr + 0xB611) = 0xFF;
-	//*(byte8 *)(baseAddr + 0xB614) = 0xFF;
-	//*(byte8 *)(baseAddr + 0xB619) = 0xFF;
-	//*(byte8 *)(baseAddr + 0xB61E) = 0xFF;
+
+
+
 
 	System_File_UpdateFileItems(&actorData);
 
 	Cosmetics_Model_UpdateModelDante[COSTUME_DANTE_DEFAULT](baseAddr);
-	//Cosmetics_Model_UpdateDevilModelDante[0](baseAddr, 1);
+	
+
+
 
 	Cosmetics_Model_UpdateDevilModelDante[DEVIL_DANTE_REBELLION](baseAddr, 1);
 	Cosmetics_Model_UpdateDevilModelDante[DEVIL_DANTE_CERBERUS](baseAddr, 2);
@@ -433,7 +426,8 @@ void UpdateActorDante(byte8 * baseAddr)
 
 
 
-	for (uint8 index = 0; index < countof(motionHelperDante); index++)
+	//for (uint8 index = 0; index < countof(motionHelperDante); index++)
+	for_all(index, countof(motionHelperDante))
 	{
 		auto & motionId    = motionHelperDante[index].motionId;
 		auto & cacheFileId = motionHelperDante[index].cacheFileId;
@@ -446,17 +440,12 @@ void UpdateActorDante(byte8 * baseAddr)
 
 
 	func_1EF040(baseAddr, 0);
-
 	func_1EEF80(baseAddr);
-
 	func_1EF040(baseAddr, 3);
 
-	//*(byte8 **)(baseAddr + 0x3DD0) = *(byte8 **)(appBaseAddr + 0x590598);
-	//*(byte8 **)(baseAddr + 0x3DD8) = *(byte8 **)(appBaseAddr + 0x58A2A0);
-	//*(byte8 **)(baseAddr + 0x3DE0) = (appBaseAddr + 0x5905B0);
-	//*(byte8 **)(baseAddr + 0x3DE8) = System_File_cacheFile[pl000][9];
-	//*(byte8 **)(baseAddr + 0x3DF0) = System_File_cacheFile[pl000][10];
-	//*(byte8 **)(baseAddr + 0x3DF8) = System_File_cacheFile[pl000][11];
+
+
+
 
 	actorData.actionData[0] = *(byte8 **)(appBaseAddr + 0x590598);
 	actorData.actionData[1] = *(byte8 **)(appBaseAddr + 0x58A2A0);
@@ -469,7 +458,7 @@ void UpdateActorDante(byte8 * baseAddr)
 	func_1FAF40(baseAddr);
 }
 
-typedef byte8 *(__fastcall * RegisterWeapon_t)(byte8 * baseAddr, uint32 id);
+typedef byte8 *(__fastcall * RegisterWeapon_t)(ACTOR_DATA & actorData, uint32 id);
 
 RegisterWeapon_t RegisterWeapon[MAX_WEAPON] = {};
 
@@ -491,50 +480,201 @@ inline void RegisterWeapon_Init()
 	RegisterWeapon[WEAPON_VERGIL_FORCE_EDGE] = func_2298E0;
 }
 
-void UpdateWeaponDante(byte8 * baseAddr)
+//void UpdateWeaponDante(byte8 * baseAddr)
+//{
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//
+//	constexpr uint32 size = (offsetof(ACTOR_DATA, styleRank) - offsetof(ACTOR_DATA, weaponData));
+//	memset(actorData.weaponData, 0, size);
+//
+//	actorData.weaponData[0] = RegisterWeapon[WEAPON_DANTE_REBELLION  ](baseAddr, 0);
+//	actorData.weaponData[1] = RegisterWeapon[WEAPON_DANTE_CERBERUS   ](baseAddr, 0);
+//	actorData.weaponData[2] = RegisterWeapon[WEAPON_DANTE_EBONY_IVORY](baseAddr, 0);
+//	actorData.weaponData[3] = RegisterWeapon[WEAPON_DANTE_SHOTGUN    ](baseAddr, 0);
+//
+//	//static_assert(offsetof(ACTOR_DATA, weaponFlags[4]) == 0x64D8);
+//	actorData.weaponFlags[4] = 4;
+//}
+
+//byte8 * CreateActor
+//(
+//	uint8 character,
+//	uint8 actor
+//)
+//{
+//	auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E28);
+//
+//	byte8 * sessionData = 0;
+//
+//	byte8 * baseAddr = 0;
+//
+//	sessionData = (g_pool[1] + 0x16C);
+//
+//	//func_2EE060((mainActorBaseAddr + 0x6410), 0x3C);
+//
+//	baseAddr = func_1DE820(character, actor, false);
+//
+//	//func_1BB390(g_pool, actor);
+//
+//	func_217B90(baseAddr, sessionData); // InitActorDante
+//	UpdateActorDante(baseAddr);
+//	UpdateWeaponDante(baseAddr);
+//
+//	func_1DFC20(baseAddr);
+//
+//	return baseAddr;
+//}
+
+
+
+
+void UpdateWeaponDante(ACTOR_DATA_DANTE & actorData)
 {
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	constexpr uint32 size = (offsetof(ACTOR_DATA, styleRank) - offsetof(ACTOR_DATA, weaponData));
+	memset(actorData.weaponData, 0, size);
+
+	actorData.weaponData[0] = RegisterWeapon[WEAPON_DANTE_REBELLION  ](actorData, 0);
+	actorData.weaponData[0] = RegisterWeapon[WEAPON_DANTE_CERBERUS   ](actorData, 0);
+	actorData.weaponData[0] = RegisterWeapon[WEAPON_DANTE_EBONY_IVORY](actorData, 0);
+	actorData.weaponData[0] = RegisterWeapon[WEAPON_DANTE_KALINA_ANN ](actorData, 9);
+
+	actorData.weaponFlags[4] = 4;
+}
+
+ACTOR_DATA_DANTE & CreateActorDante()
+{
+	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+	auto sessionData = (g_pool[1] + 0x16C);
+
+	auto & actorData = func_1DE820(CHAR_DANTE, 0, false);
+
+	System_File_UpdateFileItemsLite();
+
+
+
+	func_217B90(actorData, sessionData);
+	func_212BE0(actorData);
+
+
+	for_all(index, countof(motionHelperDante))
+	{
+		auto & motionId    = motionHelperDante[index].motionId;
+		auto & cacheFileId = motionHelperDante[index].cacheFileId;
+
+		actorData.motionArchive[motionId] = System_File_cacheFile[cacheFileId];
+	}
+
+	UpdateWeaponDante(actorData);
+
+
+
+
+	func_1DFC20(actorData);
+
+	return actorData;
+}
+
+
+
+
+
+void UpdateWeaponVergil(ACTOR_DATA_VERGIL & actorData)
+{
+	//auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+
+	//auto baseAddr = reinterpret_cast<by>
+
 
 	constexpr uint32 size = (offsetof(ACTOR_DATA, styleRank) - offsetof(ACTOR_DATA, weaponData));
 	memset(actorData.weaponData, 0, size);
 
-	actorData.weaponData[0] = RegisterWeapon[WEAPON_DANTE_REBELLION  ](baseAddr, 0);
-	actorData.weaponData[1] = RegisterWeapon[WEAPON_DANTE_CERBERUS   ](baseAddr, 0);
-	actorData.weaponData[2] = RegisterWeapon[WEAPON_DANTE_EBONY_IVORY](baseAddr, 0);
-	actorData.weaponData[3] = RegisterWeapon[WEAPON_DANTE_SHOTGUN    ](baseAddr, 0);
+	actorData.weaponData[0] = RegisterWeapon[WEAPON_VERGIL_YAMATO](actorData, 0);
+	actorData.weaponData[1] = RegisterWeapon[WEAPON_VERGIL_BEOWULF](actorData, 0);
+	actorData.weaponData[2] = RegisterWeapon[WEAPON_VERGIL_FORCE_EDGE](actorData, 0);
+
+
+
+
+	//actorData.weaponData[1] = RegisterWeapon[WEAPON_DANTE_CERBERUS   ](actorData, 0);
+	//actorData.weaponData[2] = RegisterWeapon[WEAPON_DANTE_EBONY_IVORY](actorData, 0);
+	//actorData.weaponData[3] = RegisterWeapon[WEAPON_DANTE_SHOTGUN    ](actorData, 0);
 
 	//static_assert(offsetof(ACTOR_DATA, weaponFlags[4]) == 0x64D8);
 	actorData.weaponFlags[4] = 4;
 }
 
-byte8 * CreateActor
-(
-	uint8 character,
-	uint8 actor
-)
+
+ACTOR_DATA_VERGIL & CreateActorVergil()
 {
-	auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E28);
+	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+	auto sessionData = (g_pool[1] + 0x16C);
+	//auto baseAddr = func_1DE820(CHAR_VERGIL, 0, false);
+	//auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
 
-	byte8 * sessionData = 0;
 
-	byte8 * baseAddr = 0;
+	auto & actorData = func_1DE820(CHAR_VERGIL, 0, false);
 
-	sessionData = (g_pool[1] + 0x16C);
 
-	//func_2EE060((mainActorBaseAddr + 0x6410), 0x3C);
+	System_File_UpdateFileItemsLite();
 
-	baseAddr = func_1DE820(character, actor, false);
 
-	//func_1BB390(g_pool, actor);
 
-	func_217B90(baseAddr, sessionData); // InitActorDante
-	UpdateActorDante(baseAddr);
-	UpdateWeaponDante(baseAddr);
+	//actorData.collisionIndex = 1;
 
-	func_1DFC20(baseAddr);
 
-	return baseAddr;
+	//System_File_UpdateFileItems(actorData);
+	
+
+
+
+	func_223CB0(actorData, sessionData);
+	func_220970(actorData);
+
+
+
+
+	for_all(index, countof(motionHelperVergil))
+	{
+		auto & motionId    = motionHelperVergil[index].motionId;
+		auto & cacheFileId = motionHelperVergil[index].cacheFileId;
+
+		actorData.motionArchive[motionId] = System_File_cacheFile[cacheFileId];
+	}
+
+
+
+	UpdateWeaponVergil(actorData);
+
+
+
+
+
+
+
+	func_1DFC20(actorData);
+	//return *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
+
+	return actorData;
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 inline byte16 GetBinding(uint8 action)
@@ -667,7 +807,7 @@ bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
 
 
 
-
+// @Todo: Controller.
 
 bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 {

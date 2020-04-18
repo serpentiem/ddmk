@@ -108,7 +108,7 @@ extern CacheFile System_File_cacheFile[MAX_CACHE_FILE];
 
 
 
-
+void System_File_UpdateFileItemsLite();
 
 
 
