@@ -6,6 +6,9 @@ PrivateStart;
 
 // @Todo: Create functions instead and add stringItemOff.
 
+
+// @Todo: Constexpr and add to vars.
+
 struct MotionHelper
 {
 	uint8 motionId;

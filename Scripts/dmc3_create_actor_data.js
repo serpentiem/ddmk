@@ -37,6 +37,7 @@ var items =
 	[ "devil"                    , "bool"                      , 0x3E9B              ],
 	[ "costume"                  , "uint8"                     , 0x3E9E              ],
 	[ "sparda"                   , "bool"                      , 0x3E9F              ], // @Research: Nero Angelo for Vergil.
+	[ "useHolyWater"             , "bool"                      , 0x3EA4              ],
 	[ "magicPoints"              , "float32"                   , 0x3EB8              ],
 	[ "maxMagicPoints"           , "float32"                   , 0x3EBC              ],
 	[ "cameraDirection"          , "uint16"                    , 0x3ED8              ],
