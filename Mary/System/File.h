@@ -126,6 +126,6 @@ byte8 * System_File_LoadFile
 void System_File_AdjustPointers(byte8 * archive);
 byte8 * System_File_PushFile(const char * filename);
 
-void System_File_UpdateFileItems(ACTOR_DATA * actorData);
-void System_File_UpdateMotion(ACTOR_DATA * actorData);
+//void System_File_UpdateFileItems(ACTOR_DATA * actorData);
+//void System_File_UpdateMotion(ACTOR_DATA * actorData);
 void System_File_Init();

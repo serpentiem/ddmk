@@ -143,7 +143,6 @@
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Assert.cpp" />
     <ClCompile Include="Game\Attack.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -154,6 +153,7 @@
     <ClCompile Include="System\ActorObsolete.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="ActorData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -340,5 +340,6 @@
     <ClInclude Include="Cosmetics\Model.h">
       <Filter>Cosmetics</Filter>
     </ClInclude>
+    <ClInclude Include="ActorData.h" />
   </ItemGroup>
 </Project>

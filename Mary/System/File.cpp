@@ -185,79 +185,79 @@ typedef void(* InternalAdjustPointers_t)(byte8 *);
 
 InternalAdjustPointers_t InternalAdjustPointers = 0;
 
-void UpdateCostume(ACTOR_DATA * actorData)
-{
-	auto fileItem = (FILE_ITEM *)(appBaseAddr + 0xC99D30);
-
-	if (Config.Game.Multiplayer.enable && (actorData->id != 0))
-	{
-		actorData->costume = Config.Game.Multiplayer.costume[(actorData->id - 1)];
-	}
-
-	switch (actorData->character)
-	{
-	case CHAR_DANTE:
-	{
-		if (actorData->costume >= countof(costumeMapDante))
-		{
-			actorData->costume = 0;
-		}
-		auto cacheFileId = costumeMapDante[actorData->costume];
-		fileItem[0].file = System_File_cacheFile[cacheFileId];
-		fileItem[0].stringItem = &stringItem[cacheFileId];
-		break;
-	}
-	case CHAR_VERGIL:
-	{
-		if (actorData->costume >= countof(costumeMapVergil))
-		{
-			actorData->costume = 0;
-		}
-		auto cacheFileId = costumeMapVergil[actorData->costume];
-		fileItem[3].file = System_File_cacheFile[cacheFileId];
-		fileItem[3].stringItem = &stringItem[cacheFileId];
-		break;
-	}
-	}
-}
-
-void UpdateSword(ACTOR_DATA * actorData)
-{
-	auto & unlockDevilTrigger = *(bool *)(appBaseAddr + 0xC8F250 + 0xD1);
-	auto fileItem = (FILE_ITEM *)(appBaseAddr + 0xC99D30);
-	uint8 sword = 0;
-
-	if (actorData->character != CHAR_DANTE)
-	{
-		return;
-	}
-
-	if (Config.Game.WeaponSwitcher.enable && (Config.Game.WeaponSwitcher.sword != 0))
-	{
-		sword = (Config.Game.WeaponSwitcher.sword - 1);
-	}
-	else
-	{
-		if (unlockDevilTrigger)
-		{
-			sword = 1;
-		}
-		switch (actorData->costume)
-		{
-		case COSTUME_DANTE_DMC1:
-		case COSTUME_DANTE_DMC1_NO_COAT:
-		case COSTUME_DANTE_SPARDA:
-		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
-			sword = 2;
-			break;
-		}
-	}
-
-	sword = 2;
-
-	auto cacheFileId = swordMap[sword];
-	fileItem[140].file = System_File_cacheFile[cacheFileId];
-}
+//void UpdateCostume(ACTOR_DATA * actorData)
+//{
+//	auto fileItem = (FILE_ITEM *)(appBaseAddr + 0xC99D30);
+//
+//	if (Config.Game.Multiplayer.enable && (actorData->id != 0))
+//	{
+//		actorData->costume = Config.Game.Multiplayer.costume[(actorData->id - 1)];
+//	}
+//
+//	switch (actorData->character)
+//	{
+//	case CHAR_DANTE:
+//	{
+//		if (actorData->costume >= countof(costumeMapDante))
+//		{
+//			actorData->costume = 0;
+//		}
+//		auto cacheFileId = costumeMapDante[actorData->costume];
+//		fileItem[0].file = System_File_cacheFile[cacheFileId];
+//		fileItem[0].stringItem = &stringItem[cacheFileId];
+//		break;
+//	}
+//	case CHAR_VERGIL:
+//	{
+//		if (actorData->costume >= countof(costumeMapVergil))
+//		{
+//			actorData->costume = 0;
+//		}
+//		auto cacheFileId = costumeMapVergil[actorData->costume];
+//		fileItem[3].file = System_File_cacheFile[cacheFileId];
+//		fileItem[3].stringItem = &stringItem[cacheFileId];
+//		break;
+//	}
+//	}
+//}
+//
+//void UpdateSword(ACTOR_DATA * actorData)
+//{
+//	auto & unlockDevilTrigger = *(bool *)(appBaseAddr + 0xC8F250 + 0xD1);
+//	auto fileItem = (FILE_ITEM *)(appBaseAddr + 0xC99D30);
+//	uint8 sword = 0;
+//
+//	if (actorData->character != CHAR_DANTE)
+//	{
+//		return;
+//	}
+//
+//	if (Config.Game.WeaponSwitcher.enable && (Config.Game.WeaponSwitcher.sword != 0))
+//	{
+//		sword = (Config.Game.WeaponSwitcher.sword - 1);
+//	}
+//	else
+//	{
+//		if (unlockDevilTrigger)
+//		{
+//			sword = 1;
+//		}
+//		switch (actorData->costume)
+//		{
+//		case COSTUME_DANTE_DMC1:
+//		case COSTUME_DANTE_DMC1_NO_COAT:
+//		case COSTUME_DANTE_SPARDA:
+//		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
+//			sword = 2;
+//			break;
+//		}
+//	}
+//
+//	sword = 2;
+//
+//	auto cacheFileId = swordMap[sword];
+//	fileItem[140].file = System_File_cacheFile[cacheFileId];
+//}
 
 PrivateEnd;
 
@@ -446,32 +446,32 @@ void System_File_UpdateFileItemsLite()
 
 
 
-void System_File_UpdateFileItems(ACTOR_DATA * actorData)
-{
-	for (uint8 helperIndex = 0; helperIndex < countof(fileItemHelper); helperIndex++)
-	{
-		fileItemHelper[helperIndex].Update();
-	}
-	UpdateCostume(actorData);
-	UpdateSword(actorData);
-}
+//void System_File_UpdateFileItems(ACTOR_DATA * actorData)
+//{
+//	for (uint8 helperIndex = 0; helperIndex < countof(fileItemHelper); helperIndex++)
+//	{
+//		fileItemHelper[helperIndex].Update();
+//	}
+//	UpdateCostume(actorData);
+//	UpdateSword(actorData);
+//}
 
-void System_File_UpdateMotion(ACTOR_DATA * actorData)
-{
-	//memset(&actorData->motionFile, 0, (MAX_MOT * 8));
-	//auto character = actorData->character;
-	//if (character >= MAX_CHAR_LOGIC)
-	//{
-	//	character = 0;
-	//}
-	//auto & count = motionHelperCount[character];
-	//for (uint8 index = 0; index < count; index++)
-	//{
-	//	auto & motionId    = motionHelper[character][index].motionId;
-	//	auto & cacheFileId = motionHelper[character][index].cacheFileId;
-	//	actorData->motionFile[motionId] = System_File_cacheFile[cacheFileId];
-	//}
-}
+//void System_File_UpdateMotion(ACTOR_DATA * actorData)
+//{
+//	//memset(&actorData->motionFile, 0, (MAX_MOT * 8));
+//	//auto character = actorData->character;
+//	//if (character >= MAX_CHAR_LOGIC)
+//	//{
+//	//	character = 0;
+//	//}
+//	//auto & count = motionHelperCount[character];
+//	//for (uint8 index = 0; index < count; index++)
+//	//{
+//	//	auto & motionId    = motionHelper[character][index].motionId;
+//	//	auto & cacheFileId = motionHelper[character][index].cacheFileId;
+//	//	actorData->motionFile[motionId] = System_File_cacheFile[cacheFileId];
+//	//}
+//}
 
 void System_File_Init()
 {

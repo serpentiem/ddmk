@@ -1,112 +1,115 @@
-const CHAR_DANTE  = 0;
-const CHAR_VERGIL = 3;
+const CHAR_DANTE  = 1;
+const CHAR_BOB    = 2;
+const CHAR_LADY   = 4;
+const CHAR_VERGIL = 8;
 
-const ACTOR_DATA_SIZE = 0xB8C0;
+const ACTOR_DATA_SIZE_DANTE  = 0xB8C0
+const ACTOR_DATA_SIZE_BOB    = 0xB680
+const ACTOR_DATA_SIZE_LADY   = 0x8280
+const ACTOR_DATA_SIZE_VERGIL = 0xB8C0
 
 var items =
 [
-	[ "init"                     , "bool"                      , 8                   ],
-	[ "character"                , "uint32"                    , 0x78                ],
-	[ "position"                 , "vec4"                      , 0x80                ],
-	[ "direction"                , "uint16"                    , 0xC0                ],
-	[ "id"                       , "uint8"                     , 0x118               ],
-	[ "isClone"                  , "bool"                      , 0x11C               ], // @Research: Pretty much just a bool, but has size of uint32.
-	[ "visible"                  , "uint32"                    , 0x120               ],
-	[ "modelData[3]"             , "MODEL_DATA"                , 0x200               ],
-	[ "motionArchive[32]"        , "byte8 *"                   , 0x38A0              ],
-	[ "motionData[2]"            , "MOTION_DATA"               , 0x39B0              ],
-	[ "motionDataMirror[3]"      , "MOTION_DATA"               , 0x39B4              ],
-	[ "shadow"                   , "uint32"                    , 0x3A18              ],
-	[ "color"                    , "byte32"                    , 0x3A28              ],
-	[ "actionData[6]"            , "byte8 *"                   , 0x3DD0              ],
-	[ "motionState1[6]"          , "byte32"                    , 0x3E00              ],
-	[ "chargedShotAir"           , "uint16"                    , 0x3E1A, CHAR_DANTE  ],
-	[ "chargedShot"              , "uint16"                    , 0x3E22, CHAR_DANTE  ],
-	[ "motionTimer"              , "float32"                   , 0x3E34              ],
-	[ "idleTimer"                , "float32"                   , 0x3E38              ],
-	[ "motionState2[3]"          , "byte32"                    , 0x3E60              ],
-	[ "activeModelIndex"         , "uint32"                    , 0x3E6C              ],
-	[ "queuedModelIndex"         , "uint32"                    , 0x3E70              ],
-	[ "modelMap[3]"              , "uint32"                    , 0x3E74              ],
-	[ "modelState"               , "uint8"                     , 0x3E80              ],
-	[ "lockOn"                   , "bool"                      , 0x3E84              ],
-	[ "activeModelIndexMirror"   , "uint32"                    , 0x3E88              ],
-	[ "activeDevilModel"         , "uint32"                    , 0x3E8C              ],
-	[ "airRaid"                  , "uint32"                    , 0x3E90              ], // @Research: Behaves like bool, but has size of uint32.
-	[ "devilState"               , "uint32"                    , 0x3E94              ],
-	[ "devil"                    , "bool"                      , 0x3E9B              ],
-	[ "costume"                  , "uint8"                     , 0x3E9E              ],
-	[ "sparda"                   , "bool"                      , 0x3E9F              ], // @Research: Nero Angelo for Vergil.
-	[ "useHolyWater"             , "bool"                      , 0x3EA4              ],
-	[ "magicPoints"              , "float32"                   , 0x3EB8              ],
-	[ "maxMagicPoints"           , "float32"                   , 0x3EBC              ],
-	[ "cameraDirection"          , "uint16"                    , 0x3ED8              ],
-	[ "moveOnly"                 , "bool"                      , 0x3F19              ],
-	[ "move"                     , "uint8"                     , 0x3FA4              ],
-	[ "lastMove"                 , "uint8"                     , 0x3FA5              ],
-	[ "chainCount"               , "uint8"                     , 0x3FAC              ],
-	[ "expertise[16]"            , "byte32"                    , 0x3FEC              ],
-	[ "maxHitPoints"             , "float32"                   , 0x40EC              ],
-	[ "hitPoints"                , "float32"                   , 0x411C              ],
-	[ "targetBaseAddr"           , "byte8 *"                   , 0x6328              ],
-	[ "style"                    , "uint32"                    , 0x6338              ],
-	[ "styleLevel"               , "uint32"                    , 0x6358              ],
-	[ "dashCount"                , "uint8"                     , 0x635C, CHAR_DANTE  ],
-	[ "skyStarCount"             , "uint8"                     , 0x635D, CHAR_DANTE  ],
-	[ "airTrickCount"            , "uint8"                     , 0x635E              ],
-	[ "trickUpCount"             , "uint8"                     , 0x635F, CHAR_VERGIL ],
-	[ "trickDownCount"           , "uint8"                     , 0x6360, CHAR_VERGIL ],
-	[ "quicksilver"              , "bool"                      , 0x6361, CHAR_DANTE  ],
-	[ "doppelganger"             , "bool"                      , 0x6362, CHAR_DANTE  ],
-	[ "styleExperience"          , "float32"                   , 0x6364              ],
-	[ "cloneIsActive"            , "bool"                      , 0x6454, CHAR_DANTE  ],
-	[ "cloneBaseAddr"            , "byte8 *"                   , 0x6478, CHAR_DANTE  ],
-	[ "cloneIsControlledByPlayer", "bool"                      , 0x6480, CHAR_DANTE  ],
-	[ "weaponIndex[2]"           , "uint32"                    , 0x6484, CHAR_VERGIL ],
-	[ "activeWeapon"             , "uint8"                     , 0x648D, CHAR_DANTE  ],
-	[ "weaponIndex[2]"           , "uint32"                    , 0x6490, CHAR_DANTE  ],
-	[ "weaponMap[5]"             , "uint8"                     , 0x6498              ],
-	[ "weaponData[5]"            , "byte8 *"                   , 0x64A0              ],
-	[ "weaponFlags[5]"           , "byte32"                    , 0x64C8              ],
-	[ "weaponTimer[5]"           , "float32"                   , 0x64F4              ],
-	[ "weaponSwitchTimeout[2]"   , "float32"                   , 0x6508              ],
-	[ "styleRank"                , "uint8"                     , 0x6510              ],
-	[ "styleMeter"               , "float32"                   , 0x6514              ],
-	[ "inputData[58]"            , "INPUT_DATA"                , 0x6674              ],
-	[ "collisionIndex"           , "uint32"                    , 0x7254              ],
-	[ "interactionData[8]"       , "vec4"                      , 0x7460              ],
-	[ "buttons[4]"               , "byte16"                    , 0x74E0              ],
-	[ "rightStick[2]"            , "byte16"                    , 0x74F8              ],
-	[ "leftStick[2]"             , "byte16"                    , 0x7508              ],
-	[ "actorCameraDirection"     , "uint16"                    , 0x750C              ],
-	[ "leftStickDirection[2]"    , "uint32"                    , 0x751C              ],
-	[ "devilModelMetadata"       , "DEVIL_MODEL_METADATA_DANTE", 0xB600, CHAR_DANTE  ],
-	[ "modelMetadata[6]"         , "MODEL_METADATA"            , 0xB630, CHAR_DANTE  ],
-	[ "modelMetadata[6]"         , "MODEL_METADATA"            , 0xB640, CHAR_VERGIL ],
-	[ "artemisChargeValue[2]"    , "float32"                   , 0xB868, CHAR_DANTE  ],
-	[ "artemisChargeFlags[2]"    , "byte32"                    , 0xB87C, CHAR_DANTE  ],
+	[ "init"                     , "bool"                      , 8                                ],
+	[ "character"                , "uint32"                    , 0x78                             ],
+	[ "position"                 , "vec4"                      , 0x80                             ],
+	[ "direction"                , "uint16"                    , 0xC0                             ],
+	[ "id"                       , "uint8"                     , 0x118                            ],
+	[ "isClone"                  , "bool"                      , 0x11C                            ], // @Research: Pretty much just a bool, but has size of uint32.
+	[ "visible"                  , "uint32"                    , 0x120                            ],
+	[ "modelData[3]"             , "MODEL_DATA"                , 0x200                            ],
+	[ "motionArchive[32]"        , "byte8 *"                   , 0x38A0                           ],
+	[ "motionData[2]"            , "MOTION_DATA"               , 0x39B0                           ],
+	[ "motionDataMirror[3]"      , "MOTION_DATA"               , 0x39B4                           ],
+	[ "shadow"                   , "uint32"                    , 0x3A18                           ],
+	[ "color"                    , "byte32"                    , 0x3A28                           ],
+	[ "actionData[6]"            , "byte8 *"                   , 0x3DD0                           ],
+	[ "motionState1[6]"          , "byte32"                    , 0x3E00                           ],
+	[ "chargedShotAir"           , "uint16"                    , 0x3E1A, CHAR_DANTE               ],
+	[ "chargedShot"              , "uint16"                    , 0x3E22, CHAR_DANTE               ],
+	[ "motionTimer"              , "float32"                   , 0x3E34                           ],
+	[ "idleTimer"                , "float32"                   , 0x3E38                           ],
+	[ "motionState2[3]"          , "byte32"                    , 0x3E60                           ],
+	[ "activeModelIndex"         , "uint32"                    , 0x3E6C                           ],
+	[ "queuedModelIndex"         , "uint32"                    , 0x3E70                           ],
+	[ "modelMap[3]"              , "uint32"                    , 0x3E74                           ],
+	[ "modelState"               , "uint8"                     , 0x3E80                           ],
+	[ "lockOn"                   , "bool"                      , 0x3E84                           ],
+	[ "activeModelIndexMirror"   , "uint32"                    , 0x3E88                           ],
+	[ "activeDevilModel"         , "uint32"                    , 0x3E8C                           ],
+	[ "airRaid"                  , "uint32"                    , 0x3E90                           ], // @Research: Behaves like bool, but has size of uint32.
+	[ "devilState"               , "uint32"                    , 0x3E94                           ],
+	[ "devil"                    , "bool"                      , 0x3E9B                           ],
+	[ "costume"                  , "uint8"                     , 0x3E9E                           ],
+	[ "sparda"                   , "bool"                      , 0x3E9F                           ], // @Research: Nero Angelo for Vergil.
+	[ "useHolyWater"             , "bool"                      , 0x3EA4                           ],
+	[ "magicPoints"              , "float32"                   , 0x3EB8                           ],
+	[ "maxMagicPoints"           , "float32"                   , 0x3EBC                           ],
+	[ "cameraDirection"          , "uint16"                    , 0x3ED8                           ],
+	[ "moveOnly"                 , "bool"                      , 0x3F19                           ],
+	[ "move"                     , "uint8"                     , 0x3FA4                           ],
+	[ "lastMove"                 , "uint8"                     , 0x3FA5                           ],
+	[ "chainCount"               , "uint8"                     , 0x3FAC                           ],
+	[ "expertise[16]"            , "byte32"                    , 0x3FEC                           ],
+	[ "maxHitPoints"             , "float32"                   , 0x40EC                           ],
+	[ "hitPoints"                , "float32"                   , 0x411C                           ],
+	[ "targetBaseAddr"           , "byte8 *"                   , 0x6328                           ],
+	[ "style"                    , "uint32"                    , 0x6338                           ],
+	[ "styleLevel"               , "uint32"                    , 0x6358                           ],
+	[ "dashCount"                , "uint8"                     , 0x635C, CHAR_DANTE               ],
+	[ "skyStarCount"             , "uint8"                     , 0x635D, CHAR_DANTE               ],
+	[ "airTrickCount"            , "uint8"                     , 0x635E, CHAR_DANTE | CHAR_VERGIL ],
+	[ "trickUpCount"             , "uint8"                     , 0x635F, CHAR_VERGIL              ],
+	[ "trickDownCount"           , "uint8"                     , 0x6360, CHAR_VERGIL              ],
+	[ "quicksilver"              , "bool"                      , 0x6361, CHAR_DANTE               ],
+	[ "doppelganger"             , "bool"                      , 0x6362, CHAR_DANTE               ],
+	[ "styleExperience"          , "float32"                   , 0x6364                           ],
+	[ "cloneIsActive"            , "bool"                      , 0x6454, CHAR_DANTE               ],
+	[ "cloneBaseAddr"            , "byte8 *"                   , 0x6478, CHAR_DANTE               ],
+	[ "cloneIsControlledByPlayer", "bool"                      , 0x6480, CHAR_DANTE               ],
+	[ "weaponIndex[2]"           , "uint32"                    , 0x6484, CHAR_VERGIL              ],
+	[ "activeWeapon"             , "uint8"                     , 0x648D, CHAR_DANTE               ],
+	[ "weaponIndex[2]"           , "uint32"                    , 0x6490, CHAR_DANTE               ],
+	[ "weaponMap[5]"             , "uint8"                     , 0x6498                           ],
+	[ "weaponData[5]"            , "byte8 *"                   , 0x64A0                           ],
+	[ "weaponFlags[5]"           , "byte32"                    , 0x64C8                           ],
+	[ "weaponTimer[5]"           , "float32"                   , 0x64F4                           ],
+	[ "weaponSwitchTimeout[2]"   , "float32"                   , 0x6508                           ],
+	[ "styleRank"                , "uint8"                     , 0x6510                           ],
+	[ "styleMeter"               , "float32"                   , 0x6514                           ],
+	[ "inputData[58]"            , "INPUT_DATA"                , 0x6674                           ],
+	[ "collisionIndex"           , "uint32"                    , 0x7254                           ],
+	[ "interactionData[8]"       , "vec4"                      , 0x7460                           ],
+	[ "buttons[4]"               , "byte16"                    , 0x74E0                           ],
+	[ "rightStick[2]"            , "byte16"                    , 0x74F8                           ],
+	[ "leftStick[2]"             , "byte16"                    , 0x7508                           ],
+	[ "actorCameraDirection"     , "uint16"                    , 0x750C                           ],
+	[ "leftStickDirection[2]"    , "uint32"                    , 0x751C                           ],
+	[ "devilModelMetadata"       , "DEVIL_MODEL_METADATA_DANTE", 0xB600, CHAR_DANTE               ],
+	[ "modelMetadata[6]"         , "MODEL_METADATA"            , 0xB630, CHAR_DANTE               ],
+	[ "modelMetadata[6]"         , "MODEL_METADATA"            , 0xB640, CHAR_VERGIL              ],
+	[ "artemisChargeValue[2]"    , "float32"                   , 0xB868, CHAR_DANTE               ],
+	[ "artemisChargeFlags[2]"    , "byte32"                    , 0xB87C, CHAR_DANTE               ],
 ];
 
 var extra =
 [
-	[ "characterModel"        , "uint8"   ],
-	[ "parentBaseAddr"        , "byte8 *" ],
-	[ "childBaseAddr[4]"      , "byte8 *" ],
-	[ "gamepad"               , "uint8"   ],
-	[ "buttonMask"            , "byte16"  ],
-	[ "copyPosition"          , "bool"    ],
+	[ "newCharacterModel"     , "uint8"   ],
+	[ "newParentBaseAddr"     , "byte8 *" ],
+	[ "newChildBaseAddr[4]"   , "byte8 *" ],
+	[ "newGamepad"            , "uint8"   ],
+	[ "newButtonMask"         , "byte16"  ],
+	[ "newCopyPosition"       , "bool"    ],
 	[ "newStyle"              , "uint8"   ],
 	[ "newStyleMap[5][2]"     , "uint8"   ],
 	[ "newMeleeWeaponMap[5]"  , "uint8"   ],
 	[ "newMeleeWeaponData[5]" , "byte8 *" ],
 	[ "newMeleeWeaponCount"   , "uint8"   ],
 	[ "newMeleeWeaponIndex"   , "uint8"   ],
-	[ "newMeleeWeaponUpdate"  , "bool"    ],
 	[ "newRangedWeaponMap[5]" , "uint8"   ],
 	[ "newRangedWeaponData[5]", "byte8 *" ],
 	[ "newRangedWeaponCount"  , "uint8"   ],
 	[ "newRangedWeaponIndex"  , "uint8"   ],
-	[ "newRangedWeaponUpdate" , "bool"    ],
 ];
 
 var c = "";
@@ -179,108 +182,32 @@ var Align = function(boundary)
 
 // Cpp
 
-// c += "struct ACTOR_DATA_BASE;\r\n";
-// c += "struct ACTOR_DATA_CHAR_VOID;\r\n";
-// c += "struct ACTOR_DATA_CHAR_DANTE;\r\n";
-// c += "struct ACTOR_DATA_CHAR_VERGIL;\r\n";
-// c += "struct ACTOR_DATA_EXTRA;\r\n";
-
-//c += "struct ACTOR_DATA;\r\n";
-c += "struct ACTOR_DATA_DANTE;\r\n";
-c += "struct ACTOR_DATA_VERGIL;\r\n";
+c += "#include \"../Core/Core.h\"\r\n";
 c += "\r\n";
-
-// c += "#define _(size) struct { byte8 padding[size]; }\n";
-// c += "\n";
-// c += "#pragma pack(push, 1)\n";
-// c += "\n";
-// c += "struct ACTOR_DATA_BASE\r\n";
-// c += "{\r\n";
-
-// pos = 0;
-
-// for (var index = 0; index < base.length; index++)
-// {
-// 	var name = base[index][0];
-// 	var type = base[index][1];
-// 	var off  = base[index][2];
-	
-// 	{
-// 		var diff = (off - pos);
-// 		if (diff)
-// 		{
-// 			c += "\t_(" + diff.toString() + ");\r\n";
-// 			pos += diff;
-// 		}
-// 	}
-	
-// 	c += "\t" + type + " " + name + "; // 0x" + off.toString(16).toUpperCase() + "\r\n";
-	
-// 	//c_assert += "static_assert(offsetof(ACTOR_DATA_BASE, " + name + ") == 0x" + off + ");\r\n";
-// 	c_assert += "static_assert(offsetof(ACTOR_DATA_BASE, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
-	
-	
-	
-// 	var size = GetTypeSize(type);
-	
-// 	{
-// 		var match = name.match(/\[\d+?\]/g);
-// 		if (match)
-// 		{
-// 			for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
-// 			{
-// 				var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
-// 				size *= count;
-// 			}
-// 		}
-// 	}
-	
-// 	pos += size;
-// }
-
-// {
-// 	var diff = (512 - pos);
-// 	if (diff)
-// 	{
-// 		c += "\t_(" + diff.toString() + ");\r\n";
-// 	}
-// }
-
-// c += "};\r\n";
-
-// c += "\r\n";
-// c_assert += "\r\n";
-
-// c += "struct ACTOR_DATA_CHAR_VOID\r\n";
-// c += "{\r\n";
-
-// pos = 512;
-
-// {
-// 	var diff = (ACTOR_DATA_SIZE - pos);
-// 	if (diff)
-// 	{
-// 		c += "\t_(" + diff.toString() + ");\r\n";
-// 	}
-// }
-
-// c += "};\r\n";
-
+c += "#include \"Vars.h\"\r\n";
+c += "\r\n";
+c += "#define _Merge(a, b) a##b\r\n";
+c += "#define Merge(a, b) _Merge(a, b)\r\n";
+c += "\r\n";
+c += "#define _(size) struct { byte8 Merge(padding, __LINE__)[size]; }\r\n";
+c += "\r\n";
+c += "#pragma pack(push, 1)\r\n";
+c += "\r\n";
+// c += "struct ACTOR_DATA_DANTE;\r\n";
+// c += "struct ACTOR_DATA_BOB;\r\n";
+// c += "struct ACTOR_DATA_LADY;\r\n";
+// c += "struct ACTOR_DATA_VERGIL;\r\n";
 // c += "\r\n";
 
-
-
-
-
-
-
-
+c_assert += "#include \"ActorData.h\"\r\n";
+c_assert += "\r\n";
 
 function AddActorData
 (
 	structName,
 	data,
-	id
+	id,
+	max
 )
 {
 	for (var index = 0; index < data.length; index++)
@@ -289,8 +216,13 @@ function AddActorData
 		var type      = data[index][1];
 		var off       = data[index][2];
 		var character = data[index][3];
-		
-		if ((character != undefined) && (character != id))
+
+		if ((max != undefined) && (pos >= max))
+		{
+			return;
+		}
+
+		if ((character != undefined) && !(character & id))
 		{
 			continue;
 		}
@@ -348,7 +280,8 @@ function AddActorData
 function CreateActorData
 (
 	structName,
-	id
+	id,
+	max
 )
 {
 	c += "struct " + structName + "\r\n";
@@ -356,303 +289,62 @@ function CreateActorData
 	
 	pos = 0;
 	
-	AddActorData(structName, items, id);
+	AddActorData(structName, items, id, max);
 	
 	{
-		var diff = (ACTOR_DATA_SIZE - pos);
+		var diff = (max - pos);
 		if (diff)
 		{
 			c += "\t_(" + diff.toString() + ");\r\n";
 		}
 	}
 	
-	pos = ACTOR_DATA_SIZE;
+	pos = max;
 	
 	AddActorData(structName, extra, id);
-	
+
+	c += "\r\n";
+	c += "\toperator byte8 *()\r\n";
+	c += "\t{\r\n";
+	c += "\t\treturn reinterpret_cast<byte8 *>(this);\r\n";
+	c += "\t}\r\n";
+
 	c += "};\r\n";
 }
 
-CreateActorData("ACTOR_DATA_DANTE", CHAR_DANTE);
-
-c = c.substring(0, (c.length - 4));
-
-
-
-//c += "\r\n";
-//c += "struct ACTOR_DATA : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VOID, ACTOR_DATA_EXTRA\r\n";
-//c += "struct ACTOR_DATA\r\n";
-//c += "{\r\n";
-
-
-c += "\r\n";
-c += "\toperator ACTOR_DATA_VERGIL &()\r\n";
-c += "\t{\r\n";
-c += "\t\treturn *reinterpret_cast<ACTOR_DATA_VERGIL *>(this);\r\n";
-c += "\t}\r\n";
-
-c += "\r\n";
-c += "\toperator byte8 *()\r\n";
-c += "\t{\r\n";
-c += "\t\treturn reinterpret_cast<byte8 *>(this);\r\n";
-c += "\t}\r\n";
-
-
-
-
-c += "};\r\n";
-
-
-
+CreateActorData("ACTOR_DATA", 0, ACTOR_DATA_SIZE_DANTE);
 
 c_assert += "\r\n";
 c += "\r\n";
 
+CreateActorData("ACTOR_DATA_DANTE", CHAR_DANTE, ACTOR_DATA_SIZE_DANTE);
 
-
-
-
-
-
-
-
-
-
-CreateActorData("ACTOR_DATA_VERGIL", CHAR_VERGIL);
-
-
-c = c.substring(0, (c.length - 4));
-
-
-c += "\r\n";
-c += "\toperator ACTOR_DATA_DANTE &()\r\n";
-c += "\t{\r\n";
-c += "\t\treturn *reinterpret_cast<ACTOR_DATA_DANTE *>(this);\r\n";
-c += "\t}\r\n";
-
-c += "\r\n";
-c += "\toperator byte8 *()\r\n";
-c += "\t{\r\n";
-c += "\t\treturn reinterpret_cast<byte8 *>(this);\r\n";
-c += "\t}\r\n";
-
-c += "};\r\n";
-
+c_assert += "\r\n";
 c += "\r\n";
 
-c += "typedef ACTOR_DATA_DANTE ACTOR_DATA;\r\n";
+CreateActorData("ACTOR_DATA_BOB", CHAR_BOB, ACTOR_DATA_SIZE_DANTE);
 
-//c += "\r\n";
+c_assert += "\r\n";
+c += "\r\n";
 
+CreateActorData("ACTOR_DATA_LADY", CHAR_LADY, ACTOR_DATA_SIZE_DANTE);
 
+c_assert += "\r\n";
+c += "\r\n";
 
+CreateActorData("ACTOR_DATA_VERGIL", CHAR_VERGIL, ACTOR_DATA_SIZE_DANTE);
 
+//c_assert += "\r\n";
+c += "\r\n";
 
+c += "#pragma pack(pop)\r\n";
+c += "\r\n";
+c += "#undef _\r\n";
+c += "#undef Merge\r\n";
+c += "#undef _Merge\r\n";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// c += "};\r\n";
-
-// c += "\r\n";
-// c_assert += "\r\n";
-
-// c += "struct ACTOR_DATA_CHAR_VERGIL\r\n";
-// c += "{\r\n";
-
-// pos = 0;
-
-// for (var index = 0; index < char.length; index++)
-// {
-// 	var name      = char[index][0];
-// 	var type      = char[index][1];
-// 	var off       = char[index][2];
-// 	var character = char[index][3];
-	
-// 	if ((character != undefined) && (character != CHAR_VERGIL))
-// 	{
-// 		continue;
-// 	}
-	
-// 	{
-// 		var diff = (off - pos);
-// 		if (diff)
-// 		{
-// 			c += "\t_(" + diff.toString() + ");\r\n";
-// 			pos += diff;
-// 		}
-// 	}
-	
-// 	c += "\t" + type + " " + name + "; // 0x" + off.toString(16).toUpperCase() + "\r\n";
-	
-// 	//c_assert += "static_assert(offsetof(ACTOR_DATA_CHAR_VERGIL, " + name + ") == 0x" + off + ");\r\n";
-// 	c_assert += "static_assert(offsetof(ACTOR_DATA_VERGIL, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
-	
-// 	var size = GetTypeSize(type);
-	
-// 	{
-// 		var match = name.match(/\[\d+?\]/g);
-// 		if (match)
-// 		{
-// 			for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
-// 			{
-// 				var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
-// 				size *= count;
-// 			}
-// 		}
-// 	}
-	
-// 	pos += size;
-// }
-
-// {
-// 	var diff = (ACTOR_DATA_SIZE - pos);
-// 	if (diff)
-// 	{
-// 		c += "\t_(" + diff.toString() + ");\r\n";
-// 	}
-// }
-
-// c += "};\r\n";
-// c_assert += "\r\n";
-
-
-
-
-
-// c += "struct ACTOR_DATA_EXTRA\r\n";
-// c += "{\r\n";
-
-// pos = 0;
-
-// for (var index = 0; index < extra.length; index++)
-// {
-// 	var name = extra[index][0];
-// 	var type = extra[index][1];
-
-// 	var size = GetTypeSize(type);
-
-// 	{
-// 		var match = name.match(/\[\d+?\]/g);
-// 		if (match)
-// 		{
-// 			for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
-// 			{
-// 				var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
-// 				size *= count;
-// 			}
-// 		}
-// 	}
-
-// 	{
-// 		var lastPos = pos;
-
-// 		if (name.match(/\[/))
-// 		{
-// 			Align(4);
-// 		}
-// 		if (type.match(/\*/))
-// 		{
-// 			Align(8);
-// 		}
-
-// 		var diff = (pos - lastPos);
-// 		if (diff)
-// 		{
-// 			c += "\t_(" + diff.toString() + ");\r\n";
-// 		}
-// 	}
-
-// 	c += "\t" + type + " " + name + "; // 0x" + pos.toString(16).toUpperCase() + "\r\n";
-
-// 	//c_assert += "static_assert(offsetof(ACTOR_DATA_EXTRA, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
-// 	c_assert += "static_assert(offsetof(ACTOR_DATA_EXTRA, " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");\r\n";
-
-// 	pos += size;
-// }
-
-// c += "};\r\n";
-
-// c += "\r\n";
-// c_assert += "\r\n";
-
-
-
-
-
-
-
-
-
-
-
-
-//c += "#pragma pack(pop)\r\n";
-//c += "\r\n";
-//c += "#undef _\r\n";
-
-// c += "\r\n";
-// //c += "struct ACTOR_DATA : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VOID, ACTOR_DATA_EXTRA\r\n";
-// c += "struct ACTOR_DATA\r\n";
-// c += "{\r\n";
-// c += "\toperator ACTOR_DATA_DANTE &()\r\n";
-// c += "\t{\r\n";
-// c += "\t\treturn *reinterpret_cast<ACTOR_DATA_DANTE *>(this);\r\n";
-// c += "\t}\r\n";
-// c += "\r\n";
-// c += "\toperator ACTOR_DATA_VERGIL &()\r\n";
-// c += "\t{\r\n";
-// c += "\t\treturn *reinterpret_cast<ACTOR_DATA_VERGIL *>(this);\r\n";
-// c += "\t}\r\n";
-// c += "};\r\n";
-
-// c += "\r\n";
-
-// //c += "struct ACTOR_DATA_DANTE : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_DANTE, ACTOR_DATA_EXTRA\r\n";
-// c += "struct ACTOR_DATA_DANTE\r\n";
-// c += "{\r\n";
-// c += "\toperator ACTOR_DATA &()\r\n";
-// c += "\t{\r\n";
-// c += "\t\treturn *reinterpret_cast<ACTOR_DATA *>(this);\r\n";
-// c += "\t}\r\n";
-// c += "};\r\n";
-
-// c += "\r\n";
-
-// //c += "struct ACTOR_DATA_VERGIL : ACTOR_DATA_BASE, ACTOR_DATA_CHAR_VERGIL, ACTOR_DATA_EXTRA\r\n";
-// c += "struct ACTOR_DATA_VERGIL\r\n";
-// c += "{\r\n";
-// c += "\toperator ACTOR_DATA &()\r\n";
-// c += "\t{\r\n";
-// c += "\t\treturn *reinterpret_cast<ACTOR_DATA *>(this);\r\n";
-// c += "\t}\r\n";
-// c += "};\r\n";
-
-//c += "\r\n";
-
-//c_assert += "static_assert((sizeof(ACTOR_DATA_BASE) + sizeof(ACTOR_DATA_CHAR_VOID)) == 0xB8C0);\r\n";
-//c_assert += "static_assert((sizeof(ACTOR_DATA_BASE) + sizeof(ACTOR_DATA_CHAR_DANTE)) == 0xB8C0);\r\n";
-//c_assert += "static_assert((sizeof(ACTOR_DATA_BASE) + sizeof(ACTOR_DATA_CHAR_VERGIL)) == 0xB8C0);\r\n";
-
-fs.writeFileSync("actorData.cpp", c + "\r\n" + c_assert);
-
-
-
-
-
-
-
+fs.writeFileSync("../Mary/ActorData.h", c);
+fs.writeFileSync("../Mary/ActorData.cpp", c_assert);
 
 
 
@@ -752,7 +444,8 @@ function AddActorDataCE
 (
 	data,
 	id,
-	actor
+	actor,
+	max
 )
 {
 	for (var index = 0; index < data.length; index++)
@@ -761,7 +454,12 @@ function AddActorDataCE
 		var type      = data[index][1];
 		var off       = data[index][2];
 		var character = data[index][3];
-		
+
+		if ((max != undefined) && (pos >= max))
+		{
+			return;
+		}
+
 		if ((character != undefined) && (character != id))
 		{
 			continue;
@@ -848,7 +546,8 @@ function AddActorDataCE
 function CreateActorDataCE
 (
 	groupName,
-	id
+	id,
+	max
 )
 {
 	c += "<CheatEntry>\r\n";
@@ -867,9 +566,9 @@ function CreateActorDataCE
 		
 		pos = 0;
 		
-		AddActorDataCE(items, id, actor);
+		AddActorDataCE(items, id, actor, max);
 		
-		pos = ACTOR_DATA_SIZE;
+		pos = max;
 		
 		AddActorDataCE(extra, id, actor);
 		
@@ -887,8 +586,10 @@ c += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
 c += "<CheatTable>\r\n";
 c += "<CheatEntries>\r\n";
 
-CreateActorDataCE("__DANTE__", CHAR_DANTE);
-CreateActorDataCE("__VERGIL__", CHAR_VERGIL);
+CreateActorDataCE("__DANTE__" , CHAR_DANTE , ACTOR_DATA_SIZE_DANTE );
+CreateActorDataCE("__BOB__"   , CHAR_BOB   , ACTOR_DATA_SIZE_BOB   );
+CreateActorDataCE("__LADY__"  , CHAR_LADY  , ACTOR_DATA_SIZE_LADY  );
+CreateActorDataCE("__VERGIL__", CHAR_VERGIL, ACTOR_DATA_SIZE_VERGIL);
 
 c += "</CheatEntries>\r\n";
 c += "</CheatTable>\r\n";

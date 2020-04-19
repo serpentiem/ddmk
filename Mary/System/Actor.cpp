@@ -216,7 +216,7 @@ void * IsRangedWeaponReady[MAX_CHAR] =
 
 typedef bool(__fastcall * IsWeaponReady_t)
 (
-	ACTOR_DATA & actorData,
+	byte8 * actorData,
 	uint8 weapon
 );
 
@@ -393,72 +393,81 @@ void ToggleUpdateWeapon(bool enable)
 
 
 
-void UpdateActorDante(byte8 * baseAddr)
-{
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//void UpdateActorDante(byte8 * baseAddr)
+//{
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//
+//
+//
+//
+//	actorData.devilModelMetadata.rebellion.submodelMetadata[0].submodelIndex = 255;
+//	actorData.devilModelMetadata.rebellion.submodelMetadata[1].submodelIndex = 255;
+//	actorData.devilModelMetadata.cerberus.submodelMetadata[0].submodelIndex = 255;
+//	actorData.devilModelMetadata.nevan.submodelMetadata[0].submodelIndex = 255;
+//	actorData.devilModelMetadata.nevan.submodelMetadata[1].submodelIndex = 255;
+//	actorData.devilModelMetadata.beowulf.submodelMetadata[0].submodelIndex = 255;
+//	actorData.devilModelMetadata.sparda.submodelMetadata[0].submodelIndex = 255;
+//
+//
+//
+//
+//
+//	System_File_UpdateFileItems(&actorData);
+//
+//	Cosmetics_Model_UpdateModelDante[COSTUME_DANTE_DEFAULT](baseAddr);
+//	
+//
+//
+//
+//	Cosmetics_Model_UpdateDevilModelDante[DEVIL_DANTE_REBELLION](baseAddr, 1);
+//	Cosmetics_Model_UpdateDevilModelDante[DEVIL_DANTE_CERBERUS](baseAddr, 2);
+//
+//
+//
+//
+//
+//	//for (uint8 index = 0; index < countof(motionHelperDante); index++)
+//	for_all(index, countof(motionHelperDante))
+//	{
+//		auto & motionId    = motionHelperDante[index].motionId;
+//		auto & cacheFileId = motionHelperDante[index].cacheFileId;
+//
+//		actorData.motionArchive[motionId] = System_File_cacheFile[cacheFileId];
+//	}
+//
+//
+//
+//
+//
+//	func_1EF040(baseAddr, 0);
+//	func_1EEF80(baseAddr);
+//	func_1EF040(baseAddr, 3);
+//
+//
+//
+//
+//
+//	actorData.actionData[0] = *(byte8 **)(appBaseAddr + 0x590598);
+//	actorData.actionData[1] = *(byte8 **)(appBaseAddr + 0x58A2A0);
+//	actorData.actionData[2] = (appBaseAddr + 0x5905B0);
+//	actorData.actionData[3] = System_File_cacheFile[pl000][9];
+//	actorData.actionData[4] = System_File_cacheFile[pl000][10];
+//	actorData.actionData[5] = System_File_cacheFile[pl000][11];
+//
+//	func_2EE3D0((baseAddr + 0x3C50));
+//	func_1FAF40(baseAddr);
+//}
 
 
 
 
-	actorData.devilModelMetadata.rebellion.submodelMetadata[0].submodelIndex = 255;
-	actorData.devilModelMetadata.rebellion.submodelMetadata[1].submodelIndex = 255;
-	actorData.devilModelMetadata.cerberus.submodelMetadata[0].submodelIndex = 255;
-	actorData.devilModelMetadata.nevan.submodelMetadata[0].submodelIndex = 255;
-	actorData.devilModelMetadata.nevan.submodelMetadata[1].submodelIndex = 255;
-	actorData.devilModelMetadata.beowulf.submodelMetadata[0].submodelIndex = 255;
-	actorData.devilModelMetadata.sparda.submodelMetadata[0].submodelIndex = 255;
 
 
 
 
 
-	System_File_UpdateFileItems(&actorData);
 
-	Cosmetics_Model_UpdateModelDante[COSTUME_DANTE_DEFAULT](baseAddr);
-	
-
-
-
-	Cosmetics_Model_UpdateDevilModelDante[DEVIL_DANTE_REBELLION](baseAddr, 1);
-	Cosmetics_Model_UpdateDevilModelDante[DEVIL_DANTE_CERBERUS](baseAddr, 2);
-
-
-
-
-
-	//for (uint8 index = 0; index < countof(motionHelperDante); index++)
-	for_all(index, countof(motionHelperDante))
-	{
-		auto & motionId    = motionHelperDante[index].motionId;
-		auto & cacheFileId = motionHelperDante[index].cacheFileId;
-
-		actorData.motionArchive[motionId] = System_File_cacheFile[cacheFileId];
-	}
-
-
-
-
-
-	func_1EF040(baseAddr, 0);
-	func_1EEF80(baseAddr);
-	func_1EF040(baseAddr, 3);
-
-
-
-
-
-	actorData.actionData[0] = *(byte8 **)(appBaseAddr + 0x590598);
-	actorData.actionData[1] = *(byte8 **)(appBaseAddr + 0x58A2A0);
-	actorData.actionData[2] = (appBaseAddr + 0x5905B0);
-	actorData.actionData[3] = System_File_cacheFile[pl000][9];
-	actorData.actionData[4] = System_File_cacheFile[pl000][10];
-	actorData.actionData[5] = System_File_cacheFile[pl000][11];
-
-	func_2EE3D0((baseAddr + 0x3C50));
-	func_1FAF40(baseAddr);
-}
-
-typedef byte8 *(__fastcall * RegisterWeapon_t)(ACTOR_DATA & actorData, uint32 id);
+typedef byte8 *(__fastcall * RegisterWeapon_t)(byte8 * actorData, uint32 id);
 
 RegisterWeapon_t RegisterWeapon[MAX_WEAPON] = {};
 
@@ -530,7 +539,7 @@ inline void RegisterWeapon_Init()
 
 void UpdateWeaponDante(ACTOR_DATA_DANTE & actorData)
 {
-	constexpr uint32 size = (offsetof(ACTOR_DATA, styleRank) - offsetof(ACTOR_DATA, weaponData));
+	constexpr uint32 size = (offsetof(ACTOR_DATA_DANTE, styleRank) - offsetof(ACTOR_DATA_DANTE, weaponData));
 	memset(actorData.weaponData, 0, size);
 
 	actorData.weaponData[0] = RegisterWeapon[WEAPON_DANTE_REBELLION  ](actorData, 0);
@@ -541,20 +550,23 @@ void UpdateWeaponDante(ACTOR_DATA_DANTE & actorData)
 	actorData.weaponFlags[4] = 4;
 }
 
-ACTOR_DATA_DANTE & CreateActorDante()
+ACTOR_DATA_DANTE * CreateActorDante()
 {
 	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
 	auto sessionData = (g_pool[1] + 0x16C);
 
-	auto & actorData = func_1DE820(CHAR_DANTE, 0, false);
+	auto baseAddr = func_1DE820(CHAR_DANTE, 0, false);
+	if (!baseAddr)
+	{
+		return 0;
+	}
+
+	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
 
 	System_File_UpdateFileItemsLite();
 
-
-
 	func_217B90(actorData, sessionData);
 	func_212BE0(actorData);
-
 
 	for_all(index, countof(motionHelperDante))
 	{
@@ -566,72 +578,40 @@ ACTOR_DATA_DANTE & CreateActorDante()
 
 	UpdateWeaponDante(actorData);
 
-
-
-
 	func_1DFC20(actorData);
 
-	return actorData;
+	return &actorData;
 }
-
-
-
-
 
 void UpdateWeaponVergil(ACTOR_DATA_VERGIL & actorData)
 {
-	//auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-
-	//auto baseAddr = reinterpret_cast<by>
-
-
-	constexpr uint32 size = (offsetof(ACTOR_DATA, styleRank) - offsetof(ACTOR_DATA, weaponData));
+	constexpr uint32 size = (offsetof(ACTOR_DATA_VERGIL, styleRank) - offsetof(ACTOR_DATA_VERGIL, weaponData));
 	memset(actorData.weaponData, 0, size);
 
-	actorData.weaponData[0] = RegisterWeapon[WEAPON_VERGIL_YAMATO](actorData, 0);
-	actorData.weaponData[1] = RegisterWeapon[WEAPON_VERGIL_BEOWULF](actorData, 0);
+	actorData.weaponData[0] = RegisterWeapon[WEAPON_VERGIL_YAMATO    ](actorData, 0);
+	actorData.weaponData[1] = RegisterWeapon[WEAPON_VERGIL_BEOWULF   ](actorData, 0);
 	actorData.weaponData[2] = RegisterWeapon[WEAPON_VERGIL_FORCE_EDGE](actorData, 0);
 
-
-
-
-	//actorData.weaponData[1] = RegisterWeapon[WEAPON_DANTE_CERBERUS   ](actorData, 0);
-	//actorData.weaponData[2] = RegisterWeapon[WEAPON_DANTE_EBONY_IVORY](actorData, 0);
-	//actorData.weaponData[3] = RegisterWeapon[WEAPON_DANTE_SHOTGUN    ](actorData, 0);
-
-	//static_assert(offsetof(ACTOR_DATA, weaponFlags[4]) == 0x64D8);
 	actorData.weaponFlags[4] = 4;
 }
 
-
-ACTOR_DATA_VERGIL & CreateActorVergil()
+ACTOR_DATA_VERGIL * CreateActorVergil()
 {
 	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
 	auto sessionData = (g_pool[1] + 0x16C);
-	//auto baseAddr = func_1DE820(CHAR_VERGIL, 0, false);
-	//auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
 
+	auto baseAddr = func_1DE820(CHAR_VERGIL, 0, false);
+	if (!baseAddr)
+	{
+		return 0;
+	}
 
-	auto & actorData = func_1DE820(CHAR_VERGIL, 0, false);
-
+	auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
 
 	System_File_UpdateFileItemsLite();
 
-
-
-	//actorData.collisionIndex = 1;
-
-
-	//System_File_UpdateFileItems(actorData);
-	
-
-
-
 	func_223CB0(actorData, sessionData);
 	func_220970(actorData);
-
-
-
 
 	for_all(index, countof(motionHelperVergil))
 	{
@@ -641,21 +621,11 @@ ACTOR_DATA_VERGIL & CreateActorVergil()
 		actorData.motionArchive[motionId] = System_File_cacheFile[cacheFileId];
 	}
 
-
-
 	UpdateWeaponVergil(actorData);
 
-
-
-
-
-
-
 	func_1DFC20(actorData);
-	//return *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
 
-	return actorData;
-
+	return &actorData;
 }
 
 
@@ -1316,16 +1286,16 @@ void System_Actor_Init()
 
 
 
-	// @Research: Lady has different actor_data size. Geez, quite the turn.
+	//// @Research: Lady has different actor_data size. Geez, quite the turn.
 
-	// Increase ACTOR_DATA size.
-	{
-		constexpr uint32 size = (0xB8C0 + 512);
-		Write<uint32>((appBaseAddr + 0x1DE5FA), size);
-		Write<uint32>((appBaseAddr + 0x1DE67A), size);
-		Write<uint32>((appBaseAddr + 0x1DE8B4), size);
-		Write<uint32>((appBaseAddr + 0x1DEBE2), size);
-	}
+	//// Increase ACTOR_DATA size.
+	//{
+	//	constexpr uint32 size = (0xB8C0 + 512);
+	//	Write<uint32>((appBaseAddr + 0x1DE5FA), size);
+	//	Write<uint32>((appBaseAddr + 0x1DE67A), size);
+	//	Write<uint32>((appBaseAddr + 0x1DE8B4), size);
+	//	Write<uint32>((appBaseAddr + 0x1DEBE2), size);
+	//}
 
 	{
 		byte8 sect0[] =
@@ -1335,7 +1305,7 @@ void System_Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD3B), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA, buttonMask);
+		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA_DANTE, newButtonMask);
 		//WriteJump((appBaseAddr + 0x1EBD34), func.addr, 2);
 		/*
 		dmc3.exe+1EBD34 - 66 89 83 E0740000 - mov [rbx+000074E0],ax
@@ -1352,7 +1322,7 @@ void System_Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD5B), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA, buttonMask);
+		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA_DANTE, newButtonMask);
 		//WriteJump((appBaseAddr + 0x1EBD54), func.addr, 2);
 		/*
 		dmc3.exe+1EBD54 - 66 89 83 E2740000 - mov [rbx+000074E2],ax
@@ -1368,7 +1338,7 @@ void System_Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD6B), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA, buttonMask);
+		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA_DANTE, newButtonMask);
 		//WriteJump((appBaseAddr + 0x1EBD64), func.addr, 2);
 		/*
 		dmc3.exe+1EBD64 - 66 89 8B E4740000 - mov [rbx+000074E4],cx
@@ -1385,7 +1355,7 @@ void System_Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD7C), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA, buttonMask);
+		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA_DANTE, newButtonMask);
 		//WriteJump((appBaseAddr + 0x1EBD75), func.addr, 2);
 		/*
 		dmc3.exe+1EBD75 - 66 89 93 E6740000 - mov [rbx+000074E6],dx

@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Core/Core.h"
 
+#include "../ActorData.h"
 #include "../Config.h"
 #include "../Internal.h"
 #include "../Vars.h"
@@ -54,9 +55,11 @@ extern HUDIconHelper weaponIcon[MAX_WEAPON];
 void Reset(uint32 off);
 
 
-ACTOR_DATA_DANTE & CreateActorDante();
 
-ACTOR_DATA_VERGIL & CreateActorVergil();
+ACTOR_DATA_DANTE * CreateActorDante();
+ACTOR_DATA_VERGIL * CreateActorVergil();
+
+
 
 
 

@@ -15,7 +15,7 @@ var items =
 	[ 0x8BC60 , "void"   , "byte8 * dest, byte8 * addr, byte8 * shadowFile"                               , ""                            , ""                                    ],
 	[ 0x305D80, "void"   , "byte8 * dest"                                                                 , ""                            , ""                                    ],
 	[ 0x8A000 , "void"   , "byte8 * dest, byte8 * motionFile, byte8 * addr"                               , ""                            , ""                                    ],
-	[ 0x2C9F40, "uint32" , "byte8 * physicsFile"                                                          , "0, true, false"              , ""                                    ],
+	[ 0x2C9F40, "uint32 ", "byte8 * physicsFile"                                                          , "0, true, false"              , ""                                    ],
 	[ 0x2CA1D0, "void"   , "byte8 * dest, byte8 * addr, byte8 * physicsFile, uint32 index"                , ""                            , ""                                    ],
 	[ 0x2CA2F0, "void"   , "byte8 * dest, byte8 * addr, byte8 *, MODEL_METADATA * modelData, uint32 count", "0, true, true, 0, 0, 0, 0, 1", ""                                    ],
 	[ 0x1EF040, "void"   , "byte8 * baseAddr, uint32 index"                                               , ""                            , ""                                    ],
@@ -23,59 +23,36 @@ var items =
 	[ 0x1FAF40, "void"   , "byte8 * baseAddr"                                                             , ""                            , ""                                    ],
 	[ 0x1EEF80, "void"   , "byte8 * baseAddr"                                                             , ""                            , ""                                    ],
 	[ 0x2EE060, "bool"   , "byte8 * dest, uint32 size"                                                    , ""                            , ""                                    ],
-
-
-
-//[ 0x1BB390, "void"   , "byte8 ** pool, uint32 actor"                                                  , ""                            , ""                                    ],
-
-
-
-	[ 0x1DE820, "ACTOR_DATA &", "uint32 character, uint32 id, bool isClone"                                    , "0, true, false"              , "Create Actor"                        ], // @Research: byte8 *.
-	
-	
-	
-	[ 0x217B90, "void"   , "ACTOR_DATA & actorData, byte8 * sessionData"                                        , ""                            , "Init Actor Dante"                    ],
-	[ 0x226F10, "void"   , "ACTOR_DATA & actorData, byte8 * sessionData"                                        , ""                            , "Init Actor Bob"                      ],
-	[ 0x219660, "void"   , "ACTOR_DATA & actorData, byte8 * sessionData"                                        , ""                            , "Init Actor Lady"                     ],
-	[ 0x223CB0, "void"   , "ACTOR_DATA & actorData, byte8 * sessionData"                                        , ""                            , "Init Actor Vergil"                   ],
-	[ 0x212BE0, "void"   , "ACTOR_DATA & actorData"                                                             , ""                            , "Update Actor Dante"                  ],
-	[ 0x225D70, "void"   , "ACTOR_DATA & actorData"                                                             , ""                            , "Update Actor Bob"                    ],
-	[ 0x219260, "void"   , "ACTOR_DATA & actorData"                                                             , ""                            , "Update Actor Lady"                   ],
-	[ 0x220970, "void"   , "ACTOR_DATA & actorData"                                                             , ""                            , "Update Actor Vergil"                 ],
-	[ 0x1DFC20, "void"   , "ACTOR_DATA & actorData"                                                             , ""                            , ""                                    ],
-	
-	[ 0x2310B0, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Dante Rebellion"                     ],
-	[ 0x22EC90, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Dante Cerberus"                      ],
-	[ 0x227870, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Dante Agni & Rudra"                  ],
-	[ 0x22A1E0, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Dante Nevan"                         ],
-	[ 0x228CF0, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Dante Vergil Beowulf"                ],
-	[ 0x22B0C0, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Dante Ebony & Ivory"                 ],
-	[ 0x2306B0, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Dante Shotgun"                       ],
-	[ 0x22C4A0, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Dante Artemis"                       ],
-	[ 0x2300A0, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Dante Spiral"                        ],
-	[ 0x22BA30, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Dante Lady Kalina Ann"               ],
-	[ 0x231A30, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Bob Yamato"                          ],
-	[ 0x22D960, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Vergil Yamato"                       ],
-	[ 0x2298E0, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Vergil Force Edge"                   ],
-	[ 0x22CF00, "byte8 *", "ACTOR_DATA & actorData, uint32 id"                                                  , "0, true, false"              , "Vergil Nero Angelo Sword"            ],
-
-
-
-
-
-
-
-
-
-
-
-
+	[ 0x1DE820, "byte8 *", "uint32 character, uint32 id, bool isClone"                                    , "0, true, false"              , "Create Actor"                        ],
+	[ 0x217B90, "void"   , "byte8 * actorData, byte8 * sessionData"                                       , ""                            , "Init Actor Dante"                    ],
+	[ 0x226F10, "void"   , "byte8 * actorData, byte8 * sessionData"                                       , ""                            , "Init Actor Bob"                      ],
+	[ 0x219660, "void"   , "byte8 * actorData, byte8 * sessionData"                                       , ""                            , "Init Actor Lady"                     ],
+	[ 0x223CB0, "void"   , "byte8 * actorData, byte8 * sessionData"                                       , ""                            , "Init Actor Vergil"                   ],
+	[ 0x212BE0, "void"   , "byte8 * actorData"                                                            , ""                            , "Update Actor Dante"                  ],
+	[ 0x225D70, "void"   , "byte8 * actorData"                                                            , ""                            , "Update Actor Bob"                    ],
+	[ 0x219260, "void"   , "byte8 * actorData"                                                            , ""                            , "Update Actor Lady"                   ],
+	[ 0x220970, "void"   , "byte8 * actorData"                                                            , ""                            , "Update Actor Vergil"                 ],
+	[ 0x1DFC20, "void"   , "byte8 * actorData"                                                            , ""                            , ""                                    ],
+	[ 0x2310B0, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Dante Rebellion"                     ],
+	[ 0x22EC90, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Dante Cerberus"                      ],
+	[ 0x227870, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Dante Agni & Rudra"                  ],
+	[ 0x22A1E0, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Dante Nevan"                         ],
+	[ 0x228CF0, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Dante Vergil Beowulf"                ],
+	[ 0x22B0C0, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Dante Ebony & Ivory"                 ],
+	[ 0x2306B0, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Dante Shotgun"                       ],
+	[ 0x22C4A0, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Dante Artemis"                       ],
+	[ 0x2300A0, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Dante Spiral"                        ],
+	[ 0x22BA30, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Dante Lady Kalina Ann"               ],
+	[ 0x231A30, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Bob Yamato"                          ],
+	[ 0x22D960, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Vergil Yamato"                       ],
+	[ 0x2298E0, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Vergil Force Edge"                   ],
+	[ 0x22CF00, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Vergil Nero Angelo Sword"            ],
+	[ 0x280120, "void"   , "byte8 * dest, uint32 side, uint32 index"                                      , ""                            , "Weapon Switch Animation Dante"       ],
+	[ 0x280160, "void"   , "byte8 * dest, uint32 group, uint32 index, uint32 motion"                      , ""                            , "Weapon Switch Animation Vergil"      ],
+	[ 0x1EB0E0, "void"   , "byte8 * actorData, uint32 index"                                              , ""                            , "Call after Weapon Switch Animation." ],
+	[ 0x1F92C0, "void"   , "byte8 * actorData, uint32 phase"                                              , ""                            , "Queue devil model update."           ], // @Research: Works like bool, but has size of uint32.
+	[ 0x1F97F0, "void"   , "byte8 * actorData, bool playMotion"                                           , ""                            , "Update devil model and play motion." ],
 	[ 0x23E560, "void"   , "byte8 * eventData, uint32 position"                                           , ""                            , ""                                    ],
-	[ 0x280120, "void"   , "byte8 * baseAddr, uint32 side, uint32 index"                                  , ""                            , "Weapon Switch Animation Dante"       ],
-	[ 0x280160, "void"   , "byte8 * baseAddr, uint32 group, uint32 index, uint32 motion"                  , ""                            , "Weapon Switch Animation Vergil"      ],
-	[ 0x1EB0E0, "void"   , "ACTOR_DATA & actorData, uint32 index"                                         , ""                            , "Call after Weapon Switch Animation." ],
-	[ 0x1F92C0, "void"   , "ACTOR_DATA & actorData, uint32 phase"                                         , ""                            , "Queue devil model update."           ], // @Research: Works like bool, but has size of uint32.
-	[ 0x1F97F0, "void"   , "ACTOR_DATA & actorData, bool playMotion"                                      , ""                            , "Update devil model and play motion." ],
 	[ 0x8AC80 , "void"   , "MODEL_DATA & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool"    , "0, true, true, 0, 0, 0, 0, 1", "Play Motion"                         ],
 	[ 0x89E30 , "void"   , "byte8 * baseAddr, uint32 index"                                               , ""                            , "Call after icon update."             ],
 ];
