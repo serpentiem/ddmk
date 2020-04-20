@@ -93,6 +93,109 @@ bool millionStab = false;
 
 
 
+
+
+
+
+
+void DanteYamatoDaemonStart()
+{
+
+
+
+	for_each(index, 2, Actor_actorBaseAddr.count)
+	{
+		auto baseAddr = Actor_actorBaseAddr[index];
+		if (!baseAddr)
+		{
+			continue;
+		}
+		auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+		if (!actorData.newParentBaseAddr)
+		{
+			continue;
+		}
+		auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newParentBaseAddr);
+		if (parentActorData.character != CHAR_DANTE)
+		{
+			continue;
+		}
+		if (!parentActorData.newChildBaseAddr[CHAR_VERGIL])
+		{
+			continue;
+		}
+		if (baseAddr != parentActorData.newChildBaseAddr[CHAR_VERGIL])
+		{
+			continue;
+		}
+		if (parentActorData.newMeleeWeaponMap[parentActorData.newMeleeWeaponIndex] != WEAPON_VERGIL_YAMATO)
+		{
+			continue;
+		}
+
+		// @Todo: Check if child's active weapon is yamato.
+
+		float32 timeout = 0;
+
+		const_for_all(weaponIndex, 4)
+		{
+			if (IsWeaponActive<ACTOR_DATA_DANTE>(parentActorData, parentActorData.weaponMap[weaponIndex]))
+			{
+				// @Todo: Get timeout.
+				break;
+			}
+		}
+
+		auto & length = parentActorData.modelData[parentActorData.activeModelIndex].motionLength1[BODY_PART_UPPER];
+		auto & timer  = parentActorData.modelData[parentActorData.activeModelIndex].motionTimer  [BODY_PART_UPPER];
+
+		if (timer < timeout)
+		{
+			continue;
+		}
+
+		// At this point we already switched the melee weapon, which means we WANT yamato.
+
+		// There are two parts to this: Control and visibility.
+
+		// Once the timer is above the timeout threshold, transfer control to the child.
+
+		// Now check for GAMEPAD_Y and the timer.
+
+		// If the timer runs out or GAMEPAD_Y is pressed, show the weapon model.
+
+		// And set a flag I guess?
+
+		// Basically, at this point Yamato is initiated properly.
+
+
+
+
+
+
+	}
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
 void MainLoop()
 {
 

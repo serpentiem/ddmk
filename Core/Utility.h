@@ -7,17 +7,18 @@
 
 float32 hexstrtof(const char * str);
 
-//#define countof(var) (sizeof(var) / sizeof(var[0]))
-
-// @Todo: Update.
-
-template <class T, T _value>
-struct integral_constant
+template <class T, class U>
+struct is_same
 {
-	static constexpr const T value = _value;
+	static constexpr const bool value = false;
 };
-template <class T, class U> struct is_same       : integral_constant<bool, false> {};
-template <class T>          struct is_same<T, T> : integral_constant<bool, true>  {};
+
+template <class T>
+struct is_same<T, T>
+{
+	static constexpr const bool value = true;
+};
+
 #define typematch(a, b) is_same<a, b>::value
 
 template <typename T>
@@ -69,18 +70,15 @@ template <uint64 value> struct GetDataTypeByValue : GetDataTypeByValueHelper<Get
 template <typename T>
 constexpr auto countof(T & var)
 {
-	//constexpr auto count = (sizeof(var) / sizeof(var[0]));
-	//constexpr GetDataTypeByValue<count>::type value = count;
-	//return value;
 	return (sizeof(var) / sizeof(var[0]));
 }
 
-// @Todo: Add enum support.
+#define const_for_each(name, start, end) for (GetDataTypeByValue<end>::type name = start; name < end; name++)
 
-//#define for_each(name, start, end) for (decltype(end) name = start; name < end; name++)
-#define for_each(name, start, end) for (GetDataTypeByValue<end>::type name = start; name < end; name++)
+#define for_each(name, start, end) for (decltype(end) name = start; name < end; name++)
 
-//#define for_all(name, end) for (decltype(end) name = 0; name < end; name++)
-#define for_all(name, end) for (GetDataTypeByValue<end>::type name = 0; name < end; name++)
+#define const_for_all(name, end) for (GetDataTypeByValue<end>::type name = 0; name < end; name++)
+
+#define for_all(name, end) for (decltype(end) name = 0; name < end; name++)
 
 #define HoboBreak MessageBoxA(0, "break1", 0, 0); MessageBoxA(0, "break2", 0, 0);
