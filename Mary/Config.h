@@ -4,6 +4,7 @@
 #include "Vars.h"
 
 #pragma pack(push, 1)
+
 struct CONFIG
 {
 	struct
@@ -430,6 +431,7 @@ struct CONFIG
 	}
 	Tools;
 };
+
 #pragma pack(pop)
 
 extern CONFIG Config;

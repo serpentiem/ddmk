@@ -3,10 +3,6 @@
 #include "Log.h"
 #include "Windows.h"
 
-extern byte8 * appBaseAddr;
-extern uint32  appSize;
-extern HWND    appWindow;
-
 struct FUNC
 {
 	byte8 *  addr;
@@ -15,6 +11,27 @@ struct FUNC
 	byte8 *  sect2;
 	byte8 ** cache;
 };
+
+extern byte8  * appBaseAddr;
+extern uint32   appSize;
+extern HWND     appWindow;
+
+template <typename T>
+bool Align(T & pos, T boundary, byte8 * addr = 0, uint8 pad = 0)
+{
+	T remainder = (pos % boundary);
+	if (remainder)
+	{
+		T size = (boundary - remainder);
+		if (addr)
+		{
+			memset((addr + pos), pad, size);
+		}
+		pos += size;
+		return true;
+	}
+	return false;
+}
 
 byte8 * Alloc(uint32 size);
 
@@ -40,8 +57,8 @@ inline byte8 * HighAlloc(uint32 size)
 	return AllocEx
 	(
 		size,
-		(uint64)(appBaseAddr + appSize),
-		(uint64)(appBaseAddr + 0x7FFFFFFF)
+		reinterpret_cast<uint64>(appBaseAddr + appSize),
+		reinterpret_cast<uint64>(appBaseAddr + 0x7FFFFFFF)
 	);
 }
 
@@ -126,25 +143,4 @@ FUNC CreateFunction
 	uint32   count         = 0
 );
 
-bool Memory_Init();
-
-#define HoboBreak() \
-MessageBoxA(0, "break", 0, 0); \
-MessageBoxA(0, "break", 0, 0);
-
-template <typename T>
-bool Align(T & pos, T boundary, byte8 * addr = 0, uint8 pad = 0)
-{
-	T remainder = (pos % boundary);
-	if (remainder)
-	{
-		T size = (boundary - remainder);
-		if (addr)
-		{
-			memset((addr + pos), pad, size);
-		}
-		pos += size;
-		return true;
-	}
-	return false;
-}
+bool Core_Memory_Init(uint32 size = 0);

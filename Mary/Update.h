@@ -1,16 +1,9 @@
 #pragma once
 #include "../Core/Core.h"
 
-#include "Camera.h"
+#include "Actor.h"
 #include "Config.h"
-
 #include "Event.h"
-
-#include "System/Actor.h"
-#include "System/HUD.h"
-#include "System/State.h"
-
-#include "Game/ResetMotionState.h"
-#include "Game/StyleSwitcher.h"
+#include "State.h"
 
 void Update_Init();

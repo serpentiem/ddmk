@@ -594,15 +594,15 @@ void UpdateModelTemplate(byte8 * baseAddr)
 		RegisterModel
 		(
 			dest,
-			System_File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
-			System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
+			File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
+			File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
 		);
 
 		RegisterShadow
 		(
 			dest,
 			(baseAddr + 0x9AD0 + (modelIndex * 0xC0)),
-			System_File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
+			File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
 		);
 
 		CopyBaseVertices(modelMetadata);
@@ -624,8 +624,8 @@ void UpdateModelTemplate(byte8 * baseAddr)
 		RegisterModel
 		(
 			dest,
-			System_File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
-			System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
+			File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
+			File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
 		);
 
 		func_8A000(dest, 0, dest2);
@@ -638,7 +638,7 @@ void UpdateModelTemplate(byte8 * baseAddr)
 		(
 			dest,
 			dest2,
-			System_File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
+			File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
 		);
 
 		func_2CA2F0
@@ -671,8 +671,8 @@ void UpdateModelTemplate(byte8 * baseAddr)
 		RegisterModel
 		(
 			dest,
-			System_File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
-			System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
+			File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
+			File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
 		);
 
 		func_8A000(dest, 0, dest2);
@@ -681,7 +681,7 @@ void UpdateModelTemplate(byte8 * baseAddr)
 		(
 			dest,
 			(baseAddr + 0x9D10 + (submodelIndex * 0xC0)),
-			System_File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
+			File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
 		);
 
 		((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
@@ -692,7 +692,7 @@ void UpdateModelTemplate(byte8 * baseAddr)
 		(
 			dest,
 			dest2,
-			System_File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
+			File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
 		);
 
 		func_2CA2F0
@@ -867,8 +867,8 @@ void UpdateDevilModelTemplate
 		RegisterModel
 		(
 			dest,
-			System_File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
-			System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
+			File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
+			File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
 		);
 
 		func_1EF040(baseAddr, slot);
@@ -877,7 +877,7 @@ void UpdateDevilModelTemplate
 		(
 			dest,
 			(baseAddr + 0x9AD0 + (slot * 0xC0)),
-			System_File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
+			File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
 		);
 	}
 
@@ -902,8 +902,8 @@ void UpdateDevilModelTemplate
 		RegisterModel
 		(
 			dest,
-			System_File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
-			System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
+			File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
+			File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
 		);
 
 		func_8A000(dest, 0, dest2);
@@ -912,7 +912,7 @@ void UpdateDevilModelTemplate
 		(
 			dest,
 			(baseAddr + 0x9D10 + (submodelIndex * 0xC0)),
-			System_File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
+			File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
 		);
 
 		((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
@@ -923,7 +923,7 @@ void UpdateDevilModelTemplate
 		(
 			dest,
 			dest2,
-			System_File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
+			File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
 		);
 
 		CopyVertices(baseAddr, 0, 1 , 3);
@@ -958,8 +958,8 @@ void UpdateDevilModelTemplate
 		RegisterModel
 		(
 			dest,
-			System_File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
-			System_File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
+			File_cacheFile[fileHelper.model.cacheFileId][fileHelper.model.fileIndex],
+			File_cacheFile[fileHelper.texture.cacheFileId][fileHelper.texture.fileIndex]
 		);
 
 		func_8A000(dest, 0, dest2);
@@ -968,7 +968,7 @@ void UpdateDevilModelTemplate
 		(
 			dest,
 			(baseAddr + 0x9D10 + (submodelIndex * 0xC0)),
-			System_File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
+			File_cacheFile[fileHelper.shadow.cacheFileId][fileHelper.shadow.fileIndex]
 		);
 
 		((uint8 *)(baseAddr + 0x9AC0))[submodelIndex] = 1;
@@ -979,7 +979,7 @@ void UpdateDevilModelTemplate
 		(
 			dest,
 			dest2,
-			System_File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
+			File_cacheFile[fileHelper.physics.cacheFileId][fileHelper.physics.fileIndex]
 		);
 
 		if constexpr

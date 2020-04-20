@@ -5,7 +5,7 @@
 #include "../Internal.h"
 #include "../Vars.h"
 
-#include "../System/File.h"
+#include "../File.h"
 
 typedef void(__fastcall * Cosmetics_Model_UpdateModel_t)(byte8 * baseAddr);
 typedef void(__fastcall * Cosmetics_Model_UpdateDevilModel_t)

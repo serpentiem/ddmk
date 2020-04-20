@@ -1,6 +1,60 @@
 #include "Actor.h"
 
-vector<byte8 *, 128> System_Actor_actorBaseAddr;
+vector<byte8 *, 128> Actor_actorBaseAddr;
+
+typedef byte8 *(__fastcall * RegisterWeapon_t)
+(
+	byte8 * actorData,
+	uint32 id
+);
+
+typedef bool(__fastcall * IsWeaponReady_t)
+(
+	byte8 * actorData,
+	uint8 weapon
+);
+
+struct IsWeaponReadyProxyHelper_t
+{
+	uint32 off[2];
+	uint8 weaponType;
+};
+
+RegisterWeapon_t RegisterWeapon[MAX_WEAPON] = {};
+
+constexpr IsWeaponReadyProxyHelper_t IsWeaponReadyProxyHelper[] =
+{
+	{ 0x2288D3, 0x2288D8, WEAPON_TYPE_MELEE  }, // Dante Agni & Rudra
+	{ 0x2295B7, 0x2295BC, WEAPON_TYPE_MELEE  }, // Dante Vergil Beowulf
+	{ 0x229E9D, 0       , WEAPON_TYPE_MELEE  }, // Vergil Force Edge
+	{ 0x22AD86, 0x22AD8B, WEAPON_TYPE_MELEE  }, // Dante Nevan
+	{ 0x22B723, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory Air
+	{ 0x22B753, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory
+	{ 0x22C186, 0       , WEAPON_TYPE_RANGED }, // Dante Lady Kalina Ann
+	{ 0x22C1A5, 0       , WEAPON_TYPE_RANGED }, // Dante Kalina Ann Grapple
+	{ 0x22CBC8, 0x22CBCD, WEAPON_TYPE_RANGED }, // Dante Artemis
+	{ 0x22D432, 0x22D437, WEAPON_TYPE_MELEE  }, // Vergil Nero Angelo Sword
+	{ 0x22E09A, 0x22E09F, WEAPON_TYPE_MELEE  }, // Vergil Yamato
+	{ 0x22FB1C, 0x22FB21, WEAPON_TYPE_MELEE  }, // Dante Cerberus
+	{ 0x2304BF, 0       , WEAPON_TYPE_RANGED }, // Dante Spiral
+	{ 0x230DD3, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun Shot
+	{ 0x230E16, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun
+	{ 0x23163F, 0       , WEAPON_TYPE_MELEE  }, // Dante Rebellion
+	{ 0x232005, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato Combo 1 Part 3
+	{ 0x232056, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato
+};
+
+byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -137,12 +191,6 @@ void * IsRangedWeaponReady[MAX_CHAR] =
 	0,
 };
 
-typedef bool(__fastcall * IsWeaponReady_t)
-(
-	byte8 * actorData,
-	uint8 weapon
-);
-
 template <uint8 weaponType = WEAPON_TYPE_MELEE>
 bool IsWeaponReadyProxy(byte8 * baseAddr)
 {
@@ -182,46 +230,6 @@ bool IsWeaponReadyProxy(byte8 * baseAddr)
 auto IsMeleeWeaponReadyProxy = IsWeaponReadyProxy<>;
 auto IsRangedWeaponReadyProxy = IsWeaponReadyProxy<WEAPON_TYPE_RANGED>;
 
-
-
-
-
-
-
-
-
-
-
-struct IsWeaponReadyProxyHelper_t
-{
-	uint32 off[2];
-	uint8 weaponType;
-};
-
-constexpr IsWeaponReadyProxyHelper_t IsWeaponReadyProxyHelper[] =
-{
-	{ 0x2288D3, 0x2288D8, WEAPON_TYPE_MELEE  }, // Dante Agni & Rudra
-	{ 0x2295B7, 0x2295BC, WEAPON_TYPE_MELEE  }, // Dante Vergil Beowulf
-	{ 0x229E9D, 0       , WEAPON_TYPE_MELEE  }, // Vergil Force Edge
-	{ 0x22AD86, 0x22AD8B, WEAPON_TYPE_MELEE  }, // Dante Nevan
-	{ 0x22B723, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory Air
-	{ 0x22B753, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory
-	{ 0x22C186, 0       , WEAPON_TYPE_RANGED }, // Dante Lady Kalina Ann
-	{ 0x22C1A5, 0       , WEAPON_TYPE_RANGED }, // Dante Kalina Ann Grapple
-	{ 0x22CBC8, 0x22CBCD, WEAPON_TYPE_RANGED }, // Dante Artemis
-	{ 0x22D432, 0x22D437, WEAPON_TYPE_MELEE  }, // Vergil Nero Angelo Sword
-	{ 0x22E09A, 0x22E09F, WEAPON_TYPE_MELEE  }, // Vergil Yamato
-	{ 0x22FB1C, 0x22FB21, WEAPON_TYPE_MELEE  }, // Dante Cerberus
-	{ 0x2304BF, 0       , WEAPON_TYPE_RANGED }, // Dante Spiral
-	{ 0x230DD3, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun Shot
-	{ 0x230E16, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun
-	{ 0x23163F, 0       , WEAPON_TYPE_MELEE  }, // Dante Rebellion
-	{ 0x232005, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato Combo 1 Part 3
-	{ 0x232056, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato
-};
-
-byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
-
 void ToggleUpdateWeapon(bool enable)
 {
 	LogFunction(enable);
@@ -258,7 +266,7 @@ void ToggleUpdateWeapon(bool enable)
 		uint32 callOff,
 		uint32 jumpOff,
 		uint32 jumpDestOff
-	)
+		)
 	{
 		if (enable)
 		{
@@ -271,7 +279,7 @@ void ToggleUpdateWeapon(bool enable)
 			WriteAddress((appBaseAddr + jumpOff), (appBaseAddr + jumpDestOff), 2);
 		}
 	};
-	
+
 	WriteHelper(0x2288A4, 0x2288CE, 0x2288D8); // Dante Agni & Rudra
 	/*
 	dmc3.exe+2288A4 - E8 374BFDFF - call dmc3.exe+1FD3E0
@@ -299,23 +307,6 @@ void ToggleUpdateWeapon(bool enable)
 	*/
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //void UpdateActorDante(byte8 * baseAddr)
 //{
 //	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
@@ -335,7 +326,7 @@ void ToggleUpdateWeapon(bool enable)
 //
 //
 //
-//	System_File_UpdateFileItems(&actorData);
+//	File_UpdateFileItems(&actorData);
 //
 //	Cosmetics_Model_UpdateModelDante[COSTUME_DANTE_DEFAULT](baseAddr);
 //	
@@ -355,7 +346,7 @@ void ToggleUpdateWeapon(bool enable)
 //		auto & motionId    = motionHelperDante[index].motionId;
 //		auto & cacheFileId = motionHelperDante[index].cacheFileId;
 //
-//		actorData.motionArchive[motionId] = System_File_cacheFile[cacheFileId];
+//		actorData.motionArchive[motionId] = File_cacheFile[cacheFileId];
 //	}
 //
 //
@@ -373,27 +364,15 @@ void ToggleUpdateWeapon(bool enable)
 //	actorData.actionData[0] = *(byte8 **)(appBaseAddr + 0x590598);
 //	actorData.actionData[1] = *(byte8 **)(appBaseAddr + 0x58A2A0);
 //	actorData.actionData[2] = (appBaseAddr + 0x5905B0);
-//	actorData.actionData[3] = System_File_cacheFile[pl000][9];
-//	actorData.actionData[4] = System_File_cacheFile[pl000][10];
-//	actorData.actionData[5] = System_File_cacheFile[pl000][11];
+//	actorData.actionData[3] = File_cacheFile[pl000][9];
+//	actorData.actionData[4] = File_cacheFile[pl000][10];
+//	actorData.actionData[5] = File_cacheFile[pl000][11];
 //
 //	func_2EE3D0((baseAddr + 0x3C50));
 //	func_1FAF40(baseAddr);
 //}
 
-
-
-
-
-
-
-
-
-
-typedef byte8 *(__fastcall * RegisterWeapon_t)(byte8 * actorData, uint32 id);
-
-RegisterWeapon_t RegisterWeapon[MAX_WEAPON] = {};
-
+// @Todo: Create map and add missing entries.
 inline void RegisterWeapon_Init()
 {
 	RegisterWeapon[WEAPON_DANTE_REBELLION  ] = func_2310B0;
@@ -457,9 +436,6 @@ inline void RegisterWeapon_Init()
 //	return baseAddr;
 //}
 
-
-
-
 void UpdateWeaponDante(ACTOR_DATA_DANTE & actorData)
 {
 	constexpr uint32 size = (offsetof(ACTOR_DATA_DANTE, styleRank) - offsetof(ACTOR_DATA_DANTE, weaponData));
@@ -486,7 +462,7 @@ ACTOR_DATA_DANTE * CreateActorDante()
 
 	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
 
-	System_File_UpdateFileItemsLite();
+	//File_UpdateFileItemsLite();
 
 	func_217B90(actorData, sessionData);
 	func_212BE0(actorData);
@@ -496,7 +472,7 @@ ACTOR_DATA_DANTE * CreateActorDante()
 		auto & motionId    = motionHelperDante[index].motionId;
 		auto & cacheFileId = motionHelperDante[index].cacheFileId;
 
-		actorData.motionArchive[motionId] = System_File_cacheFile[cacheFileId];
+		actorData.motionArchive[motionId] = File_cacheFile[cacheFileId];
 	}
 
 	UpdateWeaponDante(actorData);
@@ -531,7 +507,7 @@ ACTOR_DATA_VERGIL * CreateActorVergil()
 
 	auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
 
-	System_File_UpdateFileItemsLite();
+	//File_UpdateFileItemsLite();
 
 	func_223CB0(actorData, sessionData);
 	func_220970(actorData);
@@ -541,7 +517,7 @@ ACTOR_DATA_VERGIL * CreateActorVergil()
 		auto & motionId    = motionHelperVergil[index].motionId;
 		auto & cacheFileId = motionHelperVergil[index].cacheFileId;
 
-		actorData.motionArchive[motionId] = System_File_cacheFile[cacheFileId];
+		actorData.motionArchive[motionId] = File_cacheFile[cacheFileId];
 	}
 
 	UpdateWeaponVergil(actorData);
@@ -550,33 +526,6 @@ ACTOR_DATA_VERGIL * CreateActorVergil()
 
 	return &actorData;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-inline byte16 GetBinding(uint8 action)
-{
-	return (reinterpret_cast<byte16 *>(appBaseAddr + 0xD6CE8A))[action];
-}
-
-
-
 
 // @Todo: Add devil support and Nero Angelo exceptions.
 // @Todo: Check for WEAPON_VOID and same weapon.
@@ -593,7 +542,7 @@ bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
 		return false;
 	}
 
-	
+
 	{
 		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_DEVIL_ARMS)))
 		{
@@ -800,7 +749,7 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 
 				id = (pl000_00_3 + actorData.activeWeapon);
 				index = actorData.motionData[1].index;
-				motionFile = System_File_cacheFile[id][index];
+				motionFile = File_cacheFile[id][index];
 
 				func_8AC80(modelData, BODY_PART_LOWER, motionFile, 0, false);
 			}
@@ -811,92 +760,19 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 	return true;
 }
 
-
-
-// HUDIconHelper
-
-
-// texture
-// model
-
-//constexpr uint8 HUDIconMap
-
-
-
-//struct HUDIconHelper
+//void Reset(uint32 off)
 //{
-//	byte8 * model;
-//	byte8 * texture;
-//};
+//	auto g_pool = reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2520);
+//	auto dest = (g_pool[44] + off);
+//	auto & visible = *reinterpret_cast<bool *>(dest + 0x18) = false;
+//}
 
-//HUDIconHelper hudIconHelper
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void Reset(uint32 off)
-{
-
-
-	auto g_pool = reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2520);
-
-	auto dest = (g_pool[44] + off);
-
-	//func_897B0(dest);
-	//func_89450(dest);
-	//memset(dest, 0, 0x780);
-	//func_89270(dest);
-
-
-	auto & visible = *reinterpret_cast<bool *>(dest + 0x18) = false;
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void System_Actor_Init()
+void Actor_Init()
 {
 	LogFunction();
 
 
-	Log("UpdateStyleIcon %llX", UpdateStyleIcon);
-	Log("UpdateWeaponIcon %llX", UpdateWeaponIcon);
+
 
 
 
@@ -907,7 +783,7 @@ void System_Actor_Init()
 	}
 
 
-	
+
 
 
 

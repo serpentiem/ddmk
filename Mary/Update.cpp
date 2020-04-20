@@ -127,11 +127,11 @@ void MainLoop()
 
 		auto & actorData = *baseAddr;
 
-		System_Actor_actorBaseAddr.Push(actorData);
+		Actor_actorBaseAddr.Push(actorData);
 
-		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(System_Actor_actorBaseAddr[0]);
+		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
 
-		actorData.collisionIndex = 1;
+		//actorData.collisionIndex = 1;
 
 		actorData.position = parentActorData.position;
 
@@ -144,11 +144,11 @@ void MainLoop()
 
 		//System_Actor_actorBaseAddr.Push(baseAddr);
 
-		Log("count %u", System_Actor_actorBaseAddr.count);
+		Log("count %u", Actor_actorBaseAddr.count);
 
-		for (uint32 index = 0; index < System_Actor_actorBaseAddr.count; index++)
+		for (uint32 index = 0; index < Actor_actorBaseAddr.count; index++)
 		{
-			Log("%llX", System_Actor_actorBaseAddr[index]);
+			Log("%llX", Actor_actorBaseAddr[index]);
 		}
 
 

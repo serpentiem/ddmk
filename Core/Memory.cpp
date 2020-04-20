@@ -2,17 +2,15 @@
 
 constexpr bool debug = false;
 
-byte8 * appBaseAddr = 0;
-uint32  appSize     = 0;
-HWND    appWindow   = 0;
-
-extern uint32 Memory_size;
+byte8  * appBaseAddr = 0;
+uint32   appSize     = 0;
+HWND     appWindow   = 0;
 
 PrivateStart;
 
-SYSTEM_INFO   si     = {};
-byte8       * g_addr = 0;
-uint32        g_pos  = 0;
+SYSTEM_INFO   systemInfo = {};
+byte8       * g_addr     = 0;
+uint32        g_pos      = 0;
 
 PrivateEnd;
 
@@ -22,7 +20,7 @@ byte8 * Alloc(uint32 size)
 	byte32 error = 0;
 
 	SetLastError(0);
-	addr = (byte8 *)VirtualAlloc(0, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+	addr = reinterpret_cast<byte8 *>(VirtualAlloc(0, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
 	error = GetLastError();
 	if (!addr)
 	{
@@ -55,16 +53,16 @@ byte8 * AllocEx
 
 	do
 	{
-		VirtualQuery((void *)pos, &mbi, sizeof(mbi));
+		VirtualQuery(reinterpret_cast<void *>(pos), &mbi, sizeof(mbi));
 		if ((mbi.RegionSize >= size) && (mbi.State == MEM_FREE))
 		{
 			if constexpr (debug)
 			{
-				Log("pos        %llX", pos);
+				Log("pos        %llX", pos           );
 				Log("regionSize %llX", mbi.RegionSize);
-				Log("state      %X", mbi.State);
+				Log("state      %X"  , mbi.State     );
 			}
-			auto result = Align<uint64>(pos, si.dwAllocationGranularity);
+			auto result = Align<uint64>(pos, systemInfo.dwAllocationGranularity);
 			if (!result)
 			{
 				match = true;
@@ -81,9 +79,10 @@ byte8 * AllocEx
 		return 0;
 	}
 
-	addr = (byte8 *)mbi.BaseAddress;
+	addr = reinterpret_cast<byte8 *>(mbi.BaseAddress);
+
 	SetLastError(0);
-	addr = (byte8 *)VirtualAlloc(addr, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+	addr = reinterpret_cast<byte8 *>(VirtualAlloc(addr, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
 	error = GetLastError();
 	if (!addr)
 	{
@@ -92,6 +91,7 @@ byte8 * AllocEx
 	}
 
 	VirtualQuery(addr, &mbi, sizeof(mbi));
+
 	if constexpr (debug)
 	{
 		Log("addr  %llX", addr);
@@ -100,8 +100,6 @@ byte8 * AllocEx
 
 	return addr;
 }
-
-// @Todo: Change dest type to void * and add byte8 * cast.
 
 void WriteAddress
 (
@@ -167,7 +165,6 @@ void vp_memcpy
 }
 
 // @Todo: Add noReturn argument.
-
 FUNC CreateFunction
 (
 	void   * funcAddr,
@@ -398,35 +395,40 @@ FUNC CreateFunction
 	return func;
 }
 
-bool Memory_Init()
+bool Core_Memory_Init(uint32 size)
 {
 	LogFunction();
 
-	MODULEENTRY32 me = {};
-	me.dwSize = sizeof(MODULEENTRY32);
-	auto snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
-	Module32First(snapshot, &me);
-	appBaseAddr = me.modBaseAddr;
-	appSize = me.modBaseSize;
+	MODULEENTRY32 moduleEntry = {};
+	HANDLE snapshot = 0;
 
-	Log("%u %s", me.th32ProcessID, me.szModule);
-	Log("%llX %llX", appBaseAddr, (appBaseAddr + appSize));
+	moduleEntry.dwSize = sizeof(MODULEENTRY32);
+	snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
+	Module32First(snapshot, &moduleEntry);
 
-	if (!Memory_size)
+	appBaseAddr = moduleEntry.modBaseAddr;
+	appSize = moduleEntry.modBaseSize;
+
+	Log("%u %s", moduleEntry.th32ProcessID, moduleEntry.szModule);
+
+	Log("appStart %llX", appBaseAddr            );
+	Log("appEnd   %llX", (appBaseAddr + appSize));
+
+	if (!size)
 	{
 		return true;
 	}
 
-	GetSystemInfo(&si);
+	GetSystemInfo(&systemInfo);
 
-	g_addr = HighAlloc(Memory_size);
+	g_addr = HighAlloc(size);
 	if (!g_addr)
 	{
 		Log("HighAlloc failed.");
 		return false;
 	}
 
-	memset(g_addr, 0xCC, Memory_size);
+	memset(g_addr, 0xCC, size);
 
 	return true;
 }

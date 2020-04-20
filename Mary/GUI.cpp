@@ -89,7 +89,7 @@ void GUI_System_Camera()
 		Config.System.Camera.invertX
 	))
 	{
-		System_Camera_ToggleInvertX(Config.System.Camera.invertX);
+		//System_Camera_ToggleInvertX(Config.System.Camera.invertX);
 	}
 }
 
@@ -252,7 +252,7 @@ void GUI_Game_Arcade()
 		static bool enable = false;
 		if (GUI_Checkbox("Toggle Update Weapon", enable))
 		{
-			ToggleUpdateWeapon(enable);
+			//ToggleUpdateWeapon(enable);
 		}
 	}
 
@@ -472,15 +472,15 @@ void GUI_Game_Dante()
 {
 	auto Toggle = [](CONFIG & config)
 	{
-		Game_Dante_Rebellion_ToggleInfiniteSwordPierce(config.Game.Dante.Rebellion.infiniteSwordPierce);
-		Game_Dante_EbonyIvory_ToggleFoursomeTime      (config.Game.Dante.EbonyIvory.foursomeTime      );
-		Game_Dante_EbonyIvory_ToggleInfiniteRainStorm (config.Game.Dante.EbonyIvory.infiniteRainStorm );
-		Game_Dante_Artemis_ToggleSwap                 (config.Game.Dante.Artemis.swap                 );
-		Game_Dante_Artemis_ToggleInstant              (config.Game.Dante.Artemis.instant              );
-		Game_Dante_AirHike_ToggleCoreAbility          (config.Game.Dante.AirHike.coreAbility          );
-		Game_Dante_CrazyCombo_SetLevelMultiplier      (config.Game.Dante.CrazyCombo.levelMultiplier   );
-		Game_Dante_WeaponSwitchTimeout_Melee_Toggle   (config.Game.Dante.WeaponSwitchTimeout.melee    );
-		Game_Dante_WeaponSwitchTimeout_Ranged_Toggle  (config.Game.Dante.WeaponSwitchTimeout.ranged   );
+		//Game_Dante_Rebellion_ToggleInfiniteSwordPierce(config.Game.Dante.Rebellion.infiniteSwordPierce);
+		//Game_Dante_EbonyIvory_ToggleFoursomeTime      (config.Game.Dante.EbonyIvory.foursomeTime      );
+		//Game_Dante_EbonyIvory_ToggleInfiniteRainStorm (config.Game.Dante.EbonyIvory.infiniteRainStorm );
+		//Game_Dante_Artemis_ToggleSwap                 (config.Game.Dante.Artemis.swap                 );
+		//Game_Dante_Artemis_ToggleInstant              (config.Game.Dante.Artemis.instant              );
+		//Game_Dante_AirHike_ToggleCoreAbility          (config.Game.Dante.AirHike.coreAbility          );
+		//Game_Dante_CrazyCombo_SetLevelMultiplier      (config.Game.Dante.CrazyCombo.levelMultiplier   );
+		//Game_Dante_WeaponSwitchTimeout_Melee_Toggle   (config.Game.Dante.WeaponSwitchTimeout.melee    );
+		//Game_Dante_WeaponSwitchTimeout_Ranged_Toggle  (config.Game.Dante.WeaponSwitchTimeout.ranged   );
 	};
 	GUI_SECTION_HEADER_START(Game.Dante);
 	if (Config.Game.Dante.enable)
@@ -499,7 +499,7 @@ void GUI_Game_Dante()
 		Config.Game.Dante.Rebellion.infiniteSwordPierce
 	))
 	{
-		Game_Dante_Rebellion_ToggleInfiniteSwordPierce(Config.Game.Dante.Rebellion.infiniteSwordPierce);
+		//Game_Dante_Rebellion_ToggleInfiniteSwordPierce(Config.Game.Dante.Rebellion.infiniteSwordPierce);
 	}
 	GUI_Checkbox
 	(
@@ -526,7 +526,7 @@ void GUI_Game_Dante()
 		Config.Game.Dante.EbonyIvory.foursomeTime
 	))
 	{
-		Game_Dante_EbonyIvory_ToggleFoursomeTime(Config.Game.Dante.EbonyIvory.foursomeTime);
+		//Game_Dante_EbonyIvory_ToggleFoursomeTime(Config.Game.Dante.EbonyIvory.foursomeTime);
 	}
 	ImGui::SameLine();
 	GUI_Tooltip(Locale.Game.Dante.EbonyIvory.foursomeTimeDescription);
@@ -536,7 +536,7 @@ void GUI_Game_Dante()
 		Config.Game.Dante.EbonyIvory.infiniteRainStorm
 	))
 	{
-		Game_Dante_EbonyIvory_ToggleInfiniteRainStorm(Config.Game.Dante.EbonyIvory.infiniteRainStorm);
+		//Game_Dante_EbonyIvory_ToggleInfiniteRainStorm(Config.Game.Dante.EbonyIvory.infiniteRainStorm);
 	}
 	ImGui::Text(Locale.Game.Dante.Artemis.header);
 	if (GUI_Checkbox
@@ -545,7 +545,7 @@ void GUI_Game_Dante()
 		Config.Game.Dante.Artemis.swap
 	))
 	{
-		Game_Dante_Artemis_ToggleSwap(Config.Game.Dante.Artemis.swap);
+		//Game_Dante_Artemis_ToggleSwap(Config.Game.Dante.Artemis.swap);
 	}
 	if (GUI_Checkbox
 	(
@@ -553,7 +553,7 @@ void GUI_Game_Dante()
 		Config.Game.Dante.Artemis.instant
 	))
 	{
-		Game_Dante_Artemis_ToggleInstant(Config.Game.Dante.Artemis.instant);
+		//Game_Dante_Artemis_ToggleInstant(Config.Game.Dante.Artemis.instant);
 	}
 	ImGui::Text(Locale.Game.Dante.AirHike.header);
 	if (GUI_Checkbox
@@ -562,7 +562,7 @@ void GUI_Game_Dante()
 		Config.Game.Dante.AirHike.coreAbility
 	))
 	{
-		Game_Dante_AirHike_ToggleCoreAbility(Config.Game.Dante.AirHike.coreAbility);
+		//Game_Dante_AirHike_ToggleCoreAbility(Config.Game.Dante.AirHike.coreAbility);
 	}
 	ImGui::SameLine();
 	GUI_Tooltip(Locale.Game.Dante.AirHike.coreAbilityDescription);
@@ -574,7 +574,7 @@ void GUI_Game_Dante()
 		Config.Game.Dante.CrazyCombo.levelMultiplier
 	))
 	{
-		Game_Dante_CrazyCombo_SetLevelMultiplier(Config.Game.Dante.CrazyCombo.levelMultiplier);
+		//Game_Dante_CrazyCombo_SetLevelMultiplier(Config.Game.Dante.CrazyCombo.levelMultiplier);
 	}
 	ImGui::PopItemWidth();
 	ImGui::PushItemWidth(150);
@@ -585,7 +585,7 @@ void GUI_Game_Dante()
 		Config.Game.Dante.WeaponSwitchTimeout.melee
 	))
 	{
-		Game_Dante_WeaponSwitchTimeout_Melee_Toggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
+		//Game_Dante_WeaponSwitchTimeout_Melee_Toggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
 	}
 	if constexpr (debug)
 	{
@@ -597,7 +597,7 @@ void GUI_Game_Dante()
 		Config.Game.Dante.WeaponSwitchTimeout.ranged
 	))
 	{
-		Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
+		//Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
 	}
 	if constexpr (debug)
 	{
@@ -614,11 +614,11 @@ void GUI_Game_Doppelganger()
 	GUI_SECTION_HEADER_START(Game.Doppelganger);
 	if (Config.Game.Doppelganger.enable)
 	{
-		Game_Doppelganger_ToggleEnableDevilTrigger(Config.Game.Doppelganger.enableDevilTrigger);
+		//Game_Doppelganger_ToggleEnableDevilTrigger(Config.Game.Doppelganger.enableDevilTrigger);
 	}
 	else
 	{
-		Game_Doppelganger_ToggleEnableDevilTrigger(DefaultConfig.Game.Doppelganger.enableDevilTrigger);
+		//Game_Doppelganger_ToggleEnableDevilTrigger(DefaultConfig.Game.Doppelganger.enableDevilTrigger);
 	}
 	GUI_SECTION_HEADER_END(Game.Doppelganger);
 	ImGui::PushItemWidth(100);
@@ -636,10 +636,10 @@ void GUI_Game_Doppelganger()
 		Config.Game.Doppelganger.enableDevilTrigger
 	))
 	{
-		Game_Doppelganger_ToggleEnableDevilTrigger(Config.Game.Doppelganger.enableDevilTrigger);
+		//Game_Doppelganger_ToggleEnableDevilTrigger(Config.Game.Doppelganger.enableDevilTrigger);
 	}
 	GUI_SECTION_FOOTER_START(Game.Doppelganger);
-	Game_Doppelganger_ToggleEnableDevilTrigger(DefaultConfig.Game.Doppelganger.enableDevilTrigger);
+	//Game_Doppelganger_ToggleEnableDevilTrigger(DefaultConfig.Game.Doppelganger.enableDevilTrigger);
 	GUI_SECTION_FOOTER_END;
 }
 
@@ -670,11 +670,11 @@ void GUI_Game_Mobility()
 	{
 		if (Config.Game.Mobility.enable)
 		{
-			Game_Mobility_Toggle(Config.Game.Mobility.enable);
+			//Game_Mobility_Toggle(Config.Game.Mobility.enable);
 		}
 		else
 		{
-			Game_Mobility_Toggle(DefaultConfig.Game.Mobility.enable);
+			//Game_Mobility_Toggle(DefaultConfig.Game.Mobility.enable);
 		}
 	}
 	ImGui::Text("");
@@ -727,7 +727,7 @@ void GUI_Game_Mobility()
 		Config.Game.Mobility.Devil.Vergil.trickDown
 	);
 	GUI_SECTION_FOOTER_START(Game.Mobility);
-	Game_Mobility_Toggle(DefaultConfig.Game.Mobility.enable);
+	//Game_Mobility_Toggle(DefaultConfig.Game.Mobility.enable);
 	GUI_SECTION_FOOTER_END;
 }
 
@@ -735,8 +735,8 @@ void GUI_Game_Multiplayer()
 {
 	auto Toggle = [](bool enable)
 	{
-		System_Input_ToggleRangeExtension  (enable);
-		System_Input_ToggleMultiplayerFixes(enable);
+		//System_Input_ToggleRangeExtension  (enable);
+		//System_Input_ToggleMultiplayerFixes(enable);
 	};
 	GUI_PUSH_DISABLE(ActorAvailable());
 	ImGui::Text(Locale.Game.Multiplayer.header);
@@ -784,11 +784,11 @@ void GUI_Game_Other()
 	GUI_SECTION_HEADER_START(Game.Other);
 	if (Config.Game.Other.enable)
 	{
-		Game_Other_Toggle(Config.Game.Other.enable);
+		//Game_Other_Toggle(Config.Game.Other.enable);
 	}
 	else
 	{
-		Game_Other_Toggle(DefaultConfig.Game.Other.enable);
+		//Game_Other_Toggle(DefaultConfig.Game.Other.enable);
 	}
 	GUI_SECTION_HEADER_END(Game.Other);
 	ImGui::PushItemWidth(150);
@@ -819,69 +819,69 @@ void GUI_Game_Other()
 	);
 	ImGui::PopItemWidth();
 	GUI_SECTION_FOOTER_START(Game.Other);
-	Game_Other_Toggle(DefaultConfig.Game.Other.enable);
+	//Game_Other_Toggle(DefaultConfig.Game.Other.enable);
 	GUI_SECTION_FOOTER_END;
 }
 
 void GUI_Game_ResetMotionState()
 {
-	GUI_SECTION_HEADER(Game.ResetMotionState);
-	ImGui::PushItemWidth(150);
-	if (GUI_Combo<uint8>
-	(
-		Locale.Game.ResetMotionState.Button.label,
-		Locale.Game.ResetMotionState.Button.items,
-		countof(Locale.Game.ResetMotionState.Button.items),
-		Game_ResetMotionState_buttonIndex,
-		0,
-		false
-	))
-	{
-		auto & buttonIndex = Game_ResetMotionState_buttonIndex;
-		auto & buttonMap   = Game_ResetMotionState_buttonMap;
-		Config.Game.ResetMotionState.button = buttonMap[buttonIndex];
-		SaveConfig();
-	}
-	ImGui::PopItemWidth();
-	if constexpr (debug)
-	{
-		ImGui::Text("index %u", Game_ResetMotionState_buttonIndex);
-		ImGui::Text("true  %X", Config.Game.ResetMotionState.button);
-	}
-	GUI_SECTION_FOOTER_START(Game.ResetMotionState);
-	Game_ResetMotionState_UpdateButtonIndex();
-	GUI_SECTION_FOOTER_END;
+	//GUI_SECTION_HEADER(Game.ResetMotionState);
+	//ImGui::PushItemWidth(150);
+	//if (GUI_Combo<uint8>
+	//(
+	//	Locale.Game.ResetMotionState.Button.label,
+	//	Locale.Game.ResetMotionState.Button.items,
+	//	countof(Locale.Game.ResetMotionState.Button.items),
+	//	Game_ResetMotionState_buttonIndex,
+	//	0,
+	//	false
+	//))
+	//{
+	//	auto & buttonIndex = Game_ResetMotionState_buttonIndex;
+	//	auto & buttonMap   = Game_ResetMotionState_buttonMap;
+	//	Config.Game.ResetMotionState.button = buttonMap[buttonIndex];
+	//	SaveConfig();
+	//}
+	//ImGui::PopItemWidth();
+	//if constexpr (debug)
+	//{
+	//	ImGui::Text("index %u", Game_ResetMotionState_buttonIndex);
+	//	ImGui::Text("true  %X", Config.Game.ResetMotionState.button);
+	//}
+	//GUI_SECTION_FOOTER_START(Game.ResetMotionState);
+	//Game_ResetMotionState_UpdateButtonIndex();
+	//GUI_SECTION_FOOTER_END;
 }
 
 void GUI_Game_StyleSwitcher()
 {
-	GUI_SECTION_HEADER_START(Game.StyleSwitcher);
-	if (Config.Game.StyleSwitcher.enable)
-	{
-		Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
-	}
-	else
-	{
-		Game_StyleSwitcher_Toggle(DefaultConfig.Game.StyleSwitcher.enable);
-	}
-	GUI_SECTION_HEADER_END(Game.StyleSwitcher);
-	GUI_Checkbox
-	(
-		Locale.Game.StyleSwitcher.noDoubleTap,
-		Config.Game.StyleSwitcher.noDoubleTap
-	);
-	GUI_SECTION_FOOTER_START(Game.StyleSwitcher);
-	Game_StyleSwitcher_Toggle(DefaultConfig.Game.StyleSwitcher.enable);
-	GUI_SECTION_FOOTER_END;
+	//GUI_SECTION_HEADER_START(Game.StyleSwitcher);
+	//if (Config.Game.StyleSwitcher.enable)
+	//{
+	//	Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
+	//}
+	//else
+	//{
+	//	Game_StyleSwitcher_Toggle(DefaultConfig.Game.StyleSwitcher.enable);
+	//}
+	//GUI_SECTION_HEADER_END(Game.StyleSwitcher);
+	//GUI_Checkbox
+	//(
+	//	Locale.Game.StyleSwitcher.noDoubleTap,
+	//	Config.Game.StyleSwitcher.noDoubleTap
+	//);
+	//GUI_SECTION_FOOTER_START(Game.StyleSwitcher);
+	//Game_StyleSwitcher_Toggle(DefaultConfig.Game.StyleSwitcher.enable);
+	//GUI_SECTION_FOOTER_END;
 }
 
 void GUI_Game_Training()
 {
 	auto Toggle = [](CONFIG & config)
 	{
-		Game_Training_ToggleInfiniteHitPoints  (config.Game.Training.infiniteHitPoints  );
-		Game_Training_ToggleInfiniteMagicPoints(config.Game.Training.infiniteMagicPoints);
-		Game_Training_ToggleDisableTimer       (config.Game.Training.disableTimer       );
+		Training_ToggleInfiniteHitPoints  (config.Game.Training.infiniteHitPoints  );
+		Training_ToggleInfiniteMagicPoints(config.Game.Training.infiniteMagicPoints);
+		Training_ToggleDisableTimer       (config.Game.Training.disableTimer       );
 	};
 	GUI_SECTION_HEADER_START(Game.Training);
 	if (Config.Game.Training.enable)
@@ -899,7 +899,7 @@ void GUI_Game_Training()
 		Config.Game.Training.infiniteHitPoints
 	))
 	{
-		Game_Training_ToggleInfiniteHitPoints(Config.Game.Training.infiniteHitPoints);
+		Training_ToggleInfiniteHitPoints(Config.Game.Training.infiniteHitPoints);
 	}
 	if (GUI_Checkbox
 	(
@@ -907,7 +907,7 @@ void GUI_Game_Training()
 		Config.Game.Training.infiniteMagicPoints
 	))
 	{
-		Game_Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
+		Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
 	}
 	if (GUI_Checkbox
 	(
@@ -915,7 +915,7 @@ void GUI_Game_Training()
 		Config.Game.Training.disableTimer
 	))
 	{
-		Game_Training_ToggleDisableTimer(Config.Game.Training.disableTimer);
+		Training_ToggleDisableTimer(Config.Game.Training.disableTimer);
 	}
 	GUI_SECTION_FOOTER_START(Game.Training);
 	Toggle(DefaultConfig);
@@ -926,9 +926,9 @@ void GUI_Game_Vergil()
 {
 	auto Toggle = [](CONFIG & config)
 	{
-		Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(config.Game.Vergil.ForceEdge.infiniteRoundTrip);
-		Game_Vergil_SummonedSwords_ToggleChronoSwords(config.Game.Vergil.SummonedSwords.chronoSwords);
-		Game_Vergil_WeaponSwitchTimeout_MeleeToggle  (config.Game.Vergil.WeaponSwitchTimeout.melee  );
+		//Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(config.Game.Vergil.ForceEdge.infiniteRoundTrip);
+		//Game_Vergil_SummonedSwords_ToggleChronoSwords(config.Game.Vergil.SummonedSwords.chronoSwords);
+		//Game_Vergil_WeaponSwitchTimeout_MeleeToggle  (config.Game.Vergil.WeaponSwitchTimeout.melee  );
 	};
 	GUI_SECTION_HEADER_START(Game.Vergil);
 	if (Config.Game.Vergil.enable)
@@ -947,7 +947,7 @@ void GUI_Game_Vergil()
 		Config.Game.Vergil.ForceEdge.infiniteRoundTrip
 	))
 	{
-		Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(Config.Game.Vergil.ForceEdge.infiniteRoundTrip);
+		//Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(Config.Game.Vergil.ForceEdge.infiniteRoundTrip);
 	}
 	ImGui::Text(Locale.Game.Vergil.SummonedSwords.header);
 	if (GUI_Checkbox
@@ -956,7 +956,7 @@ void GUI_Game_Vergil()
 		Config.Game.Vergil.SummonedSwords.chronoSwords
 	))
 	{
-		Game_Vergil_SummonedSwords_ToggleChronoSwords(Config.Game.Vergil.SummonedSwords.chronoSwords);
+		//Game_Vergil_SummonedSwords_ToggleChronoSwords(Config.Game.Vergil.SummonedSwords.chronoSwords);
 	}
 	ImGui::SameLine();
 	GUI_Tooltip(Locale.Game.Vergil.SummonedSwords.chronoSwordsDescription);
@@ -968,7 +968,7 @@ void GUI_Game_Vergil()
 		Config.Game.Vergil.WeaponSwitchTimeout.melee
 	))
 	{
-		Game_Vergil_WeaponSwitchTimeout_MeleeToggle(Config.Game.Vergil.WeaponSwitchTimeout.melee);
+		//Game_Vergil_WeaponSwitchTimeout_MeleeToggle(Config.Game.Vergil.WeaponSwitchTimeout.melee);
 	}
 	ImGui::PopItemWidth();
 	GUI_SECTION_FOOTER_START(Game.Vergil);
@@ -982,11 +982,11 @@ void GUI_Game_WeaponSwitcher()
 	GUI_SECTION_HEADER_START(Game.WeaponSwitcher);
 	if (Config.Game.WeaponSwitcher.enable)
 	{
-		Game_WeaponSwitcher_Toggle(Config.Game.WeaponSwitcher.enable);
+		//Game_WeaponSwitcher_Toggle(Config.Game.WeaponSwitcher.enable);
 	}
 	else
 	{
-		Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
+		//Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
 	}
 	GUI_SECTION_HEADER_END(Game.WeaponSwitcher);
 	ImGui::PushItemWidth(200);
@@ -1040,7 +1040,7 @@ void GUI_Game_WeaponSwitcher()
 	}
 	ImGui::PopItemWidth();
 	GUI_SECTION_FOOTER_START(Game.WeaponSwitcher);
-	Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
+	//Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
 	GUI_SECTION_FOOTER_END;
 	GUI_POP_DISABLE(ActorAvailable());
 }
@@ -1123,7 +1123,7 @@ void GUI_Cosmetics_Color()
 			if (GUI_ColorEdit4(items[index], var[index]))
 			{
 				update = true;
-				Cosmetics_Color_UpdateColors(Config);
+				//Cosmetics_Color_UpdateColors(Config);
 			}
 			ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
 		}
@@ -1281,7 +1281,7 @@ void GUI_Cosmetics_Color()
 	{
 		memcpy(&Config.Cosmetics.Color, &DefaultConfig.Cosmetics.Color, sizeof(Config.Cosmetics.Color));
 		SaveConfig();
-		Cosmetics_Color_UpdateColors(DefaultConfig);
+		//Cosmetics_Color_UpdateColors(DefaultConfig);
 		UpdateDoppelgangerColor();
 	}
 }
@@ -1395,7 +1395,7 @@ void GUI_Cosmetics_Other()
 	ImGui::Text("");
 	if (GUI_Checkbox(Locale.Cosmetics.Other.noDevilForm, Config.Cosmetics.Other.noDevilForm))
 	{
-		Cosmetics_Other_ToggleNoDevilForm(Config.Cosmetics.Other.noDevilForm);
+		//Cosmetics_Other_ToggleNoDevilForm(Config.Cosmetics.Other.noDevilForm);
 	}
 }
 
@@ -1410,7 +1410,7 @@ void GUI_Cosmetics_Vergil()
 		Config.Cosmetics.Vergil.Beowulf.hideModel
 	))
 	{
-		Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.Beowulf.hideModel);
+		//Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.Beowulf.hideModel);
 	}
 }
 
@@ -1803,7 +1803,7 @@ void GUI_Speed_Draw()
 			if (GUI_InputEx<float32>(label, var, 0.1f))
 			{
 				var = (ceilf(var * 10000) / 10000);
-				Speed_Update(Config);
+				//Speed_Update(Config);
 			}
 		};
 		auto InputExSpeedMulti = [&]
@@ -1842,7 +1842,7 @@ void GUI_Speed_Draw()
 		);
 		ImGui::SameLine(300);
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
-		ImGui::Text("%.3f", (DefaultConfig.Speed.Main.base * System_Graphics_frameRateMultiplier));
+		//ImGui::Text("%.3f", (DefaultConfig.Speed.Main.base * System_Graphics_frameRateMultiplier));
 		ImGui::PopStyleColor();
 		InputExSpeed
 		(
@@ -1851,7 +1851,7 @@ void GUI_Speed_Draw()
 		);
 		ImGui::SameLine(300);
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
-		ImGui::Text("%.3f", (DefaultConfig.Speed.Main.turbo * System_Graphics_frameRateMultiplier));
+		//ImGui::Text("%.3f", (DefaultConfig.Speed.Main.turbo * System_Graphics_frameRateMultiplier));
 		ImGui::PopStyleColor();
 		InputExSpeed
 		(
@@ -1902,7 +1902,7 @@ void GUI_Speed_Draw()
 		{
 			memcpy(&Config.Speed, &DefaultConfig.Speed, sizeof(Config.Speed));
 			SaveConfig();
-			Speed_Update(DefaultConfig);
+			//Speed_Update(DefaultConfig);
 		}
 	}
 	ImGui::End();
@@ -1951,7 +1951,7 @@ void GUI_Teleporter_Draw()
 			GUI_InputEx<uint8>("Style", style);
 			if (GUI_Button("Update Style Icon"))
 			{
-				UpdateStyleIcon(style, styleIconDante[style].model, styleIconDante[style].texture);
+				//UpdateStyleIcon(style, styleIconDante[style].model, styleIconDante[style].texture);
 			}
 		}
 
@@ -1963,7 +1963,7 @@ void GUI_Teleporter_Draw()
 			GUI_InputEx<uint8>("Weapon", weapon);
 			if (GUI_Button("Update Weapon Icon"))
 			{
-				UpdateWeaponIcon(index, weaponIcon[weapon].model, weaponIcon[weapon].texture);
+				//UpdateWeaponIcon(index, weaponIcon[weapon].model, weaponIcon[weapon].texture);
 			}
 		}
 
@@ -2158,28 +2158,28 @@ void GUI_Overlay_Draw()
 
 void DrawRestartOverlay()
 {
-	static ImVec2 size = {};
-	ImVec2 position = {};
-	position.x = (ImGui::GetIO().DisplaySize.x - size.x) / 2;
-	position.y = (ImGui::GetIO().DisplaySize.y - size.y) / 2;
-	ImGui::SetNextWindowPos(position);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImGui::GetStyle().Colors[ImGuiCol_WindowBg]);
-	if (ImGui::Begin("RestartOverlay", &restart, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize))
-	{
-		size = ImGui::GetWindowSize();
-		ImGuiIO & io = ImGui::GetIO();
-		ImGui::PushFont(io.Fonts->Fonts[1]);
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
-		//ImGui::Text(Locale.restartRequired);
-		ImGui::PopStyleColor();
-		ImGui::PopFont();
-	}
-	ImGui::End();
-	ImGui::PopStyleColor();
-	ImGui::PopStyleVar(3);
+	//static ImVec2 size = {};
+	//ImVec2 position = {};
+	//position.x = (ImGui::GetIO().DisplaySize.x - size.x) / 2;
+	//position.y = (ImGui::GetIO().DisplaySize.y - size.y) / 2;
+	//ImGui::SetNextWindowPos(position);
+	//ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	//ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	//ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	//ImGui::PushStyleColor(ImGuiCol_WindowBg, ImGui::GetStyle().Colors[ImGuiCol_WindowBg]);
+	//if (ImGui::Begin("RestartOverlay", &restart, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize))
+	//{
+	//	size = ImGui::GetWindowSize();
+	//	ImGuiIO & io = ImGui::GetIO();
+	//	ImGui::PushFont(io.Fonts->Fonts[1]);
+	//	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+	//	//ImGui::Text(Locale.restartRequired);
+	//	ImGui::PopStyleColor();
+	//	ImGui::PopFont();
+	//}
+	//ImGui::End();
+	//ImGui::PopStyleColor();
+	//ImGui::PopStyleVar(3);
 }
 
 void GUI_Render()
@@ -2209,10 +2209,10 @@ void GUI_Render()
 	{
 		GUI_Teleporter_Draw();
 	}
-	if (restart)
-	{
-		DrawRestartOverlay();
-	}
+	//if (restart)
+	//{
+	//	DrawRestartOverlay();
+	//}
 }
 
 void GUI_Init()

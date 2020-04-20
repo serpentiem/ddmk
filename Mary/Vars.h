@@ -169,7 +169,7 @@ enum DEVIL_MODEL_PART_
 	MAX_DEVIL_MODEL_PART,
 };
 
-enum CACHE_FILE_
+enum CACHE_FILE
 {
 	// Dante
 	pl000,
@@ -595,7 +595,72 @@ enum FILE_MODE_
 
 
 
+struct MotionHelper
+{
+	uint8 motionId;
+	uint16 cacheFileId;
+};
 
+constexpr MotionHelper motionHelperDante[] =
+{
+	{ MOTION_GROUP_DANTE_BASE                  , pl000_00_0  },
+	{ MOTION_GROUP_DANTE_DAMAGE                , pl000_00_1  },
+	{ MOTION_GROUP_DANTE_TAUNTS                , pl000_00_2  },
+	{ MOTION_GROUP_DANTE_REBELLION             , pl000_00_3  },
+	{ MOTION_GROUP_DANTE_CERBERUS              , pl000_00_4  },
+	{ MOTION_GROUP_DANTE_AGNI_RUDRA            , pl000_00_5  },
+	{ MOTION_GROUP_DANTE_NEVAN                 , pl000_00_6  },
+	{ MOTION_GROUP_DANTE_BEOWULF               , pl000_00_7  },
+	{ MOTION_GROUP_DANTE_EBONY_IVORY           , pl000_00_8  },
+	{ MOTION_GROUP_DANTE_SHOTGUN               , pl000_00_9  },
+	{ MOTION_GROUP_DANTE_ARTEMIS               , pl000_00_10 },
+	{ MOTION_GROUP_DANTE_SPIRAL                , pl000_00_11 },
+	{ MOTION_GROUP_DANTE_KALINA_ANN            , pl000_00_12 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_REBELLION , pl000_00_13 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_CERBERUS  , pl000_00_14 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_AGNI_RUDRA, pl000_00_15 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_NEVAN     , pl000_00_16 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_BEOWULF   , pl000_00_17 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_EBONY_IVORY, pl000_00_18 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_SHOTGUN    , pl000_00_19 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_ARTEMIS    , pl000_00_20 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_SPIRAL     , pl000_00_21 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN , pl000_00_22 },
+	{ MOTION_GROUP_DANTE_TRICKSTER             , pl000_00_23 },
+	{ MOTION_GROUP_DANTE_ROYALGUARD            , pl000_00_24 },
+	{ MOTION_GROUP_DANTE_QUICKSILVER           , pl000_00_25 },
+	{ MOTION_GROUP_DANTE_DOPPELGANGER          , pl000_00_26 },
+};
+
+constexpr MotionHelper motionHelperBob[] =
+{
+	{ MOTION_GROUP_BOB_BASE       , pl001_00_0  },
+	{ MOTION_GROUP_BOB_DAMAGE     , pl001_00_1  },
+	{ MOTION_GROUP_BOB_TAUNTS     , pl001_00_2  },
+	{ MOTION_GROUP_BOB_MELEE_STYLE, pl001_00_31 },
+};
+
+constexpr MotionHelper motionHelperLady[] =
+{
+	{ MOTION_GROUP_LADY_BASE      , pl002_00_0  },
+	{ MOTION_GROUP_LADY_DAMAGE    , pl002_00_1  },
+	{ MOTION_GROUP_LADY_TAUNTS    , pl002_00_2  },
+	{ MOTION_GROUP_LADY_KALINA_ANN, pl000_00_12 },
+};
+
+constexpr MotionHelper motionHelperVergil[] =
+{
+	{ MOTION_GROUP_VERGIL_BASE                  , pl021_00_0 },
+	{ MOTION_GROUP_VERGIL_DAMAGE                , pl021_00_1 },
+	{ MOTION_GROUP_VERGIL_TAUNTS                , pl021_00_2 },
+	{ MOTION_GROUP_VERGIL_YAMATO                , pl021_00_3 },
+	{ MOTION_GROUP_VERGIL_BEOWULF               , pl021_00_4 },
+	{ MOTION_GROUP_VERGIL_FORCE_EDGE            , pl021_00_5 },
+	{ MOTION_GROUP_VERGIL_DARK_SLAYER           , pl021_00_6 },
+	{ MOTION_GROUP_VERGIL_NERO_ANGELO_YAMATO    , pl021_00_7 },
+	{ MOTION_GROUP_VERGIL_NERO_ANGELO_BEOWULF   , pl021_00_8 },
+	{ MOTION_GROUP_VERGIL_NERO_ANGELO_FORCE_EDGE, pl021_00_9 },
+};
 
 
 
@@ -619,6 +684,76 @@ enum FILE_MODE_
 #define _(size) struct { byte8 Merge(padding, __LINE__)[size]; }
 
 #pragma pack(push, 1)
+
+
+
+
+struct STRING_ITEM
+{
+	_(8);
+	const char * string;
+};
+
+struct FILE_ITEM
+{
+	uint32        category;
+	uint32        status;
+	uint16        id;
+	_(6);
+	void        * callback;
+	STRING_ITEM * stringItem;
+	byte8       * file;
+	_(32);
+};
+
+
+struct FileItemHelper
+{
+	uint16 fileItemId;
+	uint16 cacheFileId;
+};
+
+// @Todo: Add motion items.
+constexpr FileItemHelper fileItemHelper[] =
+{
+	// Dante
+	{ 0  , pl000               },
+	{ 200, pl005               },
+	{ 201, pl006               },
+	{ 202, pl007               },
+	{ 203, pl008               },
+	{ 204, pl009               },
+	{ 205, pl017               },
+	{ 140, plwp_sword          },
+	{ 141, plwp_nunchaku       },
+	{ 142, plwp_2sword         },
+	{ 143, plwp_guitar         },
+	{ 144, plwp_fight          },
+	{ 145, plwp_gun            },
+	{ 146, plwp_shotgun        },
+	{ 147, plwp_laser          },
+	{ 148, plwp_rifle          },
+	{ 149, plwp_ladygun        },
+	// Bob
+	{ 1  , pl001               },
+	{ 207, pl010               },
+	{ 169, plwp_vergilsword    },
+	// Lady
+	{ 2  , pl002               },
+	// Vergil
+	{ 3  , pl021               },
+	{ 221, pl010               },
+	{ 222, pl014               },
+	{ 223, pl025               },
+	{ 196, plwp_newvergilsword },
+	{ 189, plwp_newvergilfight },
+	{ 198, plwp_forceedge      },
+	{ 187, plwp_nerosword      },
+};
+
+
+
+
 
 
 
@@ -689,27 +824,6 @@ struct CAPCOM_GAMEPAD
 
 
 
-struct STRING_ITEM
-{
-
-	// @Todo: Add _(8);
-	byte8 unknown[8];
-	const char * string;
-};
-
-struct FILE_ITEM
-{
-	// @Todo: Same as above.
-
-	uint32        category;
-	uint32        status;
-	uint16        id;
-	byte8         padding[6];
-	void        * callback;
-	STRING_ITEM * stringItem;
-	byte8       * file;
-	byte8         unknown[32];
-};
 
 
 

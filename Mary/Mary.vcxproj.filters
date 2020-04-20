@@ -11,28 +11,16 @@
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="Hooks.cpp" />
-    <ClCompile Include="System\Input.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="System\State.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="Cosmetics\Color.cpp">
       <Filter>Cosmetics</Filter>
     </ClCompile>
     <ClCompile Include="System\Media.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\File.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="System\Camera.cpp">
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="Game\Arcade.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Training.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Game\StyleSwitcher.cpp">
@@ -55,9 +43,6 @@
     </ClCompile>
     <ClCompile Include="Game\ResetMotionState.cpp">
       <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="System\Actor.cpp">
-      <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="System\Weapon.cpp">
       <Filter>System</Filter>
@@ -130,17 +115,11 @@
     </ClCompile>
     <ClCompile Include="Speed.cpp" />
     <ClCompile Include="Update.cpp" />
-    <ClCompile Include="System\HUD.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="System\Graphics.cpp">
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="Cosmetics\Object.cpp">
       <Filter>Cosmetics</Filter>
-    </ClCompile>
-    <ClCompile Include="System\Memory.cpp">
-      <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Game\Attack.cpp">
@@ -150,10 +129,13 @@
     <ClCompile Include="Cosmetics\Model.cpp">
       <Filter>Cosmetics</Filter>
     </ClCompile>
-    <ClCompile Include="System\ActorObsolete.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="ActorData.cpp" />
+    <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="HUD.cpp" />
+    <ClCompile Include="File.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="Training.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -185,28 +167,16 @@
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Hooks.h" />
-    <ClInclude Include="System\Input.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="System\State.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="Cosmetics\Color.h">
       <Filter>Cosmetics</Filter>
     </ClInclude>
     <ClInclude Include="System\Media.h">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="System\File.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="System\Camera.h">
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Game\Arcade.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Training.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\StyleSwitcher.h">
@@ -232,9 +202,6 @@
     </ClInclude>
     <ClInclude Include="Game\ResetMotionState.h">
       <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="System\Actor.h">
-      <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="System\Weapon.h">
       <Filter>System</Filter>
@@ -323,17 +290,11 @@
     </ClInclude>
     <ClInclude Include="Speed.h" />
     <ClInclude Include="Update.h" />
-    <ClInclude Include="System\HUD.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="System\Graphics.h">
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Cosmetics\Object.h">
       <Filter>Cosmetics</Filter>
-    </ClInclude>
-    <ClInclude Include="System\Memory.h">
-      <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Internal.h" />
@@ -341,5 +302,12 @@
       <Filter>Cosmetics</Filter>
     </ClInclude>
     <ClInclude Include="ActorData.h" />
+    <ClInclude Include="Actor.h" />
+    <ClInclude Include="HUD.h" />
+    <ClInclude Include="File.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="Memory.h" />
+    <ClInclude Include="Training.h" />
   </ItemGroup>
 </Project>

@@ -1,99 +1,32 @@
 #include "../Core/Core.h"
 
+#include "Actor.h"
 #include "Config.h"
 #include "Event.h"
 #include "FMOD.h"
 #include "Hooks.h"
 #include "Internal.h"
-#include "Speed.h"
+#include "Memory.h"
+#include "Training.h"
 #include "Update.h"
 
-#include "System/Actor.h"
-#include "System/Animation.h"
-//#include "System/Cache.h"
-#include "System/Camera.h"
-#include "System/File.h"
-#include "System/Graphics.h"
-#include "System/HUD.h"
-#include "System/Input.h"
-#include "System/Media.h"
-#include "System/Memory.h"
-#include "System/Motion.h"
-#include "System/Sound.h"
-#include "System/Weapon.h"
 #include "System/Window.h"
-
-#include "Game/Arcade.h"
-#include "Game/Attack.h"
-#include "Game/Dante.h"
-#include "Game/Doppelganger.h"
-#include "Game/Mobility.h"
-#include "Game/Other.h"
-#include "Game/ResetMotionState.h"
-#include "Game/StyleSwitcher.h"
-#include "Game/Training.h"
-#include "Game/Vergil.h"
-#include "Game/WeaponSwitcher.h"
-
-#include "Cosmetics/Color.h"
-#include "Cosmetics/Dante.h"
-//#include "Cosmetics/Object.h"
-
-
-#include "Cosmetics/Model.h"
-
-#include "Cosmetics/Other.h"
-#include "Cosmetics/Vergil.h"
-
-const char * Log_directory = "logs";
-const char * Log_file      = "Mary.txt";
-
-uint32 Memory_size = (64 * 1024 * 1024);
-
-
-
-//#pragma comment(linker, "/export:DirectInput8Create=Create")
-//_Init_thread_epoch
-
-//#pragma comment(linker "/export:")
-
-//extern "C" __declspec(dllexport) void func_epoch()
-//{
-//	return;
-//}
-//
-//#pragma comment(linker, "/export:_Init_thread_epoch=func_epoch")
-
-
-
-
-
 
 uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
-		Log_Init();
+		Core_Log_Init("logs", "Mary.txt");
 		Log("Session started.");
-		Config_Init();
 
-
-		//System_Actor_AdjustConfig(Config);
-		//System_Actor_AdjustConfig(DefaultConfig);
-
-		Cosmetics_Color_AdjustConfig(Config);
-		Cosmetics_Color_AdjustConfig(DefaultConfig);
-
+		Core_Config_Init("configs", "Mary.bin", &Config, sizeof(CONFIG));
 		LoadConfig();
-		if (!Memory_Init())
+
+		if (!Core_Memory_Init((64 * 1024 * 1024)))
 		{
-
-			Log("FAILED.");
-
+			Log("Core_Memory_Init failed.");
 			return 0;
 		}
-
-
 
 		vp_memset((appBaseAddr + 0x5505B5), 0, 23); // Remove FMODGetCodecDescription label.
 
@@ -104,6 +37,30 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
+		if (!Memory_Init())
+		{
+			Log("Memory_Init failed.");
+			return 0;
+		}
+
+
+		Internal_Init();
+
+
+
+
+		//Memory_ToggleExtendVectors(true);
+
+
+
+
+		if (!File_Init())
+		{
+			Log("File_Init failed.");
+			return 0;
+		}
+
+		Actor_Init();
 
 
 
@@ -112,22 +69,37 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
 		//FMOD_Init();
 		Hooks_Init();
-		Internal_Init();
+		//Internal_Init();
 		//Speed_Init();
 		//Speed_Update(Config);
+
+
+
+		Training_ToggleInfiniteHitPoints  (Config.Game.Training.infiniteHitPoints  );
+		Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
+		Training_ToggleDisableTimer       (Config.Game.Training.disableTimer       );
+
+
+
+
+
+
+
+
+
 		Update_Init();
 
 
-		// Order is required.
-		System_Memory_Init();
-		System_Memory_ToggleExtendVectors(true);
-		System_File_Init();
+		//// Order is required.
+		//System_Memory_Init();
+		//System_Memory_ToggleExtendVectors(true);
+		//System_File_Init();
 
 
 
 
 
-		System_Actor_Init();
+		//System_Actor_Init();
 		//System_Actor_ToggleArrayExtension(true);
 		//System_Actor_ToggleCreateActorOne(true);
 
@@ -210,9 +182,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		//Game_StyleSwitcher_Init();
 		//Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
 
-		Game_Training_ToggleInfiniteHitPoints  (Config.Game.Training.infiniteHitPoints  );
-		Game_Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
-		Game_Training_ToggleDisableTimer       (Config.Game.Training.disableTimer       );
+		//Training_ToggleInfiniteHitPoints  (Config.Game.Training.infiniteHitPoints  );
+		//Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
+		//Training_ToggleDisableTimer       (Config.Game.Training.disableTimer       );
 
 
 

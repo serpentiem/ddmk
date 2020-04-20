@@ -4,6 +4,8 @@
 #include "Memory.h"
 #include "Windows.h"
 
+// @Research: Consider void *.
+
 byte8 * LoadFile
 (
 	const char * filename,

@@ -3,9 +3,6 @@
 #include "../Core/String.h"
 #include "../Core/Utility.h"
 
-const char * Log_directory = "logs";
-const char * Log_file      = "dinput8.txt";
-
 const char * libName  = "dinput8.dll";
 const char * funcName = "DirectInput8Create";
 
@@ -16,8 +13,6 @@ extern "C" void Create()
 {
 	return ((void(__fastcall *)())procAddr)();
 }
-
-//#pragma comment(linker, "/export:DirectInput8Create=Create")
 
 bool Init()
 {
@@ -94,7 +89,7 @@ DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
-		Log_Init();
+		Core_Log_Init("logs", "dinput8.txt");
 		Log("Session started.");
 		if (!Init())
 		{

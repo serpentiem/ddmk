@@ -1,10 +1,6 @@
 #include "Training.h"
 
-
-
-
-
-void Game_Training_ToggleInfiniteHitPoints(bool enable)
+void Training_ToggleInfiniteHitPoints(bool enable)
 {
 	LogFunction(enable);
 	if (enable)
@@ -21,7 +17,7 @@ void Game_Training_ToggleInfiniteHitPoints(bool enable)
 	}
 }
 
-void Game_Training_ToggleInfiniteMagicPoints(bool enable)
+void Training_ToggleInfiniteMagicPoints(bool enable)
 {
 	LogFunction(enable);
 	if (enable)
@@ -63,7 +59,7 @@ void Game_Training_ToggleInfiniteMagicPoints(bool enable)
 	}
 }
 
-void Game_Training_ToggleDisableTimer(bool enable)
+void Training_ToggleDisableTimer(bool enable)
 {
 	LogFunction(enable);
 	if (enable)

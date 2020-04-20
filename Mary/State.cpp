@@ -41,6 +41,9 @@ bool InGame()
 	return true;
 }
 
+
+
+// @Todo: Update addrs.
 bool HUD_IsVisible()
 {
 	if (!InGame())
@@ -56,3 +59,15 @@ bool HUD_IsVisible()
 	uint8 & alpha = *(uint8 *)(item + 0x6920);
 	return (alpha > 0) ? true : false;
 }
+
+
+
+
+
+
+
+
+
+
+
+

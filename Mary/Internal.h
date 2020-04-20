@@ -52,6 +52,7 @@ typedef void(__fastcall * func_1F97F0_t)(byte8 * actorData, bool playMotion); //
 typedef void(__fastcall * func_23E560_t)(byte8 * eventData, uint32 position);
 typedef void(__fastcall * func_8AC80_t)(MODEL_DATA & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool); // Play Motion
 typedef void(__fastcall * func_89E30_t)(byte8 * baseAddr, uint32 index); // Call after icon update.
+typedef void(__fastcall * func_1B9FA0_t)(byte8 * file); // Adjust file pointers.
 
 extern func_897B0_t func_897B0;
 extern func_89450_t func_89450;
@@ -102,5 +103,6 @@ extern func_1F97F0_t func_1F97F0;
 extern func_23E560_t func_23E560;
 extern func_8AC80_t func_8AC80;
 extern func_89E30_t func_89E30;
+extern func_1B9FA0_t func_1B9FA0;
 
 void Internal_Init();

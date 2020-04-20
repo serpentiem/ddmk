@@ -113,54 +113,100 @@ p4.exe</Command>
     <ClCompile Include="..\ImGui\imgui_demo.cpp" />
     <ClCompile Include="..\ImGui\imgui_draw.cpp" />
     <ClCompile Include="..\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Actor.cpp" />
     <ClCompile Include="ActorData.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Config.cpp" />
-    <ClCompile Include="Cosmetics\Color.cpp" />
-    <ClCompile Include="Cosmetics\Dante.cpp" />
-    <ClCompile Include="Cosmetics\Model.cpp" />
-    <ClCompile Include="Cosmetics\Object.cpp" />
-    <ClCompile Include="Cosmetics\Other.cpp" />
-    <ClCompile Include="Cosmetics\Vergil.cpp" />
+    <ClCompile Include="Cosmetics\Color.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Cosmetics\Dante.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Cosmetics\Model.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Cosmetics\Object.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Cosmetics\Other.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Cosmetics\Vergil.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Event.cpp" />
-    <ClCompile Include="FMOD.cpp" />
+    <ClCompile Include="File.cpp" />
+    <ClCompile Include="FMOD.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Game\Arcade.cpp" />
-    <ClCompile Include="Game\Attack.cpp" />
-    <ClCompile Include="Game\Dante.cpp" />
-    <ClCompile Include="Game\Doppelganger.cpp" />
-    <ClCompile Include="Game\Mobility.cpp" />
-    <ClCompile Include="Game\Other.cpp" />
-    <ClCompile Include="Game\ResetMotionState.cpp" />
-    <ClCompile Include="Game\StyleSwitcher.cpp" />
-    <ClCompile Include="Game\Training.cpp" />
-    <ClCompile Include="Game\Vergil.cpp" />
-    <ClCompile Include="Game\WeaponSwitcher.cpp" />
+    <ClCompile Include="Game\Attack.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Game\Dante.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Game\Doppelganger.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Game\Mobility.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Game\Other.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Game\ResetMotionState.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Game\StyleSwitcher.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Game\Vergil.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Game\WeaponSwitcher.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Hooks.cpp" />
     <ClCompile Include="Hotkeys.cpp" />
+    <ClCompile Include="HUD.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Internal.cpp" />
     <ClCompile Include="Locale.cpp" />
     <ClCompile Include="Mary.cpp" />
+    <ClCompile Include="Memory.cpp" />
     <ClCompile Include="Pause.cpp" />
-    <ClCompile Include="Restart.cpp" />
-    <ClCompile Include="Speed.cpp" />
-    <ClCompile Include="System\Actor.cpp" />
-    <ClCompile Include="System\ActorObsolete.cpp">
+    <ClCompile Include="Restart.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="System\Animation.cpp" />
-    <ClCompile Include="System\Camera.cpp" />
-    <ClCompile Include="System\File.cpp" />
-    <ClCompile Include="System\Graphics.cpp" />
-    <ClCompile Include="System\HUD.cpp" />
-    <ClCompile Include="System\Input.cpp" />
-    <ClCompile Include="System\Media.cpp" />
-    <ClCompile Include="System\Memory.cpp" />
-    <ClCompile Include="System\Motion.cpp" />
-    <ClCompile Include="System\Sound.cpp" />
-    <ClCompile Include="System\State.cpp" />
-    <ClCompile Include="System\Weapon.cpp" />
+    <ClCompile Include="Speed.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="System\Animation.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="System\Camera.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="System\Graphics.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="System\Media.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="System\Motion.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="System\Sound.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="System\Weapon.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="System\Window.cpp" />
+    <ClCompile Include="Training.cpp" />
     <ClCompile Include="Update.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -183,51 +229,101 @@ p4.exe</Command>
     <ClInclude Include="..\ImGui\imstb_rectpack.h" />
     <ClInclude Include="..\ImGui\imstb_textedit.h" />
     <ClInclude Include="..\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Actor.h" />
     <ClInclude Include="ActorData.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Config.h" />
-    <ClInclude Include="Cosmetics\Color.h" />
-    <ClInclude Include="Cosmetics\Dante.h" />
-    <ClInclude Include="Cosmetics\Model.h" />
-    <ClInclude Include="Cosmetics\Object.h" />
-    <ClInclude Include="Cosmetics\Other.h" />
-    <ClInclude Include="Cosmetics\Vergil.h" />
+    <ClInclude Include="Cosmetics\Color.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Cosmetics\Dante.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Cosmetics\Model.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Cosmetics\Object.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Cosmetics\Other.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Cosmetics\Vergil.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Event.h" />
-    <ClInclude Include="FMOD.h" />
+    <ClInclude Include="File.h" />
+    <ClInclude Include="FMOD.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Game\Arcade.h" />
-    <ClInclude Include="Game\Attack.h" />
-    <ClInclude Include="Game\Dante.h" />
-    <ClInclude Include="Game\Doppelganger.h" />
-    <ClInclude Include="Game\Mobility.h" />
-    <ClInclude Include="Game\Other.h" />
-    <ClInclude Include="Game\ResetMotionState.h" />
-    <ClInclude Include="Game\StyleSwitcher.h" />
-    <ClInclude Include="Game\Training.h" />
-    <ClInclude Include="Game\Vergil.h" />
-    <ClInclude Include="Game\WeaponSwitcher.h" />
+    <ClInclude Include="Game\Attack.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\Dante.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\Doppelganger.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\Mobility.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\Other.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\ResetMotionState.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\StyleSwitcher.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\Vergil.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Game\WeaponSwitcher.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Hooks.h" />
     <ClInclude Include="Hotkeys.h" />
+    <ClInclude Include="HUD.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Internal.h" />
     <ClInclude Include="Locale.h" />
+    <ClInclude Include="Memory.h" />
     <ClInclude Include="Pause.h" />
-    <ClInclude Include="Restart.h" />
-    <ClInclude Include="Speed.h" />
-    <ClInclude Include="System\Actor.h" />
-    <ClInclude Include="System\Animation.h" />
-    <ClInclude Include="System\Camera.h" />
-    <ClInclude Include="System\File.h" />
-    <ClInclude Include="System\Graphics.h" />
-    <ClInclude Include="System\HUD.h" />
-    <ClInclude Include="System\Input.h" />
-    <ClInclude Include="System\Media.h" />
-    <ClInclude Include="System\Memory.h" />
+    <ClInclude Include="Restart.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Speed.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="State.h" />
+    <ClInclude Include="System\Animation.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="System\Camera.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="System\Graphics.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="System\Media.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="System\Message.h" />
-    <ClInclude Include="System\Motion.h" />
-    <ClInclude Include="System\Sound.h" />
-    <ClInclude Include="System\State.h" />
-    <ClInclude Include="System\Weapon.h" />
+    <ClInclude Include="System\Motion.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="System\Sound.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="System\Weapon.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="System\Window.h" />
+    <ClInclude Include="Training.h" />
     <ClInclude Include="Update.h" />
     <ClInclude Include="Vars.h" />
   </ItemGroup>

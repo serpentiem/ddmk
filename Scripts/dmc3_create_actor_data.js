@@ -182,6 +182,7 @@ var Align = function(boundary)
 
 // Cpp
 
+c += "#pragma once\r\n";
 c += "#include \"../Core/Core.h\"\r\n";
 c += "\r\n";
 c += "#include \"Vars.h\"\r\n";
@@ -193,11 +194,6 @@ c += "#define _(size) struct { byte8 Merge(padding, __LINE__)[size]; }\r\n";
 c += "\r\n";
 c += "#pragma pack(push, 1)\r\n";
 c += "\r\n";
-// c += "struct ACTOR_DATA_DANTE;\r\n";
-// c += "struct ACTOR_DATA_BOB;\r\n";
-// c += "struct ACTOR_DATA_LADY;\r\n";
-// c += "struct ACTOR_DATA_VERGIL;\r\n";
-// c += "\r\n";
 
 c_assert += "#include \"ActorData.h\"\r\n";
 c_assert += "\r\n";

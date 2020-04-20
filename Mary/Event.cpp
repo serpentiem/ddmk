@@ -51,7 +51,7 @@ void ClearPool()
 {
 	LogFunction();
 
-	System_Actor_actorBaseAddr.Clear();
+	Actor_actorBaseAddr.Clear();
 
 
 	//System_Actor_mainActorBaseAddr = 0;
@@ -162,16 +162,29 @@ void Arcade_CreateMainActor(byte8 * baseAddr)
 void CreateMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
-	System_Actor_actorBaseAddr[0] = baseAddr;
-	System_Actor_actorBaseAddr.count = 2;
+	Actor_actorBaseAddr[0] = baseAddr;
+	Actor_actorBaseAddr.count = 2;
+
+
+
+	File_UpdateFileItems();
+
+
+
+
+
+
+
+
+
 
 	
-	auto & actorData = *(ACTOR_DATA *)baseAddr;
+	//auto & actorData = *(ACTOR_DATA *)baseAddr;
 
-	actorData.newButtonMask = 0xFFFF;
+	//actorData.newButtonMask = 0xFFFF;
 
-	
-	Arcade_CreateMainActor(baseAddr);
+	//
+	//Arcade_CreateMainActor(baseAddr);
 
 
 	//actorData.buttonMask = 0xFFF
@@ -203,7 +216,7 @@ void CreateMainActor(byte8 * baseAddr)
 void CreateMainClone(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
-	System_Actor_actorBaseAddr[1] = baseAddr;
+	Actor_actorBaseAddr[1] = baseAddr;
 
 
 
@@ -856,161 +869,161 @@ static void BossRush_SetContinueRoom()
 
 static const char * BossRush_SetTrack(const char * path)
 {
-	LogFunctionStart();
+	//LogFunctionStart();
 
-	VARS vars = {};
-	if (!vars.init)
-	{
-		return 0;
-	}
-	uint32 & room         = *vars.room;
-	uint32 & position     = *vars.position;
-	uint16 & nextRoom     = *vars.nextRoom;
-	uint16 & nextPosition = *vars.nextPosition;
-	byte32 * flags        = vars.flags;
-	uint32 & mission      = *vars.mission;
+	//VARS vars = {};
+	//if (!vars.init)
+	//{
+	//	return 0;
+	//}
+	//uint32 & room         = *vars.room;
+	//uint32 & position     = *vars.position;
+	//uint16 & nextRoom     = *vars.nextRoom;
+	//uint16 & nextPosition = *vars.nextPosition;
+	//byte32 * flags        = vars.flags;
+	//uint32 & mission      = *vars.mission;
 
-	switch (mission)
-	{
-	case 5:
-		if (_stricmp(path, "afs/sound/Battle_03.adx") == 0)
-		{
-			mediaError = MEDIA_SKIP_TRACK;
-			return 0;
-		}
-		if (nextRoom == ROOM_AGNI_RUDRA)
-		{
-			if (_stricmp(path, TRACK_JESTER_1) == 0)
-			{
-				mediaError = MEDIA_SKIP_TRACK;
-				return 0;
-			}
-		}
-		break;
-	case 12:
-		if (nextRoom == ROOM_GERYON)
-		{
-			if (_stricmp(path, TRACK_JESTER_2) == 0)
-			{
-				mediaError = MEDIA_SKIP_TRACK;
-				return 0;
-			}
-		}
-		break;
-	case 17:
-		if (nextRoom == ROOM_DOPPELGANGER)
-		{
-			if (_stricmp(path, TRACK_JESTER_3) == 0)
-			{
-				mediaError = MEDIA_SKIP_TRACK;
-				return 0;
-			}
-		}
-		break;
-	}
+	//switch (mission)
+	//{
+	//case 5:
+	//	if (_stricmp(path, "afs/sound/Battle_03.adx") == 0)
+	//	{
+	//		mediaError = MEDIA_SKIP_TRACK;
+	//		return 0;
+	//	}
+	//	if (nextRoom == ROOM_AGNI_RUDRA)
+	//	{
+	//		if (_stricmp(path, TRACK_JESTER_1) == 0)
+	//		{
+	//			mediaError = MEDIA_SKIP_TRACK;
+	//			return 0;
+	//		}
+	//	}
+	//	break;
+	//case 12:
+	//	if (nextRoom == ROOM_GERYON)
+	//	{
+	//		if (_stricmp(path, TRACK_JESTER_2) == 0)
+	//		{
+	//			mediaError = MEDIA_SKIP_TRACK;
+	//			return 0;
+	//		}
+	//	}
+	//	break;
+	//case 17:
+	//	if (nextRoom == ROOM_DOPPELGANGER)
+	//	{
+	//		if (_stricmp(path, TRACK_JESTER_3) == 0)
+	//		{
+	//			mediaError = MEDIA_SKIP_TRACK;
+	//			return 0;
+	//		}
+	//	}
+	//	break;
+	//}
 
-	LogFunctionEnd();
+	//LogFunctionEnd();
 
 	return 0;
 }
 
 static void BossRush_StageLoadComplete()
 {
-	LogFunctionStart();
+	//LogFunctionStart();
 
-	VARS vars = {};
-	if (!vars.init)
-	{
-		return;
-	}
-	uint32 & room         = *vars.room;
-	uint32 & position     = *vars.position;
-	uint16 & nextRoom     = *vars.nextRoom;
-	uint16 & nextPosition = *vars.nextPosition;
-	byte32 * flags        = vars.flags;
-	uint32 & mission      = *vars.mission;
+	//VARS vars = {};
+	//if (!vars.init)
+	//{
+	//	return;
+	//}
+	//uint32 & room         = *vars.room;
+	//uint32 & position     = *vars.position;
+	//uint16 & nextRoom     = *vars.nextRoom;
+	//uint16 & nextPosition = *vars.nextPosition;
+	//byte32 * flags        = vars.flags;
+	//uint32 & mission      = *vars.mission;
 
-	switch (mission)
-	{
-	case 3:
-		if ((room == ROOM_CERBERUS) && (flags[20] == 1))
-		{
-			PlayTrack(TRACK_CERBERUS);
-		}
-		break;
-	case 5:
-		if ((room == ROOM_AGNI_RUDRA) && (flags[20] == 1))
-		{
-			PlayTrack(TRACK_AGNI_RUDRA);
-		}
-		break;
-	case 7:
-		if (room == ROOM_VERGIL_1)
-		{
-			PlayTrack(TRACK_VERGIL_1);
-		}
-		break;
-	case 9:
-		if ((room == ROOM_NEVAN) && (flags[20] == 1))
-		{
-			PlayTrack(TRACK_NEVAN);
-		}
-		break;
-	case 11:
-		if ((room == ROOM_BEOWULF) && (flags[20] == 1))
-		{
-			PlayTrack(TRACK_BEOWULF);
-		}
-		break;
-	case 12:
-		if (room == ROOM_GERYON)
-		{
-			if (flags[20] == 1)
-			{
-				PlayTrack(TRACK_GERYON);
-				mediaSkipTrack = true;
-			}
-			else if (flags[20] == 2)
-			{
-				PlayTrack(TRACK_GERYON);
-			}
-		}
-		break;
-	case 13:
-		if (room == ROOM_VERGIL_2)
-		{
-			PlayTrack(TRACK_VERGIL_2);
-		}
-		break;
-	case 16:
-		if (room == ROOM_LADY)
-		{
-			PlayTrack(TRACK_LADY);
-		}
-		break;
-	case 17:
-		if ((room == ROOM_DOPPELGANGER) && (flags[20] == 0))
-		{
-			PlayTrack(TRACK_DOPPELGANGER);
-		}
-		break;
-	case 19:
-		if (room == ROOM_ARKHAM)
-		{
-			if (flags[20] == 0)
-			{
-				PlayTrack(TRACK_ARKHAM_1);
-				mediaSkipTrack = true;
-			}
-			else if (flags[20] == 1)
-			{
-				PlayTrack(TRACK_ARKHAM_2);
-			}
-		}
-		break;
-	}
+	//switch (mission)
+	//{
+	//case 3:
+	//	if ((room == ROOM_CERBERUS) && (flags[20] == 1))
+	//	{
+	//		PlayTrack(TRACK_CERBERUS);
+	//	}
+	//	break;
+	//case 5:
+	//	if ((room == ROOM_AGNI_RUDRA) && (flags[20] == 1))
+	//	{
+	//		PlayTrack(TRACK_AGNI_RUDRA);
+	//	}
+	//	break;
+	//case 7:
+	//	if (room == ROOM_VERGIL_1)
+	//	{
+	//		PlayTrack(TRACK_VERGIL_1);
+	//	}
+	//	break;
+	//case 9:
+	//	if ((room == ROOM_NEVAN) && (flags[20] == 1))
+	//	{
+	//		PlayTrack(TRACK_NEVAN);
+	//	}
+	//	break;
+	//case 11:
+	//	if ((room == ROOM_BEOWULF) && (flags[20] == 1))
+	//	{
+	//		PlayTrack(TRACK_BEOWULF);
+	//	}
+	//	break;
+	//case 12:
+	//	if (room == ROOM_GERYON)
+	//	{
+	//		if (flags[20] == 1)
+	//		{
+	//			PlayTrack(TRACK_GERYON);
+	//			mediaSkipTrack = true;
+	//		}
+	//		else if (flags[20] == 2)
+	//		{
+	//			PlayTrack(TRACK_GERYON);
+	//		}
+	//	}
+	//	break;
+	//case 13:
+	//	if (room == ROOM_VERGIL_2)
+	//	{
+	//		PlayTrack(TRACK_VERGIL_2);
+	//	}
+	//	break;
+	//case 16:
+	//	if (room == ROOM_LADY)
+	//	{
+	//		PlayTrack(TRACK_LADY);
+	//	}
+	//	break;
+	//case 17:
+	//	if ((room == ROOM_DOPPELGANGER) && (flags[20] == 0))
+	//	{
+	//		PlayTrack(TRACK_DOPPELGANGER);
+	//	}
+	//	break;
+	//case 19:
+	//	if (room == ROOM_ARKHAM)
+	//	{
+	//		if (flags[20] == 0)
+	//		{
+	//			PlayTrack(TRACK_ARKHAM_1);
+	//			mediaSkipTrack = true;
+	//		}
+	//		else if (flags[20] == 1)
+	//		{
+	//			PlayTrack(TRACK_ARKHAM_2);
+	//		}
+	//	}
+	//	break;
+	//}
 
-	LogFunctionEnd();
+	//LogFunctionEnd();
 }
 
 #pragma endregion
@@ -1073,23 +1086,23 @@ static void SetContinueRoom()
 
 static const char * SetTrack(void *, const char * path, uint32, uint32)
 {
-	Log("%s %s", FUNC_NAME, path);
+	//Log("%s %s", FUNC_NAME, path);
 
-	mediaError = MEDIA_NO_ERROR;
-	if (_stricmp(path, "afs/sound/continue.adx") == 0)
-	{
-		mediaSkipTrack = false;
-	}
-	if (mediaSkipTrack)
-	{
-		mediaSkipTrack = false;
-		mediaError = MEDIA_SKIP_TRACK;
-		return 0;
-	}
-	if (Config.Game.BossRush.enable)
-	{
-		return BossRush_SetTrack(path);
-	}
+	//mediaError = MEDIA_NO_ERROR;
+	//if (_stricmp(path, "afs/sound/continue.adx") == 0)
+	//{
+	//	mediaSkipTrack = false;
+	//}
+	//if (mediaSkipTrack)
+	//{
+	//	mediaSkipTrack = false;
+	//	mediaError = MEDIA_SKIP_TRACK;
+	//	return 0;
+	//}
+	//if (Config.Game.BossRush.enable)
+	//{
+	//	return BossRush_SetTrack(path);
+	//}
 
 	return 0;
 }
@@ -1387,18 +1400,26 @@ void ActorInitComplete(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 
-	if (baseAddr == System_Actor_actorBaseAddr[0])
-	{
-		return;
-	}
-	if (baseAddr == System_Actor_actorBaseAddr[1])
-	{
-		return;
-	}
+	//if (baseAddr == System_Actor_actorBaseAddr[0])
+	//{
+	//	return;
+	//}
+	//if (baseAddr == System_Actor_actorBaseAddr[1])
+	//{
+	//	return;
+	//}
 
-	auto & actorData = *(ACTOR_DATA *)baseAddr;
-	actorData.shadow = 1;
+	//auto & actorData = *(ACTOR_DATA *)baseAddr;
+	//actorData.shadow = 1;
+	//actorData.collisionIndex = 1;
+
+
+
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
 	actorData.collisionIndex = 1;
+
+
+
 }
 
 

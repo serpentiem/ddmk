@@ -69,11 +69,18 @@ template <uint64 value> struct GetDataTypeByValue : GetDataTypeByValueHelper<Get
 template <typename T>
 constexpr auto countof(T & var)
 {
-	constexpr auto count = (sizeof(var) / sizeof(var[0]));
-	constexpr GetDataTypeByValue<count>::type value = count;
-	return value;
+	//constexpr auto count = (sizeof(var) / sizeof(var[0]));
+	//constexpr GetDataTypeByValue<count>::type value = count;
+	//return value;
+	return (sizeof(var) / sizeof(var[0]));
 }
 
-#define for_each(name, start, end) for (decltype(end) name = start; name < end; name++)
+// @Todo: Add enum support.
 
-#define for_all(name, end) for (decltype(end) name = 0; name < end; name++)
+//#define for_each(name, start, end) for (decltype(end) name = start; name < end; name++)
+#define for_each(name, start, end) for (GetDataTypeByValue<end>::type name = start; name < end; name++)
+
+//#define for_all(name, end) for (decltype(end) name = 0; name < end; name++)
+#define for_all(name, end) for (GetDataTypeByValue<end>::type name = 0; name < end; name++)
+
+#define HoboBreak MessageBoxA(0, "break1", 0, 0); MessageBoxA(0, "break2", 0, 0);

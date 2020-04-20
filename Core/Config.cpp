@@ -1,15 +1,17 @@
 #include "Config.h"
 
-char Config_path[64];
+PrivateStart;
+
+char     g_path[64] = {};
+byte8  * g_addr     = 0;
+uint32   g_size     = 0;
+
+PrivateEnd;
 
 void SaveConfig()
 {
 	LogFunction();
-	//SaveFile(Config_addr, Config_size, Config_path);
-
-
-	SaveFile(Config_path, Config_addr, Config_size);
-
+	SaveFile(g_path, g_addr, g_size);
 }
 
 void LoadConfig()
@@ -17,24 +19,32 @@ void LoadConfig()
 	LogFunction();
 	byte8 * file = 0;
 	uint32 size = 0;
-	file = LoadFile(Config_path, &size);
+	file = LoadFile(g_path, &size);
 	if (!file)
 	{
 		SaveConfig();
 		return;
 	}
-	if (size != Config_size)
+	if (size != g_size)
 	{
 		Log("Size mismatch.");
 		SaveConfig();
 		return;
 	}
-	memcpy(Config_addr, file, size);
+	memcpy(g_addr, file, size);
 }
 
-void Config_Init()
+void Core_Config_Init
+(
+	const char * directoryName,
+	const char * filename,
+	void       * addr,
+	uint32       size
+)
 {
 	LogFunction();
-	CreateDirectoryA(Config_directory, 0);
-	snprintf(Config_path, sizeof(Config_path), "%s\\%s", Config_directory, Config_file);
+	CreateDirectoryA(directoryName, 0);
+	snprintf(g_path, sizeof(g_path), "%s\\%s", directoryName, filename);
+	g_addr = reinterpret_cast<byte8 *>(addr);
+	g_size = size;
 }

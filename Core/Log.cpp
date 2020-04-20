@@ -1,10 +1,15 @@
 #include "Log.h"
 
-char Log_path[64];
+char Core_Log_path[64];
 
-void Log_Init()
+// @Todo: Add proper check for directory.
+void Core_Log_Init
+(
+	const char * directoryName,
+	const char * filename
+)
 {
-	CreateDirectoryA(Log_directory, 0);
-	snprintf(Log_path, sizeof(Log_path), "%s\\%s", Log_directory, Log_file);
-	DeleteFileA(Log_path);
+	CreateDirectoryA(directoryName, 0);
+	snprintf(Core_Log_path, sizeof(Core_Log_path), "%s\\%s", directoryName, filename);
+	DeleteFileA(Core_Log_path);
 }

@@ -25,16 +25,7 @@
 
 // @Todo: Move to Vars.
 
-#pragma pack(push, 1)
 
-struct ARCHIVE_DATA
-{
-	byte8 signature[4];
-	uint32 fileCount;
-	uint32 fileOff[128];
-};
-
-#pragma pack(pop)
 
 
 
@@ -64,41 +55,7 @@ struct ARCHIVE_DATA
 //	return (archive + archiveData->fileOff[fileIndex]);
 //}
 
-struct CacheFile
-{
-	byte8 * file;
 
-	CacheFile()
-	{
-		memset(this, 0, sizeof(*this));
-	}
-
-	CacheFile(byte8 * addr)
-	{
-		file = addr;
-	}
-
-	operator byte8 *()
-	{
-		return file;
-	}
-
-	byte8 * operator[](uint32 index)
-	{
-		auto & archiveData = *reinterpret_cast<ARCHIVE_DATA *>(file);
-		if (index >= archiveData.fileCount)
-		{
-			return 0;
-		}
-		if (!archiveData.fileOff[index])
-		{
-			return 0;
-		}
-		return (file + archiveData.fileOff[index]);
-	}
-};
-
-extern CacheFile System_File_cacheFile[MAX_CACHE_FILE];
 
 
 
