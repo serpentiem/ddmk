@@ -3,6 +3,7 @@
 
 #include "ActorData.h"
 #include "File.h"
+#include "HUD.h"
 #include "Internal.h"
 #include "Input.h"
 #include "Vars.h"

@@ -89,14 +89,7 @@ struct ACTOR_DATA
 	uint32 styleLevel; // 0x6358
 	_(8);
 	float32 styleExperience; // 0x6364
-	_(304);
-	uint8 weaponMap[5]; // 0x6498
-	_(3);
-	byte8 * weaponData[5]; // 0x64A0
-	byte32 weaponFlags[5]; // 0x64C8
-	_(24);
-	float32 weaponTimer[5]; // 0x64F4
-	float32 weaponSwitchTimeout[2]; // 0x6508
+	_(424);
 	uint8 styleRank; // 0x6510
 	_(3);
 	float32 styleMeter; // 0x6514
@@ -241,14 +234,24 @@ struct ACTOR_DATA_DANTE
 	_(12);
 	uint8 activeWeapon; // 0x648D
 	_(2);
-	uint32 weaponIndex[2]; // 0x6490
-	uint8 weaponMap[5]; // 0x6498
+	uint32 meleeWeaponIndex; // 0x6490
+	uint32 rangedWeaponIndex; // 0x6494
+	uint8 meleeWeaponMap[2]; // 0x6498
+	uint8 rangedWeaponMap[3]; // 0x649A
 	_(3);
-	byte8 * weaponData[5]; // 0x64A0
-	byte32 weaponFlags[5]; // 0x64C8
-	_(24);
-	float32 weaponTimer[5]; // 0x64F4
-	float32 weaponSwitchTimeout[2]; // 0x6508
+	byte8 * meleeWeaponData[2]; // 0x64A0
+	byte8 * rangedWeaponData[3]; // 0x64B0
+	byte32 meleeWeaponFlags[2]; // 0x64C8
+	byte32 rangedWeaponFlags[3]; // 0x64D0
+	uint32 meleeWeaponLevel[2]; // 0x64DC
+	uint32 rangedWeaponLevel[3]; // 0x64E4
+	uint8 activeMeleeWeapon; // 0x64F0
+	uint8 activeRangedWeapon; // 0x64F1
+	_(2);
+	float32 meleeWeaponTimer[2]; // 0x64F4
+	float32 rangedWeaponTimer[3]; // 0x64FC
+	float32 meleeWeaponSwitchTimeout; // 0x6508
+	float32 rangedWeaponSwitchTimeout; // 0x650C
 	uint8 styleRank; // 0x6510
 	_(3);
 	float32 styleMeter; // 0x6514
@@ -383,14 +386,7 @@ struct ACTOR_DATA_BOB
 	uint32 styleLevel; // 0x6358
 	_(8);
 	float32 styleExperience; // 0x6364
-	_(304);
-	uint8 weaponMap[5]; // 0x6498
-	_(3);
-	byte8 * weaponData[5]; // 0x64A0
-	byte32 weaponFlags[5]; // 0x64C8
-	_(24);
-	float32 weaponTimer[5]; // 0x64F4
-	float32 weaponSwitchTimeout[2]; // 0x6508
+	_(424);
 	uint8 styleRank; // 0x6510
 	_(3);
 	float32 styleMeter; // 0x6514
@@ -517,14 +513,7 @@ struct ACTOR_DATA_LADY
 	uint32 styleLevel; // 0x6358
 	_(8);
 	float32 styleExperience; // 0x6364
-	_(304);
-	uint8 weaponMap[5]; // 0x6498
-	_(3);
-	byte8 * weaponData[5]; // 0x64A0
-	byte32 weaponFlags[5]; // 0x64C8
-	_(24);
-	float32 weaponTimer[5]; // 0x64F4
-	float32 weaponSwitchTimeout[2]; // 0x6508
+	_(424);
 	uint8 styleRank; // 0x6510
 	_(3);
 	float32 styleMeter; // 0x6514
@@ -656,15 +645,18 @@ struct ACTOR_DATA_VERGIL
 	_(3);
 	float32 styleExperience; // 0x6364
 	_(284);
-	uint32 weaponIndex[2]; // 0x6484
+	uint32 activeMeleeWeaponIndex; // 0x6484
+	uint32 queuedMeleeWeaponIndex; // 0x6488
 	_(12);
-	uint8 weaponMap[5]; // 0x6498
+	uint8 meleeWeaponMap[5]; // 0x6498
 	_(3);
-	byte8 * weaponData[5]; // 0x64A0
-	byte32 weaponFlags[5]; // 0x64C8
-	_(24);
-	float32 weaponTimer[5]; // 0x64F4
-	float32 weaponSwitchTimeout[2]; // 0x6508
+	byte8 * meleeWeaponData[5]; // 0x64A0
+	byte32 meleeWeaponFlags[5]; // 0x64C8
+	uint32 meleeWeaponLevel[5]; // 0x64DC
+	_(4);
+	float32 meleeWeaponTimer[5]; // 0x64F4
+	float32 meleeWeaponSwitchForwardTimeout; // 0x6508
+	float32 meleeWeaponSwitchBackwardTimeout; // 0x650C
 	uint8 styleRank; // 0x6510
 	_(3);
 	float32 styleMeter; // 0x6514

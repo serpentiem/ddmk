@@ -162,66 +162,14 @@ void Arcade_CreateMainActor(byte8 * baseAddr)
 void CreateMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
+
 	Actor_actorBaseAddr[0] = baseAddr;
 	Actor_actorBaseAddr.count = 2;
 
-
-
-
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-
-	if (actorData.character == CHAR_DANTE)
-	{
-		actorData.newMeleeWeaponMap[0] = WEAPON_DANTE_REBELLION;
-		actorData.newMeleeWeaponMap[1] = WEAPON_VERGIL_YAMATO;
-		actorData.newMeleeWeaponCount = 2;
-		actorData.newMeleeWeaponIndex = 0;
-	}
-
-
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	actorData.newGamepad = 1;
 
 	File_UpdateFileItems();
-
-
-
-
-
-
-
-
-
-
-	
-	//auto & actorData = *(ACTOR_DATA *)baseAddr;
-
-	//actorData.newButtonMask = 0xFFFF;
-
-	//
-	//Arcade_CreateMainActor(baseAddr);
-
-
-	//actorData.buttonMask = 0xFFF
-
-
-	
-	//auto & actorData = *(ACTOR_DATA *)baseAddr;
-	//actorData.noCollision = true;
-
-
-
-
-
-	//auto addr = System_Actor_actorBaseAddr[0];
-
-
-
-
-
-	//System_Actor_mainActorBaseAddr = baseAddr;
-	//System_Actor_mainCloneBaseAddr = baseAddr;
-	//auto & isDefault = *(bool *)(baseAddr + 0xB8C0) = true;
-
-	//auto & actorId = *(uint8 *)(baseAddr + 0x118) = ACTOR_TWO;
 
 	spawnActors = true;
 }

@@ -60,8 +60,7 @@ byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
 
 
 
-
-
+// @Todo: Update.
 
 template
 <
@@ -82,22 +81,22 @@ bool IsWeaponReady
 	{
 		if constexpr (weaponType == WEAPON_TYPE_MELEE)
 		{
-			weaponMap = actorData.weaponMap;
+			weaponMap = actorData.meleeWeaponMap;
 			weaponCount = 2;
-			weaponIndex = actorData.weaponIndex[0];
+			weaponIndex = actorData.meleeWeaponIndex;
 		}
 		else
 		{
-			weaponMap = reinterpret_cast<uint8 *>(&actorData.weaponMap[2]);
+			weaponMap = actorData.rangedWeaponMap;
 			weaponCount = 2;
-			weaponIndex = (actorData.weaponIndex[1] - 2);
+			weaponIndex = (actorData.rangedWeaponIndex - 2);
 		}
 	}
 	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
 	{
-		weaponMap = actorData.weaponMap;
+		weaponMap = actorData.meleeWeaponMap;
 		weaponCount = 3;
-		weaponIndex = actorData.weaponIndex[1];
+		weaponIndex = actorData.queuedMeleeWeaponIndex;
 	}
 
 	if (IsWeaponActive<T>(actorData, weapon))
@@ -119,9 +118,9 @@ bool IsWeaponReady
 
 	if constexpr (typematch(T, ACTOR_DATA_VERGIL))
 	{
-		if (actorData.weaponIndex[0] != actorData.weaponIndex[1])
+		if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
 		{
-			actorData.weaponIndex[0] = actorData.weaponIndex[1];
+			actorData.activeMeleeWeaponIndex = actorData.queuedMeleeWeaponIndex;
 		}
 	}
 
@@ -404,15 +403,27 @@ inline void RegisterWeapon_Init()
 
 void UpdateWeaponDante(ACTOR_DATA_DANTE & actorData)
 {
-	constexpr uint32 size = (offsetof(ACTOR_DATA_DANTE, styleRank) - offsetof(ACTOR_DATA_DANTE, weaponData));
-	memset(actorData.weaponData, 0, size);
+	constexpr uint32 size = (offsetof(ACTOR_DATA_DANTE, styleRank) - offsetof(ACTOR_DATA_DANTE, meleeWeaponData));
+	memset(actorData.meleeWeaponData, 0, size);
 
-	actorData.weaponData[0] = RegisterWeapon[WEAPON_DANTE_REBELLION  ](actorData, 0);
-	actorData.weaponData[0] = RegisterWeapon[WEAPON_DANTE_CERBERUS   ](actorData, 0);
-	actorData.weaponData[0] = RegisterWeapon[WEAPON_DANTE_EBONY_IVORY](actorData, 0);
-	actorData.weaponData[0] = RegisterWeapon[WEAPON_DANTE_KALINA_ANN ](actorData, 9);
+	const_for_all(index, 5)
+	{
+		uint8 id = (WEAPON_DANTE_REBELLION + index);
+		actorData.newMeleeWeaponData[index] = RegisterWeapon[id](actorData, id);
+	}
+	const_for_all(index, 5)
+	{
+		uint8 id = (WEAPON_DANTE_EBONY_IVORY + index);
+		actorData.newRangedWeaponData[index] = RegisterWeapon[id](actorData, id);
+	}
 
-	actorData.weaponFlags[4] = 4;
+	actorData.meleeWeaponMap[0] = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex]; // @Todo: Add Yamato exception.
+	actorData.meleeWeaponMap[1] = WEAPON_VOID;
+
+	actorData.rangedWeaponMap[0] = actorData.newRangedWeaponMap[actorData.newRangedWeaponIndex];
+	actorData.rangedWeaponMap[1] = WEAPON_VOID;
+
+	actorData.rangedWeaponFlags[2] = 4;
 }
 
 ACTOR_DATA_DANTE * CreateActorDante()
@@ -450,14 +461,22 @@ ACTOR_DATA_DANTE * CreateActorDante()
 
 void UpdateWeaponVergil(ACTOR_DATA_VERGIL & actorData)
 {
-	constexpr uint32 size = (offsetof(ACTOR_DATA_VERGIL, styleRank) - offsetof(ACTOR_DATA_VERGIL, weaponData));
-	memset(actorData.weaponData, 0, size);
+	constexpr uint32 size = (offsetof(ACTOR_DATA_VERGIL, styleRank) - offsetof(ACTOR_DATA_VERGIL, meleeWeaponData));
+	memset(actorData.meleeWeaponData, 0, size);
 
-	actorData.weaponData[0] = RegisterWeapon[WEAPON_VERGIL_YAMATO    ](actorData, 0);
-	actorData.weaponData[1] = RegisterWeapon[WEAPON_VERGIL_BEOWULF   ](actorData, 0);
-	actorData.weaponData[2] = RegisterWeapon[WEAPON_VERGIL_FORCE_EDGE](actorData, 0);
+	const_for_all(index, 3)
+	{
+		uint8 id = (WEAPON_VERGIL_YAMATO + index);
+		actorData.newMeleeWeaponData[index] = RegisterWeapon[id](actorData, id);
+	}
 
-	actorData.weaponFlags[4] = 4;
+	actorData.meleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
+	actorData.meleeWeaponMap[1] = WEAPON_VERGIL_BEOWULF;
+	actorData.meleeWeaponMap[2] = WEAPON_VERGIL_FORCE_EDGE;
+	actorData.meleeWeaponMap[3] = WEAPON_VOID;
+	actorData.meleeWeaponMap[4] = WEAPON_VOID;
+
+	actorData.meleeWeaponFlags[4] = 4;
 }
 
 ACTOR_DATA_VERGIL * CreateActorVergil()
@@ -497,121 +516,121 @@ ACTOR_DATA_VERGIL * CreateActorVergil()
 // @Todo: Check for WEAPON_VOID and same weapon.
 // @Todo: Create templates.
 
-bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
-{
-	if (actorData.devilState == 2)
-	{
-		return true;
-	}
-	if (actorData.moveOnly)
-	{
-		return false;
-	}
-
-
-	{
-		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_DEVIL_ARMS)))
-		{
-			goto sect0;
-		}
-		if (0 < actorData.weaponSwitchTimeout[0])
-		{
-			goto sect0;
-		}
-		auto addr = actorData.actionData[3];
-		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x348);
-		actorData.weaponSwitchTimeout[0] = timeout;
-		actorData.weaponSwitchTimeout[1] = timeout;
-
-		auto & queuedWeaponIndex = actorData.weaponIndex[1];
-		queuedWeaponIndex++;
-		if (queuedWeaponIndex >= 3)
-		{
-			queuedWeaponIndex = 0;
-		}
-
-		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
-
-		// @Todo: In the future just update the weapon icon and use 0.
-		func_280160
-		(
-			hud,
-			(queuedWeaponIndex < 2) ? 1 : 0,
-			(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
-			1
-		);
-		*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
-		func_1EB0E0(actorData, 4);
-
-		if (actorData.devil || (actorData.devilState == 1))
-		{
-			func_1F92C0(actorData, 1);
-			func_1F97F0(actorData, true);
-		}
-	}
-	sect0:;
-
-
-
-
-
-	{
-		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_GUN)))
-		{
-			goto sect1;
-		}
-		if (0 < actorData.weaponSwitchTimeout[1])
-		{
-			goto sect1;
-		}
-		auto addr = actorData.actionData[3];
-		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x348);
-		actorData.weaponSwitchTimeout[0] = timeout;
-		actorData.weaponSwitchTimeout[1] = timeout;
-
-		auto & queuedWeaponIndex = actorData.weaponIndex[1];
-
-
-		if (queuedWeaponIndex > 0)
-		{
-			queuedWeaponIndex--;
-		}
-		else
-		{
-			queuedWeaponIndex = 2;
-		}
-
-
-
-
-		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
-
-		// @Todo: In the future just update the weapon icon and use 0.
-		func_280160
-		(
-			hud,
-			(queuedWeaponIndex < 2) ? 1 : 0,
-			(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
-			0
-		);
-		*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
-		func_1EB0E0(actorData, 4);
-
-		if (actorData.devil || (actorData.devilState == 1))
-		{
-			func_1F92C0(actorData, 1);
-			func_1F97F0(actorData, true);
-		}
-
-
-
-	}
-	sect1:;
-
-	return true;
-}
+//bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
+//{
+//	if (actorData.devilState == 2)
+//	{
+//		return true;
+//	}
+//	if (actorData.moveOnly)
+//	{
+//		return false;
+//	}
+//
+//
+//	{
+//		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_DEVIL_ARMS)))
+//		{
+//			goto sect0;
+//		}
+//		if (0 < actorData.weaponSwitchTimeout[0])
+//		{
+//			goto sect0;
+//		}
+//		auto addr = actorData.actionData[3];
+//		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x348);
+//		actorData.weaponSwitchTimeout[0] = timeout;
+//		actorData.weaponSwitchTimeout[1] = timeout;
+//
+//		auto & queuedWeaponIndex = actorData.weaponIndex[1];
+//		queuedWeaponIndex++;
+//		if (queuedWeaponIndex >= 3)
+//		{
+//			queuedWeaponIndex = 0;
+//		}
+//
+//		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+//		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+//
+//		// @Todo: In the future just update the weapon icon and use 0.
+//		func_280160
+//		(
+//			hud,
+//			(queuedWeaponIndex < 2) ? 1 : 0,
+//			(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
+//			1
+//		);
+//		*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
+//		func_1EB0E0(actorData, 4);
+//
+//		if (actorData.devil || (actorData.devilState == 1))
+//		{
+//			func_1F92C0(actorData, 1);
+//			func_1F97F0(actorData, true);
+//		}
+//	}
+//	sect0:;
+//
+//
+//
+//
+//
+//	{
+//		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_GUN)))
+//		{
+//			goto sect1;
+//		}
+//		if (0 < actorData.weaponSwitchTimeout[1])
+//		{
+//			goto sect1;
+//		}
+//		auto addr = actorData.actionData[3];
+//		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x348);
+//		actorData.weaponSwitchTimeout[0] = timeout;
+//		actorData.weaponSwitchTimeout[1] = timeout;
+//
+//		auto & queuedWeaponIndex = actorData.weaponIndex[1];
+//
+//
+//		if (queuedWeaponIndex > 0)
+//		{
+//			queuedWeaponIndex--;
+//		}
+//		else
+//		{
+//			queuedWeaponIndex = 2;
+//		}
+//
+//
+//
+//
+//		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+//		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+//
+//		// @Todo: In the future just update the weapon icon and use 0.
+//		func_280160
+//		(
+//			hud,
+//			(queuedWeaponIndex < 2) ? 1 : 0,
+//			(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
+//			0
+//		);
+//		*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
+//		func_1EB0E0(actorData, 4);
+//
+//		if (actorData.devil || (actorData.devilState == 1))
+//		{
+//			func_1F92C0(actorData, 1);
+//			func_1F97F0(actorData, true);
+//		}
+//
+//
+//
+//	}
+//	sect1:;
+//
+//	return true;
+//}
 
 
 
@@ -628,35 +647,104 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 		return false;
 	}
 
-	{
-		auto & meleeWeaponIndex = actorData.weaponIndex[0];
-		auto & meleeWeaponSwitchTimeout = actorData.weaponSwitchTimeout[0];
+	//{
+	//	auto & meleeWeaponIndex = actorData.weaponIndex[0];
+	//	auto & meleeWeaponSwitchTimeout = actorData.weaponSwitchTimeout[0];
 
+	//	if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_DEVIL_ARMS)))
+	//	{
+	//		goto sect0;
+	//	}
+	//	if (0 < meleeWeaponSwitchTimeout)
+	//	{
+	//		goto sect0;
+	//	}
+
+	//	auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
+	//	meleeWeaponSwitchTimeout = timeout;
+
+	//	if (meleeWeaponIndex < 1)
+	//	{
+	//		meleeWeaponIndex++;
+	//	}
+	//	else
+	//	{
+	//		meleeWeaponIndex = 0;
+	//	}
+
+	//	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+	//	auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+
+	//	func_280120(hud, 1, meleeWeaponIndex);
+
+	//	func_1EB0E0(actorData, 4);
+
+	//	if (actorData.devil || (actorData.devilState == 1))
+	//	{
+	//		func_1F92C0(actorData, 1);
+	//		func_1F97F0(actorData, true);
+	//	}
+	//}
+	//sect0:;
+
+
+
+	{
 		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_DEVIL_ARMS)))
 		{
 			goto sect0;
 		}
-		if (0 < meleeWeaponSwitchTimeout)
+		if (0 < actorData.meleeWeaponSwitchTimeout)
 		{
 			goto sect0;
 		}
 
 		auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
-		meleeWeaponSwitchTimeout = timeout;
+		actorData.meleeWeaponSwitchTimeout = timeout;
 
-		if (meleeWeaponIndex < 1)
+
+
+
+		if (actorData.meleeWeaponIndex < 2)
 		{
-			meleeWeaponIndex++;
+			actorData.meleeWeaponIndex++;
 		}
 		else
 		{
-			meleeWeaponIndex = 0;
+			actorData.meleeWeaponIndex = 0;
 		}
 
-		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
 
-		func_280120(hud, 1, meleeWeaponIndex);
+
+
+
+		actorData.newMeleeWeaponIndex++;
+
+		if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
+		{
+			actorData.newMeleeWeaponIndex = 0;
+		}
+
+
+		if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] != WEAPON_VERGIL_YAMATO)
+		{
+			actorData.meleeWeaponMap[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
+		}
+
+
+
+		{
+			auto & id = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
+			HUD_UpdateWeaponIcon(2, HUD_weaponIcon[id].model, HUD_weaponIcon[id].texture);
+		}
+
+
+		//HUD_UpdateWeaponIcon(0, HUD_weaponIcon[actorData.newMeleeWeaponMap[actorData]])
+
+
+		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		auto hud = *reinterpret_cast<byte8 **>(pool[11]);
+		func_280120(hud, 1, 0);
 
 		func_1EB0E0(actorData, 4);
 
@@ -668,60 +756,74 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 	}
 	sect0:;
 
-	{
-		auto & rangedWeaponIndex = actorData.weaponIndex[1];
-		auto & rangedWeaponSwitchTimeout = actorData.weaponSwitchTimeout[1];
 
-		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_GUN)))
-		{
-			goto sect1;
-		}
-		if (0 < rangedWeaponSwitchTimeout)
-		{
-			goto sect1;
-		}
 
-		auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
-		rangedWeaponSwitchTimeout = timeout;
 
-		if (rangedWeaponIndex < 3)
-		{
-			rangedWeaponIndex++;
-		}
-		else
-		{
-			rangedWeaponIndex = 2;
-		}
+	return true;
 
-		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
 
-		func_280120(hud, 0, (rangedWeaponIndex - 2));
 
-		func_1EB0E0(actorData, 7);
-		func_1EB0E0(actorData, 9);
 
-		if (!(actorData.motionState2[1] & MOTION_STATE_BUSY))
-		{
-			if (actorData.buttons[0] & GetBinding(ACTION_LOCK_ON))
-			{
-				auto & modelData = actorData.modelData[actorData.activeModelIndex];
 
-				uint8 id = 0;
-				uint8 index = 0;
-				byte8 * motionFile = 0;
 
-				actorData.activeWeapon = actorData.weaponMap[rangedWeaponIndex];
 
-				id = (pl000_00_3 + actorData.activeWeapon);
-				index = actorData.motionData[1].index;
-				motionFile = File_cacheFile[id][index];
 
-				func_8AC80(modelData, BODY_PART_LOWER, motionFile, 0, false);
-			}
-		}
-	}
-	sect1:;
+
+
+	//{
+	//	auto & rangedWeaponIndex = actorData.weaponIndex[1];
+	//	auto & rangedWeaponSwitchTimeout = actorData.weaponSwitchTimeout[1];
+
+	//	if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_GUN)))
+	//	{
+	//		goto sect1;
+	//	}
+	//	if (0 < rangedWeaponSwitchTimeout)
+	//	{
+	//		goto sect1;
+	//	}
+
+	//	auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
+	//	rangedWeaponSwitchTimeout = timeout;
+
+	//	if (rangedWeaponIndex < 3)
+	//	{
+	//		rangedWeaponIndex++;
+	//	}
+	//	else
+	//	{
+	//		rangedWeaponIndex = 2;
+	//	}
+
+	//	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+	//	auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+
+	//	func_280120(hud, 0, (rangedWeaponIndex - 2));
+
+	//	func_1EB0E0(actorData, 7);
+	//	func_1EB0E0(actorData, 9);
+
+	//	if (!(actorData.motionState2[1] & MOTION_STATE_BUSY))
+	//	{
+	//		if (actorData.buttons[0] & GetBinding(ACTION_LOCK_ON))
+	//		{
+	//			auto & modelData = actorData.modelData[actorData.activeModelIndex];
+
+	//			uint8 id = 0;
+	//			uint8 index = 0;
+	//			byte8 * motionFile = 0;
+
+	//			actorData.activeWeapon = actorData.weaponMap[rangedWeaponIndex];
+
+	//			id = (pl000_00_3 + actorData.activeWeapon);
+	//			index = actorData.motionData[1].index;
+	//			motionFile = File_cacheFile[id][index];
+
+	//			func_8AC80(modelData, BODY_PART_LOWER, motionFile, 0, false);
+	//		}
+	//	}
+	//}
+	//sect1:;
 
 	return true;
 }
@@ -736,6 +838,30 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 void Actor_Init()
 {
 	LogFunction();
+
+	// Adjust actor data size.
+	{
+		constexpr uint32 size = (0xB8C0 + 512);
+		Write<uint32>((appBaseAddr + 0x1DE8B4), size); // Vergil
+		Write<uint32>((appBaseAddr + 0x1DE9CD), size); // Lady
+		Write<uint32>((appBaseAddr + 0x1DEAC9), size); // Bob
+		Write<uint32>((appBaseAddr + 0x1DEBE2), size); // Dante
+	}
+
+
+
+
+
+
+
+
+	
+
+
+	Write<uint32>((appBaseAddr + 0x1EBD19), offsetof(ACTOR_DATA, newGamepad));
+
+
+
 
 
 
@@ -792,10 +918,10 @@ void Actor_Init()
 
 
 
-	{
-		auto func = CreateFunction(WeaponSwitchVergil, 0, true, false);
-		WriteCall((appBaseAddr + 0x1E25E1), func.addr);
-	}
+	//{
+	//	auto func = CreateFunction(WeaponSwitchVergil, 0, true, false);
+	//	WriteCall((appBaseAddr + 0x1E25E1), func.addr);
+	//}
 	{
 		auto func = CreateFunction(WeaponSwitchDante, 0, true, false);
 		WriteCall((appBaseAddr + 0x1E25EB), func.addr);

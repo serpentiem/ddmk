@@ -137,7 +137,7 @@ void DanteYamatoDaemonStart()
 
 
 
-		if (childActorData.weaponMap[0] == WEAPON_VERGIL_YAMATO)
+		if (childActorData.meleeWeaponMap[0] == WEAPON_VERGIL_YAMATO)
 		{
 			continue;
 		}
@@ -159,7 +159,7 @@ void DanteYamatoDaemonStart()
 
 			const_for_all(weaponIndex, 4)
 			{
-				if (IsWeaponActive<ACTOR_DATA_DANTE>(actorData, actorData.weaponMap[weaponIndex]))
+				if (IsWeaponActive<ACTOR_DATA_DANTE>(actorData, actorData.meleeWeaponMap[weaponIndex]))
 				{
 					// @Todo: Get timeout.
 					break;
@@ -189,9 +189,9 @@ void DanteYamatoDaemonStart()
 
 
 
-		childActorData.weaponMap[0] = WEAPON_VERGIL_YAMATO;
-		childActorData.weaponIndex[0] = 0;
-		childActorData.weaponIndex[1] = 0;
+		childActorData.meleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
+		childActorData.activeMeleeWeaponIndex = 0;
+		childActorData.queuedMeleeWeaponIndex = 0;
 
 
 
@@ -294,75 +294,63 @@ void MainLoop()
 
 		Log("Spawn Actors.");
 
-
-		auto baseAddr = CreateActorVergil();
-		if (!baseAddr)
+		auto danteBaseAddr = CreateActorDante();
+		if (!danteBaseAddr)
 		{
 			return;
 		}
-
-		auto & actorData = *baseAddr;
-
-		Actor_actorBaseAddr.Push(actorData);
-
-		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
-
-		//actorData.collisionIndex = 1;
-
-		actorData.position = parentActorData.position;
+		auto & danteActorData = *danteBaseAddr;
+		Actor_actorBaseAddr.Push(danteActorData);
 
 
+		
+		const_for_all(index, 5)
+		{
+			danteActorData.newMeleeWeaponMap [index] = (WEAPON_DANTE_REBELLION   + index);
+			danteActorData.newRangedWeaponMap[index] = (WEAPON_DANTE_EBONY_IVORY + index);
+		}
+
+		danteActorData.newMeleeWeaponCount = 3;
 
 
-		//System_Actor_actorBaseAddr[ACTOR_TWO] = CreateActor(CHAR_DANTE, ACTOR_TWO);
 
-		//auto baseAddr = CreateActor(CHAR_DANTE, 0);
 
-		//System_Actor_actorBaseAddr.Push(baseAddr);
+
+
+
+
+
+		auto vergilBaseAddr = CreateActorVergil();
+		if (!vergilBaseAddr)
+		{
+			return;
+		}
+		auto & vergilActorData = *vergilBaseAddr;
+		Actor_actorBaseAddr.Push(vergilActorData);
+
+		danteActorData.newChildBaseAddr[CHAR_VERGIL] = vergilActorData;
+
+		vergilActorData.newParentBaseAddr = danteActorData;
+
+
+		auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
+
+		danteActorData.position = mainActorData.position;
+		vergilActorData.position = mainActorData.position;
+
+
+		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+
+		pool[3] = danteActorData;
+
+
+
 
 		Log("count %u", Actor_actorBaseAddr.count);
-
 		for (uint32 index = 0; index < Actor_actorBaseAddr.count; index++)
 		{
 			Log("%llX", Actor_actorBaseAddr[index]);
 		}
-
-
-		
-		//auto & actorData = *(ACTOR_DATA *)baseAddr;
-
-		//actorData.hide = true;
-		//actorData.hideWeapons = true;
-		//actorData.hideSummonedSwords = true;
-
-		//actorData.weaponMap[0] = WEAPON_DANTE_REBELLION;
-		//actorData.weaponMap[1] = WEAPON_DANTE_CERBERUS;
-		//actorData.weaponMap[2] = WEAPON_VOID;
-		//actorData.weaponMap[3] = WEAPON_VOID;
-
-
-
-		//actorData.character = CHAR_VERGIL;
-		//actorData.noCollision = true;
-
-
-		//actorData.parentBaseAddr = System_Actor_actorBaseAddr[0];
-
-		//actorData.buttonMask = 0xFFFF;
-
-		//auto & mainActorData = *(ACTOR_DATA *)System_Actor_actorBaseAddr[0];
-
-		//actorData.position = mainActorData.position;
-		//actorData.direction = mainActorData.direction;
-
-		//actorData.collisionIndex = 1;
-
-		//actorData.gamepad = 1;
-
-
-		//(*(ACTOR_DATA *)System_Actor_actorBaseAddr[0]).childBaseAddr[0] = baseAddr;
-
-
 	}
 
 

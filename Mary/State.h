@@ -5,7 +5,7 @@
 
 inline bool ActorAvailable()
 {
-	auto pool = reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E28);
+	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
 	if (!pool)
 	{
 		return false;
@@ -24,7 +24,7 @@ inline bool InGame()
 		return false;
 	}
 	// @Todo: Update pointer!
-	auto pool = reinterpret_cast<byte8 **>(appBaseAddr + 0xCA8918);
+	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xCA8918);
 	if (!pool)
 	{
 		return false;
