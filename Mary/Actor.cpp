@@ -200,7 +200,7 @@ void ToggleUpdateWeapon(bool enable)
 {
 	LogFunction(enable);
 
-	for_all(index, countof(IsWeaponReadyProxyHelper))
+	const_for_all(index, countof(IsWeaponReadyProxyHelper))
 	{
 		auto & item = IsWeaponReadyProxyHelper[index];
 
@@ -433,7 +433,7 @@ ACTOR_DATA_DANTE * CreateActorDante()
 	func_217B90(actorData, sessionData);
 	func_212BE0(actorData);
 
-	for_all(index, countof(motionHelperDante))
+	const_for_all(index, countof(motionHelperDante))
 	{
 		auto & motionId    = motionHelperDante[index].motionId;
 		auto & cacheFileId = motionHelperDante[index].cacheFileId;
@@ -478,7 +478,7 @@ ACTOR_DATA_VERGIL * CreateActorVergil()
 	func_223CB0(actorData, sessionData);
 	func_220970(actorData);
 
-	for_all(index, countof(motionHelperVergil))
+	const_for_all(index, countof(motionHelperVergil))
 	{
 		auto & motionId    = motionHelperVergil[index].motionId;
 		auto & cacheFileId = motionHelperVergil[index].cacheFileId;
@@ -821,7 +821,7 @@ void Actor_Init()
 		//for (uint8 index = 0; index < countof(IsWeaponReadyProxyHelper); index++)
 
 		//for_each(index, 0, countof(IsWeaponReadyProxyHelper))
-		for_all(index, countof(IsWeaponReadyProxyHelper))
+		const_for_all(index, countof(IsWeaponReadyProxyHelper))
 		{
 			auto & item = IsWeaponReadyProxyHelper[index];
 

@@ -156,7 +156,7 @@ void Arcade_CreateMainActor(byte8 * baseAddr)
 
 
 
-
+// @Todo: Create additional actor dante with all weapons and init newMeleeWeapon.
 
 
 void CreateMainActor(byte8 * baseAddr)
@@ -164,6 +164,19 @@ void CreateMainActor(byte8 * baseAddr)
 	LogFunction(baseAddr);
 	Actor_actorBaseAddr[0] = baseAddr;
 	Actor_actorBaseAddr.count = 2;
+
+
+
+
+	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+
+	if (actorData.character == CHAR_DANTE)
+	{
+		actorData.newMeleeWeaponMap[0] = WEAPON_DANTE_REBELLION;
+		actorData.newMeleeWeaponMap[1] = WEAPON_VERGIL_YAMATO;
+		actorData.newMeleeWeaponCount = 2;
+		actorData.newMeleeWeaponIndex = 0;
+	}
 
 
 

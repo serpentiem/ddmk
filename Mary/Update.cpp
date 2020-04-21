@@ -110,49 +110,122 @@ void DanteYamatoDaemonStart()
 		{
 			continue;
 		}
-		auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-		if (!actorData.newParentBaseAddr)
+		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+		if (actorData.character != CHAR_DANTE)
 		{
 			continue;
 		}
-		auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newParentBaseAddr);
-		if (parentActorData.character != CHAR_DANTE)
+		if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] != WEAPON_VERGIL_YAMATO)
 		{
 			continue;
 		}
-		if (!parentActorData.newChildBaseAddr[CHAR_VERGIL])
+		if (actorData.newParentBaseAddr)
 		{
 			continue;
 		}
-		if (baseAddr != parentActorData.newChildBaseAddr[CHAR_VERGIL])
+		if (!actorData.newChildBaseAddr[CHAR_VERGIL])
 		{
 			continue;
 		}
-		if (parentActorData.newMeleeWeaponMap[parentActorData.newMeleeWeaponIndex] != WEAPON_VERGIL_YAMATO)
+		auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
+		if (childActorData.character != CHAR_VERGIL)
 		{
 			continue;
 		}
 
-		// @Todo: Check if child's active weapon is yamato.
 
-		float32 timeout = 0;
 
-		const_for_all(weaponIndex, 4)
+
+
+		if (childActorData.weaponMap[0] == WEAPON_VERGIL_YAMATO)
 		{
-			if (IsWeaponActive<ACTOR_DATA_DANTE>(parentActorData, parentActorData.weaponMap[weaponIndex]))
+			continue;
+		}
+
+
+
+
+
+
+
+		if (actorData.newButtonMask & GAMEPAD_Y)
+		{
+			actorData.newButtonMask -= GAMEPAD_Y;
+		}
+
+		if (actorData.motionState2[1] & MOTION_STATE_BUSY)
+		{
+			float32 timeout = 0;
+
+			const_for_all(weaponIndex, 4)
 			{
-				// @Todo: Get timeout.
-				break;
+				if (IsWeaponActive<ACTOR_DATA_DANTE>(actorData, actorData.weaponMap[weaponIndex]))
+				{
+					// @Todo: Get timeout.
+					break;
+				}
+			}
+
+			auto & length = actorData.modelData[actorData.activeModelIndex].motionLength1[BODY_PART_UPPER];
+			auto & timer  = actorData.modelData[actorData.activeModelIndex].motionTimer  [BODY_PART_UPPER];
+
+			if (timer < timeout)
+			{
+				continue;
+			}
+
+			if (childActorData.buttons[2] & GAMEPAD_Y)
+			{
+				goto sect0;
+			}
+
+			if (timer < length)
+			{
+				continue;
 			}
 		}
+		sect0:;
 
-		auto & length = parentActorData.modelData[parentActorData.activeModelIndex].motionLength1[BODY_PART_UPPER];
-		auto & timer  = parentActorData.modelData[parentActorData.activeModelIndex].motionTimer  [BODY_PART_UPPER];
 
-		if (timer < timeout)
-		{
-			continue;
-		}
+
+
+		childActorData.weaponMap[0] = WEAPON_VERGIL_YAMATO;
+		childActorData.weaponIndex[0] = 0;
+		childActorData.weaponIndex[1] = 0;
+
+
+
+
+
+
+
+		
+
+		// if dante and wants yamato
+		// insta take away control
+		// if no longer busy transfer control to the child
+		// update buttons if necessary
+
+
+
+		//if (!parentActorData.newChildBaseAddr[CHAR_VERGIL])
+		//{
+		//	continue;
+		//}
+		//// @Research: Maybe not required.
+		//if (baseAddr != parentActorData.newChildBaseAddr[CHAR_VERGIL])
+		//{
+		//	continue;
+		//}
+
+
+		// No need to check the timer if we're not busy.
+
+
+
+
+
+
 
 		// At this point we already switched the melee weapon, which means we WANT yamato.
 
@@ -291,6 +364,19 @@ void MainLoop()
 
 
 	}
+
+
+
+
+
+	DanteYamatoDaemonStart();
+
+
+
+
+
+
+
 
 
 	return;
