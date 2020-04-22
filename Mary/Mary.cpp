@@ -49,7 +49,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-		//Memory_ToggleExtendVectors(true);
+		Memory_ToggleExtendVectors(true);
 
 
 

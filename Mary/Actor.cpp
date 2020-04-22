@@ -401,10 +401,57 @@ inline void RegisterWeapon_Init()
 //	return baseAddr;
 //}
 
+
+
+
+
+
+
+
+
+struct
+{
+	uint8 newMeleeWeaponMap[5] =
+	{
+		WEAPON_DANTE_REBELLION,
+		WEAPON_DANTE_AGNI_RUDRA,
+		WEAPON_VERGIL_YAMATO,
+		WEAPON_DANTE_NEVAN,
+		WEAPON_DANTE_BEOWULF,
+	};
+	uint8 newMeleeWeaponCount = 3;
+	uint8 newRangedWeaponMap[5] =
+	{
+		WEAPON_DANTE_EBONY_IVORY,
+		WEAPON_DANTE_SHOTGUN,
+		WEAPON_DANTE_ARTEMIS,
+		WEAPON_DANTE_SPIRAL,
+		WEAPON_DANTE_KALINA_ANN,
+	};
+	uint8 newRangedWeaponCount = 3;
+}
+Dante;
+
+
+
+
+
+
+
+
+
+// @Todo: Add IsWeaponIndexActive.
+
 void UpdateWeaponDante(ACTOR_DATA_DANTE & actorData)
 {
 	constexpr uint32 size = (offsetof(ACTOR_DATA_DANTE, styleRank) - offsetof(ACTOR_DATA_DANTE, meleeWeaponData));
 	memset(actorData.meleeWeaponData, 0, size);
+
+	memcpy(actorData.newMeleeWeaponMap , Dante.newMeleeWeaponMap , sizeof(Dante.newMeleeWeaponMap ));
+	memcpy(actorData.newRangedWeaponMap, Dante.newRangedWeaponMap, sizeof(Dante.newRangedWeaponMap));
+
+	actorData.newMeleeWeaponCount  = Dante.newMeleeWeaponCount;
+	actorData.newRangedWeaponCount = Dante.newRangedWeaponCount;
 
 	const_for_all(index, 5)
 	{
@@ -422,6 +469,10 @@ void UpdateWeaponDante(ACTOR_DATA_DANTE & actorData)
 
 	actorData.rangedWeaponMap[0] = actorData.newRangedWeaponMap[actorData.newRangedWeaponIndex];
 	actorData.rangedWeaponMap[1] = WEAPON_VOID;
+	actorData.rangedWeaponMap[2] = WEAPON_VOID;
+
+	actorData.meleeWeaponData [0] = actorData.newMeleeWeaponData [actorData.newMeleeWeaponIndex ];
+	actorData.rangedWeaponData[0] = actorData.newRangedWeaponData[actorData.newRangedWeaponIndex];
 
 	actorData.rangedWeaponFlags[2] = 4;
 }
@@ -438,8 +489,6 @@ ACTOR_DATA_DANTE * CreateActorDante()
 	}
 
 	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-
-	//File_UpdateFileItemsLite();
 
 	func_217B90(actorData, sessionData);
 	func_212BE0(actorData);
@@ -476,6 +525,10 @@ void UpdateWeaponVergil(ACTOR_DATA_VERGIL & actorData)
 	actorData.meleeWeaponMap[3] = WEAPON_VOID;
 	actorData.meleeWeaponMap[4] = WEAPON_VOID;
 
+	actorData.meleeWeaponData[0] = actorData.newMeleeWeaponData[0];
+	actorData.meleeWeaponData[1] = actorData.newMeleeWeaponData[1];
+	actorData.meleeWeaponData[2] = actorData.newMeleeWeaponData[2];
+
 	actorData.meleeWeaponFlags[4] = 4;
 }
 
@@ -491,8 +544,6 @@ ACTOR_DATA_VERGIL * CreateActorVergil()
 	}
 
 	auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
-
-	//File_UpdateFileItemsLite();
 
 	func_223CB0(actorData, sessionData);
 	func_220970(actorData);
@@ -705,14 +756,32 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 
 
 
-		if (actorData.meleeWeaponIndex < 2)
-		{
-			actorData.meleeWeaponIndex++;
-		}
-		else
+		//actorData.meleeWeaponIndex++;
+
+		//if (actorData.meleeWeaponIndex >= 2)
+		//{
+		//	actorData.meleeWeaponIndex = 0;
+		//}
+
+
+		//actorData.meleeWeaponIndex = (IsWeaponActive(actorData, actorData.meleeWeaponMap[0])) ? 1 : 0;
+
+		
+		if (!IsWeaponActive(actorData, actorData.meleeWeaponMap[0]))
 		{
 			actorData.meleeWeaponIndex = 0;
 		}
+		else
+		{
+			actorData.meleeWeaponIndex = 1;
+		}
+
+
+
+
+
+
+
 
 
 
@@ -729,7 +798,28 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 		if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] != WEAPON_VERGIL_YAMATO)
 		{
 			actorData.meleeWeaponMap[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
+
+
+			actorData.meleeWeaponData[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponData[actorData.newMeleeWeaponIndex];
+
+
+
+
+
+
 		}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -835,6 +925,119 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 //	auto & visible = *reinterpret_cast<bool *>(dest + 0x18) = false;
 //}
 
+
+
+
+
+
+
+void WriteMotionData(byte8 * baseAddr)
+{
+	if (!baseAddr)
+	{
+		return;
+	}
+	auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL*>(baseAddr);
+	if (actorData.character != CHAR_VERGIL)
+	{
+		return;
+	}
+	if (!actorData.newParentBaseAddr)
+	{
+		return;
+	}
+	auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newParentBaseAddr);
+	if (parentActorData.character != CHAR_DANTE)
+	{
+		return;
+	}
+	if (actorData.motionData[1].group != MOTION_GROUP_VERGIL_YAMATO)
+	{
+		return;
+	}
+
+
+
+
+
+	func_8AC80
+	(
+		parentActorData.modelData[parentActorData.activeModelIndex],
+		BODY_PART_LOWER,
+		File_cacheFile[pl021_00_3][actorData.motionData[1].index],
+		0,
+		false
+	);
+
+	func_8AC80
+	(
+		parentActorData.modelData[parentActorData.activeModelIndex],
+		BODY_PART_UPPER,
+		File_cacheFile[pl021_00_3][actorData.motionData[1].index],
+		0,
+		false
+	);
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+void WritePosition(byte8 * baseAddr)
+{
+
+
+
+
+
+	if (!baseAddr)
+	{
+		return;
+	}
+	auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL*>(baseAddr);
+	if (actorData.character != CHAR_VERGIL)
+	{
+		return;
+	}
+	if (!actorData.newParentBaseAddr)
+	{
+		return;
+	}
+	auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newParentBaseAddr);
+	if (parentActorData.character != CHAR_DANTE)
+	{
+		return;
+	}
+	if (actorData.meleeWeaponMap[0] != WEAPON_VERGIL_YAMATO)
+	{
+		return;
+	}
+
+	parentActorData.position = actorData.position;
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
 void Actor_Init()
 {
 	LogFunction();
@@ -849,8 +1052,61 @@ void Actor_Init()
 	}
 
 
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x66, 0x89, 0xAE, 0xB2, 0x39, 0x00, 0x00, //mov [rsi+000039B2],bp
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCE, //mov rcx,rsi
+		};
+		auto func = CreateFunction(WriteMotionData, (appBaseAddr + 0x1EFC8D), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteJump((appBaseAddr + 0x1EFC86), func.addr, 2);
+		/*
+		dmc3.exe+1EFC86 - 66 89 AE B2390000 - mov [rsi+000039B2],bp
+		dmc3.exe+1EFC8D - 8D 51 01          - lea edx,[rcx+01]
+		*/
+	}
 
 
+
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xF3, 0x0F, 0x11, 0x8B, 0x80, 0x00, 0x00, 0x00, //movss [rbx+00000080],xmm1
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCB, //mov rcx,rbx
+		};
+		auto func = CreateFunction(WritePosition, (appBaseAddr + 0x1FC027), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteJump((appBaseAddr + 0x1FC01F), func.addr, 3);
+		/*
+		dmc3.exe+1FC01F - F3 0F11 8B 80000000 - movss [rbx+00000080],xmm1
+		dmc3.exe+1FC027 - E9 4E030000         - jmp dmc3.exe+1FC37A
+		*/
+	}
+
+
+
+
+
+	// Disable Vergil Weapon Switch Controller
+	{
+		byte8 sect0[] =
+		{
+			0xB0, 0x01, //mov al,01
+			0xC3,       //ret
+			0x90,       //nop
+			0x90,       //nop
+		};
+		vp_memcpy((appBaseAddr + 0x1E6DD0), sect0, sizeof(sect0));
+	}
 
 
 
@@ -1008,7 +1264,7 @@ void Actor_Init()
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD3B), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA_DANTE, newButtonMask);
-		//WriteJump((appBaseAddr + 0x1EBD34), func.addr, 2);
+		WriteJump((appBaseAddr + 0x1EBD34), func.addr, 2);
 		/*
 		dmc3.exe+1EBD34 - 66 89 83 E0740000 - mov [rbx+000074E0],ax
 		dmc3.exe+1EBD3B - 48 8D 0D CE8CB600 - lea rcx,[dmc3.exe+D54A10]
@@ -1025,7 +1281,7 @@ void Actor_Init()
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD5B), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA_DANTE, newButtonMask);
-		//WriteJump((appBaseAddr + 0x1EBD54), func.addr, 2);
+		WriteJump((appBaseAddr + 0x1EBD54), func.addr, 2);
 		/*
 		dmc3.exe+1EBD54 - 66 89 83 E2740000 - mov [rbx+000074E2],ax
 		dmc3.exe+1EBD5B - 66 23 CA          - and cx,dx
@@ -1041,7 +1297,7 @@ void Actor_Init()
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD6B), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA_DANTE, newButtonMask);
-		//WriteJump((appBaseAddr + 0x1EBD64), func.addr, 2);
+		WriteJump((appBaseAddr + 0x1EBD64), func.addr, 2);
 		/*
 		dmc3.exe+1EBD64 - 66 89 8B E4740000 - mov [rbx+000074E4],cx
 		dmc3.exe+1EBD6B - 66 23 D0          - and dx,ax
@@ -1058,7 +1314,7 @@ void Actor_Init()
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD7C), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		*(byte32 *)(func.sect0 + 3) = offsetof(ACTOR_DATA_DANTE, newButtonMask);
-		//WriteJump((appBaseAddr + 0x1EBD75), func.addr, 2);
+		WriteJump((appBaseAddr + 0x1EBD75), func.addr, 2);
 		/*
 		dmc3.exe+1EBD75 - 66 89 93 E6740000 - mov [rbx+000074E6],dx
 		dmc3.exe+1EBD7C - 33 D2             - xor edx,edx

@@ -159,7 +159,15 @@ void DanteYamatoDaemonStart()
 
 			const_for_all(weaponIndex, 4)
 			{
-				if (IsWeaponActive<ACTOR_DATA_DANTE>(actorData, actorData.meleeWeaponMap[weaponIndex]))
+
+				if (actorData.meleeWeaponMap[weaponIndex] == WEAPON_VOID)
+				{
+					continue;
+				}
+
+
+
+				if (IsWeaponActive(actorData, actorData.meleeWeaponMap[weaponIndex]))
 				{
 					// @Todo: Get timeout.
 					break;
@@ -194,6 +202,11 @@ void DanteYamatoDaemonStart()
 		childActorData.queuedMeleeWeaponIndex = 0;
 
 
+		
+		if (!(childActorData.newButtonMask & GAMEPAD_Y))
+		{
+			childActorData.newButtonMask += GAMEPAD_Y;
+		}
 
 
 
@@ -294,6 +307,28 @@ void MainLoop()
 
 		Log("Spawn Actors.");
 
+
+
+
+
+		//const_for_all(index, 5)
+		//{
+		//	danteActorData.newMeleeWeaponMap [index] = (WEAPON_DANTE_REBELLION   + index);
+		//	danteActorData.newRangedWeaponMap[index] = (WEAPON_DANTE_EBONY_IVORY + index);
+		//}
+
+		//danteActorData.newMeleeWeaponCount = 3;
+
+
+
+
+
+
+
+
+
+
+
 		auto danteBaseAddr = CreateActorDante();
 		if (!danteBaseAddr)
 		{
@@ -303,16 +338,12 @@ void MainLoop()
 		Actor_actorBaseAddr.Push(danteActorData);
 
 
-		
-		const_for_all(index, 5)
-		{
-			danteActorData.newMeleeWeaponMap [index] = (WEAPON_DANTE_REBELLION   + index);
-			danteActorData.newRangedWeaponMap[index] = (WEAPON_DANTE_EBONY_IVORY + index);
-		}
+		auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
 
-		danteActorData.newMeleeWeaponCount = 3;
+		//danteActorData.position = mainActorData.position;
 
 
+		//return;
 
 
 
@@ -333,7 +364,15 @@ void MainLoop()
 		vergilActorData.newParentBaseAddr = danteActorData;
 
 
-		auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
+		
+		const_for_all(index, 5)
+		{
+			vergilActorData.meleeWeaponMap[index] = WEAPON_VOID;
+		}
+
+
+
+		//auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
 
 		danteActorData.position = mainActorData.position;
 		vergilActorData.position = mainActorData.position;
