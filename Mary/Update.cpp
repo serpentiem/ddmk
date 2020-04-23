@@ -278,12 +278,108 @@ void DanteYamatoDaemonStart()
 
 
 
+int16 g_relativeTilt = 0;
 
+/*
+GAMEPAD_UP             = 0x1000,
+GAMEPAD_RIGHT          = 0x2000,
+GAMEPAD_DOWN           = 0x4000,
+GAMEPAD_LEFT           = 0x8000,
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+enum TILT_DIRECTION
+{
+	TILT_DIRECTION_UP,
+	TILT_DIRECTION_RIGHT,
+	TILT_DIRECTION_DOWN,
+	TILT_DIRECTION_LEFT,
+	TILT_DIRECTION_VOID = 255,
+};
+
+uint8 GetRelativeTiltDirection(byte8 * baseAddr)
+{
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	if (actorData.leftStickRadius < 52)
+	{
+		return TILT_DIRECTION_VOID;
+	}
+
+	uint16 relativeTilt = (actorData.actorCameraDirection - actorData.leftStickPosition);
+
+	{
+		uint16 value = (relativeTilt - 0x6000);
+		if (value <= 0x4000)
+		{
+			return TILT_DIRECTION_UP;
+		}
+	}
+
+	{
+		uint16 value = (relativeTilt + 0x6000);
+		if (value <= 0x4000)
+		{
+			return TILT_DIRECTION_RIGHT;
+		}
+	}
+
+	{
+		uint16 value = (relativeTilt + 0x2000);
+		if (value <= 0x4000)
+		{
+			return TILT_DIRECTION_DOWN;
+		}
+	}
+
+	{
+		uint16 value = (relativeTilt - 0x2000);
+		if (value <= 0x4000)
+		{
+			return TILT_DIRECTION_LEFT;
+		}
+	}
+
+	return TILT_DIRECTION_VOID;
+}
+
+
+
+
+
+
+
+
+
+uint8 g_relativeTiltDirection = TILT_DIRECTION_VOID;
 
 
 
 void MainLoop()
 {
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	//return;
 
@@ -308,8 +404,8 @@ void MainLoop()
 		Log("Spawn Actors.");
 
 
-
-
+		Log("g_relativeTilt %llX", &g_relativeTilt);
+		Log("g_relativeTiltDirection %llX", &g_relativeTiltDirection);
 
 		//const_for_all(index, 5)
 		//{
@@ -346,6 +442,7 @@ void MainLoop()
 		//return;
 
 
+		
 
 
 
@@ -382,6 +479,9 @@ void MainLoop()
 
 		pool[3] = danteActorData;
 
+		danteActorData.newButtonMask = 0xFFFF;
+		vergilActorData.newButtonMask = 0xFFFF;
+
 
 
 
@@ -401,6 +501,15 @@ void MainLoop()
 
 
 
+	auto baseAddr = Actor_actorBaseAddr[2];
+	if (!baseAddr)
+	{
+		return;
+	}
+	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+	g_relativeTilt = (actorData.actorCameraDirection - actorData.leftStickPosition);
+
+	g_relativeTiltDirection = GetRelativeTiltDirection(actorData);
 
 
 

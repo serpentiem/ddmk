@@ -117,7 +117,8 @@ var items =
 	[ "interactionData[8]"              , "vec4"                      , 0x7460                           ],
 	[ "buttons[4]"                      , "byte16"                    , 0x74E0                           ],
 	[ "rightStick[2]"                   , "byte16"                    , 0x74F8                           ],
-	[ "leftStick[2]"                    , "byte16"                    , 0x7508                           ],
+	[ "leftStickPosition"               , "uint16"                    , 0x7508                           ],
+	[ "leftStickRadius"                 , "uint16"                    , 0x750A                           ],
 	[ "actorCameraDirection"            , "uint16"                    , 0x750C                           ],
 	[ "leftStickDirection[2]"           , "uint32"                    , 0x751C                           ],
 	[ "devilModelMetadata"              , "DEVIL_MODEL_METADATA_DANTE", 0xB600, CHAR_DANTE               ],
@@ -175,6 +176,10 @@ var GetTypeSize = function(str)
 {
 	var sizes =
 	[
+		[ "int8"                      , 1    ],
+		[ "int16"                     , 2    ],
+		[ "int32"                     , 4    ],
+		[ "int64"                     , 8    ],
 		[ "uint8"                     , 1    ],
 		[ "uint16"                    , 2    ],
 		[ "uint32"                    , 4    ],
@@ -417,6 +422,10 @@ var GetVariableType = function(str)
 {
 	var dataTypes =
 	[
+		[ "int8"   , "Byte"    ],
+		[ "int16"  , "2 Bytes" ],
+		[ "int32"  , "4 Bytes" ],
+		[ "int64"  , "8 Bytes" ],
 		[ "uint8"  , "Byte"    ],
 		[ "uint16" , "2 Bytes" ],
 		[ "uint32" , "4 Bytes" ],

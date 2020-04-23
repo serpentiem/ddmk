@@ -164,6 +164,8 @@ void vp_memcpy
 	VirtualProtect(dest, size, protection, &protection);
 }
 
+// @Todo: Add xmm register saving.
+// @Todo: Add size3 for stuff directly after the call.
 // @Todo: Add noReturn argument.
 FUNC CreateFunction
 (

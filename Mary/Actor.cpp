@@ -991,37 +991,124 @@ void WriteMotionData(byte8 * baseAddr)
 
 
 
-void WritePosition(byte8 * baseAddr)
+void WritePosition_1FC017(float32 z, float32 x, byte8 * baseAddr)
 {
 
 
 
 
 
-	if (!baseAddr)
+
+
+
+
+	// Parent
 	{
-		return;
+		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+		if (actorData.character != CHAR_DANTE)
+		{
+			goto DanteYamatoParentEnd;
+		}
+		if (actorData.newParentBaseAddr)
+		{
+			goto DanteYamatoParentEnd;
+		}
+		if (!actorData.newChildBaseAddr[CHAR_VERGIL])
+		{
+			goto DanteYamatoParentEnd;
+		}
+		auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
+		if (childActorData.character != CHAR_VERGIL)
+		{
+			goto DanteYamatoParentEnd;
+		}
+
+
+
+
+
+
+		if (childActorData.motionData[1].group == MOTION_GROUP_VERGIL_YAMATO)
+		{
+			goto DanteYamatoParentEnd;
+		}
+		//actorData.position.x = x;
+		//actorData.position.z = z;
+		childActorData.position.x = x;
+		childActorData.position.z = z;
+		//return;
+
+		goto Default;
+
 	}
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL*>(baseAddr);
-	if (actorData.character != CHAR_VERGIL)
+	DanteYamatoParentEnd:;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// Child
+
+
+	DanteYamatoChildStart:
 	{
-		return;
+		auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL*>(baseAddr);
+		if (actorData.character != CHAR_VERGIL)
+		{
+			goto DanteYamatoChildEnd;
+		}
+		if (!actorData.newParentBaseAddr)
+		{
+			goto DanteYamatoChildEnd;
+		}
+		auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newParentBaseAddr);
+		if (parentActorData.character != CHAR_DANTE)
+		{
+			goto DanteYamatoChildEnd;
+		}
+		if (actorData.motionData[1].group != MOTION_GROUP_VERGIL_YAMATO)
+		{
+			goto DanteYamatoChildEnd;
+		}
+		//actorData.position.x = x;
+		//actorData.position.z = z;
+		parentActorData.position.x = x;
+		parentActorData.position.z = z;
+		//return;
+
+		goto Default;
+
 	}
-	if (!actorData.newParentBaseAddr)
+	DanteYamatoChildEnd:;
+
+
+
+
+
+
+	// Default
+
+
+
+
+	Default:
 	{
-		return;
-	}
-	auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newParentBaseAddr);
-	if (parentActorData.character != CHAR_DANTE)
-	{
-		return;
-	}
-	if (actorData.meleeWeaponMap[0] != WEAPON_VERGIL_YAMATO)
-	{
-		return;
+		auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+		actorData.position.x = x;
+		actorData.position.z = z;
 	}
 
-	parentActorData.position = actorData.position;
+
+
 
 
 
@@ -1074,19 +1161,15 @@ void Actor_Init()
 
 
 	{
-		constexpr byte8 sect0[] =
-		{
-			0xF3, 0x0F, 0x11, 0x8B, 0x80, 0x00, 0x00, 0x00, //movss [rbx+00000080],xmm1
-		};
 		constexpr byte8 sect1[] =
 		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
+			0x4C, 0x8B, 0xC3, //mov r8,rbx
 		};
-		auto func = CreateFunction(WritePosition, (appBaseAddr + 0x1FC027), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
+		auto func = CreateFunction(WritePosition_1FC017, (appBaseAddr + 0x1FC027), true, true, 0, sizeof(sect1));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x1FC01F), func.addr, 3);
+		WriteJump((appBaseAddr + 0x1FC017), func.addr, 3);
 		/*
+		dmc3.exe+1FC017 - F3 0F11 83 88000000 - movss [rbx+00000088],xmm0
 		dmc3.exe+1FC01F - F3 0F11 8B 80000000 - movss [rbx+00000080],xmm1
 		dmc3.exe+1FC027 - E9 4E030000         - jmp dmc3.exe+1FC37A
 		*/

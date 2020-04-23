@@ -167,11 +167,15 @@ void CreateMainActor(byte8 * baseAddr)
 	Actor_actorBaseAddr.count = 2;
 
 	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-	actorData.newGamepad = 1;
+	actorData.newGamepad = 0;
+	actorData.newButtonMask = 0xFFFF;
 
 	File_UpdateFileItems();
 
-	spawnActors = true;
+
+
+
+	//spawnActors = true;
 }
 
 void CreateMainClone(byte8 * baseAddr)
@@ -1378,7 +1382,7 @@ void ActorInitComplete(byte8 * baseAddr)
 
 	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
 	actorData.collisionIndex = 1;
-
+	//actorData.newButtonMask = 0xFFFF
 
 
 }

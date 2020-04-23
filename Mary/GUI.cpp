@@ -1929,6 +1929,12 @@ void GUI_Speed_Draw()
 
 
 
+
+
+
+
+
+
 void GUI_Teleporter_Draw()
 {
 	static bool run = false;
@@ -1943,6 +1949,28 @@ void GUI_Teleporter_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin(Locale.Tools.Teleporter.header, &GUI_Teleporter_show, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
 	{
+
+
+
+		//DrawRelativeTilt();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

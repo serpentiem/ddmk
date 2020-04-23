@@ -103,7 +103,8 @@ struct ACTOR_DATA
 	_(16);
 	byte16 rightStick[2]; // 0x74F8
 	_(12);
-	byte16 leftStick[2]; // 0x7508
+	uint16 leftStickPosition; // 0x7508
+	uint16 leftStickRadius; // 0x750A
 	uint16 actorCameraDirection; // 0x750C
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
@@ -265,7 +266,8 @@ struct ACTOR_DATA_DANTE
 	_(16);
 	byte16 rightStick[2]; // 0x74F8
 	_(12);
-	byte16 leftStick[2]; // 0x7508
+	uint16 leftStickPosition; // 0x7508
+	uint16 leftStickRadius; // 0x750A
 	uint16 actorCameraDirection; // 0x750C
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
@@ -400,7 +402,8 @@ struct ACTOR_DATA_BOB
 	_(16);
 	byte16 rightStick[2]; // 0x74F8
 	_(12);
-	byte16 leftStick[2]; // 0x7508
+	uint16 leftStickPosition; // 0x7508
+	uint16 leftStickRadius; // 0x750A
 	uint16 actorCameraDirection; // 0x750C
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
@@ -527,7 +530,8 @@ struct ACTOR_DATA_LADY
 	_(16);
 	byte16 rightStick[2]; // 0x74F8
 	_(12);
-	byte16 leftStick[2]; // 0x7508
+	uint16 leftStickPosition; // 0x7508
+	uint16 leftStickRadius; // 0x750A
 	uint16 actorCameraDirection; // 0x750C
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
@@ -670,7 +674,8 @@ struct ACTOR_DATA_VERGIL
 	_(16);
 	byte16 rightStick[2]; // 0x74F8
 	_(12);
-	byte16 leftStick[2]; // 0x7508
+	uint16 leftStickPosition; // 0x7508
+	uint16 leftStickRadius; // 0x750A
 	uint16 actorCameraDirection; // 0x750C
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
