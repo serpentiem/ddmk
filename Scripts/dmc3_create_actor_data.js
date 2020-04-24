@@ -569,6 +569,13 @@ function AddActorDataCE
 			}
 			else if (type == "MODEL_DATA")
 			{
+				AddCheatEntry(description + " duration1 lower body", false, "Float", 0, (pos + 0x554 + 0), actor);
+				AddCheatEntry(description + " duration1 upper body", false, "Float", 0, (pos + 0x554 + 4), actor);
+				AddCheatEntry(description + " duration2 lower body", false, "Float", 0, (pos + 0x594 + 0), actor);
+				AddCheatEntry(description + " duration2 upper body", false, "Float", 0, (pos + 0x594 + 4), actor);
+				AddCheatEntry(description + " timer lower body"    , false, "Float", 0, (pos + 0x6B4 + 0), actor);
+				AddCheatEntry(description + " timer upper body"    , false, "Float", 0, (pos + 0x6B4 + 4), actor);
+				pos += size;
 				continue;
 			}
 			else if (type == "DEVIL_MODEL_METADATA_DANTE")

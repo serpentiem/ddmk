@@ -10,13 +10,13 @@ PrivateEnd;
 
 void SaveConfig()
 {
-	LogFunction();
+	//LogFunction();
 	SaveFile(g_path, g_addr, g_size);
 }
 
 void LoadConfig()
 {
-	LogFunction();
+	//LogFunction();
 	byte8 * file = 0;
 	uint32 size = 0;
 	file = LoadFile(g_path, &size);

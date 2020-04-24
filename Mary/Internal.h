@@ -52,7 +52,10 @@ typedef void(__fastcall * func_1F97F0_t)(byte8 * actorData, bool playMotion); //
 typedef void(__fastcall * func_23E560_t)(byte8 * eventData, uint32 position);
 typedef void(__fastcall * func_8AC80_t)(MODEL_DATA & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool); // Play Motion
 typedef void(__fastcall * func_89E30_t)(byte8 * baseAddr, uint32 index); // Call after icon update.
-typedef void(__fastcall * func_1B9FA0_t)(byte8 * file); // Adjust file pointers.
+typedef void(__fastcall * func_1B9FA0_t)(byte8 * addr); // Adjust file pointers.
+typedef void(__fastcall * func_223AC0_t)(byte8 * actorData); // Create Spiral Swords.
+typedef void(__fastcall * func_223F50_t)(byte8 * actorData, uint32 index); // Specific Summoned Swords.
+typedef void(__fastcall * func_223BE0_t)(byte8 * actorData, uint32 index); // Shoot Summoned Sword.
 
 extern func_897B0_t func_897B0;
 extern func_89450_t func_89450;
@@ -104,5 +107,8 @@ extern func_23E560_t func_23E560;
 extern func_8AC80_t func_8AC80;
 extern func_89E30_t func_89E30;
 extern func_1B9FA0_t func_1B9FA0;
+extern func_223AC0_t func_223AC0;
+extern func_223F50_t func_223F50;
+extern func_223BE0_t func_223BE0;
 
 void Internal_Init();

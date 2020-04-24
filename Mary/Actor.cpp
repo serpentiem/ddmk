@@ -1125,6 +1125,235 @@ void WritePosition_1FC017(float32 z, float32 x, byte8 * baseAddr)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bool PlayMotion(byte8 * baseAddr, uint8 group, uint8 index)
+{
+	{
+		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+		if (actorData.character != CHAR_DANTE)
+		{
+			goto DanteYamatoParentEnd;
+		}
+		if (actorData.newParentBaseAddr)
+		{
+			goto DanteYamatoParentEnd;
+		}
+		if (!actorData.newChildBaseAddr[CHAR_VERGIL])
+		{
+			goto DanteYamatoParentEnd;
+		}
+		auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
+		if (childActorData.character != CHAR_VERGIL)
+		{
+			goto DanteYamatoParentEnd;
+		}
+
+
+
+		if (childActorData.meleeWeaponMap[0] == WEAPON_VERGIL_YAMATO)
+		{
+			return true;
+		}
+
+
+
+
+		if (childActorData.motionData[1].group == MOTION_GROUP_VERGIL_YAMATO)
+		{
+			return true;
+		}
+
+
+
+
+
+
+
+
+
+
+	}
+	DanteYamatoParentEnd:;
+
+
+
+
+
+
+
+
+
+
+
+
+
+	return false;
+}
+
+
+
+
+
+
+
+void WriteMotionState(byte8 * baseAddr)
+{
+
+
+
+
+
+	{
+		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+		if (actorData.character != CHAR_DANTE)
+		{
+			goto DanteYamatoParentEnd;
+		}
+		if (actorData.newParentBaseAddr)
+		{
+			goto DanteYamatoParentEnd;
+		}
+		if (!actorData.newChildBaseAddr[CHAR_VERGIL])
+		{
+			goto DanteYamatoParentEnd;
+		}
+		auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
+		if (childActorData.character != CHAR_VERGIL)
+		{
+			goto DanteYamatoParentEnd;
+		}
+
+
+		//if (childActorData.motionState2[1] & MOTION_STATE_BUSY)
+		//{
+		//	if (!(actorData.motionState2[1] & MOTION_STATE_BUSY))
+		//	{
+		//		actorData.motionState2[1] += MOTION_STATE_BUSY;
+		//	}
+		//}
+
+
+
+
+
+
+		if (childActorData.move)
+		{
+			goto DanteYamatoChildEnd;
+		}
+		childActorData.motionState2[1] = actorData.motionState2[1];
+		return;
+	}
+	DanteYamatoParentEnd:;
+
+
+
+
+
+	{
+		auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL*>(baseAddr);
+		if (actorData.character != CHAR_VERGIL)
+		{
+			goto DanteYamatoChildEnd;
+		}
+		if (!actorData.newParentBaseAddr)
+		{
+			goto DanteYamatoChildEnd;
+		}
+		auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newParentBaseAddr);
+		if (parentActorData.character != CHAR_DANTE)
+		{
+			goto DanteYamatoChildEnd;
+		}
+		if (!actorData.move)
+		{
+			goto DanteYamatoChildEnd;
+		}
+		parentActorData.motionState2[1] = actorData.motionState2[1];
+		return;
+	}
+	DanteYamatoChildEnd:;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+bool g_logMotionData = false;
+uint8 g_motionGroup = MOTION_GROUP_DANTE_REBELLION;
+uint8 g_motionIndex = 3;
+
+void LogMotionData()
+{
+	if (!g_logMotionData)
+	{
+		return;
+	}
+
+	auto baseAddr = Actor_actorBaseAddr[0];
+	if (!baseAddr)
+	{
+		return;
+	}
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	auto & motionData = actorData.motionData[BODY_PART_UPPER];
+	auto & modelData = actorData.modelData[actorData.activeModelIndex];
+	auto & duration = modelData.motionLength1[BODY_PART_UPPER];
+	auto & timer = modelData.motionTimer[BODY_PART_UPPER];
+
+	if (!((motionData.group == g_motionGroup) && (motionData.index == g_motionIndex)))
+	{
+		return;
+	}
+
+	g_logMotionData = false;
+
+	Log("%u,%u,%.0f,%.0f", motionData.group, motionData.index, duration, timer);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void Actor_Init()
 {
 	LogFunction();
@@ -1137,6 +1366,214 @@ void Actor_Init()
 		Write<uint32>((appBaseAddr + 0x1DEAC9), size); // Bob
 		Write<uint32>((appBaseAddr + 0x1DEBE2), size); // Dante
 	}
+
+
+
+
+
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00,       //call dmc3.exe+1E5E60
+			0x84, 0xC0,                         //test al,al
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, //je dmc3.exe+1E5DC0
+		};
+		auto func = CreateFunction(LogMotionData, (appBaseAddr + 0x1E5DC0), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteCall(func.sect0, (appBaseAddr + 0x1E5E60));
+		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1E5DC0), 6);
+		WriteJump((appBaseAddr + 0x1E5DBB), func.addr);
+	}
+
+
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x89, 0x83, 0x64, 0x3E, 0x00, 0x00, //mov [rbx+00003E64],eax
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCB, //mov rcx,rbx
+	//	};
+	//	auto func = CreateFunction(WriteMotionState, (appBaseAddr + 0x1E0510), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x1E050A), func.addr, 1);
+	//	/*
+	//	dmc3.exe+1E050A - 89 83 643E0000 - mov [rbx+00003E64],eax
+	//	dmc3.exe+1E0510 - 48 83 C4 40    - add rsp,40
+	//	*/
+	//}
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x89, 0x83, 0x64, 0x3E, 0x00, 0x00, //mov [rbx+00003E64],eax
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCB, //mov rcx,rbx
+	//	};
+	//	auto func = CreateFunction(WriteMotionState, (appBaseAddr + 0x1E0952), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x1E094C), func.addr, 1);
+	//	/*
+	//	dmc3.exe+1E094C - 89 83 643E0000 - mov [rbx+00003E64],eax
+	//	dmc3.exe+1E0952 - 85 F6          - test esi,esi
+	//	*/
+	//}
+
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x89, 0x8B, 0x64, 0x3E, 0x00, 0x00, //mov [rbx+00003E64],ecx
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCB, //mov rcx,rbx
+	//	};
+	//	auto func = CreateFunction(WriteMotionState, (appBaseAddr + 0x1E0AA8), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x1E0AA2), func.addr, 1);
+	//	/*
+	//	dmc3.exe+1E0AA2 - 89 8B 643E0000        - mov [rbx+00003E64],ecx
+	//	dmc3.exe+1E0AA8 - EB 0A                 - jmp dmc3.exe+1E0AB4
+	//	*/
+	//}
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x89, 0x83, 0x64, 0x3E, 0x00, 0x00, //mov [rbx+00003E64],eax
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCB, //mov rcx,rbx
+	//	};
+	//	auto func = CreateFunction(WriteMotionState, (appBaseAddr + 0x1E0AB4), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x1E0AAE), func.addr, 1);
+	//	/*
+	//	dmc3.exe+1E0AAE - 89 83 643E0000    - mov [rbx+00003E64],eax
+	//	dmc3.exe+1E0AB4 - 83 BB 043E0000 12 - cmp dword ptr [rbx+00003E04],12
+	//	*/
+	//}
+
+
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x89, 0x91, 0x64, 0x3E, 0x00, 0x00, //mov [rcx+00003E64],edx
+	//	};
+	//	auto func = CreateFunction(WriteMotionState, (appBaseAddr + 0x1E0B7C), true, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteJump((appBaseAddr + 0x1E0B76), func.addr, 1);
+	//	/*
+	//	dmc3.exe+1E0B76 - 89 91 643E0000 - mov [rcx+00003E64],edx
+	//	dmc3.exe+1E0B7C - 8B C2          - mov eax,edx
+	//	*/
+	//}
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x89, 0x83, 0x64, 0x3E, 0x00, 0x00, //mov [rbx+00003E64],eax
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCB, //mov rcx,rbx
+	//	};
+	//	auto func = CreateFunction(WriteMotionState, (appBaseAddr + 0x1E146F), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x1E1469), func.addr, 1);
+	//	/*
+	//	dmc3.exe+1E1469 - 89 83 643E0000    - mov [rbx+00003E64],eax
+	//	dmc3.exe+1E146F - 40 88 B3 103E0000 - mov [rbx+00003E10],sil
+	//	*/
+	//}
+
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x89, 0x91, 0x64, 0x3E, 0x00, 0x00, //mov [rcx+00003E64],edx
+	//	};
+	//	auto func = CreateFunction(WriteMotionState, (appBaseAddr + 0x1E175E), true, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteJump((appBaseAddr + 0x1E1758), func.addr, 1);
+	//	/*
+	//	dmc3.exe+1E1758 - 89 91 643E0000 - mov [rcx+00003E64],edx
+	//	dmc3.exe+1E175E - 8B C2          - mov eax,edx
+	//	*/
+	//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	{
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                   //test al,al
+			0x74, 0x01,                   //je short
+			0xC3,                         //ret
+			0x48, 0x89, 0x5C, 0x24, 0x08, //mov [rsp+08],rbx
+		};
+		auto func = CreateFunction(PlayMotion, (appBaseAddr + 0x1EFB95), true, false, 0, 0, sizeof(sect2));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		//WriteJump((appBaseAddr + 0x1EFB90), func.addr);
+		/*
+		dmc3.exe+1EFB90 - 48 89 5C 24 08 - mov [rsp+08],rbx
+		dmc3.exe+1EFB95 - 48 89 6C 24 10 - mov [rsp+10],rbp
+		*/
+	}
+
+
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x89, 0x83, 0x64, 0x3E, 0x00, 0x00, //mov [rbx+00003E64],eax
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCB, //mov rcx,rbx
+	//	};
+	//	auto func = CreateFunction(WriteMotionState, (appBaseAddr + 0x1E0952), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	//WriteJump((appBaseAddr + 0x1E094C), func.addr, 1);
+	//	/*
+	//	dmc3.exe+1E094C - 89 83 643E0000 - mov [rbx+00003E64],eax
+	//	dmc3.exe+1E0952 - 85 F6          - test esi,esi
+	//	*/
+	//}
+
+
+
+
 
 
 	{

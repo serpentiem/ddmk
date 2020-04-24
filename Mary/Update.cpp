@@ -274,6 +274,218 @@ void DanteYamatoDaemonStart()
 
 
 
+float32 motionTimeoutDante [MAX_MOTION_GROUP][MAX_MOTION_INDEX] = {};
+float32 motionTimeoutVergil[MAX_MOTION_GROUP][MAX_MOTION_INDEX] = {};
+
+
+
+
+void Init()
+{
+	motionTimeoutDante[MOTION_GROUP_DANTE_REBELLION][3] = 150;
+}
+
+
+
+
+void ClearBusyFlagDante(byte8 * baseAddr)
+{
+	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+	auto & modelData = actorData.modelData[actorData.activeModelIndex];
+	auto & timer = modelData.motionTimer[BODY_PART_UPPER];
+	auto & motionData = actorData.motionData[BODY_PART_UPPER];
+	auto & motionState = actorData.motionState2[1];
+
+	uint8 group = 0;
+	uint8 index = 0;
+
+	if (!(motionState & MOTION_STATE_BUSY))
+	{
+		return;
+	}
+
+	group = motionData.group;
+	if (!((group >= MOTION_GROUP_DANTE_REBELLION) && (group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN)))
+	{
+		return;
+	}
+	index = motionData.index;
+	if (index >= MAX_MOTION_INDEX)
+	{
+		index = 0;
+	}
+	auto & timeout = motionTimeoutDante[group][index];
+
+	if (timer < timeout)
+	{
+		return;
+	}
+
+	motionState -= MOTION_STATE_BUSY;
+}
+
+
+
+
+
+
+
+
+
+void DanteYamatoDaemonUpdate()
+{
+	for_each(index, 2, Actor_actorBaseAddr.count)
+	{
+		auto baseAddr = Actor_actorBaseAddr[index];
+		if (!baseAddr)
+		{
+			continue;
+		}
+
+
+
+
+
+
+
+		{
+			auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+			if (actorData.character != CHAR_DANTE)
+			{
+				goto ParentEnd;
+			}
+			if (actorData.newParentBaseAddr)
+			{
+				goto ParentEnd;
+			}
+			if (!actorData.newChildBaseAddr[CHAR_VERGIL])
+			{
+				goto ParentEnd;
+			}
+			auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
+			if (childActorData.character != CHAR_VERGIL)
+			{
+				goto ParentEnd;
+			}
+
+
+
+
+
+			// If the parent uses a weapon, set the child's motion state to busy for the duration the weapon can be used.
+
+			{
+				auto & modelData = actorData.modelData[actorData.activeModelIndex];
+				auto & timer = modelData.motionTimer[BODY_PART_UPPER];
+				auto & motionData = actorData.motionData[BODY_PART_UPPER];
+				auto & childMotionState = childActorData.motionState2[1];
+
+				if (!((motionData.group >= MOTION_GROUP_DANTE_REBELLION) && (motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN)))
+				{
+					goto sect0;
+				}
+				if (motionData.index >= MAX_MOTION_INDEX)
+				{
+					goto sect0;
+				}
+				auto & timeout = motionTimeoutDante[motionData.group][motionData.index];
+
+				if (timer < timeout)
+				{
+					if (!(childMotionState & MOTION_STATE_BUSY))
+					{
+						childMotionState += MOTION_STATE_BUSY;
+					}
+					goto sect0;
+				}
+
+				if (childMotionState & MOTION_STATE_BUSY)
+				{
+					childMotionState -= MOTION_STATE_BUSY;
+				}
+			}
+			sect0:;
+
+			continue;
+		}
+		ParentEnd:;
+
+
+
+
+
+
+		{
+			auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL*>(baseAddr);
+			if (actorData.character != CHAR_VERGIL)
+			{
+				goto ChildEnd;
+			}
+			if (!actorData.newParentBaseAddr)
+			{
+				goto ChildEnd;
+			}
+			auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newParentBaseAddr);
+			if (parentActorData.character != CHAR_DANTE)
+			{
+				goto ChildEnd;
+			}
+
+			// If the child uses a weapon, set the parent's motion state to busy for the duration the weapon can be used.
+
+			{
+				auto & modelData = actorData.modelData[actorData.activeModelIndex];
+				auto & timer = modelData.motionTimer[BODY_PART_UPPER];
+				auto & motionData = actorData.motionData[BODY_PART_UPPER];
+				auto & parentMotionState = parentActorData.motionState2[1];
+
+				if (motionData.group != MOTION_GROUP_VERGIL_YAMATO)
+				{
+					goto sect1;
+				}
+				if (motionData.index >= MAX_MOTION_INDEX)
+				{
+					goto sect1;
+				}
+				auto & timeout = motionTimeoutVergil[motionData.group][motionData.index];
+
+				if (timer < timeout)
+				{
+					if (!(parentMotionState & MOTION_STATE_BUSY))
+					{
+						parentMotionState += MOTION_STATE_BUSY;
+					}
+					goto sect1;
+				}
+
+				if (parentMotionState & MOTION_STATE_BUSY)
+				{
+					parentMotionState -= MOTION_STATE_BUSY;
+				}
+			}
+			sect1:;
+
+			continue;
+		}
+		ChildEnd:;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -352,6 +564,51 @@ uint8 GetRelativeTiltDirection(byte8 * baseAddr)
 
 	return TILT_DIRECTION_VOID;
 }
+
+
+
+void DanteSummonedSwords()
+{
+	for_each(index, 2, Actor_actorBaseAddr.count)
+	{
+		auto baseAddr = Actor_actorBaseAddr[index];
+		if (!baseAddr)
+		{
+			continue;
+		}
+		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+		if (actorData.character != CHAR_DANTE)
+		{
+			continue;
+		}
+		if (actorData.newParentBaseAddr)
+		{
+			continue;
+		}
+		if (!actorData.newChildBaseAddr[CHAR_VERGIL])
+		{
+			continue;
+		}
+		auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
+		if (childActorData.character != CHAR_VERGIL)
+		{
+			continue;
+		}
+		if (actorData.buttons[2] & GAMEPAD_X)
+		{
+			func_223BE0(childActorData, 52);
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -494,9 +751,17 @@ void MainLoop()
 
 
 
+	//DanteSummonedSwords();
+
 
 
 	DanteYamatoDaemonStart();
+
+
+	DanteYamatoDaemonUpdate();
+
+
+
 
 
 

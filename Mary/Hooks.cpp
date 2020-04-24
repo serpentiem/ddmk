@@ -616,10 +616,10 @@ byte32 XInput_Hook_GetState
 	XINPUT_STATE * state
 )
 {
-	if (pause)
-	{
-		memset(state, 0, sizeof(XINPUT_STATE));
-	}
+	//if (pause)
+	//{
+	//	memset(state, 0, sizeof(XINPUT_STATE));
+	//}
 	return 0;
 }
 

@@ -20,6 +20,10 @@ bool IsWeaponActive
 	uint8 weapon
 )
 {
+	if (weapon == WEAPON_VOID)
+	{
+		return false;
+	}
 	if (!(actorData.motionState2[1] & MOTION_STATE_BUSY))
 	{
 		return false;
@@ -53,7 +57,10 @@ bool IsWeaponActive
 
 
 
-
+extern bool g_logMotionData;
+extern uint8 g_motionGroup;
+extern uint8 g_motionIndex;
+extern void LogMotionData();
 
 
 

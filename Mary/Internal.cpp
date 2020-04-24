@@ -50,6 +50,9 @@ func_23E560_t func_23E560 = 0;
 func_8AC80_t func_8AC80 = 0;
 func_89E30_t func_89E30 = 0;
 func_1B9FA0_t func_1B9FA0 = 0;
+func_223AC0_t func_223AC0 = 0;
+func_223F50_t func_223F50 = 0;
+func_223BE0_t func_223BE0 = 0;
 
 void Internal_Init()
 {
@@ -253,5 +256,17 @@ void Internal_Init()
 	{
 		auto func = CreateFunction((appBaseAddr + 0x1B9FA0));
 		func_1B9FA0 = (func_1B9FA0_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x223AC0));
+		func_223AC0 = (func_223AC0_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x223F50));
+		func_223F50 = (func_223F50_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x223BE0));
+		func_223BE0 = (func_223BE0_t)func.addr;
 	}
 }

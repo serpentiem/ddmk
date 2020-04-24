@@ -1955,14 +1955,33 @@ void GUI_Teleporter_Draw()
 		//DrawRelativeTilt();
 
 
+		{
+			
+			GUI_InputEx("group", g_motionGroup);
+			GUI_InputEx("index", g_motionIndex);
+			GUI_Checkbox("Log", g_logMotionData);
+			ImGui::Text("");
+		}
 
 
 
 
-
-
-
-
+		{
+			static uint32 index = 0;
+			GUI_InputEx<uint32>("Index", index);
+			if (GUI_Button("Summon Swords"))
+			{
+				func_223F50(Actor_actorBaseAddr[0], index);
+			}
+			if (GUI_Button("Create Swords"))
+			{
+				func_223AC0(Actor_actorBaseAddr[0]);
+			}
+			if (GUI_Button("Shoot Sword"))
+			{
+				func_223BE0(Actor_actorBaseAddr[0], index);
+			}
+		}
 
 
 
