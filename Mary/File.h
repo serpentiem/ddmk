@@ -45,6 +45,7 @@ struct CacheFile
 		auto & archiveData = *reinterpret_cast<ARCHIVE_DATA *>(file);
 		if (index >= archiveData.fileCount)
 		{
+			Log("Outside file range. %u %u", archiveData.fileCount, index);
 			return 0;
 		}
 		if (!archiveData.fileOff[index])
@@ -57,7 +58,7 @@ struct CacheFile
 
 extern CacheFile File_cacheFile[MAX_CACHE_FILE];
 
-extern byte8 * demo_pl000_00_3;
+//extern byte8 * demo_pl000_00_3;
 
 bool File_ExtractFile(const char * filename);
 byte8 * File_LoadFile

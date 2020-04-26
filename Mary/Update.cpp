@@ -93,6 +93,81 @@ bool millionStab = false;
 
 
 
+template <typename T>
+void SetBusyFlag(T & actorData)
+{
+	auto & motionState = actorData.motionState3[1];
+	if (!(motionState & MOTION_STATE_BUSY))
+	{
+		motionState += MOTION_STATE_BUSY;
+	}
+}
+
+template <typename T>
+void ClearBusyFlag(T & actorData)
+{
+	auto & motionState = actorData.motionState3[1];
+	if (motionState & MOTION_STATE_BUSY)
+	{
+		motionState -= MOTION_STATE_BUSY;
+	}
+}
+
+
+
+template <typename T>
+void EnableButton(T & actorData, byte16 button)
+{
+	if (!(actorData.newButtonMask & button))
+	{
+		actorData.newButtonMask += button;
+	}
+}
+
+template <typename T>
+void DisableButton(T & actorData, byte16 button)
+{
+	if (actorData.newButtonMask & button)
+	{
+		actorData.newButtonMask -= button;
+	}
+}
+
+void SetYamato(ACTOR_DATA_VERGIL & actorData)
+{
+	if (actorData.meleeWeaponMap[0] != WEAPON_VERGIL_YAMATO)
+	{
+		actorData.meleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
+		actorData.activeMeleeWeaponIndex = 0;
+		actorData.queuedMeleeWeaponIndex = 0;
+	}
+}
+
+void SetNewYamato(ACTOR_DATA_VERGIL & actorData)
+{
+	if (actorData.newMeleeWeaponMap[0] != WEAPON_VERGIL_YAMATO)
+	{
+		actorData.newMeleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
+		actorData.newMeleeWeaponCount = 1;
+		actorData.newMeleeWeaponIndex = 0;
+	}
+}
+
+
+
+template <typename T>
+bool IsBusy(T & actorData)
+{
+	if (actorData.motionState3[1] & MOTION_STATE_BUSY)
+	{
+		return true;
+	}
+	return false;
+}
+
+
+
+
 
 
 
@@ -100,9 +175,6 @@ bool millionStab = false;
 
 void DanteYamatoDaemonStart()
 {
-
-
-
 	for_each(index, 2, Actor_actorBaseAddr.count)
 	{
 		auto baseAddr = Actor_actorBaseAddr[index];
@@ -110,227 +182,61 @@ void DanteYamatoDaemonStart()
 		{
 			continue;
 		}
-		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-		if (actorData.character != CHAR_DANTE)
+
 		{
-			continue;
-		}
-		if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] != WEAPON_VERGIL_YAMATO)
-		{
-			continue;
-		}
-		if (actorData.newParentBaseAddr)
-		{
-			continue;
-		}
-		if (!actorData.newChildBaseAddr[CHAR_VERGIL])
-		{
-			continue;
-		}
-		auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
-		if (childActorData.character != CHAR_VERGIL)
-		{
-			continue;
-		}
-
-
-
-
-
-		if (childActorData.meleeWeaponMap[0] == WEAPON_VERGIL_YAMATO)
-		{
-			continue;
-		}
-
-
-
-
-
-
-
-		if (actorData.newButtonMask & GAMEPAD_Y)
-		{
-			actorData.newButtonMask -= GAMEPAD_Y;
-		}
-
-		if (actorData.motionState2[1] & MOTION_STATE_BUSY)
-		{
-			float32 timeout = 0;
-
-			const_for_all(weaponIndex, 4)
+			auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+			if (actorData.character != CHAR_DANTE)
 			{
+				goto ParentEnd;
+			}
+			if (actorData.newParentBaseAddr)
+			{
+				goto ParentEnd;
+			}
+			if (!actorData.newChildBaseAddr[CHAR_VERGIL])
+			{
+				goto ParentEnd;
+			}
+			auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
+			if (childActorData.character != CHAR_VERGIL)
+			{
+				goto ParentEnd;
+			}
 
-				if (actorData.meleeWeaponMap[weaponIndex] == WEAPON_VOID)
+			// If parent wants Yamato, check if child has Yamato equipped.
+			// if not, set vars.
+
+
+
+			auto & newMeleeWeapon = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
+
+
+			if (newMeleeWeapon == WEAPON_VERGIL_YAMATO)
+			{
+				DisableButton(actorData, GAMEPAD_Y);
+				if (actorData.style == STYLE_DANTE_SWORDMASTER)
 				{
-					continue;
+					DisableButton(actorData, GAMEPAD_B);
 				}
-
-
-
-				if (IsWeaponActive(actorData, actorData.meleeWeaponMap[weaponIndex]))
+				EnableButton(childActorData, GAMEPAD_Y);
+				SetYamato(childActorData);
+				if (!IsBusy(actorData))
 				{
-					// @Todo: Get timeout.
-					break;
+					SetNewYamato(childActorData);
 				}
 			}
 
-			auto & length = actorData.modelData[actorData.activeModelIndex].motionLength1[BODY_PART_UPPER];
-			auto & timer  = actorData.modelData[actorData.activeModelIndex].motionTimer  [BODY_PART_UPPER];
 
-			if (timer < timeout)
-			{
-				continue;
-			}
 
-			if (childActorData.buttons[2] & GAMEPAD_Y)
-			{
-				goto sect0;
-			}
 
-			if (timer < length)
-			{
-				continue;
-			}
+
+
+
+			continue;
 		}
-		sect0:;
-
-
-
-
-		childActorData.meleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
-		childActorData.activeMeleeWeaponIndex = 0;
-		childActorData.queuedMeleeWeaponIndex = 0;
-
-
-		
-		if (!(childActorData.newButtonMask & GAMEPAD_Y))
-		{
-			childActorData.newButtonMask += GAMEPAD_Y;
-		}
-
-
-
-
-
-		
-
-		// if dante and wants yamato
-		// insta take away control
-		// if no longer busy transfer control to the child
-		// update buttons if necessary
-
-
-
-		//if (!parentActorData.newChildBaseAddr[CHAR_VERGIL])
-		//{
-		//	continue;
-		//}
-		//// @Research: Maybe not required.
-		//if (baseAddr != parentActorData.newChildBaseAddr[CHAR_VERGIL])
-		//{
-		//	continue;
-		//}
-
-
-		// No need to check the timer if we're not busy.
-
-
-
-
-
-
-
-		// At this point we already switched the melee weapon, which means we WANT yamato.
-
-		// There are two parts to this: Control and visibility.
-
-		// Once the timer is above the timeout threshold, transfer control to the child.
-
-		// Now check for GAMEPAD_Y and the timer.
-
-		// If the timer runs out or GAMEPAD_Y is pressed, show the weapon model.
-
-		// And set a flag I guess?
-
-		// Basically, at this point Yamato is initiated properly.
-
-
-
-
-
-
+		ParentEnd:;
 	}
-
-
-
-
-
-
-
-
-
 }
-
-
-
-
-float32 motionTimeoutDante [MAX_MOTION_GROUP][MAX_MOTION_INDEX] = {};
-float32 motionTimeoutVergil[MAX_MOTION_GROUP][MAX_MOTION_INDEX] = {};
-
-
-
-
-void Init()
-{
-	motionTimeoutDante[MOTION_GROUP_DANTE_REBELLION][3] = 150;
-}
-
-
-
-
-void ClearBusyFlagDante(byte8 * baseAddr)
-{
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-	auto & modelData = actorData.modelData[actorData.activeModelIndex];
-	auto & timer = modelData.motionTimer[BODY_PART_UPPER];
-	auto & motionData = actorData.motionData[BODY_PART_UPPER];
-	auto & motionState = actorData.motionState2[1];
-
-	uint8 group = 0;
-	uint8 index = 0;
-
-	if (!(motionState & MOTION_STATE_BUSY))
-	{
-		return;
-	}
-
-	group = motionData.group;
-	if (!((group >= MOTION_GROUP_DANTE_REBELLION) && (group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN)))
-	{
-		return;
-	}
-	index = motionData.index;
-	if (index >= MAX_MOTION_INDEX)
-	{
-		index = 0;
-	}
-	auto & timeout = motionTimeoutDante[group][index];
-
-	if (timer < timeout)
-	{
-		return;
-	}
-
-	motionState -= MOTION_STATE_BUSY;
-}
-
-
-
-
-
-
-
-
 
 void DanteYamatoDaemonUpdate()
 {
@@ -370,46 +276,111 @@ void DanteYamatoDaemonUpdate()
 
 
 
+			
 
 
-			// If the parent uses a weapon, set the child's motion state to busy for the duration the weapon can be used.
 
+
+			auto & motionData = actorData.motionData[BODY_PART_UPPER];
+			auto & modelData = actorData.modelData[actorData.activeModelIndex];
+			auto & duration = modelData.motionLength1[BODY_PART_UPPER];
+			auto & timer = modelData.motionTimer[BODY_PART_UPPER];
+
+
+
+			//auto & childMotionData = childActorData.motionData[BODY_PART_UPPER];
+
+			// We need this so Vergil can't immediately use Yamato once it's equipped.
+			// the weapon map is updated
+			// because normally he could use this as soon as the weapon map is updated, this could conflict with an ongoing attack
+			// If the parent uses a weapon, check at what point the attack is.
+			// If we're not at the point where we can execute a new action, set the busy flag.
+			// Otherwise, clear the busy flag.
+
+			// Takes care of lock-on issues.
+
+
+
+
+
+
+			
+			// We need the busy flag so Vergil can't use Yamato instantly.
+			// Because we update the melee weapon map immediately to be able to use yamato as soon as possible.
+
+			// we also need to set the busy flag otherwise Vergil could use Yamato during our attack.
+
+			//auto IsBusy = [&]()
+			//{
+			//	if (actorData.motionState3[1] & MOTION_STATE_BUSY)
+			//	{
+			//		return true;
+			//	}
+			//	return false;
+			//};
+
+
+
+
+
+
+
+
+
+			if (IsBusy(actorData))
 			{
-				auto & modelData = actorData.modelData[actorData.activeModelIndex];
-				auto & timer = modelData.motionTimer[BODY_PART_UPPER];
-				auto & motionData = actorData.motionData[BODY_PART_UPPER];
-				auto & childMotionState = childActorData.motionState2[1];
-
-				if (!((motionData.group >= MOTION_GROUP_DANTE_REBELLION) && (motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN)))
+				if ((motionData.group >= MOTION_GROUP_DANTE_REBELLION) && (motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN))
 				{
-					goto sect0;
-				}
-				if (motionData.index >= MAX_MOTION_INDEX)
-				{
-					goto sect0;
-				}
-				auto & timeout = motionTimeoutDante[motionData.group][motionData.index];
-
-				if (timer < timeout)
-				{
-					if (!(childMotionState & MOTION_STATE_BUSY))
+					if (actorData.motionState1[4] != MOTION_STATE_EXECUTE)
 					{
-						childMotionState += MOTION_STATE_BUSY;
+						SetBusyFlag(childActorData);
 					}
-					goto sect0;
-				}
+					else
+					{
+						ClearBusyFlag(childActorData);
 
-				if (childMotionState & MOTION_STATE_BUSY)
-				{
-					childMotionState -= MOTION_STATE_BUSY;
+						// At this point the weapon is still active, but we can perform a new action.
+
+						if (childActorData.buttons[2] & GAMEPAD_Y)
+						{
+							SetNewYamato(childActorData);
+
+							duration = 0;
+							timer = 0;
+						}
+					}
 				}
 			}
-			sect0:;
+
+
+
+
+
+
+
+
+
+
+
+
+			// @Research: Perfect for lab conditions, but what happens when we get hit during an attack?
+			// Check busy flag.
+			// Shouldn't matter, because parent and child always share the same position and as such will both receive the hit.
+
+
+			//else
+			//{
+			//	if (childMotionData.group != MOTION_GROUP_VERGIL_YAMATO)
+			//	{
+			//		ClearBusyFlag(childActorData);
+			//	}
+			//}
 
 			continue;
 		}
 		ParentEnd:;
 
+		// Base condition: Parent wants Yamato and child doesn't have Yamato.
 
 
 
@@ -431,43 +402,46 @@ void DanteYamatoDaemonUpdate()
 				goto ChildEnd;
 			}
 
-			// If the child uses a weapon, set the parent's motion state to busy for the duration the weapon can be used.
 
+
+
+
+
+
+
+			// Set and clear busy flag.
+
+			auto & motionData = actorData.motionData[BODY_PART_UPPER];
+			auto & parentMotionData = parentActorData.motionData[BODY_PART_UPPER];
+
+			if (motionData.group == MOTION_GROUP_VERGIL_YAMATO)
 			{
-				auto & modelData = actorData.modelData[actorData.activeModelIndex];
-				auto & timer = modelData.motionTimer[BODY_PART_UPPER];
-				auto & motionData = actorData.motionData[BODY_PART_UPPER];
-				auto & parentMotionState = parentActorData.motionState2[1];
-
-				if (motionData.group != MOTION_GROUP_VERGIL_YAMATO)
+				if (actorData.motionState1[4] != MOTION_STATE_EXECUTE)
 				{
-					goto sect1;
+					SetBusyFlag(parentActorData);
 				}
-				if (motionData.index >= MAX_MOTION_INDEX)
+				else
 				{
-					goto sect1;
-				}
-				auto & timeout = motionTimeoutVergil[motionData.group][motionData.index];
-
-				if (timer < timeout)
-				{
-					if (!(parentMotionState & MOTION_STATE_BUSY))
-					{
-						parentMotionState += MOTION_STATE_BUSY;
-					}
-					goto sect1;
-				}
-
-				if (parentMotionState & MOTION_STATE_BUSY)
-				{
-					parentMotionState -= MOTION_STATE_BUSY;
+					ClearBusyFlag(parentActorData);
 				}
 			}
-			sect1:;
+			//else
+			//{
+			//	if (!((parentMotionData.group >= MOTION_GROUP_DANTE_REBELLION) && (parentMotionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN)))
+			//	{
+			//		ClearBusyFlag(parentActorData);
+			//	}
+			//}
 
 			continue;
 		}
 		ChildEnd:;
+
+
+
+
+
+
 	}
 }
 
@@ -664,13 +638,7 @@ void MainLoop()
 		Log("g_relativeTilt %llX", &g_relativeTilt);
 		Log("g_relativeTiltDirection %llX", &g_relativeTiltDirection);
 
-		//const_for_all(index, 5)
-		//{
-		//	danteActorData.newMeleeWeaponMap [index] = (WEAPON_DANTE_REBELLION   + index);
-		//	danteActorData.newRangedWeaponMap[index] = (WEAPON_DANTE_EBONY_IVORY + index);
-		//}
 
-		//danteActorData.newMeleeWeaponCount = 3;
 
 
 
@@ -689,6 +657,27 @@ void MainLoop()
 		}
 		auto & danteActorData = *danteBaseAddr;
 		Actor_actorBaseAddr.Push(danteActorData);
+
+
+
+
+		const_for_all(index, 5)
+		{
+			danteActorData.newMeleeWeaponMap [index] = (WEAPON_DANTE_REBELLION   + index);
+			danteActorData.newRangedWeaponMap[index] = (WEAPON_DANTE_EBONY_IVORY + index);
+		}
+		danteActorData.newMeleeWeaponCount = 3;
+		danteActorData.newMeleeWeaponIndex = 0;
+		danteActorData.newRangedWeaponCount = 3;
+		danteActorData.newRangedWeaponIndex = 0;
+
+		danteActorData.newMeleeWeaponMap[1] = WEAPON_DANTE_BEOWULF;
+		danteActorData.newMeleeWeaponMap[2] = WEAPON_VERGIL_YAMATO;
+
+
+
+
+
 
 
 		auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
@@ -737,7 +726,8 @@ void MainLoop()
 		pool[3] = danteActorData;
 
 		danteActorData.newButtonMask = 0xFFFF;
-		vergilActorData.newButtonMask = 0xFFFF;
+		//vergilActorData.newButtonMask = 0xFFFF;
+		vergilActorData.newButtonMask = 0;
 
 
 

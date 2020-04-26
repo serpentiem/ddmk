@@ -32,13 +32,13 @@ ImVec2 GUI_Cosmetics_size  = ImVec2(400, 500);
 ImVec2 GUI_Tools_size      = ImVec2(300, 500);
 
 ImVec2 GUI_Camera_size     = ImVec2(400, 400);
-ImVec2 GUI_Speed_size      = ImVec2(400, 400);
+ImVec2 GUI_Speed_size      = ImVec2(300, 180);
 ImVec2 GUI_Teleporter_size = ImVec2(120, 180);
 ImVec2 GUI_Overlay_size    = ImVec2(300, 300);
 
 bool GUI_Camera_show     = false;
-bool GUI_Speed_show      = false;
-bool GUI_Teleporter_show = false;
+bool GUI_Speed_show      = true;
+bool GUI_Teleporter_show = true;
 
 static void BuildFonts()
 {
@@ -1782,7 +1782,7 @@ void GUI_Speed_Draw()
 	{
 		run = true;
 		ImGui::SetNextWindowSize(ImVec2((GUI_Speed_size.x + 16), (GUI_Speed_size.y + 16)));
-		ImGui::SetNextWindowPos(ImVec2(530, 40));
+		ImGui::SetNextWindowPos(ImVec2(900, 100));
 	}
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
@@ -1803,21 +1803,21 @@ void GUI_Speed_Draw()
 			if (GUI_InputEx<float32>(label, var, 0.1f))
 			{
 				var = (ceilf(var * 10000) / 10000);
-				//Speed_Update(Config);
+				Speed_Update(Config);
 			}
 		};
-		auto InputExSpeedMulti = [&]
-		(
-			const char ** label,
-			float32    *  var,
-			uint8         count
-		)
-		{
-			for (uint8 index = 0; index < count; index++)
-			{
-				InputExSpeed(label[index], var[index]);
-			}
-		};
+		//auto InputExSpeedMulti = [&]
+		//(
+		//	const char ** label,
+		//	float32    *  var,
+		//	uint8         count
+		//)
+		//{
+		//	for (uint8 index = 0; index < count; index++)
+		//	{
+		//		InputExSpeed(label[index], var[index]);
+		//	}
+		//};
 		ImGui::PushItemWidth(200);
 		//ImGui::Text(Locale.Speed.FrameRate.header);
 		//if (GUI_InputEx<uint32>
@@ -1834,25 +1834,25 @@ void GUI_Speed_Draw()
 		//{
 		//	ImGui::Text("Multiplier %.3f", Speed_FrameRate_multiplier);
 		//}
-		ImGui::Text(Locale.Speed.Main.header);
+		//ImGui::Text(Locale.Speed.Main.header);
 		InputExSpeed
 		(
 			Locale.Speed.Main.base,
 			Config.Speed.Main.base
 		);
-		ImGui::SameLine(300);
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
+		//ImGui::SameLine(300);
+		//ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
 		//ImGui::Text("%.3f", (DefaultConfig.Speed.Main.base * System_Graphics_frameRateMultiplier));
-		ImGui::PopStyleColor();
+		//ImGui::PopStyleColor();
 		InputExSpeed
 		(
 			Locale.Speed.Main.turbo,
 			Config.Speed.Main.turbo
 		);
-		ImGui::SameLine(300);
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
+		//ImGui::SameLine(300);
+		//ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
 		//ImGui::Text("%.3f", (DefaultConfig.Speed.Main.turbo * System_Graphics_frameRateMultiplier));
-		ImGui::PopStyleColor();
+		//ImGui::PopStyleColor();
 		InputExSpeed
 		(
 			Locale.Speed.Main.actor,
@@ -1863,6 +1863,10 @@ void GUI_Speed_Draw()
 			Locale.Speed.Main.enemy,
 			Config.Speed.Main.enemy
 		);
+
+
+/*
+
 		ImGui::Text(Locale.Speed.Devil.header);
 		ImGui::Text(Locale.Speed.Devil.Dante.header);
 		InputExSpeedMulti
@@ -1895,14 +1899,20 @@ void GUI_Speed_Draw()
 		(
 			Locale.Speed.Quicksilver.enemy,
 			Config.Speed.Quicksilver.enemy
-		);
+		);*/
+
+
+
+
+
+
 		ImGui::PopItemWidth();
 		ImGui::Text("");
 		if (GUI_Button(Locale.Speed.reset))
 		{
 			memcpy(&Config.Speed, &DefaultConfig.Speed, sizeof(Config.Speed));
 			SaveConfig();
-			//Speed_Update(DefaultConfig);
+			Speed_Update(DefaultConfig);
 		}
 	}
 	ImGui::End();
@@ -1942,7 +1952,7 @@ void GUI_Teleporter_Draw()
 	{
 		run = true;
 		ImGui::SetNextWindowSize(ImVec2(GUI_Teleporter_size.x + 16, GUI_Teleporter_size.y + 16));
-		ImGui::SetNextWindowPos(ImVec2(10, 530));
+		ImGui::SetNextWindowPos(ImVec2(900, 300));
 	}
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
@@ -1957,6 +1967,10 @@ void GUI_Teleporter_Draw()
 
 		{
 			
+
+			
+
+
 			GUI_InputEx("group", g_motionGroup);
 			GUI_InputEx("index", g_motionIndex);
 			GUI_Checkbox("Log", g_logMotionData);
@@ -1964,54 +1978,37 @@ void GUI_Teleporter_Draw()
 		}
 
 
-
-
 		{
-			static uint32 index = 0;
-			GUI_InputEx<uint32>("Index", index);
-			if (GUI_Button("Summon Swords"))
-			{
-				func_223F50(Actor_actorBaseAddr[0], index);
-			}
-			if (GUI_Button("Create Swords"))
-			{
-				func_223AC0(Actor_actorBaseAddr[0]);
-			}
-			if (GUI_Button("Shoot Sword"))
-			{
-				func_223BE0(Actor_actorBaseAddr[0], index);
-			}
-		}
 
+			static uint32 g_duration = 0;
 
-
-
-
-
-
-
-
-
-
-		{
-			static uint8 style = 0;
-			GUI_InputEx<uint8>("Style", style);
-			if (GUI_Button("Update Style Icon"))
-			{
-				//UpdateStyleIcon(style, styleIconDante[style].model, styleIconDante[style].texture);
-			}
-		}
-
-
-		{
+			static uint16 cacheFileId = pl000_00_3;
 			static uint8 index = 0;
-			static uint8 weapon = 0;
-			GUI_InputEx<uint8>("Index", index);
-			GUI_InputEx<uint8>("Weapon", weapon);
-			if (GUI_Button("Update Weapon Icon"))
+			GUI_InputEx("cacheFileId", cacheFileId);
+			GUI_InputEx("index", index);
+			
+			GUI_InputEx("duration", g_duration);
+
+			ImGui::Text("");
+
+			ImGui::SameLine(180);
+
+			if (GUI_Button("Play Motion"))
 			{
-				//UpdateWeaponIcon(index, weaponIcon[weapon].model, weaponIcon[weapon].texture);
+				auto file = File_cacheFile[cacheFileId][index];
+				if (file)
+				{
+					auto & duration = *reinterpret_cast<float32 *>(file + 0xC);
+					g_duration = static_cast<uint32>(duration);
+					Log("file %llX", file);
+				}
+				auto baseAddr = Actor_actorBaseAddr[0];
+				auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+				func_8AC80(actorData.modelData[actorData.activeModelIndex], BODY_PART_LOWER, File_cacheFile[cacheFileId][index], 0, false);
+				func_8AC80(actorData.modelData[actorData.activeModelIndex], BODY_PART_UPPER, File_cacheFile[cacheFileId][index], 0, false);
 			}
+			
+
 		}
 
 
@@ -2021,30 +2018,22 @@ void GUI_Teleporter_Draw()
 
 
 
-
-
-
-
-		{
-			static uint32 off = 0;
-			if (GUI_Button("Hide"))
-			{
-				auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-				auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
-				auto dest = (hud + off);
-				auto & visible = *reinterpret_cast<bool *>(dest + 0x18) = false;
-			}
-			ImGui::SameLine();
-			if (GUI_Button("Show"))
-			{
-				auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-				auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
-				auto dest = (hud + off);
-				auto & visible = *reinterpret_cast<bool *>(dest + 0x18) = true;
-			}
-			ImGui::SameLine();
-			GUI_InputEx<uint32>("Offset", off, 1, true, false);
-		}
+		//{
+		//	static uint32 index = 0;
+		//	GUI_InputEx<uint32>("Index", index);
+		//	if (GUI_Button("Summon Swords"))
+		//	{
+		//		func_223F50(Actor_actorBaseAddr[0], index);
+		//	}
+		//	if (GUI_Button("Create Swords"))
+		//	{
+		//		func_223AC0(Actor_actorBaseAddr[0]);
+		//	}
+		//	if (GUI_Button("Shoot Sword"))
+		//	{
+		//		func_223BE0(Actor_actorBaseAddr[0], index);
+		//	}
+		//}
 
 
 
@@ -2054,43 +2043,106 @@ void GUI_Teleporter_Draw()
 
 
 
-		if constexpr (debug)
-		{
-			auto pos = ImGui::GetWindowPos();
-			ImGui::Text("%f %f", pos.x, pos.y);
-		}
-		{
-			if (!InGame())
-			{
-				goto InvalidPointer;
-			}
-			VARS vars;
-			if (!vars.init)
-			{
-				goto InvalidPointer;
-			}
-			uint32 & room         = *vars.room;
-			uint32 & position     = *vars.position;
-			uint32 & event        = *vars.event;
-			uint16 & nextRoom     = *vars.nextRoom;
-			uint16 & nextPosition = *vars.nextPosition;
-			ImGui::PushItemWidth(100);
-			ImGui::Text(Locale.Teleporter.current);
-			GUI_Input("", room, false, ImGuiInputTextFlags_ReadOnly);
-			GUI_Input("", position, false, ImGuiInputTextFlags_ReadOnly);
-			ImGui::Text(Locale.Teleporter.next);
-			GUI_InputEx<uint16>("", nextRoom);
-			GUI_InputEx<uint16>("", nextPosition);
-			if (GUI_Button(Locale.Teleporter.teleport))
-			{
-				event = EVENT_TELEPORT;
-			}
-			ImGui::PopItemWidth();
-			goto TeleporterEnd;
-		}
-		InvalidPointer:
-		ImGui::Text(Locale.Teleporter.invalidPointer);
-		TeleporterEnd:;
+
+
+		//{
+		//	static uint8 style = 0;
+		//	GUI_InputEx<uint8>("Style", style);
+		//	if (GUI_Button("Update Style Icon"))
+		//	{
+		//		//UpdateStyleIcon(style, styleIconDante[style].model, styleIconDante[style].texture);
+		//	}
+		//}
+
+
+		//{
+		//	static uint8 index = 0;
+		//	static uint8 weapon = 0;
+		//	GUI_InputEx<uint8>("Index", index);
+		//	GUI_InputEx<uint8>("Weapon", weapon);
+		//	if (GUI_Button("Update Weapon Icon"))
+		//	{
+		//		//UpdateWeaponIcon(index, weaponIcon[weapon].model, weaponIcon[weapon].texture);
+		//	}
+		//}
+
+
+
+
+
+
+
+
+
+
+
+
+		//{
+		//	static uint32 off = 0;
+		//	if (GUI_Button("Hide"))
+		//	{
+		//		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		//		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+		//		auto dest = (hud + off);
+		//		auto & visible = *reinterpret_cast<bool *>(dest + 0x18) = false;
+		//	}
+		//	ImGui::SameLine();
+		//	if (GUI_Button("Show"))
+		//	{
+		//		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		//		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+		//		auto dest = (hud + off);
+		//		auto & visible = *reinterpret_cast<bool *>(dest + 0x18) = true;
+		//	}
+		//	ImGui::SameLine();
+		//	GUI_InputEx<uint32>("Offset", off, 1, true, false);
+		//}
+
+
+
+
+
+
+
+
+
+		//if constexpr (debug)
+		//{
+		//	auto pos = ImGui::GetWindowPos();
+		//	ImGui::Text("%f %f", pos.x, pos.y);
+		//}
+		//{
+		//	if (!InGame())
+		//	{
+		//		goto InvalidPointer;
+		//	}
+		//	VARS vars;
+		//	if (!vars.init)
+		//	{
+		//		goto InvalidPointer;
+		//	}
+		//	uint32 & room         = *vars.room;
+		//	uint32 & position     = *vars.position;
+		//	uint32 & event        = *vars.event;
+		//	uint16 & nextRoom     = *vars.nextRoom;
+		//	uint16 & nextPosition = *vars.nextPosition;
+		//	ImGui::PushItemWidth(100);
+		//	ImGui::Text(Locale.Teleporter.current);
+		//	GUI_Input("", room, false, ImGuiInputTextFlags_ReadOnly);
+		//	GUI_Input("", position, false, ImGuiInputTextFlags_ReadOnly);
+		//	ImGui::Text(Locale.Teleporter.next);
+		//	GUI_InputEx<uint16>("", nextRoom);
+		//	GUI_InputEx<uint16>("", nextPosition);
+		//	if (GUI_Button(Locale.Teleporter.teleport))
+		//	{
+		//		event = EVENT_TELEPORT;
+		//	}
+		//	ImGui::PopItemWidth();
+		//	goto TeleporterEnd;
+		//}
+		//InvalidPointer:
+		//ImGui::Text(Locale.Teleporter.invalidPointer);
+		//TeleporterEnd:;
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);

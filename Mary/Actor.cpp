@@ -62,6 +62,88 @@ byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
 
 // @Todo: Update.
 
+//template
+//<
+//	typename T,
+//	uint8 weaponType = WEAPON_TYPE_MELEE
+//>
+//bool IsWeaponReady
+//(
+//	T & actorData,
+//	uint8 weapon
+//)
+//{
+//	uint8 * weaponMap = 0;
+//	uint8 weaponCount = 0;
+//	uint8 weaponIndex = 0;
+//
+//	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+//	{
+//		if constexpr (weaponType == WEAPON_TYPE_MELEE)
+//		{
+//			weaponMap = actorData.meleeWeaponMap;
+//			weaponCount = 2;
+//			weaponIndex = actorData.meleeWeaponIndex;
+//		}
+//		else
+//		{
+//			weaponMap = actorData.rangedWeaponMap;
+//			weaponCount = 2;
+//			weaponIndex = (actorData.rangedWeaponIndex - 2);
+//		}
+//	}
+//	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	{
+//		weaponMap = actorData.meleeWeaponMap;
+//		weaponCount = 3;
+//		weaponIndex = actorData.queuedMeleeWeaponIndex;
+//	}
+//
+//	if (IsWeaponActive<T>(actorData, weapon))
+//	{
+//		return true;
+//	}
+//
+//	for (uint8 index = 0; index < weaponCount; index++)
+//	{
+//		if (weaponMap[index] == weapon)
+//		{
+//			continue;
+//		}
+//		if (IsWeaponActive<T>(actorData, weaponMap[index]))
+//		{
+//			return false;
+//		}
+//	}
+//
+//	if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	{
+//		if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
+//		{
+//			actorData.activeMeleeWeaponIndex = actorData.queuedMeleeWeaponIndex;
+//		}
+//	}
+//
+//	if (weaponMap[weaponIndex] == weapon)
+//	{
+//		return true;
+//	}
+//
+//	if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	{
+//		if ((weapon == WEAPON_VERGIL_YAMATO) && (weaponMap[weaponIndex] == WEAPON_VERGIL_FORCE_EDGE))
+//		{
+//			return true;
+//		}
+//	}
+//
+//	return false;
+//}
+
+
+
+
+
 template
 <
 	typename T,
@@ -73,31 +155,56 @@ bool IsWeaponReady
 	uint8 weapon
 )
 {
+
+
+	// auto &
+
 	uint8 * weaponMap = 0;
 	uint8 weaponCount = 0;
 	uint8 weaponIndex = 0;
 
-	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	//if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	//{
+	//	if constexpr (weaponType == WEAPON_TYPE_MELEE)
+	//	{
+	//		weaponMap = actorData.meleeWeaponMap;
+	//		weaponCount = 2;
+	//		weaponIndex = actorData.meleeWeaponIndex;
+	//	}
+	//	else
+	//	{
+	//		weaponMap = actorData.rangedWeaponMap;
+	//		weaponCount = 2;
+	//		weaponIndex = (actorData.rangedWeaponIndex - 2);
+	//	}
+	//}
+	//else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	//{
+	//	weaponMap = actorData.meleeWeaponMap;
+	//	weaponCount = 3;
+	//	weaponIndex = actorData.queuedMeleeWeaponIndex;
+	//}
+
+
+	if constexpr (weaponType == WEAPON_TYPE_MELEE)
 	{
-		if constexpr (weaponType == WEAPON_TYPE_MELEE)
-		{
-			weaponMap = actorData.meleeWeaponMap;
-			weaponCount = 2;
-			weaponIndex = actorData.meleeWeaponIndex;
-		}
-		else
-		{
-			weaponMap = actorData.rangedWeaponMap;
-			weaponCount = 2;
-			weaponIndex = (actorData.rangedWeaponIndex - 2);
-		}
+		weaponMap = actorData.newMeleeWeaponMap;
+		weaponCount = actorData.newMeleeWeaponCount;
+		weaponIndex = actorData.newMeleeWeaponIndex;
 	}
-	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	else
 	{
-		weaponMap = actorData.meleeWeaponMap;
-		weaponCount = 3;
-		weaponIndex = actorData.queuedMeleeWeaponIndex;
+		weaponMap = actorData.newRangedWeaponMap;
+		weaponCount = actorData.newRangedWeaponCount;
+		weaponIndex = actorData.newRangedWeaponIndex;
 	}
+
+
+
+
+
+
+
 
 	if (IsWeaponActive<T>(actorData, weapon))
 	{
@@ -116,29 +223,41 @@ bool IsWeaponReady
 		}
 	}
 
-	if constexpr (typematch(T, ACTOR_DATA_VERGIL))
-	{
-		if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
-		{
-			actorData.activeMeleeWeaponIndex = actorData.queuedMeleeWeaponIndex;
-		}
-	}
+	//if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	//{
+	//	if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
+	//	{
+	//		actorData.activeMeleeWeaponIndex = actorData.queuedMeleeWeaponIndex;
+	//	}
+	//}
 
 	if (weaponMap[weaponIndex] == weapon)
 	{
 		return true;
 	}
 
-	if constexpr (typematch(T, ACTOR_DATA_VERGIL))
-	{
-		if ((weapon == WEAPON_VERGIL_YAMATO) && (weaponMap[weaponIndex] == WEAPON_VERGIL_FORCE_EDGE))
-		{
-			return true;
-		}
-	}
+	//if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	//{
+	//	if ((weapon == WEAPON_VERGIL_YAMATO) && (weaponMap[weaponIndex] == WEAPON_VERGIL_FORCE_EDGE))
+	//	{
+	//		return true;
+	//	}
+	//}
 
 	return false;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 void * IsMeleeWeaponReady[MAX_CHAR] =
 {
@@ -798,15 +917,7 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 		if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] != WEAPON_VERGIL_YAMATO)
 		{
 			actorData.meleeWeaponMap[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
-
-
 			actorData.meleeWeaponData[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponData[actorData.newMeleeWeaponIndex];
-
-
-
-
-
-
 		}
 
 
@@ -838,11 +949,11 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 
 		func_1EB0E0(actorData, 4);
 
-		if (actorData.devil || (actorData.devilState == 1))
-		{
-			func_1F92C0(actorData, 1);
-			func_1F97F0(actorData, true);
-		}
+		//if (actorData.devil || (actorData.devilState == 1))
+		//{
+		//	func_1F92C0(actorData, 1);
+		//	func_1F97F0(actorData, true);
+		//}
 	}
 	sect0:;
 
@@ -1337,7 +1448,7 @@ void LogMotionData()
 
 	g_logMotionData = false;
 
-	Log("%u,%u,%.0f,%.0f", motionData.group, motionData.index, duration, timer);
+	Log("%u, %u, %.0f, %.0f", motionData.group, motionData.index, duration, timer);
 }
 
 
@@ -1374,15 +1485,18 @@ void Actor_Init()
 	{
 		constexpr byte8 sect0[] =
 		{
-			0xE8, 0x00, 0x00, 0x00, 0x00,       //call dmc3.exe+1E5E60
+			0x48, 0x8B, 0x5C, 0x24, 0x20,       //mov rbx,[rsp+20]
 			0x84, 0xC0,                         //test al,al
-			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, //je dmc3.exe+1E5DC0
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, //je dmc3.exe+1E5F57
 		};
-		auto func = CreateFunction(LogMotionData, (appBaseAddr + 0x1E5DC0), true, true, sizeof(sect0));
+		auto func = CreateFunction(LogMotionData, (appBaseAddr + 0x1E5F57), true, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteCall(func.sect0, (appBaseAddr + 0x1E5E60));
-		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1E5DC0), 6);
-		WriteJump((appBaseAddr + 0x1E5DBB), func.addr);
+		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x1E5F57), 6);
+		WriteJump((appBaseAddr + 0x1E5F52), func.addr);
+		/*
+		dmc3.exe+1E5F52 - 48 8B 5C 24 20 - mov rbx,[rsp+20]
+		dmc3.exe+1E5F57 - 48 8B 6C 24 28 - mov rbp,[rsp+28]
+		*/
 	}
 
 

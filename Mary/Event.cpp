@@ -167,15 +167,26 @@ void CreateMainActor(byte8 * baseAddr)
 	Actor_actorBaseAddr.count = 2;
 
 	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-	actorData.newGamepad = 0;
-	actorData.newButtonMask = 0xFFFF;
+	actorData.newGamepad = 1;
+	//actorData.newButtonMask = 0xFFFF;
 
 	File_UpdateFileItems();
 
+	const_for_all(index, countof(motionHelperDante))
+	{
+		auto & motionId    = motionHelperDante[index].motionId;
+		auto & cacheFileId = motionHelperDante[index].cacheFileId;
+
+		actorData.motionArchive[motionId] = File_cacheFile[cacheFileId];
+	}
 
 
 
-	//spawnActors = true;
+	Arcade_CreateMainActor(baseAddr);
+
+
+
+	spawnActors = true;
 }
 
 void CreateMainClone(byte8 * baseAddr)

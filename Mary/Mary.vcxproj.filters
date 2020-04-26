@@ -17,9 +17,6 @@
     <ClCompile Include="System\Media.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Camera.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Arcade.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -173,9 +170,6 @@
     <ClInclude Include="System\Media.h">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="System\Camera.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Arcade.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -296,7 +290,6 @@
     <ClInclude Include="Cosmetics\Object.h">
       <Filter>Cosmetics</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="Internal.h" />
     <ClInclude Include="Cosmetics\Model.h">
       <Filter>Cosmetics</Filter>
@@ -309,5 +302,6 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="Training.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
 </Project>

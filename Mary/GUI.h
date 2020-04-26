@@ -14,7 +14,7 @@
 
 //#include "Restart.h"
 
-//#include "Speed.h"
+#include "Speed.h"
 
 #include "Training.h"
 

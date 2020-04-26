@@ -4,7 +4,7 @@ constexpr bool debug = false;
 
 CacheFile File_cacheFile[MAX_CACHE_FILE];
 
-byte8 * demo_pl000_00_3 = 0;
+//byte8 * demo_pl000_00_3 = 0;
 
 PrivateStart;
 
@@ -332,7 +332,7 @@ bool File_Init()
 		File_cacheFile[cacheFileId] = file;
 	}
 
-	return true;
+	//return true;
 
 	const_for_all(index, countof(stringItemOff))
 	{

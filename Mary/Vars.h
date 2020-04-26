@@ -142,13 +142,10 @@ enum MOTION_GROUP_
 	MAX_MOTION_GROUP = 32,
 };
 
-enum MOTION_INDEX
+enum MOTION_STATE
 {
-	MAX_MOTION_INDEX = 64,
-};
-
-enum MOTION_STATE_
-{
+	MOTION_STATE_BUFFER = 1,
+	MOTION_STATE_EXECUTE = 2,
 	MOTION_STATE_BUSY = 0x10000,
 };
 
@@ -264,6 +261,38 @@ enum CACHE_FILE
 	em034,
 	id100,
 	id100V,
+	demo_pl000_00_0,
+	demo_pl000_00_1,
+	demo_pl000_00_2,
+	demo_pl000_00_3,
+	demo_pl000_00_4,
+	demo_pl000_00_5,
+	demo_pl000_00_6,
+	demo_pl000_00_7,
+	demo_pl000_00_8,
+	demo_pl000_00_9,
+	demo_pl000_00_10,
+	demo_pl000_00_11,
+	demo_pl000_00_12,
+	demo_pl000_00_13,
+	demo_pl000_00_14,
+	demo_pl000_00_15,
+	demo_pl000_00_16,
+	demo_pl000_00_17,
+	demo_pl000_00_18,
+	demo_pl000_00_19,
+	demo_pl000_00_20,
+	demo_pl000_00_21,
+	demo_pl000_00_22,
+	demo_pl000_00_23,
+	demo_pl000_00_24,
+	demo_pl000_00_25,
+	demo_pl000_00_26,
+	demo_pl000_00_27,
+	demo_pl000_00_28,
+	demo_pl000_00_29,
+	demo_pl000_00_30,
+	demo_pl000_00_31,
 	MAX_CACHE_FILE,
 };
 
@@ -357,6 +386,38 @@ constexpr const char * cacheFilename[MAX_CACHE_FILE] =
 	"em034.pac",
 	"id100.pac",
 	"id100V.pac",
+	"demo_pl000_00_0.pac",
+	"demo_pl000_00_1.pac",
+	"demo_pl000_00_2.pac",
+	"demo_pl000_00_3.pac",
+	"demo_pl000_00_4.pac",
+	"demo_pl000_00_5.pac",
+	"demo_pl000_00_6.pac",
+	"demo_pl000_00_7.pac",
+	"demo_pl000_00_8.pac",
+	"demo_pl000_00_9.pac",
+	"demo_pl000_00_10.pac",
+	"demo_pl000_00_11.pac",
+	"demo_pl000_00_12.pac",
+	"demo_pl000_00_13.pac",
+	"demo_pl000_00_14.pac",
+	"demo_pl000_00_15.pac",
+	"demo_pl000_00_16.pac",
+	"demo_pl000_00_17.pac",
+	"demo_pl000_00_18.pac",
+	"demo_pl000_00_19.pac",
+	"demo_pl000_00_20.pac",
+	"demo_pl000_00_21.pac",
+	"demo_pl000_00_22.pac",
+	"demo_pl000_00_23.pac",
+	"demo_pl000_00_24.pac",
+	"demo_pl000_00_25.pac",
+	"demo_pl000_00_26.pac",
+	"demo_pl000_00_27.pac",
+	"demo_pl000_00_28.pac",
+	"demo_pl000_00_29.pac",
+	"demo_pl000_00_30.pac",
+	"demo_pl000_00_31.pac",
 };
 
 constexpr uint32 stringItemOff[MAX_CACHE_FILE] =

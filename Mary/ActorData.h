@@ -33,18 +33,20 @@ struct ACTOR_DATA
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
-	_(94);
+	_(22);
+	byte32 motionState1[16]; // 0x39D0
+	_(8);
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	byte32 motionState1[6]; // 0x3E00
+	byte32 motionState2[6]; // 0x3E00
 	_(28);
 	float32 motionTimer; // 0x3E34
 	float32 idleTimer; // 0x3E38
 	_(36);
-	byte32 motionState2[3]; // 0x3E60
+	byte32 motionState3[3]; // 0x3E60
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
 	uint32 modelMap[3]; // 0x3E74
@@ -161,13 +163,15 @@ struct ACTOR_DATA_DANTE
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
-	_(94);
+	_(22);
+	byte32 motionState1[16]; // 0x39D0
+	_(8);
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	byte32 motionState1[6]; // 0x3E00
+	byte32 motionState2[6]; // 0x3E00
 	_(2);
 	uint16 chargedShotAir; // 0x3E1A
 	_(6);
@@ -176,7 +180,7 @@ struct ACTOR_DATA_DANTE
 	float32 motionTimer; // 0x3E34
 	float32 idleTimer; // 0x3E38
 	_(36);
-	byte32 motionState2[3]; // 0x3E60
+	byte32 motionState3[3]; // 0x3E60
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
 	uint32 modelMap[3]; // 0x3E74
@@ -332,18 +336,20 @@ struct ACTOR_DATA_BOB
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
-	_(94);
+	_(22);
+	byte32 motionState1[16]; // 0x39D0
+	_(8);
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	byte32 motionState1[6]; // 0x3E00
+	byte32 motionState2[6]; // 0x3E00
 	_(28);
 	float32 motionTimer; // 0x3E34
 	float32 idleTimer; // 0x3E38
 	_(36);
-	byte32 motionState2[3]; // 0x3E60
+	byte32 motionState3[3]; // 0x3E60
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
 	uint32 modelMap[3]; // 0x3E74
@@ -460,18 +466,20 @@ struct ACTOR_DATA_LADY
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
-	_(94);
+	_(22);
+	byte32 motionState1[16]; // 0x39D0
+	_(8);
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	byte32 motionState1[6]; // 0x3E00
+	byte32 motionState2[6]; // 0x3E00
 	_(28);
 	float32 motionTimer; // 0x3E34
 	float32 idleTimer; // 0x3E38
 	_(36);
-	byte32 motionState2[3]; // 0x3E60
+	byte32 motionState3[3]; // 0x3E60
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
 	uint32 modelMap[3]; // 0x3E74
@@ -588,18 +596,20 @@ struct ACTOR_DATA_VERGIL
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
-	_(94);
+	_(22);
+	byte32 motionState1[16]; // 0x39D0
+	_(8);
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	byte32 motionState1[6]; // 0x3E00
+	byte32 motionState2[6]; // 0x3E00
 	_(28);
 	float32 motionTimer; // 0x3E34
 	float32 idleTimer; // 0x3E38
 	_(36);
-	byte32 motionState2[3]; // 0x3E60
+	byte32 motionState3[3]; // 0x3E60
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
 	uint32 modelMap[3]; // 0x3E74

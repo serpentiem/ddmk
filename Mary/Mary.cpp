@@ -80,15 +80,18 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Training_ToggleDisableTimer       (Config.Game.Training.disableTimer       );
 
 
+		Speed_Init();
 
 
 
-
+		Camera_ToggleInvertX(true);
 
 
 
 		Update_Init();
 
+
+		ToggleUpdateWeapon(true);
 
 		//// Order is required.
 		//System_Memory_Init();
