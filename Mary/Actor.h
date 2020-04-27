@@ -12,6 +12,21 @@ extern vector<byte8 *, 128> Actor_actorBaseAddr;
 
 
 
+//PrivateStart;
+
+template <typename T>
+bool ActorIsBusy(T & actorData)
+{
+	if (actorData.motionState3[1] & MOTION_STATE_BUSY)
+	{
+		return true;
+	}
+	return false;
+}
+
+//PrivateEnd;
+
+
 
 template <typename T>
 bool IsWeaponActive
@@ -24,7 +39,7 @@ bool IsWeaponActive
 	{
 		return false;
 	}
-	if (!(actorData.motionState2[1] & MOTION_STATE_BUSY))
+	if (!ActorIsBusy(actorData))
 	{
 		return false;
 	}

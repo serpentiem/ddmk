@@ -135,9 +135,15 @@ void DisableButton(T & actorData, byte16 button)
 
 void SetYamato(ACTOR_DATA_VERGIL & actorData)
 {
+	
 	if (actorData.meleeWeaponMap[0] != WEAPON_VERGIL_YAMATO)
 	{
+		LogFunction();
 		actorData.meleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
+		actorData.meleeWeaponData[0] = actorData.newMeleeWeaponData[0];
+
+
+
 		actorData.activeMeleeWeaponIndex = 0;
 		actorData.queuedMeleeWeaponIndex = 0;
 	}
@@ -145,13 +151,44 @@ void SetYamato(ACTOR_DATA_VERGIL & actorData)
 
 void SetNewYamato(ACTOR_DATA_VERGIL & actorData)
 {
+	
 	if (actorData.newMeleeWeaponMap[0] != WEAPON_VERGIL_YAMATO)
 	{
+		LogFunction();
 		actorData.newMeleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
 		actorData.newMeleeWeaponCount = 1;
 		actorData.newMeleeWeaponIndex = 0;
 	}
 }
+
+void ClearYamato(ACTOR_DATA_VERGIL & actorData)
+{
+	
+	if (actorData.meleeWeaponMap[0] == WEAPON_VERGIL_YAMATO)
+	{
+		LogFunction();
+		actorData.meleeWeaponMap[0] = WEAPON_VOID;
+	}
+}
+
+void ClearNewYamato(ACTOR_DATA_VERGIL & actorData)
+{
+	
+	if (actorData.newMeleeWeaponMap[0] == WEAPON_VERGIL_YAMATO)
+	{
+		LogFunction();
+		actorData.newMeleeWeaponMap[0] = WEAPON_VOID;
+		actorData.newMeleeWeaponCount = 0;
+	}
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -237,6 +274,218 @@ void DanteYamatoDaemonStart()
 		ParentEnd:;
 	}
 }
+
+
+
+
+
+
+
+
+void DanteYamatoDaemonEnd()
+{
+	for_each(index, 2, Actor_actorBaseAddr.count)
+	{
+		auto baseAddr = Actor_actorBaseAddr[index];
+		if (!baseAddr)
+		{
+			continue;
+		}
+
+		{
+			auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+			if (actorData.character != CHAR_DANTE)
+			{
+				goto ParentEnd;
+			}
+			if (actorData.newParentBaseAddr)
+			{
+				goto ParentEnd;
+			}
+			if (!actorData.newChildBaseAddr[CHAR_VERGIL])
+			{
+				goto ParentEnd;
+			}
+			auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
+			if (childActorData.character != CHAR_VERGIL)
+			{
+				goto ParentEnd;
+			}
+
+			// If parent no longer wants Yamato, check if child has Yamato equipped.
+			// if not, set vars.
+
+
+
+			auto & newMeleeWeapon = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
+
+
+			if (newMeleeWeapon != WEAPON_VERGIL_YAMATO)
+			{
+				EnableButton(actorData, GAMEPAD_Y);
+				if (actorData.style == STYLE_DANTE_SWORDMASTER)
+				{
+					EnableButton(actorData, GAMEPAD_B);
+				}
+				DisableButton(childActorData, GAMEPAD_Y);
+
+
+
+				
+
+
+
+
+
+				if (!IsBusy(childActorData))
+				{
+
+					// Can't clear it beforehand, because some function that accesses the weaponData has no range check.
+
+					//ClearYamato(childActorData);
+					ClearNewYamato(childActorData);
+				}
+			}
+
+
+
+
+
+
+
+			continue;
+		}
+		ParentEnd:;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+template <typename T>
+bool WantsYamato(T & actorData)
+{
+	if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] == WEAPON_VERGIL_YAMATO)
+	{
+		return true;
+	}
+	return false;
+}
+
+
+
+
+template <typename T>
+void StopMotion(T & actorData)
+{
+	//auto & modelData = actorData.modelData[actorData.activeModelIndex];
+	//const_for_all(index, 2)
+	//{
+	//	modelData.motionLength1[index] = 0;
+	//	modelData.motionLength2[index] = 0;
+	//	modelData.motionTimer  [index] = 0;
+	//}
+	//func_8AC80
+	//(
+	//	modelData,
+	//	BODY_PART_LOWER,
+	//	File_cacheFile[pl021_00_0][0],
+	//	0,
+	//	false
+	//);
+	//func_8AC80
+	//(
+	//	modelData,
+	//	BODY_PART_UPPER,
+	//	File_cacheFile[pl021_00_0][0],
+	//	0,
+	//	false
+	//);
+
+
+	Log("StopMotion %llX", &actorData);
+
+
+	const_for_all(index, 16)
+	{
+		actorData.motionState1[index] = 0;
+	}
+
+	actorData.motionState2[0] = 1;
+	actorData.motionState2[1] = 0;
+	actorData.motionState2[2] = 4;
+	actorData.motionState2[3] = 0;
+	actorData.motionState2[4] = 0;
+	actorData.motionState2[5] = 0;
+
+	actorData.motionState3[0] = 0x1C1B;
+	actorData.motionState3[1] = 1;
+	actorData.motionState3[2] = 0;
+
+	//func_1EFB90(actorData, 0, 1, -1, 255, 2, 3);
+
+
+	//auto & modelData = actorData.modelData[actorData.activeModelIndex];
+	//const_for_all(index, 2)
+	//{
+	//	//modelData.motionLength1[index] = 0;
+	//	//modelData.motionLength2[index] = 0;
+	//	modelData.motionTimer[index] = modelData.motionLength1[index];
+	//}
+
+
+
+
+
+
+
+}
+
+
+template <typename T>
+void BattleMotion(T & actorData)
+{
+
+
+
+	Log("BattleMotion %llX", &actorData);
+
+
+	const_for_all(index, 16)
+	{
+		actorData.motionState1[index] = 0;
+	}
+
+	actorData.motionState2[0] = 0x11;
+	actorData.motionState2[1] = 1;
+	actorData.motionState2[2] = 0x11;
+	actorData.motionState2[3] = 0x11;
+	actorData.motionState2[4] = 1;
+	actorData.motionState2[5] = 0;
+
+	actorData.motionState3[0] = 0x401;
+	actorData.motionState3[1] = 0x10001;
+	actorData.motionState3[2] = 0;
+
+
+
+}
+
+
+
+
+
+
 
 void DanteYamatoDaemonUpdate()
 {
@@ -341,12 +590,49 @@ void DanteYamatoDaemonUpdate()
 
 						// At this point the weapon is still active, but we can perform a new action.
 
-						if (childActorData.buttons[2] & GAMEPAD_Y)
+						if (childActorData.buttons[2] & GAMEPAD_Y) // @Todo: Check charge switch.
 						{
+
+							if (childActorData.newMeleeWeaponMap[0] != WEAPON_VERGIL_YAMATO)
+							{
+								StopMotion(actorData);
+
+								//auto & modelData = actorData.modelData[actorData.activeModelIndex];
+								//const_for_all(index, 2)
+								//{
+								//	modelData.motionLength1[index] = 0;
+								//	modelData.motionLength2[index] = 0;
+								//	modelData.motionTimer  [index] = 0;
+								//}
+
+
+								//StopMotion(childActorData);
+
+								BattleMotion(childActorData);
+
+							}
+
+
+
+
+
 							SetNewYamato(childActorData);
 
-							duration = 0;
-							timer = 0;
+							//duration = 0;
+							//timer = 0;
+
+
+
+
+
+							
+
+
+
+
+
+
+
 						}
 					}
 				}
@@ -405,14 +691,16 @@ void DanteYamatoDaemonUpdate()
 
 
 
-
+			auto & modelData = actorData.modelData[actorData.activeModelIndex];
+			auto & duration = modelData.motionLength1[BODY_PART_UPPER];
+			auto & timer = modelData.motionTimer[BODY_PART_UPPER];
 
 
 
 			// Set and clear busy flag.
 
 			auto & motionData = actorData.motionData[BODY_PART_UPPER];
-			auto & parentMotionData = parentActorData.motionData[BODY_PART_UPPER];
+			//auto & parentMotionData = parentActorData.motionData[BODY_PART_UPPER];
 
 			if (motionData.group == MOTION_GROUP_VERGIL_YAMATO)
 			{
@@ -423,6 +711,61 @@ void DanteYamatoDaemonUpdate()
 				else
 				{
 					ClearBusyFlag(parentActorData);
+
+					if (!WantsYamato(parentActorData)) // @Research: Not necessarily required. Actor will only have appropriate button access anyway.
+					{
+						if (parentActorData.buttons[2] & GAMEPAD_Y)
+						{
+
+
+
+							if (actorData.newMeleeWeaponMap[0] == WEAPON_VERGIL_YAMATO)
+							{
+								StopMotion(actorData);
+
+
+								//auto & modelData = actorData.modelData[actorData.activeModelIndex];
+								//const_for_all(index, 2)
+								//{
+								//	modelData.motionLength1[index] = 0;
+								//	modelData.motionLength2[index] = 0;
+								//	modelData.motionTimer  [index] = 0;
+								//}
+
+
+								//StopMotion(parentActorData);
+
+								BattleMotion(parentActorData);
+							}
+
+
+
+							//ClearYamato(actorData);
+							ClearNewYamato(actorData);
+
+
+							//duration = 0;
+							//timer = 0;
+
+
+							
+
+							
+							//StopMotion(parentActorData);
+
+						}
+					}
+
+
+
+
+
+
+
+
+
+
+
 				}
 			}
 			//else
@@ -715,6 +1058,9 @@ void MainLoop()
 
 
 
+
+
+
 		//auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
 
 		danteActorData.position = mainActorData.position;
@@ -746,9 +1092,8 @@ void MainLoop()
 
 
 	DanteYamatoDaemonStart();
-
-
 	DanteYamatoDaemonUpdate();
+	DanteYamatoDaemonEnd();
 
 
 

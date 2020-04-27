@@ -35,7 +35,7 @@ struct ACTOR_DATA
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
 	_(22);
 	byte32 motionState1[16]; // 0x39D0
-	_(8);
+	uint8 motionSwitch[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
@@ -165,7 +165,7 @@ struct ACTOR_DATA_DANTE
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
 	_(22);
 	byte32 motionState1[16]; // 0x39D0
-	_(8);
+	uint8 motionSwitch[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
@@ -338,7 +338,7 @@ struct ACTOR_DATA_BOB
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
 	_(22);
 	byte32 motionState1[16]; // 0x39D0
-	_(8);
+	uint8 motionSwitch[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
@@ -468,7 +468,7 @@ struct ACTOR_DATA_LADY
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
 	_(22);
 	byte32 motionState1[16]; // 0x39D0
-	_(8);
+	uint8 motionSwitch[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
@@ -598,7 +598,7 @@ struct ACTOR_DATA_VERGIL
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
 	_(22);
 	byte32 motionState1[16]; // 0x39D0
-	_(8);
+	uint8 motionSwitch[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28

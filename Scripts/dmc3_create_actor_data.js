@@ -22,6 +22,7 @@ var items =
 	[ "motionData[2]"                   , "MOTION_DATA"               , 0x39B0                           ],
 	[ "motionDataMirror[3]"             , "MOTION_DATA"               , 0x39B4                           ],
 	[ "motionState1[16]"                , "byte32"                    , 0x39D0                           ],
+	[ "motionSwitch[8]"                 , "uint8"                     , 0x3A10                           ],
 	[ "shadow"                          , "uint32"                    , 0x3A18                           ],
 	[ "color"                           , "byte32"                    , 0x3A28                           ],
 	[ "actionData[6]"                   , "byte8 *"                   , 0x3DD0                           ],

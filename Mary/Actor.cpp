@@ -144,6 +144,9 @@ byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
 
 
 
+// @Todo: If actor has no parent, has child, child's weapon yamato is still active, keep hiding weapon.
+
+
 template
 <
 	typename T,
