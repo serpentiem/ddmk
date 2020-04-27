@@ -1441,8 +1441,8 @@ void LogMotionData()
 	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
 	auto & motionData = actorData.motionData[BODY_PART_UPPER];
 	auto & modelData = actorData.modelData[actorData.activeModelIndex];
-	auto & duration = modelData.motionLength1[BODY_PART_UPPER];
-	auto & timer = modelData.motionTimer[BODY_PART_UPPER];
+	auto & duration = modelData.motion.duration1[BODY_PART_UPPER];
+	auto & timer = modelData.motion.timer[BODY_PART_UPPER];
 
 	if (!((motionData.group == g_motionGroup) && (motionData.index == g_motionIndex)))
 	{

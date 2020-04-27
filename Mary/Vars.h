@@ -1164,20 +1164,37 @@ typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
 
 
 
+//struct MODEL_DATA
+//{
+//	_(1364);
+//	float32 motionDuration1[2];
+//	_(56);
+//	float32 motionDuration2[2];
+//	_(280);
+//	float32 motionTimer[2];
+//	_(196);
+//};
+
+
 struct MODEL_DATA
 {
-	_(1364);
-	float32 motionLength1[2];
-	_(56);
-	float32 motionLength2[2];
-	_(280);
-	float32 motionTimer[2];
-	_(196);
+	_(1280);
+	struct
+	{
+		_(84);
+		float32 duration1[2];
+		_(56);
+		float32 duration2[2];
+		_(280);
+		float32 timer[2];
+		_(196);
+	}
+	motion;
 };
 
-static_assert(offsetof(MODEL_DATA, motionLength1) == 0x554);
-static_assert(offsetof(MODEL_DATA, motionLength2) == 0x594);
-static_assert(offsetof(MODEL_DATA, motionTimer) == 0x6B4);
+static_assert(offsetof(MODEL_DATA, motion.duration1) == 0x554);
+static_assert(offsetof(MODEL_DATA, motion.duration2) == 0x594);
+static_assert(offsetof(MODEL_DATA, motion.timer) == 0x6B4);
 static_assert(sizeof(MODEL_DATA) == 0x780);
 
 
