@@ -1108,150 +1108,6 @@ void WriteMotionData(byte8 * baseAddr)
 }
 
 
-// @Todo: Move to Event.
-void WritePosition_1FC017(float32 z, float32 x, byte8 * baseAddr)
-{
-
-
-
-	// This Event is only triggered when we do an attack.
-	// And since we treat the child actor like a weapon.
-	// And since only one weapon can be active at a time.
-	// Just check the baseAddr.
-	// If it matches the child, update the parent.
-	// And vice versa.
-
-
-
-
-	// @Todo: Update direction.
-
-
-	// @Todo: parentActorData and childActorData.
-
-	// Parent
-	{
-		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-		if (actorData.character != CHAR_DANTE)
-		{
-			goto DanteYamatoParentEnd;
-		}
-		if (actorData.newParentBaseAddr)
-		{
-			goto DanteYamatoParentEnd;
-		}
-		if (!actorData.newChildBaseAddr[CHAR_VERGIL])
-		{
-			goto DanteYamatoParentEnd;
-		}
-		auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
-		if (childActorData.character != CHAR_VERGIL)
-		{
-			goto DanteYamatoParentEnd;
-		}
-
-
-
-
-
-
-		if (childActorData.motionData[1].group == MOTION_GROUP_VERGIL_YAMATO)
-		{
-			goto DanteYamatoParentEnd;
-		}
-		//actorData.position.x = x;
-		//actorData.position.z = z;
-		childActorData.position.x = x;
-		childActorData.position.z = z;
-		//return;
-
-		goto Default;
-
-	}
-	DanteYamatoParentEnd:;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// Child
-
-
-	DanteYamatoChildStart:
-	{
-		auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL*>(baseAddr);
-		if (actorData.character != CHAR_VERGIL)
-		{
-			goto DanteYamatoChildEnd;
-		}
-		if (!actorData.newParentBaseAddr)
-		{
-			goto DanteYamatoChildEnd;
-		}
-		auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newParentBaseAddr);
-		if (parentActorData.character != CHAR_DANTE)
-		{
-			goto DanteYamatoChildEnd;
-		}
-
-
-
-
-
-		if (actorData.motionData[1].group != MOTION_GROUP_VERGIL_YAMATO)
-		{
-			goto DanteYamatoChildEnd;
-		}
-		//actorData.position.x = x;
-		//actorData.position.z = z;
-		parentActorData.position.x = x;
-		parentActorData.position.z = z;
-		//return;
-
-		goto Default;
-
-	}
-	DanteYamatoChildEnd:;
-
-
-
-
-
-
-	// Default
-
-
-
-
-	Default:
-	{
-		auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-		actorData.position.x = x;
-		actorData.position.z = z;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-}
-
 
 
 
@@ -1478,16 +1334,378 @@ void LogMotionData()
 
 
 
+// @Todo: Move to Event.
+bool FreeWalk(byte8 * baseAddr)
+{
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	if (actorData.newParentBaseAddr)
+	{
+		return false;
+	}
+	return true;
+}
 
 
 
 
 
+// Just also write child and parent position.
+// @Todo: Move to Event.
+// @Todo: Add direction.
+void UpdatePosition(byte8 * baseAddr)
+{
+	if (!baseAddr)
+	{
+		return;
+	}
+	{
+		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+		if (parentActorData.newParentBaseAddr)
+		{
+			goto ParentEnd;
+		}
+		const_for_all(index, 4)
+		{
+			auto childBaseAddr = parentActorData.newChildBaseAddr[index];
+			if (!childBaseAddr)
+			{
+				continue;
+			}
+			auto & childActorData = *reinterpret_cast<ACTOR_DATA *>(childBaseAddr);
+			childActorData.position = parentActorData.position;
+		}
+		return;
+	}
+	ParentEnd:;
+	{
+		auto & childActorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+		auto parentBaseAddr = childActorData.newParentBaseAddr;
+		if (!parentBaseAddr)
+		{
+			goto ChildEnd;
+		}
+		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(parentBaseAddr);
+		parentActorData.position = childActorData.position;
+		return;
+	}
+	ChildEnd:;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void WritePosition_1FC017(float32 z, float32 x, byte8 * baseAddr)
+//{
+//	// Free Walk
+//	// Swordmaster, Trickster Dash, Royalguard Release
+//	// Melee Attack
+//
+//	{
+//		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//		if (parentActorData.newParentBaseAddr)
+//		{
+//			goto ParentEnd;
+//		}
+//		const_for_all(index, 4)
+//		{
+//			auto childBaseAddr = parentActorData.newChildBaseAddr[index];
+//			if (!childBaseAddr)
+//			{
+//				continue;
+//			}
+//			auto & childActorData = *reinterpret_cast<ACTOR_DATA *>(childBaseAddr);
+//			childActorData.position.z = z;
+//			childActorData.position.x = x;
+//		}
+//		return;
+//	}
+//	ParentEnd:;
+//
+//	{
+//		auto & childActorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//		auto parentBaseAddr = childActorData.newParentBaseAddr;
+//		if (!parentBaseAddr)
+//		{
+//			goto ChildEnd;
+//		}
+//		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(parentBaseAddr);
+//		parentActorData.position.z = z;
+//		parentActorData.position.x = x;
+//		return;
+//	}
+//	ChildEnd:;
+//	
+//
+//
+//
+//
+//
+//
+//
+//	// This Event is only triggered when we do an attack.
+//	// And since we treat the child actor like a weapon.
+//	// And since only one weapon can be active at a time.
+//	// Just check the baseAddr.
+//	// If it matches the child, update the parent.
+//	// And vice versa.
+//
+//
+//
+//
+//	// @Todo: Update direction.
+//
+//
+//	// @Todo: parentActorData and childActorData.
+//
+//	// Parent
+//	{
+//		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+//		if (actorData.character != CHAR_DANTE)
+//		{
+//			goto DanteYamatoParentEnd;
+//		}
+//		if (actorData.newParentBaseAddr)
+//		{
+//			goto DanteYamatoParentEnd;
+//		}
+//		if (!actorData.newChildBaseAddr[CHAR_VERGIL])
+//		{
+//			goto DanteYamatoParentEnd;
+//		}
+//		auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
+//		if (childActorData.character != CHAR_VERGIL)
+//		{
+//			goto DanteYamatoParentEnd;
+//		}
+//
+//
+//
+//
+//
+//
+//		if (childActorData.motionData[1].group == MOTION_GROUP_VERGIL_YAMATO)
+//		{
+//			goto DanteYamatoParentEnd;
+//		}
+//		//actorData.position.x = x;
+//		//actorData.position.z = z;
+//		childActorData.position.x = x;
+//		childActorData.position.z = z;
+//		//return;
+//
+//		goto Default;
+//
+//	}
+//	DanteYamatoParentEnd:;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//	// Child
+//
+//
+//	DanteYamatoChildStart:
+//	{
+//		auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL*>(baseAddr);
+//		if (actorData.character != CHAR_VERGIL)
+//		{
+//			goto DanteYamatoChildEnd;
+//		}
+//		if (!actorData.newParentBaseAddr)
+//		{
+//			goto DanteYamatoChildEnd;
+//		}
+//		auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newParentBaseAddr);
+//		if (parentActorData.character != CHAR_DANTE)
+//		{
+//			goto DanteYamatoChildEnd;
+//		}
+//
+//
+//
+//
+//
+//		if (actorData.motionData[1].group != MOTION_GROUP_VERGIL_YAMATO)
+//		{
+//			goto DanteYamatoChildEnd;
+//		}
+//		//actorData.position.x = x;
+//		//actorData.position.z = z;
+//		parentActorData.position.x = x;
+//		parentActorData.position.z = z;
+//		//return;
+//
+//		goto Default;
+//
+//	}
+//	DanteYamatoChildEnd:;
+//
+//
+//
+//
+//
+//
+//	// Default
+//
+//
+//
+//
+//	Default:
+//	{
+//		auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//		actorData.position.x = x;
+//		actorData.position.z = z;
+//	}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//}
 
 
 
 void Actor_Init()
 {
+
+
+
+
+
+	// @Todo: Behaviour is correct, but of course, by default this doubles the movement speed.
+	// But if I disable the movement event for the child it freezes the attack motion.
+	// So the only proper way to alleviate this is to block the left stick entirely and add the attacks manually.
+	// Fun times.
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xF3, 0x0F, 0x11, 0x8B, 0x80, 0x00, 0x00, 0x00, //movss [rbx+00000080],xmm1
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCB, //mov rcx,rbx
+		};
+		auto func = CreateFunction(UpdatePosition, (appBaseAddr + 0x1FC027), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		//WriteJump((appBaseAddr + 0x1FC01F), func.addr, 3);
+		/*
+		dmc3.exe+1FC01F - F3 0F11 8B 80000000 - movss [rbx+00000080],xmm1
+		dmc3.exe+1FC027 - E9 4E030000         - jmp dmc3.exe+1FC37A
+		*/
+	}
+
+
+
+
+
+
+
+	{
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                   //test al,al
+			0x74, 0x05,                   //je short
+			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1F5450
+		};
+		auto func = CreateFunction(FreeWalk, (appBaseAddr + 0x1F6FD1), true, false, 0, 0, sizeof(sect2));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteCall((func.sect2 + 4), (appBaseAddr + 0x1F5450));
+		//WriteJump((appBaseAddr + 0x1F6FCC), func.addr);
+		/*
+		dmc3.exe+1F6FCC - E8 7FE4FFFF - call dmc3.exe+1F5450
+		dmc3.exe+1F6FD1 - E9 02020000 - jmp dmc3.exe+1F71D8
+		*/
+	}
+
+
+
+
+
+
+	//{
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x4C, 0x8B, 0xC3, //mov r8,rbx
+	//	};
+	//	auto func = CreateFunction(WritePosition_1FC017, (appBaseAddr + 0x1FC027), true, true, 0, sizeof(sect1));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	//WriteJump((appBaseAddr + 0x1FC017), func.addr, 3);
+	//	/*
+	//	dmc3.exe+1FC017 - F3 0F11 83 88000000 - movss [rbx+00000088],xmm0
+	//	dmc3.exe+1FC01F - F3 0F11 8B 80000000 - movss [rbx+00000080],xmm1
+	//	dmc3.exe+1FC027 - E9 4E030000         - jmp dmc3.exe+1FC37A
+	//	*/
+	//}
+
+
+
+
+
+
+
+
+
+
+
+
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x66, 0x89, 0xAE, 0xB2, 0x39, 0x00, 0x00, //mov [rsi+000039B2],bp
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCE, //mov rcx,rsi
+		};
+		auto func = CreateFunction(WriteMotionData, (appBaseAddr + 0x1EFC8D), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteJump((appBaseAddr + 0x1EFC86), func.addr, 2);
+		/*
+		dmc3.exe+1EFC86 - 66 89 AE B2390000 - mov [rsi+000039B2],bp
+		dmc3.exe+1EFC8D - 8D 51 01          - lea edx,[rcx+01]
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
 	LogFunction();
 
 	// Adjust actor data size.
@@ -1711,41 +1929,7 @@ void Actor_Init()
 
 
 
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x66, 0x89, 0xAE, 0xB2, 0x39, 0x00, 0x00, //mov [rsi+000039B2],bp
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xCE, //mov rcx,rsi
-		};
-		auto func = CreateFunction(WriteMotionData, (appBaseAddr + 0x1EFC8D), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x1EFC86), func.addr, 2);
-		/*
-		dmc3.exe+1EFC86 - 66 89 AE B2390000 - mov [rsi+000039B2],bp
-		dmc3.exe+1EFC8D - 8D 51 01          - lea edx,[rcx+01]
-		*/
-	}
 
-
-
-	{
-		constexpr byte8 sect1[] =
-		{
-			0x4C, 0x8B, 0xC3, //mov r8,rbx
-		};
-		auto func = CreateFunction(WritePosition_1FC017, (appBaseAddr + 0x1FC027), true, true, 0, sizeof(sect1));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x1FC017), func.addr, 3);
-		/*
-		dmc3.exe+1FC017 - F3 0F11 83 88000000 - movss [rbx+00000088],xmm0
-		dmc3.exe+1FC01F - F3 0F11 8B 80000000 - movss [rbx+00000080],xmm1
-		dmc3.exe+1FC027 - E9 4E030000         - jmp dmc3.exe+1FC37A
-		*/
-	}
 
 
 
