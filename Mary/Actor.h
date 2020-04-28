@@ -14,15 +14,15 @@ extern vector<byte8 *, 128> Actor_actorBaseAddr;
 
 //PrivateStart;
 
-template <typename T>
-bool ActorIsBusy(T & actorData)
-{
-	if (actorData.motionState3[1] & MOTION_STATE_BUSY)
-	{
-		return true;
-	}
-	return false;
-}
+//template <typename T>
+//bool ActorIsBusy(T & actorData)
+//{
+//	if (actorData.motionState3[1] & MOTION_STATE_BUSY)
+//	{
+//		return true;
+//	}
+//	return false;
+//}
 
 //PrivateEnd;
 
@@ -35,38 +35,83 @@ bool IsWeaponActive
 	uint8 weapon
 )
 {
+	auto & motionData = actorData.motionData[BODY_PART_UPPER];
 	if (weapon == WEAPON_VOID)
-	{
-		return false;
-	}
-	if (!ActorIsBusy(actorData))
 	{
 		return false;
 	}
 	if constexpr (typematch(T, ACTOR_DATA_DANTE))
 	{
-		if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_REBELLION + weapon))
+		if (motionData.group == (MOTION_GROUP_DANTE_REBELLION + weapon))
 		{
 			return true;
 		}
-		if (actorData.motionData[1].group == (MOTION_GROUP_DANTE_SWORDMASTER_REBELLION + weapon))
+		if (motionData.group == (MOTION_GROUP_DANTE_SWORDMASTER_REBELLION + weapon))
 		{
 			return true;
 		}
 	}
 	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
 	{
-		if (actorData.motionData[1].group == (MOTION_GROUP_VERGIL_YAMATO + weapon - WEAPON_VERGIL_YAMATO))
-		{
-			return true;
-		}
-		if ((weapon == WEAPON_VERGIL_YAMATO) && (actorData.motionData[1].group == MOTION_GROUP_VERGIL_FORCE_EDGE))
+		if (motionData.group == (MOTION_GROUP_VERGIL_YAMATO + (weapon - WEAPON_VERGIL_YAMATO)))
 		{
 			return true;
 		}
 	}
 	return false;
 }
+
+template <typename T>
+bool IsWeaponActive(T & actorData)
+{
+	auto & motionData = actorData.motionData[BODY_PART_UPPER];
+	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	{
+		if ((motionData.group >= MOTION_GROUP_DANTE_REBELLION) && (motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN))
+		{
+			return true;
+		}
+	}
+	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	{
+		if ((motionData.group >= MOTION_GROUP_VERGIL_YAMATO) && (motionData.group <= MOTION_GROUP_VERGIL_FORCE_EDGE))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

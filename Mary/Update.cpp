@@ -217,6 +217,7 @@ bool WantsYamato(T & actorData)
 	return false;
 }
 
+// @Todo: Add Nero Angelo.
 
 
 
@@ -376,10 +377,6 @@ void DanteYamatoDaemonEnd()
 
 				if (!IsBusy(childActorData))
 				{
-
-					// Can't clear it beforehand, because some function that accesses the weaponData has no range check.
-
-					//ClearYamato(childActorData);
 					ClearYamato(childActorData);
 				}
 			}
@@ -425,12 +422,6 @@ void DanteYamatoDaemonUpdate()
 			continue;
 		}
 
-
-
-
-
-
-
 		{
 			auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
 			if (actorData.character != CHAR_DANTE)
@@ -451,62 +442,11 @@ void DanteYamatoDaemonUpdate()
 				goto ParentEnd;
 			}
 
-
-
-			
-
-
-
-
 			auto & motionData = actorData.motionData[BODY_PART_UPPER];
-			//auto & modelData = actorData.modelData[actorData.activeModelIndex];
-			//auto & duration = modelData.motionDuration1[BODY_PART_UPPER];
-			//auto & timer = modelData.motionTimer[BODY_PART_UPPER];
-
-
-
-			//auto & childMotionData = childActorData.motionData[BODY_PART_UPPER];
-
-			// We need this so Vergil can't immediately use Yamato once it's equipped.
-			// the weapon map is updated
-			// because normally he could use this as soon as the weapon map is updated, this could conflict with an ongoing attack
-			// If the parent uses a weapon, check at what point the attack is.
-			// If we're not at the point where we can execute a new action, set the busy flag.
-			// Otherwise, clear the busy flag.
-
-			// Takes care of lock-on issues.
-
-
-
-
-
-
-			
-			// We need the busy flag so Vergil can't use Yamato instantly.
-			// Because we update the melee weapon map immediately to be able to use yamato as soon as possible.
-
-			// we also need to set the busy flag otherwise Vergil could use Yamato during our attack.
-
-			//auto IsBusy = [&]()
-			//{
-			//	if (actorData.motionState3[1] & MOTION_STATE_BUSY)
-			//	{
-			//		return true;
-			//	}
-			//	return false;
-			//};
-
-
-
-
-
-
-
-
 
 			if (IsBusy(actorData))
 			{
-				if ((motionData.group >= MOTION_GROUP_DANTE_REBELLION) && (motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN))
+				if (IsWeaponActive(actorData))
 				{
 					if (actorData.motionState1[4] != MOTION_STATE_EXECUTE)
 					{
@@ -518,7 +458,7 @@ void DanteYamatoDaemonUpdate()
 
 						// At this point the weapon is still active, but we can perform a new action.
 
-						if (childActorData.buttons[2] & GAMEPAD_Y) // @Todo: Check charge switch.
+						if (childActorData.buttons[2] & GAMEPAD_Y)
 						{
 							ResetState(actorData);
 							SetAttackState(childActorData);
@@ -527,22 +467,6 @@ void DanteYamatoDaemonUpdate()
 					}
 				}
 			}
-
-
-
-
-
-
-
-
-
-
-
-
-			// @Research: Perfect for lab conditions, but what happens when we get hit during an attack?
-			// Check busy flag.
-			// Shouldn't matter, because parent and child always share the same position and as such will both receive the hit.
-
 
 			//else
 			//{
@@ -578,55 +502,35 @@ void DanteYamatoDaemonUpdate()
 				goto ChildEnd;
 			}
 
-
-
-
-			//auto & modelData = actorData.modelData[actorData.activeModelIndex];
-			//auto & duration = modelData.motionDuration1[BODY_PART_UPPER];
-			//auto & timer = modelData.motionTimer[BODY_PART_UPPER];
-
-
-
-			// Set and clear busy flag.
-
 			auto & motionData = actorData.motionData[BODY_PART_UPPER];
-			//auto & parentMotionData = parentActorData.motionData[BODY_PART_UPPER];
 
-			if (motionData.group == MOTION_GROUP_VERGIL_YAMATO)
+
+
+
+
+			if (IsBusy(actorData))
 			{
-				if (actorData.motionState1[4] != MOTION_STATE_EXECUTE)
+				if (IsWeaponActive(actorData))
 				{
-					SetBusyFlag(parentActorData);
-				}
-				else
-				{
-					ClearBusyFlag(parentActorData);
-
-					if (parentActorData.buttons[2] & GAMEPAD_Y)
+					if (actorData.motionState1[4] != MOTION_STATE_EXECUTE)
 					{
-						ResetState(actorData);
-						SetAttackState(parentActorData);
-						ClearYamato(actorData);
+						SetBusyFlag(parentActorData);
 					}
+					else
+					{
+						ClearBusyFlag(parentActorData);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+						if (parentActorData.buttons[2] & GAMEPAD_Y)
+						{
+							ResetState(actorData);
+							SetAttackState(parentActorData);
+							ClearYamato(actorData);
+						}
+					}
 				}
 			}
+
+
 			//else
 			//{
 			//	if (!((parentMotionData.group >= MOTION_GROUP_DANTE_REBELLION) && (parentMotionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN)))
