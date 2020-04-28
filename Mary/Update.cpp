@@ -244,7 +244,7 @@ bool WantsYamato(T & actorData)
 
 
 
-void DanteYamatoDaemonStart()
+void DanteYamato()
 {
 	for_each(index, 2, Actor_actorBaseAddr.count)
 	{
@@ -253,143 +253,109 @@ void DanteYamatoDaemonStart()
 		{
 			continue;
 		}
-
+		auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+		if (parentActorData.character != CHAR_DANTE)
 		{
-			auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-			if (actorData.character != CHAR_DANTE)
-			{
-				goto ParentEnd;
-			}
-			if (actorData.newParentBaseAddr)
-			{
-				goto ParentEnd;
-			}
-			if (!actorData.newChildBaseAddr[CHAR_VERGIL])
-			{
-				goto ParentEnd;
-			}
-			auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
-			if (childActorData.character != CHAR_VERGIL)
-			{
-				goto ParentEnd;
-			}
-
-			// If parent wants Yamato, check if child has Yamato equipped.
-			// if not, set vars.
-
-
-
-			//auto & newMeleeWeapon = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
-
-
-			if (WantsYamato(actorData))
-			{
-				DisableButton(actorData, GAMEPAD_Y);
-
-				if (actorData.style == STYLE_DANTE_SWORDMASTER)
-				{
-					DisableButton(actorData, GAMEPAD_B);
-				}
-
-				EnableButton(childActorData, GAMEPAD_Y);
-
-				if (!IsBusy(actorData))
-				{
-					SetYamato(childActorData);
-				}
-			}
-
-
-
-
-
-
-
 			continue;
 		}
-		ParentEnd:;
-	}
-}
-
-
-
-
-
-
-
-
-void DanteYamatoDaemonEnd()
-{
-	for_each(index, 2, Actor_actorBaseAddr.count)
-	{
-		auto baseAddr = Actor_actorBaseAddr[index];
-		if (!baseAddr)
+		if (parentActorData.newParentBaseAddr)
+		{
+			continue;
+		}
+		if (!parentActorData.newChildBaseAddr[CHAR_VERGIL])
+		{
+			continue;
+		}
+		auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(parentActorData.newChildBaseAddr[CHAR_VERGIL]);
+		if (childActorData.character != CHAR_VERGIL)
 		{
 			continue;
 		}
 
+		// Start End
+
+		if (WantsYamato(parentActorData))
 		{
-			auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-			if (actorData.character != CHAR_DANTE)
+			DisableButton(parentActorData, GAMEPAD_Y);
+
+			if (parentActorData.style == STYLE_DANTE_SWORDMASTER)
 			{
-				goto ParentEnd;
-			}
-			if (actorData.newParentBaseAddr)
-			{
-				goto ParentEnd;
-			}
-			if (!actorData.newChildBaseAddr[CHAR_VERGIL])
-			{
-				goto ParentEnd;
-			}
-			auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
-			if (childActorData.character != CHAR_VERGIL)
-			{
-				goto ParentEnd;
+				DisableButton(parentActorData, GAMEPAD_B);
 			}
 
-			// If parent no longer wants Yamato, check if child has Yamato equipped.
-			// if not, set vars.
+			EnableButton(childActorData, GAMEPAD_Y);
 
-
-
-			//auto & newMeleeWeapon = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
-
-
-			if (!WantsYamato(actorData))
+			if (!IsBusy(parentActorData))
 			{
-				EnableButton(actorData, GAMEPAD_Y);
-
-				if (actorData.style == STYLE_DANTE_SWORDMASTER)
-				{
-					EnableButton(actorData, GAMEPAD_B);
-				}
-
-				DisableButton(childActorData, GAMEPAD_Y);
-
-
-
-				
-
-
-
-
-
-				if (!IsBusy(childActorData))
-				{
-					ClearYamato(childActorData);
-				}
+				SetYamato(childActorData);
 			}
-
-
-
-
-
-
-
-			continue;
 		}
-		ParentEnd:;
+		else
+		{
+			EnableButton(parentActorData, GAMEPAD_Y);
+
+			if (parentActorData.style == STYLE_DANTE_SWORDMASTER)
+			{
+				EnableButton(parentActorData, GAMEPAD_B);
+			}
+
+			DisableButton(childActorData, GAMEPAD_Y);
+
+			if (!IsBusy(childActorData))
+			{
+				ClearYamato(childActorData);
+			}
+		}
+
+		// Update
+
+		if (IsBusy(parentActorData))
+		{
+			if (IsWeaponActive(parentActorData))
+			{
+				if (parentActorData.motionState1[4] != MOTION_STATE_EXECUTE)
+				{
+					SetBusyFlag(childActorData);
+				}
+				else
+				{
+					ClearBusyFlag(childActorData);
+
+					// At this point the weapon is still active, but we can perform a new action.
+
+					if (childActorData.buttons[2] & GAMEPAD_Y)
+					{
+						ResetState(parentActorData);
+						SetAttackState(childActorData);
+						SetYamato(childActorData);
+					}
+				}
+			}
+		}
+
+		if (IsBusy(childActorData))
+		{
+			if (IsWeaponActive(childActorData))
+			{
+				if (childActorData.motionState1[4] != MOTION_STATE_EXECUTE)
+				{
+					SetBusyFlag(parentActorData);
+				}
+				else
+				{
+					ClearBusyFlag(parentActorData);
+
+					// At this point the weapon is still active, but we can perform a new action.
+
+					if (parentActorData.buttons[2] & GAMEPAD_Y)
+					{
+						ResetState(childActorData);
+						SetAttackState(parentActorData);
+						ClearYamato(childActorData);
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -410,146 +376,6 @@ void DanteYamatoDaemonEnd()
 
 
 
-
-
-void DanteYamatoDaemonUpdate()
-{
-	for_each(index, 2, Actor_actorBaseAddr.count)
-	{
-		auto baseAddr = Actor_actorBaseAddr[index];
-		if (!baseAddr)
-		{
-			continue;
-		}
-
-		{
-			auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-			if (actorData.character != CHAR_DANTE)
-			{
-				goto ParentEnd;
-			}
-			if (actorData.newParentBaseAddr)
-			{
-				goto ParentEnd;
-			}
-			if (!actorData.newChildBaseAddr[CHAR_VERGIL])
-			{
-				goto ParentEnd;
-			}
-			auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
-			if (childActorData.character != CHAR_VERGIL)
-			{
-				goto ParentEnd;
-			}
-
-			auto & motionData = actorData.motionData[BODY_PART_UPPER];
-
-			if (IsBusy(actorData))
-			{
-				if (IsWeaponActive(actorData))
-				{
-					if (actorData.motionState1[4] != MOTION_STATE_EXECUTE)
-					{
-						SetBusyFlag(childActorData);
-					}
-					else
-					{
-						ClearBusyFlag(childActorData);
-
-						// At this point the weapon is still active, but we can perform a new action.
-
-						if (childActorData.buttons[2] & GAMEPAD_Y)
-						{
-							ResetState(actorData);
-							SetAttackState(childActorData);
-							SetYamato(childActorData);
-						}
-					}
-				}
-			}
-
-			//else
-			//{
-			//	if (childMotionData.group != MOTION_GROUP_VERGIL_YAMATO)
-			//	{
-			//		ClearBusyFlag(childActorData);
-			//	}
-			//}
-
-			continue;
-		}
-		ParentEnd:;
-
-		// Base condition: Parent wants Yamato and child doesn't have Yamato.
-
-
-
-
-
-		{
-			auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL*>(baseAddr);
-			if (actorData.character != CHAR_VERGIL)
-			{
-				goto ChildEnd;
-			}
-			if (!actorData.newParentBaseAddr)
-			{
-				goto ChildEnd;
-			}
-			auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newParentBaseAddr);
-			if (parentActorData.character != CHAR_DANTE)
-			{
-				goto ChildEnd;
-			}
-
-			auto & motionData = actorData.motionData[BODY_PART_UPPER];
-
-
-
-
-
-			if (IsBusy(actorData))
-			{
-				if (IsWeaponActive(actorData))
-				{
-					if (actorData.motionState1[4] != MOTION_STATE_EXECUTE)
-					{
-						SetBusyFlag(parentActorData);
-					}
-					else
-					{
-						ClearBusyFlag(parentActorData);
-
-						if (parentActorData.buttons[2] & GAMEPAD_Y)
-						{
-							ResetState(actorData);
-							SetAttackState(parentActorData);
-							ClearYamato(actorData);
-						}
-					}
-				}
-			}
-
-
-			//else
-			//{
-			//	if (!((parentMotionData.group >= MOTION_GROUP_DANTE_REBELLION) && (parentMotionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN)))
-			//	{
-			//		ClearBusyFlag(parentActorData);
-			//	}
-			//}
-
-			continue;
-		}
-		ChildEnd:;
-
-
-
-
-
-
-	}
-}
 
 
 
@@ -850,13 +676,14 @@ void MainLoop()
 
 
 
+	DanteYamato();
+
+
+
 	//DanteSummonedSwords();
-
-
-
-	DanteYamatoDaemonStart();
-	DanteYamatoDaemonUpdate();
-	DanteYamatoDaemonEnd();
+	//DanteYamatoDaemonStart();
+	//DanteYamatoDaemonUpdate();
+	//DanteYamatoDaemonEnd();
 
 
 
