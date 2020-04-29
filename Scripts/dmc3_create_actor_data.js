@@ -21,17 +21,29 @@ var items =
 	[ "motionArchive[32]"               , "byte8 *"                   , 0x38A0                           ],
 	[ "motionData[2]"                   , "MOTION_DATA"               , 0x39B0                           ],
 	[ "motionDataMirror[3]"             , "MOTION_DATA"               , 0x39B4                           ],
-	[ "motionState1[16]"                , "byte32"                    , 0x39D0                           ],
-	[ "motionSwitch[8]"                 , "uint8"                     , 0x3A10                           ],
-	[ "shadow"                          , "uint32"                    , 0x3A18                           ],
-	[ "color"                           , "byte32"                    , 0x3A28                           ],
-	[ "actionData[6]"                   , "byte8 *"                   , 0x3DD0                           ],
-	[ "motionState2[6]"                 , "byte32"                    , 0x3E00                           ],
-	[ "chargedShotAir"                  , "uint16"                    , 0x3E1A, CHAR_DANTE               ],
-	[ "chargedShot"                     , "uint16"                    , 0x3E22, CHAR_DANTE               ],
-	[ "motionTimer"                     , "float32"                   , 0x3E34                           ],
-	[ "idleTimer"                       , "float32"                   , 0x3E38                           ],
-	[ "motionState3[3]"                 , "byte32"                    , 0x3E60                           ],
+
+
+
+	
+
+
+	[ "nextActionRequestPolicy[16]" , "uint32"  , 0x39D0 ],
+	[ "[8]"                         , "uint8"   , 0x3A10 ],
+	[ "shadow"                      , "uint32"  , 0x3A18 ],
+	[ "color"                       , "byte32"  , 0x3A28 ],
+	[ "actionData[6]"               , "byte8 *" , 0x3DD0 ],
+	[ "[4]"                         , "uint32"  , 0x3E00 ],
+	[ "[32]"                        , "uint8"   , 0x3E10 ],
+	[ "motionTimer"                 , "float32" , 0x3E34 ],
+	[ "idleTimer"                   , "float32" , 0x3E38 ],
+	[ "permissions"                 , "byte32"  , 0x3E60 ],
+	[ "state"                       , "byte32"  , 0x3E64 ],
+	[ "lastState"                   , "byte32"  , 0x3E68 ],
+
+
+
+
+
 	[ "activeModelIndex"                , "uint32"                    , 0x3E6C                           ],
 	[ "queuedModelIndex"                , "uint32"                    , 0x3E70                           ],
 	[ "modelMap[3]"                     , "uint32"                    , 0x3E74                           ],
@@ -118,7 +130,8 @@ var items =
 	[ "collisionIndex"                  , "uint32"                    , 0x7254                           ],
 	[ "interactionData[8]"              , "vec4"                      , 0x7460                           ],
 	[ "buttons[4]"                      , "byte16"                    , 0x74E0                           ],
-	[ "rightStick[2]"                   , "byte16"                    , 0x74F8                           ],
+	[ "rightStickPosition"              , "uint16"                    , 0x74F8                           ],
+	[ "rightStickRadius"                , "uint16"                    , 0x74FA                           ],
 	[ "leftStickPosition"               , "uint16"                    , 0x7508                           ],
 	[ "leftStickRadius"                 , "uint16"                    , 0x750A                           ],
 	[ "actorCameraDirection"            , "uint16"                    , 0x750C                           ],
@@ -137,7 +150,7 @@ var extra =
 	[ "newChildBaseAddr[4]"   , "byte8 *" ],
 	[ "newGamepad"            , "uint8"   ],
 	[ "newButtonMask"         , "byte16"  ],
-	[ "newCopyPosition"       , "bool"    ],
+	[ "newDisableLeftStick"   , "bool"    ],
 	[ "newStyle"              , "uint8"   ],
 	[ "newStyleMap[5][2]"     , "uint8"   ],
 	[ "newMeleeWeaponMap[5]"  , "uint8"   ],
@@ -254,6 +267,15 @@ function AddActorData
 		var type      = data[index][1];
 		var off       = data[index][2];
 		var character = data[index][3];
+
+		if (name == "")
+		{
+			name = "var_" + off.toString(16).toUpperCase();
+		}
+		else if (name.substring(0, 1) == "[")
+		{
+			name = "var_" + off.toString(16).toUpperCase() + name;
+		}
 
 		if ((max != undefined) && (pos >= max))
 		{
@@ -496,6 +518,15 @@ function AddActorDataCE
 		var type      = data[index][1];
 		var off       = data[index][2];
 		var character = data[index][3];
+
+		if (name == "")
+		{
+			name = "var_" + off.toString(16).toUpperCase();
+		}
+		else if (name.substring(0, 1) == "[")
+		{
+			name = "var_" + off.toString(16).toUpperCase() + name;
+		}
 
 		if ((max != undefined) && (pos >= max))
 		{

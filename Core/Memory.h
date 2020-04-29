@@ -1,3 +1,11 @@
+
+
+// @Todo: CopyMemory, SetMemory
+// @Todo: WriteRelativeAddress
+
+
+
+
 #pragma once
 #include "DataTypes.h"
 #include "Log.h"
@@ -84,6 +92,7 @@ void Write
 	VirtualProtect(addr, (size + padSize), protection, &protection);
 }
 
+// @Research: Should be relative address.
 void WriteAddress
 (
 	byte8  * addr,

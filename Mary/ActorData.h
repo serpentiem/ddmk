@@ -34,19 +34,22 @@ struct ACTOR_DATA
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
 	_(22);
-	byte32 motionState1[16]; // 0x39D0
-	uint8 motionSwitch[8]; // 0x3A10
+	uint32 nextActionRequestPolicy[16]; // 0x39D0
+	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	byte32 motionState2[6]; // 0x3E00
-	_(28);
+	uint32 var_3E00[4]; // 0x3E00
+	uint8 var_3E10[32]; // 0x3E10
+	_(4);
 	float32 motionTimer; // 0x3E34
 	float32 idleTimer; // 0x3E38
 	_(36);
-	byte32 motionState3[3]; // 0x3E60
+	byte32 permissions; // 0x3E60
+	byte32 state; // 0x3E64
+	byte32 lastState; // 0x3E68
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
 	uint32 modelMap[3]; // 0x3E74
@@ -103,7 +106,8 @@ struct ACTOR_DATA
 	vec4 interactionData[8]; // 0x7460
 	byte16 buttons[4]; // 0x74E0
 	_(16);
-	byte16 rightStick[2]; // 0x74F8
+	uint16 rightStickPosition; // 0x74F8
+	uint16 rightStickRadius; // 0x74FA
 	_(12);
 	uint16 leftStickPosition; // 0x7508
 	uint16 leftStickRadius; // 0x750A
@@ -117,7 +121,7 @@ struct ACTOR_DATA
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newCopyPosition; // 0xB8F3
+	bool newDisableLeftStick; // 0xB8F3
 	uint8 newStyle; // 0xB8F4
 	_(3);
 	uint8 newStyleMap[5][2]; // 0xB8F8
@@ -164,23 +168,22 @@ struct ACTOR_DATA_DANTE
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
 	_(22);
-	byte32 motionState1[16]; // 0x39D0
-	uint8 motionSwitch[8]; // 0x3A10
+	uint32 nextActionRequestPolicy[16]; // 0x39D0
+	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	byte32 motionState2[6]; // 0x3E00
-	_(2);
-	uint16 chargedShotAir; // 0x3E1A
-	_(6);
-	uint16 chargedShot; // 0x3E22
-	_(16);
+	uint32 var_3E00[4]; // 0x3E00
+	uint8 var_3E10[32]; // 0x3E10
+	_(4);
 	float32 motionTimer; // 0x3E34
 	float32 idleTimer; // 0x3E38
 	_(36);
-	byte32 motionState3[3]; // 0x3E60
+	byte32 permissions; // 0x3E60
+	byte32 state; // 0x3E64
+	byte32 lastState; // 0x3E68
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
 	uint32 modelMap[3]; // 0x3E74
@@ -268,7 +271,8 @@ struct ACTOR_DATA_DANTE
 	vec4 interactionData[8]; // 0x7460
 	byte16 buttons[4]; // 0x74E0
 	_(16);
-	byte16 rightStick[2]; // 0x74F8
+	uint16 rightStickPosition; // 0x74F8
+	uint16 rightStickRadius; // 0x74FA
 	_(12);
 	uint16 leftStickPosition; // 0x7508
 	uint16 leftStickRadius; // 0x750A
@@ -290,7 +294,7 @@ struct ACTOR_DATA_DANTE
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newCopyPosition; // 0xB8F3
+	bool newDisableLeftStick; // 0xB8F3
 	uint8 newStyle; // 0xB8F4
 	_(3);
 	uint8 newStyleMap[5][2]; // 0xB8F8
@@ -337,19 +341,22 @@ struct ACTOR_DATA_BOB
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
 	_(22);
-	byte32 motionState1[16]; // 0x39D0
-	uint8 motionSwitch[8]; // 0x3A10
+	uint32 nextActionRequestPolicy[16]; // 0x39D0
+	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	byte32 motionState2[6]; // 0x3E00
-	_(28);
+	uint32 var_3E00[4]; // 0x3E00
+	uint8 var_3E10[32]; // 0x3E10
+	_(4);
 	float32 motionTimer; // 0x3E34
 	float32 idleTimer; // 0x3E38
 	_(36);
-	byte32 motionState3[3]; // 0x3E60
+	byte32 permissions; // 0x3E60
+	byte32 state; // 0x3E64
+	byte32 lastState; // 0x3E68
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
 	uint32 modelMap[3]; // 0x3E74
@@ -406,7 +413,8 @@ struct ACTOR_DATA_BOB
 	vec4 interactionData[8]; // 0x7460
 	byte16 buttons[4]; // 0x74E0
 	_(16);
-	byte16 rightStick[2]; // 0x74F8
+	uint16 rightStickPosition; // 0x74F8
+	uint16 rightStickRadius; // 0x74FA
 	_(12);
 	uint16 leftStickPosition; // 0x7508
 	uint16 leftStickRadius; // 0x750A
@@ -420,7 +428,7 @@ struct ACTOR_DATA_BOB
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newCopyPosition; // 0xB8F3
+	bool newDisableLeftStick; // 0xB8F3
 	uint8 newStyle; // 0xB8F4
 	_(3);
 	uint8 newStyleMap[5][2]; // 0xB8F8
@@ -467,19 +475,22 @@ struct ACTOR_DATA_LADY
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
 	_(22);
-	byte32 motionState1[16]; // 0x39D0
-	uint8 motionSwitch[8]; // 0x3A10
+	uint32 nextActionRequestPolicy[16]; // 0x39D0
+	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	byte32 motionState2[6]; // 0x3E00
-	_(28);
+	uint32 var_3E00[4]; // 0x3E00
+	uint8 var_3E10[32]; // 0x3E10
+	_(4);
 	float32 motionTimer; // 0x3E34
 	float32 idleTimer; // 0x3E38
 	_(36);
-	byte32 motionState3[3]; // 0x3E60
+	byte32 permissions; // 0x3E60
+	byte32 state; // 0x3E64
+	byte32 lastState; // 0x3E68
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
 	uint32 modelMap[3]; // 0x3E74
@@ -536,7 +547,8 @@ struct ACTOR_DATA_LADY
 	vec4 interactionData[8]; // 0x7460
 	byte16 buttons[4]; // 0x74E0
 	_(16);
-	byte16 rightStick[2]; // 0x74F8
+	uint16 rightStickPosition; // 0x74F8
+	uint16 rightStickRadius; // 0x74FA
 	_(12);
 	uint16 leftStickPosition; // 0x7508
 	uint16 leftStickRadius; // 0x750A
@@ -550,7 +562,7 @@ struct ACTOR_DATA_LADY
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newCopyPosition; // 0xB8F3
+	bool newDisableLeftStick; // 0xB8F3
 	uint8 newStyle; // 0xB8F4
 	_(3);
 	uint8 newStyleMap[5][2]; // 0xB8F8
@@ -597,19 +609,22 @@ struct ACTOR_DATA_VERGIL
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
 	_(22);
-	byte32 motionState1[16]; // 0x39D0
-	uint8 motionSwitch[8]; // 0x3A10
+	uint32 nextActionRequestPolicy[16]; // 0x39D0
+	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
 	_(12);
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	byte32 motionState2[6]; // 0x3E00
-	_(28);
+	uint32 var_3E00[4]; // 0x3E00
+	uint8 var_3E10[32]; // 0x3E10
+	_(4);
 	float32 motionTimer; // 0x3E34
 	float32 idleTimer; // 0x3E38
 	_(36);
-	byte32 motionState3[3]; // 0x3E60
+	byte32 permissions; // 0x3E60
+	byte32 state; // 0x3E64
+	byte32 lastState; // 0x3E68
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
 	uint32 modelMap[3]; // 0x3E74
@@ -682,7 +697,8 @@ struct ACTOR_DATA_VERGIL
 	vec4 interactionData[8]; // 0x7460
 	byte16 buttons[4]; // 0x74E0
 	_(16);
-	byte16 rightStick[2]; // 0x74F8
+	uint16 rightStickPosition; // 0x74F8
+	uint16 rightStickRadius; // 0x74FA
 	_(12);
 	uint16 leftStickPosition; // 0x7508
 	uint16 leftStickRadius; // 0x750A
@@ -698,7 +714,7 @@ struct ACTOR_DATA_VERGIL
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newCopyPosition; // 0xB8F3
+	bool newDisableLeftStick; // 0xB8F3
 	uint8 newStyle; // 0xB8F4
 	_(3);
 	uint8 newStyleMap[5][2]; // 0xB8F8

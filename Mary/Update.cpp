@@ -118,76 +118,212 @@ void DisableButton(T & actorData, byte16 button)
 	}
 }
 
-template <typename T>
-void SetBusyFlag(T & actorData)
-{
-	auto & motionState = actorData.motionState3[1];
-	if (!(motionState & MOTION_STATE_BUSY))
-	{
-		motionState += MOTION_STATE_BUSY;
-	}
-}
-
-template <typename T>
-void ClearBusyFlag(T & actorData)
-{
-	auto & motionState = actorData.motionState3[1];
-	if (motionState & MOTION_STATE_BUSY)
-	{
-		motionState -= MOTION_STATE_BUSY;
-	}
-}
+//template <typename T>
+//void SetBusyFlag(T & actorData)
+//{
+//	auto & motionState = actorData.motionState3[1];
+//	if (!(motionState & MOTION_STATE_BUSY))
+//	{
+//		motionState += MOTION_STATE_BUSY;
+//	}
+//}
+//
+//template <typename T>
+//void ClearBusyFlag(T & actorData)
+//{
+//	auto & motionState = actorData.motionState3[1];
+//	if (motionState & MOTION_STATE_BUSY)
+//	{
+//		motionState -= MOTION_STATE_BUSY;
+//	}
+//}
 
 template <typename T>
 bool IsBusy(T & actorData)
 {
-	auto & motionState = actorData.motionState3[1];
-	if (motionState & MOTION_STATE_BUSY)
+	if (actorData.state & 0x10000)
 	{
 		return true;
 	}
 	return false;
 }
 
+//template <typename T>
+//void ResetState(T & actorData)
+//{
+//	const_for_all(index, 16)
+//	{
+//		actorData.motionState1[index] = 0;
+//	}
+//
+//	actorData.motionState2[0] = 1;
+//	actorData.motionState2[1] = 0;
+//	actorData.motionState2[2] = 4;
+//	actorData.motionState2[3] = 0;
+//	actorData.motionState2[4] = 0;
+//	actorData.motionState2[5] = 0;
+//
+//	actorData.motionState3[0] = 0x1C1B;
+//	actorData.motionState3[1] = 1;
+//	actorData.motionState3[2] = 0;
+//}
+//
+//template <typename T>
+//void SetAttackState2(T & actorData)
+//{
+//	const_for_all(index, 16)
+//	{
+//		actorData.motionState1[index] = 0;
+//	}
+//
+//	actorData.motionState2[0] = 0x11;
+//	actorData.motionState2[1] = 1;
+//	actorData.motionState2[2] = 0x11;
+//	actorData.motionState2[3] = 0x11;
+//	actorData.motionState2[4] = 1;
+//	actorData.motionState2[5] = 0;
+//
+//	actorData.motionState3[0] = 0x401;
+//	actorData.motionState3[1] = 0x10001;
+//	actorData.motionState3[2] = 0;
+//}
+
+
+
+//template <typename T>
+//void ClearMotionData(T & actorData)
+//{
+//	const_for_all(index, 2)
+//	{
+//		actorData.motionData[index].group = 0;
+//		actorData.motionData[index].index = 0;
+//	}
+//}
+//
+//
+//
+//
+//template <typename T>
+//void ClearExecutionState(T & actorData)
+//{
+//	const_for_all(index, 16)
+//	{
+//		actorData.motionState1[index] = 0;
+//	}
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//template <typename T>
+//void SetAttackState(T & actorData)
+//{
+//	actorData.motionState2[0] = 0x11;
+//	actorData.motionState2[1] = 1;
+//	actorData.motionState2[2] = 0x11;
+//	actorData.motionState2[3] = 0x11;
+//	actorData.motionState2[4] = 1;
+//	actorData.motionState2[5] = 0;
+//}
+//
+//template <typename T>
+//void ClearAttackState(T & actorData)
+//{
+//	actorData.motionState2[0] = 1;
+//	actorData.motionState2[1] = 0;
+//	actorData.motionState2[2] = 4;
+//	actorData.motionState2[3] = 0;
+//	actorData.motionState2[4] = 0;
+//	actorData.motionState2[5] = 0;
+//}
+//
+//template <typename T>
+//void SetBusyState(T & actorData)
+//{
+//	actorData.motionState3[0] = 0x401;
+//	actorData.motionState3[1] = 0x10001;
+//	actorData.motionState3[2] = 0;
+//}
+//
+//template <typename T>
+//void ClearBusyState(T & actorData)
+//{
+//	actorData.motionState3[0] = 0x1C1B;
+//	actorData.motionState3[1] = 1;
+//	actorData.motionState3[2] = 0;
+//}
+
+
+
+
+
+
+
+
+
+
+
 template <typename T>
 void ResetState(T & actorData)
 {
+	const_for_all(index, 2)
+	{
+		actorData.motionData[index].group = 0;
+		actorData.motionData[index].index = 0;
+	}
 	const_for_all(index, 16)
 	{
-		actorData.motionState1[index] = 0;
+		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
 	}
-
-	actorData.motionState2[0] = 1;
-	actorData.motionState2[1] = 0;
-	actorData.motionState2[2] = 4;
-	actorData.motionState2[3] = 0;
-	actorData.motionState2[4] = 0;
-	actorData.motionState2[5] = 0;
-
-	actorData.motionState3[0] = 0x1C1B;
-	actorData.motionState3[1] = 1;
-	actorData.motionState3[2] = 0;
+	actorData.var_3E00[0] = 1;
+	actorData.var_3E00[1] = 0;
+	actorData.var_3E00[2] = 4;
+	actorData.var_3E00[3] = 0;
+	actorData.permissions = 0x1C1B;
+	actorData.state = 1;
+	actorData.lastState = 0;
 }
+
+
+
 
 template <typename T>
 void SetAttackState(T & actorData)
 {
-	const_for_all(index, 16)
-	{
-		actorData.motionState1[index] = 0;
-	}
-
-	actorData.motionState2[0] = 0x11;
-	actorData.motionState2[1] = 1;
-	actorData.motionState2[2] = 0x11;
-	actorData.motionState2[3] = 0x11;
-	actorData.motionState2[4] = 1;
-	actorData.motionState2[5] = 0;
-
-	actorData.motionState3[0] = 0x401;
-	actorData.motionState3[1] = 0x10001;
-	actorData.motionState3[2] = 0;
+	actorData.var_3E00[0] = 0x11;
+	actorData.var_3E00[1] = 1;
+	actorData.var_3E00[2] = 0x11;
+	actorData.var_3E00[3] = 0x11;
+	actorData.permissions = 0x401;
+	actorData.state = 0x10001;
+	actorData.lastState = 1;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 inline void SetYamato(ACTOR_DATA_VERGIL & actorData)
 {
@@ -309,53 +445,107 @@ void DanteYamato()
 
 		// Update
 
-		if (IsBusy(parentActorData))
+
+
+
+
+
+
+
+		auto childPermissions = childActorData.permissions;
+		auto childState = childActorData.state;
+
+		if (IsWeaponActive(parentActorData))
 		{
-			if (IsWeaponActive(parentActorData))
+			childActorData.permissions = 0;
+			childActorData.state = parentActorData.state;
+
+			if (parentActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
 			{
-				if (parentActorData.motionState1[4] != MOTION_STATE_EXECUTE)
+				if (childActorData.buttons[2] & GAMEPAD_Y)
 				{
-					SetBusyFlag(childActorData);
-				}
-				else
-				{
-					ClearBusyFlag(childActorData);
+					ResetState(parentActorData);
+					parentActorData.permissions = 0;
 
-					// At this point the weapon is still active, but we can perform a new action.
-
-					if (childActorData.buttons[2] & GAMEPAD_Y)
-					{
-						ResetState(parentActorData);
-						SetAttackState(childActorData);
-						SetYamato(childActorData);
-					}
+					ResetState(childActorData);
+					SetAttackState(childActorData);
+					SetYamato(childActorData);
 				}
 			}
 		}
-
-		if (IsBusy(childActorData))
+		else
 		{
-			if (IsWeaponActive(childActorData))
+			childActorData.permissions = childPermissions;
+			childActorData.state = childState;
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		auto parentPermissions = parentActorData.permissions;
+		auto parentState = parentActorData.state;
+
+		if (IsWeaponActive(childActorData))
+		{
+			parentActorData.permissions = 0;
+			parentActorData.state = childActorData.state;
+
+			if (childActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
 			{
-				if (childActorData.motionState1[4] != MOTION_STATE_EXECUTE)
-				{
-					SetBusyFlag(parentActorData);
-				}
-				else
-				{
-					ClearBusyFlag(parentActorData);
+				// At this point the weapon is still active, but we can perform a new action.
 
-					// At this point the weapon is still active, but we can perform a new action.
+				if (parentActorData.buttons[2] & GAMEPAD_Y)
+				{
+					ResetState(childActorData);
+					childActorData.permissions = 0;
+					ClearYamato(childActorData);
 
-					if (parentActorData.buttons[2] & GAMEPAD_Y)
-					{
-						ResetState(childActorData);
-						SetAttackState(parentActorData);
-						ClearYamato(childActorData);
-					}
+					ResetState(parentActorData);
+					SetAttackState(parentActorData);
 				}
 			}
 		}
+		else
+		{
+			parentActorData.permissions = parentPermissions;
+			parentActorData.state = parentState;
+		}
+
+		// @Todo: Add updatePermissions bool.
+		// @Todo: Disable Left Stick Disable.
+
+
+
+
+
+
+
+
 	}
 }
 
@@ -429,7 +619,7 @@ enum TILT_DIRECTION
 uint8 GetRelativeTiltDirection(byte8 * baseAddr)
 {
 	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-	if (actorData.leftStickRadius < 52)
+	if (actorData.leftStickRadius < 52) // 66 for camera.
 	{
 		return TILT_DIRECTION_VOID;
 	}
@@ -648,6 +838,8 @@ void MainLoop()
 
 		vergilActorData.meleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
 
+
+		vergilActorData.newDisableLeftStick = true;
 
 
 		//auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
