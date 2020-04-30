@@ -272,18 +272,18 @@ bool IsBusy(T & actorData)
 
 
 
-
-template <typename T1, typename T2>
-void CopyState(T1 & source, T2 & target)
-{
-	//memcpy(target.motionData             , source.motionData             , 4 );
-	//memcpy(target.nextActionRequestPolicy, source.nextActionRequestPolicy, 64);
-	//memcpy(target.var_3E00               , source.var_3E00               , 16);
-
-	target.permissions = source.permissions;
-	target.state       = source.state;
-	target.lastState   = source.lastState;
-}
+//
+//template <typename T1, typename T2>
+//void CopyState(T1 & source, T2 & target)
+//{
+//	//memcpy(target.motionData             , source.motionData             , 4 );
+//	//memcpy(target.nextActionRequestPolicy, source.nextActionRequestPolicy, 64);
+//	//memcpy(target.var_3E00               , source.var_3E00               , 16);
+//
+//	target.permissions = source.permissions;
+//	target.state       = source.state;
+//	target.lastState   = source.lastState;
+//}
 
 
 
@@ -294,9 +294,18 @@ void CopyState(T1 & source, T2 & target)
 
 // @Todo: Set different permissions according to state.
 // Floor, air.
+
+
+
+
 template <typename T>
-void ResetState(T & actorData)
+void ResetState1(T & actorData)
 {
+
+	
+	Log("ResetState1");
+
+
 	const_for_all(index, 2)
 	{
 		actorData.motionData[index].group = 0;
@@ -311,15 +320,224 @@ void ResetState(T & actorData)
 	actorData.var_3E00[2] = 4;
 	actorData.var_3E00[3] = 0;
 
-	//memset(actorData.var_3E10, 0, 32);
-
-
-
+	memset(actorData.var_3E10, 0, 32);
 
 	actorData.permissions = 0x1C1B;
 	actorData.state = 1;
 	actorData.lastState = 0;
 }
+
+
+
+
+template <typename T>
+void ResetState2(T & actorData)
+{
+	Log("ResetState2");
+
+	const_for_all(index, 2)
+	{
+		actorData.motionData[index].group = 0;
+		actorData.motionData[index].index = 0;
+	}
+	const_for_all(index, 16)
+	{
+		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
+	}
+	actorData.var_3E00[0] = 1;
+	actorData.var_3E00[1] = 0;
+	actorData.var_3E00[2] = 4;
+	actorData.var_3E00[3] = 0;
+
+	memset(actorData.var_3E10, 0, 32);
+
+	actorData.permissions = 0x1C1B;
+	actorData.state = 1;
+	actorData.lastState = 0;
+}
+
+template <typename T>
+void ResetState3(T & actorData)
+{
+
+	Log("ResetState3");
+
+
+
+	const_for_all(index, 2)
+	{
+		actorData.motionData[index].group = 0;
+		actorData.motionData[index].index = 0;
+	}
+	const_for_all(index, 16)
+	{
+		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
+	}
+	actorData.var_3E00[0] = 1;
+	actorData.var_3E00[1] = 0;
+	actorData.var_3E00[2] = 4;
+	actorData.var_3E00[3] = 0;
+
+	memset(actorData.var_3E10, 0, 32);
+
+	actorData.permissions = 0x1C1B;
+	actorData.state = 1;
+	actorData.lastState = 0;
+}
+
+
+template <typename T>
+void ResetState4(T & actorData)
+{
+
+	Log("ResetState4");
+
+	const_for_all(index, 2)
+	{
+		actorData.motionData[index].group = 0;
+		actorData.motionData[index].index = 0;
+	}
+	const_for_all(index, 16)
+	{
+		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
+	}
+	actorData.var_3E00[0] = 1;
+	actorData.var_3E00[1] = 0;
+	actorData.var_3E00[2] = 4;
+	actorData.var_3E00[3] = 0;
+
+	memset(actorData.var_3E10, 0, 32);
+
+	actorData.permissions = 0x1C1B;
+	actorData.state = 1;
+	actorData.lastState = 0;
+}
+
+template <typename T>
+void ResetState5(T & actorData)
+{
+
+	Log("ResetState5");
+
+	const_for_all(index, 2)
+	{
+		actorData.motionData[index].group = 0;
+		actorData.motionData[index].index = 0;
+	}
+	const_for_all(index, 16)
+	{
+		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
+	}
+	actorData.var_3E00[0] = 1;
+	actorData.var_3E00[1] = 0;
+	actorData.var_3E00[2] = 4;
+	actorData.var_3E00[3] = 0;
+
+	memset(actorData.var_3E10, 0, 32);
+
+	actorData.permissions = 0x1C1B;
+	actorData.state = 1;
+	actorData.lastState = 0;
+}
+template <typename T>
+void ResetState6(T & actorData)
+{
+
+	Log("ResetState6");
+
+	const_for_all(index, 2)
+	{
+		actorData.motionData[index].group = 0;
+		actorData.motionData[index].index = 0;
+	}
+	const_for_all(index, 16)
+	{
+		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
+	}
+	actorData.var_3E00[0] = 1;
+	actorData.var_3E00[1] = 0;
+	actorData.var_3E00[2] = 4;
+	actorData.var_3E00[3] = 0;
+
+	memset(actorData.var_3E10, 0, 32);
+
+	actorData.permissions = 0x1C1B;
+	actorData.state = 1;
+	actorData.lastState = 0;
+}
+
+
+template <typename T>
+void ResetState7(T & actorData)
+{
+
+	Log("ResetState7");
+
+	const_for_all(index, 2)
+	{
+		actorData.motionData[index].group = 0;
+		actorData.motionData[index].index = 0;
+	}
+	const_for_all(index, 16)
+	{
+		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
+	}
+	actorData.var_3E00[0] = 1;
+	actorData.var_3E00[1] = 0;
+	actorData.var_3E00[2] = 4;
+	actorData.var_3E00[3] = 0;
+
+	memset(actorData.var_3E10, 0, 32);
+
+	actorData.permissions = 0x1C1B;
+	actorData.state = 1;
+	actorData.lastState = 0;
+}
+
+
+template <typename T>
+void ResetState8(T & actorData)
+{
+
+	Log("ResetState8");
+
+	const_for_all(index, 2)
+	{
+		actorData.motionData[index].group = 0;
+		actorData.motionData[index].index = 0;
+	}
+	const_for_all(index, 16)
+	{
+		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
+	}
+	actorData.var_3E00[0] = 1;
+	actorData.var_3E00[1] = 0;
+	actorData.var_3E00[2] = 4;
+	actorData.var_3E00[3] = 0;
+
+	memset(actorData.var_3E10, 0, 32);
+
+	actorData.permissions = 0x1C1B;
+	actorData.state = 1;
+	actorData.lastState = 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -331,6 +549,9 @@ void SetAttackState(T & actorData)
 	actorData.var_3E00[1] = 1;
 	actorData.var_3E00[2] = 0x11;
 	actorData.var_3E00[3] = 0x11;
+
+	actorData.var_3E10[0] = 1;
+
 	actorData.permissions = 0x401;
 	actorData.state = 0x10001;
 	actorData.lastState = 1;
@@ -483,7 +704,9 @@ void DanteYamato()
 
 
 
-
+		#define OnceStart(dest, index) if (dest.newSect##index) { dest.newSect##index = false;
+		#define OnceEnd }
+		#define OnceReset(dest, index) dest.newSect##index = true;
 
 
 
@@ -520,11 +743,15 @@ void DanteYamato()
 
 				if (childActorData.buttons[2] & GAMEPAD_Y)
 				{
-					ResetState(parentActorData);
+					ResetState1(parentActorData);
 					parentActorData.permissions = 0;
 
-					ResetState(childActorData);
-					SetAttackState(childActorData);
+					//ResetState2(childActorData);
+					//SetAttackState(childActorData);
+
+					//childActorData.newSect1 = false;
+
+
 					SetYamato(childActorData);
 				}
 			}
@@ -537,10 +764,21 @@ void DanteYamato()
 			{
 				childActorData.newSect1 = false;
 
-				ResetState(childActorData);
+				ResetState3(childActorData);
 			}
 		}
 
+
+
+
+
+
+
+
+
+
+
+		// @Todo: Air permissions.
 
 
 
@@ -550,86 +788,108 @@ void DanteYamato()
 			parentActorData.position = childActorData.position;
 			parentActorData.direction = childActorData.direction;
 
-			
+			//parentActorData.newSect2 = true;
 
+			//if (parentActorData.newSect0)
+			//{
+			//	parentActorData.newSect0 = false;
 
-			parentActorData.newSect1 = true;
+			//	parentActorData.permissions = 0;
+			//}
 
+			OnceReset(parentActorData, 2);
 
-
-
-
-
-			if (parentActorData.newSect0)
+			//OnceStart(parentActorData, 0);
 			{
-				parentActorData.newSect0 = false;
-
-
-
-
-
-
-
 				parentActorData.permissions = 0;
-				//parentActorData.newDisableLeftStick = true;
-
-
-
-
-				//parentActorData.var_3E00[2] = 4;
-
-
-
-
-				//func_8AC80
-				//(
-				//	parentActorData.modelData[parentActorData.activeModelIndex],
-				//	BODY_PART_LOWER,
-				//	File_cacheFile[pl021_00_3][childActorData.motionData[1].index],
-				//	0,
-				//	false
-				//);
-
-				//func_8AC80
-				//(
-				//	parentActorData.modelData[parentActorData.activeModelIndex],
-				//	BODY_PART_UPPER,
-				//	File_cacheFile[pl021_00_3][childActorData.motionData[1].index],
-				//	0,
-				//	false
-				//);
-
-
-
 			}
+			//OnceEnd;
 
 			if (childActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
 			{
+				//OnceStart(parentActorData, 1);
+				{
+					parentActorData.permissions = PERMISSION_DEFAULT | PERMISSION_ATTACK_STYLE_ACTION;
+				}
+				//OnceEnd;
+
+				//if (parentActorData.newSect1)
+				//{
+				//	parentActorData.newSect1 = false;
+				//	parentActorData.permissions = 0x401;
+				//}
+				// OnceStart(parentActorData, 0);
+				//parentActorData.permissions = 0;
+				// OnceEnd;
+				// weapon is still active, but parent has to be able to draw weapon.
+
 				if (parentActorData.buttons[2] & GAMEPAD_Y)
 				{
-					ResetState(childActorData);
+					ResetState4(childActorData);
 					childActorData.permissions = 0;
 					ClearYamato(childActorData);
 
-					ResetState(parentActorData);
+					//ResetState(parentActorData);
 					//parentActorData.newDisableLeftStick = false;
 
-					SetAttackState(parentActorData);
+					//SetAttackState(parentActorData);
+
+
+					//parentActorData.permissions = 0x401;
+
+
+
+					
+
+
+
+
+
+
+					parentActorData.newSect2 = false;
+
+
 				}
 			}
 		}
 		else
 		{
-			parentActorData.newSect0 = true;
+			OnceReset(parentActorData, 0);
+			OnceReset(parentActorData, 1);
 
-			if (parentActorData.newSect1)
+			OnceStart(parentActorData, 2);
 			{
-				parentActorData.newSect1 = false;
-
-				ResetState(parentActorData);
-				//parentActorData.newDisableLeftStick = false;
+				ResetState5(parentActorData);
 			}
+			OnceEnd;
+
+
+			//parentActorData.newSect0 = true;
+			//parentActorData.newSect1 = true;
+			//parentActorData.newSect2 = true;
+			//parentActorData.newSect2 = true;
+
+			//if (parentActorData.newSect2)
+			//{
+			//	parentActorData.newSect2 = false;
+
+			//	ResetState5(parentActorData);
+			//	//parentActorData.newDisableLeftStick = false;
+			//}
+
+
+
 		}
+
+
+
+		#undef OnceReset
+		#undef OnceEnd
+		#undef OnceStart
+		
+
+
+		
 
 
 
