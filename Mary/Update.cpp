@@ -273,10 +273,27 @@ bool IsBusy(T & actorData)
 
 
 
+template <typename T1, typename T2>
+void CopyState(T1 & source, T2 & target)
+{
+	//memcpy(target.motionData             , source.motionData             , 4 );
+	//memcpy(target.nextActionRequestPolicy, source.nextActionRequestPolicy, 64);
+	//memcpy(target.var_3E00               , source.var_3E00               , 16);
+
+	target.permissions = source.permissions;
+	target.state       = source.state;
+	target.lastState   = source.lastState;
+}
 
 
 
 
+
+
+
+
+// @Todo: Set different permissions according to state.
+// Floor, air.
 template <typename T>
 void ResetState(T & actorData)
 {
@@ -293,6 +310,12 @@ void ResetState(T & actorData)
 	actorData.var_3E00[1] = 0;
 	actorData.var_3E00[2] = 4;
 	actorData.var_3E00[3] = 0;
+
+	//memset(actorData.var_3E10, 0, 32);
+
+
+
+
 	actorData.permissions = 0x1C1B;
 	actorData.state = 1;
 	actorData.lastState = 0;
@@ -312,7 +335,6 @@ void SetAttackState(T & actorData)
 	actorData.state = 0x10001;
 	actorData.lastState = 1;
 }
-
 
 
 
@@ -421,7 +443,7 @@ void DanteYamato()
 
 			EnableButton(childActorData, GAMEPAD_Y);
 
-			if (!IsBusy(parentActorData))
+			if (!IsWeaponActive(parentActorData))
 			{
 				SetYamato(childActorData);
 			}
@@ -437,7 +459,7 @@ void DanteYamato()
 
 			DisableButton(childActorData, GAMEPAD_Y);
 
-			if (!IsBusy(childActorData))
+			if (!IsWeaponActive(childActorData))
 			{
 				ClearYamato(childActorData);
 			}
@@ -446,22 +468,56 @@ void DanteYamato()
 		// Update
 
 
+		//if (IsWeaponActive(parentActorData))
+		//{
+		//	CopyState(parentActorData, childActorData);
+		//}
+
+		//if (IsWeaponActive(childActorData))
+		//{
+		//	CopyState(childActorData, parentActorData);
+		//}
 
 
 
 
 
 
-		auto childPermissions = childActorData.permissions;
-		auto childState = childActorData.state;
+
+
+
+
+
+
+
+
+
+
+
+
+
+		//static_assert(sizeof(ACTOR_DATA_DANTE::motionData) == 4);
+
+
 
 		if (IsWeaponActive(parentActorData))
 		{
-			childActorData.permissions = 0;
-			childActorData.state = parentActorData.state;
+			childActorData.newSect1 = true;
+
+			if (childActorData.newSect0)
+			{
+				childActorData.newSect0 = false;
+
+				childActorData.permissions = 0;
+
+				//CopyState()
+
+			}
 
 			if (parentActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
 			{
+				// At this point the weapon is still active, but we can perform a new action.
+
 				if (childActorData.buttons[2] & GAMEPAD_Y)
 				{
 					ResetState(parentActorData);
@@ -475,50 +531,80 @@ void DanteYamato()
 		}
 		else
 		{
-			childActorData.permissions = childPermissions;
-			childActorData.state = childState;
+			childActorData.newSect0 = true;
+
+			if (childActorData.newSect1)
+			{
+				childActorData.newSect1 = false;
+
+				ResetState(childActorData);
+			}
 		}
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		auto parentPermissions = parentActorData.permissions;
-		auto parentState = parentActorData.state;
-
 		if (IsWeaponActive(childActorData))
 		{
-			parentActorData.permissions = 0;
-			parentActorData.state = childActorData.state;
+			parentActorData.position = childActorData.position;
+			parentActorData.direction = childActorData.direction;
+
+			
+
+
+			parentActorData.newSect1 = true;
+
+
+
+
+
+
+			if (parentActorData.newSect0)
+			{
+				parentActorData.newSect0 = false;
+
+
+
+
+
+
+
+				parentActorData.permissions = 0;
+				//parentActorData.newDisableLeftStick = true;
+
+
+
+
+				//parentActorData.var_3E00[2] = 4;
+
+
+
+
+				//func_8AC80
+				//(
+				//	parentActorData.modelData[parentActorData.activeModelIndex],
+				//	BODY_PART_LOWER,
+				//	File_cacheFile[pl021_00_3][childActorData.motionData[1].index],
+				//	0,
+				//	false
+				//);
+
+				//func_8AC80
+				//(
+				//	parentActorData.modelData[parentActorData.activeModelIndex],
+				//	BODY_PART_UPPER,
+				//	File_cacheFile[pl021_00_3][childActorData.motionData[1].index],
+				//	0,
+				//	false
+				//);
+
+
+
+			}
 
 			if (childActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
 			{
-				// At this point the weapon is still active, but we can perform a new action.
-
 				if (parentActorData.buttons[2] & GAMEPAD_Y)
 				{
 					ResetState(childActorData);
@@ -526,18 +612,29 @@ void DanteYamato()
 					ClearYamato(childActorData);
 
 					ResetState(parentActorData);
+					//parentActorData.newDisableLeftStick = false;
+
 					SetAttackState(parentActorData);
 				}
 			}
 		}
 		else
 		{
-			parentActorData.permissions = parentPermissions;
-			parentActorData.state = parentState;
+			parentActorData.newSect0 = true;
+
+			if (parentActorData.newSect1)
+			{
+				parentActorData.newSect1 = false;
+
+				ResetState(parentActorData);
+				//parentActorData.newDisableLeftStick = false;
+			}
 		}
 
-		// @Todo: Add updatePermissions bool.
-		// @Todo: Disable Left Stick Disable.
+
+
+
+
 
 
 

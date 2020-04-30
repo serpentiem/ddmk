@@ -2002,7 +2002,7 @@ void GUI_Teleporter_Draw()
 					g_duration = static_cast<uint32>(duration);
 					Log("file %llX", file);
 				}
-				auto baseAddr = Actor_actorBaseAddr[0];
+				auto baseAddr = Actor_actorBaseAddr[2];
 				auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
 				func_8AC80(actorData.modelData[actorData.activeModelIndex], BODY_PART_LOWER, File_cacheFile[cacheFileId][index], 0, false);
 				func_8AC80(actorData.modelData[actorData.activeModelIndex], BODY_PART_UPPER, File_cacheFile[cacheFileId][index], 0, false);

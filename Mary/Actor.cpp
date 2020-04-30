@@ -1374,8 +1374,15 @@ void UpdatePosition(byte8 * baseAddr)
 				continue;
 			}
 			auto & childActorData = *reinterpret_cast<ACTOR_DATA *>(childBaseAddr);
-			childActorData.position = parentActorData.position;
-			childActorData.direction = parentActorData.direction;
+
+			if (!IsWeaponActive(childActorData))
+			{
+				childActorData.position = parentActorData.position;
+				childActorData.direction = parentActorData.direction;
+			}
+
+
+
 		}
 		return;
 	}
@@ -1388,8 +1395,15 @@ void UpdatePosition(byte8 * baseAddr)
 			goto ChildEnd;
 		}
 		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(parentBaseAddr);
-		parentActorData.position = childActorData.position;
-		parentActorData.direction = childActorData.direction;
+
+		if (!IsWeaponActive(parentActorData))
+		{
+			parentActorData.position = childActorData.position;
+			parentActorData.direction = childActorData.direction;
+
+		}
+
+
 		return;
 	}
 	ChildEnd:;
@@ -1416,27 +1430,27 @@ void Actor_Init()
 
 
 
-	{
-		// Walk, Run
-		// Swordmaster, Trickster Dash, Royalguard Release
-		// Melee Attack
-		constexpr byte8 sect0[] =
-		{
-			0xF3, 0x0F, 0x11, 0x8B, 0x80, 0x00, 0x00, 0x00, //movss [rbx+00000080],xmm1
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
-		};
-		auto func = CreateFunction(UpdatePosition, (appBaseAddr + 0x1FC027), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x1FC01F), func.addr, 3);
-		/*
-		dmc3.exe+1FC01F - F3 0F11 8B 80000000 - movss [rbx+00000080],xmm1
-		dmc3.exe+1FC027 - E9 4E030000         - jmp dmc3.exe+1FC37A
-		*/
-	}
+	//{
+	//	// Walk, Run
+	//	// Swordmaster, Trickster Dash, Royalguard Release
+	//	// Melee Attack
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0xF3, 0x0F, 0x11, 0x8B, 0x80, 0x00, 0x00, 0x00, //movss [rbx+00000080],xmm1
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCB, //mov rcx,rbx
+	//	};
+	//	auto func = CreateFunction(UpdatePosition, (appBaseAddr + 0x1FC027), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x1FC01F), func.addr, 3);
+	//	/*
+	//	dmc3.exe+1FC01F - F3 0F11 8B 80000000 - movss [rbx+00000080],xmm1
+	//	dmc3.exe+1FC027 - E9 4E030000         - jmp dmc3.exe+1FC37A
+	//	*/
+	//}
 
 
 

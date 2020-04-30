@@ -137,6 +137,14 @@ struct ACTOR_DATA
 	byte8 * newRangedWeaponData[5]; // 0xB948
 	uint8 newRangedWeaponCount; // 0xB970
 	uint8 newRangedWeaponIndex; // 0xB971
+	bool newSect0; // 0xB972
+	bool newSect1; // 0xB973
+	bool newSect2; // 0xB974
+	bool newSect3; // 0xB975
+	bool newSect4; // 0xB976
+	bool newSect5; // 0xB977
+	bool newSect6; // 0xB978
+	bool newSect7; // 0xB979
 
 	operator byte8 *()
 	{
@@ -310,6 +318,14 @@ struct ACTOR_DATA_DANTE
 	byte8 * newRangedWeaponData[5]; // 0xB948
 	uint8 newRangedWeaponCount; // 0xB970
 	uint8 newRangedWeaponIndex; // 0xB971
+	bool newSect0; // 0xB972
+	bool newSect1; // 0xB973
+	bool newSect2; // 0xB974
+	bool newSect3; // 0xB975
+	bool newSect4; // 0xB976
+	bool newSect5; // 0xB977
+	bool newSect6; // 0xB978
+	bool newSect7; // 0xB979
 
 	operator byte8 *()
 	{
@@ -444,6 +460,14 @@ struct ACTOR_DATA_BOB
 	byte8 * newRangedWeaponData[5]; // 0xB948
 	uint8 newRangedWeaponCount; // 0xB970
 	uint8 newRangedWeaponIndex; // 0xB971
+	bool newSect0; // 0xB972
+	bool newSect1; // 0xB973
+	bool newSect2; // 0xB974
+	bool newSect3; // 0xB975
+	bool newSect4; // 0xB976
+	bool newSect5; // 0xB977
+	bool newSect6; // 0xB978
+	bool newSect7; // 0xB979
 
 	operator byte8 *()
 	{
@@ -578,6 +602,14 @@ struct ACTOR_DATA_LADY
 	byte8 * newRangedWeaponData[5]; // 0xB948
 	uint8 newRangedWeaponCount; // 0xB970
 	uint8 newRangedWeaponIndex; // 0xB971
+	bool newSect0; // 0xB972
+	bool newSect1; // 0xB973
+	bool newSect2; // 0xB974
+	bool newSect3; // 0xB975
+	bool newSect4; // 0xB976
+	bool newSect5; // 0xB977
+	bool newSect6; // 0xB978
+	bool newSect7; // 0xB979
 
 	operator byte8 *()
 	{
@@ -730,6 +762,14 @@ struct ACTOR_DATA_VERGIL
 	byte8 * newRangedWeaponData[5]; // 0xB948
 	uint8 newRangedWeaponCount; // 0xB970
 	uint8 newRangedWeaponIndex; // 0xB971
+	bool newSect0; // 0xB972
+	bool newSect1; // 0xB973
+	bool newSect2; // 0xB974
+	bool newSect3; // 0xB975
+	bool newSect4; // 0xB976
+	bool newSect5; // 0xB977
+	bool newSect6; // 0xB978
+	bool newSect7; // 0xB979
 
 	operator byte8 *()
 	{
