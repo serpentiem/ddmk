@@ -30,9 +30,9 @@
 //}
 
 
-inline byte16 GetBinding(uint8 action)
+inline byte16 GetBinding(uint8 index)
 {
-	return (reinterpret_cast<byte16 *>(appBaseAddr + 0xD6CE8A))[action];
+	return (reinterpret_cast<byte16 *>(appBaseAddr + 0xD6CE80 + 0xA))[index];
 }
 
 

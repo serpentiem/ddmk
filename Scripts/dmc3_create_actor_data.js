@@ -161,14 +161,7 @@ var extra =
 	[ "newRangedWeaponData[5]", "byte8 *" ],
 	[ "newRangedWeaponCount"  , "uint8"   ],
 	[ "newRangedWeaponIndex"  , "uint8"   ],
-	[ "newSect0"              , "bool"    ],
-	[ "newSect1"              , "bool"    ],
-	[ "newSect2"              , "bool"    ],
-	[ "newSect3"              , "bool"    ],
-	[ "newSect4"              , "bool"    ],
-	[ "newSect5"              , "bool"    ],
-	[ "newSect6"              , "bool"    ],
-	[ "newSect7"              , "bool"    ],
+	[ "newSect[8]"            , "bool"    ],
 ];
 
 var c = "";

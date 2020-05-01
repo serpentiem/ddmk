@@ -863,7 +863,7 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 
 
 	{
-		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_DEVIL_ARMS)))
+		if (!(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
 		{
 			goto sect0;
 		}

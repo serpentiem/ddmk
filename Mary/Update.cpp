@@ -704,9 +704,10 @@ void DanteYamato()
 
 
 
-		#define OnceStart(dest, index) if (dest.newSect##index) { dest.newSect##index = false;
+		#define OnceStart(dest, index) if (dest.newSect[index]) { dest.newSect[index] = false;
 		#define OnceEnd }
-		#define OnceReset(dest, index) dest.newSect##index = true;
+		#define OnceReset(dest, index) dest.newSect[index] = true;
+		#define OnceIgnore(dest, index) dest.newSect[index] = false;
 
 
 
@@ -725,11 +726,11 @@ void DanteYamato()
 
 		if (IsWeaponActive(parentActorData))
 		{
-			childActorData.newSect1 = true;
+			childActorData.newSect[1] = true;
 
-			if (childActorData.newSect0)
+			if (childActorData.newSect[0])
 			{
-				childActorData.newSect0 = false;
+				childActorData.newSect[0] = false;
 
 				childActorData.permissions = 0;
 
@@ -758,11 +759,11 @@ void DanteYamato()
 		}
 		else
 		{
-			childActorData.newSect0 = true;
+			childActorData.newSect[0] = true;
 
-			if (childActorData.newSect1)
+			if (childActorData.newSect[1])
 			{
-				childActorData.newSect1 = false;
+				childActorData.newSect[1] = false;
 
 				ResetState3(childActorData);
 			}
@@ -787,99 +788,84 @@ void DanteYamato()
 		{
 			parentActorData.position = childActorData.position;
 			parentActorData.direction = childActorData.direction;
+			parentActorData.permissions = 0;
 
-			//parentActorData.newSect2 = true;
-
-			//if (parentActorData.newSect0)
-			//{
-			//	parentActorData.newSect0 = false;
-
-			//	parentActorData.permissions = 0;
-			//}
-
-			OnceReset(parentActorData, 2);
-
-			//OnceStart(parentActorData, 0);
-			{
-				parentActorData.permissions = 0;
-			}
-			//OnceEnd;
+			OnceReset(parentActorData, 0);
 
 			if (childActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
 			{
-				//OnceStart(parentActorData, 1);
-				{
-					parentActorData.permissions = PERMISSION_DEFAULT | PERMISSION_ATTACK_STYLE_ACTION;
-				}
-				//OnceEnd;
+				parentActorData.permissions += PERMISSION_INTERACTION_STYLE_ATTACK;
 
-				//if (parentActorData.newSect1)
-				//{
-				//	parentActorData.newSect1 = false;
-				//	parentActorData.permissions = 0x401;
-				//}
-				// OnceStart(parentActorData, 0);
-				//parentActorData.permissions = 0;
-				// OnceEnd;
-				// weapon is still active, but parent has to be able to draw weapon.
-
-				if (parentActorData.buttons[2] & GAMEPAD_Y)
+				if
+				(
+					(parentActorData.buttons[2] & GAMEPAD_Y) ||
+					(parentActorData.buttons[2] & GAMEPAD_X) ||
+					(parentActorData.buttons[2] & GAMEPAD_B)
+				)
 				{
 					ResetState4(childActorData);
 					childActorData.permissions = 0;
 					ClearYamato(childActorData);
 
-					//ResetState(parentActorData);
-					//parentActorData.newDisableLeftStick = false;
+					OnceIgnore(parentActorData, 0);
 
-					//SetAttackState(parentActorData);
+					goto ChildEnd;
+				}
+			}
 
+			if (childActorData.nextActionRequestPolicy[5] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+			{
+				parentActorData.permissions += PERMISSION_JUMP_ROLL;
 
-					//parentActorData.permissions = 0x401;
+				if (parentActorData.buttons[2] & GAMEPAD_A)
+				{
+					ResetState4(childActorData);
+					childActorData.permissions = 0;
+					ClearYamato(childActorData);
 
+					OnceIgnore(parentActorData, 0);
 
+					goto ChildEnd;
+				}
+			}
 
-					
+			if (childActorData.nextActionRequestPolicy[15] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+			{
+				parentActorData.permissions += PERMISSION_WALK_RUN;
 
+				if (parentActorData.leftStickRadius >= LEFT_STICK_DEADZONE)
+				{
+					ResetState4(childActorData);
+					childActorData.permissions = 0;
+					ClearYamato(childActorData);
 
+					OnceIgnore(parentActorData, 0);
 
-
-
-
-					parentActorData.newSect2 = false;
-
-
+					goto ChildEnd;
 				}
 			}
 		}
 		else
 		{
-			OnceReset(parentActorData, 0);
-			OnceReset(parentActorData, 1);
-
-			OnceStart(parentActorData, 2);
+			OnceStart(parentActorData, 0);
 			{
 				ResetState5(parentActorData);
 			}
 			OnceEnd;
-
-
-			//parentActorData.newSect0 = true;
-			//parentActorData.newSect1 = true;
-			//parentActorData.newSect2 = true;
-			//parentActorData.newSect2 = true;
-
-			//if (parentActorData.newSect2)
-			//{
-			//	parentActorData.newSect2 = false;
-
-			//	ResetState5(parentActorData);
-			//	//parentActorData.newDisableLeftStick = false;
-			//}
-
-
-
 		}
+		ChildEnd:;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
