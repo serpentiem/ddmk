@@ -6,4 +6,23 @@
 #include "Event.h"
 #include "State.h"
 
+
+
+
+
+
+
+
+
+extern uint64 g_mainLoopCounter;
+extern uint64 g_actorLoopCounter;
+
+
+
+
+
+
+
+
+
 void Update_Init();

@@ -4,6 +4,17 @@ uint64 ticksPerSecond      = 0;
 uint64 ticksPerMillisecond = 0;
 uint64 savedTickCount      = 0;
 
+
+
+uint64 g_mainLoopCounter = 0;
+uint64 g_actorLoopCounter = 0;
+
+
+
+
+
+
+
 //bool millionStab = false;
 
 // As soon as millionStab is true, start daemon and check for state.
@@ -623,7 +634,7 @@ bool WantsYamato(T & actorData)
 
 
 
-void DanteYamato()
+void old_DanteYamato()
 {
 	for_each(index, 2, Actor_actorBaseAddr.count)
 	{
@@ -706,8 +717,9 @@ void DanteYamato()
 
 		#define OnceStart(dest, index) if (dest.newSect[index]) { dest.newSect[index] = false;
 		#define OnceEnd }
-		#define OnceReset(dest, index) dest.newSect[index] = true;
-		#define OnceIgnore(dest, index) dest.newSect[index] = false;
+		// @Research: Maybe enable and disable are better.
+		#define OnceEnable(dest, index) dest.newSect[index] = true;
+		#define OnceDisable(dest, index) dest.newSect[index] = false;
 
 
 
@@ -720,66 +732,52 @@ void DanteYamato()
 
 
 
-		//static_assert(sizeof(ACTOR_DATA_DANTE::motionData) == 4);
+
+		
+
+
 
 
 
 		if (IsWeaponActive(parentActorData))
 		{
-			childActorData.newSect[1] = true;
+			childActorData.position = parentActorData.position;
+			childActorData.direction = parentActorData.direction;
+			childActorData.permissions = 0;
+			childActorData.state = parentActorData.state;
 
-			if (childActorData.newSect[0])
-			{
-				childActorData.newSect[0] = false;
-
-				childActorData.permissions = 0;
-
-				//CopyState()
-
-			}
+			OnceEnable(childActorData, 0);
 
 			if (parentActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
 			{
-				// At this point the weapon is still active, but we can perform a new action.
+				childActorData.permissions += PERMISSION_INTERACTION_STYLE_ATTACK;
 
 				if (childActorData.buttons[2] & GAMEPAD_Y)
 				{
 					ResetState1(parentActorData);
 					parentActorData.permissions = 0;
 
-					//ResetState2(childActorData);
-					//SetAttackState(childActorData);
-
-					//childActorData.newSect1 = false;
-
-
 					SetYamato(childActorData);
+
+					OnceDisable(childActorData, 0);
+
+					goto ParentEnd;
 				}
 			}
 		}
 		else
 		{
-			childActorData.newSect[0] = true;
-
-			if (childActorData.newSect[1])
+			OnceStart(childActorData, 0);
 			{
-				childActorData.newSect[1] = false;
-
 				ResetState3(childActorData);
 			}
+			OnceEnd;
 		}
+		ParentEnd:;
 
 
 
 
-
-
-
-
-
-
-
-		// @Todo: Air permissions.
 
 
 
@@ -789,8 +787,9 @@ void DanteYamato()
 			parentActorData.position = childActorData.position;
 			parentActorData.direction = childActorData.direction;
 			parentActorData.permissions = 0;
+			parentActorData.state = childActorData.state;
 
-			OnceReset(parentActorData, 0);
+			OnceEnable(parentActorData, 0);
 
 			if (childActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
 			{
@@ -807,7 +806,7 @@ void DanteYamato()
 					childActorData.permissions = 0;
 					ClearYamato(childActorData);
 
-					OnceIgnore(parentActorData, 0);
+					OnceDisable(parentActorData, 0);
 
 					goto ChildEnd;
 				}
@@ -823,7 +822,7 @@ void DanteYamato()
 					childActorData.permissions = 0;
 					ClearYamato(childActorData);
 
-					OnceIgnore(parentActorData, 0);
+					OnceDisable(parentActorData, 0);
 
 					goto ChildEnd;
 				}
@@ -839,7 +838,7 @@ void DanteYamato()
 					childActorData.permissions = 0;
 					ClearYamato(childActorData);
 
-					OnceIgnore(parentActorData, 0);
+					OnceDisable(parentActorData, 0);
 
 					goto ChildEnd;
 				}
@@ -852,6 +851,10 @@ void DanteYamato()
 				ResetState5(parentActorData);
 			}
 			OnceEnd;
+
+			//childActorData.position = parentActorData.position;
+			//childActorData.direction = parentActorData.direction;
+			//childActorData.state = parentActorData.state;
 		}
 		ChildEnd:;
 
@@ -897,6 +900,189 @@ void DanteYamato()
 
 
 
+
+
+
+
+void DanteYamato(byte8 * baseAddr)
+{
+	auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+	if (parentActorData.character != CHAR_DANTE)
+	{
+		return;
+	}
+	if (parentActorData.newParentBaseAddr)
+	{
+		return;
+	}
+	if (!parentActorData.newChildBaseAddr[CHAR_VERGIL])
+	{
+		return;
+	}
+	auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(parentActorData.newChildBaseAddr[CHAR_VERGIL]);
+	if (childActorData.character != CHAR_VERGIL)
+	{
+		return;
+	}
+
+	// Start End
+
+	if (WantsYamato(parentActorData))
+	{
+		DisableButton(parentActorData, GAMEPAD_Y);
+
+		if (parentActorData.style == STYLE_DANTE_SWORDMASTER)
+		{
+			DisableButton(parentActorData, GAMEPAD_B);
+		}
+
+		EnableButton(childActorData, GAMEPAD_Y);
+
+		if (!IsWeaponActive(parentActorData))
+		{
+			SetYamato(childActorData);
+		}
+	}
+	else
+	{
+		EnableButton(parentActorData, GAMEPAD_Y);
+
+		if (parentActorData.style == STYLE_DANTE_SWORDMASTER)
+		{
+			EnableButton(parentActorData, GAMEPAD_B);
+		}
+
+		DisableButton(childActorData, GAMEPAD_Y);
+
+		if (!IsWeaponActive(childActorData))
+		{
+			ClearYamato(childActorData);
+		}
+	}
+
+	// Update
+
+	#define OnceStart(dest, index) if (dest.newSect[index]) { dest.newSect[index] = false;
+	#define OnceEnd }
+	#define OnceEnable(dest, index) dest.newSect[index] = true;
+	#define OnceDisable(dest, index) dest.newSect[index] = false;
+
+	if (IsWeaponActive(parentActorData))
+	{
+		childActorData.position = parentActorData.position;
+		childActorData.direction = parentActorData.direction;
+		childActorData.permissions = 0;
+		childActorData.state = parentActorData.state;
+
+		OnceEnable(childActorData, 0);
+
+		if (parentActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			childActorData.permissions += PERMISSION_INTERACTION_STYLE_ATTACK;
+
+			if (childActorData.buttons[2] & GAMEPAD_Y)
+			{
+				ResetState1(parentActorData);
+				parentActorData.permissions = 0;
+
+				SetYamato(childActorData);
+
+				OnceDisable(childActorData, 0);
+
+				goto ParentEnd;
+			}
+		}
+	}
+	else
+	{
+		OnceStart(childActorData, 0);
+		{
+			ResetState3(childActorData);
+		}
+		OnceEnd;
+	}
+	ParentEnd:;
+
+	if (IsWeaponActive(childActorData))
+	{
+		parentActorData.position = childActorData.position;
+		parentActorData.direction = childActorData.direction;
+		parentActorData.permissions = 0;
+		parentActorData.state = childActorData.state;
+
+		OnceEnable(parentActorData, 0);
+
+		if (childActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			parentActorData.permissions += PERMISSION_INTERACTION_STYLE_ATTACK;
+
+			if
+			(
+				(parentActorData.buttons[2] & GAMEPAD_Y) ||
+				(parentActorData.buttons[2] & GAMEPAD_X) ||
+				(parentActorData.buttons[2] & GAMEPAD_B)
+			)
+			{
+				ResetState4(childActorData);
+				childActorData.permissions = 0;
+				ClearYamato(childActorData);
+
+				OnceDisable(parentActorData, 0);
+
+				goto ChildEnd;
+			}
+		}
+
+		if (childActorData.nextActionRequestPolicy[5] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			parentActorData.permissions += PERMISSION_JUMP_ROLL;
+
+			if (parentActorData.buttons[2] & GAMEPAD_A)
+			{
+				ResetState4(childActorData);
+				childActorData.permissions = 0;
+				ClearYamato(childActorData);
+
+				OnceDisable(parentActorData, 0);
+
+				goto ChildEnd;
+			}
+		}
+
+		if (childActorData.nextActionRequestPolicy[15] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			parentActorData.permissions += PERMISSION_WALK_RUN;
+
+			if (parentActorData.leftStickRadius >= LEFT_STICK_DEADZONE)
+			{
+				ResetState4(childActorData);
+				childActorData.permissions = 0;
+				ClearYamato(childActorData);
+
+				OnceDisable(parentActorData, 0);
+
+				goto ChildEnd;
+			}
+		}
+	}
+	else
+	{
+		OnceStart(parentActorData, 0);
+		{
+			ResetState5(parentActorData);
+		}
+		OnceEnd;
+
+		childActorData.position = parentActorData.position;
+		childActorData.direction = parentActorData.direction;
+		childActorData.state = parentActorData.state;
+	}
+	ChildEnd:;
+
+	#undef OnceReset
+	#undef OnceEnd
+	#undef OnceStart
+}
 
 
 
@@ -1060,12 +1246,22 @@ void DanteSummonedSwords()
 uint8 g_relativeTiltDirection = TILT_DIRECTION_VOID;
 
 
+//uint64 g_mainCounter = 0;
+//uint64 g_newCounter = 0;
+
+
+
+
+
 
 void MainLoop()
 {
 
 
+	g_mainLoopCounter++;
 
+
+	//g_mainCounter++;
 
 
 
@@ -1211,7 +1407,7 @@ void MainLoop()
 
 
 
-	DanteYamato();
+	//DanteYamato();
 
 
 
@@ -1226,15 +1422,15 @@ void MainLoop()
 
 
 
-	auto baseAddr = Actor_actorBaseAddr[2];
-	if (!baseAddr)
-	{
-		return;
-	}
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-	g_relativeTilt = (actorData.actorCameraDirection - actorData.leftStickPosition);
+	//auto baseAddr = Actor_actorBaseAddr[2];
+	//if (!baseAddr)
+	//{
+	//	return;
+	//}
+	//auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+	//g_relativeTilt = (actorData.actorCameraDirection - actorData.leftStickPosition);
 
-	g_relativeTiltDirection = GetRelativeTiltDirection(actorData);
+	//g_relativeTiltDirection = GetRelativeTiltDirection(actorData);
 
 
 
@@ -1355,6 +1551,63 @@ void MainLoop()
 }
 
 
+
+
+void ActorLoop(byte8 * baseAddr)
+{
+	g_actorLoopCounter++;
+
+
+
+	DanteYamato(baseAddr);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 dmc3.exe+1E2495 - movzx r8d,byte ptr [rbx+00000118]
 dmc3.exe+1E8866 - movzx r8d,byte ptr [rcx+00000118]
@@ -1403,9 +1656,72 @@ dmc3.exe+1BE7B3 - E8 C810FFFF       - call dmc3.exe+1AF880
 
 
 
+//void DanteLoop(byte8 * baseAddr)
+//{
+//	g_newCounter++;
+//}
 
 
 
+
+
+void UpdateAirPosition(byte8 * baseAddr)
+{
+
+
+	{
+		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+		if (parentActorData.newParentBaseAddr)
+		{
+			goto ParentEnd;
+		}
+		const_for_all(index, 4)
+		{
+			auto childBaseAddr = parentActorData.newChildBaseAddr[index];
+			if (!childBaseAddr)
+			{
+				continue;
+			}
+			auto & childActorData = *reinterpret_cast<ACTOR_DATA *>(childBaseAddr);
+
+			if (!IsWeaponActive(childActorData))
+			{
+				childActorData.position = parentActorData.position;
+				childActorData.direction = parentActorData.direction;
+			}
+
+
+
+		}
+		return;
+	}
+	ParentEnd:;
+	{
+		auto & childActorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+		auto parentBaseAddr = childActorData.newParentBaseAddr;
+		if (!parentBaseAddr)
+		{
+			goto ChildEnd;
+		}
+		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(parentBaseAddr);
+
+		if (!IsWeaponActive(parentActorData))
+		{
+			parentActorData.position = childActorData.position;
+			parentActorData.direction = childActorData.direction;
+
+		}
+
+
+		return;
+	}
+	ChildEnd:;
+
+
+
+
+
+}
 
 
 // Wow, same crap.
@@ -1416,6 +1732,94 @@ void Update_Init()
 	Windows_GetTicksPerSecond(&ticksPerSecond);
 	ticksPerMillisecond = (ticksPerSecond / 1000);
 	Windows_GetTickCount(&savedTickCount);
+
+
+	{
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCF, //mov rcx,rdi
+		};
+		constexpr byte8 sect2[] =
+		{
+			0x48, 0x83, 0xC4, 0x30, //add rsp,30
+			0x5F,                   //pop rdi
+		};
+		auto func = CreateFunction(UpdateAirPosition, (appBaseAddr + 0x1FB3E8), true, true, 0, sizeof(sect1), sizeof(sect2));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteJump((appBaseAddr + 0x1FB3E3), func.addr);
+		/*
+		dmc3.exe+1FB3E3 - 48 83 C4 30 - add rsp,30
+		dmc3.exe+1FB3E7 - 5F          - pop rdi
+		dmc3.exe+1FB3E8 - C3          - ret
+		*/
+	}
+
+
+
+
+	{
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCB, //mov rcx,rbx
+		};
+		constexpr byte8 sect2[] =
+		{
+			0x48, 0x83, 0xC4, 0x20, //add rsp,20
+			0x5B,                   //pop rbx
+		};
+		auto func = CreateFunction(ActorLoop, (appBaseAddr + 0x1DFAB4), true, true, 0, sizeof(sect1), sizeof(sect2));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteJump((appBaseAddr + 0x1DFAAF), func.addr);
+		/*
+		dmc3.exe+1DFAAF - 48 83 C4 20 - add rsp,20
+		dmc3.exe+1DFAB3 - 5B          - pop rbx
+		dmc3.exe+1DFAB4 - E9 C7711400 - jmp dmc3.exe+326C80
+		*/
+	}
+
+
+
+
+
+
+
+
+
+	//{
+	//	auto func = CreateFunction(DanteLoop, (appBaseAddr + 0x1DFA30));
+	//	Write<byte8 *>((appBaseAddr + 0x4DF998), func.addr);
+
+
+
+
+
+	//	/*
+	//	dmc3.exe+4DF998
+	//	*/
+
+
+
+
+	//	/*
+	//	dmc3.exe+1DFA30 - 40 53                 - push rbx
+	//	*/
+	//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	//{
 	//	byte8 sect0[] =
 	//	{

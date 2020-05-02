@@ -1965,6 +1965,13 @@ void GUI_Teleporter_Draw()
 		//DrawRelativeTilt();
 
 
+		//{
+		//	ImGui::Text("Counter");
+		//	GUI_InputEx("g_mainCounter", g_mainCounter);
+		//	GUI_InputEx("g_newCounter", g_newCounter);
+		//}
+
+
 		{
 			
 
