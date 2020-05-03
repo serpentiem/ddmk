@@ -139,6 +139,7 @@ struct ACTOR_DATA
 	uint8 newRangedWeaponIndex; // 0xB971
 	_(2);
 	bool newSect[8]; // 0xB974
+	bool newSkipPositionUpdate; // 0xB97C
 
 	operator byte8 *()
 	{
@@ -314,6 +315,7 @@ struct ACTOR_DATA_DANTE
 	uint8 newRangedWeaponIndex; // 0xB971
 	_(2);
 	bool newSect[8]; // 0xB974
+	bool newSkipPositionUpdate; // 0xB97C
 
 	operator byte8 *()
 	{
@@ -450,6 +452,7 @@ struct ACTOR_DATA_BOB
 	uint8 newRangedWeaponIndex; // 0xB971
 	_(2);
 	bool newSect[8]; // 0xB974
+	bool newSkipPositionUpdate; // 0xB97C
 
 	operator byte8 *()
 	{
@@ -586,6 +589,7 @@ struct ACTOR_DATA_LADY
 	uint8 newRangedWeaponIndex; // 0xB971
 	_(2);
 	bool newSect[8]; // 0xB974
+	bool newSkipPositionUpdate; // 0xB97C
 
 	operator byte8 *()
 	{
@@ -740,6 +744,7 @@ struct ACTOR_DATA_VERGIL
 	uint8 newRangedWeaponIndex; // 0xB971
 	_(2);
 	bool newSect[8]; // 0xB974
+	bool newSkipPositionUpdate; // 0xB97C
 
 	operator byte8 *()
 	{

@@ -162,6 +162,7 @@ var extra =
 	[ "newRangedWeaponCount"  , "uint8"   ],
 	[ "newRangedWeaponIndex"  , "uint8"   ],
 	[ "newSect[8]"            , "bool"    ],
+	[ "newSkipPositionUpdate" , "bool"    ],
 ];
 
 var c = "";

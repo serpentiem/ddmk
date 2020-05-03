@@ -79,6 +79,7 @@ static_assert(offsetof(ACTOR_DATA, newRangedWeaponData) == 0xB948);
 static_assert(offsetof(ACTOR_DATA, newRangedWeaponCount) == 0xB970);
 static_assert(offsetof(ACTOR_DATA, newRangedWeaponIndex) == 0xB971);
 static_assert(offsetof(ACTOR_DATA, newSect) == 0xB974);
+static_assert(offsetof(ACTOR_DATA, newSkipPositionUpdate) == 0xB97C);
 
 static_assert(offsetof(ACTOR_DATA_DANTE, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_DANTE, character) == 0x78);
@@ -188,6 +189,7 @@ static_assert(offsetof(ACTOR_DATA_DANTE, newRangedWeaponData) == 0xB948);
 static_assert(offsetof(ACTOR_DATA_DANTE, newRangedWeaponCount) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_DANTE, newRangedWeaponIndex) == 0xB971);
 static_assert(offsetof(ACTOR_DATA_DANTE, newSect) == 0xB974);
+static_assert(offsetof(ACTOR_DATA_DANTE, newSkipPositionUpdate) == 0xB97C);
 
 static_assert(offsetof(ACTOR_DATA_BOB, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_BOB, character) == 0x78);
@@ -268,6 +270,7 @@ static_assert(offsetof(ACTOR_DATA_BOB, newRangedWeaponData) == 0xB948);
 static_assert(offsetof(ACTOR_DATA_BOB, newRangedWeaponCount) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_BOB, newRangedWeaponIndex) == 0xB971);
 static_assert(offsetof(ACTOR_DATA_BOB, newSect) == 0xB974);
+static_assert(offsetof(ACTOR_DATA_BOB, newSkipPositionUpdate) == 0xB97C);
 
 static_assert(offsetof(ACTOR_DATA_LADY, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_LADY, character) == 0x78);
@@ -348,6 +351,7 @@ static_assert(offsetof(ACTOR_DATA_LADY, newRangedWeaponData) == 0xB948);
 static_assert(offsetof(ACTOR_DATA_LADY, newRangedWeaponCount) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_LADY, newRangedWeaponIndex) == 0xB971);
 static_assert(offsetof(ACTOR_DATA_LADY, newSect) == 0xB974);
+static_assert(offsetof(ACTOR_DATA_LADY, newSkipPositionUpdate) == 0xB97C);
 
 static_assert(offsetof(ACTOR_DATA_VERGIL, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_VERGIL, character) == 0x78);
@@ -441,3 +445,4 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, newRangedWeaponData) == 0xB948);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newRangedWeaponCount) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newRangedWeaponIndex) == 0xB971);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newSect) == 0xB974);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newSkipPositionUpdate) == 0xB97C);
