@@ -121,7 +121,7 @@ struct ACTOR_DATA
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newDisableLeftStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F3
 	uint8 newStyle; // 0xB8F4
 	_(3);
 	uint8 newStyleMap[5][2]; // 0xB8F8
@@ -297,7 +297,7 @@ struct ACTOR_DATA_DANTE
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newDisableLeftStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F3
 	uint8 newStyle; // 0xB8F4
 	_(3);
 	uint8 newStyleMap[5][2]; // 0xB8F8
@@ -434,7 +434,7 @@ struct ACTOR_DATA_BOB
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newDisableLeftStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F3
 	uint8 newStyle; // 0xB8F4
 	_(3);
 	uint8 newStyleMap[5][2]; // 0xB8F8
@@ -571,7 +571,7 @@ struct ACTOR_DATA_LADY
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newDisableLeftStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F3
 	uint8 newStyle; // 0xB8F4
 	_(3);
 	uint8 newStyleMap[5][2]; // 0xB8F8
@@ -726,7 +726,7 @@ struct ACTOR_DATA_VERGIL
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newDisableLeftStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F3
 	uint8 newStyle; // 0xB8F4
 	_(3);
 	uint8 newStyleMap[5][2]; // 0xB8F8

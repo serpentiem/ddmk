@@ -150,7 +150,7 @@ var extra =
 	[ "newChildBaseAddr[4]"   , "byte8 *" ],
 	[ "newGamepad"            , "uint8"   ],
 	[ "newButtonMask"         , "byte16"  ],
-	[ "newDisableLeftStick"   , "bool"    ],
+	[ "newEnableLeftStick"    , "bool"    ],
 	[ "newStyle"              , "uint8"   ],
 	[ "newStyleMap[5][2]"     , "uint8"   ],
 	[ "newMeleeWeaponMap[5]"  , "uint8"   ],

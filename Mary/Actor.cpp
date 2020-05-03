@@ -1045,69 +1045,55 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 
 // @Todo: Move to Event.
 
-void WriteMotionData(byte8 * baseAddr)
+void WriteLowerBodyMotionData(byte8 * baseAddr)
 {
-	// @Todo: Move to DanteYamato.
-
-
-	if (!baseAddr)
+	auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
+	if (childActorData.character != CHAR_VERGIL)
 	{
 		return;
 	}
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL*>(baseAddr);
-	if (actorData.character != CHAR_VERGIL)
+	if (!childActorData.newParentBaseAddr)
 	{
 		return;
 	}
-	if (!actorData.newParentBaseAddr)
-	{
-		return;
-	}
-	auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newParentBaseAddr);
+	auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(childActorData.newParentBaseAddr);
 	if (parentActorData.character != CHAR_DANTE)
 	{
 		return;
 	}
-	if (actorData.motionData[1].group != MOTION_GROUP_VERGIL_YAMATO)
+	if (childActorData.motionData[BODY_PART_LOWER].group != MOTION_GROUP_VERGIL_YAMATO)
 	{
 		return;
 	}
-
-
-	// @Todo: Update with generic weapon motion.
-	// @Todo: Reference modelData, motionData and file.
-
-
-	func_8AC80
-	(
-		parentActorData.modelData[parentActorData.activeModelIndex],
-		BODY_PART_LOWER,
-		File_cacheFile[pl021_00_3][actorData.motionData[1].index],
-		0,
-		false
-	);
-
-	func_8AC80
-	(
-		parentActorData.modelData[parentActorData.activeModelIndex],
-		BODY_PART_UPPER,
-		File_cacheFile[pl021_00_3][actorData.motionData[1].index],
-		0,
-		false
-	);
-
-
-
-
-
-
-
-
-
-
+	auto & modelData = parentActorData.modelData[parentActorData.activeModelIndex];
+	auto motionFile = File_cacheFile[pl021_00_3][childActorData.motionData[BODY_PART_LOWER].index];
+	func_8AC80(modelData, BODY_PART_LOWER, motionFile, 0, false);
 }
 
-
+void WriteUpperBodyMotionData(byte8 * baseAddr)
+{
+	auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
+	if (childActorData.character != CHAR_VERGIL)
+	{
+		return;
+	}
+	if (!childActorData.newParentBaseAddr)
+	{
+		return;
+	}
+	auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(childActorData.newParentBaseAddr);
+	if (parentActorData.character != CHAR_DANTE)
+	{
+		return;
+	}
+	if (childActorData.motionData[BODY_PART_UPPER].group != MOTION_GROUP_VERGIL_YAMATO)
+	{
+		return;
+	}
+	auto & modelData = parentActorData.modelData[parentActorData.activeModelIndex];
+	auto motionFile = File_cacheFile[pl021_00_3][childActorData.motionData[BODY_PART_UPPER].index];
+	func_8AC80(modelData, BODY_PART_UPPER, motionFile, 0, false);
+}
 
 
 
@@ -1500,12 +1486,24 @@ void Actor_Init()
 
 
 
-
-
-
-
-
-
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x66, 0x89, 0xAE, 0xB0, 0x39, 0x00, 0x00, //mov [rsi+000039B0],bp
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCE, //mov rcx,rsi
+		};
+		auto func = CreateFunction(WriteLowerBodyMotionData, (appBaseAddr + 0x1EFC97), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteJump((appBaseAddr + 0x1EFC90), func.addr, 2);
+		/*
+		dmc3.exe+1EFC90 - 66 89 AE B0390000       - mov [rsi+000039B0],bp
+		dmc3.exe+1EFC97 - C7 86 C2390000 00000000 - mov [rsi+000039C2],00000000
+		*/
+	}
 	{
 		constexpr byte8 sect0[] =
 		{
@@ -1515,7 +1513,7 @@ void Actor_Init()
 		{
 			0x48, 0x8B, 0xCE, //mov rcx,rsi
 		};
-		auto func = CreateFunction(WriteMotionData, (appBaseAddr + 0x1EFC8D), true, true, sizeof(sect0), sizeof(sect1));
+		auto func = CreateFunction(WriteUpperBodyMotionData, (appBaseAddr + 0x1EFC8D), true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
 		WriteJump((appBaseAddr + 0x1EFC86), func.addr, 2);
@@ -1992,13 +1990,13 @@ void Actor_Init()
 		constexpr byte8 sect0[] =
 		{
 			0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rbx+0000B8C0],01
-			0x75, 0x03,                               //jne short
+			0x74, 0x03,                               //je short
 			0x66, 0x31, 0xC0,                         //xor ax,ax
 			0x66, 0x89, 0x83, 0x0A, 0x75, 0x00, 0x00, //mov [rbx+0000750A],ax
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBEA4), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newDisableLeftStick);
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEnableLeftStick);
 		WriteJump((appBaseAddr + 0x1EBE9D), func.addr, 2);
 		/*
 		dmc3.exe+1EBE9D - 66 89 83 0A750000   - mov [rbx+0000750A],ax
