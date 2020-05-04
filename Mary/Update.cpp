@@ -276,12 +276,17 @@ void ResetMotionState(T & actorData)
 		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
 	}
 
+	actorData.var_3E00[0] = 2;
+
+
+
+
 	//if (actorData.state & STATE_ON_FLOOR)
 	{
-		actorData.var_3E00[0] = 1;
-		actorData.var_3E00[1] = 0;
-		actorData.var_3E00[2] = 1;
-		actorData.var_3E00[3] = 0;
+		//actorData.var_3E00[0] = 1;
+		//actorData.var_3E00[1] = 0;
+		//actorData.var_3E00[2] = 1;
+		//actorData.var_3E00[3] = 0;
 	}
 	//else
 	//{
@@ -294,7 +299,7 @@ void ResetMotionState(T & actorData)
 
 
 
-	memset(actorData.var_3E10, 0, 32);
+	//memset(actorData.var_3E10, 0, 32);
 }
 
 template <typename T>
@@ -475,6 +480,25 @@ void DanteYamato(byte8 * baseAddr)
 	// Toddler Time!
 
 
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+	
+
+	#pragma region Parent Control
+
 	// Disable the melee attack button as long as Yamato is selected.
 
 	if (IsYamatoSelected(parentActorData))
@@ -489,9 +513,174 @@ void DanteYamato(byte8 * baseAddr)
 		parentActorData.newButtonMask &= ~GAMEPAD_A;
 		parentActorData.newButtonMask &= ~GAMEPAD_B;
 		parentActorData.newButtonMask &= ~GAMEPAD_X;
+		parentActorData.newButtonMask &= ~GAMEPAD_Y;
 		parentActorData.newButtonMask &= ~GAMEPAD_RIGHT_SHOULDER;
 		parentActorData.newEnableLeftStick = false;
 	}
+
+	// Re-enable buttons at certain points to make actions accessible again.
+
+	if (IsWeaponActive(childActorData))
+	{
+		// Melee Attack
+
+		if (childActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			// Only enable if we no longer want Yamato.
+
+			if (!IsYamatoSelected(parentActorData))
+			{
+				parentActorData.newButtonMask |= GAMEPAD_Y;
+				parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
+				parentActorData.newEnableLeftStick = true;
+			}
+		}
+
+		// Jump Roll
+
+		if (childActorData.nextActionRequestPolicy[5] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			parentActorData.newButtonMask |= GAMEPAD_A;
+			parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
+			parentActorData.newEnableLeftStick = true;
+		}
+
+		// Trickster
+
+		if (childActorData.nextActionRequestPolicy[8] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			parentActorData.newButtonMask |= GAMEPAD_B;
+			parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
+			parentActorData.newEnableLeftStick = true;
+		}
+
+		// Move
+
+		if (childActorData.nextActionRequestPolicy[15] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			parentActorData.newEnableLeftStick = true;
+		}
+	}
+
+
+
+
+
+	// Reset Motion State when parent accesses certain actions while Yamato is still active.
+
+	if (IsWeaponActive(childActorData))
+	{
+
+		// Melee Attack
+
+		if (childActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			if (parentActorData.buttons[2] & GAMEPAD_Y)
+			{
+				ResetMotionState(childActorData);
+			}
+		}
+
+
+		// Jump
+
+		if (childActorData.nextActionRequestPolicy[5] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			if (parentActorData.buttons[2] & GAMEPAD_A)
+			{
+				ResetMotionState(childActorData);
+			}
+		}
+
+
+
+
+
+		// Trickster
+
+		if (childActorData.nextActionRequestPolicy[8] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			if (parentActorData.buttons[2] & GAMEPAD_B)
+			{
+				ResetMotionState(childActorData);
+			}
+		}
+
+
+		// Move
+
+		if (childActorData.nextActionRequestPolicy[15] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			if (parentActorData.leftStickRadius >= LEFT_STICK_DEADZONE)
+			{
+				ResetMotionState(childActorData);
+			}
+
+
+
+		}
+
+
+
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	// If Yamato is selected, but not active re-enable buttons.
+
+	if (IsYamatoSelected(parentActorData) && !IsWeaponActive(childActorData))
+	{
+		parentActorData.newButtonMask |= GAMEPAD_A;
+		parentActorData.newButtonMask |= GAMEPAD_B;
+		parentActorData.newButtonMask |= GAMEPAD_X;
+		parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
+		parentActorData.newEnableLeftStick = true;
+	}
+
+	// If Yamato is no longer selected, check if the child's weapon is still active.
+
+
+	// If Yamato is no longer selected and not active, re-enable buttons.
+
+	if (!IsYamatoSelected(parentActorData))
+	{
+		//if (IsWeaponActive(childActorData))
+		//{
+		//	if (childActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		//	{
+		//		parentActorData.newButtonMask |= GAMEPAD_A;
+		//		parentActorData.newButtonMask |= GAMEPAD_B;
+		//		parentActorData.newButtonMask |= GAMEPAD_X;
+		//		parentActorData.newButtonMask |= GAMEPAD_Y;
+		//		parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
+		//		parentActorData.newEnableLeftStick = true;
+		//	}
+		//}
+		//else
+		if (!IsWeaponActive(childActorData))
+		{
+			parentActorData.newButtonMask |= GAMEPAD_A;
+			parentActorData.newButtonMask |= GAMEPAD_B;
+			parentActorData.newButtonMask |= GAMEPAD_X;
+			parentActorData.newButtonMask |= GAMEPAD_Y;
+			parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
+			parentActorData.newEnableLeftStick = true;
+		}
+	}
+
+	#pragma endregion
+
+	#pragma region Child Control
 
 	// If Yamato is selected, check if the parent's weapon is still active.
 
@@ -514,48 +703,6 @@ void DanteYamato(byte8 * baseAddr)
 		}
 	}
 
-	// If Yamato is selected, but not active re-enable buttons.
-
-	if (IsYamatoSelected(parentActorData) && !IsWeaponActive(childActorData))
-	{
-		parentActorData.newButtonMask |= GAMEPAD_A;
-		parentActorData.newButtonMask |= GAMEPAD_B;
-		parentActorData.newButtonMask |= GAMEPAD_X;
-		parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
-		parentActorData.newEnableLeftStick = true;
-	}
-
-	// If Yamato is no longer selected, check if the child's weapon is still active.
-
-	if (!IsYamatoSelected(parentActorData))
-	{
-		if (IsWeaponActive(childActorData))
-		{
-			if (childActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
-			{
-				parentActorData.newButtonMask |= GAMEPAD_A;
-				parentActorData.newButtonMask |= GAMEPAD_B;
-				parentActorData.newButtonMask |= GAMEPAD_X;
-				parentActorData.newButtonMask |= GAMEPAD_Y;
-				parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
-				parentActorData.newEnableLeftStick = true;
-			}
-		}
-		else
-		{
-			parentActorData.newButtonMask |= GAMEPAD_A;
-			parentActorData.newButtonMask |= GAMEPAD_B;
-			parentActorData.newButtonMask |= GAMEPAD_X;
-			parentActorData.newButtonMask |= GAMEPAD_Y;
-			parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
-			parentActorData.newEnableLeftStick = true;
-		}
-	}
-
-
-
-
-
 	// If Yamato is no longer selected disable conflicting buttons.
 
 	if (!IsYamatoSelected(parentActorData))
@@ -565,13 +712,18 @@ void DanteYamato(byte8 * baseAddr)
 		childActorData.newEnableLeftStick = false;
 	}
 
+	#pragma endregion
 
 
 
+	// What do I want to do, need and what are the requirements, where to put it?
 
-
-
-
+	// @Bug: Trickster can't access Dash while Yamato is active.
+	// @Bug: Motion state is not reset when accessing another weapon while Yamato is active.
+	// This also has to be applied to all accessible actions.
+	// @Bug: Weapons do not hide immediately when active and accessing Yamato.
+	// Possibly linked to missing reset motion state.
+	// @Research: More aerial stuff.
 
 
 
