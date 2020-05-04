@@ -928,25 +928,31 @@ struct PS2_GAMEPAD
 
 // @Todo: Change to ENGINE_GAMEPAD.
 
-struct CAPCOM_GAMEPAD
+struct ENGINE_GAMEPAD
 {
-	byte16   buttons[4];
+	byte16 buttons[4];
 	uint16 buttonsTimer[2];
 	uint16 rightStickDirection[4];
 	uint16 rightStickTimer[2];
-	uint16 rightStickPosition[2];
+	uint16 rightStickPosition;
+	uint16 rightStickRadius;
 	uint16 leftStickDirection[4];
 	uint16 leftStickTimer[2];
-	uint16 leftStickPosition[2];
+	uint16 leftStickPosition;
+	uint16 leftStickRadius;
 };
 
 
+//constexpr uint64 gamepadSize = sizeof(CAPCOM_GAMEPAD);
 
 
-
-
-
-
+//static_assert(offsetof(ENGINE_GAMEPAD, rightStickPosition) == 0x18);
+//static_assert(offsetof(ENGINE_GAMEPAD, rightStickRadius) == 0x1A);
+//
+//static_assert(offsetof(ENGINE_GAMEPAD, leftStickPosition) == 0x28);
+//static_assert(offsetof(ENGINE_GAMEPAD, leftStickRadius) == 0x2A);
+//
+//
 
 
 

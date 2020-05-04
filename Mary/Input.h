@@ -30,6 +30,23 @@
 //}
 
 
+
+
+
+inline ENGINE_GAMEPAD & GetGamepad(uint8 index)
+{
+	return (reinterpret_cast<ENGINE_GAMEPAD *>(appBaseAddr + 0xD54A10 + 0x550))[index];
+}
+
+
+
+
+
+
+
+
+
+
 inline byte16 GetBinding(uint8 index)
 {
 	return (reinterpret_cast<byte16 *>(appBaseAddr + 0xD6CE80 + 0xA))[index];
