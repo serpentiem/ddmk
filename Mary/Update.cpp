@@ -255,37 +255,37 @@ void ResetMotionState(T & actorData)
 	memset(actorData.var_3E00, 0, 16);
 	memset(actorData.var_3E10, 0, 32);
 
-	
 	actorData.var_3E00[0] = 2;
-	actorData.var_3E00[2] = 1;
-
-
-	//auto & modelData = actorData.modelData[actorData.activeModelIndex];
-
-	//modelData.motion.duration1[BODY_PART_LOWER] = 0;
-	//modelData.motion.duration1[BODY_PART_UPPER] = 0;
-	//modelData.motion.duration2[BODY_PART_LOWER] = 0;
-	//modelData.motion.duration2[BODY_PART_UPPER] = 0;
-	//modelData.motion.timer[BODY_PART_LOWER] = 0;
-	//modelData.motion.timer[BODY_PART_UPPER] = 0;
 }
-
-
 
 template <typename T>
 void TriggerAttack(T & actorData, uint8 index)
 {
 	ResetMotionState(actorData);
 
-	actorData.var_3E00[0] = 17;
-	actorData.var_3E00[1] = 1;
-	actorData.var_3E00[2] = 17;
-	actorData.var_3E00[3] = 17;
+	//actorData.var_3E00[0] = 17;
+	//actorData.var_3E00[1] = 1;
+	//actorData.var_3E00[2] = 17;
+	//actorData.var_3E00[3] = 17;
 
-	actorData.var_3E10[0] = 1;
+	//actorData.var_3E10[0] = 1;
+
+
+	//actorData.permissions = PERMISSION_UPDATE | PERMISSION_INTERACTION_STYLE_ATTACK;
+	//actorData.state |= STATE_BUSY;
 
 	actorData.move = index;
 	actorData.lastMove = 0;
+
+
+	func_1E0800(actorData, 17, 0, 0xFFFFFFFF);
+
+
+
+
+
+
+
 }
 
 
@@ -592,6 +592,12 @@ void DanteYamato(byte8 * baseAddr)
 				{
 					ResetMotionState(childActorData);
 					TriggerAttack(parentActorData, 1);
+
+					//parentActorData.buttons[0] |= GAMEPAD_Y;
+					//parentActorData.buttons[1] |= GAMEPAD_Y;
+					//parentActorData.buttons[2] |= GAMEPAD_Y;
+					//parentActorData.buttons[3] |= GAMEPAD_Y;
+
 
 					parentActorData.newButtonMask |= GAMEPAD_A;
 					parentActorData.newButtonMask |= GAMEPAD_B;

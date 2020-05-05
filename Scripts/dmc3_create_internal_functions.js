@@ -67,8 +67,18 @@ var items =
 	[ 0x1EFB90, "void"   , "byte8 * actorData, uint32 group, uint32 index, float32, uint8, uint8, uint8"                                              , ""                            , "Play motion and update state." ],
 
 
-	
 
+
+
+	[ 0x1E0800, "void", "byte8 * actorData, uint32 index, uint32, uint32", "", "Trigger Attack" ],
+
+
+	
+/*
+dmc3.exe+1E0800 - 48 89 5C 24 08        - mov [rsp+08],rbx { rcx baseAddr
+ }
+
+*/
 
 
 

@@ -21,6 +21,9 @@ var items =
 	[ "motionArchive[32]"               , "byte8 *"                   , 0x38A0                           ],
 	[ "motionData[2]"                   , "MOTION_DATA"               , 0x39B0                           ],
 	[ "motionDataMirror[3]"             , "MOTION_DATA"               , 0x39B4                           ],
+	//[ "[6]"             , "uint8"               , 0x39BA                           ],
+	[ ""             , "uint32"               , 0x39BC                           ],
+	[ "[16]"             , "uint8"               , 0x39C0                           ],
 
 
 

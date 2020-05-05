@@ -33,7 +33,9 @@ struct ACTOR_DATA
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
-	_(22);
+	_(2);
+	uint32 var_39BC; // 0x39BC
+	uint8 var_39C0[16]; // 0x39C0
 	uint32 nextActionRequestPolicy[16]; // 0x39D0
 	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
@@ -170,7 +172,9 @@ struct ACTOR_DATA_DANTE
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
-	_(22);
+	_(2);
+	uint32 var_39BC; // 0x39BC
+	uint8 var_39C0[16]; // 0x39C0
 	uint32 nextActionRequestPolicy[16]; // 0x39D0
 	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
@@ -346,7 +350,9 @@ struct ACTOR_DATA_BOB
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
-	_(22);
+	_(2);
+	uint32 var_39BC; // 0x39BC
+	uint8 var_39C0[16]; // 0x39C0
 	uint32 nextActionRequestPolicy[16]; // 0x39D0
 	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
@@ -483,7 +489,9 @@ struct ACTOR_DATA_LADY
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
-	_(22);
+	_(2);
+	uint32 var_39BC; // 0x39BC
+	uint8 var_39C0[16]; // 0x39C0
 	uint32 nextActionRequestPolicy[16]; // 0x39D0
 	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
@@ -620,7 +628,9 @@ struct ACTOR_DATA_VERGIL
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
 	MOTION_DATA motionDataMirror[3]; // 0x39B4
-	_(22);
+	_(2);
+	uint32 var_39BC; // 0x39BC
+	uint8 var_39C0[16]; // 0x39C0
 	uint32 nextActionRequestPolicy[16]; // 0x39D0
 	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
