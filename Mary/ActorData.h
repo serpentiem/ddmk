@@ -18,7 +18,11 @@ struct ACTOR_DATA
 	uint32 character; // 0x78
 	_(4);
 	vec4 position; // 0x80
-	_(48);
+	_(4);
+	float32 var_94; // 0x94
+	_(12);
+	float32 var_A4; // 0xA4
+	_(24);
 	uint16 direction; // 0xC0
 	_(86);
 	uint8 id; // 0x118
@@ -26,7 +30,10 @@ struct ACTOR_DATA
 	bool isClone; // 0x11C
 	_(3);
 	uint32 visible; // 0x120
-	_(220);
+	_(156);
+	float32 var_1C0; // 0x1C0
+	float32 var_1C4; // 0x1C4
+	_(56);
 	MODEL_DATA modelData[3]; // 0x200
 	_(8224);
 	byte8 * motionArchive[32]; // 0x38A0
@@ -80,7 +87,9 @@ struct ACTOR_DATA
 	_(138);
 	uint8 move; // 0x3FA4
 	uint8 lastMove; // 0x3FA5
-	_(6);
+	_(2);
+	uint8 bufferedMove; // 0x3FA8
+	_(3);
 	uint8 chainCount; // 0x3FAC
 	_(63);
 	byte32 expertise[16]; // 0x3FEC
@@ -142,6 +151,9 @@ struct ACTOR_DATA
 	_(2);
 	bool newSect[8]; // 0xB974
 	bool newSkipPositionUpdate; // 0xB97C
+	bool newEnableMotion; // 0xB97D
+	bool newEnablePermissionUpdate; // 0xB97E
+	bool newIsLeader; // 0xB97F
 
 	operator byte8 *()
 	{
@@ -157,7 +169,11 @@ struct ACTOR_DATA_DANTE
 	uint32 character; // 0x78
 	_(4);
 	vec4 position; // 0x80
-	_(48);
+	_(4);
+	float32 var_94; // 0x94
+	_(12);
+	float32 var_A4; // 0xA4
+	_(24);
 	uint16 direction; // 0xC0
 	_(86);
 	uint8 id; // 0x118
@@ -165,7 +181,10 @@ struct ACTOR_DATA_DANTE
 	bool isClone; // 0x11C
 	_(3);
 	uint32 visible; // 0x120
-	_(220);
+	_(156);
+	float32 var_1C0; // 0x1C0
+	float32 var_1C4; // 0x1C4
+	_(56);
 	MODEL_DATA modelData[3]; // 0x200
 	_(8224);
 	byte8 * motionArchive[32]; // 0x38A0
@@ -219,7 +238,9 @@ struct ACTOR_DATA_DANTE
 	_(138);
 	uint8 move; // 0x3FA4
 	uint8 lastMove; // 0x3FA5
-	_(6);
+	_(2);
+	uint8 bufferedMove; // 0x3FA8
+	_(3);
 	uint8 chainCount; // 0x3FAC
 	_(63);
 	byte32 expertise[16]; // 0x3FEC
@@ -320,6 +341,9 @@ struct ACTOR_DATA_DANTE
 	_(2);
 	bool newSect[8]; // 0xB974
 	bool newSkipPositionUpdate; // 0xB97C
+	bool newEnableMotion; // 0xB97D
+	bool newEnablePermissionUpdate; // 0xB97E
+	bool newIsLeader; // 0xB97F
 
 	operator byte8 *()
 	{
@@ -335,7 +359,11 @@ struct ACTOR_DATA_BOB
 	uint32 character; // 0x78
 	_(4);
 	vec4 position; // 0x80
-	_(48);
+	_(4);
+	float32 var_94; // 0x94
+	_(12);
+	float32 var_A4; // 0xA4
+	_(24);
 	uint16 direction; // 0xC0
 	_(86);
 	uint8 id; // 0x118
@@ -343,7 +371,10 @@ struct ACTOR_DATA_BOB
 	bool isClone; // 0x11C
 	_(3);
 	uint32 visible; // 0x120
-	_(220);
+	_(156);
+	float32 var_1C0; // 0x1C0
+	float32 var_1C4; // 0x1C4
+	_(56);
 	MODEL_DATA modelData[3]; // 0x200
 	_(8224);
 	byte8 * motionArchive[32]; // 0x38A0
@@ -397,7 +428,9 @@ struct ACTOR_DATA_BOB
 	_(138);
 	uint8 move; // 0x3FA4
 	uint8 lastMove; // 0x3FA5
-	_(6);
+	_(2);
+	uint8 bufferedMove; // 0x3FA8
+	_(3);
 	uint8 chainCount; // 0x3FAC
 	_(63);
 	byte32 expertise[16]; // 0x3FEC
@@ -459,6 +492,9 @@ struct ACTOR_DATA_BOB
 	_(2);
 	bool newSect[8]; // 0xB974
 	bool newSkipPositionUpdate; // 0xB97C
+	bool newEnableMotion; // 0xB97D
+	bool newEnablePermissionUpdate; // 0xB97E
+	bool newIsLeader; // 0xB97F
 
 	operator byte8 *()
 	{
@@ -474,7 +510,11 @@ struct ACTOR_DATA_LADY
 	uint32 character; // 0x78
 	_(4);
 	vec4 position; // 0x80
-	_(48);
+	_(4);
+	float32 var_94; // 0x94
+	_(12);
+	float32 var_A4; // 0xA4
+	_(24);
 	uint16 direction; // 0xC0
 	_(86);
 	uint8 id; // 0x118
@@ -482,7 +522,10 @@ struct ACTOR_DATA_LADY
 	bool isClone; // 0x11C
 	_(3);
 	uint32 visible; // 0x120
-	_(220);
+	_(156);
+	float32 var_1C0; // 0x1C0
+	float32 var_1C4; // 0x1C4
+	_(56);
 	MODEL_DATA modelData[3]; // 0x200
 	_(8224);
 	byte8 * motionArchive[32]; // 0x38A0
@@ -536,7 +579,9 @@ struct ACTOR_DATA_LADY
 	_(138);
 	uint8 move; // 0x3FA4
 	uint8 lastMove; // 0x3FA5
-	_(6);
+	_(2);
+	uint8 bufferedMove; // 0x3FA8
+	_(3);
 	uint8 chainCount; // 0x3FAC
 	_(63);
 	byte32 expertise[16]; // 0x3FEC
@@ -598,6 +643,9 @@ struct ACTOR_DATA_LADY
 	_(2);
 	bool newSect[8]; // 0xB974
 	bool newSkipPositionUpdate; // 0xB97C
+	bool newEnableMotion; // 0xB97D
+	bool newEnablePermissionUpdate; // 0xB97E
+	bool newIsLeader; // 0xB97F
 
 	operator byte8 *()
 	{
@@ -613,7 +661,11 @@ struct ACTOR_DATA_VERGIL
 	uint32 character; // 0x78
 	_(4);
 	vec4 position; // 0x80
-	_(48);
+	_(4);
+	float32 var_94; // 0x94
+	_(12);
+	float32 var_A4; // 0xA4
+	_(24);
 	uint16 direction; // 0xC0
 	_(86);
 	uint8 id; // 0x118
@@ -621,7 +673,10 @@ struct ACTOR_DATA_VERGIL
 	bool isClone; // 0x11C
 	_(3);
 	uint32 visible; // 0x120
-	_(220);
+	_(156);
+	float32 var_1C0; // 0x1C0
+	float32 var_1C4; // 0x1C4
+	_(56);
 	MODEL_DATA modelData[3]; // 0x200
 	_(8224);
 	byte8 * motionArchive[32]; // 0x38A0
@@ -675,7 +730,9 @@ struct ACTOR_DATA_VERGIL
 	_(138);
 	uint8 move; // 0x3FA4
 	uint8 lastMove; // 0x3FA5
-	_(6);
+	_(2);
+	uint8 bufferedMove; // 0x3FA8
+	_(3);
 	uint8 chainCount; // 0x3FAC
 	_(63);
 	byte32 expertise[16]; // 0x3FEC
@@ -755,6 +812,9 @@ struct ACTOR_DATA_VERGIL
 	_(2);
 	bool newSect[8]; // 0xB974
 	bool newSkipPositionUpdate; // 0xB97C
+	bool newEnableMotion; // 0xB97D
+	bool newEnablePermissionUpdate; // 0xB97E
+	bool newIsLeader; // 0xB97F
 
 	operator byte8 *()
 	{

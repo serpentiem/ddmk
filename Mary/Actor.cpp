@@ -861,9 +861,11 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 	//sect0:;
 
 
+	auto & gamepad = GetGamepad(0);
+
 
 	{
-		if (!(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
+		if (!(gamepad.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
 		{
 			goto sect0;
 		}
@@ -1486,42 +1488,42 @@ void Actor_Init()
 
 
 
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x66, 0x89, 0xAE, 0xB0, 0x39, 0x00, 0x00, //mov [rsi+000039B0],bp
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xCE, //mov rcx,rsi
-		};
-		auto func = CreateFunction(WriteLowerBodyMotionData, (appBaseAddr + 0x1EFC97), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x1EFC90), func.addr, 2);
-		/*
-		dmc3.exe+1EFC90 - 66 89 AE B0390000       - mov [rsi+000039B0],bp
-		dmc3.exe+1EFC97 - C7 86 C2390000 00000000 - mov [rsi+000039C2],00000000
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x66, 0x89, 0xAE, 0xB2, 0x39, 0x00, 0x00, //mov [rsi+000039B2],bp
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xCE, //mov rcx,rsi
-		};
-		auto func = CreateFunction(WriteUpperBodyMotionData, (appBaseAddr + 0x1EFC8D), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x1EFC86), func.addr, 2);
-		/*
-		dmc3.exe+1EFC86 - 66 89 AE B2390000 - mov [rsi+000039B2],bp
-		dmc3.exe+1EFC8D - 8D 51 01          - lea edx,[rcx+01]
-		*/
-	}
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x66, 0x89, 0xAE, 0xB0, 0x39, 0x00, 0x00, //mov [rsi+000039B0],bp
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCE, //mov rcx,rsi
+	//	};
+	//	auto func = CreateFunction(WriteLowerBodyMotionData, (appBaseAddr + 0x1EFC97), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x1EFC90), func.addr, 2);
+	//	/*
+	//	dmc3.exe+1EFC90 - 66 89 AE B0390000       - mov [rsi+000039B0],bp
+	//	dmc3.exe+1EFC97 - C7 86 C2390000 00000000 - mov [rsi+000039C2],00000000
+	//	*/
+	//}
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x66, 0x89, 0xAE, 0xB2, 0x39, 0x00, 0x00, //mov [rsi+000039B2],bp
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCE, //mov rcx,rsi
+	//	};
+	//	auto func = CreateFunction(WriteUpperBodyMotionData, (appBaseAddr + 0x1EFC8D), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x1EFC86), func.addr, 2);
+	//	/*
+	//	dmc3.exe+1EFC86 - 66 89 AE B2390000 - mov [rsi+000039B2],bp
+	//	dmc3.exe+1EFC8D - 8D 51 01          - lea edx,[rcx+01]
+	//	*/
+	//}
 
 
 

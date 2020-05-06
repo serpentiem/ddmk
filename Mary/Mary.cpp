@@ -1,6 +1,7 @@
 #include "../Core/Core.h"
 
 #include "Actor.h"
+#include "Camera.h"
 #include "Config.h"
 #include "Event.h"
 #include "FMOD.h"
@@ -61,6 +62,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		}
 
 		Actor_Init();
+
+
+		//Camera_Init();
 
 
 

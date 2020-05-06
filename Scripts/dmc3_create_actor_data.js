@@ -13,10 +13,27 @@ var items =
 	[ "init"                            , "bool"                      , 8                                ],
 	[ "character"                       , "uint32"                    , 0x78                             ],
 	[ "position"                        , "vec4"                      , 0x80                             ],
+	[ ""                        , "float32"                      , 0x94                             ],
+	[ ""                        , "float32"                      , 0xA4                             ],
 	[ "direction"                       , "uint16"                    , 0xC0                             ],
 	[ "id"                              , "uint8"                     , 0x118                            ],
 	[ "isClone"                         , "bool"                      , 0x11C                            ], //but has size of uint32.
 	[ "visible"                         , "uint32"                    , 0x120                            ],
+	[ ""                         , "float32"                    , 0x1C0                            ],
+	[ ""                         , "float32"                    , 0x1C4                            ],
+
+
+
+
+
+
+
+
+
+
+
+
+
 	[ "modelData[3]"                    , "MODEL_DATA"                , 0x200                            ],
 	[ "motionArchive[32]"               , "byte8 *"                   , 0x38A0                           ],
 	[ "motionData[2]"                   , "MOTION_DATA"               , 0x39B0                           ],
@@ -64,8 +81,12 @@ var items =
 	[ "maxMagicPoints"                  , "float32"                   , 0x3EBC                           ],
 	[ "cameraDirection"                 , "uint16"                    , 0x3ED8                           ],
 	[ "moveOnly"                        , "bool"                      , 0x3F19                           ],
+
+
 	[ "move"                            , "uint8"                     , 0x3FA4                           ],
 	[ "lastMove"                        , "uint8"                     , 0x3FA5                           ],
+	[ "bufferedMove"                    , "uint8"                     , 0x3FA8                           ],
+
 	[ "chainCount"                      , "uint8"                     , 0x3FAC                           ],
 	[ "expertise[16]"                   , "byte32"                    , 0x3FEC                           ],
 	[ "maxHitPoints"                    , "float32"                   , 0x40EC                           ],
@@ -166,6 +187,9 @@ var extra =
 	[ "newRangedWeaponIndex"  , "uint8"   ],
 	[ "newSect[8]"            , "bool"    ],
 	[ "newSkipPositionUpdate" , "bool"    ],
+	[ "newEnableMotion"       , "bool"    ],
+	[ "newEnablePermissionUpdate"       , "bool"    ],
+	[ "newIsLeader"       , "bool"    ],
 ];
 
 var c = "";

@@ -1972,17 +1972,94 @@ void GUI_Teleporter_Draw()
 		//}
 
 
+		//{
+		//	
+
+		//	
+
+
+		//	GUI_InputEx("group", g_motionGroup);
+		//	GUI_InputEx("index", g_motionIndex);
+		//	GUI_Checkbox("Log", g_logMotionData);
+		//	ImGui::Text("");
+		//}
+
+
+
+
 		{
-			
+			static byte8 lowerBody[0x120] = {};
+			static byte8 upperBody[0x120] = {};
 
-			
+			if (GUI_Button("Save Body State"))
+			{
+				auto baseAddr = Actor_actorBaseAddr[2];
+				auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+
+				auto bottom = reinterpret_cast<byte8 *>(actorData + 0x6950);
+				auto top = reinterpret_cast<byte8 *>(actorData + 0x6A70);
+
+				memcpy(lowerBody, bottom, sizeof(lowerBody));
+				memcpy(upperBody, top, sizeof(upperBody));
+			}
+
+			if (GUI_Button("Write Body State"))
+			{
+				auto baseAddr = Actor_actorBaseAddr[2];
+				auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+
+				auto bottom = reinterpret_cast<byte8 *>(actorData + 0x6950);
+				auto top = reinterpret_cast<byte8 *>(actorData + 0x6A70);
+
+				//memcpy(lowerBody, bottom, sizeof(lowerBody));
+				//memcpy(upperBody, top, sizeof(upperBody));
 
 
-			GUI_InputEx("group", g_motionGroup);
-			GUI_InputEx("index", g_motionIndex);
-			GUI_Checkbox("Log", g_logMotionData);
-			ImGui::Text("");
+				memcpy(bottom, lowerBody, sizeof(lowerBody));
+				memcpy(top, upperBody, sizeof(upperBody));
+
+
+			}
+
+
+
 		}
+
+
+
+
+
+
+
+		{
+			static uint8 move = 0;
+			static uint8 lastMove = 0;
+			GUI_InputEx("Move", move);
+			GUI_InputEx("Last Move", lastMove);
+			if (GUI_Button("Trigger Attack"))
+			{
+				auto baseAddr = Actor_actorBaseAddr[2];
+				auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+				actorData.move = move;
+				actorData.lastMove = lastMove;
+				func_1E0800(actorData, 17, 0, 0xFFFFFFFF);
+			}
+		}
+
+		{
+			if (GUI_Button("Trigger Combo 1 Part 3"))
+			{
+				auto baseAddr = Actor_actorBaseAddr[2];
+				auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+
+
+				func_211100(actorData);
+
+			}
+		}
+
+
+
 
 
 		{

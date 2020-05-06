@@ -73,14 +73,21 @@ var items =
 	[ 0x1E0800, "void", "byte8 * actorData, uint32 index, uint32, uint32", "", "Trigger Attack" ],
 
 
-	
+
+
+	[ 0x211100, "void", "byte8 * actorData", "", "Rebellion Combo 1 Part 3" ],
+
+
+
+	[ 0x1F01F0, "void", "byte8 * actorData, uint32 index", "", "Reset State" ],
+
+
 /*
-dmc3.exe+1E0800 - 48 89 5C 24 08        - mov [rsp+08],rbx { rcx baseAddr
- }
+dmc3.exe+1F01B5 - 48 8B CB              - mov rcx,rbx
+dmc3.exe+1F01B8 - E8 33000000           - call dmc3.exe+1F01F0
 
 */
-
-
+	
 
 
 

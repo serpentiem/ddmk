@@ -4,6 +4,21 @@
 #include "Config.h"
 #include "Vars.h"
 
+
+
+
+
+
+extern byte8 * Camera_followBaseAddr;
+
+
+
+
+
+
+
+
+
 void Camera_Update(CONFIG & config);
 
 
@@ -21,7 +36,7 @@ inline void Camera_ToggleInvertX(bool enable)
 
 
 
-
+void Camera_Init();
 
 
 

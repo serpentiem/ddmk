@@ -17,231 +17,44 @@ bool IsBusy(T & actorData)
 	return false;
 }
 
-#pragma region Reset State 1 to 8
 
-template <typename T>
-void ResetState1(T & actorData)
-{
-
-	
-	Log("ResetState1");
-
-
-	const_for_all(index, 2)
-	{
-		actorData.motionData[index].group = 0;
-		actorData.motionData[index].index = 0;
-	}
-	const_for_all(index, 16)
-	{
-		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
-	}
-	actorData.var_3E00[0] = 1;
-	actorData.var_3E00[1] = 0;
-	actorData.var_3E00[2] = 4;
-	actorData.var_3E00[3] = 0;
-
-	memset(actorData.var_3E10, 0, 32);
-
-	actorData.permissions = 0x1C1B;
-	actorData.state = 1;
-	actorData.lastState = 0;
-}
-
-template <typename T>
-void ResetState2(T & actorData)
-{
-	Log("ResetState2");
-
-	const_for_all(index, 2)
-	{
-		actorData.motionData[index].group = 0;
-		actorData.motionData[index].index = 0;
-	}
-	const_for_all(index, 16)
-	{
-		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
-	}
-	actorData.var_3E00[0] = 1;
-	actorData.var_3E00[1] = 0;
-	actorData.var_3E00[2] = 4;
-	actorData.var_3E00[3] = 0;
-
-	memset(actorData.var_3E10, 0, 32);
-
-	actorData.permissions = 0x1C1B;
-	actorData.state = 1;
-	actorData.lastState = 0;
-}
-
-template <typename T>
-void ResetState3(T & actorData)
-{
-
-	Log("ResetState3");
-
-
-
-	const_for_all(index, 2)
-	{
-		actorData.motionData[index].group = 0;
-		actorData.motionData[index].index = 0;
-	}
-	const_for_all(index, 16)
-	{
-		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
-	}
-	actorData.var_3E00[0] = 1;
-	actorData.var_3E00[1] = 0;
-	actorData.var_3E00[2] = 4;
-	actorData.var_3E00[3] = 0;
-
-	memset(actorData.var_3E10, 0, 32);
-
-	actorData.permissions = 0x1C1B;
-	actorData.state = 1;
-	actorData.lastState = 0;
-}
 
 
 template <typename T>
-void ResetState4(T & actorData)
+void ResetMotionData(T & actorData)
 {
-
-	Log("ResetState4");
-
-	const_for_all(index, 2)
-	{
-		actorData.motionData[index].group = 0;
-		actorData.motionData[index].index = 0;
-	}
-	const_for_all(index, 16)
-	{
-		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
-	}
-	actorData.var_3E00[0] = 1;
-	actorData.var_3E00[1] = 0;
-	actorData.var_3E00[2] = 4;
-	actorData.var_3E00[3] = 0;
-
-	memset(actorData.var_3E10, 0, 32);
-
-	actorData.permissions = 0x1C1B;
-	actorData.state = 1;
-	actorData.lastState = 0;
+	memset(actorData.motionData, 0, 4);
 }
 
-template <typename T>
-void ResetState5(T & actorData)
-{
 
-	Log("ResetState5");
-
-	const_for_all(index, 2)
-	{
-		actorData.motionData[index].group = 0;
-		actorData.motionData[index].index = 0;
-	}
-	const_for_all(index, 16)
-	{
-		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
-	}
-	actorData.var_3E00[0] = 1;
-	actorData.var_3E00[1] = 0;
-	actorData.var_3E00[2] = 4;
-	actorData.var_3E00[3] = 0;
-
-	memset(actorData.var_3E10, 0, 32);
-
-	actorData.permissions = 0x1C1B;
-	actorData.state = 1;
-	actorData.lastState = 0;
-}
-
-template <typename T>
-void ResetState6(T & actorData)
-{
-
-	Log("ResetState6");
-
-	const_for_all(index, 2)
-	{
-		actorData.motionData[index].group = 0;
-		actorData.motionData[index].index = 0;
-	}
-	const_for_all(index, 16)
-	{
-		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
-	}
-	actorData.var_3E00[0] = 1;
-	actorData.var_3E00[1] = 0;
-	actorData.var_3E00[2] = 4;
-	actorData.var_3E00[3] = 0;
-
-	memset(actorData.var_3E10, 0, 32);
-
-	actorData.permissions = 0x1C1B;
-	actorData.state = 1;
-	actorData.lastState = 0;
-}
 
 
 template <typename T>
-void ResetState7(T & actorData)
+void EndMotion(T & actorData)
 {
-
-	Log("ResetState7");
-
-	const_for_all(index, 2)
-	{
-		actorData.motionData[index].group = 0;
-		actorData.motionData[index].index = 0;
-	}
-	const_for_all(index, 16)
-	{
-		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
-	}
-	actorData.var_3E00[0] = 1;
-	actorData.var_3E00[1] = 0;
-	actorData.var_3E00[2] = 4;
-	actorData.var_3E00[3] = 0;
-
-	memset(actorData.var_3E10, 0, 32);
-
-	actorData.permissions = 0x1C1B;
-	actorData.state = 1;
-	actorData.lastState = 0;
+	actorData.var_3E00[0] = 2;
 }
-
 
 template <typename T>
-void ResetState8(T & actorData)
+void EnableControl(T & actorData)
 {
-
-	Log("ResetState8");
-
-	const_for_all(index, 2)
-	{
-		actorData.motionData[index].group = 0;
-		actorData.motionData[index].index = 0;
-	}
-	const_for_all(index, 16)
-	{
-		actorData.nextActionRequestPolicy[index] = NEXT_ACTION_REQUEST_POLICY_IGNORE;
-	}
-	actorData.var_3E00[0] = 1;
-	actorData.var_3E00[1] = 0;
-	actorData.var_3E00[2] = 4;
-	actorData.var_3E00[3] = 0;
-
-	memset(actorData.var_3E10, 0, 32);
-
-	actorData.permissions = 0x1C1B;
-	actorData.state = 1;
-	actorData.lastState = 0;
+	actorData.newButtonMask = 0xFFFF;
+	actorData.newEnableLeftStick = true;
 }
 
-#pragma endregion
+template <typename T>
+void DisableControl(T & actorData)
+{
+	actorData.newButtonMask = 0;
+	actorData.newEnableLeftStick = false;
+}
+
+template <typename T1, typename T2>
+void CopyPosition(T1 & dest, T2 & addr)
+{
+	dest.position = addr.position;
+	dest.direction = addr.direction;
+}
 
 
 
@@ -250,42 +63,49 @@ void ResetState8(T & actorData)
 template <typename T>
 void ResetMotionState(T & actorData)
 {
-	memset(actorData.motionData, 0, 4);
-	memset(actorData.nextActionRequestPolicy, 0, 64);
-	memset(actorData.var_3E00, 0, 16);
-	memset(actorData.var_3E10, 0, 32);
+	auto & modelData = actorData.modelData[actorData.activeModelIndex];
+	modelData.motion.duration1[BODY_PART_LOWER] = 0;
+	modelData.motion.duration1[BODY_PART_UPPER] = 0;
+	modelData.motion.duration2[BODY_PART_LOWER] = 0;
+	modelData.motion.duration2[BODY_PART_UPPER] = 0;
+	modelData.motion.timer[BODY_PART_LOWER] = 0;
+	modelData.motion.timer[BODY_PART_UPPER] = 0;
 
-	actorData.var_3E00[0] = 2;
+	memset(actorData.motionData, 0, 104);
+	memset(actorData.var_3E00, 0, 48);
+
+
+	// air only
+	//actorData.var_3E00[0] = 1; // Update
+	//actorData.var_3E00[2] = 1; // Play
+
+	// 1 update
+	// 2 end
+
+	actorData.var_3E00[0] = 2; // End
+	//actorData.var_3E00[2] = 1; // Play
+
+
+
+
+	
+	
+	//actorData.move = 0;
+	//actorData.lastMove = 0;
+	//actorData.bufferedMove = 0;
+	//func_1F01F0(actorData, 1);
+	//return;
+	//actorData.var_3E00[1] = 2;
+	//actorData.var_3E00[2] = 2;
+	//actorData.var_3E00[3] = 2;
 }
 
 template <typename T>
 void TriggerAttack(T & actorData, uint8 index)
 {
-	ResetMotionState(actorData);
-
-	//actorData.var_3E00[0] = 17;
-	//actorData.var_3E00[1] = 1;
-	//actorData.var_3E00[2] = 17;
-	//actorData.var_3E00[3] = 17;
-
-	//actorData.var_3E10[0] = 1;
-
-
-	//actorData.permissions = PERMISSION_UPDATE | PERMISSION_INTERACTION_STYLE_ATTACK;
-	//actorData.state |= STATE_BUSY;
-
 	actorData.move = index;
 	actorData.lastMove = 0;
-
-
 	func_1E0800(actorData, 17, 0, 0xFFFFFFFF);
-
-
-
-
-
-
-
 }
 
 
@@ -399,24 +219,25 @@ bool IsYamatoSelected(T & actorData)
 
 
 
-enum TILT_DIRECTION
-{
-	TILT_DIRECTION_VOID,
-	TILT_DIRECTION_UP,
-	TILT_DIRECTION_RIGHT,
-	TILT_DIRECTION_DOWN,
-	TILT_DIRECTION_LEFT,
-};
-
-
-
-
-
-template <typename T>
-uint8 GetRelativeTiltDirection(T & actorData)
-{
-	return 0;
-}
+//enum TILT_DIRECTION
+//{
+//	TILT_DIRECTION_VOID,
+//	TILT_DIRECTION_UP,
+//	TILT_DIRECTION_RIGHT,
+//	TILT_DIRECTION_DOWN,
+//	TILT_DIRECTION_LEFT,
+//};
+//
+//
+//
+//
+//
+//template <typename T>
+//uint8 GetRelativeTiltDirection(T & actorData)
+//{
+//	return 0;
+//}
+//
 
 
 
@@ -426,6 +247,11 @@ uint8 GetRelativeTiltDirection(T & actorData)
 
 void DanteYamato(byte8 * baseAddr)
 {
+	#define OnceEnable(dest, index) dest.newSect[index] = true
+	#define OnceDisable(dest, index) dest.newSect[index] = false
+	#define OnceStart(dest, index) if (dest.newSect[index]) { OnceDisable(dest, index)
+	#define OnceEnd }
+
 	auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
 	if (parentActorData.character != CHAR_DANTE)
 	{
@@ -444,98 +270,49 @@ void DanteYamato(byte8 * baseAddr)
 	{
 		return;
 	}
-
 	auto & gamepad = GetGamepad(0);
 
 
 
-	// Update
-
-
-	#define OnceEnable(dest, index) dest.newSect[index] = true
-	#define OnceDisable(dest, index) dest.newSect[index] = false
-	#define OnceStart(dest, index) if (dest.newSect[index]) { OnceDisable(dest, index)
-	#define OnceEnd }
-
-	#pragma region Update Position
-
-	if (IsWeaponActive(childActorData))
-	{
-		parentActorData.position = childActorData.position;
-		parentActorData.direction = childActorData.direction;
-	}
-	else
+	if (parentActorData.newIsLeader)
 	{
 		childActorData.position = parentActorData.position;
 		childActorData.direction = parentActorData.direction;
 	}
 
-	#pragma endregion
-
-
-
-
-	auto EnableParentButtons = [&]()
+	if (childActorData.newIsLeader)
 	{
-		parentActorData.newButtonMask |= GAMEPAD_A;
-		parentActorData.newButtonMask |= GAMEPAD_B;
-		parentActorData.newButtonMask |= GAMEPAD_X;
-		parentActorData.newButtonMask |= GAMEPAD_Y;
-		parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
-		parentActorData.newEnableLeftStick = true;
-	};
-	auto DisableParentButtons = [&]()
-	{
-		parentActorData.newButtonMask &= ~GAMEPAD_A;
-		parentActorData.newButtonMask &= ~GAMEPAD_B;
-		parentActorData.newButtonMask &= ~GAMEPAD_X;
-		parentActorData.newButtonMask &= ~GAMEPAD_Y;
-		parentActorData.newButtonMask &= ~GAMEPAD_RIGHT_SHOULDER;
-		parentActorData.newEnableLeftStick = false;
-	};
-
-	
+		parentActorData.position = childActorData.position;
+		parentActorData.direction = childActorData.direction;
+	}
 
 
 
 
-	// Disable melee attack button as long as Yamato is selected.
 
 
-	
+	//if (IsWeaponActive(childActorData))
 
 
-	// Manage Buttons
+
+
+	// Disable always immediately.
+	// Enable only when conditions are met.
 
 	// Parent
 
 	if (IsYamatoSelected(parentActorData))
 	{
-		parentActorData.newButtonMask &= ~GAMEPAD_Y;
-	}
-
-	if (IsWeaponActive(childActorData))
-	{
-		parentActorData.newButtonMask &= ~GAMEPAD_A;
-		parentActorData.newButtonMask &= ~GAMEPAD_B;
-		parentActorData.newButtonMask &= ~GAMEPAD_X;
-		parentActorData.newButtonMask &= ~GAMEPAD_RIGHT_SHOULDER;
+		parentActorData.newButtonMask = 0;
 		parentActorData.newEnableLeftStick = false;
-	}
-	else
-	{
-		parentActorData.newButtonMask |= GAMEPAD_A;
-		parentActorData.newButtonMask |= GAMEPAD_B;
-		parentActorData.newButtonMask |= GAMEPAD_X;
-		parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
-		parentActorData.newEnableLeftStick = true;
 	}
 
 	if (!IsYamatoSelected(parentActorData))
 	{
 		if (!IsWeaponActive(childActorData))
 		{
-			parentActorData.newButtonMask |= GAMEPAD_Y;
+			parentActorData.newButtonMask = 0xFFFF;
+			parentActorData.newEnableLeftStick = true;
 		}
 	}
 
@@ -545,7 +322,6 @@ void DanteYamato(byte8 * baseAddr)
 		{
 			if (childActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
 			{
-				// Stinger
 				if
 				(
 					(gamepad.buttons[2] & GAMEPAD_RIGHT_SHOULDER) &&
@@ -553,76 +329,81 @@ void DanteYamato(byte8 * baseAddr)
 					(gamepad.buttons[2] & GAMEPAD_Y)
 				)
 				{
-					ResetMotionState(childActorData);
-					TriggerAttack(parentActorData, 8);
+					EndMotion(childActorData);
 
-					parentActorData.newButtonMask |= GAMEPAD_A;
-					parentActorData.newButtonMask |= GAMEPAD_B;
-					parentActorData.newButtonMask |= GAMEPAD_X;
-					parentActorData.newButtonMask |= GAMEPAD_Y;
-					parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
-					parentActorData.newEnableLeftStick = true;
+					EnableControl(parentActorData);
 
-					goto MeleeAttackEnd;
+					//Camera_followBaseAddr = parentActorData;
+
+
+					childActorData.newIsLeader = false;
+					parentActorData.newIsLeader = true;
+
+
+
+					if (parentActorData.state & STATE_ON_FLOOR)
+					{
+						TriggerAttack(parentActorData, 8); // Stinger
+					}
 				}
-
-				// High Time
-				if
+				else if
 				(
 					(gamepad.buttons[2] & GAMEPAD_RIGHT_SHOULDER) &&
 					(GetRelativeTiltDirection(parentActorData) == TILT_DIRECTION_DOWN) &&
 					(gamepad.buttons[2] & GAMEPAD_Y)
 				)
 				{
-					ResetMotionState(childActorData);
-					TriggerAttack(parentActorData, 10);
+					EndMotion(childActorData);
 
-					parentActorData.newButtonMask |= GAMEPAD_A;
-					parentActorData.newButtonMask |= GAMEPAD_B;
-					parentActorData.newButtonMask |= GAMEPAD_X;
-					parentActorData.newButtonMask |= GAMEPAD_Y;
-					parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
-					parentActorData.newEnableLeftStick = true;
+					EnableControl(parentActorData);
 
-					goto MeleeAttackEnd;
+					//Camera_followBaseAddr = parentActorData;
+
+					childActorData.newIsLeader = false;
+					parentActorData.newIsLeader = true;
+
+					if (parentActorData.state & STATE_ON_FLOOR)
+					{
+						TriggerAttack(parentActorData, 10); // High Time
+					}
 				}
-
-				// Combo 1 Part 1
-				if (gamepad.buttons[2] & GAMEPAD_Y)
+				else if (gamepad.buttons[2] & GAMEPAD_Y)
 				{
-					ResetMotionState(childActorData);
-					TriggerAttack(parentActorData, 1);
+					EndMotion(childActorData);
 
-					//parentActorData.buttons[0] |= GAMEPAD_Y;
-					//parentActorData.buttons[1] |= GAMEPAD_Y;
-					//parentActorData.buttons[2] |= GAMEPAD_Y;
-					//parentActorData.buttons[3] |= GAMEPAD_Y;
+					EnableControl(parentActorData);
 
+					//Camera_followBaseAddr = parentActorData;
 
-					parentActorData.newButtonMask |= GAMEPAD_A;
-					parentActorData.newButtonMask |= GAMEPAD_B;
-					parentActorData.newButtonMask |= GAMEPAD_X;
-					parentActorData.newButtonMask |= GAMEPAD_Y;
-					parentActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
-					parentActorData.newEnableLeftStick = true;
+					childActorData.newIsLeader = false;
+					parentActorData.newIsLeader = true;
 
-					goto MeleeAttackEnd;
+					if (parentActorData.state & STATE_ON_FLOOR)
+					{
+						TriggerAttack(parentActorData, 1); // Combo 1 Part 1
+					}
+					else
+					{
+						TriggerAttack(parentActorData, 6); // Helm Breaker
+					}
 				}
 			}
-			MeleeAttackEnd:;
 		}
 	}
 
-
-
 	// Child
+
+	if (!IsYamatoSelected(parentActorData))
+	{
+		childActorData.newButtonMask = 0;
+		childActorData.newEnableLeftStick = false;
+	}
 
 	if (IsYamatoSelected(parentActorData))
 	{
 		if (!IsWeaponActive(parentActorData))
 		{
-			childActorData.newButtonMask |= GAMEPAD_Y;
-			childActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
+			childActorData.newButtonMask = 0xFFFF;
 			childActorData.newEnableLeftStick = true;
 		}
 	}
@@ -633,72 +414,73 @@ void DanteYamato(byte8 * baseAddr)
 		{
 			if (parentActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
 			{
-				// Rapid Slash
 				if
 				(
 					(gamepad.buttons[2] & GAMEPAD_RIGHT_SHOULDER) &&
-					(GetRelativeTiltDirection(parentActorData) == TILT_DIRECTION_UP) &&
+					(GetRelativeTiltDirection(childActorData) == TILT_DIRECTION_UP) &&
 					(gamepad.buttons[2] & GAMEPAD_Y)
 				)
 				{
-					ResetMotionState(parentActorData);
-					TriggerAttack(childActorData, 5);
+					EndMotion(parentActorData);
 
-					childActorData.newButtonMask |= GAMEPAD_Y;
-					childActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
-					childActorData.newEnableLeftStick = true;
+					EnableControl(childActorData);
 
-					goto ChildMeleeAttackEnd;
+					//Camera_followBaseAddr = childActorData;
+
+					parentActorData.newIsLeader = false;
+					childActorData.newIsLeader = true;
+					
+
+
+					if (childActorData.state & STATE_ON_FLOOR)
+					{
+						TriggerAttack(childActorData, 5); // Rapid Slash
+					}
 				}
-
-				// High Time
-				if
+				else if
 				(
 					(gamepad.buttons[2] & GAMEPAD_RIGHT_SHOULDER) &&
-					(GetRelativeTiltDirection(parentActorData) == TILT_DIRECTION_DOWN) &&
+					(GetRelativeTiltDirection(childActorData) == TILT_DIRECTION_DOWN) &&
 					(gamepad.buttons[2] & GAMEPAD_Y)
 				)
 				{
-					ResetMotionState(parentActorData);
-					TriggerAttack(childActorData, 7);
+					EndMotion(parentActorData);
 
-					childActorData.newButtonMask |= GAMEPAD_Y;
-					childActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
-					childActorData.newEnableLeftStick = true;
+					EnableControl(childActorData);
 
-					goto ChildMeleeAttackEnd;
+					//Camera_followBaseAddr = childActorData;
+
+					parentActorData.newIsLeader = false;
+					childActorData.newIsLeader = true;
+
+					if (childActorData.state & STATE_ON_FLOOR)
+					{
+						TriggerAttack(childActorData, 7); // High Time
+					}
 				}
-
-				// Combo 1 Part 1
-				if (gamepad.buttons[2] & GAMEPAD_Y)
+				else if (gamepad.buttons[2] & GAMEPAD_Y)
 				{
-					ResetMotionState(parentActorData);
-					TriggerAttack(childActorData, 1);
+					EndMotion(parentActorData);
 
-					childActorData.newButtonMask |= GAMEPAD_Y;
-					childActorData.newButtonMask |= GAMEPAD_RIGHT_SHOULDER;
-					childActorData.newEnableLeftStick = true;
+					EnableControl(childActorData);
 
-					goto ChildMeleeAttackEnd;
+					//Camera_followBaseAddr = childActorData;
+
+					parentActorData.newIsLeader = false;
+					childActorData.newIsLeader = true;
+
+					if (childActorData.state & STATE_ON_FLOOR)
+					{
+						TriggerAttack(childActorData, 1); // Combo 1 Part 1
+					}
+					else
+					{
+						TriggerAttack(childActorData, 11); // Aerial Rave
+					}
 				}
 			}
-			ChildMeleeAttackEnd:;
 		}
 	}
-
-	if (!IsYamatoSelected(parentActorData))
-	{
-		childActorData.newButtonMask &= ~GAMEPAD_Y;
-		childActorData.newButtonMask &= ~GAMEPAD_RIGHT_SHOULDER;
-		childActorData.newEnableLeftStick = false;
-	}
-
-
-
-
-
-
-
 
 	#undef OnceReset
 	#undef OnceEnd
@@ -773,9 +555,13 @@ void MainLoop()
 
 		danteActorData.newButtonMask = 0xFFFF;
 		danteActorData.newEnableLeftStick = true;
+		danteActorData.newEnableMotion = true;
+		danteActorData.newEnablePermissionUpdate = true;
 
 		vergilActorData.newButtonMask = GAMEPAD_Y | GAMEPAD_RIGHT_SHOULDER;
 		vergilActorData.newEnableLeftStick = true;
+		vergilActorData.newEnableMotion = true;
+		vergilActorData.newEnablePermissionUpdate = true;
 		//vergilActorData.newButtonMask = 0;
 		//vergilActorData.newEnableLeftStick = false;
 		
@@ -796,24 +582,185 @@ void Update_Init()
 	Windows_GetTickCount(&savedTickCount);
 
 
-	// Skip Position Update
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, //cmp byte ptr [rcx+0000B8C0],00
-			0x74, 0x01,                               //je short
-			0xC3,                                     //ret
-			0x48, 0x89, 0x5C, 0x24, 0x08,             //mov [rsp+08],rbx
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1FB305), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newSkipPositionUpdate);
-		WriteJump((appBaseAddr + 0x1FB300), func.addr);
-		/*
-		dmc3.exe+1FB300 - 48 89 5C 24 08 - mov [rsp+08],rbx
-		dmc3.exe+1FB305 - 57             - push rdi
-		*/
-	}
+
+
+	//#pragma region Permissions
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x00, //cmp byte ptr [rbx+0000B8C0],00
+	//		0x74, 0x06,                               //je short
+	//		0x89, 0x83, 0x60, 0x3E, 0x00, 0x00,       //mov [rbx+00003E60],eax
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x1E0AC5), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEnablePermissionUpdate);
+	//	WriteJump((appBaseAddr + 0x1E0ABF), func.addr, 1);
+	//	/*
+	//	dmc3.exe+1E0ABF - 89 83 603E0000 - mov [rbx+00003E60],eax
+	//	dmc3.exe+1E0AC5 - 75 25          - jne dmc3.exe+1E0AEC
+	//	*/
+	//}
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, //cmp byte ptr [rcx+0000B8C0],00
+	//		0x74, 0x06,                               //je short
+	//		0x89, 0x91, 0x60, 0x3E, 0x00, 0x00,       //mov [rcx+00003E60],edx
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x1E0B6C), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEnablePermissionUpdate);
+	//	WriteJump((appBaseAddr + 0x1E0B66), func.addr, 1);
+	//	/*
+	//	dmc3.exe+1E0B66 - 89 91 603E0000 - mov [rcx+00003E60],edx
+	//	dmc3.exe+1E0B6C - 8B C2          - mov eax,edx
+	//	*/
+	//}
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, //cmp byte ptr [rcx+0000B8C0],00
+	//		0x74, 0x06,                               //je short
+	//		0x89, 0x91, 0x60, 0x3E, 0x00, 0x00,       //mov [rcx+00003E60],edx
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x1E173E), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEnablePermissionUpdate);
+	//	WriteJump((appBaseAddr + 0x1E1738), func.addr, 1);
+	//	/*
+	//	dmc3.exe+1E1738 - 89 91 603E0000 - mov [rcx+00003E60],edx
+	//	dmc3.exe+1E173E - 8B C2          - mov eax,edx
+	//	*/
+	//}
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00,                   //cmp byte ptr [rcx+0000B8C0],00
+	//		0x74, 0x0A,                                                 //je short
+	//		0xC7, 0x81, 0x60, 0x3E, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, //mov [rcx+00003E60],00000002
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x1E248C), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEnablePermissionUpdate);
+	//	WriteJump((appBaseAddr + 0x1E2482), func.addr, 5);
+	//	/*
+	//	dmc3.exe+1E2482 - C7 81 603E0000 02000000 - mov [rcx+00003E60],00000002
+	//	dmc3.exe+1E248C - E8 8F800100             - call dmc3.exe+1FA520
+	//	*/
+	//}
+	//#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rcx+0000B8C0],01
+	//		0x74, 0x01,                               //je short
+	//		0xC3,                                     //ret
+	//		0x48, 0x89, 0x5C, 0x24, 0x08,             //mov [rsp+08],rbx
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x1EFB95), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEnableMotion);
+	//	WriteJump((appBaseAddr + 0x1EFB90), func.addr);
+	//	/*
+	//	dmc3.exe+1EFB90 - 48 89 5C 24 08 - mov [rsp+08],rbx
+	//	dmc3.exe+1EFB95 - 48 89 6C 24 10 - mov [rsp+10],rbp
+	//	*/
+	//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//// Skip Position Update
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, //cmp byte ptr [rcx+0000B8C0],00
+	//		0x74, 0x01,                               //je short
+	//		0xC3,                                     //ret
+	//		0x48, 0x89, 0x5C, 0x24, 0x08,             //mov [rsp+08],rbx
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x1FB305), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newSkipPositionUpdate);
+	//	WriteJump((appBaseAddr + 0x1FB300), func.addr);
+	//	/*
+	//	dmc3.exe+1FB300 - 48 89 5C 24 08 - mov [rsp+08],rbx
+	//	dmc3.exe+1FB305 - 57             - push rdi
+	//	*/
+	//}
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, //cmp byte ptr [rcx+0000B8C0],00
+	//		0x74, 0x01,                               //je short
+	//		0xC3,                                     //ret
+	//		0x0F, 0xB6, 0x81, 0x09, 0x3F, 0x00, 0x00, //movzx eax,byte ptr [rcx+00003F09]
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x1FCF37), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newSkipPositionUpdate);
+	//	WriteJump((appBaseAddr + 0x1FCF30), func.addr, 2);
+	//	/*
+	//	dmc3.exe+1FCF30 - 0FB6 81 093F0000 - movzx eax,byte ptr [rcx+00003F09]
+	//	dmc3.exe+1FCF37 - 4C 8B C9         - mov r9,rcx
+	//	*/
+	//}
+
+
+
+
+
+
+
+
 
 
 

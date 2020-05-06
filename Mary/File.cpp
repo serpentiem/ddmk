@@ -1,6 +1,6 @@
 #include "File.h"
 
-constexpr bool debug = false;
+constexpr bool debug = true;
 
 CacheFile File_cacheFile[MAX_CACHE_FILE];
 
@@ -162,7 +162,7 @@ void File_AdjustPointers(byte8 * archive)
 			func_1B9FA0((archive + fileOff));
 			if constexpr (debug)
 			{
-				Log("%.16llX", (archive + fileOff));
+				Log("%.4u %.16llX", fileIndex, (archive + fileOff));
 			}
 		}
 		return;

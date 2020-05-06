@@ -58,6 +58,8 @@ typedef void(__fastcall * func_223F50_t)(byte8 * actorData, uint32 index); // Sp
 typedef void(__fastcall * func_223BE0_t)(byte8 * actorData, uint32 index); // Shoot Summoned Sword. Use index 52.
 typedef void(__fastcall * func_1EFB90_t)(byte8 * actorData, uint32 group, uint32 index, float32, uint8, uint8, uint8); // Play motion and update state.
 typedef void(__fastcall * func_1E0800_t)(byte8 * actorData, uint32 index, uint32, uint32); // Trigger Attack
+typedef void(__fastcall * func_211100_t)(byte8 * actorData); // Rebellion Combo 1 Part 3
+typedef void(__fastcall * func_1F01F0_t)(byte8 * actorData, uint32 index); // Reset State
 
 extern func_897B0_t func_897B0;
 extern func_89450_t func_89450;
@@ -114,5 +116,7 @@ extern func_223F50_t func_223F50;
 extern func_223BE0_t func_223BE0;
 extern func_1EFB90_t func_1EFB90;
 extern func_1E0800_t func_1E0800;
+extern func_211100_t func_211100;
+extern func_1F01F0_t func_1F01F0;
 
 void Internal_Init();
