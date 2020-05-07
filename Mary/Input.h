@@ -24,13 +24,14 @@ inline byte16 GetBinding(uint8 index)
 
 inline uint8 GetRelativeTiltDirection(byte8 * baseAddr)
 {
+	auto & gamepad = GetGamepad(0);
 	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-	if (actorData.leftStickRadius < 52) // 66 for camera.
+	uint16 relativeTilt = 0;
+	if (gamepad.leftStickRadius < LEFT_STICK_DEADZONE)
 	{
 		return 0;
 	}
-	auto & gamepad = GetGamepad(0);
-	uint16 relativeTilt = (actorData.actorCameraDirection - gamepad.leftStickPosition);
+	relativeTilt = (actorData.actorCameraDirection - gamepad.leftStickPosition);
 	{
 		uint16 value = (relativeTilt - 0x6000);
 		if (value <= 0x4000)

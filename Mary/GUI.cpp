@@ -1961,6 +1961,9 @@ void GUI_Teleporter_Draw()
 	{
 
 
+		{
+			GUI_Input("Relative Tilt Direction", g_relativeTiltDirection);
+		}
 
 		//DrawRelativeTilt();
 
@@ -2040,8 +2043,8 @@ void GUI_Teleporter_Draw()
 			{
 				auto baseAddr = Actor_actorBaseAddr[2];
 				auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-				actorData.move = move;
-				actorData.lastMove = lastMove;
+				actorData.action = move;
+				actorData.lastAction = lastMove;
 				func_1E0800(actorData, 17, 0, 0xFFFFFFFF);
 			}
 		}

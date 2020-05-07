@@ -85,10 +85,10 @@ struct ACTOR_DATA
 	_(63);
 	bool moveOnly; // 0x3F19
 	_(138);
-	uint8 move; // 0x3FA4
-	uint8 lastMove; // 0x3FA5
+	uint8 action; // 0x3FA4
+	uint8 lastAction; // 0x3FA5
 	_(2);
-	uint8 bufferedMove; // 0x3FA8
+	uint8 bufferedAction; // 0x3FA8
 	_(3);
 	uint8 chainCount; // 0x3FAC
 	_(63);
@@ -236,10 +236,10 @@ struct ACTOR_DATA_DANTE
 	_(63);
 	bool moveOnly; // 0x3F19
 	_(138);
-	uint8 move; // 0x3FA4
-	uint8 lastMove; // 0x3FA5
+	uint8 action; // 0x3FA4
+	uint8 lastAction; // 0x3FA5
 	_(2);
-	uint8 bufferedMove; // 0x3FA8
+	uint8 bufferedAction; // 0x3FA8
 	_(3);
 	uint8 chainCount; // 0x3FAC
 	_(63);
@@ -426,10 +426,10 @@ struct ACTOR_DATA_BOB
 	_(63);
 	bool moveOnly; // 0x3F19
 	_(138);
-	uint8 move; // 0x3FA4
-	uint8 lastMove; // 0x3FA5
+	uint8 action; // 0x3FA4
+	uint8 lastAction; // 0x3FA5
 	_(2);
-	uint8 bufferedMove; // 0x3FA8
+	uint8 bufferedAction; // 0x3FA8
 	_(3);
 	uint8 chainCount; // 0x3FAC
 	_(63);
@@ -577,10 +577,10 @@ struct ACTOR_DATA_LADY
 	_(63);
 	bool moveOnly; // 0x3F19
 	_(138);
-	uint8 move; // 0x3FA4
-	uint8 lastMove; // 0x3FA5
+	uint8 action; // 0x3FA4
+	uint8 lastAction; // 0x3FA5
 	_(2);
-	uint8 bufferedMove; // 0x3FA8
+	uint8 bufferedAction; // 0x3FA8
 	_(3);
 	uint8 chainCount; // 0x3FAC
 	_(63);
@@ -728,10 +728,10 @@ struct ACTOR_DATA_VERGIL
 	_(63);
 	bool moveOnly; // 0x3F19
 	_(138);
-	uint8 move; // 0x3FA4
-	uint8 lastMove; // 0x3FA5
+	uint8 action; // 0x3FA4
+	uint8 lastAction; // 0x3FA5
 	_(2);
-	uint8 bufferedMove; // 0x3FA8
+	uint8 bufferedAction; // 0x3FA8
 	_(3);
 	uint8 chainCount; // 0x3FAC
 	_(63);

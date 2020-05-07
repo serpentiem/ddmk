@@ -95,7 +95,10 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Update_Init();
 
 
-		ToggleUpdateWeapon(true);
+		//ToggleUpdateWeapon(true);
+
+
+
 
 		//// Order is required.
 		//System_Memory_Init();

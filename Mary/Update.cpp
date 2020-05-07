@@ -7,24 +7,68 @@ uint64 savedTickCount      = 0;
 uint64 g_mainLoopCounter = 0;
 uint64 g_actorLoopCounter = 0;
 
-template <typename T>
-bool IsBusy(T & actorData)
+
+uint8 g_relativeTiltDirection = 0;
+
+
+
+uint8 lockOnForwardMeleeAttackDante[5][2] = {};
+uint8 lockOnBackMeleeAttackDante   [5][2] = {};
+uint8 meleeAttackDante             [5][2] =
 {
-	if (actorData.state & STATE_BUSY)
-	{
-		return true;
-	}
-	return false;
-}
+	{ ACTION_DANTE_REBELLION_COMBO_1_PART_1, ACTION_DANTE_REBELLION_HELM_BREAKER },
+};
+
+uint8 lockOnForwardSwordmasterDante[5][2] = {};
+uint8 lockOnBackSwordmasterDante   [5][2] = {};
+uint8 swordmasterDante             [5][2] = {};
+
+uint8 lockOnForwardGunslingerDante[5][2] = {};
+uint8 lockOnBackGunslingerDante   [5][2] = {};
+uint8 gunslingerDante             [5][2] = {};
+
+uint8 lockOnForwardRoyalguardDante[2] = {};
+uint8 lockOnBackRoyalguardDante   [2] = {};
+uint8 royalguardDante             [2] = {};
+
+uint8 lockOnForwardTricksterDante[2] = {};
+uint8 lockOnBackTricksterDante   [2] = {};
+uint8 tricksterDante             [2] = {};
+
+uint8 lockOnForwardRangedAttackDante[5][2] = {};
+uint8 lockOnBackRangedAttackDante   [5][2] = {};
+uint8 rangedAttackDante             [5][2] = {};
 
 
 
 
-template <typename T>
-void ResetMotionData(T & actorData)
-{
-	memset(actorData.motionData, 0, 4);
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -50,61 +94,50 @@ void DisableControl(T & actorData)
 }
 
 template <typename T1, typename T2>
-void CopyPosition(T1 & dest, T2 & addr)
+void CopyPosition(T1 & target, T2 & source)
 {
-	dest.position = addr.position;
-	dest.direction = addr.direction;
+	target.position = source.position;
+	target.direction = source.direction;
+}
+
+template <typename T>
+void SetLeader(T & actorData)
+{
+
+
+	MessageBoxA(0, "SetLeader", 0, 0);
+
+	actorData.newIsLeader = true;
+	{
+		auto parentBaseAddr = actorData.newParentBaseAddr;
+		if (!parentBaseAddr)
+		{
+			goto sect0;
+		}
+		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(parentBaseAddr);
+		parentActorData.newIsLeader = false;
+	}
+	sect0:;
+	const_for_all(index, 4)
+	{
+		auto childBaseAddr = actorData.newChildBaseAddr[index];
+		if (!childBaseAddr)
+		{
+			continue;
+		}
+		auto & childActorData = *reinterpret_cast<ACTOR_DATA *>(childBaseAddr);
+		childActorData.newIsLeader = false;
+	}
 }
 
 
 
 
-
 template <typename T>
-void ResetMotionState(T & actorData)
+__declspec(deprecated("Use bufferedAction instead.")) void TriggerAttack(T & actorData, uint8 index)
 {
-	auto & modelData = actorData.modelData[actorData.activeModelIndex];
-	modelData.motion.duration1[BODY_PART_LOWER] = 0;
-	modelData.motion.duration1[BODY_PART_UPPER] = 0;
-	modelData.motion.duration2[BODY_PART_LOWER] = 0;
-	modelData.motion.duration2[BODY_PART_UPPER] = 0;
-	modelData.motion.timer[BODY_PART_LOWER] = 0;
-	modelData.motion.timer[BODY_PART_UPPER] = 0;
-
-	memset(actorData.motionData, 0, 104);
-	memset(actorData.var_3E00, 0, 48);
-
-
-	// air only
-	//actorData.var_3E00[0] = 1; // Update
-	//actorData.var_3E00[2] = 1; // Play
-
-	// 1 update
-	// 2 end
-
-	actorData.var_3E00[0] = 2; // End
-	//actorData.var_3E00[2] = 1; // Play
-
-
-
-
-	
-	
-	//actorData.move = 0;
-	//actorData.lastMove = 0;
-	//actorData.bufferedMove = 0;
-	//func_1F01F0(actorData, 1);
-	//return;
-	//actorData.var_3E00[1] = 2;
-	//actorData.var_3E00[2] = 2;
-	//actorData.var_3E00[3] = 2;
-}
-
-template <typename T>
-void TriggerAttack(T & actorData, uint8 index)
-{
-	actorData.move = index;
-	actorData.lastMove = 0;
+	actorData.action = index;
+	actorData.lastAction = 0;
 	func_1E0800(actorData, 17, 0, 0xFFFFFFFF);
 }
 
@@ -128,57 +161,6 @@ void TriggerAttack(T & actorData, uint8 index)
 
 
 
-
-
-
-template <typename T>
-void ResetPermissions(T & actorData)
-{
-	if (actorData.state & STATE_ON_FLOOR)
-	{
-		actorData.permissions = 0x1C1B;
-	}
-	else
-	{
-		actorData.permissions = 0xC08;
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-template <typename T>
-void SetAttackState(T & actorData)
-{
-	actorData.var_3E00[0] = 0x11;
-	actorData.var_3E00[1] = 1;
-	actorData.var_3E00[2] = 0x11;
-	actorData.var_3E00[3] = 0x11;
-
-	actorData.var_3E10[0] = 1;
-
-	actorData.permissions = 0x401;
-	actorData.state = 0x10001;
-	actorData.lastState = 1;
-}
-
 inline void EnableYamato(ACTOR_DATA_VERGIL & actorData)
 {
 	if (actorData.newMeleeWeaponMap[0] != WEAPON_VERGIL_YAMATO)
@@ -197,15 +179,7 @@ inline void DisableYamato(ACTOR_DATA_VERGIL & actorData)
 	}
 }
 
-template <typename T>
-bool WantsYamato(T & actorData)
-{
-	if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] == WEAPON_VERGIL_YAMATO)
-	{
-		return true;
-	}
-	return false;
-}
+
 
 template <typename T>
 bool IsYamatoSelected(T & actorData)
@@ -219,25 +193,407 @@ bool IsYamatoSelected(T & actorData)
 
 
 
-//enum TILT_DIRECTION
+
+
+
+
+
+//enum EVENT
 //{
-//	TILT_DIRECTION_VOID,
-//	TILT_DIRECTION_UP,
-//	TILT_DIRECTION_RIGHT,
-//	TILT_DIRECTION_DOWN,
-//	TILT_DIRECTION_LEFT,
+//	EVENT_ENABLE_YAMATO,
 //};
 //
 //
+//typedef void(__fastcall * ParentChildFunc_t)(byte8 *, byte8 *);
 //
 //
 //
-//template <typename T>
-//uint8 GetRelativeTiltDirection(T & actorData)
+//template <typename T1, typename T2, typename T3 = void>
+//struct Pair
 //{
-//	return 0;
+//	typedef T3(__fastcall * type)(T1, T2);
+//};
+
+
+
+
+
+
+//typedef void(__fastcall * EventEnableYamato_t)(byte8 *, byte8 *);
+//vector<EventEnableYamato_t, 64> EventEnableYamato;
+//
+//inline void TriggerEventEnableYamato
+//(
+//	byte8 * parentBaseAddr,
+//	byte8 * childBaseAddr
+//)
+//{
+//	for_all(index, EventEnableYamato.count)
+//	{
+//		EventEnableYamato[index](parentBaseAddr, childBaseAddr);
+//	}
 //}
 //
+//typedef void(__fastcall * EventDisableYamato_t)(byte8 *, byte8 *);
+//vector<EventDisableYamato_t, 64> EventDisableYamato;
+//
+//inline void TriggerEventDisableYamato
+//(
+//	byte8 * parentBaseAddr,
+//	byte8 * childBaseAddr
+//)
+//{
+//	for_all(index, EventDisableYamato.count)
+//	{
+//		EventDisableYamato[index](parentBaseAddr, childBaseAddr);
+//	}
+//}
+
+
+
+//typedef void(__fastcall * EventVergilYamatoMeleeAttackBuffer_t)(byte8 *);
+
+
+template <typename T1, typename T2 = void>
+struct Signature1
+{
+	typedef T2(__fastcall * type)(T1);
+};
+
+template <typename T1, typename T2, typename T3 = void>
+struct Signature2
+{
+	typedef T3(__fastcall * type)(T1, T2);
+};
+
+
+//vector<Signature1<byte8 *>::type, 8> EventVergilYamatoMeleeAttackBuffer;
+//
+//
+//void EventVergilYamatoMeleeAttackBuffer_Default(byte8 *)
+//{
+//	MessageBoxA(0, "EVENT_VERGIL_MELEE_ATTACK_BUFFER", 0, 0);
+//}
+//
+//
+//
+//void func()
+//{
+//	EventVergilYamatoMeleeAttackBuffer.Push(EventVergilYamatoMeleeAttackBuffer_Default);
+//}
+//
+//
+//
+//vector<Signature1<byte8 *>::type, 8> EventMeleeAttackBuffer;
+//vector<Signature1<byte8 *>::type, 8> EventMeleeAttackExecute;
+//vector<Signature1<byte8 *>::type, 8> EventSwordmasterGunslingerBuffer;
+//vector<Signature1<byte8 *>::type, 8> EventSwordmasterGunslingerExecute;
+//vector<Signature1<byte8 *>::type, 8> EventRoyalguardBuffer;
+//vector<Signature1<byte8 *>::type, 8> EventRoyalguardExecute;
+//vector<Signature1<byte8 *>::type, 8> EventTricksterBuffer;
+//vector<Signature1<byte8 *>::type, 8> EventTricksterExecute;
+//vector<Signature1<byte8 *>::type, 8> EventRangedAttackBuffer;
+//vector<Signature1<byte8 *>::type, 8> EventRangedAttackExecute;
+//
+//
+//
+//
+//vector<Signature1<byte8 *>::type, 8> EventNextActionRequestPolicyUpdate;
+//
+//void TriggerEventNextActionRequestPolicyUpdate(byte8 * baseAddr)
+//{
+//	for_all(index, EventNextActionRequestPolicyUpdate.count)
+//	{
+//		EventNextActionRequestPolicyUpdate[index](baseAddr);
+//	}
+//}
+//
+//
+//
+//
+//
+//
+//bool IsParent(byte8 * baseAddr)
+//{
+//	auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+//	if (parentActorData.character != CHAR_DANTE)
+//	{
+//		return false;
+//	}
+//	if (parentActorData.newParentBaseAddr)
+//	{
+//		return false;
+//	}
+//	if (!parentActorData.newChildBaseAddr[CHAR_VERGIL])
+//	{
+//		return false;
+//	}
+//	auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(parentActorData.newChildBaseAddr[CHAR_VERGIL]);
+//	if (childActorData.character != CHAR_VERGIL)
+//	{
+//		return false;
+//	}
+//	return true;
+//}
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+template
+<
+	uint8 id,
+	byte16 button,
+	typename T1,
+	typename T2
+>
+bool Buffer
+(
+	T1 & parentActorData,
+	T2 & childActorData
+)
+{
+	auto & gamepad = GetGamepad(0);
+
+	uint8 style = 0;
+	uint8 meleeWeapon = 0;
+	uint8 rangedWeapon = 0;
+
+	if constexpr (id == NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK)
+	{
+		meleeWeapon = parentActorData.newMeleeWeaponMap[parentActorData.newMeleeWeaponIndex];
+		if (meleeWeapon > WEAPON_DANTE_BEOWULF)
+		{
+			meleeWeapon = WEAPON_DANTE_REBELLION;
+		}
+	}
+	else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER)
+	{
+		style = parentActorData.newStyle;
+		meleeWeapon = parentActorData.newMeleeWeaponMap[parentActorData.newMeleeWeaponIndex];
+		if (meleeWeapon > WEAPON_DANTE_BEOWULF)
+		{
+			meleeWeapon = WEAPON_DANTE_REBELLION;
+		}
+		rangedWeapon = parentActorData.newRangedWeaponMap[parentActorData.newRangedWeaponIndex];
+		if (rangedWeapon > WEAPON_DANTE_KALINA_ANN)
+		{
+			rangedWeapon = WEAPON_DANTE_EBONY_IVORY;
+		}
+		rangedWeapon -= WEAPON_DANTE_EBONY_IVORY;
+	}
+	else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK)
+	{
+		rangedWeapon = parentActorData.newRangedWeaponMap[parentActorData.newRangedWeaponIndex];
+		if (rangedWeapon > WEAPON_DANTE_KALINA_ANN)
+		{
+			rangedWeapon = WEAPON_DANTE_EBONY_IVORY;
+		}
+		rangedWeapon -= WEAPON_DANTE_EBONY_IVORY;
+	}
+
+	if
+	(
+		(gamepad.buttons[0] & GAMEPAD_RIGHT_SHOULDER) &&
+		(GetRelativeTiltDirection(parentActorData) == TILT_DIRECTION_UP) &&
+		(gamepad.buttons[0] & button)
+	)
+	{
+		if (parentActorData.state & STATE_ON_FLOOR)
+		{
+			if constexpr (id == NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK)
+			{
+				parentActorData.bufferedAction = lockOnForwardMeleeAttackDante[meleeWeapon][0];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER)
+			{
+				parentActorData.bufferedAction = (style == STYLE_DANTE_SWORDMASTER) ? lockOnForwardSwordmasterDante[meleeWeapon][0] : lockOnForwardGunslingerDante[rangedWeapon][0];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_ROYALGUARD)
+			{
+				parentActorData.bufferedAction = lockOnForwardRoyalguardDante[0];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_TRICKSTER)
+			{
+				parentActorData.bufferedAction = lockOnForwardTricksterDante[0];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK)
+			{
+				parentActorData.bufferedAction = lockOnForwardRangedAttackDante[rangedWeapon][0];
+			}
+		}
+		else
+		{
+			if constexpr (id == NEXT_ACTION_REQUEST_POLICY_ROYALGUARD)
+			{
+				parentActorData.bufferedAction = lockOnForwardRoyalguardDante[1];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_TRICKSTER)
+			{
+				parentActorData.bufferedAction = lockOnForwardTricksterDante[1];
+			}
+		}
+		return true;
+	}
+
+	if
+	(
+		(gamepad.buttons[0] & GAMEPAD_RIGHT_SHOULDER) &&
+		(GetRelativeTiltDirection(parentActorData) == TILT_DIRECTION_DOWN) &&
+		(gamepad.buttons[0] & button)
+	)
+	{
+		if (parentActorData.state & STATE_ON_FLOOR)
+		{
+			if constexpr (id == NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK)
+			{
+				parentActorData.bufferedAction = lockOnBackMeleeAttackDante[meleeWeapon][0];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER)
+			{
+				if (style == STYLE_DANTE_SWORDMASTER)
+				{
+					parentActorData.bufferedAction = lockOnBackSwordmasterDante[meleeWeapon][0];
+				}
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_ROYALGUARD)
+			{
+				parentActorData.bufferedAction = lockOnBackRoyalguardDante[0];
+			}
+		}
+		return true;
+	}
+
+	if (gamepad.buttons[0] & button)
+	{
+		if (parentActorData.state & STATE_ON_FLOOR)
+		{
+			if constexpr (id == NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK)
+			{
+				parentActorData.bufferedAction = meleeAttackDante[meleeWeapon][0];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER)
+			{
+				parentActorData.bufferedAction = (style == STYLE_DANTE_SWORDMASTER) ? swordmasterDante[meleeWeapon][0] : gunslingerDante[rangedWeapon][0];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_ROYALGUARD)
+			{
+				parentActorData.bufferedAction = royalguardDante[0];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_TRICKSTER)
+			{
+				parentActorData.bufferedAction = tricksterDante[0];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK)
+			{
+				parentActorData.bufferedAction = rangedAttackDante[rangedWeapon][0];
+			}
+		}
+		else
+		{
+			if constexpr (id == NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK)
+			{
+				parentActorData.bufferedAction = meleeAttackDante[meleeWeapon][1];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER)
+			{
+				parentActorData.bufferedAction = (style == STYLE_DANTE_SWORDMASTER) ? swordmasterDante[meleeWeapon][1] : gunslingerDante[rangedWeapon][1];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_ROYALGUARD)
+			{
+				parentActorData.bufferedAction = royalguardDante[1];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_TRICKSTER)
+			{
+				parentActorData.bufferedAction = tricksterDante[1];
+			}
+			else if constexpr (id == NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK)
+			{
+				parentActorData.bufferedAction = rangedAttackDante[rangedWeapon][1];
+			}
+		}
+		return true;
+	}
+
+	return false;
+}
+
+
+
+template
+<
+	uint8 id,
+	byte16 button,
+	typename T1,
+	typename T2
+>
+bool BufferHelper
+(
+	T1 & parentActorData,
+	T2 & childActorData
+)
+{
+	if (childActorData.nextActionRequestPolicy[id] == NEXT_ACTION_REQUEST_POLICY_BUFFER)
+	{
+		if (Buffer<id, button>(parentActorData, childActorData))
+		{
+			MessageBoxA(0, "BUFFER", 0, 0);
+		}
+	}
+	else if (childActorData.nextActionRequestPolicy[id] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+	{
+		if (parentActorData.bufferedAction)
+		{
+			EndMotion(childActorData);
+			return true;
+		}
+		if (Buffer<id, button>(parentActorData, childActorData))
+		{
+			MessageBoxA(0, "EXECUTE", 0, 0);
+			EndMotion(childActorData);
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+
+
+
+
 
 
 
@@ -274,137 +630,112 @@ void DanteYamato(byte8 * baseAddr)
 
 
 
-	if (parentActorData.newIsLeader)
+
+
+
+
+
+	if (IsYamatoSelected(parentActorData) && !IsWeaponActive(parentActorData))
 	{
-		childActorData.position = parentActorData.position;
-		childActorData.direction = parentActorData.direction;
+		OnceStart(parentActorData, 0);
+		{
+			//TriggerEventEnableYamato(parentActorData, childActorData);
+		}
+		OnceEnd;
+	}
+	else
+	{
+		OnceEnable(parentActorData, 0);
 	}
 
-	if (childActorData.newIsLeader)
+
+
+
+
+	if (!IsYamatoSelected(parentActorData) && !IsWeaponActive(childActorData))
 	{
-		parentActorData.position = childActorData.position;
-		parentActorData.direction = childActorData.direction;
+		OnceStart(parentActorData, 1);
+		{
+			//TriggerEventDisableYamato(parentActorData, childActorData);
+		}
+		OnceEnd;
 	}
-
-
-
-
-
-
-	//if (IsWeaponActive(childActorData))
-
-
-
-
-	// Disable always immediately.
-	// Enable only when conditions are met.
+	else
+	{
+		OnceEnable(parentActorData, 1);
+	}
 
 	// Parent
 
 	if (IsYamatoSelected(parentActorData))
 	{
-		parentActorData.newButtonMask = 0;
-		parentActorData.newEnableLeftStick = false;
+		DisableControl(parentActorData);
 	}
 
 	if (!IsYamatoSelected(parentActorData))
 	{
 		if (!IsWeaponActive(childActorData))
 		{
-			parentActorData.newButtonMask = 0xFFFF;
-			parentActorData.newEnableLeftStick = true;
+			EnableControl(parentActorData);
+			//SetLeader(parentActorData);
 		}
 	}
+
+
+
 
 	if (!IsYamatoSelected(parentActorData))
 	{
 		if (IsWeaponActive(childActorData))
 		{
-			if (childActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
-			{
-				if
-				(
-					(gamepad.buttons[2] & GAMEPAD_RIGHT_SHOULDER) &&
-					(GetRelativeTiltDirection(parentActorData) == TILT_DIRECTION_UP) &&
-					(gamepad.buttons[2] & GAMEPAD_Y)
-				)
-				{
-					EndMotion(childActorData);
-
-					EnableControl(parentActorData);
-
-					//Camera_followBaseAddr = parentActorData;
-
-
-					childActorData.newIsLeader = false;
-					parentActorData.newIsLeader = true;
-
-
-
-					if (parentActorData.state & STATE_ON_FLOOR)
-					{
-						TriggerAttack(parentActorData, 8); // Stinger
-					}
-				}
-				else if
-				(
-					(gamepad.buttons[2] & GAMEPAD_RIGHT_SHOULDER) &&
-					(GetRelativeTiltDirection(parentActorData) == TILT_DIRECTION_DOWN) &&
-					(gamepad.buttons[2] & GAMEPAD_Y)
-				)
-				{
-					EndMotion(childActorData);
-
-					EnableControl(parentActorData);
-
-					//Camera_followBaseAddr = parentActorData;
-
-					childActorData.newIsLeader = false;
-					parentActorData.newIsLeader = true;
-
-					if (parentActorData.state & STATE_ON_FLOOR)
-					{
-						TriggerAttack(parentActorData, 10); // High Time
-					}
-				}
-				else if (gamepad.buttons[2] & GAMEPAD_Y)
-				{
-					EndMotion(childActorData);
-
-					EnableControl(parentActorData);
-
-					//Camera_followBaseAddr = parentActorData;
-
-					childActorData.newIsLeader = false;
-					parentActorData.newIsLeader = true;
-
-					if (parentActorData.state & STATE_ON_FLOOR)
-					{
-						TriggerAttack(parentActorData, 1); // Combo 1 Part 1
-					}
-					else
-					{
-						TriggerAttack(parentActorData, 6); // Helm Breaker
-					}
-				}
-			}
+			if (BufferHelper<NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK          , GAMEPAD_Y>(parentActorData, childActorData)) { return; }
+			if (BufferHelper<NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER, GAMEPAD_B>(parentActorData, childActorData)) { return; }
+			if (BufferHelper<NEXT_ACTION_REQUEST_POLICY_ROYALGUARD            , GAMEPAD_B>(parentActorData, childActorData)) { return; }
+			if (BufferHelper<NEXT_ACTION_REQUEST_POLICY_TRICKSTER             , GAMEPAD_B>(parentActorData, childActorData)) { return; }
+			if (BufferHelper<NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK         , GAMEPAD_X>(parentActorData, childActorData)) { return; }
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// Child
 
 	if (!IsYamatoSelected(parentActorData))
 	{
-		childActorData.newButtonMask = 0;
-		childActorData.newEnableLeftStick = false;
+
+
+		DisableControl(childActorData);
+		// childActorData.newButtonMask = 0;
+		// childActorData.newEnableLeftStick = false;
 	}
 
 	if (IsYamatoSelected(parentActorData))
 	{
 		if (!IsWeaponActive(parentActorData))
 		{
-			childActorData.newButtonMask = 0xFFFF;
-			childActorData.newEnableLeftStick = true;
+			EnableControl(childActorData);
+			//SetLeader(childActorData);
+			// childActorData.newButtonMask = 0xFFFF;
+			// childActorData.newEnableLeftStick = true;
 		}
 	}
 
@@ -416,9 +747,9 @@ void DanteYamato(byte8 * baseAddr)
 			{
 				if
 				(
-					(gamepad.buttons[2] & GAMEPAD_RIGHT_SHOULDER) &&
+					(gamepad.buttons[0] & GAMEPAD_RIGHT_SHOULDER) &&
 					(GetRelativeTiltDirection(childActorData) == TILT_DIRECTION_UP) &&
-					(gamepad.buttons[2] & GAMEPAD_Y)
+					(gamepad.buttons[0] & GAMEPAD_Y)
 				)
 				{
 					EndMotion(parentActorData);
@@ -427,8 +758,10 @@ void DanteYamato(byte8 * baseAddr)
 
 					//Camera_followBaseAddr = childActorData;
 
-					parentActorData.newIsLeader = false;
-					childActorData.newIsLeader = true;
+					// parentActorData.newIsLeader = false;
+					// childActorData.newIsLeader = true;
+					SetLeader(childActorData);
+					CopyPosition(parentActorData, childActorData);
 					
 
 
@@ -439,9 +772,9 @@ void DanteYamato(byte8 * baseAddr)
 				}
 				else if
 				(
-					(gamepad.buttons[2] & GAMEPAD_RIGHT_SHOULDER) &&
+					(gamepad.buttons[0] & GAMEPAD_RIGHT_SHOULDER) &&
 					(GetRelativeTiltDirection(childActorData) == TILT_DIRECTION_DOWN) &&
-					(gamepad.buttons[2] & GAMEPAD_Y)
+					(gamepad.buttons[0] & GAMEPAD_Y)
 				)
 				{
 					EndMotion(parentActorData);
@@ -450,15 +783,17 @@ void DanteYamato(byte8 * baseAddr)
 
 					//Camera_followBaseAddr = childActorData;
 
-					parentActorData.newIsLeader = false;
-					childActorData.newIsLeader = true;
+					// parentActorData.newIsLeader = false;
+					// childActorData.newIsLeader = true;
+					SetLeader(childActorData);
+					CopyPosition(parentActorData, childActorData);
 
 					if (childActorData.state & STATE_ON_FLOOR)
 					{
 						TriggerAttack(childActorData, 7); // High Time
 					}
 				}
-				else if (gamepad.buttons[2] & GAMEPAD_Y)
+				else if (gamepad.buttons[0] & GAMEPAD_Y)
 				{
 					EndMotion(parentActorData);
 
@@ -466,8 +801,10 @@ void DanteYamato(byte8 * baseAddr)
 
 					//Camera_followBaseAddr = childActorData;
 
-					parentActorData.newIsLeader = false;
-					childActorData.newIsLeader = true;
+					// parentActorData.newIsLeader = false;
+					// childActorData.newIsLeader = true;
+					SetLeader(childActorData);
+					CopyPosition(parentActorData, childActorData);
 
 					if (childActorData.state & STATE_ON_FLOOR)
 					{
@@ -482,6 +819,19 @@ void DanteYamato(byte8 * baseAddr)
 		}
 	}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 	#undef OnceReset
 	#undef OnceEnd
 	#undef OnceStart
@@ -491,16 +841,56 @@ void ActorLoop(byte8 * baseAddr)
 {
 	g_actorLoopCounter++;
 	DanteYamato(baseAddr);
+
+
+	if (!baseAddr)
+	{
+		return;
+	}
+
+
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+
+
+
+
+
+
+
+
+
+
+
 }
 
 void MainLoop()
 {
 	g_mainLoopCounter++;
 
+	{
+		auto baseAddr = Actor_actorBaseAddr[2];
+		if (!baseAddr)
+		{
+			goto sect0;
+		}
+		auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+		g_relativeTiltDirection = GetRelativeTiltDirection(actorData);
+	}
+	sect0:;
+
+	
+
+
+
+
+
+
 	if (spawnActors)
 	{
 		spawnActors = false;
 		Log("Spawn Actors.");
+
+		auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
 
 		auto danteBaseAddr = CreateActorDante();
 		if (!danteBaseAddr)
@@ -510,20 +900,38 @@ void MainLoop()
 		auto & danteActorData = *danteBaseAddr;
 		Actor_actorBaseAddr.Push(danteActorData);
 
-		const_for_all(index, 5)
-		{
-			danteActorData.newMeleeWeaponMap [index] = (WEAPON_DANTE_REBELLION   + index);
-			danteActorData.newRangedWeaponMap[index] = (WEAPON_DANTE_EBONY_IVORY + index);
-		}
-		danteActorData.newMeleeWeaponCount = 3;
-		danteActorData.newMeleeWeaponIndex = 0;
-		danteActorData.newRangedWeaponCount = 3;
-		danteActorData.newRangedWeaponIndex = 0;
+		danteActorData.position = mainActorData.position;
+		danteActorData.newButtonMask = 0xFFFF;
+		danteActorData.newEnableLeftStick = true;
 
-		danteActorData.newMeleeWeaponMap[1] = WEAPON_DANTE_BEOWULF;
-		danteActorData.newMeleeWeaponMap[2] = WEAPON_VERGIL_YAMATO;
+		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		pool[3] = danteActorData;
 
-		auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
+
+
+
+
+		//const_for_all(index, 5)
+		//{
+		//	danteActorData.newMeleeWeaponMap [index] = (WEAPON_DANTE_REBELLION   + index);
+		//	danteActorData.newRangedWeaponMap[index] = (WEAPON_DANTE_EBONY_IVORY + index);
+		//}
+		//danteActorData.newMeleeWeaponCount = 5;
+		//danteActorData.newMeleeWeaponIndex = 0;
+		//danteActorData.newRangedWeaponCount = 3;
+		//danteActorData.newRangedWeaponIndex = 0;
+
+		////danteActorData.newMeleeWeaponMap[1] = WEAPON_DANTE_BEOWULF;
+		////danteActorData.newMeleeWeaponMap[2] = WEAPON_VERGIL_YAMATO;
+		//danteActorData.rangedWeaponMap[0] = WEAPON_DANTE_KALINA_ANN;
+		//
+		//danteActorData.rangedWeaponData[0] = danteActorData.newRangedWeaponData[0];
+
+		//danteActorData.newRangedWeaponMap[0] = WEAPON_DANTE_KALINA_ANN;
+
+
+		
+
 
 		auto vergilBaseAddr = CreateActorVergil();
 		if (!vergilBaseAddr)
@@ -541,38 +949,38 @@ void MainLoop()
 		{
 			vergilActorData.meleeWeaponMap[index] = WEAPON_VOID;
 		}
-
 		vergilActorData.meleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
-
-		//vergilActorData.newDisableLeftStick = true;
-
-		danteActorData.position = mainActorData.position;
 		vergilActorData.position = mainActorData.position;
-
-		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-
-		pool[3] = danteActorData;
-
-		danteActorData.newButtonMask = 0xFFFF;
-		danteActorData.newEnableLeftStick = true;
-		danteActorData.newEnableMotion = true;
-		danteActorData.newEnablePermissionUpdate = true;
-
-		vergilActorData.newButtonMask = GAMEPAD_Y | GAMEPAD_RIGHT_SHOULDER;
-		vergilActorData.newEnableLeftStick = true;
-		vergilActorData.newEnableMotion = true;
-		vergilActorData.newEnablePermissionUpdate = true;
+		//vergilActorData.newDisableLeftStick = true;
+		//vergilActorData.position = mainActorData.position;
+		//danteActorData.newIsLeader = true;
+		//danteActorData.newSect[0] = true;
+		//danteActorData.newSect[1] = true;
+		// danteActorData.newEnableMotion = true;
+		// danteActorData.newEnablePermissionUpdate = true;
+		// vergilActorData.newButtonMask = GAMEPAD_Y | GAMEPAD_RIGHT_SHOULDER;
+		// vergilActorData.newEnableLeftStick = true;
+		// vergilActorData.newEnableMotion = true;
+		// vergilActorData.newEnablePermissionUpdate = true;
 		//vergilActorData.newButtonMask = 0;
 		//vergilActorData.newEnableLeftStick = false;
-		
-
-		Log("count %u", Actor_actorBaseAddr.count);
-		for (uint32 index = 0; index < Actor_actorBaseAddr.count; index++)
-		{
-			Log("%llX", Actor_actorBaseAddr[index]);
-		}
+		//Log("count %u", Actor_actorBaseAddr.count);
+		//for (uint32 index = 0; index < Actor_actorBaseAddr.count; index++)
+		//{
+		//	Log("%llX", Actor_actorBaseAddr[index]);
+		//}
 	}
 }
+
+
+
+
+
+
+
+
+
+
 
 void Update_Init()
 {
@@ -581,6 +989,11 @@ void Update_Init()
 	ticksPerMillisecond = (ticksPerSecond / 1000);
 	Windows_GetTickCount(&savedTickCount);
 
+
+
+	//EventEnableYamato.Push(EventEnableYamatoDefault);
+	//EventDisableYamato.Push(EventDisableYamatoDefault);
+	//EventNextActionRequestPolicyUpdate.Push(EventNextActionRequestPolicyUpdate_DanteYamato);
 
 
 
@@ -762,7 +1175,8 @@ void Update_Init()
 
 
 
-
+	// @Research: Where did I get this from?
+	// Maybe prefer root update.
 
 
 	{

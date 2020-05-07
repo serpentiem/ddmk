@@ -10,7 +10,7 @@
 
 
 
-
+extern uint8 g_relativeTiltDirection;
 
 
 

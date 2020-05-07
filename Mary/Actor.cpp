@@ -529,15 +529,16 @@ inline void RegisterWeapon_Init()
 
 
 
-
+// @Research: Very treacherous.
 
 struct
 {
 	uint8 newMeleeWeaponMap[5] =
 	{
 		WEAPON_DANTE_REBELLION,
-		WEAPON_DANTE_AGNI_RUDRA,
+		WEAPON_DANTE_CERBERUS,
 		WEAPON_VERGIL_YAMATO,
+		//WEAPON_DANTE_AGNI_RUDRA,
 		WEAPON_DANTE_NEVAN,
 		WEAPON_DANTE_BEOWULF,
 	};
@@ -550,7 +551,7 @@ struct
 		WEAPON_DANTE_SPIRAL,
 		WEAPON_DANTE_KALINA_ANN,
 	};
-	uint8 newRangedWeaponCount = 3;
+	uint8 newRangedWeaponCount = 5;
 }
 Dante;
 
@@ -577,24 +578,26 @@ void UpdateWeaponDante(ACTOR_DATA_DANTE & actorData)
 
 	const_for_all(index, 5)
 	{
-		uint8 id = (WEAPON_DANTE_REBELLION + index);
+		uint32 id = (WEAPON_DANTE_REBELLION + index);
 		actorData.newMeleeWeaponData[index] = RegisterWeapon[id](actorData, id);
 	}
 	const_for_all(index, 5)
 	{
-		uint8 id = (WEAPON_DANTE_EBONY_IVORY + index);
+		uint32 id = (WEAPON_DANTE_EBONY_IVORY + index);
 		actorData.newRangedWeaponData[index] = RegisterWeapon[id](actorData, id);
 	}
 
-	actorData.meleeWeaponMap[0] = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex]; // @Todo: Add Yamato exception.
+	actorData.meleeWeaponMap[0] = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
 	actorData.meleeWeaponMap[1] = WEAPON_VOID;
 
-	actorData.rangedWeaponMap[0] = actorData.newRangedWeaponMap[actorData.newRangedWeaponIndex];
+	//actorData.rangedWeaponMap[0] = actorData.newRangedWeaponMap[actorData.newRangedWeaponIndex];
+	actorData.rangedWeaponMap[0] = WEAPON_DANTE_KALINA_ANN;
 	actorData.rangedWeaponMap[1] = WEAPON_VOID;
 	actorData.rangedWeaponMap[2] = WEAPON_VOID;
 
 	actorData.meleeWeaponData [0] = actorData.newMeleeWeaponData [actorData.newMeleeWeaponIndex ];
-	actorData.rangedWeaponData[0] = actorData.newRangedWeaponData[actorData.newRangedWeaponIndex];
+	//actorData.rangedWeaponData[0] = actorData.newRangedWeaponData[actorData.newRangedWeaponIndex];
+	actorData.rangedWeaponData[0] = actorData.newRangedWeaponData[4];
 
 	actorData.rangedWeaponFlags[2] = 4;
 }
@@ -874,7 +877,8 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 			goto sect0;
 		}
 
-		auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
+		//auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
+		float32 timeout = 1;
 		actorData.meleeWeaponSwitchTimeout = timeout;
 
 
@@ -1033,370 +1037,6 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 
 	return true;
 }
-
-//void Reset(uint32 off)
-//{
-//	auto g_pool = reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2520);
-//	auto dest = (g_pool[44] + off);
-//	auto & visible = *reinterpret_cast<bool *>(dest + 0x18) = false;
-//}
-
-
-
-
-
-// @Todo: Move to Event.
-
-void WriteLowerBodyMotionData(byte8 * baseAddr)
-{
-	auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
-	if (childActorData.character != CHAR_VERGIL)
-	{
-		return;
-	}
-	if (!childActorData.newParentBaseAddr)
-	{
-		return;
-	}
-	auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(childActorData.newParentBaseAddr);
-	if (parentActorData.character != CHAR_DANTE)
-	{
-		return;
-	}
-	if (childActorData.motionData[BODY_PART_LOWER].group != MOTION_GROUP_VERGIL_YAMATO)
-	{
-		return;
-	}
-	auto & modelData = parentActorData.modelData[parentActorData.activeModelIndex];
-	auto motionFile = File_cacheFile[pl021_00_3][childActorData.motionData[BODY_PART_LOWER].index];
-	func_8AC80(modelData, BODY_PART_LOWER, motionFile, 0, false);
-}
-
-void WriteUpperBodyMotionData(byte8 * baseAddr)
-{
-	auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
-	if (childActorData.character != CHAR_VERGIL)
-	{
-		return;
-	}
-	if (!childActorData.newParentBaseAddr)
-	{
-		return;
-	}
-	auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(childActorData.newParentBaseAddr);
-	if (parentActorData.character != CHAR_DANTE)
-	{
-		return;
-	}
-	if (childActorData.motionData[BODY_PART_UPPER].group != MOTION_GROUP_VERGIL_YAMATO)
-	{
-		return;
-	}
-	auto & modelData = parentActorData.modelData[parentActorData.activeModelIndex];
-	auto motionFile = File_cacheFile[pl021_00_3][childActorData.motionData[BODY_PART_UPPER].index];
-	func_8AC80(modelData, BODY_PART_UPPER, motionFile, 0, false);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-bool PlayMotion(byte8 * baseAddr, uint8 group, uint8 index)
-{
-	{
-		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-		if (actorData.character != CHAR_DANTE)
-		{
-			goto DanteYamatoParentEnd;
-		}
-		if (actorData.newParentBaseAddr)
-		{
-			goto DanteYamatoParentEnd;
-		}
-		if (!actorData.newChildBaseAddr[CHAR_VERGIL])
-		{
-			goto DanteYamatoParentEnd;
-		}
-		auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
-		if (childActorData.character != CHAR_VERGIL)
-		{
-			goto DanteYamatoParentEnd;
-		}
-
-
-
-		if (childActorData.meleeWeaponMap[0] == WEAPON_VERGIL_YAMATO)
-		{
-			return true;
-		}
-
-
-
-
-		if (childActorData.motionData[1].group == MOTION_GROUP_VERGIL_YAMATO)
-		{
-			return true;
-		}
-
-
-
-
-
-
-
-
-
-
-	}
-	DanteYamatoParentEnd:;
-
-
-
-
-
-
-
-
-
-
-
-
-
-	return false;
-}
-
-
-
-
-
-
-
-//void WriteMotionState(byte8 * baseAddr)
-//{
-//
-//
-//
-//
-//
-//	{
-//		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-//		if (actorData.character != CHAR_DANTE)
-//		{
-//			goto DanteYamatoParentEnd;
-//		}
-//		if (actorData.newParentBaseAddr)
-//		{
-//			goto DanteYamatoParentEnd;
-//		}
-//		if (!actorData.newChildBaseAddr[CHAR_VERGIL])
-//		{
-//			goto DanteYamatoParentEnd;
-//		}
-//		auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr[CHAR_VERGIL]);
-//		if (childActorData.character != CHAR_VERGIL)
-//		{
-//			goto DanteYamatoParentEnd;
-//		}
-//
-//
-//		//if (childActorData.motionState2[1] & MOTION_STATE_BUSY)
-//		//{
-//		//	if (!(actorData.motionState2[1] & MOTION_STATE_BUSY))
-//		//	{
-//		//		actorData.motionState2[1] += MOTION_STATE_BUSY;
-//		//	}
-//		//}
-//
-//
-//
-//
-//
-//
-//		if (childActorData.move)
-//		{
-//			goto DanteYamatoChildEnd;
-//		}
-//		childActorData.motionState2[1] = actorData.motionState2[1];
-//		return;
-//	}
-//	DanteYamatoParentEnd:;
-//
-//
-//
-//
-//
-//	{
-//		auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL*>(baseAddr);
-//		if (actorData.character != CHAR_VERGIL)
-//		{
-//			goto DanteYamatoChildEnd;
-//		}
-//		if (!actorData.newParentBaseAddr)
-//		{
-//			goto DanteYamatoChildEnd;
-//		}
-//		auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newParentBaseAddr);
-//		if (parentActorData.character != CHAR_DANTE)
-//		{
-//			goto DanteYamatoChildEnd;
-//		}
-//		if (!actorData.move)
-//		{
-//			goto DanteYamatoChildEnd;
-//		}
-//		parentActorData.motionState2[1] = actorData.motionState2[1];
-//		return;
-//	}
-//	DanteYamatoChildEnd:;
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//}
-
-
-
-
-
-bool g_logMotionData = false;
-uint8 g_motionGroup = MOTION_GROUP_DANTE_REBELLION;
-uint8 g_motionIndex = 3;
-
-void LogMotionData()
-{
-	if (!g_logMotionData)
-	{
-		return;
-	}
-
-	auto baseAddr = Actor_actorBaseAddr[0];
-	if (!baseAddr)
-	{
-		return;
-	}
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-	auto & motionData = actorData.motionData[BODY_PART_UPPER];
-	auto & modelData = actorData.modelData[actorData.activeModelIndex];
-	auto & duration = modelData.motion.duration1[BODY_PART_UPPER];
-	auto & timer = modelData.motion.timer[BODY_PART_UPPER];
-
-	if (!((motionData.group == g_motionGroup) && (motionData.index == g_motionIndex)))
-	{
-		return;
-	}
-
-	g_logMotionData = false;
-
-	Log("%u, %u, %.0f, %.0f", motionData.group, motionData.index, duration, timer);
-}
-
-
-
-
-
-
-
-// @Todo: Move to Event.
-bool FreeWalk(byte8 * baseAddr)
-{
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-	if (actorData.newParentBaseAddr)
-	{
-		return false;
-	}
-	return true;
-}
-
-
-
-
-
-
-
-
-
-// @Todo: Move to Event.
-void UpdatePosition(byte8 * baseAddr)
-{
-	if (!baseAddr)
-	{
-		return;
-	}
-	{
-		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-		if (parentActorData.newParentBaseAddr)
-		{
-			goto ParentEnd;
-		}
-		const_for_all(index, 4)
-		{
-			auto childBaseAddr = parentActorData.newChildBaseAddr[index];
-			if (!childBaseAddr)
-			{
-				continue;
-			}
-			auto & childActorData = *reinterpret_cast<ACTOR_DATA *>(childBaseAddr);
-
-			if (!IsWeaponActive(childActorData))
-			{
-				childActorData.position = parentActorData.position;
-				childActorData.direction = parentActorData.direction;
-			}
-
-
-
-		}
-		return;
-	}
-	ParentEnd:;
-	{
-		auto & childActorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-		auto parentBaseAddr = childActorData.newParentBaseAddr;
-		if (!parentBaseAddr)
-		{
-			goto ChildEnd;
-		}
-		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(parentBaseAddr);
-
-		if (!IsWeaponActive(parentActorData))
-		{
-			parentActorData.position = childActorData.position;
-			parentActorData.direction = childActorData.direction;
-
-		}
-
-
-		return;
-	}
-	ChildEnd:;
-}
-
 
 
 

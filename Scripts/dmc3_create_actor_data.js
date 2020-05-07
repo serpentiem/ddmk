@@ -83,9 +83,9 @@ var items =
 	[ "moveOnly"                        , "bool"                      , 0x3F19                           ],
 
 
-	[ "move"                            , "uint8"                     , 0x3FA4                           ],
-	[ "lastMove"                        , "uint8"                     , 0x3FA5                           ],
-	[ "bufferedMove"                    , "uint8"                     , 0x3FA8                           ],
+	[ "action"                            , "uint8"                     , 0x3FA4                           ],
+	[ "lastAction"                        , "uint8"                     , 0x3FA5                           ],
+	[ "bufferedAction"                    , "uint8"                     , 0x3FA8                           ],
 
 	[ "chainCount"                      , "uint8"                     , 0x3FAC                           ],
 	[ "expertise[16]"                   , "byte32"                    , 0x3FEC                           ],
