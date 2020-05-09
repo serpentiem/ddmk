@@ -2030,24 +2030,31 @@ void GUI_Teleporter_Draw()
 
 
 
-
+		ImGui::Text("");
 
 
 
 		{
-			static uint8 move = 0;
-			static uint8 lastMove = 0;
-			GUI_InputEx("Move", move);
-			GUI_InputEx("Last Move", lastMove);
-			if (GUI_Button("Trigger Attack"))
+			static uint8 action = 0;
+			GUI_InputEx("Action", action);
+			if (GUI_Button("Trigger Action"))
 			{
 				auto baseAddr = Actor_actorBaseAddr[2];
 				auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-				actorData.action = move;
-				actorData.lastAction = lastMove;
+				actorData.action = action;
 				func_1E0800(actorData, 17, 0, 0xFFFFFFFF);
 			}
+			ImGui::SameLine();
+			if (GUI_Button("Buffer Action"))
+			{
+				auto baseAddr = Actor_actorBaseAddr[2];
+				auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+				actorData.bufferedAction = action;
+			}
 		}
+
+
+		ImGui::Text("");
 
 		{
 			if (GUI_Button("Trigger Combo 1 Part 3"))
