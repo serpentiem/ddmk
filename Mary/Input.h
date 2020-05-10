@@ -6,10 +6,12 @@
 
 enum TILT_DIRECTION
 {
-	TILT_DIRECTION_UP = 1,
+	TILT_DIRECTION_NEUTRAL,
+	TILT_DIRECTION_UP,
 	TILT_DIRECTION_RIGHT,
 	TILT_DIRECTION_DOWN,
 	TILT_DIRECTION_LEFT,
+	MAX_TILT_DIRECTION,
 };
 
 inline ENGINE_GAMEPAD & GetGamepad(uint8 index)
@@ -29,7 +31,7 @@ inline uint8 GetRelativeTiltDirection(byte8 * baseAddr)
 	uint16 relativeTilt = 0;
 	if (gamepad.leftStickRadius < LEFT_STICK_DEADZONE)
 	{
-		return 0;
+		return TILT_DIRECTION_NEUTRAL;
 	}
 	relativeTilt = (actorData.actorCameraDirection - gamepad.leftStickPosition);
 	{
@@ -60,5 +62,5 @@ inline uint8 GetRelativeTiltDirection(byte8 * baseAddr)
 			return TILT_DIRECTION_LEFT;
 		}
 	}
-	return 0;
+	return TILT_DIRECTION_NEUTRAL;
 }

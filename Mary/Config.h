@@ -21,6 +21,22 @@ struct CONFIG
 	{
 		struct
 		{
+			bool enableAirStinger = false;
+		}
+		Rebellion;
+	}
+	Dante;
+
+
+
+
+
+
+
+	struct
+	{
+		struct
+		{
 			float32 base  = 1;
 			float32 turbo = 1.2f;
 			float32 actor = 1;

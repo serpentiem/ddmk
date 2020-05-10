@@ -90,6 +90,7 @@ static_assert(offsetof(ACTOR_DATA, newSkipPositionUpdate) == 0xB97C);
 static_assert(offsetof(ACTOR_DATA, newEnableMotion) == 0xB97D);
 static_assert(offsetof(ACTOR_DATA, newEnablePermissionUpdate) == 0xB97E);
 static_assert(offsetof(ACTOR_DATA, newIsLeader) == 0xB97F);
+static_assert(offsetof(ACTOR_DATA, newBufferedActionPolicy) == 0xB980);
 
 static_assert(offsetof(ACTOR_DATA_DANTE, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_DANTE, character) == 0x78);
@@ -210,6 +211,7 @@ static_assert(offsetof(ACTOR_DATA_DANTE, newSkipPositionUpdate) == 0xB97C);
 static_assert(offsetof(ACTOR_DATA_DANTE, newEnableMotion) == 0xB97D);
 static_assert(offsetof(ACTOR_DATA_DANTE, newEnablePermissionUpdate) == 0xB97E);
 static_assert(offsetof(ACTOR_DATA_DANTE, newIsLeader) == 0xB97F);
+static_assert(offsetof(ACTOR_DATA_DANTE, newBufferedActionPolicy) == 0xB980);
 
 static_assert(offsetof(ACTOR_DATA_BOB, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_BOB, character) == 0x78);
@@ -301,6 +303,7 @@ static_assert(offsetof(ACTOR_DATA_BOB, newSkipPositionUpdate) == 0xB97C);
 static_assert(offsetof(ACTOR_DATA_BOB, newEnableMotion) == 0xB97D);
 static_assert(offsetof(ACTOR_DATA_BOB, newEnablePermissionUpdate) == 0xB97E);
 static_assert(offsetof(ACTOR_DATA_BOB, newIsLeader) == 0xB97F);
+static_assert(offsetof(ACTOR_DATA_BOB, newBufferedActionPolicy) == 0xB980);
 
 static_assert(offsetof(ACTOR_DATA_LADY, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_LADY, character) == 0x78);
@@ -392,6 +395,7 @@ static_assert(offsetof(ACTOR_DATA_LADY, newSkipPositionUpdate) == 0xB97C);
 static_assert(offsetof(ACTOR_DATA_LADY, newEnableMotion) == 0xB97D);
 static_assert(offsetof(ACTOR_DATA_LADY, newEnablePermissionUpdate) == 0xB97E);
 static_assert(offsetof(ACTOR_DATA_LADY, newIsLeader) == 0xB97F);
+static_assert(offsetof(ACTOR_DATA_LADY, newBufferedActionPolicy) == 0xB980);
 
 static_assert(offsetof(ACTOR_DATA_VERGIL, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_VERGIL, character) == 0x78);
@@ -496,3 +500,4 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, newSkipPositionUpdate) == 0xB97C);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newEnableMotion) == 0xB97D);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newEnablePermissionUpdate) == 0xB97E);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newIsLeader) == 0xB97F);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newBufferedActionPolicy) == 0xB980);

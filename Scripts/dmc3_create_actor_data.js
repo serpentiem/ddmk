@@ -190,6 +190,7 @@ var extra =
 	[ "newEnableMotion"       , "bool"    ],
 	[ "newEnablePermissionUpdate"       , "bool"    ],
 	[ "newIsLeader"       , "bool"    ],
+	[ "newBufferedActionPolicy"       , "uint8"    ],
 ];
 
 var c = "";

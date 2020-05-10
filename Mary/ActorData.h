@@ -154,6 +154,7 @@ struct ACTOR_DATA
 	bool newEnableMotion; // 0xB97D
 	bool newEnablePermissionUpdate; // 0xB97E
 	bool newIsLeader; // 0xB97F
+	uint8 newBufferedActionPolicy; // 0xB980
 
 	operator byte8 *()
 	{
@@ -344,6 +345,7 @@ struct ACTOR_DATA_DANTE
 	bool newEnableMotion; // 0xB97D
 	bool newEnablePermissionUpdate; // 0xB97E
 	bool newIsLeader; // 0xB97F
+	uint8 newBufferedActionPolicy; // 0xB980
 
 	operator byte8 *()
 	{
@@ -495,6 +497,7 @@ struct ACTOR_DATA_BOB
 	bool newEnableMotion; // 0xB97D
 	bool newEnablePermissionUpdate; // 0xB97E
 	bool newIsLeader; // 0xB97F
+	uint8 newBufferedActionPolicy; // 0xB980
 
 	operator byte8 *()
 	{
@@ -646,6 +649,7 @@ struct ACTOR_DATA_LADY
 	bool newEnableMotion; // 0xB97D
 	bool newEnablePermissionUpdate; // 0xB97E
 	bool newIsLeader; // 0xB97F
+	uint8 newBufferedActionPolicy; // 0xB980
 
 	operator byte8 *()
 	{
@@ -815,6 +819,7 @@ struct ACTOR_DATA_VERGIL
 	bool newEnableMotion; // 0xB97D
 	bool newEnablePermissionUpdate; // 0xB97E
 	bool newIsLeader; // 0xB97F
+	uint8 newBufferedActionPolicy; // 0xB980
 
 	operator byte8 *()
 	{
