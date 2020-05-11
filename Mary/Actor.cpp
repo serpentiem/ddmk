@@ -591,6 +591,10 @@ void UpdateWeaponDante(ACTOR_DATA_DANTE & actorData)
 	actorData.meleeWeaponMap[1] = WEAPON_VOID;
 
 	//actorData.rangedWeaponMap[0] = actorData.newRangedWeaponMap[actorData.newRangedWeaponIndex];
+
+
+	actorData.newRangedWeaponMap[0] = WEAPON_DANTE_KALINA_ANN;
+
 	actorData.rangedWeaponMap[0] = WEAPON_DANTE_KALINA_ANN;
 	actorData.rangedWeaponMap[1] = WEAPON_VOID;
 	actorData.rangedWeaponMap[2] = WEAPON_VOID;

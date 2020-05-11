@@ -25,7 +25,7 @@ constexpr uint8 meleeAttackDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 		},
 		// Up
 		{
-			0,
+			ACTION_DANTE_REBELLION_STINGER_LEVEL_2,
 			0,
 		},
 		// Right
@@ -35,7 +35,7 @@ constexpr uint8 meleeAttackDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 		},
 		// Down
 		{
-			0,
+			ACTION_DANTE_REBELLION_HIGH_TIME,
 			0,
 		},
 		// Left
@@ -48,12 +48,12 @@ constexpr uint8 meleeAttackDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_CERBERUS_COMBO_1_PART_1,
+			ACTION_DANTE_CERBERUS_SWING,
 		},
 		// Up
 		{
-			0,
+			ACTION_DANTE_CERBERUS_REVOLVER_LEVEL_2,
 			0,
 		},
 		// Right
@@ -63,7 +63,7 @@ constexpr uint8 meleeAttackDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 		},
 		// Down
 		{
-			0,
+			ACTION_DANTE_CERBERUS_WINDMILL,
 			0,
 		},
 		// Left
@@ -76,12 +76,12 @@ constexpr uint8 meleeAttackDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_AGNI_RUDRA_COMBO_1_PART_1,
+			ACTION_DANTE_AGNI_RUDRA_AERIAL_CROSS,
 		},
 		// Up
 		{
-			0,
+			ACTION_DANTE_AGNI_RUDRA_JET_STREAM_LEVEL_3,
 			0,
 		},
 		// Right
@@ -91,7 +91,7 @@ constexpr uint8 meleeAttackDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 		},
 		// Down
 		{
-			0,
+			ACTION_DANTE_AGNI_RUDRA_WHIRLWIND,
 			0,
 		},
 		// Left
@@ -104,12 +104,12 @@ constexpr uint8 meleeAttackDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_NEVAN_TUNE_UP,
+			ACTION_DANTE_NEVAN_AIR_PLAY,
 		},
 		// Up
 		{
-			0,
+			ACTION_DANTE_NEVAN_REVERB_SHOCK_LEVEL_2,
 			0,
 		},
 		// Right
@@ -119,7 +119,7 @@ constexpr uint8 meleeAttackDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 		},
 		// Down
 		{
-			0,
+			ACTION_DANTE_NEVAN_BAT_RIFT_LEVEL_2,
 			0,
 		},
 		// Left
@@ -132,12 +132,12 @@ constexpr uint8 meleeAttackDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_BEOWULF_COMBO_1_PART_1,
+			ACTION_DANTE_BEOWULF_KILLER_BEE,
 		},
 		// Up
 		{
-			0,
+			ACTION_DANTE_BEOWULF_STRAIGHT_LEVEL_2,
 			0,
 		},
 		// Right
@@ -147,7 +147,7 @@ constexpr uint8 meleeAttackDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 		},
 		// Down
 		{
-			0,
+			ACTION_DANTE_BEOWULF_BEAST_UPPERCUT,
 			0,
 		},
 		// Left
@@ -163,12 +163,12 @@ constexpr uint8 swordmasterDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_REBELLION_PROP_SHREDDER_1,
+			ACTION_DANTE_REBELLION_AERIAL_RAVE_PART_1,
 		},
 		// Up
 		{
-			0,
+			ACTION_DANTE_REBELLION_SWORD_PIERCE,
 			0,
 		},
 		// Right
@@ -178,7 +178,7 @@ constexpr uint8 swordmasterDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 		},
 		// Down
 		{
-			0,
+			ACTION_DANTE_REBELLION_DANCE_MACABRE_PART_1,
 			0,
 		},
 		// Left
@@ -191,12 +191,12 @@ constexpr uint8 swordmasterDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_CERBERUS_FLICKER,
+			ACTION_DANTE_CERBERUS_AIR_FLICKER,
 		},
 		// Up
 		{
-			0,
+			ACTION_DANTE_CERBERUS_CRYSTAL,
 			0,
 		},
 		// Right
@@ -206,7 +206,7 @@ constexpr uint8 swordmasterDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 		},
 		// Down
 		{
-			0,
+			ACTION_DANTE_CERBERUS_ICE_AGE,
 			0,
 		},
 		// Left
@@ -219,12 +219,12 @@ constexpr uint8 swordmasterDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_AGNI_RUDRA_CROSSED_SWORDS,
+			ACTION_DANTE_AGNI_RUDRA_SKY_DANCE_PART_1,
 		},
 		// Up
 		{
-			0,
+			ACTION_DANTE_AGNI_RUDRA_CRAWLER,
 			0,
 		},
 		// Right
@@ -234,7 +234,7 @@ constexpr uint8 swordmasterDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 		},
 		// Down
 		{
-			0,
+			ACTION_DANTE_AGNI_RUDRA_TWISTER,
 			0,
 		},
 		// Left
@@ -247,12 +247,12 @@ constexpr uint8 swordmasterDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_NEVAN_SLASH,
+			ACTION_DANTE_NEVAN_AIR_SLASH_PART_1,
 		},
 		// Up
 		{
-			0,
+			ACTION_DANTE_NEVAN_FEEDBACK,
 			0,
 		},
 		// Right
@@ -262,7 +262,7 @@ constexpr uint8 swordmasterDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 		},
 		// Down
 		{
-			0,
+			ACTION_DANTE_NEVAN_DISTORTION,
 			0,
 		},
 		// Left
@@ -275,13 +275,13 @@ constexpr uint8 swordmasterDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_BEOWULF_ZODIAC,
+			ACTION_DANTE_BEOWULF_THE_HAMMER,
 		},
 		// Up
 		{
-			0,
-			0,
+			ACTION_DANTE_BEOWULF_VOLCANO,
+			ACTION_DANTE_BEOWULF_AIR_VOLCANO,
 		},
 		// Right
 		{
@@ -290,7 +290,7 @@ constexpr uint8 swordmasterDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2
 		},
 		// Down
 		{
-			0,
+			ACTION_DANTE_BEOWULF_REAL_IMPACT,
 			0,
 		},
 		// Left
@@ -306,8 +306,8 @@ constexpr uint8 gunslingerDante  [MAX_RANGED_WEAPON_DANTE][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_EBONY_IVORY_TWOSOME_TIME,
+			ACTION_DANTE_EBONY_IVORY_RAIN_STORM,
 		},
 		// Up
 		{
@@ -334,12 +334,12 @@ constexpr uint8 gunslingerDante  [MAX_RANGED_WEAPON_DANTE][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_SHOTGUN_FIREWORKS,
+			ACTION_DANTE_SHOTGUN_AIR_FIREWORKS,
 		},
 		// Up
 		{
-			0,
+			ACTION_DANTE_SHOTGUN_GUN_STINGER,
 			0,
 		},
 		// Right
@@ -362,12 +362,12 @@ constexpr uint8 gunslingerDante  [MAX_RANGED_WEAPON_DANTE][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_ARTEMIS_MULTI_LOCK_SHOT,
+			ACTION_DANTE_ARTEMIS_AIR_MULTI_LOCK_SHOT,
 		},
 		// Up
 		{
-			0,
+			ACTION_DANTE_ARTEMIS_SPHERE,
 			0,
 		},
 		// Right
@@ -390,12 +390,12 @@ constexpr uint8 gunslingerDante  [MAX_RANGED_WEAPON_DANTE][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
+			ACTION_DANTE_SPIRAL_TRICK_SHOT,
 			0,
 		},
 		// Up
 		{
-			0,
+			ACTION_DANTE_SPIRAL_SNIPER,
 			0,
 		},
 		// Right
@@ -418,12 +418,12 @@ constexpr uint8 gunslingerDante  [MAX_RANGED_WEAPON_DANTE][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
+			ACTION_DANTE_KALINA_ANN_HYSTERIC,
 			0,
 		},
 		// Up
 		{
-			0,
+			ACTION_DANTE_KALINA_ANN_GRAPPLE,
 			0,
 		},
 		// Right
@@ -452,8 +452,8 @@ constexpr uint8 royalguardDante                           [MAX_TILT_DIRECTION][2
 	},
 	// Up
 	{
-		0,
-		0,
+		ACTION_DANTE_ROYALGUARD_RELEASE_1,
+		ACTION_DANTE_ROYALGUARD_AIR_RELEASE_1,
 	},
 	// Right
 	{
@@ -475,13 +475,13 @@ constexpr uint8 tricksterDante                            [MAX_TILT_DIRECTION][2
 {
 	// Neutral
 	{
-		0,
-		0,
+		ACTION_DANTE_TRICKSTER_DASH,
+		ACTION_DANTE_TRICKSTER_SKY_STAR,
 	},
 	// Up
 	{
-		0,
-		0,
+		ACTION_DANTE_TRICKSTER_AIR_TRICK,
+		ACTION_DANTE_TRICKSTER_AIR_TRICK,
 	},
 	// Right
 	{
@@ -505,8 +505,8 @@ constexpr uint8 rangedAttackDante[MAX_RANGED_WEAPON_DANTE][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_EBONY_IVORY_NORMAL_SHOT,
+			ACTION_DANTE_EBONY_IVORY_AIR_NORMAL_SHOT,
 		},
 		// Up
 		{
@@ -533,8 +533,8 @@ constexpr uint8 rangedAttackDante[MAX_RANGED_WEAPON_DANTE][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_SHOTGUN_NORMAL_SHOT,
+			ACTION_DANTE_SHOTGUN_AIR_NORMAL_SHOT,
 		},
 		// Up
 		{
@@ -561,8 +561,8 @@ constexpr uint8 rangedAttackDante[MAX_RANGED_WEAPON_DANTE][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_DANTE_ARTEMIS_NORMAL_SHOT,
+			ACTION_DANTE_ARTEMIS_AIR_NORMAL_SHOT,
 		},
 		// Up
 		{
@@ -589,7 +589,7 @@ constexpr uint8 rangedAttackDante[MAX_RANGED_WEAPON_DANTE][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
+			ACTION_DANTE_SPIRAL_NORMAL_SHOT,
 			0,
 		},
 		// Up
@@ -617,7 +617,7 @@ constexpr uint8 rangedAttackDante[MAX_RANGED_WEAPON_DANTE][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
+			ACTION_DANTE_KALINA_ANN_NORMAL_SHOT,
 			0,
 		},
 		// Up
@@ -649,12 +649,12 @@ constexpr uint8 meleeAttackVergil[MAX_MELEE_WEAPON_VERGIL][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_VERGIL_YAMATO_COMBO_PART_1,
+			ACTION_VERGIL_YAMATO_AERIAL_RAVE_PART_1,
 		},
 		// Up
 		{
-			0,
+			ACTION_VERGIL_YAMATO_RAPID_SLASH_LEVEL_2,
 			0,
 		},
 		// Right
@@ -664,7 +664,7 @@ constexpr uint8 meleeAttackVergil[MAX_MELEE_WEAPON_VERGIL][MAX_TILT_DIRECTION][2
 		},
 		// Down
 		{
-			0,
+			ACTION_VERGIL_YAMATO_UPPER_SLASH_PART_1,
 			0,
 		},
 		// Left
@@ -677,12 +677,12 @@ constexpr uint8 meleeAttackVergil[MAX_MELEE_WEAPON_VERGIL][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_VERGIL_BEOWULF_COMBO_PART_1,
+			ACTION_VERGIL_BEOWULF_STARFALL_LEVEL_2,
 		},
 		// Up
 		{
-			0,
+			ACTION_VERGIL_BEOWULF_LUNAR_PHASE_LEVEL_2,
 			0,
 		},
 		// Right
@@ -692,7 +692,7 @@ constexpr uint8 meleeAttackVergil[MAX_MELEE_WEAPON_VERGIL][MAX_TILT_DIRECTION][2
 		},
 		// Down
 		{
-			0,
+			ACTION_VERGIL_BEOWULF_RISING_SUN,
 			0,
 		},
 		// Left
@@ -705,12 +705,12 @@ constexpr uint8 meleeAttackVergil[MAX_MELEE_WEAPON_VERGIL][MAX_TILT_DIRECTION][2
 	{
 		// Neutral
 		{
-			0,
-			0,
+			ACTION_VERGIL_FORCE_EDGE_COMBO_PART_1,
+			ACTION_VERGIL_FORCE_EDGE_HELM_BREAKER_LEVEL_2,
 		},
 		// Up
 		{
-			0,
+			ACTION_VERGIL_FORCE_EDGE_STINGER_LEVEL_2,
 			0,
 		},
 		// Right
@@ -720,7 +720,7 @@ constexpr uint8 meleeAttackVergil[MAX_MELEE_WEAPON_VERGIL][MAX_TILT_DIRECTION][2
 		},
 		// Down
 		{
-			0,
+			ACTION_VERGIL_FORCE_EDGE_HIGH_TIME,
 			0,
 		},
 		// Left
@@ -734,13 +734,13 @@ constexpr uint8 darkSlayerVergil                          [MAX_TILT_DIRECTION][2
 {
 	// Neutral
 	{
-		0,
-		0,
+		ACTION_VERGIL_DARK_SLAYER_AIR_TRICK,
+		ACTION_VERGIL_DARK_SLAYER_AIR_TRICK,
 	},
 	// Up
 	{
-		0,
-		0,
+		ACTION_VERGIL_DARK_SLAYER_TRICK_UP,
+		ACTION_VERGIL_DARK_SLAYER_TRICK_UP,
 	},
 	// Right
 	{
@@ -749,8 +749,8 @@ constexpr uint8 darkSlayerVergil                          [MAX_TILT_DIRECTION][2
 	},
 	// Down
 	{
-		0,
-		0,
+		ACTION_VERGIL_DARK_SLAYER_TRICK_DOWN,
+		ACTION_VERGIL_DARK_SLAYER_TRICK_DOWN,
 	},
 	// Left
 	{
@@ -803,12 +803,51 @@ void DisableControl(T & actorData)
 	actorData.newEnableLeftStick = false;
 }
 
-template <typename T1, typename T2>
-void CopyPosition(T1 & target, T2 & source)
+//template <typename T1, typename T2>
+//void CopyPosition(T1 & target, T2 & source)
+//{
+//	target.position = source.position;
+//	target.direction = source.direction;
+//}
+
+
+template
+<
+	typename T1,
+	typename T2
+>
+void CopyPosition
+(
+	T1 & activeActorData,
+	T2 & idleActorData
+)
 {
-	target.position = source.position;
-	target.direction = source.direction;
+	idleActorData.position = activeActorData.position;
+	idleActorData.direction = activeActorData.direction;
+
+	idleActorData.state &= ~STATE_ON_FLOOR;
+	idleActorData.state &= ~STATE_IN_AIR;
+	if (activeActorData.state & STATE_ON_FLOOR)
+	{
+		idleActorData.state |= STATE_ON_FLOOR;
+	}
+	else
+	{
+		idleActorData.state |= STATE_IN_AIR;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 template <typename T>
 void SetLeader(T & actorData)
@@ -920,16 +959,18 @@ bool IsYamatoSelected(T & actorData)
 
 
 
+#define _ToString(a) #a
+#define ToString(a) _ToString(a)
 
 
-
-
-
+#define _Merge(a, b) a##b
+#define Merge(a, b) _Merge(a, b)
 
 
 
 
 #define GetAction(actorData, binding, array)\
+uint8 action = 0;\
 const_for_each(tiltDirection, TILT_DIRECTION_UP, MAX_TILT_DIRECTION)\
 {\
 	if\
@@ -960,27 +1001,33 @@ if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLIC
 		idleActorData.bufferedAction = action;\
 		idleActorData.newBufferedActionPolicy = policy;\
 		idleActorData.state |= STATE_BUSY;\
-		MessageBoxA(0, "BUFFER", 0, 0);\
+		MessageBoxA(0, Merge("BUFFER\n", ToString(policy)), 0, 0);\
 	}\
 }\
 else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)\
 {\
 	if (idleActorData.bufferedAction && (idleActorData.newBufferedActionPolicy == policy))\
 	{\
-		MessageBoxA(0, "BUFFER TRIGGERED FROM EXECUTE", 0, 0);\
+		idleActorData.newBufferedActionPolicy = 0;\
 		idleActorData.state &= ~STATE_BUSY;\
+		CopyPosition(childActorData, parentActorData);\
 		EndMotion(activeActorData);\
+		MessageBoxA(0, Merge("BUFFER TRIGGERED FROM EXECUTE\n", ToString(policy)), 0, 0);\
 		goto BufferExecuteEnd;\
 	}\
 	GetAction(activeActorData, binding, array);\
 	if (action)\
 	{\
 		idleActorData.bufferedAction = action;\
-		idleActorData.newBufferedActionPolicy = policy;\
+		CopyPosition(childActorData, parentActorData);\
 		EndMotion(activeActorData);\
-		MessageBoxA(0, "EXECUTE", 0, 0);\
+		MessageBoxA(0, Merge("EXECUTE\n", ToString(policy)), 0, 0);\
 	}\
 }\
+
+
+
+
 
 
 
@@ -1087,7 +1134,6 @@ void DanteVergil(byte8 * baseAddr)
 	{
 		if (IsWeaponActive(childActorData))
 		{
-			uint8 action = 0;
 			auto style = parentActorData.newStyle;
 			if (style > STYLE_DANTE_DOPPELGANGER)
 			{
@@ -1098,21 +1144,41 @@ void DanteVergil(byte8 * baseAddr)
 			{
 				meleeWeapon = WEAPON_DANTE_REBELLION;
 			}
+
+
+
 			auto rangedWeapon = parentActorData.newRangedWeaponMap[parentActorData.newRangedWeaponIndex];
 			if (rangedWeapon > WEAPON_DANTE_KALINA_ANN)
 			{
 				rangedWeapon = WEAPON_DANTE_EBONY_IVORY;
 			}
 			rangedWeapon -= WEAPON_DANTE_EBONY_IVORY;
+
+
+
+
+
+
 			uint8 state = (childActorData.state & STATE_ON_FLOOR) ? 0 : 1;
 
 			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK, BINDING_MELEE_ATTACK, meleeAttackDante[meleeWeapon]);
+			if (style == STYLE_DANTE_SWORDMASTER)
+			{
+				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER, BINDING_STYLE_ACTION, swordmasterDante[meleeWeapon]);
+			}
+			else
+			{
+				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER, BINDING_STYLE_ACTION, gunslingerDante[rangedWeapon]);
+			}
+			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_ROYALGUARD, BINDING_STYLE_ACTION, royalguardDante);
+			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER, BINDING_STYLE_ACTION, tricksterDante);
+			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK, BINDING_SHOOT, rangedAttackDante[rangedWeapon]);
+			// Special case. Never has buffer state. Is run at the very end.
+			if (childActorData.nextActionRequestPolicy[NEXT_ACTION_REQUEST_POLICY_END] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+			{
+				EndMotion(childActorData);
+			}
 			BufferExecuteEnd:;
-
-
-
-
-
 		}
 	}
 
