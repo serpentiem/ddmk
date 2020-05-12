@@ -13,8 +13,8 @@ var items =
 	[ "init"                            , "bool"                      , 8                                ],
 	[ "character"                       , "uint32"                    , 0x78                             ],
 	[ "position"                        , "vec4"                      , 0x80                             ],
-	[ ""                        , "float32"                      , 0x94                             ],
-	[ ""                        , "float32"                      , 0xA4                             ],
+	[ "pull"                        , "float32"                      , 0x94                             ],
+	[ "pullMultiplier"                        , "float32"                      , 0xA4                             ],
 	[ "direction"                       , "uint16"                    , 0xC0                             ],
 	[ "id"                              , "uint8"                     , 0x118                            ],
 	[ "isClone"                         , "bool"                      , 0x11C                            ], //but has size of uint32.
@@ -191,6 +191,8 @@ var extra =
 	[ "newEnablePermissionUpdate"       , "bool"    ],
 	[ "newIsLeader"       , "bool"    ],
 	[ "newBufferedActionPolicy"       , "uint8"    ],
+	[ "newEnablePositionUpdate"       , "bool"    ],
+
 ];
 
 var c = "";

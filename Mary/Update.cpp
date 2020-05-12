@@ -822,8 +822,10 @@ void CopyPosition
 	T2 & idleActorData
 )
 {
-	idleActorData.position = activeActorData.position;
-	idleActorData.direction = activeActorData.direction;
+	idleActorData.position       = activeActorData.position;
+	idleActorData.pull           = activeActorData.pull;
+	idleActorData.pullMultiplier = activeActorData.pullMultiplier;
+	idleActorData.direction      = activeActorData.direction;
 
 	idleActorData.state &= ~STATE_ON_FLOOR;
 	idleActorData.state &= ~STATE_IN_AIR;
@@ -943,7 +945,20 @@ bool IsYamatoSelected(T & actorData)
 
 
 
-
+template <typename T>
+void FixPull(T & actorData)
+{
+	if (actorData.state & STATE_ON_FLOOR)
+	{
+		actorData.pull = 0;
+		actorData.pullMultiplier = 0;
+	}
+	else
+	{
+		actorData.pull = 0;
+		actorData.pullMultiplier = -1.5;
+	}
+}
 
 
 
@@ -1061,6 +1076,20 @@ void DanteVergil(byte8 * baseAddr)
 	auto & gamepad = GetGamepad(0);
 
 
+	
+
+
+
+	if (!IsYamatoSelected(parentActorData) && !IsWeaponActive(childActorData))
+	{
+		CopyPosition(parentActorData, childActorData);
+	}
+
+	if (IsYamatoSelected(parentActorData) && !IsWeaponActive(parentActorData))
+	{
+		CopyPosition(childActorData, parentActorData);
+	}
+
 
 
 
@@ -1072,6 +1101,13 @@ void DanteVergil(byte8 * baseAddr)
 		OnceStart(parentActorData, 0);
 		{
 			//TriggerEventEnableYamato(parentActorData, childActorData);
+
+
+			FixPull(childActorData);
+
+
+
+
 		}
 		OnceEnd;
 	}
@@ -1089,6 +1125,9 @@ void DanteVergil(byte8 * baseAddr)
 		OnceStart(parentActorData, 1);
 		{
 			//TriggerEventDisableYamato(parentActorData, childActorData);
+
+			FixPull(parentActorData);
+
 		}
 		OnceEnd;
 	}
@@ -1156,22 +1195,35 @@ void DanteVergil(byte8 * baseAddr)
 
 
 
-
+			// @Todo: Add Jump.
 
 
 			uint8 state = (childActorData.state & STATE_ON_FLOOR) ? 0 : 1;
 
 			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK, BINDING_MELEE_ATTACK, meleeAttackDante[meleeWeapon]);
-			if (style == STYLE_DANTE_SWORDMASTER)
+			switch (style)
+			{
+			case STYLE_DANTE_SWORDMASTER:
 			{
 				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER, BINDING_STYLE_ACTION, swordmasterDante[meleeWeapon]);
+				break;
 			}
-			else
+			case STYLE_DANTE_GUNSLINGER:
 			{
 				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER, BINDING_STYLE_ACTION, gunslingerDante[rangedWeapon]);
+				break;
 			}
-			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_ROYALGUARD, BINDING_STYLE_ACTION, royalguardDante);
-			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER, BINDING_STYLE_ACTION, tricksterDante);
+			case STYLE_DANTE_TRICKSTER:
+			{
+				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER, BINDING_STYLE_ACTION, tricksterDante);
+				break;
+			}
+			case STYLE_DANTE_ROYALGUARD:
+			{
+				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_ROYALGUARD, BINDING_STYLE_ACTION, royalguardDante);
+				break;
+			}
+			}
 			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK, BINDING_SHOOT, rangedAttackDante[rangedWeapon]);
 			// Special case. Never has buffer state. Is run at the very end.
 			if (childActorData.nextActionRequestPolicy[NEXT_ACTION_REQUEST_POLICY_END] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
@@ -1478,6 +1530,39 @@ void Update_Init()
 
 
 	Write<byte8>((appBaseAddr + 0x209460), 0xEB); // Air Stinger
+
+
+
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rcx+0000B8C0],01
+			0x74, 0x01,                               //je short
+			0xC3,                                     //ret
+			0x48, 0x89, 0x5C, 0x24, 0x08,             //mov [rsp+08],rbx
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1FB305), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEnablePositionUpdate);
+		WriteJump((appBaseAddr + 0x1FB300), func.addr);
+		/*
+		dmc3.exe+1FB300 - 48 89 5C 24 08 - mov [rsp+08],rbx
+		dmc3.exe+1FB305 - 57             - push rdi
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	/*

@@ -19,9 +19,9 @@ struct ACTOR_DATA
 	_(4);
 	vec4 position; // 0x80
 	_(4);
-	float32 var_94; // 0x94
+	float32 pull; // 0x94
 	_(12);
-	float32 var_A4; // 0xA4
+	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 direction; // 0xC0
 	_(86);
@@ -155,6 +155,7 @@ struct ACTOR_DATA
 	bool newEnablePermissionUpdate; // 0xB97E
 	bool newIsLeader; // 0xB97F
 	uint8 newBufferedActionPolicy; // 0xB980
+	bool newEnablePositionUpdate; // 0xB981
 
 	operator byte8 *()
 	{
@@ -171,9 +172,9 @@ struct ACTOR_DATA_DANTE
 	_(4);
 	vec4 position; // 0x80
 	_(4);
-	float32 var_94; // 0x94
+	float32 pull; // 0x94
 	_(12);
-	float32 var_A4; // 0xA4
+	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 direction; // 0xC0
 	_(86);
@@ -346,6 +347,7 @@ struct ACTOR_DATA_DANTE
 	bool newEnablePermissionUpdate; // 0xB97E
 	bool newIsLeader; // 0xB97F
 	uint8 newBufferedActionPolicy; // 0xB980
+	bool newEnablePositionUpdate; // 0xB981
 
 	operator byte8 *()
 	{
@@ -362,9 +364,9 @@ struct ACTOR_DATA_BOB
 	_(4);
 	vec4 position; // 0x80
 	_(4);
-	float32 var_94; // 0x94
+	float32 pull; // 0x94
 	_(12);
-	float32 var_A4; // 0xA4
+	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 direction; // 0xC0
 	_(86);
@@ -498,6 +500,7 @@ struct ACTOR_DATA_BOB
 	bool newEnablePermissionUpdate; // 0xB97E
 	bool newIsLeader; // 0xB97F
 	uint8 newBufferedActionPolicy; // 0xB980
+	bool newEnablePositionUpdate; // 0xB981
 
 	operator byte8 *()
 	{
@@ -514,9 +517,9 @@ struct ACTOR_DATA_LADY
 	_(4);
 	vec4 position; // 0x80
 	_(4);
-	float32 var_94; // 0x94
+	float32 pull; // 0x94
 	_(12);
-	float32 var_A4; // 0xA4
+	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 direction; // 0xC0
 	_(86);
@@ -650,6 +653,7 @@ struct ACTOR_DATA_LADY
 	bool newEnablePermissionUpdate; // 0xB97E
 	bool newIsLeader; // 0xB97F
 	uint8 newBufferedActionPolicy; // 0xB980
+	bool newEnablePositionUpdate; // 0xB981
 
 	operator byte8 *()
 	{
@@ -666,9 +670,9 @@ struct ACTOR_DATA_VERGIL
 	_(4);
 	vec4 position; // 0x80
 	_(4);
-	float32 var_94; // 0x94
+	float32 pull; // 0x94
 	_(12);
-	float32 var_A4; // 0xA4
+	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 direction; // 0xC0
 	_(86);
@@ -820,6 +824,7 @@ struct ACTOR_DATA_VERGIL
 	bool newEnablePermissionUpdate; // 0xB97E
 	bool newIsLeader; // 0xB97F
 	uint8 newBufferedActionPolicy; // 0xB980
+	bool newEnablePositionUpdate; // 0xB981
 
 	operator byte8 *()
 	{

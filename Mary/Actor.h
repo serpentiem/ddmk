@@ -89,9 +89,11 @@ bool IsWeaponActive(T & actorData)
 }
 
 
+// @Todo: Add IsActive.
 
-
-
+// group 0
+// index 14
+// leap motion
 
 
 
