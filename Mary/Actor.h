@@ -95,7 +95,7 @@ bool IsWeaponActive(T & actorData)
 // index 14
 // leap motion
 
-
+// taunts as well
 
 
 

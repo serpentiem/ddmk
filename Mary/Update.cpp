@@ -974,15 +974,12 @@ void FixPull(T & actorData)
 
 
 
-#define _ToString(a) #a
-#define ToString(a) _ToString(a)
 
 
-#define _Merge(a, b) a##b
-#define Merge(a, b) _Merge(a, b)
-
-
-
+#define OnceEnable(actorData, index) actorData.newSect[index] = true
+#define OnceDisable(actorData, index) actorData.newSect[index] = false
+#define OnceStart(actorData, index) if (actorData.newSect[index]) { OnceDisable(actorData, index)
+#define OnceEnd }
 
 #define GetAction(actorData, binding, array)\
 uint8 action = 0;\
@@ -1007,6 +1004,12 @@ if (!action)\
 	}\
 }\
 
+#define _Merge(a, b) a##b
+#define Merge(a, b) _Merge(a, b)
+
+#define _ToString(a) #a
+#define ToString(a) _ToString(a)
+
 #define BufferExecute(activeActorData, idleActorData, policy, binding, array)\
 if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_BUFFER)\
 {\
@@ -1025,7 +1028,6 @@ else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_
 	{\
 		idleActorData.newBufferedActionPolicy = 0;\
 		idleActorData.state &= ~STATE_BUSY;\
-		CopyPosition(childActorData, parentActorData);\
 		EndMotion(activeActorData);\
 		MessageBoxA(0, Merge("BUFFER TRIGGERED FROM EXECUTE\n", ToString(policy)), 0, 0);\
 		goto BufferExecuteEnd;\
@@ -1034,27 +1036,13 @@ else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_
 	if (action)\
 	{\
 		idleActorData.bufferedAction = action;\
-		CopyPosition(childActorData, parentActorData);\
 		EndMotion(activeActorData);\
 		MessageBoxA(0, Merge("EXECUTE\n", ToString(policy)), 0, 0);\
 	}\
 }\
 
-
-
-
-
-
-
-
-
 void DanteVergil(byte8 * baseAddr)
 {
-	#define OnceEnable(dest, index) dest.newSect[index] = true
-	#define OnceDisable(dest, index) dest.newSect[index] = false
-	#define OnceStart(dest, index) if (dest.newSect[index]) { OnceDisable(dest, index)
-	#define OnceEnd }
-
 	auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
 	if (parentActorData.character != CHAR_DANTE)
 	{
@@ -1195,10 +1183,20 @@ void DanteVergil(byte8 * baseAddr)
 
 
 
+
+
 			// @Todo: Add Jump.
 
 
 			uint8 state = (childActorData.state & STATE_ON_FLOOR) ? 0 : 1;
+
+
+
+
+
+
+
+
 
 			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK, BINDING_MELEE_ATTACK, meleeAttackDante[meleeWeapon]);
 			switch (style)
@@ -1375,10 +1373,24 @@ void DanteVergil(byte8 * baseAddr)
 
 
 
-	#undef OnceReset
-	#undef OnceEnd
-	#undef OnceStart
+
 }
+
+#undef BufferExecute
+#undef ToString
+#undef _ToString
+#undef Merge
+#undef _Merge
+#undef GetAction
+#undef OnceEnd
+#undef OnceStart
+#undef OnceDisable
+#undef OnceEnable
+
+
+
+
+
 
 void ActorLoop(byte8 * baseAddr)
 {
@@ -1533,23 +1545,23 @@ void Update_Init()
 
 
 
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rcx+0000B8C0],01
-			0x74, 0x01,                               //je short
-			0xC3,                                     //ret
-			0x48, 0x89, 0x5C, 0x24, 0x08,             //mov [rsp+08],rbx
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1FB305), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEnablePositionUpdate);
-		WriteJump((appBaseAddr + 0x1FB300), func.addr);
-		/*
-		dmc3.exe+1FB300 - 48 89 5C 24 08 - mov [rsp+08],rbx
-		dmc3.exe+1FB305 - 57             - push rdi
-		*/
-	}
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rcx+0000B8C0],01
+	// 		0x74, 0x01,                               //je short
+	// 		0xC3,                                     //ret
+	// 		0x48, 0x89, 0x5C, 0x24, 0x08,             //mov [rsp+08],rbx
+	// 	};
+	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1FB305), false, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEnablePositionUpdate);
+	// 	WriteJump((appBaseAddr + 0x1FB300), func.addr);
+	// 	/*
+	// 	dmc3.exe+1FB300 - 48 89 5C 24 08 - mov [rsp+08],rbx
+	// 	dmc3.exe+1FB305 - 57             - push rdi
+	// 	*/
+	// }
 
 
 
