@@ -89,13 +89,37 @@ bool IsWeaponActive(T & actorData)
 }
 
 
-// @Todo: Add IsActive.
 
-// group 0
-// index 14
-// leap motion
+template <typename T>
+bool IsActive(T & actorData)
+{
+	auto & motionData = actorData.motionData[BODY_PART_UPPER];
+	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	{
+		if ((motionData.group == MOTION_GROUP_DANTE_BASE) && (motionData.index == 14))
+		{
+			return true;
+		}
+		if ((motionData.group == MOTION_GROUP_DANTE_TAUNTS))
+		{
+			return true;
+		}
+	}
+	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	{
+		if ((motionData.group == MOTION_GROUP_VERGIL_BASE) && (motionData.index == 14))
+		{
+			return true;
+		}
+		if ((motionData.group == MOTION_GROUP_VERGIL_TAUNTS))
+		{
+			return true;
+		}
+	}
+	return IsWeaponActive(actorData);
+}
 
-// taunts as well
+
 
 
 

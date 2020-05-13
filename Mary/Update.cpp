@@ -827,15 +827,30 @@ void CopyPosition
 	idleActorData.pullMultiplier = activeActorData.pullMultiplier;
 	idleActorData.direction      = activeActorData.direction;
 
-	idleActorData.state &= ~STATE_ON_FLOOR;
-	idleActorData.state &= ~STATE_IN_AIR;
-	if (activeActorData.state & STATE_ON_FLOOR)
+	//idleActorData.state &= ~STATE_ON_FLOOR;
+	//idleActorData.state &= ~STATE_IN_AIR;
+	//if (activeActorData.state & STATE_ON_FLOOR)
+	//{
+	//	idleActorData.state |= STATE_ON_FLOOR;
+	//}
+	//else
+	//{
+	//	idleActorData.state |= STATE_IN_AIR;
+	//}
+}
+
+template <typename T>
+void FixPull(T & actorData)
+{
+	if (actorData.state & STATE_ON_FLOOR)
 	{
-		idleActorData.state |= STATE_ON_FLOOR;
+		actorData.pull = 0;
+		actorData.pullMultiplier = 0;
 	}
 	else
 	{
-		idleActorData.state |= STATE_IN_AIR;
+		actorData.pull = 0;
+		actorData.pullMultiplier = -1.5;
 	}
 }
 
@@ -850,47 +865,46 @@ void CopyPosition
 
 
 
-
-template <typename T>
-void SetLeader(T & actorData)
-{
-
-
-	MessageBoxA(0, "SetLeader", 0, 0);
-
-	actorData.newIsLeader = true;
-	{
-		auto parentBaseAddr = actorData.newParentBaseAddr;
-		if (!parentBaseAddr)
-		{
-			goto sect0;
-		}
-		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(parentBaseAddr);
-		parentActorData.newIsLeader = false;
-	}
-	sect0:;
-	const_for_all(index, 4)
-	{
-		auto childBaseAddr = actorData.newChildBaseAddr[index];
-		if (!childBaseAddr)
-		{
-			continue;
-		}
-		auto & childActorData = *reinterpret_cast<ACTOR_DATA *>(childBaseAddr);
-		childActorData.newIsLeader = false;
-	}
-}
-
-
-
-
-template <typename T>
-__declspec(deprecated("Use bufferedAction instead.")) void TriggerAttack(T & actorData, uint8 index)
-{
-	actorData.action = index;
-	actorData.lastAction = 0;
-	func_1E0800(actorData, 17, 0, 0xFFFFFFFF);
-}
+//template <typename T>
+//void SetLeader(T & actorData)
+//{
+//
+//
+//	MessageBoxA(0, "SetLeader", 0, 0);
+//
+//	actorData.newIsLeader = true;
+//	{
+//		auto parentBaseAddr = actorData.newParentBaseAddr;
+//		if (!parentBaseAddr)
+//		{
+//			goto sect0;
+//		}
+//		auto & parentActorData = *reinterpret_cast<ACTOR_DATA *>(parentBaseAddr);
+//		parentActorData.newIsLeader = false;
+//	}
+//	sect0:;
+//	const_for_all(index, 4)
+//	{
+//		auto childBaseAddr = actorData.newChildBaseAddr[index];
+//		if (!childBaseAddr)
+//		{
+//			continue;
+//		}
+//		auto & childActorData = *reinterpret_cast<ACTOR_DATA *>(childBaseAddr);
+//		childActorData.newIsLeader = false;
+//	}
+//}
+//
+//
+//
+//
+//template <typename T>
+//__declspec(deprecated("Use bufferedAction instead.")) void TriggerAttack(T & actorData, uint8 index)
+//{
+//	actorData.action = index;
+//	actorData.lastAction = 0;
+//	func_1E0800(actorData, 17, 0, 0xFFFFFFFF);
+//}
 
 
 
@@ -932,10 +946,34 @@ inline void DisableYamato(ACTOR_DATA_VERGIL & actorData)
 
 
 
+//template <typename T>
+//bool IsYamatoSelected(T & actorData)
+//{
+//	if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] == WEAPON_VERGIL_YAMATO)
+//	{
+//		return true;
+//	}
+//	return false;
+//}
+
+
+
 template <typename T>
-bool IsYamatoSelected(T & actorData)
+bool IsVergilMeleeWeaponSelected(T & actorData)
 {
-	if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] == WEAPON_VERGIL_YAMATO)
+	auto & meleeWeapon = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
+	if ((meleeWeapon >= WEAPON_VERGIL_YAMATO) && (meleeWeapon <= WEAPON_VERGIL_FORCE_EDGE))
+	{
+		return true;
+	}
+	return false;
+}
+
+template <typename T>
+bool IsDanteMeleeWeaponSelected(T & actorData)
+{
+	auto & meleeWeapon = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
+	if ((meleeWeapon >= WEAPON_DANTE_REBELLION) && (meleeWeapon <= WEAPON_DANTE_BEOWULF))
 	{
 		return true;
 	}
@@ -945,20 +983,20 @@ bool IsYamatoSelected(T & actorData)
 
 
 
-template <typename T>
-void FixPull(T & actorData)
-{
-	if (actorData.state & STATE_ON_FLOOR)
-	{
-		actorData.pull = 0;
-		actorData.pullMultiplier = 0;
-	}
-	else
-	{
-		actorData.pull = 0;
-		actorData.pullMultiplier = -1.5;
-	}
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1010,7 +1048,7 @@ if (!action)\
 #define _ToString(a) #a
 #define ToString(a) _ToString(a)
 
-#define BufferExecute(activeActorData, idleActorData, policy, binding, array)\
+#define BufferExecute(activeActorData, idleActorData, policy, binding, array, sect)\
 if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_BUFFER)\
 {\
 	GetAction(activeActorData, binding, array);\
@@ -1030,7 +1068,7 @@ else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_
 		idleActorData.state &= ~STATE_BUSY;\
 		EndMotion(activeActorData);\
 		MessageBoxA(0, Merge("BUFFER TRIGGERED FROM EXECUTE\n", ToString(policy)), 0, 0);\
-		goto BufferExecuteEnd;\
+		goto sect;\
 	}\
 	GetAction(activeActorData, binding, array);\
 	if (action)\
@@ -1068,34 +1106,42 @@ void DanteVergil(byte8 * baseAddr)
 
 
 
-	if (!IsYamatoSelected(parentActorData) && !IsWeaponActive(childActorData))
+	// Only one actor can be active at any given time.
+
+	// Active
+
+	if (IsActive(parentActorData))
 	{
 		CopyPosition(parentActorData, childActorData);
 	}
 
-	if (IsYamatoSelected(parentActorData) && !IsWeaponActive(parentActorData))
+	if (IsActive(childActorData))
 	{
 		CopyPosition(childActorData, parentActorData);
 	}
 
+	// Idle
 
-
-
-
-
-
-	if (IsYamatoSelected(parentActorData) && !IsWeaponActive(parentActorData))
+	if (!IsVergilMeleeWeaponSelected(parentActorData) && !IsActive(childActorData))
 	{
+		CopyPosition(parentActorData, childActorData);
+		OnceStart(parentActorData, 1);
+		{
+			FixPull(parentActorData);
+		}
+		OnceEnd;
+	}
+	else
+	{
+		OnceEnable(parentActorData, 1);
+	}
+
+	if (IsVergilMeleeWeaponSelected(parentActorData) && !IsActive(parentActorData))
+	{
+		CopyPosition(childActorData, parentActorData);
 		OnceStart(parentActorData, 0);
 		{
-			//TriggerEventEnableYamato(parentActorData, childActorData);
-
-
 			FixPull(childActorData);
-
-
-
-
 		}
 		OnceEnd;
 	}
@@ -1108,64 +1154,65 @@ void DanteVergil(byte8 * baseAddr)
 
 
 
-	if (!IsYamatoSelected(parentActorData) && !IsWeaponActive(childActorData))
-	{
-		OnceStart(parentActorData, 1);
-		{
-			//TriggerEventDisableYamato(parentActorData, childActorData);
 
-			FixPull(parentActorData);
 
-		}
-		OnceEnd;
-	}
-	else
-	{
-		OnceEnable(parentActorData, 1);
-	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// Parent
 
-	if (IsYamatoSelected(parentActorData))
+	if (IsVergilMeleeWeaponSelected(parentActorData))
 	{
 		DisableControl(parentActorData);
 	}
 
-	if (!IsYamatoSelected(parentActorData))
+	if (!IsVergilMeleeWeaponSelected(parentActorData))
 	{
-		if (!IsWeaponActive(childActorData))
+		if (!IsActive(childActorData))
 		{
 			EnableControl(parentActorData);
-			//SetLeader(parentActorData);
 		}
 	}
 
 
 
 
-	// if (!IsYamatoSelected(parentActorData))
-	// {
-	// 	if (IsWeaponActive(childActorData))
-	// 	{
-	// 		if (BufferHelper<NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK          >(parentActorData, childActorData)) { return; }
-	// 		if (BufferHelper<NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER>(parentActorData, childActorData)) { return; }
-	// 		if (BufferHelper<NEXT_ACTION_REQUEST_POLICY_ROYALGUARD            >(parentActorData, childActorData)) { return; }
-	// 		if (BufferHelper<NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER >(parentActorData, childActorData)) { return; }
-	// 		if (BufferHelper<NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK         >(parentActorData, childActorData)) { return; }
-	// 	}
-	// }
 
 
 
-	if (!IsYamatoSelected(parentActorData))
+
+
+	if (!IsVergilMeleeWeaponSelected(parentActorData))
 	{
-		if (IsWeaponActive(childActorData))
+		if (IsActive(childActorData))
 		{
 			auto style = parentActorData.newStyle;
 			if (style > STYLE_DANTE_DOPPELGANGER)
 			{
 				style = STYLE_DANTE_SWORDMASTER;
 			}
+
 			auto meleeWeapon = parentActorData.newMeleeWeaponMap[parentActorData.newMeleeWeaponIndex];
 			if (meleeWeapon > WEAPON_DANTE_BEOWULF)
 			{
@@ -1182,12 +1229,6 @@ void DanteVergil(byte8 * baseAddr)
 			rangedWeapon -= WEAPON_DANTE_EBONY_IVORY;
 
 
-
-
-
-			// @Todo: Add Jump.
-
-
 			uint8 state = (childActorData.state & STATE_ON_FLOOR) ? 0 : 1;
 
 
@@ -1198,37 +1239,37 @@ void DanteVergil(byte8 * baseAddr)
 
 
 
-			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK, BINDING_MELEE_ATTACK, meleeAttackDante[meleeWeapon]);
+			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK, BINDING_MELEE_ATTACK, meleeAttackDante[meleeWeapon], BufferExecuteEndDante);
 			switch (style)
 			{
 			case STYLE_DANTE_SWORDMASTER:
 			{
-				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER, BINDING_STYLE_ACTION, swordmasterDante[meleeWeapon]);
+				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER, BINDING_STYLE_ACTION, swordmasterDante[meleeWeapon], BufferExecuteEndDante);
 				break;
 			}
 			case STYLE_DANTE_GUNSLINGER:
 			{
-				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER, BINDING_STYLE_ACTION, gunslingerDante[rangedWeapon]);
+				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER, BINDING_STYLE_ACTION, gunslingerDante[rangedWeapon], BufferExecuteEndDante);
 				break;
 			}
 			case STYLE_DANTE_TRICKSTER:
 			{
-				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER, BINDING_STYLE_ACTION, tricksterDante);
+				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER, BINDING_STYLE_ACTION, tricksterDante, BufferExecuteEndDante);
 				break;
 			}
 			case STYLE_DANTE_ROYALGUARD:
 			{
-				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_ROYALGUARD, BINDING_STYLE_ACTION, royalguardDante);
+				BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_ROYALGUARD, BINDING_STYLE_ACTION, royalguardDante, BufferExecuteEndDante);
 				break;
 			}
 			}
-			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK, BINDING_SHOOT, rangedAttackDante[rangedWeapon]);
+			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK, BINDING_SHOOT, rangedAttackDante[rangedWeapon], BufferExecuteEndDante);
 			// Special case. Never has buffer state. Is run at the very end.
 			if (childActorData.nextActionRequestPolicy[NEXT_ACTION_REQUEST_POLICY_END] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
 			{
 				EndMotion(childActorData);
 			}
-			BufferExecuteEnd:;
+			BufferExecuteEndDante:;
 		}
 	}
 
@@ -1260,103 +1301,40 @@ void DanteVergil(byte8 * baseAddr)
 
 	// Child
 
-	if (!IsYamatoSelected(parentActorData))
+	if (!IsVergilMeleeWeaponSelected(parentActorData))
 	{
-
-
 		DisableControl(childActorData);
-		// childActorData.newButtonMask = 0;
-		// childActorData.newEnableLeftStick = false;
 	}
 
-	if (IsYamatoSelected(parentActorData))
+	if (IsVergilMeleeWeaponSelected(parentActorData))
 	{
-		if (!IsWeaponActive(parentActorData))
+		if (!IsActive(parentActorData))
 		{
 			EnableControl(childActorData);
-			//SetLeader(childActorData);
-			// childActorData.newButtonMask = 0xFFFF;
-			// childActorData.newEnableLeftStick = true;
 		}
 	}
 
-	if (IsYamatoSelected(parentActorData))
+	if (IsVergilMeleeWeaponSelected(parentActorData))
 	{
-		if (IsWeaponActive(parentActorData))
+		if (IsActive(parentActorData))
 		{
-			if (parentActorData.nextActionRequestPolicy[4] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+			//auto meleeWeapon = childActorData.newMeleeWeaponMap[childActorData.newMeleeWeaponIndex];
+			uint8 meleeWeapon = WEAPON_VERGIL_YAMATO;
+			if (meleeWeapon > WEAPON_VERGIL_FORCE_EDGE)
 			{
-				if
-				(
-					(gamepad.buttons[0] & GAMEPAD_RIGHT_SHOULDER) &&
-					(GetRelativeTiltDirection(childActorData) == TILT_DIRECTION_UP) &&
-					(gamepad.buttons[0] & GAMEPAD_Y)
-				)
-				{
-					EndMotion(parentActorData);
-
-					EnableControl(childActorData);
-
-					//Camera_followBaseAddr = childActorData;
-
-					// parentActorData.newIsLeader = false;
-					// childActorData.newIsLeader = true;
-					SetLeader(childActorData);
-					CopyPosition(parentActorData, childActorData);
-					
-
-
-					if (childActorData.state & STATE_ON_FLOOR)
-					{
-						TriggerAttack(childActorData, 5); // Rapid Slash
-					}
-				}
-				else if
-				(
-					(gamepad.buttons[0] & GAMEPAD_RIGHT_SHOULDER) &&
-					(GetRelativeTiltDirection(childActorData) == TILT_DIRECTION_DOWN) &&
-					(gamepad.buttons[0] & GAMEPAD_Y)
-				)
-				{
-					EndMotion(parentActorData);
-
-					EnableControl(childActorData);
-
-					//Camera_followBaseAddr = childActorData;
-
-					// parentActorData.newIsLeader = false;
-					// childActorData.newIsLeader = true;
-					SetLeader(childActorData);
-					CopyPosition(parentActorData, childActorData);
-
-					if (childActorData.state & STATE_ON_FLOOR)
-					{
-						TriggerAttack(childActorData, 7); // High Time
-					}
-				}
-				else if (gamepad.buttons[0] & GAMEPAD_Y)
-				{
-					EndMotion(parentActorData);
-
-					EnableControl(childActorData);
-
-					//Camera_followBaseAddr = childActorData;
-
-					// parentActorData.newIsLeader = false;
-					// childActorData.newIsLeader = true;
-					SetLeader(childActorData);
-					CopyPosition(parentActorData, childActorData);
-
-					if (childActorData.state & STATE_ON_FLOOR)
-					{
-						TriggerAttack(childActorData, 1); // Combo 1 Part 1
-					}
-					else
-					{
-						TriggerAttack(childActorData, 11); // Aerial Rave
-					}
-				}
+				meleeWeapon = WEAPON_VERGIL_YAMATO;
 			}
+			meleeWeapon -= WEAPON_VERGIL_YAMATO;
+
+			uint8 state = (parentActorData.state & STATE_ON_FLOOR) ? 0 : 1;
+
+			BufferExecute(parentActorData, childActorData, NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK         , BINDING_MELEE_ATTACK, meleeAttackVergil[meleeWeapon], BufferExecuteEndVergil);
+			BufferExecute(parentActorData, childActorData, NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER, BINDING_STYLE_ACTION, darkSlayerVergil              , BufferExecuteEndVergil);
+			if (parentActorData.nextActionRequestPolicy[NEXT_ACTION_REQUEST_POLICY_END] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+			{
+				EndMotion(parentActorData);
+			}
+			BufferExecuteEndVergil:;
 		}
 	}
 
