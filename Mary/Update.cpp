@@ -1019,7 +1019,7 @@ bool IsDanteMeleeWeaponSelected(T & actorData)
 #define OnceStart(actorData, index) if (actorData.newSect[index]) { OnceDisable(actorData, index)
 #define OnceEnd }
 
-#define GetAction(actorData, binding, array)\
+#define GetAction(actorData, binding, __DEST__)\
 uint8 action = 0;\
 const_for_each(tiltDirection, TILT_DIRECTION_UP, MAX_TILT_DIRECTION)\
 {\
@@ -1030,7 +1030,7 @@ const_for_each(tiltDirection, TILT_DIRECTION_UP, MAX_TILT_DIRECTION)\
 		(gamepad.buttons[0] & GetBinding(binding))\
 	)\
 	{\
-		action = array[tiltDirection][state];\
+		action = __DEST__[tiltDirection][state];\
 		break;\
 	}\
 }\
@@ -1038,7 +1038,7 @@ if (!action)\
 {\
 	if (gamepad.buttons[0] & GetBinding(binding))\
 	{\
-		action = array[TILT_DIRECTION_NEUTRAL][state];\
+		action = __DEST__[TILT_DIRECTION_NEUTRAL][state];\
 	}\
 }\
 
@@ -1048,10 +1048,10 @@ if (!action)\
 #define _ToString(a) #a
 #define ToString(a) _ToString(a)
 
-#define BufferExecute(activeActorData, idleActorData, policy, binding, array, sect)\
+#define BufferExecute(activeActorData, idleActorData, policy, binding, __DEST__, sect)\
 if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_BUFFER)\
 {\
-	GetAction(activeActorData, binding, array);\
+	GetAction(activeActorData, binding, __DEST__);\
 	if (action)\
 	{\
 		idleActorData.bufferedAction = action;\
@@ -1070,7 +1070,7 @@ else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_
 		MessageBoxA(0, Merge("BUFFER TRIGGERED FROM EXECUTE\n", ToString(policy)), 0, 0);\
 		goto sect;\
 	}\
-	GetAction(activeActorData, binding, array);\
+	GetAction(activeActorData, binding, __DEST__);\
 	if (action)\
 	{\
 		idleActorData.bufferedAction = action;\
@@ -1318,8 +1318,7 @@ void DanteVergil(byte8 * baseAddr)
 	{
 		if (IsActive(parentActorData))
 		{
-			//auto meleeWeapon = childActorData.newMeleeWeaponMap[childActorData.newMeleeWeaponIndex];
-			uint8 meleeWeapon = WEAPON_VERGIL_YAMATO;
+			auto meleeWeapon = childActorData.newMeleeWeaponMap[childActorData.newMeleeWeaponIndex];
 			if (meleeWeapon > WEAPON_VERGIL_FORCE_EDGE)
 			{
 				meleeWeapon = WEAPON_VERGIL_YAMATO;
@@ -1480,6 +1479,10 @@ void MainLoop()
 		}
 		vergilActorData.meleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
 		vergilActorData.position = mainActorData.position;
+
+
+		vergilActorData.newMeleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
+
 		//vergilActorData.newDisableLeftStick = true;
 		//vergilActorData.position = mainActorData.position;
 		//danteActorData.newIsLeader = true;

@@ -175,23 +175,29 @@ var extra =
 	[ "newGamepad"            , "uint8"   ],
 	[ "newButtonMask"         , "byte16"  ],
 	[ "newEnableLeftStick"    , "bool"    ],
-	[ "newStyle"              , "uint8"   ],
+	//[ "newStyle"              , "uint8"   ],
 	[ "newStyleMap[5][2]"     , "uint8"   ],
+
 	[ "newMeleeWeaponMap[5]"  , "uint8"   ],
 	[ "newMeleeWeaponData[5]" , "byte8 *" ],
-	[ "newMeleeWeaponCount"   , "uint8"   ],
+	//[ "newMeleeWeaponCount"   , "uint8"   ],
 	[ "newMeleeWeaponIndex"   , "uint8"   ],
+
 	[ "newRangedWeaponMap[5]" , "uint8"   ],
 	[ "newRangedWeaponData[5]", "byte8 *" ],
-	[ "newRangedWeaponCount"  , "uint8"   ],
+	//[ "newRangedWeaponCount"  , "uint8"   ],
 	[ "newRangedWeaponIndex"  , "uint8"   ],
+
+
+
+	
 	[ "newSect[8]"            , "bool"    ],
-	[ "newSkipPositionUpdate" , "bool"    ],
-	[ "newEnableMotion"       , "bool"    ],
-	[ "newEnablePermissionUpdate"       , "bool"    ],
-	[ "newIsLeader"       , "bool"    ],
+	// [ "newSkipPositionUpdate" , "bool"    ],
+	// [ "newEnableMotion"       , "bool"    ],
+	// [ "newEnablePermissionUpdate"       , "bool"    ],
+	// [ "newIsLeader"       , "bool"    ],
 	[ "newBufferedActionPolicy"       , "uint8"    ],
-	[ "newEnablePositionUpdate"       , "bool"    ],
+	//[ "newEnablePositionUpdate"       , "bool"    ],
 
 ];
 

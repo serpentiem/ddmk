@@ -2375,6 +2375,269 @@ void DrawRestartOverlay()
 	//ImGui::PopStyleVar(3);
 }
 
+
+
+
+
+
+//
+////template <typename T>
+//bool NEW_GUI_Combo
+//(
+//	const char * label,
+//	const char ** items,
+//	uint8 count,
+//	uint8 & var,
+//	bool save = true
+//)
+//{
+//	bool update = false;
+//	ImGui::PushID(GUI_id);
+//	GUI_id++;
+//	if (ImGui::BeginCombo(label, items[var]))
+//	{
+//		for_all(index, count)
+//		{
+//			bool selected = (var == index) ? true : false;
+//
+//			ImGui::PushID(GUI_id);
+//			GUI_id++;
+//
+//			if (ImGui::Selectable(items[index], &selected))
+//			{
+//				var = i;
+//				update = true;
+//			}
+//
+//			ImGui::PopID();
+//
+//			if (selected)
+//			{
+//				ImGui::SetItemDefaultFocus();
+//			}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//		}
+//		ImGui::EndCombo();
+//	}
+//	ImGui::PopID();
+//	if (update && save)
+//	{
+//		SaveConfig();
+//	}
+//	return update;
+//}
+
+
+
+
+
+
+uint8 Config_Actor_rangedWeaponDante[5] =
+{
+	WEAPON_DANTE_EBONY_IVORY,
+	WEAPON_DANTE_SHOTGUN,
+	WEAPON_DANTE_ARTEMIS,
+	WEAPON_DANTE_SPIRAL,
+	WEAPON_DANTE_KALINA_ANN,
+};
+
+uint8 Config_Actor_meleeWeaponVergil[5] =
+{
+	WEAPON_VERGIL_YAMATO,
+	WEAPON_VERGIL_BEOWULF,
+	WEAPON_VERGIL_FORCE_EDGE,
+	WEAPON_VOID,
+	WEAPON_VOID,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+const char * meleeWeaponNameVergil[] =
+{
+	"Yamato",
+	"Beowulf",
+	"Force Edge",
+	"Dante Rebellion",
+	"Dante Cerberus",
+	"Dante Agni & Rudra",
+	"Dante Nevan",
+	"Dante Beowulf",
+	"Void",
+};
+
+
+
+
+
+PrivateStart;
+
+constexpr uint8 meleeWeaponSelectMapDante[] =
+{
+	WEAPON_DANTE_REBELLION,
+	WEAPON_DANTE_CERBERUS,
+	WEAPON_DANTE_AGNI_RUDRA,
+	WEAPON_DANTE_NEVAN,
+	WEAPON_DANTE_BEOWULF,
+	WEAPON_VERGIL_YAMATO,
+	WEAPON_VERGIL_BEOWULF,
+	WEAPON_VERGIL_FORCE_EDGE,
+	WEAPON_VOID,
+};
+
+const char * meleeWeaponSelectNameDante[] =
+{
+	"Rebellion",
+	"Cerberus",
+	"Agni & Rudra",
+	"Nevan",
+	"Beowulf",
+	"Vergil Yamato",
+	"Vergil Beowulf",
+	"Vergil Force Edge",
+	"Void",
+};
+
+uint8 meleeWeaponSelectIndexDante[MAX_MELEE_WEAPON] = {};
+
+PrivateEnd;
+
+uint8 Config_Actor_meleeWeaponMapDante[MAX_MELEE_WEAPON] =
+{
+	WEAPON_DANTE_REBELLION,
+	WEAPON_DANTE_CERBERUS,
+	WEAPON_DANTE_AGNI_RUDRA,
+	WEAPON_DANTE_NEVAN,
+	WEAPON_DANTE_BEOWULF,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void UpdateMeleeWeaponSelectIndexDante()
+{
+	constexpr auto & configMap   = Config_Actor_meleeWeaponMapDante;
+	constexpr auto & selectMap   = meleeWeaponSelectMapDante;
+	constexpr auto & selectIndex = meleeWeaponSelectIndexDante;
+	const_for_all(selectIndexIndex, MAX_MELEE_WEAPON)
+	{
+		auto & configMapItem   = configMap  [selectIndexIndex];
+		auto & selectIndexItem = selectIndex[selectIndexIndex];
+		const_for_all(selectMapIndex, countof(selectMap))
+		{
+			auto & selectMapItem = selectMap[selectMapIndex];
+			if (selectMapItem == configMapItem)
+			{
+				selectIndexItem = selectMapIndex;
+				break;
+			}
+		}
+	}
+}
+
+void NEW_GUI_Main()
+{
+	if (ImGui::Begin("NEW_GUI_Main", &pause))
+	{
+		static bool run = false;
+		if (!run)
+		{
+			run = true;
+			//UpdateMeleeWeaponSelectIndexDante();
+		}
+		ImGui::Text("Melee Weapon");
+		constexpr auto & configMap   = Config_Actor_meleeWeaponMapDante;
+		constexpr auto & selectMap   = meleeWeaponSelectMapDante;
+		constexpr auto & selectName  = meleeWeaponSelectNameDante;
+		constexpr auto & selectIndex = meleeWeaponSelectIndexDante;
+		const_for_all(configMapIndex, MAX_MELEE_WEAPON)
+		{
+			auto & configMapItem   = configMap  [configMapIndex];
+			auto & selectIndexItem = selectIndex[configMapIndex];
+			ImGui::PushID(GUI_id);
+			GUI_id++;
+			if (ImGui::BeginCombo("", selectName[selectIndexItem], ImGuiComboFlags_HeightLargest))
+			{
+				const_for_all(selectMapIndex, countof(selectMap))
+				{
+					auto & selectMapItem = selectMap[selectMapIndex];
+					bool selected = (selectMapItem == configMapItem) ? true : false;
+					ImGui::PushID(GUI_id);
+					GUI_id++;
+					if (ImGui::Selectable(selectName[selectMapIndex], &selected))
+					{
+						configMapItem = selectMapItem;
+						selectIndexItem = selectMapIndex;
+					}
+					ImGui::PopID();
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::PopID();
+		}
+
+
+		ImGui::PushID(GUI_id);
+		GUI_id++;
+		if (ImGui::Button("Update Index"))
+		{
+			UpdateMeleeWeaponSelectIndexDante();
+		}
+		ImGui::PopID();
+
+
+
+
+
+
+	}
+	ImGui::End();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void GUI_Render()
 {
 	if (GUI_hide)
@@ -2406,6 +2669,13 @@ void GUI_Render()
 	//{
 	//	DrawRestartOverlay();
 	//}
+
+	ImGui::ShowDemoWindow();
+
+	NEW_GUI_Main();
+
+
+
 }
 
 void GUI_Init()

@@ -115,6 +115,9 @@ bool GUI_InputEx(const char * label, T & var, T step = 1, bool hex = false, bool
 bool GUI_Slider(const char * label, uint8 & var, uint8 min, uint8 max, bool save = true);
 bool GUI_Hyperlink(const char * label);
 bool GUI_Checkbox(const char * label, bool & var, bool save = true);
+
+
+
 template <typename T>
 bool GUI_Combo(const char * label, const char ** items, T count, T & var, T pos = 0, bool save = true)
 {
@@ -148,6 +151,18 @@ bool GUI_Combo(const char * label, const char ** items, T count, T & var, T pos 
 	}
 	return update;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 bool GUI_Button(const char * label, const ImVec2 & size = ImVec2());
 bool GUI_ColorEdit4(const char * label, float32 * var, bool save = true);
 bool GUI_ColorEdit4(float32 * var, bool save = true);

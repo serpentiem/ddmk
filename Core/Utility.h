@@ -69,10 +69,20 @@ struct GetBitCount
 
 template <uint64 value> struct GetDataTypeByValue : GetDataTypeByValueHelper<GetBitCount<value>::COUNT> {};
 
-template <typename T>
-constexpr auto countof(T & var)
+//template <typename T>
+//constexpr auto countof(T & var)
+//{
+//	return (sizeof(var) / sizeof(var[0]));
+//}
+
+template
+<
+	typename T,
+	uint32 count
+>
+constexpr auto countof(T(&array)[count])
 {
-	return (sizeof(var) / sizeof(var[0]));
+	return count;
 }
 
 #define const_for_each(name, start, end) for (GetDataTypeByValue<end>::type name = start; name < end; name++)

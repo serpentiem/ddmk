@@ -84,10 +84,52 @@ enum WEAPON_
 	WEAPON_VERGIL_FORCE_EDGE,
 	WEAPON_VOID = 255,
 	MAX_WEAPON = 16,
+	MAX_MELEE_WEAPON = 5,
+	MAX_RANGED_WEAPON = 5,
 	MAX_MELEE_WEAPON_DANTE = 5,
 	MAX_RANGED_WEAPON_DANTE = 5,
 	MAX_MELEE_WEAPON_VERGIL = 3,
 };
+
+//constexpr const char * enum_WEAPON_DANTE_REBELLION = "WEAPON_DANTE_REBELLION";
+//constexpr const char * enum_WEAPON_DANTE_CERBERUS = "WEAPON_DANTE_CERBERUS";
+//constexpr const char * enum_WEAPON_DANTE_AGNI_RUDRA = "WEAPON_DANTE_AGNI_RUDRA";
+//constexpr const char * enum_WEAPON_DANTE_NEVAN = "WEAPON_DANTE_NEVAN";
+//constexpr const char * enum_WEAPON_DANTE_BEOWULF = "WEAPON_DANTE_BEOWULF";
+//constexpr const char * enum_WEAPON_DANTE_EBONY_IVORY = "WEAPON_DANTE_EBONY_IVORY";
+//constexpr const char * enum_WEAPON_DANTE_SHOTGUN = "WEAPON_DANTE_SHOTGUN";
+//constexpr const char * enum_WEAPON_DANTE_ARTEMIS = "WEAPON_DANTE_ARTEMIS";
+//constexpr const char * enum_WEAPON_DANTE_SPIRAL = "WEAPON_DANTE_SPIRAL";
+//constexpr const char * enum_WEAPON_DANTE_KALINA_ANN = "WEAPON_DANTE_KALINA_ANN";
+//constexpr const char * enum_WEAPON_BOB_YAMATO = "WEAPON_BOB_YAMATO";
+//constexpr const char * enum_WEAPON_LADY_KALINA_ANN = "WEAPON_LADY_KALINA_ANN";
+//constexpr const char * enum_WEAPON_LADY_UNKNOWN = "WEAPON_LADY_UNKNOWN";
+//constexpr const char * enum_WEAPON_VERGIL_YAMATO = "WEAPON_VERGIL_YAMATO";
+//constexpr const char * enum_WEAPON_VERGIL_BEOWULF = "WEAPON_VERGIL_BEOWULF";
+//constexpr const char * enum_WEAPON_VERGIL_FORCE_EDGE = "WEAPON_VERGIL_FORCE_EDGE";
+//constexpr const char * enum_WEAPON_VOID = "WEAPON_VOID";
+//constexpr const char * enum_MAX_WEAPON = "MAX_WEAPON";
+//constexpr const char * enum_MAX_MELEE_WEAPON_DANTE = "MAX_MELEE_WEAPON_DANTE";
+//constexpr const char * enum_MAX_RANGED_WEAPON_DANTE = "MAX_RANGED_WEAPON_DANTE";
+//constexpr const char * enum_MAX_MELEE_WEAPON_VERGIL = "MAX_MELEE_WEAPON_VERGIL";
+//
+//
+//
+//
+//
+//#ifndef enum_name
+//#define enum_name(var) enum_##var
+//#endif
+//
+//constexpr const char * enum_greatness = enum_name(WEAPON_DANTE_AGNI_RUDRA);
+//
+//// Enums.h
+//// EnumNames.h
+
+
+
+
+
 
 enum WEAPON_TYPE_
 {
@@ -723,6 +765,7 @@ constexpr const char * cacheFilename[MAX_CACHE_FILE] =
 
 constexpr uint32 stringItemOff[MAX_CACHE_FILE] =
 {
+	// Dante
 	0x4EA570, // obj\pl000.pac
 	0x4EA580, // obj\pl011.pac
 	0x4EA590, // obj\pl013.pac
