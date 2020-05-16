@@ -42,10 +42,9 @@ T Reverse(T * var)
 #ifdef _CRT_USE_BUILTIN_OFFSETOF
 #define offsetof(s, m) __builtin_offsetof(s, m)
 #else
+// @Todo: Turn into template.
 #define offsetof(s, m) reinterpret_cast<uint32>(&(*reinterpret_cast<s *>(0)).m)
 #endif
-
-// @Research: Why uint64 again?
 
 template <uint8 count> struct GetDataTypeByValueHelper {};
 
@@ -85,12 +84,34 @@ constexpr auto countof(T(&array)[count])
 	return count;
 }
 
-#define const_for_each(name, start, end) for (GetDataTypeByValue<end>::type name = start; name < end; name++)
+//#define const_for_each(name, start, end) for (GetDataTypeByValue<end>::type name = start; name < end; name++)
+//
+//#define for_each(name, start, end) for (decltype(end) name = start; name < end; name++)
+//
+//#define const_for_all(name, end) for (typename GetDataTypeByValue<end>::type name = 0; name < end; name++)
+//
+//// ugh, fails for const.
+//#define for_all(name, end) for (decltype(end) name = 0; name < end; name++)
 
-#define for_each(name, start, end) for (decltype(end) name = start; name < end; name++)
 
-#define const_for_all(name, end) for (GetDataTypeByValue<end>::type name = 0; name < end; name++)
+//#define for_each(type, name, start, end) for (type name = start; name < end; name++)
+//#define for_all (type, name,        end) for (type name = 0    ; name < end; name++)
 
-#define for_all(name, end) for (decltype(end) name = 0; name < end; name++)
+
+
+
+#define for_all(type, name, end) for (type name = 0; name < end; name++)
+
+#define for_each(type, name, start, end) for (type name = 0; name < end; name++)
+
+
+
+
+
+
+
+
+
+
 
 #define HoboBreak MessageBoxA(0, "break1", 0, 0); MessageBoxA(0, "break2", 0, 0);

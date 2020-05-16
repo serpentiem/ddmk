@@ -133,29 +133,22 @@ struct ACTOR_DATA
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
 	bool newEnableLeftStick; // 0xB8F3
-	uint8 newStyle; // 0xB8F4
+	bool newEnableRightStick; // 0xB8F4
 	_(3);
-	uint8 newStyleMap[5][2]; // 0xB8F8
+	uint8 newMeleeWeaponMap[5]; // 0xB8F8
+	_(3);
+	byte8 * newMeleeWeaponData[5]; // 0xB900
+	uint8 newMeleeWeaponCount; // 0xB928
+	uint8 newMeleeWeaponIndex; // 0xB929
 	_(2);
-	uint8 newMeleeWeaponMap[5]; // 0xB904
+	uint8 newRangedWeaponMap[5]; // 0xB92C
 	_(7);
-	byte8 * newMeleeWeaponData[5]; // 0xB910
-	uint8 newMeleeWeaponCount; // 0xB938
-	uint8 newMeleeWeaponIndex; // 0xB939
+	byte8 * newRangedWeaponData[5]; // 0xB938
+	uint8 newRangedWeaponCount; // 0xB960
+	uint8 newRangedWeaponIndex; // 0xB961
 	_(2);
-	uint8 newRangedWeaponMap[5]; // 0xB93C
-	_(7);
-	byte8 * newRangedWeaponData[5]; // 0xB948
-	uint8 newRangedWeaponCount; // 0xB970
-	uint8 newRangedWeaponIndex; // 0xB971
-	_(2);
-	bool newSect[8]; // 0xB974
-	bool newSkipPositionUpdate; // 0xB97C
-	bool newEnableMotion; // 0xB97D
-	bool newEnablePermissionUpdate; // 0xB97E
-	bool newIsLeader; // 0xB97F
-	uint8 newBufferedActionPolicy; // 0xB980
-	bool newEnablePositionUpdate; // 0xB981
+	bool newSect[8]; // 0xB964
+	uint8 newBufferedActionPolicy; // 0xB96C
 
 	operator byte8 *()
 	{
@@ -325,29 +318,22 @@ struct ACTOR_DATA_DANTE
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
 	bool newEnableLeftStick; // 0xB8F3
-	uint8 newStyle; // 0xB8F4
+	bool newEnableRightStick; // 0xB8F4
 	_(3);
-	uint8 newStyleMap[5][2]; // 0xB8F8
+	uint8 newMeleeWeaponMap[5]; // 0xB8F8
+	_(3);
+	byte8 * newMeleeWeaponData[5]; // 0xB900
+	uint8 newMeleeWeaponCount; // 0xB928
+	uint8 newMeleeWeaponIndex; // 0xB929
 	_(2);
-	uint8 newMeleeWeaponMap[5]; // 0xB904
+	uint8 newRangedWeaponMap[5]; // 0xB92C
 	_(7);
-	byte8 * newMeleeWeaponData[5]; // 0xB910
-	uint8 newMeleeWeaponCount; // 0xB938
-	uint8 newMeleeWeaponIndex; // 0xB939
+	byte8 * newRangedWeaponData[5]; // 0xB938
+	uint8 newRangedWeaponCount; // 0xB960
+	uint8 newRangedWeaponIndex; // 0xB961
 	_(2);
-	uint8 newRangedWeaponMap[5]; // 0xB93C
-	_(7);
-	byte8 * newRangedWeaponData[5]; // 0xB948
-	uint8 newRangedWeaponCount; // 0xB970
-	uint8 newRangedWeaponIndex; // 0xB971
-	_(2);
-	bool newSect[8]; // 0xB974
-	bool newSkipPositionUpdate; // 0xB97C
-	bool newEnableMotion; // 0xB97D
-	bool newEnablePermissionUpdate; // 0xB97E
-	bool newIsLeader; // 0xB97F
-	uint8 newBufferedActionPolicy; // 0xB980
-	bool newEnablePositionUpdate; // 0xB981
+	bool newSect[8]; // 0xB964
+	uint8 newBufferedActionPolicy; // 0xB96C
 
 	operator byte8 *()
 	{
@@ -478,29 +464,22 @@ struct ACTOR_DATA_BOB
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
 	bool newEnableLeftStick; // 0xB8F3
-	uint8 newStyle; // 0xB8F4
+	bool newEnableRightStick; // 0xB8F4
 	_(3);
-	uint8 newStyleMap[5][2]; // 0xB8F8
+	uint8 newMeleeWeaponMap[5]; // 0xB8F8
+	_(3);
+	byte8 * newMeleeWeaponData[5]; // 0xB900
+	uint8 newMeleeWeaponCount; // 0xB928
+	uint8 newMeleeWeaponIndex; // 0xB929
 	_(2);
-	uint8 newMeleeWeaponMap[5]; // 0xB904
+	uint8 newRangedWeaponMap[5]; // 0xB92C
 	_(7);
-	byte8 * newMeleeWeaponData[5]; // 0xB910
-	uint8 newMeleeWeaponCount; // 0xB938
-	uint8 newMeleeWeaponIndex; // 0xB939
+	byte8 * newRangedWeaponData[5]; // 0xB938
+	uint8 newRangedWeaponCount; // 0xB960
+	uint8 newRangedWeaponIndex; // 0xB961
 	_(2);
-	uint8 newRangedWeaponMap[5]; // 0xB93C
-	_(7);
-	byte8 * newRangedWeaponData[5]; // 0xB948
-	uint8 newRangedWeaponCount; // 0xB970
-	uint8 newRangedWeaponIndex; // 0xB971
-	_(2);
-	bool newSect[8]; // 0xB974
-	bool newSkipPositionUpdate; // 0xB97C
-	bool newEnableMotion; // 0xB97D
-	bool newEnablePermissionUpdate; // 0xB97E
-	bool newIsLeader; // 0xB97F
-	uint8 newBufferedActionPolicy; // 0xB980
-	bool newEnablePositionUpdate; // 0xB981
+	bool newSect[8]; // 0xB964
+	uint8 newBufferedActionPolicy; // 0xB96C
 
 	operator byte8 *()
 	{
@@ -631,29 +610,22 @@ struct ACTOR_DATA_LADY
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
 	bool newEnableLeftStick; // 0xB8F3
-	uint8 newStyle; // 0xB8F4
+	bool newEnableRightStick; // 0xB8F4
 	_(3);
-	uint8 newStyleMap[5][2]; // 0xB8F8
+	uint8 newMeleeWeaponMap[5]; // 0xB8F8
+	_(3);
+	byte8 * newMeleeWeaponData[5]; // 0xB900
+	uint8 newMeleeWeaponCount; // 0xB928
+	uint8 newMeleeWeaponIndex; // 0xB929
 	_(2);
-	uint8 newMeleeWeaponMap[5]; // 0xB904
+	uint8 newRangedWeaponMap[5]; // 0xB92C
 	_(7);
-	byte8 * newMeleeWeaponData[5]; // 0xB910
-	uint8 newMeleeWeaponCount; // 0xB938
-	uint8 newMeleeWeaponIndex; // 0xB939
+	byte8 * newRangedWeaponData[5]; // 0xB938
+	uint8 newRangedWeaponCount; // 0xB960
+	uint8 newRangedWeaponIndex; // 0xB961
 	_(2);
-	uint8 newRangedWeaponMap[5]; // 0xB93C
-	_(7);
-	byte8 * newRangedWeaponData[5]; // 0xB948
-	uint8 newRangedWeaponCount; // 0xB970
-	uint8 newRangedWeaponIndex; // 0xB971
-	_(2);
-	bool newSect[8]; // 0xB974
-	bool newSkipPositionUpdate; // 0xB97C
-	bool newEnableMotion; // 0xB97D
-	bool newEnablePermissionUpdate; // 0xB97E
-	bool newIsLeader; // 0xB97F
-	uint8 newBufferedActionPolicy; // 0xB980
-	bool newEnablePositionUpdate; // 0xB981
+	bool newSect[8]; // 0xB964
+	uint8 newBufferedActionPolicy; // 0xB96C
 
 	operator byte8 *()
 	{
@@ -802,29 +774,22 @@ struct ACTOR_DATA_VERGIL
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
 	bool newEnableLeftStick; // 0xB8F3
-	uint8 newStyle; // 0xB8F4
+	bool newEnableRightStick; // 0xB8F4
 	_(3);
-	uint8 newStyleMap[5][2]; // 0xB8F8
+	uint8 newMeleeWeaponMap[5]; // 0xB8F8
+	_(3);
+	byte8 * newMeleeWeaponData[5]; // 0xB900
+	uint8 newMeleeWeaponCount; // 0xB928
+	uint8 newMeleeWeaponIndex; // 0xB929
 	_(2);
-	uint8 newMeleeWeaponMap[5]; // 0xB904
+	uint8 newRangedWeaponMap[5]; // 0xB92C
 	_(7);
-	byte8 * newMeleeWeaponData[5]; // 0xB910
-	uint8 newMeleeWeaponCount; // 0xB938
-	uint8 newMeleeWeaponIndex; // 0xB939
+	byte8 * newRangedWeaponData[5]; // 0xB938
+	uint8 newRangedWeaponCount; // 0xB960
+	uint8 newRangedWeaponIndex; // 0xB961
 	_(2);
-	uint8 newRangedWeaponMap[5]; // 0xB93C
-	_(7);
-	byte8 * newRangedWeaponData[5]; // 0xB948
-	uint8 newRangedWeaponCount; // 0xB970
-	uint8 newRangedWeaponIndex; // 0xB971
-	_(2);
-	bool newSect[8]; // 0xB974
-	bool newSkipPositionUpdate; // 0xB97C
-	bool newEnableMotion; // 0xB97D
-	bool newEnablePermissionUpdate; // 0xB97E
-	bool newIsLeader; // 0xB97F
-	uint8 newBufferedActionPolicy; // 0xB980
-	bool newEnablePositionUpdate; // 0xB981
+	bool newSect[8]; // 0xB964
+	uint8 newBufferedActionPolicy; // 0xB96C
 
 	operator byte8 *()
 	{

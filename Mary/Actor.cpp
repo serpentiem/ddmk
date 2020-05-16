@@ -321,7 +321,7 @@ void ToggleUpdateWeapon(bool enable)
 {
 	LogFunction(enable);
 
-	const_for_all(index, countof(IsWeaponReadyProxyHelper))
+	for_all(int, index, countof(IsWeaponReadyProxyHelper))
 	{
 		auto & item = IsWeaponReadyProxyHelper[index];
 
@@ -576,12 +576,12 @@ void UpdateWeaponDante(ACTOR_DATA_DANTE & actorData)
 	actorData.newMeleeWeaponCount  = Dante.newMeleeWeaponCount;
 	actorData.newRangedWeaponCount = Dante.newRangedWeaponCount;
 
-	const_for_all(index, 5)
+	for_all(uint8, index, 5)
 	{
 		uint32 id = (WEAPON_DANTE_REBELLION + index);
 		actorData.newMeleeWeaponData[index] = RegisterWeapon[id](actorData, id);
 	}
-	const_for_all(index, 5)
+	for_all(uint8, index, 5)
 	{
 		uint32 id = (WEAPON_DANTE_EBONY_IVORY + index);
 		actorData.newRangedWeaponData[index] = RegisterWeapon[id](actorData, id);
@@ -622,7 +622,7 @@ ACTOR_DATA_DANTE * CreateActorDante()
 	func_217B90(actorData, sessionData);
 	func_212BE0(actorData);
 
-	const_for_all(index, countof(motionHelperDante))
+	for_all(uint8, index, countof(motionHelperDante))
 	{
 		auto & motionId    = motionHelperDante[index].motionId;
 		auto & cacheFileId = motionHelperDante[index].cacheFileId;
@@ -642,7 +642,7 @@ void UpdateWeaponVergil(ACTOR_DATA_VERGIL & actorData)
 	constexpr uint32 size = (offsetof(ACTOR_DATA_VERGIL, styleRank) - offsetof(ACTOR_DATA_VERGIL, meleeWeaponData));
 	memset(actorData.meleeWeaponData, 0, size);
 
-	const_for_all(index, 3)
+	for_all(uint8, index, 3)
 	{
 		uint8 id = (WEAPON_VERGIL_YAMATO + index);
 		actorData.newMeleeWeaponData[index] = RegisterWeapon[id](actorData, id);
@@ -677,7 +677,7 @@ ACTOR_DATA_VERGIL * CreateActorVergil()
 	func_223CB0(actorData, sessionData);
 	func_220970(actorData);
 
-	const_for_all(index, countof(motionHelperVergil))
+	for_all(uint8, index, countof(motionHelperVergil))
 	{
 		auto & motionId    = motionHelperVergil[index].motionId;
 		auto & cacheFileId = motionHelperVergil[index].cacheFileId;
@@ -1514,7 +1514,7 @@ void Actor_Init()
 		//for (uint8 index = 0; index < countof(IsWeaponReadyProxyHelper); index++)
 
 		//for_each(index, 0, countof(IsWeaponReadyProxyHelper))
-		const_for_all(index, countof(IsWeaponReadyProxyHelper))
+		for_all(uint8, index, countof(IsWeaponReadyProxyHelper))
 		{
 			auto & item = IsWeaponReadyProxyHelper[index];
 

@@ -1,6 +1,11 @@
 #pragma once
 #include "../Core/DataTypes.h"
 
+enum ACTOR
+{
+	MAX_ACTOR = 4
+};
+
 enum MODE_
 {
 	MODE_EASY,
@@ -17,7 +22,8 @@ enum CHAR_
 	CHAR_BOB,
 	CHAR_LADY,
 	CHAR_VERGIL,
-	MAX_CHAR,
+	CHAR_VOID = 255,
+	MAX_CHAR = 4,
 };
 
 enum COSTUME_
@@ -86,10 +92,14 @@ enum WEAPON_
 	MAX_WEAPON = 16,
 	MAX_MELEE_WEAPON = 5,
 	MAX_RANGED_WEAPON = 5,
+	// @Todo: Remove.
 	MAX_MELEE_WEAPON_DANTE = 5,
 	MAX_RANGED_WEAPON_DANTE = 5,
 	MAX_MELEE_WEAPON_VERGIL = 3,
 };
+
+// $ActorDataStart
+// $ActorDataEnd
 
 //constexpr const char * enum_WEAPON_DANTE_REBELLION = "WEAPON_DANTE_REBELLION";
 //constexpr const char * enum_WEAPON_DANTE_CERBERUS = "WEAPON_DANTE_CERBERUS";

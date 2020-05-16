@@ -2375,122 +2375,17 @@ void DrawRestartOverlay()
 	//ImGui::PopStyleVar(3);
 }
 
-
-
-
-
-
-//
-////template <typename T>
-//bool NEW_GUI_Combo
-//(
-//	const char * label,
-//	const char ** items,
-//	uint8 count,
-//	uint8 & var,
-//	bool save = true
-//)
-//{
-//	bool update = false;
-//	ImGui::PushID(GUI_id);
-//	GUI_id++;
-//	if (ImGui::BeginCombo(label, items[var]))
-//	{
-//		for_all(index, count)
-//		{
-//			bool selected = (var == index) ? true : false;
-//
-//			ImGui::PushID(GUI_id);
-//			GUI_id++;
-//
-//			if (ImGui::Selectable(items[index], &selected))
-//			{
-//				var = i;
-//				update = true;
-//			}
-//
-//			ImGui::PopID();
-//
-//			if (selected)
-//			{
-//				ImGui::SetItemDefaultFocus();
-//			}
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//		}
-//		ImGui::EndCombo();
-//	}
-//	ImGui::PopID();
-//	if (update && save)
-//	{
-//		SaveConfig();
-//	}
-//	return update;
-//}
-
-
-
-
-
-
-uint8 Config_Actor_rangedWeaponDante[5] =
-{
-	WEAPON_DANTE_EBONY_IVORY,
-	WEAPON_DANTE_SHOTGUN,
-	WEAPON_DANTE_ARTEMIS,
-	WEAPON_DANTE_SPIRAL,
-	WEAPON_DANTE_KALINA_ANN,
-};
-
-uint8 Config_Actor_meleeWeaponVergil[5] =
-{
-	WEAPON_VERGIL_YAMATO,
-	WEAPON_VERGIL_BEOWULF,
-	WEAPON_VERGIL_FORCE_EDGE,
-	WEAPON_VOID,
-	WEAPON_VOID,
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-const char * meleeWeaponNameVergil[] =
-{
-	"Yamato",
-	"Beowulf",
-	"Force Edge",
-	"Dante Rebellion",
-	"Dante Cerberus",
-	"Dante Agni & Rudra",
-	"Dante Nevan",
-	"Dante Beowulf",
-	"Void",
-};
-
-
-
-
-
 PrivateStart;
 
-constexpr uint8 meleeWeaponSelectMapDante[] =
+const char * characterName[] =
+{
+	"Dante",
+	"Bob",
+	"Lady",
+	"Vergil",
+};
+
+uint8 meleeWeaponSelectMapDante[] =
 {
 	WEAPON_DANTE_REBELLION,
 	WEAPON_DANTE_CERBERUS,
@@ -2500,7 +2395,34 @@ constexpr uint8 meleeWeaponSelectMapDante[] =
 	WEAPON_VERGIL_YAMATO,
 	WEAPON_VERGIL_BEOWULF,
 	WEAPON_VERGIL_FORCE_EDGE,
-	WEAPON_VOID,
+};
+
+uint8 meleeWeaponSelectMapVergil[] =
+{
+	WEAPON_VERGIL_YAMATO,
+	WEAPON_VERGIL_BEOWULF,
+	WEAPON_VERGIL_FORCE_EDGE,
+	WEAPON_DANTE_REBELLION,
+	WEAPON_DANTE_CERBERUS,
+	WEAPON_DANTE_AGNI_RUDRA,
+	WEAPON_DANTE_NEVAN,
+	WEAPON_DANTE_BEOWULF,
+};
+
+uint8 * meleeWeaponSelectMap[MAX_CHAR] =
+{
+	meleeWeaponSelectMapDante,
+	0,
+	0,
+	meleeWeaponSelectMapVergil
+};
+
+uint8 meleeWeaponSelectMapCount[MAX_CHAR] =
+{
+	countof(meleeWeaponSelectMapDante),
+	0,
+	0,
+	countof(meleeWeaponSelectMapVergil),
 };
 
 const char * meleeWeaponSelectNameDante[] =
@@ -2513,47 +2435,130 @@ const char * meleeWeaponSelectNameDante[] =
 	"Vergil Yamato",
 	"Vergil Beowulf",
 	"Vergil Force Edge",
-	"Void",
 };
 
-uint8 meleeWeaponSelectIndexDante[MAX_MELEE_WEAPON] = {};
+const char * meleeWeaponSelectNameVergil[] =
+{
+	"Yamato",
+	"Beowulf",
+	"Force Edge",
+	"Dante Rebellion",
+	"Dante Cerberus",
+	"Dante Agni & Rudra",
+	"Dante Nevan",
+	"Dante Beowulf",
+};
+
+const char ** meleeWeaponSelectName[MAX_CHAR] =
+{
+	meleeWeaponSelectNameDante,
+	0,
+	0,
+	meleeWeaponSelectNameVergil,
+};
+
+uint8 meleeWeaponSelectNameCount[MAX_CHAR] =
+{
+	countof(meleeWeaponSelectNameDante),
+	0,
+	0,
+	countof(meleeWeaponSelectNameVergil),
+};
+
+uint8 meleeWeaponSelectIndex[MAX_ACTOR][MAX_CHAR][MAX_MELEE_WEAPON] = {};
+
+uint8 rangedWeaponSelectMapDante[] =
+{
+	WEAPON_DANTE_EBONY_IVORY,
+	WEAPON_DANTE_SHOTGUN,
+	WEAPON_DANTE_ARTEMIS,
+	WEAPON_DANTE_SPIRAL,
+	WEAPON_DANTE_KALINA_ANN,
+};
+
+uint8 * rangedWeaponSelectMap[MAX_CHAR] =
+{
+	rangedWeaponSelectMapDante,
+	0,
+	0,
+	0,
+};
+
+uint8 rangedWeaponSelectMapCount[MAX_CHAR] =
+{
+	countof(rangedWeaponSelectMapDante),
+	0,
+	0,
+	0,
+};
+
+const char * rangedWeaponSelectNameDante[] =
+{
+	"Ebony & Ivory",
+	"Shotgun",
+	"Artemis",
+	"Spiral",
+	"Kalina Ann",
+};
+
+const char ** rangedWeaponSelectName[MAX_CHAR] =
+{
+	rangedWeaponSelectNameDante,
+	0,
+	0,
+	0,
+};
+
+uint8 rangedWeaponSelectNameCount[MAX_CHAR] =
+{
+	countof(rangedWeaponSelectNameDante),
+	0,
+	0,
+	0,
+};
+
+uint8 rangedWeaponSelectIndex[MAX_ACTOR][MAX_CHAR][MAX_RANGED_WEAPON] = {};
 
 PrivateEnd;
 
-uint8 Config_Actor_meleeWeaponMapDante[MAX_MELEE_WEAPON] =
+template <uint8 weaponType>
+void UpdateWeaponSelectIndex(uint8 actorIndex)
 {
-	WEAPON_DANTE_REBELLION,
-	WEAPON_DANTE_CERBERUS,
-	WEAPON_DANTE_AGNI_RUDRA,
-	WEAPON_DANTE_NEVAN,
-	WEAPON_DANTE_BEOWULF,
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void UpdateMeleeWeaponSelectIndexDante()
-{
-	constexpr auto & configMap   = Config_Actor_meleeWeaponMapDante;
-	constexpr auto & selectMap   = meleeWeaponSelectMapDante;
-	constexpr auto & selectIndex = meleeWeaponSelectIndexDante;
-	const_for_all(selectIndexIndex, MAX_MELEE_WEAPON)
+	auto character = Config.Actor.character[actorIndex];
+	if (character >= MAX_CHAR)
 	{
-		auto & configMapItem   = configMap  [selectIndexIndex];
-		auto & selectIndexItem = selectIndex[selectIndexIndex];
-		const_for_all(selectMapIndex, countof(selectMap))
+		character = CHAR_DANTE;
+	}
+	uint8 * configMap      = 0;
+	uint8   configMapCount = 0;
+	uint8 * selectMap      = 0;
+	uint8   selectMapCount = 0;
+	uint8 * selectIndex    = 0;
+	if constexpr (weaponType == WEAPON_TYPE_MELEE)
+	{
+		configMap      = Config.Actor.meleeWeaponMap[actorIndex][character];
+		configMapCount = MAX_MELEE_WEAPON;
+		selectMap      = meleeWeaponSelectMap     [character];
+		selectMapCount = meleeWeaponSelectMapCount[character];
+		selectIndex    = meleeWeaponSelectIndex[actorIndex][character];
+	}
+	else
+	{
+		configMap      = Config.Actor.rangedWeaponMap[actorIndex][character];
+		configMapCount = MAX_RANGED_WEAPON;
+		selectMap      = rangedWeaponSelectMap     [character];
+		selectMapCount = rangedWeaponSelectMapCount[character];
+		selectIndex    = rangedWeaponSelectIndex[actorIndex][character];
+	}
+	if (!selectMap)
+	{
+		return;
+	}
+	for_all(uint8, configMapIndex, configMapCount)
+	{
+		auto & configMapItem   = configMap  [configMapIndex];
+		auto & selectIndexItem = selectIndex[configMapIndex];
+		for_all(uint8, selectMapIndex, selectMapCount)
 		{
 			auto & selectMapItem = selectMap[selectMapIndex];
 			if (selectMapItem == configMapItem)
@@ -2565,53 +2570,454 @@ void UpdateMeleeWeaponSelectIndexDante()
 	}
 }
 
-void NEW_GUI_Main()
+
+
+
+
+
+
+
+template
+<
+	typename T1,
+	typename T2,
+	typename T3,
+	typename T4,
+	typename T5,
+	typename T6,
+	typename T7,
+	typename T8
+>
+void WeaponSelectFunction
+(
+	T1   label,
+	T2 & configMap,
+	T3   configMapCount,
+	T4 & selectMap,
+	T5 & selectMapCount,
+	T6 & selectName,
+	T7 & selectIndex,
+	T8 & weaponCount
+)
 {
-	if (ImGui::Begin("NEW_GUI_Main", &pause))
+	if (!selectMap)
 	{
-		static bool run = false;
-		if (!run)
+		return;
+	}
+
+	ImGui::Text(label);
+
+	GUI_Slider<uint8>("", weaponCount, 1, configMapCount);
+
+	for_all(uint8, configMapIndex, configMapCount)
+	{
+		bool skip = (configMapIndex >= weaponCount) ? true : false;
+		GUI_PUSH_DISABLE(skip);
+		auto & configMapItem   = configMap  [configMapIndex];
+		auto & selectIndexItem = selectIndex[configMapIndex];
+		ImGui::PushID(GUI_id);
+		GUI_id++;
+		if (ImGui::BeginCombo("", selectName[selectIndexItem], ImGuiComboFlags_HeightLargest))
 		{
-			run = true;
-			//UpdateMeleeWeaponSelectIndexDante();
+			for_all(uint8, selectMapIndex, selectMapCount)
+			{
+				auto & selectMapItem = selectMap[selectMapIndex];
+				bool selected = (selectMapItem == configMapItem) ? true : false;
+				ImGui::PushID(GUI_id);
+				GUI_id++;
+				if (ImGui::Selectable(selectName[selectMapIndex], &selected))
+				{
+					configMapItem = selectMapItem;
+					selectIndexItem = selectMapIndex;
+				}
+				ImGui::PopID();
+			}
+			ImGui::EndCombo();
 		}
-		ImGui::Text("Melee Weapon");
-		constexpr auto & configMap   = Config_Actor_meleeWeaponMapDante;
-		constexpr auto & selectMap   = meleeWeaponSelectMapDante;
-		constexpr auto & selectName  = meleeWeaponSelectNameDante;
-		constexpr auto & selectIndex = meleeWeaponSelectIndexDante;
-		const_for_all(configMapIndex, MAX_MELEE_WEAPON)
+		ImGui::PopID();
+		GUI_POP_DISABLE(skip);
+	}
+}
+
+template <uint8 weaponType>
+void WeaponSelect(uint8 actorIndex);
+
+template <>
+void WeaponSelect<WEAPON_TYPE_MELEE>(uint8 actorIndex)
+{
+	auto character = Config.Actor.character[actorIndex];
+	if (character >= MAX_CHAR)
+	{
+		character = CHAR_DANTE;
+	}
+	WeaponSelectFunction
+	(
+		"Melee Weapons",
+		Config.Actor.meleeWeaponMap[actorIndex][character],
+		MAX_MELEE_WEAPON,
+		meleeWeaponSelectMap     [character],
+		meleeWeaponSelectMapCount[character],
+		meleeWeaponSelectName    [character],
+		meleeWeaponSelectIndex[actorIndex][character],
+		Config.Actor.meleeWeaponCount[actorIndex][character]
+	);
+}
+
+template <>
+void WeaponSelect<WEAPON_TYPE_RANGED>(uint8 actorIndex)
+{
+	auto character = Config.Actor.character[actorIndex];
+	if (character >= MAX_CHAR)
+	{
+		character = CHAR_DANTE;
+	}
+	WeaponSelectFunction
+	(
+		"Ranged Weapons",
+		Config.Actor.rangedWeaponMap[actorIndex][character],
+		MAX_RANGED_WEAPON,
+		rangedWeaponSelectMap     [character],
+		rangedWeaponSelectMapCount[character],
+		rangedWeaponSelectName    [character],
+		rangedWeaponSelectIndex[actorIndex][character],
+		Config.Actor.rangedWeaponCount[actorIndex][character]
+	);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+template <typename T>
+bool GUI_Slider
+(
+	const char * label,
+	T & var,
+	T min,
+	T max
+)
+{
+	ImGuiDataType dataType = 0;
+	const char * format = 0;
+	if constexpr (typematch(T, uint8))
+	{
+		dataType = ImGuiDataType_U8;
+		format = "%u";
+	}
+	else if constexpr (typematch(T, uint16))
+	{
+		dataType = ImGuiDataType_U16;
+		format = "%u";
+	}
+	else if constexpr (typematch(T, uint32))
+	{
+		dataType = ImGuiDataType_U32;
+		format = "%u";
+	}
+	else if constexpr (typematch(T, uint64))
+	{
+		dataType = ImGuiDataType_U64;
+		format = "%u";
+	}
+	bool update = false;
+	ImGui::PushID(GUI_id);
+	GUI_id++;
+	if
+	(
+		ImGui::SliderScalar
+		(
+			label,
+			dataType,
+			&var,
+			&min,
+			&max
+		)
+	)
+	{
+		update = true;
+	}
+	ImGui::PopID();
+	return update;
+}
+
+
+
+
+
+inline void CharacterSelect(uint8 actorIndex)
+{
+	auto & character = Config.Actor.character[actorIndex];
+	ImGui::PushID(GUI_id);
+	GUI_id++;
+	if (ImGui::BeginCombo("Character", characterName[character], ImGuiComboFlags_HeightLargest))
+	{
+		for_all(uint8, index, MAX_CHAR)
 		{
-			auto & configMapItem   = configMap  [configMapIndex];
-			auto & selectIndexItem = selectIndex[configMapIndex];
+			bool selected = (index == character) ? true : false;
 			ImGui::PushID(GUI_id);
 			GUI_id++;
-			if (ImGui::BeginCombo("", selectName[selectIndexItem], ImGuiComboFlags_HeightLargest))
+			if (ImGui::Selectable(characterName[index], &selected))
 			{
-				const_for_all(selectMapIndex, countof(selectMap))
-				{
-					auto & selectMapItem = selectMap[selectMapIndex];
-					bool selected = (selectMapItem == configMapItem) ? true : false;
-					ImGui::PushID(GUI_id);
-					GUI_id++;
-					if (ImGui::Selectable(selectName[selectMapIndex], &selected))
-					{
-						configMapItem = selectMapItem;
-						selectIndexItem = selectMapIndex;
-					}
-					ImGui::PopID();
-				}
-				ImGui::EndCombo();
+				character = index;
 			}
 			ImGui::PopID();
 		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopID();
+}
+
+
+inline void ActorTab
+(
+	const char * label,
+	uint8 actorIndex
+)
+{
+	auto & count = Config.Actor.count;
+	GUI_PUSH_DISABLE(count < (actorIndex + 1));
+	if (ImGui::BeginTabItem(label))
+	{
+		CharacterSelect(actorIndex);
+		WeaponSelect<WEAPON_TYPE_MELEE >(actorIndex);
+		WeaponSelect<WEAPON_TYPE_RANGED>(actorIndex);
+		ImGui::EndTabItem();
+	}
+	GUI_POP_DISABLE(count < (actorIndex + 1));
+}
+
+
+
+
+
+
+
+
+
+void NEW_GUI_Main()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		ImGui::SetNextWindowSize(ImVec2(300, 500));
+	}
+
+
+
+
+
+	if (ImGui::Begin("NEW_GUI_Main", &pause))
+	{
+		GUI_Slider<uint8>("Count", Config.Actor.count, 1, MAX_ACTOR);
+
+		//auto & character = Config.Actor.character[0];
+		//ImGui::PushID(GUI_id);
+		//GUI_id++;
+		//if (ImGui::BeginCombo("Character", characterName[character], ImGuiComboFlags_HeightLargest))
+		//{
+		//	for_all(uint8, index, MAX_CHAR)
+		//	{
+		//		bool selected = (index == character) ? true : false;
+		//		ImGui::PushID(GUI_id);
+		//		GUI_id++;
+		//		if (ImGui::Selectable(characterName[index], &selected))
+		//		{
+		//			character = index;
+		//		}
+		//		ImGui::PopID();
+		//	}
+		//	ImGui::EndCombo();
+		//}
+		//ImGui::PopID();
+
+
+
+		
+
+
+
+		
+
+
+		ImGui::PushID(GUI_id);
+		GUI_id++;
+		if (ImGui::BeginTabBar("ActorTabs"))
+		{
+
+			ActorTab("Actor 1", 0);
+			ActorTab("Actor 2", 1);
+			ActorTab("Actor 3", 2);
+			ActorTab("Actor 4", 3);
+
+
+
+
+
+
+
+			ImGui::EndTabBar();
+		}
+
+
+		//if (ImGui::BeginTabBar("", flags))
+		//{
+
+
+
+
+
+
+		//	//for_all(uint8, actorIndex, MAX_ACTOR)
+		//	//{
+		//	//	ImGui::PushID(GUI_id);
+		//	//	GUI_id++;
+		//	//	char tabName[64];
+		//	//	snprintf(tabName, sizeof(tabName), "Actor%u", (actorIndex + 1));
+		//	//	if (ImGui::BeginTabItem(tabName))
+		//	//	{
+		//	//		//ImGui::Text("This is the Avocado tab!\nblah blah blah blah blah");
+
+		//	//		WeaponSelect<WEAPON_TYPE_MELEE >(actorIndex);
+		//	//		WeaponSelect<WEAPON_TYPE_RANGED>(actorIndex);
+
+
+
+
+		//	//		ImGui::EndTabItem();
+		//	//	}
+		//	//	ImGui::PopID();
+		//	//}
+		//	ImGui::EndTabBar();
+		//}
+		ImGui::PopID();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		//auto & count = Config.Actor.meleeWeaponCount[0][character];
+
+		//GUI_Slider<uint8>("Weapon Count", count, 1, MAX_MELEE_WEAPON);
+
+
+		//ImGui::Text("Melee Weapons");
+		//WeaponSelect<WEAPON_TYPE_MELEE>(0);
+		////ImGui::Text("Ranged Weapons");
+		//WeaponSelect<WEAPON_TYPE_RANGED>(0);
+
+
+
+
+
+		
+		
+
+
+
+
+		//WeaponSelect
+		//<
+		//Config_Actor_meleeWeaponMapDante,
+		//meleeWeaponSelectMapDante,
+		//meleeWeaponSelectNameDante,
+		//meleeWeaponSelectIndexDante
+		//>
+		//(0);
+
+
+		//const_for_all(actorIndex, MAX_ACTOR)
+		//{
+		//	ImGui::Text("Melee Weapon");
+		//	WeaponSelect
+		//	<
+		//	Config_Actor_meleeWeaponMapDante,
+		//	meleeWeaponSelectMapDante,
+		//	meleeWeaponSelectNameDante,
+		//	meleeWeaponSelectIndexDante,
+		//	MAX_MELEE_WEAPON,
+		//	WEAPON_DANTE_REBELLION
+		//	>
+		//	(actorIndex);
+		//}
+
+
+
+
+
+		//constexpr auto & arrayPointer = Config_Actor_meleeWeaponMapDante[0];
+
+
+
+
+
+		//WeaponSelect<Config_Actor_meleeWeaponMapDante[0]>();
+
+
+
+		//ImGui::Text("Ranged Weapon");
+		//WeaponSelect
+		//<
+		//Config.Actor.rangedWeaponMapDante[actorIndex],
+		//rangedWeaponSelectMapDante,
+		//rangedWeaponSelectNameDante,
+		//rangedWeaponSelectIndexDante
+		//>
+		//();
+		//ImGui::Text("Vergil");
+		//ImGui::Text("Melee Weapon");
+		//WeaponSelect
+		//<
+		//Config.Actor.meleeWeaponMapVergil[actorIndex],
+		//meleeWeaponSelectMapVergil,
+		//meleeWeaponSelectNameVergil,
+		//meleeWeaponSelectIndexVergil
+		//>
+		//();
+
+
+
 
 
 		ImGui::PushID(GUI_id);
 		GUI_id++;
 		if (ImGui::Button("Update Index"))
 		{
-			UpdateMeleeWeaponSelectIndexDante();
+
+			UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE>(0);
+
 		}
 		ImGui::PopID();
 

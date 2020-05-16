@@ -226,7 +226,7 @@ void File_UpdateFileItem
 void File_UpdateFileItems()
 {
 	LogFunction();
-	const_for_all(index, countof(fileItemHelper))
+	for_all(uint8, index, countof(fileItemHelper))
 	{
 		File_UpdateFileItem
 		(
@@ -316,7 +316,7 @@ bool File_Init()
 
 	CreateDirectoryA("data\\dmc3\\GData.afs", 0);
 
-	const_for_all(cacheFileId, MAX_CACHE_FILE)
+	for_all(uint8, cacheFileId, MAX_CACHE_FILE)
 	{
 		if constexpr (debug)
 		{
@@ -334,7 +334,7 @@ bool File_Init()
 
 	//return true;
 
-	const_for_all(index, countof(stringItemOff))
+	for_all(uint8, index, countof(stringItemOff))
 	{
 		stringItem[index].string = reinterpret_cast<const char *>(appBaseAddr + 0xE00 + stringItemOff[index]);
 	}

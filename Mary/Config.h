@@ -9,6 +9,216 @@ struct CONFIG
 {
 	struct
 	{
+		uint8 count = 1;
+		uint8 character[MAX_ACTOR] =
+		{
+			CHAR_DANTE,
+			CHAR_VERGIL,
+			CHAR_DANTE,
+			CHAR_DANTE,
+		};
+		uint8 meleeWeaponMap[MAX_ACTOR][MAX_CHAR][MAX_MELEE_WEAPON] =
+		{
+			{
+				{
+					WEAPON_DANTE_REBELLION,
+					WEAPON_DANTE_CERBERUS,
+					WEAPON_DANTE_AGNI_RUDRA,
+					WEAPON_DANTE_NEVAN,
+					WEAPON_DANTE_BEOWULF,
+				},
+				{},
+				{},
+				{
+					WEAPON_VERGIL_YAMATO,
+					WEAPON_VERGIL_BEOWULF,
+					WEAPON_VERGIL_FORCE_EDGE,
+				},
+			},
+			{
+				{
+					WEAPON_DANTE_REBELLION,
+					WEAPON_DANTE_CERBERUS,
+					WEAPON_DANTE_AGNI_RUDRA,
+					WEAPON_DANTE_NEVAN,
+					WEAPON_DANTE_BEOWULF,
+				},
+				{},
+				{},
+				{
+					WEAPON_VERGIL_YAMATO,
+					WEAPON_VERGIL_BEOWULF,
+					WEAPON_VERGIL_FORCE_EDGE,
+				},
+			},
+			{
+				{
+					WEAPON_DANTE_REBELLION,
+					WEAPON_DANTE_CERBERUS,
+					WEAPON_DANTE_AGNI_RUDRA,
+					WEAPON_DANTE_NEVAN,
+					WEAPON_DANTE_BEOWULF,
+				},
+				{},
+				{},
+				{
+					WEAPON_VERGIL_YAMATO,
+					WEAPON_VERGIL_BEOWULF,
+					WEAPON_VERGIL_FORCE_EDGE,
+				},
+			},
+			{
+				{
+					WEAPON_DANTE_REBELLION,
+					WEAPON_DANTE_CERBERUS,
+					WEAPON_DANTE_AGNI_RUDRA,
+					WEAPON_DANTE_NEVAN,
+					WEAPON_DANTE_BEOWULF,
+				},
+				{},
+				{},
+				{
+					WEAPON_VERGIL_YAMATO,
+					WEAPON_VERGIL_BEOWULF,
+					WEAPON_VERGIL_FORCE_EDGE,
+				},
+			},
+		};
+		uint8 meleeWeaponCount[MAX_ACTOR][MAX_CHAR] =
+		{
+			{
+				5,
+				0,
+				0,
+				3,
+			},
+			{
+				5,
+				0,
+				0,
+				3,
+			},
+			{
+				5,
+				0,
+				0,
+				3,
+			},
+			{
+				5,
+				0,
+				0,
+				3,
+			},
+		};
+		uint8 rangedWeaponMap[MAX_ACTOR][MAX_CHAR][MAX_RANGED_WEAPON] =
+		{
+			{
+				{
+					WEAPON_DANTE_EBONY_IVORY,
+					WEAPON_DANTE_SHOTGUN,
+					WEAPON_DANTE_ARTEMIS,
+					WEAPON_DANTE_SPIRAL,
+					WEAPON_DANTE_KALINA_ANN,
+				},
+				{},
+				{},
+				{},
+			},
+			{
+				{
+					WEAPON_DANTE_EBONY_IVORY,
+					WEAPON_DANTE_SHOTGUN,
+					WEAPON_DANTE_ARTEMIS,
+					WEAPON_DANTE_SPIRAL,
+					WEAPON_DANTE_KALINA_ANN,
+				},
+				{},
+				{},
+				{},
+			},
+			{
+				{
+					WEAPON_DANTE_EBONY_IVORY,
+					WEAPON_DANTE_SHOTGUN,
+					WEAPON_DANTE_ARTEMIS,
+					WEAPON_DANTE_SPIRAL,
+					WEAPON_DANTE_KALINA_ANN,
+				},
+				{},
+				{},
+				{},
+			},
+			{
+				{
+					WEAPON_DANTE_EBONY_IVORY,
+					WEAPON_DANTE_SHOTGUN,
+					WEAPON_DANTE_ARTEMIS,
+					WEAPON_DANTE_SPIRAL,
+					WEAPON_DANTE_KALINA_ANN,
+				},
+				{},
+				{},
+				{},
+			},
+		};
+		uint8 rangedWeaponCount[MAX_ACTOR][MAX_CHAR] =
+		{
+			{
+				5,
+			},
+			{
+				5,
+			},
+			{
+				5,
+			},
+			{
+				5,
+			},
+		};
+	}
+	Actor;
+
+	struct ACTOR_CONFIG_DATA
+	{
+		uint8 character;
+		uint8 meleeWeaponMap[MAX_MELEE_WEAPON];
+		uint8 rangedWeaponMap[MAX_RANGED_WEAPON];
+	};
+
+	ACTOR_CONFIG_DATA actorData[2] =
+	{
+		CHAR_DANTE,
+		WEAPON_DANTE_REBELLION,
+		WEAPON_DANTE_CERBERUS,
+		WEAPON_DANTE_AGNI_RUDRA,
+		WEAPON_VOID,
+		WEAPON_VOID,
+
+
+
+
+
+
+
+
+
+
+
+	};
+
+
+
+
+
+
+
+
+
+
+	struct
+	{
 		float32 height      = 140;
 		float32 tilt        = 0.25f;
 		float32 zoom        = 460;

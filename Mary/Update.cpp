@@ -1021,7 +1021,7 @@ bool IsDanteMeleeWeaponSelected(T & actorData)
 
 #define GetAction(actorData, binding, __DEST__)\
 uint8 action = 0;\
-const_for_each(tiltDirection, TILT_DIRECTION_UP, MAX_TILT_DIRECTION)\
+for_each(uint8, tiltDirection, TILT_DIRECTION_UP, MAX_TILT_DIRECTION)\
 {\
 	if\
 	(\
@@ -1207,7 +1207,7 @@ void DanteVergil(byte8 * baseAddr)
 	{
 		if (IsActive(childActorData))
 		{
-			auto style = parentActorData.newStyle;
+			auto style = parentActorData.style;
 			if (style > STYLE_DANTE_DOPPELGANGER)
 			{
 				style = STYLE_DANTE_SWORDMASTER;
@@ -1473,7 +1473,7 @@ void MainLoop()
 
 		vergilActorData.newParentBaseAddr = danteActorData;
 
-		const_for_all(index, 5)
+		for_all(uint8, index, 5)
 		{
 			vergilActorData.meleeWeaponMap[index] = WEAPON_VOID;
 		}

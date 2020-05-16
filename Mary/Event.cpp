@@ -178,7 +178,7 @@ void CreateMainActor(byte8 * baseAddr)
 
 	File_UpdateFileItems();
 
-	const_for_all(index, countof(motionHelperDante))
+	for_all(uint8, index, countof(motionHelperDante))
 	{
 		auto & motionId    = motionHelperDante[index].motionId;
 		auto & cacheFileId = motionHelperDante[index].cacheFileId;

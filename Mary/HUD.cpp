@@ -122,7 +122,7 @@ void HUD_Init()
 
 	// Init Icons
 	{
-		const_for_all(index, countof(styleIconMapDante))
+		for_all(uint8, index, countof(styleIconMapDante))
 		{
 			auto & fileIndex = styleIconMapDante[index];
 			HUD_styleIconDante[index].model   = File_cacheFile[id100][(fileIndex + 1)];
@@ -132,14 +132,14 @@ void HUD_Init()
 		HUD_styleIconVergil[STYLE_VERGIL_DARK_SLAYER].model   = File_cacheFile[id100V][(18 + 1)];
 		HUD_styleIconVergil[STYLE_VERGIL_DARK_SLAYER].texture = File_cacheFile[id100V][(18 + 0)];
 
-		const_for_all(index, countof(weaponIconMapDante))
+		for_all(uint8, index, countof(weaponIconMapDante))
 		{
 			auto & fileIndex = weaponIconMapDante[index];
 			HUD_weaponIcon[(WEAPON_DANTE_REBELLION + index)].model   = File_cacheFile[id100][(fileIndex + 1)];
 			HUD_weaponIcon[(WEAPON_DANTE_REBELLION + index)].texture = File_cacheFile[id100][(fileIndex + 0)];
 		}
 
-		const_for_all(index, countof(weaponIconMapVergil))
+		for_all(uint8, index, countof(weaponIconMapVergil))
 		{
 			auto & fileIndex = weaponIconMapVergil[index];
 			HUD_weaponIcon[(WEAPON_VERGIL_YAMATO + index)].model   = File_cacheFile[id100V][(fileIndex + 1)];
@@ -148,7 +148,7 @@ void HUD_Init()
 	}
 
 
-	const_for_all(index, countof(HUD_weaponIcon))
+	for_all(uint8, index, countof(HUD_weaponIcon))
 	{
 		Log("%u %llX", index, HUD_weaponIcon[index].model);
 	}
