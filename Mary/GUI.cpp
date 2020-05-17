@@ -2375,6 +2375,145 @@ void DrawRestartOverlay()
 	//ImGui::PopStyleVar(3);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+template <typename T>
+bool SliderFunction
+(
+	const char * label,
+	T & var,
+	T min,
+	T max
+);
+
+template <>
+bool SliderFunction<uint8>
+(
+	const char * label,
+	uint8 & var,
+	uint8 min,
+	uint8 max
+	)
+{
+	return ImGui::SliderScalar
+	(
+		label,
+		ImGuiDataType_U8,
+		&var,
+		&min,
+		&max,
+		"%u"
+	);
+}
+
+template <typename T>
+bool Slider
+(
+	const char * label,
+	T & var,
+	T min,
+	T max,
+	bool save
+)
+{
+	bool update = false;
+	ImGuiWindow * window = ImGui::GetCurrentWindow();
+	ImGuiIO & io = ImGui::GetIO();
+
+	bool pushed = (window->DC.ItemWidthStack.size() > 0) ? true : false;
+	ImVec2 size =
+	{
+		(pushed) ? window->DC.ItemWidth : window->Size.x,
+		19
+	};
+
+	ImGui::PushID(GUI_id);
+	GUI_id++;
+	if (SliderFunction
+	(
+		label,
+		var,
+		min,
+		max
+	))
+	{
+		update = true;
+	}
+	if (ImGui::IsItemHovered())
+	{
+		if (io.MouseWheel < 0)
+		{
+			if (var > min)
+			{
+				var--;
+				update = true;
+			}
+		}
+		else if (io.MouseWheel > 0)
+		{
+			if (var < max)
+			{
+				var++;
+				update = true;
+			}
+		}
+	}
+	ImGui::PopID();
+
+	return update;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 PrivateStart;
 
 const char * characterName[] =
@@ -2521,35 +2660,34 @@ uint8 rangedWeaponSelectIndex[MAX_ACTOR][MAX_CHAR][MAX_RANGED_WEAPON] = {};
 
 PrivateEnd;
 
-template <uint8 weaponType>
-void UpdateWeaponSelectIndex(uint8 actorIndex)
+
+
+
+
+
+
+
+
+
+
+
+template
+<
+	typename T1,
+	typename T2,
+	typename T3,
+	typename T4,
+	typename T5
+>
+void UpdateWeaponSelectIndexFunction
+(
+	T1 & configMap,
+	T2   configMapCount,
+	T3 & selectMap,
+	T4 & selectMapCount,
+	T5 & selectIndex
+)
 {
-	auto character = Config.Actor.character[actorIndex];
-	if (character >= MAX_CHAR)
-	{
-		character = CHAR_DANTE;
-	}
-	uint8 * configMap      = 0;
-	uint8   configMapCount = 0;
-	uint8 * selectMap      = 0;
-	uint8   selectMapCount = 0;
-	uint8 * selectIndex    = 0;
-	if constexpr (weaponType == WEAPON_TYPE_MELEE)
-	{
-		configMap      = Config.Actor.meleeWeaponMap[actorIndex][character];
-		configMapCount = MAX_MELEE_WEAPON;
-		selectMap      = meleeWeaponSelectMap     [character];
-		selectMapCount = meleeWeaponSelectMapCount[character];
-		selectIndex    = meleeWeaponSelectIndex[actorIndex][character];
-	}
-	else
-	{
-		configMap      = Config.Actor.rangedWeaponMap[actorIndex][character];
-		configMapCount = MAX_RANGED_WEAPON;
-		selectMap      = rangedWeaponSelectMap     [character];
-		selectMapCount = rangedWeaponSelectMapCount[character];
-		selectIndex    = rangedWeaponSelectIndex[actorIndex][character];
-	}
 	if (!selectMap)
 	{
 		return;
@@ -2569,6 +2707,99 @@ void UpdateWeaponSelectIndex(uint8 actorIndex)
 		}
 	}
 }
+
+template <uint8 weaponType>
+void UpdateWeaponSelectIndex(uint8 actorIndex);
+
+template <>
+void UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE>(uint8 actorIndex)
+{
+	auto character = Config.Actor.character[actorIndex];
+	if (character >= MAX_CHAR)
+	{
+		character = CHAR_DANTE;
+	}
+	UpdateWeaponSelectIndexFunction
+	(
+		Config.Actor.meleeWeaponMap[actorIndex][character],
+		MAX_MELEE_WEAPON,
+		meleeWeaponSelectMap     [character],
+		meleeWeaponSelectMapCount[character],
+		meleeWeaponSelectIndex[actorIndex][character]
+	);
+}
+
+template <>
+void UpdateWeaponSelectIndex<WEAPON_TYPE_RANGED>(uint8 actorIndex)
+{
+	auto character = Config.Actor.character[actorIndex];
+	if (character >= MAX_CHAR)
+	{
+		character = CHAR_DANTE;
+	}
+	UpdateWeaponSelectIndexFunction
+	(
+		Config.Actor.rangedWeaponMap[actorIndex][character],
+		MAX_RANGED_WEAPON,
+		rangedWeaponSelectMap     [character],
+		rangedWeaponSelectMapCount[character],
+		rangedWeaponSelectIndex[actorIndex][character]
+	);
+}
+
+
+
+
+
+
+//template <uint8 weaponType>
+//void UpdateWeaponSelectIndex_internal(uint8 actorIndex)
+//{
+//	auto character = Config.Actor.character[actorIndex];
+//	if (character >= MAX_CHAR)
+//	{
+//		character = CHAR_DANTE;
+//	}
+//	uint8 * configMap      = 0;
+//	uint8   configMapCount = 0;
+//	uint8 * selectMap      = 0;
+//	uint8   selectMapCount = 0;
+//	uint8 * selectIndex    = 0;
+//	if constexpr (weaponType == WEAPON_TYPE_MELEE)
+//	{
+//		configMap      = Config.Actor.meleeWeaponMap[actorIndex][character];
+//		configMapCount = MAX_MELEE_WEAPON;
+//		selectMap      = meleeWeaponSelectMap     [character];
+//		selectMapCount = meleeWeaponSelectMapCount[character];
+//		selectIndex    = meleeWeaponSelectIndex[actorIndex][character];
+//	}
+//	else
+//	{
+//		configMap      = Config.Actor.rangedWeaponMap[actorIndex][character];
+//		configMapCount = MAX_RANGED_WEAPON;
+//		selectMap      = rangedWeaponSelectMap     [character];
+//		selectMapCount = rangedWeaponSelectMapCount[character];
+//		selectIndex    = rangedWeaponSelectIndex[actorIndex][character];
+//	}
+//	if (!selectMap)
+//	{
+//		return;
+//	}
+//	for_all(uint8, configMapIndex, configMapCount)
+//	{
+//		auto & configMapItem   = configMap  [configMapIndex];
+//		auto & selectIndexItem = selectIndex[configMapIndex];
+//		for_all(uint8, selectMapIndex, selectMapCount)
+//		{
+//			auto & selectMapItem = selectMap[selectMapIndex];
+//			if (selectMapItem == configMapItem)
+//			{
+//				selectIndexItem = selectMapIndex;
+//				break;
+//			}
+//		}
+//	}
+//}
 
 
 
@@ -2607,7 +2838,7 @@ void WeaponSelectFunction
 
 	ImGui::Text(label);
 
-	GUI_Slider<uint8>("", weaponCount, 1, configMapCount);
+	Slider<uint8>("", weaponCount, 1, configMapCount, false);
 
 	for_all(uint8, configMapIndex, configMapCount)
 	{
@@ -2706,57 +2937,95 @@ void WeaponSelect<WEAPON_TYPE_RANGED>(uint8 actorIndex)
 
 
 
-template <typename T>
-bool GUI_Slider
-(
-	const char * label,
-	T & var,
-	T min,
-	T max
-)
-{
-	ImGuiDataType dataType = 0;
-	const char * format = 0;
-	if constexpr (typematch(T, uint8))
-	{
-		dataType = ImGuiDataType_U8;
-		format = "%u";
-	}
-	else if constexpr (typematch(T, uint16))
-	{
-		dataType = ImGuiDataType_U16;
-		format = "%u";
-	}
-	else if constexpr (typematch(T, uint32))
-	{
-		dataType = ImGuiDataType_U32;
-		format = "%u";
-	}
-	else if constexpr (typematch(T, uint64))
-	{
-		dataType = ImGuiDataType_U64;
-		format = "%u";
-	}
-	bool update = false;
-	ImGui::PushID(GUI_id);
-	GUI_id++;
-	if
-	(
-		ImGui::SliderScalar
-		(
-			label,
-			dataType,
-			&var,
-			&min,
-			&max
-		)
-	)
-	{
-		update = true;
-	}
-	ImGui::PopID();
-	return update;
-}
+//template <typename T>
+//bool GUI_Slider_internal
+//(
+//	const char * label,
+//	T & var,
+//	T min,
+//	T max
+//)
+//{
+//	ImGuiDataType dataType = 0;
+//	const char * format = 0;
+//	if constexpr (typematch(T, uint8))
+//	{
+//		dataType = ImGuiDataType_U8;
+//		format = "%u";
+//	}
+//	else if constexpr (typematch(T, uint16))
+//	{
+//		dataType = ImGuiDataType_U16;
+//		format = "%u";
+//	}
+//	else if constexpr (typematch(T, uint32))
+//	{
+//		dataType = ImGuiDataType_U32;
+//		format = "%u";
+//	}
+//	else if constexpr (typematch(T, uint64))
+//	{
+//		dataType = ImGuiDataType_U64;
+//		format = "%u";
+//	}
+//	bool update = false;
+//	ImGui::PushID(GUI_id);
+//	GUI_id++;
+//	if
+//	(
+//		ImGui::SliderScalar
+//		(
+//			label,
+//			dataType,
+//			&var,
+//			&min,
+//			&max
+//		)
+//	)
+//	{
+//		update = true;
+//	}
+//	ImGui::PopID();
+//	return update;
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2777,6 +3046,8 @@ inline void CharacterSelect(uint8 actorIndex)
 			if (ImGui::Selectable(characterName[index], &selected))
 			{
 				character = index;
+				UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE >(actorIndex);
+				UpdateWeaponSelectIndex<WEAPON_TYPE_RANGED>(actorIndex);
 			}
 			ImGui::PopID();
 		}
@@ -2827,7 +3098,23 @@ void NEW_GUI_Main()
 
 	if (ImGui::Begin("NEW_GUI_Main", &pause))
 	{
-		GUI_Slider<uint8>("Count", Config.Actor.count, 1, MAX_ACTOR);
+		//Slider<uint8>("Count", Config.Actor.count, 1, MAX_ACTOR);
+
+
+		ImGui::PushItemWidth(150);
+		Slider<uint8>("Count", Config.Actor.count, 1, MAX_ACTOR, false);
+		ImGui::PopItemWidth();
+
+
+		ImGui::PushItemWidth(100);
+		Slider<uint8>("Count", Config.Actor.count, 1, MAX_ACTOR, false);
+		ImGui::PopItemWidth();
+
+		Slider<uint8>("Count", Config.Actor.count, 1, MAX_ACTOR, false);
+
+
+
+
 
 		//auto & character = Config.Actor.character[0];
 		//ImGui::PushID(GUI_id);
@@ -3011,15 +3298,15 @@ void NEW_GUI_Main()
 
 
 
-		ImGui::PushID(GUI_id);
-		GUI_id++;
-		if (ImGui::Button("Update Index"))
-		{
+		//ImGui::PushID(GUI_id);
+		//GUI_id++;
+		//if (ImGui::Button("Update Index"))
+		//{
 
-			UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE>(0);
+		//	UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE>(0);
 
-		}
-		ImGui::PopID();
+		//}
+		//ImGui::PopID();
 
 
 
@@ -3087,4 +3374,19 @@ void GUI_Render()
 void GUI_Init()
 {
 	BuildFonts();
+
+	// @Todo: Add UpdateIndex functions.
+
+
+	for_all(uint8, actorIndex, MAX_ACTOR)
+	{
+		UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE >(actorIndex);
+		UpdateWeaponSelectIndex<WEAPON_TYPE_RANGED>(actorIndex);
+	}
+
+
 }
+
+
+
+

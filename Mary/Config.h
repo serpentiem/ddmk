@@ -9,6 +9,7 @@ struct CONFIG
 {
 	struct
 	{
+		bool enable = false;
 		uint8 count = 1;
 		uint8 character[MAX_ACTOR] =
 		{
