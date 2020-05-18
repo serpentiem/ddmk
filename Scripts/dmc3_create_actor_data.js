@@ -119,9 +119,9 @@ var items =
 	[ "meleeWeaponData[5]"              , "byte8 *"                   , 0x64A0, CHAR_VERGIL              ],
 	[ "rangedWeaponData[3]"             , "byte8 *"                   , 0x64B0, CHAR_DANTE               ],
 
-	[ "meleeWeaponFlags[2]"             , "byte32"                    , 0x64C8, CHAR_DANTE               ],
-	[ "meleeWeaponFlags[5]"             , "byte32"                    , 0x64C8, CHAR_VERGIL              ],
-	[ "rangedWeaponFlags[3]"            , "byte32"                    , 0x64D0, CHAR_DANTE               ],
+	[ "meleeWeaponStatus[2]"             , "byte32"                    , 0x64C8, CHAR_DANTE               ],
+	[ "meleeWeaponStatus[5]"             , "byte32"                    , 0x64C8, CHAR_VERGIL              ],
+	[ "rangedWeaponStatus[3]"            , "byte32"                    , 0x64D0, CHAR_DANTE               ],
 
 	[ "meleeWeaponLevel[2]"             , "uint32"                    , 0x64DC, CHAR_DANTE               ],
 	[ "meleeWeaponLevel[5]"             , "uint32"                    , 0x64DC, CHAR_VERGIL              ],

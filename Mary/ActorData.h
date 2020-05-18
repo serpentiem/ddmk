@@ -272,8 +272,8 @@ struct ACTOR_DATA_DANTE
 	_(3);
 	byte8 * meleeWeaponData[2]; // 0x64A0
 	byte8 * rangedWeaponData[3]; // 0x64B0
-	byte32 meleeWeaponFlags[2]; // 0x64C8
-	byte32 rangedWeaponFlags[3]; // 0x64D0
+	byte32 meleeWeaponStatus[2]; // 0x64C8
+	byte32 rangedWeaponStatus[3]; // 0x64D0
 	uint32 meleeWeaponLevel[2]; // 0x64DC
 	uint32 rangedWeaponLevel[3]; // 0x64E4
 	uint8 activeMeleeWeapon; // 0x64F0
@@ -739,7 +739,7 @@ struct ACTOR_DATA_VERGIL
 	uint8 meleeWeaponMap[5]; // 0x6498
 	_(3);
 	byte8 * meleeWeaponData[5]; // 0x64A0
-	byte32 meleeWeaponFlags[5]; // 0x64C8
+	byte32 meleeWeaponStatus[5]; // 0x64C8
 	uint32 meleeWeaponLevel[5]; // 0x64DC
 	_(4);
 	float32 meleeWeaponTimer[5]; // 0x64F4

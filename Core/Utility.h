@@ -39,7 +39,7 @@ T Reverse(T * var)
 #ifdef offsetof
 #undef offsetof
 #endif
-#ifdef _CRT_USE_BUILTIN_OFFSETOF
+#ifndef __INTELLISENSE__
 #define offsetof(s, m) __builtin_offsetof(s, m)
 #else
 // @Todo: Turn into template.

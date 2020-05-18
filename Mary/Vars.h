@@ -1,6 +1,28 @@
 #pragma once
 #include "../Core/DataTypes.h"
 
+
+
+enum WEAPON_STATUS
+{
+	WEAPON_STATUS_READY,
+	WEAPON_STATUS_ACTIVE,
+	WEAPON_STATUS_RETURN,
+	WEAPON_STATUS_END,
+	WEAPON_STATUS_DISABLED,
+};
+
+
+
+//
+//enum GAMEPAD
+//{
+//	MAX_GAMEPAD = 4,
+//};
+//
+
+
+
 enum ACTOR
 {
 	MAX_ACTOR = 4
@@ -902,7 +924,7 @@ enum EVENT_
 
 
 
-enum GAMEPAD_
+enum GAMEPAD
 {
 	GAMEPAD_VOID           = 0x0000,
 	GAMEPAD_LEFT_TRIGGER   = 0x0001,
@@ -922,6 +944,7 @@ enum GAMEPAD_
 	GAMEPAD_RIGHT          = 0x2000,
 	GAMEPAD_DOWN           = 0x4000,
 	GAMEPAD_LEFT           = 0x8000,
+	MAX_GAMEPAD = 4,
 };
 
 

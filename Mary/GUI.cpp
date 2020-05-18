@@ -2389,14 +2389,23 @@ void DrawRestartOverlay()
 
 
 
+// $ New GUI Start
 
 
 
+inline void NEW_GUI_PushId()
+{
+	ImGui::PushID(GUI_id);
+	GUI_id++;
+}
 
-
+inline void NEW_GUI_PopId()
+{
+	ImGui::PopID();
+}
 
 template <typename T>
-bool SliderFunction
+bool NEW_GUI_SliderFunction
 (
 	const char * label,
 	T & var,
@@ -2405,7 +2414,7 @@ bool SliderFunction
 );
 
 template <>
-bool SliderFunction<uint8>
+bool NEW_GUI_SliderFunction<uint8>
 (
 	const char * label,
 	uint8 & var,
@@ -2425,16 +2434,15 @@ bool SliderFunction<uint8>
 }
 
 template <typename T>
-bool Slider
+bool NEW_GUI_Slider
 (
 	const char * label,
 	T & var,
 	T min,
 	T max,
-	bool save
+	bool save = true
 )
 {
-	bool update = false;
 	ImGuiWindow * window = ImGui::GetCurrentWindow();
 	ImGuiIO & io = ImGui::GetIO();
 
@@ -2445,20 +2453,18 @@ bool Slider
 		19
 	};
 
-	ImGui::PushID(GUI_id);
-	GUI_id++;
-	if (SliderFunction
+	NEW_GUI_PushId();
+	auto update = NEW_GUI_SliderFunction
 	(
 		label,
 		var,
 		min,
 		max
-	))
-	{
-		update = true;
-	}
+	);
 	if (ImGui::IsItemHovered())
 	{
+		window->Flags |= ImGuiWindowFlags_NoScrollbar;
+		window->Flags |= ImGuiWindowFlags_NoScrollWithMouse;
 		if (io.MouseWheel < 0)
 		{
 			if (var > min)
@@ -2476,19 +2482,89 @@ bool Slider
 			}
 		}
 	}
-	ImGui::PopID();
+	NEW_GUI_PopId();
+
+	if (update && save)
+	{
+		SaveConfig();
+	}
 
 	return update;
 }
 
+// @Todo: Add recursive template support.
+inline void NEW_GUI_Text(const char * format)
+{
+	ImGui::Text(format);
+}
+
+inline bool NEW_GUI_CollapsingHeader
+(
+	const char * label,
+	ImGuiTreeNodeFlags flags = 0
+)
+{
+	NEW_GUI_PushId();
+	auto update = ImGui::CollapsingHeader(label, flags);
+	NEW_GUI_PopId();
+	return update;
+}
+
+inline bool NEW_GUI_Checkbox
+(
+	const char * label,
+	bool & var,
+	bool save = true
+)
+{
+	NEW_GUI_PushId();
+	auto update = ImGui::Checkbox(label, &var);
+	NEW_GUI_PopId();
+
+	if (update && save)
+	{
+		SaveConfig();
+	}
 
 
+	return update;
+}
+
+inline bool NEW_GUI_TabBarStart
+(
+	const char * label,
+	ImGuiTabBarFlags flags = 0
+)
+{
+	NEW_GUI_PushId();
+	auto update = ImGui::BeginTabBar(label, flags);
+	NEW_GUI_PopId();
+	return update;
+}
+
+inline void NEW_GUI_TabBarEnd()
+{
+	ImGui::EndTabBar();
+}
 
 
+inline bool NEW_GUI_Button(const char * label)
+{
+	NEW_GUI_PushId();
+	auto update = ImGui::Button(label);
+	NEW_GUI_PopId();
+	return update;
+}
 
+inline void NEW_GUI_PushItemWidth(float32 width)
+{
+	ImGui::PushItemWidth(width);
+}
 
-
-
+inline void NEW_GUI_PopItemWidth()
+{
+	ImGui::PopItemWidth();
+}
 
 
 
@@ -2709,41 +2785,43 @@ void UpdateWeaponSelectIndexFunction
 }
 
 template <uint8 weaponType>
-void UpdateWeaponSelectIndex(uint8 actorIndex);
+void UpdateWeaponSelectIndex
+(
+	uint8 actorIndex,
+	uint8 characterIndex
+);
 
 template <>
-void UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE>(uint8 actorIndex)
+void UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE>
+(
+	uint8 actorIndex,
+	uint8 characterIndex
+)
 {
-	auto character = Config.Actor.character[actorIndex];
-	if (character >= MAX_CHAR)
-	{
-		character = CHAR_DANTE;
-	}
 	UpdateWeaponSelectIndexFunction
 	(
-		Config.Actor.meleeWeaponMap[actorIndex][character],
+		Config.Actor.meleeWeaponMap[actorIndex][characterIndex],
 		MAX_MELEE_WEAPON,
-		meleeWeaponSelectMap     [character],
-		meleeWeaponSelectMapCount[character],
-		meleeWeaponSelectIndex[actorIndex][character]
+		meleeWeaponSelectMap     [characterIndex],
+		meleeWeaponSelectMapCount[characterIndex],
+		meleeWeaponSelectIndex[actorIndex][characterIndex]
 	);
 }
 
 template <>
-void UpdateWeaponSelectIndex<WEAPON_TYPE_RANGED>(uint8 actorIndex)
+void UpdateWeaponSelectIndex<WEAPON_TYPE_RANGED>
+(
+	uint8 actorIndex,
+	uint8 characterIndex
+)
 {
-	auto character = Config.Actor.character[actorIndex];
-	if (character >= MAX_CHAR)
-	{
-		character = CHAR_DANTE;
-	}
 	UpdateWeaponSelectIndexFunction
 	(
-		Config.Actor.rangedWeaponMap[actorIndex][character],
+		Config.Actor.rangedWeaponMap[actorIndex][characterIndex],
 		MAX_RANGED_WEAPON,
-		rangedWeaponSelectMap     [character],
-		rangedWeaponSelectMapCount[character],
-		rangedWeaponSelectIndex[actorIndex][character]
+		rangedWeaponSelectMap     [characterIndex],
+		rangedWeaponSelectMapCount[characterIndex],
+		rangedWeaponSelectIndex[actorIndex][characterIndex]
 	);
 }
 
@@ -2838,7 +2916,7 @@ void WeaponSelectFunction
 
 	ImGui::Text(label);
 
-	Slider<uint8>("", weaponCount, 1, configMapCount, false);
+	NEW_GUI_Slider<uint8>("", weaponCount, 1, configMapCount, false);
 
 	for_all(uint8, configMapIndex, configMapCount)
 	{
@@ -2871,47 +2949,49 @@ void WeaponSelectFunction
 }
 
 template <uint8 weaponType>
-void WeaponSelect(uint8 actorIndex);
+void WeaponSelect
+(
+	uint8 actorIndex,
+	uint8 characterIndex
+);
 
 template <>
-void WeaponSelect<WEAPON_TYPE_MELEE>(uint8 actorIndex)
+void WeaponSelect<WEAPON_TYPE_MELEE>
+(
+	uint8 actorIndex,
+	uint8 characterIndex
+)
 {
-	auto character = Config.Actor.character[actorIndex];
-	if (character >= MAX_CHAR)
-	{
-		character = CHAR_DANTE;
-	}
 	WeaponSelectFunction
 	(
 		"Melee Weapons",
-		Config.Actor.meleeWeaponMap[actorIndex][character],
+		Config.Actor.meleeWeaponMap[actorIndex][characterIndex],
 		MAX_MELEE_WEAPON,
-		meleeWeaponSelectMap     [character],
-		meleeWeaponSelectMapCount[character],
-		meleeWeaponSelectName    [character],
-		meleeWeaponSelectIndex[actorIndex][character],
-		Config.Actor.meleeWeaponCount[actorIndex][character]
+		meleeWeaponSelectMap     [characterIndex],
+		meleeWeaponSelectMapCount[characterIndex],
+		meleeWeaponSelectName    [characterIndex],
+		meleeWeaponSelectIndex[actorIndex][characterIndex],
+		Config.Actor.meleeWeaponCount[actorIndex][characterIndex]
 	);
 }
 
 template <>
-void WeaponSelect<WEAPON_TYPE_RANGED>(uint8 actorIndex)
+void WeaponSelect<WEAPON_TYPE_RANGED>
+(
+	uint8 actorIndex,
+	uint8 characterIndex
+)
 {
-	auto character = Config.Actor.character[actorIndex];
-	if (character >= MAX_CHAR)
-	{
-		character = CHAR_DANTE;
-	}
 	WeaponSelectFunction
 	(
 		"Ranged Weapons",
-		Config.Actor.rangedWeaponMap[actorIndex][character],
+		Config.Actor.rangedWeaponMap[actorIndex][characterIndex],
 		MAX_RANGED_WEAPON,
-		rangedWeaponSelectMap     [character],
-		rangedWeaponSelectMapCount[character],
-		rangedWeaponSelectName    [character],
-		rangedWeaponSelectIndex[actorIndex][character],
-		Config.Actor.rangedWeaponCount[actorIndex][character]
+		rangedWeaponSelectMap     [characterIndex],
+		rangedWeaponSelectMapCount[characterIndex],
+		rangedWeaponSelectName    [characterIndex],
+		rangedWeaponSelectIndex[actorIndex][characterIndex],
+		Config.Actor.rangedWeaponCount[actorIndex][characterIndex]
 	);
 }
 
@@ -3046,8 +3126,6 @@ inline void CharacterSelect(uint8 actorIndex)
 			if (ImGui::Selectable(characterName[index], &selected))
 			{
 				character = index;
-				UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE >(actorIndex);
-				UpdateWeaponSelectIndex<WEAPON_TYPE_RANGED>(actorIndex);
 			}
 			ImGui::PopID();
 		}
@@ -3055,6 +3133,9 @@ inline void CharacterSelect(uint8 actorIndex)
 	}
 	ImGui::PopID();
 }
+
+
+
 
 
 inline void ActorTab
@@ -3068,12 +3149,19 @@ inline void ActorTab
 	if (ImGui::BeginTabItem(label))
 	{
 		CharacterSelect(actorIndex);
-		WeaponSelect<WEAPON_TYPE_MELEE >(actorIndex);
-		WeaponSelect<WEAPON_TYPE_RANGED>(actorIndex);
+		auto characterIndex = Config.Actor.character[actorIndex];
+		if (characterIndex >= MAX_CHAR)
+		{
+			characterIndex = CHAR_DANTE;
+		}
+		WeaponSelect<WEAPON_TYPE_MELEE >(actorIndex, characterIndex);
+		WeaponSelect<WEAPON_TYPE_RANGED>(actorIndex, characterIndex);
 		ImGui::EndTabItem();
 	}
 	GUI_POP_DISABLE(count < (actorIndex + 1));
 }
+
+
 
 
 
@@ -3089,224 +3177,47 @@ void NEW_GUI_Main()
 	if (!run)
 	{
 		run = true;
-		ImGui::SetNextWindowSize(ImVec2(300, 500));
+		ImGui::SetNextWindowSize(ImVec2(400, 600));
 	}
-
-
-
-
-
 	if (ImGui::Begin("NEW_GUI_Main", &pause))
 	{
-		//Slider<uint8>("Count", Config.Actor.count, 1, MAX_ACTOR);
-
-
-		ImGui::PushItemWidth(150);
-		Slider<uint8>("Count", Config.Actor.count, 1, MAX_ACTOR, false);
-		ImGui::PopItemWidth();
-
-
-		ImGui::PushItemWidth(100);
-		Slider<uint8>("Count", Config.Actor.count, 1, MAX_ACTOR, false);
-		ImGui::PopItemWidth();
-
-		Slider<uint8>("Count", Config.Actor.count, 1, MAX_ACTOR, false);
-
-
-
-
-
-		//auto & character = Config.Actor.character[0];
-		//ImGui::PushID(GUI_id);
-		//GUI_id++;
-		//if (ImGui::BeginCombo("Character", characterName[character], ImGuiComboFlags_HeightLargest))
-		//{
-		//	for_all(uint8, index, MAX_CHAR)
-		//	{
-		//		bool selected = (index == character) ? true : false;
-		//		ImGui::PushID(GUI_id);
-		//		GUI_id++;
-		//		if (ImGui::Selectable(characterName[index], &selected))
-		//		{
-		//			character = index;
-		//		}
-		//		ImGui::PopID();
-		//	}
-		//	ImGui::EndCombo();
-		//}
-		//ImGui::PopID();
-
-
-
-		
-
-
-
-		
-
-
-		ImGui::PushID(GUI_id);
-		GUI_id++;
-		if (ImGui::BeginTabBar("ActorTabs"))
+		if (NEW_GUI_CollapsingHeader("Actor"))
 		{
-
-			ActorTab("Actor 1", 0);
-			ActorTab("Actor 2", 1);
-			ActorTab("Actor 3", 2);
-			ActorTab("Actor 4", 3);
-
-
-
-
-
-
-
-			ImGui::EndTabBar();
+			NEW_GUI_Text("");
+			if (NEW_GUI_Checkbox("Enable", Config.Actor.enable))
+			{
+			}
+			NEW_GUI_Text("");
+			NEW_GUI_PushItemWidth(200);
+			NEW_GUI_Slider<uint8>("Count", Config.Actor.count, 1, MAX_ACTOR);
+			NEW_GUI_PopItemWidth();
+			if (NEW_GUI_TabBarStart("ActorTabs"))
+			{
+				ActorTab("Actor 1", 0);
+				ActorTab("Actor 2", 1);
+				ActorTab("Actor 3", 2);
+				ActorTab("Actor 4", 3);
+				NEW_GUI_TabBarEnd();
+			}
+			NEW_GUI_Text("");
+			if (NEW_GUI_Button("Reset"))
+			{
+			}
 		}
 
 
-		//if (ImGui::BeginTabBar("", flags))
-		//{
-
-
-
-
-
-
-		//	//for_all(uint8, actorIndex, MAX_ACTOR)
-		//	//{
-		//	//	ImGui::PushID(GUI_id);
-		//	//	GUI_id++;
-		//	//	char tabName[64];
-		//	//	snprintf(tabName, sizeof(tabName), "Actor%u", (actorIndex + 1));
-		//	//	if (ImGui::BeginTabItem(tabName))
-		//	//	{
-		//	//		//ImGui::Text("This is the Avocado tab!\nblah blah blah blah blah");
-
-		//	//		WeaponSelect<WEAPON_TYPE_MELEE >(actorIndex);
-		//	//		WeaponSelect<WEAPON_TYPE_RANGED>(actorIndex);
-
-
-
-
-		//	//		ImGui::EndTabItem();
-		//	//	}
-		//	//	ImGui::PopID();
-		//	//}
-		//	ImGui::EndTabBar();
-		//}
-		ImGui::PopID();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		//auto & count = Config.Actor.meleeWeaponCount[0][character];
-
-		//GUI_Slider<uint8>("Weapon Count", count, 1, MAX_MELEE_WEAPON);
-
-
-		//ImGui::Text("Melee Weapons");
-		//WeaponSelect<WEAPON_TYPE_MELEE>(0);
-		////ImGui::Text("Ranged Weapons");
-		//WeaponSelect<WEAPON_TYPE_RANGED>(0);
-
-
-
+		NEW_GUI_CollapsingHeader("Camera");
+		NEW_GUI_CollapsingHeader("Event");
+		NEW_GUI_CollapsingHeader("");
+		NEW_GUI_CollapsingHeader("");
+		NEW_GUI_CollapsingHeader("");
+		NEW_GUI_CollapsingHeader("");
+		NEW_GUI_CollapsingHeader("");
 
 
 		
-		
 
-
-
-
-		//WeaponSelect
-		//<
-		//Config_Actor_meleeWeaponMapDante,
-		//meleeWeaponSelectMapDante,
-		//meleeWeaponSelectNameDante,
-		//meleeWeaponSelectIndexDante
-		//>
-		//(0);
-
-
-		//const_for_all(actorIndex, MAX_ACTOR)
-		//{
-		//	ImGui::Text("Melee Weapon");
-		//	WeaponSelect
-		//	<
-		//	Config_Actor_meleeWeaponMapDante,
-		//	meleeWeaponSelectMapDante,
-		//	meleeWeaponSelectNameDante,
-		//	meleeWeaponSelectIndexDante,
-		//	MAX_MELEE_WEAPON,
-		//	WEAPON_DANTE_REBELLION
-		//	>
-		//	(actorIndex);
-		//}
-
-
-
-
-
-		//constexpr auto & arrayPointer = Config_Actor_meleeWeaponMapDante[0];
-
-
-
-
-
-		//WeaponSelect<Config_Actor_meleeWeaponMapDante[0]>();
-
-
-
-		//ImGui::Text("Ranged Weapon");
-		//WeaponSelect
-		//<
-		//Config.Actor.rangedWeaponMapDante[actorIndex],
-		//rangedWeaponSelectMapDante,
-		//rangedWeaponSelectNameDante,
-		//rangedWeaponSelectIndexDante
-		//>
-		//();
-		//ImGui::Text("Vergil");
-		//ImGui::Text("Melee Weapon");
-		//WeaponSelect
-		//<
-		//Config.Actor.meleeWeaponMapVergil[actorIndex],
-		//meleeWeaponSelectMapVergil,
-		//meleeWeaponSelectNameVergil,
-		//meleeWeaponSelectIndexVergil
-		//>
-		//();
-
-
-
-
-
-		//ImGui::PushID(GUI_id);
-		//GUI_id++;
-		//if (ImGui::Button("Update Index"))
-		//{
-
-		//	UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE>(0);
-
-		//}
-		//ImGui::PopID();
+		//windowFlags = ImGui::GetCurrentWindow()->Flags;
 
 
 
@@ -3380,11 +3291,12 @@ void GUI_Init()
 
 	for_all(uint8, actorIndex, MAX_ACTOR)
 	{
-		UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE >(actorIndex);
-		UpdateWeaponSelectIndex<WEAPON_TYPE_RANGED>(actorIndex);
+		for_all(uint8, characterIndex, MAX_CHAR)
+		{
+			UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE >(actorIndex, characterIndex);
+			UpdateWeaponSelectIndex<WEAPON_TYPE_RANGED>(actorIndex, characterIndex);
+		}
 	}
-
-
 }
 
 

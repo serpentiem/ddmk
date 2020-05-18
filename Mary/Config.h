@@ -181,33 +181,8 @@ struct CONFIG
 	}
 	Actor;
 
-	struct ACTOR_CONFIG_DATA
-	{
-		uint8 character;
-		uint8 meleeWeaponMap[MAX_MELEE_WEAPON];
-		uint8 rangedWeaponMap[MAX_RANGED_WEAPON];
-	};
-
-	ACTOR_CONFIG_DATA actorData[2] =
-	{
-		CHAR_DANTE,
-		WEAPON_DANTE_REBELLION,
-		WEAPON_DANTE_CERBERUS,
-		WEAPON_DANTE_AGNI_RUDRA,
-		WEAPON_VOID,
-		WEAPON_VOID,
 
 
-
-
-
-
-
-
-
-
-
-	};
 
 
 
@@ -235,6 +210,12 @@ struct CONFIG
 			bool enableAirStinger = false;
 		}
 		Rebellion;
+
+		float32 meleeWeaponSwitchTimeout = 1;
+		float32 rangedWeaponSwitchTimeout = 1;
+
+
+
 	}
 	Dante;
 

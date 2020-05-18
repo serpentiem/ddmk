@@ -2,6 +2,11 @@
 
 HUDIconHelper HUD_styleIconDante [MAX_STYLE ] = {};
 HUDIconHelper HUD_styleIconVergil[MAX_STYLE ] = {};
+
+
+
+
+
 HUDIconHelper HUD_weaponIcon     [MAX_WEAPON] = {};
 
 // @Research: Make map local.

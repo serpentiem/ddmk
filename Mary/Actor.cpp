@@ -321,7 +321,7 @@ void ToggleUpdateWeapon(bool enable)
 {
 	LogFunction(enable);
 
-	for_all(int, index, countof(IsWeaponReadyProxyHelper))
+	for_all(uint8, index, countof(IsWeaponReadyProxyHelper))
 	{
 		auto & item = IsWeaponReadyProxyHelper[index];
 
@@ -603,7 +603,7 @@ void UpdateWeaponDante(ACTOR_DATA_DANTE & actorData)
 	//actorData.rangedWeaponData[0] = actorData.newRangedWeaponData[actorData.newRangedWeaponIndex];
 	actorData.rangedWeaponData[0] = actorData.newRangedWeaponData[4];
 
-	actorData.rangedWeaponFlags[2] = 4;
+	actorData.rangedWeaponStatus[2] = WEAPON_STATUS_DISABLED;
 }
 
 ACTOR_DATA_DANTE * CreateActorDante()
@@ -658,7 +658,7 @@ void UpdateWeaponVergil(ACTOR_DATA_VERGIL & actorData)
 	actorData.meleeWeaponData[1] = actorData.newMeleeWeaponData[1];
 	actorData.meleeWeaponData[2] = actorData.newMeleeWeaponData[2];
 
-	actorData.meleeWeaponFlags[4] = 4;
+	actorData.meleeWeaponStatus[4] = WEAPON_STATUS_DISABLED;
 }
 
 ACTOR_DATA_VERGIL * CreateActorVergil()
@@ -816,7 +816,164 @@ ACTOR_DATA_VERGIL * CreateActorVergil()
 
 // @Todo: Controller.
 
-bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
+
+
+
+
+
+void MeleeWeaponSwitchControllerDanteExecute(ACTOR_DATA_DANTE & actorData)
+{
+
+
+	// @Research: Check assembly.
+	if (0 < actorData.meleeWeaponSwitchTimeout)
+	{
+		return;
+	}
+
+	actorData.meleeWeaponSwitchTimeout = Config.Dante.meleeWeaponSwitchTimeout;
+
+
+
+
+
+	actorData.newMeleeWeaponIndex++;
+	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
+	{
+		actorData.newMeleeWeaponIndex = 0;
+	}
+
+
+
+
+
+
+
+	auto newMeleeWeapon     = actorData.newMeleeWeaponMap [actorData.newMeleeWeaponIndex];
+	auto newMeleeWeaponData = actorData.newMeleeWeaponData[actorData.newMeleeWeaponIndex];
+
+
+	if (newMeleeWeapon >= MAX_WEAPON)
+	{
+		newMeleeWeapon = WEAPON_DANTE_REBELLION;
+	}
+
+
+
+	if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
+	{
+		for_all(uint8, index, 2)
+		{
+			if (!IsWeaponActive(actorData, actorData.meleeWeaponMap[index]) && (actorData.meleeWeaponStatus[index] == WEAPON_STATUS_READY))
+			{
+				actorData.meleeWeaponIndex = index;
+				break;
+			}
+		}
+		auto & meleeWeapon     = actorData.meleeWeaponMap [actorData.meleeWeaponIndex];
+		auto & meleeWeaponData = actorData.meleeWeaponData[actorData.meleeWeaponIndex];
+		meleeWeapon     = newMeleeWeapon;
+		meleeWeaponData = newMeleeWeaponData;
+	}
+
+
+
+	HUD_UpdateWeaponIcon
+	(
+		HUD_BOTTOM::MELEE_WEAPON_1,
+		HUD_weaponIcon[newMeleeWeapon].model,
+		HUD_weaponIcon[newMeleeWeapon].texture
+	);
+
+
+	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+	auto hud = *reinterpret_cast<byte8 **>(pool[11]);
+	func_280120(hud, 1, 0);
+
+	func_1EB0E0(actorData, 4);
+
+
+}
+
+
+
+//bool g_execute[MAX_ACTOR] = {};
+
+
+
+
+void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
+{
+
+
+	//static bool execute = true;
+
+
+	static bool execute[MAX_GAMEPAD] = {};
+
+
+	auto & gamepad = GetGamepad(actorData.newGamepad);
+
+
+
+	//// @Todo: Change to 0 and add execute bool.
+	//if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
+	//{
+	//	return;
+	//}
+
+
+
+
+
+
+
+	if ((gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
+	{
+		if (execute[actorData.newGamepad])
+		{
+			execute[actorData.newGamepad] = false;
+
+			// code here
+
+			MeleeWeaponSwitchControllerDanteExecute(actorData);
+
+		}
+	}
+	else
+	{
+		execute[actorData.newGamepad] = true;
+	}
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+bool WeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 {
 	if (actorData.devilState == 2)
 	{
@@ -826,6 +983,9 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 	{
 		return false;
 	}
+
+	MeleeWeaponSwitchControllerDante(actorData);
+
 
 	//{
 	//	auto & meleeWeaponIndex = actorData.weaponIndex[0];
@@ -868,70 +1028,48 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 	//sect0:;
 
 
-	auto & gamepad = GetGamepad(0);
+	//auto & gamepad = GetGamepad(0);
 
 
-	{
-		if (!(gamepad.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
-		{
-			goto sect0;
-		}
-		if (0 < actorData.meleeWeaponSwitchTimeout)
-		{
-			goto sect0;
-		}
+	//{
+	//	if (!(gamepad.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
+	//	{
+	//		goto sect0;
+	//	}
+	//	if (0 < actorData.meleeWeaponSwitchTimeout)
+	//	{
+	//		goto sect0;
+	//	}
 
-		//auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
-		float32 timeout = 1;
-		actorData.meleeWeaponSwitchTimeout = timeout;
-
-
-
-
-		//actorData.meleeWeaponIndex++;
-
-		//if (actorData.meleeWeaponIndex >= 2)
-		//{
-		//	actorData.meleeWeaponIndex = 0;
-		//}
-
-
-		//actorData.meleeWeaponIndex = (IsWeaponActive(actorData, actorData.meleeWeaponMap[0])) ? 1 : 0;
-
-		
-		if (!IsWeaponActive(actorData, actorData.meleeWeaponMap[0]))
-		{
-			actorData.meleeWeaponIndex = 0;
-		}
-		else
-		{
-			actorData.meleeWeaponIndex = 1;
-		}
+	//	//auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
+	//	float32 timeout = 1;
+	//	actorData.meleeWeaponSwitchTimeout = timeout;
 
 
 
 
+	//	//actorData.meleeWeaponIndex++;
+
+	//	//if (actorData.meleeWeaponIndex >= 2)
+	//	//{
+	//	//	actorData.meleeWeaponIndex = 0;
+	//	//}
+
+
+	//	//actorData.meleeWeaponIndex = (IsWeaponActive(actorData, actorData.meleeWeaponMap[0])) ? 1 : 0;
 
 
 
-
-
-
-
-
-		actorData.newMeleeWeaponIndex++;
-
-		if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
-		{
-			actorData.newMeleeWeaponIndex = 0;
-		}
-
-
-		if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] != WEAPON_VERGIL_YAMATO)
-		{
-			actorData.meleeWeaponMap[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
-			actorData.meleeWeaponData[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponData[actorData.newMeleeWeaponIndex];
-		}
+	//	// @Research: It's not that simple. Also check weaponFlags for things like Sword Pierce or Grapple.
+	//	
+	//	if (!IsWeaponActive(actorData, actorData.meleeWeaponMap[0]))
+	//	{
+	//		actorData.meleeWeaponIndex = 0;
+	//	}
+	//	else
+	//	{
+	//		actorData.meleeWeaponIndex = 1;
+	//	}
 
 
 
@@ -944,31 +1082,56 @@ bool WeaponSwitchDante(ACTOR_DATA_DANTE & actorData)
 
 
 
+	//	actorData.newMeleeWeaponIndex++;
+
+	//	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
+	//	{
+	//		actorData.newMeleeWeaponIndex = 0;
+	//	}
+
+
+	//	if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] != WEAPON_VERGIL_YAMATO)
+	//	{
+	//		actorData.meleeWeaponMap[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
+	//		actorData.meleeWeaponData[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponData[actorData.newMeleeWeaponIndex];
+	//	}
 
 
 
-		{
-			auto & id = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
-			HUD_UpdateWeaponIcon(2, HUD_weaponIcon[id].model, HUD_weaponIcon[id].texture);
-		}
 
 
-		//HUD_UpdateWeaponIcon(0, HUD_weaponIcon[actorData.newMeleeWeaponMap[actorData]])
 
 
-		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-		auto hud = *reinterpret_cast<byte8 **>(pool[11]);
-		func_280120(hud, 1, 0);
 
-		func_1EB0E0(actorData, 4);
 
-		//if (actorData.devil || (actorData.devilState == 1))
-		//{
-		//	func_1F92C0(actorData, 1);
-		//	func_1F97F0(actorData, true);
-		//}
-	}
-	sect0:;
+
+
+
+
+
+
+	//	{
+	//		auto & id = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
+	//		HUD_UpdateWeaponIcon(2, HUD_weaponIcon[id].model, HUD_weaponIcon[id].texture);
+	//	}
+
+
+	//	//HUD_UpdateWeaponIcon(0, HUD_weaponIcon[actorData.newMeleeWeaponMap[actorData]])
+
+
+	//	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+	//	auto hud = *reinterpret_cast<byte8 **>(pool[11]);
+	//	func_280120(hud, 1, 0);
+
+	//	func_1EB0E0(actorData, 4);
+
+	//	//if (actorData.devil || (actorData.devilState == 1))
+	//	//{
+	//	//	func_1F92C0(actorData, 1);
+	//	//	func_1F97F0(actorData, true);
+	//	//}
+	//}
+	//sect0:;
 
 
 
@@ -1490,7 +1653,7 @@ void Actor_Init()
 	//	WriteCall((appBaseAddr + 0x1E25E1), func.addr);
 	//}
 	{
-		auto func = CreateFunction(WeaponSwitchDante, 0, true, false);
+		auto func = CreateFunction(WeaponSwitchControllerDante, 0, true, false);
 		WriteCall((appBaseAddr + 0x1E25EB), func.addr);
 	}
 
