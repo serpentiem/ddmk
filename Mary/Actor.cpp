@@ -8,11 +8,11 @@ typedef byte8 *(__fastcall * RegisterWeapon_t)
 	uint32 id
 );
 
-typedef bool(__fastcall * IsWeaponReady_t)
-(
-	byte8 * actorData,
-	uint8 weapon
-);
+//typedef bool(__fastcall * IsWeaponReady_t)
+//(
+//	byte8 * actorData,
+//	uint8 weapon
+//);
 
 struct IsWeaponReadyProxyHelper_t
 {
@@ -56,198 +56,74 @@ byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
 
 
 
-
-
-
-
-// @Todo: Update.
-
-//template
-//<
-//	typename T,
-//	uint8 weaponType = WEAPON_TYPE_MELEE
-//>
-//bool IsWeaponReady
-//(
-//	T & actorData,
-//	uint8 weapon
-//)
-//{
-//	uint8 * weaponMap = 0;
-//	uint8 weaponCount = 0;
-//	uint8 weaponIndex = 0;
-//
-//	if constexpr (typematch(T, ACTOR_DATA_DANTE))
-//	{
-//		if constexpr (weaponType == WEAPON_TYPE_MELEE)
-//		{
-//			weaponMap = actorData.meleeWeaponMap;
-//			weaponCount = 2;
-//			weaponIndex = actorData.meleeWeaponIndex;
-//		}
-//		else
-//		{
-//			weaponMap = actorData.rangedWeaponMap;
-//			weaponCount = 2;
-//			weaponIndex = (actorData.rangedWeaponIndex - 2);
-//		}
-//	}
-//	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
-//	{
-//		weaponMap = actorData.meleeWeaponMap;
-//		weaponCount = 3;
-//		weaponIndex = actorData.queuedMeleeWeaponIndex;
-//	}
-//
-//	if (IsWeaponActive<T>(actorData, weapon))
-//	{
-//		return true;
-//	}
-//
-//	for (uint8 index = 0; index < weaponCount; index++)
-//	{
-//		if (weaponMap[index] == weapon)
-//		{
-//			continue;
-//		}
-//		if (IsWeaponActive<T>(actorData, weaponMap[index]))
-//		{
-//			return false;
-//		}
-//	}
-//
-//	if constexpr (typematch(T, ACTOR_DATA_VERGIL))
-//	{
-//		if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
-//		{
-//			actorData.activeMeleeWeaponIndex = actorData.queuedMeleeWeaponIndex;
-//		}
-//	}
-//
-//	if (weaponMap[weaponIndex] == weapon)
-//	{
-//		return true;
-//	}
-//
-//	if constexpr (typematch(T, ACTOR_DATA_VERGIL))
-//	{
-//		if ((weapon == WEAPON_VERGIL_YAMATO) && (weaponMap[weaponIndex] == WEAPON_VERGIL_FORCE_EDGE))
-//		{
-//			return true;
-//		}
-//	}
-//
-//	return false;
-//}
-
-
-
-
-
-// @Todo: If actor has no parent, has child, child's weapon yamato is still active, keep hiding weapon.
-
-
-template
-<
-	typename T,
-	uint8 weaponType = WEAPON_TYPE_MELEE
->
+template <typename T>
 bool IsWeaponReady
 (
-	T & actorData,
-	uint8 weapon
+	T     & actorData,
+	uint8   weapon,
+	uint8 * weaponMap,
+	uint8   weaponMapItemCount,
+	uint8   weaponMapIndex
 )
 {
-
-
-	// auto &
-
-	uint8 * weaponMap = 0;
-	uint8 weaponCount = 0;
-	uint8 weaponIndex = 0;
-
-	//if constexpr (typematch(T, ACTOR_DATA_DANTE))
-	//{
-	//	if constexpr (weaponType == WEAPON_TYPE_MELEE)
-	//	{
-	//		weaponMap = actorData.meleeWeaponMap;
-	//		weaponCount = 2;
-	//		weaponIndex = actorData.meleeWeaponIndex;
-	//	}
-	//	else
-	//	{
-	//		weaponMap = actorData.rangedWeaponMap;
-	//		weaponCount = 2;
-	//		weaponIndex = (actorData.rangedWeaponIndex - 2);
-	//	}
-	//}
-	//else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
-	//{
-	//	weaponMap = actorData.meleeWeaponMap;
-	//	weaponCount = 3;
-	//	weaponIndex = actorData.queuedMeleeWeaponIndex;
-	//}
-
-
-	if constexpr (weaponType == WEAPON_TYPE_MELEE)
-	{
-		weaponMap = actorData.newMeleeWeaponMap;
-		weaponCount = actorData.newMeleeWeaponCount;
-		weaponIndex = actorData.newMeleeWeaponIndex;
-	}
-	else
-	{
-		weaponMap = actorData.newRangedWeaponMap;
-		weaponCount = actorData.newRangedWeaponCount;
-		weaponIndex = actorData.newRangedWeaponIndex;
-	}
-
-
-
-
-
-
-
-
-	if (IsWeaponActive<T>(actorData, weapon))
+	if (IsWeaponActive(actorData, weapon))
 	{
 		return true;
 	}
 
-	for (uint8 index = 0; index < weaponCount; index++)
+	for_all(uint8, weaponMapIndex, weaponMapItemCount)
 	{
-		if (weaponMap[index] == weapon)
+		auto & weaponMapItem = weaponMap[weaponMapIndex];
+		if (weaponMapItem == weapon)
 		{
 			continue;
 		}
-		if (IsWeaponActive<T>(actorData, weaponMap[index]))
+		if (IsWeaponActive(actorData, weaponMapItem))
 		{
 			return false;
 		}
 	}
 
-	//if constexpr (typematch(T, ACTOR_DATA_VERGIL))
-	//{
-	//	if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
-	//	{
-	//		actorData.activeMeleeWeaponIndex = actorData.queuedMeleeWeaponIndex;
-	//	}
-	//}
-
-	if (weaponMap[weaponIndex] == weapon)
+	if (weaponMap[weaponMapIndex] == weapon)
 	{
 		return true;
 	}
 
-	//if constexpr (typematch(T, ACTOR_DATA_VERGIL))
-	//{
-	//	if ((weapon == WEAPON_VERGIL_YAMATO) && (weaponMap[weaponIndex] == WEAPON_VERGIL_FORCE_EDGE))
-	//	{
-	//		return true;
-	//	}
-	//}
-
 	return false;
+}
+
+template<typename T>
+bool IsMeleeWeaponReady
+(
+	T & actorData,
+	uint8 weapon
+)
+{
+	return IsWeaponReady
+	(
+		actorData,
+		weapon,
+		actorData.newMeleeWeapon,
+		actorData.newMeleeWeaponCount,
+		actorData.newMeleeWeaponIndex
+	);
+}
+
+template<typename T>
+bool IsRangedWeaponReady
+(
+	T & actorData,
+	uint8 weapon
+)
+{
+	return IsWeaponReady
+	(
+		actorData,
+		weapon,
+		actorData.newRangedWeapon,
+		actorData.newRangedWeaponCount,
+		actorData.newRangedWeaponIndex
+	);
 }
 
 
@@ -257,28 +133,7 @@ bool IsWeaponReady
 
 
 
-
-
-
-
-
-void * IsMeleeWeaponReady[MAX_CHAR] =
-{
-	IsWeaponReady<ACTOR_DATA_DANTE>,
-	0,
-	0,
-	IsWeaponReady<ACTOR_DATA_VERGIL>,
-};
-
-void * IsRangedWeaponReady[MAX_CHAR] =
-{
-	IsWeaponReady<ACTOR_DATA_DANTE, WEAPON_TYPE_RANGED>,
-	0,
-	0,
-	0,
-};
-
-template <uint8 weaponType = WEAPON_TYPE_MELEE>
+template <uint8 weaponType>
 bool IsWeaponReadyProxy(byte8 * baseAddr)
 {
 	auto & weapon = *reinterpret_cast<uint8 *>(baseAddr + 0x112);
@@ -289,33 +144,26 @@ bool IsWeaponReadyProxy(byte8 * baseAddr)
 	}
 	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(actorBaseAddr);
 
-	IsWeaponReady_t func = 0;
-
-	auto character = actorData.character;
-	if (character >= MAX_CHAR)
-	{
-		character = 0;
-	}
-
 	if constexpr (weaponType == WEAPON_TYPE_MELEE)
 	{
-		func = reinterpret_cast<IsWeaponReady_t>(IsMeleeWeaponReady[character]);
+		return IsMeleeWeaponReady(actorData, weapon);
 	}
 	else
 	{
-		func = reinterpret_cast<IsWeaponReady_t>(IsRangedWeaponReady[character]);
+		return IsRangedWeaponReady(actorData, weapon);
 	}
-
-	if (func == 0)
-	{
-		return true;
-	}
-
-	return func(actorData, weapon);
 }
 
-auto IsMeleeWeaponReadyProxy = IsWeaponReadyProxy<>;
+auto IsMeleeWeaponReadyProxy  = IsWeaponReadyProxy<WEAPON_TYPE_MELEE >;
 auto IsRangedWeaponReadyProxy = IsWeaponReadyProxy<WEAPON_TYPE_RANGED>;
+
+
+
+
+
+
+
+
 
 void ToggleUpdateWeapon(bool enable)
 {
@@ -529,79 +377,83 @@ inline void RegisterWeapon_Init()
 
 
 
-// @Research: Very treacherous.
 
-struct
+
+void UpdateWeaponDante
+(
+	ACTOR_DATA_DANTE & actorData,
+	uint8 actorIndex = 0
+)
 {
-	uint8 newMeleeWeaponMap[5] =
+	memset((reinterpret_cast<byte8 *>(&actorData) + 0x648C), 0, (0x6510 - 0x648C));
+
+	// Melee Weapon
+
+	memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeapon[actorIndex][CHAR_DANTE], MAX_MELEE_WEAPON);
+
+	actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCount[actorIndex][CHAR_DANTE];
+
+	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
 	{
-		WEAPON_DANTE_REBELLION,
-		WEAPON_DANTE_CERBERUS,
-		WEAPON_VERGIL_YAMATO,
-		//WEAPON_DANTE_AGNI_RUDRA,
-		WEAPON_DANTE_NEVAN,
-		WEAPON_DANTE_BEOWULF,
-	};
-	uint8 newMeleeWeaponCount = 3;
-	uint8 newRangedWeaponMap[5] =
-	{
-		WEAPON_DANTE_EBONY_IVORY,
-		WEAPON_DANTE_SHOTGUN,
-		WEAPON_DANTE_ARTEMIS,
-		WEAPON_DANTE_SPIRAL,
-		WEAPON_DANTE_KALINA_ANN,
-	};
-	uint8 newRangedWeaponCount = 5;
-}
-Dante;
-
-
-
-
-
-
-
-
-
-// @Todo: Add IsWeaponIndexActive.
-
-void UpdateWeaponDante(ACTOR_DATA_DANTE & actorData)
-{
-	constexpr uint32 size = (offsetof(ACTOR_DATA_DANTE, styleRank) - offsetof(ACTOR_DATA_DANTE, meleeWeaponData));
-	memset(actorData.meleeWeaponData, 0, size);
-
-	memcpy(actorData.newMeleeWeaponMap , Dante.newMeleeWeaponMap , sizeof(Dante.newMeleeWeaponMap ));
-	memcpy(actorData.newRangedWeaponMap, Dante.newRangedWeaponMap, sizeof(Dante.newRangedWeaponMap));
-
-	actorData.newMeleeWeaponCount  = Dante.newMeleeWeaponCount;
-	actorData.newRangedWeaponCount = Dante.newRangedWeaponCount;
+		actorData.newMeleeWeaponIndex = 0;
+	}
 
 	for_all(uint8, index, 5)
 	{
-		uint32 id = (WEAPON_DANTE_REBELLION + index);
-		actorData.newMeleeWeaponData[index] = RegisterWeapon[id](actorData, id);
+		uint32 weapon = (WEAPON_DANTE_REBELLION + index);
+		actorData.newMeleeWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
 	}
+
+	auto & newMeleeWeapon     = actorData.newMeleeWeapon    [actorData.newMeleeWeaponIndex];
+
+	if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
+	{
+		actorData.meleeWeapon[0] = newMeleeWeapon;
+		actorData.meleeWeapon[1] = WEAPON_VOID;
+		actorData.meleeWeaponData[0] = actorData.newMeleeWeaponData[(newMeleeWeapon - WEAPON_DANTE_REBELLION)];
+	}
+	else
+	{
+		actorData.meleeWeapon[0] = WEAPON_VOID;
+		actorData.meleeWeapon[1] = WEAPON_VOID;
+	}
+
+	actorData.meleeWeaponIndex = 0;
+
+	// Ranged Weapon
+
+	memcpy(actorData.newRangedWeapon, Config.Actor.rangedWeapon[actorIndex][CHAR_DANTE], MAX_RANGED_WEAPON);
+
+	actorData.newRangedWeaponCount = Config.Actor.rangedWeaponCount[actorIndex][CHAR_DANTE];
+
+	if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
+	{
+		actorData.newRangedWeaponIndex = 0;
+	}
+
 	for_all(uint8, index, 5)
 	{
-		uint32 id = (WEAPON_DANTE_EBONY_IVORY + index);
-		actorData.newRangedWeaponData[index] = RegisterWeapon[id](actorData, id);
+		uint32 weapon = (WEAPON_DANTE_EBONY_IVORY + index);
+		actorData.newRangedWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
 	}
 
-	actorData.meleeWeaponMap[0] = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
-	actorData.meleeWeaponMap[1] = WEAPON_VOID;
+	auto & newRangedWeapon     = actorData.newRangedWeapon    [actorData.newRangedWeaponIndex];
 
-	//actorData.rangedWeaponMap[0] = actorData.newRangedWeaponMap[actorData.newRangedWeaponIndex];
+	if ((newRangedWeapon >= WEAPON_DANTE_EBONY_IVORY) && (newRangedWeapon <= WEAPON_DANTE_KALINA_ANN))
+	{
+		actorData.rangedWeapon[0] = newRangedWeapon;
+		actorData.rangedWeapon[1] = WEAPON_VOID;
+		actorData.rangedWeapon[2] = WEAPON_VOID;
+		actorData.rangedWeaponData[0] = actorData.newRangedWeaponData[(newRangedWeapon - WEAPON_DANTE_EBONY_IVORY)];
+	}
+	else
+	{
+		actorData.rangedWeapon[0] = WEAPON_VOID;
+		actorData.rangedWeapon[1] = WEAPON_VOID;
+		actorData.rangedWeapon[2] = WEAPON_VOID;
+	}
 
-
-	actorData.newRangedWeaponMap[0] = WEAPON_DANTE_KALINA_ANN;
-
-	actorData.rangedWeaponMap[0] = WEAPON_DANTE_KALINA_ANN;
-	actorData.rangedWeaponMap[1] = WEAPON_VOID;
-	actorData.rangedWeaponMap[2] = WEAPON_VOID;
-
-	actorData.meleeWeaponData [0] = actorData.newMeleeWeaponData [actorData.newMeleeWeaponIndex ];
-	//actorData.rangedWeaponData[0] = actorData.newRangedWeaponData[actorData.newRangedWeaponIndex];
-	actorData.rangedWeaponData[0] = actorData.newRangedWeaponData[4];
+	actorData.rangedWeaponIndex = 2;
 
 	actorData.rangedWeaponStatus[2] = WEAPON_STATUS_DISABLED;
 }
@@ -637,22 +489,36 @@ ACTOR_DATA_DANTE * CreateActorDante()
 	return &actorData;
 }
 
-void UpdateWeaponVergil(ACTOR_DATA_VERGIL & actorData)
+void UpdateWeaponVergil
+(
+	ACTOR_DATA_VERGIL & actorData,
+	uint8 actorIndex = 0
+)
 {
-	constexpr uint32 size = (offsetof(ACTOR_DATA_VERGIL, styleRank) - offsetof(ACTOR_DATA_VERGIL, meleeWeaponData));
-	memset(actorData.meleeWeaponData, 0, size);
+	memset((reinterpret_cast<byte8 *>(&actorData) + 0x648C), 0, (0x6510 - 0x648C));
+
+	// Melee Weapon
+
+	memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeapon[actorIndex][CHAR_VERGIL], MAX_MELEE_WEAPON);
+
+	actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCount[actorIndex][CHAR_VERGIL];
+
+	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
+	{
+		actorData.newMeleeWeaponIndex = 0;
+	}
 
 	for_all(uint8, index, 3)
 	{
-		uint8 id = (WEAPON_VERGIL_YAMATO + index);
-		actorData.newMeleeWeaponData[index] = RegisterWeapon[id](actorData, id);
+		uint32 weapon = (WEAPON_VERGIL_YAMATO + index);
+		actorData.newMeleeWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
 	}
 
-	actorData.meleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
-	actorData.meleeWeaponMap[1] = WEAPON_VERGIL_BEOWULF;
-	actorData.meleeWeaponMap[2] = WEAPON_VERGIL_FORCE_EDGE;
-	actorData.meleeWeaponMap[3] = WEAPON_VOID;
-	actorData.meleeWeaponMap[4] = WEAPON_VOID;
+	actorData.meleeWeapon[0] = WEAPON_VERGIL_YAMATO;
+	actorData.meleeWeapon[1] = WEAPON_VERGIL_BEOWULF;
+	actorData.meleeWeapon[2] = WEAPON_VERGIL_FORCE_EDGE;
+	actorData.meleeWeapon[3] = WEAPON_VOID;
+	actorData.meleeWeapon[4] = WEAPON_VOID;
 
 	actorData.meleeWeaponData[0] = actorData.newMeleeWeaponData[0];
 	actorData.meleeWeaponData[1] = actorData.newMeleeWeaponData[1];
@@ -691,6 +557,23 @@ ACTOR_DATA_VERGIL * CreateActorVergil()
 
 	return &actorData;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // @Todo: Add devil support and Nero Angelo exceptions.
 // @Todo: Check for WEAPON_VOID and same weapon.
@@ -849,7 +732,7 @@ void MeleeWeaponSwitchControllerDanteExecute(ACTOR_DATA_DANTE & actorData)
 
 
 
-	auto newMeleeWeapon     = actorData.newMeleeWeaponMap [actorData.newMeleeWeaponIndex];
+	auto newMeleeWeapon     = actorData.newMeleeWeapon    [actorData.newMeleeWeaponIndex];
 	auto newMeleeWeaponData = actorData.newMeleeWeaponData[actorData.newMeleeWeaponIndex];
 
 
@@ -864,17 +747,42 @@ void MeleeWeaponSwitchControllerDanteExecute(ACTOR_DATA_DANTE & actorData)
 	{
 		for_all(uint8, index, 2)
 		{
-			if (!IsWeaponActive(actorData, actorData.meleeWeaponMap[index]) && (actorData.meleeWeaponStatus[index] == WEAPON_STATUS_READY))
+			if (!IsWeaponActive(actorData, actorData.meleeWeapon[index]) && (actorData.meleeWeaponStatus[index] == WEAPON_STATUS_READY))
 			{
 				actorData.meleeWeaponIndex = index;
 				break;
 			}
 		}
-		auto & meleeWeapon     = actorData.meleeWeaponMap [actorData.meleeWeaponIndex];
+		auto & meleeWeapon     = actorData.meleeWeapon    [actorData.meleeWeaponIndex];
 		auto & meleeWeaponData = actorData.meleeWeaponData[actorData.meleeWeaponIndex];
 		meleeWeapon     = newMeleeWeapon;
 		meleeWeaponData = newMeleeWeaponData;
 	}
+	else if ((newMeleeWeapon >= WEAPON_VERGIL_YAMATO) && (newMeleeWeapon <= WEAPON_VERGIL_FORCE_EDGE))
+	{
+		auto parentActorData = actorData;
+		if (parentActorData.newParentBaseAddr)
+		{
+			goto sect0;
+		}
+		if (!parentActorData.newChildBaseAddr[CHAR_VERGIL])
+		{
+			goto sect0;
+		}
+		auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(parentActorData.newChildBaseAddr[CHAR_VERGIL]);
+		if (childActorData.character != CHAR_VERGIL)
+		{
+			goto sect0;
+		}
+		childActorData.activeMeleeWeaponIndex = (newMeleeWeapon - WEAPON_VERGIL_YAMATO);
+		childActorData.queuedMeleeWeaponIndex = (newMeleeWeapon - WEAPON_VERGIL_YAMATO);
+	}
+	sect0:;
+
+
+
+
+
 
 
 
@@ -1839,3 +1747,300 @@ void Actor_Init()
 
 	//Write<byte32>((appBaseAddr + 0x1EBD19), offsetof(ACTOR_DATA, gamepad));
 }
+
+
+
+
+
+
+#pragma region Garbage
+
+
+//
+//
+//template
+//<
+//	typename T,
+//	uint8 weaponType = WEAPON_TYPE_MELEE
+//>
+//bool IsWeaponReady
+//(
+//	T & actorData,
+//	uint8 weapon
+//)
+//{
+//
+//
+//	// auto &
+//
+//	uint8 * weaponMap = 0;
+//	uint8 weaponCount = 0;
+//	uint8 weaponIndex = 0;
+//
+//	//if constexpr (typematch(T, ACTOR_DATA_DANTE))
+//	//{
+//	//	if constexpr (weaponType == WEAPON_TYPE_MELEE)
+//	//	{
+//	//		weaponMap = actorData.meleeWeaponMap;
+//	//		weaponCount = 2;
+//	//		weaponIndex = actorData.meleeWeaponIndex;
+//	//	}
+//	//	else
+//	//	{
+//	//		weaponMap = actorData.rangedWeaponMap;
+//	//		weaponCount = 2;
+//	//		weaponIndex = (actorData.rangedWeaponIndex - 2);
+//	//	}
+//	//}
+//	//else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	//{
+//	//	weaponMap = actorData.meleeWeaponMap;
+//	//	weaponCount = 3;
+//	//	weaponIndex = actorData.queuedMeleeWeaponIndex;
+//	//}
+//
+//
+//	if constexpr (weaponType == WEAPON_TYPE_MELEE)
+//	{
+//		weaponMap = actorData.newMeleeWeaponMap;
+//		weaponCount = actorData.newMeleeWeaponCount;
+//		weaponIndex = actorData.newMeleeWeaponIndex;
+//	}
+//	else
+//	{
+//		weaponMap = actorData.newRangedWeaponMap;
+//		weaponCount = actorData.newRangedWeaponCount;
+//		weaponIndex = actorData.newRangedWeaponIndex;
+//	}
+//
+//
+//
+//
+//
+//
+//
+//
+//	if (IsWeaponActive<T>(actorData, weapon))
+//	{
+//		return true;
+//	}
+//
+//	for (uint8 index = 0; index < weaponCount; index++)
+//	{
+//		if (weaponMap[index] == weapon)
+//		{
+//			continue;
+//		}
+//		if (IsWeaponActive<T>(actorData, weaponMap[index]))
+//		{
+//			return false;
+//		}
+//	}
+//
+//	//if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	//{
+//	//	if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
+//	//	{
+//	//		actorData.activeMeleeWeaponIndex = actorData.queuedMeleeWeaponIndex;
+//	//	}
+//	//}
+//
+//	if (weaponMap[weaponIndex] == weapon)
+//	{
+//		return true;
+//	}
+//
+//	//if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	//{
+//	//	if ((weapon == WEAPON_VERGIL_YAMATO) && (weaponMap[weaponIndex] == WEAPON_VERGIL_FORCE_EDGE))
+//	//	{
+//	//		return true;
+//	//	}
+//	//}
+//
+//	return false;
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// @Todo: Update.
+
+//template
+//<
+//	typename T,
+//	uint8 weaponType = WEAPON_TYPE_MELEE
+//>
+//bool IsWeaponReady
+//(
+//	T & actorData,
+//	uint8 weapon
+//)
+//{
+//	uint8 * weaponMap = 0;
+//	uint8 weaponCount = 0;
+//	uint8 weaponIndex = 0;
+//
+//	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+//	{
+//		if constexpr (weaponType == WEAPON_TYPE_MELEE)
+//		{
+//			weaponMap = actorData.meleeWeaponMap;
+//			weaponCount = 2;
+//			weaponIndex = actorData.meleeWeaponIndex;
+//		}
+//		else
+//		{
+//			weaponMap = actorData.rangedWeaponMap;
+//			weaponCount = 2;
+//			weaponIndex = (actorData.rangedWeaponIndex - 2);
+//		}
+//	}
+//	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	{
+//		weaponMap = actorData.meleeWeaponMap;
+//		weaponCount = 3;
+//		weaponIndex = actorData.queuedMeleeWeaponIndex;
+//	}
+//
+//	if (IsWeaponActive<T>(actorData, weapon))
+//	{
+//		return true;
+//	}
+//
+//	for (uint8 index = 0; index < weaponCount; index++)
+//	{
+//		if (weaponMap[index] == weapon)
+//		{
+//			continue;
+//		}
+//		if (IsWeaponActive<T>(actorData, weaponMap[index]))
+//		{
+//			return false;
+//		}
+//	}
+//
+//	if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	{
+//		if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
+//		{
+//			actorData.activeMeleeWeaponIndex = actorData.queuedMeleeWeaponIndex;
+//		}
+//	}
+//
+//	if (weaponMap[weaponIndex] == weapon)
+//	{
+//		return true;
+//	}
+//
+//	if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	{
+//		if ((weapon == WEAPON_VERGIL_YAMATO) && (weaponMap[weaponIndex] == WEAPON_VERGIL_FORCE_EDGE))
+//		{
+//			return true;
+//		}
+//	}
+//
+//	return false;
+//}
+
+
+//void * IsMeleeWeaponReady[MAX_CHAR] =
+//{
+//	IsWeaponReady<ACTOR_DATA_DANTE, WEAPON_TYPE_MELEE>,
+//	0,
+//	0,
+//	IsWeaponReady<ACTOR_DATA_VERGIL, WEAPON_TYPE_MELEE>,
+//};
+//
+//void * IsRangedWeaponReady[MAX_CHAR] =
+//{
+//	IsWeaponReady<ACTOR_DATA_DANTE, WEAPON_TYPE_RANGED>,
+//	0,
+//	0,
+//	0,
+//};
+
+
+
+
+//template <typename T, uint8 weaponType>
+//bool IsWeaponReadyProxyFunction(byte8 * baseAddr);
+//
+//template <>
+//bool IsWeaponReadyProxyFunction<ACTOR_DATA_DANTE, WEAPON_TYPE_MELEE>(byte8 * baseAddr)
+//{
+//
+//}
+
+
+
+
+
+//// @Research: Very treacherous.
+//
+//struct
+//{
+//	uint8 newMeleeWeaponMap[5] =
+//	{
+//		WEAPON_DANTE_REBELLION,
+//		WEAPON_DANTE_CERBERUS,
+//		WEAPON_VERGIL_YAMATO,
+//		//WEAPON_DANTE_AGNI_RUDRA,
+//		WEAPON_DANTE_NEVAN,
+//		WEAPON_DANTE_BEOWULF,
+//	};
+//	uint8 newMeleeWeaponCount = 3;
+//	uint8 newRangedWeaponMap[5] =
+//	{
+//		WEAPON_DANTE_EBONY_IVORY,
+//		WEAPON_DANTE_SHOTGUN,
+//		WEAPON_DANTE_ARTEMIS,
+//		WEAPON_DANTE_SPIRAL,
+//		WEAPON_DANTE_KALINA_ANN,
+//	};
+//	uint8 newRangedWeaponCount = 5;
+//}
+//Dante;
+
+
+
+// @Todo: If actor has no parent, has child, child's weapon yamato is still active, keep hiding weapon.
+
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

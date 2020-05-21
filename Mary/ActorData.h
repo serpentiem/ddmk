@@ -132,16 +132,16 @@ struct ACTOR_DATA
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newEnableLeftStick; // 0xB8F3
-	bool newEnableRightStick; // 0xB8F4
+	bool newEnableRightStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F4
 	_(3);
-	uint8 newMeleeWeaponMap[5]; // 0xB8F8
+	uint8 newMeleeWeapon[5]; // 0xB8F8
 	_(3);
 	byte8 * newMeleeWeaponData[5]; // 0xB900
 	uint8 newMeleeWeaponCount; // 0xB928
 	uint8 newMeleeWeaponIndex; // 0xB929
 	_(2);
-	uint8 newRangedWeaponMap[5]; // 0xB92C
+	uint8 newRangedWeapon[5]; // 0xB92C
 	_(7);
 	byte8 * newRangedWeaponData[5]; // 0xB938
 	uint8 newRangedWeaponCount; // 0xB960
@@ -267,13 +267,13 @@ struct ACTOR_DATA_DANTE
 	_(2);
 	uint32 meleeWeaponIndex; // 0x6490
 	uint32 rangedWeaponIndex; // 0x6494
-	uint8 meleeWeaponMap[2]; // 0x6498
-	uint8 rangedWeaponMap[3]; // 0x649A
+	uint8 meleeWeapon[2]; // 0x6498
+	uint8 rangedWeapon[3]; // 0x649A
 	_(3);
 	byte8 * meleeWeaponData[2]; // 0x64A0
 	byte8 * rangedWeaponData[3]; // 0x64B0
-	byte32 meleeWeaponStatus[2]; // 0x64C8
-	byte32 rangedWeaponStatus[3]; // 0x64D0
+	uint32 meleeWeaponStatus[2]; // 0x64C8
+	uint32 rangedWeaponStatus[3]; // 0x64D0
 	uint32 meleeWeaponLevel[2]; // 0x64DC
 	uint32 rangedWeaponLevel[3]; // 0x64E4
 	uint8 activeMeleeWeapon; // 0x64F0
@@ -317,16 +317,16 @@ struct ACTOR_DATA_DANTE
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newEnableLeftStick; // 0xB8F3
-	bool newEnableRightStick; // 0xB8F4
+	bool newEnableRightStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F4
 	_(3);
-	uint8 newMeleeWeaponMap[5]; // 0xB8F8
+	uint8 newMeleeWeapon[5]; // 0xB8F8
 	_(3);
 	byte8 * newMeleeWeaponData[5]; // 0xB900
 	uint8 newMeleeWeaponCount; // 0xB928
 	uint8 newMeleeWeaponIndex; // 0xB929
 	_(2);
-	uint8 newRangedWeaponMap[5]; // 0xB92C
+	uint8 newRangedWeapon[5]; // 0xB92C
 	_(7);
 	byte8 * newRangedWeaponData[5]; // 0xB938
 	uint8 newRangedWeaponCount; // 0xB960
@@ -463,16 +463,16 @@ struct ACTOR_DATA_BOB
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newEnableLeftStick; // 0xB8F3
-	bool newEnableRightStick; // 0xB8F4
+	bool newEnableRightStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F4
 	_(3);
-	uint8 newMeleeWeaponMap[5]; // 0xB8F8
+	uint8 newMeleeWeapon[5]; // 0xB8F8
 	_(3);
 	byte8 * newMeleeWeaponData[5]; // 0xB900
 	uint8 newMeleeWeaponCount; // 0xB928
 	uint8 newMeleeWeaponIndex; // 0xB929
 	_(2);
-	uint8 newRangedWeaponMap[5]; // 0xB92C
+	uint8 newRangedWeapon[5]; // 0xB92C
 	_(7);
 	byte8 * newRangedWeaponData[5]; // 0xB938
 	uint8 newRangedWeaponCount; // 0xB960
@@ -609,16 +609,16 @@ struct ACTOR_DATA_LADY
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newEnableLeftStick; // 0xB8F3
-	bool newEnableRightStick; // 0xB8F4
+	bool newEnableRightStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F4
 	_(3);
-	uint8 newMeleeWeaponMap[5]; // 0xB8F8
+	uint8 newMeleeWeapon[5]; // 0xB8F8
 	_(3);
 	byte8 * newMeleeWeaponData[5]; // 0xB900
 	uint8 newMeleeWeaponCount; // 0xB928
 	uint8 newMeleeWeaponIndex; // 0xB929
 	_(2);
-	uint8 newRangedWeaponMap[5]; // 0xB92C
+	uint8 newRangedWeapon[5]; // 0xB92C
 	_(7);
 	byte8 * newRangedWeaponData[5]; // 0xB938
 	uint8 newRangedWeaponCount; // 0xB960
@@ -736,15 +736,15 @@ struct ACTOR_DATA_VERGIL
 	uint32 activeMeleeWeaponIndex; // 0x6484
 	uint32 queuedMeleeWeaponIndex; // 0x6488
 	_(12);
-	uint8 meleeWeaponMap[5]; // 0x6498
+	uint8 meleeWeapon[5]; // 0x6498
 	_(3);
 	byte8 * meleeWeaponData[5]; // 0x64A0
-	byte32 meleeWeaponStatus[5]; // 0x64C8
+	uint32 meleeWeaponStatus[5]; // 0x64C8
 	uint32 meleeWeaponLevel[5]; // 0x64DC
 	_(4);
 	float32 meleeWeaponTimer[5]; // 0x64F4
 	float32 meleeWeaponSwitchForwardTimeout; // 0x6508
-	float32 meleeWeaponSwitchBackwardTimeout; // 0x650C
+	float32 meleeWeaponSwitchBackTimeout; // 0x650C
 	uint8 styleRank; // 0x6510
 	_(3);
 	float32 styleMeter; // 0x6514
@@ -773,16 +773,16 @@ struct ACTOR_DATA_VERGIL
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
 	byte16 newButtonMask; // 0xB8F1
-	bool newEnableLeftStick; // 0xB8F3
-	bool newEnableRightStick; // 0xB8F4
+	bool newEnableRightStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F4
 	_(3);
-	uint8 newMeleeWeaponMap[5]; // 0xB8F8
+	uint8 newMeleeWeapon[5]; // 0xB8F8
 	_(3);
 	byte8 * newMeleeWeaponData[5]; // 0xB900
 	uint8 newMeleeWeaponCount; // 0xB928
 	uint8 newMeleeWeaponIndex; // 0xB929
 	_(2);
-	uint8 newRangedWeaponMap[5]; // 0xB92C
+	uint8 newRangedWeapon[5]; // 0xB92C
 	_(7);
 	byte8 * newRangedWeaponData[5]; // 0xB938
 	uint8 newRangedWeaponCount; // 0xB960

@@ -105,23 +105,37 @@ var items =
 	[ "cloneIsActive"                   , "bool"                      , 0x6454, CHAR_DANTE               ],
 	[ "cloneBaseAddr"                   , "byte8 *"                   , 0x6478, CHAR_DANTE               ],
 	[ "cloneIsControlledByPlayer"       , "bool"                      , 0x6480, CHAR_DANTE               ],
+
+
+
+
 	[ "activeMeleeWeaponIndex"          , "uint32"                    , 0x6484, CHAR_VERGIL              ],
 	[ "queuedMeleeWeaponIndex"          , "uint32"                    , 0x6488, CHAR_VERGIL              ],
-	[ "activeWeapon"                    , "uint8"                     , 0x648D, CHAR_DANTE               ],
-	[ "meleeWeaponIndex"                , "uint32"                    , 0x6490, CHAR_DANTE               ],
-	[ "rangedWeaponIndex"               , "uint32"                    , 0x6494, CHAR_DANTE               ],
 
-	[ "meleeWeaponMap[2]"               , "uint8"                     , 0x6498, CHAR_DANTE               ],
-	[ "meleeWeaponMap[5]"               , "uint8"                     , 0x6498, CHAR_VERGIL              ],
-	[ "rangedWeaponMap[3]"              , "uint8"                     , 0x649A, CHAR_DANTE               ],
+
+
+	
+
+	
+
+	[ "activeWeapon"                    , "uint8"                     , 0x648D, CHAR_DANTE               ],
+
+
+	
+	[ "meleeWeaponIndex"             , "uint32"                    , 0x6490, CHAR_DANTE               ],
+	[ "rangedWeaponIndex"            , "uint32"                    , 0x6494, CHAR_DANTE               ],
+
+	[ "meleeWeapon[2]"               , "uint8"                     , 0x6498, CHAR_DANTE               ],
+	[ "meleeWeapon[5]"               , "uint8"                     , 0x6498, CHAR_VERGIL              ],
+	[ "rangedWeapon[3]"              , "uint8"                     , 0x649A, CHAR_DANTE               ],
 
 	[ "meleeWeaponData[2]"              , "byte8 *"                   , 0x64A0, CHAR_DANTE               ],
 	[ "meleeWeaponData[5]"              , "byte8 *"                   , 0x64A0, CHAR_VERGIL              ],
 	[ "rangedWeaponData[3]"             , "byte8 *"                   , 0x64B0, CHAR_DANTE               ],
 
-	[ "meleeWeaponStatus[2]"             , "byte32"                    , 0x64C8, CHAR_DANTE               ],
-	[ "meleeWeaponStatus[5]"             , "byte32"                    , 0x64C8, CHAR_VERGIL              ],
-	[ "rangedWeaponStatus[3]"            , "byte32"                    , 0x64D0, CHAR_DANTE               ],
+	[ "meleeWeaponStatus[2]"             , "uint32"                    , 0x64C8, CHAR_DANTE               ],
+	[ "meleeWeaponStatus[5]"             , "uint32"                    , 0x64C8, CHAR_VERGIL              ],
+	[ "rangedWeaponStatus[3]"            , "uint32"                    , 0x64D0, CHAR_DANTE               ],
 
 	[ "meleeWeaponLevel[2]"             , "uint32"                    , 0x64DC, CHAR_DANTE               ],
 	[ "meleeWeaponLevel[5]"             , "uint32"                    , 0x64DC, CHAR_VERGIL              ],
@@ -143,7 +157,7 @@ var items =
 	[ "meleeWeaponSwitchTimeout"        , "float32"                   , 0x6508, CHAR_DANTE               ],
 	[ "rangedWeaponSwitchTimeout"       , "float32"                   , 0x650C, CHAR_DANTE               ],
 	[ "meleeWeaponSwitchForwardTimeout" , "float32"                   , 0x6508, CHAR_VERGIL              ],
-	[ "meleeWeaponSwitchBackwardTimeout", "float32"                   , 0x650C, CHAR_VERGIL              ],
+	[ "meleeWeaponSwitchBackTimeout", "float32"                   , 0x650C, CHAR_VERGIL              ],
 
 
 
@@ -174,13 +188,13 @@ var extra =
 	[ "newChildBaseAddr[4]"    , "byte8 *" ],
 	[ "newGamepad"             , "uint8"   ],
 	[ "newButtonMask"          , "byte16"  ],
-	[ "newEnableLeftStick"     , "bool"    ],
 	[ "newEnableRightStick"    , "bool"    ],
-	[ "newMeleeWeaponMap[5]"   , "uint8"   ],
+	[ "newEnableLeftStick"     , "bool"    ],
+	[ "newMeleeWeapon[5]"      , "uint8"   ],
 	[ "newMeleeWeaponData[5]"  , "byte8 *" ],
 	[ "newMeleeWeaponCount"    , "uint8"   ],
 	[ "newMeleeWeaponIndex"    , "uint8"   ],
-	[ "newRangedWeaponMap[5]"  , "uint8"   ],
+	[ "newRangedWeapon[5]"     , "uint8"   ],
 	[ "newRangedWeaponData[5]" , "byte8 *" ],
 	[ "newRangedWeaponCount"   , "uint8"   ],
 	[ "newRangedWeaponIndex"   , "uint8"   ],

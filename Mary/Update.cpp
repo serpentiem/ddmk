@@ -928,18 +928,18 @@ void FixPull(T & actorData)
 
 inline void EnableYamato(ACTOR_DATA_VERGIL & actorData)
 {
-	if (actorData.newMeleeWeaponMap[0] != WEAPON_VERGIL_YAMATO)
+	if (actorData.newMeleeWeapon[0] != WEAPON_VERGIL_YAMATO)
 	{
-		actorData.newMeleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
+		actorData.newMeleeWeapon[0] = WEAPON_VERGIL_YAMATO;
 		actorData.newMeleeWeaponCount = 1;
 	}
 }
 
 inline void DisableYamato(ACTOR_DATA_VERGIL & actorData)
 {
-	if (actorData.newMeleeWeaponMap[0] == WEAPON_VERGIL_YAMATO)
+	if (actorData.newMeleeWeapon[0] == WEAPON_VERGIL_YAMATO)
 	{
-		actorData.newMeleeWeaponMap[0] = WEAPON_VOID;
+		actorData.newMeleeWeapon[0] = WEAPON_VOID;
 		actorData.newMeleeWeaponCount = 0;
 	}
 }
@@ -949,7 +949,7 @@ inline void DisableYamato(ACTOR_DATA_VERGIL & actorData)
 //template <typename T>
 //bool IsYamatoSelected(T & actorData)
 //{
-//	if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] == WEAPON_VERGIL_YAMATO)
+//	if (actorData.newMeleeWeapon[actorData.newMeleeWeaponIndex] == WEAPON_VERGIL_YAMATO)
 //	{
 //		return true;
 //	}
@@ -961,7 +961,7 @@ inline void DisableYamato(ACTOR_DATA_VERGIL & actorData)
 template <typename T>
 bool IsVergilMeleeWeaponSelected(T & actorData)
 {
-	auto & meleeWeapon = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
+	auto & meleeWeapon = actorData.newMeleeWeapon[actorData.newMeleeWeaponIndex];
 	if ((meleeWeapon >= WEAPON_VERGIL_YAMATO) && (meleeWeapon <= WEAPON_VERGIL_FORCE_EDGE))
 	{
 		return true;
@@ -972,7 +972,7 @@ bool IsVergilMeleeWeaponSelected(T & actorData)
 template <typename T>
 bool IsDanteMeleeWeaponSelected(T & actorData)
 {
-	auto & meleeWeapon = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
+	auto & meleeWeapon = actorData.newMeleeWeapon[actorData.newMeleeWeaponIndex];
 	if ((meleeWeapon >= WEAPON_DANTE_REBELLION) && (meleeWeapon <= WEAPON_DANTE_BEOWULF))
 	{
 		return true;
@@ -1213,7 +1213,7 @@ void DanteVergil(byte8 * baseAddr)
 				style = STYLE_DANTE_SWORDMASTER;
 			}
 
-			auto meleeWeapon = parentActorData.newMeleeWeaponMap[parentActorData.newMeleeWeaponIndex];
+			auto meleeWeapon = parentActorData.newMeleeWeapon[parentActorData.newMeleeWeaponIndex];
 			if (meleeWeapon > WEAPON_DANTE_BEOWULF)
 			{
 				meleeWeapon = WEAPON_DANTE_REBELLION;
@@ -1221,7 +1221,7 @@ void DanteVergil(byte8 * baseAddr)
 
 
 
-			auto rangedWeapon = parentActorData.newRangedWeaponMap[parentActorData.newRangedWeaponIndex];
+			auto rangedWeapon = parentActorData.newRangedWeapon[parentActorData.newRangedWeaponIndex];
 			if (rangedWeapon > WEAPON_DANTE_KALINA_ANN)
 			{
 				rangedWeapon = WEAPON_DANTE_EBONY_IVORY;
@@ -1318,7 +1318,7 @@ void DanteVergil(byte8 * baseAddr)
 	{
 		if (IsActive(parentActorData))
 		{
-			auto meleeWeapon = childActorData.newMeleeWeaponMap[childActorData.newMeleeWeaponIndex];
+			auto meleeWeapon = childActorData.newMeleeWeapon[childActorData.newMeleeWeaponIndex];
 			if (meleeWeapon > WEAPON_VERGIL_FORCE_EDGE)
 			{
 				meleeWeapon = WEAPON_VERGIL_YAMATO;
@@ -1441,21 +1441,21 @@ void MainLoop()
 
 		//const_for_all(index, 5)
 		//{
-		//	danteActorData.newMeleeWeaponMap [index] = (WEAPON_DANTE_REBELLION   + index);
-		//	danteActorData.newRangedWeaponMap[index] = (WEAPON_DANTE_EBONY_IVORY + index);
+		//	danteActorData.newMeleeWeapon [index] = (WEAPON_DANTE_REBELLION   + index);
+		//	danteActorData.newRangedWeapon[index] = (WEAPON_DANTE_EBONY_IVORY + index);
 		//}
 		//danteActorData.newMeleeWeaponCount = 5;
 		//danteActorData.newMeleeWeaponIndex = 0;
 		//danteActorData.newRangedWeaponCount = 3;
 		//danteActorData.newRangedWeaponIndex = 0;
 
-		////danteActorData.newMeleeWeaponMap[1] = WEAPON_DANTE_BEOWULF;
-		////danteActorData.newMeleeWeaponMap[2] = WEAPON_VERGIL_YAMATO;
-		//danteActorData.rangedWeaponMap[0] = WEAPON_DANTE_KALINA_ANN;
+		////danteActorData.newMeleeWeapon[1] = WEAPON_DANTE_BEOWULF;
+		////danteActorData.newMeleeWeapon[2] = WEAPON_VERGIL_YAMATO;
+		//danteActorData.rangedWeapon[0] = WEAPON_DANTE_KALINA_ANN;
 		//
 		//danteActorData.rangedWeaponData[0] = danteActorData.newRangedWeaponData[0];
 
-		//danteActorData.newRangedWeaponMap[0] = WEAPON_DANTE_KALINA_ANN;
+		//danteActorData.newRangedWeapon[0] = WEAPON_DANTE_KALINA_ANN;
 
 
 		
@@ -1473,15 +1473,18 @@ void MainLoop()
 
 		vergilActorData.newParentBaseAddr = danteActorData;
 
-		for_all(uint8, index, 5)
-		{
-			vergilActorData.meleeWeaponMap[index] = WEAPON_VOID;
-		}
-		vergilActorData.meleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
+		//for_all(uint8, index, 5)
+		//{
+		//	vergilActorData.meleeWeapon[index] = WEAPON_VOID;
+		//}
+		//vergilActorData.meleeWeapon[0] = WEAPON_VERGIL_YAMATO;
+
+
+
 		vergilActorData.position = mainActorData.position;
 
 
-		vergilActorData.newMeleeWeaponMap[0] = WEAPON_VERGIL_YAMATO;
+		//vergilActorData.newMeleeWeapon[0] = WEAPON_VERGIL_YAMATO;
 
 		//vergilActorData.newDisableLeftStick = true;
 		//vergilActorData.position = mainActorData.position;

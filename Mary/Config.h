@@ -18,7 +18,7 @@ struct CONFIG
 			CHAR_DANTE,
 			CHAR_DANTE,
 		};
-		uint8 meleeWeaponMap[MAX_ACTOR][MAX_CHAR][MAX_MELEE_WEAPON] =
+		uint8 meleeWeapon[MAX_ACTOR][MAX_CHAR][MAX_MELEE_WEAPON] =
 		{
 			{
 				{
@@ -112,7 +112,7 @@ struct CONFIG
 				3,
 			},
 		};
-		uint8 rangedWeaponMap[MAX_ACTOR][MAX_CHAR][MAX_RANGED_WEAPON] =
+		uint8 rangedWeapon[MAX_ACTOR][MAX_CHAR][MAX_RANGED_WEAPON] =
 		{
 			{
 				{

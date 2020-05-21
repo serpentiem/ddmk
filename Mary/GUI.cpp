@@ -2755,7 +2755,7 @@ template
 	typename T4,
 	typename T5
 >
-void UpdateWeaponSelectIndexFunction
+void UpdateWeaponSelectIndex
 (
 	T1 & configMap,
 	T2   configMapCount,
@@ -2784,23 +2784,23 @@ void UpdateWeaponSelectIndexFunction
 	}
 }
 
-template <uint8 weaponType>
-void UpdateWeaponSelectIndex
-(
-	uint8 actorIndex,
-	uint8 characterIndex
-);
+//template <uint8 weaponType>
+//void UpdateWeaponSelectIndex
+//(
+//	uint8 actorIndex,
+//	uint8 characterIndex
+//);
 
-template <>
-void UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE>
+//template <>
+void UpdateMeleeWeaponSelectIndex
 (
 	uint8 actorIndex,
 	uint8 characterIndex
 )
 {
-	UpdateWeaponSelectIndexFunction
+	UpdateWeaponSelectIndex
 	(
-		Config.Actor.meleeWeaponMap[actorIndex][characterIndex],
+		Config.Actor.meleeWeapon[actorIndex][characterIndex],
 		MAX_MELEE_WEAPON,
 		meleeWeaponSelectMap     [characterIndex],
 		meleeWeaponSelectMapCount[characterIndex],
@@ -2808,16 +2808,16 @@ void UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE>
 	);
 }
 
-template <>
-void UpdateWeaponSelectIndex<WEAPON_TYPE_RANGED>
+//template <>
+void UpdateRangedWeaponSelectIndex
 (
 	uint8 actorIndex,
 	uint8 characterIndex
 )
 {
-	UpdateWeaponSelectIndexFunction
+	UpdateWeaponSelectIndex
 	(
-		Config.Actor.rangedWeaponMap[actorIndex][characterIndex],
+		Config.Actor.rangedWeapon[actorIndex][characterIndex],
 		MAX_RANGED_WEAPON,
 		rangedWeaponSelectMap     [characterIndex],
 		rangedWeaponSelectMapCount[characterIndex],
@@ -2965,7 +2965,7 @@ void WeaponSelect<WEAPON_TYPE_MELEE>
 	WeaponSelectFunction
 	(
 		"Melee Weapons",
-		Config.Actor.meleeWeaponMap[actorIndex][characterIndex],
+		Config.Actor.meleeWeapon[actorIndex][characterIndex],
 		MAX_MELEE_WEAPON,
 		meleeWeaponSelectMap     [characterIndex],
 		meleeWeaponSelectMapCount[characterIndex],
@@ -2985,7 +2985,7 @@ void WeaponSelect<WEAPON_TYPE_RANGED>
 	WeaponSelectFunction
 	(
 		"Ranged Weapons",
-		Config.Actor.rangedWeaponMap[actorIndex][characterIndex],
+		Config.Actor.rangedWeapon[actorIndex][characterIndex],
 		MAX_RANGED_WEAPON,
 		rangedWeaponSelectMap     [characterIndex],
 		rangedWeaponSelectMapCount[characterIndex],
@@ -3293,8 +3293,10 @@ void GUI_Init()
 	{
 		for_all(uint8, characterIndex, MAX_CHAR)
 		{
-			UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE >(actorIndex, characterIndex);
-			UpdateWeaponSelectIndex<WEAPON_TYPE_RANGED>(actorIndex, characterIndex);
+			//UpdateWeaponSelectIndex<WEAPON_TYPE_MELEE >(actorIndex, characterIndex);
+			//UpdateWeaponSelectIndex<WEAPON_TYPE_RANGED>(actorIndex, characterIndex);
+			UpdateMeleeWeaponSelectIndex (actorIndex, characterIndex);
+			UpdateRangedWeaponSelectIndex(actorIndex, characterIndex);
 		}
 	}
 }
