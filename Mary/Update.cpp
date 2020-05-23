@@ -1420,7 +1420,7 @@ void MainLoop()
 
 		auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
 
-		auto danteBaseAddr = CreateActorDante();
+		auto danteBaseAddr = CreateActorDante(0, 0);
 		if (!danteBaseAddr)
 		{
 			return;
@@ -1461,7 +1461,7 @@ void MainLoop()
 		
 
 
-		auto vergilBaseAddr = CreateActorVergil();
+		auto vergilBaseAddr = CreateActorVergil(0, 0);
 		if (!vergilBaseAddr)
 		{
 			return;

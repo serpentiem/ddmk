@@ -3,6 +3,23 @@
 
 
 
+enum PLAYER
+{
+	MAX_PLAYER = 4,
+};
+
+
+
+
+
+enum ENTITY
+{
+	ENTITY_MAIN,
+	ENTITY_CLONE,
+	MAX_ENTITY,
+};
+
+
 enum WEAPON_STATUS
 {
 	WEAPON_STATUS_READY,

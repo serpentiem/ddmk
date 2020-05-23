@@ -320,27 +320,16 @@ inline void RegisterWeapon_Init()
 	RegisterWeapon[WEAPON_DANTE_ARTEMIS    ] = func_22C4A0;
 	RegisterWeapon[WEAPON_DANTE_SPIRAL     ] = func_2300A0;
 	RegisterWeapon[WEAPON_DANTE_KALINA_ANN ] = func_22BA30;
-
 	RegisterWeapon[WEAPON_VERGIL_YAMATO    ] = func_22D960;
 	RegisterWeapon[WEAPON_VERGIL_BEOWULF   ] = func_228CF0;
 	RegisterWeapon[WEAPON_VERGIL_FORCE_EDGE] = func_2298E0;
+	RegisterWeapon[WEAPON_BOB_YAMATO       ] = func_231A30;
 }
 
-//void UpdateWeaponDante(byte8 * baseAddr)
-//{
-//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-//
-//	constexpr uint32 size = (offsetof(ACTOR_DATA, styleRank) - offsetof(ACTOR_DATA, weaponData));
-//	memset(actorData.weaponData, 0, size);
-//
-//	actorData.weaponData[0] = RegisterWeapon[WEAPON_DANTE_REBELLION  ](baseAddr, 0);
-//	actorData.weaponData[1] = RegisterWeapon[WEAPON_DANTE_CERBERUS   ](baseAddr, 0);
-//	actorData.weaponData[2] = RegisterWeapon[WEAPON_DANTE_EBONY_IVORY](baseAddr, 0);
-//	actorData.weaponData[3] = RegisterWeapon[WEAPON_DANTE_SHOTGUN    ](baseAddr, 0);
-//
-//	//static_assert(offsetof(ACTOR_DATA, weaponFlags[4]) == 0x64D8);
-//	actorData.weaponFlags[4] = 4;
-//}
+
+
+
+
 
 //byte8 * CreateActor
 //(
@@ -382,83 +371,86 @@ inline void RegisterWeapon_Init()
 void UpdateWeaponDante
 (
 	ACTOR_DATA_DANTE & actorData,
-	uint8 actorIndex = 0
+	uint8 player,
+	uint8 entity
 )
 {
 	memset((reinterpret_cast<byte8 *>(&actorData) + 0x648C), 0, (0x6510 - 0x648C));
 
-	// Melee Weapon
+	// Melee Weapons
 
-	memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeapon[actorIndex][CHAR_DANTE], MAX_MELEE_WEAPON);
+	memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeapon[player][entity][CHAR_DANTE], MAX_MELEE_WEAPON);
 
-	actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCount[actorIndex][CHAR_DANTE];
+	actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCount[player][entity][CHAR_DANTE];
 
 	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
 	{
 		actorData.newMeleeWeaponIndex = 0;
 	}
 
-	for_all(uint8, index, 5)
+	for_all(uint8, index, MAX_MELEE_WEAPON_DANTE)
 	{
 		uint32 weapon = (WEAPON_DANTE_REBELLION + index);
 		actorData.newMeleeWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
 	}
 
-	auto & newMeleeWeapon     = actorData.newMeleeWeapon    [actorData.newMeleeWeaponIndex];
-
+	auto & newMeleeWeapon = actorData.newMeleeWeapon[actorData.newMeleeWeaponIndex];
 	if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
 	{
 		actorData.meleeWeapon[0] = newMeleeWeapon;
-		actorData.meleeWeapon[1] = WEAPON_VOID;
 		actorData.meleeWeaponData[0] = actorData.newMeleeWeaponData[(newMeleeWeapon - WEAPON_DANTE_REBELLION)];
 	}
 	else
 	{
 		actorData.meleeWeapon[0] = WEAPON_VOID;
-		actorData.meleeWeapon[1] = WEAPON_VOID;
 	}
+	actorData.meleeWeapon[1] = WEAPON_VOID;
 
 	actorData.meleeWeaponIndex = 0;
 
-	// Ranged Weapon
+	// Ranged Weapons
 
-	memcpy(actorData.newRangedWeapon, Config.Actor.rangedWeapon[actorIndex][CHAR_DANTE], MAX_RANGED_WEAPON);
+	memcpy(actorData.newRangedWeapon, Config.Actor.rangedWeapon[player][entity][CHAR_DANTE], MAX_RANGED_WEAPON);
 
-	actorData.newRangedWeaponCount = Config.Actor.rangedWeaponCount[actorIndex][CHAR_DANTE];
+	actorData.newRangedWeaponCount = Config.Actor.rangedWeaponCount[player][entity][CHAR_DANTE];
 
 	if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
 	{
 		actorData.newRangedWeaponIndex = 0;
 	}
 
-	for_all(uint8, index, 5)
+	for_all(uint8, index, MAX_RANGED_WEAPON_DANTE)
 	{
 		uint32 weapon = (WEAPON_DANTE_EBONY_IVORY + index);
 		actorData.newRangedWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
 	}
 
-	auto & newRangedWeapon     = actorData.newRangedWeapon    [actorData.newRangedWeaponIndex];
-
+	auto & newRangedWeapon = actorData.newRangedWeapon[actorData.newRangedWeaponIndex];
 	if ((newRangedWeapon >= WEAPON_DANTE_EBONY_IVORY) && (newRangedWeapon <= WEAPON_DANTE_KALINA_ANN))
 	{
 		actorData.rangedWeapon[0] = newRangedWeapon;
-		actorData.rangedWeapon[1] = WEAPON_VOID;
-		actorData.rangedWeapon[2] = WEAPON_VOID;
 		actorData.rangedWeaponData[0] = actorData.newRangedWeaponData[(newRangedWeapon - WEAPON_DANTE_EBONY_IVORY)];
 	}
 	else
 	{
 		actorData.rangedWeapon[0] = WEAPON_VOID;
-		actorData.rangedWeapon[1] = WEAPON_VOID;
-		actorData.rangedWeapon[2] = WEAPON_VOID;
 	}
+	actorData.rangedWeapon[1] = WEAPON_VOID;
+	actorData.rangedWeapon[2] = WEAPON_VOID;
 
 	actorData.rangedWeaponIndex = 2;
 
 	actorData.rangedWeaponStatus[2] = WEAPON_STATUS_DISABLED;
+
+	actorData.rangedWeaponLevel[0] = 2;
+	actorData.rangedWeaponLevel[1] = 2;
 }
 
-ACTOR_DATA_DANTE * CreateActorDante()
+ACTOR_DATA_DANTE * CreateActorDante
+(
+	uint8 player,
+	uint8 entity
+)
 {
 	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
 	auto sessionData = (g_pool[1] + 0x16C);
@@ -482,7 +474,7 @@ ACTOR_DATA_DANTE * CreateActorDante()
 		actorData.motionArchive[motionId] = File_cacheFile[cacheFileId];
 	}
 
-	UpdateWeaponDante(actorData);
+	UpdateWeaponDante(actorData, player, entity);
 
 	func_1DFC20(actorData);
 
@@ -492,23 +484,24 @@ ACTOR_DATA_DANTE * CreateActorDante()
 void UpdateWeaponVergil
 (
 	ACTOR_DATA_VERGIL & actorData,
-	uint8 actorIndex = 0
+	uint8 player,
+	uint8 entity
 )
 {
 	memset((reinterpret_cast<byte8 *>(&actorData) + 0x648C), 0, (0x6510 - 0x648C));
 
 	// Melee Weapon
 
-	memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeapon[actorIndex][CHAR_VERGIL], MAX_MELEE_WEAPON);
+	memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeapon[player][entity][CHAR_VERGIL], MAX_MELEE_WEAPON);
 
-	actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCount[actorIndex][CHAR_VERGIL];
+	actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCount[player][entity][CHAR_VERGIL];
 
 	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
 	{
 		actorData.newMeleeWeaponIndex = 0;
 	}
 
-	for_all(uint8, index, 3)
+	for_all(uint8, index, MAX_MELEE_WEAPON_VERGIL)
 	{
 		uint32 weapon = (WEAPON_VERGIL_YAMATO + index);
 		actorData.newMeleeWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
@@ -527,7 +520,11 @@ void UpdateWeaponVergil
 	actorData.meleeWeaponStatus[4] = WEAPON_STATUS_DISABLED;
 }
 
-ACTOR_DATA_VERGIL * CreateActorVergil()
+ACTOR_DATA_VERGIL * CreateActorVergil
+(
+	uint8 player,
+	uint8 entity
+)
 {
 	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
 	auto sessionData = (g_pool[1] + 0x16C);
@@ -551,7 +548,7 @@ ACTOR_DATA_VERGIL * CreateActorVergil()
 		actorData.motionArchive[motionId] = File_cacheFile[cacheFileId];
 	}
 
-	UpdateWeaponVergil(actorData);
+	UpdateWeaponVergil(actorData, player, entity);
 
 	func_1DFC20(actorData);
 
@@ -774,7 +771,6 @@ void MeleeWeaponSwitchControllerDanteExecute(ACTOR_DATA_DANTE & actorData)
 		{
 			goto sect0;
 		}
-		childActorData.activeMeleeWeaponIndex = (newMeleeWeapon - WEAPON_VERGIL_YAMATO);
 		childActorData.queuedMeleeWeaponIndex = (newMeleeWeapon - WEAPON_VERGIL_YAMATO);
 	}
 	sect0:;

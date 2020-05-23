@@ -157,7 +157,36 @@ extern void LogMotionData();
 
 
 void ToggleUpdateWeapon(bool enable);
-ACTOR_DATA_DANTE * CreateActorDante();
-ACTOR_DATA_VERGIL * CreateActorVergil();
+//ACTOR_DATA_DANTE * CreateActorDante();
+//ACTOR_DATA_VERGIL * CreateActorVergil();
+
+//
+//ACTOR_DATA_DANTE * CreateActorDante
+//(
+//	uint8 entity,
+//	uint8 actor
+//);
+//
+//ACTOR_DATA_VERGIL * CreateActorVergil
+//(
+//	uint8 entity,
+//	uint8 actor
+//);
+
+
+ACTOR_DATA_DANTE * CreateActorDante
+(
+	uint8 player,
+	uint8 entity
+);
+
+
+ACTOR_DATA_VERGIL * CreateActorVergil
+(
+	uint8 player,
+	uint8 entity
+);
+
+
 
 void Actor_Init();
