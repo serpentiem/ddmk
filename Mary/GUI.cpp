@@ -3177,6 +3177,7 @@ void NEW_GUI_Main()
 			NEW_GUI_Text("");
 			if (NEW_GUI_Checkbox("Enable", Config.Actor.enable))
 			{
+				ToggleUpdateWeapon(Config.Actor.enable);
 			}
 			NEW_GUI_Text("");
 			NEW_GUI_PushItemWidth(200);

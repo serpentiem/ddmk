@@ -10,30 +10,6 @@
 
 extern vector<byte8 *, 128> Actor_actorBaseAddr;
 
-
-
-
-
-
-
-
-
-//PrivateStart;
-
-//template <typename T>
-//bool ActorIsBusy(T & actorData)
-//{
-//	if (actorData.motionState3[1] & MOTION_STATE_BUSY)
-//	{
-//		return true;
-//	}
-//	return false;
-//}
-
-//PrivateEnd;
-
-
-
 template <typename T>
 bool IsWeaponActive
 (
@@ -88,8 +64,6 @@ bool IsWeaponActive(T & actorData)
 	return false;
 }
 
-
-
 template <typename T>
 bool IsActive(T & actorData)
 {
@@ -119,60 +93,7 @@ bool IsActive(T & actorData)
 	return IsWeaponActive(actorData);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-extern bool g_logMotionData;
-extern uint8 g_motionGroup;
-extern uint8 g_motionIndex;
-extern void LogMotionData();
-
-
-
 void ToggleUpdateWeapon(bool enable);
-//ACTOR_DATA_DANTE * CreateActorDante();
-//ACTOR_DATA_VERGIL * CreateActorVergil();
-
-//
-//ACTOR_DATA_DANTE * CreateActorDante
-//(
-//	uint8 entity,
-//	uint8 actor
-//);
-//
-//ACTOR_DATA_VERGIL * CreateActorVergil
-//(
-//	uint8 entity,
-//	uint8 actor
-//);
-
 
 ACTOR_DATA_DANTE * CreateActorDante
 (
@@ -180,13 +101,10 @@ ACTOR_DATA_DANTE * CreateActorDante
 	uint8 entity
 );
 
-
 ACTOR_DATA_VERGIL * CreateActorVergil
 (
 	uint8 player,
 	uint8 entity
 );
-
-
 
 void Actor_Init();

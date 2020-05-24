@@ -200,6 +200,8 @@ var extra =
 	[ "newRangedWeaponIndex"   , "uint8"   ],
 	[ "newSect[8]"             , "bool"    ],
 	[ "newBufferedActionPolicy", "uint8"   ],
+	[ "executeMeleeWeaponSwitch", "bool"   ],
+	[ "executeRangedWeaponSwitch", "bool"   ],
 ];
 
 var c = "";
