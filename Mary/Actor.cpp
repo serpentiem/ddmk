@@ -716,14 +716,19 @@ void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 	auto & newMeleeWeapon = actorData.newMeleeWeapon[actorData.newMeleeWeaponIndex];
 	if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
 	{
-		for_all(uint8, index, 2)
+		actorData.meleeWeaponIndex = 0;
+		if (actorData.meleeWeaponStatus[0] != WEAPON_STATUS_READY)
 		{
-			if (!IsWeaponActive(actorData, actorData.meleeWeapon[index]) && (actorData.meleeWeaponStatus[index] == WEAPON_STATUS_READY))
-			{
-				actorData.meleeWeaponIndex = index;
-				break;
-			}
+			goto sect0;
 		}
+		if (IsWeaponActive(actorData, actorData.meleeWeapon[0]) && (actorData.state & STATE_BUSY))
+		{
+			goto sect0;
+		}
+		goto sect1;
+		sect0:;
+		actorData.meleeWeaponIndex = 1;
+		sect1:;
 		auto & meleeWeapon     = actorData.meleeWeapon    [actorData.meleeWeaponIndex];
 		auto & meleeWeaponData = actorData.meleeWeaponData[actorData.meleeWeaponIndex];
 		meleeWeapon     = newMeleeWeapon;
@@ -734,20 +739,20 @@ void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 		auto parentActorData = actorData;
 		if (parentActorData.newParentBaseAddr)
 		{
-			goto sect0;
+			goto sect2;
 		}
 		if (!parentActorData.newChildBaseAddr[CHAR_VERGIL])
 		{
-			goto sect0;
+			goto sect2;
 		}
 		auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(parentActorData.newChildBaseAddr[CHAR_VERGIL]);
 		if (childActorData.character != CHAR_VERGIL)
 		{
-			goto sect0;
+			goto sect2;
 		}
 		childActorData.queuedMeleeWeaponIndex = (newMeleeWeapon - WEAPON_VERGIL_YAMATO);
 	}
-	sect0:;
+	sect2:;
 
 	// @Todo: Update enum.
 	HUD_UpdateWeaponIcon
@@ -764,6 +769,126 @@ void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 
 	func_1EB0E0(actorData, 4);
 }
+
+void RangedWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
+{
+	auto & gamepad = GetGamepad(actorData.newGamepad);
+	auto & execute = actorData.executeRangedWeaponSwitch;
+
+	if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_GUN)))
+	{
+		execute = true;
+		return;
+	}
+
+	if (!execute)
+	{
+		return;
+	}
+
+	execute = false;
+
+	// @Research: Check assembly.
+	if (0 < actorData.rangedWeaponSwitchTimeout)
+	{
+		return;
+	}
+
+	actorData.rangedWeaponSwitchTimeout = Config.Dante.rangedWeaponSwitchTimeout;
+
+	actorData.newRangedWeaponIndex++;
+	if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
+	{
+		actorData.newRangedWeaponIndex = 0;
+	}
+
+	auto & newRangedWeapon = actorData.newRangedWeapon[actorData.newRangedWeaponIndex];
+	if ((newRangedWeapon >= WEAPON_DANTE_EBONY_IVORY) && (newRangedWeapon <= WEAPON_DANTE_KALINA_ANN))
+	{
+		actorData.rangedWeaponIndex = 0;
+		if (actorData.rangedWeaponStatus[0] != WEAPON_STATUS_READY)
+		{
+			goto sect0;
+		}
+		if (IsWeaponActive(actorData, actorData.rangedWeapon[0]) && (actorData.state & STATE_BUSY))
+		{
+			goto sect0;
+		}
+		goto sect1;
+		sect0:;
+		actorData.rangedWeaponIndex = 1;
+		sect1:;
+		auto & rangedWeapon     = actorData.rangedWeapon    [actorData.rangedWeaponIndex];
+		auto & rangedWeaponData = actorData.rangedWeaponData[actorData.rangedWeaponIndex];
+		rangedWeapon     = newRangedWeapon;
+		rangedWeaponData = actorData.newRangedWeaponData[(newRangedWeapon - WEAPON_DANTE_EBONY_IVORY)];
+		actorData.rangedWeaponIndex += 2;
+	}
+
+	// @Todo: Update enum.
+	HUD_UpdateWeaponIcon
+	(
+		HUD_BOTTOM::RANGED_WEAPON_1,
+		HUD_weaponIcon[newRangedWeapon].model,
+		HUD_weaponIcon[newRangedWeapon].texture
+	);
+
+	// @Todo: Use better pointer.
+	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+	auto hud = *reinterpret_cast<byte8 **>(pool[11]);
+	func_280120(hud, 0, 0);
+
+	func_1EB0E0(actorData, 7);
+	func_1EB0E0(actorData, 9);
+
+	auto UpdateCommitment = [&]()
+	{
+		auto & modelData = actorData.modelData[actorData.activeModelIndex];
+		auto & lowerMotionData = actorData.motionData[BODY_PART_LOWER];
+		auto & upperMotionData = actorData.motionData[BODY_PART_UPPER];
+		auto & newRangedWeapon = actorData.newRangedWeapon[actorData.newRangedWeaponIndex];
+
+		if (actorData.state & STATE_BUSY)
+		{
+			return;
+		}
+		if (!(gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON)))
+		{
+			return;
+		}
+
+		actorData.activeWeapon = newRangedWeapon;
+
+		if (GetRelativeTiltDirection(actorData) != TILT_DIRECTION_NEUTRAL)
+		{
+			return;
+		}
+
+		auto & group = lowerMotionData.group = (MOTION_GROUP_DANTE_REBELLION + newRangedWeapon);
+		auto & index = lowerMotionData.index = upperMotionData.index;
+
+		uint8 id = (pl000_00_0 + group);
+		if (newRangedWeapon == WEAPON_DANTE_ARTEMIS)
+		{
+			if (index == 5)
+			{
+				index = 3;
+			}
+		}
+		else
+		{
+			if (index == 3)
+			{
+				index = 5;
+			}
+		}
+		byte8 * motionFile = File_cacheFile[id][index];
+		func_8AC80(modelData, BODY_PART_LOWER, motionFile, 0, false);
+	};
+
+	UpdateCommitment();
+}
+
 
 
 
@@ -785,164 +910,9 @@ bool WeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 	}
 
 	MeleeWeaponSwitchControllerDante (actorData);
-	//RangedWeaponSwitchControllerDante(actorData);
+	RangedWeaponSwitchControllerDante(actorData);
 
 	return true;
-
-
-
-
-	//{
-	//	auto & meleeWeaponIndex = actorData.weaponIndex[0];
-	//	auto & meleeWeaponSwitchTimeout = actorData.weaponSwitchTimeout[0];
-
-	//	if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_DEVIL_ARMS)))
-	//	{
-	//		goto sect0;
-	//	}
-	//	if (0 < meleeWeaponSwitchTimeout)
-	//	{
-	//		goto sect0;
-	//	}
-
-	//	auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
-	//	meleeWeaponSwitchTimeout = timeout;
-
-	//	if (meleeWeaponIndex < 1)
-	//	{
-	//		meleeWeaponIndex++;
-	//	}
-	//	else
-	//	{
-	//		meleeWeaponIndex = 0;
-	//	}
-
-	//	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-	//	auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
-
-	//	func_280120(hud, 1, meleeWeaponIndex);
-
-	//	func_1EB0E0(actorData, 4);
-
-	//	if (actorData.devil || (actorData.devilState == 1))
-	//	{
-	//		func_1F92C0(actorData, 1);
-	//		func_1F97F0(actorData, true);
-	//	}
-	//}
-	//sect0:;
-
-
-	//auto & gamepad = GetGamepad(0);
-
-
-	//{
-	//	if (!(gamepad.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
-	//	{
-	//		goto sect0;
-	//	}
-	//	if (0 < actorData.meleeWeaponSwitchTimeout)
-	//	{
-	//		goto sect0;
-	//	}
-
-	//	//auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
-	//	float32 timeout = 1;
-	//	actorData.meleeWeaponSwitchTimeout = timeout;
-
-
-
-
-	//	//actorData.meleeWeaponIndex++;
-
-	//	//if (actorData.meleeWeaponIndex >= 2)
-	//	//{
-	//	//	actorData.meleeWeaponIndex = 0;
-	//	//}
-
-
-	//	//actorData.meleeWeaponIndex = (IsWeaponActive(actorData, actorData.meleeWeaponMap[0])) ? 1 : 0;
-
-
-
-	//	// @Research: It's not that simple. Also check weaponFlags for things like Sword Pierce or Grapple.
-	//	
-	//	if (!IsWeaponActive(actorData, actorData.meleeWeaponMap[0]))
-	//	{
-	//		actorData.meleeWeaponIndex = 0;
-	//	}
-	//	else
-	//	{
-	//		actorData.meleeWeaponIndex = 1;
-	//	}
-
-
-
-
-
-
-
-
-
-
-
-
-	//	actorData.newMeleeWeaponIndex++;
-
-	//	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
-	//	{
-	//		actorData.newMeleeWeaponIndex = 0;
-	//	}
-
-
-	//	if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] != WEAPON_VERGIL_YAMATO)
-	//	{
-	//		actorData.meleeWeaponMap[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
-	//		actorData.meleeWeaponData[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponData[actorData.newMeleeWeaponIndex];
-	//	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//	{
-	//		auto & id = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
-	//		HUD_UpdateWeaponIcon(2, HUD_weaponIcon[id].model, HUD_weaponIcon[id].texture);
-	//	}
-
-
-	//	//HUD_UpdateWeaponIcon(0, HUD_weaponIcon[actorData.newMeleeWeaponMap[actorData]])
-
-
-	//	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-	//	auto hud = *reinterpret_cast<byte8 **>(pool[11]);
-	//	func_280120(hud, 1, 0);
-
-	//	func_1EB0E0(actorData, 4);
-
-	//	//if (actorData.devil || (actorData.devilState == 1))
-	//	//{
-	//	//	func_1F92C0(actorData, 1);
-	//	//	func_1F97F0(actorData, true);
-	//	//}
-	//}
-	//sect0:;
-
-
-
-
-	//return true;
-
 
 
 
@@ -2282,6 +2252,161 @@ bool IsActive(T & actorData)
 //	}
 //	return false;
 //}
+
+
+
+
+//{
+//	auto & meleeWeaponIndex = actorData.weaponIndex[0];
+//	auto & meleeWeaponSwitchTimeout = actorData.weaponSwitchTimeout[0];
+
+//	if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_DEVIL_ARMS)))
+//	{
+//		goto sect0;
+//	}
+//	if (0 < meleeWeaponSwitchTimeout)
+//	{
+//		goto sect0;
+//	}
+
+//	auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
+//	meleeWeaponSwitchTimeout = timeout;
+
+//	if (meleeWeaponIndex < 1)
+//	{
+//		meleeWeaponIndex++;
+//	}
+//	else
+//	{
+//		meleeWeaponIndex = 0;
+//	}
+
+//	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+//	auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+
+//	func_280120(hud, 1, meleeWeaponIndex);
+
+//	func_1EB0E0(actorData, 4);
+
+//	if (actorData.devil || (actorData.devilState == 1))
+//	{
+//		func_1F92C0(actorData, 1);
+//		func_1F97F0(actorData, true);
+//	}
+//}
+//sect0:;
+
+
+//auto & gamepad = GetGamepad(0);
+
+
+//{
+//	if (!(gamepad.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
+//	{
+//		goto sect0;
+//	}
+//	if (0 < actorData.meleeWeaponSwitchTimeout)
+//	{
+//		goto sect0;
+//	}
+
+//	//auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
+//	float32 timeout = 1;
+//	actorData.meleeWeaponSwitchTimeout = timeout;
+
+
+
+
+//	//actorData.meleeWeaponIndex++;
+
+//	//if (actorData.meleeWeaponIndex >= 2)
+//	//{
+//	//	actorData.meleeWeaponIndex = 0;
+//	//}
+
+
+//	//actorData.meleeWeaponIndex = (IsWeaponActive(actorData, actorData.meleeWeaponMap[0])) ? 1 : 0;
+
+
+
+//	// @Research: It's not that simple. Also check weaponFlags for things like Sword Pierce or Grapple.
+//	
+//	if (!IsWeaponActive(actorData, actorData.meleeWeaponMap[0]))
+//	{
+//		actorData.meleeWeaponIndex = 0;
+//	}
+//	else
+//	{
+//		actorData.meleeWeaponIndex = 1;
+//	}
+
+
+
+
+
+
+
+
+
+
+
+
+//	actorData.newMeleeWeaponIndex++;
+
+//	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
+//	{
+//		actorData.newMeleeWeaponIndex = 0;
+//	}
+
+
+//	if (actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex] != WEAPON_VERGIL_YAMATO)
+//	{
+//		actorData.meleeWeaponMap[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
+//		actorData.meleeWeaponData[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponData[actorData.newMeleeWeaponIndex];
+//	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//	{
+//		auto & id = actorData.newMeleeWeaponMap[actorData.newMeleeWeaponIndex];
+//		HUD_UpdateWeaponIcon(2, HUD_weaponIcon[id].model, HUD_weaponIcon[id].texture);
+//	}
+
+
+//	//HUD_UpdateWeaponIcon(0, HUD_weaponIcon[actorData.newMeleeWeaponMap[actorData]])
+
+
+//	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+//	auto hud = *reinterpret_cast<byte8 **>(pool[11]);
+//	func_280120(hud, 1, 0);
+
+//	func_1EB0E0(actorData, 4);
+
+//	//if (actorData.devil || (actorData.devilState == 1))
+//	//{
+//	//	func_1F92C0(actorData, 1);
+//	//	func_1F97F0(actorData, true);
+//	//}
+//}
+//sect0:;
+
+
+
+
+//return true;
+
 
 
 

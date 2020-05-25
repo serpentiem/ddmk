@@ -82,6 +82,27 @@ var items =
 	[ 0x1F01F0, "void", "byte8 * actorData, uint32 index", "", "Reset State" ],
 
 
+
+/*
+dmc3.exe+1EFC36 - E8 55A6E6FF           - call dmc3.exe+5A290 { __ONLY_THIS_ONE_REALLY_MATTERS__
+ }
+
+*/
+
+[ 0x5A290 , "void"   , "byte8 * body, uint32 group, uint32 index, uint16, uint8, uint8"    , "0, true, true, 0, 0, 0, 0, 2", "Play Motion"                         ],
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 dmc3.exe+1F01B5 - 48 8B CB              - mov rcx,rbx
 dmc3.exe+1F01B8 - E8 33000000           - call dmc3.exe+1F01F0
