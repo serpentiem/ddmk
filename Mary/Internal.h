@@ -61,6 +61,8 @@ typedef void(__fastcall * func_1E0800_t)(byte8 * actorData, uint32 index, uint32
 typedef void(__fastcall * func_211100_t)(byte8 * actorData); // Rebellion Combo 1 Part 3
 typedef void(__fastcall * func_1F01F0_t)(byte8 * actorData, uint32 index); // Reset State
 typedef void(__fastcall * func_5A290_t)(byte8 * body, uint32 group, uint32 index, uint16, uint8, uint8); // Play Motion
+typedef void(__fastcall * func_2F74E0_t)(byte8 * dest, uint32 index); // Show Model Partition
+typedef void(__fastcall * func_2F7350_t)(byte8 * dest, uint32 index); // Hide Model Partition
 
 extern func_897B0_t func_897B0;
 extern func_89450_t func_89450;
@@ -120,5 +122,7 @@ extern func_1E0800_t func_1E0800;
 extern func_211100_t func_211100;
 extern func_1F01F0_t func_1F01F0;
 extern func_5A290_t func_5A290;
+extern func_2F74E0_t func_2F74E0;
+extern func_2F7350_t func_2F7350;
 
 void Internal_Init();

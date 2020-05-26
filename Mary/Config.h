@@ -559,12 +559,13 @@ struct CONFIG
 			bool enableAirStinger = false;
 		}
 		Rebellion;
-
+		struct
+		{
+			bool hide = false;
+		}
+		Beowulf;
 		float32 meleeWeaponSwitchTimeout = 1;
 		float32 rangedWeaponSwitchTimeout = 1;
-
-
-
 	}
 	Dante;
 

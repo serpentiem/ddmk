@@ -194,10 +194,19 @@ var extra =
 	[ "newMeleeWeaponData[5]"  , "byte8 *" ],
 	[ "newMeleeWeaponCount"    , "uint8"   ],
 	[ "newMeleeWeaponIndex"    , "uint8"   ],
+	[ "newLastMeleeWeapon"     , "uint8"   ],
+
+
+
 	[ "newRangedWeapon[5]"     , "uint8"   ],
 	[ "newRangedWeaponData[5]" , "byte8 *" ],
 	[ "newRangedWeaponCount"   , "uint8"   ],
 	[ "newRangedWeaponIndex"   , "uint8"   ],
+	[ "newLastRangedWeapon"    , "uint8"   ],
+
+
+
+
 	[ "newSect[8]"             , "bool"    ],
 	[ "newBufferedActionPolicy", "uint8"   ],
 	[ "executeMeleeWeaponSwitch", "bool"   ],

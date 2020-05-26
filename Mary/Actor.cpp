@@ -46,6 +46,56 @@ constexpr IsWeaponReadyProxyHelper_t IsWeaponReadyProxyHelper[] =
 
 byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
 
+
+
+
+
+
+
+void UpdateModelPartitionConfig
+(
+	ACTOR_DATA_DANTE & actorData,
+	uint8 weapon
+)
+{
+	if (actorData.newLastMeleeWeapon == weapon)
+	{
+		return;
+	}
+	actorData.newLastMeleeWeapon = weapon;
+
+	auto & modelData = actorData.modelData[0];
+	auto dest = func_89DE0(modelData);
+
+	if (weapon == WEAPON_DANTE_BEOWULF)
+	{
+		func_2F7350(dest, 3);
+		func_2F74E0(dest, 4);
+		func_2F74E0(dest, 5);
+		func_2F7350(dest, 6);
+	}
+	else
+	{
+		func_2F74E0(dest, 3);
+		func_2F7350(dest, 4);
+		func_2F7350(dest, 5);
+		func_2F74E0(dest, 6);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 template <typename T>
 bool IsWeaponReadyFunction
 (
@@ -96,7 +146,7 @@ bool IsWeaponReady
 	auto & actorData = *reinterpret_cast<T *>(baseAddr);
 	if constexpr (weaponType == WEAPON_TYPE_MELEE)
 	{
-		return IsWeaponReadyFunction
+		auto result = IsWeaponReadyFunction
 		(
 			actorData,
 			weapon,
@@ -104,6 +154,14 @@ bool IsWeaponReady
 			actorData.newMeleeWeaponCount,
 			actorData.newMeleeWeaponIndex
 		);
+		if constexpr (typematch(T, ACTOR_DATA_DANTE))
+		{
+			if (result)
+			{
+				UpdateModelPartitionConfig(actorData, weapon);
+			}
+		}
+		return result;
 	}
 	else
 	{
@@ -671,6 +729,84 @@ ACTOR_DATA_VERGIL * CreateActorVergil
 //}
 
 
+
+
+
+// MODEL_PARTITION_CONFIG_DEFAULT
+// MODEL_PARTITION_CONFIG_BEOWULF
+
+//
+//enum MODEL_PARTITION_CONFIG
+//{
+//	MODEL_PARTITION_CONFIG_DEFAULT,
+//	MODEL_PARTITION_CONFIG_BEOWULF,
+//};
+//
+//template
+//<
+//	uint8 modelPartitionConfig,
+//	typename T
+//>
+//void ApplyModelPartitionConfig(T & actorData)
+//{
+//	auto & modelData = actorData.modelData[0];
+//	auto dest = func_89DE0(modelData);
+//	if constexpr (modelPartitionConfig == MODEL_PARTITION_CONFIG_DEFAULT)
+//	{
+//		func_2F7350(dest, 3);
+//		func_2F74E0(dest, 4);
+//		func_2F74E0(dest, 5);
+//		func_2F7350(dest, 6);
+//	}
+//	else
+//	{
+//		func_2F74E0(dest, 3);
+//		func_2F7350(dest, 4);
+//		func_2F7350(dest, 5);
+//		func_2F74E0(dest, 6);
+//	}
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//auto ApplyDefaultModelPartitionConfig = ApplyModelPartitionConfig<MODEL_PARTITION_CONFIG_DEFAULT, ACTOR_DATA_DANTE>;
+
+//inline void ApplyDefaultModelPartitionConfig(ACTOR_DATA_DANTE & actorData)
+//{
+//	auto & modelData = actorData.modelData[0];
+//	auto dest = func_89DE0(modelData);
+//	func_2F7350(dest, 3);
+//	func_2F74E0(dest, 4);
+//	func_2F74E0(dest, 5);
+//	func_2F7350(dest, 6);
+//}
+//
+//inline void ApplyBeowulfModelPartitionConfig(ACTOR_DATA_DANTE & actorData)
+//{
+//	auto & modelData = actorData.modelData[0];
+//	auto dest = func_89DE0(modelData);
+//	func_2F74E0(dest, 3);
+//	func_2F7350(dest, 4);
+//	func_2F7350(dest, 5);
+//	func_2F74E0(dest, 6);
+//}
 
 
 

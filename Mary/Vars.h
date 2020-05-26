@@ -1592,6 +1592,10 @@ struct MODEL_DATA
 		_(196);
 	}
 	motion;
+	operator byte8 *()
+	{
+		return reinterpret_cast<byte8 *>(this);
+	}
 };
 
 static_assert(offsetof(MODEL_DATA, motion.duration1) == 0x554);

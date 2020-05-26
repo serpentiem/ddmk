@@ -140,13 +140,15 @@ struct ACTOR_DATA
 	byte8 * newMeleeWeaponData[5]; // 0xB900
 	uint8 newMeleeWeaponCount; // 0xB928
 	uint8 newMeleeWeaponIndex; // 0xB929
-	_(2);
+	uint8 newLastMeleeWeapon; // 0xB92A
+	_(1);
 	uint8 newRangedWeapon[5]; // 0xB92C
 	_(7);
 	byte8 * newRangedWeaponData[5]; // 0xB938
 	uint8 newRangedWeaponCount; // 0xB960
 	uint8 newRangedWeaponIndex; // 0xB961
-	_(2);
+	uint8 newLastRangedWeapon; // 0xB962
+	_(1);
 	bool newSect[8]; // 0xB964
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
@@ -327,13 +329,15 @@ struct ACTOR_DATA_DANTE
 	byte8 * newMeleeWeaponData[5]; // 0xB900
 	uint8 newMeleeWeaponCount; // 0xB928
 	uint8 newMeleeWeaponIndex; // 0xB929
-	_(2);
+	uint8 newLastMeleeWeapon; // 0xB92A
+	_(1);
 	uint8 newRangedWeapon[5]; // 0xB92C
 	_(7);
 	byte8 * newRangedWeaponData[5]; // 0xB938
 	uint8 newRangedWeaponCount; // 0xB960
 	uint8 newRangedWeaponIndex; // 0xB961
-	_(2);
+	uint8 newLastRangedWeapon; // 0xB962
+	_(1);
 	bool newSect[8]; // 0xB964
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
@@ -475,13 +479,15 @@ struct ACTOR_DATA_BOB
 	byte8 * newMeleeWeaponData[5]; // 0xB900
 	uint8 newMeleeWeaponCount; // 0xB928
 	uint8 newMeleeWeaponIndex; // 0xB929
-	_(2);
+	uint8 newLastMeleeWeapon; // 0xB92A
+	_(1);
 	uint8 newRangedWeapon[5]; // 0xB92C
 	_(7);
 	byte8 * newRangedWeaponData[5]; // 0xB938
 	uint8 newRangedWeaponCount; // 0xB960
 	uint8 newRangedWeaponIndex; // 0xB961
-	_(2);
+	uint8 newLastRangedWeapon; // 0xB962
+	_(1);
 	bool newSect[8]; // 0xB964
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
@@ -623,13 +629,15 @@ struct ACTOR_DATA_LADY
 	byte8 * newMeleeWeaponData[5]; // 0xB900
 	uint8 newMeleeWeaponCount; // 0xB928
 	uint8 newMeleeWeaponIndex; // 0xB929
-	_(2);
+	uint8 newLastMeleeWeapon; // 0xB92A
+	_(1);
 	uint8 newRangedWeapon[5]; // 0xB92C
 	_(7);
 	byte8 * newRangedWeaponData[5]; // 0xB938
 	uint8 newRangedWeaponCount; // 0xB960
 	uint8 newRangedWeaponIndex; // 0xB961
-	_(2);
+	uint8 newLastRangedWeapon; // 0xB962
+	_(1);
 	bool newSect[8]; // 0xB964
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
@@ -789,13 +797,15 @@ struct ACTOR_DATA_VERGIL
 	byte8 * newMeleeWeaponData[5]; // 0xB900
 	uint8 newMeleeWeaponCount; // 0xB928
 	uint8 newMeleeWeaponIndex; // 0xB929
-	_(2);
+	uint8 newLastMeleeWeapon; // 0xB92A
+	_(1);
 	uint8 newRangedWeapon[5]; // 0xB92C
 	_(7);
 	byte8 * newRangedWeaponData[5]; // 0xB938
 	uint8 newRangedWeaponCount; // 0xB960
 	uint8 newRangedWeaponIndex; // 0xB961
-	_(2);
+	uint8 newLastRangedWeapon; // 0xB962
+	_(1);
 	bool newSect[8]; // 0xB964
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D

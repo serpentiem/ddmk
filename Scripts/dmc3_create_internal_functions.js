@@ -93,6 +93,8 @@ dmc3.exe+1EFC36 - E8 55A6E6FF           - call dmc3.exe+5A290 { __ONLY_THIS_ONE_
 
 
 
+[ 0x2F74E0 , "void"   , "byte8 * dest, uint32 index"    , "", "Show Model Partition"                         ],
+[ 0x2F7350 , "void"   , "byte8 * dest, uint32 index"    , "", "Hide Model Partition"                         ],
 
 
 
@@ -101,14 +103,6 @@ dmc3.exe+1EFC36 - E8 55A6E6FF           - call dmc3.exe+5A290 { __ONLY_THIS_ONE_
 
 
 
-
-
-/*
-dmc3.exe+1F01B5 - 48 8B CB              - mov rcx,rbx
-dmc3.exe+1F01B8 - E8 33000000           - call dmc3.exe+1F01F0
-
-*/
-	
 
 
 
