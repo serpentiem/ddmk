@@ -105,7 +105,12 @@ struct ACTOR_DATA
 	uint32 styleLevel; // 0x6358
 	_(8);
 	float32 styleExperience; // 0x6364
-	_(424);
+	_(236);
+	bool cloneIsActive; // 0x6454
+	_(35);
+	byte8 * cloneBaseAddr; // 0x6478
+	bool cloneIsControlledByPlayer; // 0x6480
+	_(143);
 	uint8 styleRank; // 0x6510
 	_(3);
 	float32 styleMeter; // 0x6514
@@ -444,7 +449,12 @@ struct ACTOR_DATA_BOB
 	uint32 styleLevel; // 0x6358
 	_(8);
 	float32 styleExperience; // 0x6364
-	_(424);
+	_(236);
+	bool cloneIsActive; // 0x6454
+	_(35);
+	byte8 * cloneBaseAddr; // 0x6478
+	bool cloneIsControlledByPlayer; // 0x6480
+	_(143);
 	uint8 styleRank; // 0x6510
 	_(3);
 	float32 styleMeter; // 0x6514
@@ -594,7 +604,12 @@ struct ACTOR_DATA_LADY
 	uint32 styleLevel; // 0x6358
 	_(8);
 	float32 styleExperience; // 0x6364
-	_(424);
+	_(236);
+	bool cloneIsActive; // 0x6454
+	_(35);
+	byte8 * cloneBaseAddr; // 0x6478
+	bool cloneIsControlledByPlayer; // 0x6480
+	_(143);
 	uint8 styleRank; // 0x6510
 	_(3);
 	float32 styleMeter; // 0x6514
@@ -748,7 +763,12 @@ struct ACTOR_DATA_VERGIL
 	uint8 trickDownCount; // 0x6360
 	_(3);
 	float32 styleExperience; // 0x6364
-	_(284);
+	_(236);
+	bool cloneIsActive; // 0x6454
+	_(35);
+	byte8 * cloneBaseAddr; // 0x6478
+	bool cloneIsControlledByPlayer; // 0x6480
+	_(3);
 	uint32 activeMeleeWeaponIndex; // 0x6484
 	uint32 queuedMeleeWeaponIndex; // 0x6488
 	_(12);

@@ -37,8 +37,8 @@ ImVec2 GUI_Teleporter_size = ImVec2(120, 180);
 ImVec2 GUI_Overlay_size    = ImVec2(300, 300);
 
 bool GUI_Camera_show     = false;
-bool GUI_Speed_show      = true;
-bool GUI_Teleporter_show = true;
+bool GUI_Speed_show      = false;
+bool GUI_Teleporter_show = false;
 
 static void BuildFonts()
 {
@@ -3172,6 +3172,18 @@ void NEW_GUI_Main()
 	}
 	if (ImGui::Begin("NEW_GUI_Main", &pause))
 	{
+
+		ImGui::Text("actorCount %u", Actor_actorBaseAddr.count);
+
+
+		NEW_GUI_Text("");
+
+
+
+
+
+
+
 		if (NEW_GUI_CollapsingHeader("Actor"))
 		{
 			NEW_GUI_Text("");

@@ -1391,6 +1391,135 @@ void ActorLoop(byte8 * baseAddr)
 
 }
 
+
+
+
+
+
+
+
+
+byte8 * SpawnActor
+(
+	uint8 player,
+	uint8 entity
+)
+{
+	auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
+	auto & character = Config.Actor.character[player][entity];
+	if (character == CHAR_DANTE)
+	{
+		auto danteBaseAddr = CreateActorDante(player, entity);
+		if (!danteBaseAddr)
+		{
+			return 0;
+		}
+		auto & danteActorData = *danteBaseAddr;
+		Actor_actorBaseAddr.Push(danteActorData);
+
+		danteActorData.position = mainActorData.position;
+
+		if (entity == ENTITY_MAIN)
+		{
+			danteActorData.newGamepad = player;
+			danteActorData.newButtonMask = 0xFFFF;
+			danteActorData.newEnableRightStick = true;
+			danteActorData.newEnableLeftStick = true;
+		}
+		else
+		{
+			// @Todo: Add void gamepad 5.
+			danteActorData.newGamepad = 1;
+			return danteActorData;
+		}
+
+
+
+		auto vergilBaseAddr = CreateActorVergil(player, entity);
+		if (!vergilBaseAddr)
+		{
+			return 0;
+		}
+		auto & vergilActorData = *vergilBaseAddr;
+		Actor_actorBaseAddr.Push(vergilActorData);
+
+		danteActorData.newChildBaseAddr[CHAR_VERGIL] = vergilActorData;
+
+		vergilActorData.newParentBaseAddr = danteActorData;
+		vergilActorData.position = danteActorData.position;
+
+		auto & danteNewMeleeWeapon = danteActorData.newMeleeWeapon[danteActorData.newMeleeWeaponIndex];
+		if ((danteNewMeleeWeapon >= WEAPON_VERGIL_YAMATO) && (danteNewMeleeWeapon <= WEAPON_VERGIL_FORCE_EDGE))
+		{
+			vergilActorData.activeMeleeWeaponIndex = (danteNewMeleeWeapon - WEAPON_VERGIL_YAMATO);
+			vergilActorData.queuedMeleeWeaponIndex = (danteNewMeleeWeapon - WEAPON_VERGIL_YAMATO);
+		}
+
+		return danteActorData;
+	}
+	else if (character == CHAR_BOB)
+	{
+		return 0;
+	}
+	else if (character == CHAR_LADY)
+	{
+		return 0;
+	}
+	else if (character == CHAR_VERGIL)
+	{
+		auto vergilBaseAddr = CreateActorVergil(player, entity);
+		if (!vergilBaseAddr)
+		{
+			return 0;
+		}
+		auto & vergilActorData = *vergilBaseAddr;
+		Actor_actorBaseAddr.Push(vergilActorData);
+
+		vergilActorData.position = mainActorData.position;
+
+		if (entity != ENTITY_MAIN)
+		{
+			return vergilActorData;
+		}
+
+		vergilActorData.newButtonMask = 0xFFFF;
+		vergilActorData.newEnableRightStick = true;
+		vergilActorData.newEnableLeftStick = true;
+
+		auto danteBaseAddr = CreateActorDante(player, entity);
+		if (!danteBaseAddr)
+		{
+			return 0;
+		}
+		auto & danteActorData = *danteBaseAddr;
+		Actor_actorBaseAddr.Push(danteActorData);
+
+		vergilActorData.newChildBaseAddr[CHAR_DANTE] = danteActorData;
+
+		danteActorData.newParentBaseAddr = vergilActorData;
+		danteActorData.position = vergilActorData.position;
+
+		for_all(uint8, index, MAX_MELEE_WEAPON)
+		{
+			danteActorData.newMeleeWeapon[index] = (WEAPON_DANTE_REBELLION + index);
+		}
+		danteActorData.newMeleeWeaponCount = MAX_MELEE_WEAPON_DANTE;
+		danteActorData.newMeleeWeaponIndex = 0;
+
+		auto & vergilNewMeleeWeapon = vergilActorData.newMeleeWeapon[vergilActorData.newMeleeWeaponIndex];
+		if ((vergilNewMeleeWeapon >= WEAPON_DANTE_REBELLION) && (vergilNewMeleeWeapon <= WEAPON_DANTE_BEOWULF))
+		{
+			danteActorData.meleeWeapon[0] = vergilNewMeleeWeapon;
+			danteActorData.meleeWeapon[1] = WEAPON_VOID;
+			danteActorData.meleeWeaponIndex = 0;
+		}
+
+		return vergilActorData;
+	}
+
+	return 0;
+}
+
 void MainLoop()
 {
 	g_mainLoopCounter++;
@@ -1418,92 +1547,35 @@ void MainLoop()
 		spawnActors = false;
 		Log("Spawn Actors.");
 
-		auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
-
-		auto danteBaseAddr = CreateActorDante(0, 0);
-		if (!danteBaseAddr)
+		for_all(uint8, player, Config.Actor.playerCount)
 		{
-			return;
+			auto mainBaseAddr = SpawnActor(player, ENTITY_MAIN);
+			if (!mainBaseAddr)
+			{
+				continue;
+			}
+			auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
+
+
+
+
+
+			auto cloneBaseAddr = SpawnActor(player, ENTITY_CLONE);
+			if (!cloneBaseAddr)
+			{
+				continue;
+			}
+			auto & cloneActorData = *reinterpret_cast<ACTOR_DATA *>(cloneBaseAddr);
+
+			mainActorData.cloneBaseAddr = cloneActorData;
 		}
-		auto & danteActorData = *danteBaseAddr;
-		Actor_actorBaseAddr.Push(danteActorData);
 
-		danteActorData.position = mainActorData.position;
-		danteActorData.newButtonMask = 0xFFFF;
-		danteActorData.newEnableLeftStick = true;
-
-		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-		pool[3] = danteActorData;
-
-
-
-
-
-		//const_for_all(index, 5)
-		//{
-		//	danteActorData.newMeleeWeapon [index] = (WEAPON_DANTE_REBELLION   + index);
-		//	danteActorData.newRangedWeapon[index] = (WEAPON_DANTE_EBONY_IVORY + index);
-		//}
-		//danteActorData.newMeleeWeaponCount = 5;
-		//danteActorData.newMeleeWeaponIndex = 0;
-		//danteActorData.newRangedWeaponCount = 3;
-		//danteActorData.newRangedWeaponIndex = 0;
-
-		////danteActorData.newMeleeWeapon[1] = WEAPON_DANTE_BEOWULF;
-		////danteActorData.newMeleeWeapon[2] = WEAPON_VERGIL_YAMATO;
-		//danteActorData.rangedWeapon[0] = WEAPON_DANTE_KALINA_ANN;
-		//
-		//danteActorData.rangedWeaponData[0] = danteActorData.newRangedWeaponData[0];
-
-		//danteActorData.newRangedWeapon[0] = WEAPON_DANTE_KALINA_ANN;
-
-
-		
-
-
-		auto vergilBaseAddr = CreateActorVergil(0, 0);
-		if (!vergilBaseAddr)
+		auto baseAddr = Actor_actorBaseAddr[2];
+		if (baseAddr)
 		{
-			return;
+			auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+			pool[3] = baseAddr;
 		}
-		auto & vergilActorData = *vergilBaseAddr;
-		Actor_actorBaseAddr.Push(vergilActorData);
-
-		danteActorData.newChildBaseAddr[CHAR_VERGIL] = vergilActorData;
-
-		vergilActorData.newParentBaseAddr = danteActorData;
-
-		//for_all(uint8, index, 5)
-		//{
-		//	vergilActorData.meleeWeapon[index] = WEAPON_VOID;
-		//}
-		//vergilActorData.meleeWeapon[0] = WEAPON_VERGIL_YAMATO;
-
-
-
-		vergilActorData.position = mainActorData.position;
-
-
-		//vergilActorData.newMeleeWeapon[0] = WEAPON_VERGIL_YAMATO;
-
-		//vergilActorData.newDisableLeftStick = true;
-		//vergilActorData.position = mainActorData.position;
-		//danteActorData.newIsLeader = true;
-		//danteActorData.newSect[0] = true;
-		//danteActorData.newSect[1] = true;
-		// danteActorData.newEnableMotion = true;
-		// danteActorData.newEnablePermissionUpdate = true;
-		// vergilActorData.newButtonMask = GAMEPAD_Y | GAMEPAD_RIGHT_SHOULDER;
-		// vergilActorData.newEnableLeftStick = true;
-		// vergilActorData.newEnableMotion = true;
-		// vergilActorData.newEnablePermissionUpdate = true;
-		//vergilActorData.newButtonMask = 0;
-		//vergilActorData.newEnableLeftStick = false;
-		//Log("count %u", Actor_actorBaseAddr.count);
-		//for (uint32 index = 0; index < Actor_actorBaseAddr.count; index++)
-		//{
-		//	Log("%llX", Actor_actorBaseAddr[index]);
-		//}
 	}
 }
 

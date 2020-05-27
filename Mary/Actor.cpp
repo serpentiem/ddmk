@@ -46,22 +46,12 @@ constexpr IsWeaponReadyProxyHelper_t IsWeaponReadyProxyHelper[] =
 
 byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
 
-
-
-
-
-
-
-void UpdateModelPartitionConfig
+void UpdateModelPartitionConfigFunction
 (
 	ACTOR_DATA_DANTE & actorData,
 	uint8 weapon
 )
 {
-	if (actorData.newLastMeleeWeapon == weapon)
-	{
-		return;
-	}
 	actorData.newLastMeleeWeapon = weapon;
 
 	auto & modelData = actorData.modelData[0];
@@ -83,18 +73,18 @@ void UpdateModelPartitionConfig
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
+void UpdateModelPartitionConfig
+(
+	ACTOR_DATA_DANTE & actorData,
+	uint8 weapon
+)
+{
+	if (actorData.newLastMeleeWeapon == weapon)
+	{
+		return;
+	}
+	UpdateModelPartitionConfigFunction(actorData, weapon);
+}
 
 template <typename T>
 bool IsWeaponReadyFunction
@@ -443,6 +433,8 @@ void UpdateWeaponDante
 	actorData.meleeWeapon[1] = WEAPON_VOID;
 
 	actorData.meleeWeaponIndex = 0;
+
+	UpdateModelPartitionConfigFunction(actorData, newMeleeWeapon);
 
 	// Ranged Weapons
 
@@ -1049,71 +1041,6 @@ bool WeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 	RangedWeaponSwitchControllerDante(actorData);
 
 	return true;
-
-
-
-
-
-
-
-
-
-	//{
-	//	auto & rangedWeaponIndex = actorData.weaponIndex[1];
-	//	auto & rangedWeaponSwitchTimeout = actorData.weaponSwitchTimeout[1];
-
-	//	if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_GUN)))
-	//	{
-	//		goto sect1;
-	//	}
-	//	if (0 < rangedWeaponSwitchTimeout)
-	//	{
-	//		goto sect1;
-	//	}
-
-	//	auto & timeout = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x2F4);
-	//	rangedWeaponSwitchTimeout = timeout;
-
-	//	if (rangedWeaponIndex < 3)
-	//	{
-	//		rangedWeaponIndex++;
-	//	}
-	//	else
-	//	{
-	//		rangedWeaponIndex = 2;
-	//	}
-
-	//	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-	//	auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
-
-	//	func_280120(hud, 0, (rangedWeaponIndex - 2));
-
-	//	func_1EB0E0(actorData, 7);
-	//	func_1EB0E0(actorData, 9);
-
-	//	if (!(actorData.motionState2[1] & MOTION_STATE_BUSY))
-	//	{
-	//		if (actorData.buttons[0] & GetBinding(ACTION_LOCK_ON))
-	//		{
-	//			auto & modelData = actorData.modelData[actorData.activeModelIndex];
-
-	//			uint8 id = 0;
-	//			uint8 index = 0;
-	//			byte8 * motionFile = 0;
-
-	//			actorData.activeWeapon = actorData.weaponMap[rangedWeaponIndex];
-
-	//			id = (pl000_00_3 + actorData.activeWeapon);
-	//			index = actorData.motionData[1].index;
-	//			motionFile = File_cacheFile[id][index];
-
-	//			func_8AC80(modelData, BODY_PART_LOWER, motionFile, 0, false);
-	//		}
-	//	}
-	//}
-	//sect1:;
-
-	//return true;
 }
 
 

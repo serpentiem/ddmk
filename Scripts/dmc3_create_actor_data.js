@@ -102,9 +102,11 @@ var items =
 	[ "quicksilver"                     , "bool"                      , 0x6361, CHAR_DANTE               ],
 	[ "doppelganger"                    , "bool"                      , 0x6362, CHAR_DANTE               ],
 	[ "styleExperience"                 , "float32"                   , 0x6364                           ],
-	[ "cloneIsActive"                   , "bool"                      , 0x6454, CHAR_DANTE               ],
-	[ "cloneBaseAddr"                   , "byte8 *"                   , 0x6478, CHAR_DANTE               ],
-	[ "cloneIsControlledByPlayer"       , "bool"                      , 0x6480, CHAR_DANTE               ],
+
+
+	[ "cloneIsActive"                   , "bool"                      , 0x6454               ],
+	[ "cloneBaseAddr"                   , "byte8 *"                   , 0x6478              ],
+	[ "cloneIsControlledByPlayer"       , "bool"                      , 0x6480              ],
 
 
 
