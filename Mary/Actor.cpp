@@ -1192,6 +1192,28 @@ void Actor_Init()
 
 
 
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x53,                                     //push rbx
+			0x48, 0x83, 0xEC, 0x20,                   //sub rsp,20
+			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, //cmp byte ptr [rcx+0000B8C0],04
+			0x0F, 0x83, 0x00, 0x00, 0x00, 0x00,       //jae dmc3.exe+1EBF90
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1EBCF6), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.addr + 7) = offsetof(ACTOR_DATA, newGamepad);
+		*reinterpret_cast<uint8 *>(func.addr + 0xB) = MAX_PLAYER;
+		WriteAddress((func.addr + 0xC), (appBaseAddr + 0x1EBF90), 6);
+		WriteJump((appBaseAddr + 0x1EBCF0), func.addr, 1);
+		/*
+		dmc3.exe+1EBCF0 - 40 53             - push rbx
+		dmc3.exe+1EBCF2 - 48 83 EC 20       - sub rsp,20
+		dmc3.exe+1EBCF6 - 48 8B 05 2B51AA00 - mov rax,[dmc3.exe+C90E28]
+		*/
+	}
+
+
 
 
 	{

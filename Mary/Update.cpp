@@ -1530,7 +1530,7 @@ byte8 * SpawnActor
 		}
 		else
 		{
-			danteActorData.newGamepad = 1; // @Todo: Add void gamepad 5.
+			danteActorData.newGamepad = MAX_PLAYER;
 			return danteActorData;
 		}
 
@@ -1586,7 +1586,7 @@ byte8 * SpawnActor
 		}
 		else
 		{
-			vergilActorData.newGamepad = 1; // @Assembly: If newGamepad == MAX_PLAYER return.
+			vergilActorData.newGamepad = MAX_PLAYER;
 			return vergilActorData;
 		}
 
