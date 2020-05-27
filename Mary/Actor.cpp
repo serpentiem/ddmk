@@ -46,6 +46,31 @@ constexpr IsWeaponReadyProxyHelper_t IsWeaponReadyProxyHelper[] =
 
 byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void UpdateModelPartitionConfigFunction
 (
 	ACTOR_DATA_DANTE & actorData,

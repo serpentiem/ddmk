@@ -192,6 +192,12 @@ var extra =
 	[ "newButtonMask"          , "byte16"  ],
 	[ "newEnableRightStick"    , "bool"    ],
 	[ "newEnableLeftStick"     , "bool"    ],
+
+
+	
+
+
+
 	[ "newMeleeWeapon[5]"      , "uint8"   ],
 	[ "newMeleeWeaponData[5]"  , "byte8 *" ],
 	[ "newMeleeWeaponCount"    , "uint8"   ],

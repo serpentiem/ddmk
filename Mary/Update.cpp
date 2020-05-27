@@ -14,6 +14,102 @@ uint8 g_relativeTiltDirection = 0;
 
 
 
+
+
+
+
+
+
+
+
+uint8 g_style[MAX_PLAYER][MAX_ENTITY][MAX_CHAR] =
+{
+	// Player 0
+	{
+		// Entity 0
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+		// Entity 1
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+	},
+	// Player 1
+	{
+		// Entity 0
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+		// Entity 1
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+	},
+	// Player 2
+	{
+		// Entity 0
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+		// Entity 1
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+	},
+	// Player 3
+	{
+		// Entity 0
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+		// Entity 1
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+	},
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 constexpr uint8 meleeAttackDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2] =
 {
 	// Rebellion
@@ -926,23 +1022,23 @@ void FixPull(T & actorData)
 
 
 
-inline void EnableYamato(ACTOR_DATA_VERGIL & actorData)
-{
-	if (actorData.newMeleeWeapon[0] != WEAPON_VERGIL_YAMATO)
-	{
-		actorData.newMeleeWeapon[0] = WEAPON_VERGIL_YAMATO;
-		actorData.newMeleeWeaponCount = 1;
-	}
-}
-
-inline void DisableYamato(ACTOR_DATA_VERGIL & actorData)
-{
-	if (actorData.newMeleeWeapon[0] == WEAPON_VERGIL_YAMATO)
-	{
-		actorData.newMeleeWeapon[0] = WEAPON_VOID;
-		actorData.newMeleeWeaponCount = 0;
-	}
-}
+//inline void EnableYamato(ACTOR_DATA_VERGIL & actorData)
+//{
+//	if (actorData.newMeleeWeapon[0] != WEAPON_VERGIL_YAMATO)
+//	{
+//		actorData.newMeleeWeapon[0] = WEAPON_VERGIL_YAMATO;
+//		actorData.newMeleeWeaponCount = 1;
+//	}
+//}
+//
+//inline void DisableYamato(ACTOR_DATA_VERGIL & actorData)
+//{
+//	if (actorData.newMeleeWeapon[0] == WEAPON_VERGIL_YAMATO)
+//	{
+//		actorData.newMeleeWeapon[0] = WEAPON_VOID;
+//		actorData.newMeleeWeaponCount = 0;
+//	}
+//}
 
 
 
@@ -1213,7 +1309,7 @@ void DanteVergil(byte8 * baseAddr)
 				style = STYLE_DANTE_SWORDMASTER;
 			}
 
-			auto meleeWeapon = parentActorData.newMeleeWeapon[parentActorData.newMeleeWeaponIndex];
+			auto meleeWeapon = parentActorData.meleeWeapon[parentActorData.meleeWeaponIndex];
 			if (meleeWeapon > WEAPON_DANTE_BEOWULF)
 			{
 				meleeWeapon = WEAPON_DANTE_REBELLION;
@@ -1221,13 +1317,15 @@ void DanteVergil(byte8 * baseAddr)
 
 
 
-			auto rangedWeapon = parentActorData.newRangedWeapon[parentActorData.newRangedWeaponIndex];
+			auto rangedWeapon = parentActorData.rangedWeapon[parentActorData.rangedWeaponIndex];
 			if (rangedWeapon > WEAPON_DANTE_KALINA_ANN)
 			{
 				rangedWeapon = WEAPON_DANTE_EBONY_IVORY;
 			}
-			rangedWeapon -= WEAPON_DANTE_EBONY_IVORY;
-
+			if (rangedWeapon >= WEAPON_DANTE_EBONY_IVORY)
+			{
+				rangedWeapon -= WEAPON_DANTE_EBONY_IVORY;
+			}
 
 			uint8 state = (childActorData.state & STATE_ON_FLOOR) ? 0 : 1;
 
@@ -1318,12 +1416,15 @@ void DanteVergil(byte8 * baseAddr)
 	{
 		if (IsActive(parentActorData))
 		{
-			auto meleeWeapon = childActorData.newMeleeWeapon[childActorData.newMeleeWeaponIndex];
+			auto meleeWeapon = childActorData.meleeWeapon[childActorData.queuedMeleeWeaponIndex];
 			if (meleeWeapon > WEAPON_VERGIL_FORCE_EDGE)
 			{
 				meleeWeapon = WEAPON_VERGIL_YAMATO;
 			}
-			meleeWeapon -= WEAPON_VERGIL_YAMATO;
+			if (meleeWeapon >= WEAPON_VERGIL_YAMATO)
+			{
+				meleeWeapon -= WEAPON_VERGIL_YAMATO;
+			}
 
 			uint8 state = (parentActorData.state & STATE_ON_FLOOR) ? 0 : 1;
 
@@ -1418,6 +1519,7 @@ byte8 * SpawnActor
 		Actor_actorBaseAddr.Push(danteActorData);
 
 		danteActorData.position = mainActorData.position;
+		danteActorData.style = g_style[player][entity][CHAR_DANTE];
 
 		if (entity == ENTITY_MAIN)
 		{
@@ -1428,12 +1530,9 @@ byte8 * SpawnActor
 		}
 		else
 		{
-			// @Todo: Add void gamepad 5.
-			danteActorData.newGamepad = 1;
+			danteActorData.newGamepad = 1; // @Todo: Add void gamepad 5.
 			return danteActorData;
 		}
-
-
 
 		auto vergilBaseAddr = CreateActorVergil(player, entity);
 		if (!vergilBaseAddr)
@@ -1476,15 +1575,20 @@ byte8 * SpawnActor
 		Actor_actorBaseAddr.Push(vergilActorData);
 
 		vergilActorData.position = mainActorData.position;
+		vergilActorData.style = g_style[player][entity][CHAR_VERGIL];
 
-		if (entity != ENTITY_MAIN)
+		if (entity == ENTITY_MAIN)
 		{
+			vergilActorData.newGamepad = player;
+			vergilActorData.newButtonMask = 0xFFFF;
+			vergilActorData.newEnableRightStick = true;
+			vergilActorData.newEnableLeftStick = true;
+		}
+		else
+		{
+			vergilActorData.newGamepad = 1; // @Assembly: If newGamepad == MAX_PLAYER return.
 			return vergilActorData;
 		}
-
-		vergilActorData.newButtonMask = 0xFFFF;
-		vergilActorData.newEnableRightStick = true;
-		vergilActorData.newEnableLeftStick = true;
 
 		auto danteBaseAddr = CreateActorDante(player, entity);
 		if (!danteBaseAddr)
@@ -1555,10 +1659,6 @@ void MainLoop()
 				continue;
 			}
 			auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
-
-
-
-
 
 			auto cloneBaseAddr = SpawnActor(player, ENTITY_CLONE);
 			if (!cloneBaseAddr)
