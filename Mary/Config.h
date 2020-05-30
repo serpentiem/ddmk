@@ -552,18 +552,70 @@ struct CONFIG
 		uint32  rate        = 1000;
 	}
 	Camera;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	struct
 	{
+		uint8 airHikeCount[2] = { 1, 1 };
 		struct
 		{
-			bool enableAirStinger = false;
+			uint8 dashCount    [2] = { 3, 3 };
+			uint8 skyStarCount [2] = { 1, 1 };
+			uint8 airTrickCount[2] = { 1, 1 };
+		}
+		Trickster;
+		struct
+		{
+			float32 stingerDuration   [2] = { 16 , 16  };
+			float32 stingerRange      [2] = { 560, 560 };
+			float32 airStingerDuration[2] = { 16 , 16  };
+			float32 airStingerRange   [2] = { 560, 560 };
 		}
 		Rebellion;
 		struct
 		{
+			float32 revolverHeight[2] = { 6.5, 6.5 };
+		}
+		Cerberus;
+		struct
+		{
+			float32 reverbShockDuration[2] = { 12 , 12  };
+			float32 reverbShockRange   [2] = { 300, 300 };
+		}
+		Nevan;
+		struct
+		{
 			bool hide = false;
+			float32 straightDuration   [2] = { 7   , 7    };
+			float32 straightRange      [2] = { 350 , 350  };
+			float32 airStraightDuration[2] = { 7   , 7    };
+			float32 airStraightRange   [2] = { 350 , 350  };
+			float32 risingDragonHeight [2] = { 37.5, 37.5 };
 		}
 		Beowulf;
+		struct
+		{
+			float32 gunStingerDuration   [2] = { 8  , 8   };
+			float32 gunStingerRange      [2] = { 200, 200 };
+			float32 airGunStingerDuration[2] = { 8  , 8   };
+			float32 airGunStingerRange   [2] = { 200, 200 };
+		}
+		Shotgun;
 		float32 meleeWeaponSwitchTimeout = 1;
 		float32 rangedWeaponSwitchTimeout = 1;
 	}
@@ -763,44 +815,44 @@ struct CONFIG
 			bool  enableDevilTrigger = false;
 		}
 		Doppelganger;
-		struct
-		{
-			bool enable = false;
-			struct MOBILITY
-			{
-				struct
-				{
-					uint8 airHike = 1;
-					uint8 dash[3] =
-					{
-						1,
-						2,
-						3,
-					};
-					uint8 skyStar  = 1;
-					uint8 airTrick = 1;
-				}
-				Dante;
-				struct
-				{
-					uint8 airTrick  = 1;
-					uint8 trickUp   = 1;
-					uint8 trickDown = 1;
-				}
-				Vergil;
-			};
-			MOBILITY Human;
-			MOBILITY Devil;
-		}
-		Mobility;
-		struct
-		{
-			bool  enable                      = false;
-			uint8 actorCount                  = 1;
-			uint8 character [3] = {};
-			uint8 costume   [3] = {};
-		}
-		Multiplayer;
+		//struct
+		//{
+		//	bool enable = false;
+		//	struct MOBILITY
+		//	{
+		//		struct
+		//		{
+		//			uint8 airHike = 1;
+		//			uint8 dash[3] =
+		//			{
+		//				1,
+		//				2,
+		//				3,
+		//			};
+		//			uint8 skyStar  = 1;
+		//			uint8 airTrick = 1;
+		//		}
+		//		Dante;
+		//		struct
+		//		{
+		//			uint8 airTrick  = 1;
+		//			uint8 trickUp   = 1;
+		//			uint8 trickDown = 1;
+		//		}
+		//		Vergil;
+		//	};
+		//	MOBILITY Human;
+		//	MOBILITY Devil;
+		//}
+		//Mobility;
+		//struct
+		//{
+		//	bool  enable                      = false;
+		//	uint8 actorCount                  = 1;
+		//	uint8 character [3] = {};
+		//	uint8 costume   [3] = {};
+		//}
+		//Multiplayer;
 		struct
 		{
 			bool  enable   = false;

@@ -322,10 +322,10 @@ static void Actor_StageLoadComplete()
 
 	//HoboBreak();
 
-	if (Config.Game.Multiplayer.enable)
-	{
-		return;
-	}
+	//if (Config.Game.Multiplayer.enable)
+	//{
+	//	return;
+	//}
 	//auto count = System_Actor_GetActorCount();
 	//for (uint8 actor = ACTOR_TWO; actor < count; actor++)
 	//{

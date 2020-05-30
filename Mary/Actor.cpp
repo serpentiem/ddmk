@@ -836,6 +836,25 @@ ACTOR_DATA_VERGIL * CreateActorVergil
 
 void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 {
+
+	// @Todo: Fix!
+	if (actorData.newGamepad != 0)
+	{
+		return;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 	auto & gamepad = GetGamepad(actorData.newGamepad);
 	auto & execute = actorData.executeMeleeWeaponSwitch;
 
@@ -925,6 +944,14 @@ void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 
 void RangedWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 {
+
+	// @Todo: Fix!
+	if (actorData.newGamepad != 0)
+	{
+		return;
+	}
+
+
 	auto & gamepad = GetGamepad(actorData.newGamepad);
 	auto & execute = actorData.executeRangedWeaponSwitch;
 

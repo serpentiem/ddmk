@@ -3,6 +3,7 @@
 enum FONT_
 {
 	FONT_DEFAULT,
+	FONT_MAIN,
 	FONT_OVERLAY_8,
 	FONT_OVERLAY_16,
 	FONT_OVERLAY_32,
@@ -50,6 +51,7 @@ static void BuildFonts()
 		GetWindowsDirectoryA(buffer, sizeof(buffer));
 		snprintf(overlayFont, sizeof(overlayFont), "%s\\Fonts\\consola.ttf", buffer);
 	}
+	io.Fonts->AddFontFromFileTTF(overlayFont, 17);
 	io.Fonts->AddFontFromFileTTF(overlayFont, 8);
 	io.Fonts->AddFontFromFileTTF(overlayFont, 16);
 	io.Fonts->AddFontFromFileTTF(overlayFont, 32);
@@ -222,18 +224,18 @@ void GUI_Game_Arcade()
 
 
 
-	{
-		static uint32 arg[3] = {};
-		GUI_InputEx<uint32>("arg1", arg[0]);
-		GUI_InputEx<uint32>("arg2", arg[1]);
-		GUI_InputEx<uint32>("arg3", arg[2]);
-		if (GUI_Button("Switch"))
-		{
-			auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-			auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
-			func_280160(hud, arg[0], arg[1], arg[2]);
-		}
-	}
+	//{
+	//	static uint32 arg[3] = {};
+	//	GUI_InputEx<uint32>("arg1", arg[0]);
+	//	GUI_InputEx<uint32>("arg2", arg[1]);
+	//	GUI_InputEx<uint32>("arg3", arg[2]);
+	//	if (GUI_Button("Switch"))
+	//	{
+	//		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+	//		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+	//		func_280160(hud, arg[0], arg[1], arg[2]);
+	//	}
+	//}
 
 
 
@@ -248,13 +250,13 @@ void GUI_Game_Arcade()
 
 
 
-	{
-		static bool enable = false;
-		if (GUI_Checkbox("Toggle Update Weapon", enable))
-		{
-			//ToggleUpdateWeapon(enable);
-		}
-	}
+	//{
+	//	static bool enable = false;
+	//	if (GUI_Checkbox("Toggle Update Weapon", enable))
+	//	{
+	//		//ToggleUpdateWeapon(enable);
+	//	}
+	//}
 
 
 
@@ -609,175 +611,175 @@ void GUI_Game_Dante()
 	GUI_SECTION_FOOTER_END;
 }
 
-void GUI_Game_Doppelganger()
-{
-	GUI_SECTION_HEADER_START(Game.Doppelganger);
-	if (Config.Game.Doppelganger.enable)
-	{
-		//Game_Doppelganger_ToggleEnableDevilTrigger(Config.Game.Doppelganger.enableDevilTrigger);
-	}
-	else
-	{
-		//Game_Doppelganger_ToggleEnableDevilTrigger(DefaultConfig.Game.Doppelganger.enableDevilTrigger);
-	}
-	GUI_SECTION_HEADER_END(Game.Doppelganger);
-	ImGui::PushItemWidth(100);
-	GUI_Combo<uint8>
-	(
-		Locale.Game.Doppelganger.Character.label,
-		Locale.Game.Doppelganger.Character.items,
-		countof(Locale.Game.Doppelganger.Character.items),
-		Config.Game.Doppelganger.character
-	);
-	ImGui::PopItemWidth();
-	if (GUI_Checkbox
-	(
-		Locale.Game.Doppelganger.enableDevilTrigger,
-		Config.Game.Doppelganger.enableDevilTrigger
-	))
-	{
-		//Game_Doppelganger_ToggleEnableDevilTrigger(Config.Game.Doppelganger.enableDevilTrigger);
-	}
-	GUI_SECTION_FOOTER_START(Game.Doppelganger);
-	//Game_Doppelganger_ToggleEnableDevilTrigger(DefaultConfig.Game.Doppelganger.enableDevilTrigger);
-	GUI_SECTION_FOOTER_END;
-}
+//void GUI_Game_Doppelganger()
+//{
+//	GUI_SECTION_HEADER_START(Game.Doppelganger);
+//	if (Config.Game.Doppelganger.enable)
+//	{
+//		//Game_Doppelganger_ToggleEnableDevilTrigger(Config.Game.Doppelganger.enableDevilTrigger);
+//	}
+//	else
+//	{
+//		//Game_Doppelganger_ToggleEnableDevilTrigger(DefaultConfig.Game.Doppelganger.enableDevilTrigger);
+//	}
+//	GUI_SECTION_HEADER_END(Game.Doppelganger);
+//	ImGui::PushItemWidth(100);
+//	GUI_Combo<uint8>
+//	(
+//		Locale.Game.Doppelganger.Character.label,
+//		Locale.Game.Doppelganger.Character.items,
+//		countof(Locale.Game.Doppelganger.Character.items),
+//		Config.Game.Doppelganger.character
+//	);
+//	ImGui::PopItemWidth();
+//	if (GUI_Checkbox
+//	(
+//		Locale.Game.Doppelganger.enableDevilTrigger,
+//		Config.Game.Doppelganger.enableDevilTrigger
+//	))
+//	{
+//		//Game_Doppelganger_ToggleEnableDevilTrigger(Config.Game.Doppelganger.enableDevilTrigger);
+//	}
+//	GUI_SECTION_FOOTER_START(Game.Doppelganger);
+//	//Game_Doppelganger_ToggleEnableDevilTrigger(DefaultConfig.Game.Doppelganger.enableDevilTrigger);
+//	GUI_SECTION_FOOTER_END;
+//}
 
-void GUI_Game_Mobility()
-{
-	auto InputExMobility = []
-	(
-		const char * label,
-		uint8 & human,
-		uint8 & devil
-	)
-	{
-		ImGui::PushItemWidth(29);
-		GUI_InputEx<uint8>("", human, 0);
-		ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
-		GUI_InputEx<uint8>(label, devil, 0);
-		ImGui::PopItemWidth();
-	};
-	ImGui::Text(Locale.Game.Mobility.header);
-	ImGui::SameLine();
-	GUI_Tooltip(Locale.Game.Mobility.description);
-	ImGui::Text("");
-	if (GUI_Checkbox
-	(
-		Locale.Game.Mobility.enable,
-		Config.Game.Mobility.enable
-	))
-	{
-		if (Config.Game.Mobility.enable)
-		{
-			//Game_Mobility_Toggle(Config.Game.Mobility.enable);
-		}
-		else
-		{
-			//Game_Mobility_Toggle(DefaultConfig.Game.Mobility.enable);
-		}
-	}
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(!Config.Game.Mobility.enable);
-	ImGui::Text(Locale.Game.Mobility.Dante.header);
-	InputExMobility
-	(
-		Locale.Game.Mobility.Dante.airHike,
-		Config.Game.Mobility.Human.Dante.airHike,
-		Config.Game.Mobility.Devil.Dante.airHike
-	);
-	for (uint8 index = 0; index < countof(Config.Game.Mobility.Human.Dante.dash); index++)
-	{
-		InputExMobility
-		(
-			Locale.Game.Mobility.Dante.dash[index],
-			Config.Game.Mobility.Human.Dante.dash[index],
-			Config.Game.Mobility.Devil.Dante.dash[index]
-		);
-	}
-	InputExMobility
-	(
-		Locale.Game.Mobility.Dante.skyStar,
-		Config.Game.Mobility.Human.Dante.skyStar,
-		Config.Game.Mobility.Devil.Dante.skyStar
-	);
-	InputExMobility
-	(
-		Locale.Game.Mobility.Dante.airTrick,
-		Config.Game.Mobility.Human.Dante.airTrick,
-		Config.Game.Mobility.Devil.Dante.airTrick
-	);
-	ImGui::Text(Locale.Game.Mobility.Vergil.header);
-	InputExMobility
-	(
-		Locale.Game.Mobility.Vergil.airTrick,
-		Config.Game.Mobility.Human.Vergil.airTrick,
-		Config.Game.Mobility.Devil.Vergil.airTrick
-	);
-	InputExMobility
-	(
-		Locale.Game.Mobility.Vergil.trickUp,
-		Config.Game.Mobility.Human.Vergil.trickUp,
-		Config.Game.Mobility.Devil.Vergil.trickUp
-	);
-	InputExMobility
-	(
-		Locale.Game.Mobility.Vergil.trickDown,
-		Config.Game.Mobility.Human.Vergil.trickDown,
-		Config.Game.Mobility.Devil.Vergil.trickDown
-	);
-	GUI_SECTION_FOOTER_START(Game.Mobility);
-	//Game_Mobility_Toggle(DefaultConfig.Game.Mobility.enable);
-	GUI_SECTION_FOOTER_END;
-}
-
-void GUI_Game_Multiplayer()
-{
-	auto Toggle = [](bool enable)
-	{
-		//System_Input_ToggleRangeExtension  (enable);
-		//System_Input_ToggleMultiplayerFixes(enable);
-	};
-	GUI_PUSH_DISABLE(ActorAvailable());
-	ImGui::Text(Locale.Game.Multiplayer.header);
-	ImGui::SameLine();
-	GUI_Tooltip(Locale.Game.Multiplayer.description);
-	ImGui::Text("");
-	if (GUI_Checkbox
-	(
-		Locale.Game.Multiplayer.enable,
-		Config.Game.Multiplayer.enable
-	))
-	{
-		Toggle(Config.Game.Multiplayer.enable);
-	}
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(!Config.Game.Multiplayer.enable);
-	//constexpr uint8 count = (MAX_ACTOR - 1);
-	constexpr uint8 count = 3;
-	ImGui::PushItemWidth(100);
-	GUI_Slider("", Config.Game.Multiplayer.actorCount, 1, count);
-	for (uint8 index = 0; index < count; index++)
-	{
-		bool skip = (index >= Config.Game.Multiplayer.actorCount) ? true : false;
-		GUI_PUSH_DISABLE(skip);
-		GUI_Combo<uint8>
-		(
-			"",
-			Locale.Game.Multiplayer.Character.items,
-			countof(Locale.Game.Multiplayer.Character.items),
-			Config.Game.Multiplayer.character[index]
-		);
-		ImGui::SameLine();
-		GUI_InputEx("", Config.Game.Multiplayer.costume[index]);
-		GUI_POP_DISABLE(skip);
-	}
-	ImGui::PopItemWidth();
-	GUI_SECTION_FOOTER_START(Game.Multiplayer);
-	Toggle(DefaultConfig.Game.Multiplayer.enable);
-	GUI_SECTION_FOOTER_END;
-	GUI_POP_DISABLE(ActorAvailable());
-}
+//void GUI_Game_Mobility()
+//{
+//	auto InputExMobility = []
+//	(
+//		const char * label,
+//		uint8 & human,
+//		uint8 & devil
+//	)
+//	{
+//		ImGui::PushItemWidth(29);
+//		GUI_InputEx<uint8>("", human, 0);
+//		ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
+//		GUI_InputEx<uint8>(label, devil, 0);
+//		ImGui::PopItemWidth();
+//	};
+//	ImGui::Text(Locale.Game.Mobility.header);
+//	ImGui::SameLine();
+//	GUI_Tooltip(Locale.Game.Mobility.description);
+//	ImGui::Text("");
+//	if (GUI_Checkbox
+//	(
+//		Locale.Game.Mobility.enable,
+//		Config.Game.Mobility.enable
+//	))
+//	{
+//		if (Config.Game.Mobility.enable)
+//		{
+//			//Game_Mobility_Toggle(Config.Game.Mobility.enable);
+//		}
+//		else
+//		{
+//			//Game_Mobility_Toggle(DefaultConfig.Game.Mobility.enable);
+//		}
+//	}
+//	ImGui::Text("");
+//	GUI_PUSH_DISABLE(!Config.Game.Mobility.enable);
+//	ImGui::Text(Locale.Game.Mobility.Dante.header);
+//	InputExMobility
+//	(
+//		Locale.Game.Mobility.Dante.airHike,
+//		Config.Game.Mobility.Human.Dante.airHike,
+//		Config.Game.Mobility.Devil.Dante.airHike
+//	);
+//	for (uint8 index = 0; index < countof(Config.Game.Mobility.Human.Dante.dash); index++)
+//	{
+//		InputExMobility
+//		(
+//			Locale.Game.Mobility.Dante.dash[index],
+//			Config.Game.Mobility.Human.Dante.dash[index],
+//			Config.Game.Mobility.Devil.Dante.dash[index]
+//		);
+//	}
+//	InputExMobility
+//	(
+//		Locale.Game.Mobility.Dante.skyStar,
+//		Config.Game.Mobility.Human.Dante.skyStar,
+//		Config.Game.Mobility.Devil.Dante.skyStar
+//	);
+//	InputExMobility
+//	(
+//		Locale.Game.Mobility.Dante.airTrick,
+//		Config.Game.Mobility.Human.Dante.airTrick,
+//		Config.Game.Mobility.Devil.Dante.airTrick
+//	);
+//	ImGui::Text(Locale.Game.Mobility.Vergil.header);
+//	InputExMobility
+//	(
+//		Locale.Game.Mobility.Vergil.airTrick,
+//		Config.Game.Mobility.Human.Vergil.airTrick,
+//		Config.Game.Mobility.Devil.Vergil.airTrick
+//	);
+//	InputExMobility
+//	(
+//		Locale.Game.Mobility.Vergil.trickUp,
+//		Config.Game.Mobility.Human.Vergil.trickUp,
+//		Config.Game.Mobility.Devil.Vergil.trickUp
+//	);
+//	InputExMobility
+//	(
+//		Locale.Game.Mobility.Vergil.trickDown,
+//		Config.Game.Mobility.Human.Vergil.trickDown,
+//		Config.Game.Mobility.Devil.Vergil.trickDown
+//	);
+//	GUI_SECTION_FOOTER_START(Game.Mobility);
+//	//Game_Mobility_Toggle(DefaultConfig.Game.Mobility.enable);
+//	GUI_SECTION_FOOTER_END;
+//}
+//
+//void GUI_Game_Multiplayer()
+//{
+//	auto Toggle = [](bool enable)
+//	{
+//		//System_Input_ToggleRangeExtension  (enable);
+//		//System_Input_ToggleMultiplayerFixes(enable);
+//	};
+//	GUI_PUSH_DISABLE(ActorAvailable());
+//	ImGui::Text(Locale.Game.Multiplayer.header);
+//	ImGui::SameLine();
+//	GUI_Tooltip(Locale.Game.Multiplayer.description);
+//	ImGui::Text("");
+//	if (GUI_Checkbox
+//	(
+//		Locale.Game.Multiplayer.enable,
+//		Config.Game.Multiplayer.enable
+//	))
+//	{
+//		Toggle(Config.Game.Multiplayer.enable);
+//	}
+//	ImGui::Text("");
+//	GUI_PUSH_DISABLE(!Config.Game.Multiplayer.enable);
+//	//constexpr uint8 count = (MAX_ACTOR - 1);
+//	constexpr uint8 count = 3;
+//	ImGui::PushItemWidth(100);
+//	GUI_Slider("", Config.Game.Multiplayer.actorCount, 1, count);
+//	for (uint8 index = 0; index < count; index++)
+//	{
+//		bool skip = (index >= Config.Game.Multiplayer.actorCount) ? true : false;
+//		GUI_PUSH_DISABLE(skip);
+//		GUI_Combo<uint8>
+//		(
+//			"",
+//			Locale.Game.Multiplayer.Character.items,
+//			countof(Locale.Game.Multiplayer.Character.items),
+//			Config.Game.Multiplayer.character[index]
+//		);
+//		ImGui::SameLine();
+//		GUI_InputEx("", Config.Game.Multiplayer.costume[index]);
+//		GUI_POP_DISABLE(skip);
+//	}
+//	ImGui::PopItemWidth();
+//	GUI_SECTION_FOOTER_START(Game.Multiplayer);
+//	Toggle(DefaultConfig.Game.Multiplayer.enable);
+//	GUI_SECTION_FOOTER_END;
+//	GUI_POP_DISABLE(ActorAvailable());
+//}
 
 void GUI_Game_Other()
 {
@@ -823,57 +825,57 @@ void GUI_Game_Other()
 	GUI_SECTION_FOOTER_END;
 }
 
-void GUI_Game_ResetMotionState()
-{
-	//GUI_SECTION_HEADER(Game.ResetMotionState);
-	//ImGui::PushItemWidth(150);
-	//if (GUI_Combo<uint8>
-	//(
-	//	Locale.Game.ResetMotionState.Button.label,
-	//	Locale.Game.ResetMotionState.Button.items,
-	//	countof(Locale.Game.ResetMotionState.Button.items),
-	//	Game_ResetMotionState_buttonIndex,
-	//	0,
-	//	false
-	//))
-	//{
-	//	auto & buttonIndex = Game_ResetMotionState_buttonIndex;
-	//	auto & buttonMap   = Game_ResetMotionState_buttonMap;
-	//	Config.Game.ResetMotionState.button = buttonMap[buttonIndex];
-	//	SaveConfig();
-	//}
-	//ImGui::PopItemWidth();
-	//if constexpr (debug)
-	//{
-	//	ImGui::Text("index %u", Game_ResetMotionState_buttonIndex);
-	//	ImGui::Text("true  %X", Config.Game.ResetMotionState.button);
-	//}
-	//GUI_SECTION_FOOTER_START(Game.ResetMotionState);
-	//Game_ResetMotionState_UpdateButtonIndex();
-	//GUI_SECTION_FOOTER_END;
-}
+//void GUI_Game_ResetMotionState()
+//{
+//	//GUI_SECTION_HEADER(Game.ResetMotionState);
+//	//ImGui::PushItemWidth(150);
+//	//if (GUI_Combo<uint8>
+//	//(
+//	//	Locale.Game.ResetMotionState.Button.label,
+//	//	Locale.Game.ResetMotionState.Button.items,
+//	//	countof(Locale.Game.ResetMotionState.Button.items),
+//	//	Game_ResetMotionState_buttonIndex,
+//	//	0,
+//	//	false
+//	//))
+//	//{
+//	//	auto & buttonIndex = Game_ResetMotionState_buttonIndex;
+//	//	auto & buttonMap   = Game_ResetMotionState_buttonMap;
+//	//	Config.Game.ResetMotionState.button = buttonMap[buttonIndex];
+//	//	SaveConfig();
+//	//}
+//	//ImGui::PopItemWidth();
+//	//if constexpr (debug)
+//	//{
+//	//	ImGui::Text("index %u", Game_ResetMotionState_buttonIndex);
+//	//	ImGui::Text("true  %X", Config.Game.ResetMotionState.button);
+//	//}
+//	//GUI_SECTION_FOOTER_START(Game.ResetMotionState);
+//	//Game_ResetMotionState_UpdateButtonIndex();
+//	//GUI_SECTION_FOOTER_END;
+//}
 
-void GUI_Game_StyleSwitcher()
-{
-	//GUI_SECTION_HEADER_START(Game.StyleSwitcher);
-	//if (Config.Game.StyleSwitcher.enable)
-	//{
-	//	Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
-	//}
-	//else
-	//{
-	//	Game_StyleSwitcher_Toggle(DefaultConfig.Game.StyleSwitcher.enable);
-	//}
-	//GUI_SECTION_HEADER_END(Game.StyleSwitcher);
-	//GUI_Checkbox
-	//(
-	//	Locale.Game.StyleSwitcher.noDoubleTap,
-	//	Config.Game.StyleSwitcher.noDoubleTap
-	//);
-	//GUI_SECTION_FOOTER_START(Game.StyleSwitcher);
-	//Game_StyleSwitcher_Toggle(DefaultConfig.Game.StyleSwitcher.enable);
-	//GUI_SECTION_FOOTER_END;
-}
+//void GUI_Game_StyleSwitcher()
+//{
+//	//GUI_SECTION_HEADER_START(Game.StyleSwitcher);
+//	//if (Config.Game.StyleSwitcher.enable)
+//	//{
+//	//	Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
+//	//}
+//	//else
+//	//{
+//	//	Game_StyleSwitcher_Toggle(DefaultConfig.Game.StyleSwitcher.enable);
+//	//}
+//	//GUI_SECTION_HEADER_END(Game.StyleSwitcher);
+//	//GUI_Checkbox
+//	//(
+//	//	Locale.Game.StyleSwitcher.noDoubleTap,
+//	//	Config.Game.StyleSwitcher.noDoubleTap
+//	//);
+//	//GUI_SECTION_FOOTER_START(Game.StyleSwitcher);
+//	//Game_StyleSwitcher_Toggle(DefaultConfig.Game.StyleSwitcher.enable);
+//	//GUI_SECTION_FOOTER_END;
+//}
 
 void GUI_Game_Training()
 {
@@ -976,74 +978,74 @@ void GUI_Game_Vergil()
 	GUI_SECTION_FOOTER_END;
 }
 
-void GUI_Game_WeaponSwitcher()
-{
-	GUI_PUSH_DISABLE(ActorAvailable());
-	GUI_SECTION_HEADER_START(Game.WeaponSwitcher);
-	if (Config.Game.WeaponSwitcher.enable)
-	{
-		//Game_WeaponSwitcher_Toggle(Config.Game.WeaponSwitcher.enable);
-	}
-	else
-	{
-		//Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
-	}
-	GUI_SECTION_HEADER_END(Game.WeaponSwitcher);
-	ImGui::PushItemWidth(200);
-	if (GUI_Combo<uint8>
-	(
-		Locale.Game.WeaponSwitcher.Devil.label,
-		Locale.Game.WeaponSwitcher.Devil.items,
-		countof(Locale.Game.WeaponSwitcher.Devil.items),
-		Config.Game.WeaponSwitcher.devil
-	))
-	{
-		//System_Actor_UpdateDevilModel(Config.Game.WeaponSwitcher.devil);
-	}
-	GUI_Combo<uint8>
-	(
-		Locale.Game.WeaponSwitcher.Sword.label,
-		Locale.Game.WeaponSwitcher.Sword.items,
-		countof(Locale.Game.WeaponSwitcher.Sword.items),
-		Config.Game.WeaponSwitcher.sword
-	);
-	ImGui::Text(Locale.Game.WeaponSwitcher.Melee.header);
-	GUI_Slider("", Config.Game.WeaponSwitcher.Melee.count, 1, 5);
-	for (uint8 i = 0; i < 5; i++)
-	{
-		bool skip = (i >= Config.Game.WeaponSwitcher.Melee.count) ? true : false;
-		GUI_PUSH_DISABLE(skip);
-		GUI_Combo<uint8>
-		(
-			"",
-			Locale.Game.WeaponSwitcher.Weapon.items,
-			5,
-			Config.Game.WeaponSwitcher.Melee.weapon[i]
-		);
-		GUI_POP_DISABLE(skip);
-	}
-	ImGui::Text(Locale.Game.WeaponSwitcher.Ranged.header);
-	GUI_Slider("", Config.Game.WeaponSwitcher.Ranged.count, 1, 5);
-	for (uint8 i = 0; i < 5; i++)
-	{
-		bool skip = (i >= Config.Game.WeaponSwitcher.Ranged.count) ? true : false;
-		GUI_PUSH_DISABLE(skip);
-		GUI_Combo<uint8>
-		(
-			"",
-			Locale.Game.WeaponSwitcher.Weapon.items,
-			10,
-			Config.Game.WeaponSwitcher.Ranged.weapon[i],
-			5
-		);
-		GUI_POP_DISABLE(skip);
-	}
-	ImGui::PopItemWidth();
-	GUI_SECTION_FOOTER_START(Game.WeaponSwitcher);
-	//Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
-	GUI_SECTION_FOOTER_END;
-	GUI_POP_DISABLE(ActorAvailable());
-}
+//void GUI_Game_WeaponSwitcher()
+//{
+//	GUI_PUSH_DISABLE(ActorAvailable());
+//	GUI_SECTION_HEADER_START(Game.WeaponSwitcher);
+//	if (Config.Game.WeaponSwitcher.enable)
+//	{
+//		//Game_WeaponSwitcher_Toggle(Config.Game.WeaponSwitcher.enable);
+//	}
+//	else
+//	{
+//		//Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
+//	}
+//	GUI_SECTION_HEADER_END(Game.WeaponSwitcher);
+//	ImGui::PushItemWidth(200);
+//	if (GUI_Combo<uint8>
+//	(
+//		Locale.Game.WeaponSwitcher.Devil.label,
+//		Locale.Game.WeaponSwitcher.Devil.items,
+//		countof(Locale.Game.WeaponSwitcher.Devil.items),
+//		Config.Game.WeaponSwitcher.devil
+//	))
+//	{
+//		//System_Actor_UpdateDevilModel(Config.Game.WeaponSwitcher.devil);
+//	}
+//	GUI_Combo<uint8>
+//	(
+//		Locale.Game.WeaponSwitcher.Sword.label,
+//		Locale.Game.WeaponSwitcher.Sword.items,
+//		countof(Locale.Game.WeaponSwitcher.Sword.items),
+//		Config.Game.WeaponSwitcher.sword
+//	);
+//	ImGui::Text(Locale.Game.WeaponSwitcher.Melee.header);
+//	GUI_Slider("", Config.Game.WeaponSwitcher.Melee.count, 1, 5);
+//	for (uint8 i = 0; i < 5; i++)
+//	{
+//		bool skip = (i >= Config.Game.WeaponSwitcher.Melee.count) ? true : false;
+//		GUI_PUSH_DISABLE(skip);
+//		GUI_Combo<uint8>
+//		(
+//			"",
+//			Locale.Game.WeaponSwitcher.Weapon.items,
+//			5,
+//			Config.Game.WeaponSwitcher.Melee.weapon[i]
+//		);
+//		GUI_POP_DISABLE(skip);
+//	}
+//	ImGui::Text(Locale.Game.WeaponSwitcher.Ranged.header);
+//	GUI_Slider("", Config.Game.WeaponSwitcher.Ranged.count, 1, 5);
+//	for (uint8 i = 0; i < 5; i++)
+//	{
+//		bool skip = (i >= Config.Game.WeaponSwitcher.Ranged.count) ? true : false;
+//		GUI_PUSH_DISABLE(skip);
+//		GUI_Combo<uint8>
+//		(
+//			"",
+//			Locale.Game.WeaponSwitcher.Weapon.items,
+//			10,
+//			Config.Game.WeaponSwitcher.Ranged.weapon[i],
+//			5
+//		);
+//		GUI_POP_DISABLE(skip);
+//	}
+//	ImGui::PopItemWidth();
+//	GUI_SECTION_FOOTER_START(Game.WeaponSwitcher);
+//	//Game_WeaponSwitcher_Toggle(DefaultConfig.Game.WeaponSwitcher.enable);
+//	GUI_SECTION_FOOTER_END;
+//	GUI_POP_DISABLE(ActorAvailable());
+//}
 
 void GUI_Game_Draw()
 {
@@ -1065,23 +1067,23 @@ void GUI_Game_Draw()
 		ImGui::Text("");
 		GUI_Game_Dante();
 		ImGui::Text("");
-		GUI_Game_Doppelganger();
-		ImGui::Text("");
-		GUI_Game_Mobility();
-		ImGui::Text("");
-		GUI_Game_Multiplayer();
-		ImGui::Text("");
+		//GUI_Game_Doppelganger();
+		//ImGui::Text("");
+		//GUI_Game_Mobility();
+		//ImGui::Text("");
+		//GUI_Game_Multiplayer();
+		//ImGui::Text("");
 		GUI_Game_Other();
 		ImGui::Text("");
-		GUI_Game_ResetMotionState();
-		ImGui::Text("");
-		GUI_Game_StyleSwitcher();
-		ImGui::Text("");
+		//GUI_Game_ResetMotionState();
+		//ImGui::Text("");
+		//GUI_Game_StyleSwitcher();
+		//ImGui::Text("");
 		GUI_Game_Training();
 		ImGui::Text("");
 		GUI_Game_Vergil();
-		ImGui::Text("");
-		GUI_Game_WeaponSwitcher();
+		//ImGui::Text("");
+		//GUI_Game_WeaponSwitcher();
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
@@ -1130,27 +1132,27 @@ void GUI_Cosmetics_Color()
 		ImGui::Text(label);
 		return update;
 	};
-	auto UpdateDoppelgangerColor = []()
-	{
-		if (Config.Game.Multiplayer.enable)
-		{
-			return;
-		}
-		if (Config.Cosmetics.Doppelganger.noColor)
-		{
-			return;
-		}
-		if (!InGame())
-		{
-			return;
-		}
-		//auto & baseAddr = System_Actor_actorBaseAddr[ACTOR_TWO];
-		//if (!baseAddr)
-		//{
-		//	return;
-		//}
-		//Cosmetics_Color_ApplyColor(baseAddr, 6, 0);
-	};
+	//auto UpdateDoppelgangerColor = []()
+	//{
+	//	if (Config.Game.Multiplayer.enable)
+	//	{
+	//		return;
+	//	}
+	//	if (Config.Cosmetics.Doppelganger.noColor)
+	//	{
+	//		return;
+	//	}
+	//	if (!InGame())
+	//	{
+	//		return;
+	//	}
+	//	//auto & baseAddr = System_Actor_actorBaseAddr[ACTOR_TWO];
+	//	//if (!baseAddr)
+	//	//{
+	//	//	return;
+	//	//}
+	//	//Cosmetics_Color_ApplyColor(baseAddr, 6, 0);
+	//};
 
 
 
@@ -1266,7 +1268,7 @@ void GUI_Cosmetics_Color()
 		countof(Config.Cosmetics.Color.Style.doppelganger)
 	))
 	{
-		UpdateDoppelgangerColor();
+		//UpdateDoppelgangerColor();
 	}
 	ImGui::Text(Locale.Cosmetics.Color.AirHike.header);
 	ColorPalette
@@ -1282,7 +1284,7 @@ void GUI_Cosmetics_Color()
 		memcpy(&Config.Cosmetics.Color, &DefaultConfig.Cosmetics.Color, sizeof(Config.Cosmetics.Color));
 		SaveConfig();
 		//Cosmetics_Color_UpdateColors(DefaultConfig);
-		UpdateDoppelgangerColor();
+		//UpdateDoppelgangerColor();
 	}
 }
 
@@ -2404,34 +2406,36 @@ inline void NEW_GUI_PopId()
 	ImGui::PopID();
 }
 
-template <typename T>
-bool NEW_GUI_SliderFunction
-(
-	const char * label,
-	T & var,
-	T min,
-	T max
-);
 
-template <>
-bool NEW_GUI_SliderFunction<uint8>
-(
-	const char * label,
-	uint8 & var,
-	uint8 min,
-	uint8 max
-)
-{
-	return ImGui::SliderScalar
-	(
-		label,
-		ImGuiDataType_U8,
-		&var,
-		&min,
-		&max,
-		"%u"
-	);
-}
+//// @Todo: Same treatment.
+//template <typename T>
+//bool NEW_GUI_SliderFunction
+//(
+//	const char * label,
+//	T & var,
+//	T min,
+//	T max
+//);
+//
+//template <>
+//bool NEW_GUI_SliderFunction<uint8>
+//(
+//	const char * label,
+//	uint8 & var,
+//	uint8 min,
+//	uint8 max
+//)
+//{
+//	return ImGui::SliderScalar
+//	(
+//		label,
+//		ImGuiDataType_U8,
+//		&var,
+//		&min,
+//		&max,
+//		"%u"
+//	);
+//}
 
 template <typename T>
 bool NEW_GUI_Slider
@@ -2447,12 +2451,20 @@ bool NEW_GUI_Slider
 	ImGuiIO & io = ImGui::GetIO();
 
 	NEW_GUI_PushId();
-	auto update = NEW_GUI_SliderFunction
+	auto update = ImGui::SliderScalar
 	(
 		label,
-		var,
-		min,
-		max
+		(typematch(T, uint8  )) ? ImGuiDataType_U8     :
+		(typematch(T, uint16 )) ? ImGuiDataType_U16    :
+		(typematch(T, uint32 )) ? ImGuiDataType_U32    :
+		(typematch(T, uint64 )) ? ImGuiDataType_U64    :
+		(typematch(T, float32)) ? ImGuiDataType_Float  :
+		(typematch(T, float64)) ? ImGuiDataType_Double :
+		0,
+		&var,
+		&min,
+		&max,
+		"%u"
 	);
 	if (ImGui::IsItemHovered())
 	{
@@ -2496,10 +2508,7 @@ inline bool NEW_GUI_CollapsingHeader
 	ImGuiTreeNodeFlags flags = 0
 )
 {
-	NEW_GUI_PushId();
-	auto update = ImGui::CollapsingHeader(label, flags);
-	NEW_GUI_PopId();
-	return update;
+	return ImGui::CollapsingHeader(label, flags);
 }
 
 inline bool NEW_GUI_Checkbox
@@ -2688,6 +2697,133 @@ inline bool NEW_GUI_Combo
 
 
 
+//template <typename T>
+//bool NEW_GUI_InputFunction
+//(
+//	const char * label,
+//	T & var,
+//	T step,
+//	ImGuiInputTextFlags flags = 0
+//);
+//
+//template <>
+//bool NEW_GUI_InputFunction<uint8>
+//(
+//	const char * label,
+//	uint8 & var,
+//	uint8 step,
+//	ImGuiInputTextFlags flags
+//)
+//{
+//	return ImGui::InputScalar
+//	(
+//		label,
+//		//ImGuiDataType_U8,
+//		(typematch(T, uint8)) ? ImGuiDataType_U8  :
+//		(typematch(T, uint8)) ? ImGuiDataType_U16 :
+//		(typematch(T, uint8)) ? ImGuiDataType_U32 :
+//		ImGuiDataType_U64,
+//		&var,
+//		&step,
+//		&step,
+//		0,
+//		flags
+//	);
+//}
+
+
+//template <typename T>
+//bool NEW_GUI_InputFunction
+//(
+//	const char * label,
+//	T & var,
+//	T step,
+//	ImGuiInputTextFlags flags = 0
+//)
+//{
+//	return ImGui::InputScalar
+//	(
+//		label,
+//		(typematch(T, uint8  )) ? ImGuiDataType_U8     :
+//		(typematch(T, uint16 )) ? ImGuiDataType_U16    :
+//		(typematch(T, uint32 )) ? ImGuiDataType_U32    :
+//		(typematch(T, uint64 )) ? ImGuiDataType_U64    :
+//		(typematch(T, float32)) ? ImGuiDataType_Float  :
+//		(typematch(T, float64)) ? ImGuiDataType_Double :
+//		0,
+//		&var,
+//		&step,
+//		&step,
+//		0,
+//		flags
+//	);
+//}
+
+//template <typename T>
+//bool NEW_GUI_InputFunction
+//(
+//	const char * label,
+//	T & var,
+//	T step,
+//	const char * format,
+//	ImGuiInputTextFlags flags
+//)
+//{
+//	return ImGui::InputScalar
+//	(
+//		label,
+//		(typematch(T, uint8  )) ? ImGuiDataType_U8     :
+//		(typematch(T, uint16 )) ? ImGuiDataType_U16    :
+//		(typematch(T, uint32 )) ? ImGuiDataType_U32    :
+//		(typematch(T, uint64 )) ? ImGuiDataType_U64    :
+//		(typematch(T, float32)) ? ImGuiDataType_Float  :
+//		(typematch(T, float64)) ? ImGuiDataType_Double :
+//		0,
+//		&var,
+//		&step,
+//		&step,
+//		format,
+//		flags
+//	);
+//}
+
+template <typename T>
+bool NEW_GUI_Input
+(
+	const char * label,
+	T & var,
+	T step = 1,
+	const char * format = 0,
+	ImGuiInputTextFlags flags = 0,
+	bool save = true
+)
+{
+	NEW_GUI_PushId();
+	auto update = ImGui::InputScalar
+	(
+		label,
+		(typematch(T, uint8  )) ? ImGuiDataType_U8     :
+		(typematch(T, uint16 )) ? ImGuiDataType_U16    :
+		(typematch(T, uint32 )) ? ImGuiDataType_U32    :
+		(typematch(T, uint64 )) ? ImGuiDataType_U64    :
+		(typematch(T, float32)) ? ImGuiDataType_Float  :
+		(typematch(T, float64)) ? ImGuiDataType_Double :
+		0,
+		&var,
+		(step == 0) ? 0 : &step,
+		(step == 0) ? 0 : &step,
+		format,
+		flags
+	);
+	NEW_GUI_PopId();
+
+	if (update && save)
+	{
+		SaveConfig();
+	}
+
+	return update;
+}
 
 
 
@@ -2698,6 +2834,84 @@ inline bool NEW_GUI_Combo
 
 
 
+
+template <typename T>
+void NEW_GUI_Input2
+(
+	const char * label,
+	T(&vars)[2],
+	T step = 1,
+	const char * format = 0,
+	ImGuiInputTextFlags flags = 0,
+	bool save = true
+)
+{
+	NEW_GUI_Input(""   , vars[0], step, format, flags, save);NEW_GUI_SameLine();
+	NEW_GUI_Input(label, vars[1], step, format, flags, save);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//
+//template <typename T>
+//bool NEW_GUI_Input
+//(
+//	const char * label,
+//	T & var,
+//	T step = 1,
+//	bool save = true
+//)
+//{
+//
+//}
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+//uint8 step = 1;
+//ImGui::InputScalar("Costume", ImGuiDataType_U8, &costume, &step);
+//
+////ImGui::InputScalar()
+//
+//
+//
+
+
+
+
+
+inline void NEW_GUI_SameLine(float32 x = 0)
+{
+	return ImGui::SameLine(x);
+}
 
 
 
@@ -2901,7 +3115,7 @@ inline void CharacterCostumeSelect
 	auto & costume = Config.Actor.costume[player][entity][character];
 	NEW_GUI_PushItemWidth(150);
 	NEW_GUI_Combo("Character", characterName, MAX_CHAR, character);
-	GUI_InputEx<uint8>("Costume", costume);
+	NEW_GUI_Input("Costume", costume);
 	NEW_GUI_PopItemWidth();
 }
 
@@ -3047,9 +3261,10 @@ void WeaponSelect
 		return;
 	}
 
-	ImGui::Text(label);
+	NEW_GUI_Text(label);
+	NEW_GUI_Text("");
 
-	NEW_GUI_Slider<uint8>("", weaponCount, 1, configMapCount, false);
+	NEW_GUI_Slider<uint8>("", weaponCount, 1, configMapCount);
 
 	for_all(uint8, configMapIndex, configMapCount)
 	{
@@ -3068,6 +3283,8 @@ void WeaponSelect
 		);
 		GUI_POP_DISABLE(skip);
 	}
+
+	NEW_GUI_Text("");
 }
 
 inline void MeleeWeaponSelect
@@ -3124,14 +3341,20 @@ inline void ActorTabContent
 	uint8 entity
 )
 {
+	NEW_GUI_Text("");
 	CharacterCostumeSelect(player, entity);
+	NEW_GUI_Text("");
+
 	auto character = Config.Actor.character[player][entity];
 	if (character >= MAX_CHAR)
 	{
 		character = CHAR_DANTE;
 	}
+
 	MeleeWeaponSelect (player, entity, character);
 	RangedWeaponSelect(player, entity, character);
+
+	NEW_GUI_Button("Reset");
 }
 
 inline void ActorTab
@@ -3162,16 +3385,56 @@ inline void ActorTab
 	GUI_POP_DISABLE(Config.Actor.playerCount < (player + 1));
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void NEW_GUI_Main()
 {
 	static bool run = false;
 	if (!run)
 	{
 		run = true;
-		ImGui::SetNextWindowSize(ImVec2(400, 600));
+		ImGui::SetNextWindowSize(ImVec2(800, 500));
+
+		ImGuiIO & io = ImGui::GetIO();
+		io.FontDefault = io.Fonts->Fonts[FONT_MAIN];
+		//ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_8 + Config.Tools.Overlay.fontSizeIndex]);
+
+		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
+
+
 	}
-	if (ImGui::Begin("NEW_GUI_Main", &pause))
+	if (ImGui::Begin("DDMK 2.7", &pause))
 	{
+
+		auto size = ImGui::GetWindowSize();
+		ImGui::Text("width  %f", size.x);
+		ImGui::Text("height %f", size.y);
+
+
+
+
+		//ImGuiIO & io = ImGui::GetIO();
+		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
+
 
 		ImGui::Text("actorCount %u", Actor_actorBaseAddr.count);
 
@@ -3179,6 +3442,8 @@ void NEW_GUI_Main()
 		NEW_GUI_Text("");
 
 
+
+		//io.Fonts
 
 
 
@@ -3193,27 +3458,92 @@ void NEW_GUI_Main()
 			}
 			NEW_GUI_Text("");
 			NEW_GUI_PushItemWidth(200);
-			NEW_GUI_Slider<uint8>("", Config.Actor.playerCount, 1, MAX_ACTOR);
+			NEW_GUI_Slider<uint8>("Player Count", Config.Actor.playerCount, 1, MAX_ACTOR);
 			NEW_GUI_PopItemWidth();
-
 			NEW_GUI_Text("");
-
 
 
 			if (NEW_GUI_TabBarStart("PlayerTabs"))
 			{
+				//NEW_GUI_Text("");
 				ActorTab("Player 1", 0);
 				ActorTab("Player 2", 1);
 				ActorTab("Player 3", 2);
 				ActorTab("Player 4", 3);
 				NEW_GUI_TabBarEnd();
 			}
-
-			
-
-
-
+			NEW_GUI_Text("");
+			//NEW_GUI_Button("Reset");
+			//NEW_GUI_Text("");
 		}
+
+		if (NEW_GUI_CollapsingHeader("Dante"))
+		{
+			NEW_GUI_PushItemWidth(100);
+
+			NEW_GUI_Text("");
+			NEW_GUI_Input2<uint8>("Air Hike Count", Config.Dante.airHikeCount);
+			NEW_GUI_Text("");
+
+			NEW_GUI_Text("Trickster");
+			NEW_GUI_Text("");
+			NEW_GUI_Input2<uint8>("Dash Count"     , Config.Dante.Trickster.dashCount    );
+			NEW_GUI_Input2<uint8>("Sky Star Count" , Config.Dante.Trickster.skyStarCount );
+			NEW_GUI_Input2<uint8>("Air Trick Count", Config.Dante.Trickster.airTrickCount);
+			NEW_GUI_Text("");
+
+			NEW_GUI_Text("Rebellion");
+			NEW_GUI_Text("");
+			NEW_GUI_Input2<float32>("Stinger Duration"    , Config.Dante.Rebellion.stingerDuration   , 1 , "%.0f");
+			NEW_GUI_Input2<float32>("Stinger Range"       , Config.Dante.Rebellion.stingerRange      , 10, "%.0f");
+			NEW_GUI_Input2<float32>("Air Stinger Duration", Config.Dante.Rebellion.airStingerDuration, 1 , "%.0f");
+			NEW_GUI_Input2<float32>("Air Stinger Range"   , Config.Dante.Rebellion.airStingerRange   , 10, "%.0f");
+			NEW_GUI_Text("");
+
+			NEW_GUI_Text("Cerberus");
+			NEW_GUI_Text("");
+			NEW_GUI_Input2<float32>("Revolver Height", Config.Dante.Cerberus.revolverHeight, 0.5f, "%.1f");
+			NEW_GUI_Text("");
+
+			NEW_GUI_Text("Nevan");
+			NEW_GUI_Text("");
+			NEW_GUI_Input2<float32>("Reverb Shock Duration", Config.Dante.Nevan.reverbShockDuration, 1 , "%.0f");
+			NEW_GUI_Input2<float32>("Reverb Shock Range"   , Config.Dante.Nevan.reverbShockRange   , 10, "%.0f");
+			NEW_GUI_Text("");
+
+			NEW_GUI_Text("Beowulf");
+			NEW_GUI_Text("");
+			NEW_GUI_Checkbox("Hide", Config.Dante.Beowulf.hide);
+			NEW_GUI_Input2<float32>("Straight Duration"    , Config.Dante.Beowulf.straightDuration   , 1 , "%.0f");
+			NEW_GUI_Input2<float32>("Straight Range"       , Config.Dante.Beowulf.straightRange      , 10, "%.0f");
+			NEW_GUI_Input2<float32>("Air Straight Duration", Config.Dante.Beowulf.airStraightDuration, 1 , "%.0f");
+			NEW_GUI_Input2<float32>("Air Straight Range"   , Config.Dante.Beowulf.airStraightRange   , 10, "%.0f");
+			NEW_GUI_Input2<float32>("Rising Dragon Height" , Config.Dante.Beowulf.risingDragonHeight , 10, "%.1f");
+			NEW_GUI_Text("");
+
+			NEW_GUI_Text("Shotgun");
+			NEW_GUI_Text("");
+			NEW_GUI_Input2<float32>("Gun Stinger Duration"    , Config.Dante.Shotgun.gunStingerDuration   , 1 , "%.0f");
+			NEW_GUI_Input2<float32>("Gun Stinger Range"       , Config.Dante.Shotgun.gunStingerRange      , 10, "%.0f");
+			NEW_GUI_Input2<float32>("Air Gun Stinger Duration", Config.Dante.Shotgun.airGunStingerDuration, 1 , "%.0f");
+			NEW_GUI_Input2<float32>("Air Gun Stinger Range"   , Config.Dante.Shotgun.airGunStingerRange   , 10, "%.0f");
+			NEW_GUI_Text("");
+
+			NEW_GUI_PopItemWidth();
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 		//NEW_GUI_CollapsingHeader("Camera");
