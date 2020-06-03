@@ -12,34 +12,7 @@ uint32 cachePos = 0;
 
 STRING_ITEM stringItem[countof(stringItemOff)] = {};
 
-// @Research: Make local.
-constexpr uint16 costumeMapDante[] =
-{
-	pl000,
-	pl011,
-	pl013,
-	pl015,
-	pl016,
-	pl018,
-	pl013,
-	pl018,
-};
 
-constexpr uint16 costumeMapVergil[] =
-{
-	pl021,
-	pl023,
-	pl021,
-	pl026,
-	pl026,
-};
-
-constexpr uint16 swordMap[] =
-{
-	plwp_sword,
-	plwp_sword2,
-	plwp_sword3,
-};
 
 PrivateEnd;
 
@@ -178,11 +151,14 @@ byte8 * File_PushFile(const char * filename)
 		LogFunction();
 	}
 
-	auto addr = (Memory_addr + (512 * 1024 * 1024) + cachePos);
+	auto addr = (Memory_addr + (512 * 1024 * 1024) + cachePos); // @Todo: Define size in Memory.
 	byte8 * file = 0;
 	uint32 fileSize = 0;
 
 	file = File_LoadFile(filename, &fileSize, addr);
+
+
+
 	if (!file)
 	{
 		Log("File_LoadFile failed.");
@@ -193,20 +169,198 @@ byte8 * File_PushFile(const char * filename)
 
 	if constexpr (debug)
 	{
-		Log("cachePos %X", cachePos);
+		Log("Memory_addr %.16llX"   , Memory_addr   );
+		Log("cachePos    %X"        , cachePos      );
+		Log("addr        %.16llX"   , addr          );
+		Log("file        %.16llX %s", file, filename);
+		Log("fileSize    %X"        , fileSize      );
 	}
 
 	Align<uint32>(cachePos, 0x800);
 
 	if constexpr (debug)
 	{
-		Log("file     %.16llX %s", file, filename);
-		Log("fileSize %X", fileSize);
-		Log("cachePos %X", cachePos);
+		Log("aligned cachePos %X", cachePos);
 	}
 
 	return addr;
 }
+
+
+
+//struct MetaData
+//{
+//	byte8 * addr;
+//	uint32 size;
+//};
+
+
+
+
+//template <typename T>
+//struct Array
+//{
+//	T * data;
+//	uint32 count;
+//};
+
+
+
+/*
+data
+pos
+count
+
+addr
+size
+
+Push
+Pop
+
+Clear
+
+Init
+
+[]
+*/
+
+
+
+// Stack
+// Vector
+
+// MinVector
+// GenericVector
+// SimpleVector
+
+// LinearVector
+// SimpleVector
+
+// Array
+// Vector
+
+
+//#define alias auto &
+
+
+
+
+
+//#pragma pack(push, 1)
+
+
+
+enum MEMORY_SIZE
+{
+	MEMORY_SIZE_MAIN    = (512 * 1024 * 1024),
+	MEMORY_SIZE_STATIC  = (128 * 1024 * 1024),
+	MEMORY_SIZE_DYNAMIC = (64  * 1024 * 1024),
+};
+
+
+
+
+
+
+
+
+MixedVector File_staticFile;
+MixedVector File_dynamicFile;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct FileItemHelper
+{
+	uint16 fileItemId;
+	uint16 cacheFileId;
+};
+
+
+
+
+constexpr FileItemHelper fileItemHelper[] =
+{
+	// Dante
+	{ 0  , pl000               },
+	{ 200, pl005               },
+	{ 201, pl006               },
+	{ 202, pl007               },
+	{ 203, pl008               },
+	{ 204, pl009               },
+	{ 205, pl017               },
+	{ 140, plwp_sword          },
+	{ 141, plwp_nunchaku       },
+	{ 142, plwp_2sword         },
+	{ 143, plwp_guitar         },
+	{ 144, plwp_fight          },
+	{ 145, plwp_gun            },
+	{ 146, plwp_shotgun        },
+	{ 147, plwp_laser          },
+	{ 148, plwp_rifle          },
+	{ 149, plwp_ladygun        },
+	// Bob
+	{ 1  , pl001               },
+	{ 207, pl010               },
+	{ 169, plwp_vergilsword    },
+	// Lady
+	{ 2  , pl002               },
+	// Vergil
+	{ 3  , pl021               },
+	{ 221, pl010               },
+	{ 222, pl014               },
+	{ 223, pl025               },
+	{ 196, plwp_newvergilsword },
+	{ 189, plwp_newvergilfight },
+	{ 198, plwp_forceedge      },
+	{ 187, plwp_nerosword      },
+};
+
+
+
+
+
+
+
+
+
+
+
 
 void File_UpdateFileItem
 (
@@ -223,6 +377,18 @@ void File_UpdateFileItem
 	fileItem.file       = File_cacheFile[cacheFileId];
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
 void File_UpdateFileItems()
 {
 	LogFunction();
@@ -235,6 +401,51 @@ void File_UpdateFileItems()
 		);
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// @Research: Make local.
+constexpr uint16 costumeMapDante[] =
+{
+	pl000,
+	pl011,
+	pl013,
+	pl015,
+	pl016,
+	pl018,
+	pl013,
+	pl018,
+};
+
+constexpr uint16 costumeMapVergil[] =
+{
+	pl021,
+	pl023,
+	pl021,
+	pl026,
+	pl026,
+};
+
+constexpr uint16 swordMap[] =
+{
+	plwp_sword,
+	plwp_sword2,
+	plwp_sword3,
+};
+
 
 //void UpdateCostume(ACTOR_DATA * actorData)
 //{

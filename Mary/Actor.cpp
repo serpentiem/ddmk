@@ -1,6 +1,6 @@
 #include "Actor.h"
 
-vector<byte8 *, 128> Actor_actorBaseAddr;
+Vector<byte8 *> Actor_actorBaseAddr;
 
 typedef byte8 *(__fastcall * RegisterWeapon_t)
 (
@@ -1127,6 +1127,21 @@ inline void RegisterWeapon_Init()
 
 void Actor_Init()
 {
+
+
+
+
+	Actor_actorBaseAddr.Init(512);
+
+
+
+
+
+
+
+
+
+
 	// Temporary Fixes
 
 	// Disable Vergil Weapon Switch Controller

@@ -130,6 +130,10 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
+		//Log("pl021_00_4[11] %.16llX", File_cacheFile[pl021_00_4][11]);
+		//Log("pl000_00_5[20] %.16llX", File_cacheFile[pl000_00_5][20]);
+		//Log("pl000_00_3[14] %.16llX", File_cacheFile[pl000_00_3][14]);
+
 
 
 

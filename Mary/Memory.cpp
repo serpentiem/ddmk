@@ -9,6 +9,11 @@ PrivateStart;
 byte8 * effectManagerData = 0;
 byte8 * valueManagerData  = 0;
 
+auto GetMemoryAddress()
+{
+	return Memory_addr;
+}
+
 PrivateEnd;
 
 bool Memory_Init()
@@ -21,16 +26,10 @@ bool Memory_Init()
 		Log("LowAlloc failed.");
 		return false;
 	}
+	Log("Memory_addr %llX", Memory_addr);
 
 	{
-		byte8 sect0[] =
-		{
-			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Memory_addr
-			0x48, 0x8B, 0x00,                                           //mov rax,[rax]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x3019E), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(byte8 ***)(func.sect0 + 2) = &Memory_addr;
+		auto func = CreateFunction(GetMemoryAddress, (appBaseAddr + 0x3019E), true, false);
 		WriteJump((appBaseAddr + 0x30199), func.addr);
 		/*
 		dmc3.exe+30199 - E8 328F0100 - call dmc3.exe+490D0
@@ -54,7 +53,6 @@ bool Memory_Init()
 
 	{
 		constexpr uint32 size = ((vectorItemCount * 0x10) + 8);
-
 		effectManagerData = HighAlloc(size);
 		valueManagerData = HighAlloc(size);
 		if (!effectManagerData || !valueManagerData)
@@ -67,7 +65,6 @@ bool Memory_Init()
 	return true;
 }
 
-// @Research: Vector relations.
 void Memory_ToggleExtendVectors(bool enable)
 {
 	LogFunction(enable);

@@ -2835,6 +2835,7 @@ bool NEW_GUI_Input
 
 
 
+
 template <typename T>
 void NEW_GUI_Input2
 (
@@ -3414,8 +3415,8 @@ void NEW_GUI_Main()
 		run = true;
 		ImGui::SetNextWindowSize(ImVec2(800, 500));
 
-		ImGuiIO & io = ImGui::GetIO();
-		io.FontDefault = io.Fonts->Fonts[FONT_MAIN];
+		//ImGuiIO & io = ImGui::GetIO();
+		//io.FontDefault = io.Fonts->Fonts[FONT_MAIN];
 		//ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_8 + Config.Tools.Overlay.fontSizeIndex]);
 
 		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);

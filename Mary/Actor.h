@@ -8,7 +8,16 @@
 #include "Input.h"
 #include "Vars.h"
 
-extern vector<byte8 *, 128> Actor_actorBaseAddr;
+//extern vector<byte8 *, 128> Actor_actorBaseAddr;
+
+
+
+
+extern Vector<byte8 *> Actor_actorBaseAddr;
+
+
+
+
 
 template <typename T>
 bool IsWeaponActive

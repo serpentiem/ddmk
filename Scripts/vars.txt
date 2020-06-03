@@ -1,0 +1,26 @@
+
+
+
+
+// preserve0
+// preserve1
+// preserve2
+// preserve3
+
+
+// $CacheFileStart
+ignore crap
+
+old crap
+
+new stuff
+
+// $CacheFileEnd
+
+
+
+// preserve0
+// preserve1
+// preserve2
+// preserve3
+

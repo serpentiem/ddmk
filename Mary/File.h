@@ -21,6 +21,61 @@ struct ARCHIVE_DATA
 
 #pragma pack(pop)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//
+//
+//
+//
+//template <typename T, uint32 itemCount>
+//struct vector
+//{
+//	uint32 count;
+//	T data[itemCount];
+//	void Push(T var)
+//	{
+//		data[count] = var;
+//		count++;
+//	}
+//	void Clear()
+//	{
+//		memset(this, 0, sizeof(*this));
+//	}
+//	void operator+=(T var)
+//	{
+//		Push(var);
+//	}
+//	T & operator[](uint32 index)
+//	{
+//		return data[index];
+//	}
+//	vector()
+//	{
+//		Clear();
+//	}
+//};
+//
+//
+
+
+
+
+
 struct CacheFile
 {
 	byte8 * file;
@@ -56,7 +111,65 @@ struct CacheFile
 	}
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 extern CacheFile File_cacheFile[MAX_CACHE_FILE];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //extern byte8 * demo_pl000_00_3;
 
@@ -70,11 +183,18 @@ byte8 * File_LoadFile
 );
 void File_AdjustPointers(byte8 * archive);
 byte8 * File_PushFile(const char * filename);
+
+
+
+
 void File_UpdateFileItem
 (
 	uint16 fileItemId,
 	uint16 cacheFileId
 );
 void File_UpdateFileItems();
+
+
+
 
 bool File_Init();

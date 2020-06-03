@@ -670,6 +670,62 @@ struct CONFIG
 		Quicksilver;
 	}
 	Speed;
+
+
+
+	struct
+	{
+		struct
+		{
+			float32 rapidSlashDuration    [2] = { 5  , 5   };
+			float32 rapidSlashRange       [2] = { 330, 330 };
+			float32 judgementCutRange     [2] = { 500, 500 };
+			float32 judgementCutExtraCount[2] = { 2  , 2   };
+		}
+		Yamato;
+		struct
+		{
+			float32 risingSunHeight[2] = { 504, 504 };
+		}
+		Beowulf;
+		struct
+		{
+			float32 stingerDuration   [2] = { 16 , 16  };
+			float32 stingerRange      [2] = { 560, 560 };
+			float32 airStingerDuration[2] = { 16 , 16  };
+			float32 airStingerRange   [2] = { 560, 560 };
+		}
+		ForceEdge;
+	}
+	Vergil;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	struct
 	{
 		struct

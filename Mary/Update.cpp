@@ -1468,15 +1468,83 @@ void DanteVergil(byte8 * baseAddr)
 
 
 
+#define return_if(condition) if (condition) { return; }
+
+
+void DanteAirStinger(byte8 * baseAddr)
+{
+	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+	if (!actorData.character == CHAR_DANTE)
+	{
+		return;
+	}
+	auto & gamepad = GetGamepad(actorData.newGamepad);
+	if (!(actorData.state & STATE_IN_AIR))
+	{
+		return;
+	}
+
+	if
+	(
+		(gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON)) &&
+		(GetRelativeTiltDirection(actorData) == TILT_DIRECTION_UP) &&
+		(gamepad.buttons[0] & GetBinding(BINDING_MELEE_ATTACK))
+	)
+	{
+		auto & meleeWeapon = actorData.meleeWeapon[actorData.meleeWeaponIndex];
+		switch (meleeWeapon)
+		{
+		case WEAPON_DANTE_REBELLION:
+		{
+			//actorData.bufferedAction = ACTION_DANTE_REBELLION_STINGER_LEVEL_2;
+
+
+			func_1E0800(actorData, ACTION_DANTE_REBELLION_STINGER_LEVEL_2, 0, 0xFFFFFFFF);
+
+			//	func_1E0800(actorData, 17, 0, 0xFFFFFFFF);
+
+
+
+
+			break;
+		}
+		case WEAPON_DANTE_BEOWULF:
+		{
+			actorData.bufferedAction = ACTION_DANTE_BEOWULF_STRAIGHT_LEVEL_2;
+			break;
+		}
+		}
+		return;
+	}
+
+	if
+	(
+		(gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON)) &&
+		(GetRelativeTiltDirection(actorData) == TILT_DIRECTION_UP) &&
+		(gamepad.buttons[0] & GetBinding(BINDING_STYLE_ACTION))
+	)
+	{
+		auto & rangedWeapon = actorData.rangedWeapon[actorData.rangedWeaponIndex];
+		if ((actorData.style == STYLE_DANTE_GUNSLINGER) && (rangedWeapon == WEAPON_DANTE_SHOTGUN))
+		{
+			actorData.bufferedAction = ACTION_DANTE_SHOTGUN_GUN_STINGER;
+		}
+		return;
+	}
+}
+
+
+
+
+
+
 
 
 void ActorLoop(byte8 * baseAddr)
 {
 	g_actorLoopCounter++;
 	DanteVergil(baseAddr);
-
-
-	//DanteAirStinger(baseAddr);
+	DanteAirStinger(baseAddr);
 
 
 
