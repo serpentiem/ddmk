@@ -1,9 +1,9 @@
 /.vs
 /*/Win32
 /*/x64
-/Scripts
-!/Scripts/*.js
-!/Scripts/*.cpp
+Scripts/*
+!Scripts/*.js
+!Scripts/*.cpp
 /Win32
 /x64
 *.bat
