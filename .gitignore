@@ -1,7 +1,9 @@
 /.vs
 /*/Win32
 /*/x64
-/Scripts/actorData.txt
+/Scripts
+!/Scripts/*.js
+!/Scripts/*.cpp
 /Win32
 /x64
 *.bat
