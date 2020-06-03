@@ -114,4 +114,4 @@ constexpr auto countof(T(&array)[count])
 
 
 
-#define HoboBreak MessageBoxA(0, "break1", 0, 0); MessageBoxA(0, "break2", 0, 0);
+#define HoboBreak() MessageBoxA(0, "break1", 0, 0); MessageBoxA(0, "break2", 0, 0)

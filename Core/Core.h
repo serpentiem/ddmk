@@ -11,4 +11,5 @@
 #endif
 #include "String.h"
 #include "Utility.h"
+#include "Vector.h"
 #include "Windows.h"

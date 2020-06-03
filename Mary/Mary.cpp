@@ -69,6 +69,10 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 		Event_Init();
+
+
+
+
 		Event_ToggleSkipIntro    (Config.System.Event.skipIntro    );
 		Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
 		//FMOD_Init();
@@ -79,16 +83,16 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		HUD_Init();
 
-		Training_ToggleInfiniteHitPoints  (Config.Game.Training.infiniteHitPoints  );
-		Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
-		Training_ToggleDisableTimer       (Config.Game.Training.disableTimer       );
+		//Training_ToggleInfiniteHitPoints  (Config.Game.Training.infiniteHitPoints  );
+		//Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
+		//Training_ToggleDisableTimer       (Config.Game.Training.disableTimer       );
 
 
-		Speed_Init();
+		//Speed_Init();
 
 
 
-		Camera_ToggleInvertX(true);
+		//Camera_ToggleInvertX(true);
 
 
 
@@ -121,18 +125,43 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		//System_Actor_ToggleModelFixes(true);
 		//System_Actor_ToggleDisableIdleTimer(true);
 
+
+
+
+
+
+
+
+		// Disable Idle Timer
+
 		{
 			vp_memset((appBaseAddr + 0x1F2A38), 0x90, 5); // Dante
 			vp_memset((appBaseAddr + 0x1F29AE), 0x90, 5); // Vergil
 		}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		//System_Animation_Init();
 
 
 
-		//Log("pl021_00_4[11] %.16llX", File_cacheFile[pl021_00_4][11]);
-		//Log("pl000_00_5[20] %.16llX", File_cacheFile[pl000_00_5][20]);
-		//Log("pl000_00_3[14] %.16llX", File_cacheFile[pl000_00_3][14]);
+		//Log("pl021_00_4[11] %.16llX", File_staticFiles[pl021_00_4][11]);
+		//Log("pl000_00_5[20] %.16llX", File_staticFiles[pl000_00_5][20]);
+		//Log("pl000_00_3[14] %.16llX", File_staticFiles[pl000_00_3][14]);
 
 
 
@@ -170,10 +199,19 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		//System_Weapon_ToggleDoppelgangerFixes(true);
 		//System_Weapon_ToggleModelFixes(true);
 
+
+
+
+
+
 		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
 
 		Game_Arcade_UpdateModeIndex();
 		Game_Arcade_Toggle(Config.Game.Arcade.enable);
+
+
+
+
 
 		//Game_Attack_Init();
 		//Game_Dante_Init();
@@ -220,6 +258,16 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		//Cosmetics_Other_Init();
 		//Cosmetics_Other_ToggleNoDevilForm(Config.Cosmetics.Other.noDevilForm);
 		//Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.Beowulf.hideModel);
+
+
+
+		//HoboBreak();
+
+
+
+
+
+
 	}
 	return 1;
 }

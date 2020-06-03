@@ -25,7 +25,7 @@ extern uint32   appSize;
 extern HWND     appWindow;
 
 template <typename T>
-bool Align(T & pos, T boundary, byte8 * addr = 0, uint8 pad = 0)
+bool Align(T & pos, T boundary, byte8 * addr = 0, byte8 pad = 0)
 {
 	T remainder = (pos % boundary);
 	if (remainder)

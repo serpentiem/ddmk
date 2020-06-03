@@ -2,7 +2,17 @@
 
 constexpr uint32 vectorItemCount = 4096;
 
-byte8 * Memory_addr = 0;
+//byte8 * Memory_addr = 0;
+
+
+byte8 * Memory_main = 0;
+//byte8 * Memory_staticFile
+
+// Memory_staticFileData
+// Memory_staticFileMetadata;
+
+
+
 
 PrivateStart;
 
@@ -11,7 +21,7 @@ byte8 * valueManagerData  = 0;
 
 auto GetMemoryAddress()
 {
-	return Memory_addr;
+	return Memory_main;
 }
 
 PrivateEnd;
@@ -20,13 +30,30 @@ bool Memory_Init()
 {
 	LogFunction();
 
-	Memory_addr = LowAlloc((1 * 1024 * 1024 * 1024));
-	if (!Memory_addr)
+	Memory_main = LowAlloc(MEMORY_SIZE_ALL);
+	if (!Memory_main)
 	{
 		Log("LowAlloc failed.");
 		return false;
 	}
-	Log("Memory_addr %llX", Memory_addr);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	Log("Memory_main %llX", Memory_main);
 
 	{
 		auto func = CreateFunction(GetMemoryAddress, (appBaseAddr + 0x3019E), true, false);

@@ -4,7 +4,13 @@ var fs = require("fs");
 
 var c = "";
 
-var file = fs.readFileSync("vars.txt", "utf8");
+
+
+var filename = "../Mary/Vars.h"
+
+
+
+var file = fs.readFileSync(filename, "utf8");
 
 var startTag = /\/\/ \$CacheFileStart$/;
 var endTag   = /\/\/ \$CacheFileEnd$/;
@@ -182,11 +188,11 @@ c += "struct CacheFileHelper" + NEW_LINE;
 c += "{" + NEW_LINE;
 c += "\tconst char * name;" + NEW_LINE;
 c += "\tconst char * type;" + NEW_LINE;
-c += "}" + NEW_LINE;
+c += "};" + NEW_LINE;
 
 c += NEW_LINE;
 
-c += "constexpr cacheFileHelper[MAX_CACHE_FILE] =" + NEW_LINE;
+c += "constexpr CacheFileHelper cacheFileHelper[MAX_CACHE_FILE] =" + NEW_LINE;
 c += "{" + NEW_LINE;
 
 for (var index = 0; index < items.length; index++)
@@ -197,14 +203,14 @@ for (var index = 0; index < items.length; index++)
 
 	if (type == "obj")
 	{
-		c += "obj\\" + name + ".pac";
+		c += "obj\\\\" + name + ".pac";
 	}
 	else if (type == "motion")
 	{
 		var parent = name.match(/([\S\s]+?)_/);
 		if (parent)
 		{
-			c += "motion\\" + parent[1] + "\\" + name + ".pac";
+			c += "motion\\\\" + parent[1] + "\\\\" + name + ".pac";
 		}
 	}
 	else if (type == "id")
@@ -217,7 +223,7 @@ for (var index = 0; index < items.length; index++)
 			{
 				str = str.substring(0, (str.length - 2)) + "00";
 			}
-			c += "id\\id" + str + "\\" + name + ".pac";
+			c += "id\\\\id" + str + "\\\\" + name + ".pac";
 		}
 	}
 	c += "\" }," + NEW_LINE;
@@ -242,11 +248,16 @@ for (var index = endTagLine; index < obj.length; index++)
 
 
 
-
+//fs.writeFileSync("../Mary/ActorData.h", c);
 
 
 
 
 
 //fs.writeFileSync("cacheFiles.txt", c);
-fs.writeFileSync("new_vars.txt", c);
+fs.writeFileSync(filename, c);
+
+
+
+
+

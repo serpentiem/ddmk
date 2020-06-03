@@ -2,17 +2,157 @@
 
 constexpr bool debug = true;
 
-CacheFile File_cacheFile[MAX_CACHE_FILE];
 
-//byte8 * demo_pl000_00_3 = 0;
+
+
+
+FileVector File_staticFiles;
+FileVector File_dynamicFiles;
+
+
+
+
+
+byte8 * FileVector::Push(const char * filename)
+{
+	if constexpr (debug)
+	{
+		LogFunction(filename);
+	}
+
+	byte8 * file = 0;
+	uint32 fileSize = 0;
+
+	file = File_LoadFile(filename, &fileSize, (data + pos));
+	if (!file)
+	{
+		Log("File_LoadFile failed.");
+		return 0;
+	}
+
+	//HoboBreak();
+
+
+	metadata[count].addr = file;
+	metadata[count].size = fileSize;
+
+	
+	//Log("reach here");
+
+
+	uint32 lastPos = pos;
+	pos += fileSize;
+	Align<uint32>(pos, 0x800, data);
+	metadata[count].alignedSize = (pos - lastPos);
+
+	if constexpr (debug)
+	{
+		Log("file        %.16llX", file                       );
+		Log("fileSize    %X"     , fileSize                   );
+		Log("data        %.16llX", data                       );
+		Log("pos         %X"     , pos                        );
+		Log("count       %u"     , count                      );
+		Log("addr        %.16llX", metadata[count].addr       );
+		Log("size        %u"     , metadata[count].size       );
+		Log("alignedSize %u"     , metadata[count].alignedSize);
+	}
+
+	count++;
+
+	return file;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//struct CacheFile
+//{
+//	byte8 * file;
+//
+//	CacheFile()
+//	{
+//		memset(this, 0, sizeof(*this));
+//	}
+//
+//	CacheFile(byte8 * addr)
+//	{
+//		file = addr;
+//	}
+//
+//	operator byte8 *()
+//	{
+//		return file;
+//	}
+//
+//	byte8 * operator[](uint32 index)
+//	{
+//		auto & archiveData = *reinterpret_cast<ARCHIVE_DATA *>(file);
+//		if (index >= archiveData.fileCount)
+//		{
+//			Log("Outside file range. %u %u", archiveData.fileCount, index);
+//			return 0;
+//		}
+//		if (!archiveData.fileOff[index])
+//		{
+//			return 0;
+//		}
+//		return (file + archiveData.fileOff[index]);
+//	}
+//};
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//CacheFile File_staticFiles[MAX_CACHE_FILE];
+
+byte8 * demo_pl000_00_3 = 0;
 
 PrivateStart;
 
 uint32 cachePos = 0;
 
-STRING_ITEM stringItem[countof(stringItemOff)] = {};
-
-
+STRING_ITEM stringItem[MAX_CACHE_FILE] = {};
 
 PrivateEnd;
 
@@ -144,128 +284,47 @@ void File_AdjustPointers(byte8 * archive)
 	func_1B9FA0(archive);
 }
 
-byte8 * File_PushFile(const char * filename)
-{
-	if constexpr (debug)
-	{
-		LogFunction();
-	}
-
-	auto addr = (Memory_addr + (512 * 1024 * 1024) + cachePos); // @Todo: Define size in Memory.
-	byte8 * file = 0;
-	uint32 fileSize = 0;
-
-	file = File_LoadFile(filename, &fileSize, addr);
-
-
-
-	if (!file)
-	{
-		Log("File_LoadFile failed.");
-		return 0;
-	}
-
-	cachePos += fileSize;
-
-	if constexpr (debug)
-	{
-		Log("Memory_addr %.16llX"   , Memory_addr   );
-		Log("cachePos    %X"        , cachePos      );
-		Log("addr        %.16llX"   , addr          );
-		Log("file        %.16llX %s", file, filename);
-		Log("fileSize    %X"        , fileSize      );
-	}
-
-	Align<uint32>(cachePos, 0x800);
-
-	if constexpr (debug)
-	{
-		Log("aligned cachePos %X", cachePos);
-	}
-
-	return addr;
-}
-
-
-
-//struct MetaData
+//byte8 * File_PushFile(const char * filename)
 //{
-//	byte8 * addr;
-//	uint32 size;
-//};
-
-
-
-
-//template <typename T>
-//struct Array
-//{
-//	T * data;
-//	uint32 count;
-//};
-
-
-
-/*
-data
-pos
-count
-
-addr
-size
-
-Push
-Pop
-
-Clear
-
-Init
-
-[]
-*/
-
-
-
-// Stack
-// Vector
-
-// MinVector
-// GenericVector
-// SimpleVector
-
-// LinearVector
-// SimpleVector
-
-// Array
-// Vector
-
-
-//#define alias auto &
-
-
-
-
-
-//#pragma pack(push, 1)
-
-
-
-enum MEMORY_SIZE
-{
-	MEMORY_SIZE_MAIN    = (512 * 1024 * 1024),
-	MEMORY_SIZE_STATIC  = (128 * 1024 * 1024),
-	MEMORY_SIZE_DYNAMIC = (64  * 1024 * 1024),
-};
-
-
-
-
-
-
-
-
-MixedVector File_staticFile;
-MixedVector File_dynamicFile;
+//	if constexpr (debug)
+//	{
+//		LogFunction();
+//	}
+//
+//	auto addr = (Memory_addr + (512 * 1024 * 1024) + cachePos); // @Todo: Define size in Memory.
+//	byte8 * file = 0;
+//	uint32 fileSize = 0;
+//
+//	file = File_LoadFile(filename, &fileSize, addr);
+//
+//
+//
+//	if (!file)
+//	{
+//		Log("File_LoadFile failed.");
+//		return 0;
+//	}
+//
+//	cachePos += fileSize;
+//
+//	if constexpr (debug)
+//	{
+//		Log("Memory_addr %.16llX"   , Memory_addr   );
+//		Log("cachePos    %X"        , cachePos      );
+//		Log("addr        %.16llX"   , addr          );
+//		Log("file        %.16llX %s", file, filename);
+//		Log("fileSize    %X"        , fileSize      );
+//	}
+//
+//	Align<uint32>(cachePos, 0x800);
+//
+//	if constexpr (debug)
+//	{
+//		Log("aligned cachePos %X", cachePos);
+//	}
+//
+//	return addr;
+//}
 
 
 
@@ -277,6 +336,35 @@ MixedVector File_dynamicFile;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//
+//
+//
+//MixedVector File_staticFiles;
+//MixedVector File_dynamicFiles;
+//
+//
 
 
 
@@ -310,9 +398,6 @@ struct FileItemHelper
 	uint16 fileItemId;
 	uint16 cacheFileId;
 };
-
-
-
 
 constexpr FileItemHelper fileItemHelper[] =
 {
@@ -374,7 +459,7 @@ void File_UpdateFileItem
 
 	fileItem.status     = FILE_ITEM_READY;
 	fileItem.stringItem = &stringItem[cacheFileId];
-	fileItem.file       = File_cacheFile[cacheFileId];
+	fileItem.file       = File_staticFiles[cacheFileId];
 }
 
 
@@ -400,6 +485,10 @@ void File_UpdateFileItems()
 			fileItemHelper[index].cacheFileId
 		);
 	}
+
+
+	//HoboBreak();
+
 }
 
 
@@ -417,34 +506,34 @@ void File_UpdateFileItems()
 
 
 
-// @Research: Make local.
-constexpr uint16 costumeMapDante[] =
-{
-	pl000,
-	pl011,
-	pl013,
-	pl015,
-	pl016,
-	pl018,
-	pl013,
-	pl018,
-};
-
-constexpr uint16 costumeMapVergil[] =
-{
-	pl021,
-	pl023,
-	pl021,
-	pl026,
-	pl026,
-};
-
-constexpr uint16 swordMap[] =
-{
-	plwp_sword,
-	plwp_sword2,
-	plwp_sword3,
-};
+//// @Research: Make local.
+//constexpr uint16 costumeMapDante[] =
+//{
+//	pl000,
+//	pl011,
+//	pl013,
+//	pl015,
+//	pl016,
+//	pl018,
+//	pl013,
+//	pl018,
+//};
+//
+//constexpr uint16 costumeMapVergil[] =
+//{
+//	pl021,
+//	pl023,
+//	pl021,
+//	pl026,
+//	pl026,
+//};
+//
+//constexpr uint16 swordMap[] =
+//{
+//	plwp_sword,
+//	plwp_sword2,
+//	plwp_sword3,
+//};
 
 
 //void UpdateCostume(ACTOR_DATA * actorData)
@@ -465,7 +554,7 @@ constexpr uint16 swordMap[] =
 //			actorData->costume = 0;
 //		}
 //		auto cacheFileId = costumeMapDante[actorData->costume];
-//		fileItem[0].file = System_File_cacheFile[cacheFileId];
+//		fileItem[0].file = System_File_staticFiles[cacheFileId];
 //		fileItem[0].stringItem = &stringItem[cacheFileId];
 //		break;
 //	}
@@ -476,7 +565,7 @@ constexpr uint16 swordMap[] =
 //			actorData->costume = 0;
 //		}
 //		auto cacheFileId = costumeMapVergil[actorData->costume];
-//		fileItem[3].file = System_File_cacheFile[cacheFileId];
+//		fileItem[3].file = System_File_staticFiles[cacheFileId];
 //		fileItem[3].stringItem = &stringItem[cacheFileId];
 //		break;
 //	}
@@ -518,8 +607,23 @@ constexpr uint16 swordMap[] =
 //	sword = 2;
 //
 //	auto cacheFileId = swordMap[sword];
-//	fileItem[140].file = System_File_cacheFile[cacheFileId];
+//	fileItem[140].file = System_File_staticFiles[cacheFileId];
 //}
+
+
+
+//inline void CreateStringItems()
+//{
+//	for_all(uint8, index, MAX_CACHE_FILE)
+//	{
+//		stringItem[index].string = cacheFileHelper[index].type;
+//	}
+//}
+
+
+
+
+
 
 bool File_Init()
 {
@@ -527,28 +631,85 @@ bool File_Init()
 
 	CreateDirectoryA("data\\dmc3\\GData.afs", 0);
 
+	{
+		auto dest = (Memory_main + MEMORY_SIZE_MAIN);
+
+		File_staticFiles.data = dest;
+		dest += MEMORY_SIZE_STATIC_FILES;
+
+		File_staticFiles.metadata = reinterpret_cast<FileVectorMetadata *>(dest);
+		dest += MEMORY_SIZE_STATIC_FILES_METADATA;
+
+		File_dynamicFiles.data = dest;
+		dest += MEMORY_SIZE_DYNAMIC_FILES;
+
+		File_dynamicFiles.metadata = reinterpret_cast<FileVectorMetadata *>(dest);
+		dest += MEMORY_SIZE_DYNAMIC_FILES_METADATA;
+	}
+
+
+
+
+
+	Log("File_staticFiles.data      %.16llX", File_staticFiles.data);
+	Log("File_staticFiles.metadata  %.16llX", File_staticFiles.metadata);
+	Log("File_dynamicFiles.data     %.16llX", File_dynamicFiles.data);
+	Log("File_dynamicFiles.metadata %.16llX", File_dynamicFiles.metadata);
+
+
+
+
+
+
+
+
+
+
+
+
+
 	for_all(uint8, cacheFileId, MAX_CACHE_FILE)
 	{
 		if constexpr (debug)
 		{
 			Log("%u", cacheFileId);
 		}
-		auto file = File_PushFile(cacheFilename[cacheFileId]);
+		auto & name = cacheFileHelper[cacheFileId].name;
+		auto & type = cacheFileHelper[cacheFileId].type;
+		auto file = File_staticFiles.Push(name);
 		if (!file)
 		{
-			Log("File_PushFile failed. %s", cacheFilename[cacheFileId]);
+			Log("File_PushFile failed. %s", name);
 			return false;
 		}
 		File_AdjustPointers(file);
-		File_cacheFile[cacheFileId] = file;
+		stringItem[cacheFileId].string = type;
 	}
+
+
+
+
 
 	//return true;
 
-	for_all(uint8, index, countof(stringItemOff))
-	{
-		stringItem[index].string = reinterpret_cast<const char *>(appBaseAddr + 0xE00 + stringItemOff[index]);
-	}
+	//for_all(uint8, index, countof(stringItemOff))
+	//{
+	//	stringItem[index].string = reinterpret_cast<const char *>(appBaseAddr + 0xE00 + stringItemOff[index]);
+	//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// @Todo: Update!
 	{

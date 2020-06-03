@@ -2091,7 +2091,7 @@ void GUI_Teleporter_Draw()
 
 			if (GUI_Button("Play Motion"))
 			{
-				auto file = File_cacheFile[cacheFileId][index];
+				auto file = File_staticFiles[cacheFileId][index];
 				if (file)
 				{
 					auto & duration = *reinterpret_cast<float32 *>(file + 0xC);
@@ -2100,8 +2100,8 @@ void GUI_Teleporter_Draw()
 				}
 				auto baseAddr = Actor_actorBaseAddr[2];
 				auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-				func_8AC80(actorData.modelData[actorData.activeModelIndex], BODY_PART_LOWER, File_cacheFile[cacheFileId][index], 0, false);
-				func_8AC80(actorData.modelData[actorData.activeModelIndex], BODY_PART_UPPER, File_cacheFile[cacheFileId][index], 0, false);
+				func_8AC80(actorData.modelData[actorData.activeModelIndex], BODY_PART_LOWER, File_staticFiles[cacheFileId][index], 0, false);
+				func_8AC80(actorData.modelData[actorData.activeModelIndex], BODY_PART_UPPER, File_staticFiles[cacheFileId][index], 0, false);
 			}
 			
 
@@ -2459,7 +2459,7 @@ bool NEW_GUI_Slider
 		(typematch(T, uint32 )) ? ImGuiDataType_U32    :
 		(typematch(T, uint64 )) ? ImGuiDataType_U64    :
 		(typematch(T, float32)) ? ImGuiDataType_Float  :
-		(typematch(T, float64)) ? ImGuiDataType_Double :
+		//(typematch(T, float64)) ? ImGuiDataType_Double :
 		0,
 		&var,
 		&min,
@@ -2807,7 +2807,7 @@ bool NEW_GUI_Input
 		(typematch(T, uint32 )) ? ImGuiDataType_U32    :
 		(typematch(T, uint64 )) ? ImGuiDataType_U64    :
 		(typematch(T, float32)) ? ImGuiDataType_Float  :
-		(typematch(T, float64)) ? ImGuiDataType_Double :
+		//(typematch(T, float64)) ? ImGuiDataType_Double :
 		0,
 		&var,
 		(step == 0) ? 0 : &step,
@@ -3617,7 +3617,12 @@ void GUI_Render()
 
 	//ImGui::ShowDemoWindow();
 
-	NEW_GUI_Main();
+	if (pause)
+	{
+		NEW_GUI_Main();
+	}
+
+	
 
 
 

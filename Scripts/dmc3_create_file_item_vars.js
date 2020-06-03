@@ -1,3 +1,17 @@
+
+
+var fs = require("fs");
+
+
+
+
+
+
+
+
+
+
+
 var lz = function(n)
 {
 	var str = "";
@@ -164,4 +178,7 @@ c += "</CheatEntry>\n";
 c += "</CheatEntries>\n";
 c += "</CheatTable>\n";
 
-document.body.innerHTML = "<plaintext>" + c;
+
+fs.writeFileSync("file_items.txt", c);
+
+//document.body.innerHTML = "<plaintext>" + c;

@@ -166,7 +166,7 @@ void CreateMainActor(byte8 * baseAddr)
 	Actor_actorBaseAddr[0] = baseAddr;
 	Actor_actorBaseAddr.count = 2;
 
-	//Camera_followBaseAddr = baseAddr;
+	////Camera_followBaseAddr = baseAddr;
 
 
 
@@ -174,16 +174,27 @@ void CreateMainActor(byte8 * baseAddr)
 	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
 	actorData.newGamepad = 1;
 	//actorData.newButtonMask = 0xFFFF;
+	//actorData.newEnableRightStick = true;
 	//actorData.newEnableLeftStick = true;
 
-	File_UpdateFileItems();
+
+	//HoboBreak();
+
+	//File_UpdateFileItem(0, pl000);
+
+	//HoboBreak();
+
+
+
+
+	File_UpdateFileItems(); // @Bug: Culprit!
 
 	for_all(uint8, index, countof(motionHelperDante))
 	{
 		auto & motionId    = motionHelperDante[index].motionId;
 		auto & cacheFileId = motionHelperDante[index].cacheFileId;
 
-		actorData.motionArchive[motionId] = File_cacheFile[cacheFileId];
+		actorData.motionArchive[motionId] = File_staticFiles[cacheFileId];
 	}
 
 

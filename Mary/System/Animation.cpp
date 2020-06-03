@@ -26,7 +26,7 @@ static uint32 PlayAnimation(byte8 * baseAddr, uint8 file, uint8 index)
 	}
 	byte8 ** motionAddr = (byte8 **)(baseAddr + 0x38A0);
 	//motionAddr[MOTION_GROUP_DANTE_REBELLION] = System_Cache_file[pl000_00_3];
-	motionAddr[MOTION_GROUP_DANTE_REBELLION] = System_File_cacheFile[pl000_00_3];
+	motionAddr[MOTION_GROUP_DANTE_REBELLION] = System_File_staticFiles[pl000_00_3];
 	if (!Game_Dante_Rebellion_quickDrive)
 	{
 		return 0;

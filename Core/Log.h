@@ -49,6 +49,10 @@ void LogFunctionHelper(const char * funcName, T var)
 	{
 		Log("%s %llX", funcName, var);
 	}
+	else if constexpr (typematch(T, const char *))
+	{
+		Log("%s %s", funcName, var);
+	}
 	else
 	{
 		Log("%s %u", funcName, var);

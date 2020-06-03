@@ -349,7 +349,7 @@ void ToggleUpdateWeapon(bool enable)
 //		auto & motionId    = motionHelperDante[index].motionId;
 //		auto & cacheFileId = motionHelperDante[index].cacheFileId;
 //
-//		actorData.motionArchive[motionId] = File_cacheFile[cacheFileId];
+//		actorData.motionArchive[motionId] = File_staticFiles[cacheFileId];
 //	}
 //
 //
@@ -367,9 +367,9 @@ void ToggleUpdateWeapon(bool enable)
 //	actorData.actionData[0] = *(byte8 **)(appBaseAddr + 0x590598);
 //	actorData.actionData[1] = *(byte8 **)(appBaseAddr + 0x58A2A0);
 //	actorData.actionData[2] = (appBaseAddr + 0x5905B0);
-//	actorData.actionData[3] = File_cacheFile[pl000][9];
-//	actorData.actionData[4] = File_cacheFile[pl000][10];
-//	actorData.actionData[5] = File_cacheFile[pl000][11];
+//	actorData.actionData[3] = File_staticFiles[pl000][9];
+//	actorData.actionData[4] = File_staticFiles[pl000][10];
+//	actorData.actionData[5] = File_staticFiles[pl000][11];
 //
 //	func_2EE3D0((baseAddr + 0x3C50));
 //	func_1FAF40(baseAddr);
@@ -524,7 +524,7 @@ ACTOR_DATA_DANTE * CreateActorDante
 		auto & motionId    = motionHelperDante[index].motionId;
 		auto & cacheFileId = motionHelperDante[index].cacheFileId;
 
-		actorData.motionArchive[motionId] = File_cacheFile[cacheFileId];
+		actorData.motionArchive[motionId] = File_staticFiles[cacheFileId];
 	}
 
 	UpdateWeaponDante(actorData, player, entity);
@@ -598,7 +598,7 @@ ACTOR_DATA_VERGIL * CreateActorVergil
 		auto & motionId    = motionHelperVergil[index].motionId;
 		auto & cacheFileId = motionHelperVergil[index].cacheFileId;
 
-		actorData.motionArchive[motionId] = File_cacheFile[cacheFileId];
+		actorData.motionArchive[motionId] = File_staticFiles[cacheFileId];
 	}
 
 	UpdateWeaponVergil(actorData, player, entity);
@@ -1062,7 +1062,7 @@ void RangedWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 				index = 5;
 			}
 		}
-		byte8 * motionFile = File_cacheFile[id][index];
+		byte8 * motionFile = File_staticFiles[id][index];
 		func_8AC80(modelData, BODY_PART_LOWER, motionFile, 0, false);
 	};
 
@@ -1131,7 +1131,13 @@ void Actor_Init()
 
 
 
-	Actor_actorBaseAddr.Init(512);
+	if (!Actor_actorBaseAddr.Init(512))
+	{
+
+		Log("Actor_actorBaseAddr.Init failed.");
+
+		return;
+	}
 
 
 

@@ -303,5 +303,8 @@
     <ClInclude Include="Memory.h" />
     <ClInclude Include="Training.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="..\Core\Vector.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

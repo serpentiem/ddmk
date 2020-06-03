@@ -130,25 +130,25 @@ void HUD_Init()
 		for_all(uint8, index, countof(styleIconMapDante))
 		{
 			auto & fileIndex = styleIconMapDante[index];
-			HUD_styleIconDante[index].model   = File_cacheFile[id100][(fileIndex + 1)];
-			HUD_styleIconDante[index].texture = File_cacheFile[id100][(fileIndex + 0)];
+			HUD_styleIconDante[index].model   = File_staticFiles[id100][(fileIndex + 1)];
+			HUD_styleIconDante[index].texture = File_staticFiles[id100][(fileIndex + 0)];
 		}
 
-		HUD_styleIconVergil[STYLE_VERGIL_DARK_SLAYER].model   = File_cacheFile[id100V][(18 + 1)];
-		HUD_styleIconVergil[STYLE_VERGIL_DARK_SLAYER].texture = File_cacheFile[id100V][(18 + 0)];
+		HUD_styleIconVergil[STYLE_VERGIL_DARK_SLAYER].model   = File_staticFiles[id100V][(18 + 1)];
+		HUD_styleIconVergil[STYLE_VERGIL_DARK_SLAYER].texture = File_staticFiles[id100V][(18 + 0)];
 
 		for_all(uint8, index, countof(weaponIconMapDante))
 		{
 			auto & fileIndex = weaponIconMapDante[index];
-			HUD_weaponIcon[(WEAPON_DANTE_REBELLION + index)].model   = File_cacheFile[id100][(fileIndex + 1)];
-			HUD_weaponIcon[(WEAPON_DANTE_REBELLION + index)].texture = File_cacheFile[id100][(fileIndex + 0)];
+			HUD_weaponIcon[(WEAPON_DANTE_REBELLION + index)].model   = File_staticFiles[id100][(fileIndex + 1)];
+			HUD_weaponIcon[(WEAPON_DANTE_REBELLION + index)].texture = File_staticFiles[id100][(fileIndex + 0)];
 		}
 
 		for_all(uint8, index, countof(weaponIconMapVergil))
 		{
 			auto & fileIndex = weaponIconMapVergil[index];
-			HUD_weaponIcon[(WEAPON_VERGIL_YAMATO + index)].model   = File_cacheFile[id100V][(fileIndex + 1)];
-			HUD_weaponIcon[(WEAPON_VERGIL_YAMATO + index)].texture = File_cacheFile[id100V][(fileIndex + 0)];
+			HUD_weaponIcon[(WEAPON_VERGIL_YAMATO + index)].model   = File_staticFiles[id100V][(fileIndex + 1)];
+			HUD_weaponIcon[(WEAPON_VERGIL_YAMATO + index)].texture = File_staticFiles[id100V][(fileIndex + 0)];
 		}
 	}
 

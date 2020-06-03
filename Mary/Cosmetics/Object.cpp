@@ -47,7 +47,7 @@
 //		auto & cacheFileIndex = g_cacheFileIndex[object];
 //		//auto archive = System_Cache_file[cacheFileIndex];
 //
-//		auto archive = System_File_cacheFile[cacheFileIndex]; // @Todo: Change to id.
+//		auto archive = System_File_staticFiles[cacheFileIndex]; // @Todo: Change to id.
 //
 //		auto fileOff = (uint32 *)(archive + 8);
 //		g_model  [object] = (archive + fileOff[1]);
