@@ -1,3 +1,10 @@
+
+
+// @Todo: Plural and tags.
+
+
+
+
 const CHAR_DANTE  = 1;
 const CHAR_BOB    = 2;
 const CHAR_LADY   = 4;

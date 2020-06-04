@@ -1578,7 +1578,7 @@ byte8 * SpawnActor
 	auto & character = Config.Actor.character[player][entity];
 	if (character == CHAR_DANTE)
 	{
-		auto danteBaseAddr = CreateActorDante(player, entity);
+		auto danteBaseAddr = CreateActor<ACTOR_DATA_DANTE>(player, entity);
 		if (!danteBaseAddr)
 		{
 			return 0;
@@ -1602,7 +1602,7 @@ byte8 * SpawnActor
 			return danteActorData;
 		}
 
-		auto vergilBaseAddr = CreateActorVergil(player, entity);
+		auto vergilBaseAddr = CreateActor<ACTOR_DATA_VERGIL>(player, entity);
 		if (!vergilBaseAddr)
 		{
 			return 0;
@@ -1634,7 +1634,7 @@ byte8 * SpawnActor
 	}
 	else if (character == CHAR_VERGIL)
 	{
-		auto vergilBaseAddr = CreateActorVergil(player, entity);
+		auto vergilBaseAddr = CreateActor<ACTOR_DATA_VERGIL>(player, entity);
 		if (!vergilBaseAddr)
 		{
 			return 0;
@@ -1658,7 +1658,7 @@ byte8 * SpawnActor
 			return vergilActorData;
 		}
 
-		auto danteBaseAddr = CreateActorDante(player, entity);
+		auto danteBaseAddr = CreateActor<ACTOR_DATA_DANTE>(player, entity);
 		if (!danteBaseAddr)
 		{
 			return 0;

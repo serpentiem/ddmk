@@ -4,107 +4,11 @@
 #define ZIP_STATIC
 #include "../Zip/zip.h"
 
+#include "ActorData.h"
 #include "Config.h"
 #include "Internal.h"
 #include "Memory.h"
 #include "Vars.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-//
-//
-//
-//template <typename T, uint32 itemCount>
-//struct vector
-//{
-//	uint32 count;
-//	T data[itemCount];
-//	void Push(T var)
-//	{
-//		data[count] = var;
-//		count++;
-//	}
-//	void Clear()
-//	{
-//		memset(this, 0, sizeof(*this));
-//	}
-//	void operator+=(T var)
-//	{
-//		Push(var);
-//	}
-//	T & operator[](uint32 index)
-//	{
-//		return data[index];
-//	}
-//	vector()
-//	{
-//		Clear();
-//	}
-//};
-//
-//
-
-
-
-
-//
-//struct CacheFile
-//{
-//	byte8 * file;
-//
-//	CacheFile()
-//	{
-//		memset(this, 0, sizeof(*this));
-//	}
-//
-//	CacheFile(byte8 * addr)
-//	{
-//		file = addr;
-//	}
-//
-//	operator byte8 *()
-//	{
-//		return file;
-//	}
-//
-//	byte8 * operator[](uint32 index)
-//	{
-//		auto & archiveData = *reinterpret_cast<ARCHIVE_DATA *>(file);
-//		if (index >= archiveData.fileCount)
-//		{
-//			Log("Outside file range. %u %u", archiveData.fileCount, index);
-//			return 0;
-//		}
-//		if (!archiveData.fileOff[index])
-//		{
-//			return 0;
-//		}
-//		return (file + archiveData.fileOff[index]);
-//	}
-//};
-//
-//
-
-
-
 
 struct FileVectorMetadata
 {
@@ -131,11 +35,6 @@ struct FileVectorMetadata
 	}
 };
 
-
-
-
-
-
 struct FileVector
 {
 	byte8 * data;
@@ -146,6 +45,7 @@ struct FileVector
 	uint32 metadataSize;
 
 	byte8 * Push(const char * filename); // @Todo: Modules.
+	byte8 * Push(byte8 * file, uint32 fileSize);
 	void Pop()
 	{
 		if (count == 0)
@@ -162,65 +62,25 @@ struct FileVector
 	}
 	void Clear()
 	{
+		if (count == 0)
+		{
+			return;
+		}
+		memset(metadata, 0, (count * sizeof(FileVectorMetadata)));
+		count = 0;
+	}
+	void Reset()
+	{
 		memset(this, 0, sizeof(*this));
 	}
 };
 
-
-
-
 extern FileVector File_staticFiles;
 extern FileVector File_dynamicFiles;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//extern CacheFile File_staticFiles[MAX_CACHE_FILE];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 extern byte8 * demo_pl000_00_3;
 
 bool File_ExtractFile(const char * filename);
+
 byte8 * File_LoadFile
 (
 	const char * filename,
@@ -229,15 +89,7 @@ byte8 * File_LoadFile
 	bool         skipArchive = false
 );
 
-
 void File_AdjustPointers(byte8 * archive);
-
-
-
-//byte8 * File_PushFile(const char * filename);
-
-
-
 
 void File_UpdateFileItem
 (
@@ -245,11 +97,70 @@ void File_UpdateFileItem
 	uint16 cacheFileId
 );
 
+// @Todo: Modules.
 
+constexpr uint16 File_costumeMapDante[MAX_COSTUME_DANTE] =
+{
+	pl000,
+	pl011,
+	pl013,
+	pl015,
+	pl016,
+	pl018,
+	pl013,
+	pl018,
+};
 
-void File_UpdateFileItems();
+constexpr uint16 File_costumeMapVergil[MAX_COSTUME_VERGIL] =
+{
+	pl021,
+	pl023,
+	pl021,
+	pl026,
+	pl026,
+};
 
+template <typename T>
+void File_UpdateCostumeFileItems(T & actorData)
+{
+	auto & unlockDevilTrigger = *reinterpret_cast<bool *>(appBaseAddr + 0xC8F250 + 0xD1);
+	auto costume = actorData.costume;
+	uint16 cacheFileId = 0;
 
+	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	{
+		if (costume >= MAX_COSTUME_DANTE)
+		{
+			costume = COSTUME_DANTE_DEFAULT;
+		}
+		cacheFileId = File_costumeMapDante[costume];
+		File_UpdateFileItem(0, cacheFileId);
+		// Update Sword
+		cacheFileId = (unlockDevilTrigger) ? plwp_sword2 : plwp_sword;
+		switch (costume)
+		{
+		case COSTUME_DANTE_DMC1:
+		case COSTUME_DANTE_DMC1_NO_COAT:
+		case COSTUME_DANTE_SPARDA:
+		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
+		{
+			cacheFileId = plwp_sword3;
+			break;
+		}
+		}
+		File_UpdateFileItem(140, cacheFileId);
+	}
+	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	{
+		if (costume >= MAX_COSTUME_VERGIL)
+		{
+			costume = COSTUME_VERGIL_DEFAULT;
+		}
+		cacheFileId = File_costumeMapVergil[costume];
+		File_UpdateFileItem(3, cacheFileId);
+	}
+}
 
+void File_UpdateMainFileItems();
 
 bool File_Init();

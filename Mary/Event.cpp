@@ -51,7 +51,13 @@ void ClearPool()
 {
 	LogFunction();
 
-	Actor_actorBaseAddr.Clear();
+	//Actor_actorBaseAddr.Clear();
+
+	//Actor_actorBaseAddr.count = 0;
+	
+
+
+
 
 
 	//System_Actor_mainActorBaseAddr = 0;
@@ -187,15 +193,34 @@ void CreateMainActor(byte8 * baseAddr)
 
 
 
-	File_UpdateFileItems(); // @Bug: Culprit!
+	File_UpdateMainFileItems();
 
-	for_all(uint8, index, countof(motionHelperDante))
-	{
-		auto & motionId    = motionHelperDante[index].motionId;
-		auto & cacheFileId = motionHelperDante[index].cacheFileId;
 
-		actorData.motionArchive[motionId] = File_staticFiles[cacheFileId];
-	}
+	//for_all(uint32, index, File_dynamicFiles.count)
+	//{
+	//	//auto & metadata = File_dynamicFiles
+	//}
+
+
+
+
+	File_dynamicFiles.Clear();
+
+
+	//File_UpdateCostumeFileItems(actorData);
+
+
+
+
+
+
+	//for_all(uint8, index, countof(motionHelperDante))
+	//{
+	//	auto & motionId    = motionHelperDante[index].motionId;
+	//	auto & cacheFileId = motionHelperDante[index].cacheFileId;
+
+	//	actorData.motionArchive[motionId] = File_staticFiles[cacheFileId];
+	//}
 
 
 
@@ -1806,44 +1831,44 @@ dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
 	#pragma endregion
 }
 
+
+
+
+
+
+
+
+
+
+
 void Event_ToggleSkipIntro(bool enable)
 {
 	LogFunction(enable);
-	if (enable)
+	WriteAddress((appBaseAddr + 0x2383F2), (enable) ? (appBaseAddr + 0x2383F8) : (appBaseAddr + 0x238527), 6); // Skip Message
+	WriteAddress((appBaseAddr + 0x241789), (enable) ? (appBaseAddr + 0x24178B) : (appBaseAddr + 0x2417A6), 2); // Skip Video
+	Write<uint8>((appBaseAddr + 0x238704), (enable) ? 0 : 1); // Hide Rebellion
+	// Disable Video Timer
 	{
-		WriteAddress((appBaseAddr + 0x2383F2), (appBaseAddr + 0x2383F8), 6); // Skip Message
-		WriteAddress((appBaseAddr + 0x241789), (appBaseAddr + 0x24178B), 2); // Skip Video
-		vp_memset((appBaseAddr + 0x243531), 0x90, 2);                        // Disable Video Timer
-		Write<byte8>((appBaseAddr + 0x238704), 0x00);                         // Hide Rebellion
-	}
-	else
-	{
-		WriteAddress((appBaseAddr + 0x2383F2), (appBaseAddr + 0x238527), 6);
-		WriteAddress((appBaseAddr + 0x241789), (appBaseAddr + 0x2417A6), 2);
+		auto dest = (appBaseAddr + 0x243531);
+		if (enable)
 		{
-			byte8 payload[] =
+			vp_memset(dest, 0x90, 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
 			{
 				0xFF, 0xC8, //dec eax
 			};
-			vp_memcpy((appBaseAddr + 0x243531), payload, sizeof(payload));
+			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
-		Write<byte8>((appBaseAddr + 0x238704), 0x01);
 	}
 }
 
 void Event_ToggleSkipCutscenes(bool enable)
 {
 	LogFunction(enable);
-	if (enable)
-	{
-		WriteAddress((appBaseAddr + 0x238CCA), (appBaseAddr + 0x238CD0), 6);
-		WriteAddress((appBaseAddr + 0x238CD8), (appBaseAddr + 0x238CDE), 6);
-		WriteAddress((appBaseAddr + 0x238CE3), (appBaseAddr + 0x238CE9), 6);
-	}
-	else
-	{
-		WriteAddress((appBaseAddr + 0x238CCA), (appBaseAddr + 0x238E62), 6);
-		WriteAddress((appBaseAddr + 0x238CD8), (appBaseAddr + 0x238E62), 6);
-		WriteAddress((appBaseAddr + 0x238CE3), (appBaseAddr + 0x238E62), 6);
-	}
+	WriteAddress((appBaseAddr + 0x238CCA), (enable) ? (appBaseAddr + 0x238CD0) : (appBaseAddr + 0x238E62), 6);
+	WriteAddress((appBaseAddr + 0x238CD8), (enable) ? (appBaseAddr + 0x238CDE) : (appBaseAddr + 0x238E62), 6);
+	WriteAddress((appBaseAddr + 0x238CE3), (enable) ? (appBaseAddr + 0x238CE9) : (appBaseAddr + 0x238E62), 6);
 }

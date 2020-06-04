@@ -135,7 +135,7 @@ void vp_memset
 void vp_memcpy
 (
 	void   * dest,
-	void   * addr,
+	const void   * addr,
 	uint32   size
 );
 

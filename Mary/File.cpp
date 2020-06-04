@@ -2,16 +2,12 @@
 
 constexpr bool debug = true;
 
-
-
-
-
 FileVector File_staticFiles;
 FileVector File_dynamicFiles;
 
+STRING_ITEM stringItems[MAX_CACHE_FILE] = {};
 
-
-
+byte8 * demo_pl000_00_3 = 0;
 
 byte8 * FileVector::Push(const char * filename)
 {
@@ -30,15 +26,8 @@ byte8 * FileVector::Push(const char * filename)
 		return 0;
 	}
 
-	//HoboBreak();
-
-
 	metadata[count].addr = file;
 	metadata[count].size = fileSize;
-
-	
-	//Log("reach here");
-
 
 	uint32 lastPos = pos;
 	pos += fileSize;
@@ -62,99 +51,43 @@ byte8 * FileVector::Push(const char * filename)
 	return file;
 }
 
+byte8 * FileVector::Push(byte8 * file, uint32 fileSize)
+{
+	LogFunction();
 
+	if constexpr (debug)
+	{
+		Log("file     %.16llX", file    );
+		Log("fileSize %u"     , fileSize);
+	}
 
+	auto dest = (data + pos);
+	memcpy(dest, file, fileSize);
 
+	metadata[count].addr = dest;
+	metadata[count].size = fileSize;
 
+	uint32 lastPos = pos;
+	pos += fileSize;
+	Align<uint32>(pos, 0x800, data);
+	metadata[count].alignedSize = (pos - lastPos);
 
+	if constexpr (debug)
+	{
+		Log("file        %.16llX", file                       );
+		Log("fileSize    %X"     , fileSize                   );
+		Log("data        %.16llX", data                       );
+		Log("pos         %X"     , pos                        );
+		Log("count       %u"     , count                      );
+		Log("addr        %.16llX", metadata[count].addr       );
+		Log("size        %u"     , metadata[count].size       );
+		Log("alignedSize %u"     , metadata[count].alignedSize);
+	}
 
+	count++;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//struct CacheFile
-//{
-//	byte8 * file;
-//
-//	CacheFile()
-//	{
-//		memset(this, 0, sizeof(*this));
-//	}
-//
-//	CacheFile(byte8 * addr)
-//	{
-//		file = addr;
-//	}
-//
-//	operator byte8 *()
-//	{
-//		return file;
-//	}
-//
-//	byte8 * operator[](uint32 index)
-//	{
-//		auto & archiveData = *reinterpret_cast<ARCHIVE_DATA *>(file);
-//		if (index >= archiveData.fileCount)
-//		{
-//			Log("Outside file range. %u %u", archiveData.fileCount, index);
-//			return 0;
-//		}
-//		if (!archiveData.fileOff[index])
-//		{
-//			return 0;
-//		}
-//		return (file + archiveData.fileOff[index]);
-//	}
-//};
-//
-//
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//CacheFile File_staticFiles[MAX_CACHE_FILE];
-
-byte8 * demo_pl000_00_3 = 0;
-
-PrivateStart;
-
-uint32 cachePos = 0;
-
-STRING_ITEM stringItem[MAX_CACHE_FILE] = {};
-
-PrivateEnd;
+	return dest;
+}
 
 bool File_ExtractFile(const char * filename)
 {
@@ -284,114 +217,20 @@ void File_AdjustPointers(byte8 * archive)
 	func_1B9FA0(archive);
 }
 
-//byte8 * File_PushFile(const char * filename)
-//{
-//	if constexpr (debug)
-//	{
-//		LogFunction();
-//	}
-//
-//	auto addr = (Memory_addr + (512 * 1024 * 1024) + cachePos); // @Todo: Define size in Memory.
-//	byte8 * file = 0;
-//	uint32 fileSize = 0;
-//
-//	file = File_LoadFile(filename, &fileSize, addr);
-//
-//
-//
-//	if (!file)
-//	{
-//		Log("File_LoadFile failed.");
-//		return 0;
-//	}
-//
-//	cachePos += fileSize;
-//
-//	if constexpr (debug)
-//	{
-//		Log("Memory_addr %.16llX"   , Memory_addr   );
-//		Log("cachePos    %X"        , cachePos      );
-//		Log("addr        %.16llX"   , addr          );
-//		Log("file        %.16llX %s", file, filename);
-//		Log("fileSize    %X"        , fileSize      );
-//	}
-//
-//	Align<uint32>(cachePos, 0x800);
-//
-//	if constexpr (debug)
-//	{
-//		Log("aligned cachePos %X", cachePos);
-//	}
-//
-//	return addr;
-//}
+void File_UpdateFileItem
+(
+	uint16 fileItemId,
+	uint16 cacheFileId
+)
+{
+	auto & fileItem = (reinterpret_cast<FILE_ITEM *>(appBaseAddr + 0xC99D30))[fileItemId];
 
+	memset(&fileItem, 0, sizeof(FILE_ITEM));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-//
-//
-//MixedVector File_staticFiles;
-//MixedVector File_dynamicFiles;
-//
-//
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	fileItem.status     = FILE_ITEM_READY;
+	fileItem.stringItem = &stringItems[cacheFileId];
+	fileItem.file       = File_staticFiles[cacheFileId];
+}
 
 struct FileItemHelper
 {
@@ -436,45 +275,7 @@ constexpr FileItemHelper fileItemHelper[] =
 	{ 187, plwp_nerosword      },
 };
 
-
-
-
-
-
-
-
-
-
-
-
-void File_UpdateFileItem
-(
-	uint16 fileItemId,
-	uint16 cacheFileId
-)
-{
-	auto & fileItem = (reinterpret_cast<FILE_ITEM *>(appBaseAddr + 0xC99D30))[fileItemId];
-
-	memset(&fileItem, 0, sizeof(FILE_ITEM));
-
-	fileItem.status     = FILE_ITEM_READY;
-	fileItem.stringItem = &stringItem[cacheFileId];
-	fileItem.file       = File_staticFiles[cacheFileId];
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-void File_UpdateFileItems()
+void File_UpdateMainFileItems()
 {
 	LogFunction();
 	for_all(uint8, index, countof(fileItemHelper))
@@ -485,145 +286,7 @@ void File_UpdateFileItems()
 			fileItemHelper[index].cacheFileId
 		);
 	}
-
-
-	//HoboBreak();
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//// @Research: Make local.
-//constexpr uint16 costumeMapDante[] =
-//{
-//	pl000,
-//	pl011,
-//	pl013,
-//	pl015,
-//	pl016,
-//	pl018,
-//	pl013,
-//	pl018,
-//};
-//
-//constexpr uint16 costumeMapVergil[] =
-//{
-//	pl021,
-//	pl023,
-//	pl021,
-//	pl026,
-//	pl026,
-//};
-//
-//constexpr uint16 swordMap[] =
-//{
-//	plwp_sword,
-//	plwp_sword2,
-//	plwp_sword3,
-//};
-
-
-//void UpdateCostume(ACTOR_DATA * actorData)
-//{
-//	auto fileItem = (FILE_ITEM *)(appBaseAddr + 0xC99D30);
-//
-//	if (Config.Game.Multiplayer.enable && (actorData->id != 0))
-//	{
-//		actorData->costume = Config.Game.Multiplayer.costume[(actorData->id - 1)];
-//	}
-//
-//	switch (actorData->character)
-//	{
-//	case CHAR_DANTE:
-//	{
-//		if (actorData->costume >= countof(costumeMapDante))
-//		{
-//			actorData->costume = 0;
-//		}
-//		auto cacheFileId = costumeMapDante[actorData->costume];
-//		fileItem[0].file = System_File_staticFiles[cacheFileId];
-//		fileItem[0].stringItem = &stringItem[cacheFileId];
-//		break;
-//	}
-//	case CHAR_VERGIL:
-//	{
-//		if (actorData->costume >= countof(costumeMapVergil))
-//		{
-//			actorData->costume = 0;
-//		}
-//		auto cacheFileId = costumeMapVergil[actorData->costume];
-//		fileItem[3].file = System_File_staticFiles[cacheFileId];
-//		fileItem[3].stringItem = &stringItem[cacheFileId];
-//		break;
-//	}
-//	}
-//}
-//
-//void UpdateSword(ACTOR_DATA * actorData)
-//{
-//	auto & unlockDevilTrigger = *(bool *)(appBaseAddr + 0xC8F250 + 0xD1);
-//	auto fileItem = (FILE_ITEM *)(appBaseAddr + 0xC99D30);
-//	uint8 sword = 0;
-//
-//	if (actorData->character != CHAR_DANTE)
-//	{
-//		return;
-//	}
-//
-//	if (Config.Game.WeaponSwitcher.enable && (Config.Game.WeaponSwitcher.sword != 0))
-//	{
-//		sword = (Config.Game.WeaponSwitcher.sword - 1);
-//	}
-//	else
-//	{
-//		if (unlockDevilTrigger)
-//		{
-//			sword = 1;
-//		}
-//		switch (actorData->costume)
-//		{
-//		case COSTUME_DANTE_DMC1:
-//		case COSTUME_DANTE_DMC1_NO_COAT:
-//		case COSTUME_DANTE_SPARDA:
-//		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
-//			sword = 2;
-//			break;
-//		}
-//	}
-//
-//	sword = 2;
-//
-//	auto cacheFileId = swordMap[sword];
-//	fileItem[140].file = System_File_staticFiles[cacheFileId];
-//}
-
-
-
-//inline void CreateStringItems()
-//{
-//	for_all(uint8, index, MAX_CACHE_FILE)
-//	{
-//		stringItem[index].string = cacheFileHelper[index].type;
-//	}
-//}
-
-
-
-
-
 
 bool File_Init()
 {
@@ -647,26 +310,13 @@ bool File_Init()
 		dest += MEMORY_SIZE_DYNAMIC_FILES_METADATA;
 	}
 
-
-
-
-
-	Log("File_staticFiles.data      %.16llX", File_staticFiles.data);
-	Log("File_staticFiles.metadata  %.16llX", File_staticFiles.metadata);
-	Log("File_dynamicFiles.data     %.16llX", File_dynamicFiles.data);
-	Log("File_dynamicFiles.metadata %.16llX", File_dynamicFiles.metadata);
-
-
-
-
-
-
-
-
-
-
-
-
+	if constexpr (debug)
+	{
+		Log("File_staticFiles.data      %.16llX", File_staticFiles.data);
+		Log("File_staticFiles.metadata  %.16llX", File_staticFiles.metadata);
+		Log("File_dynamicFiles.data     %.16llX", File_dynamicFiles.data);
+		Log("File_dynamicFiles.metadata %.16llX", File_dynamicFiles.metadata);
+	}
 
 	for_all(uint8, cacheFileId, MAX_CACHE_FILE)
 	{
@@ -683,37 +333,11 @@ bool File_Init()
 			return false;
 		}
 		File_AdjustPointers(file);
-		stringItem[cacheFileId].string = type;
+		stringItems[cacheFileId].string = type;
 	}
 
-
-
-
-
-	//return true;
-
-	//for_all(uint8, index, countof(stringItemOff))
-	//{
-	//	stringItem[index].string = reinterpret_cast<const char *>(appBaseAddr + 0xE00 + stringItemOff[index]);
-	//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// @Todo: Update!
 	{
-		byte8 sect0[] =
+		constexpr byte8 sect0[] =
 		{
 			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Config.System.File.preferLocalFiles
 			0x8A, 0x00,                                                 //mov al,[rax]
@@ -727,10 +351,10 @@ bool File_Init()
 			0x48, 0x8D, 0x8C, 0x24, 0x60, 0x01, 0x00, 0x00,             //lea rcx,[rsp+00000160]
 			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+327430
 		};
-		FUNC func = CreateFunction(0, (appBaseAddr + 0x2FDB1), false, false, sizeof(sect0));
+		auto func = CreateFunction(0, (appBaseAddr + 0x2FDB1), false, false, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*(bool **)(func.sect0 + 2) = &Config.System.File.preferLocalFiles;
-		*(uint32 *)(func.sect0 + 0x11) = FILE_MODE_LOCAL;
+		*reinterpret_cast<bool **>(func.sect0 + 2) = &Config.System.File.preferLocalFiles;
+		*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = FILE_MODE_LOCAL;
 		WriteCall((func.sect0 + 0x15), (appBaseAddr + 0x327430));
 		WriteCall((func.sect0 + 0x2A), (appBaseAddr + 0x327430));
 		WriteJump((appBaseAddr + 0x2FDAC), func.addr);

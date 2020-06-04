@@ -2,18 +2,6 @@
 
 Vector<byte8 *> Actor_actorBaseAddr;
 
-typedef byte8 *(__fastcall * RegisterWeapon_t)
-(
-	byte8 * actorData,
-	uint32 id
-);
-
-typedef bool(__fastcall * IsWeaponReady_t)
-(
-	byte8 * actorData,
-	uint8 weapon
-);
-
 struct IsWeaponReadyProxyHelper_t
 {
 	uint32 off[2];
@@ -70,46 +58,6 @@ byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
 
 
 
-
-void UpdateModelPartitionConfigFunction
-(
-	ACTOR_DATA_DANTE & actorData,
-	uint8 weapon
-)
-{
-	actorData.newLastMeleeWeapon = weapon;
-
-	auto & modelData = actorData.modelData[0];
-	auto dest = func_89DE0(modelData);
-
-	if (weapon == WEAPON_DANTE_BEOWULF)
-	{
-		func_2F7350(dest, 3);
-		func_2F74E0(dest, 4);
-		func_2F74E0(dest, 5);
-		func_2F7350(dest, 6);
-	}
-	else
-	{
-		func_2F74E0(dest, 3);
-		func_2F7350(dest, 4);
-		func_2F7350(dest, 5);
-		func_2F74E0(dest, 6);
-	}
-}
-
-void UpdateModelPartitionConfig
-(
-	ACTOR_DATA_DANTE & actorData,
-	uint8 weapon
-)
-{
-	if (actorData.newLastMeleeWeapon == weapon)
-	{
-		return;
-	}
-	UpdateModelPartitionConfigFunction(actorData, weapon);
-}
 
 template <typename T>
 bool IsWeaponReadyFunction
@@ -310,106 +258,6 @@ void ToggleUpdateWeapon(bool enable)
 	*/
 }
 
-//void UpdateActorDante(byte8 * baseAddr)
-//{
-//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-//
-//
-//
-//
-//	actorData.devilModelMetadata.rebellion.submodelMetadata[0].submodelIndex = 255;
-//	actorData.devilModelMetadata.rebellion.submodelMetadata[1].submodelIndex = 255;
-//	actorData.devilModelMetadata.cerberus.submodelMetadata[0].submodelIndex = 255;
-//	actorData.devilModelMetadata.nevan.submodelMetadata[0].submodelIndex = 255;
-//	actorData.devilModelMetadata.nevan.submodelMetadata[1].submodelIndex = 255;
-//	actorData.devilModelMetadata.beowulf.submodelMetadata[0].submodelIndex = 255;
-//	actorData.devilModelMetadata.sparda.submodelMetadata[0].submodelIndex = 255;
-//
-//
-//
-//
-//
-//	File_UpdateFileItems(&actorData);
-//
-//	Cosmetics_Model_UpdateModelDante[COSTUME_DANTE_DEFAULT](baseAddr);
-//	
-//
-//
-//
-//	Cosmetics_Model_UpdateDevilModelDante[DEVIL_DANTE_REBELLION](baseAddr, 1);
-//	Cosmetics_Model_UpdateDevilModelDante[DEVIL_DANTE_CERBERUS](baseAddr, 2);
-//
-//
-//
-//
-//
-//	//for (uint8 index = 0; index < countof(motionHelperDante); index++)
-//	for_all(index, countof(motionHelperDante))
-//	{
-//		auto & motionId    = motionHelperDante[index].motionId;
-//		auto & cacheFileId = motionHelperDante[index].cacheFileId;
-//
-//		actorData.motionArchive[motionId] = File_staticFiles[cacheFileId];
-//	}
-//
-//
-//
-//
-//
-//	func_1EF040(baseAddr, 0);
-//	func_1EEF80(baseAddr);
-//	func_1EF040(baseAddr, 3);
-//
-//
-//
-//
-//
-//	actorData.actionData[0] = *(byte8 **)(appBaseAddr + 0x590598);
-//	actorData.actionData[1] = *(byte8 **)(appBaseAddr + 0x58A2A0);
-//	actorData.actionData[2] = (appBaseAddr + 0x5905B0);
-//	actorData.actionData[3] = File_staticFiles[pl000][9];
-//	actorData.actionData[4] = File_staticFiles[pl000][10];
-//	actorData.actionData[5] = File_staticFiles[pl000][11];
-//
-//	func_2EE3D0((baseAddr + 0x3C50));
-//	func_1FAF40(baseAddr);
-//}
-
-
-
-
-
-
-
-
-//byte8 * CreateActor
-//(
-//	uint8 character,
-//	uint8 actor
-//)
-//{
-//	auto g_pool = *(byte8 ***)(appBaseAddr + 0xC90E28);
-//
-//	byte8 * sessionData = 0;
-//
-//	byte8 * baseAddr = 0;
-//
-//	sessionData = (g_pool[1] + 0x16C);
-//
-//	//func_2EE060((mainActorBaseAddr + 0x6410), 0x3C);
-//
-//	baseAddr = func_1DE820(character, actor, false);
-//
-//	//func_1BB390(g_pool, actor);
-//
-//	func_217B90(baseAddr, sessionData); // InitActorDante
-//	UpdateActorDante(baseAddr);
-//	UpdateWeaponDante(baseAddr);
-//
-//	func_1DFC20(baseAddr);
-//
-//	return baseAddr;
-//}
 
 
 
@@ -419,194 +267,7 @@ void ToggleUpdateWeapon(bool enable)
 
 
 
-void UpdateWeaponDante
-(
-	ACTOR_DATA_DANTE & actorData,
-	uint8 player,
-	uint8 entity
-)
-{
-	memset((reinterpret_cast<byte8 *>(&actorData) + 0x648C), 0, (0x6510 - 0x648C));
 
-	// Melee Weapons
-
-	memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeapon[player][entity][CHAR_DANTE], MAX_MELEE_WEAPON);
-
-	actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCount[player][entity][CHAR_DANTE];
-
-	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
-	{
-		actorData.newMeleeWeaponIndex = 0;
-	}
-
-	for_all(uint8, index, MAX_MELEE_WEAPON_DANTE)
-	{
-		uint32 weapon = (WEAPON_DANTE_REBELLION + index);
-		actorData.newMeleeWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
-	}
-
-	auto & newMeleeWeapon = actorData.newMeleeWeapon[actorData.newMeleeWeaponIndex];
-	if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
-	{
-		actorData.meleeWeapon[0] = newMeleeWeapon;
-		actorData.meleeWeaponData[0] = actorData.newMeleeWeaponData[(newMeleeWeapon - WEAPON_DANTE_REBELLION)];
-	}
-	else
-	{
-		actorData.meleeWeapon[0] = WEAPON_VOID;
-	}
-	actorData.meleeWeapon[1] = WEAPON_VOID;
-
-	actorData.meleeWeaponIndex = 0;
-
-	UpdateModelPartitionConfigFunction(actorData, newMeleeWeapon);
-
-	// Ranged Weapons
-
-	memcpy(actorData.newRangedWeapon, Config.Actor.rangedWeapon[player][entity][CHAR_DANTE], MAX_RANGED_WEAPON);
-
-	actorData.newRangedWeaponCount = Config.Actor.rangedWeaponCount[player][entity][CHAR_DANTE];
-
-	if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
-	{
-		actorData.newRangedWeaponIndex = 0;
-	}
-
-	for_all(uint8, index, MAX_RANGED_WEAPON_DANTE)
-	{
-		uint32 weapon = (WEAPON_DANTE_EBONY_IVORY + index);
-		actorData.newRangedWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
-	}
-
-	auto & newRangedWeapon = actorData.newRangedWeapon[actorData.newRangedWeaponIndex];
-	if ((newRangedWeapon >= WEAPON_DANTE_EBONY_IVORY) && (newRangedWeapon <= WEAPON_DANTE_KALINA_ANN))
-	{
-		actorData.rangedWeapon[0] = newRangedWeapon;
-		actorData.rangedWeaponData[0] = actorData.newRangedWeaponData[(newRangedWeapon - WEAPON_DANTE_EBONY_IVORY)];
-	}
-	else
-	{
-		actorData.rangedWeapon[0] = WEAPON_VOID;
-	}
-	actorData.rangedWeapon[1] = WEAPON_VOID;
-	actorData.rangedWeapon[2] = WEAPON_VOID;
-
-	actorData.rangedWeaponIndex = 2;
-
-	actorData.rangedWeaponStatus[2] = WEAPON_STATUS_DISABLED;
-
-	actorData.rangedWeaponLevel[0] = 2;
-	actorData.rangedWeaponLevel[1] = 2;
-}
-
-ACTOR_DATA_DANTE * CreateActorDante
-(
-	uint8 player,
-	uint8 entity
-)
-{
-	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-	auto sessionData = (g_pool[1] + 0x16C);
-
-	auto baseAddr = func_1DE820(CHAR_DANTE, 0, false);
-	if (!baseAddr)
-	{
-		return 0;
-	}
-
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-
-	func_217B90(actorData, sessionData);
-	func_212BE0(actorData);
-
-	for_all(uint8, index, countof(motionHelperDante))
-	{
-		auto & motionId    = motionHelperDante[index].motionId;
-		auto & cacheFileId = motionHelperDante[index].cacheFileId;
-
-		actorData.motionArchive[motionId] = File_staticFiles[cacheFileId];
-	}
-
-	UpdateWeaponDante(actorData, player, entity);
-
-	func_1DFC20(actorData);
-
-	return &actorData;
-}
-
-void UpdateWeaponVergil
-(
-	ACTOR_DATA_VERGIL & actorData,
-	uint8 player,
-	uint8 entity
-)
-{
-	memset((reinterpret_cast<byte8 *>(&actorData) + 0x648C), 0, (0x6510 - 0x648C));
-
-	// Melee Weapon
-
-	memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeapon[player][entity][CHAR_VERGIL], MAX_MELEE_WEAPON);
-
-	actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCount[player][entity][CHAR_VERGIL];
-
-	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
-	{
-		actorData.newMeleeWeaponIndex = 0;
-	}
-
-	for_all(uint8, index, MAX_MELEE_WEAPON_VERGIL)
-	{
-		uint32 weapon = (WEAPON_VERGIL_YAMATO + index);
-		actorData.newMeleeWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
-	}
-
-	actorData.meleeWeapon[0] = WEAPON_VERGIL_YAMATO;
-	actorData.meleeWeapon[1] = WEAPON_VERGIL_BEOWULF;
-	actorData.meleeWeapon[2] = WEAPON_VERGIL_FORCE_EDGE;
-	actorData.meleeWeapon[3] = WEAPON_VOID;
-	actorData.meleeWeapon[4] = WEAPON_VOID;
-
-	actorData.meleeWeaponData[0] = actorData.newMeleeWeaponData[0];
-	actorData.meleeWeaponData[1] = actorData.newMeleeWeaponData[1];
-	actorData.meleeWeaponData[2] = actorData.newMeleeWeaponData[2];
-
-	actorData.meleeWeaponStatus[4] = WEAPON_STATUS_DISABLED;
-}
-
-ACTOR_DATA_VERGIL * CreateActorVergil
-(
-	uint8 player,
-	uint8 entity
-)
-{
-	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-	auto sessionData = (g_pool[1] + 0x16C);
-
-	auto baseAddr = func_1DE820(CHAR_VERGIL, 0, false);
-	if (!baseAddr)
-	{
-		return 0;
-	}
-
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
-
-	func_223CB0(actorData, sessionData);
-	func_220970(actorData);
-
-	for_all(uint8, index, countof(motionHelperVergil))
-	{
-		auto & motionId    = motionHelperVergil[index].motionId;
-		auto & cacheFileId = motionHelperVergil[index].cacheFileId;
-
-		actorData.motionArchive[motionId] = File_staticFiles[cacheFileId];
-	}
-
-	UpdateWeaponVergil(actorData, player, entity);
-
-	func_1DFC20(actorData);
-
-	return &actorData;
-}
 
 
 
@@ -845,6 +506,8 @@ void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 
 
 
+
+	// if weapon count is 1 dont do nothing
 
 
 
@@ -2568,6 +2231,226 @@ bool IsActive(T & actorData)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//inline void InitActorDante
+//(
+//	ACTOR_DATA_DANTE & actorData,
+//	byte8 * sessionData
+//)
+//{
+//	return func_217B90(actorData, sessionData);
+//}
+//
+//inline void UpdateActorDante(ACTOR_DATA_DANTE & actorData)
+//{
+//	return func_212BE0(actorData);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//inline void UpdateRangedWeaponsDante
+//(
+//	ACTOR_DATA_DANTE & actorData,
+//	uint8 player,
+//	uint8 entity
+//)
+//{
+//
+//}
+
+//inline void UpdateWeaponsDante
+//(
+//	ACTOR_DATA_DANTE & actorData,
+//	uint8 player,
+//	uint8 entity
+//)
+//{
+//	memset((reinterpret_cast<byte8 *>(&actorData) + 0x648C), 0, (0x6510 - 0x648C));
+//	UpdateMeleeWeaponsDante(actorData, player, entity);
+//	UpdateRangedWeaponsDante(actorData, player, entity);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//ACTOR_DATA_DANTE * CreateActorDante
+//(
+//	uint8 player,
+//	uint8 entity
+//)
+//{
+//	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+//	auto sessionData = (g_pool[1] + 0x16C);
+//
+//	auto baseAddr = func_1DE820(CHAR_DANTE, 0, false);
+//	if (!baseAddr)
+//	{
+//		return 0;
+//	}
+//
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+//
+//	InitActorDante(actorData, sessionData);
+//
+//	actorData.costume = Config.Actor.costume[player][entity][CHAR_DANTE];
+//	File_UpdateCostumeFileItems(actorData);
+//
+//	UpdateActorDante(actorData);
+//
+//	for_all(uint8, index, countof(motionHelperDante))
+//	{
+//		auto & group       = motionHelperDante[index].group;
+//		auto & cacheFileId = motionHelperDante[index].cacheFileId;
+//
+//		auto & metadata = File_staticFiles[cacheFileId];
+//
+//		actorData.motionArchive[group] = File_dynamicFiles.Push(metadata.addr, metadata.size);
+//	}
+//
+//	UpdateWeaponsDante(actorData, player, entity);
+//
+//	func_1DFC20(actorData);
+//
+//	return &actorData;
+//}
+
+
+
+
+
+
+
+
+
+//inline void InitActorVergil
+//(
+//	ACTOR_DATA_VERGIL & actorData,
+//	byte8 * sessionData
+//)
+//{
+//	return func_223CB0(actorData, sessionData);
+//}
+//
+//inline void UpdateActorVergil(ACTOR_DATA_VERGIL & actorData)
+//{
+//	return func_220970(actorData);
+//}
+
+//inline void UpdateMeleeWeaponsVergil
+//(
+//	ACTOR_DATA_VERGIL & actorData,
+//	uint8 player,
+//	uint8 entity
+//)
+//{
+//
+//}
+
+//void UpdateWeaponsVergil
+//(
+//	ACTOR_DATA_VERGIL & actorData,
+//	uint8 player,
+//	uint8 entity
+//)
+//{
+//	memset((reinterpret_cast<byte8 *>(&actorData) + 0x648C), 0, (0x6510 - 0x648C));
+//	UpdateMeleeWeaponsVergil(actorData, player, entity);
+//}
+
+//ACTOR_DATA_VERGIL * CreateActorVergil
+//(
+//	uint8 player,
+//	uint8 entity
+//)
+//{
+//	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+//	auto sessionData = (g_pool[1] + 0x16C);
+//
+//	auto baseAddr = func_1DE820(CHAR_VERGIL, 0, false);
+//	if (!baseAddr)
+//	{
+//		return 0;
+//	}
+//
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
+//
+//	InitActorVergil(actorData, sessionData);
+//
+//	actorData.costume = Config.Actor.costume[player][entity][CHAR_VERGIL];
+//	File_UpdateCostumeFileItems(actorData);
+//
+//	UpdateActorVergil(actorData);
+//
+//	//for_all(uint8, index, countof(motionHelperVergil))
+//	//{
+//	//	auto & motionId    = motionHelperVergil[index].motionId;
+//	//	auto & cacheFileId = motionHelperVergil[index].cacheFileId;
+//
+//	//	actorData.motionArchive[motionId] = File_staticFiles[cacheFileId];
+//	//}
+//
+//	UpdateWeaponsVergil(actorData, player, entity);
+//
+//	func_1DFC20(actorData);
+//
+//	return &actorData;
+//}
 
 
 

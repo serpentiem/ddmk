@@ -134,6 +134,8 @@ void WriteAddress
 	VirtualProtect(addr, (size + padSize), protection, &protection);
 }
 
+// @Todo: Should be byte8 *.
+
 void vp_memset
 (
 	void   * addr,
@@ -152,7 +154,7 @@ void vp_memset
 void vp_memcpy
 (
 	void   * dest,
-	void   * addr,
+	const void   * addr,
 	uint32   size
 )
 {
