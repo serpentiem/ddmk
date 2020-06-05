@@ -28,7 +28,8 @@ struct Vector
 	}
 	void Clear()
 	{
-		memset(this, 0, sizeof(*this));
+		memset(data, 0, (count * sizeof(T)));
+		count = 0;
 	}
 	bool Init(uint32 _dataSize)
 	{

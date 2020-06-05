@@ -1,7 +1,7 @@
 
 
 // @Todo: Plural and tags.
-
+// @Todo: Single child.
 
 
 
@@ -562,9 +562,10 @@ var AddCheatEntry = function
 	{
 		c += "<ByteLength>" + size + "</ByteLength>\r\n";
 	}
-	c += "<Address>Mary.Actor_actorBaseAddr+8+" + (actor * 8).toString(16).toUpperCase() + "</Address>\r\n";
+	c += "<Address>Mary.Actor_actorBaseAddr</Address>\r\n";
 	c += "<Offsets>\r\n";
 	c += "<Offset>" + off.toString(16).toUpperCase() + "</Offset>\r\n";
+	c += "<Offset>" + (actor * 8).toString(16).toUpperCase() + "</Offset>\r\n";
 	c += "</Offsets>\r\n";
 	c += "</CheatEntry>\r\n";
 }

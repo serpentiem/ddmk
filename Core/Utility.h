@@ -77,12 +77,38 @@ template <uint64 value> struct GetDataTypeByValue : GetDataTypeByValueHelper<Get
 template
 <
 	typename T,
-	uint32 count
+	uint64 count
 >
 constexpr auto countof(T(&array)[count])
 {
 	return count;
 }
+
+template
+<
+	typename T1,
+	typename T2,
+	uint64 count
+>
+constexpr auto countof(T2(&array)[count])
+{
+	return static_cast<T1>(count);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //#define const_for_each(name, start, end) for (GetDataTypeByValue<end>::type name = start; name < end; name++)
 //

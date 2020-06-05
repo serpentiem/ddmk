@@ -3443,6 +3443,15 @@ void NEW_GUI_Main()
 		NEW_GUI_Text("");
 
 
+		if (NEW_GUI_Button("Update Main Actor"))
+		{
+			auto dest = Actor_actorBaseAddr[0];
+			Log("dest %.16llX", dest);
+			UpdateMotionArchives(*reinterpret_cast<ACTOR_DATA_DANTE *>(dest));
+		}
+
+
+
 
 		//io.Fonts
 

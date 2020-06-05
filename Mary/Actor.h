@@ -86,6 +86,10 @@ template <> struct GetActorDataType<CHAR_BOB   > { typedef ACTOR_DATA_BOB    val
 template <> struct GetActorDataType<CHAR_LADY  > { typedef ACTOR_DATA_LADY   value; };
 template <> struct GetActorDataType<CHAR_VERGIL> { typedef ACTOR_DATA_VERGIL value; };
 
+template <typename T> struct GetChildActorDataType {};
+template <> struct GetChildActorDataType<ACTOR_DATA_DANTE > { typedef ACTOR_DATA_VERGIL value; };
+template <> struct GetChildActorDataType<ACTOR_DATA_VERGIL> { typedef ACTOR_DATA_DANTE  value; };
+
 template <typename T>
 bool IsWeaponActive
 (
@@ -263,30 +267,28 @@ constexpr MotionArchiveHelper motionArchiveHelperVergil[] =
 template <typename T>
 void UpdateMotionArchives(T & actorData)
 {
-	// @Todo: Unify.
-	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	constexpr uint8 count =
+	(typematch(T, ACTOR_DATA_DANTE )) ? countof<uint8>(motionArchiveHelperDante ) :
+	(typematch(T, ACTOR_DATA_BOB   )) ? countof<uint8>(motionArchiveHelperBob   ) :
+	(typematch(T, ACTOR_DATA_LADY  )) ? countof<uint8>(motionArchiveHelperLady  ) :
+	(typematch(T, ACTOR_DATA_VERGIL)) ? countof<uint8>(motionArchiveHelperVergil) :
+	0;
+
+	const MotionArchiveHelper * motionArchiveHelper =
+	(typematch(T, ACTOR_DATA_DANTE )) ? motionArchiveHelperDante  :
+	(typematch(T, ACTOR_DATA_BOB   )) ? motionArchiveHelperBob    :
+	(typematch(T, ACTOR_DATA_LADY  )) ? motionArchiveHelperLady   :
+	(typematch(T, ACTOR_DATA_VERGIL)) ? motionArchiveHelperVergil :
+	0;
+
+	for_all(uint8, index, count)
 	{
-		for_all(uint8, index, countof(motionArchiveHelperDante))
-		{
-			auto & group       = motionArchiveHelperDante[index].group;
-			auto & cacheFileId = motionArchiveHelperDante[index].cacheFileId;
+		auto & group = motionArchiveHelper[index].group;
+		auto & cacheFileId = motionArchiveHelper[index].cacheFileId;
 
-			auto & metadata = File_staticFiles[cacheFileId];
+		auto & metadata = File_staticFiles[cacheFileId];
 
-			actorData.motionArchive[group] = File_dynamicFiles.Push(metadata.addr, metadata.size);
-		}
-	}
-	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
-	{
-		for_all(uint8, index, countof(motionArchiveHelperVergil))
-		{
-			auto & group       = motionArchiveHelperVergil[index].group;
-			auto & cacheFileId = motionArchiveHelperVergil[index].cacheFileId;
-
-			auto & metadata = File_staticFiles[cacheFileId];
-
-			actorData.motionArchive[group] = File_dynamicFiles.Push(metadata.addr, metadata.size);
-		}
+		actorData.motionArchive[group] = File_dynamicFiles.Push(metadata.addr, metadata.size);
 	}
 }
 

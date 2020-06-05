@@ -1144,6 +1144,9 @@ if (!action)\
 #define _ToString(a) #a
 #define ToString(a) _ToString(a)
 
+// @Research: Maybe templates are better suited for this after all.
+// @Todo: Check for input charge.
+
 #define BufferExecute(activeActorData, idleActorData, policy, binding, __DEST__, sect)\
 if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_BUFFER)\
 {\
@@ -1568,125 +1571,129 @@ void ActorLoop(byte8 * baseAddr)
 
 
 
+
+
+
+
+
+
+
+
+template <typename T>
+byte8 * SpawnActorFunction
+(
+	uint8 player,
+	uint8 entity
+)
+{
+	auto mainBaseAddr = Actor_actorBaseAddr[0];
+	if (!mainBaseAddr)
+	{
+		return 0;
+	}
+	auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
+
+	auto parentBaseAddr = CreateActor<T>(player, entity);
+	if (!parentBaseAddr)
+	{
+		return 0;
+	}
+	auto & parentActorData = *parentBaseAddr;
+	Actor_actorBaseAddr.Push(parentActorData);
+
+	parentActorData.position = mainActorData.position;
+	parentActorData.style = g_style[player][entity][GetCharacterId<T>::value]; // @Todo: Change to Actor_style for now.
+
+	if (entity == ENTITY_MAIN)
+	{
+		parentActorData.newGamepad = player;
+		parentActorData.newButtonMask = 0xFFFF;
+		parentActorData.newEnableRightStick = true;
+		parentActorData.newEnableLeftStick = true;
+	}
+	else
+	{
+		parentActorData.newGamepad = MAX_PLAYER;
+		return parentActorData;
+	}
+
+	if constexpr (typematch(T, ACTOR_DATA_DANTE) || typematch(T, ACTOR_DATA_VERGIL))
+	{
+		auto childBaseAddr = CreateActor<GetChildActorDataType<T>::value>(player, entity);
+		if (!childBaseAddr)
+		{
+			return 0;
+		}
+		auto & childActorData = *reinterpret_cast<typename GetChildActorDataType<T>::value *>(childBaseAddr);
+
+		parentActorData.newChildBaseAddr[GetCharacterId<GetChildActorDataType<T>::value>::value] = childActorData;
+
+		childActorData.newParentBaseAddr = parentActorData;
+		childActorData.position = parentActorData.position;
+
+		if constexpr (typematch(T, ACTOR_DATA_DANTE))
+		{
+			auto & newMeleeWeapon = parentActorData.newMeleeWeapon[parentActorData.newMeleeWeaponIndex];
+			if ((newMeleeWeapon >= WEAPON_VERGIL_YAMATO) && (newMeleeWeapon <= WEAPON_VERGIL_FORCE_EDGE))
+			{
+				childActorData.activeMeleeWeaponIndex = (newMeleeWeapon - WEAPON_VERGIL_YAMATO);
+				childActorData.queuedMeleeWeaponIndex = (newMeleeWeapon - WEAPON_VERGIL_YAMATO);
+			}
+		}
+		else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+		{
+			for_all(uint8, index, MAX_MELEE_WEAPON)
+			{
+				childActorData.newMeleeWeapon[index] = (WEAPON_DANTE_REBELLION + index);
+			}
+			childActorData.newMeleeWeaponCount = MAX_MELEE_WEAPON_DANTE;
+			childActorData.newMeleeWeaponIndex = 0;
+
+			auto & newMeleeWeapon = parentActorData.newMeleeWeapon[parentActorData.newMeleeWeaponIndex];
+			if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
+			{
+				childActorData.meleeWeapon[0] = newMeleeWeapon;
+				childActorData.meleeWeapon[1] = WEAPON_VOID;
+				childActorData.meleeWeaponIndex = 0;
+			}
+		}
+	}
+
+	return parentActorData;
+}
+
+
+
+
+
+
+
+
+
+
 byte8 * SpawnActor
 (
 	uint8 player,
 	uint8 entity
 )
 {
-	auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
 	auto & character = Config.Actor.character[player][entity];
+
 	if (character == CHAR_DANTE)
 	{
-		auto danteBaseAddr = CreateActor<ACTOR_DATA_DANTE>(player, entity);
-		if (!danteBaseAddr)
-		{
-			return 0;
-		}
-		auto & danteActorData = *danteBaseAddr;
-		Actor_actorBaseAddr.Push(danteActorData);
-
-		danteActorData.position = mainActorData.position;
-		danteActorData.style = g_style[player][entity][CHAR_DANTE];
-
-		if (entity == ENTITY_MAIN)
-		{
-			danteActorData.newGamepad = player;
-			danteActorData.newButtonMask = 0xFFFF;
-			danteActorData.newEnableRightStick = true;
-			danteActorData.newEnableLeftStick = true;
-		}
-		else
-		{
-			danteActorData.newGamepad = MAX_PLAYER;
-			return danteActorData;
-		}
-
-		auto vergilBaseAddr = CreateActor<ACTOR_DATA_VERGIL>(player, entity);
-		if (!vergilBaseAddr)
-		{
-			return 0;
-		}
-		auto & vergilActorData = *vergilBaseAddr;
-		Actor_actorBaseAddr.Push(vergilActorData);
-
-		danteActorData.newChildBaseAddr[CHAR_VERGIL] = vergilActorData;
-
-		vergilActorData.newParentBaseAddr = danteActorData;
-		vergilActorData.position = danteActorData.position;
-
-		auto & danteNewMeleeWeapon = danteActorData.newMeleeWeapon[danteActorData.newMeleeWeaponIndex];
-		if ((danteNewMeleeWeapon >= WEAPON_VERGIL_YAMATO) && (danteNewMeleeWeapon <= WEAPON_VERGIL_FORCE_EDGE))
-		{
-			vergilActorData.activeMeleeWeaponIndex = (danteNewMeleeWeapon - WEAPON_VERGIL_YAMATO);
-			vergilActorData.queuedMeleeWeaponIndex = (danteNewMeleeWeapon - WEAPON_VERGIL_YAMATO);
-		}
-
-		return danteActorData;
+		return SpawnActorFunction<ACTOR_DATA_DANTE>(player, entity);
 	}
 	else if (character == CHAR_BOB)
 	{
-		return 0;
+		return SpawnActorFunction<ACTOR_DATA_BOB>(player, entity);
 	}
 	else if (character == CHAR_LADY)
 	{
-		return 0;
+		return SpawnActorFunction<ACTOR_DATA_LADY>(player, entity);
 	}
 	else if (character == CHAR_VERGIL)
 	{
-		auto vergilBaseAddr = CreateActor<ACTOR_DATA_VERGIL>(player, entity);
-		if (!vergilBaseAddr)
-		{
-			return 0;
-		}
-		auto & vergilActorData = *vergilBaseAddr;
-		Actor_actorBaseAddr.Push(vergilActorData);
-
-		vergilActorData.position = mainActorData.position;
-		vergilActorData.style = g_style[player][entity][CHAR_VERGIL];
-
-		if (entity == ENTITY_MAIN)
-		{
-			vergilActorData.newGamepad = player;
-			vergilActorData.newButtonMask = 0xFFFF;
-			vergilActorData.newEnableRightStick = true;
-			vergilActorData.newEnableLeftStick = true;
-		}
-		else
-		{
-			vergilActorData.newGamepad = MAX_PLAYER;
-			return vergilActorData;
-		}
-
-		auto danteBaseAddr = CreateActor<ACTOR_DATA_DANTE>(player, entity);
-		if (!danteBaseAddr)
-		{
-			return 0;
-		}
-		auto & danteActorData = *danteBaseAddr;
-		Actor_actorBaseAddr.Push(danteActorData);
-
-		vergilActorData.newChildBaseAddr[CHAR_DANTE] = danteActorData;
-
-		danteActorData.newParentBaseAddr = vergilActorData;
-		danteActorData.position = vergilActorData.position;
-
-		for_all(uint8, index, MAX_MELEE_WEAPON)
-		{
-			danteActorData.newMeleeWeapon[index] = (WEAPON_DANTE_REBELLION + index);
-		}
-		danteActorData.newMeleeWeaponCount = MAX_MELEE_WEAPON_DANTE;
-		danteActorData.newMeleeWeaponIndex = 0;
-
-		auto & vergilNewMeleeWeapon = vergilActorData.newMeleeWeapon[vergilActorData.newMeleeWeaponIndex];
-		if ((vergilNewMeleeWeapon >= WEAPON_DANTE_REBELLION) && (vergilNewMeleeWeapon <= WEAPON_DANTE_BEOWULF))
-		{
-			danteActorData.meleeWeapon[0] = vergilNewMeleeWeapon;
-			danteActorData.meleeWeapon[1] = WEAPON_VOID;
-			danteActorData.meleeWeaponIndex = 0;
-		}
-
-		return vergilActorData;
+		return SpawnActorFunction<ACTOR_DATA_VERGIL>(player, entity);
 	}
 
 	return 0;
@@ -1718,6 +1725,12 @@ void MainLoop()
 	{
 		spawnActors = false;
 		Log("Spawn Actors.");
+
+
+
+
+
+
 
 		for_all(uint8, player, Config.Actor.playerCount)
 		{
@@ -1765,7 +1778,7 @@ void Update_Init()
 	Windows_GetTickCount(&savedTickCount);
 
 
-	Write<byte8>((appBaseAddr + 0x209460), 0xEB); // Air Stinger
+	//Write<byte8>((appBaseAddr + 0x209460), 0xEB); // Air Stinger
 
 
 

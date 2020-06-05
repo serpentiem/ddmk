@@ -50,21 +50,8 @@ void WritePool()
 void ClearPool()
 {
 	LogFunction();
-
-	//Actor_actorBaseAddr.Clear();
-
-	//Actor_actorBaseAddr.count = 0;
-	
-
-
-
-
-
-	//System_Actor_mainActorBaseAddr = 0;
-	//System_Actor_mainCloneBaseAddr = 0;
-
-	//memset(System_Actor_actorBaseAddr, 0, (MAX_ACTOR * 8));
-	//memset(System_Actor_cloneBaseAddr, 0, (MAX_ACTOR * 8));
+	File_dynamicFiles.Clear();
+	Actor_actorBaseAddr.Clear();
 }
 
 
@@ -162,20 +149,20 @@ void Arcade_CreateMainActor(byte8 * baseAddr)
 
 
 
-// @Todo: Create additional actor dante with all weapons and init newMeleeWeapon.
+
+
+
 
 
 void CreateMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 
+	File_dynamicFiles.Clear();
+	Actor_actorBaseAddr.Clear();
+
 	Actor_actorBaseAddr[0] = baseAddr;
 	Actor_actorBaseAddr.count = 2;
-
-	////Camera_followBaseAddr = baseAddr;
-
-
-
 
 	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
 	actorData.newGamepad = 1;
@@ -183,63 +170,16 @@ void CreateMainActor(byte8 * baseAddr)
 	//actorData.newEnableRightStick = true;
 	//actorData.newEnableLeftStick = true;
 
-
-	//HoboBreak();
-
-	//File_UpdateFileItem(0, pl000);
-
-	//HoboBreak();
-
-
-
-
 	File_UpdateMainFileItems();
-
-
-	//for_all(uint32, index, File_dynamicFiles.count)
-	//{
-	//	//auto & metadata = File_dynamicFiles
-	//}
-
-
-
-
-	File_dynamicFiles.Clear();
-
-
-	//File_UpdateCostumeFileItems(actorData);
-
-
-
-
-
-
-	//for_all(uint8, index, countof(motionHelperDante))
-	//{
-	//	auto & motionId    = motionHelperDante[index].motionId;
-	//	auto & cacheFileId = motionHelperDante[index].cacheFileId;
-
-	//	actorData.motionArchive[motionId] = File_staticFiles[cacheFileId];
-	//}
-
-
+	spawnActors = true;
 
 	Arcade_CreateMainActor(baseAddr);
-
-
-
-	spawnActors = true;
 }
 
 void CreateMainClone(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 	Actor_actorBaseAddr[1] = baseAddr;
-
-
-
-	//System_Actor_mainCloneBaseAddr = baseAddr;
-	//auto & isDefault = *(bool *)(baseAddr + 0xB8C0) = true;
 }
 
 PrivateEnd;
@@ -334,6 +274,10 @@ static void Actor_StageLoadComplete()
 	//	}
 	//}
 	//sect0:
+
+
+
+
 	
 
 
@@ -1131,7 +1075,7 @@ static void StageLoadComplete()
 	// @Todo: Too broad. Separate into smaller chunks.
 	//if (System_Actor_enableArrayExtension)
 	//{
-	//	Actor_StageLoadComplete();
+	Actor_StageLoadComplete();
 	//}
 	if (Config.Game.BossRush.enable)
 	{
@@ -1743,8 +1687,10 @@ dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
 	//	*(dword *)(func.sect2 + 0x15) = MEDIA_SKIP_TRACK;
 	//	//WriteJump((appBaseAddr + 0x32BA90), func.addr);
 	//}
+
+
 	//{
-	//	byte sect0[] =
+	//	constexpr byte8 sect0[] =
 	//	{
 	//		0xC7, 0x47, 0x20, 0x01, 0x00, 0x00, 0x00, //mov [rdi+20],00000001
 	//	};
@@ -1752,6 +1698,9 @@ dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
 	//	memcpy(func.sect0, sect0, sizeof(sect0));
 	//	WriteJump((appBaseAddr + 0x23D0A4), func.addr, 2);
 	//}
+
+
+
 	#pragma endregion
 	#pragma region Game Events
 	//{
