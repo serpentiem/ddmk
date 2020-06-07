@@ -98,6 +98,7 @@ p4.exe</Command>
     <ClCompile Include="Cosmetics\Vergil.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Dante.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="FMOD.cpp">
@@ -212,6 +213,7 @@ p4.exe</Command>
     <ClInclude Include="Cosmetics\Vergil.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Dante.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FMOD.h">

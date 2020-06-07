@@ -3,6 +3,7 @@
 #include "Actor.h"
 #include "Camera.h"
 #include "Config.h"
+#include "Dante.h"
 #include "Event.h"
 #include "FMOD.h"
 #include "Hooks.h"
@@ -28,6 +29,10 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 			Log("Core_Memory_Init failed.");
 			return 0;
 		}
+
+
+
+		
 
 		vp_memset((appBaseAddr + 0x5505B5), 0, 23); // Remove FMODGetCodecDescription label.
 
@@ -73,8 +78,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-		Event_ToggleSkipIntro    (Config.System.Event.skipIntro    );
-		Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
+		//Event_ToggleSkipIntro    (Config.System.Event.skipIntro    );
+		//Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
 		//FMOD_Init();
 		Hooks_Init();
 		//Internal_Init();
@@ -93,6 +98,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 		//Camera_ToggleInvertX(true);
+
+
+		Dante_Init();
 
 
 

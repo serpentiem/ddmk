@@ -540,7 +540,7 @@ void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 		return;
 	}
 
-	actorData.meleeWeaponSwitchTimeout = Config.Dante.meleeWeaponSwitchTimeout;
+	actorData.meleeWeaponSwitchTimeout = Config.Dante.weaponSwitchTimeout;
 
 	actorData.newMeleeWeaponIndex++;
 	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
@@ -637,7 +637,7 @@ void RangedWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 		return;
 	}
 
-	actorData.rangedWeaponSwitchTimeout = Config.Dante.rangedWeaponSwitchTimeout;
+	actorData.rangedWeaponSwitchTimeout = Config.Dante.weaponSwitchTimeout;
 
 	actorData.newRangedWeaponIndex++;
 	if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)

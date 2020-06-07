@@ -133,6 +133,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="Training.cpp" />
+    <ClCompile Include="Dante.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -306,5 +307,6 @@
     <ClInclude Include="..\Core\Vector.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Dante.h" />
   </ItemGroup>
 </Project>

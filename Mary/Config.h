@@ -571,16 +571,28 @@ struct CONFIG
 
 	struct
 	{
-		uint8 airHikeCount[2] = { 1, 1 };
+
+		bool enable = false;
+
+
+
+		struct
+		{
+			bool coreAbility = false;
+			uint8 count[2] = { 1, 1 };
+		}
+		AirHike;
 		struct
 		{
 			uint8 dashCount    [2] = { 3, 3 };
 			uint8 skyStarCount [2] = { 1, 1 };
 			uint8 airTrickCount[2] = { 1, 1 };
+
 		}
 		Trickster;
 		struct
 		{
+			bool infiniteSwordPierce = false;
 			float32 stingerDuration   [2] = { 16 , 16  };
 			float32 stingerRange      [2] = { 560, 560 };
 			float32 airStingerDuration[2] = { 16 , 16  };
@@ -592,6 +604,12 @@ struct CONFIG
 			float32 revolverHeight[2] = { 6.5, 6.5 };
 		}
 		Cerberus;
+		struct
+		{
+			float32 jetStreamDuration[2] = {};
+			float32 jetStreamRange   [2] = {};
+		}
+		AgniAndRudra;
 		struct
 		{
 			float32 reverbShockDuration[2] = { 12 , 12  };
@@ -610,19 +628,32 @@ struct CONFIG
 		Beowulf;
 		struct
 		{
+			bool foursomeTime      = false;
+			bool infiniteRainStorm = false;
+		}
+		EbonyIvory;
+		struct
+		{
 			float32 gunStingerDuration   [2] = { 8  , 8   };
 			float32 gunStingerRange      [2] = { 200, 200 };
 			float32 airGunStingerDuration[2] = { 8  , 8   };
 			float32 airGunStingerRange   [2] = { 200, 200 };
 		}
 		Shotgun;
-		float32 meleeWeaponSwitchTimeout = 1;
-		float32 rangedWeaponSwitchTimeout = 1;
+		struct
+		{
+			bool swapNormalShotAndMultiLock = false;
+			bool instantFullCharge       = false;
+		}
+		Artemis;
+		uint8 crazyComboLevelMultiplier = 6;
+		float32 weaponSwitchTimeout = 1;
+		bool summonedSwords = false;
 	}
 	Dante;
 
-
-
+	// EbonyAndIvory
+	// swapNormalShotAndMultiLock
 
 
 
@@ -670,6 +701,27 @@ struct CONFIG
 		Quicksilver;
 	}
 	Speed;
+
+
+
+
+
+
+	struct
+	{
+		bool enable              = false;
+		bool infiniteHitPoints   = false;
+		bool infiniteMagicPoints = false;
+		bool disableTimer        = false;
+	}
+	Training;
+
+
+
+
+
+
+
 
 
 
@@ -825,45 +877,15 @@ struct CONFIG
 			Mission19;
 		}
 		BossRush;
-		struct
-		{
-			bool enable = false;
-			struct
-			{
-				bool infiniteSwordPierce = false;
-				bool unlockQuickDrive    = false;
-			}
-			Rebellion;
-			struct
-			{
-				bool foursomeTime      = false;
-				bool infiniteRainStorm = false;
-			}
-			EbonyIvory;
-			struct
-			{
-				bool swap    = false;
-				bool instant = false;
-			}
-			Artemis;
-			struct
-			{
-				bool coreAbility = false;
-			}
-			AirHike;
-			struct
-			{
-				uint8 levelMultiplier = 6;
-			}
-			CrazyCombo;
-			struct
-			{
-				float32 melee  = 12;
-				float32 ranged = 12;
-			}
-			WeaponSwitchTimeout;
-		}
-		Dante;
+
+
+
+
+
+
+
+
+
 		struct
 		{
 			bool  enable             = false;
@@ -934,14 +956,6 @@ struct CONFIG
 			bool noDoubleTap          = false;
 		}
 		StyleSwitcher;
-		struct
-		{
-			bool enable              = true;
-			bool infiniteHitPoints   = false;
-			bool infiniteMagicPoints = true;
-			bool disableTimer        = false;
-		}
-		Training;
 		struct
 		{
 			bool enable = false;

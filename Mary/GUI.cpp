@@ -41,6 +41,9 @@ bool GUI_Camera_show     = false;
 bool GUI_Speed_show      = false;
 bool GUI_Teleporter_show = false;
 
+
+// @Todo: Private.
+
 static void BuildFonts()
 {
 	ImGuiIO & io = ImGui::GetIO();
@@ -470,146 +473,146 @@ void GUI_Game_BossRush()
 	GUI_SECTION_FOOTER(Game.BossRush);
 }
 
-void GUI_Game_Dante()
-{
-	auto Toggle = [](CONFIG & config)
-	{
-		//Game_Dante_Rebellion_ToggleInfiniteSwordPierce(config.Game.Dante.Rebellion.infiniteSwordPierce);
-		//Game_Dante_EbonyIvory_ToggleFoursomeTime      (config.Game.Dante.EbonyIvory.foursomeTime      );
-		//Game_Dante_EbonyIvory_ToggleInfiniteRainStorm (config.Game.Dante.EbonyIvory.infiniteRainStorm );
-		//Game_Dante_Artemis_ToggleSwap                 (config.Game.Dante.Artemis.swap                 );
-		//Game_Dante_Artemis_ToggleInstant              (config.Game.Dante.Artemis.instant              );
-		//Game_Dante_AirHike_ToggleCoreAbility          (config.Game.Dante.AirHike.coreAbility          );
-		//Game_Dante_CrazyCombo_SetLevelMultiplier      (config.Game.Dante.CrazyCombo.levelMultiplier   );
-		//Game_Dante_WeaponSwitchTimeout_Melee_Toggle   (config.Game.Dante.WeaponSwitchTimeout.melee    );
-		//Game_Dante_WeaponSwitchTimeout_Ranged_Toggle  (config.Game.Dante.WeaponSwitchTimeout.ranged   );
-	};
-	GUI_SECTION_HEADER_START(Game.Dante);
-	if (Config.Game.Dante.enable)
-	{
-		Toggle(Config);
-	}
-	else
-	{
-		Toggle(DefaultConfig);
-	}
-	GUI_SECTION_HEADER_END(Game.Dante);
-	ImGui::Text(Locale.Game.Dante.Rebellion.header);
-	if (GUI_Checkbox
-	(
-		Locale.Game.Dante.Rebellion.infiniteSwordPierce,
-		Config.Game.Dante.Rebellion.infiniteSwordPierce
-	))
-	{
-		//Game_Dante_Rebellion_ToggleInfiniteSwordPierce(Config.Game.Dante.Rebellion.infiniteSwordPierce);
-	}
-	GUI_Checkbox
-	(
-		Locale.Game.Dante.Rebellion.unlockQuickDrive,
-		Config.Game.Dante.Rebellion.unlockQuickDrive
-	);
-	ImGui::SameLine();
-	GUI_Tooltip(Locale.Game.Dante.Rebellion.unlockQuickDriveDescription);
-	{
-		ImGui::SameLine();
-		auto color = ImVec4(0, 1, 0, 1);
-		if (!demo_pl000_00_3)
-		{
-			color = ImVec4(1, 0, 0, 1);
-		}
-		ImGui::PushStyleColor(ImGuiCol_Text, color);
-		ImGui::Text("demo_pl000_00_3.pac");
-		ImGui::PopStyleColor();
-	}
-	ImGui::Text(Locale.Game.Dante.EbonyIvory.header);
-	if (GUI_Checkbox
-	(
-		Locale.Game.Dante.EbonyIvory.foursomeTime,
-		Config.Game.Dante.EbonyIvory.foursomeTime
-	))
-	{
-		//Game_Dante_EbonyIvory_ToggleFoursomeTime(Config.Game.Dante.EbonyIvory.foursomeTime);
-	}
-	ImGui::SameLine();
-	GUI_Tooltip(Locale.Game.Dante.EbonyIvory.foursomeTimeDescription);
-	if (GUI_Checkbox
-	(
-		Locale.Game.Dante.EbonyIvory.infiniteRainStorm,
-		Config.Game.Dante.EbonyIvory.infiniteRainStorm
-	))
-	{
-		//Game_Dante_EbonyIvory_ToggleInfiniteRainStorm(Config.Game.Dante.EbonyIvory.infiniteRainStorm);
-	}
-	ImGui::Text(Locale.Game.Dante.Artemis.header);
-	if (GUI_Checkbox
-	(
-		Locale.Game.Dante.Artemis.swap,
-		Config.Game.Dante.Artemis.swap
-	))
-	{
-		//Game_Dante_Artemis_ToggleSwap(Config.Game.Dante.Artemis.swap);
-	}
-	if (GUI_Checkbox
-	(
-		Locale.Game.Dante.Artemis.instant,
-		Config.Game.Dante.Artemis.instant
-	))
-	{
-		//Game_Dante_Artemis_ToggleInstant(Config.Game.Dante.Artemis.instant);
-	}
-	ImGui::Text(Locale.Game.Dante.AirHike.header);
-	if (GUI_Checkbox
-	(
-		Locale.Game.Dante.AirHike.coreAbility,
-		Config.Game.Dante.AirHike.coreAbility
-	))
-	{
-		//Game_Dante_AirHike_ToggleCoreAbility(Config.Game.Dante.AirHike.coreAbility);
-	}
-	ImGui::SameLine();
-	GUI_Tooltip(Locale.Game.Dante.AirHike.coreAbilityDescription);
-	ImGui::PushItemWidth(100);
-	ImGui::Text(Locale.Game.Dante.CrazyCombo.header);
-	if (GUI_InputEx
-	(
-		Locale.Game.Dante.CrazyCombo.levelMultiplier,
-		Config.Game.Dante.CrazyCombo.levelMultiplier
-	))
-	{
-		//Game_Dante_CrazyCombo_SetLevelMultiplier(Config.Game.Dante.CrazyCombo.levelMultiplier);
-	}
-	ImGui::PopItemWidth();
-	ImGui::PushItemWidth(150);
-	ImGui::Text(Locale.Game.Dante.WeaponSwitchTimeout.header);
-	if (GUI_InputEx<float32>
-	(
-		Locale.Game.Dante.WeaponSwitchTimeout.melee,
-		Config.Game.Dante.WeaponSwitchTimeout.melee
-	))
-	{
-		//Game_Dante_WeaponSwitchTimeout_Melee_Toggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
-	}
-	if constexpr (debug)
-	{
-		ImGui::Text("%f", Config.Game.Dante.WeaponSwitchTimeout.melee);
-	}
-	if (GUI_InputEx<float32>
-	(
-		Locale.Game.Dante.WeaponSwitchTimeout.ranged,
-		Config.Game.Dante.WeaponSwitchTimeout.ranged
-	))
-	{
-		//Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
-	}
-	if constexpr (debug)
-	{
-		ImGui::Text("%f", Config.Game.Dante.WeaponSwitchTimeout.ranged);
-	}
-	ImGui::PopItemWidth();
-	GUI_SECTION_FOOTER_START(Game.Dante);
-	Toggle(DefaultConfig);
-	GUI_SECTION_FOOTER_END;
-}
+//void GUI_Game_Dante()
+//{
+//	auto Toggle = [](CONFIG & config)
+//	{
+//		//Game_Dante_Rebellion_ToggleInfiniteSwordPierce(config.Game.Dante.Rebellion.infiniteSwordPierce);
+//		//Game_Dante_EbonyIvory_ToggleFoursomeTime      (config.Game.Dante.EbonyIvory.foursomeTime      );
+//		//Game_Dante_EbonyIvory_ToggleInfiniteRainStorm (config.Game.Dante.EbonyIvory.infiniteRainStorm );
+//		//Game_Dante_Artemis_ToggleSwap                 (config.Game.Dante.Artemis.swap                 );
+//		//Game_Dante_Artemis_ToggleInstant              (config.Game.Dante.Artemis.instant              );
+//		//Game_Dante_AirHike_ToggleCoreAbility          (config.Game.Dante.AirHike.coreAbility          );
+//		//Game_Dante_CrazyCombo_SetLevelMultiplier      (config.Game.Dante.CrazyCombo.levelMultiplier   );
+//		//Game_Dante_WeaponSwitchTimeout_Melee_Toggle   (config.Game.Dante.WeaponSwitchTimeout.melee    );
+//		//Game_Dante_WeaponSwitchTimeout_Ranged_Toggle  (config.Game.Dante.WeaponSwitchTimeout.ranged   );
+//	};
+//	GUI_SECTION_HEADER_START(Game.Dante);
+//	if (Config.Game.Dante.enable)
+//	{
+//		Toggle(Config);
+//	}
+//	else
+//	{
+//		Toggle(DefaultConfig);
+//	}
+//	GUI_SECTION_HEADER_END(Game.Dante);
+//	ImGui::Text(Locale.Game.Dante.Rebellion.header);
+//	if (GUI_Checkbox
+//	(
+//		Locale.Game.Dante.Rebellion.infiniteSwordPierce,
+//		Config.Game.Dante.Rebellion.infiniteSwordPierce
+//	))
+//	{
+//		//Game_Dante_Rebellion_ToggleInfiniteSwordPierce(Config.Game.Dante.Rebellion.infiniteSwordPierce);
+//	}
+//	GUI_Checkbox
+//	(
+//		Locale.Game.Dante.Rebellion.unlockQuickDrive,
+//		Config.Game.Dante.Rebellion.unlockQuickDrive
+//	);
+//	ImGui::SameLine();
+//	GUI_Tooltip(Locale.Game.Dante.Rebellion.unlockQuickDriveDescription);
+//	{
+//		ImGui::SameLine();
+//		auto color = ImVec4(0, 1, 0, 1);
+//		if (!demo_pl000_00_3)
+//		{
+//			color = ImVec4(1, 0, 0, 1);
+//		}
+//		ImGui::PushStyleColor(ImGuiCol_Text, color);
+//		ImGui::Text("demo_pl000_00_3.pac");
+//		ImGui::PopStyleColor();
+//	}
+//	ImGui::Text(Locale.Game.Dante.EbonyIvory.header);
+//	if (GUI_Checkbox
+//	(
+//		Locale.Game.Dante.EbonyIvory.foursomeTime,
+//		Config.Game.Dante.EbonyIvory.foursomeTime
+//	))
+//	{
+//		//Game_Dante_EbonyIvory_ToggleFoursomeTime(Config.Game.Dante.EbonyIvory.foursomeTime);
+//	}
+//	ImGui::SameLine();
+//	GUI_Tooltip(Locale.Game.Dante.EbonyIvory.foursomeTimeDescription);
+//	if (GUI_Checkbox
+//	(
+//		Locale.Game.Dante.EbonyIvory.infiniteRainStorm,
+//		Config.Game.Dante.EbonyIvory.infiniteRainStorm
+//	))
+//	{
+//		//Game_Dante_EbonyIvory_ToggleInfiniteRainStorm(Config.Game.Dante.EbonyIvory.infiniteRainStorm);
+//	}
+//	ImGui::Text(Locale.Game.Dante.Artemis.header);
+//	if (GUI_Checkbox
+//	(
+//		Locale.Game.Dante.Artemis.swap,
+//		Config.Game.Dante.Artemis.swap
+//	))
+//	{
+//		//Game_Dante_Artemis_ToggleSwap(Config.Game.Dante.Artemis.swap);
+//	}
+//	if (GUI_Checkbox
+//	(
+//		Locale.Game.Dante.Artemis.instant,
+//		Config.Game.Dante.Artemis.instant
+//	))
+//	{
+//		//Game_Dante_Artemis_ToggleInstant(Config.Game.Dante.Artemis.instant);
+//	}
+//	ImGui::Text(Locale.Game.Dante.AirHike.header);
+//	if (GUI_Checkbox
+//	(
+//		Locale.Game.Dante.AirHike.coreAbility,
+//		Config.Game.Dante.AirHike.coreAbility
+//	))
+//	{
+//		//Game_Dante_AirHike_ToggleCoreAbility(Config.Game.Dante.AirHike.coreAbility);
+//	}
+//	ImGui::SameLine();
+//	GUI_Tooltip(Locale.Game.Dante.AirHike.coreAbilityDescription);
+//	ImGui::PushItemWidth(100);
+//	ImGui::Text(Locale.Game.Dante.CrazyCombo.header);
+//	if (GUI_InputEx
+//	(
+//		Locale.Game.Dante.CrazyCombo.levelMultiplier,
+//		Config.Game.Dante.CrazyCombo.levelMultiplier
+//	))
+//	{
+//		//Game_Dante_CrazyCombo_SetLevelMultiplier(Config.Game.Dante.CrazyCombo.levelMultiplier);
+//	}
+//	ImGui::PopItemWidth();
+//	ImGui::PushItemWidth(150);
+//	ImGui::Text(Locale.Game.Dante.WeaponSwitchTimeout.header);
+//	if (GUI_InputEx<float32>
+//	(
+//		Locale.Game.Dante.WeaponSwitchTimeout.melee,
+//		Config.Game.Dante.WeaponSwitchTimeout.melee
+//	))
+//	{
+//		//Game_Dante_WeaponSwitchTimeout_Melee_Toggle(Config.Game.Dante.WeaponSwitchTimeout.melee);
+//	}
+//	if constexpr (debug)
+//	{
+//		ImGui::Text("%f", Config.Game.Dante.WeaponSwitchTimeout.melee);
+//	}
+//	if (GUI_InputEx<float32>
+//	(
+//		Locale.Game.Dante.WeaponSwitchTimeout.ranged,
+//		Config.Game.Dante.WeaponSwitchTimeout.ranged
+//	))
+//	{
+//		//Game_Dante_WeaponSwitchTimeout_Ranged_Toggle(Config.Game.Dante.WeaponSwitchTimeout.ranged);
+//	}
+//	if constexpr (debug)
+//	{
+//		ImGui::Text("%f", Config.Game.Dante.WeaponSwitchTimeout.ranged);
+//	}
+//	ImGui::PopItemWidth();
+//	GUI_SECTION_FOOTER_START(Game.Dante);
+//	Toggle(DefaultConfig);
+//	GUI_SECTION_FOOTER_END;
+//}
 
 //void GUI_Game_Doppelganger()
 //{
@@ -877,52 +880,52 @@ void GUI_Game_Other()
 //	//GUI_SECTION_FOOTER_END;
 //}
 
-void GUI_Game_Training()
-{
-	auto Toggle = [](CONFIG & config)
-	{
-		Training_ToggleInfiniteHitPoints  (config.Game.Training.infiniteHitPoints  );
-		Training_ToggleInfiniteMagicPoints(config.Game.Training.infiniteMagicPoints);
-		Training_ToggleDisableTimer       (config.Game.Training.disableTimer       );
-	};
-	GUI_SECTION_HEADER_START(Game.Training);
-	if (Config.Game.Training.enable)
-	{
-		Toggle(Config);
-	}
-	else
-	{
-		Toggle(DefaultConfig);
-	}
-	GUI_SECTION_HEADER_END(Game.Training);
-	if (GUI_Checkbox
-	(
-		Locale.Game.Training.infiniteHitPoints,
-		Config.Game.Training.infiniteHitPoints
-	))
-	{
-		Training_ToggleInfiniteHitPoints(Config.Game.Training.infiniteHitPoints);
-	}
-	if (GUI_Checkbox
-	(
-		Locale.Game.Training.infiniteMagicPoints,
-		Config.Game.Training.infiniteMagicPoints
-	))
-	{
-		Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
-	}
-	if (GUI_Checkbox
-	(
-		Locale.Game.Training.disableTimer,
-		Config.Game.Training.disableTimer
-	))
-	{
-		Training_ToggleDisableTimer(Config.Game.Training.disableTimer);
-	}
-	GUI_SECTION_FOOTER_START(Game.Training);
-	Toggle(DefaultConfig);
-	GUI_SECTION_FOOTER_END;
-}
+//void GUI_Game_Training()
+//{
+//	auto Toggle = [](CONFIG & config)
+//	{
+//		Training_ToggleInfiniteHitPoints  (config.Game.Training.infiniteHitPoints  );
+//		Training_ToggleInfiniteMagicPoints(config.Game.Training.infiniteMagicPoints);
+//		Training_ToggleDisableTimer       (config.Game.Training.disableTimer       );
+//	};
+//	GUI_SECTION_HEADER_START(Game.Training);
+//	if (Config.Game.Training.enable)
+//	{
+//		Toggle(Config);
+//	}
+//	else
+//	{
+//		Toggle(DefaultConfig);
+//	}
+//	GUI_SECTION_HEADER_END(Game.Training);
+//	if (GUI_Checkbox
+//	(
+//		Locale.Game.Training.infiniteHitPoints,
+//		Config.Game.Training.infiniteHitPoints
+//	))
+//	{
+//		Training_ToggleInfiniteHitPoints(Config.Game.Training.infiniteHitPoints);
+//	}
+//	if (GUI_Checkbox
+//	(
+//		Locale.Game.Training.infiniteMagicPoints,
+//		Config.Game.Training.infiniteMagicPoints
+//	))
+//	{
+//		Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
+//	}
+//	if (GUI_Checkbox
+//	(
+//		Locale.Game.Training.disableTimer,
+//		Config.Game.Training.disableTimer
+//	))
+//	{
+//		Training_ToggleDisableTimer(Config.Game.Training.disableTimer);
+//	}
+//	GUI_SECTION_FOOTER_START(Game.Training);
+//	Toggle(DefaultConfig);
+//	GUI_SECTION_FOOTER_END;
+//}
 
 void GUI_Game_Vergil()
 {
@@ -1065,8 +1068,8 @@ void GUI_Game_Draw()
 		ImGui::Text("");
 		GUI_Game_BossRush();
 		ImGui::Text("");
-		GUI_Game_Dante();
-		ImGui::Text("");
+		//GUI_Game_Dante();
+		//ImGui::Text("");
 		//GUI_Game_Doppelganger();
 		//ImGui::Text("");
 		//GUI_Game_Mobility();
@@ -1079,8 +1082,8 @@ void GUI_Game_Draw()
 		//ImGui::Text("");
 		//GUI_Game_StyleSwitcher();
 		//ImGui::Text("");
-		GUI_Game_Training();
-		ImGui::Text("");
+		//GUI_Game_Training();
+		//ImGui::Text("");
 		GUI_Game_Vergil();
 		//ImGui::Text("");
 		//GUI_Game_WeaponSwitcher();
@@ -2351,31 +2354,31 @@ void GUI_Overlay_Draw()
 	ImGui::PopStyleVar(3);
 }
 
-void DrawRestartOverlay()
-{
-	//static ImVec2 size = {};
-	//ImVec2 position = {};
-	//position.x = (ImGui::GetIO().DisplaySize.x - size.x) / 2;
-	//position.y = (ImGui::GetIO().DisplaySize.y - size.y) / 2;
-	//ImGui::SetNextWindowPos(position);
-	//ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-	//ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-	//ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
-	//ImGui::PushStyleColor(ImGuiCol_WindowBg, ImGui::GetStyle().Colors[ImGuiCol_WindowBg]);
-	//if (ImGui::Begin("RestartOverlay", &restart, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize))
-	//{
-	//	size = ImGui::GetWindowSize();
-	//	ImGuiIO & io = ImGui::GetIO();
-	//	ImGui::PushFont(io.Fonts->Fonts[1]);
-	//	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
-	//	//ImGui::Text(Locale.restartRequired);
-	//	ImGui::PopStyleColor();
-	//	ImGui::PopFont();
-	//}
-	//ImGui::End();
-	//ImGui::PopStyleColor();
-	//ImGui::PopStyleVar(3);
-}
+// void DrawRestartOverlay()
+// {
+// 	//static ImVec2 size = {};
+// 	//ImVec2 position = {};
+// 	//position.x = (ImGui::GetIO().DisplaySize.x - size.x) / 2;
+// 	//position.y = (ImGui::GetIO().DisplaySize.y - size.y) / 2;
+// 	//ImGui::SetNextWindowPos(position);
+// 	//ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+// 	//ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+// 	//ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+// 	//ImGui::PushStyleColor(ImGuiCol_WindowBg, ImGui::GetStyle().Colors[ImGuiCol_WindowBg]);
+// 	//if (ImGui::Begin("RestartOverlay", &restart, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize))
+// 	//{
+// 	//	size = ImGui::GetWindowSize();
+// 	//	ImGuiIO & io = ImGui::GetIO();
+// 	//	ImGui::PushFont(io.Fonts->Fonts[1]);
+// 	//	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+// 	//	//ImGui::Text(Locale.restartRequired);
+// 	//	ImGui::PopStyleColor();
+// 	//	ImGui::PopFont();
+// 	//}
+// 	//ImGui::End();
+// 	//ImGui::PopStyleColor();
+// 	//ImGui::PopStyleVar(3);
+// }
 
 
 
@@ -2391,9 +2394,11 @@ void DrawRestartOverlay()
 
 
 
-// $ New GUI Start
 
 
+
+
+// $NewGuiStart
 
 inline void NEW_GUI_PushId()
 {
@@ -2406,44 +2411,148 @@ inline void NEW_GUI_PopId()
 	ImGui::PopID();
 }
 
+bool NEW_GUI_Button
+(
+	const char * label,
+	const ImVec2 & size = ImVec2(0, 0)
+)
+{
+	NEW_GUI_PushId();
+	auto update = ImGui::Button(label, size);
+	NEW_GUI_PopId();
+	return update;
+}
 
-//// @Todo: Same treatment.
-//template <typename T>
-//bool NEW_GUI_SliderFunction
-//(
-//	const char * label,
-//	T & var,
-//	T min,
-//	T max
-//);
-//
-//template <>
-//bool NEW_GUI_SliderFunction<uint8>
-//(
-//	const char * label,
-//	uint8 & var,
-//	uint8 min,
-//	uint8 max
-//)
-//{
-//	return ImGui::SliderScalar
-//	(
-//		label,
-//		ImGuiDataType_U8,
-//		&var,
-//		&min,
-//		&max,
-//		"%u"
-//	);
-//}
+bool NEW_GUI_Checkbox
+(
+	const char * label,
+	bool & var,
+	bool save = true
+)
+{
+	NEW_GUI_PushId();
+	auto update = ImGui::Checkbox(label, &var);
+	NEW_GUI_PopId();
+
+	if (update && save)
+	{
+		SaveConfig();
+	}
+
+	return update;
+}
+
+template <typename T>
+bool NEW_GUI_Input
+(
+	const char * label,
+	T & var,
+	T step = 1,
+	const char * format = 0,
+	ImGuiInputTextFlags flags = 0,
+	bool save = true
+)
+{
+	NEW_GUI_PushId();
+	auto update = ImGui::InputScalar
+	(
+		label,
+		(typematch(T, uint8  )) ? ImGuiDataType_U8    :
+		(typematch(T, uint16 )) ? ImGuiDataType_U16   :
+		(typematch(T, uint32 )) ? ImGuiDataType_U32   :
+		(typematch(T, uint64 )) ? ImGuiDataType_U64   :
+		(typematch(T, float32)) ? ImGuiDataType_Float :
+		0,
+		&var,
+		(step == 0) ? 0 : &step,
+		(step == 0) ? 0 : &step,
+		format,
+		flags
+	);
+	NEW_GUI_PopId();
+
+	if (update && save)
+	{
+		SaveConfig();
+	}
+
+	return update;
+}
+
+template <typename T>
+bool NEW_GUI_InputDefault
+(
+	const char * label,
+	T & var,
+	T & defaultVar,
+	T step = 1,
+	const char * format = 0,
+	ImGuiInputTextFlags flags = 0,
+	bool save = true
+)
+{
+	auto & window = *ImGui::GetCurrentWindow();
+	auto & style = ImGui::GetStyle();
+
+	auto buttonSize = ImVec2(ImGui::GetFrameHeight(), ImGui::GetFrameHeight());
+
+	auto itemWidth = window.DC.ItemWidth;
+
+	if (window.DC.ItemWidthStack.Size > 0)
+	{
+		window.DC.ItemWidth -= (buttonSize.x + style.ItemInnerSpacing.x);
+		window.DC.ItemWidthStack.back() = window.DC.ItemWidth;
+	}
+
+	NEW_GUI_PushId();
+	auto update = ImGui::InputScalar
+	(
+		"",
+		(typematch(T, uint8  )) ? ImGuiDataType_U8    :
+		(typematch(T, uint16 )) ? ImGuiDataType_U16   :
+		(typematch(T, uint32 )) ? ImGuiDataType_U32   :
+		(typematch(T, uint64 )) ? ImGuiDataType_U64   :
+		(typematch(T, float32)) ? ImGuiDataType_Float :
+		0,
+		&var,
+		(step == 0) ? 0 : &step,
+		(step == 0) ? 0 : &step,
+		format,
+		flags
+	);
+	NEW_GUI_PopId();
+
+	ImGui::SameLine(0, style.ItemInnerSpacing.x);
+	if (NEW_GUI_Button("D", buttonSize))
+	{
+		update = true;
+		var = defaultVar;
+	}
+
+	ImGui::SameLine(0, style.ItemInnerSpacing.x);
+	ImGui::Text(label);
+
+	if (window.DC.ItemWidthStack.Size > 0)
+	{
+		window.DC.ItemWidth = itemWidth;
+		window.DC.ItemWidthStack.back() = window.DC.ItemWidth;
+	}
+
+	if (update && save)
+	{
+		SaveConfig();
+	}
+
+	return update;
+}
 
 template <typename T>
 bool NEW_GUI_Slider
 (
 	const char * label,
 	T & var,
-	T min,
-	T max,
+	const T min,
+	const T max,
 	bool save = true
 )
 {
@@ -2454,12 +2563,11 @@ bool NEW_GUI_Slider
 	auto update = ImGui::SliderScalar
 	(
 		label,
-		(typematch(T, uint8  )) ? ImGuiDataType_U8     :
-		(typematch(T, uint16 )) ? ImGuiDataType_U16    :
-		(typematch(T, uint32 )) ? ImGuiDataType_U32    :
-		(typematch(T, uint64 )) ? ImGuiDataType_U64    :
-		(typematch(T, float32)) ? ImGuiDataType_Float  :
-		//(typematch(T, float64)) ? ImGuiDataType_Double :
+		(typematch(T, uint8  )) ? ImGuiDataType_U8    :
+		(typematch(T, uint16 )) ? ImGuiDataType_U16   :
+		(typematch(T, uint32 )) ? ImGuiDataType_U32   :
+		(typematch(T, uint64 )) ? ImGuiDataType_U64   :
+		(typematch(T, float32)) ? ImGuiDataType_Float :
 		0,
 		&var,
 		&min,
@@ -2497,76 +2605,7 @@ bool NEW_GUI_Slider
 	return update;
 }
 
-inline void NEW_GUI_Text(const char * format)
-{
-	ImGui::Text(format);
-}
-
-inline bool NEW_GUI_CollapsingHeader
-(
-	const char * label,
-	ImGuiTreeNodeFlags flags = 0
-)
-{
-	return ImGui::CollapsingHeader(label, flags);
-}
-
-inline bool NEW_GUI_Checkbox
-(
-	const char * label,
-	bool & var,
-	bool save = true
-)
-{
-	NEW_GUI_PushId();
-	auto update = ImGui::Checkbox(label, &var);
-	NEW_GUI_PopId();
-
-	if (update && save)
-	{
-		SaveConfig();
-	}
-
-	return update;
-}
-
-inline bool NEW_GUI_TabBarStart
-(
-	const char * label,
-	ImGuiTabBarFlags flags = 0
-)
-{
-	return ImGui::BeginTabBar(label, flags);
-}
-
-inline void NEW_GUI_TabBarEnd()
-{
-	return ImGui::EndTabBar();
-}
-
-inline bool NEW_GUI_Button(const char * label)
-{
-	NEW_GUI_PushId();
-	auto update = ImGui::Button(label);
-	NEW_GUI_PopId();
-	return update;
-}
-
-inline void NEW_GUI_PushItemWidth(float32 width)
-{
-	ImGui::PushItemWidth(width);
-}
-
-inline void NEW_GUI_PopItemWidth()
-{
-	ImGui::PopItemWidth();
-}
-
-
-
-
-
-inline bool NEW_GUI_Selectable
+bool NEW_GUI_Selectable
 (
 	const char * label,
 	bool * selected,
@@ -2579,45 +2618,7 @@ inline bool NEW_GUI_Selectable
 	return update;
 }
 
-
-inline bool NEW_GUI_TabItemStart(const char * label)
-{
-	return ImGui::BeginTabItem(label);
-}
-
-inline void NEW_GUI_TabItemEnd()
-{
-	return ImGui::EndTabItem();
-}
-
-
-
-
-
-
-inline bool NEW_GUI_ComboStart
-(
-	const char * label,
-	const char * preview,
-	ImGuiComboFlags flags = 0
-)
-{
-	return ImGui::BeginCombo(label, preview, flags);
-}
-
-inline void NEW_GUI_ComboEnd()
-{
-	return ImGui::EndCombo();
-}
-
-
-
-
-
-
-
-
-inline bool NEW_GUI_ComboMap
+bool NEW_GUI_ComboMap
 (
 	const char * label,
 	const char ** name,
@@ -2630,7 +2631,7 @@ inline bool NEW_GUI_ComboMap
 {
 	bool update = false;
 	NEW_GUI_PushId();
-	if (NEW_GUI_ComboStart(label, name[index]))
+	if (ImGui::BeginCombo(label, name[index]))
 	{
 		for_all(uint8, mapIndex, count)
 		{
@@ -2645,7 +2646,7 @@ inline bool NEW_GUI_ComboMap
 			}
 			NEW_GUI_PopId();
 		}
-		NEW_GUI_ComboEnd();
+		ImGui::EndCombo();
 	}
 	NEW_GUI_PopId();
 
@@ -2657,7 +2658,7 @@ inline bool NEW_GUI_ComboMap
 	return update;
 }
 
-inline bool NEW_GUI_Combo
+bool NEW_GUI_Combo
 (
 	const char * label,
 	const char ** name,
@@ -2668,7 +2669,7 @@ inline bool NEW_GUI_Combo
 {
 	bool update = false;
 	NEW_GUI_PushId();
-	if (NEW_GUI_ComboStart(label, name[var]))
+	if (ImGui::BeginCombo(label, name[var]))
 	{
 		for_all(uint8, index, count)
 		{
@@ -2681,7 +2682,7 @@ inline bool NEW_GUI_Combo
 			}
 			NEW_GUI_PopId();
 		}
-		NEW_GUI_ComboEnd();
+		ImGui::EndCombo();
 	}
 	NEW_GUI_PopId();
 
@@ -2697,253 +2698,56 @@ inline bool NEW_GUI_Combo
 
 
 
-//template <typename T>
-//bool NEW_GUI_InputFunction
-//(
-//	const char * label,
-//	T & var,
-//	T step,
-//	ImGuiInputTextFlags flags = 0
-//);
-//
-//template <>
-//bool NEW_GUI_InputFunction<uint8>
-//(
-//	const char * label,
-//	uint8 & var,
-//	uint8 step,
-//	ImGuiInputTextFlags flags
-//)
-//{
-//	return ImGui::InputScalar
-//	(
-//		label,
-//		//ImGuiDataType_U8,
-//		(typematch(T, uint8)) ? ImGuiDataType_U8  :
-//		(typematch(T, uint8)) ? ImGuiDataType_U16 :
-//		(typematch(T, uint8)) ? ImGuiDataType_U32 :
-//		ImGuiDataType_U64,
-//		&var,
-//		&step,
-//		&step,
-//		0,
-//		flags
-//	);
-//}
 
 
-//template <typename T>
-//bool NEW_GUI_InputFunction
-//(
-//	const char * label,
-//	T & var,
-//	T step,
-//	ImGuiInputTextFlags flags = 0
-//)
-//{
-//	return ImGui::InputScalar
-//	(
-//		label,
-//		(typematch(T, uint8  )) ? ImGuiDataType_U8     :
-//		(typematch(T, uint16 )) ? ImGuiDataType_U16    :
-//		(typematch(T, uint32 )) ? ImGuiDataType_U32    :
-//		(typematch(T, uint64 )) ? ImGuiDataType_U64    :
-//		(typematch(T, float32)) ? ImGuiDataType_Float  :
-//		(typematch(T, float64)) ? ImGuiDataType_Double :
-//		0,
-//		&var,
-//		&step,
-//		&step,
-//		0,
-//		flags
-//	);
-//}
 
-//template <typename T>
-//bool NEW_GUI_InputFunction
-//(
-//	const char * label,
-//	T & var,
-//	T step,
-//	const char * format,
-//	ImGuiInputTextFlags flags
-//)
-//{
-//	return ImGui::InputScalar
-//	(
-//		label,
-//		(typematch(T, uint8  )) ? ImGuiDataType_U8     :
-//		(typematch(T, uint16 )) ? ImGuiDataType_U16    :
-//		(typematch(T, uint32 )) ? ImGuiDataType_U32    :
-//		(typematch(T, uint64 )) ? ImGuiDataType_U64    :
-//		(typematch(T, float32)) ? ImGuiDataType_Float  :
-//		(typematch(T, float64)) ? ImGuiDataType_Double :
-//		0,
-//		&var,
-//		&step,
-//		&step,
-//		format,
-//		flags
-//	);
-//}
 
-template <typename T>
-bool NEW_GUI_Input
-(
-	const char * label,
-	T & var,
-	T step = 1,
-	const char * format = 0,
-	ImGuiInputTextFlags flags = 0,
-	bool save = true
-)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+inline void NEW_GUI_SectionStart()
 {
-	NEW_GUI_PushId();
-	auto update = ImGui::InputScalar
-	(
-		label,
-		(typematch(T, uint8  )) ? ImGuiDataType_U8     :
-		(typematch(T, uint16 )) ? ImGuiDataType_U16    :
-		(typematch(T, uint32 )) ? ImGuiDataType_U32    :
-		(typematch(T, uint64 )) ? ImGuiDataType_U64    :
-		(typematch(T, float32)) ? ImGuiDataType_Float  :
-		//(typematch(T, float64)) ? ImGuiDataType_Double :
-		0,
-		&var,
-		(step == 0) ? 0 : &step,
-		(step == 0) ? 0 : &step,
-		format,
-		flags
-	);
-	NEW_GUI_PopId();
-
-	if (update && save)
-	{
-		SaveConfig();
-	}
-
-	return update;
+	ImGui::Text("");
 }
 
-
-
-
-
-
-
-
-
-
-
-
-template <typename T>
-void NEW_GUI_Input2
-(
-	const char * label,
-	T(&vars)[2],
-	T step = 1,
-	const char * format = 0,
-	ImGuiInputTextFlags flags = 0,
-	bool save = true
-)
+inline void NEW_GUI_SectionStart(const char * label)
 {
-	NEW_GUI_Input(""   , vars[0], step, format, flags, save);NEW_GUI_SameLine();
-	NEW_GUI_Input(label, vars[1], step, format, flags, save);
+	ImGui::Text(label);
+	ImGui::Text("");
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-//template <typename T>
-//bool NEW_GUI_Input
-//(
-//	const char * label,
-//	T & var,
-//	T step = 1,
-//	bool save = true
-//)
-//{
-//
-//}
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-
-
-
-
-
-
-
-//uint8 step = 1;
-//ImGui::InputScalar("Costume", ImGuiDataType_U8, &costume, &step);
-//
-////ImGui::InputScalar()
-//
-//
-//
-
-
-
-
-
-inline void NEW_GUI_SameLine(float32 x = 0)
+inline void NEW_GUI_SectionEnd()
 {
-	return ImGui::SameLine(x);
+	ImGui::Text("");
+	ImGui::Separator();
+	ImGui::Text("");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-PrivateStart;
 
 const char * characterName[] =
 {
@@ -2952,6 +2756,26 @@ const char * characterName[] =
 	"Lady",
 	"Vergil",
 };
+
+inline void CharacterCostumeSelect
+(
+	uint8 player,
+	uint8 entity
+)
+{
+	auto & character = Config.Actor.character[player][entity];
+	if (character >= MAX_CHAR)
+	{
+		character = CHAR_DANTE;
+	}
+	auto & costume = Config.Actor.costume[player][entity][character];
+	ImGui::PushItemWidth(150);
+	NEW_GUI_Combo("Character", characterName, MAX_CHAR, character);
+	NEW_GUI_Input("Costume", costume);
+	ImGui::PopItemWidth();
+}
+
+// $MeleeWeaponSelectMapStart
 
 uint8 meleeWeaponSelectMapDante[] =
 {
@@ -2993,6 +2817,10 @@ uint8 meleeWeaponSelectMapCount[MAX_CHAR] =
 	countof(meleeWeaponSelectMapVergil),
 };
 
+// $MeleeWeaponSelectMapEnd
+
+// $MeleeWeaponSelectNameStart
+
 const char * meleeWeaponSelectNameDante[] =
 {
 	"Rebellion",
@@ -3033,7 +2861,9 @@ uint8 meleeWeaponSelectNameCount[MAX_CHAR] =
 	countof(meleeWeaponSelectNameVergil),
 };
 
-uint8 meleeWeaponSelectIndex[MAX_ENTITY][MAX_ACTOR][MAX_CHAR][MAX_MELEE_WEAPON] = {};
+// $MeleeWeaponSelectNameEnd
+
+// $RangedWeaponSelectMapStart
 
 uint8 rangedWeaponSelectMapDante[] =
 {
@@ -3060,6 +2890,10 @@ uint8 rangedWeaponSelectMapCount[MAX_CHAR] =
 	0,
 };
 
+// $RangedWeaponSelectMapEnd
+
+// $RangedWeaponSelectNameStart
+
 const char * rangedWeaponSelectNameDante[] =
 {
 	"Ebony & Ivory",
@@ -3085,176 +2919,21 @@ uint8 rangedWeaponSelectNameCount[MAX_CHAR] =
 	0,
 };
 
-uint8 rangedWeaponSelectIndex[MAX_ENTITY][MAX_ACTOR][MAX_CHAR][MAX_RANGED_WEAPON] = {};
+// $RangedWeaponSelectNameEnd
 
-PrivateEnd;
+uint8 meleeWeaponSelectIndex [MAX_PLAYER][MAX_ENTITY][MAX_CHAR][MAX_MELEE_WEAPON ] = {};
+uint8 rangedWeaponSelectIndex[MAX_PLAYER][MAX_ENTITY][MAX_CHAR][MAX_RANGED_WEAPON] = {};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-inline void CharacterCostumeSelect
+inline void WeaponSelect
 (
-	uint8 player,
-	uint8 entity
-)
-{
-	auto & character = Config.Actor.character[player][entity];
-	if (character >= MAX_CHAR)
-	{
-		character = CHAR_DANTE;
-	}
-	auto & costume = Config.Actor.costume[player][entity][character];
-	NEW_GUI_PushItemWidth(150);
-	NEW_GUI_Combo("Character", characterName, MAX_CHAR, character);
-	NEW_GUI_Input("Costume", costume);
-	NEW_GUI_PopItemWidth();
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-template
-<
-	typename T1,
-	typename T2,
-	typename T3,
-	typename T4,
-	typename T5
->
-void UpdateWeaponSelectIndex
-(
-	T1 & configMap,
-	T2   configMapCount,
-	T3 & selectMap,
-	T4 & selectMapCount,
-	T5 & selectIndex
-)
-{
-	if (!selectMap)
-	{
-		return;
-	}
-	for_all(uint8, configMapIndex, configMapCount)
-	{
-		auto & configMapItem   = configMap  [configMapIndex];
-		auto & selectIndexItem = selectIndex[configMapIndex];
-		for_all(uint8, selectMapIndex, selectMapCount)
-		{
-			auto & selectMapItem = selectMap[selectMapIndex];
-			if (selectMapItem == configMapItem)
-			{
-				selectIndexItem = selectMapIndex;
-				break;
-			}
-		}
-	}
-}
-
-inline void UpdateMeleeWeaponSelectIndex
-(
-
-	uint8 player,
-	uint8 entity,
-	uint8 character
-)
-{
-	UpdateWeaponSelectIndex
-	(
-		Config.Actor.meleeWeapon[player][entity][character],
-		MAX_MELEE_WEAPON,
-		meleeWeaponSelectMap     [character],
-		meleeWeaponSelectMapCount[character],
-		meleeWeaponSelectIndex[player][entity][character]
-	);
-}
-
-inline void UpdateRangedWeaponSelectIndex
-(
-	uint8 player,
-	uint8 entity,
-	uint8 character
-)
-{
-	UpdateWeaponSelectIndex
-	(
-		Config.Actor.rangedWeapon[player][entity][character],
-		MAX_RANGED_WEAPON,
-		rangedWeaponSelectMap     [character],
-		rangedWeaponSelectMapCount[character],
-		rangedWeaponSelectIndex[player][entity][character]
-	);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-template
-<
-	typename T1,
-	typename T2,
-	typename T3,
-	typename T4,
-	typename T5,
-	typename T6,
-	typename T7,
-	typename T8
->
-void WeaponSelect
-(
-	T1   label,
-	T2 & configMap,
-	T3   configMapCount,
-	T4 & selectMap,
-	T5 & selectMapCount,
-	T6 & selectName,
-	T7 & selectIndex,
-	T8 & weaponCount
+	const char *  label,
+	uint8      *  configMap,
+	uint8         configMapCount,
+	uint8      *  selectMap,
+	uint8         selectMapCount,
+	const char ** selectName,
+	uint8      *  selectIndex,
+	uint8      &  weaponCount
 )
 {
 	if (!selectMap)
@@ -3262,8 +2941,10 @@ void WeaponSelect
 		return;
 	}
 
-	NEW_GUI_Text(label);
-	NEW_GUI_Text("");
+	ImGui::Text(label);
+	ImGui::Text("");
+
+	ImGui::PushItemWidth(250);
 
 	NEW_GUI_Slider<uint8>("", weaponCount, 1, configMapCount);
 
@@ -3285,7 +2966,9 @@ void WeaponSelect
 		GUI_POP_DISABLE(skip);
 	}
 
-	NEW_GUI_Text("");
+	ImGui::PopItemWidth();
+
+	ImGui::Text("");
 }
 
 inline void MeleeWeaponSelect
@@ -3328,6 +3011,79 @@ inline void RangedWeaponSelect
 	);
 }
 
+inline void UpdateWeaponSelectIndex
+(
+	uint8 * configMap,
+	uint8   configMapCount,
+	uint8 * selectMap,
+	uint8   selectMapCount,
+	uint8 * selectIndex
+)
+{
+	if (!selectMap)
+	{
+		return;
+	}
+	for_all(uint8, configMapIndex, configMapCount)
+	{
+		auto & configMapItem   = configMap  [configMapIndex];
+		auto & selectIndexItem = selectIndex[configMapIndex];
+		for_all(uint8, selectMapIndex, selectMapCount)
+		{
+			auto & selectMapItem = selectMap[selectMapIndex];
+			if (selectMapItem == configMapItem)
+			{
+				selectIndexItem = selectMapIndex;
+				break;
+			}
+		}
+	}
+}
+
+inline void UpdateMeleeWeaponSelectIndex
+(
+	uint8 player,
+	uint8 entity,
+	uint8 character
+)
+{
+	UpdateWeaponSelectIndex
+	(
+		Config.Actor.meleeWeapon[player][entity][character],
+		MAX_MELEE_WEAPON,
+		meleeWeaponSelectMap     [character],
+		meleeWeaponSelectMapCount[character],
+		meleeWeaponSelectIndex[player][entity][character]
+	);
+}
+
+inline void UpdateRangedWeaponSelectIndex
+(
+	uint8 player,
+	uint8 entity,
+	uint8 character
+)
+{
+	UpdateWeaponSelectIndex
+	(
+		Config.Actor.rangedWeapon[player][entity][character],
+		MAX_RANGED_WEAPON,
+		rangedWeaponSelectMap     [character],
+		rangedWeaponSelectMapCount[character],
+		rangedWeaponSelectIndex[player][entity][character]
+	);
+}
+
+inline void UpdateWeaponSelectIndices()
+{
+	for_all(uint8, player   , MAX_PLAYER){
+	for_all(uint8, entity   , MAX_ENTITY){
+	for_all(uint8, character, MAX_CHAR  )
+	{
+		UpdateMeleeWeaponSelectIndex (player, entity, character);
+		UpdateRangedWeaponSelectIndex(player, entity, character);
+	}}}
+}
 
 
 
@@ -3335,6 +3091,50 @@ inline void RangedWeaponSelect
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+inline void ResetActorConfig
+(
+	uint8 player,
+	uint8 entity
+)
+{
+	Config.Actor.character[player][entity] = DefaultConfig.Actor.character[player][entity];
+
+	memcpy(Config.Actor.costume[player][entity], DefaultConfig.Actor.costume[player][entity], sizeof(Config.Actor.costume[player][entity]));
+
+	memcpy(Config.Actor.meleeWeapon [player][entity], DefaultConfig.Actor.meleeWeapon [player][entity], sizeof(Config.Actor.meleeWeapon [player][entity]));
+	memcpy(Config.Actor.rangedWeapon[player][entity], DefaultConfig.Actor.rangedWeapon[player][entity], sizeof(Config.Actor.rangedWeapon[player][entity]));
+
+	memcpy(Config.Actor.meleeWeaponCount [player][entity], DefaultConfig.Actor.meleeWeaponCount [player][entity], sizeof(Config.Actor.meleeWeaponCount [player][entity]));
+	memcpy(Config.Actor.rangedWeaponCount[player][entity], DefaultConfig.Actor.rangedWeaponCount[player][entity], sizeof(Config.Actor.rangedWeaponCount[player][entity]));
+
+	for_all(uint8, character, MAX_CHAR)
+	{
+		UpdateMeleeWeaponSelectIndex (player, entity, character);
+		UpdateRangedWeaponSelectIndex(player, entity, character);
+	}
+}
 
 inline void ActorTabContent
 (
@@ -3342,9 +3142,9 @@ inline void ActorTabContent
 	uint8 entity
 )
 {
-	NEW_GUI_Text("");
+	ImGui::Text("");
 	CharacterCostumeSelect(player, entity);
-	NEW_GUI_Text("");
+	ImGui::Text("");
 
 	auto character = Config.Actor.character[player][entity];
 	if (character >= MAX_CHAR)
@@ -3355,7 +3155,10 @@ inline void ActorTabContent
 	MeleeWeaponSelect (player, entity, character);
 	RangedWeaponSelect(player, entity, character);
 
-	NEW_GUI_Button("Reset");
+	if (NEW_GUI_Button("Reset"))
+	{
+		ResetActorConfig(player, entity);
+	}
 }
 
 inline void ActorTab
@@ -3365,47 +3168,47 @@ inline void ActorTab
 )
 {
 	GUI_PUSH_DISABLE(Config.Actor.playerCount < (player + 1));
-	if (NEW_GUI_TabItemStart(label))
+	if (ImGui::BeginTabItem(label))
 	{
-		if (NEW_GUI_TabBarStart("EntityTabs"))
+		if (ImGui::BeginTabBar("EntityTabs"))
 		{
-			if (NEW_GUI_TabItemStart("Main"))
+			if (ImGui::BeginTabItem("Main"))
 			{
 				ActorTabContent(player, ENTITY_MAIN);
-				NEW_GUI_TabItemEnd();
+				ImGui::EndTabItem();
 			}
-			if (NEW_GUI_TabItemStart("Clone"))
+			if (ImGui::BeginTabItem("Clone"))
 			{
 				ActorTabContent(player, ENTITY_CLONE);
-				NEW_GUI_TabItemEnd();
+				ImGui::EndTabItem();
 			}
-			NEW_GUI_TabBarEnd();
+			ImGui::EndTabBar();
 		}
-		NEW_GUI_TabItemEnd();
+		ImGui::EndTabItem();
 	}
 	GUI_POP_DISABLE(Config.Actor.playerCount < (player + 1));
 }
 
+template <typename T>
+void ActionData
+(
+	const char * label,
+	T(&vars)[2],
+	T(&defaultVars)[2],
+	T step = 1,
+	const char * format = 0,
+	ImGuiInputTextFlags flags = 0,
+	bool save = true
+)
+{
+	auto & style = ImGui::GetStyle();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	ImGui::PushItemWidth(150);
+	NEW_GUI_InputDefault(""   , vars[0], defaultVars[0], step, format, flags, save);
+	ImGui::SameLine(0, style.ItemInnerSpacing.x);
+	NEW_GUI_InputDefault(label, vars[1], defaultVars[1], step, format, flags, save);
+	ImGui::PopItemWidth();
+}
 
 void NEW_GUI_Main()
 {
@@ -3413,36 +3216,25 @@ void NEW_GUI_Main()
 	if (!run)
 	{
 		run = true;
-		ImGui::SetNextWindowSize(ImVec2(800, 500));
+		ImGui::SetNextWindowSize(ImVec2(600, 700));
+		ImGui::SetNextWindowPos(ImVec2(5, 5));
 
 		//ImGuiIO & io = ImGui::GetIO();
 		//io.FontDefault = io.Fonts->Fonts[FONT_MAIN];
 		//ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_8 + Config.Tools.Overlay.fontSizeIndex]);
 
 		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
-
-
 	}
+
 	if (ImGui::Begin("DDMK 2.7", &pause))
 	{
-
 		auto size = ImGui::GetWindowSize();
 		ImGui::Text("width  %f", size.x);
 		ImGui::Text("height %f", size.y);
-
-
-
-
 		//ImGuiIO & io = ImGui::GetIO();
 		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
-
-
 		ImGui::Text("actorCount %u", Actor_actorBaseAddr.count);
-
-
-		NEW_GUI_Text("");
-
-
+		ImGui::Text("");
 		if (NEW_GUI_Button("Update Main Actor"))
 		{
 			auto dest = Actor_actorBaseAddr[0];
@@ -3453,121 +3245,211 @@ void NEW_GUI_Main()
 
 
 
-		//io.Fonts
 
 
 
-
-
-		if (NEW_GUI_CollapsingHeader("Actor"))
+		if (ImGui::CollapsingHeader("Actor"))
 		{
-			NEW_GUI_Text("");
+			ImGui::Text("");
 			if (NEW_GUI_Checkbox("Enable", Config.Actor.enable))
 			{
 				ToggleUpdateWeapon(Config.Actor.enable);
 			}
-			NEW_GUI_Text("");
-			NEW_GUI_PushItemWidth(200);
-			NEW_GUI_Slider<uint8>("Player Count", Config.Actor.playerCount, 1, MAX_ACTOR);
-			NEW_GUI_PopItemWidth();
-			NEW_GUI_Text("");
-
-
-			if (NEW_GUI_TabBarStart("PlayerTabs"))
+			ImGui::Text("");
+			if (NEW_GUI_Button("Reset"))
 			{
-				//NEW_GUI_Text("");
+				memcpy(&Config.Actor, &DefaultConfig.Actor, sizeof(Config.Actor));
+			}
+			ImGui::Text("");
+
+
+
+
+			ImGui::PushItemWidth(200);
+			NEW_GUI_Slider<uint8>("Player Count", Config.Actor.playerCount, 1, MAX_ACTOR);
+			ImGui::PopItemWidth();
+			ImGui::Text("");
+
+
+
+
+			if (ImGui::BeginTabBar("PlayerTabs"))
+			{
 				ActorTab("Player 1", 0);
 				ActorTab("Player 2", 1);
 				ActorTab("Player 3", 2);
 				ActorTab("Player 4", 3);
-				NEW_GUI_TabBarEnd();
+				ImGui::EndTabBar();
 			}
-			NEW_GUI_Text("");
-			//NEW_GUI_Button("Reset");
-			//NEW_GUI_Text("");
+			ImGui::Text("");
 		}
 
-		if (NEW_GUI_CollapsingHeader("Dante"))
+
+
+
+
+		if (ImGui::CollapsingHeader("Dante"))
 		{
-			NEW_GUI_PushItemWidth(100);
+			NEW_GUI_SectionStart();
+			NEW_GUI_Checkbox("Enable", Config.Dante.enable);
+			ImGui::Text("");
+			if (NEW_GUI_Button("Reset"))
+			{
+				memcpy(&Config.Dante, &DefaultConfig.Dante, sizeof(Config.Dante));
+			}
+			NEW_GUI_SectionEnd();
 
-			NEW_GUI_Text("");
-			NEW_GUI_Input2<uint8>("Air Hike Count", Config.Dante.airHikeCount);
-			NEW_GUI_Text("");
 
-			NEW_GUI_Text("Trickster");
-			NEW_GUI_Text("");
-			NEW_GUI_Input2<uint8>("Dash Count"     , Config.Dante.Trickster.dashCount    );
-			NEW_GUI_Input2<uint8>("Sky Star Count" , Config.Dante.Trickster.skyStarCount );
-			NEW_GUI_Input2<uint8>("Air Trick Count", Config.Dante.Trickster.airTrickCount);
-			NEW_GUI_Text("");
 
-			NEW_GUI_Text("Rebellion");
-			NEW_GUI_Text("");
-			NEW_GUI_Input2<float32>("Stinger Duration"    , Config.Dante.Rebellion.stingerDuration   , 1 , "%.0f");
-			NEW_GUI_Input2<float32>("Stinger Range"       , Config.Dante.Rebellion.stingerRange      , 10, "%.0f");
-			NEW_GUI_Input2<float32>("Air Stinger Duration", Config.Dante.Rebellion.airStingerDuration, 1 , "%.0f");
-			NEW_GUI_Input2<float32>("Air Stinger Range"   , Config.Dante.Rebellion.airStingerRange   , 10, "%.0f");
-			NEW_GUI_Text("");
 
-			NEW_GUI_Text("Cerberus");
-			NEW_GUI_Text("");
-			NEW_GUI_Input2<float32>("Revolver Height", Config.Dante.Cerberus.revolverHeight, 0.5f, "%.1f");
-			NEW_GUI_Text("");
 
-			NEW_GUI_Text("Nevan");
-			NEW_GUI_Text("");
-			NEW_GUI_Input2<float32>("Reverb Shock Duration", Config.Dante.Nevan.reverbShockDuration, 1 , "%.0f");
-			NEW_GUI_Input2<float32>("Reverb Shock Range"   , Config.Dante.Nevan.reverbShockRange   , 10, "%.0f");
-			NEW_GUI_Text("");
 
-			NEW_GUI_Text("Beowulf");
-			NEW_GUI_Text("");
+
+
+			
+
+
+
+
+			NEW_GUI_SectionStart("Air Hike");
+			
+			ActionData<uint8>("Count", Config.Dante.AirHike.count, DefaultConfig.Dante.AirHike.count);
+			
+			ImGui::Text("");
+			NEW_GUI_Checkbox("Core Ability", Config.Dante.AirHike.coreAbility);
+			NEW_GUI_SectionEnd();
+
+			NEW_GUI_SectionStart("Trickster");
+			
+			ActionData<uint8>("Dash Count"     , Config.Dante.Trickster.dashCount    , DefaultConfig.Dante.Trickster.dashCount    );
+			ActionData<uint8>("Sky Star Count" , Config.Dante.Trickster.skyStarCount , DefaultConfig.Dante.Trickster.skyStarCount );
+			ActionData<uint8>("Air Trick Count", Config.Dante.Trickster.airTrickCount, DefaultConfig.Dante.Trickster.airTrickCount);
+			
+			NEW_GUI_SectionEnd();
+
+			NEW_GUI_SectionStart("Rebellion");
+			
+			ActionData<float32>("Stinger Duration"    , Config.Dante.Rebellion.stingerDuration   , DefaultConfig.Dante.Rebellion.stingerDuration   , 1 , "%.0f");
+			ActionData<float32>("Stinger Range"       , Config.Dante.Rebellion.stingerRange      , DefaultConfig.Dante.Rebellion.stingerRange      , 10, "%.0f");
+			ActionData<float32>("Air Stinger Duration", Config.Dante.Rebellion.airStingerDuration, DefaultConfig.Dante.Rebellion.airStingerDuration, 1 , "%.0f");
+			ActionData<float32>("Air Stinger Range"   , Config.Dante.Rebellion.airStingerRange   , DefaultConfig.Dante.Rebellion.airStingerRange   , 10, "%.0f");
+			
+			ImGui::Text("");
+			NEW_GUI_Checkbox("Infinite Sword Pierce", Config.Dante.Rebellion.infiniteSwordPierce);
+			NEW_GUI_SectionEnd();
+
+			NEW_GUI_SectionStart("Cerberus");
+			
+			ActionData<float32>("Revolver Height", Config.Dante.Cerberus.revolverHeight, DefaultConfig.Dante.Cerberus.revolverHeight, 0.5f, "%.1f");
+			
+			NEW_GUI_SectionEnd();
+
+			NEW_GUI_SectionStart("Agni & Rudra");
+			
+			ActionData<float32>("Jet-Stream Duration", Config.Dante.AgniAndRudra.jetStreamDuration, DefaultConfig.Dante.AgniAndRudra.jetStreamDuration, 1 , "%.0f");
+			ActionData<float32>("Jet-Stream Range"   , Config.Dante.AgniAndRudra.jetStreamRange   , DefaultConfig.Dante.AgniAndRudra.jetStreamRange   , 10, "%.0f");
+			
+			NEW_GUI_SectionEnd();
+
+
+
+
+
+			NEW_GUI_SectionStart("Nevan");
+			
+			ActionData<float32>("Reverb Shock Duration", Config.Dante.Nevan.reverbShockDuration, DefaultConfig.Dante.Nevan.reverbShockDuration, 1 , "%.0f");
+			ActionData<float32>("Reverb Shock Range"   , Config.Dante.Nevan.reverbShockRange   , DefaultConfig.Dante.Nevan.reverbShockRange   , 10, "%.0f");
+			
+			NEW_GUI_SectionEnd();
+
+
+
+
+			NEW_GUI_SectionStart("Beowulf");
+			
+
+			ActionData<float32>("Straight Duration"    , Config.Dante.Beowulf.straightDuration   , DefaultConfig.Dante.Beowulf.straightDuration   , 1 , "%.0f");
+			ActionData<float32>("Straight Range"       , Config.Dante.Beowulf.straightRange      , DefaultConfig.Dante.Beowulf.straightRange      , 10, "%.0f");
+			ActionData<float32>("Air Straight Duration", Config.Dante.Beowulf.airStraightDuration, DefaultConfig.Dante.Beowulf.airStraightDuration, 1 , "%.0f");
+			ActionData<float32>("Air Straight Range"   , Config.Dante.Beowulf.airStraightRange   , DefaultConfig.Dante.Beowulf.airStraightRange   , 10, "%.0f");
+			ActionData<float32>("Rising Dragon Height" , Config.Dante.Beowulf.risingDragonHeight , DefaultConfig.Dante.Beowulf.risingDragonHeight , 10, "%.1f");
+			
+
+			ImGui::Text("");
 			NEW_GUI_Checkbox("Hide", Config.Dante.Beowulf.hide);
-			NEW_GUI_Input2<float32>("Straight Duration"    , Config.Dante.Beowulf.straightDuration   , 1 , "%.0f");
-			NEW_GUI_Input2<float32>("Straight Range"       , Config.Dante.Beowulf.straightRange      , 10, "%.0f");
-			NEW_GUI_Input2<float32>("Air Straight Duration", Config.Dante.Beowulf.airStraightDuration, 1 , "%.0f");
-			NEW_GUI_Input2<float32>("Air Straight Range"   , Config.Dante.Beowulf.airStraightRange   , 10, "%.0f");
-			NEW_GUI_Input2<float32>("Rising Dragon Height" , Config.Dante.Beowulf.risingDragonHeight , 10, "%.1f");
-			NEW_GUI_Text("");
+			NEW_GUI_SectionEnd();
 
-			NEW_GUI_Text("Shotgun");
-			NEW_GUI_Text("");
-			NEW_GUI_Input2<float32>("Gun Stinger Duration"    , Config.Dante.Shotgun.gunStingerDuration   , 1 , "%.0f");
-			NEW_GUI_Input2<float32>("Gun Stinger Range"       , Config.Dante.Shotgun.gunStingerRange      , 10, "%.0f");
-			NEW_GUI_Input2<float32>("Air Gun Stinger Duration", Config.Dante.Shotgun.airGunStingerDuration, 1 , "%.0f");
-			NEW_GUI_Input2<float32>("Air Gun Stinger Range"   , Config.Dante.Shotgun.airGunStingerRange   , 10, "%.0f");
-			NEW_GUI_Text("");
 
-			NEW_GUI_PopItemWidth();
+
+
+
+			NEW_GUI_SectionStart("Ebony & Ivory");
+			NEW_GUI_Checkbox("Foursome Time", Config.Dante.EbonyIvory.foursomeTime);
+			NEW_GUI_Checkbox("Infinite Rain Storm", Config.Dante.EbonyIvory.infiniteRainStorm);
+			NEW_GUI_SectionEnd();
+
+
+
+			NEW_GUI_SectionStart("Shotgun");
+			
+
+			ActionData<float32>("Gun Stinger Duration"    , Config.Dante.Shotgun.gunStingerDuration   , DefaultConfig.Dante.Shotgun.gunStingerDuration   , 1 , "%.0f");
+			ActionData<float32>("Gun Stinger Range"       , Config.Dante.Shotgun.gunStingerRange      , DefaultConfig.Dante.Shotgun.gunStingerRange      , 10, "%.0f");
+			ActionData<float32>("Air Gun Stinger Duration", Config.Dante.Shotgun.airGunStingerDuration, DefaultConfig.Dante.Shotgun.airGunStingerDuration, 1 , "%.0f");
+			ActionData<float32>("Air Gun Stinger Range"   , Config.Dante.Shotgun.airGunStingerRange   , DefaultConfig.Dante.Shotgun.airGunStingerRange   , 10, "%.0f");
+			
+			NEW_GUI_SectionEnd();
+
+
+
+
+
+			NEW_GUI_SectionStart("Artemis");
+			NEW_GUI_Checkbox("Swap Normal Shot and Multi Lock", Config.Dante.Artemis.swapNormalShotAndMultiLock);
+			NEW_GUI_Checkbox("Instant Full Charge", Config.Dante.Artemis.instantFullCharge);
+			NEW_GUI_SectionEnd();
+
+
+			ImGui::PushItemWidth(150);
+
+
+			//NEW_GUI_SectionStart();
+			NEW_GUI_InputDefault<uint8>("Crazy Combo Level Multiplier", Config.Dante.crazyComboLevelMultiplier, DefaultConfig.Dante.crazyComboLevelMultiplier);
+			NEW_GUI_InputDefault<float32>("Weapon Switch Timeout", Config.Dante.weaponSwitchTimeout, DefaultConfig.Dante.weaponSwitchTimeout, 1, "%.0f");
+			NEW_GUI_Checkbox("Summoned Swords", Config.Dante.summonedSwords);
+
+			ImGui::PopItemWidth();
+
+
+			//NEW_GUI_SectionEnd();
+
+			ImGui::Text("");
+
+			
+
+
+
+
+
+
 		}
 
 
 
 
+		if (ImGui::CollapsingHeader("Training"))
+		{
+			ImGui::Text("");
+			NEW_GUI_Checkbox("Enable", Config.Training.enable);
+			ImGui::Text("");
+			NEW_GUI_Button("Reset");
+			ImGui::Text("");
+			NEW_GUI_Checkbox("Infinite Hit Points", Config.Training.infiniteHitPoints);
+			NEW_GUI_Checkbox("Infinite Magic Points", Config.Training.infiniteMagicPoints);
+			NEW_GUI_Checkbox("Disable Timer", Config.Training.disableTimer);
+			ImGui::Text("");
+		}
 
-
-
-
-
-
-
-
-
-
-
-		//NEW_GUI_CollapsingHeader("Camera");
-		//NEW_GUI_CollapsingHeader("Event");
-		//NEW_GUI_CollapsingHeader("");
-		//NEW_GUI_CollapsingHeader("");
-		//NEW_GUI_CollapsingHeader("");
-		//NEW_GUI_CollapsingHeader("");
-		//NEW_GUI_CollapsingHeader("");
-
-
-		
-
-		//windowFlags = ImGui::GetCurrentWindow()->Flags;
 
 
 
@@ -3641,158 +3523,14 @@ void GUI_Init()
 {
 	BuildFonts();
 
-	// @Todo: Add all UpdateIndex functions.
+	for_all(uint8, player   , MAX_PLAYER){
 	for_all(uint8, entity   , MAX_ENTITY){
-	for_all(uint8, actor    , MAX_ACTOR ){
 	for_all(uint8, character, MAX_CHAR  )
 	{
-		UpdateMeleeWeaponSelectIndex (entity, actor, character);
-		UpdateRangedWeaponSelectIndex(entity, actor, character);
+		UpdateMeleeWeaponSelectIndex (player, entity, character);
+		UpdateRangedWeaponSelectIndex(player, entity, character);
 	}}}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifdef __GARBAGE__
-//template <typename T>
-//bool GUI_Slider_internal
-//(
-//	const char * label,
-//	T & var,
-//	T min,
-//	T max
-//)
-//{
-//	ImGuiDataType dataType = 0;
-//	const char * format = 0;
-//	if constexpr (typematch(T, uint8))
-//	{
-//		dataType = ImGuiDataType_U8;
-//		format = "%u";
-//	}
-//	else if constexpr (typematch(T, uint16))
-//	{
-//		dataType = ImGuiDataType_U16;
-//		format = "%u";
-//	}
-//	else if constexpr (typematch(T, uint32))
-//	{
-//		dataType = ImGuiDataType_U32;
-//		format = "%u";
-//	}
-//	else if constexpr (typematch(T, uint64))
-//	{
-//		dataType = ImGuiDataType_U64;
-//		format = "%u";
-//	}
-//	bool update = false;
-//	ImGui::PushID(GUI_id);
-//	GUI_id++;
-//	if
-//	(
-//		ImGui::SliderScalar
-//		(
-//			label,
-//			dataType,
-//			&var,
-//			&min,
-//			&max
-//		)
-//	)
-//	{
-//		update = true;
-//	}
-//	ImGui::PopID();
-//	return update;
-//}
-
-
-
-
-//template <uint8 weaponType>
-//void UpdateWeaponSelectIndex_internal(uint8 actorIndex)
-//{
-//	auto character = Config.Actor.character[actorIndex];
-//	if (character >= MAX_CHAR)
-//	{
-//		character = CHAR_DANTE;
-//	}
-//	uint8 * configMap      = 0;
-//	uint8   configMapCount = 0;
-//	uint8 * selectMap      = 0;
-//	uint8   selectMapCount = 0;
-//	uint8 * selectIndex    = 0;
-//	if constexpr (weaponType == WEAPON_TYPE_MELEE)
-//	{
-//		configMap      = Config.Actor.meleeWeaponMap[actorIndex][character];
-//		configMapCount = MAX_MELEE_WEAPON;
-//		selectMap      = meleeWeaponSelectMap     [character];
-//		selectMapCount = meleeWeaponSelectMapCount[character];
-//		selectIndex    = meleeWeaponSelectIndex[actorIndex][character];
-//	}
-//	else
-//	{
-//		configMap      = Config.Actor.rangedWeaponMap[actorIndex][character];
-//		configMapCount = MAX_RANGED_WEAPON;
-//		selectMap      = rangedWeaponSelectMap     [character];
-//		selectMapCount = rangedWeaponSelectMapCount[character];
-//		selectIndex    = rangedWeaponSelectIndex[actorIndex][character];
-//	}
-//	if (!selectMap)
-//	{
-//		return;
-//	}
-//	for_all(uint8, configMapIndex, configMapCount)
-//	{
-//		auto & configMapItem   = configMap  [configMapIndex];
-//		auto & selectIndexItem = selectIndex[configMapIndex];
-//		for_all(uint8, selectMapIndex, selectMapCount)
-//		{
-//			auto & selectMapItem = selectMap[selectMapIndex];
-//			if (selectMapItem == configMapItem)
-//			{
-//				selectIndexItem = selectMapIndex;
-//				break;
-//			}
-//		}
-//	}
-//}
 #endif
