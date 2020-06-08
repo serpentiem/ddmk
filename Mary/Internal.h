@@ -50,17 +50,19 @@ typedef void(__fastcall * func_1EB0E0_t)(byte8 * actorData, uint32 index); // Ca
 typedef void(__fastcall * func_1F92C0_t)(byte8 * actorData, uint32 phase); // Queue devil model update.
 typedef void(__fastcall * func_1F97F0_t)(byte8 * actorData, bool playMotion); // Update devil model and play motion.
 typedef void(__fastcall * func_23E560_t)(byte8 * eventData, uint32 position);
-typedef void(__fastcall * func_8AC80_t)(MODEL_DATA & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool); // Play Motion
 typedef void(__fastcall * func_89E30_t)(byte8 * baseAddr, uint32 index); // Call after icon update.
 typedef void(__fastcall * func_1B9FA0_t)(byte8 * addr); // Adjust file pointers.
 typedef void(__fastcall * func_223AC0_t)(byte8 * actorData); // Create Spiral Swords.
 typedef void(__fastcall * func_223F50_t)(byte8 * actorData, uint32 index); // Specific Summoned Swords.
 typedef void(__fastcall * func_223BE0_t)(byte8 * actorData, uint32 index); // Shoot Summoned Sword. Use index 52.
+typedef void(__fastcall * func_5A290_t)(byte8 * body, uint32 group, uint32 index, uint16, uint8, uint8); // Play Motion
+typedef void(__fastcall * func_8AC80_t)(MODEL_DATA & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool); // Play Motion
 typedef void(__fastcall * func_1EFB90_t)(byte8 * actorData, uint32 group, uint32 index, float32, uint8, uint8, uint8); // Play motion and update state.
+typedef void(__fastcall * func_1DFDA0_t)(byte8 *, uint32, uint8, float32, float32, uint8); // Drop1
+typedef void(__fastcall * func_1FB300_t)(byte8 *, uint32, float32); // Drop2
 typedef void(__fastcall * func_1E0800_t)(byte8 * actorData, uint32 index, uint32, uint32); // Trigger Attack
 typedef void(__fastcall * func_211100_t)(byte8 * actorData); // Rebellion Combo 1 Part 3
 typedef void(__fastcall * func_1F01F0_t)(byte8 * actorData, uint32 index); // Reset State
-typedef void(__fastcall * func_5A290_t)(byte8 * body, uint32 group, uint32 index, uint16, uint8, uint8); // Play Motion
 typedef void(__fastcall * func_2F74E0_t)(byte8 * dest, uint32 index); // Show Model Partition
 typedef void(__fastcall * func_2F7350_t)(byte8 * dest, uint32 index); // Hide Model Partition
 
@@ -111,17 +113,19 @@ extern func_1EB0E0_t func_1EB0E0;
 extern func_1F92C0_t func_1F92C0;
 extern func_1F97F0_t func_1F97F0;
 extern func_23E560_t func_23E560;
-extern func_8AC80_t func_8AC80;
 extern func_89E30_t func_89E30;
 extern func_1B9FA0_t func_1B9FA0;
 extern func_223AC0_t func_223AC0;
 extern func_223F50_t func_223F50;
 extern func_223BE0_t func_223BE0;
+extern func_5A290_t func_5A290;
+extern func_8AC80_t func_8AC80;
 extern func_1EFB90_t func_1EFB90;
+extern func_1DFDA0_t func_1DFDA0;
+extern func_1FB300_t func_1FB300;
 extern func_1E0800_t func_1E0800;
 extern func_211100_t func_211100;
 extern func_1F01F0_t func_1F01F0;
-extern func_5A290_t func_5A290;
 extern func_2F74E0_t func_2F74E0;
 extern func_2F7350_t func_2F7350;
 

@@ -86,6 +86,7 @@ var items =
 	[ "useHolyWater"                    , "bool"                      , 0x3EA4                           ],
 	[ "magicPoints"                     , "float32"                   , 0x3EB8                           ],
 	[ "maxMagicPoints"                  , "float32"                   , 0x3EBC                           ],
+	[ ""                 , "uint16"                    , 0x3ED2                           ],
 	[ "cameraDirection"                 , "uint16"                    , 0x3ED8                           ],
 	[ "moveOnly"                        , "bool"                      , 0x3F19                           ],
 

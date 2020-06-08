@@ -3235,11 +3235,47 @@ void NEW_GUI_Main()
 		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
 		ImGui::Text("actorCount %u", Actor_actorBaseAddr.count);
 		ImGui::Text("");
-		if (NEW_GUI_Button("Update Main Actor"))
+
+
+		/*
+		dmc3.exe+204C53 - F3 0F10 05 A1B52D00   - movss xmm0,[dmc3.exe+4E01FC] { (-1.50) }
+
+		*/
+
+		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(Actor_actorBaseAddr[2]);
+
+
+
 		{
-			auto dest = Actor_actorBaseAddr[0];
-			Log("dest %.16llX", dest);
-			UpdateMotionArchives(*reinterpret_cast<ACTOR_DATA_DANTE *>(dest));
+			static uint32  arg2           = 8;
+			static uint8   arg3           = 14;
+			static float32 pull           = -70.0f;
+			static float32 pullMultiplier = -1.5f;
+			static uint8   arg6           = 0;
+			NEW_GUI_Input<uint32 >("arg2"          , arg2          );
+			NEW_GUI_Input<uint8  >("arg3"          , arg3          );
+			NEW_GUI_Input<float32>("pull"          , pull          );
+			NEW_GUI_Input<float32>("pullMultiplier", pullMultiplier);
+			NEW_GUI_Input<uint8  >("arg6"          , arg6          );
+			if (NEW_GUI_Button("Drop1"))
+			{
+				func_1DFDA0(actorData, arg2, arg3, pull, pullMultiplier, arg6);
+			}
+			if (NEW_GUI_Button("Set Y"))
+			{
+				actorData.position.y = 500;
+			}
+		}
+
+		{
+			//static uint32  arg2 = 50000;
+			static float32 arg3 = 1;
+			//NEW_GUI_Input<uint32 >("arg2", arg2);
+			NEW_GUI_Input<float32>("arg3", arg3);
+			if (NEW_GUI_Button("Drop2"))
+			{
+				func_1FB300(actorData, actorData.direction, arg3);
+			}
 		}
 
 

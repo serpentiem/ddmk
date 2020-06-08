@@ -47,17 +47,19 @@ func_1EB0E0_t func_1EB0E0 = 0;
 func_1F92C0_t func_1F92C0 = 0;
 func_1F97F0_t func_1F97F0 = 0;
 func_23E560_t func_23E560 = 0;
-func_8AC80_t func_8AC80 = 0;
 func_89E30_t func_89E30 = 0;
 func_1B9FA0_t func_1B9FA0 = 0;
 func_223AC0_t func_223AC0 = 0;
 func_223F50_t func_223F50 = 0;
 func_223BE0_t func_223BE0 = 0;
+func_5A290_t func_5A290 = 0;
+func_8AC80_t func_8AC80 = 0;
 func_1EFB90_t func_1EFB90 = 0;
+func_1DFDA0_t func_1DFDA0 = 0;
+func_1FB300_t func_1FB300 = 0;
 func_1E0800_t func_1E0800 = 0;
 func_211100_t func_211100 = 0;
 func_1F01F0_t func_1F01F0 = 0;
-func_5A290_t func_5A290 = 0;
 func_2F74E0_t func_2F74E0 = 0;
 func_2F7350_t func_2F7350 = 0;
 
@@ -253,10 +255,6 @@ void Internal_Init()
 		func_23E560 = (func_23E560_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x8AC80), 0, true, true, 0, 0, 0, 0, 1);
-		func_8AC80 = (func_8AC80_t)func.addr;
-	}
-	{
 		auto func = CreateFunction((appBaseAddr + 0x89E30));
 		func_89E30 = (func_89E30_t)func.addr;
 	}
@@ -277,8 +275,24 @@ void Internal_Init()
 		func_223BE0 = (func_223BE0_t)func.addr;
 	}
 	{
+		auto func = CreateFunction((appBaseAddr + 0x5A290), 0, true, true, 0, 0, 0, 0, 2);
+		func_5A290 = (func_5A290_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x8AC80), 0, true, true, 0, 0, 0, 0, 1);
+		func_8AC80 = (func_8AC80_t)func.addr;
+	}
+	{
 		auto func = CreateFunction((appBaseAddr + 0x1EFB90));
 		func_1EFB90 = (func_1EFB90_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x1DFDA0), 0, true, true, 0, 0, 0, 0, 2);
+		func_1DFDA0 = (func_1DFDA0_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x1FB300));
+		func_1FB300 = (func_1FB300_t)func.addr;
 	}
 	{
 		auto func = CreateFunction((appBaseAddr + 0x1E0800));
@@ -291,10 +305,6 @@ void Internal_Init()
 	{
 		auto func = CreateFunction((appBaseAddr + 0x1F01F0));
 		func_1F01F0 = (func_1F01F0_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x5A290), 0, true, true, 0, 0, 0, 0, 2);
-		func_5A290 = (func_5A290_t)func.addr;
 	}
 	{
 		auto func = CreateFunction((appBaseAddr + 0x2F74E0));

@@ -80,7 +80,9 @@ struct ACTOR_DATA
 	_(19);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
-	_(24);
+	_(18);
+	uint16 var_3ED2; // 0x3ED2
+	_(4);
 	uint16 cameraDirection; // 0x3ED8
 	_(63);
 	bool moveOnly; // 0x3F19
@@ -238,7 +240,9 @@ struct ACTOR_DATA_DANTE
 	_(19);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
-	_(24);
+	_(18);
+	uint16 var_3ED2; // 0x3ED2
+	_(4);
 	uint16 cameraDirection; // 0x3ED8
 	_(63);
 	bool moveOnly; // 0x3F19
@@ -430,7 +434,9 @@ struct ACTOR_DATA_BOB
 	_(19);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
-	_(24);
+	_(18);
+	uint16 var_3ED2; // 0x3ED2
+	_(4);
 	uint16 cameraDirection; // 0x3ED8
 	_(63);
 	bool moveOnly; // 0x3F19
@@ -588,7 +594,9 @@ struct ACTOR_DATA_LADY
 	_(19);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
-	_(24);
+	_(18);
+	uint16 var_3ED2; // 0x3ED2
+	_(4);
 	uint16 cameraDirection; // 0x3ED8
 	_(63);
 	bool moveOnly; // 0x3F19
@@ -746,7 +754,9 @@ struct ACTOR_DATA_VERGIL
 	_(19);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
-	_(24);
+	_(18);
+	uint16 var_3ED2; // 0x3ED2
+	_(4);
 	uint16 cameraDirection; // 0x3ED8
 	_(63);
 	bool moveOnly; // 0x3F19
