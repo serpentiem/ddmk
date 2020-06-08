@@ -231,8 +231,10 @@ var extra =
 
 
 	[ "airStinger"   , "bool" ],
-	[ "airStraight"  , "bool" ],
-	[ "airGunStinger", "bool" ],
+	[ "airStingerTickCount"   , "uint64" ],
+
+	//[ "airStraight"  , "bool" ],
+	//[ "airGunStinger", "bool" ],
 
 
 

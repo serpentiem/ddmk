@@ -12,10 +12,10 @@ bool GetWindowPos(HWND window, POINT * point);
 
 inline bool Windows_GetTicksPerSecond(uint64 * var)
 {
-	return QueryPerformanceFrequency((LARGE_INTEGER *)var);
+	return QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER *>(var));
 }
 
 inline bool Windows_GetTickCount(uint64 * var)
 {
-	return QueryPerformanceCounter((LARGE_INTEGER *)var);
+	return QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER *>(var));
 }
