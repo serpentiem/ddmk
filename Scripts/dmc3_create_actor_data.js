@@ -226,6 +226,18 @@ var extra =
 	[ "newBufferedActionPolicy", "uint8"   ],
 	[ "executeMeleeWeaponSwitch", "bool"   ],
 	[ "executeRangedWeaponSwitch", "bool"   ],
+
+
+
+	[ "airStinger"   , "bool" ],
+	[ "airStraight"  , "bool" ],
+	[ "airGunStinger", "bool" ],
+
+
+
+
+
+
 ];
 
 var c = "";

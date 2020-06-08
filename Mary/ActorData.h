@@ -158,6 +158,9 @@ struct ACTOR_DATA
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
 	bool executeRangedWeaponSwitch; // 0xB96E
+	bool airStinger; // 0xB96F
+	bool airStraight; // 0xB970
+	bool airGunStinger; // 0xB971
 
 	operator byte8 *()
 	{
@@ -347,6 +350,9 @@ struct ACTOR_DATA_DANTE
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
 	bool executeRangedWeaponSwitch; // 0xB96E
+	bool airStinger; // 0xB96F
+	bool airStraight; // 0xB970
+	bool airGunStinger; // 0xB971
 
 	operator byte8 *()
 	{
@@ -502,6 +508,9 @@ struct ACTOR_DATA_BOB
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
 	bool executeRangedWeaponSwitch; // 0xB96E
+	bool airStinger; // 0xB96F
+	bool airStraight; // 0xB970
+	bool airGunStinger; // 0xB971
 
 	operator byte8 *()
 	{
@@ -657,6 +666,9 @@ struct ACTOR_DATA_LADY
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
 	bool executeRangedWeaponSwitch; // 0xB96E
+	bool airStinger; // 0xB96F
+	bool airStraight; // 0xB970
+	bool airGunStinger; // 0xB971
 
 	operator byte8 *()
 	{
@@ -830,6 +842,9 @@ struct ACTOR_DATA_VERGIL
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
 	bool executeRangedWeaponSwitch; // 0xB96E
+	bool airStinger; // 0xB96F
+	bool airStraight; // 0xB970
+	bool airGunStinger; // 0xB971
 
 	operator byte8 *()
 	{

@@ -93,6 +93,9 @@ static_assert(offsetof(ACTOR_DATA, newSect) == 0xB964);
 static_assert(offsetof(ACTOR_DATA, newBufferedActionPolicy) == 0xB96C);
 static_assert(offsetof(ACTOR_DATA, executeMeleeWeaponSwitch) == 0xB96D);
 static_assert(offsetof(ACTOR_DATA, executeRangedWeaponSwitch) == 0xB96E);
+static_assert(offsetof(ACTOR_DATA, airStinger) == 0xB96F);
+static_assert(offsetof(ACTOR_DATA, airStraight) == 0xB970);
+static_assert(offsetof(ACTOR_DATA, airGunStinger) == 0xB971);
 
 static_assert(offsetof(ACTOR_DATA_DANTE, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_DANTE, character) == 0x78);
@@ -213,6 +216,9 @@ static_assert(offsetof(ACTOR_DATA_DANTE, newSect) == 0xB964);
 static_assert(offsetof(ACTOR_DATA_DANTE, newBufferedActionPolicy) == 0xB96C);
 static_assert(offsetof(ACTOR_DATA_DANTE, executeMeleeWeaponSwitch) == 0xB96D);
 static_assert(offsetof(ACTOR_DATA_DANTE, executeRangedWeaponSwitch) == 0xB96E);
+static_assert(offsetof(ACTOR_DATA_DANTE, airStinger) == 0xB96F);
+static_assert(offsetof(ACTOR_DATA_DANTE, airStraight) == 0xB970);
+static_assert(offsetof(ACTOR_DATA_DANTE, airGunStinger) == 0xB971);
 
 static_assert(offsetof(ACTOR_DATA_BOB, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_BOB, character) == 0x78);
@@ -307,6 +313,9 @@ static_assert(offsetof(ACTOR_DATA_BOB, newSect) == 0xB964);
 static_assert(offsetof(ACTOR_DATA_BOB, newBufferedActionPolicy) == 0xB96C);
 static_assert(offsetof(ACTOR_DATA_BOB, executeMeleeWeaponSwitch) == 0xB96D);
 static_assert(offsetof(ACTOR_DATA_BOB, executeRangedWeaponSwitch) == 0xB96E);
+static_assert(offsetof(ACTOR_DATA_BOB, airStinger) == 0xB96F);
+static_assert(offsetof(ACTOR_DATA_BOB, airStraight) == 0xB970);
+static_assert(offsetof(ACTOR_DATA_BOB, airGunStinger) == 0xB971);
 
 static_assert(offsetof(ACTOR_DATA_LADY, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_LADY, character) == 0x78);
@@ -401,6 +410,9 @@ static_assert(offsetof(ACTOR_DATA_LADY, newSect) == 0xB964);
 static_assert(offsetof(ACTOR_DATA_LADY, newBufferedActionPolicy) == 0xB96C);
 static_assert(offsetof(ACTOR_DATA_LADY, executeMeleeWeaponSwitch) == 0xB96D);
 static_assert(offsetof(ACTOR_DATA_LADY, executeRangedWeaponSwitch) == 0xB96E);
+static_assert(offsetof(ACTOR_DATA_LADY, airStinger) == 0xB96F);
+static_assert(offsetof(ACTOR_DATA_LADY, airStraight) == 0xB970);
+static_assert(offsetof(ACTOR_DATA_LADY, airGunStinger) == 0xB971);
 
 static_assert(offsetof(ACTOR_DATA_VERGIL, init) == 0x8);
 static_assert(offsetof(ACTOR_DATA_VERGIL, character) == 0x78);
@@ -508,3 +520,6 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, newSect) == 0xB964);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newBufferedActionPolicy) == 0xB96C);
 static_assert(offsetof(ACTOR_DATA_VERGIL, executeMeleeWeaponSwitch) == 0xB96D);
 static_assert(offsetof(ACTOR_DATA_VERGIL, executeRangedWeaponSwitch) == 0xB96E);
+static_assert(offsetof(ACTOR_DATA_VERGIL, airStinger) == 0xB96F);
+static_assert(offsetof(ACTOR_DATA_VERGIL, airStraight) == 0xB970);
+static_assert(offsetof(ACTOR_DATA_VERGIL, airGunStinger) == 0xB971);

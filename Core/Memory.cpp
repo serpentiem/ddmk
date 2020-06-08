@@ -169,6 +169,8 @@ void vp_memcpy
 // @Todo: Add xmm register saving.
 // @Todo: Add size3 for stuff directly after the call.
 // @Todo: Add noReturn argument.
+// @Todo: Create template. Section and size details are known at compile time.
+// @Todo: Omit payload. Just write directly to dest.
 FUNC CreateFunction
 (
 	void   * funcAddr,

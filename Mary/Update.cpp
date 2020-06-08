@@ -1474,67 +1474,131 @@ void DanteVergil(byte8 * baseAddr)
 #define return_if(condition) if (condition) { return; }
 
 
-void DanteAirStinger(byte8 * baseAddr)
-{
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-	if (!actorData.character == CHAR_DANTE)
-	{
-		return;
-	}
-	auto & gamepad = GetGamepad(actorData.newGamepad);
-	if (!(actorData.state & STATE_IN_AIR))
-	{
-		return;
-	}
-
-	if
-	(
-		(gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON)) &&
-		(GetRelativeTiltDirection(actorData) == TILT_DIRECTION_UP) &&
-		(gamepad.buttons[0] & GetBinding(BINDING_MELEE_ATTACK))
-	)
-	{
-		auto & meleeWeapon = actorData.meleeWeapon[actorData.meleeWeaponIndex];
-		switch (meleeWeapon)
-		{
-		case WEAPON_DANTE_REBELLION:
-		{
-			//actorData.bufferedAction = ACTION_DANTE_REBELLION_STINGER_LEVEL_2;
 
 
-			func_1E0800(actorData, ACTION_DANTE_REBELLION_STINGER_LEVEL_2, 0, 0xFFFFFFFF);
+// @Todo: Add jump cancel event to reset Air Stinger.
 
-			//	func_1E0800(actorData, 17, 0, 0xFFFFFFFF);
+//void AerialState(byte8 * baseAddr)
+//{
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//
+//	if (actorData.state & STATE_ON_FLOOR)
+//	{
+//		if ((actorData.state & STATE_ON_FLOOR) != (actorData.lastState & STATE_ON_FLOOR))
+//		{
+//			if (actorData.airStinger)
+//			{
+//				actorData.airStinger = false;
+//			}
+//		}
+//	}
+//}
 
 
 
 
-			break;
-		}
-		case WEAPON_DANTE_BEOWULF:
-		{
-			actorData.bufferedAction = ACTION_DANTE_BEOWULF_STRAIGHT_LEVEL_2;
-			break;
-		}
-		}
-		return;
-	}
 
-	if
-	(
-		(gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON)) &&
-		(GetRelativeTiltDirection(actorData) == TILT_DIRECTION_UP) &&
-		(gamepad.buttons[0] & GetBinding(BINDING_STYLE_ACTION))
-	)
-	{
-		auto & rangedWeapon = actorData.rangedWeapon[actorData.rangedWeaponIndex];
-		if ((actorData.style == STYLE_DANTE_GUNSLINGER) && (rangedWeapon == WEAPON_DANTE_SHOTGUN))
-		{
-			actorData.bufferedAction = ACTION_DANTE_SHOTGUN_GUN_STINGER;
-		}
-		return;
-	}
-}
+
+
+
+//
+//
+//
+//void DanteAirStinger(byte8 * baseAddr)
+//{
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+//	if (!actorData.character == CHAR_DANTE)
+//	{
+//		return;
+//	}
+//	auto & gamepad = GetGamepad(actorData.newGamepad);
+//	if (!(actorData.state & STATE_IN_AIR))
+//	{
+//		return;
+//	}
+//
+//	if
+//	(
+//		(gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON)) &&
+//		(GetRelativeTiltDirection(actorData) == TILT_DIRECTION_UP) &&
+//		(gamepad.buttons[0] & GetBinding(BINDING_MELEE_ATTACK))
+//	)
+//	{
+//		auto & meleeWeapon = actorData.meleeWeapon[actorData.meleeWeaponIndex];
+//		switch (meleeWeapon)
+//		{
+//		case WEAPON_DANTE_REBELLION:
+//		{
+//
+//
+//
+//			if (!actorData.airStinger)
+//			{
+//				actorData.airStinger = true;
+//			}
+//
+//
+//			//func_1E0800(actorData, ACTION_DANTE_REBELLION_STINGER_LEVEL_2, 0, 0xFFFFFFFF);
+//			//actorData.permissions = 0xC08;
+//
+//
+//
+//
+//			//if (!(actorData.state & STATE_BUSY))
+//			//{
+//			//	
+//			//	
+//			//}
+//
+//
+//			
+//
+//
+//
+//
+//
+//
+//			//actorData.bufferedAction = ACTION_DANTE_REBELLION_STINGER_LEVEL_2;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//			//	func_1E0800(actorData, 17, 0, 0xFFFFFFFF);
+//
+//
+//
+//
+//			break;
+//		}
+//		//case WEAPON_DANTE_BEOWULF:
+//		//{
+//		//	actorData.bufferedAction = ACTION_DANTE_BEOWULF_STRAIGHT_LEVEL_2;
+//		//	break;
+//		//}
+//		}
+//		return;
+//	}
+//
+//	//if
+//	//(
+//	//	(gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON)) &&
+//	//	(GetRelativeTiltDirection(actorData) == TILT_DIRECTION_UP) &&
+//	//	(gamepad.buttons[0] & GetBinding(BINDING_STYLE_ACTION))
+//	//)
+//	//{
+//	//	auto & rangedWeapon = actorData.rangedWeapon[actorData.rangedWeaponIndex];
+//	//	if ((actorData.style == STYLE_DANTE_GUNSLINGER) && (rangedWeapon == WEAPON_DANTE_SHOTGUN))
+//	//	{
+//	//		actorData.bufferedAction = ACTION_DANTE_SHOTGUN_GUN_STINGER;
+//	//	}
+//	//	return;
+//	//}
+//}
 
 
 
@@ -1547,9 +1611,13 @@ void ActorLoop(byte8 * baseAddr)
 {
 	g_actorLoopCounter++;
 	DanteVergil(baseAddr);
-	DanteAirStinger(baseAddr);
 
 
+
+	//AerialState(baseAddr);
+
+	//DanteAirStinger(baseAddr);
+	
 
 
 
@@ -1764,7 +1832,37 @@ void MainLoop()
 
 
 
+void AttackDataDante(byte8 * baseAddr)
+{
+	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+	auto & gamepad = GetGamepad(actorData.newGamepad);
 
+	if (actorData.action == ACTION_DANTE_REBELLION_HELM_BREAKER)
+	{
+		actorData.airStinger = false;
+
+
+
+
+
+
+
+		if
+		(
+			(gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON)) &&
+			(GetRelativeTiltDirection(actorData) == TILT_DIRECTION_UP) &&
+			(gamepad.buttons[0] & GetBinding(BINDING_MELEE_ATTACK))
+		)
+		{
+			actorData.airStinger = true;
+		}
+
+		if (actorData.airStinger)
+		{
+			actorData.action = ACTION_DANTE_REBELLION_STINGER_LEVEL_2;
+		}
+	}
+}
 
 
 
@@ -1776,6 +1874,67 @@ void Update_Init()
 	Windows_GetTicksPerSecond(&ticksPerSecond);
 	ticksPerMillisecond = (ticksPerSecond / 1000);
 	Windows_GetTickCount(&savedTickCount);
+
+
+
+
+	{
+		constexpr byte8 sect2[] =
+		{
+			0x0F, 0xB6, 0x81, 0xA4, 0x3F, 0x00, 0x00, //movzx eax,byte ptr [rcx+00003FA4]
+		};
+		auto func = CreateFunction(AttackDataDante, (appBaseAddr + 0x1FDF17), true, true, 0, 0, sizeof(sect2));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteJump((appBaseAddr + 0x1FDF10), func.addr, 2);
+		/*
+		dmc3.exe+1FDF10 - 0FB6 81 A43F0000 - movzx eax,byte ptr [rcx+00003FA4]
+		dmc3.exe+1FDF17 - FF C8            - dec eax
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x80, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+0000B8C0],01
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       //je dmc3.exe+2094A7
+			0x80, 0xBF, 0x2A, 0x3E, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+00003E2A],01
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+2094A7
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x209462), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, airStinger);
+		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x2094A7), 6);
+		WriteAddress((func.sect0 + 0x14), (appBaseAddr + 0x2094A7), 6);
+		WriteJump((appBaseAddr + 0x209459), func.addr, 2);
+		/*
+		dmc3.exe+209459 - 80 BF 2A3E0000 01 - cmp byte ptr [rdi+00003E2A],01
+		dmc3.exe+209460 - 75 45             - jne dmc3.exe+2094A7
+		dmc3.exe+209462 - 0FB7 97 C0000000  - movzx edx,word ptr [rdi+000000C0]
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
 
 
 	//Write<byte8>((appBaseAddr + 0x209460), 0xEB); // Air Stinger
