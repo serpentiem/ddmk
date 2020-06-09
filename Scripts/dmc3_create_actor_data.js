@@ -88,6 +88,12 @@ var items =
 	[ "maxMagicPoints"                  , "float32"                   , 0x3EBC                           ],
 	[ ""                 , "uint16"                    , 0x3ED2                           ],
 	[ "cameraDirection"                 , "uint16"                    , 0x3ED8                           ],
+
+
+
+	[ "airHikeCount"                    , "uint8"                     , 0x3F11                           ],
+	[ "kickJumpCount"                   , "uint8"                     , 0x3F12                           ],
+	[ "wallHikeCount"                   , "uint8"                     , 0x3F13                           ],
 	[ "moveOnly"                        , "bool"                      , 0x3F19                           ],
 
 
@@ -230,8 +236,12 @@ var extra =
 
 
 
-	[ "airStinger"   , "bool" ],
-	[ "airStingerTickCount"   , "uint64" ],
+	//[ "airStinger"   , "bool" ],
+	//[ "airStingerTickCount"   , "uint64" ],
+
+
+	[ "airStingerCount", "uint8" ],
+
 
 	//[ "airStraight"  , "bool" ],
 	//[ "airGunStinger", "bool" ],

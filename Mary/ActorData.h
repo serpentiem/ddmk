@@ -84,7 +84,11 @@ struct ACTOR_DATA
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
-	_(63);
+	_(55);
+	uint8 airHikeCount; // 0x3F11
+	uint8 kickJumpCount; // 0x3F12
+	uint8 wallHikeCount; // 0x3F13
+	_(5);
 	bool moveOnly; // 0x3F19
 	_(138);
 	uint8 action; // 0x3FA4
@@ -160,8 +164,7 @@ struct ACTOR_DATA
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
 	bool executeRangedWeaponSwitch; // 0xB96E
-	bool airStinger; // 0xB96F
-	uint64 airStingerTickCount; // 0xB970
+	uint8 airStingerCount; // 0xB96F
 
 	operator byte8 *()
 	{
@@ -243,7 +246,11 @@ struct ACTOR_DATA_DANTE
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
-	_(63);
+	_(55);
+	uint8 airHikeCount; // 0x3F11
+	uint8 kickJumpCount; // 0x3F12
+	uint8 wallHikeCount; // 0x3F13
+	_(5);
 	bool moveOnly; // 0x3F19
 	_(138);
 	uint8 action; // 0x3FA4
@@ -353,8 +360,7 @@ struct ACTOR_DATA_DANTE
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
 	bool executeRangedWeaponSwitch; // 0xB96E
-	bool airStinger; // 0xB96F
-	uint64 airStingerTickCount; // 0xB970
+	uint8 airStingerCount; // 0xB96F
 
 	operator byte8 *()
 	{
@@ -436,7 +442,11 @@ struct ACTOR_DATA_BOB
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
-	_(63);
+	_(55);
+	uint8 airHikeCount; // 0x3F11
+	uint8 kickJumpCount; // 0x3F12
+	uint8 wallHikeCount; // 0x3F13
+	_(5);
 	bool moveOnly; // 0x3F19
 	_(138);
 	uint8 action; // 0x3FA4
@@ -512,8 +522,7 @@ struct ACTOR_DATA_BOB
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
 	bool executeRangedWeaponSwitch; // 0xB96E
-	bool airStinger; // 0xB96F
-	uint64 airStingerTickCount; // 0xB970
+	uint8 airStingerCount; // 0xB96F
 
 	operator byte8 *()
 	{
@@ -595,7 +604,11 @@ struct ACTOR_DATA_LADY
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
-	_(63);
+	_(55);
+	uint8 airHikeCount; // 0x3F11
+	uint8 kickJumpCount; // 0x3F12
+	uint8 wallHikeCount; // 0x3F13
+	_(5);
 	bool moveOnly; // 0x3F19
 	_(138);
 	uint8 action; // 0x3FA4
@@ -671,8 +684,7 @@ struct ACTOR_DATA_LADY
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
 	bool executeRangedWeaponSwitch; // 0xB96E
-	bool airStinger; // 0xB96F
-	uint64 airStingerTickCount; // 0xB970
+	uint8 airStingerCount; // 0xB96F
 
 	operator byte8 *()
 	{
@@ -754,7 +766,11 @@ struct ACTOR_DATA_VERGIL
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
-	_(63);
+	_(55);
+	uint8 airHikeCount; // 0x3F11
+	uint8 kickJumpCount; // 0x3F12
+	uint8 wallHikeCount; // 0x3F13
+	_(5);
 	bool moveOnly; // 0x3F19
 	_(138);
 	uint8 action; // 0x3FA4
@@ -848,8 +864,7 @@ struct ACTOR_DATA_VERGIL
 	uint8 newBufferedActionPolicy; // 0xB96C
 	bool executeMeleeWeaponSwitch; // 0xB96D
 	bool executeRangedWeaponSwitch; // 0xB96E
-	bool airStinger; // 0xB96F
-	uint64 airStingerTickCount; // 0xB970
+	uint8 airStingerCount; // 0xB96F
 
 	operator byte8 *()
 	{

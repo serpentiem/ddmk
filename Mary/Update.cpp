@@ -1830,7 +1830,7 @@ void MainLoop()
 
 
 
-
+// action on update
 
 void AttackDataDante(byte8 * baseAddr)
 {
@@ -1839,7 +1839,10 @@ void AttackDataDante(byte8 * baseAddr)
 
 	if (actorData.action == ACTION_DANTE_REBELLION_HELM_BREAKER)
 	{
-		actorData.airStinger = false;
+
+
+
+
 
 
 
@@ -1854,11 +1857,6 @@ void AttackDataDante(byte8 * baseAddr)
 			(gamepad.buttons[0] & GetBinding(BINDING_MELEE_ATTACK))
 		)
 		{
-			actorData.airStinger = true;
-		}
-
-		if (actorData.airStinger)
-		{
 			actorData.action = ACTION_DANTE_REBELLION_STINGER_LEVEL_2;
 		}
 	}
@@ -1872,167 +1870,199 @@ void AttackDataDante(byte8 * baseAddr)
 
 
 
+//
+//
+//void DanteStingerStart(byte8 * baseAddr)
+//{
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+//	actorData.airStingerTickCount = 0;
+//}
+//
+//void DanteStinger(byte8 * baseAddr)
+//{
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+//	//if (actorData.state & STATE_IN_AIR)
+//	//{
+//	//	func_1FB300(actorData, actorData.direction, 1);
+//	//}
+//
+//	if (actorData.state & STATE_IN_AIR)
+//	{
+//		if (actorData.airStingerTickCount > 0)
+//		{
+//			uint64  tickCount           = 0;
+//			float32 elapsedMilliseconds = 0;
+//
+//			Windows_GetTickCount(&tickCount);
+//			elapsedMilliseconds = static_cast<float32>((tickCount - actorData.airStingerTickCount) / ticksPerMillisecond);
+//
+//			if (elapsedMilliseconds >= 1000)
+//			{
+//				actorData.airStingerTickCount = 0;
+//
+//
+//				actorData.permissions = PERMISSION_UPDATE | PERMISSION_INTERACTION_STYLE_ATTACK;
+//
+//
+//				//MessageBoxA(0, "At least 500ms passed.", 0, 0);
+//
+//
+//				//func_1DFDA0(actorData, 7, 0, actorData.pull, -1.5f, 0);
+//
+//				//actorData.permissions = PERMISSION_INTERACTION_STYLE_ATTACK;
+//				//actorData.state = STATE_IN_AIR;
+//				//actorData.lastState = actorData.state;
+//
+//				//actorData.var_3E00[2] = 9;
+//
+//				//actorData.pullMultiplier = -1.5f;
+//
+//
+//				//EndMotion(actorData);
+//
+//			}
+//		}
+//	}
+//}
+//
+//void DanteStingerEnd(byte8 * baseAddr)
+//{
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+//	Windows_GetTickCount(&actorData.airStingerTickCount);
+//
+//
+//
+//
+//	//actorData.permissions = PERMISSION_UPDATE | PERMISSION_INTERACTION_STYLE_ATTACK;
+//
+//
+//
+//
+//
+//
+//
+//}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//void UpdateVar3E08(byte8 * baseAddr)
+//{
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//
+//
+//
+//
+//
+//}
+//
+//
+//
+//
+//void UpdatePermissions(byte8 * baseAddr)
+//{
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//
+//	return;
+//
+//
+//	if (actorData.airStinger && (actorData.lastAction == ACTION_DANTE_REBELLION_STINGER_LEVEL_2))
+//	{
+//		actorData.airStinger = false;
+//
+//		actorData.permissions = PERMISSION_UPDATE + PERMISSION_INTERACTION_STYLE_ATTACK;
+//
+//
+//		if (actorData.state & STATE_ON_FLOOR)
+//		{
+//			actorData.state &= ~STATE_ON_FLOOR;
+//		}
+//
+//		actorData.state |= STATE_IN_AIR;
+//		actorData.lastState = actorData.state;
+//
+//
+//		//func_1DFDA0(actorData, 8, 14, 0, -1.5f, 0);
+//
+//		//memset(actorData.var_3E00, 0, 16);
+//		//actorData.var_3E00[0] = 17;
+//		//actorData.var_3E00[1] = 17;
+//		//actorData.var_3E00[2] = 17;
+//		//actorData.var_3E00[3] = 17;
+//		//actorData.var_3E10[0] = 1;
+//
+//		//actorData.action = 132;
+//		//actorData.lastAction = 0;
+//
+//
+//		//actorData.bufferedAction = 132;
+//
+//
+//		//actorData.pull = 0;
+//		//actorData.pullMultiplier = -1.5;
+//
+//
+//		//actorData.nextActionRequestPolicy[NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK] = NEXT_ACTION_REQUEST_POLICY_EXECUTE;
+//		//actorData.nextActionRequestPolicy[NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK] = NEXT_ACTION_REQUEST_POLICY_EXECUTE;
+//
+//
+//
+//	}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//}
+//
 
 
-void DanteStingerStart(byte8 * baseAddr)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void SetAction(byte8 * baseAddr)
 {
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-	actorData.airStingerTickCount = 0;
-}
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	auto & gamepad = GetGamepad(actorData.newGamepad);
 
-void DanteStinger(byte8 * baseAddr)
-{
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-	//if (actorData.state & STATE_IN_AIR)
-	//{
-	//	func_1FB300(actorData, actorData.direction, 1);
-	//}
-
-	if (actorData.state & STATE_IN_AIR)
+	if (actorData.action == ACTION_DANTE_REBELLION_HELM_BREAKER)
 	{
-		if (actorData.airStingerTickCount > 0)
+		if
+		(
+			(gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON)) &&
+			(GetRelativeTiltDirection(actorData) == TILT_DIRECTION_UP) &&
+			(gamepad.buttons[0] & GetBinding(BINDING_MELEE_ATTACK))
+		)
 		{
-			uint64  tickCount           = 0;
-			float32 elapsedMilliseconds = 0;
-
-			Windows_GetTickCount(&tickCount);
-			elapsedMilliseconds = static_cast<float32>((tickCount - actorData.airStingerTickCount) / ticksPerMillisecond);
-
-			if (elapsedMilliseconds >= 1000)
-			{
-				actorData.airStingerTickCount = 0;
-
-
-
-				//MessageBoxA(0, "At least 500ms passed.", 0, 0);
-
-
-				//func_1DFDA0(actorData, 7, 0, actorData.pull, -1.5f, 0);
-
-				//actorData.permissions = PERMISSION_INTERACTION_STYLE_ATTACK;
-				//actorData.state = STATE_IN_AIR;
-				//actorData.lastState = actorData.state;
-
-				//actorData.var_3E00[2] = 9;
-
-				//actorData.pullMultiplier = -1.5f;
-
-
-				//EndMotion(actorData);
-
-			}
+			actorData.action = ACTION_DANTE_REBELLION_STINGER_LEVEL_2;
 		}
 	}
 }
-
-void DanteStingerEnd(byte8 * baseAddr)
-{
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-	Windows_GetTickCount(&actorData.airStingerTickCount);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-void UpdateVar3E08(byte8 * baseAddr)
-{
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-
-
-
-
-
-}
-
-
-
-
-void UpdatePermissions(byte8 * baseAddr)
-{
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-
-
-
-	if (actorData.airStinger && (actorData.lastAction == ACTION_DANTE_REBELLION_STINGER_LEVEL_2))
-	{
-		actorData.airStinger = false;
-
-		actorData.permissions = PERMISSION_INTERACTION_STYLE_ATTACK;
-
-
-		if (actorData.state & STATE_ON_FLOOR)
-		{
-			actorData.state &= ~STATE_ON_FLOOR;
-		}
-
-		actorData.state |= STATE_IN_AIR;
-		actorData.lastState = actorData.state;
-
-
-		//func_1DFDA0(actorData, 8, 14, 0, -1.5f, 0);
-
-		//memset(actorData.var_3E00, 0, 16);
-		//actorData.var_3E00[0] = 17;
-		//actorData.var_3E00[1] = 17;
-		//actorData.var_3E00[2] = 17;
-		//actorData.var_3E00[3] = 17;
-		//actorData.var_3E10[0] = 1;
-
-		//actorData.action = 132;
-		//actorData.lastAction = 0;
-
-
-		//actorData.bufferedAction = 132;
-
-
-		//actorData.pull = 0;
-		//actorData.pullMultiplier = -1.5;
-
-
-		//actorData.nextActionRequestPolicy[NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK] = NEXT_ACTION_REQUEST_POLICY_EXECUTE;
-		//actorData.nextActionRequestPolicy[NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK] = NEXT_ACTION_REQUEST_POLICY_EXECUTE;
-
-
-
-	}
-
-
-
-
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2047,32 +2077,175 @@ void Update_Init()
 	Windows_GetTickCount(&savedTickCount);
 
 
-	//vp_memset((appBaseAddr + 0x204D6E), 0x90, 1032);
-	vp_memset((appBaseAddr + 0x1F9189), 0x90, 8);
-	vp_memset((appBaseAddr + 0x1E7BF2), 0x90, 5);
-
-
-
-
 
 	{
 		constexpr byte8 sect0[] =
 		{
-			0x89, 0x83, 0x60, 0x3E, 0x00, 0x00, //mov [rbx+00003E60],eax
+			0x88, 0x83, 0xA4, 0x3F, 0x00, 0x00, //mov [rbx+00003FA4],al
 		};
 		constexpr byte8 sect1[] =
 		{
 			0x48, 0x8B, 0xCB, //mov rcx,rbx
 		};
-		auto func = CreateFunction(UpdatePermissions, (appBaseAddr + 0x1E0AC5), true, true, sizeof(sect0), sizeof(sect1));
+		auto func = CreateFunction(SetAction, (appBaseAddr + 0x1E6D90), true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x1E0ABF), func.addr, 1);
+		WriteJump((appBaseAddr + 0x1E6D8A), func.addr, 1);
 		/*
-		dmc3.exe+1E0ABF - 89 83 603E0000 - mov [rbx+00003E60],eax
-		dmc3.exe+1E0AC5 - 75 25          - jne dmc3.exe+1E0AEC
+		dmc3.exe+1E6D8A - 88 83 A43F0000        - mov [rbx+00003FA4],al
+		dmc3.exe+1E6D90 - 48 63 83 90640000     - movsxd  rax,dword ptr [rbx+00006490]
 		*/
 	}
+
+
+
+
+
+
+
+	// Skip and permissions when in air.
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xF7, 0x87, 0x64, 0x3E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //test [rdi+00003E64],0002
+			0x75, 0x05,                                                 //jne 7FF64D220011
+			0xE8, 0x00, 0x00, 0x00, 0x00,                               //call dmc3.exe+1E0B60
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x2093F2), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 6) = STATE_IN_AIR;
+		WriteCall((func.sect0 + 0xC), (appBaseAddr + 0x1E0B60));
+		WriteJump((appBaseAddr + 0x2093ED), func.addr);
+		/*
+		dmc3.exe+2093ED - E8 6E77FDFF      - call dmc3.exe+1E0B60
+		dmc3.exe+2093F2 - 0FB7 87 C0000000 - movzx eax,word ptr [rdi+000000C0]
+		*/
+	}
+
+	// Skip leap when in air.
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xF7, 0x87, 0x64, 0x3E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //test [rdi+00003E64],0002
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+2094A7
+			0x80, 0xBF, 0x2A, 0x3E, 0x00, 0x00, 0x01,                   //cmp byte ptr [rdi+00003E2A],01
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+2094A7
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x209462), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 6) = STATE_IN_AIR;
+		WriteAddress((func.sect0 + 0xA), (appBaseAddr + 0x2094A7), 6);
+		WriteAddress((func.sect0 + 0x17), (appBaseAddr + 0x2094A7), 6);
+		WriteJump((appBaseAddr + 0x209459), func.addr, 2);
+		/*
+		dmc3.exe+209459 - 80 BF 2A3E0000 01 - cmp byte ptr [rdi+00003E2A],01
+		dmc3.exe+209460 - 75 45             - jne dmc3.exe+2094A7
+		dmc3.exe+209462 - 0FB7 97 C0000000  - movzx edx,word ptr [rdi+000000C0]
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//{
+	//	constexpr byte8 sect2[] =
+	//	{
+	//		0x0F, 0xB6, 0x81, 0xA4, 0x3F, 0x00, 0x00, //movzx eax,byte ptr [rcx+00003FA4]
+	//	};
+	//	auto func = CreateFunction(AttackDataDante, (appBaseAddr + 0x1FDF17), true, true, 0, 0, sizeof(sect2));
+	//	memcpy(func.sect2, sect2, sizeof(sect2));
+	//	WriteJump((appBaseAddr + 0x1FDF10), func.addr, 2);
+	//	/*
+	//	dmc3.exe+1FDF10 - 0FB6 81 A43F0000 - movzx eax,byte ptr [rcx+00003FA4]
+	//	dmc3.exe+1FDF17 - FF C8            - dec eax
+	//	*/
+	//}
+
+
+
+
+
+	//vp_memset((appBaseAddr + 0x204D6E), 0x90, 1032);
+	//vp_memset((appBaseAddr + 0x1F9189), 0x90, 8);
+	//vp_memset((appBaseAddr + 0x1E7BF2), 0x90, 5);
+
+
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1DFDA0
+	//	};
+
+
+
+
+
+
+
+
+	//	/*
+	//	dmc3.exe+1E7BF2 - E8 A981FFFF - call dmc3.exe+1DFDA0
+	//	dmc3.exe+1E7BF7 - B0 01       - mov al,01
+	//	*/
+	//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x89, 0x83, 0x60, 0x3E, 0x00, 0x00, //mov [rbx+00003E60],eax
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCB, //mov rcx,rbx
+	//	};
+	//	auto func = CreateFunction(UpdatePermissions, (appBaseAddr + 0x1E0AC5), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x1E0ABF), func.addr, 1);
+	//	/*
+	//	dmc3.exe+1E0ABF - 89 83 603E0000 - mov [rbx+00003E60],eax
+	//	dmc3.exe+1E0AC5 - 75 25          - jne dmc3.exe+1E0AEC
+	//	*/
+	//}
 
 
 
@@ -2122,67 +2295,67 @@ void Update_Init()
 
 
 
-	{
-		constexpr byte8 sect0[] =
-		{
-			0xC6, 0x87, 0x2A, 0x3E, 0x00, 0x00, 0x01, //mov byte ptr [rdi+00003E2A],01
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xCF, //mov rcx,rdi
-		};
-		auto func = CreateFunction(DanteStingerStart, (appBaseAddr + 0x2093E3), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x2093DC), func.addr, 2);
-		/*
-		dmc3.exe+2093DC - C6 87 2A3E0000 01 - mov byte ptr [rdi+00003E2A],01
-		dmc3.exe+2093E3 - EB 74             - jmp dmc3.exe+209459
-		*/
-	}
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0xC6, 0x87, 0x2A, 0x3E, 0x00, 0x00, 0x01, //mov byte ptr [rdi+00003E2A],01
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCF, //mov rcx,rdi
+	//	};
+	//	auto func = CreateFunction(DanteStingerStart, (appBaseAddr + 0x2093E3), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x2093DC), func.addr, 2);
+	//	/*
+	//	dmc3.exe+2093DC - C6 87 2A3E0000 01 - mov byte ptr [rdi+00003E2A],01
+	//	dmc3.exe+2093E3 - EB 74             - jmp dmc3.exe+209459
+	//	*/
+	//}
 
 
 
 
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x40, 0x57,             //push rdi
-			0x48, 0x83, 0xEC, 0x60, //sub rsp,60
-		};
-		auto func = CreateFunction(DanteStinger, (appBaseAddr + 0x2090F6), true, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteJump((appBaseAddr + 0x2090F0), func.addr, 1);
-		/*
-		dmc3.exe+2090F0 - 40 57             - push rdi
-		dmc3.exe+2090F2 - 48 83 EC 60       - sub rsp,60
-		dmc3.exe+2090F6 - 80 B9 29620000 01 - cmp byte ptr [rcx+00006229],01
-		*/
-	}
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x40, 0x57,             //push rdi
+	//		0x48, 0x83, 0xEC, 0x60, //sub rsp,60
+	//	};
+	//	auto func = CreateFunction(DanteStinger, (appBaseAddr + 0x2090F6), true, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteJump((appBaseAddr + 0x2090F0), func.addr, 1);
+	//	/*
+	//	dmc3.exe+2090F0 - 40 57             - push rdi
+	//	dmc3.exe+2090F2 - 48 83 EC 60       - sub rsp,60
+	//	dmc3.exe+2090F6 - 80 B9 29620000 01 - cmp byte ptr [rcx+00006229],01
+	//	*/
+	//}
 
 
 
 
 
 
-	{
-		constexpr byte8 sect0[] =
-		{
-			0xC6, 0x87, 0x2A, 0x3E, 0x00, 0x00, 0x00, //mov byte ptr [rdi+00003E2A],00
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xCF, //mov rcx,rdi
-		};
-		auto func = CreateFunction(DanteStingerEnd, (appBaseAddr + 0x2091A0), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x209199), func.addr, 2);
-		/*
-		dmc3.exe+209199 - C6 87 2A3E0000 00 - mov byte ptr [rdi+00003E2A],00
-		dmc3.exe+2091A0 - 48 8B CF          - mov rcx,rdi
-		*/
-	}
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0xC6, 0x87, 0x2A, 0x3E, 0x00, 0x00, 0x00, //mov byte ptr [rdi+00003E2A],00
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCF, //mov rcx,rdi
+	//	};
+	//	auto func = CreateFunction(DanteStingerEnd, (appBaseAddr + 0x2091A0), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x209199), func.addr, 2);
+	//	/*
+	//	dmc3.exe+209199 - C6 87 2A3E0000 00 - mov byte ptr [rdi+00003E2A],00
+	//	dmc3.exe+2091A0 - 48 8B CF          - mov rcx,rdi
+	//	*/
+	//}
 
 
 
@@ -2215,29 +2388,30 @@ void Update_Init()
 
 
 
+	//// And Permissions
 
 
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0xBA, 0x01, 0x00, 0x00, 0x00,                               //mov edx,00000001
+	//		0xF7, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //test [rdi+0000B8C0],00000002
+	//		0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+2093F2
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x2093EA), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 7) = offsetof(ACTOR_DATA, state);
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = STATE_IN_AIR;
+	//	WriteAddress((func.sect0 + 0xF), (appBaseAddr + 0x2093F2), 6);
+	//	WriteJump((appBaseAddr + 0x2093E5), func.addr);
+	//	/*
+	//	dmc3.exe+2093E5 - BA 01000000      - mov edx,00000001
+	//	dmc3.exe+2093EA - 48 8B CF         - mov rcx,rdi
+	//	dmc3.exe+2093ED - E8 6E77FDFF      - call dmc3.exe+1E0B60
+	//	dmc3.exe+2093F2 - 0FB7 87 C0000000 - movzx eax,word ptr [rdi+000000C0]
+	//	*/
+	//}
 
-	{
-		constexpr byte8 sect0[] =
-		{
-			0xBA, 0x01, 0x00, 0x00, 0x00,                               //mov edx,00000001
-			0xF7, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //test [rdi+0000B8C0],00000002
-			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         //jne dmc3.exe+2093F2
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x2093EA), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 7) = offsetof(ACTOR_DATA, state);
-		*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = STATE_IN_AIR;
-		WriteAddress((func.sect0 + 0xF), (appBaseAddr + 0x2093F2), 6);
-		WriteJump((appBaseAddr + 0x2093E5), func.addr);
-		/*
-		dmc3.exe+2093E5 - BA 01000000      - mov edx,00000001
-		dmc3.exe+2093EA - 48 8B CF         - mov rcx,rdi
-		dmc3.exe+2093ED - E8 6E77FDFF      - call dmc3.exe+1E0B60
-		dmc3.exe+2093F2 - 0FB7 87 C0000000 - movzx eax,word ptr [rdi+000000C0]
-		*/
-	}
 
 
 
@@ -2250,19 +2424,6 @@ void Update_Init()
 
 
 
-	{
-		constexpr byte8 sect2[] =
-		{
-			0x0F, 0xB6, 0x81, 0xA4, 0x3F, 0x00, 0x00, //movzx eax,byte ptr [rcx+00003FA4]
-		};
-		auto func = CreateFunction(AttackDataDante, (appBaseAddr + 0x1FDF17), true, true, 0, 0, sizeof(sect2));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		WriteJump((appBaseAddr + 0x1FDF10), func.addr, 2);
-		/*
-		dmc3.exe+1FDF10 - 0FB6 81 A43F0000 - movzx eax,byte ptr [rcx+00003FA4]
-		dmc3.exe+1FDF17 - FF C8            - dec eax
-		*/
-	}
 
 
 
@@ -2273,30 +2434,30 @@ void Update_Init()
 
 
 
+	// allow jump
 
 
 
-
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x80, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+0000B8C0],01
-			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       //je dmc3.exe+2094A7
-			0x80, 0xBF, 0x2A, 0x3E, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+00003E2A],01
-			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+2094A7
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x209462), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, airStinger);
-		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x2094A7), 6);
-		WriteAddress((func.sect0 + 0x14), (appBaseAddr + 0x2094A7), 6);
-		WriteJump((appBaseAddr + 0x209459), func.addr, 2);
-		/*
-		dmc3.exe+209459 - 80 BF 2A3E0000 01 - cmp byte ptr [rdi+00003E2A],01
-		dmc3.exe+209460 - 75 45             - jne dmc3.exe+2094A7
-		dmc3.exe+209462 - 0FB7 97 C0000000  - movzx edx,word ptr [rdi+000000C0]
-		*/
-	}
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x80, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+0000B8C0],01
+	//		0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       //je dmc3.exe+2094A7
+	//		0x80, 0xBF, 0x2A, 0x3E, 0x00, 0x00, 0x01, //cmp byte ptr [rdi+00003E2A],01
+	//		0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       //jne dmc3.exe+2094A7
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x209462), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, airStinger);
+	//	WriteAddress((func.sect0 + 7), (appBaseAddr + 0x2094A7), 6);
+	//	WriteAddress((func.sect0 + 0x14), (appBaseAddr + 0x2094A7), 6);
+	//	WriteJump((appBaseAddr + 0x209459), func.addr, 2);
+	//	/*
+	//	dmc3.exe+209459 - 80 BF 2A3E0000 01 - cmp byte ptr [rdi+00003E2A],01
+	//	dmc3.exe+209460 - 75 45             - jne dmc3.exe+2094A7
+	//	dmc3.exe+209462 - 0FB7 97 C0000000  - movzx edx,word ptr [rdi+000000C0]
+	//	*/
+	//}
 
 
 
