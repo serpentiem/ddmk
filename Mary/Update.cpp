@@ -1758,7 +1758,7 @@ byte8 * SpawnActorFunction
 	
 	parentActorData.position = { x, y, z, 1 };
 	parentActorData.rotation = rotation;
-	parentActorData.var_3E10[8] = event;
+	
 
 
 
@@ -1770,6 +1770,10 @@ byte8 * SpawnActorFunction
 
 	if (entity == ENTITY_MAIN)
 	{
+		parentActorData.var_3E10[8] = event;
+
+
+
 		parentActorData.newEnable = true;
 		parentActorData.newGamepad = player;
 		parentActorData.newButtonMask = 0xFFFF;
@@ -1780,7 +1784,7 @@ byte8 * SpawnActorFunction
 	{
 		parentActorData.position.y = 10500;
 
-		parentActorData.var_3E10[8] = 0;
+		//parentActorData.var_3E10[8] = 0;
 
 
 
@@ -2526,6 +2530,18 @@ void ResetMobilityCounters(byte8 * baseAddr)
 
 
 
+
+void SetStartPosition(byte8 * baseAddr)
+{
+	LogFunction(baseAddr);
+
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+
+	actorData.var_3E10[8] = 0;
+}
+
+
+
 void Update_Init()
 {
 	LogFunction();
@@ -2535,6 +2551,27 @@ void Update_Init()
 
 
 	vp_memset((appBaseAddr + 0x1F9189), 0x90, 8); // disable sub
+
+
+
+
+
+
+
+	{
+		auto func = CreateFunction(SetStartPosition);
+		WriteJump((appBaseAddr + 0x1DFD04), func.addr);
+		/*
+		dmc3.exe+1DFD04 - C3 - ret
+		*/
+	}
+
+
+
+
+
+
+
 
 
 

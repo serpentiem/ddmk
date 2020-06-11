@@ -177,7 +177,7 @@ void CreateMainActor(byte8 * baseAddr)
 	Actor_actorBaseAddr[0] = baseAddr;
 	Actor_actorBaseAddr.count = 2;
 
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	//auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
 	//actorData.newGamepad = 1;
 	//actorData.newButtonMask = 0xFFFF;
 	//actorData.newEnableRightStick = true;
@@ -186,7 +186,7 @@ void CreateMainActor(byte8 * baseAddr)
 
 
 
-	actorData.var_3E10[8] = 0;
+	//actorData.var_3E10[8] = 0;
 
 
 
