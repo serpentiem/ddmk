@@ -519,7 +519,7 @@ void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 
 
 	auto & gamepad = GetGamepad(actorData.newGamepad);
-	auto & execute = actorData.executeMeleeWeaponSwitch;
+	auto & execute = actorData.newExecuteMeleeWeaponSwitch;
 
 	if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
 	{
@@ -616,7 +616,7 @@ void RangedWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 
 
 	auto & gamepad = GetGamepad(actorData.newGamepad);
-	auto & execute = actorData.executeRangedWeaponSwitch;
+	auto & execute = actorData.newExecuteRangedWeaponSwitch;
 
 	if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_GUN)))
 	{

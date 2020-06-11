@@ -926,6 +926,60 @@ enum FILE_MODE_
 
 
 
+
+struct STAGE_POSITION_DATA
+{
+	uint8 event;
+	_(3);
+	float32 x;
+	float32 y;
+	float32 z;
+	float32 rotation;
+	_(28);
+};
+
+static_assert(sizeof(STAGE_POSITION_DATA) == 48);
+//constexpr auto size = sizeof(STAGE_POSITION_DATA);
+
+
+
+struct EVENT_DATA
+{
+	_(24);
+	uint32 room;
+	uint32 position;
+	uint32 index;
+};
+
+struct NEXT_EVENT_DATA
+{
+	_(356);
+	uint16 room;
+	uint16 position;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 struct ARCHIVE_DATA
 {
 	byte8 signature[4];

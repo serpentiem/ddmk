@@ -457,6 +457,15 @@ T * CreateActor
 
 	func_1DFC20(actorData);
 
+
+	//auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+
+
+	//
+	//func_23E560(pool[9], 0);
+
+
+
 	return &actorData;
 }
 

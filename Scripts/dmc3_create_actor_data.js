@@ -22,7 +22,7 @@ var items =
 	[ "position"                        , "vec4"                      , 0x80                             ],
 	[ "pull"                        , "float32"                      , 0x94                             ],
 	[ "pullMultiplier"                        , "float32"                      , 0xA4                             ],
-	[ "direction"                       , "uint16"                    , 0xC0                             ],
+	[ "rotation"                       , "uint16"                    , 0xC0                             ],
 	[ "id"                              , "uint8"                     , 0x118                            ],
 	[ "isClone"                         , "bool"                      , 0x11C                            ], //but has size of uint32.
 	[ "visible"                         , "uint32"                    , 0x120                            ],
@@ -105,6 +105,10 @@ var items =
 	[ "expertise[16]"                   , "byte32"                    , 0x3FEC                           ],
 	[ "maxHitPoints"                    , "float32"                   , 0x40EC                           ],
 	[ "hitPoints"                       , "float32"                   , 0x411C                           ],
+
+
+
+
 	[ "targetBaseAddr"                  , "byte8 *"                   , 0x6328                           ],
 	[ "style"                           , "uint32"                    , 0x6338                           ],
 	[ "styleLevel"                      , "uint32"                    , 0x6358                           ],
@@ -116,6 +120,14 @@ var items =
 	[ "quicksilver"                     , "bool"                      , 0x6361, CHAR_DANTE               ],
 	[ "doppelganger"                    , "bool"                      , 0x6362, CHAR_DANTE               ],
 	[ "styleExperience"                 , "float32"                   , 0x6364                           ],
+
+
+
+
+
+
+
+
 
 
 	[ "cloneIsActive"                   , "bool"                      , 0x6454               ],
@@ -182,7 +194,9 @@ var items =
 	[ "styleMeter"                      , "float32"                   , 0x6514                           ],
 	[ "inputData[58]"                   , "INPUT_DATA"                , 0x6674                           ],
 	[ "collisionIndex"                  , "uint32"                    , 0x7254                           ],
+
 	[ "interactionData[8]"              , "vec4"                      , 0x7460                           ],
+	
 	[ "buttons[4]"                      , "byte16"                    , 0x74E0                           ],
 	[ "rightStickPosition"              , "uint16"                    , 0x74F8                           ],
 	[ "rightStickRadius"                , "uint16"                    , 0x74FA                           ],
@@ -199,6 +213,16 @@ var items =
 
 var extra =
 [
+
+
+
+
+	[ "newEnable", "bool" ],
+
+
+
+
+
 	[ "newCharacterModel"      , "uint8"   ],
 	[ "newParentBaseAddr"      , "byte8 *" ],
 	[ "newChildBaseAddr[4]"    , "byte8 *" ],
@@ -231,8 +255,8 @@ var extra =
 
 	[ "newSect[8]"             , "bool"    ],
 	[ "newBufferedActionPolicy", "uint8"   ],
-	[ "executeMeleeWeaponSwitch", "bool"   ],
-	[ "executeRangedWeaponSwitch", "bool"   ],
+	 [ "newExecuteMeleeWeaponSwitch", "bool"   ],
+	 [ "newExecuteRangedWeaponSwitch", "bool"   ],
 
 
 
@@ -240,7 +264,7 @@ var extra =
 	//[ "airStingerTickCount"   , "uint64" ],
 
 
-	[ "airStingerCount", "uint8" ],
+	[ "newAirStingerCount", "uint8" ],
 
 
 	//[ "airStraight"  , "bool" ],

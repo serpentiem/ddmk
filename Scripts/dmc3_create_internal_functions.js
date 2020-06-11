@@ -52,7 +52,7 @@ var items =
 	[ 0x1EB0E0, "void"   , "byte8 * actorData, uint32 index"                                              , ""                            , "Call after Weapon Switch Animation." ],
 	[ 0x1F92C0, "void"   , "byte8 * actorData, uint32 phase"                                              , ""                            , "Queue devil model update."           ], // @Research: Works like bool, but has size of uint32.
 	[ 0x1F97F0, "void"   , "byte8 * actorData, bool playMotion"                                           , ""                            , "Update devil model and play motion." ],
-	[ 0x23E560, "void"   , "byte8 * eventData, uint32 position"                                           , ""                            , ""                                    ],
+	//[ 0x23E560, "void"   , "byte8 * eventData, uint32 position"                                           , ""                            , ""                                    ],
 	
 	[ 0x89E30 , "void"   , "byte8 * baseAddr, uint32 index"                                               , ""                            , "Call after icon update."             ],
 	[ 0x1B9FA0, "void"   , "byte8 * addr"                                                                 , ""                            , "Adjust file pointers."               ],
@@ -64,7 +64,13 @@ var items =
 
 	[ 0x5A290 , "void"   , "byte8 * body, uint32 group, uint32 index, uint16, uint8, uint8"    , "0, true, true, 0, 0, 0, 0, 2", "Play Motion"                         ],
 	[ 0x8AC80 , "void"   , "MODEL_DATA & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool"    , "0, true, true, 0, 0, 0, 0, 1", "Play Motion"                         ],
-	[ 0x1EFB90, "void"   , "byte8 * actorData, uint32 group, uint32 index, float32, uint8, uint8, uint8"                                              , ""                            , "Play motion and update state." ],
+
+
+
+
+
+
+	[ 0x1EFB90, "void", "byte8 * actorData, uint32 group, uint32 index, float32, int8, uint8, uint8", "0, true, true, 0, 0, 0, 0, 3", "Play motion and update state." ],
 	
 	
 	
@@ -124,7 +130,11 @@ dmc3.exe+1EFC36 - E8 55A6E6FF           - call dmc3.exe+5A290 { __ONLY_THIS_ONE_
 
 
 
+//[ 0x23E560, "void"   , "byte8 *, uint32"    , "", "Set Start Position"],
 
+/*
+dmc3.exe+23CC23 - E8 38190000           - call dmc3.exe+23E560
+*/
 
 
 

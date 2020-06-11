@@ -46,7 +46,6 @@ func_280160_t func_280160 = 0;
 func_1EB0E0_t func_1EB0E0 = 0;
 func_1F92C0_t func_1F92C0 = 0;
 func_1F97F0_t func_1F97F0 = 0;
-func_23E560_t func_23E560 = 0;
 func_89E30_t func_89E30 = 0;
 func_1B9FA0_t func_1B9FA0 = 0;
 func_223AC0_t func_223AC0 = 0;
@@ -251,10 +250,6 @@ void Internal_Init()
 		func_1F97F0 = (func_1F97F0_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x23E560));
-		func_23E560 = (func_23E560_t)func.addr;
-	}
-	{
 		auto func = CreateFunction((appBaseAddr + 0x89E30));
 		func_89E30 = (func_89E30_t)func.addr;
 	}
@@ -283,7 +278,7 @@ void Internal_Init()
 		func_8AC80 = (func_8AC80_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x1EFB90));
+		auto func = CreateFunction((appBaseAddr + 0x1EFB90), 0, true, true, 0, 0, 0, 0, 3);
 		func_1EFB90 = (func_1EFB90_t)func.addr;
 	}
 	{

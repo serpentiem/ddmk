@@ -23,7 +23,7 @@ struct ACTOR_DATA
 	_(12);
 	float32 pullMultiplier; // 0xA4
 	_(24);
-	uint16 direction; // 0xC0
+	uint16 rotation; // 0xC0
 	_(86);
 	uint8 id; // 0x118
 	_(3);
@@ -137,8 +137,9 @@ struct ACTOR_DATA
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
 	_(17308);
-	uint8 newCharacterModel; // 0xB8C0
-	_(7);
+	bool newEnable; // 0xB8C0
+	uint8 newCharacterModel; // 0xB8C1
+	_(6);
 	byte8 * newParentBaseAddr; // 0xB8C8
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
@@ -162,9 +163,9 @@ struct ACTOR_DATA
 	_(1);
 	bool newSect[8]; // 0xB964
 	uint8 newBufferedActionPolicy; // 0xB96C
-	bool executeMeleeWeaponSwitch; // 0xB96D
-	bool executeRangedWeaponSwitch; // 0xB96E
-	uint8 airStingerCount; // 0xB96F
+	bool newExecuteMeleeWeaponSwitch; // 0xB96D
+	bool newExecuteRangedWeaponSwitch; // 0xB96E
+	uint8 newAirStingerCount; // 0xB96F
 
 	operator byte8 *()
 	{
@@ -185,7 +186,7 @@ struct ACTOR_DATA_DANTE
 	_(12);
 	float32 pullMultiplier; // 0xA4
 	_(24);
-	uint16 direction; // 0xC0
+	uint16 rotation; // 0xC0
 	_(86);
 	uint8 id; // 0x118
 	_(3);
@@ -333,8 +334,9 @@ struct ACTOR_DATA_DANTE
 	_(12);
 	byte32 artemisChargeFlags[2]; // 0xB87C
 	_(60);
-	uint8 newCharacterModel; // 0xB8C0
-	_(7);
+	bool newEnable; // 0xB8C0
+	uint8 newCharacterModel; // 0xB8C1
+	_(6);
 	byte8 * newParentBaseAddr; // 0xB8C8
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
@@ -358,9 +360,9 @@ struct ACTOR_DATA_DANTE
 	_(1);
 	bool newSect[8]; // 0xB964
 	uint8 newBufferedActionPolicy; // 0xB96C
-	bool executeMeleeWeaponSwitch; // 0xB96D
-	bool executeRangedWeaponSwitch; // 0xB96E
-	uint8 airStingerCount; // 0xB96F
+	bool newExecuteMeleeWeaponSwitch; // 0xB96D
+	bool newExecuteRangedWeaponSwitch; // 0xB96E
+	uint8 newAirStingerCount; // 0xB96F
 
 	operator byte8 *()
 	{
@@ -381,7 +383,7 @@ struct ACTOR_DATA_BOB
 	_(12);
 	float32 pullMultiplier; // 0xA4
 	_(24);
-	uint16 direction; // 0xC0
+	uint16 rotation; // 0xC0
 	_(86);
 	uint8 id; // 0x118
 	_(3);
@@ -495,8 +497,9 @@ struct ACTOR_DATA_BOB
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
 	_(17308);
-	uint8 newCharacterModel; // 0xB8C0
-	_(7);
+	bool newEnable; // 0xB8C0
+	uint8 newCharacterModel; // 0xB8C1
+	_(6);
 	byte8 * newParentBaseAddr; // 0xB8C8
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
@@ -520,9 +523,9 @@ struct ACTOR_DATA_BOB
 	_(1);
 	bool newSect[8]; // 0xB964
 	uint8 newBufferedActionPolicy; // 0xB96C
-	bool executeMeleeWeaponSwitch; // 0xB96D
-	bool executeRangedWeaponSwitch; // 0xB96E
-	uint8 airStingerCount; // 0xB96F
+	bool newExecuteMeleeWeaponSwitch; // 0xB96D
+	bool newExecuteRangedWeaponSwitch; // 0xB96E
+	uint8 newAirStingerCount; // 0xB96F
 
 	operator byte8 *()
 	{
@@ -543,7 +546,7 @@ struct ACTOR_DATA_LADY
 	_(12);
 	float32 pullMultiplier; // 0xA4
 	_(24);
-	uint16 direction; // 0xC0
+	uint16 rotation; // 0xC0
 	_(86);
 	uint8 id; // 0x118
 	_(3);
@@ -657,8 +660,9 @@ struct ACTOR_DATA_LADY
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
 	_(17308);
-	uint8 newCharacterModel; // 0xB8C0
-	_(7);
+	bool newEnable; // 0xB8C0
+	uint8 newCharacterModel; // 0xB8C1
+	_(6);
 	byte8 * newParentBaseAddr; // 0xB8C8
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
@@ -682,9 +686,9 @@ struct ACTOR_DATA_LADY
 	_(1);
 	bool newSect[8]; // 0xB964
 	uint8 newBufferedActionPolicy; // 0xB96C
-	bool executeMeleeWeaponSwitch; // 0xB96D
-	bool executeRangedWeaponSwitch; // 0xB96E
-	uint8 airStingerCount; // 0xB96F
+	bool newExecuteMeleeWeaponSwitch; // 0xB96D
+	bool newExecuteRangedWeaponSwitch; // 0xB96E
+	uint8 newAirStingerCount; // 0xB96F
 
 	operator byte8 *()
 	{
@@ -705,7 +709,7 @@ struct ACTOR_DATA_VERGIL
 	_(12);
 	float32 pullMultiplier; // 0xA4
 	_(24);
-	uint16 direction; // 0xC0
+	uint16 rotation; // 0xC0
 	_(86);
 	uint8 id; // 0x118
 	_(3);
@@ -837,8 +841,9 @@ struct ACTOR_DATA_VERGIL
 	_(16668);
 	MODEL_METADATA modelMetadata[6]; // 0xB640
 	_(160);
-	uint8 newCharacterModel; // 0xB8C0
-	_(7);
+	bool newEnable; // 0xB8C0
+	uint8 newCharacterModel; // 0xB8C1
+	_(6);
 	byte8 * newParentBaseAddr; // 0xB8C8
 	byte8 * newChildBaseAddr[4]; // 0xB8D0
 	uint8 newGamepad; // 0xB8F0
@@ -862,9 +867,9 @@ struct ACTOR_DATA_VERGIL
 	_(1);
 	bool newSect[8]; // 0xB964
 	uint8 newBufferedActionPolicy; // 0xB96C
-	bool executeMeleeWeaponSwitch; // 0xB96D
-	bool executeRangedWeaponSwitch; // 0xB96E
-	uint8 airStingerCount; // 0xB96F
+	bool newExecuteMeleeWeaponSwitch; // 0xB96D
+	bool newExecuteRangedWeaponSwitch; // 0xB96E
+	uint8 newAirStingerCount; // 0xB96F
 
 	operator byte8 *()
 	{

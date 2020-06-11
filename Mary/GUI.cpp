@@ -2081,8 +2081,14 @@ void GUI_Teleporter_Draw()
 
 			static uint32 g_duration = 0;
 
-			static uint16 cacheFileId = pl000_00_3;
+
+			static uint32 vectorIndex = 0;
+			static uint16 cacheFileId = pl000_00_0;
 			static uint8 index = 0;
+
+
+
+			GUI_InputEx("vectorIndex", vectorIndex);
 			GUI_InputEx("cacheFileId", cacheFileId);
 			GUI_InputEx("index", index);
 			
@@ -2091,6 +2097,10 @@ void GUI_Teleporter_Draw()
 			ImGui::Text("");
 
 			ImGui::SameLine(180);
+
+			
+
+
 
 			if (GUI_Button("Play Motion"))
 			{
@@ -2101,7 +2111,7 @@ void GUI_Teleporter_Draw()
 					g_duration = static_cast<uint32>(duration);
 					Log("file %llX", file);
 				}
-				auto baseAddr = Actor_actorBaseAddr[2];
+				auto baseAddr = Actor_actorBaseAddr[vectorIndex];
 				auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
 				func_8AC80(actorData.modelData[actorData.activeModelIndex], BODY_PART_LOWER, File_staticFiles[cacheFileId][index], 0, false);
 				func_8AC80(actorData.modelData[actorData.activeModelIndex], BODY_PART_UPPER, File_staticFiles[cacheFileId][index], 0, false);
@@ -2205,43 +2215,43 @@ void GUI_Teleporter_Draw()
 
 
 
-		//if constexpr (debug)
-		//{
-		//	auto pos = ImGui::GetWindowPos();
-		//	ImGui::Text("%f %f", pos.x, pos.y);
-		//}
-		//{
-		//	if (!InGame())
-		//	{
-		//		goto InvalidPointer;
-		//	}
-		//	VARS vars;
-		//	if (!vars.init)
-		//	{
-		//		goto InvalidPointer;
-		//	}
-		//	uint32 & room         = *vars.room;
-		//	uint32 & position     = *vars.position;
-		//	uint32 & event        = *vars.event;
-		//	uint16 & nextRoom     = *vars.nextRoom;
-		//	uint16 & nextPosition = *vars.nextPosition;
-		//	ImGui::PushItemWidth(100);
-		//	ImGui::Text(Locale.Teleporter.current);
-		//	GUI_Input("", room, false, ImGuiInputTextFlags_ReadOnly);
-		//	GUI_Input("", position, false, ImGuiInputTextFlags_ReadOnly);
-		//	ImGui::Text(Locale.Teleporter.next);
-		//	GUI_InputEx<uint16>("", nextRoom);
-		//	GUI_InputEx<uint16>("", nextPosition);
-		//	if (GUI_Button(Locale.Teleporter.teleport))
-		//	{
-		//		event = EVENT_TELEPORT;
-		//	}
-		//	ImGui::PopItemWidth();
-		//	goto TeleporterEnd;
-		//}
-		//InvalidPointer:
-		//ImGui::Text(Locale.Teleporter.invalidPointer);
-		//TeleporterEnd:;
+		if constexpr (debug)
+		{
+			auto pos = ImGui::GetWindowPos();
+			ImGui::Text("%f %f", pos.x, pos.y);
+		}
+		{
+			if (!InGame())
+			{
+				goto InvalidPointer;
+			}
+			VARS vars;
+			if (!vars.init)
+			{
+				goto InvalidPointer;
+			}
+			uint32 & room         = *vars.room;
+			uint32 & position     = *vars.position;
+			uint32 & event        = *vars.event;
+			uint16 & nextRoom     = *vars.nextRoom;
+			uint16 & nextPosition = *vars.nextPosition;
+			ImGui::PushItemWidth(100);
+			ImGui::Text(Locale.Teleporter.current);
+			GUI_Input("", room, false, ImGuiInputTextFlags_ReadOnly);
+			GUI_Input("", position, false, ImGuiInputTextFlags_ReadOnly);
+			ImGui::Text(Locale.Teleporter.next);
+			GUI_InputEx<uint16>("", nextRoom);
+			GUI_InputEx<uint16>("", nextPosition);
+			if (GUI_Button(Locale.Teleporter.teleport))
+			{
+				event = EVENT_TELEPORT;
+			}
+			ImGui::PopItemWidth();
+			goto TeleporterEnd;
+		}
+		InvalidPointer:
+		ImGui::Text(Locale.Teleporter.invalidPointer);
+		TeleporterEnd:;
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
@@ -3274,7 +3284,7 @@ void NEW_GUI_Main()
 			NEW_GUI_Input<float32>("arg3", arg3);
 			if (NEW_GUI_Button("Drop2"))
 			{
-				func_1FB300(actorData, actorData.direction, arg3);
+				func_1FB300(actorData, actorData.rotation, arg3);
 			}
 		}
 

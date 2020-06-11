@@ -919,6 +919,12 @@ void CopyPosition
 )
 {
 	idleActorData.position       = activeActorData.position;
+
+	idleActorData.position.y = (activeActorData.position.y + 300);
+
+
+
+
 	idleActorData.pull           = activeActorData.pull;
 	idleActorData.pullMultiplier = activeActorData.pullMultiplier;
 	idleActorData.direction      = activeActorData.direction;
@@ -1115,6 +1121,11 @@ bool IsDanteMeleeWeaponSelected(T & actorData)
 #define OnceStart(actorData, index) if (actorData.newSect[index]) { OnceDisable(actorData, index)
 #define OnceEnd }
 
+
+
+
+
+
 #define GetAction(actorData, binding, __DEST__)\
 uint8 action = 0;\
 for_each(uint8, tiltDirection, TILT_DIRECTION_UP, MAX_TILT_DIRECTION)\
@@ -1209,21 +1220,21 @@ void DanteVergil(byte8 * baseAddr)
 
 	// Active
 
-	if (IsActive(parentActorData))
-	{
-		CopyPosition(parentActorData, childActorData);
-	}
+	//if (IsActive(parentActorData))
+	//{
+	//	CopyPosition(parentActorData, childActorData);
+	//}
 
-	if (IsActive(childActorData))
-	{
-		CopyPosition(childActorData, parentActorData);
-	}
+	//if (IsActive(childActorData))
+	//{
+	//	CopyPosition(childActorData, parentActorData);
+	//}
 
 	// Idle
 
 	if (!IsVergilMeleeWeaponSelected(parentActorData) && !IsActive(childActorData))
 	{
-		CopyPosition(parentActorData, childActorData);
+		//CopyPosition(parentActorData, childActorData);
 		OnceStart(parentActorData, 1);
 		{
 			FixPull(parentActorData);
@@ -1237,7 +1248,7 @@ void DanteVergil(byte8 * baseAddr)
 
 	if (IsVergilMeleeWeaponSelected(parentActorData) && !IsActive(parentActorData))
 	{
-		CopyPosition(childActorData, parentActorData);
+		//CopyPosition(childActorData, parentActorData);
 		OnceStart(parentActorData, 0);
 		{
 			FixPull(childActorData);
@@ -1471,7 +1482,7 @@ void DanteVergil(byte8 * baseAddr)
 
 
 
-#define return_if(condition) if (condition) { return; }
+//#define return_if(condition) if (condition) { return; }
 
 
 
@@ -1643,6 +1654,58 @@ void ActorLoop(byte8 * baseAddr)
 
 
 
+// @Todo: Move to Actor.
+
+
+//typedef byte8 *(__fastcall * SpawnActor_t)
+//(
+//	uint8 player,
+//	uint8 entity,
+//	float32 x,
+//	float32 y,
+//	float32 z,
+//	uint16 direction,
+//	uint8 event
+//);
+
+
+
+
+//byte8 * func
+//(
+//	uint8 player,
+//	uint8 entity,
+//	float32 x,
+//	float32 y,
+//	float32 z,
+//	uint16 direction,
+//	uint8 event
+//);
+//
+
+
+//SpawnActorStructure<ACTOR_DATA_DANTE> a;
+
+//typedef SpawnActorStructure<ACTOR_DATA_DANTE>::type Actor_t;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1651,15 +1714,28 @@ template <typename T>
 byte8 * SpawnActorFunction
 (
 	uint8 player,
-	uint8 entity
+	uint8 entity,
+	float32 x,
+	float32 y,
+	float32 z,
+	uint16 rotation,
+	uint8 event
 )
 {
-	auto mainBaseAddr = Actor_actorBaseAddr[0];
-	if (!mainBaseAddr)
-	{
-		return 0;
-	}
-	auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
+	// auto mainBaseAddr = Actor_actorBaseAddr[0];
+	// if (!mainBaseAddr)
+	// {
+	// 	return 0;
+	// }
+	// auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
+
+
+
+
+
+
+
+
 
 	auto parentBaseAddr = CreateActor<T>(player, entity);
 	if (!parentBaseAddr)
@@ -1669,11 +1745,32 @@ byte8 * SpawnActorFunction
 	auto & parentActorData = *parentBaseAddr;
 	Actor_actorBaseAddr.Push(parentActorData);
 
-	parentActorData.position = mainActorData.position;
+
+	// // @Todo: Update with CopyPosition.
+	// parentActorData.position = mainActorData.position;
+	// parentActorData.rotation = mainActorData.rotation;
+
+
+	//parentActorData.position.x = x;
+	//parentActorData.position.y = z;
+	//parentActorData.position.z = x;
+
+	
+	parentActorData.position = { x, y, z, 1 };
+	parentActorData.rotation = rotation;
+	parentActorData.var_3E10[8] = event;
+
+
+
+
+
+
+
 	parentActorData.style = g_style[player][entity][GetCharacterId<T>::value]; // @Todo: Change to Actor_style for now.
 
 	if (entity == ENTITY_MAIN)
 	{
+		parentActorData.newEnable = true;
 		parentActorData.newGamepad = player;
 		parentActorData.newButtonMask = 0xFFFF;
 		parentActorData.newEnableRightStick = true;
@@ -1681,6 +1778,12 @@ byte8 * SpawnActorFunction
 	}
 	else
 	{
+		parentActorData.position.y = 10500;
+
+		parentActorData.var_3E10[8] = 0;
+
+
+
 		parentActorData.newGamepad = MAX_PLAYER;
 		return parentActorData;
 	}
@@ -1693,11 +1796,13 @@ byte8 * SpawnActorFunction
 			return 0;
 		}
 		auto & childActorData = *reinterpret_cast<typename GetChildActorDataType<T>::value *>(childBaseAddr);
+		Actor_actorBaseAddr.Push(childActorData);
 
-		parentActorData.newChildBaseAddr[GetCharacterId<GetChildActorDataType<T>::value>::value] = childActorData;
+		parentActorData.newChildBaseAddr[GetCharacterId<GetChildActorDataType<T>::value>::value] = childActorData; // @Todo: Remove array.
 
 		childActorData.newParentBaseAddr = parentActorData;
 		childActorData.position = parentActorData.position;
+		childActorData.position.y = 10500;
 
 		if constexpr (typematch(T, ACTOR_DATA_DANTE))
 		{
@@ -1730,14 +1835,34 @@ byte8 * SpawnActorFunction
 	return parentActorData;
 }
 
+typedef decltype(SpawnActorFunction<ACTOR_DATA_DANTE>) * SpawnActorFunction_t;
 
+SpawnActorFunction_t SpawnActorFunctionMap[MAX_CHAR] =
+{
+	SpawnActorFunction<ACTOR_DATA_DANTE >,
+	SpawnActorFunction<ACTOR_DATA_BOB   >,
+	SpawnActorFunction<ACTOR_DATA_LADY  >,
+	SpawnActorFunction<ACTOR_DATA_VERGIL>,
+};
 
-
-
-
-
-
-
+byte8 * SpawnActor
+(
+	uint8 player,
+	uint8 entity,
+	float32 x,
+	float32 y,
+	float32 z,
+	uint16 rotation,
+	uint8 event
+)
+{
+	auto character = Config.Actor.character[player][entity];
+	if (character >= MAX_CHAR)
+	{
+		character = CHAR_DANTE;
+	}
+	return SpawnActorFunctionMap[character](player, entity, x, y, z, rotation, event);
+}
 
 byte8 * SpawnActor
 (
@@ -1745,88 +1870,319 @@ byte8 * SpawnActor
 	uint8 entity
 )
 {
-	auto & character = Config.Actor.character[player][entity];
-
-	if (character == CHAR_DANTE)
-	{
-		return SpawnActorFunction<ACTOR_DATA_DANTE>(player, entity);
-	}
-	else if (character == CHAR_BOB)
-	{
-		return SpawnActorFunction<ACTOR_DATA_BOB>(player, entity);
-	}
-	else if (character == CHAR_LADY)
-	{
-		return SpawnActorFunction<ACTOR_DATA_LADY>(player, entity);
-	}
-	else if (character == CHAR_VERGIL)
-	{
-		return SpawnActorFunction<ACTOR_DATA_VERGIL>(player, entity);
-	}
-
-	return 0;
+	return SpawnActor(player, entity, 0, 0, 0, 0, 0);
 }
 
-void MainLoop()
+
+
+
+
+
+
+void SpawnActors()
 {
-	g_mainLoopCounter++;
+	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
+	if (!pool)
+	{
+		return;
+	}
+	if (!pool[8])
+	{
+		return;
+	}
+	//if (!pool[12])
+	//{
+	//	return;
+	//}
+	auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
+	//auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(pool[12]);
+
+	auto stagePositionData = *reinterpret_cast<STAGE_POSITION_DATA **>(pool[8] + 0x2CB0);
+	if (!stagePositionData)
+	{
+		return;
+	}
+
+
+	//HoboBreak();
+
+
+	auto & pos = stagePositionData[eventData.position];
+
+
+	//auto rotation = static_cast<uint16>((((pos.rotation / 360.0f) * 6.28f) * 65536.0f) / 6.28f);
+
+
+	auto Convert = [](float32 rotation)
+	{
+		float32 value = rotation;
+
+		value /= 360.0f;
+		value *= 6.28f;
+		value *= 65536.0f;
+		value /= 6.28f;
+
+		return static_cast<uint16>(value);
+	};
+
+
+
+	auto rotation = Convert(pos.rotation);
+
+
+
+
+	Log
+	(
+		"%.0f "
+		"%.0f "
+		"%.0f "
+		"%.0f "
+		"true %u "
+		"%u",
+		pos.x,
+		pos.y,
+		pos.z,
+		pos.rotation,
+		rotation,
+		pos.event
+	);
+
+
+
+
+
+
+
+
+
+
+	//spawnActors = false;
+
+
+
+
+	for_all(uint8, player, Config.Actor.playerCount)
+	{
+		auto mainBaseAddr = SpawnActor
+		(
+			player,
+			ENTITY_MAIN,
+			pos.x,
+			pos.y,
+			pos.z,
+			rotation,
+			pos.event
+		);
+		if (!mainBaseAddr)
+		{
+			continue;
+		}
+		auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
+
+		auto cloneBaseAddr = SpawnActor(player, ENTITY_CLONE);
+		if (!cloneBaseAddr)
+		{
+			continue;
+		}
+		auto & cloneActorData = *reinterpret_cast<ACTOR_DATA *>(cloneBaseAddr);
+
+		mainActorData.cloneBaseAddr = cloneActorData;
+	}
+
+	auto mainBaseAddr = Actor_actorBaseAddr[0];
+	if (!mainBaseAddr)
+	{
+		return;
+	}
+	auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
+
+	mainActorData.position.y = 10500; // @Todo: Put SPIRE_Y into enums.
+
 
 	{
+		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		if (!pool)
+		{
+			return;
+		}
 		auto baseAddr = Actor_actorBaseAddr[2];
 		if (!baseAddr)
 		{
-			goto sect0;
+			return;
 		}
-		auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-		g_relativeTiltDirection = GetRelativeTiltDirection(actorData);
+		pool[3] = baseAddr;
+
 	}
-	sect0:;
-
-	
 
 
 
+}
+
+//
+//
+//PrivateStart;
+//
+//bool run[8] = {};
+//
+//PrivateEnd;
+//
+//
+//
+//#define OnceArray run
+//#define OnceEnable(index) OnceArray[index] = true
+//#define OnceDisable(index) OnceArray[index] = false
+//#define OnceStart(index) if (OnceArray[index]) { OnceDisable(index)
+//#define OnceEnd }
+//
+//
+//
+//bool ActorLoop_sect0;
+//bool MainLoop_sect0;
+//
+//
+//
+//
+//
+//
+//
+//void func()
+//{
+//
+//	if (run[0])
+//	{
+//		run[0] = false;
+//
+//
+//
+//
+//
+//
+//
+//	}
+//
+//
+//
+//
+//}
+//
+//
+//
+//
+//
+//bool * _OnceArray = 0;
+//
+//inline void _OnceEnable(uint32 index)
+//{
+//	_OnceArray[index] = true;
+//}
+//
+//inline void _OnceDisable(uint32 index)
+//{
+//	_OnceArray[index] = false;
+//}
+//
 
 
 
-	if (spawnActors)
+
+
+
+
+
+
+
+//void SpawnActors()
+//{
+//	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
+//	if (!pool)
+//	{
+//		return;
+//	}
+//	if (!pool[8])
+//	{
+//		return;
+//	}
+//	if (!pool[12])
+//	{
+//		return;
+//	}
+//	auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
+//	auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(pool[12]);
+//
+//	//if ((eventData.room == 400) && (eventData.position == 1))
+//	//{
+//	//	return;
+//	//}
+//
+//	SpawnActorsFunction();
+//
+//
+//
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[2]);
+//
+//	//actorData.var_3E00[2] = 47;
+//	//actorData.var_3E10[0] = 101;
+//
+//
+//
+//
+//
+//
+//}
+
+
+
+
+// @Todo: Move Actor funcs to Actor ffs.
+
+
+
+
+
+
+
+
+
+bool MainLoop_run = false;
+
+void MainLoop()
+{
+	if (MainLoop_run)
 	{
-		spawnActors = false;
-		Log("Spawn Actors.");
+		MainLoop_run = false;
+		SpawnActors();
+		//SpawnActorsFunction();
 
 
+		//auto & actorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
+		//actorData.position.y = 10500;
 
-
-
-
-
-		for_all(uint8, player, Config.Actor.playerCount)
-		{
-			auto mainBaseAddr = SpawnActor(player, ENTITY_MAIN);
-			if (!mainBaseAddr)
-			{
-				continue;
-			}
-			auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
-
-			auto cloneBaseAddr = SpawnActor(player, ENTITY_CLONE);
-			if (!cloneBaseAddr)
-			{
-				continue;
-			}
-			auto & cloneActorData = *reinterpret_cast<ACTOR_DATA *>(cloneBaseAddr);
-
-			mainActorData.cloneBaseAddr = cloneActorData;
-		}
-
-		auto baseAddr = Actor_actorBaseAddr[2];
-		if (baseAddr)
-		{
-			auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-			pool[3] = baseAddr;
-		}
 	}
 }
+
+
+
+
+
+
+
+
+//#undef OnceEnd
+//#undef OnceStart
+//#undef OnceDisable
+//#undef OnceEnable
+//#undef OnceArray
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2059,13 +2415,114 @@ void SetAction(byte8 * baseAddr)
 			(gamepad.buttons[0] & GetBinding(BINDING_MELEE_ATTACK))
 		)
 		{
-			actorData.action = ACTION_DANTE_REBELLION_STINGER_LEVEL_2;
+			if (actorData.newAirStingerCount > 0)
+			{
+				actorData.newAirStingerCount--;
+				actorData.action = ACTION_DANTE_REBELLION_STINGER_LEVEL_2;
+			}
 		}
 	}
 }
 
 
 
+
+void ResetMobilityCounters(byte8 * baseAddr)
+{
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+
+	actorData.newAirStingerCount = 2;
+
+
+
+
+}
+
+
+
+//void FlipComplete(byte8 * baseAddr)
+//{
+//
+//	LogFunction(baseAddr);
+//
+//
+//	//SpawnActorsFunction();
+//
+//
+//
+//
+//
+//
+//
+//}
+
+
+
+//bool Flip_run = false;
+//
+//
+//void Flip(byte8 * baseAddr)
+//{
+//	LogFunction(baseAddr);
+//
+//	
+//	if (!Flip_run)
+//	{
+//		Flip_run = true;
+//
+//
+//
+//
+//
+//	}
+//
+//
+//
+//
+//
+//
+//}
+//
+
+
+//
+//void PlayFlipMotion(byte8 * baseAddr)
+//{
+//	LogFunction(baseAddr);
+//
+//
+//
+//	SpawnActorsFunction();
+//
+//
+//
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[2]);
+//
+//
+//
+//	func_1EFB90(actorData, 0, 5, -1, -1, 0, 10);
+//
+//
+//
+//
+//	/*
+//	dmc3.exe+1F4851 - F3 0F10 1D 7BAC1700   - movss xmm3,[dmc3.exe+36F4D4] { (-1.00) }
+//	dmc3.exe+1F4859 - 33 D2                 - xor edx,edx
+//	dmc3.exe+1F485B - C6 44 24 30 0A        - mov byte ptr [rsp+30],0A { 10 }
+//	dmc3.exe+1F4860 - 48 8B CB              - mov rcx,rbx
+//	dmc3.exe+1F4863 - C6 44 24 28 00        - mov byte ptr [rsp+28],00 { 0 }
+//	dmc3.exe+1F4868 - C6 44 24 20 FF        - mov byte ptr [rsp+20],-01 { 255 }
+//	dmc3.exe+1F486D - 44 8D 42 05           - lea r8d,[rdx+05]
+//	7FF689D921B0 - E8 DBD943FF           - call dmc3.exe+1EFB90
+//
+//
+//	*/
+//
+//
+//
+//
+//
+//}
 
 
 
@@ -2075,6 +2532,181 @@ void Update_Init()
 	Windows_GetTicksPerSecond(&ticksPerSecond);
 	ticksPerMillisecond = (ticksPerSecond / 1000);
 	Windows_GetTickCount(&savedTickCount);
+
+
+	vp_memset((appBaseAddr + 0x1F9189), 0x90, 8); // disable sub
+
+
+
+	//{
+	//	auto func = CreateFunction(FlipComplete, (appBaseAddr + 0x1E04A0));
+	//	WriteJump((appBaseAddr + 0x1F4828), func.addr);
+	//	/*
+	//	dmc3.exe+1F4828 - E9 73BCFEFF - jmp dmc3.exe+1E04A0
+	//	*/
+	//}
+
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x40, 0x53,             //push rbx
+	//		0x48, 0x83, 0xEC, 0x40, //sub rsp,40
+	//	};
+	//	auto func = CreateFunction(Flip, (appBaseAddr + 0x1F47D6), true, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteJump((appBaseAddr + 0x1F47D0), func.addr, 1);
+	//	/*
+	//	dmc3.exe+1F47D0 - 40 53            - push rbx
+	//	dmc3.exe+1F47D2 - 48 83 EC 40      - sub rsp,40
+	//	dmc3.exe+1F47D6 - 0FB6 81 103E0000 - movzx eax,byte ptr [rcx+00003E10]
+	//	*/
+	//}
+
+
+
+
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1EFB90
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xCB, //mov rcx,rbx
+	//	};
+	//	auto func = CreateFunction(PlayFlipMotion, (appBaseAddr + 0x1F4876), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteCall(func.sect0, (appBaseAddr + 0x1EFB90));
+	//	WriteJump((appBaseAddr + 0x1F4871), func.addr);
+	//	/*
+	//	dmc3.exe+1F4871 - E8 1AB3FFFF      - call dmc3.exe+1EFB90
+	//	dmc3.exe+1F4876 - 0FB7 83 C0000000 - movzx eax,word ptr [rbx+000000C0]
+	//	*/
+	//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, //cmp byte ptr [rcx+0000B8C0],01
+			0x75, 0x05,                               //jne 7FF65022000E
+			0xE8, 0x00, 0x00, 0x00, 0x00,             //call dmc3.exe+1DFDA0
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1E7BF7), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEnable);
+		WriteCall((func.sect0 + 9), (appBaseAddr + 0x1DFDA0));
+		WriteJump((appBaseAddr + 0x1E7BF2), func.addr);
+		/*
+		dmc3.exe+1E7BF2 - E8 A981FFFF - call dmc3.exe+1DFDA0
+		dmc3.exe+1E7BF7 - B0 01       - mov al,01
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x41, 0x83, 0x78, 0x78, 0x00,                                     //cmp dword ptr [r8+78],00
+			0x41, 0xC7, 0x80, 0x74, 0x63, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov [r8+00006374],00000000
+			0x41, 0xC6, 0x80, 0xAE, 0x3F, 0x00, 0x00, 0x00,                   //mov byte ptr [r8+00003FAE],00
+			0x74, 0x10,                                                       //je dmc3.exe+1E0FF5
+			0x41, 0xC6, 0x80, 0x13, 0x3F, 0x00, 0x00, 0x00,                   //mov byte ptr [r8+00003F13],00
+			0x41, 0xC6, 0x80, 0x11, 0x3F, 0x00, 0x00, 0x00,                   //mov byte ptr [r8+00003F11],00
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x49, 0x8B, 0xC8, //mov rcx,r8
+		};
+		constexpr byte8 sect2[] =
+		{
+			0xC3, //ret
+		};
+		auto func = CreateFunction(ResetMobilityCounters, 0, true, true, sizeof(sect0), sizeof(sect1), sizeof(sect2));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteJump((appBaseAddr + 0x1E0FCB), func.addr);
+		/*
+		dmc3.exe+1E0FCB - 41 83 78 78 00             - cmp dword ptr [r8+78],00
+		dmc3.exe+1E0FD0 - 41 C7 80 74630000 00000000 - mov [r8+00006374],00000000
+		dmc3.exe+1E0FDB - 41 C6 80 AE3F0000 00       - mov byte ptr [r8+00003FAE],00
+		dmc3.exe+1E0FE3 - 74 10                      - je dmc3.exe+1E0FF5
+		dmc3.exe+1E0FE5 - 41 C6 80 133F0000 00       - mov byte ptr [r8+00003F13],00
+		dmc3.exe+1E0FED - 41 C6 80 113F0000 00       - mov byte ptr [r8+00003F11],00
+		dmc3.exe+1E0FF5 - C3                         - ret
+		*/
+	}
+
+
+
+
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		0x49, 0x8B, 0xC8, //mov rcx,r8
+	//	};
+	//	auto func = CreateFunction(ResetMobilityCounters, (appBaseAddr + 0x1E0F6B), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x1E0F64), func.addr, 2);
+	//	/*
+	//	dmc3.exe+1E0F64 - 41 88 88 5D630000- mov [r8+0000635D],cl
+	//	dmc3.exe+1E0F6B - EB 5E            - jmp dmc3.exe+1E0FCB
+	//	*/
+	//}
+
+
+
+
+
+
+
+
 
 
 
@@ -2180,7 +2812,7 @@ void Update_Init()
 
 
 	//vp_memset((appBaseAddr + 0x204D6E), 0x90, 1032);
-	//vp_memset((appBaseAddr + 0x1F9189), 0x90, 8);
+	
 	//vp_memset((appBaseAddr + 0x1E7BF2), 0x90, 5);
 
 

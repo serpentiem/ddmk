@@ -36,15 +36,28 @@ dmc3.exe+1BB047 - 48 8B 4C C8 18        - mov rcx,[rax+rcx*8+18]
 */
 
 
-bool spawnActors = false;
+//bool spawnActors = false;
+
+
+
+extern bool MainLoop_run;
 
 
 
 PrivateStart;
 
-void WritePool()
+
+
+
+
+
+
+
+
+void SetPool()
 {
 	LogFunction();
+	MainLoop_run = true;
 }
 
 void ClearPool()
@@ -165,13 +178,26 @@ void CreateMainActor(byte8 * baseAddr)
 	Actor_actorBaseAddr.count = 2;
 
 	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-	actorData.newGamepad = 1;
+	//actorData.newGamepad = 1;
 	//actorData.newButtonMask = 0xFFFF;
 	//actorData.newEnableRightStick = true;
 	//actorData.newEnableLeftStick = true;
 
+
+
+
+	actorData.var_3E10[8] = 0;
+
+
+
+	//if ((actorData.motionData[BODY_PART_UPPER].group == MOTION_GROUP_DANTE_BASE) && (actorData.motionData[BODY_PART_UPPER].index > 0))
+	//{
+	//	MessageBoxA(0, "transcend!", 0, 0);
+	//}
+
+
 	File_UpdateMainFileItems();
-	spawnActors = true;
+	//spawnActors = true;
 
 	Arcade_CreateMainActor(baseAddr);
 }
@@ -1378,8 +1404,11 @@ void ActorInitComplete(byte8 * baseAddr)
 
 
 	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-	actorData.collisionIndex = 1;
+	//actorData.collisionIndex = 1;
 	//actorData.newButtonMask = 0xFFFF
+
+
+	//actorData.newAirStingerCount = 1;
 
 
 }
@@ -1441,21 +1470,21 @@ void Event_Init()
 
 
 	{
-		byte8 sect0[] =
+		constexpr byte8 sect0[] =
 		{
 			0x48, 0x89, 0x15, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rdx
 		};
-		auto func = CreateFunction(WritePool, (appBaseAddr + 0x23E69F), true, true, sizeof(sect0));
+		auto func = CreateFunction(SetPool, (appBaseAddr + 0x23E69F), true, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-		//WriteJump((appBaseAddr + 0x23E698), func.addr, 2);
+		WriteJump((appBaseAddr + 0x23E698), func.addr, 2);
 		/*
 		dmc3.exe+23E698 - 48 89 15 8927A500 - mov [dmc3.exe+C90E28],rdx
 		dmc3.exe+23E69F - 48 8D 83 D06A0000 - lea rax,[rbx+00006AD0]
 		*/
 	}
 	{
-		byte8 sect0[] =
+		constexpr byte8 sect0[] =
 		{
 			0x48, 0x89, 0x0D, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rcx
 		};
