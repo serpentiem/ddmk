@@ -6,25 +6,15 @@ byte8 * Dante_rainStorm = 0;
 
 PrivateStart;
 
+// @Research: Dante and or Vergil.
+
 void ResetMobilityCounters(byte8 * baseAddr)
 {
-	LogFunction(baseAddr);
-
 	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
-	memset(&actorData.dashCount, 0, 5);
 
-	//{
-	//	auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
-	//	actorData.trickUpCount = 23;
-	//}
-
-
-	//if (actorData.state & STATE_ON_FLOOR)
-	//{
-	//	actorData.airTrickCount = 1;
-	//}
-
-
+	actorData.dashCount = 0;
+	actorData.skyStarCount = 0;
+	actorData.airTrickCount = 0;
 }
 
 
@@ -39,18 +29,12 @@ uint32 MobilityFunction(T & actorData, uint8 & var, uint8(&array)[2])
 {
 	uint8 track = (actorData.devil) ? 1 : 0;
 
-	
-
 	if (var >= array[track])
 	{
 		return 0;
 	}
 
-
 	var++;
-
-
-
 
 	return index;
 }
@@ -67,22 +51,13 @@ auto SkyStar(ACTOR_DATA_DANTE & actorData)
 
 auto AirTrick(ACTOR_DATA_DANTE & actorData)
 {
-
 	actorData.var_3E10[26] = (actorData.state & STATE_ON_FLOOR) ? 1 : 0;
 
-
-
-
+	// Required since there is no reset when hitting the floor.
 	if (actorData.state & STATE_ON_FLOOR)
 	{
-		actorData.airTrickCount = 1;
+		actorData.airTrickCount = 0;
 	}
-
-
-
-
-
-
 
 	return MobilityFunction<24>(actorData, actorData.airTrickCount, Config.Dante.Trickster.airTrickCount);
 }
@@ -99,10 +74,7 @@ PrivateEnd;
 
 void Mobility_Init()
 {
-
-
-
-
+	// Jump, leap and enemy jump
 	{
 		constexpr byte8 sect0[] =
 		{
@@ -122,6 +94,7 @@ void Mobility_Init()
 		*/
 	}
 
+	// Wall Hike from floor
 	{
 		constexpr byte8 sect0[] =
 		{
@@ -140,6 +113,42 @@ void Mobility_Init()
 		dmc3.exe+1E07A9 - EB 06             - jmp dmc3.exe+1E07B1
 		*/
 	}
+
+	// Fall off ledge
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCB, //mov rcx,rbx
+		};
+		auto func = CreateFunction(ResetMobilityCounters, (appBaseAddr + 0x1DFFBC), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteJump((appBaseAddr + 0x1DFFB6), func.addr, 1);
+		/*
+		dmc3.exe+1DFFB6 - 88 8B 5D630000    - mov [rbx+0000635D],cl
+		dmc3.exe+1DFFBC - 40 88 AB AE3F0000 - mov [rbx+00003FAE],bpl
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -183,6 +192,9 @@ void Mobility_Init()
 
 
 	// Air Trick Fix
+	// We can't do this in the reset function, because when the reset function is triggered when we
+	// for example do a normal jump the actor state has not been updated yet.
+	// It could still have STATE_ON_FLOOR set and airTrickCount would be 1 even though we didn't use it.
 	{
 		constexpr byte8 sect0[] =
 		{
@@ -198,6 +210,23 @@ void Mobility_Init()
 		dmc3.exe+1F2214 - EB 0B       - jmp dmc3.exe+1F2221
 		*/
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	/*
