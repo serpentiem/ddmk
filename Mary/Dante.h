@@ -1,6 +1,17 @@
 #pragma once
 #include "../Core/Core.h"
 
+
+
+#include "Vars.h"
+
+
+#include "ActorData.h"
+
+#include "Config.h"
+
+
+
 extern byte8 * Dante_rainStorm;
 
 void Dante_Init();

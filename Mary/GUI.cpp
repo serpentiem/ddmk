@@ -3490,9 +3490,19 @@ void NEW_GUI_Main()
 			ImGui::Text("");
 			NEW_GUI_Button("Reset");
 			ImGui::Text("");
-			NEW_GUI_Checkbox("Infinite Hit Points", Config.Training.infiniteHitPoints);
-			NEW_GUI_Checkbox("Infinite Magic Points", Config.Training.infiniteMagicPoints);
-			NEW_GUI_Checkbox("Disable Timer", Config.Training.disableTimer);
+			if (NEW_GUI_Checkbox("Infinite Hit Points", Config.Training.infiniteHitPoints))
+			{
+				Training_ToggleInfiniteHitPoints(Config.Training.infiniteHitPoints);
+
+			}
+			if (NEW_GUI_Checkbox("Infinite Magic Points", Config.Training.infiniteMagicPoints))
+			{
+
+			}
+			if (NEW_GUI_Checkbox("Disable Timer", Config.Training.disableTimer))
+			{
+
+			}
 			ImGui::Text("");
 		}
 

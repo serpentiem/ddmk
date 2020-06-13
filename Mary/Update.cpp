@@ -2431,16 +2431,6 @@ void SetAction(byte8 * baseAddr)
 
 
 
-void ResetMobilityCounters(byte8 * baseAddr)
-{
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-
-	actorData.newAirStingerCount = 2;
-
-
-
-
-}
 
 
 
@@ -2542,6 +2532,23 @@ void SetStartPosition(byte8 * baseAddr)
 
 
 
+
+
+
+
+void ResetMobilityCounters(byte8 * baseAddr)
+{
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+
+	actorData.newAirStingerCount = 2;
+
+
+
+
+}
+
+
+
 void Update_Init()
 {
 	LogFunction();
@@ -2554,7 +2561,40 @@ void Update_Init()
 
 
 
+	WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2); // force collect orbs
 
+	{
+
+
+		//constexpr byte8 sect1[] =
+		//{
+		//	0x59, //pop rcx
+		//};
+
+
+
+
+
+
+
+		//constexpr byte8 sect0[] =
+		//{
+		//	0x51,                                                       //push rcx
+		//	0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,0000000000000000
+		//	0x50,                                                       //push rax
+		//	0x4C, 0x8B, 0xC1,                                           //mov r8,rcx
+		//	0x83, 0xFA, 0x0B,                                           //cmp edx,0B
+		//	0xE9, 0xCF, 0x0E, 0x20, 0x00,                               //jmp dmc3.exe+1E0EE6
+		//};
+
+
+
+
+
+
+
+
+	}
 
 
 

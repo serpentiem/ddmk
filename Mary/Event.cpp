@@ -81,80 +81,25 @@ void Arcade_CreateMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 
-	// Unlock Files
-
-
-
-	/*
-<?xml version="1.0" encoding="utf-8"?>
-<CheatTable>
-  <CheatEntries>
-    <CheatEntry>
-      <ID>76541</ID>
-      <Description>"0000"</Description>
-      <LastState Value="00000000" RealAddress="005F07F4"/>
-      <ShowAsHex>1</ShowAsHex>
-      <VariableType>4 Bytes</VariableType>
-      <Address>dmc3.exe+C90E28</Address>
-      <Offsets>
-        <Offset>11C</Offset>
-        <Offset>8</Offset>
-      </Offsets>
-    </CheatEntry>
-  </CheatEntries>
-</CheatTable>
-
-	*/
-	
-
-
-
-	// Weapons
+	// Unlock Weapon Files
 	{
-		auto addr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E28);
-		if (!addr)
+		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		if (!pool)
 		{
 			return;
 		}
-		addr = *reinterpret_cast<byte8 **>(addr + 0x30);
-		if (!addr)
+		if (!pool[6])
 		{
 			return;
 		}
-		auto unlock = reinterpret_cast<byte8 *>(addr + 0x7E2);
+		auto unlock = reinterpret_cast<byte8 *>(pool[6] + 0x7E2);
 		memset(unlock, 0xFF, 8);
-
-
-
-
-		//unlock[2] = 0xFF;
-		//unlock[3] = 0xFF;
-		//unlock[4] = 0xFF;
 		/*
 		dmc3.exe+2A9F6D - 48 8B 05 B46E9E00    - mov rax,[dmc3.exe+C90E28]
 		dmc3.exe+2A9F74 - 48 8B 50 30          - mov rdx,[rax+30]
 		dmc3.exe+2A9F7C - 41 84 84 10 E2070000 - test [r8+rdx+000007E2],al
 		*/
 	}
-
-	//// Styles
-	//{
-	//	auto addr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E28);
-	//	if (!addr)
-	//	{
-	//		return;
-	//	}
-	//	addr = *reinterpret_cast<byte8 **>(addr + 8);
-	//	if (!addr)
-	//	{
-	//		return;
-	//	}
-	//	auto level = reinterpret_cast<uint32 *>(addr + 0x11C);
-	//	level[0] = 2;
-	//	level[1] = 2;
-	//	level[2] = 2;
-	//	level[3] = 2;
-	//}
 }
 
 
@@ -382,6 +327,8 @@ static void Arcade_InitSession()
 	//mission = 17;
 
 
+
+	// @Todo: Use map instead.
 	ModeStart:
 	{
 		if ((Config.Game.Arcade.mission == 0) || (Config.Game.Arcade.mission == 21))
@@ -494,6 +441,9 @@ static void Arcade_SetRoom()
 {
 	LogFunctionStart();
 
+
+	// @Todo: Use EVENT_DATA instead.
+
 	VARS vars = {};
 	if (!vars.init)
 	{
@@ -516,6 +466,9 @@ static void Arcade_SetRoom()
 	}
 	if (mission == 21)
 	{
+
+		// @Todo: constexpr helper.
+
 		struct DPS
 		{
 			uint16 room;
@@ -789,9 +742,11 @@ static void BossRush_SetNextRoom()
 		switch (room)
 		{
 		case ROOM_TAIZAI_REBORN:
+		{
 			nextRoom     = ROOM_CERBERUS_REBORN;
 			nextPosition = POSITION_CERBERUS_REBORN;
 			break;
+		}
 		case ROOM_CERBERUS_REBORN:
 			nextRoom     = ROOM_GIGAPEDE_REBORN;
 			nextPosition = POSITION_GIGAPEDE_REBORN;
@@ -1382,7 +1337,7 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 
 
 
-
+// @Reaseach: Probably no longer needed.
 
 void ActorInitComplete(byte8 * baseAddr)
 {

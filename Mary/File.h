@@ -123,7 +123,7 @@ constexpr uint16 File_costumeMapVergil[MAX_COSTUME_VERGIL] =
 template <typename T>
 void File_UpdateCostumeFileItems(T & actorData)
 {
-	auto & unlockDevilTrigger = *reinterpret_cast<bool *>(appBaseAddr + 0xC8F250 + 0xD1);
+	auto & unlockDevilTrigger = *reinterpret_cast<bool *>(appBaseAddr + 0xC8F250 + 0xD1); // @Todo: Use SESSION_DATA.
 	auto costume = actorData.costume;
 	uint16 cacheFileId = 0;
 

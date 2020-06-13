@@ -24,7 +24,9 @@ struct ACTOR_DATA
 	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 rotation; // 0xC0
-	_(86);
+	_(22);
+	byte8 * attackData; // 0xD8
+	_(56);
 	uint8 id; // 0x118
 	_(3);
 	bool isClone; // 0x11C
@@ -187,7 +189,9 @@ struct ACTOR_DATA_DANTE
 	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 rotation; // 0xC0
-	_(86);
+	_(22);
+	byte8 * attackData; // 0xD8
+	_(56);
 	uint8 id; // 0x118
 	_(3);
 	bool isClone; // 0x11C
@@ -384,7 +388,9 @@ struct ACTOR_DATA_BOB
 	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 rotation; // 0xC0
-	_(86);
+	_(22);
+	byte8 * attackData; // 0xD8
+	_(56);
 	uint8 id; // 0x118
 	_(3);
 	bool isClone; // 0x11C
@@ -547,7 +553,9 @@ struct ACTOR_DATA_LADY
 	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 rotation; // 0xC0
-	_(86);
+	_(22);
+	byte8 * attackData; // 0xD8
+	_(56);
 	uint8 id; // 0x118
 	_(3);
 	bool isClone; // 0x11C
@@ -710,7 +718,9 @@ struct ACTOR_DATA_VERGIL
 	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 rotation; // 0xC0
-	_(86);
+	_(22);
+	byte8 * attackData; // 0xD8
+	_(56);
 	uint8 id; // 0x118
 	_(3);
 	bool isClone; // 0x11C

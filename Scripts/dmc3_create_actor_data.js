@@ -23,6 +23,7 @@ var items =
 	[ "pull"                        , "float32"                      , 0x94                             ],
 	[ "pullMultiplier"                        , "float32"                      , 0xA4                             ],
 	[ "rotation"                       , "uint16"                    , 0xC0                             ],
+	[ "attackData"                       , "byte8 *"                    , 0xD8                             ],
 	[ "id"                              , "uint8"                     , 0x118                            ],
 	[ "isClone"                         , "bool"                      , 0x11C                            ], //but has size of uint32.
 	[ "visible"                         , "uint32"                    , 0x120                            ],
@@ -648,7 +649,7 @@ function AddActorDataCE
 			return;
 		}
 
-		if ((character != undefined) && (character != id))
+		if ((character != undefined) && !(character & id))
 		{
 			continue;
 		}

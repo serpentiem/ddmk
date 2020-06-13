@@ -88,9 +88,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		HUD_Init();
 
-		//Training_ToggleInfiniteHitPoints  (Config.Game.Training.infiniteHitPoints  );
-		//Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
-		//Training_ToggleDisableTimer       (Config.Game.Training.disableTimer       );
+		Training_ToggleInfiniteHitPoints  (true);
+		Training_ToggleInfiniteMagicPoints(true);
+		Training_ToggleDisableTimer       (true);
 
 
 		//Speed_Init();

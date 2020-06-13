@@ -83,6 +83,103 @@ static bool AirTrick(byte8 * baseAddr)
 	return true;
 }
 
+
+#include "../ActorData.h"
+
+
+
+
+
+
+
+
+
+template <typename T>
+bool MobilityFunction(T & actorData, uint8 & count, uint8(&array)[2])
+{
+	uint8 track = (actorData.devil) ? 1 : 0;
+
+	if (count > 0)
+	{
+		count--;
+		return true;
+	}
+
+	return false;
+
+
+
+	if (count >= array[track])
+	{
+		return false;
+	}
+
+	return true;
+}
+
+auto DanteTricksterSkyStar(ACTOR_DATA_DANTE & actorData)
+{
+	return MobilityFunction(actorData, actorData.skyStarCount, Config.Dante.Trickster.skyStarCount);
+}
+
+
+
+
+
+bool func(uint8 & count)
+{
+	if (count > 0)
+	{
+		count--;
+		return true;
+	}
+	return false;
+}
+
+auto Dante_Trickster_Dash = func(0);
+
+
+
+
+
+
+
+auto new_func = Trickster_SkyStar<ACTOR_DATA_DANTE, Config.Dante.Trickster.skyStarCount>;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 static bool AirTrickVergil(byte8 * baseAddr)
 {
 	bool devil = *(bool *)(baseAddr + 0x3E9B);
@@ -197,6 +294,19 @@ void Game_Mobility_Init()
 		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E64A9), 6);
 		SkyStarProxy = func.addr;
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 	{
 		byte8 sect1[] =
 		{
@@ -211,8 +321,17 @@ void Game_Mobility_Init()
 		memcpy(func.sect1, sect1, sizeof(sect1));
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E64A9), 6);
-		AirTrickProxy = func.addr;
+		//AirTrickProxy = func.addr;
+
+
+		//Write<byte8>((appBaseAddr + 0x1E66A6), 0xC0);
+		WriteJump((appBaseAddr + 0x1E6634), AirTrickProxy, 1);
+
+		//Write<byte8>((appBaseAddr + 0x1E664D), 0x83);
 	}
+
+
+
 	{
 		byte8 sect0[] =
 		{
@@ -224,6 +343,24 @@ void Game_Mobility_Init()
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		AirTrickReset = func.addr;
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	{
 		byte8 sect1[] =
 		{
@@ -313,22 +450,33 @@ void Game_Mobility_Toggle(bool enable)
 	if (enable)
 	{
 		WriteJump((appBaseAddr + 0x1E9AA9), AirHikeProxy, 2);
-		Write<byte8>((appBaseAddr + 0x1E0FF8), 0x80);
+		
 		WriteJump((appBaseAddr + 0x1E100E), AirHikeFix, 3);
 		WriteJump((appBaseAddr + 0x1E66CB), DashProxy, 1);
+
+
+
 		WriteJump((appBaseAddr + 0x1E6696), SkyStarProxy, 2);
-		Write<byte8>((appBaseAddr + 0x1E66A6), 0xC0);
+
+
+
+
+
+
+		Write<byte8>((appBaseAddr + 0x1E686E), 0x83);
+		Write<byte8>((appBaseAddr + 0x1E680E), 0x83);
+		Write<byte8>((appBaseAddr + 0x1E67A1), 0x83);
 		WriteJump((appBaseAddr + 0x1E6634), AirTrickProxy, 1);
-		Write<byte8>((appBaseAddr + 0x1E664D), 0x83);
+		
 		WriteJump((appBaseAddr + 0x1F2228), AirTrickReset, 2);
 		WriteJump((appBaseAddr + 0x1E6854), AirTrickProxyVergil, 2);
-		Write<byte8>((appBaseAddr + 0x1E686E), 0x83);
+		
 		WriteJump((appBaseAddr + 0x1F0C92), AirTrickResetVergil, 2);
 		WriteJump((appBaseAddr + 0x1E67F4), TrickUpProxy, 2);
-		Write<byte8>((appBaseAddr + 0x1E680E), 0x83);
+		
 		WriteJump((appBaseAddr + 0x1F0B2A), TrickUpReset, 2);
 		WriteJump((appBaseAddr + 0x1E6787), TrickDownProxy, 2);
-		Write<byte8>((appBaseAddr + 0x1E67A1), 0x83);
+		
 		WriteJump((appBaseAddr + 0x1F0A33), TrickDownReset, 2);
 	}
 	else
