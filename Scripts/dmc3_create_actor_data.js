@@ -23,7 +23,7 @@ var items =
 	[ "pull"                        , "float32"                      , 0x94                             ],
 	[ "pullMultiplier"                        , "float32"                      , 0xA4                             ],
 	[ "rotation"                       , "uint16"                    , 0xC0                             ],
-	[ "attackData"                       , "byte8 *"                    , 0xD8                             ],
+	//[ "attackData"                       , "byte8 *"                    , 0xD8                             ],
 	[ "id"                              , "uint8"                     , 0x118                            ],
 	[ "isClone"                         , "bool"                      , 0x11C                            ], //but has size of uint32.
 	[ "visible"                         , "uint32"                    , 0x120                            ],
@@ -60,7 +60,14 @@ var items =
 	[ "shadow"                      , "uint32"  , 0x3A18 ],
 	[ "color"                       , "byte32"  , 0x3A28 ],
 	[ "actionData[6]"               , "byte8 *" , 0x3DD0 ],
-	[ "[4]"                         , "uint32"  , 0x3E00 ],
+
+
+
+	[ "eventData[2]"                         , "ACTOR_EVENT_DATA"  , 0x3E00 ],
+
+
+
+
 	[ "[32]"                        , "uint8"   , 0x3E10 ],
 	[ "motionTimer"                 , "float32" , 0x3E34 ],
 	[ "idleTimer"                   , "float32" , 0x3E38 ],
@@ -113,11 +120,21 @@ var items =
 	[ "targetBaseAddr"                  , "byte8 *"                   , 0x6328                           ],
 	[ "style"                           , "uint32"                    , 0x6338                           ],
 	[ "styleLevel"                      , "uint32"                    , 0x6358                           ],
+
+
+
 	[ "dashCount"                       , "uint8"                     , 0x635C, CHAR_DANTE               ],
+
+
+
 	[ "skyStarCount"                    , "uint8"                     , 0x635D, CHAR_DANTE               ],
 	[ "airTrickCount"                   , "uint8"                     , 0x635E, CHAR_DANTE | CHAR_VERGIL ],
 	[ "trickUpCount"                    , "uint8"                     , 0x635F, CHAR_VERGIL              ],
 	[ "trickDownCount"                  , "uint8"                     , 0x6360, CHAR_VERGIL              ],
+
+
+
+
 	[ "quicksilver"                     , "bool"                      , 0x6361, CHAR_DANTE               ],
 	[ "doppelganger"                    , "bool"                      , 0x6362, CHAR_DANTE               ],
 	[ "styleExperience"                 , "float32"                   , 0x6364                           ],
@@ -327,6 +344,7 @@ var GetTypeSize = function(str)
 		[ "MODEL_METADATA"            , 80   ],
 		[ "MODEL_DATA"                , 1920 ],
 		[ "DEVIL_MODEL_METADATA_DANTE", 33   ],
+		[ "ACTOR_EVENT_DATA", 8   ],
 	];
 	for (var index = 0; index < sizes.length; index++)
 	{
@@ -729,6 +747,13 @@ function AddActorDataCE
 			}
 			else if (type == "DEVIL_MODEL_METADATA_DANTE")
 			{
+				continue;
+			}
+			else if (type == "ACTOR_EVENT_DATA")
+			{
+				AddCheatEntry(description + " index"    , false, "4 Bytes", 0, (pos + 0), actor);
+				AddCheatEntry(description + " lastIndex", false, "4 Bytes", 0, (pos + 4), actor);
+				pos += size;
 				continue;
 			}
 			

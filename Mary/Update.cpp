@@ -882,7 +882,9 @@ constexpr uint8 darkSlayerVergil                          [MAX_TILT_DIRECTION][2
 template <typename T>
 void EndMotion(T & actorData)
 {
-	actorData.var_3E00[0] = 2;
+	//actorData.var_3E00[0] = 2;
+	//actorData.var_3E00[0] = 2;
+	actorData.eventData[0].index = 2;
 }
 
 template <typename T>
@@ -2743,7 +2745,7 @@ void Update_Init()
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
 		memcpy(func.sect2, sect2, sizeof(sect2));
-		WriteJump((appBaseAddr + 0x1E0FCB), func.addr);
+		//WriteJump((appBaseAddr + 0x1E0FCB), func.addr);
 		/*
 		dmc3.exe+1E0FCB - 41 83 78 78 00             - cmp dword ptr [r8+78],00
 		dmc3.exe+1E0FD0 - 41 C7 80 74630000 00000000 - mov [r8+00006374],00000000

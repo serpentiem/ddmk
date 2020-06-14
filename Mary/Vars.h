@@ -902,6 +902,17 @@ enum FILE_MODE_
 
 
 
+enum ACTOR_EVENT
+{
+	ACTOR_EVENT_DANTE_DASH = 22,
+	ACTOR_EVENT_DANTE_SKY_STAR,
+	ACTOR_EVENT_DANTE_AIR_TRICK,
+	ACTOR_EVENT_VERGIL_AIR_TRICK = 27,
+	ACTOR_EVENT_VERGIL_TRICK_UP,
+	ACTOR_EVENT_VERGIL_TRICK_DOWN,
+};
+
+
 
 
 
@@ -923,6 +934,14 @@ enum FILE_MODE_
 
 #pragma pack(push, 1)
 
+
+
+
+struct ACTOR_EVENT_DATA
+{
+	uint32 index;
+	uint32 lastIndex;
+};
 
 
 

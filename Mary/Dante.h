@@ -12,6 +12,12 @@
 
 
 
+
+void Mobility_Toggle(bool enable);
+
+//void Mobility_Init();
+
+
 extern byte8 * Dante_rainStorm;
 
 void Dante_Init();

@@ -587,7 +587,6 @@ struct CONFIG
 			uint8 dashCount    [2] = { 3, 3 };
 			uint8 skyStarCount [2] = { 1, 1 };
 			uint8 airTrickCount[2] = { 1, 1 };
-
 		}
 		Trickster;
 		struct
@@ -727,6 +726,13 @@ struct CONFIG
 
 	struct
 	{
+		struct
+		{
+			uint8 airTrickCount [2] = { 1, 1 };
+			uint8 trickUpCount  [2] = { 1, 1 };
+			uint8 trickDownCount[2] = { 1, 1 };
+		}
+		DarkSlayer;
 		struct
 		{
 			float32 rapidSlashDuration    [2] = { 5  , 5   };

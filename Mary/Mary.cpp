@@ -107,6 +107,11 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Update_Init();
 
 
+		Mobility_Toggle(true);
+
+
+
+
 		//ToggleUpdateWeapon(true);
 
 

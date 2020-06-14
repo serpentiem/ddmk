@@ -24,9 +24,7 @@ struct ACTOR_DATA
 	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 rotation; // 0xC0
-	_(22);
-	byte8 * attackData; // 0xD8
-	_(56);
+	_(86);
 	uint8 id; // 0x118
 	_(3);
 	bool isClone; // 0x11C
@@ -52,7 +50,7 @@ struct ACTOR_DATA
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	uint32 var_3E00[4]; // 0x3E00
+	ACTOR_EVENT_DATA eventData[2]; // 0x3E00
 	uint8 var_3E10[32]; // 0x3E10
 	_(4);
 	float32 motionTimer; // 0x3E34
@@ -189,9 +187,7 @@ struct ACTOR_DATA_DANTE
 	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 rotation; // 0xC0
-	_(22);
-	byte8 * attackData; // 0xD8
-	_(56);
+	_(86);
 	uint8 id; // 0x118
 	_(3);
 	bool isClone; // 0x11C
@@ -217,7 +213,7 @@ struct ACTOR_DATA_DANTE
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	uint32 var_3E00[4]; // 0x3E00
+	ACTOR_EVENT_DATA eventData[2]; // 0x3E00
 	uint8 var_3E10[32]; // 0x3E10
 	_(4);
 	float32 motionTimer; // 0x3E34
@@ -388,9 +384,7 @@ struct ACTOR_DATA_BOB
 	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 rotation; // 0xC0
-	_(22);
-	byte8 * attackData; // 0xD8
-	_(56);
+	_(86);
 	uint8 id; // 0x118
 	_(3);
 	bool isClone; // 0x11C
@@ -416,7 +410,7 @@ struct ACTOR_DATA_BOB
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	uint32 var_3E00[4]; // 0x3E00
+	ACTOR_EVENT_DATA eventData[2]; // 0x3E00
 	uint8 var_3E10[32]; // 0x3E10
 	_(4);
 	float32 motionTimer; // 0x3E34
@@ -553,9 +547,7 @@ struct ACTOR_DATA_LADY
 	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 rotation; // 0xC0
-	_(22);
-	byte8 * attackData; // 0xD8
-	_(56);
+	_(86);
 	uint8 id; // 0x118
 	_(3);
 	bool isClone; // 0x11C
@@ -581,7 +573,7 @@ struct ACTOR_DATA_LADY
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	uint32 var_3E00[4]; // 0x3E00
+	ACTOR_EVENT_DATA eventData[2]; // 0x3E00
 	uint8 var_3E10[32]; // 0x3E10
 	_(4);
 	float32 motionTimer; // 0x3E34
@@ -718,9 +710,7 @@ struct ACTOR_DATA_VERGIL
 	float32 pullMultiplier; // 0xA4
 	_(24);
 	uint16 rotation; // 0xC0
-	_(22);
-	byte8 * attackData; // 0xD8
-	_(56);
+	_(86);
 	uint8 id; // 0x118
 	_(3);
 	bool isClone; // 0x11C
@@ -746,7 +736,7 @@ struct ACTOR_DATA_VERGIL
 	byte32 color; // 0x3A28
 	_(932);
 	byte8 * actionData[6]; // 0x3DD0
-	uint32 var_3E00[4]; // 0x3E00
+	ACTOR_EVENT_DATA eventData[2]; // 0x3E00
 	uint8 var_3E10[32]; // 0x3E10
 	_(4);
 	float32 motionTimer; // 0x3E34
