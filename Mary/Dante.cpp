@@ -4,128 +4,126 @@ byte8 * Dante_rainStorm = 0;
 
 PrivateStart;
 
-struct ResetHelper
-{
-	uint32 off;
-	const byte8 * buffer;
-	uint32 bufferSize;
-};
-
-constexpr byte8 buffer_1DFEA5[] =
-{
-	0x66, 0xC7, 0x83, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [rbx+0000635E],0101
-};
-constexpr byte8 buffer_1DFFA6[] =
-{
-	0x66, 0xC7, 0x83, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [rbx+0000635E],0101
-};
-constexpr byte8 buffer_1E0790[] =
-{
-	0x66, 0x41, 0xC7, 0x81, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [r9+0000635E],0101
-};
-constexpr byte8 buffer_1E0D64[] =
-{
-	0x66, 0xC7, 0x83, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [rbx+0000635E],0101
-};
-constexpr byte8 buffer_1E0F52[] =
-{
-	0x66, 0x41, 0xC7, 0x80, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [r8+0000635E],0101
-};
-constexpr byte8 buffer_1E0FAB[] =
-{
-	0x66, 0x41, 0xC7, 0x80, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [r8+0000635E],0101
-};
-constexpr byte8 buffer_1E16B5[] =
-{
-	0x66, 0xC7, 0x83, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [rbx+0000635E],0101
-};
-constexpr byte8 buffer_1F0C92[] =
-{
-	0x40, 0x88, 0xBB, 0x5E, 0x63, 0x00, 0x00, //mov [rbx+0000635E],dil
-};
-constexpr byte8 buffer_1F2228[] =
-{
-	0xC6, 0x87, 0x5E, 0x63, 0x00, 0x00, 0x00, //mov byte ptr [rdi+0000635E],00
-};
-constexpr byte8 buffer_1F07CD[] =
-{
-	0x66, 0xC7, 0x83, 0x5F, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [rbx+0000635F],0101
-};
-constexpr byte8 buffer_1F0B2A[] =
-{
-	0x40, 0x88, 0xBB, 0x5F, 0x63, 0x00, 0x00, //mov [rbx+0000635F],dil
-};
-constexpr byte8 buffer_1DFE9E[] =
-{
-	0xC6, 0x83, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [rbx+00006360],01
-};
-constexpr byte8 buffer_1DFFAF[] =
-{
-	0xC6, 0x83, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [rbx+00006360],01
-};
-constexpr byte8 buffer_1E079A[] =
-{
-	0x41, 0xC6, 0x81, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [r9+00006360],01
-};
-constexpr byte8 buffer_1E0D6D[] =
-{
-	0xC6, 0x83, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [rbx+00006360],01
-};
-constexpr byte8 buffer_1E0F5C[] =
-{
-	0x41, 0xC6, 0x80, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [r8+00006360],01
-};
-constexpr byte8 buffer_1E0FB5[] =
-{
-	0x41, 0xC6, 0x80, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [r8+00006360],01
-};
-constexpr byte8 buffer_1E16BE[] =
-{
-	0xC6, 0x83, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [rbx+00006360],01
-};
-constexpr byte8 buffer_1F0A33[] =
-{
-	0x40, 0x88, 0xBB, 0x60, 0x63, 0x00, 0x00, //mov [rbx+00006360],dil
-};
-
-constexpr ResetHelper resetHelper[] =
-{
-	{ 0x1DFEA5, buffer_1DFEA5, 9  },
-	{ 0x1DFFA6, buffer_1DFFA6, 9  },
-	{ 0x1E0790, buffer_1E0790, 10 },
-	{ 0x1E0D64, buffer_1E0D64, 9  },
-	{ 0x1E0F52, buffer_1E0F52, 10 },
-	{ 0x1E0FAB, buffer_1E0FAB, 10 },
-	{ 0x1E16B5, buffer_1E16B5, 9  },
-	{ 0x1F0C92, buffer_1F0C92, 7  },
-	{ 0x1F2228, buffer_1F2228, 7  },
-	{ 0x1F07CD, buffer_1F07CD, 9  },
-	{ 0x1F0B2A, buffer_1F0B2A, 7  },
-	{ 0x1DFE9E, buffer_1DFE9E, 7  },
-	{ 0x1DFFAF, buffer_1DFFAF, 7  },
-	{ 0x1E079A, buffer_1E079A, 8  },
-	{ 0x1E0D6D, buffer_1E0D6D, 7  },
-	{ 0x1E0F5C, buffer_1E0F5C, 8  },
-	{ 0x1E0FB5, buffer_1E0FB5, 8  },
-	{ 0x1E16BE, buffer_1E16BE, 7  },
-	{ 0x1F0A33, buffer_1F0A33, 7  },
-};
-
-
+//struct ResetHelper
+//{
+//	uint32 off;
+//	const byte8 * buffer;
+//	uint32 bufferSize;
+//};
+//
+//constexpr byte8 buffer_1DFEA5[] =
+//{
+//	0x66, 0xC7, 0x83, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [rbx+0000635E],0101
+//};
+//constexpr byte8 buffer_1DFFA6[] =
+//{
+//	0x66, 0xC7, 0x83, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [rbx+0000635E],0101
+//};
+//constexpr byte8 buffer_1E0790[] =
+//{
+//	0x66, 0x41, 0xC7, 0x81, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [r9+0000635E],0101
+//};
+//constexpr byte8 buffer_1E0D64[] =
+//{
+//	0x66, 0xC7, 0x83, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [rbx+0000635E],0101
+//};
+//constexpr byte8 buffer_1E0F52[] =
+//{
+//	0x66, 0x41, 0xC7, 0x80, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [r8+0000635E],0101
+//};
+//constexpr byte8 buffer_1E0FAB[] =
+//{
+//	0x66, 0x41, 0xC7, 0x80, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [r8+0000635E],0101
+//};
+//constexpr byte8 buffer_1E16B5[] =
+//{
+//	0x66, 0xC7, 0x83, 0x5E, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [rbx+0000635E],0101
+//};
+//constexpr byte8 buffer_1F0C92[] =
+//{
+//	0x40, 0x88, 0xBB, 0x5E, 0x63, 0x00, 0x00, //mov [rbx+0000635E],dil
+//};
+//constexpr byte8 buffer_1F2228[] =
+//{
+//	0xC6, 0x87, 0x5E, 0x63, 0x00, 0x00, 0x00, //mov byte ptr [rdi+0000635E],00
+//};
+//constexpr byte8 buffer_1F07CD[] =
+//{
+//	0x66, 0xC7, 0x83, 0x5F, 0x63, 0x00, 0x00, 0x01, 0x01, //mov word ptr [rbx+0000635F],0101
+//};
+//constexpr byte8 buffer_1F0B2A[] =
+//{
+//	0x40, 0x88, 0xBB, 0x5F, 0x63, 0x00, 0x00, //mov [rbx+0000635F],dil
+//};
+//constexpr byte8 buffer_1DFE9E[] =
+//{
+//	0xC6, 0x83, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [rbx+00006360],01
+//};
+//constexpr byte8 buffer_1DFFAF[] =
+//{
+//	0xC6, 0x83, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [rbx+00006360],01
+//};
+//constexpr byte8 buffer_1E079A[] =
+//{
+//	0x41, 0xC6, 0x81, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [r9+00006360],01
+//};
+//constexpr byte8 buffer_1E0D6D[] =
+//{
+//	0xC6, 0x83, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [rbx+00006360],01
+//};
+//constexpr byte8 buffer_1E0F5C[] =
+//{
+//	0x41, 0xC6, 0x80, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [r8+00006360],01
+//};
+//constexpr byte8 buffer_1E0FB5[] =
+//{
+//	0x41, 0xC6, 0x80, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [r8+00006360],01
+//};
+//constexpr byte8 buffer_1E16BE[] =
+//{
+//	0xC6, 0x83, 0x60, 0x63, 0x00, 0x00, 0x01, //mov byte ptr [rbx+00006360],01
+//};
+//constexpr byte8 buffer_1F0A33[] =
+//{
+//	0x40, 0x88, 0xBB, 0x60, 0x63, 0x00, 0x00, //mov [rbx+00006360],dil
+//};
+//
+//constexpr ResetHelper resetHelper[] =
+//{
+//	{ 0x1DFEA5, buffer_1DFEA5, 9  },
+//	{ 0x1DFFA6, buffer_1DFFA6, 9  },
+//	{ 0x1E0790, buffer_1E0790, 10 },
+//	{ 0x1E0D64, buffer_1E0D64, 9  },
+//	{ 0x1E0F52, buffer_1E0F52, 10 },
+//	{ 0x1E0FAB, buffer_1E0FAB, 10 },
+//	{ 0x1E16B5, buffer_1E16B5, 9  },
+//	{ 0x1F0C92, buffer_1F0C92, 7  },
+//	{ 0x1F2228, buffer_1F2228, 7  },
+//	{ 0x1F07CD, buffer_1F07CD, 9  },
+//	{ 0x1F0B2A, buffer_1F0B2A, 7  },
+//	{ 0x1DFE9E, buffer_1DFE9E, 7  },
+//	{ 0x1DFFAF, buffer_1DFFAF, 7  },
+//	{ 0x1E079A, buffer_1E079A, 8  },
+//	{ 0x1E0D6D, buffer_1E0D6D, 7  },
+//	{ 0x1E0F5C, buffer_1E0F5C, 8  },
+//	{ 0x1E0FB5, buffer_1E0FB5, 8  },
+//	{ 0x1E16BE, buffer_1E16BE, 7  },
+//	{ 0x1F0A33, buffer_1F0A33, 7  },
+//};
 
 
 
 
 
 
-void Toggle(bool enable)
-{
-
-}
 
 
-
-
+//void Toggle(bool enable)
+//{
+//
+//}
+//
+//
 
 
 
@@ -150,6 +148,8 @@ void Toggle(bool enable)
 
 
 
+
+// @Todo: Cleanup, capture SkyStarReset event.
 
 
 
@@ -162,6 +162,9 @@ void ResetMobilityCounters(byte8 * baseAddr)
 	if (actorData.character == CHAR_DANTE)
 	{
 		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+
+
+		actorData.skyStarCount = 0;
 
 
 		if (actorData.state & STATE_ON_FLOOR)
@@ -618,8 +621,25 @@ void Mobility_Toggle(bool enable)
 
 
 
-
-
+	// Air Trick Dante Floor
+	{
+		auto dest = (appBaseAddr + 0x1F2228);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 7);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xC6, 0x87, 0x5E, 0x63, 0x00, 0x00, 0x00, //mov byte ptr [rdi+0000635E],00
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1F2228 - C6 87 5E630000 00 - mov byte ptr [rdi+0000635E],00
+		*/
+	}
 
 
 
@@ -956,19 +976,19 @@ void Mobility_Toggle(bool enable)
 
 
 	// Disable default resets for Air Trick, Trick Up and Trick Down.
-	for_all(uint8, index, countof<uint8>(resetHelper))
-	{
-		auto & item = resetHelper[index];
+	//for_all(uint8, index, countof<uint8>(resetHelper))
+	//{
+	//	auto & item = resetHelper[index];
 
-		if (enable)
-		{
-			vp_memset((appBaseAddr + item.off), 0x90, item.bufferSize);
-		}
-		else
-		{
-			vp_memcpy((appBaseAddr + item.off), item.buffer, item.bufferSize);
-		}
-	}
+	//	if (enable)
+	//	{
+	//		vp_memset((appBaseAddr + item.off), 0x90, item.bufferSize);
+	//	}
+	//	else
+	//	{
+	//		vp_memcpy((appBaseAddr + item.off), item.buffer, item.bufferSize);
+	//	}
+	//}
 }
 
 
