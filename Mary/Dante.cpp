@@ -4,11 +4,43 @@ byte8 * Dante_rainStorm = 0;
 
 PrivateStart;
 
+template <typename T>
+void SkyStarResetFunction(T & actorData)
+{
+	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	{
+		actorData.skyStarCount = 0;
+		actorData.newAirStingerCount = 0;
+	}
 
+	if (actorData.state & STATE_ON_FLOOR)
+	{
+		auto & event = actorData.eventData[1].index;
 
-
-
-
+		if constexpr (typematch(T, ACTOR_DATA_DANTE))
+		{
+			if (event == ACTOR_EVENT_DANTE_AIR_TRICK)
+			{
+				actorData.airTrickCount = 1;
+			}
+		}
+		else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+		{
+			if (event == ACTOR_EVENT_VERGIL_AIR_TRICK)
+			{
+				actorData.airTrickCount = 1;
+			}
+			else if (event == ACTOR_EVENT_VERGIL_TRICK_UP)
+			{
+				actorData.trickUpCount = 1;
+			}
+			else if (event == ACTOR_EVENT_VERGIL_TRICK_DOWN)
+			{
+				actorData.trickDownCount = 1;
+			}
+		}
+	}
+}
 
 void SkyStarReset(byte8 * baseAddr)
 {
@@ -18,52 +50,15 @@ void SkyStarReset(byte8 * baseAddr)
 	{
 		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
 
-		actorData.skyStarCount = 0;
-
-		if (actorData.state & STATE_ON_FLOOR)
-		{
-			switch (actorData.eventData[1].index)
-			{
-			case ACTOR_EVENT_DANTE_AIR_TRICK:
-			{
-				actorData.airTrickCount = 1;
-				break;
-			}
-			}
-		}
+		SkyStarResetFunction(actorData);
 	}
 	else if (actorData.character == CHAR_VERGIL)
 	{
 		auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
 
-		if (actorData.state & STATE_ON_FLOOR)
-		{
-			switch (actorData.eventData[1].index)
-			{
-			case ACTOR_EVENT_VERGIL_AIR_TRICK:
-			{
-				actorData.airTrickCount = 1;
-				break;
-			}
-			case ACTOR_EVENT_VERGIL_TRICK_UP:
-			{
-				actorData.trickUpCount = 1;
-				break;
-			}
-			case ACTOR_EVENT_VERGIL_TRICK_DOWN:
-			{
-				actorData.trickDownCount = 1;
-				break;
-			}
-			}
-		}
+		SkyStarResetFunction(actorData);
 	}
 }
-
-
-
-
-
 
 template
 <
@@ -72,7 +67,17 @@ template
 >
 uint32 MobilityFunction(T & actorData, uint8 & var, uint8(&array)[2])
 {
+
+	//actorData.newEvent = index;
+
+
+
+
 	uint8 track = (actorData.devil) ? 1 : 0;
+
+
+
+
 
 	// Required since there is no reset when hitting the floor.
 	if constexpr (index != ACTOR_EVENT_DANTE_DASH)
@@ -82,6 +87,10 @@ uint32 MobilityFunction(T & actorData, uint8 & var, uint8(&array)[2])
 			var = 0;
 		}
 	}
+
+
+
+
 
 	if (var >= array[track])
 	{
@@ -93,30 +102,21 @@ uint32 MobilityFunction(T & actorData, uint8 & var, uint8(&array)[2])
 	return index;
 }
 
-
-
-
-
-
-
-
-
-
 auto Dash(ACTOR_DATA_DANTE & actorData)
 {
-	return MobilityFunction<22>(actorData, actorData.dashCount, Config.Dante.Trickster.dashCount);
+	return MobilityFunction<ACTOR_EVENT_DANTE_DASH>(actorData, actorData.dashCount, Config.Dante.Trickster.dashCount);
 }
 
 auto SkyStar(ACTOR_DATA_DANTE & actorData)
 {
-	return MobilityFunction<23>(actorData, actorData.skyStarCount, Config.Dante.Trickster.skyStarCount);
+	return MobilityFunction<ACTOR_EVENT_DANTE_SKY_STAR>(actorData, actorData.skyStarCount, Config.Dante.Trickster.skyStarCount);
 }
 
 auto AirTrickDante(ACTOR_DATA_DANTE & actorData)
 {
 	actorData.var_3E10[26] = (actorData.state & STATE_ON_FLOOR) ? 1 : 0;
 
-	return MobilityFunction<24>(actorData, actorData.airTrickCount, Config.Dante.Trickster.airTrickCount);
+	return MobilityFunction<ACTOR_EVENT_DANTE_AIR_TRICK>(actorData, actorData.airTrickCount, Config.Dante.Trickster.airTrickCount);
 }
 
 auto AirTrickVergil(ACTOR_DATA_VERGIL & actorData)
@@ -340,8 +340,23 @@ void Mobility_Init()
 
 
 
+	// Trick Up and Trick Down are reset when touching the ground again, Air Trick is not. Let's fix it.
 
 
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xC6, 0x83, 0x5E, 0x63, 0x00, 0x00, 0x00, //mov byte ptr [rbx+0000635E],00
+			0xC6, 0x83, 0x10, 0x3E, 0x00, 0x00, 0x03, //mov byte ptr [rbx+00003E10],03
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1F07DD), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		airTrickVergilFix = func.addr;
+		/*
+		dmc3.exe+1F07D6 - C6 83 103E0000 03 - mov byte ptr [rbx+00003E10],03
+		dmc3.exe+1F07DD - E9 3C060000       - jmp dmc3.exe+1F0E1E
+		*/
+	}
 
 
 
@@ -594,6 +609,27 @@ void Mobility_Toggle(bool enable)
 		}
 		/*
 		dmc3.exe+1F0A33 - 40 88 BB 60630000 - mov [rbx+00006360],dil
+		*/
+	}
+
+	// Air Trick Vergil Fix
+	{
+		auto dest = (appBaseAddr + 0x1F07D6);
+		if (enable)
+		{
+			WriteJump(dest, airTrickVergilFix, 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xC6, 0x83, 0x10, 0x3E, 0x00, 0x00, 0x03, //mov byte ptr [rbx+00003E10],03
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1F07D6 - C6 83 103E0000 03 - mov byte ptr [rbx+00003E10],03
+		dmc3.exe+1F07DD - E9 3C060000       - jmp dmc3.exe+1F0E1E
 		*/
 	}
 }

@@ -288,6 +288,10 @@ var extra =
 	//[ "airStraight"  , "bool" ],
 	//[ "airGunStinger", "bool" ],
 
+	
+	
+	//[ "newEvent", "uint8" ],
+
 
 
 

@@ -1633,6 +1633,78 @@ void ActorLoop(byte8 * baseAddr)
 	
 
 
+	
+
+	////if ((actorData.lastState & STATE_IN_AIR) && (actorData.state & STATE_ON_FLOOR))
+	////{
+	////	MessageBoxA(0, "ON_FLOOR", 0, 0);
+	////	
+
+	////}
+
+
+/*
+
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+
+	if ((actorData.state & STATE_ON_FLOOR) && (actorData.lastState & STATE_IN_AIR))
+	{
+		if (actorData.newSect[0])
+		{
+			actorData.newSect[0] = false;
+
+			MessageBoxA(0, "ON_FLOOR", 0, 0);
+
+			auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
+			actorData.airTrickCount = 0;
+			actorData.trickUpCount = 0;
+			actorData.trickDownCount = 0;
+		}
+	}
+	else
+	{
+		actorData.newSect[0] = true;
+	}
+
+	if ((actorData.state & STATE_IN_AIR) && (actorData.lastState & STATE_ON_FLOOR))
+	{
+		if (actorData.newSect[1])
+		{
+			actorData.newSect[1] = false;
+
+			MessageBoxA(0, "IN_AIR", 0, 0);
+
+
+			auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
+			actorData.airTrickCount = 0;
+			actorData.trickUpCount = 0;
+			actorData.trickDownCount = 0;
+		}
+
+	}
+	else
+	{
+		actorData.newSect[1] = true;
+	}
+
+
+
+
+
+
+*/
+
+
+
+
+
+
+	////if ((actorData.state & STATE_IN_AIR) && (actorData.lastState & STATE_ON_FLOOR))
+	////{
+
+	////}
+
+
 
 
 
