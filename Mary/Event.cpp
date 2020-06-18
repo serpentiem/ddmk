@@ -6,6 +6,80 @@
 
 
 
+
+constexpr bool debug = true;
+
+
+
+
+
+void Main()
+{
+	LogFunction();
+}
+
+void Teleport()
+{
+	LogFunction();
+}
+
+void EnterCustomizeMenu()
+{
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
+}
+
+void LeaveCustomizeMenu();
+
+
+// EnterCustomizeMenuFromMain
+// EnterMainFromCustomizeMenu
+
+// EnterPauseMenuFromMain
+// EnterMainFromPauseMenu
+
+// PauseMenuMain
+// MainPauseMenu
+
+
+// CustomizeMain
+// CustomizeMenuMain
+
+// MainCustomizeMenu
+// MissionStartCustomizeMenu
+
+
+// MissionStart_EnterCustomizeMenu
+// MissionStart_LeaveCustomizeMenu
+
+// Main_EnterPauseMenu
+// Main_LeavePauseMenu
+
+// PauseMenu_EnterMain
+// PauseMenu_EnterMissionSelectMenu
+
+
+// MissionStart_CustomizeMenu
+// CustomizeMenu_MissionStart
+
+// Main_CustomizeMenu
+// Main_PauseMenu
+
+// PauseMenu_
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 dmc3.exe+23C779 - E8 A220FAFF           - call dmc3.exe+1DE820 Main
 dmc3.exe+2134DE - E8 3DB3FCFF           - call dmc3.exe+1DE820 Doppelganger
@@ -44,7 +118,7 @@ extern bool MainLoop_run;
 
 
 
-PrivateStart;
+//PrivateStart;
 
 
 
@@ -153,7 +227,7 @@ void CreateMainClone(byte8 * baseAddr)
 	Actor_actorBaseAddr[1] = baseAddr;
 }
 
-PrivateEnd;
+//PrivateEnd;
 
 
 

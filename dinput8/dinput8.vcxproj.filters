@@ -2,10 +2,25 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="dinput8.cpp" />
-    <ClCompile Include="..\Core\Log.cpp">
+    <ClCompile Include="..\Core\Windows.ixx">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\Core\Utility.cpp">
+    <ClCompile Include="..\Core\Config.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\File.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Log.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Memory.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Utility.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Vector.ixx">
       <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -15,16 +30,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Core\Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="..\Core\DataTypes.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Core\Log.h">
+    <ClInclude Include="..\Core\Includes.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Core\String.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Utility.h">
+    <ClInclude Include="..\Core\Macros.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

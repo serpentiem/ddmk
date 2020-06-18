@@ -3,7 +3,7 @@
 
 #include "Model.h"
 
-PrivateStart;
+//PrivateStart;
 
 #pragma region Functions
 
@@ -1032,7 +1032,7 @@ void UpdateDevilModelTemplate
 	}
 }
 
-PrivateEnd;
+//PrivateEnd;
 
 Cosmetics_Model_UpdateModel_t Cosmetics_Model_UpdateModelDante[MAX_COSTUME] =
 {

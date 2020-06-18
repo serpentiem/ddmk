@@ -217,11 +217,11 @@ HWND User_Hook_CreateWindowExW
 	);
 	if (Config.System.Input.hideMouseCursor)
 	{
-		ToggleCursor(false);
+		Windows_ToggleCursor(false);
 	}
 	else
 	{
-		ToggleCursor(true);
+		Windows_ToggleCursor(true);
 	}
 	return User_CreateWindowExW
 	(

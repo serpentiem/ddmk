@@ -7,4 +7,5 @@ Scripts/*
 /Win32
 /x64
 *.bat
+*.ifc
 *.vcxproj.user

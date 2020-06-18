@@ -2,7 +2,7 @@
 
 byte8 * Dante_rainStorm = 0;
 
-PrivateStart;
+////PrivateStart;
 
 template <typename T>
 void SkyStarResetFunction(T & actorData)
@@ -155,9 +155,7 @@ byte8 * airTrickVergilFix = 0;
 
 
 
-
-
-PrivateEnd;
+////PrivateEnd;
 
 
 void Mobility_Init()
@@ -308,6 +306,8 @@ void Mobility_Init()
 
 
 
+
+
 	auto CreateMobilityFunction = [](void * dest)
 	{
 		constexpr byte8 sect1[] =
@@ -336,6 +336,12 @@ void Mobility_Init()
 	trickUpProxy        = CreateMobilityFunction(TrickUp       );
 	trickDownProxy      = CreateMobilityFunction(TrickDown     );
 	
+
+	
+
+
+
+
 
 
 

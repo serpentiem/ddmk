@@ -14,7 +14,7 @@ byte8 * Memory_main = 0;
 
 
 
-PrivateStart;
+//PrivateStart;
 
 byte8 * effectManagerData = 0;
 byte8 * valueManagerData  = 0;
@@ -24,7 +24,7 @@ auto GetMemoryAddress()
 	return Memory_main;
 }
 
-PrivateEnd;
+//PrivateEnd;
 
 bool Memory_Init()
 {

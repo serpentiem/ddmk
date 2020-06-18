@@ -11,13 +11,13 @@ void Pause(bool enable)
 	//Log("%s %u", FUNC_NAME, enable);
 	if (enable)
 	{
-		ToggleCursor(true);
+		Windows_ToggleCursor(true);
 	}
 	else
 	{
 		if (Config.System.Input.hideMouseCursor)
 		{
-			ToggleCursor(false);
+			Windows_ToggleCursor(false);
 		}
 	}
 }

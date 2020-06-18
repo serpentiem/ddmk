@@ -1,8 +1,12 @@
-#pragma once
-#include "Datatypes.h"
-#include "Memory.h"
+#include "Includes.h"
 
-template <typename T>
+Export Module(Core_Vector);
+
+#include "Datatypes.h"
+
+Import(Core_Memory);
+
+Export template <typename T>
 struct Vector
 {
 	T * data;
@@ -46,14 +50,14 @@ struct Vector
 	}
 };
 
-struct MixedVectorMetadata
+Export struct MixedVectorMetadata
 {
 	byte8 * addr;
 	uint32 size;
 	uint32 alignedSize;
 };
 
-struct MixedVector
+Export struct MixedVector
 {
 	byte8 * data;
 	uint32 pos;

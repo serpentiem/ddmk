@@ -33,7 +33,7 @@ System_Weapon_Dante_UpdateExpertise_t System_Weapon_Dante_UpdateExpertise = 0;
 extern uint8 Game_WeaponSwitcher_Melee_index;
 extern uint8 Game_WeaponSwitcher_Ranged_index;
 
-PrivateStart;
+//PrivateStart;
 
 //struct FileItemHelper
 //{
@@ -249,7 +249,7 @@ byte8 * Dante_Ranged_SetWeaponProxy = 0;
 //	fileItemHelperDante[0].cacheFileId  = swordHelper[sword].cacheFileId;
 //}
 
-PrivateEnd;
+//PrivateEnd;
 
 void System_Weapon_Dante_Ranged_UpdateLevels(byte8 * baseAddr)
 {
@@ -276,7 +276,7 @@ void System_Weapon_Dante_Ranged_UpdateLevels(byte8 * baseAddr)
 	}
 }
 
-PrivateStart;
+//PrivateStart;
 
 //__declspec(deprecated) void UpdateWeapon(byte8 * baseAddr)
 //{
@@ -644,7 +644,7 @@ void Dante_Ranged_SetWeapon(byte8 * baseAddr)
 	model = equipment[selectedWeapon];
 }
 
-PrivateEnd;
+//PrivateEnd;
 
 void System_Weapon_Init()
 {

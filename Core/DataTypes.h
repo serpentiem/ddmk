@@ -15,7 +15,7 @@ typedef unsigned short     byte16;
 typedef unsigned long      byte32;
 typedef unsigned long long byte64;
 
-typedef float  float32;
+typedef float float32;
 
 struct vec4
 {

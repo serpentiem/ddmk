@@ -56,9 +56,6 @@
     <ClCompile Include="Cosmetics\Other.cpp">
       <Filter>Cosmetics</Filter>
     </ClCompile>
-    <ClCompile Include="..\Core\Config.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\Core\GUI.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -69,18 +66,6 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="..\Core\ImGui_User.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Log.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Memory.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Utility.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Windows.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Restart.cpp" />
@@ -100,9 +85,6 @@
       <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="FMOD.cpp" />
-    <ClCompile Include="..\Core\File.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Doppelganger.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -134,6 +116,27 @@
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="Training.cpp" />
     <ClCompile Include="Dante.cpp" />
+    <ClCompile Include="..\Core\Config.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Windows.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\File.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Log.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Utility.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Memory.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Vector.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -214,9 +217,6 @@
       <Filter>Cosmetics</Filter>
     </ClInclude>
     <ClInclude Include="Vars.h" />
-    <ClInclude Include="..\Core\Config.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\Core\DataTypes.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -230,21 +230,6 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Core\ImGui_User.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Log.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Memory.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\String.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Utility.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Windows.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Restart.h" />
@@ -271,9 +256,6 @@
     </ClInclude>
     <ClInclude Include="FMOD.h" />
     <ClInclude Include="..\Core\Core.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\File.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Game\Doppelganger.h">
@@ -304,9 +286,12 @@
     <ClInclude Include="Memory.h" />
     <ClInclude Include="Training.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="..\Core\Vector.h">
+    <ClInclude Include="Dante.h" />
+    <ClInclude Include="..\Core\Includes.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Dante.h" />
+    <ClInclude Include="..\Core\Macros.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,10 +1,22 @@
-#include "File.h"
+#include "Includes.h"
 
-byte8 * LoadFile
+Export Module(Core_File);
+
+#include "DataTypes.h"
+
+Import(Core_Log);
+Import(Core_Memory);
+
+#ifdef __INTELLISENSE__
+#include "Log.ixx"
+#include "Memory.ixx"
+#endif
+
+Export byte8 * LoadFile
 (
 	const char * filename,
-	uint32     * size,
-	byte8      * dest
+	uint32     * size = 0,
+	byte8      * dest = 0
 )
 {
 	byte8 * addr = dest;
@@ -44,7 +56,7 @@ byte8 * LoadFile
 	return addr;
 }
 
-bool SaveFile
+Export bool SaveFile
 (
 	const char * filename,
 	byte8      * addr,
@@ -66,6 +78,22 @@ bool SaveFile
 
 	WriteFile(file, addr, size, &bytesWritten, 0);
 	CloseHandle(file);
+
+	return true;
+}
+
+Export bool CheckFile(const char * filename)
+{
+	HANDLE file = 0;
+	byte32 error = 0;
+
+	SetLastError(0);
+	file = CreateFileA(filename, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	error = GetLastError();
+	if (file == INVALID_HANDLE_VALUE)
+	{
+		return false;
+	}
 
 	return true;
 }

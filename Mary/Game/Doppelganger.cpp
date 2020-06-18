@@ -3,7 +3,7 @@
 
 #include "Doppelganger.h"
 
-PrivateStart;
+//PrivateStart;
 
 byte8 * DoppelgangerRateControllerProxy = 0;
 byte8 * AdjustDevilSound                = 0;
@@ -30,7 +30,7 @@ void DoppelgangerRateController(byte8 * baseAddr)
 	//}
 }
 
-PrivateEnd;
+//PrivateEnd;
 
 void Game_Doppelganger_Init()
 {

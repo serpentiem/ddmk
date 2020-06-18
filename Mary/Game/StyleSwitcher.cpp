@@ -2,7 +2,7 @@
 
 uint64 Game_StyleSwitcher_counter = 0;
 
-PrivateStart;
+//PrivateStart;
 
 byte8 * StyleControllerProxy    = 0;
 byte8 * GunslingerGetStyleLevel = 0;
@@ -143,7 +143,7 @@ void UpdateStyle(byte8 * baseAddr, uint32 index)
 	//Game_StyleSwitcher_counter++;
 }
 
-PrivateEnd;
+//PrivateEnd;
 
 void Game_StyleSwitcher_Controller()
 {

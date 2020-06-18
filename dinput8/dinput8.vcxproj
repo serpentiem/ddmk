@@ -72,8 +72,9 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <CallingConvention>FastCall</CallingConvention>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -82,15 +83,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Core\Log.cpp" />
-    <ClCompile Include="..\Core\Utility.cpp" />
     <ClCompile Include="dinput8.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Core\Config.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="..\Core\File.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="..\Core\Log.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="..\Core\Memory.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="..\Core\Utility.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="..\Core\Vector.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+    <ClCompile Include="..\Core\Windows.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Core\Core.h" />
     <ClInclude Include="..\Core\DataTypes.h" />
-    <ClInclude Include="..\Core\Log.h" />
-    <ClInclude Include="..\Core\String.h" />
-    <ClInclude Include="..\Core\Utility.h" />
+    <ClInclude Include="..\Core\Includes.h" />
+    <ClInclude Include="..\Core\Macros.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

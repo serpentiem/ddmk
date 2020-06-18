@@ -1,7 +1,4 @@
-#include "../Core/DataTypes.h"
-#include "../Core/Log.h"
-#include "../Core/String.h"
-#include "../Core/Utility.h"
+#include "../Core/Core.h"
 
 const char * libName  = "dinput8.dll";
 const char * funcName = "DirectInput8Create";

@@ -1,15 +1,24 @@
-// @Todo: Monolith I guess.
 #pragma once
-#include "Config.h"
+#include "Includes.h"
+
 #include "DataTypes.h"
-#include "File.h"
-#include "Log.h"
-#ifdef _WIN64
-#include "Memory.h"
-#else
-#include "Memory32.h"
+
+Import(Core_Config);
+Import(Core_File);
+Import(Core_Log);
+Import(Core_Memory);
+Import(Core_Utility);
+Import(Core_Vector);
+Import(Core_Windows);
+
+#ifdef __INTELLISENSE__
+#include "Config.ixx"
+#include "File.ixx"
+#include "Log.ixx"
+#include "Memory.ixx"
+#include "Utility.ixx"
+#include "Vector.ixx"
+#include "Windows.ixx"
 #endif
-#include "String.h"
-#include "Utility.h"
-#include "Vector.h"
-#include "Windows.h"
+
+#include "Macros.h"

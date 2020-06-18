@@ -1,20 +1,43 @@
-#include "Memory.h"
+#include "Includes.h"
+
+Export Module(Core_Memory);
+
+#include "DataTypes.h"
+
+Import(Core_Log);
+
+#ifdef __INTELLISENSE__
+#include "Log.ixx"
+#endif
 
 constexpr bool debug = false;
 
-byte8  * appBaseAddr = 0;
-uint32   appSize     = 0;
-HWND     appWindow   = 0;
-
-PrivateStart;
+Export byte8  * appBaseAddr = 0;
+Export uint32   appSize     = 0;
+Export HWND     appWindow   = 0;
 
 SYSTEM_INFO   systemInfo = {};
 byte8       * g_addr     = 0;
 uint32        g_pos      = 0;
 
-PrivateEnd;
+Export template <typename T>
+bool Align(T & pos, T boundary, byte8 * addr = 0, byte8 pad = 0)
+{
+	T remainder = (pos % boundary);
+	if (remainder)
+	{
+		T size = (boundary - remainder);
+		if (addr)
+		{
+			memset((addr + pos), pad, size);
+		}
+		pos += size;
+		return true;
+	}
+	return false;
+}
 
-byte8 * Alloc(uint32 size)
+Export byte8 * Alloc(uint32 size)
 {
 	byte8 * addr = 0;
 	byte32 error = 0;
@@ -31,7 +54,7 @@ byte8 * Alloc(uint32 size)
 	return addr;
 }
 
-byte8 * AllocEx
+Export byte8 * AllocEx
 (
 	uint32 size,
 	uint64 pos,
@@ -101,14 +124,57 @@ byte8 * AllocEx
 	return addr;
 }
 
-void WriteAddress
+Export inline byte8 * LowAlloc(uint32 size)
+{
+	return AllocEx
+	(
+		size,
+		0x10000,
+		0x7FFFFFFF
+	);
+}
+
+Export inline byte8 * HighAlloc(uint32 size)
+{
+	return AllocEx
+	(
+		size,
+		reinterpret_cast<uint64>(appBaseAddr + appSize),
+		reinterpret_cast<uint64>(appBaseAddr + 0x7FFFFFFF)
+	);
+}
+
+Export template <typename T>
+void Write
+(
+	byte8  * addr,
+	T        value,
+	uint32   padSize  = 0,
+	byte8    padValue = 0x90
+)
+{
+	constexpr uint32 size = sizeof(T);
+	byte32 protection = 0;
+	VirtualProtect(addr, (size + padSize), PAGE_EXECUTE_READWRITE, &protection);
+	{
+		*(T *)addr = value;
+		if (padSize)
+		{
+			memset((addr + size), padValue, padSize);
+		}
+	}
+	VirtualProtect(addr, (size + padSize), protection, &protection);
+}
+
+// @Todo: Relative.
+Export void WriteAddress
 (
 	byte8  * addr,
 	byte8  * dest,
 	uint32   size,
-	byte8    header,
-	uint32   padSize,
-	byte8    padValue
+	byte8    header   = 0,
+	uint32   padSize  = 0,
+	byte8    padValue = 0x90
 )
 {
 	byte32 protection = 0;
@@ -134,9 +200,30 @@ void WriteAddress
 	VirtualProtect(addr, (size + padSize), protection, &protection);
 }
 
-// @Todo: Should be byte8 *.
+Export inline void WriteCall
+(
+	byte8  * addr,
+	byte8  * dest,
+	uint32   padSize  = 0,
+	byte8    padValue = 0x90
+)
+{
+	WriteAddress(addr, dest, 5, 0xE8, padSize, padValue);
+}
 
-void vp_memset
+Export inline void WriteJump
+(
+	byte8  * addr,
+	byte8  * dest,
+	uint32   padSize  = 0,
+	byte8    padValue = 0x90
+)
+{
+	WriteAddress(addr, dest, 5, 0xE9, padSize, padValue);
+}
+
+// @Todo: SetMemory.
+Export void vp_memset
 (
 	void   * addr,
 	byte8    value,
@@ -151,11 +238,12 @@ void vp_memset
 	VirtualProtect(addr, size, protection, &protection);
 }
 
-void vp_memcpy
+// @Todo: CopyMemory.
+Export void vp_memcpy
 (
-	void   * dest,
-	const void   * addr,
-	uint32   size
+	void       * dest,
+	const void * addr,
+	uint32       size
 )
 {
 	byte32 protection = 0;
@@ -166,22 +254,31 @@ void vp_memcpy
 	VirtualProtect(dest, size, protection, &protection);
 }
 
+Export struct FUNC
+{
+	byte8 *  addr;
+	byte8 *  sect0;
+	byte8 *  sect1;
+	byte8 *  sect2;
+	byte8 ** cache;
+};
+
 // @Todo: Add xmm register saving.
 // @Todo: Add size3 for stuff directly after the call.
 // @Todo: Add noReturn argument.
 // @Todo: Create template. Section and size details are known at compile time.
 // @Todo: Omit payload. Just write directly to dest.
-FUNC CreateFunction
+Export FUNC CreateFunction
 (
-	void   * funcAddr,
-	byte8  * jumpAddr,
-	bool     saveRegisters,
-	bool     noResult,
-	uint32   size0,
-	uint32   size1,
-	uint32   size2,
-	uint32   cacheSize,
-	uint32   count
+	void   * funcAddr      = 0,
+	byte8  * jumpAddr      = 0,
+	bool     saveRegisters = true,
+	bool     noResult      = true,
+	uint32   size0         = 0,
+	uint32   size1         = 0,
+	uint32   size2         = 0,
+	uint32   cacheSize     = 0,
+	uint32   count         = 0
 )
 {
 	byte8 payload[2048];
@@ -401,7 +498,7 @@ FUNC CreateFunction
 	return func;
 }
 
-bool Core_Memory_Init(uint32 size)
+Export bool Core_Memory_Init(uint32 size = 0)
 {
 	LogFunction();
 

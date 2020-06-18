@@ -13,7 +13,7 @@ struct ColorHelper
 	}
 };
 
-PrivateStart;
+//PrivateStart;
 
 ColorHelper colorHelperAuraDante[] =
 {
@@ -72,7 +72,7 @@ uint8 colorHelperCount[] =
 	countof(colorHelperStyleDoppelganger),
 };
 
-PrivateEnd;
+//PrivateEnd;
 
 void Cosmetics_Color_AdjustConfig(CONFIG & config)
 {

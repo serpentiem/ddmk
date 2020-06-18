@@ -3,7 +3,7 @@
 //bool Input_enableRangeExtension   = false;
 //bool Input_enableMultiplayerFixes = false;
 
-//PrivateStart;
+////PrivateStart;
 //
 //struct FunctionHelper
 //{
@@ -25,7 +25,7 @@
 //
 //byte8 backup[28] = {};
 //
-//PrivateEnd;
+////PrivateEnd;
 
 //void Input_Init()
 //{

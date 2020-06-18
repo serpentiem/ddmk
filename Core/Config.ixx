@@ -1,20 +1,30 @@
-#include "Config.h"
+#include "Includes.h"
 
-PrivateStart;
+Export Module(Core_Config);
+
+#include "DataTypes.h"
+
+Import(Core_File);
+Import(Core_Log);
+Import(Core_Utility);
+
+#ifdef __INTELLISENSE__
+#include "File.ixx"
+#include "Log.ixx"
+#include "Utility.ixx"
+#endif
 
 char     g_path[64] = {};
 byte8  * g_addr     = 0;
 uint32   g_size     = 0;
 
-PrivateEnd;
-
-void SaveConfig()
+Export void SaveConfig()
 {
 	//LogFunction();
 	SaveFile(g_path, g_addr, g_size);
 }
 
-void LoadConfig()
+Export void LoadConfig()
 {
 	//LogFunction();
 	byte8 * file = 0;
@@ -34,7 +44,7 @@ void LoadConfig()
 	memcpy(g_addr, file, size);
 }
 
-void Core_Config_Init
+Export void Core_Config_Init
 (
 	const char * directoryName,
 	const char * filename,
