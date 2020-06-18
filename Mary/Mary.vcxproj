@@ -65,9 +65,9 @@ p4.exe</Command>
     <ClCompile Include="..\Core\Config.ixx" />
     <ClCompile Include="..\Core\File.ixx" />
     <ClCompile Include="..\Core\GUI.cpp" />
-    <ClCompile Include="..\Core\ImGui_D3D11.cpp" />
-    <ClCompile Include="..\Core\ImGui_DirectInput8.cpp" />
-    <ClCompile Include="..\Core\ImGui_User.cpp" />
+    <ClCompile Include="..\Core\ImGui_D3D11.ixx" />
+    <ClCompile Include="..\Core\ImGui_DirectInput8.ixx" />
+    <ClCompile Include="..\Core\ImGui_User.ixx" />
     <ClCompile Include="..\Core\Log.ixx" />
     <ClCompile Include="..\Core\Memory.ixx" />
     <ClCompile Include="..\Core\Windows.ixx" />
@@ -75,7 +75,7 @@ p4.exe</Command>
     <ClCompile Include="..\ImGui\imgui_demo.cpp" />
     <ClCompile Include="..\ImGui\imgui_draw.cpp" />
     <ClCompile Include="..\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="Actor.ixx" />
     <ClCompile Include="ActorData.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Config.cpp" />
@@ -132,7 +132,7 @@ p4.exe</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GUI.cpp" />
-    <ClCompile Include="Hooks.cpp" />
+    <ClCompile Include="Hooks.ixx" />
     <ClCompile Include="Hotkeys.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -173,9 +173,6 @@ p4.exe</Command>
     <ClInclude Include="..\Core\Core.h" />
     <ClInclude Include="..\Core\DataTypes.h" />
     <ClInclude Include="..\Core\GUI.h" />
-    <ClInclude Include="..\Core\ImGui_D3D11.h" />
-    <ClInclude Include="..\Core\ImGui_DirectInput8.h" />
-    <ClInclude Include="..\Core\ImGui_User.h" />
     <ClInclude Include="..\Core\Includes.h" />
     <ClInclude Include="..\Core\Macros.h" />
     <ClCompile Include="..\Core\Utility.ixx">
@@ -190,7 +187,6 @@ p4.exe</Command>
     <ClInclude Include="..\ImGui\imstb_rectpack.h" />
     <ClInclude Include="..\ImGui\imstb_textedit.h" />
     <ClInclude Include="..\ImGui\imstb_truetype.h" />
-    <ClInclude Include="Actor.h" />
     <ClInclude Include="ActorData.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Config.h" />
@@ -247,7 +243,6 @@ p4.exe</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="GUI.h" />
-    <ClInclude Include="Hooks.h" />
     <ClInclude Include="Hotkeys.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="Input.h" />

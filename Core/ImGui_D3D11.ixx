@@ -1,7 +1,13 @@
 // Modified from
 // https://github.com/ocornut/imgui/blob/e0cab5664adf02c030f9cf2a05d2c334638a85f8/examples/imgui_impl_dx11.cpp
 
-#include "ImGui_D3D11.h"
+#include "Core.h"
+
+#include <d3d11.h>
+#include <d3dcompiler.h>
+#include "../ImGui/imgui.h"
+
+Export Module(ImGui_D3D11);
 
 // DirectX data
 static ID3D11Device*            g_pd3dDevice = NULL;
@@ -29,7 +35,7 @@ struct VERTEX_CONSTANT_BUFFER
 
 // Render function
 // (this used to be set in io.RenderDrawListsFn and called by ImGui::Render(), but you can now call this directly from your main loop)
-void ImGui_D3D11_RenderDrawData(ImDrawData * draw_data)
+Export void ImGui_D3D11_RenderDrawData(ImDrawData * draw_data)
 {
     ID3D11DeviceContext* ctx = g_pd3dDeviceContext;
 
@@ -282,7 +288,28 @@ static void ImGui_D3D11_CreateFontsTexture()
     }
 }
 
-bool ImGui_D3D11_CreateDeviceObjects()
+Export void ImGui_D3D11_InvalidateDeviceObjects()
+{
+	if (!g_pd3dDevice)
+		return;
+
+	if (g_pFontSampler) { g_pFontSampler->Release(); g_pFontSampler = NULL; }
+	if (g_pFontTextureView) { g_pFontTextureView->Release(); g_pFontTextureView = NULL; ImGui::GetIO().Fonts->TexID = NULL; } // We copied g_pFontTextureView to io.Fonts->TexID so let's clear that as well.
+	if (g_pIB) { g_pIB->Release(); g_pIB = NULL; }
+	if (g_pVB) { g_pVB->Release(); g_pVB = NULL; }
+
+	if (g_pBlendState) { g_pBlendState->Release(); g_pBlendState = NULL; }
+	if (g_pDepthStencilState) { g_pDepthStencilState->Release(); g_pDepthStencilState = NULL; }
+	if (g_pRasterizerState) { g_pRasterizerState->Release(); g_pRasterizerState = NULL; }
+	if (g_pPixelShader) { g_pPixelShader->Release(); g_pPixelShader = NULL; }
+	if (g_pPixelShaderBlob) { g_pPixelShaderBlob->Release(); g_pPixelShaderBlob = NULL; }
+	if (g_pVertexConstantBuffer) { g_pVertexConstantBuffer->Release(); g_pVertexConstantBuffer = NULL; }
+	if (g_pInputLayout) { g_pInputLayout->Release(); g_pInputLayout = NULL; }
+	if (g_pVertexShader) { g_pVertexShader->Release(); g_pVertexShader = NULL; }
+	if (g_pVertexShaderBlob) { g_pVertexShaderBlob->Release(); g_pVertexShaderBlob = NULL; }
+}
+
+Export bool ImGui_D3D11_CreateDeviceObjects()
 {
     if (!g_pd3dDevice)
         return false;
@@ -424,28 +451,7 @@ bool ImGui_D3D11_CreateDeviceObjects()
     return true;
 }
 
-void ImGui_D3D11_InvalidateDeviceObjects()
-{
-    if (!g_pd3dDevice)
-        return;
-
-    if (g_pFontSampler) { g_pFontSampler->Release(); g_pFontSampler = NULL; }
-    if (g_pFontTextureView) { g_pFontTextureView->Release(); g_pFontTextureView = NULL; ImGui::GetIO().Fonts->TexID = NULL; } // We copied g_pFontTextureView to io.Fonts->TexID so let's clear that as well.
-    if (g_pIB) { g_pIB->Release(); g_pIB = NULL; }
-    if (g_pVB) { g_pVB->Release(); g_pVB = NULL; }
-
-    if (g_pBlendState) { g_pBlendState->Release(); g_pBlendState = NULL; }
-    if (g_pDepthStencilState) { g_pDepthStencilState->Release(); g_pDepthStencilState = NULL; }
-    if (g_pRasterizerState) { g_pRasterizerState->Release(); g_pRasterizerState = NULL; }
-    if (g_pPixelShader) { g_pPixelShader->Release(); g_pPixelShader = NULL; }
-    if (g_pPixelShaderBlob) { g_pPixelShaderBlob->Release(); g_pPixelShaderBlob = NULL; }
-    if (g_pVertexConstantBuffer) { g_pVertexConstantBuffer->Release(); g_pVertexConstantBuffer = NULL; }
-    if (g_pInputLayout) { g_pInputLayout->Release(); g_pInputLayout = NULL; }
-    if (g_pVertexShader) { g_pVertexShader->Release(); g_pVertexShader = NULL; }
-    if (g_pVertexShaderBlob) { g_pVertexShaderBlob->Release(); g_pVertexShaderBlob = NULL; }
-}
-
-bool ImGui_D3D11_Init(ID3D11Device * device, ID3D11DeviceContext * device_context)
+Export bool ImGui_D3D11_Init(ID3D11Device * device, ID3D11DeviceContext * device_context)
 {
     // Get factory from device
     IDXGIDevice* pDXGIDevice = NULL;
@@ -466,7 +472,7 @@ bool ImGui_D3D11_Init(ID3D11Device * device, ID3D11DeviceContext * device_contex
     return true;
 }
 
-void ImGui_D3D11_Shutdown()
+Export void ImGui_D3D11_Shutdown()
 {
     ImGui_D3D11_InvalidateDeviceObjects();
     if (g_pFactory) { g_pFactory->Release(); g_pFactory = NULL; }
@@ -474,7 +480,7 @@ void ImGui_D3D11_Shutdown()
     g_pd3dDeviceContext = NULL;
 }
 
-void ImGui_D3D11_NewFrame()
+Export void ImGui_D3D11_NewFrame()
 {
     if (!g_pFontSampler)
         ImGui_D3D11_CreateDeviceObjects();

@@ -1,8 +1,15 @@
 #pragma once
 #include "../Core/Core.h"
-#include "../Core/ImGui_D3D11.h"
-#include "../Core/ImGui_DirectInput8.h"
-#include "../Core/ImGui_User.h"
+
+
+Import(ImGui_D3D11);
+Import(ImGui_DirectInput8);
+Import(ImGui_User);
+
+
+//#include "../Core/ImGui_D3D11.h"
+//#include "../Core/ImGui_DirectInput8.h"
+//#include "../Core/ImGui_User.h"
 
 #include <d3d11.h>
 #define DIRECTINPUT_VERSION 0x800

@@ -1,7 +1,7 @@
 #pragma once
 #include "../Core/Core.h"
 
-#include "Actor.h"
+//#include "Actor.h"
 #include "Camera.h"
 #include "Config.h"
 #include "File.h"

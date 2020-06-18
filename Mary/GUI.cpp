@@ -1,5 +1,23 @@
 #include "GUI.h"
 
+
+Import(Actor);
+
+#ifdef __INTELLISENSE__
+#include "Actor.ixx"
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
 enum FONT_
 {
 	FONT_DEFAULT,
@@ -3299,7 +3317,7 @@ void NEW_GUI_Main()
 			ImGui::Text("");
 			if (NEW_GUI_Checkbox("Enable", Config.Actor.enable))
 			{
-				ToggleUpdateWeapon(Config.Actor.enable);
+				//ToggleUpdateWeapon(Config.Actor.enable);
 			}
 			ImGui::Text("");
 			if (NEW_GUI_Button("Reset"))

@@ -5,6 +5,12 @@
 
 
 
+Import(Actor);
+
+#ifdef __INTELLISENSE__
+#include "Actor.ixx"
+#endif
+
 
 
 constexpr bool debug = true;

@@ -1,18 +1,31 @@
 #include "../Core/Core.h"
 
-#include "Actor.h"
+//#include "Actor.h"
 #include "Camera.h"
 #include "Config.h"
 #include "Dante.h"
 #include "Event.h"
 #include "FMOD.h"
-#include "Hooks.h"
+
+
+
+Import(Actor);
+Import(Hooks);
+
+#ifdef __INTELLISENSE__
+#include "Actor.ixx"
+#include "Hooks.ixx"
+#endif
+
 #include "Internal.h"
 #include "Memory.h"
 #include "Training.h"
 #include "Update.h"
 
 #include "System/Window.h"
+
+#include "HUD.h"
+
 
 uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {

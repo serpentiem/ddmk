@@ -1,20 +1,24 @@
-#include "ImGui_User.h"
+#include "Core.h"
+
+#include "../ImGui/imgui.h"
+
+Export Module(ImGui_User);
 
 LPSTR CursorMap[ImGuiMouseCursor_COUNT] = {};
 
-void ImGui_User_Init()
+Export void ImGui_User_Init()
 {
-	CursorMap[ImGuiMouseCursor_Arrow]      = IDC_ARROW;
-	CursorMap[ImGuiMouseCursor_TextInput]  = IDC_IBEAM;
-	CursorMap[ImGuiMouseCursor_ResizeAll]  = IDC_SIZEALL;
-	CursorMap[ImGuiMouseCursor_ResizeNS]   = IDC_SIZENS;
-	CursorMap[ImGuiMouseCursor_ResizeEW]   = IDC_SIZEWE;
+	CursorMap[ImGuiMouseCursor_Arrow     ] = IDC_ARROW;
+	CursorMap[ImGuiMouseCursor_TextInput ] = IDC_IBEAM;
+	CursorMap[ImGuiMouseCursor_ResizeAll ] = IDC_SIZEALL;
+	CursorMap[ImGuiMouseCursor_ResizeNS  ] = IDC_SIZENS;
+	CursorMap[ImGuiMouseCursor_ResizeEW  ] = IDC_SIZEWE;
 	CursorMap[ImGuiMouseCursor_ResizeNESW] = IDC_SIZENESW;
 	CursorMap[ImGuiMouseCursor_ResizeNWSE] = IDC_SIZENWSE;
-	CursorMap[ImGuiMouseCursor_Hand]       = IDC_HAND;
+	CursorMap[ImGuiMouseCursor_Hand      ] = IDC_HAND;
 }
 
-void ImGui_User_UpdateMouseCursor(HWND window)
+Export void ImGui_User_UpdateMouseCursor(HWND window)
 {
 	if (!window)
 	{

@@ -10,7 +10,6 @@
     <ClCompile Include="System\Window.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="Hooks.cpp" />
     <ClCompile Include="Cosmetics\Color.cpp">
       <Filter>Cosmetics</Filter>
     </ClCompile>
@@ -59,15 +58,6 @@
     <ClCompile Include="..\Core\GUI.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\Core\ImGui_D3D11.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\ImGui_DirectInput8.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\ImGui_User.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Restart.cpp" />
     <ClCompile Include="System\Sound.cpp">
       <Filter>System</Filter>
@@ -109,7 +99,6 @@
       <Filter>Cosmetics</Filter>
     </ClCompile>
     <ClCompile Include="ActorData.cpp" />
-    <ClCompile Include="Actor.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -131,12 +120,23 @@
     <ClCompile Include="..\Core\Utility.ixx">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\Core\Memory.ixx">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\Core\Vector.ixx">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\Core\ImGui_D3D11.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\ImGui_DirectInput8.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\ImGui_User.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Hooks.ixx" />
+    <ClCompile Include="..\Core\Memory.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.ixx" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -167,7 +167,6 @@
     <ClInclude Include="System\Window.h">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="Hooks.h" />
     <ClInclude Include="Cosmetics\Color.h">
       <Filter>Cosmetics</Filter>
     </ClInclude>
@@ -223,15 +222,6 @@
     <ClInclude Include="..\Core\GUI.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Core\ImGui_D3D11.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\ImGui_DirectInput8.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\ImGui_User.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Restart.h" />
     <ClInclude Include="System\Sound.h">
       <Filter>System</Filter>
@@ -278,7 +268,6 @@
       <Filter>Cosmetics</Filter>
     </ClInclude>
     <ClInclude Include="ActorData.h" />
-    <ClInclude Include="Actor.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="State.h" />

@@ -1,38 +1,808 @@
-#include "Actor.h"
+#include "../Core/Core.h"
 
-Vector<byte8 *> Actor_actorBaseAddr;
+#include "ActorData.h"
+#include "File.h"
+#include "HUD.h"
+#include "Internal.h"
+#include "Input.h"
+#include "Vars.h"
 
-struct IsWeaponReadyProxyHelper_t
+Export Module(Actor);
+
+Export Vector<byte8 *> Actor_actorBaseAddr;
+
+Export template <typename T>
+struct GetCharacterId
 {
-	uint32 off[2];
-	uint8 weaponType;
+	enum
+	{
+		value =
+		(typematch(T, ACTOR_DATA_DANTE )) ? CHAR_DANTE  :
+		(typematch(T, ACTOR_DATA_BOB   )) ? CHAR_BOB    :
+		(typematch(T, ACTOR_DATA_LADY  )) ? CHAR_LADY   :
+		(typematch(T, ACTOR_DATA_VERGIL)) ? CHAR_VERGIL :
+		0
+	};
 };
+
+Export template <uint8 character> struct GetActorDataType {};
+Export template <> struct GetActorDataType<CHAR_DANTE > { typedef ACTOR_DATA_DANTE  value; };
+Export template <> struct GetActorDataType<CHAR_BOB   > { typedef ACTOR_DATA_BOB    value; };
+Export template <> struct GetActorDataType<CHAR_LADY  > { typedef ACTOR_DATA_LADY   value; };
+Export template <> struct GetActorDataType<CHAR_VERGIL> { typedef ACTOR_DATA_VERGIL value; };
+
+Export template <typename T> struct GetChildActorDataType {};
+Export template <> struct GetChildActorDataType<ACTOR_DATA_DANTE > { typedef ACTOR_DATA_VERGIL value; };
+Export template <> struct GetChildActorDataType<ACTOR_DATA_VERGIL> { typedef ACTOR_DATA_DANTE  value; };
+
+Export template <typename T>
+bool IsWeaponActive
+(
+	T & actorData,
+	uint8 weapon
+)
+{
+	auto & motionData = actorData.motionData[BODY_PART_UPPER];
+	if (weapon == WEAPON_VOID)
+	{
+		return false;
+	}
+	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	{
+		if (motionData.group == (MOTION_GROUP_DANTE_REBELLION + weapon))
+		{
+			return true;
+		}
+		if (motionData.group == (MOTION_GROUP_DANTE_SWORDMASTER_REBELLION + weapon))
+		{
+			return true;
+		}
+	}
+	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	{
+		if (motionData.group == (MOTION_GROUP_VERGIL_YAMATO + (weapon - WEAPON_VERGIL_YAMATO)))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+Export template <typename T>
+bool IsWeaponActive(T & actorData)
+{
+	auto & motionData = actorData.motionData[BODY_PART_UPPER];
+	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	{
+		if ((motionData.group >= MOTION_GROUP_DANTE_REBELLION) && (motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN))
+		{
+			return true;
+		}
+	}
+	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	{
+		if ((motionData.group >= MOTION_GROUP_VERGIL_YAMATO) && (motionData.group <= MOTION_GROUP_VERGIL_FORCE_EDGE))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+Export template <typename T>
+bool IsActive(T & actorData)
+{
+	auto & motionData = actorData.motionData[BODY_PART_UPPER];
+	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	{
+		if ((motionData.group == MOTION_GROUP_DANTE_BASE) && (motionData.index == 14))
+		{
+			return true;
+		}
+		if ((motionData.group == MOTION_GROUP_DANTE_TAUNTS))
+		{
+			return true;
+		}
+	}
+	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	{
+		if ((motionData.group == MOTION_GROUP_VERGIL_BASE) && (motionData.index == 14))
+		{
+			return true;
+		}
+		if ((motionData.group == MOTION_GROUP_VERGIL_TAUNTS))
+		{
+			return true;
+		}
+	}
+	return IsWeaponActive(actorData);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma region Actor Management
+
+template <typename T>
+void InitActor
+(
+	T & actorData,
+	byte8 * sessionData
+)
+{
+	if constexpr      (typematch(T, ACTOR_DATA_DANTE )) { func_217B90(actorData, sessionData); }
+	else if constexpr (typematch(T, ACTOR_DATA_BOB   )) { func_226F10(actorData, sessionData); }
+	else if constexpr (typematch(T, ACTOR_DATA_LADY  )) { func_219660(actorData, sessionData); }
+	else if constexpr (typematch(T, ACTOR_DATA_VERGIL)) { func_223CB0(actorData, sessionData); }
+}
+
+template <typename T>
+void UpdateActor(T & actorData)
+{
+	if constexpr      (typematch(T, ACTOR_DATA_DANTE )) { func_212BE0(actorData); }
+	else if constexpr (typematch(T, ACTOR_DATA_BOB   )) { func_225D70(actorData); }
+	else if constexpr (typematch(T, ACTOR_DATA_LADY  )) { func_219260(actorData); }
+	else if constexpr (typematch(T, ACTOR_DATA_VERGIL)) { func_220970(actorData); }
+}
+
+struct MotionArchiveHelper
+{
+	uint8 group;
+	uint16 cacheFileId;
+};
+
+constexpr MotionArchiveHelper motionArchiveHelperDante[] =
+{
+	{ MOTION_GROUP_DANTE_BASE                  , pl000_00_0  },
+	{ MOTION_GROUP_DANTE_DAMAGE                , pl000_00_1  },
+	{ MOTION_GROUP_DANTE_TAUNTS                , pl000_00_2  },
+	{ MOTION_GROUP_DANTE_REBELLION             , pl000_00_3  },
+	{ MOTION_GROUP_DANTE_CERBERUS              , pl000_00_4  },
+	{ MOTION_GROUP_DANTE_AGNI_RUDRA            , pl000_00_5  },
+	{ MOTION_GROUP_DANTE_NEVAN                 , pl000_00_6  },
+	{ MOTION_GROUP_DANTE_BEOWULF               , pl000_00_7  },
+	{ MOTION_GROUP_DANTE_EBONY_IVORY           , pl000_00_8  },
+	{ MOTION_GROUP_DANTE_SHOTGUN               , pl000_00_9  },
+	{ MOTION_GROUP_DANTE_ARTEMIS               , pl000_00_10 },
+	{ MOTION_GROUP_DANTE_SPIRAL                , pl000_00_11 },
+	{ MOTION_GROUP_DANTE_KALINA_ANN            , pl000_00_12 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_REBELLION , pl000_00_13 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_CERBERUS  , pl000_00_14 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_AGNI_RUDRA, pl000_00_15 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_NEVAN     , pl000_00_16 },
+	{ MOTION_GROUP_DANTE_SWORDMASTER_BEOWULF   , pl000_00_17 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_EBONY_IVORY, pl000_00_18 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_SHOTGUN    , pl000_00_19 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_ARTEMIS    , pl000_00_20 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_SPIRAL     , pl000_00_21 },
+	{ MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN , pl000_00_22 },
+	{ MOTION_GROUP_DANTE_TRICKSTER             , pl000_00_23 },
+	{ MOTION_GROUP_DANTE_ROYALGUARD            , pl000_00_24 },
+	{ MOTION_GROUP_DANTE_QUICKSILVER           , pl000_00_25 },
+	{ MOTION_GROUP_DANTE_DOPPELGANGER          , pl000_00_26 },
+};
+
+constexpr MotionArchiveHelper motionArchiveHelperBob[] =
+{
+	{ MOTION_GROUP_BOB_BASE       , pl001_00_0  },
+	{ MOTION_GROUP_BOB_DAMAGE     , pl001_00_1  },
+	{ MOTION_GROUP_BOB_TAUNTS     , pl001_00_2  },
+	{ MOTION_GROUP_BOB_MELEE_STYLE, pl001_00_31 },
+};
+
+constexpr MotionArchiveHelper motionArchiveHelperLady[] =
+{
+	{ MOTION_GROUP_LADY_BASE      , pl002_00_0  },
+	{ MOTION_GROUP_LADY_DAMAGE    , pl002_00_1  },
+	{ MOTION_GROUP_LADY_TAUNTS    , pl002_00_2  },
+	{ MOTION_GROUP_LADY_KALINA_ANN, pl000_00_12 },
+};
+
+constexpr MotionArchiveHelper motionArchiveHelperVergil[] =
+{
+	{ MOTION_GROUP_VERGIL_BASE                  , pl021_00_0 },
+	{ MOTION_GROUP_VERGIL_DAMAGE                , pl021_00_1 },
+	{ MOTION_GROUP_VERGIL_TAUNTS                , pl021_00_2 },
+	{ MOTION_GROUP_VERGIL_YAMATO                , pl021_00_3 },
+	{ MOTION_GROUP_VERGIL_BEOWULF               , pl021_00_4 },
+	{ MOTION_GROUP_VERGIL_FORCE_EDGE            , pl021_00_5 },
+	{ MOTION_GROUP_VERGIL_DARK_SLAYER           , pl021_00_6 },
+	{ MOTION_GROUP_VERGIL_NERO_ANGELO_YAMATO    , pl021_00_7 },
+	{ MOTION_GROUP_VERGIL_NERO_ANGELO_BEOWULF   , pl021_00_8 },
+	{ MOTION_GROUP_VERGIL_NERO_ANGELO_FORCE_EDGE, pl021_00_9 },
+};
+
+template <typename T>
+void UpdateMotionArchives(T & actorData)
+{
+	constexpr uint8 count =
+	(typematch(T, ACTOR_DATA_DANTE )) ? countof<uint8>(motionArchiveHelperDante ) :
+	(typematch(T, ACTOR_DATA_BOB   )) ? countof<uint8>(motionArchiveHelperBob   ) :
+	(typematch(T, ACTOR_DATA_LADY  )) ? countof<uint8>(motionArchiveHelperLady  ) :
+	(typematch(T, ACTOR_DATA_VERGIL)) ? countof<uint8>(motionArchiveHelperVergil) :
+	0;
+
+	const MotionArchiveHelper * motionArchiveHelper =
+	(typematch(T, ACTOR_DATA_DANTE )) ? motionArchiveHelperDante  :
+	(typematch(T, ACTOR_DATA_BOB   )) ? motionArchiveHelperBob    :
+	(typematch(T, ACTOR_DATA_LADY  )) ? motionArchiveHelperLady   :
+	(typematch(T, ACTOR_DATA_VERGIL)) ? motionArchiveHelperVergil :
+	0;
+
+	for_all(uint8, index, count)
+	{
+		auto & group = motionArchiveHelper[index].group;
+		auto & cacheFileId = motionArchiveHelper[index].cacheFileId;
+
+		auto & metadata = File_staticFiles[cacheFileId];
+
+		actorData.motionArchive[group] = File_dynamicFiles.Push(metadata.addr, metadata.size);
+	}
+}
+
+typedef byte8 *(__fastcall * RegisterWeapon_t)
+(
+	byte8 * actorData,
+	uint32 id
+);
 
 RegisterWeapon_t RegisterWeapon[MAX_WEAPON] = {};
 
-constexpr IsWeaponReadyProxyHelper_t IsWeaponReadyProxyHelper[] =
+void InitRegisterWeapon()
 {
-	{ 0x2288D3, 0x2288D8, WEAPON_TYPE_MELEE  }, // Dante Agni & Rudra
-	{ 0x2295B7, 0x2295BC, WEAPON_TYPE_MELEE  }, // Dante Vergil Beowulf
-	{ 0x229E9D, 0       , WEAPON_TYPE_MELEE  }, // Vergil Force Edge
-	{ 0x22AD86, 0x22AD8B, WEAPON_TYPE_MELEE  }, // Dante Nevan
-	{ 0x22B723, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory Air
-	{ 0x22B753, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory
-	{ 0x22C186, 0       , WEAPON_TYPE_RANGED }, // Dante Lady Kalina Ann
-	{ 0x22C1A5, 0       , WEAPON_TYPE_RANGED }, // Dante Kalina Ann Grapple
-	{ 0x22CBC8, 0x22CBCD, WEAPON_TYPE_RANGED }, // Dante Artemis
-	{ 0x22D432, 0x22D437, WEAPON_TYPE_MELEE  }, // Vergil Nero Angelo Sword
-	{ 0x22E09A, 0x22E09F, WEAPON_TYPE_MELEE  }, // Vergil Yamato
-	{ 0x22FB1C, 0x22FB21, WEAPON_TYPE_MELEE  }, // Dante Cerberus
-	{ 0x2304BF, 0       , WEAPON_TYPE_RANGED }, // Dante Spiral
-	{ 0x230DD3, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun Shot
-	{ 0x230E16, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun
-	{ 0x23163F, 0       , WEAPON_TYPE_MELEE  }, // Dante Rebellion
-	{ 0x232005, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato Combo 1 Part 3
-	{ 0x232056, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato
+	RegisterWeapon[WEAPON_DANTE_REBELLION  ] = func_2310B0;
+	RegisterWeapon[WEAPON_DANTE_CERBERUS   ] = func_22EC90;
+	RegisterWeapon[WEAPON_DANTE_AGNI_RUDRA ] = func_227870;
+	RegisterWeapon[WEAPON_DANTE_NEVAN      ] = func_22A1E0;
+	RegisterWeapon[WEAPON_DANTE_BEOWULF    ] = func_228CF0;
+	RegisterWeapon[WEAPON_DANTE_EBONY_IVORY] = func_22B0C0;
+	RegisterWeapon[WEAPON_DANTE_SHOTGUN    ] = func_2306B0;
+	RegisterWeapon[WEAPON_DANTE_ARTEMIS    ] = func_22C4A0;
+	RegisterWeapon[WEAPON_DANTE_SPIRAL     ] = func_2300A0;
+	RegisterWeapon[WEAPON_DANTE_KALINA_ANN ] = func_22BA30;
+	RegisterWeapon[WEAPON_VERGIL_YAMATO    ] = func_22D960;
+	RegisterWeapon[WEAPON_VERGIL_BEOWULF   ] = func_228CF0;
+	RegisterWeapon[WEAPON_VERGIL_FORCE_EDGE] = func_2298E0;
+	RegisterWeapon[WEAPON_BOB_YAMATO       ] = func_231A30;
+}
+
+void UpdateModelPartitionConfigFunction
+(
+	ACTOR_DATA_DANTE & actorData,
+	uint8 weapon
+)
+{
+	actorData.newLastMeleeWeapon = weapon;
+
+	auto & modelData = actorData.modelData[0];
+	auto dest = func_89DE0(modelData);
+
+	if (weapon == WEAPON_DANTE_BEOWULF)
+	{
+		func_2F7350(dest, 3);
+		func_2F74E0(dest, 4);
+		func_2F74E0(dest, 5);
+		func_2F7350(dest, 6);
+	}
+	else
+	{
+		func_2F74E0(dest, 3);
+		func_2F7350(dest, 4);
+		func_2F7350(dest, 5);
+		func_2F74E0(dest, 6);
+	}
+}
+
+void UpdateModelPartitionConfig
+(
+	ACTOR_DATA_DANTE & actorData,
+	uint8 weapon
+)
+{
+	if (actorData.newLastMeleeWeapon == weapon)
+	{
+		return;
+	}
+	UpdateModelPartitionConfigFunction(actorData, weapon);
+}
+
+template <typename T>
+void UpdateMeleeWeapons
+(
+	T & actorData,
+	uint8 player,
+	uint8 entity
+)
+{
+	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	{
+		memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeapon[player][entity][CHAR_DANTE], MAX_MELEE_WEAPON);
+
+		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCount[player][entity][CHAR_DANTE];
+
+		if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
+		{
+			actorData.newMeleeWeaponIndex = 0;
+		}
+
+		for_all(uint8, index, MAX_MELEE_WEAPON_DANTE)
+		{
+			uint32 weapon = (WEAPON_DANTE_REBELLION + index);
+			actorData.newMeleeWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
+		}
+
+		auto & newMeleeWeapon = actorData.newMeleeWeapon[actorData.newMeleeWeaponIndex];
+		if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
+		{
+			actorData.meleeWeapon[0] = newMeleeWeapon;
+			actorData.meleeWeaponData[0] = actorData.newMeleeWeaponData[(newMeleeWeapon - WEAPON_DANTE_REBELLION)];
+		}
+		else
+		{
+			actorData.meleeWeapon[0] = WEAPON_VOID;
+		}
+		actorData.meleeWeapon[1] = WEAPON_VOID;
+
+		actorData.meleeWeaponIndex = 0;
+
+		UpdateModelPartitionConfigFunction(actorData, newMeleeWeapon);
+	}
+	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	{
+		memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeapon[player][entity][CHAR_VERGIL], MAX_MELEE_WEAPON);
+
+		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCount[player][entity][CHAR_VERGIL];
+
+		if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
+		{
+			actorData.newMeleeWeaponIndex = 0;
+		}
+
+		for_all(uint8, index, MAX_MELEE_WEAPON_VERGIL)
+		{
+			uint32 weapon = (WEAPON_VERGIL_YAMATO + index);
+			actorData.newMeleeWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
+		}
+
+		actorData.meleeWeapon[0] = WEAPON_VERGIL_YAMATO;
+		actorData.meleeWeapon[1] = WEAPON_VERGIL_BEOWULF;
+		actorData.meleeWeapon[2] = WEAPON_VERGIL_FORCE_EDGE;
+		actorData.meleeWeapon[3] = WEAPON_VOID;
+		actorData.meleeWeapon[4] = WEAPON_VOID;
+
+		actorData.meleeWeaponData[0] = actorData.newMeleeWeaponData[0];
+		actorData.meleeWeaponData[1] = actorData.newMeleeWeaponData[1];
+		actorData.meleeWeaponData[2] = actorData.newMeleeWeaponData[2];
+
+		actorData.meleeWeaponStatus[4] = WEAPON_STATUS_DISABLED;
+	}
+}
+
+template <typename T>
+void UpdateRangedWeapons
+(
+	T & actorData,
+	uint8 player,
+	uint8 entity
+)
+{
+	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	{
+		memcpy(actorData.newRangedWeapon, Config.Actor.rangedWeapon[player][entity][CHAR_DANTE], MAX_RANGED_WEAPON);
+
+		actorData.newRangedWeaponCount = Config.Actor.rangedWeaponCount[player][entity][CHAR_DANTE];
+
+		if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
+		{
+			actorData.newRangedWeaponIndex = 0;
+		}
+
+		for_all(uint8, index, MAX_RANGED_WEAPON_DANTE)
+		{
+			uint32 weapon = (WEAPON_DANTE_EBONY_IVORY + index);
+			actorData.newRangedWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
+		}
+
+		auto & newRangedWeapon = actorData.newRangedWeapon[actorData.newRangedWeaponIndex];
+		if ((newRangedWeapon >= WEAPON_DANTE_EBONY_IVORY) && (newRangedWeapon <= WEAPON_DANTE_KALINA_ANN))
+		{
+			actorData.rangedWeapon[0] = newRangedWeapon;
+			actorData.rangedWeaponData[0] = actorData.newRangedWeaponData[(newRangedWeapon - WEAPON_DANTE_EBONY_IVORY)];
+		}
+		else
+		{
+			actorData.rangedWeapon[0] = WEAPON_VOID;
+		}
+		actorData.rangedWeapon[1] = WEAPON_VOID;
+		actorData.rangedWeapon[2] = WEAPON_VOID;
+
+		actorData.rangedWeaponIndex = 2;
+
+		actorData.rangedWeaponStatus[2] = WEAPON_STATUS_DISABLED;
+
+		actorData.rangedWeaponLevel[0] = 2;
+		actorData.rangedWeaponLevel[1] = 2;
+	}
+}
+
+template <typename T>
+void UpdateWeapons
+(
+	T & actorData,
+	uint8 player,
+	uint8 entity
+)
+{
+	memset((reinterpret_cast<byte8 *>(&actorData) + 0x648C), 0, (0x6510 - 0x648C));
+	UpdateMeleeWeapons(actorData, player, entity);
+	UpdateRangedWeapons(actorData, player, entity);
+}
+
+template <typename T>
+T * CreateActor
+(
+	uint8 player,
+	uint8 entity
+)
+{
+	constexpr uint8 character = GetCharacterId<T>::value;
+
+	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+	auto sessionData = (g_pool[1] + 0x16C);
+
+	auto baseAddr = func_1DE820(character, 0, false);
+	if (!baseAddr)
+	{
+		return 0;
+	}
+
+	auto & actorData = *reinterpret_cast<T *>(baseAddr);
+
+	InitActor(actorData, sessionData);
+
+	actorData.costume = Config.Actor.costume[player][entity][character];
+	File_UpdateCostumeFileItems(actorData);
+
+	UpdateActor(actorData);
+
+	UpdateMotionArchives(actorData);
+
+	UpdateWeapons(actorData, player, entity);
+
+	func_1DFC20(actorData);
+
+
+	//auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+
+
+	//
+	//func_23E560(pool[9], 0);
+
+
+
+	return &actorData;
+}
+
+uint8 g_style[MAX_PLAYER][MAX_ENTITY][MAX_CHAR] =
+{
+	// Player 0
+	{
+		// Entity 0
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+		// Entity 1
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+	},
+	// Player 1
+	{
+		// Entity 0
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+		// Entity 1
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+	},
+	// Player 2
+	{
+		// Entity 0
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+		// Entity 1
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+	},
+	// Player 3
+	{
+		// Entity 0
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+		// Entity 1
+		{
+			STYLE_DANTE_TRICKSTER,
+			0,
+			0,
+			STYLE_VERGIL_DARK_SLAYER,
+		},
+	},
 };
 
-byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
+template <typename T>
+byte8 * SpawnActorFunction
+(
+	uint8 player,
+	uint8 entity,
+	float32 x,
+	float32 y,
+	float32 z,
+	uint16 rotation,
+	uint8 event
+)
+{
+	// auto mainBaseAddr = Actor_actorBaseAddr[0];
+	// if (!mainBaseAddr)
+	// {
+	// 	return 0;
+	// }
+	// auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
+
+
+
+
+
+
+
+
+
+	auto parentBaseAddr = CreateActor<T>(player, entity);
+	if (!parentBaseAddr)
+	{
+		return 0;
+	}
+	auto & parentActorData = *parentBaseAddr;
+	Actor_actorBaseAddr.Push(parentActorData);
+
+
+	// // @Todo: Update with CopyPosition.
+	// parentActorData.position = mainActorData.position;
+	// parentActorData.rotation = mainActorData.rotation;
+
+
+	//parentActorData.position.x = x;
+	//parentActorData.position.y = z;
+	//parentActorData.position.z = x;
+
+	
+	parentActorData.position = { x, y, z, 1 };
+	parentActorData.rotation = rotation;
+	
+
+
+
+
+
+
+
+	parentActorData.style = g_style[player][entity][GetCharacterId<T>::value]; // @Todo: Change to Actor_style for now.
+
+	if (entity == ENTITY_MAIN)
+	{
+		parentActorData.var_3E10[8] = event;
+
+
+
+		parentActorData.newEnable = true;
+		parentActorData.newGamepad = player;
+		parentActorData.newButtonMask = 0xFFFF;
+		parentActorData.newEnableRightStick = true;
+		parentActorData.newEnableLeftStick = true;
+	}
+	else
+	{
+		parentActorData.position.y = 10500;
+
+		//parentActorData.var_3E10[8] = 0;
+
+
+
+		parentActorData.newGamepad = MAX_PLAYER;
+		return parentActorData;
+	}
+
+	if constexpr (typematch(T, ACTOR_DATA_DANTE) || typematch(T, ACTOR_DATA_VERGIL))
+	{
+		auto childBaseAddr = CreateActor<GetChildActorDataType<T>::value>(player, entity);
+		if (!childBaseAddr)
+		{
+			return 0;
+		}
+		auto & childActorData = *reinterpret_cast<typename GetChildActorDataType<T>::value *>(childBaseAddr);
+		Actor_actorBaseAddr.Push(childActorData);
+
+		parentActorData.newChildBaseAddr[GetCharacterId<GetChildActorDataType<T>::value>::value] = childActorData; // @Todo: Remove array.
+
+		childActorData.newParentBaseAddr = parentActorData;
+		childActorData.position = parentActorData.position;
+		childActorData.position.y = 10500;
+
+		if constexpr (typematch(T, ACTOR_DATA_DANTE))
+		{
+			auto & newMeleeWeapon = parentActorData.newMeleeWeapon[parentActorData.newMeleeWeaponIndex];
+			if ((newMeleeWeapon >= WEAPON_VERGIL_YAMATO) && (newMeleeWeapon <= WEAPON_VERGIL_FORCE_EDGE))
+			{
+				childActorData.activeMeleeWeaponIndex = (newMeleeWeapon - WEAPON_VERGIL_YAMATO);
+				childActorData.queuedMeleeWeaponIndex = (newMeleeWeapon - WEAPON_VERGIL_YAMATO);
+			}
+		}
+		else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+		{
+			for_all(uint8, index, MAX_MELEE_WEAPON)
+			{
+				childActorData.newMeleeWeapon[index] = (WEAPON_DANTE_REBELLION + index);
+			}
+			childActorData.newMeleeWeaponCount = MAX_MELEE_WEAPON_DANTE;
+			childActorData.newMeleeWeaponIndex = 0;
+
+			auto & newMeleeWeapon = parentActorData.newMeleeWeapon[parentActorData.newMeleeWeaponIndex];
+			if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
+			{
+				childActorData.meleeWeapon[0] = newMeleeWeapon;
+				childActorData.meleeWeapon[1] = WEAPON_VOID;
+				childActorData.meleeWeaponIndex = 0;
+			}
+		}
+	}
+
+	return parentActorData;
+}
+
+typedef decltype(SpawnActorFunction<ACTOR_DATA_DANTE>) * SpawnActorFunction_t;
+
+SpawnActorFunction_t SpawnActorFunctionMap[MAX_CHAR] =
+{
+	SpawnActorFunction<ACTOR_DATA_DANTE >,
+	SpawnActorFunction<ACTOR_DATA_BOB   >,
+	SpawnActorFunction<ACTOR_DATA_LADY  >,
+	SpawnActorFunction<ACTOR_DATA_VERGIL>,
+};
+
+byte8 * SpawnActor
+(
+	uint8 player,
+	uint8 entity,
+	float32 x,
+	float32 y,
+	float32 z,
+	uint16 rotation,
+	uint8 event
+)
+{
+	auto character = Config.Actor.character[player][entity];
+	if (character >= MAX_CHAR)
+	{
+		character = CHAR_DANTE;
+	}
+	return SpawnActorFunctionMap[character](player, entity, x, y, z, rotation, event);
+}
+
+byte8 * SpawnActor
+(
+	uint8 player,
+	uint8 entity
+)
+{
+	return SpawnActor(player, entity, 0, 0, 0, 0, 0);
+}
+
+Export void SpawnActors()
+{
+	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
+	if (!pool)
+	{
+		return;
+	}
+	if (!pool[8])
+	{
+		return;
+	}
+	//if (!pool[12])
+	//{
+	//	return;
+	//}
+	auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
+	//auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(pool[12]);
+
+	auto stagePositionData = *reinterpret_cast<STAGE_POSITION_DATA **>(pool[8] + 0x2CB0);
+	if (!stagePositionData)
+	{
+		return;
+	}
+
+
+	//HoboBreak();
+
+
+	auto & pos = stagePositionData[eventData.position];
+
+
+	//auto rotation = static_cast<uint16>((((pos.rotation / 360.0f) * 6.28f) * 65536.0f) / 6.28f);
+
+
+	auto Convert = [](float32 rotation)
+	{
+		float32 value = rotation;
+
+		value /= 360.0f;
+		value *= 6.28f;
+		value *= 65536.0f;
+		value /= 6.28f;
+
+		return static_cast<uint16>(value);
+	};
+
+
+
+	auto rotation = Convert(pos.rotation);
+
+
+
+
+	Log
+	(
+		"%.0f "
+		"%.0f "
+		"%.0f "
+		"%.0f "
+		"true %u "
+		"%u",
+		pos.x,
+		pos.y,
+		pos.z,
+		pos.rotation,
+		rotation,
+		pos.event
+	);
 
 
 
@@ -43,21 +813,74 @@ byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
 
 
 
+	//spawnActors = false;
 
 
 
 
+	for_all(uint8, player, Config.Actor.playerCount)
+	{
+		auto mainBaseAddr = SpawnActor
+		(
+			player,
+			ENTITY_MAIN,
+			pos.x,
+			pos.y,
+			pos.z,
+			rotation,
+			pos.event
+		);
+		if (!mainBaseAddr)
+		{
+			continue;
+		}
+		auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
+
+		auto cloneBaseAddr = SpawnActor(player, ENTITY_CLONE);
+		if (!cloneBaseAddr)
+		{
+			continue;
+		}
+		auto & cloneActorData = *reinterpret_cast<ACTOR_DATA *>(cloneBaseAddr);
+
+		mainActorData.cloneBaseAddr = cloneActorData;
+	}
+
+	auto mainBaseAddr = Actor_actorBaseAddr[0];
+	if (!mainBaseAddr)
+	{
+		return;
+	}
+	auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
+
+	mainActorData.position.y = 10500; // @Todo: Put SPIRE_Y into enums.
 
 
 
+	// @Todo: Create helper function and include lock-on.
+
+	{
+		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		if (!pool)
+		{
+			return;
+		}
+		auto baseAddr = Actor_actorBaseAddr[2];
+		if (!baseAddr)
+		{
+			return;
+		}
+		pool[3] = baseAddr;
+
+	}
 
 
 
+}
 
+#pragma endregion
 
-
-
-
+#pragma region IsWeaponReady
 
 template <typename T>
 bool IsWeaponReadyFunction
@@ -139,6 +962,12 @@ bool IsWeaponReady
 	}
 }
 
+typedef bool(__fastcall * IsWeaponReady_t)
+(
+	byte8 * actorData,
+	uint8 weapon
+);
+
 IsWeaponReady_t IsMeleeWeaponReady[MAX_CHAR] =
 {
 	IsWeaponReady<ACTOR_DATA_DANTE, WEAPON_TYPE_MELEE>,
@@ -181,7 +1010,74 @@ bool IsWeaponReadyProxy(byte8 * baseAddr)
 auto IsMeleeWeaponReadyProxy  = IsWeaponReadyProxy<WEAPON_TYPE_MELEE >;
 auto IsRangedWeaponReadyProxy = IsWeaponReadyProxy<WEAPON_TYPE_RANGED>;
 
-void ToggleUpdateWeapon(bool enable)
+struct IsWeaponReadyProxyHelper_t
+{
+	uint32 off[2];
+	uint8 weaponType;
+};
+
+constexpr IsWeaponReadyProxyHelper_t IsWeaponReadyProxyHelper[] =
+{
+	{ 0x2288D3, 0x2288D8, WEAPON_TYPE_MELEE  }, // Dante Agni & Rudra
+	{ 0x2295B7, 0x2295BC, WEAPON_TYPE_MELEE  }, // Dante Vergil Beowulf
+	{ 0x229E9D, 0       , WEAPON_TYPE_MELEE  }, // Vergil Force Edge
+	{ 0x22AD86, 0x22AD8B, WEAPON_TYPE_MELEE  }, // Dante Nevan
+	{ 0x22B723, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory Air
+	{ 0x22B753, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory
+	{ 0x22C186, 0       , WEAPON_TYPE_RANGED }, // Dante Lady Kalina Ann
+	{ 0x22C1A5, 0       , WEAPON_TYPE_RANGED }, // Dante Kalina Ann Grapple
+	{ 0x22CBC8, 0x22CBCD, WEAPON_TYPE_RANGED }, // Dante Artemis
+	{ 0x22D432, 0x22D437, WEAPON_TYPE_MELEE  }, // Vergil Nero Angelo Sword
+	{ 0x22E09A, 0x22E09F, WEAPON_TYPE_MELEE  }, // Vergil Yamato
+	{ 0x22FB1C, 0x22FB21, WEAPON_TYPE_MELEE  }, // Dante Cerberus
+	{ 0x2304BF, 0       , WEAPON_TYPE_RANGED }, // Dante Spiral
+	{ 0x230DD3, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun Shot
+	{ 0x230E16, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun
+	{ 0x23163F, 0       , WEAPON_TYPE_MELEE  }, // Dante Rebellion
+	{ 0x232005, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato Combo 1 Part 3
+	{ 0x232056, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato
+};
+
+byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
+
+void InitIsWeaponReady()
+{
+	LogFunction();
+
+	byte8 sect2[] =
+	{
+		0x84, 0xC0,                   //test al,al
+		0x74, 0x05,                   //je short
+		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
+	};
+	for_all(uint8, index, countof(IsWeaponReadyProxyHelper))
+	{
+		auto & item = IsWeaponReadyProxyHelper[index];
+		byte8 * jumpAddr = (item.off[1]) ? (appBaseAddr + item.off[1]) : 0;
+		auto func = CreateFunction
+		(
+			(item.weaponType == WEAPON_TYPE_MELEE) ? IsMeleeWeaponReadyProxy : IsRangedWeaponReadyProxy,
+			jumpAddr,
+			true,
+			false,
+			0,
+			0,
+			sizeof(sect2)
+		);
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		if (jumpAddr)
+		{
+			WriteCall((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+		}
+		else
+		{
+			WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+		}
+		IsWeaponReadyProxyFuncAddr[index] = func.addr;
+	}
+}
+
+Export void ToggleIsWeaponReady(bool enable)
 {
 	LogFunction(enable);
 
@@ -257,6 +1153,8 @@ void ToggleUpdateWeapon(bool enable)
 	dmc3.exe+231635 - 74 0D       - je dmc3.exe+231644
 	*/
 }
+
+#pragma endregion
 
 
 
@@ -410,40 +1308,6 @@ void ToggleUpdateWeapon(bool enable)
 
 
 
-// MODEL_PARTITION_CONFIG_DEFAULT
-// MODEL_PARTITION_CONFIG_BEOWULF
-
-//
-//enum MODEL_PARTITION_CONFIG
-//{
-//	MODEL_PARTITION_CONFIG_DEFAULT,
-//	MODEL_PARTITION_CONFIG_BEOWULF,
-//};
-//
-//template
-//<
-//	uint8 modelPartitionConfig,
-//	typename T
-//>
-//void ApplyModelPartitionConfig(T & actorData)
-//{
-//	auto & modelData = actorData.modelData[0];
-//	auto dest = func_89DE0(modelData);
-//	if constexpr (modelPartitionConfig == MODEL_PARTITION_CONFIG_DEFAULT)
-//	{
-//		func_2F7350(dest, 3);
-//		func_2F74E0(dest, 4);
-//		func_2F74E0(dest, 5);
-//		func_2F7350(dest, 6);
-//	}
-//	else
-//	{
-//		func_2F74E0(dest, 3);
-//		func_2F7350(dest, 4);
-//		func_2F7350(dest, 5);
-//		func_2F74E0(dest, 6);
-//	}
-//}
 
 
 
@@ -456,35 +1320,6 @@ void ToggleUpdateWeapon(bool enable)
 
 
 
-
-
-
-
-
-
-
-
-//auto ApplyDefaultModelPartitionConfig = ApplyModelPartitionConfig<MODEL_PARTITION_CONFIG_DEFAULT, ACTOR_DATA_DANTE>;
-
-//inline void ApplyDefaultModelPartitionConfig(ACTOR_DATA_DANTE & actorData)
-//{
-//	auto & modelData = actorData.modelData[0];
-//	auto dest = func_89DE0(modelData);
-//	func_2F7350(dest, 3);
-//	func_2F74E0(dest, 4);
-//	func_2F74E0(dest, 5);
-//	func_2F7350(dest, 6);
-//}
-//
-//inline void ApplyBeowulfModelPartitionConfig(ACTOR_DATA_DANTE & actorData)
-//{
-//	auto & modelData = actorData.modelData[0];
-//	auto dest = func_89DE0(modelData);
-//	func_2F74E0(dest, 3);
-//	func_2F7350(dest, 4);
-//	func_2F7350(dest, 5);
-//	func_2F74E0(dest, 6);
-//}
 
 
 
@@ -765,45 +1600,21 @@ bool WeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 
 
 
-inline void RegisterWeapon_Init()
+
+
+Export void Actor_Init()
 {
-	RegisterWeapon[WEAPON_DANTE_REBELLION  ] = func_2310B0;
-	RegisterWeapon[WEAPON_DANTE_CERBERUS   ] = func_22EC90;
-	RegisterWeapon[WEAPON_DANTE_AGNI_RUDRA ] = func_227870;
-	RegisterWeapon[WEAPON_DANTE_NEVAN      ] = func_22A1E0;
-	RegisterWeapon[WEAPON_DANTE_BEOWULF    ] = func_228CF0;
-	RegisterWeapon[WEAPON_DANTE_EBONY_IVORY] = func_22B0C0;
-	RegisterWeapon[WEAPON_DANTE_SHOTGUN    ] = func_2306B0;
-	RegisterWeapon[WEAPON_DANTE_ARTEMIS    ] = func_22C4A0;
-	RegisterWeapon[WEAPON_DANTE_SPIRAL     ] = func_2300A0;
-	RegisterWeapon[WEAPON_DANTE_KALINA_ANN ] = func_22BA30;
-	RegisterWeapon[WEAPON_VERGIL_YAMATO    ] = func_22D960;
-	RegisterWeapon[WEAPON_VERGIL_BEOWULF   ] = func_228CF0;
-	RegisterWeapon[WEAPON_VERGIL_FORCE_EDGE] = func_2298E0;
-	RegisterWeapon[WEAPON_BOB_YAMATO       ] = func_231A30;
-}
-
-
-
-
-
-
-void Actor_Init()
-{
-
-
-
+	LogFunction();
 
 	if (!Actor_actorBaseAddr.Init(512))
 	{
-
 		Log("Actor_actorBaseAddr.Init failed.");
-
 		return;
 	}
 
+	InitRegisterWeapon();
 
-
+	InitIsWeaponReady();
 
 
 
@@ -842,9 +1653,9 @@ void Actor_Init()
 
 
 
-	LogFunction();
+	//LogFunction();
 
-	RegisterWeapon_Init();
+	//RegisterWeapon_Init();
 
 	// Adjust actor data size.
 	{
@@ -864,39 +1675,11 @@ void Actor_Init()
 		WriteCall((appBaseAddr + 0x1E25EB), func.addr);
 	}
 
-	{
-		byte8 sect2[] =
-		{
-			0x84, 0xC0,                   //test al,al
-			0x74, 0x05,                   //je short
-			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
-		};
-		for_all(uint8, index, countof(IsWeaponReadyProxyHelper))
-		{
-			auto & item = IsWeaponReadyProxyHelper[index];
-			byte8 * jumpAddr = (item.off[1]) ? (appBaseAddr + item.off[1]) : 0;
-			auto func = CreateFunction
-			(
-				(item.weaponType == WEAPON_TYPE_MELEE) ? IsMeleeWeaponReadyProxy : IsRangedWeaponReadyProxy,
-				jumpAddr,
-				true,
-				false,
-				0,
-				0,
-				sizeof(sect2)
-			);
-			memcpy(func.sect2, sect2, sizeof(sect2));
-			if (jumpAddr)
-			{
-				WriteCall((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-			}
-			else
-			{
-				WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-			}
-			IsWeaponReadyProxyFuncAddr[index] = func.addr;
-		}
-	}
+
+
+
+
+
 
 
 
@@ -2451,6 +3234,69 @@ bool IsActive(T & actorData)
 //
 //	return &actorData;
 //}
+
+
+//auto ApplyDefaultModelPartitionConfig = ApplyModelPartitionConfig<MODEL_PARTITION_CONFIG_DEFAULT, ACTOR_DATA_DANTE>;
+
+//inline void ApplyDefaultModelPartitionConfig(ACTOR_DATA_DANTE & actorData)
+//{
+//	auto & modelData = actorData.modelData[0];
+//	auto dest = func_89DE0(modelData);
+//	func_2F7350(dest, 3);
+//	func_2F74E0(dest, 4);
+//	func_2F74E0(dest, 5);
+//	func_2F7350(dest, 6);
+//}
+//
+//inline void ApplyBeowulfModelPartitionConfig(ACTOR_DATA_DANTE & actorData)
+//{
+//	auto & modelData = actorData.modelData[0];
+//	auto dest = func_89DE0(modelData);
+//	func_2F74E0(dest, 3);
+//	func_2F7350(dest, 4);
+//	func_2F7350(dest, 5);
+//	func_2F74E0(dest, 6);
+//}
+
+
+
+
+// MODEL_PARTITION_CONFIG_DEFAULT
+// MODEL_PARTITION_CONFIG_BEOWULF
+
+//
+//enum MODEL_PARTITION_CONFIG
+//{
+//	MODEL_PARTITION_CONFIG_DEFAULT,
+//	MODEL_PARTITION_CONFIG_BEOWULF,
+//};
+//
+//template
+//<
+//	uint8 modelPartitionConfig,
+//	typename T
+//>
+//void ApplyModelPartitionConfig(T & actorData)
+//{
+//	auto & modelData = actorData.modelData[0];
+//	auto dest = func_89DE0(modelData);
+//	if constexpr (modelPartitionConfig == MODEL_PARTITION_CONFIG_DEFAULT)
+//	{
+//		func_2F7350(dest, 3);
+//		func_2F74E0(dest, 4);
+//		func_2F74E0(dest, 5);
+//		func_2F7350(dest, 6);
+//	}
+//	else
+//	{
+//		func_2F74E0(dest, 3);
+//		func_2F7350(dest, 4);
+//		func_2F7350(dest, 5);
+//		func_2F74E0(dest, 6);
+//	}
+//}
+
+
 
 
 

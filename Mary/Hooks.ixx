@@ -1,6 +1,31 @@
-// @Todo: Update.
+#include "../Core/Core.h"
 
-#include "Hooks.h"
+Import(ImGui_D3D11);
+Import(ImGui_DirectInput8);
+Import(ImGui_User);
+
+#ifdef __INTELLISENSE__
+#include "../Core/ImGui_D3D11.ixx"
+#include "../Core/ImGui_DirectInput8.ixx"
+#include "../Core/ImGui_User.ixx"
+#endif
+
+#include <d3d11.h>
+#define DIRECTINPUT_VERSION 0x800
+#include <dinput.h>
+#include <dxgi.h>
+#include "../ImGui/imgui.h"
+#include <Xinput.h>
+
+#include "Config.h"
+#include "GUI.h"
+#include "Hotkeys.h"
+#include "Pause.h"
+
+#include "System/Message.h"
+#include "System/Window.h"
+
+Export Module(Hooks);
 
 constexpr bool debug = false;
 
@@ -35,36 +60,52 @@ User_RegisterClassExW_t User_RegisterClassExW = 0;
 User_CreateWindowExW_t  User_CreateWindowExW  = 0;
 User_WindowProc_t       User_WindowProc       = 0;
 
-ATOM User_Hook_RegisterClassExW
-(
-	WNDCLASSEXW * windowClass
-);
-HWND User_Hook_CreateWindowExW
-(
-	byte32     exStyle,
-	LPCWSTR   className,
-	LPCWSTR   windowName,
-	byte32     style,
-	int       x,
-	int       y,
-	int       width,
-	int       height,
-	HWND      parentWindow,
-	HMENU     menu,
-	HINSTANCE instance,
-	LPVOID    parameter
-);
-LRESULT User_Hook_WindowProc
-(
-	HWND   window,
-	UINT   message,
-	WPARAM wParameter,
-	LPARAM lParameter
-);
+
+
+
+
+
+
+
+
+
+
+//ATOM User_Hook_RegisterClassExW
+//(
+//	WNDCLASSEXW * windowClass
+//);
+//HWND User_Hook_CreateWindowExW
+//(
+//	byte32     exStyle,
+//	LPCWSTR   className,
+//	LPCWSTR   windowName,
+//	byte32     style,
+//	int       x,
+//	int       y,
+//	int       width,
+//	int       height,
+//	HWND      parentWindow,
+//	HMENU     menu,
+//	HINSTANCE instance,
+//	LPVOID    parameter
+//);
+//LRESULT User_Hook_WindowProc
+//(
+//	HWND   window,
+//	UINT   message,
+//	WPARAM wParameter,
+//	LPARAM lParameter
+//);
 
 ID3D11Device           * D3D11_device           = 0;
 ID3D11DeviceContext    * D3D11_deviceContext    = 0;
 ID3D11RenderTargetView * D3D11_renderTargetView = 0;
+
+
+
+
+
+
 
 typedef HRESULT(* D3D11_CreateDeviceAndSwapChain_t)
 (
@@ -84,21 +125,26 @@ typedef HRESULT(* D3D11_CreateDeviceAndSwapChain_t)
 
 D3D11_CreateDeviceAndSwapChain_t D3D11_CreateDeviceAndSwapChain = 0;
 
-HRESULT D3D11_Hook_CreateDeviceAndSwapChain
-(
-	IDXGIAdapter         *  adapter,
-	D3D_DRIVER_TYPE         driverType,
-	HMODULE                 software,
-	UINT                    flags,
-	D3D_FEATURE_LEVEL    *  featureLevels,
-	UINT                    featureLevelCount,
-	UINT                    SDKVersion,
-	DXGI_SWAP_CHAIN_DESC *  swapChainDescription,
-	IDXGISwapChain       ** swapChain,
-	ID3D11Device         ** device,
-	D3D_FEATURE_LEVEL    *  featureLevel,
-	ID3D11DeviceContext  ** deviceContext
-);
+//HRESULT D3D11_Hook_CreateDeviceAndSwapChain
+//(
+//	IDXGIAdapter         *  adapter,
+//	D3D_DRIVER_TYPE         driverType,
+//	HMODULE                 software,
+//	UINT                    flags,
+//	D3D_FEATURE_LEVEL    *  featureLevels,
+//	UINT                    featureLevelCount,
+//	UINT                    SDKVersion,
+//	DXGI_SWAP_CHAIN_DESC *  swapChainDescription,
+//	IDXGISwapChain       ** swapChain,
+//	ID3D11Device         ** device,
+//	D3D_FEATURE_LEVEL    *  featureLevel,
+//	ID3D11DeviceContext  ** deviceContext
+//);
+
+
+
+
+
 
 IDXGISwapChain * DXGI_swapChain = 0;
 
@@ -121,29 +167,74 @@ typedef HRESULT(* DXGI_ResizeBuffers_t)
 DXGI_Present_t       DXGI_Present       = 0;
 DXGI_ResizeBuffers_t DXGI_ResizeBuffers = 0;
 
-HRESULT DXGI_Hook_Present
-(
-	IDXGISwapChain * swapChain,
-	UINT             syncInterval,
-	UINT             flags
-);
-HRESULT DXGI_Hook_ResizeBuffers
-(
-	IDXGISwapChain * swapChain,
-	UINT             bufferCount,
-	UINT             width,
-	UINT             height,
-	DXGI_FORMAT      newFormat,
-	UINT             swapChainFlags
-);
+//HRESULT DXGI_Hook_Present
+//(
+//	IDXGISwapChain * swapChain,
+//	UINT             syncInterval,
+//	UINT             flags
+//);
+//HRESULT DXGI_Hook_ResizeBuffers
+//(
+//	IDXGISwapChain * swapChain,
+//	UINT             bufferCount,
+//	UINT             width,
+//	UINT             height,
+//	DXGI_FORMAT      newFormat,
+//	UINT             swapChainFlags
+//);
 
 IDirectInput8W       * DirectInput8_deviceInterface = 0;
 IDirectInputDevice8W * DirectInput8_mouse           = 0;
 DIMOUSESTATE2          DirectInput8_mouseState      = {};
 
-static byte32 DirectInput8_CreateMouseThread(LPVOID parameter);
-static byte32 DirectInput8_UpdateMouseThread(LPVOID parameter);
-static byte32 DirectInput8_AcquireMouseThread(LPVOID parameter);
+//static byte32 DirectInput8_CreateMouseThread(LPVOID parameter);
+//static byte32 DirectInput8_UpdateMouseThread(LPVOID parameter);
+//static byte32 DirectInput8_AcquireMouseThread(LPVOID parameter);
+
+
+
+
+
+LRESULT User_Hook_WindowProc
+(
+	HWND   window,
+	UINT   message,
+	WPARAM wParameter,
+	LPARAM lParameter
+)
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		LogFunction();
+	}
+	switch (message)
+	{
+	case WM_SETCURSOR:
+		ImGui_User_UpdateMouseCursor(window);
+		break;
+	case WM_CHAR:
+		ImGui::GetIO().AddInputCharacter((uint16)wParameter);
+		return 0;
+	case DM_PAUSE:
+		Pause(pause);
+		return 1;
+	}
+	return User_WindowProc
+	(
+		window,
+		message,
+		wParameter,
+		lParameter
+	);
+}
+
+
+
+
+
+
 
 ATOM User_Hook_RegisterClassExW
 (
@@ -240,42 +331,9 @@ HWND User_Hook_CreateWindowExW
 	);
 }
 
-LRESULT User_Hook_WindowProc
-(
-	HWND   window,
-	UINT   message,
-	WPARAM wParameter,
-	LPARAM lParameter
-)
-{
-	static bool run = false;
-	if (!run)
-	{
-		run = true;
-		LogFunction();
-	}
-	switch (message)
-	{
-	case WM_SETCURSOR:
-		ImGui_User_UpdateMouseCursor(window);
-		break;
-	case WM_CHAR:
-		ImGui::GetIO().AddInputCharacter((uint16)wParameter);
-		return 0;
-	case DM_PAUSE:
-		Pause(pause);
-		return 1;
-	}
-	return User_WindowProc
-	(
-		window,
-		message,
-		wParameter,
-		lParameter
-	);
-}
 
-static void CreateRenderTarget()
+
+void CreateRenderTarget()
 {
 	LogFunction();
 	ID3D11Texture2D * backBuffer = 0;
@@ -284,7 +342,7 @@ static void CreateRenderTarget()
 	backBuffer->Release();
 }
 
-static void RemoveRenderTarget()
+void RemoveRenderTarget()
 {
 	LogFunction();
 	if (!D3D11_renderTargetView)
@@ -297,7 +355,7 @@ static void RemoveRenderTarget()
 	D3D11_renderTargetView = 0;
 }
 
-static void Timestep()
+void Timestep()
 {
 	static uint64 freq           = 0;
 	static uint64 mainCounter    = 0;
@@ -313,6 +371,135 @@ static void Timestep()
 	ImGui::GetIO().DeltaTime = (float32)(currentCounter - mainCounter) / (float32)freq;
 	mainCounter = currentCounter;
 }
+
+
+
+
+
+
+
+HRESULT DXGI_Hook_Present
+(
+	IDXGISwapChain * swapChain,
+	UINT             syncInterval,
+	UINT             flags
+)
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		Log
+		(
+			"%s "
+			"%llX "
+			"%u "
+			"%X",
+			FUNC_NAME,
+			swapChain,
+			syncInterval,
+			flags
+		);
+	}
+
+	//if constexpr (debug)
+	//{
+	//	syncInterval = 0;
+	//}
+
+
+	if (Config.System.Graphics.vSync != 0)
+	{
+		syncInterval = (Config.System.Graphics.vSync - 1);
+	}
+
+
+
+
+
+
+
+
+	ImGui_D3D11_NewFrame();
+	Timestep();
+	ImGui::NewFrame();
+	GUI_Render();
+	ImGui::Render();
+	D3D11_deviceContext->OMSetRenderTargets(1, &D3D11_renderTargetView, 0);
+	ImGui_D3D11_RenderDrawData(ImGui::GetDrawData());
+	return DXGI_Present
+	(
+		swapChain,
+		syncInterval,
+		flags
+	);
+}
+
+
+
+
+
+
+
+HRESULT DXGI_Hook_ResizeBuffers
+(
+	IDXGISwapChain * swapChain,
+	UINT             bufferCount,
+	UINT             width,
+	UINT             height,
+	DXGI_FORMAT      newFormat,
+	UINT             swapChainFlags
+)
+{
+	Log
+	(
+		"%s "
+		"%llX "
+		"%u "
+		"%u "
+		"%u "
+		"%X "
+		"%X",
+		FUNC_NAME,
+		swapChain,
+		bufferCount,
+		width,
+		height,
+		newFormat,
+		swapChainFlags
+	);
+	RemoveRenderTarget();
+	HRESULT result = DXGI_ResizeBuffers
+	(
+		swapChain,
+		bufferCount,
+		width,
+		height,
+		newFormat,
+		swapChainFlags
+	);
+	byte32 error = GetLastError();
+	CreateRenderTarget();
+	System_Window_UpdateSize((uint32)width, (uint32)height);
+	SetLastError(error);
+	return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 HRESULT D3D11_Hook_CreateDeviceAndSwapChain
 (
@@ -383,7 +570,7 @@ HRESULT D3D11_Hook_CreateDeviceAndSwapChain
 	System_Window_UpdateSize((uint32)swapChainDescription->BufferDesc.Width, (uint32)swapChainDescription->BufferDesc.Height);
 	ImGui_D3D11_Init(D3D11_device, D3D11_deviceContext);
 	CreateRenderTarget();
-	InstallStart:
+	//InstallStart:
 	{
 		if ((result != 0) || !swapChain || !*swapChain)
 		{
@@ -411,106 +598,9 @@ HRESULT D3D11_Hook_CreateDeviceAndSwapChain
 	return result;
 }
 
-HRESULT DXGI_Hook_Present
-(
-	IDXGISwapChain * swapChain,
-	UINT             syncInterval,
-	UINT             flags
-)
-{
-	static bool run = false;
-	if (!run)
-	{
-		run = true;
-		Log
-		(
-			"%s "
-			"%llX "
-			"%u "
-			"%X",
-			FUNC_NAME,
-			swapChain,
-			syncInterval,
-			flags
-		);
-	}
-
-	//if constexpr (debug)
-	//{
-	//	syncInterval = 0;
-	//}
-
-
-	if (Config.System.Graphics.vSync != 0)
-	{
-		syncInterval = (Config.System.Graphics.vSync - 1);
-	}
 
 
 
-
-
-
-
-
-	ImGui_D3D11_NewFrame();
-	Timestep();
-	ImGui::NewFrame();
-	GUI_Render();
-	ImGui::Render();
-	D3D11_deviceContext->OMSetRenderTargets(1, &D3D11_renderTargetView, 0);
-	ImGui_D3D11_RenderDrawData(ImGui::GetDrawData());
-	return DXGI_Present
-	(
-		swapChain,
-		syncInterval,
-		flags
-	);
-}
-
-HRESULT DXGI_Hook_ResizeBuffers
-(
-	IDXGISwapChain * swapChain,
-	UINT             bufferCount,
-	UINT             width,
-	UINT             height,
-	DXGI_FORMAT      newFormat,
-	UINT             swapChainFlags
-)
-{
-	Log
-	(
-		"%s "
-		"%llX "
-		"%u "
-		"%u "
-		"%u "
-		"%X "
-		"%X",
-		FUNC_NAME,
-		swapChain,
-		bufferCount,
-		width,
-		height,
-		newFormat,
-		swapChainFlags
-	);
-	RemoveRenderTarget();
-	HRESULT result = DXGI_ResizeBuffers
-	(
-		swapChain,
-		bufferCount,
-		width,
-		height,
-		newFormat,
-		swapChainFlags
-	);
-	byte32 error = GetLastError();
-	CreateRenderTarget();
-	System_Window_UpdateSize((uint32)width, (uint32)height);
-	SetLastError(error);
-	return result;
-}
 
 HRESULT DirectInput8_Hook_GetDeviceStateKeyboard
 (
@@ -529,8 +619,71 @@ HRESULT DirectInput8_Hook_GetDeviceStateKeyboard
 	return 0;
 }
 
-static byte32 DirectInput8_CreateMouseThread(LPVOID parameter)
+
+
+
+byte32 DirectInput8_UpdateMouseThread(LPVOID parameter)
 {
+	LogFunction();
+	do
+	{
+		if (appWindow && pause)
+		{
+			DirectInput8_mouse->GetDeviceState(sizeof(DIMOUSESTATE2), &DirectInput8_mouseState);
+			ImGui_DirectInput8_UpdateMouse(appWindow, &DirectInput8_mouseState);
+		}
+		Sleep(10);
+	}
+	while (true);
+	return 1;
+}
+
+byte32 DirectInput8_AcquireMouseThread(LPVOID parameter)
+{
+
+
+
+	do
+	{
+		//LoopStart:
+		{
+			if (GetForegroundWindow() != appWindow)
+			{
+				goto LoopEnd;
+			}
+			if (!DirectInput8_mouse)
+			{
+				goto LoopEnd;
+			}
+			DirectInput8_mouse->Acquire();
+		}
+		LoopEnd:
+		Sleep(100);
+	}
+	while (true);
+	return 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+byte32 DirectInput8_CreateMouseThread(LPVOID parameter)
+{
+
+	
+
+
+
 	do
 	{
 		if (appWindow)
@@ -573,44 +726,7 @@ static byte32 DirectInput8_CreateMouseThread(LPVOID parameter)
 	return 1;
 }
 
-static byte32 DirectInput8_UpdateMouseThread(LPVOID parameter)
-{
-	LogFunction();
-	do
-	{
-		if (appWindow && pause)
-		{
-			DirectInput8_mouse->GetDeviceState(sizeof(DIMOUSESTATE2), &DirectInput8_mouseState);
-			ImGui_DirectInput8_UpdateMouse(appWindow, &DirectInput8_mouseState);
-		}
-		Sleep(10);
-	}
-	while (true);
-	return 1;
-}
 
-static byte32 DirectInput8_AcquireMouseThread(LPVOID parameter)
-{
-	do
-	{
-		LoopStart:
-		{
-			if (GetForegroundWindow() != appWindow)
-			{
-				goto LoopEnd;
-			}
-			if (!DirectInput8_mouse)
-			{
-				goto LoopEnd;
-			}
-			DirectInput8_mouse->Acquire();
-		}
-		LoopEnd:
-		Sleep(100);
-	}
-	while (true);
-	return 1;
-}
 
 byte32 XInput_Hook_GetState
 (
@@ -625,9 +741,10 @@ byte32 XInput_Hook_GetState
 	return 0;
 }
 
-void Hooks_Init()
+Export void Hooks_Init()
 {
 	LogFunction();
+	// @Todo: byte8 *
 	{
 		byte * addr = (appBaseAddr + 0x34F308);
 		User_RegisterClassExW = *(User_RegisterClassExW_t *)addr;
@@ -649,9 +766,19 @@ void Hooks_Init()
 
 		Write<void *>(addr, D3D11_Hook_CreateDeviceAndSwapChain);
 	}
+
 	Write<byte32>((appBaseAddr + 0x47F58), DISCL_NONEXCLUSIVE | DISCL_FOREGROUND); // SetCooperativeLevelKeyboard
+
+
+
+	
+
+
+
+
+
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x48, 0x8B, 0x01,       //mov rax,[rcx]
 			0x50,                   //push rax
@@ -668,7 +795,7 @@ void Hooks_Init()
 			0x48, 0x8B, 0x55, 0x10, //mov rdx,[rbp+10]
 			0x4C, 0x8B, 0x45, 0x08, //mov r8,[rbp+08]
 		};
-		byte sect2[] =
+		byte8 sect2[] =
 		{
 			0x48, 0x8B, 0xE5, //mov rsp,rbp
 			0x5D,             //pop rbp
@@ -677,13 +804,43 @@ void Hooks_Init()
 			0x59,             //pop rcx
 			0x58,             //pop rax
 		};
-		FUNC func = CreateFunction(DirectInput8_Hook_GetDeviceStateKeyboard, (appBaseAddr + 0x41DA6), false, true, sizeof(sect0), 0, sizeof(sect2));
+
+		//HoboBreak();
+
+
+		auto func = ::CreateFunction(DirectInput8_Hook_GetDeviceStateKeyboard, (appBaseAddr + 0x41DA6), false, true, sizeof(sect0), 0, sizeof(sect2));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x41DA0), func.addr, 1);
 	}
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0xBA, 0x00, 0x01, 0x00, 0x00, //mov edx,00000100
 			0x50,                         //push rax
@@ -700,7 +857,7 @@ void Hooks_Init()
 			0x48, 0x8B, 0x55, 0x10,       //mov rdx,[rbp+10]
 			0x4C, 0x8B, 0x45, 0x08,       //mov r8,[rbp+08]
 		};
-		byte sect2[] =
+		byte8 sect2[] =
 		{
 			0x48, 0x8B, 0xE5, //mov rsp,rbp
 			0x5D,             //pop rbp
@@ -709,14 +866,25 @@ void Hooks_Init()
 			0x59,             //pop rcx
 			0x58,             //pop rax
 		};
-		FUNC func = CreateFunction(DirectInput8_Hook_GetDeviceStateKeyboard, (appBaseAddr + 0x482B5), false, true, sizeof(sect0), 0, sizeof(sect2));
+		auto func = CreateFunction(DirectInput8_Hook_GetDeviceStateKeyboard, (appBaseAddr + 0x482B5), false, true, sizeof(sect0), 0, sizeof(sect2));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x482AD), func.addr);
 	}
+
+
+	
+
+
+
+
+
 	CreateThread(0, 4096, DirectInput8_CreateMouseThread, 0, 0, 0);
+
+
+
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x50,                         //push rax
 			0x51,                         //push rcx
@@ -730,7 +898,7 @@ void Hooks_Init()
 			0x48, 0x8B, 0x4D, 0x10,       //mov rcx,[rbp+10]
 			0x48, 0x8B, 0x55, 0x08,       //mov rdx,[rbp+08]
 		};
-		byte sect2[] =
+		byte8 sect2[] =
 		{
 			0x48, 0x8B, 0xE5,             //mov rsp,rbp
 			0x5D,                         //pop rbp
@@ -738,14 +906,14 @@ void Hooks_Init()
 			0x59,                         //pop rcx
 			0x58,                         //pop rax
 		};
-		FUNC func = CreateFunction(XInput_Hook_GetState, (appBaseAddr + 0x41A88), false, true, sizeof(sect0), 0, sizeof(sect2));
+		auto func = CreateFunction(XInput_Hook_GetState, (appBaseAddr + 0x41A88), false, true, sizeof(sect0), 0, sizeof(sect2));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x3453F6));
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x41A83), func.addr);
 	}
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x50,                         //push rax
 			0x51,                         //push rcx
@@ -759,7 +927,7 @@ void Hooks_Init()
 			0x48, 0x8B, 0x4D, 0x10,       //mov rcx,[rbp+10]
 			0x48, 0x8B, 0x55, 0x08,       //mov rdx,[rbp+08]
 		};
-		byte sect2[] =
+		byte8 sect2[] =
 		{
 			0x48, 0x8B, 0xE5,             //mov rsp,rbp
 			0x5D,                         //pop rbp
@@ -767,14 +935,14 @@ void Hooks_Init()
 			0x59,                         //pop rcx
 			0x58,                         //pop rax
 		};
-		FUNC func = CreateFunction(XInput_Hook_GetState, (appBaseAddr + 0x41AFF), false, true, sizeof(sect0), 0, sizeof(sect2));
+		auto func = CreateFunction(XInput_Hook_GetState, (appBaseAddr + 0x41AFF), false, true, sizeof(sect0), 0, sizeof(sect2));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x3453F6));
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x41AFA), func.addr);
 	}
 	{
-		byte sect0[] =
+		byte8 sect0[] =
 		{
 			0x50,                         //push rax
 			0x51,                         //push rcx
@@ -788,7 +956,7 @@ void Hooks_Init()
 			0x48, 0x8B, 0x4D, 0x10,       //mov rcx,[rbp+10]
 			0x48, 0x8B, 0x55, 0x08,       //mov rdx,[rbp+08]
 		};
-		byte sect2[] =
+		byte8 sect2[] =
 		{
 			0x48, 0x8B, 0xE5,             //mov rsp,rbp
 			0x5D,                         //pop rbp
@@ -796,7 +964,7 @@ void Hooks_Init()
 			0x59,                         //pop rcx
 			0x58,                         //pop rax
 		};
-		FUNC func = CreateFunction(XInput_Hook_GetState, (appBaseAddr + 0x41C45), false, true, sizeof(sect0), 0, sizeof(sect2));
+		auto func = CreateFunction(XInput_Hook_GetState, (appBaseAddr + 0x41C45), false, true, sizeof(sect0), 0, sizeof(sect2));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x3453F6));
 		memcpy(func.sect2, sect2, sizeof(sect2));
