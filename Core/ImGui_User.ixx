@@ -1,12 +1,12 @@
+module;
 #include "Core.h"
 
 #include "../ImGui/imgui.h"
-
-Export Module(ImGui_User);
+export module ModuleName(ImGui_User);
 
 LPSTR CursorMap[ImGuiMouseCursor_COUNT] = {};
 
-Export void ImGui_User_Init()
+export void ImGui_User_Init()
 {
 	CursorMap[ImGuiMouseCursor_Arrow     ] = IDC_ARROW;
 	CursorMap[ImGuiMouseCursor_TextInput ] = IDC_IBEAM;
@@ -18,7 +18,7 @@ Export void ImGui_User_Init()
 	CursorMap[ImGuiMouseCursor_Hand      ] = IDC_HAND;
 }
 
-Export void ImGui_User_UpdateMouseCursor(HWND window)
+export void ImGui_User_UpdateMouseCursor(HWND window)
 {
 	if (!window)
 	{

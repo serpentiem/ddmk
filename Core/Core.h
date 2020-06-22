@@ -1,15 +1,13 @@
 #pragma once
 #include "Includes.h"
 
-#include "DataTypes.h"
-
-Import(Core_Config);
-Import(Core_File);
-Import(Core_Log);
-Import(Core_Memory);
-Import(Core_Utility);
-Import(Core_Vector);
-Import(Core_Windows);
+import ModuleName(Core_Config);
+import ModuleName(Core_File);
+import ModuleName(Core_Log);
+import ModuleName(Core_Memory);
+import ModuleName(Core_Utility);
+import ModuleName(Core_Vector);
+import ModuleName(Core_Windows);
 
 #ifdef __INTELLISENSE__
 #include "Config.ixx"
@@ -20,5 +18,3 @@ Import(Core_Windows);
 #include "Vector.ixx"
 #include "Windows.ixx"
 #endif
-
-#include "Macros.h"

@@ -1,25 +1,23 @@
+module;
 #include "Includes.h"
+export module ModuleName(Core_Log);
 
-Export Module(Core_Log);
-
-#include "DataTypes.h"
-
-Import(Core_Utility);
+import ModuleName(Core_Utility);
 
 #ifdef __INTELLISENSE__
 #include "Utility.ixx"
 #endif
 
-Export char Core_Log_path[64];
+export char Core_Log_path[64];
 
-Export template <typename ... Args>
+export template <typename ... Args>
 void Log(const char * format, Args ... args)
 {
 	extern char Core_Log_path[64];
 
 	char timestamp[64];
 	SYSTEMTIME st = {};
-	::GetLocalTime(&st);
+	GetLocalTime(&st);
 	snprintf(timestamp, sizeof(timestamp), "%.2u:%.2u:%.2u.%.3u", st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
 
 	char message[512];
@@ -40,16 +38,16 @@ void Log(const char * format, Args ... args)
 	}
 	byte32 bytesWritten = 0;
 	OVERLAPPED overlap = {};
-	::WriteFile(file, buffer, (uint32)strlen(buffer), &bytesWritten, &overlap);
+	WriteFile(file, buffer, (uint32)strlen(buffer), &bytesWritten, &overlap);
 	CloseHandle(file);
 }
 
-Export inline void LogFunctionHelper(const char * funcName)
+export inline void LogFunctionHelper(const char * funcName)
 {
 	Log(funcName);
 }
 
-Export template <typename T>
+export template <typename T>
 void LogFunctionHelper(const char * funcName, T var)
 {
 	if constexpr (typematch(T, byte8 *))
@@ -66,7 +64,7 @@ void LogFunctionHelper(const char * funcName, T var)
 	}
 }
 
-Export void Core_Log_Init
+export void Core_Log_Init
 (
 	const char * directoryName,
 	const char * filename

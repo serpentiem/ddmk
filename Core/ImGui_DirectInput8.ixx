@@ -1,12 +1,12 @@
+module;
 #include "Core.h"
 
 #define DIRECTINPUT_VERSION 0x800
 #include <dinput.h>
 #include "../ImGui/imgui.h"
+export module ModuleName(ImGui_DirectInput8);
 
-Export Module(ImGui_DirectInput8);
-
-Export void ImGui_DirectInput8_Init()
+export void ImGui_DirectInput8_Init()
 {
 	LogFunction();
 	ImGuiIO & io = ImGui::GetIO();
@@ -33,7 +33,7 @@ Export void ImGui_DirectInput8_Init()
 	io.KeyMap[ImGuiKey_Z         ] = DIK_Z;
 }
 
-Export void ImGui_DirectInput8_UpdateKeyboard(byte8 * state)
+export void ImGui_DirectInput8_UpdateKeyboard(byte8 * state)
 {
 	ImGuiIO & io = ImGui::GetIO();
 	io.KeyCtrl  = ((state[DIK_LCONTROL] & 0x80) || (state[DIK_RCONTROL] & 0x80)) ? true : false;
@@ -49,7 +49,7 @@ Export void ImGui_DirectInput8_UpdateKeyboard(byte8 * state)
 	}
 }
 
-Export void ImGui_DirectInput8_UpdateMouse(HWND window, DIMOUSESTATE2 * state)
+export void ImGui_DirectInput8_UpdateMouse(HWND window, DIMOUSESTATE2 * state)
 {
 	if (!window)
 	{

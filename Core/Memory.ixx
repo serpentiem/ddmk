@@ -1,10 +1,8 @@
+module;
 #include "Includes.h"
+export module ModuleName(Core_Memory);
 
-Export Module(Core_Memory);
-
-#include "DataTypes.h"
-
-Import(Core_Log);
+import ModuleName(Core_Log);
 
 #ifdef __INTELLISENSE__
 #include "Log.ixx"
@@ -12,15 +10,15 @@ Import(Core_Log);
 
 constexpr bool debug = false;
 
-Export byte8  * appBaseAddr = 0;
-Export uint32   appSize     = 0;
-Export HWND     appWindow   = 0;
+export byte8  * appBaseAddr = 0;
+export uint32   appSize     = 0;
+export HWND     appWindow   = 0;
 
 SYSTEM_INFO   systemInfo = {};
 byte8       * g_addr     = 0;
 uint32        g_pos      = 0;
 
-Export template <typename T>
+export template <typename T>
 bool Align(T & pos, T boundary, byte8 * addr = 0, byte8 pad = 0)
 {
 	T remainder = (pos % boundary);
@@ -37,7 +35,7 @@ bool Align(T & pos, T boundary, byte8 * addr = 0, byte8 pad = 0)
 	return false;
 }
 
-Export byte8 * Alloc(uint32 size)
+export byte8 * Alloc(uint32 size)
 {
 	byte8 * addr = 0;
 	byte32 error = 0;
@@ -54,7 +52,7 @@ Export byte8 * Alloc(uint32 size)
 	return addr;
 }
 
-Export byte8 * AllocEx
+export byte8 * AllocEx
 (
 	uint32 size,
 	uint64 pos,
@@ -124,7 +122,7 @@ Export byte8 * AllocEx
 	return addr;
 }
 
-Export inline byte8 * LowAlloc(uint32 size)
+export inline byte8 * LowAlloc(uint32 size)
 {
 	return AllocEx
 	(
@@ -134,7 +132,7 @@ Export inline byte8 * LowAlloc(uint32 size)
 	);
 }
 
-Export inline byte8 * HighAlloc(uint32 size)
+export inline byte8 * HighAlloc(uint32 size)
 {
 	return AllocEx
 	(
@@ -144,7 +142,7 @@ Export inline byte8 * HighAlloc(uint32 size)
 	);
 }
 
-Export template <typename T>
+export template <typename T>
 void Write
 (
 	byte8  * addr,
@@ -167,7 +165,7 @@ void Write
 }
 
 // @Todo: Relative.
-Export void WriteAddress
+export void WriteAddress
 (
 	byte8  * addr,
 	byte8  * dest,
@@ -200,7 +198,7 @@ Export void WriteAddress
 	VirtualProtect(addr, (size + padSize), protection, &protection);
 }
 
-Export inline void WriteCall
+export inline void WriteCall
 (
 	byte8  * addr,
 	byte8  * dest,
@@ -211,7 +209,7 @@ Export inline void WriteCall
 	WriteAddress(addr, dest, 5, 0xE8, padSize, padValue);
 }
 
-Export inline void WriteJump
+export inline void WriteJump
 (
 	byte8  * addr,
 	byte8  * dest,
@@ -223,7 +221,7 @@ Export inline void WriteJump
 }
 
 // @Todo: SetMemory.
-Export void vp_memset
+export void vp_memset
 (
 	void   * addr,
 	byte8    value,
@@ -239,7 +237,7 @@ Export void vp_memset
 }
 
 // @Todo: CopyMemory.
-Export void vp_memcpy
+export void vp_memcpy
 (
 	void       * dest,
 	const void * addr,
@@ -254,7 +252,7 @@ Export void vp_memcpy
 	VirtualProtect(dest, size, protection, &protection);
 }
 
-Export struct FUNC
+export struct FUNC
 {
 	byte8 *  addr;
 	byte8 *  sect0;
@@ -268,7 +266,7 @@ Export struct FUNC
 // @Todo: Add noReturn argument.
 // @Todo: Create template. Section and size details are known at compile time.
 // @Todo: Omit payload. Just write directly to dest.
-Export FUNC CreateFunction
+export FUNC CreateFunction
 (
 	void   * funcAddr      = 0,
 	byte8  * jumpAddr      = 0,
@@ -498,7 +496,7 @@ Export FUNC CreateFunction
 	return func;
 }
 
-Export bool Core_Memory_Init(uint32 size = 0)
+export bool Core_Memory_Init(uint32 size = 0)
 {
 	LogFunction();
 

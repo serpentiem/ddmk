@@ -1,17 +1,26 @@
+module;
 #include "../Core/Core.h"
 
 #include "ActorData.h"
-#include "File.h"
-#include "HUD.h"
 #include "Internal.h"
-#include "Input.h"
 #include "Vars.h"
+export module ModuleName(Actor);
 
-Export Module(Actor);
+import ModuleName(Config);
+import ModuleName(File);
+import ModuleName(HUD);
+import ModuleName(Input);
 
-Export Vector<byte8 *> Actor_actorBaseAddr;
+#ifdef __INTELLISENSE__
+#include "Config.ixx"
+#include "File.ixx"
+#include "HUD.ixx"
+#include "Input.ixx"
+#endif
 
-Export template <typename T>
+export Vector<byte8 *> Actor_actorBaseAddr;
+
+export template <typename T>
 struct GetCharacterId
 {
 	enum
@@ -25,17 +34,17 @@ struct GetCharacterId
 	};
 };
 
-Export template <uint8 character> struct GetActorDataType {};
-Export template <> struct GetActorDataType<CHAR_DANTE > { typedef ACTOR_DATA_DANTE  value; };
-Export template <> struct GetActorDataType<CHAR_BOB   > { typedef ACTOR_DATA_BOB    value; };
-Export template <> struct GetActorDataType<CHAR_LADY  > { typedef ACTOR_DATA_LADY   value; };
-Export template <> struct GetActorDataType<CHAR_VERGIL> { typedef ACTOR_DATA_VERGIL value; };
+export template <uint8 character> struct GetActorDataType {};
+export template <> struct GetActorDataType<CHAR_DANTE > { typedef ACTOR_DATA_DANTE  value; };
+export template <> struct GetActorDataType<CHAR_BOB   > { typedef ACTOR_DATA_BOB    value; };
+export template <> struct GetActorDataType<CHAR_LADY  > { typedef ACTOR_DATA_LADY   value; };
+export template <> struct GetActorDataType<CHAR_VERGIL> { typedef ACTOR_DATA_VERGIL value; };
 
-Export template <typename T> struct GetChildActorDataType {};
-Export template <> struct GetChildActorDataType<ACTOR_DATA_DANTE > { typedef ACTOR_DATA_VERGIL value; };
-Export template <> struct GetChildActorDataType<ACTOR_DATA_VERGIL> { typedef ACTOR_DATA_DANTE  value; };
+export template <typename T> struct GetChildActorDataType {};
+export template <> struct GetChildActorDataType<ACTOR_DATA_DANTE > { typedef ACTOR_DATA_VERGIL value; };
+export template <> struct GetChildActorDataType<ACTOR_DATA_VERGIL> { typedef ACTOR_DATA_DANTE  value; };
 
-Export template <typename T>
+export template <typename T>
 bool IsWeaponActive
 (
 	T & actorData,
@@ -68,7 +77,7 @@ bool IsWeaponActive
 	return false;
 }
 
-Export template <typename T>
+export template <typename T>
 bool IsWeaponActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[BODY_PART_UPPER];
@@ -89,7 +98,7 @@ bool IsWeaponActive(T & actorData)
 	return false;
 }
 
-Export template <typename T>
+export template <typename T>
 bool IsActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[BODY_PART_UPPER];
@@ -735,7 +744,7 @@ byte8 * SpawnActor
 	return SpawnActor(player, entity, 0, 0, 0, 0, 0);
 }
 
-Export void SpawnActors()
+export void SpawnActors()
 {
 	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
 	if (!pool)
@@ -1077,7 +1086,7 @@ void InitIsWeaponReady()
 	}
 }
 
-Export void ToggleIsWeaponReady(bool enable)
+export void ToggleIsWeaponReady(bool enable)
 {
 	LogFunction(enable);
 
@@ -1594,6 +1603,41 @@ bool WeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 }
 
 
+export bool spawnActors = false;
+
+
+
+
+
+export void SetMainActor(byte8 * baseAddr)
+{
+	LogFunction(baseAddr);
+
+	auto actorPool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+	if (!actorPool)
+	{
+		return;
+	}
+	//auto & mainActorBaseAddr = *reinterpret_cast<byte8 **>(actorPool[3]);
+	//auto & mainActorBaseAddr = actorPool[3];
+
+	auto cameraPool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC8FBD0);
+	if (!cameraPool)
+	{
+		return;
+	}
+	if (!cameraPool[147])
+	{
+		return;
+	}
+	auto & cameraData = *reinterpret_cast<CAMERA_DATA *>(cameraPool[147]);
+
+	auto & lockOnUserBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2548);
+
+	actorPool[3] = baseAddr;
+	//cameraData.targetBaseAddr = baseAddr;
+	//lockOnUserBaseAddr = baseAddr;
+}
 
 
 
@@ -1601,8 +1645,7 @@ bool WeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 
 
 
-
-Export void Actor_Init()
+export void Actor_Init()
 {
 	LogFunction();
 

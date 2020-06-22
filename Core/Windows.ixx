@@ -1,20 +1,18 @@
+module;
 #include "Includes.h"
+export module ModuleName(Core_Windows);
 
-Export Module(Core_Windows);
-
-#include "DataTypes.h"
-
-Export inline bool Windows_GetTicksPerSecond(uint64 * var)
+export inline bool Windows_GetTicksPerSecond(uint64 * var)
 {
 	return QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER *>(var));
 }
 
-Export inline bool Windows_GetTickCount(uint64 * var)
+export inline bool Windows_GetTickCount(uint64 * var)
 {
 	return QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER *>(var));
 }
 
-Export void Windows_ToggleCursor(bool enable)
+export void Windows_ToggleCursor(bool enable)
 {
 	int32 counter = ShowCursor(false);
 	if (counter < 0)
@@ -43,7 +41,7 @@ Export void Windows_ToggleCursor(bool enable)
 	}
 }
 
-Export bool Windows_GetWindowPos(HWND window, POINT * point)
+export bool Windows_GetWindowPos(HWND window, POINT * point)
 {
 	if (!window)
 	{

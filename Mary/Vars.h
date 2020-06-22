@@ -983,6 +983,20 @@ struct NEXT_EVENT_DATA
 
 
 
+struct CAMERA_DATA
+{
+	_(176);
+	byte8 * targetBaseAddr;
+	_(24);
+	float32 height;
+	float32 tilt;
+	float32 zoom;
+};
+
+static_assert(offsetof(CAMERA_DATA, targetBaseAddr) == 0xB0);
+static_assert(offsetof(CAMERA_DATA, height) == 0xD0);
+static_assert(offsetof(CAMERA_DATA, tilt) == 0xD4);
+static_assert(offsetof(CAMERA_DATA, zoom) == 0xD8);
 
 
 
@@ -1637,8 +1651,10 @@ enum DEVIL_FLUX_
 
 
 
-#define __DDMK_OBSOLETE__
-#ifndef __DDMK_OBSOLETE__
+
+
+
+#ifdef __GARBAGE__
 
 
 enum ACTOR_

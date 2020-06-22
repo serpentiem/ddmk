@@ -1,12 +1,14 @@
+module;
 #include "Includes.h"
+export module ModuleName(Core_Vector);
 
-Export Module(Core_Vector);
+import ModuleName(Core_Memory);
 
-#include "Datatypes.h"
+#ifdef __INTELLISENSE__
+#include "Memory.ixx"
+#endif
 
-Import(Core_Memory);
-
-Export template <typename T>
+export template <typename T>
 struct Vector
 {
 	T * data;
@@ -50,14 +52,14 @@ struct Vector
 	}
 };
 
-Export struct MixedVectorMetadata
+export struct MixedVectorMetadata
 {
 	byte8 * addr;
 	uint32 size;
 	uint32 alignedSize;
 };
 
-Export struct MixedVector
+export struct MixedVector
 {
 	byte8 * data;
 	uint32 pos;

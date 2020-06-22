@@ -1,33 +1,39 @@
+module;
 #include "../Core/Core.h"
-
-Import(ImGui_D3D11);
-Import(ImGui_DirectInput8);
-Import(ImGui_User);
-
-#ifdef __INTELLISENSE__
-#include "../Core/ImGui_D3D11.ixx"
-#include "../Core/ImGui_DirectInput8.ixx"
-#include "../Core/ImGui_User.ixx"
-#endif
 
 #include <d3d11.h>
 #define DIRECTINPUT_VERSION 0x800
 #include <dinput.h>
 #include <dxgi.h>
-#include "../ImGui/imgui.h"
 #include <Xinput.h>
 
-#include "Config.h"
-#include "GUI.h"
-#include "Hotkeys.h"
-#include "Pause.h"
+#include "../ImGui/imgui.h"
+export module ModuleName(Hooks);
 
-#include "System/Message.h"
-#include "System/Window.h"
+import ModuleName(ImGui_D3D11);
+import ModuleName(ImGui_DirectInput8);
+import ModuleName(ImGui_User);
+import ModuleName(Config);
+import ModuleName(GUI);
+import ModuleName(Pause);
+import ModuleName(Window);
 
-Export Module(Hooks);
+#ifdef __INTELLISENSE__
+#include "../Core/ImGui_D3D11.ixx"
+#include "../Core/ImGui_DirectInput8.ixx"
+#include "../Core/ImGui_User.ixx"
+#include "Config.ixx"
+#include "GUI.ixx"
+#include "Pause.ixx"
+#include "Window.ixx"
+#endif
 
 constexpr bool debug = false;
+
+enum DM_
+{
+	DM_PAUSE = WM_USER,
+};
 
 typedef ATOM(* User_RegisterClassExW_t)
 (
@@ -480,7 +486,7 @@ HRESULT DXGI_Hook_ResizeBuffers
 	);
 	byte32 error = GetLastError();
 	CreateRenderTarget();
-	System_Window_UpdateSize((uint32)width, (uint32)height);
+	Window_UpdateSize((uint32)width, (uint32)height);
 	SetLastError(error);
 	return result;
 }
@@ -567,7 +573,7 @@ HRESULT D3D11_Hook_CreateDeviceAndSwapChain
 	DXGI_swapChain = *swapChain;
 	appWindow = swapChainDescription->OutputWindow;
 	// @Audit: Remove cast?
-	System_Window_UpdateSize((uint32)swapChainDescription->BufferDesc.Width, (uint32)swapChainDescription->BufferDesc.Height);
+	Window_UpdateSize((uint32)swapChainDescription->BufferDesc.Width, (uint32)swapChainDescription->BufferDesc.Height);
 	ImGui_D3D11_Init(D3D11_device, D3D11_deviceContext);
 	CreateRenderTarget();
 	//InstallStart:
@@ -598,9 +604,37 @@ HRESULT D3D11_Hook_CreateDeviceAndSwapChain
 	return result;
 }
 
-
-
-
+void TogglePause(byte8 * state)
+{
+	static bool execute = true;
+	constexpr byte8 keys[] =
+	{
+		DIK_LCONTROL,
+		DIK_D,
+	};
+	uint8 keysDown = 0;
+	for_all(uint8, index, countof(keys))
+	{
+		auto & key = keys[index];
+		if (state[key] & 0x80)
+		{
+			keysDown++;
+		}
+	}
+	if (keysDown == countof(keys))
+	{
+		if (execute)
+		{
+			pause = !pause;
+			PostMessageA(appWindow, DM_PAUSE, 0, 0);
+			execute = false;
+		}
+	}
+	else
+	{
+		execute = true;
+	}
+}
 
 HRESULT DirectInput8_Hook_GetDeviceStateKeyboard
 (
@@ -611,7 +645,7 @@ HRESULT DirectInput8_Hook_GetDeviceStateKeyboard
 {
 	byte * state = (byte *)buffer;
 	ImGui_DirectInput8_UpdateKeyboard(state);
-	Hotkeys_TogglePause(state);
+	TogglePause(state);
 	if (pause)
 	{
 		memset(buffer, 0, bufferSize);
@@ -741,7 +775,7 @@ byte32 XInput_Hook_GetState
 	return 0;
 }
 
-Export void Hooks_Init()
+export void Hooks_Init()
 {
 	LogFunction();
 	// @Todo: byte8 *

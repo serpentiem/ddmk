@@ -7,5 +7,9 @@ Scripts/*
 /Win32
 /x64
 *.bat
+*.exe
 *.ifc
 *.vcxproj.user
+CleanPDB.cpp
+GetClip.cpp
+SetClip.cpp

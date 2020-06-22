@@ -1,18 +1,16 @@
+module;
 #include "Includes.h"
+export module ModuleName(Core_File);
 
-Export Module(Core_File);
-
-#include "DataTypes.h"
-
-Import(Core_Log);
-Import(Core_Memory);
+import ModuleName(Core_Log);
+import ModuleName(Core_Memory);
 
 #ifdef __INTELLISENSE__
 #include "Log.ixx"
 #include "Memory.ixx"
 #endif
 
-Export byte8 * LoadFile
+export byte8 * LoadFile
 (
 	const char * filename,
 	uint32     * size = 0,
@@ -56,7 +54,7 @@ Export byte8 * LoadFile
 	return addr;
 }
 
-Export bool SaveFile
+export bool SaveFile
 (
 	const char * filename,
 	byte8      * addr,
@@ -82,7 +80,7 @@ Export bool SaveFile
 	return true;
 }
 
-Export bool CheckFile(const char * filename)
+export bool CheckFile(const char * filename)
 {
 	HANDLE file = 0;
 	byte32 error = 0;

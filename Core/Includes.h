@@ -11,4 +11,5 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 
+#include "Datatypes.h"
 #include "Macros.h"

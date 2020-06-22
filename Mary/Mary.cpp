@@ -1,31 +1,38 @@
 #include "../Core/Core.h"
 
-//#include "Actor.h"
-#include "Camera.h"
-#include "Config.h"
-#include "Dante.h"
-#include "Event.h"
-#include "FMOD.h"
+#include "Internal.h"
 
-
-
-Import(Actor);
-Import(Hooks);
+import ModuleName(Actor);
+import ModuleName(Arcade);
+import ModuleName(Camera);
+import ModuleName(Config);
+import ModuleName(Dante);
+import ModuleName(Event);
+import ModuleName(File);
+import ModuleName(GUI);
+import ModuleName(Hooks);
+import ModuleName(HUD);
+import ModuleName(Memory);
+import ModuleName(Training);
+import ModuleName(Update);
+import ModuleName(Window);
 
 #ifdef __INTELLISENSE__
 #include "Actor.ixx"
+#include "Arcade.ixx"
+#include "Camera.ixx"
+#include "Config.ixx"
+#include "Dante.ixx"
+#include "Event.ixx"
+#include "File.ixx"
+#include "GUI.ixx"
 #include "Hooks.ixx"
+#include "HUD.ixx"
+#include "Memory.ixx"
+#include "Training.ixx"
+#include "Update.ixx"
+#include "Window.ixx"
 #endif
-
-#include "Internal.h"
-#include "Memory.h"
-#include "Training.h"
-#include "Update.h"
-
-#include "System/Window.h"
-
-#include "HUD.h"
-
 
 uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {
@@ -230,10 +237,10 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
+		Window_ToggleForceFocus(Config.System.Window.forceFocus);
 
-		Game_Arcade_UpdateModeIndex();
-		Game_Arcade_Toggle(Config.Game.Arcade.enable);
+		Arcade_UpdateModeIndex();
+		Arcade_Toggle(Config.Game.Arcade.enable);
 
 
 

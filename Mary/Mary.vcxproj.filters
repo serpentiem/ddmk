@@ -1,67 +1,62 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Mary.cpp" />
-    <ClCompile Include="Config.cpp" />
-    <ClCompile Include="GUI.cpp" />
-    <ClCompile Include="Hotkeys.cpp" />
-    <ClCompile Include="Locale.cpp" />
-    <ClCompile Include="Pause.cpp" />
-    <ClCompile Include="System\Window.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Cosmetics\Color.cpp">
-      <Filter>Cosmetics</Filter>
-    </ClCompile>
-    <ClCompile Include="System\Media.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Arcade.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\StyleSwitcher.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Dante.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Cosmetics\Dante.cpp">
-      <Filter>Cosmetics</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\WeaponSwitcher.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Vergil.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="System\Animation.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\ResetMotionState.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="System\Weapon.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Mobility.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Other.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Cosmetics\Vergil.cpp">
-      <Filter>Cosmetics</Filter>
-    </ClCompile>
-    <ClCompile Include="Cosmetics\Other.cpp">
-      <Filter>Cosmetics</Filter>
-    </ClCompile>
     <ClCompile Include="..\Core\GUI.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Restart.cpp" />
-    <ClCompile Include="System\Sound.cpp">
-      <Filter>System</Filter>
+    <ClCompile Include="..\Core\ImGui_DirectInput8.ixx">
+      <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\Core\ImGui_User.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorData.cpp" />
+    <ClCompile Include="Internal.cpp" />
+    <ClCompile Include="File.ixx" />
+    <ClCompile Include="Memory.ixx" />
+    <ClCompile Include="HUD.ixx" />
+    <ClCompile Include="Pause.ixx" />
+    <ClCompile Include="Actor.ixx" />
+    <ClCompile Include="Config.ixx" />
+    <ClCompile Include="GUI.ixx" />
+    <ClCompile Include="Hooks.ixx" />
+    <ClCompile Include="Input.ixx" />
+    <ClCompile Include="..\Core\ImGui_D3D11.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Config.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\File.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Log.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Memory.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Utility.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Vector.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Windows.ixx">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Training.ixx" />
+    <ClCompile Include="Mary.cpp" />
+    <ClCompile Include="FMOD.cpp" />
+    <ClCompile Include="Speed.ixx" />
+    <ClCompile Include="Locale.cpp" />
+    <ClCompile Include="Event.ixx" />
+    <ClCompile Include="Dante.ixx" />
+    <ClCompile Include="Update.ixx" />
+    <ClCompile Include="Arcade.ixx" />
+    <ClCompile Include="Window.ixx" />
+    <ClCompile Include="Camera.ixx" />
+    <ClCompile Include="State.ixx" />
     <ClCompile Include="..\ImGui\imgui.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
@@ -74,158 +69,37 @@
     <ClCompile Include="..\ImGui\imgui_widgets.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="FMOD.cpp" />
-    <ClCompile Include="Game\Doppelganger.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Event.cpp" />
-    <ClCompile Include="System\Motion.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Speed.cpp" />
-    <ClCompile Include="Update.cpp" />
-    <ClCompile Include="System\Graphics.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Cosmetics\Object.cpp">
-      <Filter>Cosmetics</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Game\Attack.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Internal.cpp" />
-    <ClCompile Include="Cosmetics\Model.cpp">
-      <Filter>Cosmetics</Filter>
-    </ClCompile>
-    <ClCompile Include="ActorData.cpp" />
-    <ClCompile Include="HUD.cpp" />
-    <ClCompile Include="File.cpp" />
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Memory.cpp" />
-    <ClCompile Include="Training.cpp" />
-    <ClCompile Include="Dante.cpp" />
-    <ClCompile Include="..\Core\Config.ixx">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Windows.ixx">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\File.ixx">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Log.ixx">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Utility.ixx">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\Vector.ixx">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\ImGui_D3D11.ixx">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\ImGui_DirectInput8.ixx">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\ImGui_User.ixx">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Hooks.ixx" />
-    <ClCompile Include="..\Core\Memory.ixx">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Actor.ixx" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
-      <UniqueIdentifier>{4286cbca-c72d-4697-9845-d17dbc3429bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game">
-      <UniqueIdentifier>{420bbd7b-c618-4811-9a11-5626b67b2772}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="System">
-      <UniqueIdentifier>{7ef61810-c033-46db-9dce-0017a0319329}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Cosmetics">
-      <UniqueIdentifier>{a0d2594e-6b7a-4dbb-b2e5-a2220ae5b4cf}</UniqueIdentifier>
+      <UniqueIdentifier>{23b3c9fa-dad0-4360-8909-511578ed5094}</UniqueIdentifier>
     </Filter>
     <Filter Include="ImGui">
-      <UniqueIdentifier>{ab5fc0ee-ff9b-4901-981a-bd46b37f7a49}</UniqueIdentifier>
+      <UniqueIdentifier>{c8e16dea-2fdc-4418-8d84-59b84ee252ce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Config.h" />
-    <ClInclude Include="GUI.h" />
-    <ClInclude Include="Hotkeys.h" />
-    <ClInclude Include="Locale.h" />
-    <ClInclude Include="Pause.h" />
-    <ClInclude Include="System\Message.h">
-      <Filter>System</Filter>
+    <ClInclude Include="..\Core\Core.h">
+      <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="System\Window.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Cosmetics\Color.h">
-      <Filter>Cosmetics</Filter>
-    </ClInclude>
-    <ClInclude Include="System\Media.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Arcade.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\StyleSwitcher.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Dante.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Cosmetics\Dante.h">
-      <Filter>Cosmetics</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\WeaponSwitcher.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Vergil.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="System\Animation.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Attack.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\ResetMotionState.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="System\Weapon.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Mobility.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Other.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Cosmetics\Vergil.h">
-      <Filter>Cosmetics</Filter>
-    </ClInclude>
-    <ClInclude Include="Cosmetics\Other.h">
-      <Filter>Cosmetics</Filter>
-    </ClInclude>
-    <ClInclude Include="Vars.h" />
     <ClInclude Include="..\Core\DataTypes.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Core\GUI.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Restart.h" />
-    <ClInclude Include="System\Sound.h">
-      <Filter>System</Filter>
+    <ClInclude Include="..\Core\Includes.h">
+      <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\Core\Macros.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Vars.h" />
+    <ClInclude Include="ActorData.h" />
+    <ClInclude Include="Internal.h" />
+    <ClInclude Include="Modules.h" />
+    <ClInclude Include="FMOD.h" />
+    <ClInclude Include="Locale.h" />
     <ClInclude Include="..\ImGui\imconfig.h">
       <Filter>ImGui</Filter>
     </ClInclude>
@@ -243,44 +117,6 @@
     </ClInclude>
     <ClInclude Include="..\ImGui\imstb_truetype.h">
       <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="FMOD.h" />
-    <ClInclude Include="..\Core\Core.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Doppelganger.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Event.h" />
-    <ClInclude Include="System\Motion.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Speed.h" />
-    <ClInclude Include="Update.h" />
-    <ClInclude Include="System\Graphics.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Cosmetics\Object.h">
-      <Filter>Cosmetics</Filter>
-    </ClInclude>
-    <ClInclude Include="Internal.h" />
-    <ClInclude Include="Cosmetics\Model.h">
-      <Filter>Cosmetics</Filter>
-    </ClInclude>
-    <ClInclude Include="ActorData.h" />
-    <ClInclude Include="HUD.h" />
-    <ClInclude Include="File.h" />
-    <ClInclude Include="State.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Memory.h" />
-    <ClInclude Include="Training.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Dante.h" />
-    <ClInclude Include="..\Core\Includes.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\Macros.h">
-      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

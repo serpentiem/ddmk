@@ -1,11 +1,9 @@
+module;
 #include "Includes.h"
-
-Export Module(Core_Utility);
-
-#include "DataTypes.h"
+export module ModuleName(Core_Utility);
 
 // @Todo: Update.
-Export float32 hexstrtof(const char * str)
+export float32 hexstrtof(const char * str)
 {
 	if (strlen(str) != 8)
 	{
@@ -24,20 +22,20 @@ Export float32 hexstrtof(const char * str)
 }
 
 // @Todo: Update.
-Export template <class T, class U>
+export template <class T, class U>
 struct is_same
 {
 	static constexpr const bool value = false;
 };
 
-Export template <class T>
+export template <class T>
 struct is_same<T, T>
 {
 	static constexpr const bool value = true;
 };
 
 // @Todo: Update.
-Export template <typename T>
+export template <typename T>
 T Reverse(T * var)
 {
 	constexpr uint8 size = (uint8)sizeof(T);
@@ -49,7 +47,7 @@ T Reverse(T * var)
 	return value;
 }
 
-Export template
+export template
 <
 	typename T,
 	uint64 count
@@ -59,7 +57,7 @@ constexpr auto countof(T(&array)[count])
 	return count;
 }
 
-Export template
+export template
 <
 	typename T1,
 	typename T2,
@@ -69,49 +67,3 @@ constexpr auto countof(T2(&array)[count])
 {
 	return static_cast<T1>(count);
 }
-
-#ifdef __GARBAGE__
-
-//template <uint8 count> struct GetDataTypeByValueHelper {};
-//
-//template <> struct GetDataTypeByValueHelper<8 > { typedef uint8  type; };
-//template <> struct GetDataTypeByValueHelper<16> { typedef uint16 type; };
-//template <> struct GetDataTypeByValueHelper<32> { typedef uint32 type; };
-//template <> struct GetDataTypeByValueHelper<64> { typedef uint64 type; };
-//
-//template <uint64 value>
-//struct GetBitCount
-//{
-//	enum : uint8
-//	{
-//		COUNT =
-//		(value < (1ull << 8 )) ? 8  :
-//		(value < (1ull << 16)) ? 16 :
-//		(value < (1ull << 32)) ? 32 :
-//		64
-//	};
-//};
-//
-//template <uint64 value> struct GetDataTypeByValue : GetDataTypeByValueHelper<GetBitCount<value>::COUNT> {};
-
-//template <typename T>
-//constexpr auto countof(T & var)
-//{
-//	return (sizeof(var) / sizeof(var[0]));
-//}
-
-
-//#define const_for_each(name, start, end) for (GetDataTypeByValue<end>::type name = start; name < end; name++)
-//
-//#define for_each(name, start, end) for (decltype(end) name = start; name < end; name++)
-//
-//#define const_for_all(name, end) for (typename GetDataTypeByValue<end>::type name = 0; name < end; name++)
-//
-//// ugh, fails for const.
-//#define for_all(name, end) for (decltype(end) name = 0; name < end; name++)
-
-
-//#define for_each(type, name, start, end) for (type name = start; name < end; name++)
-//#define for_all (type, name,        end) for (type name = 0    ; name < end; name++)
-
-#endif

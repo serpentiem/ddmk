@@ -1,13 +1,13 @@
 // Modified from
 // https://github.com/ocornut/imgui/blob/e0cab5664adf02c030f9cf2a05d2c334638a85f8/examples/imgui_impl_dx11.cpp
 
+module;
 #include "Core.h"
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include "../ImGui/imgui.h"
-
-Export Module(ImGui_D3D11);
+export module ModuleName(ImGui_D3D11);
 
 // DirectX data
 static ID3D11Device*            g_pd3dDevice = NULL;
@@ -35,7 +35,7 @@ struct VERTEX_CONSTANT_BUFFER
 
 // Render function
 // (this used to be set in io.RenderDrawListsFn and called by ImGui::Render(), but you can now call this directly from your main loop)
-Export void ImGui_D3D11_RenderDrawData(ImDrawData * draw_data)
+export void ImGui_D3D11_RenderDrawData(ImDrawData * draw_data)
 {
     ID3D11DeviceContext* ctx = g_pd3dDeviceContext;
 
@@ -288,7 +288,7 @@ static void ImGui_D3D11_CreateFontsTexture()
     }
 }
 
-Export void ImGui_D3D11_InvalidateDeviceObjects()
+export void ImGui_D3D11_InvalidateDeviceObjects()
 {
 	if (!g_pd3dDevice)
 		return;
@@ -309,7 +309,7 @@ Export void ImGui_D3D11_InvalidateDeviceObjects()
 	if (g_pVertexShaderBlob) { g_pVertexShaderBlob->Release(); g_pVertexShaderBlob = NULL; }
 }
 
-Export bool ImGui_D3D11_CreateDeviceObjects()
+export bool ImGui_D3D11_CreateDeviceObjects()
 {
     if (!g_pd3dDevice)
         return false;
@@ -451,7 +451,7 @@ Export bool ImGui_D3D11_CreateDeviceObjects()
     return true;
 }
 
-Export bool ImGui_D3D11_Init(ID3D11Device * device, ID3D11DeviceContext * device_context)
+export bool ImGui_D3D11_Init(ID3D11Device * device, ID3D11DeviceContext * device_context)
 {
     // Get factory from device
     IDXGIDevice* pDXGIDevice = NULL;
@@ -472,7 +472,7 @@ Export bool ImGui_D3D11_Init(ID3D11Device * device, ID3D11DeviceContext * device
     return true;
 }
 
-Export void ImGui_D3D11_Shutdown()
+export void ImGui_D3D11_Shutdown()
 {
     ImGui_D3D11_InvalidateDeviceObjects();
     if (g_pFactory) { g_pFactory->Release(); g_pFactory = NULL; }
@@ -480,7 +480,7 @@ Export void ImGui_D3D11_Shutdown()
     g_pd3dDeviceContext = NULL;
 }
 
-Export void ImGui_D3D11_NewFrame()
+export void ImGui_D3D11_NewFrame()
 {
     if (!g_pFontSampler)
         ImGui_D3D11_CreateDeviceObjects();
