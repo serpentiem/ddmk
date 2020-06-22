@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{6D91C44D-CCD7-41BD-9144-10F618F1E2FF}</ProjectGuid>
+    <RootNamespace>Eva</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <CallingConvention>FastCall</CallingConvention>
+      <ObjectFileName>$(IntDir)%(Directory)_%(Filename)</ObjectFileName>
+      <DisableSpecificWarnings>4102;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <CallingConvention>FastCall</CallingConvention>
+      <ObjectFileName>$(IntDir)%(Directory)_%(Filename)</ObjectFileName>
+      <DisableSpecificWarnings>4102;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Core\Config.cpp" />
+    <ClCompile Include="..\Core\File.cpp" />
+    <ClCompile Include="..\Core\GUI.cpp" />
+    <ClCompile Include="..\Core\ImGui_D3D11.cpp" />
+    <ClCompile Include="..\Core\ImGui_DirectInput8.cpp" />
+    <ClCompile Include="..\Core\ImGui_User.cpp" />
+    <ClCompile Include="..\Core\Log.cpp" />
+    <ClCompile Include="..\Core\Memory.cpp" />
+    <ClCompile Include="..\Core\Utility.cpp" />
+    <ClCompile Include="..\Core\Windows.cpp" />
+    <ClCompile Include="..\ImGui\imgui.cpp" />
+    <ClCompile Include="..\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="..\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="..\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Eva.cpp" />
+    <ClCompile Include="Game\Arcade.cpp" />
+    <ClCompile Include="Game\BossRush.cpp" />
+    <ClCompile Include="Game\Dante.cpp" />
+    <ClCompile Include="Game\LockOn.cpp" />
+    <ClCompile Include="Game\MissionSelect.cpp" />
+    <ClCompile Include="Game\ResetMotionState.cpp" />
+    <ClCompile Include="Game\Training.cpp" />
+    <ClCompile Include="Game\WeaponSwitcher.cpp" />
+    <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="Hooks.cpp" />
+    <ClCompile Include="Hotkeys.cpp" />
+    <ClCompile Include="Locale.cpp" />
+    <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="System\Actor.cpp" />
+    <ClCompile Include="System\Event.cpp" />
+    <ClCompile Include="System\Graphics.cpp" />
+    <ClCompile Include="System\Input.cpp" />
+    <ClCompile Include="System\State.cpp" />
+    <ClCompile Include="System\Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Core\Config.h" />
+    <ClInclude Include="..\Core\Core.h" />
+    <ClInclude Include="..\Core\DataTypes.h" />
+    <ClInclude Include="..\Core\File.h" />
+    <ClInclude Include="..\Core\GUI.h" />
+    <ClInclude Include="..\Core\ImGui_D3D11.h" />
+    <ClInclude Include="..\Core\ImGui_DirectInput8.h" />
+    <ClInclude Include="..\Core\ImGui_User.h" />
+    <ClInclude Include="..\Core\Log.h" />
+    <ClInclude Include="..\Core\Memory.h" />
+    <ClInclude Include="..\Core\String.h" />
+    <ClInclude Include="..\Core\Utility.h" />
+    <ClInclude Include="..\Core\Vector.h" />
+    <ClInclude Include="..\Core\Windows.h" />
+    <ClInclude Include="..\ImGui\imconfig.h" />
+    <ClInclude Include="..\ImGui\imgui.h" />
+    <ClInclude Include="..\ImGui\imgui_internal.h" />
+    <ClInclude Include="..\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="..\ImGui\imstb_textedit.h" />
+    <ClInclude Include="..\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="Game\Arcade.h" />
+    <ClInclude Include="Game\BossRush.h" />
+    <ClInclude Include="Game\Dante.h" />
+    <ClInclude Include="Game\LockOn.h" />
+    <ClInclude Include="Game\MissionSelect.h" />
+    <ClInclude Include="Game\ResetMotionState.h" />
+    <ClInclude Include="Game\Training.h" />
+    <ClInclude Include="Game\WeaponSwitcher.h" />
+    <ClInclude Include="GUI.h" />
+    <ClInclude Include="Hooks.h" />
+    <ClInclude Include="Hotkeys.h" />
+    <ClInclude Include="Locale.h" />
+    <ClInclude Include="Pause.h" />
+    <ClInclude Include="System\Actor.h" />
+    <ClInclude Include="System\Event.h" />
+    <ClInclude Include="System\Graphics.h" />
+    <ClInclude Include="System\Input.h" />
+    <ClInclude Include="System\Message.h" />
+    <ClInclude Include="System\State.h" />
+    <ClInclude Include="System\Window.h" />
+    <ClInclude Include="Vars.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
