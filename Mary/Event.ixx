@@ -9,11 +9,13 @@ module;
 export module ModuleName(Event);
 
 import ModuleName(Actor);
+import ModuleName(Arcade);
 import ModuleName(Config);
 import ModuleName(File);
 
 #ifdef __INTELLISENSE__
 #include "Actor.ixx"
+#include "Arcade.ixx"
 #include "Config.ixx"
 #include "File.ixx"
 #endif
@@ -158,34 +160,6 @@ void ClearPool()
 
 
 
-void Arcade_CreateMainActor(byte8 * baseAddr)
-{
-	LogFunction(baseAddr);
-
-	// Unlock Weapon Files
-	{
-		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-		if (!pool)
-		{
-			return;
-		}
-		if (!pool[6])
-		{
-			return;
-		}
-		auto unlock = reinterpret_cast<byte8 *>(pool[6] + 0x7E2);
-		memset(unlock, 0xFF, 8);
-		/*
-		dmc3.exe+2A9F6D - 48 8B 05 B46E9E00    - mov rax,[dmc3.exe+C90E28]
-		dmc3.exe+2A9F74 - 48 8B 50 30          - mov rdx,[rax+30]
-		dmc3.exe+2A9F7C - 41 84 84 10 E2070000 - test [r8+rdx+000007E2],al
-		*/
-	}
-}
-
-
-
-
 
 
 
@@ -197,48 +171,15 @@ void Main_CreateMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 
-	File_dynamicFiles.Clear();
-	Actor_actorBaseAddr.Clear();
-
-	Actor_actorBaseAddr[0] = baseAddr;
-	Actor_actorBaseAddr.count = 2;
-
-
-
-
-
-	File_UpdateMainFileItems();
-	
-
+	Actor_CreateMainActor(baseAddr);
 	Arcade_CreateMainActor(baseAddr);
-
-
-	spawnActors = true;
-
-
-
 }
-
 
 void Customize_CreateMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 
-	File_dynamicFiles.Clear();
-	Actor_actorBaseAddr.Clear();
-
-	Actor_actorBaseAddr[0] = baseAddr;
-	Actor_actorBaseAddr.count = 2;
-
-
-	spawnActors = true;
-
-
-
-	File_UpdateMainFileItems();
-	
-
-
+	Actor_CreateMainActor(baseAddr);
 	Arcade_CreateMainActor(baseAddr);
 }
 

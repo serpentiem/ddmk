@@ -858,33 +858,37 @@ export void SpawnActors()
 		mainActorData.cloneBaseAddr = cloneActorData;
 	}
 
-	auto mainBaseAddr = Actor_actorBaseAddr[0];
-	if (!mainBaseAddr)
-	{
-		return;
-	}
-	auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
-
-	mainActorData.position.y = 10500; // @Todo: Put SPIRE_Y into enums.
 
 
 
-	// @Todo: Create helper function and include lock-on.
 
-	{
-		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-		if (!pool)
-		{
-			return;
-		}
-		auto baseAddr = Actor_actorBaseAddr[2];
-		if (!baseAddr)
-		{
-			return;
-		}
-		pool[3] = baseAddr;
+	//auto mainBaseAddr = Actor_actorBaseAddr[0];
+	//if (!mainBaseAddr)
+	//{
+	//	return;
+	//}
+	//auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
 
-	}
+	//mainActorData.position.y = 10500; // @Todo: Put SPIRE_Y into enums.
+
+
+
+	//// @Todo: Create helper function and include lock-on.
+
+	//{
+	//	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+	//	if (!pool)
+	//	{
+	//		return;
+	//	}
+	//	auto baseAddr = Actor_actorBaseAddr[2];
+	//	if (!baseAddr)
+	//	{
+	//		return;
+	//	}
+	//	pool[3] = baseAddr;
+
+	//}
 
 
 
@@ -1641,6 +1645,35 @@ export void SetMainActor(byte8 * baseAddr)
 	//cameraData.targetBaseAddr = baseAddr;
 	//lockOnUserBaseAddr = baseAddr;
 }
+
+
+
+
+
+export void Actor_CreateMainActor(byte8 * baseAddr)
+{
+	LogFunction(baseAddr);
+
+	File_dynamicFiles.Clear();
+	Actor_actorBaseAddr.Clear();
+
+	Actor_actorBaseAddr[0] = baseAddr;
+	Actor_actorBaseAddr.count = 2;
+
+	File_UpdateMainFileItems();
+
+	spawnActors = true;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

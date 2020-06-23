@@ -1839,6 +1839,7 @@ void MainLoop()
 	{
 		spawnActors = false;
 		SpawnActors();
+		SetMainActor(Actor_actorBaseAddr[2]);
 	}
 
 

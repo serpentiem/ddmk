@@ -20,7 +20,7 @@ import ModuleName(Memory);
 #include "Memory.ixx"
 #endif
 
-constexpr bool debug = true;
+constexpr bool debug = false;
 
 struct FileVectorMetadata
 {
@@ -277,10 +277,9 @@ byte8 * FileVector::Push(const char * filename)
 
 byte8 * FileVector::Push(byte8 * file, uint32 fileSize)
 {
-	LogFunction();
-
 	if constexpr (debug)
 	{
+		LogFunction();
 		Log("file     %.16llX", file);
 		Log("fileSize %u", fileSize);
 	}
