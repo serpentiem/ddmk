@@ -9,6 +9,7 @@ Scripts/*
 *.bat
 *.exe
 *.ifc
+*.obj
 *.vcxproj.user
 CleanPDB.cpp
 GetClip.cpp
