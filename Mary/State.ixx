@@ -1,3 +1,6 @@
+#ifndef __MODULE_STATE__
+#define __MODULE_STATE__
+
 module;
 #include "../Core/Core.h"
 
@@ -40,3 +43,5 @@ export inline bool InGame()
 	}
 	return true;
 }
+
+#endif

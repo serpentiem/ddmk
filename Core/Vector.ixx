@@ -1,3 +1,6 @@
+#ifndef __MODULE_CORE_VECTOR__
+#define __MODULE_CORE_VECTOR__
+
 module;
 #include "Includes.h"
 export module ModuleName(Core_Vector);
@@ -125,3 +128,5 @@ export struct MixedVector
 		return true;
 	}
 };
+
+#endif

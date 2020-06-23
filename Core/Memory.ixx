@@ -1,3 +1,6 @@
+#ifndef __MODULE_CORE_MEMORY__
+#define __MODULE_CORE_MEMORY__
+
 module;
 #include "Includes.h"
 export module ModuleName(Core_Memory);
@@ -533,3 +536,5 @@ export bool Core_Memory_Init(uint32 size = 0)
 
 	return true;
 }
+
+#endif

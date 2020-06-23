@@ -1,3 +1,6 @@
+#ifndef __MODULE_ACTOR__
+#define __MODULE_ACTOR__
+
 module;
 #include "../Core/Core.h"
 
@@ -3345,5 +3348,7 @@ bool IsActive(T & actorData)
 
 
 
+
+#endif
 
 #endif

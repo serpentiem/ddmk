@@ -1,3 +1,6 @@
+#ifndef __MODULE_FILE__
+#define __MODULE_FILE__
+
 module;
 #include "../Core/Core.h"
 
@@ -557,3 +560,5 @@ export bool File_Init()
 
 	return true;
 }
+
+#endif

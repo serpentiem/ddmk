@@ -1,3 +1,6 @@
+#ifndef __MODULE_HOOKS__
+#define __MODULE_HOOKS__
+
 module;
 #include "../Core/Core.h"
 
@@ -1005,3 +1008,5 @@ export void Hooks_Init()
 		WriteJump((appBaseAddr + 0x41C40), func.addr);
 	}
 }
+
+#endif

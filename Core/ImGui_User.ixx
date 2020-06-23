@@ -1,3 +1,6 @@
+#ifndef __MODULE_IMGUI_USER__
+#define __MODULE_IMGUI_USER__
+
 module;
 #include "Core.h"
 
@@ -36,3 +39,5 @@ export void ImGui_User_UpdateMouseCursor(HWND window)
 		}
 	}
 }
+
+#endif

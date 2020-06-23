@@ -1,3 +1,6 @@
+#ifndef __MODULE_CONFIG__
+#define __MODULE_CONFIG__
+
 module;
 #include "../Core/Core.h"
 
@@ -1121,3 +1124,5 @@ export struct CONFIG
 
 export CONFIG Config;
 export CONFIG DefaultConfig;
+
+#endif

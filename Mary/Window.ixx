@@ -1,3 +1,6 @@
+#ifndef __MODULE_WINDOW__
+#define __MODULE_WINDOW__
+
 module;
 #include "../Core/Core.h"
 
@@ -23,3 +26,5 @@ export void Window_ToggleForceFocus(bool enable)
 	// Enable Background Gamepad Input
 	WriteAddress((appBaseAddr + 0x41C0A), (enable) ? (appBaseAddr + 0x41C10) : (appBaseAddr + 0x42016), 6);
 }
+
+#endif

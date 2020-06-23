@@ -1,3 +1,6 @@
+#ifndef __MODULE_EVENT__
+#define __MODULE_EVENT__
+
 module;
 #include "../Core/Core.h"
 
@@ -440,7 +443,7 @@ static void Arcade_InitSession()
 
 
 	// @Todo: Use map instead.
-	ModeStart:
+	//ModeStart:
 	{
 		if ((Config.Game.Arcade.mission == 0) || (Config.Game.Arcade.mission == 21))
 		{
@@ -1539,8 +1542,14 @@ export void Event_Init()
 		constexpr byte8 sect0[] =
 		{
 			0xC7, 0x41, 0x20, 0x09, 0x00, 0x00, 0x00, // mov [rcx+20],00000009
-		};		auto func = CreateFunction(Main_Customize, (appBaseAddr + 0x23B21D), true, true, sizeof(sect0));		memcpy(func.sect0, sect0, sizeof(sect0));		WriteJump((appBaseAddr + 0x23B216), func.addr, 2);		/*		dmc3.exe+23B216 - C7 41 20 09000000 - mov [rcx+20],00000009
-		dmc3.exe+23B21D - C6 41 24 00       - mov byte ptr [rcx+24],00		*/
+		};
+		auto func = CreateFunction(Main_Customize, (appBaseAddr + 0x23B21D), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteJump((appBaseAddr + 0x23B216), func.addr, 2);
+		/*
+		dmc3.exe+23B216 - C7 41 20 09000000 - mov [rcx+20],00000009
+		dmc3.exe+23B21D - C6 41 24 00       - mov byte ptr [rcx+24],00
+		*/
 	}
 
 	{
@@ -1587,10 +1596,17 @@ export void Event_Init()
 		constexpr byte8 sect0[] =
 		{
 			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+1DE820
-		};		constexpr byte8 sect1[] =
+		};
+		constexpr byte8 sect1[] =
 		{
 			0x48, 0x8B, 0xC8, // mov rcx,rax
-		};		auto func = CreateFunction(Customize_CreateMainActor, (appBaseAddr + 0x23B7B8), true, true, sizeof(sect0), sizeof(sect1));		memcpy(func.sect0, sect0, sizeof(sect0));		memcpy(func.sect1, sect1, sizeof(sect1));		WriteCall(func.sect0, (appBaseAddr + 0x1DE820));		WriteJump((appBaseAddr + 0x23B7B3), func.addr);		/*
+		};
+		auto func = CreateFunction(Customize_CreateMainActor, (appBaseAddr + 0x23B7B8), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
+		WriteJump((appBaseAddr + 0x23B7B3), func.addr);
+		/*
 		dmc3.exe+23B7B3 - E8 6830FAFF       - call dmc3.exe+1DE820
 		dmc3.exe+23B7B8 - 48 89 87 B82C0000 - mov [rdi+00002CB8],rax
 		*/
@@ -2024,3 +2040,5 @@ export void Event_ToggleSkipCutscenes(bool enable)
 	WriteAddress((appBaseAddr + 0x238CD8), (enable) ? (appBaseAddr + 0x238CDE) : (appBaseAddr + 0x238E62), 6);
 	WriteAddress((appBaseAddr + 0x238CE3), (enable) ? (appBaseAddr + 0x238CE9) : (appBaseAddr + 0x238E62), 6);
 }
+
+#endif

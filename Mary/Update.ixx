@@ -1,3 +1,6 @@
+#ifndef __MODULE_UPDATE__
+#define __MODULE_UPDATE__
+
 module;
 #include "../Core/Core.h"
 
@@ -3141,3 +3144,5 @@ export void Update_Init()
 		*/
 	}
 }
+
+#endif

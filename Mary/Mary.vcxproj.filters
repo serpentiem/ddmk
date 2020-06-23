@@ -69,6 +69,7 @@
     <ClCompile Include="..\ImGui\imgui_widgets.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="Dependency.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">

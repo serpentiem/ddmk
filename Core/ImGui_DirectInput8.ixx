@@ -1,3 +1,6 @@
+#ifndef __MODULE_IMGUI_DIRECT_INPUT_8__
+#define __MODULE_IMGUI_DIRECT_INPUT_8__
+
 module;
 #include "Core.h"
 
@@ -66,3 +69,5 @@ export void ImGui_DirectInput8_UpdateMouse(HWND window, DIMOUSESTATE2 * state)
 	}
 	io.MouseWheel += (static_cast<float32>(state->lZ) / static_cast<float32>(WHEEL_DELTA));
 }
+
+#endif

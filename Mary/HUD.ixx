@@ -1,3 +1,6 @@
+#ifndef __MODULE_HUD__
+#define __MODULE_HUD__
+
 module;
 #include "../Core/Core.h"
 
@@ -238,3 +241,5 @@ export void HUD_Init()
 		Log("%u %llX", index, HUD_weaponIcon[index].model);
 	}
 }
+
+#endif

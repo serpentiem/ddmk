@@ -1,3 +1,6 @@
+#ifndef __MODULE_WINDOWS__
+#define __MODULE_WINDOWS__
+
 module;
 #include "Includes.h"
 export module ModuleName(Core_Windows);
@@ -56,3 +59,5 @@ export bool Windows_GetWindowPos(HWND window, POINT * point)
 	point->y = rect.top;
 	return true;
 }
+
+#endif

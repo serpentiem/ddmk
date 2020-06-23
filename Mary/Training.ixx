@@ -1,3 +1,6 @@
+#ifndef __MODULE_TRAINING__
+#define __MODULE_TRAINING__
+
 module;
 #include "../Core/Core.h"
 
@@ -86,3 +89,5 @@ export void Training_ToggleDisableTimer(bool enable)
 	}
 	Write<byte8>((appBaseAddr + 0x27F332), (enable) ? 0xEB : 0x74);
 }
+
+#endif

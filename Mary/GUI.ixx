@@ -1,3 +1,6 @@
+#ifndef __MODULE_GUI__
+#define __MODULE_GUI__
+
 module;
 #include "../Core/Core.h"
 #include "../Core/GUI.h"
@@ -3640,4 +3643,6 @@ export void GUI_Init()
 }
 
 #ifdef __GARBAGE__
+#endif
+
 #endif

@@ -1,3 +1,6 @@
+#ifndef __MODULE_CORE_CONFIG__
+#define __MODULE_CORE_CONFIG__
+
 module;
 #include "Includes.h"
 export module ModuleName(Core_Config);
@@ -54,3 +57,5 @@ export void Core_Config_Init
 	g_addr = reinterpret_cast<byte8 *>(addr);
 	g_size = size;
 }
+
+#endif

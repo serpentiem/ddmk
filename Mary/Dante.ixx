@@ -1,3 +1,6 @@
+#ifndef __MODULE_DANTE__
+#define __MODULE_DANTE__
+
 module;
 #include "../Core/Core.h"
 
@@ -1174,5 +1177,7 @@ export void Dante_CrazyCombo_SetLevelMultiplier(uint8 multiplier)
 	//}
 
 
+
+#endif
 
 #endif

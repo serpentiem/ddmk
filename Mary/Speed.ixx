@@ -1,3 +1,6 @@
+#ifndef __MODULE_SPEED__
+#define __MODULE_SPEED__
+
 module;
 #include "../Core/Core.h"
 
@@ -87,3 +90,5 @@ export void Speed_Init()
 	Speed_Quicksilver_actor = &addr[2];
 	Speed_Quicksilver_enemy = &addr[3];
 }
+
+#endif

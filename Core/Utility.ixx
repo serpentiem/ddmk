@@ -1,3 +1,6 @@
+#ifndef __MODULE_CORE_UTILITY__
+#define __MODULE_CORE_UTILITY__
+
 module;
 #include "Includes.h"
 export module ModuleName(Core_Utility);
@@ -67,3 +70,5 @@ constexpr auto countof(T2(&array)[count])
 {
 	return static_cast<T1>(count);
 }
+
+#endif

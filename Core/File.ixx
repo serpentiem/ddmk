@@ -1,3 +1,6 @@
+#ifndef __MODULE_CORE_FILE__
+#define __MODULE_CORE_FILE__
+
 module;
 #include "Includes.h"
 export module ModuleName(Core_File);
@@ -95,3 +98,5 @@ export bool CheckFile(const char * filename)
 
 	return true;
 }
+
+#endif

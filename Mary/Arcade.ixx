@@ -1,3 +1,6 @@
+#ifndef __MODULE_ARCADE__
+#define __MODULE_ARCADE__
+
 module;
 #include "../Core/Core.h"
 
@@ -47,3 +50,5 @@ export void Arcade_Toggle(bool enable)
 	// @Todo: Lazy solution, update proper vars!
 	Write<byte8>((appBaseAddr + 0x1AA791), (enable) ? 0xEB : 0x75); // Skip orb notifications.
 }
+
+#endif

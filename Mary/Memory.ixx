@@ -1,3 +1,6 @@
+#ifndef __MODULE_MEMORY__
+#define __MODULE_MEMORY__
+
 module;
 #include "../Core/Core.h"
 export module ModuleName(Memory);
@@ -115,3 +118,5 @@ export void Memory_ToggleExtendVectors(bool enable)
 		Write<uint32>((appBaseAddr + 0x32503C), count);
 	}
 }
+
+#endif

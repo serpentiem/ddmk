@@ -1,3 +1,6 @@
+#ifndef __MODULE_PAUSE__
+#define __MODULE_PAUSE__
+
 module;
 #include "../Core/Core.h"
 export module ModuleName(Pause);
@@ -24,3 +27,5 @@ export void Pause(bool enable)
 		}
 	}
 }
+
+#endif
