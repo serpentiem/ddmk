@@ -21,7 +21,7 @@ export void Pause(bool enable)
 	}
 	else
 	{
-		if (Config.System.Input.hideMouseCursor)
+		if (Config.Input.hideMouseCursor)
 		{
 			Windows_ToggleCursor(false);
 		}

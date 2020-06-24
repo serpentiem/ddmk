@@ -11,7 +11,6 @@ struct LOCALE
 		// @Todo: Change to header.
 		const char * label[4] =
 		{
-			"System",
 			"Game",
 			"Cosmetics",
 			"Tools",

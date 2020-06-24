@@ -120,4 +120,7 @@
       <Filter>ImGui</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Mobility.ixx" />
+  </ItemGroup>
 </Project>

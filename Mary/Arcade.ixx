@@ -30,7 +30,7 @@ export void Arcade_UpdateModeIndex()
 	auto & modeMap   = Arcade_modeMap;
 	for (uint8 index = 0; index < countof(modeMap); index++)
 	{
-		if (modeMap[index] == Config.Game.Arcade.mode)
+		if (modeMap[index] == Config.Arcade.mode)
 		{
 			modeIndex = index;
 			break;

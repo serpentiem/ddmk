@@ -13,6 +13,7 @@ import ModuleName(GUI);
 import ModuleName(Hooks);
 import ModuleName(HUD);
 import ModuleName(Memory);
+import ModuleName(Mobility);
 import ModuleName(Training);
 import ModuleName(Update);
 import ModuleName(Window);
@@ -29,6 +30,7 @@ import ModuleName(Window);
 #include "Hooks.ixx"
 #include "HUD.ixx"
 #include "Memory.ixx"
+#include "Mobility.ixx"
 #include "Training.ixx"
 #include "Update.ixx"
 #include "Window.ixx"
@@ -98,8 +100,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-		Event_ToggleSkipIntro    (Config.System.Event.skipIntro    );
-		Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
+		Event_ToggleSkipIntro    (true);
+		Event_ToggleSkipCutscenes(true);
 		//FMOD_Init();
 		Hooks_Init();
 		//Internal_Init();
@@ -127,7 +129,13 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Update_Init();
 
 
-		Mobility_Toggle(true);
+		//Mobility_Toggle(true);
+
+		Mobility::Init();
+		Mobility::Toggle(true);
+
+
+
 
 
 
@@ -237,10 +245,10 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-		Window_ToggleForceFocus(Config.System.Window.forceFocus);
+		Window_ToggleForceFocus(true);
 
 		Arcade_UpdateModeIndex();
-		Arcade_Toggle(Config.Game.Arcade.enable);
+		Arcade_Toggle(Config.Arcade.enable);
 
 
 

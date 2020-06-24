@@ -391,7 +391,7 @@ void File_UpdateCostumeFileItems(T & actorData)
 	auto costume = actorData.costume;
 	uint16 cacheFileId = 0;
 
-	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 	{
 		if (costume >= MAX_COSTUME_DANTE)
 		{
@@ -414,7 +414,7 @@ void File_UpdateCostumeFileItems(T & actorData)
 		}
 		File_UpdateFileItem(140, cacheFileId);
 	}
-	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 	{
 		if (costume >= MAX_COSTUME_VERGIL)
 		{
@@ -550,7 +550,7 @@ export bool File_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x2FDB1), false, false, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<bool **>(func.sect0 + 2) = &Config.System.File.preferLocalFiles;
+		*reinterpret_cast<bool **>(func.sect0 + 2) = &Config.File.preferLocalFiles;
 		*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = FILE_MODE_LOCAL;
 		WriteCall((func.sect0 + 0x15), (appBaseAddr + 0x327430));
 		WriteCall((func.sect0 + 0x2A), (appBaseAddr + 0x327430));

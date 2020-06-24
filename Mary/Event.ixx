@@ -12,12 +12,14 @@ import ModuleName(Actor);
 import ModuleName(Arcade);
 import ModuleName(Config);
 import ModuleName(File);
+import ModuleName(Mobility);
 
 #ifdef __INTELLISENSE__
 #include "Actor.ixx"
 #include "Arcade.ixx"
 #include "Config.ixx"
 #include "File.ixx"
+#include "Mobility.ixx"
 #endif
 
 constexpr bool debug = true;
@@ -377,7 +379,7 @@ static void Arcade_InitSession()
 	float32 * styleExperience    =  (float32 *)(addr + 0xF8 );
 	uint32  * expertise          =  (uint32  *)(addr + 0x110);
 
-	mission = Config.Game.Arcade.mission;
+	mission = Config.Arcade.mission;
 
 	//mission = 17;
 
@@ -386,7 +388,7 @@ static void Arcade_InitSession()
 	// @Todo: Use map instead.
 	//ModeStart:
 	{
-		if ((Config.Game.Arcade.mission == 0) || (Config.Game.Arcade.mission == 21))
+		if ((Config.Arcade.mission == 0) || (Config.Arcade.mission == 21))
 		{
 			goto ModeEnd;
 		}
@@ -397,7 +399,7 @@ static void Arcade_InitSession()
 		//}
 		//else
 		{
-			mode = Config.Game.Arcade.mode;
+			mode = Config.Arcade.mode;
 		}
 	}
 	ModeEnd:
@@ -405,7 +407,7 @@ static void Arcade_InitSession()
 	enableTutorial = false;
 	useGoldOrb = true;
 
-	if (Config.Game.Arcade.mission == 21)
+	if (Config.Arcade.mission == 21)
 	{
 		bloodyPalace = true;
 	}
@@ -414,29 +416,29 @@ static void Arcade_InitSession()
 
 	//memset(unlock, true, 14);
 
-	if (Config.Game.Arcade.character == CHAR_DANTE)
+	if (Config.Arcade.character == CHAR_DANTE)
 	{
-		vp_memcpy(equipment, Config.Game.Arcade.equipment, 4);
+		vp_memcpy(equipment, Config.Arcade.weapon, 4);
 	}
 
 
 
-	costume = Config.Game.Arcade.costume;
+	costume = Config.Arcade.costume;
 
 	unlockDevilTrigger = true;
 
-	hitPoints = Config.Game.Arcade.hitPoints;
-	magicPoints = Config.Game.Arcade.magicPoints;
+	hitPoints = Config.Arcade.hitPoints;
+	magicPoints = Config.Arcade.magicPoints;
 
-	if (Config.Game.Arcade.character == CHAR_DANTE)
+	if (Config.Arcade.character == CHAR_DANTE)
 	{
-		if ((Config.Game.Arcade.style == STYLE_DANTE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
+		if ((Config.Arcade.style == STYLE_DANTE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
 		{
 			style = STYLE_DANTE_TRICKSTER;
 		}
 		else
 		{
-			style = Config.Game.Arcade.style;
+			style = Config.Arcade.style;
 		}
 	}
 
@@ -488,7 +490,7 @@ static void Arcade_SetCharacter(byte8 * addr)
 {
 	LogFunctionStart();
 	uint8 & character = *(uint8 *)(addr + 0x4565);
-	character = Config.Game.Arcade.character;
+	character = Config.Arcade.character;
 	LogFunctionEnd();
 }
 
@@ -511,13 +513,13 @@ static void Arcade_SetRoom()
 	byte32 * flags        = vars.flags;
 	uint32 & mission      = *vars.mission;
 
-	if (!Config.Game.Arcade.ignoreRoom)
+	if (!Config.Arcade.ignoreRoom)
 	{
-		nextRoom = Config.Game.Arcade.room;
+		nextRoom = static_cast<uint16>(Config.Arcade.room);
 	}
-	if (!Config.Game.Arcade.ignorePosition)
+	if (!Config.Arcade.ignorePosition)
 	{
-		nextPosition = Config.Game.Arcade.position;
+		nextPosition = static_cast<uint16>(Config.Arcade.position);
 	}
 	if (mission == 21)
 	{
@@ -562,8 +564,8 @@ static void Arcade_SetRoom()
 			{ 448, 0 }, // jester 2
 			{ 449, 0 }, // jester 3
 		};
-		nextRoom     = var[Config.Game.Arcade.BloodyPalace.floor].room;
-		nextPosition = var[Config.Game.Arcade.BloodyPalace.floor].position;
+		nextRoom     = var[Config.Arcade.floor].room;
+		nextPosition = var[Config.Arcade.floor].position;
 	}
 	LogFunctionEnd();
 }
@@ -1029,7 +1031,7 @@ static void BossRush_StageLoadComplete()
 static void InitSession()
 {
 	LogFunctionStart();
-	if (Config.Game.Arcade.enable)
+	if (Config.Arcade.enable)
 	{
 		Arcade_InitSession();
 	}
@@ -1039,7 +1041,7 @@ static void InitSession()
 static void SetCharacter(byte8 * addr)
 {
 	LogFunctionStart();
-	if (Config.Game.Arcade.enable)
+	if (Config.Arcade.enable)
 	{
 		Arcade_SetCharacter(addr);
 	}
@@ -1049,7 +1051,7 @@ static void SetCharacter(byte8 * addr)
 static void SetRoom()
 {
 	LogFunctionStart();
-	if (Config.Game.Arcade.enable)
+	if (Config.Arcade.enable)
 	{
 		Arcade_SetRoom();
 	}
@@ -1475,9 +1477,219 @@ void Customize_Main()
 	//SetMainActor(actorData);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void SkyStarReset(byte8 * baseAddr)
+{
+	Mobility::SkyStarReset(baseAddr);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 export void Event_Init()
 {
 	LogFunction();
+
+
+
+
+
+
+
+
+	// Sky Star Reset
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCB, //mov rcx,rbx
+		};
+		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall((appBaseAddr + 0x1DFEAE), func.addr, 1);
+		/*
+		dmc3.exe+1DFEAE - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCB, //mov rcx,rbx
+		};
+		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall((appBaseAddr + 0x1DFFB6), func.addr, 1);
+		/*
+		dmc3.exe+1DFFB6 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x41, 0x88, 0x89, 0x5D, 0x63, 0x00, 0x00, //mov [r9+0000635D],cl
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x49, 0x8B, 0xC9, //mov rcx,r9
+		};
+		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall((appBaseAddr + 0x1E07A2), func.addr, 2);
+		/*
+		dmc3.exe+1E07A2 - 41 88 89 5D630000 - mov [r9+0000635D],cl
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCB, //mov rcx,rbx
+		};
+		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall((appBaseAddr + 0x1E0D81), func.addr, 1);
+		/*
+		dmc3.exe+1E0D81 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x49, 0x8B, 0xC8, //mov rcx,r8
+		};
+		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall((appBaseAddr + 0x1E0F64), func.addr, 2);
+		/*
+		dmc3.exe+1E0F64 - 41 88 88 5D630000 - mov [r8+0000635D],cl
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x49, 0x8B, 0xC8, //mov rcx,r8
+		};
+		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall((appBaseAddr + 0x1E0FBD), func.addr, 2);
+		/*
+		dmc3.exe+1E0FBD - 41 88 88 5D630000 - mov [r8+0000635D],cl
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCB, //mov rcx,rbx
+		};
+		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall((appBaseAddr + 0x1E16D2), func.addr, 1);
+		/*
+		dmc3.exe+1E16D2 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x88, 0x83, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],al
+		};
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCB, //mov rcx,rbx
+		};
+		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall((appBaseAddr + 0x1E66AC), func.addr, 1);
+		/*
+		dmc3.exe+1E66AC - 88 83 5D630000 - mov [rbx+0000635D],al
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	{
 		constexpr byte8 sect0[] =

@@ -25,17 +25,37 @@ export float32 hexstrtof(const char * str)
 }
 
 // @Todo: Update.
-export template <class T, class U>
-struct is_same
+//export template <class T, class U>
+//struct is_same
+//{
+//	static constexpr const bool value = false;
+//};
+//
+//export template <class T>
+//struct is_same<T, T>
+//{
+//	static constexpr const bool value = true;
+//};
+
+export template
+<
+	typename T1,
+	typename T2
+>
+struct TypeMatch
 {
-	static constexpr const bool value = false;
+	static constexpr bool value = false;
 };
 
-export template <class T>
-struct is_same<T, T>
+export template <typename T>
+struct TypeMatch<T, T>
 {
-	static constexpr const bool value = true;
+	static constexpr bool value = true;
 };
+
+
+
+
 
 // @Todo: Update.
 export template <typename T>

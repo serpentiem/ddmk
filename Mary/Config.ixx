@@ -535,7 +535,59 @@ export struct CONFIG
 
 
 
-
+	struct
+	{
+		bool   enable         = true;
+		uint32 mission        = 17;
+		uint32 mode           = MODE_NORMAL;
+		uint32 room           = 900;
+		uint32 position       = 0;
+		bool   ignoreRoom     = false;
+		bool   ignorePosition = false;
+		uint8  floor          = 0;
+		uint8  character      = CHAR_DANTE;
+		uint8  costume        = 0;
+		uint32 style          = STYLE_DANTE_TRICKSTER;
+		// @Todo: Should be weapons.
+		uint8  weapon[MAX_CHAR][5] =
+		{
+			// Dante
+			{
+				WEAPON_DANTE_REBELLION,
+				WEAPON_DANTE_CERBERUS,
+				WEAPON_DANTE_EBONY_IVORY,
+				WEAPON_DANTE_SHOTGUN,
+				WEAPON_VOID,
+			},
+			// Bob
+			{
+				WEAPON_BOB_YAMATO,
+				WEAPON_VOID,
+				WEAPON_VOID,
+				WEAPON_VOID,
+				WEAPON_VOID,
+			},
+			// Lady
+			{
+				WEAPON_VOID,
+				WEAPON_VOID,
+				9,
+				WEAPON_VOID,
+				11,
+			},
+			// Vergil
+			{
+				WEAPON_VERGIL_YAMATO,
+				WEAPON_VERGIL_BEOWULF,
+				WEAPON_VERGIL_FORCE_EDGE,
+				WEAPON_VOID,
+				WEAPON_VOID,
+			},
+		};
+		float32 hitPoints   = 6000;
+		float32 magicPoints = 3000;
+	}
+	Arcade;
 
 
 
@@ -656,6 +708,43 @@ export struct CONFIG
 
 	// EbonyAndIvory
 	// swapNormalShotAndMultiLock
+
+
+	struct
+	{
+		bool skipIntro     = true;
+		bool skipCutscenes = true;
+	}
+	Event;
+
+	struct
+	{
+		bool preferLocalFiles = true;
+	}
+	File;
+
+
+	struct
+	{
+		uint32 frameRate = 60;
+		uint8  vSync     = 0;
+	}
+	Graphics;
+
+	struct
+	{
+		bool hideMouseCursor = true;
+	}
+	Input;
+	struct
+	{
+		bool forceFocus = true;
+	}
+	Window;
+
+
+
+
 
 
 
@@ -800,66 +889,10 @@ export struct CONFIG
 			bool invertX = false;
 		}
 		Camera;
-		struct
-		{
-			bool skipIntro     = true;
-			bool skipCutscenes = true;
-		}
-		Event;
-		struct
-		{
-			bool preferLocalFiles = true;
-		}
-		File;
-		struct
-		{
-			uint32 frameRate = 60;
-			uint8  vSync     = 0;
-		}
-		Graphics;
-		struct
-		{
-			bool hideMouseCursor = true;
-		}
-		Input;
-		struct
-		{
-			bool forceFocus = true;
-		}
-		Window;
 	}
 	System;
 	struct
 	{
-		struct
-		{
-			bool   enable         = true;
-			uint32 mission        = 17;
-			uint32 mode           = MODE_NORMAL;
-			uint16 room           = 900;
-			bool   ignoreRoom     = false;
-			uint16 position       = 0;
-			bool   ignorePosition = false;
-			struct
-			{
-				uint8 floor = 0;
-			}
-			BloodyPalace;
-			// @Todo: Update!
-			uint8  character    = CHAR_DANTE;
-			uint8  costume      = 0;
-			uint32 style        = STYLE_DANTE_TRICKSTER;
-			uint8  equipment[4] =
-			{
-				WEAPON_DANTE_REBELLION,
-				WEAPON_DANTE_CERBERUS,
-				WEAPON_DANTE_EBONY_IVORY,
-				WEAPON_DANTE_SHOTGUN,
-			};
-			float32 hitPoints   = 6000;
-			float32 magicPoints = 3000;
-		}
-		Arcade;
 		struct
 		{
 			bool enable = false;

@@ -53,11 +53,11 @@ export inline void LogFunctionHelper(const char * funcName)
 export template <typename T>
 void LogFunctionHelper(const char * funcName, T var)
 {
-	if constexpr (typematch(T, byte8 *))
+	if constexpr (TypeMatch<T, byte8 *>::value)
 	{
 		Log("%s %llX", funcName, var);
 	}
-	else if constexpr (typematch(T, const char *))
+	else if constexpr (TypeMatch<T, const char *>::value)
 	{
 		Log("%s %s", funcName, var);
 	}

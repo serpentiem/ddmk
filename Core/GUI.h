@@ -18,21 +18,21 @@ bool GUI_Input(const char * label, T & var, bool hex = false, ImGuiInputTextFlag
 	ImGuiInputTextFlags flags = ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue;
 	if (hex)
 	{
-		if constexpr      (typematch(T, uint8  )) { sprintf(value, "%.2X", var); }
-		else if constexpr (typematch(T, uint16 )) { sprintf(value, "%.4X", var); }
-		else if constexpr (typematch(T, uint32 )) { sprintf(value, "%.8X", var); }
+		if constexpr      (TypeMatch<T, uint8  >::value) { sprintf(value, "%.2X", var); }
+		else if constexpr (TypeMatch<T, uint16 >::value) { sprintf(value, "%.4X", var); }
+		else if constexpr (TypeMatch<T, uint32 >::value) { sprintf(value, "%.8X", var); }
 		#pragma warning(push)
 		#pragma warning(disable: 4477)
-		else if constexpr (typematch(T, float32)) { sprintf(value, "%.8X", var); }
+		else if constexpr (TypeMatch<T, float32>::value) { sprintf(value, "%.8X", var); }
 		#pragma warning(pop)
 		flags |= ImGuiInputTextFlags_CharsHexadecimal;
 	}
 	else
 	{
-		if constexpr      (typematch(T, uint8 )) { sprintf(value, "%u",   var); }
-		else if constexpr (typematch(T, uint16)) { sprintf(value, "%u",   var); }
-		else if constexpr (typematch(T, uint32)) { sprintf(value, "%u",   var); }
-		else if constexpr (typematch(T, float32 )) { sprintf(value, "%.3f", var); }
+		if constexpr      (TypeMatch<T, uint8 >::value) { sprintf(value, "%u",   var); }
+		else if constexpr (TypeMatch<T, uint16>::value) { sprintf(value, "%u",   var); }
+		else if constexpr (TypeMatch<T, uint32>::value) { sprintf(value, "%u",   var); }
+		else if constexpr (TypeMatch<T, float32 >::value) { sprintf(value, "%.3f", var); }
 		flags |= ImGuiInputTextFlags_CharsDecimal;
 	}
 	flags |= extraFlags;
@@ -42,7 +42,7 @@ bool GUI_Input(const char * label, T & var, bool hex = false, ImGuiInputTextFlag
 	{
 		if (hex)
 		{
-			if constexpr (typematch(T, float32))
+			if constexpr (TypeMatch<T, float32>::value)
 			{
 				var = hexstrtof(value);
 			}
@@ -53,7 +53,7 @@ bool GUI_Input(const char * label, T & var, bool hex = false, ImGuiInputTextFlag
 		}
 		else
 		{
-			if constexpr (typematch(T, float32))
+			if constexpr (TypeMatch<T, float32>::value)
 			{
 				var = strtof(value, 0);
 			}

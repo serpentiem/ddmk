@@ -67,7 +67,6 @@ enum FONT_
 
 enum TAB_
 {
-	TAB_SYSTEM,
 	TAB_GAME,
 	TAB_COSMETICS,
 	TAB_TOOLS,
@@ -152,84 +151,84 @@ void GUI_System_Camera()
 	}
 }
 
-void GUI_System_Event()
-{
-	GUI_Hyperlink(Locale.System.Event.header);
-	ImGui::Text("");
-	if (GUI_Checkbox
-	(
-		Locale.System.Event.skipIntro,
-		Config.System.Event.skipIntro
-	))
-	{
-		Event_ToggleSkipIntro(Config.System.Event.skipIntro);
-	}
-	if (GUI_Checkbox
-	(
-		Locale.System.Event.skipCutscenes,
-		Config.System.Event.skipCutscenes
-	))
-	{
-		Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
-	}
-}
+//void GUI_System_Event()
+//{
+//	GUI_Hyperlink(Locale.System.Event.header);
+//	ImGui::Text("");
+//	if (GUI_Checkbox
+//	(
+//		Locale.System.Event.skipIntro,
+//		Config.System.Event.skipIntro
+//	))
+//	{
+//		Event_ToggleSkipIntro(Config.System.Event.skipIntro);
+//	}
+//	if (GUI_Checkbox
+//	(
+//		Locale.System.Event.skipCutscenes,
+//		Config.System.Event.skipCutscenes
+//	))
+//	{
+//		Event_ToggleSkipCutscenes(Config.System.Event.skipCutscenes);
+//	}
+//}
+//
+//void GUI_System_File()
+//{
+//	GUI_Hyperlink(Locale.System.File.header);
+//	ImGui::Text("");
+//	GUI_Checkbox
+//	(
+//		Locale.System.File.preferLocalFiles,
+//		Config.System.File.preferLocalFiles
+//	);
+//}
 
-void GUI_System_File()
-{
-	GUI_Hyperlink(Locale.System.File.header);
-	ImGui::Text("");
-	GUI_Checkbox
-	(
-		Locale.System.File.preferLocalFiles,
-		Config.System.File.preferLocalFiles
-	);
-}
-
-void GUI_System_Graphics()
-{
-	GUI_Hyperlink(Locale.System.Graphics.header);
-	ImGui::Text("");
-	ImGui::PushItemWidth(150);
-	GUI_InputEx<uint32>
-	(
-		Locale.System.Graphics.frameRate,
-		Config.System.Graphics.frameRate
-	);
-	ImGui::SameLine();
-	GUI_Tooltip(Locale.System.Graphics.frameRateHint);
-	GUI_Combo<uint8>
-	(
-		Locale.System.Graphics.VSync.label,
-		Locale.System.Graphics.VSync.items,
-		countof(Locale.System.Graphics.VSync.items),
-		Config.System.Graphics.vSync
-	);
-	ImGui::PopItemWidth();
-}
-
-void GUI_System_Input()
-{
-	GUI_Hyperlink(Locale.System.Input.header);
-	ImGui::Text("");
-	GUI_Checkbox
-	(
-		Locale.System.Input.hideMouseCursor,
-		Config.System.Input.hideMouseCursor
-	);
-}
-
-void GUI_System_Window()
-{
-	GUI_Hyperlink(Locale.System.Window.header);
-	ImGui::Text("");
-	if (GUI_Checkbox(
-		Locale.System.Window.forceFocus,
-		Config.System.Window.forceFocus
-	))
-	{
-		Window_ToggleForceFocus(Config.System.Window.forceFocus);
-	}
-}
+//void GUI_System_Graphics()
+//{
+//	GUI_Hyperlink(Locale.System.Graphics.header);
+//	ImGui::Text("");
+//	ImGui::PushItemWidth(150);
+//	GUI_InputEx<uint32>
+//	(
+//		Locale.System.Graphics.frameRate,
+//		Config.System.Graphics.frameRate
+//	);
+//	ImGui::SameLine();
+//	GUI_Tooltip(Locale.System.Graphics.frameRateHint);
+//	GUI_Combo<uint8>
+//	(
+//		Locale.System.Graphics.VSync.label,
+//		Locale.System.Graphics.VSync.items,
+//		countof(Locale.System.Graphics.VSync.items),
+//		Config.System.Graphics.vSync
+//	);
+//	ImGui::PopItemWidth();
+//}
+//
+//void GUI_System_Input()
+//{
+//	GUI_Hyperlink(Locale.System.Input.header);
+//	ImGui::Text("");
+//	GUI_Checkbox
+//	(
+//		Locale.System.Input.hideMouseCursor,
+//		Config.System.Input.hideMouseCursor
+//	);
+//}
+//
+//void GUI_System_Window()
+//{
+//	GUI_Hyperlink(Locale.System.Window.header);
+//	ImGui::Text("");
+//	if (GUI_Checkbox(
+//		Locale.System.Window.forceFocus,
+//		Config.System.Window.forceFocus
+//	))
+//	{
+//		Window_ToggleForceFocus(Config.System.Window.forceFocus);
+//	}
+//}
 
 void GUI_System_Draw()
 {
@@ -248,16 +247,6 @@ void GUI_System_Draw()
 		GUI_System_Actor();
 		ImGui::Text("");
 		GUI_System_Camera();
-		ImGui::Text("");
-		GUI_System_Event();
-		ImGui::Text("");
-		GUI_System_File();
-		ImGui::Text("");
-		GUI_System_Graphics();
-		ImGui::Text("");
-		GUI_System_Input();
-		ImGui::Text("");
-		GUI_System_Window();
 	}
 	ImGui::End();
 	ImGui::PopStyleVar(3);
@@ -267,220 +256,220 @@ void GUI_System_Draw()
 
 #pragma region Game
 
-void GUI_Arcade()
-{
-
-
-	//static uint8 character = CHAR_DANTE;
-
-	//if (GUI_Button("CreateActor"))
-	//{
-	//	auto baseAddr = CreateActor(CHAR_DANTE, ACTOR_TWO);
-	//	Log("baseAddr %llX", baseAddr);
-	//}
-
-
-
-	//{
-	//	static uint32 arg[3] = {};
-	//	GUI_InputEx<uint32>("arg1", arg[0]);
-	//	GUI_InputEx<uint32>("arg2", arg[1]);
-	//	GUI_InputEx<uint32>("arg3", arg[2]);
-	//	if (GUI_Button("Switch"))
-	//	{
-	//		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-	//		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
-	//		func_280160(hud, arg[0], arg[1], arg[2]);
-	//	}
-	//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//{
-	//	static bool enable = false;
-	//	if (GUI_Checkbox("Toggle Update Weapon", enable))
-	//	{
-	//		//ToggleUpdateWeapon(enable);
-	//	}
-	//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-	ImGui::Text(Locale.Game.Arcade.header);
-	ImGui::SameLine();
-	GUI_Tooltip(Locale.Game.Arcade.description);
-	ImGui::Text("");
-	if (GUI_Checkbox
-	(
-		Locale.Game.Arcade.enable,
-		Config.Game.Arcade.enable
-	))
-	{
-		if (Config.Game.Arcade.enable)
-		{
-			Arcade_Toggle(Config.Game.Arcade.enable);
-		}
-		else
-		{
-			Arcade_Toggle(DefaultConfig.Game.Arcade.enable);
-		}
-	}
-	ImGui::Text("");
-	GUI_PUSH_DISABLE(!Config.Game.Arcade.enable);
-	ImGui::PushItemWidth(200);
-	GUI_Combo<uint32>
-	(
-		Locale.Game.Arcade.Mission.label,
-		Locale.Game.Arcade.Mission.items,
-		countof(Locale.Game.Arcade.Mission.items),
-		Config.Game.Arcade.mission
-	);
-	if ((Config.Game.Arcade.mission != 0) && (Config.Game.Arcade.mission != 21))
-	{
-		if (GUI_Combo<uint8>
-		(
-			Locale.Game.Arcade.Mode.label,
-			Locale.Game.Arcade.Mode.items,
-			countof(Locale.Game.Arcade.Mode.items),
-			Arcade_modeIndex,
-			0,
-			false
-		))
-		{
-			auto & modeIndex = Arcade_modeIndex;
-			auto & modeMap   = Arcade_modeMap;
-			Config.Game.Arcade.mode = modeMap[modeIndex];
-			SaveConfig();
-		}
-		if constexpr (debug)
-		{
-			ImGui::Text("index %u", Arcade_modeIndex);
-			ImGui::Text("true  %X", Config.Game.Arcade.mode);
-		}
-		GUI_InputEx<uint16>
-		(
-			Locale.Game.Arcade.room,
-			Config.Game.Arcade.room
-		);
-		ImGui::SameLine();
-		GUI_Checkbox
-		(
-			Locale.Game.Arcade.ignoreRoom,
-			Config.Game.Arcade.ignoreRoom
-		);
-		GUI_InputEx<uint16>
-		(
-			Locale.Game.Arcade.position,
-			Config.Game.Arcade.position
-		);
-		ImGui::SameLine();
-		GUI_Checkbox
-		(
-			Locale.Game.Arcade.ignorePosition,
-			Config.Game.Arcade.ignorePosition
-		);
-	}
-	else if (Config.Game.Arcade.mission == 21)
-	{
-		GUI_Combo<uint8>
-		(
-			Locale.Game.Arcade.BloodyPalace.Floor.label,
-			Locale.Game.Arcade.BloodyPalace.Floor.items,
-			countof(Locale.Game.Arcade.BloodyPalace.Floor.items),
-			Config.Game.Arcade.BloodyPalace.floor
-		);
-	}
-	GUI_Combo<uint8>
-	(
-		Locale.Game.Arcade.Character.label,
-		Locale.Game.Arcade.Character.items,
-		countof(Locale.Game.Arcade.Character.items),
-		Config.Game.Arcade.character
-	);
-	if (Config.Game.Arcade.mission != 0)
-	{
-		GUI_InputEx<uint8>
-		(
-			Locale.Game.Arcade.costume,
-			Config.Game.Arcade.costume
-		);
-	}
-	if ((Config.Game.Arcade.mission != 0) && (Config.Game.Arcade.character == CHAR_DANTE))
-	{
-		GUI_Combo<uint32>
-		(
-			Locale.Game.Arcade.Style.label,
-			Locale.Game.Arcade.Style.items,
-			countof(Locale.Game.Arcade.Style.items),
-			Config.Game.Arcade.style
-		);
-		for (uint8 index = 0; index < countof(Config.Game.Arcade.equipment); index++)
-		{
-			if (index < 2)
-			{
-				GUI_Combo<uint8>
-				(
-					Locale.Game.Arcade.Equipment.label[index],
-					Locale.Game.Arcade.Equipment.items,
-					5,
-					Config.Game.Arcade.equipment[index]
-				);
-			}
-			else
-			{
-				GUI_Combo<uint8>
-				(
-					Locale.Game.Arcade.Equipment.label[index],
-					Locale.Game.Arcade.Equipment.items,
-					10,
-					Config.Game.Arcade.equipment[index],
-					5
-				);
-			}
-		}
-	}
-	if (Config.Game.Arcade.mission != 0)
-	{
-		GUI_InputEx<float32>
-		(
-			Locale.Game.Arcade.hitPoints,
-			Config.Game.Arcade.hitPoints,
-			1000
-		);
-		GUI_InputEx<float32>
-		(
-			Locale.Game.Arcade.magicPoints,
-			Config.Game.Arcade.magicPoints,
-			1000
-		);
-	}
-	ImGui::PopItemWidth();
-	GUI_SECTION_FOOTER_START(Game.Arcade);
-	Arcade_UpdateModeIndex();
-	Arcade_Toggle(DefaultConfig.Game.Arcade.enable);
-	GUI_SECTION_FOOTER_END;
-}
+//void GUI_Arcade()
+//{
+//
+//
+//	//static uint8 character = CHAR_DANTE;
+//
+//	//if (GUI_Button("CreateActor"))
+//	//{
+//	//	auto baseAddr = CreateActor(CHAR_DANTE, ACTOR_TWO);
+//	//	Log("baseAddr %llX", baseAddr);
+//	//}
+//
+//
+//
+//	//{
+//	//	static uint32 arg[3] = {};
+//	//	GUI_InputEx<uint32>("arg1", arg[0]);
+//	//	GUI_InputEx<uint32>("arg2", arg[1]);
+//	//	GUI_InputEx<uint32>("arg3", arg[2]);
+//	//	if (GUI_Button("Switch"))
+//	//	{
+//	//		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+//	//		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+//	//		func_280160(hud, arg[0], arg[1], arg[2]);
+//	//	}
+//	//}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//	//{
+//	//	static bool enable = false;
+//	//	if (GUI_Checkbox("Toggle Update Weapon", enable))
+//	//	{
+//	//		//ToggleUpdateWeapon(enable);
+//	//	}
+//	//}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//	ImGui::Text(Locale.Game.Arcade.header);
+//	ImGui::SameLine();
+//	GUI_Tooltip(Locale.Game.Arcade.description);
+//	ImGui::Text("");
+//	if (GUI_Checkbox
+//	(
+//		Locale.Game.Arcade.enable,
+//		Config.Game.Arcade.enable
+//	))
+//	{
+//		if (Config.Game.Arcade.enable)
+//		{
+//			Arcade_Toggle(Config.Game.Arcade.enable);
+//		}
+//		else
+//		{
+//			Arcade_Toggle(DefaultConfig.Game.Arcade.enable);
+//		}
+//	}
+//	ImGui::Text("");
+//	GUI_PUSH_DISABLE(!Config.Game.Arcade.enable);
+//	ImGui::PushItemWidth(200);
+//	GUI_Combo<uint32>
+//	(
+//		Locale.Game.Arcade.Mission.label,
+//		Locale.Game.Arcade.Mission.items,
+//		countof(Locale.Game.Arcade.Mission.items),
+//		Config.Game.Arcade.mission
+//	);
+//	if ((Config.Game.Arcade.mission != 0) && (Config.Game.Arcade.mission != 21))
+//	{
+//		if (GUI_Combo<uint8>
+//		(
+//			Locale.Game.Arcade.Mode.label,
+//			Locale.Game.Arcade.Mode.items,
+//			countof(Locale.Game.Arcade.Mode.items),
+//			Arcade_modeIndex,
+//			0,
+//			false
+//		))
+//		{
+//			auto & modeIndex = Arcade_modeIndex;
+//			auto & modeMap   = Arcade_modeMap;
+//			Config.Game.Arcade.mode = modeMap[modeIndex];
+//			SaveConfig();
+//		}
+//		if constexpr (debug)
+//		{
+//			ImGui::Text("index %u", Arcade_modeIndex);
+//			ImGui::Text("true  %X", Config.Game.Arcade.mode);
+//		}
+//		GUI_InputEx<uint16>
+//		(
+//			Locale.Game.Arcade.room,
+//			Config.Game.Arcade.room
+//		);
+//		ImGui::SameLine();
+//		GUI_Checkbox
+//		(
+//			Locale.Game.Arcade.ignoreRoom,
+//			Config.Game.Arcade.ignoreRoom
+//		);
+//		GUI_InputEx<uint16>
+//		(
+//			Locale.Game.Arcade.position,
+//			Config.Game.Arcade.position
+//		);
+//		ImGui::SameLine();
+//		GUI_Checkbox
+//		(
+//			Locale.Game.Arcade.ignorePosition,
+//			Config.Game.Arcade.ignorePosition
+//		);
+//	}
+//	else if (Config.Game.Arcade.mission == 21)
+//	{
+//		GUI_Combo<uint8>
+//		(
+//			Locale.Game.Arcade.BloodyPalace.Floor.label,
+//			Locale.Game.Arcade.BloodyPalace.Floor.items,
+//			countof(Locale.Game.Arcade.BloodyPalace.Floor.items),
+//			Config.Game.Arcade.BloodyPalace.floor
+//		);
+//	}
+//	GUI_Combo<uint8>
+//	(
+//		Locale.Game.Arcade.Character.label,
+//		Locale.Game.Arcade.Character.items,
+//		countof(Locale.Game.Arcade.Character.items),
+//		Config.Game.Arcade.character
+//	);
+//	if (Config.Game.Arcade.mission != 0)
+//	{
+//		GUI_InputEx<uint8>
+//		(
+//			Locale.Game.Arcade.costume,
+//			Config.Game.Arcade.costume
+//		);
+//	}
+//	if ((Config.Game.Arcade.mission != 0) && (Config.Game.Arcade.character == CHAR_DANTE))
+//	{
+//		GUI_Combo<uint32>
+//		(
+//			Locale.Game.Arcade.Style.label,
+//			Locale.Game.Arcade.Style.items,
+//			countof(Locale.Game.Arcade.Style.items),
+//			Config.Game.Arcade.style
+//		);
+//		for (uint8 index = 0; index < countof(Config.Game.Arcade.equipment); index++)
+//		{
+//			if (index < 2)
+//			{
+//				GUI_Combo<uint8>
+//				(
+//					Locale.Game.Arcade.Equipment.label[index],
+//					Locale.Game.Arcade.Equipment.items,
+//					5,
+//					Config.Game.Arcade.equipment[index]
+//				);
+//			}
+//			else
+//			{
+//				GUI_Combo<uint8>
+//				(
+//					Locale.Game.Arcade.Equipment.label[index],
+//					Locale.Game.Arcade.Equipment.items,
+//					10,
+//					Config.Game.Arcade.equipment[index],
+//					5
+//				);
+//			}
+//		}
+//	}
+//	if (Config.Game.Arcade.mission != 0)
+//	{
+//		GUI_InputEx<float32>
+//		(
+//			Locale.Game.Arcade.hitPoints,
+//			Config.Game.Arcade.hitPoints,
+//			1000
+//		);
+//		GUI_InputEx<float32>
+//		(
+//			Locale.Game.Arcade.magicPoints,
+//			Config.Game.Arcade.magicPoints,
+//			1000
+//		);
+//	}
+//	ImGui::PopItemWidth();
+//	GUI_SECTION_FOOTER_START(Game.Arcade);
+//	Arcade_UpdateModeIndex();
+//	Arcade_Toggle(DefaultConfig.Game.Arcade.enable);
+//	GUI_SECTION_FOOTER_END;
+//}
 
 void GUI_Game_BossRush()
 {
@@ -1118,8 +1107,8 @@ void GUI_Game_Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
 	if (ImGui::Begin("GUI_Game", &pause, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		GUI_Arcade();
-		ImGui::Text("");
+		//GUI_Arcade();
+		//ImGui::Text("");
 		GUI_Game_BossRush();
 		ImGui::Text("");
 		//GUI_Game_Dante();
@@ -1727,9 +1716,6 @@ void GUI_Main_Draw()
 	ImGui::PopStyleVar(4);
 	switch (activeTab)
 	{
-	case TAB_SYSTEM:
-		GUI_System_Draw();
-		break;
 	case TAB_GAME:
 		GUI_Game_Draw();
 		break;
@@ -2521,11 +2507,11 @@ bool NEW_GUI_Input
 	auto update = ImGui::InputScalar
 	(
 		label,
-		(typematch(T, uint8  )) ? ImGuiDataType_U8    :
-		(typematch(T, uint16 )) ? ImGuiDataType_U16   :
-		(typematch(T, uint32 )) ? ImGuiDataType_U32   :
-		(typematch(T, uint64 )) ? ImGuiDataType_U64   :
-		(typematch(T, float32)) ? ImGuiDataType_Float :
+		(TypeMatch<T, uint8  >::value) ? ImGuiDataType_U8    :
+		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16   :
+		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32   :
+		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64   :
+		(TypeMatch<T, float32>::value) ? ImGuiDataType_Float :
 		0,
 		&var,
 		(step == 0) ? 0 : &step,
@@ -2572,11 +2558,11 @@ bool NEW_GUI_InputDefault
 	auto update = ImGui::InputScalar
 	(
 		"",
-		(typematch(T, uint8  )) ? ImGuiDataType_U8    :
-		(typematch(T, uint16 )) ? ImGuiDataType_U16   :
-		(typematch(T, uint32 )) ? ImGuiDataType_U32   :
-		(typematch(T, uint64 )) ? ImGuiDataType_U64   :
-		(typematch(T, float32)) ? ImGuiDataType_Float :
+		(TypeMatch<T, uint8  >::value) ? ImGuiDataType_U8    :
+		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16   :
+		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32   :
+		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64   :
+		(TypeMatch<T, float32>::value) ? ImGuiDataType_Float :
 		0,
 		&var,
 		(step == 0) ? 0 : &step,
@@ -2627,11 +2613,11 @@ bool NEW_GUI_Slider
 	auto update = ImGui::SliderScalar
 	(
 		label,
-		(typematch(T, uint8  )) ? ImGuiDataType_U8    :
-		(typematch(T, uint16 )) ? ImGuiDataType_U16   :
-		(typematch(T, uint32 )) ? ImGuiDataType_U32   :
-		(typematch(T, uint64 )) ? ImGuiDataType_U64   :
-		(typematch(T, float32)) ? ImGuiDataType_Float :
+		(TypeMatch<T, uint8  >::value) ? ImGuiDataType_U8    :
+		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16   :
+		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32   :
+		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64   :
+		(TypeMatch<T, float32>::value) ? ImGuiDataType_Float :
 		0,
 		&var,
 		&min,
@@ -2682,27 +2668,48 @@ bool NEW_GUI_Selectable
 	return update;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+template
+<
+	typename T,
+	uint8 count
+>
 bool NEW_GUI_ComboMap
 (
 	const char * label,
-	const char ** name,
-	uint8 count,
-	uint8 * map,
+	const char *(&names)[count],
+	T(&map)[count],
 	uint8 & index,
-	uint8 & var,
+	T & var,
 	bool save = true
 )
 {
 	bool update = false;
 	NEW_GUI_PushId();
-	if (ImGui::BeginCombo(label, name[index]))
+	if (ImGui::BeginCombo(label, names[index]))
 	{
 		for_all(uint8, mapIndex, count)
 		{
 			auto & mapItem = map[mapIndex];
 			bool selected = (mapItem == var) ? true : false;
 			NEW_GUI_PushId();
-			if (NEW_GUI_Selectable(name[mapIndex], &selected))
+			if (NEW_GUI_Selectable(names[mapIndex], &selected))
 			{
 				update = true;
 				index = mapIndex;
@@ -2722,27 +2729,31 @@ bool NEW_GUI_ComboMap
 	return update;
 }
 
+template
+<
+	typename T,
+	uint8 count
+>
 bool NEW_GUI_Combo
 (
 	const char * label,
-	const char ** name,
-	uint8 count,
-	uint8 & var,
+	const char *(&names)[count],
+	T & var,
 	bool save = true
 )
 {
 	bool update = false;
 	NEW_GUI_PushId();
-	if (ImGui::BeginCombo(label, name[var]))
+	if (ImGui::BeginCombo(label, names[var]))
 	{
 		for_all(uint8, index, count)
 		{
 			bool selected = (index == var) ? true : false;
 			NEW_GUI_PushId();
-			if (NEW_GUI_Selectable(name[index], &selected))
+			if (NEW_GUI_Selectable(names[index], &selected))
 			{
 				update = true;
-				var = index;
+				var = static_cast<T>(index);
 			}
 			NEW_GUI_PopId();
 		}
@@ -2757,6 +2768,19 @@ bool NEW_GUI_Combo
 
 	return update;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2834,12 +2858,47 @@ inline void CharacterCostumeSelect
 	}
 	auto & costume = Config.Actor.costume[player][entity][character];
 	ImGui::PushItemWidth(150);
-	NEW_GUI_Combo("Character", characterName, MAX_CHAR, character);
+	NEW_GUI_Combo("Character", characterName, character);
 	NEW_GUI_Input("Costume", costume);
 	ImGui::PopItemWidth();
 }
 
+
+
+
+
+
+
 // $MeleeWeaponSelectMapStart
+
+
+
+
+
+
+const char * meleeWeaponSelectNamesDante[] =
+{
+	"Rebellion",
+	"Cerberus",
+	"Agni & Rudra",
+	"Nevan",
+	"Beowulf",
+	"Vergil Yamato",
+	"Vergil Beowulf",
+	"Vergil Force Edge",
+};
+
+const char * meleeWeaponSelectNamesVergil[] =
+{
+	"Yamato",
+	"Beowulf",
+	"Force Edge",
+	"Dante Rebellion",
+	"Dante Cerberus",
+	"Dante Agni & Rudra",
+	"Dante Nevan",
+	"Dante Beowulf",
+};
 
 uint8 meleeWeaponSelectMapDante[] =
 {
@@ -2865,69 +2924,20 @@ uint8 meleeWeaponSelectMapVergil[] =
 	WEAPON_DANTE_BEOWULF,
 };
 
-uint8 * meleeWeaponSelectMap[MAX_CHAR] =
+
+
+
+
+
+const char * rangedWeaponSelectNamesDante[] =
 {
-	meleeWeaponSelectMapDante,
-	0,
-	0,
-	meleeWeaponSelectMapVergil
+	"Ebony & Ivory",
+	"Shotgun",
+	"Artemis",
+	"Spiral",
+	"Kalina Ann",
 };
 
-uint8 meleeWeaponSelectMapCount[MAX_CHAR] =
-{
-	countof(meleeWeaponSelectMapDante),
-	0,
-	0,
-	countof(meleeWeaponSelectMapVergil),
-};
-
-// $MeleeWeaponSelectMapEnd
-
-// $MeleeWeaponSelectNameStart
-
-const char * meleeWeaponSelectNameDante[] =
-{
-	"Rebellion",
-	"Cerberus",
-	"Agni & Rudra",
-	"Nevan",
-	"Beowulf",
-	"Vergil Yamato",
-	"Vergil Beowulf",
-	"Vergil Force Edge",
-};
-
-const char * meleeWeaponSelectNameVergil[] =
-{
-	"Yamato",
-	"Beowulf",
-	"Force Edge",
-	"Dante Rebellion",
-	"Dante Cerberus",
-	"Dante Agni & Rudra",
-	"Dante Nevan",
-	"Dante Beowulf",
-};
-
-const char ** meleeWeaponSelectName[MAX_CHAR] =
-{
-	meleeWeaponSelectNameDante,
-	0,
-	0,
-	meleeWeaponSelectNameVergil,
-};
-
-uint8 meleeWeaponSelectNameCount[MAX_CHAR] =
-{
-	countof(meleeWeaponSelectNameDante),
-	0,
-	0,
-	countof(meleeWeaponSelectNameVergil),
-};
-
-// $MeleeWeaponSelectNameEnd
-
-// $RangedWeaponSelectMapStart
 
 uint8 rangedWeaponSelectMapDante[] =
 {
@@ -2938,217 +2948,532 @@ uint8 rangedWeaponSelectMapDante[] =
 	WEAPON_DANTE_KALINA_ANN,
 };
 
-uint8 * rangedWeaponSelectMap[MAX_CHAR] =
-{
-	rangedWeaponSelectMapDante,
-	0,
-	0,
-	0,
-};
 
-uint8 rangedWeaponSelectMapCount[MAX_CHAR] =
-{
-	countof(rangedWeaponSelectMapDante),
-	0,
-	0,
-	0,
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+uint8 meleeWeaponSelectIndex [MAX_PLAYER][MAX_ENTITY][MAX_CHAR][MAX_MELEE_WEAPON ] = {};
+uint8 rangedWeaponSelectIndex[MAX_PLAYER][MAX_ENTITY][MAX_CHAR][MAX_RANGED_WEAPON] = {};
+
+
+
+//
+//
+//inline void WeaponSelect
+//(
+//	const char *  label,
+//	uint8      *  configMap,
+//	uint8         configMapCount,
+//	uint8      *  selectMap,
+//	uint8         selectMapCount,
+//	const char ** selectName,
+//	uint8      *  selectIndex,
+//	uint8      &  weaponCount
+//)
+//{
+//	if (!selectMap)
+//	{
+//		return;
+//	}
+//
+//	ImGui::Text(label);
+//	ImGui::Text("");
+//
+//	ImGui::PushItemWidth(250);
+//
+//	NEW_GUI_Slider<uint8>("", weaponCount, 1, configMapCount);
+//
+//	for_all(uint8, configMapIndex, configMapCount)
+//	{
+//		bool skip = (configMapIndex >= weaponCount) ? true : false;
+//		GUI_PUSH_DISABLE(skip);
+//		auto & configMapItem   = configMap  [configMapIndex];
+//		auto & selectIndexItem = selectIndex[configMapIndex];
+//
+//		NEW_GUI_ComboMap("", selectName)
+//
+//
+//
+//			NEW_GUI_ComboMap
+//			(
+//				"",
+//				selectName,
+//				selectMapCount,
+//				selectMap,
+//				selectIndexItem,
+//				configMapItem
+//			);
+//		GUI_POP_DISABLE(skip);
+//	}
+//
+//	ImGui::PopItemWidth();
+//
+//	ImGui::Text("");
+//}
+//
+//inline void MeleeWeaponSelect
+//(
+//	uint8 player,
+//	uint8 entity,
+//	uint8 character
+//)
+//{
+//	WeaponSelect
+//	(
+//		"Melee Weapons",
+//		Config.Actor.meleeWeapon[player][entity][character],
+//		MAX_MELEE_WEAPON,
+//		meleeWeaponSelectMap     [character],
+//		meleeWeaponSelectMapCount[character],
+//		meleeWeaponSelectName    [character],
+//		meleeWeaponSelectIndex[player][entity][character],
+//		Config.Actor.meleeWeaponCount[player][entity][character]
+//	);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+//uint8 * meleeWeaponSelectMap[MAX_CHAR] =
+//{
+//	meleeWeaponSelectMapDante,
+//	0,
+//	0,
+//	meleeWeaponSelectMapVergil
+//};
+//
+//uint8 meleeWeaponSelectMapCount[MAX_CHAR] =
+//{
+//	countof(meleeWeaponSelectMapDante),
+//	0,
+//	0,
+//	countof(meleeWeaponSelectMapVergil),
+//};
+
+// $MeleeWeaponSelectMapEnd
+
+// $MeleeWeaponSelectNameStart
+
+//const char * meleeWeaponSelectNameDante[] =
+//{
+//	"Rebellion",
+//	"Cerberus",
+//	"Agni & Rudra",
+//	"Nevan",
+//	"Beowulf",
+//	"Vergil Yamato",
+//	"Vergil Beowulf",
+//	"Vergil Force Edge",
+//};
+//
+//const char * meleeWeaponSelectNameVergil[] =
+//{
+//	"Yamato",
+//	"Beowulf",
+//	"Force Edge",
+//	"Dante Rebellion",
+//	"Dante Cerberus",
+//	"Dante Agni & Rudra",
+//	"Dante Nevan",
+//	"Dante Beowulf",
+//};
+
+//const char ** meleeWeaponSelectName[MAX_CHAR] =
+//{
+//	meleeWeaponSelectNameDante,
+//	0,
+//	0,
+//	meleeWeaponSelectNameVergil,
+//};
+//
+//uint8 meleeWeaponSelectNameCount[MAX_CHAR] =
+//{
+//	countof(meleeWeaponSelectNameDante),
+//	0,
+//	0,
+//	countof(meleeWeaponSelectNameVergil),
+//};
+
+// $MeleeWeaponSelectNameEnd
+
+// $RangedWeaponSelectMapStart
+
+
+//
+//uint8 * rangedWeaponSelectMap[MAX_CHAR] =
+//{
+//	rangedWeaponSelectMapDante,
+//	0,
+//	0,
+//	0,
+//};
+//
+//uint8 rangedWeaponSelectMapCount[MAX_CHAR] =
+//{
+//	countof(rangedWeaponSelectMapDante),
+//	0,
+//	0,
+//	0,
+//};
 
 // $RangedWeaponSelectMapEnd
 
 // $RangedWeaponSelectNameStart
 
-const char * rangedWeaponSelectNameDante[] =
-{
-	"Ebony & Ivory",
-	"Shotgun",
-	"Artemis",
-	"Spiral",
-	"Kalina Ann",
-};
 
-const char ** rangedWeaponSelectName[MAX_CHAR] =
-{
-	rangedWeaponSelectNameDante,
-	0,
-	0,
-	0,
-};
-
-uint8 rangedWeaponSelectNameCount[MAX_CHAR] =
-{
-	countof(rangedWeaponSelectNameDante),
-	0,
-	0,
-	0,
-};
+//
+//const char ** rangedWeaponSelectName[MAX_CHAR] =
+//{
+//	rangedWeaponSelectNameDante,
+//	0,
+//	0,
+//	0,
+//};
+//
+//uint8 rangedWeaponSelectNameCount[MAX_CHAR] =
+//{
+//	countof(rangedWeaponSelectNameDante),
+//	0,
+//	0,
+//	0,
+//};
 
 // $RangedWeaponSelectNameEnd
 
-uint8 meleeWeaponSelectIndex [MAX_PLAYER][MAX_ENTITY][MAX_CHAR][MAX_MELEE_WEAPON ] = {};
-uint8 rangedWeaponSelectIndex[MAX_PLAYER][MAX_ENTITY][MAX_CHAR][MAX_RANGED_WEAPON] = {};
+//uint8 meleeWeaponSelectIndex [MAX_PLAYER][MAX_ENTITY][MAX_CHAR][MAX_MELEE_WEAPON ] = {};
 
-inline void WeaponSelect
+
+
+
+
+
+
+
+template
+<
+	uint64 configMapItemCount,
+	uint64 selectMapItemCount
+>
+void WeaponSelectFunction
 (
-	const char *  label,
-	uint8      *  configMap,
-	uint8         configMapCount,
-	uint8      *  selectMap,
-	uint8         selectMapCount,
-	const char ** selectName,
-	uint8      *  selectIndex,
-	uint8      &  weaponCount
+	const char * label,
+	uint8(&configMap)[configMapItemCount],
+	uint8 & weaponCount,
+	const char *(&selectNames)[selectMapItemCount],
+	uint8(&selectMap)[selectMapItemCount],
+	uint8(&selectIndex)[configMapItemCount]
 )
 {
-	if (!selectMap)
-	{
-		return;
-	}
-
 	ImGui::Text(label);
 	ImGui::Text("");
 
 	ImGui::PushItemWidth(250);
 
-	NEW_GUI_Slider<uint8>("", weaponCount, 1, configMapCount);
+	NEW_GUI_Slider<uint8>("", weaponCount, 1, configMapItemCount);
 
-	for_all(uint8, configMapIndex, configMapCount)
+	for_all(uint8, configMapIndex, configMapItemCount)
 	{
-		bool skip = (configMapIndex >= weaponCount) ? true : false;
-		GUI_PUSH_DISABLE(skip);
 		auto & configMapItem   = configMap  [configMapIndex];
 		auto & selectIndexItem = selectIndex[configMapIndex];
+
+		bool skip = (configMapIndex >= weaponCount) ? true : false;
+		GUI_PUSH_DISABLE(skip);
+
 		NEW_GUI_ComboMap
 		(
 			"",
-			selectName,
-			selectMapCount,
+			selectNames,
 			selectMap,
 			selectIndexItem,
 			configMapItem
 		);
+
 		GUI_POP_DISABLE(skip);
 	}
 
 	ImGui::PopItemWidth();
-
-	ImGui::Text("");
 }
 
-inline void MeleeWeaponSelect
+template <uint64 character>
+void WeaponSelect
 (
 	uint8 player,
-	uint8 entity,
-	uint8 character
+	uint8 entity
 )
 {
-	WeaponSelect
+	WeaponSelectFunction
 	(
 		"Melee Weapons",
-		Config.Actor.meleeWeapon[player][entity][character],
-		MAX_MELEE_WEAPON,
-		meleeWeaponSelectMap     [character],
-		meleeWeaponSelectMapCount[character],
-		meleeWeaponSelectName    [character],
-		meleeWeaponSelectIndex[player][entity][character],
-		Config.Actor.meleeWeaponCount[player][entity][character]
-	);
-}
-
-inline void RangedWeaponSelect
-(
-	uint8 player,
-	uint8 entity,
-	uint8 character
-)
-{
-	WeaponSelect
-	(
-		"Ranged Weapons",
-		Config.Actor.rangedWeapon[player][entity][character],
-		MAX_RANGED_WEAPON,
-		rangedWeaponSelectMap     [character],
-		rangedWeaponSelectMapCount[character],
-		rangedWeaponSelectName    [character],
-		rangedWeaponSelectIndex[player][entity][character],
-		Config.Actor.rangedWeaponCount[player][entity][character]
-	);
-}
-
-inline void UpdateWeaponSelectIndex
-(
-	uint8 * configMap,
-	uint8   configMapCount,
-	uint8 * selectMap,
-	uint8   selectMapCount,
-	uint8 * selectIndex
-)
-{
-	if (!selectMap)
-	{
-		return;
-	}
-	for_all(uint8, configMapIndex, configMapCount)
-	{
-		auto & configMapItem   = configMap  [configMapIndex];
-		auto & selectIndexItem = selectIndex[configMapIndex];
-		for_all(uint8, selectMapIndex, selectMapCount)
-		{
-			auto & selectMapItem = selectMap[selectMapIndex];
-			if (selectMapItem == configMapItem)
-			{
-				selectIndexItem = selectMapIndex;
-				break;
-			}
-		}
-	}
-}
-
-inline void UpdateMeleeWeaponSelectIndex
-(
-	uint8 player,
-	uint8 entity,
-	uint8 character
-)
-{
-	UpdateWeaponSelectIndex
-	(
-		Config.Actor.meleeWeapon[player][entity][character],
-		MAX_MELEE_WEAPON,
-		meleeWeaponSelectMap     [character],
-		meleeWeaponSelectMapCount[character],
+		Config.Actor.meleeWeapon     [player][entity][character],
+		Config.Actor.meleeWeaponCount[player][entity][character],
+		(character == CHAR_DANTE) ? meleeWeaponSelectNamesDante : meleeWeaponSelectNamesVergil,
+		(character == CHAR_DANTE) ? meleeWeaponSelectMapDante   : meleeWeaponSelectMapVergil,
 		meleeWeaponSelectIndex[player][entity][character]
 	);
-}
 
-inline void UpdateRangedWeaponSelectIndex
-(
-	uint8 player,
-	uint8 entity,
-	uint8 character
-)
-{
-	UpdateWeaponSelectIndex
-	(
-		Config.Actor.rangedWeapon[player][entity][character],
-		MAX_RANGED_WEAPON,
-		rangedWeaponSelectMap     [character],
-		rangedWeaponSelectMapCount[character],
-		rangedWeaponSelectIndex[player][entity][character]
-	);
-}
-
-inline void UpdateWeaponSelectIndices()
-{
-	for_all(uint8, player   , MAX_PLAYER){
-	for_all(uint8, entity   , MAX_ENTITY){
-	for_all(uint8, character, MAX_CHAR  )
+	if constexpr (character == CHAR_DANTE)
 	{
-		UpdateMeleeWeaponSelectIndex (player, entity, character);
-		UpdateRangedWeaponSelectIndex(player, entity, character);
-	}}}
+		ImGui::Text("");
+		WeaponSelectFunction
+		(
+			"Ranged Weapons",
+			Config.Actor.rangedWeapon     [player][entity][character],
+			Config.Actor.rangedWeaponCount[player][entity][character],
+			rangedWeaponSelectNamesDante,
+			rangedWeaponSelectMapDante,
+			rangedWeaponSelectIndex[player][entity][character]
+		);
+	}
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//inline void WeaponSelect
+//(
+//	const char *  label,
+//	uint8      *  configMap,
+//	uint8         configMapCount,
+//	uint8      *  selectMap,
+//	uint8         selectMapCount,
+//	const char ** selectName,
+//	uint8      *  selectIndex,
+//	uint8      &  weaponCount
+//)
+//{
+//	if (!selectMap)
+//	{
+//		return;
+//	}
+//
+//	ImGui::Text(label);
+//	ImGui::Text("");
+//
+//	ImGui::PushItemWidth(250);
+//
+//	NEW_GUI_Slider<uint8>("", weaponCount, 1, configMapCount);
+//
+//	for_all(uint8, configMapIndex, configMapCount)
+//	{
+//		bool skip = (configMapIndex >= weaponCount) ? true : false;
+//		GUI_PUSH_DISABLE(skip);
+//		auto & configMapItem   = configMap  [configMapIndex];
+//		auto & selectIndexItem = selectIndex[configMapIndex];
+//
+//		NEW_GUI_ComboMap("", selectName)
+//
+//
+//
+//		NEW_GUI_ComboMap
+//		(
+//			"",
+//			selectName,
+//			selectMapCount,
+//			selectMap,
+//			selectIndexItem,
+//			configMapItem
+//		);
+//		GUI_POP_DISABLE(skip);
+//	}
+//
+//	ImGui::PopItemWidth();
+//
+//	ImGui::Text("");
+//}
+//
+//inline void MeleeWeaponSelect
+//(
+//	uint8 player,
+//	uint8 entity,
+//	uint8 character
+//)
+//{
+//	WeaponSelect
+//	(
+//		"Melee Weapons",
+//		Config.Actor.meleeWeapon[player][entity][character],
+//		MAX_MELEE_WEAPON,
+//		meleeWeaponSelectMap     [character],
+//		meleeWeaponSelectMapCount[character],
+//		meleeWeaponSelectName    [character],
+//		meleeWeaponSelectIndex[player][entity][character],
+//		Config.Actor.meleeWeaponCount[player][entity][character]
+//	);
+//}
+
+//inline void RangedWeaponSelect
+//(
+//	uint8 player,
+//	uint8 entity,
+//	uint8 character
+//)
+//{
+//	WeaponSelect
+//	(
+//		"Ranged Weapons",
+//		Config.Actor.rangedWeapon[player][entity][character],
+//		MAX_RANGED_WEAPON,
+//		rangedWeaponSelectMap     [character],
+//		rangedWeaponSelectMapCount[character],
+//		rangedWeaponSelectName    [character],
+//		rangedWeaponSelectIndex[player][entity][character],
+//		Config.Actor.rangedWeaponCount[player][entity][character]
+//	);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//inline void UpdateWeaponSelectIndex
+//(
+//	uint8 * configMap,
+//	uint8   configMapCount,
+//	uint8 * selectMap,
+//	uint8   selectMapCount,
+//	uint8 * selectIndex
+//)
+//{
+//	if (!selectMap)
+//	{
+//		return;
+//	}
+//	for_all(uint8, configMapIndex, configMapCount)
+//	{
+//		auto & configMapItem   = configMap  [configMapIndex];
+//		auto & selectIndexItem = selectIndex[configMapIndex];
+//		for_all(uint8, selectMapIndex, selectMapCount)
+//		{
+//			auto & selectMapItem = selectMap[selectMapIndex];
+//			if (selectMapItem == configMapItem)
+//			{
+//				selectIndexItem = selectMapIndex;
+//				break;
+//			}
+//		}
+//	}
+//}
+//
+//inline void UpdateMeleeWeaponSelectIndex
+//(
+//	uint8 player,
+//	uint8 entity,
+//	uint8 character
+//)
+//{
+//	UpdateWeaponSelectIndex
+//	(
+//		Config.Actor.meleeWeapon[player][entity][character],
+//		MAX_MELEE_WEAPON,
+//		meleeWeaponSelectMap     [character],
+//		meleeWeaponSelectMapCount[character],
+//		meleeWeaponSelectIndex[player][entity][character]
+//	);
+//}
+//
+//inline void UpdateRangedWeaponSelectIndex
+//(
+//	uint8 player,
+//	uint8 entity,
+//	uint8 character
+//)
+//{
+//	UpdateWeaponSelectIndex
+//	(
+//		Config.Actor.rangedWeapon[player][entity][character],
+//		MAX_RANGED_WEAPON,
+//		rangedWeaponSelectMap     [character],
+//		rangedWeaponSelectMapCount[character],
+//		rangedWeaponSelectIndex[player][entity][character]
+//	);
+//}
+//
+//inline void UpdateWeaponSelectIndices()
+//{
+//	for_all(uint8, player   , MAX_PLAYER){
+//	for_all(uint8, entity   , MAX_ENTITY){
+//	for_all(uint8, character, MAX_CHAR  )
+//	{
+//		UpdateMeleeWeaponSelectIndex (player, entity, character);
+//		UpdateRangedWeaponSelectIndex(player, entity, character);
+//	}}}
+//}
+//
 
 
 
@@ -3193,11 +3518,11 @@ inline void ResetActorConfig
 	memcpy(Config.Actor.meleeWeaponCount [player][entity], DefaultConfig.Actor.meleeWeaponCount [player][entity], sizeof(Config.Actor.meleeWeaponCount [player][entity]));
 	memcpy(Config.Actor.rangedWeaponCount[player][entity], DefaultConfig.Actor.rangedWeaponCount[player][entity], sizeof(Config.Actor.rangedWeaponCount[player][entity]));
 
-	for_all(uint8, character, MAX_CHAR)
-	{
-		UpdateMeleeWeaponSelectIndex (player, entity, character);
-		UpdateRangedWeaponSelectIndex(player, entity, character);
-	}
+	//for_all(uint8, character, MAX_CHAR)
+	//{
+	//	UpdateMeleeWeaponSelectIndex (player, entity, character);
+	//	UpdateRangedWeaponSelectIndex(player, entity, character);
+	//}
 }
 
 inline void ActorTabContent
@@ -3210,14 +3535,32 @@ inline void ActorTabContent
 	CharacterCostumeSelect(player, entity);
 	ImGui::Text("");
 
-	auto character = Config.Actor.character[player][entity];
-	if (character >= MAX_CHAR)
+	auto & character = Config.Actor.character[player][entity];
+
+	switch (character)
 	{
-		character = CHAR_DANTE;
+	case CHAR_DANTE:
+	{
+		WeaponSelect<CHAR_DANTE>(player, entity);
+		break;
+	}
+	case CHAR_VERGIL:
+	{
+		WeaponSelect<CHAR_VERGIL>(player, entity);
+		break;
+	}
 	}
 
-	MeleeWeaponSelect (player, entity, character);
-	RangedWeaponSelect(player, entity, character);
+
+
+
+	//if (character >= MAX_CHAR)
+	//{
+	//	character = CHAR_DANTE;
+	//}
+
+	//MeleeWeaponSelect (player, entity, character);
+	//RangedWeaponSelect(player, entity, character);
 
 	if (NEW_GUI_Button("Reset"))
 	{
@@ -3273,6 +3616,81 @@ void ActionData
 	NEW_GUI_InputDefault(label, vars[1], defaultVars[1], step, format, flags, save);
 	ImGui::PopItemWidth();
 }
+
+
+
+
+template
+<
+	typename T1,
+	uint64 itemCount,
+	typename T2
+>
+void NEW_GUI_UpdateIndex
+(
+	T1(&map)[itemCount],
+	uint8 & index,
+	T2 & var
+)
+{
+	for_all(uint8, mapIndex, itemCount)
+	{
+		auto & mapItem = map[mapIndex];
+		if (mapItem == var)
+		{
+			index = var;
+			break;
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const char * modeNames[] =
+{
+	"Easy",
+	"Normal",
+	"Hard",
+	"Very Hard",
+	"Dante Must Die",
+	"Heaven or Hell",
+};
+
+uint32 modeMap[] =
+{
+	MODE_EASY,
+	MODE_NORMAL,
+	MODE_HARD,
+	MODE_VERY_HARD,
+	MODE_DANTE_MUST_DIE,
+	MODE_HARD,
+};
+
+uint8 modeIndex = 0;
+
+
+
+
+
+
+
+
 
 void NEW_GUI_Main()
 {
@@ -3561,7 +3979,163 @@ void NEW_GUI_Main()
 		}
 
 
+		if (ImGui::CollapsingHeader("System"))
+		{
+			ImGui::Text("");
+			NEW_GUI_SectionStart("Event");
+			NEW_GUI_Checkbox("Skip Intro"    , Config.Event.skipIntro    );
+			NEW_GUI_Checkbox("Skip Cutscenes", Config.Event.skipCutscenes);
+			NEW_GUI_SectionEnd();
 
+			NEW_GUI_SectionStart("File");
+			NEW_GUI_Checkbox("Prefer Local Files", Config.File.preferLocalFiles);
+			NEW_GUI_SectionEnd();
+
+			NEW_GUI_SectionStart("Graphics");
+			NEW_GUI_InputDefault("Frame Rate", Config.Graphics.frameRate, DefaultConfig.Graphics.frameRate);
+
+			const char * items[] =
+			{
+				"Auto",
+				"Force Off",
+				"Force On",
+			};
+			//NEW_GUI_Combo<uint8>("V-Sync", items, countof<uint8>(items), Config.Graphics.vSync);
+			//NEW_GUI_SectionEnd();
+
+			NEW_GUI_SectionStart("Input");
+			NEW_GUI_Checkbox("Hide Mouse Cursor", Config.Input.hideMouseCursor);
+			NEW_GUI_SectionEnd();
+
+			NEW_GUI_SectionStart("Window");
+			NEW_GUI_Checkbox("Force Focus", Config.Window.forceFocus);
+			NEW_GUI_SectionEnd();
+
+
+
+
+
+
+		}
+
+
+		if (ImGui::CollapsingHeader("Teleporter"))
+		{
+			auto Draw = []()
+			{
+				if (!InGame())
+				{
+					return false;
+				}
+				auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
+				if (!pool)
+				{
+					return false;
+				}
+				if (!pool[8])
+				{
+					return false;
+				}
+				if (!pool[12])
+				{
+					return false;
+				}
+				auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
+				auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(pool[12]);
+				float32 width = 150;
+
+				ImGui::PushItemWidth(width);
+				ImGui::Text("Current");
+				NEW_GUI_Input<uint32>("", eventData.room    , 0, "%u", ImGuiInputTextFlags_ReadOnly, false);
+				NEW_GUI_Input<uint32>("", eventData.position, 0, "%u", ImGuiInputTextFlags_ReadOnly, false);
+				ImGui::Text("Next");
+				NEW_GUI_Input<uint16>("", nextEventData.room    , 1, "%u", 0, false);
+				NEW_GUI_Input<uint16>("", nextEventData.position, 1, "%u", 0, false);
+				if (NEW_GUI_Button("Teleport", ImVec2(width, ImGui::GetFrameHeight())))
+				{
+					eventData.index = EVENT_TELEPORT;
+				}
+				ImGui::PopItemWidth();
+
+				return true;
+			};
+
+			ImGui::Text("");
+			if (!Draw())
+			{
+				ImGui::Text("Invalid Pointer");
+			}
+		}
+
+
+		if (ImGui::CollapsingHeader("Arcade"))
+		{
+			ImGui::Text("");
+			NEW_GUI_Checkbox("Enable", Config.Arcade.enable);
+			ImGui::Text("");
+			NEW_GUI_Button("Reset");
+			ImGui::Text("");
+
+
+
+			const char * missionNames[] =
+			{
+				"Movie",
+				"Mission 1",
+				"Mission 2",
+				"Mission 3",
+				"Mission 4",
+				"Mission 5",
+				"Mission 6",
+				"Mission 7",
+				"Mission 8",
+				"Mission 9",
+				"Mission 10",
+				"Mission 11",
+				"Mission 12",
+				"Mission 13",
+				"Mission 14",
+				"Mission 15",
+				"Mission 16",
+				"Mission 17",
+				"Mission 18",
+				"Mission 19",
+				"Mission 20",
+				"Bloody Palace",
+			};
+			//NEW_GUI_Combo<uint32>("Mission", missionNames, countof<uint32>(missionNames), Config.Arcade.mission);
+			NEW_GUI_Combo("Mission", missionNames, Config.Arcade.mission);
+
+
+
+
+
+
+
+			NEW_GUI_ComboMap("Mode", modeNames, modeMap, modeIndex, Config.Arcade.mode);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		}
+
+
+
+		
 
 
 
@@ -3633,13 +4207,22 @@ export void GUI_Init()
 {
 	BuildFonts();
 
-	for_all(uint8, player   , MAX_PLAYER){
-	for_all(uint8, entity   , MAX_ENTITY){
-	for_all(uint8, character, MAX_CHAR  )
-	{
-		UpdateMeleeWeaponSelectIndex (player, entity, character);
-		UpdateRangedWeaponSelectIndex(player, entity, character);
-	}}}
+	//for_all(uint8, player   , MAX_PLAYER){
+	//for_all(uint8, entity   , MAX_ENTITY){
+	//for_all(uint8, character, MAX_CHAR  )
+	//{
+	//	UpdateMeleeWeaponSelectIndex (player, entity, character);
+	//	UpdateRangedWeaponSelectIndex(player, entity, character);
+	//}}}
+
+	
+	//NEW_GUI_UpdateIndex(modeMap, modeIndex, Config.Arcade.mode);
+
+
+
+
+
+
 }
 
 #ifdef __GARBAGE__

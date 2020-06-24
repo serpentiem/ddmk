@@ -29,10 +29,10 @@ struct GetCharacterId
 	enum
 	{
 		value =
-		(typematch(T, ACTOR_DATA_DANTE )) ? CHAR_DANTE  :
-		(typematch(T, ACTOR_DATA_BOB   )) ? CHAR_BOB    :
-		(typematch(T, ACTOR_DATA_LADY  )) ? CHAR_LADY   :
-		(typematch(T, ACTOR_DATA_VERGIL)) ? CHAR_VERGIL :
+		(TypeMatch<T, ACTOR_DATA_DANTE >::value) ? CHAR_DANTE  :
+		(TypeMatch<T, ACTOR_DATA_BOB   >::value) ? CHAR_BOB    :
+		(TypeMatch<T, ACTOR_DATA_LADY  >::value) ? CHAR_LADY   :
+		(TypeMatch<T, ACTOR_DATA_VERGIL>::value) ? CHAR_VERGIL :
 		0
 	};
 };
@@ -59,7 +59,7 @@ bool IsWeaponActive
 	{
 		return false;
 	}
-	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 	{
 		if (motionData.group == (MOTION_GROUP_DANTE_REBELLION + weapon))
 		{
@@ -70,7 +70,7 @@ bool IsWeaponActive
 			return true;
 		}
 	}
-	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 	{
 		if (motionData.group == (MOTION_GROUP_VERGIL_YAMATO + (weapon - WEAPON_VERGIL_YAMATO)))
 		{
@@ -84,14 +84,14 @@ export template <typename T>
 bool IsWeaponActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[BODY_PART_UPPER];
-	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 	{
 		if ((motionData.group >= MOTION_GROUP_DANTE_REBELLION) && (motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN))
 		{
 			return true;
 		}
 	}
-	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 	{
 		if ((motionData.group >= MOTION_GROUP_VERGIL_YAMATO) && (motionData.group <= MOTION_GROUP_VERGIL_FORCE_EDGE))
 		{
@@ -105,7 +105,7 @@ export template <typename T>
 bool IsActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[BODY_PART_UPPER];
-	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 	{
 		if ((motionData.group == MOTION_GROUP_DANTE_BASE) && (motionData.index == 14))
 		{
@@ -116,7 +116,7 @@ bool IsActive(T & actorData)
 			return true;
 		}
 	}
-	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 	{
 		if ((motionData.group == MOTION_GROUP_VERGIL_BASE) && (motionData.index == 14))
 		{
@@ -155,19 +155,19 @@ void InitActor
 	byte8 * sessionData
 )
 {
-	if constexpr      (typematch(T, ACTOR_DATA_DANTE )) { func_217B90(actorData, sessionData); }
-	else if constexpr (typematch(T, ACTOR_DATA_BOB   )) { func_226F10(actorData, sessionData); }
-	else if constexpr (typematch(T, ACTOR_DATA_LADY  )) { func_219660(actorData, sessionData); }
-	else if constexpr (typematch(T, ACTOR_DATA_VERGIL)) { func_223CB0(actorData, sessionData); }
+	if constexpr      (TypeMatch<T, ACTOR_DATA_DANTE >::value) { func_217B90(actorData, sessionData); }
+	else if constexpr (TypeMatch<T, ACTOR_DATA_BOB   >::value) { func_226F10(actorData, sessionData); }
+	else if constexpr (TypeMatch<T, ACTOR_DATA_LADY  >::value) { func_219660(actorData, sessionData); }
+	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value) { func_223CB0(actorData, sessionData); }
 }
 
 template <typename T>
 void UpdateActor(T & actorData)
 {
-	if constexpr      (typematch(T, ACTOR_DATA_DANTE )) { func_212BE0(actorData); }
-	else if constexpr (typematch(T, ACTOR_DATA_BOB   )) { func_225D70(actorData); }
-	else if constexpr (typematch(T, ACTOR_DATA_LADY  )) { func_219260(actorData); }
-	else if constexpr (typematch(T, ACTOR_DATA_VERGIL)) { func_220970(actorData); }
+	if constexpr      (TypeMatch<T, ACTOR_DATA_DANTE >::value) { func_212BE0(actorData); }
+	else if constexpr (TypeMatch<T, ACTOR_DATA_BOB   >::value) { func_225D70(actorData); }
+	else if constexpr (TypeMatch<T, ACTOR_DATA_LADY  >::value) { func_219260(actorData); }
+	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value) { func_220970(actorData); }
 }
 
 struct MotionArchiveHelper
@@ -240,18 +240,19 @@ constexpr MotionArchiveHelper motionArchiveHelperVergil[] =
 template <typename T>
 void UpdateMotionArchives(T & actorData)
 {
+	// @Todo: Update countof.
 	constexpr uint8 count =
-	(typematch(T, ACTOR_DATA_DANTE )) ? countof<uint8>(motionArchiveHelperDante ) :
-	(typematch(T, ACTOR_DATA_BOB   )) ? countof<uint8>(motionArchiveHelperBob   ) :
-	(typematch(T, ACTOR_DATA_LADY  )) ? countof<uint8>(motionArchiveHelperLady  ) :
-	(typematch(T, ACTOR_DATA_VERGIL)) ? countof<uint8>(motionArchiveHelperVergil) :
+	(TypeMatch<T, ACTOR_DATA_DANTE >::value) ? countof<uint8>(motionArchiveHelperDante ) :
+	(TypeMatch<T, ACTOR_DATA_BOB   >::value) ? countof<uint8>(motionArchiveHelperBob   ) :
+	(TypeMatch<T, ACTOR_DATA_LADY  >::value) ? countof<uint8>(motionArchiveHelperLady  ) :
+	(TypeMatch<T, ACTOR_DATA_VERGIL>::value) ? countof<uint8>(motionArchiveHelperVergil) :
 	0;
 
 	const MotionArchiveHelper * motionArchiveHelper =
-	(typematch(T, ACTOR_DATA_DANTE )) ? motionArchiveHelperDante  :
-	(typematch(T, ACTOR_DATA_BOB   )) ? motionArchiveHelperBob    :
-	(typematch(T, ACTOR_DATA_LADY  )) ? motionArchiveHelperLady   :
-	(typematch(T, ACTOR_DATA_VERGIL)) ? motionArchiveHelperVergil :
+	(TypeMatch<T, ACTOR_DATA_DANTE >::value) ? motionArchiveHelperDante  :
+	(TypeMatch<T, ACTOR_DATA_BOB   >::value) ? motionArchiveHelperBob    :
+	(TypeMatch<T, ACTOR_DATA_LADY  >::value) ? motionArchiveHelperLady   :
+	(TypeMatch<T, ACTOR_DATA_VERGIL>::value) ? motionArchiveHelperVergil :
 	0;
 
 	for_all(uint8, index, count)
@@ -339,7 +340,7 @@ void UpdateMeleeWeapons
 	uint8 entity
 )
 {
-	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 	{
 		memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeapon[player][entity][CHAR_DANTE], MAX_MELEE_WEAPON);
 
@@ -372,7 +373,7 @@ void UpdateMeleeWeapons
 
 		UpdateModelPartitionConfigFunction(actorData, newMeleeWeapon);
 	}
-	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 	{
 		memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeapon[player][entity][CHAR_VERGIL], MAX_MELEE_WEAPON);
 
@@ -411,7 +412,7 @@ void UpdateRangedWeapons
 	uint8 entity
 )
 {
-	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 	{
 		memcpy(actorData.newRangedWeapon, Config.Actor.rangedWeapon[player][entity][CHAR_DANTE], MAX_RANGED_WEAPON);
 
@@ -662,7 +663,7 @@ byte8 * SpawnActorFunction
 		return parentActorData;
 	}
 
-	if constexpr (typematch(T, ACTOR_DATA_DANTE) || typematch(T, ACTOR_DATA_VERGIL))
+	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value || TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 	{
 		auto childBaseAddr = CreateActor<GetChildActorDataType<T>::value>(player, entity);
 		if (!childBaseAddr)
@@ -678,7 +679,7 @@ byte8 * SpawnActorFunction
 		childActorData.position = parentActorData.position;
 		childActorData.position.y = 10500;
 
-		if constexpr (typematch(T, ACTOR_DATA_DANTE))
+		if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 		{
 			auto & newMeleeWeapon = parentActorData.newMeleeWeapon[parentActorData.newMeleeWeaponIndex];
 			if ((newMeleeWeapon >= WEAPON_VERGIL_YAMATO) && (newMeleeWeapon <= WEAPON_VERGIL_FORCE_EDGE))
@@ -687,7 +688,7 @@ byte8 * SpawnActorFunction
 				childActorData.queuedMeleeWeaponIndex = (newMeleeWeapon - WEAPON_VERGIL_YAMATO);
 			}
 		}
-		else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+		else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 		{
 			for_all(uint8, index, MAX_MELEE_WEAPON)
 			{
@@ -956,7 +957,7 @@ bool IsWeaponReady
 			actorData.newMeleeWeaponCount,
 			actorData.newMeleeWeaponIndex
 		);
-		if constexpr (typematch(T, ACTOR_DATA_DANTE))
+		if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 		{
 			if (result)
 			{
@@ -2281,7 +2282,7 @@ export void Actor_Init()
 //	uint8 weaponCount = 0;
 //	uint8 weaponIndex = 0;
 //
-//	//if constexpr (typematch(T, ACTOR_DATA_DANTE))
+//	//if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 //	//{
 //	//	if constexpr (weaponType == WEAPON_TYPE_MELEE)
 //	//	{
@@ -2296,7 +2297,7 @@ export void Actor_Init()
 //	//		weaponIndex = (actorData.rangedWeaponIndex - 2);
 //	//	}
 //	//}
-//	//else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	//else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 //	//{
 //	//	weaponMap = actorData.meleeWeaponMap;
 //	//	weaponCount = 3;
@@ -2341,7 +2342,7 @@ export void Actor_Init()
 //		}
 //	}
 //
-//	//if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	//if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 //	//{
 //	//	if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
 //	//	{
@@ -2354,7 +2355,7 @@ export void Actor_Init()
 //		return true;
 //	}
 //
-//	//if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	//if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 //	//{
 //	//	if ((weapon == WEAPON_VERGIL_YAMATO) && (weaponMap[weaponIndex] == WEAPON_VERGIL_FORCE_EDGE))
 //	//	{
@@ -2396,7 +2397,7 @@ export void Actor_Init()
 //	uint8 weaponCount = 0;
 //	uint8 weaponIndex = 0;
 //
-//	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+//	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 //	{
 //		if constexpr (weaponType == WEAPON_TYPE_MELEE)
 //		{
@@ -2411,7 +2412,7 @@ export void Actor_Init()
 //			weaponIndex = (actorData.rangedWeaponIndex - 2);
 //		}
 //	}
-//	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 //	{
 //		weaponMap = actorData.meleeWeaponMap;
 //		weaponCount = 3;
@@ -2435,7 +2436,7 @@ export void Actor_Init()
 //		}
 //	}
 //
-//	if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 //	{
 //		if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
 //		{
@@ -2448,7 +2449,7 @@ export void Actor_Init()
 //		return true;
 //	}
 //
-//	if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 //	{
 //		if ((weapon == WEAPON_VERGIL_YAMATO) && (weaponMap[weaponIndex] == WEAPON_VERGIL_FORCE_EDGE))
 //		{
@@ -2617,7 +2618,7 @@ inline bool IsWeaponActiveVergil
 //	{
 //		return false;
 //	}
-//	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+//	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 //	{
 //		if (motionData.group == (MOTION_GROUP_DANTE_REBELLION + weapon))
 //		{
@@ -2628,7 +2629,7 @@ inline bool IsWeaponActiveVergil
 //			return true;
 //		}
 //	}
-//	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+//	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 //	{
 //		if (motionData.group == (MOTION_GROUP_VERGIL_YAMATO + (weapon - WEAPON_VERGIL_YAMATO)))
 //		{
@@ -2642,14 +2643,14 @@ template <typename T>
 bool IsWeaponActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[BODY_PART_UPPER];
-	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 	{
 		if ((motionData.group >= MOTION_GROUP_DANTE_REBELLION) && (motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN))
 		{
 			return true;
 		}
 	}
-	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 	{
 		if ((motionData.group >= MOTION_GROUP_VERGIL_YAMATO) && (motionData.group <= MOTION_GROUP_VERGIL_FORCE_EDGE))
 		{
@@ -2672,7 +2673,7 @@ template <typename T>
 bool IsActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[BODY_PART_UPPER];
-	if constexpr (typematch(T, ACTOR_DATA_DANTE))
+	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 	{
 		if ((motionData.group == MOTION_GROUP_DANTE_BASE) && (motionData.index == 14))
 		{
@@ -2683,7 +2684,7 @@ bool IsActive(T & actorData)
 			return true;
 		}
 	}
-	else if constexpr (typematch(T, ACTOR_DATA_VERGIL))
+	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
 	{
 		if ((motionData.group == MOTION_GROUP_VERGIL_BASE) && (motionData.index == 14))
 		{

@@ -13,8 +13,6 @@
 
 #define HoboBreak() MessageBoxA(0, "break1", 0, 0); MessageBoxA(0, "break2", 0, 0)
 
-#define typematch(a, b) is_same<a, b>::value // @Todo: Remove.
-
 #define FUNC_NAME __FUNCTION__
 
 #define LogFunction(...) LogFunctionHelper(FUNC_NAME, __VA_ARGS__)
