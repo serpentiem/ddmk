@@ -39,20 +39,7 @@ import ModuleName(Window);
 #include "Window.ixx"
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#define debug true
 
 enum FONT_
 {
@@ -73,8 +60,6 @@ enum TAB_
 	MAX_TAB,
 	TAB_VOID,
 };
-
-constexpr bool debug = false;
 
 uint8 activeTab = TAB_VOID;
 
@@ -3210,6 +3195,12 @@ void WeaponSelectFunction
 			configMapItem
 		);
 
+		if constexpr (debug)
+		{
+			ImGui::Text("value %u", configMapItem  );
+			ImGui::Text("index %u", selectIndexItem);
+		}
+
 		GUI_POP_DISABLE(skip);
 	}
 
@@ -3428,6 +3419,100 @@ void WeaponSelect
 //		}
 //	}
 //}
+
+
+
+//
+//
+//void UpdateMeleeWeaponSelectIndex
+//(
+//	uint8 player,
+//	uint8 entity,
+//	uint8 character
+//)
+//{
+//	NEW_GUI_UpdateIndex
+//	(
+//		meleeWeaponSelectMapDante,
+//		meleeWeaponSelectIndex[player][entity][character][0],
+//		Config.Actor.meleeWeapon[player][entity][character][0]
+//	);
+//}
+//
+//
+
+
+
+
+
+
+
+
+
+template
+<
+	uint64 configMapItemCount,
+	uint64 selectMapItemCount
+>
+void UpdateWeaponSelectIndicesFunction
+(
+	uint8(&selectMap)[selectMapItemCount],
+	uint8(&selectIndex)[configMapItemCount],
+	uint8(&configMap)[configMapItemCount]
+)
+{
+	for_all(uint8, configMapIndex, configMapItemCount)
+	{
+		auto & configMapItem   = configMap  [configMapIndex];
+		auto & selectIndexItem = selectIndex[configMapIndex];
+
+		NEW_GUI_UpdateIndex(selectMap, selectIndexItem, configMapItem);
+	}
+}
+
+void UpdateWeaponSelectIndices()
+{
+	for_all(uint8, player   , MAX_PLAYER) {
+	for_all(uint8, entity   , MAX_ENTITY) {
+	for_all(uint8, character, MAX_CHAR  )
+	{
+		UpdateWeaponSelectIndicesFunction
+		(
+			(character == CHAR_DANTE) ? meleeWeaponSelectMapDante : meleeWeaponSelectMapVergil,
+			meleeWeaponSelectIndex  [player][entity][character],
+			Config.Actor.meleeWeapon[player][entity][character]
+		);
+
+		if (character == CHAR_DANTE)
+		{
+
+			
+
+
+			UpdateWeaponSelectIndicesFunction
+			(
+				rangedWeaponSelectMapDante,
+				rangedWeaponSelectIndex  [player][entity][character],
+				Config.Actor.rangedWeapon[player][entity][character]
+			);
+		}
+	}}}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //
 //inline void UpdateMeleeWeaponSelectIndex
 //(
@@ -3517,6 +3602,12 @@ inline void ResetActorConfig
 
 	memcpy(Config.Actor.meleeWeaponCount [player][entity], DefaultConfig.Actor.meleeWeaponCount [player][entity], sizeof(Config.Actor.meleeWeaponCount [player][entity]));
 	memcpy(Config.Actor.rangedWeaponCount[player][entity], DefaultConfig.Actor.rangedWeaponCount[player][entity], sizeof(Config.Actor.rangedWeaponCount[player][entity]));
+
+
+	UpdateWeaponSelectIndices();
+
+
+
 
 	//for_all(uint8, character, MAX_CHAR)
 	//{
@@ -3618,7 +3709,8 @@ void ActionData
 }
 
 
-
+// items & itemCount
+// or map & mapItemCount
 
 template
 <
@@ -3638,7 +3730,12 @@ void NEW_GUI_UpdateIndex
 		auto & mapItem = map[mapIndex];
 		if (mapItem == var)
 		{
-			index = var;
+			//index = var;
+
+			index = mapIndex;
+
+
+
 			break;
 		}
 	}
@@ -3710,55 +3807,55 @@ void NEW_GUI_Main()
 
 	if (ImGui::Begin("DDMK 2.7", &pause))
 	{
-		auto size = ImGui::GetWindowSize();
-		ImGui::Text("width  %f", size.x);
-		ImGui::Text("height %f", size.y);
-		//ImGuiIO & io = ImGui::GetIO();
-		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
-		ImGui::Text("actorCount %u", Actor_actorBaseAddr.count);
-		ImGui::Text("");
+		//auto size = ImGui::GetWindowSize();
+		//ImGui::Text("width  %f", size.x);
+		//ImGui::Text("height %f", size.y);
+		////ImGuiIO & io = ImGui::GetIO();
+		////ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
+		//ImGui::Text("actorCount %u", Actor_actorBaseAddr.count);
+		//ImGui::Text("");
 
 
-		/*
-		dmc3.exe+204C53 - F3 0F10 05 A1B52D00   - movss xmm0,[dmc3.exe+4E01FC] { (-1.50) }
+		///*
+		//dmc3.exe+204C53 - F3 0F10 05 A1B52D00   - movss xmm0,[dmc3.exe+4E01FC] { (-1.50) }
 
-		*/
+		//*/
 
-		auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(Actor_actorBaseAddr[2]);
+		//auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(Actor_actorBaseAddr[2]);
 
 
 
-		{
-			static uint32  arg2           = 8;
-			static uint8   arg3           = 14;
-			static float32 pull           = -70.0f;
-			static float32 pullMultiplier = -1.5f;
-			static uint8   arg6           = 0;
-			NEW_GUI_Input<uint32 >("arg2"          , arg2          );
-			NEW_GUI_Input<uint8  >("arg3"          , arg3          );
-			NEW_GUI_Input<float32>("pull"          , pull          );
-			NEW_GUI_Input<float32>("pullMultiplier", pullMultiplier);
-			NEW_GUI_Input<uint8  >("arg6"          , arg6          );
-			if (NEW_GUI_Button("Drop1"))
-			{
-				func_1DFDA0(actorData, arg2, arg3, pull, pullMultiplier, arg6);
-			}
-			if (NEW_GUI_Button("Set Y"))
-			{
-				actorData.position.y = 500;
-			}
-		}
+		//{
+		//	static uint32  arg2           = 8;
+		//	static uint8   arg3           = 14;
+		//	static float32 pull           = -70.0f;
+		//	static float32 pullMultiplier = -1.5f;
+		//	static uint8   arg6           = 0;
+		//	NEW_GUI_Input<uint32 >("arg2"          , arg2          );
+		//	NEW_GUI_Input<uint8  >("arg3"          , arg3          );
+		//	NEW_GUI_Input<float32>("pull"          , pull          );
+		//	NEW_GUI_Input<float32>("pullMultiplier", pullMultiplier);
+		//	NEW_GUI_Input<uint8  >("arg6"          , arg6          );
+		//	if (NEW_GUI_Button("Drop1"))
+		//	{
+		//		func_1DFDA0(actorData, arg2, arg3, pull, pullMultiplier, arg6);
+		//	}
+		//	if (NEW_GUI_Button("Set Y"))
+		//	{
+		//		actorData.position.y = 500;
+		//	}
+		//}
 
-		{
-			//static uint32  arg2 = 50000;
-			static float32 arg3 = 1;
-			//NEW_GUI_Input<uint32 >("arg2", arg2);
-			NEW_GUI_Input<float32>("arg3", arg3);
-			if (NEW_GUI_Button("Drop2"))
-			{
-				func_1FB300(actorData, actorData.rotation, arg3);
-			}
-		}
+		//{
+		//	//static uint32  arg2 = 50000;
+		//	static float32 arg3 = 1;
+		//	//NEW_GUI_Input<uint32 >("arg2", arg2);
+		//	NEW_GUI_Input<float32>("arg3", arg3);
+		//	if (NEW_GUI_Button("Drop2"))
+		//	{
+		//		func_1FB300(actorData, actorData.rotation, arg3);
+		//	}
+		//}
 
 
 
@@ -4219,7 +4316,7 @@ export void GUI_Init()
 	//NEW_GUI_UpdateIndex(modeMap, modeIndex, Config.Arcade.mode);
 
 
-
+	UpdateWeaponSelectIndices();
 
 
 
