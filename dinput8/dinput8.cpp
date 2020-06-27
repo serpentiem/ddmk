@@ -11,6 +11,8 @@ extern "C" void Create()
 	return ((void(__fastcall *)())procAddr)();
 }
 
+// #pragma comment(linker, "/export:DirectInput8Create=Create")
+
 bool Init()
 {
 	LogFunction();

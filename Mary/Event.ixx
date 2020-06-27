@@ -416,10 +416,10 @@ static void Arcade_InitSession()
 
 	//memset(unlock, true, 14);
 
-	if (Config.Arcade.character == CHAR_DANTE)
-	{
-		vp_memcpy(equipment, Config.Arcade.weapon, 4);
-	}
+	//if (Config.Arcade.character == CHAR_DANTE)
+	//{
+	//	vp_memcpy(equipment, Config.Arcade.weapon, 4);
+	//}
 
 
 

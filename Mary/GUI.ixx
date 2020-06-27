@@ -41,6 +41,8 @@ import ModuleName(Window);
 
 #define debug true
 
+#pragma region __OLD__
+
 enum FONT_
 {
 	FONT_DEFAULT,
@@ -2415,12 +2417,7 @@ void GUI_Overlay_Draw()
 // 	//ImGui::PopStyleVar(3);
 // }
 
-
-
-
-
-
-
+#pragma endregion
 
 
 
@@ -2653,35 +2650,58 @@ bool NEW_GUI_Selectable
 	return update;
 }
 
+template
+<
+	typename varType,
+	uint8 count
+>
+bool NEW_GUI_Combo
+(
+	const char * label,
+	const char *(&names)[count],
+	varType & var,
+	bool save = true
+)
+{
+	bool update = false;
+	NEW_GUI_PushId();
+	if (ImGui::BeginCombo(label, names[var]))
+	{
+		for_all(varType, index, count)
+		{
+			bool selected = (index == var) ? true : false;
+			NEW_GUI_PushId();
+			if (NEW_GUI_Selectable(names[index], &selected))
+			{
+				update = true;
+				var = index;
+			}
+			NEW_GUI_PopId();
+		}
+		ImGui::EndCombo();
+	}
+	NEW_GUI_PopId();
 
+	if (update && save)
+	{
+		SaveConfig();
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	return update;
+}
 
 template
 <
-	typename T,
-	uint8 count
+	typename varType,
+	uint8 mapItemCount
 >
 bool NEW_GUI_ComboMap
 (
 	const char * label,
-	const char *(&names)[count],
-	T(&map)[count],
+	const char *(&names)[mapItemCount],
+	varType(&map)[mapItemCount],
 	uint8 & index,
-	T & var,
+	varType & var,
 	bool save = true
 )
 {
@@ -2689,10 +2709,10 @@ bool NEW_GUI_ComboMap
 	NEW_GUI_PushId();
 	if (ImGui::BeginCombo(label, names[index]))
 	{
-		for_all(uint8, mapIndex, count)
+		for_all(uint8, mapIndex, mapItemCount)
 		{
 			auto & mapItem = map[mapIndex];
-			bool selected = (mapItem == var) ? true : false;
+			bool selected = (mapIndex == index) ? true : false;
 			NEW_GUI_PushId();
 			if (NEW_GUI_Selectable(names[mapIndex], &selected))
 			{
@@ -2716,93 +2736,26 @@ bool NEW_GUI_ComboMap
 
 template
 <
-	typename T,
-	uint8 count
+	typename varType,
+	uint8 mapItemCount
 >
-bool NEW_GUI_Combo
+void NEW_GUI_UpdateComboMapIndex
 (
-	const char * label,
-	const char *(&names)[count],
-	T & var,
-	bool save = true
+	varType(&map)[mapItemCount],
+	uint8 & index,
+	varType & var
 )
 {
-	bool update = false;
-	NEW_GUI_PushId();
-	if (ImGui::BeginCombo(label, names[var]))
+	for_all(uint8, mapIndex, mapItemCount)
 	{
-		for_all(uint8, index, count)
+		auto & mapItem = map[mapIndex];
+		if (mapItem == var)
 		{
-			bool selected = (index == var) ? true : false;
-			NEW_GUI_PushId();
-			if (NEW_GUI_Selectable(names[index], &selected))
-			{
-				update = true;
-				var = static_cast<T>(index);
-			}
-			NEW_GUI_PopId();
+			index = mapIndex;
+			break;
 		}
-		ImGui::EndCombo();
 	}
-	NEW_GUI_PopId();
-
-	if (update && save)
-	{
-		SaveConfig();
-	}
-
-	return update;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 inline void NEW_GUI_SectionStart()
 {
@@ -3431,7 +3384,7 @@ void WeaponSelect
 //	uint8 character
 //)
 //{
-//	NEW_GUI_UpdateIndex
+//	NEW_GUI_UpdateComboMapIndex
 //	(
 //		meleeWeaponSelectMapDante,
 //		meleeWeaponSelectIndex[player][entity][character][0],
@@ -3466,7 +3419,7 @@ void UpdateWeaponSelectIndicesFunction
 		auto & configMapItem   = configMap  [configMapIndex];
 		auto & selectIndexItem = selectIndex[configMapIndex];
 
-		NEW_GUI_UpdateIndex(selectMap, selectIndexItem, configMapItem);
+		NEW_GUI_UpdateComboMapIndex(selectMap, selectIndexItem, configMapItem);
 	}
 }
 
@@ -3709,55 +3662,54 @@ void ActionData
 }
 
 
-// items & itemCount
-// or map & mapItemCount
 
-template
-<
-	typename T1,
-	uint64 itemCount,
-	typename T2
->
-void NEW_GUI_UpdateIndex
-(
-	T1(&map)[itemCount],
-	uint8 & index,
-	T2 & var
-)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const char * missionNames[] =
 {
-	for_all(uint8, mapIndex, itemCount)
-	{
-		auto & mapItem = map[mapIndex];
-		if (mapItem == var)
-		{
-			//index = var;
-
-			index = mapIndex;
-
-
-
-			break;
-		}
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	"Movie",
+	"Mission 1",
+	"Mission 2",
+	"Mission 3",
+	"Mission 4",
+	"Mission 5",
+	"Mission 6",
+	"Mission 7",
+	"Mission 8",
+	"Mission 9",
+	"Mission 10",
+	"Mission 11",
+	"Mission 12",
+	"Mission 13",
+	"Mission 14",
+	"Mission 15",
+	"Mission 16",
+	"Mission 17",
+	"Mission 18",
+	"Mission 19",
+	"Mission 20",
+	"Bloody Palace",
+};
 
 const char * modeNames[] =
 {
@@ -3780,6 +3732,145 @@ uint32 modeMap[] =
 };
 
 uint8 modeIndex = 0;
+
+const char * characterNames[] =
+{
+	"Dante",
+	"Bob",
+	"Lady",
+	"Vergil",
+};
+
+const char * styleNames[] =
+{
+	"Swordmaster",
+	"Gunslinger",
+	"Trickster",
+	"Royalguard",
+	"Quicksilver",
+	"Doppelganger",
+};
+
+const char * meleeWeaponNames[] =
+{
+	"Rebellion",
+	"Cerberus",
+	"Agni & Rudra",
+	"Nevan",
+	"Beowulf",
+};
+
+uint8 meleeWeaponMap[] =
+{
+	WEAPON_DANTE_REBELLION,
+	WEAPON_DANTE_CERBERUS,
+	WEAPON_DANTE_AGNI_RUDRA,
+	WEAPON_DANTE_NEVAN,
+	WEAPON_DANTE_BEOWULF,
+};
+
+uint8 meleeWeaponIndex[2] = {};
+
+const char * rangedWeaponNames[] =
+{
+	"Ebony & Ivory",
+	"Shotgun",
+	"Artemis",
+	"Spiral",
+	"Kalina Ann",
+};
+
+uint8 rangedWeaponMap[] =
+{
+	WEAPON_DANTE_EBONY_IVORY,
+	WEAPON_DANTE_SHOTGUN,
+	WEAPON_DANTE_ARTEMIS,
+	WEAPON_DANTE_SPIRAL,
+	WEAPON_DANTE_KALINA_ANN,
+};
+
+uint8 rangedWeaponIndex[2] = {};
+
+void Arcade()
+{
+	if (ImGui::CollapsingHeader("Arcade"))
+	{
+		ImGui::Text("");
+		NEW_GUI_Checkbox("Enable", Config.Arcade.enable);
+		ImGui::Text("");
+		NEW_GUI_Button("Reset");
+		ImGui::Text("");
+		NEW_GUI_Combo("Mission", missionNames, Config.Arcade.mission);
+		NEW_GUI_ComboMap("Mode", modeNames, modeMap, modeIndex, Config.Arcade.mode);
+		if constexpr (debug)
+		{
+			ImGui::Text("value %u", Config.Arcade.mode);
+			ImGui::Text("index %u", modeIndex);
+		}
+		NEW_GUI_InputDefault("Room", Config.Arcade.room, DefaultConfig.Arcade.room);
+		ImGui::SameLine();
+		NEW_GUI_Checkbox("Ignore", Config.Arcade.ignoreRoom);
+		NEW_GUI_InputDefault("Position", Config.Arcade.position, DefaultConfig.Arcade.position);
+		ImGui::SameLine();
+		NEW_GUI_Checkbox("Ignore", Config.Arcade.ignorePosition);
+		NEW_GUI_InputDefault("Floor", Config.Arcade.floor, DefaultConfig.Arcade.floor);
+		NEW_GUI_InputDefault<float32>("Hit Points", Config.Arcade.hitPoints, DefaultConfig.Arcade.hitPoints, 1000, "%.0f");
+		NEW_GUI_InputDefault<float32>("Magic Points", Config.Arcade.magicPoints, DefaultConfig.Arcade.magicPoints, 1000, "%.0f");
+
+
+
+
+		NEW_GUI_Combo("Character", characterNames, Config.Arcade.character);
+		NEW_GUI_InputDefault("Costume", Config.Arcade.costume, DefaultConfig.Arcade.costume);
+		NEW_GUI_Combo("Style", styleNames, Config.Arcade.style);
+
+
+
+		NEW_GUI_ComboMap("Melee Weapon 1", meleeWeaponNames, meleeWeaponMap, meleeWeaponIndex[0], Config.Arcade.meleeWeapons[0]);
+		NEW_GUI_ComboMap("Melee Weapon 2", meleeWeaponNames, meleeWeaponMap, meleeWeaponIndex[1], Config.Arcade.meleeWeapons[1]);
+		NEW_GUI_ComboMap("Ranged Weapon 1", rangedWeaponNames, rangedWeaponMap, rangedWeaponIndex[0], Config.Arcade.rangedWeapons[0]);
+		NEW_GUI_ComboMap("Ranged Weapon 2", rangedWeaponNames, rangedWeaponMap, rangedWeaponIndex[1], Config.Arcade.rangedWeapons[1]);
+
+
+
+
+
+
+		//NEW_GUI_ComboMap("Melee Weapon 1", meleeWeaponNames, meleeWeapon, Config.Arcade.meleeWeapons[0]);
+		//NEW_GUI_Combo("Melee Weapon 2", meleeWeaponNames, Config.Arcade.meleeWeapons[1]);
+		//NEW_GUI_Combo("Ranged Weapon 1", rangedWeaponNames, Config.Arcade.rangedWeapons[0]);
+		//NEW_GUI_Combo("Ranged Weapon 2", rangedWeaponNames, Config.Arcade.rangedWeapons[1]);
+
+
+
+
+
+
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4162,75 +4253,12 @@ void NEW_GUI_Main()
 			{
 				ImGui::Text("Invalid Pointer");
 			}
+			ImGui::Text("");
 		}
 
 
-		if (ImGui::CollapsingHeader("Arcade"))
-		{
-			ImGui::Text("");
-			NEW_GUI_Checkbox("Enable", Config.Arcade.enable);
-			ImGui::Text("");
-			NEW_GUI_Button("Reset");
-			ImGui::Text("");
 
-
-
-			const char * missionNames[] =
-			{
-				"Movie",
-				"Mission 1",
-				"Mission 2",
-				"Mission 3",
-				"Mission 4",
-				"Mission 5",
-				"Mission 6",
-				"Mission 7",
-				"Mission 8",
-				"Mission 9",
-				"Mission 10",
-				"Mission 11",
-				"Mission 12",
-				"Mission 13",
-				"Mission 14",
-				"Mission 15",
-				"Mission 16",
-				"Mission 17",
-				"Mission 18",
-				"Mission 19",
-				"Mission 20",
-				"Bloody Palace",
-			};
-			//NEW_GUI_Combo<uint32>("Mission", missionNames, countof<uint32>(missionNames), Config.Arcade.mission);
-			NEW_GUI_Combo("Mission", missionNames, Config.Arcade.mission);
-
-
-
-
-
-
-
-			NEW_GUI_ComboMap("Mode", modeNames, modeMap, modeIndex, Config.Arcade.mode);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		}
-
-
+		Arcade();
 
 		
 
@@ -4303,20 +4331,22 @@ export void GUI_Render()
 export void GUI_Init()
 {
 	BuildFonts();
-
-	//for_all(uint8, player   , MAX_PLAYER){
-	//for_all(uint8, entity   , MAX_ENTITY){
-	//for_all(uint8, character, MAX_CHAR  )
-	//{
-	//	UpdateMeleeWeaponSelectIndex (player, entity, character);
-	//	UpdateRangedWeaponSelectIndex(player, entity, character);
-	//}}}
-
-	
-	//NEW_GUI_UpdateIndex(modeMap, modeIndex, Config.Arcade.mode);
-
-
 	UpdateWeaponSelectIndices();
+
+
+	NEW_GUI_UpdateComboMapIndex(modeMap, modeIndex, Config.Arcade.mode);
+
+
+	NEW_GUI_UpdateComboMapIndex(meleeWeaponMap, meleeWeaponIndex[0], Config.Arcade.meleeWeapons[0]);
+	NEW_GUI_UpdateComboMapIndex(meleeWeaponMap, meleeWeaponIndex[1], Config.Arcade.meleeWeapons[1]);
+	NEW_GUI_UpdateComboMapIndex(rangedWeaponMap, rangedWeaponIndex[0], Config.Arcade.rangedWeapons[0]);
+	NEW_GUI_UpdateComboMapIndex(rangedWeaponMap, rangedWeaponIndex[1], Config.Arcade.rangedWeapons[1]);
+	
+
+
+
+
+	//NEW_GUI_UpdateComboMapIndex()
 
 
 

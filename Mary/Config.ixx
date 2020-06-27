@@ -537,55 +537,78 @@ export struct CONFIG
 
 	struct
 	{
-		bool   enable         = true;
-		uint32 mission        = 17;
-		uint32 mode           = MODE_NORMAL;
-		uint32 room           = 900;
-		uint32 position       = 0;
-		bool   ignoreRoom     = false;
-		bool   ignorePosition = false;
-		uint8  floor          = 0;
-		uint8  character      = CHAR_DANTE;
-		uint8  costume        = 0;
-		uint32 style          = STYLE_DANTE_TRICKSTER;
-		// @Todo: Should be weapons.
-		uint8  weapon[MAX_CHAR][5] =
+		bool    enable         = true;
+		uint32  mission        = 17;
+		uint32  mode           = MODE_NORMAL;
+		uint32  room           = 900;
+		uint32  position       = 0;
+		bool    ignoreRoom     = false;
+		bool    ignorePosition = false;
+		uint8   floor          = 0;
+		float32 hitPoints      = 6000;
+		float32 magicPoints    = 3000;
+		uint8   character      = CHAR_DANTE;
+		uint8   costume        = 0;
+		uint32  style          = STYLE_DANTE_TRICKSTER;
+		uint8 meleeWeapons[2] =
 		{
-			// Dante
-			{
-				WEAPON_DANTE_REBELLION,
-				WEAPON_DANTE_CERBERUS,
-				WEAPON_DANTE_EBONY_IVORY,
-				WEAPON_DANTE_SHOTGUN,
-				WEAPON_VOID,
-			},
-			// Bob
-			{
-				WEAPON_BOB_YAMATO,
-				WEAPON_VOID,
-				WEAPON_VOID,
-				WEAPON_VOID,
-				WEAPON_VOID,
-			},
-			// Lady
-			{
-				WEAPON_VOID,
-				WEAPON_VOID,
-				9,
-				WEAPON_VOID,
-				11,
-			},
-			// Vergil
-			{
-				WEAPON_VERGIL_YAMATO,
-				WEAPON_VERGIL_BEOWULF,
-				WEAPON_VERGIL_FORCE_EDGE,
-				WEAPON_VOID,
-				WEAPON_VOID,
-			},
+			WEAPON_DANTE_REBELLION,
+			WEAPON_DANTE_CERBERUS,
 		};
-		float32 hitPoints   = 6000;
-		float32 magicPoints = 3000;
+		uint8 rangedWeapons[2] =
+		{
+			WEAPON_DANTE_EBONY_IVORY,
+			WEAPON_DANTE_SHOTGUN,
+		};
+
+
+
+
+
+
+		//uint8 weapons[4] =
+		//{
+		//	WEAPON_DANTE_REBELLION,
+		//	WEAPON_DANTE_CERBERUS,
+		//	WEAPON_DANTE_EBONY_IVORY,
+		//	WEAPON_DANTE_SHOTGUN,
+		//};
+
+
+
+		//// @Todo: Should be weapons.
+		//uint8  weapon[MAX_CHAR][5] =
+		//{
+		//	// Dante
+		//	{
+
+		//		WEAPON_VOID,
+		//	},
+		//	// Bob
+		//	{
+		//		WEAPON_BOB_YAMATO,
+		//		WEAPON_VOID,
+		//		WEAPON_VOID,
+		//		WEAPON_VOID,
+		//		WEAPON_VOID,
+		//	},
+		//	// Lady
+		//	{
+		//		WEAPON_VOID,
+		//		WEAPON_VOID,
+		//		9,
+		//		WEAPON_VOID,
+		//		11,
+		//	},
+		//	// Vergil
+		//	{
+		//		WEAPON_VERGIL_YAMATO,
+		//		WEAPON_VERGIL_BEOWULF,
+		//		WEAPON_VERGIL_FORCE_EDGE,
+		//		WEAPON_VOID,
+		//		WEAPON_VOID,
+		//	},
+		//};
 	}
 	Arcade;
 
