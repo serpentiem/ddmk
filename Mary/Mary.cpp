@@ -5,6 +5,7 @@
 import ModuleName(Actor);
 import ModuleName(Arcade);
 import ModuleName(Camera);
+import ModuleName(Color);
 import ModuleName(Config);
 import ModuleName(Dante);
 import ModuleName(Event);
@@ -22,6 +23,7 @@ import ModuleName(Window);
 #include "Actor.ixx"
 #include "Arcade.ixx"
 #include "Camera.ixx"
+#include "Color.ixx"
 #include "Config.ixx"
 #include "Dante.ixx"
 #include "Event.ixx"
@@ -44,6 +46,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Log("Session started.");
 
 		Core_Config_Init("configs", "Mary.bin", &Config, sizeof(CONFIG));
+		Color_UpdateConfig(Config);
+		Color_UpdateConfig(DefaultConfig);
 		LoadConfig();
 
 		if (!Core_Memory_Init((64 * 1024 * 1024)))

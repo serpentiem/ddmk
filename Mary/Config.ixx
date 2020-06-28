@@ -598,6 +598,57 @@ export struct CONFIG
 	Camera;
 	struct
 	{
+		struct
+		{
+			float32 airHike[5][4] =
+			{
+				{ 128,   0,   0, 200 },
+				{  96, 128, 144, 200 },
+				{ 160,  64,  16, 200 },
+				{ 112,  64, 160, 200 },
+				{ 128, 128, 128, 200 },
+			};
+			struct
+			{
+				float32 skyStar[4] = { 255, 0, 0, 200 };
+			}
+			Trickster;
+			struct
+			{
+				float32 ultimate[4] = { 143, 112, 48, 200 };
+			}
+			Royalguard;
+			struct
+			{
+				float32 clone[4] = { 16, 16, 16, 48 };
+			}
+			Doppelganger;
+			float32 aura[5][4] =
+			{
+				{ 128,   0,   0, 200 },
+				{  96, 128, 144, 200 },
+				{ 160,  64,  16, 200 },
+				{ 112,  64, 160, 200 },
+				{ 128, 128, 128, 200 },
+			};
+			float32 sparda[4] = { 128, 0, 0, 200 };
+		}
+		Dante;
+		struct
+		{
+			float32 aura[3][4] =
+			{
+				{ 32, 64, 128, 200 },
+				{ 32, 64, 128, 200 },
+				{ 32, 64, 128, 200 },
+			};
+			float32 neroAngelo[4] = { 64, 0, 255, 200 };
+		}
+		Vergil;
+	}
+	Color;
+	struct
+	{
 		bool enable = false;
 		struct
 		{
@@ -843,74 +894,8 @@ export struct CONFIG
 
 
 
-
-
-
-
-
 	struct
 	{
-		struct
-		{
-			struct
-			{
-				float32 dante[5][4] =
-				{
-					{ 128,   0,   0, 200 },
-					{  96, 128, 144, 200 },
-					{ 160,  64,  16, 200 },
-					{ 112,  64, 160, 200 },
-					{ 128, 128, 128, 200 },
-				};
-				float32 vergil[1][4] =
-				{
-					{ 32, 64, 128, 200 },
-				};
-				float32 neroAngelo[1][4] =
-				{
-					{ 64, 0, 255, 200 },
-				};
-			}
-			Aura;
-			struct
-			{
-				float32 trickster[1][4] =
-				{
-					{ 255, 0, 0, 200 },
-				};
-				float32 royalguard[1][4] =
-				{
-					{ 143, 112, 48, 200 },
-				};
-				float32 doppelganger[1][4] =
-				{
-					{ 16, 16, 16, 48 },
-				};
-			}
-			Style;
-			struct
-			{
-				float32 dante[5][4] =
-				{
-					{ 128,   0,   0, 200 },
-					{  96, 128, 144, 200 },
-					{ 160,  64,  16, 200 },
-					{ 112,  64, 160, 200 },
-					{ 128, 128, 128, 200 },
-				};
-			}
-			AirHike;
-		}
-		Color;
-		struct
-		{
-			struct
-			{
-				bool hideModel = false;
-			}
-			Beowulf;
-		}
-		Dante;
 		struct
 		{
 			bool noColor = false;
@@ -921,15 +906,6 @@ export struct CONFIG
 			bool noDevilForm = false;
 		}
 		Other;
-		struct
-		{
-			struct
-			{
-				bool hideModel = false;
-			}
-			Beowulf;
-		}
-		Vergil;
 	}
 	Cosmetics;
 

@@ -119,5 +119,6 @@
     <None Include="..\Core\GUI.ixx">
       <Filter>Core</Filter>
     </None>
+    <None Include="Color.ixx" />
   </ItemGroup>
 </Project>

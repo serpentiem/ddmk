@@ -5,6 +5,7 @@ module;
 #include "../Core/Core.h"
 
 #include "../ImGui/imgui.h"
+#include "../ImGui/imgui_internal.h"
 
 #include "ActorData.h"
 #include "Internal.h"
@@ -840,7 +841,7 @@ void Arcade()
 		
 		if (Config.Arcade.mission > 0)
 		{
-			GUI_InputDefault<float32>("Hit Points", Config.Arcade.hitPoints, DefaultConfig.Arcade.hitPoints, 1000, "%.0f");
+			GUI_InputDefault<float32>("Hit Points"  , Config.Arcade.hitPoints  , DefaultConfig.Arcade.hitPoints  , 1000, "%.0f");
 			GUI_InputDefault<float32>("Magic Points", Config.Arcade.magicPoints, DefaultConfig.Arcade.magicPoints, 1000, "%.0f");
 		}
 		
@@ -932,9 +933,238 @@ void Camera()
 }
 
 
+// ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaPreview
+
+
+bool GUI_ColorEdit4
+(
+	const char * label,
+	float32(&var)[4],
+	ImGuiColorEditFlags flags = 0,
+	bool save = true
+)
+{
+	bool update = false;
+
+	GUI_PushId();
+	if (ImGui::ColorEdit4(label, var, flags))
+	{
+		update = true;
+	}
+	GUI_PopId();
+
+	if (update && save)
+	{
+		SaveConfig();
+	}
+
+	return update;
+}
+
+template <uint8 count>
+bool GUI_ColorPalette
+(
+	const char * label,
+	float32(&vars)[count][4]
+)
+{
+	bool update = false;
+	auto & style = ImGui::GetStyle();
+
+	for_all(uint8, index, count)
+	{
+		if (GUI_ColorEdit4("", vars[index], ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaPreview))
+		{
+			update = true;
+		}
+		ImGui::SameLine(0, style.ItemInnerSpacing.x);
+	}
+
+	ImGui::Text(label);
+
+	return update;
+}
+
+bool GUI_Color
+(
+	const char * label,
+	float32(&var)[4]
+)
+{
+	return GUI_ColorEdit4(label, var, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaPreview);
+}
 
 
 
+void Section(const char * label)
+{
+
+	ImGui::Text(label);
+
+	auto & style = ImGui::GetStyle();
+
+	ImGui::SameLine(0, style.ItemInnerSpacing.x);
+
+
+
+	auto size = ImGui::CalcTextSize(label);
+
+	auto window = ImGui::GetCurrentWindow();
+
+	float32 x1 = window->Pos.x + size.x + 16;
+	float32 x2 = window->Pos.x + window->Size.x;
+
+	//float thickness_draw = 1.0f;
+	//float thickness_layout = 0.0f;
+	const ImRect bb(ImVec2(x1, window->DC.CursorPos.y + 7), ImVec2(x2, window->DC.CursorPos.y + 7));
+	ImGui::ItemSize(ImVec2(0.0f, 0.0f));
+	window->DrawList->AddLine(bb.Min, ImVec2(bb.Max.x, bb.Min.y), ImGui::GetColorU32(ImGuiCol_Separator));
+
+
+	ImGui::Text("");
+
+}
+
+
+
+
+void Cosmetics()
+{
+	if (ImGui::CollapsingHeader("Cosmetics"))
+	{
+		ImGui::Text("");
+
+
+		GUI_Button("Reset");
+		//ImGui::Text("");
+
+		GUI_SectionEnd();
+
+
+
+
+		//ColorPalette("Aura", Config.Cosmetics.Color.Aura.dante);
+
+		//ImGui::Text("Color");
+
+
+
+
+		float32 off = 123;
+
+		
+		//GUI_SectionStart("Color Dante");
+
+
+		
+
+		//ImGui::Text("Color Dante");
+
+		//ImGui::SameLine(0, style.ItemInnerSpacing.x);
+
+		//ImGui::SeparatorEx()
+
+		//ImGui::Line
+
+		
+
+
+
+
+		//Section("Color Dante");
+
+
+		ImGui::Text("Color Dante");
+		ImGui::Text("");
+
+
+		
+
+
+		//ImGui::Text("");
+
+
+
+
+		GUI_ColorPalette("Air Hike", Config.Color.Dante.airHike);
+
+		ImGui::Text("");
+
+		ImGui::Text("Trickster");
+
+		//ImGui::SetCursorPosX(100);
+		GUI_Color("Sky Star", Config.Color.Dante.Trickster.skyStar);
+		//GUI_Color("", Config.Color.Dante.Trickster.skyStar);
+		//ImGui::SameLine(off);
+		//ImGui::Text("Sky Star");
+
+		ImGui::Text("");
+
+
+		ImGui::Text("Royalguard");
+		//ImGui::SetCursorPosX(100);
+		GUI_Color("Ultimate", Config.Color.Dante.Royalguard.ultimate);
+		//GUI_Color("", Config.Color.Dante.Royalguard.ultimate);
+		//ImGui::SameLine(off);
+		//ImGui::Text("Ultimate");
+
+		ImGui::Text("");
+
+		ImGui::Text("Doppelganger");
+		//ImGui::SetCursorPosX(100);
+		GUI_Color("Clone", Config.Color.Dante.Doppelganger.clone);
+
+
+
+		//GUI_Color("", Config.Color.Dante.Doppelganger.clone);
+		//ImGui::SameLine(off);
+		//ImGui::Text("Clone");
+		
+
+		ImGui::Text("");
+		GUI_ColorPalette("Aura", Config.Color.Dante.aura);
+		//ImGui::SetCursorPosX(100);
+
+		//ImGui::Text("");
+
+		GUI_Color("Sparda", Config.Color.Dante.sparda);
+		//GUI_Color("", Config.Color.Dante.sparda);
+		//ImGui::SameLine(off);
+		//ImGui::Text("Hentai");
+
+
+
+		//GUI_SectionEnd();
+
+
+		//ImGui::Text("");
+
+
+		//Section("Color Vergil");
+
+		ImGui::Text("");
+		GUI_Button("Reset");
+
+		GUI_SectionEnd();
+
+		ImGui::Text("Color Vergil");
+		ImGui::Text("");
+
+		GUI_ColorPalette("Aura", Config.Color.Vergil.aura);
+		GUI_Color("Nero Angelo", Config.Color.Vergil.neroAngelo);
+
+
+
+		ImGui::Text("");
+		GUI_Button("Reset");
+
+
+
+
+
+		ImGui::Text("");
+	}
+}
 
 
 
@@ -1103,7 +1333,16 @@ void Dante()
 
 
 
-
+void Repair()
+{
+	if (ImGui::CollapsingHeader("Repair"))
+	{
+		ImGui::Text("");
+		GUI_Button("Reset Weapons");
+		GUI_Button("Reset Ranged Weapon Levels");
+		ImGui::Text("");
+	}
+}
 
 
 
@@ -1372,7 +1611,9 @@ void Main()
 		Arcade();
 		BossRush();
 		Camera();
+		Cosmetics();
 		Dante();
+		Repair();
 		Speed();
 		System();
 		Teleporter();
