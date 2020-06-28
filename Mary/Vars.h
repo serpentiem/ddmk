@@ -937,6 +937,89 @@ enum ACTOR_EVENT
 
 
 
+
+
+// $SessionDataStart
+
+struct SESSION_DATA
+{
+	uint32 mission; // 0
+	_(8);
+	uint32 mode; // 0xC
+	bool oneHitKill; // 0x10
+	_(1);
+	bool enableTutorial; // 0x12
+	bool useGoldOrb; // 0x13
+	_(8);
+	bool bloodyPalace; // 0x1C
+	_(24);
+	uint8 goldOrbCount; // 0x35
+	_(16);
+	bool unlock[14]; // 0x46
+	_(48);
+	uint8 weapons[4]; // 0x84
+	_(72);
+	uint8 costume; // 0xD0
+	bool unlockDevilTrigger; // 0xD1
+	_(2);
+	float32 hitPoints; // 0xD4
+	float32 magicPoints; // 0xD8
+	uint32 style; // 0xDC
+	uint32 styleLevel[6]; // 0xE0
+	float32 styleExperience[6]; // 0xF8
+	byte32 expertise[8]; // 0x110
+};
+
+static_assert(offsetof(SESSION_DATA, mission) == 0);
+static_assert(offsetof(SESSION_DATA, mode) == 0xC);
+static_assert(offsetof(SESSION_DATA, oneHitKill) == 0x10);
+static_assert(offsetof(SESSION_DATA, enableTutorial) == 0x12);
+static_assert(offsetof(SESSION_DATA, useGoldOrb) == 0x13);
+static_assert(offsetof(SESSION_DATA, bloodyPalace) == 0x1C);
+static_assert(offsetof(SESSION_DATA, goldOrbCount) == 0x35);
+static_assert(offsetof(SESSION_DATA, unlock) == 0x46);
+static_assert(offsetof(SESSION_DATA, weapons) == 0x84);
+static_assert(offsetof(SESSION_DATA, costume) == 0xD0);
+static_assert(offsetof(SESSION_DATA, unlockDevilTrigger) == 0xD1);
+static_assert(offsetof(SESSION_DATA, hitPoints) == 0xD4);
+static_assert(offsetof(SESSION_DATA, magicPoints) == 0xD8);
+static_assert(offsetof(SESSION_DATA, style) == 0xDC);
+static_assert(offsetof(SESSION_DATA, styleLevel) == 0xE0);
+static_assert(offsetof(SESSION_DATA, styleExperience) == 0xF8);
+static_assert(offsetof(SESSION_DATA, expertise) == 0x110);
+
+// $SessionDataEnd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 struct ACTOR_EVENT_DATA
 {
 	uint32 index;

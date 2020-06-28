@@ -133,9 +133,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Core\GUI.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)Core_%(Filename)</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="..\ImGui\imgui.cpp" />
     <ClCompile Include="..\ImGui\imgui_demo.cpp" />
     <ClCompile Include="..\ImGui\imgui_draw.cpp" />
@@ -162,7 +159,6 @@
   <ItemGroup>
     <ClInclude Include="..\Core\Core.h" />
     <ClInclude Include="..\Core\DataTypes.h" />
-    <ClInclude Include="..\Core\GUI.h" />
     <ClInclude Include="..\Core\Includes.h" />
     <ClInclude Include="..\Core\Macros.h" />
     <ClInclude Include="..\ImGui\imconfig.h" />
@@ -249,6 +245,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Core\GUI.ixx" />
     <None Include="Mobility.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -330,7 +330,7 @@ static void Actor_StageLoadComplete()
 
 	//HoboBreak();
 
-	//if (Config.Game.Multiplayer.enable)
+	//if (Config.Multiplayer.enable)
 	//{
 	//	return;
 	//}
@@ -351,140 +351,68 @@ static void Actor_StageLoadComplete()
 
 #pragma region Arcade
 
-static void Arcade_InitSession()
+void Arcade_InitSession()
 {
-	LogFunctionStart();
+	auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
 
-	// @Todo: Auto and specifiy VARS.
+	sessionData.mission = Config.Arcade.mission;
 
-	// @Todo: Create SESSION_DATA struct.
-
-
-	byte8 * addr = (appBaseAddr + 0xC8F250);
-	uint32  & mission            = *(uint32  *)(addr        );
-	uint32  & mode               = *(uint32  *)(addr + 0xC  );
-	bool    & oneHitKill         = *(bool    *)(addr + 0x10 );
-	bool    & enableTutorial     = *(bool    *)(addr + 0x12 );
-	bool    & useGoldOrb         = *(bool    *)(addr + 0x13 );
-	bool    & bloodyPalace       = *(bool    *)(addr + 0x1C );
-	uint8   & goldOrbCount       = *(uint8   *)(addr + 0x35 );
-	bool    * unlock             =  (bool    *)(addr + 0x46 );
-	uint8   * equipment          =  (uint8   *)(addr + 0x84 );
-	uint8   & costume            = *(uint8   *)(addr + 0xD0 );
-	bool    & unlockDevilTrigger = *(bool    *)(addr + 0xD1 );
-	float32 & hitPoints          = *(float32 *)(addr + 0xD4 );
-	float32 & magicPoints        = *(float32 *)(addr + 0xD8 );
-	uint32  & style              = *(uint32  *)(addr + 0xDC );
-	uint32  * styleLevel         =  (uint32  *)(addr + 0xE0 );
-	float32 * styleExperience    =  (float32 *)(addr + 0xF8 );
-	uint32  * expertise          =  (uint32  *)(addr + 0x110);
-
-	mission = Config.Arcade.mission;
-
-	//mission = 17;
-
-
-
-	// @Todo: Use map instead.
-	//ModeStart:
+	if ((sessionData.mission >= 1) && (sessionData.mission <= 20))
 	{
-		if ((Config.Arcade.mission == 0) || (Config.Arcade.mission == 21))
-		{
-			goto ModeEnd;
-		}
-		//if (Game_Arcade_modeIndex == 5)
-		//{
-		//	mode = MODE_HARD;
-		//	oneHitKill = true;
-		//}
-		//else
-		{
-			mode = Config.Arcade.mode;
-		}
+		sessionData.mode = Config.Arcade.mode;
 	}
-	ModeEnd:
 
-	enableTutorial = false;
-	useGoldOrb = true;
+	sessionData.enableTutorial = false;
+	sessionData.useGoldOrb = true;
 
 	if (Config.Arcade.mission == 21)
 	{
-		bloodyPalace = true;
+		sessionData.bloodyPalace = true;
 	}
 
-	goldOrbCount = 3;
-
-	//memset(unlock, true, 14);
-
-	//if (Config.Arcade.character == CHAR_DANTE)
-	//{
-	//	vp_memcpy(equipment, Config.Arcade.weapon, 4);
-	//}
-
-
-
-	costume = Config.Arcade.costume;
-
-	unlockDevilTrigger = true;
-
-	hitPoints = Config.Arcade.hitPoints;
-	magicPoints = Config.Arcade.magicPoints;
+	sessionData.goldOrbCount = 3;
 
 	if (Config.Arcade.character == CHAR_DANTE)
 	{
-		if ((Config.Arcade.style == STYLE_DANTE_DOPPELGANGER) && Config.System.Actor.forceSingleActor)
-		{
-			style = STYLE_DANTE_TRICKSTER;
-		}
-		else
-		{
-			style = Config.Arcade.style;
-		}
+		sessionData.weapons[0] = Config.Arcade.meleeWeapons[0];
+		sessionData.weapons[1] = Config.Arcade.meleeWeapons[1];
+		sessionData.weapons[2] = Config.Arcade.rangedWeapons[0];
+		sessionData.weapons[3] = Config.Arcade.rangedWeapons[1];
 	}
 
+	sessionData.costume = Config.Arcade.costume;
+	sessionData.unlockDevilTrigger = true;
+	sessionData.hitPoints = Config.Arcade.hitPoints;
+	sessionData.magicPoints = Config.Arcade.magicPoints;
 
+	if (Config.Arcade.character == CHAR_DANTE)
+	{
+		sessionData.style = Config.Arcade.style;
+	}
 
-	
-	memset(styleLevel, 0, (MAX_STYLE * 4));
-	//for (uint8 styleId = 0; styleId < 4; styleId++)
-	//{
-	//	styleLevel[styleId] = 2;
-	//}
+	memset(sessionData.styleLevel, 0, (MAX_STYLE * 4));
 
-	styleLevel[0] = 2;
-	styleLevel[1] = 2;
-	styleLevel[2] = 2;
-	styleLevel[3] = 2;
+	sessionData.styleLevel[0] = 2;
+	sessionData.styleLevel[1] = 2;
+	sessionData.styleLevel[2] = 2;
+	sessionData.styleLevel[3] = 2;
 
+	memset(sessionData.styleExperience, 0, (MAX_STYLE * 4));
 
+	memset(sessionData.expertise, 0xFF, (8 * 4));
 
-
-
-	
-
-
-
-
-
-	memset(styleExperience, 0, (MAX_STYLE * 4));
-
-	//memset(expertise, 0xFFFFFFFF, 32);
-	//memset(expertise, 0xFFFFFFFF, 32);
-
-	memset(expertise, 0xFF, (8 * 4));
-
-
-
-
-	uint32 & controllerMagic = *(uint32 *)(appBaseAddr + 0x553000);
-
-	controllerMagic = 0;
-
-
-
-
-	LogFunctionEnd();
+	auto & controllerMagic = *reinterpret_cast<uint32 *>(appBaseAddr + 0x553000) = 0;
 }
+
+
+
+
+
+
+
+
+
+
 
 static void Arcade_SetCharacter(byte8 * addr)
 {
@@ -610,7 +538,7 @@ static void BossRush_SetRoom()
 	case 5:
 		if (nextRoom == ROOM_START_5)
 		{
-			if (!Config.Game.BossRush.Mission5.skipJester)
+			if (!Config.BossRush.Mission5.skipJester)
 			{
 				nextRoom     = ROOM_JESTER_1;
 				nextPosition = POSITION_JESTER_1;
@@ -673,12 +601,12 @@ static void BossRush_SetRoom()
 	case 12:
 		if (nextRoom == ROOM_START_12)
 		{
-			if (!Config.Game.BossRush.Mission12.skipJester)
+			if (!Config.BossRush.Mission12.skipJester)
 			{
 				nextRoom     = ROOM_JESTER_2;
 				nextPosition = POSITION_JESTER_2;
 			}
-			else if (!Config.Game.BossRush.Mission12.skipGeryonBridgeBattle)
+			else if (!Config.BossRush.Mission12.skipGeryonBridgeBattle)
 			{
 				nextRoom     = ROOM_GERYON;
 				nextPosition = POSITION_GERYON_BRIDGE;
@@ -710,7 +638,7 @@ static void BossRush_SetRoom()
 	case 17:
 		if (nextRoom == ROOM_START_17)
 		{
-			if (!Config.Game.BossRush.Mission17.skipJester)
+			if (!Config.BossRush.Mission17.skipJester)
 			{
 				nextRoom     = ROOM_JESTER_3;
 				nextPosition = POSITION_JESTER_3;
@@ -734,7 +662,7 @@ static void BossRush_SetRoom()
 		{
 			nextRoom     = ROOM_ARKHAM;
 			nextPosition = POSITION_ARKHAM;
-			if (Config.Game.BossRush.Mission19.skipFirstPart)
+			if (Config.BossRush.Mission19.skipArkhamBattlePart1)
 			{
 				flags[20] = 1;
 			}
@@ -774,7 +702,7 @@ static void BossRush_SetNextRoom()
 	case 12:
 		if (room == ROOM_JESTER_2)
 		{
-			if (!Config.Game.BossRush.Mission12.skipGeryonBridgeBattle)
+			if (!Config.BossRush.Mission12.skipGeryonBridgeBattle)
 			{
 				nextRoom     = ROOM_GERYON;
 				nextPosition = POSITION_GERYON_BRIDGE;
@@ -1055,7 +983,7 @@ static void SetRoom()
 	{
 		Arcade_SetRoom();
 	}
-	if (Config.Game.BossRush.enable)
+	if (Config.BossRush.enable)
 	{
 		BossRush_SetRoom();
 	}
@@ -1065,7 +993,7 @@ static void SetRoom()
 static void SetNextRoom()
 {
 	LogFunctionStart();
-	if (Config.Game.BossRush.enable)
+	if (Config.BossRush.enable)
 	{
 		BossRush_SetNextRoom();
 	}
@@ -1075,7 +1003,7 @@ static void SetNextRoom()
 static void SetContinueRoom()
 {
 	LogFunctionStart();
-	if (Config.Game.BossRush.enable)
+	if (Config.BossRush.enable)
 	{
 		BossRush_SetContinueRoom();
 	}
@@ -1099,7 +1027,7 @@ static const char * SetTrack(void *, const char * path, uint32, uint32)
 	//	mediaError = MEDIA_SKIP_TRACK;
 	//	return 0;
 	//}
-	//if (Config.Game.BossRush.enable)
+	//if (Config.BossRush.enable)
 	//{
 	//	return BossRush_SetTrack(path);
 	//}
@@ -1115,7 +1043,7 @@ static void StageLoadComplete()
 	//{
 	Actor_StageLoadComplete();
 	//}
-	if (Config.Game.BossRush.enable)
+	if (Config.BossRush.enable)
 	{
 		BossRush_StageLoadComplete();
 	}
@@ -1227,7 +1155,7 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 //
 //
 //
-//	//if (!Config.Game.Doppelganger.enableDevilTrigger)
+//	//if (!Config.Doppelganger.enableDevilTrigger)
 //	//{
 //	//	System_Actor_UpdateFlux(baseAddr, DEVIL_FLUX_END);
 //	//	return;
@@ -1328,7 +1256,7 @@ inline void Doppelganger_ToggleForceActorUpdate(bool enable)
 //
 //	Doppelganger_ToggleForceActorUpdate(false);
 //
-//	if (!Config.Game.Doppelganger.enableDevilTrigger)
+//	if (!Config.Doppelganger.enableDevilTrigger)
 //	{
 //		*(uint32 *)(baseAddr + 0x3E6C) = 0;
 //		*(uint32 *)(baseAddr + 0x3E70) = 0;
@@ -2094,7 +2022,7 @@ dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
 	//	};
 	//	byte sect2[] =
 	//	{
-	//		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Config.Game.Doppelganger.enable
+	//		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Config.Doppelganger.enable
 	//		0x8A, 0x00,                                                 //mov al,[rax]
 	//		0x84, 0xC0,                                                 //test al,al
 	//		0x74, 0x06,                                                 //je short
@@ -2110,7 +2038,7 @@ dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
 	//	memcpy(func.sect0, sect0, sizeof(sect0));
 	//	memcpy(func.sect1, sect1, sizeof(sect1));
 	//	memcpy(func.sect2, sect2, sizeof(sect2));
-	//	*(bool **)(func.sect2 + 2) = &Config.Game.Doppelganger.enable;
+	//	*(bool **)(func.sect2 + 2) = &Config.Doppelganger.enable;
 	//	WriteAddress((func.sect2 + 0x11), (appBaseAddr + 0x1E930E), 5);
 	//	WriteAddress((func.sect2 + 0x1E), (appBaseAddr + 0x1E930E), 6);
 	//	WriteAddress((func.sect2 + 0x24), (appBaseAddr + 0x1E92EA), 5);
@@ -2127,7 +2055,7 @@ dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
 	//	};
 	//	byte sect2[] =
 	//	{
-	//		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Config.Game.Doppelganger.enable
+	//		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&Config.Doppelganger.enable
 	//		0x8A, 0x00,                                                 //mov al,[rax]
 	//		0x84, 0xC0,                                                 //test al,al
 	//		0x74, 0x06,                                                 //je short
@@ -2142,7 +2070,7 @@ dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
 	//	memcpy(func.sect0, sect0, sizeof(sect0));
 	//	memcpy(func.sect1, sect1, sizeof(sect1));
 	//	memcpy(func.sect2, sect2, sizeof(sect2));
-	//	*(bool **)(func.sect2 + 2) = &Config.Game.Doppelganger.enable;
+	//	*(bool **)(func.sect2 + 2) = &Config.Doppelganger.enable;
 	//	WriteAddress((func.sect2 + 0x11), (appBaseAddr + 0x1E2B63), 5);
 	//	WriteAddress((func.sect2 + 0x1E), (appBaseAddr + 0x1E2B63), 6);
 	//	WriteAddress((func.sect2 + 0x24), (appBaseAddr + 0x1E2B2D), 5);

@@ -409,7 +409,7 @@ function AddActorData
 		{
 			name = "var_" + off.toString(16).toUpperCase();
 		}
-		else if (name.substring(0, 1) == "[")
+		else if (name.substring(0, 1) == "[") // @Research: What?
 		{
 			name = "var_" + off.toString(16).toUpperCase() + name;
 		}

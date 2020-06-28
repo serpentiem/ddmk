@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\Core\GUI.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\Core\ImGui_DirectInput8.ixx">
       <Filter>Core</Filter>
     </ClCompile>
@@ -86,9 +83,6 @@
     <ClInclude Include="..\Core\DataTypes.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Core\GUI.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\Core\Includes.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -122,5 +116,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Mobility.ixx" />
+    <None Include="..\Core\GUI.ixx">
+      <Filter>Core</Filter>
+    </None>
   </ItemGroup>
 </Project>

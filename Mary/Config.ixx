@@ -532,9 +532,6 @@ export struct CONFIG
 		};
 	}
 	Actor;
-
-
-
 	struct
 	{
 		bool    enable         = true;
@@ -560,68 +557,37 @@ export struct CONFIG
 			WEAPON_DANTE_EBONY_IVORY,
 			WEAPON_DANTE_SHOTGUN,
 		};
-
-
-
-
-
-
-		//uint8 weapons[4] =
-		//{
-		//	WEAPON_DANTE_REBELLION,
-		//	WEAPON_DANTE_CERBERUS,
-		//	WEAPON_DANTE_EBONY_IVORY,
-		//	WEAPON_DANTE_SHOTGUN,
-		//};
-
-
-
-		//// @Todo: Should be weapons.
-		//uint8  weapon[MAX_CHAR][5] =
-		//{
-		//	// Dante
-		//	{
-
-		//		WEAPON_VOID,
-		//	},
-		//	// Bob
-		//	{
-		//		WEAPON_BOB_YAMATO,
-		//		WEAPON_VOID,
-		//		WEAPON_VOID,
-		//		WEAPON_VOID,
-		//		WEAPON_VOID,
-		//	},
-		//	// Lady
-		//	{
-		//		WEAPON_VOID,
-		//		WEAPON_VOID,
-		//		9,
-		//		WEAPON_VOID,
-		//		11,
-		//	},
-		//	// Vergil
-		//	{
-		//		WEAPON_VERGIL_YAMATO,
-		//		WEAPON_VERGIL_BEOWULF,
-		//		WEAPON_VERGIL_FORCE_EDGE,
-		//		WEAPON_VOID,
-		//		WEAPON_VOID,
-		//	},
-		//};
 	}
 	Arcade;
-
-
-
-
-
-
-
-
-
 	struct
 	{
+		bool enable = false;
+		struct
+		{
+			bool skipJester = false;
+		}
+		Mission5;
+		struct
+		{
+			bool skipJester             = false;
+			bool skipGeryonBridgeBattle = false;
+		}
+		Mission12;
+		struct
+		{
+			bool skipJester = false;
+		}
+		Mission17;
+		struct
+		{
+			bool skipArkhamBattlePart1 = false;
+		}
+		Mission19;
+	}
+	BossRush;
+	struct
+	{
+		bool    invertX     = false;
 		float32 height      = 140;
 		float32 tilt        = 0.25f;
 		float32 zoom        = 460;
@@ -630,30 +596,9 @@ export struct CONFIG
 		uint32  rate        = 1000;
 	}
 	Camera;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	struct
 	{
-
 		bool enable = false;
-
-
-
 		struct
 		{
 			bool coreAbility = false;
@@ -720,40 +665,31 @@ export struct CONFIG
 		struct
 		{
 			bool swapNormalShotAndMultiLock = false;
-			bool instantFullCharge       = false;
+			bool instantFullCharge          = false;
 		}
 		Artemis;
-		uint8 crazyComboLevelMultiplier = 6;
 		float32 weaponSwitchTimeout = 1;
+		uint8 crazyComboLevelMultiplier = 6;
 		bool summonedSwords = false;
 	}
 	Dante;
-
-	// EbonyAndIvory
-	// swapNormalShotAndMultiLock
-
-
 	struct
 	{
 		bool skipIntro     = true;
 		bool skipCutscenes = true;
 	}
 	Event;
-
 	struct
 	{
 		bool preferLocalFiles = true;
 	}
 	File;
-
-
 	struct
 	{
 		uint32 frameRate = 60;
 		uint8  vSync     = 0;
 	}
 	Graphics;
-
 	struct
 	{
 		bool hideMouseCursor = true;
@@ -761,19 +697,7 @@ export struct CONFIG
 	Input;
 	struct
 	{
-		bool forceFocus = true;
-	}
-	Window;
-
-
-
-
-
-
-
-
-	struct
-	{
+		bool enable = false;
 		struct
 		{
 			float32 base  = 1;
@@ -815,12 +739,6 @@ export struct CONFIG
 		Quicksilver;
 	}
 	Speed;
-
-
-
-
-
-
 	struct
 	{
 		bool enable              = false;
@@ -829,18 +747,9 @@ export struct CONFIG
 		bool disableTimer        = false;
 	}
 	Training;
-
-
-
-
-
-
-
-
-
-
 	struct
 	{
+		bool enable = false;
 		struct
 		{
 			uint8 airTrickCount [2] = { 1, 1 };
@@ -850,41 +759,39 @@ export struct CONFIG
 		DarkSlayer;
 		struct
 		{
-			float32 rapidSlashDuration    [2] = { 5  , 5   };
-			float32 rapidSlashRange       [2] = { 330, 330 };
-			float32 judgementCutRange     [2] = { 500, 500 };
-			float32 judgementCutExtraCount[2] = { 2  , 2   };
+			float32 rapidSlashDuration[2] = { 5  , 5   };
+			float32 rapidSlashRange   [2] = { 330, 330 };
+			float32 judgementCutCount [2] = { 2  , 2   };
+			float32 judgementCutRange [2] = { 500, 500 };
 		}
 		Yamato;
 		struct
 		{
+			bool hide = false;
 			float32 risingSunHeight[2] = { 504, 504 };
 		}
 		Beowulf;
 		struct
 		{
+			bool infiniteRoundTrip = false;
 			float32 stingerDuration   [2] = { 16 , 16  };
 			float32 stingerRange      [2] = { 560, 560 };
 			float32 airStingerDuration[2] = { 16 , 16  };
 			float32 airStingerRange   [2] = { 560, 560 };
 		}
 		ForceEdge;
+		struct
+		{
+			bool chronoSwords = false;
+		}
+		SummonedSwords;
 	}
 	Vergil;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	struct
+	{
+		bool forceFocus = true;
+	}
+	Window;
 
 
 
@@ -901,181 +808,46 @@ export struct CONFIG
 
 	struct
 	{
+		bool  enable   = false;
+		float32 orbReach = 300;
 		struct
 		{
-			bool forceSingleActor = false;
-			bool disableIdleTimer = false;
+			float32 devil        = 11;
+			float32 quicksilver  = 16.5f;
+			float32 doppelganger = 16.5f;
 		}
-		Actor;
-		struct
-		{
-			bool invertX = false;
-		}
-		Camera;
+		MagicPointsDepletionRate;
 	}
-	System;
+	Other;
 	struct
 	{
-		struct
-		{
-			bool enable = false;
-			struct
-			{
-				bool skipJester = false;
-			}
-			Mission5;
-			struct
-			{
-				bool skipJester = false;
-				bool skipGeryonBridgeBattle = false;
-			}
-			Mission12;
-			struct
-			{
-				bool skipJester = false;
-			}
-			Mission17;
-			struct
-			{
-				bool skipFirstPart = false;
-			}
-			Mission19;
-		}
-		BossRush;
-
-
-
-
-
-
-
-
-
-		struct
-		{
-			bool  enable             = false;
-			uint8 character          = CHAR_DANTE;
-			bool  enableDevilTrigger = false;
-		}
-		Doppelganger;
-		//struct
-		//{
-		//	bool enable = false;
-		//	struct MOBILITY
-		//	{
-		//		struct
-		//		{
-		//			uint8 airHike = 1;
-		//			uint8 dash[3] =
-		//			{
-		//				1,
-		//				2,
-		//				3,
-		//			};
-		//			uint8 skyStar  = 1;
-		//			uint8 airTrick = 1;
-		//		}
-		//		Dante;
-		//		struct
-		//		{
-		//			uint8 airTrick  = 1;
-		//			uint8 trickUp   = 1;
-		//			uint8 trickDown = 1;
-		//		}
-		//		Vergil;
-		//	};
-		//	MOBILITY Human;
-		//	MOBILITY Devil;
-		//}
-		//Mobility;
-		//struct
-		//{
-		//	bool  enable                      = false;
-		//	uint8 actorCount                  = 1;
-		//	uint8 character [3] = {};
-		//	uint8 costume   [3] = {};
-		//}
-		//Multiplayer;
-		struct
-		{
-			bool  enable   = false;
-			float32 orbReach = 300;
-			struct
-			{
-				float32 devil        = 11;
-				float32 quicksilver  = 16.5f;
-				float32 doppelganger = 16.5f;
-			}
-			MagicPointsDepletionRate;
-		}
-		Other;
-		struct
-		{
-			bool   enable = false;
-			byte16 button = GAMEPAD_UP;
-		}
-		ResetMotionState;
-		struct
-		{
-			bool enable               = false;
-			bool noDoubleTap          = false;
-		}
-		StyleSwitcher;
-		struct
-		{
-			bool enable = false;
-			struct
-			{
-				bool infiniteRoundTrip = false;
-			}
-			ForceEdge;
-			struct
-			{
-				bool chronoSwords = false;
-			}
-			SummonedSwords;
-			struct
-			{
-				float32 melee = 8;
-			}
-			WeaponSwitchTimeout;
-		}
-		Vergil;
-		struct
-		{
-			bool  enable = false;
-			uint8 devil  = DEVIL_DANTE_REBELLION;
-			uint8 sword  = 0;
-			struct
-			{
-				uint8 count     = 5;
-				uint8 weapon[5] =
-				{
-					WEAPON_DANTE_REBELLION,
-					WEAPON_DANTE_CERBERUS,
-					WEAPON_DANTE_AGNI_RUDRA,
-					WEAPON_DANTE_NEVAN,
-					WEAPON_DANTE_BEOWULF,
-				};
-			}
-			Melee;
-			struct
-			{
-				uint8 count     = 5;
-				uint8 weapon[5] =
-				{
-					WEAPON_DANTE_EBONY_IVORY,
-					WEAPON_DANTE_SHOTGUN,
-					WEAPON_DANTE_ARTEMIS,
-					WEAPON_DANTE_SPIRAL,
-					WEAPON_DANTE_KALINA_ANN,
-				};
-			}
-			Ranged;
-		}
-		WeaponSwitcher;
+		bool   enable = false;
+		byte16 button = GAMEPAD_UP;
 	}
-	Game;
+	ResetMotionState;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	struct
 	{
 		struct
@@ -1160,21 +932,21 @@ export struct CONFIG
 		Vergil;
 	}
 	Cosmetics;
-	struct
-	{
-		struct
-		{
-			bool    enable        = false;
-			float32 x             = 0;
-			float32 y             = 0;
-			uint8   fontSizeIndex = 2;
-			float32 color[4]      = { 1, 0, 0, 1 };
-			bool    focus         = true;
-			bool    memory        = true;
-		}
-		Overlay;
-	}
-	Tools;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 };
 #pragma pack(pop)
 
