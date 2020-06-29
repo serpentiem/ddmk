@@ -569,8 +569,8 @@ export struct CONFIG
 		Mission5;
 		struct
 		{
-			bool skipJester             = false;
-			bool skipGeryonBridgeBattle = false;
+			bool skipJester      = false;
+			bool skipGeryonPart1 = false;
 		}
 		Mission12;
 		struct
@@ -580,7 +580,7 @@ export struct CONFIG
 		Mission17;
 		struct
 		{
-			bool skipArkhamBattlePart1 = false;
+			bool skipArkhamPart1 = false;
 		}
 		Mission19;
 	}

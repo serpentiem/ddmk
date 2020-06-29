@@ -516,6 +516,37 @@ uint32 Arcade_modeMap[] =
 
 uint8 Arcade_modeIndex = 0;
 
+const char * Arcade_floorNames[] =
+{
+	"Floor 1",
+	"Floor 2",
+	"Floor 3",
+	"Floor 4",
+	"Floor 5",
+	"Floor 6",
+	"Floor 7",
+	"Floor 8",
+	"Floor 9",
+	"Floor 10",
+	"Cerberus",
+	"Gigapede",
+	"Agni & Rudra",
+	"Nevan",
+	"Beowulf",
+	"Geryon",
+	"Doppelganger",
+	"Leviathan",
+	"Damned Chessmen",
+	"Vergil 1",
+	"Vergil 2",
+	"Vergil 3",
+	"Lady",
+	"Arkham",
+	"Jester 1",
+	"Jester 2",
+	"Jester 3",
+};
+
 const char * Arcade_characterNames[] =
 {
 	"Dante",
@@ -615,7 +646,7 @@ void Arcade()
 
 		if (Config.Arcade.mission == 21)
 		{
-			GUI_InputDefault("Floor", Config.Arcade.floor, DefaultConfig.Arcade.floor);
+			GUI_Combo("Floor", Arcade_floorNames, Config.Arcade.floor, ImGuiComboFlags_HeightLargest);
 		}
 
 		if (Config.Arcade.mission > 0)
@@ -658,7 +689,7 @@ void BossRush()
 
 		GUI_SectionStart("Mission 12");
 		GUI_Checkbox("Skip Jester", Config.BossRush.Mission12.skipJester);
-		GUI_Checkbox("Skip Geryon Bridge Battle", Config.BossRush.Mission12.skipGeryonBridgeBattle);
+		GUI_Checkbox("Skip Geryon Part 1", Config.BossRush.Mission12.skipGeryonPart1);
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Mission 17");
@@ -666,7 +697,7 @@ void BossRush()
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Mission 19");
-		GUI_Checkbox("Skip Arkham Battle Part 1", Config.BossRush.Mission19.skipArkhamBattlePart1);
+		GUI_Checkbox("Skip Arkham Part 1", Config.BossRush.Mission19.skipArkhamPart1);
 		ImGui::Text("");
 	}
 }

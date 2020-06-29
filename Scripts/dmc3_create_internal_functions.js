@@ -138,6 +138,27 @@ dmc3.exe+23CC23 - E8 38190000           - call dmc3.exe+23E560
 
 
 
+[ 0x32BE20, "void", "byte8 * dest"                                       , "", "Init Track" ],
+[ 0x32BA90, "void", "byte8 * dest, const char * filename, uint32, uint32", "", "Set Track"  ],
+
+
+/*
+
+
+
+
+
+
+
+dmc3.exe+243325 - 45 33 C9              - xor r9d,r9d { __SET_TRACK__
+ }
+dmc3.exe+243328 - 48 8D 15 D9002A00     - lea rdx,[dmc3.exe+4E3408] { ("afs/sound/Kaze_01.adx") }
+dmc3.exe+24332F - 45 33 C0              - xor r8d,r8d
+dmc3.exe+243332 - 48 8D 0D CF03AB00     - lea rcx,[dmc3.exe+CF3708] { (0) }
+dmc3.exe+243339 - E8 52870E00           - call dmc3.exe+32BA90
+
+*/
+
 
 
 

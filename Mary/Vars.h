@@ -1608,108 +1608,204 @@ actorData.forceData[3].x
 
 
 
-#pragma region Review
 
-// @Research: Consider boss ids.
 
-enum ROOM_
+
+
+
+
+
+
+
+struct MissionStartHelper
 {
-	ROOM_START_3             = 2,
-	ROOM_START_4             = 100,
-	ROOM_START_5             = 111,
-	ROOM_START_7             = 127,
-	ROOM_START_8             = 300,
-	ROOM_START_9             = 201,
-	ROOM_START_11            = 212,
-	ROOM_START_12            = 217,
-	ROOM_START_13            = 229,
-	ROOM_START_16            = 106,
-	ROOM_START_17            = 133,
-	ROOM_START_18            = 400,
-	ROOM_START_19            = 406,
-	ROOM_CERBERUS            = 6,
-	ROOM_GIGAPEDE            = 111,
-	ROOM_JESTER_1            = 422,
-	ROOM_AGNI_RUDRA          = 121,
-	ROOM_VERGIL_1            = 144,
-	ROOM_LEVIATHAN           = 302,
-	ROOM_NEVAN               = 210,
-	ROOM_BEOWULF             = 217,
-	ROOM_JESTER_2            = 448,
-	ROOM_GERYON              = 228,
-	ROOM_VERGIL_2            = 234,
-	ROOM_LADY                = 115,
-	ROOM_JESTER_3            = 449,
-	ROOM_DOPPELGANGER        = 139,
-	ROOM_TAIZAI_REBORN       = 420,
-	ROOM_CERBERUS_REBORN     = 412,
-	ROOM_GIGAPEDE_REBORN     = 413,
-	ROOM_AGNI_RUDRA_REBORN   = 414,
-	ROOM_LEVIATHAN_REBORN    = 419,
-	ROOM_NEVAN_REBORN        = 415,
-	ROOM_BEOWULF_REBORN      = 416,
-	ROOM_GERYON_REBORN       = 417,
-	ROOM_DOPPELGANGER_REBORN = 418,
-	ROOM_ARKHAM              = 421,
-	ROOM_VERGIL_3            = 411,
+	uint16 room;
+	uint16 position;
 };
 
-enum POSITION_
+constexpr MissionStartHelper missionStartHelper[] =
 {
-	POSITION_CERBERUS            = 2,
-	POSITION_GIGAPEDE            = 0,
-	POSITION_JESTER_1            = 0,
-	POSITION_AGNI_RUDRA          = 3,
-	POSITION_VERGIL_1            = 0,
-	POSITION_LEVIATHAN           = 0,
-	POSITION_NEVAN               = 2,
-	POSITION_BEOWULF             = 2,
-	POSITION_JESTER_2            = 0,
-	POSITION_GERYON_BRIDGE       = 0,
-	POSITION_GERYON_GROUND       = 2,
-	POSITION_VERGIL_2            = 0,
-	POSITION_LADY                = 2,
-	POSITION_JESTER_3            = 0,
-	POSITION_DOPPELGANGER        = 0,
-	POSITION_TAIZAI_REBORN       = 0,
-	POSITION_CERBERUS_REBORN     = 0,
-	POSITION_GIGAPEDE_REBORN     = 0,
-	POSITION_AGNI_RUDRA_REBORN   = 0,
-	POSITION_LEVIATHAN_REBORN    = 0,
-	POSITION_NEVAN_REBORN        = 0,
-	POSITION_BEOWULF_REBORN      = 0,
-	POSITION_GERYON_REBORN       = 0,
-	POSITION_DOPPELGANGER_REBORN = 0,
-	POSITION_ARKHAM              = 0,
-	POSITION_VERGIL_3            = 0,
+	{ 0  , 0 }, // Movie
+	{ 0  , 0 }, // Mission 1
+	{ 1  , 0 }, // Mission 2
+	{ 2  , 0 }, // Mission 3
+	{ 100, 0 }, // Mission 4
+	{ 111, 2 }, // Mission 5
+	{ 122, 0 }, // Mission 6
+	{ 127, 2 }, // Mission 7
+	{ 300, 0 }, // Mission 8
+	{ 201, 0 }, // Mission 9
+	{ 209, 2 }, // Mission 10
+	{ 212, 1 }, // Mission 11
+	{ 217, 1 }, // Mission 12
+	{ 229, 0 }, // Mission 13
+	{ 237, 1 }, // Mission 14
+	{ 222, 1 }, // Mission 15
+	{ 106, 0 }, // Mission 16
+	{ 133, 1 }, // Mission 17
+	{ 400, 0 }, // Mission 18
+	{ 406, 0 }, // Mission 19
+	{ 411, 0 }, // Mission 20
+	{ 423, 0 }, // Bloody Palace
 };
 
-#define TRACK_CERBERUS            "afs/sound/Boss_01.adx"
-#define TRACK_GIGAPEDE            "afs/sound/T_Boss.adx"
-#define TRACK_JESTER_1            "afs/sound/Jester.adx"
-#define TRACK_AGNI_RUDRA          "afs/sound/Boss_02.adx"
-#define TRACK_VERGIL_1            "afs/sound/Versil_01.adx"
-#define TRACK_LEVIATHAN           "afs/sound/Boss_08.adx"
-#define TRACK_NEVAN               "afs/sound/Boss_03.adx"
-#define TRACK_BEOWULF             "afs/sound/Boss_04.adx"
-#define TRACK_JESTER_2            "afs/sound/Jester.adx"
-#define TRACK_GERYON              "afs/sound/Boss_05.adx"
-#define TRACK_VERGIL_2            "afs/sound/Versil_02.adx"
-#define TRACK_LADY                "afs/sound/Lady.adx"
-#define TRACK_JESTER_3            "afs/sound/Jester.adx"
-#define TRACK_DOPPELGANGER        "afs/sound/Boss_06.adx"
-#define TRACK_TAIZAI_REBORN       "afs/sound/Battle_01B.adx"
-#define TRACK_CERBERUS_REBORN     "afs/sound/Boss_01B.adx"
-#define TRACK_GIGAPEDE_REBORN     "afs/sound/T_BossB.adx"
-#define TRACK_AGNI_RUDRA_REBORN   "afs/sound/Boss_02B.adx"
-#define TRACK_LEVIATHAN_REBORN    "afs/sound/Boss_08B.adx"
-#define TRACK_NEVAN_REBORN        "afs/sound/Boss_03B.adx"
-#define TRACK_BEOWULF_REBORN      "afs/sound/Boss_04B.adx"
-#define TRACK_GERYON_REBORN       "afs/sound/Boss_05B.adx"
-#define TRACK_DOPPELGANGER_REBORN "afs/sound/Boss_06B.adx"
-#define TRACK_ARKHAM_1            "afs/sound/Hine_01.adx"
-#define TRACK_ARKHAM_2            "afs/sound/Hine_02.adx"
-#define TRACK_VERGIL_3            "afs/sound/Versil_03.adx"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct FloorHelper
+{
+	uint16 room;
+	uint16 position;
+};
+
+constexpr FloorHelper Arcade_floorHelper[] =
+{
+	{ 423, 0 }, // Floor 1
+{ 424, 0 }, // Floor 2
+{ 425, 0 }, // Floor 3
+{ 426, 0 }, // Floor 4
+{ 427, 0 }, // Floor 5
+{ 428, 0 }, // Floor 6
+{ 429, 0 }, // Floor 7
+{ 430, 0 }, // Floor 8
+{ 431, 0 }, // Floor 9
+{ 432, 0 }, // Floor 10
+{ 433, 0 }, // Cerberus
+{ 434, 0 }, // Gigapede
+{ 435, 0 }, // Agni & Rudra
+{ 436, 0 }, // Nevan
+{ 437, 0 }, // Beowulf
+{ 438, 2 }, // Geryon
+{ 439, 0 }, // Doppelganger
+{ 440, 0 }, // Heart of Leviathan
+{ 441, 0 }, // Damned Chessmen
+{ 442, 0 }, // Vergil 1
+{ 443, 0 }, // Vergil 2
+{ 444, 0 }, // Vergil 3
+{ 445, 2 }, // Lady
+{ 446, 0 }, // Arkham
+{ 422, 0 }, // Jester 1
+{ 448, 0 }, // Jester 2
+{ 449, 0 }, // Jester 3
+};
+
+
+
+
+
+
+
+
+
+
+enum BOSS
+{
+	BOSS_CERBERUS,
+	BOSS_GIGAPEDE,
+	BOSS_JESTER_1,
+	BOSS_AGNI_RUDRA,
+	BOSS_VERGIL_1,
+	BOSS_LEVIATHAN,
+	BOSS_NEVAN,
+	BOSS_BEOWULF,
+	BOSS_JESTER_2,
+	BOSS_GERYON_PART_1,
+	BOSS_GERYON_PART_2,
+	BOSS_VERGIL_2,
+	BOSS_LADY,
+	BOSS_JESTER_3,
+	BOSS_DOPPELGANGER,
+	BOSS_TAIZAI_REBORN,
+	BOSS_CERBERUS_REBORN,
+	BOSS_GIGAPEDE_REBORN,
+	BOSS_AGNI_RUDRA_REBORN,
+	BOSS_LEVIATHAN_REBORN,
+	BOSS_NEVAN_REBORN,
+	BOSS_BEOWULF_REBORN,
+	BOSS_GERYON_REBORN,
+	BOSS_DOPPELGANGER_REBORN,
+	BOSS_ARKHAM_PART_1,
+	BOSS_ARKHAM_PART_2,
+	BOSS_VERGIL_3,
+};
+
+struct BossHelper
+{
+	uint16 room;
+	uint16 position;
+	const char * track;
+};
+
+constexpr BossHelper bossHelper[] =
+{
+	{ 6  , 2, "afs/sound/Boss_01.adx"    }, // Cerberus
+	{ 111, 0, "afs/sound/T_Boss.adx"     }, // Gigapede
+	{ 422, 0, "afs/sound/Jester.adx"     }, // Jester 1
+	{ 121, 3, "afs/sound/Boss_02.adx"    }, // Agni & Rudra
+	{ 144, 0, "afs/sound/Versil_01.adx"  }, // Vergil 1
+	{ 302, 0, "afs/sound/Boss_08.adx"    }, // Leviathan
+	{ 210, 2, "afs/sound/Boss_03.adx"    }, // Nevan
+	{ 217, 2, "afs/sound/Boss_04.adx"    }, // Beowulf
+	{ 448, 0, "afs/sound/Jester.adx"     }, // Jester 2
+	{ 228, 0, "afs/sound/Boss_05.adx"    }, // Geryon Part 1
+	{ 228, 2, "afs/sound/Boss_05.adx"    }, // Geryon Part 2
+	{ 234, 0, "afs/sound/Versil_02.adx"  }, // Vergil 2
+	{ 115, 2, "afs/sound/Lady.adx"       }, // Lady
+	{ 449, 0, "afs/sound/Jester.adx"     }, // Jester 3
+	{ 139, 0, "afs/sound/Boss_06.adx"    }, // Doppelganger
+	{ 420, 0, "afs/sound/Battle_01B.adx" }, // Taizai Reborn
+	{ 412, 0, "afs/sound/Boss_01B.adx"   }, // Cerberus Reborn
+	{ 413, 0, "afs/sound/T_BossB.adx"    }, // Gigapede Reborn
+	{ 414, 0, "afs/sound/Boss_02B.adx"   }, // Agni & Rudra Reborn
+	{ 419, 0, "afs/sound/Boss_08B.adx"   }, // Leviathan Reborn
+	{ 415, 0, "afs/sound/Boss_03B.adx"   }, // Nevan Reborn
+	{ 416, 0, "afs/sound/Boss_04B.adx"   }, // Beowulf Reborn
+	{ 417, 0, "afs/sound/Boss_05B.adx"   }, // Geryon Reborn
+	{ 418, 0, "afs/sound/Boss_06B.adx"   }, // Doppelganger Reborn
+	{ 421, 0, "afs/sound/Hine_01.adx"    }, // Arkham Part 1
+	{ 421, 0, "afs/sound/Hine_02.adx"    }, // Arkham Part 2
+	{ 411, 0, "afs/sound/Versil_03.adx"  }, // Vergil 3
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 enum DEVIL_FLUX_
 {
@@ -1720,13 +1816,6 @@ enum DEVIL_FLUX_
 
 
 
-
-
-
-
-
-
-#pragma endregion
 
 
 
