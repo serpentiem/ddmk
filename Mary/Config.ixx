@@ -665,6 +665,11 @@ export struct CONFIG
 		Trickster;
 		struct
 		{
+			bool noColor = false;
+		}
+		Doppelganger;
+		struct
+		{
 			bool infiniteSwordPierce = false;
 			float32 stingerDuration   [2] = { 16 , 16  };
 			float32 stingerRange      [2] = { 560, 560 };
@@ -746,6 +751,25 @@ export struct CONFIG
 		bool hideMouseCursor = true;
 	}
 	Input;
+	struct
+	{
+		bool    noDevilForm = false;
+		float32 orbReach    = 300;
+		struct
+		{
+			float32 devil        = 11;
+			float32 quicksilver  = 16.5f;
+			float32 doppelganger = 16.5f;
+		}
+		MagicPointsDepletionRate;
+	}
+	Other;
+	struct
+	{
+		bool   enable = false;
+		byte16 button = GAMEPAD_UP;
+	}
+	ResetMotionState;
 	struct
 	{
 		bool enable = false;
@@ -843,86 +867,6 @@ export struct CONFIG
 		bool forceFocus = true;
 	}
 	Window;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	struct
-	{
-		bool  enable   = false;
-		float32 orbReach = 300;
-		struct
-		{
-			float32 devil        = 11;
-			float32 quicksilver  = 16.5f;
-			float32 doppelganger = 16.5f;
-		}
-		MagicPointsDepletionRate;
-	}
-	Other;
-	struct
-	{
-		bool   enable = false;
-		byte16 button = GAMEPAD_UP;
-	}
-	ResetMotionState;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	struct
-	{
-		struct
-		{
-			bool noColor = false;
-		}
-		Doppelganger;
-		struct
-		{
-			bool noDevilForm = false;
-		}
-		Other;
-	}
-	Cosmetics;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 };
 #pragma pack(pop)
 

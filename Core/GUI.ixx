@@ -368,4 +368,62 @@ export inline void GUI_PopDisable(bool condition)
 	}
 }
 
+export bool GUI_ColorEdit4
+(
+	const char * label,
+	float32(&var)[4],
+	ImGuiColorEditFlags flags = 0,
+	bool save = true
+)
+{
+	bool update = false;
+
+	GUI_PushId();
+	if (ImGui::ColorEdit4(label, var, flags))
+	{
+		update = true;
+	}
+	GUI_PopId();
+
+	if (update && save)
+	{
+		SaveConfig();
+	}
+
+	return update;
+}
+
+export template <uint8 count>
+bool GUI_ColorPalette
+(
+	const char * label,
+	float32(&vars)[count][4]
+)
+{
+	bool update = false;
+	auto & style = ImGui::GetStyle();
+
+	for_all(uint8, index, count)
+	{
+		if (GUI_ColorEdit4("", vars[index], ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaPreview))
+		{
+			update = true;
+		}
+		ImGui::SameLine(0, style.ItemInnerSpacing.x);
+	}
+
+	ImGui::Text(label);
+
+	return update;
+}
+
+export bool GUI_Color
+(
+	const char * label,
+	float32(&var)[4]
+)
+{
+	return GUI_ColorEdit4(label, var, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaPreview);
+}
+
 #endif
