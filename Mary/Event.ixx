@@ -25,6 +25,69 @@ import ModuleName(Mobility);
 
 constexpr bool debug = true;
 
+
+
+
+
+
+
+
+
+
+
+
+
+bool skipTrack = false;
+
+bool SetTrack
+(
+	byte8 * dest,
+	const char * filename,
+	uint32 arg3,
+	uint32 arg4
+)
+{
+	Log("%s %llX %s %u %u", FUNC_NAME, dest, filename, arg3, arg4);
+
+	//if (!Config.BossRush.enable)
+	//{
+	//	return true;
+	//}
+
+	if (skipTrack)
+	{
+		skipTrack = false;
+
+		return false;
+	}
+
+	return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void Arcade_InitSession()
 {
 	if (!Config.Arcade.enable)
@@ -208,6 +271,8 @@ void BossRush_SetRoom()
 		}
 		case 5:
 		{
+			skipTrack = true;
+
 			if (!Config.BossRush.Mission5.skipJester)
 			{
 				SetNextEventData(BOSS_JESTER_1);
@@ -481,6 +546,34 @@ void BossRush_SetContinueRoom()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //const char * BossRush_SetTrack(const char * path)
 //{
 //	//LogFunctionStart();
@@ -541,7 +634,7 @@ void BossRush_SetContinueRoom()
 //	return 0;
 //}
 
-bool skipTrack = false;
+
 
 void BossRush_StageLoadComplete()
 {
@@ -640,7 +733,7 @@ void BossRush_StageLoadComplete()
 		if ((eventData.room == bossHelper[BOSS_GERYON_PART_1].room) && (flags[20] == 1))
 		{
 			PlayTrack(bossHelper[BOSS_GERYON_PART_1].track);
-			skipTrack = true;
+			//skipTrack = true;
 		}
 		else if ((eventData.room == bossHelper[BOSS_GERYON_PART_2].room) && (flags[20] == 2))
 		{
@@ -677,7 +770,7 @@ void BossRush_StageLoadComplete()
 		if ((eventData.room == bossHelper[BOSS_ARKHAM_PART_1].room) && (flags[20] == 0))
 		{
 			PlayTrack(bossHelper[BOSS_ARKHAM_PART_1].track);
-			skipTrack = true;
+			//skipTrack = true;
 		}
 		else if ((eventData.room == bossHelper[BOSS_ARKHAM_PART_2].room) && (flags[20] == 1))
 		{
@@ -1042,35 +1135,6 @@ static void Actor_StageLoadComplete()
 
 
 
-
-
-
-
-
-// @Check: Why are both enum and bool required?
-
-static const char * SetTrack(void *, const char * path, uint32, uint32)
-{
-	//Log("%s %s", FUNC_NAME, path);
-
-	//mediaError = MEDIA_NO_ERROR;
-	//if (_stricmp(path, "afs/sound/continue.adx") == 0)
-	//{
-	//	mediaSkipTrack = false;
-	//}
-	//if (mediaSkipTrack)
-	//{
-	//	mediaSkipTrack = false;
-	//	mediaError = MEDIA_SKIP_TRACK;
-	//	return 0;
-	//}
-	//if (Config.BossRush.enable)
-	//{
-	//	return BossRush_SetTrack(path);
-	//}
-
-	return 0;
-}
 
 
 
@@ -1602,9 +1666,50 @@ export void Event_Init()
 
 
 
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0x89, 0x5C, 0x24, 0x08, // mov [rsp+08],rbx
+		};		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0, // test al,al
+			0x75, 0x01, // jne short
+			0xC3,       // ret
+		};		auto func = CreateFunction(SetTrack, (appBaseAddr + 0x32BA95), true, false, sizeof(sect0), 0, sizeof(sect2));		memcpy(func.sect0, sect0, sizeof(sect0));		memcpy(func.sect2, sect2, sizeof(sect2));		WriteJump((appBaseAddr + 0x32BA90), func.addr);		/*		dmc3.exe+32BA90 - 48 89 5C 24 08 - mov [rsp+08],rbx
+		dmc3.exe+32BA95 - 48 89 6C 24 10 - mov [rsp+10],rbp		*/
+	}
 
 
 
+
+
+
+
+
+	// @Audit: Not sure if this shouldn't be part of Media.cpp.
+	//{
+	//	byte sect0[] =
+	//	{
+	//		0x48, 0x89, 0x5C, 0x24, 0x08, //mov [rsp+08],rbx
+	//	};
+	//	byte sect2[] =
+	//	{
+	//		0x48, 0x85, 0xC0,                                           //test rax,rax
+	//		0x74, 0x03,                                                 //je short
+	//		0x48, 0x8B, 0xD0,                                           //mov rdx,rax
+	//		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&mediaError
+	//		0x8B, 0x00,                                                 //mov eax,[rax]
+	//		0x3D, 0x00, 0x00, 0x00, 0x00,                               //cmp eax,MEDIA_SKIP_TRACK
+	//		0x75, 0x01,                                                 //jne short
+	//		0xC3,                                                       //ret
+	//	};
+	//	FUNC func = CreateFunction(SetTrack, (appBaseAddr + 0x32BA95), true, false, sizeof(sect0), 0, sizeof(sect2));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect2, sect2, sizeof(sect2));
+	//	*(dword **)(func.sect2 + 0xA) = &mediaError;
+	//	*(dword *)(func.sect2 + 0x15) = MEDIA_SKIP_TRACK;
+	//	//WriteJump((appBaseAddr + 0x32BA90), func.addr);
+	//}
 
 
 
@@ -2069,30 +2174,7 @@ dmc3.exe+211E83 - E8 98C9FCFF           - call dmc3.exe+1DE820 Bob
 
 
 
-	// @Audit: Not sure if this shouldn't be part of Media.cpp.
-	//{
-	//	byte sect0[] =
-	//	{
-	//		0x48, 0x89, 0x5C, 0x24, 0x08, //mov [rsp+08],rbx
-	//	};
-	//	byte sect2[] =
-	//	{
-	//		0x48, 0x85, 0xC0,                                           //test rax,rax
-	//		0x74, 0x03,                                                 //je short
-	//		0x48, 0x8B, 0xD0,                                           //mov rdx,rax
-	//		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&mediaError
-	//		0x8B, 0x00,                                                 //mov eax,[rax]
-	//		0x3D, 0x00, 0x00, 0x00, 0x00,                               //cmp eax,MEDIA_SKIP_TRACK
-	//		0x75, 0x01,                                                 //jne short
-	//		0xC3,                                                       //ret
-	//	};
-	//	FUNC func = CreateFunction(SetTrack, (appBaseAddr + 0x32BA95), true, false, sizeof(sect0), 0, sizeof(sect2));
-	//	memcpy(func.sect0, sect0, sizeof(sect0));
-	//	memcpy(func.sect2, sect2, sizeof(sect2));
-	//	*(dword **)(func.sect2 + 0xA) = &mediaError;
-	//	*(dword *)(func.sect2 + 0x15) = MEDIA_SKIP_TRACK;
-	//	//WriteJump((appBaseAddr + 0x32BA90), func.addr);
-	//}
+
 
 
 

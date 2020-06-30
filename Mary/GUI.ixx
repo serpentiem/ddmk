@@ -1181,6 +1181,44 @@ void Main()
 
 	if (ImGui::Begin("DDMK 2.7", &pause))
 	{
+
+		ImGui::Text("");
+
+		auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
+
+		GUI_Checkbox("One Hit Kill", sessionData.oneHitKill, false);
+
+		ImGui::Text("");
+
+
+
+		auto PlayTrack = [](const char * filename)
+		{
+			func_32BE20((appBaseAddr + 0xCF3700));
+			func_32BA90((appBaseAddr + 0xCF3708), filename, 0, 0);
+		};
+
+
+		ImGui::Text("");
+		static char buffer[256] = {};
+		ImGui::InputText("Filename", buffer, sizeof(buffer));
+
+		if (GUI_Button("Play Track"))
+		{
+			PlayTrack(buffer);
+		}
+
+
+
+		ImGui::Text("");
+
+
+
+
+
+
+
+
 		Actor();
 		Arcade();
 		BossRush();
