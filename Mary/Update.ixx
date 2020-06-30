@@ -1331,18 +1331,18 @@ void ActorLoop(byte8 * baseAddr)
 
 
 
-void MainLoop()
-{
-
-	if (spawnActors)
-	{
-		spawnActors = false;
-		SpawnActors();
-		SetMainActor(Actor_actorBaseAddr[2]);
-	}
-
-
-}
+//void MainLoop()
+//{
+//
+//	if (spawnActors)
+//	{
+//		spawnActors = false;
+//		SpawnActors();
+//		SetMainActor(Actor_actorBaseAddr[2]);
+//	}
+//
+//
+//}
 
 
 
@@ -1716,20 +1716,20 @@ export void Update_Init()
 		dmc3.exe+1DFAB4 - E9 C7711400 - jmp dmc3.exe+326C80
 		*/
 	}
-	{
-		byte8 sect0[] =
-		{
-			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+23B060
-		};
-		auto func = CreateFunction(MainLoop, (appBaseAddr + 0x23D4B7), true, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteCall(func.sect0, (appBaseAddr + 0x23B060));
-		WriteJump((appBaseAddr + 0x23D4B2), func.addr);
-		/*
-		dmc3.exe+23D4B2 - E8 A9DBFFFF - call dmc3.exe+23B060
-		dmc3.exe+23D4B7 - 84 C0       - test al,al
-		*/
-	}
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+23B060
+	//	};
+	//	auto func = CreateFunction(MainLoop, (appBaseAddr + 0x23D4B7), true, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	WriteCall(func.sect0, (appBaseAddr + 0x23B060));
+	//	WriteJump((appBaseAddr + 0x23D4B2), func.addr);
+	//	/*
+	//	dmc3.exe+23D4B2 - E8 A9DBFFFF - call dmc3.exe+23B060
+	//	dmc3.exe+23D4B7 - 84 C0       - test al,al
+	//	*/
+	//}
 }
 
 #ifdef __GARBAGE__

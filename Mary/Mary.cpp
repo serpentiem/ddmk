@@ -104,8 +104,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-		Event_ToggleSkipIntro    (true);
-		Event_ToggleSkipCutscenes(true);
+		Event_ToggleSkipIntro    (Config.Event.skipIntro);
+		Event_ToggleSkipCutscenes(Config.Event.skipCutscenes);
 		//FMOD_Init();
 		Hooks_Init();
 		//Internal_Init();

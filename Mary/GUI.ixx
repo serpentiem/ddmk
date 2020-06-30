@@ -968,7 +968,10 @@ void System()
 		ImGui::Text("");
 		GUI_SectionStart("Event");
 		GUI_Checkbox("Skip Intro"    , Config.Event.skipIntro    );
-		GUI_Checkbox("Skip Cutscenes", Config.Event.skipCutscenes);
+		if (GUI_Checkbox("Skip Cutscenes", Config.Event.skipCutscenes))
+		{
+			Event_ToggleSkipCutscenes(Config.Event.skipCutscenes);
+		}
 		GUI_SectionEnd();
 
 		GUI_SectionStart("File");
