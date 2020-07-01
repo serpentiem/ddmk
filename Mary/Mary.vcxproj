@@ -140,7 +140,6 @@
     <ClCompile Include="ActorData.cpp" />
     <ClCompile Include="Arcade.ixx" />
     <ClCompile Include="Dante.ixx" />
-    <ClCompile Include="Dependency.cpp" />
     <ClCompile Include="Event.ixx" />
     <ClCompile Include="File.ixx" />
     <ClCompile Include="FMOD.cpp">
@@ -246,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Core\GUI.ixx" />
+    <None Include="BossRush.ixx" />
     <None Include="Color.ixx" />
     <None Include="Mobility.ixx" />
   </ItemGroup>

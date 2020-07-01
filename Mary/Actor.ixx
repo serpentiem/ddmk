@@ -1611,7 +1611,11 @@ bool WeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 }
 
 
-export bool spawnActors = false;
+
+
+
+
+export bool Actor_spawnActors = false;
 
 
 
@@ -1638,6 +1642,10 @@ export void SetMainActor(byte8 * baseAddr)
 	{
 		return;
 	}
+
+
+	// @Todo: User and Anchor.
+
 	auto & cameraData = *reinterpret_cast<CAMERA_DATA *>(cameraPool[147]);
 
 	auto & lockOnUserBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2548);
@@ -1663,11 +1671,27 @@ export void Actor_CreateMainActor(byte8 * baseAddr)
 
 	File_UpdateMainFileItems();
 
-	spawnActors = true;
+	Actor_spawnActors = true;
 }
 
 
 
+
+
+export void Actor_MainLoop()
+{
+	//LogFunction();
+
+	if (Actor_spawnActors)
+	{
+		Actor_spawnActors = false;
+		//SpawnActors();
+
+
+		Log("__SPAWN_ACTORS__");
+
+	}
+}
 
 
 

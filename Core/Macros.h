@@ -19,3 +19,6 @@
 
 #define LogFunctionStart() Log("%s Start", FUNC_NAME)
 #define LogFunctionEnd() Log("%s End", FUNC_NAME)
+
+#define _Prep_Merge(a, b) a##b
+#define Prep_Merge(a, b) _Prep_Merge(a, b)

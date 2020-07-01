@@ -3,6 +3,14 @@
 
 
 
+
+
+
+
+
+
+
+
 enum PLAYER
 {
 	MAX_PLAYER = 4,
@@ -769,8 +777,10 @@ constexpr CacheFileHelper cacheFileHelper[MAX_CACHE_FILE] =
 
 enum EVENT_
 {
-	EVENT_GAME     = 1,
-	EVENT_TELEPORT = 2,
+	EVENT_MAIN      = 1,
+	EVENT_TELEPORT  = 2,
+	EVENT_PAUSE     = 3,
+	EVENT_CUSTOMIZE = 6,
 };
 
 
@@ -927,12 +937,77 @@ enum ACTOR_EVENT
 
 
 
-#define _Merge(a, b) a##b
-#define Merge(a, b) _Merge(a, b)
 
-#define _(size) struct { byte8 Merge(padding, __LINE__)[size]; }
+
+#define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
 
 #pragma pack(push, 1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct ACTOR_EVENT_DATA
+{
+	uint32 index;
+	uint32 lastIndex;
+};
+
+
+
+
+struct STAGE_POSITION_DATA
+{
+	uint8 event;
+	_(3);
+	float32 x;
+	float32 y;
+	float32 z;
+	float32 rotation;
+	_(28);
+};
+
+static_assert(sizeof(STAGE_POSITION_DATA) == 48);
+//constexpr auto size = sizeof(STAGE_POSITION_DATA);
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -990,61 +1065,6 @@ static_assert(offsetof(SESSION_DATA, expertise) == 0x110);
 
 // $SessionDataEnd
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct ACTOR_EVENT_DATA
-{
-	uint32 index;
-	uint32 lastIndex;
-};
-
-
-
-
-struct STAGE_POSITION_DATA
-{
-	uint8 event;
-	_(3);
-	float32 x;
-	float32 y;
-	float32 z;
-	float32 rotation;
-	_(28);
-};
-
-static_assert(sizeof(STAGE_POSITION_DATA) == 48);
-//constexpr auto size = sizeof(STAGE_POSITION_DATA);
-
-
-
 struct EVENT_DATA
 {
 	_(24);
@@ -1059,6 +1079,83 @@ struct NEXT_EVENT_DATA
 	uint16 room;
 	uint16 position;
 };
+
+#define IntroduceSessionData() auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250)
+
+#define _IntroduceEventData(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+if (!name[8])\
+{\
+	__VA_ARGS__;\
+}\
+auto & eventData = *reinterpret_cast<EVENT_DATA *>(name[8])
+#define IntroduceEventData(...) _IntroduceEventData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+#define _IntroduceNextEventData(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+if (!name[12])\
+{\
+	__VA_ARGS__;\
+}\
+auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(name[12])
+#define IntroduceNextEventData(...) _IntroduceNextEventData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+#define _IntroduceEventFlags(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E30);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+if (!name[1])\
+{\
+	__VA_ARGS__;\
+}\
+auto eventFlags = reinterpret_cast<byte32 *>(name[1])
+#define IntroduceEventFlags(...) _IntroduceEventFlags(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1579,9 +1676,104 @@ static_assert(sizeof(MODEL_DATA) == 0x780);
 
 #pragma pack(pop)
 
+
+
+
+
+
+
+
+
+/*
+\
+\
+auto name2 = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E30);\
+if (!name2)\
+{\
+return;\
+}\
+if (!name2[1])\
+{\
+return;\
+}\
+auto eventFlags = reinterpret_cast<byte32 *>(name2[1])
+*/
+
+
+
+//#define _(size) struct { byte8 Merge(padding, __LINE__)[size]; }
+
+
+
+//#define IntroduceEventDataFunction(name1, name2) _IntroduceEventDataFunction(name1, name2)
+
+
+//#define Expand(a) a
+
+//#define IntroduceEventData IntroduceEventDataFunction(Merge(pool1_, __LINE__), Merge(pool2_, __LINE__))
+
+
+//#undef Expand
+
+//
+//#define IntroduceEventDataFunction(name1, name2) _IntroduceEventDataFunction(name1, name2)
+//
+//#define _IntroduceEventData IntroduceEventDataFunction(Merge(pool1_, __LINE__), Merge(pool2_, __LINE__))
+//
+//#define IntroduceEventData _IntroduceEventData
+
+
+
+
+
+
+
+
+
+
+//#define IntroduceEventDataFunction _IntroduceEventDataFunction(Merge(pool1_, __LINE__), Merge(pool2_, __LINE__))
+
+//#define IntroduceEventData IntroduceEventDataFunction
+
+
+
+
+
+
+
+
+//#define IntroduceEventData _IntroduceEventData(Merge(pool1_, __LINE__), Merge(pool2_, __LINE__))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #undef _
-#undef Merge
-#undef _Merge
+//#undef Merge
+//#undef _Merge
 
 
 

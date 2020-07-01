@@ -251,7 +251,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		Window_ToggleForceFocus(true);
 
-		Arcade_UpdateModeIndex();
+		//Arcade_UpdateModeIndex();
 		Arcade_Toggle(Config.Arcade.enable);
 
 

@@ -1,8 +1,3 @@
-
-
-// @Todo: Main Loop to init and events to clear, set.
-
-
 #ifndef __MODULE_EVENT__
 #define __MODULE_EVENT__
 
@@ -16,6 +11,7 @@ export module ModuleName(Event);
 
 import ModuleName(Actor);
 import ModuleName(Arcade);
+import ModuleName(BossRush);
 import ModuleName(Config);
 import ModuleName(File);
 import ModuleName(Mobility);
@@ -23,6 +19,7 @@ import ModuleName(Mobility);
 #ifdef __INTELLISENSE__
 #include "Actor.ixx"
 #include "Arcade.ixx"
+#include "BossRush.ixx"
 #include "Config.ixx"
 #include "File.ixx"
 #include "Mobility.ixx"
@@ -30,699 +27,10 @@ import ModuleName(Mobility);
 
 constexpr bool debug = true;
 
-bool skipTrack = false;
 
 
 
-void Arcade_InitSession()
-{
-	if (!Config.Arcade.enable)
-	{
-		return;
-	}
-
-	auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
-
-	sessionData.mission = Config.Arcade.mission;
-
-	if ((sessionData.mission >= 1) && (sessionData.mission <= 20))
-	{
-		sessionData.mode = Config.Arcade.mode;
-	}
-
-	sessionData.enableTutorial = false;
-	sessionData.useGoldOrb = true;
-
-	if (Config.Arcade.mission == 21)
-	{
-		sessionData.bloodyPalace = true;
-	}
-
-	sessionData.goldOrbCount = 3;
-
-	if (Config.Arcade.character == CHAR_DANTE)
-	{
-		sessionData.weapons[0] = Config.Arcade.meleeWeapons[0];
-		sessionData.weapons[1] = Config.Arcade.meleeWeapons[1];
-		sessionData.weapons[2] = Config.Arcade.rangedWeapons[0];
-		sessionData.weapons[3] = Config.Arcade.rangedWeapons[1];
-	}
-
-	sessionData.costume = Config.Arcade.costume;
-	sessionData.unlockDevilTrigger = true;
-	sessionData.hitPoints = Config.Arcade.hitPoints;
-	sessionData.magicPoints = Config.Arcade.magicPoints;
-
-	if (Config.Arcade.character == CHAR_DANTE)
-	{
-		sessionData.style = Config.Arcade.style;
-	}
-
-	memset(sessionData.styleLevel, 0, (MAX_STYLE * 4));
-
-	sessionData.styleLevel[0] = 2;
-	sessionData.styleLevel[1] = 2;
-	sessionData.styleLevel[2] = 2;
-	sessionData.styleLevel[3] = 2;
-
-	memset(sessionData.styleExperience, 0, (MAX_STYLE * 4));
-
-	memset(sessionData.expertise, 0xFF, (8 * 4));
-
-	auto & controllerMagic = *reinterpret_cast<uint32 *>(appBaseAddr + 0x553000) = 0;
-}
-
-void Arcade_SetCharacter(byte8 * dest)
-{
-	if (!Config.Arcade.enable)
-	{
-		return;
-	}
-
-	LogFunction(dest);
-	auto & character = *reinterpret_cast<uint8 *>(dest + 0x4565) = Config.Arcade.character;
-}
-
-void Arcade_SetRoom()
-{
-	if (!Config.Arcade.enable || Config.BossRush.enable)
-	{
-		return;
-	}
-
-	LogFunction();
-
-	auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
-
-	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
-	if (!pool)
-	{
-		return;
-	}
-	if (!pool[8])
-	{
-		return;
-	}
-	if (!pool[12])
-	{
-		return;
-	}
-	auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
-	auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(pool[12]);
-
-	if ((sessionData.mission >= 1) && (sessionData.mission <= 20))
-	{
-		if (!Config.Arcade.ignoreRoom)
-		{
-			nextEventData.room = static_cast<uint16>(Config.Arcade.room);
-		}
-
-		if (!Config.Arcade.ignorePosition)
-		{
-			nextEventData.position = static_cast<uint16>(Config.Arcade.position);
-		}
-	}
-
-	if (sessionData.mission == 21)
-	{
-		auto floor = Config.Arcade.floor;
-		if (floor >= countof(Arcade_floorHelper))
-		{
-			floor = 0;
-		}
-
-		nextEventData.room     = Arcade_floorHelper[floor].room;
-		nextEventData.position = Arcade_floorHelper[floor].position;
-	}
-}
-
-void BossRush_SetRoom()
-{
-	if (!Config.BossRush.enable)
-	{
-		return;
-	}
-
-	LogFunction();
-
-	auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
-
-	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
-	if (!pool)
-	{
-		return;
-	}
-	if (!pool[8])
-	{
-		return;
-	}
-	if (!pool[12])
-	{
-		return;
-	}
-	auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
-	auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(pool[12]);
-
-	auto pool2 = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E30);
-	if (!pool2)
-	{
-		return;
-	}
-	if (!pool2[1])
-	{
-		return;
-	}
-	auto flags = reinterpret_cast<byte32 *>(pool2[1]);
-
-	auto SetNextEventData = [&](uint8 boss)
-	{
-		nextEventData.room     = bossHelper[boss].room;
-		nextEventData.position = bossHelper[boss].position;
-	};
-
-	if (nextEventData.room == missionStartHelper[sessionData.mission].room)
-	{
-		switch (sessionData.mission)
-		{
-		case 3:
-		{
-			SetNextEventData(BOSS_CERBERUS);
-			flags[20] = 1;
-			break;
-		}
-		case 4:
-		{
-			SetNextEventData(BOSS_GIGAPEDE);
-			break;
-		}
-		case 5:
-		{
-			if (!Config.BossRush.Mission5.skipJester)
-			{
-				SetNextEventData(BOSS_JESTER_1);
-			}
-			else
-			{
-				SetNextEventData(BOSS_AGNI_RUDRA);
-				flags[20] = 1;
-			}
-			break;
-		}
-		case 7:
-		{
-			SetNextEventData(BOSS_VERGIL_1);
-			break;
-		}
-		case 8:
-		{
-			SetNextEventData(BOSS_LEVIATHAN);
-			*reinterpret_cast<uint8 *>(reinterpret_cast<byte8 *>(pool2) + 0x6A) = 1;
-			*reinterpret_cast<byte8 *>(pool[12] + 0x7DF) = 0x40;
-			break;
-		}
-		case 9:
-		{
-			SetNextEventData(BOSS_NEVAN);
-			flags[20] = 1;
-			break;
-		}
-		case 11:
-		{
-			SetNextEventData(BOSS_BEOWULF);
-			flags[20] = 1;
-			break;
-		}
-		case 12:
-		{
-			if (!Config.BossRush.Mission12.skipJester)
-			{
-				SetNextEventData(BOSS_JESTER_2);
-			}
-			else if (!Config.BossRush.Mission12.skipGeryonPart1)
-			{
-				SetNextEventData(BOSS_GERYON_PART_1);
-				flags[20] = 1;
-			}
-			else
-			{
-				SetNextEventData(BOSS_GERYON_PART_2);
-				flags[20] = 2;
-			}
-			break;
-		}
-		case 13:
-		{
-			SetNextEventData(BOSS_VERGIL_2);
-			break;
-		}
-		case 16:
-		{
-			SetNextEventData(BOSS_LADY);
-			flags[20] = 1;
-			break;
-		}
-		case 17:
-		{
-			if (!Config.BossRush.Mission17.skipJester)
-			{
-				SetNextEventData(BOSS_JESTER_3);
-			}
-			else
-			{
-				SetNextEventData(BOSS_DOPPELGANGER);
-			}
-			break;
-		}
-		case 18:
-		{
-			SetNextEventData(BOSS_TAIZAI_REBORN);
-			break;
-		}
-		case 19:
-		{
-			if (!Config.BossRush.Mission19.skipArkhamPart1)
-			{
-				SetNextEventData(BOSS_ARKHAM_PART_1);
-			}
-			else
-			{
-				SetNextEventData(BOSS_ARKHAM_PART_2);
-				flags[20] = 1;
-			}
-			break;
-		}
-		}
-	}
-}
-
-void BossRush_SetNextRoom()
-{
-	if (!Config.BossRush.enable)
-	{
-		return;
-	}
-
-	LogFunction();
-
-	auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
-
-	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
-	if (!pool)
-	{
-		return;
-	}
-	if (!pool[8])
-	{
-		return;
-	}
-	if (!pool[12])
-	{
-		return;
-	}
-	auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
-	auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(pool[12]);
-
-	auto pool2 = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E30);
-	if (!pool2)
-	{
-		return;
-	}
-	if (!pool2[1])
-	{
-		return;
-	}
-	auto flags = reinterpret_cast<byte32 *>(pool2[1]);
-
-	auto SetNextEventData = [&](uint8 boss)
-	{
-		nextEventData.room     = bossHelper[boss].room;
-		nextEventData.position = bossHelper[boss].position;
-	};
-
-	switch (sessionData.mission)
-	{
-	case 5:
-	{
-		if (eventData.room == bossHelper[BOSS_JESTER_1].room)
-		{
-			SetNextEventData(BOSS_AGNI_RUDRA);
-			flags[20] = 1;
-		}
-		break;
-	}
-	case 12:
-	{
-		if (eventData.room == bossHelper[BOSS_JESTER_2].room)
-		{
-			if (!Config.BossRush.Mission12.skipGeryonPart1)
-			{
-				SetNextEventData(BOSS_GERYON_PART_1);
-				flags[20] = 1;
-			}
-			else
-			{
-				SetNextEventData(BOSS_GERYON_PART_2);
-				flags[20] = 2;
-			}
-		}
-		break;
-	}
-	case 17:
-	{
-		if (eventData.room == bossHelper[BOSS_JESTER_3].room)
-		{
-			SetNextEventData(BOSS_DOPPELGANGER);
-		}
-		break;
-	}
-	case 18:
-	{
-		switch (static_cast<uint16>(eventData.room))
-		{
-		case bossHelper[BOSS_TAIZAI_REBORN].room:
-		{
-			SetNextEventData(BOSS_CERBERUS_REBORN);
-			break;
-		}
-		case bossHelper[BOSS_CERBERUS_REBORN].room:
-		{
-			SetNextEventData(BOSS_GIGAPEDE_REBORN);
-			break;
-		}
-		case bossHelper[BOSS_GIGAPEDE_REBORN].room:
-		{
-			SetNextEventData(BOSS_AGNI_RUDRA_REBORN);
-			break;
-		}
-		case bossHelper[BOSS_AGNI_RUDRA_REBORN].room:
-		{
-			SetNextEventData(BOSS_LEVIATHAN_REBORN);
-			break;
-		}
-		case bossHelper[BOSS_LEVIATHAN_REBORN].room:
-		{
-			SetNextEventData(BOSS_NEVAN_REBORN);
-			break;
-		}
-		case bossHelper[BOSS_NEVAN_REBORN].room:
-		{
-			SetNextEventData(BOSS_BEOWULF_REBORN);
-			break;
-		}
-		case bossHelper[BOSS_BEOWULF_REBORN].room:
-		{
-			SetNextEventData(BOSS_GERYON_REBORN);
-			break;
-		}
-		case bossHelper[BOSS_GERYON_REBORN].room:
-		{
-			SetNextEventData(BOSS_DOPPELGANGER_REBORN);
-			break;
-		}
-		case bossHelper[BOSS_DOPPELGANGER_REBORN].room:
-		{
-			nextEventData.room     = 403;
-			nextEventData.position = 2;
-			flags[14] = 0x3FE;
-			flags[15] = 0x1FF;
-			break;
-		}
-		}
-		break;
-	}
-	}
-}
-
-void BossRush_SetContinueRoom()
-{
-	if (!Config.BossRush.enable)
-	{
-		return;
-	}
-
-	LogFunction();
-
-	auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
-
-	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
-	if (!pool)
-	{
-		return;
-	}
-	if (!pool[8])
-	{
-		return;
-	}
-	if (!pool[12])
-	{
-		return;
-	}
-	auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
-	auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(pool[12]);
-
-	nextEventData.room     = static_cast<uint16>(eventData.room    );
-	nextEventData.position = static_cast<uint16>(eventData.position);
-}
-
-bool BossRush_SetTrack(const char * filename)
-{
-	if (!Config.BossRush.enable)
-	{
-		return true;
-	}
-
-	auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
-
-	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
-	if (!pool)
-	{
-		Log("no pool");
-		return true;
-	}
-	if (!pool[8])
-	{
-		Log("no pool[8]");
-		return true;
-	}
-	if (!pool[12])
-	{
-		Log("no pool[12]");
-		return true;
-	}
-	auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
-	auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(pool[12]);
-
-	auto pool2 = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E30);
-	if (!pool2)
-	{
-		Log("no pool2");
-		return true;
-	}
-	if (!pool2[1])
-	{
-		Log("no pool2[1]");
-		return true;
-	}
-	auto flags = reinterpret_cast<byte32 *>(pool2[1]);
-
-
-
-	if
-	(
-		(sessionData.mission == 5) &&
-		(strcmp(filename, "afs/sound/Battle_03.adx") == 0)
-	)
-	{
-		return false;
-	}
-
-	if
-	(
-		(sessionData.mission == 5) &&
-		(eventData.room == bossHelper[BOSS_AGNI_RUDRA].room) &&
-		(strcmp(filename, bossHelper[BOSS_JESTER_1].track) == 0)
-	)
-	{
-		return false;
-	}
-
-
-
-
-
-
-
-
-
-
-	return true;
-}
-
-
-
-
-
-
-
-
-
-
-
-void BossRush_Main()
-{
-	if (!Config.BossRush.enable)
-	{
-		return;
-	}
-
-	LogFunction();
-
-	auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
-
-	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
-	if (!pool)
-	{
-		return;
-	}
-	if (!pool[8])
-	{
-		return;
-	}
-	if (!pool[12])
-	{
-		return;
-	}
-	auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
-	auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(pool[12]);
-
-	auto pool2 = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E30);
-	if (!pool2)
-	{
-		return;
-	}
-	if (!pool2[1])
-	{
-		return;
-	}
-	auto flags = reinterpret_cast<byte32 *>(pool2[1]);
-
-	auto PlayTrack = [](const char * filename)
-	{
-		func_32BE20((appBaseAddr + 0xCF3700));
-		func_32BA90((appBaseAddr + 0xCF3708), filename, 0, 0);
-	};
-
-	switch (sessionData.mission)
-	{
-	case 3:
-	{
-		if ((eventData.room == bossHelper[BOSS_CERBERUS].room) && (flags[20] == 1))
-		{
-			PlayTrack(bossHelper[BOSS_CERBERUS].track);
-		}
-		break;
-	}
-	case 5:
-	{
-		if ((eventData.room == bossHelper[BOSS_AGNI_RUDRA].room) && (flags[20] == 1))
-		{
-			PlayTrack(bossHelper[BOSS_AGNI_RUDRA].track);
-		}
-		break;
-	}
-	case 7:
-	{
-		if (eventData.room == bossHelper[BOSS_VERGIL_1].room)
-		{
-			PlayTrack(bossHelper[BOSS_VERGIL_1].track);
-		}
-		break;
-	}
-	case 9:
-	{
-		if ((eventData.room == bossHelper[BOSS_NEVAN].room) && (flags[20] == 1))
-		{
-			PlayTrack(bossHelper[BOSS_NEVAN].track);
-		}
-		break;
-	}
-	case 11:
-	{
-		if ((eventData.room == bossHelper[BOSS_BEOWULF].room) && (flags[20] == 1))
-		{
-			PlayTrack(bossHelper[BOSS_BEOWULF].track);
-		}
-		break;
-	}
-	case 12:
-	{
-		if ((eventData.room == bossHelper[BOSS_GERYON_PART_1].room) && (flags[20] == 1))
-		{
-			PlayTrack(bossHelper[BOSS_GERYON_PART_1].track);
-		}
-		else if ((eventData.room == bossHelper[BOSS_GERYON_PART_2].room) && (flags[20] == 2))
-		{
-			PlayTrack(bossHelper[BOSS_GERYON_PART_2].track);
-		}
-		break;
-	}
-	case 13:
-	{
-		if (eventData.room == bossHelper[BOSS_VERGIL_2].room)
-		{
-			PlayTrack(bossHelper[BOSS_VERGIL_2].track);
-		}
-		break;
-	}
-	case 16:
-	{
-		if (eventData.room == bossHelper[BOSS_LADY].room)
-		{
-			PlayTrack(bossHelper[BOSS_LADY].track);
-		}
-		break;
-	}
-	case 17:
-	{
-		if ((eventData.room == bossHelper[BOSS_DOPPELGANGER].room) && (flags[20] == 0))
-		{
-			PlayTrack(bossHelper[BOSS_DOPPELGANGER].track);
-		}
-		break;
-	}
-	case 19:
-	{
-		if ((eventData.room == bossHelper[BOSS_ARKHAM_PART_1].room) && (flags[20] == 0))
-		{
-			PlayTrack(bossHelper[BOSS_ARKHAM_PART_1].track);
-		}
-		else if ((eventData.room == bossHelper[BOSS_ARKHAM_PART_2].room) && (flags[20] == 1))
-		{
-			PlayTrack(bossHelper[BOSS_ARKHAM_PART_2].track);
-		}
-		break;
-	}
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//bool MainLoop_run = false;
 
 
 
@@ -758,98 +66,6 @@ void ClearPool()
 
 
 
-
-
-
-
-void Main_CreateMainActor(byte8 * baseAddr)
-{
-	LogFunction(baseAddr);
-
-	Actor_CreateMainActor(baseAddr);
-	Arcade_CreateMainActor(baseAddr);
-
-
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-
-	actorData.newButtonMask = 0xFFFF;
-	actorData.newEnableRightStick = true;
-	actorData.newEnableLeftStick = true;
-
-
-
-
-}
-
-void Customize_CreateMainActor(byte8 * baseAddr)
-{
-	LogFunction(baseAddr);
-
-	Actor_CreateMainActor(baseAddr);
-	Arcade_CreateMainActor(baseAddr);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void CreateMainClone(byte8 * baseAddr)
-{
-	LogFunction(baseAddr);
-	Actor_actorBaseAddr[1] = baseAddr;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void SkyStarReset(byte8 * baseAddr)
-{
-	Mobility::SkyStarReset(baseAddr);
-}
 
 
 
@@ -924,27 +140,20 @@ bool SetTrack
 	return BossRush_SetTrack(filename);
 }
 
-bool MainLoop_run = false;
 
 
-void MainLoop_Once()
-{
-	auto & cutsceneBar = *reinterpret_cast<bool *>(appBaseAddr + 0x5D113D);
 
-	if (!MainLoop_run && !cutsceneBar)
-	{
-		MainLoop_run = true;
 
-		Log("MainLoop->MainLoop_run %u", MainLoop_run);
 
-		BossRush_Main();
-	}
-}
 
-void MainLoop()
-{
-	//MainLoop_Once();
-}
+
+
+
+
+
+
+
+
 
 void MissionStart_Main()
 {
@@ -957,22 +166,22 @@ void Main_Customize()
 {
 	LogFunction();
 
-	auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
-	auto & actorData     = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[2]);
+	//auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
+	//auto & actorData     = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[2]);
 
 	// @Research: Update collisionIndex.
 	//mainActorData.position = actorData.position;
 	//actorData.position.y = 10500;
 
-	SetMainActor(mainActorData);
+	//SetMainActor(mainActorData);
 }
 
 void Customize_Main()
 {
 	LogFunction();
 
-	auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
-	auto & actorData     = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[2]);
+	//auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
+	//auto & actorData     = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[2]);
 
 	//actorData.position = mainActorData.position;
 	//mainActorData.position.y = 10500;
@@ -984,10 +193,177 @@ void Teleport()
 {
 	LogFunction();
 
-	MainLoop_run = false;
+	//MainLoop_run = false;
 
-	Log("Teleport->MainLoop_run %u", MainLoop_run);
+	//Log("Teleport->MainLoop_run %u", MainLoop_run);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Main_CreateMainActor(byte8 * baseAddr)
+{
+	LogFunction(baseAddr);
+
+	Actor_CreateMainActor(baseAddr);
+
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	actorData.newButtonMask = 0xFFFF;
+	actorData.newEnableRightStick = true;
+	actorData.newEnableLeftStick = true;
+}
+
+void Customize_CreateMainActor(byte8 * baseAddr)
+{
+	LogFunction(baseAddr);
+
+	Actor_CreateMainActor(baseAddr);
+
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	actorData.newButtonMask = 0xFFFF;
+	actorData.newEnableRightStick = true;
+	actorData.newEnableLeftStick = true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//
+//void MainLoop_Once()
+//{
+//	auto & cutsceneBar = *reinterpret_cast<bool *>(appBaseAddr + 0x5D113D);
+//
+//	if (!MainLoop_run && !cutsceneBar)
+//	{
+//		MainLoop_run = true;
+//
+//		Log("MainLoop->MainLoop_run %u", MainLoop_run);
+//
+//		BossRush_Main();
+//	}
+//}
+
+void MainLoop()
+{
+	Actor_MainLoop();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void CreateMainClone(byte8 * baseAddr)
+//{
+//	LogFunction(baseAddr);
+//	Actor_actorBaseAddr[1] = baseAddr;
+//}
+
+
+
+
+
+
+void SkyStarReset(byte8 * baseAddr)
+{
+	Mobility::SkyStarReset(baseAddr);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export void Event_Init()
 {
@@ -1101,8 +477,15 @@ export void Event_Init()
 		constexpr byte8 sect0[] =
 		{
 			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+23B060
-		};		auto func = CreateFunction(MainLoop, (appBaseAddr + 0x23D4B7), true, true, sizeof(sect0));		memcpy(func.sect0, sect0, sizeof(sect0));		WriteCall(func.sect0, (appBaseAddr + 0x23B060));		WriteJump((appBaseAddr + 0x23D4B2), func.addr);		/*		dmc3.exe+23D4B2 - E8 A9DBFFFF - call dmc3.exe+23B060
-		dmc3.exe+23D4B7 - 84 C0       - test al,al		*/
+		};
+		auto func = CreateFunction(MainLoop, (appBaseAddr + 0x23D4B7), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteCall(func.sect0, (appBaseAddr + 0x23B060));
+		WriteJump((appBaseAddr + 0x23D4B2), func.addr);
+		/*
+		dmc3.exe+23D4B2 - E8 A9DBFFFF - call dmc3.exe+23B060
+		dmc3.exe+23D4B7 - 84 C0       - test al,al
+		*/
 	}
 
 	// Transitions
@@ -1149,8 +532,14 @@ export void Event_Init()
 		constexpr byte8 sect0[] =
 		{
 			0xC7, 0x41, 0x20, 0x02, 0x00, 0x00, 0x00, // mov [rcx+20],00000002
-		};		auto func = CreateFunction(Teleport, (appBaseAddr + 0x23B3DA), true, true, sizeof(sect0));		memcpy(func.sect0, sect0, sizeof(sect0));		WriteJump((appBaseAddr + 0x23B3D3), func.addr, 2);		/*		dmc3.exe+23B3D3 - C7 41 20 02000000 - mov [rcx+20],00000002
-		dmc3.exe+23B3DA - C6 41 24 00       - mov byte ptr [rcx+24],00		*/
+		};
+		auto func = CreateFunction(Teleport, (appBaseAddr + 0x23B3DA), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteJump((appBaseAddr + 0x23B3D3), func.addr, 2);
+		/*
+		dmc3.exe+23B3D3 - C7 41 20 02000000 - mov [rcx+20],00000002
+		dmc3.exe+23B3DA - C6 41 24 00       - mov byte ptr [rcx+24],00
+		*/
 	}
 
 
@@ -1457,46 +846,48 @@ export void Event_Init()
 
 
 
-	// @Todo: Event namespaces.
+	
 
-	{
-		byte8 sect0[] =
-		{
-			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1DE820
-		};
-		byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xC8, //mov rcx,rax
-		};
-		auto func = CreateFunction(CreateMainClone, (appBaseAddr + 0x2134E3), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
-		WriteJump((appBaseAddr + 0x2134DE), func.addr);
-		/*
-		dmc3.exe+2134DE - E8 3DB3FCFF       - call dmc3.exe+1DE820
-		dmc3.exe+2134E3 - 48 89 86 78640000 - mov [rsi+00006478],rax
-		*/
-	}
-	{
-		byte8 sect0[] =
-		{
-			0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1DE820
-		};
-		byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xC8, //mov rcx,rax
-		};
-		auto func = CreateFunction(CreateMainClone, (appBaseAddr + 0x211E88), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
-		WriteJump((appBaseAddr + 0x211E83), func.addr);
-		/*
-		dmc3.exe+211E83 - E8 98C9FCFF       - call dmc3.exe+1DE820
-		dmc3.exe+211E88 - 48 89 83 78640000 - mov [rbx+00006478],rax
-		*/
-	}
+
+
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1DE820
+	//	};
+	//	byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xC8, //mov rcx,rax
+	//	};
+	//	auto func = CreateFunction(CreateMainClone, (appBaseAddr + 0x2134E3), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
+	//	WriteJump((appBaseAddr + 0x2134DE), func.addr);
+	//	/*
+	//	dmc3.exe+2134DE - E8 3DB3FCFF       - call dmc3.exe+1DE820
+	//	dmc3.exe+2134E3 - 48 89 86 78640000 - mov [rsi+00006478],rax
+	//	*/
+	//}
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1DE820
+	//	};
+	//	byte8 sect1[] =
+	//	{
+	//		0x48, 0x8B, 0xC8, //mov rcx,rax
+	//	};
+	//	auto func = CreateFunction(CreateMainClone, (appBaseAddr + 0x211E88), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
+	//	WriteJump((appBaseAddr + 0x211E83), func.addr);
+	//	/*
+	//	dmc3.exe+211E83 - E8 98C9FCFF       - call dmc3.exe+1DE820
+	//	dmc3.exe+211E88 - 48 89 83 78640000 - mov [rbx+00006478],rax
+	//	*/
+	//}
 }
 
 export void Event_ToggleSkipIntro(bool enable)

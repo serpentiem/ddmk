@@ -37,7 +37,7 @@ export inline bool InGame()
 		return false;
 	}
 	auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
-	if (eventData.index != EVENT_GAME)
+	if (eventData.index != EVENT_MAIN)
 	{
 		return false;
 	}
