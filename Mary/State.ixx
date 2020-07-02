@@ -27,17 +27,8 @@ export inline bool InGame()
 	{
 		return false;
 	}
-	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
-	if (!pool)
-	{
-		return false;
-	}
-	if (!pool[8])
-	{
-		return false;
-	}
-	auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
-	if (eventData.index != EVENT_MAIN)
+	IntroduceSceneData(return false);
+	if (sceneData.scene != SCENE_MAIN)
 	{
 		return false;
 	}

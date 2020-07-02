@@ -1586,6 +1586,91 @@ void SetMainActor(byte8 * baseAddr)
 
 
 
+export void Actor_Customize()
+{
+	LogFunction();
+
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[2]);
+	actorSpawnHelper.position = actorData.position;
+	actorSpawnHelper.rotation = actorData.rotation;
+	actorSpawnHelper.event = 0;
+
+	SetMainActor(Actor_actorBaseAddr[0]);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export void Actor_MissionClear()
+{
+	LogFunction();
+
+	SetMainActor(Actor_actorBaseAddr[0]);
+}
+
+export void Actor_MissionStart()
+{
+	LogFunction();
+
+	SetMainActor(Actor_actorBaseAddr[0]);
+}
+
+export void Actor_MissionSelect()
+{
+	LogFunction();
+
+	SetMainActor(Actor_actorBaseAddr[0]);
+}
+
+
+
+
+
+
+
+
+
+
+export void Actor_Teleport()
+{
+	LogFunction();
+
+	SetMainActor(Actor_actorBaseAddr[0]);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1593,10 +1678,10 @@ export void Actor_Main()
 {
 	LogFunction();
 
-	IntroduceEventData(return);
+	IntroduceSceneData(return);
 	IntroduceStagePositionData(return);
 
-	auto & pos = stagePositionData[eventData.position];
+	auto & pos = stagePositionData[sceneData.position];
 
 	auto Convert = [](float32 rotation)
 	{
@@ -1612,7 +1697,7 @@ export void Actor_Main()
 
 	actorSpawnHelper.position = { pos.x, pos.y, pos.z, 1 };
 	actorSpawnHelper.rotation = Convert(pos.rotation);
-	actorSpawnHelper.event = 0;
+	actorSpawnHelper.event = pos.event;
 
 	//Log
 	//(
@@ -1632,6 +1717,22 @@ export void Actor_Main()
 	//);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export void Actor_CreateMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
@@ -1647,17 +1748,7 @@ export void Actor_CreateMainActor(byte8 * baseAddr)
 	Actor_spawnActors = true;
 }
 
-export void Actor_Customize()
-{
-	LogFunction();
 
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[2]);
-	actorSpawnHelper.position = actorData.position;
-	actorSpawnHelper.rotation = actorData.rotation;
-	actorSpawnHelper.event = 0;
-
-	SetMainActor(Actor_actorBaseAddr[0]);
-}
 
 export void Actor_MainLoopOnce()
 {

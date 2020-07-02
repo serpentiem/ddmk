@@ -775,13 +775,44 @@ constexpr CacheFileHelper cacheFileHelper[MAX_CACHE_FILE] =
 
 // @Todo: Add missing events.
 
-enum EVENT_
+
+
+
+
+
+
+
+
+
+
+enum SCENE
 {
-	EVENT_MAIN      = 1,
-	EVENT_TELEPORT  = 2,
-	EVENT_PAUSE     = 3,
-	EVENT_CUSTOMIZE = 6,
+	SCENE_MAIN      = 1,
+	SCENE_TELEPORT  = 2,
+	SCENE_PAUSE     = 3,
+	SCENE_STATUS    = 4,
+	SCENE_OPTIONS   = 5,
+	SCENE_CONTINUE  = 6,
+	SCENE_CUSTOMIZE = 9,
+	SCENE_SAVE      = 10,
+	SCENE_SUB       = 11,
 };
+
+enum SUBSCENE
+{
+	SUBSCENE_MISSION_CLEAR  = 5,
+	SUBSCENE_GAME_OVER      = 6,
+	SUBSCENE_MISSION_START  = 7,
+	SUBSCENE_MISSION_SELECT = 8,
+};
+
+
+
+
+
+
+
+
 
 
 
@@ -1046,15 +1077,17 @@ static_assert(offsetof(SESSION_DATA, expertise) == 0x110);
 
 // $SessionDataEnd
 
-struct EVENT_DATA
+struct SCENE_DATA
 {
 	_(24);
 	uint32 room;
 	uint32 position;
-	uint32 index;
+	uint32 scene;
+	_(8);
+	uint32 subscene;
 };
 
-struct NEXT_EVENT_DATA
+struct NEXT_SCENE_DATA
 {
 	_(356);
 	uint16 room;
@@ -1074,7 +1107,7 @@ struct STAGE_POSITION_DATA
 
 #define IntroduceSessionData() auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250)
 
-#define _IntroduceEventData(name, ...)\
+#define _IntroduceSceneData(name, ...)\
 auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
 if (!name)\
 {\
@@ -1084,10 +1117,10 @@ if (!name[8])\
 {\
 	__VA_ARGS__;\
 }\
-auto & eventData = *reinterpret_cast<EVENT_DATA *>(name[8])
-#define IntroduceEventData(...) _IntroduceEventData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+auto & sceneData = *reinterpret_cast<SCENE_DATA *>(name[8])
+#define IntroduceSceneData(...) _IntroduceSceneData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
 
-#define _IntroduceNextEventData(name, ...)\
+#define _IntroduceNextSceneData(name, ...)\
 auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
 if (!name)\
 {\
@@ -1097,8 +1130,8 @@ if (!name[12])\
 {\
 	__VA_ARGS__;\
 }\
-auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(name[12])
-#define IntroduceNextEventData(...) _IntroduceNextEventData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+auto & nextSceneData = *reinterpret_cast<NEXT_SCENE_DATA *>(name[12])
+#define IntroduceNextSceneData(...) _IntroduceNextSceneData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
 
 #define _IntroduceEventFlags(name, ...)\
 auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E30);\
@@ -1326,55 +1359,55 @@ struct ENGINE_GAMEPAD
 // ACTOR_VARS
 // CAMERA_VARS
 
-struct VARS
-{
-	bool     init;
-	uint32 * room;
-	uint32 * position;
-	uint32 * event;
-	uint16 * nextRoom;
-	uint16 * nextPosition;
-	byte32 * flags;
-	uint32 * mission;
-	VARS()
-	{
-		memset(this, 0, sizeof(*this));
-		{
-			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xCA8918); // EVENT_DATA
-			if (!addr)
-			{
-				return;
-			}
-			if (!addr[8])
-			{
-				return;
-			}
-			room     = (uint32 *)(addr[8] + 0x18);
-			position = (uint32 *)(addr[8] + 0x1C);
-			event    = (uint32 *)(addr[8] + 0x20);
-			if (!addr[12])
-			{
-				return;
-			}
-			nextRoom     = (uint16 *)(addr[12] + 0x164); // NEXT_EVENT_DATA
-			nextPosition = (uint16 *)(addr[12] + 0x166);
-		}
-		{
-			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xC90E30); // MISSION_DATA
-			if (!addr)
-			{
-				return;
-			}
-			if (!addr[1])
-			{
-				return;
-			}
-			flags = (byte32 *)addr[1];
-		}
-		mission = (uint32 *)(appBaseAddr + 0xC8F250); // SESSION_DATA
-		init = true;
-	}
-};
+// struct VARS
+// {
+// 	bool     init;
+// 	uint32 * room;
+// 	uint32 * position;
+// 	uint32 * event;
+// 	uint16 * nextRoom;
+// 	uint16 * nextPosition;
+// 	byte32 * flags;
+// 	uint32 * mission;
+// 	VARS()
+// 	{
+// 		memset(this, 0, sizeof(*this));
+// 		{
+// 			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xCA8918); // EVENT_DATA
+// 			if (!addr)
+// 			{
+// 				return;
+// 			}
+// 			if (!addr[8])
+// 			{
+// 				return;
+// 			}
+// 			room     = (uint32 *)(addr[8] + 0x18);
+// 			position = (uint32 *)(addr[8] + 0x1C);
+// 			event    = (uint32 *)(addr[8] + 0x20);
+// 			if (!addr[12])
+// 			{
+// 				return;
+// 			}
+// 			nextRoom     = (uint16 *)(addr[12] + 0x164); // NEXT_EVENT_DATA
+// 			nextPosition = (uint16 *)(addr[12] + 0x166);
+// 		}
+// 		{
+// 			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xC90E30); // MISSION_DATA
+// 			if (!addr)
+// 			{
+// 				return;
+// 			}
+// 			if (!addr[1])
+// 			{
+// 				return;
+// 			}
+// 			flags = (byte32 *)addr[1];
+// 		}
+// 		mission = (uint32 *)(appBaseAddr + 0xC8F250); // SESSION_DATA
+// 		init = true;
+// 	}
+// };
 
 struct MEMORY_OBJECT
 {
@@ -1688,72 +1721,6 @@ static_assert(sizeof(MODEL_DATA) == 0x780);
 #pragma pack(pop)
 
 
-
-
-
-
-
-
-
-/*
-\
-\
-auto name2 = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E30);\
-if (!name2)\
-{\
-return;\
-}\
-if (!name2[1])\
-{\
-return;\
-}\
-auto eventFlags = reinterpret_cast<byte32 *>(name2[1])
-*/
-
-
-
-//#define _(size) struct { byte8 Merge(padding, __LINE__)[size]; }
-
-
-
-//#define IntroduceEventDataFunction(name1, name2) _IntroduceEventDataFunction(name1, name2)
-
-
-//#define Expand(a) a
-
-//#define IntroduceEventData IntroduceEventDataFunction(Merge(pool1_, __LINE__), Merge(pool2_, __LINE__))
-
-
-//#undef Expand
-
-//
-//#define IntroduceEventDataFunction(name1, name2) _IntroduceEventDataFunction(name1, name2)
-//
-//#define _IntroduceEventData IntroduceEventDataFunction(Merge(pool1_, __LINE__), Merge(pool2_, __LINE__))
-//
-//#define IntroduceEventData _IntroduceEventData
-
-
-
-
-
-
-
-
-
-
-//#define IntroduceEventDataFunction _IntroduceEventDataFunction(Merge(pool1_, __LINE__), Merge(pool2_, __LINE__))
-
-//#define IntroduceEventData IntroduceEventDataFunction
-
-
-
-
-
-
-
-
-//#define IntroduceEventData _IntroduceEventData(Merge(pool1_, __LINE__), Merge(pool2_, __LINE__))
 
 
 

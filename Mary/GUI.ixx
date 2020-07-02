@@ -1056,33 +1056,22 @@ void Teleporter()
 			{
 				return false;
 			}
-			auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
-			if (!pool)
-			{
-				return false;
-			}
-			if (!pool[8])
-			{
-				return false;
-			}
-			if (!pool[12])
-			{
-				return false;
-			}
-			auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
-			auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(pool[12]);
+			IntroduceSceneData(return false);
+			IntroduceNextSceneData(return false);
 			float32 width = 150;
 
 			ImGui::PushItemWidth(width);
 			ImGui::Text("Current");
-			GUI_Input<uint32>("", eventData.room    , 0, "%u", ImGuiInputTextFlags_ReadOnly, false);
-			GUI_Input<uint32>("", eventData.position, 0, "%u", ImGuiInputTextFlags_ReadOnly, false);
+			GUI_Input<uint32>("", sceneData.room    , 0, "%u", ImGuiInputTextFlags_ReadOnly, false);
+			GUI_Input<uint32>("", sceneData.position, 0, "%u", ImGuiInputTextFlags_ReadOnly, false);
 			ImGui::Text("Next");
-			GUI_Input<uint16>("", nextEventData.room    , 1, "%u", 0, false);
-			GUI_Input<uint16>("", nextEventData.position, 1, "%u", 0, false);
+			GUI_Input<uint16>("", nextSceneData.room    , 1, "%u", 0, false);
+			GUI_Input<uint16>("", nextSceneData.position, 1, "%u", 0, false);
 			if (GUI_Button("Teleport", ImVec2(width, ImGui::GetFrameHeight())))
 			{
-				eventData.index = EVENT_TELEPORT;
+				sceneData.scene = SCENE_TELEPORT;
+
+				Actor_Teleport();
 			}
 			ImGui::PopItemWidth();
 
