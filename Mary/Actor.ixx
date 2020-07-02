@@ -1,3 +1,11 @@
+
+
+// @Todo: Add enable check.
+
+
+
+
+
 #ifndef __MODULE_ACTOR__
 #define __MODULE_ACTOR__
 
@@ -581,16 +589,35 @@ uint8 g_style[MAX_PLAYER][MAX_ENTITY][MAX_CHAR] =
 	},
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct ActorSpawnHelper
+{
+	vec4 position;
+	uint16 rotation;
+	uint8 event;
+};
+
+ActorSpawnHelper actorSpawnHelper = {};
+
 template <typename T>
 byte8 * SpawnActorFunction
 (
 	uint8 player,
-	uint8 entity,
-	float32 x,
-	float32 y,
-	float32 z,
-	uint16 rotation,
-	uint8 event
+	uint8 entity
 )
 {
 	// auto mainBaseAddr = Actor_actorBaseAddr[0];
@@ -627,9 +654,13 @@ byte8 * SpawnActorFunction
 	//parentActorData.position.z = x;
 
 	
-	parentActorData.position = { x, y, z, 1 };
-	parentActorData.rotation = rotation;
+	//parentActorData.position = { x, y, z, 1 };
+	//parentActorData.rotation = rotation;
 	
+
+	parentActorData.position = actorSpawnHelper.position;
+	parentActorData.rotation = actorSpawnHelper.rotation;
+
 
 
 
@@ -641,7 +672,7 @@ byte8 * SpawnActorFunction
 
 	if (entity == ENTITY_MAIN)
 	{
-		parentActorData.var_3E10[8] = event;
+		parentActorData.var_3E10[8] = actorSpawnHelper.event;
 
 
 
@@ -710,139 +741,42 @@ byte8 * SpawnActorFunction
 	return parentActorData;
 }
 
-typedef decltype(SpawnActorFunction<ACTOR_DATA_DANTE>) * SpawnActorFunction_t;
-
-SpawnActorFunction_t SpawnActorFunctionMap[MAX_CHAR] =
-{
-	SpawnActorFunction<ACTOR_DATA_DANTE >,
-	SpawnActorFunction<ACTOR_DATA_BOB   >,
-	SpawnActorFunction<ACTOR_DATA_LADY  >,
-	SpawnActorFunction<ACTOR_DATA_VERGIL>,
-};
-
-byte8 * SpawnActor
-(
-	uint8 player,
-	uint8 entity,
-	float32 x,
-	float32 y,
-	float32 z,
-	uint16 rotation,
-	uint8 event
-)
-{
-	auto character = Config.Actor.character[player][entity];
-	if (character >= MAX_CHAR)
-	{
-		character = CHAR_DANTE;
-	}
-	return SpawnActorFunctionMap[character](player, entity, x, y, z, rotation, event);
-}
-
 byte8 * SpawnActor
 (
 	uint8 player,
 	uint8 entity
 )
 {
-	return SpawnActor(player, entity, 0, 0, 0, 0, 0);
+	auto character = Config.Actor.character[player][entity];
+	switch (character)
+	{
+	case CHAR_DANTE:
+	{
+		return SpawnActorFunction<ACTOR_DATA_DANTE>(player, entity);
+	}
+	case CHAR_BOB:
+	{
+		return SpawnActorFunction<ACTOR_DATA_BOB>(player, entity);
+	}
+	case CHAR_LADY:
+	{
+		return SpawnActorFunction<ACTOR_DATA_LADY>(player, entity);
+	}
+	case CHAR_VERGIL:
+	{
+		return SpawnActorFunction<ACTOR_DATA_VERGIL>(player, entity);
+	}
+	}
+	return 0;
 }
 
-export void SpawnActors()
+void SpawnActors()
 {
-	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
-	if (!pool)
-	{
-		return;
-	}
-	if (!pool[8])
-	{
-		return;
-	}
-	//if (!pool[12])
-	//{
-	//	return;
-	//}
-	auto & eventData = *reinterpret_cast<EVENT_DATA *>(pool[8]);
-	//auto & nextEventData = *reinterpret_cast<NEXT_EVENT_DATA *>(pool[12]);
-
-	auto stagePositionData = *reinterpret_cast<STAGE_POSITION_DATA **>(pool[8] + 0x2CB0);
-	if (!stagePositionData)
-	{
-		return;
-	}
-
-
-	//HoboBreak();
-
-
-	auto & pos = stagePositionData[eventData.position];
-
-
-	//auto rotation = static_cast<uint16>((((pos.rotation / 360.0f) * 6.28f) * 65536.0f) / 6.28f);
-
-
-	auto Convert = [](float32 rotation)
-	{
-		float32 value = rotation;
-
-		value /= 360.0f;
-		value *= 6.28f;
-		value *= 65536.0f;
-		value /= 6.28f;
-
-		return static_cast<uint16>(value);
-	};
-
-
-
-	auto rotation = Convert(pos.rotation);
-
-
-
-
-	Log
-	(
-		"%.0f "
-		"%.0f "
-		"%.0f "
-		"%.0f "
-		"true %u "
-		"%u",
-		pos.x,
-		pos.y,
-		pos.z,
-		pos.rotation,
-		rotation,
-		pos.event
-	);
-
-
-
-
-
-
-
-
-
-
-	//spawnActors = false;
-
-
-
+	LogFunction();
 
 	for_all(uint8, player, Config.Actor.playerCount)
 	{
-		auto mainBaseAddr = SpawnActor
-		(
-			player,
-			ENTITY_MAIN,
-			pos.x,
-			pos.y,
-			pos.z,
-			rotation,
-			pos.event
-		);
+		auto mainBaseAddr = SpawnActor(player, ENTITY_MAIN);
 		if (!mainBaseAddr)
 		{
 			continue;
@@ -858,41 +792,6 @@ export void SpawnActors()
 
 		mainActorData.cloneBaseAddr = cloneActorData;
 	}
-
-
-
-
-
-	//auto mainBaseAddr = Actor_actorBaseAddr[0];
-	//if (!mainBaseAddr)
-	//{
-	//	return;
-	//}
-	//auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
-
-	//mainActorData.position.y = 10500; // @Todo: Put SPIRE_Y into enums.
-
-
-
-	//// @Todo: Create helper function and include lock-on.
-
-	//{
-	//	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-	//	if (!pool)
-	//	{
-	//		return;
-	//	}
-	//	auto baseAddr = Actor_actorBaseAddr[2];
-	//	if (!baseAddr)
-	//	{
-	//		return;
-	//	}
-	//	pool[3] = baseAddr;
-
-	//}
-
-
-
 }
 
 #pragma endregion
@@ -1173,13 +1072,7 @@ export void ToggleIsWeaponReady(bool enable)
 
 #pragma endregion
 
-
-
-
-
-
-
-
+#pragma region __HIDE__
 
 
 
@@ -1610,36 +1503,61 @@ bool WeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 	return true;
 }
 
+#pragma endregion
 
 
 
 
 
-export bool Actor_spawnActors = false;
 
 
 
 
 
-export void SetMainActor(byte8 * baseAddr)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bool Actor_spawnActors = false;
+
+void SetMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 
 	auto actorPool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
 	if (!actorPool)
 	{
+		Log("No actorPool");
 		return;
 	}
 	//auto & mainActorBaseAddr = *reinterpret_cast<byte8 **>(actorPool[3]);
 	//auto & mainActorBaseAddr = actorPool[3];
 
+
+
+	// @Todo: Introduce Camera Data.
+
+
 	auto cameraPool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC8FBD0);
 	if (!cameraPool)
 	{
+		Log("No cameraPool");
 		return;
 	}
 	if (!cameraPool[147])
 	{
+		Log("No cameraPool[147]");
 		return;
 	}
 
@@ -1648,16 +1566,71 @@ export void SetMainActor(byte8 * baseAddr)
 
 	auto & cameraData = *reinterpret_cast<CAMERA_DATA *>(cameraPool[147]);
 
+
+
+
+
+
 	auto & lockOnUserBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2548);
 
 	actorPool[3] = baseAddr;
-	//cameraData.targetBaseAddr = baseAddr;
-	//lockOnUserBaseAddr = baseAddr;
+	cameraData.targetBaseAddr = baseAddr;
+	lockOnUserBaseAddr = baseAddr;
 }
 
 
 
 
+
+
+
+
+
+
+
+
+export void Actor_Main()
+{
+	LogFunction();
+
+	IntroduceEventData(return);
+	IntroduceStagePositionData(return);
+
+	auto & pos = stagePositionData[eventData.position];
+
+	auto Convert = [](float32 rotation)
+	{
+		float32 value = rotation;
+
+		value /= 360.0f;
+		value *= 6.28f;
+		value *= 65536.0f;
+		value /= 6.28f;
+
+		return static_cast<uint16>(value);
+	};
+
+	actorSpawnHelper.position = { pos.x, pos.y, pos.z, 1 };
+	actorSpawnHelper.rotation = Convert(pos.rotation);
+	actorSpawnHelper.event = 0;
+
+	//Log
+	//(
+	//	"Stage Position Data "
+	//	"%.0f "
+	//	"%.0f "
+	//	"%.0f "
+	//	"%.0f "
+	//	"true %u "
+	//	"%u",
+	//	pos.x,
+	//	pos.y,
+	//	pos.z,
+	//	pos.rotation,
+	//	rotation,
+	//	pos.event
+	//);
+}
 
 export void Actor_CreateMainActor(byte8 * baseAddr)
 {
@@ -1674,26 +1647,36 @@ export void Actor_CreateMainActor(byte8 * baseAddr)
 	Actor_spawnActors = true;
 }
 
-
-
-
-
-export void Actor_MainLoop()
+export void Actor_Customize()
 {
-	//LogFunction();
+	LogFunction();
 
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[2]);
+	actorSpawnHelper.position = actorData.position;
+	actorSpawnHelper.rotation = actorData.rotation;
+	actorSpawnHelper.event = 0;
+
+	SetMainActor(Actor_actorBaseAddr[0]);
+}
+
+export void Actor_MainLoopOnce()
+{
 	if (Actor_spawnActors)
 	{
 		Actor_spawnActors = false;
-		//SpawnActors();
 
+		LogFunction();
 
-		Log("__SPAWN_ACTORS__");
-
+		SpawnActors();
 	}
 }
 
+export void Actor_MainLoopOnceSync()
+{
+	LogFunction();
 
+	SetMainActor(Actor_actorBaseAddr[2]);
+}
 
 
 

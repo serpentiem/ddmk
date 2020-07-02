@@ -1428,14 +1428,14 @@ void SetAction(byte8 * baseAddr)
 
 
 
-void SetStartPosition(byte8 * baseAddr)
-{
-	LogFunction(baseAddr);
-
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-
-	actorData.var_3E10[8] = 0;
-}
+//void SetStartPosition(byte8 * baseAddr)
+//{
+//	LogFunction(baseAddr);
+//
+//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//
+//	actorData.var_3E10[8] = 0;
+//}
 
 
 
@@ -1474,13 +1474,13 @@ export void Update_Init()
 
 
 
-	{
-		auto func = CreateFunction(SetStartPosition);
-		WriteJump((appBaseAddr + 0x1DFD04), func.addr);
-		/*
-		dmc3.exe+1DFD04 - C3 - ret
-		*/
-	}
+	//{
+	//	auto func = CreateFunction(SetStartPosition);
+	//	WriteJump((appBaseAddr + 0x1DFD04), func.addr);
+	//	/*
+	//	dmc3.exe+1DFD04 - C3 - ret
+	//	*/
+	//}
 
 
 

@@ -985,25 +985,6 @@ struct ACTOR_EVENT_DATA
 
 
 
-struct STAGE_POSITION_DATA
-{
-	uint8 event;
-	_(3);
-	float32 x;
-	float32 y;
-	float32 z;
-	float32 rotation;
-	_(28);
-};
-
-static_assert(sizeof(STAGE_POSITION_DATA) == 48);
-//constexpr auto size = sizeof(STAGE_POSITION_DATA);
-
-
-
-
-
-
 
 
 
@@ -1080,6 +1061,17 @@ struct NEXT_EVENT_DATA
 	uint16 position;
 };
 
+struct STAGE_POSITION_DATA
+{
+	uint8 event;
+	_(3);
+	float32 x;
+	float32 y;
+	float32 z;
+	float32 rotation;
+	_(28);
+};
+
 #define IntroduceSessionData() auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250)
 
 #define _IntroduceEventData(name, ...)\
@@ -1120,6 +1112,25 @@ if (!name[1])\
 }\
 auto eventFlags = reinterpret_cast<byte32 *>(name[1])
 #define IntroduceEventFlags(...) _IntroduceEventFlags(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+#define _IntroduceStagePositionData(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+if (!name[8])\
+{\
+	__VA_ARGS__;\
+}\
+auto stagePositionData = *reinterpret_cast<STAGE_POSITION_DATA **>(name[8] + 0x2CB0);\
+if (!stagePositionData)\
+{\
+	__VA_ARGS__;\
+}
+#define IntroduceStagePositionData(...) _IntroduceStagePositionData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+
 
 
 
@@ -2564,3 +2575,5 @@ enum MOTION_GROUP_
 
 
 #endif
+
+

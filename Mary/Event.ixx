@@ -85,7 +85,8 @@ void ClearPool()
 
 
 
-
+bool MainLoopOnce_run = false;
+bool MainLoopOnceSync_run = false;
 
 
 
@@ -146,64 +147,13 @@ bool SetTrack
 
 
 
-
-
-
-
-
-
-
-
-
-void MissionStart_Main()
+void UnlockActor(byte8 * baseAddr)
 {
-	LogFunction();
-
-	BossRush_Main();
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	actorData.newButtonMask = 0xFFFF;
+	actorData.newEnableRightStick = true;
+	actorData.newEnableLeftStick = true;
 }
-
-void Main_Customize()
-{
-	LogFunction();
-
-	//auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
-	//auto & actorData     = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[2]);
-
-	// @Research: Update collisionIndex.
-	//mainActorData.position = actorData.position;
-	//actorData.position.y = 10500;
-
-	//SetMainActor(mainActorData);
-}
-
-void Customize_Main()
-{
-	LogFunction();
-
-	//auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[0]);
-	//auto & actorData     = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[2]);
-
-	//actorData.position = mainActorData.position;
-	//mainActorData.position.y = 10500;
-
-	//SetMainActor(actorData);
-}
-
-void Teleport()
-{
-	LogFunction();
-
-	//MainLoop_run = false;
-
-	//Log("Teleport->MainLoop_run %u", MainLoop_run);
-}
-
-
-
-
-
-
-
 
 
 
@@ -222,24 +172,49 @@ void Main_CreateMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 
+	MainLoopOnce_run = false;
+	MainLoopOnceSync_run = false;
+
 	Actor_CreateMainActor(baseAddr);
 
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-	actorData.newButtonMask = 0xFFFF;
-	actorData.newEnableRightStick = true;
-	actorData.newEnableLeftStick = true;
+	//UnlockActor(baseAddr);
+}
+
+void Main()
+{
+	LogFunction();
+
+	Actor_Main();
+	BossRush_Main();
+}
+
+void Main_Customize()
+{
+	LogFunction();
+
+	Actor_Customize();
 }
 
 void Customize_CreateMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 
+	MainLoopOnce_run = false;
+	MainLoopOnceSync_run = false;
+
 	Actor_CreateMainActor(baseAddr);
 
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
-	actorData.newButtonMask = 0xFFFF;
-	actorData.newEnableRightStick = true;
-	actorData.newEnableLeftStick = true;
+	//UnlockActor(baseAddr);
+}
+
+void Customize_Main()
+{
+	LogFunction();
+}
+
+void Teleport()
+{
+	LogFunction();
 }
 
 
@@ -255,26 +230,40 @@ void Customize_CreateMainActor(byte8 * baseAddr)
 
 
 
+void MainLoopOnce()
+{
+	if (!MainLoopOnce_run)
+	{
+		MainLoopOnce_run = true;
 
-//
-//
-//void MainLoop_Once()
-//{
-//	auto & cutsceneBar = *reinterpret_cast<bool *>(appBaseAddr + 0x5D113D);
-//
-//	if (!MainLoop_run && !cutsceneBar)
-//	{
-//		MainLoop_run = true;
-//
-//		Log("MainLoop->MainLoop_run %u", MainLoop_run);
-//
-//		BossRush_Main();
-//	}
-//}
+		LogFunction();
+
+		Actor_MainLoopOnce();
+	}
+}
+
+void MainLoopOnceSync()
+{
+	auto & cutsceneBar = *reinterpret_cast<bool *>(appBaseAddr + 0x5D113D);
+	if (cutsceneBar)
+	{
+		return;
+	}
+
+	if (!MainLoopOnceSync_run)
+	{
+		MainLoopOnceSync_run = true;
+
+		LogFunction();
+
+		Actor_MainLoopOnceSync();
+	}
+}
 
 void MainLoop()
 {
-	Actor_MainLoop();
+	MainLoopOnce();
+	MainLoopOnceSync();
 }
 
 
@@ -494,7 +483,7 @@ export void Event_Init()
 		{
 			0xC7, 0x47, 0x20, 0x01, 0x00, 0x00, 0x00, // mov [rdi+20],00000001
 		};
-		auto func = CreateFunction(MissionStart_Main, (appBaseAddr + 0x23D0AB), true, true, sizeof(sect0));
+		auto func = CreateFunction(Main, (appBaseAddr + 0x23D0AB), true, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		WriteJump((appBaseAddr + 0x23D0A4), func.addr, 2);
 		/*
