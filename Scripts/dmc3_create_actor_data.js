@@ -208,7 +208,7 @@ var items =
 
 
 
-	[ "styleRank"                       , "uint8"                     , 0x6510                           ],
+	[ "styleRank"                       , "uint32"                    , 0x6510                           ],
 	[ "styleMeter"                      , "float32"                   , 0x6514                           ],
 	[ "inputData[58]"                   , "INPUT_DATA"                , 0x6674                           ],
 	[ "collisionIndex"                  , "uint32"                    , 0x7254                           ],

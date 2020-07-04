@@ -147,6 +147,23 @@ constexpr uint8 weaponIconMapVergil[] =
 //	//HUD_UpdateStyleIcon();
 //}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export void HUD_UpdateStyleIcon
 (
 	uint8 style,

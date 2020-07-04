@@ -117,8 +117,7 @@ struct ACTOR_DATA
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
 	_(143);
-	uint8 styleRank; // 0x6510
-	_(3);
+	uint32 styleRank; // 0x6510
 	float32 styleMeter; // 0x6514
 	_(348);
 	INPUT_DATA inputData[58]; // 0x6674
@@ -306,8 +305,7 @@ struct ACTOR_DATA_DANTE
 	float32 rangedWeaponTimer[3]; // 0x64FC
 	float32 meleeWeaponSwitchTimeout; // 0x6508
 	float32 rangedWeaponSwitchTimeout; // 0x650C
-	uint8 styleRank; // 0x6510
-	_(3);
+	uint32 styleRank; // 0x6510
 	float32 styleMeter; // 0x6514
 	_(348);
 	INPUT_DATA inputData[58]; // 0x6674
@@ -477,8 +475,7 @@ struct ACTOR_DATA_BOB
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
 	_(143);
-	uint8 styleRank; // 0x6510
-	_(3);
+	uint32 styleRank; // 0x6510
 	float32 styleMeter; // 0x6514
 	_(348);
 	INPUT_DATA inputData[58]; // 0x6674
@@ -640,8 +637,7 @@ struct ACTOR_DATA_LADY
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
 	_(143);
-	uint8 styleRank; // 0x6510
-	_(3);
+	uint32 styleRank; // 0x6510
 	float32 styleMeter; // 0x6514
 	_(348);
 	INPUT_DATA inputData[58]; // 0x6674
@@ -819,8 +815,7 @@ struct ACTOR_DATA_VERGIL
 	float32 meleeWeaponTimer[5]; // 0x64F4
 	float32 meleeWeaponSwitchForwardTimeout; // 0x6508
 	float32 meleeWeaponSwitchBackTimeout; // 0x650C
-	uint8 styleRank; // 0x6510
-	_(3);
+	uint32 styleRank; // 0x6510
 	float32 styleMeter; // 0x6514
 	_(348);
 	INPUT_DATA inputData[58]; // 0x6674

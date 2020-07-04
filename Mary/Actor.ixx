@@ -770,7 +770,7 @@ byte8 * SpawnActor
 	return 0;
 }
 
-void SpawnActors()
+export void SpawnActors()
 {
 	LogFunction();
 
@@ -1535,6 +1535,45 @@ void SetMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 
+
+
+	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+
+
+
+
+
+
+	// Style Rank
+	{
+		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		if (!pool)
+		{
+			return;
+		}
+		if (!pool[12])
+		{
+			return;
+		}
+		auto dest = *reinterpret_cast<byte8 **>(pool[12]);
+		if (!dest)
+		{
+			return;
+		}
+		*reinterpret_cast<uint32 **>(dest + 0x3D10) = &actorData.styleRank;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
 	auto actorPool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
 	if (!actorPool)
 	{
@@ -1680,6 +1719,8 @@ export void Actor_Main()
 
 	IntroduceSceneData(return);
 	IntroduceStagePositionData(return);
+
+	Log("reach here!");
 
 	auto & pos = stagePositionData[sceneData.position];
 

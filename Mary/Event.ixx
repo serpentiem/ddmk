@@ -167,6 +167,17 @@ void CreateMainActor(byte8 * baseAddr)
 	Actor_CreateMainActor(baseAddr);
 
 	UnlockActor(baseAddr);
+
+
+
+	//Actor_Main();
+
+
+
+	//SpawnActors();
+
+
+
 }
 
 void Main_CreateMainActor(byte8 * baseAddr)
@@ -229,7 +240,7 @@ void Main_Teleport()
 {
 	LogFunction();
 
-	Actor_Teleport();
+	//Actor_Teleport();
 
 }
 
@@ -242,7 +253,7 @@ void Main_Customize()
 
 
 
-	Actor_Customize();
+	//Actor_Customize();
 
 }
 
@@ -273,7 +284,7 @@ void MissionStart()
 {
 	LogFunction();
 
-	Actor_MissionStart();
+	//Actor_MissionStart();
 
 }
 
@@ -281,7 +292,7 @@ void MissionSelect()
 {
 	LogFunction();
 
-	Actor_MissionSelect();
+	//Actor_MissionSelect();
 
 
 
@@ -451,6 +462,34 @@ void SkyStarReset(byte8 * baseAddr)
 
 export void Event_Init()
 {
+
+
+
+	vp_memset((appBaseAddr + 0x27A39C), 0x90, 5); // Disable Style Rank Sub
+
+
+	
+	/*
+
+	dmc3.exe+27A39C - F3 0F11 4B 04         - movss [rbx+04],xmm1
+
+
+	*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	LogFunction();
 
 	// Main

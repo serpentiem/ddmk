@@ -1174,6 +1174,19 @@ void Main()
 	if (ImGui::Begin("DDMK 2.7", &pause))
 	{
 
+
+
+		ImGui::Text("");
+
+		if (GUI_Button("SpawnActors"))
+		{
+			SpawnActors();
+		}
+
+
+
+
+
 		ImGui::Text("");
 
 		auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
