@@ -481,8 +481,23 @@ T * CreateActor
 {
 	constexpr uint8 character = GetCharacterId<T>::value;
 
-	auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-	auto sessionData = (g_pool[1] + 0x16C);
+
+
+	// @Todo: IntroduceMissionActorData.
+	// @Todo: Move everything to Vars.h.
+	// @Todo: Order DATA structs correctly.
+	// @Todo: Update create internal functions script.
+	// @Todo: sessionData -> missionActorData.
+	// @Todo: Update actor data script.
+
+
+
+	// @Todo: Properly separate Spawn and Create.
+
+
+
+	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+	auto sessionData = (pool[1] + 0x16C);
 
 	auto baseAddr = func_1DE820(character, 0, false);
 	if (!baseAddr)
@@ -740,6 +755,20 @@ byte8 * SpawnActorFunction
 
 	return parentActorData;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 byte8 * SpawnActor
 (

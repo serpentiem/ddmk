@@ -39,6 +39,8 @@ export void Arcade_InitSession()
 
 	sessionData.goldOrbCount = 3;
 
+	memset(sessionData.unlock, 1, 14);
+
 	if (Config.Arcade.character == CHAR_DANTE)
 	{
 		sessionData.weapons[0] = Config.Arcade.meleeWeapons[0];
@@ -150,7 +152,7 @@ export void Arcade_Toggle(bool enable)
 	LogFunction(enable);
 	Write<byte8>((appBaseAddr + 0x2433FB), (enable) ? 0xEB : 0x74); // Force new game.
 	Write<byte8>((appBaseAddr + 0x243299), (enable) ? 0xEB : 0x74); // Skip mission select menu.
-	Write<byte8>((appBaseAddr + 0x2411F5), (enable) ? 0xEB : 0x74); // Force start mission.
+	//Write<byte8>((appBaseAddr + 0x2411F5), (enable) ? 0xEB : 0x74); // Force start mission.
 	// Force costume.
 	WriteAddress((appBaseAddr + 0x217991), (enable) ? (appBaseAddr + 0x217993) : (appBaseAddr + 0x2179A2), 2);
 	WriteAddress((appBaseAddr + 0x21799A), (enable) ? (appBaseAddr + 0x21799C) : (appBaseAddr + 0x2179A2), 2);

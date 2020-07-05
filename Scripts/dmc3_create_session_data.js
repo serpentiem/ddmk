@@ -112,6 +112,7 @@ var items =
 	[ "oneHitKill"        , "bool"   , 0x10  ],
 	[ "enableTutorial"    , "bool"   , 0x12  ],
 	[ "useGoldOrb"        , "bool"   , 0x13  ],
+	[ "character"         , "uint8"  , 0x14  ],
 	[ "bloodyPalace"      , "bool"   , 0x1C  ],
 	[ "goldOrbCount"      , "uint8"  , 0x35  ],
 	[ "unlock[14]"        , "bool"   , 0x46  ],

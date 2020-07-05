@@ -23,6 +23,11 @@ var items =
 	[ 0x1FAF40, "void"   , "byte8 * baseAddr"                                                             , ""                            , ""                                    ],
 	[ 0x1EEF80, "void"   , "byte8 * baseAddr"                                                             , ""                            , ""                                    ],
 	[ 0x2EE060, "bool"   , "byte8 * dest, uint32 size"                                                    , ""                            , ""                                    ],
+
+
+
+
+	
 	[ 0x1DE820, "byte8 *", "uint32 character, uint32 id, bool isClone"                                    , "0, true, false"              , "Create Actor"                        ],
 	[ 0x217B90, "void"   , "byte8 * actorData, byte8 * sessionData"                                       , ""                            , "Init Actor Dante"                    ],
 	[ 0x226F10, "void"   , "byte8 * actorData, byte8 * sessionData"                                       , ""                            , "Init Actor Bob"                      ],
@@ -33,6 +38,10 @@ var items =
 	[ 0x219260, "void"   , "byte8 * actorData"                                                            , ""                            , "Update Actor Lady"                   ],
 	[ 0x220970, "void"   , "byte8 * actorData"                                                            , ""                            , "Update Actor Vergil"                 ],
 	[ 0x1DFC20, "void"   , "byte8 * actorData"                                                            , ""                            , ""                                    ],
+
+
+
+
 	[ 0x2310B0, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Dante Rebellion"                     ],
 	[ 0x22EC90, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Dante Cerberus"                      ],
 	[ 0x227870, "byte8 *", "byte8 * actorData, uint32 id"                                                 , "0, true, false"              , "Dante Agni & Rudra"                  ],

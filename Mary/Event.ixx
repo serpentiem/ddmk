@@ -168,6 +168,7 @@ void CreateMainActor(byte8 * baseAddr)
 
 	UnlockActor(baseAddr);
 
+	Arcade_CreateMainActor(baseAddr);
 
 
 	//Actor_Main();
@@ -217,6 +218,8 @@ void Main()
 
 	Actor_Main();
 
+
+	//Arcade_Main();
 
 }
 
@@ -344,7 +347,7 @@ void MainLoopOnce()
 
 		LogFunction();
 
-		Actor_MainLoopOnce();
+		//Actor_MainLoopOnce();
 	}
 }
 
@@ -362,7 +365,7 @@ void MainLoopOnceSync()
 
 		LogFunction();
 
-		Actor_MainLoopOnceSync();
+		//Actor_MainLoopOnceSync();
 	}
 }
 

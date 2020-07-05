@@ -146,43 +146,8 @@ enum WEAPON_
 	MAX_MELEE_WEAPON_VERGIL = 3,
 };
 
-// $ActorDataStart
-// $ActorDataEnd
 
-//constexpr const char * enum_WEAPON_DANTE_REBELLION = "WEAPON_DANTE_REBELLION";
-//constexpr const char * enum_WEAPON_DANTE_CERBERUS = "WEAPON_DANTE_CERBERUS";
-//constexpr const char * enum_WEAPON_DANTE_AGNI_RUDRA = "WEAPON_DANTE_AGNI_RUDRA";
-//constexpr const char * enum_WEAPON_DANTE_NEVAN = "WEAPON_DANTE_NEVAN";
-//constexpr const char * enum_WEAPON_DANTE_BEOWULF = "WEAPON_DANTE_BEOWULF";
-//constexpr const char * enum_WEAPON_DANTE_EBONY_IVORY = "WEAPON_DANTE_EBONY_IVORY";
-//constexpr const char * enum_WEAPON_DANTE_SHOTGUN = "WEAPON_DANTE_SHOTGUN";
-//constexpr const char * enum_WEAPON_DANTE_ARTEMIS = "WEAPON_DANTE_ARTEMIS";
-//constexpr const char * enum_WEAPON_DANTE_SPIRAL = "WEAPON_DANTE_SPIRAL";
-//constexpr const char * enum_WEAPON_DANTE_KALINA_ANN = "WEAPON_DANTE_KALINA_ANN";
-//constexpr const char * enum_WEAPON_BOB_YAMATO = "WEAPON_BOB_YAMATO";
-//constexpr const char * enum_WEAPON_LADY_KALINA_ANN = "WEAPON_LADY_KALINA_ANN";
-//constexpr const char * enum_WEAPON_LADY_UNKNOWN = "WEAPON_LADY_UNKNOWN";
-//constexpr const char * enum_WEAPON_VERGIL_YAMATO = "WEAPON_VERGIL_YAMATO";
-//constexpr const char * enum_WEAPON_VERGIL_BEOWULF = "WEAPON_VERGIL_BEOWULF";
-//constexpr const char * enum_WEAPON_VERGIL_FORCE_EDGE = "WEAPON_VERGIL_FORCE_EDGE";
-//constexpr const char * enum_WEAPON_VOID = "WEAPON_VOID";
-//constexpr const char * enum_MAX_WEAPON = "MAX_WEAPON";
-//constexpr const char * enum_MAX_MELEE_WEAPON_DANTE = "MAX_MELEE_WEAPON_DANTE";
-//constexpr const char * enum_MAX_RANGED_WEAPON_DANTE = "MAX_RANGED_WEAPON_DANTE";
-//constexpr const char * enum_MAX_MELEE_WEAPON_VERGIL = "MAX_MELEE_WEAPON_VERGIL";
-//
-//
-//
-//
-//
-//#ifndef enum_name
-//#define enum_name(var) enum_##var
-//#endif
-//
-//constexpr const char * enum_greatness = enum_name(WEAPON_DANTE_AGNI_RUDRA);
-//
-//// Enums.h
-//// EnumNames.h
+
 
 
 
@@ -965,6 +930,17 @@ enum ACTOR_EVENT
 
 
 
+enum ACTOR_MODE
+{
+	ACTOR_MODE_DEFAULT,
+	ACTOR_MODE_MISSION_12,
+	ACTOR_MODE_MISSION_18,
+	ACTOR_MODE_MISSION_19,
+}
+
+
+
+
 
 
 
@@ -983,6 +959,14 @@ enum ACTOR_EVENT
 
 
 
+// $ActorDataStart
+
+
+trash
+
+
+
+// $ActorDataEnd
 
 
 
@@ -1007,14 +991,20 @@ enum ACTOR_EVENT
 
 
 
-struct ACTOR_EVENT_DATA
-{
-	uint32 index;
-	uint32 lastIndex;
-};
 
 
 
+//
+//
+//
+//struct ACTOR_EVENT_DATA
+//{
+//	uint32 index;
+//	uint32 lastIndex;
+//};
+//
+//
+//
 
 
 
