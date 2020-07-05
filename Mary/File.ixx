@@ -7,16 +7,16 @@ module;
 #define ZIP_STATIC
 #include "../Zip/zip.h"
 
-#include "ActorData.h"
-#include "Internal.h"
 #include "Vars.h"
 export module ModuleName(File);
 
 import ModuleName(Config);
+import ModuleName(Internal);
 import ModuleName(Memory);
 
 #ifdef __INTELLISENSE__
 #include "Config.ixx"
+#include "Internal.ixx"
 #include "Memory.ixx"
 #endif
 

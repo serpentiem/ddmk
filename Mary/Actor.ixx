@@ -12,20 +12,20 @@
 module;
 #include "../Core/Core.h"
 
-#include "ActorData.h"
-#include "Internal.h"
 #include "Vars.h"
 export module ModuleName(Actor);
 
 import ModuleName(Config);
 import ModuleName(File);
 import ModuleName(HUD);
+import ModuleName(Internal);
 import ModuleName(Input);
 
 #ifdef __INTELLISENSE__
 #include "Config.ixx"
 #include "File.ixx"
 #include "HUD.ixx"
+#include "Internal.ixx"
 #include "Input.ixx"
 #endif
 
@@ -1517,14 +1517,14 @@ void RangedWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 
 bool WeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 {
-	if (actorData.devilState == 2)
+	if (actorData.mode == ACTOR_MODE_MISSION_18)
 	{
 		return true;
 	}
-	if (actorData.moveOnly)
-	{
-		return false;
-	}
+	//if (actorData.moveOnly)
+	//{
+	//	return false;
+	//}
 
 	MeleeWeaponSwitchControllerDante (actorData);
 	RangedWeaponSwitchControllerDante(actorData);

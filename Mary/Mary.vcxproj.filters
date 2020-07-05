@@ -7,8 +7,6 @@
     <ClCompile Include="..\Core\ImGui_User.ixx">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="ActorData.cpp" />
-    <ClCompile Include="Internal.cpp" />
     <ClCompile Include="File.ixx" />
     <ClCompile Include="Memory.ixx" />
     <ClCompile Include="HUD.ixx" />
@@ -46,7 +44,6 @@
     <ClCompile Include="Mary.cpp" />
     <ClCompile Include="FMOD.cpp" />
     <ClCompile Include="Speed.ixx" />
-    <ClCompile Include="Locale.cpp" />
     <ClCompile Include="Event.ixx" />
     <ClCompile Include="Dante.ixx" />
     <ClCompile Include="Update.ixx" />
@@ -89,11 +86,8 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Vars.h" />
-    <ClInclude Include="ActorData.h" />
-    <ClInclude Include="Internal.h" />
     <ClInclude Include="Modules.h" />
     <ClInclude Include="FMOD.h" />
-    <ClInclude Include="Locale.h" />
     <ClInclude Include="..\ImGui\imconfig.h">
       <Filter>ImGui</Filter>
     </ClInclude>
@@ -120,5 +114,6 @@
     </None>
     <None Include="Color.ixx" />
     <None Include="BossRush.ixx" />
+    <None Include="Internal.ixx" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,5 @@
 #include "../Core/Core.h"
 
-#include "Internal.h"
-
 import ModuleName(Actor);
 import ModuleName(Arcade);
 import ModuleName(Camera);
@@ -13,6 +11,7 @@ import ModuleName(File);
 import ModuleName(GUI);
 import ModuleName(Hooks);
 import ModuleName(HUD);
+import ModuleName(Internal);
 import ModuleName(Memory);
 import ModuleName(Mobility);
 import ModuleName(Training);
@@ -31,6 +30,7 @@ import ModuleName(Window);
 #include "GUI.ixx"
 #include "Hooks.ixx"
 #include "HUD.ixx"
+#include "Internal.ixx"
 #include "Memory.ixx"
 #include "Mobility.ixx"
 #include "Training.ixx"

@@ -4,14 +4,15 @@
 module;
 #include "../Core/Core.h"
 
-#include "Internal.h"
 #include "Vars.h"
 export module ModuleName(HUD);
 
 import ModuleName(File);
+import ModuleName(Internal);
 
 #ifdef __INTELLISENSE__
 #include "File.ixx"
+#include "Internal.ixx"
 #endif
 
 // @Todo: Move to vars.

@@ -1,24 +1,10 @@
 #pragma once
 #include "../Core/DataTypes.h"
 
-
-
-
-
-
-
-
-
-
-
 enum PLAYER
 {
 	MAX_PLAYER = 4,
 };
-
-
-
-
 
 enum ENTITY
 {
@@ -27,7 +13,6 @@ enum ENTITY
 	MAX_ENTITY,
 };
 
-
 enum WEAPON_STATUS
 {
 	WEAPON_STATUS_READY,
@@ -35,22 +20,6 @@ enum WEAPON_STATUS
 	WEAPON_STATUS_RETURN,
 	WEAPON_STATUS_END,
 	WEAPON_STATUS_DISABLED,
-};
-
-
-
-//
-//enum GAMEPAD
-//{
-//	MAX_GAMEPAD = 4,
-//};
-//
-
-
-
-enum ACTOR
-{
-	MAX_ACTOR = 4
 };
 
 enum MODE_
@@ -146,14 +115,6 @@ enum WEAPON_
 	MAX_MELEE_WEAPON_VERGIL = 3,
 };
 
-
-
-
-
-
-
-
-
 enum WEAPON_TYPE_
 {
 	WEAPON_TYPE_MELEE,
@@ -226,19 +187,6 @@ enum NEXT_ACTION_REQUEST_POLICY
 	NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK = 10,
 	NEXT_ACTION_REQUEST_POLICY_END = 15,
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 enum ACTION
 {
@@ -447,17 +395,6 @@ enum ACTION
 	ACTION_VERGIL_NERO_ANGELO_FIREBALL_2,
 };
 
-
-
-
-
-
-
-
-
-
-
-
 enum PERMISSION
 {
 	PERMISSION_UPDATE = 1,
@@ -468,52 +405,12 @@ enum PERMISSION
 	PERMISSION_INTERACTION_STYLE_ATTACK = 0x400,
 };
 
-
-
-
-
-
 enum STATE
 {
 	STATE_ON_FLOOR = 1,
 	STATE_IN_AIR = 2,
 	STATE_BUSY = 0x10000,
 };
-
-
-//enum MOTION_STATE
-//{
-//	MOTION_STATE_BUFFER = 1,
-//	MOTION_STATE_EXECUTE = 2,
-//	//MOTION_STATE_BUSY = 0x10000,
-//
-//	ALLOW_MOVE = 2,
-//	ALLOW_JUMP = 8,
-//
-//
-//
-//
-//	MOTION_STATE_FLOOR = 1,
-//	MOTION_STATE_AIR = 2,
-//	MOTION_STATE_ACTION = 0x10000,
-//
-//
-//
-//
-//	//MOTION_STATE_CAN_INTERACT = 1,
-//
-//
-//
-//
-//
-//
-//	//MOTION_STATE_BLOCK_ACTION = 0x10000,
-//
-//
-//
-//
-//
-//};
 
 enum BODY_PART_
 {
@@ -735,21 +632,6 @@ constexpr CacheFileHelper cacheFileHelper[MAX_CACHE_FILE] =
 
 
 
-
-
-
-// @Todo: Add missing events.
-
-
-
-
-
-
-
-
-
-
-
 enum SCENE
 {
 	SCENE_MAIN      = 1,
@@ -770,25 +652,6 @@ enum SUBSCENE
 	SUBSCENE_MISSION_START  = 7,
 	SUBSCENE_MISSION_SELECT = 8,
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 enum GAMEPAD
 {
@@ -813,16 +676,10 @@ enum GAMEPAD
 	MAX_GAMEPAD = 4,
 };
 
-
 enum LEFT_STICK
 {
 	LEFT_STICK_DEADZONE = 52,
 };
-
-
-
-
-
 
 enum BINDING
 {
@@ -843,43 +700,6 @@ enum BINDING
 	BINDING_TAUNT,
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-enum WEAPON_ICON_SIDE_
-{
-	WEAPON_ICON_SIDE_LEFT,
-	WEAPON_ICON_SIDE_RIGHT,
-};
-
-enum FILE_ITEM_STATUS_
-{
-	FILE_ITEM_READY = 3,
-};
-
 enum SPEED_DEVIL_
 {
 	SPEED_DEVIL_DANTE_REBELLION,
@@ -896,17 +716,17 @@ enum SPEED_DEVIL_
 	SPEED_DEVIL_NERO_ANGELO_FORCE_EDGE,
 };
 
+enum FILE_ITEM_STATUS_
+{
+	FILE_ITEM_READY = 3,
+};
+
 enum FILE_MODE_
 {
 	FILE_MODE_MEMORY,
 	FILE_MODE_ARCHIVE,
 	FILE_MODE_LOCAL,
 };
-
-
-
-
-
 
 enum ACTOR_EVENT
 {
@@ -918,33 +738,13 @@ enum ACTOR_EVENT
 	ACTOR_EVENT_VERGIL_TRICK_DOWN,
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
 enum ACTOR_MODE
 {
 	ACTOR_MODE_DEFAULT,
 	ACTOR_MODE_MISSION_12,
 	ACTOR_MODE_MISSION_18,
 	ACTOR_MODE_MISSION_19,
-}
-
-
-
-
-
-
-
-
+};
 
 #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
 
@@ -957,62 +757,11 @@ enum ACTOR_MODE
 
 
 
-
-
-// $ActorDataStart
-
-
-trash
-
-
-
-// $ActorDataEnd
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-//
-//struct ACTOR_EVENT_DATA
-//{
-//	uint32 index;
-//	uint32 lastIndex;
-//};
-//
-//
-//
-
-
-
-
-
-
-
-
+struct ACTOR_EVENT_DATA
+{
+	uint32 index;
+	uint32 lastIndex;
+};
 
 
 
@@ -1094,6 +843,10 @@ struct STAGE_POSITION_DATA
 	float32 rotation;
 	_(28);
 };
+
+
+
+
 
 #define IntroduceSessionData() auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250)
 
@@ -1276,21 +1029,20 @@ struct FILE_ITEM
 
 
 
-// @Todo: Update types.
+
+
+
 
 struct PS2_GAMEPAD
 {
-	uint32 ready;
-	// @Todo: Add _.
-	uint32 reserved[3];
+	_(16);
 	uint8  vibration[4];
-	byte16   buttons[6];
+	byte16 buttons[6];
 	uint8  rightStickX;
 	uint8  rightStickY;
 	uint8  leftStickX;
 	uint8  leftStickY;
-	// @Todo: Add _.
-	uint32 unknown[3];
+	_(12);
 	uint16 rightStickDirection[4];
 	uint16 leftStickDirection[4];
 	uint16 rightStickDirectionFast[2];
@@ -1300,8 +1052,6 @@ struct PS2_GAMEPAD
 	uint16 rightStickDifference;
 	uint16 leftStickDifference;
 };
-
-// @Todo: Change to ENGINE_GAMEPAD.
 
 struct ENGINE_GAMEPAD
 {
@@ -1318,16 +1068,6 @@ struct ENGINE_GAMEPAD
 };
 
 
-//constexpr uint64 gamepadSize = sizeof(CAPCOM_GAMEPAD);
-
-
-//static_assert(offsetof(ENGINE_GAMEPAD, rightStickPosition) == 0x18);
-//static_assert(offsetof(ENGINE_GAMEPAD, rightStickRadius) == 0x1A);
-//
-//static_assert(offsetof(ENGINE_GAMEPAD, leftStickPosition) == 0x28);
-//static_assert(offsetof(ENGINE_GAMEPAD, leftStickRadius) == 0x2A);
-//
-//
 
 
 
@@ -1341,63 +1081,6 @@ struct ENGINE_GAMEPAD
 
 
 
-// @Todo: Specifiy and auto vars.
-
-// EVENT_VARS
-// LIVE_VARS
-// CHAR_VARS
-// ACTOR_VARS
-// CAMERA_VARS
-
-// struct VARS
-// {
-// 	bool     init;
-// 	uint32 * room;
-// 	uint32 * position;
-// 	uint32 * event;
-// 	uint16 * nextRoom;
-// 	uint16 * nextPosition;
-// 	byte32 * flags;
-// 	uint32 * mission;
-// 	VARS()
-// 	{
-// 		memset(this, 0, sizeof(*this));
-// 		{
-// 			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xCA8918); // EVENT_DATA
-// 			if (!addr)
-// 			{
-// 				return;
-// 			}
-// 			if (!addr[8])
-// 			{
-// 				return;
-// 			}
-// 			room     = (uint32 *)(addr[8] + 0x18);
-// 			position = (uint32 *)(addr[8] + 0x1C);
-// 			event    = (uint32 *)(addr[8] + 0x20);
-// 			if (!addr[12])
-// 			{
-// 				return;
-// 			}
-// 			nextRoom     = (uint16 *)(addr[12] + 0x164); // NEXT_EVENT_DATA
-// 			nextPosition = (uint16 *)(addr[12] + 0x166);
-// 		}
-// 		{
-// 			byte8 ** addr = *(byte8 ***)(appBaseAddr + 0xC90E30); // MISSION_DATA
-// 			if (!addr)
-// 			{
-// 				return;
-// 			}
-// 			if (!addr[1])
-// 			{
-// 				return;
-// 			}
-// 			flags = (byte32 *)addr[1];
-// 		}
-// 		mission = (uint32 *)(appBaseAddr + 0xC8F250); // SESSION_DATA
-// 		init = true;
-// 	}
-// };
 
 struct MEMORY_OBJECT
 {
@@ -1457,13 +1140,6 @@ struct INPUT_DATA
 
 
 
-// @Todo: Add MODEL_DATA for 0x780.
-
-
-
-
-
-
 struct MODEL_METADATA
 {
 	uint8 count;
@@ -1472,16 +1148,9 @@ struct MODEL_METADATA
 	_(16);
 };
 
-//
-//struct DEVIL_MODEL_METADATA_DANTE_REBELLION : DEVIL_MODEL_METADATA
-//{
-//	DEVIL_SUBMODEL_METADATA submodelMetadata[2];
-//};
-//
-//struct DEVIL_MODEL_METADATA_DANTE_CERBERUS : DEVIL_MODEL_METADATA
-//{
-//	DEVIL_SUBMODEL_METADATA submodelMetadata;
-//};
+
+
+
 
 
 struct DEVIL_MODEL_METADATA;
@@ -1546,7 +1215,6 @@ struct DEVIL_MODEL_METADATA_DANTE
 	}
 };
 
-constexpr uint32 devilModelMetadataDanteSize = (uint32)sizeof(DEVIL_MODEL_METADATA_DANTE);
 
 
 
@@ -1562,6 +1230,13 @@ constexpr uint32 devilModelMetadataDanteSize = (uint32)sizeof(DEVIL_MODEL_METADA
 
 
 
+
+
+enum DEVIL_FLUX_
+{
+	DEVIL_FLUX_START = 1,
+	DEVIL_FLUX_END   = 2,
+};
 
 
 
@@ -1607,18 +1282,6 @@ typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
 
 
 
-//struct MODEL_DATA
-//{
-//	_(1364);
-//	float32 motionDuration1[2];
-//	_(56);
-//	float32 motionDuration2[2];
-//	_(280);
-//	float32 motionTimer[2];
-//	_(196);
-//};
-
-
 struct MODEL_DATA
 {
 	_(1280);
@@ -1648,126 +1311,1395 @@ static_assert(sizeof(MODEL_DATA) == 0x780);
 
 
 
-//constexpr uint32 g_off = offsetof(ACTOR_DATA_DANTE, motionData);
 
+// $ActorDataStart
 
+struct ACTOR_DATA
+{
+	_(8);
+	bool init; // 8
+	_(111);
+	uint32 character; // 0x78
+	_(4);
+	vec4 position; // 0x80
+	_(4);
+	float32 pull; // 0x94
+	_(12);
+	float32 pullMultiplier; // 0xA4
+	_(24);
+	uint16 rotation; // 0xC0
+	_(86);
+	uint8 id; // 0x118
+	_(3);
+	uint32 isClone; // 0x11C
+	uint32 visible; // 0x120
+	_(156);
+	float32 var_1C0; // 0x1C0
+	float32 var_1C4; // 0x1C4
+	_(56);
+	MODEL_DATA modelData[3]; // 0x200
+	_(8224);
+	byte8 * motionArchive[32]; // 0x38A0
+	_(16);
+	MOTION_DATA motionData[2]; // 0x39B0
+	MOTION_DATA motionDataMirror[3]; // 0x39B4
+	_(2);
+	uint32 var_39BC; // 0x39BC
+	uint8 var_39C0[16]; // 0x39C0
+	uint32 nextActionRequestPolicy[16]; // 0x39D0
+	uint8 var_3A10[8]; // 0x3A10
+	uint32 shadow; // 0x3A18
+	_(12);
+	byte32 color; // 0x3A28
+	_(932);
+	byte8 * actionData[6]; // 0x3DD0
+	ACTOR_EVENT_DATA eventData[2]; // 0x3E00
+	uint8 var_3E10[32]; // 0x3E10
+	_(4);
+	float32 motionTimer; // 0x3E34
+	float32 idleTimer; // 0x3E38
+	_(36);
+	byte32 permissions; // 0x3E60
+	byte32 state; // 0x3E64
+	byte32 lastState; // 0x3E68
+	uint32 activeModelIndex; // 0x3E6C
+	uint32 queuedModelIndex; // 0x3E70
+	uint32 modelMap[3]; // 0x3E74
+	uint8 modelState; // 0x3E80
+	_(3);
+	bool lockOn; // 0x3E84
+	_(3);
+	uint32 activeModelIndexMirror; // 0x3E88
+	uint32 activeDevilModel; // 0x3E8C
+	uint32 airRaid; // 0x3E90
+	uint32 mode; // 0x3E94
+	_(3);
+	bool devil; // 0x3E9B
+	_(2);
+	uint8 costume; // 0x3E9E
+	bool sparda; // 0x3E9F
+	_(4);
+	bool useHolyWater; // 0x3EA4
+	_(19);
+	float32 magicPoints; // 0x3EB8
+	float32 maxMagicPoints; // 0x3EBC
+	_(18);
+	uint16 var_3ED2; // 0x3ED2
+	_(4);
+	uint16 cameraDirection; // 0x3ED8
+	_(55);
+	uint8 airHikeCount; // 0x3F11
+	uint8 kickJumpCount; // 0x3F12
+	uint8 wallHikeCount; // 0x3F13
+	_(144);
+	uint8 action; // 0x3FA4
+	uint8 lastAction; // 0x3FA5
+	_(2);
+	uint8 bufferedAction; // 0x3FA8
+	_(3);
+	uint8 chainCount; // 0x3FAC
+	_(63);
+	byte32 expertise[16]; // 0x3FEC
+	_(192);
+	float32 maxHitPoints; // 0x40EC
+	_(44);
+	float32 hitPoints; // 0x411C
+	_(8712);
+	byte8 * targetBaseAddr; // 0x6328
+	_(8);
+	uint32 style; // 0x6338
+	_(28);
+	uint32 styleLevel; // 0x6358
+	_(8);
+	float32 styleExperience; // 0x6364
+	_(236);
+	bool cloneIsActive; // 0x6454
+	_(35);
+	byte8 * cloneBaseAddr; // 0x6478
+	bool cloneIsControlledByPlayer; // 0x6480
+	_(143);
+	uint32 styleRank; // 0x6510
+	float32 styleMeter; // 0x6514
+	_(348);
+	INPUT_DATA inputData[58]; // 0x6674
+	_(2344);
+	uint32 collisionIndex; // 0x7254
+	_(520);
+	vec4 interactionData[8]; // 0x7460
+	byte16 buttons[4]; // 0x74E0
+	_(16);
+	uint16 rightStickPosition; // 0x74F8
+	uint16 rightStickRadius; // 0x74FA
+	_(12);
+	uint16 leftStickPosition; // 0x7508
+	uint16 leftStickRadius; // 0x750A
+	uint16 actorCameraDirection; // 0x750C
+	_(14);
+	uint32 leftStickDirection[2]; // 0x751C
+	_(17308);
+	bool newEnable; // 0xB8C0
+	uint8 newCharacterModel; // 0xB8C1
+	_(6);
+	byte8 * newParentBaseAddr; // 0xB8C8
+	byte8 * newChildBaseAddr[4]; // 0xB8D0
+	uint8 newGamepad; // 0xB8F0
+	byte16 newButtonMask; // 0xB8F1
+	bool newEnableRightStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F4
+	_(3);
+	uint8 newMeleeWeapon[5]; // 0xB8F8
+	_(3);
+	byte8 * newMeleeWeaponData[5]; // 0xB900
+	uint8 newMeleeWeaponCount; // 0xB928
+	uint8 newMeleeWeaponIndex; // 0xB929
+	uint8 newLastMeleeWeapon; // 0xB92A
+	_(1);
+	uint8 newRangedWeapon[5]; // 0xB92C
+	_(7);
+	byte8 * newRangedWeaponData[5]; // 0xB938
+	uint8 newRangedWeaponCount; // 0xB960
+	uint8 newRangedWeaponIndex; // 0xB961
+	uint8 newLastRangedWeapon; // 0xB962
+	_(1);
+	bool newSect[8]; // 0xB964
+	uint8 newBufferedActionPolicy; // 0xB96C
+	bool newExecuteMeleeWeaponSwitch; // 0xB96D
+	bool newExecuteRangedWeaponSwitch; // 0xB96E
+	uint8 newAirStingerCount; // 0xB96F
 
+	operator byte8 *()
+	{
+		return reinterpret_cast<byte8 *>(this);
+	}
+};
 
+struct ACTOR_DATA_DANTE
+{
+	_(8);
+	bool init; // 8
+	_(111);
+	uint32 character; // 0x78
+	_(4);
+	vec4 position; // 0x80
+	_(4);
+	float32 pull; // 0x94
+	_(12);
+	float32 pullMultiplier; // 0xA4
+	_(24);
+	uint16 rotation; // 0xC0
+	_(86);
+	uint8 id; // 0x118
+	_(3);
+	uint32 isClone; // 0x11C
+	uint32 visible; // 0x120
+	_(156);
+	float32 var_1C0; // 0x1C0
+	float32 var_1C4; // 0x1C4
+	_(56);
+	MODEL_DATA modelData[3]; // 0x200
+	_(8224);
+	byte8 * motionArchive[32]; // 0x38A0
+	_(16);
+	MOTION_DATA motionData[2]; // 0x39B0
+	MOTION_DATA motionDataMirror[3]; // 0x39B4
+	_(2);
+	uint32 var_39BC; // 0x39BC
+	uint8 var_39C0[16]; // 0x39C0
+	uint32 nextActionRequestPolicy[16]; // 0x39D0
+	uint8 var_3A10[8]; // 0x3A10
+	uint32 shadow; // 0x3A18
+	_(12);
+	byte32 color; // 0x3A28
+	_(932);
+	byte8 * actionData[6]; // 0x3DD0
+	ACTOR_EVENT_DATA eventData[2]; // 0x3E00
+	uint8 var_3E10[32]; // 0x3E10
+	_(4);
+	float32 motionTimer; // 0x3E34
+	float32 idleTimer; // 0x3E38
+	_(36);
+	byte32 permissions; // 0x3E60
+	byte32 state; // 0x3E64
+	byte32 lastState; // 0x3E68
+	uint32 activeModelIndex; // 0x3E6C
+	uint32 queuedModelIndex; // 0x3E70
+	uint32 modelMap[3]; // 0x3E74
+	uint8 modelState; // 0x3E80
+	_(3);
+	bool lockOn; // 0x3E84
+	_(3);
+	uint32 activeModelIndexMirror; // 0x3E88
+	uint32 activeDevilModel; // 0x3E8C
+	uint32 airRaid; // 0x3E90
+	uint32 mode; // 0x3E94
+	_(3);
+	bool devil; // 0x3E9B
+	_(2);
+	uint8 costume; // 0x3E9E
+	bool sparda; // 0x3E9F
+	_(4);
+	bool useHolyWater; // 0x3EA4
+	_(19);
+	float32 magicPoints; // 0x3EB8
+	float32 maxMagicPoints; // 0x3EBC
+	_(18);
+	uint16 var_3ED2; // 0x3ED2
+	_(4);
+	uint16 cameraDirection; // 0x3ED8
+	_(55);
+	uint8 airHikeCount; // 0x3F11
+	uint8 kickJumpCount; // 0x3F12
+	uint8 wallHikeCount; // 0x3F13
+	_(144);
+	uint8 action; // 0x3FA4
+	uint8 lastAction; // 0x3FA5
+	_(2);
+	uint8 bufferedAction; // 0x3FA8
+	_(3);
+	uint8 chainCount; // 0x3FAC
+	_(63);
+	byte32 expertise[16]; // 0x3FEC
+	_(192);
+	float32 maxHitPoints; // 0x40EC
+	_(44);
+	float32 hitPoints; // 0x411C
+	_(8712);
+	byte8 * targetBaseAddr; // 0x6328
+	_(8);
+	uint32 style; // 0x6338
+	_(28);
+	uint32 styleLevel; // 0x6358
+	uint8 dashCount; // 0x635C
+	uint8 skyStarCount; // 0x635D
+	uint8 airTrickCount; // 0x635E
+	_(2);
+	bool quicksilver; // 0x6361
+	bool doppelganger; // 0x6362
+	_(1);
+	float32 styleExperience; // 0x6364
+	_(236);
+	bool cloneIsActive; // 0x6454
+	_(35);
+	byte8 * cloneBaseAddr; // 0x6478
+	bool cloneIsControlledByPlayer; // 0x6480
+	_(12);
+	uint8 activeWeapon; // 0x648D
+	_(2);
+	uint32 meleeWeaponIndex; // 0x6490
+	uint32 rangedWeaponIndex; // 0x6494
+	uint8 meleeWeapon[2]; // 0x6498
+	uint8 rangedWeapon[3]; // 0x649A
+	_(3);
+	byte8 * meleeWeaponData[2]; // 0x64A0
+	byte8 * rangedWeaponData[3]; // 0x64B0
+	uint32 meleeWeaponStatus[2]; // 0x64C8
+	uint32 rangedWeaponStatus[3]; // 0x64D0
+	uint32 meleeWeaponLevel[2]; // 0x64DC
+	uint32 rangedWeaponLevel[3]; // 0x64E4
+	uint8 activeMeleeWeapon; // 0x64F0
+	uint8 activeRangedWeapon; // 0x64F1
+	_(2);
+	float32 meleeWeaponTimer[2]; // 0x64F4
+	float32 rangedWeaponTimer[3]; // 0x64FC
+	float32 meleeWeaponSwitchTimeout; // 0x6508
+	float32 rangedWeaponSwitchTimeout; // 0x650C
+	uint32 styleRank; // 0x6510
+	float32 styleMeter; // 0x6514
+	_(348);
+	INPUT_DATA inputData[58]; // 0x6674
+	_(2344);
+	uint32 collisionIndex; // 0x7254
+	_(520);
+	vec4 interactionData[8]; // 0x7460
+	byte16 buttons[4]; // 0x74E0
+	_(16);
+	uint16 rightStickPosition; // 0x74F8
+	uint16 rightStickRadius; // 0x74FA
+	_(12);
+	uint16 leftStickPosition; // 0x7508
+	uint16 leftStickRadius; // 0x750A
+	uint16 actorCameraDirection; // 0x750C
+	_(14);
+	uint32 leftStickDirection[2]; // 0x751C
+	_(16604);
+	DEVIL_MODEL_METADATA_DANTE devilModelMetadata; // 0xB600
+	_(15);
+	MODEL_METADATA modelMetadata[6]; // 0xB630
+	_(88);
+	float32 artemisChargeValue[2]; // 0xB868
+	_(12);
+	byte32 artemisChargeFlags[2]; // 0xB87C
+	_(60);
+	bool newEnable; // 0xB8C0
+	uint8 newCharacterModel; // 0xB8C1
+	_(6);
+	byte8 * newParentBaseAddr; // 0xB8C8
+	byte8 * newChildBaseAddr[4]; // 0xB8D0
+	uint8 newGamepad; // 0xB8F0
+	byte16 newButtonMask; // 0xB8F1
+	bool newEnableRightStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F4
+	_(3);
+	uint8 newMeleeWeapon[5]; // 0xB8F8
+	_(3);
+	byte8 * newMeleeWeaponData[5]; // 0xB900
+	uint8 newMeleeWeaponCount; // 0xB928
+	uint8 newMeleeWeaponIndex; // 0xB929
+	uint8 newLastMeleeWeapon; // 0xB92A
+	_(1);
+	uint8 newRangedWeapon[5]; // 0xB92C
+	_(7);
+	byte8 * newRangedWeaponData[5]; // 0xB938
+	uint8 newRangedWeaponCount; // 0xB960
+	uint8 newRangedWeaponIndex; // 0xB961
+	uint8 newLastRangedWeapon; // 0xB962
+	_(1);
+	bool newSect[8]; // 0xB964
+	uint8 newBufferedActionPolicy; // 0xB96C
+	bool newExecuteMeleeWeaponSwitch; // 0xB96D
+	bool newExecuteRangedWeaponSwitch; // 0xB96E
+	uint8 newAirStingerCount; // 0xB96F
 
+	operator byte8 *()
+	{
+		return reinterpret_cast<byte8 *>(this);
+	}
+};
 
+struct ACTOR_DATA_BOB
+{
+	_(8);
+	bool init; // 8
+	_(111);
+	uint32 character; // 0x78
+	_(4);
+	vec4 position; // 0x80
+	_(4);
+	float32 pull; // 0x94
+	_(12);
+	float32 pullMultiplier; // 0xA4
+	_(24);
+	uint16 rotation; // 0xC0
+	_(86);
+	uint8 id; // 0x118
+	_(3);
+	uint32 isClone; // 0x11C
+	uint32 visible; // 0x120
+	_(156);
+	float32 var_1C0; // 0x1C0
+	float32 var_1C4; // 0x1C4
+	_(56);
+	MODEL_DATA modelData[3]; // 0x200
+	_(8224);
+	byte8 * motionArchive[32]; // 0x38A0
+	_(16);
+	MOTION_DATA motionData[2]; // 0x39B0
+	MOTION_DATA motionDataMirror[3]; // 0x39B4
+	_(2);
+	uint32 var_39BC; // 0x39BC
+	uint8 var_39C0[16]; // 0x39C0
+	uint32 nextActionRequestPolicy[16]; // 0x39D0
+	uint8 var_3A10[8]; // 0x3A10
+	uint32 shadow; // 0x3A18
+	_(12);
+	byte32 color; // 0x3A28
+	_(932);
+	byte8 * actionData[6]; // 0x3DD0
+	ACTOR_EVENT_DATA eventData[2]; // 0x3E00
+	uint8 var_3E10[32]; // 0x3E10
+	_(4);
+	float32 motionTimer; // 0x3E34
+	float32 idleTimer; // 0x3E38
+	_(36);
+	byte32 permissions; // 0x3E60
+	byte32 state; // 0x3E64
+	byte32 lastState; // 0x3E68
+	uint32 activeModelIndex; // 0x3E6C
+	uint32 queuedModelIndex; // 0x3E70
+	uint32 modelMap[3]; // 0x3E74
+	uint8 modelState; // 0x3E80
+	_(3);
+	bool lockOn; // 0x3E84
+	_(3);
+	uint32 activeModelIndexMirror; // 0x3E88
+	uint32 activeDevilModel; // 0x3E8C
+	uint32 airRaid; // 0x3E90
+	uint32 mode; // 0x3E94
+	_(3);
+	bool devil; // 0x3E9B
+	_(2);
+	uint8 costume; // 0x3E9E
+	bool sparda; // 0x3E9F
+	_(4);
+	bool useHolyWater; // 0x3EA4
+	_(19);
+	float32 magicPoints; // 0x3EB8
+	float32 maxMagicPoints; // 0x3EBC
+	_(18);
+	uint16 var_3ED2; // 0x3ED2
+	_(4);
+	uint16 cameraDirection; // 0x3ED8
+	_(55);
+	uint8 airHikeCount; // 0x3F11
+	uint8 kickJumpCount; // 0x3F12
+	uint8 wallHikeCount; // 0x3F13
+	_(144);
+	uint8 action; // 0x3FA4
+	uint8 lastAction; // 0x3FA5
+	_(2);
+	uint8 bufferedAction; // 0x3FA8
+	_(3);
+	uint8 chainCount; // 0x3FAC
+	_(63);
+	byte32 expertise[16]; // 0x3FEC
+	_(192);
+	float32 maxHitPoints; // 0x40EC
+	_(44);
+	float32 hitPoints; // 0x411C
+	_(8712);
+	byte8 * targetBaseAddr; // 0x6328
+	_(8);
+	uint32 style; // 0x6338
+	_(28);
+	uint32 styleLevel; // 0x6358
+	_(8);
+	float32 styleExperience; // 0x6364
+	_(236);
+	bool cloneIsActive; // 0x6454
+	_(35);
+	byte8 * cloneBaseAddr; // 0x6478
+	bool cloneIsControlledByPlayer; // 0x6480
+	_(143);
+	uint32 styleRank; // 0x6510
+	float32 styleMeter; // 0x6514
+	_(348);
+	INPUT_DATA inputData[58]; // 0x6674
+	_(2344);
+	uint32 collisionIndex; // 0x7254
+	_(520);
+	vec4 interactionData[8]; // 0x7460
+	byte16 buttons[4]; // 0x74E0
+	_(16);
+	uint16 rightStickPosition; // 0x74F8
+	uint16 rightStickRadius; // 0x74FA
+	_(12);
+	uint16 leftStickPosition; // 0x7508
+	uint16 leftStickRadius; // 0x750A
+	uint16 actorCameraDirection; // 0x750C
+	_(14);
+	uint32 leftStickDirection[2]; // 0x751C
+	_(17308);
+	bool newEnable; // 0xB8C0
+	uint8 newCharacterModel; // 0xB8C1
+	_(6);
+	byte8 * newParentBaseAddr; // 0xB8C8
+	byte8 * newChildBaseAddr[4]; // 0xB8D0
+	uint8 newGamepad; // 0xB8F0
+	byte16 newButtonMask; // 0xB8F1
+	bool newEnableRightStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F4
+	_(3);
+	uint8 newMeleeWeapon[5]; // 0xB8F8
+	_(3);
+	byte8 * newMeleeWeaponData[5]; // 0xB900
+	uint8 newMeleeWeaponCount; // 0xB928
+	uint8 newMeleeWeaponIndex; // 0xB929
+	uint8 newLastMeleeWeapon; // 0xB92A
+	_(1);
+	uint8 newRangedWeapon[5]; // 0xB92C
+	_(7);
+	byte8 * newRangedWeaponData[5]; // 0xB938
+	uint8 newRangedWeaponCount; // 0xB960
+	uint8 newRangedWeaponIndex; // 0xB961
+	uint8 newLastRangedWeapon; // 0xB962
+	_(1);
+	bool newSect[8]; // 0xB964
+	uint8 newBufferedActionPolicy; // 0xB96C
+	bool newExecuteMeleeWeaponSwitch; // 0xB96D
+	bool newExecuteRangedWeaponSwitch; // 0xB96E
+	uint8 newAirStingerCount; // 0xB96F
 
+	operator byte8 *()
+	{
+		return reinterpret_cast<byte8 *>(this);
+	}
+};
 
+struct ACTOR_DATA_LADY
+{
+	_(8);
+	bool init; // 8
+	_(111);
+	uint32 character; // 0x78
+	_(4);
+	vec4 position; // 0x80
+	_(4);
+	float32 pull; // 0x94
+	_(12);
+	float32 pullMultiplier; // 0xA4
+	_(24);
+	uint16 rotation; // 0xC0
+	_(86);
+	uint8 id; // 0x118
+	_(3);
+	uint32 isClone; // 0x11C
+	uint32 visible; // 0x120
+	_(156);
+	float32 var_1C0; // 0x1C0
+	float32 var_1C4; // 0x1C4
+	_(56);
+	MODEL_DATA modelData[3]; // 0x200
+	_(8224);
+	byte8 * motionArchive[32]; // 0x38A0
+	_(16);
+	MOTION_DATA motionData[2]; // 0x39B0
+	MOTION_DATA motionDataMirror[3]; // 0x39B4
+	_(2);
+	uint32 var_39BC; // 0x39BC
+	uint8 var_39C0[16]; // 0x39C0
+	uint32 nextActionRequestPolicy[16]; // 0x39D0
+	uint8 var_3A10[8]; // 0x3A10
+	uint32 shadow; // 0x3A18
+	_(12);
+	byte32 color; // 0x3A28
+	_(932);
+	byte8 * actionData[6]; // 0x3DD0
+	ACTOR_EVENT_DATA eventData[2]; // 0x3E00
+	uint8 var_3E10[32]; // 0x3E10
+	_(4);
+	float32 motionTimer; // 0x3E34
+	float32 idleTimer; // 0x3E38
+	_(36);
+	byte32 permissions; // 0x3E60
+	byte32 state; // 0x3E64
+	byte32 lastState; // 0x3E68
+	uint32 activeModelIndex; // 0x3E6C
+	uint32 queuedModelIndex; // 0x3E70
+	uint32 modelMap[3]; // 0x3E74
+	uint8 modelState; // 0x3E80
+	_(3);
+	bool lockOn; // 0x3E84
+	_(3);
+	uint32 activeModelIndexMirror; // 0x3E88
+	uint32 activeDevilModel; // 0x3E8C
+	uint32 airRaid; // 0x3E90
+	uint32 mode; // 0x3E94
+	_(3);
+	bool devil; // 0x3E9B
+	_(2);
+	uint8 costume; // 0x3E9E
+	bool sparda; // 0x3E9F
+	_(4);
+	bool useHolyWater; // 0x3EA4
+	_(19);
+	float32 magicPoints; // 0x3EB8
+	float32 maxMagicPoints; // 0x3EBC
+	_(18);
+	uint16 var_3ED2; // 0x3ED2
+	_(4);
+	uint16 cameraDirection; // 0x3ED8
+	_(55);
+	uint8 airHikeCount; // 0x3F11
+	uint8 kickJumpCount; // 0x3F12
+	uint8 wallHikeCount; // 0x3F13
+	_(144);
+	uint8 action; // 0x3FA4
+	uint8 lastAction; // 0x3FA5
+	_(2);
+	uint8 bufferedAction; // 0x3FA8
+	_(3);
+	uint8 chainCount; // 0x3FAC
+	_(63);
+	byte32 expertise[16]; // 0x3FEC
+	_(192);
+	float32 maxHitPoints; // 0x40EC
+	_(44);
+	float32 hitPoints; // 0x411C
+	_(8712);
+	byte8 * targetBaseAddr; // 0x6328
+	_(8);
+	uint32 style; // 0x6338
+	_(28);
+	uint32 styleLevel; // 0x6358
+	_(8);
+	float32 styleExperience; // 0x6364
+	_(236);
+	bool cloneIsActive; // 0x6454
+	_(35);
+	byte8 * cloneBaseAddr; // 0x6478
+	bool cloneIsControlledByPlayer; // 0x6480
+	_(143);
+	uint32 styleRank; // 0x6510
+	float32 styleMeter; // 0x6514
+	_(348);
+	INPUT_DATA inputData[58]; // 0x6674
+	_(2344);
+	uint32 collisionIndex; // 0x7254
+	_(520);
+	vec4 interactionData[8]; // 0x7460
+	byte16 buttons[4]; // 0x74E0
+	_(16);
+	uint16 rightStickPosition; // 0x74F8
+	uint16 rightStickRadius; // 0x74FA
+	_(12);
+	uint16 leftStickPosition; // 0x7508
+	uint16 leftStickRadius; // 0x750A
+	uint16 actorCameraDirection; // 0x750C
+	_(14);
+	uint32 leftStickDirection[2]; // 0x751C
+	_(17308);
+	bool newEnable; // 0xB8C0
+	uint8 newCharacterModel; // 0xB8C1
+	_(6);
+	byte8 * newParentBaseAddr; // 0xB8C8
+	byte8 * newChildBaseAddr[4]; // 0xB8D0
+	uint8 newGamepad; // 0xB8F0
+	byte16 newButtonMask; // 0xB8F1
+	bool newEnableRightStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F4
+	_(3);
+	uint8 newMeleeWeapon[5]; // 0xB8F8
+	_(3);
+	byte8 * newMeleeWeaponData[5]; // 0xB900
+	uint8 newMeleeWeaponCount; // 0xB928
+	uint8 newMeleeWeaponIndex; // 0xB929
+	uint8 newLastMeleeWeapon; // 0xB92A
+	_(1);
+	uint8 newRangedWeapon[5]; // 0xB92C
+	_(7);
+	byte8 * newRangedWeaponData[5]; // 0xB938
+	uint8 newRangedWeaponCount; // 0xB960
+	uint8 newRangedWeaponIndex; // 0xB961
+	uint8 newLastRangedWeapon; // 0xB962
+	_(1);
+	bool newSect[8]; // 0xB964
+	uint8 newBufferedActionPolicy; // 0xB96C
+	bool newExecuteMeleeWeaponSwitch; // 0xB96D
+	bool newExecuteRangedWeaponSwitch; // 0xB96E
+	uint8 newAirStingerCount; // 0xB96F
 
+	operator byte8 *()
+	{
+		return reinterpret_cast<byte8 *>(this);
+	}
+};
 
+struct ACTOR_DATA_VERGIL
+{
+	_(8);
+	bool init; // 8
+	_(111);
+	uint32 character; // 0x78
+	_(4);
+	vec4 position; // 0x80
+	_(4);
+	float32 pull; // 0x94
+	_(12);
+	float32 pullMultiplier; // 0xA4
+	_(24);
+	uint16 rotation; // 0xC0
+	_(86);
+	uint8 id; // 0x118
+	_(3);
+	uint32 isClone; // 0x11C
+	uint32 visible; // 0x120
+	_(156);
+	float32 var_1C0; // 0x1C0
+	float32 var_1C4; // 0x1C4
+	_(56);
+	MODEL_DATA modelData[3]; // 0x200
+	_(8224);
+	byte8 * motionArchive[32]; // 0x38A0
+	_(16);
+	MOTION_DATA motionData[2]; // 0x39B0
+	MOTION_DATA motionDataMirror[3]; // 0x39B4
+	_(2);
+	uint32 var_39BC; // 0x39BC
+	uint8 var_39C0[16]; // 0x39C0
+	uint32 nextActionRequestPolicy[16]; // 0x39D0
+	uint8 var_3A10[8]; // 0x3A10
+	uint32 shadow; // 0x3A18
+	_(12);
+	byte32 color; // 0x3A28
+	_(932);
+	byte8 * actionData[6]; // 0x3DD0
+	ACTOR_EVENT_DATA eventData[2]; // 0x3E00
+	uint8 var_3E10[32]; // 0x3E10
+	_(4);
+	float32 motionTimer; // 0x3E34
+	float32 idleTimer; // 0x3E38
+	_(36);
+	byte32 permissions; // 0x3E60
+	byte32 state; // 0x3E64
+	byte32 lastState; // 0x3E68
+	uint32 activeModelIndex; // 0x3E6C
+	uint32 queuedModelIndex; // 0x3E70
+	uint32 modelMap[3]; // 0x3E74
+	uint8 modelState; // 0x3E80
+	_(3);
+	bool lockOn; // 0x3E84
+	_(3);
+	uint32 activeModelIndexMirror; // 0x3E88
+	uint32 activeDevilModel; // 0x3E8C
+	uint32 airRaid; // 0x3E90
+	uint32 mode; // 0x3E94
+	_(3);
+	bool devil; // 0x3E9B
+	_(2);
+	uint8 costume; // 0x3E9E
+	bool sparda; // 0x3E9F
+	_(4);
+	bool useHolyWater; // 0x3EA4
+	_(19);
+	float32 magicPoints; // 0x3EB8
+	float32 maxMagicPoints; // 0x3EBC
+	_(18);
+	uint16 var_3ED2; // 0x3ED2
+	_(4);
+	uint16 cameraDirection; // 0x3ED8
+	_(55);
+	uint8 airHikeCount; // 0x3F11
+	uint8 kickJumpCount; // 0x3F12
+	uint8 wallHikeCount; // 0x3F13
+	_(144);
+	uint8 action; // 0x3FA4
+	uint8 lastAction; // 0x3FA5
+	_(2);
+	uint8 bufferedAction; // 0x3FA8
+	_(3);
+	uint8 chainCount; // 0x3FAC
+	_(63);
+	byte32 expertise[16]; // 0x3FEC
+	_(192);
+	float32 maxHitPoints; // 0x40EC
+	_(44);
+	float32 hitPoints; // 0x411C
+	_(8712);
+	byte8 * targetBaseAddr; // 0x6328
+	_(8);
+	uint32 style; // 0x6338
+	_(28);
+	uint32 styleLevel; // 0x6358
+	_(2);
+	uint8 airTrickCount; // 0x635E
+	uint8 trickUpCount; // 0x635F
+	uint8 trickDownCount; // 0x6360
+	_(3);
+	float32 styleExperience; // 0x6364
+	_(236);
+	bool cloneIsActive; // 0x6454
+	_(35);
+	byte8 * cloneBaseAddr; // 0x6478
+	bool cloneIsControlledByPlayer; // 0x6480
+	_(3);
+	uint32 activeMeleeWeaponIndex; // 0x6484
+	uint32 queuedMeleeWeaponIndex; // 0x6488
+	_(12);
+	uint8 meleeWeapon[5]; // 0x6498
+	_(3);
+	byte8 * meleeWeaponData[5]; // 0x64A0
+	uint32 meleeWeaponStatus[5]; // 0x64C8
+	uint32 meleeWeaponLevel[5]; // 0x64DC
+	_(4);
+	float32 meleeWeaponTimer[5]; // 0x64F4
+	float32 meleeWeaponSwitchForwardTimeout; // 0x6508
+	float32 meleeWeaponSwitchBackTimeout; // 0x650C
+	uint32 styleRank; // 0x6510
+	float32 styleMeter; // 0x6514
+	_(348);
+	INPUT_DATA inputData[58]; // 0x6674
+	_(2344);
+	uint32 collisionIndex; // 0x7254
+	_(520);
+	vec4 interactionData[8]; // 0x7460
+	byte16 buttons[4]; // 0x74E0
+	_(16);
+	uint16 rightStickPosition; // 0x74F8
+	uint16 rightStickRadius; // 0x74FA
+	_(12);
+	uint16 leftStickPosition; // 0x7508
+	uint16 leftStickRadius; // 0x750A
+	uint16 actorCameraDirection; // 0x750C
+	_(14);
+	uint32 leftStickDirection[2]; // 0x751C
+	_(16668);
+	MODEL_METADATA modelMetadata[6]; // 0xB640
+	_(160);
+	bool newEnable; // 0xB8C0
+	uint8 newCharacterModel; // 0xB8C1
+	_(6);
+	byte8 * newParentBaseAddr; // 0xB8C8
+	byte8 * newChildBaseAddr[4]; // 0xB8D0
+	uint8 newGamepad; // 0xB8F0
+	byte16 newButtonMask; // 0xB8F1
+	bool newEnableRightStick; // 0xB8F3
+	bool newEnableLeftStick; // 0xB8F4
+	_(3);
+	uint8 newMeleeWeapon[5]; // 0xB8F8
+	_(3);
+	byte8 * newMeleeWeaponData[5]; // 0xB900
+	uint8 newMeleeWeaponCount; // 0xB928
+	uint8 newMeleeWeaponIndex; // 0xB929
+	uint8 newLastMeleeWeapon; // 0xB92A
+	_(1);
+	uint8 newRangedWeapon[5]; // 0xB92C
+	_(7);
+	byte8 * newRangedWeaponData[5]; // 0xB938
+	uint8 newRangedWeaponCount; // 0xB960
+	uint8 newRangedWeaponIndex; // 0xB961
+	uint8 newLastRangedWeapon; // 0xB962
+	_(1);
+	bool newSect[8]; // 0xB964
+	uint8 newBufferedActionPolicy; // 0xB96C
+	bool newExecuteMeleeWeaponSwitch; // 0xB96D
+	bool newExecuteRangedWeaponSwitch; // 0xB96E
+	uint8 newAirStingerCount; // 0xB96F
 
+	operator byte8 *()
+	{
+		return reinterpret_cast<byte8 *>(this);
+	}
+};
 
+static_assert(offsetof(ACTOR_DATA, init) == 8);
+static_assert(offsetof(ACTOR_DATA, character) == 0x78);
+static_assert(offsetof(ACTOR_DATA, position) == 0x80);
+static_assert(offsetof(ACTOR_DATA, pull) == 0x94);
+static_assert(offsetof(ACTOR_DATA, pullMultiplier) == 0xA4);
+static_assert(offsetof(ACTOR_DATA, rotation) == 0xC0);
+static_assert(offsetof(ACTOR_DATA, id) == 0x118);
+static_assert(offsetof(ACTOR_DATA, isClone) == 0x11C);
+static_assert(offsetof(ACTOR_DATA, visible) == 0x120);
+static_assert(offsetof(ACTOR_DATA, var_1C0) == 0x1C0);
+static_assert(offsetof(ACTOR_DATA, var_1C4) == 0x1C4);
+static_assert(offsetof(ACTOR_DATA, modelData) == 0x200);
+static_assert(offsetof(ACTOR_DATA, motionArchive) == 0x38A0);
+static_assert(offsetof(ACTOR_DATA, motionData) == 0x39B0);
+static_assert(offsetof(ACTOR_DATA, motionDataMirror) == 0x39B4);
+static_assert(offsetof(ACTOR_DATA, var_39BC) == 0x39BC);
+static_assert(offsetof(ACTOR_DATA, var_39C0) == 0x39C0);
+static_assert(offsetof(ACTOR_DATA, nextActionRequestPolicy) == 0x39D0);
+static_assert(offsetof(ACTOR_DATA, var_3A10) == 0x3A10);
+static_assert(offsetof(ACTOR_DATA, shadow) == 0x3A18);
+static_assert(offsetof(ACTOR_DATA, color) == 0x3A28);
+static_assert(offsetof(ACTOR_DATA, actionData) == 0x3DD0);
+static_assert(offsetof(ACTOR_DATA, eventData) == 0x3E00);
+static_assert(offsetof(ACTOR_DATA, var_3E10) == 0x3E10);
+static_assert(offsetof(ACTOR_DATA, motionTimer) == 0x3E34);
+static_assert(offsetof(ACTOR_DATA, idleTimer) == 0x3E38);
+static_assert(offsetof(ACTOR_DATA, permissions) == 0x3E60);
+static_assert(offsetof(ACTOR_DATA, state) == 0x3E64);
+static_assert(offsetof(ACTOR_DATA, lastState) == 0x3E68);
+static_assert(offsetof(ACTOR_DATA, activeModelIndex) == 0x3E6C);
+static_assert(offsetof(ACTOR_DATA, queuedModelIndex) == 0x3E70);
+static_assert(offsetof(ACTOR_DATA, modelMap) == 0x3E74);
+static_assert(offsetof(ACTOR_DATA, modelState) == 0x3E80);
+static_assert(offsetof(ACTOR_DATA, lockOn) == 0x3E84);
+static_assert(offsetof(ACTOR_DATA, activeModelIndexMirror) == 0x3E88);
+static_assert(offsetof(ACTOR_DATA, activeDevilModel) == 0x3E8C);
+static_assert(offsetof(ACTOR_DATA, airRaid) == 0x3E90);
+static_assert(offsetof(ACTOR_DATA, mode) == 0x3E94);
+static_assert(offsetof(ACTOR_DATA, devil) == 0x3E9B);
+static_assert(offsetof(ACTOR_DATA, costume) == 0x3E9E);
+static_assert(offsetof(ACTOR_DATA, sparda) == 0x3E9F);
+static_assert(offsetof(ACTOR_DATA, useHolyWater) == 0x3EA4);
+static_assert(offsetof(ACTOR_DATA, magicPoints) == 0x3EB8);
+static_assert(offsetof(ACTOR_DATA, maxMagicPoints) == 0x3EBC);
+static_assert(offsetof(ACTOR_DATA, var_3ED2) == 0x3ED2);
+static_assert(offsetof(ACTOR_DATA, cameraDirection) == 0x3ED8);
+static_assert(offsetof(ACTOR_DATA, airHikeCount) == 0x3F11);
+static_assert(offsetof(ACTOR_DATA, kickJumpCount) == 0x3F12);
+static_assert(offsetof(ACTOR_DATA, wallHikeCount) == 0x3F13);
+static_assert(offsetof(ACTOR_DATA, action) == 0x3FA4);
+static_assert(offsetof(ACTOR_DATA, lastAction) == 0x3FA5);
+static_assert(offsetof(ACTOR_DATA, bufferedAction) == 0x3FA8);
+static_assert(offsetof(ACTOR_DATA, chainCount) == 0x3FAC);
+static_assert(offsetof(ACTOR_DATA, expertise) == 0x3FEC);
+static_assert(offsetof(ACTOR_DATA, maxHitPoints) == 0x40EC);
+static_assert(offsetof(ACTOR_DATA, hitPoints) == 0x411C);
+static_assert(offsetof(ACTOR_DATA, targetBaseAddr) == 0x6328);
+static_assert(offsetof(ACTOR_DATA, style) == 0x6338);
+static_assert(offsetof(ACTOR_DATA, styleLevel) == 0x6358);
+static_assert(offsetof(ACTOR_DATA, styleExperience) == 0x6364);
+static_assert(offsetof(ACTOR_DATA, cloneIsActive) == 0x6454);
+static_assert(offsetof(ACTOR_DATA, cloneBaseAddr) == 0x6478);
+static_assert(offsetof(ACTOR_DATA, cloneIsControlledByPlayer) == 0x6480);
+static_assert(offsetof(ACTOR_DATA, styleRank) == 0x6510);
+static_assert(offsetof(ACTOR_DATA, styleMeter) == 0x6514);
+static_assert(offsetof(ACTOR_DATA, inputData) == 0x6674);
+static_assert(offsetof(ACTOR_DATA, collisionIndex) == 0x7254);
+static_assert(offsetof(ACTOR_DATA, interactionData) == 0x7460);
+static_assert(offsetof(ACTOR_DATA, buttons) == 0x74E0);
+static_assert(offsetof(ACTOR_DATA, rightStickPosition) == 0x74F8);
+static_assert(offsetof(ACTOR_DATA, rightStickRadius) == 0x74FA);
+static_assert(offsetof(ACTOR_DATA, leftStickPosition) == 0x7508);
+static_assert(offsetof(ACTOR_DATA, leftStickRadius) == 0x750A);
+static_assert(offsetof(ACTOR_DATA, actorCameraDirection) == 0x750C);
+static_assert(offsetof(ACTOR_DATA, leftStickDirection) == 0x751C);
+static_assert(offsetof(ACTOR_DATA, newEnable) == 0xB8C0);
+static_assert(offsetof(ACTOR_DATA, newCharacterModel) == 0xB8C1);
+static_assert(offsetof(ACTOR_DATA, newParentBaseAddr) == 0xB8C8);
+static_assert(offsetof(ACTOR_DATA, newChildBaseAddr) == 0xB8D0);
+static_assert(offsetof(ACTOR_DATA, newGamepad) == 0xB8F0);
+static_assert(offsetof(ACTOR_DATA, newButtonMask) == 0xB8F1);
+static_assert(offsetof(ACTOR_DATA, newEnableRightStick) == 0xB8F3);
+static_assert(offsetof(ACTOR_DATA, newEnableLeftStick) == 0xB8F4);
+static_assert(offsetof(ACTOR_DATA, newMeleeWeapon) == 0xB8F8);
+static_assert(offsetof(ACTOR_DATA, newMeleeWeaponData) == 0xB900);
+static_assert(offsetof(ACTOR_DATA, newMeleeWeaponCount) == 0xB928);
+static_assert(offsetof(ACTOR_DATA, newMeleeWeaponIndex) == 0xB929);
+static_assert(offsetof(ACTOR_DATA, newLastMeleeWeapon) == 0xB92A);
+static_assert(offsetof(ACTOR_DATA, newRangedWeapon) == 0xB92C);
+static_assert(offsetof(ACTOR_DATA, newRangedWeaponData) == 0xB938);
+static_assert(offsetof(ACTOR_DATA, newRangedWeaponCount) == 0xB960);
+static_assert(offsetof(ACTOR_DATA, newRangedWeaponIndex) == 0xB961);
+static_assert(offsetof(ACTOR_DATA, newLastRangedWeapon) == 0xB962);
+static_assert(offsetof(ACTOR_DATA, newSect) == 0xB964);
+static_assert(offsetof(ACTOR_DATA, newBufferedActionPolicy) == 0xB96C);
+static_assert(offsetof(ACTOR_DATA, newExecuteMeleeWeaponSwitch) == 0xB96D);
+static_assert(offsetof(ACTOR_DATA, newExecuteRangedWeaponSwitch) == 0xB96E);
+static_assert(offsetof(ACTOR_DATA, newAirStingerCount) == 0xB96F);
 
+static_assert(offsetof(ACTOR_DATA_DANTE, init) == 8);
+static_assert(offsetof(ACTOR_DATA_DANTE, character) == 0x78);
+static_assert(offsetof(ACTOR_DATA_DANTE, position) == 0x80);
+static_assert(offsetof(ACTOR_DATA_DANTE, pull) == 0x94);
+static_assert(offsetof(ACTOR_DATA_DANTE, pullMultiplier) == 0xA4);
+static_assert(offsetof(ACTOR_DATA_DANTE, rotation) == 0xC0);
+static_assert(offsetof(ACTOR_DATA_DANTE, id) == 0x118);
+static_assert(offsetof(ACTOR_DATA_DANTE, isClone) == 0x11C);
+static_assert(offsetof(ACTOR_DATA_DANTE, visible) == 0x120);
+static_assert(offsetof(ACTOR_DATA_DANTE, var_1C0) == 0x1C0);
+static_assert(offsetof(ACTOR_DATA_DANTE, var_1C4) == 0x1C4);
+static_assert(offsetof(ACTOR_DATA_DANTE, modelData) == 0x200);
+static_assert(offsetof(ACTOR_DATA_DANTE, motionArchive) == 0x38A0);
+static_assert(offsetof(ACTOR_DATA_DANTE, motionData) == 0x39B0);
+static_assert(offsetof(ACTOR_DATA_DANTE, motionDataMirror) == 0x39B4);
+static_assert(offsetof(ACTOR_DATA_DANTE, var_39BC) == 0x39BC);
+static_assert(offsetof(ACTOR_DATA_DANTE, var_39C0) == 0x39C0);
+static_assert(offsetof(ACTOR_DATA_DANTE, nextActionRequestPolicy) == 0x39D0);
+static_assert(offsetof(ACTOR_DATA_DANTE, var_3A10) == 0x3A10);
+static_assert(offsetof(ACTOR_DATA_DANTE, shadow) == 0x3A18);
+static_assert(offsetof(ACTOR_DATA_DANTE, color) == 0x3A28);
+static_assert(offsetof(ACTOR_DATA_DANTE, actionData) == 0x3DD0);
+static_assert(offsetof(ACTOR_DATA_DANTE, eventData) == 0x3E00);
+static_assert(offsetof(ACTOR_DATA_DANTE, var_3E10) == 0x3E10);
+static_assert(offsetof(ACTOR_DATA_DANTE, motionTimer) == 0x3E34);
+static_assert(offsetof(ACTOR_DATA_DANTE, idleTimer) == 0x3E38);
+static_assert(offsetof(ACTOR_DATA_DANTE, permissions) == 0x3E60);
+static_assert(offsetof(ACTOR_DATA_DANTE, state) == 0x3E64);
+static_assert(offsetof(ACTOR_DATA_DANTE, lastState) == 0x3E68);
+static_assert(offsetof(ACTOR_DATA_DANTE, activeModelIndex) == 0x3E6C);
+static_assert(offsetof(ACTOR_DATA_DANTE, queuedModelIndex) == 0x3E70);
+static_assert(offsetof(ACTOR_DATA_DANTE, modelMap) == 0x3E74);
+static_assert(offsetof(ACTOR_DATA_DANTE, modelState) == 0x3E80);
+static_assert(offsetof(ACTOR_DATA_DANTE, lockOn) == 0x3E84);
+static_assert(offsetof(ACTOR_DATA_DANTE, activeModelIndexMirror) == 0x3E88);
+static_assert(offsetof(ACTOR_DATA_DANTE, activeDevilModel) == 0x3E8C);
+static_assert(offsetof(ACTOR_DATA_DANTE, airRaid) == 0x3E90);
+static_assert(offsetof(ACTOR_DATA_DANTE, mode) == 0x3E94);
+static_assert(offsetof(ACTOR_DATA_DANTE, devil) == 0x3E9B);
+static_assert(offsetof(ACTOR_DATA_DANTE, costume) == 0x3E9E);
+static_assert(offsetof(ACTOR_DATA_DANTE, sparda) == 0x3E9F);
+static_assert(offsetof(ACTOR_DATA_DANTE, useHolyWater) == 0x3EA4);
+static_assert(offsetof(ACTOR_DATA_DANTE, magicPoints) == 0x3EB8);
+static_assert(offsetof(ACTOR_DATA_DANTE, maxMagicPoints) == 0x3EBC);
+static_assert(offsetof(ACTOR_DATA_DANTE, var_3ED2) == 0x3ED2);
+static_assert(offsetof(ACTOR_DATA_DANTE, cameraDirection) == 0x3ED8);
+static_assert(offsetof(ACTOR_DATA_DANTE, airHikeCount) == 0x3F11);
+static_assert(offsetof(ACTOR_DATA_DANTE, kickJumpCount) == 0x3F12);
+static_assert(offsetof(ACTOR_DATA_DANTE, wallHikeCount) == 0x3F13);
+static_assert(offsetof(ACTOR_DATA_DANTE, action) == 0x3FA4);
+static_assert(offsetof(ACTOR_DATA_DANTE, lastAction) == 0x3FA5);
+static_assert(offsetof(ACTOR_DATA_DANTE, bufferedAction) == 0x3FA8);
+static_assert(offsetof(ACTOR_DATA_DANTE, chainCount) == 0x3FAC);
+static_assert(offsetof(ACTOR_DATA_DANTE, expertise) == 0x3FEC);
+static_assert(offsetof(ACTOR_DATA_DANTE, maxHitPoints) == 0x40EC);
+static_assert(offsetof(ACTOR_DATA_DANTE, hitPoints) == 0x411C);
+static_assert(offsetof(ACTOR_DATA_DANTE, targetBaseAddr) == 0x6328);
+static_assert(offsetof(ACTOR_DATA_DANTE, style) == 0x6338);
+static_assert(offsetof(ACTOR_DATA_DANTE, styleLevel) == 0x6358);
+static_assert(offsetof(ACTOR_DATA_DANTE, dashCount) == 0x635C);
+static_assert(offsetof(ACTOR_DATA_DANTE, skyStarCount) == 0x635D);
+static_assert(offsetof(ACTOR_DATA_DANTE, airTrickCount) == 0x635E);
+static_assert(offsetof(ACTOR_DATA_DANTE, quicksilver) == 0x6361);
+static_assert(offsetof(ACTOR_DATA_DANTE, doppelganger) == 0x6362);
+static_assert(offsetof(ACTOR_DATA_DANTE, styleExperience) == 0x6364);
+static_assert(offsetof(ACTOR_DATA_DANTE, cloneIsActive) == 0x6454);
+static_assert(offsetof(ACTOR_DATA_DANTE, cloneBaseAddr) == 0x6478);
+static_assert(offsetof(ACTOR_DATA_DANTE, cloneIsControlledByPlayer) == 0x6480);
+static_assert(offsetof(ACTOR_DATA_DANTE, activeWeapon) == 0x648D);
+static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeaponIndex) == 0x6490);
+static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeaponIndex) == 0x6494);
+static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeapon) == 0x6498);
+static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeapon) == 0x649A);
+static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeaponData) == 0x64A0);
+static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeaponData) == 0x64B0);
+static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeaponStatus) == 0x64C8);
+static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeaponStatus) == 0x64D0);
+static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeaponLevel) == 0x64DC);
+static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeaponLevel) == 0x64E4);
+static_assert(offsetof(ACTOR_DATA_DANTE, activeMeleeWeapon) == 0x64F0);
+static_assert(offsetof(ACTOR_DATA_DANTE, activeRangedWeapon) == 0x64F1);
+static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeaponTimer) == 0x64F4);
+static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeaponTimer) == 0x64FC);
+static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeaponSwitchTimeout) == 0x6508);
+static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeaponSwitchTimeout) == 0x650C);
+static_assert(offsetof(ACTOR_DATA_DANTE, styleRank) == 0x6510);
+static_assert(offsetof(ACTOR_DATA_DANTE, styleMeter) == 0x6514);
+static_assert(offsetof(ACTOR_DATA_DANTE, inputData) == 0x6674);
+static_assert(offsetof(ACTOR_DATA_DANTE, collisionIndex) == 0x7254);
+static_assert(offsetof(ACTOR_DATA_DANTE, interactionData) == 0x7460);
+static_assert(offsetof(ACTOR_DATA_DANTE, buttons) == 0x74E0);
+static_assert(offsetof(ACTOR_DATA_DANTE, rightStickPosition) == 0x74F8);
+static_assert(offsetof(ACTOR_DATA_DANTE, rightStickRadius) == 0x74FA);
+static_assert(offsetof(ACTOR_DATA_DANTE, leftStickPosition) == 0x7508);
+static_assert(offsetof(ACTOR_DATA_DANTE, leftStickRadius) == 0x750A);
+static_assert(offsetof(ACTOR_DATA_DANTE, actorCameraDirection) == 0x750C);
+static_assert(offsetof(ACTOR_DATA_DANTE, leftStickDirection) == 0x751C);
+static_assert(offsetof(ACTOR_DATA_DANTE, devilModelMetadata) == 0xB600);
+static_assert(offsetof(ACTOR_DATA_DANTE, modelMetadata) == 0xB630);
+static_assert(offsetof(ACTOR_DATA_DANTE, artemisChargeValue) == 0xB868);
+static_assert(offsetof(ACTOR_DATA_DANTE, artemisChargeFlags) == 0xB87C);
+static_assert(offsetof(ACTOR_DATA_DANTE, newEnable) == 0xB8C0);
+static_assert(offsetof(ACTOR_DATA_DANTE, newCharacterModel) == 0xB8C1);
+static_assert(offsetof(ACTOR_DATA_DANTE, newParentBaseAddr) == 0xB8C8);
+static_assert(offsetof(ACTOR_DATA_DANTE, newChildBaseAddr) == 0xB8D0);
+static_assert(offsetof(ACTOR_DATA_DANTE, newGamepad) == 0xB8F0);
+static_assert(offsetof(ACTOR_DATA_DANTE, newButtonMask) == 0xB8F1);
+static_assert(offsetof(ACTOR_DATA_DANTE, newEnableRightStick) == 0xB8F3);
+static_assert(offsetof(ACTOR_DATA_DANTE, newEnableLeftStick) == 0xB8F4);
+static_assert(offsetof(ACTOR_DATA_DANTE, newMeleeWeapon) == 0xB8F8);
+static_assert(offsetof(ACTOR_DATA_DANTE, newMeleeWeaponData) == 0xB900);
+static_assert(offsetof(ACTOR_DATA_DANTE, newMeleeWeaponCount) == 0xB928);
+static_assert(offsetof(ACTOR_DATA_DANTE, newMeleeWeaponIndex) == 0xB929);
+static_assert(offsetof(ACTOR_DATA_DANTE, newLastMeleeWeapon) == 0xB92A);
+static_assert(offsetof(ACTOR_DATA_DANTE, newRangedWeapon) == 0xB92C);
+static_assert(offsetof(ACTOR_DATA_DANTE, newRangedWeaponData) == 0xB938);
+static_assert(offsetof(ACTOR_DATA_DANTE, newRangedWeaponCount) == 0xB960);
+static_assert(offsetof(ACTOR_DATA_DANTE, newRangedWeaponIndex) == 0xB961);
+static_assert(offsetof(ACTOR_DATA_DANTE, newLastRangedWeapon) == 0xB962);
+static_assert(offsetof(ACTOR_DATA_DANTE, newSect) == 0xB964);
+static_assert(offsetof(ACTOR_DATA_DANTE, newBufferedActionPolicy) == 0xB96C);
+static_assert(offsetof(ACTOR_DATA_DANTE, newExecuteMeleeWeaponSwitch) == 0xB96D);
+static_assert(offsetof(ACTOR_DATA_DANTE, newExecuteRangedWeaponSwitch) == 0xB96E);
+static_assert(offsetof(ACTOR_DATA_DANTE, newAirStingerCount) == 0xB96F);
 
+static_assert(offsetof(ACTOR_DATA_BOB, init) == 8);
+static_assert(offsetof(ACTOR_DATA_BOB, character) == 0x78);
+static_assert(offsetof(ACTOR_DATA_BOB, position) == 0x80);
+static_assert(offsetof(ACTOR_DATA_BOB, pull) == 0x94);
+static_assert(offsetof(ACTOR_DATA_BOB, pullMultiplier) == 0xA4);
+static_assert(offsetof(ACTOR_DATA_BOB, rotation) == 0xC0);
+static_assert(offsetof(ACTOR_DATA_BOB, id) == 0x118);
+static_assert(offsetof(ACTOR_DATA_BOB, isClone) == 0x11C);
+static_assert(offsetof(ACTOR_DATA_BOB, visible) == 0x120);
+static_assert(offsetof(ACTOR_DATA_BOB, var_1C0) == 0x1C0);
+static_assert(offsetof(ACTOR_DATA_BOB, var_1C4) == 0x1C4);
+static_assert(offsetof(ACTOR_DATA_BOB, modelData) == 0x200);
+static_assert(offsetof(ACTOR_DATA_BOB, motionArchive) == 0x38A0);
+static_assert(offsetof(ACTOR_DATA_BOB, motionData) == 0x39B0);
+static_assert(offsetof(ACTOR_DATA_BOB, motionDataMirror) == 0x39B4);
+static_assert(offsetof(ACTOR_DATA_BOB, var_39BC) == 0x39BC);
+static_assert(offsetof(ACTOR_DATA_BOB, var_39C0) == 0x39C0);
+static_assert(offsetof(ACTOR_DATA_BOB, nextActionRequestPolicy) == 0x39D0);
+static_assert(offsetof(ACTOR_DATA_BOB, var_3A10) == 0x3A10);
+static_assert(offsetof(ACTOR_DATA_BOB, shadow) == 0x3A18);
+static_assert(offsetof(ACTOR_DATA_BOB, color) == 0x3A28);
+static_assert(offsetof(ACTOR_DATA_BOB, actionData) == 0x3DD0);
+static_assert(offsetof(ACTOR_DATA_BOB, eventData) == 0x3E00);
+static_assert(offsetof(ACTOR_DATA_BOB, var_3E10) == 0x3E10);
+static_assert(offsetof(ACTOR_DATA_BOB, motionTimer) == 0x3E34);
+static_assert(offsetof(ACTOR_DATA_BOB, idleTimer) == 0x3E38);
+static_assert(offsetof(ACTOR_DATA_BOB, permissions) == 0x3E60);
+static_assert(offsetof(ACTOR_DATA_BOB, state) == 0x3E64);
+static_assert(offsetof(ACTOR_DATA_BOB, lastState) == 0x3E68);
+static_assert(offsetof(ACTOR_DATA_BOB, activeModelIndex) == 0x3E6C);
+static_assert(offsetof(ACTOR_DATA_BOB, queuedModelIndex) == 0x3E70);
+static_assert(offsetof(ACTOR_DATA_BOB, modelMap) == 0x3E74);
+static_assert(offsetof(ACTOR_DATA_BOB, modelState) == 0x3E80);
+static_assert(offsetof(ACTOR_DATA_BOB, lockOn) == 0x3E84);
+static_assert(offsetof(ACTOR_DATA_BOB, activeModelIndexMirror) == 0x3E88);
+static_assert(offsetof(ACTOR_DATA_BOB, activeDevilModel) == 0x3E8C);
+static_assert(offsetof(ACTOR_DATA_BOB, airRaid) == 0x3E90);
+static_assert(offsetof(ACTOR_DATA_BOB, mode) == 0x3E94);
+static_assert(offsetof(ACTOR_DATA_BOB, devil) == 0x3E9B);
+static_assert(offsetof(ACTOR_DATA_BOB, costume) == 0x3E9E);
+static_assert(offsetof(ACTOR_DATA_BOB, sparda) == 0x3E9F);
+static_assert(offsetof(ACTOR_DATA_BOB, useHolyWater) == 0x3EA4);
+static_assert(offsetof(ACTOR_DATA_BOB, magicPoints) == 0x3EB8);
+static_assert(offsetof(ACTOR_DATA_BOB, maxMagicPoints) == 0x3EBC);
+static_assert(offsetof(ACTOR_DATA_BOB, var_3ED2) == 0x3ED2);
+static_assert(offsetof(ACTOR_DATA_BOB, cameraDirection) == 0x3ED8);
+static_assert(offsetof(ACTOR_DATA_BOB, airHikeCount) == 0x3F11);
+static_assert(offsetof(ACTOR_DATA_BOB, kickJumpCount) == 0x3F12);
+static_assert(offsetof(ACTOR_DATA_BOB, wallHikeCount) == 0x3F13);
+static_assert(offsetof(ACTOR_DATA_BOB, action) == 0x3FA4);
+static_assert(offsetof(ACTOR_DATA_BOB, lastAction) == 0x3FA5);
+static_assert(offsetof(ACTOR_DATA_BOB, bufferedAction) == 0x3FA8);
+static_assert(offsetof(ACTOR_DATA_BOB, chainCount) == 0x3FAC);
+static_assert(offsetof(ACTOR_DATA_BOB, expertise) == 0x3FEC);
+static_assert(offsetof(ACTOR_DATA_BOB, maxHitPoints) == 0x40EC);
+static_assert(offsetof(ACTOR_DATA_BOB, hitPoints) == 0x411C);
+static_assert(offsetof(ACTOR_DATA_BOB, targetBaseAddr) == 0x6328);
+static_assert(offsetof(ACTOR_DATA_BOB, style) == 0x6338);
+static_assert(offsetof(ACTOR_DATA_BOB, styleLevel) == 0x6358);
+static_assert(offsetof(ACTOR_DATA_BOB, styleExperience) == 0x6364);
+static_assert(offsetof(ACTOR_DATA_BOB, cloneIsActive) == 0x6454);
+static_assert(offsetof(ACTOR_DATA_BOB, cloneBaseAddr) == 0x6478);
+static_assert(offsetof(ACTOR_DATA_BOB, cloneIsControlledByPlayer) == 0x6480);
+static_assert(offsetof(ACTOR_DATA_BOB, styleRank) == 0x6510);
+static_assert(offsetof(ACTOR_DATA_BOB, styleMeter) == 0x6514);
+static_assert(offsetof(ACTOR_DATA_BOB, inputData) == 0x6674);
+static_assert(offsetof(ACTOR_DATA_BOB, collisionIndex) == 0x7254);
+static_assert(offsetof(ACTOR_DATA_BOB, interactionData) == 0x7460);
+static_assert(offsetof(ACTOR_DATA_BOB, buttons) == 0x74E0);
+static_assert(offsetof(ACTOR_DATA_BOB, rightStickPosition) == 0x74F8);
+static_assert(offsetof(ACTOR_DATA_BOB, rightStickRadius) == 0x74FA);
+static_assert(offsetof(ACTOR_DATA_BOB, leftStickPosition) == 0x7508);
+static_assert(offsetof(ACTOR_DATA_BOB, leftStickRadius) == 0x750A);
+static_assert(offsetof(ACTOR_DATA_BOB, actorCameraDirection) == 0x750C);
+static_assert(offsetof(ACTOR_DATA_BOB, leftStickDirection) == 0x751C);
+static_assert(offsetof(ACTOR_DATA_BOB, newEnable) == 0xB8C0);
+static_assert(offsetof(ACTOR_DATA_BOB, newCharacterModel) == 0xB8C1);
+static_assert(offsetof(ACTOR_DATA_BOB, newParentBaseAddr) == 0xB8C8);
+static_assert(offsetof(ACTOR_DATA_BOB, newChildBaseAddr) == 0xB8D0);
+static_assert(offsetof(ACTOR_DATA_BOB, newGamepad) == 0xB8F0);
+static_assert(offsetof(ACTOR_DATA_BOB, newButtonMask) == 0xB8F1);
+static_assert(offsetof(ACTOR_DATA_BOB, newEnableRightStick) == 0xB8F3);
+static_assert(offsetof(ACTOR_DATA_BOB, newEnableLeftStick) == 0xB8F4);
+static_assert(offsetof(ACTOR_DATA_BOB, newMeleeWeapon) == 0xB8F8);
+static_assert(offsetof(ACTOR_DATA_BOB, newMeleeWeaponData) == 0xB900);
+static_assert(offsetof(ACTOR_DATA_BOB, newMeleeWeaponCount) == 0xB928);
+static_assert(offsetof(ACTOR_DATA_BOB, newMeleeWeaponIndex) == 0xB929);
+static_assert(offsetof(ACTOR_DATA_BOB, newLastMeleeWeapon) == 0xB92A);
+static_assert(offsetof(ACTOR_DATA_BOB, newRangedWeapon) == 0xB92C);
+static_assert(offsetof(ACTOR_DATA_BOB, newRangedWeaponData) == 0xB938);
+static_assert(offsetof(ACTOR_DATA_BOB, newRangedWeaponCount) == 0xB960);
+static_assert(offsetof(ACTOR_DATA_BOB, newRangedWeaponIndex) == 0xB961);
+static_assert(offsetof(ACTOR_DATA_BOB, newLastRangedWeapon) == 0xB962);
+static_assert(offsetof(ACTOR_DATA_BOB, newSect) == 0xB964);
+static_assert(offsetof(ACTOR_DATA_BOB, newBufferedActionPolicy) == 0xB96C);
+static_assert(offsetof(ACTOR_DATA_BOB, newExecuteMeleeWeaponSwitch) == 0xB96D);
+static_assert(offsetof(ACTOR_DATA_BOB, newExecuteRangedWeaponSwitch) == 0xB96E);
+static_assert(offsetof(ACTOR_DATA_BOB, newAirStingerCount) == 0xB96F);
 
+static_assert(offsetof(ACTOR_DATA_LADY, init) == 8);
+static_assert(offsetof(ACTOR_DATA_LADY, character) == 0x78);
+static_assert(offsetof(ACTOR_DATA_LADY, position) == 0x80);
+static_assert(offsetof(ACTOR_DATA_LADY, pull) == 0x94);
+static_assert(offsetof(ACTOR_DATA_LADY, pullMultiplier) == 0xA4);
+static_assert(offsetof(ACTOR_DATA_LADY, rotation) == 0xC0);
+static_assert(offsetof(ACTOR_DATA_LADY, id) == 0x118);
+static_assert(offsetof(ACTOR_DATA_LADY, isClone) == 0x11C);
+static_assert(offsetof(ACTOR_DATA_LADY, visible) == 0x120);
+static_assert(offsetof(ACTOR_DATA_LADY, var_1C0) == 0x1C0);
+static_assert(offsetof(ACTOR_DATA_LADY, var_1C4) == 0x1C4);
+static_assert(offsetof(ACTOR_DATA_LADY, modelData) == 0x200);
+static_assert(offsetof(ACTOR_DATA_LADY, motionArchive) == 0x38A0);
+static_assert(offsetof(ACTOR_DATA_LADY, motionData) == 0x39B0);
+static_assert(offsetof(ACTOR_DATA_LADY, motionDataMirror) == 0x39B4);
+static_assert(offsetof(ACTOR_DATA_LADY, var_39BC) == 0x39BC);
+static_assert(offsetof(ACTOR_DATA_LADY, var_39C0) == 0x39C0);
+static_assert(offsetof(ACTOR_DATA_LADY, nextActionRequestPolicy) == 0x39D0);
+static_assert(offsetof(ACTOR_DATA_LADY, var_3A10) == 0x3A10);
+static_assert(offsetof(ACTOR_DATA_LADY, shadow) == 0x3A18);
+static_assert(offsetof(ACTOR_DATA_LADY, color) == 0x3A28);
+static_assert(offsetof(ACTOR_DATA_LADY, actionData) == 0x3DD0);
+static_assert(offsetof(ACTOR_DATA_LADY, eventData) == 0x3E00);
+static_assert(offsetof(ACTOR_DATA_LADY, var_3E10) == 0x3E10);
+static_assert(offsetof(ACTOR_DATA_LADY, motionTimer) == 0x3E34);
+static_assert(offsetof(ACTOR_DATA_LADY, idleTimer) == 0x3E38);
+static_assert(offsetof(ACTOR_DATA_LADY, permissions) == 0x3E60);
+static_assert(offsetof(ACTOR_DATA_LADY, state) == 0x3E64);
+static_assert(offsetof(ACTOR_DATA_LADY, lastState) == 0x3E68);
+static_assert(offsetof(ACTOR_DATA_LADY, activeModelIndex) == 0x3E6C);
+static_assert(offsetof(ACTOR_DATA_LADY, queuedModelIndex) == 0x3E70);
+static_assert(offsetof(ACTOR_DATA_LADY, modelMap) == 0x3E74);
+static_assert(offsetof(ACTOR_DATA_LADY, modelState) == 0x3E80);
+static_assert(offsetof(ACTOR_DATA_LADY, lockOn) == 0x3E84);
+static_assert(offsetof(ACTOR_DATA_LADY, activeModelIndexMirror) == 0x3E88);
+static_assert(offsetof(ACTOR_DATA_LADY, activeDevilModel) == 0x3E8C);
+static_assert(offsetof(ACTOR_DATA_LADY, airRaid) == 0x3E90);
+static_assert(offsetof(ACTOR_DATA_LADY, mode) == 0x3E94);
+static_assert(offsetof(ACTOR_DATA_LADY, devil) == 0x3E9B);
+static_assert(offsetof(ACTOR_DATA_LADY, costume) == 0x3E9E);
+static_assert(offsetof(ACTOR_DATA_LADY, sparda) == 0x3E9F);
+static_assert(offsetof(ACTOR_DATA_LADY, useHolyWater) == 0x3EA4);
+static_assert(offsetof(ACTOR_DATA_LADY, magicPoints) == 0x3EB8);
+static_assert(offsetof(ACTOR_DATA_LADY, maxMagicPoints) == 0x3EBC);
+static_assert(offsetof(ACTOR_DATA_LADY, var_3ED2) == 0x3ED2);
+static_assert(offsetof(ACTOR_DATA_LADY, cameraDirection) == 0x3ED8);
+static_assert(offsetof(ACTOR_DATA_LADY, airHikeCount) == 0x3F11);
+static_assert(offsetof(ACTOR_DATA_LADY, kickJumpCount) == 0x3F12);
+static_assert(offsetof(ACTOR_DATA_LADY, wallHikeCount) == 0x3F13);
+static_assert(offsetof(ACTOR_DATA_LADY, action) == 0x3FA4);
+static_assert(offsetof(ACTOR_DATA_LADY, lastAction) == 0x3FA5);
+static_assert(offsetof(ACTOR_DATA_LADY, bufferedAction) == 0x3FA8);
+static_assert(offsetof(ACTOR_DATA_LADY, chainCount) == 0x3FAC);
+static_assert(offsetof(ACTOR_DATA_LADY, expertise) == 0x3FEC);
+static_assert(offsetof(ACTOR_DATA_LADY, maxHitPoints) == 0x40EC);
+static_assert(offsetof(ACTOR_DATA_LADY, hitPoints) == 0x411C);
+static_assert(offsetof(ACTOR_DATA_LADY, targetBaseAddr) == 0x6328);
+static_assert(offsetof(ACTOR_DATA_LADY, style) == 0x6338);
+static_assert(offsetof(ACTOR_DATA_LADY, styleLevel) == 0x6358);
+static_assert(offsetof(ACTOR_DATA_LADY, styleExperience) == 0x6364);
+static_assert(offsetof(ACTOR_DATA_LADY, cloneIsActive) == 0x6454);
+static_assert(offsetof(ACTOR_DATA_LADY, cloneBaseAddr) == 0x6478);
+static_assert(offsetof(ACTOR_DATA_LADY, cloneIsControlledByPlayer) == 0x6480);
+static_assert(offsetof(ACTOR_DATA_LADY, styleRank) == 0x6510);
+static_assert(offsetof(ACTOR_DATA_LADY, styleMeter) == 0x6514);
+static_assert(offsetof(ACTOR_DATA_LADY, inputData) == 0x6674);
+static_assert(offsetof(ACTOR_DATA_LADY, collisionIndex) == 0x7254);
+static_assert(offsetof(ACTOR_DATA_LADY, interactionData) == 0x7460);
+static_assert(offsetof(ACTOR_DATA_LADY, buttons) == 0x74E0);
+static_assert(offsetof(ACTOR_DATA_LADY, rightStickPosition) == 0x74F8);
+static_assert(offsetof(ACTOR_DATA_LADY, rightStickRadius) == 0x74FA);
+static_assert(offsetof(ACTOR_DATA_LADY, leftStickPosition) == 0x7508);
+static_assert(offsetof(ACTOR_DATA_LADY, leftStickRadius) == 0x750A);
+static_assert(offsetof(ACTOR_DATA_LADY, actorCameraDirection) == 0x750C);
+static_assert(offsetof(ACTOR_DATA_LADY, leftStickDirection) == 0x751C);
+static_assert(offsetof(ACTOR_DATA_LADY, newEnable) == 0xB8C0);
+static_assert(offsetof(ACTOR_DATA_LADY, newCharacterModel) == 0xB8C1);
+static_assert(offsetof(ACTOR_DATA_LADY, newParentBaseAddr) == 0xB8C8);
+static_assert(offsetof(ACTOR_DATA_LADY, newChildBaseAddr) == 0xB8D0);
+static_assert(offsetof(ACTOR_DATA_LADY, newGamepad) == 0xB8F0);
+static_assert(offsetof(ACTOR_DATA_LADY, newButtonMask) == 0xB8F1);
+static_assert(offsetof(ACTOR_DATA_LADY, newEnableRightStick) == 0xB8F3);
+static_assert(offsetof(ACTOR_DATA_LADY, newEnableLeftStick) == 0xB8F4);
+static_assert(offsetof(ACTOR_DATA_LADY, newMeleeWeapon) == 0xB8F8);
+static_assert(offsetof(ACTOR_DATA_LADY, newMeleeWeaponData) == 0xB900);
+static_assert(offsetof(ACTOR_DATA_LADY, newMeleeWeaponCount) == 0xB928);
+static_assert(offsetof(ACTOR_DATA_LADY, newMeleeWeaponIndex) == 0xB929);
+static_assert(offsetof(ACTOR_DATA_LADY, newLastMeleeWeapon) == 0xB92A);
+static_assert(offsetof(ACTOR_DATA_LADY, newRangedWeapon) == 0xB92C);
+static_assert(offsetof(ACTOR_DATA_LADY, newRangedWeaponData) == 0xB938);
+static_assert(offsetof(ACTOR_DATA_LADY, newRangedWeaponCount) == 0xB960);
+static_assert(offsetof(ACTOR_DATA_LADY, newRangedWeaponIndex) == 0xB961);
+static_assert(offsetof(ACTOR_DATA_LADY, newLastRangedWeapon) == 0xB962);
+static_assert(offsetof(ACTOR_DATA_LADY, newSect) == 0xB964);
+static_assert(offsetof(ACTOR_DATA_LADY, newBufferedActionPolicy) == 0xB96C);
+static_assert(offsetof(ACTOR_DATA_LADY, newExecuteMeleeWeaponSwitch) == 0xB96D);
+static_assert(offsetof(ACTOR_DATA_LADY, newExecuteRangedWeaponSwitch) == 0xB96E);
+static_assert(offsetof(ACTOR_DATA_LADY, newAirStingerCount) == 0xB96F);
 
+static_assert(offsetof(ACTOR_DATA_VERGIL, init) == 8);
+static_assert(offsetof(ACTOR_DATA_VERGIL, character) == 0x78);
+static_assert(offsetof(ACTOR_DATA_VERGIL, position) == 0x80);
+static_assert(offsetof(ACTOR_DATA_VERGIL, pull) == 0x94);
+static_assert(offsetof(ACTOR_DATA_VERGIL, pullMultiplier) == 0xA4);
+static_assert(offsetof(ACTOR_DATA_VERGIL, rotation) == 0xC0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, id) == 0x118);
+static_assert(offsetof(ACTOR_DATA_VERGIL, isClone) == 0x11C);
+static_assert(offsetof(ACTOR_DATA_VERGIL, visible) == 0x120);
+static_assert(offsetof(ACTOR_DATA_VERGIL, var_1C0) == 0x1C0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, var_1C4) == 0x1C4);
+static_assert(offsetof(ACTOR_DATA_VERGIL, modelData) == 0x200);
+static_assert(offsetof(ACTOR_DATA_VERGIL, motionArchive) == 0x38A0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, motionData) == 0x39B0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, motionDataMirror) == 0x39B4);
+static_assert(offsetof(ACTOR_DATA_VERGIL, var_39BC) == 0x39BC);
+static_assert(offsetof(ACTOR_DATA_VERGIL, var_39C0) == 0x39C0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, nextActionRequestPolicy) == 0x39D0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, var_3A10) == 0x3A10);
+static_assert(offsetof(ACTOR_DATA_VERGIL, shadow) == 0x3A18);
+static_assert(offsetof(ACTOR_DATA_VERGIL, color) == 0x3A28);
+static_assert(offsetof(ACTOR_DATA_VERGIL, actionData) == 0x3DD0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, eventData) == 0x3E00);
+static_assert(offsetof(ACTOR_DATA_VERGIL, var_3E10) == 0x3E10);
+static_assert(offsetof(ACTOR_DATA_VERGIL, motionTimer) == 0x3E34);
+static_assert(offsetof(ACTOR_DATA_VERGIL, idleTimer) == 0x3E38);
+static_assert(offsetof(ACTOR_DATA_VERGIL, permissions) == 0x3E60);
+static_assert(offsetof(ACTOR_DATA_VERGIL, state) == 0x3E64);
+static_assert(offsetof(ACTOR_DATA_VERGIL, lastState) == 0x3E68);
+static_assert(offsetof(ACTOR_DATA_VERGIL, activeModelIndex) == 0x3E6C);
+static_assert(offsetof(ACTOR_DATA_VERGIL, queuedModelIndex) == 0x3E70);
+static_assert(offsetof(ACTOR_DATA_VERGIL, modelMap) == 0x3E74);
+static_assert(offsetof(ACTOR_DATA_VERGIL, modelState) == 0x3E80);
+static_assert(offsetof(ACTOR_DATA_VERGIL, lockOn) == 0x3E84);
+static_assert(offsetof(ACTOR_DATA_VERGIL, activeModelIndexMirror) == 0x3E88);
+static_assert(offsetof(ACTOR_DATA_VERGIL, activeDevilModel) == 0x3E8C);
+static_assert(offsetof(ACTOR_DATA_VERGIL, airRaid) == 0x3E90);
+static_assert(offsetof(ACTOR_DATA_VERGIL, mode) == 0x3E94);
+static_assert(offsetof(ACTOR_DATA_VERGIL, devil) == 0x3E9B);
+static_assert(offsetof(ACTOR_DATA_VERGIL, costume) == 0x3E9E);
+static_assert(offsetof(ACTOR_DATA_VERGIL, sparda) == 0x3E9F);
+static_assert(offsetof(ACTOR_DATA_VERGIL, useHolyWater) == 0x3EA4);
+static_assert(offsetof(ACTOR_DATA_VERGIL, magicPoints) == 0x3EB8);
+static_assert(offsetof(ACTOR_DATA_VERGIL, maxMagicPoints) == 0x3EBC);
+static_assert(offsetof(ACTOR_DATA_VERGIL, var_3ED2) == 0x3ED2);
+static_assert(offsetof(ACTOR_DATA_VERGIL, cameraDirection) == 0x3ED8);
+static_assert(offsetof(ACTOR_DATA_VERGIL, airHikeCount) == 0x3F11);
+static_assert(offsetof(ACTOR_DATA_VERGIL, kickJumpCount) == 0x3F12);
+static_assert(offsetof(ACTOR_DATA_VERGIL, wallHikeCount) == 0x3F13);
+static_assert(offsetof(ACTOR_DATA_VERGIL, action) == 0x3FA4);
+static_assert(offsetof(ACTOR_DATA_VERGIL, lastAction) == 0x3FA5);
+static_assert(offsetof(ACTOR_DATA_VERGIL, bufferedAction) == 0x3FA8);
+static_assert(offsetof(ACTOR_DATA_VERGIL, chainCount) == 0x3FAC);
+static_assert(offsetof(ACTOR_DATA_VERGIL, expertise) == 0x3FEC);
+static_assert(offsetof(ACTOR_DATA_VERGIL, maxHitPoints) == 0x40EC);
+static_assert(offsetof(ACTOR_DATA_VERGIL, hitPoints) == 0x411C);
+static_assert(offsetof(ACTOR_DATA_VERGIL, targetBaseAddr) == 0x6328);
+static_assert(offsetof(ACTOR_DATA_VERGIL, style) == 0x6338);
+static_assert(offsetof(ACTOR_DATA_VERGIL, styleLevel) == 0x6358);
+static_assert(offsetof(ACTOR_DATA_VERGIL, airTrickCount) == 0x635E);
+static_assert(offsetof(ACTOR_DATA_VERGIL, trickUpCount) == 0x635F);
+static_assert(offsetof(ACTOR_DATA_VERGIL, trickDownCount) == 0x6360);
+static_assert(offsetof(ACTOR_DATA_VERGIL, styleExperience) == 0x6364);
+static_assert(offsetof(ACTOR_DATA_VERGIL, cloneIsActive) == 0x6454);
+static_assert(offsetof(ACTOR_DATA_VERGIL, cloneBaseAddr) == 0x6478);
+static_assert(offsetof(ACTOR_DATA_VERGIL, cloneIsControlledByPlayer) == 0x6480);
+static_assert(offsetof(ACTOR_DATA_VERGIL, activeMeleeWeaponIndex) == 0x6484);
+static_assert(offsetof(ACTOR_DATA_VERGIL, queuedMeleeWeaponIndex) == 0x6488);
+static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeapon) == 0x6498);
+static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeaponData) == 0x64A0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeaponStatus) == 0x64C8);
+static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeaponLevel) == 0x64DC);
+static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeaponTimer) == 0x64F4);
+static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeaponSwitchForwardTimeout) == 0x6508);
+static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeaponSwitchBackTimeout) == 0x650C);
+static_assert(offsetof(ACTOR_DATA_VERGIL, styleRank) == 0x6510);
+static_assert(offsetof(ACTOR_DATA_VERGIL, styleMeter) == 0x6514);
+static_assert(offsetof(ACTOR_DATA_VERGIL, inputData) == 0x6674);
+static_assert(offsetof(ACTOR_DATA_VERGIL, collisionIndex) == 0x7254);
+static_assert(offsetof(ACTOR_DATA_VERGIL, interactionData) == 0x7460);
+static_assert(offsetof(ACTOR_DATA_VERGIL, buttons) == 0x74E0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, rightStickPosition) == 0x74F8);
+static_assert(offsetof(ACTOR_DATA_VERGIL, rightStickRadius) == 0x74FA);
+static_assert(offsetof(ACTOR_DATA_VERGIL, leftStickPosition) == 0x7508);
+static_assert(offsetof(ACTOR_DATA_VERGIL, leftStickRadius) == 0x750A);
+static_assert(offsetof(ACTOR_DATA_VERGIL, actorCameraDirection) == 0x750C);
+static_assert(offsetof(ACTOR_DATA_VERGIL, leftStickDirection) == 0x751C);
+static_assert(offsetof(ACTOR_DATA_VERGIL, modelMetadata) == 0xB640);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newEnable) == 0xB8C0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newCharacterModel) == 0xB8C1);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newParentBaseAddr) == 0xB8C8);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newChildBaseAddr) == 0xB8D0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newGamepad) == 0xB8F0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newButtonMask) == 0xB8F1);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newEnableRightStick) == 0xB8F3);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newEnableLeftStick) == 0xB8F4);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newMeleeWeapon) == 0xB8F8);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newMeleeWeaponData) == 0xB900);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newMeleeWeaponCount) == 0xB928);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newMeleeWeaponIndex) == 0xB929);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newLastMeleeWeapon) == 0xB92A);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newRangedWeapon) == 0xB92C);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newRangedWeaponData) == 0xB938);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newRangedWeaponCount) == 0xB960);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newRangedWeaponIndex) == 0xB961);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newLastRangedWeapon) == 0xB962);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newSect) == 0xB964);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newBufferedActionPolicy) == 0xB96C);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newExecuteMeleeWeaponSwitch) == 0xB96D);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newExecuteRangedWeaponSwitch) == 0xB96E);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newAirStingerCount) == 0xB96F);
 
-
-
-
-
-
-
-
-
-//constexpr auto g_danteOff = offsetof(ACTOR_DATA_DANTE, cloneBaseAddr);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//constexpr uint32 baseSize = (uint32)sizeof(ACTOR_DATA_BASE);
-//constexpr uint32 voidSize = (uint32)sizeof(ACTOR_DATA_CHAR_VOID);
-
-
-
-
-
-
-//constexpr uint32 adsizeDante = (uint32)sizeof(ACTOR_DATA_DANTE);
-//constexpr uint32 adsizeVergil = (uint32)sizeof(ACTOR_DATA_VERGIL);
-
-
+// $ActorDataEnd
 
 #pragma pack(pop)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #undef _
-//#undef Merge
-//#undef _Merge
-
-
-
-/*
-
-INTERACTION_DATA
-
-
-_(528);
-
-vec4 force[8];
-
-actorData.interactionData.force[3].x
-
-
-actorData.forceData[3].x
-
-
-
-
-
-
-*/
-
-
-
 
 
 
@@ -1837,32 +2769,32 @@ struct FloorHelper
 constexpr FloorHelper Arcade_floorHelper[] =
 {
 	{ 423, 0 }, // Floor 1
-{ 424, 0 }, // Floor 2
-{ 425, 0 }, // Floor 3
-{ 426, 0 }, // Floor 4
-{ 427, 0 }, // Floor 5
-{ 428, 0 }, // Floor 6
-{ 429, 0 }, // Floor 7
-{ 430, 0 }, // Floor 8
-{ 431, 0 }, // Floor 9
-{ 432, 0 }, // Floor 10
-{ 433, 0 }, // Cerberus
-{ 434, 0 }, // Gigapede
-{ 435, 0 }, // Agni & Rudra
-{ 436, 0 }, // Nevan
-{ 437, 0 }, // Beowulf
-{ 438, 2 }, // Geryon
-{ 439, 0 }, // Doppelganger
-{ 440, 0 }, // Heart of Leviathan
-{ 441, 0 }, // Damned Chessmen
-{ 442, 0 }, // Vergil 1
-{ 443, 0 }, // Vergil 2
-{ 444, 0 }, // Vergil 3
-{ 445, 2 }, // Lady
-{ 446, 0 }, // Arkham
-{ 422, 0 }, // Jester 1
-{ 448, 0 }, // Jester 2
-{ 449, 0 }, // Jester 3
+	{ 424, 0 }, // Floor 2
+	{ 425, 0 }, // Floor 3
+	{ 426, 0 }, // Floor 4
+	{ 427, 0 }, // Floor 5
+	{ 428, 0 }, // Floor 6
+	{ 429, 0 }, // Floor 7
+	{ 430, 0 }, // Floor 8
+	{ 431, 0 }, // Floor 9
+	{ 432, 0 }, // Floor 10
+	{ 433, 0 }, // Cerberus
+	{ 434, 0 }, // Gigapede
+	{ 435, 0 }, // Agni & Rudra
+	{ 436, 0 }, // Nevan
+	{ 437, 0 }, // Beowulf
+	{ 438, 2 }, // Geryon
+	{ 439, 0 }, // Doppelganger
+	{ 440, 0 }, // Heart of Leviathan
+	{ 441, 0 }, // Damned Chessmen
+	{ 442, 0 }, // Vergil 1
+	{ 443, 0 }, // Vergil 2
+	{ 444, 0 }, // Vergil 3
+	{ 445, 2 }, // Lady
+	{ 446, 0 }, // Arkham
+	{ 422, 0 }, // Jester 1
+	{ 448, 0 }, // Jester 2
+	{ 449, 0 }, // Jester 3
 };
 
 
@@ -1954,583 +2886,5 @@ constexpr BossHelper bossHelper[] =
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-enum DEVIL_FLUX_
-{
-	DEVIL_FLUX_START = 1,
-	DEVIL_FLUX_END   = 2,
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifdef __GARBAGE__
-
-
-enum ACTOR_
-{
-	ACTOR_ONE,
-	ACTOR_TWO,
-	ACTOR_THREE,
-	ACTOR_FOUR,
-	MAX_ACTOR,
-};
-
-
-
-
-
-
-
-
-
-
-enum MODEL_
-{
-	MODEL_BASE,
-	MODEL_COAT,
-	MODEL_WINGS,
-	MAX_MODEL,
-};
-
-enum DEVIL_BOB_
-{
-	DEVIL_BOB_YAMATO = 1,
-};
-
-enum BODY_COUNT_
-{
-	BODY_COUNT_DANTE  = 7,
-	BODY_COUNT_BOB    = 2,
-	BODY_COUNT_LADY   = 1,
-	BODY_COUNT_VERGIL = 4,
-	MAX_BODY_COUNT    = 7,
-};
-
-enum MISSION_
-{
-	MAX_MISSION = 22,
-};
-
-enum COSTUME_BOB_
-{
-	COSTUME_BOB_DEFAULT,
-	MAX_COSTUME_BOB,
-};
-
-enum COSTUME_LADY_
-{
-	COSTUME_LADY_DEFAULT,
-	MAX_COSTUME_LADY,
-};
-
-enum COSTUME_COUNT_
-{
-	COSTUME_COUNT_DANTE  = MAX_COSTUME_DANTE,
-	COSTUME_COUNT_BOB    = MAX_COSTUME_BOB,
-	COSTUME_COUNT_LADY   = MAX_COSTUME_LADY,
-	COSTUME_COUNT_VERGIL = MAX_COSTUME_VERGIL,
-	MAX_COSTUME_COUNT    = MAX_COSTUME_DANTE,
-};
-
-enum WEAPON_COUNT_
-{
-	WEAPON_COUNT_DANTE  = 10,
-	WEAPON_COUNT_BOB    = 1,
-	WEAPON_COUNT_LADY   = 2,
-	WEAPON_COUNT_VERGIL = 3,
-};
-
-
-struct MODEL_FILE_DATA_SINGLE
-{
-	uint16 cacheFileId;
-	uint8 index;
-};
-
-struct MODEL_FILE_DATA
-{
-	MODEL_FILE_DATA_SINGLE modelFile  [MAX_MODEL];
-	MODEL_FILE_DATA_SINGLE textureFile[MAX_MODEL];
-	MODEL_FILE_DATA_SINGLE shadowFile [MAX_MODEL];
-	MODEL_FILE_DATA_SINGLE physicsFile[MAX_MODEL];
-};
-
-enum Object_
-{
-	Object_Dante,
-	Object_Lady,
-	Object_Rebellion,
-	Object_Rebellion2,
-	Object_ForceEdgeDante,
-	Object_Yamato,
-	Object_ForceEdge,
-	Object_NeroAngeloSbyte16,
-	Object_Count,
-};
-
-
-
-struct INPUT_BUFFER
-{
-	_(4);
-	uint8 level;
-	_(7);
-};
-
-struct CHARGE_DATA
-{
-	byte32 flags[2];
-	float32 value;
-};
-
-enum STYLE_
-{
-	MAX_STYLE = 6,
-};
-
-// @Research: Use native instead of logic.
-
-enum NATIVE_STYLE_DANTE_
-{
-	NATIVE_STYLE_DANTE_Sbyte16MASTER,
-	NATIVE_STYLE_DANTE_GUNSLINGER,
-	NATIVE_STYLE_DANTE_TRICKSTER,
-	NATIVE_STYLE_DANTE_ROYALGUARD,
-	NATIVE_STYLE_DANTE_QUICKSILVER,
-	NATIVE_STYLE_DANTE_DOPPELGANGER,
-	MAX_NATIVE_STYLE_DANTE,
-};
-
-enum NATIVE_STYLE_VERGIL_
-{
-	NATIVE_STYLE_VERGIL_DARK_SLAYER = 2,
-	MAX_NATIVE_STYLE_VERGIL = 1,
-};
-
-
-
-
-
-
-enum NATIVE_WEAPON_DANTE_
-{
-	NATIVE_WEAPON_DANTE_REBELLION,
-	NATIVE_WEAPON_DANTE_CERBERUS,
-	NATIVE_WEAPON_DANTE_AGNI_RUDRA,
-	NATIVE_WEAPON_DANTE_NEVAN,
-	NATIVE_WEAPON_DANTE_BEOWULF,
-	NATIVE_WEAPON_DANTE_EBONY_IVORY,
-	NATIVE_WEAPON_DANTE_SHOTGUN,
-	NATIVE_WEAPON_DANTE_ARTEMIS,
-	NATIVE_WEAPON_DANTE_SPIRAL,
-	NATIVE_WEAPON_DANTE_KALINA_ANN,
-	MAX_NATIVE_WEAPON_DANTE,
-};
-
-enum NATIVE_WEAPON_VERGIL_
-{
-	NATIVE_WEAPON_VERGIL_YAMATO = 11,
-	NATIVE_WEAPON_VERGIL_BEOWULF,
-	NATIVE_WEAPON_VERGIL_FORCE_EDGE,
-	MAX_NATIVE_WEAPON_VERGIL = 3,
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-enum WEAPON_
-{
-	MAX_WEAPON = 16,
-	WEAPON_VOID = 255,
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// NATIVE_COSTUME_DANTE_
-// MAX_NATIVE_COSTUME_DANTE
-
-
-// original
-// native
-// logic
-// prime
-
-
-
-
-
-
-
-
-enum DEVIL_VERGIL_
-{
-	DEVIL_VERGIL_YAMATO,
-	DEVIL_VERGIL_BEOWULF = 4,
-	DEVIL_VERGIL_NERO_ANGELO = 6,
-	MAX_DEVIL_VERGIL,
-};
-
-
-
-
-
-constexpr uint8 costumeMapDante[MAX_COSTUME_DANTE] =
-{
-	NATIVE_COSTUME_DANTE_DEFAULT,
-	NATIVE_COSTUME_DANTE_DEFAULT_NO_COAT,
-	NATIVE_COSTUME_DANTE_DEFAULT_TORN,
-	NATIVE_COSTUME_DANTE_DMC1,
-	NATIVE_COSTUME_DANTE_DMC1_NO_COAT,
-	NATIVE_COSTUME_DANTE_SPARDA,
-};
-
-constexpr uint8 costumeMapVergil[MAX_COSTUME_VERGIL] =
-{
-	NATIVE_COSTUME_VERGIL_DEFAULT,
-	NATIVE_COSTUME_VERGIL_DEFAULT_NO_COAT,
-	NATIVE_COSTUME_VERGIL_SPARDA,
-};
-
-enum COSTUME_DANTE_
-{
-	COSTUME_DANTE_DEFAULT,
-	COSTUME_DANTE_DEFAULT_NO_COAT,
-	COSTUME_DANTE_DEFAULT_TORN,
-	COSTUME_DANTE_DMC1,
-	COSTUME_DANTE_DMC1_NO_COAT,
-	COSTUME_DANTE_SPARDA,
-	MAX_COSTUME_DANTE,
-};
-
-enum COSTUME_VERGIL_
-{
-	COSTUME_VERGIL_DEFAULT,
-	COSTUME_VERGIL_DEFAULT_NO_COAT,
-	COSTUME_VERGIL_SPARDA,
-	MAX_COSTUME_VERGIL,
-};
-
-
-
-
-enum COSTUME_VERGIL_
-{
-	COSTUME_VERGIL_DEFAULT,
-	COSTUME_VERGIL_DEFAULT_NO_COAT,
-	COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS,
-	COSTUME_VERGIL_SPARDA,
-	COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS,
-	MAX_COSTUME_VERGIL,
-};
-
-
-
-
-enum NATIVE_STYLE_VERGIL_
-{
-	NATIVE_STYLE_VERGIL_DARK_SLAYER = 2,
-	MAX_NATIVE_STYLE_VERGIL = 1,
-};
-
-enum STYLE_VERGIL_
-{
-	STYLE_VERGIL_DARK_SLAYER,
-	STYLE_VERGIL_ROYALGUARD,
-	MAX_STYLE_VERGIL,
-};
-
-
-
-
-
-
-
-
-
-
-
-enum STYLE_
-{
-	STYLE_DANTE_Sbyte16MASTER,
-	STYLE_DANTE_GUNSLINGER,
-	STYLE_DANTE_TRICKSTER,
-	STYLE_DANTE_ROYALGUARD,
-	STYLE_DANTE_QUICKSILVER,
-	STYLE_DANTE_DOPPELGANGER,
-	STYLE_VERGIL_DARK_SLAYER = 2,
-	MAX_STYLE = 6,
-};
-
-
-
-
-
-
-
-
-
-
-
-
-enum WEAPON_
-{
-	WEAPON_VOID = 255,
-};
-
-enum NATIVE_MELEE_WEAPON_DANTE_
-{
-	NATIVE_MELEE_WEAPON_DANTE_REBELLION,
-	NATIVE_MELEE_WEAPON_DANTE_CERBERUS,
-	NATIVE_MELEE_WEAPON_DANTE_AGNI_RUDRA,
-	NATIVE_MELEE_WEAPON_DANTE_NEVAN,
-	NATIVE_MELEE_WEAPON_DANTE_BEOWULF,
-	MAX_NATIVE_MELEE_WEAPON_DANTE,
-};
-
-enum NATIVE_RANGED_WEAPON_DANTE_
-{
-	NATIVE_RANGED_WEAPON_DANTE_EBONY_IVORY = 5,
-	NATIVE_RANGED_WEAPON_DANTE_SHOTGUN,
-	NATIVE_RANGED_WEAPON_DANTE_ARTEMIS,
-	NATIVE_RANGED_WEAPON_DANTE_SPIRAL,
-	NATIVE_RANGED_WEAPON_DANTE_KALINA_ANN,
-	MAX_NATIVE_RANGED_WEAPON_DANTE = 5,
-};
-
-enum MELEE_WEAPON_DANTE_
-{
-	MELEE_WEAPON_DANTE_REBELLION,
-	MELEE_WEAPON_DANTE_CERBERUS,
-	MELEE_WEAPON_DANTE_AGNI_RUDRA,
-	MELEE_WEAPON_DANTE_NEVAN,
-	MELEE_WEAPON_DANTE_BEOWULF,
-	MELEE_WEAPON_DANTE_YAMATO,
-	MAX_MELEE_WEAPON_DANTE,
-};
-
-enum RANGED_WEAPON_DANTE_
-{
-	RANGED_WEAPON_DANTE_EBONY_IVORY,
-	RANGED_WEAPON_DANTE_SHOTGUN,
-	RANGED_WEAPON_DANTE_ARTEMIS,
-	RANGED_WEAPON_DANTE_SPIRAL,
-	RANGED_WEAPON_DANTE_KALINA_ANN,
-	RANGED_WEAPON_DANTE_SUMMONED_Sbyte16S,
-	MAX_RANGED_WEAPON_DANTE,
-};
-
-constexpr uint8 rangedWeaponMapDante[MAX_RANGED_WEAPON_DANTE] =
-{
-	NATIVE_RANGED_WEAPON_DANTE_EBONY_IVORY,
-	NATIVE_RANGED_WEAPON_DANTE_SHOTGUN,
-	NATIVE_RANGED_WEAPON_DANTE_ARTEMIS,
-	NATIVE_RANGED_WEAPON_DANTE_SPIRAL,
-	NATIVE_RANGED_WEAPON_DANTE_KALINA_ANN,
-	WEAPON_VOID,
-};
-
-enum NATIVE_MELEE_WEAPON_VERGIL_
-{
-	NATIVE_MELEE_WEAPON_VERGIL_YAMATO = 11,
-	NATIVE_MELEE_WEAPON_VERGIL_BEOWULF,
-	NATIVE_MELEE_WEAPON_VERGIL_FORCE_EDGE,
-	MAX_NATIVE_MELEE_WEAPON_VERGIL = 3,
-};
-
-enum MELEE_WEAPON_VERGIL_
-{
-	MELEE_WEAPON_VERGIL_YAMATO,
-	MELEE_WEAPON_VERGIL_BEOWULF,
-	MELEE_WEAPON_VERGIL_FORCE_EDGE,
-	MAX_MELEE_WEAPON_VERGIL,
-};
-
-
-
-
-enum NEW_MELEE_WEAPON_VERGIL_
-{
-	NEW_MELEE_WEAPON_VERGIL_YAMATO = 11,
-	NEW_MELEE_WEAPON_VERGIL_BEOWULF,
-	NEW_MELEE_WEAPON_VERGIL_FORCE_EDGE,
-	//MAX_NEW_MELEE_WEAPON_VERGIL = 3,
-};
-
-
-
-
-
-
-
-
-
-
-//enum MOTION_GROUP_BOB_
-//{
-//	MOTION_GROUP_BOB_BASE,
-//	MOTION_GROUP_BOB_DAMAGE,
-//	MOTION_GROUP_BOB_TAUNTS,
-//	MOTION_GROUP_BOB_MELEE_STYLE = 31,
-//	MAX_MOTION_GROUP_BOB         = 4,
-//};
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//enum MOTION_GROUP_LADY_
-//{
-//	MOTION_GROUP_LADY_BASE,
-//	MOTION_GROUP_LADY_DAMAGE,
-//	MOTION_GROUP_LADY_TAUNTS,
-//	MOTION_GROUP_LADY_KALINA_ANN = 12,
-//	MAX_MOTION_GROUP_LADY        = 4,
-//};
-
-enum MOTION_GROUP_VERGIL_
-{
-	MOTION_GROUP_VERGIL_BASE,
-	MOTION_GROUP_VERGIL_DAMAGE,
-	MOTION_GROUP_VERGIL_TAUNTS,
-	MOTION_GROUP_VERGIL_YAMATO,
-	MOTION_GROUP_VERGIL_BEOWULF,
-	MOTION_GROUP_VERGIL_FORCE_EDGE,
-	MOTION_GROUP_VERGIL_DARK_SLAYER,
-	MOTION_GROUP_VERGIL_NERO_ANGELO_YAMATO,
-	MOTION_GROUP_VERGIL_NERO_ANGELO_BEOWULF,
-	MOTION_GROUP_VERGIL_NERO_ANGELO_FORCE_EDGE,
-	MAX_MOTION_GROUP_VERGIL,
-};
-
-enum MOTION_GROUP_
-{
-	//MOTION_GROUP_DANTE  = MAX_MOTION_GROUP_DANTE,
-	//MOTION_GROUP_BOB    = MAX_MOTION_GROUP_BOB,
-	//MOTION_GROUP_LADY   = MAX_MOTION_GROUP_LADY,
-	//MOTION_GROUP_VERGIL = MAX_MOTION_GROUP_VERGIL,
-	MAX_MOT    = 32,
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #endif
-
-

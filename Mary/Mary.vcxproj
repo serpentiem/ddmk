@@ -137,7 +137,6 @@
     <ClCompile Include="..\ImGui\imgui_demo.cpp" />
     <ClCompile Include="..\ImGui\imgui_draw.cpp" />
     <ClCompile Include="..\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="ActorData.cpp" />
     <ClCompile Include="Arcade.ixx" />
     <ClCompile Include="Dante.ixx" />
     <ClCompile Include="Event.ixx" />
@@ -146,8 +145,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="HUD.ixx" />
-    <ClCompile Include="Internal.cpp" />
-    <ClCompile Include="Locale.cpp" />
     <ClCompile Include="Mary.cpp" />
     <ClCompile Include="Memory.ixx" />
     <ClCompile Include="Speed.ixx" />
@@ -166,7 +163,6 @@
     <ClInclude Include="..\ImGui\imstb_rectpack.h" />
     <ClInclude Include="..\ImGui\imstb_textedit.h" />
     <ClInclude Include="..\ImGui\imstb_truetype.h" />
-    <ClInclude Include="ActorData.h" />
     <ClCompile Include="Config.ixx">
       <FileType>Document</FileType>
     </ClCompile>
@@ -179,8 +175,6 @@
     <ClInclude Include="FMOD.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Internal.h" />
-    <ClInclude Include="Locale.h" />
     <ClInclude Include="Modules.h" />
     <ClCompile Include="State.ixx">
       <FileType>Document</FileType>
@@ -247,6 +241,7 @@
     <None Include="..\Core\GUI.ixx" />
     <None Include="BossRush.ixx" />
     <None Include="Color.ixx" />
+    <None Include="Internal.ixx" />
     <None Include="Mobility.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

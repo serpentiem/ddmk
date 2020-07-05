@@ -6,8 +6,6 @@ module;
 
 #include "../ImGui/imgui.h"
 
-#include "ActorData.h"
-#include "Internal.h"
 #include "Locale.h"
 #include "Vars.h"
 export module ModuleName(GUI);
@@ -20,6 +18,7 @@ import ModuleName(Camera);
 import ModuleName(Config);
 import ModuleName(Event);
 import ModuleName(File);
+import ModuleName(Internal);
 import ModuleName(Pause);
 import ModuleName(Speed);
 import ModuleName(State);
@@ -35,6 +34,7 @@ import ModuleName(Window);
 #include "Config.ixx"
 #include "Event.ixx"
 #include "File.ixx"
+#include "Internal.ixx"
 #include "Pause.ixx"
 #include "Speed.ixx"
 #include "State.ixx"
@@ -103,7 +103,7 @@ void Overlay()
 				color = ImVec4(1, 0, 0, 1);
 			}
 			ImGui::PushStyleColor(ImGuiCol_Text, color);
-			ImGui::Text(Locale.Tools.Overlay.focus);
+			ImGui::Text("Focus");
 			ImGui::PopStyleColor();
 		}
 
@@ -452,7 +452,7 @@ void Actor()
 		ImGui::Text("");
 
 		ImGui::PushItemWidth(200);
-		GUI_Slider<uint8>("Player Count", Config.Actor.playerCount, 1, MAX_ACTOR);
+		GUI_Slider<uint8>("Player Count", Config.Actor.playerCount, 1, MAX_PLAYER);
 		ImGui::PopItemWidth();
 		ImGui::Text("");
 

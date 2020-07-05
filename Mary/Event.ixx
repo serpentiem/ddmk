@@ -4,8 +4,6 @@
 module;
 #include "../Core/Core.h"
 
-#include "ActorData.h"
-#include "Internal.h"
 #include "Vars.h"
 export module ModuleName(Event);
 

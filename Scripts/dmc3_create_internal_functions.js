@@ -1,8 +1,11 @@
-var c_typedef = "";
-var c_extern = "";
+NEW_LINE = "\r\n";
+
+var fs = require("fs");
+
+var c = "";
+var c_typedefs = "";
 var c_vars = "";
 var c_init = "";
-var fs = require("fs");
 
 var items =
 [
@@ -29,10 +32,10 @@ var items =
 
 	
 	[ 0x1DE820, "byte8 *", "uint32 character, uint32 id, bool isClone"                                    , "0, true, false"              , "Create Actor"                        ],
-	[ 0x217B90, "void"   , "byte8 * actorData, byte8 * sessionData"                                       , ""                            , "Init Actor Dante"                    ],
-	[ 0x226F10, "void"   , "byte8 * actorData, byte8 * sessionData"                                       , ""                            , "Init Actor Bob"                      ],
-	[ 0x219660, "void"   , "byte8 * actorData, byte8 * sessionData"                                       , ""                            , "Init Actor Lady"                     ],
-	[ 0x223CB0, "void"   , "byte8 * actorData, byte8 * sessionData"                                       , ""                            , "Init Actor Vergil"                   ],
+	[ 0x217B90, "void"   , "byte8 * actorData, byte8 * missionActorData"                                       , ""                            , "Init Actor Dante"                    ],
+	[ 0x226F10, "void"   , "byte8 * actorData, byte8 * missionActorData"                                       , ""                            , "Init Actor Bob"                      ],
+	[ 0x219660, "void"   , "byte8 * actorData, byte8 * missionActorData"                                       , ""                            , "Init Actor Lady"                     ],
+	[ 0x223CB0, "void"   , "byte8 * actorData, byte8 * missionActorData"                                       , ""                            , "Init Actor Vergil"                   ],
 	[ 0x212BE0, "void"   , "byte8 * actorData"                                                            , ""                            , "Update Actor Dante"                  ],
 	[ 0x225D70, "void"   , "byte8 * actorData"                                                            , ""                            , "Update Actor Bob"                    ],
 	[ 0x219260, "void"   , "byte8 * actorData"                                                            , ""                            , "Update Actor Lady"                   ],
@@ -183,50 +186,49 @@ for (var index = 0; index < items.length; index++)
 	
 	var offStr = off.toString(16).toUpperCase();
 	
-	c_typedef += "typedef " + returnType + "(__fastcall * func_" + offStr + "_t)(" + args + ");";
+	c_typedefs += "export typedef " + returnType + "(__fastcall * func_" + offStr + "_t)(" + args + ");";
 	if (hint != "")
 	{
-		c_typedef += " // " + hint;
+		c_typedefs += " // " + hint;
 	}
-	c_typedef += "\r\n";
+	c_typedefs += "" + NEW_LINE;
+
+	c_vars += "export func_" + offStr + "_t func_" + offStr + " = 0;" + NEW_LINE;
 	
-	c_extern += "extern func_" + offStr + "_t func_" + offStr + ";\r\n";
-	
-	c_vars += "func_" + offStr + "_t func_" + offStr + " = 0;\r\n";
-	
-	c_init += "\t{\r\n";
+	c_init += "\t{" + NEW_LINE;
 	c_init += "\t\tauto func = CreateFunction((appBaseAddr + 0x" + offStr + ")";
 	if (createFunctionArgs != "")
 	{
 		c_init += ", " + createFunctionArgs;
 	}
-	c_init += ");\r\n";
-	c_init += "\t\tfunc_" + offStr + " = (func_" + offStr + "_t)func.addr;\r\n";
-	c_init += "\t}\r\n";
+	c_init += ");" + NEW_LINE;
+	c_init += "\t\tfunc_" + offStr + " = (func_" + offStr + "_t)func.addr;" + NEW_LINE;
+	c_init += "\t}" + NEW_LINE;
 }
 
-var h = "";
-h += "#pragma once\r\n";
-h += "#include \"../Core/Core.h\"\r\n";
-h += "\r\n";
-h += "#include \"Vars.h\"\r\n";
-h += "\r\n";
-h += c_typedef;
-h += "\r\n";
-h += c_extern;
-h += "\r\n";
-h += "void Internal_Init();\r\n";
+c += "#ifndef __MODULE_INTERNAL__" + NEW_LINE;
+c += "#define __MODULE_INTERNAL__" + NEW_LINE;
+c += NEW_LINE;
+c += "module;" + NEW_LINE;
+c += "#include \"../Core/Core.h\"" + NEW_LINE;
+c += NEW_LINE;
+c += "#include \"Vars.h\"" + NEW_LINE;
+c += "export module ModuleName(Internal);" + NEW_LINE;
+c += NEW_LINE;
 
-var cpp = "";
-cpp += "#include \"Internal.h\"\r\n";
-cpp += "\r\n";
-cpp += c_vars;
-cpp += "\r\n";
-cpp += "void Internal_Init()\r\n";
-cpp += "{\r\n";
-cpp += "\tLogFunction();\r\n";
-cpp += c_init;
-cpp += "}\r\n";
+c += c_typedefs;
+c += NEW_LINE;
 
-fs.writeFileSync("../Mary/Internal.h", h);
-fs.writeFileSync("../Mary/Internal.cpp", cpp);
+c += c_vars;
+c += NEW_LINE;
+
+c += "export void Internal_Init()" + NEW_LINE;
+c += "{" + NEW_LINE;
+c += "\tLogFunction();" + NEW_LINE;
+c += c_init;
+c += "}" + NEW_LINE;
+
+c += NEW_LINE;
+c += "#endif" + NEW_LINE;
+
+fs.writeFileSync("../Mary/Internal.ixx", c);

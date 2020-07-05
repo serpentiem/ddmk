@@ -4,7 +4,6 @@
 module;
 #include "../Core/Core.h"
 
-#include "ActorData.h"
 #include "Vars.h"
 export module ModuleName(Input);
 

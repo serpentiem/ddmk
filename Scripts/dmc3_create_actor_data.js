@@ -1,4 +1,11 @@
-// @Todo: Change uppercase variables to pascalcase.
+
+
+
+
+
+
+
+
 
 NEW_LINE = "\r\n";
 
@@ -27,68 +34,75 @@ var c_assert = "";
 
 
 
-// var filename = "../Mary/Vars.h"
-
-// var file = fs.readFileSync(filename, "utf8");
-
-// var startTag = /\/\/ \$ActorDataStart$/;
-// var endTag   = /\/\/ \$ActorDataEnd$/;
-
-// var startTagLine = -1;
-// var endTagLine   = -1;
-
-// var obj = file.match(/[\S\s]*?\r\n/g);
-
-// for (var index = 0; index < obj.length; index++)
-// {
-// 	var str = obj[index].substring(0, (obj[index].length - 2));
-// 	if (str.match(startTag))
-// 	{
-// 		startTagLine = index;
-// 		break;
-// 	}
-// }
-
-// if (startTagLine == -1)
-// {
-// 	console.log("Start tag not found.");
-// 	return;
-// }
-
-// for (var index = 0; index < obj.length; index++)
-// {
-// 	var str = obj[index].substring(0, (obj[index].length - 2));
-// 	if (str.match(endTag))
-// 	{
-// 		endTagLine = index;
-// 		break;
-// 	}
-// }
-
-// if (endTagLine == -1)
-// {
-// 	console.log("End tag not found.");
-// 	return;
-// }
-
-// if (endTagLine < startTagLine)
-// {
-// 	console.log("End tag appears before start tag.");
-// 	return;
-// }
-
-// console.log("startTagLine " + (startTagLine + 1));
-// console.log("endTagLine   " + (endTagLine   + 1));
-
-// for (var index = 0; index <= startTagLine; index++)
-// {
-// 	var str = obj[index].substring(0, (obj[index].length - 2));
-// 	c += str + NEW_LINE;
-// }
 
 
 
+var filename = "../Mary/Vars.h"
 
+var file = fs.readFileSync(filename, "utf8");
+
+var startTag = /\/\/ \$ActorDataStart$/;
+var endTag   = /\/\/ \$ActorDataEnd$/;
+
+var startTagLine = -1;
+var endTagLine   = -1;
+
+var obj = file.match(/[\S\s]*?\r\n/g);
+
+for (var index = 0; index < obj.length; index++)
+{
+	var str = obj[index].substring(0, (obj[index].length - 2));
+	if (str.match(startTag))
+	{
+		startTagLine = index;
+		break;
+	}
+}
+
+if (startTagLine == -1)
+{
+	console.log("Start tag not found.");
+	return;
+}
+
+for (var index = 0; index < obj.length; index++)
+{
+	var str = obj[index].substring(0, (obj[index].length - 2));
+	if (str.match(endTag))
+	{
+		endTagLine = index;
+		break;
+	}
+}
+
+if (endTagLine == -1)
+{
+	console.log("End tag not found.");
+	return;
+}
+
+if (endTagLine < startTagLine)
+{
+	console.log("End tag appears before start tag.");
+	return;
+}
+
+console.log("startTagLine " + (startTagLine + 1));
+console.log("endTagLine   " + (endTagLine   + 1));
+
+for (var index = 0; index <= startTagLine; index++)
+{
+	var str = obj[index].substring(0, (obj[index].length - 2));
+	c += str + NEW_LINE;
+}
+
+
+
+c += NEW_LINE;
+
+
+// c += "struct SESSION_DATA" + NEW_LINE;
+// c += "{" + NEW_LINE;
 
 
 
@@ -205,7 +219,7 @@ var items =
 	[ "airHikeCount"                    , "uint8"                     , 0x3F11                           ],
 	[ "kickJumpCount"                   , "uint8"                     , 0x3F12                           ],
 	[ "wallHikeCount"                   , "uint8"                     , 0x3F13                           ],
-	[ "moveOnly"                        , "bool"                      , 0x3F19                           ],
+	//[ "moveOnly"                        , "bool"                      , 0x3F19                           ],
 
 
 	[ "action"                            , "uint8"                     , 0x3FA4                           ],
@@ -428,6 +442,11 @@ var pos = 0;
 
 var GetTypeSize = function(str)
 {
+	if (str.match(/\*/))
+	{
+		return 8;
+	}
+
 	var sizes =
 	[
 		[ "int8"                      , 1    ],
@@ -452,28 +471,18 @@ var GetTypeSize = function(str)
 		[ "DEVIL_MODEL_METADATA_DANTE", 33   ],
 		[ "ACTOR_EVENT_DATA"          , 8    ],
 	];
+
 	for (var index = 0; index < sizes.length; index++)
 	{
 		var name = sizes[index][0];
 		var size = sizes[index][1];
-
-
-		if (name.match(/\*/))
-		{
-
-			console.log("Pointah found!");
-
-			return 8;
-		}
-
-
-
 
 		if (name == str)
 		{
 			return size;
 		}
 	}
+
 	return 0;
 }
 
@@ -512,32 +521,18 @@ var Align = function(boundary)
 
 
 
+
+
 function CreateActorData
 (
 	structName,
 	id
 )
 {
-
-
-
-
-
 	c += "struct " + structName + NEW_LINE;
 	c += "{" + NEW_LINE;
 	
 	pos = 0;
-
-
-
-
-
-
-
-
-
-
-
 
 	for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
 	{
@@ -548,6 +543,11 @@ function CreateActorData
 		var off       = item[2];
 		var character = item[3];
 
+		if ((character != undefined) && !(character & id))
+		{
+			continue;
+		}
+
 		if (name == "")
 		{
 			name = "var_" + off.toString(16).toUpperCase();
@@ -557,23 +557,30 @@ function CreateActorData
 			name = "var_" + off.toString(16).toUpperCase() + name;
 		}
 
-		if ((character != undefined) && !(character & id))
-		{
-			continue;
-		}
+		var lastPos = pos;
+		
+		pos = off;
 
-		var diff = (off - pos);
+		var diff = (pos - lastPos);
 		if (diff)
 		{
 			c += "\t_(" + diff.toString() + ");" + NEW_LINE;
 		}
 
-		pos = off;
+		var posString = "";
+		if (pos >= 10)
+		{
+			posString = "0x" + pos.toString(16).toUpperCase();
+		}
+		else
+		{
+			posString = pos.toString();
+		}
 
-		c += "\t" + type + " " + name + "; // 0x" + pos.toString(16).toUpperCase() + NEW_LINE;
-		
-		c_assert += "static_assert(offsetof(" + structName + ", " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");" + NEW_LINE;
-		
+		c += "\t" + type + " " + name + "; // " + posString + NEW_LINE;
+
+		c_assert += "static_assert(offsetof(" + structName + ", " + name.split("[")[0] + ") == " + posString + ");" + NEW_LINE;
+
 		var size = GetTypeSize(type);
 
 		{
@@ -591,16 +598,13 @@ function CreateActorData
 		pos += size;
 	}
 
-
-
-
-
-
+	var diff = (ACTOR_DATA_SIZE_DANTE - pos);
+	if (diff)
+	{
+		c += "\t_(" + diff.toString() + ");" + NEW_LINE;
+	}
 
 	pos = ACTOR_DATA_SIZE_DANTE;
-
-
-
 
 	for (var itemIndex = 0; itemIndex < extra.length; itemIndex++)
 	{
@@ -626,10 +630,20 @@ function CreateActorData
 			c += "\t_(" + diff.toString() + ");" + NEW_LINE;
 		}
 
-		c += "\t" + type + " " + name + "; // 0x" + pos.toString(16).toUpperCase() + NEW_LINE;
-		
-		c_assert += "static_assert(offsetof(" + structName + ", " + name.split("[")[0] + ") == 0x" + pos.toString(16).toUpperCase() + ");" + NEW_LINE;
-		
+		var posString = "";
+		if (pos >= 10)
+		{
+			posString = "0x" + pos.toString(16).toUpperCase();
+		}
+		else
+		{
+			posString = pos.toString();
+		}
+
+		c += "\t" + type + " " + name + "; // " + posString + NEW_LINE;
+
+		c_assert += "static_assert(offsetof(" + structName + ", " + name.split("[")[0] + ") == " + posString + ");" + NEW_LINE;
+
 		var size = GetTypeSize(type);
 
 		{
@@ -647,9 +661,6 @@ function CreateActorData
 		pos += size;
 	}
 
-
-
-
 	c += "" + NEW_LINE;
 	c += "\toperator byte8 *()" + NEW_LINE;
 	c += "\t{" + NEW_LINE;
@@ -657,10 +668,6 @@ function CreateActorData
 	c += "\t}" + NEW_LINE;
 
 	c += "};" + NEW_LINE;
-
-
-
-
 }
 
 
@@ -740,13 +747,39 @@ CreateActorData("ACTOR_DATA_VERGIL", CHAR_VERGIL);
 //fs.writeFileSync("../Mary/ActorData.h", c);
 //fs.writeFileSync("../Mary/ActorData.cpp", c_assert);
 
-fs.writeFileSync("adata.cpp", c);
+//fs.writeFileSync("adata.cpp", c);
 
 
 
 
 
+c += NEW_LINE;
 
+c += c_assert;
+
+
+
+c += NEW_LINE;
+
+
+
+
+
+for (var index = endTagLine; index < obj.length; index++)
+{
+	var str = obj[index].substring(0, (obj[index].length - 2));
+	c += str + NEW_LINE;
+}
+
+
+
+//console.log(c_assert);
+
+
+//var data = c + NEW_LINE + c_assert;
+
+
+fs.writeFileSync(filename, c);
 
 
 

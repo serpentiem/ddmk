@@ -4,14 +4,15 @@
 module;
 #include "../Core/Core.h"
 
-#include "Internal.h"
 #include "Vars.h"
 export module ModuleName(BossRush);
 
 import ModuleName(Config);
+import ModuleName(Internal);
 
 #ifdef __INTELLISENSE__
 #include "Config.ixx"
+#include "Internal.ixx"
 #endif
 
 export void BossRush_SetRoom()
