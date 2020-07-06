@@ -80,15 +80,57 @@ constexpr auto countof(T(&array)[count])
 	return count;
 }
 
+//export template
+//<
+//	typename T1,
+//	typename T2,
+//	uint64 count
+//>
+//constexpr auto countof(T2(&array)[count])
+//{
+//	return static_cast<T1>(count);
+//}
+
+
+
+
+
 export template
 <
-	typename T1,
-	typename T2,
-	uint64 count
+	typename varType,
+	uint8 mapItemCount
 >
-constexpr auto countof(T2(&array)[count])
+void UpdateMapIndex
+(
+	varType(&map)[mapItemCount],
+	uint8 & index,
+	varType & var
+)
 {
-	return static_cast<T1>(count);
+	for_all(uint8, mapIndex, mapItemCount)
+	{
+		auto & mapItem = map[mapIndex];
+		if (mapItem == var)
+		{
+			index = mapIndex;
+			break;
+		}
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif

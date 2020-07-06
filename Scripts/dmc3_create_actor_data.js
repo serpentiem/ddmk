@@ -360,7 +360,7 @@ var extra =
 
 	[ "newCharacterModel"      , "uint8"   ],
 	[ "newParentBaseAddr"      , "byte8 *" ],
-	[ "newChildBaseAddr[4]"    , "byte8 *" ],
+	[ "newChildBaseAddr"       , "byte8 *" ],
 	[ "newGamepad"             , "uint8"   ],
 	[ "newButtonMask"          , "byte16"  ],
 	[ "newEnableRightStick"    , "bool"    ],

@@ -38,497 +38,261 @@ export struct CONFIG
 			},
 		};
 		uint8 costume[MAX_PLAYER][MAX_ENTITY][MAX_CHAR] = {};
-		uint8 meleeWeapon[MAX_PLAYER][MAX_ENTITY][MAX_CHAR][MAX_MELEE_WEAPON] =
+		bool enableQuicksilver[MAX_PLAYER] =
+		{
+			true,
+			true,
+			true,
+			true,
+		};
+		bool enableDoppelganger[MAX_PLAYER] =
+		{
+			true,
+			true,
+			true,
+			true,
+		};
+		uint8 meleeWeaponDante[MAX_PLAYER][MAX_ENTITY][MAX_MELEE_WEAPON] =
 		{
 			// Player 0
 			{
 				// Entity 0
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_REBELLION,
-						WEAPON_DANTE_CERBERUS,
-						WEAPON_DANTE_AGNI_RUDRA,
-						WEAPON_DANTE_NEVAN,
-						WEAPON_DANTE_BEOWULF,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-						WEAPON_VERGIL_YAMATO,
-						WEAPON_VERGIL_BEOWULF,
-						WEAPON_VERGIL_FORCE_EDGE,
-					},
+					WEAPON_DANTE_REBELLION,
+					WEAPON_DANTE_CERBERUS,
+					WEAPON_DANTE_AGNI_RUDRA,
+					WEAPON_DANTE_NEVAN,
+					WEAPON_DANTE_BEOWULF,
 				},
 				// Entity 1
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_REBELLION,
-						WEAPON_DANTE_CERBERUS,
-						WEAPON_DANTE_AGNI_RUDRA,
-						WEAPON_DANTE_NEVAN,
-						WEAPON_DANTE_BEOWULF,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-						WEAPON_VERGIL_YAMATO,
-						WEAPON_VERGIL_BEOWULF,
-						WEAPON_VERGIL_FORCE_EDGE,
-					},
+					WEAPON_DANTE_REBELLION,
+					WEAPON_DANTE_CERBERUS,
+					WEAPON_DANTE_AGNI_RUDRA,
+					WEAPON_DANTE_NEVAN,
+					WEAPON_DANTE_BEOWULF,
 				},
 			},
 			// Player 1
 			{
 				// Entity 0
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_REBELLION,
-						WEAPON_DANTE_CERBERUS,
-						WEAPON_DANTE_AGNI_RUDRA,
-						WEAPON_DANTE_NEVAN,
-						WEAPON_DANTE_BEOWULF,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-						WEAPON_VERGIL_YAMATO,
-						WEAPON_VERGIL_BEOWULF,
-						WEAPON_VERGIL_FORCE_EDGE,
-					},
+					WEAPON_DANTE_REBELLION,
+					WEAPON_DANTE_CERBERUS,
+					WEAPON_DANTE_AGNI_RUDRA,
+					WEAPON_DANTE_NEVAN,
+					WEAPON_DANTE_BEOWULF,
 				},
 				// Entity 1
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_REBELLION,
-						WEAPON_DANTE_CERBERUS,
-						WEAPON_DANTE_AGNI_RUDRA,
-						WEAPON_DANTE_NEVAN,
-						WEAPON_DANTE_BEOWULF,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-						WEAPON_VERGIL_YAMATO,
-						WEAPON_VERGIL_BEOWULF,
-						WEAPON_VERGIL_FORCE_EDGE,
-					},
+					WEAPON_DANTE_REBELLION,
+					WEAPON_DANTE_CERBERUS,
+					WEAPON_DANTE_AGNI_RUDRA,
+					WEAPON_DANTE_NEVAN,
+					WEAPON_DANTE_BEOWULF,
 				},
 			},
 			// Player 2
 			{
 				// Entity 0
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_REBELLION,
-						WEAPON_DANTE_CERBERUS,
-						WEAPON_DANTE_AGNI_RUDRA,
-						WEAPON_DANTE_NEVAN,
-						WEAPON_DANTE_BEOWULF,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-						WEAPON_VERGIL_YAMATO,
-						WEAPON_VERGIL_BEOWULF,
-						WEAPON_VERGIL_FORCE_EDGE,
-					},
+					WEAPON_DANTE_REBELLION,
+					WEAPON_DANTE_CERBERUS,
+					WEAPON_DANTE_AGNI_RUDRA,
+					WEAPON_DANTE_NEVAN,
+					WEAPON_DANTE_BEOWULF,
 				},
 				// Entity 1
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_REBELLION,
-						WEAPON_DANTE_CERBERUS,
-						WEAPON_DANTE_AGNI_RUDRA,
-						WEAPON_DANTE_NEVAN,
-						WEAPON_DANTE_BEOWULF,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-						WEAPON_VERGIL_YAMATO,
-						WEAPON_VERGIL_BEOWULF,
-						WEAPON_VERGIL_FORCE_EDGE,
-					},
+					WEAPON_DANTE_REBELLION,
+					WEAPON_DANTE_CERBERUS,
+					WEAPON_DANTE_AGNI_RUDRA,
+					WEAPON_DANTE_NEVAN,
+					WEAPON_DANTE_BEOWULF,
 				},
 			},
 			// Player 3
 			{
 				// Entity 0
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_REBELLION,
-						WEAPON_DANTE_CERBERUS,
-						WEAPON_DANTE_AGNI_RUDRA,
-						WEAPON_DANTE_NEVAN,
-						WEAPON_DANTE_BEOWULF,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-						WEAPON_VERGIL_YAMATO,
-						WEAPON_VERGIL_BEOWULF,
-						WEAPON_VERGIL_FORCE_EDGE,
-					},
+					WEAPON_DANTE_REBELLION,
+					WEAPON_DANTE_CERBERUS,
+					WEAPON_DANTE_AGNI_RUDRA,
+					WEAPON_DANTE_NEVAN,
+					WEAPON_DANTE_BEOWULF,
 				},
 				// Entity 1
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_REBELLION,
-						WEAPON_DANTE_CERBERUS,
-						WEAPON_DANTE_AGNI_RUDRA,
-						WEAPON_DANTE_NEVAN,
-						WEAPON_DANTE_BEOWULF,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-						WEAPON_VERGIL_YAMATO,
-						WEAPON_VERGIL_BEOWULF,
-						WEAPON_VERGIL_FORCE_EDGE,
-					},
+					WEAPON_DANTE_REBELLION,
+					WEAPON_DANTE_CERBERUS,
+					WEAPON_DANTE_AGNI_RUDRA,
+					WEAPON_DANTE_NEVAN,
+					WEAPON_DANTE_BEOWULF,
 				},
 			},
 		};
-		uint8 meleeWeaponCount[MAX_PLAYER][MAX_ENTITY][MAX_CHAR] =
+		uint8 meleeWeaponVergil[MAX_PLAYER][MAX_ENTITY][MAX_MELEE_WEAPON] =
 		{
 			// Player 0
 			{
 				// Entity 0
 				{
-					5,
-					0,
-					0,
-					3,
+					WEAPON_VERGIL_YAMATO,
+					WEAPON_VERGIL_BEOWULF,
+					WEAPON_VERGIL_FORCE_EDGE,
 				},
 				// Entity 1
 				{
-					5,
-					0,
-					0,
-					3,
+					WEAPON_VERGIL_YAMATO,
+					WEAPON_VERGIL_BEOWULF,
+					WEAPON_VERGIL_FORCE_EDGE,
 				},
 			},
 			// Player 1
 			{
 				// Entity 0
 				{
-					5,
-					0,
-					0,
-					3,
+					WEAPON_VERGIL_YAMATO,
+					WEAPON_VERGIL_BEOWULF,
+					WEAPON_VERGIL_FORCE_EDGE,
 				},
 				// Entity 1
 				{
-					5,
-					0,
-					0,
-					3,
+					WEAPON_VERGIL_YAMATO,
+					WEAPON_VERGIL_BEOWULF,
+					WEAPON_VERGIL_FORCE_EDGE,
 				},
 			},
 			// Player 2
 			{
 				// Entity 0
 				{
-					5,
-					0,
-					0,
-					3,
+					WEAPON_VERGIL_YAMATO,
+					WEAPON_VERGIL_BEOWULF,
+					WEAPON_VERGIL_FORCE_EDGE,
 				},
 				// Entity 1
 				{
-					5,
-					0,
-					0,
-					3,
+					WEAPON_VERGIL_YAMATO,
+					WEAPON_VERGIL_BEOWULF,
+					WEAPON_VERGIL_FORCE_EDGE,
 				},
 			},
 			// Player 3
 			{
 				// Entity 0
 				{
-					5,
-					0,
-					0,
-					3,
+					WEAPON_VERGIL_YAMATO,
+					WEAPON_VERGIL_BEOWULF,
+					WEAPON_VERGIL_FORCE_EDGE,
 				},
 				// Entity 1
 				{
-					5,
-					0,
-					0,
-					3,
+					WEAPON_VERGIL_YAMATO,
+					WEAPON_VERGIL_BEOWULF,
+					WEAPON_VERGIL_FORCE_EDGE,
 				},
 			},
 		};
-		uint8 rangedWeapon[MAX_PLAYER][MAX_ENTITY][MAX_CHAR][MAX_RANGED_WEAPON] =
+		uint8 rangedWeaponDante[MAX_PLAYER][MAX_ENTITY][MAX_RANGED_WEAPON] =
 		{
 			// Player 0
 			{
 				// Entity 0
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_EBONY_IVORY,
-						WEAPON_DANTE_SHOTGUN,
-						WEAPON_DANTE_ARTEMIS,
-						WEAPON_DANTE_SPIRAL,
-						WEAPON_DANTE_KALINA_ANN,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-					},
+					WEAPON_DANTE_EBONY_IVORY,
+					WEAPON_DANTE_SHOTGUN,
+					WEAPON_DANTE_ARTEMIS,
+					WEAPON_DANTE_SPIRAL,
+					WEAPON_DANTE_KALINA_ANN,
 				},
 				// Entity 1
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_EBONY_IVORY,
-						WEAPON_DANTE_SHOTGUN,
-						WEAPON_DANTE_ARTEMIS,
-						WEAPON_DANTE_SPIRAL,
-						WEAPON_DANTE_KALINA_ANN,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-					},
+					WEAPON_DANTE_EBONY_IVORY,
+					WEAPON_DANTE_SHOTGUN,
+					WEAPON_DANTE_ARTEMIS,
+					WEAPON_DANTE_SPIRAL,
+					WEAPON_DANTE_KALINA_ANN,
 				},
 			},
 			// Player 1
 			{
 				// Entity 0
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_EBONY_IVORY,
-						WEAPON_DANTE_SHOTGUN,
-						WEAPON_DANTE_ARTEMIS,
-						WEAPON_DANTE_SPIRAL,
-						WEAPON_DANTE_KALINA_ANN,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-					},
+					WEAPON_DANTE_EBONY_IVORY,
+					WEAPON_DANTE_SHOTGUN,
+					WEAPON_DANTE_ARTEMIS,
+					WEAPON_DANTE_SPIRAL,
+					WEAPON_DANTE_KALINA_ANN,
 				},
 				// Entity 1
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_EBONY_IVORY,
-						WEAPON_DANTE_SHOTGUN,
-						WEAPON_DANTE_ARTEMIS,
-						WEAPON_DANTE_SPIRAL,
-						WEAPON_DANTE_KALINA_ANN,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-					},
+					WEAPON_DANTE_EBONY_IVORY,
+					WEAPON_DANTE_SHOTGUN,
+					WEAPON_DANTE_ARTEMIS,
+					WEAPON_DANTE_SPIRAL,
+					WEAPON_DANTE_KALINA_ANN,
 				},
 			},
 			// Player 2
 			{
 				// Entity 0
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_EBONY_IVORY,
-						WEAPON_DANTE_SHOTGUN,
-						WEAPON_DANTE_ARTEMIS,
-						WEAPON_DANTE_SPIRAL,
-						WEAPON_DANTE_KALINA_ANN,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-					},
+					WEAPON_DANTE_EBONY_IVORY,
+					WEAPON_DANTE_SHOTGUN,
+					WEAPON_DANTE_ARTEMIS,
+					WEAPON_DANTE_SPIRAL,
+					WEAPON_DANTE_KALINA_ANN,
 				},
 				// Entity 1
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_EBONY_IVORY,
-						WEAPON_DANTE_SHOTGUN,
-						WEAPON_DANTE_ARTEMIS,
-						WEAPON_DANTE_SPIRAL,
-						WEAPON_DANTE_KALINA_ANN,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-					},
+					WEAPON_DANTE_EBONY_IVORY,
+					WEAPON_DANTE_SHOTGUN,
+					WEAPON_DANTE_ARTEMIS,
+					WEAPON_DANTE_SPIRAL,
+					WEAPON_DANTE_KALINA_ANN,
 				},
 			},
 			// Player 3
 			{
 				// Entity 0
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_EBONY_IVORY,
-						WEAPON_DANTE_SHOTGUN,
-						WEAPON_DANTE_ARTEMIS,
-						WEAPON_DANTE_SPIRAL,
-						WEAPON_DANTE_KALINA_ANN,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-					},
+					WEAPON_DANTE_EBONY_IVORY,
+					WEAPON_DANTE_SHOTGUN,
+					WEAPON_DANTE_ARTEMIS,
+					WEAPON_DANTE_SPIRAL,
+					WEAPON_DANTE_KALINA_ANN,
 				},
 				// Entity 1
 				{
-					// Character 0
-					{
-						WEAPON_DANTE_EBONY_IVORY,
-						WEAPON_DANTE_SHOTGUN,
-						WEAPON_DANTE_ARTEMIS,
-						WEAPON_DANTE_SPIRAL,
-						WEAPON_DANTE_KALINA_ANN,
-					},
-					// Character 1
-					{
-					},
-					// Character 2
-					{
-					},
-					// Character 3
-					{
-					},
+					WEAPON_DANTE_EBONY_IVORY,
+					WEAPON_DANTE_SHOTGUN,
+					WEAPON_DANTE_ARTEMIS,
+					WEAPON_DANTE_SPIRAL,
+					WEAPON_DANTE_KALINA_ANN,
 				},
 			},
 		};
-		uint8 rangedWeaponCount[MAX_PLAYER][MAX_ENTITY][MAX_CHAR] =
+		uint8 meleeWeaponCountDante[MAX_PLAYER][MAX_ENTITY] =
 		{
-			// Player 0
-			{
-				// Entity 0
-				{
-					5,
-				},
-				// Entity 1
-				{
-					5,
-				},
-			},
-			// Player 1
-			{
-				// Entity 0
-				{
-					5,
-				},
-				// Entity 1
-				{
-					5,
-				},
-			},
-			// Player 2
-			{
-				// Entity 0
-				{
-					5,
-				},
-				// Entity 1
-				{
-					5,
-				},
-			},
-			// Player 3
-			{
-				// Entity 0
-				{
-					5,
-				},
-				// Entity 1
-				{
-					5,
-				},
-			},
+			{ 5, 5 },
+			{ 5, 5 },
+			{ 5, 5 },
+			{ 5, 5 },
+		};
+		uint8 meleeWeaponCountVergil[MAX_PLAYER][MAX_ENTITY] =
+		{
+			{ 3, 3 },
+			{ 3, 3 },
+			{ 3, 3 },
+			{ 3, 3 },
+		};
+		uint8 rangedWeaponCountDante[MAX_PLAYER][MAX_ENTITY] =
+		{
+			{ 5, 5 },
+			{ 5, 5 },
+			{ 5, 5 },
+			{ 5, 5 },
 		};
 	}
 	Actor;

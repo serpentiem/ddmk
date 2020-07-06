@@ -144,6 +144,8 @@ const char * Actor_characterNames[] =
 	"Vergil",
 };
 
+
+// @Todo: Move to tab content ffs.
 void Actor_CharacterCostumeSelect
 (
 	uint8 player,
@@ -368,6 +370,16 @@ void Actor_ActorTabContent
 )
 {
 	ImGui::Text("");
+
+	if (entity == ENTITY_MAIN)
+	{
+		GUI_Checkbox("Enable Clone", Config.Actor.enableClone[player]);
+	}
+	ImGui::Text("");
+
+
+
+
 	Actor_CharacterCostumeSelect(player, entity);
 	ImGui::Text("");
 

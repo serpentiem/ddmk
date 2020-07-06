@@ -314,28 +314,28 @@ bool GUI_ComboMap
 	return update;
 }
 
-export template
-<
-	typename varType,
-	uint8 mapItemCount
->
-void GUI_UpdateComboMapIndex
-(
-	varType(&map)[mapItemCount],
-	uint8 & index,
-	varType & var
-)
-{
-	for_all(uint8, mapIndex, mapItemCount)
-	{
-		auto & mapItem = map[mapIndex];
-		if (mapItem == var)
-		{
-			index = mapIndex;
-			break;
-		}
-	}
-}
+//export template
+//<
+//	typename varType,
+//	uint8 mapItemCount
+//>
+//void GUI_UpdateComboMapIndex
+//(
+//	varType(&map)[mapItemCount],
+//	uint8 & index,
+//	varType & var
+//)
+//{
+//	for_all(uint8, mapIndex, mapItemCount)
+//	{
+//		auto & mapItem = map[mapIndex];
+//		if (mapItem == var)
+//		{
+//			index = mapIndex;
+//			break;
+//		}
+//	}
+//}
 
 export inline void GUI_SectionStart(const char * label)
 {
