@@ -107,6 +107,9 @@ void UpdateMapIndex
 	varType & var
 )
 {
+
+	//LogFunction();
+
 	for_all(uint8, mapIndex, mapItemCount)
 	{
 		auto & mapItem = map[mapIndex];
@@ -116,6 +119,13 @@ void UpdateMapIndex
 			break;
 		}
 	}
+
+
+	//MessageBoxA(0, "No Match", 0, 0);
+
+
+	//Log("No Match");
+
 }
 
 

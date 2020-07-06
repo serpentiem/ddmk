@@ -857,7 +857,7 @@ struct STAGE_POSITION_DATA
 
 
 #define _IntroduceMissionActorData(name, ...)\
-auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E30);\
+auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E30);\
 if (!name)\
 {\
 	__VA_ARGS__;\

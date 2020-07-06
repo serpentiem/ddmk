@@ -1027,11 +1027,11 @@ void DanteVergil(byte8 * baseAddr)
 	{
 		return;
 	}
-	if (!parentActorData.newChildBaseAddr[CHAR_VERGIL])
+	if (!parentActorData.newChildBaseAddr)
 	{
 		return;
 	}
-	auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(parentActorData.newChildBaseAddr[CHAR_VERGIL]);
+	auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(parentActorData.newChildBaseAddr);
 	if (childActorData.character != CHAR_VERGIL)
 	{
 		return;
@@ -1468,7 +1468,7 @@ export void Update_Init()
 
 
 
-
+	return;
 
 
 
@@ -1753,7 +1753,7 @@ export void Update_Init()
 //	sect0:;
 //	const_for_all(index, 4)
 //	{
-//		auto childBaseAddr = actorData.newChildBaseAddr[index];
+//		auto childBaseAddr = actorData.newChildBaseAddr;
 //		if (!childBaseAddr)
 //		{
 //			continue;

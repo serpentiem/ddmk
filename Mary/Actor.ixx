@@ -403,11 +403,15 @@ void InitRangedWeapons(T & actorData)
 		for_all(uint8, index, MAX_RANGED_WEAPON_DANTE)
 		{
 			uint32 weapon = (WEAPON_DANTE_EBONY_IVORY + index);
-			actorData.newMeleeWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
+			actorData.newRangedWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
 		}
 		actorData.rangedWeapon[0] = WEAPON_DANTE_EBONY_IVORY;
 		actorData.rangedWeapon[1] = WEAPON_VOID;
 		actorData.rangedWeapon[2] = WEAPON_VOID;
+
+		//actorData.rangedWeaponData[0] = actorData.newRangedWeaponData[0];
+
+
 		actorData.rangedWeaponIndex = 2;
 		actorData.rangedWeaponStatus[2] = WEAPON_STATUS_DISABLED;
 		actorData.rangedWeaponLevel[0] = 2;
@@ -446,6 +450,43 @@ void UpdateNewMeleeWeapons
 	UpdateMapIndex(actorData.newMeleeWeapon, actorData.newMeleeWeaponIndex, g_newMeleeWeapon[player][entity]);
 }
 
+
+
+export template
+<
+	typename varType,
+	uint8 mapItemCount
+>
+void UpdateMapIndex2
+(
+	varType(&map)[mapItemCount],
+	uint8 & index,
+	varType & var
+)
+{
+
+	//LogFunction();
+
+	for_all(uint8, mapIndex, mapItemCount)
+	{
+		auto & mapItem = map[mapIndex];
+		if (mapItem == var)
+		{
+			index = mapIndex;
+			return;
+		}
+	}
+
+
+	//MessageBoxA(0, "No Match", 0, 0);
+
+
+	Log("No Match");
+
+}
+
+
+
 template <typename T>
 void UpdateNewRangedWeapons
 (
@@ -454,11 +495,40 @@ void UpdateNewRangedWeapons
 	uint8 entity
 )
 {
+
+	LogFunction();
+
+
+
 	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 	{
 		memcpy(actorData.newRangedWeapon, Config.Actor.rangedWeaponDante[player][entity], MAX_RANGED_WEAPON);
+
+
 		actorData.newRangedWeaponCount = Config.Actor.rangedWeaponCountDante[player][entity];
-		UpdateMapIndex(actorData.newRangedWeapon, actorData.newRangedWeaponIndex, g_newRangedWeapon[player][entity]);
+
+
+
+		UpdateMapIndex2(actorData.newRangedWeapon, actorData.newRangedWeaponIndex, g_newRangedWeapon[player][entity]);
+
+
+
+		Log("newRangedWeapon      %u", actorData.newRangedWeapon);
+		Log("newRangedWeaponIndex %u", actorData.newRangedWeaponIndex);
+		Log("g_newRangedWeapon    %u", g_newRangedWeapon[player][entity]);
+
+
+
+
+
+
+		Log("UpdateMapIndex %llx %u", actorData, actorData.newRangedWeaponIndex);
+
+
+
+
+
+
 	}
 }
 
@@ -532,8 +602,26 @@ void UpdateRangedWeapon
 	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 	{
 		actorData.rangedWeaponIndex = (!IsWeaponActive(actorData, actorData.rangedWeapon[0])) ? 0 : 1;
+
+		Log("rangedWeaponIndex %u", actorData.rangedWeaponIndex);
+
+
 		actorData.rangedWeapon[actorData.rangedWeaponIndex] = weapon;
-		actorData.rangedWeaponData[actorData.rangedWeaponIndex] = actorData.newRangedWeaponData[(weapon - WEAPON_DANTE_EBONY_IVORY)];
+
+
+		HoboBreak();
+
+
+		uint8 index = (weapon - WEAPON_DANTE_EBONY_IVORY);
+
+
+		actorData.rangedWeaponData[actorData.rangedWeaponIndex] = actorData.newRangedWeaponData[index];
+
+
+
+
+
+
 		actorData.rangedWeaponIndex += 2;
 	}
 }
@@ -548,6 +636,13 @@ T * CreateActorFunction
 	constexpr uint8 character = GetCharacterId<T>::value;
 
 	IntroduceMissionActorData(return 0);
+
+	//Log("missionActorData_16C %llX", missionActorData_16C);
+
+	//HoboBreak();
+
+
+
 
 	auto baseAddr = func_1DE820(character, 0, false);
 	if (!baseAddr)
@@ -622,6 +717,9 @@ byte8 * CreateActor
 	UpdateMeleeWeapon (parentActorData, parentActorData.newMeleeWeapon [parentActorData.newMeleeWeaponIndex ]);
 	UpdateRangedWeapon(parentActorData, parentActorData.newRangedWeapon[parentActorData.newRangedWeaponIndex]);
 
+
+	Log("ranged weapon actor data %u", parentActorData.newRangedWeapon[parentActorData.newRangedWeaponIndex]);
+
 	return parentActorData;
 }
 
@@ -639,24 +737,49 @@ struct ActorSpawnHelper
 
 ActorSpawnHelper actorSpawnHelper = {};
 
-
-
-
-// @Todo: Merge.
-
-template <typename T>
-byte8 * SpawnActorFunction
+byte8 * SpawnActor
 (
 	uint8 player,
 	uint8 entity
 )
 {
-	auto baseAddr = CreateActor<T>(player, entity);
+	byte8 * baseAddr = 0;
+	auto character = Config.Actor.character[player][entity];
+	switch (character)
+	{
+	case CHAR_DANTE:
+	{
+		baseAddr = CreateActor<ACTOR_DATA_DANTE>(player, entity);
+		break;
+	}
+	case CHAR_BOB:
+	{
+		baseAddr = CreateActor<ACTOR_DATA_BOB>(player, entity);
+		break;
+	}
+	case CHAR_LADY:
+	{
+		baseAddr = CreateActor<ACTOR_DATA_LADY>(player, entity);
+		break;
+	}
+	case CHAR_VERGIL:
+	{
+		baseAddr = CreateActor<ACTOR_DATA_VERGIL>(player, entity);
+		break;
+	}
+	}
 	if (!baseAddr)
 	{
 		return 0;
 	}
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+
+	Log("meleeWeaponData  %llX", actorData.meleeWeaponData[0] );
+	Log("rangedWeaponData %llX", actorData.rangedWeaponData[0]);
+
+
+
+
 
 	actorData.position = actorSpawnHelper.position;
 	actorData.rotation = actorSpawnHelper.rotation;
@@ -679,35 +802,6 @@ byte8 * SpawnActorFunction
 	}
 
 	return baseAddr;
-}
-
-byte8 * SpawnActor
-(
-	uint8 player,
-	uint8 entity
-)
-{
-	auto character = Config.Actor.character[player][entity];
-	switch (character)
-	{
-	case CHAR_DANTE:
-	{
-		return SpawnActorFunction<ACTOR_DATA_DANTE>(player, entity);
-	}
-	case CHAR_BOB:
-	{
-		return SpawnActorFunction<ACTOR_DATA_BOB>(player, entity);
-	}
-	case CHAR_LADY:
-	{
-		return SpawnActorFunction<ACTOR_DATA_LADY>(player, entity);
-	}
-	case CHAR_VERGIL:
-	{
-		return SpawnActorFunction<ACTOR_DATA_VERGIL>(player, entity);
-	}
-	}
-	return 0;
 }
 
 export void SpawnActors()
@@ -1774,6 +1868,28 @@ export void Actor_Init()
 	InitRegisterWeapon();
 
 	InitIsWeaponReady();
+
+
+	// @Todo: Create function.
+	for_all(uint8, player, MAX_PLAYER){
+	for_all(uint8, entity, MAX_ENTITY)
+	{
+		auto & character = Config.Actor.character[player][entity];
+		switch (character)
+		{
+		case CHAR_DANTE:
+		{
+			g_newMeleeWeapon [player][entity] = Config.Actor.meleeWeaponDante [player][entity][0];
+			g_newRangedWeapon[player][entity] = Config.Actor.rangedWeaponDante[player][entity][0];
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			g_newMeleeWeapon[player][entity] = Config.Actor.meleeWeaponVergil[player][entity][0];
+			break;
+		}
+		}
+	}}
 
 
 

@@ -295,8 +295,8 @@ void Actor_WeaponSelect
 	Actor_WeaponSelectFunction
 	(
 		"Melee Weapons",
-		Config.Actor.meleeWeapon     [player][entity][character],
-		Config.Actor.meleeWeaponCount[player][entity][character],
+		(character == CHAR_DANTE) ? Config.Actor.meleeWeaponDante[player][entity] : Config.Actor.meleeWeaponVergil[player][entity],
+		(character == CHAR_DANTE) ? Config.Actor.meleeWeaponCountDante[player][entity] : Config.Actor.meleeWeaponCountVergil[player][entity],
 		(character == CHAR_DANTE) ? Actor_meleeWeaponNamesDante : Actor_meleeWeaponNamesVergil,
 		(character == CHAR_DANTE) ? Actor_meleeWeaponMapDante   : Actor_meleeWeaponMapVergil,
 		Actor_meleeWeaponIndex[player][entity][character]
@@ -308,8 +308,8 @@ void Actor_WeaponSelect
 		Actor_WeaponSelectFunction
 		(
 			"Ranged Weapons",
-			Config.Actor.rangedWeapon     [player][entity][character],
-			Config.Actor.rangedWeaponCount[player][entity][character],
+			Config.Actor.rangedWeaponDante     [player][entity],
+			Config.Actor.rangedWeaponCountDante[player][entity],
 			Actor_rangedWeaponNamesDante,
 			Actor_rangedWeaponMapDante,
 			Actor_rangedWeaponIndex[player][entity][character]
@@ -334,10 +334,12 @@ void Actor_UpdateWeaponSelectIndicesFunction
 		auto & configMapItem   = configMap  [configMapIndex];
 		auto & selectIndexItem = selectIndex[configMapIndex];
 
-		GUI_UpdateComboMapIndex(selectMap, selectIndexItem, configMapItem);
+		UpdateMapIndex(selectMap, selectIndexItem, configMapItem);
 	}
 }
 
+
+// @Todo: Update.
 void Actor_UpdateWeaponSelectIndices()
 {
 	for_all(uint8, player   , MAX_PLAYER) {
@@ -348,7 +350,7 @@ void Actor_UpdateWeaponSelectIndices()
 		(
 			(character == CHAR_DANTE) ? Actor_meleeWeaponMapDante : Actor_meleeWeaponMapVergil,
 			Actor_meleeWeaponIndex  [player][entity][character],
-			Config.Actor.meleeWeapon[player][entity][character]
+			(character == CHAR_DANTE) ? Config.Actor.meleeWeaponDante[player][entity] : Config.Actor.meleeWeaponVergil[player][entity]
 		);
 
 		if (character == CHAR_DANTE)
@@ -357,7 +359,7 @@ void Actor_UpdateWeaponSelectIndices()
 			(
 				Actor_rangedWeaponMapDante,
 				Actor_rangedWeaponIndex  [player][entity][character],
-				Config.Actor.rangedWeapon[player][entity][character]
+				Config.Actor.rangedWeaponDante[player][entity]
 			);
 		}
 	}}}
@@ -373,7 +375,8 @@ void Actor_ActorTabContent
 
 	if (entity == ENTITY_MAIN)
 	{
-		GUI_Checkbox("Enable Clone", Config.Actor.enableClone[player]);
+		GUI_Checkbox("Enable Quicksilver" , Config.Actor.enableQuicksilver [player]);
+		GUI_Checkbox("Enable Doppelganger", Config.Actor.enableDoppelganger[player]);
 	}
 	ImGui::Text("");
 
@@ -405,11 +408,11 @@ void Actor_ActorTabContent
 
 		memcpy(Config.Actor.costume[player][entity], DefaultConfig.Actor.costume[player][entity], sizeof(Config.Actor.costume[player][entity]));
 
-		memcpy(Config.Actor.meleeWeapon [player][entity], DefaultConfig.Actor.meleeWeapon [player][entity], sizeof(Config.Actor.meleeWeapon [player][entity]));
-		memcpy(Config.Actor.rangedWeapon[player][entity], DefaultConfig.Actor.rangedWeapon[player][entity], sizeof(Config.Actor.rangedWeapon[player][entity]));
+		//memcpy(Config.Actor.meleeWeapon [player][entity], DefaultConfig.Actor.meleeWeapon [player][entity], sizeof(Config.Actor.meleeWeapon [player][entity]));
+		//memcpy(Config.Actor.rangedWeapon[player][entity], DefaultConfig.Actor.rangedWeapon[player][entity], sizeof(Config.Actor.rangedWeapon[player][entity]));
 
-		memcpy(Config.Actor.meleeWeaponCount [player][entity], DefaultConfig.Actor.meleeWeaponCount [player][entity], sizeof(Config.Actor.meleeWeaponCount [player][entity]));
-		memcpy(Config.Actor.rangedWeaponCount[player][entity], DefaultConfig.Actor.rangedWeaponCount[player][entity], sizeof(Config.Actor.rangedWeaponCount[player][entity]));
+		//memcpy(Config.Actor.meleeWeaponCount [player][entity], DefaultConfig.Actor.meleeWeaponCount [player][entity], sizeof(Config.Actor.meleeWeaponCount [player][entity]));
+		//memcpy(Config.Actor.rangedWeaponCount[player][entity], DefaultConfig.Actor.rangedWeaponCount[player][entity], sizeof(Config.Actor.rangedWeaponCount[player][entity]));
 
 		Actor_UpdateWeaponSelectIndices();
 	}
@@ -619,11 +622,11 @@ uint8 Arcade_rangedWeaponIndex[2] = {};
 
 void Arcade_Init()
 {
-	GUI_UpdateComboMapIndex(Arcade_modeMap, Arcade_modeIndex, Config.Arcade.mode);
-	GUI_UpdateComboMapIndex(Arcade_meleeWeaponMap , Arcade_meleeWeaponIndex [0], Config.Arcade.meleeWeapons[0] );
-	GUI_UpdateComboMapIndex(Arcade_meleeWeaponMap , Arcade_meleeWeaponIndex [1], Config.Arcade.meleeWeapons[1] );
-	GUI_UpdateComboMapIndex(Arcade_rangedWeaponMap, Arcade_rangedWeaponIndex[0], Config.Arcade.rangedWeapons[0]);
-	GUI_UpdateComboMapIndex(Arcade_rangedWeaponMap, Arcade_rangedWeaponIndex[1], Config.Arcade.rangedWeapons[1]);
+	UpdateMapIndex(Arcade_modeMap, Arcade_modeIndex, Config.Arcade.mode);
+	UpdateMapIndex(Arcade_meleeWeaponMap , Arcade_meleeWeaponIndex [0], Config.Arcade.meleeWeapons[0] );
+	UpdateMapIndex(Arcade_meleeWeaponMap , Arcade_meleeWeaponIndex [1], Config.Arcade.meleeWeapons[1] );
+	UpdateMapIndex(Arcade_rangedWeaponMap, Arcade_rangedWeaponIndex[0], Config.Arcade.rangedWeapons[0]);
+	UpdateMapIndex(Arcade_rangedWeaponMap, Arcade_rangedWeaponIndex[1], Config.Arcade.rangedWeapons[1]);
 }
 
 void Arcade()
@@ -947,7 +950,7 @@ uint8 ResetMotionState_buttonIndex = 0;
 
 void ResetMotionState_Init()
 {
-	GUI_UpdateComboMapIndex(ResetMotionState_buttonMap, ResetMotionState_buttonIndex, Config.ResetMotionState.button);
+	UpdateMapIndex(ResetMotionState_buttonMap, ResetMotionState_buttonIndex, Config.ResetMotionState.button);
 }
 
 void ResetMotionState()

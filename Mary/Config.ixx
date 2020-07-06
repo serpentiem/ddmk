@@ -299,9 +299,9 @@ export struct CONFIG
 	struct
 	{
 		bool    enable         = true;
-		uint32  mission        = 16;
+		uint32  mission        = 17;
 		uint32  mode           = MODE_NORMAL;
-		uint32  room           = 102;
+		uint32  room           = 900;
 		uint32  position       = 0;
 		bool    ignoreRoom     = false;
 		bool    ignorePosition = false;
