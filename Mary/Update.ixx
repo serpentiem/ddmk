@@ -1150,7 +1150,7 @@ void DanteVergil(byte8 * baseAddr)
 				style = STYLE_DANTE_SWORDMASTER;
 			}
 
-			auto meleeWeapon = parentActorData.meleeWeapon[parentActorData.meleeWeaponIndex];
+			auto meleeWeapon = parentActorData.weapons[parentActorData.meleeWeaponIndex];
 			if (meleeWeapon > WEAPON_DANTE_BEOWULF)
 			{
 				meleeWeapon = WEAPON_DANTE_REBELLION;
@@ -1158,7 +1158,7 @@ void DanteVergil(byte8 * baseAddr)
 
 
 
-			auto rangedWeapon = parentActorData.rangedWeapon[parentActorData.rangedWeaponIndex];
+			auto rangedWeapon = parentActorData.weapons[parentActorData.rangedWeaponIndex];
 			if (rangedWeapon > WEAPON_DANTE_KALINA_ANN)
 			{
 				rangedWeapon = WEAPON_DANTE_EBONY_IVORY;
@@ -1257,7 +1257,7 @@ void DanteVergil(byte8 * baseAddr)
 	{
 		if (IsActive(parentActorData))
 		{
-			auto meleeWeapon = childActorData.meleeWeapon[childActorData.queuedMeleeWeaponIndex];
+			auto meleeWeapon = childActorData.weapons[childActorData.queuedMeleeWeaponIndex];
 			if (meleeWeapon > WEAPON_VERGIL_FORCE_EDGE)
 			{
 				meleeWeapon = WEAPON_VERGIL_YAMATO;

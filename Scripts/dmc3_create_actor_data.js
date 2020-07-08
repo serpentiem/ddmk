@@ -1,115 +1,6 @@
-
-
-
-
-
-
-
-
-
-NEW_LINE = "\r\n";
-
 var fs = require("fs");
 
-var lz = function(n)
-{
-	var str = "";
-	if (n < 1000)
-	{
-		str = "0";
-	}
-	if (n < 100)
-	{
-		str = "00";
-	}
-	if (n < 10)
-	{
-		str = "000";
-	}
-	return str + n;
-}
-
-var c = "";
-var c_assert = "";
-
-
-
-
-
-
-var filename = "../Mary/Vars.h"
-
-var file = fs.readFileSync(filename, "utf8");
-
-var startTag = /\/\/ \$ActorDataStart$/;
-var endTag   = /\/\/ \$ActorDataEnd$/;
-
-var startTagLine = -1;
-var endTagLine   = -1;
-
-var obj = file.match(/[\S\s]*?\r\n/g);
-
-for (var index = 0; index < obj.length; index++)
-{
-	var str = obj[index].substring(0, (obj[index].length - 2));
-	if (str.match(startTag))
-	{
-		startTagLine = index;
-		break;
-	}
-}
-
-if (startTagLine == -1)
-{
-	console.log("Start tag not found.");
-	return;
-}
-
-for (var index = 0; index < obj.length; index++)
-{
-	var str = obj[index].substring(0, (obj[index].length - 2));
-	if (str.match(endTag))
-	{
-		endTagLine = index;
-		break;
-	}
-}
-
-if (endTagLine == -1)
-{
-	console.log("End tag not found.");
-	return;
-}
-
-if (endTagLine < startTagLine)
-{
-	console.log("End tag appears before start tag.");
-	return;
-}
-
-console.log("startTagLine " + (startTagLine + 1));
-console.log("endTagLine   " + (endTagLine   + 1));
-
-for (var index = 0; index <= startTagLine; index++)
-{
-	var str = obj[index].substring(0, (obj[index].length - 2));
-	c += str + NEW_LINE;
-}
-
-
-
-c += NEW_LINE;
-
-
-// c += "struct SESSION_DATA" + NEW_LINE;
-// c += "{" + NEW_LINE;
-
-
-
-
-
-
-
+eval(fs.readFileSync("dmc3_core.js", "utf8"));
 
 const CHAR_DANTE  = 1;
 const CHAR_BOB    = 2;
@@ -191,7 +82,7 @@ var items =
 	[ "lockOn"                          , "bool"                      , 0x3E84                           ],
 	[ "activeModelIndexMirror"          , "uint32"                    , 0x3E88                           ],
 	[ "activeDevilModel"                , "uint32"                    , 0x3E8C                           ],
-	[ "airRaid"                         , "uint32"                    , 0x3E90                           ], //but has size of uint32.
+	[ "airRaid"                         , "uint32"                    , 0x3E90                           ],
 
 
 
@@ -207,7 +98,14 @@ var items =
 
 	[ "devil"                           , "bool"                      , 0x3E9B                           ],
 	[ "costume"                         , "uint8"                     , 0x3E9E                           ],
-	[ "sparda"                          , "bool"                      , 0x3E9F                           ], // @Research: Nero Angelo for Vergil.
+
+	[ "sparda"                          , "bool"                      , 0x3E9F, CHAR_DANTE                           ],
+	[ "neroAngelo"                          , "bool"                      , 0x3E9F, CHAR_VERGIL                           ],
+
+
+
+
+
 	[ "useHolyWater"                    , "bool"                      , 0x3EA4                           ],
 	[ "magicPoints"                     , "float32"                   , 0x3EB8                           ],
 	[ "maxMagicPoints"                  , "float32"                   , 0x3EBC                           ],
@@ -241,29 +139,13 @@ var items =
 
 
 	[ "dashCount"                       , "uint8"                     , 0x635C, CHAR_DANTE               ],
-
-
-
 	[ "skyStarCount"                    , "uint8"                     , 0x635D, CHAR_DANTE               ],
 	[ "airTrickCount"                   , "uint8"                     , 0x635E, CHAR_DANTE | CHAR_VERGIL ],
 	[ "trickUpCount"                    , "uint8"                     , 0x635F, CHAR_VERGIL              ],
 	[ "trickDownCount"                  , "uint8"                     , 0x6360, CHAR_VERGIL              ],
-
-
-
-
 	[ "quicksilver"                     , "bool"                      , 0x6361, CHAR_DANTE               ],
 	[ "doppelganger"                    , "bool"                      , 0x6362, CHAR_DANTE               ],
 	[ "styleExperience"                 , "float32"                   , 0x6364                           ],
-
-
-
-
-
-
-
-
-
 
 	[ "cloneIsActive"                   , "bool"                      , 0x6454               ],
 	[ "cloneBaseAddr"                   , "byte8 *"                   , 0x6478              ],
@@ -272,55 +154,30 @@ var items =
 
 
 
-	[ "activeMeleeWeaponIndex"          , "uint32"                    , 0x6484, CHAR_VERGIL              ],
-	[ "queuedMeleeWeaponIndex"          , "uint32"                    , 0x6488, CHAR_VERGIL              ],
-
-
-
-	
-
-	
-
-	[ "activeWeapon"                    , "uint8"                     , 0x648D, CHAR_DANTE               ],
-
-
-	
-	[ "meleeWeaponIndex"             , "uint32"                    , 0x6490, CHAR_DANTE               ],
-	[ "rangedWeaponIndex"            , "uint32"                    , 0x6494, CHAR_DANTE               ],
-
-	[ "meleeWeapon[2]"               , "uint8"                     , 0x6498, CHAR_DANTE               ],
-	[ "meleeWeapon[5]"               , "uint8"                     , 0x6498, CHAR_VERGIL              ],
-	[ "rangedWeapon[3]"              , "uint8"                     , 0x649A, CHAR_DANTE               ],
-
-	[ "meleeWeaponData[2]"              , "byte8 *"                   , 0x64A0, CHAR_DANTE               ],
-	[ "meleeWeaponData[5]"              , "byte8 *"                   , 0x64A0, CHAR_VERGIL              ],
-	[ "rangedWeaponData[3]"             , "byte8 *"                   , 0x64B0, CHAR_DANTE               ],
-
-	[ "meleeWeaponStatus[2]"             , "uint32"                    , 0x64C8, CHAR_DANTE               ],
-	[ "meleeWeaponStatus[5]"             , "uint32"                    , 0x64C8, CHAR_VERGIL              ],
-	[ "rangedWeaponStatus[3]"            , "uint32"                    , 0x64D0, CHAR_DANTE               ],
-
-	[ "meleeWeaponLevel[2]"             , "uint32"                    , 0x64DC, CHAR_DANTE               ],
-	[ "meleeWeaponLevel[5]"             , "uint32"                    , 0x64DC, CHAR_VERGIL              ],
-	[ "rangedWeaponLevel[3]"            , "uint32"                    , 0x64E4, CHAR_DANTE               ],
 
 
 
 
-	[ "activeMeleeWeapon"               , "uint8"                     , 0x64F0, CHAR_DANTE               ],
-	[ "activeRangedWeapon"              , "uint8"                     , 0x64F1, CHAR_DANTE               ],
-
-
-	[ "meleeWeaponTimer[2]"             , "float32"                   , 0x64F4, CHAR_DANTE               ],
-	[ "meleeWeaponTimer[5]"             , "float32"                   , 0x64F4, CHAR_VERGIL              ],
-	[ "rangedWeaponTimer[3]"            , "float32"                   , 0x64FC, CHAR_DANTE               ],
 
 
 
-	[ "meleeWeaponSwitchTimeout"        , "float32"                   , 0x6508, CHAR_DANTE               ],
-	[ "rangedWeaponSwitchTimeout"       , "float32"                   , 0x650C, CHAR_DANTE               ],
-	[ "meleeWeaponSwitchForwardTimeout" , "float32"                   , 0x6508, CHAR_VERGIL              ],
-	[ "meleeWeaponSwitchBackTimeout", "float32"                   , 0x650C, CHAR_VERGIL              ],
+
+	[ "activeMeleeWeaponIndex"         , "uint32" , 0x6484, CHAR_VERGIL ],
+	[ "queuedMeleeWeaponIndex"         , "uint32" , 0x6488, CHAR_VERGIL ],
+	[ "activeWeapon"                   , "uint8"  , 0x648D, CHAR_DANTE  ],
+	[ "meleeWeaponIndex"               , "uint32" , 0x6490, CHAR_DANTE  ],
+	[ "rangedWeaponIndex"              , "uint32" , 0x6494, CHAR_DANTE  ],
+	[ "weapons[5]"                     , "uint8"  , 0x6498              ],
+	[ "weaponData[5]"                  , "byte8 *", 0x64A0              ],
+	[ "weaponStatus[5]"                , "uint32" , 0x64C8              ],
+	[ "weaponLevels[5]"                , "uint32" , 0x64DC              ],
+	[ "activeMeleeWeapon"              , "uint8"  , 0x64F0, CHAR_DANTE  ],
+	[ "activeRangedWeapon"             , "uint8"  , 0x64F1, CHAR_DANTE  ],
+	[ "weaponTimers[5]"                , "float32", 0x64F4              ],
+	[ "meleeWeaponSwitchTimeout"       , "float32", 0x6508, CHAR_DANTE  ],
+	[ "rangedWeaponSwitchTimeout"      , "float32", 0x650C, CHAR_DANTE  ],
+	[ "meleeWeaponSwitchForwardTimeout", "float32", 0x6508, CHAR_VERGIL ],
+	[ "meleeWeaponSwitchBackTimeout"   , "float32", 0x650C, CHAR_VERGIL ],
 
 
 
@@ -386,6 +243,8 @@ var extra =
 	[ "newLastRangedWeapon"    , "uint8"   ],
 
 
+	[ "newAirStingerCount131321", "uasda8" ],
+
 
 
 	[ "newSect[8]"             , "bool"    ],
@@ -400,6 +259,7 @@ var extra =
 
 
 	[ "newAirStingerCount", "uint8" ],
+	[ "newAirStingerCount131321", "uasda8" ],
 
 
 	//[ "airStraight"  , "bool" ],
@@ -416,112 +276,130 @@ var extra =
 
 ];
 
-// var c = "";
-// var c_assert = "";
-var pos = 0;
+// Cpp
 
-//var fs = require("fs");
+console.log("Cpp");
+console.log("");
 
-// var lz = function(n)
-// {
-// 	var str = "";
-// 	if (n < 1000)
-// 	{
-// 		str = "0";
-// 	}
-// 	if (n < 100)
-// 	{
-// 		str = "00";
-// 	}
-// 	if (n < 10)
-// 	{
-// 		str = "000";
-// 	}
-// 	return str + n;
-// }
+var c_assert = "";
 
-var GetTypeSize = function(str)
+var filename = "../Mary/Vars.h"
+
+var file = fs.readFileSync(filename, "utf8");
+
+var startTag = /\/\/ \$ActorDataStart$/;
+var endTag   = /\/\/ \$ActorDataEnd$/;
+
+var startTagLine = -1;
+var endTagLine   = -1;
+
+var obj = file.match(/[\S\s]*?\r\n/g);
+
+for (var index = 0; index < obj.length; index++)
 {
-	if (str.match(/\*/))
+	var str = obj[index].substring(0, (obj[index].length - 2));
+	if (str.match(startTag))
 	{
-		return 8;
+		startTagLine = index;
+		break;
+	}
+}
+
+if (startTagLine == -1)
+{
+	console.log("Start tag not found.");
+	return;
+}
+
+for (var index = 0; index < obj.length; index++)
+{
+	var str = obj[index].substring(0, (obj[index].length - 2));
+	if (str.match(endTag))
+	{
+		endTagLine = index;
+		break;
+	}
+}
+
+if (endTagLine == -1)
+{
+	console.log("End tag not found.");
+	return;
+}
+
+if (endTagLine < startTagLine)
+{
+	console.log("End tag appears before start tag.");
+	return;
+}
+
+console.log("startTagLine " + (startTagLine + 1));
+console.log("endTagLine   " + (endTagLine   + 1));
+
+for (var index = 0; index <= startTagLine; index++)
+{
+	var str = obj[index].substring(0, (obj[index].length - 2));
+	c += str + NEW_LINE;
+}
+
+c += NEW_LINE;
+
+
+
+function CreateActorDataFunction
+(
+	structName,
+	name,
+	type
+)
+{
+	if (!IsKnownType(type))
+	{
+		console.log("Unknown " + type);
+		return;
 	}
 
-	var sizes =
-	[
-		[ "int8"                      , 1    ],
-		[ "int16"                     , 2    ],
-		[ "int32"                     , 4    ],
-		[ "int64"                     , 8    ],
-		[ "uint8"                     , 1    ],
-		[ "uint16"                    , 2    ],
-		[ "uint32"                    , 4    ],
-		[ "uint64"                    , 8    ],
-		[ "byte8"                     , 1    ],
-		[ "byte16"                    , 2    ],
-		[ "byte32"                    , 4    ],
-		[ "byte64"                    , 8    ],
-		[ "bool"                      , 1    ],
-		[ "float32"                   , 4    ],
-		[ "vec4"                      , 16   ],
-		[ "INPUT_DATA"                , 12   ],
-		[ "MOTION_DATA"               , 2    ],
-		[ "MODEL_METADATA"            , 80   ],
-		[ "MODEL_DATA"                , 1920 ],
-		[ "DEVIL_MODEL_METADATA_DANTE", 33   ],
-		[ "ACTOR_EVENT_DATA"          , 8    ],
-	];
+	var count = 1;
+	var size = GetTypeSize(type);
 
-	for (var index = 0; index < sizes.length; index++)
+	if (name == "")
 	{
-		var name = sizes[index][0];
-		var size = sizes[index][1];
+		name = "var_" + pos.toString(16).toUpperCase();
+	}
+	else if (name.substring(0, 1) == "[")
+	{
+		name = "var_" + pos.toString(16).toUpperCase() + name;
+	}
 
-		if (name == str)
+	{
+		var matches = name.match(/\[\d+?\]/g);
+		if (matches)
 		{
-			return size;
+			for (var matchIndex = 0; matchIndex < matches.length; matchIndex++)
+			{
+				count *= parseInt(matches[matchIndex].match(/\[(\d+?)\]/)[1]);
+			}
 		}
 	}
 
-	return 0;
-}
+	size *= count;
 
-var Align = function(boundary)
-{
-	var remainder = (pos % boundary);
-	if (remainder)
+	var posString = "";
+	if (pos >= 10)
 	{
-		var size = (boundary - remainder);
-		pos += size;
+		posString = "0x" + pos.toString(16).toUpperCase();
 	}
+	else
+	{
+		posString = pos.toString();
+	}
+
+	c += "\t" + type + " " + name + "; // " + posString + NEW_LINE;
+
+	c_assert += "static_assert(offsetof(" + structName + ", " + name.split("[")[0] + ") == " + posString + ");" + NEW_LINE;
+
+	pos += size;
 }
-
-// Cpp
-
-// c += "#pragma once\r\n";
-// c += "#include \"../Core/Core.h\"\r\n";
-// c += "\r\n";
-// c += "#include \"Vars.h\"\r\n";
-// c += "\r\n";
-// c += "#define _Merge(a, b) a##b\r\n";
-// c += "#define Merge(a, b) _Merge(a, b)\r\n";
-// c += "\r\n";
-// c += "#define _(size) struct { byte8 Merge(padding, __LINE__)[size]; }\r\n";
-// c += "\r\n";
-// c += "#pragma pack(push, 1)\r\n";
-// c += "\r\n";
-
-//c_assert += "#include \"ActorData.h\"\r\n";
-//c_assert += "\r\n";
-
-
-
-
-
-
-
-
-
 
 function CreateActorData
 (
@@ -548,54 +426,15 @@ function CreateActorData
 			continue;
 		}
 
-		if (name == "")
-		{
-			name = "var_" + off.toString(16).toUpperCase();
-		}
-		else if (name.substring(0, 1) == "[")
-		{
-			name = "var_" + off.toString(16).toUpperCase() + name;
-		}
-
-		var lastPos = pos;
-		
-		pos = off;
-
-		var diff = (pos - lastPos);
+		var diff = (off - pos);
 		if (diff)
 		{
 			c += "\t_(" + diff.toString() + ");" + NEW_LINE;
 		}
 
-		var posString = "";
-		if (pos >= 10)
-		{
-			posString = "0x" + pos.toString(16).toUpperCase();
-		}
-		else
-		{
-			posString = pos.toString();
-		}
+		pos = off;
 
-		c += "\t" + type + " " + name + "; // " + posString + NEW_LINE;
-
-		c_assert += "static_assert(offsetof(" + structName + ", " + name.split("[")[0] + ") == " + posString + ");" + NEW_LINE;
-
-		var size = GetTypeSize(type);
-
-		{
-			var matches = name.match(/\[\d+?\]/g);
-			if (matches)
-			{
-				for (var matchIndex = 0; matchIndex < matches.length; matchIndex++)
-				{
-					var count = parseInt(matches[matchIndex].match(/\[(\d+?)\]/)[1]);
-					size *= count;
-				}
-			}
-		}
-		
-		pos += size;
+		CreateActorDataFunction(structName, name, type);
 	}
 
 	var diff = (ACTOR_DATA_SIZE_DANTE - pos);
@@ -630,35 +469,7 @@ function CreateActorData
 			c += "\t_(" + diff.toString() + ");" + NEW_LINE;
 		}
 
-		var posString = "";
-		if (pos >= 10)
-		{
-			posString = "0x" + pos.toString(16).toUpperCase();
-		}
-		else
-		{
-			posString = pos.toString();
-		}
-
-		c += "\t" + type + " " + name + "; // " + posString + NEW_LINE;
-
-		c_assert += "static_assert(offsetof(" + structName + ", " + name.split("[")[0] + ") == " + posString + ");" + NEW_LINE;
-
-		var size = GetTypeSize(type);
-
-		{
-			var matches = name.match(/\[\d+?\]/g);
-			if (matches)
-			{
-				for (var matchIndex = 0; matchIndex < matches.length; matchIndex++)
-				{
-					var count = parseInt(matches[matchIndex].match(/\[(\d+?)\]/)[1]);
-					size *= count;
-				}
-			}
-		}
-		
-		pos += size;
+		CreateActorDataFunction(structName, name, type);
 	}
 
 	c += "" + NEW_LINE;
@@ -670,100 +481,30 @@ function CreateActorData
 	c += "};" + NEW_LINE;
 }
 
-
-
-
-
-
-
-
-
-
-// function CreateActorData
-// (
-// 	structName,
-// 	id
-// )
-// {
-// 	c += "struct " + structName + NEW_LINE;
-// 	c += "{" + NEW_LINE;
-	
-// 	pos = 0;
-	
-// 	AddActorData(structName, id);
-	
-// 	{
-// 		var diff = (max - pos);
-// 		if (diff)
-// 		{
-// 			c += "\t_(" + diff.toString() + ");NEW_LINE";
-// 		}
-// 	}
-	
-// 	pos = max;
-	
-// 	AddActorData(structName, extra, id);
-
-// 	c += "" + NEW_LINE;
-// 	c += "\toperator byte8 *()" + NEW_LINE;
-// 	c += "\t{" + NEW_LINE;
-// 	c += "\t\treturn reinterpret_cast<byte8 *>(this);" + NEW_LINE;
-// 	c += "\t}" + NEW_LINE;
-
-// 	c += "};" + NEW_LINE;
-// }
-
 CreateActorData("ACTOR_DATA", 0);
-
 c_assert += "" + NEW_LINE;
 c += "" + NEW_LINE;
 
 CreateActorData("ACTOR_DATA_DANTE", CHAR_DANTE);
-
 c_assert += "" + NEW_LINE;
 c += "" + NEW_LINE;
 
 CreateActorData("ACTOR_DATA_BOB", CHAR_BOB);
-
 c_assert += "" + NEW_LINE;
 c += "" + NEW_LINE;
 
 CreateActorData("ACTOR_DATA_LADY", CHAR_LADY);
-
 c_assert += "" + NEW_LINE;
 c += "" + NEW_LINE;
 
 CreateActorData("ACTOR_DATA_VERGIL", CHAR_VERGIL);
 
-//c_assert += "" + NEW_LINE;
-// c += "" + NEW_LINE;
-
-// c += "#pragma pack(pop)" + NEW_LINE;
-// c += "" + NEW_LINE;
-// c += "#undef _" + NEW_LINE;
-// c += "#undef Merge" + NEW_LINE;
-// c += "#undef _Merge" + NEW_LINE;
-
-//fs.writeFileSync("../Mary/ActorData.h", c);
-//fs.writeFileSync("../Mary/ActorData.cpp", c_assert);
-
-//fs.writeFileSync("adata.cpp", c);
-
-
-
-
-
 c += NEW_LINE;
-
 c += c_assert;
 
 
 
 c += NEW_LINE;
-
-
-
-
 
 for (var index = endTagLine; index < obj.length; index++)
 {
@@ -771,285 +512,213 @@ for (var index = endTagLine; index < obj.length; index++)
 	c += str + NEW_LINE;
 }
 
-
-
-//console.log(c_assert);
-
-
-//var data = c + NEW_LINE + c_assert;
-
-
 fs.writeFileSync(filename, c);
 
+console.log("");
 
+// Cheat Engine
 
+console.log("Cheat Engine");
+console.log("");
 
+function CreateActorCheatEntryFunction
+(
+	name,
+	type,
+	off,
+	hex,
+	actor
+)
+{
+	CreateCheatEntry
+	(
+		name,
+		hex,
+		type,
+		"Mary.Actor_actorBaseAddr",
+		off.toString(16).toUpperCase(),
+		(actor * 8).toString(16).toUpperCase()
+	);
+}
 
+function CreateActorCheatEntry
+(
+	name,
+	type,
+	actor
+)
+{
+	if (!IsKnownType(type))
+	{
+		console.log("Unknown " + type);
+		return;
+	}
 
-return;
+	var count = 1;
+	var size = GetTypeSize(type);
+	var variableType = GetVariableType(type);
+	var hex = GetShowAsHex(type);
 
+	if (name == "")
+	{
+		name = "var_" + pos.toString(16).toUpperCase();
+	}
+	else if (name.substring(0, 1) == "[")
+	{
+		name = "var_" + pos.toString(16).toUpperCase() + name;
+	}
 
-// // Cheat Engine
+	{
+		var matches = name.match(/\[\d+?\]/g);
+		if (matches)
+		{
+			for (var matchIndex = 0; matchIndex < matches.length; matchIndex++)
+			{
+				count *= parseInt(matches[matchIndex].match(/\[(\d+?)\]/)[1]);
+			}
+		}
+	}
 
-// var GetShowAsHex = function(str)
-// {
-// 	var dataTypes =
-// 	[
-// 		"byte8",
-// 		"byte16",
-// 		"byte32",
-// 		"byte64",
-// 		"byte8 *",
-// 	];
-// 	for (var index = 0; index < dataTypes.length; index++)
-// 	{
-// 		var type = dataTypes[index];
-// 		if (str == type)
-// 		{
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
+	for (var index = 0; index < count; index++, pos += size)
+	{
+		var description = name.split("[")[0];
 
-// var GetVariableType = function(str)
-// {
-// 	var dataTypes =
-// 	[
-// 		[ "int8"   , "Byte"    ],
-// 		[ "int16"  , "2 Bytes" ],
-// 		[ "int32"  , "4 Bytes" ],
-// 		[ "int64"  , "8 Bytes" ],
-// 		[ "uint8"  , "Byte"    ],
-// 		[ "uint16" , "2 Bytes" ],
-// 		[ "uint32" , "4 Bytes" ],
-// 		[ "uint64" , "8 Bytes" ],
-// 		[ "byte8"  , "Byte"    ],
-// 		[ "byte16" , "2 Bytes" ],
-// 		[ "byte32" , "4 Bytes" ],
-// 		[ "byte64" , "8 Bytes" ],
-// 		[ "byte8 *", "8 Bytes" ],
-// 		[ "bool"   , "Byte"    ],
-// 		[ "float32", "Float"   ],
-// 	];
-// 	for (var index = 0; index < dataTypes.length; index++)
-// 	{
-// 		var cppType = dataTypes[index][0];
-// 		var ceType  = dataTypes[index][1];
-// 		if (str == cppType)
-// 		{
-// 			return ceType;
-// 		}
-// 	}
-// 	return "";
-// }
+		if (count > 1)
+		{
+			description += " " + lz(index);
+		}
 
-// // @Todo: Create general CreateCheatEntry function.
+		if (variableType != "")
+		{
+			CreateActorCheatEntryFunction(description, variableType, pos, hex, actor);
+			continue;
+		}
 
-// var AddCheatEntry = function
-// (
-// 	description,
-// 	hex,
-// 	type,
-// 	size,
-// 	off,
-// 	actor
-// )
-// {
-// 	c += "<CheatEntry>\r\n";
-// 	c += "<Description>\"" + description + "\"</Description>\r\n";
-// 	if (hex)
-// 	{
-// 		c += "<ShowAsHex>1</ShowAsHex>\r\n";
-// 	}
-// 	c += "<VariableType>" + type + "</VariableType>\r\n";
-// 	if (type == "Array of byte")
-// 	{
-// 		c += "<ByteLength>" + size + "</ByteLength>\r\n";
-// 	}
-// 	c += "<Address>Mary.Actor_actorBaseAddr</Address>\r\n";
-// 	c += "<Offsets>\r\n";
-// 	c += "<Offset>" + off.toString(16).toUpperCase() + "</Offset>\r\n";
-// 	c += "<Offset>" + (actor * 8).toString(16).toUpperCase() + "</Offset>\r\n";
-// 	c += "</Offsets>\r\n";
-// 	c += "</CheatEntry>\r\n";
-// }
+		if (type == "vec4")
+		{
+			CreateActorCheatEntryFunction(description + " x", "Float", (pos + 0  ), false, actor);
+			CreateActorCheatEntryFunction(description + " y", "Float", (pos + 4  ), false, actor);
+			CreateActorCheatEntryFunction(description + " z", "Float", (pos + 8  ), false, actor);
+			CreateActorCheatEntryFunction(description + " a", "Float", (pos + 0xC), false, actor);
+			continue;
+		}
+		else if (type == "MOTION_DATA")
+		{
+			CreateActorCheatEntryFunction(description + " index", "Byte", (pos + 0), false, actor);
+			CreateActorCheatEntryFunction(description + " group", "Byte", (pos + 1), false, actor);
+			continue;
+		}
+		else if (type == "INPUT_DATA")
+		{
+			continue;
+		}
+		else if (type == "MODEL_METADATA")
+		{
+			continue;
+		}
+		else if (type == "MODEL_DATA")
+		{
+			continue;
+		}
+		else if (type == "DEVIL_MODEL_METADATA_DANTE")
+		{
+			continue;
+		}
+		else if (type == "ACTOR_EVENT_DATA")
+		{
+			continue;
+		}
+		else
+		{
+			console.log("Ignore " + type);
+		}
+	}
+}
 
-// function AddActorDataCE
-// (
-// 	data,
-// 	id,
-// 	actor,
-// 	max
-// )
-// {
-// 	for (var index = 0; index < data.length; index++)
-// 	{
-// 		var name      = data[index][0];
-// 		var type      = data[index][1];
-// 		var off       = data[index][2];
-// 		var character = data[index][3];
+function CreateCheatEntries
+(
+	groupName,
+	id
+)
+{
+	c += "<CheatEntry>" + NEW_LINE;
+	c += "<Description>" + groupName + "</Description>" + NEW_LINE;
+	c += "<Options moHideChildren=\"1\"/>" + NEW_LINE;
+	c += "<GroupHeader>1</GroupHeader>" + NEW_LINE;
+	c += "<CheatEntries>" + NEW_LINE;
 
-// 		if (name == "")
-// 		{
-// 			name = "var_" + off.toString(16).toUpperCase();
-// 		}
-// 		else if (name.substring(0, 1) == "[")
-// 		{
-// 			name = "var_" + off.toString(16).toUpperCase() + name;
-// 		}
+	for (var actor = 0; actor < 4; actor++)
+	{
+		c += "<CheatEntry>" + NEW_LINE;
+		c += "<Description>" + lz(actor) + "</Description>" + NEW_LINE;
+		c += "<Options moHideChildren=\"1\"/>" + NEW_LINE;
+		c += "<GroupHeader>1</GroupHeader>" + NEW_LINE;
+		c += "<CheatEntries>" + NEW_LINE;
 
-// 		if ((max != undefined) && (pos >= max))
-// 		{
-// 			return;
-// 		}
+		// Main
 
-// 		if ((character != undefined) && !(character & id))
-// 		{
-// 			continue;
-// 		}
-		
-// 		if (off != undefined)
-// 		{
-// 			pos = off;
-// 		}
-// 		else
-// 		{
-// 			if (type.match(/\*/))
-// 			{
-// 				Align(8);
-// 			}
-// 			else if (name.match(/\[/))
-// 			{
-// 				Align(4);
-// 			}
-// 		}
-		
-// 		var count = 1;
-		
-// 		{
-// 			var match = name.match(/\[\d+?\]/g);
-// 			if (match)
-// 			{
-// 				for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
-// 				{
-// 					count *= parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
-// 				}
-// 			}
-// 		}
-		
-// 		var size = GetTypeSize(type);
-		
-// 		for (var entryIndex = 0; entryIndex < count; entryIndex++)
-// 		{
-// 			var description = name.split("[")[0];
-// 			if (count > 1)
-// 			{
-// 				description += " " + lz(entryIndex);
-// 			}
-			
-// 			if (type == "vec4")
-// 			{
-// 				AddCheatEntry(description + " x", false, "Float", 0, (pos + 0  ), actor);
-// 				AddCheatEntry(description + " y", false, "Float", 0, (pos + 4  ), actor);
-// 				AddCheatEntry(description + " z", false, "Float", 0, (pos + 8  ), actor);
-// 				AddCheatEntry(description + " a", false, "Float", 0, (pos + 0xC), actor);
-// 				continue;
-// 			}
-// 			else if (type == "INPUT_DATA")
-// 			{
-// 				continue;
-// 			}
-// 			else if (type == "MOTION_DATA")
-// 			{
-// 				AddCheatEntry(description + " index", false, "Byte", 0, (pos + 0), actor);
-// 				AddCheatEntry(description + " group", false, "Byte", 0, (pos + 1), actor);
-// 				pos += size;
-// 				continue;
-// 			}
-// 			else if (type == "MODEL_METADATA")
-// 			{
-// 				continue;
-// 			}
-// 			else if (type == "MODEL_DATA")
-// 			{
-// 				AddCheatEntry(description + " duration1 lower body", false, "Float", 0, (pos + 0x554 + 0), actor);
-// 				AddCheatEntry(description + " duration1 upper body", false, "Float", 0, (pos + 0x554 + 4), actor);
-// 				AddCheatEntry(description + " duration2 lower body", false, "Float", 0, (pos + 0x594 + 0), actor);
-// 				AddCheatEntry(description + " duration2 upper body", false, "Float", 0, (pos + 0x594 + 4), actor);
-// 				AddCheatEntry(description + " timer lower body"    , false, "Float", 0, (pos + 0x6B4 + 0), actor);
-// 				AddCheatEntry(description + " timer upper body"    , false, "Float", 0, (pos + 0x6B4 + 4), actor);
-// 				pos += size;
-// 				continue;
-// 			}
-// 			else if (type == "DEVIL_MODEL_METADATA_DANTE")
-// 			{
-// 				continue;
-// 			}
-// 			else if (type == "ACTOR_EVENT_DATA")
-// 			{
-// 				AddCheatEntry(description + " index"    , false, "4 Bytes", 0, (pos + 0), actor);
-// 				AddCheatEntry(description + " lastIndex", false, "4 Bytes", 0, (pos + 4), actor);
-// 				pos += size;
-// 				continue;
-// 			}
-			
-// 			AddCheatEntry(description, GetShowAsHex(type), GetVariableType(type), 0, pos, actor);
-			
-// 			pos += size;
-// 		}
-// 	}
-// }
+		for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
+		{
+			var item = items[itemIndex];
 
-// function CreateActorDataCE
-// (
-// 	groupName,
-// 	id,
-// 	max
-// )
-// {
-// 	c += "<CheatEntry>\r\n";
-// 	c += "<Description>\"" + groupName + "\"</Description>\r\n";
-// 	c += "<Options moHideChildren=\"1\"/>\r\n";
-// 	c += "<GroupHeader>1</GroupHeader>\r\n";
-// 	c += "<CheatEntries>\r\n";
-	
-// 	for (var actor = 0; actor < 4; actor++)
-// 	{
-// 		c += "<CheatEntry>\r\n";
-// 		c += "<Description>\"" + lz(actor) + "\"</Description>\r\n";
-// 		c += "<Options moHideChildren=\"1\"/>\r\n";
-// 		c += "<GroupHeader>1</GroupHeader>\r\n";
-// 		c += "<CheatEntries>\r\n";
-		
-// 		pos = 0;
-		
-// 		AddActorDataCE(items, id, actor, max);
-		
-// 		pos = max;
-		
-// 		AddActorDataCE(extra, id, actor);
-		
-// 		c += "</CheatEntries>\r\n";
-// 		c += "</CheatEntry>\r\n";
-// 	}
-	
-// 	c += "</CheatEntries>\r\n";
-// 	c += "</CheatEntry>\r\n";
-// }
+			var name      = item[0];
+			var type      = item[1];
+			var off       = item[2];
+			var character = item[3];
 
-// c = "";
+			if ((character != undefined) && !(character & id))
+			{
+				continue;
+			}
 
-// c += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
-// c += "<CheatTable>\r\n";
-// c += "<CheatEntries>\r\n";
+			pos = off;
 
-// CreateActorDataCE("__DANTE__" , CHAR_DANTE , ACTOR_DATA_SIZE_DANTE );
-// CreateActorDataCE("__BOB__"   , CHAR_BOB   , ACTOR_DATA_SIZE_BOB   );
-// CreateActorDataCE("__LADY__"  , CHAR_LADY  , ACTOR_DATA_SIZE_LADY  );
-// CreateActorDataCE("__VERGIL__", CHAR_VERGIL, ACTOR_DATA_SIZE_VERGIL);
+			CreateActorCheatEntry(name, type, actor);
+		}
 
-// c += "</CheatEntries>\r\n";
-// c += "</CheatTable>\r\n";
+		pos = ACTOR_DATA_SIZE_DANTE;
 
-// fs.writeFileSync("actorData.txt", c);
+		// Ex
+
+		for (var itemIndex = 0; itemIndex < extra.length; itemIndex++)
+		{
+			var item = extra[itemIndex];
+
+			var name = item[0];
+			var type = item[1];
+
+			if (type.match(/\*/))
+			{
+				Align(8);
+			}
+			else if (name.match(/\[/))
+			{
+				Align(4);
+			}
+
+			CreateActorCheatEntry(name, type, actor);
+		}
+
+		c += "</CheatEntries>" + NEW_LINE;
+		c += "</CheatEntry>" + NEW_LINE;
+	}
+	c += "</CheatEntries>" + NEW_LINE;
+	c += "</CheatEntry>" + NEW_LINE;
+}
+
+c = "";
+
+c += "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + NEW_LINE;
+c += "<CheatTable>" + NEW_LINE;
+c += "<CheatEntries>" + NEW_LINE;
+
+// CreateCheatEntries("ACTOR_DATA"       , 0          );
+CreateCheatEntries("ACTOR_DATA_DANTE" , CHAR_DANTE );
+// CreateCheatEntries("ACTOR_DATA_BOB"   , CHAR_BOB   );
+// CreateCheatEntries("ACTOR_DATA_LADY"  , CHAR_LADY  );
+// CreateCheatEntries("ACTOR_DATA_VERGIL", CHAR_VERGIL);
+
+c += "</CheatEntries>" + NEW_LINE;
+c += "</CheatTable>" + NEW_LINE;
+
+fs.writeFileSync("actorData.txt", c);

@@ -5,9 +5,11 @@ module;
 #include "Includes.h"
 export module ModuleName(Core_Vector);
 
+import ModuleName(Core_Log);
 import ModuleName(Core_Memory);
 
 #ifdef __INTELLISENSE__
+#include "Log.ixx"
 #include "Memory.ixx"
 #endif
 
@@ -128,5 +130,33 @@ export struct MixedVector
 		return true;
 	}
 };
+
+// @Research: Less modular design.
+export template
+<
+	typename varType,
+	uint8 mapItemCount
+>
+void UpdateMapIndex
+(
+	varType(&map)[mapItemCount],
+	uint8 & index,
+	varType & var
+)
+{
+	LogFunction();
+
+	for_all(uint8, mapIndex, mapItemCount)
+	{
+		auto & mapItem = map[mapIndex];
+		if (mapItem == var)
+		{
+			index = mapIndex;
+			return;
+		}
+	}
+
+	Log("No match.");
+}
 
 #endif

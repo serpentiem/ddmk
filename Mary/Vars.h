@@ -1441,8 +1441,7 @@ struct ACTOR_DATA
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
-	bool sparda; // 0x3E9F
-	_(4);
+	_(5);
 	bool useHolyWater; // 0x3EA4
 	_(19);
 	float32 magicPoints; // 0x3EB8
@@ -1481,7 +1480,15 @@ struct ACTOR_DATA
 	_(35);
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
-	_(143);
+	_(23);
+	uint8 weapons[5]; // 0x6498
+	_(3);
+	byte8 * weaponData[5]; // 0x64A0
+	uint32 weaponStatus[5]; // 0x64C8
+	uint32 weaponLevels[5]; // 0x64DC
+	_(4);
+	float32 weaponTimers[5]; // 0x64F4
+	_(8);
 	uint32 styleRank; // 0x6510
 	float32 styleMeter; // 0x6514
 	_(348);
@@ -1651,20 +1658,15 @@ struct ACTOR_DATA_DANTE
 	_(2);
 	uint32 meleeWeaponIndex; // 0x6490
 	uint32 rangedWeaponIndex; // 0x6494
-	uint8 meleeWeapon[2]; // 0x6498
-	uint8 rangedWeapon[3]; // 0x649A
+	uint8 weapons[5]; // 0x6498
 	_(3);
-	byte8 * meleeWeaponData[2]; // 0x64A0
-	byte8 * rangedWeaponData[3]; // 0x64B0
-	uint32 meleeWeaponStatus[2]; // 0x64C8
-	uint32 rangedWeaponStatus[3]; // 0x64D0
-	uint32 meleeWeaponLevel[2]; // 0x64DC
-	uint32 rangedWeaponLevel[3]; // 0x64E4
+	byte8 * weaponData[5]; // 0x64A0
+	uint32 weaponStatus[5]; // 0x64C8
+	uint32 weaponLevels[5]; // 0x64DC
 	uint8 activeMeleeWeapon; // 0x64F0
 	uint8 activeRangedWeapon; // 0x64F1
 	_(2);
-	float32 meleeWeaponTimer[2]; // 0x64F4
-	float32 rangedWeaponTimer[3]; // 0x64FC
+	float32 weaponTimers[5]; // 0x64F4
 	float32 meleeWeaponSwitchTimeout; // 0x6508
 	float32 rangedWeaponSwitchTimeout; // 0x650C
 	uint32 styleRank; // 0x6510
@@ -1793,8 +1795,7 @@ struct ACTOR_DATA_BOB
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
-	bool sparda; // 0x3E9F
-	_(4);
+	_(5);
 	bool useHolyWater; // 0x3EA4
 	_(19);
 	float32 magicPoints; // 0x3EB8
@@ -1833,7 +1834,15 @@ struct ACTOR_DATA_BOB
 	_(35);
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
-	_(143);
+	_(23);
+	uint8 weapons[5]; // 0x6498
+	_(3);
+	byte8 * weaponData[5]; // 0x64A0
+	uint32 weaponStatus[5]; // 0x64C8
+	uint32 weaponLevels[5]; // 0x64DC
+	_(4);
+	float32 weaponTimers[5]; // 0x64F4
+	_(8);
 	uint32 styleRank; // 0x6510
 	float32 styleMeter; // 0x6514
 	_(348);
@@ -1952,8 +1961,7 @@ struct ACTOR_DATA_LADY
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
-	bool sparda; // 0x3E9F
-	_(4);
+	_(5);
 	bool useHolyWater; // 0x3EA4
 	_(19);
 	float32 magicPoints; // 0x3EB8
@@ -1992,7 +2000,15 @@ struct ACTOR_DATA_LADY
 	_(35);
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
-	_(143);
+	_(23);
+	uint8 weapons[5]; // 0x6498
+	_(3);
+	byte8 * weaponData[5]; // 0x64A0
+	uint32 weaponStatus[5]; // 0x64C8
+	uint32 weaponLevels[5]; // 0x64DC
+	_(4);
+	float32 weaponTimers[5]; // 0x64F4
+	_(8);
 	uint32 styleRank; // 0x6510
 	float32 styleMeter; // 0x6514
 	_(348);
@@ -2111,7 +2127,7 @@ struct ACTOR_DATA_VERGIL
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
-	bool sparda; // 0x3E9F
+	bool neroAngelo; // 0x3E9F
 	_(4);
 	bool useHolyWater; // 0x3EA4
 	_(19);
@@ -2159,13 +2175,13 @@ struct ACTOR_DATA_VERGIL
 	uint32 activeMeleeWeaponIndex; // 0x6484
 	uint32 queuedMeleeWeaponIndex; // 0x6488
 	_(12);
-	uint8 meleeWeapon[5]; // 0x6498
+	uint8 weapons[5]; // 0x6498
 	_(3);
-	byte8 * meleeWeaponData[5]; // 0x64A0
-	uint32 meleeWeaponStatus[5]; // 0x64C8
-	uint32 meleeWeaponLevel[5]; // 0x64DC
+	byte8 * weaponData[5]; // 0x64A0
+	uint32 weaponStatus[5]; // 0x64C8
+	uint32 weaponLevels[5]; // 0x64DC
 	_(4);
-	float32 meleeWeaponTimer[5]; // 0x64F4
+	float32 weaponTimers[5]; // 0x64F4
 	float32 meleeWeaponSwitchForwardTimeout; // 0x6508
 	float32 meleeWeaponSwitchBackTimeout; // 0x650C
 	uint32 styleRank; // 0x6510
@@ -2265,7 +2281,6 @@ static_assert(offsetof(ACTOR_DATA, airRaid) == 0x3E90);
 static_assert(offsetof(ACTOR_DATA, mode) == 0x3E94);
 static_assert(offsetof(ACTOR_DATA, devil) == 0x3E9B);
 static_assert(offsetof(ACTOR_DATA, costume) == 0x3E9E);
-static_assert(offsetof(ACTOR_DATA, sparda) == 0x3E9F);
 static_assert(offsetof(ACTOR_DATA, useHolyWater) == 0x3EA4);
 static_assert(offsetof(ACTOR_DATA, magicPoints) == 0x3EB8);
 static_assert(offsetof(ACTOR_DATA, maxMagicPoints) == 0x3EBC);
@@ -2288,6 +2303,11 @@ static_assert(offsetof(ACTOR_DATA, styleExperience) == 0x6364);
 static_assert(offsetof(ACTOR_DATA, cloneIsActive) == 0x6454);
 static_assert(offsetof(ACTOR_DATA, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ACTOR_DATA, cloneIsControlledByPlayer) == 0x6480);
+static_assert(offsetof(ACTOR_DATA, weapons) == 0x6498);
+static_assert(offsetof(ACTOR_DATA, weaponData) == 0x64A0);
+static_assert(offsetof(ACTOR_DATA, weaponStatus) == 0x64C8);
+static_assert(offsetof(ACTOR_DATA, weaponLevels) == 0x64DC);
+static_assert(offsetof(ACTOR_DATA, weaponTimers) == 0x64F4);
 static_assert(offsetof(ACTOR_DATA, styleRank) == 0x6510);
 static_assert(offsetof(ACTOR_DATA, styleMeter) == 0x6514);
 static_assert(offsetof(ACTOR_DATA, inputData) == 0x6674);
@@ -2395,18 +2415,13 @@ static_assert(offsetof(ACTOR_DATA_DANTE, cloneIsControlledByPlayer) == 0x6480);
 static_assert(offsetof(ACTOR_DATA_DANTE, activeWeapon) == 0x648D);
 static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeaponIndex) == 0x6490);
 static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeaponIndex) == 0x6494);
-static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeapon) == 0x6498);
-static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeapon) == 0x649A);
-static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeaponData) == 0x64A0);
-static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeaponData) == 0x64B0);
-static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeaponStatus) == 0x64C8);
-static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeaponStatus) == 0x64D0);
-static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeaponLevel) == 0x64DC);
-static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeaponLevel) == 0x64E4);
+static_assert(offsetof(ACTOR_DATA_DANTE, weapons) == 0x6498);
+static_assert(offsetof(ACTOR_DATA_DANTE, weaponData) == 0x64A0);
+static_assert(offsetof(ACTOR_DATA_DANTE, weaponStatus) == 0x64C8);
+static_assert(offsetof(ACTOR_DATA_DANTE, weaponLevels) == 0x64DC);
 static_assert(offsetof(ACTOR_DATA_DANTE, activeMeleeWeapon) == 0x64F0);
 static_assert(offsetof(ACTOR_DATA_DANTE, activeRangedWeapon) == 0x64F1);
-static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeaponTimer) == 0x64F4);
-static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeaponTimer) == 0x64FC);
+static_assert(offsetof(ACTOR_DATA_DANTE, weaponTimers) == 0x64F4);
 static_assert(offsetof(ACTOR_DATA_DANTE, meleeWeaponSwitchTimeout) == 0x6508);
 static_assert(offsetof(ACTOR_DATA_DANTE, rangedWeaponSwitchTimeout) == 0x650C);
 static_assert(offsetof(ACTOR_DATA_DANTE, styleRank) == 0x6510);
@@ -2489,7 +2504,6 @@ static_assert(offsetof(ACTOR_DATA_BOB, airRaid) == 0x3E90);
 static_assert(offsetof(ACTOR_DATA_BOB, mode) == 0x3E94);
 static_assert(offsetof(ACTOR_DATA_BOB, devil) == 0x3E9B);
 static_assert(offsetof(ACTOR_DATA_BOB, costume) == 0x3E9E);
-static_assert(offsetof(ACTOR_DATA_BOB, sparda) == 0x3E9F);
 static_assert(offsetof(ACTOR_DATA_BOB, useHolyWater) == 0x3EA4);
 static_assert(offsetof(ACTOR_DATA_BOB, magicPoints) == 0x3EB8);
 static_assert(offsetof(ACTOR_DATA_BOB, maxMagicPoints) == 0x3EBC);
@@ -2512,6 +2526,11 @@ static_assert(offsetof(ACTOR_DATA_BOB, styleExperience) == 0x6364);
 static_assert(offsetof(ACTOR_DATA_BOB, cloneIsActive) == 0x6454);
 static_assert(offsetof(ACTOR_DATA_BOB, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ACTOR_DATA_BOB, cloneIsControlledByPlayer) == 0x6480);
+static_assert(offsetof(ACTOR_DATA_BOB, weapons) == 0x6498);
+static_assert(offsetof(ACTOR_DATA_BOB, weaponData) == 0x64A0);
+static_assert(offsetof(ACTOR_DATA_BOB, weaponStatus) == 0x64C8);
+static_assert(offsetof(ACTOR_DATA_BOB, weaponLevels) == 0x64DC);
+static_assert(offsetof(ACTOR_DATA_BOB, weaponTimers) == 0x64F4);
 static_assert(offsetof(ACTOR_DATA_BOB, styleRank) == 0x6510);
 static_assert(offsetof(ACTOR_DATA_BOB, styleMeter) == 0x6514);
 static_assert(offsetof(ACTOR_DATA_BOB, inputData) == 0x6674);
@@ -2588,7 +2607,6 @@ static_assert(offsetof(ACTOR_DATA_LADY, airRaid) == 0x3E90);
 static_assert(offsetof(ACTOR_DATA_LADY, mode) == 0x3E94);
 static_assert(offsetof(ACTOR_DATA_LADY, devil) == 0x3E9B);
 static_assert(offsetof(ACTOR_DATA_LADY, costume) == 0x3E9E);
-static_assert(offsetof(ACTOR_DATA_LADY, sparda) == 0x3E9F);
 static_assert(offsetof(ACTOR_DATA_LADY, useHolyWater) == 0x3EA4);
 static_assert(offsetof(ACTOR_DATA_LADY, magicPoints) == 0x3EB8);
 static_assert(offsetof(ACTOR_DATA_LADY, maxMagicPoints) == 0x3EBC);
@@ -2611,6 +2629,11 @@ static_assert(offsetof(ACTOR_DATA_LADY, styleExperience) == 0x6364);
 static_assert(offsetof(ACTOR_DATA_LADY, cloneIsActive) == 0x6454);
 static_assert(offsetof(ACTOR_DATA_LADY, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ACTOR_DATA_LADY, cloneIsControlledByPlayer) == 0x6480);
+static_assert(offsetof(ACTOR_DATA_LADY, weapons) == 0x6498);
+static_assert(offsetof(ACTOR_DATA_LADY, weaponData) == 0x64A0);
+static_assert(offsetof(ACTOR_DATA_LADY, weaponStatus) == 0x64C8);
+static_assert(offsetof(ACTOR_DATA_LADY, weaponLevels) == 0x64DC);
+static_assert(offsetof(ACTOR_DATA_LADY, weaponTimers) == 0x64F4);
 static_assert(offsetof(ACTOR_DATA_LADY, styleRank) == 0x6510);
 static_assert(offsetof(ACTOR_DATA_LADY, styleMeter) == 0x6514);
 static_assert(offsetof(ACTOR_DATA_LADY, inputData) == 0x6674);
@@ -2687,7 +2710,7 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, airRaid) == 0x3E90);
 static_assert(offsetof(ACTOR_DATA_VERGIL, mode) == 0x3E94);
 static_assert(offsetof(ACTOR_DATA_VERGIL, devil) == 0x3E9B);
 static_assert(offsetof(ACTOR_DATA_VERGIL, costume) == 0x3E9E);
-static_assert(offsetof(ACTOR_DATA_VERGIL, sparda) == 0x3E9F);
+static_assert(offsetof(ACTOR_DATA_VERGIL, neroAngelo) == 0x3E9F);
 static_assert(offsetof(ACTOR_DATA_VERGIL, useHolyWater) == 0x3EA4);
 static_assert(offsetof(ACTOR_DATA_VERGIL, magicPoints) == 0x3EB8);
 static_assert(offsetof(ACTOR_DATA_VERGIL, maxMagicPoints) == 0x3EBC);
@@ -2715,11 +2738,11 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ACTOR_DATA_VERGIL, cloneIsControlledByPlayer) == 0x6480);
 static_assert(offsetof(ACTOR_DATA_VERGIL, activeMeleeWeaponIndex) == 0x6484);
 static_assert(offsetof(ACTOR_DATA_VERGIL, queuedMeleeWeaponIndex) == 0x6488);
-static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeapon) == 0x6498);
-static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeaponData) == 0x64A0);
-static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeaponStatus) == 0x64C8);
-static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeaponLevel) == 0x64DC);
-static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeaponTimer) == 0x64F4);
+static_assert(offsetof(ACTOR_DATA_VERGIL, weapons) == 0x6498);
+static_assert(offsetof(ACTOR_DATA_VERGIL, weaponData) == 0x64A0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, weaponStatus) == 0x64C8);
+static_assert(offsetof(ACTOR_DATA_VERGIL, weaponLevels) == 0x64DC);
+static_assert(offsetof(ACTOR_DATA_VERGIL, weaponTimers) == 0x64F4);
 static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeaponSwitchForwardTimeout) == 0x6508);
 static_assert(offsetof(ACTOR_DATA_VERGIL, meleeWeaponSwitchBackTimeout) == 0x650C);
 static_assert(offsetof(ACTOR_DATA_VERGIL, styleRank) == 0x6510);
