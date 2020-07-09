@@ -243,6 +243,8 @@
     <None Include="Color.ixx" />
     <None Include="Internal.ixx" />
     <None Include="Mobility.ixx" />
+    <None Include="Model.ix" />
+    <None Include="Model.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -115,5 +115,7 @@
     <None Include="Color.ixx" />
     <None Include="BossRush.ixx" />
     <None Include="Internal.ixx" />
+    <None Include="Model.ix" />
+    <None Include="Model.ixx" />
   </ItemGroup>
 </Project>

@@ -19,6 +19,7 @@ import ModuleName(Config);
 import ModuleName(Event);
 import ModuleName(File);
 import ModuleName(Internal);
+import ModuleName(Model);
 import ModuleName(Pause);
 import ModuleName(Speed);
 import ModuleName(State);
@@ -35,6 +36,7 @@ import ModuleName(Window);
 #include "Event.ixx"
 #include "File.ixx"
 #include "Internal.ixx"
+#include "Model.ixx"
 #include "Pause.ixx"
 #include "Speed.ixx"
 #include "State.ixx"
@@ -1188,10 +1190,16 @@ void Main()
 
 	if (ImGui::Begin("DDMK 2.7", &pause))
 	{
-
-
-
 		ImGui::Text("");
+
+
+
+		if (GUI_Button("Pop Dante"))
+		{
+			ResetModel(Actor_actorBaseAddr[0] + 0xB8C0);
+			UpdateModelDante(Actor_actorBaseAddr[0]);
+		}
+
 
 		if (GUI_Button("SpawnActors"))
 		{

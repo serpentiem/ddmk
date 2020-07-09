@@ -114,6 +114,13 @@ var items =
 	[ "leftStickRadius"                , "uint16"                    , 0x750A                           ],
 	[ "actorCameraDirection"           , "uint16"                    , 0x750C                           ],
 	[ "leftStickDirection[2]"          , "uint32"                    , 0x751C                           ],
+	[ "[2]"                            , "MODEL_DATA"                , 0x7540                           ],
+	[ "[2]"                            , "uint8"                     , 0x9AC0                           ],
+	[ "[2]"                            , "SHADOW_DATA"               , 0x9AD0                           ],
+	[ "[2]"                            , "SHADOW_DATA"               , 0x9D10                           ],
+	[ "[2]"                            , "byte8"                     , 0xA0D0                           ],
+	[ "[2]"                            , "byte8"                     , 0xA210                           ],
+	[ "[2]"                            , "byte8"                     , 0xA540                           ],
 	[ "devilModelMetadata"             , "DEVIL_MODEL_METADATA_DANTE", 0xB600, CHAR_DANTE               ],
 	[ "modelMetadata[6]"               , "MODEL_METADATA"            , 0xB630, CHAR_DANTE               ],
 	[ "modelMetadata[6]"               , "MODEL_METADATA"            , 0xB640, CHAR_VERGIL              ],
@@ -123,8 +130,6 @@ var items =
 
 var extra =
 [
-	// [ "newEnable"                   , "bool"    ],
-	// [ "newCharacterModel"           , "uint8"   ],
 	[ "newParentBaseAddr"           , "byte8 *" ],
 	[ "newChildBaseAddr"            , "byte8 *" ],
 	[ "newGamepad"                  , "uint8"   ],
@@ -143,8 +148,6 @@ var extra =
 	[ "newLastRangedWeapon"         , "uint8"   ],
 	[ "newSect[8]"                  , "bool"    ],
 	[ "newBufferedActionPolicy"     , "uint8"   ],
-	// [ "newExecuteMeleeWeaponSwitch" , "bool"    ],
-	// [ "newExecuteRangedWeaponSwitch", "bool"    ],
 	[ "newAirStingerCount"          , "uint8"   ],
 ];
 

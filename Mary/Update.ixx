@@ -1464,7 +1464,7 @@ export void Update_Init()
 
 
 	//vp_memset((appBaseAddr + 0x1F9189), 0x90, 8); // disable sub
-	//WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2); // force collect orbs
+	
 
 
 

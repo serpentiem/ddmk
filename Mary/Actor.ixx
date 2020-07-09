@@ -1976,7 +1976,8 @@ export void Actor_Init()
 
 	// Adjust actor data size.
 	{
-		constexpr uint32 size = (0xB8C0 + 512);
+		//constexpr uint32 size = (0xB8C0 + 512);
+		constexpr uint32 size = (64 * 1024);
 		Write<uint32>((appBaseAddr + 0x1DE8B4), size); // Vergil
 		Write<uint32>((appBaseAddr + 0x1DE9CD), size); // Lady
 		Write<uint32>((appBaseAddr + 0x1DEAC9), size); // Bob

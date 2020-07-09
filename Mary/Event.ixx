@@ -345,7 +345,7 @@ void MainLoopOnce()
 
 		LogFunction();
 
-		Actor_MainLoopOnce();
+		//Actor_MainLoopOnce();
 	}
 }
 
@@ -481,8 +481,20 @@ export void Event_Init()
 		constexpr byte8 sect0[] =
 		{
 			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+1F83A0
-		};		constexpr byte8 sect1[] =		{			mov_rcx_rbx,		};		auto func = CreateFunction(ActorLoop, (appBaseAddr + 0x1DFA9B), true, true, sizeof(sect0), sizeof(sect1));		memcpy(func.sect0, sect0, sizeof(sect0));		memcpy(func.sect1, sect1, sizeof(sect1));		WriteCall(func.sect0, (appBaseAddr + 0x1F83A0));		WriteJump((appBaseAddr + 0x1DFA96), func.addr);		/*		dmc3.exe+1DFA96 - E8 05890100 - call dmc3.exe+1F83A0
-		dmc3.exe+1DFA9B - EB 08       - jmp dmc3.exe+1DFAA5		*/
+		};
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+		auto func = CreateFunction(ActorLoop, (appBaseAddr + 0x1DFA9B), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall(func.sect0, (appBaseAddr + 0x1F83A0));
+		WriteJump((appBaseAddr + 0x1DFA96), func.addr);
+		/*
+		dmc3.exe+1DFA96 - E8 05890100 - call dmc3.exe+1F83A0
+		dmc3.exe+1DFA9B - EB 08       - jmp dmc3.exe+1DFAA5
+		*/
 	}
 
 

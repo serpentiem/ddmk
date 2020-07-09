@@ -14,6 +14,7 @@ import ModuleName(HUD);
 import ModuleName(Internal);
 import ModuleName(Memory);
 import ModuleName(Mobility);
+import ModuleName(Model);
 import ModuleName(Training);
 //import ModuleName(Update);
 import ModuleName(Window);
@@ -33,6 +34,7 @@ import ModuleName(Window);
 #include "Internal.ixx"
 #include "Memory.ixx"
 #include "Mobility.ixx"
+#include "Model.ixx"
 #include "Training.ixx"
 //#include "Update.ixx"
 #include "Window.ixx"
@@ -139,9 +141,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Mobility::Toggle(true);
 
 
+		Model_Init();
 
-
-
+		WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2); // force collect orbs
 
 
 		//ToggleUpdateWeapon(true);
