@@ -20,6 +20,7 @@ import ModuleName(File);
 import ModuleName(HUD);
 import ModuleName(Internal);
 import ModuleName(Input);
+import ModuleName(Memory);
 
 #ifdef __INTELLISENSE__
 #include "Config.ixx"
@@ -27,6 +28,7 @@ import ModuleName(Input);
 #include "HUD.ixx"
 #include "Internal.ixx"
 #include "Input.ixx"
+#include "Memory.ixx"
 #endif
 
 export Vector<byte8 *> Actor_actorBaseAddr;
@@ -554,7 +556,7 @@ T * CreateActorFunction
 {
 	constexpr uint8 character = GetCharacterId<T>::value;
 
-	IntroduceMissionActorData(return 0);
+	IntroduceMissionActorDataPointers(return 0);
 
 	auto baseAddr = func_1DE820(character, 0, false);
 	if (!baseAddr)
@@ -597,7 +599,7 @@ byte8 * CreateActor
 
 	if (entity == ENTITY_MAIN)
 	{
-		parentActorData.newEnable = true;
+		//parentActorData.newEnable = true;
 		parentActorData.newGamepad = player;
 		parentActorData.newButtonMask = 0xFFFF;
 		parentActorData.newEnableRightStick = true;
@@ -1188,6 +1190,136 @@ export void ToggleIsWeaponReady(bool enable)
 
 void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 {
+	if (actorData.newMeleeWeaponCount <= 1)
+	{
+		return;
+	}
+
+	if (!(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
+	{
+		return;
+	}
+
+	if (0 < actorData.meleeWeaponSwitchTimeout)
+	{
+		return;
+	}
+
+	actorData.meleeWeaponSwitchTimeout = Config.Dante.weaponSwitchTimeout;
+
+	actorData.newMeleeWeaponIndex++;
+	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
+	{
+		actorData.newMeleeWeaponIndex = 0;
+	}
+
+
+	auto & newMeleeWeapon = actorData.newMeleeWeapon[actorData.newMeleeWeaponIndex];
+
+	UpdateMeleeWeapon(actorData, newMeleeWeapon);
+
+
+	
+
+	IntroduceHUDPointers(return);
+
+
+	// @Todo: Update enum.
+	// @Todo: Remove reference from newMeleeWeapon.
+	HUD_UpdateWeaponIcon
+	(
+		HUD_BOTTOM::MELEE_WEAPON_1,
+		HUD_weaponIcon[newMeleeWeapon].model,
+		HUD_weaponIcon[newMeleeWeapon].texture
+	);
+	func_280120(hudBottom, 1, 0);
+
+	func_1EB0E0(actorData, 4);
+
+
+
+	if (actorData.devil)
+	{
+		func_1F92C0(actorData, 1); // Just updates the model index.
+		func_1F97F0(actorData, true); // important one
+	}
+
+
+
+	/*
+	dmc3.exe+1EAA0E - BA 01000000           - mov edx,00000001 { 1 }
+	dmc3.exe+1EAA13 - 48 8B CF              - mov rcx,rdi
+	dmc3.exe+1EAA16 - E8 A5E80000           - call dmc3.exe+1F92C0 { queue
+	}
+	dmc3.exe+1EAA1B - B2 01                 - mov dl,01 { 1 }
+	dmc3.exe+1EAA1D - 48 8B CF              - mov rcx,rdi
+	dmc3.exe+1EAA20 - E8 CBED0000           - call dmc3.exe+1F97F0 { update
+	}
+
+	*/
+
+
+
+
+
+
+
+
+
+
+
+	/*
+	<?xml version="1.0" encoding="utf-8"?>
+	<CheatTable>
+	<CheatEntries>
+	<CheatEntry>
+	<ID>158423</ID>
+	<Description>"top"</Description>
+	<LastState Value="0000000004726670" RealAddress="01A616F0"/>
+	<ShowAsHex>1</ShowAsHex>
+	<VariableType>8 Bytes</VariableType>
+	<Address>dmc3.exe+C8F970+1478+10</Address>
+	<Offsets>
+	<Offset>1B070</Offset>
+	<Offset>18+10</Offset>
+	</Offsets>
+	</CheatEntry>
+	<CheatEntry>
+	<ID>158424</ID>
+	<Description>"bottom"</Description>
+	<LastState Value="0000000004762670" RealAddress="01A616F8"/>
+	<ShowAsHex>1</ShowAsHex>
+	<VariableType>8 Bytes</VariableType>
+	<Address>dmc3.exe+C8F970+1478+10</Address>
+	<Offsets>
+	<Offset>1B078</Offset>
+	<Offset>18+10</Offset>
+	</Offsets>
+	</CheatEntry>
+	</CheatEntries>
+	</CheatTable>
+	*/
+
+
+
+
+
+
+	//if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	//// @Todo: Fix!
 	//if (actorData.newGamepad != 0)
@@ -1438,14 +1570,12 @@ bool WeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 	{
 		return true;
 	}
-	//if (actorData.moveOnly)
-	//{
-	//	return false;
-	//}
-
+	if (actorData.var_3F19 == true)
+	{
+		return false;
+	}
 	MeleeWeaponSwitchControllerDante (actorData);
-	RangedWeaponSwitchControllerDante(actorData);
-
+	//RangedWeaponSwitchControllerDante(actorData);
 	return true;
 }
 
@@ -1857,6 +1987,9 @@ export void Actor_Init()
 	//	auto func = CreateFunction(WeaponSwitchVergil, 0, true, false);
 	//	WriteCall((appBaseAddr + 0x1E25E1), func.addr);
 	//}
+
+	// @Todo: Move to Event.
+
 	{
 		auto func = CreateFunction(WeaponSwitchControllerDante, 0, true, false);
 		WriteCall((appBaseAddr + 0x1E25EB), func.addr);

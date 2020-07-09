@@ -1,5 +1,10 @@
 #pragma once
 
+typedef unsigned char      bool8;
+typedef unsigned short     bool16;
+typedef unsigned long      bool32;
+typedef unsigned long long bool64;
+
 typedef char      int8;
 typedef short     int16;
 typedef long      int32;

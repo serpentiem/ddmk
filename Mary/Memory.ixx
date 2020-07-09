@@ -119,4 +119,14 @@ export void Memory_ToggleExtendVectors(bool enable)
 	}
 }
 
+export byte8 * GetMasterPointer()
+{
+	auto dest = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC8F970 + 0x1478 + 0x10);
+	if (!dest)
+	{
+		return 0;
+	}
+	return *reinterpret_cast<byte8 **>(dest + 0x18 + 0x10);
+}
+
 #endif

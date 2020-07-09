@@ -15,7 +15,7 @@ import ModuleName(Internal);
 import ModuleName(Memory);
 import ModuleName(Mobility);
 import ModuleName(Training);
-import ModuleName(Update);
+//import ModuleName(Update);
 import ModuleName(Window);
 
 #ifdef __INTELLISENSE__
@@ -34,7 +34,7 @@ import ModuleName(Window);
 #include "Memory.ixx"
 #include "Mobility.ixx"
 #include "Training.ixx"
-#include "Update.ixx"
+//#include "Update.ixx"
 #include "Window.ixx"
 #endif
 
@@ -130,7 +130,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-		Update_Init();
+		//Update_Init();
 
 
 		//Mobility_Toggle(true);

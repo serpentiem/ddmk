@@ -387,7 +387,10 @@ void MainLoop()
 
 
 
-
+void ActorLoop(byte8 * baseAddr)
+{
+	return;
+}
 
 
 
@@ -463,6 +466,34 @@ void SkyStarReset(byte8 * baseAddr)
 
 export void Event_Init()
 {
+
+
+
+
+
+	// Actor Loop
+	{
+		/*
+		dmc3.exe+1E25EB - E8 F0820000 - call dmc3.exe+1EA8E0 - Weapon Switch Controller Dante
+		dmc3.exe+1F900E - E8 5D94FEFF - call dmc3.exe+1E2470 - Actor Input Handler
+		dmc3.exe+1DFA96 - E8 05890100 - call dmc3.exe+1F83A0 - Actor Main Update
+		*/
+		constexpr byte8 sect0[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+1F83A0
+		};		constexpr byte8 sect1[] =		{			mov_rcx_rbx,		};		auto func = CreateFunction(ActorLoop, (appBaseAddr + 0x1DFA9B), true, true, sizeof(sect0), sizeof(sect1));		memcpy(func.sect0, sect0, sizeof(sect0));		memcpy(func.sect1, sect1, sizeof(sect1));		WriteCall(func.sect0, (appBaseAddr + 0x1F83A0));		WriteJump((appBaseAddr + 0x1DFA96), func.addr);		/*		dmc3.exe+1DFA96 - E8 05890100 - call dmc3.exe+1F83A0
+		dmc3.exe+1DFA9B - EB 08       - jmp dmc3.exe+1DFAA5		*/
+	}
+
+
+
+
+
+
+
+
+
+
 
 
 
