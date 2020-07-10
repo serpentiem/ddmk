@@ -113,6 +113,11 @@ void CopyCoatVertices(byte8 * dest)
 
 
 
+
+
+// costumeCacheFileId
+
+
 template <typename T>
 void UpdateModelFunction(T & actorData)
 {
@@ -125,9 +130,74 @@ void UpdateModelFunction(T & actorData)
 
 	auto baseAddr = reinterpret_cast<byte8 *>(&actorData);
 
-	//auto & modelData = actorData.modelData[actorData.activeModelIndex];
+	auto & modelData = actorData.modelData[0];
 
-	auto & modelData = actorData.newModelData[0];
+
+
+
+
+
+	auto costume = actorData.costume;
+	if (costume >= MAX_COSTUME_DANTE)
+	{
+		costume = 0;
+	}
+
+
+	auto costumeFileId = costumeFileIdsDante[costume];
+
+	//auto file = File_staticFiles[costumeFileId];
+
+	byte8 * modelFile   = 0;
+	byte8 * textureFile = 0;
+	byte8 * shadowFile  = 0;
+	byte8 * physicsFile = 0;
+
+
+
+
+
+
+
+
+
+
+	// noAmuletNoCoat
+
+
+
+	//bool coat =
+	//(actorData.costume == COSTUME_DANTE_DEFAULT_NO_COAT) ? false :
+	//(actorData.costume == COSTUME_DANTE_DMC1_NO_COAT   ) ? false :
+	//true;
+
+
+
+	{
+		{
+			auto & file = File_staticFiles[costumeFileId];
+			modelFile   = file[1];
+			textureFile = file[0];
+			shadowFile  = file[8];
+		}
+		if (actorData.newForceLadyFiles)
+		{
+			//if (costume == COSTUME_LADY_DEFAULT)
+			//{
+			//	auto & file = File_staticFiles[pl002];
+			//	modelFile   = file[1];
+			//	textureFile = file[0];
+			//	shadowFile  = file[8];
+			//}
+			//else
+			//{
+				auto & file = File_staticFiles[em034];
+				modelFile   = file[32];
+				textureFile = file[31];
+				shadowFile  = file[16];
+			/*}*/
+		}
+	}
 
 
 
@@ -138,97 +208,88 @@ void UpdateModelFunction(T & actorData)
 	RegisterModel
 	(
 		modelData,
-		File_staticFiles[pl011][1],
-		File_staticFiles[pl011][0]
+		modelFile,
+		textureFile
 	);
 
 	RegisterShadow
 	(
 		modelData,
-		(baseAddr + 0x9AD0 + (modelIndex * 0xC0)),
-		File_staticFiles[pl011][8]
+		actorData.var_9AD0[modelIndex],
+		shadowFile
 	);
 
 	CopyBaseVertices(actorData.modelMetadata);
 
 
 
-	//func_8A000(modelData, File_staticFiles[pl000_00_0], (baseAddr + 0x1880));
 
 
 
-	/*
-	dmc3.exe+1EF3E0 - 4D 8D BD 00020000     - lea r15,[r13+00000200] { __SLOT_0_START__
+
+
+
+
+
+
+
+
+
+	// Coat
+
+	{
+		auto & file = File_staticFiles[costumeFileId];
+		modelFile   = file[12];
+		textureFile = file[0];
+		shadowFile  = file[14];
+		physicsFile = file[13];
 	}
-	dmc3.exe+1EF3E7 - 48 8B D1              - mov rdx,rcx { MOT_BASE
-	}
-	dmc3.exe+1EF3EA - 49 8B 07              - mov rax,[r15]
-	dmc3.exe+1EF3ED - 4D 8D B5 80180000     - lea r14,[r13+00001880] { baseAddr + 1880
-	}
-	dmc3.exe+1EF3F4 - 4D 8B C6              - mov r8,r14
-	dmc3.exe+1EF3F7 - 49 8B CF              - mov rcx,r15 { modelData
-	}
-	dmc3.exe+1EF3FA - FF 90 50010000        - call qword ptr [rax+00000150] { dmc3.exe+8A000
-	}
-
-	*/
 
 
 
 
 
 
+	RegisterModel
+	(
+		actorData.var_7540[submodelIndex],
+		modelFile,
+		textureFile
+	);
 
+	func_8A000
+	(
+		actorData.var_7540[submodelIndex],
+		0,
+		actorData.var_A0D0
+	);
 
+	RegisterShadow
+	(
+		actorData.var_7540[submodelIndex],
+		actorData.var_9D10[submodelIndex],
+		shadowFile
+	);
 
+	actorData.var_9AC0[submodelIndex] = 1;
 
+	RegisterPhysics
+	(
+		actorData.var_A210,
+		actorData.var_A0D0,
+		physicsFile
+	);
 
+	func_2CA2F0
+	(
+		actorData.var_A210,
+		(baseAddr + ((modelOff + 0x310) * 8)), // @Research: May no longer be needed.
+		(appBaseAddr + 0x58B380),
+		actorData.modelMetadata,
+		6
+	);
 
-
-
-	//// Coat
-
-	//auto dest = (baseAddr + 0x7540 + (submodelIndex * 0x780));
-	//auto dest2 = (baseAddr + 0xA0D0);
-
-
-	//RegisterModel
-	//(
-	//	dest,
-	//	File_staticFiles[pl000][12],
-	//	File_staticFiles[pl000][0]
-	//);
-
-	//func_8A000(dest, 0, dest2);
-
-	//RegisterShadow
-	//(
-	//	dest,
-	//	(baseAddr + 0x9D10 + (submodelIndex * 0xC0)),
-	//	File_staticFiles[pl000][14]
-	//);
-
-	//(reinterpret_cast<uint8 *>(baseAddr + 0x9AC0))[submodelIndex] = 1;
-
-	//dest = (baseAddr + 0xA210);
-
-	//RegisterPhysics
-	//(
-	//	dest,
-	//	dest2,
-	//	File_staticFiles[pl000][13]
-	//);
-
-	//func_2CA2F0
-	//(
-	//	dest,
-	//	(baseAddr + ((modelOff + 0x310) * 8)),
-	//	(appBaseAddr + 0x58B380),
-	//	actorData.modelMetadata,
-	//	6
-	//);
-
-	//CopyCoatVertices(dest2);
+	CopyCoatVertices(actorData.var_A0D0);
 }
 
 
@@ -247,6 +308,14 @@ export void UpdateModelDante(byte8 * baseAddr)
 
 
 
+
+
+
+
+
+
+
+
 export void Model_Init()
 {
 	LogFunction();
@@ -259,6 +328,20 @@ export void Model_Init()
 		dmc3.exe+212CB8 - 48 8D 86 A0380000 - lea rax,[rsi+000038A0]
 		*/
 	}
+
+
+
+	// Dante Model Partition Updates
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
+			0x74, 0x05,                               // je short
+			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+2169F0
+		};		auto func = CreateFunction(0, (appBaseAddr + 0x21557C), false, true, sizeof(sect0));		memcpy(func.sect0, sect0, sizeof(sect0));		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceLadyFiles);		WriteCall((func.sect0 + 9), (appBaseAddr + 0x2169F0));		WriteJump((appBaseAddr + 0x215577), func.addr);		/*		dmc3.exe+215577 - E8 74140000       - call dmc3.exe+2169F0
+		dmc3.exe+21557C - 48 81 C7 40750000 - add rdi,00007540		*/
+	}
+
 
 
 

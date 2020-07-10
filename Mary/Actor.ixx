@@ -234,45 +234,105 @@ void InitRegisterWeapon()
 	RegisterWeapon[WEAPON_BOB_YAMATO       ] = func_231A30;
 }
 
-void UpdateModelPartitionConfigFunction
-(
-	ACTOR_DATA_DANTE & actorData,
-	uint8 weapon
-)
+
+
+
+
+
+
+
+
+template <typename T>
+void UpdateModelPartitions(T & actorData)
 {
-	actorData.newLastMeleeWeapon = weapon;
+	auto modelPartitionData = actorData.modelData[0].partitionData;
 
-	auto & modelData = actorData.modelData[0];
-	auto dest = func_89DE0(modelData);
+	if (actorData.newForceLadyFiles)
+	{
+		//if (actorData.costume == COSTUME_LADY_DEFAULT)
+		//{
 
-	if (weapon == WEAPON_DANTE_BEOWULF)
-	{
-		func_2F7350(dest, 3);
-		func_2F74E0(dest, 4);
-		func_2F74E0(dest, 5);
-		func_2F7350(dest, 6);
-	}
-	else
-	{
-		func_2F74E0(dest, 3);
-		func_2F7350(dest, 4);
-		func_2F7350(dest, 5);
-		func_2F74E0(dest, 6);
-	}
-}
-
-void UpdateModelPartitionConfig
-(
-	ACTOR_DATA_DANTE & actorData,
-	uint8 weapon
-)
-{
-	if (actorData.newLastMeleeWeapon == weapon)
-	{
+		//}
+		//else
+		{
+			modelPartitionData[0].value = 3; // Body
+			modelPartitionData[1].value = 3; // Face
+			modelPartitionData[2].value = 3; // Hands
+			modelPartitionData[3].value = 3; // Accessories
+			modelPartitionData[4].value = 2; // Millenium Puzzle
+			modelPartitionData[5].value = 3; // Feet
+			modelPartitionData[6].value = 3; // Belt
+			modelPartitionData[7].value = 3; // Zippers
+		}
 		return;
 	}
-	UpdateModelPartitionConfigFunction(actorData, weapon);
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void UpdateModelPartitionConfigFunction
+//(
+//	ACTOR_DATA_DANTE & actorData,
+//	uint8 weapon
+//)
+//{
+//	actorData.newLastMeleeWeapon = weapon;
+//
+//	auto & modelData = actorData.modelData[0];
+//	auto dest = func_89DE0(modelData);
+//
+//	if (weapon == WEAPON_DANTE_BEOWULF)
+//	{
+//		func_2F7350(dest, 3);
+//		func_2F74E0(dest, 4);
+//		func_2F74E0(dest, 5);
+//		func_2F7350(dest, 6);
+//	}
+//	else
+//	{
+//		func_2F74E0(dest, 3);
+//		func_2F7350(dest, 4);
+//		func_2F7350(dest, 5);
+//		func_2F74E0(dest, 6);
+//	}
+//}
+
+//void UpdateModelPartitionConfig
+//(
+//	ACTOR_DATA_DANTE & actorData,
+//	uint8 weapon
+//)
+//{
+//	if (actorData.newLastMeleeWeapon == weapon)
+//	{
+//		return;
+//	}
+//	UpdateModelPartitionConfigFunction(actorData, weapon);
+//}
 
 template <typename T>
 void InitMeleeWeapons(T & actorData)
@@ -569,9 +629,21 @@ T * CreateActorFunction
 	InitActor(actorData, missionActorData_16C);
 
 	actorData.costume = Config.Actor.costume[player][entity][character];
-	File_UpdateCostumeFileItems(actorData);
+	//File_UpdateCostumeFileItems(actorData);
+
+	actorData.newForceLadyFiles = Config.Actor.forceLadyFiles[player][entity][character];
+
+	File_UpdateActorFileItems(actorData);
+
+
+
+
 
 	UpdateActor(actorData);
+
+	UpdateModelPartitions(actorData);
+
+	actorData.shadow = 1;
 
 	UpdateMotionArchives(actorData);
 
@@ -808,7 +880,11 @@ bool IsWeaponReady
 		{
 			if (result)
 			{
-				UpdateModelPartitionConfig(actorData, weapon);
+				if (actorData.newLastMeleeWeapon != weapon)
+				{
+					actorData.newLastMeleeWeapon = weapon;
+					UpdateModelPartitions(actorData);
+				}
 			}
 		}
 		return result;
@@ -1856,11 +1932,15 @@ export void Actor_CreateMainActor(byte8 * baseAddr)
 
 	File_dynamicFiles.Clear();
 	Actor_actorBaseAddr.Clear();
+	
+
+
+
 
 	Actor_actorBaseAddr[0] = baseAddr;
 	Actor_actorBaseAddr.count = 2;
 
-	File_UpdateMainFileItems();
+	
 
 	Actor_spawnActors = true;
 }

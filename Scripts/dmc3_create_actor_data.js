@@ -149,6 +149,7 @@ var extra =
 	[ "newSect[8]"                  , "bool"    ],
 	[ "newBufferedActionPolicy"     , "uint8"   ],
 	[ "newAirStingerCount"          , "uint8"   ],
+	[ "newForceLadyFiles"           , "bool"    ],
 ];
 
 // Cpp

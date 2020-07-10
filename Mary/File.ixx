@@ -312,25 +312,6 @@ byte8 * FileVector::Push(byte8 * file, uint32 fileSize)
 	return dest;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void File_UpdateFileItem
 (
 	uint16 fileItemId,
@@ -346,123 +327,39 @@ void File_UpdateFileItem
 	fileItem.file = File_staticFiles[cacheFileId];
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-constexpr uint16 File_costumeMapDante[MAX_COSTUME_DANTE] =
-{
-	pl000,
-	pl011,
-	pl013,
-	pl015,
-	pl016,
-	pl018,
-	pl013,
-	pl018,
-};
-
-constexpr uint16 File_costumeMapVergil[MAX_COSTUME_VERGIL] =
-{
-	pl021,
-	pl023,
-	pl021,
-	pl026,
-	pl026,
-};
-
-export template <typename T>
-void File_UpdateCostumeFileItems(T & actorData)
-{
-	auto & unlockDevilTrigger = *reinterpret_cast<bool *>(appBaseAddr + 0xC8F250 + 0xD1); // @Todo: Use SESSION_DATA.
-	auto costume = actorData.costume;
-	uint16 cacheFileId = 0;
-
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
-	{
-		if (costume >= MAX_COSTUME_DANTE)
-		{
-			costume = COSTUME_DANTE_DEFAULT;
-		}
-		cacheFileId = File_costumeMapDante[costume];
-		File_UpdateFileItem(0, cacheFileId);
-		// Update Sword
-		cacheFileId = (unlockDevilTrigger) ? plwp_sword2 : plwp_sword;
-		switch (costume)
-		{
-		case COSTUME_DANTE_DMC1:
-		case COSTUME_DANTE_DMC1_NO_COAT:
-		case COSTUME_DANTE_SPARDA:
-		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
-		{
-			cacheFileId = plwp_sword3;
-			break;
-		}
-		}
-		File_UpdateFileItem(140, cacheFileId);
-	}
-	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
-	{
-		if (costume >= MAX_COSTUME_VERGIL)
-		{
-			costume = COSTUME_VERGIL_DEFAULT;
-		}
-		cacheFileId = File_costumeMapVergil[costume];
-		File_UpdateFileItem(3, cacheFileId);
-	}
-}
-
-
-
-
-
 struct FileItemHelper
 {
 	uint16 fileItemId;
-	uint16 cacheFileId;
+	uint16 fileId;
 };
 
-constexpr FileItemHelper fileItemHelper[] =
+constexpr FileItemHelper fileItemHelperDante[] =
 {
-	// Dante
-	{ 0  , pl000               },
-	{ 200, pl005               },
-	{ 201, pl006               },
-	{ 202, pl007               },
-	{ 203, pl008               },
-	{ 204, pl009               },
-	{ 205, pl017               },
-	{ 140, plwp_sword          },
-	{ 141, plwp_nunchaku       },
-	{ 142, plwp_2sword         },
-	{ 143, plwp_guitar         },
-	{ 144, plwp_fight          },
-	{ 145, plwp_gun            },
-	{ 146, plwp_shotgun        },
-	{ 147, plwp_laser          },
-	{ 148, plwp_rifle          },
-	{ 149, plwp_ladygun        },
-	// Bob
-	{ 1  , pl001               },
-	{ 207, pl010               },
-	{ 169, plwp_vergilsword    },
-	// Lady
-	{ 2  , pl002               },
-	// Vergil
-	{ 3  , pl021               },
+	{ 200, pl005         },
+	{ 201, pl006         },
+	{ 202, pl007         },
+	{ 203, pl008         },
+	{ 204, pl009         },
+	{ 205, pl017         },
+	{ 141, plwp_nunchaku },
+	{ 142, plwp_2sword   },
+	{ 143, plwp_guitar   },
+	{ 144, plwp_fight    },
+	{ 145, plwp_gun      },
+	{ 146, plwp_shotgun  },
+	{ 147, plwp_laser    },
+	{ 148, plwp_rifle    },
+	{ 149, plwp_ladygun  },
+};
+
+constexpr FileItemHelper fileItemHelperBob[] =
+{
+	{ 207, pl010            },
+	{ 169, plwp_vergilsword },
+};
+
+constexpr FileItemHelper fileItemHelperVergil[] =
+{
 	{ 221, pl010               },
 	{ 222, pl014               },
 	{ 223, pl025               },
@@ -472,16 +369,85 @@ constexpr FileItemHelper fileItemHelper[] =
 	{ 187, plwp_nerosword      },
 };
 
-export void File_UpdateMainFileItems()
+export template <typename T>
+void File_UpdateActorFileItems(T & actorData)
 {
 	LogFunction();
-	for_all(uint8, index, countof(fileItemHelper))
+
+	IntroduceSessionData();
+
+	auto costume = actorData.costume;
+	uint16 costumeFileId = 0;
+
+	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 	{
-		File_UpdateFileItem
+		if (costume >= MAX_COSTUME_DANTE)
+		{
+			costume = 0;
+		}
+		costumeFileId = costumeFileIdsDante[costume];
+		File_UpdateFileItem(0, costumeFileId);
+
+		uint16 swordFileId = plwp_sword;
+		if (sessionData.unlockDevilTrigger)
+		{
+			swordFileId = plwp_sword2;
+		}
+		if
 		(
-			fileItemHelper[index].fileItemId,
-			fileItemHelper[index].cacheFileId
-		);
+			(costume == COSTUME_DANTE_DMC1                        ) ||
+			(costume == COSTUME_DANTE_DMC1_NO_COAT                ) ||
+			(costume == COSTUME_DANTE_SPARDA                      ) ||
+			(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS)
+		)
+		{
+			swordFileId = plwp_sword3;
+		}
+		File_UpdateFileItem(140, swordFileId);
+
+		for_all(uint8, index, countof(fileItemHelperDante))
+		{
+			File_UpdateFileItem
+			(
+				fileItemHelperDante[index].fileItemId,
+				fileItemHelperDante[index].fileId
+			);
+		}
+	}
+	else if constexpr (TypeMatch<T, ACTOR_DATA_BOB>::value)
+	{
+		File_UpdateFileItem(1, pl001);
+
+		for_all(uint8, index, countof(fileItemHelperBob))
+		{
+			File_UpdateFileItem
+			(
+				fileItemHelperBob[index].fileItemId,
+				fileItemHelperBob[index].fileId
+			);
+		}
+	}
+	else if constexpr (TypeMatch<T, ACTOR_DATA_LADY>::value)
+	{
+		File_UpdateFileItem(2, pl002);
+	}
+	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+	{
+		if (costume >= MAX_COSTUME_VERGIL)
+		{
+			costume = 0;
+		}
+		costumeFileId = costumeFileIdsVergil[costume];
+		File_UpdateFileItem(3, costumeFileId);
+
+		for_all(uint8, index, countof(fileItemHelperVergil))
+		{
+			File_UpdateFileItem
+			(
+				fileItemHelperVergil[index].fileItemId,
+				fileItemHelperVergil[index].fileId
+			);
+		}
 	}
 }
 

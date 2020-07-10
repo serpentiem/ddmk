@@ -38,6 +38,7 @@ export struct CONFIG
 			},
 		};
 		uint8 costume[MAX_PLAYER][MAX_ENTITY][MAX_CHAR] = {};
+		bool forceLadyFiles[MAX_PLAYER][MAX_ENTITY][MAX_CHAR] = {};
 		bool enableQuicksilver[MAX_PLAYER] =
 		{
 			true,

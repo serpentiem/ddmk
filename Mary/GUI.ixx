@@ -163,6 +163,11 @@ void Actor_CharacterCostumeSelect
 	ImGui::PushItemWidth(150);
 	GUI_Combo("Character", Actor_characterNames, character);
 	GUI_Input("Costume", costume);
+
+
+	GUI_Checkbox("Force Lady Files", Config.Actor.forceLadyFiles[player][entity][character]);
+
+
 	ImGui::PopItemWidth();
 }
 
