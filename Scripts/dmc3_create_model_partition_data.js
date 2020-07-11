@@ -25,8 +25,8 @@ for (var actor = 0; actor < 4; actor++)
 		CreateCheatEntry
 		(
 			lz(index),
-			false,
-			"4 Bytes",
+			true,
+			"Byte",
 			"Mary.Actor_actorBaseAddr",
 			(index * 0x380).toString(16).toUpperCase(),
 			"200+80+100",

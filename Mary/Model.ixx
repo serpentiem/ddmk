@@ -184,18 +184,18 @@ void UpdateModelFunction(T & actorData)
 		{
 			//if (costume == COSTUME_LADY_DEFAULT)
 			//{
-			//	auto & file = File_staticFiles[pl002];
-			//	modelFile   = file[1];
-			//	textureFile = file[0];
-			//	shadowFile  = file[8];
+				auto & file = File_staticFiles[pl002];
+				modelFile   = file[1];
+				textureFile = file[0];
+				shadowFile  = file[8];
 			//}
-			//else
-			//{
-				auto & file = File_staticFiles[em034];
-				modelFile   = file[32];
-				textureFile = file[31];
-				shadowFile  = file[16];
-			/*}*/
+			////else
+			////{
+			//	auto & file = File_staticFiles[em034];
+			//	modelFile   = file[32];
+			//	textureFile = file[31];
+			//	shadowFile  = file[16];
+			///*}*/
 		}
 	}
 
@@ -338,12 +338,33 @@ export void Model_Init()
 			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
 			0x74, 0x05,                               // je short
 			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+2169F0
-		};		auto func = CreateFunction(0, (appBaseAddr + 0x21557C), false, true, sizeof(sect0));		memcpy(func.sect0, sect0, sizeof(sect0));		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceLadyFiles);		WriteCall((func.sect0 + 9), (appBaseAddr + 0x2169F0));		WriteJump((appBaseAddr + 0x215577), func.addr);		/*		dmc3.exe+215577 - E8 74140000       - call dmc3.exe+2169F0
-		dmc3.exe+21557C - 48 81 C7 40750000 - add rdi,00007540		*/
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x21557C), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceLadyFiles);
+		WriteCall((func.sect0 + 9), (appBaseAddr + 0x2169F0));
+		WriteJump((appBaseAddr + 0x215577), func.addr);
+
+
+		//vp_memset((appBaseAddr + 0x215577), 0x90, 5);
+
+		/*
+		dmc3.exe+215577 - E8 74140000       - call dmc3.exe+2169F0
+		dmc3.exe+21557C - 48 81 C7 40750000 - add rdi,00007540
+		*/
 	}
 
 
-
+	// Vergil Model Parition Updates
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
+			0x74, 0x05,                               // je short
+			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+223420
+		};		auto func = CreateFunction(0, (appBaseAddr + 0x222861), false, true, sizeof(sect0));		memcpy(func.sect0, sect0, sizeof(sect0));		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceLadyFiles);		WriteCall((func.sect0 + 9), (appBaseAddr + 0x223420));		WriteJump((appBaseAddr + 0x22285C), func.addr);		/*		dmc3.exe+22285C - E8 BF0B0000       - call dmc3.exe+223420
+		dmc3.exe+222861 - 48 8D B7 40750000 - lea rsi,[rdi+00007540]		*/
+	}
 
 
 

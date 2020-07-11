@@ -1379,16 +1379,11 @@ static_assert(sizeof(MODEL_PARTITION_DATA) == 0x380);
 
 struct MODEL_DATA
 {
-
-	_(384);
-
-	//byte8 * partitionData;
-
+	_(24);
+	bool visible;
+	bool physics;
+	_(358);
 	MODEL_PARTITION_DATA * partitionData;
-
-
-
-	//_(1280);
 	_(888);
 	struct
 	{

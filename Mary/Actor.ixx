@@ -245,15 +245,21 @@ void InitRegisterWeapon()
 template <typename T>
 void UpdateModelPartitions(T & actorData)
 {
+	IntroduceSessionData();
+
 	auto modelPartitionData = actorData.modelData[0].partitionData;
 
 	if (actorData.newForceLadyFiles)
 	{
-		//if (actorData.costume == COSTUME_LADY_DEFAULT)
-		//{
-
-		//}
-		//else
+		if (actorData.costume == COSTUME_LADY_DEFAULT)
+		{
+			modelPartitionData[0].value = 3; // Body
+			modelPartitionData[1].value = 3; // Face
+			modelPartitionData[2].value = 3; // Hands
+			modelPartitionData[3].value = 3; // Accessories
+			modelPartitionData[4].value = (sessionData.mission >= 14) ? 3 : 2; // Bandage
+		}
+		else
 		{
 			modelPartitionData[0].value = 3; // Body
 			modelPartitionData[1].value = 3; // Face
@@ -267,16 +273,136 @@ void UpdateModelPartitions(T & actorData)
 		return;
 	}
 
+	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	{
+		auto & meleeWeapon = actorData.weapons[actorData.meleeWeaponIndex];
 
-
-
-
-
-
-
-
-
-
+		switch (actorData.costume)
+		{
+		case COSTUME_DANTE_DEFAULT:
+		{
+			modelPartitionData[0 ].value = 3; // Hands
+			modelPartitionData[1 ].value = 2; // Fists
+			modelPartitionData[2 ].value = 3; // Shoulders
+			modelPartitionData[3 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms
+			modelPartitionData[4 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms Half
+			modelPartitionData[5 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs Half
+			modelPartitionData[6 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs and Feet
+			modelPartitionData[7 ].value = 3; // Upper Legs
+			modelPartitionData[8 ].value = 3; // Accessories
+			modelPartitionData[9 ].value = 3; // Upper Body
+			modelPartitionData[10].value = 3; // Face
+			modelPartitionData[11].value = 3; // Hair Base
+			modelPartitionData[12].value = 3; // Hair Back Layer 1
+			modelPartitionData[13].value = 3; // Hair Back Layer 2
+			modelPartitionData[14].value = 3; // Hair Sides
+			modelPartitionData[15].value = 3; // Hair Back Layer 3
+			modelPartitionData[16].value = 3; // Hair Main
+			break;
+		}
+		case COSTUME_DANTE_DEFAULT_NO_COAT:
+		{
+			modelPartitionData[0 ].value = 3; // Hands
+			modelPartitionData[1 ].value = 2; // Fists
+			modelPartitionData[2 ].value = 3; // Upper Body
+			modelPartitionData[3 ].value = 2; // Filler
+			modelPartitionData[4 ].value = 2; // Filler
+			modelPartitionData[5 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs Half
+			modelPartitionData[6 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs and Feet
+			modelPartitionData[7 ].value = 3; // Upper Legs
+			modelPartitionData[8 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Accessories
+			modelPartitionData[9 ].value = 3; // Face
+			modelPartitionData[10].value = 3; // Hair Base
+			modelPartitionData[11].value = 3; // Hair Back Layer 1
+			modelPartitionData[12].value = 3; // Hair Back Layer 2
+			modelPartitionData[13].value = 3; // Hair Sides
+			modelPartitionData[14].value = 3; // Hair Back Layer 3
+			modelPartitionData[15].value = 3; // Hair Main
+			break;
+		}
+		case COSTUME_DANTE_DEFAULT_TORN:
+		case COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS:
+		{
+			modelPartitionData[0 ].value = 3; // Hands
+			modelPartitionData[1 ].value = 2; // Fists
+			modelPartitionData[2 ].value = 3; // Shoulders
+			modelPartitionData[3 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms
+			modelPartitionData[4 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms Half
+			modelPartitionData[5 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs Half
+			modelPartitionData[6 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs and Feet
+			modelPartitionData[7 ].value = 3; // Upper Legs
+			modelPartitionData[8 ].value = 3; // Accessories
+			modelPartitionData[9 ].value = 3; // Upper Body
+			modelPartitionData[10].value = 3; // Lower Right Arm
+			modelPartitionData[11].value = 3; // Face
+			modelPartitionData[12].value = 3; // Hair Base
+			modelPartitionData[13].value = 3; // Hair Back Layer 1
+			modelPartitionData[14].value = 3; // Hair Back Layer 2
+			modelPartitionData[15].value = 3; // Hair Sides
+			modelPartitionData[16].value = 3; // Hair Back Layer 3
+			modelPartitionData[17].value = 3; // Hair Main
+			break;
+		}
+		case COSTUME_DANTE_DMC1:
+		{
+			modelPartitionData[0 ].value = 3; // Hands
+			modelPartitionData[1 ].value = 2; // Fists
+			modelPartitionData[2 ].value = 3; // Shoulders and Arms
+			modelPartitionData[3 ].value = 2; // Filler
+			modelPartitionData[4 ].value = 2; // Filler
+			modelPartitionData[5 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs Half
+			modelPartitionData[6 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs and Feet
+			modelPartitionData[7 ].value = 3; // Upper Legs
+			modelPartitionData[8 ].value = 3; // Vest
+			modelPartitionData[9 ].value = 3; // Upper Body
+			modelPartitionData[10].value = 3; // Face
+			modelPartitionData[11].value = 3; // Hair Base
+			modelPartitionData[12].value = 3; // Hair Back Layer 1
+			modelPartitionData[13].value = 3; // Hair Back Layer 2
+			modelPartitionData[14].value = 3; // Hair Back Layer 3
+			modelPartitionData[15].value = 3; // Hair Main
+			break;
+		}
+		case COSTUME_DANTE_DMC1_NO_COAT:
+		{
+			modelPartitionData[0 ].value = 3; // Hands
+			modelPartitionData[1 ].value = 2; // Fists
+			modelPartitionData[2 ].value = 3; // Upper Body
+			modelPartitionData[3 ].value = 2; // Filler
+			modelPartitionData[4 ].value = 2; // Filler
+			modelPartitionData[5 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs Half
+			modelPartitionData[6 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs and Feet
+			modelPartitionData[7 ].value = 3; // Upper Legs
+			modelPartitionData[8 ].value = 3; // Collar
+			modelPartitionData[9 ].value = 3; // Face
+			modelPartitionData[10].value = 3; // Hair Base
+			modelPartitionData[11].value = 3; // Hair Back Layer 1
+			modelPartitionData[12].value = 3; // Hair Back Layer 2
+			modelPartitionData[13].value = 3; // Hair Back Layer 3
+			modelPartitionData[14].value = 3; // Hair Main
+			break;
+		}
+		case COSTUME_DANTE_SPARDA:
+		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
+		{
+			modelPartitionData[0 ].value = 3; // Hands
+			modelPartitionData[1 ].value = 2; // Fists
+			modelPartitionData[2 ].value = 3; // Shoulders
+			modelPartitionData[3 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms
+			modelPartitionData[4 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms Half
+			modelPartitionData[5 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs Half
+			modelPartitionData[6 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs and Feet
+			modelPartitionData[7 ].value = 3; // Upper Legs
+			modelPartitionData[8 ].value = 3; // Upper Body
+			modelPartitionData[9 ].value = 3; // Monocle
+			modelPartitionData[10].value = 3; // Collar
+			modelPartitionData[11].value = 3; // Neck
+			modelPartitionData[12].value = 3; // Face
+			modelPartitionData[13].value = 3; // Hair
+			break;
+		}
+		}
+	}
 }
 
 
@@ -642,6 +768,20 @@ T * CreateActorFunction
 	UpdateActor(actorData);
 
 	UpdateModelPartitions(actorData);
+
+
+
+	if (actorData.newForceLadyFiles)
+	{
+		auto & modelData = actorData.var_7540[0];
+
+		modelData.visible = false;
+
+
+
+	}
+
+
 
 	actorData.shadow = 1;
 
