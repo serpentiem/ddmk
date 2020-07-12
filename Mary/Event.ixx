@@ -330,7 +330,23 @@ void Pause_Sub(SCENE_DATA & sceneData)
 
 
 
+/*
+Dante
+A0
+dmc3.exe+212070 - 40 56                 - push rsi
+A8
+dmc3.exe+218960 - 48 89 5C 24 08        - mov [rsp+08],rbx
 
+
+
+
+
+Lady
+A0
+dmc3.exe+2191D0 - 48 89 5C 24 08        - mov [rsp+08],rbx
+A8
+dmc3.exe+219A60 - 48 89 5C 24 08        - mov [rsp+08],rbx
+*/
 
 
 

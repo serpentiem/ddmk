@@ -1468,7 +1468,8 @@ struct ACTOR_DATA
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	_(8224);
+	byte8 var_1880[2]; // 0x1880
+	_(8222);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
@@ -1646,7 +1647,8 @@ struct ACTOR_DATA_DANTE
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	_(8224);
+	byte8 var_1880[2]; // 0x1880
+	_(8222);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
@@ -1846,7 +1848,8 @@ struct ACTOR_DATA_BOB
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	_(8224);
+	byte8 var_1880[2]; // 0x1880
+	_(8222);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
@@ -2024,7 +2027,8 @@ struct ACTOR_DATA_LADY
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	_(8224);
+	byte8 var_1880[2]; // 0x1880
+	_(8222);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
@@ -2202,7 +2206,8 @@ struct ACTOR_DATA_VERGIL
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	_(8224);
+	byte8 var_1880[2]; // 0x1880
+	_(8222);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
@@ -2379,6 +2384,7 @@ static_assert(offsetof(ACTOR_DATA, visible) == 0x120);
 static_assert(offsetof(ACTOR_DATA, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA, modelData) == 0x200);
+static_assert(offsetof(ACTOR_DATA, var_1880) == 0x1880);
 static_assert(offsetof(ACTOR_DATA, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA, motionDataMirror) == 0x39B4);
@@ -2487,6 +2493,7 @@ static_assert(offsetof(ACTOR_DATA_DANTE, visible) == 0x120);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA_DANTE, modelData) == 0x200);
+static_assert(offsetof(ACTOR_DATA_DANTE, var_1880) == 0x1880);
 static_assert(offsetof(ACTOR_DATA_DANTE, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_DANTE, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA_DANTE, motionDataMirror) == 0x39B4);
@@ -2612,6 +2619,7 @@ static_assert(offsetof(ACTOR_DATA_BOB, visible) == 0x120);
 static_assert(offsetof(ACTOR_DATA_BOB, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA_BOB, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA_BOB, modelData) == 0x200);
+static_assert(offsetof(ACTOR_DATA_BOB, var_1880) == 0x1880);
 static_assert(offsetof(ACTOR_DATA_BOB, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_BOB, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA_BOB, motionDataMirror) == 0x39B4);
@@ -2720,6 +2728,7 @@ static_assert(offsetof(ACTOR_DATA_LADY, visible) == 0x120);
 static_assert(offsetof(ACTOR_DATA_LADY, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA_LADY, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA_LADY, modelData) == 0x200);
+static_assert(offsetof(ACTOR_DATA_LADY, var_1880) == 0x1880);
 static_assert(offsetof(ACTOR_DATA_LADY, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_LADY, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA_LADY, motionDataMirror) == 0x39B4);
@@ -2828,6 +2837,7 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, visible) == 0x120);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA_VERGIL, modelData) == 0x200);
+static_assert(offsetof(ACTOR_DATA_VERGIL, var_1880) == 0x1880);
 static_assert(offsetof(ACTOR_DATA_VERGIL, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, motionDataMirror) == 0x39B4);

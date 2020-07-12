@@ -122,13 +122,13 @@ template <typename T>
 void UpdateModelFunction(T & actorData)
 {
 	uint8 modelIndex = 0;
-	uint8 modelOff = 0;
+	//uint8 modelOff = 0;
 
 	uint8 submodelIndex = 0;
 
 
 
-	auto baseAddr = reinterpret_cast<byte8 *>(&actorData);
+	//auto baseAddr = reinterpret_cast<byte8 *>(&actorData);
 
 	auto & modelData = actorData.modelData[0];
 
@@ -166,38 +166,34 @@ void UpdateModelFunction(T & actorData)
 
 
 
-	//bool coat =
-	//(actorData.costume == COSTUME_DANTE_DEFAULT_NO_COAT) ? false :
-	//(actorData.costume == COSTUME_DANTE_DMC1_NO_COAT   ) ? false :
-	//true;
 
 
 
 	{
+		auto & file = File_staticFiles[costumeFileId];
+		modelFile   = file[1];
+		textureFile = file[0];
+		shadowFile  = file[8];
+	}
+
+	if (actorData.newForceLadyFiles)
+	{
+		if (costume == COSTUME_LADY_DEFAULT)
 		{
-			auto & file = File_staticFiles[costumeFileId];
+			auto & file = File_staticFiles[pl002];
 			modelFile   = file[1];
 			textureFile = file[0];
 			shadowFile  = file[8];
 		}
-		if (actorData.newForceLadyFiles)
+		else
 		{
-			//if (costume == COSTUME_LADY_DEFAULT)
-			//{
-				auto & file = File_staticFiles[pl002];
-				modelFile   = file[1];
-				textureFile = file[0];
-				shadowFile  = file[8];
-			//}
-			////else
-			////{
-			//	auto & file = File_staticFiles[em034];
-			//	modelFile   = file[32];
-			//	textureFile = file[31];
-			//	shadowFile  = file[16];
-			///*}*/
+			auto & file = File_staticFiles[em034];
+			modelFile   = file[32];
+			textureFile = file[31];
+			shadowFile  = file[16];
 		}
 	}
+
 
 
 
@@ -237,18 +233,47 @@ void UpdateModelFunction(T & actorData)
 
 	// Coat
 
+
+
+
+	bool coat =
+	(
+		(costume == COSTUME_DANTE_DEFAULT                           ) ||
+		(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
+		(costume == COSTUME_DANTE_DMC1                              ) ||
+		(costume == COSTUME_DANTE_SPARDA                            ) ||
+		(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
+		(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
+	)
+	? true : false;
+
+	if (actorData.newForceLadyFiles)
+	{
+		coat = false;
+
+		if (costume == COSTUME_LADY_DEFAULT)
+		{
+			auto & file = File_staticFiles[pl002];
+			modelFile   = file[12];
+			textureFile = file[0];
+			physicsFile = file[13];
+		}
+		else
+		{
+			auto & file = File_staticFiles[em034];
+			modelFile   = file[17];
+			textureFile = file[31];
+			physicsFile = file[18];
+		}
+	}
+	else
 	{
 		auto & file = File_staticFiles[costumeFileId];
 		modelFile   = file[12];
-		textureFile = file[0];
+		textureFile = file[0 ];
 		shadowFile  = file[14];
 		physicsFile = file[13];
 	}
-
-
-
-
-
 
 	RegisterModel
 	(
@@ -264,12 +289,34 @@ void UpdateModelFunction(T & actorData)
 		actorData.var_A0D0
 	);
 
-	RegisterShadow
-	(
-		actorData.var_7540[submodelIndex],
-		actorData.var_9D10[submodelIndex],
-		shadowFile
-	);
+
+
+	if (actorData.newForceLadyFiles)
+	{
+		return;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	if (coat)
+	{
+		RegisterShadow
+		(
+			actorData.var_7540[submodelIndex],
+			actorData.var_9D10[submodelIndex],
+			shadowFile
+		);
+	}
 
 	actorData.var_9AC0[submodelIndex] = 1;
 
@@ -280,16 +327,47 @@ void UpdateModelFunction(T & actorData)
 		physicsFile
 	);
 
+	//if (actorData.newForceLadyFiles)
+	//{
+	//	func_2CA2F0
+	//	(
+	//		actorData.var_A210,
+	//		actorData.var_1880,
+	//		(appBaseAddr + 0x58AC84),
+	//		actorData.modelMetadata,
+	//		1
+	//	);
+	//	return;
+	//}
+	/*
+	dmc3.exe+2194C0 - 4C 8D 05 BD173700 - lea r8,[dmc3.exe+58AC84]
+	*/
+
+
+
+
+
+
+
+
+
 	func_2CA2F0
 	(
 		actorData.var_A210,
-		(baseAddr + ((modelOff + 0x310) * 8)), // @Research: May no longer be needed.
+		actorData.var_1880,
 		(appBaseAddr + 0x58B380),
 		actorData.modelMetadata,
-		6
+		(coat) ? 6 : 1
 	);
 
-	CopyCoatVertices(actorData.var_A0D0);
+	if (coat)
+	{
+		CopyCoatVertices(actorData.var_A0D0);
+	}
+	else
+	{
+		CopyAmuletVertices(actorData.modelMetadata);
+	}
 }
 
 
@@ -322,7 +400,7 @@ export void Model_Init()
 
 	{
 		auto func = CreateFunction(UpdateModelDante);
-		//WriteCall((appBaseAddr + 0x212CB3), func.addr);
+		WriteCall((appBaseAddr + 0x212CB3), func.addr);
 		/*
 		dmc3.exe+212CB3 - E8 98200000       - call dmc3.exe+214D50
 		dmc3.exe+212CB8 - 48 8D 86 A0380000 - lea rax,[rsi+000038A0]
@@ -362,9 +440,53 @@ export void Model_Init()
 			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
 			0x74, 0x05,                               // je short
 			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+223420
-		};		auto func = CreateFunction(0, (appBaseAddr + 0x222861), false, true, sizeof(sect0));		memcpy(func.sect0, sect0, sizeof(sect0));		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceLadyFiles);		WriteCall((func.sect0 + 9), (appBaseAddr + 0x223420));		WriteJump((appBaseAddr + 0x22285C), func.addr);		/*		dmc3.exe+22285C - E8 BF0B0000       - call dmc3.exe+223420
-		dmc3.exe+222861 - 48 8D B7 40750000 - lea rsi,[rdi+00007540]		*/
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x222861), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceLadyFiles);
+		WriteCall((func.sect0 + 9), (appBaseAddr + 0x223420));
+		WriteJump((appBaseAddr + 0x22285C), func.addr);
+		/*
+		dmc3.exe+22285C - E8 BF0B0000       - call dmc3.exe+223420
+		dmc3.exe+222861 - 48 8D B7 40750000 - lea rsi,[rdi+00007540]
+		*/
 	}
+
+
+
+
+
+
+	// Dante 7540 Position Update
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       // je dmc3.exe+2191D0
+			0x40, 0x56,                               // push rsi
+			0x48, 0x83, 0xEC, 0x20,                   // sub rsp,20
+		};		auto func = CreateFunction(0, (appBaseAddr + 0x212076), false, true, sizeof(sect0));		memcpy(func.sect0, sect0, sizeof(sect0));		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceLadyFiles);		WriteAddress((func.sect0 + 7), (appBaseAddr + 0x2191D0), 6);
+		WriteJump((appBaseAddr + 0x212070), func.addr, 1);
+		/*
+		dmc3.exe+212070 - 40 56             - push rsi
+		dmc3.exe+212072 - 48 83 EC 20       - sub rsp,20
+		dmc3.exe+212076 - 48 63 81 6C3E0000 - movsxd  rax,dword ptr [rcx+00003E6C]
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

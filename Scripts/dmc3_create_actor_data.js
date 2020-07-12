@@ -26,6 +26,7 @@ var items =
 	[ ""                               , "float32"                   , 0x1C0                            ],
 	[ ""                               , "float32"                   , 0x1C4                            ],
 	[ "modelData[3]"                   , "MODEL_DATA"                , 0x200                            ],
+	[ "[2]"                            , "byte8"                     , 0x1880                           ],
 	[ "motionArchive[32]"              , "byte8 *"                   , 0x38A0                           ],
 	[ "motionData[2]"                  , "MOTION_DATA"               , 0x39B0                           ],
 	[ "motionDataMirror[3]"            , "MOTION_DATA"               , 0x39B4                           ],

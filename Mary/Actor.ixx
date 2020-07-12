@@ -245,6 +245,8 @@ void InitRegisterWeapon()
 template <typename T>
 void UpdateModelPartitions(T & actorData)
 {
+	LogFunction();
+
 	IntroduceSessionData();
 
 	auto modelPartitionData = actorData.modelData[0].partitionData;
@@ -771,19 +773,19 @@ T * CreateActorFunction
 
 
 
-	if (actorData.newForceLadyFiles)
-	{
-		auto & modelData = actorData.var_7540[0];
+	//if (actorData.newForceLadyFiles)
+	//{
+	//	auto & modelData = actorData.var_7540[0];
 
-		modelData.visible = false;
-
-
-
-	}
+	//	modelData.visible = false;
 
 
 
-	actorData.shadow = 1;
+	//}
+
+
+
+	//actorData.shadow = 1;
 
 	UpdateMotionArchives(actorData);
 
@@ -942,6 +944,14 @@ export void SpawnActors()
 			continue;
 		}
 		auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
+
+		if (player == 0)
+		{
+			HoboBreak();
+		}
+
+
+
 
 		auto cloneBaseAddr = SpawnActor(player, ENTITY_CLONE);
 		if (!cloneBaseAddr)
