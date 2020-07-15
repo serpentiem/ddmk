@@ -337,6 +337,160 @@ export void UpdateModelDante(byte8 * baseAddr)
 
 
 
+
+
+
+
+
+template <typename T>
+void UpdateDevilModelFunctionDante(T & actorData)
+{
+	uint8 slot = 1;
+
+	uint8 modelIndex         = (slot == 1) ? 1 : 2;
+
+
+
+
+	uint8 modelOff           = (slot == 1) ? 0x18 : 0x30;
+	uint8 submodelIndex      = (slot == 1) ? 1 : 3;
+	uint8 devilModelOff      = (slot == 1) ? 0 : 0x24;
+	uint8 devilSubmodelIndex = (slot == 1) ? 0 : 2;
+
+	auto CopyVertices = [&]
+	(
+		byte8 * baseAddr,
+		uint8   index0,
+		uint8   index1,
+		uint8   index2
+		)
+	{
+		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x35D580);
+
+		byte8 * dest = 0;
+		byte8 * addr = 0;
+
+		vec4 * vertices = 0;
+
+		dest = (baseAddr + 0xAA00 + (index0 * 0xC0) + (devilSubmodelIndex * 0x300));
+
+		addr = *(byte8 **)(baseAddr + 0xA300 + ((devilModelOff + index1) * 8));
+		*(byte8 **)(addr + 0x100) = dest;
+
+		vertices = (vec4 *)(dest + 0x80);
+		vertices[0] = g_vertices[0];
+		vertices[1] = g_vertices[1];
+		vertices[2] = g_vertices[2];
+		vertices[3] = g_vertices[3];
+
+		*(uint32 *)(dest + 0x28) = 1;
+		addr = *(byte8 **)(baseAddr + 0x1880 + ((modelOff + index2) * 8));
+		addr = *(byte8 **)(addr + 0x110);
+		*(byte8 **)(dest + 0x30) = addr;
+	};
+
+
+
+	auto & meleeWeapon = actorData.weapons[actorData.meleeWeaponIndex];
+
+
+
+
+
+
+
+	uint8 devil = 0;
+	if ((meleeWeapon >= WEAPON_DANTE_REBELLION) && (meleeWeapon <= WEAPON_DANTE_BEOWULF))
+	{
+		devil = meleeWeapon;
+	}
+	if (actorData.sparda)
+	{
+		devil = DEVIL_DANTE_SPARDA;
+	}
+	actorData.devilModels[modelIndex] = devil; // @Research: Merge with devil.
+
+
+
+
+	//actorData.devilModelMetadata.rebellion.
+
+
+
+	//actorData.devilModelMetadata.Rebellion.submodelMetadata[0].
+
+
+	auto & devilModelMetadata = actorData.devilModelMetadata[devil];
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+export void UpdateDevilModelDante(byte8 * baseAddr)
+{
+	LogFunction(baseAddr);
+
+	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+
+	UpdateDevilModelFunctionDante(actorData);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Vector devilAuras<byte8 *>;
 
 export Vector<byte8 *> devilAuras;
@@ -602,8 +756,15 @@ export void Model_Init()
 			0x48, 0x8B, 0x96, 0x98, 0x18, 0x00, 0x00, // mov rdx,[rsi+00001898]
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x2120CB), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceFiles);		*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(ACTOR_DATA, newForceFilesCharacter);		*reinterpret_cast<uint8 *>(func.sect0 + 0xF) = CHAR_LADY;		WriteJump((appBaseAddr + 0x2120C4), func.addr, 2);		/*		dmc3.exe+2120C4 - 48 8B 96 98180000 - mov rdx,[rsi+00001898]
-		dmc3.exe+2120CB - 48 8D 8E 40750000 - lea rcx,[rsi+00007540]		*/
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceFiles);
+		*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(ACTOR_DATA, newForceFilesCharacter);
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xF) = CHAR_LADY;
+		WriteJump((appBaseAddr + 0x2120C4), func.addr, 2);
+		/*
+		dmc3.exe+2120C4 - 48 8B 96 98180000 - mov rdx,[rsi+00001898]
+		dmc3.exe+2120CB - 48 8D 8E 40750000 - lea rcx,[rsi+00007540]
+		*/
 	}
 
 

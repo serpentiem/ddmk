@@ -46,7 +46,7 @@ var items =
 	[ "lastState"                      , "byte32"                    , 0x3E68                           ],
 	[ "activeModelIndex"               , "uint32"                    , 0x3E6C                           ],
 	[ "queuedModelIndex"               , "uint32"                    , 0x3E70                           ],
-	[ "modelMap[3]"                    , "uint32"                    , 0x3E74                           ],
+	[ "devilModels[3]"                 , "uint32"                    , 0x3E74                           ],
 	[ "modelState"                     , "uint8"                     , 0x3E80                           ],
 	[ "lockOn"                         , "bool"                      , 0x3E84                           ], // @Todo: Check type.
 	[ "activeModelIndexMirror"         , "uint32"                    , 0x3E88                           ],
@@ -122,7 +122,7 @@ var items =
 	[ "[2]"                            , "byte8"                     , 0xA0D0                           ],
 	[ "[2]"                            , "byte8"                     , 0xA210                           ],
 	[ "[2]"                            , "byte8"                     , 0xA540                           ],
-	[ "devilModelMetadata"             , "DEVIL_MODEL_METADATA_DANTE", 0xB600, CHAR_DANTE               ],
+	[ "devilModelMetadata"             , "DevilModelMetadataDante"   , 0xB600, CHAR_DANTE               ],
 	[ "modelMetadata[6]"               , "MODEL_METADATA"            , 0xB630, CHAR_DANTE               ],
 	[ "modelMetadata[6]"               , "MODEL_METADATA"            , 0xB640, CHAR_VERGIL              ],
 	[ "artemisChargeValue[2]"          , "float32"                   , 0xB868, CHAR_DANTE               ],

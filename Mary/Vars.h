@@ -1207,68 +1207,74 @@ struct MODEL_METADATA
 
 
 
-
-struct DEVIL_MODEL_METADATA;
-struct DEVIL_SUBMODEL_METADATA;
-struct DEVIL_MODEL_METADATA_ONE;
-struct DEVIL_MODEL_METADATA_TWO;
-
-struct DEVIL_MODEL_METADATA
+struct DevilModelMetadata
 {
 	uint8 modelIndex;
 	uint8 modelOff;
-
-	operator DEVIL_MODEL_METADATA_TWO &()
-	{
-		return *(DEVIL_MODEL_METADATA_TWO *)this;
-	}
 };
 
-struct DEVIL_SUBMODEL_METADATA
+struct DevilSubmodelMetadata
 {
 	uint8 submodelIndex;
 	uint8 devilModelOff;
 	uint8 devilSubmodelIndex;
 };
 
-struct DEVIL_MODEL_METADATA_ONE : DEVIL_MODEL_METADATA
+struct DevilModelMetadata1 : DevilModelMetadata
 {
-	DEVIL_SUBMODEL_METADATA submodelMetadata[1];
+	DevilSubmodelMetadata submodelMetadata;
 };
 
-struct DEVIL_MODEL_METADATA_TWO : DEVIL_MODEL_METADATA
+struct DevilModelMetadata2 : DevilModelMetadata
 {
-	DEVIL_SUBMODEL_METADATA submodelMetadata[2];
+	DevilSubmodelMetadata submodelMetadata[2];
 };
 
-struct DEVIL_MODEL_METADATA_DANTE
+struct DevilModelMetadataDante
 {
-	DEVIL_MODEL_METADATA_TWO rebellion;
-	DEVIL_MODEL_METADATA_ONE cerberus;
-	DEVIL_MODEL_METADATA agniRudra;
-	DEVIL_MODEL_METADATA_TWO nevan;
-	DEVIL_MODEL_METADATA_ONE beowulf;
-	DEVIL_MODEL_METADATA_ONE sparda;
+	DevilModelMetadata2 Rebellion;
+	DevilModelMetadata1 Cerberus;
+	DevilModelMetadata  AgniRudra;
+	DevilModelMetadata2 Nevan;
+	DevilModelMetadata1 Beowulf;
+	DevilModelMetadata1 Sparda;
 
-	DEVIL_MODEL_METADATA_TWO & operator[](uint8 index)
+	DevilModelMetadata2 & operator[](uint8 index)
 	{
 		switch (index)
 		{
 		case DEVIL_DANTE_REBELLION:
-			return rebellion;
+		{
+			return Rebellion;
+		}
 		case DEVIL_DANTE_CERBERUS:
-			return cerberus;
+		{
+			return *reinterpret_cast<DevilModelMetadata2 *>(&Cerberus);
+		}
 		case DEVIL_DANTE_AGNI_RUDRA:
-			return agniRudra;
+		{
+			return *reinterpret_cast<DevilModelMetadata2 *>(&AgniRudra);
+		}
 		case DEVIL_DANTE_NEVAN:
-			return nevan;
+		{
+			return Nevan;
+		}
 		case DEVIL_DANTE_BEOWULF:
-			return beowulf;
+		{
+			return *reinterpret_cast<DevilModelMetadata2 *>(&Beowulf);
+		}
 		case DEVIL_DANTE_SPARDA:
-			return sparda;
+		{
+			return *reinterpret_cast<DevilModelMetadata2 *>(&Sparda);
+		}
 		}
 	}
 };
+
+static_assert(sizeof(DevilModelMetadataDante) == 33);
+
+
+
 
 
 
@@ -1507,7 +1513,7 @@ struct ACTOR_DATA
 	byte32 lastState; // 0x3E68
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
-	uint32 modelMap[3]; // 0x3E74
+	uint32 devilModels[3]; // 0x3E74
 	uint8 modelState; // 0x3E80
 	_(3);
 	bool lockOn; // 0x3E84
@@ -1689,7 +1695,7 @@ struct ACTOR_DATA_DANTE
 	byte32 lastState; // 0x3E68
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
-	uint32 modelMap[3]; // 0x3E74
+	uint32 devilModels[3]; // 0x3E74
 	uint8 modelState; // 0x3E80
 	_(3);
 	bool lockOn; // 0x3E84
@@ -1799,7 +1805,7 @@ struct ACTOR_DATA_DANTE
 	_(814);
 	byte8 var_A540[2]; // 0xA540
 	_(4286);
-	DEVIL_MODEL_METADATA_DANTE devilModelMetadata; // 0xB600
+	DevilModelMetadataDante devilModelMetadata; // 0xB600
 	_(15);
 	MODEL_METADATA modelMetadata[6]; // 0xB630
 	_(88);
@@ -1893,7 +1899,7 @@ struct ACTOR_DATA_BOB
 	byte32 lastState; // 0x3E68
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
-	uint32 modelMap[3]; // 0x3E74
+	uint32 devilModels[3]; // 0x3E74
 	uint8 modelState; // 0x3E80
 	_(3);
 	bool lockOn; // 0x3E84
@@ -2075,7 +2081,7 @@ struct ACTOR_DATA_LADY
 	byte32 lastState; // 0x3E68
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
-	uint32 modelMap[3]; // 0x3E74
+	uint32 devilModels[3]; // 0x3E74
 	uint8 modelState; // 0x3E80
 	_(3);
 	bool lockOn; // 0x3E84
@@ -2257,7 +2263,7 @@ struct ACTOR_DATA_VERGIL
 	byte32 lastState; // 0x3E68
 	uint32 activeModelIndex; // 0x3E6C
 	uint32 queuedModelIndex; // 0x3E70
-	uint32 modelMap[3]; // 0x3E74
+	uint32 devilModels[3]; // 0x3E74
 	uint8 modelState; // 0x3E80
 	_(3);
 	bool lockOn; // 0x3E84
@@ -2431,7 +2437,7 @@ static_assert(offsetof(ACTOR_DATA, state) == 0x3E64);
 static_assert(offsetof(ACTOR_DATA, lastState) == 0x3E68);
 static_assert(offsetof(ACTOR_DATA, activeModelIndex) == 0x3E6C);
 static_assert(offsetof(ACTOR_DATA, queuedModelIndex) == 0x3E70);
-static_assert(offsetof(ACTOR_DATA, modelMap) == 0x3E74);
+static_assert(offsetof(ACTOR_DATA, devilModels) == 0x3E74);
 static_assert(offsetof(ACTOR_DATA, modelState) == 0x3E80);
 static_assert(offsetof(ACTOR_DATA, lockOn) == 0x3E84);
 static_assert(offsetof(ACTOR_DATA, activeModelIndexMirror) == 0x3E88);
@@ -2543,7 +2549,7 @@ static_assert(offsetof(ACTOR_DATA_DANTE, state) == 0x3E64);
 static_assert(offsetof(ACTOR_DATA_DANTE, lastState) == 0x3E68);
 static_assert(offsetof(ACTOR_DATA_DANTE, activeModelIndex) == 0x3E6C);
 static_assert(offsetof(ACTOR_DATA_DANTE, queuedModelIndex) == 0x3E70);
-static_assert(offsetof(ACTOR_DATA_DANTE, modelMap) == 0x3E74);
+static_assert(offsetof(ACTOR_DATA_DANTE, devilModels) == 0x3E74);
 static_assert(offsetof(ACTOR_DATA_DANTE, modelState) == 0x3E80);
 static_assert(offsetof(ACTOR_DATA_DANTE, lockOn) == 0x3E84);
 static_assert(offsetof(ACTOR_DATA_DANTE, activeModelIndexMirror) == 0x3E88);
@@ -2672,7 +2678,7 @@ static_assert(offsetof(ACTOR_DATA_BOB, state) == 0x3E64);
 static_assert(offsetof(ACTOR_DATA_BOB, lastState) == 0x3E68);
 static_assert(offsetof(ACTOR_DATA_BOB, activeModelIndex) == 0x3E6C);
 static_assert(offsetof(ACTOR_DATA_BOB, queuedModelIndex) == 0x3E70);
-static_assert(offsetof(ACTOR_DATA_BOB, modelMap) == 0x3E74);
+static_assert(offsetof(ACTOR_DATA_BOB, devilModels) == 0x3E74);
 static_assert(offsetof(ACTOR_DATA_BOB, modelState) == 0x3E80);
 static_assert(offsetof(ACTOR_DATA_BOB, lockOn) == 0x3E84);
 static_assert(offsetof(ACTOR_DATA_BOB, activeModelIndexMirror) == 0x3E88);
@@ -2784,7 +2790,7 @@ static_assert(offsetof(ACTOR_DATA_LADY, state) == 0x3E64);
 static_assert(offsetof(ACTOR_DATA_LADY, lastState) == 0x3E68);
 static_assert(offsetof(ACTOR_DATA_LADY, activeModelIndex) == 0x3E6C);
 static_assert(offsetof(ACTOR_DATA_LADY, queuedModelIndex) == 0x3E70);
-static_assert(offsetof(ACTOR_DATA_LADY, modelMap) == 0x3E74);
+static_assert(offsetof(ACTOR_DATA_LADY, devilModels) == 0x3E74);
 static_assert(offsetof(ACTOR_DATA_LADY, modelState) == 0x3E80);
 static_assert(offsetof(ACTOR_DATA_LADY, lockOn) == 0x3E84);
 static_assert(offsetof(ACTOR_DATA_LADY, activeModelIndexMirror) == 0x3E88);
@@ -2896,7 +2902,7 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, state) == 0x3E64);
 static_assert(offsetof(ACTOR_DATA_VERGIL, lastState) == 0x3E68);
 static_assert(offsetof(ACTOR_DATA_VERGIL, activeModelIndex) == 0x3E6C);
 static_assert(offsetof(ACTOR_DATA_VERGIL, queuedModelIndex) == 0x3E70);
-static_assert(offsetof(ACTOR_DATA_VERGIL, modelMap) == 0x3E74);
+static_assert(offsetof(ACTOR_DATA_VERGIL, devilModels) == 0x3E74);
 static_assert(offsetof(ACTOR_DATA_VERGIL, modelState) == 0x3E80);
 static_assert(offsetof(ACTOR_DATA_VERGIL, lockOn) == 0x3E84);
 static_assert(offsetof(ACTOR_DATA_VERGIL, activeModelIndexMirror) == 0x3E88);
