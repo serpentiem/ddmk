@@ -589,28 +589,21 @@ export void Model_Init()
 	}
 
 
-
-
-
-	// Devil Coat Update
+	// Dante Coat Update
 	{
 		constexpr byte8 sect0[] =
 		{
-			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
-			0x75, 0x01,                               // jne short
-			0xC3,                                     // ret
-			0x40, 0x57,                               // push rdi
-			0x48, 0x83, 0xEC, 0x30,                   // sub rsp,30
+			0x80, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rsi+0000B8C0],01
+			0x75, 0x12,                               // jne short
+			0x80, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, // cmp byte ptr [rsi+0000B8C0],02
+			0x75, 0x09,                               // jne short
+			0x48, 0x8B, 0x96, 0xA8, 0x18, 0x00, 0x00, // mov rdx,[rsi+000018A8]
+			0xEB, 0x07,                               // jmp short
+			0x48, 0x8B, 0x96, 0x98, 0x18, 0x00, 0x00, // mov rdx,[rsi+00001898]
 		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x216686), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceFiles);
-		WriteJump((appBaseAddr + 0x216680), func.addr, 1);
-		/*
-		dmc3.exe+216680 - 40 57       - push rdi
-		dmc3.exe+216682 - 48 83 EC 30 - sub rsp,30
-		dmc3.exe+216686 - 48 8B F9    - mov rdi,rcx
-		*/
+		auto func = CreateFunction(0, (appBaseAddr + 0x2120CB), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceFiles);		*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(ACTOR_DATA, newForceFilesCharacter);		*reinterpret_cast<uint8 *>(func.sect0 + 0xF) = CHAR_LADY;		WriteJump((appBaseAddr + 0x2120C4), func.addr, 2);		/*		dmc3.exe+2120C4 - 48 8B 96 98180000 - mov rdx,[rsi+00001898]
+		dmc3.exe+2120CB - 48 8D 8E 40750000 - lea rcx,[rsi+00007540]		*/
 	}
 
 
@@ -619,32 +612,95 @@ export void Model_Init()
 
 
 
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
-			0x74, 0x16,                               // je short
-			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
-			0x75, 0x0D,                               // jne short
-			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, // cmp byte ptr [rcx+0000B8C0],02
-			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       // je dmc3.exe+2191D0
-			0x40, 0x56,                               // push rsi
-			0x48, 0x83, 0xEC, 0x20,                   // sub rsp,20
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x212076), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, devil);
-		*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(ACTOR_DATA, newForceFiles);
-		*reinterpret_cast<uint32 *>(func.sect0 + 0x14) = offsetof(ACTOR_DATA, newForceFilesCharacter);
-		*reinterpret_cast<uint8 *>(func.sect0 + 0x18) = CHAR_LADY;
-		WriteAddress((func.sect0 + 0x19), (appBaseAddr + 0x2191D0), 6);
-		WriteJump((appBaseAddr + 0x212070), func.addr, 1);
-		/*
-		dmc3.exe+212070 - 40 56             - push rsi
-		dmc3.exe+212072 - 48 83 EC 20       - sub rsp,20
-		dmc3.exe+212076 - 48 63 81 6C3E0000 - movsxd  rax,dword ptr [rcx+00003E6C]
-		*/
-	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//// Devil Coat Update
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
+	//		0x75, 0x01,                               // jne short
+	//		0xC3,                                     // ret
+	//		0x40, 0x57,                               // push rdi
+	//		0x48, 0x83, 0xEC, 0x30,                   // sub rsp,30
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x216686), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceFiles);
+	//	//WriteJump((appBaseAddr + 0x216680), func.addr, 1);
+	//	/*
+	//	dmc3.exe+216680 - 40 57       - push rdi
+	//	dmc3.exe+216682 - 48 83 EC 30 - sub rsp,30
+	//	dmc3.exe+216686 - 48 8B F9    - mov rdi,rcx
+	//	*/
+	//}
+
+
+
+
+
+	//// Dante Coat Position Update
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
+	//		0x74, 0x16,                               // je short
+	//		0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
+	//		0x75, 0x0D,                               // jne short
+	//		0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, // cmp byte ptr [rcx+0000B8C0],02
+	//		0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       // je dmc3.exe+2191D0
+	//		0x40, 0x56,                               // push rsi
+	//		0x48, 0x83, 0xEC, 0x20,                   // sub rsp,20
+	//	};
+	//	auto func = CreateFunction(0, (appBaseAddr + 0x212076), false, true, sizeof(sect0));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, devil);
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(ACTOR_DATA, newForceFiles);
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 0x14) = offsetof(ACTOR_DATA, newForceFilesCharacter);
+	//	*reinterpret_cast<uint8 *>(func.sect0 + 0x18) = CHAR_LADY;
+	//	WriteAddress((func.sect0 + 0x19), (appBaseAddr + 0x2191D0), 6);
+	//	//WriteJump((appBaseAddr + 0x212070), func.addr, 1);
+	//	/*
+	//	dmc3.exe+212070 - 40 56             - push rsi
+	//	dmc3.exe+212072 - 48 83 EC 20       - sub rsp,20
+	//	dmc3.exe+212076 - 48 63 81 6C3E0000 - movsxd  rax,dword ptr [rcx+00003E6C]
+	//	*/
+	//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -800,8 +856,13 @@ export void Model_Init()
 			0x8B, 0x84, 0x96, 0xC0, 0x2D, 0xC9, 0x00, // mov eax,[rsi+rdx*4+00C92DC0]
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x8DC23), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ACTOR_DATA, newEffectIndices);		WriteJump((appBaseAddr + 0x8DC1C), func.addr, 2);		/*		dmc3.exe+8DC1C - 8B 84 96 C02DC900 - mov eax,[rsi+rdx*4+00C92DC0]
-		dmc3.exe+8DC23 - 0FA3 C8           - bt eax,ecx		*/
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ACTOR_DATA, newEffectIndices);
+		WriteJump((appBaseAddr + 0x8DC1C), func.addr, 2);
+		/*
+		dmc3.exe+8DC1C - 8B 84 96 C02DC900 - mov eax,[rsi+rdx*4+00C92DC0]
+		dmc3.exe+8DC23 - 0FA3 C8           - bt eax,ecx
+		*/
 	}
 
 
@@ -818,8 +879,13 @@ export void Model_Init()
 			0x41, 0x8B, 0x84, 0x91, 0xC0, 0x2D, 0xC9, 0x00, // mov eax,[r9+rdx*4+00C92DC0]
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x90D29), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ACTOR_DATA, newEffectIndices);		WriteJump((appBaseAddr + 0x90D21), func.addr, 3);		/*		dmc3.exe+90D21 - 41 8B 84 91 C02DC900 - mov eax,[r9+rdx*4+00C92DC0]
-		dmc3.exe+90D29 - 0FA3 C8              - bt eax,ecx		*/
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ACTOR_DATA, newEffectIndices);
+		WriteJump((appBaseAddr + 0x90D21), func.addr, 3);
+		/*
+		dmc3.exe+90D21 - 41 8B 84 91 C02DC900 - mov eax,[r9+rdx*4+00C92DC0]
+		dmc3.exe+90D29 - 0FA3 C8              - bt eax,ecx
+		*/
 	}
 
 
@@ -834,9 +900,15 @@ export void Model_Init()
 			0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1F954E), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEffectIndices[1]);		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ACTOR_DATA, newEffectIndices[2]);		WriteJump((appBaseAddr + 0x1F9542), func.addr, 1);		/*		dmc3.exe+1F9542 - 8B 05 7C98A900 - mov eax,[dmc3.exe+C92DC4]
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEffectIndices[1]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ACTOR_DATA, newEffectIndices[2]);
+		WriteJump((appBaseAddr + 0x1F9542), func.addr, 1);
+		/*
+		dmc3.exe+1F9542 - 8B 05 7C98A900 - mov eax,[dmc3.exe+C92DC4]
 		dmc3.exe+1F9548 - 8B 0D 7A98A900 - mov ecx,[dmc3.exe+C92DC8]
-		dmc3.exe+1F954E - 83 C8 01       - or eax,01		*/
+		dmc3.exe+1F954E - 83 C8 01       - or eax,01
+		*/
 	}
 
 
@@ -850,9 +922,15 @@ export void Model_Init()
 			0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1F9578), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEffectIndices[1]);		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ACTOR_DATA, newEffectIndices[2]);		WriteJump((appBaseAddr + 0x1F956C), func.addr, 1);		/*		dmc3.exe+1F956C - 89 05 5298A900 - mov [dmc3.exe+C92DC4],eax
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEffectIndices[1]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ACTOR_DATA, newEffectIndices[2]);
+		WriteJump((appBaseAddr + 0x1F956C), func.addr, 1);
+		/*
+		dmc3.exe+1F956C - 89 05 5298A900 - mov [dmc3.exe+C92DC4],eax
 		dmc3.exe+1F9572 - 89 0D 5098A900 - mov [dmc3.exe+C92DC8],ecx
-		dmc3.exe+1F9578 - 48 83 C4 20    - add rsp,20		*/
+		dmc3.exe+1F9578 - 48 83 C4 20    - add rsp,20
+		*/
 	}
 
 
@@ -871,7 +949,8 @@ export void Model_Init()
 			0x48, 0x8B, 0xCF,                               // mov rcx,rdi
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x90D57), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));		*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ACTOR_DATA, newEffectIndices);
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ACTOR_DATA, newEffectIndices);
 		WriteJump((appBaseAddr + 0x90D4A), func.addr);
 		/*
 		dmc3.exe+90D4A - D3 E0                - shl eax,cl
@@ -897,8 +976,13 @@ export void Model_Init()
 			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+1FAA90
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x90B2D), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));		WriteJump((appBaseAddr + 0x90B28), func.addr);		WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x1FAA90));		/*		dmc3.exe+90B28 - E8 639F1600 - call dmc3.exe+1FAA90
-		dmc3.exe+90B2D - 48 8B D0    - mov rdx,rax		*/
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteJump((appBaseAddr + 0x90B28), func.addr);
+		WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x1FAA90));
+		/*
+		dmc3.exe+90B28 - E8 639F1600 - call dmc3.exe+1FAA90
+		dmc3.exe+90B2D - 48 8B D0    - mov rdx,rax
+		*/
 	}
 
 
