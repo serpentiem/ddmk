@@ -163,9 +163,30 @@ void Actor_CharacterCostumeSelect
 	ImGui::PushItemWidth(150);
 	GUI_Combo("Character", Actor_characterNames, character);
 	GUI_Input("Costume", costume);
+	GUI_Checkbox("Force Files", Config.Actor.forceFiles[player][entity][character]);
+	
+
+	
+	bool condition = !Config.Actor.forceFiles[player][entity][character];
+	GUI_PushDisable(condition);
+	GUI_Combo("Character", Actor_characterNames, Config.Actor.forceFilesCharacter[player][entity][character]);
+	GUI_PopDisable(condition);
 
 
-	GUI_Checkbox("Force Lady Files", Config.Actor.forceLadyFiles[player][entity][character]);
+
+
+	//GUI_Checkbox("Force Dante Files" , Config.Actor.forceDanteFiles [player][entity][character]);
+	//GUI_Checkbox("Force Bob Files"   , Config.Actor.forceBobFiles   [player][entity][character]);
+	//GUI_Checkbox("Force Lady Files"  , Config.Actor.forceLadyFiles  [player][entity][character]);
+	//GUI_Checkbox("Force Vergil Files", Config.Actor.forceVergilFiles[player][entity][character]);
+
+
+
+
+
+
+
+
 
 
 	ImGui::PopItemWidth();
@@ -1196,6 +1217,28 @@ void Main()
 	if (ImGui::Begin("DDMK 2.7", &pause))
 	{
 		ImGui::Text("");
+
+
+
+		if (GUI_Button("Vector"))
+		{
+			for_all(uint32, index, devilAuras.count)
+			{
+				Log("devilAura[%u] %llX", index, devilAuras[index]);
+			}
+		}
+
+
+
+
+		static uint8 actor = 0;
+		static uint8 index = 0;
+		GUI_Input("Actor", actor);
+		GUI_Input("Index", index);
+		if (GUI_Button("Flux"))
+		{
+			func_1F94D0(Actor_actorBaseAddr[actor], index);
+		}
 
 
 

@@ -69,6 +69,8 @@ enum COSTUME_
 	COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS,
 	MAX_COSTUME = 8,
 	MAX_COSTUME_DANTE = 8,
+	MAX_COSTUME_BOB = 1,
+	MAX_COSTUME_LADY = 2,
 	MAX_COSTUME_VERGIL = 5,
 };
 
@@ -1326,6 +1328,16 @@ constexpr uint16 costumeFileIdsDante[MAX_COSTUME_DANTE] =
 	pl018,
 };
 
+constexpr uint16 costumeFileIdsBob[MAX_COSTUME_BOB] =
+{
+	pl001,
+};
+
+constexpr uint16 costumeFileIdsLady[MAX_COSTUME_LADY] =
+{
+	pl002,
+	em034,
+};
 
 constexpr uint16 costumeFileIdsVergil[MAX_COSTUME_VERGIL] =
 {
@@ -1344,20 +1356,20 @@ constexpr uint16 costumeFileIdsVergil[MAX_COSTUME_VERGIL] =
 
 
 
-struct MODEL_FILE_HELPER
-{
-	struct Data
-	{
-		uint16 cacheFileId;
-		uint8  fileIndex;
-	};
-	Data model;
-	Data texture;
-	Data shadow;
-	Data physics;
-};
-
-typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
+//struct MODEL_FILE_HELPER
+//{
+//	struct Data
+//	{
+//		uint16 cacheFileId;
+//		uint8  fileIndex;
+//	};
+//	Data model;
+//	Data texture;
+//	Data shadow;
+//	Data physics;
+//};
+//
+//typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
 
 
 
@@ -1615,7 +1627,10 @@ struct ACTOR_DATA
 	bool newSect[8]; // 0xB944
 	uint8 newBufferedActionPolicy; // 0xB94C
 	uint8 newAirStingerCount; // 0xB94D
-	bool newForceLadyFiles; // 0xB94E
+	bool newForceFiles; // 0xB94E
+	uint8 newForceFilesCharacter; // 0xB94F
+	byte8 * newDevilAura; // 0xB950
+	byte32 newEffectIndices[8]; // 0xB958
 
 	operator byte8 *()
 	{
@@ -1816,7 +1831,10 @@ struct ACTOR_DATA_DANTE
 	bool newSect[8]; // 0xB944
 	uint8 newBufferedActionPolicy; // 0xB94C
 	uint8 newAirStingerCount; // 0xB94D
-	bool newForceLadyFiles; // 0xB94E
+	bool newForceFiles; // 0xB94E
+	uint8 newForceFilesCharacter; // 0xB94F
+	byte8 * newDevilAura; // 0xB950
+	byte32 newEffectIndices[8]; // 0xB958
 
 	operator byte8 *()
 	{
@@ -1995,7 +2013,10 @@ struct ACTOR_DATA_BOB
 	bool newSect[8]; // 0xB944
 	uint8 newBufferedActionPolicy; // 0xB94C
 	uint8 newAirStingerCount; // 0xB94D
-	bool newForceLadyFiles; // 0xB94E
+	bool newForceFiles; // 0xB94E
+	uint8 newForceFilesCharacter; // 0xB94F
+	byte8 * newDevilAura; // 0xB950
+	byte32 newEffectIndices[8]; // 0xB958
 
 	operator byte8 *()
 	{
@@ -2174,7 +2195,10 @@ struct ACTOR_DATA_LADY
 	bool newSect[8]; // 0xB944
 	uint8 newBufferedActionPolicy; // 0xB94C
 	uint8 newAirStingerCount; // 0xB94D
-	bool newForceLadyFiles; // 0xB94E
+	bool newForceFiles; // 0xB94E
+	uint8 newForceFilesCharacter; // 0xB94F
+	byte8 * newDevilAura; // 0xB950
+	byte32 newEffectIndices[8]; // 0xB958
 
 	operator byte8 *()
 	{
@@ -2364,7 +2388,10 @@ struct ACTOR_DATA_VERGIL
 	bool newSect[8]; // 0xB944
 	uint8 newBufferedActionPolicy; // 0xB94C
 	uint8 newAirStingerCount; // 0xB94D
-	bool newForceLadyFiles; // 0xB94E
+	bool newForceFiles; // 0xB94E
+	uint8 newForceFilesCharacter; // 0xB94F
+	byte8 * newDevilAura; // 0xB950
+	byte32 newEffectIndices[8]; // 0xB958
 
 	operator byte8 *()
 	{
@@ -2479,7 +2506,10 @@ static_assert(offsetof(ACTOR_DATA, newLastRangedWeapon) == 0xB942);
 static_assert(offsetof(ACTOR_DATA, newSect) == 0xB944);
 static_assert(offsetof(ACTOR_DATA, newBufferedActionPolicy) == 0xB94C);
 static_assert(offsetof(ACTOR_DATA, newAirStingerCount) == 0xB94D);
-static_assert(offsetof(ACTOR_DATA, newForceLadyFiles) == 0xB94E);
+static_assert(offsetof(ACTOR_DATA, newForceFiles) == 0xB94E);
+static_assert(offsetof(ACTOR_DATA, newForceFilesCharacter) == 0xB94F);
+static_assert(offsetof(ACTOR_DATA, newDevilAura) == 0xB950);
+static_assert(offsetof(ACTOR_DATA, newEffectIndices) == 0xB958);
 
 static_assert(offsetof(ACTOR_DATA_DANTE, status) == 8);
 static_assert(offsetof(ACTOR_DATA_DANTE, character) == 0x78);
@@ -2605,7 +2635,10 @@ static_assert(offsetof(ACTOR_DATA_DANTE, newLastRangedWeapon) == 0xB942);
 static_assert(offsetof(ACTOR_DATA_DANTE, newSect) == 0xB944);
 static_assert(offsetof(ACTOR_DATA_DANTE, newBufferedActionPolicy) == 0xB94C);
 static_assert(offsetof(ACTOR_DATA_DANTE, newAirStingerCount) == 0xB94D);
-static_assert(offsetof(ACTOR_DATA_DANTE, newForceLadyFiles) == 0xB94E);
+static_assert(offsetof(ACTOR_DATA_DANTE, newForceFiles) == 0xB94E);
+static_assert(offsetof(ACTOR_DATA_DANTE, newForceFilesCharacter) == 0xB94F);
+static_assert(offsetof(ACTOR_DATA_DANTE, newDevilAura) == 0xB950);
+static_assert(offsetof(ACTOR_DATA_DANTE, newEffectIndices) == 0xB958);
 
 static_assert(offsetof(ACTOR_DATA_BOB, status) == 8);
 static_assert(offsetof(ACTOR_DATA_BOB, character) == 0x78);
@@ -2714,7 +2747,10 @@ static_assert(offsetof(ACTOR_DATA_BOB, newLastRangedWeapon) == 0xB942);
 static_assert(offsetof(ACTOR_DATA_BOB, newSect) == 0xB944);
 static_assert(offsetof(ACTOR_DATA_BOB, newBufferedActionPolicy) == 0xB94C);
 static_assert(offsetof(ACTOR_DATA_BOB, newAirStingerCount) == 0xB94D);
-static_assert(offsetof(ACTOR_DATA_BOB, newForceLadyFiles) == 0xB94E);
+static_assert(offsetof(ACTOR_DATA_BOB, newForceFiles) == 0xB94E);
+static_assert(offsetof(ACTOR_DATA_BOB, newForceFilesCharacter) == 0xB94F);
+static_assert(offsetof(ACTOR_DATA_BOB, newDevilAura) == 0xB950);
+static_assert(offsetof(ACTOR_DATA_BOB, newEffectIndices) == 0xB958);
 
 static_assert(offsetof(ACTOR_DATA_LADY, status) == 8);
 static_assert(offsetof(ACTOR_DATA_LADY, character) == 0x78);
@@ -2823,7 +2859,10 @@ static_assert(offsetof(ACTOR_DATA_LADY, newLastRangedWeapon) == 0xB942);
 static_assert(offsetof(ACTOR_DATA_LADY, newSect) == 0xB944);
 static_assert(offsetof(ACTOR_DATA_LADY, newBufferedActionPolicy) == 0xB94C);
 static_assert(offsetof(ACTOR_DATA_LADY, newAirStingerCount) == 0xB94D);
-static_assert(offsetof(ACTOR_DATA_LADY, newForceLadyFiles) == 0xB94E);
+static_assert(offsetof(ACTOR_DATA_LADY, newForceFiles) == 0xB94E);
+static_assert(offsetof(ACTOR_DATA_LADY, newForceFilesCharacter) == 0xB94F);
+static_assert(offsetof(ACTOR_DATA_LADY, newDevilAura) == 0xB950);
+static_assert(offsetof(ACTOR_DATA_LADY, newEffectIndices) == 0xB958);
 
 static_assert(offsetof(ACTOR_DATA_VERGIL, status) == 8);
 static_assert(offsetof(ACTOR_DATA_VERGIL, character) == 0x78);
@@ -2941,7 +2980,10 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, newLastRangedWeapon) == 0xB942);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newSect) == 0xB944);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newBufferedActionPolicy) == 0xB94C);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newAirStingerCount) == 0xB94D);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newForceLadyFiles) == 0xB94E);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newForceFiles) == 0xB94E);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newForceFilesCharacter) == 0xB94F);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newDevilAura) == 0xB950);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newEffectIndices) == 0xB958);
 
 // $ActorDataEnd
 

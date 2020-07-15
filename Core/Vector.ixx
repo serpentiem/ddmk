@@ -33,6 +33,32 @@ struct Vector
 		}
 		count--;
 	}
+
+	void PopFirst()
+	{
+		if (count == 0)
+		{
+			return;
+		}
+
+		if (count > 1)
+		{
+			memcpy(data, &data[1], ((count - 1) * 8));
+		}
+
+
+		data[count] = 0;
+
+
+
+
+
+		count--;
+	}
+
+
+
+
 	T & operator[](uint32 index)
 	{
 		return data[index];

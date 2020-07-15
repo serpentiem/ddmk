@@ -154,6 +154,16 @@ dmc3.exe+23CC23 - E8 38190000           - call dmc3.exe+23E560
 [ 0x32BA90, "void", "byte8 * dest, const char * filename, uint32, uint32", "", "Set Track"  ],
 
 
+
+/*
+dmc3.exe+1E78AF - E8 1C1C0100           - call dmc3.exe+1F94D0
+
+*/
+
+
+[ 0x1F94D0, "void", "byte8 * baseAddr, uint8 index", "", "Devil Flux"  ],
+
+
 /*
 
 

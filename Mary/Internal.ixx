@@ -70,6 +70,7 @@ export typedef void(__fastcall * func_2F74E0_t)(byte8 * dest, uint32 index); // 
 export typedef void(__fastcall * func_2F7350_t)(byte8 * dest, uint32 index); // Hide Model Partition
 export typedef void(__fastcall * func_32BE20_t)(byte8 * dest); // Init Track
 export typedef void(__fastcall * func_32BA90_t)(byte8 * dest, const char * filename, uint32, uint32); // Set Track
+export typedef void(__fastcall * func_1F94D0_t)(byte8 * baseAddr, uint8 index); // Devil Flux
 
 export func_897B0_t func_897B0 = 0;
 export func_89450_t func_89450 = 0;
@@ -134,6 +135,7 @@ export func_2F74E0_t func_2F74E0 = 0;
 export func_2F7350_t func_2F7350 = 0;
 export func_32BE20_t func_32BE20 = 0;
 export func_32BA90_t func_32BA90 = 0;
+export func_1F94D0_t func_1F94D0 = 0;
 
 export void Internal_Init()
 {
@@ -389,6 +391,10 @@ export void Internal_Init()
 	{
 		auto func = CreateFunction((appBaseAddr + 0x32BA90));
 		func_32BA90 = (func_32BA90_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x1F94D0));
+		func_1F94D0 = (func_1F94D0_t)func.addr;
 	}
 }
 

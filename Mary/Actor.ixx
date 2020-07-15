@@ -251,7 +251,7 @@ void UpdateModelPartitions(T & actorData)
 
 	auto modelPartitionData = actorData.modelData[0].partitionData;
 
-	if (actorData.newForceLadyFiles)
+	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY))
 	{
 		if (actorData.costume == COSTUME_LADY_DEFAULT)
 		{
@@ -754,20 +754,48 @@ T * CreateActorFunction
 
 	auto & actorData = *reinterpret_cast<T *>(baseAddr);
 
+
+	
+
+	File_UpdateActorFileItems(actorData);
+
+
+
 	InitActor(actorData, missionActorData_16C);
 
 	actorData.costume = Config.Actor.costume[player][entity][character];
 	//File_UpdateCostumeFileItems(actorData);
 
-	actorData.newForceLadyFiles = Config.Actor.forceLadyFiles[player][entity][character];
+	//actorData.newForceDanteFiles  = Config.Actor.forceDanteFiles [player][entity][character];
+	//actorData.newForceBobFiles    = Config.Actor.forceBobFiles   [player][entity][character];
+	//actorData.newForceLadyFiles   = Config.Actor.forceLadyFiles  [player][entity][character];
+	//actorData.newForceVergilFiles = Config.Actor.forceVergilFiles[player][entity][character];
 
-	File_UpdateActorFileItems(actorData);
+	actorData.newForceFiles          = Config.Actor.forceFiles         [player][entity][character];
+	actorData.newForceFilesCharacter = Config.Actor.forceFilesCharacter[player][entity][character];
+
+
+
+	
+
+
+
+
+
+
+
+	
+
 
 
 
 
 
 	UpdateActor(actorData);
+
+
+
+
 
 	UpdateModelPartitions(actorData);
 
@@ -810,6 +838,19 @@ byte8 * CreateActor
 	}
 	auto & parentActorData = *parentBaseAddr;
 	Actor_actorBaseAddr.Push(parentActorData);
+
+
+
+	//if ((player == 0) && (entity == ENTITY_MAIN))
+	//{
+	//	HoboBreak();
+	//}
+
+
+
+
+
+
 
 	if (entity == ENTITY_MAIN)
 	{
@@ -945,10 +986,7 @@ export void SpawnActors()
 		}
 		auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
 
-		if (player == 0)
-		{
-			HoboBreak();
-		}
+
 
 
 
