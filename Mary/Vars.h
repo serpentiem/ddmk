@@ -82,10 +82,11 @@ enum DEVIL_
 	DEVIL_DANTE_NEVAN,
 	DEVIL_DANTE_BEOWULF,
 	DEVIL_DANTE_SPARDA,
-	DEVIL_VERGIL_YAMATO,
-	DEVIL_VERGIL_BEOWULF = 4,
-	DEVIL_VERGIL_NERO_ANGELO = 6,
-	MAX_DEVIL = 7,
+	MAX_DEVIL_DANTE = 6,
+	//DEVIL_VERGIL_YAMATO,
+	//DEVIL_VERGIL_BEOWULF = 4,
+	//DEVIL_VERGIL_NERO_ANGELO = 6,
+	//MAX_DEVIL = 7,
 };
 
 enum STYLE_
@@ -1440,7 +1441,16 @@ struct SHADOW_DATA
 
 static_assert(sizeof(SHADOW_DATA) == 0xC0);
 
+struct PHYSICS_DATA
+{
+	_(240);
+	operator byte8 *()
+	{
+		return reinterpret_cast<byte8 *>(this);
+	}
+};
 
+static_assert(sizeof(PHYSICS_DATA) == 0xF0);
 
 
 
@@ -1486,8 +1496,8 @@ struct ACTOR_DATA
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	byte8 var_1880[2]; // 0x1880
-	_(8222);
+	SHADOW_DATA var_1880[2]; // 0x1880
+	_(7840);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
@@ -1606,9 +1616,13 @@ struct ACTOR_DATA
 	byte8 var_A0D0[2]; // 0xA0D0
 	_(318);
 	byte8 var_A210[2]; // 0xA210
-	_(814);
-	byte8 var_A540[2]; // 0xA540
-	_(4990);
+	_(238);
+	byte8 var_A300[2]; // 0xA300
+	_(286);
+	byte8 var_A420[2]; // 0xA420
+	_(286);
+	PHYSICS_DATA var_A540[2]; // 0xA540
+	_(4512);
 	byte8 * newParentBaseAddr; // 0xB8C0
 	byte8 * newChildBaseAddr; // 0xB8C8
 	uint8 newGamepad; // 0xB8D0
@@ -1668,8 +1682,8 @@ struct ACTOR_DATA_DANTE
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	byte8 var_1880[2]; // 0x1880
-	_(8222);
+	SHADOW_DATA var_1880[2]; // 0x1880
+	_(7840);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
@@ -1802,9 +1816,13 @@ struct ACTOR_DATA_DANTE
 	byte8 var_A0D0[2]; // 0xA0D0
 	_(318);
 	byte8 var_A210[2]; // 0xA210
-	_(814);
-	byte8 var_A540[2]; // 0xA540
-	_(4286);
+	_(238);
+	byte8 var_A300[2]; // 0xA300
+	_(286);
+	byte8 var_A420[2]; // 0xA420
+	_(286);
+	PHYSICS_DATA var_A540[2]; // 0xA540
+	_(3808);
 	DevilModelMetadataDante devilModelMetadata; // 0xB600
 	_(15);
 	MODEL_METADATA modelMetadata[6]; // 0xB630
@@ -1872,8 +1890,8 @@ struct ACTOR_DATA_BOB
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	byte8 var_1880[2]; // 0x1880
-	_(8222);
+	SHADOW_DATA var_1880[2]; // 0x1880
+	_(7840);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
@@ -1992,9 +2010,13 @@ struct ACTOR_DATA_BOB
 	byte8 var_A0D0[2]; // 0xA0D0
 	_(318);
 	byte8 var_A210[2]; // 0xA210
-	_(814);
-	byte8 var_A540[2]; // 0xA540
-	_(4990);
+	_(238);
+	byte8 var_A300[2]; // 0xA300
+	_(286);
+	byte8 var_A420[2]; // 0xA420
+	_(286);
+	PHYSICS_DATA var_A540[2]; // 0xA540
+	_(4512);
 	byte8 * newParentBaseAddr; // 0xB8C0
 	byte8 * newChildBaseAddr; // 0xB8C8
 	uint8 newGamepad; // 0xB8D0
@@ -2054,8 +2076,8 @@ struct ACTOR_DATA_LADY
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	byte8 var_1880[2]; // 0x1880
-	_(8222);
+	SHADOW_DATA var_1880[2]; // 0x1880
+	_(7840);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
@@ -2174,9 +2196,13 @@ struct ACTOR_DATA_LADY
 	byte8 var_A0D0[2]; // 0xA0D0
 	_(318);
 	byte8 var_A210[2]; // 0xA210
-	_(814);
-	byte8 var_A540[2]; // 0xA540
-	_(4990);
+	_(238);
+	byte8 var_A300[2]; // 0xA300
+	_(286);
+	byte8 var_A420[2]; // 0xA420
+	_(286);
+	PHYSICS_DATA var_A540[2]; // 0xA540
+	_(4512);
 	byte8 * newParentBaseAddr; // 0xB8C0
 	byte8 * newChildBaseAddr; // 0xB8C8
 	uint8 newGamepad; // 0xB8D0
@@ -2236,8 +2262,8 @@ struct ACTOR_DATA_VERGIL
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	byte8 var_1880[2]; // 0x1880
-	_(8222);
+	SHADOW_DATA var_1880[2]; // 0x1880
+	_(7840);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
 	MOTION_DATA motionData[2]; // 0x39B0
@@ -2365,9 +2391,13 @@ struct ACTOR_DATA_VERGIL
 	byte8 var_A0D0[2]; // 0xA0D0
 	_(318);
 	byte8 var_A210[2]; // 0xA210
-	_(814);
-	byte8 var_A540[2]; // 0xA540
-	_(4350);
+	_(238);
+	byte8 var_A300[2]; // 0xA300
+	_(286);
+	byte8 var_A420[2]; // 0xA420
+	_(286);
+	PHYSICS_DATA var_A540[2]; // 0xA540
+	_(3872);
 	MODEL_METADATA modelMetadata[6]; // 0xB640
 	_(160);
 	byte8 * newParentBaseAddr; // 0xB8C0
@@ -2492,6 +2522,8 @@ static_assert(offsetof(ACTOR_DATA, var_9AD0) == 0x9AD0);
 static_assert(offsetof(ACTOR_DATA, var_9D10) == 0x9D10);
 static_assert(offsetof(ACTOR_DATA, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA, var_A210) == 0xA210);
+static_assert(offsetof(ACTOR_DATA, var_A300) == 0xA300);
+static_assert(offsetof(ACTOR_DATA, var_A420) == 0xA420);
 static_assert(offsetof(ACTOR_DATA, var_A540) == 0xA540);
 static_assert(offsetof(ACTOR_DATA, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA, newChildBaseAddr) == 0xB8C8);
@@ -2617,6 +2649,8 @@ static_assert(offsetof(ACTOR_DATA_DANTE, var_9AD0) == 0x9AD0);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_9D10) == 0x9D10);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_A210) == 0xA210);
+static_assert(offsetof(ACTOR_DATA_DANTE, var_A300) == 0xA300);
+static_assert(offsetof(ACTOR_DATA_DANTE, var_A420) == 0xA420);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_A540) == 0xA540);
 static_assert(offsetof(ACTOR_DATA_DANTE, devilModelMetadata) == 0xB600);
 static_assert(offsetof(ACTOR_DATA_DANTE, modelMetadata) == 0xB630);
@@ -2733,6 +2767,8 @@ static_assert(offsetof(ACTOR_DATA_BOB, var_9AD0) == 0x9AD0);
 static_assert(offsetof(ACTOR_DATA_BOB, var_9D10) == 0x9D10);
 static_assert(offsetof(ACTOR_DATA_BOB, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA_BOB, var_A210) == 0xA210);
+static_assert(offsetof(ACTOR_DATA_BOB, var_A300) == 0xA300);
+static_assert(offsetof(ACTOR_DATA_BOB, var_A420) == 0xA420);
 static_assert(offsetof(ACTOR_DATA_BOB, var_A540) == 0xA540);
 static_assert(offsetof(ACTOR_DATA_BOB, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA_BOB, newChildBaseAddr) == 0xB8C8);
@@ -2845,6 +2881,8 @@ static_assert(offsetof(ACTOR_DATA_LADY, var_9AD0) == 0x9AD0);
 static_assert(offsetof(ACTOR_DATA_LADY, var_9D10) == 0x9D10);
 static_assert(offsetof(ACTOR_DATA_LADY, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA_LADY, var_A210) == 0xA210);
+static_assert(offsetof(ACTOR_DATA_LADY, var_A300) == 0xA300);
+static_assert(offsetof(ACTOR_DATA_LADY, var_A420) == 0xA420);
 static_assert(offsetof(ACTOR_DATA_LADY, var_A540) == 0xA540);
 static_assert(offsetof(ACTOR_DATA_LADY, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA_LADY, newChildBaseAddr) == 0xB8C8);
@@ -2965,6 +3003,8 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, var_9AD0) == 0x9AD0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_9D10) == 0x9D10);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_A210) == 0xA210);
+static_assert(offsetof(ACTOR_DATA_VERGIL, var_A300) == 0xA300);
+static_assert(offsetof(ACTOR_DATA_VERGIL, var_A420) == 0xA420);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_A540) == 0xA540);
 static_assert(offsetof(ACTOR_DATA_VERGIL, modelMetadata) == 0xB640);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newParentBaseAddr) == 0xB8C0);

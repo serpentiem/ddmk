@@ -26,7 +26,9 @@ var items =
 	[ ""                               , "float32"                   , 0x1C0                            ],
 	[ ""                               , "float32"                   , 0x1C4                            ],
 	[ "modelData[3]"                   , "MODEL_DATA"                , 0x200                            ],
-	[ "[2]"                            , "byte8"                     , 0x1880                           ],
+
+	[ "[2]"                            , "SHADOW_DATA"               , 0x1880                           ], // @Research: Unconfirmed!
+
 	[ "motionArchive[32]"              , "byte8 *"                   , 0x38A0                           ],
 	[ "motionData[2]"                  , "MOTION_DATA"               , 0x39B0                           ],
 	[ "motionDataMirror[3]"            , "MOTION_DATA"               , 0x39B4                           ],
@@ -117,11 +119,15 @@ var items =
 	[ "leftStickDirection[2]"          , "uint32"                    , 0x751C                           ],
 	[ "[2]"                            , "MODEL_DATA"                , 0x7540                           ],
 	[ "[2]"                            , "uint8"                     , 0x9AC0                           ],
+
 	[ "[2]"                            , "SHADOW_DATA"               , 0x9AD0                           ],
 	[ "[2]"                            , "SHADOW_DATA"               , 0x9D10                           ],
+
 	[ "[2]"                            , "byte8"                     , 0xA0D0                           ],
 	[ "[2]"                            , "byte8"                     , 0xA210                           ],
-	[ "[2]"                            , "byte8"                     , 0xA540                           ],
+	[ "[2]"                            , "byte8"                     , 0xA300                           ],
+	[ "[2]"                            , "byte8"                     , 0xA420                           ],
+	[ "[2]"                            , "PHYSICS_DATA"              , 0xA540                           ],
 	[ "devilModelMetadata"             , "DevilModelMetadataDante"   , 0xB600, CHAR_DANTE               ],
 	[ "modelMetadata[6]"               , "MODEL_METADATA"            , 0xB630, CHAR_DANTE               ],
 	[ "modelMetadata[6]"               , "MODEL_METADATA"            , 0xB640, CHAR_VERGIL              ],

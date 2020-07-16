@@ -63,6 +63,7 @@ var typeHelper =
 	[ "DevilModelMetadataDante"   , ""       , 33  , false ],
 	[ "ACTOR_EVENT_DATA"          , ""       , 8   , false ],
 	[ "SHADOW_DATA"               , ""       , 192 , false ],
+	[ "PHYSICS_DATA"              , ""       , 240 , false ],
 ];
 
 // function Template(typeString)

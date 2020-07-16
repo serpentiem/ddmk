@@ -339,23 +339,48 @@ export void UpdateModelDante(byte8 * baseAddr)
 
 
 
+constexpr uint16 devilFileIdsDante[MAX_DEVIL_DANTE] =
+{
+	pl005,
+	pl006,
+	pl007,
+	pl008,
+	pl009,
+	pl017,
+};
+
+
+
 
 
 
 template <typename T>
 void UpdateDevilModelFunctionDante(T & actorData)
 {
-	uint8 slot = 1;
+	uint8 modelIndex = 1;
 
-	uint8 modelIndex         = (slot == 1) ? 1 : 2;
+	uint8 submodelIndex      = (modelIndex == 1) ? 1 : 3;
+	uint8 devilSubmodelIndex = (modelIndex == 1) ? 0 : 2;
+
+	uint8 modelOff      = (modelIndex == 1) ? 0x18 : 0x30;
+	uint8 devilModelOff = (modelIndex == 1) ? 0    : 0x24;
+
+
+	byte8 * modelFile   = 0;
+	byte8 * textureFile = 0;
+	byte8 * shadowFile  = 0;
+	byte8 * physicsFile = 0;
+
+
+
+	
 
 
 
 
-	uint8 modelOff           = (slot == 1) ? 0x18 : 0x30;
-	uint8 submodelIndex      = (slot == 1) ? 1 : 3;
-	uint8 devilModelOff      = (slot == 1) ? 0 : 0x24;
-	uint8 devilSubmodelIndex = (slot == 1) ? 0 : 2;
+
+
+	auto baseAddr = reinterpret_cast<byte8 *>(&actorData);
 
 	auto CopyVertices = [&]
 	(
@@ -408,17 +433,12 @@ void UpdateDevilModelFunctionDante(T & actorData)
 	{
 		devil = DEVIL_DANTE_SPARDA;
 	}
+
 	actorData.devilModels[modelIndex] = devil; // @Research: Merge with devil.
 
+	uint16 devilFileId = devilFileIdsDante[devil];
 
-
-
-	//actorData.devilModelMetadata.rebellion.
-
-
-
-	//actorData.devilModelMetadata.Rebellion.submodelMetadata[0].
-
+	auto & file = File_staticFiles[devilFileId];
 
 	auto & devilModelMetadata = actorData.devilModelMetadata[devil];
 
@@ -426,9 +446,234 @@ void UpdateDevilModelFunctionDante(T & actorData)
 
 
 
+	// Main
+
+	if (devil == DEVIL_DANTE_AGNI_RUDRA)
+	{
+		modelFile   = file[1];
+		textureFile = file[0];
+		shadowFile  = file[2];
+	}
+	else if
+	(
+		(devil == DEVIL_DANTE_CERBERUS) ||
+		(devil == DEVIL_DANTE_BEOWULF ) ||
+		(devil == DEVIL_DANTE_SPARDA  )
+	)
+	{
+		modelFile   = file[1];
+		textureFile = file[0];
+		shadowFile  = file[4];
+	}
+	else if
+	(
+		(devil == DEVIL_DANTE_REBELLION) ||
+		(devil == DEVIL_DANTE_NEVAN    )
+	)
+	{
+		modelFile   = file[1];
+		textureFile = file[0];
+		shadowFile  = file[6];
+	}
+
+	devilModelMetadata.modelIndex = modelIndex;
+	devilModelMetadata.modelOff   = modelOff;
+
+	RegisterModel
+	(
+		actorData.modelData[modelIndex],
+		modelFile,
+		textureFile
+	);
+
+	func_1EF040(actorData, modelIndex); // @Research: static_cast.
+
+	RegisterShadow
+	(
+		actorData.modelData[modelIndex],
+		actorData.var_9AD0[modelIndex],
+		shadowFile
+	);
+
+	if (devil == DEVIL_DANTE_AGNI_RUDRA)
+	{
+		return;
+	}
 
 
-	
+
+
+	//bool wings =
+	//(
+	//	(devil == DEVIL_DANTE_REBELLION) ||
+	//	(devil == DEVIL_DANTE_NEVAN    )
+	//)
+	//? true : false;
+
+
+
+
+
+
+	// Wings
+
+	if
+	(
+		(devil == DEVIL_DANTE_REBELLION) ||
+		(devil == DEVIL_DANTE_NEVAN    )
+	)
+	{
+		modelFile   = file[2];
+		textureFile = file[0];
+		shadowFile  = file[7];
+		physicsFile = file[3];
+	}
+
+
+	RegisterModel
+	(
+		actorData.var_7540[submodelIndex],
+		modelFile,
+		textureFile
+	);
+
+	func_8A000
+	(
+		actorData.var_7540[submodelIndex],
+		0,
+		(modelIndex == 1) ? actorData.var_A300 : actorData.var_A420
+	);
+
+	RegisterShadow
+	(
+		actorData.var_7540[submodelIndex],
+		actorData.var_9D10[submodelIndex],
+		shadowFile
+	);
+
+	actorData.var_9AC0[submodelIndex] = 1;
+
+	RegisterPhysics
+	(
+		actorData.var_A540[devilSubmodelIndex],
+		(modelIndex == 1) ? actorData.var_A300 : actorData.var_A420,
+		physicsFile
+	);
+
+	CopyVertices(baseAddr, 0, 1 , 3);
+	CopyVertices(baseAddr, 1, 12, 2);
+
+	devilModelMetadata.submodelMetadata[0].submodelIndex      = submodelIndex;
+	devilModelMetadata.submodelMetadata[0].devilModelOff      = devilModelOff;
+	devilModelMetadata.submodelMetadata[0].devilSubmodelIndex = devilSubmodelIndex;
+
+	submodelIndex++;
+	devilSubmodelIndex++;
+
+	devilModelOff += 9;
+
+	// Coat
+
+	if
+	(
+		(devil == DEVIL_DANTE_CERBERUS) ||
+		(devil == DEVIL_DANTE_BEOWULF ) ||
+		(devil == DEVIL_DANTE_SPARDA  )
+	)
+	{
+		modelFile   = file[2];
+		textureFile = file[0];
+		shadowFile  = file[5];
+		physicsFile = file[3];
+	}
+	else if
+	(
+		(devil == DEVIL_DANTE_REBELLION) ||
+		(devil == DEVIL_DANTE_NEVAN    )
+	)
+	{
+		modelFile   = file[4];
+		textureFile = file[0];
+		shadowFile  = file[8];
+		physicsFile = file[5];
+	}
+
+
+	RegisterModel
+	(
+		actorData.var_7540[submodelIndex],
+		modelFile,
+		textureFile
+	);
+
+	func_8A000
+	(
+		actorData.var_7540[submodelIndex],
+		0,
+		(modelIndex == 1) ? actorData.var_A300 : actorData.var_A420 // @Todo: Merge to size struct 288.
+	);
+
+
+	RegisterShadow
+	(
+		actorData.var_7540[submodelIndex],
+		actorData.var_9D10[submodelIndex],
+		shadowFile
+	);
+
+	actorData.var_9AC0[submodelIndex] = 1;
+
+	RegisterPhysics
+	(
+		actorData.var_A540[devilSubmodelIndex],
+		(modelIndex == 1) ? actorData.var_A300 : actorData.var_A420, // @Todo: Merge to size struct 288.
+		physicsFile
+	);
+
+
+
+
+	if
+	(
+		(devil == DEVIL_DANTE_CERBERUS) ||
+		(devil == DEVIL_DANTE_BEOWULF )
+	)
+	{
+
+		CopyVertices(baseAddr, 0, 1, 3 );
+		CopyVertices(baseAddr, 1, 2, 6 );
+		CopyVertices(baseAddr, 2, 8, 10);
+
+
+
+
+	}
+	else if
+	(
+		(devil == DEVIL_DANTE_REBELLION) ||
+		(devil == DEVIL_DANTE_NEVAN    )
+	)
+	{
+
+
+		func_2CA2F0
+		(
+			actorData.var_A540[devilSubmodelIndex],
+			actorData.var_1880[modelIndex],
+			(appBaseAddr + 0x58B380),
+			actorData.modelMetadata,
+			6
+		);
+
+
+		CopyVertices(baseAddr, 0, 1, 2 );
+		CopyVertices(baseAddr, 1, 2, 14);
+
+
+
+
+
+	}
 
 
 
@@ -437,7 +682,23 @@ void UpdateDevilModelFunctionDante(T & actorData)
 
 
 
-
+	if
+	(
+		(devil == DEVIL_DANTE_CERBERUS) ||
+		(devil == DEVIL_DANTE_BEOWULF ) ||
+		(devil == DEVIL_DANTE_SPARDA  )
+	)
+	{
+		devilModelMetadata.submodelMetadata[0].submodelIndex      = submodelIndex;
+		devilModelMetadata.submodelMetadata[0].devilModelOff      = devilModelOff;
+		devilModelMetadata.submodelMetadata[0].devilSubmodelIndex = devilSubmodelIndex;
+	}
+	else
+	{
+		devilModelMetadata.submodelMetadata[1].submodelIndex      = submodelIndex;
+		devilModelMetadata.submodelMetadata[1].devilModelOff      = devilModelOff;
+		devilModelMetadata.submodelMetadata[1].devilSubmodelIndex = devilSubmodelIndex;
+	}
 
 
 
@@ -447,6 +708,39 @@ void UpdateDevilModelFunctionDante(T & actorData)
 
 
 }
+
+
+//template <uint64 size>
+//struct Size
+//{
+//	byte8[size];
+//};
+//
+//Size<120> Data_120;
+
+
+
+struct Size_120
+{
+	byte8 data[120];
+};
+
+
+
+#define IntroduceSizeStruct(size)\
+struct Size_##size\
+{\
+	byte8 data[size];\
+}
+
+IntroduceSizeStruct(512);
+
+
+
+
+
+
+
 
 
 
