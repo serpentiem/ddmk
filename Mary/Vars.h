@@ -759,6 +759,25 @@ enum ACTOR_MODE
 	ACTOR_MODE_MISSION_19,
 };
 
+
+
+
+
+
+
+
+
+
+#define IntroduceSizeStruct(size)\
+struct Size_##size\
+{\
+	byte8 data[size];\
+	operator byte8 *()\
+	{\
+		return reinterpret_cast<byte8 *>(this);\
+	}\
+}
+
 #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
 
 #pragma pack(push, 1)
@@ -1269,6 +1288,7 @@ struct DevilModelMetadataDante
 			return *reinterpret_cast<DevilModelMetadata2 *>(&Sparda);
 		}
 		}
+		return Rebellion;
 	}
 };
 
@@ -1430,30 +1450,32 @@ static_assert(sizeof(MODEL_DATA) == 0x780);
 
 
 
-struct SHADOW_DATA
-{
-	_(192);
-	operator byte8 *()
-	{
-		return reinterpret_cast<byte8 *>(this);
-	}
-};
+//struct SHADOW_DATA
+//{
+//	_(192);
+//	operator byte8 *()
+//	{
+//		return reinterpret_cast<byte8 *>(this);
+//	}
+//};
+//
+//static_assert(sizeof(SHADOW_DATA) == 0xC0);
+//
+//struct PHYSICS_DATA
+//{
+//	_(240);
+//	operator byte8 *()
+//	{
+//		return reinterpret_cast<byte8 *>(this);
+//	}
+//};
+//
+//static_assert(sizeof(PHYSICS_DATA) == 0xF0);
 
-static_assert(sizeof(SHADOW_DATA) == 0xC0);
 
-struct PHYSICS_DATA
-{
-	_(240);
-	operator byte8 *()
-	{
-		return reinterpret_cast<byte8 *>(this);
-	}
-};
-
-static_assert(sizeof(PHYSICS_DATA) == 0xF0);
-
-
-
+IntroduceSizeStruct(192);
+IntroduceSizeStruct(240);
+IntroduceSizeStruct(288);
 
 
 
@@ -1496,7 +1518,7 @@ struct ACTOR_DATA
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	SHADOW_DATA var_1880[2]; // 0x1880
+	Size_192 var_1880[2]; // 0x1880
 	_(7840);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -1605,23 +1627,20 @@ struct ACTOR_DATA
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
 	_(28);
-	MODEL_DATA var_7540[2]; // 0x7540
+	MODEL_DATA submodelData[2]; // 0x7540
 	_(5760);
 	uint8 var_9AC0[2]; // 0x9AC0
 	_(14);
-	SHADOW_DATA var_9AD0[2]; // 0x9AD0
+	Size_192 shadowData[2]; // 0x9AD0
 	_(192);
-	SHADOW_DATA var_9D10[2]; // 0x9D10
+	Size_192 subshadowData[2]; // 0x9D10
 	_(576);
 	byte8 var_A0D0[2]; // 0xA0D0
 	_(318);
 	byte8 var_A210[2]; // 0xA210
 	_(238);
-	byte8 var_A300[2]; // 0xA300
-	_(286);
-	byte8 var_A420[2]; // 0xA420
-	_(286);
-	PHYSICS_DATA var_A540[2]; // 0xA540
+	Size_288 var_A300[2]; // 0xA300
+	Size_240 var_A540[2]; // 0xA540
 	_(4512);
 	byte8 * newParentBaseAddr; // 0xB8C0
 	byte8 * newChildBaseAddr; // 0xB8C8
@@ -1682,7 +1701,7 @@ struct ACTOR_DATA_DANTE
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	SHADOW_DATA var_1880[2]; // 0x1880
+	Size_192 var_1880[2]; // 0x1880
 	_(7840);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -1805,23 +1824,20 @@ struct ACTOR_DATA_DANTE
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
 	_(28);
-	MODEL_DATA var_7540[2]; // 0x7540
+	MODEL_DATA submodelData[2]; // 0x7540
 	_(5760);
 	uint8 var_9AC0[2]; // 0x9AC0
 	_(14);
-	SHADOW_DATA var_9AD0[2]; // 0x9AD0
+	Size_192 shadowData[2]; // 0x9AD0
 	_(192);
-	SHADOW_DATA var_9D10[2]; // 0x9D10
+	Size_192 subshadowData[2]; // 0x9D10
 	_(576);
 	byte8 var_A0D0[2]; // 0xA0D0
 	_(318);
 	byte8 var_A210[2]; // 0xA210
 	_(238);
-	byte8 var_A300[2]; // 0xA300
-	_(286);
-	byte8 var_A420[2]; // 0xA420
-	_(286);
-	PHYSICS_DATA var_A540[2]; // 0xA540
+	Size_288 var_A300[2]; // 0xA300
+	Size_240 var_A540[2]; // 0xA540
 	_(3808);
 	DevilModelMetadataDante devilModelMetadata; // 0xB600
 	_(15);
@@ -1890,7 +1906,7 @@ struct ACTOR_DATA_BOB
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	SHADOW_DATA var_1880[2]; // 0x1880
+	Size_192 var_1880[2]; // 0x1880
 	_(7840);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -1999,23 +2015,20 @@ struct ACTOR_DATA_BOB
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
 	_(28);
-	MODEL_DATA var_7540[2]; // 0x7540
+	MODEL_DATA submodelData[2]; // 0x7540
 	_(5760);
 	uint8 var_9AC0[2]; // 0x9AC0
 	_(14);
-	SHADOW_DATA var_9AD0[2]; // 0x9AD0
+	Size_192 shadowData[2]; // 0x9AD0
 	_(192);
-	SHADOW_DATA var_9D10[2]; // 0x9D10
+	Size_192 subshadowData[2]; // 0x9D10
 	_(576);
 	byte8 var_A0D0[2]; // 0xA0D0
 	_(318);
 	byte8 var_A210[2]; // 0xA210
 	_(238);
-	byte8 var_A300[2]; // 0xA300
-	_(286);
-	byte8 var_A420[2]; // 0xA420
-	_(286);
-	PHYSICS_DATA var_A540[2]; // 0xA540
+	Size_288 var_A300[2]; // 0xA300
+	Size_240 var_A540[2]; // 0xA540
 	_(4512);
 	byte8 * newParentBaseAddr; // 0xB8C0
 	byte8 * newChildBaseAddr; // 0xB8C8
@@ -2076,7 +2089,7 @@ struct ACTOR_DATA_LADY
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	SHADOW_DATA var_1880[2]; // 0x1880
+	Size_192 var_1880[2]; // 0x1880
 	_(7840);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -2185,23 +2198,20 @@ struct ACTOR_DATA_LADY
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
 	_(28);
-	MODEL_DATA var_7540[2]; // 0x7540
+	MODEL_DATA submodelData[2]; // 0x7540
 	_(5760);
 	uint8 var_9AC0[2]; // 0x9AC0
 	_(14);
-	SHADOW_DATA var_9AD0[2]; // 0x9AD0
+	Size_192 shadowData[2]; // 0x9AD0
 	_(192);
-	SHADOW_DATA var_9D10[2]; // 0x9D10
+	Size_192 subshadowData[2]; // 0x9D10
 	_(576);
 	byte8 var_A0D0[2]; // 0xA0D0
 	_(318);
 	byte8 var_A210[2]; // 0xA210
 	_(238);
-	byte8 var_A300[2]; // 0xA300
-	_(286);
-	byte8 var_A420[2]; // 0xA420
-	_(286);
-	PHYSICS_DATA var_A540[2]; // 0xA540
+	Size_288 var_A300[2]; // 0xA300
+	Size_240 var_A540[2]; // 0xA540
 	_(4512);
 	byte8 * newParentBaseAddr; // 0xB8C0
 	byte8 * newChildBaseAddr; // 0xB8C8
@@ -2262,7 +2272,7 @@ struct ACTOR_DATA_VERGIL
 	float32 var_1C4; // 0x1C4
 	_(56);
 	MODEL_DATA modelData[3]; // 0x200
-	SHADOW_DATA var_1880[2]; // 0x1880
+	Size_192 var_1880[2]; // 0x1880
 	_(7840);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -2380,23 +2390,20 @@ struct ACTOR_DATA_VERGIL
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
 	_(28);
-	MODEL_DATA var_7540[2]; // 0x7540
+	MODEL_DATA submodelData[2]; // 0x7540
 	_(5760);
 	uint8 var_9AC0[2]; // 0x9AC0
 	_(14);
-	SHADOW_DATA var_9AD0[2]; // 0x9AD0
+	Size_192 shadowData[2]; // 0x9AD0
 	_(192);
-	SHADOW_DATA var_9D10[2]; // 0x9D10
+	Size_192 subshadowData[2]; // 0x9D10
 	_(576);
 	byte8 var_A0D0[2]; // 0xA0D0
 	_(318);
 	byte8 var_A210[2]; // 0xA210
 	_(238);
-	byte8 var_A300[2]; // 0xA300
-	_(286);
-	byte8 var_A420[2]; // 0xA420
-	_(286);
-	PHYSICS_DATA var_A540[2]; // 0xA540
+	Size_288 var_A300[2]; // 0xA300
+	Size_240 var_A540[2]; // 0xA540
 	_(3872);
 	MODEL_METADATA modelMetadata[6]; // 0xB640
 	_(160);
@@ -2516,14 +2523,13 @@ static_assert(offsetof(ACTOR_DATA, leftStickPosition) == 0x7508);
 static_assert(offsetof(ACTOR_DATA, leftStickRadius) == 0x750A);
 static_assert(offsetof(ACTOR_DATA, actorCameraDirection) == 0x750C);
 static_assert(offsetof(ACTOR_DATA, leftStickDirection) == 0x751C);
-static_assert(offsetof(ACTOR_DATA, var_7540) == 0x7540);
+static_assert(offsetof(ACTOR_DATA, submodelData) == 0x7540);
 static_assert(offsetof(ACTOR_DATA, var_9AC0) == 0x9AC0);
-static_assert(offsetof(ACTOR_DATA, var_9AD0) == 0x9AD0);
-static_assert(offsetof(ACTOR_DATA, var_9D10) == 0x9D10);
+static_assert(offsetof(ACTOR_DATA, shadowData) == 0x9AD0);
+static_assert(offsetof(ACTOR_DATA, subshadowData) == 0x9D10);
 static_assert(offsetof(ACTOR_DATA, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA, var_A210) == 0xA210);
 static_assert(offsetof(ACTOR_DATA, var_A300) == 0xA300);
-static_assert(offsetof(ACTOR_DATA, var_A420) == 0xA420);
 static_assert(offsetof(ACTOR_DATA, var_A540) == 0xA540);
 static_assert(offsetof(ACTOR_DATA, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA, newChildBaseAddr) == 0xB8C8);
@@ -2643,14 +2649,13 @@ static_assert(offsetof(ACTOR_DATA_DANTE, leftStickPosition) == 0x7508);
 static_assert(offsetof(ACTOR_DATA_DANTE, leftStickRadius) == 0x750A);
 static_assert(offsetof(ACTOR_DATA_DANTE, actorCameraDirection) == 0x750C);
 static_assert(offsetof(ACTOR_DATA_DANTE, leftStickDirection) == 0x751C);
-static_assert(offsetof(ACTOR_DATA_DANTE, var_7540) == 0x7540);
+static_assert(offsetof(ACTOR_DATA_DANTE, submodelData) == 0x7540);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_9AC0) == 0x9AC0);
-static_assert(offsetof(ACTOR_DATA_DANTE, var_9AD0) == 0x9AD0);
-static_assert(offsetof(ACTOR_DATA_DANTE, var_9D10) == 0x9D10);
+static_assert(offsetof(ACTOR_DATA_DANTE, shadowData) == 0x9AD0);
+static_assert(offsetof(ACTOR_DATA_DANTE, subshadowData) == 0x9D10);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_A210) == 0xA210);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_A300) == 0xA300);
-static_assert(offsetof(ACTOR_DATA_DANTE, var_A420) == 0xA420);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_A540) == 0xA540);
 static_assert(offsetof(ACTOR_DATA_DANTE, devilModelMetadata) == 0xB600);
 static_assert(offsetof(ACTOR_DATA_DANTE, modelMetadata) == 0xB630);
@@ -2761,14 +2766,13 @@ static_assert(offsetof(ACTOR_DATA_BOB, leftStickPosition) == 0x7508);
 static_assert(offsetof(ACTOR_DATA_BOB, leftStickRadius) == 0x750A);
 static_assert(offsetof(ACTOR_DATA_BOB, actorCameraDirection) == 0x750C);
 static_assert(offsetof(ACTOR_DATA_BOB, leftStickDirection) == 0x751C);
-static_assert(offsetof(ACTOR_DATA_BOB, var_7540) == 0x7540);
+static_assert(offsetof(ACTOR_DATA_BOB, submodelData) == 0x7540);
 static_assert(offsetof(ACTOR_DATA_BOB, var_9AC0) == 0x9AC0);
-static_assert(offsetof(ACTOR_DATA_BOB, var_9AD0) == 0x9AD0);
-static_assert(offsetof(ACTOR_DATA_BOB, var_9D10) == 0x9D10);
+static_assert(offsetof(ACTOR_DATA_BOB, shadowData) == 0x9AD0);
+static_assert(offsetof(ACTOR_DATA_BOB, subshadowData) == 0x9D10);
 static_assert(offsetof(ACTOR_DATA_BOB, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA_BOB, var_A210) == 0xA210);
 static_assert(offsetof(ACTOR_DATA_BOB, var_A300) == 0xA300);
-static_assert(offsetof(ACTOR_DATA_BOB, var_A420) == 0xA420);
 static_assert(offsetof(ACTOR_DATA_BOB, var_A540) == 0xA540);
 static_assert(offsetof(ACTOR_DATA_BOB, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA_BOB, newChildBaseAddr) == 0xB8C8);
@@ -2875,14 +2879,13 @@ static_assert(offsetof(ACTOR_DATA_LADY, leftStickPosition) == 0x7508);
 static_assert(offsetof(ACTOR_DATA_LADY, leftStickRadius) == 0x750A);
 static_assert(offsetof(ACTOR_DATA_LADY, actorCameraDirection) == 0x750C);
 static_assert(offsetof(ACTOR_DATA_LADY, leftStickDirection) == 0x751C);
-static_assert(offsetof(ACTOR_DATA_LADY, var_7540) == 0x7540);
+static_assert(offsetof(ACTOR_DATA_LADY, submodelData) == 0x7540);
 static_assert(offsetof(ACTOR_DATA_LADY, var_9AC0) == 0x9AC0);
-static_assert(offsetof(ACTOR_DATA_LADY, var_9AD0) == 0x9AD0);
-static_assert(offsetof(ACTOR_DATA_LADY, var_9D10) == 0x9D10);
+static_assert(offsetof(ACTOR_DATA_LADY, shadowData) == 0x9AD0);
+static_assert(offsetof(ACTOR_DATA_LADY, subshadowData) == 0x9D10);
 static_assert(offsetof(ACTOR_DATA_LADY, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA_LADY, var_A210) == 0xA210);
 static_assert(offsetof(ACTOR_DATA_LADY, var_A300) == 0xA300);
-static_assert(offsetof(ACTOR_DATA_LADY, var_A420) == 0xA420);
 static_assert(offsetof(ACTOR_DATA_LADY, var_A540) == 0xA540);
 static_assert(offsetof(ACTOR_DATA_LADY, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA_LADY, newChildBaseAddr) == 0xB8C8);
@@ -2997,14 +3000,13 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, leftStickPosition) == 0x7508);
 static_assert(offsetof(ACTOR_DATA_VERGIL, leftStickRadius) == 0x750A);
 static_assert(offsetof(ACTOR_DATA_VERGIL, actorCameraDirection) == 0x750C);
 static_assert(offsetof(ACTOR_DATA_VERGIL, leftStickDirection) == 0x751C);
-static_assert(offsetof(ACTOR_DATA_VERGIL, var_7540) == 0x7540);
+static_assert(offsetof(ACTOR_DATA_VERGIL, submodelData) == 0x7540);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_9AC0) == 0x9AC0);
-static_assert(offsetof(ACTOR_DATA_VERGIL, var_9AD0) == 0x9AD0);
-static_assert(offsetof(ACTOR_DATA_VERGIL, var_9D10) == 0x9D10);
+static_assert(offsetof(ACTOR_DATA_VERGIL, shadowData) == 0x9AD0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, subshadowData) == 0x9D10);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_A210) == 0xA210);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_A300) == 0xA300);
-static_assert(offsetof(ACTOR_DATA_VERGIL, var_A420) == 0xA420);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_A540) == 0xA540);
 static_assert(offsetof(ACTOR_DATA_VERGIL, modelMetadata) == 0xB640);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newParentBaseAddr) == 0xB8C0);

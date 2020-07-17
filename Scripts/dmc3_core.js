@@ -101,6 +101,10 @@ function IsKnownType(typeString)
 			return true;
 		}
 	}
+	if (typeString.match(/Size_/))
+	{
+		return true;
+	}
 	return false;
 }
 
@@ -109,6 +113,13 @@ function GetTypeSize(typeString)
 	if (typeString.match(/\*/))
 	{
 		return 8;
+	}
+	{
+		var match = typeString.match(/Size_([\d]+?)$/);
+		if (match)
+		{
+			return parseInt(match[1]);
+		}
 	}
 	var items = typeHelper;
 	for (var itemIndex = 0; itemIndex < items.length; itemIndex++)

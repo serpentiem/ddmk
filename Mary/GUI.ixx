@@ -1220,6 +1220,29 @@ void Main()
 
 
 
+		static uint8 devil = 0;
+		static uint8 devilModelIndex = 0;
+		GUI_Input("Devil"            , devil          );
+		GUI_Input("Devil Model Index", devilModelIndex);
+		if (GUI_Button("Update Devil"))
+		{
+			auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(Actor_actorBaseAddr[2]);
+
+
+
+			ResetModel(actorData.modelData   [(devilModelIndex == 0) ? 1 : 2]);
+			ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 1 : 3]);
+			ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 2 : 4]);
+
+
+
+
+			UpdateDevilModelFunctionDante(actorData, devil, devilModelIndex);
+		}
+
+
+
+
 		if (GUI_Button("Vector"))
 		{
 			for_all(uint32, index, devilAuras.count)
