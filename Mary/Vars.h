@@ -1476,6 +1476,7 @@ static_assert(sizeof(MODEL_DATA) == 0x780);
 IntroduceSizeStruct(192);
 IntroduceSizeStruct(240);
 IntroduceSizeStruct(288);
+IntroduceSizeStruct(768);
 
 
 
@@ -1551,7 +1552,7 @@ struct ACTOR_DATA
 	bool lockOn; // 0x3E84
 	_(3);
 	uint32 activeModelIndexMirror; // 0x3E88
-	uint32 activeDevilModel; // 0x3E8C
+	uint32 activeDevil; // 0x3E8C
 	uint32 airRaid; // 0x3E90
 	uint32 mode; // 0x3E94
 	_(3);
@@ -1639,9 +1640,12 @@ struct ACTOR_DATA
 	_(318);
 	byte8 var_A210[2]; // 0xA210
 	_(238);
-	Size_288 var_A300[2]; // 0xA300
+	byte8 * var_A300[2]; // 0xA300
+	_(560);
 	Size_240 var_A540[2]; // 0xA540
-	_(4512);
+	_(736);
+	Size_768 var_AA00[2]; // 0xAA00
+	_(2240);
 	byte8 * newParentBaseAddr; // 0xB8C0
 	byte8 * newChildBaseAddr; // 0xB8C8
 	uint8 newGamepad; // 0xB8D0
@@ -1734,7 +1738,7 @@ struct ACTOR_DATA_DANTE
 	bool lockOn; // 0x3E84
 	_(3);
 	uint32 activeModelIndexMirror; // 0x3E88
-	uint32 activeDevilModel; // 0x3E8C
+	uint32 activeDevil; // 0x3E8C
 	uint32 airRaid; // 0x3E90
 	uint32 mode; // 0x3E94
 	_(3);
@@ -1836,9 +1840,12 @@ struct ACTOR_DATA_DANTE
 	_(318);
 	byte8 var_A210[2]; // 0xA210
 	_(238);
-	Size_288 var_A300[2]; // 0xA300
+	byte8 * var_A300[2]; // 0xA300
+	_(560);
 	Size_240 var_A540[2]; // 0xA540
-	_(3808);
+	_(736);
+	Size_768 var_AA00[2]; // 0xAA00
+	_(1536);
 	DevilModelMetadataDante devilModelMetadata; // 0xB600
 	_(15);
 	MODEL_METADATA modelMetadata[6]; // 0xB630
@@ -1939,7 +1946,7 @@ struct ACTOR_DATA_BOB
 	bool lockOn; // 0x3E84
 	_(3);
 	uint32 activeModelIndexMirror; // 0x3E88
-	uint32 activeDevilModel; // 0x3E8C
+	uint32 activeDevil; // 0x3E8C
 	uint32 airRaid; // 0x3E90
 	uint32 mode; // 0x3E94
 	_(3);
@@ -2027,9 +2034,12 @@ struct ACTOR_DATA_BOB
 	_(318);
 	byte8 var_A210[2]; // 0xA210
 	_(238);
-	Size_288 var_A300[2]; // 0xA300
+	byte8 * var_A300[2]; // 0xA300
+	_(560);
 	Size_240 var_A540[2]; // 0xA540
-	_(4512);
+	_(736);
+	Size_768 var_AA00[2]; // 0xAA00
+	_(2240);
 	byte8 * newParentBaseAddr; // 0xB8C0
 	byte8 * newChildBaseAddr; // 0xB8C8
 	uint8 newGamepad; // 0xB8D0
@@ -2122,7 +2132,7 @@ struct ACTOR_DATA_LADY
 	bool lockOn; // 0x3E84
 	_(3);
 	uint32 activeModelIndexMirror; // 0x3E88
-	uint32 activeDevilModel; // 0x3E8C
+	uint32 activeDevil; // 0x3E8C
 	uint32 airRaid; // 0x3E90
 	uint32 mode; // 0x3E94
 	_(3);
@@ -2210,9 +2220,12 @@ struct ACTOR_DATA_LADY
 	_(318);
 	byte8 var_A210[2]; // 0xA210
 	_(238);
-	Size_288 var_A300[2]; // 0xA300
+	byte8 * var_A300[2]; // 0xA300
+	_(560);
 	Size_240 var_A540[2]; // 0xA540
-	_(4512);
+	_(736);
+	Size_768 var_AA00[2]; // 0xAA00
+	_(2240);
 	byte8 * newParentBaseAddr; // 0xB8C0
 	byte8 * newChildBaseAddr; // 0xB8C8
 	uint8 newGamepad; // 0xB8D0
@@ -2305,7 +2318,7 @@ struct ACTOR_DATA_VERGIL
 	bool lockOn; // 0x3E84
 	_(3);
 	uint32 activeModelIndexMirror; // 0x3E88
-	uint32 activeDevilModel; // 0x3E8C
+	uint32 activeDevil; // 0x3E8C
 	uint32 airRaid; // 0x3E90
 	uint32 mode; // 0x3E94
 	_(3);
@@ -2402,9 +2415,12 @@ struct ACTOR_DATA_VERGIL
 	_(318);
 	byte8 var_A210[2]; // 0xA210
 	_(238);
-	Size_288 var_A300[2]; // 0xA300
+	byte8 * var_A300[2]; // 0xA300
+	_(560);
 	Size_240 var_A540[2]; // 0xA540
-	_(3872);
+	_(736);
+	Size_768 var_AA00[2]; // 0xAA00
+	_(1600);
 	MODEL_METADATA modelMetadata[6]; // 0xB640
 	_(160);
 	byte8 * newParentBaseAddr; // 0xB8C0
@@ -2478,7 +2494,7 @@ static_assert(offsetof(ACTOR_DATA, devilModels) == 0x3E74);
 static_assert(offsetof(ACTOR_DATA, modelState) == 0x3E80);
 static_assert(offsetof(ACTOR_DATA, lockOn) == 0x3E84);
 static_assert(offsetof(ACTOR_DATA, activeModelIndexMirror) == 0x3E88);
-static_assert(offsetof(ACTOR_DATA, activeDevilModel) == 0x3E8C);
+static_assert(offsetof(ACTOR_DATA, activeDevil) == 0x3E8C);
 static_assert(offsetof(ACTOR_DATA, airRaid) == 0x3E90);
 static_assert(offsetof(ACTOR_DATA, mode) == 0x3E94);
 static_assert(offsetof(ACTOR_DATA, devil) == 0x3E9B);
@@ -2531,6 +2547,7 @@ static_assert(offsetof(ACTOR_DATA, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA, var_A210) == 0xA210);
 static_assert(offsetof(ACTOR_DATA, var_A300) == 0xA300);
 static_assert(offsetof(ACTOR_DATA, var_A540) == 0xA540);
+static_assert(offsetof(ACTOR_DATA, var_AA00) == 0xAA00);
 static_assert(offsetof(ACTOR_DATA, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA, newChildBaseAddr) == 0xB8C8);
 static_assert(offsetof(ACTOR_DATA, newGamepad) == 0xB8D0);
@@ -2591,7 +2608,7 @@ static_assert(offsetof(ACTOR_DATA_DANTE, devilModels) == 0x3E74);
 static_assert(offsetof(ACTOR_DATA_DANTE, modelState) == 0x3E80);
 static_assert(offsetof(ACTOR_DATA_DANTE, lockOn) == 0x3E84);
 static_assert(offsetof(ACTOR_DATA_DANTE, activeModelIndexMirror) == 0x3E88);
-static_assert(offsetof(ACTOR_DATA_DANTE, activeDevilModel) == 0x3E8C);
+static_assert(offsetof(ACTOR_DATA_DANTE, activeDevil) == 0x3E8C);
 static_assert(offsetof(ACTOR_DATA_DANTE, airRaid) == 0x3E90);
 static_assert(offsetof(ACTOR_DATA_DANTE, mode) == 0x3E94);
 static_assert(offsetof(ACTOR_DATA_DANTE, devil) == 0x3E9B);
@@ -2657,6 +2674,7 @@ static_assert(offsetof(ACTOR_DATA_DANTE, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_A210) == 0xA210);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_A300) == 0xA300);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_A540) == 0xA540);
+static_assert(offsetof(ACTOR_DATA_DANTE, var_AA00) == 0xAA00);
 static_assert(offsetof(ACTOR_DATA_DANTE, devilModelMetadata) == 0xB600);
 static_assert(offsetof(ACTOR_DATA_DANTE, modelMetadata) == 0xB630);
 static_assert(offsetof(ACTOR_DATA_DANTE, artemisChargeValue) == 0xB868);
@@ -2721,7 +2739,7 @@ static_assert(offsetof(ACTOR_DATA_BOB, devilModels) == 0x3E74);
 static_assert(offsetof(ACTOR_DATA_BOB, modelState) == 0x3E80);
 static_assert(offsetof(ACTOR_DATA_BOB, lockOn) == 0x3E84);
 static_assert(offsetof(ACTOR_DATA_BOB, activeModelIndexMirror) == 0x3E88);
-static_assert(offsetof(ACTOR_DATA_BOB, activeDevilModel) == 0x3E8C);
+static_assert(offsetof(ACTOR_DATA_BOB, activeDevil) == 0x3E8C);
 static_assert(offsetof(ACTOR_DATA_BOB, airRaid) == 0x3E90);
 static_assert(offsetof(ACTOR_DATA_BOB, mode) == 0x3E94);
 static_assert(offsetof(ACTOR_DATA_BOB, devil) == 0x3E9B);
@@ -2774,6 +2792,7 @@ static_assert(offsetof(ACTOR_DATA_BOB, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA_BOB, var_A210) == 0xA210);
 static_assert(offsetof(ACTOR_DATA_BOB, var_A300) == 0xA300);
 static_assert(offsetof(ACTOR_DATA_BOB, var_A540) == 0xA540);
+static_assert(offsetof(ACTOR_DATA_BOB, var_AA00) == 0xAA00);
 static_assert(offsetof(ACTOR_DATA_BOB, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA_BOB, newChildBaseAddr) == 0xB8C8);
 static_assert(offsetof(ACTOR_DATA_BOB, newGamepad) == 0xB8D0);
@@ -2834,7 +2853,7 @@ static_assert(offsetof(ACTOR_DATA_LADY, devilModels) == 0x3E74);
 static_assert(offsetof(ACTOR_DATA_LADY, modelState) == 0x3E80);
 static_assert(offsetof(ACTOR_DATA_LADY, lockOn) == 0x3E84);
 static_assert(offsetof(ACTOR_DATA_LADY, activeModelIndexMirror) == 0x3E88);
-static_assert(offsetof(ACTOR_DATA_LADY, activeDevilModel) == 0x3E8C);
+static_assert(offsetof(ACTOR_DATA_LADY, activeDevil) == 0x3E8C);
 static_assert(offsetof(ACTOR_DATA_LADY, airRaid) == 0x3E90);
 static_assert(offsetof(ACTOR_DATA_LADY, mode) == 0x3E94);
 static_assert(offsetof(ACTOR_DATA_LADY, devil) == 0x3E9B);
@@ -2887,6 +2906,7 @@ static_assert(offsetof(ACTOR_DATA_LADY, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA_LADY, var_A210) == 0xA210);
 static_assert(offsetof(ACTOR_DATA_LADY, var_A300) == 0xA300);
 static_assert(offsetof(ACTOR_DATA_LADY, var_A540) == 0xA540);
+static_assert(offsetof(ACTOR_DATA_LADY, var_AA00) == 0xAA00);
 static_assert(offsetof(ACTOR_DATA_LADY, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA_LADY, newChildBaseAddr) == 0xB8C8);
 static_assert(offsetof(ACTOR_DATA_LADY, newGamepad) == 0xB8D0);
@@ -2947,7 +2967,7 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, devilModels) == 0x3E74);
 static_assert(offsetof(ACTOR_DATA_VERGIL, modelState) == 0x3E80);
 static_assert(offsetof(ACTOR_DATA_VERGIL, lockOn) == 0x3E84);
 static_assert(offsetof(ACTOR_DATA_VERGIL, activeModelIndexMirror) == 0x3E88);
-static_assert(offsetof(ACTOR_DATA_VERGIL, activeDevilModel) == 0x3E8C);
+static_assert(offsetof(ACTOR_DATA_VERGIL, activeDevil) == 0x3E8C);
 static_assert(offsetof(ACTOR_DATA_VERGIL, airRaid) == 0x3E90);
 static_assert(offsetof(ACTOR_DATA_VERGIL, mode) == 0x3E94);
 static_assert(offsetof(ACTOR_DATA_VERGIL, devil) == 0x3E9B);
@@ -3008,6 +3028,7 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, var_A0D0) == 0xA0D0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_A210) == 0xA210);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_A300) == 0xA300);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_A540) == 0xA540);
+static_assert(offsetof(ACTOR_DATA_VERGIL, var_AA00) == 0xAA00);
 static_assert(offsetof(ACTOR_DATA_VERGIL, modelMetadata) == 0xB640);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newChildBaseAddr) == 0xB8C8);

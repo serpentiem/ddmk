@@ -121,11 +121,14 @@ var items =
 	[ "subshadowData[2]"               , "Size_192"                  , 0x9D10                           ],
 	[ "[2]"                            , "byte8"                     , 0xA0D0                           ],
 	[ "[2]"                            , "byte8"                     , 0xA210                           ],
-
-	[ "[2]"                            , "Size_288"                  , 0xA300                           ],
-	//[ "[2]"                            , "byte8"                     , 0xA420                           ],
-
+	[ "[2]"                            , "byte8 *"                   , 0xA300                           ],
 	[ "[2]"                            , "Size_240"                  , 0xA540                           ],
+	[ "[2]"                            , "Size_768"                  , 0xAA00                           ],
+
+
+	
+
+
 	[ "devilModelMetadata"             , "DevilModelMetadataDante"   , 0xB600, CHAR_DANTE               ],
 	[ "modelMetadata[6]"               , "MODEL_METADATA"            , 0xB630, CHAR_DANTE               ],
 	[ "modelMetadata[6]"               , "MODEL_METADATA"            , 0xB640, CHAR_VERGIL              ],
@@ -504,7 +507,7 @@ function CreateActorCheatEntry
 		{
 			continue;
 		}
-		else if (type == "DEVIL_MODEL_METADATA_DANTE")
+		else if (type == "DevilModelMetadataDante")
 		{
 			continue;
 		}

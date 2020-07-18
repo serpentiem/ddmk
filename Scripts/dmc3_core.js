@@ -62,8 +62,8 @@ var typeHelper =
 	[ "MODEL_DATA"                , ""       , 1920, false ],
 	[ "DevilModelMetadataDante"   , ""       , 33  , false ],
 	[ "ACTOR_EVENT_DATA"          , ""       , 8   , false ],
-	[ "SHADOW_DATA"               , ""       , 192 , false ],
-	[ "PHYSICS_DATA"              , ""       , 240 , false ],
+	// [ "SHADOW_DATA"               , ""       , 192 , false ],
+	// [ "PHYSICS_DATA"              , ""       , 240 , false ],
 ];
 
 // function Template(typeString)
@@ -252,5 +252,40 @@ function CreateCheatEntry
 	{
 		c += "</Offsets>" + NEW_LINE;
 	}
+	c += "</CheatEntry>" + NEW_LINE;
+}
+
+function CheatTableStart()
+{
+	c += "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + NEW_LINE;
+	c += "<CheatTable>" + NEW_LINE;
+	c += "<CheatEntries>" + NEW_LINE;
+}
+
+function CheatTableEnd()
+{
+	c += "</CheatEntries>" + NEW_LINE;
+	c += "</CheatTable>" + NEW_LINE;
+}
+
+function GroupStart
+(
+	description,
+	hideChildren
+)
+{
+	c += "<CheatEntry>" + NEW_LINE;
+	c += "<Description>" + description + "</Description>" + NEW_LINE;
+	if (hideChildren)
+	{
+		c += "<Options moHideChildren=\"1\"/>" + NEW_LINE;
+	}
+	c += "<GroupHeader>1</GroupHeader>" + NEW_LINE;
+	c += "<CheatEntries>" + NEW_LINE;
+}
+
+function GroupEnd()
+{
+	c += "</CheatEntries>" + NEW_LINE;
 	c += "</CheatEntry>" + NEW_LINE;
 }

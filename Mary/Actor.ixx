@@ -780,8 +780,12 @@ T * CreateActorFunction
 
 
 
+	//if ((character == CHAR_DANTE) && (entity == ENTITY_MAIN) && (player == 0))
+	//{
+	//	actorData.weapons[0] = WEAPON_DANTE_BEOWULF;
+	//}
 
-
+	
 
 
 	
