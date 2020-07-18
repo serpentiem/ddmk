@@ -101,6 +101,24 @@ export void ResetModel(byte8 * dest)
 	func_89270(dest);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void CopyBaseVertices(MODEL_METADATA * modelMetadata)
 {
 	auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
@@ -573,7 +591,9 @@ void UpdateDevilModelFunctionDante
 		//(devilModelIndex == 0) ? actorData.var_A300[0] : actorData.var_A300[1]
 
 
-		reinterpret_cast<byte8 *>(&actorData.var_A300[devilModelOff]) // actually an index, sheesh
+		//reinterpret_cast<byte8 *>(&actorData.var_A300[devilModelOff]) // actually an index, sheesh
+
+		&actorData.var_A300[devilModelOff]
 
 
 	);
@@ -620,7 +640,8 @@ void UpdateDevilModelFunctionDante
 				actorData.var_A540[devilSubmodelIndex],
 				//(devilModelIndex == 0) ? actorData.var_A300[0] : actorData.var_A300[1],
 				//actorData.var_A300[devilModelOff],
-				reinterpret_cast<byte8 *>(&actorData.var_A300[devilModelOff]),
+				//reinterpret_cast<byte8 *>(&actorData.var_A300[devilModelOff]),
+				&actorData.var_A300[devilModelOff],
 				physicsFile,
 				index
 			);
@@ -753,7 +774,8 @@ void UpdateDevilModelFunctionDante
 		//(devilModelIndex == 0) ? actorData.var_A300[0] : actorData.var_A300[1] // @Todo: Can do it better!
 
 		//actorData.var_A300[devilModelOff] // actually an index, sheesh
-		reinterpret_cast<byte8 *>(&actorData.var_A300[devilModelOff]) // actually an index, sheesh
+		//reinterpret_cast<byte8 *>(&actorData.var_A300[devilModelOff]) // actually an index, sheesh
+		&actorData.var_A300[devilModelOff]
 
 	);
 
@@ -818,7 +840,8 @@ void UpdateDevilModelFunctionDante
 
 
 				//actorData.var_A300[devilModelOff],
-				reinterpret_cast<byte8 *>(&actorData.var_A300[devilModelOff]),
+				//reinterpret_cast<byte8 *>(&actorData.var_A300[devilModelOff]),
+				&actorData.var_A300[devilModelOff],
 
 
 

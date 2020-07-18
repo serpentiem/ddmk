@@ -10,16 +10,16 @@ export module ModuleName(Internal);
 export typedef void(__fastcall * func_897B0_t)(byte8 * dest);
 export typedef void(__fastcall * func_89450_t)(byte8 * dest);
 export typedef void(__fastcall * func_89270_t)(byte8 * dest);
-export typedef void(__fastcall * func_8B470_t)(byte8 * dest, uint32 flag);
-export typedef void(__fastcall * func_89960_t)(byte8 * dest, byte8 * modelFile, byte8 * textureFile);
-export typedef byte8 *(__fastcall * func_89DE0_t)(byte8 * dest);
-export typedef void(__fastcall * func_8BC60_t)(byte8 * dest, byte8 * addr, byte8 * shadowFile);
+export typedef void(__fastcall * func_8B470_t)(byte8 * modelData, bool32 enable);
+export typedef void(__fastcall * func_89960_t)(byte8 * modelData, byte8 * modelFile, byte8 * textureFile);
+export typedef void(__fastcall * func_1EF040_t)(byte8 * actorData, uint32 index);
+export typedef byte8 *(__fastcall * func_89DE0_t)(byte8 * modelData);
+export typedef void(__fastcall * func_8BC60_t)(byte8 * shadowData, byte8 * dest, byte8 * file);
 export typedef void(__fastcall * func_305D80_t)(byte8 * dest);
-export typedef void(__fastcall * func_8A000_t)(byte8 * dest, byte8 * motionFile, byte8 * addr);
-export typedef uint32 (__fastcall * func_2C9F40_t)(byte8 * physicsFile);
-export typedef void(__fastcall * func_2CA1D0_t)(byte8 * dest, byte8 * addr, byte8 * physicsFile, uint32 index);
-export typedef void(__fastcall * func_2CA2F0_t)(byte8 * dest, byte8 * addr, byte8 *, MODEL_METADATA * modelData, uint32 count);
-export typedef void(__fastcall * func_1EF040_t)(byte8 * baseAddr, uint32 index);
+export typedef void(__fastcall * func_8A000_t)(byte8 * modelData, byte8 * motionFile, void * dest);
+export typedef uint32(__fastcall * func_2C9F40_t)(byte8 * file);
+export typedef void(__fastcall * func_2CA1D0_t)(byte8 * physicsData, void * dest, byte8 * file, uint32 index);
+export typedef void(__fastcall * func_2CA2F0_t)(byte8 * physicsData, byte8 * dest, byte8 * addr, void * modelMetadata, uint32 count);
 export typedef void(__fastcall * func_2EE3D0_t)(byte8 * dest);
 export typedef void(__fastcall * func_1FAF40_t)(byte8 * baseAddr);
 export typedef void(__fastcall * func_1EEF80_t)(byte8 * baseAddr);
@@ -77,6 +77,7 @@ export func_89450_t func_89450 = 0;
 export func_89270_t func_89270 = 0;
 export func_8B470_t func_8B470 = 0;
 export func_89960_t func_89960 = 0;
+export func_1EF040_t func_1EF040 = 0;
 export func_89DE0_t func_89DE0 = 0;
 export func_8BC60_t func_8BC60 = 0;
 export func_305D80_t func_305D80 = 0;
@@ -84,7 +85,6 @@ export func_8A000_t func_8A000 = 0;
 export func_2C9F40_t func_2C9F40 = 0;
 export func_2CA1D0_t func_2CA1D0 = 0;
 export func_2CA2F0_t func_2CA2F0 = 0;
-export func_1EF040_t func_1EF040 = 0;
 export func_2EE3D0_t func_2EE3D0 = 0;
 export func_1FAF40_t func_1FAF40 = 0;
 export func_1EEF80_t func_1EEF80 = 0;
@@ -161,6 +161,10 @@ export void Internal_Init()
 		func_89960 = (func_89960_t)func.addr;
 	}
 	{
+		auto func = CreateFunction((appBaseAddr + 0x1EF040));
+		func_1EF040 = (func_1EF040_t)func.addr;
+	}
+	{
 		auto func = CreateFunction((appBaseAddr + 0x89DE0), 0, true, false);
 		func_89DE0 = (func_89DE0_t)func.addr;
 	}
@@ -187,10 +191,6 @@ export void Internal_Init()
 	{
 		auto func = CreateFunction((appBaseAddr + 0x2CA2F0), 0, true, true, 0, 0, 0, 0, 1);
 		func_2CA2F0 = (func_2CA2F0_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x1EF040));
-		func_1EF040 = (func_1EF040_t)func.addr;
 	}
 	{
 		auto func = CreateFunction((appBaseAddr + 0x2EE3D0));

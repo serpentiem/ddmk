@@ -1,3 +1,11 @@
+
+
+
+// @Todo: Include Core.
+// @Todo: Add description to definitions.
+
+
+
 NEW_LINE = "\r\n";
 
 var fs = require("fs");
@@ -9,20 +17,56 @@ var c_init = "";
 
 var items =
 [
-	[ 0x897B0 , "void"   , "byte8 * dest"                                                                 , ""                            , ""                                    ],
-	[ 0x89450 , "void"   , "byte8 * dest"                                                                 , ""                            , ""                                    ],
-	[ 0x89270 , "void"   , "byte8 * dest"                                                                 , ""                            , ""                                    ],
-	[ 0x8B470 , "void"   , "byte8 * dest, uint32 flag"                                                    , ""                            , ""                                    ],
-	[ 0x89960 , "void"   , "byte8 * dest, byte8 * modelFile, byte8 * textureFile"                         , ""                            , ""                                    ],
-	[ 0x89DE0 , "byte8 *", "byte8 * dest"                                                                 , "0, true, false"              , ""                                    ],
-	[ 0x8BC60 , "void"   , "byte8 * dest, byte8 * addr, byte8 * shadowFile"                               , ""                            , ""                                    ],
-	[ 0x305D80, "void"   , "byte8 * dest"                                                                 , ""                            , ""                                    ],
-	[ 0x8A000 , "void"   , "byte8 * dest, byte8 * motionFile, byte8 * addr"                               , ""                            , ""                                    ],
-	[ 0x2C9F40, "uint32 ", "byte8 * physicsFile"                                                          , "0, true, false"              , ""                                    ],
-	[ 0x2CA1D0, "void"   , "byte8 * dest, byte8 * addr, byte8 * physicsFile, uint32 index"                , ""                            , ""                                    ],
-	[ 0x2CA2F0, "void"   , "byte8 * dest, byte8 * addr, byte8 *, MODEL_METADATA * modelData, uint32 count", "0, true, true, 0, 0, 0, 0, 1", ""                                    ], // @Todo: Update!
-	[ 0x1EF040, "void"   , "byte8 * baseAddr, uint32 index"                                               , ""                            , ""                                    ],
+	[ 0x897B0 , "void"   , "byte8 * dest"                                                                       , ""                            , "" ],
+	[ 0x89450 , "void"   , "byte8 * dest"                                                                       , ""                            , "" ],
+	[ 0x89270 , "void"   , "byte8 * dest"                                                                       , ""                            , "" ],
+	[ 0x8B470 , "void"   , "byte8 * modelData, bool32 enable"                                                   , ""                            , "" ],
+	[ 0x89960 , "void"   , "byte8 * modelData, byte8 * modelFile, byte8 * textureFile"                          , ""                            , "" ],
+	[ 0x1EF040, "void"   , "byte8 * actorData, uint32 index"                                                    , ""                            , "" ], // @Research: Check if modelIndex.
+	[ 0x89DE0 , "byte8 *", "byte8 * modelData"                                                                  , "0, true, false"              , "" ],
+	[ 0x8BC60 , "void"   , "byte8 * shadowData, byte8 * dest, byte8 * file"                                     , ""                            , "" ],
+	[ 0x305D80, "void"   , "byte8 * dest"                                                                       , ""                            , "" ],
+	[ 0x8A000 , "void"   , "byte8 * modelData, byte8 * motionFile, void * dest"                                 , ""                            , "" ],
+	[ 0x2C9F40, "uint32" , "byte8 * file"                                                                       , "0, true, false"              , "" ],
+	[ 0x2CA1D0, "void"   , "byte8 * physicsData, void * dest, byte8 * file, uint32 index"                       , ""                            , "" ],
+	[ 0x2CA2F0, "void"   , "byte8 * physicsData, byte8 * dest, byte8 * addr, void * modelMetadata, uint32 count", "0, true, true, 0, 0, 0, 0, 1", "" ], // @Research: Check addr.
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	[ 0x2EE3D0, "void"   , "byte8 * dest"                                                                 , ""                            , ""                                    ],
+
+
+
+
+
+
+
 	[ 0x1FAF40, "void"   , "byte8 * baseAddr"                                                             , ""                            , ""                                    ],
 	[ 0x1EEF80, "void"   , "byte8 * baseAddr"                                                             , ""                            , ""                                    ],
 	[ 0x2EE060, "bool"   , "byte8 * dest, uint32 size"                                                    , ""                            , ""                                    ],
