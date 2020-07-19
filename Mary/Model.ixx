@@ -356,7 +356,11 @@ void UpdateModelFunctionDante(T & actorData)
 	func_2CA2F0
 	(
 		actorData.var_A210,
-		actorData.var_1880[modelIndex],
+		//actorData.var_1880[modelIndex],
+
+		actorData.physicsMetadata[modelIndex],
+
+
 		(appBaseAddr + 0x58B380),
 		actorData.modelMetadata,
 		(coat) ? 6 : 1
@@ -402,6 +406,58 @@ constexpr uint16 devilFileIdsDante[MAX_DEVIL_DANTE] =
 
 
 
+
+//template <typename T>
+//void LinkPhysics
+//(
+//	T & actorData,
+//	DevilPhysicsData & devilPhysicsData,
+//	uint8 physicsIndex,
+//	uint8 devilPhysicsIndex
+//)
+//{
+//	uint8 modelIndex = 1;
+//	uint8 devilModelIndex = 0;
+//
+//	auto & devilPhysicsMetadata = *actorData.devilPhysicsMetadata[devilModelIndex][devilPhysicsIndex];
+//	devilPhysicsMetadata.devilPhysicsData = &devilPhysicsData;
+//
+//	devilPhysicsData.enable = 1;
+//
+//	auto & physicsMetadata = *actorData.physicsMetadata[modelIndex][physicsIndex];
+//	devilPhysicsData.physicsData = physicsMetadata.physicsData;
+//
+//	memcpy(devilPhysicsData.data, (appBaseAddr + 0x35D580), 64);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export template <typename T>
 void UpdateDevilModelFunctionDante
 (
@@ -410,13 +466,26 @@ void UpdateDevilModelFunctionDante
 	uint8 devilModelIndex
 )
 {
-	uint8 modelIndex = (devilModelIndex == 0) ? 1 : 2;
+	uint8 modelIndex   = (devilModelIndex == 0) ? 1  : 2;
+	uint8 physicsMetadataIndex = 0;
 
 	uint8 submodelIndex      = (devilModelIndex == 0) ? 1 : 3;
+	uint8 devilPhysicsMetadataIndex  = 0;
 	uint8 devilSubmodelIndex = (devilModelIndex == 0) ? 0 : 2;
 
-	uint8 modelOff      = (devilModelIndex == 0) ? 0x18 : 0x30;
-	uint8 devilModelOff = (devilModelIndex == 0) ? 0    : 0x24;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	byte8 * modelFile   = 0;
@@ -426,70 +495,6 @@ void UpdateDevilModelFunctionDante
 
 
 
-	
-
-
-
-
-
-
-	auto baseAddr = reinterpret_cast<byte8 *>(&actorData);
-
-	//auto CopyVertices = [&]
-	//(
-	//	//byte8 * baseAddr,
-	//	uint8   index0,
-	//	uint8   index1,
-	//	uint8   index2
-	//	)
-	//{
-	//	//auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x35D580);
-
-	//	byte8 * dest = 0;
-	//	byte8 * addr = 0;
-
-	//	//vec4 * vertices = 0;
-
-	//	dest = (baseAddr + 0xAA00 + (index0 * 0xC0) + (devilSubmodelIndex * 0x300));
-
-	//	addr = *(byte8 **)(baseAddr + 0xA300 + ((devilModelOff + index1) * 8));
-	//	*(byte8 **)(addr + 0x100) = dest;
-
-
-	//	memcpy((dest + 0x80), (appBaseAddr + 0x35D580), 64);
-
-	//	//vertices = (vec4 *)(dest + 0x80);
-	//	//vertices[0] = g_vertices[0];
-	//	//vertices[1] = g_vertices[1];
-	//	//vertices[2] = g_vertices[2];
-	//	//vertices[3] = g_vertices[3];
-
-	//	*(uint32 *)(dest + 0x28) = 1;
-	//	addr = *(byte8 **)(baseAddr + 0x1880 + ((modelOff + index2) * 8));
-	//	addr = *(byte8 **)(addr + 0x110);
-	//	*(byte8 **)(dest + 0x30) = addr;
-	//};
-
-
-
-	//auto & meleeWeapon = actorData.weapons[actorData.meleeWeaponIndex];
-
-
-
-
-
-
-
-	//uint8 devil = 0;
-	//if ((meleeWeapon >= WEAPON_DANTE_REBELLION) && (meleeWeapon <= WEAPON_DANTE_BEOWULF))
-	//{
-	//	devil = meleeWeapon;
-	//}
-	//if (actorData.sparda)
-	//{
-	//	devil = DEVIL_DANTE_SPARDA;
-	//}
-
 	actorData.devilModels[modelIndex] = devil; // @Research: Merge with devil.
 
 	uint16 devilFileId = devilFileIdsDante[devil];
@@ -497,6 +502,61 @@ void UpdateDevilModelFunctionDante
 	auto & file = File_staticFiles[devilFileId];
 
 	auto & devilModelMetadata = actorData.devilModelMetadata[devil];
+
+
+
+
+
+
+	// @Todo: Extern and DevilMetadata2 reference.
+
+	auto LinkPhysicsData = [&]
+	(
+		uint8 devilPhysicsDataIndex,
+		uint8 _physicsMetadataIndex,
+		uint8 _devilPhysicsMetadataIndex
+	)
+	{
+		auto & devilPhysicsData = actorData.devilPhysicsData[devilSubmodelIndex][devilPhysicsDataIndex];
+		auto physicsMetadataAddr = actorData.physicsMetadata[modelIndex][(physicsMetadataIndex + _physicsMetadataIndex)];
+		if (!physicsMetadataAddr)
+		{
+			return;
+		}
+		auto & physicsMetadata = *physicsMetadataAddr;
+		auto devilPhysicsMetadataAddr = actorData.devilPhysicsMetadata[devilModelIndex][(devilPhysicsMetadataIndex + _devilPhysicsMetadataIndex)];
+		if (!devilPhysicsMetadataAddr)
+		{
+			return;
+		}
+		auto & devilPhysicsMetadata = *devilPhysicsMetadataAddr;
+
+		devilPhysicsData.enable = 1;
+		devilPhysicsData.physicsData = physicsMetadata.physicsData;
+		memcpy(devilPhysicsData.data, (appBaseAddr + 0x35D580), 64);
+
+		devilPhysicsMetadata.devilPhysicsData = &devilPhysicsData;
+	};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -545,16 +605,30 @@ void UpdateDevilModelFunctionDante
 	}
 
 
+
+
+	//uint8 physicsIndex = (devilModelIndex == 0) ? 24 : 48;
+
+
 	devilModelMetadata.modelIndex = modelIndex;
-	devilModelMetadata.modelOff   = modelOff;
+	devilModelMetadata.physicsIndex = ((modelIndex * 24) + physicsIndex);
+
+
+
+
+	// auto & modelDataIndex = devilModelMetadata
+
+	
+	// auto & physicsMetadataIndex = devilmodelmetadata = ((devil == DEVIL_DANTE_REBELLION) || (devil == DEVIL_DANTE_NEVAN)) ? 9 : 0;
 
 
 
 
 
 
+	// stuff
 
-
+	// modelDataIndex += (modelIndex * 24);
 
 
 
@@ -582,20 +656,11 @@ void UpdateDevilModelFunctionDante
 		textureFile
 	);
 
-
-	// @Bug: Correct.
 	func_8A000
 	(
 		actorData.submodelData[submodelIndex],
 		0,
-		//(devilModelIndex == 0) ? actorData.var_A300[0] : actorData.var_A300[1]
-
-
-		//reinterpret_cast<byte8 *>(&actorData.var_A300[devilModelOff]) // actually an index, sheesh
-
-		&actorData.var_A300[devilModelOff]
-
-
+		&actorData.devilPhysicsMetadata[devilModelIndex][devilPhysicsMetadataIndex]
 	);
 
 	
@@ -632,16 +697,12 @@ void UpdateDevilModelFunctionDante
 			MessageBoxA(0, "cyka bilyat!", 0, 0);
 		}
 
-		// @Research: Game checks specifically for 0. Add skip.
 		for_all(uint32, index, count)
 		{
 			func_2CA1D0
 			(
 				actorData.var_A540[devilSubmodelIndex],
-				//(devilModelIndex == 0) ? actorData.var_A300[0] : actorData.var_A300[1],
-				//actorData.var_A300[devilModelOff],
-				//reinterpret_cast<byte8 *>(&actorData.var_A300[devilModelOff]),
-				&actorData.var_A300[devilModelOff],
+				&actorData.devilPhysicsMetadata[devilModelIndex][devilPhysicsMetadataIndex],
 				physicsFile,
 				index
 			);
@@ -649,53 +710,10 @@ void UpdateDevilModelFunctionDante
 	}
 
 
-	// Wings
-	{
-		{
-			auto data = (reinterpret_cast<byte8 *>(&actorData.var_AA00[devilSubmodelIndex]));
-			{
 
 
-
-
-				//auto pool = reinterpret_cast<byte8 **>(actorData.var_A300);
-				//auto dest = pool[(devilModelOff + 1)];
-
-				auto dest = actorData.var_A300[(devilModelOff + 1)];
-
-
-
-				*reinterpret_cast<byte8 **>(dest + 0x100) = data;
-			}
-			memcpy((data + 0x80), (appBaseAddr + 0x35D580), 64);
-
-			auto pool = reinterpret_cast<byte8 **>(actorData.var_1880);
-			auto addr = pool[(modelOff + 3)];
-			auto dest = *reinterpret_cast<byte8 **>(addr + 0x110);
-
-			*reinterpret_cast<byte8 **>(data + 0x30) = dest;
-			*reinterpret_cast<bool32 *>(data + 0x28) = 1;
-		}
-
-		auto data = (reinterpret_cast<byte8 *>(&actorData.var_AA00[devilSubmodelIndex]) + 0xC0);
-		{
-			//auto pool = reinterpret_cast<byte8 **>(actorData.var_A300);
-			//auto dest = pool[(devilModelOff + 12)];
-
-
-			auto dest = actorData.var_A300[(devilModelOff + 12)];
-
-			*reinterpret_cast<byte8 **>(dest + 0x100) = data;
-		}
-		memcpy((data + 0x80), (appBaseAddr + 0x35D580), 64);
-
-		auto pool = reinterpret_cast<byte8 **>(actorData.var_1880);
-		auto addr = pool[(modelOff + 2)];
-		auto dest = *reinterpret_cast<byte8 **>(addr + 0x110);
-
-		*reinterpret_cast<byte8 **>(data + 0x30) = dest;
-		*reinterpret_cast<bool32 *>(data + 0x28) = 1;
-	}
+	LinkPhysicsData(0, 3, 1 );
+	LinkPhysicsData(1, 2, 12);
 
 
 
@@ -714,13 +732,13 @@ void UpdateDevilModelFunctionDante
 
 
 
-	// @Research: Merge vars.
+
 	devilModelMetadata.submodelMetadata[0].submodelIndex      = submodelIndex;
-	devilModelMetadata.submodelMetadata[0].devilModelOff      = devilModelOff;
+	devilModelMetadata.submodelMetadata[0].devilPhysicsIndex      = ((devilModelIndex * 36) + devilPhysicsIndex);
 	devilModelMetadata.submodelMetadata[0].devilSubmodelIndex = devilSubmodelIndex;
 
 	submodelIndex++;
-	devilModelOff += 9;
+	devilPhysicsIndex += 9;
 	devilSubmodelIndex++;
 
 
@@ -768,15 +786,7 @@ void UpdateDevilModelFunctionDante
 	(
 		actorData.submodelData[submodelIndex],
 		0,
-
-
-		// @Bug: 0x48 off.
-		//(devilModelIndex == 0) ? actorData.var_A300[0] : actorData.var_A300[1] // @Todo: Can do it better!
-
-		//actorData.var_A300[devilModelOff] // actually an index, sheesh
-		//reinterpret_cast<byte8 *>(&actorData.var_A300[devilModelOff]) // actually an index, sheesh
-		&actorData.var_A300[devilModelOff]
-
+		&actorData.devilPhysicsMetadata[devilModelIndex][devilPhysicsIndex]
 	);
 
 
@@ -836,15 +846,7 @@ void UpdateDevilModelFunctionDante
 			func_2CA1D0
 			(
 				actorData.var_A540[devilSubmodelIndex],
-				//(devilModelIndex == 0) ? actorData.var_A300[0] : actorData.var_A300[1], // @Todo: Can do it better!
-
-
-				//actorData.var_A300[devilModelOff],
-				//reinterpret_cast<byte8 *>(&actorData.var_A300[devilModelOff]),
-				&actorData.var_A300[devilModelOff],
-
-
-
+				&actorData.devilPhysicsMetadata[devilModelIndex][devilPhysicsIndex],
 				physicsFile,
 				index
 			);
@@ -859,7 +861,7 @@ void UpdateDevilModelFunctionDante
 	func_2CA2F0
 	(
 		actorData.var_A540[devilSubmodelIndex],
-		actorData.var_1880[modelIndex],
+		actorData.physicsMetadata[modelIndex],
 		(appBaseAddr + 0x58B380),
 		actorData.modelMetadata,
 		6
@@ -867,58 +869,17 @@ void UpdateDevilModelFunctionDante
 
 
 
-
-
-	// Coat
-	{
-		{
-			//auto data = actorData.var_AA00[devilSubmodelIndex];
-			auto data = (reinterpret_cast<byte8 *>(&actorData.var_AA00[devilSubmodelIndex]));
-			{
-				//auto pool = reinterpret_cast<byte8 **>(actorData.var_A300);
-				//auto dest = pool[(devilModelOff + 1)];
-				auto dest = actorData.var_A300[(devilModelOff + 1)];
-				*reinterpret_cast<byte8 **>(dest + 0x100) = data;
-			}
-			memcpy((data + 0x80), (appBaseAddr + 0x35D580), 64);
-
-			auto pool = reinterpret_cast<byte8 **>(actorData.var_1880);
-			auto addr = pool[(modelOff + 2)];
-			auto dest = *reinterpret_cast<byte8 **>(addr + 0x110);
-
-			*reinterpret_cast<byte8 **>(data + 0x30) = dest;
-			*reinterpret_cast<bool32 *>(data + 0x28) = 1;
-		}
-
-		auto data = (reinterpret_cast<byte8 *>(&actorData.var_AA00[devilSubmodelIndex]) + 0xC0);
-		{
-			//auto pool = reinterpret_cast<byte8 **>(actorData.var_A300);
-			//auto dest = pool[(devilModelOff + 2)];
-			auto dest = actorData.var_A300[(devilModelOff + 2)];
-			*reinterpret_cast<byte8 **>(dest + 0x100) = data;
-		}
-		memcpy((data + 0x80), (appBaseAddr + 0x35D580), 64);
-
-		auto pool = reinterpret_cast<byte8 **>(actorData.var_1880);
-		auto addr = pool[(modelOff + 14)];
-		auto dest = *reinterpret_cast<byte8 **>(addr + 0x110);
-
-		*reinterpret_cast<byte8 **>(data + 0x30) = dest;
-		*reinterpret_cast<bool32 *>(data + 0x28) = 1;
-	}
+	//uint8 devilPhysicsIndex  = (devilModelIndex == 0) ? 0 : 36;
 
 
 
 
 
-
-
-
-
-
+	LinkPhysicsData(0, 2 , 1);
+	LinkPhysicsData(1, 14, 2);
 
 	devilModelMetadata.submodelMetadata[1].submodelIndex      = submodelIndex;
-	devilModelMetadata.submodelMetadata[1].devilModelOff      = devilModelOff;
+	devilModelMetadata.submodelMetadata[1].devilPhysicsIndex  = ((devilModelIndex * 36) + devilPhysicsIndex);
 	devilModelMetadata.submodelMetadata[1].devilSubmodelIndex = devilSubmodelIndex;
 
 	return;
@@ -947,6 +908,70 @@ void UpdateDevilModelFunctionDante
 
 
 
+
+
+
+
+
+
+
+
+	//auto baseAddr = reinterpret_cast<byte8 *>(&actorData);
+
+	//auto CopyVertices = [&]
+	//(
+	//	//byte8 * baseAddr,
+	//	uint8   index0,
+	//	uint8   index1,
+	//	uint8   index2
+	//	)
+	//{
+	//	//auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x35D580);
+
+	//	byte8 * dest = 0;
+	//	byte8 * addr = 0;
+
+	//	//vec4 * vertices = 0;
+
+	//	dest = (baseAddr + 0xAA00 + (index0 * 0xC0) + (devilSubmodelIndex * 0x300));
+
+	//	addr = *(byte8 **)(baseAddr + 0xA300 + ((devilPhysicsIndex + index1) * 8));
+	//	*(byte8 **)(addr + 0x100) = dest;
+
+
+	//	memcpy((dest + 0x80), (appBaseAddr + 0x35D580), 64);
+
+	//	//vertices = (vec4 *)(dest + 0x80);
+	//	//vertices[0] = g_vertices[0];
+	//	//vertices[1] = g_vertices[1];
+	//	//vertices[2] = g_vertices[2];
+	//	//vertices[3] = g_vertices[3];
+
+	//	*(uint32 *)(dest + 0x28) = 1;
+	//	addr = *(byte8 **)(baseAddr + 0x1880 + ((physicsIndex + index2) * 8));
+	//	addr = *(byte8 **)(addr + 0x110);
+	//	*(byte8 **)(dest + 0x30) = addr;
+	//};
+
+
+
+	//auto & meleeWeapon = actorData.weapons[actorData.meleeWeaponIndex];
+
+
+
+
+
+
+
+	//uint8 devil = 0;
+	//if ((meleeWeapon >= WEAPON_DANTE_REBELLION) && (meleeWeapon <= WEAPON_DANTE_BEOWULF))
+	//{
+	//	devil = meleeWeapon;
+	//}
+	//if (actorData.sparda)
+	//{
+	//	devil = DEVIL_DANTE_SPARDA;
+	//}
 
 
 

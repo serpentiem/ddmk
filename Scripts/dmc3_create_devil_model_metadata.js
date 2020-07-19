@@ -34,57 +34,57 @@ for (var actor = 0; actor < 4; actor++)
 
 	GroupStart("Rebellion", false);
 	CreateActorCheatEntry("modelIndex"        , "Byte", (pos + 0), false, actor);
-	CreateActorCheatEntry("modelOff"          , "Byte", (pos + 1), true , actor);
+	CreateActorCheatEntry("physicsIndex"      , "Byte", (pos + 1), false, actor);
 	CreateActorCheatEntry("submodelIndex"     , "Byte", (pos + 2), false, actor);
-	CreateActorCheatEntry("devilModelOff"     , "Byte", (pos + 3), true , actor);
+	CreateActorCheatEntry("devilPhysicsIndex" , "Byte", (pos + 3), false, actor);
 	CreateActorCheatEntry("devilSubmodelIndex", "Byte", (pos + 4), false, actor);
 	CreateActorCheatEntry("submodelIndex"     , "Byte", (pos + 5), false, actor);
-	CreateActorCheatEntry("devilModelOff"     , "Byte", (pos + 6), true , actor);
+	CreateActorCheatEntry("devilPhysicsIndex" , "Byte", (pos + 6), false, actor);
 	CreateActorCheatEntry("devilSubmodelIndex", "Byte", (pos + 7), false, actor);
 	GroupEnd();
 	pos += 8;
 
 	GroupStart("Cerberus", false);
 	CreateActorCheatEntry("modelIndex"        , "Byte", (pos + 0), false, actor);
-	CreateActorCheatEntry("modelOff"          , "Byte", (pos + 1), true , actor);
+	CreateActorCheatEntry("physicsIndex"      , "Byte", (pos + 1), false, actor);
 	CreateActorCheatEntry("submodelIndex"     , "Byte", (pos + 2), false, actor);
-	CreateActorCheatEntry("devilModelOff"     , "Byte", (pos + 3), true , actor);
+	CreateActorCheatEntry("devilPhysicsIndex" , "Byte", (pos + 3), false, actor);
 	CreateActorCheatEntry("devilSubmodelIndex", "Byte", (pos + 4), false, actor);
 	GroupEnd();
 	pos += 5;
 
 	GroupStart("Agni Rudra", false);
-	CreateActorCheatEntry("modelIndex"        , "Byte", (pos + 0), false, actor);
-	CreateActorCheatEntry("modelOff"          , "Byte", (pos + 1), true , actor);
+	CreateActorCheatEntry("modelIndex"   , "Byte", (pos + 0), false, actor);
+	CreateActorCheatEntry("physicsIndex" , "Byte", (pos + 1), false, actor);
 	GroupEnd();
 	pos += 2;
 
 	GroupStart("Nevan", false);
 	CreateActorCheatEntry("modelIndex"        , "Byte", (pos + 0), false, actor);
-	CreateActorCheatEntry("modelOff"          , "Byte", (pos + 1), true , actor);
+	CreateActorCheatEntry("physicsIndex"      , "Byte", (pos + 1), false, actor);
 	CreateActorCheatEntry("submodelIndex"     , "Byte", (pos + 2), false, actor);
-	CreateActorCheatEntry("devilModelOff"     , "Byte", (pos + 3), true , actor);
+	CreateActorCheatEntry("devilPhysicsIndex" , "Byte", (pos + 3), false, actor);
 	CreateActorCheatEntry("devilSubmodelIndex", "Byte", (pos + 4), false, actor);
 	CreateActorCheatEntry("submodelIndex"     , "Byte", (pos + 5), false, actor);
-	CreateActorCheatEntry("devilModelOff"     , "Byte", (pos + 6), true , actor);
+	CreateActorCheatEntry("devilPhysicsIndex" , "Byte", (pos + 6), false, actor);
 	CreateActorCheatEntry("devilSubmodelIndex", "Byte", (pos + 7), false, actor);
 	GroupEnd();
 	pos += 8;
 
 	GroupStart("Beowulf", false);
 	CreateActorCheatEntry("modelIndex"        , "Byte", (pos + 0), false, actor);
-	CreateActorCheatEntry("modelOff"          , "Byte", (pos + 1), true , actor);
+	CreateActorCheatEntry("physicsIndex"      , "Byte", (pos + 1), false, actor);
 	CreateActorCheatEntry("submodelIndex"     , "Byte", (pos + 2), false, actor);
-	CreateActorCheatEntry("devilModelOff"     , "Byte", (pos + 3), true , actor);
+	CreateActorCheatEntry("devilPhysicsIndex" , "Byte", (pos + 3), false, actor);
 	CreateActorCheatEntry("devilSubmodelIndex", "Byte", (pos + 4), false, actor);
 	GroupEnd();
 	pos += 5;
 
 	GroupStart("Sparda", false);
 	CreateActorCheatEntry("modelIndex"        , "Byte", (pos + 0), false, actor);
-	CreateActorCheatEntry("modelOff"          , "Byte", (pos + 1), true , actor);
+	CreateActorCheatEntry("physicsIndex"      , "Byte", (pos + 1), false, actor);
 	CreateActorCheatEntry("submodelIndex"     , "Byte", (pos + 2), false, actor);
-	CreateActorCheatEntry("devilModelOff"     , "Byte", (pos + 3), true , actor);
+	CreateActorCheatEntry("devilPhysicsIndex" , "Byte", (pos + 3), false, actor);
 	CreateActorCheatEntry("devilSubmodelIndex", "Byte", (pos + 4), false, actor);
 	GroupEnd();
 	pos += 5;

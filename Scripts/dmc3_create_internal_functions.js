@@ -29,7 +29,7 @@ var items =
 	[ 0x8A000 , "void"   , "byte8 * modelData, byte8 * motionFile, void * dest"                                 , ""                            , "" ],
 	[ 0x2C9F40, "uint32" , "byte8 * file"                                                                       , "0, true, false"              , "" ],
 	[ 0x2CA1D0, "void"   , "byte8 * physicsData, void * dest, byte8 * file, uint32 index"                       , ""                            , "" ],
-	[ 0x2CA2F0, "void"   , "byte8 * physicsData, byte8 * dest, byte8 * addr, void * modelMetadata, uint32 count", "0, true, true, 0, 0, 0, 0, 1", "" ], // @Research: Check addr.
+	[ 0x2CA2F0, "void"   , "byte8 * physicsData, void * dest, byte8 * addr, void * modelMetadata, uint32 count", "0, true, true, 0, 0, 0, 0, 1", "" ], // @Research: Check addr.
 	
 
 

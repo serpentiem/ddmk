@@ -26,7 +26,12 @@ var items =
 	[ ""                               , "float32"                   , 0x1C0                            ],
 	[ ""                               , "float32"                   , 0x1C4                            ],
 	[ "modelData[3]"                   , "MODEL_DATA"                , 0x200                            ],
-	[ "[2]"                            , "Size_192"                  , 0x1880                           ],
+
+	[ "physicsMetadata[3][24]", "PhysicsMetadata *"                   , 0x1880                           ],
+
+
+
+
 	[ "motionArchive[32]"              , "byte8 *"                   , 0x38A0                           ],
 	[ "motionData[2]"                  , "MOTION_DATA"               , 0x39B0                           ],
 	[ "motionDataMirror[3]"            , "MOTION_DATA"               , 0x39B4                           ],
@@ -119,11 +124,33 @@ var items =
 	[ "[2]"                            , "uint8"                     , 0x9AC0                           ],
 	[ "shadowData[2]"                  , "Size_192"                  , 0x9AD0                           ],
 	[ "subshadowData[2]"               , "Size_192"                  , 0x9D10                           ],
+
+
+
+
 	[ "[2]"                            , "byte8"                     , 0xA0D0                           ],
+
+
+
+
 	[ "[2]"                            , "byte8"                     , 0xA210                           ],
-	[ "[2]"                            , "byte8 *"                   , 0xA300                           ],
+
+
+
+
+
+
+	[ "devilPhysicsMetadata[2][36]", "DevilPhysicsMetadata *"                   , 0xA300                           ],
+
+
+
+
 	[ "[2]"                            , "Size_240"                  , 0xA540                           ],
-	[ "[2]"                            , "Size_768"                  , 0xAA00                           ],
+
+
+
+	
+	[ "devilPhysicsData[4][4]"         , "DevilPhysicsData"          , 0xAA00                           ],
 
 
 	

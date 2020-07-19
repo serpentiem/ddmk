@@ -64,6 +64,12 @@ var typeHelper =
 	[ "ACTOR_EVENT_DATA"          , ""       , 8   , false ],
 	// [ "SHADOW_DATA"               , ""       , 192 , false ],
 	// [ "PHYSICS_DATA"              , ""       , 240 , false ],
+	
+	[ "PhysicsData"          , ""       , 8   , false ],
+	[ "PhysicsMetadata"      , ""       , 280 , false ],
+
+	[ "DevilPhysicsData"          , ""       , 192 , false ],
+	[ "DevilPhysicsMetadata"      , ""       , 264 , false ],
 ];
 
 // function Template(typeString)

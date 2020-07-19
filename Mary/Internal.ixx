@@ -19,7 +19,7 @@ export typedef void(__fastcall * func_305D80_t)(byte8 * dest);
 export typedef void(__fastcall * func_8A000_t)(byte8 * modelData, byte8 * motionFile, void * dest);
 export typedef uint32(__fastcall * func_2C9F40_t)(byte8 * file);
 export typedef void(__fastcall * func_2CA1D0_t)(byte8 * physicsData, void * dest, byte8 * file, uint32 index);
-export typedef void(__fastcall * func_2CA2F0_t)(byte8 * physicsData, byte8 * dest, byte8 * addr, void * modelMetadata, uint32 count);
+export typedef void(__fastcall * func_2CA2F0_t)(byte8 * physicsData, void * dest, byte8 * addr, void * modelMetadata, uint32 count);
 export typedef void(__fastcall * func_2EE3D0_t)(byte8 * dest);
 export typedef void(__fastcall * func_1FAF40_t)(byte8 * baseAddr);
 export typedef void(__fastcall * func_1EEF80_t)(byte8 * baseAddr);
