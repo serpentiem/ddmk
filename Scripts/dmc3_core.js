@@ -58,18 +58,20 @@ var typeHelper =
 	[ "vec4"                      , ""       , 16  , false ],
 	[ "INPUT_DATA"                , ""       , 12  , false ],
 	[ "MOTION_DATA"               , ""       , 2   , false ],
-	[ "MODEL_METADATA"            , ""       , 80  , false ],
-	[ "MODEL_DATA"                , ""       , 1920, false ],
+	[ "ModelMetadata"            , ""       , 80  , false ],
+	[ "ModelData"                , ""       , 1920, false ],
 	[ "DevilModelMetadataDante"   , ""       , 33  , false ],
 	[ "ACTOR_EVENT_DATA"          , ""       , 8   , false ],
 	// [ "SHADOW_DATA"               , ""       , 192 , false ],
 	// [ "PHYSICS_DATA"              , ""       , 240 , false ],
 	
-	[ "PhysicsData"          , ""       , 8   , false ],
-	[ "PhysicsMetadata"      , ""       , 280 , false ],
 
-	[ "DevilPhysicsData"          , ""       , 192 , false ],
-	[ "DevilPhysicsMetadata"      , ""       , 264 , false ],
+
+	[ "ShadowData"           , "" , 192 , false ],
+	[ "PhysicsData"          , "" , 240 , false ],
+	[ "PhysicsMetadata"      , "" , 320 , false ],
+	[ "DevilPhysicsData"     , "" , 192 , false ],
+	[ "DevilPhysicsMetadata" , "" , 264 , false ], // Min size.
 ];
 
 // function Template(typeString)

@@ -10,16 +10,16 @@ export module ModuleName(Internal);
 export typedef void(__fastcall * func_897B0_t)(byte8 * dest);
 export typedef void(__fastcall * func_89450_t)(byte8 * dest);
 export typedef void(__fastcall * func_89270_t)(byte8 * dest);
-export typedef void(__fastcall * func_8B470_t)(byte8 * modelData, bool32 enable);
-export typedef void(__fastcall * func_89960_t)(byte8 * modelData, byte8 * modelFile, byte8 * textureFile);
+export typedef void(__fastcall * func_8B470_t)(ModelData & modelData, bool32 enable);
+export typedef void(__fastcall * func_89960_t)(ModelData & modelData, byte8 * modelFile, byte8 * textureFile);
 export typedef void(__fastcall * func_1EF040_t)(byte8 * actorData, uint32 index);
-export typedef byte8 *(__fastcall * func_89DE0_t)(byte8 * modelData);
-export typedef void(__fastcall * func_8BC60_t)(byte8 * shadowData, byte8 * dest, byte8 * file);
+export typedef byte8 *(__fastcall * func_89DE0_t)(ModelData & modelData);
+export typedef void(__fastcall * func_8BC60_t)(ShadowData & shadowData, byte8 * dest, byte8 * file);
 export typedef void(__fastcall * func_305D80_t)(byte8 * dest);
-export typedef void(__fastcall * func_8A000_t)(byte8 * modelData, byte8 * motionFile, void * dest);
-export typedef uint32(__fastcall * func_2C9F40_t)(byte8 * file);
-export typedef void(__fastcall * func_2CA1D0_t)(byte8 * physicsData, void * dest, byte8 * file, uint32 index);
-export typedef void(__fastcall * func_2CA2F0_t)(byte8 * physicsData, void * dest, byte8 * addr, void * modelMetadata, uint32 count);
+export typedef void(__fastcall * func_8A000_t)(ModelData & modelData, byte8 * motionFile, void * dest);
+export typedef uint32(__fastcall * func_2C9F40_t)(byte8 * physicsFile);
+export typedef void(__fastcall * func_2CA1D0_t)(PhysicsData & physicsData, void * physicsMetadata, byte8 * physicsFile, uint32 index);
+export typedef void(__fastcall * func_2CA2F0_t)(PhysicsData & physicsData, void * dest, byte8 * addr, void * modelMetadata, uint32 count);
 export typedef void(__fastcall * func_2EE3D0_t)(byte8 * dest);
 export typedef void(__fastcall * func_1FAF40_t)(byte8 * baseAddr);
 export typedef void(__fastcall * func_1EEF80_t)(byte8 * baseAddr);
@@ -53,13 +53,13 @@ export typedef void(__fastcall * func_280160_t)(byte8 * dest, uint32 group, uint
 export typedef void(__fastcall * func_1EB0E0_t)(byte8 * actorData, uint32 index); // Call after Weapon Switch Animation.
 export typedef void(__fastcall * func_1F92C0_t)(byte8 * actorData, uint32 phase); // Queue devil model update.
 export typedef void(__fastcall * func_1F97F0_t)(byte8 * actorData, bool playMotion); // Update devil model and play motion.
-export typedef void(__fastcall * func_89E30_t)(byte8 * baseAddr, uint32 index); // Call after icon update.
+export typedef void(__fastcall * func_89E30_t)(ModelData & modelData, uint32 index); // Call after icon update.
 export typedef void(__fastcall * func_1B9FA0_t)(byte8 * addr); // Adjust file pointers.
 export typedef void(__fastcall * func_223AC0_t)(byte8 * actorData); // Create Spiral Swords.
 export typedef void(__fastcall * func_223F50_t)(byte8 * actorData, uint32 index); // Specific Summoned Swords.
 export typedef void(__fastcall * func_223BE0_t)(byte8 * actorData, uint32 index); // Shoot Summoned Sword. Use index 52.
 export typedef void(__fastcall * func_5A290_t)(byte8 * body, uint32 group, uint32 index, uint16, uint8, uint8); // Play Motion
-export typedef void(__fastcall * func_8AC80_t)(MODEL_DATA & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool); // Play Motion
+export typedef void(__fastcall * func_8AC80_t)(ModelData & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool); // Play Motion
 export typedef void(__fastcall * func_1EFB90_t)(byte8 * actorData, uint32 group, uint32 index, float32, int8, uint8, uint8); // Play motion and update state.
 export typedef void(__fastcall * func_1DFDA0_t)(byte8 *, uint32, uint8, float32, float32, uint8); // Drop1
 export typedef void(__fastcall * func_1FB300_t)(byte8 * actorData, uint32 direction, float32 value); // Adjust Position
@@ -72,70 +72,70 @@ export typedef void(__fastcall * func_32BE20_t)(byte8 * dest); // Init Track
 export typedef void(__fastcall * func_32BA90_t)(byte8 * dest, const char * filename, uint32, uint32); // Set Track
 export typedef void(__fastcall * func_1F94D0_t)(byte8 * baseAddr, uint8 index); // Devil Flux
 
-export func_897B0_t func_897B0 = 0;
-export func_89450_t func_89450 = 0;
-export func_89270_t func_89270 = 0;
-export func_8B470_t func_8B470 = 0;
-export func_89960_t func_89960 = 0;
-export func_1EF040_t func_1EF040 = 0;
-export func_89DE0_t func_89DE0 = 0;
-export func_8BC60_t func_8BC60 = 0;
-export func_305D80_t func_305D80 = 0;
-export func_8A000_t func_8A000 = 0;
-export func_2C9F40_t func_2C9F40 = 0;
-export func_2CA1D0_t func_2CA1D0 = 0;
-export func_2CA2F0_t func_2CA2F0 = 0;
-export func_2EE3D0_t func_2EE3D0 = 0;
-export func_1FAF40_t func_1FAF40 = 0;
-export func_1EEF80_t func_1EEF80 = 0;
-export func_2EE060_t func_2EE060 = 0;
-export func_1DE820_t func_1DE820 = 0;
-export func_217B90_t func_217B90 = 0;
-export func_226F10_t func_226F10 = 0;
-export func_219660_t func_219660 = 0;
-export func_223CB0_t func_223CB0 = 0;
-export func_212BE0_t func_212BE0 = 0;
-export func_225D70_t func_225D70 = 0;
-export func_219260_t func_219260 = 0;
-export func_220970_t func_220970 = 0;
-export func_1DFC20_t func_1DFC20 = 0;
-export func_2310B0_t func_2310B0 = 0;
-export func_22EC90_t func_22EC90 = 0;
-export func_227870_t func_227870 = 0;
-export func_22A1E0_t func_22A1E0 = 0;
-export func_228CF0_t func_228CF0 = 0;
-export func_22B0C0_t func_22B0C0 = 0;
-export func_2306B0_t func_2306B0 = 0;
-export func_22C4A0_t func_22C4A0 = 0;
-export func_2300A0_t func_2300A0 = 0;
-export func_22BA30_t func_22BA30 = 0;
-export func_231A30_t func_231A30 = 0;
-export func_22D960_t func_22D960 = 0;
-export func_2298E0_t func_2298E0 = 0;
-export func_22CF00_t func_22CF00 = 0;
-export func_280120_t func_280120 = 0;
-export func_280160_t func_280160 = 0;
-export func_1EB0E0_t func_1EB0E0 = 0;
-export func_1F92C0_t func_1F92C0 = 0;
-export func_1F97F0_t func_1F97F0 = 0;
-export func_89E30_t func_89E30 = 0;
-export func_1B9FA0_t func_1B9FA0 = 0;
-export func_223AC0_t func_223AC0 = 0;
-export func_223F50_t func_223F50 = 0;
-export func_223BE0_t func_223BE0 = 0;
-export func_5A290_t func_5A290 = 0;
-export func_8AC80_t func_8AC80 = 0;
-export func_1EFB90_t func_1EFB90 = 0;
-export func_1DFDA0_t func_1DFDA0 = 0;
-export func_1FB300_t func_1FB300 = 0;
-export func_1E0800_t func_1E0800 = 0;
-export func_211100_t func_211100 = 0;
-export func_1F01F0_t func_1F01F0 = 0;
-export func_2F74E0_t func_2F74E0 = 0;
-export func_2F7350_t func_2F7350 = 0;
-export func_32BE20_t func_32BE20 = 0;
-export func_32BA90_t func_32BA90 = 0;
-export func_1F94D0_t func_1F94D0 = 0;
+export func_897B0_t func_897B0 = 0; // (byte8 * dest)
+export func_89450_t func_89450 = 0; // (byte8 * dest)
+export func_89270_t func_89270 = 0; // (byte8 * dest)
+export func_8B470_t func_8B470 = 0; // (ModelData & modelData, bool32 enable)
+export func_89960_t func_89960 = 0; // (ModelData & modelData, byte8 * modelFile, byte8 * textureFile)
+export func_1EF040_t func_1EF040 = 0; // (byte8 * actorData, uint32 index)
+export func_89DE0_t func_89DE0 = 0; // (ModelData & modelData)
+export func_8BC60_t func_8BC60 = 0; // (ShadowData & shadowData, byte8 * dest, byte8 * file)
+export func_305D80_t func_305D80 = 0; // (byte8 * dest)
+export func_8A000_t func_8A000 = 0; // (ModelData & modelData, byte8 * motionFile, void * dest)
+export func_2C9F40_t func_2C9F40 = 0; // (byte8 * physicsFile)
+export func_2CA1D0_t func_2CA1D0 = 0; // (PhysicsData & physicsData, void * physicsMetadata, byte8 * physicsFile, uint32 index)
+export func_2CA2F0_t func_2CA2F0 = 0; // (PhysicsData & physicsData, void * dest, byte8 * addr, void * modelMetadata, uint32 count)
+export func_2EE3D0_t func_2EE3D0 = 0; // (byte8 * dest)
+export func_1FAF40_t func_1FAF40 = 0; // (byte8 * baseAddr)
+export func_1EEF80_t func_1EEF80 = 0; // (byte8 * baseAddr)
+export func_2EE060_t func_2EE060 = 0; // (byte8 * dest, uint32 size)
+export func_1DE820_t func_1DE820 = 0; // (uint32 character, uint32 id, bool isClone)
+export func_217B90_t func_217B90 = 0; // (byte8 * actorData, byte8 * missionActorData)
+export func_226F10_t func_226F10 = 0; // (byte8 * actorData, byte8 * missionActorData)
+export func_219660_t func_219660 = 0; // (byte8 * actorData, byte8 * missionActorData)
+export func_223CB0_t func_223CB0 = 0; // (byte8 * actorData, byte8 * missionActorData)
+export func_212BE0_t func_212BE0 = 0; // (byte8 * actorData)
+export func_225D70_t func_225D70 = 0; // (byte8 * actorData)
+export func_219260_t func_219260 = 0; // (byte8 * actorData)
+export func_220970_t func_220970 = 0; // (byte8 * actorData)
+export func_1DFC20_t func_1DFC20 = 0; // (byte8 * actorData)
+export func_2310B0_t func_2310B0 = 0; // (byte8 * actorData, uint32 id)
+export func_22EC90_t func_22EC90 = 0; // (byte8 * actorData, uint32 id)
+export func_227870_t func_227870 = 0; // (byte8 * actorData, uint32 id)
+export func_22A1E0_t func_22A1E0 = 0; // (byte8 * actorData, uint32 id)
+export func_228CF0_t func_228CF0 = 0; // (byte8 * actorData, uint32 id)
+export func_22B0C0_t func_22B0C0 = 0; // (byte8 * actorData, uint32 id)
+export func_2306B0_t func_2306B0 = 0; // (byte8 * actorData, uint32 id)
+export func_22C4A0_t func_22C4A0 = 0; // (byte8 * actorData, uint32 id)
+export func_2300A0_t func_2300A0 = 0; // (byte8 * actorData, uint32 id)
+export func_22BA30_t func_22BA30 = 0; // (byte8 * actorData, uint32 id)
+export func_231A30_t func_231A30 = 0; // (byte8 * actorData, uint32 id)
+export func_22D960_t func_22D960 = 0; // (byte8 * actorData, uint32 id)
+export func_2298E0_t func_2298E0 = 0; // (byte8 * actorData, uint32 id)
+export func_22CF00_t func_22CF00 = 0; // (byte8 * actorData, uint32 id)
+export func_280120_t func_280120 = 0; // (byte8 * dest, uint32 side, uint32 index)
+export func_280160_t func_280160 = 0; // (byte8 * dest, uint32 group, uint32 index, uint32 motion)
+export func_1EB0E0_t func_1EB0E0 = 0; // (byte8 * actorData, uint32 index)
+export func_1F92C0_t func_1F92C0 = 0; // (byte8 * actorData, uint32 phase)
+export func_1F97F0_t func_1F97F0 = 0; // (byte8 * actorData, bool playMotion)
+export func_89E30_t func_89E30 = 0; // (ModelData & modelData, uint32 index)
+export func_1B9FA0_t func_1B9FA0 = 0; // (byte8 * addr)
+export func_223AC0_t func_223AC0 = 0; // (byte8 * actorData)
+export func_223F50_t func_223F50 = 0; // (byte8 * actorData, uint32 index)
+export func_223BE0_t func_223BE0 = 0; // (byte8 * actorData, uint32 index)
+export func_5A290_t func_5A290 = 0; // (byte8 * body, uint32 group, uint32 index, uint16, uint8, uint8)
+export func_8AC80_t func_8AC80 = 0; // (ModelData & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool)
+export func_1EFB90_t func_1EFB90 = 0; // (byte8 * actorData, uint32 group, uint32 index, float32, int8, uint8, uint8)
+export func_1DFDA0_t func_1DFDA0 = 0; // (byte8 *, uint32, uint8, float32, float32, uint8)
+export func_1FB300_t func_1FB300 = 0; // (byte8 * actorData, uint32 direction, float32 value)
+export func_1E0800_t func_1E0800 = 0; // (byte8 * actorData, uint32 index, uint32, uint32)
+export func_211100_t func_211100 = 0; // (byte8 * actorData)
+export func_1F01F0_t func_1F01F0 = 0; // (byte8 * actorData, uint32 index)
+export func_2F74E0_t func_2F74E0 = 0; // (byte8 * dest, uint32 index)
+export func_2F7350_t func_2F7350 = 0; // (byte8 * dest, uint32 index)
+export func_32BE20_t func_32BE20 = 0; // (byte8 * dest)
+export func_32BA90_t func_32BA90 = 0; // (byte8 * dest, const char * filename, uint32, uint32)
+export func_1F94D0_t func_1F94D0 = 0; // (byte8 * baseAddr, uint8 index)
 
 export void Internal_Init()
 {

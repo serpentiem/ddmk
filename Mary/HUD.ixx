@@ -181,7 +181,7 @@ export void HUD_UpdateStyleIcon
 	auto top    = *reinterpret_cast<byte8 **>(addr + 0x1B070);
 	auto bottom = *reinterpret_cast<byte8 **>(addr + 0x1B078);
 
-	auto styleIcon = (top + 0x3B80);
+	auto & styleIcon = *reinterpret_cast<ModelData *>(top + 0x3B80);
 
 	func_897B0(styleIcon);
 	func_89450(styleIcon);
@@ -211,7 +211,7 @@ export void HUD_UpdateWeaponIcon
 	auto top    = *reinterpret_cast<byte8 **>(addr + 0x1B070);
 	auto bottom = *reinterpret_cast<byte8 **>(addr + 0x1B078);
 
-	auto dest = (bottom + HUD_bottomOff[index]);
+	auto & dest = *reinterpret_cast<ModelData *>(bottom + HUD_bottomOff[index]);
 
 	func_897B0(dest);
 	func_89450(dest);

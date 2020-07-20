@@ -1234,9 +1234,9 @@ void Main()
 
 
 
-			//ResetModel(actorData.modelData   [(devilModelIndex == 0) ? 1 : 2]);
-			//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 1 : 3]);
-			//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 2 : 4]);
+			ResetModel(actorData.modelData   [(devilModelIndex == 0) ? 1 : 2]);
+			ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 1 : 3]);
+			ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 2 : 4]);
 
 
 
@@ -1269,11 +1269,11 @@ void Main()
 
 
 
-		if (GUI_Button("Pop Dante"))
-		{
-			ResetModel(Actor_actorBaseAddr[0] + 0xB8C0);
-			UpdateModelDante(Actor_actorBaseAddr[0]);
-		}
+		//if (GUI_Button("Pop Dante"))
+		//{
+		//	ResetModel(Actor_actorBaseAddr[0] + 0xB8C0);
+		//	UpdateModelDante(Actor_actorBaseAddr[0]);
+		//}
 
 
 		if (GUI_Button("SpawnActors"))

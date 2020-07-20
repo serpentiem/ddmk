@@ -17,364 +17,525 @@ import ModuleName(Internal);
 #include "Internal.ixx"
 #endif
 
-void RegisterModel
+//void old_RegisterModel
+//(
+//	byte8 * dest,
+//	byte8 * modelFile,
+//	byte8 * textureFile
+//)
+//{
+//	func_8B470(dest, 1);
+//	func_89960(dest, modelFile, textureFile);
+//}
+//
+//void old_RegisterShadow
+//(
+//	byte8 * dest,
+//	byte8 * buffer,
+//	byte8 * file
+//)
+//{
+//	byte8 * addr = 0;
+//
+//	addr = func_89DE0(dest);
+//	func_8BC60(buffer, addr, file);
+//	addr = func_89DE0(dest);
+//	func_305D80(addr);
+//}
+//
+//void old_RegisterPhysics
+//(
+//	byte8 * dest,
+//	byte8 * buffer,
+//	byte8 * file
+//)
+//{
+//	uint32 count = 0;
+//
+//	count = func_2C9F40(file);
+//
+//	for_all(uint32, index, count)
+//	{
+//		func_2CA1D0(dest, buffer, file, index);
+//		dest += 0xF0; // @Todo: Change to Size_240.
+//	}
+//}
+//
+
+
+
+
+
+
+
+
+
+
+inline void RegisterModel
 (
-	byte8 * dest,
+	ModelData & modelData,
 	byte8 * modelFile,
 	byte8 * textureFile
 )
 {
-	func_8B470(dest, 1);
-	func_89960(dest, modelFile, textureFile);
-}
-
-void RegisterShadow
-(
-	byte8 * dest,
-	byte8 * buffer,
-	byte8 * file
-)
-{
-	byte8 * addr = 0;
-
-	addr = func_89DE0(dest);
-	func_8BC60(buffer, addr, file);
-	addr = func_89DE0(dest);
-	func_305D80(addr);
-}
-
-void RegisterPhysics
-(
-	byte8 * dest,
-	byte8 * buffer,
-	byte8 * file
-)
-{
-	uint32 count = 0;
-
-	count = func_2C9F40(file);
-
-	for_all(uint32, index, count)
-	{
-		func_2CA1D0(dest, buffer, file, index);
-		dest += 0xF0; // @Todo: Change to Size_240.
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export void ResetModel(byte8 * dest)
-{
-	func_897B0(dest);
-	func_89450(dest);
-	memset(dest, 0, sizeof(MODEL_DATA));
-	func_89270(dest);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void CopyBaseVertices(MODEL_METADATA * modelMetadata)
-{
-	auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
-
-	for_all(uint8, index, 6)
-	{
-		uint8 off = (index * 3);
-		modelMetadata[index].count = 4;
-		modelMetadata[index].vertices[0] = g_vertices[(off + 0)];
-		modelMetadata[index].vertices[1] = g_vertices[(off + 1)];
-		modelMetadata[index].vertices[2] = g_vertices[(off + 2)];
-	}
-}
-
-void CopyAmuletVertices(MODEL_METADATA * modelMetadata)
-{
-	auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
-
-	modelMetadata[0].count = 4;
-	modelMetadata[0].vertices[0] = g_vertices[23];
-	modelMetadata[0].vertices[1] = g_vertices[24];
-	modelMetadata[0].vertices[2] = g_vertices[25];
-}
-
-void CopyCoatVertices(byte8 * dest)
-{
-	auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x35D580);
-	auto addr = *reinterpret_cast<byte8 **>(dest);
-	auto vertices = *reinterpret_cast<vec4 **>(addr + 0x108);
-
-	vertices[0] = g_vertices[0];
-	vertices[1] = g_vertices[1];
-	vertices[2] = g_vertices[2];
-	vertices[3] = g_vertices[3];
-}
-
-
-
-
-
-
-
-
-
-
-
-template <typename T>
-void UpdateModelFunctionDante(T & actorData)
-{
-	uint8 modelIndex    = 0;
-	uint8 submodelIndex = 0;
-
-	byte8 * modelFile   = 0;
-	byte8 * textureFile = 0;
-	byte8 * shadowFile  = 0;
-	byte8 * physicsFile = 0;
-
-	auto & modelData = actorData.modelData[0];
-
-	auto costume = actorData.costume;
-	if (costume >= MAX_COSTUME_DANTE)
-	{
-		costume = 0;
-	}
-	auto costumeFileId = costumeFileIdsDante[costume];
-	auto coat =
+	func_8B470
 	(
-		(costume == COSTUME_DANTE_DEFAULT                           ) ||
-		(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
-		(costume == COSTUME_DANTE_DMC1                              ) ||
-		(costume == COSTUME_DANTE_SPARDA                            ) ||
-		(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
-		(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
-	)
-	? true : false;
-
-	if (actorData.newForceFiles)
-	{
-		switch (actorData.newForceFilesCharacter)
-		{
-		case CHAR_BOB:
-		{
-			if (costume >= MAX_COSTUME_BOB)
-			{
-				costume = 0;
-			}
-			costumeFileId = costumeFileIdsBob[costume];
-			coat = false;
-			break;
-		}
-		case CHAR_LADY:
-		{
-			if (costume >= MAX_COSTUME_LADY)
-			{
-				costume = 0;
-			}
-			costumeFileId = costumeFileIdsLady[costume];
-			coat = false;
-			break;
-		}
-		case CHAR_VERGIL:
-		{
-			if (costume >= MAX_COSTUME_VERGIL)
-			{
-				costume = 0;
-			}
-			costumeFileId = costumeFileIdsVergil[costume];
-			coat =
-			(
-				(costume == COSTUME_VERGIL_DEFAULT                      ) ||
-				(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
-				(costume == COSTUME_VERGIL_SPARDA                       ) ||
-				(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
-			)
-			? true : false;
-			break;
-		}
-		}
-	}
-
-	auto & file = File_staticFiles[costumeFileId];
-
-	// Main
-
-	modelFile   = file[1];
-	textureFile = file[0];
-	shadowFile  = file[8];
-
-	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
-	{
-		modelFile   = file[32];
-		textureFile = file[31];
-		shadowFile  = file[16];
-	}
-
-	RegisterModel
+		modelData,
+		1
+	);
+	func_89960
 	(
 		modelData,
 		modelFile,
 		textureFile
 	);
+}
 
-	RegisterShadow
+inline void RegisterShadow
+(
+	ModelData & modelData,
+	ShadowData & shadowData,
+	byte8 * shadowFile
+)
+{
+	auto dest = func_89DE0(modelData);
+	func_8BC60
 	(
-		modelData,
-		actorData.shadowData[modelIndex],
+		shadowData,
+		dest,
 		shadowFile
 	);
+	//dest = func_89DE0(modelData);
+	func_305D80(dest);
+}
 
-	CopyBaseVertices(actorData.modelMetadata);
-
-
-
-	
-
-
-
-
-	// Coat
-
-	modelFile   = file[12];
-	textureFile = file[0 ];
-	shadowFile  = file[14];
-	physicsFile = file[13];
-
-	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
-	{
-		modelFile   = file[17];
-		textureFile = file[31];
-		physicsFile = file[18];
-	}
-
-	RegisterModel
-	(
-		actorData.submodelData[submodelIndex],
-		modelFile,
-		textureFile
-	);
-
-	func_8A000
-	(
-		actorData.submodelData[submodelIndex],
-		0,
-		actorData.var_A0D0
-	);
-
-	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY))
+inline void RegisterPhysics
+(
+	byte8 * physicsFile,
+	PhysicsData * physicsData,
+	void * physicsMetadata
+)
+{
+	auto count = func_2C9F40(physicsFile);
+	if (count == 0)
 	{
 		return;
 	}
-
-	if (coat)
+	for_all(uint32, index, count)
 	{
-		RegisterShadow
+		func_2CA1D0
 		(
-			actorData.submodelData[submodelIndex],
-			actorData.subshadowData[submodelIndex],
-			shadowFile
+			physicsData[index],
+			physicsMetadata,
+			physicsFile,
+			index
 		);
 	}
-
-	actorData.var_9AC0[submodelIndex] = 1;
-
-	RegisterPhysics
-	(
-		actorData.var_A210,
-		actorData.var_A0D0,
-		physicsFile
-	);
-
-	//if (actorData.newForceLadyFiles)
-	//{
-	//	func_2CA2F0
-	//	(
-	//		actorData.var_A210,
-	//		actorData.var_1880,
-	//		(appBaseAddr + 0x58AC84),
-	//		actorData.modelMetadata,
-	//		1
-	//	);
-	//	return;
-	//}
-	/*
-	dmc3.exe+2194C0 - 4C 8D 05 BD173700 - lea r8,[dmc3.exe+58AC84]
-	*/
-
-
-
-
-
-
-
-
-
-	func_2CA2F0
-	(
-		actorData.var_A210,
-		//actorData.var_1880[modelIndex],
-
-		actorData.physicsMetadata[modelIndex],
-
-
-		(appBaseAddr + 0x58B380),
-		actorData.modelMetadata,
-		(coat) ? 6 : 1
-	);
-
-	if (coat)
-	{
-		CopyCoatVertices(actorData.var_A0D0);
-	}
-	else
-	{
-		CopyAmuletVertices(actorData.modelMetadata);
-	}
 }
+
+//template <typename T>
+//void LinkModelPhysicsData
+//(
+//	T & actorData,
+//	DevilModelMetadata & devilModelMetadata,
+//	DevilSubmodelMetadata & devilSubmodelMetadata,
+//	uint8 devilModelPhysicsDataIndex,
+//	uint8 modelPhysicsMetadataIndex,
+//	uint8 devilModelPhysicsMetadataIndex
+//)
+//{
+//	uint8 devilModelIndex = (devilModelMetadata.modelIndex == 1) ? 0 : 1;
+//
+//	auto & devilModelPhysicsData = actorData.devilModelPhysicsData[devilSubmodelMetadata.devilSubmodelIndex][devilModelPhysicsDataIndex];
+//
+//	auto modelPhysicsMetadataAddr = actorData.modelPhysicsMetadata[devilModelMetadata.modelIndex][(devilModelMetadata.modelPhysicsMetadataIndex + modelPhysicsMetadataIndex)];
+//	if (!modelPhysicsMetadataAddr)
+//	{
+//		return;
+//	}
+//	auto & modelPhysicsMetadata = *modelPhysicsMetadataAddr;
+//
+//	auto devilModelPhysicsMetadataAddr = actorData.devilModelPhysicsMetadata[devilModelIndex][(devilSubmodelMetadata.devilModelPhysicsMetadataIndex + devilModelPhysicsMetadataIndex)];
+//	if (!devilModelPhysicsMetadataAddr)
+//	{
+//		return;
+//	}
+//	auto & devilPhysicsMetadata = *devilModelPhysicsMetadataAddr;
+//
+//	devilModelPhysicsData.enable = 1;
+//	devilModelPhysicsData.physicsData = modelPhysicsMetadata.physicsData;
+//	memcpy(devilModelPhysicsData.data, (appBaseAddr + 0x35D580), 64);
+//
+//	devilPhysicsMetadata.devilPhysicsData = &devilModelPhysicsData;
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+human
+
+func_2CA1D0
+(
+actorData.var_A210,
+actorData.var_A0D0,
+physicsFile,
+index
+);
+
+devil
+
+func_2CA1D0
+(
+actorData.var_A540[devilSubmodelIndex],
+&actorData.devilPhysicsMetadata[devilModelIndex][devilPhysicsMetadataIndex],
+physicsFile,
+index
+);
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export void ResetModel(ModelData & modelData)
+{
+	func_897B0(modelData);
+	func_89450(modelData);
+	memset(modelData, 0, sizeof(ModelData));
+	func_89270(modelData);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void CopyBaseVertices(MODEL_METADATA * modelMetadata)
+//{
+//	auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
+//
+//	for_all(uint8, index, 6)
+//	{
+//		uint8 off = (index * 3);
+//		modelMetadata[index].count = 4;
+//		modelMetadata[index].vertices[0] = g_vertices[(off + 0)];
+//		modelMetadata[index].vertices[1] = g_vertices[(off + 1)];
+//		modelMetadata[index].vertices[2] = g_vertices[(off + 2)];
+//	}
+//}
+//
+//void CopyAmuletVertices(MODEL_METADATA * modelMetadata)
+//{
+//	auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
+//
+//	modelMetadata[0].count = 4;
+//	modelMetadata[0].vertices[0] = g_vertices[23];
+//	modelMetadata[0].vertices[1] = g_vertices[24];
+//	modelMetadata[0].vertices[2] = g_vertices[25];
+//}
+//
+//void CopyCoatVertices(byte8 * dest)
+//{
+//	auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x35D580);
+//	auto addr = *reinterpret_cast<byte8 **>(dest);
+//	auto vertices = *reinterpret_cast<vec4 **>(addr + 0x108);
+//
+//	vertices[0] = g_vertices[0];
+//	vertices[1] = g_vertices[1];
+//	vertices[2] = g_vertices[2];
+//	vertices[3] = g_vertices[3];
+//}
+
+
+
+
+
+
+
+
+
+
+
+//template <typename T>
+//void UpdateModelFunctionDante(T & actorData)
+//{
+//	uint8 modelIndex    = 0;
+//	uint8 submodelIndex = 0;
+//
+//	byte8 * modelFile   = 0;
+//	byte8 * textureFile = 0;
+//	byte8 * shadowFile  = 0;
+//	byte8 * physicsFile = 0;
+//
+//	auto & modelData = actorData.modelData[0];
+//
+//	auto costume = actorData.costume;
+//	if (costume >= MAX_COSTUME_DANTE)
+//	{
+//		costume = 0;
+//	}
+//	auto costumeFileId = costumeFileIdsDante[costume];
+//	auto coat =
+//	(
+//		(costume == COSTUME_DANTE_DEFAULT                           ) ||
+//		(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
+//		(costume == COSTUME_DANTE_DMC1                              ) ||
+//		(costume == COSTUME_DANTE_SPARDA                            ) ||
+//		(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
+//		(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
+//	)
+//	? true : false;
+//
+//	if (actorData.newForceFiles)
+//	{
+//		switch (actorData.newForceFilesCharacter)
+//		{
+//		case CHAR_BOB:
+//		{
+//			if (costume >= MAX_COSTUME_BOB)
+//			{
+//				costume = 0;
+//			}
+//			costumeFileId = costumeFileIdsBob[costume];
+//			coat = false;
+//			break;
+//		}
+//		case CHAR_LADY:
+//		{
+//			if (costume >= MAX_COSTUME_LADY)
+//			{
+//				costume = 0;
+//			}
+//			costumeFileId = costumeFileIdsLady[costume];
+//			coat = false;
+//			break;
+//		}
+//		case CHAR_VERGIL:
+//		{
+//			if (costume >= MAX_COSTUME_VERGIL)
+//			{
+//				costume = 0;
+//			}
+//			costumeFileId = costumeFileIdsVergil[costume];
+//			coat =
+//			(
+//				(costume == COSTUME_VERGIL_DEFAULT                      ) ||
+//				(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
+//				(costume == COSTUME_VERGIL_SPARDA                       ) ||
+//				(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
+//			)
+//			? true : false;
+//			break;
+//		}
+//		}
+//	}
+//
+//	auto & file = File_staticFiles[costumeFileId];
+//
+//	// Main
+//
+//	modelFile   = file[1];
+//	textureFile = file[0];
+//	shadowFile  = file[8];
+//
+//	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
+//	{
+//		modelFile   = file[32];
+//		textureFile = file[31];
+//		shadowFile  = file[16];
+//	}
+//
+//	RegisterModel
+//	(
+//		modelData,
+//		modelFile,
+//		textureFile
+//	);
+//
+//	RegisterShadow
+//	(
+//		modelData,
+//		actorData.shadowData[modelIndex],
+//		shadowFile
+//	);
+//
+//	CopyBaseVertices(actorData.modelMetadata);
+//
+//
+//
+//	
+//
+//
+//
+//
+//	// Coat
+//
+//	modelFile   = file[12];
+//	textureFile = file[0 ];
+//	shadowFile  = file[14];
+//	physicsFile = file[13];
+//
+//	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
+//	{
+//		modelFile   = file[17];
+//		textureFile = file[31];
+//		physicsFile = file[18];
+//	}
+//
+//	RegisterModel
+//	(
+//		actorData.submodelData[submodelIndex],
+//		modelFile,
+//		textureFile
+//	);
+//
+//	func_8A000
+//	(
+//		actorData.submodelData[submodelIndex],
+//		0,
+//		actorData.var_A0D0
+//	);
+//
+//	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY))
+//	{
+//		return;
+//	}
+//
+//	if (coat)
+//	{
+//		RegisterShadow
+//		(
+//			actorData.submodelData[submodelIndex],
+//			actorData.subshadowData[submodelIndex],
+//			shadowFile
+//		);
+//	}
+//
+//	actorData.var_9AC0[submodelIndex] = 1;
+//
+//	//RegisterPhysics
+//	//(
+//	//	actorData.var_A210,
+//	//	actorData.var_A0D0,
+//	//	physicsFile
+//	//);
+//
+//	//if (actorData.newForceLadyFiles)
+//	//{
+//	//	func_2CA2F0
+//	//	(
+//	//		actorData.var_A210,
+//	//		actorData.var_1880,
+//	//		(appBaseAddr + 0x58AC84),
+//	//		actorData.modelMetadata,
+//	//		1
+//	//	);
+//	//	return;
+//	//}
+//	/*
+//	dmc3.exe+2194C0 - 4C 8D 05 BD173700 - lea r8,[dmc3.exe+58AC84]
+//	*/
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//	func_2CA2F0
+//	(
+//		actorData.var_A210,
+//		//actorData.var_1880[modelIndex],
+//
+//		actorData.physicsMetadata[modelIndex],
+//
+//
+//		(appBaseAddr + 0x58B380),
+//		actorData.modelMetadata,
+//		(coat) ? 6 : 1
+//	);
+//
+//	if (coat)
+//	{
+//		CopyCoatVertices(actorData.var_A0D0);
+//	}
+//	else
+//	{
+//		CopyAmuletVertices(actorData.modelMetadata);
+//	}
+//}
 
 
 
@@ -384,7 +545,7 @@ export void UpdateModelDante(byte8 * baseAddr)
 
 	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
 
-	UpdateModelFunctionDante(actorData);
+	//UpdateModelFunctionDante(actorData);
 }
 
 
@@ -455,7 +616,7 @@ constexpr uint16 devilFileIdsDante[MAX_DEVIL_DANTE] =
 
 
 
-
+// @Todo: Set devil id.
 
 
 export template <typename T>
@@ -466,114 +627,84 @@ void UpdateDevilModelFunctionDante
 	uint8 devilModelIndex
 )
 {
-	uint8 modelIndex   = (devilModelIndex == 0) ? 1  : 2;
-	uint8 physicsMetadataIndex = 0;
+	uint16 devilFileId = devilFileIdsDante[devil];
 
-	uint8 submodelIndex      = (devilModelIndex == 0) ? 1 : 3;
-	uint8 devilPhysicsMetadataIndex  = 0;
-	uint8 devilSubmodelIndex = (devilModelIndex == 0) ? 0 : 2;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	auto & file = File_staticFiles[devilFileId];
 
 	byte8 * modelFile   = 0;
 	byte8 * textureFile = 0;
 	byte8 * shadowFile  = 0;
 	byte8 * physicsFile = 0;
 
-
-
-	actorData.devilModels[modelIndex] = devil; // @Research: Merge with devil.
-
-	uint16 devilFileId = devilFileIdsDante[devil];
-
-	auto & file = File_staticFiles[devilFileId];
-
 	auto & devilModelMetadata = actorData.devilModelMetadata[devil];
 
+	uint8 modelIndex                = (devilModelIndex == 0) ? 1  : 2;
+	uint8 modelPhysicsMetadataIndex = 0;
 
+	uint8 submodelIndex                  = (devilModelIndex == 0) ? 1 : 3;
+	uint8 devilModelPhysicsMetadataIndex = 0;
+	uint8 devilSubmodelIndex             = (devilModelIndex == 0) ? 0 : 2;
 
-
-
-
-	// @Todo: Extern and DevilMetadata2 reference.
-
-	auto LinkPhysicsData = [&]
+	auto LinkModelPhysicsData = [&]
 	(
-		uint8 devilPhysicsDataIndex,
-		uint8 _physicsMetadataIndex,
-		uint8 _devilPhysicsMetadataIndex
+		uint8 _devilModelPhysicsDataIndex,
+		uint8 _modelPhysicsMetadataIndex,
+		uint8 _devilModelPhysicsMetadataIndex
 	)
 	{
-		auto & devilPhysicsData = actorData.devilPhysicsData[devilSubmodelIndex][devilPhysicsDataIndex];
-		auto physicsMetadataAddr = actorData.physicsMetadata[modelIndex][(physicsMetadataIndex + _physicsMetadataIndex)];
-		if (!physicsMetadataAddr)
+		auto & devilModelPhysicsData = actorData.devilModelPhysicsData[devilSubmodelIndex][_devilModelPhysicsDataIndex];
+
+		auto modelPhysicsMetadataAddr = actorData.modelPhysicsMetadata[modelIndex][(modelPhysicsMetadataIndex + _modelPhysicsMetadataIndex)];
+		if (!modelPhysicsMetadataAddr)
 		{
 			return;
 		}
-		auto & physicsMetadata = *physicsMetadataAddr;
-		auto devilPhysicsMetadataAddr = actorData.devilPhysicsMetadata[devilModelIndex][(devilPhysicsMetadataIndex + _devilPhysicsMetadataIndex)];
-		if (!devilPhysicsMetadataAddr)
+		auto & modelPhysicsMetadata = *modelPhysicsMetadataAddr;
+
+		auto devilModelPhysicsMetadataAddr = actorData.devilModelPhysicsMetadata[devilModelIndex][(devilModelPhysicsMetadataIndex + _devilModelPhysicsMetadataIndex)];
+		if (!devilModelPhysicsMetadataAddr)
 		{
 			return;
 		}
-		auto & devilPhysicsMetadata = *devilPhysicsMetadataAddr;
+		auto & devilPhysicsMetadata = *devilModelPhysicsMetadataAddr;
 
-		devilPhysicsData.enable = 1;
-		devilPhysicsData.physicsData = physicsMetadata.physicsData;
-		memcpy(devilPhysicsData.data, (appBaseAddr + 0x35D580), 64);
+		devilModelPhysicsData.enable = 1;
+		devilModelPhysicsData.physicsData = modelPhysicsMetadata.physicsData;
+		memcpy(devilModelPhysicsData.data, (appBaseAddr + 0x35D580), 64);
 
-		devilPhysicsMetadata.devilPhysicsData = &devilPhysicsData;
+		devilPhysicsMetadata.devilPhysicsData = &devilModelPhysicsData;
 	};
 
+	actorData.devilModels[modelIndex] = devil;
 
+	// Main
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	modelFile = file[1];
+	modelFile   = file[1];
 	textureFile = file[0];
 
-	func_8B470
+	if (devil == DEVIL_DANTE_AGNI_RUDRA)
+	{
+		shadowFile  = file[2];
+	}
+	else if
 	(
-		actorData.modelData[modelIndex],
-		1
-	);
+		(devil == DEVIL_DANTE_CERBERUS) ||
+		(devil == DEVIL_DANTE_BEOWULF ) ||
+		(devil == DEVIL_DANTE_SPARDA  )
+	)
+	{
+		shadowFile  = file[4];
+	}
+	else if
+	(
+		(devil == DEVIL_DANTE_REBELLION) ||
+		(devil == DEVIL_DANTE_NEVAN    )
+	)
+	{
+		shadowFile  = file[6];
+	}
 
-	func_89960
+	RegisterModel
 	(
 		actorData.modelData[modelIndex],
 		modelFile,
@@ -586,699 +717,166 @@ void UpdateDevilModelFunctionDante
 		modelIndex
 	);
 
-
-	{
-		shadowFile = file[6];
-
-		auto dest = func_89DE0(actorData.modelData[modelIndex]);
-
-		func_8BC60
-		(
-			actorData.shadowData[modelIndex],
-			dest,
-			shadowFile
-		);
-
-		//dest = func_89DE0(actorData.modelData[modelIndex]);
-
-		func_305D80(dest);
-	}
-
-
-
-
-	//uint8 physicsIndex = (devilModelIndex == 0) ? 24 : 48;
-
+	RegisterShadow
+	(
+		actorData.modelData[modelIndex],
+		actorData.modelShadowData[modelIndex],
+		shadowFile
+	);
 
 	devilModelMetadata.modelIndex = modelIndex;
-	devilModelMetadata.physicsIndex = ((modelIndex * 24) + physicsIndex);
+	devilModelMetadata.modelPhysicsMetadataIndex = ((modelIndex * 24) + modelPhysicsMetadataIndex);
 
+	if (devil == DEVIL_DANTE_AGNI_RUDRA)
+	{
+		return;
+	}
 
+	// Wings
 
+	modelFile   = file[2];
+	textureFile = file[0];
+	physicsFile = file[3];
 
-	// auto & modelDataIndex = devilModelMetadata
-
-	
-	// auto & physicsMetadataIndex = devilmodelmetadata = ((devil == DEVIL_DANTE_REBELLION) || (devil == DEVIL_DANTE_NEVAN)) ? 9 : 0;
-
-
-
-
-
-
-	// stuff
-
-	// modelDataIndex += (modelIndex * 24);
-
-
-
-
-
-
-
-
-
-
-	//textureFile = file[0];
-
-	modelFile = file[2];
-
-	func_8B470
+	if
 	(
-		actorData.submodelData[submodelIndex],
-		1
-	);
-
-	func_89960
-	(
-		actorData.submodelData[submodelIndex],
-		modelFile,
-		textureFile
-	);
-
-	func_8A000
-	(
-		actorData.submodelData[submodelIndex],
-		0,
-		&actorData.devilPhysicsMetadata[devilModelIndex][devilPhysicsMetadataIndex]
-	);
-
-	
-
-
-
-
+		(devil == DEVIL_DANTE_REBELLION) ||
+		(devil == DEVIL_DANTE_NEVAN    )
+	)
 	{
 		shadowFile = file[7];
-
-		auto dest = func_89DE0(actorData.submodelData[submodelIndex]);
-
-		func_8BC60
-		(
-			actorData.subshadowData[submodelIndex],
-			dest,
-			shadowFile
-		);
-
-		//dest = func_89DE0(actorData.submodelData[submodelIndex]);
-
-		func_305D80(dest);
-
-		actorData.var_9AC0[submodelIndex] = 1;
 	}
-
-	{
-		physicsFile = file[3];
-
-		auto count = func_2C9F40(physicsFile);
-
-		if (count == 0)
-		{
-			MessageBoxA(0, "cyka bilyat!", 0, 0);
-		}
-
-		for_all(uint32, index, count)
-		{
-			func_2CA1D0
-			(
-				actorData.var_A540[devilSubmodelIndex],
-				&actorData.devilPhysicsMetadata[devilModelIndex][devilPhysicsMetadataIndex],
-				physicsFile,
-				index
-			);
-		}
-	}
-
-
-
-
-	LinkPhysicsData(0, 3, 1 );
-	LinkPhysicsData(1, 2, 12);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	devilModelMetadata.submodelMetadata[0].submodelIndex      = submodelIndex;
-	devilModelMetadata.submodelMetadata[0].devilPhysicsIndex      = ((devilModelIndex * 36) + devilPhysicsIndex);
-	devilModelMetadata.submodelMetadata[0].devilSubmodelIndex = devilSubmodelIndex;
-
-	submodelIndex++;
-	devilPhysicsIndex += 9;
-	devilSubmodelIndex++;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//textureFile = file[0];
-	modelFile = file[4];
-
-	func_8B470
+	else if
 	(
-		actorData.submodelData[submodelIndex],
-		1
-	);
+		(devil == DEVIL_DANTE_CERBERUS) ||
+		(devil == DEVIL_DANTE_BEOWULF ) ||
+		(devil == DEVIL_DANTE_SPARDA  )
+	)
+	{
+		shadowFile = file[5];
+	}
 
-	func_89960
+	RegisterModel
 	(
 		actorData.submodelData[submodelIndex],
 		modelFile,
 		textureFile
 	);
 
-
-
-
-
-	
-
 	func_8A000
 	(
 		actorData.submodelData[submodelIndex],
 		0,
-		&actorData.devilPhysicsMetadata[devilModelIndex][devilPhysicsIndex]
+		&actorData.devilModelPhysicsMetadata[devilModelIndex][devilModelPhysicsMetadataIndex]
 	);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	{
-		shadowFile = file[8];
-
-		auto dest = func_89DE0(actorData.submodelData[submodelIndex]);
-
-		func_8BC60
-		(
-			actorData.subshadowData[submodelIndex],
-			dest,
-			shadowFile
-		);
-
-		//dest = func_89DE0(actorData.submodelData[submodelIndex]);
-
-		func_305D80(dest);
-	}
-
-
+	RegisterShadow
+	(
+		actorData.submodelData[submodelIndex],
+		actorData.submodelShadowData[submodelIndex],
+		shadowFile
+	);
 
 	actorData.var_9AC0[submodelIndex] = 1;
 
+	RegisterPhysics
+	(
+		physicsFile,
+		&actorData.devilSubmodelPhysicsData[devilSubmodelIndex],
+		&actorData.devilModelPhysicsMetadata[devilModelIndex][devilModelPhysicsMetadataIndex]
+	);
+
+	LinkModelPhysicsData(0, 3, 1);
+
+	if
+	(
+		(devil == DEVIL_DANTE_REBELLION) ||
+		(devil == DEVIL_DANTE_NEVAN    )
+	)
 	{
-		physicsFile = file[5];
-
-		auto count = func_2C9F40(physicsFile);
-
-		// @Research: Same here, check for 0.
-
-		if (count == 0)
-		{
-			MessageBoxA(0, "cyka bilyat!", 0, 0);
-		}
-
-
-
-		for_all(uint32, index, count)
-		{
-			func_2CA1D0
-			(
-				actorData.var_A540[devilSubmodelIndex],
-				&actorData.devilPhysicsMetadata[devilModelIndex][devilPhysicsIndex],
-				physicsFile,
-				index
-			);
-		}
+		LinkModelPhysicsData(1, 2, 12);
+	}
+	else if
+	(
+		(devil == DEVIL_DANTE_CERBERUS) ||
+		(devil == DEVIL_DANTE_BEOWULF )
+	)
+	{
+		LinkModelPhysicsData(1, 6 , 2);
+		LinkModelPhysicsData(2, 10, 8);
 	}
 
+	devilModelMetadata.devilSubmodelMetadata[0].submodelIndex                  = submodelIndex;
+	devilModelMetadata.devilSubmodelMetadata[0].devilModelPhysicsMetadataIndex = ((devilModelIndex * 36) + devilModelPhysicsMetadataIndex);
+	devilModelMetadata.devilSubmodelMetadata[0].devilSubmodelIndex             = devilSubmodelIndex;
 
+	submodelIndex++;
+	devilModelPhysicsMetadataIndex += 9;
+	devilSubmodelIndex++;
 
-	
+	// Coat
 
+	if
+	(
+		!(
+			(devil == DEVIL_DANTE_REBELLION) ||
+			(devil == DEVIL_DANTE_NEVAN    )
+		)
+	)
+	{
+		return;
+	}
+
+	modelFile   = file[4];
+	textureFile = file[0];
+	shadowFile  = file[8];
+	physicsFile = file[5];
+
+	RegisterModel
+	(
+		actorData.submodelData[submodelIndex],
+		modelFile,
+		textureFile
+	);
+
+	func_8A000
+	(
+		actorData.submodelData[submodelIndex],
+		0,
+		&actorData.devilModelPhysicsMetadata[devilModelIndex][devilModelPhysicsMetadataIndex]
+	);
+
+	RegisterShadow
+	(
+		actorData.submodelData[submodelIndex],
+		actorData.submodelShadowData[submodelIndex],
+		shadowFile
+	);
+
+	actorData.var_9AC0[submodelIndex] = 1;
+
+	RegisterPhysics
+	(
+		physicsFile,
+		&actorData.devilSubmodelPhysicsData[devilSubmodelIndex],
+		&actorData.devilModelPhysicsMetadata[devilModelIndex][devilModelPhysicsMetadataIndex]
+	);
 
 	func_2CA2F0
 	(
-		actorData.var_A540[devilSubmodelIndex],
-		actorData.physicsMetadata[modelIndex],
+		actorData.devilSubmodelPhysicsData[devilSubmodelIndex],
+		actorData.modelPhysicsMetadata[modelIndex],
 		(appBaseAddr + 0x58B380),
 		actorData.modelMetadata,
 		6
 	);
 
-
-
-	//uint8 devilPhysicsIndex  = (devilModelIndex == 0) ? 0 : 36;
-
-
-
-
-
-	LinkPhysicsData(0, 2 , 1);
-	LinkPhysicsData(1, 14, 2);
-
-	devilModelMetadata.submodelMetadata[1].submodelIndex      = submodelIndex;
-	devilModelMetadata.submodelMetadata[1].devilPhysicsIndex  = ((devilModelIndex * 36) + devilPhysicsIndex);
-	devilModelMetadata.submodelMetadata[1].devilSubmodelIndex = devilSubmodelIndex;
-
-	return;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//auto baseAddr = reinterpret_cast<byte8 *>(&actorData);
-
-	//auto CopyVertices = [&]
-	//(
-	//	//byte8 * baseAddr,
-	//	uint8   index0,
-	//	uint8   index1,
-	//	uint8   index2
-	//	)
-	//{
-	//	//auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x35D580);
-
-	//	byte8 * dest = 0;
-	//	byte8 * addr = 0;
-
-	//	//vec4 * vertices = 0;
-
-	//	dest = (baseAddr + 0xAA00 + (index0 * 0xC0) + (devilSubmodelIndex * 0x300));
-
-	//	addr = *(byte8 **)(baseAddr + 0xA300 + ((devilPhysicsIndex + index1) * 8));
-	//	*(byte8 **)(addr + 0x100) = dest;
-
-
-	//	memcpy((dest + 0x80), (appBaseAddr + 0x35D580), 64);
-
-	//	//vertices = (vec4 *)(dest + 0x80);
-	//	//vertices[0] = g_vertices[0];
-	//	//vertices[1] = g_vertices[1];
-	//	//vertices[2] = g_vertices[2];
-	//	//vertices[3] = g_vertices[3];
-
-	//	*(uint32 *)(dest + 0x28) = 1;
-	//	addr = *(byte8 **)(baseAddr + 0x1880 + ((physicsIndex + index2) * 8));
-	//	addr = *(byte8 **)(addr + 0x110);
-	//	*(byte8 **)(dest + 0x30) = addr;
-	//};
-
-
-
-	//auto & meleeWeapon = actorData.weapons[actorData.meleeWeaponIndex];
-
-
-
-
-
-
-
-	//uint8 devil = 0;
-	//if ((meleeWeapon >= WEAPON_DANTE_REBELLION) && (meleeWeapon <= WEAPON_DANTE_BEOWULF))
-	//{
-	//	devil = meleeWeapon;
-	//}
-	//if (actorData.sparda)
-	//{
-	//	devil = DEVIL_DANTE_SPARDA;
-	//}
-
-
-
-	//// Main
-
-	//if (devil == DEVIL_DANTE_AGNI_RUDRA)
-	//{
-	//	modelFile   = file[1];
-	//	textureFile = file[0];
-	//	shadowFile  = file[2];
-	//}
-	//else if
-	//(
-	//	(devil == DEVIL_DANTE_CERBERUS) ||
-	//	(devil == DEVIL_DANTE_BEOWULF ) ||
-	//	(devil == DEVIL_DANTE_SPARDA  )
-	//)
-	//{
-	//	modelFile   = file[1];
-	//	textureFile = file[0];
-	//	shadowFile  = file[4];
-	//}
-	//else if
-	//(
-	//	(devil == DEVIL_DANTE_REBELLION) ||
-	//	(devil == DEVIL_DANTE_NEVAN    )
-	//)
-	//{
-	//	modelFile   = file[1];
-	//	textureFile = file[0];
-	//	shadowFile  = file[6];
-	//}
-
-	//devilModelMetadata.modelIndex = modelIndex;
-	//devilModelMetadata.modelOff   = modelOff;
-
-	//RegisterModel
-	//(
-	//	actorData.modelData[modelIndex],
-	//	modelFile,
-	//	textureFile
-	//);
-
-	//func_1EF040(actorData, modelIndex); // @Research: static_cast.
-
-	//RegisterShadow
-	//(
-	//	actorData.modelData[modelIndex],
-	//	actorData.shadowData[modelIndex],
-	//	shadowFile
-	//);
-
-	//if (devil == DEVIL_DANTE_AGNI_RUDRA)
-	//{
-	//	return;
-	//}
-
-
-
-
-
-	//// Wings
-
-	//if
-	//(
-	//	(devil == DEVIL_DANTE_REBELLION) ||
-	//	(devil == DEVIL_DANTE_NEVAN    )
-	//)
-	//{
-	//	modelFile   = file[2];
-	//	textureFile = file[0];
-	//	shadowFile  = file[7];
-	//	physicsFile = file[3];
-
-	//	RegisterModel
-	//	(
-	//		actorData.submodelData[submodelIndex],
-	//		modelFile,
-	//		textureFile
-	//	);
-
-	//	func_8A000
-	//	(
-	//		actorData.submodelData[submodelIndex],
-	//		0,
-	//		(devilModelIndex == 0) ? actorData.var_A300[0] : actorData.var_A300[1]
-	//	);
-
-	//	RegisterShadow
-	//	(
-	//		actorData.submodelData[submodelIndex],
-	//		actorData.subshadowData[submodelIndex],
-	//		shadowFile
-	//	);
-
-	//	actorData.var_9AC0[submodelIndex] = 1;
-
-
-
-
-
-
-
-
-	//	RegisterPhysics
-	//	(
-	//		actorData.var_A540[devilSubmodelIndex],
-	//		(devilModelIndex == 0) ? actorData.var_A300[0] : actorData.var_A300[1],
-	//		physicsFile
-	//	);
-
-
-
-
-	//	// Wings
-	//	{
-	//		auto data = actorData.var_AA00[devilSubmodelIndex];
-	//		{
-	//			auto pool = reinterpret_cast<byte8 **>(actorData.var_A300);
-	//			auto dest = pool[(devilModelOff + 1)];
-
-	//			*reinterpret_cast<byte8 **>(dest + 0x100) = data;
-	//		}
-	//		memcpy((data + 0x80), (appBaseAddr + 0x35D580), 64);
-
-	//		auto pool = reinterpret_cast<byte8 **>(actorData.var_1880);
-	//		auto addr = pool[(modelOff + 3)];
-	//		auto dest = *reinterpret_cast<byte8 **>(addr + 0x110);
-	//		*reinterpret_cast<byte8 **>(data + 0x30) = dest;
-	//		*reinterpret_cast<bool32 *>(data + 0x28) = 1;
-	//	}
-
-
-
-
-
-
-
-	//	//CopyVertices(0, 1 , 3);
-
-
-
-
-
-	//	//CopyVertices(1, 12, 2);
-
-	//	devilModelMetadata.submodelMetadata[0].submodelIndex      = submodelIndex;
-	//	devilModelMetadata.submodelMetadata[0].devilModelOff      = devilModelOff;
-	//	devilModelMetadata.submodelMetadata[0].devilSubmodelIndex = devilSubmodelIndex;
-
-	//	submodelIndex++;
-	//	devilSubmodelIndex++;
-
-	//	devilModelOff += 9;
-	//}
-
-
-
-	//// Coat
-
-	//if
-	//(
-	//	(devil == DEVIL_DANTE_CERBERUS) ||
-	//	(devil == DEVIL_DANTE_BEOWULF ) ||
-	//	(devil == DEVIL_DANTE_SPARDA  )
-	//)
-	//{
-	//	modelFile   = file[2];
-	//	textureFile = file[0];
-	//	shadowFile  = file[5];
-	//	physicsFile = file[3];
-	//}
-	//else if
-	//(
-	//	(devil == DEVIL_DANTE_REBELLION) ||
-	//	(devil == DEVIL_DANTE_NEVAN    )
-	//)
-	//{
-	//	modelFile   = file[4];
-	//	textureFile = file[0];
-	//	shadowFile  = file[8];
-	//	physicsFile = file[5];
-	//}
-
-	//RegisterModel
-	//(
-	//	actorData.submodelData[submodelIndex],
-	//	modelFile,
-	//	textureFile
-	//);
-
-	//func_8A000
-	//(
-	//	actorData.submodelData[submodelIndex],
-	//	0,
-	//	(devilModelIndex == 0) ? actorData.var_A300[0] : actorData.var_A300[1]
-	//);
-
-	//RegisterShadow
-	//(
-	//	actorData.submodelData[submodelIndex],
-	//	actorData.subshadowData[submodelIndex],
-	//	shadowFile
-	//);
-
-	//actorData.var_9AC0[submodelIndex] = 1;
-
-	//RegisterPhysics
-	//(
-	//	actorData.var_A540[devilSubmodelIndex],
-	//	(devilModelIndex == 0) ? actorData.var_A300[0] : actorData.var_A300[1],
-	//	physicsFile
-	//);
-
-	//if
-	//(
-	//	(devil == DEVIL_DANTE_CERBERUS) ||
-	//	(devil == DEVIL_DANTE_BEOWULF )
-	//)
-	//{
-	//	CopyVertices(0, 1, 3 );
-	//	CopyVertices(1, 2, 6 );
-	//	CopyVertices(2, 8, 10);
-	//}
-	//else if
-	//(
-	//	(devil == DEVIL_DANTE_REBELLION) ||
-	//	(devil == DEVIL_DANTE_NEVAN    )
-	//)
-	//{
-	//	func_2CA2F0
-	//	(
-	//		actorData.var_A540[devilSubmodelIndex],
-	//		actorData.var_1880[modelIndex],
-	//		(appBaseAddr + 0x58B380),
-	//		actorData.modelMetadata,
-	//		6
-	//	);
-
-	//	//CopyVertices(0, 1, 2 );
-	//	//CopyVertices(1, 2, 14);
-	//}
-
-	//if
-	//(
-	//	(devil == DEVIL_DANTE_CERBERUS) ||
-	//	(devil == DEVIL_DANTE_BEOWULF ) ||
-	//	(devil == DEVIL_DANTE_SPARDA  )
-	//)
-	//{
-	//	devilModelMetadata.submodelMetadata[0].submodelIndex      = submodelIndex;
-	//	devilModelMetadata.submodelMetadata[0].devilModelOff      = devilModelOff;
-	//	devilModelMetadata.submodelMetadata[0].devilSubmodelIndex = devilSubmodelIndex;
-	//}
-	//else
-	//{
-	//	devilModelMetadata.submodelMetadata[1].submodelIndex      = submodelIndex;
-	//	devilModelMetadata.submodelMetadata[1].devilModelOff      = devilModelOff;
-	//	devilModelMetadata.submodelMetadata[1].devilSubmodelIndex = devilSubmodelIndex;
-	//}
-
-
-
-
-
-	//if (devil == DEVIL_DANTE_REBELLION)
-	//{
-	//	// Coat
-	//	{
-	//		auto data = (reinterpret_cast<byte8 *>(&actorData.var_AA00[devilSubmodelIndex]) + 0xC0);
-	//		{
-	//			auto pool = reinterpret_cast<byte8 **>(actorData.var_A300);
-	//			auto dest = pool[(devilModelOff + 12)];
-	//			*reinterpret_cast<byte8 **>(dest + 0x100) = data;
-	//		}
-	//		memcpy((data + 0x80), (appBaseAddr + 0x35D580), 64);
-
-	//		auto pool = reinterpret_cast<byte8 **>(actorData.var_A300);
-	//		auto addr = pool[(modelOff + 2)];
-	//		auto dest = *reinterpret_cast<byte8 **>(addr + 0x110);
-	//		*reinterpret_cast<byte8 **>(data + 0x30) = dest;
-	//		*reinterpret_cast<bool32 *>(data + 0x28) = 1;
-	//	}
-
-	//	*reinterpret_cast<uint8 *>(baseAddr + 0xB878) = 255;
-	//}
-
-
-
-
-	// 1309 without devil
-	// 1319 with devil
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	LinkModelPhysicsData(0, 2 , 1);
+	LinkModelPhysicsData(1, 14, 2);
+
+	devilModelMetadata.devilSubmodelMetadata[1].submodelIndex      = submodelIndex;
+	devilModelMetadata.devilSubmodelMetadata[1].devilModelPhysicsMetadataIndex  = ((devilModelIndex * 36) + devilModelPhysicsMetadataIndex);
+	devilModelMetadata.devilSubmodelMetadata[1].devilSubmodelIndex = devilSubmodelIndex;
 }
 
 

@@ -249,7 +249,7 @@ void UpdateModelPartitions(T & actorData)
 
 	IntroduceSessionData();
 
-	auto modelPartitionData = actorData.modelData[0].partitionData;
+	auto modelPartitionData = actorData.modelData[0].modelPartitionData;
 
 	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY))
 	{

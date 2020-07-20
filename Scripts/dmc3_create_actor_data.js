@@ -25,9 +25,17 @@ var items =
 	[ "visible"                        , "uint32"                    , 0x120                            ], // @Todo: Check type.
 	[ ""                               , "float32"                   , 0x1C0                            ],
 	[ ""                               , "float32"                   , 0x1C4                            ],
-	[ "modelData[3]"                   , "MODEL_DATA"                , 0x200                            ],
 
-	[ "physicsMetadata[3][24]", "PhysicsMetadata *"                   , 0x1880                           ],
+
+
+
+	[ "modelData[3]"                   , "ModelData"                , 0x200                            ],
+
+	[ "modelPhysicsMetadata[3][24]", "PhysicsMetadata *"                   , 0x1880                           ],
+
+
+
+
 
 
 
@@ -120,45 +128,59 @@ var items =
 	[ "leftStickRadius"                , "uint16"                    , 0x750A                           ],
 	[ "actorCameraDirection"           , "uint16"                    , 0x750C                           ],
 	[ "leftStickDirection[2]"          , "uint32"                    , 0x751C                           ],
-	[ "submodelData[2]"                , "MODEL_DATA"                , 0x7540                           ],
+
+
+
+
+	[ "submodelData[5]"                , "ModelData"                , 0x7540                           ],
+
+
+
+
 	[ "[2]"                            , "uint8"                     , 0x9AC0                           ],
-	[ "shadowData[2]"                  , "Size_192"                  , 0x9AD0                           ],
-	[ "subshadowData[2]"               , "Size_192"                  , 0x9D10                           ],
-
-
-
-
-	[ "[2]"                            , "byte8"                     , 0xA0D0                           ],
-
-
-
-
-	[ "[2]"                            , "byte8"                     , 0xA210                           ],
 
 
 
 
 
 
-	[ "devilPhysicsMetadata[2][36]", "DevilPhysicsMetadata *"                   , 0xA300                           ],
+	[ "modelShadowData[3]"                  , "ShadowData"                  , 0x9AD0                           ],
+	[ "submodelShadowData[4]"               , "ShadowData"                  , 0x9D10                           ],
 
 
 
 
-	[ "[2]"                            , "Size_240"                  , 0xA540                           ],
+	[ "submodelPhysicsMetadata"         , "PhysicsMetadata"        , 0xA0D0                           ],
+	[ "submodelPhysicsData"             , "PhysicsData"            , 0xA210                           ],
 
 
 
-	
-	[ "devilPhysicsData[4][4]"         , "DevilPhysicsData"          , 0xAA00                           ],
+
+
+	[ "devilModelPhysicsMetadata[2][36]", "DevilPhysicsMetadata *" , 0xA300                           ],
+
+
+	[ "devilSubmodelPhysicsData[4]"     , "PhysicsData"            , 0xA540                           ],
+	[ "devilModelPhysicsData[4][4]"     , "DevilPhysicsData"       , 0xAA00                           ],
 
 
 	
+
+
+
 
 
 	[ "devilModelMetadata"             , "DevilModelMetadataDante"   , 0xB600, CHAR_DANTE               ],
-	[ "modelMetadata[6]"               , "MODEL_METADATA"            , 0xB630, CHAR_DANTE               ],
-	[ "modelMetadata[6]"               , "MODEL_METADATA"            , 0xB640, CHAR_VERGIL              ],
+	[ "modelMetadata[6]"               , "ModelMetadata"            , 0xB630, CHAR_DANTE               ],
+
+
+
+
+
+
+
+
+
 	[ "artemisChargeValue[2]"          , "float32"                   , 0xB868, CHAR_DANTE               ],
 	[ "artemisChargeFlags[2]"          , "byte32"                    , 0xB87C, CHAR_DANTE               ],
 ];
@@ -530,7 +552,7 @@ function CreateActorCheatEntry
 		{
 			continue;
 		}
-		else if (type == "MODEL_DATA")
+		else if (type == "ModelData")
 		{
 			continue;
 		}

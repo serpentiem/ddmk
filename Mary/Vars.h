@@ -1211,26 +1211,29 @@ struct INPUT_DATA
 
 
 
+struct ShadowData
+{
+	_(192);
+};
 
-
-
-
-
-
-
+static_assert(sizeof(ShadowData) == 0xC0);
 
 struct PhysicsData
 {
-	_(8);
+	_(240);
 };
+
+static_assert(sizeof(PhysicsData) == 0xF0);
 
 struct PhysicsMetadata
 {
 	_(272);
 	PhysicsData * physicsData;
+	_(40);
 };
 
 static_assert(offsetof(PhysicsMetadata, physicsData) == 0x110);
+static_assert(sizeof(PhysicsMetadata) == 0x140);
 
 
 
@@ -1337,13 +1340,16 @@ static_assert(offsetof(DevilPhysicsMetadata, devilPhysicsData) == 0x100);
 
 
 
-struct MODEL_METADATA
+struct ModelMetadata
 {
 	uint8 count;
 	_(15);
 	vec4 vertices[3];
 	_(16);
 };
+
+static_assert(sizeof(ModelMetadata) == 80);
+
 
 
 
@@ -1352,13 +1358,13 @@ struct MODEL_METADATA
 struct DevilModelMetadata
 {
 	uint8 modelIndex;
-	uint8 physicsIndex;
+	uint8 modelPhysicsMetadataIndex;
 };
 
 struct DevilSubmodelMetadata
 {
 	uint8 submodelIndex;
-	uint8 devilPhysicsIndex;
+	uint8 devilModelPhysicsMetadataIndex;
 	uint8 devilSubmodelIndex;
 };
 
@@ -1377,12 +1383,12 @@ struct DevilSubmodelMetadata
 
 struct DevilModelMetadata1 : DevilModelMetadata
 {
-	DevilSubmodelMetadata submodelMetadata;
+	DevilSubmodelMetadata devilSubmodelMetadata;
 };
 
 struct DevilModelMetadata2 : DevilModelMetadata
 {
-	DevilSubmodelMetadata submodelMetadata[2];
+	DevilSubmodelMetadata devilSubmodelMetadata[2];
 };
 
 struct DevilModelMetadataDante
@@ -1537,27 +1543,21 @@ constexpr uint16 costumeFileIdsVergil[MAX_COSTUME_VERGIL] =
 
 
 
-struct MODEL_PARTITION_DATA
+struct ModelPartitionData
 {
 	uint8 value;
 	_(895);
 };
 
-static_assert(sizeof(MODEL_PARTITION_DATA) == 0x380);
+static_assert(sizeof(ModelPartitionData) == 0x380);
 
-
-
-
-
-
-
-struct MODEL_DATA
+struct ModelData
 {
 	_(24);
 	bool visible;
 	bool physics;
 	_(358);
-	MODEL_PARTITION_DATA * partitionData;
+	ModelPartitionData * modelPartitionData;
 	_(888);
 	struct
 	{
@@ -1569,17 +1569,33 @@ struct MODEL_DATA
 		float32 timer[2];
 		_(196);
 	}
-	motion;
+	Motion;
 	operator byte8 *()
 	{
 		return reinterpret_cast<byte8 *>(this);
 	}
 };
 
-static_assert(offsetof(MODEL_DATA, motion.duration1) == 0x554);
-static_assert(offsetof(MODEL_DATA, motion.duration2) == 0x594);
-static_assert(offsetof(MODEL_DATA, motion.timer) == 0x6B4);
-static_assert(sizeof(MODEL_DATA) == 0x780);
+static_assert(offsetof(ModelData, Motion.duration1) == 0x554);
+static_assert(offsetof(ModelData, Motion.duration2) == 0x594);
+static_assert(offsetof(ModelData, Motion.timer) == 0x6B4);
+static_assert(sizeof(ModelData) == 0x780);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1653,8 +1669,8 @@ struct ACTOR_DATA
 	float32 var_1C0; // 0x1C0
 	float32 var_1C4; // 0x1C4
 	_(56);
-	MODEL_DATA modelData[3]; // 0x200
-	PhysicsMetadata * physicsMetadata[3][24]; // 0x1880
+	ModelData modelData[3]; // 0x200
+	PhysicsMetadata * modelPhysicsMetadata[3][24]; // 0x1880
 	_(7648);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -1763,22 +1779,18 @@ struct ACTOR_DATA
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
 	_(28);
-	MODEL_DATA submodelData[2]; // 0x7540
-	_(5760);
+	ModelData submodelData[5]; // 0x7540
 	uint8 var_9AC0[2]; // 0x9AC0
 	_(14);
-	Size_192 shadowData[2]; // 0x9AD0
+	ShadowData modelShadowData[3]; // 0x9AD0
+	ShadowData submodelShadowData[4]; // 0x9D10
 	_(192);
-	Size_192 subshadowData[2]; // 0x9D10
-	_(576);
-	byte8 var_A0D0[2]; // 0xA0D0
-	_(318);
-	byte8 var_A210[2]; // 0xA210
-	_(238);
-	DevilPhysicsMetadata * devilPhysicsMetadata[2][36]; // 0xA300
-	Size_240 var_A540[2]; // 0xA540
-	_(736);
-	DevilPhysicsData devilPhysicsData[4][4]; // 0xAA00
+	PhysicsMetadata submodelPhysicsMetadata; // 0xA0D0
+	PhysicsData submodelPhysicsData; // 0xA210
+	DevilPhysicsMetadata * devilModelPhysicsMetadata[2][36]; // 0xA300
+	PhysicsData devilSubmodelPhysicsData[4]; // 0xA540
+	_(256);
+	DevilPhysicsData devilModelPhysicsData[4][4]; // 0xAA00
 	_(704);
 	byte8 * newParentBaseAddr; // 0xB8C0
 	byte8 * newChildBaseAddr; // 0xB8C8
@@ -1838,8 +1850,8 @@ struct ACTOR_DATA_DANTE
 	float32 var_1C0; // 0x1C0
 	float32 var_1C4; // 0x1C4
 	_(56);
-	MODEL_DATA modelData[3]; // 0x200
-	PhysicsMetadata * physicsMetadata[3][24]; // 0x1880
+	ModelData modelData[3]; // 0x200
+	PhysicsMetadata * modelPhysicsMetadata[3][24]; // 0x1880
 	_(7648);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -1962,25 +1974,21 @@ struct ACTOR_DATA_DANTE
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
 	_(28);
-	MODEL_DATA submodelData[2]; // 0x7540
-	_(5760);
+	ModelData submodelData[5]; // 0x7540
 	uint8 var_9AC0[2]; // 0x9AC0
 	_(14);
-	Size_192 shadowData[2]; // 0x9AD0
+	ShadowData modelShadowData[3]; // 0x9AD0
+	ShadowData submodelShadowData[4]; // 0x9D10
 	_(192);
-	Size_192 subshadowData[2]; // 0x9D10
-	_(576);
-	byte8 var_A0D0[2]; // 0xA0D0
-	_(318);
-	byte8 var_A210[2]; // 0xA210
-	_(238);
-	DevilPhysicsMetadata * devilPhysicsMetadata[2][36]; // 0xA300
-	Size_240 var_A540[2]; // 0xA540
-	_(736);
-	DevilPhysicsData devilPhysicsData[4][4]; // 0xAA00
+	PhysicsMetadata submodelPhysicsMetadata; // 0xA0D0
+	PhysicsData submodelPhysicsData; // 0xA210
+	DevilPhysicsMetadata * devilModelPhysicsMetadata[2][36]; // 0xA300
+	PhysicsData devilSubmodelPhysicsData[4]; // 0xA540
+	_(256);
+	DevilPhysicsData devilModelPhysicsData[4][4]; // 0xAA00
 	DevilModelMetadataDante devilModelMetadata; // 0xB600
 	_(15);
-	MODEL_METADATA modelMetadata[6]; // 0xB630
+	ModelMetadata modelMetadata[6]; // 0xB630
 	_(88);
 	float32 artemisChargeValue[2]; // 0xB868
 	_(12);
@@ -2044,8 +2052,8 @@ struct ACTOR_DATA_BOB
 	float32 var_1C0; // 0x1C0
 	float32 var_1C4; // 0x1C4
 	_(56);
-	MODEL_DATA modelData[3]; // 0x200
-	PhysicsMetadata * physicsMetadata[3][24]; // 0x1880
+	ModelData modelData[3]; // 0x200
+	PhysicsMetadata * modelPhysicsMetadata[3][24]; // 0x1880
 	_(7648);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -2154,22 +2162,18 @@ struct ACTOR_DATA_BOB
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
 	_(28);
-	MODEL_DATA submodelData[2]; // 0x7540
-	_(5760);
+	ModelData submodelData[5]; // 0x7540
 	uint8 var_9AC0[2]; // 0x9AC0
 	_(14);
-	Size_192 shadowData[2]; // 0x9AD0
+	ShadowData modelShadowData[3]; // 0x9AD0
+	ShadowData submodelShadowData[4]; // 0x9D10
 	_(192);
-	Size_192 subshadowData[2]; // 0x9D10
-	_(576);
-	byte8 var_A0D0[2]; // 0xA0D0
-	_(318);
-	byte8 var_A210[2]; // 0xA210
-	_(238);
-	DevilPhysicsMetadata * devilPhysicsMetadata[2][36]; // 0xA300
-	Size_240 var_A540[2]; // 0xA540
-	_(736);
-	DevilPhysicsData devilPhysicsData[4][4]; // 0xAA00
+	PhysicsMetadata submodelPhysicsMetadata; // 0xA0D0
+	PhysicsData submodelPhysicsData; // 0xA210
+	DevilPhysicsMetadata * devilModelPhysicsMetadata[2][36]; // 0xA300
+	PhysicsData devilSubmodelPhysicsData[4]; // 0xA540
+	_(256);
+	DevilPhysicsData devilModelPhysicsData[4][4]; // 0xAA00
 	_(704);
 	byte8 * newParentBaseAddr; // 0xB8C0
 	byte8 * newChildBaseAddr; // 0xB8C8
@@ -2229,8 +2233,8 @@ struct ACTOR_DATA_LADY
 	float32 var_1C0; // 0x1C0
 	float32 var_1C4; // 0x1C4
 	_(56);
-	MODEL_DATA modelData[3]; // 0x200
-	PhysicsMetadata * physicsMetadata[3][24]; // 0x1880
+	ModelData modelData[3]; // 0x200
+	PhysicsMetadata * modelPhysicsMetadata[3][24]; // 0x1880
 	_(7648);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -2339,22 +2343,18 @@ struct ACTOR_DATA_LADY
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
 	_(28);
-	MODEL_DATA submodelData[2]; // 0x7540
-	_(5760);
+	ModelData submodelData[5]; // 0x7540
 	uint8 var_9AC0[2]; // 0x9AC0
 	_(14);
-	Size_192 shadowData[2]; // 0x9AD0
+	ShadowData modelShadowData[3]; // 0x9AD0
+	ShadowData submodelShadowData[4]; // 0x9D10
 	_(192);
-	Size_192 subshadowData[2]; // 0x9D10
-	_(576);
-	byte8 var_A0D0[2]; // 0xA0D0
-	_(318);
-	byte8 var_A210[2]; // 0xA210
-	_(238);
-	DevilPhysicsMetadata * devilPhysicsMetadata[2][36]; // 0xA300
-	Size_240 var_A540[2]; // 0xA540
-	_(736);
-	DevilPhysicsData devilPhysicsData[4][4]; // 0xAA00
+	PhysicsMetadata submodelPhysicsMetadata; // 0xA0D0
+	PhysicsData submodelPhysicsData; // 0xA210
+	DevilPhysicsMetadata * devilModelPhysicsMetadata[2][36]; // 0xA300
+	PhysicsData devilSubmodelPhysicsData[4]; // 0xA540
+	_(256);
+	DevilPhysicsData devilModelPhysicsData[4][4]; // 0xAA00
 	_(704);
 	byte8 * newParentBaseAddr; // 0xB8C0
 	byte8 * newChildBaseAddr; // 0xB8C8
@@ -2414,8 +2414,8 @@ struct ACTOR_DATA_VERGIL
 	float32 var_1C0; // 0x1C0
 	float32 var_1C4; // 0x1C4
 	_(56);
-	MODEL_DATA modelData[3]; // 0x200
-	PhysicsMetadata * physicsMetadata[3][24]; // 0x1880
+	ModelData modelData[3]; // 0x200
+	PhysicsMetadata * modelPhysicsMetadata[3][24]; // 0x1880
 	_(7648);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -2533,25 +2533,19 @@ struct ACTOR_DATA_VERGIL
 	_(14);
 	uint32 leftStickDirection[2]; // 0x751C
 	_(28);
-	MODEL_DATA submodelData[2]; // 0x7540
-	_(5760);
+	ModelData submodelData[5]; // 0x7540
 	uint8 var_9AC0[2]; // 0x9AC0
 	_(14);
-	Size_192 shadowData[2]; // 0x9AD0
+	ShadowData modelShadowData[3]; // 0x9AD0
+	ShadowData submodelShadowData[4]; // 0x9D10
 	_(192);
-	Size_192 subshadowData[2]; // 0x9D10
-	_(576);
-	byte8 var_A0D0[2]; // 0xA0D0
-	_(318);
-	byte8 var_A210[2]; // 0xA210
-	_(238);
-	DevilPhysicsMetadata * devilPhysicsMetadata[2][36]; // 0xA300
-	Size_240 var_A540[2]; // 0xA540
-	_(736);
-	DevilPhysicsData devilPhysicsData[4][4]; // 0xAA00
-	_(64);
-	MODEL_METADATA modelMetadata[6]; // 0xB640
-	_(160);
+	PhysicsMetadata submodelPhysicsMetadata; // 0xA0D0
+	PhysicsData submodelPhysicsData; // 0xA210
+	DevilPhysicsMetadata * devilModelPhysicsMetadata[2][36]; // 0xA300
+	PhysicsData devilSubmodelPhysicsData[4]; // 0xA540
+	_(256);
+	DevilPhysicsData devilModelPhysicsData[4][4]; // 0xAA00
+	_(704);
 	byte8 * newParentBaseAddr; // 0xB8C0
 	byte8 * newChildBaseAddr; // 0xB8C8
 	uint8 newGamepad; // 0xB8D0
@@ -2599,7 +2593,7 @@ static_assert(offsetof(ACTOR_DATA, visible) == 0x120);
 static_assert(offsetof(ACTOR_DATA, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA, modelData) == 0x200);
-static_assert(offsetof(ACTOR_DATA, physicsMetadata) == 0x1880);
+static_assert(offsetof(ACTOR_DATA, modelPhysicsMetadata) == 0x1880);
 static_assert(offsetof(ACTOR_DATA, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA, motionDataMirror) == 0x39B4);
@@ -2670,13 +2664,13 @@ static_assert(offsetof(ACTOR_DATA, actorCameraDirection) == 0x750C);
 static_assert(offsetof(ACTOR_DATA, leftStickDirection) == 0x751C);
 static_assert(offsetof(ACTOR_DATA, submodelData) == 0x7540);
 static_assert(offsetof(ACTOR_DATA, var_9AC0) == 0x9AC0);
-static_assert(offsetof(ACTOR_DATA, shadowData) == 0x9AD0);
-static_assert(offsetof(ACTOR_DATA, subshadowData) == 0x9D10);
-static_assert(offsetof(ACTOR_DATA, var_A0D0) == 0xA0D0);
-static_assert(offsetof(ACTOR_DATA, var_A210) == 0xA210);
-static_assert(offsetof(ACTOR_DATA, devilPhysicsMetadata) == 0xA300);
-static_assert(offsetof(ACTOR_DATA, var_A540) == 0xA540);
-static_assert(offsetof(ACTOR_DATA, devilPhysicsData) == 0xAA00);
+static_assert(offsetof(ACTOR_DATA, modelShadowData) == 0x9AD0);
+static_assert(offsetof(ACTOR_DATA, submodelShadowData) == 0x9D10);
+static_assert(offsetof(ACTOR_DATA, submodelPhysicsMetadata) == 0xA0D0);
+static_assert(offsetof(ACTOR_DATA, submodelPhysicsData) == 0xA210);
+static_assert(offsetof(ACTOR_DATA, devilModelPhysicsMetadata) == 0xA300);
+static_assert(offsetof(ACTOR_DATA, devilSubmodelPhysicsData) == 0xA540);
+static_assert(offsetof(ACTOR_DATA, devilModelPhysicsData) == 0xAA00);
 static_assert(offsetof(ACTOR_DATA, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA, newChildBaseAddr) == 0xB8C8);
 static_assert(offsetof(ACTOR_DATA, newGamepad) == 0xB8D0);
@@ -2713,7 +2707,7 @@ static_assert(offsetof(ACTOR_DATA_DANTE, visible) == 0x120);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA_DANTE, modelData) == 0x200);
-static_assert(offsetof(ACTOR_DATA_DANTE, physicsMetadata) == 0x1880);
+static_assert(offsetof(ACTOR_DATA_DANTE, modelPhysicsMetadata) == 0x1880);
 static_assert(offsetof(ACTOR_DATA_DANTE, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_DANTE, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA_DANTE, motionDataMirror) == 0x39B4);
@@ -2797,13 +2791,13 @@ static_assert(offsetof(ACTOR_DATA_DANTE, actorCameraDirection) == 0x750C);
 static_assert(offsetof(ACTOR_DATA_DANTE, leftStickDirection) == 0x751C);
 static_assert(offsetof(ACTOR_DATA_DANTE, submodelData) == 0x7540);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_9AC0) == 0x9AC0);
-static_assert(offsetof(ACTOR_DATA_DANTE, shadowData) == 0x9AD0);
-static_assert(offsetof(ACTOR_DATA_DANTE, subshadowData) == 0x9D10);
-static_assert(offsetof(ACTOR_DATA_DANTE, var_A0D0) == 0xA0D0);
-static_assert(offsetof(ACTOR_DATA_DANTE, var_A210) == 0xA210);
-static_assert(offsetof(ACTOR_DATA_DANTE, devilPhysicsMetadata) == 0xA300);
-static_assert(offsetof(ACTOR_DATA_DANTE, var_A540) == 0xA540);
-static_assert(offsetof(ACTOR_DATA_DANTE, devilPhysicsData) == 0xAA00);
+static_assert(offsetof(ACTOR_DATA_DANTE, modelShadowData) == 0x9AD0);
+static_assert(offsetof(ACTOR_DATA_DANTE, submodelShadowData) == 0x9D10);
+static_assert(offsetof(ACTOR_DATA_DANTE, submodelPhysicsMetadata) == 0xA0D0);
+static_assert(offsetof(ACTOR_DATA_DANTE, submodelPhysicsData) == 0xA210);
+static_assert(offsetof(ACTOR_DATA_DANTE, devilModelPhysicsMetadata) == 0xA300);
+static_assert(offsetof(ACTOR_DATA_DANTE, devilSubmodelPhysicsData) == 0xA540);
+static_assert(offsetof(ACTOR_DATA_DANTE, devilModelPhysicsData) == 0xAA00);
 static_assert(offsetof(ACTOR_DATA_DANTE, devilModelMetadata) == 0xB600);
 static_assert(offsetof(ACTOR_DATA_DANTE, modelMetadata) == 0xB630);
 static_assert(offsetof(ACTOR_DATA_DANTE, artemisChargeValue) == 0xB868);
@@ -2844,7 +2838,7 @@ static_assert(offsetof(ACTOR_DATA_BOB, visible) == 0x120);
 static_assert(offsetof(ACTOR_DATA_BOB, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA_BOB, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA_BOB, modelData) == 0x200);
-static_assert(offsetof(ACTOR_DATA_BOB, physicsMetadata) == 0x1880);
+static_assert(offsetof(ACTOR_DATA_BOB, modelPhysicsMetadata) == 0x1880);
 static_assert(offsetof(ACTOR_DATA_BOB, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_BOB, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA_BOB, motionDataMirror) == 0x39B4);
@@ -2915,13 +2909,13 @@ static_assert(offsetof(ACTOR_DATA_BOB, actorCameraDirection) == 0x750C);
 static_assert(offsetof(ACTOR_DATA_BOB, leftStickDirection) == 0x751C);
 static_assert(offsetof(ACTOR_DATA_BOB, submodelData) == 0x7540);
 static_assert(offsetof(ACTOR_DATA_BOB, var_9AC0) == 0x9AC0);
-static_assert(offsetof(ACTOR_DATA_BOB, shadowData) == 0x9AD0);
-static_assert(offsetof(ACTOR_DATA_BOB, subshadowData) == 0x9D10);
-static_assert(offsetof(ACTOR_DATA_BOB, var_A0D0) == 0xA0D0);
-static_assert(offsetof(ACTOR_DATA_BOB, var_A210) == 0xA210);
-static_assert(offsetof(ACTOR_DATA_BOB, devilPhysicsMetadata) == 0xA300);
-static_assert(offsetof(ACTOR_DATA_BOB, var_A540) == 0xA540);
-static_assert(offsetof(ACTOR_DATA_BOB, devilPhysicsData) == 0xAA00);
+static_assert(offsetof(ACTOR_DATA_BOB, modelShadowData) == 0x9AD0);
+static_assert(offsetof(ACTOR_DATA_BOB, submodelShadowData) == 0x9D10);
+static_assert(offsetof(ACTOR_DATA_BOB, submodelPhysicsMetadata) == 0xA0D0);
+static_assert(offsetof(ACTOR_DATA_BOB, submodelPhysicsData) == 0xA210);
+static_assert(offsetof(ACTOR_DATA_BOB, devilModelPhysicsMetadata) == 0xA300);
+static_assert(offsetof(ACTOR_DATA_BOB, devilSubmodelPhysicsData) == 0xA540);
+static_assert(offsetof(ACTOR_DATA_BOB, devilModelPhysicsData) == 0xAA00);
 static_assert(offsetof(ACTOR_DATA_BOB, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA_BOB, newChildBaseAddr) == 0xB8C8);
 static_assert(offsetof(ACTOR_DATA_BOB, newGamepad) == 0xB8D0);
@@ -2958,7 +2952,7 @@ static_assert(offsetof(ACTOR_DATA_LADY, visible) == 0x120);
 static_assert(offsetof(ACTOR_DATA_LADY, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA_LADY, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA_LADY, modelData) == 0x200);
-static_assert(offsetof(ACTOR_DATA_LADY, physicsMetadata) == 0x1880);
+static_assert(offsetof(ACTOR_DATA_LADY, modelPhysicsMetadata) == 0x1880);
 static_assert(offsetof(ACTOR_DATA_LADY, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_LADY, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA_LADY, motionDataMirror) == 0x39B4);
@@ -3029,13 +3023,13 @@ static_assert(offsetof(ACTOR_DATA_LADY, actorCameraDirection) == 0x750C);
 static_assert(offsetof(ACTOR_DATA_LADY, leftStickDirection) == 0x751C);
 static_assert(offsetof(ACTOR_DATA_LADY, submodelData) == 0x7540);
 static_assert(offsetof(ACTOR_DATA_LADY, var_9AC0) == 0x9AC0);
-static_assert(offsetof(ACTOR_DATA_LADY, shadowData) == 0x9AD0);
-static_assert(offsetof(ACTOR_DATA_LADY, subshadowData) == 0x9D10);
-static_assert(offsetof(ACTOR_DATA_LADY, var_A0D0) == 0xA0D0);
-static_assert(offsetof(ACTOR_DATA_LADY, var_A210) == 0xA210);
-static_assert(offsetof(ACTOR_DATA_LADY, devilPhysicsMetadata) == 0xA300);
-static_assert(offsetof(ACTOR_DATA_LADY, var_A540) == 0xA540);
-static_assert(offsetof(ACTOR_DATA_LADY, devilPhysicsData) == 0xAA00);
+static_assert(offsetof(ACTOR_DATA_LADY, modelShadowData) == 0x9AD0);
+static_assert(offsetof(ACTOR_DATA_LADY, submodelShadowData) == 0x9D10);
+static_assert(offsetof(ACTOR_DATA_LADY, submodelPhysicsMetadata) == 0xA0D0);
+static_assert(offsetof(ACTOR_DATA_LADY, submodelPhysicsData) == 0xA210);
+static_assert(offsetof(ACTOR_DATA_LADY, devilModelPhysicsMetadata) == 0xA300);
+static_assert(offsetof(ACTOR_DATA_LADY, devilSubmodelPhysicsData) == 0xA540);
+static_assert(offsetof(ACTOR_DATA_LADY, devilModelPhysicsData) == 0xAA00);
 static_assert(offsetof(ACTOR_DATA_LADY, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA_LADY, newChildBaseAddr) == 0xB8C8);
 static_assert(offsetof(ACTOR_DATA_LADY, newGamepad) == 0xB8D0);
@@ -3072,7 +3066,7 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, visible) == 0x120);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA_VERGIL, modelData) == 0x200);
-static_assert(offsetof(ACTOR_DATA_VERGIL, physicsMetadata) == 0x1880);
+static_assert(offsetof(ACTOR_DATA_VERGIL, modelPhysicsMetadata) == 0x1880);
 static_assert(offsetof(ACTOR_DATA_VERGIL, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, motionDataMirror) == 0x39B4);
@@ -3151,14 +3145,13 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, actorCameraDirection) == 0x750C);
 static_assert(offsetof(ACTOR_DATA_VERGIL, leftStickDirection) == 0x751C);
 static_assert(offsetof(ACTOR_DATA_VERGIL, submodelData) == 0x7540);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_9AC0) == 0x9AC0);
-static_assert(offsetof(ACTOR_DATA_VERGIL, shadowData) == 0x9AD0);
-static_assert(offsetof(ACTOR_DATA_VERGIL, subshadowData) == 0x9D10);
-static_assert(offsetof(ACTOR_DATA_VERGIL, var_A0D0) == 0xA0D0);
-static_assert(offsetof(ACTOR_DATA_VERGIL, var_A210) == 0xA210);
-static_assert(offsetof(ACTOR_DATA_VERGIL, devilPhysicsMetadata) == 0xA300);
-static_assert(offsetof(ACTOR_DATA_VERGIL, var_A540) == 0xA540);
-static_assert(offsetof(ACTOR_DATA_VERGIL, devilPhysicsData) == 0xAA00);
-static_assert(offsetof(ACTOR_DATA_VERGIL, modelMetadata) == 0xB640);
+static_assert(offsetof(ACTOR_DATA_VERGIL, modelShadowData) == 0x9AD0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, submodelShadowData) == 0x9D10);
+static_assert(offsetof(ACTOR_DATA_VERGIL, submodelPhysicsMetadata) == 0xA0D0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, submodelPhysicsData) == 0xA210);
+static_assert(offsetof(ACTOR_DATA_VERGIL, devilModelPhysicsMetadata) == 0xA300);
+static_assert(offsetof(ACTOR_DATA_VERGIL, devilSubmodelPhysicsData) == 0xA540);
+static_assert(offsetof(ACTOR_DATA_VERGIL, devilModelPhysicsData) == 0xAA00);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newParentBaseAddr) == 0xB8C0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newChildBaseAddr) == 0xB8C8);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newGamepad) == 0xB8D0);

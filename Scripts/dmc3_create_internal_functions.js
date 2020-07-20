@@ -20,16 +20,31 @@ var items =
 	[ 0x897B0 , "void"   , "byte8 * dest"                                                                       , ""                            , "" ],
 	[ 0x89450 , "void"   , "byte8 * dest"                                                                       , ""                            , "" ],
 	[ 0x89270 , "void"   , "byte8 * dest"                                                                       , ""                            , "" ],
-	[ 0x8B470 , "void"   , "byte8 * modelData, bool32 enable"                                                   , ""                            , "" ],
-	[ 0x89960 , "void"   , "byte8 * modelData, byte8 * modelFile, byte8 * textureFile"                          , ""                            , "" ],
+
+	[ 0x8B470 , "void"   , "ModelData & modelData, bool32 enable"                                                   , ""                            , "" ],
+	[ 0x89960 , "void"   , "ModelData & modelData, byte8 * modelFile, byte8 * textureFile"                          , ""                            , "" ],
 	[ 0x1EF040, "void"   , "byte8 * actorData, uint32 index"                                                    , ""                            , "" ], // @Research: Check if modelIndex.
-	[ 0x89DE0 , "byte8 *", "byte8 * modelData"                                                                  , "0, true, false"              , "" ],
-	[ 0x8BC60 , "void"   , "byte8 * shadowData, byte8 * dest, byte8 * file"                                     , ""                            , "" ],
+
+
+
+
+
+	[ 0x89DE0 , "byte8 *", "ModelData & modelData"                                                                  , "0, true, false"              , "" ],
+	[ 0x8BC60 , "void"   , "ShadowData & shadowData, byte8 * dest, byte8 * file"                                     , ""                            , "" ],
 	[ 0x305D80, "void"   , "byte8 * dest"                                                                       , ""                            , "" ],
-	[ 0x8A000 , "void"   , "byte8 * modelData, byte8 * motionFile, void * dest"                                 , ""                            , "" ],
-	[ 0x2C9F40, "uint32" , "byte8 * file"                                                                       , "0, true, false"              , "" ],
-	[ 0x2CA1D0, "void"   , "byte8 * physicsData, void * dest, byte8 * file, uint32 index"                       , ""                            , "" ],
-	[ 0x2CA2F0, "void"   , "byte8 * physicsData, void * dest, byte8 * addr, void * modelMetadata, uint32 count", "0, true, true, 0, 0, 0, 0, 1", "" ], // @Research: Check addr.
+	[ 0x8A000 , "void"   , "ModelData & modelData, byte8 * motionFile, void * dest"                                 , ""                            , "" ],
+
+
+
+	[ 0x2C9F40, "uint32" , "byte8 * physicsFile"                                                                       , "0, true, false"              , "" ],
+
+
+
+	[ 0x2CA1D0, "void"   , "PhysicsData & physicsData, void * physicsMetadata, byte8 * physicsFile, uint32 index"                       , ""                            , "" ],
+
+
+
+	[ 0x2CA2F0, "void"   , "PhysicsData & physicsData, void * dest, byte8 * addr, void * modelMetadata, uint32 count", "0, true, true, 0, 0, 0, 0, 1", "" ], // @Research: Check addr.
 	
 
 
@@ -110,7 +125,16 @@ var items =
 	[ 0x1F97F0, "void"   , "byte8 * actorData, bool playMotion"                                           , ""                            , "Update devil model and play motion." ],
 	//[ 0x23E560, "void"   , "byte8 * eventData, uint32 position"                                           , ""                            , ""                                    ],
 	
-	[ 0x89E30 , "void"   , "byte8 * baseAddr, uint32 index"                                               , ""                            , "Call after icon update."             ],
+
+
+
+
+
+	[ 0x89E30 , "void"   , "ModelData & modelData, uint32 index"                                               , ""                            , "Call after icon update."             ],
+
+
+
+
 	[ 0x1B9FA0, "void"   , "byte8 * addr"                                                                 , ""                            , "Adjust file pointers."               ],
 	[ 0x223AC0, "void"   , "byte8 * actorData"                                                            , ""                            , "Create Spiral Swords."               ],
 	[ 0x223F50, "void"   , "byte8 * actorData, uint32 index"                                              , ""                            , "Specific Summoned Swords."           ],
@@ -119,7 +143,7 @@ var items =
 
 
 	[ 0x5A290 , "void"   , "byte8 * body, uint32 group, uint32 index, uint16, uint8, uint8"    , "0, true, true, 0, 0, 0, 0, 2", "Play Motion"                         ],
-	[ 0x8AC80 , "void"   , "MODEL_DATA & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool"    , "0, true, true, 0, 0, 0, 0, 1", "Play Motion"                         ],
+	[ 0x8AC80 , "void"   , "ModelData & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool"    , "0, true, true, 0, 0, 0, 0, 1", "Play Motion"                         ],
 
 
 
@@ -247,7 +271,7 @@ for (var index = 0; index < items.length; index++)
 	}
 	c_typedefs += "" + NEW_LINE;
 
-	c_vars += "export func_" + offStr + "_t func_" + offStr + " = 0;" + NEW_LINE;
+	c_vars += "export func_" + offStr + "_t func_" + offStr + " = 0; // (" + args + ")" + NEW_LINE;
 	
 	c_init += "\t{" + NEW_LINE;
 	c_init += "\t\tauto func = CreateFunction((appBaseAddr + 0x" + offStr + ")";
