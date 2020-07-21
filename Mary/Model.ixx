@@ -654,14 +654,14 @@ void UpdateDevilModelFunctionDante
 	{
 		auto & devilModelPhysicsData = actorData.devilModelPhysicsData[devilSubmodelIndex][_devilModelPhysicsDataIndex];
 
-		auto modelPhysicsMetadataAddr = actorData.modelPhysicsMetadata[modelIndex][(modelPhysicsMetadataIndex + _modelPhysicsMetadataIndex)];
+		auto modelPhysicsMetadataAddr = actorData.modelPhysicsMetadataPool[modelIndex][(modelPhysicsMetadataIndex + _modelPhysicsMetadataIndex)];
 		if (!modelPhysicsMetadataAddr)
 		{
 			return;
 		}
 		auto & modelPhysicsMetadata = *modelPhysicsMetadataAddr;
 
-		auto devilModelPhysicsMetadataAddr = actorData.devilModelPhysicsMetadata[devilModelIndex][(devilModelPhysicsMetadataIndex + _devilModelPhysicsMetadataIndex)];
+		auto devilModelPhysicsMetadataAddr = actorData.devilModelPhysicsMetadataPool[devilModelIndex][(devilModelPhysicsMetadataIndex + _devilModelPhysicsMetadataIndex)];
 		if (!devilModelPhysicsMetadataAddr)
 		{
 			return;
@@ -767,7 +767,7 @@ void UpdateDevilModelFunctionDante
 	(
 		actorData.submodelData[submodelIndex],
 		0,
-		&actorData.devilModelPhysicsMetadata[devilModelIndex][devilModelPhysicsMetadataIndex]
+		&actorData.devilModelPhysicsMetadataPool[devilModelIndex][devilModelPhysicsMetadataIndex]
 	);
 
 	RegisterShadow
@@ -777,16 +777,14 @@ void UpdateDevilModelFunctionDante
 		shadowFile
 	);
 
-	actorData.var_9AC0[submodelIndex] = 1;
+	actorData.var_9AC0[submodelIndex] = true;
 
 	RegisterPhysics
 	(
 		physicsFile,
 		&actorData.devilSubmodelPhysicsData[devilSubmodelIndex],
-		&actorData.devilModelPhysicsMetadata[devilModelIndex][devilModelPhysicsMetadataIndex]
+		&actorData.devilModelPhysicsMetadataPool[devilModelIndex][devilModelPhysicsMetadataIndex]
 	);
-
-	LinkModelPhysicsData(0, 3, 1);
 
 	if
 	(
@@ -794,6 +792,7 @@ void UpdateDevilModelFunctionDante
 		(devil == DEVIL_DANTE_NEVAN    )
 	)
 	{
+		LinkModelPhysicsData(0, 3, 1);
 		LinkModelPhysicsData(1, 2, 12);
 	}
 	else if
@@ -802,6 +801,7 @@ void UpdateDevilModelFunctionDante
 		(devil == DEVIL_DANTE_BEOWULF )
 	)
 	{
+		LinkModelPhysicsData(0, 3, 1);
 		LinkModelPhysicsData(1, 6 , 2);
 		LinkModelPhysicsData(2, 10, 8);
 	}
@@ -843,7 +843,7 @@ void UpdateDevilModelFunctionDante
 	(
 		actorData.submodelData[submodelIndex],
 		0,
-		&actorData.devilModelPhysicsMetadata[devilModelIndex][devilModelPhysicsMetadataIndex]
+		&actorData.devilModelPhysicsMetadataPool[devilModelIndex][devilModelPhysicsMetadataIndex]
 	);
 
 	RegisterShadow
@@ -853,19 +853,19 @@ void UpdateDevilModelFunctionDante
 		shadowFile
 	);
 
-	actorData.var_9AC0[submodelIndex] = 1;
+	actorData.var_9AC0[submodelIndex] = true;
 
 	RegisterPhysics
 	(
 		physicsFile,
 		&actorData.devilSubmodelPhysicsData[devilSubmodelIndex],
-		&actorData.devilModelPhysicsMetadata[devilModelIndex][devilModelPhysicsMetadataIndex]
+		&actorData.devilModelPhysicsMetadataPool[devilModelIndex][devilModelPhysicsMetadataIndex]
 	);
 
 	func_2CA2F0
 	(
 		actorData.devilSubmodelPhysicsData[devilSubmodelIndex],
-		actorData.modelPhysicsMetadata[modelIndex],
+		actorData.modelPhysicsMetadataPool[modelIndex],
 		(appBaseAddr + 0x58B380),
 		actorData.modelMetadata,
 		6
@@ -874,9 +874,9 @@ void UpdateDevilModelFunctionDante
 	LinkModelPhysicsData(0, 2 , 1);
 	LinkModelPhysicsData(1, 14, 2);
 
-	devilModelMetadata.devilSubmodelMetadata[1].submodelIndex      = submodelIndex;
+	devilModelMetadata.devilSubmodelMetadata[1].submodelIndex                   = submodelIndex;
 	devilModelMetadata.devilSubmodelMetadata[1].devilModelPhysicsMetadataIndex  = ((devilModelIndex * 36) + devilModelPhysicsMetadataIndex);
-	devilModelMetadata.devilSubmodelMetadata[1].devilSubmodelIndex = devilSubmodelIndex;
+	devilModelMetadata.devilSubmodelMetadata[1].devilSubmodelIndex              = devilSubmodelIndex;
 }
 
 
@@ -1115,11 +1115,11 @@ export void Model_Init()
 		};
 		auto func = CreateFunction(UpdateDevilModelDante, (appBaseAddr + 0x21344F), true, true, 0, sizeof(sect1));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x213167), func.addr, 2);
+		//WriteJump((appBaseAddr + 0x213167), func.addr, 2);
 	}
 
 	// Force Only Rebellion
-	WriteJump((appBaseAddr + 0x214B29), (appBaseAddr + 0x21344F));
+	//WriteJump((appBaseAddr + 0x214B29), (appBaseAddr + 0x21344F));
 
 
 	return;
