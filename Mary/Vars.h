@@ -1227,11 +1227,13 @@ static_assert(sizeof(PhysicsData) == 0xF0);
 
 struct PhysicsMetadata
 {
-	_(272);
+	_(264);
+	vec4 * vertices;
 	PhysicsData * physicsData;
 	_(40);
 };
 
+static_assert(offsetof(PhysicsMetadata, vertices) == 0x108);
 static_assert(offsetof(PhysicsMetadata, physicsData) == 0x110);
 static_assert(sizeof(PhysicsMetadata) == 0x140);
 
@@ -1515,6 +1517,27 @@ constexpr uint16 costumeFileIdsVergil[MAX_COSTUME_VERGIL] =
 	pl026,
 	pl026,
 };
+
+
+
+constexpr uint16 devilFileIdsDante[MAX_DEVIL_DANTE] =
+{
+	pl005,
+	pl006,
+	pl007,
+	pl008,
+	pl009,
+	pl017,
+};
+
+
+
+
+
+
+
+
+
 
 
 

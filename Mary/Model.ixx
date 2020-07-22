@@ -252,7 +252,7 @@ index
 
 
 
-
+// @Todo: Add Shadow.
 
 export void ResetModel(ModelData & modelData)
 {
@@ -326,216 +326,206 @@ export void ResetModel(ModelData & modelData)
 
 
 
-//template <typename T>
-//void UpdateModelFunctionDante(T & actorData)
-//{
-//	uint8 modelIndex    = 0;
-//	uint8 submodelIndex = 0;
-//
-//	byte8 * modelFile   = 0;
-//	byte8 * textureFile = 0;
-//	byte8 * shadowFile  = 0;
-//	byte8 * physicsFile = 0;
-//
-//	auto & modelData = actorData.modelData[0];
-//
-//	auto costume = actorData.costume;
-//	if (costume >= MAX_COSTUME_DANTE)
-//	{
-//		costume = 0;
-//	}
-//	auto costumeFileId = costumeFileIdsDante[costume];
-//	auto coat =
-//	(
-//		(costume == COSTUME_DANTE_DEFAULT                           ) ||
-//		(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
-//		(costume == COSTUME_DANTE_DMC1                              ) ||
-//		(costume == COSTUME_DANTE_SPARDA                            ) ||
-//		(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
-//		(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
-//	)
-//	? true : false;
-//
-//	if (actorData.newForceFiles)
-//	{
-//		switch (actorData.newForceFilesCharacter)
-//		{
-//		case CHAR_BOB:
-//		{
-//			if (costume >= MAX_COSTUME_BOB)
-//			{
-//				costume = 0;
-//			}
-//			costumeFileId = costumeFileIdsBob[costume];
-//			coat = false;
-//			break;
-//		}
-//		case CHAR_LADY:
-//		{
-//			if (costume >= MAX_COSTUME_LADY)
-//			{
-//				costume = 0;
-//			}
-//			costumeFileId = costumeFileIdsLady[costume];
-//			coat = false;
-//			break;
-//		}
-//		case CHAR_VERGIL:
-//		{
-//			if (costume >= MAX_COSTUME_VERGIL)
-//			{
-//				costume = 0;
-//			}
-//			costumeFileId = costumeFileIdsVergil[costume];
-//			coat =
-//			(
-//				(costume == COSTUME_VERGIL_DEFAULT                      ) ||
-//				(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
-//				(costume == COSTUME_VERGIL_SPARDA                       ) ||
-//				(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
-//			)
-//			? true : false;
-//			break;
-//		}
-//		}
-//	}
-//
-//	auto & file = File_staticFiles[costumeFileId];
-//
-//	// Main
-//
-//	modelFile   = file[1];
-//	textureFile = file[0];
-//	shadowFile  = file[8];
-//
-//	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
-//	{
-//		modelFile   = file[32];
-//		textureFile = file[31];
-//		shadowFile  = file[16];
-//	}
-//
-//	RegisterModel
-//	(
-//		modelData,
-//		modelFile,
-//		textureFile
-//	);
-//
-//	RegisterShadow
-//	(
-//		modelData,
-//		actorData.shadowData[modelIndex],
-//		shadowFile
-//	);
-//
-//	CopyBaseVertices(actorData.modelMetadata);
-//
-//
-//
-//	
-//
-//
-//
-//
-//	// Coat
-//
-//	modelFile   = file[12];
-//	textureFile = file[0 ];
-//	shadowFile  = file[14];
-//	physicsFile = file[13];
-//
-//	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
-//	{
-//		modelFile   = file[17];
-//		textureFile = file[31];
-//		physicsFile = file[18];
-//	}
-//
-//	RegisterModel
-//	(
-//		actorData.submodelData[submodelIndex],
-//		modelFile,
-//		textureFile
-//	);
-//
-//	func_8A000
-//	(
-//		actorData.submodelData[submodelIndex],
-//		0,
-//		actorData.var_A0D0
-//	);
-//
-//	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY))
-//	{
-//		return;
-//	}
-//
-//	if (coat)
-//	{
-//		RegisterShadow
-//		(
-//			actorData.submodelData[submodelIndex],
-//			actorData.subshadowData[submodelIndex],
-//			shadowFile
-//		);
-//	}
-//
-//	actorData.var_9AC0[submodelIndex] = 1;
-//
-//	//RegisterPhysics
-//	//(
-//	//	actorData.var_A210,
-//	//	actorData.var_A0D0,
-//	//	physicsFile
-//	//);
-//
-//	//if (actorData.newForceLadyFiles)
-//	//{
-//	//	func_2CA2F0
-//	//	(
-//	//		actorData.var_A210,
-//	//		actorData.var_1880,
-//	//		(appBaseAddr + 0x58AC84),
-//	//		actorData.modelMetadata,
-//	//		1
-//	//	);
-//	//	return;
-//	//}
-//	/*
-//	dmc3.exe+2194C0 - 4C 8D 05 BD173700 - lea r8,[dmc3.exe+58AC84]
-//	*/
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//	func_2CA2F0
-//	(
-//		actorData.var_A210,
-//		//actorData.var_1880[modelIndex],
-//
-//		actorData.physicsMetadata[modelIndex],
-//
-//
-//		(appBaseAddr + 0x58B380),
-//		actorData.modelMetadata,
-//		(coat) ? 6 : 1
-//	);
-//
-//	if (coat)
-//	{
-//		CopyCoatVertices(actorData.var_A0D0);
-//	}
-//	else
-//	{
-//		CopyAmuletVertices(actorData.modelMetadata);
-//	}
-//}
+template <typename T>
+void UpdateModelFunctionDante(T & actorData)
+{
+	auto costume = actorData.costume;
+	if (costume >= MAX_COSTUME_DANTE)
+	{
+		costume = 0;
+	}
+	auto costumeFileId = costumeFileIdsDante[costume];
+	auto coat =
+	(
+		(costume == COSTUME_DANTE_DEFAULT                           ) ||
+		(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
+		(costume == COSTUME_DANTE_DMC1                              ) ||
+		(costume == COSTUME_DANTE_SPARDA                            ) ||
+		(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
+		(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
+	)
+	? true : false;
+
+	if (actorData.newForceFiles)
+	{
+		switch (actorData.newForceFilesCharacter)
+		{
+		case CHAR_BOB:
+		{
+			if (costume >= MAX_COSTUME_BOB)
+			{
+				costume = 0;
+			}
+			costumeFileId = costumeFileIdsBob[costume];
+			coat = false;
+			break;
+		}
+		case CHAR_LADY:
+		{
+			if (costume >= MAX_COSTUME_LADY)
+			{
+				costume = 0;
+			}
+			costumeFileId = costumeFileIdsLady[costume];
+			coat = false;
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			if (costume >= MAX_COSTUME_VERGIL)
+			{
+				costume = 0;
+			}
+			costumeFileId = costumeFileIdsVergil[costume];
+			coat =
+			(
+				(costume == COSTUME_VERGIL_DEFAULT                      ) ||
+				(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
+				(costume == COSTUME_VERGIL_SPARDA                       ) ||
+				(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
+			)
+			? true : false;
+			break;
+		}
+		}
+	}
+
+	auto & file = File_staticFiles[costumeFileId];
+
+	byte8 * modelFile   = 0;
+	byte8 * textureFile = 0;
+	byte8 * shadowFile  = 0;
+	byte8 * physicsFile = 0;
+
+	uint8 modelIndex    = 0;
+	uint8 submodelIndex = 0;
+
+	// Main
+
+	modelFile   = file[1];
+	textureFile = file[0];
+	shadowFile  = file[8];
+
+	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
+	{
+		modelFile   = file[32];
+		textureFile = file[31];
+		shadowFile  = file[16];
+	}
+
+	RegisterModel
+	(
+		actorData.modelData[modelIndex],
+		modelFile,
+		textureFile
+	);
+
+	RegisterShadow
+	(
+		actorData.modelData[modelIndex],
+		actorData.modelShadowData[modelIndex],
+		shadowFile
+	);
+
+	{
+		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
+
+		for_all(uint8, index, 6)
+		{
+			uint8 off = (index * 3);
+			actorData.modelMetadata[index].count = 4;
+			actorData.modelMetadata[index].vertices[0] = g_vertices[(off + 0)];
+			actorData.modelMetadata[index].vertices[1] = g_vertices[(off + 1)];
+			actorData.modelMetadata[index].vertices[2] = g_vertices[(off + 2)];
+		}
+	}
+
+	// Coat
+
+	modelFile   = file[12];
+	textureFile = file[0 ];
+	shadowFile  = file[14];
+	physicsFile = file[13];
+
+	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
+	{
+		modelFile   = file[17];
+		textureFile = file[31];
+		physicsFile = file[18];
+	}
+
+	RegisterModel
+	(
+		actorData.submodelData[submodelIndex],
+		modelFile,
+		textureFile
+	);
+
+	func_8A000
+	(
+		actorData.submodelData[submodelIndex],
+		0,
+		&actorData.submodelPhysicsMetadata
+	);
+
+	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY))
+	{
+		return;
+	}
+
+	if (coat)
+	{
+		RegisterShadow
+		(
+			actorData.submodelData[submodelIndex],
+			actorData.submodelShadowData[submodelIndex],
+			shadowFile
+		);
+	}
+
+	actorData.var_9AC0[submodelIndex] = true;
+
+	RegisterPhysics
+	(
+		physicsFile,
+		&actorData.submodelPhysicsData,
+		&actorData.submodelPhysicsMetadata
+	);
+
+	func_2CA2F0
+	(
+		actorData.submodelPhysicsData,
+		actorData.modelPhysicsMetadataPool[modelIndex],
+		(appBaseAddr + 0x58B380),
+		actorData.modelMetadata,
+		(coat) ? 6 : 1
+	);
+
+	if (coat)
+	{
+		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x35D580);
+
+		actorData.submodelPhysicsMetadata.vertices[0] = g_vertices[0];
+		actorData.submodelPhysicsMetadata.vertices[1] = g_vertices[1];
+		actorData.submodelPhysicsMetadata.vertices[2] = g_vertices[2];
+		actorData.submodelPhysicsMetadata.vertices[3] = g_vertices[3];
+	}
+	else
+	{
+		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
+
+		actorData.modelMetadata[0].count = 4;
+		actorData.modelMetadata[0].vertices[0] = g_vertices[23];
+		actorData.modelMetadata[0].vertices[1] = g_vertices[24];
+		actorData.modelMetadata[0].vertices[2] = g_vertices[25];
+	}
+}
+
+
+
+
+
+
 
 
 
@@ -545,22 +535,11 @@ export void UpdateModelDante(byte8 * baseAddr)
 
 	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
 
-	//UpdateModelFunctionDante(actorData);
+	UpdateModelFunctionDante(actorData);
 }
 
 
 
-
-
-constexpr uint16 devilFileIdsDante[MAX_DEVIL_DANTE] =
-{
-	pl005,
-	pl006,
-	pl007,
-	pl008,
-	pl009,
-	pl017,
-};
 
 
 
@@ -616,7 +595,10 @@ constexpr uint16 devilFileIdsDante[MAX_DEVIL_DANTE] =
 
 
 
-// @Todo: Set devil id.
+
+
+
+
 
 
 export template <typename T>
@@ -627,7 +609,7 @@ void UpdateDevilModelFunctionDante
 	uint8 devilModelIndex
 )
 {
-	uint16 devilFileId = devilFileIdsDante[devil];
+	auto devilFileId = devilFileIdsDante[devil];
 
 	auto & file = File_staticFiles[devilFileId];
 
@@ -1108,21 +1090,21 @@ export void Model_Init()
 
 
 
-	{
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rsi,
-		};
-		auto func = CreateFunction(UpdateDevilModelDante, (appBaseAddr + 0x21344F), true, true, 0, sizeof(sect1));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		//WriteJump((appBaseAddr + 0x213167), func.addr, 2);
-	}
+	//{
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		mov_rcx_rsi,
+	//	};
+	//	auto func = CreateFunction(UpdateDevilModelDante, (appBaseAddr + 0x21344F), true, true, 0, sizeof(sect1));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	//WriteJump((appBaseAddr + 0x213167), func.addr, 2);
+	//}
 
 	// Force Only Rebellion
 	//WriteJump((appBaseAddr + 0x214B29), (appBaseAddr + 0x21344F));
 
 
-	return;
+	//return;
 
 
 
@@ -1384,74 +1366,74 @@ export void Model_Init()
 
 
 	// Create Devil Aura
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0x8B, 0x83, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rbx+000000C0]
-			0x48, 0x85, 0xC0,                         // test rax,rax
-			0x74, 0x03,                               // je short
-			0x48, 0x8B, 0xC8,                         // mov rcx,rax
-			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+1FAA90
-		};
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-		auto func = CreateFunction(CreateDevilAura, (appBaseAddr + 0x8E45C), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x1FAA90));
-		WriteJump((appBaseAddr + 0x8E457), func.addr);
-		/*
-		dmc3.exe+8E457 - E8 34C61600 - call dmc3.exe+1FAA90
-		dmc3.exe+8E45C - 48 8B D0    - mov rdx,rax
-		*/
-	}
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x48, 0x8B, 0x83, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rbx+000000C0]
+	//		0x48, 0x85, 0xC0,                         // test rax,rax
+	//		0x74, 0x03,                               // je short
+	//		0x48, 0x8B, 0xC8,                         // mov rcx,rax
+	//		0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+1FAA90
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		mov_rcx_rbx,
+	//	};
+	//	auto func = CreateFunction(CreateDevilAura, (appBaseAddr + 0x8E45C), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x1FAA90));
+	//	WriteJump((appBaseAddr + 0x8E457), func.addr);
+	//	/*
+	//	dmc3.exe+8E457 - E8 34C61600 - call dmc3.exe+1FAA90
+	//	dmc3.exe+8E45C - 48 8B D0    - mov rdx,rax
+	//	*/
+	//}
 
 
 
 
 
 	// Enter Devil Form
-	{
-		constexpr byte8 sect0[] =
-		{
-			0xC6, 0x87, 0x9B, 0x3E, 0x00, 0x00, 0x01, // mov byte ptr [rdi+00003E9B],01
-		};
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rdi,
-		};
-		auto func = CreateFunction(EnterDevilForm, (appBaseAddr + 0x1E7810), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x1E7809), func.addr, 2);
-		/*
-		dmc3.exe+1E7809 - C6 87 9B3E0000 01 - mov byte ptr [rdi+00003E9B],01
-		dmc3.exe+1E7810 - 89 74 24 30       - mov [rsp+30],esi
-		*/
-	}
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0xC6, 0x87, 0x9B, 0x3E, 0x00, 0x00, 0x01, // mov byte ptr [rdi+00003E9B],01
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		mov_rcx_rdi,
+	//	};
+	//	auto func = CreateFunction(EnterDevilForm, (appBaseAddr + 0x1E7810), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x1E7809), func.addr, 2);
+	//	/*
+	//	dmc3.exe+1E7809 - C6 87 9B3E0000 01 - mov byte ptr [rdi+00003E9B],01
+	//	dmc3.exe+1E7810 - 89 74 24 30       - mov [rsp+30],esi
+	//	*/
+	//}
 
 
 	// Leave Devil Form
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x40, 0x88, 0xB7, 0x9B, 0x3E, 0x00, 0x00, // mov [rdi+00003E9B],sil
-		};
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rdi,
-		};
-		auto func = CreateFunction(LeaveDevilForm, (appBaseAddr + 0x1E78C6), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x1E78BF), func.addr, 2);
-		/*
-		dmc3.exe+1E78BF - 40 88 B7 9B3E0000 - mov [rdi+00003E9B],sil
-		dmc3.exe+1E78C6 - 48 8B CF          - mov rcx,rdi
-		*/
-	}
+	//{
+	//	constexpr byte8 sect0[] =
+	//	{
+	//		0x40, 0x88, 0xB7, 0x9B, 0x3E, 0x00, 0x00, // mov [rdi+00003E9B],sil
+	//	};
+	//	constexpr byte8 sect1[] =
+	//	{
+	//		mov_rcx_rdi,
+	//	};
+	//	auto func = CreateFunction(LeaveDevilForm, (appBaseAddr + 0x1E78C6), true, true, sizeof(sect0), sizeof(sect1));
+	//	memcpy(func.sect0, sect0, sizeof(sect0));
+	//	memcpy(func.sect1, sect1, sizeof(sect1));
+	//	WriteJump((appBaseAddr + 0x1E78BF), func.addr, 2);
+	//	/*
+	//	dmc3.exe+1E78BF - 40 88 B7 9B3E0000 - mov [rdi+00003E9B],sil
+	//	dmc3.exe+1E78C6 - 48 8B CF          - mov rcx,rdi
+	//	*/
+	//}
 
 
 

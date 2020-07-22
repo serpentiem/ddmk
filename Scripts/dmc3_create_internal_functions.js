@@ -44,7 +44,7 @@ var items =
 
 
 
-	[ 0x2CA2F0, "void"   , "PhysicsData & physicsData, void * dest, byte8 * addr, void * modelMetadata, uint32 count", "0, true, true, 0, 0, 0, 0, 1", "" ], // @Research: Check addr.
+	[ 0x2CA2F0, "void"   , "PhysicsData & physicsData, void * dest, byte8 * addr, ModelMetadata * modelMetadata, uint32 count", "0, true, true, 0, 0, 0, 0, 1", "" ], // @Research: Check addr.
 	
 
 

@@ -19,7 +19,7 @@ export typedef void(__fastcall * func_305D80_t)(byte8 * dest);
 export typedef void(__fastcall * func_8A000_t)(ModelData & modelData, byte8 * motionFile, void * dest);
 export typedef uint32(__fastcall * func_2C9F40_t)(byte8 * physicsFile);
 export typedef void(__fastcall * func_2CA1D0_t)(PhysicsData & physicsData, void * physicsMetadata, byte8 * physicsFile, uint32 index);
-export typedef void(__fastcall * func_2CA2F0_t)(PhysicsData & physicsData, void * dest, byte8 * addr, void * modelMetadata, uint32 count);
+export typedef void(__fastcall * func_2CA2F0_t)(PhysicsData & physicsData, void * dest, byte8 * addr, ModelMetadata * modelMetadata, uint32 count);
 export typedef void(__fastcall * func_2EE3D0_t)(byte8 * dest);
 export typedef void(__fastcall * func_1FAF40_t)(byte8 * baseAddr);
 export typedef void(__fastcall * func_1EEF80_t)(byte8 * baseAddr);
@@ -84,7 +84,7 @@ export func_305D80_t func_305D80 = 0; // (byte8 * dest)
 export func_8A000_t func_8A000 = 0; // (ModelData & modelData, byte8 * motionFile, void * dest)
 export func_2C9F40_t func_2C9F40 = 0; // (byte8 * physicsFile)
 export func_2CA1D0_t func_2CA1D0 = 0; // (PhysicsData & physicsData, void * physicsMetadata, byte8 * physicsFile, uint32 index)
-export func_2CA2F0_t func_2CA2F0 = 0; // (PhysicsData & physicsData, void * dest, byte8 * addr, void * modelMetadata, uint32 count)
+export func_2CA2F0_t func_2CA2F0 = 0; // (PhysicsData & physicsData, void * dest, byte8 * addr, ModelMetadata * modelMetadata, uint32 count)
 export func_2EE3D0_t func_2EE3D0 = 0; // (byte8 * dest)
 export func_1FAF40_t func_1FAF40 = 0; // (byte8 * baseAddr)
 export func_1EEF80_t func_1EEF80 = 0; // (byte8 * baseAddr)

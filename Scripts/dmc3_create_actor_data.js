@@ -522,29 +522,11 @@ function CreateCheatEntries
 	id
 )
 {
-	// c += "<CheatEntry>" + NEW_LINE;
-	// c += "<Description>" + groupName + "</Description>" + NEW_LINE;
-	// c += "<Options moHideChildren=\"1\"/>" + NEW_LINE;
-	// c += "<GroupHeader>1</GroupHeader>" + NEW_LINE;
-	// c += "<CheatEntries>" + NEW_LINE;
-
-
 	GroupStart(groupName, true);
-
 
 	for (var actor = 0; actor < 4; actor++)
 	{
-
-
 		GroupStart(lz(actor), true);
-
-
-
-		// c += "<CheatEntry>" + NEW_LINE;
-		// c += "<Description>" + lz(actor) + "</Description>" + NEW_LINE;
-		// c += "<Options moHideChildren=\"1\"/>" + NEW_LINE;
-		// c += "<GroupHeader>1</GroupHeader>" + NEW_LINE;
-		// c += "<CheatEntries>" + NEW_LINE;
 
 		// Main
 
@@ -590,25 +572,13 @@ function CreateCheatEntries
 			CreateActorCheatEntry(name, type, actor);
 		}
 
-		// c += "</CheatEntries>" + NEW_LINE;
-		// c += "</CheatEntry>" + NEW_LINE;
-
-
 		GroupEnd();
-
 	}
-	// c += "</CheatEntries>" + NEW_LINE;
-	// c += "</CheatEntry>" + NEW_LINE;
-
+	
 	GroupEnd();
-
 }
 
 c = "";
-
-// c += "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + NEW_LINE;
-// c += "<CheatTable>" + NEW_LINE;
-// c += "<CheatEntries>" + NEW_LINE;
 
 CheatTableStart();
 
@@ -617,9 +587,6 @@ CreateCheatEntries("ACTOR_DATA_DANTE" , CHAR_DANTE );
 // CreateCheatEntries("ACTOR_DATA_BOB"   , CHAR_BOB   );
 // CreateCheatEntries("ACTOR_DATA_LADY"  , CHAR_LADY  );
 // CreateCheatEntries("ACTOR_DATA_VERGIL", CHAR_VERGIL);
-
-// c += "</CheatEntries>" + NEW_LINE;
-// c += "</CheatTable>" + NEW_LINE;
 
 CheatTableEnd();
 
