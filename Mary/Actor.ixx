@@ -21,6 +21,7 @@ import ModuleName(HUD);
 import ModuleName(Internal);
 import ModuleName(Input);
 import ModuleName(Memory);
+import ModuleName(Model);
 
 #ifdef __INTELLISENSE__
 #include "Config.ixx"
@@ -29,6 +30,7 @@ import ModuleName(Memory);
 #include "Internal.ixx"
 #include "Input.ixx"
 #include "Memory.ixx"
+#include "Model.ixx"
 #endif
 
 export Vector<byte8 *> Actor_actorBaseAddr;
@@ -1506,8 +1508,46 @@ void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 
 
 
+
+
+
+
 	if (actorData.devil)
 	{
+
+
+		//uint8 devilModelIndex = (actorData.meleeWeaponIndex)
+
+
+		auto devil = actorData.weapons[actorData.meleeWeaponIndex];
+		if (devil >= MAX_DEVIL_DANTE)
+		{
+			devil = 0;
+		}
+
+
+
+
+
+		auto devilModelIndex = static_cast<uint8>(actorData.meleeWeaponIndex);
+
+
+
+		
+		ResetModel(actorData.modelData   [(devilModelIndex == 0) ? 1 : 2]);
+		ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 1 : 3]);
+		ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 2 : 4]);
+
+
+
+		// if within valid range
+
+		UpdateDevilModelFunctionDante(actorData, devil, devilModelIndex);
+
+
+
+
+
 		func_1F92C0(actorData, 1); // Just updates the model index.
 		func_1F97F0(actorData, true); // important one
 	}
