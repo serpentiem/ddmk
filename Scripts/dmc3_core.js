@@ -70,8 +70,10 @@ var typeHelper =
 	[ "ShadowData"           , "" , 192 , false ],
 	[ "PhysicsData"          , "" , 240 , false ],
 	[ "PhysicsMetadata"      , "" , 320 , false ],
-	[ "DevilPhysicsData"     , "" , 192 , false ],
-	[ "DevilPhysicsMetadata" , "" , 264 , false ], // Min size.
+	[ "PhysicsLinkData"     , "" , 192 , false ],
+	[ "PhysicsLinkMetadata" , "" , 264 , false ],
+
+	[ "BodyPartData" , "" , 288 , false ],
 ];
 
 // function Template(typeString)

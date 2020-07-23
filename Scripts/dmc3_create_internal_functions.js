@@ -122,7 +122,7 @@ var items =
 	[ 0x280160, "void"   , "byte8 * dest, uint32 group, uint32 index, uint32 motion"                      , ""                            , "Weapon Switch Animation Vergil"      ],
 	[ 0x1EB0E0, "void"   , "byte8 * actorData, uint32 index"                                              , ""                            , "Call after Weapon Switch Animation." ],
 	[ 0x1F92C0, "void"   , "byte8 * actorData, uint32 phase"                                              , ""                            , "Queue devil model update."           ], // @Research: Works like bool, but has size of uint32.
-	[ 0x1F97F0, "void"   , "byte8 * actorData, bool playMotion"                                           , ""                            , "Update devil model and play motion." ],
+	[ 0x1F97F0, "void"   , "byte8 * actorData, bool noMotion"                                           , ""                            , "Update devil model and play motion." ],
 	//[ 0x23E560, "void"   , "byte8 * eventData, uint32 position"                                           , ""                            , ""                                    ],
 	
 

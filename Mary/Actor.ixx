@@ -66,7 +66,7 @@ bool IsWeaponActive
 	uint8 weapon
 )
 {
-	auto & motionData = actorData.motionData[BODY_PART_UPPER];
+	auto & motionData = actorData.motionData[UPPER_BODY];
 	if (weapon == WEAPON_VOID)
 	{
 		return false;
@@ -95,7 +95,7 @@ bool IsWeaponActive
 export template <typename T>
 bool IsWeaponActive(T & actorData)
 {
-	auto & motionData = actorData.motionData[BODY_PART_UPPER];
+	auto & motionData = actorData.motionData[UPPER_BODY];
 	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 	{
 		if ((motionData.group >= MOTION_GROUP_DANTE_REBELLION) && (motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN))
@@ -116,7 +116,7 @@ bool IsWeaponActive(T & actorData)
 export template <typename T>
 bool IsActive(T & actorData)
 {
-	auto & motionData = actorData.motionData[BODY_PART_UPPER];
+	auto & motionData = actorData.motionData[UPPER_BODY];
 	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
 	{
 		if ((motionData.group == MOTION_GROUP_DANTE_BASE) && (motionData.index == 14))
@@ -1510,47 +1510,45 @@ void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 
 
 
-
-
-	if (actorData.devil)
+	auto devil = actorData.weapons[actorData.meleeWeaponIndex];
+	if (devil >= MAX_DEVIL_DANTE)
 	{
-
-
-		//uint8 devilModelIndex = (actorData.meleeWeaponIndex)
-
-
-		auto devil = actorData.weapons[actorData.meleeWeaponIndex];
-		if (devil >= MAX_DEVIL_DANTE)
-		{
-			devil = 0;
-		}
-
-
-
-
-
-		auto devilModelIndex = static_cast<uint8>(actorData.meleeWeaponIndex);
-
-
-
-		
-		ResetModel(actorData.modelData   [(devilModelIndex == 0) ? 1 : 2]);
-		ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 1 : 3]);
-		ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 2 : 4]);
-
-
-
-		// if within valid range
-
-		UpdateDevilModelFunctionDante(actorData, devil, devilModelIndex);
-
-
-
-
-
-		func_1F92C0(actorData, 1); // Just updates the model index.
-		func_1F97F0(actorData, true); // important one
+		devil = 0;
 	}
+	auto devilModelIndex = static_cast<uint8>(actorData.meleeWeaponIndex);
+
+	ResetModel(actorData.modelData   [(devilModelIndex == 0) ? 1 : 2]);
+	ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 1 : 3]);
+	ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 2 : 4]);
+
+	UpdateDevilModelFunctionDante(actorData, devil, devilModelIndex);
+
+
+	//func_1F92C0(actorData, 1);
+
+
+
+	func_1F97F0(actorData, true);
+
+
+	//actorData.quuedModelIndex = (devilModelIndex + 1);
+
+
+	actorData.queuedModelIndex = (devilModelIndex + 1);
+
+
+
+
+
+
+
+	//if (actorData.devil)
+	//{
+
+	//}
+
+
+
 
 
 
@@ -2289,7 +2287,7 @@ export void Actor_Init()
 	// Adjust actor data size.
 	{
 		//constexpr uint32 size = (0xB8C0 + 512);
-		constexpr uint32 size = (64 * 1024);
+		constexpr uint32 size = (128 * 1024);
 		Write<uint32>((appBaseAddr + 0x1DE8B4), size); // Vergil
 		Write<uint32>((appBaseAddr + 0x1DE9CD), size); // Lady
 		Write<uint32>((appBaseAddr + 0x1DEAC9), size); // Bob

@@ -7,10 +7,13 @@ const CHAR_BOB    = 2;
 const CHAR_LADY   = 4;
 const CHAR_VERGIL = 8;
 
-const ACTOR_DATA_SIZE_DANTE  = 0xB8C0
-const ACTOR_DATA_SIZE_BOB    = 0xB680
-const ACTOR_DATA_SIZE_LADY   = 0x8280
-const ACTOR_DATA_SIZE_VERGIL = 0xB8C0
+const ACTOR_DATA_SIZE_DANTE  = 0xB8C0;
+const ACTOR_DATA_SIZE_BOB    = 0xB680;
+const ACTOR_DATA_SIZE_LADY   = 0x8280;
+const ACTOR_DATA_SIZE_VERGIL = 0xB8C0;
+
+//const NEW_ACTOR_DATA_START = (64 * 1024);
+const NEW_ACTOR_DATA_START = 0xB8C0;
 
 var items =
 [
@@ -25,8 +28,27 @@ var items =
 	[ "visible"                             , "uint32"                  , 0x120                            ],
 	[ ""                                    , "float32"                 , 0x1C0                            ],
 	[ ""                                    , "float32"                 , 0x1C4                            ],
+
 	[ "modelData[3]"                        , "ModelData"               , 0x200                            ],
+
+
+
+
+
+
 	[ "modelPhysicsMetadataPool[3][24]"     , "PhysicsMetadata *"       , 0x1880                           ],
+
+
+
+
+
+
+
+
+	[ ""                   , "byte8 *"                 , 0x3894                           ],
+
+
+
 	[ "motionArchive[32]"                   , "byte8 *"                 , 0x38A0                           ],
 	[ "motionData[2]"                       , "MOTION_DATA"             , 0x39B0                           ],
 	[ "motionDataMirror[3]"                 , "MOTION_DATA"             , 0x39B4                           ],
@@ -36,6 +58,12 @@ var items =
 	[ "[8]"                                 , "uint8"                   , 0x3A10                           ],
 	[ "shadow"                              , "uint32"                  , 0x3A18                           ],
 	[ "color"                               , "byte32"                  , 0x3A28                           ],
+
+
+
+
+
+
 	[ "actionData[6]"                       , "byte8 *"                 , 0x3DD0                           ],
 	[ "eventData[2]"                        , "ACTOR_EVENT_DATA"        , 0x3E00                           ],
 	[ "[32]"                                , "uint8"                   , 0x3E10                           ],
@@ -44,13 +72,17 @@ var items =
 	[ "permissions"                         , "byte32"                  , 0x3E60                           ],
 	[ "state"                               , "byte32"                  , 0x3E64                           ],
 	[ "lastState"                           , "byte32"                  , 0x3E68                           ],
+
 	[ "activeModelIndex"                    , "uint32"                  , 0x3E6C                           ],
 	[ "queuedModelIndex"                    , "uint32"                  , 0x3E70                           ],
 	[ "devilModels[3]"                      , "uint32"                  , 0x3E74                           ],
+
 	[ "modelState"                          , "uint8"                   , 0x3E80                           ],
 	[ "lockOn"                              , "bool32"                  , 0x3E84                           ],
+
 	[ "activeModelIndexMirror"              , "uint32"                  , 0x3E88                           ],
 	[ "activeDevil"                         , "uint32"                  , 0x3E8C                           ],
+
 	[ "airRaid"                             , "uint32"                  , 0x3E90                           ],
 	[ "mode"                                , "uint32"                  , 0x3E94                           ],
 	[ "devil"                               , "bool"                    , 0x3E9B                           ],
@@ -106,6 +138,33 @@ var items =
 	[ "styleRank"                           , "uint32"                  , 0x6510                           ],
 	[ "styleMeter"                          , "float32"                 , 0x6514                           ],
 	[ "inputData[58]"                       , "INPUT_DATA"              , 0x6674                           ],
+
+
+
+
+
+	[ "bodyPartData[4][2]"                      , "BodyPartData"                  , 0x6950                           ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	[ ""                      , "uint32"                  , 0x7250                           ],
+
+
+
 	[ "collisionIndex"                      , "uint32"                  , 0x7254                           ],
 	[ "interactionData[8]"                  , "vec4"                    , 0x7460                           ],
 	[ "buttons[4]"                          , "byte16"                  , 0x74E0                           ],
@@ -115,20 +174,62 @@ var items =
 	[ "leftStickRadius"                     , "uint16"                  , 0x750A                           ],
 	[ "actorCameraDirection"                , "uint16"                  , 0x750C                           ],
 	[ "leftStickDirection[2]"               , "uint32"                  , 0x751C                           ],
+
+
+
+
 	[ "submodelData[5]"                     , "ModelData"               , 0x7540                           ],
+
+
+
+
+
+
+
 	[ "[5]"                                 , "bool"                    , 0x9AC0                           ],
 	[ "modelShadowData[3]"                  , "ShadowData"              , 0x9AD0                           ],
 	[ "submodelShadowData[5]"               , "ShadowData"              , 0x9D10                           ],
+
+
+
+
 	[ "submodelPhysicsMetadata"             , "PhysicsMetadata"         , 0xA0D0                           ],
 	[ "submodelPhysicsData"                 , "PhysicsData"             , 0xA210                           ],
-	[ "devilModelPhysicsMetadataPool[2][36]", "DevilPhysicsMetadata *"  , 0xA300                           ],
+
+
+
+
+
+
+	[ "devilModelPhysicsLinkMetadataPool[2][36]", "PhysicsLinkMetadata *"  , 0xA300                           ],
+
+
+
+
 	[ "devilSubmodelPhysicsData[4]"         , "PhysicsData"             , 0xA540                           ],
-	[ "devilModelPhysicsData[4][4]"         , "DevilPhysicsData"        , 0xAA00                           ],
+
+
+	[ "devilSubmodelPhysicsLinkData[4][4]"         , "PhysicsLinkData"        , 0xAA00                           ], // @Research: Corresponding to what?
+
+
+
+
+
 	[ "devilModelMetadata"                  , "DevilModelMetadataDante" , 0xB600, CHAR_DANTE               ],
 	[ "modelMetadata[6]"                    , "ModelMetadata"           , 0xB630, CHAR_DANTE               ],
+
 	[ "artemisChargeValue[2]"               , "float32"                 , 0xB868, CHAR_DANTE               ],
 	[ "artemisChargeFlags[2]"               , "byte32"                  , 0xB87C, CHAR_DANTE               ],
 ];
+
+
+
+
+
+
+
+
+
 
 var extra =
 [
@@ -155,6 +256,20 @@ var extra =
 	[ "newForceFilesCharacter" , "uint8"   ],
 	[ "newDevilAura"           , "byte8 *" ],
 	[ "newEffectIndices[8]"    , "byte32"  ],
+
+	[ "newBodyPartData[7][2]", "BodyPartData" ],
+
+	[ "newSubmodelData[11]", "ModelData" ],
+
+
+
+
+
+	[ "newLastVar", "uint32" ],
+
+
+
+
 ];
 
 // Cpp
@@ -318,13 +433,13 @@ function CreateActorData
 		CreateActorDataFunction(structName, name, type);
 	}
 
-	var diff = (ACTOR_DATA_SIZE_DANTE - pos);
+	var diff = (NEW_ACTOR_DATA_START - pos);
 	if (diff)
 	{
 		c += "\t_(" + diff.toString() + ");" + NEW_LINE;
 	}
 
-	pos = ACTOR_DATA_SIZE_DANTE;
+	pos = NEW_ACTOR_DATA_START;
 
 	for (var itemIndex = 0; itemIndex < extra.length; itemIndex++)
 	{
@@ -337,11 +452,11 @@ function CreateActorData
 
 		if (type.match(/\*/))
 		{
-			Align(8);
+			Align(16);
 		}
 		else if (name.match(/\[/))
 		{
-			Align(4);
+			Align(16);
 		}
 
 		var diff = (pos - lastPos);
@@ -509,6 +624,30 @@ function CreateActorCheatEntry
 		{
 			continue;
 		}
+		else if (type == "BodyPartData")
+		{
+			continue;
+		}
+		else if (type == "ModelMetadata")
+		{
+			continue;
+		}
+		else if (type == "PhysicsLinkData")
+		{
+			continue;
+		}
+		else if (type == "ShadowData")
+		{
+			continue;
+		}
+		else if (type == "PhysicsData")
+		{
+			continue;
+		}
+		else if (type == "PhysicsMetadata")
+		{
+			continue;
+		}
 		else
 		{
 			console.log("Ignore " + type);
@@ -549,7 +688,7 @@ function CreateCheatEntries
 			CreateActorCheatEntry(name, type, actor);
 		}
 
-		pos = ACTOR_DATA_SIZE_DANTE;
+		pos = NEW_ACTOR_DATA_START;
 
 		// Ex
 
@@ -562,11 +701,11 @@ function CreateCheatEntries
 
 			if (type.match(/\*/))
 			{
-				Align(8);
+				Align(16);
 			}
 			else if (name.match(/\[/))
 			{
-				Align(4);
+				Align(16);
 			}
 
 			CreateActorCheatEntry(name, type, actor);

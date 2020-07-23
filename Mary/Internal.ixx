@@ -52,7 +52,7 @@ export typedef void(__fastcall * func_280120_t)(byte8 * dest, uint32 side, uint3
 export typedef void(__fastcall * func_280160_t)(byte8 * dest, uint32 group, uint32 index, uint32 motion); // Weapon Switch Animation Vergil
 export typedef void(__fastcall * func_1EB0E0_t)(byte8 * actorData, uint32 index); // Call after Weapon Switch Animation.
 export typedef void(__fastcall * func_1F92C0_t)(byte8 * actorData, uint32 phase); // Queue devil model update.
-export typedef void(__fastcall * func_1F97F0_t)(byte8 * actorData, bool playMotion); // Update devil model and play motion.
+export typedef void(__fastcall * func_1F97F0_t)(byte8 * actorData, bool noMotion); // Update devil model and play motion.
 export typedef void(__fastcall * func_89E30_t)(ModelData & modelData, uint32 index); // Call after icon update.
 export typedef void(__fastcall * func_1B9FA0_t)(byte8 * addr); // Adjust file pointers.
 export typedef void(__fastcall * func_223AC0_t)(byte8 * actorData); // Create Spiral Swords.
@@ -117,7 +117,7 @@ export func_280120_t func_280120 = 0; // (byte8 * dest, uint32 side, uint32 inde
 export func_280160_t func_280160 = 0; // (byte8 * dest, uint32 group, uint32 index, uint32 motion)
 export func_1EB0E0_t func_1EB0E0 = 0; // (byte8 * actorData, uint32 index)
 export func_1F92C0_t func_1F92C0 = 0; // (byte8 * actorData, uint32 phase)
-export func_1F97F0_t func_1F97F0 = 0; // (byte8 * actorData, bool playMotion)
+export func_1F97F0_t func_1F97F0 = 0; // (byte8 * actorData, bool noMotion)
 export func_89E30_t func_89E30 = 0; // (ModelData & modelData, uint32 index)
 export func_1B9FA0_t func_1B9FA0 = 0; // (byte8 * addr)
 export func_223AC0_t func_223AC0 = 0; // (byte8 * actorData)
