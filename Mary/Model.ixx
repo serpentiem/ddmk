@@ -423,7 +423,7 @@ void UpdateModelFunctionDante(T & actorData)
 	RegisterShadow
 	(
 		actorData.modelData[modelIndex],
-		actorData.modelShadowData[modelIndex],
+		actorData.newModelShadowData[modelIndex],
 		shadowFile
 	);
 
@@ -702,7 +702,7 @@ void UpdateDevilModelFunctionDante
 	RegisterShadow
 	(
 		actorData.modelData[modelIndex],
-		actorData.modelShadowData[modelIndex],
+		actorData.newModelShadowData[modelIndex],
 		shadowFile
 	);
 
@@ -1439,7 +1439,61 @@ void ToggleSubmodelDataRelocation(bool enable)
 
 
 
-
+void ToggleModelShadowDataRelocation(bool enable)
+{
+	LogFunction(enable);
+	// 0x9AD0
+	{
+		static_assert(offsetof(ACTOR_DATA, modelShadowData[0]) == 0x9AD0);
+		constexpr auto off = offsetof(ACTOR_DATA, modelShadowData[0]);
+		constexpr auto newOff = offsetof(ACTOR_DATA, newModelShadowData[0]);
+		Write<uint32>((appBaseAddr + 0x18278E + 3), (enable) ? newOff : off); // dmc3.exe+18278E - 0F29 85 D09A0000 - MOVAPS [RBP+00009AD0],XMM0
+		Write<uint32>((appBaseAddr + 0x1DD4FD + 3), (enable) ? newOff : off); // dmc3.exe+1DD4FD - 48 8D 8B D09A0000 - LEA RCX,[RBX+00009AD0]
+		Write<uint32>((appBaseAddr + 0x1DDEFF + 3), (enable) ? newOff : off); // dmc3.exe+1DDEFF - 48 8D 8B D09A0000 - LEA RCX,[RBX+00009AD0]
+		Write<uint32>((appBaseAddr + 0x211FC7 + 3), (enable) ? newOff : off); // dmc3.exe+211FC7 - 48 8D B3 D09A0000 - LEA RSI,[RBX+00009AD0]
+		Write<uint32>((appBaseAddr + 0x211FF8 + 3), (enable) ? newOff : off); // dmc3.exe+211FF8 - 48 81 C1 D09A0000 - ADD RCX,00009AD0
+		Write<uint32>((appBaseAddr + 0x213262 + 4), (enable) ? newOff : off); // dmc3.exe+213262 - 48 8B BC 33 D09A0000 - MOV RDI,[RBX+RSI+00009AD0]
+		Write<uint32>((appBaseAddr + 0x21326D + 3), (enable) ? newOff : off); // dmc3.exe+21326D - 48 8D 8E D09A0000 - LEA RCX,[RSI+00009AD0]
+		Write<uint32>((appBaseAddr + 0x21365C + 4), (enable) ? newOff : off); // dmc3.exe+21365C - 48 8B BC 33 D09A0000 - MOV RDI,[RBX+RSI+00009AD0]
+		Write<uint32>((appBaseAddr + 0x213667 + 3), (enable) ? newOff : off); // dmc3.exe+213667 - 48 8D 8E D09A0000 - LEA RCX,[RSI+00009AD0]
+		Write<uint32>((appBaseAddr + 0x213A6A + 4), (enable) ? newOff : off); // dmc3.exe+213A6A - 48 8B BC 33 D09A0000 - MOV RDI,[RBX+RSI+00009AD0]
+		Write<uint32>((appBaseAddr + 0x213A75 + 3), (enable) ? newOff : off); // dmc3.exe+213A75 - 48 8D 8E D09A0000 - LEA RCX,[RSI+00009AD0]
+		Write<uint32>((appBaseAddr + 0x2140CD + 4), (enable) ? newOff : off); // dmc3.exe+2140CD - 48 8B BC 33 D09A0000 - MOV RDI,[RBX+RSI+00009AD0]
+		Write<uint32>((appBaseAddr + 0x2140DD + 3), (enable) ? newOff : off); // dmc3.exe+2140DD - 48 8D 8E D09A0000 - LEA RCX,[RSI+00009AD0]
+		Write<uint32>((appBaseAddr + 0x2141ED + 4), (enable) ? newOff : off); // dmc3.exe+2141ED - 48 8B BC 33 D09A0000 - MOV RDI,[RBX+RSI+00009AD0]
+		Write<uint32>((appBaseAddr + 0x2141F8 + 3), (enable) ? newOff : off); // dmc3.exe+2141F8 - 48 8D 8E D09A0000 - LEA RCX,[RSI+00009AD0]
+		Write<uint32>((appBaseAddr + 0x2145DC + 4), (enable) ? newOff : off); // dmc3.exe+2145DC - 48 8B BC 33 D09A0000 - MOV RDI,[RBX+RSI+00009AD0]
+		Write<uint32>((appBaseAddr + 0x2145E7 + 3), (enable) ? newOff : off); // dmc3.exe+2145E7 - 48 8D 8E D09A0000 - LEA RCX,[RSI+00009AD0]
+		Write<uint32>((appBaseAddr + 0x214DED + 3), (enable) ? newOff : off); // dmc3.exe+214DED - 49 8B BE D09A0000 - MOV RDI,[R14+00009AD0]
+		Write<uint32>((appBaseAddr + 0x214DFA + 3), (enable) ? newOff : off); // dmc3.exe+214DFA - 49 8D 8E D09A0000 - LEA RCX,[R14+00009AD0]
+		Write<uint32>((appBaseAddr + 0x218999 + 3), (enable) ? newOff : off); // dmc3.exe+218999 - 48 81 C1 D09A0000 - ADD RCX,00009AD0
+		Write<uint32>((appBaseAddr + 0x218EAC + 3), (enable) ? newOff : off); // dmc3.exe+218EAC - 48 8D 8F D09A0000 - LEA RCX,[RDI+00009AD0]
+		Write<uint32>((appBaseAddr + 0x220CCF + 4), (enable) ? newOff : off); // dmc3.exe+220CCF - 4D 89 B4 24 D09A0000 - MOV [R12+00009AD0],R14
+		Write<uint32>((appBaseAddr + 0x22631F + 3), (enable) ? newOff : off); // dmc3.exe+22631F - 49 89 B6 D09A0000 - MOV [R14+00009AD0],RSI
+		Write<uint32>((appBaseAddr + 0x34B3CA + 3), (enable) ? newOff : off); // dmc3.exe+34B3CA - 48 81 C1 D09A0000 - ADD RCX,00009AD0
+	}
+	// 0x9B90
+	{
+		static_assert(offsetof(ACTOR_DATA, modelShadowData[1]) == 0x9B90);
+		constexpr auto off = offsetof(ACTOR_DATA, modelShadowData[1]);
+		constexpr auto newOff = offsetof(ACTOR_DATA, newModelShadowData[1]);
+		Write<uint32>((appBaseAddr + 0xFD855 + 3), (enable) ? newOff : off); // dmc3.exe+FD855 - 4C 8D 9E 909B0000 - LEA R11,[RSI+00009B90]
+		Write<uint32>((appBaseAddr + 0xFFF7C + 3), (enable) ? newOff : off); // dmc3.exe+FFF7C - 0F29 81 909B0000 - MOVAPS [RCX+00009B90],XMM0
+	}
+	// 0x9C50
+	{
+		static_assert(offsetof(ACTOR_DATA, modelShadowData[2]) == 0x9C50);
+		constexpr auto off = offsetof(ACTOR_DATA, modelShadowData[2]);
+		constexpr auto newOff = offsetof(ACTOR_DATA, newModelShadowData[2]);
+		Write<uint32>((appBaseAddr + 0xF8521 + 2), (enable) ? newOff : off); // dmc3.exe+F8521 - C7 81 509C0000 00000000 - MOV [RCX+00009C50],00000000
+		Write<uint32>((appBaseAddr + 0xFC18D + 2), (enable) ? newOff : off); // dmc3.exe+FC18D - 89 AB 509C0000 - MOV [RBX+00009C50],EBP
+		Write<uint32>((appBaseAddr + 0xFCF75 + 3), (enable) ? newOff : off); // dmc3.exe+FCF75 - 45 89 BE 509C0000 - MOV [R14+00009C50],R15D
+		Write<uint32>((appBaseAddr + 0xFFE95 + 2), (enable) ? newOff : off); // dmc3.exe+FFE95 - C7 87 509C0000 00000000 - MOV [RDI+00009C50],00000000
+		Write<uint32>((appBaseAddr + 0x100652 + 3), (enable) ? newOff : off); // dmc3.exe+100652 - 44 38 B7 509C0000 - CMP [RDI+00009C50],R14L
+		Write<uint32>((appBaseAddr + 0x100665 + 2), (enable) ? newOff : off); // dmc3.exe+100665 - C6 87 509C0000 01 - MOV BYTE PTR [RDI+00009C50],01
+		Write<uint32>((appBaseAddr + 0x1007C2 + 3), (enable) ? newOff : off); // dmc3.exe+1007C2 - 44 89 B7 509C0000 - MOV [RDI+00009C50],R14D
+	}
+}
 
 
 
@@ -1472,6 +1526,7 @@ export void Model_Init()
 
 	ToggleBodyPartDataRelocation(true);
 	ToggleSubmodelDataRelocation(true);
+	ToggleModelShadowDataRelocation(true);
 
 	//ToggleExpansion(true);
 	//ToggleSubmodelRelocation(true);

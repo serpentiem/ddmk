@@ -1886,7 +1886,8 @@ struct ACTOR_DATA
 	byte32 newEffectIndices[8]; // 0xB980
 	BodyPartData newBodyPartData[7][2]; // 0xB9A0
 	ModelData newSubmodelData[11]; // 0xC960
-	uint32 newLastVar; // 0x11BE0
+	ShadowData newModelShadowData[6]; // 0x11BE0
+	uint32 newLastVar; // 0x12060
 
 	operator byte8 *()
 	{
@@ -2096,7 +2097,8 @@ struct ACTOR_DATA_DANTE
 	byte32 newEffectIndices[8]; // 0xB980
 	BodyPartData newBodyPartData[7][2]; // 0xB9A0
 	ModelData newSubmodelData[11]; // 0xC960
-	uint32 newLastVar; // 0x11BE0
+	ShadowData newModelShadowData[6]; // 0x11BE0
+	uint32 newLastVar; // 0x12060
 
 	operator byte8 *()
 	{
@@ -2285,7 +2287,8 @@ struct ACTOR_DATA_BOB
 	byte32 newEffectIndices[8]; // 0xB980
 	BodyPartData newBodyPartData[7][2]; // 0xB9A0
 	ModelData newSubmodelData[11]; // 0xC960
-	uint32 newLastVar; // 0x11BE0
+	ShadowData newModelShadowData[6]; // 0x11BE0
+	uint32 newLastVar; // 0x12060
 
 	operator byte8 *()
 	{
@@ -2474,7 +2477,8 @@ struct ACTOR_DATA_LADY
 	byte32 newEffectIndices[8]; // 0xB980
 	BodyPartData newBodyPartData[7][2]; // 0xB9A0
 	ModelData newSubmodelData[11]; // 0xC960
-	uint32 newLastVar; // 0x11BE0
+	ShadowData newModelShadowData[6]; // 0x11BE0
+	uint32 newLastVar; // 0x12060
 
 	operator byte8 *()
 	{
@@ -2672,7 +2676,8 @@ struct ACTOR_DATA_VERGIL
 	byte32 newEffectIndices[8]; // 0xB980
 	BodyPartData newBodyPartData[7][2]; // 0xB9A0
 	ModelData newSubmodelData[11]; // 0xC960
-	uint32 newLastVar; // 0x11BE0
+	ShadowData newModelShadowData[6]; // 0x11BE0
+	uint32 newLastVar; // 0x12060
 
 	operator byte8 *()
 	{
@@ -2798,7 +2803,8 @@ static_assert(offsetof(ACTOR_DATA, newDevilAura) == 0xB970);
 static_assert(offsetof(ACTOR_DATA, newEffectIndices) == 0xB980);
 static_assert(offsetof(ACTOR_DATA, newBodyPartData) == 0xB9A0);
 static_assert(offsetof(ACTOR_DATA, newSubmodelData) == 0xC960);
-static_assert(offsetof(ACTOR_DATA, newLastVar) == 0x11BE0);
+static_assert(offsetof(ACTOR_DATA, newModelShadowData) == 0x11BE0);
+static_assert(offsetof(ACTOR_DATA, newLastVar) == 0x12060);
 
 static_assert(offsetof(ACTOR_DATA_DANTE, status) == 8);
 static_assert(offsetof(ACTOR_DATA_DANTE, character) == 0x78);
@@ -2935,7 +2941,8 @@ static_assert(offsetof(ACTOR_DATA_DANTE, newDevilAura) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_DANTE, newEffectIndices) == 0xB980);
 static_assert(offsetof(ACTOR_DATA_DANTE, newBodyPartData) == 0xB9A0);
 static_assert(offsetof(ACTOR_DATA_DANTE, newSubmodelData) == 0xC960);
-static_assert(offsetof(ACTOR_DATA_DANTE, newLastVar) == 0x11BE0);
+static_assert(offsetof(ACTOR_DATA_DANTE, newModelShadowData) == 0x11BE0);
+static_assert(offsetof(ACTOR_DATA_DANTE, newLastVar) == 0x12060);
 
 static_assert(offsetof(ACTOR_DATA_BOB, status) == 8);
 static_assert(offsetof(ACTOR_DATA_BOB, character) == 0x78);
@@ -3055,7 +3062,8 @@ static_assert(offsetof(ACTOR_DATA_BOB, newDevilAura) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_BOB, newEffectIndices) == 0xB980);
 static_assert(offsetof(ACTOR_DATA_BOB, newBodyPartData) == 0xB9A0);
 static_assert(offsetof(ACTOR_DATA_BOB, newSubmodelData) == 0xC960);
-static_assert(offsetof(ACTOR_DATA_BOB, newLastVar) == 0x11BE0);
+static_assert(offsetof(ACTOR_DATA_BOB, newModelShadowData) == 0x11BE0);
+static_assert(offsetof(ACTOR_DATA_BOB, newLastVar) == 0x12060);
 
 static_assert(offsetof(ACTOR_DATA_LADY, status) == 8);
 static_assert(offsetof(ACTOR_DATA_LADY, character) == 0x78);
@@ -3175,7 +3183,8 @@ static_assert(offsetof(ACTOR_DATA_LADY, newDevilAura) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_LADY, newEffectIndices) == 0xB980);
 static_assert(offsetof(ACTOR_DATA_LADY, newBodyPartData) == 0xB9A0);
 static_assert(offsetof(ACTOR_DATA_LADY, newSubmodelData) == 0xC960);
-static_assert(offsetof(ACTOR_DATA_LADY, newLastVar) == 0x11BE0);
+static_assert(offsetof(ACTOR_DATA_LADY, newModelShadowData) == 0x11BE0);
+static_assert(offsetof(ACTOR_DATA_LADY, newLastVar) == 0x12060);
 
 static_assert(offsetof(ACTOR_DATA_VERGIL, status) == 8);
 static_assert(offsetof(ACTOR_DATA_VERGIL, character) == 0x78);
@@ -3303,7 +3312,8 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, newDevilAura) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newEffectIndices) == 0xB980);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newBodyPartData) == 0xB9A0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newSubmodelData) == 0xC960);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newLastVar) == 0x11BE0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newModelShadowData) == 0x11BE0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newLastVar) == 0x12060);
 
 // $ActorDataEnd
 

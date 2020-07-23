@@ -187,8 +187,17 @@ var items =
 
 
 	[ "[5]"                                 , "bool"                    , 0x9AC0                           ],
+
 	[ "modelShadowData[3]"                  , "ShadowData"              , 0x9AD0                           ],
+
+
+
 	[ "submodelShadowData[5]"               , "ShadowData"              , 0x9D10                           ],
+
+
+
+
+
 
 
 
@@ -260,6 +269,8 @@ var extra =
 	[ "newBodyPartData[7][2]", "BodyPartData" ],
 
 	[ "newSubmodelData[11]", "ModelData" ],
+
+	[ "newModelShadowData[6]", "ShadowData" ],
 
 
 
