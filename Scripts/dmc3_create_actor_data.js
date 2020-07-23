@@ -219,12 +219,17 @@ var items =
 
 
 
+
+
+
+
+
+
+
+
+
 	[ "devilSubmodelPhysicsData[4]"         , "PhysicsData"             , 0xA540                           ], // Relocated.
-
-
-
-
-	[ "devilSubmodelPhysicsLinkData[4][4]"         , "PhysicsLinkData"        , 0xAA00                           ],
+	[ "devilSubmodelPhysicsLinkData[4][4]"         , "PhysicsLinkData"        , 0xAA00                           ], // Relocated.
 
 
 
@@ -306,6 +311,10 @@ var extra =
 
 
 	[ "newDevilSubmodelPhysicsLinkData[10][4]", "PhysicsLinkData" ],
+
+
+
+	[ "newDevilModelPhysicsLinkMetadataPool[5][36]", "PhysicsLinkMetadata *" ],
 
 
 
