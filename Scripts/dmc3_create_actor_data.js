@@ -143,7 +143,7 @@ var items =
 
 
 
-	[ "bodyPartData[4][2]"                      , "BodyPartData"                  , 0x6950                           ],
+	[ "bodyPartData[4][2]"                      , "BodyPartData"                  , 0x6950                           ], // Relocated.
 
 
 
@@ -178,7 +178,7 @@ var items =
 
 
 
-	[ "submodelData[5]"                     , "ModelData"               , 0x7540                           ],
+	[ "submodelData[5]"                     , "ModelData"               , 0x7540                           ], // Relocated.
 
 
 
@@ -188,11 +188,8 @@ var items =
 
 	[ "[5]"                                 , "bool"                    , 0x9AC0                           ],
 
-	[ "modelShadowData[3]"                  , "ShadowData"              , 0x9AD0                           ],
-
-
-
-	[ "submodelShadowData[5]"               , "ShadowData"              , 0x9D10                           ],
+	[ "modelShadowData[3]"                  , "ShadowData"              , 0x9AD0                           ], // Relocated.
+	[ "submodelShadowData[5]"               , "ShadowData"              , 0x9D10                           ], // Relocated.
 
 
 
@@ -202,8 +199,15 @@ var items =
 
 
 
-	[ "submodelPhysicsMetadata"             , "PhysicsMetadata"         , 0xA0D0                           ],
-	[ "submodelPhysicsData"                 , "PhysicsData"             , 0xA210                           ],
+	[ "submodelPhysicsMetadata"             , "PhysicsMetadata"         , 0xA0D0                           ], // Relocated.
+	[ "submodelPhysicsData"                 , "PhysicsData"             , 0xA210                           ], // Relocated.
+
+
+
+
+
+
+
 
 
 
@@ -218,7 +222,15 @@ var items =
 	[ "devilSubmodelPhysicsData[4]"         , "PhysicsData"             , 0xA540                           ],
 
 
-	[ "devilSubmodelPhysicsLinkData[4][4]"         , "PhysicsLinkData"        , 0xAA00                           ], // @Research: Corresponding to what?
+
+
+	[ "devilSubmodelPhysicsLinkData[4][4]"         , "PhysicsLinkData"        , 0xAA00                           ],
+
+
+
+
+
+
 
 
 
@@ -271,6 +283,24 @@ var extra =
 	[ "newSubmodelData[11]", "ModelData" ],
 
 	[ "newModelShadowData[6]", "ShadowData" ],
+	[ "newSubmodelShadowData[11]", "ShadowData" ],
+
+
+
+
+
+	[ "newSubmodelPhysicsMetadata[2]", "PhysicsMetadata" ],
+
+
+
+
+
+
+	[ "newSubmodelPhysicsData[2]", "PhysicsData" ],
+
+
+
+	[ "newDevilSubmodelPhysicsData[10]", "PhysicsData" ],
 
 
 
