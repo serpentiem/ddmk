@@ -36,7 +36,13 @@ var items =
 
 
 
-	[ "modelPhysicsMetadataPool[3][24]"     , "PhysicsMetadata *"       , 0x1880                           ],
+
+
+	[ "modelPhysicsMetadataPool[4][24]"     , "PhysicsMetadata *"       , 0x1880                           ],
+
+
+
+	[ "[4][24]"     , "Size_32"       , 0x1B88                           ],
 
 
 
@@ -45,7 +51,8 @@ var items =
 
 
 
-	[ ""                   , "byte8 *"                 , 0x3894                           ],
+	[ "motionSpeed"                   , "float32"                 , 0x3894                           ],
+	[ "motionSpeedMultiplier"                   , "float32"                 , 0x3898                           ],
 
 
 
@@ -58,6 +65,16 @@ var items =
 	[ "[8]"                                 , "uint8"                   , 0x3A10                           ],
 	[ "shadow"                              , "uint32"                  , 0x3A18                           ],
 	[ "color"                               , "byte32"                  , 0x3A28                           ],
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -214,7 +231,7 @@ var items =
 
 
 
-	[ "devilModelPhysicsLinkMetadataPool[2][36]", "PhysicsLinkMetadata *"  , 0xA300                           ],
+	[ "devilModelPhysicsLinkMetadataPool[2][36]", "PhysicsLinkMetadata *"  , 0xA300                           ], // Relocated.
 
 
 
@@ -316,6 +333,10 @@ var extra =
 
 	[ "newDevilModelPhysicsLinkMetadataPool[5][36]", "PhysicsLinkMetadata *" ],
 
+
+
+
+	[ "newModelPhysicsMetadataPool[10][24]"     , "PhysicsMetadata *" ],
 
 
 

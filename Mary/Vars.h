@@ -1729,8 +1729,8 @@ struct ACTOR_DATA
 	float32 var_1C4; // 0x1C4
 	_(56);
 	ModelData modelData[3]; // 0x200
-	PhysicsMetadata * modelPhysicsMetadataPool[3][24]; // 0x1880
-	_(7636);
+	PhysicsMetadata * modelPhysicsMetadataPool[4][24]; // 0x1880
+	_(7444);
 	byte8 * var_3894; // 0x3894
 	_(4);
 	byte8 * motionArchive[32]; // 0x38A0
@@ -1893,7 +1893,8 @@ struct ACTOR_DATA
 	PhysicsData newDevilSubmodelPhysicsData[10]; // 0x12D00
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x13660
 	PhysicsLinkMetadata * newDevilModelPhysicsLinkMetadataPool[5][36]; // 0x15460
-	uint32 newLastVar; // 0x15A00
+	PhysicsMetadata * newModelPhysicsMetadataPool[10][24]; // 0x15A00
+	uint32 newLastVar; // 0x16180
 
 	operator byte8 *()
 	{
@@ -1925,8 +1926,8 @@ struct ACTOR_DATA_DANTE
 	float32 var_1C4; // 0x1C4
 	_(56);
 	ModelData modelData[3]; // 0x200
-	PhysicsMetadata * modelPhysicsMetadataPool[3][24]; // 0x1880
-	_(7636);
+	PhysicsMetadata * modelPhysicsMetadataPool[4][24]; // 0x1880
+	_(7444);
 	byte8 * var_3894; // 0x3894
 	_(4);
 	byte8 * motionArchive[32]; // 0x38A0
@@ -2110,7 +2111,8 @@ struct ACTOR_DATA_DANTE
 	PhysicsData newDevilSubmodelPhysicsData[10]; // 0x12D00
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x13660
 	PhysicsLinkMetadata * newDevilModelPhysicsLinkMetadataPool[5][36]; // 0x15460
-	uint32 newLastVar; // 0x15A00
+	PhysicsMetadata * newModelPhysicsMetadataPool[10][24]; // 0x15A00
+	uint32 newLastVar; // 0x16180
 
 	operator byte8 *()
 	{
@@ -2142,8 +2144,8 @@ struct ACTOR_DATA_BOB
 	float32 var_1C4; // 0x1C4
 	_(56);
 	ModelData modelData[3]; // 0x200
-	PhysicsMetadata * modelPhysicsMetadataPool[3][24]; // 0x1880
-	_(7636);
+	PhysicsMetadata * modelPhysicsMetadataPool[4][24]; // 0x1880
+	_(7444);
 	byte8 * var_3894; // 0x3894
 	_(4);
 	byte8 * motionArchive[32]; // 0x38A0
@@ -2306,7 +2308,8 @@ struct ACTOR_DATA_BOB
 	PhysicsData newDevilSubmodelPhysicsData[10]; // 0x12D00
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x13660
 	PhysicsLinkMetadata * newDevilModelPhysicsLinkMetadataPool[5][36]; // 0x15460
-	uint32 newLastVar; // 0x15A00
+	PhysicsMetadata * newModelPhysicsMetadataPool[10][24]; // 0x15A00
+	uint32 newLastVar; // 0x16180
 
 	operator byte8 *()
 	{
@@ -2338,8 +2341,8 @@ struct ACTOR_DATA_LADY
 	float32 var_1C4; // 0x1C4
 	_(56);
 	ModelData modelData[3]; // 0x200
-	PhysicsMetadata * modelPhysicsMetadataPool[3][24]; // 0x1880
-	_(7636);
+	PhysicsMetadata * modelPhysicsMetadataPool[4][24]; // 0x1880
+	_(7444);
 	byte8 * var_3894; // 0x3894
 	_(4);
 	byte8 * motionArchive[32]; // 0x38A0
@@ -2502,7 +2505,8 @@ struct ACTOR_DATA_LADY
 	PhysicsData newDevilSubmodelPhysicsData[10]; // 0x12D00
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x13660
 	PhysicsLinkMetadata * newDevilModelPhysicsLinkMetadataPool[5][36]; // 0x15460
-	uint32 newLastVar; // 0x15A00
+	PhysicsMetadata * newModelPhysicsMetadataPool[10][24]; // 0x15A00
+	uint32 newLastVar; // 0x16180
 
 	operator byte8 *()
 	{
@@ -2534,8 +2538,8 @@ struct ACTOR_DATA_VERGIL
 	float32 var_1C4; // 0x1C4
 	_(56);
 	ModelData modelData[3]; // 0x200
-	PhysicsMetadata * modelPhysicsMetadataPool[3][24]; // 0x1880
-	_(7636);
+	PhysicsMetadata * modelPhysicsMetadataPool[4][24]; // 0x1880
+	_(7444);
 	byte8 * var_3894; // 0x3894
 	_(4);
 	byte8 * motionArchive[32]; // 0x38A0
@@ -2707,7 +2711,8 @@ struct ACTOR_DATA_VERGIL
 	PhysicsData newDevilSubmodelPhysicsData[10]; // 0x12D00
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x13660
 	PhysicsLinkMetadata * newDevilModelPhysicsLinkMetadataPool[5][36]; // 0x15460
-	uint32 newLastVar; // 0x15A00
+	PhysicsMetadata * newModelPhysicsMetadataPool[10][24]; // 0x15A00
+	uint32 newLastVar; // 0x16180
 
 	operator byte8 *()
 	{
@@ -2840,7 +2845,8 @@ static_assert(offsetof(ACTOR_DATA, newSubmodelPhysicsData) == 0x12B20);
 static_assert(offsetof(ACTOR_DATA, newDevilSubmodelPhysicsData) == 0x12D00);
 static_assert(offsetof(ACTOR_DATA, newDevilSubmodelPhysicsLinkData) == 0x13660);
 static_assert(offsetof(ACTOR_DATA, newDevilModelPhysicsLinkMetadataPool) == 0x15460);
-static_assert(offsetof(ACTOR_DATA, newLastVar) == 0x15A00);
+static_assert(offsetof(ACTOR_DATA, newModelPhysicsMetadataPool) == 0x15A00);
+static_assert(offsetof(ACTOR_DATA, newLastVar) == 0x16180);
 
 static_assert(offsetof(ACTOR_DATA_DANTE, status) == 8);
 static_assert(offsetof(ACTOR_DATA_DANTE, character) == 0x78);
@@ -2984,7 +2990,8 @@ static_assert(offsetof(ACTOR_DATA_DANTE, newSubmodelPhysicsData) == 0x12B20);
 static_assert(offsetof(ACTOR_DATA_DANTE, newDevilSubmodelPhysicsData) == 0x12D00);
 static_assert(offsetof(ACTOR_DATA_DANTE, newDevilSubmodelPhysicsLinkData) == 0x13660);
 static_assert(offsetof(ACTOR_DATA_DANTE, newDevilModelPhysicsLinkMetadataPool) == 0x15460);
-static_assert(offsetof(ACTOR_DATA_DANTE, newLastVar) == 0x15A00);
+static_assert(offsetof(ACTOR_DATA_DANTE, newModelPhysicsMetadataPool) == 0x15A00);
+static_assert(offsetof(ACTOR_DATA_DANTE, newLastVar) == 0x16180);
 
 static_assert(offsetof(ACTOR_DATA_BOB, status) == 8);
 static_assert(offsetof(ACTOR_DATA_BOB, character) == 0x78);
@@ -3111,7 +3118,8 @@ static_assert(offsetof(ACTOR_DATA_BOB, newSubmodelPhysicsData) == 0x12B20);
 static_assert(offsetof(ACTOR_DATA_BOB, newDevilSubmodelPhysicsData) == 0x12D00);
 static_assert(offsetof(ACTOR_DATA_BOB, newDevilSubmodelPhysicsLinkData) == 0x13660);
 static_assert(offsetof(ACTOR_DATA_BOB, newDevilModelPhysicsLinkMetadataPool) == 0x15460);
-static_assert(offsetof(ACTOR_DATA_BOB, newLastVar) == 0x15A00);
+static_assert(offsetof(ACTOR_DATA_BOB, newModelPhysicsMetadataPool) == 0x15A00);
+static_assert(offsetof(ACTOR_DATA_BOB, newLastVar) == 0x16180);
 
 static_assert(offsetof(ACTOR_DATA_LADY, status) == 8);
 static_assert(offsetof(ACTOR_DATA_LADY, character) == 0x78);
@@ -3238,7 +3246,8 @@ static_assert(offsetof(ACTOR_DATA_LADY, newSubmodelPhysicsData) == 0x12B20);
 static_assert(offsetof(ACTOR_DATA_LADY, newDevilSubmodelPhysicsData) == 0x12D00);
 static_assert(offsetof(ACTOR_DATA_LADY, newDevilSubmodelPhysicsLinkData) == 0x13660);
 static_assert(offsetof(ACTOR_DATA_LADY, newDevilModelPhysicsLinkMetadataPool) == 0x15460);
-static_assert(offsetof(ACTOR_DATA_LADY, newLastVar) == 0x15A00);
+static_assert(offsetof(ACTOR_DATA_LADY, newModelPhysicsMetadataPool) == 0x15A00);
+static_assert(offsetof(ACTOR_DATA_LADY, newLastVar) == 0x16180);
 
 static_assert(offsetof(ACTOR_DATA_VERGIL, status) == 8);
 static_assert(offsetof(ACTOR_DATA_VERGIL, character) == 0x78);
@@ -3373,7 +3382,8 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, newSubmodelPhysicsData) == 0x12B20);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newDevilSubmodelPhysicsData) == 0x12D00);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newDevilSubmodelPhysicsLinkData) == 0x13660);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newDevilModelPhysicsLinkMetadataPool) == 0x15460);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newLastVar) == 0x15A00);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newModelPhysicsMetadataPool) == 0x15A00);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newLastVar) == 0x16180);
 
 // $ActorDataEnd
 
