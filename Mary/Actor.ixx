@@ -2303,7 +2303,7 @@ export void Actor_Init()
 
 	{
 		auto func = CreateFunction(WeaponSwitchControllerDante, 0, true, false);
-		WriteCall((appBaseAddr + 0x1E25EB), func.addr);
+		//WriteCall((appBaseAddr + 0x1E25EB), func.addr);
 	}
 
 
