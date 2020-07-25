@@ -1731,7 +1731,8 @@ struct ACTOR_DATA
 	ModelData modelData[3]; // 0x200
 	PhysicsMetadata * modelPhysicsMetadataPool[4][24]; // 0x1880
 	_(7444);
-	byte8 * var_3894; // 0x3894
+	float32 motionSpeed; // 0x3894
+	float32 motionSpeedMultiplier; // 0x3898
 	_(4);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -1884,17 +1885,8 @@ struct ACTOR_DATA
 	byte8 * newDevilAura; // 0xB970
 	_(8);
 	byte32 newEffectIndices[8]; // 0xB980
-	BodyPartData newBodyPartData[7][2]; // 0xB9A0
-	ModelData newSubmodelData[11]; // 0xC960
-	ShadowData newModelShadowData[6]; // 0x11BE0
-	ShadowData newSubmodelShadowData[11]; // 0x12060
-	PhysicsMetadata newSubmodelPhysicsMetadata[2]; // 0x128A0
-	PhysicsData newSubmodelPhysicsData[2]; // 0x12B20
-	PhysicsData newDevilSubmodelPhysicsData[10]; // 0x12D00
-	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x13660
-	PhysicsLinkMetadata * newDevilModelPhysicsLinkMetadataPool[5][36]; // 0x15460
-	PhysicsMetadata * newModelPhysicsMetadataPool[10][24]; // 0x15A00
-	uint32 newLastVar; // 0x16180
+	PhysicsMetadata * newModelPhysicsMetadataPool[4][24]; // 0xB9A0
+	uint32 newLastVar; // 0xBCA0
 
 	operator byte8 *()
 	{
@@ -1928,7 +1920,8 @@ struct ACTOR_DATA_DANTE
 	ModelData modelData[3]; // 0x200
 	PhysicsMetadata * modelPhysicsMetadataPool[4][24]; // 0x1880
 	_(7444);
-	byte8 * var_3894; // 0x3894
+	float32 motionSpeed; // 0x3894
+	float32 motionSpeedMultiplier; // 0x3898
 	_(4);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -2102,17 +2095,8 @@ struct ACTOR_DATA_DANTE
 	byte8 * newDevilAura; // 0xB970
 	_(8);
 	byte32 newEffectIndices[8]; // 0xB980
-	BodyPartData newBodyPartData[7][2]; // 0xB9A0
-	ModelData newSubmodelData[11]; // 0xC960
-	ShadowData newModelShadowData[6]; // 0x11BE0
-	ShadowData newSubmodelShadowData[11]; // 0x12060
-	PhysicsMetadata newSubmodelPhysicsMetadata[2]; // 0x128A0
-	PhysicsData newSubmodelPhysicsData[2]; // 0x12B20
-	PhysicsData newDevilSubmodelPhysicsData[10]; // 0x12D00
-	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x13660
-	PhysicsLinkMetadata * newDevilModelPhysicsLinkMetadataPool[5][36]; // 0x15460
-	PhysicsMetadata * newModelPhysicsMetadataPool[10][24]; // 0x15A00
-	uint32 newLastVar; // 0x16180
+	PhysicsMetadata * newModelPhysicsMetadataPool[4][24]; // 0xB9A0
+	uint32 newLastVar; // 0xBCA0
 
 	operator byte8 *()
 	{
@@ -2146,7 +2130,8 @@ struct ACTOR_DATA_BOB
 	ModelData modelData[3]; // 0x200
 	PhysicsMetadata * modelPhysicsMetadataPool[4][24]; // 0x1880
 	_(7444);
-	byte8 * var_3894; // 0x3894
+	float32 motionSpeed; // 0x3894
+	float32 motionSpeedMultiplier; // 0x3898
 	_(4);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -2299,17 +2284,8 @@ struct ACTOR_DATA_BOB
 	byte8 * newDevilAura; // 0xB970
 	_(8);
 	byte32 newEffectIndices[8]; // 0xB980
-	BodyPartData newBodyPartData[7][2]; // 0xB9A0
-	ModelData newSubmodelData[11]; // 0xC960
-	ShadowData newModelShadowData[6]; // 0x11BE0
-	ShadowData newSubmodelShadowData[11]; // 0x12060
-	PhysicsMetadata newSubmodelPhysicsMetadata[2]; // 0x128A0
-	PhysicsData newSubmodelPhysicsData[2]; // 0x12B20
-	PhysicsData newDevilSubmodelPhysicsData[10]; // 0x12D00
-	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x13660
-	PhysicsLinkMetadata * newDevilModelPhysicsLinkMetadataPool[5][36]; // 0x15460
-	PhysicsMetadata * newModelPhysicsMetadataPool[10][24]; // 0x15A00
-	uint32 newLastVar; // 0x16180
+	PhysicsMetadata * newModelPhysicsMetadataPool[4][24]; // 0xB9A0
+	uint32 newLastVar; // 0xBCA0
 
 	operator byte8 *()
 	{
@@ -2343,7 +2319,8 @@ struct ACTOR_DATA_LADY
 	ModelData modelData[3]; // 0x200
 	PhysicsMetadata * modelPhysicsMetadataPool[4][24]; // 0x1880
 	_(7444);
-	byte8 * var_3894; // 0x3894
+	float32 motionSpeed; // 0x3894
+	float32 motionSpeedMultiplier; // 0x3898
 	_(4);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -2496,17 +2473,8 @@ struct ACTOR_DATA_LADY
 	byte8 * newDevilAura; // 0xB970
 	_(8);
 	byte32 newEffectIndices[8]; // 0xB980
-	BodyPartData newBodyPartData[7][2]; // 0xB9A0
-	ModelData newSubmodelData[11]; // 0xC960
-	ShadowData newModelShadowData[6]; // 0x11BE0
-	ShadowData newSubmodelShadowData[11]; // 0x12060
-	PhysicsMetadata newSubmodelPhysicsMetadata[2]; // 0x128A0
-	PhysicsData newSubmodelPhysicsData[2]; // 0x12B20
-	PhysicsData newDevilSubmodelPhysicsData[10]; // 0x12D00
-	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x13660
-	PhysicsLinkMetadata * newDevilModelPhysicsLinkMetadataPool[5][36]; // 0x15460
-	PhysicsMetadata * newModelPhysicsMetadataPool[10][24]; // 0x15A00
-	uint32 newLastVar; // 0x16180
+	PhysicsMetadata * newModelPhysicsMetadataPool[4][24]; // 0xB9A0
+	uint32 newLastVar; // 0xBCA0
 
 	operator byte8 *()
 	{
@@ -2540,7 +2508,8 @@ struct ACTOR_DATA_VERGIL
 	ModelData modelData[3]; // 0x200
 	PhysicsMetadata * modelPhysicsMetadataPool[4][24]; // 0x1880
 	_(7444);
-	byte8 * var_3894; // 0x3894
+	float32 motionSpeed; // 0x3894
+	float32 motionSpeedMultiplier; // 0x3898
 	_(4);
 	byte8 * motionArchive[32]; // 0x38A0
 	_(16);
@@ -2702,17 +2671,8 @@ struct ACTOR_DATA_VERGIL
 	byte8 * newDevilAura; // 0xB970
 	_(8);
 	byte32 newEffectIndices[8]; // 0xB980
-	BodyPartData newBodyPartData[7][2]; // 0xB9A0
-	ModelData newSubmodelData[11]; // 0xC960
-	ShadowData newModelShadowData[6]; // 0x11BE0
-	ShadowData newSubmodelShadowData[11]; // 0x12060
-	PhysicsMetadata newSubmodelPhysicsMetadata[2]; // 0x128A0
-	PhysicsData newSubmodelPhysicsData[2]; // 0x12B20
-	PhysicsData newDevilSubmodelPhysicsData[10]; // 0x12D00
-	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x13660
-	PhysicsLinkMetadata * newDevilModelPhysicsLinkMetadataPool[5][36]; // 0x15460
-	PhysicsMetadata * newModelPhysicsMetadataPool[10][24]; // 0x15A00
-	uint32 newLastVar; // 0x16180
+	PhysicsMetadata * newModelPhysicsMetadataPool[4][24]; // 0xB9A0
+	uint32 newLastVar; // 0xBCA0
 
 	operator byte8 *()
 	{
@@ -2733,7 +2693,8 @@ static_assert(offsetof(ACTOR_DATA, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA, modelData) == 0x200);
 static_assert(offsetof(ACTOR_DATA, modelPhysicsMetadataPool) == 0x1880);
-static_assert(offsetof(ACTOR_DATA, var_3894) == 0x3894);
+static_assert(offsetof(ACTOR_DATA, motionSpeed) == 0x3894);
+static_assert(offsetof(ACTOR_DATA, motionSpeedMultiplier) == 0x3898);
 static_assert(offsetof(ACTOR_DATA, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA, motionDataMirror) == 0x39B4);
@@ -2836,17 +2797,8 @@ static_assert(offsetof(ACTOR_DATA, newForceFiles) == 0xB96A);
 static_assert(offsetof(ACTOR_DATA, newForceFilesCharacter) == 0xB96B);
 static_assert(offsetof(ACTOR_DATA, newDevilAura) == 0xB970);
 static_assert(offsetof(ACTOR_DATA, newEffectIndices) == 0xB980);
-static_assert(offsetof(ACTOR_DATA, newBodyPartData) == 0xB9A0);
-static_assert(offsetof(ACTOR_DATA, newSubmodelData) == 0xC960);
-static_assert(offsetof(ACTOR_DATA, newModelShadowData) == 0x11BE0);
-static_assert(offsetof(ACTOR_DATA, newSubmodelShadowData) == 0x12060);
-static_assert(offsetof(ACTOR_DATA, newSubmodelPhysicsMetadata) == 0x128A0);
-static_assert(offsetof(ACTOR_DATA, newSubmodelPhysicsData) == 0x12B20);
-static_assert(offsetof(ACTOR_DATA, newDevilSubmodelPhysicsData) == 0x12D00);
-static_assert(offsetof(ACTOR_DATA, newDevilSubmodelPhysicsLinkData) == 0x13660);
-static_assert(offsetof(ACTOR_DATA, newDevilModelPhysicsLinkMetadataPool) == 0x15460);
-static_assert(offsetof(ACTOR_DATA, newModelPhysicsMetadataPool) == 0x15A00);
-static_assert(offsetof(ACTOR_DATA, newLastVar) == 0x16180);
+static_assert(offsetof(ACTOR_DATA, newModelPhysicsMetadataPool) == 0xB9A0);
+static_assert(offsetof(ACTOR_DATA, newLastVar) == 0xBCA0);
 
 static_assert(offsetof(ACTOR_DATA_DANTE, status) == 8);
 static_assert(offsetof(ACTOR_DATA_DANTE, character) == 0x78);
@@ -2861,7 +2813,8 @@ static_assert(offsetof(ACTOR_DATA_DANTE, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA_DANTE, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA_DANTE, modelData) == 0x200);
 static_assert(offsetof(ACTOR_DATA_DANTE, modelPhysicsMetadataPool) == 0x1880);
-static_assert(offsetof(ACTOR_DATA_DANTE, var_3894) == 0x3894);
+static_assert(offsetof(ACTOR_DATA_DANTE, motionSpeed) == 0x3894);
+static_assert(offsetof(ACTOR_DATA_DANTE, motionSpeedMultiplier) == 0x3898);
 static_assert(offsetof(ACTOR_DATA_DANTE, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_DANTE, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA_DANTE, motionDataMirror) == 0x39B4);
@@ -2981,17 +2934,8 @@ static_assert(offsetof(ACTOR_DATA_DANTE, newForceFiles) == 0xB96A);
 static_assert(offsetof(ACTOR_DATA_DANTE, newForceFilesCharacter) == 0xB96B);
 static_assert(offsetof(ACTOR_DATA_DANTE, newDevilAura) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_DANTE, newEffectIndices) == 0xB980);
-static_assert(offsetof(ACTOR_DATA_DANTE, newBodyPartData) == 0xB9A0);
-static_assert(offsetof(ACTOR_DATA_DANTE, newSubmodelData) == 0xC960);
-static_assert(offsetof(ACTOR_DATA_DANTE, newModelShadowData) == 0x11BE0);
-static_assert(offsetof(ACTOR_DATA_DANTE, newSubmodelShadowData) == 0x12060);
-static_assert(offsetof(ACTOR_DATA_DANTE, newSubmodelPhysicsMetadata) == 0x128A0);
-static_assert(offsetof(ACTOR_DATA_DANTE, newSubmodelPhysicsData) == 0x12B20);
-static_assert(offsetof(ACTOR_DATA_DANTE, newDevilSubmodelPhysicsData) == 0x12D00);
-static_assert(offsetof(ACTOR_DATA_DANTE, newDevilSubmodelPhysicsLinkData) == 0x13660);
-static_assert(offsetof(ACTOR_DATA_DANTE, newDevilModelPhysicsLinkMetadataPool) == 0x15460);
-static_assert(offsetof(ACTOR_DATA_DANTE, newModelPhysicsMetadataPool) == 0x15A00);
-static_assert(offsetof(ACTOR_DATA_DANTE, newLastVar) == 0x16180);
+static_assert(offsetof(ACTOR_DATA_DANTE, newModelPhysicsMetadataPool) == 0xB9A0);
+static_assert(offsetof(ACTOR_DATA_DANTE, newLastVar) == 0xBCA0);
 
 static_assert(offsetof(ACTOR_DATA_BOB, status) == 8);
 static_assert(offsetof(ACTOR_DATA_BOB, character) == 0x78);
@@ -3006,7 +2950,8 @@ static_assert(offsetof(ACTOR_DATA_BOB, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA_BOB, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA_BOB, modelData) == 0x200);
 static_assert(offsetof(ACTOR_DATA_BOB, modelPhysicsMetadataPool) == 0x1880);
-static_assert(offsetof(ACTOR_DATA_BOB, var_3894) == 0x3894);
+static_assert(offsetof(ACTOR_DATA_BOB, motionSpeed) == 0x3894);
+static_assert(offsetof(ACTOR_DATA_BOB, motionSpeedMultiplier) == 0x3898);
 static_assert(offsetof(ACTOR_DATA_BOB, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_BOB, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA_BOB, motionDataMirror) == 0x39B4);
@@ -3109,17 +3054,8 @@ static_assert(offsetof(ACTOR_DATA_BOB, newForceFiles) == 0xB96A);
 static_assert(offsetof(ACTOR_DATA_BOB, newForceFilesCharacter) == 0xB96B);
 static_assert(offsetof(ACTOR_DATA_BOB, newDevilAura) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_BOB, newEffectIndices) == 0xB980);
-static_assert(offsetof(ACTOR_DATA_BOB, newBodyPartData) == 0xB9A0);
-static_assert(offsetof(ACTOR_DATA_BOB, newSubmodelData) == 0xC960);
-static_assert(offsetof(ACTOR_DATA_BOB, newModelShadowData) == 0x11BE0);
-static_assert(offsetof(ACTOR_DATA_BOB, newSubmodelShadowData) == 0x12060);
-static_assert(offsetof(ACTOR_DATA_BOB, newSubmodelPhysicsMetadata) == 0x128A0);
-static_assert(offsetof(ACTOR_DATA_BOB, newSubmodelPhysicsData) == 0x12B20);
-static_assert(offsetof(ACTOR_DATA_BOB, newDevilSubmodelPhysicsData) == 0x12D00);
-static_assert(offsetof(ACTOR_DATA_BOB, newDevilSubmodelPhysicsLinkData) == 0x13660);
-static_assert(offsetof(ACTOR_DATA_BOB, newDevilModelPhysicsLinkMetadataPool) == 0x15460);
-static_assert(offsetof(ACTOR_DATA_BOB, newModelPhysicsMetadataPool) == 0x15A00);
-static_assert(offsetof(ACTOR_DATA_BOB, newLastVar) == 0x16180);
+static_assert(offsetof(ACTOR_DATA_BOB, newModelPhysicsMetadataPool) == 0xB9A0);
+static_assert(offsetof(ACTOR_DATA_BOB, newLastVar) == 0xBCA0);
 
 static_assert(offsetof(ACTOR_DATA_LADY, status) == 8);
 static_assert(offsetof(ACTOR_DATA_LADY, character) == 0x78);
@@ -3134,7 +3070,8 @@ static_assert(offsetof(ACTOR_DATA_LADY, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA_LADY, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA_LADY, modelData) == 0x200);
 static_assert(offsetof(ACTOR_DATA_LADY, modelPhysicsMetadataPool) == 0x1880);
-static_assert(offsetof(ACTOR_DATA_LADY, var_3894) == 0x3894);
+static_assert(offsetof(ACTOR_DATA_LADY, motionSpeed) == 0x3894);
+static_assert(offsetof(ACTOR_DATA_LADY, motionSpeedMultiplier) == 0x3898);
 static_assert(offsetof(ACTOR_DATA_LADY, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_LADY, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA_LADY, motionDataMirror) == 0x39B4);
@@ -3237,17 +3174,8 @@ static_assert(offsetof(ACTOR_DATA_LADY, newForceFiles) == 0xB96A);
 static_assert(offsetof(ACTOR_DATA_LADY, newForceFilesCharacter) == 0xB96B);
 static_assert(offsetof(ACTOR_DATA_LADY, newDevilAura) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_LADY, newEffectIndices) == 0xB980);
-static_assert(offsetof(ACTOR_DATA_LADY, newBodyPartData) == 0xB9A0);
-static_assert(offsetof(ACTOR_DATA_LADY, newSubmodelData) == 0xC960);
-static_assert(offsetof(ACTOR_DATA_LADY, newModelShadowData) == 0x11BE0);
-static_assert(offsetof(ACTOR_DATA_LADY, newSubmodelShadowData) == 0x12060);
-static_assert(offsetof(ACTOR_DATA_LADY, newSubmodelPhysicsMetadata) == 0x128A0);
-static_assert(offsetof(ACTOR_DATA_LADY, newSubmodelPhysicsData) == 0x12B20);
-static_assert(offsetof(ACTOR_DATA_LADY, newDevilSubmodelPhysicsData) == 0x12D00);
-static_assert(offsetof(ACTOR_DATA_LADY, newDevilSubmodelPhysicsLinkData) == 0x13660);
-static_assert(offsetof(ACTOR_DATA_LADY, newDevilModelPhysicsLinkMetadataPool) == 0x15460);
-static_assert(offsetof(ACTOR_DATA_LADY, newModelPhysicsMetadataPool) == 0x15A00);
-static_assert(offsetof(ACTOR_DATA_LADY, newLastVar) == 0x16180);
+static_assert(offsetof(ACTOR_DATA_LADY, newModelPhysicsMetadataPool) == 0xB9A0);
+static_assert(offsetof(ACTOR_DATA_LADY, newLastVar) == 0xBCA0);
 
 static_assert(offsetof(ACTOR_DATA_VERGIL, status) == 8);
 static_assert(offsetof(ACTOR_DATA_VERGIL, character) == 0x78);
@@ -3262,7 +3190,8 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, var_1C0) == 0x1C0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, var_1C4) == 0x1C4);
 static_assert(offsetof(ACTOR_DATA_VERGIL, modelData) == 0x200);
 static_assert(offsetof(ACTOR_DATA_VERGIL, modelPhysicsMetadataPool) == 0x1880);
-static_assert(offsetof(ACTOR_DATA_VERGIL, var_3894) == 0x3894);
+static_assert(offsetof(ACTOR_DATA_VERGIL, motionSpeed) == 0x3894);
+static_assert(offsetof(ACTOR_DATA_VERGIL, motionSpeedMultiplier) == 0x3898);
 static_assert(offsetof(ACTOR_DATA_VERGIL, motionArchive) == 0x38A0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, motionData) == 0x39B0);
 static_assert(offsetof(ACTOR_DATA_VERGIL, motionDataMirror) == 0x39B4);
@@ -3373,17 +3302,8 @@ static_assert(offsetof(ACTOR_DATA_VERGIL, newForceFiles) == 0xB96A);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newForceFilesCharacter) == 0xB96B);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newDevilAura) == 0xB970);
 static_assert(offsetof(ACTOR_DATA_VERGIL, newEffectIndices) == 0xB980);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newBodyPartData) == 0xB9A0);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newSubmodelData) == 0xC960);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newModelShadowData) == 0x11BE0);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newSubmodelShadowData) == 0x12060);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newSubmodelPhysicsMetadata) == 0x128A0);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newSubmodelPhysicsData) == 0x12B20);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newDevilSubmodelPhysicsData) == 0x12D00);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newDevilSubmodelPhysicsLinkData) == 0x13660);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newDevilModelPhysicsLinkMetadataPool) == 0x15460);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newModelPhysicsMetadataPool) == 0x15A00);
-static_assert(offsetof(ACTOR_DATA_VERGIL, newLastVar) == 0x16180);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newModelPhysicsMetadataPool) == 0xB9A0);
+static_assert(offsetof(ACTOR_DATA_VERGIL, newLastVar) == 0xBCA0);
 
 // $ActorDataEnd
 
