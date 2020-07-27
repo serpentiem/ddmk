@@ -2252,16 +2252,16 @@ export void Actor_Init()
 	// Temporary Fixes
 
 	// Disable Vergil Weapon Switch Controller
-	{
-		byte8 sect0[] =
-		{
-			0xB0, 0x01, //mov al,01
-			0xC3,       //ret
-			0x90,       //nop
-			0x90,       //nop
-		};
-		vp_memcpy((appBaseAddr + 0x1E6DD0), sect0, sizeof(sect0));
-	}
+	//{
+	//	byte8 sect0[] =
+	//	{
+	//		0xB0, 0x01, //mov al,01
+	//		0xC3,       //ret
+	//		0x90,       //nop
+	//		0x90,       //nop
+	//	};
+	//	vp_memcpy((appBaseAddr + 0x1E6DD0), sect0, sizeof(sect0));
+	//}
 
 	Write<uint32>((appBaseAddr + 0x1EBD19), offsetof(ACTOR_DATA, newGamepad));
 

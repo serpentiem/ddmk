@@ -42,6 +42,22 @@ var items =
 
 
 
+
+	[ "modelAllocationDataCount", "uint32"       , 0x1B80                           ],
+	[ "modelAllocationData[209]", "Size_32"      , 0x1B88                           ],
+
+
+
+
+
+
+
+
+
+
+
+
+
 	//[ "[4][24]"     , "Size_32"       , 0x1B88                           ],
 
 
@@ -216,7 +232,10 @@ var items =
 
 
 
-	[ "submodelPhysicsMetadata"             , "PhysicsMetadata"         , 0xA0D0                           ], // Relocated.
+	[ "submodelPhysicsMetadataPool[39]"             , "byte8 *"         , 0xA0D0                           ], // Relocated.
+
+
+
 	[ "submodelPhysicsData"                 , "PhysicsData"             , 0xA210                           ], // Relocated.
 
 
@@ -276,6 +295,25 @@ var items =
 
 var extra =
 [
+
+
+
+
+	[ "newModelPhysicsMetadataPool[7][24]", "PhysicsMetadata *" ],
+
+
+
+	[ "newModelAllocationData[512]", "Size_32" ],
+
+
+
+
+
+
+
+
+
+
 	[ "newParentBaseAddr"      , "byte8 *" ],
 	[ "newChildBaseAddr"       , "byte8 *" ],
 	[ "newGamepad"             , "uint8"   ],
@@ -341,7 +379,15 @@ var extra =
 
 
 
-	[ "newModelPhysicsMetadataPool[4][24]"     , "PhysicsMetadata *" ],
+	
+	
+
+
+	
+	//[ "newModelPhysicsMetadataAllocationCount"      , "uint32"            ],
+	//[ "newModelPhysicsMetadataAllocationData[4][24]", "Size_32"           ],
+
+
 
 
 
@@ -670,7 +716,11 @@ function CreateActorCheatEntry
 			continue;
 		}
 
-		if (type == "vec4")
+		if (type.match(/Size_/))
+		{
+			continue;
+		}
+		else if (type == "vec4")
 		{
 			CreateActorCheatEntryFunction(description + " x", "Float", (pos + 0  ), false, actor);
 			CreateActorCheatEntryFunction(description + " y", "Float", (pos + 4  ), false, actor);

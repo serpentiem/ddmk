@@ -639,6 +639,126 @@ void TogglePause(byte8 * state)
 	}
 }
 
+void WindowSize1(byte8 * state)
+{
+	static bool execute = true;
+	constexpr byte8 keys[] =
+	{
+		DIK_LCONTROL,
+		DIK_1,
+	};
+	uint8 keysDown = 0;
+	for_all(uint8, index, countof(keys))
+	{
+		auto & key = keys[index];
+		if (state[key] & 0x80)
+		{
+			keysDown++;
+		}
+	}
+	if (keysDown == countof(keys))
+	{
+		if (execute)
+		{
+			execute = false;
+			SetWindowPos
+			(
+				appWindow,
+				0,
+				0,
+				0,
+				640,
+				360,
+				0
+			);
+		}
+	}
+	else
+	{
+		execute = true;
+	}
+}
+
+void WindowSize2(byte8 * state)
+{
+	static bool execute = true;
+	constexpr byte8 keys[] =
+	{
+		DIK_LCONTROL,
+		DIK_2,
+	};
+	uint8 keysDown = 0;
+	for_all(uint8, index, countof(keys))
+	{
+		auto & key = keys[index];
+		if (state[key] & 0x80)
+		{
+			keysDown++;
+		}
+	}
+	if (keysDown == countof(keys))
+	{
+		if (execute)
+		{
+			execute = false;
+			SetWindowPos
+			(
+				appWindow,
+				0,
+				0,
+				0,
+				1280,
+				720,
+				0
+			);
+		}
+	}
+	else
+	{
+		execute = true;
+	}
+}
+
+void WindowSize3(byte8 * state)
+{
+	static bool execute = true;
+	constexpr byte8 keys[] =
+	{
+		DIK_LCONTROL,
+		DIK_3,
+	};
+	uint8 keysDown = 0;
+	for_all(uint8, index, countof(keys))
+	{
+		auto & key = keys[index];
+		if (state[key] & 0x80)
+		{
+			keysDown++;
+		}
+	}
+	if (keysDown == countof(keys))
+	{
+		if (execute)
+		{
+			execute = false;
+			SetWindowPos
+			(
+				appWindow,
+				0,
+				0,
+				0,
+				1920,
+				1080,
+				0
+			);
+		}
+	}
+	else
+	{
+		execute = true;
+	}
+}
+
 HRESULT DirectInput8_Hook_GetDeviceStateKeyboard
 (
 	IDirectInputDevice8A * device,
@@ -653,6 +773,9 @@ HRESULT DirectInput8_Hook_GetDeviceStateKeyboard
 	{
 		memset(buffer, 0, bufferSize);
 	}
+	WindowSize1(state);
+	WindowSize2(state);
+	WindowSize3(state);
 	return 0;
 }
 
