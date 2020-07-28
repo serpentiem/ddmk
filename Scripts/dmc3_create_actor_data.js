@@ -306,7 +306,7 @@ var extra =
 	[ "newModelAllocationData[512]", "Size_32" ],
 
 
-
+	[ "newBodyPartData[7][2]", "BodyPartData" ],
 
 
 
