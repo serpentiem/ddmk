@@ -250,7 +250,7 @@ var items =
 
 
 
-	[ "devilModelPhysicsLinkMetadataPool[2][36]", "PhysicsLinkMetadata *"  , 0xA300                           ], // Relocated.
+	[ "devilModelPhysicsMetadataPool[2][36]", "PhysicsLinkMetadata *"  , 0xA300                           ], // Relocated.
 
 
 
@@ -308,6 +308,8 @@ var extra =
 
 	[ "newBodyPartData[7][2]", "BodyPartData" ],
 
+
+	[ "newDevilModelPhysicsMetadataPool[5][36]", "PhysicsLinkMetadata *" ],
 
 
 
