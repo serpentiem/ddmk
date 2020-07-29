@@ -206,7 +206,7 @@ void UpdateMotionArchives(T & actorData)
 
 		auto & metadata = File_staticFiles[cacheFileId];
 
-		actorData.motionArchive[group] = File_dynamicFiles.Push(metadata.addr, metadata.size);
+		actorData.motionArchives[group] = File_dynamicFiles.Push(metadata.addr, metadata.size);
 	}
 }
 

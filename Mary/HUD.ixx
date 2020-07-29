@@ -183,10 +183,10 @@ export void HUD_UpdateStyleIcon
 
 	auto & styleIcon = *reinterpret_cast<ModelData *>(top + 0x3B80);
 
-	func_897B0(styleIcon);
-	func_89450(styleIcon);
-	memset(styleIcon, 0, 0x780);
-	func_89270(styleIcon);
+	//func_897B0(styleIcon);
+	//func_89450(styleIcon);
+	//memset(styleIcon, 0, 0x780);
+	//func_89270(styleIcon);
 
 	auto map = reinterpret_cast<uint8 *>(appBaseAddr + 0x4E9070);
 	auto & effect = *reinterpret_cast<uint8 *>(top + 0x690E) = map[style];
@@ -213,10 +213,10 @@ export void HUD_UpdateWeaponIcon
 
 	auto & dest = *reinterpret_cast<ModelData *>(bottom + HUD_bottomOff[index]);
 
-	func_897B0(dest);
-	func_89450(dest);
-	memset(dest, 0, 0x780);
-	func_89270(dest);
+	//func_897B0(dest);
+	//func_89450(dest);
+	//memset(dest, 0, 0x780);
+	//func_89270(dest);
 
 	func_89960(dest, model, texture);
 	func_89E30(dest, 1);

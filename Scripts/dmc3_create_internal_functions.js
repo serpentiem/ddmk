@@ -1,6 +1,12 @@
 
 
 
+/*
+dmc3.exe+1EF3D3 - E8 D8A0E6FF           - call dmc3.exe+594B0
+
+*/
+
+
 // @Todo: Include Core.
 // @Todo: Add description to definitions.
 
@@ -32,7 +38,7 @@ var items =
 	[ 0x89DE0 , "byte8 *", "ModelData & modelData"                                                                  , "0, true, false"              , "" ],
 	[ 0x8BC60 , "void"   , "ShadowData & shadowData, byte8 * dest, byte8 * file"                                     , ""                            , "" ],
 	[ 0x305D80, "void"   , "byte8 * dest"                                                                       , ""                            , "" ],
-	[ 0x8A000 , "void"   , "ModelData & modelData, byte8 * motionFile, void * dest"                                 , ""                            , "" ],
+	[ 0x8A000 , "void"   , "ModelData & modelData, byte8 * motionFile, PhysicsMetadata ** modelPhysicsMetadataPool"                                 , ""                            , "" ],
 
 
 
@@ -249,6 +255,88 @@ dmc3.exe+243339 - E8 52870E00           - call dmc3.exe+32BA90
 
 */
 
+
+
+/*
+
+dmc3.exe+1EF352 - 48 89 5C 24 40        - mov [rsp+40],rbx { &var_7250
+ }
+dmc3.exe+1EF357 - 49 8D 8D B06C0000     - lea rcx,[r13+00006CB0] { upper body part data
+ }
+dmc3.exe+1EF35E - 48 89 74 24 38        - mov [rsp+38],rsi { &motionSpeedMultiplier
+ }
+dmc3.exe+1EF363 - 49 8D 9D A0380000     - lea rbx,[r13+000038A0] { motionArchives
+ }
+dmc3.exe+1EF36A - 4C 89 7C 24 30        - mov [rsp+30],r15 { model physics metadata pool
+ }
+dmc3.exe+1EF36F - 45 8D 44 24 01        - lea r8d,[r12+01] { UPPER_BODY
+ }
+dmc3.exe+1EF374 - 48 89 7C 24 28        - mov [rsp+28],rdi { &modelData+8
+ }
+dmc3.exe+1EF379 - 48 8B D0              - mov rdx,rax { file
+ }
+dmc3.exe+1EF37C - 45 0FB7 CC            - movzx r9d,r12w { 0
+ }
+dmc3.exe+1EF380 - 48 89 5C 24 20        - mov [rsp+20],rbx { motionArchives
+ }
+dmc3.exe+1EF385 - E8 26A1E6FF           - call dmc3.exe+594B0
+dmc3.exe+1EF38A - 45 0FB7 45 78         - movzx r8d,word ptr [r13+78]
+dmc3.exe+1EF38F - 45 8D 4C 24 05        - lea r9d,[r12+05]
+dmc3.exe+1EF394 - 4D 85 F6              - test r14,r14
+dmc3.exe+1EF397 - 48 8D 0D 92A9AA00     - lea rcx,[dmc3.exe+C99D30] { (0) }
+dmc3.exe+1EF39E - 49 0F44 EC            - cmove rbp,r12
+dmc3.exe+1EF3A2 - 33 D2                 - xor edx,edx
+dmc3.exe+1EF3A4 - E8 178FFCFF           - call __GET_FILE__
+
+dmc3.exe+1EF3A9 - 4C 89 64 24 40        - mov [rsp+40],r12 { 0
+ }
+dmc3.exe+1EF3AE - 49 8D 8D 906B0000     - lea rcx,[r13+00006B90] { lower body part data
+ }
+dmc3.exe+1EF3B5 - 48 89 74 24 38        - mov [rsp+38],rsi { &motionSpeedMultiplier
+ }
+dmc3.exe+1EF3BA - 48 8B D0              - mov rdx,rax { file
+ }
+dmc3.exe+1EF3BD - 4C 89 7C 24 30        - mov [rsp+30],r15 { model physics metadata pool
+ }
+dmc3.exe+1EF3C2 - 45 0FB7 CC            - movzx r9d,r12w { 0
+ }
+dmc3.exe+1EF3C6 - 48 89 6C 24 28        - mov [rsp+28],rbp { &modelData + 8
+ }
+dmc3.exe+1EF3CB - 45 33 C0              - xor r8d,r8d { LOWER_BODY
+ }
+dmc3.exe+1EF3CE - 48 89 5C 24 20        - mov [rsp+20],rbx { motionArchives
+ }
+dmc3.exe+1EF3D3 - E8 D8A0E6FF           - call dmc3.exe+594B0
+
+
+
+*/
+
+
+[ 0x594B0, "void", "BodyPartData & bodyPartData, byte8 * file, uint32 bodyPart, uint32, byte8 ** motionArchives, byte8 *** modelDataFunctions, PhysicsMetadata ** modelPhysicsMetadataPool, float32 * motionSpeed, void *", "0, true, true, 0, 0, 0, 0, 5", "" ],
+
+
+
+/*
+dmc3.exe+8A520 - 48 8D 81 00050000     - lea rax,[rcx+00000500]
+*/
+
+
+[ 0x8A520, "byte8 *", "ModelData & modelData", "0, true, false", "" ],
+
+
+
+[ 0x30E630, "void", "byte8 * dest, uint32 index", "", "" ],
+
+
+
+/*
+dmc3.exe+1EF4FB - E8 20B0E9FF           - call __GET_OFFSET__
+dmc3.exe+1EF500 - 33 D2                 - xor edx,edx
+dmc3.exe+1EF502 - 48 8B C8              - mov rcx,rax
+dmc3.exe+1EF505 - E8 26F11100           - call dmc3.exe+30E630
+
+*/
 
 
 

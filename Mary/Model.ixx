@@ -1,5 +1,12 @@
 
 
+
+/*
+@Crash: ebony ivory shooting spam trickster dash
+*/
+
+
+
 /*
 devilModelPhysicsLinkMetadataPool -> devilModelPhysicsMetadataPool
 */
@@ -134,10 +141,10 @@ inline void RegisterPhysics
 
 export void ResetModel(ModelData & modelData)
 {
-	func_897B0(modelData);
-	func_89450(modelData);
-	memset(modelData, 0, sizeof(ModelData));
-	func_89270(modelData);
+	//func_897B0(modelData);
+	//func_89450(modelData);
+	//memset(modelData, 0, sizeof(ModelData));
+	//func_89270(modelData);
 }
 
 
@@ -945,6 +952,76 @@ void LeaveDevilForm(byte8 * baseAddr)
 
 
 
+/*
+dmc3.exe+212D6A - 33 D2                 - xor edx,edx { first leak
+}
+dmc3.exe+212D6C - 48 8B CE              - mov rcx,rsi
+dmc3.exe+212D6F - E8 CCC2FDFF           - call dmc3.exe+1EF040
+
+*/
+
+
+
+
+
+
+template <typename T>
+void NewFunc
+(
+	T & actorData,
+	uint32 modelIndex
+)
+{
+	func_8A000
+	(
+		actorData.modelData[modelIndex],
+		actorData.motionArchives[0],
+		actorData.newModelPhysicsMetadataPool[modelIndex]
+	);
+
+	actorData.modelData[modelIndex].Motion.init = false;
+
+	// Not sure if required, but legit.
+	{
+		auto dest = reinterpret_cast<byte8 *>(actorData.newModelPhysicsMetadataPool[0][(1 + modelIndex)]);
+		*reinterpret_cast<RecoveryData **>(dest + 0x100) = &actorData.newRecoveryData[modelIndex];
+	}
+
+	auto & recoveryData = actorData.newRecoveryData[modelIndex];
+	recoveryData.init = false;
+	memset(recoveryData.data, 0, 32);
+
+	auto file = File_staticFiles[pl000][5];
+
+	func_594B0
+	(
+		actorData.newBodyPartData[modelIndex][UPPER_BODY],
+		file,
+		UPPER_BODY,
+		0,
+		actorData.motionArchives,
+		&actorData.modelData[modelIndex].functions,
+		actorData.newModelPhysicsMetadataPool[modelIndex],
+		&actorData.motionSpeed,
+		&actorData.var_7250
+	);
+
+	func_594B0
+	(
+		actorData.newBodyPartData[modelIndex][LOWER_BODY],
+		file,
+		LOWER_BODY,
+		0,
+		actorData.motionArchives,
+		&actorData.modelData[modelIndex].functions,
+		actorData.newModelPhysicsMetadataPool[modelIndex],
+		&actorData.motionSpeed,
+		0
+	);
+
+	auto dest = func_8A520(actorData.modelData[modelIndex]);
+	func_30E630(dest, 0);
+}
 
 
 
@@ -954,8 +1031,65 @@ void LeaveDevilForm(byte8 * baseAddr)
 
 
 
+/*
+template <typename T>
+void NewFunc
+(
+T & actorData,
+uint32 modelIndex
+)
+{
+func_8A000
+(
+actorData.modelData[modelIndex],
+actorData.motionArchives[0],
+actorData.modelPhysicsMetadataPool[modelIndex]
+);
 
+actorData.modelData[modelIndex].Motion.init = false;
 
+// Not sure if required, but legit.
+{
+auto dest = reinterpret_cast<byte8 *>(actorData.modelPhysicsMetadataPool[0][(1 + modelIndex)]);
+*reinterpret_cast<RecoveryData **>(dest + 0x100) = &actorData.recoveryData[modelIndex];
+}
+
+auto & recoveryData = actorData.recoveryData[modelIndex];
+recoveryData.init = false;
+memset(recoveryData.data, 0, 32);
+
+auto file = File_staticFiles[pl000][5];
+
+func_594B0
+(
+actorData.bodyPartData[modelIndex][UPPER_BODY],
+file,
+UPPER_BODY,
+0,
+actorData.motionArchives,
+&actorData.modelData[modelIndex].functions,
+actorData.modelPhysicsMetadataPool[modelIndex],
+&actorData.motionSpeed,
+&actorData.var_7250
+);
+
+func_594B0
+(
+actorData.bodyPartData[modelIndex][LOWER_BODY],
+file,
+LOWER_BODY,
+0,
+actorData.motionArchives,
+&actorData.modelData[modelIndex].functions,
+actorData.modelPhysicsMetadataPool[modelIndex],
+&actorData.motionSpeed,
+0
+);
+
+auto dest = func_8A520(actorData.modelData[modelIndex]);
+func_30E630(dest, 0);
+}
+*/
 
 
 
@@ -973,6 +1107,123 @@ void LeaveDevilForm(byte8 * baseAddr)
 void ToggleRelocations(bool enable)
 {
 	LogFunction(enable);
+
+
+
+
+
+	// 0x3B00
+	{
+		constexpr auto off = offsetof(ACTOR_DATA, recoveryData[0]);
+		constexpr auto newOff = offsetof(ACTOR_DATA, newRecoveryData[0]);
+		static_assert(off == 0x3B00);
+		// Trash<uint32>((appBaseAddr + 0xA9357 + 3), (enable) ? newOff : off); // dmc3.exe+A9357 - BA 003B0000 - MOV EDX,00003B00
+		// Trash<uint32>((appBaseAddr + 0xA9542 + 3), (enable) ? newOff : off); // dmc3.exe+A9542 - BA 003B0000 - MOV EDX,00003B00
+		// Write<uint32>((appBaseAddr + 0xDB494 + 3), (enable) ? newOff : off); // dmc3.exe+DB494 - 48 89 AE 003B0000 - MOV [RSI+00003B00],RBP
+		Write<uint32>((appBaseAddr + 0x1DDC09 + 3), (enable) ? newOff : off); // dmc3.exe+1DDC09 - 48 8D 8E 003B0000 - LEA RCX,[RSI+00003B00]
+		Write<uint32>((appBaseAddr + 0x1DE3AD + 3), (enable) ? newOff : off); // dmc3.exe+1DE3AD - 48 8D 8F 003B0000 - LEA RCX,[RDI+00003B00]
+		Write<uint32>((appBaseAddr + 0x1EF408 + 3), (enable) ? newOff : off); // dmc3.exe+1EF408 - 49 8D 8D 003B0000 - LEA RCX,[R13+00003B00]
+		// Write<uint32>((appBaseAddr + 0x34B8E1 + 3), (enable) ? newOff : off); // dmc3.exe+34B8E1 - 48 81 C1 003B0000 - ADD RCX,00003B00
+		// Trash<uint32>((appBaseAddr + 0x4A20EB + 3), (enable) ? newOff : off); // dmc3.exe+4A20EB - 80 9C 03 00003B00 00 - SBB BYTE PTR [RBX+RAX+003B0000],00
+		// Trash<uint32>((appBaseAddr + 0x4B7C59 + 3), (enable) ? newOff : off); // dmc3.exe+4B7C59 - 05 00003B00 - ADD EAX,003B0000
+		// Trash<uint32>((appBaseAddr + 0x4B7C67 + 3), (enable) ? newOff : off); // dmc3.exe+4B7C67 - 00 14 05 00003B00 - ADD [RAX+003B0000],DL
+		// Trash<uint32>((appBaseAddr + 0x4B7C77 + 3), (enable) ? newOff : off); // dmc3.exe+4B7C77 - 00 34 05 00003B00 - ADD [RAX+003B0000],DH
+		// Trash<uint32>((appBaseAddr + 0x4B7CA9 + 3), (enable) ? newOff : off); // dmc3.exe+4B7CA9 - 05 00003B00 - ADD EAX,003B0000
+		// Trash<uint32>((appBaseAddr + 0x4B7CC7 + 3), (enable) ? newOff : off); // dmc3.exe+4B7CC7 - 00 B4 05 00003B00 - ADD [RBP+RAX+003B0000],DH
+		// Trash<uint32>((appBaseAddr + 0x4B7CD9 + 3), (enable) ? newOff : off); // dmc3.exe+4B7CD9 - 05 00003B00 - ADD EAX,003B0000
+		// Trash<uint32>((appBaseAddr + 0x4B7CE9 + 3), (enable) ? newOff : off); // dmc3.exe+4B7CE9 - 05 00003B00 - ADD EAX,003B0000
+		// Trash<uint32>((appBaseAddr + 0x4BEA8D + 3), (enable) ? newOff : off); // dmc3.exe+4BEA8D - 05 00003B00 - ADD EAX,003B0000
+		// Trash<uint32>((appBaseAddr + 0x4BEABB + 3), (enable) ? newOff : off); // dmc3.exe+4BEABB - 00 84 05 00003B00 - ADD [RBP+RAX+003B0000],AL
+	}
+	// 0x3B70
+	{
+		constexpr auto off = offsetof(ACTOR_DATA, recoveryData[1]);
+		constexpr auto newOff = offsetof(ACTOR_DATA, newRecoveryData[1]);
+		static_assert(off == 0x3B70);
+		// Write<uint32>((appBaseAddr + 0xD8A7A + 3), (enable) ? newOff : off); // dmc3.exe+D8A7A - 4C 89 BE 703B0000 - MOV [RSI+00003B70],R15
+		// Write<uint32>((appBaseAddr + 0xE16B1 + 3), (enable) ? newOff : off); // dmc3.exe+E16B1 - 48 89 83 703B0000 - MOV [RBX+00003B70],RAX
+		// Write<uint32>((appBaseAddr + 0x118D65 + 3), (enable) ? newOff : off); // dmc3.exe+118D65 - 4C 89 B6 703B0000 - MOV [RSI+00003B70],R14
+		// Write<uint32>((appBaseAddr + 0x125199 + 3), (enable) ? newOff : off); // dmc3.exe+125199 - 48 8B 89 703B0000 - MOV RCX,[RCX+00003B70]
+		Write<uint32>((appBaseAddr + 0x1EF2E1 + 3), (enable) ? newOff : off); // dmc3.exe+1EF2E1 - 49 8D 8D 703B0000 - LEA RCX,[R13+00003B70]
+	}
+	// 0x3BE0
+	{
+		constexpr auto off = offsetof(ACTOR_DATA, recoveryData[2]);
+		constexpr auto newOff = offsetof(ACTOR_DATA, newRecoveryData[2]);
+		static_assert(off == 0x3BE0);
+		// Write<uint32>((appBaseAddr + 0x121E32 + 3), (enable) ? newOff : off); // dmc3.exe+121E32 - 48 8D 93 E03B0000 - LEA RDX,[RBX+00003BE0]
+		// Write<uint32>((appBaseAddr + 0x126454 + 3), (enable) ? newOff : off); // dmc3.exe+126454 - 48 8D BE E03B0000 - LEA RDI,[RSI+00003BE0]
+		// Write<uint32>((appBaseAddr + 0x126E64 + 3), (enable) ? newOff : off); // dmc3.exe+126E64 - 48 8D 93 E03B0000 - LEA RDX,[RBX+00003BE0]
+		Write<uint32>((appBaseAddr + 0x1EF1B5 + 3), (enable) ? newOff : off); // dmc3.exe+1EF1B5 - 49 8D 8D E03B0000 - LEA RCX,[R13+00003BE0]
+	}
+
+
+
+
+
+
+
+
+
+
+	// // 0x3C50
+	// {
+	// 	constexpr auto off = offsetof(ACTOR_DATA, var_3B00[3]);
+	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newVar_3B00[6]);
+	// 	static_assert(off == 0x3C50);
+	// 	Write<uint32>((appBaseAddr + 0x1DDC32 + 3), (enable) ? newOff : off); // dmc3.exe+1DDC32 - 48 8D 8E 503C0000 - LEA RCX,[RSI+00003C50]
+	// 	// Write<uint32>((appBaseAddr + 0x1EDE6E + 3), (enable) ? newOff : off); // dmc3.exe+1EDE6E - 48 8D B1 503C0000 - LEA RSI,[RCX+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x205A0B + 3), (enable) ? newOff : off); // dmc3.exe+205A0B - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x205BE9 + 3), (enable) ? newOff : off); // dmc3.exe+205BE9 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x209387 + 3), (enable) ? newOff : off); // dmc3.exe+209387 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	// Write<uint32>((appBaseAddr + 0x20A335 + 3), (enable) ? newOff : off); // dmc3.exe+20A335 - 4C 8D 83 503C0000 - LEA R8,[RBX+00003C50]
+	// 	// Write<uint32>((appBaseAddr + 0x20AA54 + 3), (enable) ? newOff : off); // dmc3.exe+20AA54 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	// Write<uint32>((appBaseAddr + 0x20ABED + 3), (enable) ? newOff : off); // dmc3.exe+20ABED - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x20EC40 + 3), (enable) ? newOff : off); // dmc3.exe+20EC40 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x20F157 + 3), (enable) ? newOff : off); // dmc3.exe+20F157 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x20F3A3 + 3), (enable) ? newOff : off); // dmc3.exe+20F3A3 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x2101D3 + 3), (enable) ? newOff : off); // dmc3.exe+2101D3 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x214B57 + 3), (enable) ? newOff : off); // dmc3.exe+214B57 - 48 8D 8E 503C0000 - LEA RCX,[RSI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x215540 + 3), (enable) ? newOff : off); // dmc3.exe+215540 - 48 8D 8F 503C0000 - LEA RCX,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x215557 + 3), (enable) ? newOff : off); // dmc3.exe+215557 - 48 8D 8F 503C0000 - LEA RCX,[RDI+00003C50]
+	// 	// Write<uint32>((appBaseAddr + 0x2158EE + 3), (enable) ? newOff : off); // dmc3.exe+2158EE - 48 8D 9F 503C0000 - LEA RBX,[RDI+00003C50]
+	// 	// Write<uint32>((appBaseAddr + 0x215A1E + 3), (enable) ? newOff : off); // dmc3.exe+215A1E - 48 8D 9F 503C0000 - LEA RBX,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x21601C + 3), (enable) ? newOff : off); // dmc3.exe+21601C - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x2160E0 + 3), (enable) ? newOff : off); // dmc3.exe+2160E0 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	// Write<uint32>((appBaseAddr + 0x21611A + 3), (enable) ? newOff : off); // dmc3.exe+21611A - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x21614D + 3), (enable) ? newOff : off); // dmc3.exe+21614D - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x21627A + 3), (enable) ? newOff : off); // dmc3.exe+21627A - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	// Write<uint32>((appBaseAddr + 0x2162B4 + 3), (enable) ? newOff : off); // dmc3.exe+2162B4 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x2162E7 + 3), (enable) ? newOff : off); // dmc3.exe+2162E7 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x216362 + 3), (enable) ? newOff : off); // dmc3.exe+216362 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x216489 + 3), (enable) ? newOff : off); // dmc3.exe+216489 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x216D19 + 3), (enable) ? newOff : off); // dmc3.exe+216D19 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x216D92 + 3), (enable) ? newOff : off); // dmc3.exe+216D92 - 4C 8D 87 503C0000 - LEA R8,[RDI+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x21847F + 3), (enable) ? newOff : off); // dmc3.exe+21847F - 4C 8D 83 503C0000 - LEA R8,[RBX+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x21855E + 3), (enable) ? newOff : off); // dmc3.exe+21855E - 4C 8D 83 503C0000 - LEA R8,[RBX+00003C50]
+	// 	Write<uint32>((appBaseAddr + 0x2195FE + 3), (enable) ? newOff : off); // dmc3.exe+2195FE - 48 8D 8D 503C0000 - LEA RCX,[RBP+00003C50]
+	// 	// Write<uint32>((appBaseAddr + 0x34B91F + 3), (enable) ? newOff : off); // dmc3.exe+34B91F - 48 81 C1 503C0000 - ADD RCX,00003C50
+	// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3332,6 +3583,26 @@ void ToggleRelocations(bool enable)
 export void Model_Init()
 {
 	LogFunction();
+
+
+	{
+		auto func = CreateFunction(NewFunc<ACTOR_DATA_DANTE>);
+		WriteCall((appBaseAddr + 0x212D6F), func.addr); // dante
+		WriteCall((appBaseAddr + 0x21459A), func.addr); // rebellion
+		/*
+		dmc3.exe+212D6F - E8 CCC2FDFF           - call dmc3.exe+1EF040
+		*/
+
+
+		/*
+		dmc3.exe+21459A - E8 A1AAFDFF           - call dmc3.exe+1EF040
+
+		*/
+	}
+
+
+
+
 
 
 	ToggleRelocations(true);

@@ -74,6 +74,7 @@ var typeHelper =
 	[ "PhysicsLinkMetadata" , "" , 264 , false ],
 
 	[ "BodyPartData" , "" , 288 , false ],
+	[ "RecoveryData" , "" , 112 , false ],
 ];
 
 // function Template(typeString)

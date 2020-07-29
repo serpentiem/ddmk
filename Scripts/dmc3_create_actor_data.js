@@ -67,12 +67,24 @@ var items =
 
 
 
-	[ "motionSpeed"                   , "float32"                 , 0x3894                           ],
-	[ "motionSpeedMultiplier"                   , "float32"                 , 0x3898                           ],
+	[ "motionSpeed"          , "float32"                 , 0x3894                           ],
+	[ "motionSpeedMultiplier", "float32"                 , 0x3898                           ],
 
 
 
-	[ "motionArchive[32]"                   , "byte8 *"                 , 0x38A0                           ],
+
+
+
+
+
+	[ "motionArchives[32]"                   , "byte8 *"                 , 0x38A0                           ],
+
+
+
+
+
+
+
 	[ "motionData[2]"                       , "MOTION_DATA"             , 0x39B0                           ],
 	[ "motionDataMirror[3]"                 , "MOTION_DATA"             , 0x39B4                           ],
 	[ ""                                    , "uint32"                  , 0x39BC                           ],
@@ -81,6 +93,10 @@ var items =
 	[ "[8]"                                 , "uint8"                   , 0x3A10                           ],
 	[ "shadow"                              , "uint32"                  , 0x3A18                           ],
 	[ "color"                               , "byte32"                  , 0x3A28                           ],
+
+
+
+	[ "recoveryData[4]", "RecoveryData"                  , 0x3B00                           ],
 
 
 
@@ -194,7 +210,13 @@ var items =
 
 
 
-	[ ""                      , "uint32"                  , 0x7250                           ],
+	
+	
+
+
+
+
+	[ "[4]"                      , "byte8"                  , 0x7250                           ],
 
 
 
@@ -298,6 +320,9 @@ var extra =
 
 
 
+	[ "newModelData[6]"                        , "ModelData"],
+
+
 
 	[ "newModelPhysicsMetadataPool[7][24]", "PhysicsMetadata *" ],
 
@@ -311,6 +336,11 @@ var extra =
 
 	[ "newDevilModelPhysicsMetadataPool[5][36]", "PhysicsLinkMetadata *" ],
 
+
+	//[ "newVar_3B00[7]", "Size_112" ],
+
+
+	[ "newRecoveryData[7]", "RecoveryData" ],
 
 
 
