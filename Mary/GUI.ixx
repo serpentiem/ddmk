@@ -1241,7 +1241,7 @@ void Main()
 
 
 
-			//UpdateDevilModelFunctionDante(actorData, devil, devilModelIndex);
+			UpdateDevilModelFunctionDante(actorData, devil, devilModelIndex);
 		}
 
 

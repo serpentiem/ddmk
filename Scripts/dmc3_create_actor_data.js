@@ -29,62 +29,14 @@ var items =
 	[ ""                                    , "float32"                 , 0x1C0                            ],
 	[ ""                                    , "float32"                 , 0x1C4                            ],
 
-	[ "modelData[3]"                        , "ModelData"               , 0x200                            ],
-
-
-
-
-
-
-
-
-	[ "modelPhysicsMetadataPool[4][24]"     , "PhysicsMetadata *"       , 0x1880                           ],
-
-
-
-
-	[ "modelAllocationDataCount", "uint32"       , 0x1B80                           ],
-	[ "modelAllocationData[209]", "Size_32"      , 0x1B88                           ],
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//[ "[4][24]"     , "Size_32"       , 0x1B88                           ],
-
-
-
-
-
-
-
+	[ "modelData[3]"                   , "ModelData"        , 0x200  ],
+	[ "modelPhysicsMetadataPool[4][24]", "PhysicsMetadata *", 0x1880 ],
+	[ "modelAllocationDataCount"       , "uint32"           , 0x1B80 ],
+	[ "modelAllocationData[209]"       , "Size_32"          , 0x1B88 ],
 
 	[ "motionSpeed"          , "float32"                 , 0x3894                           ],
 	[ "motionSpeedMultiplier", "float32"                 , 0x3898                           ],
-
-
-
-
-
-
-
-
 	[ "motionArchives[32]"                   , "byte8 *"                 , 0x38A0                           ],
-
-
-
-
-
-
-
 	[ "motionData[2]"                       , "MOTION_DATA"             , 0x39B0                           ],
 	[ "motionDataMirror[3]"                 , "MOTION_DATA"             , 0x39B4                           ],
 	[ ""                                    , "uint32"                  , 0x39BC                           ],
@@ -94,24 +46,7 @@ var items =
 	[ "shadow"                              , "uint32"                  , 0x3A18                           ],
 	[ "color"                               , "byte32"                  , 0x3A28                           ],
 
-
-
 	[ "recoveryData[4]", "RecoveryData"                  , 0x3B00                           ],
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	[ "actionData[6]"                       , "byte8 *"                 , 0x3DD0                           ],
 	[ "eventData[2]"                        , "ACTOR_EVENT_DATA"        , 0x3E00                           ],
@@ -124,6 +59,7 @@ var items =
 
 	[ "activeModelIndex"                    , "uint32"                  , 0x3E6C                           ],
 	[ "queuedModelIndex"                    , "uint32"                  , 0x3E70                           ],
+
 	[ "devilModels[3]"                      , "uint32"                  , 0x3E74                           ],
 
 	[ "modelState"                          , "uint8"                   , 0x3E80                           ],
@@ -192,7 +128,7 @@ var items =
 
 
 
-	[ "bodyPartData[4][2]"                      , "BodyPartData"                  , 0x6950                           ], // Relocated.
+	[ "bodyPartData[4][2]"                      , "BodyPartData"                  , 0x6950                           ],
 
 
 
@@ -233,61 +169,15 @@ var items =
 
 
 
-	[ "submodelData[5]"                     , "ModelData"               , 0x7540                           ], // Relocated.
-
-
-
-
-
-
-
-	[ "[5]"                                 , "bool"                    , 0x9AC0                           ],
-
-	[ "modelShadowData[3]"                  , "ShadowData"              , 0x9AD0                           ], // Relocated.
-	[ "submodelShadowData[5]"               , "ShadowData"              , 0x9D10                           ], // Relocated.
-
-
-
-
-
-
-
-
-
-	[ "submodelPhysicsMetadataPool[39]"             , "byte8 *"         , 0xA0D0                           ], // Relocated.
-
-
-
-	[ "submodelPhysicsData"                 , "PhysicsData"             , 0xA210                           ], // Relocated.
-
-
-
-
-
-
-
-
-
-
-
-	//[ "modelPhysicsMetadataPool[4][24]"     , "PhysicsMetadata *"       , 0x1880                           ],
-
-	[ "devilModelPhysicsMetadataPool[2][36]", "PhysicsMetadata *"  , 0xA300                           ], // Relocated.
-
-
-
-
-
-
-
-
-
-
-
-
-
-	[ "devilSubmodelPhysicsData[4]"         , "PhysicsData"             , 0xA540                           ], // Relocated.
-	[ "devilSubmodelPhysicsLinkData[4][4]"         , "PhysicsLinkData"        , 0xAA00                           ], // Relocated.
+	[ "submodelData[5]"                     , "ModelData"        , 0x7540 ],
+	[ "[5]"                                 , "bool"             , 0x9AC0 ],
+	[ "modelShadowData[3]"                  , "ShadowData"       , 0x9AD0 ],
+	[ "submodelShadowData[5]"               , "ShadowData"       , 0x9D10 ],
+	[ "submodelPhysicsMetadataPool[39]"     , "byte8 *"          , 0xA0D0 ],
+	[ "submodelPhysicsData"                 , "PhysicsData"      , 0xA210 ],
+	[ "devilModelPhysicsMetadataPool[2][36]", "PhysicsMetadata *", 0xA300 ],
+	[ "devilSubmodelPhysicsData[4]"         , "PhysicsData"      , 0xA540 ],
+	[ "devilSubmodelPhysicsLinkData[4][4]"  , "PhysicsLinkData"  , 0xAA00 ],
 
 
 
@@ -317,55 +207,39 @@ var items =
 
 var extra =
 [
+	[ "newFirstVar", "uint32" ],
+
+
+	// __NEW_PRIME__
+	/*
+	[ "modelData[3]"                        , "ModelData"        , 0x200  ],
+	[ "modelPhysicsMetadataPool[4][24]"     , "PhysicsMetadata *", 0x1880 ],
+	[ "modelAllocationData[209]"            , "Size_32"          , 0x1B88 ],
+	[ "recoveryData[4]"                     , "RecoveryData"     , 0x3B00 ],
+	[ "devilModels[3]"                      , "uint32"           , 0x3E74 ],
+	[ "bodyPartData[4][2]"                  , "BodyPartData"     , 0x6950 ],
+	[ "submodelData[5]"                     , "ModelData"        , 0x7540 ],
+	[ "modelShadowData[3]"                  , "ShadowData"       , 0x9AD0 ],
+	[ "submodelShadowData[5]"               , "ShadowData"       , 0x9D10 ],
+	[ "devilModelPhysicsMetadataPool[2][36]", "PhysicsMetadata *", 0xA300 ],
+	[ "devilSubmodelPhysicsData[4]"         , "PhysicsData"      , 0xA540 ],
+	[ "devilSubmodelPhysicsLinkData[4][4]"  , "PhysicsLinkData"  , 0xAA00 ],
+	*/
 
 
 
-	[ "newModelData[6]"                        , "ModelData"],
-
-
-
-	[ "newModelPhysicsMetadataPool[7][24]", "PhysicsMetadata *" ],
-
-
-
-	[ "newModelAllocationData[512]", "Size_32" ],
-
-
-	[ "newBodyPartData[7][2]", "BodyPartData" ],
-
-
-	
-	
-	
-
-
-	[ "newDevilModelPhysicsMetadataPool[5][36]", "PhysicsMetadata *"  ], 
-
-
-
-
-	//[ "newVar_3B00[7]", "Size_112" ],
-
-
-	[ "newRecoveryData[7]", "RecoveryData" ],
-
-
-
-
-	[ "newSubmodelData[11]"                     , "ModelData" ],
-
-
-	[ "newModelShadowData[6]"                  , "ShadowData" ],
-
-
-
-
-
-
-	
-	[ "newSubmodelShadowData[11]"             , "ShadowData"          ],
-	[ "newDevilSubmodelPhysicsData[10]"       , "PhysicsData"           ],
-	[ "newDevilSubmodelPhysicsLinkData[10][4]", "PhysicsLinkData"  ],
+	[ "newModelData[3]"                        , "ModelData"        , 0x200  ],
+	[ "newModelPhysicsMetadataPool[4][24]"     , "PhysicsMetadata *", 0x1880 ],
+	[ "newModelAllocationData[209]"            , "Size_32"          , 0x1B88 ],
+	[ "newRecoveryData[3]"                     , "RecoveryData"     , 0x3B00 ],
+	[ "newDevilModels[3]"                      , "uint32"           , 0x3E74 ],
+	[ "newBodyPartData[4][2]"                  , "BodyPartData"     , 0x6950 ],
+	[ "newSubmodelData[5]"                     , "ModelData"        , 0x7540 ],
+	[ "newModelShadowData[3]"                  , "ShadowData"       , 0x9AD0 ],
+	[ "newSubmodelShadowData[5]"               , "ShadowData"       , 0x9D10 ],
+	[ "newDevilModelPhysicsMetadataPool[2][36]", "PhysicsMetadata *", 0xA300 ],
+	[ "newDevilSubmodelPhysicsData[4]"         , "PhysicsData"      , 0xA540 ],
+	[ "newDevilSubmodelPhysicsLinkData[4][4]"  , "PhysicsLinkData"  , 0xAA00 ],
 
 
 
@@ -375,6 +249,30 @@ var extra =
 
 
 
+
+
+
+
+
+
+
+
+
+	// __OLD__
+	/*
+	[ "newModelData[6]"                        , "ModelData"         ],
+	[ "newModelPhysicsMetadataPool[7][24]"     , "PhysicsMetadata *" ],
+	[ "newModelAllocationData[512]"            , "Size_32"           ],
+	[ "newBodyPartData[7][2]"                  , "BodyPartData"      ],
+	[ "newDevilModelPhysicsMetadataPool[5][36]", "PhysicsMetadata *" ],
+	[ "newRecoveryData[7]"                     , "RecoveryData"      ],
+	[ "newSubmodelData[11]"                    , "ModelData"         ],
+	[ "newModelShadowData[6]"                  , "ShadowData"        ],
+	[ "newSubmodelShadowData[11]"              , "ShadowData"        ],
+	[ "newDevilSubmodelPhysicsData[10]"        , "PhysicsData"       ],
+	[ "newDevilSubmodelPhysicsLinkData[10][4]" , "PhysicsLinkData"   ],
+	[ "newDevilModels[6]"                      , "uint32"            ],
+	*/
 
 
 
@@ -421,56 +319,8 @@ var extra =
 	[ "newDevilAura"           , "byte8 *" ],
 	[ "newEffectIndices[8]"    , "byte32"  ],
 
-	// [ "newBodyPartData[7][2]", "BodyPartData" ],
-
-	// [ "newSubmodelData[11]", "ModelData" ],
-
-	// [ "newModelShadowData[6]", "ShadowData" ],
-	// [ "newSubmodelShadowData[11]", "ShadowData" ],
-
-
-
-
-
-	// [ "newSubmodelPhysicsMetadata[2]", "PhysicsMetadata" ],
-
-
-
-
-
-
-	// [ "newSubmodelPhysicsData[2]", "PhysicsData" ],
-
-
-
-	// [ "newDevilSubmodelPhysicsData[10]", "PhysicsData" ],
-
-
-
-
-	// [ "newDevilSubmodelPhysicsLinkData[10][4]", "PhysicsLinkData" ],
-
-
-
-	// [ "newDevilModelPhysicsLinkMetadataPool[5][36]", "PhysicsLinkMetadata *" ],
-
-
-
-
-	//[ "newModelPhysicsMetadataPool[10][24]"     , "PhysicsMetadata *" ],
-
-
-
 
 	
-	
-
-
-	
-	//[ "newModelPhysicsMetadataAllocationCount"      , "uint32"            ],
-	//[ "newModelPhysicsMetadataAllocationData[4][24]", "Size_32"           ],
-
-
 
 
 
