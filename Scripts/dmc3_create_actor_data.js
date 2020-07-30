@@ -345,6 +345,12 @@ var extra =
 
 
 
+	[ "newSubmodelData[11]"                     , "ModelData" ],
+
+
+
+
+
 
 	[ "newParentBaseAddr"      , "byte8 *" ],
 	[ "newChildBaseAddr"       , "byte8 *" ],
