@@ -270,9 +270,9 @@ var items =
 
 
 
+	//[ "modelPhysicsMetadataPool[4][24]"     , "PhysicsMetadata *"       , 0x1880                           ],
 
-
-	[ "devilModelPhysicsMetadataPool[2][36]", "PhysicsLinkMetadata *"  , 0xA300                           ], // Relocated.
+	[ "devilModelPhysicsMetadataPool[2][36]", "PhysicsMetadata *"  , 0xA300                           ], // Relocated.
 
 
 
@@ -334,7 +334,14 @@ var extra =
 	[ "newBodyPartData[7][2]", "BodyPartData" ],
 
 
-	[ "newDevilModelPhysicsMetadataPool[5][36]", "PhysicsLinkMetadata *" ],
+	
+	
+	
+
+
+	[ "newDevilModelPhysicsMetadataPool[5][36]", "PhysicsMetadata *"  ], 
+
+
 
 
 	//[ "newVar_3B00[7]", "Size_112" ],
@@ -346,6 +353,44 @@ var extra =
 
 
 	[ "newSubmodelData[11]"                     , "ModelData" ],
+
+
+	[ "newModelShadowData[6]"                  , "ShadowData" ],
+
+
+
+
+
+
+	
+	[ "newSubmodelShadowData[11]"             , "ShadowData"          ],
+	[ "newDevilSubmodelPhysicsData[10]"       , "PhysicsData"           ],
+	[ "newDevilSubmodelPhysicsLinkData[10][4]", "PhysicsLinkData"  ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
