@@ -168,6 +168,7 @@ void Write
 }
 
 // @Todo: Relative.
+// @Todo: void *.
 export void WriteAddress
 (
 	byte8  * addr,
