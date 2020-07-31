@@ -724,6 +724,10 @@ function CreateActorCheatEntry
 		{
 			continue;
 		}
+		else if (type == "RecoveryData")
+		{
+			continue;
+		}
 		else
 		{
 			console.log("Ignore " + type);
