@@ -549,27 +549,48 @@ void UpdateDevilModelFunctionDante
 	byte8 * shadowFile = 0;
 	byte8 * physicsFile = 0;
 
+	//uint8 modelIndex = (devilModelIndex == 0) ? 1 : 2;
+	//uint8 submodelIndex = (devilModelIndex == 0) ? 1 : 3;
+	//uint8 devilSubmodelIndex = (devilModelIndex == 0) ? 0 : 2;
+
 	auto & devilModelMetadata = actorData.devilModelMetadata[devil];
 
-	//uint8 modelIndex = (devilModelIndex == 0) ? 1 : 2;
+
 
 
 	
-	uint8 modelIndex = (devilModelIndex + 1);
+	uint8 modelIndex = (1 + devilModelIndex);
+	uint8 submodelIndex = (1 + (devilModelIndex * 2));
+	uint8 devilSubmodelIndex = (devilModelIndex * 2);
 
 
 
 
 	uint8 modelPhysicsMetadataIndex = 0;
-
-	//uint8 submodelIndex = (devilModelIndex == 0) ? 1 : 3;
-
-	uint8 submodelIndex = (1 + (devilModelIndex * 2));
-
-
 	uint8 devilModelPhysicsMetadataIndex = 0;
-	//uint8 devilSubmodelIndex = (devilModelIndex == 0) ? 0 : 2;
-	uint8 devilSubmodelIndex = (devilModelIndex * 2);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	auto LinkModelPhysicsData = [&]
 	(
@@ -583,6 +604,8 @@ void UpdateDevilModelFunctionDante
 		auto modelPhysicsMetadataAddr = actorData.newModelPhysicsMetadataPool[modelIndex][(modelPhysicsMetadataIndex + _modelPhysicsMetadataIndex)];
 		if (!modelPhysicsMetadataAddr)
 		{
+			Log("LinkModelPhysicsData failed.");
+			Log("modelPhysicsMetadataAddr");
 			return;
 		}
 		auto & modelPhysicsMetadata = *modelPhysicsMetadataAddr;
@@ -590,6 +613,8 @@ void UpdateDevilModelFunctionDante
 		auto devilModelPhysicsMetadataAddr = actorData.newDevilModelPhysicsMetadataPool[devilModelIndex][(devilModelPhysicsMetadataIndex + _devilModelPhysicsMetadataIndex)];
 		if (!devilModelPhysicsMetadataAddr)
 		{
+			Log("LinkModelPhysicsData failed.");
+			Log("devilModelPhysicsMetadataAddr");
 			return;
 		}
 		auto & devilPhysicsMetadata = *devilModelPhysicsMetadataAddr;
@@ -2978,6 +3003,16 @@ export void Model_Init()
 
 
 
+	// Devil Coat Update Ignore Range Check
+	{
+		WriteAddress((appBaseAddr + 0x218982), (appBaseAddr + 0x218988), 6);
+		/*
+		dmc3.exe+21897C - 8D 41 FF          - lea eax,[rcx-01]
+		dmc3.exe+21897F - 83 F8 01          - cmp eax,01
+		dmc3.exe+218982 - 0F87 F9050000     - ja dmc3.exe+218F81
+		dmc3.exe+218988 - 83 BF 183A0000 01 - cmp dword ptr [rdi+00003A18],01
+		*/
+	}
 
 
 
