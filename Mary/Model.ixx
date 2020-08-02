@@ -2984,105 +2984,6 @@ void ToggleRelocations(bool enable)
 
 
 
-/*
-dmc3.exe+1DD140
-
-dmc3.exe+1DD172 - B8 D1000000           - mov eax,000000D1 { 209 }
-
-dmc3.exe+1DD480
-
-dmc3.exe+1DD4F1 - 41 B8 05000000        - mov r8d,00000005 { 5 }
-dmc3.exe+1DD51C - 41 B8 03000000        - mov r8d,00000003 { 3 }
-dmc3.exe+1DD540 - 41 B8 05000000        - mov r8d,00000005 { 5 }
-dmc3.exe+1DD58F - 41 B8 04000000        - mov r8d,00000004 { 4 }
-dmc3.exe+1DD5BA - 41 B8 10000000        - mov r8d,00000010 { 16 }
-
-dmc3.exe+1DDAF0
-
-dmc3.exe+1DDB6A - 41 B8 03000000        - mov r8d,00000003 { 3 }
-dmc3.exe+1DDB95 - 41 B8 D1000000        - mov r8d,000000D1 { 209 }
-dmc3.exe+1DDC28 - 44 8D 42 93           - lea r8d,[rdx-6D]
-dmc3.exe+1DDD82 - 45 8D 47 06           - lea r8d,[r15+06]
-
-dmc3.exe+1DDE40
-
-dmc3.exe+1DE280
-
-dmc3.exe+1DE307 - 41 B8 06000000        - mov r8d,00000006 { 6 }
-dmc3.exe+1DE3C0 - 44 8D 42 93           - lea r8d,[rdx-6D]
-dmc3.exe+1DE40E - 41 B8 D1000000        - mov r8d,000000D1 { 209 }
-dmc3.exe+1DE42D - 41 B8 03000000        - mov r8d,00000003 { 3 }
-
-dmc3.exe+1DEBA4
-
-dmc3.exe+1DEC63 - 41 B9 60000000        - mov r9d,00000060 { 96 }
-dmc3.exe+1DEC80 - 41 B9 48000000        - mov r9d,00000048 { 72 }
-*/
-
-
-/*
-Create
-
-dmc3.exe+1DEC03 - E8 78E8FFFF           - call dmc3.exe+1DD480
-
-dmc3.exe+1DD49B - E8 50060000           - call dmc3.exe+1DDAF0
-
-dmc3.exe+1DDB6A - 41 B8 03000000        - mov r8d,00000003 { 3 }
-dmc3.exe+1DDB95 - 41 B8 D1000000        - mov r8d,000000D1 { 209 }
-dmc3.exe+1DDC28 - 44 8D 42 93           - lea r8d,[rdx-6D]
-dmc3.exe+1DDD82 - 45 8D 47 06           - lea r8d,[r15+06]
-
-dmc3.exe+1DD4F1 - 41 B8 05000000        - mov r8d,00000005 { 5 }
-dmc3.exe+1DD51C - 41 B8 03000000        - mov r8d,00000003 { 3 }
-dmc3.exe+1DD540 - 41 B8 05000000        - mov r8d,00000005 { 5 }
-dmc3.exe+1DD56B - 41 B8 01000000        - mov r8d,00000001 { 1 }
-dmc3.exe+1DD58F - 41 B8 04000000        - mov r8d,00000004 { 4 }
-dmc3.exe+1DD5BA - 41 B8 10000000        - mov r8d,00000010 { 16 }
-
-dmc3.exe+1DEC63 - 41 B9 60000000        - mov r9d,00000060 { 96 }
-
-dmc3.exe+1DEC70 - E8 CBE4FFFF           - call dmc3.exe+1DD140
-
-dmc3.exe+1DD172 - B8 D1000000           - mov eax,000000D1 { 209 }
-dmc3.exe+1DD1AA - 49 8D 8E 881B0000     - lea rcx,[r14+00001B88]
-dmc3.exe+1DD1BB - 49 8B 8E 981B0000     - mov rcx,[r14+00001B98]
-
-dmc3.exe+1DEC80 - 41 B9 48000000        - mov r9d,00000048 { 72 }
-dmc3.exe+1DEC9D - 41 B9 27000000        - mov r9d,00000027 { 39 }
-
-dmc3.exe+1DECB3 - E8 080E0000           - call dmc3.exe+1DFAC0
-
-dmc3.exe+1DFAEE - 48 81 C1 881B0000     - add rcx,00001B88 { 7048 }
-*/
-
-/*
-Free
-
-dmc3.exe+1DE5E0
-
-dmc3.exe+1DE5EF - E8 4CF8FFFF           - call dmc3.exe+1DDE40
-
-dmc3.exe+1DDE96 - 41 B8 10000000        - mov r8d,00000010 { 16 }
-dmc3.exe+1DDEB5 - 41 B8 04000000        - mov r8d,00000004 { 4 }
-dmc3.exe+1DDED4 - 41 B8 01000000        - mov r8d,00000001 { 1 }
-dmc3.exe+1DDEF3 - 41 B8 05000000        - mov r8d,00000005 { 5 }
-dmc3.exe+1DDF12 - 41 B8 03000000        - mov r8d,00000003 { 3 }
-dmc3.exe+1DDF31 - 41 B8 05000000        - mov r8d,00000005 { 5 }
-
-dmc3.exe+1DDF45 - E9 36030000           - jmp dmc3.exe+1DE280
-
-dmc3.exe+1DE307 - 41 B8 06000000        - mov r8d,00000006 { 6 }
-dmc3.exe+1DE3C0 - 44 8D 42 93           - lea r8d,[rdx-6D]
-dmc3.exe+1DE40E - 41 B8 D1000000        - mov r8d,000000D1 { 209 }
-dmc3.exe+1DE42D - 41 B8 03000000        - mov r8d,00000003 { 3 }
-*/
-
-
-
-
-
-
-
 
 
 
@@ -3151,7 +3052,7 @@ void ToggleCountAdjustments(bool enable)
 		// Write<uint32>((appBaseAddr + 0x1DEB4A + 2), (enable) ? newCount : count); // dmc3.exe+1DEB4A - 41 B9 60000000 - MOV R9D,00000060
 		Write<uint32>((appBaseAddr + 0x1DEC63 + 2), (enable) ? newCount : count); // dmc3.exe+1DEC63 - 41 B9 60000000 - mov r9d,00000060
 		// Free
-		// Handled by Model Allocation Data.
+		// Handled together with Model Allocation Data.
 	}
 
 	// Model Allocation Data
@@ -3222,20 +3123,24 @@ void ToggleCountAdjustments(bool enable)
 		Write<uint32>((appBaseAddr + 0x1DDEF3 + 2), (enable) ? newCount : count); // dmc3.exe+1DDEF3 - 41 B8 05000000 - mov r8d,00000005
 	}
 
-	// Submodel Physics Data
-	{
-		// Create
-		//dmc3.exe+1DD56B - 41 B8 01000000        - mov r8d,00000001 { 1 }
-		// Free
-		//dmc3.exe+1DDED4 - 41 B8 01000000        - mov r8d,00000001 { 1 }
-	}
-
 	// Submodel Physics Metadata Pool
 	{
+		constexpr uint32 count = 39;
+		constexpr uint32 newCount = 39;
 		// Create
-		//dmc3.exe+1DEC9D - 41 B9 27000000        - mov r9d,00000027 { 39 }
+		Write<uint32>((appBaseAddr + 0x1DEC9D + 2), (enable) ? newCount : count); // dmc3.exe+1DEC9D - 41 B9 27000000 - mov r9d,00000027
 		// Free
-		// Handle by Model Allocation Data.
+		// Handled together with Model Allocation Data.
+	}
+
+	// Submodel Physics Data
+	{
+		constexpr uint32 count = 1;
+		constexpr uint32 newCount = 1;
+		// Create
+		Write<uint32>((appBaseAddr + 0x1DD56B + 2), (enable) ? newCount : count); // dmc3.exe+1DD56B - 41 B8 01000000 - mov r8d,00000001
+		// Free
+		Write<uint32>((appBaseAddr + 0x1DDED4 + 2), (enable) ? newCount : count); // dmc3.exe+1DDED4 - 41 B8 01000000 - mov r8d,00000001
 	}
 
 	// Devil Model Physics Metadata Pool
@@ -3245,7 +3150,7 @@ void ToggleCountAdjustments(bool enable)
 		// Create
 		Write<uint32>((appBaseAddr + 0x1DEC80 + 2), (enable) ? newCount : count); // dmc3.exe+1DEC80 - 41 B9 48000000 - mov r9d,00000048
 		// Free
-		// Handled by Model Allocation Data.
+		// Handled together with Model Allocation Data.
 	}
 
 	// Devil Submodel Physics Data
@@ -3269,111 +3174,6 @@ void ToggleCountAdjustments(bool enable)
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Write<uint32>((appBaseAddr + 0x1DE307 + 3), (enable) ? newOff : off); // dmc3.exe+1DE307 - 41 B8 06000000 - mov r8d,00000006
-// Write<uint32>((appBaseAddr + 0x1DE3C0 + 3), (enable) ? newOff : off); // dmc3.exe+1DE3C0 - 44 8D 42 93 - lea r8d,[rdx-6D]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-dmc3.exe+1DDE96 - 41 B8 10000000        - mov r8d,00000010 { 16 }
-dmc3.exe+1DDEB5 - 41 B8 04000000        - mov r8d,00000004 { 4 }
-dmc3.exe+1DDEF3 - 41 B8 05000000        - mov r8d,00000005 { 5 }
-dmc3.exe+1DDF12 - 41 B8 03000000        - mov r8d,00000003 { 3 }
-dmc3.exe+1DDF31 - 41 B8 05000000        - mov r8d,00000005 { 5 }
-
-
-
-dmc3.exe+1DE307 - 41 B8 06000000        - mov r8d,00000006 { 6 }
-dmc3.exe+1DE3C0 - 44 8D 42 93           - lea r8d,[rdx-6D]
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export void Model_Init()
 {
 	LogFunction();
@@ -3382,7 +3182,7 @@ export void Model_Init()
 	//auto modelPhysicsMetadataOffs = HighAlloc(64);
 
 
-	return;
+	//return;
 
 
 	{
@@ -3483,8 +3283,8 @@ export void Model_Init()
 
 
 
-	//ToggleRelocations(true);
-	//ToggleCountAdjustments(true);
+	ToggleRelocations(true);
+	ToggleCountAdjustments(true);
 
 
 
