@@ -56,12 +56,19 @@ var typeHelper =
 	[ "float32"                   , "4 Bytes", 4   , false ],
 	// Structures
 	[ "vec4"                      , ""       , 16  , false ],
-	[ "INPUT_DATA"                , ""       , 12  , false ],
-	[ "MOTION_DATA"               , ""       , 2   , false ],
+
+
+
+
+	[ "InputData"                , ""       , 12  , false ],
+	[ "MotionData"               , ""       , 2   , false ],
+	[ "ActorEventData"          , ""       , 8   , false ],
+
+
 	[ "ModelMetadata"            , ""       , 80  , false ],
 	[ "ModelData"                , ""       , 1920, false ],
 	[ "DevilModelMetadataDante"   , ""       , 33  , false ],
-	[ "ACTOR_EVENT_DATA"          , ""       , 8   , false ],
+	
 	// [ "SHADOW_DATA"               , ""       , 192 , false ],
 	// [ "PHYSICS_DATA"              , ""       , 240 , false ],
 	

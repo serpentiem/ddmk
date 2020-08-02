@@ -379,7 +379,7 @@ void File_UpdateActorFileItems(T & actorData)
 	auto costume = actorData.costume;
 	uint16 costumeFileId = 0;
 
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		if (costume >= MAX_COSTUME_DANTE)
 		{
@@ -414,7 +414,7 @@ void File_UpdateActorFileItems(T & actorData)
 			);
 		}
 	}
-	else if constexpr (TypeMatch<T, ACTOR_DATA_BOB>::value)
+	else if constexpr (TypeMatch<T, ActorDataBob>::value)
 	{
 		File_UpdateFileItem(1, pl001);
 
@@ -427,11 +427,11 @@ void File_UpdateActorFileItems(T & actorData)
 			);
 		}
 	}
-	else if constexpr (TypeMatch<T, ACTOR_DATA_LADY>::value)
+	else if constexpr (TypeMatch<T, ActorDataLady>::value)
 	{
 		File_UpdateFileItem(2, pl002);
 	}
-	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
 		if (costume >= MAX_COSTUME_VERGIL)
 		{

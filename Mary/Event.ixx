@@ -147,7 +147,7 @@ bool SetTrack
 
 void UnlockActor(byte8 * baseAddr)
 {
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 	actorData.newButtonMask = 0xFFFF;
 	actorData.newEnableRightStick = true;
 	actorData.newEnableLeftStick = true;
@@ -164,7 +164,7 @@ void CreateMainActor(byte8 * baseAddr)
 
 	Actor_CreateMainActor(baseAddr);
 
-	UnlockActor(baseAddr);
+	//UnlockActor(baseAddr);
 
 	Arcade_CreateMainActor(baseAddr);
 
@@ -361,7 +361,7 @@ void MainLoopOnce()
 
 		LogFunction();
 
-		//Actor_MainLoopOnce();
+		Actor_MainLoopOnce();
 	}
 }
 
@@ -379,7 +379,7 @@ void MainLoopOnceSync()
 
 		LogFunction();
 
-		//Actor_MainLoopOnceSync();
+		Actor_MainLoopOnceSync();
 	}
 }
 
@@ -1231,13 +1231,13 @@ void ActorInitComplete(byte8 * baseAddr)
 	//	return;
 	//}
 
-	//auto & actorData = *(ACTOR_DATA *)baseAddr;
+	//auto & actorData = *(ActorData *)baseAddr;
 	//actorData.shadow = 1;
 	//actorData.collisionIndex = 1;
 
 
 
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 	//actorData.collisionIndex = 1;
 	//actorData.newButtonMask = 0xFFFF
 

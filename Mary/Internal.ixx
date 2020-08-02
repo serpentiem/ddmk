@@ -7,9 +7,9 @@ module;
 #include "Vars.h"
 export module ModuleName(Internal);
 
-export typedef void(__fastcall * func_897B0_t)(byte8 * dest);
-export typedef void(__fastcall * func_89450_t)(byte8 * dest);
-export typedef void(__fastcall * func_89270_t)(byte8 * dest);
+export typedef void(__fastcall * func_897B0_t)(ModelData & modelData);
+export typedef void(__fastcall * func_89450_t)(ModelData & modelData);
+export typedef void(__fastcall * func_89270_t)(ModelData & modelData);
 export typedef void(__fastcall * func_8B470_t)(ModelData & modelData, bool32 enable);
 export typedef void(__fastcall * func_89960_t)(ModelData & modelData, byte8 * modelFile, byte8 * textureFile);
 export typedef void(__fastcall * func_1EF040_t)(byte8 * actorData, uint32 index);
@@ -18,7 +18,7 @@ export typedef void(__fastcall * func_8BC60_t)(ShadowData & shadowData, byte8 * 
 export typedef void(__fastcall * func_305D80_t)(byte8 * dest);
 export typedef void(__fastcall * func_8A000_t)(ModelData & modelData, byte8 * motionFile, PhysicsMetadata ** modelPhysicsMetadataPool);
 export typedef uint32(__fastcall * func_2C9F40_t)(byte8 * physicsFile);
-export typedef void(__fastcall * func_2CA1D0_t)(PhysicsData & physicsData, void * physicsMetadata, byte8 * physicsFile, uint32 index);
+export typedef void(__fastcall * func_2CA1D0_t)(PhysicsData & physicsData, PhysicsMetadata ** physicsMetadata, byte8 * physicsFile, uint32 index);
 export typedef void(__fastcall * func_2CA2F0_t)(PhysicsData & physicsData, void * dest, byte8 * addr, ModelMetadata * modelMetadata, uint32 count);
 export typedef void(__fastcall * func_2EE3D0_t)(byte8 * dest);
 export typedef void(__fastcall * func_1FAF40_t)(byte8 * baseAddr);
@@ -75,9 +75,9 @@ export typedef void(__fastcall * func_594B0_t)(BodyPartData & bodyPartData, byte
 export typedef byte8 *(__fastcall * func_8A520_t)(ModelData & modelData);
 export typedef void(__fastcall * func_30E630_t)(byte8 * dest, uint32 index);
 
-export func_897B0_t func_897B0 = 0; // (byte8 * dest)
-export func_89450_t func_89450 = 0; // (byte8 * dest)
-export func_89270_t func_89270 = 0; // (byte8 * dest)
+export func_897B0_t func_897B0 = 0; // (ModelData & modelData)
+export func_89450_t func_89450 = 0; // (ModelData & modelData)
+export func_89270_t func_89270 = 0; // (ModelData & modelData)
 export func_8B470_t func_8B470 = 0; // (ModelData & modelData, bool32 enable)
 export func_89960_t func_89960 = 0; // (ModelData & modelData, byte8 * modelFile, byte8 * textureFile)
 export func_1EF040_t func_1EF040 = 0; // (byte8 * actorData, uint32 index)
@@ -86,7 +86,7 @@ export func_8BC60_t func_8BC60 = 0; // (ShadowData & shadowData, byte8 * dest, b
 export func_305D80_t func_305D80 = 0; // (byte8 * dest)
 export func_8A000_t func_8A000 = 0; // (ModelData & modelData, byte8 * motionFile, PhysicsMetadata ** modelPhysicsMetadataPool)
 export func_2C9F40_t func_2C9F40 = 0; // (byte8 * physicsFile)
-export func_2CA1D0_t func_2CA1D0 = 0; // (PhysicsData & physicsData, void * physicsMetadata, byte8 * physicsFile, uint32 index)
+export func_2CA1D0_t func_2CA1D0 = 0; // (PhysicsData & physicsData, PhysicsMetadata ** physicsMetadata, byte8 * physicsFile, uint32 index)
 export func_2CA2F0_t func_2CA2F0 = 0; // (PhysicsData & physicsData, void * dest, byte8 * addr, ModelMetadata * modelMetadata, uint32 count)
 export func_2EE3D0_t func_2EE3D0 = 0; // (byte8 * dest)
 export func_1FAF40_t func_1FAF40 = 0; // (byte8 * baseAddr)

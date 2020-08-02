@@ -41,23 +41,23 @@ struct GetCharacterId
 	enum
 	{
 		value =
-		(TypeMatch<T, ACTOR_DATA_DANTE >::value) ? CHAR_DANTE  :
-		(TypeMatch<T, ACTOR_DATA_BOB   >::value) ? CHAR_BOB    :
-		(TypeMatch<T, ACTOR_DATA_LADY  >::value) ? CHAR_LADY   :
-		(TypeMatch<T, ACTOR_DATA_VERGIL>::value) ? CHAR_VERGIL :
+		(TypeMatch<T, ActorDataDante >::value) ? CHAR_DANTE  :
+		(TypeMatch<T, ActorDataBob   >::value) ? CHAR_BOB    :
+		(TypeMatch<T, ActorDataLady  >::value) ? CHAR_LADY   :
+		(TypeMatch<T, ActorDataVergil>::value) ? CHAR_VERGIL :
 		0
 	};
 };
 
 export template <uint8 character> struct GetActorDataType {};
-export template <> struct GetActorDataType<CHAR_DANTE > { typedef ACTOR_DATA_DANTE  value; };
-export template <> struct GetActorDataType<CHAR_BOB   > { typedef ACTOR_DATA_BOB    value; };
-export template <> struct GetActorDataType<CHAR_LADY  > { typedef ACTOR_DATA_LADY   value; };
-export template <> struct GetActorDataType<CHAR_VERGIL> { typedef ACTOR_DATA_VERGIL value; };
+export template <> struct GetActorDataType<CHAR_DANTE > { typedef ActorDataDante  value; };
+export template <> struct GetActorDataType<CHAR_BOB   > { typedef ActorDataBob    value; };
+export template <> struct GetActorDataType<CHAR_LADY  > { typedef ActorDataLady   value; };
+export template <> struct GetActorDataType<CHAR_VERGIL> { typedef ActorDataVergil value; };
 
 export template <typename T> struct GetChildActorDataType {};
-export template <> struct GetChildActorDataType<ACTOR_DATA_DANTE > { typedef ACTOR_DATA_VERGIL value; };
-export template <> struct GetChildActorDataType<ACTOR_DATA_VERGIL> { typedef ACTOR_DATA_DANTE  value; };
+export template <> struct GetChildActorDataType<ActorDataDante > { typedef ActorDataVergil value; };
+export template <> struct GetChildActorDataType<ActorDataVergil> { typedef ActorDataDante  value; };
 
 export template <typename T>
 bool IsWeaponActive
@@ -71,7 +71,7 @@ bool IsWeaponActive
 	{
 		return false;
 	}
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		if (motionData.group == (MOTION_GROUP_DANTE_REBELLION + weapon))
 		{
@@ -82,7 +82,7 @@ bool IsWeaponActive
 			return true;
 		}
 	}
-	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
 		if (motionData.group == (MOTION_GROUP_VERGIL_YAMATO + (weapon - WEAPON_VERGIL_YAMATO)))
 		{
@@ -96,14 +96,14 @@ export template <typename T>
 bool IsWeaponActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[UPPER_BODY];
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		if ((motionData.group >= MOTION_GROUP_DANTE_REBELLION) && (motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN))
 		{
 			return true;
 		}
 	}
-	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
 		if ((motionData.group >= MOTION_GROUP_VERGIL_YAMATO) && (motionData.group <= MOTION_GROUP_VERGIL_FORCE_EDGE))
 		{
@@ -117,7 +117,7 @@ export template <typename T>
 bool IsActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[UPPER_BODY];
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		if ((motionData.group == MOTION_GROUP_DANTE_BASE) && (motionData.index == 14))
 		{
@@ -128,7 +128,7 @@ bool IsActive(T & actorData)
 			return true;
 		}
 	}
-	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
 		if ((motionData.group == MOTION_GROUP_VERGIL_BASE) && (motionData.index == 14))
 		{
@@ -167,36 +167,36 @@ void InitActor
 	byte8 * missionActorData
 )
 {
-	if constexpr      (TypeMatch<T, ACTOR_DATA_DANTE >::value) { func_217B90(actorData, missionActorData); }
-	else if constexpr (TypeMatch<T, ACTOR_DATA_BOB   >::value) { func_226F10(actorData, missionActorData); }
-	else if constexpr (TypeMatch<T, ACTOR_DATA_LADY  >::value) { func_219660(actorData, missionActorData); }
-	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value) { func_223CB0(actorData, missionActorData); }
+	if constexpr      (TypeMatch<T, ActorDataDante >::value) { func_217B90(actorData, missionActorData); }
+	else if constexpr (TypeMatch<T, ActorDataBob   >::value) { func_226F10(actorData, missionActorData); }
+	else if constexpr (TypeMatch<T, ActorDataLady  >::value) { func_219660(actorData, missionActorData); }
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value) { func_223CB0(actorData, missionActorData); }
 }
 
 template <typename T>
 void UpdateActor(T & actorData)
 {
-	if constexpr      (TypeMatch<T, ACTOR_DATA_DANTE >::value) { func_212BE0(actorData); }
-	else if constexpr (TypeMatch<T, ACTOR_DATA_BOB   >::value) { func_225D70(actorData); }
-	else if constexpr (TypeMatch<T, ACTOR_DATA_LADY  >::value) { func_219260(actorData); }
-	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value) { func_220970(actorData); }
+	if constexpr      (TypeMatch<T, ActorDataDante >::value) { func_212BE0(actorData); }
+	else if constexpr (TypeMatch<T, ActorDataBob   >::value) { func_225D70(actorData); }
+	else if constexpr (TypeMatch<T, ActorDataLady  >::value) { func_219260(actorData); }
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value) { func_220970(actorData); }
 }
 
 template <typename T>
 void UpdateMotionArchives(T & actorData)
 {
 	constexpr uint8 count =
-	(TypeMatch<T, ACTOR_DATA_DANTE >::value) ? static_cast<uint8>(countof(motionArchiveHelperDante )) :
-	(TypeMatch<T, ACTOR_DATA_BOB   >::value) ? static_cast<uint8>(countof(motionArchiveHelperBob   )) :
-	(TypeMatch<T, ACTOR_DATA_LADY  >::value) ? static_cast<uint8>(countof(motionArchiveHelperLady  )) :
-	(TypeMatch<T, ACTOR_DATA_VERGIL>::value) ? static_cast<uint8>(countof(motionArchiveHelperVergil)) :
+	(TypeMatch<T, ActorDataDante >::value) ? static_cast<uint8>(countof(motionArchiveHelperDante )) :
+	(TypeMatch<T, ActorDataBob   >::value) ? static_cast<uint8>(countof(motionArchiveHelperBob   )) :
+	(TypeMatch<T, ActorDataLady  >::value) ? static_cast<uint8>(countof(motionArchiveHelperLady  )) :
+	(TypeMatch<T, ActorDataVergil>::value) ? static_cast<uint8>(countof(motionArchiveHelperVergil)) :
 	0;
 
 	const MotionArchiveHelper * motionArchiveHelper =
-	(TypeMatch<T, ACTOR_DATA_DANTE >::value) ? motionArchiveHelperDante  :
-	(TypeMatch<T, ACTOR_DATA_BOB   >::value) ? motionArchiveHelperBob    :
-	(TypeMatch<T, ACTOR_DATA_LADY  >::value) ? motionArchiveHelperLady   :
-	(TypeMatch<T, ACTOR_DATA_VERGIL>::value) ? motionArchiveHelperVergil :
+	(TypeMatch<T, ActorDataDante >::value) ? motionArchiveHelperDante  :
+	(TypeMatch<T, ActorDataBob   >::value) ? motionArchiveHelperBob    :
+	(TypeMatch<T, ActorDataLady  >::value) ? motionArchiveHelperLady   :
+	(TypeMatch<T, ActorDataVergil>::value) ? motionArchiveHelperVergil :
 	0;
 
 	for_all(uint8, index, count)
@@ -247,11 +247,13 @@ void InitRegisterWeapon()
 template <typename T>
 void UpdateModelPartitions(T & actorData)
 {
+	return;
+
 	LogFunction();
 
 	IntroduceSessionData();
 
-	auto modelPartitionData = actorData.modelData[0].modelPartitionData;
+	auto modelPartitionData = actorData.newModelData[0].modelPartitionData;
 
 	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY))
 	{
@@ -277,7 +279,7 @@ void UpdateModelPartitions(T & actorData)
 		return;
 	}
 
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		auto & meleeWeapon = actorData.weapons[actorData.meleeWeaponIndex];
 
@@ -426,7 +428,7 @@ void UpdateModelPartitions(T & actorData)
 
 //void UpdateModelPartitionConfigFunction
 //(
-//	ACTOR_DATA_DANTE & actorData,
+//	ActorDataDante & actorData,
 //	uint8 weapon
 //)
 //{
@@ -453,7 +455,7 @@ void UpdateModelPartitions(T & actorData)
 
 //void UpdateModelPartitionConfig
 //(
-//	ACTOR_DATA_DANTE & actorData,
+//	ActorDataDante & actorData,
 //	uint8 weapon
 //)
 //{
@@ -467,7 +469,7 @@ void UpdateModelPartitions(T & actorData)
 template <typename T>
 void InitMeleeWeapons(T & actorData)
 {
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		for_all(uint8, index, MAX_MELEE_WEAPON_DANTE)
 		{
@@ -479,7 +481,7 @@ void InitMeleeWeapons(T & actorData)
 		actorData.weapons[1] = WEAPON_VOID;
 		actorData.weaponData[0] = actorData.newMeleeWeaponData[0];
 	}
-	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
 		for_all(uint8, index, MAX_MELEE_WEAPON_VERGIL)
 		{
@@ -506,7 +508,7 @@ void InitMeleeWeapons(T & actorData)
 template <typename T>
 void InitRangedWeapons(T & actorData)
 {
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		for_all(uint8, index, MAX_RANGED_WEAPON_DANTE)
 		{
@@ -527,8 +529,8 @@ void InitRangedWeapons(T & actorData)
 template <typename T>
 void InitWeapons(T & actorData)
 {
-	auto dest = (reinterpret_cast<byte8 *>(&actorData) + offsetof(ACTOR_DATA_VERGIL, activeMeleeWeaponIndex));
-	constexpr uint32 size = (offsetof(ACTOR_DATA_VERGIL, styleRank) - offsetof(ACTOR_DATA_VERGIL, activeMeleeWeaponIndex));
+	auto dest = (reinterpret_cast<byte8 *>(&actorData) + offsetof(ActorDataVergil, activeMeleeWeaponIndex));
+	constexpr uint32 size = (offsetof(ActorDataVergil, styleRank) - offsetof(ActorDataVergil, activeMeleeWeaponIndex));
 	memset(dest, 0, size);
 
 	InitMeleeWeapons (actorData);
@@ -567,12 +569,12 @@ void UpdateNewMeleeWeapons
 	uint8 entity
 )
 {
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeaponDante[player][entity], MAX_MELEE_WEAPON);
 		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCountDante[player][entity];
 	}
-	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
 		memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeaponVergil[player][entity], MAX_MELEE_WEAPON);
 		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCountVergil[player][entity];
@@ -630,7 +632,7 @@ void UpdateNewRangedWeapons
 
 
 
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		memcpy(actorData.newRangedWeapon, Config.Actor.rangedWeaponDante[player][entity], MAX_RANGED_WEAPON);
 
@@ -669,13 +671,13 @@ void UpdateMeleeWeaponFunction
 	uint8 weapon
 )
 {
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		actorData.meleeWeaponIndex = (!IsWeaponActive(actorData, actorData.weapons[0])) ? 0 : 1;
 		actorData.weapons[actorData.meleeWeaponIndex] = weapon;
 		actorData.weaponData[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponData[(weapon - WEAPON_DANTE_REBELLION)];
 	}
-	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
 		actorData.queuedMeleeWeaponIndex = (weapon - WEAPON_VERGIL_YAMATO);
 	}
@@ -688,7 +690,7 @@ void UpdateMeleeWeapon
 	uint8 weapon
 )
 {
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		if ((weapon >= WEAPON_DANTE_REBELLION) && (weapon <= WEAPON_DANTE_BEOWULF))
 		{
@@ -700,11 +702,11 @@ void UpdateMeleeWeapon
 			{
 				return;
 			}
-			auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(actorData.newChildBaseAddr);
+			auto & childActorData = *reinterpret_cast<ActorDataVergil *>(actorData.newChildBaseAddr);
 			UpdateMeleeWeaponFunction(childActorData, weapon);
 		}
 	}
-	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
 		if ((weapon >= WEAPON_VERGIL_YAMATO) && (weapon <= WEAPON_VERGIL_FORCE_EDGE))
 		{
@@ -716,7 +718,7 @@ void UpdateMeleeWeapon
 			{
 				return;
 			}
-			auto & childActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(actorData.newChildBaseAddr);
+			auto & childActorData = *reinterpret_cast<ActorDataDante *>(actorData.newChildBaseAddr);
 			UpdateMeleeWeaponFunction(childActorData, weapon);
 		}
 	}
@@ -729,7 +731,7 @@ void UpdateRangedWeapon
 	uint8 weapon
 )
 {
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		actorData.rangedWeaponIndex = (!IsWeaponActive(actorData, actorData.weapons[2])) ? 2 : 3;
 		actorData.weapons[actorData.rangedWeaponIndex] = weapon;
@@ -866,20 +868,20 @@ byte8 * CreateActor
 		parentActorData.newEnableRightStick = true;
 		parentActorData.newEnableLeftStick = true;
 
-		if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value || TypeMatch<T, ACTOR_DATA_VERGIL>::value)
-		{
-			auto childBaseAddr = CreateActorFunction<GetChildActorDataType<T>::value>(player, entity);
-			if (!childBaseAddr)
-			{
-				return 0;
-			}
-			auto & childActorData = *childBaseAddr;
-			Actor_actorBaseAddr.Push(childActorData);
+		//if constexpr (TypeMatch<T, ActorDataDante>::value || TypeMatch<T, ActorDataVergil>::value)
+		//{
+		//	auto childBaseAddr = CreateActorFunction<GetChildActorDataType<T>::value>(player, entity);
+		//	if (!childBaseAddr)
+		//	{
+		//		return 0;
+		//	}
+		//	auto & childActorData = *childBaseAddr;
+		//	Actor_actorBaseAddr.Push(childActorData);
 
-			parentActorData.newChildBaseAddr = childActorData;
+		//	parentActorData.newChildBaseAddr = childActorData;
 
-			childActorData.newParentBaseAddr = parentActorData;
-		}
+		//	childActorData.newParentBaseAddr = parentActorData;
+		//}
 	}
 	else
 	{
@@ -924,22 +926,22 @@ byte8 * SpawnActor
 	{
 	case CHAR_DANTE:
 	{
-		baseAddr = CreateActor<ACTOR_DATA_DANTE>(player, entity);
+		baseAddr = CreateActor<ActorDataDante>(player, entity);
 		break;
 	}
 	case CHAR_BOB:
 	{
-		baseAddr = CreateActor<ACTOR_DATA_BOB>(player, entity);
+		baseAddr = CreateActor<ActorDataBob>(player, entity);
 		break;
 	}
 	case CHAR_LADY:
 	{
-		baseAddr = CreateActor<ACTOR_DATA_LADY>(player, entity);
+		baseAddr = CreateActor<ActorDataLady>(player, entity);
 		break;
 	}
 	case CHAR_VERGIL:
 	{
-		baseAddr = CreateActor<ACTOR_DATA_VERGIL>(player, entity);
+		baseAddr = CreateActor<ActorDataVergil>(player, entity);
 		break;
 	}
 	}
@@ -947,7 +949,7 @@ byte8 * SpawnActor
 	{
 		return 0;
 	}
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
 
 	//Log("meleeWeaponData  %llX", actorData.meleeWeaponData[0] );
 	//Log("rangedWeaponData %llX", actorData.rangedWeaponData[0]);
@@ -970,7 +972,7 @@ byte8 * SpawnActor
 
 	if (actorData.newChildBaseAddr)
 	{
-		auto & childActorData = *reinterpret_cast<ACTOR_DATA *>(actorData.newChildBaseAddr);
+		auto & childActorData = *reinterpret_cast<ActorData *>(actorData.newChildBaseAddr);
 		childActorData.position = actorSpawnHelper.position;
 		childActorData.rotation = actorSpawnHelper.rotation;
 		childActorData.position.y = 10500;
@@ -990,7 +992,7 @@ export void SpawnActors()
 		{
 			continue;
 		}
-		auto & mainActorData = *reinterpret_cast<ACTOR_DATA *>(mainBaseAddr);
+		auto & mainActorData = *reinterpret_cast<ActorData *>(mainBaseAddr);
 
 
 
@@ -1002,7 +1004,7 @@ export void SpawnActors()
 		{
 			continue;
 		}
-		auto & cloneActorData = *reinterpret_cast<ACTOR_DATA *>(cloneBaseAddr);
+		auto & cloneActorData = *reinterpret_cast<ActorData *>(cloneBaseAddr);
 
 		mainActorData.cloneBaseAddr = cloneActorData;
 	}
@@ -1070,7 +1072,7 @@ bool IsWeaponReady
 			actorData.newMeleeWeaponCount,
 			actorData.newMeleeWeaponIndex
 		);
-		if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+		if constexpr (TypeMatch<T, ActorDataDante>::value)
 		{
 			if (result)
 			{
@@ -1104,15 +1106,15 @@ typedef bool(__fastcall * IsWeaponReady_t)
 
 IsWeaponReady_t IsMeleeWeaponReady[MAX_CHAR] =
 {
-	IsWeaponReady<ACTOR_DATA_DANTE, WEAPON_TYPE_MELEE>,
+	IsWeaponReady<ActorDataDante, WEAPON_TYPE_MELEE>,
 	0,
 	0,
-	IsWeaponReady<ACTOR_DATA_VERGIL, WEAPON_TYPE_MELEE>,
+	IsWeaponReady<ActorDataVergil, WEAPON_TYPE_MELEE>,
 };
 
 IsWeaponReady_t IsRangedWeaponReady[MAX_CHAR] =
 {
-	IsWeaponReady<ACTOR_DATA_DANTE, WEAPON_TYPE_MELEE>,
+	IsWeaponReady<ActorDataDante, WEAPON_TYPE_MELEE>,
 	0,
 	0,
 	0,
@@ -1127,7 +1129,7 @@ bool IsWeaponReadyProxy(byte8 * baseAddr)
 	{
 		return true;
 	}
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(actorBaseAddr);
+	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
 	auto character = actorData.character;
 	if (character >= MAX_CHAR)
 	{
@@ -1316,7 +1318,7 @@ export void ToggleIsWeaponReady(bool enable)
 // @Todo: Check for WEAPON_VOID and same weapon.
 // @Todo: Create templates.
 
-//bool WeaponSwitchVergil(ACTOR_DATA_VERGIL & actorData)
+//bool WeaponSwitchVergil(ActorDataVergil & actorData)
 //{
 //	if (actorData.devilState == 2)
 //	{
@@ -1458,8 +1460,17 @@ export void ToggleIsWeaponReady(bool enable)
 
 
 
-void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
+void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 {
+
+	//// @Todo: Fix!
+	//if (actorData.newGamepad != 0)
+	//{
+	//	return;
+	//}
+
+
+
 	if (actorData.newMeleeWeaponCount <= 1)
 	{
 		return;
@@ -1508,6 +1519,19 @@ void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 
 
 
+
+
+	if (actorData.devil)
+	{
+		
+		if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
+		{
+			actorData.queuedModelIndex = (1 + newMeleeWeapon);
+		}
+
+
+
+	}
 
 
 	//auto devil = actorData.weapons[actorData.meleeWeaponIndex];
@@ -1627,11 +1651,7 @@ void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 
 
 
-	//// @Todo: Fix!
-	//if (actorData.newGamepad != 0)
-	//{
-	//	return;
-	//}
+
 
 
 
@@ -1709,7 +1729,7 @@ void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 	//	{
 	//		goto sect2;
 	//	}
-	//	auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(parentActorData.newChildBaseAddr[CHAR_VERGIL]);
+	//	auto & childActorData = *reinterpret_cast<ActorDataVergil *>(parentActorData.newChildBaseAddr[CHAR_VERGIL]);
 	//	if (childActorData.character != CHAR_VERGIL)
 	//	{
 	//		goto sect2;
@@ -1734,7 +1754,7 @@ void MeleeWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 	//func_1EB0E0(actorData, 4);
 }
 
-void RangedWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
+void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
 {
 
 	//// @Todo: Fix!
@@ -1870,7 +1890,7 @@ void RangedWeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
 
 
 
-bool WeaponSwitchControllerDante(ACTOR_DATA_DANTE & actorData)
+bool WeaponSwitchControllerDante(ActorDataDante & actorData)
 {
 	if (actorData.mode == ACTOR_MODE_MISSION_18)
 	{
@@ -1919,7 +1939,7 @@ void SetMainActor(byte8 * baseAddr)
 
 
 
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 
 
 
@@ -1984,6 +2004,7 @@ void SetMainActor(byte8 * baseAddr)
 
 
 	// @Todo: User and Anchor.
+	// @Todo: Remove caps.
 
 	auto & cameraData = *reinterpret_cast<CAMERA_DATA *>(cameraPool[147]);
 
@@ -1996,7 +2017,7 @@ void SetMainActor(byte8 * baseAddr)
 
 	actorPool[3] = baseAddr;
 	cameraData.targetBaseAddr = baseAddr;
-	lockOnUserBaseAddr = baseAddr;
+	//lockOnUserBaseAddr = baseAddr;
 }
 
 
@@ -2011,7 +2032,7 @@ export void Actor_Customize()
 {
 	LogFunction();
 
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(Actor_actorBaseAddr[2]);
+	auto & actorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[2]);
 	actorSpawnHelper.position = actorData.position;
 	actorSpawnHelper.rotation = actorData.rotation;
 	actorSpawnHelper.event = 0;
@@ -2263,7 +2284,7 @@ export void Actor_Init()
 	//	vp_memcpy((appBaseAddr + 0x1E6DD0), sect0, sizeof(sect0));
 	//}
 
-	Write<uint32>((appBaseAddr + 0x1EBD19), offsetof(ACTOR_DATA, newGamepad));
+	Write<uint32>((appBaseAddr + 0x1EBD19), offsetof(ActorData, newGamepad));
 
 	{
 		Write<byte8>((appBaseAddr + 0x27E800), 0xEB);
@@ -2303,7 +2324,7 @@ export void Actor_Init()
 
 	{
 		auto func = CreateFunction(WeaponSwitchControllerDante, 0, true, false);
-		//WriteCall((appBaseAddr + 0x1E25EB), func.addr);
+		WriteCall((appBaseAddr + 0x1E25EB), func.addr);
 	}
 
 
@@ -2327,7 +2348,7 @@ export void Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBCF6), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.addr + 7) = offsetof(ACTOR_DATA, newGamepad);
+		*reinterpret_cast<uint32 *>(func.addr + 7) = offsetof(ActorData, newGamepad);
 		*reinterpret_cast<uint8 *>(func.addr + 0xB) = MAX_PLAYER;
 		WriteAddress((func.addr + 0xC), (appBaseAddr + 0x1EBF90), 6);
 		WriteJump((appBaseAddr + 0x1EBCF0), func.addr, 1);
@@ -2349,7 +2370,7 @@ export void Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD3B), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ACTOR_DATA, newButtonMask);
+		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newButtonMask);
 		WriteJump((appBaseAddr + 0x1EBD34), func.addr, 2);
 		/*
 		dmc3.exe+1EBD34 - 66 89 83 E0740000 - mov [rbx+000074E0],ax
@@ -2365,7 +2386,7 @@ export void Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD5B), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ACTOR_DATA, newButtonMask);
+		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newButtonMask);
 		WriteJump((appBaseAddr + 0x1EBD54), func.addr, 2);
 		/*
 		dmc3.exe+1EBD54 - 66 89 83 E2740000 - mov [rbx+000074E2],ax
@@ -2381,7 +2402,7 @@ export void Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD6B), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ACTOR_DATA, newButtonMask);
+		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newButtonMask);
 		WriteJump((appBaseAddr + 0x1EBD64), func.addr, 2);
 		/*
 		dmc3.exe+1EBD64 - 66 89 8B E4740000 - mov [rbx+000074E4],cx
@@ -2397,7 +2418,7 @@ export void Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD7C), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ACTOR_DATA, newButtonMask);
+		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newButtonMask);
 		WriteJump((appBaseAddr + 0x1EBD75), func.addr, 2);
 		/*
 		dmc3.exe+1EBD75 - 66 89 93 E6740000 - mov [rbx+000074E6],dx
@@ -2415,7 +2436,7 @@ export void Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1EBEA4), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEnableLeftStick);
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnableLeftStick);
 		WriteJump((appBaseAddr + 0x1EBE9D), func.addr, 2);
 		/*
 		dmc3.exe+1EBE9D - 66 89 83 0A750000   - mov [rbx+0000750A],ax
@@ -2799,7 +2820,7 @@ export void Actor_Init()
 
 //// @Research: Lady has different actor_data size. Geez, quite the turn.
 
-//// Increase ACTOR_DATA size.
+//// Increase ActorData size.
 //{
 //	constexpr uint32 size = (0xB8C0 + 512);
 //	Write<uint32>((appBaseAddr + 0x1DE5FA), size);
@@ -2809,7 +2830,7 @@ export void Actor_Init()
 //}
 
 
-//Write<byte32>((appBaseAddr + 0x1EBD19), offsetof(ACTOR_DATA, gamepad));
+//Write<byte32>((appBaseAddr + 0x1EBD19), offsetof(ActorData, gamepad));
 
 
 //
@@ -2833,7 +2854,7 @@ export void Actor_Init()
 //	uint8 weaponCount = 0;
 //	uint8 weaponIndex = 0;
 //
-//	//if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+//	//if constexpr (TypeMatch<T, ActorDataDante>::value)
 //	//{
 //	//	if constexpr (weaponType == WEAPON_TYPE_MELEE)
 //	//	{
@@ -2848,7 +2869,7 @@ export void Actor_Init()
 //	//		weaponIndex = (actorData.rangedWeaponIndex - 2);
 //	//	}
 //	//}
-//	//else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+//	//else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 //	//{
 //	//	weaponMap = actorData.meleeWeaponMap;
 //	//	weaponCount = 3;
@@ -2893,7 +2914,7 @@ export void Actor_Init()
 //		}
 //	}
 //
-//	//if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+//	//if constexpr (TypeMatch<T, ActorDataVergil>::value)
 //	//{
 //	//	if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
 //	//	{
@@ -2906,7 +2927,7 @@ export void Actor_Init()
 //		return true;
 //	}
 //
-//	//if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+//	//if constexpr (TypeMatch<T, ActorDataVergil>::value)
 //	//{
 //	//	if ((weapon == WEAPON_VERGIL_YAMATO) && (weaponMap[weaponIndex] == WEAPON_VERGIL_FORCE_EDGE))
 //	//	{
@@ -2948,7 +2969,7 @@ export void Actor_Init()
 //	uint8 weaponCount = 0;
 //	uint8 weaponIndex = 0;
 //
-//	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+//	if constexpr (TypeMatch<T, ActorDataDante>::value)
 //	{
 //		if constexpr (weaponType == WEAPON_TYPE_MELEE)
 //		{
@@ -2963,7 +2984,7 @@ export void Actor_Init()
 //			weaponIndex = (actorData.rangedWeaponIndex - 2);
 //		}
 //	}
-//	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+//	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 //	{
 //		weaponMap = actorData.meleeWeaponMap;
 //		weaponCount = 3;
@@ -2987,7 +3008,7 @@ export void Actor_Init()
 //		}
 //	}
 //
-//	if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+//	if constexpr (TypeMatch<T, ActorDataVergil>::value)
 //	{
 //		if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
 //		{
@@ -3000,7 +3021,7 @@ export void Actor_Init()
 //		return true;
 //	}
 //
-//	if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+//	if constexpr (TypeMatch<T, ActorDataVergil>::value)
 //	{
 //		if ((weapon == WEAPON_VERGIL_YAMATO) && (weaponMap[weaponIndex] == WEAPON_VERGIL_FORCE_EDGE))
 //		{
@@ -3014,15 +3035,15 @@ export void Actor_Init()
 
 //void * IsMeleeWeaponReady[MAX_CHAR] =
 //{
-//	IsWeaponReady<ACTOR_DATA_DANTE, WEAPON_TYPE_MELEE>,
+//	IsWeaponReady<ActorDataDante, WEAPON_TYPE_MELEE>,
 //	0,
 //	0,
-//	IsWeaponReady<ACTOR_DATA_VERGIL, WEAPON_TYPE_MELEE>,
+//	IsWeaponReady<ActorDataVergil, WEAPON_TYPE_MELEE>,
 //};
 //
 //void * IsRangedWeaponReady[MAX_CHAR] =
 //{
-//	IsWeaponReady<ACTOR_DATA_DANTE, WEAPON_TYPE_RANGED>,
+//	IsWeaponReady<ActorDataDante, WEAPON_TYPE_RANGED>,
 //	0,
 //	0,
 //	0,
@@ -3035,7 +3056,7 @@ export void Actor_Init()
 //bool IsWeaponReadyProxyFunction(byte8 * baseAddr);
 //
 //template <>
-//bool IsWeaponReadyProxyFunction<ACTOR_DATA_DANTE, WEAPON_TYPE_MELEE>(byte8 * baseAddr)
+//bool IsWeaponReadyProxyFunction<ActorDataDante, WEAPON_TYPE_MELEE>(byte8 * baseAddr)
 //{
 //
 //}
@@ -3097,7 +3118,7 @@ inline bool IsWeaponActiveDante
 	uint8 weapon
 )
 {
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
 	auto & motionData = actorData.motionData[BODY_PART_UPPER];
 	if (weapon == WEAPON_VOID)
 	{
@@ -3120,7 +3141,7 @@ inline bool IsWeaponActiveVergil
 	uint8 weapon
 )
 {
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ActorDataVergil *>(baseAddr);
 	auto & motionData = actorData.motionData[BODY_PART_UPPER];
 	if (weapon == WEAPON_VOID)
 	{
@@ -3169,7 +3190,7 @@ inline bool IsWeaponActiveVergil
 //	{
 //		return false;
 //	}
-//	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+//	if constexpr (TypeMatch<T, ActorDataDante>::value)
 //	{
 //		if (motionData.group == (MOTION_GROUP_DANTE_REBELLION + weapon))
 //		{
@@ -3180,7 +3201,7 @@ inline bool IsWeaponActiveVergil
 //			return true;
 //		}
 //	}
-//	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+//	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 //	{
 //		if (motionData.group == (MOTION_GROUP_VERGIL_YAMATO + (weapon - WEAPON_VERGIL_YAMATO)))
 //		{
@@ -3194,14 +3215,14 @@ template <typename T>
 bool IsWeaponActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[BODY_PART_UPPER];
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		if ((motionData.group >= MOTION_GROUP_DANTE_REBELLION) && (motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN))
 		{
 			return true;
 		}
 	}
-	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
 		if ((motionData.group >= MOTION_GROUP_VERGIL_YAMATO) && (motionData.group <= MOTION_GROUP_VERGIL_FORCE_EDGE))
 		{
@@ -3224,7 +3245,7 @@ template <typename T>
 bool IsActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[BODY_PART_UPPER];
-	if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		if ((motionData.group == MOTION_GROUP_DANTE_BASE) && (motionData.index == 14))
 		{
@@ -3235,7 +3256,7 @@ bool IsActive(T & actorData)
 			return true;
 		}
 	}
-	else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
 		if ((motionData.group == MOTION_GROUP_VERGIL_BASE) && (motionData.index == 14))
 		{
@@ -3262,7 +3283,7 @@ bool IsActive(T & actorData)
 //	uint8 weapon
 //)
 //{
-//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 //	auto & motionData = actorData.motionData[BODY_PART_UPPER];
 //	if (weapon == WEAPON_VOID)
 //	{
@@ -3296,7 +3317,7 @@ bool IsActive(T & actorData)
 //
 //inline bool IsWeaponActive(byte8 * baseAddr)
 //{
-//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 //	auto & motionData = actorData.motionData[BODY_PART_UPPER];
 //	switch (actorData.character)
 //	{
@@ -3326,7 +3347,7 @@ bool IsActive(T & actorData)
 //
 //inline bool IsActive(byte8 * baseAddr)
 //{
-//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 //	auto & motionData = actorData.motionData[BODY_PART_UPPER];
 //	switch (actorData.character)
 //	{
@@ -3408,9 +3429,9 @@ bool IsActive(T & actorData)
 //);
 //
 //template <>
-//bool IsWeaponReady<ACTOR_DATA_DANTE>
+//bool IsWeaponReady<ActorDataDante>
 //(
-//	ACTOR_DATA_DANTE & actorData,
+//	ActorDataDante & actorData,
 //	uint8 weapon
 //)
 //{
@@ -3427,9 +3448,9 @@ bool IsActive(T & actorData)
 //}
 //
 //template <>
-//bool IsWeaponReady<ACTOR_DATA_VERGIL>
+//bool IsWeaponReady<ActorDataVergil>
 //(
-//	ACTOR_DATA_VERGIL & actorData,
+//	ActorDataVergil & actorData,
 //	uint8 weapon
 //)
 //{
@@ -3458,7 +3479,7 @@ bool IsActive(T & actorData)
 ////template <typename T>
 //bool IsWeaponActive2
 //(
-//	ACTOR_DATA & actorData,
+//	ActorData & actorData,
 //	uint8 weapon
 //)
 //{
@@ -3670,14 +3691,14 @@ bool IsActive(T & actorData)
 
 //inline void InitActorDante
 //(
-//	ACTOR_DATA_DANTE & actorData,
+//	ActorDataDante & actorData,
 //	byte8 * sessionData
 //)
 //{
 //	return func_217B90(actorData, sessionData);
 //}
 //
-//inline void UpdateActorDante(ACTOR_DATA_DANTE & actorData)
+//inline void UpdateActorDante(ActorDataDante & actorData)
 //{
 //	return func_212BE0(actorData);
 //}
@@ -3703,7 +3724,7 @@ bool IsActive(T & actorData)
 
 //inline void UpdateRangedWeaponsDante
 //(
-//	ACTOR_DATA_DANTE & actorData,
+//	ActorDataDante & actorData,
 //	uint8 player,
 //	uint8 entity
 //)
@@ -3713,7 +3734,7 @@ bool IsActive(T & actorData)
 
 //inline void UpdateWeaponsDante
 //(
-//	ACTOR_DATA_DANTE & actorData,
+//	ActorDataDante & actorData,
 //	uint8 player,
 //	uint8 entity
 //)
@@ -3743,7 +3764,7 @@ bool IsActive(T & actorData)
 
 
 
-//ACTOR_DATA_DANTE * CreateActorDante
+//ActorDataDante * CreateActorDante
 //(
 //	uint8 player,
 //	uint8 entity
@@ -3758,7 +3779,7 @@ bool IsActive(T & actorData)
 //		return 0;
 //	}
 //
-//	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+//	auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
 //
 //	InitActorDante(actorData, sessionData);
 //
@@ -3794,21 +3815,21 @@ bool IsActive(T & actorData)
 
 //inline void InitActorVergil
 //(
-//	ACTOR_DATA_VERGIL & actorData,
+//	ActorDataVergil & actorData,
 //	byte8 * sessionData
 //)
 //{
 //	return func_223CB0(actorData, sessionData);
 //}
 //
-//inline void UpdateActorVergil(ACTOR_DATA_VERGIL & actorData)
+//inline void UpdateActorVergil(ActorDataVergil & actorData)
 //{
 //	return func_220970(actorData);
 //}
 
 //inline void UpdateMeleeWeaponsVergil
 //(
-//	ACTOR_DATA_VERGIL & actorData,
+//	ActorDataVergil & actorData,
 //	uint8 player,
 //	uint8 entity
 //)
@@ -3818,7 +3839,7 @@ bool IsActive(T & actorData)
 
 //void UpdateWeaponsVergil
 //(
-//	ACTOR_DATA_VERGIL & actorData,
+//	ActorDataVergil & actorData,
 //	uint8 player,
 //	uint8 entity
 //)
@@ -3827,7 +3848,7 @@ bool IsActive(T & actorData)
 //	UpdateMeleeWeaponsVergil(actorData, player, entity);
 //}
 
-//ACTOR_DATA_VERGIL * CreateActorVergil
+//ActorDataVergil * CreateActorVergil
 //(
 //	uint8 player,
 //	uint8 entity
@@ -3842,7 +3863,7 @@ bool IsActive(T & actorData)
 //		return 0;
 //	}
 //
-//	auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
+//	auto & actorData = *reinterpret_cast<ActorDataVergil *>(baseAddr);
 //
 //	InitActorVergil(actorData, sessionData);
 //
@@ -3867,9 +3888,9 @@ bool IsActive(T & actorData)
 //}
 
 
-//auto ApplyDefaultModelPartitionConfig = ApplyModelPartitionConfig<MODEL_PARTITION_CONFIG_DEFAULT, ACTOR_DATA_DANTE>;
+//auto ApplyDefaultModelPartitionConfig = ApplyModelPartitionConfig<MODEL_PARTITION_CONFIG_DEFAULT, ActorDataDante>;
 
-//inline void ApplyDefaultModelPartitionConfig(ACTOR_DATA_DANTE & actorData)
+//inline void ApplyDefaultModelPartitionConfig(ActorDataDante & actorData)
 //{
 //	auto & modelData = actorData.modelData[0];
 //	auto dest = func_89DE0(modelData);
@@ -3879,7 +3900,7 @@ bool IsActive(T & actorData)
 //	func_2F7350(dest, 6);
 //}
 //
-//inline void ApplyBeowulfModelPartitionConfig(ACTOR_DATA_DANTE & actorData)
+//inline void ApplyBeowulfModelPartitionConfig(ActorDataDante & actorData)
 //{
 //	auto & modelData = actorData.modelData[0];
 //	auto dest = func_89DE0(modelData);

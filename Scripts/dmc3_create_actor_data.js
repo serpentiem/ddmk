@@ -7,13 +7,10 @@ const CHAR_BOB    = 2;
 const CHAR_LADY   = 4;
 const CHAR_VERGIL = 8;
 
-const ACTOR_DATA_SIZE_DANTE  = 0xB8C0;
-const ACTOR_DATA_SIZE_BOB    = 0xB680;
-const ACTOR_DATA_SIZE_LADY   = 0x8280;
-const ACTOR_DATA_SIZE_VERGIL = 0xB8C0;
-
-//const NEW_ACTOR_DATA_START = (64 * 1024);
-const NEW_ACTOR_DATA_START = 0xB8C0;
+const SIZE_DANTE  = 0xB8C0;
+const SIZE_BOB    = 0xB680;
+const SIZE_LADY   = 0x8280;
+const SIZE_VERGIL = 0xB8C0;
 
 var items =
 [
@@ -50,8 +47,8 @@ var items =
 	[ "motionSpeed"          , "float32"                 , 0x3894                           ],
 	[ "motionSpeedMultiplier", "float32"                 , 0x3898                           ],
 	[ "motionArchives[32]"                   , "byte8 *"                 , 0x38A0                           ],
-	[ "motionData[2]"                       , "MOTION_DATA"             , 0x39B0                           ],
-	[ "motionDataMirror[3]"                 , "MOTION_DATA"             , 0x39B4                           ],
+	[ "motionData[2]"                       , "MotionData"             , 0x39B0                           ],
+	[ "motionDataMirror[3]"                 , "MotionData"             , 0x39B4                           ],
 	[ ""                                    , "uint32"                  , 0x39BC                           ],
 	[ "[16]"                                , "uint8"                   , 0x39C0                           ],
 	[ "nextActionRequestPolicy[16]"         , "uint32"                  , 0x39D0                           ],
@@ -62,7 +59,7 @@ var items =
 	[ "recoveryData[3]", "RecoveryData"                  , 0x3B00                           ],
 
 	[ "actionData[6]"                       , "byte8 *"                 , 0x3DD0                           ],
-	[ "eventData[2]"                        , "ACTOR_EVENT_DATA"        , 0x3E00                           ],
+	[ "eventData[2]"                        , "ActorEventData"        , 0x3E00                           ],
 	[ "[32]"                                , "uint8"                   , 0x3E10                           ],
 	[ "motionTimer"                         , "float32"                 , 0x3E34                           ],
 	[ "idleTimer"                           , "float32"                 , 0x3E38                           ],
@@ -135,7 +132,7 @@ var items =
 	[ "meleeWeaponSwitchBackTimeout"        , "float32"                 , 0x650C, CHAR_VERGIL              ],
 	[ "styleRank"                           , "uint32"                  , 0x6510                           ],
 	[ "styleMeter"                          , "float32"                 , 0x6514                           ],
-	[ "inputData[58]"                       , "INPUT_DATA"              , 0x6674                           ],
+	[ "inputData[58]"                       , "InputData"              , 0x6674                           ],
 
 
 
@@ -186,7 +183,7 @@ var items =
 	[ "[5]"                                 , "bool"             , 0x9AC0 ],
 	[ "modelShadowData[3]"                  , "ShadowData"       , 0x9AD0 ],
 	[ "submodelShadowData[5]"               , "ShadowData"       , 0x9D10 ],
-	[ "submodelPhysicsMetadataPool[39]"     , "byte8 *"          , 0xA0D0 ],
+	[ "submodelPhysicsMetadataPool[39]"     , "PhysicsMetadata *", 0xA0D0 ],
 	[ "submodelPhysicsData"                 , "PhysicsData"      , 0xA210 ],
 	[ "devilModelPhysicsMetadataPool[2][36]", "PhysicsMetadata *", 0xA300 ],
 	[ "devilSubmodelPhysicsData[4]"         , "PhysicsData"      , 0xA540 ],
@@ -505,13 +502,13 @@ function CreateActorData
 		CreateActorDataFunction(structName, name, type);
 	}
 
-	var diff = (NEW_ACTOR_DATA_START - pos);
+	var diff = (SIZE_DANTE - pos);
 	if (diff)
 	{
 		c += "\t_(" + diff.toString() + ");" + NEW_LINE;
 	}
 
-	pos = NEW_ACTOR_DATA_START;
+	pos = SIZE_DANTE;
 
 	for (var itemIndex = 0; itemIndex < extra.length; itemIndex++)
 	{
@@ -549,23 +546,23 @@ function CreateActorData
 	c += "};" + NEW_LINE;
 }
 
-CreateActorData("ACTOR_DATA", 0);
+CreateActorData("ActorData", 0);
 c_assert += "" + NEW_LINE;
 c += "" + NEW_LINE;
 
-CreateActorData("ACTOR_DATA_DANTE", CHAR_DANTE);
+CreateActorData("ActorDataDante", CHAR_DANTE);
 c_assert += "" + NEW_LINE;
 c += "" + NEW_LINE;
 
-CreateActorData("ACTOR_DATA_BOB", CHAR_BOB);
+CreateActorData("ActorDataBob", CHAR_BOB);
 c_assert += "" + NEW_LINE;
 c += "" + NEW_LINE;
 
-CreateActorData("ACTOR_DATA_LADY", CHAR_LADY);
+CreateActorData("ActorDataLady", CHAR_LADY);
 c_assert += "" + NEW_LINE;
 c += "" + NEW_LINE;
 
-CreateActorData("ACTOR_DATA_VERGIL", CHAR_VERGIL);
+CreateActorData("ActorDataVergil", CHAR_VERGIL);
 
 c += NEW_LINE;
 c += c_assert;
@@ -674,18 +671,10 @@ function CreateActorCheatEntry
 			CreateActorCheatEntryFunction(description + " a", "Float", (pos + 0xC), false, actor);
 			continue;
 		}
-		else if (type == "MOTION_DATA")
+		else if (type == "MotionData")
 		{
 			CreateActorCheatEntryFunction(description + " index", "Byte", (pos + 0), false, actor);
 			CreateActorCheatEntryFunction(description + " group", "Byte", (pos + 1), false, actor);
-			continue;
-		}
-		else if (type == "INPUT_DATA")
-		{
-			continue;
-		}
-		else if (type == "MODEL_METADATA")
-		{
 			continue;
 		}
 		else if (type == "ModelData")
@@ -693,10 +682,6 @@ function CreateActorCheatEntry
 			continue;
 		}
 		else if (type == "DevilModelMetadataDante")
-		{
-			continue;
-		}
-		else if (type == "ACTOR_EVENT_DATA")
 		{
 			continue;
 		}
@@ -725,6 +710,14 @@ function CreateActorCheatEntry
 			continue;
 		}
 		else if (type == "RecoveryData")
+		{
+			continue;
+		}
+		else if (type == "InputData")
+		{
+			continue;
+		}
+		else if (type == "ActorEventData")
 		{
 			continue;
 		}
@@ -768,7 +761,7 @@ function CreateCheatEntries
 			CreateActorCheatEntry(name, type, actor);
 		}
 
-		pos = NEW_ACTOR_DATA_START;
+		pos = SIZE_DANTE;
 
 		// Ex
 

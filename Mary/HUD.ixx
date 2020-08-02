@@ -213,10 +213,10 @@ export void HUD_UpdateWeaponIcon
 
 	auto & dest = *reinterpret_cast<ModelData *>(bottom + HUD_bottomOff[index]);
 
-	//func_897B0(dest);
-	//func_89450(dest);
-	//memset(dest, 0, 0x780);
-	//func_89270(dest);
+	func_897B0(dest);
+	func_89450(dest);
+	memset(&dest, 0, 0x780);
+	func_89270(dest);
 
 	func_89960(dest, model, texture);
 	func_89E30(dest, 1);

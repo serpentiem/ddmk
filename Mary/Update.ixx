@@ -1018,7 +1018,7 @@ else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_
 
 void DanteVergil(byte8 * baseAddr)
 {
-	auto & parentActorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+	auto & parentActorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
 	if (parentActorData.character != CHAR_DANTE)
 	{
 		return;
@@ -1031,7 +1031,7 @@ void DanteVergil(byte8 * baseAddr)
 	{
 		return;
 	}
-	auto & childActorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(parentActorData.newChildBaseAddr);
+	auto & childActorData = *reinterpret_cast<ActorDataVergil *>(parentActorData.newChildBaseAddr);
 	if (childActorData.character != CHAR_VERGIL)
 	{
 		return;
@@ -1357,7 +1357,7 @@ void ActorLoop(byte8 * baseAddr)
 
 void AttackDataDante(byte8 * baseAddr)
 {
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
 	auto & gamepad = GetGamepad(actorData.newGamepad);
 
 	if (actorData.action == ACTION_DANTE_REBELLION_HELM_BREAKER)
@@ -1402,7 +1402,7 @@ void AttackDataDante(byte8 * baseAddr)
 
 void SetAction(byte8 * baseAddr)
 {
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 	auto & gamepad = GetGamepad(actorData.newGamepad);
 
 	if (actorData.action == ACTION_DANTE_REBELLION_HELM_BREAKER)
@@ -1431,7 +1431,7 @@ void SetAction(byte8 * baseAddr)
 //{
 //	LogFunction(baseAddr);
 //
-//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 //
 //	actorData.var_3E10[8] = 0;
 //}
@@ -1444,7 +1444,7 @@ void SetAction(byte8 * baseAddr)
 
 //void ResetMobilityCounters(byte8 * baseAddr)
 //{
-//	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+//	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 //
 //	actorData.newAirStingerCount = 2;
 //
@@ -1508,7 +1508,7 @@ export void Update_Init()
 	//	};
 	//	auto func = CreateFunction(0, (appBaseAddr + 0x1E7BF7), false, true, sizeof(sect0));
 	//	memcpy(func.sect0, sect0, sizeof(sect0));
-	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEnable);
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable);
 	//	WriteCall((func.sect0 + 9), (appBaseAddr + 0x1DFDA0));
 	//	WriteJump((appBaseAddr + 0x1E7BF2), func.addr);
 	//	/*

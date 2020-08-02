@@ -30,7 +30,7 @@ export inline byte16 GetBinding(uint8 index)
 export inline uint8 GetRelativeTiltDirection(byte8 * baseAddr)
 {
 	auto & gamepad = GetGamepad(0);
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 	uint16 relativeTilt = 0;
 	if (gamepad.leftStickRadius < LEFT_STICK_DEADZONE)
 	{

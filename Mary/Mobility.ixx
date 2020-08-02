@@ -52,34 +52,34 @@ namespace Mobility
 		return index;
 	}
 
-	auto Dash(ACTOR_DATA_DANTE & actorData)
+	auto Dash(ActorDataDante & actorData)
 	{
 		return MobilityFunction<ACTOR_EVENT_DANTE_DASH>(actorData, actorData.dashCount, Config.Dante.Trickster.dashCount);
 	}
 
-	auto SkyStar(ACTOR_DATA_DANTE & actorData)
+	auto SkyStar(ActorDataDante & actorData)
 	{
 		return MobilityFunction<ACTOR_EVENT_DANTE_SKY_STAR>(actorData, actorData.skyStarCount, Config.Dante.Trickster.skyStarCount);
 	}
 
-	auto AirTrickDante(ACTOR_DATA_DANTE & actorData)
+	auto AirTrickDante(ActorDataDante & actorData)
 	{
 		actorData.var_3E10[26] = (actorData.state & STATE_ON_FLOOR) ? 1 : 0;
 
 		return MobilityFunction<ACTOR_EVENT_DANTE_AIR_TRICK>(actorData, actorData.airTrickCount, Config.Dante.Trickster.airTrickCount);
 	}
 
-	auto AirTrickVergil(ACTOR_DATA_VERGIL & actorData)
+	auto AirTrickVergil(ActorDataVergil & actorData)
 	{
 		return MobilityFunction<ACTOR_EVENT_VERGIL_AIR_TRICK>(actorData, actorData.airTrickCount, Config.Vergil.DarkSlayer.airTrickCount);
 	}
 
-	auto TrickUp(ACTOR_DATA_VERGIL & actorData)
+	auto TrickUp(ActorDataVergil & actorData)
 	{
 		return MobilityFunction<ACTOR_EVENT_VERGIL_TRICK_UP>(actorData, actorData.trickUpCount, Config.Vergil.DarkSlayer.trickUpCount);
 	}
 
-	auto TrickDown(ACTOR_DATA_VERGIL & actorData)
+	auto TrickDown(ActorDataVergil & actorData)
 	{
 		return MobilityFunction<ACTOR_EVENT_VERGIL_TRICK_DOWN>(actorData, actorData.trickDownCount, Config.Vergil.DarkSlayer.trickDownCount);
 	}
@@ -87,7 +87,7 @@ namespace Mobility
 	template <typename T>
 	void SkyStarResetFunction(T & actorData)
 	{
-		if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+		if constexpr (TypeMatch<T, ActorDataDante>::value)
 		{
 			actorData.skyStarCount = 0;
 			actorData.newAirStingerCount = 0;
@@ -97,14 +97,14 @@ namespace Mobility
 		{
 			auto & event = actorData.eventData[1].index;
 
-			if constexpr (TypeMatch<T, ACTOR_DATA_DANTE>::value)
+			if constexpr (TypeMatch<T, ActorDataDante>::value)
 			{
 				if (event == ACTOR_EVENT_DANTE_AIR_TRICK)
 				{
 					actorData.airTrickCount = 1;
 				}
 			}
-			else if constexpr (TypeMatch<T, ACTOR_DATA_VERGIL>::value)
+			else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 			{
 				if (event == ACTOR_EVENT_VERGIL_AIR_TRICK)
 				{
@@ -124,17 +124,17 @@ namespace Mobility
 
 	export void SkyStarReset(byte8 * baseAddr)
 	{
-		auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+		auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 
 		if (actorData.character == CHAR_DANTE)
 		{
-			auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+			auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
 
 			SkyStarResetFunction(actorData);
 		}
 		else if (actorData.character == CHAR_VERGIL)
 		{
-			auto & actorData = *reinterpret_cast<ACTOR_DATA_VERGIL *>(baseAddr);
+			auto & actorData = *reinterpret_cast<ActorDataVergil *>(baseAddr);
 
 			SkyStarResetFunction(actorData);
 		}

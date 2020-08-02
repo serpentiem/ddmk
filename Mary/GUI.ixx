@@ -1230,7 +1230,7 @@ void Main()
 		GUI_Input("Devil Model Index", devilModelIndex);
 		if (GUI_Button("Update Devil"))
 		{
-			auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(Actor_actorBaseAddr[actor]);
+			auto & actorData = *reinterpret_cast<ActorDataDante *>(Actor_actorBaseAddr[actor]);
 
 
 

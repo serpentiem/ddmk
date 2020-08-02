@@ -23,9 +23,9 @@ var c_init = "";
 
 var items =
 [
-	[ 0x897B0 , "void"   , "byte8 * dest"                                                                       , ""                            , "" ],
-	[ 0x89450 , "void"   , "byte8 * dest"                                                                       , ""                            , "" ],
-	[ 0x89270 , "void"   , "byte8 * dest"                                                                       , ""                            , "" ],
+	[ 0x897B0 , "void"   , "ModelData & modelData"                                                                       , ""                            , "" ],
+	[ 0x89450 , "void"   , "ModelData & modelData"                                                                       , ""                            , "" ],
+	[ 0x89270 , "void"   , "ModelData & modelData"                                                                       , ""                            , "" ],
 
 	[ 0x8B470 , "void"   , "ModelData & modelData, bool32 enable"                                                   , ""                            , "" ],
 	[ 0x89960 , "void"   , "ModelData & modelData, byte8 * modelFile, byte8 * textureFile"                          , ""                            , "" ],
@@ -46,7 +46,7 @@ var items =
 
 
 
-	[ 0x2CA1D0, "void"   , "PhysicsData & physicsData, void * physicsMetadata, byte8 * physicsFile, uint32 index"                       , ""                            , "" ],
+	[ 0x2CA1D0, "void"   , "PhysicsData & physicsData, PhysicsMetadata ** physicsMetadata, byte8 * physicsFile, uint32 index"                       , ""                            , "" ],
 
 
 

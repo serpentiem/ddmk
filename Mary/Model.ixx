@@ -59,7 +59,7 @@ inline void RegisterPhysics
 (
 	byte8 * physicsFile,
 	PhysicsData * physicsData,
-	void * physicsMetadata
+	PhysicsMetadata ** physicsMetadata
 )
 {
 	auto count = func_2C9F40(physicsFile);
@@ -197,203 +197,401 @@ export void ResetModel(ModelData & modelData)
 
 
 
-// template <typename T>
-// void UpdateModelFunctionDante(T & actorData)
-// {
-// 	auto costume = actorData.costume;
-// 	if (costume >= MAX_COSTUME_DANTE)
-// 	{
-// 		costume = 0;
-// 	}
-// 	auto costumeFileId = costumeFileIdsDante[costume];
-// 	auto coat =
-// 	(
-// 		(costume == COSTUME_DANTE_DEFAULT                           ) ||
-// 		(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
-// 		(costume == COSTUME_DANTE_DMC1                              ) ||
-// 		(costume == COSTUME_DANTE_SPARDA                            ) ||
-// 		(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
-// 		(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
-// 	)
-// 	? true : false;
+template <typename T>
+void UpdateModelFunctionDante(T & actorData)
+{
+	auto costume = actorData.costume;
+	if (costume >= MAX_COSTUME_DANTE)
+	{
+		costume = 0;
+	}
+	auto costumeFileId = costumeFileIdsDante[costume];
+	auto coat =
+	(
+		(costume == COSTUME_DANTE_DEFAULT                           ) ||
+		(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
+		(costume == COSTUME_DANTE_DMC1                              ) ||
+		(costume == COSTUME_DANTE_SPARDA                            ) ||
+		(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
+		(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
+	)
+	? true : false;
 
-// 	if (actorData.newForceFiles)
-// 	{
-// 		switch (actorData.newForceFilesCharacter)
-// 		{
-// 		case CHAR_BOB:
-// 		{
-// 			if (costume >= MAX_COSTUME_BOB)
-// 			{
-// 				costume = 0;
-// 			}
-// 			costumeFileId = costumeFileIdsBob[costume];
-// 			coat = false;
-// 			break;
-// 		}
-// 		case CHAR_LADY:
-// 		{
-// 			if (costume >= MAX_COSTUME_LADY)
-// 			{
-// 				costume = 0;
-// 			}
-// 			costumeFileId = costumeFileIdsLady[costume];
-// 			coat = false;
-// 			break;
-// 		}
-// 		case CHAR_VERGIL:
-// 		{
-// 			if (costume >= MAX_COSTUME_VERGIL)
-// 			{
-// 				costume = 0;
-// 			}
-// 			costumeFileId = costumeFileIdsVergil[costume];
-// 			coat =
-// 			(
-// 				(costume == COSTUME_VERGIL_DEFAULT                      ) ||
-// 				(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
-// 				(costume == COSTUME_VERGIL_SPARDA                       ) ||
-// 				(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
-// 			)
-// 			? true : false;
-// 			break;
-// 		}
-// 		}
-// 	}
+	if (actorData.newForceFiles)
+	{
+		switch (actorData.newForceFilesCharacter)
+		{
+		case CHAR_BOB:
+		{
+			if (costume >= MAX_COSTUME_BOB)
+			{
+				costume = 0;
+			}
+			costumeFileId = costumeFileIdsBob[costume];
+			coat = false;
+			break;
+		}
+		case CHAR_LADY:
+		{
+			if (costume >= MAX_COSTUME_LADY)
+			{
+				costume = 0;
+			}
+			costumeFileId = costumeFileIdsLady[costume];
+			coat = false;
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			if (costume >= MAX_COSTUME_VERGIL)
+			{
+				costume = 0;
+			}
+			costumeFileId = costumeFileIdsVergil[costume];
+			coat =
+			(
+				(costume == COSTUME_VERGIL_DEFAULT                      ) ||
+				(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
+				(costume == COSTUME_VERGIL_SPARDA                       ) ||
+				(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
+			)
+			? true : false;
+			break;
+		}
+		}
+	}
 
-// 	auto & file = File_staticFiles[costumeFileId];
+	auto & file = File_staticFiles[costumeFileId];
 
-// 	byte8 * modelFile   = 0;
-// 	byte8 * textureFile = 0;
-// 	byte8 * shadowFile  = 0;
-// 	byte8 * physicsFile = 0;
+	byte8 * modelFile   = 0;
+	byte8 * textureFile = 0;
+	byte8 * shadowFile  = 0;
+	byte8 * physicsFile = 0;
 
-// 	uint8 modelIndex    = 0;
-// 	uint8 submodelIndex = 0;
+	uint8 modelIndex    = 0;
+	uint8 submodelIndex = 0;
 
-// 	// Main
+	// Main
 
-// 	modelFile   = file[1];
-// 	textureFile = file[0];
-// 	shadowFile  = file[8];
+	modelFile   = file[1];
+	textureFile = file[0];
+	shadowFile  = file[8];
 
-// 	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
-// 	{
-// 		modelFile   = file[32];
-// 		textureFile = file[31];
-// 		shadowFile  = file[16];
-// 	}
+	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
+	{
+		modelFile   = file[32];
+		textureFile = file[31];
+		shadowFile  = file[16];
+	}
 
-// 	RegisterModel
-// 	(
-// 		actorData.modelData[modelIndex],
-// 		modelFile,
-// 		textureFile
-// 	);
+	RegisterModel
+	(
+		actorData.newModelData[modelIndex],
+		modelFile,
+		textureFile
+	);
 
-// 	RegisterShadow
-// 	(
-// 		actorData.modelData[modelIndex],
-// 		actorData.newModelShadowData[modelIndex],
-// 		shadowFile
-// 	);
+	RegisterShadow
+	(
+		actorData.newModelData[modelIndex],
+		actorData.newModelShadowData[modelIndex],
+		shadowFile
+	);
 
-// 	{
-// 		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
+	{
+		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
 
-// 		for_all(uint8, index, 6)
-// 		{
-// 			uint8 off = (index * 3);
-// 			actorData.modelMetadata[index].count = 4;
-// 			actorData.modelMetadata[index].vertices[0] = g_vertices[(off + 0)];
-// 			actorData.modelMetadata[index].vertices[1] = g_vertices[(off + 1)];
-// 			actorData.modelMetadata[index].vertices[2] = g_vertices[(off + 2)];
-// 		}
-// 	}
+		for_all(uint8, index, 6)
+		{
+			uint8 off = (index * 3);
+			actorData.modelMetadata[index].count = 4;
+			actorData.modelMetadata[index].vertices[0] = g_vertices[(off + 0)];
+			actorData.modelMetadata[index].vertices[1] = g_vertices[(off + 1)];
+			actorData.modelMetadata[index].vertices[2] = g_vertices[(off + 2)];
+		}
+	}
 
-// 	// Coat
+	// Coat
 
-// 	modelFile   = file[12];
-// 	textureFile = file[0 ];
-// 	shadowFile  = file[14];
-// 	physicsFile = file[13];
+	modelFile   = file[12];
+	textureFile = file[0 ];
+	shadowFile  = file[14];
+	physicsFile = file[13];
 
-// 	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
-// 	{
-// 		modelFile   = file[17];
-// 		textureFile = file[31];
-// 		physicsFile = file[18];
-// 	}
+	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
+	{
+		modelFile   = file[17];
+		textureFile = file[31];
+		physicsFile = file[18];
+	}
 
-// 	RegisterModel
-// 	(
-// 		actorData.newSubmodelData[submodelIndex],
-// 		modelFile,
-// 		textureFile
-// 	);
+	RegisterModel
+	(
+		actorData.newSubmodelData[submodelIndex],
+		modelFile,
+		textureFile
+	);
 
-// 	func_8A000
-// 	(
-// 		actorData.newSubmodelData[submodelIndex],
-// 		0,
-// 		&actorData.newSubmodelPhysicsMetadata[0]
-// 	);
+	func_8A000
+	(
+		actorData.newSubmodelData[submodelIndex],
+		0,
+		&actorData.submodelPhysicsMetadataPool[0]
+	);
 
-// 	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY))
-// 	{
-// 		return;
-// 	}
+	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY))
+	{
+		return;
+	}
 
-// 	if (coat)
-// 	{
-// 		RegisterShadow
-// 		(
-// 			actorData.newSubmodelData[submodelIndex],
-// 			actorData.newSubmodelShadowData[submodelIndex],
-// 			shadowFile
-// 		);
-// 	}
+	if (coat)
+	{
+		RegisterShadow
+		(
+			actorData.newSubmodelData[submodelIndex],
+			actorData.newSubmodelShadowData[submodelIndex],
+			shadowFile
+		);
+	}
 
-// 	actorData.var_9AC0[submodelIndex] = true;
+	actorData.var_9AC0[submodelIndex] = true;
 
-// 	RegisterPhysics
-// 	(
-// 		physicsFile,
-// 		&actorData.newSubmodelPhysicsData[0],
-// 		&actorData.newSubmodelPhysicsMetadata[0]
-// 	);
+	RegisterPhysics
+	(
+		physicsFile,
+		&actorData.submodelPhysicsData,
+		&actorData.submodelPhysicsMetadataPool[0]
+	);
 
-// 	// func_2CA2F0
-// 	// (
-// 	// 	actorData.newSubmodelPhysicsData[0],
-// 	// 	actorData.modelPhysicsMetadataPool[modelIndex],
-// 	// 	(appBaseAddr + 0x58B380),
-// 	// 	actorData.modelMetadata,
-// 	// 	(coat) ? 6 : 1
-// 	// );
+	func_2CA2F0
+	(
+		actorData.submodelPhysicsData,
+		actorData.newModelPhysicsMetadataPool[modelIndex],
+		(appBaseAddr + 0x58B380),
+		actorData.modelMetadata,
+		(coat) ? 6 : 1
+	);
 
-// 	if (coat)
-// 	{
-// 		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x35D580);
+	if (coat)
+	{
+		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x35D580);
+		auto & submodelPhysicsMetadata = *actorData.submodelPhysicsMetadataPool[0];
 
-// 		actorData.newSubmodelPhysicsMetadata[0].vertices[0] = g_vertices[0];
-// 		actorData.newSubmodelPhysicsMetadata[0].vertices[1] = g_vertices[1];
-// 		actorData.newSubmodelPhysicsMetadata[0].vertices[2] = g_vertices[2];
-// 		actorData.newSubmodelPhysicsMetadata[0].vertices[3] = g_vertices[3];
-// 	}
-// 	else
-// 	{
-// 		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
+		submodelPhysicsMetadata.vertices[0] = g_vertices[0];
+		submodelPhysicsMetadata.vertices[1] = g_vertices[1];
+		submodelPhysicsMetadata.vertices[2] = g_vertices[2];
+		submodelPhysicsMetadata.vertices[3] = g_vertices[3];
+	}
+	else
+	{
+		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
 
-// 		actorData.modelMetadata[0].count = 4;
-// 		actorData.modelMetadata[0].vertices[0] = g_vertices[23];
-// 		actorData.modelMetadata[0].vertices[1] = g_vertices[24];
-// 		actorData.modelMetadata[0].vertices[2] = g_vertices[25];
-// 	}
-// }
+		actorData.modelMetadata[0].count = 4;
+		actorData.modelMetadata[0].vertices[0] = g_vertices[23];
+		actorData.modelMetadata[0].vertices[1] = g_vertices[24];
+		actorData.modelMetadata[0].vertices[2] = g_vertices[25];
+	}
+}
 
 
+/*
 
+template <typename T>
+void UpdateModelFunctionDante(T & actorData)
+{
+	auto costume = actorData.costume;
+	if (costume >= MAX_COSTUME_DANTE)
+	{
+		costume = 0;
+	}
+	auto costumeFileId = costumeFileIdsDante[costume];
+	auto coat =
+	(
+		(costume == COSTUME_DANTE_DEFAULT                           ) ||
+		(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
+		(costume == COSTUME_DANTE_DMC1                              ) ||
+		(costume == COSTUME_DANTE_SPARDA                            ) ||
+		(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
+		(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
+	)
+	? true : false;
+
+	if (actorData.newForceFiles)
+	{
+		switch (actorData.newForceFilesCharacter)
+		{
+		case CHAR_BOB:
+		{
+			if (costume >= MAX_COSTUME_BOB)
+			{
+				costume = 0;
+			}
+			costumeFileId = costumeFileIdsBob[costume];
+			coat = false;
+			break;
+		}
+		case CHAR_LADY:
+		{
+			if (costume >= MAX_COSTUME_LADY)
+			{
+				costume = 0;
+			}
+			costumeFileId = costumeFileIdsLady[costume];
+			coat = false;
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			if (costume >= MAX_COSTUME_VERGIL)
+			{
+				costume = 0;
+			}
+			costumeFileId = costumeFileIdsVergil[costume];
+			coat =
+			(
+				(costume == COSTUME_VERGIL_DEFAULT                      ) ||
+				(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
+				(costume == COSTUME_VERGIL_SPARDA                       ) ||
+				(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
+			)
+			? true : false;
+			break;
+		}
+		}
+	}
+
+	auto & file = File_staticFiles[costumeFileId];
+
+	byte8 * modelFile   = 0;
+	byte8 * textureFile = 0;
+	byte8 * shadowFile  = 0;
+	byte8 * physicsFile = 0;
+
+	uint8 modelIndex    = 0;
+	uint8 submodelIndex = 0;
+
+	// Main
+
+	modelFile   = file[1];
+	textureFile = file[0];
+	shadowFile  = file[8];
+
+	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
+	{
+		modelFile   = file[32];
+		textureFile = file[31];
+		shadowFile  = file[16];
+	}
+
+	RegisterModel
+	(
+		actorData.modelData[modelIndex],
+		modelFile,
+		textureFile
+	);
+
+	RegisterShadow
+	(
+		actorData.modelData[modelIndex],
+		actorData.newModelShadowData[modelIndex],
+		shadowFile
+	);
+
+	{
+		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
+
+		for_all(uint8, index, 6)
+		{
+			uint8 off = (index * 3);
+			actorData.modelMetadata[index].count = 4;
+			actorData.modelMetadata[index].vertices[0] = g_vertices[(off + 0)];
+			actorData.modelMetadata[index].vertices[1] = g_vertices[(off + 1)];
+			actorData.modelMetadata[index].vertices[2] = g_vertices[(off + 2)];
+		}
+	}
+
+	// Coat
+
+	modelFile   = file[12];
+	textureFile = file[0 ];
+	shadowFile  = file[14];
+	physicsFile = file[13];
+
+	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
+	{
+		modelFile   = file[17];
+		textureFile = file[31];
+		physicsFile = file[18];
+	}
+
+	RegisterModel
+	(
+		actorData.newSubmodelData[submodelIndex],
+		modelFile,
+		textureFile
+	);
+
+	func_8A000
+	(
+		actorData.newSubmodelData[submodelIndex],
+		0,
+		&actorData.newSubmodelPhysicsMetadata[0]
+	);
+
+	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY))
+	{
+		return;
+	}
+
+	if (coat)
+	{
+		RegisterShadow
+		(
+			actorData.newSubmodelData[submodelIndex],
+			actorData.newSubmodelShadowData[submodelIndex],
+			shadowFile
+		);
+	}
+
+	actorData.var_9AC0[submodelIndex] = true;
+
+	RegisterPhysics
+	(
+		physicsFile,
+		&actorData.newSubmodelPhysicsData[0],
+		&actorData.newSubmodelPhysicsMetadata[0]
+	);
+
+	func_2CA2F0
+	(
+		actorData.newSubmodelPhysicsData[0],
+		actorData.modelPhysicsMetadataPool[modelIndex],
+		(appBaseAddr + 0x58B380),
+		actorData.modelMetadata,
+		(coat) ? 6 : 1
+	);
+
+	if (coat)
+	{
+		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x35D580);
+
+		actorData.newSubmodelPhysicsMetadata[0].vertices[0] = g_vertices[0];
+		actorData.newSubmodelPhysicsMetadata[0].vertices[1] = g_vertices[1];
+		actorData.newSubmodelPhysicsMetadata[0].vertices[2] = g_vertices[2];
+		actorData.newSubmodelPhysicsMetadata[0].vertices[3] = g_vertices[3];
+	}
+	else
+	{
+		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
+
+		actorData.modelMetadata[0].count = 4;
+		actorData.modelMetadata[0].vertices[0] = g_vertices[23];
+		actorData.modelMetadata[0].vertices[1] = g_vertices[24];
+		actorData.modelMetadata[0].vertices[2] = g_vertices[25];
+	}
+}
+
+*/
 
 
 
@@ -404,9 +602,9 @@ export void UpdateModelDante(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 
-	auto & actorData = *reinterpret_cast<ACTOR_DATA_DANTE *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
 
-	//UpdateModelFunctionDante(actorData);
+	UpdateModelFunctionDante(actorData);
 }
 
 
@@ -857,7 +1055,7 @@ void UpdateDevilModelFunctionDante
 
 
 
-void UpdateDevilModelDante(ACTOR_DATA_DANTE & actorData)
+void UpdateDevilModelDante(ActorDataDante & actorData)
 {
 	LogFunction(actorData.operator byte8 *());
 	UpdateDevilModelFunctionDante(actorData, 0, 0);
@@ -928,7 +1126,7 @@ void CreateDevilAura(byte8 * baseAddr)
 	//{
 	//	return;
 	//}
-	//auto & actorData = *reinterpret_cast<ACTOR_DATA *>(actorBaseAddr);
+	//auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
 	//actorData.newDevilAura = baseAddr;
 }
 
@@ -947,7 +1145,7 @@ void EnterDevilForm(byte8 * baseAddr)
 
 	//auto & actorData = *reinterpret_cast<byte8 **>(baseAddr);
 
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 
 
 
@@ -974,7 +1172,7 @@ void LeaveDevilForm(byte8 * baseAddr)
 	{
 		return;
 	}
-	auto & actorData = *reinterpret_cast<ACTOR_DATA *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 	//if (!actorData.newDevilAura)
 	//{
 	//	return;
@@ -1153,8 +1351,8 @@ void ToggleRelocations(bool enable)
 
 	// 0x200
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, modelData[0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newModelData[0]);
+		constexpr auto off = offsetof(ActorData, modelData[0]);
+		constexpr auto newOff = offsetof(ActorData, newModelData[0]);
 		static_assert(off == 0x200);
 		// Write<uint32>((appBaseAddr + 0x23470 + 3), (enable) ? newOff : off); // dmc3.exe+23470 - 48 89 8B 00020000 - MOV [RBX+00000200],RCX
 		// LikelyWeapon<uint32>((appBaseAddr + 0x5082D + 3), (enable) ? newOff : off); // dmc3.exe+5082D - 48 89 81 00020000 - MOV [RCX+00000200],RAX
@@ -1467,15 +1665,15 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x208
 	{
-		constexpr auto off = (offsetof(ACTOR_DATA, modelData[0]) + 8);
-		constexpr auto newOff = (offsetof(ACTOR_DATA, newModelData[0]) + 8);
+		constexpr auto off = (offsetof(ActorData, modelData[0]) + 8);
+		constexpr auto newOff = (offsetof(ActorData, newModelData[0]) + 8);
 		static_assert(off == 0x208);
 		Write<uint32>((appBaseAddr + 0x1EF412 + 3), (enable) ? newOff : off); // dmc3.exe+1EF412 - 49 8D AD 08020000 - lea rbp,[r13+00000208]
 	}
 	// 0x980
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, modelData[1]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newModelData[1]);
+		constexpr auto off = offsetof(ActorData, modelData[1]);
+		constexpr auto newOff = offsetof(ActorData, newModelData[1]);
 		static_assert(off == 0x980);
 		// Write<uint32>((appBaseAddr + 0xD6A18 + 3), (enable) ? newOff : off); // dmc3.exe+D6A18 - 4C 89 A8 80090000 - MOV [RAX+00000980],R13
 		// Write<uint32>((appBaseAddr + 0xD70D3 + 3), (enable) ? newOff : off); // dmc3.exe+D70D3 - 4D 8B 87 80090000 - MOV R8,[R15+00000980]
@@ -1569,15 +1767,15 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x988
 	{
-		constexpr auto off = (offsetof(ACTOR_DATA, modelData[1]) + 8);
-		constexpr auto newOff = (offsetof(ACTOR_DATA, newModelData[1]) + 8);
+		constexpr auto off = (offsetof(ActorData, modelData[1]) + 8);
+		constexpr auto newOff = (offsetof(ActorData, newModelData[1]) + 8);
 		static_assert(off == 0x988);
 		Write<uint32>((appBaseAddr + 0x1EF2F2 + 3), (enable) ? newOff : off); // dmc3.exe+1EF2F2 - 49 8D AD 88090000 - lea rbp,[r13+00000988]
 	}
 	// 0x1100
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, modelData[2]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newModelData[2]);
+		constexpr auto off = offsetof(ActorData, modelData[2]);
+		constexpr auto newOff = offsetof(ActorData, newModelData[2]);
 		static_assert(off == 0x1100);
 		// Trash<uint32>((appBaseAddr + 0xDF897 + 3), (enable) ? newOff : off); // dmc3.exe+DF897 - 48 B8 1100000011000000 - MOV RAX,0000001100000011
 		// Write<uint32>((appBaseAddr + 0x13A3CB + 3), (enable) ? newOff : off); // dmc3.exe+13A3CB - 4C 89 A8 00110000 - MOV [RAX+00001100],R13
@@ -1659,15 +1857,15 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x1108
 	{
-		constexpr auto off = (offsetof(ACTOR_DATA, modelData[2]) + 8);
-		constexpr auto newOff = (offsetof(ACTOR_DATA, newModelData[2]) + 8);
+		constexpr auto off = (offsetof(ActorData, modelData[2]) + 8);
+		constexpr auto newOff = (offsetof(ActorData, newModelData[2]) + 8);
 		static_assert(off == 0x1108);
 		Write<uint32>((appBaseAddr + 0x1EF1C6 + 3), (enable) ? newOff : off); // dmc3.exe+1EF1C6 - 49 8D AD 08110000 - lea rbp,[r13+00001108]
 	}
 	// 0x1880
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][0]);
+		constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][0]);
+		constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][0]);
 		static_assert(off == 0x1880);
 		// Trash<uint32>((appBaseAddr + 0x3EDAE + 3), (enable) ? newOff : off); // dmc3.exe+3EDAE - B9 80180000 - MOV ECX,00001880
 		// Trash<uint32>((appBaseAddr + 0x3EEBC + 3), (enable) ? newOff : off); // dmc3.exe+3EEBC - B9 80180000 - MOV ECX,00001880
@@ -2037,8 +2235,8 @@ void ToggleRelocations(bool enable)
 		// Trash<uint32>((appBaseAddr + 0x5989C9 + 4), (enable) ? newOff : off); // dmc3.exe+5989C9 - 15 00001880 - ADC EAX,80180000
 		// 0x310
 		{
-			constexpr auto off = (offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][0]) / 8);
-			constexpr auto newOff = (offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][0]) / 8);
+			constexpr auto off = (offsetof(ActorData, modelPhysicsMetadataPool[0][0]) / 8);
+			constexpr auto newOff = (offsetof(ActorData, newModelPhysicsMetadataPool[0][0]) / 8);
 			static_assert(off == 0x310);
 			// Trash<uint32>((appBaseAddr + 0x8F750 + 3), (enable) ? newOff : off); // dmc3.exe+8F750 - 48 81 EC 10030000 - SUB RSP,00000310
 			// Write<uint32>((appBaseAddr + 0x123DF9 + 3), (enable) ? newOff : off); // dmc3.exe+123DF9 - BA 10030000 - MOV EDX,00000310
@@ -2051,8 +2249,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x1888
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][1]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][1]);
+		constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][1]);
+		constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][1]);
 		static_assert(off == 0x1888);
 		// Write<uint32>((appBaseAddr + 0xBA9DE + 3), (enable) ? newOff : off); // dmc3.exe+BA9DE - 48 8B 96 88180000 - MOV RDX,[RSI+00001888]
 		// Write<uint32>((appBaseAddr + 0xBAAE5 + 3), (enable) ? newOff : off); // dmc3.exe+BAAE5 - 48 8B 96 88180000 - MOV RDX,[RSI+00001888]
@@ -2072,8 +2270,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x1890
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][2]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][2]);
+		constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][2]);
+		constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][2]);
 		static_assert(off == 0x1890);
 		// Write<uint32>((appBaseAddr + 0x1510CA + 3), (enable) ? newOff : off); // dmc3.exe+1510CA - 48 89 88 90180000 - MOV [RAX+00001890],RCX
 		Write<uint32>((appBaseAddr + 0x1EF30A + 3), (enable) ? newOff : off); // dmc3.exe+1EF30A - 49 8B 85 90180000 - MOV RAX,[R13+00001890]
@@ -2084,8 +2282,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x1898
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][3]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][3]);
+		constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][3]);
+		constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][3]);
 		static_assert(off == 0x1898);
 		// Write<uint32>((appBaseAddr + 0xB9DF1 + 3), (enable) ? newOff : off); // dmc3.exe+B9DF1 - 48 8B 87 98180000 - MOV RAX,[RDI+00001898]
 		// Write<uint32>((appBaseAddr + 0xBA06E + 3), (enable) ? newOff : off); // dmc3.exe+BA06E - 48 8B 8F 98180000 - MOV RCX,[RDI+00001898]
@@ -2119,8 +2317,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x18A8
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][5]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][5]);
+		constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][5]);
+		constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][5]);
 		static_assert(off == 0x18A8);
 		Write<uint32>((appBaseAddr + 0x986CE + 3), (enable) ? newOff : off); // dmc3.exe+986CE - 48 8B 81 A8180000 - MOV RAX,[RCX+000018A8]
 		// Write<uint32>((appBaseAddr + 0x9DB24 + 3), (enable) ? newOff : off); // dmc3.exe+9DB24 - 48 8B 81 A8180000 - MOV RAX,[RCX+000018A8]
@@ -2150,29 +2348,29 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x1940
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][0]);
+		constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][0]);
+		constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][0]);
 		static_assert(off == 0x1940);
 		Write<uint32>((appBaseAddr + 0x1EF2BB + 3), (enable) ? newOff : off); // dmc3.exe+1EF2BB - 4D 8D BD 40190000 - LEA R15,[R13+00001940]
 	}
 	// 0x1A00
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][0]);
+		constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][0]);
+		constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][0]);
 		static_assert(off == 0x1A00);
 		Write<uint32>((appBaseAddr + 0x1EF18F + 3), (enable) ? newOff : off); // dmc3.exe+1EF18F - 4D 8D BD 001A0000 - LEA R15,[R13+00001A00]
 	}
 	// 0x1AC0
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][0]); // -> [6]
+		constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][0]);
+		constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][0]); // -> [6]
 		static_assert(off == 0x1AC0);
 		Write<uint32>((appBaseAddr + 0x1EF0A9 + 3), (enable) ? newOff : off); // dmc3.exe+1EF0A9 - 49 8D AD C01A0000 - LEA RBP,[R13+00001AC0]
 	}
 	// 0x1B88
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, modelAllocationData[0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newModelAllocationData[0]);
+		constexpr auto off = offsetof(ActorData, modelAllocationData[0]);
+		constexpr auto newOff = offsetof(ActorData, newModelAllocationData[0]);
 		static_assert(off == 0x1B88);
 		Write<uint32>((appBaseAddr + 0x1DD1AA + 3), (enable) ? newOff : off); // dmc3.exe+1DD1AA - 49 8D 8E 881B0000 - LEA RCX,[R14+00001B88]
 		Write<uint32>((appBaseAddr + 0x1DD27A + 3), (enable) ? newOff : off); // dmc3.exe+1DD27A - 49 8D 8E 881B0000 - LEA RCX,[R14+00001B88]
@@ -2186,8 +2384,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x1B98
 	{
-		constexpr auto off = (offsetof(ACTOR_DATA, modelAllocationData[0]) + 0x10);
-		constexpr auto newOff = (offsetof(ACTOR_DATA, newModelAllocationData[0]) + 0x10);
+		constexpr auto off = (offsetof(ActorData, modelAllocationData[0]) + 0x10);
+		constexpr auto newOff = (offsetof(ActorData, newModelAllocationData[0]) + 0x10);
 		static_assert(off == 0x1B98);
 		Write<uint32>((appBaseAddr + 0x1DD1BB + 3), (enable) ? newOff : off); // dmc3.exe+1DD1BB - 49 8B 8E 981B0000 - MOV RCX,[R14+00001B98]
 		Write<uint32>((appBaseAddr + 0x1DD28B + 3), (enable) ? newOff : off); // dmc3.exe+1DD28B - 49 8B 8E 981B0000 - MOV RCX,[R14+00001B98]
@@ -2196,8 +2394,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x3B00
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, recoveryData[0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newRecoveryData[0]);
+		constexpr auto off = offsetof(ActorData, recoveryData[0]);
+		constexpr auto newOff = offsetof(ActorData, newRecoveryData[0]);
 		static_assert(off == 0x3B00);
 		// Trash<uint32>((appBaseAddr + 0xA9357 + 3), (enable) ? newOff : off); // dmc3.exe+A9357 - BA 003B0000 - MOV EDX,00003B00
 		// Trash<uint32>((appBaseAddr + 0xA9542 + 3), (enable) ? newOff : off); // dmc3.exe+A9542 - BA 003B0000 - MOV EDX,00003B00
@@ -2219,8 +2417,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x3B70
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, recoveryData[1]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newRecoveryData[1]);
+		constexpr auto off = offsetof(ActorData, recoveryData[1]);
+		constexpr auto newOff = offsetof(ActorData, newRecoveryData[1]);
 		static_assert(off == 0x3B70);
 		// Write<uint32>((appBaseAddr + 0xD8A7A + 3), (enable) ? newOff : off); // dmc3.exe+D8A7A - 4C 89 BE 703B0000 - MOV [RSI+00003B70],R15
 		// Write<uint32>((appBaseAddr + 0xE16B1 + 3), (enable) ? newOff : off); // dmc3.exe+E16B1 - 48 89 83 703B0000 - MOV [RBX+00003B70],RAX
@@ -2230,8 +2428,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x3BE0
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, recoveryData[2]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newRecoveryData[2]);
+		constexpr auto off = offsetof(ActorData, recoveryData[2]);
+		constexpr auto newOff = offsetof(ActorData, newRecoveryData[2]);
 		static_assert(off == 0x3BE0);
 		// Write<uint32>((appBaseAddr + 0x121E32 + 3), (enable) ? newOff : off); // dmc3.exe+121E32 - 48 8D 93 E03B0000 - LEA RDX,[RBX+00003BE0]
 		// Write<uint32>((appBaseAddr + 0x126454 + 3), (enable) ? newOff : off); // dmc3.exe+126454 - 48 8D BE E03B0000 - LEA RDI,[RSI+00003BE0]
@@ -2240,8 +2438,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x3E74
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, devilModels[0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newDevilModels[0]);
+		constexpr auto off = offsetof(ActorData, devilModels[0]);
+		constexpr auto newOff = offsetof(ActorData, newDevilModels[0]);
 		static_assert(off == 0x3E74);
 		// Trash<uint32>((appBaseAddr + 0x4B215 + 3), (enable) ? newOff : off); // dmc3.exe+4B215 - 0F10 87 743E0000 - MOVUPS XMM0,[RDI+00003E74]
 		// Trash<uint32>((appBaseAddr + 0x4B262 + 3), (enable) ? newOff : off); // dmc3.exe+4B262 - 0F10 87 743E0000 - MOVUPS XMM0,[RDI+00003E74]
@@ -2269,8 +2467,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x6950
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, bodyPartData[0][0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newBodyPartData[0][0]);
+		constexpr auto off = offsetof(ActorData, bodyPartData[0][0]);
+		constexpr auto newOff = offsetof(ActorData, newBodyPartData[0][0]);
 		static_assert(off == 0x6950);
 		// Write<uint32>((appBaseAddr + 0x1313BE + 3), (enable) ? newOff : off); // dmc3.exe+1313BE - 49 89 86 50690000 - MOV [R14+00006950],RAX
 		Write<uint32>((appBaseAddr + 0x1DDD63 + 3), (enable) ? newOff : off); // dmc3.exe+1DDD63 - 48 8D 8E 50690000 - LEA RCX,[RSI+00006950]
@@ -2296,8 +2494,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x6A70
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, bodyPartData[0][1]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newBodyPartData[0][1]);
+		constexpr auto off = offsetof(ActorData, bodyPartData[0][1]);
+		constexpr auto newOff = offsetof(ActorData, newBodyPartData[0][1]);
 		static_assert(off == 0x6A70);
 		// Write<uint32>((appBaseAddr + 0xB9C7C + 3), (enable) ? newOff : off); // dmc3.exe+B9C7C - 4C 8D B7 706A0000 - LEA R14,[RDI+00006A70]
 		// Write<uint32>((appBaseAddr + 0xCA512 + 3), (enable) ? newOff : off); // dmc3.exe+CA512 - 48 8D 8E 706A0000 - LEA RCX,[RSI+00006A70]
@@ -2322,36 +2520,36 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x6B90
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, bodyPartData[1][0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newBodyPartData[1][0]);
+		constexpr auto off = offsetof(ActorData, bodyPartData[1][0]);
+		constexpr auto newOff = offsetof(ActorData, newBodyPartData[1][0]);
 		static_assert(off == 0x6B90);
 		Write<uint32>((appBaseAddr + 0x1EF3AE + 3), (enable) ? newOff : off); // dmc3.exe+1EF3AE - 49 8D 8D 906B0000 - LEA RCX,[R13+00006B90]
 	}
 	// 0x6CB0
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, bodyPartData[1][1]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newBodyPartData[1][1]);
+		constexpr auto off = offsetof(ActorData, bodyPartData[1][1]);
+		constexpr auto newOff = offsetof(ActorData, newBodyPartData[1][1]);
 		static_assert(off == 0x6CB0);
 		Write<uint32>((appBaseAddr + 0x1EF357 + 3), (enable) ? newOff : off); // dmc3.exe+1EF357 - 49 8D 8D B06C0000 - LEA RCX,[R13+00006CB0]
 	}
 	// 0x6DD0
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, bodyPartData[2][0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newBodyPartData[2][0]);
+		constexpr auto off = offsetof(ActorData, bodyPartData[2][0]);
+		constexpr auto newOff = offsetof(ActorData, newBodyPartData[2][0]);
 		static_assert(off == 0x6DD0);
 		Write<uint32>((appBaseAddr + 0x1EF282 + 3), (enable) ? newOff : off); // dmc3.exe+1EF282 - 49 8D 8D D06D0000 - LEA RCX,[R13+00006DD0]
 	}
 	// 0x6EF0
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, bodyPartData[2][1]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newBodyPartData[2][1]);
+		constexpr auto off = offsetof(ActorData, bodyPartData[2][1]);
+		constexpr auto newOff = offsetof(ActorData, newBodyPartData[2][1]);
 		static_assert(off == 0x6EF0);
 		Write<uint32>((appBaseAddr + 0x1EF22B + 3), (enable) ? newOff : off); // dmc3.exe+1EF22B - 49 8D 8D F06E0000 - LEA RCX,[R13+00006EF0]
 	}
 	// // 0x7010
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, bodyPartData[3][0]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newBodyPartData[6][0]);
+	// 	constexpr auto off = offsetof(ActorData, bodyPartData[3][0]);
+	// 	constexpr auto newOff = offsetof(ActorData, newBodyPartData[6][0]);
 	// 	static_assert(off == 0x7010);
 	// 	Write<uint32>((appBaseAddr + 0x1DDD8C + 3), (enable) ? newOff : off); // dmc3.exe+1DDD8C - 48 8D 8E 10700000 - LEA RCX,[RSI+00007010]
 	// 	Write<uint32>((appBaseAddr + 0x1DE2D5 + 3), (enable) ? newOff : off); // dmc3.exe+1DE2D5 - 48 8D 8F 10700000 - LEA RCX,[RDI+00007010]
@@ -2366,8 +2564,8 @@ void ToggleRelocations(bool enable)
 	// }
 	// // 0x7130
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, bodyPartData[3][1]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newBodyPartData[6][1]);
+	// 	constexpr auto off = offsetof(ActorData, bodyPartData[3][1]);
+	// 	constexpr auto newOff = offsetof(ActorData, newBodyPartData[6][1]);
 	// 	static_assert(off == 0x7130);
 	// 	Write<uint32>((appBaseAddr + 0x1EF0FE + 3), (enable) ? newOff : off); // dmc3.exe+1EF0FE - 49 8D 8D 30710000 - LEA RCX,[R13+00007130]
 	// 	Write<uint32>((appBaseAddr + 0x1EF169 + 3), (enable) ? newOff : off); // dmc3.exe+1EF169 - 49 8D 8D 30710000 - LEA RCX,[R13+00007130]
@@ -2380,8 +2578,8 @@ void ToggleRelocations(bool enable)
 	// }
 	// 0x7540
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, submodelData[0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newSubmodelData[0]);
+		constexpr auto off = offsetof(ActorData, submodelData[0]);
+		constexpr auto newOff = offsetof(ActorData, newSubmodelData[0]);
 		static_assert(off == 0x7540);
 		// Write<uint32>((appBaseAddr + 0x17644B + 3), (enable) ? newOff : off); // dmc3.exe+17644B - 48 8D 8E 40750000 - LEA RCX,[RSI+00007540]
 		// Write<uint32>((appBaseAddr + 0x176BF2 + 3), (enable) ? newOff : off); // dmc3.exe+176BF2 - 48 8D 8E 40750000 - LEA RCX,[RSI+00007540]
@@ -2549,8 +2747,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x9AD0
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, modelShadowData[0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newModelShadowData[0]);
+		constexpr auto off = offsetof(ActorData, modelShadowData[0]);
+		constexpr auto newOff = offsetof(ActorData, newModelShadowData[0]);
 		static_assert(off == 0x9AD0);
 		// Write<uint32>((appBaseAddr + 0x18278E + 3), (enable) ? newOff : off); // dmc3.exe+18278E - 0F29 85 D09A0000 - MOVAPS [RBP+00009AD0],XMM0
 		Write<uint32>((appBaseAddr + 0x1DD4FD + 3), (enable) ? newOff : off); // dmc3.exe+1DD4FD - 48 8D 8B D09A0000 - LEA RCX,[RBX+00009AD0]
@@ -2579,8 +2777,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0x9D10
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, submodelShadowData[0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newSubmodelShadowData[0]);
+		constexpr auto off = offsetof(ActorData, submodelShadowData[0]);
+		constexpr auto newOff = offsetof(ActorData, newSubmodelShadowData[0]);
 		static_assert(off == 0x9D10);
 		Write<uint32>((appBaseAddr + 0x1DD528 + 3), (enable) ? newOff : off); // dmc3.exe+1DD528 - 48 8D 8B 109D0000 - LEA RCX,[RBX+00009D10]
 		Write<uint32>((appBaseAddr + 0x1DDEE0 + 3), (enable) ? newOff : off); // dmc3.exe+1DDEE0 - 48 8D 8B 109D0000 - LEA RCX,[RBX+00009D10]
@@ -2608,8 +2806,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0xA300
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, devilModelPhysicsMetadataPool[0][0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newDevilModelPhysicsMetadataPool[0][0]);
+		constexpr auto off = offsetof(ActorData, devilModelPhysicsMetadataPool[0][0]);
+		constexpr auto newOff = offsetof(ActorData, newDevilModelPhysicsMetadataPool[0][0]);
 		static_assert(off == 0xA300);
 		Write<uint32>((appBaseAddr + 0x1DEC79 + 3), (enable) ? newOff : off); // dmc3.exe+1DEC79 - 48 81 C2 00A30000 - ADD RDX,0000A300
 		Write<uint32>((appBaseAddr + 0x2136FC + 3), (enable) ? newOff : off); // dmc3.exe+2136FC - 4D 8D 85 00A30000 - LEA R8,[R13+0000A300]
@@ -2635,8 +2833,8 @@ void ToggleRelocations(bool enable)
 		// Trash<uint32>((appBaseAddr + 0x5FD05D + 3), (enable) ? newOff : off); // dmc3.exe+5FD05D - A2 0002A40000A30000 - MOV [A30000A40200],AL
 		// 0x1460
 		{
-			constexpr auto off = (offsetof(ACTOR_DATA, devilModelPhysicsMetadataPool[0][0]) / 8);
-			constexpr auto newOff = (offsetof(ACTOR_DATA, newDevilModelPhysicsMetadataPool[0][0]) / 8);
+			constexpr auto off = (offsetof(ActorData, devilModelPhysicsMetadataPool[0][0]) / 8);
+			constexpr auto newOff = (offsetof(ActorData, newDevilModelPhysicsMetadataPool[0][0]) / 8);
 			static_assert(off == 0x1460);
 			// Trash<uint32>((appBaseAddr + 0xE1F36 + 3), (enable) ? newOff : off); // dmc3.exe+E1F36 - 48 C7 86 60140000 0050C347 - MOV QWORD PTR [RSI+00001460],47C35000
 			// Trash<uint32>((appBaseAddr + 0xE3D69 + 3), (enable) ? newOff : off); // dmc3.exe+E3D69 - 48 C7 86 60140000 0050C347 - MOV QWORD PTR [RSI+00001460],47C35000
@@ -2677,8 +2875,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0xA540
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, devilSubmodelPhysicsData[0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newDevilSubmodelPhysicsData[0]);
+		constexpr auto off = offsetof(ActorData, devilSubmodelPhysicsData[0]);
+		constexpr auto newOff = offsetof(ActorData, newDevilSubmodelPhysicsData[0]);
 		static_assert(off == 0xA540);
 		Write<uint32>((appBaseAddr + 0x1DD577 + 3), (enable) ? newOff : off); // dmc3.exe+1DD577 - 48 8D 8B 40A50000 - LEA RCX,[RBX+0000A540]
 		Write<uint32>((appBaseAddr + 0x1DDEA2 + 3), (enable) ? newOff : off); // dmc3.exe+1DDEA2 - 48 8D 8B 40A50000 - LEA RCX,[RBX+0000A540]
@@ -2709,8 +2907,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0xAA00
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, devilSubmodelPhysicsLinkData[0][0]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newDevilSubmodelPhysicsLinkData[0][0]);
+		constexpr auto off = offsetof(ActorData, devilSubmodelPhysicsLinkData[0][0]);
+		constexpr auto newOff = offsetof(ActorData, newDevilSubmodelPhysicsLinkData[0][0]);
 		static_assert(off == 0xAA00);
 		Write<uint32>((appBaseAddr + 0x1DD59B + 3), (enable) ? newOff : off); // dmc3.exe+1DD59B - 48 8D 8B 00AA0000 - LEA RCX,[RBX+0000AA00]
 		Write<uint32>((appBaseAddr + 0x1DDE83 + 3), (enable) ? newOff : off); // dmc3.exe+1DDE83 - 48 81 C1 00AA0000 - ADD RCX,0000AA00
@@ -2729,8 +2927,8 @@ void ToggleRelocations(bool enable)
 	}
 	// 0xAAC0
 	{
-		constexpr auto off = (offsetof(ACTOR_DATA, devilSubmodelPhysicsLinkData[0][0]) + 0xC0);
-		constexpr auto newOff = (offsetof(ACTOR_DATA, newDevilSubmodelPhysicsLinkData[0][0]) + 0xC0);
+		constexpr auto off = (offsetof(ActorData, devilSubmodelPhysicsLinkData[0][0]) + 0xC0);
+		constexpr auto newOff = (offsetof(ActorData, newDevilSubmodelPhysicsLinkData[0][0]) + 0xC0);
 		static_assert(off == 0xAAC0);
 		Write<uint32>((appBaseAddr + 0x213832 + 3), (enable) ? newOff : off); // dmc3.exe+213832 - 48 8D 96 C0AA0000 - LEA RDX,[RSI+0000AAC0]
 		Write<uint32>((appBaseAddr + 0x213C36 + 3), (enable) ? newOff : off); // dmc3.exe+213C36 - 48 8D 96 C0AA0000 - LEA RDX,[RSI+0000AAC0]
@@ -2787,23 +2985,9 @@ void ToggleRelocations(bool enable)
 
 
 /*
-dmc3.exe+1DE280
+dmc3.exe+1DD140
 
-dmc3.exe+1DE307 - 41 B8 06000000        - mov r8d,00000006 { 6 }
-dmc3.exe+1DE3C0 - 44 8D 42 93           - lea r8d,[rdx-6D]
-dmc3.exe+1DE40E - 41 B8 D1000000        - mov r8d,000000D1 { 209 }
-dmc3.exe+1DE42D - 41 B8 03000000        - mov r8d,00000003 { 3 }
-
-
-
-dmc3.exe+1DDAF0
-
-dmc3.exe+1DDB6A - 41 B8 03000000        - mov r8d,00000003 { 3 }
-dmc3.exe+1DDB95 - 41 B8 D1000000        - mov r8d,000000D1 { 209 }
-dmc3.exe+1DDC28 - 44 8D 42 93           - lea r8d,[rdx-6D]
-dmc3.exe+1DDD82 - 45 8D 47 06           - lea r8d,[r15+06]
-
-
+dmc3.exe+1DD172 - B8 D1000000           - mov eax,000000D1 { 209 }
 
 dmc3.exe+1DD480
 
@@ -2813,19 +2997,101 @@ dmc3.exe+1DD540 - 41 B8 05000000        - mov r8d,00000005 { 5 }
 dmc3.exe+1DD58F - 41 B8 04000000        - mov r8d,00000004 { 4 }
 dmc3.exe+1DD5BA - 41 B8 10000000        - mov r8d,00000010 { 16 }
 
+dmc3.exe+1DDAF0
 
+dmc3.exe+1DDB6A - 41 B8 03000000        - mov r8d,00000003 { 3 }
+dmc3.exe+1DDB95 - 41 B8 D1000000        - mov r8d,000000D1 { 209 }
+dmc3.exe+1DDC28 - 44 8D 42 93           - lea r8d,[rdx-6D]
+dmc3.exe+1DDD82 - 45 8D 47 06           - lea r8d,[r15+06]
+
+dmc3.exe+1DDE40
+
+dmc3.exe+1DE280
+
+dmc3.exe+1DE307 - 41 B8 06000000        - mov r8d,00000006 { 6 }
+dmc3.exe+1DE3C0 - 44 8D 42 93           - lea r8d,[rdx-6D]
+dmc3.exe+1DE40E - 41 B8 D1000000        - mov r8d,000000D1 { 209 }
+dmc3.exe+1DE42D - 41 B8 03000000        - mov r8d,00000003 { 3 }
 
 dmc3.exe+1DEBA4
 
 dmc3.exe+1DEC63 - 41 B9 60000000        - mov r9d,00000060 { 96 }
 dmc3.exe+1DEC80 - 41 B9 48000000        - mov r9d,00000048 { 72 }
+*/
 
 
+/*
+Create
 
-dmc3.exe+1DD140 - 48 89 54 24 10        - mov [rsp+10],rdx
+dmc3.exe+1DEC03 - E8 78E8FFFF           - call dmc3.exe+1DD480
+
+dmc3.exe+1DD49B - E8 50060000           - call dmc3.exe+1DDAF0
+
+dmc3.exe+1DDB6A - 41 B8 03000000        - mov r8d,00000003 { 3 }
+dmc3.exe+1DDB95 - 41 B8 D1000000        - mov r8d,000000D1 { 209 }
+dmc3.exe+1DDC28 - 44 8D 42 93           - lea r8d,[rdx-6D]
+dmc3.exe+1DDD82 - 45 8D 47 06           - lea r8d,[r15+06]
+
+dmc3.exe+1DD4F1 - 41 B8 05000000        - mov r8d,00000005 { 5 }
+dmc3.exe+1DD51C - 41 B8 03000000        - mov r8d,00000003 { 3 }
+dmc3.exe+1DD540 - 41 B8 05000000        - mov r8d,00000005 { 5 }
+dmc3.exe+1DD56B - 41 B8 01000000        - mov r8d,00000001 { 1 }
+dmc3.exe+1DD58F - 41 B8 04000000        - mov r8d,00000004 { 4 }
+dmc3.exe+1DD5BA - 41 B8 10000000        - mov r8d,00000010 { 16 }
+
+dmc3.exe+1DEC63 - 41 B9 60000000        - mov r9d,00000060 { 96 }
+
+dmc3.exe+1DEC70 - E8 CBE4FFFF           - call dmc3.exe+1DD140
 
 dmc3.exe+1DD172 - B8 D1000000           - mov eax,000000D1 { 209 }
+dmc3.exe+1DD1AA - 49 8D 8E 881B0000     - lea rcx,[r14+00001B88]
+dmc3.exe+1DD1BB - 49 8B 8E 981B0000     - mov rcx,[r14+00001B98]
+
+dmc3.exe+1DEC80 - 41 B9 48000000        - mov r9d,00000048 { 72 }
+dmc3.exe+1DEC9D - 41 B9 27000000        - mov r9d,00000027 { 39 }
+
+dmc3.exe+1DECB3 - E8 080E0000           - call dmc3.exe+1DFAC0
+
+dmc3.exe+1DFAEE - 48 81 C1 881B0000     - add rcx,00001B88 { 7048 }
 */
+
+/*
+Free
+
+dmc3.exe+1DE5E0
+
+dmc3.exe+1DE5EF - E8 4CF8FFFF           - call dmc3.exe+1DDE40
+
+dmc3.exe+1DDE96 - 41 B8 10000000        - mov r8d,00000010 { 16 }
+dmc3.exe+1DDEB5 - 41 B8 04000000        - mov r8d,00000004 { 4 }
+dmc3.exe+1DDED4 - 41 B8 01000000        - mov r8d,00000001 { 1 }
+dmc3.exe+1DDEF3 - 41 B8 05000000        - mov r8d,00000005 { 5 }
+dmc3.exe+1DDF12 - 41 B8 03000000        - mov r8d,00000003 { 3 }
+dmc3.exe+1DDF31 - 41 B8 05000000        - mov r8d,00000005 { 5 }
+
+dmc3.exe+1DDF45 - E9 36030000           - jmp dmc3.exe+1DE280
+
+dmc3.exe+1DE307 - 41 B8 06000000        - mov r8d,00000006 { 6 }
+dmc3.exe+1DE3C0 - 44 8D 42 93           - lea r8d,[rdx-6D]
+dmc3.exe+1DE40E - 41 B8 D1000000        - mov r8d,000000D1 { 209 }
+dmc3.exe+1DE42D - 41 B8 03000000        - mov r8d,00000003 { 3 }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2869,41 +3135,50 @@ void ToggleCountAdjustments(bool enable)
 	{
 		constexpr uint32 count = 3;
 		constexpr uint32 newCount = 6;
+		// Create
 		Write<uint32>((appBaseAddr + 0x1DDB6A + 2), (enable) ? newCount : count); // dmc3.exe+1DDB6A - 41 B8 03000000 - mov r8d,00000003
+		// Free
 		Write<uint32>((appBaseAddr + 0x1DE42D + 2), (enable) ? newCount : count); // dmc3.exe+1DE42D - 41 B8 03000000 - mov r8d,00000003
-		Write<uint32>((appBaseAddr + 0x1FCA4E + 1), (enable) ? newCount : count); // dmc3.exe+1FCA4E - BB 03000000 - mov ebx,00000003
 	}
 
 	// Model Physics Metadata Pool
 	{
 		constexpr uint32 count = (4 * 24);
 		constexpr uint32 newCount = (7 * 24);
+		// Create
 		// Write<uint32>((appBaseAddr + 0x1DE935 + 2), (enable) ? newCount : count); // dmc3.exe+1DE935 - 41 B9 60000000 - MOV R9D,00000060
 		// Write<uint32>((appBaseAddr + 0x1DEA4E + 2), (enable) ? newCount : count); // dmc3.exe+1DEA4E - 41 B9 60000000 - MOV R9D,00000060
 		// Write<uint32>((appBaseAddr + 0x1DEB4A + 2), (enable) ? newCount : count); // dmc3.exe+1DEB4A - 41 B9 60000000 - MOV R9D,00000060
 		Write<uint32>((appBaseAddr + 0x1DEC63 + 2), (enable) ? newCount : count); // dmc3.exe+1DEC63 - 41 B9 60000000 - mov r9d,00000060
+		// Free
+		// Handled by Model Allocation Data.
 	}
 
 	// Model Allocation Data
 	{
 		constexpr uint32 count = 209;
 		constexpr uint32 newCount = 512;
+		// Create
+		Write<uint32>((appBaseAddr + 0x1DDB95 + 2), (enable) ? newCount : count); // dmc3.exe+1DDB95 - 41 B8 D1000000 - mov r8d,000000D1
+		Write<uint32>((appBaseAddr + 0x1DD172 + 1), (enable) ? newCount : count); // dmc3.exe+1DD172 - B8 D1000000 - mov eax,000000D1
+		// Free
+		Write<uint32>((appBaseAddr + 0x1DE40E + 2), (enable) ? newCount : count); // dmc3.exe+1DE40E - 41 B8 D1000000 - mov r8d,000000D1
+		// Unknown
 		// Write<uint32>((appBaseAddr + 0x13C9F1 + 1), (enable) ? newCount : count); // dmc3.exe+13C9F1 - BA D1000000 - MOV EDX,000000D1
 		// Write<uint32>((appBaseAddr + 0x13CA38 + 1), (enable) ? newCount : count); // dmc3.exe+13CA38 - BA D1000000 - MOV EDX,000000D1
 		// Write<uint32>((appBaseAddr + 0x1DD242 + 1), (enable) ? newCount : count); // dmc3.exe+1DD242 - B8 D1000000 - MOV EAX,000000D1
 		// Write<uint32>((appBaseAddr + 0x1DD312 + 1), (enable) ? newCount : count); // dmc3.exe+1DD312 - B8 D1000000 - MOV EAX,000000D1
 		// Write<uint32>((appBaseAddr + 0x1DD3E2 + 1), (enable) ? newCount : count); // dmc3.exe+1DD3E2 - B8 D1000000 - MOV EAX,000000D1
 		// Write<uint32>((appBaseAddr + 0x34B85B + 2), (enable) ? newCount : count); // dmc3.exe+34B85B - 41 B8 D1000000 - MOV R8D,000000D1
-		Write<uint32>((appBaseAddr + 0x1DD172 + 1), (enable) ? newCount : count); // dmc3.exe+1DD172 - B8 D1000000 - mov eax,000000D1
-		Write<uint32>((appBaseAddr + 0x1DDB95 + 2), (enable) ? newCount : count); // dmc3.exe+1DDB95 - 41 B8 D1000000 - mov r8d,000000D1
-		Write<uint32>((appBaseAddr + 0x1DE40E + 2), (enable) ? newCount : count); // dmc3.exe+1DE40E - 41 B8 D1000000 - mov r8d,000000D1
 	}
 
 	// Recovery Data
 	{
 		constexpr int8 count = -(static_cast<int8>(sizeof(RecoveryData) - 3));
 		constexpr int8 newCount = -(static_cast<int8>(sizeof(RecoveryData) - 6));
+		// Create
 		Write<int8>((appBaseAddr + 0x1DDC28 + 3), (enable) ? newCount : count); // dmc3.exe+1DDC28 - 44 8D 42 93 - lea r8d,[rdx-6D]
+		// Free
 		Write<int8>((appBaseAddr + 0x1DE3C0 + 3), (enable) ? newCount : count); // dmc3.exe+1DE3C0 - 44 8D 42 93 - lea r8d,[rdx-6D]
 	}
 
@@ -2911,7 +3186,9 @@ void ToggleCountAdjustments(bool enable)
 	{
 		constexpr uint32 count = (3 * 2);
 		constexpr uint32 newCount = (6 * 2);
+		// Create
 		Write<uint8>((appBaseAddr + 0x1DDD82 + 3), (enable) ? static_cast<uint8>(newCount) : static_cast<uint8>(count)); // dmc3.exe+1DDD82 - 45 8D 47 06 - lea r8d,[r15+06]
+		// Free
 		Write<uint32>((appBaseAddr + 0x1DE307 + 2), (enable) ? newCount : count); // dmc3.exe+1DE307 - 41 B8 06000000 - mov r8d,00000006
 	}
 
@@ -2919,36 +3196,65 @@ void ToggleCountAdjustments(bool enable)
 	{
 		constexpr uint32 count = (1 + (2 * 2));
 		constexpr uint32 newCount = (1 + (5 * 2));
+		// Create
 		Write<uint32>((appBaseAddr + 0x1DD4F1 + 2), (enable) ? newCount : count); // dmc3.exe+1DD4F1 - 41 B8 05000000 - mov r8d,00000005
-		Write<uint32>((appBaseAddr + 0x2237E6 + 1), (enable) ? newCount : count); // dmc3.exe+2237E6 - BB 05000000 - mov ebx,00000005
+		// Free
+		Write<uint32>((appBaseAddr + 0x1DDF31 + 2), (enable) ? newCount : count); // dmc3.exe+1DDF31 - 41 B8 05000000 - mov r8d,00000005
 	}
 
 	// Model Shadow Data
 	{
 		constexpr uint32 count = 3;
 		constexpr uint32 newCount = 6;
+		// Create
 		Write<uint32>((appBaseAddr + 0x1DD51C + 2), (enable) ? newCount : count); // dmc3.exe+1DD51C - 41 B8 03000000 - mov r8d,00000003
+		// Free
+		Write<uint32>((appBaseAddr + 0x1DDF12 + 2), (enable) ? newCount : count); // dmc3.exe+1DDF12 - 41 B8 03000000 - mov r8d,00000003
 	}
 
 	// Submodel Shadow Data
 	{
 		constexpr uint32 count = (1 + (2 * 2));
 		constexpr uint32 newCount = (1 + (5 * 2));
+		// Create
 		Write<uint32>((appBaseAddr + 0x1DD540 + 2), (enable) ? newCount : count); // dmc3.exe+1DD540 - 41 B8 05000000 - mov r8d,00000005
+		// Free
+		Write<uint32>((appBaseAddr + 0x1DDEF3 + 2), (enable) ? newCount : count); // dmc3.exe+1DDEF3 - 41 B8 05000000 - mov r8d,00000005
+	}
+
+	// Submodel Physics Data
+	{
+		// Create
+		//dmc3.exe+1DD56B - 41 B8 01000000        - mov r8d,00000001 { 1 }
+		// Free
+		//dmc3.exe+1DDED4 - 41 B8 01000000        - mov r8d,00000001 { 1 }
+	}
+
+	// Submodel Physics Metadata Pool
+	{
+		// Create
+		//dmc3.exe+1DEC9D - 41 B9 27000000        - mov r9d,00000027 { 39 }
+		// Free
+		// Handle by Model Allocation Data.
 	}
 
 	// Devil Model Physics Metadata Pool
 	{
 		constexpr uint32 count = (2 * 36);
 		constexpr uint32 newCount = (5 * 36);
+		// Create
 		Write<uint32>((appBaseAddr + 0x1DEC80 + 2), (enable) ? newCount : count); // dmc3.exe+1DEC80 - 41 B9 48000000 - mov r9d,00000048
+		// Free
+		// Handled by Model Allocation Data.
 	}
 
 	// Devil Submodel Physics Data
 	{
 		constexpr uint32 count = (2 * 2);
 		constexpr uint32 newCount = (5 * 2);
+		// Create
 		Write<uint32>((appBaseAddr + 0x1DD58F + 2), (enable) ? newCount : count); // dmc3.exe+1DD58F - 41 B8 04000000 - mov r8d,00000004
+		// Free
 		Write<uint32>((appBaseAddr + 0x1DDEB5 + 2), (enable) ? newCount : count); // dmc3.exe+1DDEB5 - 41 B8 04000000 - mov r8d,00000004
 	}
 
@@ -2956,9 +3262,112 @@ void ToggleCountAdjustments(bool enable)
 	{
 		constexpr uint32 count = (2 * 2 * 4);
 		constexpr uint32 newCount = (5 * 2 * 4);
+		// Create
 		Write<uint32>((appBaseAddr + 0x1DD5BA + 2), (enable) ? newCount : count); // dmc3.exe+1DD5BA - 41 B8 10000000 - mov r8d,00000010
+		// Free
+		Write<uint32>((appBaseAddr + 0x1DDE96 + 2), (enable) ? newCount : count); // dmc3.exe+1DDE96 - 41 B8 10000000 - mov r8d,00000010
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Write<uint32>((appBaseAddr + 0x1DE307 + 3), (enable) ? newOff : off); // dmc3.exe+1DE307 - 41 B8 06000000 - mov r8d,00000006
+// Write<uint32>((appBaseAddr + 0x1DE3C0 + 3), (enable) ? newOff : off); // dmc3.exe+1DE3C0 - 44 8D 42 93 - lea r8d,[rdx-6D]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+dmc3.exe+1DDE96 - 41 B8 10000000        - mov r8d,00000010 { 16 }
+dmc3.exe+1DDEB5 - 41 B8 04000000        - mov r8d,00000004 { 4 }
+dmc3.exe+1DDEF3 - 41 B8 05000000        - mov r8d,00000005 { 5 }
+dmc3.exe+1DDF12 - 41 B8 03000000        - mov r8d,00000003 { 3 }
+dmc3.exe+1DDF31 - 41 B8 05000000        - mov r8d,00000005 { 5 }
+
+
+
+dmc3.exe+1DE307 - 41 B8 06000000        - mov r8d,00000006 { 6 }
+dmc3.exe+1DE3C0 - 44 8D 42 93           - lea r8d,[rdx-6D]
+*/
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2972,6 +3381,8 @@ export void Model_Init()
 
 	//auto modelPhysicsMetadataOffs = HighAlloc(64);
 
+
+	return;
 
 
 	{
@@ -3016,7 +3427,7 @@ export void Model_Init()
 
 
 
-
+	
 
 
 
@@ -3050,7 +3461,7 @@ export void Model_Init()
 
 
 	// {
-	// 	auto func = CreateFunction(NewFunc<ACTOR_DATA_DANTE>);
+	// 	auto func = CreateFunction(NewFunc<ActorDataDante>);
 	// 	WriteCall((appBaseAddr + 0x212D6F), func.addr); // dante
 	// 	WriteCall((appBaseAddr + 0x21459A), func.addr); // rebellion
 	// }
@@ -3072,12 +3483,12 @@ export void Model_Init()
 
 
 
-	ToggleRelocations(true);
-	ToggleCountAdjustments(true);
+	//ToggleRelocations(true);
+	//ToggleCountAdjustments(true);
 
 
 
-	return;
+	//return;
 
 
 
@@ -3131,6 +3542,9 @@ export void Model_Init()
 	}
 
 
+	//return;
+
+
 
 	// Dante Model Partition Updates
 	{
@@ -3142,7 +3556,7 @@ export void Model_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x21557C), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceFiles);
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newForceFiles);
 		WriteCall((func.sect0 + 9), (appBaseAddr + 0x2169F0));
 		WriteJump((appBaseAddr + 0x215577), func.addr);
 		/*
@@ -3162,7 +3576,7 @@ export void Model_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x222861), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceFiles);
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newForceFiles);
 		WriteCall((func.sect0 + 9), (appBaseAddr + 0x223420));
 		WriteJump((appBaseAddr + 0x22285C), func.addr);
 		/*
@@ -3181,7 +3595,7 @@ export void Model_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x22B616), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 9) = offsetof(ACTOR_DATA, newForceFiles);
+		*reinterpret_cast<uint32 *>(func.sect0 + 9) = offsetof(ActorData, newForceFiles);
 		WriteAddress((func.sect0 + 0xE), (appBaseAddr + 0x22B7E2), 6);
 		WriteJump((appBaseAddr + 0x22B60F), func.addr, 2);
 		/*
@@ -3199,15 +3613,17 @@ export void Model_Init()
 			0x75, 0x12,                               // jne short
 			0x80, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, // cmp byte ptr [rsi+0000B8C0],02
 			0x75, 0x09,                               // jne short
-			0x48, 0x8B, 0x96, 0xA8, 0x18, 0x00, 0x00, // mov rdx,[rsi+000018A8]
+			0x48, 0x8B, 0x96, 0x00, 0x00, 0x00, 0x00, // mov rdx,[rsi+000018A8]
 			0xEB, 0x07,                               // jmp short
-			0x48, 0x8B, 0x96, 0x98, 0x18, 0x00, 0x00, // mov rdx,[rsi+00001898]
+			0x48, 0x8B, 0x96, 0x00, 0x00, 0x00, 0x00, // mov rdx,[rsi+00001898]
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x2120CB), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceFiles);
-		*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(ACTOR_DATA, newForceFilesCharacter);
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newForceFiles);
+		*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(ActorData, newForceFilesCharacter);
 		*reinterpret_cast<uint8 *>(func.sect0 + 0xF) = CHAR_LADY;
+		*reinterpret_cast<uint32 *>(func.sect0 + 0x15) = offsetof(ActorData, newModelPhysicsMetadataPool[0][5]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 0x1E) = offsetof(ActorData, newModelPhysicsMetadataPool[0][3]);
 		WriteJump((appBaseAddr + 0x2120C4), func.addr, 2);
 		/*
 		dmc3.exe+2120C4 - 48 8B 96 98180000 - mov rdx,[rsi+00001898]
@@ -3249,7 +3665,7 @@ export void Model_Init()
 	//	};
 	//	auto func = CreateFunction(0, (appBaseAddr + 0x216686), false, true, sizeof(sect0));
 	//	memcpy(func.sect0, sect0, sizeof(sect0));
-	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceFiles);
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newForceFiles);
 	//	//WriteJump((appBaseAddr + 0x216680), func.addr, 1);
 	//	/*
 	//	dmc3.exe+216680 - 40 57       - push rdi
@@ -3277,9 +3693,9 @@ export void Model_Init()
 	//	};
 	//	auto func = CreateFunction(0, (appBaseAddr + 0x212076), false, true, sizeof(sect0));
 	//	memcpy(func.sect0, sect0, sizeof(sect0));
-	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, devil);
-	//	*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(ACTOR_DATA, newForceFiles);
-	//	*reinterpret_cast<uint32 *>(func.sect0 + 0x14) = offsetof(ACTOR_DATA, newForceFilesCharacter);
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, devil);
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(ActorData, newForceFiles);
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 0x14) = offsetof(ActorData, newForceFilesCharacter);
 	//	*reinterpret_cast<uint8 *>(func.sect0 + 0x18) = CHAR_LADY;
 	//	WriteAddress((func.sect0 + 0x19), (appBaseAddr + 0x2191D0), 6);
 	//	//WriteJump((appBaseAddr + 0x212070), func.addr, 1);
@@ -3328,8 +3744,8 @@ export void Model_Init()
 	//	};
 	//	auto func = CreateFunction(0, (appBaseAddr + 0x212076), false, true, sizeof(sect0));
 	//	memcpy(func.sect0, sect0, sizeof(sect0));
-	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceFiles);
-	//	*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(ACTOR_DATA, newForceFilesCharacter);
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newForceFiles);
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(ActorData, newForceFilesCharacter);
 	//	*reinterpret_cast<uint8 *>(func.sect0 + 0xF) = CHAR_LADY;
 	//	WriteJump((func.sect0 + 0x12), (appBaseAddr + 0x2191D0));
 
@@ -3363,7 +3779,7 @@ export void Model_Init()
 	//	};
 	//	auto func = CreateFunction(0, (appBaseAddr + 0x212076), false, true, sizeof(sect0));
 	//	memcpy(func.sect0, sect0, sizeof(sect0));
-	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newForceLadyFiles);
+	//	*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newForceLadyFiles);
 	//	WriteAddress((func.sect0 + 7), (appBaseAddr + 0x2191D0), 6);
 	//	WriteJump((appBaseAddr + 0x212070), func.addr, 1);
 	//	/*
@@ -3466,7 +3882,7 @@ export void Model_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x8DC23), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ACTOR_DATA, newEffectIndices);
+		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ActorData, newEffectIndices);
 		WriteJump((appBaseAddr + 0x8DC1C), func.addr, 2);
 		/*
 		dmc3.exe+8DC1C - 8B 84 96 C02DC900 - mov eax,[rsi+rdx*4+00C92DC0]
@@ -3489,7 +3905,7 @@ export void Model_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x90D29), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ACTOR_DATA, newEffectIndices);
+		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ActorData, newEffectIndices);
 		WriteJump((appBaseAddr + 0x90D21), func.addr, 3);
 		/*
 		dmc3.exe+90D21 - 41 8B 84 91 C02DC900 - mov eax,[r9+rdx*4+00C92DC0]
@@ -3510,8 +3926,8 @@ export void Model_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1F954E), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEffectIndices[1]);
-		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ACTOR_DATA, newEffectIndices[2]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEffectIndices[1]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ActorData, newEffectIndices[2]);
 		WriteJump((appBaseAddr + 0x1F9542), func.addr, 1);
 		/*
 		dmc3.exe+1F9542 - 8B 05 7C98A900 - mov eax,[dmc3.exe+C92DC4]
@@ -3532,8 +3948,8 @@ export void Model_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1F9578), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ACTOR_DATA, newEffectIndices[1]);
-		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ACTOR_DATA, newEffectIndices[2]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEffectIndices[1]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ActorData, newEffectIndices[2]);
 		WriteJump((appBaseAddr + 0x1F956C), func.addr, 1);
 		/*
 		dmc3.exe+1F956C - 89 05 5298A900 - mov [dmc3.exe+C92DC4],eax
@@ -3559,7 +3975,7 @@ export void Model_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x90D57), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ACTOR_DATA, newEffectIndices);
+		*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices);
 		WriteJump((appBaseAddr + 0x90D4A), func.addr);
 		/*
 		dmc3.exe+90D4A - D3 E0                - shl eax,cl
@@ -3619,8 +4035,8 @@ export void Model_Init()
 #ifdef __GARBAGE__
 	// // 0x18A0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][4]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][4]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][4]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][4]);
 		//static_assert(off == 0x18A0);
 	// 	// Write<uint32>((appBaseAddr + 0xCEAA0 + 3), (enable) ? newOff : off); // dmc3.exe+CEAA0 - 48 63 83 A0180000 - MOVSXD RAX,DWORD PTR [RBX+000018A0]
 	// 	// Trash<uint32>((appBaseAddr + 0xCECB2 + 3), (enable) ? newOff : off); // dmc3.exe+CECB2 - 8B 83 A0180000 - MOV EAX,[RBX+000018A0]
@@ -3639,8 +4055,8 @@ export void Model_Init()
 
 	// // 0x18B0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][6]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][6]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][6]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][6]);
 		//static_assert(off == 0x18B0);
 	// 	// Trash<uint32>((appBaseAddr + 0xCFA01 + 3), (enable) ? newOff : off); // dmc3.exe+CFA01 - 41 C7 80 B0180000 02000000 - MOV [R8+000018B0],00000002
 	// 	// Write<uint32>((appBaseAddr + 0xCFA19 + 3), (enable) ? newOff : off); // dmc3.exe+CFA19 - 49 89 90 B0180000 - MOV [R8+000018B0],RDX
@@ -3654,8 +4070,8 @@ export void Model_Init()
 	// }
 	// // 0x18B8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][7]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][7]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][7]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][7]);
 		//static_assert(off == 0x18B8);
 	// 	// Trash<uint32>((appBaseAddr + 0xCFB55 + 3), (enable) ? newOff : off); // dmc3.exe+CFB55 - 41 83 B8 B8180000 0E - CMP DWORD PTR [R8+000018B8],0E
 	// 	// Trash<uint32>((appBaseAddr + 0xFDE7C + 3), (enable) ? newOff : off); // dmc3.exe+FDE7C - 0F11 8F B8180000 - MOVUPS [RDI+000018B8],XMM1
@@ -3666,8 +4082,8 @@ export void Model_Init()
 	// }
 	// // 0x18C0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][8]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][8]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][8]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][8]);
 		//static_assert(off == 0x18C0);
 	// 	// Trash<uint32>((appBaseAddr + 0x258930 + 3), (enable) ? newOff : off); // dmc3.exe+258930 - 66 89 BB C0180000 - MOV [RBX+000018C0],DI
 	// 	// Trash<uint32>((appBaseAddr + 0x25968F + 3), (enable) ? newOff : off); // dmc3.exe+25968F - 66 89 BA C0180000 - MOV [RDX+000018C0],DI
@@ -3676,8 +4092,8 @@ export void Model_Init()
 	// }
 	// // 0x18C8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][9]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][9]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][9]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][9]);
 		//static_assert(off == 0x18C8);
 	// 	// Trash<uint32>((appBaseAddr + 0xFDE8A + 3), (enable) ? newOff : off); // dmc3.exe+FDE8A - 0F11 87 C8180000 - MOVUPS [RDI+000018C8],XMM0
 	// 	// Trash<uint32>((appBaseAddr + 0x25894C + 3), (enable) ? newOff : off); // dmc3.exe+25894C - 66 89 BB C8180000 - MOV [RBX+000018C8],DI
@@ -3687,8 +4103,8 @@ export void Model_Init()
 	// }
 	// // 0x18D0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][10]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][10]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][10]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][10]);
 		//static_assert(off == 0x18D0);
 	// 	// Trash<uint32>((appBaseAddr + 0x258968 + 3), (enable) ? newOff : off); // dmc3.exe+258968 - 66 89 BB D0180000 - MOV [RBX+000018D0],DI
 	// 	// Trash<uint32>((appBaseAddr + 0x2596C7 + 3), (enable) ? newOff : off); // dmc3.exe+2596C7 - 66 89 BA D0180000 - MOV [RDX+000018D0],DI
@@ -3697,16 +4113,16 @@ export void Model_Init()
 	// }
 	// // 0x18D8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][11]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][11]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][11]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][11]);
 		//static_assert(off == 0x18D8);
 	// 	// Trash<uint32>((appBaseAddr + 0xFDE98 + 3), (enable) ? newOff : off); // dmc3.exe+FDE98 - 0F11 8F D8180000 - MOVUPS [RDI+000018D8],XMM1
 	// 	// Trash<uint32>((appBaseAddr + 0xFE957 + 3), (enable) ? newOff : off); // dmc3.exe+FE957 - F3 0F11 87 D8180000 - MOVSS [RDI+000018D8],XMM0
 	// }
 	// // 0x18E0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][12]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][12]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][12]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][12]);
 		//static_assert(off == 0x18E0);
 	// 	// Write<uint32>((appBaseAddr + 0xCBE97 + 3), (enable) ? newOff : off); // dmc3.exe+CBE97 - 48 8D 8E E0180000 - LEA RCX,[RSI+000018E0]
 	// 	// Write<uint32>((appBaseAddr + 0xCBFB4 + 3), (enable) ? newOff : off); // dmc3.exe+CBFB4 - 48 8D 8E E0180000 - LEA RCX,[RSI+000018E0]
@@ -3720,15 +4136,15 @@ export void Model_Init()
 	// }
 	// // 0x18E8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][13]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][13]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][13]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][13]);
 		//static_assert(off == 0x18E8);
 	// 	// Trash<uint32>((appBaseAddr + 0xFDEA6 + 3), (enable) ? newOff : off); // dmc3.exe+FDEA6 - 0F11 87 E8180000 - MOVUPS [RDI+000018E8],XMM0
 	// }
 	// // 0x18F0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][14]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][14]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][14]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][14]);
 		//static_assert(off == 0x18F0);
 	// 	// Trash<uint32>((appBaseAddr + 0x25A5EA + 3), (enable) ? newOff : off); // dmc3.exe+25A5EA - 0F29 87 F0180000 - MOVAPS [RDI+000018F0],XMM0
 	// 	// Write<uint32>((appBaseAddr + 0x25CE6A + 3), (enable) ? newOff : off); // dmc3.exe+25CE6A - 48 8D 8F F0180000 - LEA RCX,[RDI+000018F0]
@@ -3743,8 +4159,8 @@ export void Model_Init()
 	// }
 	// // 0x18F8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][15]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][15]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][15]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][15]);
 		//static_assert(off == 0x18F8);
 	// 	// Write<uint32>((appBaseAddr + 0xBAA0B + 3), (enable) ? newOff : off); // dmc3.exe+BAA0B - 48 8B 96 F8180000 - MOV RDX,[RSI+000018F8]
 	// 	// Write<uint32>((appBaseAddr + 0xBAB12 + 3), (enable) ? newOff : off); // dmc3.exe+BAB12 - 48 8B 96 F8180000 - MOV RDX,[RSI+000018F8]
@@ -3780,8 +4196,8 @@ export void Model_Init()
 	// }
 	// // 0x1900
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][16]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][16]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][16]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][16]);
 		//static_assert(off == 0x1900);
 	// 	// Trash<uint32>((appBaseAddr + 0x86274 + 3), (enable) ? newOff : off); // dmc3.exe+86274 - BA 00190000 - MOV EDX,00001900
 	// 	// Write<uint32>((appBaseAddr + 0xBAA25 + 3), (enable) ? newOff : off); // dmc3.exe+BAA25 - 48 8B 96 00190000 - MOV RDX,[RSI+00001900]
@@ -3827,8 +4243,8 @@ export void Model_Init()
 	// }
 	// // 0x1908
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][17]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][17]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][17]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][17]);
 		//static_assert(off == 0x1908);
 	// 	// Write<uint32>((appBaseAddr + 0xCBEA4 + 3), (enable) ? newOff : off); // dmc3.exe+CBEA4 - 48 8D 8E 08190000 - LEA RCX,[RSI+00001908]
 	// 	// Write<uint32>((appBaseAddr + 0xCBFA7 + 3), (enable) ? newOff : off); // dmc3.exe+CBFA7 - 48 81 C1 08190000 - ADD RCX,00001908
@@ -3845,8 +4261,8 @@ export void Model_Init()
 	// }
 	// // 0x1910
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][18]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][18]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][18]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][18]);
 		//static_assert(off == 0x1910);
 	// 	// Write<uint32>((appBaseAddr + 0x259891 + 3), (enable) ? newOff : off); // dmc3.exe+259891 - 48 89 98 10190000 - MOV [RAX+00001910],RBX
 	// 	// Trash<uint32>((appBaseAddr + 0x25A606 + 3), (enable) ? newOff : off); // dmc3.exe+25A606 - 0F29 87 10190000 - MOVAPS [RDI+00001910],XMM0
@@ -3859,8 +4275,8 @@ export void Model_Init()
 	// }
 	// // 0x1918
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][19]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][19]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][19]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][19]);
 		//static_assert(off == 0x1918);
 	// 	// Write<uint32>((appBaseAddr + 0xBAA3F + 3), (enable) ? newOff : off); // dmc3.exe+BAA3F - 48 8B 96 18190000 - MOV RDX,[RSI+00001918]
 	// 	// Write<uint32>((appBaseAddr + 0xBAB46 + 3), (enable) ? newOff : off); // dmc3.exe+BAB46 - 48 8B 96 18190000 - MOV RDX,[RSI+00001918]
@@ -3868,8 +4284,8 @@ export void Model_Init()
 	// }
 	// // 0x1920
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][20]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][20]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][20]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][20]);
 		//static_assert(off == 0x1920);
 	// 	// Write<uint32>((appBaseAddr + 0xBAA59 + 3), (enable) ? newOff : off); // dmc3.exe+BAA59 - 48 8B 96 20190000 - MOV RDX,[RSI+00001920]
 	// 	// Write<uint32>((appBaseAddr + 0xBAB60 + 3), (enable) ? newOff : off); // dmc3.exe+BAB60 - 48 8B 96 20190000 - MOV RDX,[RSI+00001920]
@@ -3883,16 +4299,16 @@ export void Model_Init()
 	// }
 	// // 0x1928
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][21]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][21]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][21]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][21]);
 		//static_assert(off == 0x1928);
 	// 	// Write<uint32>((appBaseAddr + 0x2598B2 + 3), (enable) ? newOff : off); // dmc3.exe+2598B2 - 48 89 98 28190000 - MOV [RAX+00001928],RBX
 	// 	// Trash<uint32>((appBaseAddr + 0x52E334 + 3), (enable) ? newOff : off); // dmc3.exe+52E334 - A0 010000192808001A - MOV AL,[1A00082819000001]
 	// }
 	// // 0x1930
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][22]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][22]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][22]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][22]);
 		//static_assert(off == 0x1930);
 	// 	// Trash<uint32>((appBaseAddr + 0xD281F + 3), (enable) ? newOff : off); // dmc3.exe+D281F - C7 81 30190000 0000A040 - MOV [RCX+00001930],40A00000
 	// 	// Trash<uint32>((appBaseAddr + 0xF8A89 + 3), (enable) ? newOff : off); // dmc3.exe+F8A89 - C6 83 30190000 01 - MOV BYTE PTR [RBX+00001930],01
@@ -3907,8 +4323,8 @@ export void Model_Init()
 	// }
 	// // 0x1938
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[0][23]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[0][23]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[0][23]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[0][23]);
 		//static_assert(off == 0x1938);
 	// 	// Write<uint32>((appBaseAddr + 0xD2833 + 3), (enable) ? newOff : off); // dmc3.exe+D2833 - 48 C7 81 38190000 0000A040 - MOV QWORD PTR [RCX+00001938],40A00000
 	// 	// Trash<uint32>((appBaseAddr + 0xF8A9A + 3), (enable) ? newOff : off); // dmc3.exe+F8A9A - C7 83 38190000 0000A042 - MOV [RBX+00001938],42A00000
@@ -3921,8 +4337,8 @@ export void Model_Init()
 
 	// // 0x1948
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][1]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][1]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][1]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][1]);
 		//static_assert(off == 0x1948);
 	// 	// Trash<uint32>((appBaseAddr + 0xD182C + 3), (enable) ? newOff : off); // dmc3.exe+D182C - C7 83 48190000 00009644 - MOV [RBX+00001948],44960000
 	// 	// Trash<uint32>((appBaseAddr + 0xD1843 + 3), (enable) ? newOff : off); // dmc3.exe+D1843 - 89 83 48190000 - MOV [RBX+00001948],EAX
@@ -3956,8 +4372,8 @@ export void Model_Init()
 	// }
 	// // 0x1950
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][2]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][2]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][2]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][2]);
 		//static_assert(off == 0x1950);
 	// 	// Trash<uint32>((appBaseAddr + 0xD1849 + 3), (enable) ? newOff : off); // dmc3.exe+D1849 - 89 83 50190000 - MOV [RBX+00001950],EAX
 	// 	// Write<uint32>((appBaseAddr + 0x25A80B + 3), (enable) ? newOff : off); // dmc3.exe+25A80B - 48 8D 87 50190000 - LEA RAX,[RDI+00001950]
@@ -3968,8 +4384,8 @@ export void Model_Init()
 	// }
 	// // 0x1958
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][3]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][3]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][3]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][3]);
 		//static_assert(off == 0x1958);
 	// 	// Trash<uint32>((appBaseAddr + 0xD2FE7 + 3), (enable) ? newOff : off); // dmc3.exe+D2FE7 - F3 0F10 91 58190000 - MOVSS XMM2,[RCX+00001958]
 	// 	// Trash<uint32>((appBaseAddr + 0xD300E + 3), (enable) ? newOff : off); // dmc3.exe+D300E - F3 0F11 91 58190000 - MOVSS [RCX+00001958],XMM2
@@ -3977,8 +4393,8 @@ export void Model_Init()
 	// }
 	// // 0x1960
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][4]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][4]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][4]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][4]);
 		//static_assert(off == 0x1960);
 	// 	// Trash<uint32>((appBaseAddr + 0xD115E + 3), (enable) ? newOff : off); // dmc3.exe+D115E - 8B 8B 60190000 - MOV ECX,[RBX+00001960]
 	// 	// Trash<uint32>((appBaseAddr + 0xD1823 + 3), (enable) ? newOff : off); // dmc3.exe+D1823 - 83 BB 60190000 00 - CMP DWORD PTR [RBX+00001960],00
@@ -3995,30 +4411,30 @@ export void Model_Init()
 	// }
 	// // 0x1968
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][5]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][5]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][5]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][5]);
 		// static_assert(off == 0x1968);
 	// 	// Write<uint32>((appBaseAddr + 0xF9294 + 3), (enable) ? newOff : off); // dmc3.exe+F9294 - 48 89 83 68190000 - MOV [RBX+00001968],RAX
 	// }
 	// // 0x1970
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][6]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][6]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][6]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][6]);
 		// static_assert(off == 0x1970);
 	// 	// Trash<uint32>((appBaseAddr + 0x2919B9 + 3), (enable) ? newOff : off); // dmc3.exe+2919B9 - 66 89 83 70190000 - MOV [RBX+00001970],AX
 	// }
 	// // 0x1978
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][7]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][7]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][7]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][7]);
 		// static_assert(off == 0x1978);
 	// 	// Write<uint32>((appBaseAddr + 0xF92CA + 3), (enable) ? newOff : off); // dmc3.exe+F92CA - 48 C7 83 78190000 01000000 - MOV QWORD PTR [RBX+00001978],00000001
 	// 	// Trash<uint32>((appBaseAddr + 0x5CE2DE + 3), (enable) ? newOff : off); // dmc3.exe+5CE2DE - 0D 00001978 - OR EAX,78190000
 	// }
 	// // 0x1980
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][8]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][8]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][8]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][8]);
 		// static_assert(off == 0x1980);
 	// 	// Write<uint32>((appBaseAddr + 0xF92B6 + 3), (enable) ? newOff : off); // dmc3.exe+F92B6 - 48 89 8B 80190000 - MOV [RBX+00001980],RCX
 	// 	// Save<uint32>((appBaseAddr + 0x298014 + 3), (enable) ? newOff : off); // dmc3.exe+298014 - 48 8D 8D 80190000 - LEA RCX,[RBP+00001980]
@@ -4032,8 +4448,8 @@ export void Model_Init()
 	// }
 	// // 0x1988
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][9]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][9]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][9]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][9]);
 		// static_assert(off == 0x1988);
 	// 	// Trash<uint32>((appBaseAddr + 0xD0D62 + 3), (enable) ? newOff : off); // dmc3.exe+D0D62 - 48 63 83 88190000 - MOVSXD RAX,DWORD PTR [RBX+00001988]
 	// 	// Trash<uint32>((appBaseAddr + 0xD1930 + 3), (enable) ? newOff : off); // dmc3.exe+D1930 - 89 91 88190000 - MOV [RCX+00001988],EDX
@@ -4050,8 +4466,8 @@ export void Model_Init()
 	// }
 	// // 0x1990
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][10]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][10]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][10]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][10]);
 		// static_assert(off == 0x1990);
 	// 	// Trash<uint32>((appBaseAddr + 0xFEF4A + 3), (enable) ? newOff : off); // dmc3.exe+FEF4A - 80 BF 90190000 00 - CMP BYTE PTR [RDI+00001990],00
 	// 	// Trash<uint32>((appBaseAddr + 0xFF1A8 + 3), (enable) ? newOff : off); // dmc3.exe+FF1A8 - C6 87 90190000 00 - MOV BYTE PTR [RDI+00001990],00
@@ -4060,8 +4476,8 @@ export void Model_Init()
 	// }
 	// // 0x1998
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][11]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][11]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][11]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][11]);
 		// static_assert(off == 0x1998);
 	// 	// Trash<uint32>((appBaseAddr + 0xFEFBD + 3), (enable) ? newOff : off); // dmc3.exe+FEFBD - F3 0F59 87 98190000 - MULSS XMM0,[RDI+00001998]
 	// 	// Trash<uint32>((appBaseAddr + 0xFEFF7 + 3), (enable) ? newOff : off); // dmc3.exe+FEFF7 - F3 0F59 87 98190000 - MULSS XMM0,[RDI+00001998]
@@ -4075,8 +4491,8 @@ export void Model_Init()
 	// }
 	// // 0x19A0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][12]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][12]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][12]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][12]);
 		// static_assert(off == 0x19A0);
 	// 	// Trash<uint32>((appBaseAddr + 0xC8DCF + 3), (enable) ? newOff : off); // dmc3.exe+C8DCF - F3 0F11 84 9E A0190000 - MOVSS [RSI+RBX*4+000019A0],XMM0
 	// 	// Trash<uint32>((appBaseAddr + 0xC8F65 + 3), (enable) ? newOff : off); // dmc3.exe+C8F65 - F3 0F11 84 9E A0190000 - MOVSS [RSI+RBX*4+000019A0],XMM0
@@ -4089,15 +4505,15 @@ export void Model_Init()
 	// }
 	// // 0x19A8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][13]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][13]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][13]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][13]);
 		// static_assert(off == 0x19A8);
 	// 	// Empty
 	// }
 	// // 0x19B0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][14]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][14]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][14]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][14]);
 		// static_assert(off == 0x19B0);
 	// 	// Trash<uint32>((appBaseAddr + 0xD0C85 + 3), (enable) ? newOff : off); // dmc3.exe+D0C85 - 89 AF B0190000 - MOV [RDI+000019B0],EBP
 	// 	// Trash<uint32>((appBaseAddr + 0xD2D6E + 3), (enable) ? newOff : off); // dmc3.exe+D2D6E - F3 0F10 87 B0190000 - MOVSS XMM0,[RDI+000019B0]
@@ -4110,8 +4526,8 @@ export void Model_Init()
 	// }
 	// // 0x19B8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][15]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][15]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][15]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][15]);
 		// static_assert(off == 0x19B8);
 	// 	// Trash<uint32>((appBaseAddr + 0xD0D1D + 3), (enable) ? newOff : off); // dmc3.exe+D0D1D - F3 0F11 87 B8190000 - MOVSS [RDI+000019B8],XMM0
 	// 	// Trash<uint32>((appBaseAddr + 0xD2DC6 + 3), (enable) ? newOff : off); // dmc3.exe+D2DC6 - F3 0F58 8F B8190000 - ADDSS XMM1,DWORD PTR [RDI+000019B8]
@@ -4126,8 +4542,8 @@ export void Model_Init()
 	// }
 	// // 0x19C0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][16]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][16]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][16]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][16]);
 		// static_assert(off == 0x19C0);
 	// 	// Trash<uint32>((appBaseAddr + 0xD2DF2 + 3), (enable) ? newOff : off); // dmc3.exe+D2DF2 - 44 89 A7 C0190000 - MOV [RDI+000019C0],R12D
 	// 	// Write<uint32>((appBaseAddr + 0xE8508 + 3), (enable) ? newOff : off); // dmc3.exe+E8508 - 48 89 BE C0190000 - MOV [RSI+000019C0],RDI
@@ -4170,8 +4586,8 @@ export void Model_Init()
 	// }
 	// // 0x19C8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][17]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][17]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][17]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][17]);
 		// static_assert(off == 0x19C8);
 	// 	// Trash<uint32>((appBaseAddr + 0xCC606 + 3), (enable) ? newOff : off); // dmc3.exe+CC606 - C7 83 C8190000 02000000 - MOV [RBX+000019C8],00000002
 	// 	// Trash<uint32>((appBaseAddr + 0xCC78A + 3), (enable) ? newOff : off); // dmc3.exe+CC78A - C7 83 C8190000 02000000 - MOV [RBX+000019C8],00000002
@@ -4186,8 +4602,8 @@ export void Model_Init()
 	// }
 	// // 0x19D0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][18]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][18]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][18]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][18]);
 		// static_assert(off == 0x19D0);
 	// 	// Write<uint32>((appBaseAddr + 0x58DDB + 3), (enable) ? newOff : off); // dmc3.exe+58DDB - 48 8D 8F D0190000 - LEA RCX,[RDI+000019D0]
 	// 	// Write<uint32>((appBaseAddr + 0xCBEFB + 3), (enable) ? newOff : off); // dmc3.exe+CBEFB - 48 89 9E D0190000 - MOV [RSI+000019D0],RBX
@@ -4213,8 +4629,8 @@ export void Model_Init()
 	// }
 	// // 0x19D8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][19]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][19]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][19]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][19]);
 		// static_assert(off == 0x19D8);
 	// 	// Write<uint32>((appBaseAddr + 0xCBEE3 + 3), (enable) ? newOff : off); // dmc3.exe+CBEE3 - 48 8D BE D8190000 - LEA RDI,[RSI+000019D8]
 	// 	// Write<uint32>((appBaseAddr + 0xD22FD + 3), (enable) ? newOff : off); // dmc3.exe+D22FD - 48 89 83 D8190000 - MOV [RBX+000019D8],RAX
@@ -4228,8 +4644,8 @@ export void Model_Init()
 	// }
 	// // 0x19E0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][20]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][20]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][20]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][20]);
 		// static_assert(off == 0x19E0);
 	// 	// Write<uint32>((appBaseAddr + 0xCDC8E + 3), (enable) ? newOff : off); // dmc3.exe+CDC8E - 48 8B 8B E0190000 - MOV RCX,[RBX+000019E0]
 	// 	// Write<uint32>((appBaseAddr + 0xCDC9F + 3), (enable) ? newOff : off); // dmc3.exe+CDC9F - 48 89 BB E0190000 - MOV [RBX+000019E0],RDI
@@ -4248,8 +4664,8 @@ export void Model_Init()
 	// }
 	// // 0x19E8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][21]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][21]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][21]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][21]);
 		// static_assert(off == 0x19E8);
 	// 	// Write<uint32>((appBaseAddr + 0xD2397 + 3), (enable) ? newOff : off); // dmc3.exe+D2397 - 48 89 83 E8190000 - MOV [RBX+000019E8],RAX
 	// 	// Write<uint32>((appBaseAddr + 0xD23C2 + 3), (enable) ? newOff : off); // dmc3.exe+D23C2 - 48 8B 83 E8190000 - MOV RAX,[RBX+000019E8]
@@ -4258,16 +4674,16 @@ export void Model_Init()
 	// }
 	// // 0x19F0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][22]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][22]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][22]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][22]);
 		// static_assert(off == 0x19F0);
 	// 	// Trash<uint32>((appBaseAddr + 0xE854F + 3), (enable) ? newOff : off); // dmc3.exe+E854F - 66 89 86 F0190000 - MOV [RSI+000019F0],AX
 	// 	// Trash<uint32>((appBaseAddr + 0xEA458 + 3), (enable) ? newOff : off); // dmc3.exe+EA458 - 66 89 86 F0190000 - MOV [RSI+000019F0],AX
 	// }
 	// // 0x19F8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[1][23]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[1][23]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[1][23]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[1][23]);
 		// static_assert(off == 0x19F8);
 	// 	// Trash<uint32>((appBaseAddr + 0xE856B + 3), (enable) ? newOff : off); // dmc3.exe+E856B - 66 89 86 F8190000 - MOV [RSI+000019F8],AX
 	// 	// Trash<uint32>((appBaseAddr + 0xEA474 + 3), (enable) ? newOff : off); // dmc3.exe+EA474 - 66 89 86 F8190000 - MOV [RSI+000019F8],AX
@@ -4277,23 +4693,23 @@ export void Model_Init()
 
 	// // 0x1A08
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][1]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][1]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][1]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][1]);
 		// static_assert(off == 0x1A08);
 	// 	// Write<uint32>((appBaseAddr + 0x1788B2 + 3), (enable) ? newOff : off); // dmc3.exe+1788B2 - 4C 8B 87 081A0000 - MOV R8,[RDI+00001A08]
 	// }
 	// // 0x1A10
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][2]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][2]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][2]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][2]);
 		// static_assert(off == 0x1A10);
 	// 	// Write<uint32>((appBaseAddr + 0xCE7BF + 3), (enable) ? newOff : off); // dmc3.exe+CE7BF - 48 89 83 101A0000 - MOV [RBX+00001A10],RAX
 	// 	// Write<uint32>((appBaseAddr + 0xEA3AC + 3), (enable) ? newOff : off); // dmc3.exe+EA3AC - 48 8D BE 101A0000 - LEA RDI,[RSI+00001A10]
 	// }
 	// // 0x1A18
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][3]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][3]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][3]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][3]);
 		// static_assert(off == 0x1A18);
 	// 	// Write<uint32>((appBaseAddr + 0xCF36D + 3), (enable) ? newOff : off); // dmc3.exe+CF36D - 48 89 83 181A0000 - MOV [RBX+00001A18],RAX
 	// 	// Trash<uint32>((appBaseAddr + 0xE881B + 3), (enable) ? newOff : off); // dmc3.exe+E881B - 0F2F 81 181A0000 - COMISS XMM0,[RCX+00001A18]
@@ -4317,8 +4733,8 @@ export void Model_Init()
 	// }
 	// // 0x1A20
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][4]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][4]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][4]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][4]);
 		// static_assert(off == 0x1A20);
 	// 	// Write<uint32>((appBaseAddr + 0xCC715 + 3), (enable) ? newOff : off); // dmc3.exe+CC715 - 48 89 83 201A0000 - MOV [RBX+00001A20],RAX
 	// 	// Write<uint32>((appBaseAddr + 0xCC99E + 3), (enable) ? newOff : off); // dmc3.exe+CC99E - 48 89 83 201A0000 - MOV [RBX+00001A20],RAX
@@ -4333,8 +4749,8 @@ export void Model_Init()
 	// }
 	// // 0x1A28
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][5]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][5]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][5]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][5]);
 		// static_assert(off == 0x1A28);
 	// 	// Write<uint32>((appBaseAddr + 0xCD7F2 + 3), (enable) ? newOff : off); // dmc3.exe+CD7F2 - 48 89 83 281A0000 - MOV [RBX+00001A28],RAX
 	// 	// Write<uint32>((appBaseAddr + 0xE858E + 3), (enable) ? newOff : off); // dmc3.exe+E858E - 48 8D 8E 281A0000 - LEA RCX,[RSI+00001A28]
@@ -4347,8 +4763,8 @@ export void Model_Init()
 	// }
 	// // 0x1A30
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][6]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][6]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][6]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][6]);
 		// static_assert(off == 0x1A30);
 	// 	// Write<uint32>((appBaseAddr + 0xCDC58 + 3), (enable) ? newOff : off); // dmc3.exe+CDC58 - 48 89 83 301A0000 - MOV [RBX+00001A30],RAX
 	// 	// Write<uint32>((appBaseAddr + 0xCDC83 + 3), (enable) ? newOff : off); // dmc3.exe+CDC83 - 48 8B 83 301A0000 - MOV RAX,[RBX+00001A30]
@@ -4357,15 +4773,15 @@ export void Model_Init()
 	// }
 	// // 0x1A38
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][7]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][7]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][7]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][7]);
 		// static_assert(off == 0x1A38);
 	// 	// Empty
 	// }
 	// // 0x1A40
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][8]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][8]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][8]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][8]);
 		// static_assert(off == 0x1A40);
 	// 	// Trash<uint32>((appBaseAddr + 0xD1C68 + 3), (enable) ? newOff : off); // dmc3.exe+D1C68 - 83 BB 401A0000 02 - CMP DWORD PTR [RBX+00001A40],02
 	// 	// Write<uint32>((appBaseAddr + 0x118C79 + 3), (enable) ? newOff : off); // dmc3.exe+118C79 - 48 8D 8E 401A0000 - LEA RCX,[RSI+00001A40]
@@ -4430,15 +4846,15 @@ export void Model_Init()
 	// }
 	// // 0x1A48
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][9]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][9]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][9]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][9]);
 		// static_assert(off == 0x1A48);
 	// 	// Empty
 	// }
 	// // 0x1A50
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][10]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][10]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][10]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][10]);
 		// static_assert(off == 0x1A50);
 	// 	// Write<uint32>((appBaseAddr + 0xE8AEF + 3), (enable) ? newOff : off); // dmc3.exe+E8AEF - 48 81 C1 501A0000 - ADD RCX,00001A50
 	// 	// Mission19<uint32>((appBaseAddr + 0x160B64 + 3), (enable) ? newOff : off); // dmc3.exe+160B64 - 49 8D BE 501A0000 - LEA RDI,[R14+00001A50]
@@ -4449,8 +4865,8 @@ export void Model_Init()
 	// }
 	// // 0x1A58
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][11]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][11]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][11]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][11]);
 		// static_assert(off == 0x1A58);
 	// 	// Trash<uint32>((appBaseAddr + 0x25B18E + 3), (enable) ? newOff : off); // dmc3.exe+25B18E - 89 BB 581A0000 - MOV [RBX+00001A58],EDI
 	// 	// Trash<uint32>((appBaseAddr + 0x25B378 + 3), (enable) ? newOff : off); // dmc3.exe+25B378 - 44 39 B7 581A0000 - CMP [RDI+00001A58],R14D
@@ -4463,8 +4879,8 @@ export void Model_Init()
 	// }
 	// // 0x1A60
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][12]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][12]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][12]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][12]);
 		// static_assert(off == 0x1A60);
 	// 	// Trash<uint32>((appBaseAddr + 0x160B8A + 3), (enable) ? newOff : off); // dmc3.exe+160B8A - 41 0F29 86 601A0000 - MOVAPS [R14+00001A60],XMM0
 	// 	// Mission19<uint32>((appBaseAddr + 0x2573AA + 3), (enable) ? newOff : off); // dmc3.exe+2573AA - 48 8D 9D 601A0000 - LEA RBX,[RBP+00001A60]
@@ -4476,8 +4892,8 @@ export void Model_Init()
 	// }
 	// // 0x1A68
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][13]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][13]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][13]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][13]);
 		// static_assert(off == 0x1A68);
 	// 	// Trash<uint32>((appBaseAddr + 0xCC2A7 + 3), (enable) ? newOff : off); // dmc3.exe+CC2A7 - F3 0F58 83 681A0000 - ADDSS XMM0,DWORD PTR [RBX+00001A68]
 	// 	// Trash<uint32>((appBaseAddr + 0xCC2AF + 3), (enable) ? newOff : off); // dmc3.exe+CC2AF - F3 0F11 83 681A0000 - MOVSS [RBX+00001A68],XMM0
@@ -4494,22 +4910,22 @@ export void Model_Init()
 	// }
 	// // 0x1A70
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][14]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][14]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][14]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][14]);
 		// static_assert(off == 0x1A70);
 	// 	// Trash<uint32>((appBaseAddr + 0x160B96 + 3), (enable) ? newOff : off); // dmc3.exe+160B96 - 41 0F29 8E 701A0000 - MOVAPS [R14+00001A70],XMM1
 	// }
 	// // 0x1A78
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][15]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][15]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][15]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][15]);
 		// static_assert(off == 0x1A78);
 	// 	// Mission19<uint32>((appBaseAddr + 0x15FD3A + 3), (enable) ? newOff : off); // dmc3.exe+15FD3A - 48 8D 8F 781A0000 - LEA RCX,[RDI+00001A78]
 	// }
 	// // 0x1A80
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][16]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][16]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][16]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][16]);
 		// static_assert(off == 0x1A80);
 	// 	// Trash<uint32>((appBaseAddr + 0xCC24E + 3), (enable) ? newOff : off); // dmc3.exe+CC24E - 83 BB 801A0000 00 - CMP DWORD PTR [RBX+00001A80],00
 	// 	// Trash<uint32>((appBaseAddr + 0xCCB11 + 3), (enable) ? newOff : off); // dmc3.exe+CCB11 - 0F29 86 801A0000 - MOVAPS [RSI+00001A80],XMM0
@@ -4567,8 +4983,8 @@ export void Model_Init()
 	// }
 	// // 0x1A88
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][17]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][17]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][17]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][17]);
 		// static_assert(off == 0x1A88);
 	// 	// Trash<uint32>((appBaseAddr + 0xCCB7D + 3), (enable) ? newOff : off); // dmc3.exe+CCB7D - F3 0F10 8E 881A0000 - MOVSS XMM1,[RSI+00001A88]
 	// 	// Trash<uint32>((appBaseAddr + 0xCF036 + 3), (enable) ? newOff : off); // dmc3.exe+CF036 - F3 0F10 8B 881A0000 - MOVSS XMM1,[RBX+00001A88]
@@ -4597,8 +5013,8 @@ export void Model_Init()
 	// }
 	// // 0x1A90
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][18]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][18]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][18]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][18]);
 		// static_assert(off == 0x1A90);
 	// 	// Trash<uint32>((appBaseAddr + 0xCF450 + 3), (enable) ? newOff : off); // dmc3.exe+CF450 - 89 B3 901A0000 - MOV [RBX+00001A90],ESI
 	// 	// Trash<uint32>((appBaseAddr + 0xCF755 + 3), (enable) ? newOff : off); // dmc3.exe+CF755 - 89 93 901A0000 - MOV [RBX+00001A90],EDX
@@ -4612,8 +5028,8 @@ export void Model_Init()
 	// }
 	// // 0x1A98
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][19]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][19]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][19]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][19]);
 		// static_assert(off == 0x1A98);
 	// 	// Trash<uint32>((appBaseAddr + 0xC88E2 + 3), (enable) ? newOff : off); // dmc3.exe+C88E2 - F3 0F10 84 9E 981A0000 - MOVSS XMM0,[RSI+RBX*4+00001A98]
 	// 	// Trash<uint32>((appBaseAddr + 0xC890D + 3), (enable) ? newOff : off); // dmc3.exe+C890D - F3 0F11 84 9E 981A0000 - MOVSS [RSI+RBX*4+00001A98],XMM0
@@ -4630,8 +5046,8 @@ export void Model_Init()
 	// }
 	// // 0x1AA0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][20]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][20]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][20]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][20]);
 		// static_assert(off == 0x1AA0);
 	// 	// Trash<uint32>((appBaseAddr + 0xCC371 + 3), (enable) ? newOff : off); // dmc3.exe+CC371 - 8B 8B A01A0000 - MOV ECX,[RBX+00001AA0]
 	// 	// Trash<uint32>((appBaseAddr + 0xCC510 + 3), (enable) ? newOff : off); // dmc3.exe+CC510 - 8B 89 A01A0000 - MOV ECX,[RCX+00001AA0]
@@ -4681,8 +5097,8 @@ export void Model_Init()
 	// }
 	// // 0x1AA8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][21]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][21]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][21]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][21]);
 		// static_assert(off == 0x1AA8);
 	// 	// Trash<uint32>((appBaseAddr + 0xCC67C + 3), (enable) ? newOff : off); // dmc3.exe+CC67C - F3 0F58 83 A81A0000 - ADDSS XMM0,DWORD PTR [RBX+00001AA8]
 	// 	// Trash<uint32>((appBaseAddr + 0xCC68B + 3), (enable) ? newOff : off); // dmc3.exe+CC68B - F3 0F11 83 A81A0000 - MOVSS [RBX+00001AA8],XMM0
@@ -4702,8 +5118,8 @@ export void Model_Init()
 	// }
 	// // 0x1AB0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][22]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][22]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][22]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][22]);
 		// static_assert(off == 0x1AB0);
 	// 	// Trash<uint32>((appBaseAddr + 0xCCC9E + 3), (enable) ? newOff : off); // dmc3.exe+CCC9E - C7 83 B01A0000 EC51383E - MOV [RBX+00001AB0],3E3851EC
 	// 	// Trash<uint32>((appBaseAddr + 0xCCCE3 + 3), (enable) ? newOff : off); // dmc3.exe+CCCE3 - F3 0F10 93 B01A0000 - MOVSS XMM2,[RBX+00001AB0]
@@ -4737,8 +5153,8 @@ export void Model_Init()
 	// }
 	// // 0x1AB8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[2][23]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[2][23]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[2][23]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[2][23]);
 		// static_assert(off == 0x1AB8);
 	// 	// Trash<uint32>((appBaseAddr + 0x254252 + 3), (enable) ? newOff : off); // dmc3.exe+254252 - 44 8B 86 B81A0000 - MOV R8D,[RSI+00001AB8]
 	// 	// Trash<uint32>((appBaseAddr + 0x25A206 + 3), (enable) ? newOff : off); // dmc3.exe+25A206 - 66 44 89 A8 B81A0000 - MOV [RAX+00001AB8],R13W
@@ -4759,15 +5175,15 @@ export void Model_Init()
 
 	// // 0x1AC8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][1]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][1]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][1]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][1]);
 	// 	static_assert(off == 0x1AC8);
 	// 	// Trash<uint32>((appBaseAddr + 0xD0D04 + 3), (enable) ? newOff : off); // dmc3.exe+D0D04 - 89 AF C81A0000 - MOV [RDI+00001AC8],EBP
 	// }
 	// // 0x1AD0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][2]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][2]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][2]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][2]);
 	// 	static_assert(off == 0x1AD0);
 	// 	// Mission19<uint32>((appBaseAddr + 0x15FF1D + 3), (enable) ? newOff : off); // dmc3.exe+15FF1D - 4C 8D 81 D01A0000 - LEA R8,[RCX+00001AD0]
 	// 	// Mission19<uint32>((appBaseAddr + 0x1607DE + 3), (enable) ? newOff : off); // dmc3.exe+1607DE - 49 89 86 D01A0000 - MOV [R14+00001AD0],RAX
@@ -4780,16 +5196,16 @@ export void Model_Init()
 	// }
 	// // 0x1AD8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][3]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][3]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][3]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][3]);
 	// 	static_assert(off == 0x1AD8);
 	// 	// Mission19<uint32>((appBaseAddr + 0x160813 + 3), (enable) ? newOff : off); // dmc3.exe+160813 - 49 89 86 D81A0000 - MOV [R14+00001AD8],RAX
 	// 	// Mission19<uint32>((appBaseAddr + 0x1609D3 + 3), (enable) ? newOff : off); // dmc3.exe+1609D3 - 49 8B 96 D81A0000 - MOV RDX,[R14+00001AD8]
 	// }
 	// // 0x1AE0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][4]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][4]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][4]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][4]);
 	// 	static_assert(off == 0x1AE0);
 	// 	// Trash<uint32>((appBaseAddr + 0xD0D0A + 3), (enable) ? newOff : off); // dmc3.exe+D0D0A - 89 AF E01A0000 - MOV [RDI+00001AE0],EBP
 	// 	// Write<uint32>((appBaseAddr + 0xE85B5 + 3), (enable) ? newOff : off); // dmc3.exe+E85B5 - 48 8D 9E E01A0000 - LEA RBX,[RSI+00001AE0]
@@ -4817,16 +5233,16 @@ export void Model_Init()
 	// }
 	// // 0x1AE8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][5]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][5]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][5]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][5]);
 	// 	static_assert(off == 0x1AE8);
 	// 	// Trash<uint32>((appBaseAddr + 0x15F480 + 3), (enable) ? newOff : off); // dmc3.exe+15F480 - 8B 89 E81A0000 - MOV ECX,[RCX+00001AE8]
 	// 	// Mission19<uint32>((appBaseAddr + 0x16087D + 3), (enable) ? newOff : off); // dmc3.exe+16087D - 49 8D B6 E81A0000 - LEA RSI,[R14+00001AE8]
 	// }
 	// // 0x1AF0
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][6]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][6]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][6]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][6]);
 	// 	static_assert(off == 0x1AF0);
 	// 	// Write<uint32>((appBaseAddr + 0x15D97B + 3), (enable) ? newOff : off); // dmc3.exe+15D97B - 4C 8D 86 F01A0000 - LEA R8,[RSI+00001AF0]
 	// 	// Mission19<uint32>((appBaseAddr + 0x15FF4A + 3), (enable) ? newOff : off); // dmc3.exe+15FF4A - 48 8D 99 F01A0000 - LEA RBX,[RCX+00001AF0]
@@ -4839,8 +5255,8 @@ export void Model_Init()
 	// }
 	// // 0x1AF8
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][7]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][7]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][7]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][7]);
 	// 	static_assert(off == 0x1AF8);
 	// 	// Trash<uint32>((appBaseAddr + 0xC8587 + 3), (enable) ? newOff : off); // dmc3.exe+C8587 - F3 0F10 84 B7 F81A0000 - MOVSS XMM0,[RDI+RSI*4+00001AF8]
 	// 	// Trash<uint32>((appBaseAddr + 0xC859F + 3), (enable) ? newOff : off); // dmc3.exe+C859F - F3 0F11 84 B7 F81A0000 - MOVSS [RDI+RSI*4+00001AF8],XMM0
@@ -4851,8 +5267,8 @@ export void Model_Init()
 	// }
 	// // 0x1B00
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][8]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][8]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][8]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][8]);
 	// 	static_assert(off == 0x1B00);
 	// 	// Trash<uint32>((appBaseAddr + 0xCC3A3 + 3), (enable) ? newOff : off); // dmc3.exe+CC3A3 - C7 83 001B0000 02000000 - MOV [RBX+00001B00],00000002
 	// 	// Write<uint32>((appBaseAddr + 0xCC3BA + 3), (enable) ? newOff : off); // dmc3.exe+CC3BA - 48 89 83 001B0000 - MOV [RBX+00001B00],RAX
@@ -4953,8 +5369,8 @@ export void Model_Init()
 	// }
 	// // 0x1B08
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][9]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][9]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][9]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][9]);
 	// 	static_assert(off == 0x1B08);
 	// 	// Trash<uint32>((appBaseAddr + 0xCF64A + 3), (enable) ? newOff : off); // dmc3.exe+CF64A - 83 BB 081B0000 1F - CMP DWORD PTR [RBX+00001B08],1F
 	// 	// Trash<uint32>((appBaseAddr + 0xD01D4 + 3), (enable) ? newOff : off); // dmc3.exe+D01D4 - 83 BF 081B0000 1F - CMP DWORD PTR [RDI+00001B08],1F
@@ -4963,32 +5379,32 @@ export void Model_Init()
 	// }
 	// // 0x1B10
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][10]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][10]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][10]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][10]);
 	// 	static_assert(off == 0x1B10);
 	// 	// Trash<uint32>((appBaseAddr + 0x253DE8 + 3), (enable) ? newOff : off); // dmc3.exe+253DE8 - 89 88 101B0000 - MOV [RAX+00001B10],ECX
 	// 	// Trash<uint32>((appBaseAddr + 0x25453E + 3), (enable) ? newOff : off); // dmc3.exe+25453E - 66 0F6E 85 101B0000 - MOVD XMM0,[RBP+00001B10]
 	// }
 	// // 0x1B18
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][11]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][11]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][11]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][11]);
 	// 	static_assert(off == 0x1B18);
 	// 	// Trash<uint32>((appBaseAddr + 0x253E02 + 3), (enable) ? newOff : off); // dmc3.exe+253E02 - 89 88 181B0000 - MOV [RAX+00001B18],ECX
 	// 	// Trash<uint32>((appBaseAddr + 0x2545A4 + 3), (enable) ? newOff : off); // dmc3.exe+2545A4 - 44 8B 85 181B0000 - MOV R8D,[RBP+00001B18]
 	// }
 	// // 0x1B20
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][12]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][12]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][12]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][12]);
 	// 	static_assert(off == 0x1B20);
 	// 	// Trash<uint32>((appBaseAddr + 0x253E1C + 3), (enable) ? newOff : off); // dmc3.exe+253E1C - 89 88 201B0000 - MOV [RAX+00001B20],ECX
 	// 	// Trash<uint32>((appBaseAddr + 0x254586 + 3), (enable) ? newOff : off); // dmc3.exe+254586 - 66 0F6E 85 201B0000 - MOVD XMM0,[RBP+00001B20]
 	// }
 	// // 0x1B28
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][13]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][13]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][13]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][13]);
 	// 	static_assert(off == 0x1B28);
 	// 	// Trash<uint32>((appBaseAddr + 0x2538CD + 3), (enable) ? newOff : off); // dmc3.exe+2538CD - 89 83 281B0000 - MOV [RBX+00001B28],EAX
 	// 	// Trash<uint32>((appBaseAddr + 0x253A4D + 3), (enable) ? newOff : off); // dmc3.exe+253A4D - 44 01 81 281B0000 - ADD [RCX+00001B28],R8D
@@ -4997,22 +5413,22 @@ export void Model_Init()
 	// }
 	// // 0x1B30
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][14]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][14]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][14]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][14]);
 	// 	static_assert(off == 0x1B30);
 	// 	// Empty
 	// }
 	// // 0x1B38
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][15]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][15]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][15]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][15]);
 	// 	static_assert(off == 0x1B38);
 	// 	// Empty
 	// }
 	// // 0x1B40
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][16]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][16]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][16]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][16]);
 	// 	static_assert(off == 0x1B40);
 	// 	// Trash<uint32>((appBaseAddr + 0xCC0E9 + 3), (enable) ? newOff : off); // dmc3.exe+CC0E9 - BA 401B0000 - MOV EDX,00001B40
 	// 	// Trash<uint32>((appBaseAddr + 0xD1A8B + 3), (enable) ? newOff : off); // dmc3.exe+D1A8B - BA 401B0000 - MOV EDX,00001B40
@@ -5021,15 +5437,15 @@ export void Model_Init()
 	// }
 	// // 0x1B48
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][17]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][17]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][17]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][17]);
 	// 	static_assert(off == 0x1B48);
 	// 	// Write<uint32>((appBaseAddr + 0x15D8E7 + 3), (enable) ? newOff : off); // dmc3.exe+15D8E7 - 48 8B 86 481B0000 - MOV RAX,[RSI+00001B48]
 	// }
 	// // 0x1B50
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][18]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][18]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][18]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][18]);
 	// 	static_assert(off == 0x1B50);
 	// 	// Write<uint32>((appBaseAddr + 0xEA209 + 3), (enable) ? newOff : off); // dmc3.exe+EA209 - 48 89 86 501B0000 - MOV [RSI+00001B50],RAX
 	// 	// Write<uint32>((appBaseAddr + 0xEA31B + 3), (enable) ? newOff : off); // dmc3.exe+EA31B - 48 8B 86 501B0000 - MOV RAX,[RSI+00001B50]
@@ -5037,8 +5453,8 @@ export void Model_Init()
 	// }
 	// // 0x1B58
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][19]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][19]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][19]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][19]);
 	// 	static_assert(off == 0x1B58);
 	// 	// Write<uint32>((appBaseAddr + 0xE85E7 + 3), (enable) ? newOff : off); // dmc3.exe+E85E7 - 48 89 BE 581B0000 - MOV [RSI+00001B58],RDI
 	// 	// Write<uint32>((appBaseAddr + 0xE91EF + 3), (enable) ? newOff : off); // dmc3.exe+E91EF - 48 8B 81 581B0000 - MOV RAX,[RCX+00001B58]
@@ -5062,8 +5478,8 @@ export void Model_Init()
 	// }
 	// // 0x1B60
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][20]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][20]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][20]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][20]);
 	// 	static_assert(off == 0x1B60);
 	// 	// Mission19<uint32>((appBaseAddr + 0x15C811 + 3), (enable) ? newOff : off); // dmc3.exe+15C811 - 48 8D 9E 601B0000 - LEA RBX,[RSI+00001B60]
 	// 	// Mission19<uint32>((appBaseAddr + 0x15CAC4 + 3), (enable) ? newOff : off); // dmc3.exe+15CAC4 - 48 89 86 601B0000 - MOV [RSI+00001B60],RAX
@@ -5072,8 +5488,8 @@ export void Model_Init()
 	// }
 	// // 0x1B68
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][21]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][21]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][21]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][21]);
 	// 	static_assert(off == 0x1B68);
 	// 	// Trash<uint32>((appBaseAddr + 0x254A52 + 3), (enable) ? newOff : off); // dmc3.exe+254A52 - F3 0F58 81 681B0000 - ADDSS XMM0,DWORD PTR [RCX+00001B68]
 	// 	// Trash<uint32>((appBaseAddr + 0x254A62 + 3), (enable) ? newOff : off); // dmc3.exe+254A62 - F3 0F11 81 681B0000 - MOVSS [RCX+00001B68],XMM0
@@ -5082,8 +5498,8 @@ export void Model_Init()
 	// }
 	// // 0x1B70
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][22]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][22]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][22]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][22]);
 	// 	static_assert(off == 0x1B70);
 	// 	// Write<uint32>((appBaseAddr + 0x2538A8 + 3), (enable) ? newOff : off); // dmc3.exe+2538A8 - 48 8D 8B 701B0000 - LEA RCX,[RBX+00001B70]
 	// 	// Write<uint32>((appBaseAddr + 0x253963 + 3), (enable) ? newOff : off); // dmc3.exe+253963 - 48 81 C1 701B0000 - ADD RCX,00001B70
@@ -5095,8 +5511,8 @@ export void Model_Init()
 	// }
 	// // 0x1B78
 	// {
-	// 	constexpr auto off = offsetof(ACTOR_DATA, modelPhysicsMetadataPool[3][23]);
-	// 	constexpr auto newOff = offsetof(ACTOR_DATA, newModelPhysicsMetadataPool[3][23]);
+	// 	constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][23]);
+	// 	constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][23]);
 	// 	static_assert(off == 0x1B78);
 	// 	// Trash<uint32>((appBaseAddr + 0x254419 + 3), (enable) ? newOff : off); // dmc3.exe+254419 - C7 85 781B0000 0D000000 - MOV [RBP+00001B78],0000000D
 	// }
@@ -5125,8 +5541,8 @@ export void Model_Init()
 
 	// 0x7CC0
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, submodelData[1]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newSubmodelData[1]);
+		constexpr auto off = offsetof(ActorData, submodelData[1]);
+		constexpr auto newOff = offsetof(ActorData, newSubmodelData[1]);
 		static_assert(off == 0x7CC0);
 		// Write<uint32>((appBaseAddr + 0x176458 + 3), (enable) ? newOff : off); // dmc3.exe+176458 - 48 8D 8E C07C0000 - LEA RCX,[RSI+00007CC0]
 		// Write<uint32>((appBaseAddr + 0x176BE5 + 3), (enable) ? newOff : off); // dmc3.exe+176BE5 - 48 8D 8E C07C0000 - LEA RCX,[RSI+00007CC0]
@@ -5138,8 +5554,8 @@ export void Model_Init()
 	}
 	// 0x8440
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, submodelData[2]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newSubmodelData[2]);
+		constexpr auto off = offsetof(ActorData, submodelData[2]);
+		constexpr auto newOff = offsetof(ActorData, newSubmodelData[2]);
 		static_assert(off == 0x8440);
 		// Write<uint32>((appBaseAddr + 0xB5F18 + 3), (enable) ? newOff : off); // dmc3.exe+B5F18 - 49 8D 94 24 40840000 - LEA RDX,[R12+00008440]
 		// Write<uint32>((appBaseAddr + 0x176465 + 3), (enable) ? newOff : off); // dmc3.exe+176465 - 48 8D 8E 40840000 - LEA RCX,[RSI+00008440]
@@ -5167,8 +5583,8 @@ export void Model_Init()
 	}
 	// 0x8BC0
 	{
-		constexpr auto off = offsetof(ACTOR_DATA, submodelData[3]);
-		constexpr auto newOff = offsetof(ACTOR_DATA, newSubmodelData[3]);
+		constexpr auto off = offsetof(ActorData, submodelData[3]);
+		constexpr auto newOff = offsetof(ActorData, newSubmodelData[3]);
 		static_assert(off == 0x8BC0);
 		// Write<uint32>((appBaseAddr + 0x1764E7 + 3), (enable) ? newOff : off); // dmc3.exe+1764E7 - 48 8D 9E C08B0000 - LEA RBX,[RSI+00008BC0]
 		// Write<uint32>((appBaseAddr + 0x176B5C + 3), (enable) ? newOff : off); // dmc3.exe+176B5C - 48 89 AE C08B0000 - MOV [RSI+00008BC0],RBP
