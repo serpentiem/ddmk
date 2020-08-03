@@ -114,6 +114,7 @@ var items =
 	[ "cloneIsActive"                       , "bool"                    , 0x6454                           ],
 	[ "cloneBaseAddr"                       , "byte8 *"                 , 0x6478                           ],
 	[ "cloneIsControlledByPlayer"           , "bool"                    , 0x6480                           ],
+
 	[ "activeMeleeWeaponIndex"              , "uint32"                  , 0x6484, CHAR_VERGIL              ],
 	[ "queuedMeleeWeaponIndex"              , "uint32"                  , 0x6488, CHAR_VERGIL              ],
 	[ "activeWeapon"                        , "uint8"                   , 0x648D, CHAR_DANTE               ],
@@ -130,6 +131,7 @@ var items =
 	[ "rangedWeaponSwitchTimeout"           , "float32"                 , 0x650C, CHAR_DANTE               ],
 	[ "meleeWeaponSwitchForwardTimeout"     , "float32"                 , 0x6508, CHAR_VERGIL              ],
 	[ "meleeWeaponSwitchBackTimeout"        , "float32"                 , 0x650C, CHAR_VERGIL              ],
+	
 	[ "styleRank"                           , "uint32"                  , 0x6510                           ],
 	[ "styleMeter"                          , "float32"                 , 0x6514                           ],
 	[ "inputData[58]"                       , "InputData"              , 0x6674                           ],
