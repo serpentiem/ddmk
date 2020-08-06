@@ -120,13 +120,20 @@ var items =
 	[ "activeWeapon"                        , "uint8"                   , 0x648D, CHAR_DANTE               ],
 	[ "meleeWeaponIndex"                    , "uint32"                  , 0x6490, CHAR_DANTE               ],
 	[ "rangedWeaponIndex"                   , "uint32"                  , 0x6494, CHAR_DANTE               ],
+
+
+
 	[ "weapons[5]"                          , "uint8"                   , 0x6498                           ],
 	[ "weaponData[5]"                       , "byte8 *"                 , 0x64A0                           ],
 	[ "weaponStatus[5]"                     , "uint32"                  , 0x64C8                           ],
 	[ "weaponLevels[5]"                     , "uint32"                  , 0x64DC                           ],
+
+	
 	[ "activeMeleeWeapon"                   , "uint8"                   , 0x64F0, CHAR_DANTE               ],
 	[ "activeRangedWeapon"                  , "uint8"                   , 0x64F1, CHAR_DANTE               ],
+	
 	[ "weaponTimers[5]"                     , "float32"                 , 0x64F4                           ],
+
 	[ "meleeWeaponSwitchTimeout"            , "float32"                 , 0x6508, CHAR_DANTE               ],
 	[ "rangedWeaponSwitchTimeout"           , "float32"                 , 0x650C, CHAR_DANTE               ],
 	[ "meleeWeaponSwitchForwardTimeout"     , "float32"                 , 0x6508, CHAR_VERGIL              ],
@@ -313,16 +320,19 @@ var extra =
 	[ "newButtonMask"          , "byte16"  ],
 	[ "newEnableRightStick"    , "bool"    ],
 	[ "newEnableLeftStick"     , "bool"    ],
-	[ "newMeleeWeapon[5]"      , "uint8"   ],
+
+	[ "newMeleeWeapons[5]"      , "uint8"   ],
 	[ "newMeleeWeaponData[5]"  , "byte8 *" ],
 	[ "newMeleeWeaponCount"    , "uint8"   ],
 	[ "newMeleeWeaponIndex"    , "uint8"   ],
 	[ "newLastMeleeWeapon"     , "uint8"   ],
-	[ "newRangedWeapon[5]"     , "uint8"   ],
+
+	[ "newRangedWeapons[5]"     , "uint8"   ],
 	[ "newRangedWeaponData[5]" , "byte8 *" ],
 	[ "newRangedWeaponCount"   , "uint8"   ],
 	[ "newRangedWeaponIndex"   , "uint8"   ],
 	[ "newLastRangedWeapon"    , "uint8"   ],
+
 	[ "newSect[8]"             , "bool"    ],
 	[ "newBufferedActionPolicy", "uint8"   ],
 	[ "newAirStingerCount"     , "uint8"   ],

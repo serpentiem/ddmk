@@ -890,7 +890,7 @@ void FixPull(T & actorData)
 template <typename T>
 bool IsVergilMeleeWeaponSelected(T & actorData)
 {
-	auto & meleeWeapon = actorData.newMeleeWeapon[actorData.newMeleeWeaponIndex];
+	auto & meleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
 	if ((meleeWeapon >= WEAPON_VERGIL_YAMATO) && (meleeWeapon <= WEAPON_VERGIL_FORCE_EDGE))
 	{
 		return true;
@@ -901,7 +901,7 @@ bool IsVergilMeleeWeaponSelected(T & actorData)
 template <typename T>
 bool IsDanteMeleeWeaponSelected(T & actorData)
 {
-	auto & meleeWeapon = actorData.newMeleeWeapon[actorData.newMeleeWeaponIndex];
+	auto & meleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
 	if ((meleeWeapon >= WEAPON_DANTE_REBELLION) && (meleeWeapon <= WEAPON_DANTE_BEOWULF))
 	{
 		return true;

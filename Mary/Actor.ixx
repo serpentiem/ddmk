@@ -571,15 +571,15 @@ void UpdateNewMeleeWeapons
 {
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeaponDante[player][entity], MAX_MELEE_WEAPON);
+		memcpy(actorData.newMeleeWeapons, Config.Actor.meleeWeaponDante[player][entity], MAX_MELEE_WEAPON);
 		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCountDante[player][entity];
 	}
 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
-		memcpy(actorData.newMeleeWeapon, Config.Actor.meleeWeaponVergil[player][entity], MAX_MELEE_WEAPON);
+		memcpy(actorData.newMeleeWeapons, Config.Actor.meleeWeaponVergil[player][entity], MAX_MELEE_WEAPON);
 		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCountVergil[player][entity];
 	}
-	UpdateMapIndex(actorData.newMeleeWeapon, actorData.newMeleeWeaponIndex, g_newMeleeWeapon[player][entity]);
+	UpdateMapIndex(actorData.newMeleeWeapons, actorData.newMeleeWeaponIndex, g_newMeleeWeapon[player][entity]);
 }
 
 
@@ -634,14 +634,14 @@ void UpdateNewRangedWeapons
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		memcpy(actorData.newRangedWeapon, Config.Actor.rangedWeaponDante[player][entity], MAX_RANGED_WEAPON);
+		memcpy(actorData.newRangedWeapons, Config.Actor.rangedWeaponDante[player][entity], MAX_RANGED_WEAPON);
 
 
 		actorData.newRangedWeaponCount = Config.Actor.rangedWeaponCountDante[player][entity];
 
 
 
-		UpdateMapIndex(actorData.newRangedWeapon, actorData.newRangedWeaponIndex, g_newRangedWeapon[player][entity]);
+		UpdateMapIndex(actorData.newRangedWeapons, actorData.newRangedWeaponIndex, g_newRangedWeapon[player][entity]);
 
 
 
@@ -891,8 +891,8 @@ byte8 * CreateActor
 	UpdateNewMeleeWeapons (parentActorData, player, entity);
 	UpdateNewRangedWeapons(parentActorData, player, entity);
 
-	UpdateMeleeWeapon (parentActorData, parentActorData.newMeleeWeapon [parentActorData.newMeleeWeaponIndex ]);
-	UpdateRangedWeapon(parentActorData, parentActorData.newRangedWeapon[parentActorData.newRangedWeaponIndex]);
+	UpdateMeleeWeapon (parentActorData, parentActorData.newMeleeWeapons [parentActorData.newMeleeWeaponIndex ]);
+	UpdateRangedWeapon(parentActorData, parentActorData.newRangedWeapons[parentActorData.newRangedWeaponIndex]);
 
 
 	//Log("ranged weapon actor data %u", parentActorData.newRangedWeapon[parentActorData.newRangedWeaponIndex]);
@@ -1068,7 +1068,7 @@ bool IsWeaponReady
 		(
 			actorData,
 			weapon,
-			actorData.newMeleeWeapon,
+			actorData.newMeleeWeapons,
 			actorData.newMeleeWeaponCount,
 			actorData.newMeleeWeaponIndex
 		);
@@ -1091,7 +1091,7 @@ bool IsWeaponReady
 		(
 			actorData,
 			weapon,
-			actorData.newRangedWeapon,
+			actorData.newRangedWeapons,
 			actorData.newRangedWeaponCount,
 			actorData.newRangedWeaponIndex
 		);
@@ -1495,7 +1495,7 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 	}
 
 
-	auto & newMeleeWeapon = actorData.newMeleeWeapon[actorData.newMeleeWeaponIndex];
+	auto & newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
 
 	UpdateMeleeWeapon(actorData, newMeleeWeapon);
 
@@ -1697,7 +1697,7 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 	//	actorData.newMeleeWeaponIndex = 0;
 	//}
 
-	//auto & newMeleeWeapon = actorData.newMeleeWeapon[actorData.newMeleeWeaponIndex];
+	//auto & newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
 	//if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
 	//{
 	//	actorData.meleeWeaponIndex = 0;
@@ -1794,7 +1794,7 @@ void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
 	//	actorData.newRangedWeaponIndex = 0;
 	//}
 
-	//auto & newRangedWeapon = actorData.newRangedWeapon[actorData.newRangedWeaponIndex];
+	//auto & newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
 	//if ((newRangedWeapon >= WEAPON_DANTE_EBONY_IVORY) && (newRangedWeapon <= WEAPON_DANTE_KALINA_ANN))
 	//{
 	//	actorData.rangedWeaponIndex = 0;
@@ -1838,7 +1838,7 @@ void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
 	//	auto & modelData = actorData.modelData[actorData.activeModelIndex];
 	//	auto & lowerMotionData = actorData.motionData[BODY_PART_LOWER];
 	//	auto & upperMotionData = actorData.motionData[BODY_PART_UPPER];
-	//	auto & newRangedWeapon = actorData.newRangedWeapon[actorData.newRangedWeaponIndex];
+	//	auto & newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
 
 	//	if (actorData.state & STATE_BUSY)
 	//	{

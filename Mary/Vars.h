@@ -1919,14 +1919,14 @@ struct ActorData
 	bool newEnableRightStick; // 0x1C7AB
 	bool newEnableLeftStick; // 0x1C7AC
 	_(3);
-	uint8 newMeleeWeapon[5]; // 0x1C7B0
+	uint8 newMeleeWeapons[5]; // 0x1C7B0
 	_(11);
 	byte8 * newMeleeWeaponData[5]; // 0x1C7C0
 	uint8 newMeleeWeaponCount; // 0x1C7E8
 	uint8 newMeleeWeaponIndex; // 0x1C7E9
 	uint8 newLastMeleeWeapon; // 0x1C7EA
 	_(5);
-	uint8 newRangedWeapon[5]; // 0x1C7F0
+	uint8 newRangedWeapons[5]; // 0x1C7F0
 	_(11);
 	byte8 * newRangedWeaponData[5]; // 0x1C800
 	uint8 newRangedWeaponCount; // 0x1C828
@@ -2150,14 +2150,14 @@ struct ActorDataDante
 	bool newEnableRightStick; // 0x1C7AB
 	bool newEnableLeftStick; // 0x1C7AC
 	_(3);
-	uint8 newMeleeWeapon[5]; // 0x1C7B0
+	uint8 newMeleeWeapons[5]; // 0x1C7B0
 	_(11);
 	byte8 * newMeleeWeaponData[5]; // 0x1C7C0
 	uint8 newMeleeWeaponCount; // 0x1C7E8
 	uint8 newMeleeWeaponIndex; // 0x1C7E9
 	uint8 newLastMeleeWeapon; // 0x1C7EA
 	_(5);
-	uint8 newRangedWeapon[5]; // 0x1C7F0
+	uint8 newRangedWeapons[5]; // 0x1C7F0
 	_(11);
 	byte8 * newRangedWeaponData[5]; // 0x1C800
 	uint8 newRangedWeaponCount; // 0x1C828
@@ -2360,14 +2360,14 @@ struct ActorDataBob
 	bool newEnableRightStick; // 0x1C7AB
 	bool newEnableLeftStick; // 0x1C7AC
 	_(3);
-	uint8 newMeleeWeapon[5]; // 0x1C7B0
+	uint8 newMeleeWeapons[5]; // 0x1C7B0
 	_(11);
 	byte8 * newMeleeWeaponData[5]; // 0x1C7C0
 	uint8 newMeleeWeaponCount; // 0x1C7E8
 	uint8 newMeleeWeaponIndex; // 0x1C7E9
 	uint8 newLastMeleeWeapon; // 0x1C7EA
 	_(5);
-	uint8 newRangedWeapon[5]; // 0x1C7F0
+	uint8 newRangedWeapons[5]; // 0x1C7F0
 	_(11);
 	byte8 * newRangedWeaponData[5]; // 0x1C800
 	uint8 newRangedWeaponCount; // 0x1C828
@@ -2570,14 +2570,14 @@ struct ActorDataLady
 	bool newEnableRightStick; // 0x1C7AB
 	bool newEnableLeftStick; // 0x1C7AC
 	_(3);
-	uint8 newMeleeWeapon[5]; // 0x1C7B0
+	uint8 newMeleeWeapons[5]; // 0x1C7B0
 	_(11);
 	byte8 * newMeleeWeaponData[5]; // 0x1C7C0
 	uint8 newMeleeWeaponCount; // 0x1C7E8
 	uint8 newMeleeWeaponIndex; // 0x1C7E9
 	uint8 newLastMeleeWeapon; // 0x1C7EA
 	_(5);
-	uint8 newRangedWeapon[5]; // 0x1C7F0
+	uint8 newRangedWeapons[5]; // 0x1C7F0
 	_(11);
 	byte8 * newRangedWeaponData[5]; // 0x1C800
 	uint8 newRangedWeaponCount; // 0x1C828
@@ -2789,14 +2789,14 @@ struct ActorDataVergil
 	bool newEnableRightStick; // 0x1C7AB
 	bool newEnableLeftStick; // 0x1C7AC
 	_(3);
-	uint8 newMeleeWeapon[5]; // 0x1C7B0
+	uint8 newMeleeWeapons[5]; // 0x1C7B0
 	_(11);
 	byte8 * newMeleeWeaponData[5]; // 0x1C7C0
 	uint8 newMeleeWeaponCount; // 0x1C7E8
 	uint8 newMeleeWeaponIndex; // 0x1C7E9
 	uint8 newLastMeleeWeapon; // 0x1C7EA
 	_(5);
-	uint8 newRangedWeapon[5]; // 0x1C7F0
+	uint8 newRangedWeapons[5]; // 0x1C7F0
 	_(11);
 	byte8 * newRangedWeaponData[5]; // 0x1C800
 	uint8 newRangedWeaponCount; // 0x1C828
@@ -2936,12 +2936,12 @@ static_assert(offsetof(ActorData, newGamepad) == 0x1C7A8);
 static_assert(offsetof(ActorData, newButtonMask) == 0x1C7A9);
 static_assert(offsetof(ActorData, newEnableRightStick) == 0x1C7AB);
 static_assert(offsetof(ActorData, newEnableLeftStick) == 0x1C7AC);
-static_assert(offsetof(ActorData, newMeleeWeapon) == 0x1C7B0);
+static_assert(offsetof(ActorData, newMeleeWeapons) == 0x1C7B0);
 static_assert(offsetof(ActorData, newMeleeWeaponData) == 0x1C7C0);
 static_assert(offsetof(ActorData, newMeleeWeaponCount) == 0x1C7E8);
 static_assert(offsetof(ActorData, newMeleeWeaponIndex) == 0x1C7E9);
 static_assert(offsetof(ActorData, newLastMeleeWeapon) == 0x1C7EA);
-static_assert(offsetof(ActorData, newRangedWeapon) == 0x1C7F0);
+static_assert(offsetof(ActorData, newRangedWeapons) == 0x1C7F0);
 static_assert(offsetof(ActorData, newRangedWeaponData) == 0x1C800);
 static_assert(offsetof(ActorData, newRangedWeaponCount) == 0x1C828);
 static_assert(offsetof(ActorData, newRangedWeaponIndex) == 0x1C829);
@@ -3088,12 +3088,12 @@ static_assert(offsetof(ActorDataDante, newGamepad) == 0x1C7A8);
 static_assert(offsetof(ActorDataDante, newButtonMask) == 0x1C7A9);
 static_assert(offsetof(ActorDataDante, newEnableRightStick) == 0x1C7AB);
 static_assert(offsetof(ActorDataDante, newEnableLeftStick) == 0x1C7AC);
-static_assert(offsetof(ActorDataDante, newMeleeWeapon) == 0x1C7B0);
+static_assert(offsetof(ActorDataDante, newMeleeWeapons) == 0x1C7B0);
 static_assert(offsetof(ActorDataDante, newMeleeWeaponData) == 0x1C7C0);
 static_assert(offsetof(ActorDataDante, newMeleeWeaponCount) == 0x1C7E8);
 static_assert(offsetof(ActorDataDante, newMeleeWeaponIndex) == 0x1C7E9);
 static_assert(offsetof(ActorDataDante, newLastMeleeWeapon) == 0x1C7EA);
-static_assert(offsetof(ActorDataDante, newRangedWeapon) == 0x1C7F0);
+static_assert(offsetof(ActorDataDante, newRangedWeapons) == 0x1C7F0);
 static_assert(offsetof(ActorDataDante, newRangedWeaponData) == 0x1C800);
 static_assert(offsetof(ActorDataDante, newRangedWeaponCount) == 0x1C828);
 static_assert(offsetof(ActorDataDante, newRangedWeaponIndex) == 0x1C829);
@@ -3223,12 +3223,12 @@ static_assert(offsetof(ActorDataBob, newGamepad) == 0x1C7A8);
 static_assert(offsetof(ActorDataBob, newButtonMask) == 0x1C7A9);
 static_assert(offsetof(ActorDataBob, newEnableRightStick) == 0x1C7AB);
 static_assert(offsetof(ActorDataBob, newEnableLeftStick) == 0x1C7AC);
-static_assert(offsetof(ActorDataBob, newMeleeWeapon) == 0x1C7B0);
+static_assert(offsetof(ActorDataBob, newMeleeWeapons) == 0x1C7B0);
 static_assert(offsetof(ActorDataBob, newMeleeWeaponData) == 0x1C7C0);
 static_assert(offsetof(ActorDataBob, newMeleeWeaponCount) == 0x1C7E8);
 static_assert(offsetof(ActorDataBob, newMeleeWeaponIndex) == 0x1C7E9);
 static_assert(offsetof(ActorDataBob, newLastMeleeWeapon) == 0x1C7EA);
-static_assert(offsetof(ActorDataBob, newRangedWeapon) == 0x1C7F0);
+static_assert(offsetof(ActorDataBob, newRangedWeapons) == 0x1C7F0);
 static_assert(offsetof(ActorDataBob, newRangedWeaponData) == 0x1C800);
 static_assert(offsetof(ActorDataBob, newRangedWeaponCount) == 0x1C828);
 static_assert(offsetof(ActorDataBob, newRangedWeaponIndex) == 0x1C829);
@@ -3358,12 +3358,12 @@ static_assert(offsetof(ActorDataLady, newGamepad) == 0x1C7A8);
 static_assert(offsetof(ActorDataLady, newButtonMask) == 0x1C7A9);
 static_assert(offsetof(ActorDataLady, newEnableRightStick) == 0x1C7AB);
 static_assert(offsetof(ActorDataLady, newEnableLeftStick) == 0x1C7AC);
-static_assert(offsetof(ActorDataLady, newMeleeWeapon) == 0x1C7B0);
+static_assert(offsetof(ActorDataLady, newMeleeWeapons) == 0x1C7B0);
 static_assert(offsetof(ActorDataLady, newMeleeWeaponData) == 0x1C7C0);
 static_assert(offsetof(ActorDataLady, newMeleeWeaponCount) == 0x1C7E8);
 static_assert(offsetof(ActorDataLady, newMeleeWeaponIndex) == 0x1C7E9);
 static_assert(offsetof(ActorDataLady, newLastMeleeWeapon) == 0x1C7EA);
-static_assert(offsetof(ActorDataLady, newRangedWeapon) == 0x1C7F0);
+static_assert(offsetof(ActorDataLady, newRangedWeapons) == 0x1C7F0);
 static_assert(offsetof(ActorDataLady, newRangedWeaponData) == 0x1C800);
 static_assert(offsetof(ActorDataLady, newRangedWeaponCount) == 0x1C828);
 static_assert(offsetof(ActorDataLady, newRangedWeaponIndex) == 0x1C829);
@@ -3501,12 +3501,12 @@ static_assert(offsetof(ActorDataVergil, newGamepad) == 0x1C7A8);
 static_assert(offsetof(ActorDataVergil, newButtonMask) == 0x1C7A9);
 static_assert(offsetof(ActorDataVergil, newEnableRightStick) == 0x1C7AB);
 static_assert(offsetof(ActorDataVergil, newEnableLeftStick) == 0x1C7AC);
-static_assert(offsetof(ActorDataVergil, newMeleeWeapon) == 0x1C7B0);
+static_assert(offsetof(ActorDataVergil, newMeleeWeapons) == 0x1C7B0);
 static_assert(offsetof(ActorDataVergil, newMeleeWeaponData) == 0x1C7C0);
 static_assert(offsetof(ActorDataVergil, newMeleeWeaponCount) == 0x1C7E8);
 static_assert(offsetof(ActorDataVergil, newMeleeWeaponIndex) == 0x1C7E9);
 static_assert(offsetof(ActorDataVergil, newLastMeleeWeapon) == 0x1C7EA);
-static_assert(offsetof(ActorDataVergil, newRangedWeapon) == 0x1C7F0);
+static_assert(offsetof(ActorDataVergil, newRangedWeapons) == 0x1C7F0);
 static_assert(offsetof(ActorDataVergil, newRangedWeaponData) == 0x1C800);
 static_assert(offsetof(ActorDataVergil, newRangedWeaponCount) == 0x1C828);
 static_assert(offsetof(ActorDataVergil, newRangedWeaponIndex) == 0x1C829);
