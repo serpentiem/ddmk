@@ -297,7 +297,11 @@ var extra =
 
 
 
-
+	[ "newWeapons[10]"      , "uint8"   ],
+	[ "newWeaponData[10]"   , "byte8 *" ],
+	[ "newWeaponStatus[10]" , "uint32"  ],
+	[ "newWeaponLevels[10]" , "uint32"  ],
+	[ "newWeaponTimers[10]" , "float32" ],
 
 
 
