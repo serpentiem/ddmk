@@ -3185,27 +3185,31 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weapons[0]);
 		constexpr auto newOff = offsetof(ActorData, newWeapons[0]);
 		static_assert(off == 0x6498);
-		// Init
-		Write<uint32>((appBaseAddr + 0x1DED41 + 3), (enable) ? newOff : off); // dmc3.exe+1DED41 - 48 8D A9 98640000 - LEA RBP,[RCX+00006498]
-		Write<uint32>((appBaseAddr + 0x1E02A2 + 4), (enable) ? newOff : off); // dmc3.exe+1E02A2 - 40 38 B4 18 98640000 - CMP [RAX+RBX+00006498],SIL
-		Write<uint32>((appBaseAddr + 0x1F80B1 + 4), (enable) ? newOff : off); // dmc3.exe+1F80B1 - 0FB6 84 19 98640000 - MOVZX EAX,BYTE PTR [RCX+RBX+00006498]
-		Write<uint32>((appBaseAddr + 0x1F80BF + 4), (enable) ? newOff : off); // dmc3.exe+1F80BF - 0FB6 84 19 98640000 - MOVZX EAX,BYTE PTR [RCX+RBX+00006498]
-		Write<uint32>((appBaseAddr + 0x1F80D4 + 4), (enable) ? newOff : off); // dmc3.exe+1F80D4 - 0FB6 8C 18 98640000 - MOVZX ECX,BYTE PTR [RAX+RBX+00006498]
+		// Init Actor Dante
+		Write<uint32>((appBaseAddr + 0x217BF4 + 2), (enable) ? newOff : off); // dmc3.exe+217BF4 - 88 81 98640000 - MOV [RCX+00006498],AL
+		// Init Actor Bob
+		Write<uint32>((appBaseAddr + 0x226F53 + 2), (enable) ? newOff : off); // dmc3.exe+226F53 - C7 81 98640000 0EFFFFFF - MOV [RCX+00006498],FFFFFF0E
+		// Init Actor Lady
+		Write<uint32>((appBaseAddr + 0x2196AA + 2), (enable) ? newOff : off); // dmc3.exe+2196AA - C7 81 98640000 FFFF090A - MOV [RCX+00006498],0A09FFFF
+		// Init Actor Vergil
+		Write<uint32>((appBaseAddr + 0x223D11 + 2), (enable) ? newOff : off); // dmc3.exe+223D11 - C7 81 98640000 0B0C0DFF - MOV [RCX+00006498],FF0D0C0B
+		// Update Actor Dante
 		Write<uint32>((appBaseAddr + 0x212D9A + 3), (enable) ? newOff : off); // dmc3.exe+212D9A - 4C 8D A6 98640000 - LEA R12,[RSI+00006498]
 		Write<uint32>((appBaseAddr + 0x213423 + 3), (enable) ? newOff : off); // dmc3.exe+213423 - 4C 8D A6 98640000 - LEA R12,[RSI+00006498]
 		Write<uint32>((appBaseAddr + 0x2143AC + 3), (enable) ? newOff : off); // dmc3.exe+2143AC - 4C 8D A6 98640000 - LEA R12,[RSI+00006498]
 		Write<uint32>((appBaseAddr + 0x214A5F + 3), (enable) ? newOff : off); // dmc3.exe+214A5F - 4C 8D A6 98640000 - LEA R12,[RSI+00006498]
 		Write<uint32>((appBaseAddr + 0x214BD2 + 3), (enable) ? newOff : off); // dmc3.exe+214BD2 - 80 BC 30 98640000 04 - CMP BYTE PTR [RAX+RSI+00006498],04
-		Write<uint32>((appBaseAddr + 0x217BF4 + 2), (enable) ? newOff : off); // dmc3.exe+217BF4 - 88 81 98640000 - MOV [RCX+00006498],AL
-		Write<uint32>((appBaseAddr + 0x21959D + 3), (enable) ? newOff : off); // dmc3.exe+21959D - 48 8D 9D 98640000 - LEA RBX,[RBP+00006498]
-		Write<uint32>((appBaseAddr + 0x2196AA + 2), (enable) ? newOff : off); // dmc3.exe+2196AA - C7 81 98640000 FFFF090A - MOV [RCX+00006498],0A09FFFF
-		Write<uint32>((appBaseAddr + 0x223D11 + 2), (enable) ? newOff : off); // dmc3.exe+223D11 - C7 81 98640000 0B0C0DFF - MOV [RCX+00006498],FF0D0C0B
+		// Update Actor Bob
 		Write<uint32>((appBaseAddr + 0x22629D + 3), (enable) ? newOff : off); // dmc3.exe+22629D - 49 8D 86 98640000 - LEA RAX,[R14+00006498]
 		Write<uint32>((appBaseAddr + 0x22639B + 5), (enable) ? newOff : off); // dmc3.exe+22639B - 42 0FB6 84 31 98640000 - MOVZX EAX,BYTE PTR [RCX+R14+00006498]
-		Write<uint32>((appBaseAddr + 0x226F53 + 2), (enable) ? newOff : off); // dmc3.exe+226F53 - C7 81 98640000 0EFFFFFF - MOV [RCX+00006498],FFFFFF0E
-		// Free
-		Write<uint32>((appBaseAddr + 0x2198D0 + 3), (enable) ? newOff : off); // dmc3.exe+2198D0 - 0FB6 81 98640000 - MOVZX EAX,BYTE PTR [RCX+00006498]
-		Write<uint32>((appBaseAddr + 0x2241F0 + 3), (enable) ? newOff : off); // dmc3.exe+2241F0 - 0FB6 81 98640000 - MOVZX EAX,BYTE PTR [RCX+00006498]
+		// Update Actor Lady
+		Write<uint32>((appBaseAddr + 0x21959D + 3), (enable) ? newOff : off); // dmc3.exe+21959D - 48 8D 9D 98640000 - LEA RBX,[RBP+00006498]
+		// Register Weapons
+		Write<uint32>((appBaseAddr + 0x1DED41 + 3), (enable) ? newOff : off); // dmc3.exe+1DED41 - 48 8D A9 98640000 - LEA RBP,[RCX+00006498]
+		// Set Active Weapons
+		Write<uint32>((appBaseAddr + 0x1F80B1 + 4), (enable) ? newOff : off); // dmc3.exe+1F80B1 - 0FB6 84 19 98640000 - MOVZX EAX,BYTE PTR [RCX+RBX+00006498]
+		Write<uint32>((appBaseAddr + 0x1F80BF + 4), (enable) ? newOff : off); // dmc3.exe+1F80BF - 0FB6 84 19 98640000 - MOVZX EAX,BYTE PTR [RCX+RBX+00006498]
+		Write<uint32>((appBaseAddr + 0x1F80D4 + 4), (enable) ? newOff : off); // dmc3.exe+1F80D4 - 0FB6 8C 18 98640000 - MOVZX ECX,BYTE PTR [RAX+RBX+00006498]
 		// Weapon Switch
 		Write<uint32>((appBaseAddr + 0x1EA987 + 5), (enable) ? newOff : off); // dmc3.exe+1EA987 - 44 0FB6 84 3B 98640000 - MOVZX R8D,BYTE PTR [RBX+RDI+00006498]
 		Write<uint32>((appBaseAddr + 0x1EA99D + 3), (enable) ? newOff : off); // dmc3.exe+1EA99D - 80 BC 38 98640000 FF - CMP BYTE PTR [RAX+RDI+00006498],-01
@@ -3213,8 +3217,12 @@ void ToggleWeaponRelocations(bool enable)
 		Write<uint32>((appBaseAddr + 0x1EAA74 + 4), (enable) ? newOff : off); // dmc3.exe+1EAA74 - 0FB6 8C 3B 98640000 - MOVZX ECX,BYTE PTR [RBX+RDI+00006498]
 		Write<uint32>((appBaseAddr + 0x1EAA8A + 3), (enable) ? newOff : off); // dmc3.exe+1EAA8A - 80 BC 3B 98640000 FF - CMP BYTE PTR [RBX+RDI+00006498],-01
 		Write<uint32>((appBaseAddr + 0x1EAA9F + 3), (enable) ? newOff : off); // dmc3.exe+1EAA9F - 3A 8C 3B 98640000 - CMP CL,[RBX+RDI+00006498]
+		// Free
+		Write<uint32>((appBaseAddr + 0x2198D0 + 3), (enable) ? newOff : off); // dmc3.exe+2198D0 - 0FB6 81 98640000 - MOVZX EAX,BYTE PTR [RCX+00006498]
+		Write<uint32>((appBaseAddr + 0x2241F0 + 3), (enable) ? newOff : off); // dmc3.exe+2241F0 - 0FB6 81 98640000 - MOVZX EAX,BYTE PTR [RCX+00006498]
 		// Other
 		Write<uint32>((appBaseAddr + 0x1D91E0 + 3), (enable) ? newOff : off); // dmc3.exe+1D91E0 - 80 BC 11 98640000 0D - CMP BYTE PTR [RCX+RDX+00006498],0D
+		Write<uint32>((appBaseAddr + 0x1E02A2 + 4), (enable) ? newOff : off); // dmc3.exe+1E02A2 - 40 38 B4 18 98640000 - CMP [RAX+RBX+00006498],SIL
 		Write<uint32>((appBaseAddr + 0x1E088D + 3), (enable) ? newOff : off); // dmc3.exe+1E088D - 80 BC 18 98640000 05 - CMP BYTE PTR [RAX+RBX+00006498],05
 		Write<uint32>((appBaseAddr + 0x1E090C + 4), (enable) ? newOff : off); // dmc3.exe+1E090C - 0FB6 8C 18 98640000 - MOVZX ECX,BYTE PTR [RAX+RBX+00006498]
 		Write<uint32>((appBaseAddr + 0x1E0923 + 4), (enable) ? newOff : off); // dmc3.exe+1E0923 - 0FB6 8C 18 98640000 - MOVZX ECX,BYTE PTR [RAX+RBX+00006498]
@@ -3354,6 +3362,20 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weapons[1]);
 		constexpr auto newOff = offsetof(ActorData, newWeapons[1]);
 		static_assert(off == 0x6499);
+
+
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
+
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x1DF2E9 + 2), (enable) ? newOff : off); // dmc3.exe+1DF2E9 - C6 83 99640000 FF - MOV BYTE PTR [RBX+00006499],-01
 		Write<uint32>((appBaseAddr + 0x217C07 + 2), (enable) ? newOff : off); // dmc3.exe+217C07 - 88 81 99640000 - MOV [RCX+00006499],AL
@@ -3369,6 +3391,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weapons[2]);
 		constexpr auto newOff = offsetof(ActorData, newWeapons[2]);
 		static_assert(off == 0x649A);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x1DEE2A + 3), (enable) ? newOff : off); // dmc3.exe+1DEE2A - 48 8D AB 9A640000 - LEA RBP,[RBX+0000649A]
 		Write<uint32>((appBaseAddr + 0x212F12 + 3), (enable) ? newOff : off); // dmc3.exe+212F12 - 48 8D 9E 9A640000 - LEA RBX,[RSI+0000649A]
@@ -3385,6 +3417,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weapons[3]);
 		constexpr auto newOff = offsetof(ActorData, newWeapons[3]);
 		static_assert(off == 0x649B);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x1DF2F9 + 2), (enable) ? newOff : off); // dmc3.exe+1DF2F9 - C6 83 9B640000 FF - MOV BYTE PTR [RBX+0000649B],-01
 		Write<uint32>((appBaseAddr + 0x217C2D + 2), (enable) ? newOff : off); // dmc3.exe+217C2D - 88 81 9B640000 - MOV [RCX+0000649B],AL
@@ -3400,6 +3442,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weapons[4]);
 		constexpr auto newOff = offsetof(ActorData, newWeapons[4]);
 		static_assert(off == 0x649C);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x217C40 + 2), (enable) ? newOff : off); // dmc3.exe+217C40 - 88 81 9C640000 - MOV [RCX+0000649C],AL
 		Write<uint32>((appBaseAddr + 0x2196B4 + 2), (enable) ? newOff : off); // dmc3.exe+2196B4 - C6 81 9C640000 0B - MOV BYTE PTR [RCX+0000649C],0B
@@ -3414,6 +3466,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponData[0]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponData[0]);
 		static_assert(off == 0x64A0);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x1DED55 + 3), (enable) ? newOff : off); // dmc3.exe+1DED55 - 48 8D B1 A0640000 - LEA RSI,[RCX+000064A0]
 		Write<uint32>((appBaseAddr + 0x1FCAD4 + 3), (enable) ? newOff : off); // dmc3.exe+1FCAD4 - 49 8D 9E A0640000 - LEA RBX,[R14+000064A0]
@@ -3469,6 +3531,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponData[2]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponData[2]);
 		static_assert(off == 0x64B0);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x1DEE3E + 3), (enable) ? newOff : off); // dmc3.exe+1DEE3E - 48 8D B3 B0640000 - LEA RSI,[RBX+000064B0]
 	}
@@ -3477,6 +3549,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponData[3]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponData[3]);
 		static_assert(off == 0x64B8);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		// Free
 		// Other
@@ -3488,6 +3570,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponStatus[0]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponStatus[0]);
 		static_assert(off == 0x64C8);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x1DED48 + 3), (enable) ? newOff : off); // dmc3.exe+1DED48 - 48 8D B9 C8640000 - LEA RDI,[RCX+000064C8]
 		// Free
@@ -3517,6 +3609,15 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponStatus[2]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponStatus[2]);
 		static_assert(off == 0x64D0);
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x1DEE37 + 3), (enable) ? newOff : off); // dmc3.exe+1DEE37 - 48 8D BB D0640000 - LEA RDI,[RBX+000064D0]
 		// Free
@@ -3528,6 +3629,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponStatus[3]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponStatus[3]);
 		static_assert(off == 0x64D4);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		// Free
 		// Other
@@ -3556,6 +3667,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponLevels[0]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponLevels[0]);
 		static_assert(off == 0x64DC);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x217BFD + 2), (enable) ? newOff : off); // dmc3.exe+217BFD - 89 81 DC640000 - MOV [RCX+000064DC],EAX
 		Write<uint32>((appBaseAddr + 0x223D25 + 2), (enable) ? newOff : off); // dmc3.exe+223D25 - 89 81 DC640000 - MOV [RCX+000064DC],EAX
@@ -3583,6 +3704,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponLevels[1]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponLevels[1]);
 		static_assert(off == 0x64E0);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x217C10 + 2), (enable) ? newOff : off); // dmc3.exe+217C10 - 89 81 E0640000 - MOV [RCX+000064E0],EAX
 		Write<uint32>((appBaseAddr + 0x223D2E + 2), (enable) ? newOff : off); // dmc3.exe+223D2E - 89 81 E0640000 - MOV [RCX+000064E0],EAX
@@ -3613,6 +3744,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponLevels[2]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponLevels[2]);
 		static_assert(off == 0x64E4);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x217C23 + 2), (enable) ? newOff : off); // dmc3.exe+217C23 - 89 81 E4640000 - MOV [RCX+000064E4],EAX
 		Write<uint32>((appBaseAddr + 0x2196C2 + 3), (enable) ? newOff : off); // dmc3.exe+2196C2 - 4C 89 A1 E4640000 - MOV [RCX+000064E4],R12
@@ -3632,6 +3773,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponLevels[3]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponLevels[3]);
 		static_assert(off == 0x64E8);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x217C36 + 2), (enable) ? newOff : off); // dmc3.exe+217C36 - 89 81 E8640000 - MOV [RCX+000064E8],EAX
 		Write<uint32>((appBaseAddr + 0x223D40 + 2), (enable) ? newOff : off); // dmc3.exe+223D40 - 89 81 E8640000 - MOV [RCX+000064E8],EAX
@@ -3646,6 +3797,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponLevels[4]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponLevels[4]);
 		static_assert(off == 0x64EC);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x217C49 + 2), (enable) ? newOff : off); // dmc3.exe+217C49 - 89 81 EC640000 - MOV [RCX+000064EC],EAX
 		Write<uint32>((appBaseAddr + 0x2196C9 + 3), (enable) ? newOff : off); // dmc3.exe+2196C9 - 44 89 A1 EC640000 - MOV [RCX+000064EC],R12D
@@ -3666,6 +3827,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponTimers[0]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponTimers[0]);
 		static_assert(off == 0x64F4);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x1DEF3D + 3), (enable) ? newOff : off); // dmc3.exe+1DEF3D - 4C 89 BB F4640000 - MOV [RBX+000064F4],R15
 		// Free
@@ -3683,6 +3854,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponTimers[1]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponTimers[1]);
 		static_assert(off == 0x64F8);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		// Free
 		// Other
@@ -3693,6 +3874,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponTimers[2]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponTimers[2]);
 		static_assert(off == 0x64FC);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x1DEF44 + 3), (enable) ? newOff : off); // dmc3.exe+1DEF44 - 4C 89 BB FC640000 - MOV [RBX+000064FC],R15
 		// Free
@@ -3703,6 +3894,16 @@ void ToggleWeaponRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, weaponTimers[4]);
 		constexpr auto newOff = offsetof(ActorData, newWeaponTimers[4]);
 		static_assert(off == 0x6504);
+
+		// Init Actor Dante
+		// Init Actor Bob
+		// Init Actor Lady
+		// Init Actor Vergil
+		// Update Actor Dante
+		// Update Actor Bob
+		// Update Actor Lady
+		// Update Actor Vergil
+
 		// Init
 		Write<uint32>((appBaseAddr + 0x1DEF4B + 3), (enable) ? newOff : off); // dmc3.exe+1DEF4B - 44 89 BB 04650000 - MOV [RBX+00006504],R15D
 		// Free
@@ -3730,7 +3931,7 @@ export void Model_Init()
 	//auto modelPhysicsMetadataOffs = HighAlloc(64);
 
 
-	ToggleWeaponRelocations(true);
+	//ToggleWeaponRelocations(true);
 
 
 
