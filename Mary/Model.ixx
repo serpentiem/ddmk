@@ -3347,8 +3347,8 @@ void ToggleWeaponRelocations(bool enable)
 		Write<uint32>((appBaseAddr + 0x21C842 + 3), (enable) ? newOff : off); // dmc3.exe+21C842 - 80 BC 18 98640000 0B - CMP BYTE PTR [RAX+RBX+00006498],0B
 		Write<uint32>((appBaseAddr + 0x21D0D4 + 3), (enable) ? newOff : off); // dmc3.exe+21D0D4 - 80 BC 38 98640000 0B - CMP BYTE PTR [RAX+RDI+00006498],0B
 		Write<uint32>((appBaseAddr + 0x21D102 + 3), (enable) ? newOff : off); // dmc3.exe+21D102 - 80 BC 38 98640000 0B - CMP BYTE PTR [RAX+RDI+00006498],0B
-		// Write<uint32>((appBaseAddr + 0x21E904 + 3), (enable) ? newOff : off); // dmc3.exe+21E904 - 80 BC 18 98640000 0B - CMP BYTE PTR [RAX+RBX+00006498],0B
-		// Write<uint32>((appBaseAddr + 0x21E932 + 3), (enable) ? newOff : off); // dmc3.exe+21E932 - 80 BC 18 98640000 0B - CMP BYTE PTR [RAX+RBX+00006498],0B
+		Write<uint32>((appBaseAddr + 0x21E904 + 3), (enable) ? newOff : off); // dmc3.exe+21E904 - 80 BC 18 98640000 0B - CMP BYTE PTR [RAX+RBX+00006498],0B
+		Write<uint32>((appBaseAddr + 0x21E932 + 3), (enable) ? newOff : off); // dmc3.exe+21E932 - 80 BC 18 98640000 0B - CMP BYTE PTR [RAX+RBX+00006498],0B
 		Write<uint32>((appBaseAddr + 0x21F226 + 3), (enable) ? newOff : off); // dmc3.exe+21F226 - 80 BC 1F 98640000 0D - CMP BYTE PTR [RDI+RBX+00006498],0D
 		Write<uint32>((appBaseAddr + 0x21F250 + 3), (enable) ? newOff : off); // dmc3.exe+21F250 - 80 BC 19 98640000 0D - CMP BYTE PTR [RCX+RBX+00006498],0D
 		Write<uint32>((appBaseAddr + 0x2228F3 + 3), (enable) ? newOff : off); // dmc3.exe+2228F3 - 48 81 C1 98640000 - ADD RCX,00006498
@@ -3475,8 +3475,8 @@ void ToggleWeaponRelocations(bool enable)
 		Write<uint32>((appBaseAddr + 0x21C85E + 4), (enable) ? newOff : off); // dmc3.exe+21C85E - 48 8B BC C3 A0640000 - MOV RDI,[RBX+RAX*8+000064A0]
 		Write<uint32>((appBaseAddr + 0x21D0F3 + 4), (enable) ? newOff : off); // dmc3.exe+21D0F3 - 4C 8B 8C C7 A0640000 - MOV R9,[RDI+RAX*8+000064A0]
 		Write<uint32>((appBaseAddr + 0x21D11E + 4), (enable) ? newOff : off); // dmc3.exe+21D11E - 4C 8B 8C C7 A0640000 - MOV R9,[RDI+RAX*8+000064A0]
-		// Write<uint32>((appBaseAddr + 0x21E923 + 4), (enable) ? newOff : off); // dmc3.exe+21E923 - 4C 8B 8C C3 A0640000 - MOV R9,[RBX+RAX*8+000064A0]
-		// Write<uint32>((appBaseAddr + 0x21E94E + 4), (enable) ? newOff : off); // dmc3.exe+21E94E - 4C 8B 8C C3 A0640000 - MOV R9,[RBX+RAX*8+000064A0]
+		Write<uint32>((appBaseAddr + 0x21E923 + 4), (enable) ? newOff : off); // dmc3.exe+21E923 - 4C 8B 8C C3 A0640000 - MOV R9,[RBX+RAX*8+000064A0]
+		Write<uint32>((appBaseAddr + 0x21E94E + 4), (enable) ? newOff : off); // dmc3.exe+21E94E - 4C 8B 8C C3 A0640000 - MOV R9,[RBX+RAX*8+000064A0]
 		Write<uint32>((appBaseAddr + 0x21F2F7 + 4), (enable) ? newOff : off); // dmc3.exe+21F2F7 - 48 8B 8C C3 A0640000 - MOV RCX,[RBX+RAX*8+000064A0]
 		Write<uint32>((appBaseAddr + 0x222B62 + 4), (enable) ? newOff : off); // dmc3.exe+222B62 - 48 8B 8C C7 A0640000 - MOV RCX,[RDI+RAX*8+000064A0]
 	}
