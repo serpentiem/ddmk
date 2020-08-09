@@ -3495,7 +3495,7 @@ void ToggleWeaponRelocations(bool enable)
 		static_assert(off == 0x64B8);
 		// Register Weapons
 		Write<uint32>((appBaseAddr + 0x1DEF27 + 3), (enable) ? newOff : off); // dmc3.exe+1DEF27 - 48 89 83 B8640000 - MOV [RBX+000064B8],RAX
-		// Other
+		// Nero Angelo Sword
 		Write<uint32>((appBaseAddr + 0x21AF95 + 3), (enable) ? newOff : off); // dmc3.exe+21AF95 - 48 8B 8F B8640000 - MOV RCX,[RDI+000064B8]
 	}
 	// 0x64C8
