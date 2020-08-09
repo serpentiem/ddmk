@@ -3658,17 +3658,88 @@ void ToggleWeaponRelocations(bool enable)
 	}
 }
 
+void ToggleWeaponCountAdjustments(bool enable)
+{
+	LogFunction(enable);
 
+	constexpr uint8 count = 5;
+	constexpr uint8 newCount = 10;
 
-
-
-
-
-
-
-
-
-
+	Write<uint8>((appBaseAddr + 0x1D91EC + 2), (enable) ? newCount : count); // dmc3.exe+1D91EC - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x1E02B2 + 2), (enable) ? newCount : count); // dmc3.exe+1E02B2 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x1EAE1E + 2), (enable) ? newCount : count); // dmc3.exe+1EAE1E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x1F59BD + 2), (enable) ? newCount : count); // dmc3.exe+1F59BD - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x1FACAB + 2), (enable) ? newCount : count); // dmc3.exe+1FACAB - 83 F8 05 - cmp eax,05
+	Write<uint8>((appBaseAddr + 0x1FAD0B + 2), (enable) ? newCount : count); // dmc3.exe+1FAD0B - 83 F8 05 - cmp eax,05
+	Write<uint8>((appBaseAddr + 0x1FAD4B + 2), (enable) ? newCount : count); // dmc3.exe+1FAD4B - 83 F8 05 - cmp eax,05
+	Write<uint8>((appBaseAddr + 0x1FD14F + 3), (enable) ? newCount : count); // dmc3.exe+1FD14F - 41 83 FA 05 - cmp r10d,05
+	Write<uint8>((appBaseAddr + 0x1FD180 + 3), (enable) ? newCount : count); // dmc3.exe+1FD180 - 41 83 F9 05 - cmp r9d,05
+	Write<uint8>((appBaseAddr + 0x1FD1DB + 2), (enable) ? newCount : count); // dmc3.exe+1FD1DB - 83 F8 05 - cmp eax,05
+	Write<uint8>((appBaseAddr + 0x1FD65D + 2), (enable) ? newCount : count); // dmc3.exe+1FD65D - 83 F8 05 - cmp eax,05
+	Write<uint8>((appBaseAddr + 0x20617E + 2), (enable) ? newCount : count); // dmc3.exe+20617E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x20619E + 2), (enable) ? newCount : count); // dmc3.exe+20619E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x2063AC + 2), (enable) ? newCount : count); // dmc3.exe+2063AC - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x20651C + 2), (enable) ? newCount : count); // dmc3.exe+20651C - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x2086F1 + 2), (enable) ? newCount : count); // dmc3.exe+2086F1 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x20E30E + 2), (enable) ? newCount : count); // dmc3.exe+20E30E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x20E66E + 2), (enable) ? newCount : count); // dmc3.exe+20E66E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x20E71F + 2), (enable) ? newCount : count); // dmc3.exe+20E71F - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x210A2E + 2), (enable) ? newCount : count); // dmc3.exe+210A2E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x210C0C + 2), (enable) ? newCount : count); // dmc3.exe+210C0C - 83 FF 05 - cmp edi,05
+	Write<uint8>((appBaseAddr + 0x210C50 + 2), (enable) ? newCount : count); // dmc3.exe+210C50 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x2113DD + 2), (enable) ? newCount : count); // dmc3.exe+2113DD - 83 FF 05 - cmp edi,05
+	Write<uint8>((appBaseAddr + 0x2114CC + 2), (enable) ? newCount : count); // dmc3.exe+2114CC - 83 FF 05 - cmp edi,05
+	Write<uint8>((appBaseAddr + 0x2115EC + 2), (enable) ? newCount : count); // dmc3.exe+2115EC - 83 FF 05 - cmp edi,05
+	Write<uint8>((appBaseAddr + 0x21168E + 2), (enable) ? newCount : count); // dmc3.exe+21168E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21172F + 2), (enable) ? newCount : count); // dmc3.exe+21172F - 83 FF 05 - cmp edi,05
+	Write<uint8>((appBaseAddr + 0x21178E + 2), (enable) ? newCount : count); // dmc3.exe+21178E - 83 F9 05 - cmp ecx,05
+	Write<uint32>((appBaseAddr + 0x215602 + 1), (enable) ? static_cast<uint32>(newCount) : static_cast<uint32>(count)); // dmc3.exe+215602 - BA 05000000 - mov edx,00000005
+	Write<uint8>((appBaseAddr + 0x215657 + 2), (enable) ? newCount : count); // dmc3.exe+215657 - 8D 4A 05 - lea ecx,[rdx+05]
+	Write<uint8>((appBaseAddr + 0x21570E + 2), (enable) ? newCount : count); // dmc3.exe+21570E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x2158BE + 2), (enable) ? newCount : count); // dmc3.exe+2158BE - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21597E + 2), (enable) ? newCount : count); // dmc3.exe+21597E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x2159EE + 2), (enable) ? newCount : count); // dmc3.exe+2159EE - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x215BDE + 2), (enable) ? newCount : count); // dmc3.exe+215BDE - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x215E8E + 2), (enable) ? newCount : count); // dmc3.exe+215E8E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x215EAE + 2), (enable) ? newCount : count); // dmc3.exe+215EAE - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x216E4E + 2), (enable) ? newCount : count); // dmc3.exe+216E4E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x217022 + 2), (enable) ? newCount : count); // dmc3.exe+217022 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x2171F2 + 2), (enable) ? newCount : count); // dmc3.exe+2171F2 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x217372 + 2), (enable) ? newCount : count); // dmc3.exe+217372 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21747F + 2), (enable) ? newCount : count); // dmc3.exe+21747F - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x2181A2 + 2), (enable) ? newCount : count); // dmc3.exe+2181A2 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x218322 + 2), (enable) ? newCount : count); // dmc3.exe+218322 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x2183F1 + 2), (enable) ? newCount : count); // dmc3.exe+2183F1 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21842E + 2), (enable) ? newCount : count); // dmc3.exe+21842E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x218462 + 2), (enable) ? newCount : count); // dmc3.exe+218462 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x2184BE + 2), (enable) ? newCount : count); // dmc3.exe+2184BE - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x2184FE + 2), (enable) ? newCount : count); // dmc3.exe+2184FE - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21853E + 2), (enable) ? newCount : count); // dmc3.exe+21853E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21A46E + 2), (enable) ? newCount : count); // dmc3.exe+21A46E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21A4BE + 2), (enable) ? newCount : count); // dmc3.exe+21A4BE - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21B800 + 2), (enable) ? newCount : count); // dmc3.exe+21B800 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21B8CE + 2), (enable) ? newCount : count); // dmc3.exe+21B8CE - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21B8FE + 2), (enable) ? newCount : count); // dmc3.exe+21B8FE - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21BBBC + 2), (enable) ? newCount : count); // dmc3.exe+21BBBC - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21BBF0 + 2), (enable) ? newCount : count); // dmc3.exe+21BBF0 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21C0AE + 2), (enable) ? newCount : count); // dmc3.exe+21C0AE - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21C3DE + 2), (enable) ? newCount : count); // dmc3.exe+21C3DE - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21C40E + 2), (enable) ? newCount : count); // dmc3.exe+21C40E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21C6AF + 2), (enable) ? newCount : count); // dmc3.exe+21C6AF - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21C751 + 2), (enable) ? newCount : count); // dmc3.exe+21C751 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21C84E + 2), (enable) ? newCount : count); // dmc3.exe+21C84E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21D0E0 + 2), (enable) ? newCount : count); // dmc3.exe+21D0E0 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21D10E + 2), (enable) ? newCount : count); // dmc3.exe+21D10E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21E910 + 2), (enable) ? newCount : count); // dmc3.exe+21E910 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21E93E + 2), (enable) ? newCount : count); // dmc3.exe+21E93E - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x21F232 + 2), (enable) ? newCount : count); // dmc3.exe+21F232 - 83 FF 05 - cmp edi,05
+	Write<uint8>((appBaseAddr + 0x21F260 + 2), (enable) ? newCount : count); // dmc3.exe+21F260 - 83 F9 05 - cmp ecx,05
+	Write<uint32>((appBaseAddr + 0x2228FF + 1), (enable) ? static_cast<uint32>(newCount) : static_cast<uint32>(count)); // dmc3.exe+2228FF - BA 05000000 - mov edx,00000005
+	Write<uint8>((appBaseAddr + 0x2229AE + 2), (enable) ? newCount : count); // dmc3.exe+2229AE - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x222B52 + 2), (enable) ? newCount : count); // dmc3.exe+222B52 - 83 F9 05 - cmp ecx,05
+	Write<uint8>((appBaseAddr + 0x222E9E + 2), (enable) ? newCount : count); // dmc3.exe+222E9E - 83 FE 05 - cmp esi,05
+	Write<uint8>((appBaseAddr + 0x222F40 + 2), (enable) ? newCount : count); // dmc3.exe+222F40 - 83 F9 05 - cmp ecx,05
+}
 
 export void Model_Init()
 {
@@ -3678,7 +3749,8 @@ export void Model_Init()
 	//auto modelPhysicsMetadataOffs = HighAlloc(64);
 
 
-	//ToggleWeaponRelocations(true);
+	ToggleWeaponRelocations(true);
+	ToggleWeaponCountAdjustments(true);
 
 
 
