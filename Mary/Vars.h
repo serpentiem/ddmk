@@ -1786,7 +1786,8 @@ struct ActorData
 	byte32 color; // 0x3A28
 	_(212);
 	RecoveryData recoveryData[3]; // 0x3B00
-	_(384);
+	byte8 var_3C50[2]; // 0x3C50
+	_(382);
 	byte8 * actionData[6]; // 0x3DD0
 	ActorEventData eventData[2]; // 0x3E00
 	uint8 var_3E10[32]; // 0x3E10
@@ -2005,7 +2006,8 @@ struct ActorDataDante
 	byte32 color; // 0x3A28
 	_(212);
 	RecoveryData recoveryData[3]; // 0x3B00
-	_(384);
+	byte8 var_3C50[2]; // 0x3C50
+	_(382);
 	byte8 * actionData[6]; // 0x3DD0
 	ActorEventData eventData[2]; // 0x3E00
 	uint8 var_3E10[32]; // 0x3E10
@@ -2245,7 +2247,8 @@ struct ActorDataBob
 	byte32 color; // 0x3A28
 	_(212);
 	RecoveryData recoveryData[3]; // 0x3B00
-	_(384);
+	byte8 var_3C50[2]; // 0x3C50
+	_(382);
 	byte8 * actionData[6]; // 0x3DD0
 	ActorEventData eventData[2]; // 0x3E00
 	uint8 var_3E10[32]; // 0x3E10
@@ -2464,7 +2467,8 @@ struct ActorDataLady
 	byte32 color; // 0x3A28
 	_(212);
 	RecoveryData recoveryData[3]; // 0x3B00
-	_(384);
+	byte8 var_3C50[2]; // 0x3C50
+	_(382);
 	byte8 * actionData[6]; // 0x3DD0
 	ActorEventData eventData[2]; // 0x3E00
 	uint8 var_3E10[32]; // 0x3E10
@@ -2683,7 +2687,8 @@ struct ActorDataVergil
 	byte32 color; // 0x3A28
 	_(212);
 	RecoveryData recoveryData[3]; // 0x3B00
-	_(384);
+	byte8 var_3C50[2]; // 0x3C50
+	_(382);
 	byte8 * actionData[6]; // 0x3DD0
 	ActorEventData eventData[2]; // 0x3E00
 	uint8 var_3E10[32]; // 0x3E10
@@ -2892,6 +2897,7 @@ static_assert(offsetof(ActorData, var_3A10) == 0x3A10);
 static_assert(offsetof(ActorData, shadow) == 0x3A18);
 static_assert(offsetof(ActorData, color) == 0x3A28);
 static_assert(offsetof(ActorData, recoveryData) == 0x3B00);
+static_assert(offsetof(ActorData, var_3C50) == 0x3C50);
 static_assert(offsetof(ActorData, actionData) == 0x3DD0);
 static_assert(offsetof(ActorData, eventData) == 0x3E00);
 static_assert(offsetof(ActorData, var_3E10) == 0x3E10);
@@ -3032,6 +3038,7 @@ static_assert(offsetof(ActorDataDante, var_3A10) == 0x3A10);
 static_assert(offsetof(ActorDataDante, shadow) == 0x3A18);
 static_assert(offsetof(ActorDataDante, color) == 0x3A28);
 static_assert(offsetof(ActorDataDante, recoveryData) == 0x3B00);
+static_assert(offsetof(ActorDataDante, var_3C50) == 0x3C50);
 static_assert(offsetof(ActorDataDante, actionData) == 0x3DD0);
 static_assert(offsetof(ActorDataDante, eventData) == 0x3E00);
 static_assert(offsetof(ActorDataDante, var_3E10) == 0x3E10);
@@ -3189,6 +3196,7 @@ static_assert(offsetof(ActorDataBob, var_3A10) == 0x3A10);
 static_assert(offsetof(ActorDataBob, shadow) == 0x3A18);
 static_assert(offsetof(ActorDataBob, color) == 0x3A28);
 static_assert(offsetof(ActorDataBob, recoveryData) == 0x3B00);
+static_assert(offsetof(ActorDataBob, var_3C50) == 0x3C50);
 static_assert(offsetof(ActorDataBob, actionData) == 0x3DD0);
 static_assert(offsetof(ActorDataBob, eventData) == 0x3E00);
 static_assert(offsetof(ActorDataBob, var_3E10) == 0x3E10);
@@ -3329,6 +3337,7 @@ static_assert(offsetof(ActorDataLady, var_3A10) == 0x3A10);
 static_assert(offsetof(ActorDataLady, shadow) == 0x3A18);
 static_assert(offsetof(ActorDataLady, color) == 0x3A28);
 static_assert(offsetof(ActorDataLady, recoveryData) == 0x3B00);
+static_assert(offsetof(ActorDataLady, var_3C50) == 0x3C50);
 static_assert(offsetof(ActorDataLady, actionData) == 0x3DD0);
 static_assert(offsetof(ActorDataLady, eventData) == 0x3E00);
 static_assert(offsetof(ActorDataLady, var_3E10) == 0x3E10);
@@ -3469,6 +3478,7 @@ static_assert(offsetof(ActorDataVergil, var_3A10) == 0x3A10);
 static_assert(offsetof(ActorDataVergil, shadow) == 0x3A18);
 static_assert(offsetof(ActorDataVergil, color) == 0x3A28);
 static_assert(offsetof(ActorDataVergil, recoveryData) == 0x3B00);
+static_assert(offsetof(ActorDataVergil, var_3C50) == 0x3C50);
 static_assert(offsetof(ActorDataVergil, actionData) == 0x3DD0);
 static_assert(offsetof(ActorDataVergil, eventData) == 0x3E00);
 static_assert(offsetof(ActorDataVergil, var_3E10) == 0x3E10);

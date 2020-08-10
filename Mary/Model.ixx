@@ -197,9 +197,12 @@ export void ResetModel(ModelData & modelData)
 
 
 
-template <typename T>
+export template <typename T>
 void UpdateModelFunctionDante(T & actorData)
 {
+
+	//HoboBreak();
+
 	auto costume = actorData.costume;
 	if (costume >= MAX_COSTUME_DANTE)
 	{
@@ -3658,6 +3661,8 @@ void ToggleWeaponRelocations(bool enable)
 	}
 }
 
+
+
 void ToggleWeaponCountAdjustments(bool enable)
 {
 	LogFunction(enable);
@@ -3749,15 +3754,16 @@ export void Model_Init()
 	//auto modelPhysicsMetadataOffs = HighAlloc(64);
 
 
-	ToggleWeaponRelocations(true);
-	ToggleWeaponCountAdjustments(true);
+	//ToggleWeaponRelocations(true);
+	//ToggleWeaponCountAdjustments(true);
+
+	ToggleRelocations(true);
+	ToggleCountAdjustments(true);
 
 
 
 
-
-
-	return;
+	
 
 
 	{
@@ -3801,7 +3807,7 @@ export void Model_Init()
 	}
 
 
-
+	return;
 	
 
 

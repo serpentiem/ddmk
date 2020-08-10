@@ -739,6 +739,91 @@ void UpdateRangedWeapon
 	}
 }
 
+
+
+
+
+
+
+
+void UpdateActorFunctionDante(ActorDataDante & actorData)
+{
+
+	LogFunction(actorData.operator byte8 *());
+
+	actorData.devilModelMetadata.Rebellion.devilSubmodelMetadata[0].submodelIndex = 255;
+	actorData.devilModelMetadata.Rebellion.devilSubmodelMetadata[1].submodelIndex = 255;
+	actorData.devilModelMetadata.Cerberus.devilSubmodelMetadata.submodelIndex = 255;
+	actorData.devilModelMetadata.Nevan.devilSubmodelMetadata[0].submodelIndex = 255;
+	actorData.devilModelMetadata.Nevan.devilSubmodelMetadata[1].submodelIndex = 255;
+	actorData.devilModelMetadata.Beowulf.devilSubmodelMetadata.submodelIndex = 255;
+	actorData.devilModelMetadata.Sparda.devilSubmodelMetadata.submodelIndex = 255;
+
+	UpdateModelFunctionDante(actorData);
+
+	func_1EF040(actorData, 0);
+	func_1EEF80(actorData);
+	func_1EF040(actorData, 3);
+
+	for_all(uint8, index, 5)
+	{
+		UpdateDevilModelFunctionDante(actorData, (DEVIL_DANTE_REBELLION + index), index);
+	}
+
+	actorData.actionData[0] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x590598);
+	actorData.actionData[1] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x58A2A0);
+	actorData.actionData[2] = (appBaseAddr + 0x5905B0);
+	actorData.actionData[3] = File_staticFiles[pl000][9];
+	actorData.actionData[4] = File_staticFiles[pl000][10];
+	actorData.actionData[5] = File_staticFiles[pl000][11];
+
+	func_2EE3D0(actorData.var_3C50);
+
+	func_1FAF40(actorData);
+}
+
+void UpdateActorDante(byte8 * baseAddr)
+{
+	LogFunction(baseAddr);
+
+	auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
+
+	UpdateActorFunctionDante(actorData);
+}
+
+
+
+
+void ToggleNewUpdateActorDante(bool enable)
+{
+	LogFunction(enable);
+
+	Write<void *>((appBaseAddr + 0x4DFA10), (enable) ? UpdateActorDante : reinterpret_cast<void *>(appBaseAddr + 0x212BE0)); // @Research: There has to be a better way.
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 template <typename T>
 T * CreateActorFunction
 (
@@ -797,9 +882,21 @@ T * CreateActorFunction
 
 
 
+	//ToggleNewUpdateActorDante(true);
 
 
-	UpdateActor(actorData);
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+		UpdateActorFunctionDante(actorData);
+	}
+	else
+	{
+		UpdateActor(actorData);
+	}
+
+	
+
+	//ToggleNewUpdateActorDante(false);
 
 
 
@@ -2263,6 +2360,11 @@ export void Actor_Init()
 		}
 		}
 	}}
+
+
+
+
+
 
 
 

@@ -58,6 +58,10 @@ var items =
 
 	[ "recoveryData[3]", "RecoveryData"                  , 0x3B00                           ],
 
+
+
+	[ "[2]", "byte8"                  , 0x3C50                           ],
+
 	[ "actionData[6]"                       , "byte8 *"                 , 0x3DD0                           ],
 	[ "eventData[2]"                        , "ActorEventData"        , 0x3E00                           ],
 	[ "[32]"                                , "uint8"                   , 0x3E10                           ],
