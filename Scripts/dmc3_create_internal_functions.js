@@ -2,6 +2,11 @@
 
 
 /*
+dmc3.exe+214B49 - E8 02160B00           - call dmc3.exe+2C6150
+*/
+
+
+/*
 dmc3.exe+1EF3D3 - E8 D8A0E6FF           - call dmc3.exe+594B0
 
 */
@@ -51,12 +56,19 @@ var items =
 
 
 	[ 0x2CA2F0, "void"   , "PhysicsData & physicsData, void * dest, byte8 * addr, ModelMetadata * modelMetadata, uint32 count", "0, true, true, 0, 0, 0, 0, 1", "" ], // @Research: Check addr.
+
+
+
+
+	[ 0x2C6150, "void *", "void * dest, uint32 size, int32 mode", "", "Alloc" ],
 	
 
 
 
 
-
+	/*
+dmc3.exe+214B49 - E8 02160B00           - call dmc3.exe+2C6150
+	*/
 
 
 
@@ -90,6 +102,9 @@ var items =
 
 	[ 0x1FAF40, "void"   , "byte8 * baseAddr"                                                             , ""                            , ""                                    ],
 	[ 0x1EEF80, "void"   , "byte8 * baseAddr"                                                             , ""                            , ""                                    ],
+
+
+	
 	[ 0x2EE060, "bool"   , "byte8 * dest, uint32 size"                                                    , ""                            , ""                                    ],
 
 

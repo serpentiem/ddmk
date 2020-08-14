@@ -1848,9 +1848,12 @@ struct ActorData
 	uint32 styleLevel; // 0x6358
 	_(8);
 	float32 styleExperience; // 0x6364
-	_(236);
+	_(168);
+	byte8 var_6410[60]; // 0x6410
+	_(8);
 	bool cloneIsActive; // 0x6454
-	_(35);
+	_(3);
+	byte8 var_6458[32]; // 0x6458
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
 	_(23);
@@ -2075,9 +2078,12 @@ struct ActorDataDante
 	bool doppelganger; // 0x6362
 	_(1);
 	float32 styleExperience; // 0x6364
-	_(236);
+	_(168);
+	byte8 var_6410[60]; // 0x6410
+	_(8);
 	bool cloneIsActive; // 0x6454
-	_(35);
+	_(3);
+	byte8 var_6458[32]; // 0x6458
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
 	_(12);
@@ -2309,9 +2315,12 @@ struct ActorDataBob
 	uint32 styleLevel; // 0x6358
 	_(8);
 	float32 styleExperience; // 0x6364
-	_(236);
+	_(168);
+	byte8 var_6410[60]; // 0x6410
+	_(8);
 	bool cloneIsActive; // 0x6454
-	_(35);
+	_(3);
+	byte8 var_6458[32]; // 0x6458
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
 	_(23);
@@ -2529,9 +2538,12 @@ struct ActorDataLady
 	uint32 styleLevel; // 0x6358
 	_(8);
 	float32 styleExperience; // 0x6364
-	_(236);
+	_(168);
+	byte8 var_6410[60]; // 0x6410
+	_(8);
 	bool cloneIsActive; // 0x6454
-	_(35);
+	_(3);
+	byte8 var_6458[32]; // 0x6458
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
 	_(23);
@@ -2754,9 +2766,12 @@ struct ActorDataVergil
 	uint8 trickDownCount; // 0x6360
 	_(3);
 	float32 styleExperience; // 0x6364
-	_(236);
+	_(168);
+	byte8 var_6410[60]; // 0x6410
+	_(8);
 	bool cloneIsActive; // 0x6454
-	_(35);
+	_(3);
+	byte8 var_6458[32]; // 0x6458
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
 	_(3);
@@ -2937,7 +2952,9 @@ static_assert(offsetof(ActorData, targetBaseAddr) == 0x6328);
 static_assert(offsetof(ActorData, style) == 0x6338);
 static_assert(offsetof(ActorData, styleLevel) == 0x6358);
 static_assert(offsetof(ActorData, styleExperience) == 0x6364);
+static_assert(offsetof(ActorData, var_6410) == 0x6410);
 static_assert(offsetof(ActorData, cloneIsActive) == 0x6454);
+static_assert(offsetof(ActorData, var_6458) == 0x6458);
 static_assert(offsetof(ActorData, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ActorData, cloneIsControlledByPlayer) == 0x6480);
 static_assert(offsetof(ActorData, weapons) == 0x6498);
@@ -3084,7 +3101,9 @@ static_assert(offsetof(ActorDataDante, airTrickCount) == 0x635E);
 static_assert(offsetof(ActorDataDante, quicksilver) == 0x6361);
 static_assert(offsetof(ActorDataDante, doppelganger) == 0x6362);
 static_assert(offsetof(ActorDataDante, styleExperience) == 0x6364);
+static_assert(offsetof(ActorDataDante, var_6410) == 0x6410);
 static_assert(offsetof(ActorDataDante, cloneIsActive) == 0x6454);
+static_assert(offsetof(ActorDataDante, var_6458) == 0x6458);
 static_assert(offsetof(ActorDataDante, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ActorDataDante, cloneIsControlledByPlayer) == 0x6480);
 static_assert(offsetof(ActorDataDante, activeWeapon) == 0x648D);
@@ -3236,7 +3255,9 @@ static_assert(offsetof(ActorDataBob, targetBaseAddr) == 0x6328);
 static_assert(offsetof(ActorDataBob, style) == 0x6338);
 static_assert(offsetof(ActorDataBob, styleLevel) == 0x6358);
 static_assert(offsetof(ActorDataBob, styleExperience) == 0x6364);
+static_assert(offsetof(ActorDataBob, var_6410) == 0x6410);
 static_assert(offsetof(ActorDataBob, cloneIsActive) == 0x6454);
+static_assert(offsetof(ActorDataBob, var_6458) == 0x6458);
 static_assert(offsetof(ActorDataBob, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ActorDataBob, cloneIsControlledByPlayer) == 0x6480);
 static_assert(offsetof(ActorDataBob, weapons) == 0x6498);
@@ -3377,7 +3398,9 @@ static_assert(offsetof(ActorDataLady, targetBaseAddr) == 0x6328);
 static_assert(offsetof(ActorDataLady, style) == 0x6338);
 static_assert(offsetof(ActorDataLady, styleLevel) == 0x6358);
 static_assert(offsetof(ActorDataLady, styleExperience) == 0x6364);
+static_assert(offsetof(ActorDataLady, var_6410) == 0x6410);
 static_assert(offsetof(ActorDataLady, cloneIsActive) == 0x6454);
+static_assert(offsetof(ActorDataLady, var_6458) == 0x6458);
 static_assert(offsetof(ActorDataLady, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ActorDataLady, cloneIsControlledByPlayer) == 0x6480);
 static_assert(offsetof(ActorDataLady, weapons) == 0x6498);
@@ -3522,7 +3545,9 @@ static_assert(offsetof(ActorDataVergil, airTrickCount) == 0x635E);
 static_assert(offsetof(ActorDataVergil, trickUpCount) == 0x635F);
 static_assert(offsetof(ActorDataVergil, trickDownCount) == 0x6360);
 static_assert(offsetof(ActorDataVergil, styleExperience) == 0x6364);
+static_assert(offsetof(ActorDataVergil, var_6410) == 0x6410);
 static_assert(offsetof(ActorDataVergil, cloneIsActive) == 0x6454);
+static_assert(offsetof(ActorDataVergil, var_6458) == 0x6458);
 static_assert(offsetof(ActorDataVergil, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ActorDataVergil, cloneIsControlledByPlayer) == 0x6480);
 static_assert(offsetof(ActorDataVergil, activeMeleeWeaponIndex) == 0x6484);

@@ -115,9 +115,37 @@ var items =
 	[ "quicksilver"                         , "bool"                    , 0x6361, CHAR_DANTE               ],
 	[ "doppelganger"                        , "bool"                    , 0x6362, CHAR_DANTE               ],
 	[ "styleExperience"                     , "float32"                 , 0x6364                           ],
+
+
+
+
+
+
+
+
+	[ "[60]"                       , "byte8"                    , 0x6410                           ],
 	[ "cloneIsActive"                       , "bool"                    , 0x6454                           ],
+	[ "[32]"                       , "byte8"                    , 0x6458                           ],
 	[ "cloneBaseAddr"                       , "byte8 *"                 , 0x6478                           ],
 	[ "cloneIsControlledByPlayer"           , "bool"                    , 0x6480                           ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	[ "activeMeleeWeaponIndex"              , "uint32"                  , 0x6484, CHAR_VERGIL              ],
 	[ "queuedMeleeWeaponIndex"              , "uint32"                  , 0x6488, CHAR_VERGIL              ],

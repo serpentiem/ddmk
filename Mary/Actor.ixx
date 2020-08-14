@@ -744,12 +744,18 @@ void UpdateRangedWeapon
 
 
 
-
+// @Todo: Remove the double functions.
 
 void UpdateActorFunctionDante(ActorDataDante & actorData)
 {
 
 	LogFunction(actorData.operator byte8 *());
+
+
+
+
+	
+	//memset(actorData.var_9AC0, 0, 5);
 
 	actorData.devilModelMetadata.Rebellion.devilSubmodelMetadata[0].submodelIndex = 255;
 	actorData.devilModelMetadata.Rebellion.devilSubmodelMetadata[1].submodelIndex = 255;
@@ -758,6 +764,23 @@ void UpdateActorFunctionDante(ActorDataDante & actorData)
 	actorData.devilModelMetadata.Nevan.devilSubmodelMetadata[1].submodelIndex = 255;
 	actorData.devilModelMetadata.Beowulf.devilSubmodelMetadata.submodelIndex = 255;
 	actorData.devilModelMetadata.Sparda.devilSubmodelMetadata.submodelIndex = 255;
+
+	/*
+	dmc3.exe+212C0D - 44 89 B9 C09A0000     - mov [rcx+00009AC0],r15d
+	dmc3.exe+212C14 - 44 88 B9 C49A0000     - mov [rcx+00009AC4],r15l
+	dmc3.exe+212C20 - C6 81 02B60000 FF     - mov byte ptr [rcx+0000B602],-01 { 255 }
+	dmc3.exe+212C2B - C6 81 05B60000 FF     - mov byte ptr [rcx+0000B605],-01 { 255 }
+	dmc3.exe+212C32 - C6 81 0AB60000 FF     - mov byte ptr [rcx+0000B60A],-01 { 255 }
+	dmc3.exe+212C39 - C6 81 11B60000 FF     - mov byte ptr [rcx+0000B611],-01 { 255 }
+	dmc3.exe+212C40 - C6 81 14B60000 FF     - mov byte ptr [rcx+0000B614],-01 { 255 }
+	dmc3.exe+212C47 - C6 81 19B60000 FF     - mov byte ptr [rcx+0000B619],-01 { 255 }
+	dmc3.exe+212C4E - C6 81 1EB60000 FF     - mov byte ptr [rcx+0000B61E],-01 { 255 }
+	*/
+
+
+
+
+
 
 	UpdateModelFunctionDante(actorData);
 
@@ -770,6 +793,52 @@ void UpdateActorFunctionDante(ActorDataDante & actorData)
 		UpdateDevilModelFunctionDante(actorData, (DEVIL_DANTE_REBELLION + index), index);
 	}
 
+
+
+
+	/*
+	__CREATE_CLONE_DANTE_START__ - 48 8D 8E 10640000     - lea rcx,[rsi+00006410]
+	dmc3.exe+2134CD              - BA 3C000000           - mov edx,0000003C
+	dmc3.exe+2134D2              - E8 89AB0D00           - call dmc3.exe+2EE060
+
+
+
+
+	dmc3.exe+2134D7              - 45 8B C5              - mov r8d,r13d
+	dmc3.exe+2134DA              - B2 01                 - mov dl,01 { 1 }
+	dmc3.exe+2134DC              - 33 C9                 - xor ecx,ecx
+	dmc3.exe+2134DE              - E8 3DB3FCFF           - call __CREATE_ACTOR__
+	dmc3.exe+2134E3              - 48 89 86 78640000     - mov [rsi+00006478],rax
+	*/
+
+
+	/*
+	maybe relevant
+	dmc3.exe+2134FF - E8 8C7EFAFF           - call dmc3.exe+1BB390
+	*/
+
+
+
+
+	func_2C6150(actorData.var_6458, 0x49000, -2);
+	
+
+
+
+
+	/*
+	dmc3.exe+214B37 - 48 8D 8E 58640000 - lea rcx,[rsi+00006458]
+	dmc3.exe+214B3E - BA 00900400       - mov edx,00049000
+	dmc3.exe+214B43 - 41 B8 FEFFFFFF    - mov r8d,FFFFFFFE
+	dmc3.exe+214B49 - E8 02160B00       - call __ALLOC__
+	*/
+
+
+
+
+
+
+
 	actorData.actionData[0] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x590598);
 	actorData.actionData[1] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x58A2A0);
 	actorData.actionData[2] = (appBaseAddr + 0x5905B0);
@@ -777,9 +846,81 @@ void UpdateActorFunctionDante(ActorDataDante & actorData)
 	actorData.actionData[4] = File_staticFiles[pl000][10];
 	actorData.actionData[5] = File_staticFiles[pl000][11];
 
+
+	/*
+	dmc3.exe+214B50 - 48 8B 05 41BA3700 - mov rax,[dmc3.exe+590598]
+	dmc3.exe+214B5E - 48 89 86 D03D0000 - mov [rsi+00003DD0],rax
+
+	dmc3.exe+214B65 - 48 8B 05 34573700 - mov rax,[dmc3.exe+58A2A0]
+	dmc3.exe+214B6C - 48 89 86 D83D0000 - mov [rsi+00003DD8],rax
+
+	dmc3.exe+214B73 - 48 8D 05 36BA3700 - lea rax,[dmc3.exe+5905B0]
+	dmc3.exe+214B7A - 48 89 86 E03D0000 - mov [rsi+00003DE0],rax
+
+	dmc3.exe+212C27 - 45 8D 4F 09       - lea r9d,[r15+09]
+	dmc3.exe+212C5C - E8 5F56FAFF       - call __GET_FILE__
+	dmc3.exe+212C6C - 48 89 86 E83D0000 - mov [rsi+00003DE8],rax
+
+	dmc3.exe+212C66 - 45 8D 4F 0A       - lea r9d,[r15+0A]
+	dmc3.exe+212C7A - E8 4156FAFF       - call __GET_FILE__
+	dmc3.exe+212C8A - 48 89 86 F03D0000 - mov [rsi+00003DF0],rax
+
+	dmc3.exe+212C84 - 45 8D 4F 0B       - lea r9d,[r15+0B]
+	dmc3.exe+212C98 - E8 2356FAFF       - call __GET_FILE__
+	dmc3.exe+212CA0 - 48 89 86 F83D0000 - mov [rsi+00003DF8],rax
+	*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/*
+	dmc3.exe+214B57 - 48 8D 8E 503C0000 - lea rcx,[rsi+00003C50]
+	dmc3.exe+214B81 - E8 4A980D00       - call dmc3.exe+2EE3D0
+	*/
+
 	func_2EE3D0(actorData.var_3C50);
 
+
+
+
 	func_1FAF40(actorData);
+
+
+	/*
+	dmc3.exe+214C4B - C7 86 21B60000 00000000    - mov [rsi+0000B621],00000000
+	dmc3.exe+214C76 - 66 C7 86 25B60000 0000     - mov [rsi+0000B625],0000
+	dmc3.exe+214C7F - C6 86 27B60000 00          - mov [rsi+0000B627],00
+	dmc3.exe+214B91 - 89 BE 50B80000             - mov [rsi+0000B850],edi
+	dmc3.exe+214C55 - 48 C7 86 54B80000 00000000 - mov [rsi+0000B854],00000000
+	dmc3.exe+214BA7 - 48 C7 86 5CB80000 00000000 - mov [rsi+0000B85C],00000000
+	dmc3.exe+214C70 - 89 BE 64B80000             - mov [rsi+0000B864],edi
+	dmc3.exe+214BB2 - 89 BE 70B80000             - mov [rsi+0000B870],edi
+	dmc3.exe+214C6A - 89 BE 74B80000             - mov [rsi+0000B874],edi
+	dmc3.exe+214B97 - 66 C7 86 7BB80000 0000     - mov [rsi+0000B87B],0000
+	dmc3.exe+214BA0 - C6 86 7DB80000 00          - mov [rsi+0000B87D],00
+	dmc3.exe+214C86 - C6 86 7EB80000 00          - mov [rsi+0000B87E],00
+	dmc3.exe+214C60 - C7 86 80B80000 00000000    - mov [rsi+0000B880],00000000
+	dmc3.exe+214C8D - C6 86 84B80000 00          - mov [rsi+0000B884],00
+	dmc3.exe+214C94 - 89 BE 88B80000             - mov [rsi+0000B888],edi
+	dmc3.exe+214C9A - C6 86 8DB80000 00          - mov [rsi+0000B88D],00
+	dmc3.exe+214CA1 - C6 86 8FB80000 00          - mov [rsi+0000B88F],00
+	dmc3.exe+214CA8 - 89 BE 94B80000             - mov [rsi+0000B894],edi
+	*/
+
+
+
+
+
+
 }
 
 void UpdateActorDante(byte8 * baseAddr)

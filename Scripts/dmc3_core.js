@@ -82,6 +82,7 @@ var typeHelper =
 
 	[ "BodyPartData" , "" , 288 , false ],
 	[ "RecoveryData" , "" , 112 , false ],
+	//[ "CloneData" , "" , 116 , false ],
 ];
 
 // function Template(typeString)
