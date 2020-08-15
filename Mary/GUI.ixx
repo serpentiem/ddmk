@@ -1228,32 +1228,32 @@ void Main()
 		GUI_Input("Actor"            , actor          );
 		GUI_Input("Devil"            , devil          );
 		GUI_Input("Devil Model Index", devilModelIndex);
-		if (GUI_Button("Update Devil"))
-		{
-			auto & actorData = *reinterpret_cast<ActorDataDante *>(Actor_actorBaseAddr[actor]);
+		//if (GUI_Button("Update Devil"))
+		//{
+		//	auto & actorData = *reinterpret_cast<ActorDataDante *>(Actor_actorBaseAddr[actor]);
 
 
 
-			//ResetModel(actorData.modelData   [(devilModelIndex == 0) ? 1 : 2]);
-			//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 1 : 3]);
-			//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 2 : 4]);
-
-
-
-
-			UpdateDevilModelFunctionDante(actorData, devil, devilModelIndex);
-		}
+		//	//ResetModel(actorData.modelData   [(devilModelIndex == 0) ? 1 : 2]);
+		//	//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 1 : 3]);
+		//	//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 2 : 4]);
 
 
 
 
-		if (GUI_Button("Vector"))
-		{
-			for_all(uint32, index, devilAuras.count)
-			{
-				Log("devilAura[%u] %llX", index, devilAuras[index]);
-			}
-		}
+		//	UpdateDevilModelFunctionDante(actorData, devil, devilModelIndex);
+		//}
+
+
+
+
+		//if (GUI_Button("Vector"))
+		//{
+		//	for_all(uint32, index, devilAuras.count)
+		//	{
+		//		Log("devilAura[%u] %llX", index, devilAuras[index]);
+		//	}
+		//}
 
 
 

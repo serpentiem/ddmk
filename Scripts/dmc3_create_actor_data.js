@@ -279,18 +279,20 @@ var extra =
 
 
 
-	[ "newModelData[6]"                        , "ModelData"        , 0x200  ],
-	[ "newModelPhysicsMetadataPool[7][24]"     , "PhysicsMetadata *", 0x1880 ],
-	[ "newModelAllocationData[512]"            , "Size_32"          , 0x1B88 ],
-	[ "newRecoveryData[6]"                     , "RecoveryData"     , 0x3B00 ],
-	[ "newDevilModels[6]"                      , "uint32"           , 0x3E74 ],
-	[ "newBodyPartData[6][2]"                  , "BodyPartData"     , 0x6950 ],
-	[ "newSubmodelData[11]"                    , "ModelData"        , 0x7540 ],
-	[ "newModelShadowData[6]"                  , "ShadowData"       , 0x9AD0 ],
-	[ "newSubmodelShadowData[11]"              , "ShadowData"       , 0x9D10 ],
-	[ "newDevilModelPhysicsMetadataPool[5][36]", "PhysicsMetadata *", 0xA300 ],
-	[ "newDevilSubmodelPhysicsData[10]"        , "PhysicsData"      , 0xA540 ],
-	[ "newDevilSubmodelPhysicsLinkData[10][4]" , "PhysicsLinkData"  , 0xAA00 ],
+	[ "newModelData[6]"                        , "ModelData"         ],
+	[ "newModelPhysicsMetadataPool[7][24]"     , "PhysicsMetadata *" ],
+	[ "newModelAllocationData[512]"            , "Size_32"           ],
+	[ "newRecoveryData[6]"                     , "RecoveryData"      ],
+	[ "newDevilModels[6]"                      , "uint32"            ],
+
+	[ "newBodyPartData[7][2]"                  , "BodyPartData"      ],
+
+	[ "newSubmodelData[11]"                    , "ModelData"         ],
+	[ "newModelShadowData[6]"                  , "ShadowData"        ],
+	[ "newSubmodelShadowData[11]"              , "ShadowData"        ],
+	[ "newDevilModelPhysicsMetadataPool[5][36]", "PhysicsMetadata *" ],
+	[ "newDevilSubmodelPhysicsData[10]"        , "PhysicsData"       ],
+	[ "newDevilSubmodelPhysicsLinkData[10][4]" , "PhysicsLinkData"   ],
 
 
 
@@ -357,17 +359,24 @@ var extra =
 	[ "newEnableRightStick"    , "bool"    ],
 	[ "newEnableLeftStick"     , "bool"    ],
 
-	[ "newMeleeWeapons[5]"      , "uint8"   ],
-	[ "newMeleeWeaponData[5]"  , "byte8 *" ],
+	[ "newMeleeWeapons[5]"     , "uint8"   ],
 	[ "newMeleeWeaponCount"    , "uint8"   ],
 	[ "newMeleeWeaponIndex"    , "uint8"   ],
-	[ "newLastMeleeWeapon"     , "uint8"   ],
 
-	[ "newRangedWeapons[5]"     , "uint8"   ],
-	[ "newRangedWeaponData[5]" , "byte8 *" ],
+
+	[ "newRangedWeapons[5]"    , "uint8"   ],
 	[ "newRangedWeaponCount"   , "uint8"   ],
 	[ "newRangedWeaponIndex"   , "uint8"   ],
-	[ "newLastRangedWeapon"    , "uint8"   ],
+
+
+
+	
+
+
+	//[ "newMeleeWeaponData[5]"  , "byte8 *" ],
+	//[ "newLastMeleeWeapon"     , "uint8"   ],
+	//[ "newRangedWeaponData[5]" , "byte8 *" ],
+	//[ "newLastRangedWeapon"    , "uint8"   ],
 
 	[ "newSect[8]"             , "bool"    ],
 	[ "newBufferedActionPolicy", "uint8"   ],

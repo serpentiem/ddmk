@@ -242,7 +242,7 @@ void InitRegisterWeapon()
 
 
 
-
+// @Todo: Move to Model for now.
 
 template <typename T>
 void UpdateModelPartitions(T & actorData)
@@ -426,140 +426,12 @@ void UpdateModelPartitions(T & actorData)
 
 
 
-//void UpdateModelPartitionConfigFunction
-//(
-//	ActorDataDante & actorData,
-//	uint8 weapon
-//)
-//{
-//	actorData.newLastMeleeWeapon = weapon;
-//
-//	auto & modelData = actorData.modelData[0];
-//	auto dest = func_89DE0(modelData);
-//
-//	if (weapon == WEAPON_DANTE_BEOWULF)
-//	{
-//		func_2F7350(dest, 3);
-//		func_2F74E0(dest, 4);
-//		func_2F74E0(dest, 5);
-//		func_2F7350(dest, 6);
-//	}
-//	else
-//	{
-//		func_2F74E0(dest, 3);
-//		func_2F7350(dest, 4);
-//		func_2F7350(dest, 5);
-//		func_2F74E0(dest, 6);
-//	}
-//}
-
-//void UpdateModelPartitionConfig
-//(
-//	ActorDataDante & actorData,
-//	uint8 weapon
-//)
-//{
-//	if (actorData.newLastMeleeWeapon == weapon)
-//	{
-//		return;
-//	}
-//	UpdateModelPartitionConfigFunction(actorData, weapon);
-//}
-
-template <typename T>
-void InitMeleeWeapons(T & actorData)
-{
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
-	{
-		for_all(uint8, index, MAX_MELEE_WEAPON_DANTE)
-		{
-			uint32 weapon = (WEAPON_DANTE_REBELLION + index);
-			actorData.newMeleeWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
-		}
-		actorData.meleeWeaponIndex = 0;
-		actorData.weapons[0] = WEAPON_DANTE_REBELLION;
-		actorData.weapons[1] = WEAPON_VOID;
-		actorData.weaponData[0] = actorData.newMeleeWeaponData[0];
-	}
-	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	{
-		for_all(uint8, index, MAX_MELEE_WEAPON_VERGIL)
-		{
-			uint32 weapon = (WEAPON_VERGIL_YAMATO + index);
-			actorData.newMeleeWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
-		}
-		if (actorData.neroAngelo)
-		{
-			func_22CF00(actorData, 0);
-		}
-		actorData.activeMeleeWeaponIndex = 0;
-		actorData.queuedMeleeWeaponIndex = 0;
-		actorData.weapons[0] = WEAPON_VERGIL_YAMATO;
-		actorData.weapons[1] = WEAPON_VERGIL_BEOWULF;
-		actorData.weapons[2] = WEAPON_VERGIL_FORCE_EDGE;
-		actorData.weapons[3] = WEAPON_VOID;
-		actorData.weapons[4] = WEAPON_VOID;
-		actorData.weaponData[0] = actorData.newMeleeWeaponData[0];
-		actorData.weaponData[1] = actorData.newMeleeWeaponData[1];
-		actorData.weaponData[2] = actorData.newMeleeWeaponData[2];
-	}
-}
-
-template <typename T>
-void InitRangedWeapons(T & actorData)
-{
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
-	{
-		for_all(uint8, index, MAX_RANGED_WEAPON_DANTE)
-		{
-			uint32 weapon = (WEAPON_DANTE_EBONY_IVORY + index);
-			actorData.newRangedWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
-		}
-		actorData.rangedWeaponIndex = 2;
-		actorData.weapons[2] = WEAPON_DANTE_EBONY_IVORY;
-		actorData.weapons[3] = WEAPON_VOID;
-		actorData.weapons[4] = WEAPON_VOID;
-		actorData.weaponData[2] = actorData.newRangedWeaponData[0];
-		actorData.weaponStatus[4] = WEAPON_STATUS_DISABLED;
-		actorData.weaponLevels[2] = 2;
-		actorData.weaponLevels[3] = 2;
-	}
-}
-
-template <typename T>
-void InitWeapons(T & actorData)
-{
-	auto dest = (reinterpret_cast<byte8 *>(&actorData) + offsetof(ActorDataVergil, activeMeleeWeaponIndex));
-	constexpr uint32 size = (offsetof(ActorDataVergil, styleRank) - offsetof(ActorDataVergil, activeMeleeWeaponIndex));
-	memset(dest, 0, size);
-
-	InitMeleeWeapons (actorData);
-	InitRangedWeapons(actorData);
-}
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-uint8 g_newMeleeWeapon [MAX_PLAYER][MAX_ENTITY] = {};
-uint8 g_newRangedWeapon[MAX_PLAYER][MAX_ENTITY] = {};
+uint8 g_newMeleeWeaponIndex [MAX_PLAYER][MAX_ENTITY] = {};
+uint8 g_newRangedWeaponIndex[MAX_PLAYER][MAX_ENTITY] = {};
 
 template <typename T>
 void UpdateNewMeleeWeapons
@@ -579,45 +451,7 @@ void UpdateNewMeleeWeapons
 		memcpy(actorData.newMeleeWeapons, Config.Actor.meleeWeaponVergil[player][entity], MAX_MELEE_WEAPON);
 		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCountVergil[player][entity];
 	}
-	UpdateMapIndex(actorData.newMeleeWeapons, actorData.newMeleeWeaponIndex, g_newMeleeWeapon[player][entity]);
 }
-
-
-//
-//export template
-//<
-//	typename varType,
-//	uint8 mapItemCount
-//>
-//void UpdateMapIndex2
-//(
-//	varType(&map)[mapItemCount],
-//	uint8 & index,
-//	varType & var
-//)
-//{
-//
-//	//LogFunction();
-//
-//	for_all(uint8, mapIndex, mapItemCount)
-//	{
-//		auto & mapItem = map[mapIndex];
-//		if (mapItem == var)
-//		{
-//			index = mapIndex;
-//			return;
-//		}
-//	}
-//
-//
-//	//MessageBoxA(0, "No Match", 0, 0);
-//
-//
-//	Log("No Match");
-//
-//}
-
-
 
 template <typename T>
 void UpdateNewRangedWeapons
@@ -627,59 +461,10 @@ void UpdateNewRangedWeapons
 	uint8 entity
 )
 {
-
-	LogFunction();
-
-
-
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		memcpy(actorData.newRangedWeapons, Config.Actor.rangedWeaponDante[player][entity], MAX_RANGED_WEAPON);
-
-
 		actorData.newRangedWeaponCount = Config.Actor.rangedWeaponCountDante[player][entity];
-
-
-
-		UpdateMapIndex(actorData.newRangedWeapons, actorData.newRangedWeaponIndex, g_newRangedWeapon[player][entity]);
-
-
-
-		//Log("newRangedWeapon      %u", actorData.newRangedWeapon);
-		//Log("newRangedWeaponIndex %u", actorData.newRangedWeaponIndex);
-		//Log("g_newRangedWeapon    %u", g_newRangedWeapon[player][entity]);
-
-
-
-
-
-
-		//Log("UpdateMapIndex %llx %u", actorData, actorData.newRangedWeaponIndex);
-
-
-
-
-
-
-	}
-}
-
-template <typename T>
-void UpdateMeleeWeaponFunction
-(
-	T & actorData,
-	uint8 weapon
-)
-{
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
-	{
-		actorData.meleeWeaponIndex = (!IsWeaponActive(actorData, actorData.weapons[0])) ? 0 : 1;
-		actorData.weapons[actorData.meleeWeaponIndex] = weapon;
-		actorData.weaponData[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponData[(weapon - WEAPON_DANTE_REBELLION)];
-	}
-	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	{
-		actorData.queuedMeleeWeaponIndex = (weapon - WEAPON_VERGIL_YAMATO);
 	}
 }
 
@@ -694,32 +479,7 @@ void UpdateMeleeWeapon
 	{
 		if ((weapon >= WEAPON_DANTE_REBELLION) && (weapon <= WEAPON_DANTE_BEOWULF))
 		{
-			UpdateMeleeWeaponFunction(actorData, weapon);
-		}
-		else if ((weapon >= WEAPON_VERGIL_YAMATO) && (weapon <= WEAPON_VERGIL_FORCE_EDGE))
-		{
-			if (!actorData.newChildBaseAddr)
-			{
-				return;
-			}
-			auto & childActorData = *reinterpret_cast<ActorDataVergil *>(actorData.newChildBaseAddr);
-			UpdateMeleeWeaponFunction(childActorData, weapon);
-		}
-	}
-	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	{
-		if ((weapon >= WEAPON_VERGIL_YAMATO) && (weapon <= WEAPON_VERGIL_FORCE_EDGE))
-		{
-			UpdateMeleeWeaponFunction(actorData, weapon);
-		}
-		else if ((weapon >= WEAPON_DANTE_REBELLION) && (weapon <= WEAPON_DANTE_BEOWULF))
-		{
-			if (!actorData.newChildBaseAddr)
-			{
-				return;
-			}
-			auto & childActorData = *reinterpret_cast<ActorDataDante *>(actorData.newChildBaseAddr);
-			UpdateMeleeWeaponFunction(childActorData, weapon);
+			actorData.meleeWeaponIndex = weapon;
 		}
 	}
 }
@@ -733,10 +493,90 @@ void UpdateRangedWeapon
 {
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		actorData.rangedWeaponIndex = (!IsWeaponActive(actorData, actorData.weapons[2])) ? 2 : 3;
-		actorData.weapons[actorData.rangedWeaponIndex] = weapon;
-		actorData.weaponData[actorData.rangedWeaponIndex] = actorData.newRangedWeaponData[(weapon - WEAPON_DANTE_EBONY_IVORY)];
+		if ((weapon >= WEAPON_DANTE_EBONY_IVORY) && (weapon <= WEAPON_DANTE_KALINA_ANN))
+		{
+			actorData.rangedWeaponIndex = weapon;
+		}
 	}
+}
+
+template <typename T>
+void InitWeapons
+(
+	T & actorData,
+	uint8 player,
+	uint8 entity
+)
+{
+	memset
+	(
+		(reinterpret_cast<byte8 *>(&actorData) + offsetof(ActorDataVergil, activeMeleeWeaponIndex)),
+		0,
+		(offsetof(ActorDataVergil, styleRank) - offsetof(ActorDataVergil, activeMeleeWeaponIndex))
+	);
+	memset(actorData.newWeapons, WEAPON_VOID, sizeof(actorData.newWeapons));
+	memset(actorData.newWeaponStatus, WEAPON_STATUS_DISABLED, sizeof(actorData.newWeaponStatus));
+
+	constexpr uint8 count =
+	(TypeMatch<T, ActorDataDante >::value) ? 10 :
+	(TypeMatch<T, ActorDataVergil>::value) ? 3  :
+	0;
+
+	for_all(uint8, index, count)
+	{
+		uint8 weapon =
+		(TypeMatch<T, ActorDataDante >::value) ? (WEAPON_DANTE_REBELLION + index) :
+		(TypeMatch<T, ActorDataVergil>::value) ? (WEAPON_VERGIL_YAMATO   + index) :
+		0;
+
+		actorData.newWeapons[index] = weapon;
+		actorData.newWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
+		actorData.newWeaponStatus[index] = WEAPON_STATUS_READY;
+
+		if constexpr (TypeMatch<T, ActorDataDante>::value)
+		{
+			if (index >= 5)
+			{
+				actorData.newWeaponLevels[index] = 2;
+			}
+		}
+	}
+
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+		actorData.meleeWeaponIndex = 0;
+		actorData.rangedWeaponIndex = 5;
+	}
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+	{
+		actorData.activeMeleeWeaponIndex = 0;
+		actorData.queuedMeleeWeaponIndex = 0;
+		if (actorData.neroAngelo)
+		{
+			actorData.newWeaponData[3] = func_22CF00(actorData, 0);
+		}
+	}
+
+	actorData.newMeleeWeaponIndex  = g_newMeleeWeaponIndex [player][entity];
+	actorData.newRangedWeaponIndex = g_newRangedWeaponIndex[player][entity];
+}
+
+template <typename T>
+void UpdateWeapons
+(
+	T & actorData,
+	uint8 player,
+	uint8 entity
+)
+{
+	UpdateNewMeleeWeapons (actorData, player, entity);
+	UpdateNewRangedWeapons(actorData, player, entity);
+
+	auto newMeleeWeapon  = actorData.newMeleeWeapons [actorData.newMeleeWeaponIndex ];
+	auto newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
+
+	UpdateMeleeWeapon (actorData, newMeleeWeapon );
+	UpdateRangedWeapon(actorData, newRangedWeapon);
 }
 
 
@@ -744,11 +584,61 @@ void UpdateRangedWeapon
 
 
 
-// @Todo: Remove the double functions.
 
-void UpdateActorFunctionDante(ActorDataDante & actorData)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void UpdateActorDante(ActorDataDante & actorData)
 {
-
 	LogFunction(actorData.operator byte8 *());
 
 
@@ -757,6 +647,18 @@ void UpdateActorFunctionDante(ActorDataDante & actorData)
 	
 	//memset(actorData.var_9AC0, 0, 5);
 
+
+	/*
+	dmc3.exe+212C0D - 44 89 B9 C09A0000 - mov [rcx+00009AC0],r15d
+	dmc3.exe+212C14 - 44 88 B9 C49A0000 - mov [rcx+00009AC4],r15l
+	dmc3.exe+212C20 - C6 81 02B60000 FF - mov byte ptr [rcx+0000B602],-01 { 255 }
+	dmc3.exe+212C2B - C6 81 05B60000 FF - mov byte ptr [rcx+0000B605],-01 { 255 }
+	dmc3.exe+212C32 - C6 81 0AB60000 FF - mov byte ptr [rcx+0000B60A],-01 { 255 }
+	dmc3.exe+212C39 - C6 81 11B60000 FF - mov byte ptr [rcx+0000B611],-01 { 255 }
+	dmc3.exe+212C40 - C6 81 14B60000 FF - mov byte ptr [rcx+0000B614],-01 { 255 }
+	dmc3.exe+212C47 - C6 81 19B60000 FF - mov byte ptr [rcx+0000B619],-01 { 255 }
+	dmc3.exe+212C4E - C6 81 1EB60000 FF - mov byte ptr [rcx+0000B61E],-01 { 255 }
+	*/
 	actorData.devilModelMetadata.Rebellion.devilSubmodelMetadata[0].submodelIndex = 255;
 	actorData.devilModelMetadata.Rebellion.devilSubmodelMetadata[1].submodelIndex = 255;
 	actorData.devilModelMetadata.Cerberus.devilSubmodelMetadata.submodelIndex = 255;
@@ -765,17 +667,7 @@ void UpdateActorFunctionDante(ActorDataDante & actorData)
 	actorData.devilModelMetadata.Beowulf.devilSubmodelMetadata.submodelIndex = 255;
 	actorData.devilModelMetadata.Sparda.devilSubmodelMetadata.submodelIndex = 255;
 
-	/*
-	dmc3.exe+212C0D - 44 89 B9 C09A0000     - mov [rcx+00009AC0],r15d
-	dmc3.exe+212C14 - 44 88 B9 C49A0000     - mov [rcx+00009AC4],r15l
-	dmc3.exe+212C20 - C6 81 02B60000 FF     - mov byte ptr [rcx+0000B602],-01 { 255 }
-	dmc3.exe+212C2B - C6 81 05B60000 FF     - mov byte ptr [rcx+0000B605],-01 { 255 }
-	dmc3.exe+212C32 - C6 81 0AB60000 FF     - mov byte ptr [rcx+0000B60A],-01 { 255 }
-	dmc3.exe+212C39 - C6 81 11B60000 FF     - mov byte ptr [rcx+0000B611],-01 { 255 }
-	dmc3.exe+212C40 - C6 81 14B60000 FF     - mov byte ptr [rcx+0000B614],-01 { 255 }
-	dmc3.exe+212C47 - C6 81 19B60000 FF     - mov byte ptr [rcx+0000B619],-01 { 255 }
-	dmc3.exe+212C4E - C6 81 1EB60000 FF     - mov byte ptr [rcx+0000B61E],-01 { 255 }
-	*/
+
 
 
 
@@ -784,14 +676,43 @@ void UpdateActorFunctionDante(ActorDataDante & actorData)
 
 	UpdateModelFunctionDante(actorData);
 
+
+	//InitModel(actorData, 0);
+
+
+
 	func_1EF040(actorData, 0);
 	func_1EEF80(actorData);
 	func_1EF040(actorData, 3);
 
-	for_all(uint8, index, 5)
+
+
+
+	//InitModel(actorData, 3);
+
+
+
+
+
+
+
+
+	if (actorData.sparda)
 	{
-		UpdateDevilModelFunctionDante(actorData, (DEVIL_DANTE_REBELLION + index), index);
+		UpdateDevilModelDante(actorData, DEVIL_DANTE_SPARDA, 0);
 	}
+	else
+	{
+		for_all(uint8, index, 5)
+		{
+			UpdateDevilModelDante(actorData, (DEVIL_DANTE_REBELLION + index), index);
+		}
+	}
+	
+
+
+
+
 
 
 
@@ -820,7 +741,7 @@ void UpdateActorFunctionDante(ActorDataDante & actorData)
 
 
 
-	func_2C6150(actorData.var_6458, 0x49000, -2);
+	//func_2C6150(actorData.var_6458, 0x49000, -2);
 	
 
 
@@ -839,12 +760,7 @@ void UpdateActorFunctionDante(ActorDataDante & actorData)
 
 
 
-	actorData.actionData[0] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x590598);
-	actorData.actionData[1] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x58A2A0);
-	actorData.actionData[2] = (appBaseAddr + 0x5905B0);
-	actorData.actionData[3] = File_staticFiles[pl000][9];
-	actorData.actionData[4] = File_staticFiles[pl000][10];
-	actorData.actionData[5] = File_staticFiles[pl000][11];
+
 
 
 	/*
@@ -869,8 +785,12 @@ void UpdateActorFunctionDante(ActorDataDante & actorData)
 	dmc3.exe+212C98 - E8 2356FAFF       - call __GET_FILE__
 	dmc3.exe+212CA0 - 48 89 86 F83D0000 - mov [rsi+00003DF8],rax
 	*/
-
-
+	actorData.actionData[0] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x590598);
+	actorData.actionData[1] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x58A2A0);
+	actorData.actionData[2] = (appBaseAddr + 0x5905B0);
+	actorData.actionData[3] = File_staticFiles[pl000][9];
+	actorData.actionData[4] = File_staticFiles[pl000][10];
+	actorData.actionData[5] = File_staticFiles[pl000][11];
 
 
 
@@ -886,61 +806,29 @@ void UpdateActorFunctionDante(ActorDataDante & actorData)
 	dmc3.exe+214B57 - 48 8D 8E 503C0000 - lea rcx,[rsi+00003C50]
 	dmc3.exe+214B81 - E8 4A980D00       - call dmc3.exe+2EE3D0
 	*/
-
 	func_2EE3D0(actorData.var_3C50);
 
-
-
-
 	func_1FAF40(actorData);
-
-
-	/*
-	dmc3.exe+214C4B - C7 86 21B60000 00000000    - mov [rsi+0000B621],00000000
-	dmc3.exe+214C76 - 66 C7 86 25B60000 0000     - mov [rsi+0000B625],0000
-	dmc3.exe+214C7F - C6 86 27B60000 00          - mov [rsi+0000B627],00
-	dmc3.exe+214B91 - 89 BE 50B80000             - mov [rsi+0000B850],edi
-	dmc3.exe+214C55 - 48 C7 86 54B80000 00000000 - mov [rsi+0000B854],00000000
-	dmc3.exe+214BA7 - 48 C7 86 5CB80000 00000000 - mov [rsi+0000B85C],00000000
-	dmc3.exe+214C70 - 89 BE 64B80000             - mov [rsi+0000B864],edi
-	dmc3.exe+214BB2 - 89 BE 70B80000             - mov [rsi+0000B870],edi
-	dmc3.exe+214C6A - 89 BE 74B80000             - mov [rsi+0000B874],edi
-	dmc3.exe+214B97 - 66 C7 86 7BB80000 0000     - mov [rsi+0000B87B],0000
-	dmc3.exe+214BA0 - C6 86 7DB80000 00          - mov [rsi+0000B87D],00
-	dmc3.exe+214C86 - C6 86 7EB80000 00          - mov [rsi+0000B87E],00
-	dmc3.exe+214C60 - C7 86 80B80000 00000000    - mov [rsi+0000B880],00000000
-	dmc3.exe+214C8D - C6 86 84B80000 00          - mov [rsi+0000B884],00
-	dmc3.exe+214C94 - 89 BE 88B80000             - mov [rsi+0000B888],edi
-	dmc3.exe+214C9A - C6 86 8DB80000 00          - mov [rsi+0000B88D],00
-	dmc3.exe+214CA1 - C6 86 8FB80000 00          - mov [rsi+0000B88F],00
-	dmc3.exe+214CA8 - 89 BE 94B80000             - mov [rsi+0000B894],edi
-	*/
-
-
-
-
-
-
 }
 
-void UpdateActorDante(byte8 * baseAddr)
-{
-	LogFunction(baseAddr);
-
-	auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
-
-	UpdateActorFunctionDante(actorData);
-}
-
-
+//void UpdateActorDante(byte8 * baseAddr)
+//{
+//	LogFunction(baseAddr);
+//
+//	auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
+//
+//	UpdateActorFunctionDante(actorData);
+//}
 
 
-void ToggleNewUpdateActorDante(bool enable)
-{
-	LogFunction(enable);
 
-	Write<void *>((appBaseAddr + 0x4DFA10), (enable) ? UpdateActorDante : reinterpret_cast<void *>(appBaseAddr + 0x212BE0)); // @Research: There has to be a better way.
-}
+
+//void ToggleNewUpdateActorDante(bool enable)
+//{
+//	LogFunction(enable);
+//
+//	Write<void *>((appBaseAddr + 0x4DFA10), (enable) ? UpdateActorDante : reinterpret_cast<void *>(appBaseAddr + 0x212BE0)); // @Research: There has to be a better way.
+//}
 
 
 
@@ -1028,7 +916,7 @@ T * CreateActorFunction
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		UpdateActorFunctionDante(actorData);
+		UpdateActorDante(actorData);
 	}
 	else
 	{
@@ -1063,7 +951,11 @@ T * CreateActorFunction
 
 	UpdateMotionArchives(actorData);
 
-	InitWeapons(actorData);
+	InitWeapons(actorData, player, entity);
+
+
+
+
 
 	func_1DFC20(actorData);
 
@@ -1310,17 +1202,18 @@ bool IsWeaponReady
 			actorData.newMeleeWeaponCount,
 			actorData.newMeleeWeaponIndex
 		);
-		if constexpr (TypeMatch<T, ActorDataDante>::value)
-		{
-			if (result)
-			{
-				if (actorData.newLastMeleeWeapon != weapon)
-				{
-					actorData.newLastMeleeWeapon = weapon;
-					UpdateModelPartitions(actorData);
-				}
-			}
-		}
+		// @Todo: Move to OnUpdate.
+		//if constexpr (TypeMatch<T, ActorDataDante>::value)
+		//{
+		//	if (result)
+		//	{
+		//		if (actorData.newLastMeleeWeapon != weapon)
+		//		{
+		//			actorData.newLastMeleeWeapon = weapon;
+		//			UpdateModelPartitions(actorData);
+		//		}
+		//	}
+		//}
 		return result;
 	}
 	else
@@ -2481,26 +2374,26 @@ export void Actor_Init()
 	InitIsWeaponReady();
 
 
-	// @Todo: Create function.
-	for_all(uint8, player, MAX_PLAYER){
-	for_all(uint8, entity, MAX_ENTITY)
-	{
-		auto & character = Config.Actor.character[player][entity];
-		switch (character)
-		{
-		case CHAR_DANTE:
-		{
-			g_newMeleeWeapon [player][entity] = Config.Actor.meleeWeaponDante [player][entity][0];
-			g_newRangedWeapon[player][entity] = Config.Actor.rangedWeaponDante[player][entity][0];
-			break;
-		}
-		case CHAR_VERGIL:
-		{
-			g_newMeleeWeapon[player][entity] = Config.Actor.meleeWeaponVergil[player][entity][0];
-			break;
-		}
-		}
-	}}
+	//// @Todo: Create function.
+	//for_all(uint8, player, MAX_PLAYER){
+	//for_all(uint8, entity, MAX_ENTITY)
+	//{
+	//	auto & character = Config.Actor.character[player][entity];
+	//	switch (character)
+	//	{
+	//	case CHAR_DANTE:
+	//	{
+	//		g_newMeleeWeapon [player][entity] = Config.Actor.meleeWeaponDante [player][entity][0];
+	//		g_newRangedWeapon[player][entity] = Config.Actor.rangedWeaponDante[player][entity][0];
+	//		break;
+	//	}
+	//	case CHAR_VERGIL:
+	//	{
+	//		g_newMeleeWeapon[player][entity] = Config.Actor.meleeWeaponVergil[player][entity][0];
+	//		break;
+	//	}
+	//	}
+	//}}
 
 
 
@@ -2711,6 +2604,230 @@ export void Actor_Init()
 
 
 #ifdef __GARBAGE__
+
+
+
+
+//void UpdateModelPartitionConfigFunction
+//(
+//	ActorDataDante & actorData,
+//	uint8 weapon
+//)
+//{
+//	actorData.newLastMeleeWeapon = weapon;
+//
+//	auto & modelData = actorData.modelData[0];
+//	auto dest = func_89DE0(modelData);
+//
+//	if (weapon == WEAPON_DANTE_BEOWULF)
+//	{
+//		func_2F7350(dest, 3);
+//		func_2F74E0(dest, 4);
+//		func_2F74E0(dest, 5);
+//		func_2F7350(dest, 6);
+//	}
+//	else
+//	{
+//		func_2F74E0(dest, 3);
+//		func_2F7350(dest, 4);
+//		func_2F7350(dest, 5);
+//		func_2F74E0(dest, 6);
+//	}
+//}
+
+//void UpdateModelPartitionConfig
+//(
+//	ActorDataDante & actorData,
+//	uint8 weapon
+//)
+//{
+//	if (actorData.newLastMeleeWeapon == weapon)
+//	{
+//		return;
+//	}
+//	UpdateModelPartitionConfigFunction(actorData, weapon);
+//}
+
+//template <typename T>
+//void InitMeleeWeapons(T & actorData)
+//{
+//	if constexpr (TypeMatch<T, ActorDataDante>::value)
+//	{
+//		for_all(uint8, index, MAX_MELEE_WEAPON_DANTE)
+//		{
+//			uint32 weapon = (WEAPON_DANTE_REBELLION + index);
+//			actorData.newMeleeWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
+//		}
+//		actorData.meleeWeaponIndex = 0;
+//		actorData.weapons[0] = WEAPON_DANTE_REBELLION;
+//		actorData.weapons[1] = WEAPON_VOID;
+//		actorData.weaponData[0] = actorData.newMeleeWeaponData[0];
+//	}
+//	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+//	{
+//		for_all(uint8, index, MAX_MELEE_WEAPON_VERGIL)
+//		{
+//			uint32 weapon = (WEAPON_VERGIL_YAMATO + index);
+//			actorData.newMeleeWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
+//		}
+//		if (actorData.neroAngelo)
+//		{
+//			func_22CF00(actorData, 0);
+//		}
+//		actorData.activeMeleeWeaponIndex = 0;
+//		actorData.queuedMeleeWeaponIndex = 0;
+//		actorData.weapons[0] = WEAPON_VERGIL_YAMATO;
+//		actorData.weapons[1] = WEAPON_VERGIL_BEOWULF;
+//		actorData.weapons[2] = WEAPON_VERGIL_FORCE_EDGE;
+//		actorData.weapons[3] = WEAPON_VOID;
+//		actorData.weapons[4] = WEAPON_VOID;
+//		actorData.weaponData[0] = actorData.newMeleeWeaponData[0];
+//		actorData.weaponData[1] = actorData.newMeleeWeaponData[1];
+//		actorData.weaponData[2] = actorData.newMeleeWeaponData[2];
+//	}
+//}
+//
+//template <typename T>
+//void InitRangedWeapons(T & actorData)
+//{
+//	if constexpr (TypeMatch<T, ActorDataDante>::value)
+//	{
+//		for_all(uint8, index, MAX_RANGED_WEAPON_DANTE)
+//		{
+//			uint32 weapon = (WEAPON_DANTE_EBONY_IVORY + index);
+//			actorData.newRangedWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
+//		}
+//		actorData.rangedWeaponIndex = 2;
+//		actorData.weapons[2] = WEAPON_DANTE_EBONY_IVORY;
+//		actorData.weapons[3] = WEAPON_VOID;
+//		actorData.weapons[4] = WEAPON_VOID;
+//		actorData.weaponData[2] = actorData.newRangedWeaponData[0];
+//		actorData.weaponStatus[4] = WEAPON_STATUS_DISABLED;
+//		actorData.weaponLevels[2] = 2;
+//		actorData.weaponLevels[3] = 2;
+//	}
+//}
+
+
+
+//
+//export template
+//<
+//	typename varType,
+//	uint8 mapItemCount
+//>
+//void UpdateMapIndex2
+//(
+//	varType(&map)[mapItemCount],
+//	uint8 & index,
+//	varType & var
+//)
+//{
+//
+//	//LogFunction();
+//
+//	for_all(uint8, mapIndex, mapItemCount)
+//	{
+//		auto & mapItem = map[mapIndex];
+//		if (mapItem == var)
+//		{
+//			index = mapIndex;
+//			return;
+//		}
+//	}
+//
+//
+//	//MessageBoxA(0, "No Match", 0, 0);
+//
+//
+//	Log("No Match");
+//
+//}
+
+
+
+
+
+//template <typename T>
+//void UpdateMeleeWeaponFunction
+//(
+//	T & actorData,
+//	uint8 weapon
+//)
+//{
+//	if constexpr (TypeMatch<T, ActorDataDante>::value)
+//	{
+//		actorData.meleeWeaponIndex = (!IsWeaponActive(actorData, actorData.weapons[0])) ? 0 : 1;
+//		actorData.weapons[actorData.meleeWeaponIndex] = weapon;
+//		actorData.weaponData[actorData.meleeWeaponIndex] = actorData.newMeleeWeaponData[(weapon - WEAPON_DANTE_REBELLION)];
+//	}
+//	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+//	{
+//		actorData.queuedMeleeWeaponIndex = (weapon - WEAPON_VERGIL_YAMATO);
+//	}
+//}
+//
+//template <typename T>
+//void UpdateMeleeWeapon
+//(
+//	T & actorData,
+//	uint8 weapon
+//)
+//{
+//	if constexpr (TypeMatch<T, ActorDataDante>::value)
+//	{
+//		if ((weapon >= WEAPON_DANTE_REBELLION) && (weapon <= WEAPON_DANTE_BEOWULF))
+//		{
+//			UpdateMeleeWeaponFunction(actorData, weapon);
+//		}
+//		else if ((weapon >= WEAPON_VERGIL_YAMATO) && (weapon <= WEAPON_VERGIL_FORCE_EDGE))
+//		{
+//			if (!actorData.newChildBaseAddr)
+//			{
+//				return;
+//			}
+//			auto & childActorData = *reinterpret_cast<ActorDataVergil *>(actorData.newChildBaseAddr);
+//			UpdateMeleeWeaponFunction(childActorData, weapon);
+//		}
+//	}
+//	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+//	{
+//		if ((weapon >= WEAPON_VERGIL_YAMATO) && (weapon <= WEAPON_VERGIL_FORCE_EDGE))
+//		{
+//			UpdateMeleeWeaponFunction(actorData, weapon);
+//		}
+//		else if ((weapon >= WEAPON_DANTE_REBELLION) && (weapon <= WEAPON_DANTE_BEOWULF))
+//		{
+//			if (!actorData.newChildBaseAddr)
+//			{
+//				return;
+//			}
+//			auto & childActorData = *reinterpret_cast<ActorDataDante *>(actorData.newChildBaseAddr);
+//			UpdateMeleeWeaponFunction(childActorData, weapon);
+//		}
+//	}
+//}
+//
+//template <typename T>
+//void UpdateRangedWeapon
+//(
+//	T & actorData,
+//	uint8 weapon
+//)
+//{
+//	if constexpr (TypeMatch<T, ActorDataDante>::value)
+//	{
+//		actorData.rangedWeaponIndex = (!IsWeaponActive(actorData, actorData.weapons[2])) ? 2 : 3;
+//		actorData.weapons[actorData.rangedWeaponIndex] = weapon;
+//		actorData.weaponData[actorData.rangedWeaponIndex] = actorData.newRangedWeaponData[(weapon - WEAPON_DANTE_EBONY_IVORY)];
+//	}
+//}
+
+
+
+
+
+
 //{
 //	// Walk, Run
 //	// Swordmaster, Trickster Dash, Royalguard Release
