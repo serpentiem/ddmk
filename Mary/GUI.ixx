@@ -323,7 +323,7 @@ void Actor_WeaponSelect
 	Actor_WeaponSelectFunction
 	(
 		"Melee Weapons",
-		(character == CHAR_DANTE) ? Config.Actor.meleeWeaponDante[player][entity] : Config.Actor.meleeWeaponVergil[player][entity],
+		(character == CHAR_DANTE) ? Config.Actor.meleeWeaponsDante[player][entity] : Config.Actor.meleeWeaponsVergil[player][entity],
 		(character == CHAR_DANTE) ? Config.Actor.meleeWeaponCountDante[player][entity] : Config.Actor.meleeWeaponCountVergil[player][entity],
 		(character == CHAR_DANTE) ? Actor_meleeWeaponNamesDante : Actor_meleeWeaponNamesVergil,
 		(character == CHAR_DANTE) ? Actor_meleeWeaponMapDante   : Actor_meleeWeaponMapVergil,
@@ -336,7 +336,7 @@ void Actor_WeaponSelect
 		Actor_WeaponSelectFunction
 		(
 			"Ranged Weapons",
-			Config.Actor.rangedWeaponDante     [player][entity],
+			Config.Actor.rangedWeaponsDante     [player][entity],
 			Config.Actor.rangedWeaponCountDante[player][entity],
 			Actor_rangedWeaponNamesDante,
 			Actor_rangedWeaponMapDante,
@@ -378,7 +378,7 @@ void Actor_UpdateWeaponSelectIndices()
 		(
 			(character == CHAR_DANTE) ? Actor_meleeWeaponMapDante : Actor_meleeWeaponMapVergil,
 			Actor_meleeWeaponIndex  [player][entity][character],
-			(character == CHAR_DANTE) ? Config.Actor.meleeWeaponDante[player][entity] : Config.Actor.meleeWeaponVergil[player][entity]
+			(character == CHAR_DANTE) ? Config.Actor.meleeWeaponsDante[player][entity] : Config.Actor.meleeWeaponsVergil[player][entity]
 		);
 
 		if (character == CHAR_DANTE)
@@ -387,7 +387,7 @@ void Actor_UpdateWeaponSelectIndices()
 			(
 				Actor_rangedWeaponMapDante,
 				Actor_rangedWeaponIndex  [player][entity][character],
-				Config.Actor.rangedWeaponDante[player][entity]
+				Config.Actor.rangedWeaponsDante[player][entity]
 			);
 		}
 	}}}

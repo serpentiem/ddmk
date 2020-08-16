@@ -242,184 +242,6 @@ void InitRegisterWeapon()
 
 
 
-// @Todo: Move to Model for now.
-
-template <typename T>
-void UpdateModelPartitions(T & actorData)
-{
-	return;
-
-	LogFunction();
-
-	IntroduceSessionData();
-
-	auto modelPartitionData = actorData.newModelData[0].modelPartitionData;
-
-	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY))
-	{
-		if (actorData.costume == COSTUME_LADY_DEFAULT)
-		{
-			modelPartitionData[0].value = 3; // Body
-			modelPartitionData[1].value = 3; // Face
-			modelPartitionData[2].value = 3; // Hands
-			modelPartitionData[3].value = 3; // Accessories
-			modelPartitionData[4].value = (sessionData.mission >= 14) ? 3 : 2; // Bandage
-		}
-		else
-		{
-			modelPartitionData[0].value = 3; // Body
-			modelPartitionData[1].value = 3; // Face
-			modelPartitionData[2].value = 3; // Hands
-			modelPartitionData[3].value = 3; // Accessories
-			modelPartitionData[4].value = 2; // Millenium Puzzle
-			modelPartitionData[5].value = 3; // Feet
-			modelPartitionData[6].value = 3; // Belt
-			modelPartitionData[7].value = 3; // Zippers
-		}
-		return;
-	}
-
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
-	{
-		auto & meleeWeapon = actorData.weapons[actorData.meleeWeaponIndex];
-
-		switch (actorData.costume)
-		{
-		case COSTUME_DANTE_DEFAULT:
-		{
-			modelPartitionData[0 ].value = 3; // Hands
-			modelPartitionData[1 ].value = 2; // Fists
-			modelPartitionData[2 ].value = 3; // Shoulders
-			modelPartitionData[3 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms
-			modelPartitionData[4 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms Half
-			modelPartitionData[5 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs Half
-			modelPartitionData[6 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs and Feet
-			modelPartitionData[7 ].value = 3; // Upper Legs
-			modelPartitionData[8 ].value = 3; // Accessories
-			modelPartitionData[9 ].value = 3; // Upper Body
-			modelPartitionData[10].value = 3; // Face
-			modelPartitionData[11].value = 3; // Hair Base
-			modelPartitionData[12].value = 3; // Hair Back Layer 1
-			modelPartitionData[13].value = 3; // Hair Back Layer 2
-			modelPartitionData[14].value = 3; // Hair Sides
-			modelPartitionData[15].value = 3; // Hair Back Layer 3
-			modelPartitionData[16].value = 3; // Hair Main
-			break;
-		}
-		case COSTUME_DANTE_DEFAULT_NO_COAT:
-		{
-			modelPartitionData[0 ].value = 3; // Hands
-			modelPartitionData[1 ].value = 2; // Fists
-			modelPartitionData[2 ].value = 3; // Upper Body
-			modelPartitionData[3 ].value = 2; // Filler
-			modelPartitionData[4 ].value = 2; // Filler
-			modelPartitionData[5 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs Half
-			modelPartitionData[6 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs and Feet
-			modelPartitionData[7 ].value = 3; // Upper Legs
-			modelPartitionData[8 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Accessories
-			modelPartitionData[9 ].value = 3; // Face
-			modelPartitionData[10].value = 3; // Hair Base
-			modelPartitionData[11].value = 3; // Hair Back Layer 1
-			modelPartitionData[12].value = 3; // Hair Back Layer 2
-			modelPartitionData[13].value = 3; // Hair Sides
-			modelPartitionData[14].value = 3; // Hair Back Layer 3
-			modelPartitionData[15].value = 3; // Hair Main
-			break;
-		}
-		case COSTUME_DANTE_DEFAULT_TORN:
-		case COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS:
-		{
-			modelPartitionData[0 ].value = 3; // Hands
-			modelPartitionData[1 ].value = 2; // Fists
-			modelPartitionData[2 ].value = 3; // Shoulders
-			modelPartitionData[3 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms
-			modelPartitionData[4 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms Half
-			modelPartitionData[5 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs Half
-			modelPartitionData[6 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs and Feet
-			modelPartitionData[7 ].value = 3; // Upper Legs
-			modelPartitionData[8 ].value = 3; // Accessories
-			modelPartitionData[9 ].value = 3; // Upper Body
-			modelPartitionData[10].value = 3; // Lower Right Arm
-			modelPartitionData[11].value = 3; // Face
-			modelPartitionData[12].value = 3; // Hair Base
-			modelPartitionData[13].value = 3; // Hair Back Layer 1
-			modelPartitionData[14].value = 3; // Hair Back Layer 2
-			modelPartitionData[15].value = 3; // Hair Sides
-			modelPartitionData[16].value = 3; // Hair Back Layer 3
-			modelPartitionData[17].value = 3; // Hair Main
-			break;
-		}
-		case COSTUME_DANTE_DMC1:
-		{
-			modelPartitionData[0 ].value = 3; // Hands
-			modelPartitionData[1 ].value = 2; // Fists
-			modelPartitionData[2 ].value = 3; // Shoulders and Arms
-			modelPartitionData[3 ].value = 2; // Filler
-			modelPartitionData[4 ].value = 2; // Filler
-			modelPartitionData[5 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs Half
-			modelPartitionData[6 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs and Feet
-			modelPartitionData[7 ].value = 3; // Upper Legs
-			modelPartitionData[8 ].value = 3; // Vest
-			modelPartitionData[9 ].value = 3; // Upper Body
-			modelPartitionData[10].value = 3; // Face
-			modelPartitionData[11].value = 3; // Hair Base
-			modelPartitionData[12].value = 3; // Hair Back Layer 1
-			modelPartitionData[13].value = 3; // Hair Back Layer 2
-			modelPartitionData[14].value = 3; // Hair Back Layer 3
-			modelPartitionData[15].value = 3; // Hair Main
-			break;
-		}
-		case COSTUME_DANTE_DMC1_NO_COAT:
-		{
-			modelPartitionData[0 ].value = 3; // Hands
-			modelPartitionData[1 ].value = 2; // Fists
-			modelPartitionData[2 ].value = 3; // Upper Body
-			modelPartitionData[3 ].value = 2; // Filler
-			modelPartitionData[4 ].value = 2; // Filler
-			modelPartitionData[5 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs Half
-			modelPartitionData[6 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs and Feet
-			modelPartitionData[7 ].value = 3; // Upper Legs
-			modelPartitionData[8 ].value = 3; // Collar
-			modelPartitionData[9 ].value = 3; // Face
-			modelPartitionData[10].value = 3; // Hair Base
-			modelPartitionData[11].value = 3; // Hair Back Layer 1
-			modelPartitionData[12].value = 3; // Hair Back Layer 2
-			modelPartitionData[13].value = 3; // Hair Back Layer 3
-			modelPartitionData[14].value = 3; // Hair Main
-			break;
-		}
-		case COSTUME_DANTE_SPARDA:
-		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
-		{
-			modelPartitionData[0 ].value = 3; // Hands
-			modelPartitionData[1 ].value = 2; // Fists
-			modelPartitionData[2 ].value = 3; // Shoulders
-			modelPartitionData[3 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms
-			modelPartitionData[4 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms Half
-			modelPartitionData[5 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs Half
-			modelPartitionData[6 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs and Feet
-			modelPartitionData[7 ].value = 3; // Upper Legs
-			modelPartitionData[8 ].value = 3; // Upper Body
-			modelPartitionData[9 ].value = 3; // Monocle
-			modelPartitionData[10].value = 3; // Collar
-			modelPartitionData[11].value = 3; // Neck
-			modelPartitionData[12].value = 3; // Face
-			modelPartitionData[13].value = 3; // Hair
-			break;
-		}
-		}
-	}
-}
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -432,73 +254,6 @@ void UpdateModelPartitions(T & actorData)
 
 uint8 g_newMeleeWeaponIndex [MAX_PLAYER][MAX_ENTITY] = {};
 uint8 g_newRangedWeaponIndex[MAX_PLAYER][MAX_ENTITY] = {};
-
-template <typename T>
-void UpdateNewMeleeWeapons
-(
-	T & actorData,
-	uint8 player,
-	uint8 entity
-)
-{
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
-	{
-		memcpy(actorData.newMeleeWeapons, Config.Actor.meleeWeaponDante[player][entity], MAX_MELEE_WEAPON);
-		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCountDante[player][entity];
-	}
-	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	{
-		memcpy(actorData.newMeleeWeapons, Config.Actor.meleeWeaponVergil[player][entity], MAX_MELEE_WEAPON);
-		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCountVergil[player][entity];
-	}
-}
-
-template <typename T>
-void UpdateNewRangedWeapons
-(
-	T & actorData,
-	uint8 player,
-	uint8 entity
-)
-{
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
-	{
-		memcpy(actorData.newRangedWeapons, Config.Actor.rangedWeaponDante[player][entity], MAX_RANGED_WEAPON);
-		actorData.newRangedWeaponCount = Config.Actor.rangedWeaponCountDante[player][entity];
-	}
-}
-
-template <typename T>
-void UpdateMeleeWeapon
-(
-	T & actorData,
-	uint8 weapon
-)
-{
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
-	{
-		if ((weapon >= WEAPON_DANTE_REBELLION) && (weapon <= WEAPON_DANTE_BEOWULF))
-		{
-			actorData.meleeWeaponIndex = weapon;
-		}
-	}
-}
-
-template <typename T>
-void UpdateRangedWeapon
-(
-	T & actorData,
-	uint8 weapon
-)
-{
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
-	{
-		if ((weapon >= WEAPON_DANTE_EBONY_IVORY) && (weapon <= WEAPON_DANTE_KALINA_ANN))
-		{
-			actorData.rangedWeaponIndex = weapon;
-		}
-	}
-}
 
 template <typename T>
 void InitWeapons
@@ -562,6 +317,66 @@ void InitWeapons
 }
 
 template <typename T>
+void UpdateMeleeWeapons
+(
+	T & actorData,
+	uint8 player,
+	uint8 entity
+)
+{
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+		memcpy(actorData.newMeleeWeapons, Config.Actor.meleeWeaponsDante[player][entity], MAX_MELEE_WEAPON);
+		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCountDante[player][entity];
+
+		auto weapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
+
+		if ((weapon >= WEAPON_DANTE_REBELLION) && (weapon <= WEAPON_DANTE_BEOWULF))
+		{
+			if (!actorData.sparda)
+			{
+				if (!IsWeaponActive(actorData))
+				{
+					actorData.activeModelIndex = (1 + weapon);
+				}
+				else
+				{
+					actorData.queuedModelIndex = (1 + weapon);
+				}
+			}
+			actorData.meleeWeaponIndex = weapon;
+		}
+	}
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+	{
+		memcpy(actorData.newMeleeWeapons, Config.Actor.meleeWeaponsVergil[player][entity], MAX_MELEE_WEAPON);
+		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCountVergil[player][entity];
+	}
+}
+
+template <typename T>
+void UpdateRangedWeapons
+(
+	T & actorData,
+	uint8 player,
+	uint8 entity
+)
+{
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+		memcpy(actorData.newRangedWeapons, Config.Actor.rangedWeaponsDante[player][entity], MAX_RANGED_WEAPON);
+		actorData.newRangedWeaponCount = Config.Actor.rangedWeaponCountDante[player][entity];
+
+		auto weapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
+
+		if ((weapon >= WEAPON_DANTE_EBONY_IVORY) && (weapon <= WEAPON_DANTE_KALINA_ANN))
+		{
+			actorData.rangedWeaponIndex = weapon;
+		}
+	}
+}
+
+template <typename T>
 void UpdateWeapons
 (
 	T & actorData,
@@ -569,73 +384,9 @@ void UpdateWeapons
 	uint8 entity
 )
 {
-	UpdateNewMeleeWeapons (actorData, player, entity);
-	UpdateNewRangedWeapons(actorData, player, entity);
-
-	auto newMeleeWeapon  = actorData.newMeleeWeapons [actorData.newMeleeWeaponIndex ];
-	auto newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
-
-	UpdateMeleeWeapon (actorData, newMeleeWeapon );
-	UpdateRangedWeapon(actorData, newRangedWeapon);
+	UpdateMeleeWeapons (actorData, player, entity);
+	UpdateRangedWeapons(actorData, player, entity);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void UpdateActorDante(ActorDataDante & actorData)
 {
@@ -811,27 +562,6 @@ void UpdateActorDante(ActorDataDante & actorData)
 	func_1FAF40(actorData);
 }
 
-//void UpdateActorDante(byte8 * baseAddr)
-//{
-//	LogFunction(baseAddr);
-//
-//	auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
-//
-//	UpdateActorFunctionDante(actorData);
-//}
-
-
-
-
-//void ToggleNewUpdateActorDante(bool enable)
-//{
-//	LogFunction(enable);
-//
-//	Write<void *>((appBaseAddr + 0x4DFA10), (enable) ? UpdateActorDante : reinterpret_cast<void *>(appBaseAddr + 0x212BE0)); // @Research: There has to be a better way.
-//}
-
-
-
 
 
 
@@ -931,7 +661,7 @@ T * CreateActorFunction
 
 
 
-	UpdateModelPartitions(actorData);
+	// UpdateModelPartitions(actorData);
 
 
 
@@ -953,7 +683,7 @@ T * CreateActorFunction
 
 	InitWeapons(actorData, player, entity);
 
-
+	UpdateWeapons(actorData, player, entity);
 
 
 
@@ -1018,11 +748,11 @@ byte8 * CreateActor
 		parentActorData.newGamepad = MAX_PLAYER;
 	}
 
-	UpdateNewMeleeWeapons (parentActorData, player, entity);
-	UpdateNewRangedWeapons(parentActorData, player, entity);
+	//UpdateNewMeleeWeapons (parentActorData, player, entity);
+	//UpdateNewRangedWeapons(parentActorData, player, entity);
 
-	UpdateMeleeWeapon (parentActorData, parentActorData.newMeleeWeapons [parentActorData.newMeleeWeaponIndex ]);
-	UpdateRangedWeapon(parentActorData, parentActorData.newRangedWeapons[parentActorData.newRangedWeaponIndex]);
+	//UpdateMeleeWeapon (parentActorData, parentActorData.newMeleeWeapons [parentActorData.newMeleeWeaponIndex ]);
+	//UpdateRangedWeapon(parentActorData, parentActorData.newRangedWeapons[parentActorData.newRangedWeaponIndex]);
 
 
 	//Log("ranged weapon actor data %u", parentActorData.newRangedWeapon[parentActorData.newRangedWeaponIndex]);
@@ -1626,9 +1356,9 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 	}
 
 
-	auto & newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
+	//auto & newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
 
-	UpdateMeleeWeapon(actorData, newMeleeWeapon);
+	//UpdateMeleeWeapon(actorData, newMeleeWeapon);
 
 
 	
@@ -1638,31 +1368,31 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 
 	// @Todo: Update enum.
 	// @Todo: Remove reference from newMeleeWeapon.
-	HUD_UpdateWeaponIcon
-	(
-		HUD_BOTTOM::MELEE_WEAPON_1,
-		HUD_weaponIcon[newMeleeWeapon].model,
-		HUD_weaponIcon[newMeleeWeapon].texture
-	);
-	func_280120(hudBottom, 1, 0);
+	//HUD_UpdateWeaponIcon
+	//(
+	//	HUD_BOTTOM::MELEE_WEAPON_1,
+	//	HUD_weaponIcon[newMeleeWeapon].model,
+	//	HUD_weaponIcon[newMeleeWeapon].texture
+	//);
+	//func_280120(hudBottom, 1, 0);
 
-	func_1EB0E0(actorData, 4);
-
-
+	//func_1EB0E0(actorData, 4);
 
 
 
-	if (actorData.devil)
-	{
-		
-		if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
-		{
-			actorData.queuedModelIndex = (1 + newMeleeWeapon);
-		}
+
+
+	//if (actorData.devil)
+	//{
+	//	
+	//	if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
+	//	{
+	//		actorData.queuedModelIndex = (1 + newMeleeWeapon);
+	//	}
 
 
 
-	}
+	//}
 
 
 	//auto devil = actorData.weapons[actorData.meleeWeaponIndex];
@@ -2604,6 +2334,73 @@ export void Actor_Init()
 
 
 #ifdef __GARBAGE__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//template <typename T>
+//void UpdateMeleeWeapon
+//(
+//	T & actorData,
+//	uint8 weapon
+//)
+//{
+//	if constexpr (TypeMatch<T, ActorDataDante>::value)
+//	{
+//		if ((weapon >= WEAPON_DANTE_REBELLION) && (weapon <= WEAPON_DANTE_BEOWULF))
+//		{
+//			actorData.meleeWeaponIndex = weapon;
+//		}
+//	}
+//}
+//
+//template <typename T>
+//void UpdateRangedWeapon
+//(
+//	T & actorData,
+//	uint8 weapon
+//)
+//{
+//	if constexpr (TypeMatch<T, ActorDataDante>::value)
+//	{
+//		if ((weapon >= WEAPON_DANTE_EBONY_IVORY) && (weapon <= WEAPON_DANTE_KALINA_ANN))
+//		{
+//			actorData.rangedWeaponIndex = weapon;
+//		}
+//	}
+//}
+
+//void UpdateActorDante(byte8 * baseAddr)
+//{
+//	LogFunction(baseAddr);
+//
+//	auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
+//
+//	UpdateActorFunctionDante(actorData);
+//}
+
+
+
+
+//void ToggleNewUpdateActorDante(bool enable)
+//{
+//	LogFunction(enable);
+//
+//	Write<void *>((appBaseAddr + 0x4DFA10), (enable) ? UpdateActorDante : reinterpret_cast<void *>(appBaseAddr + 0x212BE0)); // @Research: There has to be a better way.
+//}
+
+
 
 
 

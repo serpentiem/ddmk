@@ -54,7 +54,7 @@ export struct CONFIG
 			true,
 			true,
 		};
-		uint8 meleeWeaponDante[MAX_PLAYER][MAX_ENTITY][MAX_MELEE_WEAPON] =
+		uint8 meleeWeaponsDante[MAX_PLAYER][MAX_ENTITY][MAX_MELEE_WEAPON] =
 		{
 			// Player 0
 			{
@@ -133,7 +133,7 @@ export struct CONFIG
 				},
 			},
 		};
-		uint8 meleeWeaponVergil[MAX_PLAYER][MAX_ENTITY][MAX_MELEE_WEAPON] =
+		uint8 meleeWeaponsVergil[MAX_PLAYER][MAX_ENTITY][MAX_MELEE_WEAPON] =
 		{
 			// Player 0
 			{
@@ -196,7 +196,7 @@ export struct CONFIG
 				},
 			},
 		};
-		uint8 rangedWeaponDante[MAX_PLAYER][MAX_ENTITY][MAX_RANGED_WEAPON] =
+		uint8 rangedWeaponsDante[MAX_PLAYER][MAX_ENTITY][MAX_RANGED_WEAPON] =
 		{
 			// Player 0
 			{
