@@ -329,22 +329,31 @@ void UpdateMeleeWeapons
 		memcpy(actorData.newMeleeWeapons, Config.Actor.meleeWeaponsDante[player][entity], MAX_MELEE_WEAPON);
 		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCountDante[player][entity];
 
+		if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
+		{
+			actorData.newMeleeWeaponIndex = 0;
+		}
+
 		auto weapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
 
 		if ((weapon >= WEAPON_DANTE_REBELLION) && (weapon <= WEAPON_DANTE_BEOWULF))
 		{
-			if (!actorData.sparda)
+			actorData.meleeWeaponIndex = weapon;
+
+			if (actorData.devil)
 			{
-				if (!IsWeaponActive(actorData))
+				if (!actorData.sparda)
 				{
-					actorData.activeModelIndex = (1 + weapon);
-				}
-				else
-				{
-					actorData.queuedModelIndex = (1 + weapon);
+					if (!IsWeaponActive(actorData))
+					{
+						actorData.activeModelIndex = (1 + weapon);
+					}
+					else
+					{
+						actorData.queuedModelIndex = (1 + weapon);
+					}
 				}
 			}
-			actorData.meleeWeaponIndex = weapon;
 		}
 	}
 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
@@ -393,7 +402,7 @@ void UpdateActorDante(ActorDataDante & actorData)
 	LogFunction(actorData.operator byte8 *());
 
 
-
+	//HoboBreak();
 
 	
 	//memset(actorData.var_9AC0, 0, 5);
@@ -402,13 +411,13 @@ void UpdateActorDante(ActorDataDante & actorData)
 	/*
 	dmc3.exe+212C0D - 44 89 B9 C09A0000 - mov [rcx+00009AC0],r15d
 	dmc3.exe+212C14 - 44 88 B9 C49A0000 - mov [rcx+00009AC4],r15l
-	dmc3.exe+212C20 - C6 81 02B60000 FF - mov byte ptr [rcx+0000B602],-01 { 255 }
-	dmc3.exe+212C2B - C6 81 05B60000 FF - mov byte ptr [rcx+0000B605],-01 { 255 }
-	dmc3.exe+212C32 - C6 81 0AB60000 FF - mov byte ptr [rcx+0000B60A],-01 { 255 }
-	dmc3.exe+212C39 - C6 81 11B60000 FF - mov byte ptr [rcx+0000B611],-01 { 255 }
-	dmc3.exe+212C40 - C6 81 14B60000 FF - mov byte ptr [rcx+0000B614],-01 { 255 }
-	dmc3.exe+212C47 - C6 81 19B60000 FF - mov byte ptr [rcx+0000B619],-01 { 255 }
-	dmc3.exe+212C4E - C6 81 1EB60000 FF - mov byte ptr [rcx+0000B61E],-01 { 255 }
+	dmc3.exe+212C20 - C6 81 02B60000 FF - mov byte ptr [rcx+0000B602],-01
+	dmc3.exe+212C2B - C6 81 05B60000 FF - mov byte ptr [rcx+0000B605],-01
+	dmc3.exe+212C32 - C6 81 0AB60000 FF - mov byte ptr [rcx+0000B60A],-01
+	dmc3.exe+212C39 - C6 81 11B60000 FF - mov byte ptr [rcx+0000B611],-01
+	dmc3.exe+212C40 - C6 81 14B60000 FF - mov byte ptr [rcx+0000B614],-01
+	dmc3.exe+212C47 - C6 81 19B60000 FF - mov byte ptr [rcx+0000B619],-01
+	dmc3.exe+212C4E - C6 81 1EB60000 FF - mov byte ptr [rcx+0000B61E],-01
 	*/
 	actorData.devilModelMetadata.Rebellion.devilSubmodelMetadata[0].submodelIndex = 255;
 	actorData.devilModelMetadata.Rebellion.devilSubmodelMetadata[1].submodelIndex = 255;
@@ -602,47 +611,17 @@ T * CreateActorFunction
 
 	auto & actorData = *reinterpret_cast<T *>(baseAddr);
 
-
-	
-
 	File_UpdateActorFileItems(actorData);
-
-
 
 	InitActor(actorData, missionActorData_16C);
 
 	actorData.costume = Config.Actor.costume[player][entity][character];
-	//File_UpdateCostumeFileItems(actorData);
 
-	//actorData.newForceDanteFiles  = Config.Actor.forceDanteFiles [player][entity][character];
-	//actorData.newForceBobFiles    = Config.Actor.forceBobFiles   [player][entity][character];
-	//actorData.newForceLadyFiles   = Config.Actor.forceLadyFiles  [player][entity][character];
-	//actorData.newForceVergilFiles = Config.Actor.forceVergilFiles[player][entity][character];
+	actorData.newPlayer = player;
+	actorData.newEntity = entity;
 
 	actorData.newForceFiles          = Config.Actor.forceFiles         [player][entity][character];
 	actorData.newForceFilesCharacter = Config.Actor.forceFilesCharacter[player][entity][character];
-
-
-
-	
-
-
-
-	//if ((character == CHAR_DANTE) && (entity == ENTITY_MAIN) && (player == 0))
-	//{
-	//	actorData.weapons[0] = WEAPON_DANTE_BEOWULF;
-	//}
-
-	
-
-
-	
-
-
-
-
-	//ToggleNewUpdateActorDante(true);
-
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
@@ -653,39 +632,11 @@ T * CreateActorFunction
 		UpdateActor(actorData);
 	}
 
-	
-
-	//ToggleNewUpdateActorDante(false);
-
-
-
-
-
-	// UpdateModelPartitions(actorData);
-
-
-
-	//if (actorData.newForceLadyFiles)
-	//{
-	//	auto & modelData = actorData.var_7540[0];
-
-	//	modelData.visible = false;
-
-
-
-	//}
-
-
-
-	//actorData.shadow = 1;
-
 	UpdateMotionArchives(actorData);
 
 	InitWeapons(actorData, player, entity);
 
 	UpdateWeapons(actorData, player, entity);
-
-
 
 	func_1DFC20(actorData);
 
@@ -889,7 +840,7 @@ bool IsWeaponReadyFunction
 		return true;
 	}
 
-	for_all(uint8, mapIndex, mapItemCount)
+	for_all(uint8, mapIndex, mapItemCount) // @Todo: mapItemIndex.
 	{
 		auto & mapItem = map[mapIndex];
 		if (mapItem == weapon)
@@ -1323,15 +1274,6 @@ export void ToggleIsWeaponReady(bool enable)
 
 void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 {
-
-	//// @Todo: Fix!
-	//if (actorData.newGamepad != 0)
-	//{
-	//	return;
-	//}
-
-
-
 	if (actorData.newMeleeWeaponCount <= 1)
 	{
 		return;
@@ -1350,269 +1292,18 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 	actorData.meleeWeaponSwitchTimeout = Config.Dante.weaponSwitchTimeout;
 
 	actorData.newMeleeWeaponIndex++;
-	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
-	{
-		actorData.newMeleeWeaponIndex = 0;
-	}
 
+	UpdateMeleeWeapons(actorData, actorData.newPlayer, actorData.newEntity);
 
-	//auto & newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
+	auto newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
 
-	//UpdateMeleeWeapon(actorData, newMeleeWeapon);
-
-
-	
+	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, newMeleeWeapon);
 
 	IntroduceHUDPointers(return);
 
+	func_280120(hudBottom, 1, 0);
 
-	// @Todo: Update enum.
-	// @Todo: Remove reference from newMeleeWeapon.
-	//HUD_UpdateWeaponIcon
-	//(
-	//	HUD_BOTTOM::MELEE_WEAPON_1,
-	//	HUD_weaponIcon[newMeleeWeapon].model,
-	//	HUD_weaponIcon[newMeleeWeapon].texture
-	//);
-	//func_280120(hudBottom, 1, 0);
-
-	//func_1EB0E0(actorData, 4);
-
-
-
-
-
-	//if (actorData.devil)
-	//{
-	//	
-	//	if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
-	//	{
-	//		actorData.queuedModelIndex = (1 + newMeleeWeapon);
-	//	}
-
-
-
-	//}
-
-
-	//auto devil = actorData.weapons[actorData.meleeWeaponIndex];
-	//if (devil >= MAX_DEVIL_DANTE)
-	//{
-	//	devil = 0;
-	//}
-	//auto devilModelIndex = static_cast<uint8>(actorData.meleeWeaponIndex);
-
-	//ResetModel(actorData.modelData   [(devilModelIndex == 0) ? 1 : 2]);
-	//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 1 : 3]);
-	//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 2 : 4]);
-
-	//UpdateDevilModelFunctionDante(actorData, devil, devilModelIndex);
-
-
-	//func_1F92C0(actorData, 1);
-
-
-
-	//func_1F97F0(actorData, true);
-
-
-	//actorData.quuedModelIndex = (devilModelIndex + 1);
-
-
-	//actorData.queuedModelIndex = (devilModelIndex + 1);
-
-
-
-
-
-
-
-	//if (actorData.devil)
-	//{
-
-	//}
-
-
-
-
-
-
-	/*
-	dmc3.exe+1EAA0E - BA 01000000           - mov edx,00000001 { 1 }
-	dmc3.exe+1EAA13 - 48 8B CF              - mov rcx,rdi
-	dmc3.exe+1EAA16 - E8 A5E80000           - call dmc3.exe+1F92C0 { queue
-	}
-	dmc3.exe+1EAA1B - B2 01                 - mov dl,01 { 1 }
-	dmc3.exe+1EAA1D - 48 8B CF              - mov rcx,rdi
-	dmc3.exe+1EAA20 - E8 CBED0000           - call dmc3.exe+1F97F0 { update
-	}
-
-	*/
-
-
-
-
-
-
-
-
-
-
-
-	/*
-	<?xml version="1.0" encoding="utf-8"?>
-	<CheatTable>
-	<CheatEntries>
-	<CheatEntry>
-	<ID>158423</ID>
-	<Description>"top"</Description>
-	<LastState Value="0000000004726670" RealAddress="01A616F0"/>
-	<ShowAsHex>1</ShowAsHex>
-	<VariableType>8 Bytes</VariableType>
-	<Address>dmc3.exe+C8F970+1478+10</Address>
-	<Offsets>
-	<Offset>1B070</Offset>
-	<Offset>18+10</Offset>
-	</Offsets>
-	</CheatEntry>
-	<CheatEntry>
-	<ID>158424</ID>
-	<Description>"bottom"</Description>
-	<LastState Value="0000000004762670" RealAddress="01A616F8"/>
-	<ShowAsHex>1</ShowAsHex>
-	<VariableType>8 Bytes</VariableType>
-	<Address>dmc3.exe+C8F970+1478+10</Address>
-	<Offsets>
-	<Offset>1B078</Offset>
-	<Offset>18+10</Offset>
-	</Offsets>
-	</CheatEntry>
-	</CheatEntries>
-	</CheatTable>
-	*/
-
-
-
-
-
-
-	//if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//// if weapon count is 1 dont do nothing
-
-
-
-
-
-
-
-
-
-
-	//auto & gamepad = GetGamepad(actorData.newGamepad);
-	//auto & execute = actorData.newExecuteMeleeWeaponSwitch;
-
-	//if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
-	//{
-	//	execute = true;
-	//	return;
-	//}
-
-	//if (!execute)
-	//{
-	//	return;
-	//}
-
-	//execute = false;
-
-	//// @Research: Check assembly.
-	//if (0 < actorData.meleeWeaponSwitchTimeout)
-	//{
-	//	return;
-	//}
-
-	//actorData.meleeWeaponSwitchTimeout = Config.Dante.weaponSwitchTimeout;
-
-	//actorData.newMeleeWeaponIndex++;
-	//if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
-	//{
-	//	actorData.newMeleeWeaponIndex = 0;
-	//}
-
-	//auto & newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
-	//if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
-	//{
-	//	actorData.meleeWeaponIndex = 0;
-	//	if (actorData.meleeWeaponStatus[0] != WEAPON_STATUS_READY)
-	//	{
-	//		goto sect0;
-	//	}
-	//	if (IsWeaponActive(actorData, actorData.meleeWeapon[0]) && (actorData.state & STATE_BUSY))
-	//	{
-	//		goto sect0;
-	//	}
-	//	goto sect1;
-	//	sect0:;
-	//	actorData.meleeWeaponIndex = 1;
-	//	sect1:;
-	//	auto & meleeWeapon     = actorData.meleeWeapon    [actorData.meleeWeaponIndex];
-	//	auto & meleeWeaponData = actorData.meleeWeaponData[actorData.meleeWeaponIndex];
-	//	meleeWeapon     = newMeleeWeapon;
-	//	meleeWeaponData = actorData.newMeleeWeaponData[(newMeleeWeapon - WEAPON_DANTE_REBELLION)];
-	//}
-	//else if ((newMeleeWeapon >= WEAPON_VERGIL_YAMATO) && (newMeleeWeapon <= WEAPON_VERGIL_FORCE_EDGE))
-	//{
-	//	auto parentActorData = actorData;
-	//	if (parentActorData.newParentBaseAddr)
-	//	{
-	//		goto sect2;
-	//	}
-	//	if (!parentActorData.newChildBaseAddr[CHAR_VERGIL])
-	//	{
-	//		goto sect2;
-	//	}
-	//	auto & childActorData = *reinterpret_cast<ActorDataVergil *>(parentActorData.newChildBaseAddr[CHAR_VERGIL]);
-	//	if (childActorData.character != CHAR_VERGIL)
-	//	{
-	//		goto sect2;
-	//	}
-	//	childActorData.queuedMeleeWeaponIndex = (newMeleeWeapon - WEAPON_VERGIL_YAMATO);
-	//}
-	//sect2:;
-
-	//// @Todo: Update enum.
-	//HUD_UpdateWeaponIcon
-	//(
-	//	HUD_BOTTOM::MELEE_WEAPON_1,
-	//	HUD_weaponIcon[newMeleeWeapon].model,
-	//	HUD_weaponIcon[newMeleeWeapon].texture
-	//);
-
-	//// @Todo: Use better pointer.
-	//auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-	//auto hud = *reinterpret_cast<byte8 **>(pool[11]);
-	//func_280120(hud, 1, 0);
-
-	//func_1EB0E0(actorData, 4);
+	func_1EB0E0(actorData, 4);
 }
 
 void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
@@ -2186,11 +1877,17 @@ export void Actor_Init()
 	//	WriteCall((appBaseAddr + 0x1E25E1), func.addr);
 	//}
 
-	// @Todo: Move to Event.
 
+
+
+
+	// @Todo: Move to Event.
 	{
 		auto func = CreateFunction(WeaponSwitchControllerDante, 0, true, false);
-		//WriteCall((appBaseAddr + 0x1E25EB), func.addr);
+		WriteCall((appBaseAddr + 0x1E25EB), func.addr);
+		/*
+		dmc3.exe+1E25EB - E8 F0820000 - call dmc3.exe+1EA8E0
+		*/
 	}
 
 
@@ -2337,6 +2034,248 @@ export void Actor_Init()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+//if (actorData.devil)
+//{
+//	
+//	if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
+//	{
+//		actorData.queuedModelIndex = (1 + newMeleeWeapon);
+//	}
+
+
+
+//}
+
+
+//auto devil = actorData.weapons[actorData.meleeWeaponIndex];
+//if (devil >= MAX_DEVIL_DANTE)
+//{
+//	devil = 0;
+//}
+//auto devilModelIndex = static_cast<uint8>(actorData.meleeWeaponIndex);
+
+//ResetModel(actorData.modelData   [(devilModelIndex == 0) ? 1 : 2]);
+//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 1 : 3]);
+//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 2 : 4]);
+
+//UpdateDevilModelFunctionDante(actorData, devil, devilModelIndex);
+
+
+//func_1F92C0(actorData, 1);
+
+
+
+//func_1F97F0(actorData, true);
+
+
+//actorData.quuedModelIndex = (devilModelIndex + 1);
+
+
+//actorData.queuedModelIndex = (devilModelIndex + 1);
+
+
+
+
+
+
+
+//if (actorData.devil)
+//{
+
+//}
+
+
+
+
+
+
+/*
+dmc3.exe+1EAA0E - BA 01000000           - mov edx,00000001 { 1 }
+dmc3.exe+1EAA13 - 48 8B CF              - mov rcx,rdi
+dmc3.exe+1EAA16 - E8 A5E80000           - call dmc3.exe+1F92C0 { queue
+}
+dmc3.exe+1EAA1B - B2 01                 - mov dl,01 { 1 }
+dmc3.exe+1EAA1D - 48 8B CF              - mov rcx,rdi
+dmc3.exe+1EAA20 - E8 CBED0000           - call dmc3.exe+1F97F0 { update
+}
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+/*
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable>
+<CheatEntries>
+<CheatEntry>
+<ID>158423</ID>
+<Description>"top"</Description>
+<LastState Value="0000000004726670" RealAddress="01A616F0"/>
+<ShowAsHex>1</ShowAsHex>
+<VariableType>8 Bytes</VariableType>
+<Address>dmc3.exe+C8F970+1478+10</Address>
+<Offsets>
+<Offset>1B070</Offset>
+<Offset>18+10</Offset>
+</Offsets>
+</CheatEntry>
+<CheatEntry>
+<ID>158424</ID>
+<Description>"bottom"</Description>
+<LastState Value="0000000004762670" RealAddress="01A616F8"/>
+<ShowAsHex>1</ShowAsHex>
+<VariableType>8 Bytes</VariableType>
+<Address>dmc3.exe+C8F970+1478+10</Address>
+<Offsets>
+<Offset>1B078</Offset>
+<Offset>18+10</Offset>
+</Offsets>
+</CheatEntry>
+</CheatEntries>
+</CheatTable>
+*/
+
+
+
+
+
+
+//if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//// if weapon count is 1 dont do nothing
+
+
+
+
+
+
+
+
+
+
+//auto & gamepad = GetGamepad(actorData.newGamepad);
+//auto & execute = actorData.newExecuteMeleeWeaponSwitch;
+
+//if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
+//{
+//	execute = true;
+//	return;
+//}
+
+//if (!execute)
+//{
+//	return;
+//}
+
+//execute = false;
+
+//// @Research: Check assembly.
+//if (0 < actorData.meleeWeaponSwitchTimeout)
+//{
+//	return;
+//}
+
+//actorData.meleeWeaponSwitchTimeout = Config.Dante.weaponSwitchTimeout;
+
+//actorData.newMeleeWeaponIndex++;
+//if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
+//{
+//	actorData.newMeleeWeaponIndex = 0;
+//}
+
+//auto & newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
+//if ((newMeleeWeapon >= WEAPON_DANTE_REBELLION) && (newMeleeWeapon <= WEAPON_DANTE_BEOWULF))
+//{
+//	actorData.meleeWeaponIndex = 0;
+//	if (actorData.meleeWeaponStatus[0] != WEAPON_STATUS_READY)
+//	{
+//		goto sect0;
+//	}
+//	if (IsWeaponActive(actorData, actorData.meleeWeapon[0]) && (actorData.state & STATE_BUSY))
+//	{
+//		goto sect0;
+//	}
+//	goto sect1;
+//	sect0:;
+//	actorData.meleeWeaponIndex = 1;
+//	sect1:;
+//	auto & meleeWeapon     = actorData.meleeWeapon    [actorData.meleeWeaponIndex];
+//	auto & meleeWeaponData = actorData.meleeWeaponData[actorData.meleeWeaponIndex];
+//	meleeWeapon     = newMeleeWeapon;
+//	meleeWeaponData = actorData.newMeleeWeaponData[(newMeleeWeapon - WEAPON_DANTE_REBELLION)];
+//}
+//else if ((newMeleeWeapon >= WEAPON_VERGIL_YAMATO) && (newMeleeWeapon <= WEAPON_VERGIL_FORCE_EDGE))
+//{
+//	auto parentActorData = actorData;
+//	if (parentActorData.newParentBaseAddr)
+//	{
+//		goto sect2;
+//	}
+//	if (!parentActorData.newChildBaseAddr[CHAR_VERGIL])
+//	{
+//		goto sect2;
+//	}
+//	auto & childActorData = *reinterpret_cast<ActorDataVergil *>(parentActorData.newChildBaseAddr[CHAR_VERGIL]);
+//	if (childActorData.character != CHAR_VERGIL)
+//	{
+//		goto sect2;
+//	}
+//	childActorData.queuedMeleeWeaponIndex = (newMeleeWeapon - WEAPON_VERGIL_YAMATO);
+//}
+//sect2:;
+
+//// @Todo: Update enum.
+//HUD_UpdateWeaponIcon
+//(
+//	HUD_BOTTOM::MELEE_WEAPON_1,
+//	HUD_weaponIcon[newMeleeWeapon].model,
+//	HUD_weaponIcon[newMeleeWeapon].texture
+//);
+
+//// @Todo: Use better pointer.
+//auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+//auto hud = *reinterpret_cast<byte8 **>(pool[11]);
+//func_280120(hud, 1, 0);
+
+//func_1EB0E0(actorData, 4);
 
 
 

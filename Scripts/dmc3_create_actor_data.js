@@ -352,6 +352,13 @@ var extra =
 
 
 
+	[ "newPlayer", "uint8" ],
+	[ "newEntity", "uint8" ],
+
+
+
+
+
 	[ "newParentBaseAddr"      , "byte8 *" ],
 	[ "newChildBaseAddr"       , "byte8 *" ],
 	[ "newGamepad"             , "uint8"   ],
