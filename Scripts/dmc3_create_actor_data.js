@@ -248,14 +248,20 @@ var items =
 
 
 	[ "submodelData[5]"                     , "ModelData"        , 0x7540 ],
-	[ "[5]"                                 , "bool"             , 0x9AC0 ],
-	[ "modelShadowData[3]"                  , "ShadowData"       , 0x9AD0 ],
-	[ "submodelShadowData[5]"               , "ShadowData"       , 0x9D10 ],
-	[ "submodelPhysicsMetadataPool[39]"     , "PhysicsMetadata *", 0xA0D0 ],
-	[ "submodelPhysicsData"                 , "PhysicsData"      , 0xA210 ],
-	[ "devilModelPhysicsMetadataPool[2][36]", "PhysicsMetadata *", 0xA300 ],
-	[ "devilSubmodelPhysicsData[4]"         , "PhysicsData"      , 0xA540 ],
-	[ "devilSubmodelPhysicsLinkData[4][4]"  , "PhysicsLinkData"  , 0xAA00 ],
+	[ "submodelInit[5]"                     , "bool"             , 0x9AC0 ],
+
+
+
+
+
+
+	[ "modelShadowData[3]"                  , "ShadowData"       , 0x9AD0, CHAR_DANTE ],
+	[ "submodelShadowData[5]"               , "ShadowData"       , 0x9D10, CHAR_DANTE ],
+	[ "submodelPhysicsMetadataPool[39]"     , "PhysicsMetadata *", 0xA0D0, CHAR_DANTE ],
+	[ "submodelPhysicsData"                 , "PhysicsData"      , 0xA210, CHAR_DANTE ],
+	[ "devilModelPhysicsMetadataPool[2][36]", "PhysicsMetadata *", 0xA300, CHAR_DANTE ],
+	[ "devilSubmodelPhysicsData[4]"         , "PhysicsData"      , 0xA540, CHAR_DANTE ],
+	[ "devilSubmodelPhysicsLinkData[4][4]"  , "PhysicsLinkData"  , 0xAA00, CHAR_DANTE ],
 
 
 
@@ -311,10 +317,9 @@ var extra =
 	[ "newModelAllocationData[512]"            , "Size_32"           ],
 	[ "newRecoveryData[6]"                     , "RecoveryData"      ],
 	[ "newDevilModels[6]"                      , "uint32"            ],
-
 	[ "newBodyPartData[7][2]"                  , "BodyPartData"      ],
-
 	[ "newSubmodelData[11]"                    , "ModelData"         ],
+	[ "newSubmodelInit[11]"                    , "bool"              ],
 	[ "newModelShadowData[6]"                  , "ShadowData"        ],
 	[ "newSubmodelShadowData[11]"              , "ShadowData"        ],
 	[ "newDevilModelPhysicsMetadataPool[5][36]", "PhysicsMetadata *" ],

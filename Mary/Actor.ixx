@@ -387,6 +387,11 @@ void UpdateRangedWeapons
 		memcpy(actorData.newRangedWeapons, Config.Actor.rangedWeaponsDante[player][entity], MAX_RANGED_WEAPON);
 		actorData.newRangedWeaponCount = Config.Actor.rangedWeaponCountDante[player][entity];
 
+		if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
+		{
+			actorData.newRangedWeaponIndex = 0;
+		}
+
 		auto weapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
 
 		if ((weapon >= WEAPON_DANTE_EBONY_IVORY) && (weapon <= WEAPON_DANTE_KALINA_ANN))
@@ -1415,129 +1420,36 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 
 void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
 {
+	if (actorData.newRangedWeaponCount <= 1)
+	{
+		return;
+	}
 
-	//// @Todo: Fix!
-	//if (actorData.newGamepad != 0)
-	//{
-	//	return;
-	//}
+	if (!(actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN)))
+	{
+		return;
+	}
 
+	if (0 < actorData.rangedWeaponSwitchTimeout)
+	{
+		return;
+	}
 
-	//auto & gamepad = GetGamepad(actorData.newGamepad);
-	//auto & execute = actorData.newExecuteRangedWeaponSwitch;
+	actorData.rangedWeaponSwitchTimeout = Config.Dante.weaponSwitchTimeout;
 
-	//if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_GUN)))
-	//{
-	//	execute = true;
-	//	return;
-	//}
+	actorData.newRangedWeaponIndex++;
 
-	//if (!execute)
-	//{
-	//	return;
-	//}
+	UpdateRangedWeapons(actorData, actorData.newPlayer, actorData.newEntity);
 
-	//execute = false;
+	auto newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
 
-	//// @Research: Check assembly.
-	//if (0 < actorData.rangedWeaponSwitchTimeout)
-	//{
-	//	return;
-	//}
+	HUD_UpdateWeaponIcon(HUD_BOTTOM_RANGED_WEAPON_1, newRangedWeapon);
 
-	//actorData.rangedWeaponSwitchTimeout = Config.Dante.weaponSwitchTimeout;
+	IntroduceHUDPointers(return);
 
-	//actorData.newRangedWeaponIndex++;
-	//if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
-	//{
-	//	actorData.newRangedWeaponIndex = 0;
-	//}
+	func_280120(hudBottom, 0, 0); // @Todo: Enums.
 
-	//auto & newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
-	//if ((newRangedWeapon >= WEAPON_DANTE_EBONY_IVORY) && (newRangedWeapon <= WEAPON_DANTE_KALINA_ANN))
-	//{
-	//	actorData.rangedWeaponIndex = 0;
-	//	if (actorData.rangedWeaponStatus[0] != WEAPON_STATUS_READY)
-	//	{
-	//		goto sect0;
-	//	}
-	//	if (IsWeaponActive(actorData, actorData.rangedWeapon[0]) && (actorData.state & STATE_BUSY))
-	//	{
-	//		goto sect0;
-	//	}
-	//	goto sect1;
-	//	sect0:;
-	//	actorData.rangedWeaponIndex = 1;
-	//	sect1:;
-	//	auto & rangedWeapon     = actorData.rangedWeapon    [actorData.rangedWeaponIndex];
-	//	auto & rangedWeaponData = actorData.rangedWeaponData[actorData.rangedWeaponIndex];
-	//	rangedWeapon     = newRangedWeapon;
-	//	rangedWeaponData = actorData.newRangedWeaponData[(newRangedWeapon - WEAPON_DANTE_EBONY_IVORY)];
-	//	actorData.rangedWeaponIndex += 2;
-	//}
-
-	//// @Todo: Update enum.
-	//HUD_UpdateWeaponIcon
-	//(
-	//	HUD_BOTTOM::RANGED_WEAPON_1,
-	//	HUD_weaponIcon[newRangedWeapon].model,
-	//	HUD_weaponIcon[newRangedWeapon].texture
-	//);
-
-	//// @Todo: Use better pointer.
-	//auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-	//auto hud = *reinterpret_cast<byte8 **>(pool[11]);
-	//func_280120(hud, 0, 0);
-
-	//func_1EB0E0(actorData, 7);
-	//func_1EB0E0(actorData, 9);
-
-	//auto UpdateCommitment = [&]()
-	//{
-	//	auto & modelData = actorData.modelData[actorData.activeModelIndex];
-	//	auto & lowerMotionData = actorData.motionData[BODY_PART_LOWER];
-	//	auto & upperMotionData = actorData.motionData[BODY_PART_UPPER];
-	//	auto & newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
-
-	//	if (actorData.state & STATE_BUSY)
-	//	{
-	//		return;
-	//	}
-	//	if (!(gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON)))
-	//	{
-	//		return;
-	//	}
-
-	//	actorData.activeWeapon = newRangedWeapon;
-
-	//	if (GetRelativeTiltDirection(actorData) != TILT_DIRECTION_NEUTRAL)
-	//	{
-	//		return;
-	//	}
-
-	//	auto & group = lowerMotionData.group = (MOTION_GROUP_DANTE_REBELLION + newRangedWeapon);
-	//	auto & index = lowerMotionData.index = upperMotionData.index;
-
-	//	uint8 id = (pl000_00_0 + group);
-	//	if (newRangedWeapon == WEAPON_DANTE_ARTEMIS)
-	//	{
-	//		if (index == 5)
-	//		{
-	//			index = 3;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		if (index == 3)
-	//		{
-	//			index = 5;
-	//		}
-	//	}
-	//	byte8 * motionFile = File_staticFiles[id][index];
-	//	func_8AC80(modelData, BODY_PART_LOWER, motionFile, 0, false);
-	//};
-
-	//UpdateCommitment();
+	func_1EB0E0(actorData, 4);
 }
 
 
@@ -1560,7 +1472,7 @@ bool WeaponSwitchControllerDante(ActorDataDante & actorData)
 		return false;
 	}
 	MeleeWeaponSwitchControllerDante (actorData);
-	//RangedWeaponSwitchControllerDante(actorData);
+	RangedWeaponSwitchControllerDante(actorData);
 	return true;
 }
 
@@ -2140,6 +2052,135 @@ export void Actor_Init()
 #ifdef __GARBAGE__
 
 
+
+
+
+
+
+
+
+//// @Todo: Fix!
+//if (actorData.newGamepad != 0)
+//{
+//	return;
+//}
+
+
+//auto & gamepad = GetGamepad(actorData.newGamepad);
+//auto & execute = actorData.newExecuteRangedWeaponSwitch;
+
+//if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_GUN)))
+//{
+//	execute = true;
+//	return;
+//}
+
+//if (!execute)
+//{
+//	return;
+//}
+
+//execute = false;
+
+//// @Research: Check assembly.
+//if (0 < actorData.rangedWeaponSwitchTimeout)
+//{
+//	return;
+//}
+
+//actorData.rangedWeaponSwitchTimeout = Config.Dante.weaponSwitchTimeout;
+
+//actorData.newRangedWeaponIndex++;
+//if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
+//{
+//	actorData.newRangedWeaponIndex = 0;
+//}
+
+//auto & newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
+//if ((newRangedWeapon >= WEAPON_DANTE_EBONY_IVORY) && (newRangedWeapon <= WEAPON_DANTE_KALINA_ANN))
+//{
+//	actorData.rangedWeaponIndex = 0;
+//	if (actorData.rangedWeaponStatus[0] != WEAPON_STATUS_READY)
+//	{
+//		goto sect0;
+//	}
+//	if (IsWeaponActive(actorData, actorData.rangedWeapon[0]) && (actorData.state & STATE_BUSY))
+//	{
+//		goto sect0;
+//	}
+//	goto sect1;
+//	sect0:;
+//	actorData.rangedWeaponIndex = 1;
+//	sect1:;
+//	auto & rangedWeapon     = actorData.rangedWeapon    [actorData.rangedWeaponIndex];
+//	auto & rangedWeaponData = actorData.rangedWeaponData[actorData.rangedWeaponIndex];
+//	rangedWeapon     = newRangedWeapon;
+//	rangedWeaponData = actorData.newRangedWeaponData[(newRangedWeapon - WEAPON_DANTE_EBONY_IVORY)];
+//	actorData.rangedWeaponIndex += 2;
+//}
+
+//// @Todo: Update enum.
+//HUD_UpdateWeaponIcon
+//(
+//	HUD_BOTTOM::RANGED_WEAPON_1,
+//	HUD_weaponIcon[newRangedWeapon].model,
+//	HUD_weaponIcon[newRangedWeapon].texture
+//);
+
+//// @Todo: Use better pointer.
+//auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+//auto hud = *reinterpret_cast<byte8 **>(pool[11]);
+//func_280120(hud, 0, 0);
+
+//func_1EB0E0(actorData, 7);
+//func_1EB0E0(actorData, 9);
+
+//auto UpdateCommitment = [&]()
+//{
+//	auto & modelData = actorData.modelData[actorData.activeModelIndex];
+//	auto & lowerMotionData = actorData.motionData[BODY_PART_LOWER];
+//	auto & upperMotionData = actorData.motionData[BODY_PART_UPPER];
+//	auto & newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
+
+//	if (actorData.state & STATE_BUSY)
+//	{
+//		return;
+//	}
+//	if (!(gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON)))
+//	{
+//		return;
+//	}
+
+//	actorData.activeWeapon = newRangedWeapon;
+
+//	if (GetRelativeTiltDirection(actorData) != TILT_DIRECTION_NEUTRAL)
+//	{
+//		return;
+//	}
+
+//	auto & group = lowerMotionData.group = (MOTION_GROUP_DANTE_REBELLION + newRangedWeapon);
+//	auto & index = lowerMotionData.index = upperMotionData.index;
+
+//	uint8 id = (pl000_00_0 + group);
+//	if (newRangedWeapon == WEAPON_DANTE_ARTEMIS)
+//	{
+//		if (index == 5)
+//		{
+//			index = 3;
+//		}
+//	}
+//	else
+//	{
+//		if (index == 3)
+//		{
+//			index = 5;
+//		}
+//	}
+//	byte8 * motionFile = File_staticFiles[id][index];
+//	func_8AC80(modelData, BODY_PART_LOWER, motionFile, 0, false);
+//};
+
+//UpdateCommitment();
 
 
 
