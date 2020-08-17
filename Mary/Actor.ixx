@@ -340,20 +340,31 @@ void UpdateMeleeWeapons
 		{
 			actorData.meleeWeaponIndex = weapon;
 
-			if (actorData.devil)
-			{
-				if (!actorData.sparda)
-				{
-					if (!IsWeaponActive(actorData))
-					{
-						actorData.activeModelIndex = (1 + weapon);
-					}
-					else
-					{
-						actorData.queuedModelIndex = (1 + weapon);
-					}
-				}
-			}
+			//if (actorData.devil)
+			//{
+
+			//	actorData.queuedModelIndex = (1 + weapon);
+			//	actorData.activeModelIndexMirror = (1 + weapon);
+			//	actorData.activeDevil = weapon;
+			//	actorData.airRaid = 0;
+
+
+
+
+
+
+			//	//if (!actorData.sparda)
+			//	//{
+			//	//	if (!IsWeaponActive(actorData))
+			//	//	{
+			//	//		actorData.activeModelIndex = (1 + weapon);
+			//	//	}
+			//	//	else
+			//	//	{
+			//	//		actorData.queuedModelIndex = (1 + weapon);
+			//	//	}
+			//	//}
+			//}
 		}
 	}
 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
@@ -1295,15 +1306,111 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 
 	UpdateMeleeWeapons(actorData, actorData.newPlayer, actorData.newEntity);
 
+
+
+
+
 	auto newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
 
 	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, newMeleeWeapon);
 
 	IntroduceHUDPointers(return);
 
-	func_280120(hudBottom, 1, 0);
+	func_280120(hudBottom, 1, 0); // @Todo: Enums.
 
 	func_1EB0E0(actorData, 4);
+
+
+
+
+	/*
+	dmc3.exe+1EA9B9 - 48 8B 05 6864AA00     - mov rax,[dmc3.exe+C90E28] { (01A44000) }
+	dmc3.exe+1EA9C0 - 48 8B 48 58           - mov rcx,[rax+58]
+	dmc3.exe+1EA9C4 - 48 8B 09              - mov rcx,[rcx]
+	dmc3.exe+1EA9C7 - 48 85 C9              - test rcx,rcx
+	dmc3.exe+1EA9CA - 74 0D                 - je dmc3.exe+1EA9D9
+
+	dmc3.exe+1EA9CC - 44 8B C3              - mov r8d,ebx
+	dmc3.exe+1EA9CF - BA 01000000           - mov edx,00000001 { 1 }
+	dmc3.exe+1EA9D4 - E8 47570900           - call __WEAPON_SWITCH_ANIMATION_DANTE__
+	
+	dmc3.exe+1EA9DE - 89 9F 90640000        - mov [rdi+00006490],ebx
+
+
+	dmc3.exe+1EA9D9 - BA 04000000           - mov edx,00000004
+	dmc3.exe+1EA9E4 - 48 8B CF              - mov rcx,rdi
+	dmc3.exe+1EA9E7 - E8 F4060000           - call dmc3.exe+1EB0E0
+	*/
+
+
+
+	auto weapon = newMeleeWeapon;
+
+
+	if (weapon >= MAX_WEAPON)
+	{
+		weapon = 0;
+	}
+
+
+
+
+
+	if (actorData.devil)
+	{
+
+		actorData.queuedModelIndex = (1 + weapon);
+		actorData.activeModelIndexMirror = (1 + weapon);
+		actorData.activeDevil = weapon;
+		actorData.airRaid = 0;
+
+
+		func_1F97F0(actorData, true);
+
+
+
+		//if (!actorData.sparda)
+		//{
+		//	if (!IsWeaponActive(actorData))
+		//	{
+		//		actorData.activeModelIndex = (1 + weapon);
+		//	}
+		//	else
+		//	{
+		//		actorData.queuedModelIndex = (1 + weapon);
+		//	}
+		//}
+	}
+
+
+
+
+	/*
+	dmc3.exe+1EAA0E - BA 01000000           - mov edx,00000001
+	dmc3.exe+1EAA13 - 48 8B CF              - mov rcx,rdi
+	dmc3.exe+1EAA16 - E8 A5E80000           - call dmc3.exe+1F92C0
+
+	dmc3.exe+1EAA1B - B2 01                 - mov dl,01
+	dmc3.exe+1EAA1D - 48 8B CF              - mov rcx,rdi
+	dmc3.exe+1EAA20 - E8 CBED0000           - call dmc3.exe+1F97F0
+	*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)

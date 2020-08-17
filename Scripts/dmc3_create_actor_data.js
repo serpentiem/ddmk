@@ -71,6 +71,10 @@ var items =
 	[ "state"                               , "byte32"                  , 0x3E64                           ],
 	[ "lastState"                           , "byte32"                  , 0x3E68                           ],
 
+
+
+
+
 	[ "activeModelIndex"                    , "uint32"                  , 0x3E6C                           ],
 	[ "queuedModelIndex"                    , "uint32"                  , 0x3E70                           ],
 
@@ -79,7 +83,16 @@ var items =
 	[ "modelState"                          , "uint8"                   , 0x3E80                           ],
 	[ "lockOn"                              , "bool32"                  , 0x3E84                           ],
 
+
+
+	
 	[ "activeModelIndexMirror"              , "uint32"                  , 0x3E88                           ],
+
+
+
+
+
+
 	[ "activeDevil"                         , "uint32"                  , 0x3E8C                           ],
 
 	[ "airRaid"                             , "uint32"                  , 0x3E90                           ],
@@ -88,6 +101,20 @@ var items =
 	[ "costume"                             , "uint8"                   , 0x3E9E                           ],
 	[ "sparda"                              , "bool"                    , 0x3E9F, CHAR_DANTE               ],
 	[ "neroAngelo"                          , "bool"                    , 0x3E9F, CHAR_VERGIL              ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	[ "useHolyWater"                        , "bool"                    , 0x3EA4                           ],
 	[ "magicPoints"                         , "float32"                 , 0x3EB8                           ],
 	[ "maxMagicPoints"                      , "float32"                 , 0x3EBC                           ],
