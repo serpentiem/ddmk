@@ -1903,7 +1903,7 @@ export void Actor_Init()
 	// @Todo: Move to Event.
 	{
 		auto func = CreateFunction(WeaponSwitchControllerDante, 0, true, false);
-		WriteCall((appBaseAddr + 0x1E25EB), func.addr);
+		//WriteCall((appBaseAddr + 0x1E25EB), func.addr);
 		/*
 		dmc3.exe+1E25EB - E8 F0820000 - call dmc3.exe+1EA8E0
 		*/
