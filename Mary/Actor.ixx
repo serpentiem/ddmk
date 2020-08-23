@@ -450,7 +450,7 @@ void UpdateActorDante(ActorDataDante & actorData)
 
 
 
-	UpdateModelFunctionDante(actorData);
+	UpdateModelDante(actorData);
 
 
 	//InitModel(actorData, 0);

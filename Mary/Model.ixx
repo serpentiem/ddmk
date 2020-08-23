@@ -51,7 +51,6 @@ inline void RegisterShadow
 		dest,
 		shadowFile
 	);
-	//dest = func_89DE0(modelData);
 	func_305D80(dest);
 }
 
@@ -314,22 +313,232 @@ void UpdateModelPartitions(T & actorData)
 }
 
 export template <typename T>
-void UpdateModelFunctionDante(T & actorData)
+void UpdateModelDante(T & actorData)
+{
+	uint8 character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : GetCharacterId<T>::value;
+	if (character >= MAX_CHAR)
+	{
+		character = 0;
+	}
+	uint8 costume = 0;
+	uint16 costumeFileId = 0;
+	bool coat = false;
+
+	switch (character)
+	{
+	case CHAR_DANTE:
+	{
+		if (costume >= MAX_COSTUME_DANTE)
+		{
+			costume = 0;
+		}
+		costumeFileId = costumeFileIdsDante[costume];
+		coat =
+		(
+			(costume == COSTUME_DANTE_DEFAULT                           ) ||
+			(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
+			(costume == COSTUME_DANTE_DMC1                              ) ||
+			(costume == COSTUME_DANTE_SPARDA                            ) ||
+			(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
+			(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
+		)
+		? true : false;
+		break;
+	}
+	case CHAR_BOB:
+	{
+		if (costume >= MAX_COSTUME_BOB)
+		{
+			costume = 0;
+		}
+		costumeFileId = costumeFileIdsBob[costume];
+		coat = false;
+		break;
+	}
+	case CHAR_LADY:
+	{
+		if (costume >= MAX_COSTUME_LADY)
+		{
+			costume = 0;
+		}
+		costumeFileId = costumeFileIdsLady[costume];
+		coat = false;
+		break;
+	}
+	case CHAR_VERGIL:
+	{
+		if (costume >= MAX_COSTUME_VERGIL)
+		{
+			costume = 0;
+		}
+		costumeFileId = costumeFileIdsVergil[costume];
+		coat =
+		(
+			(costume == COSTUME_VERGIL_DEFAULT                      ) ||
+			(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
+			(costume == COSTUME_VERGIL_SPARDA                       ) ||
+			(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
+		)
+		? true : false;
+		break;
+	}
+	}
+
+	auto & file = File_staticFiles[costumeFileId];
+
+	byte8 * modelFile   = 0;
+	byte8 * textureFile = 0;
+	byte8 * shadowFile  = 0;
+	byte8 * physicsFile = 0;
+
+	uint8 modelIndex    = 0;
+	uint8 submodelIndex = 0;
+
+	// Main
+
+	modelFile   = file[1];
+	textureFile = file[0];
+	shadowFile  = file[8];
+
+	if ((character == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
+	{
+		modelFile   = file[32];
+		textureFile = file[31];
+		shadowFile  = file[16];
+	}
+
+	RegisterModel
+	(
+		actorData.newModelData[modelIndex],
+		modelFile,
+		textureFile
+	);
+
+	RegisterShadow
+	(
+		actorData.newModelData[modelIndex],
+		actorData.newModelShadowData[modelIndex],
+		shadowFile
+	);
+
+	{
+		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
+
+		for_all(uint8, index, 6)
+		{
+			uint8 off = (index * 3);
+			actorData.modelMetadata[index].count = 4;
+			actorData.modelMetadata[index].vertices[0] = g_vertices[(off + 0)];
+			actorData.modelMetadata[index].vertices[1] = g_vertices[(off + 1)];
+			actorData.modelMetadata[index].vertices[2] = g_vertices[(off + 2)];
+		}
+	}
+
+	// Coat
+
+	modelFile   = file[12];
+	textureFile = file[0 ];
+	shadowFile  = file[14];
+	physicsFile = file[13];
+
+	if ((character == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
+	{
+		modelFile   = file[17];
+		textureFile = file[31];
+		physicsFile = file[18];
+	}
+
+	RegisterModel
+	(
+		actorData.newSubmodelData[submodelIndex],
+		modelFile,
+		textureFile
+	);
+
+	func_8A000
+	(
+		actorData.newSubmodelData[submodelIndex],
+		0,
+		&actorData.submodelPhysicsMetadataPool[0]
+	);
+
+	if ((character == CHAR_LADY))
+	{
+		return;
+	}
+
+	if (coat)
+	{
+		RegisterShadow
+		(
+			actorData.newSubmodelData[submodelIndex],
+			actorData.newSubmodelShadowData[submodelIndex],
+			shadowFile
+		);
+	}
+
+	actorData.newSubmodelInit[submodelIndex] = true;
+
+	RegisterPhysics
+	(
+		physicsFile,
+		&actorData.submodelPhysicsData,
+		&actorData.submodelPhysicsMetadataPool[0]
+	);
+
+	func_2CA2F0
+	(
+		actorData.submodelPhysicsData,
+		actorData.newModelPhysicsMetadataPool[modelIndex],
+		(appBaseAddr + 0x58B380),
+		actorData.modelMetadata,
+		(coat) ? 6 : 1
+	);
+
+	if (coat)
+	{
+		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x35D580);
+		auto & submodelPhysicsMetadata = *actorData.submodelPhysicsMetadataPool[0];
+
+		submodelPhysicsMetadata.vertices[0] = g_vertices[0];
+		submodelPhysicsMetadata.vertices[1] = g_vertices[1];
+		submodelPhysicsMetadata.vertices[2] = g_vertices[2];
+		submodelPhysicsMetadata.vertices[3] = g_vertices[3];
+	}
+	else
+	{
+		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
+
+		actorData.modelMetadata[0].count = 4;
+		actorData.modelMetadata[0].vertices[0] = g_vertices[23];
+		actorData.modelMetadata[0].vertices[1] = g_vertices[24];
+		actorData.modelMetadata[0].vertices[2] = g_vertices[25];
+	}
+}
+
+
+
+
+
+
+
+
+
+export template <typename T>
+void UpdateModelVergil(T & actorData)
 {
 	auto costume = actorData.costume;
-	if (costume >= MAX_COSTUME_DANTE)
+	if (costume >= MAX_COSTUME_VERGIL)
 	{
 		costume = 0;
 	}
-	auto costumeFileId = costumeFileIdsDante[costume];
+	auto costumeFileId = costumeFileIdsVergil[costume];
 	auto coat =
 	(
-		(costume == COSTUME_DANTE_DEFAULT                           ) ||
-		(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
-		(costume == COSTUME_DANTE_DMC1                              ) ||
-		(costume == COSTUME_DANTE_SPARDA                            ) ||
-		(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
-		(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
+		(costume == COSTUME_VERGIL_DEFAULT                      ) ||
+		(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
+		(costume == COSTUME_VERGIL_SPARDA                       ) ||
+		(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
 	)
 	? true : false;
 
@@ -337,6 +546,26 @@ void UpdateModelFunctionDante(T & actorData)
 	{
 		switch (actorData.newForceFilesCharacter)
 		{
+		case CHAR_DANTE:
+		{
+			costume = actorData.costume;
+			if (costume >= MAX_COSTUME_DANTE)
+			{
+				costume = 0;
+			}
+			costumeFileId = costumeFileIdsDante[costume];
+			coat =
+			(
+				(costume == COSTUME_DANTE_DEFAULT                           ) ||
+				(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
+				(costume == COSTUME_DANTE_DMC1                              ) ||
+				(costume == COSTUME_DANTE_SPARDA                            ) ||
+				(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
+				(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
+			)
+			? true : false;
+			break;
+		}
 		case CHAR_BOB:
 		{
 			if (costume >= MAX_COSTUME_BOB)
@@ -355,23 +584,6 @@ void UpdateModelFunctionDante(T & actorData)
 			}
 			costumeFileId = costumeFileIdsLady[costume];
 			coat = false;
-			break;
-		}
-		case CHAR_VERGIL:
-		{
-			if (costume >= MAX_COSTUME_VERGIL)
-			{
-				costume = 0;
-			}
-			costumeFileId = costumeFileIdsVergil[costume];
-			coat =
-			(
-				(costume == COSTUME_VERGIL_DEFAULT                      ) ||
-				(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
-				(costume == COSTUME_VERGIL_SPARDA                       ) ||
-				(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
-			)
-			? true : false;
 			break;
 		}
 		}
@@ -508,6 +720,33 @@ void UpdateModelFunctionDante(T & actorData)
 		actorData.modelMetadata[0].vertices[2] = g_vertices[25];
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export template <typename T>
 void UpdateDevilModelDante
@@ -1292,7 +1531,7 @@ void ToggleModelRelocations(bool enable)
 		Write<uint32>((appBaseAddr + 0x215373 + 3), (enable) ? newOff : off); // dmc3.exe+215373 - 49 8D 96 80180000 - LEA RDX,[R14+00001880]
 		// Update Model Vergil
 		Write<uint32>((appBaseAddr + 0x222653 + 3), (enable) ? newOff : off); // dmc3.exe+222653 - 48 8D 95 80180000 - LEA RDX,[RBP+00001880]
-		// Write<uint32>((appBaseAddr + 0x2227D3 + 3), (enable) ? newOff : off); // dmc3.exe+2227D3 - 48 8D 95 80180000 - LEA RDX,[RBP+00001880]
+		Write<uint32>((appBaseAddr + 0x2227D3 + 3), (enable) ? newOff : off); // dmc3.exe+2227D3 - 48 8D 95 80180000 - LEA RDX,[RBP+00001880]
 		// func_1EF040
 		Write<uint32>((appBaseAddr + 0x1EF3ED + 3), (enable) ? newOff : off); // dmc3.exe+1EF3ED - 4D 8D B5 80180000 - LEA R14,[R13+00001880]
 		// func_1F7BE0
@@ -1684,7 +1923,7 @@ void ToggleModelRelocations(bool enable)
 		// Write<uint32>((appBaseAddr + 0xC7A1D + 3), (enable) ? newOff : off); // dmc3.exe+C7A1D - 48 8B 97 98180000 - MOV RDX,[RDI+00001898]
 		// Write<uint32>((appBaseAddr + 0xC823B + 3), (enable) ? newOff : off); // dmc3.exe+C823B - 48 8B 85 98180000 - MOV RAX,[RBP+00001898]
 		// Write<uint32>((appBaseAddr + 0xCB18E + 3), (enable) ? newOff : off); // dmc3.exe+CB18E - 48 8B 8E 98180000 - MOV RCX,[RSI+00001898]
-		// Write<uint32>((appBaseAddr + 0x22445B + 3), (enable) ? newOff : off); // dmc3.exe+22445B - 48 8B 93 98180000 - MOV RDX,[RBX+00001898]
+		Write<uint32>((appBaseAddr + 0x22445B + 3), (enable) ? newOff : off); // dmc3.exe+22445B - 48 8B 93 98180000 - MOV RDX,[RBX+00001898]
 		// Write<uint32>((appBaseAddr + 0x2588F3 + 3), (enable) ? newOff : off); // dmc3.exe+2588F3 - 48 89 83 98180000 - MOV [RBX+00001898],RAX
 		// Write<uint32>((appBaseAddr + 0x2596ED + 3), (enable) ? newOff : off); // dmc3.exe+2596ED - 48 89 8A 98180000 - MOV [RDX+00001898],RCX
 		// Write<uint32>((appBaseAddr + 0x25B0C8 + 3), (enable) ? newOff : off); // dmc3.exe+25B0C8 - 48 89 BB 98180000 - MOV [RBX+00001898],RDI
@@ -1976,7 +2215,7 @@ void ToggleModelRelocations(bool enable)
 		// Update Model Vergil
 		Write<uint32>((appBaseAddr + 0x22221B + 3), (enable) ? newOff : off); // dmc3.exe+22221B - 4C 8D AD 40750000 - LEA R13,[RBP+00007540]
 		Write<uint32>((appBaseAddr + 0x222449 + 3), (enable) ? newOff : off); // dmc3.exe+222449 - 4C 8D AD 40750000 - LEA R13,[RBP+00007540]
-		// Write<uint32>((appBaseAddr + 0x222702 + 3), (enable) ? newOff : off); // dmc3.exe+222702 - 48 8D B5 40750000 - LEA RSI,[RBP+00007540]
+		Write<uint32>((appBaseAddr + 0x222702 + 3), (enable) ? newOff : off); // dmc3.exe+222702 - 48 8D B5 40750000 - LEA RSI,[RBP+00007540]
 		// func_1DD480
 		Write<uint32>((appBaseAddr + 0x1DD4D2 + 3), (enable) ? newOff : off); // dmc3.exe+1DD4D2 - 48 8D 8B 40750000 - LEA RCX,[RBX+00007540]
 		// func_1DDE40
@@ -2129,41 +2368,41 @@ void ToggleModelRelocations(bool enable)
 		static_assert(off == 0x9AC0);
 		// Update Actor Dante
 		Write<uint32>((appBaseAddr + 0x212C0D + 3), (enable) ? newOff : off); // dmc3.exe+212C0D - 44 89 B9 C09A0000 - MOV [RCX+00009AC0],R15D
-		Write<uint32>((appBaseAddr + 0x21338B + 3), (enable) ? newOff : off); // dmc3.exe+21338B - 42 C6 84 2E C09A0000 01 - MOV BYTE PTR [RSI+R13+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x21338B + 4), (enable) ? newOff : off); // dmc3.exe+21338B - 42 C6 84 2E C09A0000 01 - MOV BYTE PTR [RSI+R13+00009AC0],01
 		Write<uint32>((appBaseAddr + 0x213709 + 3), (enable) ? newOff : off); // dmc3.exe+213709 - C6 84 37 C09A0000 01 - MOV BYTE PTR [RDI+RSI+00009AC0],01
 		Write<uint32>((appBaseAddr + 0x213B1D + 3), (enable) ? newOff : off); // dmc3.exe+213B1D - C6 84 37 C09A0000 01 - MOV BYTE PTR [RDI+RSI+00009AC0],01
-		Write<uint32>((appBaseAddr + 0x213D9E + 3), (enable) ? newOff : off); // dmc3.exe+213D9E - 41 C6 84 36 C09A0000 01 - MOV BYTE PTR [R14+RSI+00009AC0],01
-		Write<uint32>((appBaseAddr + 0x214315 + 3), (enable) ? newOff : off); // dmc3.exe+214315 - 42 C6 84 2E C09A0000 01 - MOV BYTE PTR [RSI+R13+00009AC0],01
-		Write<uint32>((appBaseAddr + 0x2146FC + 3), (enable) ? newOff : off); // dmc3.exe+2146FC - 42 C6 84 2E C09A0000 01 - MOV BYTE PTR [RSI+R13+00009AC0],01
-		Write<uint32>((appBaseAddr + 0x214978 + 3), (enable) ? newOff : off); // dmc3.exe+214978 - 42 C6 84 36 C09A0000 01 - MOV BYTE PTR [RSI+R14+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x213D9E + 4), (enable) ? newOff : off); // dmc3.exe+213D9E - 41 C6 84 36 C09A0000 01 - MOV BYTE PTR [R14+RSI+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x214315 + 4), (enable) ? newOff : off); // dmc3.exe+214315 - 42 C6 84 2E C09A0000 01 - MOV BYTE PTR [RSI+R13+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x2146FC + 4), (enable) ? newOff : off); // dmc3.exe+2146FC - 42 C6 84 2E C09A0000 01 - MOV BYTE PTR [RSI+R13+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x214978 + 4), (enable) ? newOff : off); // dmc3.exe+214978 - 42 C6 84 36 C09A0000 01 - MOV BYTE PTR [RSI+R14+00009AC0],01
 		// Update Actor Bob
-		Write<uint32>((appBaseAddr + 0x225D8A + 3), (enable) ? newOff : off); // dmc3.exe+225D8A - C7 81 C09A0000 00000000 - MOV [RCX+00009AC0],00000000
+		Write<uint32>((appBaseAddr + 0x225D8A + 2), (enable) ? newOff : off); // dmc3.exe+225D8A - C7 81 C09A0000 00000000 - MOV [RCX+00009AC0],00000000
 		Write<uint32>((appBaseAddr + 0x226107 + 3), (enable) ? newOff : off); // dmc3.exe+226107 - 41 C6 86 C09A0000 01 - MOV BYTE PTR [R14+00009AC0],01
-		Write<uint32>((appBaseAddr + 0x2264D6 + 3), (enable) ? newOff : off); // dmc3.exe+2264D6 - 42 C6 84 36 C09A0000 01 - MOV BYTE PTR [RSI+R14+00009AC0],01
-		Write<uint32>((appBaseAddr + 0x2266EB + 3), (enable) ? newOff : off); // dmc3.exe+2266EB - 43 C6 84 34 C09A0000 01 - MOV BYTE PTR [R12+R14+00009AC0],01
-		Write<uint32>((appBaseAddr + 0x2268F7 + 3), (enable) ? newOff : off); // dmc3.exe+2268F7 - 43 C6 84 34 C09A0000 01 - MOV BYTE PTR [R12+R14+00009AC0],01
-		// Write<uint32>((appBaseAddr + 0x226A43 + 3), (enable) ? newOff : off); // dmc3.exe+226A43 - 42 C6 84 36 C09A0000 01 - MOV BYTE PTR [RSI+R14+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x2264D6 + 4), (enable) ? newOff : off); // dmc3.exe+2264D6 - 42 C6 84 36 C09A0000 01 - MOV BYTE PTR [RSI+R14+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x2266EB + 4), (enable) ? newOff : off); // dmc3.exe+2266EB - 43 C6 84 34 C09A0000 01 - MOV BYTE PTR [R12+R14+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x2268F7 + 4), (enable) ? newOff : off); // dmc3.exe+2268F7 - 43 C6 84 34 C09A0000 01 - MOV BYTE PTR [R12+R14+00009AC0],01
+		// Write<uint32>((appBaseAddr + 0x226A43 + 4), (enable) ? newOff : off); // dmc3.exe+226A43 - 42 C6 84 36 C09A0000 01 - MOV BYTE PTR [RSI+R14+00009AC0],01
 		// Update Actor Vergil
 		Write<uint32>((appBaseAddr + 0x22098E + 3), (enable) ? newOff : off); // dmc3.exe+22098E - 44 89 B1 C09A0000 - MOV [RCX+00009AC0],R14D
-		Write<uint32>((appBaseAddr + 0x22116B + 3), (enable) ? newOff : off); // dmc3.exe+22116B - 42 88 9C 20 C09A0000 - MOV [RAX+R12+00009AC0],BL
-		Write<uint32>((appBaseAddr + 0x22136C + 3), (enable) ? newOff : off); // dmc3.exe+22136C - 43 C6 84 27 C09A0000 01 - MOV BYTE PTR [R15+R12+00009AC0],01
-		Write<uint32>((appBaseAddr + 0x221770 + 3), (enable) ? newOff : off); // dmc3.exe+221770 - 43 C6 84 27 C09A0000 01 - MOV BYTE PTR [R15+R12+00009AC0],01
-		Write<uint32>((appBaseAddr + 0x221A0A + 3), (enable) ? newOff : off); // dmc3.exe+221A0A - 42 C6 84 25 C09A0000 01 - MOV BYTE PTR [RBP+R12+00009AC0],01
-		Write<uint32>((appBaseAddr + 0x221DF9 + 3), (enable) ? newOff : off); // dmc3.exe+221DF9 - 42 C6 84 25 C09A0000 01 - MOV BYTE PTR [RBP+R12+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x22116B + 4), (enable) ? newOff : off); // dmc3.exe+22116B - 42 88 9C 20 C09A0000 - MOV [RAX+R12+00009AC0],BL
+		Write<uint32>((appBaseAddr + 0x22136C + 4), (enable) ? newOff : off); // dmc3.exe+22136C - 43 C6 84 27 C09A0000 01 - MOV BYTE PTR [R15+R12+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x221770 + 4), (enable) ? newOff : off); // dmc3.exe+221770 - 43 C6 84 27 C09A0000 01 - MOV BYTE PTR [R15+R12+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x221A0A + 4), (enable) ? newOff : off); // dmc3.exe+221A0A - 42 C6 84 25 C09A0000 01 - MOV BYTE PTR [RBP+R12+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x221DF9 + 4), (enable) ? newOff : off); // dmc3.exe+221DF9 - 42 C6 84 25 C09A0000 01 - MOV BYTE PTR [RBP+R12+00009AC0],01
 		// Update Model Dante
 		Write<uint32>((appBaseAddr + 0x214FE3 + 3), (enable) ? newOff : off); // dmc3.exe+214FE3 - 41 C6 86 C09A0000 01 - MOV BYTE PTR [R14+00009AC0],01
-		// Write<uint32>((appBaseAddr + 0x2152D6 + 3), (enable) ? newOff : off); // dmc3.exe+2152D6 - 41 C6 86 C09A0000 01 - MOV BYTE PTR [R14+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x2152D6 + 3), (enable) ? newOff : off); // dmc3.exe+2152D6 - 41 C6 86 C09A0000 01 - MOV BYTE PTR [R14+00009AC0],01
 		// Update Model Vergil
-		Write<uint32>((appBaseAddr + 0x222253 + 3), (enable) ? newOff : off); // dmc3.exe+222253 - C6 85 C09A0000 01 - MOV BYTE PTR [RBP+00009AC0],01
-		Write<uint32>((appBaseAddr + 0x222481 + 3), (enable) ? newOff : off); // dmc3.exe+222481 - C6 85 C09A0000 01 - MOV BYTE PTR [RBP+00009AC0],01
-		// Write<uint32>((appBaseAddr + 0x222737 + 3), (enable) ? newOff : off); // dmc3.exe+222737 - C6 85 C09A0000 01 - MOV BYTE PTR [RBP+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x222253 + 2), (enable) ? newOff : off); // dmc3.exe+222253 - C6 85 C09A0000 01 - MOV BYTE PTR [RBP+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x222481 + 2), (enable) ? newOff : off); // dmc3.exe+222481 - C6 85 C09A0000 01 - MOV BYTE PTR [RBP+00009AC0],01
+		Write<uint32>((appBaseAddr + 0x222737 + 2), (enable) ? newOff : off); // dmc3.exe+222737 - C6 85 C09A0000 01 - MOV BYTE PTR [RBP+00009AC0],01
 		// func_211F20
 		Write<uint32>((appBaseAddr + 0x211F3A + 3), (enable) ? newOff : off); // dmc3.exe+211F3A - 48 8D B9 C09A0000 - LEA RDI,[RCX+00009AC0]
 		// Other
 		Write<uint32>((appBaseAddr + 0x2203BD + 3), (enable) ? newOff : off); // dmc3.exe+2203BD - 48 8D B1 C09A0000 - LEA RSI,[RCX+00009AC0]
 		Write<uint32>((appBaseAddr + 0x225997 + 3), (enable) ? newOff : off); // dmc3.exe+225997 - 48 8D 99 C09A0000 - LEA RBX,[RCX+00009AC0]
 		// Unknown
-		// Write<uint32>((appBaseAddr + 0x182780 + 3), (enable) ? newOff : off); // dmc3.exe+182780 - C6 85 C09A0000 04 - MOV BYTE PTR [RBP+00009AC0],04
+		// Write<uint32>((appBaseAddr + 0x182780 + 2), (enable) ? newOff : off); // dmc3.exe+182780 - C6 85 C09A0000 04 - MOV BYTE PTR [RBP+00009AC0],04
 	}
 	// 0x9AC4
 	{
@@ -2173,7 +2412,7 @@ void ToggleModelRelocations(bool enable)
 		// Update Actor Dante
 		Write<uint32>((appBaseAddr + 0x212C14 + 3), (enable) ? newOff : off); // dmc3.exe+212C14 - 44 88 B9 C49A0000 - MOV [RCX+00009AC4],R15L
 		// Update Actor Bob
-		Write<uint32>((appBaseAddr + 0x225D97 + 3), (enable) ? newOff : off); // dmc3.exe+225D97 - C6 81 C49A0000 00 - MOV BYTE PTR [RCX+00009AC4],00
+		Write<uint32>((appBaseAddr + 0x225D97 + 2), (enable) ? newOff : off); // dmc3.exe+225D97 - C6 81 C49A0000 00 - MOV BYTE PTR [RCX+00009AC4],00
 		// Update Actor Vergil
 		Write<uint32>((appBaseAddr + 0x220997 + 3), (enable) ? newOff : off); // dmc3.exe+220997 - 44 88 B1 C49A0000 - MOV [RCX+00009AC4],R14L
 	}
@@ -2185,7 +2424,7 @@ void ToggleModelRelocations(bool enable)
 		// Update Actor Bob
 		Write<uint32>((appBaseAddr + 0x226318 + 3), (enable) ? newOff : off); // dmc3.exe+226318 - 49 89 B6 C89A0000 - MOV [R14+00009AC8],RSI
 		// Update Actor Vergil
-		Write<uint32>((appBaseAddr + 0x220CC4 + 3), (enable) ? newOff : off); // dmc3.exe+220CC4 - 4D 89 B4 24 C89A0000 - MOV [R12+00009AC8],R14
+		Write<uint32>((appBaseAddr + 0x220CC4 + 4), (enable) ? newOff : off); // dmc3.exe+220CC4 - 4D 89 B4 24 C89A0000 - MOV [R12+00009AC8],R14
 	}
 	// 0x9AD0
 	{
@@ -2261,6 +2500,68 @@ void ToggleModelRelocations(bool enable)
 		Write<uint32>((appBaseAddr + 0x218F20 + 3), (enable) ? newOff : off); // dmc3.exe+218F20 - 48 8D 8F 109D0000 - LEA RCX,[RDI+00009D10]
 		// Unknown
 		// Write<uint32>((appBaseAddr + 0x34B3FB + 3), (enable) ? newOff : off); // dmc3.exe+34B3FB - 48 81 C1 109D0000 - ADD RCX,00009D10
+	}
+	// 0x9AF0
+	{
+		constexpr auto off = offsetof(ActorDataVergil, modelShadowData[0]);
+		constexpr auto newOff = offsetof(ActorDataVergil, newModelShadowData[0]);
+		static_assert(off == 0x9AF0);
+		// Update Actor Vergil
+		Write<uint32>((appBaseAddr + 0x220ED2 + 4), (enable) ? newOff : off); // dmc3.exe+220ED2 - 4A 8B BC 23 F09A0000 - MOV RDI,[RBX+R12+00009AF0]
+		Write<uint32>((appBaseAddr + 0x220EDD + 3), (enable) ? newOff : off); // dmc3.exe+220EDD - 48 8D 8B F09A0000 - LEA RCX,[RBX+00009AF0]
+		Write<uint32>((appBaseAddr + 0x221262 + 4), (enable) ? newOff : off); // dmc3.exe+221262 - 4A 8B BC 23 F09A0000 - MOV RDI,[RBX+R12+00009AF0]
+		Write<uint32>((appBaseAddr + 0x22126D + 3), (enable) ? newOff : off); // dmc3.exe+22126D - 48 8D 8B F09A0000 - LEA RCX,[RBX+00009AF0]
+		Write<uint32>((appBaseAddr + 0x221663 + 4), (enable) ? newOff : off); // dmc3.exe+221663 - 4A 8B BC 23 F09A0000 - MOV RDI,[RBX+R12+00009AF0]
+		Write<uint32>((appBaseAddr + 0x22166E + 3), (enable) ? newOff : off); // dmc3.exe+22166E - 48 8D 8B F09A0000 - LEA RCX,[RBX+00009AF0]
+		// Update Model Vergil
+		Write<uint32>((appBaseAddr + 0x222073 + 3), (enable) ? newOff : off); // dmc3.exe+222073 - 48 8B B5 F09A0000 - MOV RSI,[RBP+00009AF0]
+		Write<uint32>((appBaseAddr + 0x222083 + 3), (enable) ? newOff : off); // dmc3.exe+222083 - 48 8D 8D F09A0000 - LEA RCX,[RBP+00009AF0]
+		// func_1DE160
+		// Write<uint32>((appBaseAddr + 0x1DE22D + 3), (enable) ? newOff : off); // dmc3.exe+1DE22D - 48 8D 8B F09A0000 - LEA RCX,[RBX+00009AF0]
+		// Unknown
+		// Write<uint32>((appBaseAddr + 0x1827AA + 3), (enable) ? newOff : off); // dmc3.exe+1827AA - 0F29 85 F09A0000 - MOVAPS [RBP+00009AF0],XMM0
+		Write<uint32>((appBaseAddr + 0x1DD81D + 3), (enable) ? newOff : off); // dmc3.exe+1DD81D - 48 8D 8B F09A0000 - LEA RCX,[RBX+00009AF0]
+		// Write<uint32>((appBaseAddr + 0x1DD9CD + 3), (enable) ? newOff : off); // dmc3.exe+1DD9CD - 48 8D 8B F09A0000 - LEA RCX,[RBX+00009AF0]
+		Write<uint32>((appBaseAddr + 0x1DE107 + 3), (enable) ? newOff : off); // dmc3.exe+1DE107 - 48 8D 8B F09A0000 - LEA RCX,[RBX+00009AF0]
+		Write<uint32>((appBaseAddr + 0x22045C + 3), (enable) ? newOff : off); // dmc3.exe+22045C - 48 8D B3 F09A0000 - LEA RSI,[RBX+00009AF0]
+		Write<uint32>((appBaseAddr + 0x22048A + 3), (enable) ? newOff : off); // dmc3.exe+22048A - 48 81 C1 F09A0000 - ADD RCX,00009AF0
+		Write<uint32>((appBaseAddr + 0x2243B1 + 3), (enable) ? newOff : off); // dmc3.exe+2243B1 - 48 81 C1 F09A0000 - ADD RCX,00009AF0
+		Write<uint32>((appBaseAddr + 0x224491 + 3), (enable) ? newOff : off); // dmc3.exe+224491 - 48 81 C1 F09A0000 - ADD RCX,00009AF0
+		// Write<uint32>((appBaseAddr + 0x34B57A + 3), (enable) ? newOff : off); // dmc3.exe+34B57A - 48 81 C1 F09A0000 - ADD RCX,00009AF0
+		// Write<uint32>((appBaseAddr + 0x34B6EA + 3), (enable) ? newOff : off); // dmc3.exe+34B6EA - 48 81 C1 F09A0000 - ADD RCX,00009AF0
+	}
+	// 0x9D30
+	{
+		constexpr auto off = offsetof(ActorDataVergil, submodelShadowData[0]);
+		constexpr auto newOff = offsetof(ActorDataVergil, newSubmodelShadowData[0]);
+		static_assert(off == 0x9D30);
+		// Update Actor Vergil
+		Write<uint32>((appBaseAddr + 0x220FB4 + 4), (enable) ? newOff : off); // dmc3.exe+220FB4 - 4A 8B BC 23 309D0000 - MOV RDI,[RBX+R12+00009D30]
+		Write<uint32>((appBaseAddr + 0x220FBF + 4), (enable) ? newOff : off); // dmc3.exe+220FBF - 49 8D 8C 24 309D0000 - LEA RCX,[R12+00009D30]
+		Write<uint32>((appBaseAddr + 0x22133E + 4), (enable) ? newOff : off); // dmc3.exe+22133E - 4A 8B BC 23 309D0000 - MOV RDI,[RBX+R12+00009D30]
+		Write<uint32>((appBaseAddr + 0x221349 + 3), (enable) ? newOff : off); // dmc3.exe+221349 - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
+		Write<uint32>((appBaseAddr + 0x221741 + 4), (enable) ? newOff : off); // dmc3.exe+221741 - 4A 8B BC 23 309D0000 - MOV RDI,[RBX+R12+00009D30]
+		Write<uint32>((appBaseAddr + 0x22174C + 4), (enable) ? newOff : off); // dmc3.exe+22174C - 49 8D 8C 24 309D0000 - LEA RCX,[R12+00009D30]
+		Write<uint32>((appBaseAddr + 0x2219DB + 4), (enable) ? newOff : off); // dmc3.exe+2219DB - 4A 8B BC 23 309D0000 - MOV RDI,[RBX+R12+00009D30]
+		Write<uint32>((appBaseAddr + 0x2219E6 + 4), (enable) ? newOff : off); // dmc3.exe+2219E6 - 49 8D 8C 24 309D0000 - LEA RCX,[R12+00009D30]
+		Write<uint32>((appBaseAddr + 0x221DAD + 4), (enable) ? newOff : off); // dmc3.exe+221DAD - 4A 8B BC 23 309D0000 - MOV RDI,[RBX+R12+00009D30]
+		Write<uint32>((appBaseAddr + 0x221DB8 + 4), (enable) ? newOff : off); // dmc3.exe+221DB8 - 49 8D 8C 24 309D0000 - LEA RCX,[R12+00009D30]
+		// Update Model Vergil
+		Write<uint32>((appBaseAddr + 0x222698 + 3), (enable) ? newOff : off); // dmc3.exe+222698 - 48 8B B5 309D0000 - MOV RSI,[RBP+00009D30]
+		Write<uint32>((appBaseAddr + 0x2226A8 + 3), (enable) ? newOff : off); // dmc3.exe+2226A8 - 48 8D 8D 309D0000 - LEA RCX,[RBP+00009D30]
+		// func_1DE160
+		// Write<uint32>((appBaseAddr + 0x1DE20E + 3), (enable) ? newOff : off); // dmc3.exe+1DE20E - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
+		// Unknown
+		Write<uint32>((appBaseAddr + 0x1DD848 + 3), (enable) ? newOff : off); // dmc3.exe+1DD848 - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
+		// Write<uint32>((appBaseAddr + 0x1DD9F8 + 3), (enable) ? newOff : off); // dmc3.exe+1DD9F8 - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
+		Write<uint32>((appBaseAddr + 0x1DE0E8 + 3), (enable) ? newOff : off); // dmc3.exe+1DE0E8 - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
+		Write<uint32>((appBaseAddr + 0x2203D0 + 3), (enable) ? newOff : off); // dmc3.exe+2203D0 - 4C 8D B1 309D0000 - LEA R14,[RCX+00009D30]
+		Write<uint32>((appBaseAddr + 0x220425 + 3), (enable) ? newOff : off); // dmc3.exe+220425 - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
+		Write<uint32>((appBaseAddr + 0x22441E + 3), (enable) ? newOff : off); // dmc3.exe+22441E - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
+		Write<uint32>((appBaseAddr + 0x22454A + 3), (enable) ? newOff : off); // dmc3.exe+22454A - 48 81 C1 309D0000 - ADD RCX,00009D30
+		Write<uint32>((appBaseAddr + 0x22470E + 3), (enable) ? newOff : off); // dmc3.exe+22470E - 48 81 C1 309D0000 - ADD RCX,00009D30
+		// Write<uint32>((appBaseAddr + 0x34B5AB + 3), (enable) ? newOff : off); // dmc3.exe+34B5AB - 48 81 C1 309D0000 - ADD RCX,00009D30
+		// Write<uint32>((appBaseAddr + 0x34B71B + 3), (enable) ? newOff : off); // dmc3.exe+34B71B - 48 81 C1 309D0000 - ADD RCX,00009D30
 	}
 	// 0xA300
 	{
@@ -2890,7 +3191,6 @@ void ToggleWeaponRelocations(bool enable)
 
 
 
-
 void ToggleModelCountAdjustments(bool enable)
 {
 	LogFunction(enable);
@@ -3179,29 +3479,7 @@ export void Model_Init()
 	}
 
 
-	return;
-	
-
-
-
-
-
-
-
-
-
-	// {
-	// 	auto func = CreateFunction(UpdateModelDante);
-	// 	//WriteCall((appBaseAddr + 0x212CB3), func.addr);
-	// 	/*
-	// 	dmc3.exe+212CB3 - E8 98200000       - call dmc3.exe+214D50
-	// 	dmc3.exe+212CB8 - 48 8D 86 A0380000 - lea rax,[rsi+000038A0]
-	// 	*/
-	// }
-
-
-	//return;
-
+	// return;
 
 
 	// Dante Model Partition Updates
@@ -3262,6 +3540,40 @@ export void Model_Init()
 		*/
 	}
 
+	// Artemis Position Update
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x0F, 0xB6, 0x82, 0x9E, 0x3E, 0x00, 0x00, // movzx eax,byte ptr [rdx+00003E9E]
+			0x80, 0xBA, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rdx+0000B8C0],01
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       // je dmc3.exe+22EC65
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x22EC2E), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 9) = offsetof(ActorData, newForceFiles);
+		WriteAddress((func.sect0 + 0xE), (appBaseAddr + 0x22EC65), 6);
+		WriteJump((appBaseAddr + 0x22EC27), func.addr, 2);
+		/*
+		dmc3.exe+22EC27 - 0FB6 82 9E3E0000 - movzx eax,byte ptr [rdx+00003E9E]
+		dmc3.exe+22EC2E - 3C 07            - cmp al,07
+		*/
+	}
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// Dante Coat Update
 	{
@@ -3294,6 +3606,178 @@ export void Model_Init()
 
 
 
+
+
+
+	// On
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0x8B, 0x83, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rbx+000000C0]
+			0x48, 0x85, 0xC0,                         // test rax,rax
+			0x74, 0x09,                               // je short
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+			0xEB, 0x07,                               // jmp short
+			0x8B, 0x84, 0x96, 0xC0, 0x2D, 0xC9, 0x00, // mov eax,[rsi+rdx*4+00C92DC0]
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x8DC23), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ActorData, newEffectIndices);
+		WriteJump((appBaseAddr + 0x8DC1C), func.addr, 2);
+		/*
+		dmc3.exe+8DC1C - 8B 84 96 C02DC900 - mov eax,[rsi+rdx*4+00C92DC0]
+		dmc3.exe+8DC23 - 0FA3 C8           - bt eax,ecx
+		*/
+	}
+
+
+
+	// Update
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0x8B, 0x87, 0xC0, 0x00, 0x00, 0x00,       // mov rax,[rdi+000000C0]
+			0x48, 0x85, 0xC0,                               // test rax,rax
+			0x74, 0x09,                                     // je short
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00,       // mov eax,[rax+rdx*4+0000B8C0]
+			0xEB, 0x08,                                     // jmp short
+			0x41, 0x8B, 0x84, 0x91, 0xC0, 0x2D, 0xC9, 0x00, // mov eax,[r9+rdx*4+00C92DC0]
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x90D29), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ActorData, newEffectIndices);
+		WriteJump((appBaseAddr + 0x90D21), func.addr, 3);
+		/*
+		dmc3.exe+90D21 - 41 8B 84 91 C02DC900 - mov eax,[r9+rdx*4+00C92DC0]
+		dmc3.exe+90D29 - 0FA3 C8              - bt eax,ecx
+		*/
+	}
+
+
+
+
+
+	// Off
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
+			0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1F954E), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEffectIndices[1]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ActorData, newEffectIndices[2]);
+		WriteJump((appBaseAddr + 0x1F9542), func.addr, 1);
+		/*
+		dmc3.exe+1F9542 - 8B 05 7C98A900 - mov eax,[dmc3.exe+C92DC4]
+		dmc3.exe+1F9548 - 8B 0D 7A98A900 - mov ecx,[dmc3.exe+C92DC8]
+		dmc3.exe+1F954E - 83 C8 01       - or eax,01
+		*/
+	}
+
+
+
+
+
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
+			0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1F9578), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEffectIndices[1]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ActorData, newEffectIndices[2]);
+		WriteJump((appBaseAddr + 0x1F956C), func.addr, 1);
+		/*
+		dmc3.exe+1F956C - 89 05 5298A900 - mov [dmc3.exe+C92DC4],eax
+		dmc3.exe+1F9572 - 89 0D 5098A900 - mov [dmc3.exe+C92DC8],ecx
+		dmc3.exe+1F9578 - 48 83 C4 20    - add rsp,20
+		*/
+	}
+
+
+
+
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xD3, 0xE0,                                     // shl eax,cl
+			0x48, 0x8B, 0x8F, 0xC0, 0x00, 0x00, 0x00,       // mov rcx,[rdi+000000C0]
+			0x48, 0x85, 0xC9,                               // test rcx,rcx
+			0x74, 0x09,                                     // je short
+			0x31, 0x84, 0x91, 0x00, 0x00, 0x00, 0x00,       // xor [rcx+rdx*4+0000B8C0],eax
+			0xEB, 0x08,                                     // jmp short
+			0x41, 0x31, 0x84, 0x91, 0xC0, 0x2D, 0xC9, 0x00, // xor [r9+rdx*4+00C92DC0],eax
+			0x48, 0x8B, 0xCF,                               // mov rcx,rdi
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x90D57), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices);
+		WriteJump((appBaseAddr + 0x90D4A), func.addr);
+		/*
+		dmc3.exe+90D4A - D3 E0                - shl eax,cl
+		dmc3.exe+90D4C - 48 8B CF             - mov rcx,rdi
+		dmc3.exe+90D4F - 41 31 84 91 C02DC900 - xor [r9+rdx*4+00C92DC0],eax
+		dmc3.exe+90D57 - 33 D2                - xor edx,edx
+		*/
+	}
+
+
+
+
+
+	// Update Effect Position
+
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0x8B, 0x87, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rdi+000000C0]
+			0x48, 0x85, 0xC0,                         // test rax,rax
+			0x74, 0x03,                               // je short
+			0x48, 0x8B, 0xC8,                         // mov rcx,rax
+			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+1FAA90
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x90B2D), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteJump((appBaseAddr + 0x90B28), func.addr);
+		WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x1FAA90));
+		/*
+		dmc3.exe+90B28 - E8 639F1600 - call dmc3.exe+1FAA90
+		dmc3.exe+90B2D - 48 8B D0    - mov rdx,rax
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+#endif
+
+#ifdef __GARBAGE__
+
+
+
+	return;
+	
 
 
 
@@ -3521,174 +4005,27 @@ export void Model_Init()
 	//}
 
 
+	//return;
+	
+
+
+	//return;
 
 
 
 
 
 
-	// On
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0x8B, 0x83, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rbx+000000C0]
-			0x48, 0x85, 0xC0,                         // test rax,rax
-			0x74, 0x09,                               // je short
-			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
-			0xEB, 0x07,                               // jmp short
-			0x8B, 0x84, 0x96, 0xC0, 0x2D, 0xC9, 0x00, // mov eax,[rsi+rdx*4+00C92DC0]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x8DC23), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ActorData, newEffectIndices);
-		WriteJump((appBaseAddr + 0x8DC1C), func.addr, 2);
-		/*
-		dmc3.exe+8DC1C - 8B 84 96 C02DC900 - mov eax,[rsi+rdx*4+00C92DC0]
-		dmc3.exe+8DC23 - 0FA3 C8           - bt eax,ecx
-		*/
-	}
+	// {
+	// 	auto func = CreateFunction(UpdateModelDante);
+	// 	//WriteCall((appBaseAddr + 0x212CB3), func.addr);
+	// 	/*
+	// 	dmc3.exe+212CB3 - E8 98200000       - call dmc3.exe+214D50
+	// 	dmc3.exe+212CB8 - 48 8D 86 A0380000 - lea rax,[rsi+000038A0]
+	// 	*/
+	// }
 
 
+	//return;
 
-	// Update
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0x8B, 0x87, 0xC0, 0x00, 0x00, 0x00,       // mov rax,[rdi+000000C0]
-			0x48, 0x85, 0xC0,                               // test rax,rax
-			0x74, 0x09,                                     // je short
-			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00,       // mov eax,[rax+rdx*4+0000B8C0]
-			0xEB, 0x08,                                     // jmp short
-			0x41, 0x8B, 0x84, 0x91, 0xC0, 0x2D, 0xC9, 0x00, // mov eax,[r9+rdx*4+00C92DC0]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x90D29), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ActorData, newEffectIndices);
-		WriteJump((appBaseAddr + 0x90D21), func.addr, 3);
-		/*
-		dmc3.exe+90D21 - 41 8B 84 91 C02DC900 - mov eax,[r9+rdx*4+00C92DC0]
-		dmc3.exe+90D29 - 0FA3 C8              - bt eax,ecx
-		*/
-	}
-
-
-
-
-
-	// Off
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
-			0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1F954E), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEffectIndices[1]);
-		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ActorData, newEffectIndices[2]);
-		WriteJump((appBaseAddr + 0x1F9542), func.addr, 1);
-		/*
-		dmc3.exe+1F9542 - 8B 05 7C98A900 - mov eax,[dmc3.exe+C92DC4]
-		dmc3.exe+1F9548 - 8B 0D 7A98A900 - mov ecx,[dmc3.exe+C92DC8]
-		dmc3.exe+1F954E - 83 C8 01       - or eax,01
-		*/
-	}
-
-
-
-
-
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
-			0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1F9578), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEffectIndices[1]);
-		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ActorData, newEffectIndices[2]);
-		WriteJump((appBaseAddr + 0x1F956C), func.addr, 1);
-		/*
-		dmc3.exe+1F956C - 89 05 5298A900 - mov [dmc3.exe+C92DC4],eax
-		dmc3.exe+1F9572 - 89 0D 5098A900 - mov [dmc3.exe+C92DC8],ecx
-		dmc3.exe+1F9578 - 48 83 C4 20    - add rsp,20
-		*/
-	}
-
-
-
-
-	{
-		constexpr byte8 sect0[] =
-		{
-			0xD3, 0xE0,                                     // shl eax,cl
-			0x48, 0x8B, 0x8F, 0xC0, 0x00, 0x00, 0x00,       // mov rcx,[rdi+000000C0]
-			0x48, 0x85, 0xC9,                               // test rcx,rcx
-			0x74, 0x09,                                     // je short
-			0x31, 0x84, 0x91, 0x00, 0x00, 0x00, 0x00,       // xor [rcx+rdx*4+0000B8C0],eax
-			0xEB, 0x08,                                     // jmp short
-			0x41, 0x31, 0x84, 0x91, 0xC0, 0x2D, 0xC9, 0x00, // xor [r9+rdx*4+00C92DC0],eax
-			0x48, 0x8B, 0xCF,                               // mov rcx,rdi
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x90D57), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices);
-		WriteJump((appBaseAddr + 0x90D4A), func.addr);
-		/*
-		dmc3.exe+90D4A - D3 E0                - shl eax,cl
-		dmc3.exe+90D4C - 48 8B CF             - mov rcx,rdi
-		dmc3.exe+90D4F - 41 31 84 91 C02DC900 - xor [r9+rdx*4+00C92DC0],eax
-		dmc3.exe+90D57 - 33 D2                - xor edx,edx
-		*/
-	}
-
-
-
-
-
-	// Update Effect Position
-
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0x8B, 0x87, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rdi+000000C0]
-			0x48, 0x85, 0xC0,                         // test rax,rax
-			0x74, 0x03,                               // je short
-			0x48, 0x8B, 0xC8,                         // mov rcx,rax
-			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+1FAA90
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x90B2D), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteJump((appBaseAddr + 0x90B28), func.addr);
-		WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x1FAA90));
-		/*
-		dmc3.exe+90B28 - E8 639F1600 - call dmc3.exe+1FAA90
-		dmc3.exe+90B2D - 48 8B D0    - mov rdx,rax
-		*/
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
-
-#endif
-
-#ifdef __GARBAGE__
 #endif

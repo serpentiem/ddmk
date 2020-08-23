@@ -250,15 +250,21 @@ var items =
 	[ "submodelData[5]"                     , "ModelData"        , 0x7540 ],
 	[ "submodelInit[5]"                     , "bool"             , 0x9AC0 ],
 
-
-
-
-
-
 	[ "modelShadowData[3]"                  , "ShadowData"       , 0x9AD0, CHAR_DANTE ],
 	[ "submodelShadowData[5]"               , "ShadowData"       , 0x9D10, CHAR_DANTE ],
 	[ "submodelPhysicsMetadataPool[39]"     , "PhysicsMetadata *", 0xA0D0, CHAR_DANTE ],
 	[ "submodelPhysicsData"                 , "PhysicsData"      , 0xA210, CHAR_DANTE ],
+
+	[ "modelShadowData[3]"                  , "ShadowData"       , 0x9AF0, CHAR_VERGIL ],
+	[ "submodelShadowData[5]"               , "ShadowData"       , 0x9D30, CHAR_VERGIL ],
+	[ "submodelPhysicsMetadataPool[39]"     , "PhysicsMetadata *", 0xA0F0, CHAR_VERGIL ],
+	[ "submodelPhysicsData"                 , "PhysicsData"      , 0xA230, CHAR_VERGIL ],
+	
+
+
+
+
+	
 	[ "devilModelPhysicsMetadataPool[2][36]", "PhysicsMetadata *", 0xA300, CHAR_DANTE ],
 	[ "devilSubmodelPhysicsData[4]"         , "PhysicsData"      , 0xA540, CHAR_DANTE ],
 	[ "devilSubmodelPhysicsLinkData[4][4]"  , "PhysicsLinkData"  , 0xAA00, CHAR_DANTE ],
@@ -267,14 +273,20 @@ var items =
 
 
 
-
-
-
-
-
-
 	[ "devilModelMetadata"                  , "DevilModelMetadataDante" , 0xB600, CHAR_DANTE               ],
+
+
+
+	
 	[ "modelMetadata[6]"                    , "ModelMetadata"           , 0xB630, CHAR_DANTE               ],
+
+
+	[ "modelMetadata[6]"                    , "ModelMetadata"    , 0xB640, CHAR_VERGIL ],
+
+
+
+
+
 
 	[ "artemisChargeValue[2]"               , "float32"                 , 0xB868, CHAR_DANTE               ],
 	[ "artemisChargeFlags[2]"               , "byte32"                  , 0xB87C, CHAR_DANTE               ],

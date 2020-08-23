@@ -2863,7 +2863,15 @@ struct ActorDataVergil
 	_(28);
 	ModelData submodelData[5]; // 0x7540
 	bool submodelInit[5]; // 0x9AC0
-	_(7675);
+	_(43);
+	ShadowData modelShadowData[3]; // 0x9AF0
+	ShadowData submodelShadowData[5]; // 0x9D30
+	PhysicsMetadata * submodelPhysicsMetadataPool[39]; // 0xA0F0
+	_(8);
+	PhysicsData submodelPhysicsData; // 0xA230
+	_(4896);
+	ModelMetadata modelMetadata[6]; // 0xB640
+	_(160);
 	uint32 newFirstVar; // 0xB8C0
 	_(12);
 	ModelData newModelData[6]; // 0xB8D0
@@ -3590,6 +3598,11 @@ static_assert(offsetof(ActorDataVergil, actorCameraDirection) == 0x750C);
 static_assert(offsetof(ActorDataVergil, leftStickDirection) == 0x751C);
 static_assert(offsetof(ActorDataVergil, submodelData) == 0x7540);
 static_assert(offsetof(ActorDataVergil, submodelInit) == 0x9AC0);
+static_assert(offsetof(ActorDataVergil, modelShadowData) == 0x9AF0);
+static_assert(offsetof(ActorDataVergil, submodelShadowData) == 0x9D30);
+static_assert(offsetof(ActorDataVergil, submodelPhysicsMetadataPool) == 0xA0F0);
+static_assert(offsetof(ActorDataVergil, submodelPhysicsData) == 0xA230);
+static_assert(offsetof(ActorDataVergil, modelMetadata) == 0xB640);
 static_assert(offsetof(ActorDataVergil, newFirstVar) == 0xB8C0);
 static_assert(offsetof(ActorDataVergil, newModelData) == 0xB8D0);
 static_assert(offsetof(ActorDataVergil, newModelPhysicsMetadataPool) == 0xE5D0);
