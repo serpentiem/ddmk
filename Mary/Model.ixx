@@ -1,3 +1,8 @@
+
+
+// @Todo: Merge with Actor.
+
+
 #ifndef __MODULE_MODEL__
 #define __MODULE_MODEL__
 
@@ -16,6 +21,25 @@ import ModuleName(Internal);
 #include "File.ixx"
 #include "Internal.ixx"
 #endif
+
+
+
+
+template <typename T>
+struct GetCharacterId
+{
+	enum
+	{
+		value =
+		(TypeMatch<T, ActorDataDante >::value) ? CHAR_DANTE  :
+		(TypeMatch<T, ActorDataBob   >::value) ? CHAR_BOB    :
+		(TypeMatch<T, ActorDataLady  >::value) ? CHAR_LADY   :
+		(TypeMatch<T, ActorDataVergil>::value) ? CHAR_VERGIL :
+		0
+	};
+};
+
+
 
 inline void RegisterModel
 (
@@ -313,7 +337,7 @@ void UpdateModelPartitions(T & actorData)
 }
 
 export template <typename T>
-void UpdateModelDante(T & actorData)
+void UpdateModel(T & actorData)
 {
 	uint8 character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : GetCharacterId<T>::value;
 	if (character >= MAX_CHAR)
@@ -490,7 +514,7 @@ void UpdateModelDante(T & actorData)
 	(
 		actorData.submodelPhysicsData,
 		actorData.newModelPhysicsMetadataPool[modelIndex],
-		(appBaseAddr + 0x58B380),
+		(appBaseAddr + ((coat) ? 0x58B380 : 0x58B054)),
 		actorData.modelMetadata,
 		(coat) ? 6 : 1
 	);
@@ -516,7 +540,32 @@ void UpdateModelDante(T & actorData)
 	}
 }
 
+/*
+dante
+dmc3.exe+214E17 - 41 C6 86 30B60000 04 - mov byte ptr [r14+0000B630],04
+dmc3.exe+214E1F - 0F28 05 3A643700     - movaps xmm0,[dmc3.exe+58B260]
 
+dante coat
+dmc3.exe+214FFB - 0F28 05 7E851400     - movaps xmm0,[dmc3.exe+35D580]
+dmc3.exe+2151E0 - 4C 8D 05 99613700    - lea r8,[dmc3.exe+58B380]
+
+dante amulet
+dmc3.exe+2152F6 - 0F28 05 D3603700     - movaps xmm0,[dmc3.exe+58B3D0]
+dmc3.exe+215390 - 4C 8D 05 BD5C3700    - lea r8,[dmc3.exe+58B054]
+
+vergil
+dmc3.exe+2220A0 - 4C 8D A5 40B60000    - lea r12,[rbp+0000B640]
+dmc3.exe+2220A7 - 41 C6 04 24  04      - mov byte ptr [r12],04
+dmc3.exe+2220AC - 0F28 05 AD913600     - movaps xmm0,[dmc3.exe+58B260]
+
+vergil coat
+dmc3.exe+222270 - 0F28 05 09B31300     - movaps xmm0,[dmc3.exe+35D580]
+dmc3.exe+22266C - 4C 8D 05 0D8D3600    - lea r8,[dmc3.exe+58B380]
+
+vergil amulet
+dmc3.exe+222753 - 0F28 05 768C3600     - movaps xmm0,[dmc3.exe+58B3D0]
+dmc3.exe+2227EC - 4C 8D 05 61883600    - lea r8,[dmc3.exe+58B054]
+*/
 
 
 
@@ -3430,7 +3479,43 @@ export void Model_Init()
 {
 	LogFunction();
 
-	return;
+	//return;
+
+
+
+
+
+
+
+
+
+	/*
+	dmc3.exe+220CCF - 4D 89 B4 24 D09A0000  - mov [r12+00009AD0],r14
+	dmc3.exe+220CD7 - 4D 89 B4 24 D89A0000  - mov [r12+00009AD8],r14
+	dmc3.exe+220CDF - 4D 89 B4 24 E09A0000  - mov [r12+00009AE0],r14
+	dmc3.exe+220CE7 - 4D 89 B4 24 E89A0000  - mov [r12+00009AE8],r14
+	dmc3.exe+220CEF - 41 38 9C 24 9F3E0000  - cmp [r12+00003E9F],bl
+	*/
+
+
+
+	// Update Models
+	{
+		auto func = CreateFunction(UpdateModel<ActorDataDante>);
+		WriteCall((appBaseAddr + 0x212CB3), func.addr);
+		/*
+		dmc3.exe+212CB3 - E8 98200000       - call dmc3.exe+214D50
+		dmc3.exe+212CB8 - 48 8D 86 A0380000 - lea rax,[rsi+000038A0]
+		*/
+	}
+	{
+		auto func = CreateFunction(UpdateModel<ActorDataVergil>);
+		WriteCall((appBaseAddr + 0x220A30), func.addr);
+		/*
+		dmc3.exe+220A30 - E8 AB150000          - call dmc3.exe+221FE0
+		dmc3.exe+220A35 - 49 8D 84 24 A0380000 - lea rax,[r12+000038A0]
+		*/
+	}
 
 	ToggleModelRelocations(true);
 	ToggleWeaponRelocations(true);
@@ -3479,7 +3564,11 @@ export void Model_Init()
 	}
 
 
-	// return;
+
+	// Vergil Offset
+	vp_memset((appBaseAddr + 0x220CCF), 0x90, 32); // The irony lel.
+
+	return;
 
 
 	// Dante Model Partition Updates
