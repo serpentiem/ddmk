@@ -344,7 +344,7 @@ void UpdateModel(T & actorData)
 	{
 		character = 0;
 	}
-	uint8 costume = 0;
+	uint8 costume = actorData.costume;
 	uint16 costumeFileId = 0;
 	bool coat = false;
 
@@ -1960,6 +1960,7 @@ void ToggleModelRelocations(bool enable)
 		Write<uint32>((appBaseAddr + 0x2230AA + 3), (enable) ? newOff : off); // dmc3.exe+2230AA - 4C 8B 83 98180000 - MOV R8,[RBX+00001898]
 		Write<uint32>((appBaseAddr + 0x2230E0 + 3), (enable) ? newOff : off); // dmc3.exe+2230E0 - 48 8B 93 98180000 - MOV RDX,[RBX+00001898]
 		Write<uint32>((appBaseAddr + 0x2243FB + 3), (enable) ? newOff : off); // dmc3.exe+2243FB - 48 8B 93 98180000 - MOV RDX,[RBX+00001898]
+		Write<uint32>((appBaseAddr + 0x22445B + 3), (enable) ? newOff : off); // dmc3.exe+22445B - 48 8B 93 98180000 - MOV RDX,[RBX+00001898]
 		Write<uint32>((appBaseAddr + 0x225A71 + 3), (enable) ? newOff : off); // dmc3.exe+225A71 - 48 8B 93 98180000 - MOV RDX,[RBX+00001898]
 		Write<uint32>((appBaseAddr + 0x226D86 + 3), (enable) ? newOff : off); // dmc3.exe+226D86 - 4C 8B 81 98180000 - MOV R8,[RCX+00001898]
 		Write<uint32>((appBaseAddr + 0x2272D1 + 3), (enable) ? newOff : off); // dmc3.exe+2272D1 - 48 8B 93 98180000 - MOV RDX,[RBX+00001898]
@@ -1972,7 +1973,6 @@ void ToggleModelRelocations(bool enable)
 		// Write<uint32>((appBaseAddr + 0xC7A1D + 3), (enable) ? newOff : off); // dmc3.exe+C7A1D - 48 8B 97 98180000 - MOV RDX,[RDI+00001898]
 		// Write<uint32>((appBaseAddr + 0xC823B + 3), (enable) ? newOff : off); // dmc3.exe+C823B - 48 8B 85 98180000 - MOV RAX,[RBP+00001898]
 		// Write<uint32>((appBaseAddr + 0xCB18E + 3), (enable) ? newOff : off); // dmc3.exe+CB18E - 48 8B 8E 98180000 - MOV RCX,[RSI+00001898]
-		Write<uint32>((appBaseAddr + 0x22445B + 3), (enable) ? newOff : off); // dmc3.exe+22445B - 48 8B 93 98180000 - MOV RDX,[RBX+00001898]
 		// Write<uint32>((appBaseAddr + 0x2588F3 + 3), (enable) ? newOff : off); // dmc3.exe+2588F3 - 48 89 83 98180000 - MOV [RBX+00001898],RAX
 		// Write<uint32>((appBaseAddr + 0x2596ED + 3), (enable) ? newOff : off); // dmc3.exe+2596ED - 48 89 8A 98180000 - MOV [RDX+00001898],RCX
 		// Write<uint32>((appBaseAddr + 0x25B0C8 + 3), (enable) ? newOff : off); // dmc3.exe+25B0C8 - 48 89 BB 98180000 - MOV [RBX+00001898],RDI
@@ -2410,6 +2410,14 @@ void ToggleModelRelocations(bool enable)
 		// Write<uint32>((appBaseAddr + 0x34B549 + 3), (enable) ? newOff : off); // dmc3.exe+34B549 - 48 81 C1 40750000 - ADD RCX,00007540
 		// Write<uint32>((appBaseAddr + 0x34B6B9 + 3), (enable) ? newOff : off); // dmc3.exe+34B6B9 - 48 81 C1 40750000 - ADD RCX,00007540
 	}
+	// 0x7548
+	{
+		constexpr auto off = (offsetof(ActorData, submodelData[0]) + 8);
+		constexpr auto newOff = (offsetof(ActorData, newSubmodelData[0]) + 8);
+		static_assert(off == 0x7548);
+		// Update Actor Vergil
+		Write<uint32>((appBaseAddr + 0x221D07 + 3), (enable) ? newOff : off); // dmc3.exe+221D07 - 48 81 C7 48750000 - add rdi,00007548
+	}
 	// 0x9AC0
 	{
 		constexpr auto off = offsetof(ActorData, submodelInit[0]);
@@ -2567,15 +2575,16 @@ void ToggleModelRelocations(bool enable)
 		Write<uint32>((appBaseAddr + 0x222083 + 3), (enable) ? newOff : off); // dmc3.exe+222083 - 48 8D 8D F09A0000 - LEA RCX,[RBP+00009AF0]
 		// func_1DE160
 		// Write<uint32>((appBaseAddr + 0x1DE22D + 3), (enable) ? newOff : off); // dmc3.exe+1DE22D - 48 8D 8B F09A0000 - LEA RCX,[RBX+00009AF0]
-		// Unknown
-		// Write<uint32>((appBaseAddr + 0x1827AA + 3), (enable) ? newOff : off); // dmc3.exe+1827AA - 0F29 85 F09A0000 - MOVAPS [RBP+00009AF0],XMM0
+		// Other
 		Write<uint32>((appBaseAddr + 0x1DD81D + 3), (enable) ? newOff : off); // dmc3.exe+1DD81D - 48 8D 8B F09A0000 - LEA RCX,[RBX+00009AF0]
-		// Write<uint32>((appBaseAddr + 0x1DD9CD + 3), (enable) ? newOff : off); // dmc3.exe+1DD9CD - 48 8D 8B F09A0000 - LEA RCX,[RBX+00009AF0]
 		Write<uint32>((appBaseAddr + 0x1DE107 + 3), (enable) ? newOff : off); // dmc3.exe+1DE107 - 48 8D 8B F09A0000 - LEA RCX,[RBX+00009AF0]
 		Write<uint32>((appBaseAddr + 0x22045C + 3), (enable) ? newOff : off); // dmc3.exe+22045C - 48 8D B3 F09A0000 - LEA RSI,[RBX+00009AF0]
 		Write<uint32>((appBaseAddr + 0x22048A + 3), (enable) ? newOff : off); // dmc3.exe+22048A - 48 81 C1 F09A0000 - ADD RCX,00009AF0
 		Write<uint32>((appBaseAddr + 0x2243B1 + 3), (enable) ? newOff : off); // dmc3.exe+2243B1 - 48 81 C1 F09A0000 - ADD RCX,00009AF0
 		Write<uint32>((appBaseAddr + 0x224491 + 3), (enable) ? newOff : off); // dmc3.exe+224491 - 48 81 C1 F09A0000 - ADD RCX,00009AF0
+		// Unknown
+		// Write<uint32>((appBaseAddr + 0x1827AA + 3), (enable) ? newOff : off); // dmc3.exe+1827AA - 0F29 85 F09A0000 - MOVAPS [RBP+00009AF0],XMM0
+		// Write<uint32>((appBaseAddr + 0x1DD9CD + 3), (enable) ? newOff : off); // dmc3.exe+1DD9CD - 48 8D 8B F09A0000 - LEA RCX,[RBX+00009AF0]
 		// Write<uint32>((appBaseAddr + 0x34B57A + 3), (enable) ? newOff : off); // dmc3.exe+34B57A - 48 81 C1 F09A0000 - ADD RCX,00009AF0
 		// Write<uint32>((appBaseAddr + 0x34B6EA + 3), (enable) ? newOff : off); // dmc3.exe+34B6EA - 48 81 C1 F09A0000 - ADD RCX,00009AF0
 	}
@@ -2600,15 +2609,16 @@ void ToggleModelRelocations(bool enable)
 		Write<uint32>((appBaseAddr + 0x2226A8 + 3), (enable) ? newOff : off); // dmc3.exe+2226A8 - 48 8D 8D 309D0000 - LEA RCX,[RBP+00009D30]
 		// func_1DE160
 		// Write<uint32>((appBaseAddr + 0x1DE20E + 3), (enable) ? newOff : off); // dmc3.exe+1DE20E - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
-		// Unknown
+		// Other
 		Write<uint32>((appBaseAddr + 0x1DD848 + 3), (enable) ? newOff : off); // dmc3.exe+1DD848 - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
-		// Write<uint32>((appBaseAddr + 0x1DD9F8 + 3), (enable) ? newOff : off); // dmc3.exe+1DD9F8 - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
 		Write<uint32>((appBaseAddr + 0x1DE0E8 + 3), (enable) ? newOff : off); // dmc3.exe+1DE0E8 - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
 		Write<uint32>((appBaseAddr + 0x2203D0 + 3), (enable) ? newOff : off); // dmc3.exe+2203D0 - 4C 8D B1 309D0000 - LEA R14,[RCX+00009D30]
 		Write<uint32>((appBaseAddr + 0x220425 + 3), (enable) ? newOff : off); // dmc3.exe+220425 - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
 		Write<uint32>((appBaseAddr + 0x22441E + 3), (enable) ? newOff : off); // dmc3.exe+22441E - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
 		Write<uint32>((appBaseAddr + 0x22454A + 3), (enable) ? newOff : off); // dmc3.exe+22454A - 48 81 C1 309D0000 - ADD RCX,00009D30
 		Write<uint32>((appBaseAddr + 0x22470E + 3), (enable) ? newOff : off); // dmc3.exe+22470E - 48 81 C1 309D0000 - ADD RCX,00009D30
+		// Unknown
+		// Write<uint32>((appBaseAddr + 0x1DD9F8 + 3), (enable) ? newOff : off); // dmc3.exe+1DD9F8 - 48 8D 8B 309D0000 - LEA RCX,[RBX+00009D30]
 		// Write<uint32>((appBaseAddr + 0x34B5AB + 3), (enable) ? newOff : off); // dmc3.exe+34B5AB - 48 81 C1 309D0000 - ADD RCX,00009D30
 		// Write<uint32>((appBaseAddr + 0x34B71B + 3), (enable) ? newOff : off); // dmc3.exe+34B71B - 48 81 C1 309D0000 - ADD RCX,00009D30
 	}
@@ -3240,6 +3250,8 @@ void ToggleWeaponRelocations(bool enable)
 
 
 
+
+
 void ToggleModelCountAdjustments(bool enable)
 {
 	LogFunction(enable);
@@ -3568,7 +3580,7 @@ export void Model_Init()
 	// Vergil Offset
 	vp_memset((appBaseAddr + 0x220CCF), 0x90, 32); // The irony lel.
 
-	return;
+	//return;
 
 
 	// Dante Model Partition Updates
@@ -3689,6 +3701,36 @@ export void Model_Init()
 		dmc3.exe+2120CB - 48 8D 8E 40750000 - lea rcx,[rsi+00007540]
 		*/
 	}
+
+
+
+	// Vergil Coat Update
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x80, 0xBE, 0xC0, 0xB8, 0x00, 0x00, 0x01, // cmp byte ptr [rsi+0000B8C0],01
+			0x75, 0x12,                               // jne short
+			0x80, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, // cmp byte ptr [rsi+0000B8C0],02
+			0x75, 0x09,                               // jne short
+			0x48, 0x8B, 0x96, 0x00, 0x00, 0x00, 0x00, // mov rdx,[rsi+000018A8]
+			0xEB, 0x07,                               // jmp short
+			0x48, 0x8B, 0x96, 0x00, 0x00, 0x00, 0x00, // mov rdx,[rsi+00001898]
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x22050D), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newForceFiles);
+		*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(ActorData, newForceFilesCharacter);
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xF) = CHAR_LADY;
+		*reinterpret_cast<uint32 *>(func.sect0 + 0x15) = offsetof(ActorData, newModelPhysicsMetadataPool[0][5]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 0x1E) = offsetof(ActorData, newModelPhysicsMetadataPool[0][3]);
+		WriteJump((appBaseAddr + 0x220506), func.addr, 2);
+		/*
+		dmc3.exe+220506 - 48 8B 96 98180000 - mov rdx,[rsi+00001898]
+		dmc3.exe+22050D - 48 8D 8E 40750000 - lea rcx,[rsi+00007540]
+		*/
+	}
+
+
 
 
 

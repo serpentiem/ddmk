@@ -361,7 +361,7 @@ void MainLoopOnce()
 
 		LogFunction();
 
-		//Actor_MainLoopOnce();
+		Actor_MainLoopOnce();
 	}
 }
 
