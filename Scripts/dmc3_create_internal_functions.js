@@ -66,12 +66,19 @@ var items =
 
 
 
+	[ 0x1FD3E0, "bool", "WeaponData & weaponData, uint8", "", "IsWeaponReady" ],
+	[ 0x1FDE10, "void", "WeaponData & weaponData", "", "Show Weapon" ],
+
+
 	/*
 dmc3.exe+214B49 - E8 02160B00           - call dmc3.exe+2C6150
 	*/
 
 
+/*
+dmc3.exe+1FDE10 - 40 56                 - push rsi
 
+*/
 
 
 
@@ -345,6 +352,7 @@ dmc3.exe+8A520 - 48 8D 81 00050000     - lea rax,[rcx+00000500]
 
 
 
+
 /*
 dmc3.exe+1EF4FB - E8 20B0E9FF           - call __GET_OFFSET__
 dmc3.exe+1EF500 - 33 D2                 - xor edx,edx
@@ -352,6 +360,14 @@ dmc3.exe+1EF502 - 48 8B C8              - mov rcx,rax
 dmc3.exe+1EF505 - E8 26F11100           - call dmc3.exe+30E630
 
 */
+
+/*
+dmc3.exe+2288A4 - E8 374BFDFF           - call dmc3.exe+1FD3E0
+
+*/
+
+
+
 
 
 

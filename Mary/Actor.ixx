@@ -1,6 +1,9 @@
 
 
-// @Todo: Add enable check.
+// @Todo: Update Model Partitions OnInit and OnUpdate.
+
+
+
 
 
 
@@ -339,32 +342,6 @@ void UpdateMeleeWeapons
 		if ((weapon >= WEAPON_DANTE_REBELLION) && (weapon <= WEAPON_DANTE_BEOWULF))
 		{
 			actorData.meleeWeaponIndex = weapon;
-
-			//if (actorData.devil)
-			//{
-
-			//	actorData.queuedModelIndex = (1 + weapon);
-			//	actorData.activeModelIndexMirror = (1 + weapon);
-			//	actorData.activeDevil = weapon;
-			//	actorData.airRaid = 0;
-
-
-
-
-
-
-			//	//if (!actorData.sparda)
-			//	//{
-			//	//	if (!IsWeaponActive(actorData))
-			//	//	{
-			//	//		actorData.activeModelIndex = (1 + weapon);
-			//	//	}
-			//	//	else
-			//	//	{
-			//	//		actorData.queuedModelIndex = (1 + weapon);
-			//	//	}
-			//	//}
-			//}
 		}
 	}
 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
@@ -452,6 +429,8 @@ void UpdateActorDante(ActorDataDante & actorData)
 
 	UpdateModel(actorData);
 
+
+	//Log("reached here");
 
 	//InitModel(actorData, 0);
 
@@ -841,286 +820,153 @@ export void SpawnActors()
 
 #pragma region IsWeaponReady
 
-template <typename T>
-bool IsWeaponReadyFunction
-(
-	T     & actorData,
-	uint8   weapon,
-	uint8 * map,
-	uint8   mapItemCount,
-	uint8   index
-)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+template <uint8 weaponType>
+bool IsWeaponReady(WeaponData & weaponData)
 {
-	if (IsWeaponActive(actorData, weapon))
+	if (!weaponData.actorBaseAddr)
+	{
+		return true;
+	}
+	auto & actorData = *reinterpret_cast<ActorDataDante *>(weaponData.actorBaseAddr);
+
+	if (actorData.character != CHAR_DANTE)
 	{
 		return true;
 	}
 
-	for_all(uint8, mapIndex, mapItemCount) // @Todo: mapItemIndex.
+	if (IsWeaponActive(actorData, weaponData.weapon))
 	{
-		auto & mapItem = map[mapIndex];
-		if (mapItem == weapon)
+		return true;
+	}
+
+	for_all(uint8, index, 5)
+	{
+		uint8 weapon =
+		(weaponType == WEAPON_TYPE_MELEE ) ? (WEAPON_DANTE_REBELLION   + index) :
+		(weaponType == WEAPON_TYPE_RANGED) ? (WEAPON_DANTE_EBONY_IVORY + index) :
+		0;
+		if (weaponData.weapon == weapon)
 		{
 			continue;
 		}
-		if (IsWeaponActive(actorData, mapItem))
+		if (IsWeaponActive(actorData, weapon))
 		{
 			return false;
 		}
 	}
 
-	if (map[index] == weapon)
+	if constexpr (weaponType == WEAPON_TYPE_MELEE)
 	{
-		return true;
+		if (actorData.meleeWeaponIndex == weaponData.weapon)
+		{
+			return true;
+		}
+	}
+	else if constexpr (weaponType == WEAPON_TYPE_RANGED)
+	{
+		if (actorData.rangedWeaponIndex == weaponData.weapon)
+		{
+			return true;
+		}
 	}
 
 	return false;
 }
 
-template
-<
-	typename T,
-	uint8 weaponType
->
-bool IsWeaponReady
-(
-	byte8 * baseAddr,
-	uint8 weapon
-)
-{
-	auto & actorData = *reinterpret_cast<T *>(baseAddr);
-	if constexpr (weaponType == WEAPON_TYPE_MELEE)
-	{
-		auto result = IsWeaponReadyFunction
-		(
-			actorData,
-			weapon,
-			actorData.newMeleeWeapons,
-			actorData.newMeleeWeaponCount,
-			actorData.newMeleeWeaponIndex
-		);
-		// @Todo: Move to OnUpdate.
-		//if constexpr (TypeMatch<T, ActorDataDante>::value)
-		//{
-		//	if (result)
-		//	{
-		//		if (actorData.newLastMeleeWeapon != weapon)
-		//		{
-		//			actorData.newLastMeleeWeapon = weapon;
-		//			UpdateModelPartitions(actorData);
-		//		}
-		//	}
-		//}
-		return result;
-	}
-	else
-	{
-		return IsWeaponReadyFunction
-		(
-			actorData,
-			weapon,
-			actorData.newRangedWeapons,
-			actorData.newRangedWeaponCount,
-			actorData.newRangedWeaponIndex
-		);
-	}
-}
 
-typedef bool(__fastcall * IsWeaponReady_t)
-(
-	byte8 * actorData,
-	uint8 weapon
-);
 
-IsWeaponReady_t IsMeleeWeaponReady[MAX_CHAR] =
-{
-	IsWeaponReady<ActorDataDante, WEAPON_TYPE_MELEE>,
-	0,
-	0,
-	IsWeaponReady<ActorDataVergil, WEAPON_TYPE_MELEE>,
-};
 
-IsWeaponReady_t IsRangedWeaponReady[MAX_CHAR] =
-{
-	IsWeaponReady<ActorDataDante, WEAPON_TYPE_MELEE>,
-	0,
-	0,
-	0,
-};
 
-template <uint8 weaponType>
-bool IsWeaponReadyProxy(byte8 * baseAddr)
-{
-	auto & weapon = *reinterpret_cast<uint8 *>(baseAddr + 0x112);
-	auto actorBaseAddr = *reinterpret_cast<byte8 **>(baseAddr + 0x120);
-	if (!actorBaseAddr)
-	{
-		return true;
-	}
-	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-	auto character = actorData.character;
-	if (character >= MAX_CHAR)
-	{
-		character = CHAR_DANTE;
-	}
-	auto & func = (weaponType == WEAPON_TYPE_MELEE) ? IsMeleeWeaponReady[character] : IsRangedWeaponReady[character];
-	if (!func)
-	{
-		return true;
-	}
-	return func(actorData, weapon);
-}
 
-auto IsMeleeWeaponReadyProxy  = IsWeaponReadyProxy<WEAPON_TYPE_MELEE >;
-auto IsRangedWeaponReadyProxy = IsWeaponReadyProxy<WEAPON_TYPE_RANGED>;
-
-struct IsWeaponReadyProxyHelper_t
-{
-	uint32 off[2];
-	uint8 weaponType;
-};
-
-constexpr IsWeaponReadyProxyHelper_t IsWeaponReadyProxyHelper[] =
-{
-	{ 0x2288D3, 0x2288D8, WEAPON_TYPE_MELEE  }, // Dante Agni & Rudra
-	{ 0x2295B7, 0x2295BC, WEAPON_TYPE_MELEE  }, // Dante Vergil Beowulf
-	{ 0x229E9D, 0       , WEAPON_TYPE_MELEE  }, // Vergil Force Edge
-	{ 0x22AD86, 0x22AD8B, WEAPON_TYPE_MELEE  }, // Dante Nevan
-	{ 0x22B723, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory Air
-	{ 0x22B753, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory
-	{ 0x22C186, 0       , WEAPON_TYPE_RANGED }, // Dante Lady Kalina Ann
-	{ 0x22C1A5, 0       , WEAPON_TYPE_RANGED }, // Dante Kalina Ann Grapple
-	{ 0x22CBC8, 0x22CBCD, WEAPON_TYPE_RANGED }, // Dante Artemis
-	{ 0x22D432, 0x22D437, WEAPON_TYPE_MELEE  }, // Vergil Nero Angelo Sword
-	{ 0x22E09A, 0x22E09F, WEAPON_TYPE_MELEE  }, // Vergil Yamato
-	{ 0x22FB1C, 0x22FB21, WEAPON_TYPE_MELEE  }, // Dante Cerberus
-	{ 0x2304BF, 0       , WEAPON_TYPE_RANGED }, // Dante Spiral
-	{ 0x230DD3, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun Shot
-	{ 0x230E16, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun
-	{ 0x23163F, 0       , WEAPON_TYPE_MELEE  }, // Dante Rebellion
-	{ 0x232005, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato Combo 1 Part 3
-	{ 0x232056, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato
-};
-
-byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
 
 void InitIsWeaponReady()
 {
 	LogFunction();
 
-	byte8 sect2[] =
-	{
-		0x84, 0xC0,                   //test al,al
-		0x74, 0x05,                   //je short
-		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
-	};
-	for_all(uint8, index, countof(IsWeaponReadyProxyHelper))
-	{
-		auto & item = IsWeaponReadyProxyHelper[index];
-		byte8 * jumpAddr = (item.off[1]) ? (appBaseAddr + item.off[1]) : 0;
-		auto func = CreateFunction
-		(
-			(item.weaponType == WEAPON_TYPE_MELEE) ? IsMeleeWeaponReadyProxy : IsRangedWeaponReadyProxy,
-			jumpAddr,
-			true,
-			false,
-			0,
-			0,
-			sizeof(sect2)
-		);
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		if (jumpAddr)
-		{
-			WriteCall((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-		}
-		else
-		{
-			WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-		}
-		IsWeaponReadyProxyFuncAddr[index] = func.addr;
-	}
-}
+	auto meleeFunc  = CreateFunction(IsWeaponReady<WEAPON_TYPE_MELEE >, 0, true, false);
+	auto rangedFunc = CreateFunction(IsWeaponReady<WEAPON_TYPE_RANGED>, 0, true, false);
 
-export void ToggleIsWeaponReady(bool enable)
-{
-	LogFunction(enable);
-
-	for_all(uint8, index, countof(IsWeaponReadyProxyHelper))
-	{
-		auto & item = IsWeaponReadyProxyHelper[index];
-
-		byte8 * addr = 0;
-		byte8 * jumpAddr = 0;
-
-		addr = (appBaseAddr + item.off[0]);
-		jumpAddr = (item.off[1]) ? (appBaseAddr + item.off[1]) : 0;
-
-		if (enable)
-		{
-			WriteJump(addr, IsWeaponReadyProxyFuncAddr[index]);
-		}
-		else
-		{
-			if (jumpAddr)
-			{
-				WriteCall(addr, (appBaseAddr + 0x1FDE10));
-			}
-			else
-			{
-				WriteJump(addr, (appBaseAddr + 0x1FDE10));
-			}
-		}
-	}
-
-	auto WriteHelper = [&]
-	(
-		uint32 callOff,
-		uint32 jumpOff,
-		uint32 jumpDestOff
-		)
-	{
-		if (enable)
-		{
-			WriteJump((appBaseAddr + callOff), (appBaseAddr + callOff + 5));
-			WriteAddress((appBaseAddr + jumpOff), (appBaseAddr + jumpOff + 2), 2);
-		}
-		else
-		{
-			WriteCall((appBaseAddr + callOff), (appBaseAddr + 0x1FD3E0));
-			WriteAddress((appBaseAddr + jumpOff), (appBaseAddr + jumpDestOff), 2);
-		}
-	};
-
-	WriteHelper(0x2288A4, 0x2288CE, 0x2288D8); // Dante Agni & Rudra
-	/*
-	dmc3.exe+2288A4 - E8 374BFDFF - call dmc3.exe+1FD3E0
-	dmc3.exe+2288CE - 74 08       - je dmc3.exe+2288D8
-	*/
-	WriteHelper(0x229E8C, 0x229E93, 0x229EA2); // Vergil Force Edge
-	/*
-	dmc3.exe+229E8C - E8 4F35FDFF - call dmc3.exe+1FD3E0
-	dmc3.exe+229E93 - 74 0D       - je dmc3.exe+229EA2
-	*/
-	WriteHelper(0x22AD2D, 0x22AD39, 0x22AD8B); // Dante Nevan
-	/*
-	dmc3.exe+22AD2D - E8 AE26FDFF - call dmc3.exe+1FD3E0
-	dmc3.exe+22AD39 - 74 50       - je dmc3.exe+22AD8B
-	*/
-	WriteHelper(0x22FAD4, 0x22FADB, 0x22FB21); // Dante Cerberus
-	/*
-	dmc3.exe+22FAD4 - E8 07D9FCFF - call dmc3.exe+1FD3E0
-	dmc3.exe+22FADB - 74 44       - je dmc3.exe+22FB21
-	*/
-	WriteHelper(0x23162E, 0x231635, 0x231644); // Dante Rebellion
+	// Rebellion
+	WriteCall((appBaseAddr + 0x23162E), meleeFunc.addr);
 	/*
 	dmc3.exe+23162E - E8 ADBDFCFF - call dmc3.exe+1FD3E0
-	dmc3.exe+231635 - 74 0D       - je dmc3.exe+231644
 	*/
+
+	// Cerberus
+	WriteCall((appBaseAddr + 0x22FAD4), meleeFunc.addr);
+	/*
+	dmc3.exe+22FAD4 - E8 07D9FCFF - call dmc3.exe+1FD3E0
+	*/
+
+	// Agni & Rudra
+	WriteCall((appBaseAddr + 0x2288A4), meleeFunc.addr);
+	/*
+	dmc3.exe+2288A4 - E8 374BFDFF - call dmc3.exe+1FD3E0
+	*/
+
+	// Nevan
+	WriteCall((appBaseAddr + 0x22AD2D), meleeFunc.addr);
+	/*
+	dmc3.exe+22AD2D - E8 AE26FDFF - call dmc3.exe+1FD3E0
+	*/
+
+	// Beowulf
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call
+			0x84, 0xC0,                   // test al,al
+			0x74, 0x05,                   // je short
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+1FDE10
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x2295BC), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteCall(func.sect0, meleeFunc.addr);
+		WriteCall((func.sect0 + 9), (appBaseAddr + 0x1FDE10));
+		WriteJump((appBaseAddr + 0x2295B7), func.addr);
+		/*
+		dmc3.exe+2295B7 - E8 5448FDFF    - call dmc3.exe+1FDE10
+		dmc3.exe+2295BC - 48 8B 7C 24 50 - mov rdi,[rsp+50]
+		*/
+	}
+
+	return;
+
+	// Artemis
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call
+			0x84, 0xC0,                   // test al,al
+			0x74, 0x05,                   // je short
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+1FDE10
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x22CBCD), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteCall(func.sect0, rangedFunc.addr);
+		WriteCall((func.sect0 + 9), (appBaseAddr + 0x1FDE10));
+		WriteJump((appBaseAddr + 0x22CBC8), func.addr);
+		/*
+		dmc3.exe+22CBC8 - E8 4312FDFF    - call dmc3.exe+1FDE10
+		dmc3.exe+22CBCD - 48 8B 5C 24 48 - mov rbx,[rsp+48]
+		*/
+	}
 }
 
-#pragma endregion
-
-#pragma region __HIDE__
 
 
 
@@ -1135,133 +981,372 @@ export void ToggleIsWeaponReady(bool enable)
 
 
 
-
-
-
-
-
-
-
-// @Todo: Add devil support and Nero Angelo exceptions.
-// @Todo: Check for WEAPON_VOID and same weapon.
-// @Todo: Create templates.
-
-//bool WeaponSwitchVergil(ActorDataVergil & actorData)
+//template <typename T>
+//bool IsWeaponReadyFunction
+//(
+//	T     & actorData,
+//	uint8   weapon,
+//	uint8 * map,
+//	uint8   mapItemCount,
+//	uint8   index
+//)
 //{
-//	if (actorData.devilState == 2)
+//	if (IsWeaponActive(actorData, weapon))
 //	{
 //		return true;
 //	}
-//	if (actorData.moveOnly)
+//
+//	for_all(uint8, mapIndex, mapItemCount) // @Todo: mapItemIndex.
 //	{
-//		return false;
+//		auto & mapItem = map[mapIndex];
+//		if (mapItem == weapon)
+//		{
+//			continue;
+//		}
+//		if (IsWeaponActive(actorData, mapItem))
+//		{
+//			return false;
+//		}
 //	}
 //
-//
+//	if (map[index] == weapon)
 //	{
-//		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_DEVIL_ARMS)))
-//		{
-//			goto sect0;
-//		}
-//		if (0 < actorData.weaponSwitchTimeout[0])
-//		{
-//			goto sect0;
-//		}
-//		auto addr = actorData.actionData[3];
-//		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x348);
-//		actorData.weaponSwitchTimeout[0] = timeout;
-//		actorData.weaponSwitchTimeout[1] = timeout;
+//		return true;
+//	}
 //
-//		auto & queuedWeaponIndex = actorData.weaponIndex[1];
-//		queuedWeaponIndex++;
-//		if (queuedWeaponIndex >= 3)
-//		{
-//			queuedWeaponIndex = 0;
-//		}
+//	return false;
+//}
 //
-//		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-//		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+//template
+//<
+//	typename T,
+//	uint8 weaponType
+//>
+//bool IsWeaponReady
+//(
+//	byte8 * baseAddr,
+//	uint8 weapon
+//)
+//{
+//	auto & actorData = *reinterpret_cast<T *>(baseAddr);
 //
-//		// @Todo: In the future just update the weapon icon and use 0.
-//		func_280160
+//
+//
+//	if constexpr (weaponType == WEAPON_TYPE_MELEE)
+//	{
+//		return IsWeaponReadyFunction
 //		(
-//			hud,
-//			(queuedWeaponIndex < 2) ? 1 : 0,
-//			(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
-//			1
+//			actorData,
+//			weapon,
+//			actorData.newMeleeWeapons,
+//			actorData.newMeleeWeaponCount,
+//			actorData.newMeleeWeaponIndex
 //		);
-//		*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
-//		func_1EB0E0(actorData, 4);
-//
-//		if (actorData.devil || (actorData.devilState == 1))
-//		{
-//			func_1F92C0(actorData, 1);
-//			func_1F97F0(actorData, true);
-//		}
 //	}
-//	sect0:;
-//
-//
-//
-//
-//
+//	else
 //	{
-//		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_GUN)))
-//		{
-//			goto sect1;
-//		}
-//		if (0 < actorData.weaponSwitchTimeout[1])
-//		{
-//			goto sect1;
-//		}
-//		auto addr = actorData.actionData[3];
-//		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x348);
-//		actorData.weaponSwitchTimeout[0] = timeout;
-//		actorData.weaponSwitchTimeout[1] = timeout;
+//		return IsWeaponReadyFunction
+//		(
+//			actorData,
+//			weapon,
+//			actorData.newRangedWeapons,
+//			actorData.newRangedWeaponCount,
+//			actorData.newRangedWeaponIndex
+//		);
+//	}
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//typedef bool(__fastcall * IsWeaponReady_t)
+//(
+//	byte8 * actorData,
+//	uint8 weapon
+//);
 //
-//		auto & queuedWeaponIndex = actorData.weaponIndex[1];
+//IsWeaponReady_t IsMeleeWeaponReady[MAX_CHAR] =
+//{
+//	IsWeaponReady<ActorDataDante, WEAPON_TYPE_MELEE>,
+//	0,
+//	0,
+//	IsWeaponReady<ActorDataVergil, WEAPON_TYPE_MELEE>,
+//};
+//
+//IsWeaponReady_t IsRangedWeaponReady[MAX_CHAR] =
+//{
+//	IsWeaponReady<ActorDataDante, WEAPON_TYPE_RANGED>,
+//	0,
+//	0,
+//	0,
+//};
+
+//template <uint8 weaponType>
+//bool IsWeaponReadyProxy(byte8 * baseAddr)
+//{
+//	auto & weapon = *reinterpret_cast<uint8 *>(baseAddr + 0x112);
+//	auto actorBaseAddr = *reinterpret_cast<byte8 **>(baseAddr + 0x120);
+//	if (!actorBaseAddr)
+//	{
+//		return true;
+//	}
 //
 //
-//		if (queuedWeaponIndex > 0)
+//
+//
+//
+//
+//	//auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//	//auto character = actorData.character;
+//	//if (character >= MAX_CHAR)
+//	//{
+//	//	character = CHAR_DANTE;
+//	//}
+//	//auto & func = (weaponType == WEAPON_TYPE_MELEE) ? IsMeleeWeaponReady[character] : IsRangedWeaponReady[character];
+//	//if (!func)
+//	//{
+//	//	return true;
+//	//}
+//	//return func(actorData, weapon);
+//}
+
+//auto IsMeleeWeaponReadyProxy  = IsWeaponReadyProxy<WEAPON_TYPE_MELEE >;
+//auto IsRangedWeaponReadyProxy = IsWeaponReadyProxy<WEAPON_TYPE_RANGED>;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// struct IsWeaponReadyProxyHelper_t
+// {
+// 	uint32 off[2];
+// 	uint8 weaponType;
+// };
+
+// constexpr IsWeaponReadyProxyHelper_t IsWeaponReadyProxyHelper[] =
+// {
+
+
+
+
+
+// 	{ 0x23163F, 0       , WEAPON_TYPE_MELEE  }, // Dante Rebellion
+// 	{ 0x22FB1C, 0x22FB21, WEAPON_TYPE_MELEE  }, // Dante Cerberus
+// 	{ 0x2288D3, 0x2288D8, WEAPON_TYPE_MELEE  }, // Dante Agni & Rudra
+// 	{ 0x22AD86, 0x22AD8B, WEAPON_TYPE_MELEE  }, // Dante Nevan
+// 	{ 0x2295B7, 0x2295BC, WEAPON_TYPE_MELEE  }, // Dante Vergil Beowulf
+
+
+
+
+
+
+	
+
+	
+// 	{ 0x22B753, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory
+// 	{ 0x22B723, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory Air
+// 	{ 0x230E16, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun
+// 	{ 0x230DD3, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun Shot
+// 	{ 0x22CBC8, 0x22CBCD, WEAPON_TYPE_RANGED }, // Dante Artemis
+// 	{ 0x2304BF, 0       , WEAPON_TYPE_RANGED }, // Dante Spiral
+// 	{ 0x22C186, 0       , WEAPON_TYPE_RANGED }, // Dante Lady Kalina Ann
+// 	{ 0x22C1A5, 0       , WEAPON_TYPE_RANGED }, // Dante Kalina Ann Grapple
+
+
+
+
+
+	
+	
+
+	
+
+
+
+
+
+// 	{ 0x22D432, 0x22D437, WEAPON_TYPE_MELEE  }, // Vergil Nero Angelo Sword
+// 	{ 0x22E09A, 0x22E09F, WEAPON_TYPE_MELEE  }, // Vergil Yamato
+// 	{ 0x229E9D, 0       , WEAPON_TYPE_MELEE  }, // Vergil Force Edge
+// 	{ 0x232005, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato Combo 1 Part 3
+// 	{ 0x232056, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato
+// };
+
+//byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
+//
+//void InitIsWeaponReady()
+//{
+//	LogFunction();
+//
+//	byte8 sect2[] =
+//	{
+//		0x84, 0xC0,                   //test al,al
+//		0x74, 0x05,                   //je short
+//		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
+//	};
+//	for_all(uint8, index, countof(IsWeaponReadyProxyHelper))
+//	{
+//		auto & item = IsWeaponReadyProxyHelper[index];
+//		byte8 * jumpAddr = (item.off[1]) ? (appBaseAddr + item.off[1]) : 0;
+//		auto func = CreateFunction
+//		(
+//			(item.weaponType == WEAPON_TYPE_MELEE) ? IsMeleeWeaponReadyProxy : IsRangedWeaponReadyProxy,
+//			jumpAddr,
+//			true,
+//			false,
+//			0,
+//			0,
+//			sizeof(sect2)
+//		);
+//		memcpy(func.sect2, sect2, sizeof(sect2));
+//		if (jumpAddr)
 //		{
-//			queuedWeaponIndex--;
+//			WriteCall((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
 //		}
 //		else
 //		{
-//			queuedWeaponIndex = 2;
+//			WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
 //		}
-//
-//
-//
-//
-//		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-//		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
-//
-//		// @Todo: In the future just update the weapon icon and use 0.
-//		func_280160
-//		(
-//			hud,
-//			(queuedWeaponIndex < 2) ? 1 : 0,
-//			(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
-//			0
-//		);
-//		*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
-//		func_1EB0E0(actorData, 4);
-//
-//		if (actorData.devil || (actorData.devilState == 1))
-//		{
-//			func_1F92C0(actorData, 1);
-//			func_1F97F0(actorData, true);
-//		}
-//
-//
-//
+//		IsWeaponReadyProxyFuncAddr[index] = func.addr;
 //	}
-//	sect1:;
+//}
 //
-//	return true;
+//export void ToggleIsWeaponReady(bool enable)
+//{
+//	LogFunction(enable);
+//
+//	for_all(uint8, index, countof(IsWeaponReadyProxyHelper))
+//	{
+//		auto & item = IsWeaponReadyProxyHelper[index];
+//
+//		byte8 * addr = 0;
+//		byte8 * jumpAddr = 0;
+//
+//		addr = (appBaseAddr + item.off[0]);
+//		jumpAddr = (item.off[1]) ? (appBaseAddr + item.off[1]) : 0;
+//
+//		if (enable)
+//		{
+//			WriteJump(addr, IsWeaponReadyProxyFuncAddr[index]);
+//		}
+//		else
+//		{
+//			if (jumpAddr)
+//			{
+//				WriteCall(addr, (appBaseAddr + 0x1FDE10));
+//			}
+//			else
+//			{
+//				WriteJump(addr, (appBaseAddr + 0x1FDE10));
+//			}
+//		}
+//	}
+//
+//	auto WriteHelper = [&]
+//	(
+//		uint32 callOff,
+//		uint32 jumpOff,
+//		uint32 jumpDestOff
+//	)
+//	{
+//		if (enable)
+//		{
+//			WriteJump((appBaseAddr + callOff), (appBaseAddr + callOff + 5));
+//			WriteAddress((appBaseAddr + jumpOff), (appBaseAddr + jumpOff + 2), 2);
+//		}
+//		else
+//		{
+//			WriteCall((appBaseAddr + callOff), (appBaseAddr + 0x1FD3E0));
+//			WriteAddress((appBaseAddr + jumpOff), (appBaseAddr + jumpDestOff), 2);
+//		}
+//	};
+//
+//	WriteHelper(0x2288A4, 0x2288CE, 0x2288D8); // Dante Agni & Rudra
+//	/*
+//	dmc3.exe+2288A4 - E8 374BFDFF - call dmc3.exe+1FD3E0
+//	dmc3.exe+2288CE - 74 08       - je dmc3.exe+2288D8
+//	*/
+//	WriteHelper(0x229E8C, 0x229E93, 0x229EA2); // Vergil Force Edge
+//	/*
+//	dmc3.exe+229E8C - E8 4F35FDFF - call dmc3.exe+1FD3E0
+//	dmc3.exe+229E93 - 74 0D       - je dmc3.exe+229EA2
+//	*/
+//	WriteHelper(0x22AD2D, 0x22AD39, 0x22AD8B); // Dante Nevan
+//	/*
+//	dmc3.exe+22AD2D - E8 AE26FDFF - call dmc3.exe+1FD3E0
+//	dmc3.exe+22AD39 - 74 50       - je dmc3.exe+22AD8B
+//	*/
+//	WriteHelper(0x22FAD4, 0x22FADB, 0x22FB21); // Dante Cerberus
+//	/*
+//	dmc3.exe+22FAD4 - E8 07D9FCFF - call dmc3.exe+1FD3E0
+//	dmc3.exe+22FADB - 74 44       - je dmc3.exe+22FB21
+//	*/
+//	WriteHelper(0x23162E, 0x231635, 0x231644); // Dante Rebellion
+//	/*
+//	dmc3.exe+23162E - E8 ADBDFCFF - call dmc3.exe+1FD3E0
+//	dmc3.exe+231635 - 74 0D       - je dmc3.exe+231644
+//	*/
 //}
 
+#pragma endregion
 
 
 
@@ -1325,97 +1410,31 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 
 	func_1EB0E0(actorData, 4);
 
-
-
-
-	/*
-	dmc3.exe+1EA9B9 - 48 8B 05 6864AA00     - mov rax,[dmc3.exe+C90E28] { (01A44000) }
-	dmc3.exe+1EA9C0 - 48 8B 48 58           - mov rcx,[rax+58]
-	dmc3.exe+1EA9C4 - 48 8B 09              - mov rcx,[rcx]
-	dmc3.exe+1EA9C7 - 48 85 C9              - test rcx,rcx
-	dmc3.exe+1EA9CA - 74 0D                 - je dmc3.exe+1EA9D9
-
-	dmc3.exe+1EA9CC - 44 8B C3              - mov r8d,ebx
-	dmc3.exe+1EA9CF - BA 01000000           - mov edx,00000001 { 1 }
-	dmc3.exe+1EA9D4 - E8 47570900           - call __WEAPON_SWITCH_ANIMATION_DANTE__
-	
-	dmc3.exe+1EA9DE - 89 9F 90640000        - mov [rdi+00006490],ebx
-
-
-	dmc3.exe+1EA9D9 - BA 04000000           - mov edx,00000004
-	dmc3.exe+1EA9E4 - 48 8B CF              - mov rcx,rdi
-	dmc3.exe+1EA9E7 - E8 F4060000           - call dmc3.exe+1EB0E0
-	*/
-
-
-
-	auto weapon = newMeleeWeapon;
-
-
-	if (weapon >= MAX_WEAPON)
-	{
-		weapon = 0;
-	}
-
-
-
-
-
 	if (actorData.devil)
 	{
+		if (actorData.sparda)
+		{
+			actorData.queuedModelIndex = 1;
+			actorData.activeModelIndexMirror = 1;
+			actorData.activeDevil = DEVIL_DANTE_SPARDA;
+			actorData.airRaid = 0;
+		}
+		else
+		{
+			auto weapon = newMeleeWeapon;
+			if (weapon > WEAPON_DANTE_BEOWULF)
+			{
+				weapon = 0;
+			}
 
-		actorData.queuedModelIndex = (1 + weapon);
-		actorData.activeModelIndexMirror = (1 + weapon);
-		actorData.activeDevil = weapon;
-		actorData.airRaid = 0;
+			actorData.queuedModelIndex = (1 + weapon);
+			actorData.activeModelIndexMirror = (1 + weapon);
+			actorData.activeDevil = weapon;
+			actorData.airRaid = 0;
 
-
-		func_1F97F0(actorData, true);
-
-
-
-		//if (!actorData.sparda)
-		//{
-		//	if (!IsWeaponActive(actorData))
-		//	{
-		//		actorData.activeModelIndex = (1 + weapon);
-		//	}
-		//	else
-		//	{
-		//		actorData.queuedModelIndex = (1 + weapon);
-		//	}
-		//}
+			func_1F97F0(actorData, true);
+		}
 	}
-
-
-
-
-	/*
-	dmc3.exe+1EAA0E - BA 01000000           - mov edx,00000001
-	dmc3.exe+1EAA13 - 48 8B CF              - mov rcx,rdi
-	dmc3.exe+1EAA16 - E8 A5E80000           - call dmc3.exe+1F92C0
-
-	dmc3.exe+1EAA1B - B2 01                 - mov dl,01
-	dmc3.exe+1EAA1D - 48 8B CF              - mov rcx,rdi
-	dmc3.exe+1EAA20 - E8 CBED0000           - call dmc3.exe+1F97F0
-	*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
@@ -1476,7 +1495,8 @@ bool WeaponSwitchControllerDante(ActorDataDante & actorData)
 	return true;
 }
 
-#pragma endregion
+
+
 
 
 
@@ -1554,6 +1574,11 @@ void SetMainActor(byte8 * baseAddr)
 
 export void Actor_CreateMainActor(byte8 * baseAddr)
 {
+	if (!Config.Actor.enable)
+	{
+		return;
+	}
+
 	LogFunction(baseAddr);
 
 	Actor_actorBaseAddr.Clear();
@@ -1567,6 +1592,11 @@ export void Actor_CreateMainActor(byte8 * baseAddr)
 
 export void Actor_Main()
 {
+	if (!Config.Actor.enable)
+	{
+		return;
+	}
+
 	LogFunction();
 
 	if (customize)
@@ -1600,6 +1630,11 @@ export void Actor_Main()
 
 export void Actor_Customize()
 {
+	if (!Config.Actor.enable)
+	{
+		return;
+	}
+
 	LogFunction();
 
 	customize = true;
@@ -1624,6 +1659,11 @@ export void Actor_Customize()
 
 export void Actor_Delete()
 {
+	if (!Config.Actor.enable)
+	{
+		return;
+	}
+
 	LogFunction();
 
 	SetMainActor(Actor_actorBaseAddr[0]);
@@ -1631,6 +1671,11 @@ export void Actor_Delete()
 
 export void Actor_MainLoopOnce()
 {
+	if (!Config.Actor.enable)
+	{
+		return;
+	}
+
 	if (Actor_spawnActors)
 	{
 		Actor_spawnActors = false;
@@ -1643,6 +1688,11 @@ export void Actor_MainLoopOnce()
 
 export void Actor_MainLoopOnceSync()
 {
+	if (!Config.Actor.enable)
+	{
+		return;
+	}
+
 	LogFunction();
 
 	if (!Actor_actorBaseAddr[2])
@@ -1677,7 +1727,9 @@ export void Actor_Init()
 
 	InitRegisterWeapon();
 
-	InitIsWeaponReady();
+	//InitIsWeaponReady();
+
+	//ToggleIsWeaponReady(true);
 
 
 	//// @Todo: Create function.
@@ -1771,7 +1823,7 @@ export void Actor_Init()
 	// @Todo: Move to Event.
 	{
 		auto func = CreateFunction(WeaponSwitchControllerDante, 0, true, false);
-		//WriteCall((appBaseAddr + 0x1E25EB), func.addr);
+		WriteCall((appBaseAddr + 0x1E25EB), func.addr);
 		/*
 		dmc3.exe+1E25EB - E8 F0820000 - call dmc3.exe+1EA8E0
 		*/
@@ -1918,6 +1970,158 @@ export void Actor_Init()
 
 
 #ifdef __GARBAGE__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// @Todo: Add devil support and Nero Angelo exceptions.
+// @Todo: Check for WEAPON_VOID and same weapon.
+// @Todo: Create templates.
+
+//bool WeaponSwitchVergil(ActorDataVergil & actorData)
+//{
+//	if (actorData.devilState == 2)
+//	{
+//		return true;
+//	}
+//	if (actorData.moveOnly)
+//	{
+//		return false;
+//	}
+//
+//
+//	{
+//		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_DEVIL_ARMS)))
+//		{
+//			goto sect0;
+//		}
+//		if (0 < actorData.weaponSwitchTimeout[0])
+//		{
+//			goto sect0;
+//		}
+//		auto addr = actorData.actionData[3];
+//		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x348);
+//		actorData.weaponSwitchTimeout[0] = timeout;
+//		actorData.weaponSwitchTimeout[1] = timeout;
+//
+//		auto & queuedWeaponIndex = actorData.weaponIndex[1];
+//		queuedWeaponIndex++;
+//		if (queuedWeaponIndex >= 3)
+//		{
+//			queuedWeaponIndex = 0;
+//		}
+//
+//		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+//		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+//
+//		// @Todo: In the future just update the weapon icon and use 0.
+//		func_280160
+//		(
+//			hud,
+//			(queuedWeaponIndex < 2) ? 1 : 0,
+//			(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
+//			1
+//		);
+//		*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
+//		func_1EB0E0(actorData, 4);
+//
+//		if (actorData.devil || (actorData.devilState == 1))
+//		{
+//			func_1F92C0(actorData, 1);
+//			func_1F97F0(actorData, true);
+//		}
+//	}
+//	sect0:;
+//
+//
+//
+//
+//
+//	{
+//		if (!(actorData.buttons[2] & GetBinding(ACTION_CHANGE_GUN)))
+//		{
+//			goto sect1;
+//		}
+//		if (0 < actorData.weaponSwitchTimeout[1])
+//		{
+//			goto sect1;
+//		}
+//		auto addr = actorData.actionData[3];
+//		auto & timeout = *reinterpret_cast<float32 *>(addr + 0x348);
+//		actorData.weaponSwitchTimeout[0] = timeout;
+//		actorData.weaponSwitchTimeout[1] = timeout;
+//
+//		auto & queuedWeaponIndex = actorData.weaponIndex[1];
+//
+//
+//		if (queuedWeaponIndex > 0)
+//		{
+//			queuedWeaponIndex--;
+//		}
+//		else
+//		{
+//			queuedWeaponIndex = 2;
+//		}
+//
+//
+//
+//
+//		auto g_pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+//		auto hud = *reinterpret_cast<byte8 **>(g_pool[11]);
+//
+//		// @Todo: In the future just update the weapon icon and use 0.
+//		func_280160
+//		(
+//			hud,
+//			(queuedWeaponIndex < 2) ? 1 : 0,
+//			(queuedWeaponIndex < 2) ? queuedWeaponIndex : 0,
+//			0
+//		);
+//		*reinterpret_cast<bool *>(reinterpret_cast<byte8 *>(&actorData) + 0x648C) = true;
+//		func_1EB0E0(actorData, 4);
+//
+//		if (actorData.devil || (actorData.devilState == 1))
+//		{
+//			func_1F92C0(actorData, 1);
+//			func_1F97F0(actorData, true);
+//		}
+//
+//
+//
+//	}
+//	sect1:;
+//
+//	return true;
+//}
+
+
+
+
+
 
 
 

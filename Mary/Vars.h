@@ -1865,6 +1865,20 @@ IntroduceSizeStruct(768);
 
 
 
+struct WeaponData
+{
+	_(274);
+	uint8 weapon;
+	_(5);
+	uint8 value;
+	_(7);
+	byte8 * actorBaseAddr;
+};
+
+static_assert(offsetof(WeaponData, weapon) == 0x112);
+static_assert(offsetof(WeaponData, value) == 0x118);
+static_assert(offsetof(WeaponData, actorBaseAddr) == 0x120);
+
 
 
 

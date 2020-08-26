@@ -12,7 +12,7 @@ export struct CONFIG
 {
 	struct
 	{
-		bool enable = false;
+		bool enable = true;
 		uint8 playerCount = 1;
 		uint8 character[MAX_PLAYER][MAX_ENTITY] =
 		{

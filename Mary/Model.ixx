@@ -3290,7 +3290,7 @@ export void Model_Init()
 {
 	LogFunction();
 
-	return;
+	//return;
 
 
 

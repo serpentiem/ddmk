@@ -20,6 +20,8 @@ export void Arcade_InitSession()
 		return;
 	}
 
+	LogFunction();
+
 	IntroduceSessionData();
 
 	sessionData.mission = Config.Arcade.mission;
