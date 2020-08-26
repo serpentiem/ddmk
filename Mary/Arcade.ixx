@@ -94,18 +94,18 @@ export void Arcade_SetRoom()
 	LogFunction();
 
 	IntroduceSessionData();
-	IntroduceNextSceneData(return);
+	IntroduceNextEventData(return);
 
 	if ((sessionData.mission >= 1) && (sessionData.mission <= 20))
 	{
 		if (!Config.Arcade.ignoreRoom)
 		{
-			nextSceneData.room = static_cast<uint16>(Config.Arcade.room);
+			nextEventData.room = static_cast<uint16>(Config.Arcade.room);
 		}
 
 		if (!Config.Arcade.ignorePosition)
 		{
-			nextSceneData.position = static_cast<uint16>(Config.Arcade.position);
+			nextEventData.position = static_cast<uint16>(Config.Arcade.position);
 		}
 	}
 
@@ -117,8 +117,8 @@ export void Arcade_SetRoom()
 			floor = 0;
 		}
 
-		nextSceneData.room     = Arcade_floorHelper[floor].room;
-		nextSceneData.position = Arcade_floorHelper[floor].position;
+		nextEventData.room     = Arcade_floorHelper[floor].room;
+		nextEventData.position = Arcade_floorHelper[floor].position;
 	}
 }
 

@@ -1099,22 +1099,22 @@ void Teleporter()
 			{
 				return false;
 			}
-			IntroduceSceneData(return false);
-			IntroduceNextSceneData(return false);
+			IntroduceEventData(return false);
+			IntroduceNextEventData(return false);
 			float32 width = 150;
 
 			ImGui::PushItemWidth(width);
 			ImGui::Text("Current");
-			GUI_Input<uint32>("", sceneData.room    , 0, "%u", ImGuiInputTextFlags_ReadOnly, false);
-			GUI_Input<uint32>("", sceneData.position, 0, "%u", ImGuiInputTextFlags_ReadOnly, false);
+			GUI_Input<uint32>("", eventData.room    , 0, "%u", ImGuiInputTextFlags_ReadOnly, false);
+			GUI_Input<uint32>("", eventData.position, 0, "%u", ImGuiInputTextFlags_ReadOnly, false);
 			ImGui::Text("Next");
-			GUI_Input<uint16>("", nextSceneData.room    , 1, "%u", 0, false);
-			GUI_Input<uint16>("", nextSceneData.position, 1, "%u", 0, false);
+			GUI_Input<uint16>("", nextEventData.room    , 1, "%u", 0, false);
+			GUI_Input<uint16>("", nextEventData.position, 1, "%u", 0, false);
 			if (GUI_Button("Teleport", ImVec2(width, ImGui::GetFrameHeight())))
 			{
-				sceneData.scene = SCENE_TELEPORT;
+				eventData.event = EVENT_TELEPORT;
 
-				Actor_Teleport();
+				//Actor_Teleport();
 			}
 			ImGui::PopItemWidth();
 

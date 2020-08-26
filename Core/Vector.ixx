@@ -170,7 +170,7 @@ void UpdateMapIndex
 	varType & var
 )
 {
-	LogFunction();
+	//LogFunction();
 
 	for_all(uint8, mapIndex, mapItemCount)
 	{

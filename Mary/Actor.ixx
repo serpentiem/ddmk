@@ -1503,19 +1503,23 @@ bool WeaponSwitchControllerDante(ActorDataDante & actorData)
 
 
 bool Actor_spawnActors = false;
+bool customize = false;
 
 void SetMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
 
-
-
 	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 
-
-
-
-
+	// Main
+	{
+		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		if (!pool)
+		{
+			return;
+		}
+		pool[3] = baseAddr;
+	}
 
 	// Style Rank
 	{
@@ -1536,167 +1540,46 @@ void SetMainActor(byte8 * baseAddr)
 		*reinterpret_cast<uint32 **>(dest + 0x3D10) = &actorData.styleRank;
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-	auto actorPool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-	if (!actorPool)
+	// Lock-On
 	{
-		Log("No actorPool");
-		return;
-	}
-	//auto & mainActorBaseAddr = *reinterpret_cast<byte8 **>(actorPool[3]);
-	//auto & mainActorBaseAddr = actorPool[3];
-
-
-
-	// @Todo: Introduce Camera Data.
-
-
-	auto cameraPool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC8FBD0);
-	if (!cameraPool)
-	{
-		Log("No cameraPool");
-		return;
-	}
-	if (!cameraPool[147])
-	{
-		Log("No cameraPool[147]");
-		return;
+		*reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2548) = baseAddr;
 	}
 
-
-	// @Todo: User and Anchor.
-	// @Todo: Remove caps.
-
-	auto & cameraData = *reinterpret_cast<CAMERA_DATA *>(cameraPool[147]);
-
-
-
-
-
-
-	auto & lockOnUserBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2548);
-
-	actorPool[3] = baseAddr;
-	cameraData.targetBaseAddr = baseAddr;
-	//lockOnUserBaseAddr = baseAddr;
+	// Camera
+	{
+		IntroduceCameraData(return);
+		cameraData.targetBaseAddr = baseAddr;
+	}
 }
 
-
-
-
-
-
-
-
-
-export void Actor_Customize()
+export void Actor_CreateMainActor(byte8 * baseAddr)
 {
-	LogFunction();
+	LogFunction(baseAddr);
 
-	auto & actorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[2]);
-	actorSpawnHelper.position = actorData.position;
-	actorSpawnHelper.rotation = actorData.rotation;
-	actorSpawnHelper.event = 0;
+	Actor_actorBaseAddr.Clear();
+	Actor_actorBaseAddr[0] = baseAddr;
+	Actor_actorBaseAddr.count = 2;
 
-	SetMainActor(Actor_actorBaseAddr[0]);
+	File_dynamicFiles.Clear();
+
+	Actor_spawnActors = true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export void Actor_MissionClear()
-{
-	LogFunction();
-
-	SetMainActor(Actor_actorBaseAddr[0]);
-}
-
-export void Actor_MissionStart()
-{
-	LogFunction();
-
-	SetMainActor(Actor_actorBaseAddr[0]);
-}
-
-export void Actor_MissionSelect()
-{
-	LogFunction();
-
-	SetMainActor(Actor_actorBaseAddr[0]);
-}
-
-
-
-
-
-
-
-
-
-
-export void Actor_Teleport()
-{
-	LogFunction();
-
-	SetMainActor(Actor_actorBaseAddr[0]);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export void Actor_Main()
 {
 	LogFunction();
 
-	IntroduceSceneData(return);
+	if (customize)
+	{
+		customize = false;
+		Log("customize");
+		return;
+	}
+
+	IntroduceEventData(return);
 	IntroduceStagePositionData(return);
 
-	Log("reach here!");
-
-	auto & pos = stagePositionData[sceneData.position];
+	auto & pos = stagePositionData[eventData.position];
 
 	auto Convert = [](float32 rotation)
 	{
@@ -1713,61 +1596,38 @@ export void Actor_Main()
 	actorSpawnHelper.position = { pos.x, pos.y, pos.z, 1 };
 	actorSpawnHelper.rotation = Convert(pos.rotation);
 	actorSpawnHelper.event = pos.event;
-
-	//Log
-	//(
-	//	"Stage Position Data "
-	//	"%.0f "
-	//	"%.0f "
-	//	"%.0f "
-	//	"%.0f "
-	//	"true %u "
-	//	"%u",
-	//	pos.x,
-	//	pos.y,
-	//	pos.z,
-	//	pos.rotation,
-	//	rotation,
-	//	pos.event
-	//);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export void Actor_CreateMainActor(byte8 * baseAddr)
+export void Actor_Customize()
 {
-	LogFunction(baseAddr);
+	LogFunction();
 
-	File_dynamicFiles.Clear();
-	Actor_actorBaseAddr.Clear();
-	
+	customize = true;
 
+	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28); // @Todo: IntroduceMainActorData.
+	if (!pool)
+	{
+		return;
+	}
+	if (!pool[3])
+	{
+		return;
+	}
+	auto & actorData = *reinterpret_cast<ActorData *>(pool[3]);
 
+	actorSpawnHelper.position = actorData.position;
+	actorSpawnHelper.rotation = actorData.rotation;
+	actorSpawnHelper.event = 0;
 
-
-	Actor_actorBaseAddr[0] = baseAddr;
-	Actor_actorBaseAddr.count = 2;
-
-	
-
-	Actor_spawnActors = true;
+	SetMainActor(Actor_actorBaseAddr[0]);
 }
 
+export void Actor_Delete()
+{
+	LogFunction();
 
+	SetMainActor(Actor_actorBaseAddr[0]);
+}
 
 export void Actor_MainLoopOnce()
 {
@@ -1784,6 +1644,12 @@ export void Actor_MainLoopOnce()
 export void Actor_MainLoopOnceSync()
 {
 	LogFunction();
+
+	if (!Actor_actorBaseAddr[2])
+	{
+		Log("Actor_actorBaseAddr[2] 0");
+		return;
+	}
 
 	SetMainActor(Actor_actorBaseAddr[2]);
 }
@@ -1867,6 +1733,8 @@ export void Actor_Init()
 		Write<byte8>((appBaseAddr + 0x27DF3E), 0xEB);
 		Write<byte16>((appBaseAddr + 0x280DB9), 0xE990);
 	}
+
+	vp_memset((appBaseAddr + 0x27A39C), 0x90, 5); // Disable Style Rank Sub
 
 
 
@@ -2050,6 +1918,36 @@ export void Actor_Init()
 
 
 #ifdef __GARBAGE__
+
+
+
+//export void Actor_MissionClear()
+//{
+//	LogFunction();
+//
+//	SetMainActor(Actor_actorBaseAddr[0]);
+//}
+//
+//export void Actor_MissionStart()
+//{
+//	LogFunction();
+//
+//	SetMainActor(Actor_actorBaseAddr[0]);
+//}
+//
+//export void Actor_MissionSelect()
+//{
+//	LogFunction();
+//
+//	SetMainActor(Actor_actorBaseAddr[0]);
+//}
+//
+//export void Actor_Teleport()
+//{
+//	LogFunction();
+//
+//	SetMainActor(Actor_actorBaseAddr[0]);
+//}
 
 
 

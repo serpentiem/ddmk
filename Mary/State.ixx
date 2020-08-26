@@ -27,8 +27,8 @@ export inline bool InGame()
 	{
 		return false;
 	}
-	IntroduceSceneData(return false);
-	if (sceneData.scene != SCENE_MAIN)
+	IntroduceEventData(return false);
+	if (eventData.event != EVENT_MAIN)
 	{
 		return false;
 	}

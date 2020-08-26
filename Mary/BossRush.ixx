@@ -25,17 +25,17 @@ export void BossRush_SetRoom()
 	LogFunction();
 
 	IntroduceSessionData();
-	IntroduceSceneData(return);
-	IntroduceNextSceneData(return);
+	IntroduceEventData(return);
+	IntroduceNextEventData(return);
 	IntroduceEventFlags(return);
 	
 	auto SetNextEventData = [&](uint8 boss)
 	{
-		nextSceneData.room     = bossHelper[boss].room;
-		nextSceneData.position = bossHelper[boss].position;
+		nextEventData.room     = bossHelper[boss].room;
+		nextEventData.position = bossHelper[boss].position;
 	};
 
-	if (nextSceneData.room == missionStartHelper[sessionData.mission].room)
+	if (nextEventData.room == missionStartHelper[sessionData.mission].room)
 	{
 		switch (sessionData.mission)
 		{
@@ -174,21 +174,21 @@ export void BossRush_SetNextRoom()
 	LogFunction();
 
 	IntroduceSessionData();
-	IntroduceSceneData(return);
-	IntroduceNextSceneData(return);
+	IntroduceEventData(return);
+	IntroduceNextEventData(return);
 	IntroduceEventFlags(return);
 
 	auto SetNextEventData = [&](uint8 boss)
 	{
-		nextSceneData.room     = bossHelper[boss].room;
-		nextSceneData.position = bossHelper[boss].position;
+		nextEventData.room     = bossHelper[boss].room;
+		nextEventData.position = bossHelper[boss].position;
 	};
 
 	switch (sessionData.mission)
 	{
 	case 5:
 	{
-		if (sceneData.room == bossHelper[BOSS_JESTER_1].room)
+		if (eventData.room == bossHelper[BOSS_JESTER_1].room)
 		{
 			SetNextEventData(BOSS_AGNI_RUDRA);
 			eventFlags[20] = 1;
@@ -197,7 +197,7 @@ export void BossRush_SetNextRoom()
 	}
 	case 12:
 	{
-		if (sceneData.room == bossHelper[BOSS_JESTER_2].room)
+		if (eventData.room == bossHelper[BOSS_JESTER_2].room)
 		{
 			if (!Config.BossRush.Mission12.skipGeryonPart1)
 			{
@@ -214,7 +214,7 @@ export void BossRush_SetNextRoom()
 	}
 	case 17:
 	{
-		if (sceneData.room == bossHelper[BOSS_JESTER_3].room)
+		if (eventData.room == bossHelper[BOSS_JESTER_3].room)
 		{
 			SetNextEventData(BOSS_DOPPELGANGER);
 		}
@@ -222,7 +222,7 @@ export void BossRush_SetNextRoom()
 	}
 	case 18:
 	{
-		switch (static_cast<uint16>(sceneData.room))
+		switch (static_cast<uint16>(eventData.room))
 		{
 		case bossHelper[BOSS_TAIZAI_REBORN].room:
 		{
@@ -266,8 +266,8 @@ export void BossRush_SetNextRoom()
 		}
 		case bossHelper[BOSS_DOPPELGANGER_REBORN].room:
 		{
-			nextSceneData.room     = 403;
-			nextSceneData.position = 2;
+			nextEventData.room     = 403;
+			nextEventData.position = 2;
 			eventFlags[14] = 0x3FE;
 			eventFlags[15] = 0x1FF;
 			break;
@@ -288,12 +288,12 @@ export void BossRush_SetContinueRoom()
 	LogFunction();
 
 	IntroduceSessionData();
-	IntroduceSceneData(return);
-	IntroduceNextSceneData(return);
+	IntroduceEventData(return);
+	IntroduceNextEventData(return);
 	IntroduceEventFlags(return);
 
-	nextSceneData.room     = static_cast<uint16>(sceneData.room    );
-	nextSceneData.position = static_cast<uint16>(sceneData.position);
+	nextEventData.room     = static_cast<uint16>(eventData.room    );
+	nextEventData.position = static_cast<uint16>(eventData.position);
 }
 
 export bool BossRush_SetTrack(const char * filename)
@@ -306,8 +306,8 @@ export bool BossRush_SetTrack(const char * filename)
 	LogFunction();
 
 	IntroduceSessionData();
-	IntroduceSceneData(return true);
-	IntroduceNextSceneData(return true);
+	IntroduceEventData(return true);
+	IntroduceNextEventData(return true);
 	IntroduceEventFlags(return true);
 
 	if
@@ -322,7 +322,7 @@ export bool BossRush_SetTrack(const char * filename)
 	if
 	(
 		(sessionData.mission == 5) &&
-		(sceneData.room == bossHelper[BOSS_AGNI_RUDRA].room) &&
+		(eventData.room == bossHelper[BOSS_AGNI_RUDRA].room) &&
 		(strcmp(filename, bossHelper[BOSS_JESTER_1].track) == 0)
 	)
 	{
@@ -342,8 +342,8 @@ export void BossRush_Main()
 	LogFunction();
 
 	IntroduceSessionData();
-	IntroduceSceneData(return);
-	IntroduceNextSceneData(return);
+	IntroduceEventData(return);
+	IntroduceNextEventData(return);
 	IntroduceEventFlags(return);
 
 	auto PlayTrack = [](const char * filename)
@@ -356,7 +356,7 @@ export void BossRush_Main()
 	{
 	case 3:
 	{
-		if ((sceneData.room == bossHelper[BOSS_CERBERUS].room) && (eventFlags[20] == 1))
+		if ((eventData.room == bossHelper[BOSS_CERBERUS].room) && (eventFlags[20] == 1))
 		{
 			PlayTrack(bossHelper[BOSS_CERBERUS].track);
 		}
@@ -364,7 +364,7 @@ export void BossRush_Main()
 	}
 	case 5:
 	{
-		if ((sceneData.room == bossHelper[BOSS_AGNI_RUDRA].room) && (eventFlags[20] == 1))
+		if ((eventData.room == bossHelper[BOSS_AGNI_RUDRA].room) && (eventFlags[20] == 1))
 		{
 			PlayTrack(bossHelper[BOSS_AGNI_RUDRA].track);
 		}
@@ -372,7 +372,7 @@ export void BossRush_Main()
 	}
 	case 7:
 	{
-		if (sceneData.room == bossHelper[BOSS_VERGIL_1].room)
+		if (eventData.room == bossHelper[BOSS_VERGIL_1].room)
 		{
 			PlayTrack(bossHelper[BOSS_VERGIL_1].track);
 		}
@@ -380,7 +380,7 @@ export void BossRush_Main()
 	}
 	case 9:
 	{
-		if ((sceneData.room == bossHelper[BOSS_NEVAN].room) && (eventFlags[20] == 1))
+		if ((eventData.room == bossHelper[BOSS_NEVAN].room) && (eventFlags[20] == 1))
 		{
 			PlayTrack(bossHelper[BOSS_NEVAN].track);
 		}
@@ -388,7 +388,7 @@ export void BossRush_Main()
 	}
 	case 11:
 	{
-		if ((sceneData.room == bossHelper[BOSS_BEOWULF].room) && (eventFlags[20] == 1))
+		if ((eventData.room == bossHelper[BOSS_BEOWULF].room) && (eventFlags[20] == 1))
 		{
 			PlayTrack(bossHelper[BOSS_BEOWULF].track);
 		}
@@ -396,11 +396,11 @@ export void BossRush_Main()
 	}
 	case 12:
 	{
-		if ((sceneData.room == bossHelper[BOSS_GERYON_PART_1].room) && (eventFlags[20] == 1))
+		if ((eventData.room == bossHelper[BOSS_GERYON_PART_1].room) && (eventFlags[20] == 1))
 		{
 			PlayTrack(bossHelper[BOSS_GERYON_PART_1].track);
 		}
-		else if ((sceneData.room == bossHelper[BOSS_GERYON_PART_2].room) && (eventFlags[20] == 2))
+		else if ((eventData.room == bossHelper[BOSS_GERYON_PART_2].room) && (eventFlags[20] == 2))
 		{
 			PlayTrack(bossHelper[BOSS_GERYON_PART_2].track);
 		}
@@ -408,7 +408,7 @@ export void BossRush_Main()
 	}
 	case 13:
 	{
-		if (sceneData.room == bossHelper[BOSS_VERGIL_2].room)
+		if (eventData.room == bossHelper[BOSS_VERGIL_2].room)
 		{
 			PlayTrack(bossHelper[BOSS_VERGIL_2].track);
 		}
@@ -416,7 +416,7 @@ export void BossRush_Main()
 	}
 	case 16:
 	{
-		if (sceneData.room == bossHelper[BOSS_LADY].room)
+		if (eventData.room == bossHelper[BOSS_LADY].room)
 		{
 			PlayTrack(bossHelper[BOSS_LADY].track);
 		}
@@ -424,7 +424,7 @@ export void BossRush_Main()
 	}
 	case 17:
 	{
-		if ((sceneData.room == bossHelper[BOSS_DOPPELGANGER].room) && (eventFlags[20] == 0))
+		if ((eventData.room == bossHelper[BOSS_DOPPELGANGER].room) && (eventFlags[20] == 0))
 		{
 			PlayTrack(bossHelper[BOSS_DOPPELGANGER].track);
 		}
@@ -432,11 +432,11 @@ export void BossRush_Main()
 	}
 	case 19:
 	{
-		if ((sceneData.room == bossHelper[BOSS_ARKHAM_PART_1].room) && (eventFlags[20] == 0))
+		if ((eventData.room == bossHelper[BOSS_ARKHAM_PART_1].room) && (eventFlags[20] == 0))
 		{
 			PlayTrack(bossHelper[BOSS_ARKHAM_PART_1].track);
 		}
-		else if ((sceneData.room == bossHelper[BOSS_ARKHAM_PART_2].room) && (eventFlags[20] == 1))
+		else if ((eventData.room == bossHelper[BOSS_ARKHAM_PART_2].room) && (eventFlags[20] == 1))
 		{
 			PlayTrack(bossHelper[BOSS_ARKHAM_PART_2].track);
 		}

@@ -687,26 +687,73 @@ constexpr CacheFileHelper cacheFileHelper[MAX_CACHE_FILE] =
 
 
 
+
+
+
+
 enum SCENE
 {
-	SCENE_MAIN      = 1,
-	SCENE_TELEPORT  = 2,
-	SCENE_PAUSE     = 3,
-	SCENE_STATUS    = 4,
-	SCENE_OPTIONS   = 5,
-	SCENE_CONTINUE  = 6,
-	SCENE_CUSTOMIZE = 9,
-	SCENE_SAVE      = 10,
-	SCENE_SUB       = 11,
+	SCENE_BOOT,
+	SCENE_INTRO,
+	SCENE_MAIN_MENU,
+	SCENE_MISSION_SELECT,
+	SCENE_LOAD,
+	SCENE_MAIN,
+	SCENE_CUTSCENE,
+	SCENE_MISSION_START,
+	SCENE_MISSION_RESULT,
+	SCENE_GAME_OVER,
+	MAX_SCENE,
 };
 
-enum SUBSCENE
+enum EVENT
 {
-	SUBSCENE_MISSION_CLEAR  = 5,
-	SUBSCENE_GAME_OVER      = 6,
-	SUBSCENE_MISSION_START  = 7,
-	SUBSCENE_MISSION_SELECT = 8,
+	EVENT_INIT,
+	EVENT_MAIN,
+	EVENT_TELEPORT,
+	EVENT_PAUSE,
+	EVENT_STATUS,
+	EVENT_OPTIONS,
+	EVENT_DEATH,
+	EVENT_GET_ITEM,
+	EVENT_MESSAGE,
+	EVENT_CUSTOMIZE,
+	EVENT_SAVE,
+	EVENT_DELETE,
+	EVENT_END,
+	MAX_EVENT,
 };
+
+enum SUBEVENT
+{
+	SUBEVENT_MISSION_START  = 7,
+	SUBEVENT_MISSION_SELECT = 8,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 enum GAMEPAD
 {
@@ -890,24 +937,24 @@ static_assert(offsetof(SESSION_DATA, expertise) == 0x110);
 
 // $SessionDataEnd
 
-struct SCENE_DATA
+struct EventData
 {
 	_(24);
 	uint32 room;
 	uint32 position;
-	uint32 scene;
+	uint32 event;
 	_(8);
-	uint32 subscene;
+	uint32 subevent;
 };
 
-struct NEXT_SCENE_DATA
+struct NextEventData
 {
 	_(356);
 	uint16 room;
 	uint16 position;
 };
 
-struct STAGE_POSITION_DATA
+struct StagePositionData
 {
 	uint8 event;
 	_(3);
@@ -925,18 +972,21 @@ struct STAGE_POSITION_DATA
 
 
 
-// #define _IntroduceHUDPointers(name, ...)\
-// auto name = GetMasterPointer();\
-// if (!name)\
-// {\
-// 	__VA_ARGS__;\
-// }\
-// auto hudTop    = *reinterpret_cast<byte8 **>(name + 0x1B070);\
-// auto hudBottom = *reinterpret_cast<byte8 **>(name + 0x1B078)
-// #define IntroduceHUDPointers(...) _IntroduceHUDPointers(Prep_Merge(dest_, __LINE__), __VA_ARGS__)
 
 
 
+#define _IntroduceCameraData(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC8FBD0);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+if (!name[147])\
+{\
+	__VA_ARGS__;\
+}\
+auto & cameraData = *reinterpret_cast<CAMERA_DATA *>(name[147])
+#define IntroduceCameraData(...) _IntroduceCameraData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
 
 #define _IntroduceHUDPointers(name, ...)\
 auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E28);\
@@ -1008,7 +1058,7 @@ auto missionActorData_16C = reinterpret_cast<byte8 *>(name + 0x16C)
 
 #define IntroduceSessionData() auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250)
 
-#define _IntroduceSceneData(name, ...)\
+#define _IntroduceEventData(name, ...)\
 auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
 if (!name)\
 {\
@@ -1018,10 +1068,10 @@ if (!name[8])\
 {\
 	__VA_ARGS__;\
 }\
-auto & sceneData = *reinterpret_cast<SCENE_DATA *>(name[8])
-#define IntroduceSceneData(...) _IntroduceSceneData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+auto & eventData = *reinterpret_cast<EventData *>(name[8])
+#define IntroduceEventData(...) _IntroduceEventData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
 
-#define _IntroduceNextSceneData(name, ...)\
+#define _IntroduceNextEventData(name, ...)\
 auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
 if (!name)\
 {\
@@ -1031,8 +1081,8 @@ if (!name[12])\
 {\
 	__VA_ARGS__;\
 }\
-auto & nextSceneData = *reinterpret_cast<NEXT_SCENE_DATA *>(name[12])
-#define IntroduceNextSceneData(...) _IntroduceNextSceneData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+auto & nextEventData = *reinterpret_cast<NextEventData *>(name[12])
+#define IntroduceNextEventData(...) _IntroduceNextEventData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
 
 #define _IntroduceEventFlags(name, ...)\
 auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E30);\
@@ -1057,7 +1107,7 @@ if (!name[8])\
 {\
 	__VA_ARGS__;\
 }\
-auto stagePositionData = *reinterpret_cast<STAGE_POSITION_DATA **>(name[8] + 0x2CB0);\
+auto stagePositionData = *reinterpret_cast<StagePositionData **>(name[8] + 0x2CB0);\
 if (!stagePositionData)\
 {\
 	__VA_ARGS__;\
