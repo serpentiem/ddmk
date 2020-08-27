@@ -300,6 +300,18 @@ export struct CONFIG
 	Actor;
 	struct
 	{
+		float32 jetStreamDuration[2] = {};
+		float32 jetStreamRange   [2] = {};
+	}
+	AgniRudra;
+	struct
+	{
+		bool coreAbility = false;
+		uint8 count[2] = { 1, 1 };
+	}
+	AirHike;
+	struct
+	{
 		bool    enable         = true;
 		uint32  mission        = 17;
 		uint32  mode           = MODE_NORMAL;
@@ -325,6 +337,26 @@ export struct CONFIG
 		};
 	}
 	Arcade;
+	struct
+	{
+		bool swapNormalShotAndMultiLock = false;
+		bool instantFullCharge          = false;
+	}
+	Artemis;
+	struct
+	{
+		bool hide = false;
+		float32 straightDuration   [2] = { 7   , 7    };
+		float32 straightRange      [2] = { 350 , 350  };
+		float32 airStraightDuration[2] = { 7   , 7    };
+		float32 airStraightRange   [2] = { 350 , 350  };
+	}
+	BeowulfDante;
+	struct
+	{
+		bool hide = false;
+	}
+	BeowulfVergil;
 	struct
 	{
 		bool enable = false;
@@ -364,32 +396,32 @@ export struct CONFIG
 	Camera;
 	struct
 	{
+		float32 airHike[5][4] =
+		{
+			{ 128,   0,   0, 200 },
+			{  96, 128, 144, 200 },
+			{ 160,  64,  16, 200 },
+			{ 112,  64, 160, 200 },
+			{ 128, 128, 128, 200 },
+		};
 		struct
 		{
-			float32 airHike[5][4] =
-			{
-				{ 128,   0,   0, 200 },
-				{  96, 128, 144, 200 },
-				{ 160,  64,  16, 200 },
-				{ 112,  64, 160, 200 },
-				{ 128, 128, 128, 200 },
-			};
-			struct
-			{
-				float32 skyStar[4] = { 255, 0, 0, 200 };
-			}
-			Trickster;
-			struct
-			{
-				float32 ultimate[4] = { 143, 112, 48, 200 };
-			}
-			Royalguard;
-			struct
-			{
-				float32 clone[4] = { 16, 16, 16, 48 };
-			}
-			Doppelganger;
-			float32 aura[5][4] =
+			float32 skyStar[4] = { 255, 0, 0, 200 };
+		}
+		Trickster;
+		struct
+		{
+			float32 ultimate[4] = { 143, 112, 48, 200 };
+		}
+		Royalguard;
+		struct
+		{
+			float32 clone[4] = { 16, 16, 16, 48 };
+		}
+		Doppelganger;
+		struct
+		{
+			float32 dante[5][4] =
 			{
 				{ 128,   0,   0, 200 },
 				{  96, 128, 144, 200 },
@@ -398,11 +430,7 @@ export struct CONFIG
 				{ 128, 128, 128, 200 },
 			};
 			float32 sparda[4] = { 128, 0, 0, 200 };
-		}
-		Dante;
-		struct
-		{
-			float32 aura[3][4] =
+			float32 vergil[3][4] =
 			{
 				{ 32, 64, 128, 200 },
 				{ 32, 64, 128, 200 },
@@ -410,91 +438,28 @@ export struct CONFIG
 			};
 			float32 neroAngelo[4] = { 64, 0, 255, 200 };
 		}
-		Vergil;
+		Aura;
 	}
 	Color;
+	uint8 crazyComboLevelMultiplier = 6;
 	struct
 	{
-		bool enable = false;
-		struct
-		{
-			bool coreAbility = false;
-			uint8 count[2] = { 1, 1 };
-		}
-		AirHike;
-		struct
-		{
-			uint8 dashCount    [2] = { 3, 3 };
-			uint8 skyStarCount [2] = { 1, 1 };
-			uint8 airTrickCount[2] = { 1, 1 };
-		}
-		Trickster;
-		struct
-		{
-			bool noColor = false;
-		}
-		Doppelganger;
-		struct
-		{
-			bool infiniteSwordPierce = false;
-			float32 stingerDuration   [2] = { 16 , 16  };
-			float32 stingerRange      [2] = { 560, 560 };
-			float32 airStingerDuration[2] = { 16 , 16  };
-			float32 airStingerRange   [2] = { 560, 560 };
-		}
-		Rebellion;
-		struct
-		{
-			float32 revolverHeight[2] = { 6.5, 6.5 };
-		}
-		Cerberus;
-		struct
-		{
-			float32 jetStreamDuration[2] = {};
-			float32 jetStreamRange   [2] = {};
-		}
-		AgniAndRudra;
-		struct
-		{
-			float32 reverbShockDuration[2] = { 12 , 12  };
-			float32 reverbShockRange   [2] = { 300, 300 };
-		}
-		Nevan;
-		struct
-		{
-			bool hide = false;
-			float32 straightDuration   [2] = { 7   , 7    };
-			float32 straightRange      [2] = { 350 , 350  };
-			float32 airStraightDuration[2] = { 7   , 7    };
-			float32 airStraightRange   [2] = { 350 , 350  };
-			float32 risingDragonHeight [2] = { 37.5, 37.5 };
-		}
-		Beowulf;
-		struct
-		{
-			bool foursomeTime      = false;
-			bool infiniteRainStorm = false;
-		}
-		EbonyIvory;
-		struct
-		{
-			float32 gunStingerDuration   [2] = { 8  , 8   };
-			float32 gunStingerRange      [2] = { 200, 200 };
-			float32 airGunStingerDuration[2] = { 8  , 8   };
-			float32 airGunStingerRange   [2] = { 200, 200 };
-		}
-		Shotgun;
-		struct
-		{
-			bool swapNormalShotAndMultiLock = false;
-			bool instantFullCharge          = false;
-		}
-		Artemis;
-		float32 weaponSwitchTimeout = 1;
-		uint8 crazyComboLevelMultiplier = 6;
-		bool summonedSwords = false;
+		uint8 airTrickCount [2] = { 1, 1 };
+		uint8 trickUpCount  [2] = { 1, 1 };
+		uint8 trickDownCount[2] = { 1, 1 };
 	}
-	Dante;
+	DarkSlayer;
+	struct
+	{
+		bool noColor = false;
+	}
+	Doppelganger;
+	struct
+	{
+		bool foursomeTime      = false;
+		bool infiniteRainStorm = false;
+	}
+	EbonyIvory;
 	struct
 	{
 		bool skipIntro     = true;
@@ -508,6 +473,15 @@ export struct CONFIG
 	File;
 	struct
 	{
+		bool infiniteRoundTrip = false;
+		float32 stingerDuration   [2] = { 16 , 16  };
+		float32 stingerRange      [2] = { 560, 560 };
+		float32 airStingerDuration[2] = { 16 , 16  };
+		float32 airStingerRange   [2] = { 560, 560 };
+	}
+	ForceEdge;
+	struct
+	{
 		uint32 frameRate = 60;
 		uint8  vSync     = 0;
 	}
@@ -519,23 +493,42 @@ export struct CONFIG
 	Input;
 	struct
 	{
-		bool    noDevilForm = false;
-		float32 orbReach    = 300;
-		struct
-		{
-			float32 devil        = 11;
-			float32 quicksilver  = 16.5f;
-			float32 doppelganger = 16.5f;
-		}
-		MagicPointsDepletionRate;
+		float32 quicksilver  = 16.5f;
+		float32 doppelganger = 16.5f;
+		float32 devil        = 11;
 	}
-	Other;
+	MagicPointsDepletionRate;
+	struct
+	{
+		float32 reverbShockDuration[2] = { 12 , 12  };
+		float32 reverbShockRange   [2] = { 300, 300 };
+	}
+	Nevan;
+	bool noDevilForm = false;
+	float32 orbReach = 300;
+	struct
+	{
+		bool infiniteSwordPierce = false;
+		float32 stingerDuration   [2] = { 16 , 16  };
+		float32 stingerRange      [2] = { 560, 560 };
+		float32 airStingerDuration[2] = { 16 , 16  };
+		float32 airStingerRange   [2] = { 560, 560 };
+	}
+	Rebellion;
 	struct
 	{
 		bool   enable = false;
 		byte16 button = GAMEPAD_UP;
 	}
 	ResetMotionState;
+	struct
+	{
+		float32 gunStingerDuration   [2] = { 8  , 8   };
+		float32 gunStingerRange      [2] = { 200, 200 };
+		float32 airGunStingerDuration[2] = { 8  , 8   };
+		float32 airGunStingerRange   [2] = { 200, 200 };
+	}
+	Shotgun;
 	struct
 	{
 		bool enable = false;
@@ -547,6 +540,12 @@ export struct CONFIG
 			float32 enemy = 1;
 		}
 		Main;
+		struct
+		{
+			float32 actor = 1.05f;
+			float32 enemy = 0.33f;
+		}
+		Quicksilver;
 		struct
 		{
 			float32 dante[6] =
@@ -572,14 +571,14 @@ export struct CONFIG
 			};
 		}
 		Devil;
-		struct
-		{
-			float32 actor = 1.05f;
-			float32 enemy = 0.33f;
-		}
-		Quicksilver;
 	}
 	Speed;
+	struct
+	{
+		bool chronoSwords = false;
+		bool dante        = false;
+	}
+	SummonedSwords;
 	struct
 	{
 		bool enable              = false;
@@ -590,49 +589,25 @@ export struct CONFIG
 	Training;
 	struct
 	{
-		bool enable = false;
-		struct
-		{
-			uint8 airTrickCount [2] = { 1, 1 };
-			uint8 trickUpCount  [2] = { 1, 1 };
-			uint8 trickDownCount[2] = { 1, 1 };
-		}
-		DarkSlayer;
-		struct
-		{
-			float32 rapidSlashDuration[2] = { 5  , 5   };
-			float32 rapidSlashRange   [2] = { 330, 330 };
-			float32 judgementCutCount [2] = { 2  , 2   };
-			float32 judgementCutRange [2] = { 500, 500 };
-		}
-		Yamato;
-		struct
-		{
-			bool hide = false;
-			float32 risingSunHeight[2] = { 504, 504 };
-		}
-		Beowulf;
-		struct
-		{
-			bool infiniteRoundTrip = false;
-			float32 stingerDuration   [2] = { 16 , 16  };
-			float32 stingerRange      [2] = { 560, 560 };
-			float32 airStingerDuration[2] = { 16 , 16  };
-			float32 airStingerRange   [2] = { 560, 560 };
-		}
-		ForceEdge;
-		struct
-		{
-			bool chronoSwords = false;
-		}
-		SummonedSwords;
+		uint8 dashCount    [2] = { 3, 3 };
+		uint8 skyStarCount [2] = { 1, 1 };
+		uint8 airTrickCount[2] = { 1, 1 };
 	}
-	Vergil;
+	Trickster;
+	float32 weaponSwitchTimeout = 1;
 	struct
 	{
 		bool forceFocus = true;
 	}
 	Window;
+	struct
+	{
+		float32 rapidSlashDuration[2] = { 5  , 5   };
+		float32 rapidSlashRange   [2] = { 330, 330 };
+		float32 judgementCutCount [2] = { 2  , 2   };
+		float32 judgementCutRange [2] = { 500, 500 };
+	}
+	Yamato;
 };
 #pragma pack(pop)
 

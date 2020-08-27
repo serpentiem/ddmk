@@ -12,6 +12,7 @@ import ModuleName(Arcade);
 import ModuleName(BossRush);
 import ModuleName(File);
 import ModuleName(Mobility);
+import ModuleName(Model);
 
 #ifdef __INTELLISENSE__
 #include "Actor.ixx"
@@ -19,6 +20,7 @@ import ModuleName(Mobility);
 #include "BossRush.ixx"
 #include "File.ixx"
 #include "Mobility.ixx"
+#include "Model.ixx"
 #endif
 
 constexpr bool debug = true;
@@ -293,7 +295,25 @@ void MainLoop()
 
 void ActorLoop(byte8 * baseAddr)
 {
-	return;
+
+
+
+	if (!baseAddr)
+	{
+		return;
+	}
+
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+
+	UpdateModelPartitions(actorData);
+
+
+
+
+
+
+
+
 }
 
 void SkyStarReset(byte8 * baseAddr)

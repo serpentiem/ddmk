@@ -41,6 +41,133 @@ struct GetCharacterId
 
 
 
+template <typename T>
+bool IsWeaponActive2
+(
+	T & actorData,
+	uint8 weapon
+)
+{
+	auto & motionData = actorData.motionData[UPPER_BODY];
+	if (weapon == WEAPON_VOID)
+	{
+		return false;
+	}
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+		if (motionData.group == (MOTION_GROUP_DANTE_REBELLION + weapon))
+		{
+			return true;
+		}
+		if (motionData.group == (MOTION_GROUP_DANTE_SWORDMASTER_REBELLION + weapon))
+		{
+			return true;
+		}
+	}
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+	{
+		if (motionData.group == (MOTION_GROUP_VERGIL_YAMATO + (weapon - WEAPON_VERGIL_YAMATO)))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+template <typename T>
+bool IsWeaponActive2(T & actorData)
+{
+	auto & motionData = actorData.motionData[UPPER_BODY];
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+		if ((motionData.group >= MOTION_GROUP_DANTE_REBELLION) && (motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN))
+		{
+			return true;
+		}
+	}
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+	{
+		if ((motionData.group >= MOTION_GROUP_VERGIL_YAMATO) && (motionData.group <= MOTION_GROUP_VERGIL_FORCE_EDGE))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+
+
+
+
+
+
+
+template <uint8 weaponType>
+bool IsWeaponReady(WeaponData & weaponData)
+{
+	if (!weaponData.actorBaseAddr)
+	{
+		return true;
+	}
+	auto & actorData = *reinterpret_cast<ActorDataDante *>(weaponData.actorBaseAddr);
+
+	if (actorData.character != CHAR_DANTE)
+	{
+		return true;
+	}
+
+
+	if ((weaponData.weapon == WEAPON_DANTE_BEOWULF) && Config.BeowulfDante.hide)
+	{
+		return false;
+	}
+
+
+
+
+	if (IsWeaponActive2(actorData, weaponData.weapon))
+	{
+		return true;
+	}
+
+	for_all(uint8, index, 5)
+	{
+		uint8 weapon =
+			(weaponType == WEAPON_TYPE_MELEE ) ? (WEAPON_DANTE_REBELLION   + index) :
+			(weaponType == WEAPON_TYPE_RANGED) ? (WEAPON_DANTE_EBONY_IVORY + index) :
+			0;
+		if (weaponData.weapon == weapon)
+		{
+			continue;
+		}
+		if (IsWeaponActive2(actorData, weapon))
+		{
+			return false;
+		}
+	}
+
+	if constexpr (weaponType == WEAPON_TYPE_MELEE)
+	{
+		if (actorData.meleeWeaponIndex == weaponData.weapon)
+		{
+			return true;
+		}
+	}
+	else if constexpr (weaponType == WEAPON_TYPE_RANGED)
+	{
+		if (actorData.rangedWeaponIndex == weaponData.weapon)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+
 inline void RegisterModel
 (
 	ModelData & modelData,
@@ -169,56 +296,79 @@ export void ResetModel(ModelData & modelData)
 }
 
 // @Todo: Update vars.
+
+
+
+
 export template <typename T>
 void UpdateModelPartitions(T & actorData)
 {
-	return;
-
-	LogFunction();
+	//LogFunction();
 
 	IntroduceSessionData();
 
 	auto modelPartitionData = actorData.newModelData[0].modelPartitionData;
 
-	if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY))
+	uint8 character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : static_cast<uint8>(actorData.character);
+	if (character >= MAX_CHAR)
 	{
-		if (actorData.costume == COSTUME_LADY_DEFAULT)
-		{
-			modelPartitionData[0].value = 3; // Body
-			modelPartitionData[1].value = 3; // Face
-			modelPartitionData[2].value = 3; // Hands
-			modelPartitionData[3].value = 3; // Accessories
-			modelPartitionData[4].value = (sessionData.mission >= 14) ? 3 : 2; // Bandage
-		}
-		else
-		{
-			modelPartitionData[0].value = 3; // Body
-			modelPartitionData[1].value = 3; // Face
-			modelPartitionData[2].value = 3; // Hands
-			modelPartitionData[3].value = 3; // Accessories
-			modelPartitionData[4].value = 2; // Millenium Puzzle
-			modelPartitionData[5].value = 3; // Feet
-			modelPartitionData[6].value = 3; // Belt
-			modelPartitionData[7].value = 3; // Zippers
-		}
-		return;
+		character = 0;
 	}
+	uint8 costume = actorData.costume;
 
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	switch (character)
 	{
-		auto & meleeWeapon = actorData.weapons[actorData.meleeWeaponIndex];
+	case CHAR_DANTE:
+	{
+		if (costume >= MAX_COSTUME_DANTE)
+		{
+			costume = 0;
+		}
 
-		switch (actorData.costume)
+		auto & actorData2 = *reinterpret_cast<ActorDataDante *>(&actorData);
+
+
+		auto & meleeWeapon = actorData2.newWeapons[actorData2.meleeWeaponIndex];
+
+		switch (costume)
 		{
 		case COSTUME_DANTE_DEFAULT:
 		{
 			modelPartitionData[0 ].value = 3; // Hands
 			modelPartitionData[1 ].value = 2; // Fists
 			modelPartitionData[2 ].value = 3; // Shoulders
-			modelPartitionData[3 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms
-			modelPartitionData[4 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Arms Half
-			modelPartitionData[5 ].value = (meleeWeapon == WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs Half
-			modelPartitionData[6 ].value = (meleeWeapon != WEAPON_DANTE_BEOWULF) ? 3 : 2; // Lower Legs and Feet
+
+
+			
+			auto dest = actorData2.newWeaponData[WEAPON_DANTE_BEOWULF];
+			if (dest)
+			{
+				auto & beowulfWeaponData = *reinterpret_cast<WeaponData *>(dest);
+
+
+				if (IsWeaponReady<WEAPON_TYPE_MELEE>(beowulfWeaponData))
+				{
+					modelPartitionData[3 ].value = 2; // Lower Arms
+					modelPartitionData[4 ].value = 3; // Lower Arms Half
+					modelPartitionData[5 ].value = 3; // Lower Legs Half
+					modelPartitionData[6 ].value = 2; // Lower Legs and Feet
+				}
+				else
+				{
+					modelPartitionData[3 ].value = 3; // Lower Arms
+					modelPartitionData[4 ].value = 2; // Lower Arms Half
+					modelPartitionData[5 ].value = 2; // Lower Legs Half
+					modelPartitionData[6 ].value = 3; // Lower Legs and Feet
+				}
+			}
+
+
+
+
+
+
+
+
 			modelPartitionData[7 ].value = 3; // Upper Legs
 			modelPartitionData[8 ].value = 3; // Accessories
 			modelPartitionData[9 ].value = 3; // Upper Body
@@ -333,7 +483,79 @@ void UpdateModelPartitions(T & actorData)
 			break;
 		}
 		}
+
+
+		break;
 	}
+	case CHAR_BOB:
+	{
+		if (costume >= MAX_COSTUME_BOB)
+		{
+			costume = 0;
+		}
+		break;
+	}
+	case CHAR_LADY:
+	{
+		if (costume >= MAX_COSTUME_LADY)
+		{
+			costume = 0;
+		}
+
+		// @Research: Prefer switch.
+
+		if (costume == COSTUME_LADY_DEFAULT)
+		{
+			modelPartitionData[0].value = 3; // Body
+			modelPartitionData[1].value = 3; // Face
+			modelPartitionData[2].value = 3; // Hands
+			modelPartitionData[3].value = 3; // Accessories
+			modelPartitionData[4].value = (sessionData.mission >= 14) ? 3 : 2; // Bandage
+		}
+		else
+		{
+			modelPartitionData[0].value = 3; // Body
+			modelPartitionData[1].value = 3; // Face
+			modelPartitionData[2].value = 3; // Hands
+			modelPartitionData[3].value = 3; // Accessories
+			modelPartitionData[4].value = 2; // Millenium Puzzle
+			modelPartitionData[5].value = 3; // Feet
+			modelPartitionData[6].value = 3; // Belt
+			modelPartitionData[7].value = 3; // Zippers
+		}
+
+		break;
+	}
+	case CHAR_VERGIL:
+	{
+		if (costume >= MAX_COSTUME_VERGIL)
+		{
+			costume = 0;
+		}
+		break;
+	}
+	}
+
+
+
+
+
+
+
+
+
+
+
+	//if (actorData.newForceFiles && (actorData.newForceFilesCharacter == CHAR_LADY))
+	//{
+
+	//	return;
+	//}
+
+	//if constexpr (TypeMatch<T, ActorDataDante>::value)
+	//{
+
+	//}
 }
 
 export template <typename T>
@@ -1824,7 +2046,7 @@ void ToggleModelRelocations(bool enable)
 	// 0x1AC0
 	{
 		constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][0]);
-		constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[3][0]); // -> [6]
+		constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[6][0]); // -> [6]
 		static_assert(off == 0x1AC0);
 		// func_1EF040
 		Write<uint32>((appBaseAddr + 0x1EF0A9 + 3), (enable) ? newOff : off); // dmc3.exe+1EF0A9 - 49 8D AD C01A0000 - LEA RBP,[R13+00001AC0]

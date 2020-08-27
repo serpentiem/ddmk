@@ -17,7 +17,7 @@ export void Color_UpdateConfig(CONFIG & config)
 
 	constexpr uint8 count = (sizeof(CONFIG::Color) / 4);
 
-	auto vars = reinterpret_cast<float32 *>(config.Color.Dante.airHike);
+	auto vars = reinterpret_cast<float32 *>(config.Color.airHike);
 
 	for_all(uint8, index, count)
 	{

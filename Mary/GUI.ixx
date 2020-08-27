@@ -763,33 +763,38 @@ void Cosmetics()
 		GUI_Button("Reset");
 		GUI_SectionEnd();
 
-		GUI_SectionStart("Color Dante");
-		GUI_ColorPalette("Air Hike", Config.Color.Dante.airHike);
+		GUI_SectionStart("Color");
+		GUI_ColorPalette("Air Hike", Config.Color.airHike);
 		ImGui::Text("");
 		ImGui::Text("Trickster");
-		GUI_Color("Sky Star", Config.Color.Dante.Trickster.skyStar);
+		GUI_Color("Sky Star", Config.Color.Trickster.skyStar);
 		ImGui::Text("");
 		ImGui::Text("Royalguard");
-		GUI_Color("Ultimate", Config.Color.Dante.Royalguard.ultimate);
+		GUI_Color("Ultimate", Config.Color.Royalguard.ultimate);
 		ImGui::Text("");
 		ImGui::Text("Doppelganger");
-		GUI_Color("Clone", Config.Color.Dante.Doppelganger.clone);
+		GUI_Color("Clone", Config.Color.Doppelganger.clone);
 		ImGui::Text("");
-		GUI_ColorPalette("Aura", Config.Color.Dante.aura);
-		GUI_Color("Sparda", Config.Color.Dante.sparda);
-		ImGui::Text("");
-		GUI_Button("Reset");
-		GUI_SectionEnd();
-
-		GUI_SectionStart("Color Vergil");
-		GUI_ColorPalette("Aura", Config.Color.Vergil.aura);
-		GUI_Color("Nero Angelo", Config.Color.Vergil.neroAngelo);
-		ImGui::Text("");
-		GUI_Button("Reset");
+		ImGui::Text("Aura");
+		GUI_ColorPalette("Dante", Config.Color.Aura.dante);
+		GUI_Color("Sparda", Config.Color.Aura.sparda);
+		GUI_ColorPalette("Vergil", Config.Color.Aura.vergil);
+		GUI_Color("Nero Angelo", Config.Color.Aura.neroAngelo);
+		//ImGui::Text("");
+		//GUI_Button("Reset");
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Other");
-		GUI_Checkbox("No Devil Form", Config.Other.noDevilForm);
+		GUI_Checkbox("No Devil Form", Config.noDevilForm);
+
+		GUI_Checkbox("Hide Beowulf Dante", Config.BeowulfDante.hide);
+		GUI_Checkbox("Hide Beowulf Vergil", Config.BeowulfVergil.hide);
+
+
+
+
+
+
 		ImGui::Text("");
 	}
 }
@@ -821,82 +826,87 @@ void Dante()
 	if (ImGui::CollapsingHeader("Dante"))
 	{
 		ImGui::Text("");
-		GUI_Checkbox("Enable", Config.Dante.enable);
-		ImGui::Text("");
 		if (GUI_Button("Reset"))
 		{
-			memcpy(&Config.Dante, &DefaultConfig.Dante, sizeof(Config.Dante));
 		}
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Air Hike");
-		GUI_Checkbox("Core Ability", Config.Dante.AirHike.coreAbility);
+		GUI_Checkbox("Core Ability", Config.AirHike.coreAbility);
 		ImGui::Text("");
-		ActionData<uint8>("Count", Config.Dante.AirHike.count, DefaultConfig.Dante.AirHike.count);
+		ActionData<uint8>("Count", Config.AirHike.count, DefaultConfig.AirHike.count);
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Trickster");
-		ActionData<uint8>("Dash Count"     , Config.Dante.Trickster.dashCount    , DefaultConfig.Dante.Trickster.dashCount    );
-		ActionData<uint8>("Sky Star Count" , Config.Dante.Trickster.skyStarCount , DefaultConfig.Dante.Trickster.skyStarCount );
-		ActionData<uint8>("Air Trick Count", Config.Dante.Trickster.airTrickCount, DefaultConfig.Dante.Trickster.airTrickCount);
+		ActionData<uint8>("Dash Count"     , Config.Trickster.dashCount    , DefaultConfig.Trickster.dashCount    );
+		ActionData<uint8>("Sky Star Count" , Config.Trickster.skyStarCount , DefaultConfig.Trickster.skyStarCount );
+		ActionData<uint8>("Air Trick Count", Config.Trickster.airTrickCount, DefaultConfig.Trickster.airTrickCount);
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Rebellion");
-		GUI_Checkbox("Infinite Sword Pierce", Config.Dante.Rebellion.infiniteSwordPierce);
+		GUI_Checkbox("Infinite Sword Pierce", Config.Rebellion.infiniteSwordPierce);
 		ImGui::Text("");
-		ActionData<float32>("Stinger Duration"    , Config.Dante.Rebellion.stingerDuration   , DefaultConfig.Dante.Rebellion.stingerDuration   , 1 , "%.0f");
-		ActionData<float32>("Stinger Range"       , Config.Dante.Rebellion.stingerRange      , DefaultConfig.Dante.Rebellion.stingerRange      , 10, "%.0f");
-		ActionData<float32>("Air Stinger Duration", Config.Dante.Rebellion.airStingerDuration, DefaultConfig.Dante.Rebellion.airStingerDuration, 1 , "%.0f");
-		ActionData<float32>("Air Stinger Range"   , Config.Dante.Rebellion.airStingerRange   , DefaultConfig.Dante.Rebellion.airStingerRange   , 10, "%.0f");
+		ActionData<float32>("Stinger Duration"    , Config.Rebellion.stingerDuration   , DefaultConfig.Rebellion.stingerDuration   , 1 , "%.0f");
+		ActionData<float32>("Stinger Range"       , Config.Rebellion.stingerRange      , DefaultConfig.Rebellion.stingerRange      , 10, "%.0f");
+		ActionData<float32>("Air Stinger Duration", Config.Rebellion.airStingerDuration, DefaultConfig.Rebellion.airStingerDuration, 1 , "%.0f");
+		ActionData<float32>("Air Stinger Range"   , Config.Rebellion.airStingerRange   , DefaultConfig.Rebellion.airStingerRange   , 10, "%.0f");
 		GUI_SectionEnd();
 
-		GUI_SectionStart("Cerberus");
-		ActionData<float32>("Revolver Height", Config.Dante.Cerberus.revolverHeight, DefaultConfig.Dante.Cerberus.revolverHeight, 0.5f, "%.1f");
-		GUI_SectionEnd();
+		//GUI_SectionStart("Cerberus");
+		//ActionData<float32>("Revolver Height", Config.Cerberus.revolverHeight, DefaultConfig.Cerberus.revolverHeight, 0.5f, "%.1f");
+		//GUI_SectionEnd();
 
 		GUI_SectionStart("Agni & Rudra");
-		ActionData<float32>("Jet-Stream Duration", Config.Dante.AgniAndRudra.jetStreamDuration, DefaultConfig.Dante.AgniAndRudra.jetStreamDuration, 1 , "%.0f");
-		ActionData<float32>("Jet-Stream Range"   , Config.Dante.AgniAndRudra.jetStreamRange   , DefaultConfig.Dante.AgniAndRudra.jetStreamRange   , 10, "%.0f");
+		ActionData<float32>("Jet-Stream Duration", Config.AgniRudra.jetStreamDuration, DefaultConfig.AgniRudra.jetStreamDuration, 1 , "%.0f");
+		ActionData<float32>("Jet-Stream Range"   , Config.AgniRudra.jetStreamRange   , DefaultConfig.AgniRudra.jetStreamRange   , 10, "%.0f");
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Nevan");
-		ActionData<float32>("Reverb Shock Duration", Config.Dante.Nevan.reverbShockDuration, DefaultConfig.Dante.Nevan.reverbShockDuration, 1 , "%.0f");
-		ActionData<float32>("Reverb Shock Range"   , Config.Dante.Nevan.reverbShockRange   , DefaultConfig.Dante.Nevan.reverbShockRange   , 10, "%.0f");
+		ActionData<float32>("Reverb Shock Duration", Config.Nevan.reverbShockDuration, DefaultConfig.Nevan.reverbShockDuration, 1 , "%.0f");
+		ActionData<float32>("Reverb Shock Range"   , Config.Nevan.reverbShockRange   , DefaultConfig.Nevan.reverbShockRange   , 10, "%.0f");
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Beowulf");
-		GUI_Checkbox("Hide", Config.Dante.Beowulf.hide);
-		ImGui::Text("");
-		ActionData<float32>("Straight Duration"    , Config.Dante.Beowulf.straightDuration   , DefaultConfig.Dante.Beowulf.straightDuration   , 1 , "%.0f");
-		ActionData<float32>("Straight Range"       , Config.Dante.Beowulf.straightRange      , DefaultConfig.Dante.Beowulf.straightRange      , 10, "%.0f");
-		ActionData<float32>("Air Straight Duration", Config.Dante.Beowulf.airStraightDuration, DefaultConfig.Dante.Beowulf.airStraightDuration, 1 , "%.0f");
-		ActionData<float32>("Air Straight Range"   , Config.Dante.Beowulf.airStraightRange   , DefaultConfig.Dante.Beowulf.airStraightRange   , 10, "%.0f");
-		ActionData<float32>("Rising Dragon Height" , Config.Dante.Beowulf.risingDragonHeight , DefaultConfig.Dante.Beowulf.risingDragonHeight , 10, "%.1f");
+		//GUI_Checkbox("Hide", Config.Beowulf.hide);
+		//ImGui::Text("");
+		ActionData<float32>("Straight Duration"    , Config.BeowulfDante.straightDuration   , DefaultConfig.BeowulfDante.straightDuration   , 1 , "%.0f");
+		ActionData<float32>("Straight Range"       , Config.BeowulfDante.straightRange      , DefaultConfig.BeowulfDante.straightRange      , 10, "%.0f");
+		ActionData<float32>("Air Straight Duration", Config.BeowulfDante.airStraightDuration, DefaultConfig.BeowulfDante.airStraightDuration, 1 , "%.0f");
+		ActionData<float32>("Air Straight Range"   , Config.BeowulfDante.airStraightRange   , DefaultConfig.BeowulfDante.airStraightRange   , 10, "%.0f");
+		//ActionData<float32>("Rising Dragon Height" , Config.BeowulfDante.risingDragonHeight , DefaultConfig.BeowulfDante.risingDragonHeight , 10, "%.1f");
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Ebony & Ivory");
-		GUI_Checkbox("Foursome Time", Config.Dante.EbonyIvory.foursomeTime);
-		GUI_Checkbox("Infinite Rain Storm", Config.Dante.EbonyIvory.infiniteRainStorm);
+		GUI_Checkbox("Foursome Time", Config.EbonyIvory.foursomeTime);
+		GUI_Checkbox("Infinite Rain Storm", Config.EbonyIvory.infiniteRainStorm);
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Shotgun");
-		ActionData<float32>("Gun Stinger Duration"    , Config.Dante.Shotgun.gunStingerDuration   , DefaultConfig.Dante.Shotgun.gunStingerDuration   , 1 , "%.0f");
-		ActionData<float32>("Gun Stinger Range"       , Config.Dante.Shotgun.gunStingerRange      , DefaultConfig.Dante.Shotgun.gunStingerRange      , 10, "%.0f");
-		ActionData<float32>("Air Gun Stinger Duration", Config.Dante.Shotgun.airGunStingerDuration, DefaultConfig.Dante.Shotgun.airGunStingerDuration, 1 , "%.0f");
-		ActionData<float32>("Air Gun Stinger Range"   , Config.Dante.Shotgun.airGunStingerRange   , DefaultConfig.Dante.Shotgun.airGunStingerRange   , 10, "%.0f");
+		ActionData<float32>("Gun Stinger Duration"    , Config.Shotgun.gunStingerDuration   , DefaultConfig.Shotgun.gunStingerDuration   , 1 , "%.0f");
+		ActionData<float32>("Gun Stinger Range"       , Config.Shotgun.gunStingerRange      , DefaultConfig.Shotgun.gunStingerRange      , 10, "%.0f");
+		ActionData<float32>("Air Gun Stinger Duration", Config.Shotgun.airGunStingerDuration, DefaultConfig.Shotgun.airGunStingerDuration, 1 , "%.0f");
+		ActionData<float32>("Air Gun Stinger Range"   , Config.Shotgun.airGunStingerRange   , DefaultConfig.Shotgun.airGunStingerRange   , 10, "%.0f");
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Artemis");
-		GUI_Checkbox("Swap Normal Shot and Multi Lock", Config.Dante.Artemis.swapNormalShotAndMultiLock);
-		GUI_Checkbox("Instant Full Charge", Config.Dante.Artemis.instantFullCharge);
+		GUI_Checkbox("Swap Normal Shot and Multi Lock", Config.Artemis.swapNormalShotAndMultiLock);
+		GUI_Checkbox("Instant Full Charge", Config.Artemis.instantFullCharge);
 		GUI_SectionEnd();
 
-		ImGui::PushItemWidth(150);
-		GUI_InputDefault<float32>("Weapon Switch Timeout", Config.Dante.weaponSwitchTimeout, DefaultConfig.Dante.weaponSwitchTimeout, 1, "%.0f");
-		GUI_InputDefault<uint8>("Crazy Combo Level Multiplier", Config.Dante.crazyComboLevelMultiplier, DefaultConfig.Dante.crazyComboLevelMultiplier);
-		GUI_Checkbox("Summoned Swords", Config.Dante.summonedSwords);
-		ImGui::PopItemWidth();
+		GUI_SectionStart("Summoned Swords");
+		GUI_Checkbox("Enable", Config.SummonedSwords.dante);
 		ImGui::Text("");
+
+
+		//GUI_SectionEnd();
+
+
+
+		//ImGui::PushItemWidth(150);
+
+		//GUI_Checkbox("Summoned Swords", Config.summonedSwords);
+		//ImGui::PopItemWidth();
+		//ImGui::Text("");
 	}
 }
 
@@ -905,19 +915,21 @@ void Other()
 	if (ImGui::CollapsingHeader("Other"))
 	{
 		ImGui::Text("");
-		GUI_Button("Reset");
-		ImGui::Text("");
-
-		ImGui::PushItemWidth(150);
-		GUI_InputDefault<float32>("Orb Reach", Config.Other.orbReach, DefaultConfig.Other.orbReach, 100, "%.0f");
-		ImGui::PopItemWidth();
+		if (GUI_Button("Reset"))
+		{
+		}
 		GUI_SectionEnd();
-
 		GUI_SectionStart("Magic Points Depletion Rate");
 		ImGui::PushItemWidth(150);
-		GUI_InputDefault<float32>("Devil"       , Config.Other.MagicPointsDepletionRate.devil       , DefaultConfig.Other.MagicPointsDepletionRate.devil       , 1, "%.1f");
-		GUI_InputDefault<float32>("Quicksilver" , Config.Other.MagicPointsDepletionRate.quicksilver , DefaultConfig.Other.MagicPointsDepletionRate.quicksilver , 1, "%.1f");
-		GUI_InputDefault<float32>("Doppelganger", Config.Other.MagicPointsDepletionRate.doppelganger, DefaultConfig.Other.MagicPointsDepletionRate.doppelganger, 1, "%.1f");
+		GUI_InputDefault<float32>("Quicksilver" , Config.MagicPointsDepletionRate.quicksilver , DefaultConfig.MagicPointsDepletionRate.quicksilver , 1, "%.1f");
+		GUI_InputDefault<float32>("Doppelganger", Config.MagicPointsDepletionRate.doppelganger, DefaultConfig.MagicPointsDepletionRate.doppelganger, 1, "%.1f");
+		GUI_InputDefault<float32>("Devil"       , Config.MagicPointsDepletionRate.devil       , DefaultConfig.MagicPointsDepletionRate.devil       , 1, "%.1f");
+		ImGui::PopItemWidth();
+		GUI_SectionEnd();
+		ImGui::PushItemWidth(150);
+		GUI_InputDefault<uint8  >("Crazy Combo Level Multiplier", Config.crazyComboLevelMultiplier, DefaultConfig.crazyComboLevelMultiplier             );
+		GUI_InputDefault<float32>("Orb Reach"                   , Config.orbReach                 , DefaultConfig.orbReach                 , 100, "%.0f");
+		GUI_InputDefault<float32>("Weapon Switch Timeout"       , Config.weaponSwitchTimeout      , DefaultConfig.weaponSwitchTimeout      , 1  , "%.0f");
 		ImGui::PopItemWidth();
 		ImGui::Text("");
 	}
@@ -1048,16 +1060,17 @@ void Speed()
 		ImGui::Text("");
 		GUI_Button("Reset");
 		GUI_SectionEnd();
-
 		ImGui::PushItemWidth(200);
-
 		GUI_SectionStart("Main");
 		GUI_InputDefault("Base" , Config.Speed.Main.base , DefaultConfig.Speed.Main.base , 0.1f, "%.2f");
 		GUI_InputDefault("Turbo", Config.Speed.Main.turbo, DefaultConfig.Speed.Main.turbo, 0.1f, "%.2f");
 		GUI_InputDefault("Actor", Config.Speed.Main.actor, DefaultConfig.Speed.Main.actor, 0.1f, "%.2f");
 		GUI_InputDefault("Enemy", Config.Speed.Main.enemy, DefaultConfig.Speed.Main.enemy, 0.1f, "%.2f");
 		GUI_SectionEnd();
-
+		GUI_SectionStart("Quicksilver");
+		GUI_InputDefault("Actor", Config.Speed.Quicksilver.actor, DefaultConfig.Speed.Quicksilver.actor, 0.1f, "%.2f");
+		GUI_InputDefault("Enemy", Config.Speed.Quicksilver.enemy, DefaultConfig.Speed.Quicksilver.enemy, 0.1f, "%.2f");
+		GUI_SectionEnd();
 		GUI_SectionStart("Devil");
 		ImGui::Text("Dante");
 		GUI_InputDefault("Rebellion"   , Config.Speed.Devil.dante[0], DefaultConfig.Speed.Devil.dante[0], 0.1f, "%.2f");
@@ -1067,25 +1080,18 @@ void Speed()
 		GUI_InputDefault("Beowulf"     , Config.Speed.Devil.dante[4], DefaultConfig.Speed.Devil.dante[4], 0.1f, "%.2f");
 		GUI_InputDefault("Sparda"      , Config.Speed.Devil.dante[5], DefaultConfig.Speed.Devil.dante[5], 0.1f, "%.2f");
 		ImGui::Text("");
-
 		ImGui::Text("Vergil");
 		GUI_InputDefault("Yamato"    , Config.Speed.Devil.vergil[0], DefaultConfig.Speed.Devil.vergil[0], 0.1f, "%.2f");
 		GUI_InputDefault("Beowulf"   , Config.Speed.Devil.vergil[1], DefaultConfig.Speed.Devil.vergil[1], 0.1f, "%.2f");
 		GUI_InputDefault("Force Edge", Config.Speed.Devil.vergil[2], DefaultConfig.Speed.Devil.vergil[2], 0.1f, "%.2f");
 		ImGui::Text("");
-
 		ImGui::Text("Nero Angelo");
 		GUI_InputDefault("Yamato"    , Config.Speed.Devil.neroAngelo[0], DefaultConfig.Speed.Devil.neroAngelo[0], 0.1f, "%.2f");
 		GUI_InputDefault("Beowulf"   , Config.Speed.Devil.neroAngelo[1], DefaultConfig.Speed.Devil.neroAngelo[1], 0.1f, "%.2f");
 		GUI_InputDefault("Force Edge", Config.Speed.Devil.neroAngelo[2], DefaultConfig.Speed.Devil.neroAngelo[2], 0.1f, "%.2f");
-		GUI_SectionEnd();
-
-		GUI_SectionStart("Quicksilver");
-		GUI_InputDefault("Actor", Config.Speed.Quicksilver.actor, DefaultConfig.Speed.Quicksilver.actor, 0.1f, "%.2f");
-		GUI_InputDefault("Enemy", Config.Speed.Quicksilver.enemy, DefaultConfig.Speed.Quicksilver.enemy, 0.1f, "%.2f");
-		ImGui::Text("");
-
 		ImGui::PopItemWidth();
+
+		ImGui::Text("");
 	}
 }
 
@@ -1134,10 +1140,10 @@ void Training()
 {
 	if (ImGui::CollapsingHeader("Training"))
 	{
-		ImGui::Text("");
-		GUI_Checkbox("Enable", Config.Training.enable);
-		ImGui::Text("");
-		GUI_Button("Reset");
+		//ImGui::Text("");
+		//GUI_Checkbox("Enable", Config.Training.enable);
+		//ImGui::Text("");
+		//GUI_Button("Reset");
 		ImGui::Text("");
 		if (GUI_Checkbox("Infinite Hit Points", Config.Training.infiniteHitPoints))
 		{
@@ -1158,41 +1164,41 @@ void Vergil()
 	if (ImGui::CollapsingHeader("Vergil"))
 	{
 		ImGui::Text("");
-		GUI_Checkbox("Enable", Config.Vergil.enable);
-		ImGui::Text("");
-		GUI_Button("Reset");
-		GUI_SectionEnd();
+		//GUI_Checkbox("Enable", Config.enable);
+		//ImGui::Text("");
+		//GUI_Button("Reset");
+		//GUI_SectionEnd();
 
 		GUI_SectionStart("Dark Slayer");
-		ActionData<uint8>("Air Trick Count" , Config.Vergil.DarkSlayer.airTrickCount , DefaultConfig.Vergil.DarkSlayer.airTrickCount );
-		ActionData<uint8>("Trick Up Count"  , Config.Vergil.DarkSlayer.trickUpCount  , DefaultConfig.Vergil.DarkSlayer.trickUpCount  );
-		ActionData<uint8>("Trick Down Count", Config.Vergil.DarkSlayer.trickDownCount, DefaultConfig.Vergil.DarkSlayer.trickDownCount);
+		ActionData<uint8>("Air Trick Count" , Config.DarkSlayer.airTrickCount , DefaultConfig.DarkSlayer.airTrickCount );
+		ActionData<uint8>("Trick Up Count"  , Config.DarkSlayer.trickUpCount  , DefaultConfig.DarkSlayer.trickUpCount  );
+		ActionData<uint8>("Trick Down Count", Config.DarkSlayer.trickDownCount, DefaultConfig.DarkSlayer.trickDownCount);
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Yamato");
-		ActionData<float32>("Rapid Slash Duration", Config.Vergil.Yamato.rapidSlashDuration, DefaultConfig.Vergil.Yamato.rapidSlashDuration, 1 , "%.0f");
-		ActionData<float32>("Rapid Slash Range"   , Config.Vergil.Yamato.rapidSlashRange   , DefaultConfig.Vergil.Yamato.rapidSlashRange   , 10, "%.0f");
-		ActionData<float32>("Judgement Cut Count" , Config.Vergil.Yamato.judgementCutCount , DefaultConfig.Vergil.Yamato.judgementCutCount , 1 , "%.0f");
-		ActionData<float32>("Judgement Cut Range" , Config.Vergil.Yamato.judgementCutRange , DefaultConfig.Vergil.Yamato.judgementCutRange , 10, "%.0f");
+		ActionData<float32>("Rapid Slash Duration", Config.Yamato.rapidSlashDuration, DefaultConfig.Yamato.rapidSlashDuration, 1 , "%.0f");
+		ActionData<float32>("Rapid Slash Range"   , Config.Yamato.rapidSlashRange   , DefaultConfig.Yamato.rapidSlashRange   , 10, "%.0f");
+		ActionData<float32>("Judgement Cut Count" , Config.Yamato.judgementCutCount , DefaultConfig.Yamato.judgementCutCount , 1 , "%.0f");
+		ActionData<float32>("Judgement Cut Range" , Config.Yamato.judgementCutRange , DefaultConfig.Yamato.judgementCutRange , 10, "%.0f");
 		GUI_SectionEnd();
 
-		GUI_SectionStart("Beowulf");
-		GUI_Checkbox("Hide", Config.Vergil.Beowulf.hide);
-		ImGui::Text("");
-		ActionData<float32>("Rising Sun Height", Config.Vergil.Beowulf.risingSunHeight, DefaultConfig.Vergil.Beowulf.risingSunHeight, 1 , "%.0f");
-		GUI_SectionEnd();
+		//GUI_SectionStart("Beowulf");
+		////GUI_Checkbox("Hide", Config.Beowulf.hide);
+		////ImGui::Text("");
+		//ActionData<float32>("Rising Sun Height", Config.Beowulf.risingSunHeight, DefaultConfig.Beowulf.risingSunHeight, 1 , "%.0f");
+		//GUI_SectionEnd();
 
 		GUI_SectionStart("Force Edge");
-		GUI_Checkbox("Infinite Round Trip", Config.Vergil.ForceEdge.infiniteRoundTrip);
+		GUI_Checkbox("Infinite Round Trip", Config.ForceEdge.infiniteRoundTrip);
 		ImGui::Text("");
-		ActionData<float32>("Stinger Duration"    , Config.Vergil.ForceEdge.stingerDuration   , DefaultConfig.Vergil.ForceEdge.stingerDuration   , 1 , "%.0f");
-		ActionData<float32>("Stinger Range"       , Config.Vergil.ForceEdge.stingerRange      , DefaultConfig.Vergil.ForceEdge.stingerRange      , 10, "%.0f");
-		ActionData<float32>("Air Stinger Duration", Config.Vergil.ForceEdge.airStingerDuration, DefaultConfig.Vergil.ForceEdge.airStingerDuration, 1 , "%.0f");
-		ActionData<float32>("Air Stinger Range"   , Config.Vergil.ForceEdge.airStingerRange   , DefaultConfig.Vergil.ForceEdge.airStingerRange   , 10, "%.0f");
+		ActionData<float32>("Stinger Duration"    , Config.ForceEdge.stingerDuration   , DefaultConfig.ForceEdge.stingerDuration   , 1 , "%.0f");
+		ActionData<float32>("Stinger Range"       , Config.ForceEdge.stingerRange      , DefaultConfig.ForceEdge.stingerRange      , 10, "%.0f");
+		ActionData<float32>("Air Stinger Duration", Config.ForceEdge.airStingerDuration, DefaultConfig.ForceEdge.airStingerDuration, 1 , "%.0f");
+		ActionData<float32>("Air Stinger Range"   , Config.ForceEdge.airStingerRange   , DefaultConfig.ForceEdge.airStingerRange   , 10, "%.0f");
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Summoned Swords");
-		GUI_Checkbox("Chrono Swords", Config.Vergil.SummonedSwords.chronoSwords);
+		GUI_Checkbox("Chrono Swords", Config.SummonedSwords.chronoSwords);
 		ImGui::Text("");
 	}
 }
@@ -1222,99 +1228,99 @@ void Main()
 
 
 
-		static uint8 actor = 0;
-		static uint8 devil = 0;
-		static uint8 devilModelIndex = 0;
-		GUI_Input("Actor"            , actor          );
-		GUI_Input("Devil"            , devil          );
-		GUI_Input("Devil Model Index", devilModelIndex);
-		//if (GUI_Button("Update Devil"))
+		//static uint8 actor = 0;
+		//static uint8 devil = 0;
+		//static uint8 devilModelIndex = 0;
+		//GUI_Input("Actor"            , actor          );
+		//GUI_Input("Devil"            , devil          );
+		//GUI_Input("Devil Model Index", devilModelIndex);
+		////if (GUI_Button("Update Devil"))
+		////{
+		////	auto & actorData = *reinterpret_cast<ActorDataDante *>(Actor_actorBaseAddr[actor]);
+
+
+
+		////	//ResetModel(actorData.modelData   [(devilModelIndex == 0) ? 1 : 2]);
+		////	//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 1 : 3]);
+		////	//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 2 : 4]);
+
+
+
+
+		////	UpdateDevilModelFunctionDante(actorData, devil, devilModelIndex);
+		////}
+
+
+
+
+		////if (GUI_Button("Vector"))
+		////{
+		////	for_all(uint32, index, devilAuras.count)
+		////	{
+		////		Log("devilAura[%u] %llX", index, devilAuras[index]);
+		////	}
+		////}
+
+
+
+
+		//
+		//static uint8 index = 0;
+		//GUI_Input("Actor", actor);
+		//GUI_Input("Index", index);
+		//if (GUI_Button("Flux"))
 		//{
-		//	auto & actorData = *reinterpret_cast<ActorDataDante *>(Actor_actorBaseAddr[actor]);
+		//	func_1F94D0(Actor_actorBaseAddr[actor], index);
+		//}
 
 
 
-		//	//ResetModel(actorData.modelData   [(devilModelIndex == 0) ? 1 : 2]);
-		//	//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 1 : 3]);
-		//	//ResetModel(actorData.submodelData[(devilModelIndex == 0) ? 2 : 4]);
+		////if (GUI_Button("Pop Dante"))
+		////{
+		////	ResetModel(Actor_actorBaseAddr[0] + 0xB8C0);
+		////	UpdateModelDante(Actor_actorBaseAddr[0]);
+		////}
 
 
-
-
-		//	UpdateDevilModelFunctionDante(actorData, devil, devilModelIndex);
+		//if (GUI_Button("SpawnActors"))
+		//{
+		//	SpawnActors();
+		//	//HoboBreak();
 		//}
 
 
 
 
-		//if (GUI_Button("Vector"))
+
+		//ImGui::Text("");
+
+		//auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
+
+		//GUI_Checkbox("One Hit Kill", sessionData.oneHitKill, false);
+
+		//ImGui::Text("");
+
+
+
+		//auto PlayTrack = [](const char * filename)
 		//{
-		//	for_all(uint32, index, devilAuras.count)
-		//	{
-		//		Log("devilAura[%u] %llX", index, devilAuras[index]);
-		//	}
+		//	func_32BE20((appBaseAddr + 0xCF3700));
+		//	func_32BA90((appBaseAddr + 0xCF3708), filename, 0, 0);
+		//};
+
+
+		//ImGui::Text("");
+		//static char buffer[256] = {};
+		//ImGui::InputText("Filename", buffer, sizeof(buffer));
+
+		//if (GUI_Button("Play Track"))
+		//{
+		//	PlayTrack(buffer);
 		//}
 
 
 
-
-		
-		static uint8 index = 0;
-		GUI_Input("Actor", actor);
-		GUI_Input("Index", index);
-		if (GUI_Button("Flux"))
-		{
-			func_1F94D0(Actor_actorBaseAddr[actor], index);
-		}
-
-
-
-		//if (GUI_Button("Pop Dante"))
-		//{
-		//	ResetModel(Actor_actorBaseAddr[0] + 0xB8C0);
-		//	UpdateModelDante(Actor_actorBaseAddr[0]);
-		//}
-
-
-		if (GUI_Button("SpawnActors"))
-		{
-			SpawnActors();
-			//HoboBreak();
-		}
-
-
-
-
-
-		ImGui::Text("");
-
-		auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
-
-		GUI_Checkbox("One Hit Kill", sessionData.oneHitKill, false);
-
-		ImGui::Text("");
-
-
-
-		auto PlayTrack = [](const char * filename)
-		{
-			func_32BE20((appBaseAddr + 0xCF3700));
-			func_32BA90((appBaseAddr + 0xCF3708), filename, 0, 0);
-		};
-
-
-		ImGui::Text("");
-		static char buffer[256] = {};
-		ImGui::InputText("Filename", buffer, sizeof(buffer));
-
-		if (GUI_Button("Play Track"))
-		{
-			PlayTrack(buffer);
-		}
-
-
-
-		ImGui::Text("");
+		//ImGui::Text("");
 
 
 

@@ -820,19 +820,10 @@ export void SpawnActors()
 
 #pragma region IsWeaponReady
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+byte8 * IsMeleeWeaponReady      = 0;
+byte8 * IsMeleeWeaponReadyShow  = 0;
+byte8 * IsRangedWeaponReady     = 0;
+byte8 * IsRangedWeaponReadyShow = 0;
 
 template <uint8 weaponType>
 bool IsWeaponReady(WeaponData & weaponData)
@@ -847,6 +838,15 @@ bool IsWeaponReady(WeaponData & weaponData)
 	{
 		return true;
 	}
+
+
+	if ((weaponData.weapon == WEAPON_DANTE_BEOWULF) && Config.BeowulfDante.hide)
+	{
+		return false;
+	}
+
+
+
 
 	if (IsWeaponActive(actorData, weaponData.weapon))
 	{
@@ -887,464 +887,87 @@ bool IsWeaponReady(WeaponData & weaponData)
 	return false;
 }
 
-
-
-
-
-
-
 void InitIsWeaponReady()
 {
 	LogFunction();
 
-	auto meleeFunc  = CreateFunction(IsWeaponReady<WEAPON_TYPE_MELEE >, 0, true, false);
-	auto rangedFunc = CreateFunction(IsWeaponReady<WEAPON_TYPE_RANGED>, 0, true, false);
+	// Melee
+	{
+		auto func = CreateFunction(IsWeaponReady<WEAPON_TYPE_MELEE>, 0, true, false);
+		IsMeleeWeaponReady = func.addr;
+	}
+	{
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                   // test al,al
+			0x74, 0x05,                   // je short
+			0xE9, 0x00, 0x00, 0x00, 0x00, // jmp dmc3.exe+1FDE10
+		};
+		auto func = CreateFunction(IsWeaponReady<WEAPON_TYPE_MELEE>, 0, true, false, 0, 0, sizeof(sect2));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+		IsMeleeWeaponReadyShow = func.addr;
+	}
+
+	// Ranged
+	{
+		auto func = CreateFunction(IsWeaponReady<WEAPON_TYPE_RANGED>, 0, true, false);
+		IsRangedWeaponReady = func.addr;
+	}
+	{
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                   // test al,al
+			0x74, 0x05,                   // je short
+			0xE9, 0x00, 0x00, 0x00, 0x00, // jmp dmc3.exe+1FDE10
+		};
+		auto func = CreateFunction(IsWeaponReady<WEAPON_TYPE_RANGED>, 0, true, false, 0, 0, sizeof(sect2));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+		IsRangedWeaponReadyShow = func.addr;
+	}
+}
+
+void ToggleIsWeaponReady(bool enable)
+{
+	LogFunction(enable);
 
 	// Rebellion
-	WriteCall((appBaseAddr + 0x23162E), meleeFunc.addr);
+	WriteCall((appBaseAddr + 0x23162E), (enable) ? IsMeleeWeaponReady : (appBaseAddr + 0x1FD3E0));
 	/*
 	dmc3.exe+23162E - E8 ADBDFCFF - call dmc3.exe+1FD3E0
 	*/
 
 	// Cerberus
-	WriteCall((appBaseAddr + 0x22FAD4), meleeFunc.addr);
+	WriteCall((appBaseAddr + 0x22FAD4), (enable) ? IsMeleeWeaponReady : (appBaseAddr + 0x1FD3E0));
 	/*
 	dmc3.exe+22FAD4 - E8 07D9FCFF - call dmc3.exe+1FD3E0
 	*/
 
 	// Agni & Rudra
-	WriteCall((appBaseAddr + 0x2288A4), meleeFunc.addr);
+	WriteCall((appBaseAddr + 0x2288A4), (enable) ? IsMeleeWeaponReady : (appBaseAddr + 0x1FD3E0));
 	/*
 	dmc3.exe+2288A4 - E8 374BFDFF - call dmc3.exe+1FD3E0
 	*/
 
 	// Nevan
-	WriteCall((appBaseAddr + 0x22AD2D), meleeFunc.addr);
+	WriteCall((appBaseAddr + 0x22AD2D), (enable) ? IsMeleeWeaponReady : (appBaseAddr + 0x1FD3E0));
 	/*
 	dmc3.exe+22AD2D - E8 AE26FDFF - call dmc3.exe+1FD3E0
 	*/
 
 	// Beowulf
-	{
-		constexpr byte8 sect0[] =
-		{
-			0xE8, 0x00, 0x00, 0x00, 0x00, // call
-			0x84, 0xC0,                   // test al,al
-			0x74, 0x05,                   // je short
-			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+1FDE10
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x2295BC), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteCall(func.sect0, meleeFunc.addr);
-		WriteCall((func.sect0 + 9), (appBaseAddr + 0x1FDE10));
-		WriteJump((appBaseAddr + 0x2295B7), func.addr);
-		/*
-		dmc3.exe+2295B7 - E8 5448FDFF    - call dmc3.exe+1FDE10
-		dmc3.exe+2295BC - 48 8B 7C 24 50 - mov rdi,[rsp+50]
-		*/
-	}
-
-	return;
+	WriteCall((appBaseAddr + 0x2295B7), (enable) ? IsMeleeWeaponReadyShow : (appBaseAddr + 0x1FDE10));
+	/*
+	dmc3.exe+2295B7 - E8 5448FDFF - call dmc3.exe+1FDE10
+	*/
 
 	// Artemis
-	{
-		constexpr byte8 sect0[] =
-		{
-			0xE8, 0x00, 0x00, 0x00, 0x00, // call
-			0x84, 0xC0,                   // test al,al
-			0x74, 0x05,                   // je short
-			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+1FDE10
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x22CBCD), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteCall(func.sect0, rangedFunc.addr);
-		WriteCall((func.sect0 + 9), (appBaseAddr + 0x1FDE10));
-		WriteJump((appBaseAddr + 0x22CBC8), func.addr);
-		/*
-		dmc3.exe+22CBC8 - E8 4312FDFF    - call dmc3.exe+1FDE10
-		dmc3.exe+22CBCD - 48 8B 5C 24 48 - mov rbx,[rsp+48]
-		*/
-	}
+	WriteCall((appBaseAddr + 0x22CBC8), (enable) ? IsRangedWeaponReadyShow : (appBaseAddr + 0x1FDE10));
+	/*
+	dmc3.exe+22CBC8 - E8 4312FDFF - call dmc3.exe+1FDE10
+	*/
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//template <typename T>
-//bool IsWeaponReadyFunction
-//(
-//	T     & actorData,
-//	uint8   weapon,
-//	uint8 * map,
-//	uint8   mapItemCount,
-//	uint8   index
-//)
-//{
-//	if (IsWeaponActive(actorData, weapon))
-//	{
-//		return true;
-//	}
-//
-//	for_all(uint8, mapIndex, mapItemCount) // @Todo: mapItemIndex.
-//	{
-//		auto & mapItem = map[mapIndex];
-//		if (mapItem == weapon)
-//		{
-//			continue;
-//		}
-//		if (IsWeaponActive(actorData, mapItem))
-//		{
-//			return false;
-//		}
-//	}
-//
-//	if (map[index] == weapon)
-//	{
-//		return true;
-//	}
-//
-//	return false;
-//}
-//
-//template
-//<
-//	typename T,
-//	uint8 weaponType
-//>
-//bool IsWeaponReady
-//(
-//	byte8 * baseAddr,
-//	uint8 weapon
-//)
-//{
-//	auto & actorData = *reinterpret_cast<T *>(baseAddr);
-//
-//
-//
-//	if constexpr (weaponType == WEAPON_TYPE_MELEE)
-//	{
-//		return IsWeaponReadyFunction
-//		(
-//			actorData,
-//			weapon,
-//			actorData.newMeleeWeapons,
-//			actorData.newMeleeWeaponCount,
-//			actorData.newMeleeWeaponIndex
-//		);
-//	}
-//	else
-//	{
-//		return IsWeaponReadyFunction
-//		(
-//			actorData,
-//			weapon,
-//			actorData.newRangedWeapons,
-//			actorData.newRangedWeaponCount,
-//			actorData.newRangedWeaponIndex
-//		);
-//	}
-//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//typedef bool(__fastcall * IsWeaponReady_t)
-//(
-//	byte8 * actorData,
-//	uint8 weapon
-//);
-//
-//IsWeaponReady_t IsMeleeWeaponReady[MAX_CHAR] =
-//{
-//	IsWeaponReady<ActorDataDante, WEAPON_TYPE_MELEE>,
-//	0,
-//	0,
-//	IsWeaponReady<ActorDataVergil, WEAPON_TYPE_MELEE>,
-//};
-//
-//IsWeaponReady_t IsRangedWeaponReady[MAX_CHAR] =
-//{
-//	IsWeaponReady<ActorDataDante, WEAPON_TYPE_RANGED>,
-//	0,
-//	0,
-//	0,
-//};
-
-//template <uint8 weaponType>
-//bool IsWeaponReadyProxy(byte8 * baseAddr)
-//{
-//	auto & weapon = *reinterpret_cast<uint8 *>(baseAddr + 0x112);
-//	auto actorBaseAddr = *reinterpret_cast<byte8 **>(baseAddr + 0x120);
-//	if (!actorBaseAddr)
-//	{
-//		return true;
-//	}
-//
-//
-//
-//
-//
-//
-//	//auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//	//auto character = actorData.character;
-//	//if (character >= MAX_CHAR)
-//	//{
-//	//	character = CHAR_DANTE;
-//	//}
-//	//auto & func = (weaponType == WEAPON_TYPE_MELEE) ? IsMeleeWeaponReady[character] : IsRangedWeaponReady[character];
-//	//if (!func)
-//	//{
-//	//	return true;
-//	//}
-//	//return func(actorData, weapon);
-//}
-
-//auto IsMeleeWeaponReadyProxy  = IsWeaponReadyProxy<WEAPON_TYPE_MELEE >;
-//auto IsRangedWeaponReadyProxy = IsWeaponReadyProxy<WEAPON_TYPE_RANGED>;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// struct IsWeaponReadyProxyHelper_t
-// {
-// 	uint32 off[2];
-// 	uint8 weaponType;
-// };
-
-// constexpr IsWeaponReadyProxyHelper_t IsWeaponReadyProxyHelper[] =
-// {
-
-
-
-
-
-// 	{ 0x23163F, 0       , WEAPON_TYPE_MELEE  }, // Dante Rebellion
-// 	{ 0x22FB1C, 0x22FB21, WEAPON_TYPE_MELEE  }, // Dante Cerberus
-// 	{ 0x2288D3, 0x2288D8, WEAPON_TYPE_MELEE  }, // Dante Agni & Rudra
-// 	{ 0x22AD86, 0x22AD8B, WEAPON_TYPE_MELEE  }, // Dante Nevan
-// 	{ 0x2295B7, 0x2295BC, WEAPON_TYPE_MELEE  }, // Dante Vergil Beowulf
-
-
-
-
-
-
-	
-
-	
-// 	{ 0x22B753, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory
-// 	{ 0x22B723, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory Air
-// 	{ 0x230E16, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun
-// 	{ 0x230DD3, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun Shot
-// 	{ 0x22CBC8, 0x22CBCD, WEAPON_TYPE_RANGED }, // Dante Artemis
-// 	{ 0x2304BF, 0       , WEAPON_TYPE_RANGED }, // Dante Spiral
-// 	{ 0x22C186, 0       , WEAPON_TYPE_RANGED }, // Dante Lady Kalina Ann
-// 	{ 0x22C1A5, 0       , WEAPON_TYPE_RANGED }, // Dante Kalina Ann Grapple
-
-
-
-
-
-	
-	
-
-	
-
-
-
-
-
-// 	{ 0x22D432, 0x22D437, WEAPON_TYPE_MELEE  }, // Vergil Nero Angelo Sword
-// 	{ 0x22E09A, 0x22E09F, WEAPON_TYPE_MELEE  }, // Vergil Yamato
-// 	{ 0x229E9D, 0       , WEAPON_TYPE_MELEE  }, // Vergil Force Edge
-// 	{ 0x232005, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato Combo 1 Part 3
-// 	{ 0x232056, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato
-// };
-
-//byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
-//
-//void InitIsWeaponReady()
-//{
-//	LogFunction();
-//
-//	byte8 sect2[] =
-//	{
-//		0x84, 0xC0,                   //test al,al
-//		0x74, 0x05,                   //je short
-//		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
-//	};
-//	for_all(uint8, index, countof(IsWeaponReadyProxyHelper))
-//	{
-//		auto & item = IsWeaponReadyProxyHelper[index];
-//		byte8 * jumpAddr = (item.off[1]) ? (appBaseAddr + item.off[1]) : 0;
-//		auto func = CreateFunction
-//		(
-//			(item.weaponType == WEAPON_TYPE_MELEE) ? IsMeleeWeaponReadyProxy : IsRangedWeaponReadyProxy,
-//			jumpAddr,
-//			true,
-//			false,
-//			0,
-//			0,
-//			sizeof(sect2)
-//		);
-//		memcpy(func.sect2, sect2, sizeof(sect2));
-//		if (jumpAddr)
-//		{
-//			WriteCall((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-//		}
-//		else
-//		{
-//			WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-//		}
-//		IsWeaponReadyProxyFuncAddr[index] = func.addr;
-//	}
-//}
-//
-//export void ToggleIsWeaponReady(bool enable)
-//{
-//	LogFunction(enable);
-//
-//	for_all(uint8, index, countof(IsWeaponReadyProxyHelper))
-//	{
-//		auto & item = IsWeaponReadyProxyHelper[index];
-//
-//		byte8 * addr = 0;
-//		byte8 * jumpAddr = 0;
-//
-//		addr = (appBaseAddr + item.off[0]);
-//		jumpAddr = (item.off[1]) ? (appBaseAddr + item.off[1]) : 0;
-//
-//		if (enable)
-//		{
-//			WriteJump(addr, IsWeaponReadyProxyFuncAddr[index]);
-//		}
-//		else
-//		{
-//			if (jumpAddr)
-//			{
-//				WriteCall(addr, (appBaseAddr + 0x1FDE10));
-//			}
-//			else
-//			{
-//				WriteJump(addr, (appBaseAddr + 0x1FDE10));
-//			}
-//		}
-//	}
-//
-//	auto WriteHelper = [&]
-//	(
-//		uint32 callOff,
-//		uint32 jumpOff,
-//		uint32 jumpDestOff
-//	)
-//	{
-//		if (enable)
-//		{
-//			WriteJump((appBaseAddr + callOff), (appBaseAddr + callOff + 5));
-//			WriteAddress((appBaseAddr + jumpOff), (appBaseAddr + jumpOff + 2), 2);
-//		}
-//		else
-//		{
-//			WriteCall((appBaseAddr + callOff), (appBaseAddr + 0x1FD3E0));
-//			WriteAddress((appBaseAddr + jumpOff), (appBaseAddr + jumpDestOff), 2);
-//		}
-//	};
-//
-//	WriteHelper(0x2288A4, 0x2288CE, 0x2288D8); // Dante Agni & Rudra
-//	/*
-//	dmc3.exe+2288A4 - E8 374BFDFF - call dmc3.exe+1FD3E0
-//	dmc3.exe+2288CE - 74 08       - je dmc3.exe+2288D8
-//	*/
-//	WriteHelper(0x229E8C, 0x229E93, 0x229EA2); // Vergil Force Edge
-//	/*
-//	dmc3.exe+229E8C - E8 4F35FDFF - call dmc3.exe+1FD3E0
-//	dmc3.exe+229E93 - 74 0D       - je dmc3.exe+229EA2
-//	*/
-//	WriteHelper(0x22AD2D, 0x22AD39, 0x22AD8B); // Dante Nevan
-//	/*
-//	dmc3.exe+22AD2D - E8 AE26FDFF - call dmc3.exe+1FD3E0
-//	dmc3.exe+22AD39 - 74 50       - je dmc3.exe+22AD8B
-//	*/
-//	WriteHelper(0x22FAD4, 0x22FADB, 0x22FB21); // Dante Cerberus
-//	/*
-//	dmc3.exe+22FAD4 - E8 07D9FCFF - call dmc3.exe+1FD3E0
-//	dmc3.exe+22FADB - 74 44       - je dmc3.exe+22FB21
-//	*/
-//	WriteHelper(0x23162E, 0x231635, 0x231644); // Dante Rebellion
-//	/*
-//	dmc3.exe+23162E - E8 ADBDFCFF - call dmc3.exe+1FD3E0
-//	dmc3.exe+231635 - 74 0D       - je dmc3.exe+231644
-//	*/
-//}
 
 #pragma endregion
 
@@ -1390,7 +1013,7 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 		return;
 	}
 
-	actorData.meleeWeaponSwitchTimeout = Config.Dante.weaponSwitchTimeout;
+	actorData.meleeWeaponSwitchTimeout = Config.weaponSwitchTimeout;
 
 	actorData.newMeleeWeaponIndex++;
 
@@ -1454,7 +1077,7 @@ void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
 		return;
 	}
 
-	actorData.rangedWeaponSwitchTimeout = Config.Dante.weaponSwitchTimeout;
+	actorData.rangedWeaponSwitchTimeout = Config.weaponSwitchTimeout;
 
 	actorData.newRangedWeaponIndex++;
 
@@ -1540,6 +1163,8 @@ void SetMainActor(byte8 * baseAddr)
 		}
 		pool[3] = baseAddr;
 	}
+
+	return;
 
 	// Style Rank
 	{
@@ -1727,9 +1352,11 @@ export void Actor_Init()
 
 	InitRegisterWeapon();
 
-	//InitIsWeaponReady();
+	InitIsWeaponReady();
 
-	//ToggleIsWeaponReady(true);
+	ToggleIsWeaponReady(true);
+
+
 
 
 	//// @Todo: Create function.
@@ -1973,6 +1600,377 @@ export void Actor_Init()
 
 
 
+
+
+
+
+
+
+
+//template <typename T>
+//bool IsWeaponReadyFunction
+//(
+//	T     & actorData,
+//	uint8   weapon,
+//	uint8 * map,
+//	uint8   mapItemCount,
+//	uint8   index
+//)
+//{
+//	if (IsWeaponActive(actorData, weapon))
+//	{
+//		return true;
+//	}
+//
+//	for_all(uint8, mapIndex, mapItemCount) // @Todo: mapItemIndex.
+//	{
+//		auto & mapItem = map[mapIndex];
+//		if (mapItem == weapon)
+//		{
+//			continue;
+//		}
+//		if (IsWeaponActive(actorData, mapItem))
+//		{
+//			return false;
+//		}
+//	}
+//
+//	if (map[index] == weapon)
+//	{
+//		return true;
+//	}
+//
+//	return false;
+//}
+//
+//template
+//<
+//	typename T,
+//	uint8 weaponType
+//>
+//bool IsWeaponReady
+//(
+//	byte8 * baseAddr,
+//	uint8 weapon
+//)
+//{
+//	auto & actorData = *reinterpret_cast<T *>(baseAddr);
+//
+//
+//
+//	if constexpr (weaponType == WEAPON_TYPE_MELEE)
+//	{
+//		return IsWeaponReadyFunction
+//		(
+//			actorData,
+//			weapon,
+//			actorData.newMeleeWeapons,
+//			actorData.newMeleeWeaponCount,
+//			actorData.newMeleeWeaponIndex
+//		);
+//	}
+//	else
+//	{
+//		return IsWeaponReadyFunction
+//		(
+//			actorData,
+//			weapon,
+//			actorData.newRangedWeapons,
+//			actorData.newRangedWeaponCount,
+//			actorData.newRangedWeaponIndex
+//		);
+//	}
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//typedef bool(__fastcall * IsWeaponReady_t)
+//(
+//	byte8 * actorData,
+//	uint8 weapon
+//);
+//
+//IsWeaponReady_t IsMeleeWeaponReady[MAX_CHAR] =
+//{
+//	IsWeaponReady<ActorDataDante, WEAPON_TYPE_MELEE>,
+//	0,
+//	0,
+//	IsWeaponReady<ActorDataVergil, WEAPON_TYPE_MELEE>,
+//};
+//
+//IsWeaponReady_t IsRangedWeaponReady[MAX_CHAR] =
+//{
+//	IsWeaponReady<ActorDataDante, WEAPON_TYPE_RANGED>,
+//	0,
+//	0,
+//	0,
+//};
+
+//template <uint8 weaponType>
+//bool IsWeaponReadyProxy(byte8 * baseAddr)
+//{
+//	auto & weapon = *reinterpret_cast<uint8 *>(baseAddr + 0x112);
+//	auto actorBaseAddr = *reinterpret_cast<byte8 **>(baseAddr + 0x120);
+//	if (!actorBaseAddr)
+//	{
+//		return true;
+//	}
+//
+//
+//
+//
+//
+//
+//	//auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//	//auto character = actorData.character;
+//	//if (character >= MAX_CHAR)
+//	//{
+//	//	character = CHAR_DANTE;
+//	//}
+//	//auto & func = (weaponType == WEAPON_TYPE_MELEE) ? IsMeleeWeaponReady[character] : IsRangedWeaponReady[character];
+//	//if (!func)
+//	//{
+//	//	return true;
+//	//}
+//	//return func(actorData, weapon);
+//}
+
+//auto IsMeleeWeaponReadyProxy  = IsWeaponReadyProxy<WEAPON_TYPE_MELEE >;
+//auto IsRangedWeaponReadyProxy = IsWeaponReadyProxy<WEAPON_TYPE_RANGED>;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// struct IsWeaponReadyProxyHelper_t
+// {
+// 	uint32 off[2];
+// 	uint8 weaponType;
+// };
+
+// constexpr IsWeaponReadyProxyHelper_t IsWeaponReadyProxyHelper[] =
+// {
+
+
+
+
+
+// 	{ 0x23163F, 0       , WEAPON_TYPE_MELEE  }, // Dante Rebellion
+// 	{ 0x22FB1C, 0x22FB21, WEAPON_TYPE_MELEE  }, // Dante Cerberus
+// 	{ 0x2288D3, 0x2288D8, WEAPON_TYPE_MELEE  }, // Dante Agni & Rudra
+// 	{ 0x22AD86, 0x22AD8B, WEAPON_TYPE_MELEE  }, // Dante Nevan
+// 	{ 0x2295B7, 0x2295BC, WEAPON_TYPE_MELEE  }, // Dante Vergil Beowulf
+
+
+
+
+
+
+
+
+
+// 	{ 0x22B753, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory
+// 	{ 0x22B723, 0       , WEAPON_TYPE_RANGED }, // Dante Ebony & Ivory Air
+// 	{ 0x230E16, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun
+// 	{ 0x230DD3, 0       , WEAPON_TYPE_RANGED }, // Dante Shotgun Shot
+// 	{ 0x22CBC8, 0x22CBCD, WEAPON_TYPE_RANGED }, // Dante Artemis
+// 	{ 0x2304BF, 0       , WEAPON_TYPE_RANGED }, // Dante Spiral
+// 	{ 0x22C186, 0       , WEAPON_TYPE_RANGED }, // Dante Lady Kalina Ann
+// 	{ 0x22C1A5, 0       , WEAPON_TYPE_RANGED }, // Dante Kalina Ann Grapple
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 	{ 0x22D432, 0x22D437, WEAPON_TYPE_MELEE  }, // Vergil Nero Angelo Sword
+// 	{ 0x22E09A, 0x22E09F, WEAPON_TYPE_MELEE  }, // Vergil Yamato
+// 	{ 0x229E9D, 0       , WEAPON_TYPE_MELEE  }, // Vergil Force Edge
+// 	{ 0x232005, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato Combo 1 Part 3
+// 	{ 0x232056, 0       , WEAPON_TYPE_MELEE  }, // Bob Yamato
+// };
+
+//byte8 * IsWeaponReadyProxyFuncAddr[countof(IsWeaponReadyProxyHelper)] = {};
+//
+//void InitIsWeaponReady()
+//{
+//	LogFunction();
+//
+//	byte8 sect2[] =
+//	{
+//		0x84, 0xC0,                   //test al,al
+//		0x74, 0x05,                   //je short
+//		0xE8, 0x00, 0x00, 0x00, 0x00, //call dmc3.exe+1FDE10
+//	};
+//	for_all(uint8, index, countof(IsWeaponReadyProxyHelper))
+//	{
+//		auto & item = IsWeaponReadyProxyHelper[index];
+//		byte8 * jumpAddr = (item.off[1]) ? (appBaseAddr + item.off[1]) : 0;
+//		auto func = CreateFunction
+//		(
+//			(item.weaponType == WEAPON_TYPE_MELEE) ? IsMeleeWeaponReadyProxy : IsRangedWeaponReadyProxy,
+//			jumpAddr,
+//			true,
+//			false,
+//			0,
+//			0,
+//			sizeof(sect2)
+//		);
+//		memcpy(func.sect2, sect2, sizeof(sect2));
+//		if (jumpAddr)
+//		{
+//			WriteCall((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+//		}
+//		else
+//		{
+//			WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+//		}
+//		IsWeaponReadyProxyFuncAddr[index] = func.addr;
+//	}
+//}
+//
+//export void ToggleIsWeaponReady(bool enable)
+//{
+//	LogFunction(enable);
+//
+//	for_all(uint8, index, countof(IsWeaponReadyProxyHelper))
+//	{
+//		auto & item = IsWeaponReadyProxyHelper[index];
+//
+//		byte8 * addr = 0;
+//		byte8 * jumpAddr = 0;
+//
+//		addr = (appBaseAddr + item.off[0]);
+//		jumpAddr = (item.off[1]) ? (appBaseAddr + item.off[1]) : 0;
+//
+//		if (enable)
+//		{
+//			WriteJump(addr, IsWeaponReadyProxyFuncAddr[index]);
+//		}
+//		else
+//		{
+//			if (jumpAddr)
+//			{
+//				WriteCall(addr, (appBaseAddr + 0x1FDE10));
+//			}
+//			else
+//			{
+//				WriteJump(addr, (appBaseAddr + 0x1FDE10));
+//			}
+//		}
+//	}
+//
+//	auto WriteHelper = [&]
+//	(
+//		uint32 callOff,
+//		uint32 jumpOff,
+//		uint32 jumpDestOff
+//	)
+//	{
+//		if (enable)
+//		{
+//			WriteJump((appBaseAddr + callOff), (appBaseAddr + callOff + 5));
+//			WriteAddress((appBaseAddr + jumpOff), (appBaseAddr + jumpOff + 2), 2);
+//		}
+//		else
+//		{
+//			WriteCall((appBaseAddr + callOff), (appBaseAddr + 0x1FD3E0));
+//			WriteAddress((appBaseAddr + jumpOff), (appBaseAddr + jumpDestOff), 2);
+//		}
+//	};
+//
+//	WriteHelper(0x2288A4, 0x2288CE, 0x2288D8); // Dante Agni & Rudra
+//	/*
+//	dmc3.exe+2288A4 - E8 374BFDFF - call dmc3.exe+1FD3E0
+//	dmc3.exe+2288CE - 74 08       - je dmc3.exe+2288D8
+//	*/
+//	WriteHelper(0x229E8C, 0x229E93, 0x229EA2); // Vergil Force Edge
+//	/*
+//	dmc3.exe+229E8C - E8 4F35FDFF - call dmc3.exe+1FD3E0
+//	dmc3.exe+229E93 - 74 0D       - je dmc3.exe+229EA2
+//	*/
+//	WriteHelper(0x22AD2D, 0x22AD39, 0x22AD8B); // Dante Nevan
+//	/*
+//	dmc3.exe+22AD2D - E8 AE26FDFF - call dmc3.exe+1FD3E0
+//	dmc3.exe+22AD39 - 74 50       - je dmc3.exe+22AD8B
+//	*/
+//	WriteHelper(0x22FAD4, 0x22FADB, 0x22FB21); // Dante Cerberus
+//	/*
+//	dmc3.exe+22FAD4 - E8 07D9FCFF - call dmc3.exe+1FD3E0
+//	dmc3.exe+22FADB - 74 44       - je dmc3.exe+22FB21
+//	*/
+//	WriteHelper(0x23162E, 0x231635, 0x231644); // Dante Rebellion
+//	/*
+//	dmc3.exe+23162E - E8 ADBDFCFF - call dmc3.exe+1FD3E0
+//	dmc3.exe+231635 - 74 0D       - je dmc3.exe+231644
+//	*/
+//}
 
 
 
