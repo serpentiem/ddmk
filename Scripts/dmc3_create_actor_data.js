@@ -183,7 +183,7 @@ var items =
 
 
 	[ "weapons[5]"                          , "uint8"                   , 0x6498                           ],
-	[ "weaponData[5]"                       , "byte8 *"                 , 0x64A0                           ],
+	[ "weaponData[5]"                       , "WeaponData *"            , 0x64A0                           ],
 	[ "weaponStatus[5]"                     , "uint32"                  , 0x64C8                           ],
 	[ "weaponLevels[5]"                     , "uint32"                  , 0x64DC                           ],
 
@@ -376,7 +376,7 @@ var extra =
 
 
 	[ "newWeapons[10]"      , "uint8"   ],
-	[ "newWeaponData[10]"   , "byte8 *" ],
+	[ "newWeaponData[10]"   , "WeaponData *" ],
 	[ "newWeaponStatus[10]" , "uint32"  ],
 	[ "newWeaponLevels[10]" , "uint32"  ],
 	[ "newWeaponTimers[10]" , "float32" ],

@@ -37,20 +37,20 @@ export typedef void(__fastcall * func_225D70_t)(byte8 * actorData); // Update Ac
 export typedef void(__fastcall * func_219260_t)(byte8 * actorData); // Update Actor Lady
 export typedef void(__fastcall * func_220970_t)(byte8 * actorData); // Update Actor Vergil
 export typedef void(__fastcall * func_1DFC20_t)(byte8 * actorData);
-export typedef byte8 *(__fastcall * func_2310B0_t)(byte8 * actorData, uint32 id); // Dante Rebellion
-export typedef byte8 *(__fastcall * func_22EC90_t)(byte8 * actorData, uint32 id); // Dante Cerberus
-export typedef byte8 *(__fastcall * func_227870_t)(byte8 * actorData, uint32 id); // Dante Agni & Rudra
-export typedef byte8 *(__fastcall * func_22A1E0_t)(byte8 * actorData, uint32 id); // Dante Nevan
-export typedef byte8 *(__fastcall * func_228CF0_t)(byte8 * actorData, uint32 id); // Dante Vergil Beowulf
-export typedef byte8 *(__fastcall * func_22B0C0_t)(byte8 * actorData, uint32 id); // Dante Ebony & Ivory
-export typedef byte8 *(__fastcall * func_2306B0_t)(byte8 * actorData, uint32 id); // Dante Shotgun
-export typedef byte8 *(__fastcall * func_22C4A0_t)(byte8 * actorData, uint32 id); // Dante Artemis
-export typedef byte8 *(__fastcall * func_2300A0_t)(byte8 * actorData, uint32 id); // Dante Spiral
-export typedef byte8 *(__fastcall * func_22BA30_t)(byte8 * actorData, uint32 id); // Dante Lady Kalina Ann
-export typedef byte8 *(__fastcall * func_231A30_t)(byte8 * actorData, uint32 id); // Bob Yamato
-export typedef byte8 *(__fastcall * func_22D960_t)(byte8 * actorData, uint32 id); // Vergil Yamato
-export typedef byte8 *(__fastcall * func_2298E0_t)(byte8 * actorData, uint32 id); // Vergil Force Edge
-export typedef byte8 *(__fastcall * func_22CF00_t)(byte8 * actorData, uint32 id); // Vergil Nero Angelo Sword
+export typedef WeaponData *(__fastcall * func_2310B0_t)(byte8 * actorData, uint32 id); // Dante Rebellion
+export typedef WeaponData *(__fastcall * func_22EC90_t)(byte8 * actorData, uint32 id); // Dante Cerberus
+export typedef WeaponData *(__fastcall * func_227870_t)(byte8 * actorData, uint32 id); // Dante Agni & Rudra
+export typedef WeaponData *(__fastcall * func_22A1E0_t)(byte8 * actorData, uint32 id); // Dante Nevan
+export typedef WeaponData *(__fastcall * func_228CF0_t)(byte8 * actorData, uint32 id); // Dante Vergil Beowulf
+export typedef WeaponData *(__fastcall * func_22B0C0_t)(byte8 * actorData, uint32 id); // Dante Ebony & Ivory
+export typedef WeaponData *(__fastcall * func_2306B0_t)(byte8 * actorData, uint32 id); // Dante Shotgun
+export typedef WeaponData *(__fastcall * func_22C4A0_t)(byte8 * actorData, uint32 id); // Dante Artemis
+export typedef WeaponData *(__fastcall * func_2300A0_t)(byte8 * actorData, uint32 id); // Dante Spiral
+export typedef WeaponData *(__fastcall * func_22BA30_t)(byte8 * actorData, uint32 id); // Dante Lady Kalina Ann
+export typedef WeaponData *(__fastcall * func_231A30_t)(byte8 * actorData, uint32 id); // Bob Yamato
+export typedef WeaponData *(__fastcall * func_22D960_t)(byte8 * actorData, uint32 id); // Vergil Yamato
+export typedef WeaponData *(__fastcall * func_2298E0_t)(byte8 * actorData, uint32 id); // Vergil Force Edge
+export typedef WeaponData *(__fastcall * func_22CF00_t)(byte8 * actorData, uint32 id); // Vergil Nero Angelo Sword
 export typedef void(__fastcall * func_280120_t)(byte8 * dest, uint32 side, uint32 index); // Weapon Switch Animation Dante
 export typedef void(__fastcall * func_280160_t)(byte8 * dest, uint32 group, uint32 index, uint32 motion); // Weapon Switch Animation Vergil
 export typedef void(__fastcall * func_1EB0E0_t)(byte8 * actorData, uint32 index); // Call after Weapon Switch Animation.

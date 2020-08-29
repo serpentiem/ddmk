@@ -89,44 +89,70 @@ enum DEVIL_
 	//MAX_DEVIL = 7,
 };
 
+
+
+
+
+
+
+
+
+
+
 enum STYLE_
 {
-	STYLE_DANTE_SWORDMASTER,
-	STYLE_DANTE_GUNSLINGER,
-	STYLE_DANTE_TRICKSTER,
-	STYLE_DANTE_ROYALGUARD,
-	STYLE_DANTE_QUICKSILVER,
-	STYLE_DANTE_DOPPELGANGER,
-	STYLE_VERGIL_DARK_SLAYER = 2,
+	STYLE_SWORDMASTER,
+	STYLE_GUNSLINGER,
+	STYLE_TRICKSTER,
+	STYLE_ROYALGUARD,
+	STYLE_QUICKSILVER,
+	STYLE_DOPPELGANGER,
+	STYLE_DARK_SLAYER = 2,
 	MAX_STYLE = 6,
 };
 
 enum WEAPON_
 {
-	WEAPON_DANTE_REBELLION,
-	WEAPON_DANTE_CERBERUS,
-	WEAPON_DANTE_AGNI_RUDRA,
-	WEAPON_DANTE_NEVAN,
-	WEAPON_DANTE_BEOWULF,
-	WEAPON_DANTE_EBONY_IVORY,
-	WEAPON_DANTE_SHOTGUN,
-	WEAPON_DANTE_ARTEMIS,
-	WEAPON_DANTE_SPIRAL,
-	WEAPON_DANTE_KALINA_ANN,
-	WEAPON_BOB_YAMATO = 14,
-	WEAPON_LADY_KALINA_ANN = 9,
-	WEAPON_LADY_UNKNOWN = 11,
-	WEAPON_VERGIL_YAMATO = 11,
-	WEAPON_VERGIL_BEOWULF,
-	WEAPON_VERGIL_FORCE_EDGE,
-	WEAPON_VOID = 255,
-	MAX_WEAPON = 16,
+	WEAPON_REBELLION,
+	WEAPON_CERBERUS,
+	WEAPON_AGNI_RUDRA,
+	WEAPON_NEVAN,
+	WEAPON_BEOWULF_DANTE,
+	WEAPON_EBONY_IVORY,
+	WEAPON_SHOTGUN,
+	WEAPON_ARTEMIS,
+	WEAPON_SPIRAL,
+	WEAPON_KALINA_ANN,
+	WEAPON_YAMATO_VERGIL = 11,
+	WEAPON_BEOWULF_VERGIL,
+	WEAPON_FORCE_EDGE,
+	WEAPON_YAMATO_BOB,
+	MAX_WEAPON,
+	// @Research: Re-evaluate.
 	MAX_MELEE_WEAPON = 5,
 	MAX_RANGED_WEAPON = 5,
 	MAX_MELEE_WEAPON_DANTE = 5,
 	MAX_RANGED_WEAPON_DANTE = 5,
 	MAX_MELEE_WEAPON_VERGIL = 3,
+	WEAPON_VOID = 255,
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 enum WEAPON_TYPE_
 {
@@ -2013,7 +2039,7 @@ struct ActorData
 	_(23);
 	uint8 weapons[5]; // 0x6498
 	_(3);
-	byte8 * weaponData[5]; // 0x64A0
+	WeaponData * weaponData[5]; // 0x64A0
 	uint32 weaponStatus[5]; // 0x64C8
 	uint32 weaponLevels[5]; // 0x64DC
 	_(4);
@@ -2063,7 +2089,7 @@ struct ActorData
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x1ABE0
 	uint8 newWeapons[10]; // 0x1C9E0
 	_(6);
-	byte8 * newWeaponData[10]; // 0x1C9F0
+	WeaponData * newWeaponData[10]; // 0x1C9F0
 	uint32 newWeaponStatus[10]; // 0x1CA40
 	_(8);
 	uint32 newWeaponLevels[10]; // 0x1CA70
@@ -2235,7 +2261,7 @@ struct ActorDataDante
 	uint32 rangedWeaponIndex; // 0x6494
 	uint8 weapons[5]; // 0x6498
 	_(3);
-	byte8 * weaponData[5]; // 0x64A0
+	WeaponData * weaponData[5]; // 0x64A0
 	uint32 weaponStatus[5]; // 0x64C8
 	uint32 weaponLevels[5]; // 0x64DC
 	uint8 activeMeleeWeapon; // 0x64F0
@@ -2305,7 +2331,7 @@ struct ActorDataDante
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x1ABE0
 	uint8 newWeapons[10]; // 0x1C9E0
 	_(6);
-	byte8 * newWeaponData[10]; // 0x1C9F0
+	WeaponData * newWeaponData[10]; // 0x1C9F0
 	uint32 newWeaponStatus[10]; // 0x1CA40
 	_(8);
 	uint32 newWeaponLevels[10]; // 0x1CA70
@@ -2466,7 +2492,7 @@ struct ActorDataBob
 	_(23);
 	uint8 weapons[5]; // 0x6498
 	_(3);
-	byte8 * weaponData[5]; // 0x64A0
+	WeaponData * weaponData[5]; // 0x64A0
 	uint32 weaponStatus[5]; // 0x64C8
 	uint32 weaponLevels[5]; // 0x64DC
 	_(4);
@@ -2516,7 +2542,7 @@ struct ActorDataBob
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x1ABE0
 	uint8 newWeapons[10]; // 0x1C9E0
 	_(6);
-	byte8 * newWeaponData[10]; // 0x1C9F0
+	WeaponData * newWeaponData[10]; // 0x1C9F0
 	uint32 newWeaponStatus[10]; // 0x1CA40
 	_(8);
 	uint32 newWeaponLevels[10]; // 0x1CA70
@@ -2677,7 +2703,7 @@ struct ActorDataLady
 	_(23);
 	uint8 weapons[5]; // 0x6498
 	_(3);
-	byte8 * weaponData[5]; // 0x64A0
+	WeaponData * weaponData[5]; // 0x64A0
 	uint32 weaponStatus[5]; // 0x64C8
 	uint32 weaponLevels[5]; // 0x64DC
 	_(4);
@@ -2727,7 +2753,7 @@ struct ActorDataLady
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x1ABE0
 	uint8 newWeapons[10]; // 0x1C9E0
 	_(6);
-	byte8 * newWeaponData[10]; // 0x1C9F0
+	WeaponData * newWeaponData[10]; // 0x1C9F0
 	uint32 newWeaponStatus[10]; // 0x1CA40
 	_(8);
 	uint32 newWeaponLevels[10]; // 0x1CA70
@@ -2896,7 +2922,7 @@ struct ActorDataVergil
 	_(12);
 	uint8 weapons[5]; // 0x6498
 	_(3);
-	byte8 * weaponData[5]; // 0x64A0
+	WeaponData * weaponData[5]; // 0x64A0
 	uint32 weaponStatus[5]; // 0x64C8
 	uint32 weaponLevels[5]; // 0x64DC
 	_(4);
@@ -2955,7 +2981,7 @@ struct ActorDataVergil
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x1ABE0
 	uint8 newWeapons[10]; // 0x1C9E0
 	_(6);
-	byte8 * newWeaponData[10]; // 0x1C9F0
+	WeaponData * newWeaponData[10]; // 0x1C9F0
 	uint32 newWeaponStatus[10]; // 0x1CA40
 	_(8);
 	uint32 newWeaponLevels[10]; // 0x1CA70

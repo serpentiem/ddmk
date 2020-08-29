@@ -295,25 +295,7 @@ void MainLoop()
 
 void ActorLoop(byte8 * baseAddr)
 {
-
-
-
-	if (!baseAddr)
-	{
-		return;
-	}
-
-	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
-
-	UpdateModelPartitions(actorData);
-
-
-
-
-
-
-
-
+	Actor_ActorLoop(baseAddr);
 }
 
 void SkyStarReset(byte8 * baseAddr)

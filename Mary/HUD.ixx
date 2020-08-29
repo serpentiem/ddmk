@@ -69,7 +69,7 @@ void InitIcons()
 		};
 		for_all(uint8, weapon, countof(fileIndices))
 		{
-			auto & item = weaponIcons[(WEAPON_DANTE_REBELLION + weapon)];
+			auto & item = weaponIcons[(WEAPON_REBELLION + weapon)];
 			auto & fileIndex = fileIndices[weapon];
 			item.modelFile   = File_staticFiles[id100][(fileIndex + 1)];
 			item.textureFile = File_staticFiles[id100][(fileIndex + 0)];
@@ -86,7 +86,7 @@ void InitIcons()
 		};
 		for_all(uint8, weapon, countof(fileIndices))
 		{
-			auto & item = weaponIcons[(WEAPON_VERGIL_YAMATO + weapon)];
+			auto & item = weaponIcons[(WEAPON_YAMATO_VERGIL + weapon)];
 			auto & fileIndex = fileIndices[weapon];
 			item.modelFile   = File_staticFiles[id100V][(fileIndex + 1)];
 			item.textureFile = File_staticFiles[id100V][(fileIndex + 0)];
@@ -117,7 +117,7 @@ export void HUD_UpdateStyleIcon
 	modelFile   = styleIcons[style].modelFile;
 	textureFile = styleIcons[style].textureFile;
 
-	if ((character == CHAR_VERGIL) && (style == STYLE_VERGIL_DARK_SLAYER))
+	if ((character == CHAR_VERGIL) && (style == STYLE_DARK_SLAYER))
 	{
 		modelFile = darkSlayerIcon.modelFile;
 		textureFile = darkSlayerIcon.textureFile;

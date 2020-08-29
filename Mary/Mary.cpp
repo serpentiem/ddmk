@@ -142,7 +142,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Mobility::Toggle(true);
 
 
-		Model_Init();
+		//Model_Init();
 
 		WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2); // force collect orbs
 
