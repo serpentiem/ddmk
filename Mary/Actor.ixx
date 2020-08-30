@@ -136,124 +136,91 @@ bool IsActive(T & actorData)
 	return IsWeaponActive(actorData);
 }
 
-template <uint8 weaponType>
-bool IsWeaponReady(WeaponData & weaponData)
+template <typename T>
+bool IsMeleeWeaponReady
+(
+	T & actorData,
+	uint8 weapon
+)
 {
-	if (!weaponData.actorBaseAddr)
-	{
-		return true;
-	}
-	auto & actorData = *reinterpret_cast<ActorDataDante *>(weaponData.actorBaseAddr);
-
-	if constexpr (weaponType == WEAPON_TYPE_MELEE)
-	{
-		if ((actorData.character == CHAR_VERGIL) && (weaponData.weapon == WEAPON_BEOWULF_VERGIL))
-		{
-			if (!actorData.devil && Config.BeowulfVergil.hide)
-			{
-				return false;
-			}
-			return true;
-		}
-	}
-
-	if (actorData.character != CHAR_DANTE)
+	if constexpr (TypeMatch<T, ActorDataBob>::value || TypeMatch<T, ActorDataLady>::value)
 	{
 		return true;
 	}
 
-	if constexpr (weaponType == WEAPON_TYPE_MELEE)
+	if (actorData.devil)
 	{
-		if (actorData.devil)
+		if constexpr (TypeMatch<T, ActorDataDante>::value)
 		{
-			uint8 weapon = weaponData.weapon;
-			if (weapon > WEAPON_BEOWULF_DANTE)
-			{
-				weapon = 0;
-			}
-			if (actorData.activeDevil == (DEVIL_DANTE_REBELLION + weapon))
+			if (actorData.activeDevil == (weapon - WEAPON_REBELLION))
 			{
 				return true;
 			}
 		}
-		else
+		else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 		{
-			if ((weaponData.weapon == WEAPON_BEOWULF_DANTE) && Config.BeowulfDante.hide)
+			if (actorData.activeDevil == (weapon - WEAPON_YAMATO_VERGIL))
+			{
+				return true;
+			}
+		}
+	}
+	else
+	{
+		if constexpr (TypeMatch<T, ActorDataDante>::value)
+		{
+			if ((weapon == WEAPON_BEOWULF_DANTE) && Config.BeowulfDante.hide)
+			{
+				return false;
+			}
+		}
+		else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+		{
+			if ((weapon == WEAPON_BEOWULF_VERGIL) && Config.BeowulfVergil.hide)
 			{
 				return false;
 			}
 		}
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*
-	pseudo vergil solution
-
-	if activeWeapon != queuedWeapon
-	get active weapon id
-	check if active
-	if not active
-	set activeWEapon to queuedweapon
-
-	
-	*/
-
-
-
-
-
-
-
-
-
-
-
-	if (IsWeaponActive(actorData, weaponData.weapon))
+	if (IsWeaponActive(actorData, weapon))
 	{
 		return true;
 	}
 
-	for_all(uint8, index, 5)
+	constexpr uint8 count =
+	(TypeMatch<T, ActorDataDante >::value) ? MAX_MELEE_WEAPON_DANTE  :
+	(TypeMatch<T, ActorDataVergil>::value) ? MAX_MELEE_WEAPON_VERGIL :
+	0;
+
+	for_all(uint8, index, count)
 	{
-		uint8 weapon =
-		(weaponType == WEAPON_TYPE_MELEE ) ? (WEAPON_REBELLION   + index) :
-		(weaponType == WEAPON_TYPE_RANGED) ? (WEAPON_EBONY_IVORY + index) :
+		uint8 weapon2 =
+		(TypeMatch<T, ActorDataDante >::value) ? (WEAPON_REBELLION     + index) :
+		(TypeMatch<T, ActorDataVergil>::value) ? (WEAPON_YAMATO_VERGIL + index) :
 		0;
-		if (weaponData.weapon == weapon)
+
+		if (weapon2 == weapon)
 		{
 			continue;
 		}
-		if (IsWeaponActive(actorData, weapon))
+
+		if (IsWeaponActive(actorData, weapon2))
 		{
 			return false;
 		}
 	}
 
-	if constexpr (weaponType == WEAPON_TYPE_MELEE)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		if (actorData.meleeWeaponIndex == weaponData.weapon)
+		if (actorData.meleeWeaponIndex == (weapon - WEAPON_REBELLION))
 		{
 			return true;
 		}
 	}
-	else if constexpr (weaponType == WEAPON_TYPE_RANGED)
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
-		if (actorData.rangedWeaponIndex == weaponData.weapon)
+		if (actorData.activeMeleeWeaponIndex == (weapon - WEAPON_YAMATO_VERGIL))
 		{
 			return true;
 		}
@@ -262,17 +229,99 @@ bool IsWeaponReady(WeaponData & weaponData)
 	return false;
 }
 
-template <typename T>
-bool IsWeaponReadyBeowulf(T & actorData)
+bool IsMeleeWeaponReadyProxy(WeaponData & weaponData)
 {
-	auto weaponDataAddr = actorData.newWeaponData[WEAPON_BEOWULF_DANTE];
-	if (!weaponDataAddr)
+	if (!weaponData.actorBaseAddr)
 	{
-		return false;
+		return true;
 	}
-	auto & weaponData = *weaponDataAddr;
-	return IsWeaponReady<WEAPON_TYPE_MELEE>(weaponData);
+	auto & actorData = *reinterpret_cast<ActorData *>(weaponData.actorBaseAddr);
+
+	switch (actorData.character)
+	{
+		case CHAR_DANTE:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(weaponData.actorBaseAddr);
+			return IsMeleeWeaponReady(actorData2, weaponData.weapon);
+		}
+		case CHAR_BOB:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataBob *>(weaponData.actorBaseAddr);
+			return IsMeleeWeaponReady(actorData2, weaponData.weapon);
+		}
+		case CHAR_LADY:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataLady *>(weaponData.actorBaseAddr);
+			return IsMeleeWeaponReady(actorData2, weaponData.weapon);
+		}
+		case CHAR_VERGIL:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(weaponData.actorBaseAddr);
+			return IsMeleeWeaponReady(actorData2, weaponData.weapon);
+		}
+	}
+
+	return true;
 }
+
+bool IsRangedWeaponReady
+(
+	ActorDataDante & actorData,
+	uint8 weapon
+)
+{
+	if (IsWeaponActive(actorData, weapon))
+	{
+		return true;
+	}
+
+	for_all(uint8, index, MAX_RANGED_WEAPON_DANTE)
+	{
+		uint8 weapon2 = (WEAPON_EBONY_IVORY + index);
+
+		if (weapon2 == weapon)
+		{
+			continue;
+		}
+
+		if (IsWeaponActive(actorData, weapon2))
+		{
+			return false;
+		}
+	}
+
+	if (actorData.rangedWeaponIndex == weapon)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool IsRangedWeaponReadyProxy(WeaponData & weaponData)
+{
+	if (!weaponData.actorBaseAddr)
+	{
+		return true;
+	}
+	auto & actorData = *reinterpret_cast<ActorDataDante *>(weaponData.actorBaseAddr);
+
+	return IsRangedWeaponReady(actorData, weaponData.weapon);
+}
+
+
+
+/*
+pseudo vergil solution
+
+if activeWeapon != queuedWeapon
+get active weapon id
+check if active
+if not active
+set activeWEapon to queuedweapon
+*/
+
+
 
 void SetMainActor(byte8 * baseAddr)
 {
@@ -901,7 +950,15 @@ void UpdateModelPartitions(T & actorData)
 		{
 			costume = 0;
 		}
-		auto beowulf = IsWeaponReadyBeowulf(actorData);
+		bool beowulf = false;
+		if constexpr (TypeMatch<T, ActorDataDante>::value)
+		{
+			beowulf = IsMeleeWeaponReady(actorData, WEAPON_BEOWULF_DANTE);
+		}
+		else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+		{
+			beowulf = IsMeleeWeaponReady(actorData, WEAPON_BEOWULF_VERGIL);
+		}
 		switch (costume)
 		{
 		case COSTUME_DANTE_DEFAULT:
@@ -1074,6 +1131,101 @@ void UpdateModelPartitions(T & actorData)
 		if (costume >= MAX_COSTUME_VERGIL)
 		{
 			costume = 0;
+		}
+		bool beowulf = false;
+		if constexpr (TypeMatch<T, ActorDataDante>::value)
+		{
+			beowulf = IsMeleeWeaponReady(actorData, WEAPON_BEOWULF_DANTE);
+		}
+		else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+		{
+			beowulf = IsMeleeWeaponReady(actorData, WEAPON_BEOWULF_VERGIL);
+		}
+		switch (costume)
+		{
+		case COSTUME_VERGIL_DEFAULT:
+		{
+			modelPartitionData[0 ].value = 3; // Body
+			modelPartitionData[1 ].value = 3; // Shoulders
+			modelPartitionData[2 ].value = (beowulf) ? 2 : 3; // Hands
+			modelPartitionData[3 ].value = 3; // Face
+			modelPartitionData[4 ].value = (beowulf) ? 3 : 2; // Fists
+			modelPartitionData[5 ].value = 3; // Hair Base
+			modelPartitionData[6 ].value = 3; // Hair Main
+			modelPartitionData[7 ].value = (beowulf) ? 3 : 2; // Lower Legs Half
+			modelPartitionData[8 ].value = (beowulf) ? 2 : 3; // Lower Legs and Feet
+			modelPartitionData[9 ].value = (beowulf) ? 3 : 2; // Lower Arms Half
+			modelPartitionData[10].value = (beowulf) ? 2 : 3; // Lower Arms
+			break;
+		}
+		case COSTUME_VERGIL_DEFAULT_NO_COAT:
+		{
+			modelPartitionData[0 ].value = 3; // Body
+			modelPartitionData[1 ].value = 3; // Arms
+			modelPartitionData[2 ].value = 3; // Hands
+			modelPartitionData[3 ].value = 3; // Face
+			modelPartitionData[4 ].value = 3; // Fists
+			modelPartitionData[5 ].value = 3; // Hair Base
+			modelPartitionData[6 ].value = 3; // Hair Main
+			modelPartitionData[7 ].value = 3; // Lower Legs Half
+			modelPartitionData[8 ].value = 3; // Lower Legs and Feet
+			modelPartitionData[9 ].value = 3; // Filler
+			modelPartitionData[10].value = 3; // Filler
+			break;
+		}
+		case COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS:
+		{
+			modelPartitionData[0 ].value = 3; // Body
+			modelPartitionData[1 ].value = 3; // Shoulders
+			modelPartitionData[2 ].value = 3; // Hands
+			modelPartitionData[3 ].value = 3; // Face
+			modelPartitionData[4 ].value = 3; // Fists
+			modelPartitionData[5 ].value = 3; // Hair Base
+			modelPartitionData[6 ].value = 3; // Hair Main
+			modelPartitionData[7 ].value = 3; // Lower Legs Half
+			modelPartitionData[8 ].value = 3; // Lower Legs and Feet
+			modelPartitionData[9 ].value = 3; // Lower Arms Half
+			modelPartitionData[10].value = 3; // Lower Arms
+			break;
+		}
+		case COSTUME_VERGIL_SPARDA:
+		{
+			modelPartitionData[0 ].value = 3; // Neck
+			modelPartitionData[1 ].value = 3; // Face
+			modelPartitionData[2 ].value = 3; // Hands
+			modelPartitionData[3 ].value = 3; // Eyes
+			modelPartitionData[4 ].value = 3; // Fists
+			modelPartitionData[5 ].value = 3; // Hair Base
+			modelPartitionData[6 ].value = 3; // Hair Main
+			modelPartitionData[7 ].value = 3; // Lower Legs Half
+			modelPartitionData[8 ].value = 3; // Lower Legs and Feet
+			modelPartitionData[9 ].value = 3; // Lower Arms Half
+			modelPartitionData[10].value = 3; // Lower Arms
+			modelPartitionData[11].value = 3; // Collar
+			modelPartitionData[12].value = 3; // Lower Legs
+			modelPartitionData[13].value = 3; // Shoulders
+			modelPartitionData[14].value = 3; // Body
+			break;
+		}
+		case COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS:
+		{
+			modelPartitionData[0 ].value = 3; // Neck
+			modelPartitionData[1 ].value = 3; // Face
+			modelPartitionData[2 ].value = 3; // Hands
+			modelPartitionData[3 ].value = 3; // Eyes
+			modelPartitionData[4 ].value = 3; // Fists
+			modelPartitionData[5 ].value = 3; // Hair Base
+			modelPartitionData[6 ].value = 3; // Hair Main
+			modelPartitionData[7 ].value = 3; // Lower Legs Half
+			modelPartitionData[8 ].value = 3; // Lower Legs and Feet
+			modelPartitionData[9 ].value = 3; // Lower Arms Half
+			modelPartitionData[10].value = 3; // Lower Arms
+			modelPartitionData[11].value = 3; // Collar
+			modelPartitionData[12].value = 3; // Lower Legs
+			modelPartitionData[13].value = 3; // Shoulders
+			modelPartitionData[14].value = 3; // Body
+			break;
+		}
 		}
 		break;
 	}
@@ -1703,10 +1855,10 @@ export void SpawnActors()
 
 #pragma region IsWeaponReady
 
-byte8 * IsMeleeWeaponReady      = 0;
-byte8 * IsMeleeWeaponReadyShow  = 0;
-byte8 * IsRangedWeaponReady     = 0;
-byte8 * IsRangedWeaponReadyShow = 0;
+byte8 * IsMeleeWeaponReadyProxyAddr      = 0;
+byte8 * IsMeleeWeaponReadyProxyShowAddr  = 0;
+byte8 * IsRangedWeaponReadyProxyAddr     = 0;
+byte8 * IsRangedWeaponReadyProxyShowAddr = 0;
 
 void InitIsWeaponReady()
 {
@@ -1714,8 +1866,8 @@ void InitIsWeaponReady()
 
 	// Melee
 	{
-		auto func = CreateFunction(IsWeaponReady<WEAPON_TYPE_MELEE>, 0, true, false);
-		IsMeleeWeaponReady = func.addr;
+		auto func = CreateFunction(IsMeleeWeaponReadyProxy, 0, true, false);
+		IsMeleeWeaponReadyProxyAddr = func.addr;
 	}
 	{
 		constexpr byte8 sect2[] =
@@ -1724,16 +1876,16 @@ void InitIsWeaponReady()
 			0x74, 0x05,                   // je short
 			0xE9, 0x00, 0x00, 0x00, 0x00, // jmp dmc3.exe+1FDE10
 		};
-		auto func = CreateFunction(IsWeaponReady<WEAPON_TYPE_MELEE>, 0, true, false, 0, 0, sizeof(sect2));
+		auto func = CreateFunction(IsMeleeWeaponReadyProxy, 0, true, false, 0, 0, sizeof(sect2));
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-		IsMeleeWeaponReadyShow = func.addr;
+		IsMeleeWeaponReadyProxyShowAddr = func.addr;
 	}
 
 	// Ranged
 	{
-		auto func = CreateFunction(IsWeaponReady<WEAPON_TYPE_RANGED>, 0, true, false);
-		IsRangedWeaponReady = func.addr;
+		auto func = CreateFunction(IsRangedWeaponReadyProxy, 0, true, false);
+		IsRangedWeaponReadyProxyAddr = func.addr;
 	}
 	{
 		constexpr byte8 sect2[] =
@@ -1742,10 +1894,10 @@ void InitIsWeaponReady()
 			0x74, 0x05,                   // je short
 			0xE9, 0x00, 0x00, 0x00, 0x00, // jmp dmc3.exe+1FDE10
 		};
-		auto func = CreateFunction(IsWeaponReady<WEAPON_TYPE_RANGED>, 0, true, false, 0, 0, sizeof(sect2));
+		auto func = CreateFunction(IsRangedWeaponReadyProxy, 0, true, false, 0, 0, sizeof(sect2));
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-		IsRangedWeaponReadyShow = func.addr;
+		IsRangedWeaponReadyProxyAddr = func.addr;
 	}
 }
 
@@ -1754,37 +1906,37 @@ void ToggleIsWeaponReady(bool enable)
 	LogFunction(enable);
 
 	// Rebellion
-	WriteCall((appBaseAddr + 0x23162E), (enable) ? IsMeleeWeaponReady : (appBaseAddr + 0x1FD3E0));
+	WriteCall((appBaseAddr + 0x23162E), (enable) ? IsMeleeWeaponReadyProxyAddr : (appBaseAddr + 0x1FD3E0));
 	/*
 	dmc3.exe+23162E - E8 ADBDFCFF - call dmc3.exe+1FD3E0
 	*/
 
 	// Cerberus
-	WriteCall((appBaseAddr + 0x22FAD4), (enable) ? IsMeleeWeaponReady : (appBaseAddr + 0x1FD3E0));
+	WriteCall((appBaseAddr + 0x22FAD4), (enable) ? IsMeleeWeaponReadyProxyAddr : (appBaseAddr + 0x1FD3E0));
 	/*
 	dmc3.exe+22FAD4 - E8 07D9FCFF - call dmc3.exe+1FD3E0
 	*/
 
 	// Agni & Rudra
-	WriteCall((appBaseAddr + 0x2288A4), (enable) ? IsMeleeWeaponReady : (appBaseAddr + 0x1FD3E0));
+	WriteCall((appBaseAddr + 0x2288A4), (enable) ? IsMeleeWeaponReadyProxyAddr : (appBaseAddr + 0x1FD3E0));
 	/*
 	dmc3.exe+2288A4 - E8 374BFDFF - call dmc3.exe+1FD3E0
 	*/
 
 	// Nevan
-	WriteCall((appBaseAddr + 0x22AD2D), (enable) ? IsMeleeWeaponReady : (appBaseAddr + 0x1FD3E0));
+	WriteCall((appBaseAddr + 0x22AD2D), (enable) ? IsMeleeWeaponReadyProxyAddr : (appBaseAddr + 0x1FD3E0));
 	/*
 	dmc3.exe+22AD2D - E8 AE26FDFF - call dmc3.exe+1FD3E0
 	*/
 
 	// Beowulf
-	WriteCall((appBaseAddr + 0x2295B7), (enable) ? IsMeleeWeaponReadyShow : (appBaseAddr + 0x1FDE10));
+	WriteCall((appBaseAddr + 0x2295B7), (enable) ? IsMeleeWeaponReadyProxyShowAddr : (appBaseAddr + 0x1FDE10));
 	/*
 	dmc3.exe+2295B7 - E8 5448FDFF - call dmc3.exe+1FDE10
 	*/
 
 	// Artemis
-	WriteCall((appBaseAddr + 0x22CBC8), (enable) ? IsRangedWeaponReadyShow : (appBaseAddr + 0x1FDE10));
+	WriteCall((appBaseAddr + 0x22CBC8), (enable) ? IsRangedWeaponReadyProxyAddr : (appBaseAddr + 0x1FDE10));
 	/*
 	dmc3.exe+22CBC8 - E8 4312FDFF - call dmc3.exe+1FDE10
 	*/
@@ -2054,7 +2206,33 @@ export void Actor_ActorLoop(byte8 * baseAddr)
 	}
 	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 
-	UpdateModelPartitions(actorData);
+	switch (actorData.character)
+	{
+		case CHAR_DANTE:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(baseAddr);
+			UpdateModelPartitions(actorData2);
+			break;
+		}
+		case CHAR_BOB:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataBob *>(baseAddr);
+			UpdateModelPartitions(actorData2);
+			break;
+		}
+		case CHAR_LADY:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataLady *>(baseAddr);
+			UpdateModelPartitions(actorData2);
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(baseAddr);
+			UpdateModelPartitions(actorData2);
+			break;
+		}
+	}
 }
 
 #pragma endregion
@@ -4814,6 +4992,11 @@ export void Actor_Init()
 		dmc3.exe+222861 - 48 8D B7 40750000 - lea rsi,[rdi+00007540]
 		*/
 	}
+
+	vp_memset((appBaseAddr + 0x22285C), 0x90, 5);
+
+
+
 
 	// Ebony Ivory Position Update
 	{
