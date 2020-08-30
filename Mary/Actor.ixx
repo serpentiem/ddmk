@@ -145,16 +145,80 @@ bool IsWeaponReady(WeaponData & weaponData)
 	}
 	auto & actorData = *reinterpret_cast<ActorDataDante *>(weaponData.actorBaseAddr);
 
+	if constexpr (weaponType == WEAPON_TYPE_MELEE)
+	{
+		if ((actorData.character == CHAR_VERGIL) && (weaponData.weapon == WEAPON_BEOWULF_VERGIL))
+		{
+			if (!actorData.devil && Config.BeowulfVergil.hide)
+			{
+				return false;
+			}
+			return true;
+		}
+	}
+
 	if (actorData.character != CHAR_DANTE)
 	{
 		return true;
 	}
 
-
-	if ((weaponData.weapon == WEAPON_BEOWULF_DANTE) && Config.BeowulfDante.hide)
+	if constexpr (weaponType == WEAPON_TYPE_MELEE)
 	{
-		return false;
+		if (actorData.devil)
+		{
+			uint8 weapon = weaponData.weapon;
+			if (weapon > WEAPON_BEOWULF_DANTE)
+			{
+				weapon = 0;
+			}
+			if (actorData.activeDevil == (DEVIL_DANTE_REBELLION + weapon))
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if ((weaponData.weapon == WEAPON_BEOWULF_DANTE) && Config.BeowulfDante.hide)
+			{
+				return false;
+			}
+		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/*
+	pseudo vergil solution
+
+	if activeWeapon != queuedWeapon
+	get active weapon id
+	check if active
+	if not active
+	set activeWEapon to queuedweapon
+
+	
+	*/
+
+
+
+
+
+
+
 
 
 

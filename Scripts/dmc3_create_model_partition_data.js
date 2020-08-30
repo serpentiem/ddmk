@@ -29,7 +29,7 @@ for (var actor = 0; actor < 4; actor++)
 			"Byte",
 			"Mary.Actor_actorBaseAddr",
 			(index * 0x380).toString(16).toUpperCase(),
-			"200+80+100",
+			"B8D0+80+100",
 			(actor * 8).toString(16).toUpperCase()
 		);
 	}
