@@ -2095,9 +2095,10 @@ struct ActorData
 	uint32 newWeaponLevels[10]; // 0x1CA70
 	_(8);
 	float32 newWeaponTimers[10]; // 0x1CAA0
-	uint8 newPlayer; // 0x1CAC8
-	uint8 newEntity; // 0x1CAC9
-	_(6);
+	bool32 newIsClone; // 0x1CAC8
+	uint8 newPlayer; // 0x1CACC
+	uint8 newEntity; // 0x1CACD
+	_(2);
 	byte8 * newParentBaseAddr; // 0x1CAD0
 	_(8);
 	byte8 * newChildBaseAddr; // 0x1CAE0
@@ -2337,9 +2338,10 @@ struct ActorDataDante
 	uint32 newWeaponLevels[10]; // 0x1CA70
 	_(8);
 	float32 newWeaponTimers[10]; // 0x1CAA0
-	uint8 newPlayer; // 0x1CAC8
-	uint8 newEntity; // 0x1CAC9
-	_(6);
+	bool32 newIsClone; // 0x1CAC8
+	uint8 newPlayer; // 0x1CACC
+	uint8 newEntity; // 0x1CACD
+	_(2);
 	byte8 * newParentBaseAddr; // 0x1CAD0
 	_(8);
 	byte8 * newChildBaseAddr; // 0x1CAE0
@@ -2548,9 +2550,10 @@ struct ActorDataBob
 	uint32 newWeaponLevels[10]; // 0x1CA70
 	_(8);
 	float32 newWeaponTimers[10]; // 0x1CAA0
-	uint8 newPlayer; // 0x1CAC8
-	uint8 newEntity; // 0x1CAC9
-	_(6);
+	bool32 newIsClone; // 0x1CAC8
+	uint8 newPlayer; // 0x1CACC
+	uint8 newEntity; // 0x1CACD
+	_(2);
 	byte8 * newParentBaseAddr; // 0x1CAD0
 	_(8);
 	byte8 * newChildBaseAddr; // 0x1CAE0
@@ -2759,9 +2762,10 @@ struct ActorDataLady
 	uint32 newWeaponLevels[10]; // 0x1CA70
 	_(8);
 	float32 newWeaponTimers[10]; // 0x1CAA0
-	uint8 newPlayer; // 0x1CAC8
-	uint8 newEntity; // 0x1CAC9
-	_(6);
+	bool32 newIsClone; // 0x1CAC8
+	uint8 newPlayer; // 0x1CACC
+	uint8 newEntity; // 0x1CACD
+	_(2);
 	byte8 * newParentBaseAddr; // 0x1CAD0
 	_(8);
 	byte8 * newChildBaseAddr; // 0x1CAE0
@@ -2987,9 +2991,10 @@ struct ActorDataVergil
 	uint32 newWeaponLevels[10]; // 0x1CA70
 	_(8);
 	float32 newWeaponTimers[10]; // 0x1CAA0
-	uint8 newPlayer; // 0x1CAC8
-	uint8 newEntity; // 0x1CAC9
-	_(6);
+	bool32 newIsClone; // 0x1CAC8
+	uint8 newPlayer; // 0x1CACC
+	uint8 newEntity; // 0x1CACD
+	_(2);
 	byte8 * newParentBaseAddr; // 0x1CAD0
 	_(8);
 	byte8 * newChildBaseAddr; // 0x1CAE0
@@ -3135,8 +3140,9 @@ static_assert(offsetof(ActorData, newWeaponData) == 0x1C9F0);
 static_assert(offsetof(ActorData, newWeaponStatus) == 0x1CA40);
 static_assert(offsetof(ActorData, newWeaponLevels) == 0x1CA70);
 static_assert(offsetof(ActorData, newWeaponTimers) == 0x1CAA0);
-static_assert(offsetof(ActorData, newPlayer) == 0x1CAC8);
-static_assert(offsetof(ActorData, newEntity) == 0x1CAC9);
+static_assert(offsetof(ActorData, newIsClone) == 0x1CAC8);
+static_assert(offsetof(ActorData, newPlayer) == 0x1CACC);
+static_assert(offsetof(ActorData, newEntity) == 0x1CACD);
 static_assert(offsetof(ActorData, newParentBaseAddr) == 0x1CAD0);
 static_assert(offsetof(ActorData, newChildBaseAddr) == 0x1CAE0);
 static_assert(offsetof(ActorData, newGamepad) == 0x1CAE8);
@@ -3294,8 +3300,9 @@ static_assert(offsetof(ActorDataDante, newWeaponData) == 0x1C9F0);
 static_assert(offsetof(ActorDataDante, newWeaponStatus) == 0x1CA40);
 static_assert(offsetof(ActorDataDante, newWeaponLevels) == 0x1CA70);
 static_assert(offsetof(ActorDataDante, newWeaponTimers) == 0x1CAA0);
-static_assert(offsetof(ActorDataDante, newPlayer) == 0x1CAC8);
-static_assert(offsetof(ActorDataDante, newEntity) == 0x1CAC9);
+static_assert(offsetof(ActorDataDante, newIsClone) == 0x1CAC8);
+static_assert(offsetof(ActorDataDante, newPlayer) == 0x1CACC);
+static_assert(offsetof(ActorDataDante, newEntity) == 0x1CACD);
 static_assert(offsetof(ActorDataDante, newParentBaseAddr) == 0x1CAD0);
 static_assert(offsetof(ActorDataDante, newChildBaseAddr) == 0x1CAE0);
 static_assert(offsetof(ActorDataDante, newGamepad) == 0x1CAE8);
@@ -3429,8 +3436,9 @@ static_assert(offsetof(ActorDataBob, newWeaponData) == 0x1C9F0);
 static_assert(offsetof(ActorDataBob, newWeaponStatus) == 0x1CA40);
 static_assert(offsetof(ActorDataBob, newWeaponLevels) == 0x1CA70);
 static_assert(offsetof(ActorDataBob, newWeaponTimers) == 0x1CAA0);
-static_assert(offsetof(ActorDataBob, newPlayer) == 0x1CAC8);
-static_assert(offsetof(ActorDataBob, newEntity) == 0x1CAC9);
+static_assert(offsetof(ActorDataBob, newIsClone) == 0x1CAC8);
+static_assert(offsetof(ActorDataBob, newPlayer) == 0x1CACC);
+static_assert(offsetof(ActorDataBob, newEntity) == 0x1CACD);
 static_assert(offsetof(ActorDataBob, newParentBaseAddr) == 0x1CAD0);
 static_assert(offsetof(ActorDataBob, newChildBaseAddr) == 0x1CAE0);
 static_assert(offsetof(ActorDataBob, newGamepad) == 0x1CAE8);
@@ -3564,8 +3572,9 @@ static_assert(offsetof(ActorDataLady, newWeaponData) == 0x1C9F0);
 static_assert(offsetof(ActorDataLady, newWeaponStatus) == 0x1CA40);
 static_assert(offsetof(ActorDataLady, newWeaponLevels) == 0x1CA70);
 static_assert(offsetof(ActorDataLady, newWeaponTimers) == 0x1CAA0);
-static_assert(offsetof(ActorDataLady, newPlayer) == 0x1CAC8);
-static_assert(offsetof(ActorDataLady, newEntity) == 0x1CAC9);
+static_assert(offsetof(ActorDataLady, newIsClone) == 0x1CAC8);
+static_assert(offsetof(ActorDataLady, newPlayer) == 0x1CACC);
+static_assert(offsetof(ActorDataLady, newEntity) == 0x1CACD);
 static_assert(offsetof(ActorDataLady, newParentBaseAddr) == 0x1CAD0);
 static_assert(offsetof(ActorDataLady, newChildBaseAddr) == 0x1CAE0);
 static_assert(offsetof(ActorDataLady, newGamepad) == 0x1CAE8);
@@ -3712,8 +3721,9 @@ static_assert(offsetof(ActorDataVergil, newWeaponData) == 0x1C9F0);
 static_assert(offsetof(ActorDataVergil, newWeaponStatus) == 0x1CA40);
 static_assert(offsetof(ActorDataVergil, newWeaponLevels) == 0x1CA70);
 static_assert(offsetof(ActorDataVergil, newWeaponTimers) == 0x1CAA0);
-static_assert(offsetof(ActorDataVergil, newPlayer) == 0x1CAC8);
-static_assert(offsetof(ActorDataVergil, newEntity) == 0x1CAC9);
+static_assert(offsetof(ActorDataVergil, newIsClone) == 0x1CAC8);
+static_assert(offsetof(ActorDataVergil, newPlayer) == 0x1CACC);
+static_assert(offsetof(ActorDataVergil, newEntity) == 0x1CACD);
 static_assert(offsetof(ActorDataVergil, newParentBaseAddr) == 0x1CAD0);
 static_assert(offsetof(ActorDataVergil, newChildBaseAddr) == 0x1CAE0);
 static_assert(offsetof(ActorDataVergil, newGamepad) == 0x1CAE8);

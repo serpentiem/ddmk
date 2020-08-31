@@ -324,7 +324,7 @@ export struct CONFIG
 		float32 magicPoints    = 3000;
 		uint8   character      = CHAR_DANTE;
 		uint8   costume        = 0;
-		uint32  style          = STYLE_TRICKSTER;
+		uint32  style          = STYLE_DOPPELGANGER;
 		uint8 meleeWeapons[2] =
 		{
 			WEAPON_REBELLION,

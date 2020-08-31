@@ -192,6 +192,29 @@ void Customize_CreateMainActor(byte8 * baseAddr)
 	return CreateMainActor(baseAddr);
 }
 
+
+void CreateCloneActor(byte8 * baseAddr)
+{
+	UnlockActor(baseAddr);
+
+	Actor_CreateCloneActor(baseAddr);
+}
+
+void UpdateActorDante_CreateCloneActor(byte8 * baseAddr)
+{
+	LogFunction();
+
+	return CreateCloneActor(baseAddr);
+}
+
+
+
+
+
+
+
+
+
 bool EventOnce(EventData & eventData)
 {
 	auto event = eventData.event;
@@ -418,7 +441,7 @@ export void Event_Init()
 		};
 		constexpr byte8 sect1[] =
 		{
-			0x48, 0x8B, 0xC8, //mov rcx,rax
+			mov_rcx_rax,
 		};
 		auto func = CreateFunction(Main_CreateMainActor, (appBaseAddr + 0x23C77E), true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
@@ -437,7 +460,7 @@ export void Event_Init()
 		};
 		constexpr byte8 sect1[] =
 		{
-			0x48, 0x8B, 0xC8, // mov rcx,rax
+			mov_rcx_rax,
 		};
 		auto func = CreateFunction(Customize_CreateMainActor, (appBaseAddr + 0x23B7B8), true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
@@ -449,6 +472,46 @@ export void Event_Init()
 		dmc3.exe+23B7B8 - 48 89 87 B82C0000 - mov [rdi+00002CB8],rax
 		*/
 	}
+
+	// Create Clone Actor
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+1DE820
+		};
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rax,
+		};
+		auto func = CreateFunction(UpdateActorDante_CreateCloneActor, (appBaseAddr + 0x2134E3), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
+		WriteJump((appBaseAddr + 0x2134DE), func.addr);
+		/*
+		dmc3.exe+2134DE - E8 3DB3FCFF       - call dmc3.exe+1DE820
+		dmc3.exe+2134E3 - 48 89 86 78640000 - mov [rsi+00006478],rax
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// Event Handler
 	{

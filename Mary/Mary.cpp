@@ -138,8 +138,15 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		//Mobility_Toggle(true);
 
+
+
+
 		Mobility::Init();
 		Mobility::Toggle(true);
+
+
+
+
 
 
 		//Model_Init();

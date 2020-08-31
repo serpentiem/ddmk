@@ -891,7 +891,7 @@ template <typename T>
 bool IsVergilMeleeWeaponSelected(T & actorData)
 {
 	auto & meleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
-	if ((meleeWeapon >= WEAPON_VERGIL_YAMATO) && (meleeWeapon <= WEAPON_VERGIL_FORCE_EDGE))
+	if ((meleeWeapon >= WEAPON_YAMATO_VERGIL) && (meleeWeapon <= WEAPON_FORCE_EDGE))
 	{
 		return true;
 	}
@@ -902,7 +902,7 @@ template <typename T>
 bool IsDanteMeleeWeaponSelected(T & actorData)
 {
 	auto & meleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
-	if ((meleeWeapon >= WEAPON_DANTE_REBELLION) && (meleeWeapon <= WEAPON_DANTE_BEOWULF))
+	if ((meleeWeapon >= WEAPON_REBELLION) && (meleeWeapon <= WEAPON_BEOWULF_DANTE))
 	{
 		return true;
 	}
@@ -1145,27 +1145,27 @@ void DanteVergil(byte8 * baseAddr)
 		if (IsActive(childActorData))
 		{
 			auto style = parentActorData.style;
-			if (style > STYLE_DANTE_DOPPELGANGER)
+			if (style > STYLE_DOPPELGANGER)
 			{
-				style = STYLE_DANTE_SWORDMASTER;
+				style = STYLE_SWORDMASTER;
 			}
 
 			auto meleeWeapon = parentActorData.weapons[parentActorData.meleeWeaponIndex];
-			if (meleeWeapon > WEAPON_DANTE_BEOWULF)
+			if (meleeWeapon > WEAPON_BEOWULF_DANTE)
 			{
-				meleeWeapon = WEAPON_DANTE_REBELLION;
+				meleeWeapon = WEAPON_REBELLION;
 			}
 
 
 
 			auto rangedWeapon = parentActorData.weapons[parentActorData.rangedWeaponIndex];
-			if (rangedWeapon > WEAPON_DANTE_KALINA_ANN)
+			if (rangedWeapon > WEAPON_KALINA_ANN)
 			{
-				rangedWeapon = WEAPON_DANTE_EBONY_IVORY;
+				rangedWeapon = WEAPON_EBONY_IVORY;
 			}
-			if (rangedWeapon >= WEAPON_DANTE_EBONY_IVORY)
+			if (rangedWeapon >= WEAPON_EBONY_IVORY)
 			{
-				rangedWeapon -= WEAPON_DANTE_EBONY_IVORY;
+				rangedWeapon -= WEAPON_EBONY_IVORY;
 			}
 
 			uint8 state = (childActorData.state & STATE_ON_FLOOR) ? 0 : 1;
@@ -1258,13 +1258,13 @@ void DanteVergil(byte8 * baseAddr)
 		if (IsActive(parentActorData))
 		{
 			auto meleeWeapon = childActorData.weapons[childActorData.queuedMeleeWeaponIndex];
-			if (meleeWeapon > WEAPON_VERGIL_FORCE_EDGE)
+			if (meleeWeapon > WEAPON_FORCE_EDGE)
 			{
-				meleeWeapon = WEAPON_VERGIL_YAMATO;
+				meleeWeapon = WEAPON_YAMATO;
 			}
-			if (meleeWeapon >= WEAPON_VERGIL_YAMATO)
+			if (meleeWeapon >= WEAPON_YAMATO)
 			{
-				meleeWeapon -= WEAPON_VERGIL_YAMATO;
+				meleeWeapon -= WEAPON_YAMATO;
 			}
 
 			uint8 state = (parentActorData.state & STATE_ON_FLOOR) ? 0 : 1;

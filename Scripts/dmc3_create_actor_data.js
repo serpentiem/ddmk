@@ -386,6 +386,7 @@ var extra =
 
 
 
+	[ "newIsClone", "bool32" ],
 
 
 
@@ -395,7 +396,7 @@ var extra =
 
 
 
-
+	
 	[ "newPlayer", "uint8" ],
 	[ "newEntity", "uint8" ],
 
