@@ -15,6 +15,7 @@ import ModuleName(Internal);
 import ModuleName(Memory);
 import ModuleName(Mobility);
 import ModuleName(Model);
+import ModuleName(Scene);
 import ModuleName(Training);
 //import ModuleName(Update);
 import ModuleName(Window);
@@ -35,6 +36,7 @@ import ModuleName(Window);
 #include "Memory.ixx"
 #include "Mobility.ixx"
 #include "Model.ixx"
+#include "Scene.ixx"
 #include "Training.ixx"
 //#include "Update.ixx"
 #include "Window.ixx"
@@ -116,6 +118,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		//Speed_Update(Config);
 
 		HUD_Init();
+
+
+		Scene_Init();
 
 		Training_ToggleInfiniteHitPoints  (Config.Training.infiniteHitPoints);
 		Training_ToggleInfiniteMagicPoints(true);

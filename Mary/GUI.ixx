@@ -1292,13 +1292,10 @@ void Main()
 
 
 
-		//ImGui::Text("");
-
-		//auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
-
-		//GUI_Checkbox("One Hit Kill", sessionData.oneHitKill, false);
-
-		//ImGui::Text("");
+		ImGui::Text("");
+		auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250);
+		GUI_Checkbox("One Hit Kill", sessionData.oneHitKill, false);
+		ImGui::Text("");
 
 
 

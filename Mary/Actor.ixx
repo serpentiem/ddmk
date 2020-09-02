@@ -49,11 +49,6 @@ export template <> struct GetActorDataType<CHAR_BOB   > { typedef ActorDataBob  
 export template <> struct GetActorDataType<CHAR_LADY  > { typedef ActorDataLady   value; };
 export template <> struct GetActorDataType<CHAR_VERGIL> { typedef ActorDataVergil value; };
 
-// @Todo: Remove.
-export template <typename T> struct GetChildActorDataType {};
-export template <> struct GetChildActorDataType<ActorDataDante > { typedef ActorDataVergil value; };
-export template <> struct GetChildActorDataType<ActorDataVergil> { typedef ActorDataDante  value; };
-
 struct CharacterData
 {
 	uint8 character;
@@ -105,7 +100,7 @@ void CharacterData::Update(T & actorData)
 			costume = 0;
 		}
 		costumeFileId = costumeFileIdsBob[costume];
-		coat = false;
+		coat = false; // @Research: Compare coat vars.
 		break;
 	}
 	case CHAR_LADY:
@@ -136,6 +131,22 @@ void CharacterData::Update(T & actorData)
 		break;
 	}
 	}
+}
+
+export template <typename T>
+bool IsStyleActive
+(
+	T & actorData,
+	uint8 style
+)
+{
+	return false;
+}
+
+export template <typename T>
+bool IsStyleActive(T & actorData)
+{
+	return false;
 }
 
 export template <typename T>
@@ -232,6 +243,9 @@ bool IsMeleeWeaponReady
 	{
 		return true;
 	}
+
+
+	// @Todo: Update for Sparda.
 
 	if (actorData.devil)
 	{
@@ -570,8 +584,6 @@ void UpdateCostumeFileData(T & actorData)
 {
 	IntroduceSessionData();
 
-
-
 	CharacterData characterData;
 
 	characterData.Update(actorData);
@@ -580,58 +592,6 @@ void UpdateCostumeFileData(T & actorData)
 	auto & costume       = characterData.costume;
 	auto & costumeFileId = characterData.costumeFileId;
 	auto & coat          = characterData.coat;
-
-
-
-
-
-	// uint8 character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : static_cast<uint8>(actorData.character);
-	// if (character >= MAX_CHAR)
-	// {
-	// 	character = 0;
-	// }
-	// uint8 costume = actorData.costume;
-	// uint16 costumeFileId = 0;
-
-	// switch (character)
-	// {
-	// case CHAR_DANTE:
-	// {
-	// 	if (costume >= MAX_COSTUME_DANTE)
-	// 	{
-	// 		costume = 0;
-	// 	}
-	// 	costumeFileId = costumeFileIdsDante[costume];
-	// 	break;
-	// }
-	// case CHAR_BOB:
-	// {
-	// 	if (costume >= MAX_COSTUME_BOB)
-	// 	{
-	// 		costume = 0;
-	// 	}
-	// 	costumeFileId = costumeFileIdsBob[costume];
-	// 	break;
-	// }
-	// case CHAR_LADY:
-	// {
-	// 	if (costume >= MAX_COSTUME_LADY)
-	// 	{
-	// 		costume = 0;
-	// 	}
-	// 	costumeFileId = costumeFileIdsLady[costume];
-	// 	break;
-	// }
-	// case CHAR_VERGIL:
-	// {
-	// 	if (costume >= MAX_COSTUME_VERGIL)
-	// 	{
-	// 		costume = 0;
-	// 	}
-	// 	costumeFileId = costumeFileIdsVergil[costume];
-	// 	break;
-	// }
-	// }
 
 	File_UpdateFileData(static_cast<uint16>(character), costumeFileId);
 
@@ -737,16 +697,6 @@ void InitModel
 	func_30E630(dest, 0);
 }
 
-
-
-
-
-
-
-
-
-
-
 template <typename T>
 void UpdateModel(T & actorData)
 {
@@ -758,79 +708,6 @@ void UpdateModel(T & actorData)
 	auto & costume       = characterData.costume;
 	auto & costumeFileId = characterData.costumeFileId;
 	auto & coat          = characterData.coat;
-
-
-
-
-
-	//uint8 character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : GetCharacterId<T>::value;
-	//if (character >= MAX_CHAR)
-	//{
-	//	character = 0;
-	//}
-	//uint8 costume = actorData.costume;
-	//uint16 costumeFileId = 0;
-	//bool coat = false;
-
-	//switch (character)
-	//{
-	//case CHAR_DANTE:
-	//{
-	//	if (costume >= MAX_COSTUME_DANTE)
-	//	{
-	//		costume = 0;
-	//	}
-	//	costumeFileId = costumeFileIdsDante[costume];
-	//	coat =
-	//	(
-	//		(costume == COSTUME_DANTE_DEFAULT                           ) ||
-	//		(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
-	//		(costume == COSTUME_DANTE_DMC1                              ) ||
-	//		(costume == COSTUME_DANTE_SPARDA                            ) ||
-	//		(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
-	//		(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
-	//	)
-	//	? true : false;
-	//	break;
-	//}
-	//case CHAR_BOB:
-	//{
-	//	if (costume >= MAX_COSTUME_BOB)
-	//	{
-	//		costume = 0;
-	//	}
-	//	costumeFileId = costumeFileIdsBob[costume];
-	//	coat = false;
-	//	break;
-	//}
-	//case CHAR_LADY:
-	//{
-	//	if (costume >= MAX_COSTUME_LADY)
-	//	{
-	//		costume = 0;
-	//	}
-	//	costumeFileId = costumeFileIdsLady[costume];
-	//	coat = false;
-	//	break;
-	//}
-	//case CHAR_VERGIL:
-	//{
-	//	if (costume >= MAX_COSTUME_VERGIL)
-	//	{
-	//		costume = 0;
-	//	}
-	//	costumeFileId = costumeFileIdsVergil[costume];
-	//	coat =
-	//	(
-	//		(costume == COSTUME_VERGIL_DEFAULT                      ) ||
-	//		(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
-	//		(costume == COSTUME_VERGIL_SPARDA                       ) ||
-	//		(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
-	//	)
-	//	? true : false;
-	//	break;
-	//}
-	//}
 
 	auto & file = File_staticFiles[costumeFileId];
 
@@ -915,11 +792,6 @@ void UpdateModel(T & actorData)
 		return;
 	}
 
-
-
-
-
-
 	if (coat && shadowFile)
 	{
 		RegisterShadow
@@ -929,17 +801,6 @@ void UpdateModel(T & actorData)
 			shadowFile
 		);
 	}
-
-
-
-
-
-
-
-
-
-
-	
 
 	actorData.newSubmodelInit[submodelIndex] = true;
 
@@ -1010,6 +871,7 @@ void UpdateDevilModel
 	uint8 modelPhysicsMetadataIndex = 0;
 	uint8 devilModelPhysicsMetadataIndex = 0;
 
+	// @Todo: Update.
 	auto LinkModelPhysicsData = [&]
 	(
 		uint8 _devilSubmodelPhysicsLinkDataIndex,
@@ -1253,33 +1115,25 @@ void UpdateModelPartitions(T & actorData)
 {
 	IntroduceSessionData();
 
+	CharacterData characterData;
+
+	characterData.Update(actorData);
+
+	auto & character     = characterData.character;
+	auto & costume       = characterData.costume;
+	auto & costumeFileId = characterData.costumeFileId;
+	auto & coat          = characterData.coat;
+
 	auto modelPartitionData = actorData.newModelData[0].modelPartitionData;
 	if (!modelPartitionData)
 	{
-		static bool run = false;
-		if (!run)
-		{
-			run = true;
-			Log("modelPartitionData 0 %llX", actorData.operator byte8 *());
-		}
 		return;
 	}
-
-	uint8 character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : static_cast<uint8>(actorData.character);
-	if (character >= MAX_CHAR)
-	{
-		character = 0;
-	}
-	uint8 costume = actorData.costume;
 
 	switch (character)
 	{
 	case CHAR_DANTE:
 	{
-		if (costume >= MAX_COSTUME_DANTE)
-		{
-			costume = 0;
-		}
 		bool beowulf = false;
 		if constexpr (TypeMatch<T, ActorDataDante>::value)
 		{
@@ -1293,8 +1147,8 @@ void UpdateModelPartitions(T & actorData)
 		{
 		case COSTUME_DANTE_DEFAULT:
 		{
-			modelPartitionData[0 ].value = 3; // Hands
-			modelPartitionData[1 ].value = 2; // Fists
+			modelPartitionData[0 ].value = (beowulf) ? 2 : 3; // Hands
+			modelPartitionData[1 ].value = (beowulf) ? 3 : 2; // Fists
 			modelPartitionData[2 ].value = 3; // Shoulders
 			modelPartitionData[3 ].value = (beowulf) ? 2 : 3; // Lower Arms
 			modelPartitionData[4 ].value = (beowulf) ? 3 : 2; // Lower Arms Half
@@ -1314,15 +1168,15 @@ void UpdateModelPartitions(T & actorData)
 		}
 		case COSTUME_DANTE_DEFAULT_NO_COAT:
 		{
-			modelPartitionData[0 ].value = 3; // Hands
-			modelPartitionData[1 ].value = 2; // Fists
+			modelPartitionData[0 ].value = (beowulf) ? 2 : 3; // Hands
+			modelPartitionData[1 ].value = (beowulf) ? 3 : 2; // Fists
 			modelPartitionData[2 ].value = 3; // Upper Body
 			modelPartitionData[3 ].value = 2; // Filler
 			modelPartitionData[4 ].value = 2; // Filler
 			modelPartitionData[5 ].value = (beowulf) ? 3 : 2; // Lower Legs Half
 			modelPartitionData[6 ].value = (beowulf) ? 2 : 3; // Lower Legs and Feet
 			modelPartitionData[7 ].value = 3; // Upper Legs
-			modelPartitionData[8 ].value = (beowulf) ? 2 : 3; // Accessories
+			modelPartitionData[8 ].value = 3; // Accessories
 			modelPartitionData[9 ].value = 3; // Face
 			modelPartitionData[10].value = 3; // Hair Base
 			modelPartitionData[11].value = 3; // Hair Back Layer 1
@@ -1335,8 +1189,8 @@ void UpdateModelPartitions(T & actorData)
 		case COSTUME_DANTE_DEFAULT_TORN:
 		case COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS:
 		{
-			modelPartitionData[0 ].value = 3; // Hands
-			modelPartitionData[1 ].value = 2; // Fists
+			modelPartitionData[0 ].value = (beowulf) ? 2 : 3; // Hands
+			modelPartitionData[1 ].value = (beowulf) ? 3 : 2; // Fists
 			modelPartitionData[2 ].value = 3; // Shoulders
 			modelPartitionData[3 ].value = (beowulf) ? 2 : 3; // Lower Arms
 			modelPartitionData[4 ].value = (beowulf) ? 3 : 2; // Lower Arms Half
@@ -1357,8 +1211,8 @@ void UpdateModelPartitions(T & actorData)
 		}
 		case COSTUME_DANTE_DMC1:
 		{
-			modelPartitionData[0 ].value = 3; // Hands
-			modelPartitionData[1 ].value = 2; // Fists
+			modelPartitionData[0 ].value = (beowulf) ? 2 : 3; // Hands
+			modelPartitionData[1 ].value = (beowulf) ? 3 : 2; // Fists
 			modelPartitionData[2 ].value = 3; // Shoulders and Arms
 			modelPartitionData[3 ].value = 2; // Filler
 			modelPartitionData[4 ].value = 2; // Filler
@@ -1377,8 +1231,8 @@ void UpdateModelPartitions(T & actorData)
 		}
 		case COSTUME_DANTE_DMC1_NO_COAT:
 		{
-			modelPartitionData[0 ].value = 3; // Hands
-			modelPartitionData[1 ].value = 2; // Fists
+			modelPartitionData[0 ].value = (beowulf) ? 2 : 3; // Hands
+			modelPartitionData[1 ].value = (beowulf) ? 3 : 2; // Fists
 			modelPartitionData[2 ].value = 3; // Upper Body
 			modelPartitionData[3 ].value = 2; // Filler
 			modelPartitionData[4 ].value = 2; // Filler
@@ -1397,8 +1251,8 @@ void UpdateModelPartitions(T & actorData)
 		case COSTUME_DANTE_SPARDA:
 		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
 		{
-			modelPartitionData[0 ].value = 3; // Hands
-			modelPartitionData[1 ].value = 2; // Fists
+			modelPartitionData[0 ].value = (beowulf) ? 2 : 3; // Hands
+			modelPartitionData[1 ].value = (beowulf) ? 3 : 2; // Fists
 			modelPartitionData[2 ].value = 3; // Shoulders
 			modelPartitionData[3 ].value = (beowulf) ? 2 : 3; // Lower Arms
 			modelPartitionData[4 ].value = (beowulf) ? 3 : 2; // Lower Arms Half
@@ -1418,18 +1272,10 @@ void UpdateModelPartitions(T & actorData)
 	}
 	case CHAR_BOB:
 	{
-		if (costume >= MAX_COSTUME_BOB)
-		{
-			costume = 0;
-		}
 		break;
 	}
 	case CHAR_LADY:
 	{
-		if (costume >= MAX_COSTUME_LADY)
-		{
-			costume = 0;
-		}
 		switch (costume)
 		{
 		case COSTUME_LADY_DEFAULT:
@@ -1458,10 +1304,6 @@ void UpdateModelPartitions(T & actorData)
 	}
 	case CHAR_VERGIL:
 	{
-		if (costume >= MAX_COSTUME_VERGIL)
-		{
-			costume = 0;
-		}
 		bool beowulf = false;
 		if constexpr (TypeMatch<T, ActorDataDante>::value)
 		{
@@ -1474,6 +1316,7 @@ void UpdateModelPartitions(T & actorData)
 		switch (costume)
 		{
 		case COSTUME_VERGIL_DEFAULT:
+		case COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS:
 		{
 			modelPartitionData[0 ].value = 3; // Body
 			modelPartitionData[1 ].value = 3; // Shoulders
@@ -1492,64 +1335,31 @@ void UpdateModelPartitions(T & actorData)
 		{
 			modelPartitionData[0 ].value = 3; // Body
 			modelPartitionData[1 ].value = 3; // Arms
-			modelPartitionData[2 ].value = 3; // Hands
+			modelPartitionData[2 ].value = (beowulf) ? 2 : 3; // Hands
 			modelPartitionData[3 ].value = 3; // Face
-			modelPartitionData[4 ].value = 3; // Fists
+			modelPartitionData[4 ].value = (beowulf) ? 3 : 2; // Fists
 			modelPartitionData[5 ].value = 3; // Hair Base
 			modelPartitionData[6 ].value = 3; // Hair Main
-			modelPartitionData[7 ].value = 3; // Lower Legs Half
-			modelPartitionData[8 ].value = 3; // Lower Legs and Feet
-			modelPartitionData[9 ].value = 3; // Filler
-			modelPartitionData[10].value = 3; // Filler
-			break;
-		}
-		case COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS:
-		{
-			modelPartitionData[0 ].value = 3; // Body
-			modelPartitionData[1 ].value = 3; // Shoulders
-			modelPartitionData[2 ].value = 3; // Hands
-			modelPartitionData[3 ].value = 3; // Face
-			modelPartitionData[4 ].value = 3; // Fists
-			modelPartitionData[5 ].value = 3; // Hair Base
-			modelPartitionData[6 ].value = 3; // Hair Main
-			modelPartitionData[7 ].value = 3; // Lower Legs Half
-			modelPartitionData[8 ].value = 3; // Lower Legs and Feet
-			modelPartitionData[9 ].value = 3; // Lower Arms Half
-			modelPartitionData[10].value = 3; // Lower Arms
+			modelPartitionData[7 ].value = (beowulf) ? 3 : 2; // Lower Legs Half
+			modelPartitionData[8 ].value = (beowulf) ? 2 : 3; // Lower Legs and Feet
+			modelPartitionData[9 ].value = 2; // Filler
+			modelPartitionData[10].value = 2; // Filler
 			break;
 		}
 		case COSTUME_VERGIL_SPARDA:
-		{
-			modelPartitionData[0 ].value = 3; // Neck
-			modelPartitionData[1 ].value = 3; // Face
-			modelPartitionData[2 ].value = 3; // Hands
-			modelPartitionData[3 ].value = 3; // Eyes
-			modelPartitionData[4 ].value = 3; // Fists
-			modelPartitionData[5 ].value = 3; // Hair Base
-			modelPartitionData[6 ].value = 3; // Hair Main
-			modelPartitionData[7 ].value = 3; // Lower Legs Half
-			modelPartitionData[8 ].value = 3; // Lower Legs and Feet
-			modelPartitionData[9 ].value = 3; // Lower Arms Half
-			modelPartitionData[10].value = 3; // Lower Arms
-			modelPartitionData[11].value = 3; // Collar
-			modelPartitionData[12].value = 3; // Lower Legs
-			modelPartitionData[13].value = 3; // Shoulders
-			modelPartitionData[14].value = 3; // Body
-			break;
-		}
 		case COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS:
 		{
 			modelPartitionData[0 ].value = 3; // Neck
 			modelPartitionData[1 ].value = 3; // Face
-			modelPartitionData[2 ].value = 3; // Hands
+			modelPartitionData[2 ].value = (beowulf) ? 2 : 3; // Hands
 			modelPartitionData[3 ].value = 3; // Eyes
-			modelPartitionData[4 ].value = 3; // Fists
+			modelPartitionData[4 ].value = (beowulf) ? 3 : 2; // Fists
 			modelPartitionData[5 ].value = 3; // Hair Base
 			modelPartitionData[6 ].value = 3; // Hair Main
-			modelPartitionData[7 ].value = 3; // Lower Legs Half
-			modelPartitionData[8 ].value = 3; // Lower Legs and Feet
-			modelPartitionData[9 ].value = 3; // Lower Arms Half
-			modelPartitionData[10].value = 3; // Lower Arms
+			modelPartitionData[7 ].value = (beowulf) ? 3 : 2; // Lower Legs Half
+			modelPartitionData[8 ].value = (beowulf) ? 2 : 3; // Lower Legs and Feet
+			modelPartitionData[9 ].value = (beowulf) ? 3 : 2; // Lower Arms Half
+			modelPartitionData[10].value = (beowulf) ? 2 : 3; // Lower Arms
 			modelPartitionData[11].value = 3; // Collar
 			modelPartitionData[12].value = 3; // Lower Legs
 			modelPartitionData[13].value = 3; // Shoulders
@@ -1602,20 +1412,20 @@ RegisterWeapon_t RegisterWeapon[MAX_WEAPON] = {};
 
 void InitRegisterWeapon()
 {
-	RegisterWeapon[WEAPON_REBELLION  ] = func_2310B0;
-	RegisterWeapon[WEAPON_CERBERUS   ] = func_22EC90;
-	RegisterWeapon[WEAPON_AGNI_RUDRA ] = func_227870;
-	RegisterWeapon[WEAPON_NEVAN      ] = func_22A1E0;
-	RegisterWeapon[WEAPON_BEOWULF_DANTE    ] = func_228CF0;
-	RegisterWeapon[WEAPON_EBONY_IVORY] = func_22B0C0;
-	RegisterWeapon[WEAPON_SHOTGUN    ] = func_2306B0;
-	RegisterWeapon[WEAPON_ARTEMIS    ] = func_22C4A0;
-	RegisterWeapon[WEAPON_SPIRAL     ] = func_2300A0;
-	RegisterWeapon[WEAPON_KALINA_ANN ] = func_22BA30;
-	RegisterWeapon[WEAPON_YAMATO_VERGIL    ] = func_22D960;
-	RegisterWeapon[WEAPON_BEOWULF_VERGIL   ] = func_228CF0;
-	RegisterWeapon[WEAPON_FORCE_EDGE] = func_2298E0;
-	RegisterWeapon[WEAPON_YAMATO_BOB       ] = func_231A30;
+	RegisterWeapon[WEAPON_REBELLION      ] = func_2310B0;
+	RegisterWeapon[WEAPON_CERBERUS       ] = func_22EC90;
+	RegisterWeapon[WEAPON_AGNI_RUDRA     ] = func_227870;
+	RegisterWeapon[WEAPON_NEVAN          ] = func_22A1E0;
+	RegisterWeapon[WEAPON_BEOWULF_DANTE  ] = func_228CF0;
+	RegisterWeapon[WEAPON_EBONY_IVORY    ] = func_22B0C0;
+	RegisterWeapon[WEAPON_SHOTGUN        ] = func_2306B0;
+	RegisterWeapon[WEAPON_ARTEMIS        ] = func_22C4A0;
+	RegisterWeapon[WEAPON_SPIRAL         ] = func_2300A0;
+	RegisterWeapon[WEAPON_KALINA_ANN     ] = func_22BA30;
+	RegisterWeapon[WEAPON_YAMATO_VERGIL  ] = func_22D960;
+	RegisterWeapon[WEAPON_BEOWULF_VERGIL ] = func_228CF0;
+	RegisterWeapon[WEAPON_FORCE_EDGE     ] = func_2298E0;
+	RegisterWeapon[WEAPON_YAMATO_BOB     ] = func_231A30;
 }
 
 
@@ -1648,7 +1458,7 @@ void InitWeapons
 	for_all(uint8, index, count)
 	{
 		uint8 weapon =
-		(TypeMatch<T, ActorDataDante >::value) ? (WEAPON_REBELLION + index) :
+		(TypeMatch<T, ActorDataDante >::value) ? (WEAPON_REBELLION       + index) :
 		(TypeMatch<T, ActorDataVergil>::value) ? (WEAPON_YAMATO_VERGIL   + index) :
 		0;
 
@@ -1674,6 +1484,7 @@ void InitWeapons
 	{
 		actorData.activeMeleeWeaponIndex = 0;
 		actorData.queuedMeleeWeaponIndex = 0;
+
 		if (actorData.neroAngelo)
 		{
 			actorData.newWeaponData[3] = func_22CF00(actorData, 0);
@@ -2609,6 +2420,7 @@ void ToggleRelocations(bool enable)
 		Write<uint32>((appBaseAddr + 0x1EF6DC + 3), (enable) ? newOff : off); // dmc3.exe+1EF6DC - 48 81 C1 00020000 - ADD RCX,00000200
 		Write<uint32>((appBaseAddr + 0x1EF8B3 + 3), (enable) ? newOff : off); // dmc3.exe+1EF8B3 - 48 81 C1 00020000 - ADD RCX,00000200
 		Write<uint32>((appBaseAddr + 0x1FB570 + 3), (enable) ? newOff : off); // dmc3.exe+1FB570 - 48 81 C1 00020000 - ADD RCX,00000200
+		Write<uint32>((appBaseAddr + 0x1FB9D1 + 3), (enable) ? newOff : off); // dmc3.exe+1FB9D1 - 48 81 C3 00020000 - ADD RBX,00000200
 		Write<uint32>((appBaseAddr + 0x1FC3CB + 3), (enable) ? newOff : off); // dmc3.exe+1FC3CB - 48 81 C1 00020000 - ADD RCX,00000200
 		Write<uint32>((appBaseAddr + 0x1FC525 + 3), (enable) ? newOff : off); // dmc3.exe+1FC525 - 48 81 C1 00020000 - ADD RCX,00000200
 		Write<uint32>((appBaseAddr + 0x1FCA34 + 3), (enable) ? newOff : off); // dmc3.exe+1FCA34 - 48 8D B1 00020000 - LEA RSI,[RCX+00000200]
@@ -2670,10 +2482,6 @@ void ToggleRelocations(bool enable)
 		// Write<uint32>((appBaseAddr + 0x116EF0 + 3), (enable) ? newOff : off); // dmc3.exe+116EF0 - 48 8D 8F 00020000 - LEA RCX,[RDI+00000200]
 		// Write<uint32>((appBaseAddr + 0x151EA7 + 2), (enable) ? newOff : off); // dmc3.exe+151EA7 - 48 05 00020000 - ADD RAX,00000200
 		// Write<uint32>((appBaseAddr + 0x15204C + 2), (enable) ? newOff : off); // dmc3.exe+15204C - 48 05 00020000 - ADD RAX,00000200
-		// Write<uint32>((appBaseAddr + 0x17412C + 2), (enable) ? newOff : off); // dmc3.exe+17412C - 48 05 00020000 - ADD RAX,00000200
-		// Write<uint32>((appBaseAddr + 0x174A8C + 2), (enable) ? newOff : off); // dmc3.exe+174A8C - 48 05 00020000 - ADD RAX,00000200
-		// Write<uint32>((appBaseAddr + 0x174AF1 + 2), (enable) ? newOff : off); // dmc3.exe+174AF1 - 48 05 00020000 - ADD RAX,00000200
-		// Write<uint32>((appBaseAddr + 0x174C27 + 3), (enable) ? newOff : off); // dmc3.exe+174C27 - 48 81 C6 00020000 - ADD RSI,00000200
 		// Write<uint32>((appBaseAddr + 0x19E23F + 3), (enable) ? newOff : off); // dmc3.exe+19E23F - 48 8D 8B 00020000 - LEA RCX,[RBX+00000200]
 		// Write<uint32>((appBaseAddr + 0x1A1B46 + 3), (enable) ? newOff : off); // dmc3.exe+1A1B46 - 48 81 C1 00020000 - ADD RCX,00000200
 		// Write<uint32>((appBaseAddr + 0x1A1EAF + 3), (enable) ? newOff : off); // dmc3.exe+1A1EAF - 48 8D 8F 00020000 - LEA RCX,[RDI+00000200]
@@ -2688,7 +2496,6 @@ void ToggleRelocations(bool enable)
 		// Write<uint32>((appBaseAddr + 0x1FB7C3 + 3), (enable) ? newOff : off); // dmc3.exe+1FB7C3 - 48 8D B3 00020000 - LEA RSI,[RBX+00000200]
 		// Write<uint32>((appBaseAddr + 0x1FB88C + 3), (enable) ? newOff : off); // dmc3.exe+1FB88C - 48 8D B3 00020000 - LEA RSI,[RBX+00000200]
 		// Write<uint32>((appBaseAddr + 0x1FB946 + 3), (enable) ? newOff : off); // dmc3.exe+1FB946 - 48 8D B3 00020000 - LEA RSI,[RBX+00000200]
-		Write<uint32>((appBaseAddr + 0x1FB9D1 + 3), (enable) ? newOff : off); // dmc3.exe+1FB9D1 - 48 81 C3 00020000 - ADD RBX,00000200
 		// Write<uint32>((appBaseAddr + 0x1FCB5B + 3), (enable) ? newOff : off); // dmc3.exe+1FCB5B - 4C 8D B7 00020000 - LEA R14,[RDI+00000200]
 		// Write<uint32>((appBaseAddr + 0x1FCBC7 + 3), (enable) ? newOff : off); // dmc3.exe+1FCBC7 - 4C 8D B7 00020000 - LEA R14,[RDI+00000200]
 		// Write<uint32>((appBaseAddr + 0x1FCC2D + 3), (enable) ? newOff : off); // dmc3.exe+1FCC2D - 4C 8D B7 00020000 - LEA R14,[RDI+00000200]
@@ -2824,8 +2631,6 @@ void ToggleRelocations(bool enable)
 		// Write<uint32>((appBaseAddr + 0x3014EF + 3), (enable) ? newOff : off); // dmc3.exe+3014EF - 48 8B 8D 08020000 - MOV RCX,[RBP+00000208]
 		// Write<uint32>((appBaseAddr + 0x3015ED + 3), (enable) ? newOff : off); // dmc3.exe+3015ED - 48 89 95 08020000 - MOV [RBP+00000208],RDX
 		// Write<uint32>((appBaseAddr + 0x30160D + 3), (enable) ? newOff : off); // dmc3.exe+30160D - 48 8B 8D 08020000 - MOV RCX,[RBP+00000208]
-		// Write<uint32>((appBaseAddr + 0x301715 + 3), (enable) ? newOff : off); // dmc3.exe+301715 - 48 89 95 08020000 - MOV [RBP+00000208],RDX
-		// Write<uint32>((appBaseAddr + 0x301735 + 3), (enable) ? newOff : off); // dmc3.exe+301735 - 48 8B 8D 08020000 - MOV RCX,[RBP+00000208]
 		// Write<uint32>((appBaseAddr + 0x30181C + 3), (enable) ? newOff : off); // dmc3.exe+30181C - 48 89 95 08020000 - MOV [RBP+00000208],RDX
 		// Write<uint32>((appBaseAddr + 0x30183C + 3), (enable) ? newOff : off); // dmc3.exe+30183C - 48 8B 8D 08020000 - MOV RCX,[RBP+00000208]
 		// Write<uint32>((appBaseAddr + 0x30193A + 3), (enable) ? newOff : off); // dmc3.exe+30193A - 48 89 95 08020000 - MOV [RBP+00000208],RDX
@@ -2891,7 +2696,6 @@ void ToggleRelocations(bool enable)
 		// Write<uint32>((appBaseAddr + 0x26B327 + 3), (enable) ? newOff : off); // dmc3.exe+26B327 - 48 81 C1 80090000 - ADD RCX,00000980
 		// Write<uint32>((appBaseAddr + 0x26B33B + 3), (enable) ? newOff : off); // dmc3.exe+26B33B - 4C 8D 80 80090000 - LEA R8,[RAX+00000980]
 		// Write<uint32>((appBaseAddr + 0x26B9E9 + 3), (enable) ? newOff : off); // dmc3.exe+26B9E9 - 48 89 B1 80090000 - MOV [RCX+00000980],RSI
-		// Write<uint32>((appBaseAddr + 0x26D4DD + 3), (enable) ? newOff : off); // dmc3.exe+26D4DD - 48 8D 8B 80090000 - LEA RCX,[RBX+00000980]
 		// Write<uint32>((appBaseAddr + 0x26D5AD + 3), (enable) ? newOff : off); // dmc3.exe+26D5AD - 48 8D 8B 80090000 - LEA RCX,[RBX+00000980]
 		// Write<uint32>((appBaseAddr + 0x26D81A + 3), (enable) ? newOff : off); // dmc3.exe+26D81A - 48 81 C1 80090000 - ADD RCX,00000980
 		// Write<uint32>((appBaseAddr + 0x26D843 + 3), (enable) ? newOff : off); // dmc3.exe+26D843 - 49 8D 88 80090000 - LEA RCX,[R8+00000980]
@@ -2985,7 +2789,6 @@ void ToggleRelocations(bool enable)
 		// Write<uint32>((appBaseAddr + 0x166061 + 3), (enable) ? newOff : off); // dmc3.exe+166061 - 48 89 83 00110000 - MOV [RBX+00001100],RAX
 		// Write<uint32>((appBaseAddr + 0x16608C + 3), (enable) ? newOff : off); // dmc3.exe+16608C - 48 8B 83 00110000 - MOV RAX,[RBX+00001100]
 		// Write<uint32>((appBaseAddr + 0x1A068A + 3), (enable) ? newOff : off); // dmc3.exe+1A068A - 4C 8D 8F 00110000 - LEA R9,[RDI+00001100]
-		// Write<uint32>((appBaseAddr + 0x26D4EA + 3), (enable) ? newOff : off); // dmc3.exe+26D4EA - 48 8D 8B 00110000 - LEA RCX,[RBX+00001100]
 		// Write<uint32>((appBaseAddr + 0x26D5A0 + 3), (enable) ? newOff : off); // dmc3.exe+26D5A0 - 48 8D 8B 00110000 - LEA RCX,[RBX+00001100]
 		// Write<uint32>((appBaseAddr + 0x26D9AD + 3), (enable) ? newOff : off); // dmc3.exe+26D9AD - 48 81 C1 00110000 - ADD RCX,00001100
 		// Write<uint32>((appBaseAddr + 0x26DA41 + 3), (enable) ? newOff : off); // dmc3.exe+26DA41 - 48 8D 8F 00110000 - LEA RCX,[RDI+00001100]
@@ -3071,6 +2874,8 @@ void ToggleRelocations(bool enable)
 		Write<uint32>((appBaseAddr + 0xDA8A9 + 4), (enable) ? newOff : off); // dmc3.exe+DA8A9 - 48 8B 94 C7 80180000 - MOV RDX,[RDI+RAX*8+00001880]
 		Write<uint32>((appBaseAddr + 0xDA8C5 + 4), (enable) ? newOff : off); // dmc3.exe+DA8C5 - 48 8B 8C C7 80180000 - MOV RCX,[RDI+RAX*8+00001880]
 		Write<uint32>((appBaseAddr + 0xDA8E7 + 4), (enable) ? newOff : off); // dmc3.exe+DA8E7 - 48 8B 8C C7 80180000 - MOV RCX,[RDI+RAX*8+00001880]
+		Write<uint32>((appBaseAddr + 0x16FC58 + 4), (enable) ? newOff : off); // dmc3.exe+16FC58 - 48 8B 8C C3 80180000 - MOV RCX,[RBX+RAX*8+00001880]
+		Write<uint32>((appBaseAddr + 0x173D52 + 4), (enable) ? newOff : off); // dmc3.exe+173D52 - 48 8B 8C C3 80180000 - MOV RCX,[RBX+RAX*8+00001880]
 		Write<uint32>((appBaseAddr + 0x1A35EB + 4), (enable) ? newOff : off); // dmc3.exe+1A35EB - 48 8B 8C C7 80180000 - MOV RCX,[RDI+RAX*8+00001880]
 		Write<uint32>((appBaseAddr + 0x1E946F + 4), (enable) ? newOff : off); // dmc3.exe+1E946F - 48 8B 8C C7 80180000 - MOV RCX,[RDI+RAX*8+00001880]
 		Write<uint32>((appBaseAddr + 0x1EAE89 + 4), (enable) ? newOff : off); // dmc3.exe+1EAE89 - 48 8B 94 C3 80180000 - MOV RDX,[RBX+RAX*8+00001880]
@@ -3330,9 +3135,7 @@ void ToggleRelocations(bool enable)
 		// Write<uint32>((appBaseAddr + 0xFEA30 + 3), (enable) ? newOff : off); // dmc3.exe+FEA30 - 48 8D 8F 80180000 - LEA RCX,[RDI+00001880]
 		// Write<uint32>((appBaseAddr + 0x150370 + 4), (enable) ? newOff : off); // dmc3.exe+150370 - 48 8B 8C C3 80180000 - MOV RCX,[RBX+RAX*8+00001880]
 		// Write<uint32>((appBaseAddr + 0x150395 + 4), (enable) ? newOff : off); // dmc3.exe+150395 - 48 8B 8C C3 80180000 - MOV RCX,[RBX+RAX*8+00001880]
-		// Write<uint32>((appBaseAddr + 0x16FC58 + 4), (enable) ? newOff : off); // dmc3.exe+16FC58 - 48 8B 8C C3 80180000 - MOV RCX,[RBX+RAX*8+00001880]
 		// Write<uint32>((appBaseAddr + 0x173072 + 4), (enable) ? newOff : off); // dmc3.exe+173072 - 48 8B 8C C3 80180000 - MOV RCX,[RBX+RAX*8+00001880]
-		// Write<uint32>((appBaseAddr + 0x173D52 + 4), (enable) ? newOff : off); // dmc3.exe+173D52 - 48 8B 8C C3 80180000 - MOV RCX,[RBX+RAX*8+00001880]
 		// Write<uint32>((appBaseAddr + 0x17C39B + 4), (enable) ? newOff : off); // dmc3.exe+17C39B - 48 8B 8C C3 80180000 - MOV RCX,[RBX+RAX*8+00001880]
 		// Write<uint32>((appBaseAddr + 0x17C784 + 4), (enable) ? newOff : off); // dmc3.exe+17C784 - 48 8B 8C C3 80180000 - MOV RCX,[RBX+RAX*8+00001880]
 		// Write<uint32>((appBaseAddr + 0x17D694 + 4), (enable) ? newOff : off); // dmc3.exe+17D694 - 48 8B 8C C3 80180000 - MOV RCX,[RBX+RAX*8+00001880]
@@ -4706,6 +4509,7 @@ void ToggleRelocations(bool enable)
 	}
 }
 
+
 void ToggleModelCountAdjustments(bool enable)
 {
 	LogFunction(enable);
@@ -5629,4 +5433,121 @@ export void Actor_Init()
 #endif
 
 #ifdef __GARBAGE__
+
+	// uint8 character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : static_cast<uint8>(actorData.character);
+	// if (character >= MAX_CHAR)
+	// {
+	// 	character = 0;
+	// }
+	// uint8 costume = actorData.costume;
+	// uint16 costumeFileId = 0;
+
+	// switch (character)
+	// {
+	// case CHAR_DANTE:
+	// {
+	// 	if (costume >= MAX_COSTUME_DANTE)
+	// 	{
+	// 		costume = 0;
+	// 	}
+	// 	costumeFileId = costumeFileIdsDante[costume];
+	// 	break;
+	// }
+	// case CHAR_BOB:
+	// {
+	// 	if (costume >= MAX_COSTUME_BOB)
+	// 	{
+	// 		costume = 0;
+	// 	}
+	// 	costumeFileId = costumeFileIdsBob[costume];
+	// 	break;
+	// }
+	// case CHAR_LADY:
+	// {
+	// 	if (costume >= MAX_COSTUME_LADY)
+	// 	{
+	// 		costume = 0;
+	// 	}
+	// 	costumeFileId = costumeFileIdsLady[costume];
+	// 	break;
+	// }
+	// case CHAR_VERGIL:
+	// {
+	// 	if (costume >= MAX_COSTUME_VERGIL)
+	// 	{
+	// 		costume = 0;
+	// 	}
+	// 	costumeFileId = costumeFileIdsVergil[costume];
+	// 	break;
+	// }
+	// }
+	//uint8 character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : GetCharacterId<T>::value;
+	//if (character >= MAX_CHAR)
+	//{
+	//	character = 0;
+	//}
+	//uint8 costume = actorData.costume;
+	//uint16 costumeFileId = 0;
+	//bool coat = false;
+
+	//switch (character)
+	//{
+	//case CHAR_DANTE:
+	//{
+	//	if (costume >= MAX_COSTUME_DANTE)
+	//	{
+	//		costume = 0;
+	//	}
+	//	costumeFileId = costumeFileIdsDante[costume];
+	//	coat =
+	//	(
+	//		(costume == COSTUME_DANTE_DEFAULT                           ) ||
+	//		(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
+	//		(costume == COSTUME_DANTE_DMC1                              ) ||
+	//		(costume == COSTUME_DANTE_SPARDA                            ) ||
+	//		(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
+	//		(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
+	//	)
+	//	? true : false;
+	//	break;
+	//}
+	//case CHAR_BOB:
+	//{
+	//	if (costume >= MAX_COSTUME_BOB)
+	//	{
+	//		costume = 0;
+	//	}
+	//	costumeFileId = costumeFileIdsBob[costume];
+	//	coat = false;
+	//	break;
+	//}
+	//case CHAR_LADY:
+	//{
+	//	if (costume >= MAX_COSTUME_LADY)
+	//	{
+	//		costume = 0;
+	//	}
+	//	costumeFileId = costumeFileIdsLady[costume];
+	//	coat = false;
+	//	break;
+	//}
+	//case CHAR_VERGIL:
+	//{
+	//	if (costume >= MAX_COSTUME_VERGIL)
+	//	{
+	//		costume = 0;
+	//	}
+	//	costumeFileId = costumeFileIdsVergil[costume];
+	//	coat =
+	//	(
+	//		(costume == COSTUME_VERGIL_DEFAULT                      ) ||
+	//		(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
+	//		(costume == COSTUME_VERGIL_SPARDA                       ) ||
+	//		(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
+	//	)
+	//	? true : false;
+	//	break;
+	//}
+	//}
+
 #endif
