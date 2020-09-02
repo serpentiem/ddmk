@@ -33,7 +33,7 @@ struct FileVectorMetadata
 	}
 	byte8 * operator[](uint32 index)
 	{
-		auto & archiveData = *reinterpret_cast<ARCHIVE_DATA *>(addr);
+		auto & archiveData = *reinterpret_cast<ArchiveData *>(addr);
 		if (index >= archiveData.fileCount)
 		{
 			Log("Outside file range. %u %u", archiveData.fileCount, index);
@@ -94,7 +94,7 @@ struct FileVector
 export FileVector File_staticFiles;
 export FileVector File_dynamicFiles;
 
-STRING_ITEM stringItems[MAX_CACHE_FILE] = {};
+StringData stringData[MAX_CACHE_FILE] = {};
 
 byte8 * demo_pl000_00_3 = 0;
 
@@ -312,143 +312,19 @@ byte8 * FileVector::Push(byte8 * file, uint32 fileSize)
 	return dest;
 }
 
-void File_UpdateFileItem
+export void File_UpdateFileData
 (
-	uint16 fileItemId,
-	uint16 cacheFileId
+	uint16 fileDataId,
+	uint16 fileId
 )
 {
-	auto & fileItem = (reinterpret_cast<FILE_ITEM *>(appBaseAddr + 0xC99D30))[fileItemId];
+	auto & fileData = (reinterpret_cast<FileData *>(appBaseAddr + 0xC99D30))[fileDataId];
 
-	memset(&fileItem, 0, sizeof(FILE_ITEM));
+	memset(&fileData, 0, sizeof(FileData));
 
-	fileItem.status = FILE_ITEM_READY;
-	fileItem.stringItem = &stringItems[cacheFileId];
-	fileItem.file = File_staticFiles[cacheFileId];
-}
-
-struct FileItemHelper
-{
-	uint16 fileItemId;
-	uint16 fileId;
-};
-
-constexpr FileItemHelper fileItemHelperDante[] =
-{
-	{ 200, pl005         },
-	{ 201, pl006         },
-	{ 202, pl007         },
-	{ 203, pl008         },
-	{ 204, pl009         },
-	{ 205, pl017         },
-	{ 141, plwp_nunchaku },
-	{ 142, plwp_2sword   },
-	{ 143, plwp_guitar   },
-	{ 144, plwp_fight    },
-	{ 145, plwp_gun      },
-	{ 146, plwp_shotgun  },
-	{ 147, plwp_laser    },
-	{ 148, plwp_rifle    },
-	{ 149, plwp_ladygun  },
-};
-
-constexpr FileItemHelper fileItemHelperBob[] =
-{
-	{ 207, pl010            },
-	{ 169, plwp_vergilsword },
-};
-
-constexpr FileItemHelper fileItemHelperVergil[] =
-{
-	{ 221, pl010               },
-	{ 222, pl014               },
-	{ 223, pl025               },
-	{ 196, plwp_newvergilsword },
-	{ 189, plwp_newvergilfight },
-	{ 198, plwp_forceedge      },
-	{ 187, plwp_nerosword      },
-};
-
-export template <typename T>
-void File_UpdateActorFileItems(T & actorData)
-{
-	LogFunction();
-
-	IntroduceSessionData();
-
-	auto costume = actorData.costume;
-	uint16 costumeFileId = 0;
-
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
-	{
-		if (costume >= MAX_COSTUME_DANTE)
-		{
-			costume = 0;
-		}
-		costumeFileId = costumeFileIdsDante[costume];
-		File_UpdateFileItem(0, costumeFileId);
-
-		uint16 swordFileId = plwp_sword;
-		if (sessionData.unlockDevilTrigger)
-		{
-			swordFileId = plwp_sword2;
-		}
-		if
-		(
-			(costume == COSTUME_DANTE_DMC1                        ) ||
-			(costume == COSTUME_DANTE_DMC1_NO_COAT                ) ||
-			(costume == COSTUME_DANTE_SPARDA                      ) ||
-			(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS)
-		)
-		{
-			swordFileId = plwp_sword3;
-		}
-		File_UpdateFileItem(140, swordFileId);
-
-		for_all(uint8, index, countof(fileItemHelperDante))
-		{
-			File_UpdateFileItem
-			(
-				fileItemHelperDante[index].fileItemId,
-				fileItemHelperDante[index].fileId
-			);
-		}
-	}
-	else if constexpr (TypeMatch<T, ActorDataBob>::value)
-	{
-		File_UpdateFileItem(1, pl001);
-
-		for_all(uint8, index, countof(fileItemHelperBob))
-		{
-			File_UpdateFileItem
-			(
-				fileItemHelperBob[index].fileItemId,
-				fileItemHelperBob[index].fileId
-			);
-		}
-	}
-	else if constexpr (TypeMatch<T, ActorDataLady>::value)
-	{
-		File_UpdateFileItem(2, pl002);
-	}
-	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	{
-		if (costume >= MAX_COSTUME_VERGIL)
-		{
-			costume = 0;
-		}
-		costumeFileId = costumeFileIdsVergil[costume];
-		File_UpdateFileItem(3, costumeFileId);
-
-		for_all(uint8, index, countof(fileItemHelperVergil))
-		{
-			File_UpdateFileItem
-			(
-				fileItemHelperVergil[index].fileItemId,
-				fileItemHelperVergil[index].fileId
-			);
-		}
-	}
+	fileData.status = FILE_STATUS_READY;
+	fileData.stringData = &stringData[fileId];
+	fileData.file = File_staticFiles[fileId];
 }
 
 export bool File_Init()
@@ -496,7 +372,7 @@ export bool File_Init()
 			return false;
 		}
 		File_AdjustPointers(file);
-		stringItems[cacheFileId].string = type;
+		stringData[cacheFileId].string = type;
 	}
 
 	{

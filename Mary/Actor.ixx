@@ -49,9 +49,94 @@ export template <> struct GetActorDataType<CHAR_BOB   > { typedef ActorDataBob  
 export template <> struct GetActorDataType<CHAR_LADY  > { typedef ActorDataLady   value; };
 export template <> struct GetActorDataType<CHAR_VERGIL> { typedef ActorDataVergil value; };
 
+// @Todo: Remove.
 export template <typename T> struct GetChildActorDataType {};
 export template <> struct GetChildActorDataType<ActorDataDante > { typedef ActorDataVergil value; };
 export template <> struct GetChildActorDataType<ActorDataVergil> { typedef ActorDataDante  value; };
+
+struct CharacterData
+{
+	uint8 character;
+	uint8 costume;
+	uint16 costumeFileId;
+	bool coat;
+
+	template <typename T>
+	void Update(T & actorData);
+};
+
+template <typename T>
+void CharacterData::Update(T & actorData)
+{
+	character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : static_cast<uint8>(actorData.character);
+	if (character >= MAX_CHAR)
+	{
+		character = 0;
+	}
+	costume = actorData.costume;
+	costumeFileId = 0;
+	coat = false;
+
+	switch (character)
+	{
+	case CHAR_DANTE:
+	{
+		if (costume >= MAX_COSTUME_DANTE)
+		{
+			costume = 0;
+		}
+		costumeFileId = costumeFileIdsDante[costume];
+		coat =
+		(
+			(costume == COSTUME_DANTE_DEFAULT                           ) ||
+			(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
+			(costume == COSTUME_DANTE_DMC1                              ) ||
+			(costume == COSTUME_DANTE_SPARDA                            ) ||
+			(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
+			(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
+		)
+		? true : false;
+		break;
+	}
+	case CHAR_BOB:
+	{
+		if (costume >= MAX_COSTUME_BOB)
+		{
+			costume = 0;
+		}
+		costumeFileId = costumeFileIdsBob[costume];
+		coat = false;
+		break;
+	}
+	case CHAR_LADY:
+	{
+		if (costume >= MAX_COSTUME_LADY)
+		{
+			costume = 0;
+		}
+		costumeFileId = costumeFileIdsLady[costume];
+		coat = false;
+		break;
+	}
+	case CHAR_VERGIL:
+	{
+		if (costume >= MAX_COSTUME_VERGIL)
+		{
+			costume = 0;
+		}
+		costumeFileId = costumeFileIdsVergil[costume];
+		coat =
+		(
+			(costume == COSTUME_VERGIL_DEFAULT                      ) ||
+			(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
+			(costume == COSTUME_VERGIL_SPARDA                       ) ||
+			(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
+		)
+		? true : false;
+		break;
+	}
+	}
+}
 
 export template <typename T>
 bool IsWeaponActive
@@ -210,6 +295,25 @@ bool IsMeleeWeaponReady
 			return false;
 		}
 	}
+
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+
+		if (actorData.devil && actorData.sparda)
+		{
+			return false;
+		}
+	}
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+	{
+		if (actorData.devil && actorData.neroAngelo)
+		{
+			return false;
+		}
+	}
+
+
+
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
@@ -374,6 +478,183 @@ void SetMainActor(byte8 * baseAddr)
 
 #pragma endregion
 
+#pragma region File
+
+struct FileDataHelper
+{
+	uint16 fileDataId;
+	uint16 fileId;
+};
+
+constexpr FileDataHelper fileDataHelperDante[] =
+{
+	{ 0  , pl000         },
+	{ 200, pl005         },
+	{ 201, pl006         },
+	{ 202, pl007         },
+	{ 203, pl008         },
+	{ 204, pl009         },
+	{ 205, pl017         },
+	{ 140, plwp_sword    },
+	{ 141, plwp_nunchaku },
+	{ 142, plwp_2sword   },
+	{ 143, plwp_guitar   },
+	{ 144, plwp_fight    },
+	{ 145, plwp_gun      },
+	{ 146, plwp_shotgun  },
+	{ 147, plwp_laser    },
+	{ 148, plwp_rifle    },
+	{ 149, plwp_ladygun  },
+};
+
+constexpr FileDataHelper fileDataHelperBob[] =
+{
+	{ 1  , pl001            },
+	{ 207, pl010            },
+	{ 169, plwp_vergilsword },
+};
+
+constexpr FileDataHelper fileDataHelperLady[] =
+{
+	{ 2, pl002 },
+};
+
+constexpr FileDataHelper fileDataHelperVergil[] =
+{
+	{ 3  , pl021               },
+	{ 221, pl010               },
+	{ 222, pl014               },
+	{ 223, pl025               },
+	{ 196, plwp_newvergilsword },
+	{ 189, plwp_newvergilfight },
+	{ 198, plwp_forceedge      },
+	{ 187, plwp_nerosword      },
+};
+
+template<uint8 itemCount>
+void UpdateFileDataFunction(const FileDataHelper(&items)[itemCount])
+{
+	for_all(uint8, itemIndex, itemCount)
+	{
+		File_UpdateFileData
+		(
+			items[itemIndex].fileDataId,
+			items[itemIndex].fileId
+		);
+	}
+}
+
+template <typename T>
+void UpdateFileData(T & actorData)
+{
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+		UpdateFileDataFunction(fileDataHelperDante);
+	}
+	else if constexpr (TypeMatch<T, ActorDataBob>::value)
+	{
+		UpdateFileDataFunction(fileDataHelperBob);
+	}
+	else if constexpr (TypeMatch<T, ActorDataLady>::value)
+	{
+		UpdateFileDataFunction(fileDataHelperLady);
+	}
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+	{
+		UpdateFileDataFunction(fileDataHelperVergil);
+	}
+}
+
+template <typename T>
+void UpdateCostumeFileData(T & actorData)
+{
+	IntroduceSessionData();
+
+
+
+	CharacterData characterData;
+
+	characterData.Update(actorData);
+
+	auto & character     = characterData.character;
+	auto & costume       = characterData.costume;
+	auto & costumeFileId = characterData.costumeFileId;
+	auto & coat          = characterData.coat;
+
+
+
+
+
+	// uint8 character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : static_cast<uint8>(actorData.character);
+	// if (character >= MAX_CHAR)
+	// {
+	// 	character = 0;
+	// }
+	// uint8 costume = actorData.costume;
+	// uint16 costumeFileId = 0;
+
+	// switch (character)
+	// {
+	// case CHAR_DANTE:
+	// {
+	// 	if (costume >= MAX_COSTUME_DANTE)
+	// 	{
+	// 		costume = 0;
+	// 	}
+	// 	costumeFileId = costumeFileIdsDante[costume];
+	// 	break;
+	// }
+	// case CHAR_BOB:
+	// {
+	// 	if (costume >= MAX_COSTUME_BOB)
+	// 	{
+	// 		costume = 0;
+	// 	}
+	// 	costumeFileId = costumeFileIdsBob[costume];
+	// 	break;
+	// }
+	// case CHAR_LADY:
+	// {
+	// 	if (costume >= MAX_COSTUME_LADY)
+	// 	{
+	// 		costume = 0;
+	// 	}
+	// 	costumeFileId = costumeFileIdsLady[costume];
+	// 	break;
+	// }
+	// case CHAR_VERGIL:
+	// {
+	// 	if (costume >= MAX_COSTUME_VERGIL)
+	// 	{
+	// 		costume = 0;
+	// 	}
+	// 	costumeFileId = costumeFileIdsVergil[costume];
+	// 	break;
+	// }
+	// }
+
+	File_UpdateFileData(static_cast<uint16>(character), costumeFileId);
+
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+		uint16 swordFileId = plwp_sword;
+
+		if (sessionData.unlockDevilTrigger)
+		{
+			swordFileId = plwp_sword2;
+		}
+
+		if (actorData.sparda)
+		{
+			swordFileId = plwp_sword3;
+		}
+
+		File_UpdateFileData(140, swordFileId);
+	}
+}
+
+#pragma endregion
+
 #pragma region Actor Management
 
 template <typename T>
@@ -456,77 +737,100 @@ void InitModel
 	func_30E630(dest, 0);
 }
 
+
+
+
+
+
+
+
+
+
+
 template <typename T>
 void UpdateModel(T & actorData)
 {
-	uint8 character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : GetCharacterId<T>::value;
-	if (character >= MAX_CHAR)
-	{
-		character = 0;
-	}
-	uint8 costume = actorData.costume;
-	uint16 costumeFileId = 0;
-	bool coat = false;
+	CharacterData characterData;
 
-	switch (character)
-	{
-	case CHAR_DANTE:
-	{
-		if (costume >= MAX_COSTUME_DANTE)
-		{
-			costume = 0;
-		}
-		costumeFileId = costumeFileIdsDante[costume];
-		coat =
-		(
-			(costume == COSTUME_DANTE_DEFAULT                           ) ||
-			(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
-			(costume == COSTUME_DANTE_DMC1                              ) ||
-			(costume == COSTUME_DANTE_SPARDA                            ) ||
-			(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
-			(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
-		)
-		? true : false;
-		break;
-	}
-	case CHAR_BOB:
-	{
-		if (costume >= MAX_COSTUME_BOB)
-		{
-			costume = 0;
-		}
-		costumeFileId = costumeFileIdsBob[costume];
-		coat = false;
-		break;
-	}
-	case CHAR_LADY:
-	{
-		if (costume >= MAX_COSTUME_LADY)
-		{
-			costume = 0;
-		}
-		costumeFileId = costumeFileIdsLady[costume];
-		coat = false;
-		break;
-	}
-	case CHAR_VERGIL:
-	{
-		if (costume >= MAX_COSTUME_VERGIL)
-		{
-			costume = 0;
-		}
-		costumeFileId = costumeFileIdsVergil[costume];
-		coat =
-		(
-			(costume == COSTUME_VERGIL_DEFAULT                      ) ||
-			(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
-			(costume == COSTUME_VERGIL_SPARDA                       ) ||
-			(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
-		)
-		? true : false;
-		break;
-	}
-	}
+	characterData.Update(actorData);
+
+	auto & character     = characterData.character;
+	auto & costume       = characterData.costume;
+	auto & costumeFileId = characterData.costumeFileId;
+	auto & coat          = characterData.coat;
+
+
+
+
+
+	//uint8 character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : GetCharacterId<T>::value;
+	//if (character >= MAX_CHAR)
+	//{
+	//	character = 0;
+	//}
+	//uint8 costume = actorData.costume;
+	//uint16 costumeFileId = 0;
+	//bool coat = false;
+
+	//switch (character)
+	//{
+	//case CHAR_DANTE:
+	//{
+	//	if (costume >= MAX_COSTUME_DANTE)
+	//	{
+	//		costume = 0;
+	//	}
+	//	costumeFileId = costumeFileIdsDante[costume];
+	//	coat =
+	//	(
+	//		(costume == COSTUME_DANTE_DEFAULT                           ) ||
+	//		(costume == COSTUME_DANTE_DEFAULT_TORN                      ) ||
+	//		(costume == COSTUME_DANTE_DMC1                              ) ||
+	//		(costume == COSTUME_DANTE_SPARDA                            ) ||
+	//		(costume == COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS) ||
+	//		(costume == COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS      )
+	//	)
+	//	? true : false;
+	//	break;
+	//}
+	//case CHAR_BOB:
+	//{
+	//	if (costume >= MAX_COSTUME_BOB)
+	//	{
+	//		costume = 0;
+	//	}
+	//	costumeFileId = costumeFileIdsBob[costume];
+	//	coat = false;
+	//	break;
+	//}
+	//case CHAR_LADY:
+	//{
+	//	if (costume >= MAX_COSTUME_LADY)
+	//	{
+	//		costume = 0;
+	//	}
+	//	costumeFileId = costumeFileIdsLady[costume];
+	//	coat = false;
+	//	break;
+	//}
+	//case CHAR_VERGIL:
+	//{
+	//	if (costume >= MAX_COSTUME_VERGIL)
+	//	{
+	//		costume = 0;
+	//	}
+	//	costumeFileId = costumeFileIdsVergil[costume];
+	//	coat =
+	//	(
+	//		(costume == COSTUME_VERGIL_DEFAULT                      ) ||
+	//		(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
+	//		(costume == COSTUME_VERGIL_SPARDA                       ) ||
+	//		(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
+	//	)
+	//	? true : false;
+	//	break;
+	//}
+	//}
 
 	auto & file = File_staticFiles[costumeFileId];
 
@@ -611,7 +915,12 @@ void UpdateModel(T & actorData)
 		return;
 	}
 
-	if (coat)
+
+
+
+
+
+	if (coat && shadowFile)
 	{
 		RegisterShadow
 		(
@@ -620,6 +929,17 @@ void UpdateModel(T & actorData)
 			shadowFile
 		);
 	}
+
+
+
+
+
+
+
+
+
+
+	
 
 	actorData.newSubmodelInit[submodelIndex] = true;
 
@@ -1574,9 +1894,9 @@ T * CreateActorFunction
 	uint8 entity
 )
 {
-	constexpr uint8 character = GetCharacterId<T>::value;
-
 	IntroduceMissionActorDataPointers(return 0);
+
+	constexpr uint8 character = GetCharacterId<T>::value;
 
 	auto baseAddr = func_1DE820(character, 0, false);
 	if (!baseAddr)
@@ -1586,17 +1906,46 @@ T * CreateActorFunction
 
 	auto & actorData = *reinterpret_cast<T *>(baseAddr);
 
-	File_UpdateActorFileItems(actorData);
+	UpdateFileData(actorData);
 
 	InitActor(actorData, missionActorData_16C);
 
 	actorData.costume = Config.Actor.costume[player][entity][character];
+
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+		switch (actorData.costume)
+		{
+		case COSTUME_DANTE_DMC1:
+		case COSTUME_DANTE_DMC1_NO_COAT:
+		case COSTUME_DANTE_SPARDA:
+		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
+		{
+			actorData.sparda = true;
+			break;
+		}
+		}
+	}
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+	{
+		switch (actorData.costume)
+		{
+		case COSTUME_VERGIL_SPARDA:
+		case COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS:
+		{
+			actorData.neroAngelo = true;
+			break;
+		}
+		}
+	}
 
 	actorData.newPlayer = player;
 	actorData.newEntity = entity;
 
 	actorData.newForceFiles          = Config.Actor.forceFiles         [player][entity][character];
 	actorData.newForceFilesCharacter = Config.Actor.forceFilesCharacter[player][entity][character];
+
+	UpdateCostumeFileData(actorData);
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{

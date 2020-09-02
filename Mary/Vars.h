@@ -844,18 +844,6 @@ enum SPEED_DEVIL_
 	SPEED_DEVIL_NERO_ANGELO_FORCE_EDGE,
 };
 
-enum FILE_ITEM_STATUS_
-{
-	FILE_ITEM_READY = 3,
-};
-
-enum FILE_MODE_
-{
-	FILE_MODE_MEMORY,
-	FILE_MODE_ARCHIVE,
-	FILE_MODE_LOCAL,
-};
-
 enum ACTOR_EVENT
 {
 	ACTOR_EVENT_DANTE_DASH = 22,
@@ -1209,37 +1197,43 @@ static_assert(offsetof(CAMERA_DATA, zoom) == 0xD8);
 
 
 
+enum FILE_STATUS
+{
+	FILE_STATUS_READY = 3,
+};
+
+enum FILE_MODE
+{
+	FILE_MODE_MEMORY,
+	FILE_MODE_ARCHIVE,
+	FILE_MODE_LOCAL,
+};
 
 
 
 
-
-struct ARCHIVE_DATA
+struct ArchiveData
 {
 	byte8 signature[4];
 	uint32 fileCount;
 	uint32 fileOff[128];
 };
 
-
-
-
-
-struct STRING_ITEM
+struct StringData
 {
 	_(8);
 	const char * string;
 };
 
-struct FILE_ITEM
+struct FileData
 {
-	uint32        category;
-	uint32        status;
-	uint16        id;
+	uint32 category;
+	uint32 status;
+	uint16 id;
 	_(6);
-	void        * callback;
-	STRING_ITEM * stringItem;
-	byte8       * file;
+	void * callback;
+	StringData * stringData;
+	byte8 * file;
 	_(32);
 };
 
