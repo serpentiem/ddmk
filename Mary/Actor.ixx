@@ -4832,6 +4832,121 @@ void InitGetActorBaseAddr()
 
 
 
+// @Research: Use activeDevil instead.
+void SetColor
+(
+	ActorData & actorData,
+	byte8 * dest
+)
+{
+	uint8 character = static_cast<uint8>(actorData.character);
+
+	switch (character)
+	{
+		case CHAR_DANTE:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(&actorData);
+
+			if (actorData2.sparda)
+			{
+				memcpy(dest, activeConfig.Color.Aura.sparda, 4);
+			}
+			else
+			{
+				uint8 meleeWeaponIndex = static_cast<uint8>(actorData2.meleeWeaponIndex);
+				if (meleeWeaponIndex >= MAX_MELEE_WEAPON_DANTE)
+				{
+					meleeWeaponIndex = 0;
+				}
+
+				memcpy(dest, activeConfig.Color.Aura.dante[meleeWeaponIndex], 4);
+			}
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
+
+			if (actorData2.neroAngelo)
+			{
+				memcpy(dest, activeConfig.Color.Aura.neroAngelo, 4);
+			}
+			else
+			{
+				uint8 activeMeleeWeaponIndex = static_cast<uint8>(actorData2.activeMeleeWeaponIndex);
+				if (activeMeleeWeaponIndex >= MAX_MELEE_WEAPON_VERGIL)
+				{
+					activeMeleeWeaponIndex = 0;
+				}
+
+				memcpy(dest, activeConfig.Color.Aura.vergil[activeMeleeWeaponIndex], 4);
+			}
+			break;
+		}
+	}
+}
+
+// void SetColorProxy(byte8 * baseAddr)
+// {
+// 	auto addr = *reinterpret_cast<byte8 **>(baseAddr + 0x28);
+// 	if (!addr)
+// 	{
+// 		return;
+// 	}
+// 	auto actorBaseAddr = *reinterpret_cast<byte8 **>(addr + 0xC0);
+// 	if (!actorBaseAddr)
+// 	{
+// 		return;
+// 	}
+// 	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+
+// 	auto dest = (baseAddr + 0xE0);
+
+// 	SetColor(actorData, dest);
+// }
+
+
+void SetColorProxy(byte8 * baseAddr, byte8 * dest)
+{
+	auto addr = *reinterpret_cast<byte8 **>(baseAddr + 0x30);
+	if (!addr)
+	{
+		return;
+	}
+
+	auto actorBaseAddr = *reinterpret_cast<byte8 **>(baseAddr + 0xC0);
+	if (!actorBaseAddr)
+	{
+		return;
+	}
+	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+
+	//auto dest = (addr + 0xE0);
+
+	SetColor(actorData, dest);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void ToggleMainActorFixes(bool enable)
 {
@@ -4852,102 +4967,201 @@ void ToggleMainActorFixes(bool enable)
 
 
 
+	// {
+	// 	auto dest = (appBaseAddr + 0x90C2B);
+	// 	if (enable)
+	// 	{
+	// 		WriteCall(dest, GetActorBaseAddr[RDI], 2);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x8B, 0x05, 0xF6, 0x01, 0xC0, 0x00, // mov rax,[dmc3.exe+C90E28]
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+90C2B - 48 8B 05 F601C000 - mov rax,[dmc3.exe+C90E28]
+	// 	*/
+	// }
+
+	// {
+	// 	auto dest = (appBaseAddr + 0x90C3D);
+	// 	if (enable)
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x8B, 0xC8, // mov rcx,rax
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 		vp_memset((dest + 3), 0x90, 1);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x8B, 0x48, 0x18, // mov rcx,[rax+18]
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+90C3D - 48 8B 48 18 - mov rcx,[rax+18]
+	// 	*/
+	// }
+
+
+
+	// {
+	// 	auto dest = (appBaseAddr + 0x8E417);
+	// 	if (enable)
+	// 	{
+	// 		WriteCall(dest, GetActorBaseAddr[RBX], 2);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x8B, 0x0D, 0x0A, 0x2A, 0xC0, 0x00, // mov rcx,[dmc3.exe+C90E28]
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+8E417 - 48 8B 0D 0A2AC000 - mov rcx,[dmc3.exe+C90E28]
+	// 	*/
+	// }
+
+	// {
+	// 	auto dest = (appBaseAddr + 0x8E44A);
+	// 	if (enable)
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x8B, 0xC8, // mov rcx,rax
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 		vp_memset((dest + 3), 0x90, 1);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x8B, 0x49, 0x18, // mov rcx,[rcx+18]
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+8E44A - 48 8B 49 18 - mov rcx,[rcx+18]
+	// 	*/
+	// }
+
+
+
+
+
+	// Start
 	{
-		auto dest = (appBaseAddr + 0x90C2B);
-		if (enable)
+		constexpr byte8 sect0[] =
 		{
-			WriteCall(dest, GetActorBaseAddr[RDI], 2);
-		}
-		else
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call
+			0x48, 0x8B, 0xC8,             // mov rcx,rax
+			0x48, 0x8D, 0x55, 0xA7,       // lea rdx,[rbp-59]
+		};
+		constexpr byte8 sect2[] =
 		{
-			constexpr byte8 buffer[] =
-			{
-				0x48, 0x8B, 0x05, 0xF6, 0x01, 0xC0, 0x00, // mov rax,[dmc3.exe+C90E28]
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
+			0xBA, 0x01, 0x00, 0x00, 0x00, // mov edx,00000001
+		};
+		auto func = CreateFunction(SetColor, (appBaseAddr + 0x8E457), true, true, sizeof(sect0), 0, sizeof(sect2));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteCall(func.sect0, GetActorBaseAddr[RBX]);
+		WriteJump((appBaseAddr + 0x8E452), func.addr);
 		/*
-		dmc3.exe+90C2B - 48 8B 05 F601C000 - mov rax,[dmc3.exe+C90E28]
+		dmc3.exe+8E452 - BA 01000000 - mov edx,00000001
+		dmc3.exe+8E457 - E8 34C61600 - call dmc3.exe+1FAA90
 		*/
 	}
 
+	// Loop
 	{
-		auto dest = (appBaseAddr + 0x90C3D);
-		if (enable)
+		constexpr byte8 sect1[] =
 		{
-			constexpr byte8 buffer[] =
-			{
-				0x48, 0x8B, 0xC8, // mov rcx,rax
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-			vp_memset((dest + 3), 0x90, 1);
-		}
-		else
+			mov_rcx_rbx,
+		};
+		constexpr byte8 sect2[] =
 		{
-			constexpr byte8 buffer[] =
-			{
-				0x48, 0x8B, 0x48, 0x18, // mov rcx,[rax+18]
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
+			0x44, 0x0F, 0xB6, 0x83, 0xE0, 0x00, 0x00, 0x00, // movzx r8d,byte ptr [rbx+000000E0]
+		};
+		auto func = CreateFunction(SetColorProxy, (appBaseAddr + 0x2E5F53), true, true, 0, sizeof(sect1), sizeof(sect2));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		//WriteJump((appBaseAddr + 0x2E5F4B), func.addr, 3);
 		/*
-		dmc3.exe+90C3D - 48 8B 48 18 - mov rcx,[rax+18]
+		dmc3.exe+2E5F4B - 44 0FB6 83 E0000000 - movzx r8d,byte ptr [rbx+000000E0]
+		dmc3.exe+2E5F53 - 44 0FB6 8B E1000000 - movzx r9d,byte ptr [rbx+000000E1]
 		*/
 	}
 
 
-
+	// True Loop
 	{
-		auto dest = (appBaseAddr + 0x8E417);
-		if (enable)
+		// constexpr byte8 sect0[] =
+		// {
+		// 	0xE8, 0x00, 0x00, 0x00, 0x00, // call
+		// 	0x48, 0x8B, 0xC8,             // mov rcx,rax
+		// 	0x48, 0x8D, 0x54, 0x24, 0x30, // lea rdx,[rsp+30]
+		// };
+
+		constexpr byte8 sect0[] =
 		{
-			WriteCall(dest, GetActorBaseAddr[RBX], 2);
-		}
-		else
+			0x48, 0x8D, 0x54, 0x24, 0x30, // lea rdx,[rsp+30]
+		};
+		constexpr byte8 sect1[] =
 		{
-			constexpr byte8 buffer[] =
-			{
-				0x48, 0x8B, 0x0D, 0x0A, 0x2A, 0xC0, 0x00, // mov rcx,[dmc3.exe+C90E28]
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
+			mov_rcx_rdi,
+		};
+		constexpr byte8 sect2[] =
+		{
+			0x48, 0x8B, 0x06, // mov rax,[rsi]
+			0x48, 0x85, 0xC0, // test rax,rax
+		};
+		auto func = CreateFunction(SetColorProxy, (appBaseAddr + 0x90C69), true, true, sizeof(sect0), sizeof(sect1), sizeof(sect2));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		//WriteCall(func.sect0, GetActorBaseAddr[RDI]);
+		WriteJump((appBaseAddr + 0x90C63), func.addr, 1);
 		/*
-		dmc3.exe+8E417 - 48 8B 0D 0A2AC000 - mov rcx,[dmc3.exe+C90E28]
+		dmc3.exe+90C63 - 48 8B 06 - mov rax,[rsi]
+		dmc3.exe+90C66 - 48 85 C0 - test rax,rax
+		dmc3.exe+90C69 - 74 32    - je dmc3.exe+90C9D
 		*/
 	}
 
-	{
-		auto dest = (appBaseAddr + 0x8E44A);
-		if (enable)
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x48, 0x8B, 0xC8, // mov rcx,rax
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-			vp_memset((dest + 3), 0x90, 1);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x48, 0x8B, 0x49, 0x18, // mov rcx,[rcx+18]
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+8E44A - 48 8B 49 18 - mov rcx,[rcx+18]
-		*/
-	}
-
-
-
-
-
-
-
-
-
+	// // End
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0xE8, 0x00, 0x00, 0x00, 0x00, // call
+	// 		0x48, 0x8B, 0xC8,             // mov rcx,rax
+	// 		0x48, 0x8D, 0x54, 0x24, 0x30, // lea rdx,[rsp+30]
+	// 	};
+	// 	constexpr byte8 sect2[] =
+	// 	{
+	// 		0x48, 0x8B, 0x06, // mov rax,[rsi]
+	// 		0x48, 0x85, 0xC0, // test rax,rax
+	// 	};
+	// 	auto func = CreateFunction(SetColor, (appBaseAddr + 0x90C69), true, true, sizeof(sect0), 0, sizeof(sect2));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect2, sect2, sizeof(sect2));
+	// 	WriteCall(func.sect0, GetActorBaseAddr[RDI]);
+	// 	WriteJump((appBaseAddr + 0x90C63), func.addr, 1);
+	// 	/*
+	// 	dmc3.exe+90C63 - 48 8B 06 - mov rax,[rsi]
+	// 	dmc3.exe+90C66 - 48 85 C0 - test rax,rax
+	// 	dmc3.exe+90C69 - 74 32    - je dmc3.exe+90C9D
+	// 	*/
+	// }
 
 
 
