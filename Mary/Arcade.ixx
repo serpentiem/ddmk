@@ -15,7 +15,7 @@ import ModuleName(Config);
 
 export void Arcade_InitSession()
 {
-	if (!Config.Arcade.enable)
+	if (!activeConfig.Arcade.enable)
 	{
 		return;
 	}
@@ -24,17 +24,17 @@ export void Arcade_InitSession()
 
 	IntroduceSessionData();
 
-	sessionData.mission = Config.Arcade.mission;
+	sessionData.mission = activeConfig.Arcade.mission;
 
 	if ((sessionData.mission >= 1) && (sessionData.mission <= 20))
 	{
-		sessionData.mode = Config.Arcade.mode;
+		sessionData.mode = activeConfig.Arcade.mode;
 	}
 
 	sessionData.enableTutorial = false;
 	sessionData.useGoldOrb = true;
 
-	if (Config.Arcade.mission == 21)
+	if (activeConfig.Arcade.mission == 21)
 	{
 		sessionData.bloodyPalace = true;
 	}
@@ -43,22 +43,22 @@ export void Arcade_InitSession()
 
 	memset(sessionData.unlock, 1, 14);
 
-	if (Config.Arcade.character == CHAR_DANTE)
+	if (activeConfig.Arcade.character == CHAR_DANTE)
 	{
-		sessionData.weapons[0] = Config.Arcade.meleeWeapons[0];
-		sessionData.weapons[1] = Config.Arcade.meleeWeapons[1];
-		sessionData.weapons[2] = Config.Arcade.rangedWeapons[0];
-		sessionData.weapons[3] = Config.Arcade.rangedWeapons[1];
+		sessionData.weapons[0] = activeConfig.Arcade.meleeWeapons[0];
+		sessionData.weapons[1] = activeConfig.Arcade.meleeWeapons[1];
+		sessionData.weapons[2] = activeConfig.Arcade.rangedWeapons[0];
+		sessionData.weapons[3] = activeConfig.Arcade.rangedWeapons[1];
 	}
 
-	sessionData.costume = Config.Arcade.costume;
+	sessionData.costume = activeConfig.Arcade.costume;
 	sessionData.unlockDevilTrigger = true;
-	sessionData.hitPoints = Config.Arcade.hitPoints;
-	sessionData.magicPoints = Config.Arcade.magicPoints;
+	sessionData.hitPoints = activeConfig.Arcade.hitPoints;
+	sessionData.magicPoints = activeConfig.Arcade.magicPoints;
 
-	if (Config.Arcade.character == CHAR_DANTE)
+	if (activeConfig.Arcade.character == CHAR_DANTE)
 	{
-		sessionData.style = Config.Arcade.style;
+		sessionData.style = activeConfig.Arcade.style;
 	}
 
 	memset(sessionData.styleLevel, 0, (MAX_STYLE * 4));
@@ -77,18 +77,18 @@ export void Arcade_InitSession()
 
 export void Arcade_SetCharacter(byte8 * dest)
 {
-	if (!Config.Arcade.enable)
+	if (!activeConfig.Arcade.enable)
 	{
 		return;
 	}
 
 	LogFunction(dest);
-	auto & character = *reinterpret_cast<uint8 *>(dest + 0x4565) = Config.Arcade.character;
+	auto & character = *reinterpret_cast<uint8 *>(dest + 0x4565) = activeConfig.Arcade.character;
 }
 
 export void Arcade_SetRoom()
 {
-	if (!Config.Arcade.enable || Config.BossRush.enable)
+	if (!activeConfig.Arcade.enable || activeConfig.BossRush.enable)
 	{
 		return;
 	}
@@ -100,20 +100,20 @@ export void Arcade_SetRoom()
 
 	if ((sessionData.mission >= 1) && (sessionData.mission <= 20))
 	{
-		if (!Config.Arcade.ignoreRoom)
+		if (!activeConfig.Arcade.ignoreRoom)
 		{
-			nextEventData.room = static_cast<uint16>(Config.Arcade.room);
+			nextEventData.room = static_cast<uint16>(activeConfig.Arcade.room);
 		}
 
-		if (!Config.Arcade.ignorePosition)
+		if (!activeConfig.Arcade.ignorePosition)
 		{
-			nextEventData.position = static_cast<uint16>(Config.Arcade.position);
+			nextEventData.position = static_cast<uint16>(activeConfig.Arcade.position);
 		}
 	}
 
 	if (sessionData.mission == 21)
 	{
-		auto floor = Config.Arcade.floor;
+		auto floor = activeConfig.Arcade.floor;
 		if (floor >= countof(Arcade_floorHelper))
 		{
 			floor = 0;

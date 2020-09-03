@@ -17,7 +17,7 @@ import ModuleName(Internal);
 
 export void BossRush_SetRoom()
 {
-	if (!Config.BossRush.enable)
+	if (!activeConfig.BossRush.enable)
 	{
 		return;
 	}
@@ -52,7 +52,7 @@ export void BossRush_SetRoom()
 		}
 		case 5:
 		{
-			if (!Config.BossRush.Mission5.skipJester)
+			if (!activeConfig.BossRush.Mission5.skipJester)
 			{
 				SetNextEventData(BOSS_JESTER_1);
 			}
@@ -103,11 +103,11 @@ export void BossRush_SetRoom()
 		}
 		case 12:
 		{
-			if (!Config.BossRush.Mission12.skipJester)
+			if (!activeConfig.BossRush.Mission12.skipJester)
 			{
 				SetNextEventData(BOSS_JESTER_2);
 			}
-			else if (!Config.BossRush.Mission12.skipGeryonPart1)
+			else if (!activeConfig.BossRush.Mission12.skipGeryonPart1)
 			{
 				SetNextEventData(BOSS_GERYON_PART_1);
 				eventFlags[20] = 1;
@@ -132,7 +132,7 @@ export void BossRush_SetRoom()
 		}
 		case 17:
 		{
-			if (!Config.BossRush.Mission17.skipJester)
+			if (!activeConfig.BossRush.Mission17.skipJester)
 			{
 				SetNextEventData(BOSS_JESTER_3);
 			}
@@ -149,7 +149,7 @@ export void BossRush_SetRoom()
 		}
 		case 19:
 		{
-			if (!Config.BossRush.Mission19.skipArkhamPart1)
+			if (!activeConfig.BossRush.Mission19.skipArkhamPart1)
 			{
 				SetNextEventData(BOSS_ARKHAM_PART_1);
 			}
@@ -166,7 +166,7 @@ export void BossRush_SetRoom()
 
 export void BossRush_SetNextRoom()
 {
-	if (!Config.BossRush.enable)
+	if (!activeConfig.BossRush.enable)
 	{
 		return;
 	}
@@ -199,7 +199,7 @@ export void BossRush_SetNextRoom()
 	{
 		if (eventData.room == bossHelper[BOSS_JESTER_2].room)
 		{
-			if (!Config.BossRush.Mission12.skipGeryonPart1)
+			if (!activeConfig.BossRush.Mission12.skipGeryonPart1)
 			{
 				SetNextEventData(BOSS_GERYON_PART_1);
 				eventFlags[20] = 1;
@@ -280,7 +280,7 @@ export void BossRush_SetNextRoom()
 
 export void BossRush_SetContinueRoom()
 {
-	if (!Config.BossRush.enable)
+	if (!activeConfig.BossRush.enable)
 	{
 		return;
 	}
@@ -298,7 +298,7 @@ export void BossRush_SetContinueRoom()
 
 export bool BossRush_SetTrack(const char * filename)
 {
-	if (!Config.BossRush.enable)
+	if (!activeConfig.BossRush.enable)
 	{
 		return true;
 	}
@@ -334,7 +334,7 @@ export bool BossRush_SetTrack(const char * filename)
 
 export void BossRush_Main()
 {
-	if (!Config.BossRush.enable)
+	if (!activeConfig.BossRush.enable)
 	{
 		return;
 	}

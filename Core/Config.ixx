@@ -1,3 +1,6 @@
+
+// @Research: Update.
+
 #ifndef __MODULE_CORE_CONFIG__
 #define __MODULE_CORE_CONFIG__
 

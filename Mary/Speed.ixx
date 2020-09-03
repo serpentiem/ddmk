@@ -21,7 +21,7 @@ float32 * Speed_Quicksilver_actor = 0;
 float32 * Speed_Quicksilver_enemy = 0;
 
 // @Todo: Update.
-export void Speed_Update(CONFIG & config)
+export void Speed_Update(Config & config)
 {
 	LogFunction();
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "Includes.h"
 
-import ModuleName(Core_Config);
 import ModuleName(Core_File);
 import ModuleName(Core_Log);
 import ModuleName(Core_Memory);
@@ -10,7 +9,6 @@ import ModuleName(Core_Vector);
 import ModuleName(Core_Windows);
 
 #ifdef __INTELLISENSE__
-#include "Config.ixx"
 #include "File.ixx"
 #include "Log.ixx"
 #include "Memory.ixx"

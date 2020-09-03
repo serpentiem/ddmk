@@ -14,7 +14,7 @@ import ModuleName(Config);
 #endif
 
 // @Todo: Update with CAMERA_DATA.
-export void Camera_Update(const CONFIG & config)
+export void Camera_Update(Config & config)
 {
 	auto addr = *(byte8 **)(appBaseAddr + 0xC8FBD0);
 	if (!addr)

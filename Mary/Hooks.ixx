@@ -315,7 +315,7 @@ HWND User_Hook_CreateWindowExW
 		instance,
 		parameter
 	);
-	if (Config.Input.hideMouseCursor)
+	if (activeConfig.Input.hideMouseCursor)
 	{
 		Windows_ToggleCursor(false);
 	}
@@ -417,9 +417,9 @@ HRESULT DXGI_Hook_Present
 	//}
 
 
-	if (Config.Graphics.vSync != 0)
+	if (activeConfig.Graphics.vSync != 0)
 	{
-		syncInterval = (Config.Graphics.vSync - 1);
+		syncInterval = (activeConfig.Graphics.vSync - 1);
 	}
 
 

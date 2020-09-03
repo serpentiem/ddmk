@@ -54,34 +54,34 @@ namespace Mobility
 
 	auto Dash(ActorDataDante & actorData)
 	{
-		return MobilityFunction<ACTOR_EVENT_DANTE_DASH>(actorData, actorData.dashCount, Config.Trickster.dashCount);
+		return MobilityFunction<ACTOR_EVENT_DANTE_DASH>(actorData, actorData.dashCount, activeConfig.Trickster.dashCount);
 	}
 
 	auto SkyStar(ActorDataDante & actorData)
 	{
-		return MobilityFunction<ACTOR_EVENT_DANTE_SKY_STAR>(actorData, actorData.skyStarCount, Config.Trickster.skyStarCount);
+		return MobilityFunction<ACTOR_EVENT_DANTE_SKY_STAR>(actorData, actorData.skyStarCount, activeConfig.Trickster.skyStarCount);
 	}
 
 	auto AirTrickDante(ActorDataDante & actorData)
 	{
 		actorData.var_3E10[26] = (actorData.state & STATE_ON_FLOOR) ? 1 : 0;
 
-		return MobilityFunction<ACTOR_EVENT_DANTE_AIR_TRICK>(actorData, actorData.airTrickCount, Config.Trickster.airTrickCount);
+		return MobilityFunction<ACTOR_EVENT_DANTE_AIR_TRICK>(actorData, actorData.airTrickCount, activeConfig.Trickster.airTrickCount);
 	}
 
 	auto AirTrickVergil(ActorDataVergil & actorData)
 	{
-		return MobilityFunction<ACTOR_EVENT_VERGIL_AIR_TRICK>(actorData, actorData.airTrickCount, Config.DarkSlayer.airTrickCount);
+		return MobilityFunction<ACTOR_EVENT_VERGIL_AIR_TRICK>(actorData, actorData.airTrickCount, activeConfig.DarkSlayer.airTrickCount);
 	}
 
 	auto TrickUp(ActorDataVergil & actorData)
 	{
-		return MobilityFunction<ACTOR_EVENT_VERGIL_TRICK_UP>(actorData, actorData.trickUpCount, Config.DarkSlayer.trickUpCount);
+		return MobilityFunction<ACTOR_EVENT_VERGIL_TRICK_UP>(actorData, actorData.trickUpCount, activeConfig.DarkSlayer.trickUpCount);
 	}
 
 	auto TrickDown(ActorDataVergil & actorData)
 	{
-		return MobilityFunction<ACTOR_EVENT_VERGIL_TRICK_DOWN>(actorData, actorData.trickDownCount, Config.DarkSlayer.trickDownCount);
+		return MobilityFunction<ACTOR_EVENT_VERGIL_TRICK_DOWN>(actorData, actorData.trickDownCount, activeConfig.DarkSlayer.trickDownCount);
 	}
 
 	template <typename T>

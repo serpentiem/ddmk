@@ -9,6 +9,7 @@ module;
 export module ModuleName(Core_GUI);
 
 export int GUI_id = 0;
+export bool GUI_save = false;
 
 export inline void GUI_PushId()
 {
@@ -36,17 +37,16 @@ export bool GUI_Button
 export bool GUI_Checkbox
 (
 	const char * label,
-	bool & var,
-	bool save = true
+	bool & var
 )
 {
 	GUI_PushId();
 	auto update = ImGui::Checkbox(label, &var);
 	GUI_PopId();
 
-	if (update && save)
+	if (update)
 	{
-		SaveConfig();
+		GUI_save = true;
 	}
 
 	return update;
@@ -59,8 +59,7 @@ bool GUI_Input
 	T & var,
 	T step = 1,
 	const char * format = 0,
-	ImGuiInputTextFlags flags = 0,
-	bool save = true
+	ImGuiInputTextFlags flags = 0
 )
 {
 	GUI_PushId();
@@ -81,9 +80,9 @@ bool GUI_Input
 	);
 	GUI_PopId();
 
-	if (update && save)
+	if (update)
 	{
-		SaveConfig();
+		GUI_save = true;
 	}
 
 	return update;
@@ -97,8 +96,7 @@ bool GUI_InputDefault
 	T & defaultVar,
 	T step = 1,
 	const char * format = 0,
-	ImGuiInputTextFlags flags = 0,
-	bool save = true
+	ImGuiInputTextFlags flags = 0
 )
 {
 	auto & window = *ImGui::GetCurrentWindow();
@@ -148,9 +146,9 @@ bool GUI_InputDefault
 		window.DC.ItemWidthStack.back() = window.DC.ItemWidth;
 	}
 
-	if (update && save)
+	if (update)
 	{
-		SaveConfig();
+		GUI_save = true;
 	}
 
 	return update;
@@ -162,8 +160,7 @@ bool GUI_Slider
 	const char * label,
 	T & var,
 	const T min,
-	const T max,
-	bool save = true
+	const T max
 )
 {
 	ImGuiWindow * window = ImGui::GetCurrentWindow();
@@ -207,9 +204,9 @@ bool GUI_Slider
 	}
 	GUI_PopId();
 
-	if (update && save)
+	if (update)
 	{
-		SaveConfig();
+		GUI_save = true;
 	}
 
 	return update;
@@ -238,8 +235,7 @@ bool GUI_Combo
 	const char * label,
 	const char *(&names)[count],
 	varType & var,
-	ImGuiComboFlags flags = 0,
-	bool save = true
+	ImGuiComboFlags flags = 0
 )
 {
 	bool update = false;
@@ -261,9 +257,9 @@ bool GUI_Combo
 	}
 	GUI_PopId();
 
-	if (update && save)
+	if (update)
 	{
-		SaveConfig();
+		GUI_save = true;
 	}
 
 	return update;
@@ -281,8 +277,7 @@ bool GUI_ComboMap
 	varType(&map)[mapItemCount],
 	uint8 & index,
 	varType & var,
-	ImGuiComboFlags flags = 0,
-	bool save = true
+	ImGuiComboFlags flags = 0
 )
 {
 	bool update = false;
@@ -306,9 +301,9 @@ bool GUI_ComboMap
 	}
 	GUI_PopId();
 
-	if (update && save)
+	if (update)
 	{
-		SaveConfig();
+		GUI_save = true;
 	}
 
 	return update;
@@ -368,36 +363,110 @@ export inline void GUI_PopDisable(bool condition)
 	}
 }
 
+//export bool GUI_ColorEdit4
+//(
+//	const char * label,
+//	float32(&var)[4],
+//	ImGuiColorEditFlags flags = 0
+//)
+//{
+//	bool update = false;
+//
+//	GUI_PushId();
+//	if (ImGui::ColorEdit4(label, var, flags))
+//	{
+//		update = true;
+//	}
+//	GUI_PopId();
+//
+//	if (update)
+//	{
+//		GUI_save = true;
+//	}
+//
+//	return update;
+//}
+
 export bool GUI_ColorEdit4
 (
 	const char * label,
-	float32(&var)[4],
-	ImGuiColorEditFlags flags = 0,
-	bool save = true
+	uint8(&var)[4],
+	float32(&var2)[4],
+	ImGuiColorEditFlags flags = 0
 )
 {
 	bool update = false;
 
+	//float32 var2[4] = {};
+
+
+	// @Todo: Remove.
+
+
+
+
+
+
 	GUI_PushId();
-	if (ImGui::ColorEdit4(label, var, flags))
+	if (ImGui::ColorEdit4(label, var2, flags))
 	{
 		update = true;
+
+
+		for_all(uint8, index, 4)
+		{
+			var[index] = static_cast<uint8>(var2[index] * 255);
+		}
+
+
 	}
 	GUI_PopId();
 
-	if (update && save)
+	if (update)
 	{
-		SaveConfig();
+		GUI_save = true;
+
+
+
+
 	}
+
+	ImGui::Text("");
+
+	ImGui::Text("var[0] %u", var[0]);
+	ImGui::Text("var[1] %u", var[1]);
+	ImGui::Text("var[2] %u", var[2]);
+	ImGui::Text("var[3] %u", var[3]);
+
+	ImGui::Text("var2[0] %f", var2[0]);
+	ImGui::Text("var2[1] %f", var2[1]);
+	ImGui::Text("var2[2] %f", var2[2]);
+	ImGui::Text("var2[3] %f", var2[3]);
+
+	ImGui::Text("");
 
 	return update;
 }
 
-export template <uint8 count>
+
+
+
+export bool GUI_Color
+(
+	const char * label,
+	uint8(&var)[4],
+	float32(&var2)[4]
+)
+{
+	return GUI_ColorEdit4(label, var, var2, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaPreview);
+}
+
+export template<uint8 count>
 bool GUI_ColorPalette
 (
 	const char * label,
-	float32(&vars)[count][4]
+	uint8(&vars)[count][4],
+	float32(&vars2)[count][4]
 )
 {
 	bool update = false;
@@ -405,7 +474,7 @@ bool GUI_ColorPalette
 
 	for_all(uint8, index, count)
 	{
-		if (GUI_ColorEdit4("", vars[index], ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaPreview))
+		if (GUI_ColorEdit4("", vars[index], vars2[index], ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaPreview))
 		{
 			update = true;
 		}
@@ -415,15 +484,6 @@ bool GUI_ColorPalette
 	ImGui::Text(label);
 
 	return update;
-}
-
-export bool GUI_Color
-(
-	const char * label,
-	float32(&var)[4]
-)
-{
-	return GUI_ColorEdit4(label, var, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaPreview);
 }
 
 #endif

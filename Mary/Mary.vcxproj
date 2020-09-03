@@ -182,10 +182,6 @@
     <ClInclude Include="Vars.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Core\Config.ixx">
-      <FileType>Document</FileType>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)Core_%(Filename)</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="..\Core\File.ixx">
       <FileType>Document</FileType>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)Core_%(Filename)</ObjectFileName>
@@ -244,6 +240,7 @@
     <None Include="Internal.ixx" />
     <None Include="Mobility.ixx" />
     <None Include="Model.ixx" />
+    <None Include="Scene.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

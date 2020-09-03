@@ -8,7 +8,7 @@ module;
 export module ModuleName(Config);
 
 #pragma pack(push, 1)
-export struct CONFIG
+export struct Config
 {
 	struct
 	{
@@ -396,7 +396,7 @@ export struct CONFIG
 	Camera;
 	struct
 	{
-		float32 airHike[5][4] =
+		uint8 airHike[5][4] =
 		{
 			{ 128,   0,   0, 200 },
 			{  96, 128, 144, 200 },
@@ -406,22 +406,22 @@ export struct CONFIG
 		};
 		struct
 		{
-			float32 skyStar[4] = { 255, 0, 0, 200 };
+			uint8 skyStar[4] = { 255, 0, 0, 200 };
 		}
 		Trickster;
 		struct
 		{
-			float32 ultimate[4] = { 143, 112, 48, 200 };
+			uint8 ultimate[4] = { 143, 112, 48, 200 };
 		}
 		Royalguard;
 		struct
 		{
-			float32 clone[4] = { 16, 16, 16, 48 };
+			uint8 clone[4] = { 16, 16, 16, 48 };
 		}
 		Doppelganger;
 		struct
 		{
-			float32 dante[5][4] =
+			uint8 dante[5][4] =
 			{
 				{ 128,   0,   0, 200 },
 				{  96, 128, 144, 200 },
@@ -429,14 +429,14 @@ export struct CONFIG
 				{ 112,  64, 160, 200 },
 				{ 128, 128, 128, 200 },
 			};
-			float32 sparda[4] = { 128, 0, 0, 200 };
-			float32 vergil[3][4] =
+			uint8 sparda[4] = { 128, 0, 0, 200 };
+			uint8 vergil[3][4] =
 			{
 				{ 32, 64, 128, 200 },
 				{ 32, 64, 128, 200 },
 				{ 32, 64, 128, 200 },
 			};
-			float32 neroAngelo[4] = { 64, 0, 255, 200 };
+			uint8 neroAngelo[4] = { 64, 0, 255, 200 };
 		}
 		Aura;
 	}
@@ -611,7 +611,51 @@ export struct CONFIG
 };
 #pragma pack(pop)
 
-export CONFIG Config;
-export CONFIG DefaultConfig;
+export Config defaultConfig;
+export Config activeConfig;
+export Config queuedConfig;
+
+char g_path[64] = {};
+
+export void SaveConfig()
+{
+	SaveFile(g_path, reinterpret_cast<byte8 *>(&activeConfig), sizeof(Config));
+}
+
+export void LoadConfig()
+{
+	byte8 * file = 0;
+	uint32 size = 0;
+
+	file = LoadFile(g_path, &size);
+	if (!file)
+	{
+		SaveConfig();
+		return;
+	}
+
+	if (size != sizeof(Config))
+	{
+		Log("Size mismatch.");
+
+		SaveConfig();
+		return;
+	}
+
+	memcpy(&activeConfig, file, size);
+}
+
+export void Config_Init
+(
+	const char * directoryName,
+	const char * filename
+)
+{
+	LogFunction();
+
+	CreateDirectoryA(directoryName, 0);
+
+	snprintf(g_path, sizeof(g_path), "%s\\%s", directoryName, filename);
+}
 
 #endif

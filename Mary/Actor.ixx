@@ -268,14 +268,14 @@ bool IsMeleeWeaponReady
 	{
 		if constexpr (TypeMatch<T, ActorDataDante>::value)
 		{
-			if ((weapon == WEAPON_BEOWULF_DANTE) && Config.BeowulfDante.hide)
+			if ((weapon == WEAPON_BEOWULF_DANTE) && activeConfig.BeowulfDante.hide)
 			{
 				return false;
 			}
 		}
 		else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 		{
-			if ((weapon == WEAPON_BEOWULF_VERGIL) && Config.BeowulfVergil.hide)
+			if ((weapon == WEAPON_BEOWULF_VERGIL) && activeConfig.BeowulfVergil.hide)
 			{
 				return false;
 			}
@@ -1505,8 +1505,8 @@ void UpdateMeleeWeapons
 {
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		memcpy(actorData.newMeleeWeapons, Config.Actor.meleeWeaponsDante[player][entity], MAX_MELEE_WEAPON);
-		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCountDante[player][entity];
+		memcpy(actorData.newMeleeWeapons, activeConfig.Actor.meleeWeaponsDante[player][entity], MAX_MELEE_WEAPON);
+		actorData.newMeleeWeaponCount = activeConfig.Actor.meleeWeaponCountDante[player][entity];
 
 		if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
 		{
@@ -1522,8 +1522,8 @@ void UpdateMeleeWeapons
 	}
 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
-		memcpy(actorData.newMeleeWeapons, Config.Actor.meleeWeaponsVergil[player][entity], MAX_MELEE_WEAPON);
-		actorData.newMeleeWeaponCount = Config.Actor.meleeWeaponCountVergil[player][entity];
+		memcpy(actorData.newMeleeWeapons, activeConfig.Actor.meleeWeaponsVergil[player][entity], MAX_MELEE_WEAPON);
+		actorData.newMeleeWeaponCount = activeConfig.Actor.meleeWeaponCountVergil[player][entity];
 	}
 }
 
@@ -1537,8 +1537,8 @@ void UpdateRangedWeapons
 {
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		memcpy(actorData.newRangedWeapons, Config.Actor.rangedWeaponsDante[player][entity], MAX_RANGED_WEAPON);
-		actorData.newRangedWeaponCount = Config.Actor.rangedWeaponCountDante[player][entity];
+		memcpy(actorData.newRangedWeapons, activeConfig.Actor.rangedWeaponsDante[player][entity], MAX_RANGED_WEAPON);
+		actorData.newRangedWeaponCount = activeConfig.Actor.rangedWeaponCountDante[player][entity];
 
 		if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
 		{
@@ -1721,7 +1721,7 @@ T * CreateActorFunction
 
 	InitActor(actorData, missionActorData_16C);
 
-	actorData.costume = Config.Actor.costume[player][entity][character];
+	actorData.costume = activeConfig.Actor.costume[player][entity][character];
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
@@ -1753,8 +1753,8 @@ T * CreateActorFunction
 	actorData.newPlayer = player;
 	actorData.newEntity = entity;
 
-	actorData.newForceFiles          = Config.Actor.forceFiles         [player][entity][character];
-	actorData.newForceFilesCharacter = Config.Actor.forceFilesCharacter[player][entity][character];
+	actorData.newForceFiles          = activeConfig.Actor.forceFiles         [player][entity][character];
+	actorData.newForceFilesCharacter = activeConfig.Actor.forceFilesCharacter[player][entity][character];
 
 	UpdateCostumeFileData(actorData);
 
@@ -1867,7 +1867,7 @@ byte8 * SpawnActor
 )
 {
 	byte8 * baseAddr = 0;
-	auto character = Config.Actor.character[player][entity];
+	auto character = activeConfig.Actor.character[player][entity];
 	switch (character)
 	{
 	case CHAR_DANTE:
@@ -1931,7 +1931,7 @@ export void SpawnActors()
 {
 	LogFunction();
 
-	for_all(uint8, player, Config.Actor.playerCount)
+	for_all(uint8, player, activeConfig.Actor.playerCount)
 	{
 		auto mainBaseAddr = SpawnActor(player, ENTITY_MAIN);
 		if (!mainBaseAddr)
@@ -2068,7 +2068,7 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 		return;
 	}
 
-	actorData.meleeWeaponSwitchTimeout = Config.weaponSwitchTimeout;
+	actorData.meleeWeaponSwitchTimeout = activeConfig.weaponSwitchTimeout;
 
 	actorData.newMeleeWeaponIndex++;
 
@@ -2132,7 +2132,7 @@ void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
 		return;
 	}
 
-	actorData.rangedWeaponSwitchTimeout = Config.weaponSwitchTimeout;
+	actorData.rangedWeaponSwitchTimeout = activeConfig.weaponSwitchTimeout;
 
 	actorData.newRangedWeaponIndex++;
 
@@ -2173,7 +2173,7 @@ bool customize = false;
 
 export void Actor_CreateMainActor(byte8 * baseAddr)
 {
-	if (!Config.Actor.enable)
+	if (!activeConfig.Actor.enable)
 	{
 		return;
 	}
@@ -2191,7 +2191,7 @@ export void Actor_CreateMainActor(byte8 * baseAddr)
 
 export void Actor_CreateCloneActor(byte8 * baseAddr)
 {
-	if (!Config.Actor.enable)
+	if (!activeConfig.Actor.enable)
 	{
 		return;
 	}
@@ -2203,7 +2203,7 @@ export void Actor_CreateCloneActor(byte8 * baseAddr)
 
 export void Actor_Main()
 {
-	if (!Config.Actor.enable)
+	if (!activeConfig.Actor.enable)
 	{
 		return;
 	}
@@ -2241,7 +2241,7 @@ export void Actor_Main()
 
 export void Actor_Customize()
 {
-	if (!Config.Actor.enable)
+	if (!activeConfig.Actor.enable)
 	{
 		return;
 	}
@@ -2270,7 +2270,7 @@ export void Actor_Customize()
 
 export void Actor_Delete()
 {
-	if (!Config.Actor.enable)
+	if (!activeConfig.Actor.enable)
 	{
 		return;
 	}
@@ -2282,7 +2282,7 @@ export void Actor_Delete()
 
 export void Actor_MainLoopOnce()
 {
-	if (!Config.Actor.enable)
+	if (!activeConfig.Actor.enable)
 	{
 		return;
 	}
@@ -2299,7 +2299,7 @@ export void Actor_MainLoopOnce()
 
 export void Actor_MainLoopOnceSync()
 {
-	if (!Config.Actor.enable)
+	if (!activeConfig.Actor.enable)
 	{
 		return;
 	}
@@ -4749,25 +4749,98 @@ void ToggleWeaponCountAdjustments(bool enable)
 
 
 
+
+
+// byte8 * GetActorBaseAddrRAX = 0;
+// byte8 * GetActorBaseAddrRBX = 0;
+// byte8 * GetActorBaseAddrRCX = 0;
+// byte8 * GetActorBaseAddrRDX = 0;
+// byte8 * GetActorBaseAddrRSI = 0;
+// byte8 * GetActorBaseAddrRDI = 0;
+// byte8 * GetActorBaseAddrRBP = 0;
+// byte8 * GetActorBaseAddrRSP = 0;
+// byte8 * GetActorBaseAddrR8  = 0;
+// byte8 * GetActorBaseAddrR9  = 0;
+// byte8 * GetActorBaseAddrR10 = 0;
+// byte8 * GetActorBaseAddrR11 = 0;
+// byte8 * GetActorBaseAddrR12 = 0;
+// byte8 * GetActorBaseAddrR13 = 0;
+// byte8 * GetActorBaseAddrR14 = 0;
+// byte8 * GetActorBaseAddrR15 = 0;
+
+
+enum REGISTER
+{
+	RAX,
+	RCX,
+	RDX,
+	RBX,
+	RSP,
+	RBP,
+	RSI,
+	RDI,
+	R8,
+	R9,
+	R10,
+	R11,
+	R12,
+	R13,
+	R14,
+	R15,
+	MAX_REGISTER,
+};
+
+byte8 * GetActorBaseAddr[MAX_REGISTER] = {};
+
+void InitGetActorBaseAddr()
+{
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0x8B, 0x80, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rax+000000C0]
+			0x48, 0x85, 0xC0,                         // test rax,rax
+			0x75, 0x0B,                               // jne short
+			0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, // mov rax,[dmc3.exe+C90E28]
+			0x48, 0x8B, 0x40, 0x18,                   // mov rax,[rax+18]
+			0xC3,                                     // ret
+		};
+		for_all(uint8, index, MAX_REGISTER)
+		{
+			auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+			memcpy(func.sect0, sect0, sizeof(sect0));
+			WriteAddress((func.sect0 + 0xC), (appBaseAddr + 0xC90E28), 7);
+			GetActorBaseAddr[index] = func.addr;
+
+			if (index < R8)
+			{
+				*reinterpret_cast<byte8 *>(func.sect0) = 0x48;
+				*reinterpret_cast<byte8 *>(func.sect0 + 2) = (0x80 + index);
+			}
+			else
+			{
+				*reinterpret_cast<byte8 *>(func.sect0) = 0x49;
+				*reinterpret_cast<byte8 *>(func.sect0 + 2) = (0x80 + (index - R8));
+			}
+		}
+	}
+
+	for_all(uint8, index, countof(GetActorBaseAddr))
+	{
+		Log("GetActorBaseAddr %llX", GetActorBaseAddr[index]);
+	}
+}
+
+
+
+
 void ToggleMainActorFixes(bool enable)
 {
-
 	LogFunction(enable);
-
-
 	Write<byte16>((appBaseAddr + 0x1F83DE + 2), (enable) ? 0x90C7 : 0x1841);
 	/*
 	dmc3.exe+1F83DE - 48 8B 41 18 - mov rax,[rcx+18]
 	*/
-
-
-
-
 	Write<uint32>((appBaseAddr + 0x1F5FC6 + 2), offsetof(ActorData, newIsClone));
-
-
-
-
 	/*
 	dmc3.exe+1F5FC6 - 83 B9 1C010000 01     - cmp dword ptr [rcx+0000011C],01 { 1 }
 	*/
@@ -4776,10 +4849,110 @@ void ToggleMainActorFixes(bool enable)
 
 
 
+
+
+
+	{
+		auto dest = (appBaseAddr + 0x90C2B);
+		if (enable)
+		{
+			WriteCall(dest, GetActorBaseAddr[RDI], 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x48, 0x8B, 0x05, 0xF6, 0x01, 0xC0, 0x00, // mov rax,[dmc3.exe+C90E28]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+90C2B - 48 8B 05 F601C000 - mov rax,[dmc3.exe+C90E28]
+		*/
+	}
+
+	{
+		auto dest = (appBaseAddr + 0x90C3D);
+		if (enable)
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x48, 0x8B, 0xC8, // mov rcx,rax
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+			vp_memset((dest + 3), 0x90, 1);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x48, 0x8B, 0x48, 0x18, // mov rcx,[rax+18]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+90C3D - 48 8B 48 18 - mov rcx,[rax+18]
+		*/
+	}
+
+
+
+	{
+		auto dest = (appBaseAddr + 0x8E417);
+		if (enable)
+		{
+			WriteCall(dest, GetActorBaseAddr[RBX], 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x48, 0x8B, 0x0D, 0x0A, 0x2A, 0xC0, 0x00, // mov rcx,[dmc3.exe+C90E28]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+8E417 - 48 8B 0D 0A2AC000 - mov rcx,[dmc3.exe+C90E28]
+		*/
+	}
+
+	{
+		auto dest = (appBaseAddr + 0x8E44A);
+		if (enable)
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x48, 0x8B, 0xC8, // mov rcx,rax
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+			vp_memset((dest + 3), 0x90, 1);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x48, 0x8B, 0x49, 0x18, // mov rcx,[rcx+18]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+8E44A - 48 8B 49 18 - mov rcx,[rcx+18]
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
-
-
-
 
 
 
@@ -4802,6 +4975,10 @@ export void Actor_Init()
 
 	ToggleIsWeaponReady(true);
 
+	
+
+	InitGetActorBaseAddr();
+
 	ToggleMainActorFixes(true);
 
 
@@ -4809,18 +4986,18 @@ export void Actor_Init()
 	//for_all(uint8, player, MAX_PLAYER){
 	//for_all(uint8, entity, MAX_ENTITY)
 	//{
-	//	auto & character = Config.Actor.character[player][entity];
+	//	auto & character = activeConfig.Actor.character[player][entity];
 	//	switch (character)
 	//	{
 	//	case CHAR_DANTE:
 	//	{
-	//		g_newMeleeWeapon [player][entity] = Config.Actor.meleeWeaponDante [player][entity][0];
-	//		g_newRangedWeapon[player][entity] = Config.Actor.rangedWeaponDante[player][entity][0];
+	//		g_newMeleeWeapon [player][entity] = activeConfig.Actor.meleeWeaponDante [player][entity][0];
+	//		g_newRangedWeapon[player][entity] = activeConfig.Actor.rangedWeaponDante[player][entity][0];
 	//		break;
 	//	}
 	//	case CHAR_VERGIL:
 	//	{
-	//		g_newMeleeWeapon[player][entity] = Config.Actor.meleeWeaponVergil[player][entity][0];
+	//		g_newMeleeWeapon[player][entity] = activeConfig.Actor.meleeWeaponVergil[player][entity][0];
 	//		break;
 	//	}
 	//	}

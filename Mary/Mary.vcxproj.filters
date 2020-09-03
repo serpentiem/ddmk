@@ -19,9 +19,6 @@
     <ClCompile Include="..\Core\ImGui_D3D11.ixx">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\Core\Config.ixx">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\Core\File.ixx">
       <Filter>Core</Filter>
     </ClCompile>
@@ -116,5 +113,6 @@
     <None Include="BossRush.ixx" />
     <None Include="Internal.ixx" />
     <None Include="Model.ixx" />
+    <None Include="Scene.ixx" />
   </ItemGroup>
 </Project>

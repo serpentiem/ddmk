@@ -47,18 +47,18 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 	if (reason == DLL_PROCESS_ATTACH)
 	{
 		Core_Log_Init("logs", "Mary.txt");
-		Log("Session started.");
 
-		Core_Config_Init("configs", "Mary.bin", &Config, sizeof(CONFIG));
-		Color_UpdateConfig(Config);
-		Color_UpdateConfig(DefaultConfig);
-		LoadConfig();
+		Log("Session started.");
 
 		if (!Core_Memory_Init((64 * 1024 * 1024)))
 		{
 			Log("Core_Memory_Init failed.");
 			return 0;
 		}
+
+		Config_Init("configs", "Mary.bin");
+		LoadConfig();
+
 
 
 
@@ -101,6 +101,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		//Camera_Init();
 
+		Color_Init();
 
 
 		Event_Init();
@@ -108,8 +109,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-		Event_ToggleSkipIntro    (Config.Event.skipIntro);
-		//Event_ToggleSkipCutscenes(Config.Event.skipCutscenes);
+		Event_ToggleSkipIntro    (activeConfig.Event.skipIntro);
+		//Event_ToggleSkipCutscenes(activeConfig.Event.skipCutscenes);
 		Event_ToggleSkipCutscenes(false);
 		//FMOD_Init();
 		Hooks_Init();
@@ -122,7 +123,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		Scene_Init();
 
-		Training_ToggleInfiniteHitPoints  (Config.Training.infiniteHitPoints);
+		Training_ToggleInfiniteHitPoints  (activeConfig.Training.infiniteHitPoints);
 		Training_ToggleInfiniteMagicPoints(true);
 		Training_ToggleDisableTimer       (true);
 
@@ -238,13 +239,13 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-		//System_Camera_ToggleInvertX(Config.System.Camera.invertX);
+		//System_Camera_ToggleInvertX(activeConfig.System.Camera.invertX);
 		//System_Graphics_UpdateFrameRate(Config);
 		//System_HUD_Init();
 
 		//System_Input_Init();
-		//System_Input_ToggleRangeExtension  (Config.Game.Multiplayer.enable);
-		//System_Input_ToggleMultiplayerFixes(Config.Game.Multiplayer.enable);
+		//System_Input_ToggleRangeExtension  (activeConfig.Game.Multiplayer.enable);
+		//System_Input_ToggleMultiplayerFixes(activeConfig.Game.Multiplayer.enable);
 
 		//System_Input_ToggleRangeExtension  (true);
 		//System_Input_ToggleMultiplayerFixes(true);
@@ -267,7 +268,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Window_ToggleForceFocus(true);
 
 		//Arcade_UpdateModeIndex();
-		Arcade_Toggle(Config.Arcade.enable);
+		Arcade_Toggle(activeConfig.Arcade.enable);
 
 
 
@@ -275,49 +276,49 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		//Game_Attack_Init();
 		//Game_Dante_Init();
-		//Game_Dante_Rebellion_ToggleInfiniteSwordPierce(Config.Game.Dante.Rebellion.infiniteSwordPierce);
-		//Game_Dante_EbonyIvory_ToggleFoursomeTime      (Config.Game.Dante.EbonyIvory.foursomeTime      );
-		//Game_Dante_EbonyIvory_ToggleInfiniteRainStorm (Config.Game.Dante.EbonyIvory.infiniteRainStorm );
-		//Game_Dante_Artemis_ToggleSwap                 (Config.Game.Dante.Artemis.swap                 );
-		//Game_Dante_Artemis_ToggleInstant              (Config.Game.Dante.Artemis.instant              );
-		//Game_Dante_AirHike_ToggleCoreAbility          (Config.Game.Dante.AirHike.coreAbility          );
-		//Game_Dante_CrazyCombo_SetLevelMultiplier      (Config.Game.Dante.CrazyCombo.levelMultiplier   );
-		//Game_Dante_WeaponSwitchTimeout_Melee_Toggle   (Config.Game.Dante.WeaponSwitchTimeout.melee    );
-		//Game_Dante_WeaponSwitchTimeout_Ranged_Toggle  (Config.Game.Dante.WeaponSwitchTimeout.ranged   );
+		//Game_Dante_Rebellion_ToggleInfiniteSwordPierce(activeConfig.Game.Dante.Rebellion.infiniteSwordPierce);
+		//Game_Dante_EbonyIvory_ToggleFoursomeTime      (activeConfig.Game.Dante.EbonyIvory.foursomeTime      );
+		//Game_Dante_EbonyIvory_ToggleInfiniteRainStorm (activeConfig.Game.Dante.EbonyIvory.infiniteRainStorm );
+		//Game_Dante_Artemis_ToggleSwap                 (activeConfig.Game.Dante.Artemis.swap                 );
+		//Game_Dante_Artemis_ToggleInstant              (activeConfig.Game.Dante.Artemis.instant              );
+		//Game_Dante_AirHike_ToggleCoreAbility          (activeConfig.Game.Dante.AirHike.coreAbility          );
+		//Game_Dante_CrazyCombo_SetLevelMultiplier      (activeConfig.Game.Dante.CrazyCombo.levelMultiplier   );
+		//Game_Dante_WeaponSwitchTimeout_Melee_Toggle   (activeConfig.Game.Dante.WeaponSwitchTimeout.melee    );
+		//Game_Dante_WeaponSwitchTimeout_Ranged_Toggle  (activeConfig.Game.Dante.WeaponSwitchTimeout.ranged   );
 		//Game_Doppelganger_Init();
-		//Game_Doppelganger_ToggleEnableDevilTrigger(Config.Game.Doppelganger.enableDevilTrigger);
+		//Game_Doppelganger_ToggleEnableDevilTrigger(activeConfig.Game.Doppelganger.enableDevilTrigger);
 		//Game_Mobility_Init();
-		//Game_Mobility_Toggle(Config.Game.Mobility.enable);
+		//Game_Mobility_Toggle(activeConfig.Game.Mobility.enable);
 		//Game_Other_Init();
-		//Game_Other_Toggle(Config.Game.Other.enable);
+		//Game_Other_Toggle(activeConfig.Game.Other.enable);
 		//Game_ResetMotionState_UpdateButtonIndex();
 		//Game_StyleSwitcher_Init();
-		//Game_StyleSwitcher_Toggle(Config.Game.StyleSwitcher.enable);
+		//Game_StyleSwitcher_Toggle(activeConfig.Game.StyleSwitcher.enable);
 
-		//Training_ToggleInfiniteHitPoints  (Config.Game.Training.infiniteHitPoints  );
-		//Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
-		//Training_ToggleDisableTimer       (Config.Game.Training.disableTimer       );
+		//Training_ToggleInfiniteHitPoints  (activeConfig.Game.Training.infiniteHitPoints  );
+		//Training_ToggleInfiniteMagicPoints(activeConfig.Game.Training.infiniteMagicPoints);
+		//Training_ToggleDisableTimer       (activeConfig.Game.Training.disableTimer       );
 
 
 
 		//Game_Vergil_Init();
-		//Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(Config.Game.Vergil.ForceEdge.infiniteRoundTrip);
-		//Game_Vergil_SummonedSwords_ToggleChronoSwords(Config.Game.Vergil.SummonedSwords.chronoSwords);
-		//Game_Vergil_WeaponSwitchTimeout_MeleeToggle  (Config.Game.Vergil.WeaponSwitchTimeout.melee  );
+		//Game_Vergil_ForceEdge_ToggleInfiniteRoundTrip(activeConfig.Game.Vergil.ForceEdge.infiniteRoundTrip);
+		//Game_Vergil_SummonedSwords_ToggleChronoSwords(activeConfig.Game.Vergil.SummonedSwords.chronoSwords);
+		//Game_Vergil_WeaponSwitchTimeout_MeleeToggle  (activeConfig.Game.Vergil.WeaponSwitchTimeout.melee  );
 		//Game_WeaponSwitcher_Init();
-		//Game_WeaponSwitcher_Toggle(Config.Game.WeaponSwitcher.enable);
+		//Game_WeaponSwitcher_Toggle(activeConfig.Game.WeaponSwitcher.enable);
 
 		//Cosmetics_Color_Init();
 		//Cosmetics_Color_UpdateColors(Config);
 		//Cosmetics_Dante_Init();
-		//Cosmetics_Dante_ToggleHideBeowulf(Config.Cosmetics.Dante.Beowulf.hideModel);
+		//Cosmetics_Dante_ToggleHideBeowulf(activeConfig.Cosmetics.Dante.Beowulf.hideModel);
 		//Cosmetics_Object_Init();
 
 		//Cosmetics_Model_Init();
 
 		//Cosmetics_Other_Init();
-		//Cosmetics_Other_ToggleNoDevilForm(Config.Cosmetics.Other.noDevilForm);
-		//Cosmetics_Vergil_ToggleHideBeowulf(Config.Cosmetics.Vergil.Beowulf.hideModel);
+		//Cosmetics_Other_ToggleNoDevilForm(activeConfig.Cosmetics.Other.noDevilForm);
+		//Cosmetics_Vergil_ToggleHideBeowulf(activeConfig.Cosmetics.Vergil.Beowulf.hideModel);
 
 
 
