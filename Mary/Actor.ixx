@@ -232,6 +232,7 @@ bool IsActive(T & actorData)
 	return IsWeaponActive(actorData);
 }
 
+// @Todo: Check Air Raid.
 template <typename T>
 bool IsMeleeWeaponReady
 (
@@ -4832,8 +4833,15 @@ void InitGetActorBaseAddr()
 
 
 
-// @Research: Use activeDevil instead.
-void SetColor
+
+
+
+
+
+
+
+
+void SetColorAura
 (
 	ActorData & actorData,
 	byte8 * dest
@@ -4886,54 +4894,39 @@ void SetColor
 	}
 }
 
-// void SetColorProxy(byte8 * baseAddr)
+// void SetColorProxy(byte8 * baseAddr, byte8 * dest)
 // {
-// 	auto addr = *reinterpret_cast<byte8 **>(baseAddr + 0x28);
-// 	if (!addr)
-// 	{
-// 		return;
-// 	}
-// 	auto actorBaseAddr = *reinterpret_cast<byte8 **>(addr + 0xC0);
+// 	auto actorBaseAddr = *reinterpret_cast<byte8 **>(baseAddr + 0xC0);
 // 	if (!actorBaseAddr)
 // 	{
 // 		return;
 // 	}
 // 	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
 
-// 	auto dest = (baseAddr + 0xE0);
-
 // 	SetColor(actorData, dest);
 // }
 
 
-void SetColorProxy(byte8 * baseAddr, byte8 * dest)
+
+
+
+
+
+
+void SetColorAirHike
+(
+	ActorDataDante & actorData,
+	byte8 * dest
+)
 {
-	auto addr = *reinterpret_cast<byte8 **>(baseAddr + 0x30);
-	if (!addr)
+	uint8 meleeWeaponIndex = static_cast<uint8>(actorData.meleeWeaponIndex);
+	if (meleeWeaponIndex >= MAX_MELEE_WEAPON_DANTE)
 	{
-		return;
+		meleeWeaponIndex = 0;
 	}
 
-	auto actorBaseAddr = *reinterpret_cast<byte8 **>(baseAddr + 0xC0);
-	if (!actorBaseAddr)
-	{
-		return;
-	}
-	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-
-	//auto dest = (addr + 0xE0);
-
-	SetColor(actorData, dest);
+	memcpy(dest, activeConfig.Color.airHike[meleeWeaponIndex], 4);
 }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -4967,99 +4960,7 @@ void ToggleMainActorFixes(bool enable)
 
 
 
-	// {
-	// 	auto dest = (appBaseAddr + 0x90C2B);
-	// 	if (enable)
-	// 	{
-	// 		WriteCall(dest, GetActorBaseAddr[RDI], 2);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x8B, 0x05, 0xF6, 0x01, 0xC0, 0x00, // mov rax,[dmc3.exe+C90E28]
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+90C2B - 48 8B 05 F601C000 - mov rax,[dmc3.exe+C90E28]
-	// 	*/
-	// }
-
-	// {
-	// 	auto dest = (appBaseAddr + 0x90C3D);
-	// 	if (enable)
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x8B, 0xC8, // mov rcx,rax
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 		vp_memset((dest + 3), 0x90, 1);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x8B, 0x48, 0x18, // mov rcx,[rax+18]
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+90C3D - 48 8B 48 18 - mov rcx,[rax+18]
-	// 	*/
-	// }
-
-
-
-	// {
-	// 	auto dest = (appBaseAddr + 0x8E417);
-	// 	if (enable)
-	// 	{
-	// 		WriteCall(dest, GetActorBaseAddr[RBX], 2);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x8B, 0x0D, 0x0A, 0x2A, 0xC0, 0x00, // mov rcx,[dmc3.exe+C90E28]
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+8E417 - 48 8B 0D 0A2AC000 - mov rcx,[dmc3.exe+C90E28]
-	// 	*/
-	// }
-
-	// {
-	// 	auto dest = (appBaseAddr + 0x8E44A);
-	// 	if (enable)
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x8B, 0xC8, // mov rcx,rax
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 		vp_memset((dest + 3), 0x90, 1);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x8B, 0x49, 0x18, // mov rcx,[rcx+18]
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+8E44A - 48 8B 49 18 - mov rcx,[rcx+18]
-	// 	*/
-	// }
-
-
-
-
-
-	// Start
+	// Aura Start
 	{
 		constexpr byte8 sect0[] =
 		{
@@ -5071,7 +4972,7 @@ void ToggleMainActorFixes(bool enable)
 		{
 			0xBA, 0x01, 0x00, 0x00, 0x00, // mov edx,00000001
 		};
-		auto func = CreateFunction(SetColor, (appBaseAddr + 0x8E457), true, true, sizeof(sect0), 0, sizeof(sect2));
+		auto func = CreateFunction(SetColorAura, (appBaseAddr + 0x8E457), true, true, sizeof(sect0), 0, sizeof(sect2));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteCall(func.sect0, GetActorBaseAddr[RBX]);
@@ -5082,54 +4983,23 @@ void ToggleMainActorFixes(bool enable)
 		*/
 	}
 
-	// Loop
+	// Aura Loop
 	{
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-		constexpr byte8 sect2[] =
-		{
-			0x44, 0x0F, 0xB6, 0x83, 0xE0, 0x00, 0x00, 0x00, // movzx r8d,byte ptr [rbx+000000E0]
-		};
-		auto func = CreateFunction(SetColorProxy, (appBaseAddr + 0x2E5F53), true, true, 0, sizeof(sect1), sizeof(sect2));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		//WriteJump((appBaseAddr + 0x2E5F4B), func.addr, 3);
-		/*
-		dmc3.exe+2E5F4B - 44 0FB6 83 E0000000 - movzx r8d,byte ptr [rbx+000000E0]
-		dmc3.exe+2E5F53 - 44 0FB6 8B E1000000 - movzx r9d,byte ptr [rbx+000000E1]
-		*/
-	}
-
-
-	// True Loop
-	{
-		// constexpr byte8 sect0[] =
-		// {
-		// 	0xE8, 0x00, 0x00, 0x00, 0x00, // call
-		// 	0x48, 0x8B, 0xC8,             // mov rcx,rax
-		// 	0x48, 0x8D, 0x54, 0x24, 0x30, // lea rdx,[rsp+30]
-		// };
-
 		constexpr byte8 sect0[] =
 		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call
+			0x48, 0x8B, 0xC8,             // mov rcx,rax
 			0x48, 0x8D, 0x54, 0x24, 0x30, // lea rdx,[rsp+30]
-		};
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rdi,
 		};
 		constexpr byte8 sect2[] =
 		{
 			0x48, 0x8B, 0x06, // mov rax,[rsi]
 			0x48, 0x85, 0xC0, // test rax,rax
 		};
-		auto func = CreateFunction(SetColorProxy, (appBaseAddr + 0x90C69), true, true, sizeof(sect0), sizeof(sect1), sizeof(sect2));
+		auto func = CreateFunction(SetColorAura, (appBaseAddr + 0x90C69), true, true, sizeof(sect0), 0, sizeof(sect2));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
 		memcpy(func.sect2, sect2, sizeof(sect2));
-		//WriteCall(func.sect0, GetActorBaseAddr[RDI]);
+		WriteCall(func.sect0, GetActorBaseAddr[RDI]);
 		WriteJump((appBaseAddr + 0x90C63), func.addr, 1);
 		/*
 		dmc3.exe+90C63 - 48 8B 06 - mov rax,[rsi]
@@ -5138,30 +5008,119 @@ void ToggleMainActorFixes(bool enable)
 		*/
 	}
 
-	// // End
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0xE8, 0x00, 0x00, 0x00, 0x00, // call
-	// 		0x48, 0x8B, 0xC8,             // mov rcx,rax
-	// 		0x48, 0x8D, 0x54, 0x24, 0x30, // lea rdx,[rsp+30]
-	// 	};
-	// 	constexpr byte8 sect2[] =
-	// 	{
-	// 		0x48, 0x8B, 0x06, // mov rax,[rsi]
-	// 		0x48, 0x85, 0xC0, // test rax,rax
-	// 	};
-	// 	auto func = CreateFunction(SetColor, (appBaseAddr + 0x90C69), true, true, sizeof(sect0), 0, sizeof(sect2));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	memcpy(func.sect2, sect2, sizeof(sect2));
-	// 	WriteCall(func.sect0, GetActorBaseAddr[RDI]);
-	// 	WriteJump((appBaseAddr + 0x90C63), func.addr, 1);
-	// 	/*
-	// 	dmc3.exe+90C63 - 48 8B 06 - mov rax,[rsi]
-	// 	dmc3.exe+90C66 - 48 85 C0 - test rax,rax
-	// 	dmc3.exe+90C69 - 74 32    - je dmc3.exe+90C9D
-	// 	*/
-	// }
+	// Aura Vergil Fix
+	{
+		auto dest = (appBaseAddr + 0x90C32);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 4);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x44, 0x0F, 0xB6, 0xEB, // movzx r13d,bl
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+90C32 - 44 0FB6 EB - movzx r13d,bl
+		*/
+	}
+
+
+	// Doppelganger Clone
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rsi
+			0x8B, 0x36,                                                 // mov esi,[rsi]
+			0x89, 0xB7, 0x28, 0x3A, 0x00, 0x00,                         // mov [rdi+00003A28],esi
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1FCD7D), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Doppelganger.clone;
+		WriteJump((appBaseAddr + 0x1FCD73), func.addr, 5);
+		/*
+		dmc3.exe+1FCD73 - C7 87 283A0000 10101030 - mov [rdi+00003A28],30101010
+		dmc3.exe+1FCD7D - 89 87 243A0000          - mov [rdi+00003A24],eax
+		*/
+	}
+
+
+
+	// Trickster Sky Star
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rdi
+			0x8B, 0x3F,                                                 // mov edi,[rdi]
+			0x89, 0xB8, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],edi
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x8E340), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Trickster.skyStar;
+		WriteJump((appBaseAddr + 0x8E330), func.addr, 4);
+		/*
+		dmc3.exe+8E330 - 66 C7 80 E0000000 FF00  - mov word ptr [rax+000000E0],00FF
+		dmc3.exe+8E340 - C7 80 DC000000 02000000 - mov [rax+000000DC],00000002
+		*/
+	}
+
+	// Royalguard Ultimate Start
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
+			0x8B, 0x09,                                                 // mov ecx,[rcx]
+			0x89, 0x88, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],ecx
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x8E84C), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Royalguard.ultimate;
+		WriteJump((appBaseAddr + 0x8E83C), func.addr, 4);
+		/*
+		dmc3.exe+8E83C - 66 C7 80 E0000000 8F70  - mov word ptr [rax+000000E0],708F
+		dmc3.exe+8E84C - C7 80 DC000000 02000000 - mov [rax+000000DC],00000002
+		*/
+	}
+
+
+	// Royalguard Ultimate End
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
+			0x8B, 0x09,                                                 // mov ecx,[rcx]
+			0x89, 0x88, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],ecx
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x91154), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Royalguard.ultimate;
+		WriteJump((appBaseAddr + 0x91144), func.addr, 4);
+		/*
+		dmc3.exe+91144 - 66 C7 80 E0000000 8F70  - mov word ptr [rax+000000E0],708F
+		dmc3.exe+91154 - C7 80 DC000000 02000000 - mov [rax+000000DC],00000002
+		*/
+	}
+
+
+
+	// Air Hike
+	{
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+		auto func = CreateFunction(SetColorAirHike, 0, true, true, 0, sizeof(sect1));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall((appBaseAddr + 0x1F66DD), func.addr);
+		/*
+		dmc3.exe+1F66DD - E8 1E66E9FF - call dmc3.exe+8CD00
+		*/
+	}
+
+
 
 
 
@@ -5940,5 +5899,120 @@ export void Actor_Init()
 	//	break;
 	//}
 	//}
+
+
+
+	// Loop
+	{
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+		constexpr byte8 sect2[] =
+		{
+			0x44, 0x0F, 0xB6, 0x83, 0xE0, 0x00, 0x00, 0x00, // movzx r8d,byte ptr [rbx+000000E0]
+		};
+		auto func = CreateFunction(SetColorProxy, (appBaseAddr + 0x2E5F53), true, true, 0, sizeof(sect1), sizeof(sect2));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		//WriteJump((appBaseAddr + 0x2E5F4B), func.addr, 3);
+		/*
+		dmc3.exe+2E5F4B - 44 0FB6 83 E0000000 - movzx r8d,byte ptr [rbx+000000E0]
+		dmc3.exe+2E5F53 - 44 0FB6 8B E1000000 - movzx r9d,byte ptr [rbx+000000E1]
+		*/
+	}
+
+
+
+
+	// {
+	// 	auto dest = (appBaseAddr + 0x90C2B);
+	// 	if (enable)
+	// 	{
+	// 		WriteCall(dest, GetActorBaseAddr[RDI], 2);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x8B, 0x05, 0xF6, 0x01, 0xC0, 0x00, // mov rax,[dmc3.exe+C90E28]
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+90C2B - 48 8B 05 F601C000 - mov rax,[dmc3.exe+C90E28]
+	// 	*/
+	// }
+
+	// {
+	// 	auto dest = (appBaseAddr + 0x90C3D);
+	// 	if (enable)
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x8B, 0xC8, // mov rcx,rax
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 		vp_memset((dest + 3), 0x90, 1);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x8B, 0x48, 0x18, // mov rcx,[rax+18]
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+90C3D - 48 8B 48 18 - mov rcx,[rax+18]
+	// 	*/
+	// }
+
+
+
+	// {
+	// 	auto dest = (appBaseAddr + 0x8E417);
+	// 	if (enable)
+	// 	{
+	// 		WriteCall(dest, GetActorBaseAddr[RBX], 2);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x8B, 0x0D, 0x0A, 0x2A, 0xC0, 0x00, // mov rcx,[dmc3.exe+C90E28]
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+8E417 - 48 8B 0D 0A2AC000 - mov rcx,[dmc3.exe+C90E28]
+	// 	*/
+	// }
+
+	// {
+	// 	auto dest = (appBaseAddr + 0x8E44A);
+	// 	if (enable)
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x8B, 0xC8, // mov rcx,rax
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 		vp_memset((dest + 3), 0x90, 1);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x8B, 0x49, 0x18, // mov rcx,[rcx+18]
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+8E44A - 48 8B 49 18 - mov rcx,[rcx+18]
+	// 	*/
+	// }
+
+
 
 #endif
