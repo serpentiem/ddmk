@@ -240,72 +240,16 @@ bool IsMeleeWeaponReady
 	uint8 weapon
 )
 {
-	if constexpr (TypeMatch<T, ActorDataBob>::value || TypeMatch<T, ActorDataLady>::value)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		return true;
-	}
-
-
-	// @Todo: Update for Sparda.
-
-	if (actorData.devil)
-	{
-		if constexpr (TypeMatch<T, ActorDataDante>::value)
+		if ((weapon == WEAPON_BEOWULF_DANTE) && activeConfig.BeowulfDante.hide && !actorData.devil)
 		{
-			if (actorData.activeDevil == (weapon - WEAPON_REBELLION))
-			{
-				return true;
-			}
-		}
-		else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-		{
-			if (actorData.activeDevil == (weapon - WEAPON_YAMATO_VERGIL))
-			{
-				return true;
-			}
+			return false;
 		}
 	}
-	else
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
-		if constexpr (TypeMatch<T, ActorDataDante>::value)
-		{
-			if ((weapon == WEAPON_BEOWULF_DANTE) && activeConfig.BeowulfDante.hide)
-			{
-				return false;
-			}
-		}
-		else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-		{
-			if ((weapon == WEAPON_BEOWULF_VERGIL) && activeConfig.BeowulfVergil.hide)
-			{
-				return false;
-			}
-		}
-	}
-
-	if (IsWeaponActive(actorData, weapon))
-	{
-		return true;
-	}
-
-	constexpr uint8 count =
-	(TypeMatch<T, ActorDataDante >::value) ? MAX_MELEE_WEAPON_DANTE  :
-	(TypeMatch<T, ActorDataVergil>::value) ? MAX_MELEE_WEAPON_VERGIL :
-	0;
-
-	for_all(uint8, index, count)
-	{
-		uint8 weapon2 =
-		(TypeMatch<T, ActorDataDante >::value) ? (WEAPON_REBELLION     + index) :
-		(TypeMatch<T, ActorDataVergil>::value) ? (WEAPON_YAMATO_VERGIL + index) :
-		0;
-
-		if (weapon2 == weapon)
-		{
-			continue;
-		}
-
-		if (IsWeaponActive(actorData, weapon2))
+		if ((weapon == WEAPON_BEOWULF_VERGIL) && activeConfig.BeowulfVergil.hide && !actorData.devil)
 		{
 			return false;
 		}
@@ -313,39 +257,48 @@ bool IsMeleeWeaponReady
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
+		if (actorData.devil && !actorData.sparda)
+		{
+			if (actorData.activeDevil == weapon)
+			{
+				return true;
+			}
+		}
+
+		if (IsWeaponActive(actorData, weapon))
+		{
+			return true;
+		}
+
+		for_all(uint8, index, MAX_MELEE_WEAPON_DANTE)
+		{
+			uint8 weapon2 = (WEAPON_REBELLION + index);
+
+			if (weapon2 == weapon)
+			{
+				continue;
+			}
+
+			if (IsWeaponActive(actorData, weapon2))
+			{
+				return false;
+			}
+		}
 
 		if (actorData.devil && actorData.sparda)
 		{
 			return false;
 		}
-	}
-	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	{
-		if (actorData.devil && actorData.neroAngelo)
-		{
-			return false;
-		}
-	}
 
-
-
-
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
-	{
-		if (actorData.meleeWeaponIndex == (weapon - WEAPON_REBELLION))
+		if (actorData.meleeWeaponIndex == weapon)
 		{
 			return true;
 		}
-	}
-	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	{
-		if (actorData.activeMeleeWeaponIndex == (weapon - WEAPON_YAMATO_VERGIL))
-		{
-			return true;
-		}
+
+		return false;
 	}
 
-	return false;
+	return true;
 }
 
 bool IsMeleeWeaponReadyProxy(WeaponData & weaponData)
@@ -428,17 +381,56 @@ bool IsRangedWeaponReadyProxy(WeaponData & weaponData)
 	return IsRangedWeaponReady(actorData, weaponData.weapon);
 }
 
+void IsMeleeWeaponReadyVergilFix(ActorDataVergil & actorData)
+{
+	if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
+	{
+		uint8 weapon = (WEAPON_YAMATO_VERGIL + static_cast<uint8>(actorData.activeMeleeWeaponIndex));
+
+		if (!IsWeaponActive(actorData, weapon))
+		{
+			actorData.activeMeleeWeaponIndex = actorData.queuedMeleeWeaponIndex;
+		}
+	}
+}
+
+byte8 * GetActorBaseAddr[MAX_REGISTER] = {};
+
+void InitGetActorBaseAddr()
+{
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0x8B, 0x80, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rax+000000C0]
+			0x48, 0x85, 0xC0,                         // test rax,rax
+			0x75, 0x0B,                               // jne short
+			0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, // mov rax,[dmc3.exe+C90E28]
+			0x48, 0x8B, 0x40, 0x18,                   // mov rax,[rax+18]
+			0xC3,                                     // ret
+		};
+		for_all(uint8, index, MAX_REGISTER)
+		{
+			auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+			memcpy(func.sect0, sect0, sizeof(sect0));
+			WriteAddress((func.sect0 + 0xC), (appBaseAddr + 0xC90E28), 7);
+			GetActorBaseAddr[index] = func.addr;
+
+			if (index < R8)
+			{
+				*reinterpret_cast<byte8 *>(func.sect0) = 0x48;
+				*reinterpret_cast<byte8 *>(func.sect0 + 2) = (0x80 + index);
+			}
+			else
+			{
+				*reinterpret_cast<byte8 *>(func.sect0) = 0x49;
+				*reinterpret_cast<byte8 *>(func.sect0 + 2) = (0x80 + (index - R8));
+			}
+		}
+	}
+}
 
 
-/*
-pseudo vergil solution
 
-if activeWeapon != queuedWeapon
-get active weapon id
-check if active
-if not active
-set activeWEapon to queuedweapon
-*/
 
 
 
@@ -914,23 +906,23 @@ void UpdateDevilModel
 	modelFile = file[1];
 	textureFile = file[0];
 
-	if (devil == DEVIL_DANTE_AGNI_RUDRA)
+	if (devil == DEVIL_AGNI_RUDRA)
 	{
 		shadowFile = file[2];
 	}
 	else if
 	(
-		(devil == DEVIL_DANTE_CERBERUS) ||
-		(devil == DEVIL_DANTE_BEOWULF ) ||
-		(devil == DEVIL_DANTE_SPARDA  )
+		(devil == DEVIL_CERBERUS) ||
+		(devil == DEVIL_BEOWULF ) ||
+		(devil == DEVIL_SPARDA  )
 	)
 	{
 		shadowFile = file[4];
 	}
 	else if
 	(
-		(devil == DEVIL_DANTE_REBELLION) ||
-		(devil == DEVIL_DANTE_NEVAN    )
+		(devil == DEVIL_REBELLION) ||
+		(devil == DEVIL_NEVAN    )
 	)
 	{
 		shadowFile = file[6];
@@ -959,7 +951,7 @@ void UpdateDevilModel
 	devilModelMetadata.modelIndex = modelIndex;
 	devilModelMetadata.modelPhysicsMetadataIndex = ((modelIndex * 24) + modelPhysicsMetadataIndex);
 
-	if (devil == DEVIL_DANTE_AGNI_RUDRA)
+	if (devil == DEVIL_AGNI_RUDRA)
 	{
 		return;
 	}
@@ -972,17 +964,17 @@ void UpdateDevilModel
 
 	if
 	(
-		(devil == DEVIL_DANTE_REBELLION) ||
-		(devil == DEVIL_DANTE_NEVAN    )
+		(devil == DEVIL_REBELLION) ||
+		(devil == DEVIL_NEVAN    )
 	)
 	{
 		shadowFile = file[7];
 	}
 	else if
 	(
-		(devil == DEVIL_DANTE_CERBERUS) ||
-		(devil == DEVIL_DANTE_BEOWULF ) ||
-		(devil == DEVIL_DANTE_SPARDA  )
+		(devil == DEVIL_CERBERUS) ||
+		(devil == DEVIL_BEOWULF ) ||
+		(devil == DEVIL_SPARDA  )
 	)
 	{
 		shadowFile = file[5];
@@ -1020,8 +1012,8 @@ void UpdateDevilModel
 
 	if
 	(
-		(devil == DEVIL_DANTE_REBELLION) ||
-		(devil == DEVIL_DANTE_NEVAN    )
+		(devil == DEVIL_REBELLION) ||
+		(devil == DEVIL_NEVAN    )
 	)
 	{
 		LinkModelPhysicsData(0, 3, 1 );
@@ -1029,8 +1021,8 @@ void UpdateDevilModel
 	}
 	else if
 	(
-		(devil == DEVIL_DANTE_CERBERUS) ||
-		(devil == DEVIL_DANTE_BEOWULF )
+		(devil == DEVIL_CERBERUS) ||
+		(devil == DEVIL_BEOWULF )
 	)
 	{
 		LinkModelPhysicsData(0, 3 , 1);
@@ -1051,8 +1043,8 @@ void UpdateDevilModel
 	if
 	(
 	!(
-		(devil == DEVIL_DANTE_REBELLION) ||
-		(devil == DEVIL_DANTE_NEVAN    )
+		(devil == DEVIL_REBELLION) ||
+		(devil == DEVIL_NEVAN    )
 	)
 	)
 	{
@@ -1596,13 +1588,13 @@ void UpdateActorDante(ActorDataDante & actorData)
 
 	if (actorData.sparda)
 	{
-		UpdateDevilModel(actorData, DEVIL_DANTE_SPARDA, 0);
+		UpdateDevilModel(actorData, DEVIL_SPARDA, 0);
 	}
 	else
 	{
 		for_all(uint8, index, 5)
 		{
-			UpdateDevilModel(actorData, (DEVIL_DANTE_REBELLION + index), index);
+			UpdateDevilModel(actorData, (DEVIL_REBELLION + index), index);
 		}
 	}
 	
@@ -2095,7 +2087,7 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 		{
 			actorData.queuedModelIndex = 1;
 			actorData.activeModelIndexMirror = 1;
-			actorData.activeDevil = DEVIL_DANTE_SPARDA;
+			actorData.activeDevil = DEVIL_SPARDA;
 			actorData.airRaid = 0;
 		}
 		else
@@ -2348,6 +2340,7 @@ export void Actor_ActorLoop(byte8 * baseAddr)
 		{
 			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(baseAddr);
 			UpdateModelPartitions(actorData2);
+			IsMeleeWeaponReadyVergilFix(actorData2);
 			break;
 		}
 	}
@@ -4752,94 +4745,33 @@ void ToggleWeaponCountAdjustments(bool enable)
 
 
 
-// byte8 * GetActorBaseAddrRAX = 0;
-// byte8 * GetActorBaseAddrRBX = 0;
-// byte8 * GetActorBaseAddrRCX = 0;
-// byte8 * GetActorBaseAddrRDX = 0;
-// byte8 * GetActorBaseAddrRSI = 0;
-// byte8 * GetActorBaseAddrRDI = 0;
-// byte8 * GetActorBaseAddrRBP = 0;
-// byte8 * GetActorBaseAddrRSP = 0;
-// byte8 * GetActorBaseAddrR8  = 0;
-// byte8 * GetActorBaseAddrR9  = 0;
-// byte8 * GetActorBaseAddrR10 = 0;
-// byte8 * GetActorBaseAddrR11 = 0;
-// byte8 * GetActorBaseAddrR12 = 0;
-// byte8 * GetActorBaseAddrR13 = 0;
-// byte8 * GetActorBaseAddrR14 = 0;
-// byte8 * GetActorBaseAddrR15 = 0;
 
 
-enum REGISTER
+
+
+
+
+
+
+
+
+
+
+
+void SetColorAirHike
+(
+	ActorDataDante & actorData,
+	byte8 * dest
+)
 {
-	RAX,
-	RCX,
-	RDX,
-	RBX,
-	RSP,
-	RBP,
-	RSI,
-	RDI,
-	R8,
-	R9,
-	R10,
-	R11,
-	R12,
-	R13,
-	R14,
-	R15,
-	MAX_REGISTER,
-};
-
-byte8 * GetActorBaseAddr[MAX_REGISTER] = {};
-
-void InitGetActorBaseAddr()
-{
+	uint8 meleeWeaponIndex = static_cast<uint8>(actorData.meleeWeaponIndex);
+	if (meleeWeaponIndex >= MAX_MELEE_WEAPON_DANTE)
 	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0x8B, 0x80, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rax+000000C0]
-			0x48, 0x85, 0xC0,                         // test rax,rax
-			0x75, 0x0B,                               // jne short
-			0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, // mov rax,[dmc3.exe+C90E28]
-			0x48, 0x8B, 0x40, 0x18,                   // mov rax,[rax+18]
-			0xC3,                                     // ret
-		};
-		for_all(uint8, index, MAX_REGISTER)
-		{
-			auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
-			memcpy(func.sect0, sect0, sizeof(sect0));
-			WriteAddress((func.sect0 + 0xC), (appBaseAddr + 0xC90E28), 7);
-			GetActorBaseAddr[index] = func.addr;
-
-			if (index < R8)
-			{
-				*reinterpret_cast<byte8 *>(func.sect0) = 0x48;
-				*reinterpret_cast<byte8 *>(func.sect0 + 2) = (0x80 + index);
-			}
-			else
-			{
-				*reinterpret_cast<byte8 *>(func.sect0) = 0x49;
-				*reinterpret_cast<byte8 *>(func.sect0 + 2) = (0x80 + (index - R8));
-			}
-		}
+		meleeWeaponIndex = 0;
 	}
 
-	for_all(uint8, index, countof(GetActorBaseAddr))
-	{
-		Log("GetActorBaseAddr %llX", GetActorBaseAddr[index]);
-	}
+	memcpy(dest, activeConfig.Color.airHike[meleeWeaponIndex], 4);
 }
-
-
-
-
-
-
-
-
-
-
 
 void SetColorAura
 (
@@ -4894,71 +4826,95 @@ void SetColorAura
 	}
 }
 
-// void SetColorProxy(byte8 * baseAddr, byte8 * dest)
-// {
-// 	auto actorBaseAddr = *reinterpret_cast<byte8 **>(baseAddr + 0xC0);
-// 	if (!actorBaseAddr)
-// 	{
-// 		return;
-// 	}
-// 	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-
-// 	SetColor(actorData, dest);
-// }
-
-
-
-
-
-
-
-
-void SetColorAirHike
-(
-	ActorDataDante & actorData,
-	byte8 * dest
-)
+void InitColor()
 {
-	uint8 meleeWeaponIndex = static_cast<uint8>(actorData.meleeWeaponIndex);
-	if (meleeWeaponIndex >= MAX_MELEE_WEAPON_DANTE)
+	LogFunction();
+
+	// Air Hike
 	{
-		meleeWeaponIndex = 0;
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+		auto func = CreateFunction(SetColorAirHike, 0, true, true, 0, sizeof(sect1));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall((appBaseAddr + 0x1F66DD), func.addr);
+		/*
+		dmc3.exe+1F66DD - E8 1E66E9FF - call dmc3.exe+8CD00
+		*/
 	}
 
-	memcpy(dest, activeConfig.Color.airHike[meleeWeaponIndex], 4);
-}
+	// Trickster Sky Star
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rdi
+			0x8B, 0x3F,                                                 // mov edi,[rdi]
+			0x89, 0xB8, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],edi
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x8E340), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Trickster.skyStar;
+		WriteJump((appBaseAddr + 0x8E330), func.addr, 4);
+		/*
+		dmc3.exe+8E330 - 66 C7 80 E0000000 FF00  - mov word ptr [rax+000000E0],00FF
+		dmc3.exe+8E340 - C7 80 DC000000 02000000 - mov [rax+000000DC],00000002
+		*/
+	}
 
+	// Royalguard Ultimate Start
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
+			0x8B, 0x09,                                                 // mov ecx,[rcx]
+			0x89, 0x88, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],ecx
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x8E84C), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Royalguard.ultimate;
+		WriteJump((appBaseAddr + 0x8E83C), func.addr, 4);
+		/*
+		dmc3.exe+8E83C - 66 C7 80 E0000000 8F70  - mov word ptr [rax+000000E0],708F
+		dmc3.exe+8E84C - C7 80 DC000000 02000000 - mov [rax+000000DC],00000002
+		*/
+	}
 
+	// Royalguard Ultimate End
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
+			0x8B, 0x09,                                                 // mov ecx,[rcx]
+			0x89, 0x88, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],ecx
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x91154), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Royalguard.ultimate;
+		WriteJump((appBaseAddr + 0x91144), func.addr, 4);
+		/*
+		dmc3.exe+91144 - 66 C7 80 E0000000 8F70  - mov word ptr [rax+000000E0],708F
+		dmc3.exe+91154 - C7 80 DC000000 02000000 - mov [rax+000000DC],00000002
+		*/
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-void ToggleMainActorFixes(bool enable)
-{
-	LogFunction(enable);
-	Write<byte16>((appBaseAddr + 0x1F83DE + 2), (enable) ? 0x90C7 : 0x1841);
-	/*
-	dmc3.exe+1F83DE - 48 8B 41 18 - mov rax,[rcx+18]
-	*/
-	Write<uint32>((appBaseAddr + 0x1F5FC6 + 2), offsetof(ActorData, newIsClone));
-	/*
-	dmc3.exe+1F5FC6 - 83 B9 1C010000 01     - cmp dword ptr [rcx+0000011C],01 { 1 }
-	*/
-
-
-
-
-
-
-
+	// Doppelganger Clone
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rsi
+			0x8B, 0x36,                                                 // mov esi,[rsi]
+			0x89, 0xB7, 0x28, 0x3A, 0x00, 0x00,                         // mov [rdi+00003A28],esi
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1FCD7D), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Doppelganger.clone;
+		WriteJump((appBaseAddr + 0x1FCD73), func.addr, 5);
+		/*
+		dmc3.exe+1FCD73 - C7 87 283A0000 10101030 - mov [rdi+00003A28],30101010
+		dmc3.exe+1FCD7D - 89 87 243A0000          - mov [rdi+00003A24],eax
+		*/
+	}
 
 	// Aura Start
 	{
@@ -5009,122 +4965,33 @@ void ToggleMainActorFixes(bool enable)
 	}
 
 	// Aura Vergil Fix
-	{
-		auto dest = (appBaseAddr + 0x90C32);
-		if (enable)
-		{
-			vp_memset(dest, 0x90, 4);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x44, 0x0F, 0xB6, 0xEB, // movzx r13d,bl
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+90C32 - 44 0FB6 EB - movzx r13d,bl
-		*/
-	}
-
-
-	// Doppelganger Clone
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rsi
-			0x8B, 0x36,                                                 // mov esi,[rsi]
-			0x89, 0xB7, 0x28, 0x3A, 0x00, 0x00,                         // mov [rdi+00003A28],esi
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1FCD7D), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Doppelganger.clone;
-		WriteJump((appBaseAddr + 0x1FCD73), func.addr, 5);
-		/*
-		dmc3.exe+1FCD73 - C7 87 283A0000 10101030 - mov [rdi+00003A28],30101010
-		dmc3.exe+1FCD7D - 89 87 243A0000          - mov [rdi+00003A24],eax
-		*/
-	}
-
-
-
-	// Trickster Sky Star
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rdi
-			0x8B, 0x3F,                                                 // mov edi,[rdi]
-			0x89, 0xB8, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],edi
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x8E340), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Trickster.skyStar;
-		WriteJump((appBaseAddr + 0x8E330), func.addr, 4);
-		/*
-		dmc3.exe+8E330 - 66 C7 80 E0000000 FF00  - mov word ptr [rax+000000E0],00FF
-		dmc3.exe+8E340 - C7 80 DC000000 02000000 - mov [rax+000000DC],00000002
-		*/
-	}
-
-	// Royalguard Ultimate Start
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
-			0x8B, 0x09,                                                 // mov ecx,[rcx]
-			0x89, 0x88, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],ecx
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x8E84C), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Royalguard.ultimate;
-		WriteJump((appBaseAddr + 0x8E83C), func.addr, 4);
-		/*
-		dmc3.exe+8E83C - 66 C7 80 E0000000 8F70  - mov word ptr [rax+000000E0],708F
-		dmc3.exe+8E84C - C7 80 DC000000 02000000 - mov [rax+000000DC],00000002
-		*/
-	}
-
-
-	// Royalguard Ultimate End
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
-			0x8B, 0x09,                                                 // mov ecx,[rcx]
-			0x89, 0x88, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],ecx
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x91154), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Royalguard.ultimate;
-		WriteJump((appBaseAddr + 0x91144), func.addr, 4);
-		/*
-		dmc3.exe+91144 - 66 C7 80 E0000000 8F70  - mov word ptr [rax+000000E0],708F
-		dmc3.exe+91154 - C7 80 DC000000 02000000 - mov [rax+000000DC],00000002
-		*/
-	}
-
-
-
-	// Air Hike
-	{
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-		auto func = CreateFunction(SetColorAirHike, 0, true, true, 0, sizeof(sect1));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1F66DD), func.addr);
-		/*
-		dmc3.exe+1F66DD - E8 1E66E9FF - call dmc3.exe+8CD00
-		*/
-	}
+	vp_memset((appBaseAddr + 0x90C32), 0x90, 4);
+	/*
+	dmc3.exe+90C32 - 44 0FB6 EB - movzx r13d,bl
+	*/
+}
 
 
 
 
 
 
+
+
+
+
+
+void ToggleMainActorFixes(bool enable)
+{
+	LogFunction(enable);
+	Write<byte16>((appBaseAddr + 0x1F83DE + 2), (enable) ? 0x90C7 : 0x1841);
+	/*
+	dmc3.exe+1F83DE - 48 8B 41 18 - mov rax,[rcx+18]
+	*/
+	Write<uint32>((appBaseAddr + 0x1F5FC6 + 2), offsetof(ActorData, newIsClone));
+	/*
+	dmc3.exe+1F5FC6 - 83 B9 1C010000 01     - cmp dword ptr [rcx+0000011C],01 { 1 }
+	*/
 }
 
 
@@ -5153,6 +5020,10 @@ export void Actor_Init()
 	InitGetActorBaseAddr();
 
 	ToggleMainActorFixes(true);
+
+
+	InitColor();
+
 
 
 	//// @Todo: Create function.

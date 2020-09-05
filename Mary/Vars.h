@@ -74,30 +74,18 @@ enum COSTUME_
 	MAX_COSTUME_VERGIL = 5,
 };
 
-enum DEVIL_
+enum DEVIL
 {
-	DEVIL_DANTE_REBELLION,
-	DEVIL_DANTE_CERBERUS,
-	DEVIL_DANTE_AGNI_RUDRA,
-	DEVIL_DANTE_NEVAN,
-	DEVIL_DANTE_BEOWULF,
-	DEVIL_DANTE_SPARDA,
-	MAX_DEVIL_DANTE = 6,
-	//DEVIL_VERGIL_YAMATO,
-	//DEVIL_VERGIL_BEOWULF = 4,
-	//DEVIL_VERGIL_NERO_ANGELO = 6,
-	//MAX_DEVIL = 7,
+	DEVIL_REBELLION,
+	DEVIL_CERBERUS,
+	DEVIL_AGNI_RUDRA,
+	DEVIL_NEVAN,
+	DEVIL_BEOWULF,
+	DEVIL_SPARDA,
+	DEVIL_NERO_ANGELO,
+	DEVIL_YAMATO = 0,
+	MAX_DEVIL = 7,
 };
-
-
-
-
-
-
-
-
-
-
 
 enum STYLE_
 {
@@ -1593,27 +1581,27 @@ struct DevilModelMetadataDante
 	{
 		switch (index)
 		{
-		case DEVIL_DANTE_REBELLION:
+		case DEVIL_REBELLION:
 		{
 			return Rebellion;
 		}
-		case DEVIL_DANTE_CERBERUS:
+		case DEVIL_CERBERUS:
 		{
 			return *reinterpret_cast<DevilModelMetadata2 *>(&Cerberus);
 		}
-		case DEVIL_DANTE_AGNI_RUDRA:
+		case DEVIL_AGNI_RUDRA:
 		{
 			return *reinterpret_cast<DevilModelMetadata2 *>(&AgniRudra);
 		}
-		case DEVIL_DANTE_NEVAN:
+		case DEVIL_NEVAN:
 		{
 			return Nevan;
 		}
-		case DEVIL_DANTE_BEOWULF:
+		case DEVIL_BEOWULF:
 		{
 			return *reinterpret_cast<DevilModelMetadata2 *>(&Beowulf);
 		}
-		case DEVIL_DANTE_SPARDA:
+		case DEVIL_SPARDA:
 		{
 			return *reinterpret_cast<DevilModelMetadata2 *>(&Sparda);
 		}
@@ -1707,7 +1695,7 @@ constexpr uint16 costumeFileIdsVergil[MAX_COSTUME_VERGIL] =
 
 
 
-constexpr uint16 devilFileIdsDante[MAX_DEVIL_DANTE] =
+constexpr uint16 devilFileIdsDante[6] =
 {
 	pl005,
 	pl006,

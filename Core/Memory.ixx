@@ -13,6 +13,27 @@ import ModuleName(Core_Log);
 
 constexpr bool debug = false;
 
+export enum REGISTER
+{
+	RAX,
+	RCX,
+	RDX,
+	RBX,
+	RSP,
+	RBP,
+	RSI,
+	RDI,
+	R8,
+	R9,
+	R10,
+	R11,
+	R12,
+	R13,
+	R14,
+	R15,
+	MAX_REGISTER,
+};
+
 export byte8  * appBaseAddr = 0;
 export uint32   appSize     = 0;
 export HWND     appWindow   = 0;
