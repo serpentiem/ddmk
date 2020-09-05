@@ -1893,7 +1893,17 @@ static_assert(offsetof(WeaponData, actorBaseAddr) == 0x120);
 
 
 
-
+struct PlayerData
+{
+	uint8 character;
+	uint8 costume;
+	bool forceFiles;
+	uint8 forceFilesCharacter;
+	uint8 meleeWeapons[MAX_MELEE_WEAPON];
+	uint8 meleeWeaponCount;
+	uint8 rangedWeapons[MAX_RANGED_WEAPON];
+	uint8 rangedWeaponCount;
+};
 
 
 

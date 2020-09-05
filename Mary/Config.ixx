@@ -13,289 +13,8 @@ export struct Config
 	struct
 	{
 		bool enable = true;
+		PlayerData playerData[MAX_PLAYER][MAX_ENTITY] = {};
 		uint8 playerCount = 1;
-		uint8 character[MAX_PLAYER][MAX_ENTITY] =
-		{
-			// Player 0
-			{
-				CHAR_DANTE,
-				CHAR_DANTE,
-			},
-			// Player 1
-			{
-				CHAR_BOB,
-				CHAR_BOB,
-			},
-			// Player 2
-			{
-				CHAR_LADY,
-				CHAR_LADY,
-			},
-			// Player 3
-			{
-				CHAR_VERGIL,
-				CHAR_VERGIL,
-			},
-		};
-		uint8 costume[MAX_PLAYER][MAX_ENTITY][MAX_CHAR] = {};
-		bool forceFiles[MAX_PLAYER][MAX_ENTITY][MAX_CHAR] = {};
-		uint8 forceFilesCharacter[MAX_PLAYER][MAX_ENTITY][MAX_CHAR] = {};
-		bool enableQuicksilver[MAX_PLAYER] =
-		{
-			true,
-			true,
-			true,
-			true,
-		};
-		bool enableDoppelganger[MAX_PLAYER] =
-		{
-			true,
-			true,
-			true,
-			true,
-		};
-		uint8 meleeWeaponsDante[MAX_PLAYER][MAX_ENTITY][MAX_MELEE_WEAPON] =
-		{
-			// Player 0
-			{
-				// Entity 0
-				{
-					WEAPON_REBELLION,
-					WEAPON_CERBERUS,
-					WEAPON_AGNI_RUDRA,
-					WEAPON_NEVAN,
-					WEAPON_BEOWULF_DANTE,
-				},
-				// Entity 1
-				{
-					WEAPON_REBELLION,
-					WEAPON_CERBERUS,
-					WEAPON_AGNI_RUDRA,
-					WEAPON_NEVAN,
-					WEAPON_BEOWULF_DANTE,
-				},
-			},
-			// Player 1
-			{
-				// Entity 0
-				{
-					WEAPON_REBELLION,
-					WEAPON_CERBERUS,
-					WEAPON_AGNI_RUDRA,
-					WEAPON_NEVAN,
-					WEAPON_BEOWULF_DANTE,
-				},
-				// Entity 1
-				{
-					WEAPON_REBELLION,
-					WEAPON_CERBERUS,
-					WEAPON_AGNI_RUDRA,
-					WEAPON_NEVAN,
-					WEAPON_BEOWULF_DANTE,
-				},
-			},
-			// Player 2
-			{
-				// Entity 0
-				{
-					WEAPON_REBELLION,
-					WEAPON_CERBERUS,
-					WEAPON_AGNI_RUDRA,
-					WEAPON_NEVAN,
-					WEAPON_BEOWULF_DANTE,
-				},
-				// Entity 1
-				{
-					WEAPON_REBELLION,
-					WEAPON_CERBERUS,
-					WEAPON_AGNI_RUDRA,
-					WEAPON_NEVAN,
-					WEAPON_BEOWULF_DANTE,
-				},
-			},
-			// Player 3
-			{
-				// Entity 0
-				{
-					WEAPON_REBELLION,
-					WEAPON_CERBERUS,
-					WEAPON_AGNI_RUDRA,
-					WEAPON_NEVAN,
-					WEAPON_BEOWULF_DANTE,
-				},
-				// Entity 1
-				{
-					WEAPON_REBELLION,
-					WEAPON_CERBERUS,
-					WEAPON_AGNI_RUDRA,
-					WEAPON_NEVAN,
-					WEAPON_BEOWULF_DANTE,
-				},
-			},
-		};
-		uint8 meleeWeaponsVergil[MAX_PLAYER][MAX_ENTITY][MAX_MELEE_WEAPON] =
-		{
-			// Player 0
-			{
-				// Entity 0
-				{
-					WEAPON_YAMATO_VERGIL,
-					WEAPON_BEOWULF_VERGIL,
-					WEAPON_FORCE_EDGE,
-				},
-				// Entity 1
-				{
-					WEAPON_YAMATO_VERGIL,
-					WEAPON_BEOWULF_VERGIL,
-					WEAPON_FORCE_EDGE,
-				},
-			},
-			// Player 1
-			{
-				// Entity 0
-				{
-					WEAPON_YAMATO_VERGIL,
-					WEAPON_BEOWULF_VERGIL,
-					WEAPON_FORCE_EDGE,
-				},
-				// Entity 1
-				{
-					WEAPON_YAMATO_VERGIL,
-					WEAPON_BEOWULF_VERGIL,
-					WEAPON_FORCE_EDGE,
-				},
-			},
-			// Player 2
-			{
-				// Entity 0
-				{
-					WEAPON_YAMATO_VERGIL,
-					WEAPON_BEOWULF_VERGIL,
-					WEAPON_FORCE_EDGE,
-				},
-				// Entity 1
-				{
-					WEAPON_YAMATO_VERGIL,
-					WEAPON_BEOWULF_VERGIL,
-					WEAPON_FORCE_EDGE,
-				},
-			},
-			// Player 3
-			{
-				// Entity 0
-				{
-					WEAPON_YAMATO_VERGIL,
-					WEAPON_BEOWULF_VERGIL,
-					WEAPON_FORCE_EDGE,
-				},
-				// Entity 1
-				{
-					WEAPON_YAMATO_VERGIL,
-					WEAPON_BEOWULF_VERGIL,
-					WEAPON_FORCE_EDGE,
-				},
-			},
-		};
-		uint8 rangedWeaponsDante[MAX_PLAYER][MAX_ENTITY][MAX_RANGED_WEAPON] =
-		{
-			// Player 0
-			{
-				// Entity 0
-				{
-					WEAPON_EBONY_IVORY,
-					WEAPON_SHOTGUN,
-					WEAPON_ARTEMIS,
-					WEAPON_SPIRAL,
-					WEAPON_KALINA_ANN,
-				},
-				// Entity 1
-				{
-					WEAPON_EBONY_IVORY,
-					WEAPON_SHOTGUN,
-					WEAPON_ARTEMIS,
-					WEAPON_SPIRAL,
-					WEAPON_KALINA_ANN,
-				},
-			},
-			// Player 1
-			{
-				// Entity 0
-				{
-					WEAPON_EBONY_IVORY,
-					WEAPON_SHOTGUN,
-					WEAPON_ARTEMIS,
-					WEAPON_SPIRAL,
-					WEAPON_KALINA_ANN,
-				},
-				// Entity 1
-				{
-					WEAPON_EBONY_IVORY,
-					WEAPON_SHOTGUN,
-					WEAPON_ARTEMIS,
-					WEAPON_SPIRAL,
-					WEAPON_KALINA_ANN,
-				},
-			},
-			// Player 2
-			{
-				// Entity 0
-				{
-					WEAPON_EBONY_IVORY,
-					WEAPON_SHOTGUN,
-					WEAPON_ARTEMIS,
-					WEAPON_SPIRAL,
-					WEAPON_KALINA_ANN,
-				},
-				// Entity 1
-				{
-					WEAPON_EBONY_IVORY,
-					WEAPON_SHOTGUN,
-					WEAPON_ARTEMIS,
-					WEAPON_SPIRAL,
-					WEAPON_KALINA_ANN,
-				},
-			},
-			// Player 3
-			{
-				// Entity 0
-				{
-					WEAPON_EBONY_IVORY,
-					WEAPON_SHOTGUN,
-					WEAPON_ARTEMIS,
-					WEAPON_SPIRAL,
-					WEAPON_KALINA_ANN,
-				},
-				// Entity 1
-				{
-					WEAPON_EBONY_IVORY,
-					WEAPON_SHOTGUN,
-					WEAPON_ARTEMIS,
-					WEAPON_SPIRAL,
-					WEAPON_KALINA_ANN,
-				},
-			},
-		};
-		uint8 meleeWeaponCountDante[MAX_PLAYER][MAX_ENTITY] =
-		{
-			{ 5, 5 },
-			{ 5, 5 },
-			{ 5, 5 },
-			{ 5, 5 },
-		};
-		uint8 meleeWeaponCountVergil[MAX_PLAYER][MAX_ENTITY] =
-		{
-			{ 3, 3 },
-			{ 3, 3 },
-			{ 3, 3 },
-			{ 3, 3 },
-		};
-		uint8 rangedWeaponCountDante[MAX_PLAYER][MAX_ENTITY] =
-		{
-			{ 5, 5 },
-			{ 5, 5 },
-			{ 5, 5 },
-			{ 5, 5 },
-		};
 	}
 	Actor;
 	struct
@@ -618,6 +337,71 @@ export Config queuedConfig;
 
 char g_path[64] = {};
 
+export void ApplyPlayerData
+(
+	PlayerData & playerData,
+	uint8 character
+)
+{
+	memset(&playerData, 0, sizeof(PlayerData));
+
+	switch (character)
+	{
+	case CHAR_DANTE:
+	{
+		playerData =
+		{
+			CHAR_DANTE,
+			0,
+			false,
+			CHAR_DANTE,
+			{
+				WEAPON_REBELLION,
+				WEAPON_CERBERUS,
+				WEAPON_AGNI_RUDRA,
+				WEAPON_NEVAN,
+				WEAPON_BEOWULF_DANTE,
+			},
+			MAX_MELEE_WEAPON_DANTE,
+			{
+				WEAPON_EBONY_IVORY,
+				WEAPON_SHOTGUN,
+				WEAPON_ARTEMIS,
+				WEAPON_SPIRAL,
+				WEAPON_KALINA_ANN,
+			},
+			MAX_RANGED_WEAPON_DANTE
+		};
+		break;
+	};
+	case CHAR_BOB:
+	{
+		break;
+	};
+	case CHAR_LADY:
+	{
+		break;
+	};
+	case CHAR_VERGIL:
+	{
+		playerData =
+		{
+			CHAR_VERGIL,
+			0,
+			false,
+			CHAR_DANTE,
+			{
+				WEAPON_YAMATO_VERGIL,
+				WEAPON_BEOWULF_VERGIL,
+				WEAPON_FORCE_EDGE,
+			},
+			MAX_MELEE_WEAPON_VERGIL
+		};
+		break;
+	};
+	}
+}
+
 export void SaveConfig()
 {
 	SaveFile(g_path, reinterpret_cast<byte8 *>(&activeConfig), sizeof(Config));
@@ -644,6 +428,7 @@ export void LoadConfig()
 	}
 
 	memcpy(&activeConfig, file, size);
+	memcpy(&queuedConfig, file, size);
 }
 
 export void Config_Init
@@ -657,6 +442,14 @@ export void Config_Init
 	CreateDirectoryA(directoryName, 0);
 
 	snprintf(g_path, sizeof(g_path), "%s\\%s", directoryName, filename);
+
+	for_all(uint8, player, MAX_PLAYER){
+	for_all(uint8, entity, MAX_ENTITY)
+	{
+		ApplyPlayerData(defaultConfig.Actor.playerData[player][entity], CHAR_DANTE);
+		ApplyPlayerData(activeConfig.Actor.playerData [player][entity], CHAR_DANTE);
+		ApplyPlayerData(queuedConfig.Actor.playerData [player][entity], CHAR_DANTE);
+	}}
 }
 
 #endif

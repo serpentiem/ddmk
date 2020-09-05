@@ -265,6 +265,7 @@ bool GUI_Combo
 	return update;
 }
 
+// @Todo: Update names. Prefer items and itemIndex.
 export template
 <
 	typename varType,

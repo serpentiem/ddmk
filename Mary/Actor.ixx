@@ -1498,8 +1498,8 @@ void UpdateMeleeWeapons
 {
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		memcpy(actorData.newMeleeWeapons, activeConfig.Actor.meleeWeaponsDante[player][entity], MAX_MELEE_WEAPON);
-		actorData.newMeleeWeaponCount = activeConfig.Actor.meleeWeaponCountDante[player][entity];
+		//memcpy(actorData.newMeleeWeapons, activeConfig.Actor.meleeWeaponsDante[player][entity], MAX_MELEE_WEAPON);
+		//actorData.newMeleeWeaponCount = activeConfig.Actor.meleeWeaponCountDante[player][entity];
 
 		if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
 		{
@@ -1515,8 +1515,8 @@ void UpdateMeleeWeapons
 	}
 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
-		memcpy(actorData.newMeleeWeapons, activeConfig.Actor.meleeWeaponsVergil[player][entity], MAX_MELEE_WEAPON);
-		actorData.newMeleeWeaponCount = activeConfig.Actor.meleeWeaponCountVergil[player][entity];
+		//memcpy(actorData.newMeleeWeapons, activeConfig.Actor.meleeWeaponsVergil[player][entity], MAX_MELEE_WEAPON);
+		//actorData.newMeleeWeaponCount = activeConfig.Actor.meleeWeaponCountVergil[player][entity];
 	}
 }
 
@@ -1530,8 +1530,8 @@ void UpdateRangedWeapons
 {
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		memcpy(actorData.newRangedWeapons, activeConfig.Actor.rangedWeaponsDante[player][entity], MAX_RANGED_WEAPON);
-		actorData.newRangedWeaponCount = activeConfig.Actor.rangedWeaponCountDante[player][entity];
+		//memcpy(actorData.newRangedWeapons, activeConfig.Actor.rangedWeaponsDante[player][entity], MAX_RANGED_WEAPON);
+		//actorData.newRangedWeaponCount = activeConfig.Actor.rangedWeaponCountDante[player][entity];
 
 		if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
 		{
@@ -1714,7 +1714,13 @@ T * CreateActorFunction
 
 	InitActor(actorData, missionActorData_16C);
 
-	actorData.costume = activeConfig.Actor.costume[player][entity][character];
+	//actorData.costume = activeConfig.Actor.costume[player][entity][character];
+
+	auto & playerData = activeConfig.Actor.playerData[player][entity];
+
+	actorData.costume = playerData.costume;
+
+	//actorData.costume
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
@@ -1746,8 +1752,13 @@ T * CreateActorFunction
 	actorData.newPlayer = player;
 	actorData.newEntity = entity;
 
-	actorData.newForceFiles          = activeConfig.Actor.forceFiles         [player][entity][character];
-	actorData.newForceFilesCharacter = activeConfig.Actor.forceFilesCharacter[player][entity][character];
+	//actorData.newForceFiles          = activeConfig.Actor.forceFiles         [player][entity][character];
+	//actorData.newForceFilesCharacter = activeConfig.Actor.forceFilesCharacter[player][entity][character];
+
+	actorData.newForceFiles          = playerData.forceFiles;
+	actorData.newForceFilesCharacter = playerData.forceFilesCharacter;
+
+
 
 	UpdateCostumeFileData(actorData);
 
@@ -1860,8 +1871,14 @@ byte8 * SpawnActor
 )
 {
 	byte8 * baseAddr = 0;
-	auto character = activeConfig.Actor.character[player][entity];
-	switch (character)
+
+
+	auto & playerData = activeConfig.Actor.playerData[player][entity];
+
+
+
+	//auto character = activeConfig.Actor.character[player][entity];
+	switch (playerData.character)
 	{
 	case CHAR_DANTE:
 	{
@@ -2156,6 +2173,30 @@ bool WeaponSwitchControllerDante(ActorDataDante & actorData)
 	RangedWeaponSwitchControllerDante(actorData);
 	return true;
 }
+
+
+
+
+void UpdateGlobalMeleeWeaponIndices()
+{
+	//for_all(uint8, player   , MAX_PLAYER){
+	//for_all(uint8, entity   , MAX_ENTITY){
+	//for_all(uint8, character, MAX_CHAR  )
+	//{
+
+	//	if (activeConfig.Actor.meleeWeaponCount[]!= queuedConfig.Actor.meleeWeaponCount)
+
+	//}}}
+}
+
+
+
+
+
+
+
+
+
 
 #pragma endregion
 
