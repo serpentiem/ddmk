@@ -343,7 +343,6 @@ export inline void GUI_SectionEnd()
 {
 	ImGui::Text("");
 	ImGui::Separator();
-	ImGui::Text("");
 }
 
 export inline void GUI_PushDisable(bool condition)

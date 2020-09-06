@@ -376,10 +376,18 @@ export void ApplyPlayerData
 	};
 	case CHAR_BOB:
 	{
+		playerData =
+		{
+			CHAR_BOB
+		};
 		break;
 	};
 	case CHAR_LADY:
 	{
+		playerData =
+		{
+			CHAR_LADY
+		};
 		break;
 	};
 	case CHAR_VERGIL:
