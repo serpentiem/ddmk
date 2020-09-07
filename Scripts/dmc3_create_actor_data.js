@@ -392,20 +392,27 @@ var extra =
 
 
 
+	//[ "newPlayerData", "PlayerData *" ],
 
 
 
 
-	
-	[ "newPlayer", "uint8" ],
-	[ "newEntity", "uint8" ],
+	[ "newPlayer"             , "uint8" ],
+	[ "newEntity"             , "uint8" ],
+	[ "newForceFiles"         , "bool"  ],
+	[ "newForceFilesCharacter", "uint8" ],
 
 
 
 
 
-	[ "newParentBaseAddr"      , "byte8 *" ],
-	[ "newChildBaseAddr"       , "byte8 *" ],
+
+
+
+
+
+	//[ "newParentBaseAddr"      , "byte8 *" ],
+	//[ "newChildBaseAddr"       , "byte8 *" ],
 	[ "newGamepad"             , "uint8"   ],
 	[ "newButtonMask"          , "byte16"  ],
 	[ "newEnableRightStick"    , "bool"    ],
@@ -433,8 +440,10 @@ var extra =
 	[ "newSect[8]"             , "bool"    ],
 	[ "newBufferedActionPolicy", "uint8"   ],
 	[ "newAirStingerCount"     , "uint8"   ],
-	[ "newForceFiles"          , "bool"    ],
-	[ "newForceFilesCharacter" , "uint8"   ],
+
+
+
+
 	[ "newDevilAura"           , "byte8 *" ],
 	[ "newEffectIndices[8]"    , "byte32"  ],
 

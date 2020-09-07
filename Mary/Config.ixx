@@ -295,6 +295,11 @@ export struct Config
 	Speed;
 	struct
 	{
+		bool noDoubleTap = false;
+	}
+	StyleSwitchController;
+	struct
+	{
 		bool chronoSwords = false;
 		bool dante        = false;
 	}
@@ -363,6 +368,7 @@ export void ApplyPlayerData
 				WEAPON_BEOWULF_DANTE,
 			},
 			MAX_MELEE_WEAPON_DANTE,
+			0,
 			{
 				WEAPON_EBONY_IVORY,
 				WEAPON_SHOTGUN,
@@ -370,7 +376,8 @@ export void ApplyPlayerData
 				WEAPON_SPIRAL,
 				WEAPON_KALINA_ANN,
 			},
-			MAX_RANGED_WEAPON_DANTE
+			MAX_RANGED_WEAPON_DANTE,
+			0
 		};
 		break;
 	};
@@ -403,7 +410,8 @@ export void ApplyPlayerData
 				WEAPON_BEOWULF_VERGIL,
 				WEAPON_FORCE_EDGE,
 			},
-			MAX_MELEE_WEAPON_VERGIL
+			MAX_MELEE_WEAPON_VERGIL,
+			0
 		};
 		break;
 	};

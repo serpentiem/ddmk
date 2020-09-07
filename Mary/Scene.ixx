@@ -7,9 +7,11 @@ module;
 #include "Vars.h"
 export module ModuleName(Scene);
 
+import ModuleName(Actor);
 import ModuleName(Event);
 
 #ifdef __INTELLISENSE__
+#include "Actor.ixx"
 #include "Event.ixx"
 #endif
 
@@ -19,12 +21,14 @@ void SceneMain()
 {
 	LogFunction();
 	g_scene = SCENE_MAIN;
+	Actor_SceneMain();
 }
 
 void SceneMissionSelect()
 {
 	LogFunction();
 	g_scene = SCENE_MISSION_SELECT;
+	Actor_SceneMissionSelect();
 }
 
 void SceneGame()
@@ -44,6 +48,7 @@ void SceneMissionStart()
 {
 	LogFunction();
 	g_scene = SCENE_MISSION_START;
+	Actor_SceneMissionStart();
 }
 
 void SceneMissionResult()

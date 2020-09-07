@@ -21,6 +21,7 @@ import ModuleName(File);
 import ModuleName(Internal);
 import ModuleName(Model);
 import ModuleName(Pause);
+import ModuleName(Scene);
 import ModuleName(Speed);
 import ModuleName(State);
 import ModuleName(Training);
@@ -38,6 +39,7 @@ import ModuleName(Window);
 #include "Internal.ixx"
 #include "Model.ixx"
 #include "Pause.ixx"
+#include "Scene.ixx"
 #include "Speed.ixx"
 #include "State.ixx"
 #include "Training.ixx"
@@ -110,6 +112,8 @@ void Overlay()
 		}
 
 		ImGui::Text("%.3f FPS", (ImGui::GetIO().Framerate));
+
+		ImGui::Text("g_scene %u", g_scene);
 
 		constexpr uint32 off[] =
 		{
@@ -239,6 +243,15 @@ void Actor_UpdateWeaponIndices
 	}
 }
 
+void Actor_UpdateWeaponIndices()
+{
+	for_all(uint8, player, MAX_PLAYER){
+	for_all(uint8, entity, MAX_ENTITY)
+	{
+		Actor_UpdateWeaponIndices(player, entity);
+	}}
+}
+
 void Actor_PlayerTab
 (
 	uint8 player,
@@ -348,12 +361,27 @@ void Actor()
 	if (ImGui::CollapsingHeader("Actor"))
 	{
 		ImGui::Text("");
-		GUI_Checkbox("Enable", activeConfig.Actor.enable); // queuedConfig only. watch g_scene
+
+		if (GUI_Checkbox("Enable", queuedConfig.Actor.enable))
+		{
+			if
+			(
+				(g_scene == SCENE_MAIN          ) ||
+				(g_scene == SCENE_MISSION_SELECT)
+			)
+			{
+				activeConfig.Actor.enable = queuedConfig.Actor.enable;
+				Actor_Toggle(activeConfig.Actor.enable);
+			}
+		}
 		ImGui::Text("");
-		GUI_Button("Reset");
-		/*
-		reset activeConfig and queuedConfig
-		*/
+
+		if (GUI_Button("Reset"))
+		{
+			memcpy(&activeConfig.Actor, &defaultConfig.Actor, sizeof(Config::Actor));
+			memcpy(&queuedConfig.Actor, &defaultConfig.Actor, sizeof(Config::Actor));
+			Actor_UpdateWeaponIndices();
+		}
 		ImGui::Text("");
 
 		ImGui::PushItemWidth(200);
@@ -989,47 +1017,6 @@ void ResetMotionState()
 	}
 }
 
-const char * Graphics_vSyncNames[] =
-{
-	"Auto",
-	"Force Off",
-	"Force On",
-};
-
-void System()
-{
-	if (ImGui::CollapsingHeader("System"))
-	{
-		ImGui::Text("");
-		GUI_SectionStart("Event");
-		GUI_Checkbox("Skip Intro"    , activeConfig.Event.skipIntro    );
-		if (GUI_Checkbox("Skip Cutscenes", activeConfig.Event.skipCutscenes))
-		{
-			Event_ToggleSkipCutscenes(activeConfig.Event.skipCutscenes);
-		}
-		GUI_SectionEnd();
-
-		GUI_SectionStart("File");
-		GUI_Checkbox("Prefer Local Files", activeConfig.File.preferLocalFiles);
-		GUI_SectionEnd();
-
-		GUI_SectionStart("Graphics");
-		ImGui::PushItemWidth(150);
-		GUI_InputDefault("Frame Rate", activeConfig.Graphics.frameRate, defaultConfig.Graphics.frameRate);
-		GUI_Combo("V-Sync", Graphics_vSyncNames, activeConfig.Graphics.vSync);
-		ImGui::PopItemWidth();
-		GUI_SectionEnd();
-
-		GUI_SectionStart("Input");
-		GUI_Checkbox("Hide Mouse Cursor", activeConfig.Input.hideMouseCursor);
-		GUI_SectionEnd();
-
-		GUI_SectionStart("Window");
-		GUI_Checkbox("Force Focus", activeConfig.Window.forceFocus);
-		ImGui::Text("");
-	}
-}
-
 void Speed()
 {
 	if (ImGui::CollapsingHeader("Speed"))
@@ -1071,6 +1058,59 @@ void Speed()
 		GUI_InputDefault("Force Edge", activeConfig.Speed.Devil.neroAngelo[2], defaultConfig.Speed.Devil.neroAngelo[2], 0.1f, "%.2f");
 		ImGui::PopItemWidth();
 
+		ImGui::Text("");
+	}
+}
+
+void StyleSwitchController()
+{
+	if (ImGui::CollapsingHeader("Style Switch Controller"))
+	{
+		ImGui::Text("");
+
+		GUI_Checkbox("No Double Tap", activeConfig.StyleSwitchController.noDoubleTap);
+
+		ImGui::Text("");
+	}
+}
+
+const char * Graphics_vSyncNames[] =
+{
+	"Auto",
+	"Force Off",
+	"Force On",
+};
+
+void System()
+{
+	if (ImGui::CollapsingHeader("System"))
+	{
+		ImGui::Text("");
+		GUI_SectionStart("Event");
+		GUI_Checkbox("Skip Intro"    , activeConfig.Event.skipIntro    );
+		if (GUI_Checkbox("Skip Cutscenes", activeConfig.Event.skipCutscenes))
+		{
+			Event_ToggleSkipCutscenes(activeConfig.Event.skipCutscenes);
+		}
+		GUI_SectionEnd();
+
+		GUI_SectionStart("File");
+		GUI_Checkbox("Prefer Local Files", activeConfig.File.preferLocalFiles);
+		GUI_SectionEnd();
+
+		GUI_SectionStart("Graphics");
+		ImGui::PushItemWidth(150);
+		GUI_InputDefault("Frame Rate", activeConfig.Graphics.frameRate, defaultConfig.Graphics.frameRate);
+		GUI_Combo("V-Sync", Graphics_vSyncNames, activeConfig.Graphics.vSync);
+		ImGui::PopItemWidth();
+		GUI_SectionEnd();
+
+		GUI_SectionStart("Input");
+		GUI_Checkbox("Hide Mouse Cursor", activeConfig.Input.hideMouseCursor);
+		GUI_SectionEnd();
+
+		GUI_SectionStart("Window");
+		GUI_Checkbox("Force Focus", activeConfig.Window.forceFocus);
 		ImGui::Text("");
 	}
 }
@@ -1316,6 +1356,7 @@ void Main()
 		Repair();
 		ResetMotionState();
 		Speed();
+		StyleSwitchController();
 		System();
 		Teleporter();
 		Training();
@@ -1347,14 +1388,7 @@ export void GUI_Render()
 export void GUI_Init()
 {
 	BuildFonts();
-
-	// @Todo: Put into function.
-	for_all(uint8, player, MAX_PLAYER){
-	for_all(uint8, entity, MAX_ENTITY)
-	{
-		Actor_UpdateWeaponIndices(player, entity);
-	}}
-
+	Actor_UpdateWeaponIndices();
 	Arcade_Init();
 	Cosmetics_Init();
 	ResetMotionState_Init();

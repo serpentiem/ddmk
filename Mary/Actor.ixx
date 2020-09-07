@@ -25,6 +25,8 @@ import ModuleName(Model);
 #include "Model.ixx"
 #endif
 
+constexpr bool debug = true;
+
 #pragma region Main
 
 export Vector<byte8 *> Actor_actorBaseAddr;
@@ -1405,33 +1407,27 @@ RegisterWeapon_t RegisterWeapon[MAX_WEAPON] = {};
 
 void InitRegisterWeapon()
 {
-	RegisterWeapon[WEAPON_REBELLION      ] = func_2310B0;
-	RegisterWeapon[WEAPON_CERBERUS       ] = func_22EC90;
-	RegisterWeapon[WEAPON_AGNI_RUDRA     ] = func_227870;
-	RegisterWeapon[WEAPON_NEVAN          ] = func_22A1E0;
-	RegisterWeapon[WEAPON_BEOWULF_DANTE  ] = func_228CF0;
-	RegisterWeapon[WEAPON_EBONY_IVORY    ] = func_22B0C0;
-	RegisterWeapon[WEAPON_SHOTGUN        ] = func_2306B0;
-	RegisterWeapon[WEAPON_ARTEMIS        ] = func_22C4A0;
-	RegisterWeapon[WEAPON_SPIRAL         ] = func_2300A0;
-	RegisterWeapon[WEAPON_KALINA_ANN     ] = func_22BA30;
-	RegisterWeapon[WEAPON_YAMATO_VERGIL  ] = func_22D960;
-	RegisterWeapon[WEAPON_BEOWULF_VERGIL ] = func_228CF0;
-	RegisterWeapon[WEAPON_FORCE_EDGE     ] = func_2298E0;
-	RegisterWeapon[WEAPON_YAMATO_BOB     ] = func_231A30;
+	RegisterWeapon[WEAPON_REBELLION     ] = func_2310B0;
+	RegisterWeapon[WEAPON_CERBERUS      ] = func_22EC90;
+	RegisterWeapon[WEAPON_AGNI_RUDRA    ] = func_227870;
+	RegisterWeapon[WEAPON_NEVAN         ] = func_22A1E0;
+	RegisterWeapon[WEAPON_BEOWULF_DANTE ] = func_228CF0;
+	RegisterWeapon[WEAPON_EBONY_IVORY   ] = func_22B0C0;
+	RegisterWeapon[WEAPON_SHOTGUN       ] = func_2306B0;
+	RegisterWeapon[WEAPON_ARTEMIS       ] = func_22C4A0;
+	RegisterWeapon[WEAPON_SPIRAL        ] = func_2300A0;
+	RegisterWeapon[WEAPON_KALINA_ANN    ] = func_22BA30;
+	RegisterWeapon[WEAPON_YAMATO_VERGIL ] = func_22D960;
+	RegisterWeapon[WEAPON_BEOWULF_VERGIL] = func_228CF0;
+	RegisterWeapon[WEAPON_FORCE_EDGE    ] = func_2298E0;
+	RegisterWeapon[WEAPON_YAMATO_BOB    ] = func_231A30;
 }
-
-
-
-uint8 g_newMeleeWeaponIndex [MAX_PLAYER][MAX_ENTITY] = {};
-uint8 g_newRangedWeaponIndex[MAX_PLAYER][MAX_ENTITY] = {};
 
 template <typename T>
 void InitWeapons
 (
 	T & actorData,
-	uint8 player,
-	uint8 entity
+	PlayerData & playerData
 )
 {
 	memset
@@ -1451,8 +1447,8 @@ void InitWeapons
 	for_all(uint8, index, count)
 	{
 		uint8 weapon =
-		(TypeMatch<T, ActorDataDante >::value) ? (WEAPON_REBELLION       + index) :
-		(TypeMatch<T, ActorDataVergil>::value) ? (WEAPON_YAMATO_VERGIL   + index) :
+		(TypeMatch<T, ActorDataDante >::value) ? (WEAPON_REBELLION     + index) :
+		(TypeMatch<T, ActorDataVergil>::value) ? (WEAPON_YAMATO_VERGIL + index) :
 		0;
 
 		actorData.newWeapons[index] = weapon;
@@ -1484,30 +1480,32 @@ void InitWeapons
 		}
 	}
 
-	actorData.newMeleeWeaponIndex  = g_newMeleeWeaponIndex [player][entity];
-	actorData.newRangedWeaponIndex = g_newRangedWeaponIndex[player][entity];
+	actorData.newMeleeWeaponIndex  = playerData.meleeWeaponIndex;
+	actorData.newRangedWeaponIndex = playerData.rangedWeaponIndex;
 }
 
 template <typename T>
 void UpdateMeleeWeapons
 (
 	T & actorData,
-	uint8 player,
-	uint8 entity
+	PlayerData & playerData
 )
 {
+	memcpy(actorData.newMeleeWeapons, playerData.meleeWeapons, MAX_MELEE_WEAPON);
+
+	actorData.newMeleeWeaponCount = playerData.meleeWeaponCount;
+
+	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
+	{
+		actorData.newMeleeWeaponIndex = 0;
+	}
+
+	playerData.meleeWeaponIndex = actorData.newMeleeWeaponIndex;
+
+	auto weapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
+
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		//memcpy(actorData.newMeleeWeapons, activeConfig.Actor.meleeWeaponsDante[player][entity], MAX_MELEE_WEAPON);
-		//actorData.newMeleeWeaponCount = activeConfig.Actor.meleeWeaponCountDante[player][entity];
-
-		if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
-		{
-			actorData.newMeleeWeaponIndex = 0;
-		}
-
-		auto weapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
-
 		if ((weapon >= WEAPON_REBELLION) && (weapon <= WEAPON_BEOWULF_DANTE))
 		{
 			actorData.meleeWeaponIndex = weapon;
@@ -1515,8 +1513,10 @@ void UpdateMeleeWeapons
 	}
 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
-		//memcpy(actorData.newMeleeWeapons, activeConfig.Actor.meleeWeaponsVergil[player][entity], MAX_MELEE_WEAPON);
-		//actorData.newMeleeWeaponCount = activeConfig.Actor.meleeWeaponCountVergil[player][entity];
+		if ((weapon >= WEAPON_YAMATO_VERGIL) && (weapon <= WEAPON_FORCE_EDGE))
+		{
+			actorData.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
+		}
 	}
 }
 
@@ -1524,22 +1524,24 @@ template <typename T>
 void UpdateRangedWeapons
 (
 	T & actorData,
-	uint8 player,
-	uint8 entity
+	PlayerData & playerData
 )
 {
+	memcpy(actorData.newRangedWeapons, playerData.rangedWeapons, MAX_RANGED_WEAPON);
+
+	actorData.newRangedWeaponCount = playerData.rangedWeaponCount;
+
+	if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
+	{
+		actorData.newRangedWeaponIndex = 0;
+	}
+
+	playerData.rangedWeaponIndex = actorData.newRangedWeaponIndex;
+
+	auto weapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
+
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		//memcpy(actorData.newRangedWeapons, activeConfig.Actor.rangedWeaponsDante[player][entity], MAX_RANGED_WEAPON);
-		//actorData.newRangedWeaponCount = activeConfig.Actor.rangedWeaponCountDante[player][entity];
-
-		if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
-		{
-			actorData.newRangedWeaponIndex = 0;
-		}
-
-		auto weapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
-
 		if ((weapon >= WEAPON_EBONY_IVORY) && (weapon <= WEAPON_KALINA_ANN))
 		{
 			actorData.rangedWeaponIndex = weapon;
@@ -1551,12 +1553,11 @@ template <typename T>
 void UpdateWeapons
 (
 	T & actorData,
-	uint8 player,
-	uint8 entity
+	PlayerData & playerData
 )
 {
-	UpdateMeleeWeapons (actorData, player, entity);
-	UpdateRangedWeapons(actorData, player, entity);
+	UpdateMeleeWeapons (actorData, playerData);
+	UpdateRangedWeapons(actorData, playerData);
 }
 
 void UpdateActorDante(ActorDataDante & actorData)
@@ -1691,36 +1692,106 @@ void UpdateActorDante(ActorDataDante & actorData)
 
 
 
+// template <typename T>
+// T * CreateActorFunction(PlayerData & playerData)
+// {
+// 	IntroduceMissionActorDataPointers(return 0);
+
+// 	auto baseAddr = func_1DE820(GetCharacterId<T>::value, 0, false);
+// 	if (!baseAddr)
+// 	{
+// 		return 0;
+// 	}
+// 	auto & actorData = *reinterpret_cast<T *>(baseAddr);
+
+// 	UpdateFileData(actorData);
+
+// 	InitActor(actorData, missionActorData_16C);
+
+// 	actorData.costume = playerData.costume;
+
+// 	if constexpr (TypeMatch<T, ActorDataDante>::value)
+// 	{
+// 		switch (actorData.costume)
+// 		{
+// 		case COSTUME_DANTE_DMC1:
+// 		case COSTUME_DANTE_DMC1_NO_COAT:
+// 		case COSTUME_DANTE_SPARDA:
+// 		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
+// 		{
+// 			actorData.sparda = true;
+// 			break;
+// 		}
+// 		}
+// 	}
+// 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+// 	{
+// 		switch (actorData.costume)
+// 		{
+// 		case COSTUME_VERGIL_SPARDA:
+// 		case COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS:
+// 		{
+// 			actorData.neroAngelo = true;
+// 			break;
+// 		}
+// 		}
+// 	}
+
+// 	actorData.newPlayerData = &playerData;
+
+// 	actorData.newForceFiles          = playerData.forceFiles;
+// 	actorData.newForceFilesCharacter = playerData.forceFilesCharacter;
+
+// 	UpdateCostumeFileData(actorData);
+
+// 	if constexpr (TypeMatch<T, ActorDataDante>::value)
+// 	{
+// 		UpdateActorDante(actorData);
+// 	}
+// 	else
+// 	{
+// 		UpdateActor(actorData);
+// 	}
+
+// 	UpdateMotionArchives(actorData);
+
+// 	InitWeapons(actorData, playerData);
+
+// 	UpdateWeapons(actorData, playerData);
+
+// 	func_1DFC20(actorData);
+
+// 	return &actorData;
+// }
+
 template <typename T>
-T * CreateActorFunction
+byte8 * CreateActor
 (
 	uint8 player,
 	uint8 entity
 )
 {
+	if constexpr (debug)
+	{
+		LogFunction(player, entity);
+	}
+
 	IntroduceMissionActorDataPointers(return 0);
 
-	constexpr uint8 character = GetCharacterId<T>::value;
-
-	auto baseAddr = func_1DE820(character, 0, false);
+	auto baseAddr = func_1DE820(GetCharacterId<T>::value, 0, false);
 	if (!baseAddr)
 	{
 		return 0;
 	}
-
 	auto & actorData = *reinterpret_cast<T *>(baseAddr);
+
+	auto & playerData = activeConfig.Actor.playerData[player][entity];
 
 	UpdateFileData(actorData);
 
 	InitActor(actorData, missionActorData_16C);
 
-	//actorData.costume = activeConfig.Actor.costume[player][entity][character];
-
-	auto & playerData = activeConfig.Actor.playerData[player][entity];
-
 	actorData.costume = playerData.costume;
-
-	//actorData.costume
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
@@ -1749,16 +1820,10 @@ T * CreateActorFunction
 		}
 	}
 
-	actorData.newPlayer = player;
-	actorData.newEntity = entity;
-
-	//actorData.newForceFiles          = activeConfig.Actor.forceFiles         [player][entity][character];
-	//actorData.newForceFilesCharacter = activeConfig.Actor.forceFilesCharacter[player][entity][character];
-
+	actorData.newPlayer              = player;
+	actorData.newEntity              = entity;
 	actorData.newForceFiles          = playerData.forceFiles;
 	actorData.newForceFilesCharacter = playerData.forceFilesCharacter;
-
-
 
 	UpdateCostumeFileData(actorData);
 
@@ -1773,82 +1838,33 @@ T * CreateActorFunction
 
 	UpdateMotionArchives(actorData);
 
-	InitWeapons(actorData, player, entity);
+	InitWeapons(actorData, playerData);
 
-	UpdateWeapons(actorData, player, entity);
+	UpdateWeapons(actorData, playerData);
 
 	func_1DFC20(actorData);
 
-	return &actorData;
-}
-
-template <typename T>
-byte8 * CreateActor
-(
-	uint8 player,
-	uint8 entity
-)
-{
-	auto parentBaseAddr = CreateActorFunction<T>(player, entity);
-	if (!parentBaseAddr)
-	{
-		return 0;
-	}
-	auto & parentActorData = *parentBaseAddr;
-	Actor_actorBaseAddr.Push(parentActorData);
-
-
-
-	//if ((player == 0) && (entity == ENTITY_MAIN))
-	//{
-	//	HoboBreak();
-	//}
-
-
-
-
-
-
+	actorData.newGamepad = player;
 
 	if (entity == ENTITY_MAIN)
 	{
-		//parentActorData.newEnable = true;
-		parentActorData.newGamepad = player;
-		parentActorData.newButtonMask = 0xFFFF;
-		parentActorData.newEnableRightStick = true;
-		parentActorData.newEnableLeftStick = true;
-
-		//if constexpr (TypeMatch<T, ActorDataDante>::value || TypeMatch<T, ActorDataVergil>::value)
-		//{
-		//	auto childBaseAddr = CreateActorFunction<GetChildActorDataType<T>::value>(player, entity);
-		//	if (!childBaseAddr)
-		//	{
-		//		return 0;
-		//	}
-		//	auto & childActorData = *childBaseAddr;
-		//	Actor_actorBaseAddr.Push(childActorData);
-
-		//	parentActorData.newChildBaseAddr = childActorData;
-
-		//	childActorData.newParentBaseAddr = parentActorData;
-		//}
-	}
-	else
-	{
-		parentActorData.newGamepad = MAX_PLAYER;
+		actorData.newButtonMask = 0xFFFF;
+		actorData.newEnableRightStick = true;
+		actorData.newEnableLeftStick = true;
 	}
 
-	//UpdateNewMeleeWeapons (parentActorData, player, entity);
-	//UpdateNewRangedWeapons(parentActorData, player, entity);
+	Actor_actorBaseAddr.Push(actorData);
 
-	//UpdateMeleeWeapon (parentActorData, parentActorData.newMeleeWeapons [parentActorData.newMeleeWeaponIndex ]);
-	//UpdateRangedWeapon(parentActorData, parentActorData.newRangedWeapons[parentActorData.newRangedWeaponIndex]);
-
-
-	//Log("ranged weapon actor data %u", parentActorData.newRangedWeapon[parentActorData.newRangedWeaponIndex]);
-
-	return parentActorData;
+	return actorData;
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -1905,7 +1921,7 @@ byte8 * SpawnActor
 	{
 		return 0;
 	}
-	auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 
 	//Log("meleeWeaponData  %llX", actorData.meleeWeaponData[0] );
 	//Log("rangedWeaponData %llX", actorData.rangedWeaponData[0]);
@@ -1926,13 +1942,13 @@ byte8 * SpawnActor
 		actorData.position.y = 10500;
 	}
 
-	if (actorData.newChildBaseAddr)
-	{
-		auto & childActorData = *reinterpret_cast<ActorData *>(actorData.newChildBaseAddr);
-		childActorData.position = actorSpawnHelper.position;
-		childActorData.rotation = actorSpawnHelper.rotation;
-		childActorData.position.y = 10500;
-	}
+	// if (actorData.newChildBaseAddr)
+	// {
+	// 	auto & childActorData = *reinterpret_cast<ActorData *>(actorData.newChildBaseAddr);
+	// 	childActorData.position = actorSpawnHelper.position;
+	// 	childActorData.rotation = actorSpawnHelper.rotation;
+	// 	childActorData.position.y = 10500;
+	// }
 
 	return baseAddr;
 }
@@ -1949,11 +1965,6 @@ export void SpawnActors()
 			continue;
 		}
 		auto & mainActorData = *reinterpret_cast<ActorData *>(mainBaseAddr);
-
-
-
-
-
 
 		auto cloneBaseAddr = SpawnActor(player, ENTITY_CLONE);
 		if (!cloneBaseAddr)
@@ -2082,7 +2093,9 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 
 	actorData.newMeleeWeaponIndex++;
 
-	UpdateMeleeWeapons(actorData, actorData.newPlayer, actorData.newEntity);
+	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
+
+	UpdateMeleeWeapons(actorData, playerData);
 
 
 
@@ -2146,7 +2159,9 @@ void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
 
 	actorData.newRangedWeaponIndex++;
 
-	UpdateRangedWeapons(actorData, actorData.newPlayer, actorData.newEntity);
+	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
+
+	UpdateRangedWeapons(actorData, playerData);
 
 	auto newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
 
@@ -5691,6 +5706,72 @@ export void Actor_Init()
 
 
 }
+
+export void Actor_Toggle(bool enable)
+{
+	LogFunction(enable);
+}
+
+
+
+
+
+
+export void Actor_SceneMain()
+{
+	LogFunction();
+
+	if (activeConfig.Actor.enable != queuedConfig.Actor.enable)
+	{
+		activeConfig.Actor.enable = queuedConfig.Actor.enable;
+
+		Actor_Toggle(activeConfig.Actor.enable);
+	}
+}
+
+export void Actor_SceneMissionSelect()
+{
+	LogFunction();
+
+	if (activeConfig.Actor.enable != queuedConfig.Actor.enable)
+	{
+		activeConfig.Actor.enable = queuedConfig.Actor.enable;
+
+		Actor_Toggle(activeConfig.Actor.enable);
+	}
+}
+
+export void Actor_SceneMissionStart()
+{
+	LogFunction();
+
+	for_all(uint8, player, MAX_PLAYER){
+	for_all(uint8, entity, MAX_ENTITY)
+	{
+		auto & playerData = activeConfig.Actor.playerData[player][entity];
+
+		playerData.meleeWeaponIndex  = 0;
+		playerData.rangedWeaponIndex = 0;
+	}}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif
 

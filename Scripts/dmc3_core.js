@@ -83,6 +83,7 @@ var typeHelper =
 	[ "BodyPartData" , "" , 288 , false ],
 	[ "RecoveryData" , "" , 112 , false ],
 	[ "WeaponData" , "" , 296 , false ],
+	[ "PlayerData" , "" , 18, false ],
 	//[ "CloneData" , "" , 116 , false ],
 ];
 

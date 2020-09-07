@@ -67,6 +67,21 @@ void LogFunctionHelper(const char * funcName, T var)
 	}
 }
 
+export template
+<
+	typename T1,
+	typename T2
+>
+void LogFunctionHelper
+(
+	const char * funcName,
+	T1 var1,
+	T2 var2
+)
+{
+	Log("%s %u %u", funcName, var1, var2);
+}
+
 export void Core_Log_Init
 (
 	const char * directoryName,
