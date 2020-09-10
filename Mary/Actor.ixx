@@ -1969,6 +1969,8 @@ void StyleSwitchController(T & actorData)
 
 
 
+
+
 void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 {
 	if (actorData.newMeleeWeaponCount <= 1)
@@ -1981,6 +1983,22 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 		return;
 	}
 
+	auto player = actorData.newPlayer;
+	if (player >= MAX_PLAYER)
+	{
+		player = 0;
+	}
+
+	auto entity = actorData.newEntity;
+	if (entity >= MAX_ENTITY)
+	{
+		entity = 0;
+	}
+
+	auto & playerData = activeConfig.Actor.playerData[player][entity];
+
+	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[player];
+	
 	bool update = false;
 
 	auto Forward = [&]()
@@ -2011,7 +2029,11 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 
 	if (actorData.newEntity == ENTITY_MAIN)
 	{
-		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+		if
+		(
+			enableDoppelganger &&
+			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+		)
 		{
 			return;
 		}
@@ -2030,7 +2052,11 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 	}
 	else
 	{
-		if
+		if (!enableDoppelganger)
+		{
+			return;
+		}
+		else if
 		(
 			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA   )) &&
 			(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
@@ -2046,8 +2072,6 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 	}
 
 	actorData.meleeWeaponSwitchTimeout = activeConfig.weaponSwitchTimeout;
-
-	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
 
 	UpdateMeleeWeapons(actorData, playerData);
 
