@@ -1710,6 +1710,28 @@ constexpr uint16 devilFileIdsDante[6] =
 
 
 
+constexpr uint8 weaponDevilIds[MAX_WEAPON] =
+{
+	DEVIL_REBELLION,
+	DEVIL_CERBERUS,
+	DEVIL_AGNI_RUDRA,
+	DEVIL_NEVAN,
+	DEVIL_BEOWULF,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	DEVIL_YAMATO,
+	DEVIL_BEOWULF,
+	DEVIL_YAMATO,
+	DEVIL_YAMATO,
+};
+
+
+
+
 
 
 
