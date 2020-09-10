@@ -1367,6 +1367,98 @@ void UpdateModelPartitions(T & actorData)
 	}
 }
 
+void UpdateActorDante(ActorDataDante & actorData)
+{
+	LogFunction(actorData.operator byte8 *());
+
+	actorData.devilModelMetadata.Rebellion.devilSubmodelMetadata[0].submodelIndex = 255;
+	actorData.devilModelMetadata.Rebellion.devilSubmodelMetadata[1].submodelIndex = 255;
+	actorData.devilModelMetadata.Cerberus.devilSubmodelMetadata.submodelIndex = 255;
+	actorData.devilModelMetadata.Nevan.devilSubmodelMetadata[0].submodelIndex = 255;
+	actorData.devilModelMetadata.Nevan.devilSubmodelMetadata[1].submodelIndex = 255;
+	actorData.devilModelMetadata.Beowulf.devilSubmodelMetadata.submodelIndex = 255;
+	actorData.devilModelMetadata.Sparda.devilSubmodelMetadata.submodelIndex = 255;
+	/*
+	dmc3.exe+212C20 - C6 81 02B60000 FF - mov byte ptr [rcx+0000B602],-01
+	dmc3.exe+212C2B - C6 81 05B60000 FF - mov byte ptr [rcx+0000B605],-01
+	dmc3.exe+212C32 - C6 81 0AB60000 FF - mov byte ptr [rcx+0000B60A],-01
+	dmc3.exe+212C39 - C6 81 11B60000 FF - mov byte ptr [rcx+0000B611],-01
+	dmc3.exe+212C40 - C6 81 14B60000 FF - mov byte ptr [rcx+0000B614],-01
+	dmc3.exe+212C47 - C6 81 19B60000 FF - mov byte ptr [rcx+0000B619],-01
+	dmc3.exe+212C4E - C6 81 1EB60000 FF - mov byte ptr [rcx+0000B61E],-01
+	*/
+
+	UpdateModel(actorData);
+
+	func_1EF040(actorData, 0);
+	func_1EEF80(actorData);
+	func_1EF040(actorData, 3);
+
+	if (actorData.sparda)
+	{
+		UpdateDevilModel(actorData, DEVIL_SPARDA, 0);
+	}
+	else
+	{
+		for_all(uint8, index, 5)
+		{
+			UpdateDevilModel(actorData, (DEVIL_REBELLION + index), index);
+		}
+	}
+
+	func_2EE060(actorData.var_6410, 60);
+	/*
+	dmc3.exe+2134C6 - 48 8D 8E 10640000 - lea rcx,[rsi+00006410]
+	dmc3.exe+2134CD - BA 3C000000       - mov edx,0000003C
+	dmc3.exe+2134D2 - E8 89AB0D00       - call dmc3.exe+2EE060
+	*/
+
+	func_2C6150(actorData.var_6458, 0x49000, -2);
+	/*
+	dmc3.exe+214B37 - 48 8D 8E 58640000 - lea rcx,[rsi+00006458]
+	dmc3.exe+214B3E - BA 00900400       - mov edx,00049000
+	dmc3.exe+214B43 - 41 B8 FEFFFFFF    - mov r8d,FFFFFFFE
+	dmc3.exe+214B49 - E8 02160B00       - call dmc3.exe+2C6150
+	*/
+
+	actorData.actionData[0] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x590598);
+	actorData.actionData[1] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x58A2A0);
+	actorData.actionData[2] = (appBaseAddr + 0x5905B0);
+	actorData.actionData[3] = File_staticFiles[pl000][9];
+	actorData.actionData[4] = File_staticFiles[pl000][10];
+	actorData.actionData[5] = File_staticFiles[pl000][11];
+	/*
+	dmc3.exe+214B50 - 48 8B 05 41BA3700 - mov rax,[dmc3.exe+590598]
+	dmc3.exe+214B5E - 48 89 86 D03D0000 - mov [rsi+00003DD0],rax
+
+	dmc3.exe+214B65 - 48 8B 05 34573700 - mov rax,[dmc3.exe+58A2A0]
+	dmc3.exe+214B6C - 48 89 86 D83D0000 - mov [rsi+00003DD8],rax
+
+	dmc3.exe+214B73 - 48 8D 05 36BA3700 - lea rax,[dmc3.exe+5905B0]
+	dmc3.exe+214B7A - 48 89 86 E03D0000 - mov [rsi+00003DE0],rax
+
+	dmc3.exe+212C27 - 45 8D 4F 09       - lea r9d,[r15+09]
+	dmc3.exe+212C5C - E8 5F56FAFF       - call __GET_FILE__
+	dmc3.exe+212C6C - 48 89 86 E83D0000 - mov [rsi+00003DE8],rax
+
+	dmc3.exe+212C66 - 45 8D 4F 0A       - lea r9d,[r15+0A]
+	dmc3.exe+212C7A - E8 4156FAFF       - call __GET_FILE__
+	dmc3.exe+212C8A - 48 89 86 F03D0000 - mov [rsi+00003DF0],rax
+
+	dmc3.exe+212C84 - 45 8D 4F 0B       - lea r9d,[r15+0B]
+	dmc3.exe+212C98 - E8 2356FAFF       - call __GET_FILE__
+	dmc3.exe+212CA0 - 48 89 86 F83D0000 - mov [rsi+00003DF8],rax
+	*/
+
+	func_2EE3D0(actorData.var_3C50);
+	/*
+	dmc3.exe+214B57 - 48 8D 8E 503C0000 - lea rcx,[rsi+00003C50]
+	dmc3.exe+214B81 - E8 4A980D00       - call dmc3.exe+2EE3D0
+	*/
+
+	func_1FAF40(actorData);
+}
+
 template <typename T>
 void UpdateMotionArchives(T & actorData)
 {
@@ -1480,8 +1572,25 @@ void InitWeapons
 		}
 	}
 
-	actorData.newMeleeWeaponIndex  = playerData.meleeWeaponIndex;
+	memcpy(actorData.newMeleeWeapons, playerData.meleeWeapons, MAX_MELEE_WEAPON);
+
+	actorData.newMeleeWeaponCount = playerData.meleeWeaponCount;
+	actorData.newMeleeWeaponIndex = playerData.meleeWeaponIndex;
+
+	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
+	{
+		actorData.newMeleeWeaponIndex = 0;
+	}
+
+	memcpy(actorData.newRangedWeapons, playerData.rangedWeapons, MAX_RANGED_WEAPON);
+
+	actorData.newRangedWeaponCount = playerData.rangedWeaponCount;
 	actorData.newRangedWeaponIndex = playerData.rangedWeaponIndex;
+
+	if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
+	{
+		actorData.newRangedWeaponIndex = 0;
+	}
 }
 
 template <typename T>
@@ -1491,15 +1600,6 @@ void UpdateMeleeWeapons
 	PlayerData & playerData
 )
 {
-	memcpy(actorData.newMeleeWeapons, playerData.meleeWeapons, MAX_MELEE_WEAPON);
-
-	actorData.newMeleeWeaponCount = playerData.meleeWeaponCount;
-
-	if (actorData.newMeleeWeaponIndex >= actorData.newMeleeWeaponCount)
-	{
-		actorData.newMeleeWeaponIndex = 0;
-	}
-
 	playerData.meleeWeaponIndex = actorData.newMeleeWeaponIndex;
 
 	auto weapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
@@ -1527,15 +1627,6 @@ void UpdateRangedWeapons
 	PlayerData & playerData
 )
 {
-	memcpy(actorData.newRangedWeapons, playerData.rangedWeapons, MAX_RANGED_WEAPON);
-
-	actorData.newRangedWeaponCount = playerData.rangedWeaponCount;
-
-	if (actorData.newRangedWeaponIndex >= actorData.newRangedWeaponCount)
-	{
-		actorData.newRangedWeaponIndex = 0;
-	}
-
 	playerData.rangedWeaponIndex = actorData.newRangedWeaponIndex;
 
 	auto weapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
@@ -1559,210 +1650,6 @@ void UpdateWeapons
 	UpdateMeleeWeapons (actorData, playerData);
 	UpdateRangedWeapons(actorData, playerData);
 }
-
-void UpdateActorDante(ActorDataDante & actorData)
-{
-	LogFunction(actorData.operator byte8 *());
-
-	actorData.devilModelMetadata.Rebellion.devilSubmodelMetadata[0].submodelIndex = 255;
-	actorData.devilModelMetadata.Rebellion.devilSubmodelMetadata[1].submodelIndex = 255;
-	actorData.devilModelMetadata.Cerberus.devilSubmodelMetadata.submodelIndex = 255;
-	actorData.devilModelMetadata.Nevan.devilSubmodelMetadata[0].submodelIndex = 255;
-	actorData.devilModelMetadata.Nevan.devilSubmodelMetadata[1].submodelIndex = 255;
-	actorData.devilModelMetadata.Beowulf.devilSubmodelMetadata.submodelIndex = 255;
-	actorData.devilModelMetadata.Sparda.devilSubmodelMetadata.submodelIndex = 255;
-	/*
-	dmc3.exe+212C20 - C6 81 02B60000 FF - mov byte ptr [rcx+0000B602],-01
-	dmc3.exe+212C2B - C6 81 05B60000 FF - mov byte ptr [rcx+0000B605],-01
-	dmc3.exe+212C32 - C6 81 0AB60000 FF - mov byte ptr [rcx+0000B60A],-01
-	dmc3.exe+212C39 - C6 81 11B60000 FF - mov byte ptr [rcx+0000B611],-01
-	dmc3.exe+212C40 - C6 81 14B60000 FF - mov byte ptr [rcx+0000B614],-01
-	dmc3.exe+212C47 - C6 81 19B60000 FF - mov byte ptr [rcx+0000B619],-01
-	dmc3.exe+212C4E - C6 81 1EB60000 FF - mov byte ptr [rcx+0000B61E],-01
-	*/
-
-	UpdateModel(actorData);
-
-	func_1EF040(actorData, 0);
-	func_1EEF80(actorData);
-	func_1EF040(actorData, 3);
-
-	if (actorData.sparda)
-	{
-		UpdateDevilModel(actorData, DEVIL_SPARDA, 0);
-	}
-	else
-	{
-		for_all(uint8, index, 5)
-		{
-			UpdateDevilModel(actorData, (DEVIL_REBELLION + index), index);
-		}
-	}
-	
-
-
-	func_2EE060(actorData.var_6410, 60);
-	/*
-	dmc3.exe+2134C6 - 48 8D 8E 10640000 - lea rcx,[rsi+00006410]
-	dmc3.exe+2134CD - BA 3C000000       - mov edx,0000003C
-	dmc3.exe+2134D2 - E8 89AB0D00       - call dmc3.exe+2EE060
-	*/
-
-	func_2C6150(actorData.var_6458, 0x49000, -2);
-	/*
-	dmc3.exe+214B37 - 48 8D 8E 58640000 - lea rcx,[rsi+00006458]
-	dmc3.exe+214B3E - BA 00900400       - mov edx,00049000
-	dmc3.exe+214B43 - 41 B8 FEFFFFFF    - mov r8d,FFFFFFFE
-	dmc3.exe+214B49 - E8 02160B00       - call dmc3.exe+2C6150
-	*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	actorData.actionData[0] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x590598);
-	actorData.actionData[1] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x58A2A0);
-	actorData.actionData[2] = (appBaseAddr + 0x5905B0);
-	actorData.actionData[3] = File_staticFiles[pl000][9];
-	actorData.actionData[4] = File_staticFiles[pl000][10];
-	actorData.actionData[5] = File_staticFiles[pl000][11];
-	/*
-	dmc3.exe+214B50 - 48 8B 05 41BA3700 - mov rax,[dmc3.exe+590598]
-	dmc3.exe+214B5E - 48 89 86 D03D0000 - mov [rsi+00003DD0],rax
-
-	dmc3.exe+214B65 - 48 8B 05 34573700 - mov rax,[dmc3.exe+58A2A0]
-	dmc3.exe+214B6C - 48 89 86 D83D0000 - mov [rsi+00003DD8],rax
-
-	dmc3.exe+214B73 - 48 8D 05 36BA3700 - lea rax,[dmc3.exe+5905B0]
-	dmc3.exe+214B7A - 48 89 86 E03D0000 - mov [rsi+00003DE0],rax
-
-	dmc3.exe+212C27 - 45 8D 4F 09       - lea r9d,[r15+09]
-	dmc3.exe+212C5C - E8 5F56FAFF       - call __GET_FILE__
-	dmc3.exe+212C6C - 48 89 86 E83D0000 - mov [rsi+00003DE8],rax
-
-	dmc3.exe+212C66 - 45 8D 4F 0A       - lea r9d,[r15+0A]
-	dmc3.exe+212C7A - E8 4156FAFF       - call __GET_FILE__
-	dmc3.exe+212C8A - 48 89 86 F03D0000 - mov [rsi+00003DF0],rax
-
-	dmc3.exe+212C84 - 45 8D 4F 0B       - lea r9d,[r15+0B]
-	dmc3.exe+212C98 - E8 2356FAFF       - call __GET_FILE__
-	dmc3.exe+212CA0 - 48 89 86 F83D0000 - mov [rsi+00003DF8],rax
-	*/
-
-	func_2EE3D0(actorData.var_3C50);
-	/*
-	dmc3.exe+214B57 - 48 8D 8E 503C0000 - lea rcx,[rsi+00003C50]
-	dmc3.exe+214B81 - E8 4A980D00       - call dmc3.exe+2EE3D0
-	*/
-
-	func_1FAF40(actorData);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// template <typename T>
-// T * CreateActorFunction(PlayerData & playerData)
-// {
-// 	IntroduceMissionActorDataPointers(return 0);
-
-// 	auto baseAddr = func_1DE820(GetCharacterId<T>::value, 0, false);
-// 	if (!baseAddr)
-// 	{
-// 		return 0;
-// 	}
-// 	auto & actorData = *reinterpret_cast<T *>(baseAddr);
-
-// 	UpdateFileData(actorData);
-
-// 	InitActor(actorData, missionActorData_16C);
-
-// 	actorData.costume = playerData.costume;
-
-// 	if constexpr (TypeMatch<T, ActorDataDante>::value)
-// 	{
-// 		switch (actorData.costume)
-// 		{
-// 		case COSTUME_DANTE_DMC1:
-// 		case COSTUME_DANTE_DMC1_NO_COAT:
-// 		case COSTUME_DANTE_SPARDA:
-// 		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
-// 		{
-// 			actorData.sparda = true;
-// 			break;
-// 		}
-// 		}
-// 	}
-// 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-// 	{
-// 		switch (actorData.costume)
-// 		{
-// 		case COSTUME_VERGIL_SPARDA:
-// 		case COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS:
-// 		{
-// 			actorData.neroAngelo = true;
-// 			break;
-// 		}
-// 		}
-// 	}
-
-// 	actorData.newPlayerData = &playerData;
-
-// 	actorData.newForceFiles          = playerData.forceFiles;
-// 	actorData.newForceFilesCharacter = playerData.forceFilesCharacter;
-
-// 	UpdateCostumeFileData(actorData);
-
-// 	if constexpr (TypeMatch<T, ActorDataDante>::value)
-// 	{
-// 		UpdateActorDante(actorData);
-// 	}
-// 	else
-// 	{
-// 		UpdateActor(actorData);
-// 	}
-
-// 	UpdateMotionArchives(actorData);
-
-// 	InitWeapons(actorData, playerData);
-
-// 	UpdateWeapons(actorData, playerData);
-
-// 	func_1DFC20(actorData);
-
-// 	return &actorData;
-// }
 
 template <typename T>
 byte8 * CreateActor
@@ -1825,6 +1712,11 @@ byte8 * CreateActor
 	actorData.newForceFiles          = playerData.forceFiles;
 	actorData.newForceFilesCharacter = playerData.forceFilesCharacter;
 
+	actorData.newGamepad          = player;
+	actorData.newButtonMask       = 0xFFFF;
+	actorData.newEnableRightStick = true;
+	actorData.newEnableLeftStick  = true;
+
 	UpdateCostumeFileData(actorData);
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
@@ -1843,15 +1735,6 @@ byte8 * CreateActor
 	UpdateWeapons(actorData, playerData);
 
 	func_1DFC20(actorData);
-
-	actorData.newGamepad = player;
-
-	if (entity == ENTITY_MAIN)
-	{
-		actorData.newButtonMask = 0xFFFF;
-		actorData.newEnableRightStick = true;
-		actorData.newEnableLeftStick = true;
-	}
 
 	Actor_actorBaseAddr.Push(actorData);
 
@@ -2072,14 +1955,23 @@ void ToggleIsWeaponReady(bool enable)
 
 #pragma region Controllers
 
+
+
+template <typename T>
+void StyleSwitchController(T & actorData)
+{
+
+
+
+}
+
+
+
+
+
 void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 {
 	if (actorData.newMeleeWeaponCount <= 1)
-	{
-		return;
-	}
-
-	if (!(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
 	{
 		return;
 	}
@@ -2089,27 +1981,77 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 		return;
 	}
 
-	actorData.meleeWeaponSwitchTimeout = activeConfig.weaponSwitchTimeout;
+	bool update = false;
 
-	actorData.newMeleeWeaponIndex++;
+	auto Forward = [&]()
+	{
+		if (actorData.newMeleeWeaponIndex == (actorData.newMeleeWeaponCount - 1))
+		{
+			actorData.newMeleeWeaponIndex = 0;
+		}
+		else
+		{
+			actorData.newMeleeWeaponIndex++;
+		}
+		update = true;
+	};
+
+	auto Back = [&]()
+	{
+		if (actorData.newMeleeWeaponIndex == 0)
+		{
+			actorData.newMeleeWeaponIndex = (actorData.newMeleeWeaponCount - 1);
+		}
+		else
+		{
+			actorData.newMeleeWeaponIndex--;
+		}
+		update = true;
+	};
+
+	if (actorData.newEntity == ENTITY_MAIN)
+	{
+		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+		{
+			return;
+		}
+		else if
+		(
+			(actorData.buttons[0] & GetBinding(BINDING_TAUNT            )) &&
+			(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+		)
+		{
+			Back();
+		}
+		else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+		{
+			Forward();
+		}
+	}
+	else
+	{
+		if
+		(
+			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA   )) &&
+			(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+		)
+		{
+			Forward();
+		}
+	}
+
+	if (!update)
+	{
+		return;
+	}
+
+	actorData.meleeWeaponSwitchTimeout = activeConfig.weaponSwitchTimeout;
 
 	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
 
 	UpdateMeleeWeapons(actorData, playerData);
 
-
-
-
-
 	auto newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
-
-	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, newMeleeWeapon);
-
-	IntroduceHUDPointers(return);
-
-	func_280120(hudBottom, 1, 0); // @Todo: Enums.
-
-	func_1EB0E0(actorData, 4);
 
 	if (actorData.devil)
 	{
@@ -2136,6 +2078,19 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 			func_1F97F0(actorData, true);
 		}
 	}
+
+	if (actorData.newEntity == ENTITY_CLONE)
+	{
+		return;
+	}
+
+	IntroduceHUDPointers(return);
+
+	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, newMeleeWeapon);
+
+	func_280120(hudBottom, 1, 0); // @Todo: Enums.
+
+	func_1EB0E0(actorData, 4);
 }
 
 void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
@@ -5776,6 +5731,85 @@ export void Actor_SceneMissionStart()
 #endif
 
 #ifdef __GARBAGE__
+
+
+
+
+
+
+// template <typename T>
+// T * CreateActorFunction(PlayerData & playerData)
+// {
+// 	IntroduceMissionActorDataPointers(return 0);
+
+// 	auto baseAddr = func_1DE820(GetCharacterId<T>::value, 0, false);
+// 	if (!baseAddr)
+// 	{
+// 		return 0;
+// 	}
+// 	auto & actorData = *reinterpret_cast<T *>(baseAddr);
+
+// 	UpdateFileData(actorData);
+
+// 	InitActor(actorData, missionActorData_16C);
+
+// 	actorData.costume = playerData.costume;
+
+// 	if constexpr (TypeMatch<T, ActorDataDante>::value)
+// 	{
+// 		switch (actorData.costume)
+// 		{
+// 		case COSTUME_DANTE_DMC1:
+// 		case COSTUME_DANTE_DMC1_NO_COAT:
+// 		case COSTUME_DANTE_SPARDA:
+// 		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
+// 		{
+// 			actorData.sparda = true;
+// 			break;
+// 		}
+// 		}
+// 	}
+// 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+// 	{
+// 		switch (actorData.costume)
+// 		{
+// 		case COSTUME_VERGIL_SPARDA:
+// 		case COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS:
+// 		{
+// 			actorData.neroAngelo = true;
+// 			break;
+// 		}
+// 		}
+// 	}
+
+// 	actorData.newPlayerData = &playerData;
+
+// 	actorData.newForceFiles          = playerData.forceFiles;
+// 	actorData.newForceFilesCharacter = playerData.forceFilesCharacter;
+
+// 	UpdateCostumeFileData(actorData);
+
+// 	if constexpr (TypeMatch<T, ActorDataDante>::value)
+// 	{
+// 		UpdateActorDante(actorData);
+// 	}
+// 	else
+// 	{
+// 		UpdateActor(actorData);
+// 	}
+
+// 	UpdateMotionArchives(actorData);
+
+// 	InitWeapons(actorData, playerData);
+
+// 	UpdateWeapons(actorData, playerData);
+
+// 	func_1DFC20(actorData);
+
+// 	return &actorData;
+// }
+
+
 
 	// uint8 character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : static_cast<uint8>(actorData.character);
 	// if (character >= MAX_CHAR)

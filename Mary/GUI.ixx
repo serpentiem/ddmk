@@ -170,7 +170,7 @@ const char * Actor_meleeWeaponNames[] =
 	"Agni & Rudra",
 	"Nevan",
 	"Beowulf Dante",
-	"Yamato",
+	"Yamato Vergil",
 	"Beowulf Vergil",
 	"Force Edge",
 };
@@ -215,7 +215,7 @@ void Actor_UpdateWeaponIndices
 	uint8 entity
 )
 {
-	auto & playerData = activeConfig.Actor.playerData[player][entity];
+	auto & playerData = queuedConfig.Actor.playerData[player][entity];
 
 	for_all(uint8, index, MAX_MELEE_WEAPON)
 	{
@@ -258,13 +258,13 @@ void Actor_PlayerTab
 	uint8 entity
 )
 {
-	auto & playerData = activeConfig.Actor.playerData[player][entity];
+	auto & playerData = queuedConfig.Actor.playerData[player][entity];
 
 	for_all(uint8, character, MAX_CHAR)
 	{
 		if (GUI_Button(Actor_characterNames[character]))
 		{
-			ApplyPlayerData(playerData, character);
+			ApplyDefaultPlayerData(playerData, character);
 			Actor_UpdateWeaponIndices(player, entity);
 		}
 		ImGui::SameLine();
@@ -385,7 +385,7 @@ void Actor()
 		ImGui::Text("");
 
 		ImGui::PushItemWidth(200);
-		GUI_Slider<uint8>("Player Count", activeConfig.Actor.playerCount, 1, MAX_PLAYER);
+		GUI_Slider<uint8>("Player Count", queuedConfig.Actor.playerCount, 1, MAX_PLAYER);
 		ImGui::PopItemWidth();
 		ImGui::Text("");
 
@@ -393,12 +393,24 @@ void Actor()
 		{
 			for_all(uint8, player, MAX_PLAYER)
 			{
-				auto condition = (player >= activeConfig.Actor.playerCount);
+				auto condition = (player >= queuedConfig.Actor.playerCount);
 
 				GUI_PushDisable(condition);
 
 				if (ImGui::BeginTabItem(Actor_playerNames[player]))
 				{
+					ImGui::Text("");
+
+					if (GUI_Checkbox("Enable Doppelganger", queuedConfig.Actor.enableDoppelganger[player]))
+					{
+						for_all(uint8, entity, MAX_ENTITY)
+						{
+							auto & playerData = queuedConfig.Actor.playerData[player][entity];
+							ApplyDefaultPlayerData(playerData, playerData.character);
+							Actor_UpdateWeaponIndices(player, entity);
+						}
+					}
+					//GUI_SectionEnd();
 					ImGui::Text("");
 
 					GUI_SectionStart("Main");

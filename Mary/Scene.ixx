@@ -8,10 +8,12 @@ module;
 export module ModuleName(Scene);
 
 import ModuleName(Actor);
+import ModuleName(Config);
 import ModuleName(Event);
 
 #ifdef __INTELLISENSE__
 #include "Actor.ixx"
+#include "Config.ixx"
 #include "Event.ixx"
 #endif
 
@@ -48,6 +50,16 @@ void SceneMissionStart()
 {
 	LogFunction();
 	g_scene = SCENE_MISSION_START;
+
+
+
+
+	memcpy(&activeConfig, &queuedConfig, sizeof(Config));
+
+
+
+
+
 	Actor_SceneMissionStart();
 }
 

@@ -151,6 +151,7 @@ var items =
 
 
 	[ "[60]"                       , "byte8"                    , 0x6410                           ],
+	[ "cloneRate"                       , "uint32"                    , 0x6450                           ],
 	[ "cloneIsActive"                       , "bool"                    , 0x6454                           ],
 	[ "[32]"                       , "byte8"                    , 0x6458                           ],
 	[ "cloneBaseAddr"                       , "byte8 *"                 , 0x6478                           ],
@@ -392,7 +393,6 @@ var extra =
 
 
 
-	//[ "newPlayerData", "PlayerData *" ],
 
 
 
@@ -411,12 +411,20 @@ var extra =
 
 
 
-	//[ "newParentBaseAddr"      , "byte8 *" ],
-	//[ "newChildBaseAddr"       , "byte8 *" ],
+
 	[ "newGamepad"             , "uint8"   ],
 	[ "newButtonMask"          , "byte16"  ],
 	[ "newEnableRightStick"    , "bool"    ],
 	[ "newEnableLeftStick"     , "bool"    ],
+
+
+
+
+
+
+
+
+
 
 	[ "newMeleeWeapons[5]"     , "uint8"   ],
 	[ "newMeleeWeaponCount"    , "uint8"   ],
@@ -429,8 +437,21 @@ var extra =
 
 
 
-	
 
+
+	[ "newStyle"   , "uint8"   ],
+
+
+
+
+
+
+
+
+	
+	//[ "newPlayerData", "PlayerData *" ],
+	//[ "newParentBaseAddr"      , "byte8 *" ],
+	//[ "newChildBaseAddr"       , "byte8 *" ],
 
 	//[ "newMeleeWeaponData[5]"  , "byte8 *" ],
 	//[ "newLastMeleeWeapon"     , "uint8"   ],

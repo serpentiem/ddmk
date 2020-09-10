@@ -15,6 +15,7 @@ export struct Config
 		bool enable = true;
 		PlayerData playerData[MAX_PLAYER][MAX_ENTITY] = {};
 		uint8 playerCount = 1;
+		bool enableDoppelganger[MAX_PLAYER] = {};
 	}
 	Actor;
 	struct
@@ -105,7 +106,7 @@ export struct Config
 	BossRush;
 	struct
 	{
-		bool    invertX     = false;
+		bool    invertX     = true;
 		float32 height      = 140;
 		float32 tilt        = 0.25f;
 		float32 zoom        = 460;
@@ -342,7 +343,7 @@ export Config queuedConfig;
 
 char g_path[64] = {};
 
-export void ApplyPlayerData
+export void ApplyDefaultPlayerData
 (
 	PlayerData & playerData,
 	uint8 character
@@ -360,6 +361,7 @@ export void ApplyPlayerData
 			0,
 			false,
 			CHAR_DANTE,
+			STYLE_TRICKSTER,
 			{
 				WEAPON_REBELLION,
 				WEAPON_CERBERUS,
@@ -405,6 +407,7 @@ export void ApplyPlayerData
 			0,
 			false,
 			CHAR_DANTE,
+			STYLE_DARK_SLAYER,
 			{
 				WEAPON_YAMATO_VERGIL,
 				WEAPON_BEOWULF_VERGIL,
@@ -462,9 +465,9 @@ export void Config_Init
 	for_all(uint8, player, MAX_PLAYER){
 	for_all(uint8, entity, MAX_ENTITY)
 	{
-		ApplyPlayerData(defaultConfig.Actor.playerData[player][entity], CHAR_DANTE);
-		ApplyPlayerData(activeConfig.Actor.playerData [player][entity], CHAR_DANTE);
-		ApplyPlayerData(queuedConfig.Actor.playerData [player][entity], CHAR_DANTE);
+		ApplyDefaultPlayerData(defaultConfig.Actor.playerData[player][entity], CHAR_DANTE);
+		ApplyDefaultPlayerData(activeConfig.Actor.playerData [player][entity], CHAR_DANTE);
+		ApplyDefaultPlayerData(queuedConfig.Actor.playerData [player][entity], CHAR_DANTE);
 	}}
 }
 

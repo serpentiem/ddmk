@@ -132,7 +132,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-		//Camera_ToggleInvertX(true);
+		Camera_ToggleInvertX(activeConfig.Camera.invertX);
 
 
 		Dante_Init();

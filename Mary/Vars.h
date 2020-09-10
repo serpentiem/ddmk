@@ -1899,6 +1899,7 @@ struct PlayerData
 	uint8 costume;
 	bool forceFiles;
 	uint8 forceFilesCharacter;
+	uint8 style;
 	uint8 meleeWeapons[MAX_MELEE_WEAPON];
 	uint8 meleeWeaponCount;
 	uint8 meleeWeaponIndex;
@@ -2027,7 +2028,8 @@ struct ActorData
 	float32 styleExperience; // 0x6364
 	_(168);
 	byte8 var_6410[60]; // 0x6410
-	_(8);
+	_(4);
+	uint32 cloneRate; // 0x6450
 	bool cloneIsActive; // 0x6454
 	_(3);
 	byte8 var_6458[32]; // 0x6458
@@ -2109,7 +2111,8 @@ struct ActorData
 	uint8 newRangedWeapons[5]; // 0x1CAF0
 	uint8 newRangedWeaponCount; // 0x1CAF5
 	uint8 newRangedWeaponIndex; // 0x1CAF6
-	_(9);
+	uint8 newStyle; // 0x1CAF7
+	_(8);
 	bool newSect[8]; // 0x1CB00
 	uint8 newBufferedActionPolicy; // 0x1CB08
 	uint8 newAirStingerCount; // 0x1CB09
@@ -2242,7 +2245,8 @@ struct ActorDataDante
 	float32 styleExperience; // 0x6364
 	_(168);
 	byte8 var_6410[60]; // 0x6410
-	_(8);
+	_(4);
+	uint32 cloneRate; // 0x6450
 	bool cloneIsActive; // 0x6454
 	_(3);
 	byte8 var_6458[32]; // 0x6458
@@ -2348,7 +2352,8 @@ struct ActorDataDante
 	uint8 newRangedWeapons[5]; // 0x1CAF0
 	uint8 newRangedWeaponCount; // 0x1CAF5
 	uint8 newRangedWeaponIndex; // 0x1CAF6
-	_(9);
+	uint8 newStyle; // 0x1CAF7
+	_(8);
 	bool newSect[8]; // 0x1CB00
 	uint8 newBufferedActionPolicy; // 0x1CB08
 	uint8 newAirStingerCount; // 0x1CB09
@@ -2474,7 +2479,8 @@ struct ActorDataBob
 	float32 styleExperience; // 0x6364
 	_(168);
 	byte8 var_6410[60]; // 0x6410
-	_(8);
+	_(4);
+	uint32 cloneRate; // 0x6450
 	bool cloneIsActive; // 0x6454
 	_(3);
 	byte8 var_6458[32]; // 0x6458
@@ -2556,7 +2562,8 @@ struct ActorDataBob
 	uint8 newRangedWeapons[5]; // 0x1CAF0
 	uint8 newRangedWeaponCount; // 0x1CAF5
 	uint8 newRangedWeaponIndex; // 0x1CAF6
-	_(9);
+	uint8 newStyle; // 0x1CAF7
+	_(8);
 	bool newSect[8]; // 0x1CB00
 	uint8 newBufferedActionPolicy; // 0x1CB08
 	uint8 newAirStingerCount; // 0x1CB09
@@ -2682,7 +2689,8 @@ struct ActorDataLady
 	float32 styleExperience; // 0x6364
 	_(168);
 	byte8 var_6410[60]; // 0x6410
-	_(8);
+	_(4);
+	uint32 cloneRate; // 0x6450
 	bool cloneIsActive; // 0x6454
 	_(3);
 	byte8 var_6458[32]; // 0x6458
@@ -2764,7 +2772,8 @@ struct ActorDataLady
 	uint8 newRangedWeapons[5]; // 0x1CAF0
 	uint8 newRangedWeaponCount; // 0x1CAF5
 	uint8 newRangedWeaponIndex; // 0x1CAF6
-	_(9);
+	uint8 newStyle; // 0x1CAF7
+	_(8);
 	bool newSect[8]; // 0x1CB00
 	uint8 newBufferedActionPolicy; // 0x1CB08
 	uint8 newAirStingerCount; // 0x1CB09
@@ -2895,7 +2904,8 @@ struct ActorDataVergil
 	float32 styleExperience; // 0x6364
 	_(168);
 	byte8 var_6410[60]; // 0x6410
-	_(8);
+	_(4);
+	uint32 cloneRate; // 0x6450
 	bool cloneIsActive; // 0x6454
 	_(3);
 	byte8 var_6458[32]; // 0x6458
@@ -2989,7 +2999,8 @@ struct ActorDataVergil
 	uint8 newRangedWeapons[5]; // 0x1CAF0
 	uint8 newRangedWeaponCount; // 0x1CAF5
 	uint8 newRangedWeaponIndex; // 0x1CAF6
-	_(9);
+	uint8 newStyle; // 0x1CAF7
+	_(8);
 	bool newSect[8]; // 0x1CB00
 	uint8 newBufferedActionPolicy; // 0x1CB08
 	uint8 newAirStingerCount; // 0x1CB09
@@ -3073,6 +3084,7 @@ static_assert(offsetof(ActorData, style) == 0x6338);
 static_assert(offsetof(ActorData, styleLevel) == 0x6358);
 static_assert(offsetof(ActorData, styleExperience) == 0x6364);
 static_assert(offsetof(ActorData, var_6410) == 0x6410);
+static_assert(offsetof(ActorData, cloneRate) == 0x6450);
 static_assert(offsetof(ActorData, cloneIsActive) == 0x6454);
 static_assert(offsetof(ActorData, var_6458) == 0x6458);
 static_assert(offsetof(ActorData, cloneBaseAddr) == 0x6478);
@@ -3132,6 +3144,7 @@ static_assert(offsetof(ActorData, newMeleeWeaponIndex) == 0x1CAE6);
 static_assert(offsetof(ActorData, newRangedWeapons) == 0x1CAF0);
 static_assert(offsetof(ActorData, newRangedWeaponCount) == 0x1CAF5);
 static_assert(offsetof(ActorData, newRangedWeaponIndex) == 0x1CAF6);
+static_assert(offsetof(ActorData, newStyle) == 0x1CAF7);
 static_assert(offsetof(ActorData, newSect) == 0x1CB00);
 static_assert(offsetof(ActorData, newBufferedActionPolicy) == 0x1CB08);
 static_assert(offsetof(ActorData, newAirStingerCount) == 0x1CB09);
@@ -3213,6 +3226,7 @@ static_assert(offsetof(ActorDataDante, quicksilver) == 0x6361);
 static_assert(offsetof(ActorDataDante, doppelganger) == 0x6362);
 static_assert(offsetof(ActorDataDante, styleExperience) == 0x6364);
 static_assert(offsetof(ActorDataDante, var_6410) == 0x6410);
+static_assert(offsetof(ActorDataDante, cloneRate) == 0x6450);
 static_assert(offsetof(ActorDataDante, cloneIsActive) == 0x6454);
 static_assert(offsetof(ActorDataDante, var_6458) == 0x6458);
 static_assert(offsetof(ActorDataDante, cloneBaseAddr) == 0x6478);
@@ -3290,6 +3304,7 @@ static_assert(offsetof(ActorDataDante, newMeleeWeaponIndex) == 0x1CAE6);
 static_assert(offsetof(ActorDataDante, newRangedWeapons) == 0x1CAF0);
 static_assert(offsetof(ActorDataDante, newRangedWeaponCount) == 0x1CAF5);
 static_assert(offsetof(ActorDataDante, newRangedWeaponIndex) == 0x1CAF6);
+static_assert(offsetof(ActorDataDante, newStyle) == 0x1CAF7);
 static_assert(offsetof(ActorDataDante, newSect) == 0x1CB00);
 static_assert(offsetof(ActorDataDante, newBufferedActionPolicy) == 0x1CB08);
 static_assert(offsetof(ActorDataDante, newAirStingerCount) == 0x1CB09);
@@ -3365,6 +3380,7 @@ static_assert(offsetof(ActorDataBob, style) == 0x6338);
 static_assert(offsetof(ActorDataBob, styleLevel) == 0x6358);
 static_assert(offsetof(ActorDataBob, styleExperience) == 0x6364);
 static_assert(offsetof(ActorDataBob, var_6410) == 0x6410);
+static_assert(offsetof(ActorDataBob, cloneRate) == 0x6450);
 static_assert(offsetof(ActorDataBob, cloneIsActive) == 0x6454);
 static_assert(offsetof(ActorDataBob, var_6458) == 0x6458);
 static_assert(offsetof(ActorDataBob, cloneBaseAddr) == 0x6478);
@@ -3424,6 +3440,7 @@ static_assert(offsetof(ActorDataBob, newMeleeWeaponIndex) == 0x1CAE6);
 static_assert(offsetof(ActorDataBob, newRangedWeapons) == 0x1CAF0);
 static_assert(offsetof(ActorDataBob, newRangedWeaponCount) == 0x1CAF5);
 static_assert(offsetof(ActorDataBob, newRangedWeaponIndex) == 0x1CAF6);
+static_assert(offsetof(ActorDataBob, newStyle) == 0x1CAF7);
 static_assert(offsetof(ActorDataBob, newSect) == 0x1CB00);
 static_assert(offsetof(ActorDataBob, newBufferedActionPolicy) == 0x1CB08);
 static_assert(offsetof(ActorDataBob, newAirStingerCount) == 0x1CB09);
@@ -3499,6 +3516,7 @@ static_assert(offsetof(ActorDataLady, style) == 0x6338);
 static_assert(offsetof(ActorDataLady, styleLevel) == 0x6358);
 static_assert(offsetof(ActorDataLady, styleExperience) == 0x6364);
 static_assert(offsetof(ActorDataLady, var_6410) == 0x6410);
+static_assert(offsetof(ActorDataLady, cloneRate) == 0x6450);
 static_assert(offsetof(ActorDataLady, cloneIsActive) == 0x6454);
 static_assert(offsetof(ActorDataLady, var_6458) == 0x6458);
 static_assert(offsetof(ActorDataLady, cloneBaseAddr) == 0x6478);
@@ -3558,6 +3576,7 @@ static_assert(offsetof(ActorDataLady, newMeleeWeaponIndex) == 0x1CAE6);
 static_assert(offsetof(ActorDataLady, newRangedWeapons) == 0x1CAF0);
 static_assert(offsetof(ActorDataLady, newRangedWeaponCount) == 0x1CAF5);
 static_assert(offsetof(ActorDataLady, newRangedWeaponIndex) == 0x1CAF6);
+static_assert(offsetof(ActorDataLady, newStyle) == 0x1CAF7);
 static_assert(offsetof(ActorDataLady, newSect) == 0x1CB00);
 static_assert(offsetof(ActorDataLady, newBufferedActionPolicy) == 0x1CB08);
 static_assert(offsetof(ActorDataLady, newAirStingerCount) == 0x1CB09);
@@ -3637,6 +3656,7 @@ static_assert(offsetof(ActorDataVergil, trickUpCount) == 0x635F);
 static_assert(offsetof(ActorDataVergil, trickDownCount) == 0x6360);
 static_assert(offsetof(ActorDataVergil, styleExperience) == 0x6364);
 static_assert(offsetof(ActorDataVergil, var_6410) == 0x6410);
+static_assert(offsetof(ActorDataVergil, cloneRate) == 0x6450);
 static_assert(offsetof(ActorDataVergil, cloneIsActive) == 0x6454);
 static_assert(offsetof(ActorDataVergil, var_6458) == 0x6458);
 static_assert(offsetof(ActorDataVergil, cloneBaseAddr) == 0x6478);
@@ -3705,6 +3725,7 @@ static_assert(offsetof(ActorDataVergil, newMeleeWeaponIndex) == 0x1CAE6);
 static_assert(offsetof(ActorDataVergil, newRangedWeapons) == 0x1CAF0);
 static_assert(offsetof(ActorDataVergil, newRangedWeaponCount) == 0x1CAF5);
 static_assert(offsetof(ActorDataVergil, newRangedWeaponIndex) == 0x1CAF6);
+static_assert(offsetof(ActorDataVergil, newStyle) == 0x1CAF7);
 static_assert(offsetof(ActorDataVergil, newSect) == 0x1CB00);
 static_assert(offsetof(ActorDataVergil, newBufferedActionPolicy) == 0x1CB08);
 static_assert(offsetof(ActorDataVergil, newAirStingerCount) == 0x1CB09);
