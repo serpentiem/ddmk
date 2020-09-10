@@ -1687,16 +1687,6 @@ void UpdateMeleeWeapons
 		if ((weapon >= WEAPON_YAMATO_VERGIL) && (weapon <= WEAPON_FORCE_EDGE))
 		{
 			actorData.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
-
-			if
-			(
-				(actorData.queuedMeleeWeaponIndex == 2) &&
-				actorData.devil &&
-				actorData.neroAngelo
-			)
-			{
-				actorData.queuedMeleeWeaponIndex = 0;
-			}
 		}
 	}
 }
@@ -2450,6 +2440,11 @@ void MeleeWeaponSwitchControllerVergil(ActorDataVergil & actorData)
 	{
 		if (actorData.neroAngelo)
 		{
+			if (actorData.queuedMeleeWeaponIndex == 2)
+			{
+				actorData.queuedMeleeWeaponIndex = 0;
+			}
+
 			actorData.queuedModelIndex       = 1;
 			actorData.activeModelIndexMirror = 1;
 			actorData.activeDevil            = DEVIL_NERO_ANGELO;
@@ -2503,6 +2498,40 @@ bool WeaponSwitchControllerVergil(ActorDataVergil & actorData)
 	return true;
 }
 
+
+
+
+export void Actor_DeactivateDevilForm(byte8 * baseAddr)
+{
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+
+	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
+
+	switch (actorData.character)
+	{
+		case CHAR_DANTE:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(baseAddr);
+			break;
+		}
+		case CHAR_BOB:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataBob *>(baseAddr);
+			break;
+		}
+		case CHAR_LADY:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataLady *>(baseAddr);
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(baseAddr);
+			UpdateMeleeWeapons(actorData2, playerData);
+			break;
+		}
+	}
+}
 
 
 
