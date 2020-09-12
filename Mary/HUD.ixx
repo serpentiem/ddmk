@@ -96,8 +96,8 @@ void InitIcons()
 
 export void HUD_UpdateStyleIcon
 (
-	uint8 style,
-	uint8 character = CHAR_DANTE
+	uint8 character,
+	uint8 style
 )
 {
 	if (style >= MAX_STYLE)
@@ -111,15 +111,15 @@ export void HUD_UpdateStyleIcon
 
 	ResetModel(modelData);
 
-	byte8 * modelFile   = 0;
-	byte8 * textureFile = 0;
+	// byte8 * modelFile   = 0;
+	// byte8 * textureFile = 0;
 
-	modelFile   = styleIcons[style].modelFile;
-	textureFile = styleIcons[style].textureFile;
+	auto modelFile   = styleIcons[style].modelFile;
+	auto textureFile = styleIcons[style].textureFile;
 
 	if ((character == CHAR_VERGIL) && (style == STYLE_DARK_SLAYER))
 	{
-		modelFile = darkSlayerIcon.modelFile;
+		modelFile   = darkSlayerIcon.modelFile;
 		textureFile = darkSlayerIcon.textureFile;
 	}
 
@@ -147,11 +147,11 @@ export void HUD_UpdateWeaponIcon
 
 	ResetModel(modelData);
 
-	byte8 * modelFile   = 0;
-	byte8 * textureFile = 0;
+	//byte8 * modelFile   = 0;
+	//byte8 * textureFile = 0;
 
-	modelFile   = weaponIcons[weapon].modelFile;
-	textureFile = weaponIcons[weapon].textureFile;
+	auto modelFile   = weaponIcons[weapon].modelFile;
+	auto textureFile = weaponIcons[weapon].textureFile;
 
 	func_89960(modelData, modelFile, textureFile);
 	func_89E30(modelData, 1);

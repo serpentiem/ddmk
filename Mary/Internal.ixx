@@ -28,10 +28,10 @@ export typedef void(__fastcall * func_1FAF40_t)(byte8 * baseAddr);
 export typedef void(__fastcall * func_1EEF80_t)(byte8 * baseAddr);
 export typedef bool(__fastcall * func_2EE060_t)(byte8 * dest, uint32 size);
 export typedef byte8 *(__fastcall * func_1DE820_t)(uint32 character, uint32 id, bool isClone); // Create Actor
-export typedef void(__fastcall * func_217B90_t)(byte8 * actorData, byte8 * missionActorData); // Init Actor Dante
-export typedef void(__fastcall * func_226F10_t)(byte8 * actorData, byte8 * missionActorData); // Init Actor Bob
-export typedef void(__fastcall * func_219660_t)(byte8 * actorData, byte8 * missionActorData); // Init Actor Lady
-export typedef void(__fastcall * func_223CB0_t)(byte8 * actorData, byte8 * missionActorData); // Init Actor Vergil
+export typedef void(__fastcall * func_217B90_t)(byte8 * actorData, ActiveMissionActorData & activeMissionActorData); // Init Actor Dante
+export typedef void(__fastcall * func_226F10_t)(byte8 * actorData, ActiveMissionActorData & activeMissionActorData); // Init Actor Bob
+export typedef void(__fastcall * func_219660_t)(byte8 * actorData, ActiveMissionActorData & activeMissionActorData); // Init Actor Lady
+export typedef void(__fastcall * func_223CB0_t)(byte8 * actorData, ActiveMissionActorData & activeMissionActorData); // Init Actor Vergil
 export typedef void(__fastcall * func_212BE0_t)(byte8 * actorData); // Update Actor Dante
 export typedef void(__fastcall * func_225D70_t)(byte8 * actorData); // Update Actor Bob
 export typedef void(__fastcall * func_219260_t)(byte8 * actorData); // Update Actor Lady
@@ -99,10 +99,10 @@ export func_1FAF40_t func_1FAF40 = 0; // (byte8 * baseAddr)
 export func_1EEF80_t func_1EEF80 = 0; // (byte8 * baseAddr)
 export func_2EE060_t func_2EE060 = 0; // (byte8 * dest, uint32 size)
 export func_1DE820_t func_1DE820 = 0; // (uint32 character, uint32 id, bool isClone)
-export func_217B90_t func_217B90 = 0; // (byte8 * actorData, byte8 * missionActorData)
-export func_226F10_t func_226F10 = 0; // (byte8 * actorData, byte8 * missionActorData)
-export func_219660_t func_219660 = 0; // (byte8 * actorData, byte8 * missionActorData)
-export func_223CB0_t func_223CB0 = 0; // (byte8 * actorData, byte8 * missionActorData)
+export func_217B90_t func_217B90 = 0; // (byte8 * actorData, ActiveMissionActorData & activeMissionActorData)
+export func_226F10_t func_226F10 = 0; // (byte8 * actorData, ActiveMissionActorData & activeMissionActorData)
+export func_219660_t func_219660 = 0; // (byte8 * actorData, ActiveMissionActorData & activeMissionActorData)
+export func_223CB0_t func_223CB0 = 0; // (byte8 * actorData, ActiveMissionActorData & activeMissionActorData)
 export func_212BE0_t func_212BE0 = 0; // (byte8 * actorData)
 export func_225D70_t func_225D70 = 0; // (byte8 * actorData)
 export func_219260_t func_219260 = 0; // (byte8 * actorData)

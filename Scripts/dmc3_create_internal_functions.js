@@ -91,10 +91,10 @@ var items =
 
 	
 	[ 0x1DE820, "byte8 *", "uint32 character, uint32 id, bool isClone"                                    , "0, true, false"              , "Create Actor"                        ],
-	[ 0x217B90, "void"   , "byte8 * actorData, byte8 * missionActorData"                                       , ""                            , "Init Actor Dante"                    ],
-	[ 0x226F10, "void"   , "byte8 * actorData, byte8 * missionActorData"                                       , ""                            , "Init Actor Bob"                      ],
-	[ 0x219660, "void"   , "byte8 * actorData, byte8 * missionActorData"                                       , ""                            , "Init Actor Lady"                     ],
-	[ 0x223CB0, "void"   , "byte8 * actorData, byte8 * missionActorData"                                       , ""                            , "Init Actor Vergil"                   ],
+	[ 0x217B90, "void"   , "byte8 * actorData, ActiveMissionActorData & activeMissionActorData"                                       , ""                            , "Init Actor Dante"                    ],
+	[ 0x226F10, "void"   , "byte8 * actorData, ActiveMissionActorData & activeMissionActorData"                                       , ""                            , "Init Actor Bob"                      ],
+	[ 0x219660, "void"   , "byte8 * actorData, ActiveMissionActorData & activeMissionActorData"                                       , ""                            , "Init Actor Lady"                     ],
+	[ 0x223CB0, "void"   , "byte8 * actorData, ActiveMissionActorData & activeMissionActorData"                                       , ""                            , "Init Actor Vergil"                   ],
 	[ 0x212BE0, "void"   , "byte8 * actorData"                                                            , ""                            , "Update Actor Dante"                  ],
 	[ 0x225D70, "void"   , "byte8 * actorData"                                                            , ""                            , "Update Actor Bob"                    ],
 	[ 0x219260, "void"   , "byte8 * actorData"                                                            , ""                            , "Update Actor Lady"                   ],

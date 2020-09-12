@@ -443,7 +443,7 @@ var extra =
 
 
 
-
+	[ "newExecuteStyleSwitch"     , "uint8"   ],
 
 
 
@@ -461,6 +461,7 @@ var extra =
 	[ "newSect[8]"             , "bool"    ],
 	[ "newBufferedActionPolicy", "uint8"   ],
 	[ "newAirStingerCount"     , "uint8"   ],
+	
 
 
 

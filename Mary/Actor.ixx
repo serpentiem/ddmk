@@ -687,13 +687,13 @@ template <typename T>
 void InitActor
 (
 	T & actorData,
-	byte8 * missionActorData
+	ActiveMissionActorData & activeMissionActorData
 )
 {
-	if constexpr      (TypeMatch<T, ActorDataDante >::value) { func_217B90(actorData, missionActorData); }
-	else if constexpr (TypeMatch<T, ActorDataBob   >::value) { func_226F10(actorData, missionActorData); }
-	else if constexpr (TypeMatch<T, ActorDataLady  >::value) { func_219660(actorData, missionActorData); }
-	else if constexpr (TypeMatch<T, ActorDataVergil>::value) { func_223CB0(actorData, missionActorData); }
+	if constexpr      (TypeMatch<T, ActorDataDante >::value) { func_217B90(actorData, activeMissionActorData); }
+	else if constexpr (TypeMatch<T, ActorDataBob   >::value) { func_226F10(actorData, activeMissionActorData); }
+	else if constexpr (TypeMatch<T, ActorDataLady  >::value) { func_219660(actorData, activeMissionActorData); }
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value) { func_223CB0(actorData, activeMissionActorData); }
 }
 
 template <typename T>
@@ -1560,6 +1560,55 @@ void UpdateMotionArchives(T & actorData)
 
 
 
+template <typename T>
+void UpdateStyle
+(
+	T & actorData,
+	PlayerData & playerData
+)
+{
+	auto enableQuicksilver = activeConfig.Actor.enableQuicksilver[actorData.newPlayer];
+
+	auto & style = actorData.newStyle;
+
+	if
+	(
+		enableQuicksilver &&
+		(actorData.style == style)
+	)
+	{
+		style = STYLE_QUICKSILVER;
+	}
+
+	playerData.style = style;
+
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+		if ((style >= STYLE_SWORDMASTER) && (style <= STYLE_DOPPELGANGER))
+		{
+			actorData.style = style;
+		}
+	}
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+	{
+		switch (style)
+		{
+		case STYLE_DARK_SLAYER:
+		case STYLE_QUICKSILVER:
+		case STYLE_DOPPELGANGER:
+		{
+			actorData.style = style;
+			break;
+		}
+		}
+	}
+}
+
+
+
+
+
+
 typedef WeaponData *(__fastcall * RegisterWeapon_t)
 (
 	byte8 * actorData,
@@ -1734,7 +1783,9 @@ byte8 * CreateActor
 		LogFunction(player, entity);
 	}
 
-	IntroduceMissionActorDataPointers(return 0);
+	IntroduceMissionActorData(return 0);
+
+	
 
 	auto baseAddr = func_1DE820(GetCharacterId<T>::value, 0, false);
 	if (!baseAddr)
@@ -1747,7 +1798,9 @@ byte8 * CreateActor
 
 	UpdateFileData(actorData);
 
-	InitActor(actorData, missionActorData_16C);
+	//HoboBreak();
+
+	InitActor(actorData, activeMissionActorData);
 
 	actorData.costume = playerData.costume;
 
@@ -2028,12 +2081,126 @@ void ToggleIsWeaponReady(bool enable)
 
 
 
+
+
+
+
+
+
 template <typename T>
-void StyleSwitchController(T & actorData)
+void StyleSwitchController
+(
+	T & actorData,
+	PlayerData & playerData
+)
 {
+	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 
+	auto & execute = actorData.newExecuteStyleSwitch;
 
+	bool update = false;
 
+	auto SetStyle = [&](uint8 style)
+	{
+		if (!execute)
+		{
+			return;
+		}
+
+		execute = false;
+
+		actorData.newStyle = style;
+
+		update = true;
+	};
+
+	if (actorData.newEntity == ENTITY_MAIN)
+	{
+		if
+		(
+			enableDoppelganger &&
+			(actorData.buttons[0] & GetBinding(BINDING_CHANGE_TARGET )) &&
+			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+		)
+		{
+			SetStyle(STYLE_DOPPELGANGER);
+		}
+		else if
+		(
+			enableDoppelganger &&
+			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+		)
+		{
+			return;
+		}
+		else if (actorData.buttons[2] & GetBinding(BINDING_ITEM_SCREEN))
+		{
+			SetStyle(STYLE_TRICKSTER);
+		}
+		else if (actorData.buttons[2] & GetBinding(BINDING_MAP_SCREEN))
+		{
+			SetStyle(STYLE_SWORDMASTER);
+		}
+		else if (actorData.buttons[2] & GetBinding(BINDING_EQUIP_SCREEN))
+		{
+			SetStyle(STYLE_ROYALGUARD);
+		}
+		else if (actorData.buttons[2] & GetBinding(BINDING_FILE_SCREEN))
+		{
+			SetStyle(STYLE_GUNSLINGER);
+		}
+		else
+		{
+			execute = true;
+		}
+	}
+	else
+	{
+		if (!enableDoppelganger)
+		{
+			return;
+		}
+		else if (!(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)))
+		{
+			return;
+		}
+		else if (actorData.buttons[2] & GetBinding(BINDING_ITEM_SCREEN))
+		{
+			SetStyle(STYLE_TRICKSTER);
+		}
+		else if (actorData.buttons[2] & GetBinding(BINDING_MAP_SCREEN))
+		{
+			SetStyle(STYLE_SWORDMASTER);
+		}
+		else if (actorData.buttons[2] & GetBinding(BINDING_EQUIP_SCREEN))
+		{
+			SetStyle(STYLE_ROYALGUARD);
+		}
+		else if (actorData.buttons[2] & GetBinding(BINDING_FILE_SCREEN))
+		{
+			SetStyle(STYLE_GUNSLINGER);
+		}
+		else
+		{
+			execute = true;
+		}
+	}
+
+	if (!update)
+	{
+		return;
+	}
+
+	UpdateStyle(actorData, playerData);
+
+	if (actorData.newEntity == ENTITY_CLONE)
+	{
+		return;
+	}
+
+	IntroduceHUDPointers(return);
+
+	HUD_UpdateStyleIcon(CHAR_DANTE, actorData.newStyle);
 }
 
 
@@ -2042,7 +2209,15 @@ void StyleSwitchController(T & actorData)
 
 
 
-void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
+
+
+
+
+void MeleeWeaponSwitchControllerDante
+(
+	ActorDataDante & actorData,
+	PlayerData & playerData
+)
 {
 	if (actorData.newMeleeWeaponCount <= 1)
 	{
@@ -2054,21 +2229,21 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 		return;
 	}
 
-	auto player = actorData.newPlayer;
-	if (player >= MAX_PLAYER)
-	{
-		player = 0;
-	}
+	// auto player = actorData.newPlayer;
+	// if (player >= MAX_PLAYER)
+	// {
+	// 	player = 0;
+	// }
 
-	auto entity = actorData.newEntity;
-	if (entity >= MAX_ENTITY)
-	{
-		entity = 0;
-	}
+	// auto entity = actorData.newEntity;
+	// if (entity >= MAX_ENTITY)
+	// {
+	// 	entity = 0;
+	// }
 
-	auto & playerData = activeConfig.Actor.playerData[player][entity];
+	// auto & playerData = activeConfig.Actor.playerData[player][entity];
 
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[player];
+	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 	
 	bool update = false;
 
@@ -2127,11 +2302,11 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 		{
 			return;
 		}
-		else if
-		(
-			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA   )) &&
-			(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
-		)
+		else if (!(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)))
+		{
+			return;
+		}
+		else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
 		{
 			Forward();
 		}
@@ -2188,7 +2363,11 @@ void MeleeWeaponSwitchControllerDante(ActorDataDante & actorData)
 	func_1EB0E0(actorData, 4);
 }
 
-void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
+void RangedWeaponSwitchControllerDante
+(
+	ActorDataDante & actorData,
+	PlayerData & playerData
+)
 {
 	if (actorData.newRangedWeaponCount <= 1)
 	{
@@ -2200,21 +2379,21 @@ void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
 		return;
 	}
 
-	auto player = actorData.newPlayer;
-	if (player >= MAX_PLAYER)
-	{
-		player = 0;
-	}
+	// auto player = actorData.newPlayer;
+	// if (player >= MAX_PLAYER)
+	// {
+	// 	player = 0;
+	// }
 
-	auto entity = actorData.newEntity;
-	if (entity >= MAX_ENTITY)
-	{
-		entity = 0;
-	}
+	// auto entity = actorData.newEntity;
+	// if (entity >= MAX_ENTITY)
+	// {
+	// 	entity = 0;
+	// }
 
-	auto & playerData = activeConfig.Actor.playerData[player][entity];
+	// auto & playerData = activeConfig.Actor.playerData[player][entity];
 
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[player];
+	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 	
 	bool update = false;
 
@@ -2308,8 +2487,25 @@ void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
 	func_1EB0E0(actorData, 4);
 }
 
-bool WeaponSwitchControllerDante(ActorDataDante & actorData)
+bool WeaponSwitchControllerDante(byte8 * baseAddr)
 {
+	if (!baseAddr)
+	{
+		return true;
+	}
+	else if (baseAddr == Actor_actorBaseAddr[0])
+	{
+		return true;
+	}
+	else if (baseAddr == Actor_actorBaseAddr[1])
+	{
+		return true;
+	}
+
+	auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
+
+	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
+
 	if (actorData.mode == ACTOR_MODE_MISSION_18)
 	{
 		return true;
@@ -2320,13 +2516,18 @@ bool WeaponSwitchControllerDante(ActorDataDante & actorData)
 		return false;
 	}
 
-	MeleeWeaponSwitchControllerDante (actorData);
-	RangedWeaponSwitchControllerDante(actorData);
+	StyleSwitchController            (actorData, playerData);
+	MeleeWeaponSwitchControllerDante (actorData, playerData);
+	RangedWeaponSwitchControllerDante(actorData, playerData);
 
 	return true;
 }
 
-void MeleeWeaponSwitchControllerVergil(ActorDataVergil & actorData)
+void MeleeWeaponSwitchControllerVergil
+(
+	ActorDataVergil & actorData,
+	PlayerData & playerData
+)
 {
 	if (actorData.newMeleeWeaponCount <= 1)
 	{
@@ -2338,21 +2539,21 @@ void MeleeWeaponSwitchControllerVergil(ActorDataVergil & actorData)
 		return;
 	}
 
-	auto player = actorData.newPlayer;
-	if (player >= MAX_PLAYER)
-	{
-		player = 0;
-	}
+	// auto player = actorData.newPlayer;
+	// if (player >= MAX_PLAYER)
+	// {
+	// 	player = 0;
+	// }
 
-	auto entity = actorData.newEntity;
-	if (entity >= MAX_ENTITY)
-	{
-		entity = 0;
-	}
+	// auto entity = actorData.newEntity;
+	// if (entity >= MAX_ENTITY)
+	// {
+	// 	entity = 0;
+	// }
 
-	auto & playerData = activeConfig.Actor.playerData[player][entity];
+	// auto & playerData = activeConfig.Actor.playerData[player][entity];
 
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[player];
+	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 	
 	bool update = false;
 
@@ -2481,8 +2682,31 @@ void MeleeWeaponSwitchControllerVergil(ActorDataVergil & actorData)
 	func_1EB0E0(actorData, 4);
 }
 
-bool WeaponSwitchControllerVergil(ActorDataVergil & actorData)
+
+
+
+
+
+
+bool WeaponSwitchControllerVergil(byte8 * baseAddr)
 {
+	if (!baseAddr)
+	{
+		return true;
+	}
+	else if (baseAddr == Actor_actorBaseAddr[0])
+	{
+		return true;
+	}
+	else if (baseAddr == Actor_actorBaseAddr[1])
+	{
+		return true;
+	}
+
+	auto & actorData = *reinterpret_cast<ActorDataVergil *>(baseAddr);
+
+	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
+
 	if (actorData.mode == ACTOR_MODE_MISSION_18)
 	{
 		return true;
@@ -2493,10 +2717,42 @@ bool WeaponSwitchControllerVergil(ActorDataVergil & actorData)
 		return false;
 	}
 
-	MeleeWeaponSwitchControllerVergil(actorData);
+	StyleSwitchController            (actorData, playerData);
+	MeleeWeaponSwitchControllerVergil (actorData, playerData);
 
 	return true;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// bool WeaponSwitchControllerVergil(ActorDataVergil & actorData)
+// {
+// 	if (actorData.mode == ACTOR_MODE_MISSION_18)
+// 	{
+// 		return true;
+// 	}
+
+// 	if (actorData.var_3F19 == true)
+// 	{
+// 		return false;
+// 	}
+
+// 	MeleeWeaponSwitchControllerVergil(actorData);
+
+// 	return true;
+// }
 
 
 

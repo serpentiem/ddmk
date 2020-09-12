@@ -54,7 +54,7 @@ void SceneMissionStart()
 
 
 
-	memcpy(&activeConfig, &queuedConfig, sizeof(Config));
+	//memcpy(&activeConfig, &queuedConfig, sizeof(Config));
 
 
 

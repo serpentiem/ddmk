@@ -15,6 +15,13 @@ export struct Config
 		bool enable = true;
 		PlayerData playerData[MAX_PLAYER][MAX_ENTITY] = {};
 		uint8 playerCount = 1;
+		bool enableQuicksilver[MAX_PLAYER] =
+		{
+			true,
+			true,
+			true,
+			true,
+		};
 		bool enableDoppelganger[MAX_PLAYER] = {};
 	}
 	Actor;
