@@ -599,52 +599,52 @@ void Arcade()
 	if (ImGui::CollapsingHeader("Arcade"))
 	{
 		ImGui::Text("");
-		GUI_Checkbox("Enable", activeConfig.Arcade.enable);
+		GUI_Checkbox("Enable", queuedConfig.Arcade.enable);
 		ImGui::Text("");
 		GUI_Button("Reset");
 		ImGui::Text("");
 
 		ImGui::PushItemWidth(200);
 
-		GUI_Combo("Mission", Arcade_missionNames, activeConfig.Arcade.mission, ImGuiComboFlags_HeightLargest);
+		GUI_Combo("Mission", Arcade_missionNames, queuedConfig.Arcade.mission, ImGuiComboFlags_HeightLargest);
 
-		if ((activeConfig.Arcade.mission >= 1) && (activeConfig.Arcade.mission <= 20))
+		if ((queuedConfig.Arcade.mission >= 1) && (queuedConfig.Arcade.mission <= 20))
 		{
-			GUI_ComboMap("Mode", Arcade_modeNames, Arcade_modeMap, Arcade_modeIndex, activeConfig.Arcade.mode);
+			GUI_ComboMap("Mode", Arcade_modeNames, Arcade_modeMap, Arcade_modeIndex, queuedConfig.Arcade.mode);
 			if constexpr (debug)
 			{
-				ImGui::Text("value %u", activeConfig.Arcade.mode);
+				ImGui::Text("value %u", queuedConfig.Arcade.mode);
 				ImGui::Text("index %u", Arcade_modeIndex);
 			}
-			GUI_InputDefault("Room", activeConfig.Arcade.room, defaultConfig.Arcade.room);
+			GUI_InputDefault("Room", queuedConfig.Arcade.room, defaultConfig.Arcade.room);
 			ImGui::SameLine();
-			GUI_Checkbox("Ignore", activeConfig.Arcade.ignoreRoom);
-			GUI_InputDefault("Position", activeConfig.Arcade.position, defaultConfig.Arcade.position);
+			GUI_Checkbox("Ignore", queuedConfig.Arcade.ignoreRoom);
+			GUI_InputDefault("Position", queuedConfig.Arcade.position, defaultConfig.Arcade.position);
 			ImGui::SameLine();
-			GUI_Checkbox("Ignore", activeConfig.Arcade.ignorePosition);
+			GUI_Checkbox("Ignore", queuedConfig.Arcade.ignorePosition);
 		}
 
-		if (activeConfig.Arcade.mission == 21)
+		if (queuedConfig.Arcade.mission == 21)
 		{
-			GUI_Combo("Floor", Arcade_floorNames, activeConfig.Arcade.floor, ImGuiComboFlags_HeightLargest);
+			GUI_Combo("Floor", Arcade_floorNames, queuedConfig.Arcade.floor, ImGuiComboFlags_HeightLargest);
 		}
 
-		if (activeConfig.Arcade.mission > 0)
+		if (queuedConfig.Arcade.mission > 0)
 		{
-			GUI_InputDefault<float32>("Hit Points"  , activeConfig.Arcade.hitPoints  , defaultConfig.Arcade.hitPoints  , 1000, "%.0f");
-			GUI_InputDefault<float32>("Magic Points", activeConfig.Arcade.magicPoints, defaultConfig.Arcade.magicPoints, 1000, "%.0f");
+			GUI_InputDefault<float32>("Hit Points"  , queuedConfig.Arcade.hitPoints  , defaultConfig.Arcade.hitPoints  , 1000, "%.0f");
+			GUI_InputDefault<float32>("Magic Points", queuedConfig.Arcade.magicPoints, defaultConfig.Arcade.magicPoints, 1000, "%.0f");
 		}
 
-		GUI_Combo("Character", Arcade_characterNames, activeConfig.Arcade.character);
-		GUI_InputDefault("Costume", activeConfig.Arcade.costume, defaultConfig.Arcade.costume);
+		GUI_Combo("Character", Arcade_characterNames, queuedConfig.Arcade.character);
+		GUI_InputDefault("Costume", queuedConfig.Arcade.costume, defaultConfig.Arcade.costume);
 
-		if ((activeConfig.Arcade.mission > 0) && (activeConfig.Arcade.character == CHAR_DANTE))
+		if ((queuedConfig.Arcade.mission > 0) && (queuedConfig.Arcade.character == CHAR_DANTE))
 		{
-			GUI_Combo("Style", Arcade_styleNames, activeConfig.Arcade.style);
-			GUI_ComboMap("Melee Weapon 1" , Arcade_meleeWeaponNames , Arcade_meleeWeaponMap , Arcade_meleeWeaponIndex [0], activeConfig.Arcade.meleeWeapons [0]);
-			GUI_ComboMap("Melee Weapon 2" , Arcade_meleeWeaponNames , Arcade_meleeWeaponMap , Arcade_meleeWeaponIndex [1], activeConfig.Arcade.meleeWeapons [1]);
-			GUI_ComboMap("Ranged Weapon 1", Arcade_rangedWeaponNames, Arcade_rangedWeaponMap, Arcade_rangedWeaponIndex[0], activeConfig.Arcade.rangedWeapons[0]);
-			GUI_ComboMap("Ranged Weapon 2", Arcade_rangedWeaponNames, Arcade_rangedWeaponMap, Arcade_rangedWeaponIndex[1], activeConfig.Arcade.rangedWeapons[1]);
+			GUI_Combo("Style", Arcade_styleNames, queuedConfig.Arcade.style);
+			GUI_ComboMap("Melee Weapon 1" , Arcade_meleeWeaponNames , Arcade_meleeWeaponMap , Arcade_meleeWeaponIndex [0], queuedConfig.Arcade.meleeWeapons [0]);
+			GUI_ComboMap("Melee Weapon 2" , Arcade_meleeWeaponNames , Arcade_meleeWeaponMap , Arcade_meleeWeaponIndex [1], queuedConfig.Arcade.meleeWeapons [1]);
+			GUI_ComboMap("Ranged Weapon 1", Arcade_rangedWeaponNames, Arcade_rangedWeaponMap, Arcade_rangedWeaponIndex[0], queuedConfig.Arcade.rangedWeapons[0]);
+			GUI_ComboMap("Ranged Weapon 2", Arcade_rangedWeaponNames, Arcade_rangedWeaponMap, Arcade_rangedWeaponIndex[1], queuedConfig.Arcade.rangedWeapons[1]);
 		}
 
 		ImGui::Text("");

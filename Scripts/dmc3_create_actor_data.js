@@ -194,10 +194,10 @@ var items =
 	
 	[ "weaponTimers[5]"                     , "float32"                 , 0x64F4                           ],
 
-	[ "meleeWeaponSwitchTimeout"            , "float32"                 , 0x6508, CHAR_DANTE               ],
-	[ "rangedWeaponSwitchTimeout"           , "float32"                 , 0x650C, CHAR_DANTE               ],
-	[ "meleeWeaponSwitchForwardTimeout"     , "float32"                 , 0x6508, CHAR_VERGIL              ],
-	[ "meleeWeaponSwitchBackTimeout"        , "float32"                 , 0x650C, CHAR_VERGIL              ],
+	[ "meleeWeaponSwitchTimeout"            , "float32"                 , 0x6508,                ],
+	[ "rangedWeaponSwitchTimeout"           , "float32"                 , 0x650C,                ],
+	// [ "meleeWeaponSwitchForwardTimeout"     , "float32"                 , 0x6508, CHAR_VERGIL              ],
+	// [ "meleeWeaponSwitchBackTimeout"        , "float32"                 , 0x650C, CHAR_VERGIL              ],
 	
 	[ "styleRank"                           , "uint32"                  , 0x6510                           ],
 	[ "styleMeter"                          , "float32"                 , 0x6514                           ],

@@ -19,46 +19,83 @@ import ModuleName(Event);
 
 export uint8 g_scene = 0;
 
+
+void SetScene
+(
+	uint8 scene,
+	bool updateConfig = false
+)
+{
+	g_scene = scene;
+
+	if (updateConfig)
+	{
+		memcpy(&activeConfig, &queuedConfig, sizeof(Config));
+	}
+}
+
+
+
+
+
+
+
+
+
+
 void SceneMain()
 {
 	LogFunction();
-	g_scene = SCENE_MAIN;
+
+	SetScene(SCENE_MAIN, true);
+
+	// g_scene = SCENE_MAIN;
+
+	// memcpy(&activeConfig, &queuedConfig, sizeof(Config));
+
 	Actor_SceneMain();
 }
 
 void SceneMissionSelect()
 {
 	LogFunction();
-	g_scene = SCENE_MISSION_SELECT;
+
+	SetScene(SCENE_MISSION_SELECT, true);
+
+	// g_scene = SCENE_MISSION_SELECT;
+
+	// memcpy(&activeConfig, &queuedConfig, sizeof(Config));
+
 	Actor_SceneMissionSelect();
 }
 
 void SceneGame()
 {
 	LogFunction();
-	g_scene = SCENE_GAME;
+
+
+	SetScene(SCENE_GAME);
+
+	//g_scene = SCENE_GAME;
 }
 
 void SceneCutscene()
 {
 	LogFunction();
-	g_scene = SCENE_CUTSCENE;
+	SetScene(SCENE_CUTSCENE);
+	//g_scene = SCENE_CUTSCENE;
 	//Event_ToggleSkipCutscenes(true);
 }
 
 void SceneMissionStart()
 {
 	LogFunction();
-	g_scene = SCENE_MISSION_START;
 
+	SetScene(SCENE_MISSION_START, true);
 
+	// g_scene = SCENE_MISSION_START;
 
-
-	//memcpy(&activeConfig, &queuedConfig, sizeof(Config));
-
-
-
-
+	// memcpy(&activeConfig, &queuedConfig, sizeof(Config));
 
 	Actor_SceneMissionStart();
 }
@@ -66,8 +103,12 @@ void SceneMissionStart()
 void SceneMissionResult()
 {
 	LogFunction();
-	g_scene = SCENE_MISSION_RESULT;
-	//Event_ToggleSkipCutscenes(false);
+
+	SetScene(SCENE_MISSION_RESULT);
+
+
+
+	//g_scene = SCENE_MISSION_RESULT;
 }
 
 export void Scene_Init()

@@ -97,6 +97,7 @@ enum STYLE_
 	STYLE_DOPPELGANGER,
 	STYLE_DARK_SLAYER = 2,
 	MAX_STYLE = 6,
+	//STYLE_VOID = 255,
 };
 
 enum WEAPON_
@@ -2099,7 +2100,8 @@ struct ActorData
 	uint32 weaponLevels[5]; // 0x64DC
 	_(4);
 	float32 weaponTimers[5]; // 0x64F4
-	_(8);
+	float32 meleeWeaponSwitchTimeout; // 0x6508
+	float32 rangedWeaponSwitchTimeout; // 0x650C
 	uint32 styleRank; // 0x6510
 	float32 styleMeter; // 0x6514
 	_(348);
@@ -2552,7 +2554,8 @@ struct ActorDataBob
 	uint32 weaponLevels[5]; // 0x64DC
 	_(4);
 	float32 weaponTimers[5]; // 0x64F4
-	_(8);
+	float32 meleeWeaponSwitchTimeout; // 0x6508
+	float32 rangedWeaponSwitchTimeout; // 0x650C
 	uint32 styleRank; // 0x6510
 	float32 styleMeter; // 0x6514
 	_(348);
@@ -2763,7 +2766,8 @@ struct ActorDataLady
 	uint32 weaponLevels[5]; // 0x64DC
 	_(4);
 	float32 weaponTimers[5]; // 0x64F4
-	_(8);
+	float32 meleeWeaponSwitchTimeout; // 0x6508
+	float32 rangedWeaponSwitchTimeout; // 0x650C
 	uint32 styleRank; // 0x6510
 	float32 styleMeter; // 0x6514
 	_(348);
@@ -2982,8 +2986,8 @@ struct ActorDataVergil
 	uint32 weaponLevels[5]; // 0x64DC
 	_(4);
 	float32 weaponTimers[5]; // 0x64F4
-	float32 meleeWeaponSwitchForwardTimeout; // 0x6508
-	float32 meleeWeaponSwitchBackTimeout; // 0x650C
+	float32 meleeWeaponSwitchTimeout; // 0x6508
+	float32 rangedWeaponSwitchTimeout; // 0x650C
 	uint32 styleRank; // 0x6510
 	float32 styleMeter; // 0x6514
 	_(348);
@@ -3155,6 +3159,8 @@ static_assert(offsetof(ActorData, weaponData) == 0x64A0);
 static_assert(offsetof(ActorData, weaponStatus) == 0x64C8);
 static_assert(offsetof(ActorData, weaponLevels) == 0x64DC);
 static_assert(offsetof(ActorData, weaponTimers) == 0x64F4);
+static_assert(offsetof(ActorData, meleeWeaponSwitchTimeout) == 0x6508);
+static_assert(offsetof(ActorData, rangedWeaponSwitchTimeout) == 0x650C);
 static_assert(offsetof(ActorData, styleRank) == 0x6510);
 static_assert(offsetof(ActorData, styleMeter) == 0x6514);
 static_assert(offsetof(ActorData, inputData) == 0x6674);
@@ -3453,6 +3459,8 @@ static_assert(offsetof(ActorDataBob, weaponData) == 0x64A0);
 static_assert(offsetof(ActorDataBob, weaponStatus) == 0x64C8);
 static_assert(offsetof(ActorDataBob, weaponLevels) == 0x64DC);
 static_assert(offsetof(ActorDataBob, weaponTimers) == 0x64F4);
+static_assert(offsetof(ActorDataBob, meleeWeaponSwitchTimeout) == 0x6508);
+static_assert(offsetof(ActorDataBob, rangedWeaponSwitchTimeout) == 0x650C);
 static_assert(offsetof(ActorDataBob, styleRank) == 0x6510);
 static_assert(offsetof(ActorDataBob, styleMeter) == 0x6514);
 static_assert(offsetof(ActorDataBob, inputData) == 0x6674);
@@ -3590,6 +3598,8 @@ static_assert(offsetof(ActorDataLady, weaponData) == 0x64A0);
 static_assert(offsetof(ActorDataLady, weaponStatus) == 0x64C8);
 static_assert(offsetof(ActorDataLady, weaponLevels) == 0x64DC);
 static_assert(offsetof(ActorDataLady, weaponTimers) == 0x64F4);
+static_assert(offsetof(ActorDataLady, meleeWeaponSwitchTimeout) == 0x6508);
+static_assert(offsetof(ActorDataLady, rangedWeaponSwitchTimeout) == 0x650C);
 static_assert(offsetof(ActorDataLady, styleRank) == 0x6510);
 static_assert(offsetof(ActorDataLady, styleMeter) == 0x6514);
 static_assert(offsetof(ActorDataLady, inputData) == 0x6674);
@@ -3733,8 +3743,8 @@ static_assert(offsetof(ActorDataVergil, weaponData) == 0x64A0);
 static_assert(offsetof(ActorDataVergil, weaponStatus) == 0x64C8);
 static_assert(offsetof(ActorDataVergil, weaponLevels) == 0x64DC);
 static_assert(offsetof(ActorDataVergil, weaponTimers) == 0x64F4);
-static_assert(offsetof(ActorDataVergil, meleeWeaponSwitchForwardTimeout) == 0x6508);
-static_assert(offsetof(ActorDataVergil, meleeWeaponSwitchBackTimeout) == 0x650C);
+static_assert(offsetof(ActorDataVergil, meleeWeaponSwitchTimeout) == 0x6508);
+static_assert(offsetof(ActorDataVergil, rangedWeaponSwitchTimeout) == 0x650C);
 static_assert(offsetof(ActorDataVergil, styleRank) == 0x6510);
 static_assert(offsetof(ActorDataVergil, styleMeter) == 0x6514);
 static_assert(offsetof(ActorDataVergil, inputData) == 0x6674);

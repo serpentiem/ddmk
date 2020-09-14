@@ -1558,7 +1558,24 @@ void UpdateMotionArchives(T & actorData)
 	}
 }
 
+template <typename T>
+void InitStyle
+(
+	T & actorData,
+	PlayerData & playerData
+)
+{
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+		actorData.style = STYLE_TRICKSTER;
+	}
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+	{
+		actorData.style = STYLE_DARK_SLAYER;
+	}
 
+	actorData.newStyle = playerData.style;
+}
 
 template <typename T>
 void UpdateStyle
@@ -1567,18 +1584,7 @@ void UpdateStyle
 	PlayerData & playerData
 )
 {
-	auto enableQuicksilver = activeConfig.Actor.enableQuicksilver[actorData.newPlayer];
-
-	auto & style = actorData.newStyle;
-
-	if
-	(
-		enableQuicksilver &&
-		(actorData.style == style)
-	)
-	{
-		style = STYLE_QUICKSILVER;
-	}
+	auto style = actorData.newStyle;
 
 	playerData.style = style;
 
@@ -1603,9 +1609,6 @@ void UpdateStyle
 		}
 	}
 }
-
-
-
 
 
 
@@ -1854,6 +1857,19 @@ byte8 * CreateActor
 
 	UpdateMotionArchives(actorData);
 
+	InitStyle(actorData, playerData);
+
+	UpdateStyle(actorData, playerData);
+
+	if
+	(
+		(player == 0) &&
+		(entity == ENTITY_MAIN)
+	)
+	{
+		HUD_UpdateStyleIcon(playerData.character, playerData.style);
+	}
+
 	InitWeapons(actorData, playerData);
 
 	UpdateWeapons(actorData, playerData);
@@ -2087,6 +2103,10 @@ void ToggleIsWeaponReady(bool enable)
 
 
 
+
+
+
+
 template <typename T>
 void StyleSwitchController
 (
@@ -2094,6 +2114,7 @@ void StyleSwitchController
 	PlayerData & playerData
 )
 {
+	auto & enableQuicksilver  = activeConfig.Actor.enableQuicksilver [actorData.newPlayer];
 	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 
 	auto & execute = actorData.newExecuteStyleSwitch;
@@ -2109,82 +2130,78 @@ void StyleSwitchController
 
 		execute = false;
 
+		if (actorData.newStyle == style)
+		{
+			if (actorData.newEntity == ENTITY_CLONE)
+			{
+				return;
+			}
+
+			if (!enableQuicksilver)
+			{
+				return;
+			}
+
+			style = STYLE_QUICKSILVER;
+		}
+
 		actorData.newStyle = style;
 
 		update = true;
 	};
 
-	if (actorData.newEntity == ENTITY_MAIN)
+	if
+	(
+		enableDoppelganger &&
+		(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	)
 	{
-		if
-		(
-			enableDoppelganger &&
-			(actorData.buttons[0] & GetBinding(BINDING_CHANGE_TARGET )) &&
-			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-		)
+		if (actorData.newEntity == ENTITY_MAIN)
 		{
-			SetStyle(STYLE_DOPPELGANGER);
-		}
-		else if
-		(
-			enableDoppelganger &&
-			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-		)
-		{
+			if (actorData.buttons[0] & GetBinding(BINDING_CHANGE_TARGET))
+			{
+				SetStyle(STYLE_DOPPELGANGER);
+
+				goto sect0;
+			}
+			else
+			{
+				execute = true;
+			}
+
 			return;
-		}
-		else if (actorData.buttons[2] & GetBinding(BINDING_ITEM_SCREEN))
-		{
-			SetStyle(STYLE_TRICKSTER);
-		}
-		else if (actorData.buttons[2] & GetBinding(BINDING_MAP_SCREEN))
-		{
-			SetStyle(STYLE_SWORDMASTER);
-		}
-		else if (actorData.buttons[2] & GetBinding(BINDING_EQUIP_SCREEN))
-		{
-			SetStyle(STYLE_ROYALGUARD);
-		}
-		else if (actorData.buttons[2] & GetBinding(BINDING_FILE_SCREEN))
-		{
-			SetStyle(STYLE_GUNSLINGER);
-		}
-		else
-		{
-			execute = true;
 		}
 	}
 	else
 	{
-		if (!enableDoppelganger)
+		if (actorData.newEntity == ENTITY_CLONE)
 		{
 			return;
-		}
-		else if (!(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)))
-		{
-			return;
-		}
-		else if (actorData.buttons[2] & GetBinding(BINDING_ITEM_SCREEN))
-		{
-			SetStyle(STYLE_TRICKSTER);
-		}
-		else if (actorData.buttons[2] & GetBinding(BINDING_MAP_SCREEN))
-		{
-			SetStyle(STYLE_SWORDMASTER);
-		}
-		else if (actorData.buttons[2] & GetBinding(BINDING_EQUIP_SCREEN))
-		{
-			SetStyle(STYLE_ROYALGUARD);
-		}
-		else if (actorData.buttons[2] & GetBinding(BINDING_FILE_SCREEN))
-		{
-			SetStyle(STYLE_GUNSLINGER);
-		}
-		else
-		{
-			execute = true;
 		}
 	}
+
+	if (actorData.buttons[2] & GetBinding(BINDING_ITEM_SCREEN))
+	{
+		SetStyle(STYLE_TRICKSTER);
+	}
+	else if (actorData.buttons[2] & GetBinding(BINDING_MAP_SCREEN))
+	{
+		SetStyle(STYLE_SWORDMASTER);
+	}
+	else if (actorData.buttons[2] & GetBinding(BINDING_EQUIP_SCREEN))
+	{
+		SetStyle(STYLE_ROYALGUARD);
+	}
+	else if (actorData.buttons[2] & GetBinding(BINDING_FILE_SCREEN))
+	{
+		SetStyle(STYLE_GUNSLINGER);
+	}
+	else
+	{
+		execute = true;
+	}
+
+	sect0:;
 
 	if (!update)
 	{
@@ -2193,7 +2210,12 @@ void StyleSwitchController
 
 	UpdateStyle(actorData, playerData);
 
-	if (actorData.newEntity == ENTITY_CLONE)
+	if (actorData.newPlayer != 0)
+	{
+		return;
+	}
+
+	if (actorData.newEntity != ENTITY_MAIN)
 	{
 		return;
 	}
@@ -2203,19 +2225,10 @@ void StyleSwitchController
 	HUD_UpdateStyleIcon(CHAR_DANTE, actorData.newStyle);
 }
 
-
-
-
-
-
-
-
-
-
-
-void MeleeWeaponSwitchControllerDante
+template <typename T>
+void MeleeWeaponSwitchController
 (
-	ActorDataDante & actorData,
+	T & actorData,
 	PlayerData & playerData
 )
 {
@@ -2228,20 +2241,6 @@ void MeleeWeaponSwitchControllerDante
 	{
 		return;
 	}
-
-	// auto player = actorData.newPlayer;
-	// if (player >= MAX_PLAYER)
-	// {
-	// 	player = 0;
-	// }
-
-	// auto entity = actorData.newEntity;
-	// if (entity >= MAX_ENTITY)
-	// {
-	// 	entity = 0;
-	// }
-
-	// auto & playerData = activeConfig.Actor.playerData[player][entity];
 
 	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 	
@@ -2273,42 +2272,42 @@ void MeleeWeaponSwitchControllerDante
 		update = true;
 	};
 
-	if (actorData.newEntity == ENTITY_MAIN)
+	if
+	(
+		enableDoppelganger &&
+		(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	)
 	{
-		if
-		(
-			enableDoppelganger &&
-			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-		)
+		if (actorData.newEntity == ENTITY_MAIN)
 		{
 			return;
-		}
-		else if
-		(
-			(actorData.buttons[0] & GetBinding(BINDING_TAUNT            )) &&
-			(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
-		)
-		{
-			Back();
-		}
-		else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
-		{
-			Forward();
 		}
 	}
 	else
 	{
-		if (!enableDoppelganger)
+		if (actorData.newEntity == ENTITY_CLONE)
 		{
 			return;
 		}
-		else if (!(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)))
+	}
+
+	if
+	(
+		(actorData.buttons[0] & GetBinding(BINDING_TAUNT            )) &&
+		(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+	)
+	{
+		Back();
+	}
+	else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+	{
+		Forward();
+	}
+	else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
+	{
+		if constexpr (TypeMatch<T, ActorDataVergil>::value)
 		{
-			return;
-		}
-		else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
-		{
-			Forward();
+			Back();
 		}
 	}
 
@@ -2323,33 +2322,74 @@ void MeleeWeaponSwitchControllerDante
 
 	auto newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
 
-	if (actorData.devil)
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		if (actorData.sparda)
+		if (actorData.devil)
 		{
-			actorData.queuedModelIndex       = 1;
-			actorData.activeModelIndexMirror = 1;
-			actorData.activeDevil            = DEVIL_SPARDA;
-			actorData.airRaid                = 0;
-		}
-		else
-		{
-			auto weapon = newMeleeWeapon;
-			if (weapon > WEAPON_BEOWULF_DANTE)
+			if (actorData.sparda)
 			{
-				weapon = WEAPON_REBELLION;
+				actorData.queuedModelIndex       = 1;
+				actorData.activeModelIndexMirror = 1;
+				actorData.activeDevil            = DEVIL_SPARDA;
+				actorData.airRaid                = 0;
 			}
+			else
+			{
+				auto weapon = newMeleeWeapon;
+				if (weapon > WEAPON_BEOWULF_DANTE)
+				{
+					weapon = WEAPON_REBELLION;
+				}
 
-			actorData.queuedModelIndex       = (1 + weapon);
-			actorData.activeModelIndexMirror = (1 + weapon);
-			actorData.activeDevil            = static_cast<uint32>(weaponDevilIds[weapon]);
-			actorData.airRaid                = 0;
+				actorData.queuedModelIndex       = (1 + weapon);
+				actorData.activeModelIndexMirror = (1 + weapon);
+				actorData.activeDevil            = static_cast<uint32>(weaponDevilIds[weapon]);
+				actorData.airRaid                = 0;
 
-			func_1F97F0(actorData, true);
+				func_1F97F0(actorData, true);
+			}
+		}
+	}
+	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+	{
+		if (actorData.devil)
+		{
+			if (actorData.neroAngelo)
+			{
+				if (actorData.queuedMeleeWeaponIndex == 2)
+				{
+					actorData.queuedMeleeWeaponIndex = 0;
+				}
+
+				actorData.queuedModelIndex       = 1;
+				actorData.activeModelIndexMirror = 1;
+				actorData.activeDevil            = DEVIL_NERO_ANGELO;
+				actorData.airRaid                = 0;
+			}
+			else
+			{
+				auto weapon = newMeleeWeapon;
+				if ((weapon < WEAPON_YAMATO_VERGIL) || (weapon > WEAPON_FORCE_EDGE))
+				{
+					weapon = WEAPON_YAMATO_VERGIL;
+				}
+
+				actorData.queuedModelIndex       = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
+				actorData.activeModelIndexMirror = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
+				actorData.activeDevil            = static_cast<uint32>(weaponDevilIds[weapon]);
+				actorData.airRaid                = 0;
+
+				func_1F97F0(actorData, true);
+			}
 		}
 	}
 
-	if (actorData.newEntity == ENTITY_CLONE)
+	if (actorData.newPlayer != 0)
+	{
+		return;
+	}
+
+	if (actorData.newEntity != ENTITY_MAIN)
 	{
 		return;
 	}
@@ -2363,9 +2403,10 @@ void MeleeWeaponSwitchControllerDante
 	func_1EB0E0(actorData, 4);
 }
 
-void RangedWeaponSwitchControllerDante
+template <typename T>
+void RangedWeaponSwitchController
 (
-	ActorDataDante & actorData,
+	T & actorData,
 	PlayerData & playerData
 )
 {
@@ -2378,20 +2419,6 @@ void RangedWeaponSwitchControllerDante
 	{
 		return;
 	}
-
-	// auto player = actorData.newPlayer;
-	// if (player >= MAX_PLAYER)
-	// {
-	// 	player = 0;
-	// }
-
-	// auto entity = actorData.newEntity;
-	// if (entity >= MAX_ENTITY)
-	// {
-	// 	entity = 0;
-	// }
-
-	// auto & playerData = activeConfig.Actor.playerData[player][entity];
 
 	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 	
@@ -2423,43 +2450,36 @@ void RangedWeaponSwitchControllerDante
 		update = true;
 	};
 
-	if (actorData.newEntity == ENTITY_MAIN)
+	if
+	(
+		enableDoppelganger &&
+		(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	)
 	{
-		if
-		(
-			enableDoppelganger &&
-			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-		)
+		if (actorData.newEntity == ENTITY_MAIN)
 		{
 			return;
-		}
-		else if
-		(
-			(actorData.buttons[0] & GetBinding(BINDING_TAUNT     )) &&
-			(actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
-		)
-		{
-			Back();
-		}
-		else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
-		{
-			Forward();
 		}
 	}
 	else
 	{
-		if (!enableDoppelganger)
+		if (actorData.newEntity == ENTITY_CLONE)
 		{
 			return;
 		}
-		else if
-		(
-			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)) &&
-			(actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN    ))
-		)
-		{
-			Forward();
-		}
+	}
+
+	if
+	(
+		(actorData.buttons[0] & GetBinding(BINDING_TAUNT     )) &&
+		(actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
+	)
+	{
+		Back();
+	}
+	else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
+	{
+		Forward();
 	}
 
 	if (!update)
@@ -2473,7 +2493,12 @@ void RangedWeaponSwitchControllerDante
 
 	auto newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
 
-	if (actorData.newEntity == ENTITY_CLONE)
+	if (actorData.newPlayer != 0)
+	{
+		return;
+	}
+
+	if (actorData.newEntity != ENTITY_MAIN)
 	{
 		return;
 	}
@@ -2482,213 +2507,13 @@ void RangedWeaponSwitchControllerDante
 
 	HUD_UpdateWeaponIcon(HUD_BOTTOM_RANGED_WEAPON_1, newRangedWeapon);
 
-	func_280120(hudBottom, 0, 0); // @Todo: Enums.
-
-	func_1EB0E0(actorData, 4);
-}
-
-bool WeaponSwitchControllerDante(byte8 * baseAddr)
-{
-	if (!baseAddr)
-	{
-		return true;
-	}
-	else if (baseAddr == Actor_actorBaseAddr[0])
-	{
-		return true;
-	}
-	else if (baseAddr == Actor_actorBaseAddr[1])
-	{
-		return true;
-	}
-
-	auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
-
-	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
-
-	if (actorData.mode == ACTOR_MODE_MISSION_18)
-	{
-		return true;
-	}
-
-	if (actorData.var_3F19 == true)
-	{
-		return false;
-	}
-
-	StyleSwitchController            (actorData, playerData);
-	MeleeWeaponSwitchControllerDante (actorData, playerData);
-	RangedWeaponSwitchControllerDante(actorData, playerData);
-
-	return true;
-}
-
-void MeleeWeaponSwitchControllerVergil
-(
-	ActorDataVergil & actorData,
-	PlayerData & playerData
-)
-{
-	if (actorData.newMeleeWeaponCount <= 1)
-	{
-		return;
-	}
-
-	if (0 < actorData.meleeWeaponSwitchForwardTimeout)
-	{
-		return;
-	}
-
-	// auto player = actorData.newPlayer;
-	// if (player >= MAX_PLAYER)
-	// {
-	// 	player = 0;
-	// }
-
-	// auto entity = actorData.newEntity;
-	// if (entity >= MAX_ENTITY)
-	// {
-	// 	entity = 0;
-	// }
-
-	// auto & playerData = activeConfig.Actor.playerData[player][entity];
-
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
-	
-	bool update = false;
-
-	auto Forward = [&]()
-	{
-		if (actorData.newMeleeWeaponIndex == (actorData.newMeleeWeaponCount - 1))
-		{
-			actorData.newMeleeWeaponIndex = 0;
-		}
-		else
-		{
-			actorData.newMeleeWeaponIndex++;
-		}
-		update = true;
-	};
-
-	auto Back = [&]()
-	{
-		if (actorData.newMeleeWeaponIndex == 0)
-		{
-			actorData.newMeleeWeaponIndex = (actorData.newMeleeWeaponCount - 1);
-		}
-		else
-		{
-			actorData.newMeleeWeaponIndex--;
-		}
-		update = true;
-	};
-
-	if (actorData.newEntity == ENTITY_MAIN)
-	{
-		if
-		(
-			enableDoppelganger &&
-			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-		)
-		{
-			return;
-		}
-		else if
-		(
-			(actorData.buttons[0] & GetBinding(BINDING_TAUNT            )) &&
-			(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
-		)
-		{
-			Back();
-		}
-		else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
-		{
-			Forward();
-		}
-		else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
-		{
-			Back();
-		}
-	}
-	else
-	{
-		if (!enableDoppelganger)
-		{
-			return;
-		}
-		else if
-		(
-			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA   )) &&
-			(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
-		)
-		{
-			Forward();
-		}
-	}
-
-	if (!update)
-	{
-		return;
-	}
-
-	actorData.meleeWeaponSwitchForwardTimeout = activeConfig.weaponSwitchTimeout;
-
-	UpdateMeleeWeapons(actorData, playerData);
-
-	auto newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
-
-	if (actorData.devil)
-	{
-		if (actorData.neroAngelo)
-		{
-			if (actorData.queuedMeleeWeaponIndex == 2)
-			{
-				actorData.queuedMeleeWeaponIndex = 0;
-			}
-
-			actorData.queuedModelIndex       = 1;
-			actorData.activeModelIndexMirror = 1;
-			actorData.activeDevil            = DEVIL_NERO_ANGELO;
-			actorData.airRaid                = 0;
-		}
-		else
-		{
-			auto weapon = newMeleeWeapon;
-			if ((weapon < WEAPON_YAMATO_VERGIL) || (weapon > WEAPON_FORCE_EDGE))
-			{
-				weapon = WEAPON_YAMATO_VERGIL;
-			}
-
-			actorData.queuedModelIndex       = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
-			actorData.activeModelIndexMirror = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
-			actorData.activeDevil            = static_cast<uint32>(weaponDevilIds[weapon]);
-			actorData.airRaid                = 0;
-
-			func_1F97F0(actorData, true);
-		}
-	}
-
-	if (actorData.newEntity == ENTITY_CLONE)
-	{
-		return;
-	}
-
-	IntroduceHUDPointers(return);
-
-	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, newMeleeWeapon);
-
 	func_280120(hudBottom, 1, 0); // @Todo: Enums.
 
 	func_1EB0E0(actorData, 4);
 }
 
-
-
-
-
-
-
-bool WeaponSwitchControllerVergil(byte8 * baseAddr)
+template <typename T>
+bool WeaponSwitchController(byte8 * baseAddr)
 {
 	if (!baseAddr)
 	{
@@ -2703,7 +2528,7 @@ bool WeaponSwitchControllerVergil(byte8 * baseAddr)
 		return true;
 	}
 
-	auto & actorData = *reinterpret_cast<ActorDataVergil *>(baseAddr);
+	auto & actorData = *reinterpret_cast<T *>(baseAddr);
 
 	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
 
@@ -2717,11 +2542,59 @@ bool WeaponSwitchControllerVergil(byte8 * baseAddr)
 		return false;
 	}
 
-	StyleSwitchController            (actorData, playerData);
-	MeleeWeaponSwitchControllerVergil (actorData, playerData);
+	StyleSwitchController(actorData, playerData);
+
+	MeleeWeaponSwitchController(actorData, playerData);
+
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+		RangedWeaponSwitchController(actorData, playerData);
+	}
 
 	return true;
 }
+
+
+
+
+
+
+
+
+// bool WeaponSwitchControllerVergil(byte8 * baseAddr)
+// {
+// 	if (!baseAddr)
+// 	{
+// 		return true;
+// 	}
+// 	else if (baseAddr == Actor_actorBaseAddr[0])
+// 	{
+// 		return true;
+// 	}
+// 	else if (baseAddr == Actor_actorBaseAddr[1])
+// 	{
+// 		return true;
+// 	}
+
+// 	auto & actorData = *reinterpret_cast<ActorDataVergil *>(baseAddr);
+
+// 	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
+
+// 	if (actorData.mode == ACTOR_MODE_MISSION_18)
+// 	{
+// 		return true;
+// 	}
+
+// 	if (actorData.var_3F19 == true)
+// 	{
+// 		return false;
+// 	}
+
+// 	StyleSwitchController            (actorData, playerData);
+// 	MeleeWeaponSwitchControllerVergil (actorData, playerData);
+
+// 	return true;
+// }
 
 
 
@@ -5668,6 +5541,18 @@ export void Actor_Init()
 
 
 
+	// Disable Menu Controller
+	Write<uint8>((appBaseAddr + 0x23B111), 0);
+	Write<uint8>((appBaseAddr + 0x23B15E), 0);
+	Write<uint8>((appBaseAddr + 0x23B1A2), 0);
+	Write<uint8>((appBaseAddr + 0x23B1E6), 0);
+
+
+	// @Todo: Update Style Icon during actor init.
+	// if player 0 and entity main
+
+
+
 	//// @Todo: Create function.
 	//for_all(uint8, player, MAX_PLAYER){
 	//for_all(uint8, entity, MAX_ENTITY)
@@ -5757,7 +5642,7 @@ export void Actor_Init()
 	
 
 	{
-		auto func = CreateFunction(WeaponSwitchControllerDante, 0, true, false);
+		auto func = CreateFunction(WeaponSwitchController<ActorDataDante>, 0, true, false);
 		WriteCall((appBaseAddr + 0x1E25EB), func.addr);
 		/*
 		dmc3.exe+1E25EB - E8 F0820000 - call dmc3.exe+1EA8E0
@@ -5765,7 +5650,7 @@ export void Actor_Init()
 	}
 
 	{
-		auto func = CreateFunction(WeaponSwitchControllerVergil, 0, true, false);
+		auto func = CreateFunction(WeaponSwitchController<ActorDataVergil>, 0, true, false);
 		WriteCall((appBaseAddr + 0x1E25E1), func.addr);
 		/*
 		dmc3.exe+1E25E1 - E8 EA470000 - call dmc3.exe+1E6DD0
@@ -6319,24 +6204,14 @@ export void Actor_SceneMain()
 {
 	LogFunction();
 
-	if (activeConfig.Actor.enable != queuedConfig.Actor.enable)
-	{
-		activeConfig.Actor.enable = queuedConfig.Actor.enable;
-
-		Actor_Toggle(activeConfig.Actor.enable);
-	}
+	Actor_Toggle(activeConfig.Actor.enable);
 }
 
 export void Actor_SceneMissionSelect()
 {
 	LogFunction();
 
-	if (activeConfig.Actor.enable != queuedConfig.Actor.enable)
-	{
-		activeConfig.Actor.enable = queuedConfig.Actor.enable;
-
-		Actor_Toggle(activeConfig.Actor.enable);
-	}
+	Actor_Toggle(activeConfig.Actor.enable);
 }
 
 export void Actor_SceneMissionStart()
@@ -6743,5 +6618,263 @@ void UpdateGlobalMeleeWeaponIndices()
 			return false;
 		}
 	}
+
+
+
+void RangedWeaponSwitchControllerDante
+(
+	ActorDataDante & actorData,
+	PlayerData & playerData
+)
+{
+	if (actorData.newRangedWeaponCount <= 1)
+	{
+		return;
+	}
+
+	if (0 < actorData.rangedWeaponSwitchTimeout)
+	{
+		return;
+	}
+
+	// auto player = actorData.newPlayer;
+	// if (player >= MAX_PLAYER)
+	// {
+	// 	player = 0;
+	// }
+
+	// auto entity = actorData.newEntity;
+	// if (entity >= MAX_ENTITY)
+	// {
+	// 	entity = 0;
+	// }
+
+	// auto & playerData = activeConfig.Actor.playerData[player][entity];
+
+	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
+	
+	bool update = false;
+
+	auto Forward = [&]()
+	{
+		if (actorData.newRangedWeaponIndex == (actorData.newRangedWeaponCount - 1))
+		{
+			actorData.newRangedWeaponIndex = 0;
+		}
+		else
+		{
+			actorData.newRangedWeaponIndex++;
+		}
+		update = true;
+	};
+
+	auto Back = [&]()
+	{
+		if (actorData.newRangedWeaponIndex == 0)
+		{
+			actorData.newRangedWeaponIndex = (actorData.newRangedWeaponCount - 1);
+		}
+		else
+		{
+			actorData.newRangedWeaponIndex--;
+		}
+		update = true;
+	};
+
+	if (actorData.newEntity == ENTITY_MAIN)
+	{
+		if
+		(
+			enableDoppelganger &&
+			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+		)
+		{
+			return;
+		}
+		else if
+		(
+			(actorData.buttons[0] & GetBinding(BINDING_TAUNT     )) &&
+			(actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
+		)
+		{
+			Back();
+		}
+		else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
+		{
+			Forward();
+		}
+	}
+	else
+	{
+		if (!enableDoppelganger)
+		{
+			return;
+		}
+		else if
+		(
+			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)) &&
+			(actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN    ))
+		)
+		{
+			Forward();
+		}
+	}
+
+	if (!update)
+	{
+		return;
+	}
+
+	actorData.rangedWeaponSwitchTimeout = activeConfig.weaponSwitchTimeout;
+
+	UpdateRangedWeapons(actorData, playerData);
+
+	auto newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
+
+	if (actorData.newEntity == ENTITY_CLONE)
+	{
+		return;
+	}
+
+	IntroduceHUDPointers(return);
+
+	HUD_UpdateWeaponIcon(HUD_BOTTOM_RANGED_WEAPON_1, newRangedWeapon);
+
+	func_280120(hudBottom, 0, 0); // @Todo: Enums.
+
+	func_1EB0E0(actorData, 4);
+}
+
+
+
+void MeleeWeaponSwitchControllerVergil
+(
+	ActorDataVergil & actorData,
+	PlayerData & playerData
+)
+{
+	if (actorData.newMeleeWeaponCount <= 1)
+	{
+		return;
+	}
+
+	if (0 < actorData.meleeWeaponSwitchForwardTimeout)
+	{
+		return;
+	}
+
+	// auto player = actorData.newPlayer;
+	// if (player >= MAX_PLAYER)
+	// {
+	// 	player = 0;
+	// }
+
+	// auto entity = actorData.newEntity;
+	// if (entity >= MAX_ENTITY)
+	// {
+	// 	entity = 0;
+	// }
+
+	// auto & playerData = activeConfig.Actor.playerData[player][entity];
+
+	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
+	
+	bool update = false;
+
+	auto Forward = [&]()
+	{
+		if (actorData.newMeleeWeaponIndex == (actorData.newMeleeWeaponCount - 1))
+		{
+			actorData.newMeleeWeaponIndex = 0;
+		}
+		else
+		{
+			actorData.newMeleeWeaponIndex++;
+		}
+		update = true;
+	};
+
+	auto Back = [&]()
+	{
+		if (actorData.newMeleeWeaponIndex == 0)
+		{
+			actorData.newMeleeWeaponIndex = (actorData.newMeleeWeaponCount - 1);
+		}
+		else
+		{
+			actorData.newMeleeWeaponIndex--;
+		}
+		update = true;
+	};
+
+	if (actorData.newEntity == ENTITY_MAIN)
+	{
+		if
+		(
+			enableDoppelganger &&
+			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+		)
+		{
+			return;
+		}
+		else if
+		(
+			(actorData.buttons[0] & GetBinding(BINDING_TAUNT            )) &&
+			(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+		)
+		{
+			Back();
+		}
+		else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+		{
+			Forward();
+		}
+		else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
+		{
+			Back();
+		}
+	}
+	else
+	{
+		if (!enableDoppelganger)
+		{
+			return;
+		}
+		else if
+		(
+			(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA   )) &&
+			(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+		)
+		{
+			Forward();
+		}
+	}
+
+	if (!update)
+	{
+		return;
+	}
+
+	actorData.meleeWeaponSwitchForwardTimeout = activeConfig.weaponSwitchTimeout;
+
+	UpdateMeleeWeapons(actorData, playerData);
+
+	auto newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
+
+
+
+	if (actorData.newEntity == ENTITY_CLONE)
+	{
+		return;
+	}
+
+	IntroduceHUDPointers(return);
+
+	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, newMeleeWeapon);
+
+	func_280120(hudBottom, 1, 0); // @Todo: Enums.
+
+	func_1EB0E0(actorData, 4);
+}
 
 #endif
