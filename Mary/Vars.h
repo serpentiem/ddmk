@@ -100,7 +100,7 @@ enum STYLE_
 	//STYLE_VOID = 255,
 };
 
-enum WEAPON_
+enum WEAPON
 {
 	WEAPON_REBELLION,
 	WEAPON_CERBERUS,
@@ -117,14 +117,21 @@ enum WEAPON_
 	WEAPON_FORCE_EDGE,
 	WEAPON_YAMATO_BOB,
 	MAX_WEAPON,
-	// @Research: Re-evaluate.
-	MAX_MELEE_WEAPON = 5,
-	MAX_RANGED_WEAPON = 5,
-	MAX_MELEE_WEAPON_DANTE = 5,
-	MAX_RANGED_WEAPON_DANTE = 5,
-	MAX_MELEE_WEAPON_VERGIL = 3,
 	WEAPON_VOID = 255,
 };
+
+enum WEAPON_COUNT
+{
+	WEAPON_COUNT_DANTE = 10,
+	WEAPON_COUNT_VERGIL = 3,
+	MELEE_WEAPON_COUNT = 5,
+	MELEE_WEAPON_COUNT_DANTE = 5,
+	MELEE_WEAPON_COUNT_VERGIL = 3,
+	RANGED_WEAPON_COUNT = 5,
+	RANGED_WEAPON_COUNT_DANTE = 5,
+};
+
+
 
 
 
@@ -1957,10 +1964,10 @@ struct PlayerData
 	bool forceFiles;
 	uint8 forceFilesCharacter;
 	uint8 style;
-	uint8 meleeWeapons[MAX_MELEE_WEAPON];
+	uint8 meleeWeapons[MELEE_WEAPON_COUNT];
 	uint8 meleeWeaponCount;
 	uint8 meleeWeaponIndex;
-	uint8 rangedWeapons[MAX_RANGED_WEAPON];
+	uint8 rangedWeapons[RANGED_WEAPON_COUNT];
 	uint8 rangedWeaponCount;
 	uint8 rangedWeaponIndex;
 };
@@ -2017,7 +2024,8 @@ struct ActorData
 	uint32 nextActionRequestPolicy[16]; // 0x39D0
 	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
-	_(12);
+	uint32 lastShadow; // 0x3A1C
+	_(8);
 	byte32 color; // 0x3A28
 	_(212);
 	RecoveryData recoveryData[3]; // 0x3B00
@@ -2052,7 +2060,10 @@ struct ActorData
 	_(19);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
-	_(18);
+	_(4);
+	float32 var_3EC4; // 0x3EC4
+	float32 var_3EC8; // 0x3EC8
+	_(6);
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
@@ -2079,16 +2090,22 @@ struct ActorData
 	byte8 * targetBaseAddr; // 0x6328
 	_(8);
 	uint32 style; // 0x6338
-	_(28);
+	_(4);
+	uint32 var_6340; // 0x6340
+	_(20);
 	uint32 styleLevel; // 0x6358
-	_(8);
+	_(5);
+	bool quicksilver; // 0x6361
+	bool doppelganger; // 0x6362
+	_(1);
 	float32 styleExperience; // 0x6364
 	_(168);
-	byte8 var_6410[60]; // 0x6410
-	_(4);
+	byte8 var_6410[40]; // 0x6410
+	byte8 * var_6438; // 0x6438
+	uint32 var_6440; // 0x6440
+	_(12);
 	uint32 cloneRate; // 0x6450
-	bool cloneIsActive; // 0x6454
-	_(3);
+	uint32 var_6454; // 0x6454
 	byte8 var_6458[32]; // 0x6458
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
@@ -2229,7 +2246,8 @@ struct ActorDataDante
 	uint32 nextActionRequestPolicy[16]; // 0x39D0
 	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
-	_(12);
+	uint32 lastShadow; // 0x3A1C
+	_(8);
 	byte32 color; // 0x3A28
 	_(212);
 	RecoveryData recoveryData[3]; // 0x3B00
@@ -2265,7 +2283,10 @@ struct ActorDataDante
 	_(19);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
-	_(18);
+	_(4);
+	float32 var_3EC4; // 0x3EC4
+	float32 var_3EC8; // 0x3EC8
+	_(6);
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
@@ -2292,7 +2313,9 @@ struct ActorDataDante
 	byte8 * targetBaseAddr; // 0x6328
 	_(8);
 	uint32 style; // 0x6338
-	_(28);
+	_(4);
+	uint32 var_6340; // 0x6340
+	_(20);
 	uint32 styleLevel; // 0x6358
 	uint8 dashCount; // 0x635C
 	uint8 skyStarCount; // 0x635D
@@ -2303,11 +2326,12 @@ struct ActorDataDante
 	_(1);
 	float32 styleExperience; // 0x6364
 	_(168);
-	byte8 var_6410[60]; // 0x6410
-	_(4);
+	byte8 var_6410[40]; // 0x6410
+	byte8 * var_6438; // 0x6438
+	uint32 var_6440; // 0x6440
+	_(12);
 	uint32 cloneRate; // 0x6450
-	bool cloneIsActive; // 0x6454
-	_(3);
+	uint32 var_6454; // 0x6454
 	byte8 var_6458[32]; // 0x6458
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
@@ -2471,7 +2495,8 @@ struct ActorDataBob
 	uint32 nextActionRequestPolicy[16]; // 0x39D0
 	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
-	_(12);
+	uint32 lastShadow; // 0x3A1C
+	_(8);
 	byte32 color; // 0x3A28
 	_(212);
 	RecoveryData recoveryData[3]; // 0x3B00
@@ -2506,7 +2531,10 @@ struct ActorDataBob
 	_(19);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
-	_(18);
+	_(4);
+	float32 var_3EC4; // 0x3EC4
+	float32 var_3EC8; // 0x3EC8
+	_(6);
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
@@ -2533,16 +2561,22 @@ struct ActorDataBob
 	byte8 * targetBaseAddr; // 0x6328
 	_(8);
 	uint32 style; // 0x6338
-	_(28);
+	_(4);
+	uint32 var_6340; // 0x6340
+	_(20);
 	uint32 styleLevel; // 0x6358
-	_(8);
+	_(5);
+	bool quicksilver; // 0x6361
+	bool doppelganger; // 0x6362
+	_(1);
 	float32 styleExperience; // 0x6364
 	_(168);
-	byte8 var_6410[60]; // 0x6410
-	_(4);
+	byte8 var_6410[40]; // 0x6410
+	byte8 * var_6438; // 0x6438
+	uint32 var_6440; // 0x6440
+	_(12);
 	uint32 cloneRate; // 0x6450
-	bool cloneIsActive; // 0x6454
-	_(3);
+	uint32 var_6454; // 0x6454
 	byte8 var_6458[32]; // 0x6458
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
@@ -2683,7 +2717,8 @@ struct ActorDataLady
 	uint32 nextActionRequestPolicy[16]; // 0x39D0
 	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
-	_(12);
+	uint32 lastShadow; // 0x3A1C
+	_(8);
 	byte32 color; // 0x3A28
 	_(212);
 	RecoveryData recoveryData[3]; // 0x3B00
@@ -2718,7 +2753,10 @@ struct ActorDataLady
 	_(19);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
-	_(18);
+	_(4);
+	float32 var_3EC4; // 0x3EC4
+	float32 var_3EC8; // 0x3EC8
+	_(6);
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
@@ -2745,16 +2783,22 @@ struct ActorDataLady
 	byte8 * targetBaseAddr; // 0x6328
 	_(8);
 	uint32 style; // 0x6338
-	_(28);
+	_(4);
+	uint32 var_6340; // 0x6340
+	_(20);
 	uint32 styleLevel; // 0x6358
-	_(8);
+	_(5);
+	bool quicksilver; // 0x6361
+	bool doppelganger; // 0x6362
+	_(1);
 	float32 styleExperience; // 0x6364
 	_(168);
-	byte8 var_6410[60]; // 0x6410
-	_(4);
+	byte8 var_6410[40]; // 0x6410
+	byte8 * var_6438; // 0x6438
+	uint32 var_6440; // 0x6440
+	_(12);
 	uint32 cloneRate; // 0x6450
-	bool cloneIsActive; // 0x6454
-	_(3);
+	uint32 var_6454; // 0x6454
 	byte8 var_6458[32]; // 0x6458
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
@@ -2895,7 +2939,8 @@ struct ActorDataVergil
 	uint32 nextActionRequestPolicy[16]; // 0x39D0
 	uint8 var_3A10[8]; // 0x3A10
 	uint32 shadow; // 0x3A18
-	_(12);
+	uint32 lastShadow; // 0x3A1C
+	_(8);
 	byte32 color; // 0x3A28
 	_(212);
 	RecoveryData recoveryData[3]; // 0x3B00
@@ -2931,7 +2976,10 @@ struct ActorDataVergil
 	_(19);
 	float32 magicPoints; // 0x3EB8
 	float32 maxMagicPoints; // 0x3EBC
-	_(18);
+	_(4);
+	float32 var_3EC4; // 0x3EC4
+	float32 var_3EC8; // 0x3EC8
+	_(6);
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
@@ -2958,20 +3006,25 @@ struct ActorDataVergil
 	byte8 * targetBaseAddr; // 0x6328
 	_(8);
 	uint32 style; // 0x6338
-	_(28);
+	_(4);
+	uint32 var_6340; // 0x6340
+	_(20);
 	uint32 styleLevel; // 0x6358
 	_(2);
 	uint8 airTrickCount; // 0x635E
 	uint8 trickUpCount; // 0x635F
 	uint8 trickDownCount; // 0x6360
-	_(3);
+	bool quicksilver; // 0x6361
+	bool doppelganger; // 0x6362
+	_(1);
 	float32 styleExperience; // 0x6364
 	_(168);
-	byte8 var_6410[60]; // 0x6410
-	_(4);
+	byte8 var_6410[40]; // 0x6410
+	byte8 * var_6438; // 0x6438
+	uint32 var_6440; // 0x6440
+	_(12);
 	uint32 cloneRate; // 0x6450
-	bool cloneIsActive; // 0x6454
-	_(3);
+	uint32 var_6454; // 0x6454
 	byte8 var_6458[32]; // 0x6458
 	byte8 * cloneBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
@@ -3106,6 +3159,7 @@ static_assert(offsetof(ActorData, var_39C0) == 0x39C0);
 static_assert(offsetof(ActorData, nextActionRequestPolicy) == 0x39D0);
 static_assert(offsetof(ActorData, var_3A10) == 0x3A10);
 static_assert(offsetof(ActorData, shadow) == 0x3A18);
+static_assert(offsetof(ActorData, lastShadow) == 0x3A1C);
 static_assert(offsetof(ActorData, color) == 0x3A28);
 static_assert(offsetof(ActorData, recoveryData) == 0x3B00);
 static_assert(offsetof(ActorData, var_3C50) == 0x3C50);
@@ -3131,6 +3185,8 @@ static_assert(offsetof(ActorData, costume) == 0x3E9E);
 static_assert(offsetof(ActorData, useHolyWater) == 0x3EA4);
 static_assert(offsetof(ActorData, magicPoints) == 0x3EB8);
 static_assert(offsetof(ActorData, maxMagicPoints) == 0x3EBC);
+static_assert(offsetof(ActorData, var_3EC4) == 0x3EC4);
+static_assert(offsetof(ActorData, var_3EC8) == 0x3EC8);
 static_assert(offsetof(ActorData, var_3ED2) == 0x3ED2);
 static_assert(offsetof(ActorData, cameraDirection) == 0x3ED8);
 static_assert(offsetof(ActorData, airHikeCount) == 0x3F11);
@@ -3146,11 +3202,16 @@ static_assert(offsetof(ActorData, maxHitPoints) == 0x40EC);
 static_assert(offsetof(ActorData, hitPoints) == 0x411C);
 static_assert(offsetof(ActorData, targetBaseAddr) == 0x6328);
 static_assert(offsetof(ActorData, style) == 0x6338);
+static_assert(offsetof(ActorData, var_6340) == 0x6340);
 static_assert(offsetof(ActorData, styleLevel) == 0x6358);
+static_assert(offsetof(ActorData, quicksilver) == 0x6361);
+static_assert(offsetof(ActorData, doppelganger) == 0x6362);
 static_assert(offsetof(ActorData, styleExperience) == 0x6364);
 static_assert(offsetof(ActorData, var_6410) == 0x6410);
+static_assert(offsetof(ActorData, var_6438) == 0x6438);
+static_assert(offsetof(ActorData, var_6440) == 0x6440);
 static_assert(offsetof(ActorData, cloneRate) == 0x6450);
-static_assert(offsetof(ActorData, cloneIsActive) == 0x6454);
+static_assert(offsetof(ActorData, var_6454) == 0x6454);
 static_assert(offsetof(ActorData, var_6458) == 0x6458);
 static_assert(offsetof(ActorData, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ActorData, cloneIsControlledByPlayer) == 0x6480);
@@ -3245,6 +3306,7 @@ static_assert(offsetof(ActorDataDante, var_39C0) == 0x39C0);
 static_assert(offsetof(ActorDataDante, nextActionRequestPolicy) == 0x39D0);
 static_assert(offsetof(ActorDataDante, var_3A10) == 0x3A10);
 static_assert(offsetof(ActorDataDante, shadow) == 0x3A18);
+static_assert(offsetof(ActorDataDante, lastShadow) == 0x3A1C);
 static_assert(offsetof(ActorDataDante, color) == 0x3A28);
 static_assert(offsetof(ActorDataDante, recoveryData) == 0x3B00);
 static_assert(offsetof(ActorDataDante, var_3C50) == 0x3C50);
@@ -3271,6 +3333,8 @@ static_assert(offsetof(ActorDataDante, sparda) == 0x3E9F);
 static_assert(offsetof(ActorDataDante, useHolyWater) == 0x3EA4);
 static_assert(offsetof(ActorDataDante, magicPoints) == 0x3EB8);
 static_assert(offsetof(ActorDataDante, maxMagicPoints) == 0x3EBC);
+static_assert(offsetof(ActorDataDante, var_3EC4) == 0x3EC4);
+static_assert(offsetof(ActorDataDante, var_3EC8) == 0x3EC8);
 static_assert(offsetof(ActorDataDante, var_3ED2) == 0x3ED2);
 static_assert(offsetof(ActorDataDante, cameraDirection) == 0x3ED8);
 static_assert(offsetof(ActorDataDante, airHikeCount) == 0x3F11);
@@ -3286,6 +3350,7 @@ static_assert(offsetof(ActorDataDante, maxHitPoints) == 0x40EC);
 static_assert(offsetof(ActorDataDante, hitPoints) == 0x411C);
 static_assert(offsetof(ActorDataDante, targetBaseAddr) == 0x6328);
 static_assert(offsetof(ActorDataDante, style) == 0x6338);
+static_assert(offsetof(ActorDataDante, var_6340) == 0x6340);
 static_assert(offsetof(ActorDataDante, styleLevel) == 0x6358);
 static_assert(offsetof(ActorDataDante, dashCount) == 0x635C);
 static_assert(offsetof(ActorDataDante, skyStarCount) == 0x635D);
@@ -3294,8 +3359,10 @@ static_assert(offsetof(ActorDataDante, quicksilver) == 0x6361);
 static_assert(offsetof(ActorDataDante, doppelganger) == 0x6362);
 static_assert(offsetof(ActorDataDante, styleExperience) == 0x6364);
 static_assert(offsetof(ActorDataDante, var_6410) == 0x6410);
+static_assert(offsetof(ActorDataDante, var_6438) == 0x6438);
+static_assert(offsetof(ActorDataDante, var_6440) == 0x6440);
 static_assert(offsetof(ActorDataDante, cloneRate) == 0x6450);
-static_assert(offsetof(ActorDataDante, cloneIsActive) == 0x6454);
+static_assert(offsetof(ActorDataDante, var_6454) == 0x6454);
 static_assert(offsetof(ActorDataDante, var_6458) == 0x6458);
 static_assert(offsetof(ActorDataDante, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ActorDataDante, cloneIsControlledByPlayer) == 0x6480);
@@ -3406,6 +3473,7 @@ static_assert(offsetof(ActorDataBob, var_39C0) == 0x39C0);
 static_assert(offsetof(ActorDataBob, nextActionRequestPolicy) == 0x39D0);
 static_assert(offsetof(ActorDataBob, var_3A10) == 0x3A10);
 static_assert(offsetof(ActorDataBob, shadow) == 0x3A18);
+static_assert(offsetof(ActorDataBob, lastShadow) == 0x3A1C);
 static_assert(offsetof(ActorDataBob, color) == 0x3A28);
 static_assert(offsetof(ActorDataBob, recoveryData) == 0x3B00);
 static_assert(offsetof(ActorDataBob, var_3C50) == 0x3C50);
@@ -3431,6 +3499,8 @@ static_assert(offsetof(ActorDataBob, costume) == 0x3E9E);
 static_assert(offsetof(ActorDataBob, useHolyWater) == 0x3EA4);
 static_assert(offsetof(ActorDataBob, magicPoints) == 0x3EB8);
 static_assert(offsetof(ActorDataBob, maxMagicPoints) == 0x3EBC);
+static_assert(offsetof(ActorDataBob, var_3EC4) == 0x3EC4);
+static_assert(offsetof(ActorDataBob, var_3EC8) == 0x3EC8);
 static_assert(offsetof(ActorDataBob, var_3ED2) == 0x3ED2);
 static_assert(offsetof(ActorDataBob, cameraDirection) == 0x3ED8);
 static_assert(offsetof(ActorDataBob, airHikeCount) == 0x3F11);
@@ -3446,11 +3516,16 @@ static_assert(offsetof(ActorDataBob, maxHitPoints) == 0x40EC);
 static_assert(offsetof(ActorDataBob, hitPoints) == 0x411C);
 static_assert(offsetof(ActorDataBob, targetBaseAddr) == 0x6328);
 static_assert(offsetof(ActorDataBob, style) == 0x6338);
+static_assert(offsetof(ActorDataBob, var_6340) == 0x6340);
 static_assert(offsetof(ActorDataBob, styleLevel) == 0x6358);
+static_assert(offsetof(ActorDataBob, quicksilver) == 0x6361);
+static_assert(offsetof(ActorDataBob, doppelganger) == 0x6362);
 static_assert(offsetof(ActorDataBob, styleExperience) == 0x6364);
 static_assert(offsetof(ActorDataBob, var_6410) == 0x6410);
+static_assert(offsetof(ActorDataBob, var_6438) == 0x6438);
+static_assert(offsetof(ActorDataBob, var_6440) == 0x6440);
 static_assert(offsetof(ActorDataBob, cloneRate) == 0x6450);
-static_assert(offsetof(ActorDataBob, cloneIsActive) == 0x6454);
+static_assert(offsetof(ActorDataBob, var_6454) == 0x6454);
 static_assert(offsetof(ActorDataBob, var_6458) == 0x6458);
 static_assert(offsetof(ActorDataBob, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ActorDataBob, cloneIsControlledByPlayer) == 0x6480);
@@ -3545,6 +3620,7 @@ static_assert(offsetof(ActorDataLady, var_39C0) == 0x39C0);
 static_assert(offsetof(ActorDataLady, nextActionRequestPolicy) == 0x39D0);
 static_assert(offsetof(ActorDataLady, var_3A10) == 0x3A10);
 static_assert(offsetof(ActorDataLady, shadow) == 0x3A18);
+static_assert(offsetof(ActorDataLady, lastShadow) == 0x3A1C);
 static_assert(offsetof(ActorDataLady, color) == 0x3A28);
 static_assert(offsetof(ActorDataLady, recoveryData) == 0x3B00);
 static_assert(offsetof(ActorDataLady, var_3C50) == 0x3C50);
@@ -3570,6 +3646,8 @@ static_assert(offsetof(ActorDataLady, costume) == 0x3E9E);
 static_assert(offsetof(ActorDataLady, useHolyWater) == 0x3EA4);
 static_assert(offsetof(ActorDataLady, magicPoints) == 0x3EB8);
 static_assert(offsetof(ActorDataLady, maxMagicPoints) == 0x3EBC);
+static_assert(offsetof(ActorDataLady, var_3EC4) == 0x3EC4);
+static_assert(offsetof(ActorDataLady, var_3EC8) == 0x3EC8);
 static_assert(offsetof(ActorDataLady, var_3ED2) == 0x3ED2);
 static_assert(offsetof(ActorDataLady, cameraDirection) == 0x3ED8);
 static_assert(offsetof(ActorDataLady, airHikeCount) == 0x3F11);
@@ -3585,11 +3663,16 @@ static_assert(offsetof(ActorDataLady, maxHitPoints) == 0x40EC);
 static_assert(offsetof(ActorDataLady, hitPoints) == 0x411C);
 static_assert(offsetof(ActorDataLady, targetBaseAddr) == 0x6328);
 static_assert(offsetof(ActorDataLady, style) == 0x6338);
+static_assert(offsetof(ActorDataLady, var_6340) == 0x6340);
 static_assert(offsetof(ActorDataLady, styleLevel) == 0x6358);
+static_assert(offsetof(ActorDataLady, quicksilver) == 0x6361);
+static_assert(offsetof(ActorDataLady, doppelganger) == 0x6362);
 static_assert(offsetof(ActorDataLady, styleExperience) == 0x6364);
 static_assert(offsetof(ActorDataLady, var_6410) == 0x6410);
+static_assert(offsetof(ActorDataLady, var_6438) == 0x6438);
+static_assert(offsetof(ActorDataLady, var_6440) == 0x6440);
 static_assert(offsetof(ActorDataLady, cloneRate) == 0x6450);
-static_assert(offsetof(ActorDataLady, cloneIsActive) == 0x6454);
+static_assert(offsetof(ActorDataLady, var_6454) == 0x6454);
 static_assert(offsetof(ActorDataLady, var_6458) == 0x6458);
 static_assert(offsetof(ActorDataLady, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ActorDataLady, cloneIsControlledByPlayer) == 0x6480);
@@ -3684,6 +3767,7 @@ static_assert(offsetof(ActorDataVergil, var_39C0) == 0x39C0);
 static_assert(offsetof(ActorDataVergil, nextActionRequestPolicy) == 0x39D0);
 static_assert(offsetof(ActorDataVergil, var_3A10) == 0x3A10);
 static_assert(offsetof(ActorDataVergil, shadow) == 0x3A18);
+static_assert(offsetof(ActorDataVergil, lastShadow) == 0x3A1C);
 static_assert(offsetof(ActorDataVergil, color) == 0x3A28);
 static_assert(offsetof(ActorDataVergil, recoveryData) == 0x3B00);
 static_assert(offsetof(ActorDataVergil, var_3C50) == 0x3C50);
@@ -3710,6 +3794,8 @@ static_assert(offsetof(ActorDataVergil, neroAngelo) == 0x3E9F);
 static_assert(offsetof(ActorDataVergil, useHolyWater) == 0x3EA4);
 static_assert(offsetof(ActorDataVergil, magicPoints) == 0x3EB8);
 static_assert(offsetof(ActorDataVergil, maxMagicPoints) == 0x3EBC);
+static_assert(offsetof(ActorDataVergil, var_3EC4) == 0x3EC4);
+static_assert(offsetof(ActorDataVergil, var_3EC8) == 0x3EC8);
 static_assert(offsetof(ActorDataVergil, var_3ED2) == 0x3ED2);
 static_assert(offsetof(ActorDataVergil, cameraDirection) == 0x3ED8);
 static_assert(offsetof(ActorDataVergil, airHikeCount) == 0x3F11);
@@ -3725,14 +3811,19 @@ static_assert(offsetof(ActorDataVergil, maxHitPoints) == 0x40EC);
 static_assert(offsetof(ActorDataVergil, hitPoints) == 0x411C);
 static_assert(offsetof(ActorDataVergil, targetBaseAddr) == 0x6328);
 static_assert(offsetof(ActorDataVergil, style) == 0x6338);
+static_assert(offsetof(ActorDataVergil, var_6340) == 0x6340);
 static_assert(offsetof(ActorDataVergil, styleLevel) == 0x6358);
 static_assert(offsetof(ActorDataVergil, airTrickCount) == 0x635E);
 static_assert(offsetof(ActorDataVergil, trickUpCount) == 0x635F);
 static_assert(offsetof(ActorDataVergil, trickDownCount) == 0x6360);
+static_assert(offsetof(ActorDataVergil, quicksilver) == 0x6361);
+static_assert(offsetof(ActorDataVergil, doppelganger) == 0x6362);
 static_assert(offsetof(ActorDataVergil, styleExperience) == 0x6364);
 static_assert(offsetof(ActorDataVergil, var_6410) == 0x6410);
+static_assert(offsetof(ActorDataVergil, var_6438) == 0x6438);
+static_assert(offsetof(ActorDataVergil, var_6440) == 0x6440);
 static_assert(offsetof(ActorDataVergil, cloneRate) == 0x6450);
-static_assert(offsetof(ActorDataVergil, cloneIsActive) == 0x6454);
+static_assert(offsetof(ActorDataVergil, var_6454) == 0x6454);
 static_assert(offsetof(ActorDataVergil, var_6458) == 0x6458);
 static_assert(offsetof(ActorDataVergil, cloneBaseAddr) == 0x6478);
 static_assert(offsetof(ActorDataVergil, cloneIsControlledByPlayer) == 0x6480);

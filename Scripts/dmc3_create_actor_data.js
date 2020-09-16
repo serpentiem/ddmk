@@ -54,6 +54,7 @@ var items =
 	[ "nextActionRequestPolicy[16]"         , "uint32"                  , 0x39D0                           ],
 	[ "[8]"                                 , "uint8"                   , 0x3A10                           ],
 	[ "shadow"                              , "uint32"                  , 0x3A18                           ],
+	[ "lastShadow"                              , "uint32"                  , 0x3A1C                           ],
 	[ "color"                               , "byte32"                  , 0x3A28                           ],
 
 	[ "recoveryData[3]", "RecoveryData"                  , 0x3B00                           ],
@@ -118,6 +119,18 @@ var items =
 	[ "useHolyWater"                        , "bool"                    , 0x3EA4                           ],
 	[ "magicPoints"                         , "float32"                 , 0x3EB8                           ],
 	[ "maxMagicPoints"                      , "float32"                 , 0x3EBC                           ],
+
+
+
+
+
+	[ ""                                    , "float32"                  , 0x3EC4                           ],
+	[ ""                                    , "float32"                  , 0x3EC8                           ],
+
+
+
+
+
 	[ ""                                    , "uint16"                  , 0x3ED2                           ],
 	[ "cameraDirection"                     , "uint16"                  , 0x3ED8                           ],
 	[ "airHikeCount"                        , "uint8"                   , 0x3F11                           ],
@@ -132,15 +145,23 @@ var items =
 	[ "maxHitPoints"                        , "float32"                 , 0x40EC                           ],
 	[ "hitPoints"                           , "float32"                 , 0x411C                           ],
 	[ "targetBaseAddr"                      , "byte8 *"                 , 0x6328                           ],
+
+	
+
 	[ "style"                               , "uint32"                  , 0x6338                           ],
+
+
+	[ ""                      , "uint32"                 , 0x6340                           ],
+
+
 	[ "styleLevel"                          , "uint32"                  , 0x6358                           ],
 	[ "dashCount"                           , "uint8"                   , 0x635C, CHAR_DANTE               ],
 	[ "skyStarCount"                        , "uint8"                   , 0x635D, CHAR_DANTE               ],
 	[ "airTrickCount"                       , "uint8"                   , 0x635E, CHAR_DANTE | CHAR_VERGIL ],
 	[ "trickUpCount"                        , "uint8"                   , 0x635F, CHAR_VERGIL              ],
 	[ "trickDownCount"                      , "uint8"                   , 0x6360, CHAR_VERGIL              ],
-	[ "quicksilver"                         , "bool"                    , 0x6361, CHAR_DANTE               ],
-	[ "doppelganger"                        , "bool"                    , 0x6362, CHAR_DANTE               ],
+	[ "quicksilver"                         , "bool"                    , 0x6361               ],
+	[ "doppelganger"                        , "bool"                    , 0x6362               ],
 	[ "styleExperience"                     , "float32"                 , 0x6364                           ],
 
 
@@ -150,12 +171,25 @@ var items =
 
 
 
-	[ "[60]"                       , "byte8"                    , 0x6410                           ],
+
+	[ "[40]"                       , "byte8"                    , 0x6410                           ],
+	[ ""                       , "byte8 *"                    , 0x6438                           ],
+	[ ""                       , "uint32"                    , 0x6440                           ],
 	[ "cloneRate"                       , "uint32"                    , 0x6450                           ],
-	[ "cloneIsActive"                       , "bool"                    , 0x6454                           ],
+
+
+
+
+	[ ""                       , "uint32"                    , 0x6454                           ],
+
+
+
+
 	[ "[32]"                       , "byte8"                    , 0x6458                           ],
 	[ "cloneBaseAddr"                       , "byte8 *"                 , 0x6478                           ],
 	[ "cloneIsControlledByPlayer"           , "bool"                    , 0x6480                           ],
+
+
 
 
 

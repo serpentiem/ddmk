@@ -7,9 +7,14 @@
 #define offsetof(s, m) reinterpret_cast<uint32>(&(*reinterpret_cast<s *>(0)).m)
 #endif
 
-#define for_all(type, name, end) for (type name = 0; name < end; name++)
+//#define for_all(type, name, end) for (type name = 0; name < end; name++)
 
-#define for_each(type, name, start, end) for (type name = 0; name < end; name++)
+#define for_each(type, name, start, end) for (type name = start; name < end; name++)
+
+#define for_all(type, name, end) for_each(type, name, 0, end)
+
+
+
 
 #define HoboBreak() MessageBoxA(0, "break1", 0, 0); MessageBoxA(0, "break2", 0, 0)
 

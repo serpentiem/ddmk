@@ -376,7 +376,7 @@ export void ApplyDefaultPlayerData
 				WEAPON_NEVAN,
 				WEAPON_BEOWULF_DANTE,
 			},
-			MAX_MELEE_WEAPON_DANTE,
+			MELEE_WEAPON_COUNT_DANTE,
 			0,
 			{
 				WEAPON_EBONY_IVORY,
@@ -385,7 +385,7 @@ export void ApplyDefaultPlayerData
 				WEAPON_SPIRAL,
 				WEAPON_KALINA_ANN,
 			},
-			MAX_RANGED_WEAPON_DANTE,
+			RANGED_WEAPON_COUNT_DANTE,
 			0
 		};
 		break;
@@ -420,7 +420,7 @@ export void ApplyDefaultPlayerData
 				WEAPON_BEOWULF_VERGIL,
 				WEAPON_FORCE_EDGE,
 			},
-			MAX_MELEE_WEAPON_VERGIL,
+			MELEE_WEAPON_COUNT_VERGIL,
 			0
 		};
 		break;

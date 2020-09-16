@@ -292,7 +292,7 @@ bool IsMeleeWeaponReady
 			return true;
 		}
 
-		for_all(uint8, index, MAX_MELEE_WEAPON_DANTE)
+		for_all(uint8, index, MELEE_WEAPON_COUNT_DANTE)
 		{
 			uint8 weapon2 = (WEAPON_REBELLION + index);
 
@@ -348,7 +348,7 @@ bool IsMeleeWeaponReady
 			return true;
 		}
 
-		for_all(uint8, index, MAX_MELEE_WEAPON_VERGIL)
+		for_all(uint8, index, MELEE_WEAPON_COUNT_VERGIL)
 		{
 			uint8 weapon2 = (WEAPON_YAMATO_VERGIL + index);
 
@@ -420,7 +420,7 @@ bool IsRangedWeaponReady
 		return true;
 	}
 
-	for_all(uint8, index, MAX_RANGED_WEAPON_DANTE)
+	for_all(uint8, index, RANGED_WEAPON_COUNT_DANTE)
 	{
 		uint8 weapon2 = (WEAPON_EBONY_IVORY + index);
 
@@ -1655,8 +1655,8 @@ void InitWeapons
 	memset(actorData.newWeaponStatus, WEAPON_STATUS_DISABLED, sizeof(actorData.newWeaponStatus));
 
 	constexpr uint8 count =
-	(TypeMatch<T, ActorDataDante >::value) ? 10 :
-	(TypeMatch<T, ActorDataVergil>::value) ? 3  :
+	(TypeMatch<T, ActorDataDante >::value) ? WEAPON_COUNT_DANTE  :
+	(TypeMatch<T, ActorDataVergil>::value) ? WEAPON_COUNT_VERGIL :
 	0;
 
 	for_all(uint8, index, count)
@@ -1669,14 +1669,6 @@ void InitWeapons
 		actorData.newWeapons[index] = weapon;
 		actorData.newWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
 		actorData.newWeaponStatus[index] = WEAPON_STATUS_READY;
-
-		if constexpr (TypeMatch<T, ActorDataDante>::value)
-		{
-			if (index >= 5)
-			{
-				actorData.newWeaponLevels[index] = 2;
-			}
-		}
 	}
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
@@ -1695,7 +1687,7 @@ void InitWeapons
 		}
 	}
 
-	memcpy(actorData.newMeleeWeapons, playerData.meleeWeapons, MAX_MELEE_WEAPON);
+	memcpy(actorData.newMeleeWeapons, playerData.meleeWeapons, MELEE_WEAPON_COUNT);
 
 	actorData.newMeleeWeaponCount = playerData.meleeWeaponCount;
 	actorData.newMeleeWeaponIndex = playerData.meleeWeaponIndex;
@@ -1705,7 +1697,7 @@ void InitWeapons
 		actorData.newMeleeWeaponIndex = 0;
 	}
 
-	memcpy(actorData.newRangedWeapons, playerData.rangedWeapons, MAX_RANGED_WEAPON);
+	memcpy(actorData.newRangedWeapons, playerData.rangedWeapons, RANGED_WEAPON_COUNT);
 
 	actorData.newRangedWeaponCount = playerData.rangedWeaponCount;
 	actorData.newRangedWeaponIndex = playerData.rangedWeaponIndex;
@@ -1799,6 +1791,8 @@ byte8 * CreateActor
 
 	auto & playerData = activeConfig.Actor.playerData[player][entity];
 
+	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[player];
+
 	UpdateFileData(actorData);
 
 	//HoboBreak();
@@ -1873,6 +1867,27 @@ byte8 * CreateActor
 	InitWeapons(actorData, playerData);
 
 	UpdateWeapons(actorData, playerData);
+
+	memset(actorData.expertise, 0xFF, 64);
+
+	actorData.styleLevel = 2;
+
+	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	{
+		for_each(uint8, index, WEAPON_EBONY_IVORY, WEAPON_COUNT_DANTE)
+		{
+			actorData.newWeaponLevels[index] = 2;
+		}
+	}
+
+	if
+	(
+		(enableDoppelganger) &&
+		(entity == ENTITY_CLONE)
+	)
+	{
+		actorData.newIsClone = true;
+	}
 
 	func_1DFC20(actorData);
 
@@ -2095,18 +2110,6 @@ void ToggleIsWeaponReady(bool enable)
 
 #pragma region Controllers
 
-
-
-
-
-
-
-
-
-
-
-
-
 template <typename T>
 void StyleSwitchController
 (
@@ -2291,17 +2294,16 @@ void MeleeWeaponSwitchController
 		}
 	}
 
-	if
-	(
-		(actorData.buttons[0] & GetBinding(BINDING_TAUNT            )) &&
-		(actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
-	)
+	if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
 	{
-		Back();
-	}
-	else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
-	{
-		Forward();
+		if (actorData.buttons[0] & GetBinding(BINDING_TAUNT))
+		{
+			Back();
+		}
+		else
+		{
+			Forward();
+		}
 	}
 	else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
 	{
@@ -2469,17 +2471,16 @@ void RangedWeaponSwitchController
 		}
 	}
 
-	if
-	(
-		(actorData.buttons[0] & GetBinding(BINDING_TAUNT     )) &&
-		(actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
-	)
+	if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
 	{
-		Back();
-	}
-	else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
-	{
-		Forward();
+		if (actorData.buttons[0] & GetBinding(BINDING_TAUNT))
+		{
+			Back();
+		}
+		else
+		{
+			Forward();
+		}
 	}
 
 	if (!update)
@@ -2507,7 +2508,7 @@ void RangedWeaponSwitchController
 
 	HUD_UpdateWeaponIcon(HUD_BOTTOM_RANGED_WEAPON_1, newRangedWeapon);
 
-	func_280120(hudBottom, 1, 0); // @Todo: Enums.
+	func_280120(hudBottom, 0, 0); // @Todo: Enums.
 
 	func_1EB0E0(actorData, 4);
 }
@@ -5280,7 +5281,7 @@ void SetColorAirHike
 )
 {
 	uint8 meleeWeaponIndex = static_cast<uint8>(actorData.meleeWeaponIndex);
-	if (meleeWeaponIndex >= MAX_MELEE_WEAPON_DANTE)
+	if (meleeWeaponIndex >= MELEE_WEAPON_COUNT_DANTE)
 	{
 		meleeWeaponIndex = 0;
 	}
@@ -5309,7 +5310,7 @@ void SetColorAura
 			else
 			{
 				uint8 meleeWeaponIndex = static_cast<uint8>(actorData2.meleeWeaponIndex);
-				if (meleeWeaponIndex >= MAX_MELEE_WEAPON_DANTE)
+				if (meleeWeaponIndex >= MELEE_WEAPON_COUNT_DANTE)
 				{
 					meleeWeaponIndex = 0;
 				}
@@ -5329,7 +5330,7 @@ void SetColorAura
 			else
 			{
 				uint8 activeMeleeWeaponIndex = static_cast<uint8>(actorData2.activeMeleeWeaponIndex);
-				if (activeMeleeWeaponIndex >= MAX_MELEE_WEAPON_VERGIL)
+				if (activeMeleeWeaponIndex >= MELEE_WEAPON_COUNT_VERGIL)
 				{
 					activeMeleeWeaponIndex = 0;
 				}
@@ -5509,6 +5510,144 @@ void ToggleMainActorFixes(bool enable)
 	*/
 }
 
+void ToggleStyleFixes(bool enable)
+{
+	// Disable Menu Controller
+	Write<bool>((appBaseAddr + 0x23B110 + 1), (enable) ? false : true); // dmc3.exe+23B110 - B0 01 - mov al,01
+	Write<bool>((appBaseAddr + 0x23B15D + 1), (enable) ? false : true); // dmc3.exe+23B15D - B0 01 - mov al,01
+	Write<bool>((appBaseAddr + 0x23B1A1 + 1), (enable) ? false : true); // dmc3.exe+23B1A1 - B0 01 - mov al,01
+	Write<bool>((appBaseAddr + 0x23B1E5 + 1), (enable) ? false : true); // dmc3.exe+23B1E5 - B0 01 - mov al,01
+
+	// Force Style Updates
+	{
+		WriteAddress((appBaseAddr + 0x1F87BB), (enable) ? (appBaseAddr + 0x1F87DC) : (appBaseAddr + 0x1F8AC6), 6); // dmc3.exe+1F87BB - 0F84 05030000 - je dmc3.exe+1F8AC6
+		WriteAddress((appBaseAddr + 0x1F87C4), (enable) ? (appBaseAddr + 0x1F87DC) : (appBaseAddr + 0x1F8AAC), 6); // dmc3.exe+1F87C4 - 0F84 E2020000 - je dmc3.exe+1F8AAC
+		WriteAddress((appBaseAddr + 0x1F87CD), (enable) ? (appBaseAddr + 0x1F87DC) : (appBaseAddr + 0x1F8A00), 6); // dmc3.exe+1F87CD - 0F84 2D020000 - je dmc3.exe+1F8A00
+		WriteAddress((appBaseAddr + 0x1F87D6), (enable) ? (appBaseAddr + 0x1F87DC) : (appBaseAddr + 0x1F8AF8), 6); // dmc3.exe+1F87D6 - 0F85 1C030000 - jne dmc3.exe+1F8AF8
+		// Doppelganger
+		WriteAddress((appBaseAddr + 0x1F880B), (enable) ? (appBaseAddr + 0x1F8A00) : (appBaseAddr + 0x1F8AF8), 6); // dmc3.exe+1F880B - 0F85 E7020000 - jne dmc3.exe+1F8AF8
+		WriteAddress((appBaseAddr + 0x1F8852), (enable) ? (appBaseAddr + 0x1F8A00) : (appBaseAddr + 0x1F8AF8), 6); // dmc3.exe+1F8852 - 0F85 A0020000 - jne dmc3.exe+1F8AF8
+		WriteAddress((appBaseAddr + 0x1F8862), (enable) ? (appBaseAddr + 0x1F8A00) : (appBaseAddr + 0x1F8AF8), 5); // dmc3.exe+1F8862 - E9 91020000   - jmp dmc3.exe+1F8AF8
+		WriteAddress((appBaseAddr + 0x1F886E), (enable) ? (appBaseAddr + 0x1F8A00) : (appBaseAddr + 0x1F8AF8), 6); // dmc3.exe+1F886E - 0F84 84020000 - je dmc3.exe+1F8AF8
+		WriteAddress((appBaseAddr + 0x1F89E1), (enable) ? (appBaseAddr + 0x1F8A00) : (appBaseAddr + 0x1F8AF8), 6); // dmc3.exe+1F89E1 - 0F82 11010000 - jb dmc3.exe+1F8AF8
+		WriteAddress((appBaseAddr + 0x1F89FB), (enable) ? (appBaseAddr + 0x1F8A00) : (appBaseAddr + 0x1F8AF8), 5); // dmc3.exe+1F89FB - E9 F8000000   - jmp dmc3.exe+1F8AF8
+		// Quicksilver
+		WriteAddress((appBaseAddr + 0x1F8A07), (enable) ? (appBaseAddr + 0x1F8AAC) : (appBaseAddr + 0x1F8AF8), 6); // dmc3.exe+1F8A07 - 0F85 EB000000 - jne dmc3.exe+1F8AF8
+		WriteAddress((appBaseAddr + 0x1F8A7D), (enable) ? (appBaseAddr + 0x1F8AAC) : (appBaseAddr + 0x1F8AF8), 2); // dmc3.exe+1F8A7D - 72 79         - jb dmc3.exe+1F8AF8
+		WriteAddress((appBaseAddr + 0x1F8AAA), (enable) ? (appBaseAddr + 0x1F8AAC) : (appBaseAddr + 0x1F8AF8), 2); // dmc3.exe+1F8AAA - EB 4C         - jmp dmc3.exe+1F8AF8
+		// Royalguard
+		WriteAddress((appBaseAddr + 0x1F8AC4), (enable) ? (appBaseAddr + 0x1F8AC6) : (appBaseAddr + 0x1F8AF8), 2); // dmc3.exe+1F8AC4 - EB 32 - jmp dmc3.exe+1F8AF8
+	}
+
+	// Gunslinger Fixes
+	{
+		// Allow Charging
+		WriteAddress((appBaseAddr + 0x21607C), (enable) ? (appBaseAddr + 0x216082) : (appBaseAddr + 0x216572), 6);
+		/*
+		dmc3.exe+21606F - 83 BF 38630000 01 - cmp dword ptr [rdi+00006338],01
+		dmc3.exe+21607C - 0F85 F0040000     - jne dmc3.exe+216572
+		dmc3.exe+216082 - 83 BF 943E0000 02 - cmp dword ptr [rdi+00003E94],02
+		*/
+
+		// Allow Charged Shot
+		WriteAddress((appBaseAddr + 0x1E6AAD), (enable) ? (appBaseAddr + 0x1E6AB3) : (appBaseAddr + 0x1E64A9), 6);
+		/*
+		dmc3.exe+1E6AA7 - 3B 83 38630000 - cmp eax,[rbx+00006338]
+		dmc3.exe+1E6AAD - 0F85 F6F9FFFF  - jne dmc3.exe+1E64A9
+		dmc3.exe+1E6AB3 - 83 7B 78 00    - cmp dword ptr [rbx+78],00
+		*/
+
+		// Allow Wild Stomp
+		Write<byte8>((appBaseAddr + 0x1E7F5F), (enable) ? 0xEB : 0x74);
+		/*
+		dmc3.exe+1E7F55 - 83 B9 38630000 01 - cmp dword ptr [rcx+00006338],01
+		dmc3.exe+1E7F5F - 74 15             - je dmc3.exe+1E7F76
+		*/
+	}
+}
+
+
+void ActivateDoppelganger(ActorData & actorData)
+{
+	actorData.doppelganger = true;
+	/*
+	dmc3.exe+1E9224 - C6 87 62630000 01 - mov byte ptr [rdi+00006362],01
+	*/
+
+	actorData.var_6340 = 3;
+	actorData.var_6454 = 1;
+	/*
+	dmc3.exe+1E922B - C7 87 40630000 03000000 - mov [rdi+00006340],00000003
+	dmc3.exe+1E9235 - C7 87 54640000 01000000 - mov [rdi+00006454],00000001
+	*/
+
+	actorData.var_3EC8 = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x1EC);
+	/*
+	dmc3.exe+1E921B - 48 8B 87 E83D0000 - mov rax,[rdi+00003DE8]
+	dmc3.exe+1E923F - 8B 88 EC010000    - mov ecx,[rax+000001EC]
+	dmc3.exe+1E924B - 89 8F C83E0000    - mov [rdi+00003EC8],ecx
+	*/
+
+	memset(actorData.var_6438, 0, (actorData.var_6440 * 46));
+	/*
+	dmc3.exe+1E92AA - 48 8B 8F 38640000 - mov rcx,[rdi+00006438]
+	dmc3.exe+1E9222 - 33 D2             - xor edx,edx
+	dmc3.exe+1E92A3 - 48 63 87 40640000 - movsxd rax,dword ptr [rdi+00006440]
+	dmc3.exe+1E92B1 - 4C 6B C0 2E       - imul r8,rax,2E
+	dmc3.exe+1E92B5 - E8 30D91500       - call dmc3.exe+346BEA
+	*/
+
+	actorData.cloneRate = 0;
+
+
+	func_1EAE60(actorData, 0);
+
+
+	/*
+	dmc3.exe+1E92D7 - 33 D2       - xor edx,edx
+	dmc3.exe+1E92D9 - 48 8B CF    - mov rcx,rdi
+	dmc3.exe+1E92DC - E8 7F1B0000 - call dmc3.exe+1EAE60
+	*/
+}
+
+void DeactivateDoppelganger(ActorData & actorData)
+{
+	actorData.doppelganger = false;
+	/*
+	dmc3.exe+1E2AD8 - C6 81 62630000 00 - mov byte ptr [rcx+00006362],00
+	*/
+
+	actorData.var_6340 = 0;
+	actorData.var_6454 = 0;
+	/*
+	dmc3.exe+1E2AEC - C7 81 40630000 00000000 - mov [rcx+00006340],00000000
+	dmc3.exe+1E2AF6 - C7 81 54640000 00000000 - mov [rcx+00006454],00000000
+	*/
+
+
+
+	// only if devil, but shouldn't matter
+
+	actorData.var_3EC4 = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x1F0);
+	/*
+	dmc3.exe+1E2B37 - 48 8B 83 E83D0000 - mov rax,[rbx+00003DE8]
+	dmc3.exe+1E2B40 - 8B 88 F0010000    - mov ecx,[rax+000001F0]
+	dmc3.exe+1E2B46 - 89 8B C43E0000    - mov [rbx+00003EC4],ecx
+	*/
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
 
 
 
@@ -5540,12 +5679,44 @@ export void Actor_Init()
 	InitColor();
 
 
+	ToggleStyleFixes(true);
 
-	// Disable Menu Controller
-	Write<uint8>((appBaseAddr + 0x23B111), 0);
-	Write<uint8>((appBaseAddr + 0x23B15E), 0);
-	Write<uint8>((appBaseAddr + 0x23B1A2), 0);
-	Write<uint8>((appBaseAddr + 0x23B1E6), 0);
+
+
+
+
+	{
+		auto func = CreateFunction(ActivateDoppelganger, (appBaseAddr + 0x1E930E));
+		WriteJump((appBaseAddr + 0x1E9216), func.addr);
+		/*
+		dmc3.exe+1E9216 - E8 E5170100 - call dmc3.exe+1FAA00
+		dmc3.exe+1E930E - B0 01       - mov al,01
+		*/
+	}
+
+	{
+		auto func = CreateFunction(DeactivateDoppelganger, (appBaseAddr + 0x1E2B63));
+		WriteJump((appBaseAddr + 0x1E2AD1), func.addr, 2);
+		/*
+		dmc3.exe+1E2AD1 - 48 8B 81 78640000 - mov rax,[rcx+00006478]
+		dmc3.exe+1E2B63 - 48 83 C4 20       - add rsp,20
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	// @Todo: Update Style Icon during actor init.

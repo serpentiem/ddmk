@@ -53,7 +53,7 @@ var typeHelper =
 	[ "byte16"                    , "2 Bytes", 2   , true  ],
 	[ "byte32"                    , "4 Bytes", 4   , true  ],
 	[ "byte64"                    , "8 Bytes", 8   , true  ],
-	[ "float32"                   , "4 Bytes", 4   , false ],
+	[ "float32"                   , "Float", 4   , false ],
 	// Structures
 	[ "vec4"                      , ""       , 16  , false ],
 

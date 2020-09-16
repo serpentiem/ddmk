@@ -130,6 +130,12 @@ var items =
 	[ 0x1EB0E0, "void"   , "byte8 * actorData, uint32 index"                                              , ""                            , "Call after Weapon Switch Animation." ],
 	[ 0x1F92C0, "void"   , "byte8 * actorData, uint32 phase"                                              , ""                            , "Queue devil model update."           ],
 	[ 0x1F97F0, "void"   , "byte8 * actorData, bool noMotion"                                           , ""                            , "Update devil model and play motion." ],
+
+
+
+
+	[ 0x1F94D0, "void"   , "byte8 * actorData, uint8 index", "", "Devil Flux"  ],
+	[ 0x1EAE60, "void"   , "byte8 * actorData, uint8 index", "", "Play Doppelganger Effect" ],
 	
 	
 
@@ -217,7 +223,7 @@ var items =
 
 
 
-[ 0x1F94D0, "void", "byte8 * baseAddr, uint8 index", "", "Devil Flux"  ],
+
 
 
 

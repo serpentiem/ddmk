@@ -187,7 +187,7 @@ uint8 Actor_meleeWeapons[] =
 	WEAPON_FORCE_EDGE,
 };
 
-uint8 Actor_meleeWeaponIndices[MAX_PLAYER][MAX_ENTITY][MAX_MELEE_WEAPON] = {};
+uint8 Actor_meleeWeaponIndices[MAX_PLAYER][MAX_ENTITY][MELEE_WEAPON_COUNT] = {};
 
 const char * Actor_rangedWeaponNames[] =
 {
@@ -207,7 +207,7 @@ uint8 Actor_rangedWeapons[] =
 	WEAPON_KALINA_ANN,
 };
 
-uint8 Actor_rangedWeaponIndices[MAX_PLAYER][MAX_ENTITY][MAX_RANGED_WEAPON] = {};
+uint8 Actor_rangedWeaponIndices[MAX_PLAYER][MAX_ENTITY][RANGED_WEAPON_COUNT] = {};
 
 void Actor_UpdateWeaponIndices
 (
@@ -217,7 +217,7 @@ void Actor_UpdateWeaponIndices
 {
 	auto & playerData = queuedConfig.Actor.playerData[player][entity];
 
-	for_all(uint8, index, MAX_MELEE_WEAPON)
+	for_all(uint8, index, MELEE_WEAPON_COUNT)
 	{
 		UpdateMapIndex
 		(
@@ -232,7 +232,7 @@ void Actor_UpdateWeaponIndices
 		return;
 	}
 
-	for_all(uint8, index, MAX_RANGED_WEAPON)
+	for_all(uint8, index, RANGED_WEAPON_COUNT)
 	{
 		UpdateMapIndex
 		(
@@ -300,9 +300,9 @@ void Actor_PlayerTab
 	ImGui::Text("Melee Weapons");
 	ImGui::PushItemWidth(200);
 
-	GUI_Slider<uint8>("", playerData.meleeWeaponCount, 1, MAX_MELEE_WEAPON);
+	GUI_Slider<uint8>("", playerData.meleeWeaponCount, 1, MELEE_WEAPON_COUNT);
 
-	for_all(uint8, index, MAX_MELEE_WEAPON)
+	for_all(uint8, index, MELEE_WEAPON_COUNT)
 	{
 		bool condition = (index >= playerData.meleeWeaponCount);
 		GUI_PushDisable(condition);
@@ -332,9 +332,9 @@ void Actor_PlayerTab
 	ImGui::Text("Ranged Weapons");
 	ImGui::PushItemWidth(200);
 
-	GUI_Slider<uint8>("", playerData.rangedWeaponCount, 1, MAX_RANGED_WEAPON);
+	GUI_Slider<uint8>("", playerData.rangedWeaponCount, 1, RANGED_WEAPON_COUNT);
 
-	for_all(uint8, index, MAX_RANGED_WEAPON)
+	for_all(uint8, index, RANGED_WEAPON_COUNT)
 	{
 		bool condition = (index >= playerData.rangedWeaponCount);
 		GUI_PushDisable(condition);
@@ -1471,7 +1471,7 @@ void Actor_WeaponSelectFunction
 //	WEAPON_KALINA_ANN,
 //};
 //
-//uint8 Actor_rangedWeaponIndex[MAX_PLAYER][MAX_ENTITY][MAX_CHAR][MAX_RANGED_WEAPON] = {};
+//uint8 Actor_rangedWeaponIndex[MAX_PLAYER][MAX_ENTITY][MAX_CHAR][RANGED_WEAPON_COUNT] = {};
 
 //template
 //<
@@ -1688,7 +1688,7 @@ void Actor_WeaponSelectFunction
 //	WEAPON_BEOWULF_DANTE,
 //};
 //
-//uint8 Actor_meleeWeaponIndex[MAX_PLAYER][MAX_ENTITY][MAX_CHAR][MAX_MELEE_WEAPON] = {};
+//uint8 Actor_meleeWeaponIndex[MAX_PLAYER][MAX_ENTITY][MAX_CHAR][MELEE_WEAPON_COUNT] = {};
 
 
 

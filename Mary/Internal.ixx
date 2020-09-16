@@ -56,6 +56,8 @@ export typedef void(__fastcall * func_280160_t)(byte8 * dest, uint32 group, uint
 export typedef void(__fastcall * func_1EB0E0_t)(byte8 * actorData, uint32 index); // Call after Weapon Switch Animation.
 export typedef void(__fastcall * func_1F92C0_t)(byte8 * actorData, uint32 phase); // Queue devil model update.
 export typedef void(__fastcall * func_1F97F0_t)(byte8 * actorData, bool noMotion); // Update devil model and play motion.
+export typedef void(__fastcall * func_1F94D0_t)(byte8 * actorData, uint8 index); // Devil Flux
+export typedef void(__fastcall * func_1EAE60_t)(byte8 * actorData, uint8 index); // Play Doppelganger Effect
 export typedef void(__fastcall * func_89E30_t)(ModelData & modelData, uint32 index); // Call after icon update.
 export typedef void(__fastcall * func_1B9FA0_t)(byte8 * addr); // Adjust file pointers.
 export typedef void(__fastcall * func_223AC0_t)(byte8 * actorData); // Create Spiral Swords.
@@ -73,7 +75,6 @@ export typedef void(__fastcall * func_2F74E0_t)(byte8 * dest, uint32 index); // 
 export typedef void(__fastcall * func_2F7350_t)(byte8 * dest, uint32 index); // Hide Model Partition
 export typedef void(__fastcall * func_32BE20_t)(byte8 * dest); // Init Track
 export typedef void(__fastcall * func_32BA90_t)(byte8 * dest, const char * filename, uint32, uint32); // Set Track
-export typedef void(__fastcall * func_1F94D0_t)(byte8 * baseAddr, uint8 index); // Devil Flux
 export typedef void(__fastcall * func_594B0_t)(BodyPartData & bodyPartData, byte8 * file, uint32 bodyPart, uint32, byte8 ** motionArchives, byte8 *** modelDataFunctions, PhysicsMetadata ** modelPhysicsMetadataPool, float32 * motionSpeed, void *);
 export typedef byte8 *(__fastcall * func_8A520_t)(ModelData & modelData);
 export typedef void(__fastcall * func_30E630_t)(byte8 * dest, uint32 index);
@@ -127,6 +128,8 @@ export func_280160_t func_280160 = 0; // (byte8 * dest, uint32 group, uint32 ind
 export func_1EB0E0_t func_1EB0E0 = 0; // (byte8 * actorData, uint32 index)
 export func_1F92C0_t func_1F92C0 = 0; // (byte8 * actorData, uint32 phase)
 export func_1F97F0_t func_1F97F0 = 0; // (byte8 * actorData, bool noMotion)
+export func_1F94D0_t func_1F94D0 = 0; // (byte8 * actorData, uint8 index)
+export func_1EAE60_t func_1EAE60 = 0; // (byte8 * actorData, uint8 index)
 export func_89E30_t func_89E30 = 0; // (ModelData & modelData, uint32 index)
 export func_1B9FA0_t func_1B9FA0 = 0; // (byte8 * addr)
 export func_223AC0_t func_223AC0 = 0; // (byte8 * actorData)
@@ -144,7 +147,6 @@ export func_2F74E0_t func_2F74E0 = 0; // (byte8 * dest, uint32 index)
 export func_2F7350_t func_2F7350 = 0; // (byte8 * dest, uint32 index)
 export func_32BE20_t func_32BE20 = 0; // (byte8 * dest)
 export func_32BA90_t func_32BA90 = 0; // (byte8 * dest, const char * filename, uint32, uint32)
-export func_1F94D0_t func_1F94D0 = 0; // (byte8 * baseAddr, uint8 index)
 export func_594B0_t func_594B0 = 0; // (BodyPartData & bodyPartData, byte8 * file, uint32 bodyPart, uint32, byte8 ** motionArchives, byte8 *** modelDataFunctions, PhysicsMetadata ** modelPhysicsMetadataPool, float32 * motionSpeed, void *)
 export func_8A520_t func_8A520 = 0; // (ModelData & modelData)
 export func_30E630_t func_30E630 = 0; // (byte8 * dest, uint32 index)
@@ -349,6 +351,14 @@ export void Internal_Init()
 		func_1F97F0 = (func_1F97F0_t)func.addr;
 	}
 	{
+		auto func = CreateFunction((appBaseAddr + 0x1F94D0));
+		func_1F94D0 = (func_1F94D0_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x1EAE60));
+		func_1EAE60 = (func_1EAE60_t)func.addr;
+	}
+	{
 		auto func = CreateFunction((appBaseAddr + 0x89E30));
 		func_89E30 = (func_89E30_t)func.addr;
 	}
@@ -415,10 +425,6 @@ export void Internal_Init()
 	{
 		auto func = CreateFunction((appBaseAddr + 0x32BA90));
 		func_32BA90 = (func_32BA90_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x1F94D0));
-		func_1F94D0 = (func_1F94D0_t)func.addr;
 	}
 	{
 		auto func = CreateFunction((appBaseAddr + 0x594B0), 0, true, true, 0, 0, 0, 0, 5);
