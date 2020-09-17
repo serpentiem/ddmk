@@ -1887,6 +1887,16 @@ byte8 * CreateActor
 	)
 	{
 		actorData.newIsClone = true;
+
+
+		//actorData.newGamepad          = player;
+		actorData.newButtonMask       = 0;
+		actorData.newEnableRightStick = false;
+		actorData.newEnableLeftStick  = false;
+
+
+
+
 	}
 
 	func_1DFC20(actorData);
@@ -5836,6 +5846,112 @@ export void Actor_Init()
 
 
 	ToggleStyleFixes(true);
+
+
+
+
+
+
+
+	// Position Updates
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
+			0x74, 0x01,                               // je short
+			0xC3,                                     // ret
+			0x48, 0x89, 0x5C, 0x24, 0x08,             // mov [rsp+08],rbx
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1FB305), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable[0]);
+		WriteJump((appBaseAddr + 0x1FB300), func.addr);
+		/*
+		dmc3.exe+1FB300 - 48 89 5C 24 08 - mov [rsp+08],rbx
+		dmc3.exe+1FB305 - 57             - push rdi
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
+			0x74, 0x01,                               // je short
+			0xC3,                                     // ret
+			0x48, 0x89, 0x5C, 0x24, 0x08,             // mov [rsp+08],rbx
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1FBE25), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable[1]);
+		WriteJump((appBaseAddr + 0x1FBE20), func.addr);
+		/*
+		dmc3.exe+1FBE20 - 48 89 5C 24 08 - mov [rsp+08],rbx
+		dmc3.exe+1FBE25 - 57             - push rdi
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
+			0x74, 0x01,                               // je short
+			0xC3,                                     // ret
+			0x40, 0x57,                               // push rdi
+			0x48, 0x83, 0xEC, 0x20,                   // sub rsp,20
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1FB476), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable[2]);
+		WriteJump((appBaseAddr + 0x1FB470), func.addr, 1);
+		/*
+		dmc3.exe+1FB470 - 40 57                - push rdi
+		dmc3.exe+1FB472 - 48 83 EC 20          - sub rsp,20
+		dmc3.exe+1FB476 - 66 83 B9 0A750000 35 - cmp word ptr [rcx+0000750A],35
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
+			0x74, 0x01,                               // je short
+			0xC3,                                     // ret
+			0x48, 0x89, 0x5C, 0x24, 0x10,             // mov [rsp+10],rbx
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1FB545), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable[3]);
+		WriteJump((appBaseAddr + 0x1FB540), func.addr);
+		/*
+		dmc3.exe+1FB540 - 48 89 5C 24 10 - mov [rsp+10],rbx
+		dmc3.exe+1FB545 - 57             - push rdi
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
+			0x74, 0x01,                               // je short
+			0xC3,                                     // ret
+			0x48, 0x89, 0x5C, 0x24, 0x18,             // mov [rsp+18],rbx
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1FBEE5), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable[4]);
+		WriteJump((appBaseAddr + 0x1FBEE0), func.addr);
+		/*
+		dmc3.exe+1FBEE0 - 48 89 5C 24 18 - mov [rsp+18],rbx
+		dmc3.exe+1FBEE5 - 48 89 7C 24 20 - mov [rsp+20],rdi
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

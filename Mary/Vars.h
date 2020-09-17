@@ -2190,13 +2190,15 @@ struct ActorData
 	uint8 newExecuteStyleSwitch; // 0x1CAF8
 	_(7);
 	bool newSect[8]; // 0x1CB00
-	uint8 newBufferedActionPolicy; // 0x1CB08
-	uint8 newAirStingerCount; // 0x1CB09
-	_(6);
-	byte8 * newDevilAura; // 0x1CB10
 	_(8);
-	byte32 newEffectIndices[8]; // 0x1CB20
-	uint32 newLastVar; // 0x1CB40
+	bool newEnable[8]; // 0x1CB10
+	uint8 newBufferedActionPolicy; // 0x1CB18
+	uint8 newAirStingerCount; // 0x1CB19
+	_(6);
+	byte8 * newDevilAura; // 0x1CB20
+	_(8);
+	byte32 newEffectIndices[8]; // 0x1CB30
+	uint32 newLastVar; // 0x1CB50
 
 	operator byte8 *()
 	{
@@ -2439,13 +2441,15 @@ struct ActorDataDante
 	uint8 newExecuteStyleSwitch; // 0x1CAF8
 	_(7);
 	bool newSect[8]; // 0x1CB00
-	uint8 newBufferedActionPolicy; // 0x1CB08
-	uint8 newAirStingerCount; // 0x1CB09
-	_(6);
-	byte8 * newDevilAura; // 0x1CB10
 	_(8);
-	byte32 newEffectIndices[8]; // 0x1CB20
-	uint32 newLastVar; // 0x1CB40
+	bool newEnable[8]; // 0x1CB10
+	uint8 newBufferedActionPolicy; // 0x1CB18
+	uint8 newAirStingerCount; // 0x1CB19
+	_(6);
+	byte8 * newDevilAura; // 0x1CB20
+	_(8);
+	byte32 newEffectIndices[8]; // 0x1CB30
+	uint32 newLastVar; // 0x1CB50
 
 	operator byte8 *()
 	{
@@ -2661,13 +2665,15 @@ struct ActorDataBob
 	uint8 newExecuteStyleSwitch; // 0x1CAF8
 	_(7);
 	bool newSect[8]; // 0x1CB00
-	uint8 newBufferedActionPolicy; // 0x1CB08
-	uint8 newAirStingerCount; // 0x1CB09
-	_(6);
-	byte8 * newDevilAura; // 0x1CB10
 	_(8);
-	byte32 newEffectIndices[8]; // 0x1CB20
-	uint32 newLastVar; // 0x1CB40
+	bool newEnable[8]; // 0x1CB10
+	uint8 newBufferedActionPolicy; // 0x1CB18
+	uint8 newAirStingerCount; // 0x1CB19
+	_(6);
+	byte8 * newDevilAura; // 0x1CB20
+	_(8);
+	byte32 newEffectIndices[8]; // 0x1CB30
+	uint32 newLastVar; // 0x1CB50
 
 	operator byte8 *()
 	{
@@ -2883,13 +2889,15 @@ struct ActorDataLady
 	uint8 newExecuteStyleSwitch; // 0x1CAF8
 	_(7);
 	bool newSect[8]; // 0x1CB00
-	uint8 newBufferedActionPolicy; // 0x1CB08
-	uint8 newAirStingerCount; // 0x1CB09
-	_(6);
-	byte8 * newDevilAura; // 0x1CB10
 	_(8);
-	byte32 newEffectIndices[8]; // 0x1CB20
-	uint32 newLastVar; // 0x1CB40
+	bool newEnable[8]; // 0x1CB10
+	uint8 newBufferedActionPolicy; // 0x1CB18
+	uint8 newAirStingerCount; // 0x1CB19
+	_(6);
+	byte8 * newDevilAura; // 0x1CB20
+	_(8);
+	byte32 newEffectIndices[8]; // 0x1CB30
+	uint32 newLastVar; // 0x1CB50
 
 	operator byte8 *()
 	{
@@ -3120,13 +3128,15 @@ struct ActorDataVergil
 	uint8 newExecuteStyleSwitch; // 0x1CAF8
 	_(7);
 	bool newSect[8]; // 0x1CB00
-	uint8 newBufferedActionPolicy; // 0x1CB08
-	uint8 newAirStingerCount; // 0x1CB09
-	_(6);
-	byte8 * newDevilAura; // 0x1CB10
 	_(8);
-	byte32 newEffectIndices[8]; // 0x1CB20
-	uint32 newLastVar; // 0x1CB40
+	bool newEnable[8]; // 0x1CB10
+	uint8 newBufferedActionPolicy; // 0x1CB18
+	uint8 newAirStingerCount; // 0x1CB19
+	_(6);
+	byte8 * newDevilAura; // 0x1CB20
+	_(8);
+	byte32 newEffectIndices[8]; // 0x1CB30
+	uint32 newLastVar; // 0x1CB50
 
 	operator byte8 *()
 	{
@@ -3275,11 +3285,12 @@ static_assert(offsetof(ActorData, newRangedWeaponIndex) == 0x1CAF6);
 static_assert(offsetof(ActorData, newStyle) == 0x1CAF7);
 static_assert(offsetof(ActorData, newExecuteStyleSwitch) == 0x1CAF8);
 static_assert(offsetof(ActorData, newSect) == 0x1CB00);
-static_assert(offsetof(ActorData, newBufferedActionPolicy) == 0x1CB08);
-static_assert(offsetof(ActorData, newAirStingerCount) == 0x1CB09);
-static_assert(offsetof(ActorData, newDevilAura) == 0x1CB10);
-static_assert(offsetof(ActorData, newEffectIndices) == 0x1CB20);
-static_assert(offsetof(ActorData, newLastVar) == 0x1CB40);
+static_assert(offsetof(ActorData, newEnable) == 0x1CB10);
+static_assert(offsetof(ActorData, newBufferedActionPolicy) == 0x1CB18);
+static_assert(offsetof(ActorData, newAirStingerCount) == 0x1CB19);
+static_assert(offsetof(ActorData, newDevilAura) == 0x1CB20);
+static_assert(offsetof(ActorData, newEffectIndices) == 0x1CB30);
+static_assert(offsetof(ActorData, newLastVar) == 0x1CB50);
 
 static_assert(offsetof(ActorDataDante, status) == 8);
 static_assert(offsetof(ActorDataDante, character) == 0x78);
@@ -3442,11 +3453,12 @@ static_assert(offsetof(ActorDataDante, newRangedWeaponIndex) == 0x1CAF6);
 static_assert(offsetof(ActorDataDante, newStyle) == 0x1CAF7);
 static_assert(offsetof(ActorDataDante, newExecuteStyleSwitch) == 0x1CAF8);
 static_assert(offsetof(ActorDataDante, newSect) == 0x1CB00);
-static_assert(offsetof(ActorDataDante, newBufferedActionPolicy) == 0x1CB08);
-static_assert(offsetof(ActorDataDante, newAirStingerCount) == 0x1CB09);
-static_assert(offsetof(ActorDataDante, newDevilAura) == 0x1CB10);
-static_assert(offsetof(ActorDataDante, newEffectIndices) == 0x1CB20);
-static_assert(offsetof(ActorDataDante, newLastVar) == 0x1CB40);
+static_assert(offsetof(ActorDataDante, newEnable) == 0x1CB10);
+static_assert(offsetof(ActorDataDante, newBufferedActionPolicy) == 0x1CB18);
+static_assert(offsetof(ActorDataDante, newAirStingerCount) == 0x1CB19);
+static_assert(offsetof(ActorDataDante, newDevilAura) == 0x1CB20);
+static_assert(offsetof(ActorDataDante, newEffectIndices) == 0x1CB30);
+static_assert(offsetof(ActorDataDante, newLastVar) == 0x1CB50);
 
 static_assert(offsetof(ActorDataBob, status) == 8);
 static_assert(offsetof(ActorDataBob, character) == 0x78);
@@ -3589,11 +3601,12 @@ static_assert(offsetof(ActorDataBob, newRangedWeaponIndex) == 0x1CAF6);
 static_assert(offsetof(ActorDataBob, newStyle) == 0x1CAF7);
 static_assert(offsetof(ActorDataBob, newExecuteStyleSwitch) == 0x1CAF8);
 static_assert(offsetof(ActorDataBob, newSect) == 0x1CB00);
-static_assert(offsetof(ActorDataBob, newBufferedActionPolicy) == 0x1CB08);
-static_assert(offsetof(ActorDataBob, newAirStingerCount) == 0x1CB09);
-static_assert(offsetof(ActorDataBob, newDevilAura) == 0x1CB10);
-static_assert(offsetof(ActorDataBob, newEffectIndices) == 0x1CB20);
-static_assert(offsetof(ActorDataBob, newLastVar) == 0x1CB40);
+static_assert(offsetof(ActorDataBob, newEnable) == 0x1CB10);
+static_assert(offsetof(ActorDataBob, newBufferedActionPolicy) == 0x1CB18);
+static_assert(offsetof(ActorDataBob, newAirStingerCount) == 0x1CB19);
+static_assert(offsetof(ActorDataBob, newDevilAura) == 0x1CB20);
+static_assert(offsetof(ActorDataBob, newEffectIndices) == 0x1CB30);
+static_assert(offsetof(ActorDataBob, newLastVar) == 0x1CB50);
 
 static_assert(offsetof(ActorDataLady, status) == 8);
 static_assert(offsetof(ActorDataLady, character) == 0x78);
@@ -3736,11 +3749,12 @@ static_assert(offsetof(ActorDataLady, newRangedWeaponIndex) == 0x1CAF6);
 static_assert(offsetof(ActorDataLady, newStyle) == 0x1CAF7);
 static_assert(offsetof(ActorDataLady, newExecuteStyleSwitch) == 0x1CAF8);
 static_assert(offsetof(ActorDataLady, newSect) == 0x1CB00);
-static_assert(offsetof(ActorDataLady, newBufferedActionPolicy) == 0x1CB08);
-static_assert(offsetof(ActorDataLady, newAirStingerCount) == 0x1CB09);
-static_assert(offsetof(ActorDataLady, newDevilAura) == 0x1CB10);
-static_assert(offsetof(ActorDataLady, newEffectIndices) == 0x1CB20);
-static_assert(offsetof(ActorDataLady, newLastVar) == 0x1CB40);
+static_assert(offsetof(ActorDataLady, newEnable) == 0x1CB10);
+static_assert(offsetof(ActorDataLady, newBufferedActionPolicy) == 0x1CB18);
+static_assert(offsetof(ActorDataLady, newAirStingerCount) == 0x1CB19);
+static_assert(offsetof(ActorDataLady, newDevilAura) == 0x1CB20);
+static_assert(offsetof(ActorDataLady, newEffectIndices) == 0x1CB30);
+static_assert(offsetof(ActorDataLady, newLastVar) == 0x1CB50);
 
 static_assert(offsetof(ActorDataVergil, status) == 8);
 static_assert(offsetof(ActorDataVergil, character) == 0x78);
@@ -3894,11 +3908,12 @@ static_assert(offsetof(ActorDataVergil, newRangedWeaponIndex) == 0x1CAF6);
 static_assert(offsetof(ActorDataVergil, newStyle) == 0x1CAF7);
 static_assert(offsetof(ActorDataVergil, newExecuteStyleSwitch) == 0x1CAF8);
 static_assert(offsetof(ActorDataVergil, newSect) == 0x1CB00);
-static_assert(offsetof(ActorDataVergil, newBufferedActionPolicy) == 0x1CB08);
-static_assert(offsetof(ActorDataVergil, newAirStingerCount) == 0x1CB09);
-static_assert(offsetof(ActorDataVergil, newDevilAura) == 0x1CB10);
-static_assert(offsetof(ActorDataVergil, newEffectIndices) == 0x1CB20);
-static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CB40);
+static_assert(offsetof(ActorDataVergil, newEnable) == 0x1CB10);
+static_assert(offsetof(ActorDataVergil, newBufferedActionPolicy) == 0x1CB18);
+static_assert(offsetof(ActorDataVergil, newAirStingerCount) == 0x1CB19);
+static_assert(offsetof(ActorDataVergil, newDevilAura) == 0x1CB20);
+static_assert(offsetof(ActorDataVergil, newEffectIndices) == 0x1CB30);
+static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CB50);
 
 // $ActorDataEnd
 

@@ -493,6 +493,7 @@ var extra =
 	//[ "newLastRangedWeapon"    , "uint8"   ],
 
 	[ "newSect[8]"             , "bool"    ],
+	[ "newEnable[8]"           , "bool"    ],
 	[ "newBufferedActionPolicy", "uint8"   ],
 	[ "newAirStingerCount"     , "uint8"   ],
 	

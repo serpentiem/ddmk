@@ -149,7 +149,13 @@ bool SetTrack
 
 
 
-
+void LockActor(byte8 * baseAddr)
+{
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+	actorData.newButtonMask = 0;
+	actorData.newEnableRightStick = false;
+	actorData.newEnableLeftStick = false;
+}
 
 
 void UnlockActor(byte8 * baseAddr)
@@ -170,7 +176,7 @@ void CreateMainActor(byte8 * baseAddr)
 	MainLoopOnce_run = false;
 	MainLoopOnceSync_run = false;
 
-	UnlockActor(baseAddr);
+	//LockActor(baseAddr);
 
 	Actor_CreateMainActor(baseAddr);
 
@@ -195,7 +201,7 @@ void Customize_CreateMainActor(byte8 * baseAddr)
 
 void CreateCloneActor(byte8 * baseAddr)
 {
-	UnlockActor(baseAddr);
+	//UnlockActor(baseAddr);
 
 	Actor_CreateCloneActor(baseAddr);
 }

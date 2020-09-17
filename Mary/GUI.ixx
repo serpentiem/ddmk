@@ -1257,6 +1257,25 @@ void Main()
 		ImGui::Text("");
 
 
+		for_each(uint32, actorIndex, 2, Actor_actorBaseAddr.count)
+		{
+			if (!Actor_actorBaseAddr[actorIndex])
+			{
+				break;
+			}
+			auto & actorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[actorIndex]);
+
+			for_all(uint8, index, countof(actorData.newEnable))
+			{
+				char label[64];
+				snprintf(label, sizeof(label), "Enable %u", index);
+				
+				GUI_Checkbox(label, actorData.newEnable[index]);
+			}
+
+			ImGui::Text("");
+		}
+
 
 
 
