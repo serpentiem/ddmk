@@ -2228,6 +2228,91 @@ void StyleSwitchController
 	HUD_UpdateStyleIcon(CHAR_DANTE, actorData.newStyle);
 }
 
+
+
+
+
+
+
+
+template <typename T>
+void UpdateForm
+(
+	T & actorData
+)
+{
+	actorData.queuedModelIndex       = 0;
+	actorData.activeModelIndexMirror = 0;
+	actorData.airRaid                = 0;
+
+	if (actorData.devil)
+	{
+		if constexpr (TypeMatch<T, ActorDataDante>::value)
+		{
+			if (actorData.sparda)
+			{
+				actorData.queuedModelIndex       = 1;
+				actorData.activeModelIndexMirror = 1;
+				actorData.activeDevil            = DEVIL_SPARDA;
+				actorData.airRaid                = 0;
+			}
+			else
+			{
+				auto weapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
+				if (weapon > WEAPON_BEOWULF_DANTE)
+				{
+					weapon = WEAPON_REBELLION;
+				}
+
+				actorData.queuedModelIndex       = (1 + weapon);
+				actorData.activeModelIndexMirror = (1 + weapon);
+				actorData.activeDevil            = static_cast<uint32>(weaponDevilIds[weapon]);
+				actorData.airRaid                = 0;
+
+				func_1F97F0(actorData, true);
+			}
+		}
+		else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+		{
+			if (actorData.neroAngelo)
+			{
+				if (actorData.queuedMeleeWeaponIndex == 2)
+				{
+					actorData.queuedMeleeWeaponIndex = 0;
+				}
+
+				actorData.queuedModelIndex       = 1;
+				actorData.activeModelIndexMirror = 1;
+				actorData.activeDevil            = DEVIL_NERO_ANGELO;
+				actorData.airRaid                = 0;
+			}
+			else
+			{
+				auto weapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
+				if ((weapon < WEAPON_YAMATO_VERGIL) || (weapon > WEAPON_FORCE_EDGE))
+				{
+					weapon = WEAPON_YAMATO_VERGIL;
+				}
+
+				actorData.queuedModelIndex       = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
+				actorData.activeModelIndexMirror = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
+				actorData.activeDevil            = static_cast<uint32>(weaponDevilIds[weapon]);
+				actorData.airRaid                = 0;
+
+				func_1F97F0(actorData, true);
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
 template <typename T>
 void MeleeWeaponSwitchController
 (
@@ -2324,67 +2409,7 @@ void MeleeWeaponSwitchController
 
 	auto newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
 
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
-	{
-		if (actorData.devil)
-		{
-			if (actorData.sparda)
-			{
-				actorData.queuedModelIndex       = 1;
-				actorData.activeModelIndexMirror = 1;
-				actorData.activeDevil            = DEVIL_SPARDA;
-				actorData.airRaid                = 0;
-			}
-			else
-			{
-				auto weapon = newMeleeWeapon;
-				if (weapon > WEAPON_BEOWULF_DANTE)
-				{
-					weapon = WEAPON_REBELLION;
-				}
-
-				actorData.queuedModelIndex       = (1 + weapon);
-				actorData.activeModelIndexMirror = (1 + weapon);
-				actorData.activeDevil            = static_cast<uint32>(weaponDevilIds[weapon]);
-				actorData.airRaid                = 0;
-
-				func_1F97F0(actorData, true);
-			}
-		}
-	}
-	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	{
-		if (actorData.devil)
-		{
-			if (actorData.neroAngelo)
-			{
-				if (actorData.queuedMeleeWeaponIndex == 2)
-				{
-					actorData.queuedMeleeWeaponIndex = 0;
-				}
-
-				actorData.queuedModelIndex       = 1;
-				actorData.activeModelIndexMirror = 1;
-				actorData.activeDevil            = DEVIL_NERO_ANGELO;
-				actorData.airRaid                = 0;
-			}
-			else
-			{
-				auto weapon = newMeleeWeapon;
-				if ((weapon < WEAPON_YAMATO_VERGIL) || (weapon > WEAPON_FORCE_EDGE))
-				{
-					weapon = WEAPON_YAMATO_VERGIL;
-				}
-
-				actorData.queuedModelIndex       = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
-				actorData.activeModelIndexMirror = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
-				actorData.activeDevil            = static_cast<uint32>(weaponDevilIds[weapon]);
-				actorData.airRaid                = 0;
-
-				func_1F97F0(actorData, true);
-			}
-		}
-	}
+	UpdateForm(actorData);
 
 	if (actorData.newPlayer != 0)
 	{
@@ -2631,37 +2656,39 @@ bool WeaponSwitchController(byte8 * baseAddr)
 
 
 
-export void Actor_DeactivateDevilForm(byte8 * baseAddr)
-{
-	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+// @Todo: Don't discard!
 
-	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
+// export void Actor_DeactivateDevilForm(byte8 * baseAddr)
+// {
+// 	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 
-	switch (actorData.character)
-	{
-		case CHAR_DANTE:
-		{
-			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(baseAddr);
-			break;
-		}
-		case CHAR_BOB:
-		{
-			auto & actorData2 = *reinterpret_cast<ActorDataBob *>(baseAddr);
-			break;
-		}
-		case CHAR_LADY:
-		{
-			auto & actorData2 = *reinterpret_cast<ActorDataLady *>(baseAddr);
-			break;
-		}
-		case CHAR_VERGIL:
-		{
-			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(baseAddr);
-			UpdateMeleeWeapons(actorData2, playerData);
-			break;
-		}
-	}
-}
+// 	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
+
+// 	switch (actorData.character)
+// 	{
+// 		case CHAR_DANTE:
+// 		{
+// 			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(baseAddr);
+// 			break;
+// 		}
+// 		case CHAR_BOB:
+// 		{
+// 			auto & actorData2 = *reinterpret_cast<ActorDataBob *>(baseAddr);
+// 			break;
+// 		}
+// 		case CHAR_LADY:
+// 		{
+// 			auto & actorData2 = *reinterpret_cast<ActorDataLady *>(baseAddr);
+// 			break;
+// 		}
+// 		case CHAR_VERGIL:
+// 		{
+// 			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(baseAddr);
+// 			UpdateMeleeWeapons(actorData2, playerData);
+// 			break;
+// 		}
+// 	}
+// }
 
 
 
@@ -5567,8 +5594,100 @@ void ToggleStyleFixes(bool enable)
 }
 
 
+
+
+bool DevilDoppelgangerCheck(ActorData & actorData)
+{
+	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
+
+	if
+	(
+		enableDoppelganger &&
+		(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	)
+	{
+		if (actorData.newEntity == ENTITY_MAIN)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (actorData.newEntity == ENTITY_CLONE)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
+
+void ActivateDevil(ActorData & actorData)
+{
+	switch (actorData.character)
+	{
+		case CHAR_DANTE:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(&actorData);
+			UpdateForm(actorData2);
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
+			UpdateForm(actorData2);
+			break;
+		}
+	}
+
+	func_1F94D0(actorData, DEVIL_FLUX_START);
+}
+
+void DeactivateDevil(ActorData & actorData)
+{
+	switch (actorData.character)
+	{
+		case CHAR_DANTE:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(&actorData);
+			UpdateForm(actorData2);
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
+			UpdateForm(actorData2);
+			break;
+		}
+	}
+
+	func_1F94D0(actorData, DEVIL_FLUX_END);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void ActivateDoppelganger(ActorData & actorData)
 {
+	if (!actorData.cloneBaseAddr)
+	{
+		return;
+	}
+	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
+
 	actorData.doppelganger = true;
 	/*
 	dmc3.exe+1E9224 - C6 87 62630000 01 - mov byte ptr [rdi+00006362],01
@@ -5599,15 +5718,37 @@ void ActivateDoppelganger(ActorData & actorData)
 
 	actorData.cloneRate = 0;
 
-
 	func_1EAE60(actorData, 0);
-
-
 	/*
 	dmc3.exe+1E92D7 - 33 D2       - xor edx,edx
 	dmc3.exe+1E92D9 - 48 8B CF    - mov rcx,rdi
 	dmc3.exe+1E92DC - E8 7F1B0000 - call dmc3.exe+1EAE60
 	*/
+
+	// if (actorData.devil)
+	// {
+	// 	cloneActorData.devil = true;
+
+	// 	auto newMeleeWeapon = cloneActorData.newMeleeWeapons[cloneActorData.newMeleeWeaponIndex];
+
+	// 	switch (cloneActorData.character)
+	// 	{
+	// 		case CHAR_DANTE:
+	// 		{
+	// 			auto & cloneActorData2 = *reinterpret_cast<ActorDataDante *>(&cloneActorData);
+	// 			UpdateDevil(cloneActorData2, newMeleeWeapon);
+	// 			break;
+	// 		}
+	// 		case CHAR_VERGIL:
+	// 		{
+	// 			auto & cloneActorData2 = *reinterpret_cast<ActorDataVergil *>(&cloneActorData);
+	// 			UpdateDevil(cloneActorData2, newMeleeWeapon);
+	// 			break;
+	// 		}
+	// 	}
+
+	// 	func_1F94D0(cloneActorData, DEVIL_FLUX_START);
+	// }
 }
 
 void DeactivateDoppelganger(ActorData & actorData)
@@ -5641,7 +5782,22 @@ void DeactivateDoppelganger(ActorData & actorData)
 
 
 
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5680,6 +5836,83 @@ export void Actor_Init()
 
 
 	ToggleStyleFixes(true);
+
+
+
+
+
+
+
+	{
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rdi,
+		};
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                               // test al,al
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       // je dmc3.exe+1E7926
+			0x40, 0x38, 0xB7, 0x9B, 0x3E, 0x00, 0x00, // cmp [rdi+00003E9B],sil
+		};
+		auto func = CreateFunction(DevilDoppelgangerCheck, (appBaseAddr + 0x1E77E3), true, false, 0, sizeof(sect1), sizeof(sect2));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E7926), 6);
+		WriteJump((appBaseAddr + 0x1E77DC), func.addr, 2);
+		/*
+		dmc3.exe+1E77DC - 40 38 B7 9B3E0000 - cmp [rdi+00003E9B],sil
+		dmc3.exe+1E77E3 - 0F85 D4000000     - jne dmc3.exe+1E78BD
+		*/
+	}
+
+
+
+
+
+	{
+		vp_memset((appBaseAddr + 0x1E78A5), 0x90, 5);
+		/*
+		dmc3.exe+1E78A5 - E8 161A0100 - call dmc3.exe+1F92C0
+		*/
+	}
+	{
+		auto func = CreateFunction(ActivateDevil);
+		WriteCall((appBaseAddr + 0x1E78AF), func.addr);
+		/*
+		dmc3.exe+1E78AF - E8 1C1C0100 - call dmc3.exe+1F94D0
+		*/
+	}
+
+	{
+		vp_memset((appBaseAddr + 0x1E78C9), 0x90, 5);
+		/*
+		dmc3.exe+1E78C9 - E8 F2190100 - call dmc3.exe+1F92C0
+		*/
+	}
+	{
+		auto func = CreateFunction(DeactivateDevil);
+		WriteCall((appBaseAddr + 0x1E78E6), func.addr);
+		/*
+		dmc3.exe+1E78E6 - E8 E51B0100 - call dmc3.exe+1F94D0
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

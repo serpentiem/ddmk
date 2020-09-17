@@ -328,15 +328,15 @@ void SkyStarReset(byte8 * baseAddr)
 
 
 
-void DeactivateDevilForm(byte8 * baseAddr)
-{
-	if (!baseAddr)
-	{
-		return;
-	}
+// void DeactivateDevilForm(byte8 * baseAddr)
+// {
+// 	if (!baseAddr)
+// 	{
+// 		return;
+// 	}
 
-	Actor_DeactivateDevilForm(baseAddr);
-}
+// 	Actor_DeactivateDevilForm(baseAddr);
+// }
 
 
 
@@ -349,24 +349,24 @@ export void Event_Init()
 
 
 
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x40, 0x88, 0xB7, 0x9B, 0x3E, 0x00, 0x00, // mov [rdi+00003E9B],sil
-		};
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rdi,
-		};
-		auto func = CreateFunction(DeactivateDevilForm, (appBaseAddr + 0x1E78C6), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x1E78BF), func.addr, 2);
-		/*
-		dmc3.exe+1E78BF - 40 88 B7 9B3E0000 - mov [rdi+00003E9B],sil
-		dmc3.exe+1E78C6 - 48 8B CF          - mov rcx,rdi
-		*/
-	}
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x40, 0x88, 0xB7, 0x9B, 0x3E, 0x00, 0x00, // mov [rdi+00003E9B],sil
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rdi,
+	// 	};
+	// 	auto func = CreateFunction(DeactivateDevilForm, (appBaseAddr + 0x1E78C6), true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	WriteJump((appBaseAddr + 0x1E78BF), func.addr, 2);
+	// 	/*
+	// 	dmc3.exe+1E78BF - 40 88 B7 9B3E0000 - mov [rdi+00003E9B],sil
+	// 	dmc3.exe+1E78C6 - 48 8B CF          - mov rcx,rdi
+	// 	*/
+	// }
 
 
 
