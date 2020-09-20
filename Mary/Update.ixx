@@ -30,149 +30,28 @@ uint64 g_actorLoopCounter = 0;
 
 uint8 g_relativeTiltDirection = 0;
 
-constexpr uint8 meleeAttackDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2] =
-{
-	// Rebellion
-	{
-		// Neutral
-		{
-			ACTION_DANTE_REBELLION_COMBO_1_PART_1,
-			ACTION_DANTE_REBELLION_HELM_BREAKER,
-		},
-		// Up
-		{
-			ACTION_DANTE_REBELLION_STINGER_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_REBELLION_HIGH_TIME,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Cerberus
-	{
-		// Neutral
-		{
-			ACTION_DANTE_CERBERUS_COMBO_1_PART_1,
-			ACTION_DANTE_CERBERUS_SWING,
-		},
-		// Up
-		{
-			ACTION_DANTE_CERBERUS_REVOLVER_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_CERBERUS_WINDMILL,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Agni & Rudra
-	{
-		// Neutral
-		{
-			ACTION_DANTE_AGNI_RUDRA_COMBO_1_PART_1,
-			ACTION_DANTE_AGNI_RUDRA_AERIAL_CROSS,
-		},
-		// Up
-		{
-			ACTION_DANTE_AGNI_RUDRA_JET_STREAM_LEVEL_3,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_AGNI_RUDRA_WHIRLWIND,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Nevan
-	{
-		// Neutral
-		{
-			ACTION_DANTE_NEVAN_TUNE_UP,
-			ACTION_DANTE_NEVAN_AIR_PLAY,
-		},
-		// Up
-		{
-			ACTION_DANTE_NEVAN_REVERB_SHOCK_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_NEVAN_BAT_RIFT_LEVEL_2,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Beowulf
-	{
-		// Neutral
-		{
-			ACTION_DANTE_BEOWULF_COMBO_1_PART_1,
-			ACTION_DANTE_BEOWULF_KILLER_BEE,
-		},
-		// Up
-		{
-			ACTION_DANTE_BEOWULF_STRAIGHT_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_BEOWULF_BEAST_UPPERCUT,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 constexpr uint8 swordmasterDante [MAX_MELEE_WEAPON_DANTE ][MAX_TILT_DIRECTION][2] =
 {
 	// Rebellion
@@ -659,93 +538,7 @@ constexpr uint8 rangedAttackDante[MAX_RANGED_WEAPON_DANTE][MAX_TILT_DIRECTION][2
 	},
 };
 
-constexpr uint8 meleeAttackVergil[MAX_MELEE_WEAPON_VERGIL][MAX_TILT_DIRECTION][2] =
-{
-	// Yamato
-	{
-		// Neutral
-		{
-			ACTION_VERGIL_YAMATO_COMBO_PART_1,
-			ACTION_VERGIL_YAMATO_AERIAL_RAVE_PART_1,
-		},
-		// Up
-		{
-			ACTION_VERGIL_YAMATO_RAPID_SLASH_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_VERGIL_YAMATO_UPPER_SLASH_PART_1,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Beowulf
-	{
-		// Neutral
-		{
-			ACTION_VERGIL_BEOWULF_COMBO_PART_1,
-			ACTION_VERGIL_BEOWULF_STARFALL_LEVEL_2,
-		},
-		// Up
-		{
-			ACTION_VERGIL_BEOWULF_LUNAR_PHASE_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_VERGIL_BEOWULF_RISING_SUN,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Force Edge
-	{
-		// Neutral
-		{
-			ACTION_VERGIL_FORCE_EDGE_COMBO_PART_1,
-			ACTION_VERGIL_FORCE_EDGE_HELM_BREAKER_LEVEL_2,
-		},
-		// Up
-		{
-			ACTION_VERGIL_FORCE_EDGE_STINGER_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_VERGIL_FORCE_EDGE_HIGH_TIME,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-};
+
 constexpr uint8 darkSlayerVergil                          [MAX_TILT_DIRECTION][2] =
 {
 	// Neutral
@@ -829,39 +622,6 @@ void DisableControl(T & actorData)
 //}
 
 
-template
-<
-	typename T1,
-	typename T2
->
-void CopyPosition
-(
-	T1 & activeActorData,
-	T2 & idleActorData
-)
-{
-	idleActorData.position       = activeActorData.position;
-
-	idleActorData.position.y = (activeActorData.position.y + 300);
-
-
-
-
-	idleActorData.pull           = activeActorData.pull;
-	idleActorData.pullMultiplier = activeActorData.pullMultiplier;
-	idleActorData.direction      = activeActorData.direction;
-
-	//idleActorData.state &= ~STATE_ON_FLOOR;
-	//idleActorData.state &= ~STATE_IN_AIR;
-	//if (activeActorData.state & STATE_ON_FLOOR)
-	//{
-	//	idleActorData.state |= STATE_ON_FLOOR;
-	//}
-	//else
-	//{
-	//	idleActorData.state |= STATE_IN_AIR;
-	//}
-}
 
 template <typename T>
 void FixPull(T & actorData)
@@ -887,27 +647,6 @@ void FixPull(T & actorData)
 
 
 
-template <typename T>
-bool IsVergilMeleeWeaponSelected(T & actorData)
-{
-	auto & meleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
-	if ((meleeWeapon >= WEAPON_YAMATO_VERGIL) && (meleeWeapon <= WEAPON_FORCE_EDGE))
-	{
-		return true;
-	}
-	return false;
-}
-
-template <typename T>
-bool IsDanteMeleeWeaponSelected(T & actorData)
-{
-	auto & meleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
-	if ((meleeWeapon >= WEAPON_REBELLION) && (meleeWeapon <= WEAPON_BEOWULF_DANTE))
-	{
-		return true;
-	}
-	return false;
-}
 
 
 
@@ -941,46 +680,47 @@ bool IsDanteMeleeWeaponSelected(T & actorData)
 
 
 
+// auto & gamepad = GetGamepad(0);
+
+// #define GetAction(actorData, binding, __DEST__)\
+// uint8 action = 0;\
+// for_each(uint8, tiltDirection, TILT_DIRECTION_UP, MAX_TILT_DIRECTION)\
+// {\
+// 	if\
+// 	(\
+// 		(gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON)) &&\
+// 		(GetRelativeTiltDirection(actorData) == tiltDirection) &&\
+// 		(gamepad.buttons[0] & GetBinding(binding))\
+// 	)\
+// 	{\
+// 		action = __DEST__[tiltDirection][state];\
+// 		break;\
+// 	}\
+// }\
+// if (!action)\
+// {\
+// 	if (gamepad.buttons[0] & GetBinding(binding))\
+// 	{\
+// 		action = __DEST__[TILT_DIRECTION_NEUTRAL][state];\
+// 	}\
+// }\
 
 
-#define OnceEnable(actorData, index) actorData.newSect[index] = true
-#define OnceDisable(actorData, index) actorData.newSect[index] = false
-#define OnceStart(actorData, index) if (actorData.newSect[index]) { OnceDisable(actorData, index)
-#define OnceEnd }
 
 
 
 
-
-
-#define GetAction(actorData, binding, __DEST__)\
-uint8 action = 0;\
-for_each(uint8, tiltDirection, TILT_DIRECTION_UP, MAX_TILT_DIRECTION)\
-{\
-	if\
-	(\
-		(gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON)) &&\
-		(GetRelativeTiltDirection(actorData) == tiltDirection) &&\
-		(gamepad.buttons[0] & GetBinding(binding))\
-	)\
-	{\
-		action = __DEST__[tiltDirection][state];\
-		break;\
-	}\
-}\
-if (!action)\
-{\
-	if (gamepad.buttons[0] & GetBinding(binding))\
-	{\
-		action = __DEST__[TILT_DIRECTION_NEUTRAL][state];\
-	}\
-}\
 
 #define _Merge(a, b) a##b
 #define Merge(a, b) _Merge(a, b)
 
 #define _ToString(a) #a
 #define ToString(a) _ToString(a)
+
+
+
+
+
 
 // @Research: Maybe templates are better suited for this after all.
 // @Todo: Check for input charge.
@@ -1016,7 +756,209 @@ else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_
 	}\
 }\
 
-void DanteVergil(byte8 * baseAddr)
+
+/*
+
+style stuff
+
+
+weapon stuff
+
+if active
+
+check buffer
+
+else
+
+switch to actor and weapon
+
+OnceStart
+OnceEnd
+
+
+
+CopyPosition
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#define OnceEnable(actorData, index) actorData.newSect[index] = true
+#define OnceDisable(actorData, index) actorData.newSect[index] = false
+#define OnceStart(actorData, index) if (actorData.newSect[index]) { OnceDisable(actorData, index)
+#define OnceEnd }
+
+
+
+// template <typename T>
+// bool IsVergilMeleeWeaponSelected(T & actorData)
+// {
+// 	auto & meleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
+// 	if ((meleeWeapon >= WEAPON_YAMATO_VERGIL) && (meleeWeapon <= WEAPON_FORCE_EDGE))
+// 	{
+// 		return true;
+// 	}
+// 	return false;
+// }
+
+// template <typename T>
+// bool IsDanteMeleeWeaponSelected(T & actorData)
+// {
+// 	auto weapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
+// 	if ((weapon >= WEAPON_REBELLION) && (weapon <= WEAPON_BEOWULF_DANTE))
+// 	{
+// 		return true;
+// 	}
+
+// 	return false;
+// }
+
+
+
+
+
+
+
+
+
+
+template
+<
+	typename T1,
+	typename T2
+>
+bool BufferFunction
+(
+	T1 & activeActorData,
+	T2 & idleActorData,
+	uint8 policy,
+	uint8 binding,
+	uint8(&map)[MAX_TILT_DIRECTION][2]
+)
+{
+
+	
+	
+
+
+	if (IsActive(actorData))
+	{
+		if (actorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_BUFFER)
+		{
+			auto action = GetAction(actorData, binding, map);
+			if (action)
+			{
+				actorData.newExecute[0] = false;
+
+				actorData.newEnable = false;
+				cloneActorData.newEnable = true;
+				cloneActorData.bufferedAction = action;
+				cloneActorData.state |= STATE_BUSY;
+			}
+		}
+		else if (actorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			auto action = GetAction(actorData, binding, map);
+			if (action)
+			{
+				actorData.newExecute[0] = false;
+
+				actorData.newEnable = false;
+				cloneActorData.newEnable = true;
+				cloneActorData.bufferedAction = action;
+				cloneActorData.state &= ~STATE_BUSY;
+			}
+		}
+	}
+	else
+	{
+		actorData.newExecute[0] = false;
+
+		actorData.newEnable = false;
+		cloneActorData.newEnable = true;
+	}
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bool executeCharacterSwitch[MAX_PLAYER] = {};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void DanteVergil2(byte8 * baseAddr)
 {
 	auto & parentActorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
 	if (parentActorData.character != CHAR_DANTE)
@@ -1178,7 +1120,24 @@ void DanteVergil(byte8 * baseAddr)
 
 
 
-			BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK, BINDING_MELEE_ATTACK, meleeAttackDante[meleeWeapon], BufferExecuteEndDante);
+			//BufferExecute(childActorData, parentActorData, NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK, BINDING_MELEE_ATTACK, meleeAttackDante[meleeWeapon], BufferExecuteEndDante);
+
+
+			BufferExecute
+			(
+				childActorData,
+				parentActorData,
+				NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK,
+				BINDING_MELEE_ATTACK,
+				meleeAttackDante[meleeWeapon],
+				BufferExecuteEndDante
+			);
+
+
+
+
+
+
 			switch (style)
 			{
 			case STYLE_DANTE_SWORDMASTER:
@@ -1732,6 +1691,130 @@ export void Update_Init()
 }
 
 #ifdef __GARBAGE__
+
+
+
+
+
+
+
+
+auto weapon = actorData.newMeleeWeapon[actorData.newMeleeWeaponIndex];
+
+
+
+
+
+	if
+	(
+		IsDanteMeleeWeapon(weapon) &&
+		!IsDanteMeleeWeapon(actorData.newLastMeleeWeapon)
+	)
+	{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		if (!IsDanteMeleeWeapon(acotrData.newLastMeleeWeapon))
+		{
+
+		}
+		else
+		{
+			if (actorData.newSect[0])
+			{
+				actorData.newSect[0] = false;
+
+				cloneActorData.meleeWeaponIndex = weapon;
+			}
+		}
+	}
+	else
+	{
+		actorData.newSect[0] = true;
+	}
+
+
+
+
+
+
+	if
+	(
+		IsVergilMeleeWeapon(weapon) &&
+		!IsVergilMeleeWeapon(actorData.newLastMeleeWeapon)
+	)
+	{
+		if (IsActive(cloneActorData))
+		{
+			if (cloneActorData.nextActionRequestPolicy[NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK] == NEXT_ACTION_REQUEST_POLICY_BUFFER)
+			{
+				auto action = GetAction(cloneActorData, BINDING_MELEE_ATTACK, meleeAttackVergil[weapon]);
+				if (action)
+				{
+					if (actorData.newSect[1])
+					{
+						actorData.newSect[1] = false;
+
+						memset(cloneActorData.newEnable, 0, 8);
+						memset(actorData.newEnable, 1, 8);
+
+						actorData.bufferedAction = action;
+						actorData.state |= STATE_BUSY;
+					}
+				}
+			}
+			else if (cloneActorData.nextActionRequestPolicy[NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+			{
+				auto action = GetAction(cloneActorData, BINDING_MELEE_ATTACK, meleeAttackVergil[weapon]);
+				if (action)
+				{
+					if (actorData.newSect[1])
+					{
+						actorData.newSect[1] = false;
+
+						memset(cloneActorData.newEnable, 0, 8);
+						memset(actorData.newEnable, 1, 8);
+
+						actorData.bufferedAction = action;
+						actorData.state &= ~STATE_BUSY;
+					}
+				}
+			}
+		}
+		else
+		{
+			if (actorData.newSect[1])
+			{
+				actorData.newSect[1] = false;
+
+				memset(cloneActorData.newEnable, 0, 8);
+				memset(actorData.newEnable, 1, 8);
+			}
+		}
+	}
+	else
+	{
+		actorData.newSect[1] = true;
+	}
+
+
+
+
+
+
+
 #endif
 
 #endif

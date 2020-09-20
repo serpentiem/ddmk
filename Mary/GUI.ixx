@@ -1265,13 +1265,15 @@ void Main()
 			}
 			auto & actorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[actorIndex]);
 
-			for_all(uint8, index, countof(actorData.newEnable))
-			{
-				char label[64];
-				snprintf(label, sizeof(label), "Enable %u", index);
+			GUI_Checkbox("Enable", actorData.newEnable);
+
+			// for_all(uint8, index, countof(actorData.newEnable))
+			// {
+			// 	char label[64];
+			// 	snprintf(label, sizeof(label), "Enable %u", index);
 				
-				GUI_Checkbox(label, actorData.newEnable[index]);
-			}
+			// 	GUI_Checkbox(label, actorData.newEnable[index]);
+			// }
 
 			ImGui::Text("");
 		}

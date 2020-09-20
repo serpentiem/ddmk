@@ -205,6 +205,8 @@ bool IsWeaponActive(T & actorData)
 	return false;
 }
 
+
+// @Todo: Update.
 export template <typename T>
 bool IsActive(T & actorData)
 {
@@ -1697,6 +1699,8 @@ void InitWeapons
 		actorData.newMeleeWeaponIndex = 0;
 	}
 
+	actorData.newLastMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
+
 	memcpy(actorData.newRangedWeapons, playerData.rangedWeapons, RANGED_WEAPON_COUNT);
 
 	actorData.newRangedWeaponCount = playerData.rangedWeaponCount;
@@ -1706,10 +1710,67 @@ void InitWeapons
 	{
 		actorData.newRangedWeaponIndex = 0;
 	}
+
+	actorData.newLastRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
 }
 
+
+
+
+
+bool IsDanteMeleeWeapon(uint8 weapon)
+{
+	if
+	(
+		(weapon >= WEAPON_REBELLION    ) &&
+		(weapon <= WEAPON_BEOWULF_DANTE)
+	)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool IsVergilMeleeWeapon(uint8 weapon)
+{
+	if
+	(
+		(weapon >= WEAPON_YAMATO_VERGIL) &&
+		(weapon <= WEAPON_FORCE_EDGE   )
+	)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool IsDanteRangedWeapon(uint8 weapon)
+{
+	if
+	(
+		(weapon >= WEAPON_EBONY_IVORY) &&
+		(weapon <= WEAPON_KALINA_ANN )
+	)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+
+
+
+
+
+
+
+
+
 template <typename T>
-void UpdateMeleeWeapons
+void UpdateMeleeWeapon
 (
 	T & actorData,
 	PlayerData & playerData
@@ -1719,24 +1780,115 @@ void UpdateMeleeWeapons
 
 	auto weapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
 
+	actorData.newLastMeleeWeapon = weapon;
+
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		if ((weapon >= WEAPON_REBELLION) && (weapon <= WEAPON_BEOWULF_DANTE))
+		if (IsDanteMeleeWeapon(weapon))
 		{
 			actorData.meleeWeaponIndex = weapon;
+
+			
 		}
 	}
 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
-		if ((weapon >= WEAPON_YAMATO_VERGIL) && (weapon <= WEAPON_FORCE_EDGE))
+		if (IsVergilMeleeWeapon(weapon))
 		{
 			actorData.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
+
+			
+		}
+	}
+
+
+	if (IsDanteMeleeWeapon(weapon))
+	{
+		actorData.newCharacter = CHAR_DANTE;
+	}
+	else if (IsVergilMeleeWeapon(weapon))
+	{
+		actorData.newCharacter = CHAR_VERGIL;
+	}
+	
+
+	
+
+
+
+
+
+
+}
+
+template <typename T>
+void UpdateCloneMeleeWeapon(T & actorData)
+{
+	auto weapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
+
+	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
+
+	if (enableDoppelganger)
+	{
+		return;
+	}
+
+	if (actorData.newEntity != ENTITY_MAIN)
+	{
+		return;
+	}
+
+	if (!actorData.cloneBaseAddr)
+	{
+		return;
+	}
+	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
+
+	switch (cloneActorData.character)
+	{
+		case CHAR_DANTE:
+		{
+			auto & cloneActorData2 = *reinterpret_cast<ActorDataDante *>(actorData.cloneBaseAddr);
+
+			if (IsDanteMeleeWeapon(weapon))
+			{
+				cloneActorData2.meleeWeaponIndex = weapon;
+			}
+
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			auto & cloneActorData2 = *reinterpret_cast<ActorDataVergil *>(actorData.cloneBaseAddr);
+
+			if (IsVergilMeleeWeapon(weapon))
+			{
+				cloneActorData2.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
+			}
+
+			break;
 		}
 	}
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 template <typename T>
-void UpdateRangedWeapons
+void UpdateRangedWeapon
 (
 	T & actorData,
 	PlayerData & playerData
@@ -1746,9 +1898,11 @@ void UpdateRangedWeapons
 
 	auto weapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
 
+	actorData.newLastRangedWeapon = weapon;
+
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		if ((weapon >= WEAPON_EBONY_IVORY) && (weapon <= WEAPON_KALINA_ANN))
+		if (IsDanteRangedWeapon(weapon))
 		{
 			actorData.rangedWeaponIndex = weapon;
 		}
@@ -1762,8 +1916,8 @@ void UpdateWeapons
 	PlayerData & playerData
 )
 {
-	UpdateMeleeWeapons (actorData, playerData);
-	UpdateRangedWeapons(actorData, playerData);
+	UpdateMeleeWeapon (actorData, playerData);
+	UpdateRangedWeapon(actorData, playerData);
 }
 
 template <typename T>
@@ -1833,10 +1987,32 @@ byte8 * CreateActor
 	actorData.newForceFiles          = playerData.forceFiles;
 	actorData.newForceFilesCharacter = playerData.forceFilesCharacter;
 
+
+
+
+
+
+
+
+
+
 	actorData.newGamepad          = player;
 	actorData.newButtonMask       = 0xFFFF;
 	actorData.newEnableRightStick = true;
 	actorData.newEnableLeftStick  = true;
+
+
+
+
+
+	actorData.newCharacter = GetCharacterId<T>::value;
+	actorData.newLastCharacter = GetCharacterId<T>::value;
+
+
+
+
+
+
 
 	UpdateCostumeFileData(actorData);
 
@@ -1850,6 +2026,17 @@ byte8 * CreateActor
 	}
 
 	UpdateMotionArchives(actorData);
+
+
+
+
+
+
+
+
+
+
+
 
 	InitStyle(actorData, playerData);
 
@@ -2001,6 +2188,8 @@ byte8 * SpawnActor
 	return baseAddr;
 }
 
+
+// @Todo: Update names.
 export void SpawnActors()
 {
 	LogFunction();
@@ -2022,6 +2211,8 @@ export void SpawnActors()
 		auto & cloneActorData = *reinterpret_cast<ActorData *>(cloneBaseAddr);
 
 		mainActorData.cloneBaseAddr = cloneActorData;
+
+		UpdateCloneMeleeWeapon(mainActorData);
 	}
 }
 
@@ -2119,6 +2310,568 @@ void ToggleIsWeaponReady(bool enable)
 #pragma endregion
 
 #pragma region Controllers
+
+
+
+
+
+
+
+
+
+
+constexpr uint8 meleeAttackDante [MELEE_WEAPON_COUNT_DANTE ][MAX_TILT_DIRECTION][2] =
+{
+	// Rebellion
+	{
+		// Neutral
+		{
+			ACTION_DANTE_REBELLION_COMBO_1_PART_1,
+			ACTION_DANTE_REBELLION_HELM_BREAKER,
+		},
+		// Up
+		{
+			ACTION_DANTE_REBELLION_STINGER_LEVEL_2,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			ACTION_DANTE_REBELLION_HIGH_TIME,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Cerberus
+	{
+		// Neutral
+		{
+			ACTION_DANTE_CERBERUS_COMBO_1_PART_1,
+			ACTION_DANTE_CERBERUS_SWING,
+		},
+		// Up
+		{
+			ACTION_DANTE_CERBERUS_REVOLVER_LEVEL_2,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			ACTION_DANTE_CERBERUS_WINDMILL,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Agni & Rudra
+	{
+		// Neutral
+		{
+			ACTION_DANTE_AGNI_RUDRA_COMBO_1_PART_1,
+			ACTION_DANTE_AGNI_RUDRA_AERIAL_CROSS,
+		},
+		// Up
+		{
+			ACTION_DANTE_AGNI_RUDRA_JET_STREAM_LEVEL_3,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			ACTION_DANTE_AGNI_RUDRA_WHIRLWIND,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Nevan
+	{
+		// Neutral
+		{
+			ACTION_DANTE_NEVAN_TUNE_UP,
+			ACTION_DANTE_NEVAN_AIR_PLAY,
+		},
+		// Up
+		{
+			ACTION_DANTE_NEVAN_REVERB_SHOCK_LEVEL_2,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			ACTION_DANTE_NEVAN_BAT_RIFT_LEVEL_2,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Beowulf
+	{
+		// Neutral
+		{
+			ACTION_DANTE_BEOWULF_COMBO_1_PART_1,
+			ACTION_DANTE_BEOWULF_KILLER_BEE,
+		},
+		// Up
+		{
+			ACTION_DANTE_BEOWULF_STRAIGHT_LEVEL_2,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			ACTION_DANTE_BEOWULF_BEAST_UPPERCUT,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+};
+
+
+
+
+constexpr uint8 meleeAttackVergil[MELEE_WEAPON_COUNT_VERGIL][MAX_TILT_DIRECTION][2] =
+{
+	// Yamato
+	{
+		// Neutral
+		{
+			ACTION_VERGIL_YAMATO_COMBO_PART_1,
+			ACTION_VERGIL_YAMATO_AERIAL_RAVE_PART_1,
+		},
+		// Up
+		{
+			ACTION_VERGIL_YAMATO_RAPID_SLASH_LEVEL_2,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			ACTION_VERGIL_YAMATO_UPPER_SLASH_PART_1,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Beowulf
+	{
+		// Neutral
+		{
+			ACTION_VERGIL_BEOWULF_COMBO_PART_1,
+			ACTION_VERGIL_BEOWULF_STARFALL_LEVEL_2,
+		},
+		// Up
+		{
+			ACTION_VERGIL_BEOWULF_LUNAR_PHASE_LEVEL_2,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			ACTION_VERGIL_BEOWULF_RISING_SUN,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Force Edge
+	{
+		// Neutral
+		{
+			ACTION_VERGIL_FORCE_EDGE_COMBO_PART_1,
+			ACTION_VERGIL_FORCE_EDGE_HELM_BREAKER_LEVEL_2,
+		},
+		// Up
+		{
+			ACTION_VERGIL_FORCE_EDGE_STINGER_LEVEL_2,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			ACTION_VERGIL_FORCE_EDGE_HIGH_TIME,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// @Todo: Consider CopyState.
+template
+<
+	typename T1,
+	typename T2
+>
+void CopyPosition
+(
+	T1 & activeActorData,
+	T2 & idleActorData
+)
+{
+	idleActorData.position       = activeActorData.position;
+	idleActorData.pull           = activeActorData.pull;
+	idleActorData.pullMultiplier = activeActorData.pullMultiplier;
+	idleActorData.rotation       = activeActorData.rotation;
+}
+
+template <typename T>
+uint8 GetAction
+(
+	T & actorData,
+	uint8 binding,
+	const uint8(&map)[MAX_TILT_DIRECTION][2]
+)
+{
+	uint8 action = 0;
+
+	auto & gamepad = GetGamepad(actorData.newPlayer);
+
+	uint8 state = (actorData.state & STATE_ON_FLOOR) ? 0 : 1;
+
+	if (gamepad.buttons[0] & GetBinding(binding))
+	{
+		action = map[TILT_DIRECTION_NEUTRAL][state];
+
+		if (gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON))
+		{
+			for_each(uint8, tiltDirection, TILT_DIRECTION_UP, MAX_TILT_DIRECTION)
+			{
+				if (GetRelativeTiltDirection(actorData) == tiltDirection)
+				{
+					action = map[tiltDirection][state];
+					break;
+				}
+			}
+		}
+	}
+
+	return action;
+}
+
+
+
+
+
+
+
+void CharacterSwitchController(byte8 * baseAddr)
+{
+	if (!baseAddr)
+	{
+		return;
+	}
+	if (baseAddr == Actor_actorBaseAddr[0])
+	{
+		return;
+	}
+	if (baseAddr == Actor_actorBaseAddr[1])
+	{
+		return;
+	}
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+
+	if (actorData.newEntity != ENTITY_MAIN)
+	{
+		return;
+	}
+
+	if (!actorData.cloneBaseAddr)
+	{
+		return;
+	}
+	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
+
+	//auto & character     = actorData.newCharacter;
+	auto & lastCharacter = actorData.newLastCharacter;
+	auto & execute       = actorData.newExecuteCharacterSwitch;
+
+	auto BufferExecute = [&]
+	(
+		ActorData & activeActorData,
+		ActorData & idleActorData,
+		uint8 policy,
+		uint8 binding,
+		const uint8(&map)[MAX_TILT_DIRECTION][2]
+	)
+	{
+		if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_BUFFER)
+		{
+			auto action = GetAction(activeActorData, binding, map);
+			if (action)
+			{
+				if (!idleActorData.bufferedAction)
+				{
+					idleActorData.bufferedAction = action;
+					idleActorData.state |= STATE_BUSY;
+
+					return true;
+				}
+			}
+		}
+		else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			if (idleActorData.bufferedAction)
+			{
+				execute = false;
+
+				lastCharacter = activeActorData.newCharacter;
+
+				activeActorData.newEnable = false;
+
+				idleActorData.newEnable = true;
+				idleActorData.state &= ~STATE_BUSY;
+
+				return true;
+			}
+
+			auto action = GetAction(activeActorData, binding, map);
+			if (action)
+			{
+				execute = false;
+
+				lastCharacter = activeActorData.newCharacter;
+
+				activeActorData.newEnable = false;
+
+				idleActorData.newEnable = true;
+				idleActorData.bufferedAction = action;
+				idleActorData.state &= ~STATE_BUSY;
+
+				return true;
+			}
+		}
+
+		return false;
+	};
+
+	auto Function = [&]
+	(
+		ActorData & activeActorData,
+		ActorData & idleActorData
+	)
+	{
+		if (!execute)
+		{
+			return;
+		}
+
+		if (IsActive(activeActorData))
+		{
+			switch (activeActorData.character)
+			{
+				case CHAR_DANTE:
+				{
+					auto & activeActorData2 = *reinterpret_cast<ActorDataDante *>(&activeActorData);
+
+					auto weapon = activeActorData2.meleeWeaponIndex;
+					if (weapon > 4)
+					{
+						weapon = 0;
+					}
+
+					if
+					(
+						BufferExecute
+						(
+							activeActorData,
+							idleActorData,
+							NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK,
+							BINDING_MELEE_ATTACK,
+							meleeAttackDante[weapon]
+						)
+					)
+					{
+						break;
+					}
+					break;
+				}
+				case CHAR_VERGIL:
+				{
+					auto & activeActorData2 = *reinterpret_cast<ActorDataVergil *>(&activeActorData);
+
+					auto weapon = activeActorData2.activeMeleeWeaponIndex;
+					if (weapon > 2)
+					{
+						weapon = 0;
+					}
+
+					if
+					(
+						BufferExecute
+						(
+							activeActorData,
+							idleActorData,
+							NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK,
+							BINDING_MELEE_ATTACK,
+							meleeAttackVergil[weapon]
+						)
+					)
+					{
+						break;
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			execute = false;
+
+			lastCharacter = activeActorData.newCharacter;
+
+			activeActorData.newEnable = false;
+			idleActorData.newEnable = true;
+		}
+	};
+
+	if (actorData.newCharacter != actorData.newLastCharacter)
+	{
+		if (actorData.newCharacter == cloneActorData.character)
+		{
+			// Enter
+			Function(actorData, cloneActorData);
+		}
+		else
+		{
+			// Leave
+			Function(cloneActorData, actorData);
+		}
+	}
+	else
+	{
+		execute = true;
+	}
+	
+	// if (actorData.newEnable)
+	// {
+	// 	CopyPosition(actorData, cloneActorData);
+	// }
+	// else
+	// {
+	// 	CopyPosition(cloneActorData, actorData);
+	// }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 template <typename T>
 void StyleSwitchController
@@ -2415,7 +3168,9 @@ void MeleeWeaponSwitchController
 
 	actorData.meleeWeaponSwitchTimeout = activeConfig.weaponSwitchTimeout;
 
-	UpdateMeleeWeapons(actorData, playerData);
+	UpdateMeleeWeapon(actorData, playerData);
+
+	UpdateCloneMeleeWeapon(actorData);
 
 	auto newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
 
@@ -2525,7 +3280,7 @@ void RangedWeaponSwitchController
 
 	actorData.rangedWeaponSwitchTimeout = activeConfig.weaponSwitchTimeout;
 
-	UpdateRangedWeapons(actorData, playerData);
+	UpdateRangedWeapon(actorData, playerData);
 
 	auto newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
 
@@ -2577,6 +3332,8 @@ bool WeaponSwitchController(byte8 * baseAddr)
 	{
 		return false;
 	}
+
+	CharacterSwitchController(actorData);
 
 	StyleSwitchController(actorData, playerData);
 
@@ -2694,7 +3451,7 @@ bool WeaponSwitchController(byte8 * baseAddr)
 // 		case CHAR_VERGIL:
 // 		{
 // 			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(baseAddr);
-// 			UpdateMeleeWeapons(actorData2, playerData);
+// 			UpdateMeleeWeapon(actorData2, playerData);
 // 			break;
 // 		}
 // 	}
@@ -5864,7 +6621,7 @@ export void Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1FB305), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable[0]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable);
 		WriteJump((appBaseAddr + 0x1FB300), func.addr);
 		/*
 		dmc3.exe+1FB300 - 48 89 5C 24 08 - mov [rsp+08],rbx
@@ -5881,7 +6638,7 @@ export void Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1FBE25), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable[1]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable);
 		WriteJump((appBaseAddr + 0x1FBE20), func.addr);
 		/*
 		dmc3.exe+1FBE20 - 48 89 5C 24 08 - mov [rsp+08],rbx
@@ -5899,7 +6656,7 @@ export void Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1FB476), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable[2]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable);
 		WriteJump((appBaseAddr + 0x1FB470), func.addr, 1);
 		/*
 		dmc3.exe+1FB470 - 40 57                - push rdi
@@ -5917,7 +6674,7 @@ export void Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1FB545), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable[3]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable);
 		WriteJump((appBaseAddr + 0x1FB540), func.addr);
 		/*
 		dmc3.exe+1FB540 - 48 89 5C 24 10 - mov [rsp+10],rbx
@@ -5934,7 +6691,7 @@ export void Actor_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1FBEE5), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable[4]);
+		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable);
 		WriteJump((appBaseAddr + 0x1FBEE0), func.addr);
 		/*
 		dmc3.exe+1FBEE0 - 48 89 5C 24 18 - mov [rsp+18],rbx
@@ -6795,7 +7552,7 @@ void RangedWeaponSwitchControllerDante(ActorDataDante & actorData)
 
 	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
 
-	UpdateRangedWeapons(actorData, playerData);
+	UpdateRangedWeapon(actorData, playerData);
 
 	auto newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
 
@@ -7247,7 +8004,7 @@ void RangedWeaponSwitchControllerDante
 
 	actorData.rangedWeaponSwitchTimeout = activeConfig.weaponSwitchTimeout;
 
-	UpdateRangedWeapons(actorData, playerData);
+	UpdateRangedWeapon(actorData, playerData);
 
 	auto newRangedWeapon = actorData.newRangedWeapons[actorData.newRangedWeaponIndex];
 
@@ -7377,7 +8134,7 @@ void MeleeWeaponSwitchControllerVergil
 
 	actorData.meleeWeaponSwitchForwardTimeout = activeConfig.weaponSwitchTimeout;
 
-	UpdateMeleeWeapons(actorData, playerData);
+	UpdateMeleeWeapon(actorData, playerData);
 
 	auto newMeleeWeapon = actorData.newMeleeWeapons[actorData.newMeleeWeaponIndex];
 

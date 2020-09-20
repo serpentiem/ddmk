@@ -460,14 +460,27 @@ var extra =
 
 
 
+
+
+
+
+	[ "newCharacter"     , "uint8"   ],
+	[ "newLastCharacter"     , "uint8"   ],
+
+
+
+
+
 	[ "newMeleeWeapons[5]"     , "uint8"   ],
 	[ "newMeleeWeaponCount"    , "uint8"   ],
 	[ "newMeleeWeaponIndex"    , "uint8"   ],
+	[ "newLastMeleeWeapon"    , "uint8"   ],
 
 
 	[ "newRangedWeapons[5]"    , "uint8"   ],
 	[ "newRangedWeaponCount"   , "uint8"   ],
 	[ "newRangedWeaponIndex"   , "uint8"   ],
+	[ "newLastRangedWeapon"   , "uint8"   ],
 
 
 
@@ -477,7 +490,8 @@ var extra =
 
 
 
-	[ "newExecuteStyleSwitch"     , "uint8"   ],
+	[ "newExecuteCharacterSwitch"     , "bool"   ],
+	[ "newExecuteStyleSwitch"     , "bool"   ],
 
 
 
@@ -492,16 +506,15 @@ var extra =
 	//[ "newRangedWeaponData[5]" , "byte8 *" ],
 	//[ "newLastRangedWeapon"    , "uint8"   ],
 
-	[ "newSect[8]"             , "bool"    ],
-	[ "newEnable[8]"           , "bool"    ],
-	[ "newBufferedActionPolicy", "uint8"   ],
+	//[ "newSect[8]"             , "bool"    ],
+
+
+	[ "newEnable"           , "bool"    ],
+
+
+	// [ "newBufferedActionPolicy", "uint8"   ],
 	[ "newAirStingerCount"     , "uint8"   ],
-	
-
-
-
-
-	[ "newDevilAura"           , "byte8 *" ],
+	// [ "newDevilAura"           , "byte8 *" ],
 	[ "newEffectIndices[8]"    , "byte32"  ],
 
 
