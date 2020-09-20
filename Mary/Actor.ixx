@@ -208,7 +208,7 @@ bool IsWeaponActive(T & actorData)
 
 // @Todo: Update.
 export template <typename T>
-bool IsActive(T & actorData)
+__declspec(noinline) bool IsActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[UPPER_BODY];
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
@@ -1853,6 +1853,8 @@ void UpdateCloneMeleeWeapon(T & actorData)
 			if (IsDanteMeleeWeapon(weapon))
 			{
 				cloneActorData2.meleeWeaponIndex = weapon;
+
+				actorData.newCharacter = CHAR_DANTE;
 			}
 
 			break;
@@ -1864,6 +1866,8 @@ void UpdateCloneMeleeWeapon(T & actorData)
 			if (IsVergilMeleeWeapon(weapon))
 			{
 				cloneActorData2.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
+
+				actorData.newCharacter = CHAR_VERGIL;
 			}
 
 			break;
@@ -2667,9 +2671,27 @@ void CharacterSwitchController(byte8 * baseAddr)
 	}
 	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
 
-	//auto & character     = actorData.newCharacter;
+	auto & character     = actorData.newCharacter;
 	auto & lastCharacter = actorData.newLastCharacter;
 	auto & execute       = actorData.newExecuteCharacterSwitch;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	auto BufferExecute = [&]
 	(
@@ -2687,6 +2709,10 @@ void CharacterSwitchController(byte8 * baseAddr)
 			{
 				if (!idleActorData.bufferedAction)
 				{
+
+					Log("NEXT_ACTION_REQUEST_POLICY_BUFFER");
+
+
 					idleActorData.bufferedAction = action;
 					idleActorData.state |= STATE_BUSY;
 
@@ -2698,9 +2724,11 @@ void CharacterSwitchController(byte8 * baseAddr)
 		{
 			if (idleActorData.bufferedAction)
 			{
+				Log("NEXT_ACTION_REQUEST_POLICY_EXECUTE");
+
 				execute = false;
 
-				lastCharacter = activeActorData.newCharacter;
+				lastCharacter = character;
 
 				activeActorData.newEnable = false;
 
@@ -2715,7 +2743,7 @@ void CharacterSwitchController(byte8 * baseAddr)
 			{
 				execute = false;
 
-				lastCharacter = activeActorData.newCharacter;
+				lastCharacter = character;
 
 				activeActorData.newEnable = false;
 
@@ -2741,20 +2769,20 @@ void CharacterSwitchController(byte8 * baseAddr)
 			return;
 		}
 
-		if (IsActive(activeActorData))
+		switch (activeActorData.character)
 		{
-			switch (activeActorData.character)
+			case CHAR_DANTE:
 			{
-				case CHAR_DANTE:
+				auto & activeActorData2 = *reinterpret_cast<ActorDataDante *>(&activeActorData);
+
+				auto weapon = activeActorData2.meleeWeaponIndex;
+				if (weapon > 4)
 				{
-					auto & activeActorData2 = *reinterpret_cast<ActorDataDante *>(&activeActorData);
+					weapon = 0;
+				}
 
-					auto weapon = activeActorData2.meleeWeaponIndex;
-					if (weapon > 4)
-					{
-						weapon = 0;
-					}
-
+				if (IsActive(activeActorData2))
+				{
 					if
 					(
 						BufferExecute
@@ -2769,18 +2797,31 @@ void CharacterSwitchController(byte8 * baseAddr)
 					{
 						break;
 					}
-					break;
 				}
-				case CHAR_VERGIL:
+				else
 				{
-					auto & activeActorData2 = *reinterpret_cast<ActorDataVergil *>(&activeActorData);
+					execute = false;
 
-					auto weapon = activeActorData2.activeMeleeWeaponIndex;
-					if (weapon > 2)
-					{
-						weapon = 0;
-					}
+					lastCharacter = character;
 
+					activeActorData.newEnable = false;
+					idleActorData.newEnable = true;
+				}
+
+				break;
+			}
+			case CHAR_VERGIL:
+			{
+				auto & activeActorData2 = *reinterpret_cast<ActorDataVergil *>(&activeActorData);
+
+				auto weapon = activeActorData2.activeMeleeWeaponIndex;
+				if (weapon > 2)
+				{
+					weapon = 0;
+				}
+
+				if (IsActive(activeActorData2))
+				{
 					if
 					(
 						BufferExecute
@@ -2795,24 +2836,25 @@ void CharacterSwitchController(byte8 * baseAddr)
 					{
 						break;
 					}
-					break;
 				}
+				else
+				{
+					execute = false;
+
+					lastCharacter = character;
+
+					activeActorData.newEnable = false;
+					idleActorData.newEnable = true;
+				}
+
+				break;
 			}
-		}
-		else
-		{
-			execute = false;
-
-			lastCharacter = activeActorData.newCharacter;
-
-			activeActorData.newEnable = false;
-			idleActorData.newEnable = true;
 		}
 	};
 
 	if (actorData.newCharacter != actorData.newLastCharacter)
 	{
-		if (actorData.newCharacter == cloneActorData.character)
+		if (actorData.newCharacter == static_cast<uint8>(cloneActorData.character))
 		{
 			// Enter
 			Function(actorData, cloneActorData);
@@ -2828,6 +2870,13 @@ void CharacterSwitchController(byte8 * baseAddr)
 		execute = true;
 	}
 	
+
+
+
+
+
+
+
 	// if (actorData.newEnable)
 	// {
 	// 	CopyPosition(actorData, cloneActorData);
