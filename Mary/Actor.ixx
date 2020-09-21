@@ -41,7 +41,7 @@ __declspec(dllexport) bool  g_executeCharacterSwitch[MAX_PLAYER] = {};
 
 
 
-
+// @Todo: Fix Lock-On.
 
 
 
@@ -233,6 +233,32 @@ bool IsDanteRangedWeapon(uint8 weapon)
 
 
 
+
+template <typename T>
+void ToggleActor
+(
+	T & actorData,
+	bool enable
+)
+{
+	actorData.newEnable = enable;
+	actorData.collisionIndex = (enable) ? 0 : 1;
+
+	// @Todo: Together with melee weapon switch controller change to global gamepad.
+	actorData.newButtonMask       = (enable) ? 0xFFFF : (GetBinding(BINDING_CHANGE_DEVIL_ARMS) | GetBinding(BINDING_CHANGE_GUN));
+	actorData.newEnableRightStick = enable;
+	actorData.newEnableLeftStick  = enable;
+
+
+
+
+
+
+
+
+
+
+}
 
 
 
@@ -2386,6 +2412,13 @@ export void SpawnActors()
 		mainActorData.cloneBaseAddr = cloneActorData;
 
 		UpdateCloneMeleeWeapon(mainActorData);
+
+		ToggleActor(mainActorData, true);
+		ToggleActor(cloneActorData, false);
+
+		//Toggle
+
+		//ToggleActor(mainActorData)
 	}
 }
 
@@ -2813,6 +2846,34 @@ uint8 GetAction
 
 
 
+// template
+// <
+// 	typename T1,
+// 	typename T2
+// >
+// void ToggleActor
+// (
+// 	T1 & activeActorData,
+// 	T2 & queuedActorData
+// )
+// {
+// 	activeActorData.newEnable = false;
+// 	activeActorData.collisionIndex = 1;
+
+// 	queuedActorData.newEnable = true;
+// 	queuedActorData.collisionIndex = 0;
+// }
+
+
+
+
+
+
+
+
+
+
+
 void CharacterSwitchController(byte8 * baseAddr)
 {
 	if (!baseAddr)
@@ -2899,9 +2960,20 @@ void CharacterSwitchController(byte8 * baseAddr)
 
 				lastCharacter = character;
 
-				activeActorData.newEnable = false;
+				// activeActorData.newEnable = false;
 
-				idleActorData.newEnable = true;
+				// idleActorData.newEnable = true;
+
+
+				//ToggleActor(activeActorData, idleActorData);
+
+
+
+				ToggleActor(activeActorData, false);
+				ToggleActor(idleActorData  , true );
+
+
+
 				idleActorData.state &= ~STATE_BUSY;
 
 				return true;
@@ -2914,9 +2986,16 @@ void CharacterSwitchController(byte8 * baseAddr)
 
 				lastCharacter = character;
 
-				activeActorData.newEnable = false;
+				// activeActorData.newEnable = false;
 
-				idleActorData.newEnable = true;
+				// idleActorData.newEnable = true;
+
+				//ToggleActor(activeActorData, idleActorData);
+
+				ToggleActor(activeActorData, false);
+				ToggleActor(idleActorData  , true );
+
+
 				idleActorData.bufferedAction = action;
 				idleActorData.state &= ~STATE_BUSY;
 
@@ -2973,8 +3052,14 @@ void CharacterSwitchController(byte8 * baseAddr)
 
 					lastCharacter = character;
 
-					activeActorData.newEnable = false;
-					idleActorData.newEnable = true;
+					// activeActorData.newEnable = false;
+					// idleActorData.newEnable = true;
+					//ToggleActor(activeActorData, idleActorData);
+
+				ToggleActor(activeActorData, false);
+				ToggleActor(idleActorData  , true );
+
+
 				}
 
 				break;
@@ -3012,8 +3097,16 @@ void CharacterSwitchController(byte8 * baseAddr)
 
 					lastCharacter = character;
 
-					activeActorData.newEnable = false;
-					idleActorData.newEnable = true;
+					// activeActorData.newEnable = false;
+					// idleActorData.newEnable = true;
+
+
+					//ToggleActor(activeActorData, idleActorData);
+
+				ToggleActor(activeActorData, false);
+				ToggleActor(idleActorData  , true );
+
+
 				}
 
 				break;
@@ -3040,20 +3133,23 @@ void CharacterSwitchController(byte8 * baseAddr)
 	}
 	
 
-
-
-
-
-
-
-	// if (actorData.newEnable)
+	// @Todo: Doppelganger check.
+	// if (enableDoppelganger)
 	// {
-	// 	CopyPosition(actorData, cloneActorData);
+	// 	return;
 	// }
-	// else
-	// {
-	// 	CopyPosition(cloneActorData, actorData);
-	// }
+
+
+
+
+	if (actorData.newEnable)
+	{
+		CopyPosition(actorData, cloneActorData);
+	}
+	else
+	{
+		CopyPosition(cloneActorData, actorData);
+	}
 }
 
 
@@ -6721,6 +6817,13 @@ void DeactivateDoppelganger(ActorData & actorData)
 
 
 
+// @Todo: Create CollisionData.
+void UpdateCollisionData(ActorData & actorData)
+{
+	LogFunction(actorData.operator byte8 *());
+
+	actorData.collisionIndex = (actorData.newEnable) ? 0 : 1;
+}
 
 
 
@@ -6756,6 +6859,34 @@ export void Actor_Init()
 
 
 	ToggleStyleFixes(true);
+
+
+
+
+
+
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+5C260
+		};
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rsi,
+		};
+		auto func = CreateFunction(UpdateCollisionData, (appBaseAddr + 0x1EF001), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall(func.sect0, (appBaseAddr + 0x5C260));
+		WriteJump((appBaseAddr + 0x1EEFFC), func.addr);
+		/*
+		dmc3.exe+1EEFFC - E8 5FD2E6FF       - call dmc3.exe+5C260
+		dmc3.exe+1EF001 - 83 BE 943E0000 03 - cmp dword ptr [rsi+00003E94],03
+		*/
+	}
+
+
+
 
 
 

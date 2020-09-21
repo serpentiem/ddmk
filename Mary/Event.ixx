@@ -324,6 +324,12 @@ void MainLoop()
 
 void ActorLoop(byte8 * baseAddr)
 {
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		LogFunction();
+	}
 	Actor_ActorLoop(baseAddr);
 }
 
