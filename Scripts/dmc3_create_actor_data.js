@@ -464,33 +464,32 @@ var extra =
 
 
 
-	[ "newCharacter"     , "uint8"   ],
-	[ "newLastCharacter"     , "uint8"   ],
+	// [ "newCharacter"     , "uint8"   ],
+	// [ "newLastCharacter"     , "uint8"   ],
+
+	// [ "newExecuteCharacterSwitch"     , "bool"   ],
+
+
+
+	// [ "newMeleeWeapons[5]"     , "uint8"   ],
+	// [ "newMeleeWeaponCount"    , "uint8"   ],
+	// [ "newMeleeWeaponIndex"    , "uint8"   ],
+	// [ "newLastMeleeWeapon"    , "uint8"   ],
+
+
+	// [ "newRangedWeapons[5]"    , "uint8"   ],
+	// [ "newRangedWeaponCount"   , "uint8"   ],
+	// [ "newRangedWeaponIndex"   , "uint8"   ],
+	// [ "newLastRangedWeapon"   , "uint8"   ],
+
+	// [ "newStyle"   , "uint8"   ],
 
 
 
 
 
-	[ "newMeleeWeapons[5]"     , "uint8"   ],
-	[ "newMeleeWeaponCount"    , "uint8"   ],
-	[ "newMeleeWeaponIndex"    , "uint8"   ],
-	[ "newLastMeleeWeapon"    , "uint8"   ],
 
 
-	[ "newRangedWeapons[5]"    , "uint8"   ],
-	[ "newRangedWeaponCount"   , "uint8"   ],
-	[ "newRangedWeaponIndex"   , "uint8"   ],
-	[ "newLastRangedWeapon"   , "uint8"   ],
-
-
-
-
-
-	[ "newStyle"   , "uint8"   ],
-
-
-
-	[ "newExecuteCharacterSwitch"     , "bool"   ],
 	[ "newExecuteStyleSwitch"     , "bool"   ],
 
 
