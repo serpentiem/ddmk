@@ -1953,6 +1953,13 @@ static_assert(offsetof(WeaponData, actorBaseAddr) == 0x120);
 
 
 
+enum ACTOR_DATA_SIZE
+{
+	ACTOR_DATA_SIZE_DANTE  = 47296,
+	ACTOR_DATA_SIZE_BOB    = 46720,
+	ACTOR_DATA_SIZE_LADY   = 33408,
+	ACTOR_DATA_SIZE_VERGIL = 47296,
+};
 
 
 

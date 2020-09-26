@@ -97,6 +97,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		}
 
 		Actor_Init();
+		Actor_Toggle(activeConfig.Actor.enable);
 
 
 		//Camera_Init();
