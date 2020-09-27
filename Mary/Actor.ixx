@@ -35,6 +35,7 @@ export Vector<byte8 *> Actor_actorBaseAddr;
 
 __declspec(dllexport) uint8 g_character             [MAX_PLAYER] = {};
 __declspec(dllexport) uint8 g_lastCharacter         [MAX_PLAYER] = {};
+__declspec(dllexport) uint8 g_activeCharacter       [MAX_PLAYER] = {};
 __declspec(dllexport) bool  g_executeCharacterSwitch[MAX_PLAYER] = {};
 
 
@@ -88,6 +89,22 @@ void InitGetActorBaseAddr()
 
 
 
+// @Todo: Together with melee weapon switch controller change to global gamepad.
+
+template <typename T>
+void ToggleInput
+(
+	T & actorData,
+	bool enable
+)
+{
+	actorData.newButtonMask       = (enable) ? 0xFFFF : (GetBinding(BINDING_CHANGE_DEVIL_ARMS) | GetBinding(BINDING_CHANGE_GUN));
+	actorData.newEnableRightStick = enable;
+	actorData.newEnableLeftStick  = enable;
+}
+
+
+
 
 template <typename T>
 void ToggleActor
@@ -99,11 +116,8 @@ void ToggleActor
 	actorData.newEnable = enable;
 	actorData.collisionIndex = (enable) ? 0 : 1;
 
-	// @Todo: Together with melee weapon switch controller change to global gamepad.
-	actorData.newButtonMask       = (enable) ? 0xFFFF : (GetBinding(BINDING_CHANGE_DEVIL_ARMS) | GetBinding(BINDING_CHANGE_GUN));
-	actorData.newEnableRightStick = enable;
-	actorData.newEnableLeftStick  = enable;
 
+	ToggleInput(actorData, enable);
 
 
 
@@ -2017,7 +2031,10 @@ void UpdateMeleeWeapon
 
 	auto weapon = playerData.meleeWeapons[playerData.meleeWeaponIndex];
 
-	auto & character = g_character[actorData.newPlayer];
+	auto & character     = g_character    [actorData.newPlayer];
+	auto & lastCharacter = g_lastCharacter[actorData.newPlayer];
+
+	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
@@ -2047,6 +2064,32 @@ void UpdateMeleeWeapon
 	{
 		character = CHAR_VERGIL;
 	}
+
+	// if (enableDoppelganger)
+	// {
+	// 	return;
+	// }
+
+
+	// if (character == lastCharacter)
+	// {
+	// 	if (character == static_cast<uint8>(actorData.character))
+	// 	{
+	// 		ToggleInput(actorData, true);
+	// 	}
+	// }
+	// else if (character != lastCharacter)
+	// {
+	// 	if (character != static_cast<uint8>(actorData.character))
+	// 	{
+	// 		ToggleInput(actorData, false);
+	// 	}
+	// }
+
+
+
+
+
 }
 
 template <typename T>
@@ -2345,8 +2388,9 @@ byte8 * CreateActor
 
 	if (entity == ENTITY_MAIN)
 	{
-		g_character    [player] = GetCharacterId<T>::value;
-		g_lastCharacter[player] = GetCharacterId<T>::value;
+		g_character      [player] = GetCharacterId<T>::value;
+		g_lastCharacter  [player] = GetCharacterId<T>::value;
+		g_activeCharacter[player] = GetCharacterId<T>::value;
 
 		ToggleActor(actorData, true);
 	}
@@ -2514,13 +2558,6 @@ export void SpawnActors()
 		mainActorData.cloneBaseAddr = cloneActorData;
 
 		UpdateCloneMeleeWeapon(mainActorData);
-
-		//ToggleActor(mainActorData, true);
-		//ToggleActor(cloneActorData, false);
-
-		//Toggle
-
-		//ToggleActor(mainActorData)
 	}
 }
 
@@ -2948,28 +2985,6 @@ uint8 GetAction
 
 
 
-// template
-// <
-// 	typename T1,
-// 	typename T2
-// >
-// void ToggleActor
-// (
-// 	T1 & activeActorData,
-// 	T2 & queuedActorData
-// )
-// {
-// 	activeActorData.newEnable = false;
-// 	activeActorData.collisionIndex = 1;
-
-// 	queuedActorData.newEnable = true;
-// 	queuedActorData.collisionIndex = 0;
-// }
-
-
-
-
-
 
 
 
@@ -3003,9 +3018,10 @@ void CharacterSwitchController(byte8 * baseAddr)
 	}
 	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
 
-	auto & character     = g_character             [actorData.newPlayer];
-	auto & lastCharacter = g_lastCharacter         [actorData.newPlayer];
-	auto & execute       = g_executeCharacterSwitch[actorData.newPlayer];
+	auto & character       = g_character             [actorData.newPlayer];
+	auto & lastCharacter   = g_lastCharacter         [actorData.newPlayer];
+	auto & activeCharacter = g_activeCharacter       [actorData.newPlayer];
+	auto & execute         = g_executeCharacterSwitch[actorData.newPlayer];
 
 
 
@@ -3041,9 +3057,9 @@ void CharacterSwitchController(byte8 * baseAddr)
 			{
 				if (!idleActorData.bufferedAction)
 				{
-
-					Log("NEXT_ACTION_REQUEST_POLICY_BUFFER");
-
+					char buffer[64] = {};
+					snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_BUFFER %u", action);
+					MessageBoxA(0, buffer, 0, 0);
 
 					idleActorData.bufferedAction = action;
 					idleActorData.state |= STATE_BUSY;
@@ -3054,20 +3070,32 @@ void CharacterSwitchController(byte8 * baseAddr)
 		}
 		else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
 		{
+			//execute = false;
+
+
+
+
+
+
+
 			if (idleActorData.bufferedAction)
 			{
-				Log("NEXT_ACTION_REQUEST_POLICY_EXECUTE");
+				char buffer[64] = {};
+				snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE buffer %u", idleActorData.bufferedAction);
+				MessageBoxA(0, buffer, 0, 0);
 
 				execute = false;
 
-				lastCharacter = character;
+				activeCharacter = character;
 
 				// activeActorData.newEnable = false;
 
 				// idleActorData.newEnable = true;
 
 
-				//ToggleActor(activeActorData, idleActorData);
+
+
+
 
 
 
@@ -3084,15 +3112,27 @@ void CharacterSwitchController(byte8 * baseAddr)
 			auto action = GetAction(activeActorData, binding, map);
 			if (action)
 			{
+
 				execute = false;
 
-				lastCharacter = character;
+
+				char buffer[64] = {};
+				snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE %u", action);
+				MessageBoxA(0, buffer, 0, 0);
+
+
+
+				//execute = false;
+
+				activeCharacter = character;
 
 				// activeActorData.newEnable = false;
 
 				// idleActorData.newEnable = true;
 
-				//ToggleActor(activeActorData, idleActorData);
+
+
+
 
 				ToggleActor(activeActorData, false);
 				ToggleActor(idleActorData  , true );
@@ -3114,63 +3154,21 @@ void CharacterSwitchController(byte8 * baseAddr)
 		ActorData & idleActorData
 	)
 	{
-		if (!execute)
-		{
-			return;
-		}
+		// if (!execute)
+		// {
+		// 	return;
+		// }
+
+		//ToggleInput(activeActorData, false);
 
 		switch (activeActorData.character)
 		{
 			case CHAR_DANTE:
 			{
 				auto & activeActorData2 = *reinterpret_cast<ActorDataDante *>(&activeActorData);
+				auto & idleActorData2 = *reinterpret_cast<ActorDataVergil *>(&idleActorData);
 
-				auto weapon = activeActorData2.meleeWeaponIndex;
-				if (weapon > 4)
-				{
-					weapon = 0;
-				}
-
-				if (IsActive(activeActorData2))
-				{
-					if
-					(
-						BufferExecute
-						(
-							activeActorData,
-							idleActorData,
-							NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK,
-							BINDING_MELEE_ATTACK,
-							meleeAttackDante[weapon]
-						)
-					)
-					{
-						break;
-					}
-				}
-				else
-				{
-					execute = false;
-
-					lastCharacter = character;
-
-					// activeActorData.newEnable = false;
-					// idleActorData.newEnable = true;
-					//ToggleActor(activeActorData, idleActorData);
-
-				ToggleActor(activeActorData, false);
-				ToggleActor(idleActorData  , true );
-
-
-				}
-
-				break;
-			}
-			case CHAR_VERGIL:
-			{
-				auto & activeActorData2 = *reinterpret_cast<ActorDataVergil *>(&activeActorData);
-
-				auto weapon = activeActorData2.activeMeleeWeaponIndex;
+				auto weapon = idleActorData2.activeMeleeWeaponIndex;
 				if (weapon > 2)
 				{
 					weapon = 0;
@@ -3197,16 +3195,85 @@ void CharacterSwitchController(byte8 * baseAddr)
 				{
 					execute = false;
 
-					lastCharacter = character;
+					if (activeCharacter != character)
+					{
+						activeCharacter = character;
 
-					// activeActorData.newEnable = false;
-					// idleActorData.newEnable = true;
+						ToggleActor(activeActorData, false);
+						ToggleActor(idleActorData  , true );
+					}
+					else
+					{
+						ToggleActor(activeActorData, true );
+						ToggleActor(idleActorData  , false);
+					}
 
 
-					//ToggleActor(activeActorData, idleActorData);
 
-				ToggleActor(activeActorData, false);
-				ToggleActor(idleActorData  , true );
+
+				}
+
+				break;
+			}
+			case CHAR_VERGIL:
+			{
+				auto & activeActorData2 = *reinterpret_cast<ActorDataVergil *>(&activeActorData);
+				auto & idleActorData2 = *reinterpret_cast<ActorDataDante *>(&idleActorData);
+
+				auto weapon = idleActorData2.meleeWeaponIndex;
+				if (weapon > 4)
+				{
+					weapon = 0;
+				}
+
+				if (IsActive(activeActorData2))
+				{
+					if
+					(
+						BufferExecute
+						(
+							activeActorData,
+							idleActorData,
+							NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK,
+							BINDING_MELEE_ATTACK,
+							meleeAttackDante[weapon]
+						)
+					)
+					{
+						break;
+					}
+				}
+				else
+				{
+					execute = false;
+
+
+					if (activeCharacter != character)
+					{
+						activeCharacter = character;
+
+						ToggleActor(activeActorData, false);
+						ToggleActor(idleActorData  , true );
+					}
+					else
+					{
+						ToggleActor(activeActorData, true );
+						ToggleActor(idleActorData  , false);
+					}
+
+
+					// activeCharacter = character;
+
+					// // activeActorData.newEnable = false;
+					// // idleActorData.newEnable = true;
+
+
+
+
+
+
+					// ToggleActor(activeActorData, false);
+					// ToggleActor(idleActorData  , true );
 
 
 				}
@@ -3216,23 +3283,77 @@ void CharacterSwitchController(byte8 * baseAddr)
 		}
 	};
 
-	if (character != lastCharacter)
+
+
+	if (lastCharacter != character)
 	{
-		if (character == static_cast<uint8>(cloneActorData.character))
+		lastCharacter = character;
+
+		ToggleInput(actorData     , false);
+		ToggleInput(cloneActorData, false);
+
+		execute = true;
+	}
+	// else
+	// {
+	// 	execute = true;
+	// }
+
+
+	if (execute)
+	{
+		if (activeCharacter == static_cast<uint8>(actorData.character))
 		{
-			// Enter
 			Function(actorData, cloneActorData);
 		}
 		else
 		{
-			// Leave
 			Function(cloneActorData, actorData);
 		}
 	}
-	else
-	{
-		execute = true;
-	}
+
+
+
+
+
+
+
+	// if (character == static_cast<uint8>(cloneActorData.character))
+	// {
+	// 	// Enter
+	// 	Function(actorData, cloneActorData);
+	// }
+	// else
+	// {
+	// 	// Leave
+	// 	Function(cloneActorData, actorData);
+	// }
+
+
+
+
+
+
+
+
+
+	// if (character != lastCharacter)
+	// {
+	// 	if (character == static_cast<uint8>(cloneActorData.character))
+	// 	{
+	// 		// Enter
+	// 		Function(actorData, cloneActorData);
+	// 	}
+	// 	else
+	// 	{
+	// 		// Leave
+	// 		Function(cloneActorData, actorData);
+	// 	}
+	// }
+	// else
+	// {
+	// 	execute = true;
+	// }
 	
 
 	// @Todo: Doppelganger check.
