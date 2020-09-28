@@ -98,7 +98,7 @@ void ToggleInput
 	bool enable
 )
 {
-	actorData.newButtonMask       = (enable) ? 0xFFFF : (GetBinding(BINDING_CHANGE_DEVIL_ARMS) | GetBinding(BINDING_CHANGE_GUN));
+	actorData.newButtonMask       = (enable) ? 0xFFFF : (GetBinding(BINDING_CHANGE_DEVIL_ARMS) | GetBinding(BINDING_CHANGE_GUN) | GetBinding(BINDING_ITEM_SCREEN));
 	actorData.newEnableRightStick = enable;
 	actorData.newEnableLeftStick  = enable;
 }
@@ -1982,39 +1982,41 @@ void UpdateStyle
 	PlayerData & playerData
 )
 {
-	auto style = playerData.style;
+	actorData.style = playerData.style;
 
-	auto & character = g_character[actorData.newPlayer];
+	// auto style = playerData.style;
 
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
-	{
-		if (IsDanteStyle(style))
-		{
-			actorData.style = style;
-		}
-	}
-	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	{
-		if (IsVergilStyle(style))
-		{
-			actorData.style = style;
+	// auto & character = g_character[actorData.newPlayer];
 
-		}
-	}
+	// if constexpr (TypeMatch<T, ActorDataDante>::value)
+	// {
+	// 	if (IsDanteStyle(style))
+	// 	{
+	// 		actorData.style = style;
+	// 	}
+	// }
+	// else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+	// {
+	// 	if (IsVergilStyle(style))
+	// 	{
+	// 		actorData.style = style;
 
-	if (actorData.newEntity != ENTITY_MAIN)
-	{
-		return;
-	}
+	// 	}
+	// }
 
-	if (IsDanteStyle(style))
-	{
-		character = CHAR_DANTE;
-	}
-	else if (IsVergilStyle(style))
-	{
-		character = CHAR_VERGIL;
-	}
+	// if (actorData.newEntity != ENTITY_MAIN)
+	// {
+	// 	return;
+	// }
+
+	// if (IsDanteStyle(style))
+	// {
+	// 	character = CHAR_DANTE;
+	// }
+	// else if (IsVergilStyle(style))
+	// {
+	// 	character = CHAR_VERGIL;
+	// }
 }
 
 template <typename T>
@@ -2388,9 +2390,44 @@ byte8 * CreateActor
 
 	if (entity == ENTITY_MAIN)
 	{
-		g_character      [player] = GetCharacterId<T>::value;
-		g_lastCharacter  [player] = GetCharacterId<T>::value;
-		g_activeCharacter[player] = GetCharacterId<T>::value;
+		auto & character       = g_character      [player];
+		auto & lastCharacter   = g_lastCharacter  [player];
+		auto & activeCharacter = g_activeCharacter[player];
+
+		activeCharacter = lastCharacter = character = GetCharacterId<T>::value;
+
+		auto weapon = playerData.meleeWeapons[playerData.meleeWeaponIndex];
+
+		if
+		(
+			(actorData.character == CHAR_DANTE) &&
+			!IsDanteMeleeWeapon(weapon)
+		)
+		{
+			playerData.meleeWeaponIndex = 0;
+
+			UpdateMeleeWeapon(actorData, playerData);
+		}
+		else if
+		(
+			(actorData.character == CHAR_VERGIL) &&
+			!IsVergilMeleeWeapon(weapon)
+		)
+		{
+			playerData.meleeWeaponIndex = 0;
+
+			UpdateMeleeWeapon(actorData, playerData);
+		}
+
+
+		// if (IsDanteMeleeWeapon(weapon))
+		// {
+		// 	character = CHAR_DANTE;
+		// }
+		// else if (IsVergilMeleeWeapon(weapon))
+		// {
+		// 	character = CHAR_VERGIL;
+		// }
 
 		ToggleActor(actorData, true);
 	}
@@ -3161,6 +3198,28 @@ void CharacterSwitchController(byte8 * baseAddr)
 
 		//ToggleInput(activeActorData, false);
 
+
+
+
+		if (activeCharacter == character)
+		{
+			execute = false;
+
+			ToggleActor(activeActorData, true );
+			ToggleActor(idleActorData  , false);
+
+			return;
+		}
+
+
+
+
+
+
+
+
+
+
 		switch (activeActorData.character)
 		{
 			case CHAR_DANTE:
@@ -3195,18 +3254,18 @@ void CharacterSwitchController(byte8 * baseAddr)
 				{
 					execute = false;
 
-					if (activeCharacter != character)
-					{
+					// if (activeCharacter != character)
+					// {
 						activeCharacter = character;
 
 						ToggleActor(activeActorData, false);
 						ToggleActor(idleActorData  , true );
-					}
-					else
-					{
-						ToggleActor(activeActorData, true );
-						ToggleActor(idleActorData  , false);
-					}
+					// }
+					// else
+					// {
+					// 	ToggleActor(activeActorData, true );
+					// 	ToggleActor(idleActorData  , false);
+					// }
 
 
 
@@ -3248,18 +3307,18 @@ void CharacterSwitchController(byte8 * baseAddr)
 					execute = false;
 
 
-					if (activeCharacter != character)
-					{
+					// if (activeCharacter != character)
+					// {
 						activeCharacter = character;
 
 						ToggleActor(activeActorData, false);
 						ToggleActor(idleActorData  , true );
-					}
-					else
-					{
-						ToggleActor(activeActorData, true );
-						ToggleActor(idleActorData  , false);
-					}
+					// }
+					// else
+					// {
+					// 	ToggleActor(activeActorData, true );
+					// 	ToggleActor(idleActorData  , false);
+					// }
 
 
 					// activeCharacter = character;
@@ -3417,7 +3476,7 @@ void StyleSwitchController
 	PlayerData & playerData
 )
 {
-	auto & enableQuicksilver  = activeConfig.Actor.enableQuicksilver [actorData.newPlayer];
+	auto & enableQuicksilver  = activeConfig.Actor.enableQuicksilver [actorData.newPlayer]; // @Todo: Single switch.
 	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 
 	auto & execute = actorData.newExecuteStyleSwitch;
@@ -3435,7 +3494,12 @@ void StyleSwitchController
 
 		if (playerData.style == style)
 		{
-			if (actorData.newEntity == ENTITY_CLONE)
+			if (actorData.newPlayer != 0)
+			{
+				return;
+			}
+			// also add player check
+			if (actorData.newEntity != ENTITY_MAIN)
 			{
 				return;
 			}
@@ -3483,26 +3547,86 @@ void StyleSwitchController
 		}
 	}
 
-	if (actorData.buttons[2] & GetBinding(BINDING_ITEM_SCREEN))
+
+
+
+	switch (actorData.character)
 	{
-		SetStyle(STYLE_TRICKSTER);
+		case CHAR_DANTE:
+		{
+			if (actorData.buttons[2] & GetBinding(BINDING_ITEM_SCREEN))
+			{
+				SetStyle(STYLE_TRICKSTER);
+			}
+			else if (actorData.buttons[2] & GetBinding(BINDING_MAP_SCREEN))
+			{
+				SetStyle(STYLE_SWORDMASTER);
+			}
+			else if (actorData.buttons[2] & GetBinding(BINDING_EQUIP_SCREEN))
+			{
+				SetStyle(STYLE_ROYALGUARD);
+			}
+			else if (actorData.buttons[2] & GetBinding(BINDING_FILE_SCREEN))
+			{
+				SetStyle(STYLE_GUNSLINGER);
+			}
+			else
+			{
+				execute = true;
+			}
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			if (actorData.buttons[2] & GetBinding(BINDING_ITEM_SCREEN))
+			{
+				SetStyle(STYLE_DARK_SLAYER);
+			}
+			else
+			{
+				execute = true;
+			}
+			break;
+		}
 	}
-	else if (actorData.buttons[2] & GetBinding(BINDING_MAP_SCREEN))
-	{
-		SetStyle(STYLE_SWORDMASTER);
-	}
-	else if (actorData.buttons[2] & GetBinding(BINDING_EQUIP_SCREEN))
-	{
-		SetStyle(STYLE_ROYALGUARD);
-	}
-	else if (actorData.buttons[2] & GetBinding(BINDING_FILE_SCREEN))
-	{
-		SetStyle(STYLE_GUNSLINGER);
-	}
-	else
-	{
-		execute = true;
-	}
+
+
+	// if (actorData.character == CHAR_DANTE)
+	// {
+	// 	if (actorData.buttons[2] & GetBinding(BINDING_ITEM_SCREEN))
+	// 	{
+	// 		SetStyle(STYLE_TRICKSTER);
+	// 	}
+	// 	else if (actorData.buttons[2] & GetBinding(BINDING_MAP_SCREEN))
+	// 	{
+	// 		SetStyle(STYLE_SWORDMASTER);
+	// 	}
+	// 	else if (actorData.buttons[2] & GetBinding(BINDING_EQUIP_SCREEN))
+	// 	{
+	// 		SetStyle(STYLE_ROYALGUARD);
+	// 	}
+	// 	else if (actorData.buttons[2] & GetBinding(BINDING_FILE_SCREEN))
+	// 	{
+	// 		SetStyle(STYLE_GUNSLINGER);
+	// 	}
+	// 	else
+	// 	{
+	// 		execute = true;
+	// 	}
+	// }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	sect0:;
 
