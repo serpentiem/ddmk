@@ -43,7 +43,7 @@ __declspec(dllexport) bool  g_executeCharacterSwitch[MAX_PLAYER] = {};
 
 
 // @Todo: Fix Lock-On.
-
+// @Todo: Air Lunar Phase and Nevan instant Vortex.
 
 
 
@@ -89,7 +89,27 @@ void InitGetActorBaseAddr()
 
 
 
-// @Todo: Together with melee weapon switch controller change to global gamepad.
+
+// @Todo: Consider CopyState.
+template
+<
+	typename T1,
+	typename T2
+>
+void CopyPosition
+(
+	T1 & activeActorData,
+	T2 & idleActorData
+)
+{
+	idleActorData.position       = activeActorData.position;
+	idleActorData.pull           = activeActorData.pull;
+	idleActorData.pullMultiplier = activeActorData.pullMultiplier;
+	idleActorData.rotation       = activeActorData.rotation;
+}
+
+
+
 
 template <typename T>
 void ToggleInput
@@ -98,13 +118,40 @@ void ToggleInput
 	bool enable
 )
 {
-	actorData.newButtonMask       = (enable) ? 0xFFFF : (GetBinding(BINDING_CHANGE_DEVIL_ARMS) | GetBinding(BINDING_CHANGE_GUN) | GetBinding(BINDING_ITEM_SCREEN));
-	actorData.newEnableRightStick = enable;
-	actorData.newEnableLeftStick  = enable;
+	auto & character       = g_character      [actorData.newPlayer];
+	auto & lastCharacter   = g_lastCharacter  [actorData.newPlayer];
+	auto & activeCharacter = g_activeCharacter[actorData.newPlayer];
+
+	if (enable)
+	{
+		actorData.newButtonMask      = 0xFFFF;
+		actorData.newEnableLeftStick = true;
+	}
+	else
+	{
+		actorData.newButtonMask =
+		(
+			GetBinding(BINDING_CHANGE_DEVIL_ARMS) |
+			GetBinding(BINDING_CHANGE_GUN       )
+		);
+		actorData.newEnableLeftStick = false;
+
+		if
+		(
+			(actorData.character == CHAR_VERGIL) &&
+			(activeCharacter == CHAR_DANTE) &&
+			activeConfig.SummonedSwords.dante
+		)
+		{
+			actorData.newButtonMask |=
+			(
+				GetBinding(BINDING_SHOOT  ) |
+				GetBinding(BINDING_LOCK_ON)
+			);
+			actorData.newEnableLeftStick = true;
+		}
+	}
 }
-
-
-
 
 template <typename T>
 void ToggleActor
@@ -116,17 +163,7 @@ void ToggleActor
 	actorData.newEnable = enable;
 	actorData.collisionIndex = (enable) ? 0 : 1;
 
-
 	ToggleInput(actorData, enable);
-
-
-
-
-
-
-
-
-
 }
 
 
@@ -206,11 +243,11 @@ struct GetCharacterId
 	};
 };
 
-export template <uint8 character> struct GetActorDataType {};
-export template <> struct GetActorDataType<CHAR_DANTE > { typedef ActorDataDante  value; };
-export template <> struct GetActorDataType<CHAR_BOB   > { typedef ActorDataBob    value; };
-export template <> struct GetActorDataType<CHAR_LADY  > { typedef ActorDataLady   value; };
-export template <> struct GetActorDataType<CHAR_VERGIL> { typedef ActorDataVergil value; };
+// export template <uint8 character> struct GetActorDataType {};
+// export template <> struct GetActorDataType<CHAR_DANTE > { typedef ActorDataDante  value; };
+// export template <> struct GetActorDataType<CHAR_BOB   > { typedef ActorDataBob    value; };
+// export template <> struct GetActorDataType<CHAR_LADY  > { typedef ActorDataLady   value; };
+// export template <> struct GetActorDataType<CHAR_VERGIL> { typedef ActorDataVergil value; };
 
 struct CharacterData
 {
@@ -349,30 +386,30 @@ void InitRegisterWeapon()
 
 
 
-bool IsDanteStyle(uint8 style)
-{
-	if ((style >= STYLE_SWORDMASTER) && (style <= STYLE_DOPPELGANGER))
-	{
-		return true;
-	}
+// bool IsDanteStyle(uint8 style)
+// {
+// 	if ((style >= STYLE_SWORDMASTER) && (style <= STYLE_DOPPELGANGER))
+// 	{
+// 		return true;
+// 	}
 
-	return false;
-}
+// 	return false;
+// }
 
-bool IsVergilStyle(uint8 style)
-{
-	switch (style)
-	{
-		case STYLE_DARK_SLAYER:
-		case STYLE_QUICKSILVER:
-		case STYLE_DOPPELGANGER:
-		{
-			return true;
-		}
-	}
+// bool IsVergilStyle(uint8 style)
+// {
+// 	switch (style)
+// 	{
+// 		case STYLE_DARK_SLAYER:
+// 		case STYLE_QUICKSILVER:
+// 		case STYLE_DOPPELGANGER:
+// 		{
+// 			return true;
+// 		}
+// 	}
 
-	return false;
-}
+// 	return false;
+// }
 
 
 
@@ -785,6 +822,45 @@ void IsMeleeWeaponReadyVergilFix(ActorDataVergil & actorData)
 
 
 
+template <typename T>
+bool DoppelgangerCheck(T & actorData)
+{
+	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
+
+	if (enableDoppelganger)
+	{
+		if (actorData.newEntity == ENTITY_MAIN)
+		{
+			if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if (!(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)))
+			{
+				return false;
+			}
+		}
+	}
+	else
+	{
+		if (actorData.newEntity == ENTITY_MAIN)
+		{
+			if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
 
 
 
@@ -2702,7 +2778,397 @@ void ToggleIsWeaponReady(bool enable)
 
 
 
-constexpr uint8 meleeAttackDante [MELEE_WEAPON_COUNT_DANTE ][MAX_TILT_DIRECTION][2] =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+constexpr uint8 swordmaster[MELEE_WEAPON_COUNT_DANTE][MAX_TILT_DIRECTION][2] =
+{
+	// Rebellion
+	{
+		// Neutral
+		{
+			ACTION_DANTE_REBELLION_PROP_SHREDDER_1,
+			ACTION_DANTE_REBELLION_AERIAL_RAVE_PART_1,
+		},
+		// Up
+		{
+			ACTION_DANTE_REBELLION_SWORD_PIERCE,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			ACTION_DANTE_REBELLION_DANCE_MACABRE_PART_1,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Cerberus
+	{
+		// Neutral
+		{
+			ACTION_DANTE_CERBERUS_FLICKER,
+			ACTION_DANTE_CERBERUS_AIR_FLICKER,
+		},
+		// Up
+		{
+			ACTION_DANTE_CERBERUS_CRYSTAL,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			ACTION_DANTE_CERBERUS_ICE_AGE,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Agni & Rudra
+	{
+		// Neutral
+		{
+			ACTION_DANTE_AGNI_RUDRA_CROSSED_SWORDS,
+			ACTION_DANTE_AGNI_RUDRA_SKY_DANCE_PART_1,
+		},
+		// Up
+		{
+			ACTION_DANTE_AGNI_RUDRA_CRAWLER,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			ACTION_DANTE_AGNI_RUDRA_TWISTER,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Nevan
+	{
+		// Neutral
+		{
+			ACTION_DANTE_NEVAN_SLASH,
+			ACTION_DANTE_NEVAN_AIR_SLASH_PART_1,
+		},
+		// Up
+		{
+			ACTION_DANTE_NEVAN_FEEDBACK,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			ACTION_DANTE_NEVAN_DISTORTION,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Beowulf
+	{
+		// Neutral
+		{
+			ACTION_DANTE_BEOWULF_ZODIAC,
+			ACTION_DANTE_BEOWULF_THE_HAMMER,
+		},
+		// Up
+		{
+			ACTION_DANTE_BEOWULF_VOLCANO,
+			ACTION_DANTE_BEOWULF_AIR_VOLCANO,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			ACTION_DANTE_BEOWULF_REAL_IMPACT,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+};
+
+constexpr uint8 gunslinger[RANGED_WEAPON_COUNT_DANTE][MAX_TILT_DIRECTION][2] =
+{
+	// Ebony & Ivory
+	{
+		// Neutral
+		{
+			ACTION_DANTE_EBONY_IVORY_TWOSOME_TIME,
+			ACTION_DANTE_EBONY_IVORY_RAIN_STORM,
+		},
+		// Up
+		{
+			0,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			0,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Shotgun
+	{
+		// Neutral
+		{
+			ACTION_DANTE_SHOTGUN_FIREWORKS,
+			ACTION_DANTE_SHOTGUN_AIR_FIREWORKS,
+		},
+		// Up
+		{
+			ACTION_DANTE_SHOTGUN_GUN_STINGER,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			0,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Artemis
+	{
+		// Neutral
+		{
+			ACTION_DANTE_ARTEMIS_MULTI_LOCK_SHOT,
+			ACTION_DANTE_ARTEMIS_AIR_MULTI_LOCK_SHOT,
+		},
+		// Up
+		{
+			ACTION_DANTE_ARTEMIS_SPHERE,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			0,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Spiral
+	{
+		// Neutral
+		{
+			ACTION_DANTE_SPIRAL_TRICK_SHOT,
+			0,
+		},
+		// Up
+		{
+			ACTION_DANTE_SPIRAL_SNIPER,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			0,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+	// Kalina Ann
+	{
+		// Neutral
+		{
+			ACTION_DANTE_KALINA_ANN_HYSTERIC,
+			0,
+		},
+		// Up
+		{
+			ACTION_DANTE_KALINA_ANN_GRAPPLE,
+			0,
+		},
+		// Right
+		{
+			0,
+			0,
+		},
+		// Down
+		{
+			0,
+			0,
+		},
+		// Left
+		{
+			0,
+			0,
+		},
+	},
+};
+
+constexpr uint8 trickster[MAX_TILT_DIRECTION][2] =
+{
+	// Neutral
+	{
+		ACTION_DANTE_TRICKSTER_DASH,
+		ACTION_DANTE_TRICKSTER_SKY_STAR,
+	},
+	// Up
+	{
+		ACTION_DANTE_TRICKSTER_AIR_TRICK,
+		ACTION_DANTE_TRICKSTER_AIR_TRICK,
+	},
+	// Right
+	{
+		0,
+		0,
+	},
+	// Down
+	{
+		0,
+		0,
+	},
+	// Left
+	{
+		0,
+		0,
+	},
+};
+
+constexpr uint8 royalguard[MAX_TILT_DIRECTION][2] =
+{
+	// Neutral
+	{
+		0,
+		0,
+	},
+	// Up
+	{
+		ACTION_DANTE_ROYALGUARD_RELEASE_1,
+		ACTION_DANTE_ROYALGUARD_AIR_RELEASE_1,
+	},
+	// Right
+	{
+		0,
+		0,
+	},
+	// Down
+	{
+		0,
+		0,
+	},
+	// Left
+	{
+		0,
+		0,
+	},
+};
+
+constexpr uint8 darkSlayer[MAX_TILT_DIRECTION][2] =
+{
+	// Neutral
+	{
+		ACTION_VERGIL_DARK_SLAYER_AIR_TRICK,
+		ACTION_VERGIL_DARK_SLAYER_AIR_TRICK,
+	},
+	// Up
+	{
+		ACTION_VERGIL_DARK_SLAYER_TRICK_UP,
+		ACTION_VERGIL_DARK_SLAYER_TRICK_UP,
+	},
+	// Right
+	{
+		0,
+		0,
+	},
+	// Down
+	{
+		ACTION_VERGIL_DARK_SLAYER_TRICK_DOWN,
+		ACTION_VERGIL_DARK_SLAYER_TRICK_DOWN,
+	},
+	// Left
+	{
+		0,
+		0,
+	},
+};
+
+constexpr uint8 meleeAttackDante[MELEE_WEAPON_COUNT_DANTE][MAX_TILT_DIRECTION][2] =
 {
 	// Rebellion
 	{
@@ -2846,9 +3312,6 @@ constexpr uint8 meleeAttackDante [MELEE_WEAPON_COUNT_DANTE ][MAX_TILT_DIRECTION]
 	},
 };
 
-
-
-
 constexpr uint8 meleeAttackVergil[MELEE_WEAPON_COUNT_VERGIL][MAX_TILT_DIRECTION][2] =
 {
 	// Yamato
@@ -2964,23 +3427,16 @@ constexpr uint8 meleeAttackVergil[MELEE_WEAPON_COUNT_VERGIL][MAX_TILT_DIRECTION]
 
 
 
-// @Todo: Consider CopyState.
-template
-<
-	typename T1,
-	typename T2
->
-void CopyPosition
-(
-	T1 & activeActorData,
-	T2 & idleActorData
-)
-{
-	idleActorData.position       = activeActorData.position;
-	idleActorData.pull           = activeActorData.pull;
-	idleActorData.pullMultiplier = activeActorData.pullMultiplier;
-	idleActorData.rotation       = activeActorData.rotation;
-}
+
+
+
+
+
+
+
+
+
+
 
 template <typename T>
 uint8 GetAction
@@ -3054,6 +3510,23 @@ void CharacterSwitchController(byte8 * baseAddr)
 		return;
 	}
 	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
+
+
+
+	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
+
+	if (enableDoppelganger)
+	{
+		return;
+	}
+
+
+
+
+
+
+
+
 
 	auto & character       = g_character             [actorData.newPlayer];
 	auto & lastCharacter   = g_lastCharacter         [actorData.newPlayer];
@@ -3205,6 +3678,8 @@ void CharacterSwitchController(byte8 * baseAddr)
 		{
 			execute = false;
 
+			// should be toggle input
+
 			ToggleActor(activeActorData, true );
 			ToggleActor(idleActorData  , false);
 
@@ -3236,6 +3711,20 @@ void CharacterSwitchController(byte8 * baseAddr)
 				if (IsActive(activeActorData2))
 				{
 					if
+					(
+						BufferExecute
+						(
+							activeActorData,
+							idleActorData,
+							NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER,
+							BINDING_STYLE_ACTION,
+							darkSlayer
+						)
+					)
+					{
+						break;
+					}
+					else if
 					(
 						BufferExecute
 						(
@@ -3279,15 +3768,88 @@ void CharacterSwitchController(byte8 * baseAddr)
 				auto & activeActorData2 = *reinterpret_cast<ActorDataVergil *>(&activeActorData);
 				auto & idleActorData2 = *reinterpret_cast<ActorDataDante *>(&idleActorData);
 
-				auto weapon = idleActorData2.meleeWeaponIndex;
-				if (weapon > 4)
+				auto style = idleActorData2.style;
+				if (style > STYLE_DOPPELGANGER)
 				{
-					weapon = 0;
+					style = STYLE_SWORDMASTER;
 				}
+				style -= STYLE_SWORDMASTER;
+
+				auto meleeWeapon = idleActorData2.meleeWeaponIndex;
+				if (meleeWeapon > WEAPON_BEOWULF_DANTE)
+				{
+					meleeWeapon = WEAPON_REBELLION;
+				}
+				meleeWeapon -= WEAPON_REBELLION;
+
+				auto rangedWeapon = idleActorData2.rangedWeaponIndex;
+				if (rangedWeapon > WEAPON_KALINA_ANN)
+				{
+					rangedWeapon = WEAPON_EBONY_IVORY;
+				}
+				rangedWeapon -= WEAPON_EBONY_IVORY;
 
 				if (IsActive(activeActorData2))
 				{
-					if
+					bool skip = false;
+
+					switch (style)
+					{
+						case STYLE_SWORDMASTER:
+						{
+							skip = BufferExecute
+							(
+								activeActorData,
+								idleActorData,
+								NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER,
+								BINDING_STYLE_ACTION,
+								swordmaster[meleeWeapon]
+							);
+							break;
+						}
+						case STYLE_GUNSLINGER:
+						{
+							skip = BufferExecute
+							(
+								activeActorData,
+								idleActorData,
+								NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER,
+								BINDING_STYLE_ACTION,
+								gunslinger[rangedWeapon]
+							);
+							break;
+						}
+						case STYLE_TRICKSTER:
+						{
+							skip = BufferExecute
+							(
+								activeActorData,
+								idleActorData,
+								NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER,
+								BINDING_STYLE_ACTION,
+								trickster
+							);
+							break;
+						}
+						case STYLE_ROYALGUARD:
+						{
+							skip = BufferExecute
+							(
+								activeActorData,
+								idleActorData,
+								NEXT_ACTION_REQUEST_POLICY_ROYALGUARD,
+								BINDING_STYLE_ACTION,
+								royalguard
+							);
+							break;
+						}
+					}
+
+					if (skip)
+					{
+						break;
+					}
+					else if
 					(
 						BufferExecute
 						(
@@ -3295,7 +3857,7 @@ void CharacterSwitchController(byte8 * baseAddr)
 							idleActorData,
 							NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK,
 							BINDING_MELEE_ATTACK,
-							meleeAttackDante[weapon]
+							meleeAttackDante[meleeWeapon]
 						)
 					)
 					{
@@ -3517,35 +4079,68 @@ void StyleSwitchController
 		update = true;
 	};
 
-	if
-	(
-		enableDoppelganger &&
-		(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	)
+
+
+
+
+	if (enableDoppelganger)
 	{
 		if (actorData.newEntity == ENTITY_MAIN)
 		{
-			if (actorData.buttons[0] & GetBinding(BINDING_CHANGE_TARGET))
+			if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
 			{
-				SetStyle(STYLE_DOPPELGANGER);
+				if (actorData.buttons[0] & GetBinding(BINDING_CHANGE_TARGET))
+				{
+					SetStyle(STYLE_DOPPELGANGER);
 
-				goto sect0;
+					goto sect0;
+				}
+				else
+				{
+					execute = true;
+				}
 			}
-			else
-			{
-				execute = true;
-			}
-
-			return;
 		}
 	}
-	else
+
+
+	if (!DoppelgangerCheck(actorData))
 	{
-		if (actorData.newEntity == ENTITY_CLONE)
-		{
-			return;
-		}
+		return;
 	}
+
+
+	// if
+	// (
+	// 	enableDoppelganger &&
+	// 	(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	// )
+	// {
+	// 	if (actorData.newEntity == ENTITY_MAIN)
+	// 	{
+	// 		if (actorData.buttons[0] & GetBinding(BINDING_CHANGE_TARGET))
+	// 		{
+	// 			SetStyle(STYLE_DOPPELGANGER);
+
+	// 			goto sect0;
+	// 		}
+	// 		else
+	// 		{
+	// 			execute = true;
+	// 		}
+
+	// 		return;
+	// 	}
+	// }
+	// else
+	// {
+	// 	if (actorData.newEntity == ENTITY_CLONE)
+	// 	{
+	// 		return;
+	// 	}
+	// }
+
+
 
 
 
@@ -3711,24 +4306,80 @@ void MeleeWeaponSwitchController
 		update = true;
 	};
 
-	if
-	(
-		enableDoppelganger &&
-		(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	)
+
+
+
+
+
+
+	if (!DoppelgangerCheck(actorData))
 	{
-		if (actorData.newEntity == ENTITY_MAIN)
-		{
-			return;
-		}
+		return;
 	}
-	else
-	{
-		if (actorData.newEntity == ENTITY_CLONE)
-		{
-			return;
-		}
-	}
+
+
+
+	// if (enableDoppelganger)
+	// {
+	// 	if (actorData.newEntity == ENTITY_MAIN)
+	// 	{
+	// 		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	// 		{
+	// 			return;
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		if (!(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)))
+	// 		{
+	// 			return;
+	// 		}
+	// 	}
+	// }
+	// else
+	// {
+	// 	if (actorData.newEntity == ENTITY_MAIN)
+	// 	{
+	// 		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	// 		{
+	// 			return;
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		return;
+	// 	}
+	// }
+
+
+
+
+
+
+	// if
+	// (
+	// 	enableDoppelganger &&
+	// 	(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	// )
+	// {
+	// 	if (actorData.newEntity == ENTITY_MAIN)
+	// 	{
+	// 		return;
+	// 	}
+	// }
+	// else
+	// {
+	// 	if (actorData.newEntity == ENTITY_CLONE)
+	// 	{
+	// 		return;
+	// 	}
+	// }
+
+
+
+
+
+
 
 	if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
 	{
@@ -3748,6 +4399,82 @@ void MeleeWeaponSwitchController
 			Back();
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// if
+	// (
+	// 	enableDoppelganger &&
+	// 	(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	// )
+	// {
+	// 	if (actorData.newEntity == ENTITY_MAIN)
+	// 	{
+	// 		return;
+	// 	}
+	// }
+	// else
+	// {
+	// 	if (actorData.newEntity == ENTITY_CLONE)
+	// 	{
+	// 		return;
+	// 	}
+	// }
+
+	// if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+	// {
+	// 	if (actorData.buttons[0] & GetBinding(BINDING_TAUNT))
+	// 	{
+	// 		Back();
+	// 	}
+	// 	else
+	// 	{
+	// 		Forward();
+	// 	}
+	// }
+	// else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
+	// {
+	// 	if constexpr (TypeMatch<T, ActorDataVergil>::value)
+	// 	{
+	// 		Back();
+	// 	}
+	// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	if (!update)
 	{
@@ -3825,23 +4552,28 @@ void RangedWeaponSwitchController
 		update = true;
 	};
 
-	if
-	(
-		enableDoppelganger &&
-		(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	)
+	// if
+	// (
+	// 	enableDoppelganger &&
+	// 	(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	// )
+	// {
+	// 	if (actorData.newEntity == ENTITY_MAIN)
+	// 	{
+	// 		return;
+	// 	}
+	// }
+	// else
+	// {
+	// 	if (actorData.newEntity == ENTITY_CLONE)
+	// 	{
+	// 		return;
+	// 	}
+	// }
+
+	if (!DoppelgangerCheck(actorData))
 	{
-		if (actorData.newEntity == ENTITY_MAIN)
-		{
-			return;
-		}
-	}
-	else
-	{
-		if (actorData.newEntity == ENTITY_CLONE)
-		{
-			return;
-		}
+		return;
 	}
 
 	if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
@@ -6972,34 +7704,74 @@ void ToggleStyleFixes(bool enable)
 
 bool DevilDoppelgangerCheck(ActorData & actorData)
 {
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 
-	if (enableDoppelganger)
-	{
-		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-		{
-			if (actorData.newEntity == ENTITY_MAIN)
-			{
-				return false;
-			}
-		}
-		else
-		{
-			if (actorData.newEntity == ENTITY_CLONE)
-			{
-				return false;
-			}
-		}
-	}
-	else
-	{
-		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-		{
-			return false;
-		}
-	}
 
-	return true;
+	return DoppelgangerCheck(actorData);
+
+
+
+	// auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
+
+	// if (enableDoppelganger)
+	// {
+	// 	if (actorData.newEntity == ENTITY_MAIN)
+	// 	{
+	// 		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	// 		{
+	// 			return false;
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		if (!(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)))
+	// 		{
+	// 			return false;
+	// 		}
+	// 	}
+	// }
+	// else
+	// {
+	// 	// if (actorData.newEntity == ENTITY_MAIN)
+	// 	{
+	// 		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	// 		{
+	// 			return false;
+	// 		}
+	// 	}
+	// 	// else
+	// 	// {
+	// 	// 	return false;
+	// 	// }
+	// }
+
+
+
+	// if (enableDoppelganger)
+	// {
+	// 	if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	// 	{
+	// 		if (actorData.newEntity == ENTITY_MAIN)
+	// 		{
+	// 			return false;
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		if (actorData.newEntity == ENTITY_CLONE)
+	// 		{
+	// 			return false;
+	// 		}
+	// 	}
+	// }
+	// else
+	// {
+	// 	if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	// 	{
+	// 		return false;
+	// 	}
+	// }
+
+	//return true;
 }
 
 
@@ -7204,6 +7976,7 @@ byte8  * DeactivateDoppelgangerAddr       = 0;
 byte8  * PositionUpdateAddr[8]            = {};
 byte8  * InputUpdateAddr[8]               = {};
 byte8  * UpdateCollisionDataAddr          = 0;
+byte8  * ResetBufferedActionAddr          = 0;
 
 export void Actor_Init()
 {
@@ -7596,6 +8369,24 @@ export void Actor_Init()
 		/*
 		dmc3.exe+1EEFFC - E8 5FD2E6FF       - call dmc3.exe+5C260
 		dmc3.exe+1EF001 - 83 BE 943E0000 03 - cmp dword ptr [rsi+00003E94],03
+		*/
+	}
+
+	// Reset Buffered Action
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x41, 0x80, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [r8+0000B8C0],01
+			0x75, 0x07,                                     // jne short
+			0x41, 0x88, 0x80, 0xA8, 0x3F, 0x00, 0x00,       // mov [r8+00003FA8],al
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1E0EB9), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newEnable);
+		ResetBufferedActionAddr = func.addr;
+		/*
+		dmc3.exe+1E0EB2 - 41 88 80 A83F0000 - mov [r8+00003FA8],al
+		dmc3.exe+1E0EB9 - 41 88 80 103F0000 - mov [r8+00003F10],al
 		*/
 	}
 }
@@ -8178,6 +8969,27 @@ export void Actor_Toggle(bool enable)
 		dmc3.exe+1EF001 - 83 BE 943E0000 03 - cmp dword ptr [rsi+00003E94],03
 		*/
 	}
+
+	// Reset Buffered Action
+	{
+		auto dest = (appBaseAddr + 0x1E0EB2);
+		if (enable)
+		{
+			WriteJump(dest, ResetBufferedActionAddr, 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x41, 0x88, 0x80, 0xA8, 0x3F, 0x00, 0x00, // mov [r8+00003FA8],al
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E0EB2 - 41 88 80 A83F0000 - mov [r8+00003FA8],al
+		dmc3.exe+1E0EB9 - 41 88 80 103F0000 - mov [r8+00003F10],al
+		*/
+	}
 }
 
 
@@ -8362,5 +9174,6 @@ bool DoppelgangerRateController(ActorData & actorData)
 		dmc3.exe+1EBD1E - 0F85 9B000000     - jne dmc3.exe+1EBDBF
 		*/
 
+// @Todo: Together with melee weapon switch controller change to global gamepad.
 
 #endif

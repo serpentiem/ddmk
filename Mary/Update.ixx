@@ -394,6 +394,28 @@ constexpr uint8 tricksterDante                            [MAX_TILT_DIRECTION][2
 		0,
 	},
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 constexpr uint8 rangedAttackDante[MAX_RANGED_WEAPON_DANTE][MAX_TILT_DIRECTION][2] =
 {
 	// Ebony & Ivory
