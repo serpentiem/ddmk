@@ -154,6 +154,11 @@ var items =
 	[ "expertise[16]"                       , "byte32"                  , 0x3FEC                           ],
 	[ "maxHitPoints"                        , "float32"                 , 0x40EC                           ],
 	[ "hitPoints"                           , "float32"                 , 0x411C                           ],
+
+
+	
+
+
 	[ "targetBaseAddr"                      , "byte8 *"                 , 0x6328                           ],
 
 	

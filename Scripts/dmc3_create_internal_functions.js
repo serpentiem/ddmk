@@ -136,9 +136,19 @@ var items =
 
 	[ 0x1F94D0, "void"   , "byte8 * actorData, uint8 index", "", "Devil Flux"  ],
 	[ 0x1EAE60, "void"   , "byte8 * actorData, uint8 index", "", "Play Doppelganger Effect" ],
-	
-	
 
+
+
+
+
+	[ 0x32E5F0, "float32"   , "vec4 & position", "0, true, false", "" ],
+	
+	
+/*
+dmc3.exe+1BB69D - E8 4E2F1700           - call dmc3.exe+32E5F0 { actor position vector
+ }
+
+*/
 
 	
 

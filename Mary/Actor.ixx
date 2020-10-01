@@ -153,6 +153,9 @@ void ToggleInput
 	}
 }
 
+
+//byte8 * mainActorBaseAddr = 0;
+
 template <typename T>
 void ToggleActor
 (
@@ -164,7 +167,16 @@ void ToggleActor
 	actorData.collisionIndex = (enable) ? 0 : 1;
 
 	ToggleInput(actorData, enable);
+
+
+
+	//mainActorBaseAddr = actorData;
+
+
 }
+
+
+
 
 
 
@@ -175,6 +187,8 @@ void ToggleActor
 void SetMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
+
+	//mainActorBaseAddr = baseAddr;
 
 	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 
@@ -188,7 +202,7 @@ void SetMainActor(byte8 * baseAddr)
 		pool[3] = baseAddr;
 	}
 
-	return;
+	//return;
 
 	// Style Rank
 	{
@@ -3569,7 +3583,7 @@ void CharacterSwitchController(byte8 * baseAddr)
 				{
 					char buffer[64] = {};
 					snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_BUFFER %u", action);
-					MessageBoxA(0, buffer, 0, 0);
+					//MessageBoxA(0, buffer, 0, 0);
 
 					idleActorData.bufferedAction = action;
 					idleActorData.state |= STATE_BUSY;
@@ -3592,7 +3606,7 @@ void CharacterSwitchController(byte8 * baseAddr)
 			{
 				char buffer[64] = {};
 				snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE buffer %u", idleActorData.bufferedAction);
-				MessageBoxA(0, buffer, 0, 0);
+				//MessageBoxA(0, buffer, 0, 0);
 
 				execute = false;
 
@@ -3628,7 +3642,7 @@ void CharacterSwitchController(byte8 * baseAddr)
 
 				char buffer[64] = {};
 				snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE %u", action);
-				MessageBoxA(0, buffer, 0, 0);
+				//MessageBoxA(0, buffer, 0, 0);
 
 
 
@@ -4793,6 +4807,12 @@ bool customize = false;
 
 export void Actor_CreateMainActor(byte8 * baseAddr)
 {
+
+
+	//mainActorBaseAddr = baseAddr;
+
+
+
 	if (!activeConfig.Actor.enable)
 	{
 		return;
@@ -7879,6 +7899,18 @@ void ActivateDoppelganger(ActorData & actorData)
 	dmc3.exe+1E92DC - E8 7F1B0000 - call dmc3.exe+1EAE60
 	*/
 
+
+
+
+
+	ToggleActor(cloneActorData, true);
+
+
+
+
+
+
+
 	// if (actorData.devil)
 	// {
 	// 	cloneActorData.devil = true;
@@ -7907,6 +7939,16 @@ void ActivateDoppelganger(ActorData & actorData)
 
 void DeactivateDoppelganger(ActorData & actorData)
 {
+
+
+	if (!actorData.cloneBaseAddr)
+	{
+		return;
+	}
+	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
+
+
+
 	actorData.doppelganger = false;
 	/*
 	dmc3.exe+1E2AD8 - C6 81 62630000 00 - mov byte ptr [rcx+00006362],00
@@ -7931,7 +7973,7 @@ void DeactivateDoppelganger(ActorData & actorData)
 	*/
 
 
-
+	ToggleActor(cloneActorData, false);
 
 
 
@@ -8389,7 +8431,65 @@ export void Actor_Init()
 		dmc3.exe+1E0EB9 - 41 88 80 103F0000 - mov [r8+00003F10],al
 		*/
 	}
+
+
+
+
+
+
+
+
+
+
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x55,                                                       // push rbp
+			0x56,                                                       // push rsi
+			0x57,                                                       // push rdi
+			0x48, 0xBD, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rbp
+			0x48, 0x8B, 0x75, 0x00,                                     // mov rsi,[rbp+00]
+			0x48, 0x85, 0xF6,                                           // test rsi,rsi
+			0x74, 0x49,                                                 // je short
+			0xBF, 0x02, 0x00, 0x00, 0x00,                               // mov edi,00000002
+			0x3B, 0x7D, 0x08,                                           // cmp edi,[rbp+08]
+			0x73, 0x3F,                                                 // jae short
+			0x48, 0x8B, 0x0C, 0xFE,                                     // mov rcx,[rsi+rdi*8]
+			0x48, 0x85, 0xC9,                                           // test rcx,rcx
+			0x74, 0x32,                                                 // je short
+			0x48, 0x8B, 0x91, 0xD8, 0x51, 0x00, 0x00,                   // mov rdx,[rcx+000051D8]
+			0x48, 0x85, 0xD2,                                           // test rdx,rdx
+			0x74, 0x26,                                                 // je short
+			0x48, 0x8B, 0x42, 0x08,                                     // mov rax,[rdx+08]
+			0x48, 0x89, 0x81, 0xD8, 0x51, 0x00, 0x00,                   // mov [rcx+000051D8],rax
+			0x48, 0x89, 0x1A,                                           // mov [rdx],rbx
+			0x48, 0x8B, 0x81, 0xD0, 0x51, 0x00, 0x00,                   // mov rax,[rcx+000051D0]
+			0x48, 0x89, 0x42, 0x08,                                     // mov [rdx+08],rax
+			0x48, 0x89, 0x91, 0xD0, 0x51, 0x00, 0x00,                   // mov [rcx+000051D0],rdx
+			0xFF, 0x81, 0x08, 0x62, 0x00, 0x00,                         // inc [rcx+00006208]
+			0xFF, 0xC7,                                                 // inc edi
+			0xEB, 0xBC,                                                 // jmp short
+			0x5F,                                                       // pop rdi
+			0x5E,                                                       // pop rsi
+			0x5D,                                                       // pop rbp
+			0xB0, 0x01,                                                 // mov al,01
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1BB77C), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<void **>(func.sect0 + 5) = &Actor_actorBaseAddr;
+		WriteJump((appBaseAddr + 0x1BB6FC), func.addr, 5);
+		/*
+		dmc3.exe+1BB6FC - 48 8B 47 18    - mov rax,[rdi+18]
+		dmc3.exe+1BB700 - FF 80 08620000 - inc [rax+00006208]
+		dmc3.exe+1BB77C - 48 8B 5C 24 30 - mov rbx,[rsp+30]
+		*/
+	}
 }
+
+
+
+
+
 
 export void Actor_Toggle(bool enable)
 {

@@ -40,12 +40,12 @@ export struct Config
 	struct
 	{
 		bool    enable         = true;
-		uint32  mission        = 17;
+		uint32  mission        = 2;
 		uint32  mode           = MODE_NORMAL;
 		uint32  room           = 900;
 		uint32  position       = 0;
-		bool    ignoreRoom     = false;
-		bool    ignorePosition = false;
+		bool    ignoreRoom     = true;
+		bool    ignorePosition = true;
 		uint8   floor          = 0;
 		float32 hitPoints      = 6000;
 		float32 magicPoints    = 3000;
