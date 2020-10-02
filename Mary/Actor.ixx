@@ -7642,10 +7642,79 @@ void InitColor()
 void ToggleMainActorFixes(bool enable)
 {
 	LogFunction(enable);
-	Write<byte16>((appBaseAddr + 0x1F83DE + 2), (enable) ? 0x90C7 : 0x1841);
-	/*
-	dmc3.exe+1F83DE - 48 8B 41 18 - mov rax,[rcx+18]
-	*/
+
+
+
+
+
+
+	{
+		auto dest = (appBaseAddr + 0x1F83D7);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 18);
+			constexpr byte8 buffer[] =
+			{
+				0x40, 0x38, 0xB7, 0x62, 0x63, 0x00, 0x00, // cmp [rdi+00006362],sil
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x48, 0x8B, 0x0D, 0x4A, 0x8A, 0xA9, 0x00, // mov rcx,[dmc3.exe+C90E28]
+				0x48, 0x8B, 0x41, 0x18,                   // mov rax,[rcx+18]
+				0x40, 0x38, 0xB0, 0x62, 0x63, 0x00, 0x00, // cmp [rax+00006362],sil
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1F83D7 - 48 8B 0D 4A8AA900 - mov rcx,[dmc3.exe+C90E28]
+		dmc3.exe+1F83DE - 48 8B 41 18       - mov rax,[rcx+18]
+		dmc3.exe+1F83E2 - 40 38 B0 62630000 - cmp [rax+00006362],sil
+		dmc3.exe+1F83E9 - 75 0E             - jne dmc3.exe+1F83F9
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	Write<uint32>((appBaseAddr + 0x1F5FC6 + 2), offsetof(ActorData, newIsClone));
 	/*
 	dmc3.exe+1F5FC6 - 83 B9 1C010000 01     - cmp dword ptr [rcx+0000011C],01 { 1 }
@@ -9090,6 +9159,199 @@ export void Actor_Toggle(bool enable)
 		dmc3.exe+1E0EB9 - 41 88 80 103F0000 - mov [r8+00003F10],al
 		*/
 	}
+
+
+
+
+
+
+
+	// Lock-On Fixes
+	// {
+	// 	auto dest = (appBaseAddr + 0x1F83F2);
+	// 	if (enable)
+	// 	{
+	// 		vp_memset(dest, 0x90, 7);
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			mov_rcx_rdi,
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x8B, 0x0D, 0x2F, 0x8A, 0xA9, 0x00, // mov rcx,[dmc3.exe+C90E28]
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1F83F2 - 48 8B 0D 2F8AA900 - mov rcx,[dmc3.exe+C90E28]
+	// 	dmc3.exe+1F83F9 - 39 B7 20010000    - cmp [rdi+00000120],esi
+	// 	*/
+	// }
+
+
+
+
+
+	{
+		auto dest = (appBaseAddr + 0x1F8401);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 7);
+			constexpr byte8 buffer[] =
+			{
+				mov_rcx_rdi,
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x0F, 0xB6, 0x97, 0x18, 0x01, 0x00, 0x00, // movzx edx,byte ptr [rdi+00000118]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1F8401 - 0FB6 97 18010000 - movzx edx,byte ptr [rdi+00000118]
+		dmc3.exe+1F8408 - E8 5321FCFF      - call dmc3.exe+1BA560
+		*/
+	}
+
+
+	{
+		auto dest = (appBaseAddr + 0x1F90BD);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 14);
+			constexpr byte8 buffer[] =
+			{
+				mov_rcx_rdi,
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x0F, 0xB6, 0x97, 0x18, 0x01, 0x00, 0x00, // movzx edx,byte ptr [rdi+00000118]
+				0x48, 0x8B, 0x0D, 0x5D, 0x7D, 0xA9, 0x00, // mov rcx,[dmc3.exe+C90E28]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1F90BD - 0FB6 97 18010000  - movzx edx,byte ptr [rdi+00000118]
+		dmc3.exe+1F90C4 - 48 8B 0D 5D7DA900 - mov rcx,[dmc3.exe+C90E28]
+		*/
+	}
+
+
+
+
+
+
+
+
+	{
+		auto dest = (appBaseAddr + 0x1BA560);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 3);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x48, 0x63, 0xC2, // movsxd rax,edx
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1BA560 - 48 63 C2       - movsxd rax,edx
+		dmc3.exe+1BA563 - 41 B9 FF000000 - mov r9d,000000FF
+		*/
+	}
+
+
+
+
+
+	{
+		auto dest = (appBaseAddr + 0x1BA569);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 9);
+			constexpr byte8 buffer[] =
+			{
+				0x4C, 0x8B, 0xC1, // mov r8,rcx
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x4C, 0x8B, 0x44, 0xC1, 0x18, // mov r8,[rcx+rax*8+18]
+				0x4C, 0x8D, 0x14, 0xC1,       // lea r10,[rcx+rax*8]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1BA569 - 4C 8B 44 C1 18 - mov r8,[rcx+rax*8+18]
+		dmc3.exe+1BA56E - 4C 8D 14 C1    - lea r10,[rcx+rax*8]
+		*/
+	}
+
+
+
+
+
+
+
+	{
+		auto dest = (appBaseAddr + 0x1BA5C5);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 11);
+			constexpr byte8 buffer[] =
+			{
+				0x45, 0x89, 0x98, 0x40, 0x20, 0x00, 0x00, // mov [r8+00002040],r11d
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x49, 0x8B, 0x42, 0x18,                   // mov rax,[r10+18]
+				0x44, 0x89, 0x98, 0x08, 0x62, 0x00, 0x00, // mov [rax+00006208],r11d
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1BA5C5 - 49 8B 42 18       - mov rax,[r10+18]
+		dmc3.exe+1BA5C9 - 44 89 98 08620000 - mov [rax+00006208],r11d
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 
