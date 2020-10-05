@@ -206,8 +206,6 @@ enum MOTION_GROUP_
 	MAX_MOTION_GROUP = 32,
 };
 
-// @Todo: Check Vergil.
-
 enum NEXT_ACTION_REQUEST_POLICY
 {
 	NEXT_ACTION_REQUEST_POLICY_IGNORE,
@@ -438,6 +436,7 @@ enum PERMISSION
 	PERMISSION_TARGET = 0x10,
 	PERMISSION_RELEASE = 0x20,
 	PERMISSION_INTERACTION_STYLE_ATTACK = 0x400,
+	PERMISSION_TRICKSTER_DARK_SLAYER = 0x1000000,
 };
 
 enum STATE
@@ -2101,7 +2100,11 @@ struct ActorData
 	uint32 var_6340; // 0x6340
 	_(20);
 	uint32 styleLevel; // 0x6358
-	_(5);
+	uint8 dashCount; // 0x635C
+	uint8 skyStarCount; // 0x635D
+	uint8 airTrickCount; // 0x635E
+	uint8 trickUpCount; // 0x635F
+	uint8 trickDownCount; // 0x6360
 	bool quicksilver; // 0x6361
 	bool doppelganger; // 0x6362
 	_(1);
@@ -2314,7 +2317,8 @@ struct ActorDataDante
 	uint8 dashCount; // 0x635C
 	uint8 skyStarCount; // 0x635D
 	uint8 airTrickCount; // 0x635E
-	_(2);
+	uint8 trickUpCount; // 0x635F
+	uint8 trickDownCount; // 0x6360
 	bool quicksilver; // 0x6361
 	bool doppelganger; // 0x6362
 	_(1);
@@ -2546,7 +2550,11 @@ struct ActorDataBob
 	uint32 var_6340; // 0x6340
 	_(20);
 	uint32 styleLevel; // 0x6358
-	_(5);
+	uint8 dashCount; // 0x635C
+	uint8 skyStarCount; // 0x635D
+	uint8 airTrickCount; // 0x635E
+	uint8 trickUpCount; // 0x635F
+	uint8 trickDownCount; // 0x6360
 	bool quicksilver; // 0x6361
 	bool doppelganger; // 0x6362
 	_(1);
@@ -2755,7 +2763,11 @@ struct ActorDataLady
 	uint32 var_6340; // 0x6340
 	_(20);
 	uint32 styleLevel; // 0x6358
-	_(5);
+	uint8 dashCount; // 0x635C
+	uint8 skyStarCount; // 0x635D
+	uint8 airTrickCount; // 0x635E
+	uint8 trickUpCount; // 0x635F
+	uint8 trickDownCount; // 0x6360
 	bool quicksilver; // 0x6361
 	bool doppelganger; // 0x6362
 	_(1);
@@ -2965,7 +2977,8 @@ struct ActorDataVergil
 	uint32 var_6340; // 0x6340
 	_(20);
 	uint32 styleLevel; // 0x6358
-	_(2);
+	uint8 dashCount; // 0x635C
+	uint8 skyStarCount; // 0x635D
 	uint8 airTrickCount; // 0x635E
 	uint8 trickUpCount; // 0x635F
 	uint8 trickDownCount; // 0x6360
@@ -3146,6 +3159,11 @@ static_assert(offsetof(ActorData, targetBaseAddr) == 0x6328);
 static_assert(offsetof(ActorData, style) == 0x6338);
 static_assert(offsetof(ActorData, var_6340) == 0x6340);
 static_assert(offsetof(ActorData, styleLevel) == 0x6358);
+static_assert(offsetof(ActorData, dashCount) == 0x635C);
+static_assert(offsetof(ActorData, skyStarCount) == 0x635D);
+static_assert(offsetof(ActorData, airTrickCount) == 0x635E);
+static_assert(offsetof(ActorData, trickUpCount) == 0x635F);
+static_assert(offsetof(ActorData, trickDownCount) == 0x6360);
 static_assert(offsetof(ActorData, quicksilver) == 0x6361);
 static_assert(offsetof(ActorData, doppelganger) == 0x6362);
 static_assert(offsetof(ActorData, styleExperience) == 0x6364);
@@ -3288,6 +3306,8 @@ static_assert(offsetof(ActorDataDante, styleLevel) == 0x6358);
 static_assert(offsetof(ActorDataDante, dashCount) == 0x635C);
 static_assert(offsetof(ActorDataDante, skyStarCount) == 0x635D);
 static_assert(offsetof(ActorDataDante, airTrickCount) == 0x635E);
+static_assert(offsetof(ActorDataDante, trickUpCount) == 0x635F);
+static_assert(offsetof(ActorDataDante, trickDownCount) == 0x6360);
 static_assert(offsetof(ActorDataDante, quicksilver) == 0x6361);
 static_assert(offsetof(ActorDataDante, doppelganger) == 0x6362);
 static_assert(offsetof(ActorDataDante, styleExperience) == 0x6364);
@@ -3442,6 +3462,11 @@ static_assert(offsetof(ActorDataBob, targetBaseAddr) == 0x6328);
 static_assert(offsetof(ActorDataBob, style) == 0x6338);
 static_assert(offsetof(ActorDataBob, var_6340) == 0x6340);
 static_assert(offsetof(ActorDataBob, styleLevel) == 0x6358);
+static_assert(offsetof(ActorDataBob, dashCount) == 0x635C);
+static_assert(offsetof(ActorDataBob, skyStarCount) == 0x635D);
+static_assert(offsetof(ActorDataBob, airTrickCount) == 0x635E);
+static_assert(offsetof(ActorDataBob, trickUpCount) == 0x635F);
+static_assert(offsetof(ActorDataBob, trickDownCount) == 0x6360);
 static_assert(offsetof(ActorDataBob, quicksilver) == 0x6361);
 static_assert(offsetof(ActorDataBob, doppelganger) == 0x6362);
 static_assert(offsetof(ActorDataBob, styleExperience) == 0x6364);
@@ -3580,6 +3605,11 @@ static_assert(offsetof(ActorDataLady, targetBaseAddr) == 0x6328);
 static_assert(offsetof(ActorDataLady, style) == 0x6338);
 static_assert(offsetof(ActorDataLady, var_6340) == 0x6340);
 static_assert(offsetof(ActorDataLady, styleLevel) == 0x6358);
+static_assert(offsetof(ActorDataLady, dashCount) == 0x635C);
+static_assert(offsetof(ActorDataLady, skyStarCount) == 0x635D);
+static_assert(offsetof(ActorDataLady, airTrickCount) == 0x635E);
+static_assert(offsetof(ActorDataLady, trickUpCount) == 0x635F);
+static_assert(offsetof(ActorDataLady, trickDownCount) == 0x6360);
 static_assert(offsetof(ActorDataLady, quicksilver) == 0x6361);
 static_assert(offsetof(ActorDataLady, doppelganger) == 0x6362);
 static_assert(offsetof(ActorDataLady, styleExperience) == 0x6364);
@@ -3719,6 +3749,8 @@ static_assert(offsetof(ActorDataVergil, targetBaseAddr) == 0x6328);
 static_assert(offsetof(ActorDataVergil, style) == 0x6338);
 static_assert(offsetof(ActorDataVergil, var_6340) == 0x6340);
 static_assert(offsetof(ActorDataVergil, styleLevel) == 0x6358);
+static_assert(offsetof(ActorDataVergil, dashCount) == 0x635C);
+static_assert(offsetof(ActorDataVergil, skyStarCount) == 0x635D);
 static_assert(offsetof(ActorDataVergil, airTrickCount) == 0x635E);
 static_assert(offsetof(ActorDataVergil, trickUpCount) == 0x635F);
 static_assert(offsetof(ActorDataVergil, trickDownCount) == 0x6360);

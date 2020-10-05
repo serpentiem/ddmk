@@ -40,6 +40,14 @@ __declspec(dllexport) bool  g_executeCharacterSwitch[MAX_PLAYER] = {};
 
 
 
+__declspec(dllexport) uint8 g_motionGroup       [MAX_PLAYER] = {};
+__declspec(dllexport) uint8 g_lastMotionGroup       [MAX_PLAYER] = {};
+__declspec(dllexport) float32 g_timeout     [MAX_PLAYER] = {};
+
+
+
+
+
 byte8 * lockOnActorBaseAddr = 0;
 
 
@@ -93,12 +101,25 @@ void InitGetActorBaseAddr()
 }
 
 
+// template
+// <
+// 	typename T1,
+// 	typename T2
+// >
+// void CopyPull
+// (
+// 	T1 & activeActorData,
+// 	T2 & idleActorData
+// )
+// {
+// 	idleActorData.pull           = activeActorData.pull;
+// 	idleActorData.pullMultiplier = activeActorData.pullMultiplier;
+// }
 
 
 
 
-
-
+// @Research: Sync.
 
 template
 <
@@ -115,13 +136,122 @@ void CopyState
 	idleActorData.pull           = activeActorData.pull;
 	idleActorData.pullMultiplier = activeActorData.pullMultiplier;
 	idleActorData.rotation       = activeActorData.rotation;
+
+
+
+	//memcpy(idleActorData.eventData, activeActorData.eventData, sizeof(ActorEventData));
+
+
+
+	//idleActorData.airHikeCount   = activeActorData.airHikeCount;
+	idleActorData.kickJumpCount  = activeActorData.kickJumpCount;
+	idleActorData.wallHikeCount  = activeActorData.wallHikeCount;
+
+	//idleActorData.dashCount      = activeActorData.dashCount;
+	//idleActorData.skyStarCount   = activeActorData.skyStarCount;
+	idleActorData.airTrickCount   = activeActorData.airTrickCount;
+	//idleActorData.trickUpCount   = activeActorData.trickUpCount;
+	//idleActorData.trickDownCount = activeActorData.trickDownCount;
+
+
+
+
+
+
+
 	idleActorData.hitPoints      = activeActorData.hitPoints;
 	idleActorData.maxHitPoints   = activeActorData.maxHitPoints;
 	idleActorData.magicPoints    = activeActorData.magicPoints;
 	idleActorData.maxMagicPoints = activeActorData.maxMagicPoints;
 	idleActorData.styleRank      = activeActorData.styleRank;
 	idleActorData.styleMeter     = activeActorData.styleMeter;
+
+
+
+	memcpy(idleActorData.nextActionRequestPolicy, activeActorData.nextActionRequestPolicy, 64);
+
+
+	idleActorData.permissions = activeActorData.permissions;
+
+	idleActorData.state = activeActorData.state;
+	idleActorData.lastState = activeActorData.lastState;
+
+
+
+
+
+
 }
+
+
+
+
+// @Todo: Implement reset permissions.
+// @Todo: Implement visiblity handler.
+
+template<typename T>
+void UpdatePermissions(T & actorData)
+{
+
+
+
+	//return;
+
+	
+	
+
+	if (actorData.state & STATE_ON_FLOOR)
+	{
+
+		// if (actorData.permissions & PERMISSION_TRICKSTER_DARK_SLAYER)
+		// {
+		// 	actorData.permissions = 0x1C1B;
+		// 	actorData.state = STATE_ON_FLOOR;
+		// 	actorData.lastState = STATE_ON_FLOOR;
+		// }
+
+
+
+
+		if (actorData.permissions == 0x1C19)
+		{
+			actorData.permissions = 0x1C1B;
+		}
+		//actorData.permissions |= PERMISSION_WALK_RUN;
+	}
+
+
+
+	return;
+
+
+
+	if (actorData.state & STATE_IN_AIR)
+	{
+		actorData.permissions = PERMISSION_UPDATE | PERMISSION_INTERACTION_STYLE_ATTACK;
+	}
+	else
+	{
+		actorData.permissions = PERMISSION_UPDATE | PERMISSION_WALK_RUN;
+	}
+}
+
+
+
+
+template <typename T>
+void EndMotion(T & actorData)
+{
+	//actorData.var_3E00[0] = 2;
+	//actorData.var_3E00[0] = 2;
+	actorData.eventData[0].index = 2;
+}
+
+
+
+
+
+
 
 
 
@@ -199,6 +329,23 @@ void ToggleActor
 	actorData.collisionIndex = (enable) ? 0 : 1;
 
 	ToggleInput(actorData, enable);
+
+
+	actorData.visible = (enable) ? 1 : 0;
+
+
+
+	if (!enable)
+	{
+		actorData.airHikeCount   = 1;
+		actorData.kickJumpCount  = 1;
+		actorData.wallHikeCount  = 1;
+		actorData.dashCount      = 0;
+		actorData.skyStarCount   = 0;
+		actorData.airTrickCount  = 0;
+		actorData.trickUpCount   = 0;
+		actorData.trickDownCount = 0;
+	}
 
 
 
@@ -545,21 +692,21 @@ bool IsVergilWeapon(uint8 weapon)
 
 
 
-export template <typename T>
-bool IsStyleActive
-(
-	T & actorData,
-	uint8 style
-)
-{
-	return false;
-}
+// export template <typename T>
+// bool IsStyleActive
+// (
+// 	T & actorData,
+// 	uint8 style
+// )
+// {
+// 	return false;
+// }
 
-export template <typename T>
-bool IsStyleActive(T & actorData)
-{
-	return false;
-}
+// export template <typename T>
+// bool IsStyleActive(T & actorData)
+// {
+// 	return false;
+// }
 
 export template <typename T>
 bool IsWeaponActive
@@ -582,14 +729,14 @@ bool IsWeaponActive
 			return false;
 		}
 
-		if
-		(
-			(motionData.group == MOTION_GROUP_DANTE_NEVAN) &&
-			(motionData.index == 4)
-		)
-		{
-			return false;
-		}
+		// if
+		// (
+		// 	(motionData.group == MOTION_GROUP_DANTE_NEVAN) &&
+		// 	(motionData.index == 4)
+		// )
+		// {
+		// 	return false;
+		// }
 
 		if (motionData.group == (MOTION_GROUP_DANTE_REBELLION + weapon))
 		{
@@ -607,14 +754,14 @@ bool IsWeaponActive
 			return false;
 		}
 
-		if
-		(
-			(motionData.group == MOTION_GROUP_VERGIL_YAMATO) &&
-			(motionData.index == 16)
-		)
-		{
-			return false;
-		}
+		// if
+		// (
+		// 	(motionData.group == MOTION_GROUP_VERGIL_YAMATO) &&
+		// 	(motionData.index == 16)
+		// )
+		// {
+		// 	return false;
+		// }
 
 		if (motionData.group == (MOTION_GROUP_VERGIL_YAMATO + (weapon - WEAPON_YAMATO_VERGIL)))
 		{
@@ -625,26 +772,61 @@ bool IsWeaponActive
 	return false;
 }
 
-export template <typename T>
+
+
+
+
+
+
+
+
+
+
+
+
+
+template <typename T>
 bool IsWeaponActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[UPPER_BODY];
 
-	if (motionData.index == 0)
-	{
-		return false;
-	}
-
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		if ((motionData.group >= MOTION_GROUP_DANTE_REBELLION) && (motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN))
+		if
+		(
+			(motionData.group >= MOTION_GROUP_DANTE_REBELLION ) &&
+			(motionData.group <= MOTION_GROUP_DANTE_KALINA_ANN) &&
+			(motionData.index > 0)
+		)
+		{
+			return true;
+		}
+		else if
+		(
+			(motionData.group >= MOTION_GROUP_DANTE_SWORDMASTER_REBELLION) &&
+			(motionData.group <= MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN)
+		)
 		{
 			return true;
 		}
 	}
 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
-		if ((motionData.group >= MOTION_GROUP_VERGIL_YAMATO) && (motionData.group <= MOTION_GROUP_VERGIL_FORCE_EDGE))
+		if
+		(
+			(motionData.group >= MOTION_GROUP_VERGIL_YAMATO    ) &&
+			(motionData.group <= MOTION_GROUP_VERGIL_FORCE_EDGE) &&
+			(motionData.index > 0)
+		)
+		{
+			return true;
+		}
+		else if
+		(
+			(motionData.group >= MOTION_GROUP_VERGIL_NERO_ANGELO_YAMATO ) &&
+			(motionData.group <= MOTION_GROUP_VERGIL_NERO_ANGELO_BEOWULF) &&
+			(motionData.index > 0)
+		)
 		{
 			return true;
 		}
@@ -657,35 +839,78 @@ bool IsWeaponActive(T & actorData)
 
 
 
-// @Todo: Update.
-export template <typename T>
-__declspec(noinline) bool IsActive(T & actorData)
+
+
+
+
+template <typename T>
+bool IsActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[UPPER_BODY];
+
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		if ((motionData.group == MOTION_GROUP_DANTE_BASE) && (motionData.index == 14))
+		if
+		(
+			(motionData.group == MOTION_GROUP_DANTE_BASE) &&
+			(motionData.index > 0)
+		)
 		{
 			return true;
 		}
-		if ((motionData.group == MOTION_GROUP_DANTE_TAUNTS))
+		else if
+		(
+			(motionData.group >= MOTION_GROUP_DANTE_DAMAGE) &&
+			(motionData.group <= MOTION_GROUP_DANTE_TAUNTS)
+		)
+		{
+			return true;
+		}
+		else if (IsWeaponActive(actorData))
+		{
+			return true;
+		}
+		else if
+		(
+			(motionData.group >= MOTION_GROUP_DANTE_TRICKSTER   ) &&
+			(motionData.group <= MOTION_GROUP_DANTE_DOPPELGANGER)
+		)
 		{
 			return true;
 		}
 	}
 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
-		if ((motionData.group == MOTION_GROUP_VERGIL_BASE) && (motionData.index == 14))
+		if
+		(
+			(motionData.group == MOTION_GROUP_VERGIL_BASE) &&
+			(motionData.index > 0)
+		)
 		{
 			return true;
 		}
-		if ((motionData.group == MOTION_GROUP_VERGIL_TAUNTS))
+		else if
+		(
+			(motionData.group >= MOTION_GROUP_VERGIL_DAMAGE) &&
+			(motionData.group <= MOTION_GROUP_VERGIL_TAUNTS)
+		)
+		{
+			return true;
+		}
+		else if (IsWeaponActive(actorData))
+		{
+			return true;
+		}
+		else if (motionData.group >= MOTION_GROUP_VERGIL_DARK_SLAYER)
 		{
 			return true;
 		}
 	}
-	return IsWeaponActive(actorData);
+
+	return false;
 }
+
+
 
 
 
@@ -3641,6 +3866,9 @@ void CharacterSwitchController(byte8 * baseAddr)
 	auto & lastCharacter   = g_lastCharacter         [actorData.newPlayer];
 	auto & activeCharacter = g_activeCharacter       [actorData.newPlayer];
 	auto & execute         = g_executeCharacterSwitch[actorData.newPlayer];
+	auto & motionGroup     = g_motionGroup           [actorData.newPlayer];
+	auto & lastMotionGroup = g_lastMotionGroup       [actorData.newPlayer];
+	auto & timeout         = g_timeout               [actorData.newPlayer];
 
 
 
@@ -3656,116 +3884,211 @@ void CharacterSwitchController(byte8 * baseAddr)
 
 
 
+	// auto BufferExecute = [&]
+	// (
+	// 	ActorData & activeActorData,
+	// 	ActorData & idleActorData,
+	// 	uint8 policy,
+	// 	uint8 binding,
+	// 	const uint8(&map)[MAX_TILT_DIRECTION][2]
+	// )
+	// {
+	// 	if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_BUFFER)
+	// 	{
+	// 		auto action = GetAction(activeActorData, binding, map);
+	// 		if (action)
+	// 		{
+	// 			if (!idleActorData.bufferedAction)
+	// 			{
+	// 				char buffer[64] = {};
+	// 				snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_BUFFER %u", action);
+	// 				//MessageBoxA(0, buffer, 0, 0);
+
+	// 				idleActorData.bufferedAction = action;
+	// 				idleActorData.state |= STATE_BUSY;
+
+	// 				return true;
+	// 			}
+	// 		}
+	// 	}
+	// 	else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+	// 	{
+	// 		//execute = false;
 
 
 
 
-	auto BufferExecute = [&]
+
+
+
+	// 		if (idleActorData.bufferedAction)
+	// 		{
+	// 			char buffer[64] = {};
+	// 			snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE buffer %u", idleActorData.bufferedAction);
+	// 			//MessageBoxA(0, buffer, 0, 0);
+
+	// 			execute = false;
+
+	// 			activeCharacter = character;
+
+	// 			// activeActorData.newEnable = false;
+
+	// 			// idleActorData.newEnable = true;
+
+
+
+
+
+
+
+
+	// 			ToggleActor(activeActorData, false);
+	// 			ToggleActor(idleActorData  , true );
+
+
+
+	// 			idleActorData.state &= ~STATE_BUSY;
+
+	// 			return true;
+	// 		}
+
+	// 		auto action = GetAction(activeActorData, binding, map);
+	// 		if (action)
+	// 		{
+
+	// 			execute = false;
+
+
+	// 			char buffer[64] = {};
+	// 			snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE %u", action);
+	// 			//MessageBoxA(0, buffer, 0, 0);
+
+
+
+	// 			//execute = false;
+
+	// 			activeCharacter = character;
+
+	// 			// activeActorData.newEnable = false;
+
+	// 			// idleActorData.newEnable = true;
+
+
+
+
+
+	// 			ToggleActor(activeActorData, false);
+	// 			ToggleActor(idleActorData  , true );
+
+
+	// 			idleActorData.bufferedAction = action;
+	// 			idleActorData.state &= ~STATE_BUSY;
+
+	// 			return true;
+	// 		}
+	// 	}
+
+	// 	return false;
+	// };
+
+
+
+
+
+
+	auto SetTimeout = [&]
 	(
-		ActorData & activeActorData,
-		ActorData & idleActorData,
-		uint8 policy,
-		uint8 binding,
-		const uint8(&map)[MAX_TILT_DIRECTION][2]
+		uint8 index,
+		float32 value
 	)
 	{
-		if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_BUFFER)
+		motionGroup = index;
+
+		if (lastMotionGroup != motionGroup)
 		{
-			auto action = GetAction(activeActorData, binding, map);
-			if (action)
-			{
-				if (!idleActorData.bufferedAction)
-				{
-					char buffer[64] = {};
-					snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_BUFFER %u", action);
-					//MessageBoxA(0, buffer, 0, 0);
+			lastMotionGroup = motionGroup;
 
-					idleActorData.bufferedAction = action;
-					idleActorData.state |= STATE_BUSY;
-
-					return true;
-				}
-			}
+			timeout = value;
 		}
-		else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
-		{
-			//execute = false;
-
-
-
-
-
-
-
-			if (idleActorData.bufferedAction)
-			{
-				char buffer[64] = {};
-				snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE buffer %u", idleActorData.bufferedAction);
-				//MessageBoxA(0, buffer, 0, 0);
-
-				execute = false;
-
-				activeCharacter = character;
-
-				// activeActorData.newEnable = false;
-
-				// idleActorData.newEnable = true;
-
-
-
-
-
-
-
-
-				ToggleActor(activeActorData, false);
-				ToggleActor(idleActorData  , true );
-
-
-
-				idleActorData.state &= ~STATE_BUSY;
-
-				return true;
-			}
-
-			auto action = GetAction(activeActorData, binding, map);
-			if (action)
-			{
-
-				execute = false;
-
-
-				char buffer[64] = {};
-				snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE %u", action);
-				//MessageBoxA(0, buffer, 0, 0);
-
-
-
-				//execute = false;
-
-				activeCharacter = character;
-
-				// activeActorData.newEnable = false;
-
-				// idleActorData.newEnable = true;
-
-
-
-
-
-				ToggleActor(activeActorData, false);
-				ToggleActor(idleActorData  , true );
-
-
-				idleActorData.bufferedAction = action;
-				idleActorData.state &= ~STATE_BUSY;
-
-				return true;
-			}
-		}
-
-		return false;
 	};
+
+
+
+
+	auto TimeoutFunction = [&]
+	(
+		ActorData & activeActorData,
+		ActorData & idleActorData
+	)
+	{
+
+
+
+
+
+
+
+		switch (activeActorData.character)
+		{
+			// case CHAR_DANTE:
+			// {
+			// 	auto & activeActorData2 = *reinterpret_cast<ActorDataDante *>(&activeActorData);
+			// 	auto & idleActorData2 = *reinterpret_cast<ActorDataVergil *>(&idleActorData);
+
+
+
+			// 	break;
+			// }
+			case CHAR_VERGIL:
+			{
+				auto & activeActorData2 = *reinterpret_cast<ActorDataVergil *>(&activeActorData);
+				auto & idleActorData2 = *reinterpret_cast<ActorDataDante *>(&idleActorData);
+
+
+
+				auto & motionData = activeActorData.motionData[UPPER_BODY];
+
+				if (motionData.group == MOTION_GROUP_VERGIL_DARK_SLAYER)
+				{
+					SetTimeout(motionData.group, 25);
+				}
+
+
+
+				break;
+			}
+		}
+
+
+
+
+	};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	auto Function = [&]
 	(
@@ -3773,12 +4096,57 @@ void CharacterSwitchController(byte8 * baseAddr)
 		ActorData & idleActorData
 	)
 	{
-		// if (!execute)
+
+
+
+
+
+
+
+		// switch (activeActorData.character)
 		// {
-		// 	return;
+		// 	// case CHAR_DANTE:
+		// 	// {
+		// 	// 	auto & activeActorData2 = *reinterpret_cast<ActorDataDante *>(&activeActorData);
+		// 	// 	auto & idleActorData2 = *reinterpret_cast<ActorDataVergil *>(&idleActorData);
+
+
+
+		// 	// 	break;
+		// 	// }
+		// 	case CHAR_VERGIL:
+		// 	{
+		// 		auto & activeActorData2 = *reinterpret_cast<ActorDataVergil *>(&activeActorData);
+		// 		auto & idleActorData2 = *reinterpret_cast<ActorDataDante *>(&idleActorData);
+
+
+
+		// 		auto & motionData = activeActorData.motionData[UPPER_BODY];
+
+		// 		if (motionData.group == MOTION_GROUP_VERGIL_DARK_SLAYER)
+		// 		{
+		// 			SetTimeout(motionData.group, 100);
+		// 		}
+
+
+
+		// 		break;
+		// 	}
 		// }
 
-		//ToggleInput(activeActorData, false);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3787,19 +4155,16 @@ void CharacterSwitchController(byte8 * baseAddr)
 		{
 			execute = false;
 
-			// should be toggle input
-
-			ToggleActor(activeActorData, true );
-			ToggleActor(idleActorData  , false);
+			ToggleInput(activeActorData, true );
+			ToggleInput(idleActorData  , false);
 
 			return;
 		}
 
-
-
-
-
-
+		if (timeout > 0)
+		{
+			return;
+		}
 
 
 
@@ -3811,63 +4176,44 @@ void CharacterSwitchController(byte8 * baseAddr)
 				auto & activeActorData2 = *reinterpret_cast<ActorDataDante *>(&activeActorData);
 				auto & idleActorData2 = *reinterpret_cast<ActorDataVergil *>(&idleActorData);
 
-				auto weapon = idleActorData2.activeMeleeWeaponIndex;
-				if (weapon > 2)
-				{
-					weapon = 0;
-				}
-
 				if (IsActive(activeActorData2))
 				{
-					if
-					(
-						BufferExecute
-						(
-							activeActorData,
-							idleActorData,
-							NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER,
-							BINDING_STYLE_ACTION,
-							darkSlayer
-						)
-					)
+
+
+
+
+
+
+					if (IsActive(idleActorData2))
 					{
-						break;
-					}
-					else if
-					(
-						BufferExecute
-						(
-							activeActorData,
-							idleActorData,
-							NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK,
-							BINDING_MELEE_ATTACK,
-							meleeAttackVergil[weapon]
-						)
-					)
-					{
-						break;
+						execute = false;
+
+						activeCharacter = character;
+
+						ToggleActor(activeActorData, false);
+						ToggleActor(idleActorData  , true );
+
+						//CopyPull(activeActorData, idleActorData);
+
+						EndMotion(activeActorData);
+
+						UpdatePermissions(idleActorData);
 					}
 				}
 				else
 				{
 					execute = false;
 
-					// if (activeCharacter != character)
-					// {
-						activeCharacter = character;
+					activeCharacter = character;
 
-						ToggleActor(activeActorData, false);
-						ToggleActor(idleActorData  , true );
-					// }
-					// else
-					// {
-					// 	ToggleActor(activeActorData, true );
-					// 	ToggleActor(idleActorData  , false);
-					// }
+					ToggleActor(activeActorData, false);
+					ToggleActor(idleActorData  , true );
 
+					EndMotion(activeActorData);
 
+					//CopyPull(activeActorData, idleActorData);
 
-
+					UpdatePermissions(idleActorData);
 				}
 
 				break;
@@ -3877,135 +4223,61 @@ void CharacterSwitchController(byte8 * baseAddr)
 				auto & activeActorData2 = *reinterpret_cast<ActorDataVergil *>(&activeActorData);
 				auto & idleActorData2 = *reinterpret_cast<ActorDataDante *>(&idleActorData);
 
-				auto style = idleActorData2.style;
-				if (style > STYLE_DOPPELGANGER)
-				{
-					style = STYLE_SWORDMASTER;
-				}
-				style -= STYLE_SWORDMASTER;
 
-				auto meleeWeapon = idleActorData2.meleeWeaponIndex;
-				if (meleeWeapon > WEAPON_BEOWULF_DANTE)
-				{
-					meleeWeapon = WEAPON_REBELLION;
-				}
-				meleeWeapon -= WEAPON_REBELLION;
 
-				auto rangedWeapon = idleActorData2.rangedWeaponIndex;
-				if (rangedWeapon > WEAPON_KALINA_ANN)
-				{
-					rangedWeapon = WEAPON_EBONY_IVORY;
-				}
-				rangedWeapon -= WEAPON_EBONY_IVORY;
+				// auto & motionData = activeActorData.motionData[UPPER_BODY];
+
+				// if (motionData.group == MOTION_GROUP_VERGIL_DARK_SLAYER)
+				// {
+				// 	SetTimeout(motionData.group, 500);
+				// }
+
+				// if (activeCharacter == CHAR_VERGIL)
+				// {
+
+				// }
+
+
+
 
 				if (IsActive(activeActorData2))
 				{
-					bool skip = false;
 
-					switch (style)
-					{
-						case STYLE_SWORDMASTER:
-						{
-							skip = BufferExecute
-							(
-								activeActorData,
-								idleActorData,
-								NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER,
-								BINDING_STYLE_ACTION,
-								swordmaster[meleeWeapon]
-							);
-							break;
-						}
-						case STYLE_GUNSLINGER:
-						{
-							skip = BufferExecute
-							(
-								activeActorData,
-								idleActorData,
-								NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER,
-								BINDING_STYLE_ACTION,
-								gunslinger[rangedWeapon]
-							);
-							break;
-						}
-						case STYLE_TRICKSTER:
-						{
-							skip = BufferExecute
-							(
-								activeActorData,
-								idleActorData,
-								NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER,
-								BINDING_STYLE_ACTION,
-								trickster
-							);
-							break;
-						}
-						case STYLE_ROYALGUARD:
-						{
-							skip = BufferExecute
-							(
-								activeActorData,
-								idleActorData,
-								NEXT_ACTION_REQUEST_POLICY_ROYALGUARD,
-								BINDING_STYLE_ACTION,
-								royalguard
-							);
-							break;
-						}
-					}
 
-					if (skip)
+
+
+
+
+					if (IsActive(idleActorData2))
 					{
-						break;
-					}
-					else if
-					(
-						BufferExecute
-						(
-							activeActorData,
-							idleActorData,
-							NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK,
-							BINDING_MELEE_ATTACK,
-							meleeAttackDante[meleeWeapon]
-						)
-					)
-					{
-						break;
+						execute = false;
+
+						activeCharacter = character;
+
+						ToggleActor(activeActorData, false);
+						ToggleActor(idleActorData  , true );
+
+						EndMotion(activeActorData);
+
+						//CopyPull(activeActorData, idleActorData);
+
+						UpdatePermissions(idleActorData);
 					}
 				}
 				else
 				{
 					execute = false;
 
+					activeCharacter = character;
 
-					// if (activeCharacter != character)
-					// {
-						activeCharacter = character;
+					ToggleActor(activeActorData, false);
+					ToggleActor(idleActorData  , true );
 
-						ToggleActor(activeActorData, false);
-						ToggleActor(idleActorData  , true );
-					// }
-					// else
-					// {
-					// 	ToggleActor(activeActorData, true );
-					// 	ToggleActor(idleActorData  , false);
-					// }
+					EndMotion(activeActorData);
 
+					//CopyPull(activeActorData, idleActorData);
 
-					// activeCharacter = character;
-
-					// // activeActorData.newEnable = false;
-					// // idleActorData.newEnable = true;
-
-
-
-
-
-
-					// ToggleActor(activeActorData, false);
-					// ToggleActor(idleActorData  , true );
-
-
+					UpdatePermissions(idleActorData);
 				}
 
 				break;
@@ -4013,22 +4285,23 @@ void CharacterSwitchController(byte8 * baseAddr)
 		}
 	};
 
-
-
 	if (lastCharacter != character)
 	{
 		lastCharacter = character;
 
-		ToggleInput(actorData     , false);
-		ToggleInput(cloneActorData, false);
+		if (character == static_cast<uint8>(actorData.character))
+		{
+			ToggleInput(actorData     , true );
+			ToggleInput(cloneActorData, false);
+		}
+		else
+		{
+			ToggleInput(actorData     , false);
+			ToggleInput(cloneActorData, true );
+		}
 
 		execute = true;
 	}
-	// else
-	// {
-	// 	execute = true;
-	// }
-
 
 	if (execute)
 	{
@@ -4044,20 +4317,14 @@ void CharacterSwitchController(byte8 * baseAddr)
 
 
 
-
-
-
-
-	// if (character == static_cast<uint8>(cloneActorData.character))
-	// {
-	// 	// Enter
-	// 	Function(actorData, cloneActorData);
-	// }
-	// else
-	// {
-	// 	// Leave
-	// 	Function(cloneActorData, actorData);
-	// }
+	if (activeCharacter == static_cast<uint8>(actorData.character))
+	{
+		TimeoutFunction(actorData, cloneActorData);
+	}
+	else
+	{
+		TimeoutFunction(cloneActorData, actorData);
+	}
 
 
 
@@ -4067,30 +4334,25 @@ void CharacterSwitchController(byte8 * baseAddr)
 
 
 
-	// if (character != lastCharacter)
-	// {
-	// 	if (character == static_cast<uint8>(cloneActorData.character))
-	// 	{
-	// 		// Enter
-	// 		Function(actorData, cloneActorData);
-	// 	}
-	// 	else
-	// 	{
-	// 		// Leave
-	// 		Function(cloneActorData, actorData);
-	// 	}
-	// }
-	// else
-	// {
-	// 	execute = true;
-	// }
+
+	if (timeout > 0)
+	{
+		timeout -= 1.0f;
+	}
+	else if (timeout <= 0)
+	{
+		timeout = 0;
+
+		// @Todo: Use execute switch.
+
+		motionGroup = 0;
+		lastMotionGroup = 0;
+	}
+	
 	
 
-	// @Todo: Doppelganger check.
-	// if (enableDoppelganger)
-	// {
-	// 	return;
-	// }
+
+
 
 
 
@@ -4104,6 +4366,9 @@ void CharacterSwitchController(byte8 * baseAddr)
 		CopyState(cloneActorData, actorData);
 	}
 }
+
+
+
 
 
 
@@ -9155,103 +9420,103 @@ export void Actor_Toggle(bool enable)
 	}
 
 	// Position Updates
-	{
-		auto dest = (appBaseAddr + 0x1FB300);
-		if (enable)
-		{
-			WriteJump(dest, PositionUpdateAddr[0]);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x48, 0x89, 0x5C, 0x24, 0x08, // mov [rsp+08],rbx
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1FB300 - 48 89 5C 24 08 - mov [rsp+08],rbx
-		dmc3.exe+1FB305 - 57             - push rdi
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1FBE20);
-		if (enable)
-		{
-			WriteJump(dest, PositionUpdateAddr[1]);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x48, 0x89, 0x5C, 0x24, 0x08, // mov [rsp+08],rbx
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1FBE20 - 48 89 5C 24 08 - mov [rsp+08],rbx
-		dmc3.exe+1FBE25 - 57             - push rdi
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1FB470);
-		if (enable)
-		{
-			WriteJump(dest, PositionUpdateAddr[2], 1);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x40, 0x57,             // push rdi
-				0x48, 0x83, 0xEC, 0x20, // sub rsp,20
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1FB470 - 40 57                - push rdi
-		dmc3.exe+1FB472 - 48 83 EC 20          - sub rsp,20
-		dmc3.exe+1FB476 - 66 83 B9 0A750000 35 - cmp word ptr [rcx+0000750A],35
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1FB540);
-		if (enable)
-		{
-			WriteJump(dest, PositionUpdateAddr[3]);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x48, 0x89, 0x5C, 0x24, 0x10, // mov [rsp+10],rbx
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1FB540 - 48 89 5C 24 10 - mov [rsp+10],rbx
-		dmc3.exe+1FB545 - 57             - push rdi
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1FBEE0);
-		if (enable)
-		{
-			WriteJump(dest, PositionUpdateAddr[4]);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x48, 0x89, 0x5C, 0x24, 0x18, // mov [rsp+18],rbx
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1FBEE0 - 48 89 5C 24 18 - mov [rsp+18],rbx
-		dmc3.exe+1FBEE5 - 48 89 7C 24 20 - mov [rsp+20],rdi
-		*/
-	}
+	// {
+	// 	auto dest = (appBaseAddr + 0x1FB300);
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(dest, PositionUpdateAddr[0]);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x89, 0x5C, 0x24, 0x08, // mov [rsp+08],rbx
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1FB300 - 48 89 5C 24 08 - mov [rsp+08],rbx
+	// 	dmc3.exe+1FB305 - 57             - push rdi
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1FBE20);
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(dest, PositionUpdateAddr[1]);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x89, 0x5C, 0x24, 0x08, // mov [rsp+08],rbx
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1FBE20 - 48 89 5C 24 08 - mov [rsp+08],rbx
+	// 	dmc3.exe+1FBE25 - 57             - push rdi
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1FB470);
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(dest, PositionUpdateAddr[2], 1);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x40, 0x57,             // push rdi
+	// 			0x48, 0x83, 0xEC, 0x20, // sub rsp,20
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1FB470 - 40 57                - push rdi
+	// 	dmc3.exe+1FB472 - 48 83 EC 20          - sub rsp,20
+	// 	dmc3.exe+1FB476 - 66 83 B9 0A750000 35 - cmp word ptr [rcx+0000750A],35
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1FB540);
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(dest, PositionUpdateAddr[3]);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x89, 0x5C, 0x24, 0x10, // mov [rsp+10],rbx
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1FB540 - 48 89 5C 24 10 - mov [rsp+10],rbx
+	// 	dmc3.exe+1FB545 - 57             - push rdi
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1FBEE0);
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(dest, PositionUpdateAddr[4]);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x48, 0x89, 0x5C, 0x24, 0x18, // mov [rsp+18],rbx
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1FBEE0 - 48 89 5C 24 18 - mov [rsp+18],rbx
+	// 	dmc3.exe+1FBEE5 - 48 89 7C 24 20 - mov [rsp+20],rdi
+	// 	*/
+	// }
 
 	// Input Updates
 	{
@@ -9376,26 +9641,26 @@ export void Actor_Toggle(bool enable)
 		*/
 	}
 
-	// Reset Buffered Action
-	{
-		auto dest = (appBaseAddr + 0x1E0EB2);
-		if (enable)
-		{
-			WriteJump(dest, ResetBufferedActionAddr, 2);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x41, 0x88, 0x80, 0xA8, 0x3F, 0x00, 0x00, // mov [r8+00003FA8],al
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1E0EB2 - 41 88 80 A83F0000 - mov [r8+00003FA8],al
-		dmc3.exe+1E0EB9 - 41 88 80 103F0000 - mov [r8+00003F10],al
-		*/
-	}
+	// // Reset Buffered Action
+	// {
+	// 	auto dest = (appBaseAddr + 0x1E0EB2);
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(dest, ResetBufferedActionAddr, 2);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x41, 0x88, 0x80, 0xA8, 0x3F, 0x00, 0x00, // mov [r8+00003FA8],al
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1E0EB2 - 41 88 80 A83F0000 - mov [r8+00003FA8],al
+	// 	dmc3.exe+1E0EB9 - 41 88 80 103F0000 - mov [r8+00003F10],al
+	// 	*/
+	// }
 
 
 
@@ -9897,5 +10162,299 @@ bool DoppelgangerRateController(ActorData & actorData)
 		*/
 
 // @Todo: Together with melee weapon switch controller change to global gamepad.
+
+
+
+
+
+
+
+	// if (character == static_cast<uint8>(cloneActorData.character))
+	// {
+	// 	// Enter
+	// 	Function(actorData, cloneActorData);
+	// }
+	// else
+	// {
+	// 	// Leave
+	// 	Function(cloneActorData, actorData);
+	// }
+
+
+
+
+
+
+
+
+
+	// if (character != lastCharacter)
+	// {
+	// 	if (character == static_cast<uint8>(cloneActorData.character))
+	// 	{
+	// 		// Enter
+	// 		Function(actorData, cloneActorData);
+	// 	}
+	// 	else
+	// 	{
+	// 		// Leave
+	// 		Function(cloneActorData, actorData);
+	// 	}
+	// }
+	// else
+	// {
+	// 	execute = true;
+	// }
+	
+
+	// @Todo: Doppelganger check.
+	// if (enableDoppelganger)
+	// {
+	// 	return;
+	// }
+
+				auto weapon = idleActorData2.activeMeleeWeaponIndex;
+				if (weapon > 2)
+				{
+					weapon = 0;
+				}
+
+
+				auto style = idleActorData2.style;
+				if (style > STYLE_DOPPELGANGER)
+				{
+					style = STYLE_SWORDMASTER;
+				}
+				style -= STYLE_SWORDMASTER;
+
+				auto meleeWeapon = idleActorData2.meleeWeaponIndex;
+				if (meleeWeapon > WEAPON_BEOWULF_DANTE)
+				{
+					meleeWeapon = WEAPON_REBELLION;
+				}
+				meleeWeapon -= WEAPON_REBELLION;
+
+				auto rangedWeapon = idleActorData2.rangedWeaponIndex;
+				if (rangedWeapon > WEAPON_KALINA_ANN)
+				{
+					rangedWeapon = WEAPON_EBONY_IVORY;
+				}
+				rangedWeapon -= WEAPON_EBONY_IVORY;
+
+				if (IsActive(activeActorData2))
+				{
+					bool skip = false;
+
+					switch (style)
+					{
+						case STYLE_SWORDMASTER:
+						{
+							skip = BufferExecute
+							(
+								activeActorData,
+								idleActorData,
+								NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER,
+								BINDING_STYLE_ACTION,
+								swordmaster[meleeWeapon]
+							);
+							break;
+						}
+						case STYLE_GUNSLINGER:
+						{
+							skip = BufferExecute
+							(
+								activeActorData,
+								idleActorData,
+								NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER,
+								BINDING_STYLE_ACTION,
+								gunslinger[rangedWeapon]
+							);
+							break;
+						}
+						case STYLE_TRICKSTER:
+						{
+							skip = BufferExecute
+							(
+								activeActorData,
+								idleActorData,
+								NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER,
+								BINDING_STYLE_ACTION,
+								trickster
+							);
+							break;
+						}
+						case STYLE_ROYALGUARD:
+						{
+							skip = BufferExecute
+							(
+								activeActorData,
+								idleActorData,
+								NEXT_ACTION_REQUEST_POLICY_ROYALGUARD,
+								BINDING_STYLE_ACTION,
+								royalguard
+							);
+							break;
+						}
+					}
+
+					if (skip)
+					{
+						break;
+					}
+					else if
+					(
+						BufferExecute
+						(
+							activeActorData,
+							idleActorData,
+							NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK,
+							BINDING_MELEE_ATTACK,
+							meleeAttackDante[meleeWeapon]
+						)
+					)
+					{
+						break;
+					}
+				}
+				else
+				{
+					execute = false;
+
+
+					// if (activeCharacter != character)
+					// {
+						activeCharacter = character;
+
+						ToggleActor(activeActorData, false);
+						ToggleActor(idleActorData  , true );
+					// }
+					// else
+					// {
+					// 	ToggleActor(activeActorData, true );
+					// 	ToggleActor(idleActorData  , false);
+					// }
+
+
+					// activeCharacter = character;
+
+					// // activeActorData.newEnable = false;
+					// // idleActorData.newEnable = true;
+
+
+
+
+
+
+					// ToggleActor(activeActorData, false);
+					// ToggleActor(idleActorData  , true );
+
+
+
+
+
+				}
+
+
+
+
+		// if somehow active switch
+
+
+
+
+		for_all(uint8, policy, 16)
+		{
+			if (activeActorData.nextActionRequestPolicy[policy] != 0)
+			{
+
+			}
+		}
+
+
+
+		else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
+		{
+			//execute = false;
+
+
+
+
+
+
+
+			if (idleActorData.bufferedAction)
+			{
+				char buffer[64] = {};
+				snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE buffer %u", idleActorData.bufferedAction);
+				//MessageBoxA(0, buffer, 0, 0);
+
+				execute = false;
+
+				activeCharacter = character;
+
+				// activeActorData.newEnable = false;
+
+				// idleActorData.newEnable = true;
+
+
+
+
+
+
+
+
+				ToggleActor(activeActorData, false);
+				ToggleActor(idleActorData  , true );
+
+
+
+				idleActorData.state &= ~STATE_BUSY;
+
+				return true;
+			}
+
+			auto action = GetAction(activeActorData, binding, map);
+			if (action)
+			{
+
+				execute = false;
+
+
+				char buffer[64] = {};
+				snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE %u", action);
+				//MessageBoxA(0, buffer, 0, 0);
+
+
+
+				//execute = false;
+
+				activeCharacter = character;
+
+				// activeActorData.newEnable = false;
+
+				// idleActorData.newEnable = true;
+
+
+
+
+
+				ToggleActor(activeActorData, false);
+				ToggleActor(idleActorData  , true );
+
+
+				idleActorData.bufferedAction = action;
+				idleActorData.state &= ~STATE_BUSY;
+
+				return true;
+			}
+		}
+
+		// if (!execute)
+		// {
+		// 	return;
+		// }
+
+		//ToggleInput(activeActorData, false);
+
 
 #endif

@@ -170,11 +170,11 @@ var items =
 
 
 	[ "styleLevel"                          , "uint32"                  , 0x6358                           ],
-	[ "dashCount"                           , "uint8"                   , 0x635C, CHAR_DANTE               ],
-	[ "skyStarCount"                        , "uint8"                   , 0x635D, CHAR_DANTE               ],
-	[ "airTrickCount"                       , "uint8"                   , 0x635E, CHAR_DANTE | CHAR_VERGIL ],
-	[ "trickUpCount"                        , "uint8"                   , 0x635F, CHAR_VERGIL              ],
-	[ "trickDownCount"                      , "uint8"                   , 0x6360, CHAR_VERGIL              ],
+	[ "dashCount"                           , "uint8"                   , 0x635C,                ],
+	[ "skyStarCount"                        , "uint8"                   , 0x635D,                ],
+	[ "airTrickCount"                       , "uint8"                   , 0x635E,  ],
+	[ "trickUpCount"                        , "uint8"                   , 0x635F,               ],
+	[ "trickDownCount"                      , "uint8"                   , 0x6360,               ],
 	[ "quicksilver"                         , "bool"                    , 0x6361               ],
 	[ "doppelganger"                        , "bool"                    , 0x6362               ],
 	[ "styleExperience"                     , "float32"                 , 0x6364                           ],

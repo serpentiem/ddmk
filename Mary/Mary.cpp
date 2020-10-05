@@ -124,9 +124,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		Scene_Init();
 
-		Training_ToggleInfiniteHitPoints  (activeConfig.Training.infiniteHitPoints);
-		Training_ToggleInfiniteMagicPoints(true);
-		Training_ToggleDisableTimer       (true);
+		Training_ToggleInfiniteHitPoints  (activeConfig.Training.infiniteHitPoints  );
+		Training_ToggleInfiniteMagicPoints(activeConfig.Training.infiniteMagicPoints);
+		Training_ToggleDisableTimer       (activeConfig.Training.disableTimer       );
 
 
 		//Speed_Init();
