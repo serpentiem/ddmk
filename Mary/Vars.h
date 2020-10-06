@@ -1970,6 +1970,7 @@ struct PlayerData
 	bool forceFiles;
 	uint8 forceFilesCharacter;
 	uint8 style;
+	uint8 startStyle;
 	uint8 meleeWeapons[MELEE_WEAPON_COUNT];
 	uint8 meleeWeaponCount;
 	uint8 meleeWeaponIndex;
@@ -1977,6 +1978,9 @@ struct PlayerData
 	uint8 rangedWeaponCount;
 	uint8 rangedWeaponIndex;
 };
+
+
+
 
 
 

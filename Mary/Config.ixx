@@ -369,6 +369,7 @@ export void ApplyDefaultPlayerData
 			false,
 			CHAR_DANTE,
 			STYLE_TRICKSTER,
+			STYLE_TRICKSTER,
 			{
 				WEAPON_REBELLION,
 				WEAPON_CERBERUS,
@@ -414,6 +415,7 @@ export void ApplyDefaultPlayerData
 			0,
 			false,
 			CHAR_DANTE,
+			STYLE_DARK_SLAYER,
 			STYLE_DARK_SLAYER,
 			{
 				WEAPON_YAMATO_VERGIL,

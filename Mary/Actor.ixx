@@ -1,3 +1,10 @@
+
+
+
+// @Todo: Air Stinger, Air Lunar Phase and Nevan instant Vortex.
+
+
+
 #ifndef __MODULE_ACTOR__
 #define __MODULE_ACTOR__
 
@@ -31,39 +38,16 @@ constexpr bool debug = true;
 
 export Vector<byte8 *> Actor_actorBaseAddr;
 
-
-
-__declspec(dllexport) uint8 g_character             [MAX_PLAYER] = {};
-__declspec(dllexport) uint8 g_lastCharacter         [MAX_PLAYER] = {};
-__declspec(dllexport) uint8 g_activeCharacter       [MAX_PLAYER] = {};
-__declspec(dllexport) bool  g_executeCharacterSwitch[MAX_PLAYER] = {};
-
-
-
-__declspec(dllexport) uint8 g_motionGroup       [MAX_PLAYER] = {};
-__declspec(dllexport) uint8 g_lastMotionGroup       [MAX_PLAYER] = {};
-__declspec(dllexport) float32 g_timeout     [MAX_PLAYER] = {};
-
-
-
-
-
-byte8 * lockOnActorBaseAddr = 0;
-
-
-
-
-
-
-// @Todo: Fix Lock-On.
-// @Todo: Air Lunar Phase and Nevan instant Vortex.
-
-// @Todo: Reset style playerdata.
-
-
-
-
-
+__declspec(dllexport) uint8   g_character      [MAX_PLAYER] = {};
+__declspec(dllexport) uint8   g_lastCharacter  [MAX_PLAYER] = {};
+__declspec(dllexport) uint8   g_activeCharacter[MAX_PLAYER] = {};
+__declspec(dllexport) uint8   g_motionGroup    [MAX_PLAYER] = {};
+__declspec(dllexport) uint8   g_lastMotionGroup[MAX_PLAYER] = {};
+__declspec(dllexport) uint8   g_motionIndex    [MAX_PLAYER] = {};
+__declspec(dllexport) uint8   g_lastMotionIndex[MAX_PLAYER] = {};
+__declspec(dllexport) float32 g_timeout        [MAX_PLAYER] = {};
+__declspec(dllexport) bool    g_execute1       [MAX_PLAYER] = {};
+__declspec(dllexport) bool    g_execute2       [MAX_PLAYER] = {};
 
 byte8 * GetActorBaseAddr[MAX_REGISTER] = {};
 
@@ -100,276 +84,9 @@ void InitGetActorBaseAddr()
 	}
 }
 
-
-// template
-// <
-// 	typename T1,
-// 	typename T2
-// >
-// void CopyPull
-// (
-// 	T1 & activeActorData,
-// 	T2 & idleActorData
-// )
-// {
-// 	idleActorData.pull           = activeActorData.pull;
-// 	idleActorData.pullMultiplier = activeActorData.pullMultiplier;
-// }
-
-
-
-
-// @Research: Sync.
-
-template
-<
-	typename T1,
-	typename T2
->
-void CopyState
-(
-	T1 & activeActorData,
-	T2 & idleActorData
-)
-{
-	idleActorData.position       = activeActorData.position;
-	idleActorData.pull           = activeActorData.pull;
-	idleActorData.pullMultiplier = activeActorData.pullMultiplier;
-	idleActorData.rotation       = activeActorData.rotation;
-
-
-
-	//memcpy(idleActorData.eventData, activeActorData.eventData, sizeof(ActorEventData));
-
-
-
-	//idleActorData.airHikeCount   = activeActorData.airHikeCount;
-	idleActorData.kickJumpCount  = activeActorData.kickJumpCount;
-	idleActorData.wallHikeCount  = activeActorData.wallHikeCount;
-
-	//idleActorData.dashCount      = activeActorData.dashCount;
-	//idleActorData.skyStarCount   = activeActorData.skyStarCount;
-	idleActorData.airTrickCount   = activeActorData.airTrickCount;
-	//idleActorData.trickUpCount   = activeActorData.trickUpCount;
-	//idleActorData.trickDownCount = activeActorData.trickDownCount;
-
-
-
-
-
-
-
-	idleActorData.hitPoints      = activeActorData.hitPoints;
-	idleActorData.maxHitPoints   = activeActorData.maxHitPoints;
-	idleActorData.magicPoints    = activeActorData.magicPoints;
-	idleActorData.maxMagicPoints = activeActorData.maxMagicPoints;
-	idleActorData.styleRank      = activeActorData.styleRank;
-	idleActorData.styleMeter     = activeActorData.styleMeter;
-
-
-
-	memcpy(idleActorData.nextActionRequestPolicy, activeActorData.nextActionRequestPolicy, 64);
-
-
-	idleActorData.permissions = activeActorData.permissions;
-
-	idleActorData.state = activeActorData.state;
-	idleActorData.lastState = activeActorData.lastState;
-
-
-
-
-
-
-}
-
-
-
-
-// @Todo: Implement reset permissions.
-// @Todo: Implement visiblity handler.
-
-template<typename T>
-void UpdatePermissions(T & actorData)
-{
-
-
-
-	//return;
-
-	
-	
-
-	if (actorData.state & STATE_ON_FLOOR)
-	{
-
-		// if (actorData.permissions & PERMISSION_TRICKSTER_DARK_SLAYER)
-		// {
-		// 	actorData.permissions = 0x1C1B;
-		// 	actorData.state = STATE_ON_FLOOR;
-		// 	actorData.lastState = STATE_ON_FLOOR;
-		// }
-
-
-
-
-		if (actorData.permissions == 0x1C19)
-		{
-			actorData.permissions = 0x1C1B;
-		}
-		//actorData.permissions |= PERMISSION_WALK_RUN;
-	}
-
-
-
-	return;
-
-
-
-	if (actorData.state & STATE_IN_AIR)
-	{
-		actorData.permissions = PERMISSION_UPDATE | PERMISSION_INTERACTION_STYLE_ATTACK;
-	}
-	else
-	{
-		actorData.permissions = PERMISSION_UPDATE | PERMISSION_WALK_RUN;
-	}
-}
-
-
-
-
-template <typename T>
-void EndMotion(T & actorData)
-{
-	//actorData.var_3E00[0] = 2;
-	//actorData.var_3E00[0] = 2;
-	actorData.eventData[0].index = 2;
-}
-
-
-
-
-
-
-
-
-
-
-template <typename T>
-void ToggleInput
-(
-	T & actorData,
-	bool enable
-)
-{
-	// auto & character       = g_character      [actorData.newPlayer];
-	// auto & lastCharacter   = g_lastCharacter  [actorData.newPlayer];
-	// auto & activeCharacter = g_activeCharacter[actorData.newPlayer];
-
-	if (enable)
-	{
-		actorData.newButtonMask      = 0xFFFF;
-		actorData.newEnableLeftStick = true;
-	}
-	else
-	{
-		actorData.newButtonMask =
-		(
-			GetBinding(BINDING_CHANGE_DEVIL_ARMS) |
-			GetBinding(BINDING_CHANGE_GUN       )
-		);
-		actorData.newEnableLeftStick = false;
-
-		// if
-		// (
-		// 	(actorData.character == CHAR_VERGIL) &&
-		// 	(activeCharacter == CHAR_DANTE) &&
-		// 	activeConfig.SummonedSwords.dante
-		// )
-		// {
-		// 	actorData.newButtonMask |=
-		// 	(
-		// 		GetBinding(BINDING_SHOOT  ) |
-		// 		GetBinding(BINDING_LOCK_ON)
-		// 	);
-		// 	actorData.newEnableLeftStick = true;
-		// }
-	}
-}
-
-
-//byte8 * mainActorBaseAddr = 0;
-
-template <typename T>
-void ToggleActor
-(
-	T & actorData,
-	bool enable
-)
-{
-
-
-	if
-	(
-		(actorData.newPlayer == 0) &&
-		enable
-	)
-	{
-		//lockOnActorBaseAddr = actorData;
-		SetMainActor(actorData);
-	}
-
-
-
-
-
-
-	actorData.newEnable = enable;
-	actorData.collisionIndex = (enable) ? 0 : 1;
-
-	ToggleInput(actorData, enable);
-
-
-	actorData.visible = (enable) ? 1 : 0;
-
-
-
-	if (!enable)
-	{
-		actorData.airHikeCount   = 1;
-		actorData.kickJumpCount  = 1;
-		actorData.wallHikeCount  = 1;
-		actorData.dashCount      = 0;
-		actorData.skyStarCount   = 0;
-		actorData.airTrickCount  = 0;
-		actorData.trickUpCount   = 0;
-		actorData.trickDownCount = 0;
-	}
-
-
-
-	//mainActorBaseAddr = actorData;
-
-
-}
-
-
-
-
-
-
-
-
-
-
 void SetMainActor(byte8 * baseAddr)
 {
 	LogFunction(baseAddr);
-
-	lockOnActorBaseAddr = baseAddr;
-
-	//mainActorBaseAddr = baseAddr;
 
 	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 
@@ -382,8 +99,6 @@ void SetMainActor(byte8 * baseAddr)
 		}
 		pool[3] = baseAddr;
 	}
-
-	//return;
 
 	// Style Rank
 	{
@@ -404,11 +119,6 @@ void SetMainActor(byte8 * baseAddr)
 		*reinterpret_cast<uint32 **>(dest + 0x3D10) = &actorData.styleRank;
 	}
 
-	// // Lock-On
-	// {
-	// 	*reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2548) = baseAddr;
-	// }
-
 	// Camera
 	{
 		IntroduceCameraData(return);
@@ -416,13 +126,118 @@ void SetMainActor(byte8 * baseAddr)
 	}
 }
 
+template
+<
+	typename T1,
+	typename T2
+>
+void CopyState
+(
+	T1 & activeActorData,
+	T2 & idleActorData
+)
+{
+	idleActorData.position       = activeActorData.position;
+	idleActorData.pull           = activeActorData.pull;
+	idleActorData.pullMultiplier = activeActorData.pullMultiplier;
+	idleActorData.rotation       = activeActorData.rotation;
 
+	idleActorData.kickJumpCount = activeActorData.kickJumpCount;
+	idleActorData.wallHikeCount = activeActorData.wallHikeCount;
+	idleActorData.airTrickCount = activeActorData.airTrickCount;
 
+	idleActorData.hitPoints      = activeActorData.hitPoints;
+	idleActorData.maxHitPoints   = activeActorData.maxHitPoints;
+	idleActorData.magicPoints    = activeActorData.magicPoints;
+	idleActorData.maxMagicPoints = activeActorData.maxMagicPoints;
+	idleActorData.styleRank      = activeActorData.styleRank;
+	idleActorData.styleMeter     = activeActorData.styleMeter;
 
+	memcpy(idleActorData.nextActionRequestPolicy, activeActorData.nextActionRequestPolicy, 64);
 
+	idleActorData.permissions = activeActorData.permissions;
+	idleActorData.state       = activeActorData.state;
+	idleActorData.lastState   = activeActorData.lastState;
+}
 
+template<typename T>
+void UpdatePermissions(T & actorData)
+{
+	if (actorData.state & STATE_ON_FLOOR)
+	{
+		if (actorData.permissions == 0x1C19)
+		{
+			actorData.permissions = 0x1C1B;
+		}
+	}
+}
 
+template <typename T>
+void EndMotion(T & actorData)
+{
+	actorData.eventData[0].index = 2;
+}
 
+template <typename T>
+void ToggleInput
+(
+	T & actorData,
+	bool enable
+)
+{
+	if (enable)
+	{
+		actorData.newButtonMask      = 0xFFFF;
+		actorData.newEnableLeftStick = true;
+	}
+	else
+	{
+		actorData.newButtonMask =
+		(
+			GetBinding(BINDING_CHANGE_DEVIL_ARMS) |
+			GetBinding(BINDING_CHANGE_GUN       )
+		);
+		actorData.newEnableLeftStick = false;
+	}
+}
+
+template <typename T>
+void ToggleActor
+(
+	T & actorData,
+	bool enable
+)
+{
+	actorData.newEnable = enable;
+	actorData.collisionIndex = (enable) ? 0 : 1;
+
+	ToggleInput(actorData, enable);
+
+	// @Todo: Show Idle Actors.
+	actorData.visible = (enable) ? 1 : 0;
+
+	// @Todo: Update with mobility values.
+	if (!enable)
+	{
+		actorData.airHikeCount   = 1;
+		actorData.kickJumpCount  = 1;
+		actorData.wallHikeCount  = 1;
+		actorData.dashCount      = 0;
+		actorData.skyStarCount   = 0;
+		actorData.airTrickCount  = 0;
+		actorData.trickUpCount   = 0;
+		actorData.trickDownCount = 0;
+	}
+
+	if
+	(
+		(actorData.newPlayer == 0) &&
+		enable
+	)
+	{
+		SetMainActor(actorData);
+	}
+}
 
 export template <typename T>
 struct GetCharacterId
@@ -437,12 +252,6 @@ struct GetCharacterId
 		0
 	};
 };
-
-// export template <uint8 character> struct GetActorDataType {};
-// export template <> struct GetActorDataType<CHAR_DANTE > { typedef ActorDataDante  value; };
-// export template <> struct GetActorDataType<CHAR_BOB   > { typedef ActorDataBob    value; };
-// export template <> struct GetActorDataType<CHAR_LADY  > { typedef ActorDataLady   value; };
-// export template <> struct GetActorDataType<CHAR_VERGIL> { typedef ActorDataVergil value; };
 
 struct CharacterData
 {
@@ -530,11 +339,6 @@ void CharacterData::Update(T & actorData)
 
 
 
-
-
-
-
-
 typedef WeaponData *(__fastcall * RegisterWeapon_t)
 (
 	byte8 * actorData,
@@ -581,34 +385,6 @@ void InitRegisterWeapon()
 
 
 
-// bool IsDanteStyle(uint8 style)
-// {
-// 	if ((style >= STYLE_SWORDMASTER) && (style <= STYLE_DOPPELGANGER))
-// 	{
-// 		return true;
-// 	}
-
-// 	return false;
-// }
-
-// bool IsVergilStyle(uint8 style)
-// {
-// 	switch (style)
-// 	{
-// 		case STYLE_DARK_SLAYER:
-// 		case STYLE_QUICKSILVER:
-// 		case STYLE_DOPPELGANGER:
-// 		{
-// 			return true;
-// 		}
-// 	}
-
-// 	return false;
-// }
-
-
-
-
 bool IsDanteMeleeWeapon(uint8 weapon)
 {
 	if
@@ -651,8 +427,6 @@ bool IsDanteRangedWeapon(uint8 weapon)
 	return false;
 }
 
-
-
 bool IsDanteWeapon(uint8 weapon)
 {
 	if (IsDanteMeleeWeapon(weapon))
@@ -667,7 +441,6 @@ bool IsDanteWeapon(uint8 weapon)
 	return false;
 }
 
-
 bool IsVergilWeapon(uint8 weapon)
 {
 	if (IsVergilMeleeWeapon(weapon))
@@ -678,37 +451,7 @@ bool IsVergilWeapon(uint8 weapon)
 	return false;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export template <typename T>
-// bool IsStyleActive
-// (
-// 	T & actorData,
-// 	uint8 style
-// )
-// {
-// 	return false;
-// }
-
-// export template <typename T>
-// bool IsStyleActive(T & actorData)
-// {
-// 	return false;
-// }
-
-export template <typename T>
+template <typename T>
 bool IsWeaponActive
 (
 	T & actorData,
@@ -772,19 +515,6 @@ bool IsWeaponActive
 	return false;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 template <typename T>
 bool IsWeaponActive(T & actorData)
 {
@@ -834,14 +564,6 @@ bool IsWeaponActive(T & actorData)
 
 	return false;
 }
-
-
-
-
-
-
-
-
 
 template <typename T>
 bool IsActive(T & actorData)
@@ -910,28 +632,6 @@ bool IsActive(T & actorData)
 	return false;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// @Todo: Check Air Raid.
-// @Todo: Make weapon constexpr.
 template <typename T>
 bool IsMeleeWeaponReady
 (
@@ -1138,8 +838,6 @@ bool IsRangedWeaponReadyProxy(WeaponData & weaponData)
 	return IsRangedWeaponReady(actorData, weaponData.weapon);
 }
 
-// @Todo: Order.
-
 void IsMeleeWeaponReadyVergilFix(ActorDataVergil & actorData)
 {
 	if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
@@ -1152,9 +850,6 @@ void IsMeleeWeaponReadyVergilFix(ActorDataVergil & actorData)
 		}
 	}
 }
-
-
-
 
 template <typename T>
 bool DoppelgangerCheck(T & actorData)
@@ -1195,24 +890,6 @@ bool DoppelgangerCheck(T & actorData)
 
 	return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #pragma endregion
 
@@ -2189,6 +1866,77 @@ void UpdateActorDante(ActorDataDante & actorData)
 }
 
 template <typename T>
+void UpdateForm
+(
+	T & actorData
+)
+{
+	actorData.queuedModelIndex       = 0;
+	actorData.activeModelIndexMirror = 0;
+	actorData.airRaid                = 0;
+
+	if (actorData.devil)
+	{
+		if constexpr (TypeMatch<T, ActorDataDante>::value)
+		{
+			if (actorData.sparda)
+			{
+				actorData.queuedModelIndex       = 1;
+				actorData.activeModelIndexMirror = 1;
+				actorData.activeDevil            = DEVIL_SPARDA;
+				actorData.airRaid                = 0;
+			}
+			else
+			{
+				auto weapon = actorData.meleeWeaponIndex;
+				if (weapon > WEAPON_BEOWULF_DANTE)
+				{
+					weapon = WEAPON_REBELLION;
+				}
+
+				actorData.queuedModelIndex       = (1 + weapon);
+				actorData.activeModelIndexMirror = (1 + weapon);
+				actorData.activeDevil            = static_cast<uint32>(weaponDevilIds[weapon]);
+				actorData.airRaid                = 0;
+
+				func_1F97F0(actorData, true);
+			}
+		}
+		else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+		{
+			// @Todo: Update name.
+			if (actorData.neroAngelo)
+			{
+				if (actorData.queuedMeleeWeaponIndex == 2)
+				{
+					actorData.queuedMeleeWeaponIndex = 0;
+				}
+
+				actorData.queuedModelIndex       = 1;
+				actorData.activeModelIndexMirror = 1;
+				actorData.activeDevil            = DEVIL_NERO_ANGELO;
+				actorData.airRaid                = 0;
+			}
+			else
+			{
+				auto weapon = actorData.activeMeleeWeaponIndex;
+				if ((weapon < WEAPON_YAMATO_VERGIL) || (weapon > WEAPON_FORCE_EDGE))
+				{
+					weapon = WEAPON_YAMATO_VERGIL;
+				}
+
+				actorData.queuedModelIndex       = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
+				actorData.activeModelIndexMirror = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
+				actorData.activeDevil            = static_cast<uint32>(weaponDevilIds[weapon]);
+				actorData.airRaid                = 0;
+
+				func_1F97F0(actorData, true);
+			}
+		}
+	}
+}
+
+template <typename T>
 void UpdateMotionArchives(T & actorData)
 {
 	constexpr uint8 count =
@@ -2215,30 +1963,6 @@ void UpdateMotionArchives(T & actorData)
 		actorData.motionArchives[group] = File_dynamicFiles.Push(metadata.addr, metadata.size);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 template <typename T>
 void InitStyle(T & actorData)
@@ -2299,92 +2023,6 @@ void InitWeapons(T & actorData)
 	}
 }
 
-
-
-
-
-
-
-
-
-template <typename T>
-void UpdateForm
-(
-	T & actorData
-)
-{
-	actorData.queuedModelIndex       = 0;
-	actorData.activeModelIndexMirror = 0;
-	actorData.airRaid                = 0;
-
-	if (actorData.devil)
-	{
-		if constexpr (TypeMatch<T, ActorDataDante>::value)
-		{
-			if (actorData.sparda)
-			{
-				actorData.queuedModelIndex       = 1;
-				actorData.activeModelIndexMirror = 1;
-				actorData.activeDevil            = DEVIL_SPARDA;
-				actorData.airRaid                = 0;
-			}
-			else
-			{
-				auto weapon = actorData.meleeWeaponIndex;
-				if (weapon > WEAPON_BEOWULF_DANTE)
-				{
-					weapon = WEAPON_REBELLION;
-				}
-
-				actorData.queuedModelIndex       = (1 + weapon);
-				actorData.activeModelIndexMirror = (1 + weapon);
-				actorData.activeDevil            = static_cast<uint32>(weaponDevilIds[weapon]);
-				actorData.airRaid                = 0;
-
-				func_1F97F0(actorData, true);
-			}
-		}
-		else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-		{
-			if (actorData.neroAngelo)
-			{
-				if (actorData.queuedMeleeWeaponIndex == 2)
-				{
-					actorData.queuedMeleeWeaponIndex = 0;
-				}
-
-				actorData.queuedModelIndex       = 1;
-				actorData.activeModelIndexMirror = 1;
-				actorData.activeDevil            = DEVIL_NERO_ANGELO;
-				actorData.airRaid                = 0;
-			}
-			else
-			{
-				auto weapon = actorData.activeMeleeWeaponIndex;
-				if ((weapon < WEAPON_YAMATO_VERGIL) || (weapon > WEAPON_FORCE_EDGE))
-				{
-					weapon = WEAPON_YAMATO_VERGIL;
-				}
-
-				actorData.queuedModelIndex       = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
-				actorData.activeModelIndexMirror = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
-				actorData.activeDevil            = static_cast<uint32>(weaponDevilIds[weapon]);
-				actorData.airRaid                = 0;
-
-				func_1F97F0(actorData, true);
-			}
-		}
-	}
-}
-
-
-
-
-
-
-
-
-
 template <typename T>
 void UpdateStyle
 (
@@ -2393,40 +2031,6 @@ void UpdateStyle
 )
 {
 	actorData.style = playerData.style;
-
-	// auto style = playerData.style;
-
-	// auto & character = g_character[actorData.newPlayer];
-
-	// if constexpr (TypeMatch<T, ActorDataDante>::value)
-	// {
-	// 	if (IsDanteStyle(style))
-	// 	{
-	// 		actorData.style = style;
-	// 	}
-	// }
-	// else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	// {
-	// 	if (IsVergilStyle(style))
-	// 	{
-	// 		actorData.style = style;
-
-	// 	}
-	// }
-
-	// if (actorData.newEntity != ENTITY_MAIN)
-	// {
-	// 	return;
-	// }
-
-	// if (IsDanteStyle(style))
-	// {
-	// 	character = CHAR_DANTE;
-	// }
-	// else if (IsVergilStyle(style))
-	// {
-	// 	character = CHAR_VERGIL;
-	// }
 }
 
 template <typename T>
@@ -2476,32 +2080,6 @@ void UpdateMeleeWeapon
 	{
 		character = CHAR_VERGIL;
 	}
-
-	// if (enableDoppelganger)
-	// {
-	// 	return;
-	// }
-
-
-	// if (character == lastCharacter)
-	// {
-	// 	if (character == static_cast<uint8>(actorData.character))
-	// 	{
-	// 		ToggleInput(actorData, true);
-	// 	}
-	// }
-	// else if (character != lastCharacter)
-	// {
-	// 	if (character != static_cast<uint8>(actorData.character))
-	// 	{
-	// 		ToggleInput(actorData, false);
-	// 	}
-	// }
-
-
-
-
-
 }
 
 template <typename T>
@@ -2537,23 +2115,6 @@ void UpdateWeapons
 	UpdateMeleeWeapon (actorData, playerData);
 	UpdateRangedWeapon(actorData, playerData);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 template <typename T>
 void UpdateCloneMeleeWeapon(T & actorData)
@@ -2606,17 +2167,6 @@ void UpdateCloneMeleeWeapon(T & actorData)
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
 
 template <typename T>
 byte8 * CreateActor
@@ -3103,721 +2653,6 @@ void ToggleIsWeaponReady(bool enable)
 
 #pragma region Controllers
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-constexpr uint8 swordmaster[MELEE_WEAPON_COUNT_DANTE][MAX_TILT_DIRECTION][2] =
-{
-	// Rebellion
-	{
-		// Neutral
-		{
-			ACTION_DANTE_REBELLION_PROP_SHREDDER_1,
-			ACTION_DANTE_REBELLION_AERIAL_RAVE_PART_1,
-		},
-		// Up
-		{
-			ACTION_DANTE_REBELLION_SWORD_PIERCE,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_REBELLION_DANCE_MACABRE_PART_1,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Cerberus
-	{
-		// Neutral
-		{
-			ACTION_DANTE_CERBERUS_FLICKER,
-			ACTION_DANTE_CERBERUS_AIR_FLICKER,
-		},
-		// Up
-		{
-			ACTION_DANTE_CERBERUS_CRYSTAL,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_CERBERUS_ICE_AGE,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Agni & Rudra
-	{
-		// Neutral
-		{
-			ACTION_DANTE_AGNI_RUDRA_CROSSED_SWORDS,
-			ACTION_DANTE_AGNI_RUDRA_SKY_DANCE_PART_1,
-		},
-		// Up
-		{
-			ACTION_DANTE_AGNI_RUDRA_CRAWLER,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_AGNI_RUDRA_TWISTER,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Nevan
-	{
-		// Neutral
-		{
-			ACTION_DANTE_NEVAN_SLASH,
-			ACTION_DANTE_NEVAN_AIR_SLASH_PART_1,
-		},
-		// Up
-		{
-			ACTION_DANTE_NEVAN_FEEDBACK,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_NEVAN_DISTORTION,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Beowulf
-	{
-		// Neutral
-		{
-			ACTION_DANTE_BEOWULF_ZODIAC,
-			ACTION_DANTE_BEOWULF_THE_HAMMER,
-		},
-		// Up
-		{
-			ACTION_DANTE_BEOWULF_VOLCANO,
-			ACTION_DANTE_BEOWULF_AIR_VOLCANO,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_BEOWULF_REAL_IMPACT,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-};
-
-constexpr uint8 gunslinger[RANGED_WEAPON_COUNT_DANTE][MAX_TILT_DIRECTION][2] =
-{
-	// Ebony & Ivory
-	{
-		// Neutral
-		{
-			ACTION_DANTE_EBONY_IVORY_TWOSOME_TIME,
-			ACTION_DANTE_EBONY_IVORY_RAIN_STORM,
-		},
-		// Up
-		{
-			0,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			0,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Shotgun
-	{
-		// Neutral
-		{
-			ACTION_DANTE_SHOTGUN_FIREWORKS,
-			ACTION_DANTE_SHOTGUN_AIR_FIREWORKS,
-		},
-		// Up
-		{
-			ACTION_DANTE_SHOTGUN_GUN_STINGER,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			0,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Artemis
-	{
-		// Neutral
-		{
-			ACTION_DANTE_ARTEMIS_MULTI_LOCK_SHOT,
-			ACTION_DANTE_ARTEMIS_AIR_MULTI_LOCK_SHOT,
-		},
-		// Up
-		{
-			ACTION_DANTE_ARTEMIS_SPHERE,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			0,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Spiral
-	{
-		// Neutral
-		{
-			ACTION_DANTE_SPIRAL_TRICK_SHOT,
-			0,
-		},
-		// Up
-		{
-			ACTION_DANTE_SPIRAL_SNIPER,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			0,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Kalina Ann
-	{
-		// Neutral
-		{
-			ACTION_DANTE_KALINA_ANN_HYSTERIC,
-			0,
-		},
-		// Up
-		{
-			ACTION_DANTE_KALINA_ANN_GRAPPLE,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			0,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-};
-
-constexpr uint8 trickster[MAX_TILT_DIRECTION][2] =
-{
-	// Neutral
-	{
-		ACTION_DANTE_TRICKSTER_DASH,
-		ACTION_DANTE_TRICKSTER_SKY_STAR,
-	},
-	// Up
-	{
-		ACTION_DANTE_TRICKSTER_AIR_TRICK,
-		ACTION_DANTE_TRICKSTER_AIR_TRICK,
-	},
-	// Right
-	{
-		0,
-		0,
-	},
-	// Down
-	{
-		0,
-		0,
-	},
-	// Left
-	{
-		0,
-		0,
-	},
-};
-
-constexpr uint8 royalguard[MAX_TILT_DIRECTION][2] =
-{
-	// Neutral
-	{
-		0,
-		0,
-	},
-	// Up
-	{
-		ACTION_DANTE_ROYALGUARD_RELEASE_1,
-		ACTION_DANTE_ROYALGUARD_AIR_RELEASE_1,
-	},
-	// Right
-	{
-		0,
-		0,
-	},
-	// Down
-	{
-		0,
-		0,
-	},
-	// Left
-	{
-		0,
-		0,
-	},
-};
-
-constexpr uint8 darkSlayer[MAX_TILT_DIRECTION][2] =
-{
-	// Neutral
-	{
-		ACTION_VERGIL_DARK_SLAYER_AIR_TRICK,
-		ACTION_VERGIL_DARK_SLAYER_AIR_TRICK,
-	},
-	// Up
-	{
-		ACTION_VERGIL_DARK_SLAYER_TRICK_UP,
-		ACTION_VERGIL_DARK_SLAYER_TRICK_UP,
-	},
-	// Right
-	{
-		0,
-		0,
-	},
-	// Down
-	{
-		ACTION_VERGIL_DARK_SLAYER_TRICK_DOWN,
-		ACTION_VERGIL_DARK_SLAYER_TRICK_DOWN,
-	},
-	// Left
-	{
-		0,
-		0,
-	},
-};
-
-constexpr uint8 meleeAttackDante[MELEE_WEAPON_COUNT_DANTE][MAX_TILT_DIRECTION][2] =
-{
-	// Rebellion
-	{
-		// Neutral
-		{
-			ACTION_DANTE_REBELLION_COMBO_1_PART_1,
-			ACTION_DANTE_REBELLION_HELM_BREAKER,
-		},
-		// Up
-		{
-			ACTION_DANTE_REBELLION_STINGER_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_REBELLION_HIGH_TIME,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Cerberus
-	{
-		// Neutral
-		{
-			ACTION_DANTE_CERBERUS_COMBO_1_PART_1,
-			ACTION_DANTE_CERBERUS_SWING,
-		},
-		// Up
-		{
-			ACTION_DANTE_CERBERUS_REVOLVER_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_CERBERUS_WINDMILL,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Agni & Rudra
-	{
-		// Neutral
-		{
-			ACTION_DANTE_AGNI_RUDRA_COMBO_1_PART_1,
-			ACTION_DANTE_AGNI_RUDRA_AERIAL_CROSS,
-		},
-		// Up
-		{
-			ACTION_DANTE_AGNI_RUDRA_JET_STREAM_LEVEL_3,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_AGNI_RUDRA_WHIRLWIND,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Nevan
-	{
-		// Neutral
-		{
-			ACTION_DANTE_NEVAN_TUNE_UP,
-			ACTION_DANTE_NEVAN_AIR_PLAY,
-		},
-		// Up
-		{
-			ACTION_DANTE_NEVAN_REVERB_SHOCK_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_NEVAN_BAT_RIFT_LEVEL_2,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Beowulf
-	{
-		// Neutral
-		{
-			ACTION_DANTE_BEOWULF_COMBO_1_PART_1,
-			ACTION_DANTE_BEOWULF_KILLER_BEE,
-		},
-		// Up
-		{
-			ACTION_DANTE_BEOWULF_STRAIGHT_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_DANTE_BEOWULF_BEAST_UPPERCUT,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-};
-
-constexpr uint8 meleeAttackVergil[MELEE_WEAPON_COUNT_VERGIL][MAX_TILT_DIRECTION][2] =
-{
-	// Yamato
-	{
-		// Neutral
-		{
-			ACTION_VERGIL_YAMATO_COMBO_PART_1,
-			ACTION_VERGIL_YAMATO_AERIAL_RAVE_PART_1,
-		},
-		// Up
-		{
-			ACTION_VERGIL_YAMATO_RAPID_SLASH_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_VERGIL_YAMATO_UPPER_SLASH_PART_1,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Beowulf
-	{
-		// Neutral
-		{
-			ACTION_VERGIL_BEOWULF_COMBO_PART_1,
-			ACTION_VERGIL_BEOWULF_STARFALL_LEVEL_2,
-		},
-		// Up
-		{
-			ACTION_VERGIL_BEOWULF_LUNAR_PHASE_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_VERGIL_BEOWULF_RISING_SUN,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-	// Force Edge
-	{
-		// Neutral
-		{
-			ACTION_VERGIL_FORCE_EDGE_COMBO_PART_1,
-			ACTION_VERGIL_FORCE_EDGE_HELM_BREAKER_LEVEL_2,
-		},
-		// Up
-		{
-			ACTION_VERGIL_FORCE_EDGE_STINGER_LEVEL_2,
-			0,
-		},
-		// Right
-		{
-			0,
-			0,
-		},
-		// Down
-		{
-			ACTION_VERGIL_FORCE_EDGE_HIGH_TIME,
-			0,
-		},
-		// Left
-		{
-			0,
-			0,
-		},
-	},
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-template <typename T>
-uint8 GetAction
-(
-	T & actorData,
-	uint8 binding,
-	const uint8(&map)[MAX_TILT_DIRECTION][2]
-)
-{
-	uint8 action = 0;
-
-	auto & gamepad = GetGamepad(actorData.newPlayer);
-
-	uint8 state = (actorData.state & STATE_ON_FLOOR) ? 0 : 1;
-
-	if (gamepad.buttons[0] & GetBinding(binding))
-	{
-		action = map[TILT_DIRECTION_NEUTRAL][state];
-
-		if (gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON))
-		{
-			for_each(uint8, tiltDirection, TILT_DIRECTION_UP, MAX_TILT_DIRECTION)
-			{
-				if (GetRelativeTiltDirection(actorData) == tiltDirection)
-				{
-					action = map[tiltDirection][state];
-					break;
-				}
-			}
-		}
-	}
-
-	return action;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 void CharacterSwitchController(byte8 * baseAddr)
 {
 	if (!baseAddr)
@@ -3845,8 +2680,6 @@ void CharacterSwitchController(byte8 * baseAddr)
 	}
 	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
 
-
-
 	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 
 	if (enableDoppelganger)
@@ -3854,166 +2687,39 @@ void CharacterSwitchController(byte8 * baseAddr)
 		return;
 	}
 
-
-
-
-
-
-
-
-
-	auto & character       = g_character             [actorData.newPlayer];
-	auto & lastCharacter   = g_lastCharacter         [actorData.newPlayer];
-	auto & activeCharacter = g_activeCharacter       [actorData.newPlayer];
-	auto & execute         = g_executeCharacterSwitch[actorData.newPlayer];
-	auto & motionGroup     = g_motionGroup           [actorData.newPlayer];
-	auto & lastMotionGroup = g_lastMotionGroup       [actorData.newPlayer];
-	auto & timeout         = g_timeout               [actorData.newPlayer];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// auto BufferExecute = [&]
-	// (
-	// 	ActorData & activeActorData,
-	// 	ActorData & idleActorData,
-	// 	uint8 policy,
-	// 	uint8 binding,
-	// 	const uint8(&map)[MAX_TILT_DIRECTION][2]
-	// )
-	// {
-	// 	if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_BUFFER)
-	// 	{
-	// 		auto action = GetAction(activeActorData, binding, map);
-	// 		if (action)
-	// 		{
-	// 			if (!idleActorData.bufferedAction)
-	// 			{
-	// 				char buffer[64] = {};
-	// 				snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_BUFFER %u", action);
-	// 				//MessageBoxA(0, buffer, 0, 0);
-
-	// 				idleActorData.bufferedAction = action;
-	// 				idleActorData.state |= STATE_BUSY;
-
-	// 				return true;
-	// 			}
-	// 		}
-	// 	}
-	// 	else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
-	// 	{
-	// 		//execute = false;
-
-
-
-
-
-
-
-	// 		if (idleActorData.bufferedAction)
-	// 		{
-	// 			char buffer[64] = {};
-	// 			snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE buffer %u", idleActorData.bufferedAction);
-	// 			//MessageBoxA(0, buffer, 0, 0);
-
-	// 			execute = false;
-
-	// 			activeCharacter = character;
-
-	// 			// activeActorData.newEnable = false;
-
-	// 			// idleActorData.newEnable = true;
-
-
-
-
-
-
-
-
-	// 			ToggleActor(activeActorData, false);
-	// 			ToggleActor(idleActorData  , true );
-
-
-
-	// 			idleActorData.state &= ~STATE_BUSY;
-
-	// 			return true;
-	// 		}
-
-	// 		auto action = GetAction(activeActorData, binding, map);
-	// 		if (action)
-	// 		{
-
-	// 			execute = false;
-
-
-	// 			char buffer[64] = {};
-	// 			snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE %u", action);
-	// 			//MessageBoxA(0, buffer, 0, 0);
-
-
-
-	// 			//execute = false;
-
-	// 			activeCharacter = character;
-
-	// 			// activeActorData.newEnable = false;
-
-	// 			// idleActorData.newEnable = true;
-
-
-
-
-
-	// 			ToggleActor(activeActorData, false);
-	// 			ToggleActor(idleActorData  , true );
-
-
-	// 			idleActorData.bufferedAction = action;
-	// 			idleActorData.state &= ~STATE_BUSY;
-
-	// 			return true;
-	// 		}
-	// 	}
-
-	// 	return false;
-	// };
-
-
-
-
-
+	auto & character       = g_character      [actorData.newPlayer];
+	auto & lastCharacter   = g_lastCharacter  [actorData.newPlayer];
+	auto & activeCharacter = g_activeCharacter[actorData.newPlayer];
+	auto & motionGroup     = g_motionGroup    [actorData.newPlayer];
+	auto & lastMotionGroup = g_lastMotionGroup[actorData.newPlayer];
+	auto & motionIndex     = g_motionIndex    [actorData.newPlayer];
+	auto & lastMotionIndex = g_lastMotionIndex[actorData.newPlayer];
+	auto & timeout         = g_timeout        [actorData.newPlayer];
+	auto & execute1        = g_execute1       [actorData.newPlayer];
+	auto & execute2        = g_execute2       [actorData.newPlayer];
 
 	auto SetTimeout = [&]
 	(
+		uint8 group,
 		uint8 index,
 		float32 value
 	)
 	{
-		motionGroup = index;
+		motionGroup = group;
+		motionIndex = index;
 
-		if (lastMotionGroup != motionGroup)
+		if
+		(
+			(lastMotionGroup != motionGroup) &&
+			(lastMotionIndex != motionIndex)
+		)
 		{
 			lastMotionGroup = motionGroup;
+			lastMotionIndex = motionIndex;
 
 			timeout = value;
 		}
 	};
-
-
-
 
 	auto TimeoutFunction = [&]
 	(
@@ -4021,74 +2727,45 @@ void CharacterSwitchController(byte8 * baseAddr)
 		ActorData & idleActorData
 	)
 	{
-
-
-
-
-
-
-
 		switch (activeActorData.character)
 		{
-			// case CHAR_DANTE:
-			// {
-			// 	auto & activeActorData2 = *reinterpret_cast<ActorDataDante *>(&activeActorData);
-			// 	auto & idleActorData2 = *reinterpret_cast<ActorDataVergil *>(&idleActorData);
-
-
-
-			// 	break;
-			// }
 			case CHAR_VERGIL:
 			{
 				auto & activeActorData2 = *reinterpret_cast<ActorDataVergil *>(&activeActorData);
 				auto & idleActorData2 = *reinterpret_cast<ActorDataDante *>(&idleActorData);
-
-
-
 				auto & motionData = activeActorData.motionData[UPPER_BODY];
 
-				if (motionData.group == MOTION_GROUP_VERGIL_DARK_SLAYER)
+				if
+				(
+					(motionData.group == MOTION_GROUP_VERGIL_DARK_SLAYER) &&
+					(motionData.index == 0)
+				)
 				{
-					SetTimeout(motionData.group, 25);
+					SetTimeout
+					(
+						motionData.group,
+						motionData.index,
+						25
+					);
 				}
-
-
+				else if
+				(
+					(motionData.group == MOTION_GROUP_VERGIL_DARK_SLAYER) &&
+					(motionData.index == 1)
+				)
+				{
+					SetTimeout
+					(
+						motionData.group,
+						motionData.index,
+						25
+					);
+				}
 
 				break;
 			}
 		}
-
-
-
-
 	};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	auto Function = [&]
 	(
@@ -4096,64 +2773,9 @@ void CharacterSwitchController(byte8 * baseAddr)
 		ActorData & idleActorData
 	)
 	{
-
-
-
-
-
-
-
-		// switch (activeActorData.character)
-		// {
-		// 	// case CHAR_DANTE:
-		// 	// {
-		// 	// 	auto & activeActorData2 = *reinterpret_cast<ActorDataDante *>(&activeActorData);
-		// 	// 	auto & idleActorData2 = *reinterpret_cast<ActorDataVergil *>(&idleActorData);
-
-
-
-		// 	// 	break;
-		// 	// }
-		// 	case CHAR_VERGIL:
-		// 	{
-		// 		auto & activeActorData2 = *reinterpret_cast<ActorDataVergil *>(&activeActorData);
-		// 		auto & idleActorData2 = *reinterpret_cast<ActorDataDante *>(&idleActorData);
-
-
-
-		// 		auto & motionData = activeActorData.motionData[UPPER_BODY];
-
-		// 		if (motionData.group == MOTION_GROUP_VERGIL_DARK_SLAYER)
-		// 		{
-		// 			SetTimeout(motionData.group, 100);
-		// 		}
-
-
-
-		// 		break;
-		// 	}
-		// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		if (activeCharacter == character)
 		{
-			execute = false;
+			execute1 = false;
 
 			ToggleInput(activeActorData, true );
 			ToggleInput(idleActorData  , false);
@@ -4165,9 +2787,6 @@ void CharacterSwitchController(byte8 * baseAddr)
 		{
 			return;
 		}
-
-
-
 
 		switch (activeActorData.character)
 		{
@@ -4186,7 +2805,7 @@ void CharacterSwitchController(byte8 * baseAddr)
 
 					if (IsActive(idleActorData2))
 					{
-						execute = false;
+						execute1 = false;
 
 						activeCharacter = character;
 
@@ -4202,7 +2821,7 @@ void CharacterSwitchController(byte8 * baseAddr)
 				}
 				else
 				{
-					execute = false;
+					execute1 = false;
 
 					activeCharacter = character;
 
@@ -4250,7 +2869,7 @@ void CharacterSwitchController(byte8 * baseAddr)
 
 					if (IsActive(idleActorData2))
 					{
-						execute = false;
+						execute1 = false;
 
 						activeCharacter = character;
 
@@ -4266,7 +2885,7 @@ void CharacterSwitchController(byte8 * baseAddr)
 				}
 				else
 				{
-					execute = false;
+					execute1 = false;
 
 					activeCharacter = character;
 
@@ -4300,10 +2919,10 @@ void CharacterSwitchController(byte8 * baseAddr)
 			ToggleInput(cloneActorData, true );
 		}
 
-		execute = true;
+		execute1 = true;
 	}
 
-	if (execute)
+	if (execute1)
 	{
 		if (activeCharacter == static_cast<uint8>(actorData.character))
 		{
@@ -4315,8 +2934,6 @@ void CharacterSwitchController(byte8 * baseAddr)
 		}
 	}
 
-
-
 	if (activeCharacter == static_cast<uint8>(actorData.character))
 	{
 		TimeoutFunction(actorData, cloneActorData);
@@ -4326,36 +2943,31 @@ void CharacterSwitchController(byte8 * baseAddr)
 		TimeoutFunction(cloneActorData, actorData);
 	}
 
-
-
-
-
-
-
-
-
-
 	if (timeout > 0)
 	{
 		timeout -= 1.0f;
 	}
-	else if (timeout <= 0)
+	else if (timeout < 0)
 	{
 		timeout = 0;
-
-		// @Todo: Use execute switch.
-
-		motionGroup = 0;
-		lastMotionGroup = 0;
 	}
-	
-	
 
+	if (timeout == 0)
+	{
+		if (execute2)
+		{
+			execute2 = false;
 
-
-
-
-
+			motionGroup     = 255;
+			lastMotionGroup = 255;
+			motionIndex     = 255;
+			lastMotionIndex = 255;
+		}
+	}
+	else
+	{
+		execute2 = true;
+	}
 
 	if (actorData.newEnable)
 	{
@@ -4366,44 +2978,6 @@ void CharacterSwitchController(byte8 * baseAddr)
 		CopyState(cloneActorData, actorData);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 template <typename T>
 void StyleSwitchController
@@ -4434,7 +3008,7 @@ void StyleSwitchController
 			{
 				return;
 			}
-			// also add player check
+
 			if (actorData.newEntity != ENTITY_MAIN)
 			{
 				return;
@@ -4482,38 +3056,6 @@ void StyleSwitchController
 	{
 		return;
 	}
-
-
-	// if
-	// (
-	// 	enableDoppelganger &&
-	// 	(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	// )
-	// {
-	// 	if (actorData.newEntity == ENTITY_MAIN)
-	// 	{
-	// 		if (actorData.buttons[0] & GetBinding(BINDING_CHANGE_TARGET))
-	// 		{
-	// 			SetStyle(STYLE_DOPPELGANGER);
-
-	// 			goto sect0;
-	// 		}
-	// 		else
-	// 		{
-	// 			execute = true;
-	// 		}
-
-	// 		return;
-	// 	}
-	// }
-	// else
-	// {
-	// 	if (actorData.newEntity == ENTITY_CLONE)
-	// 	{
-	// 		return;
-	// 	}
-	// }
-
 
 
 
@@ -4620,23 +3162,6 @@ void StyleSwitchController
 
 	HUD_UpdateStyleIcon(CHAR_DANTE, playerData.style);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 template <typename T>
 void MeleeWeaponSwitchController
@@ -5035,129 +3560,6 @@ bool WeaponSwitchController(byte8 * baseAddr)
 	return true;
 }
 
-
-
-
-
-
-
-
-
-
-
-// bool WeaponSwitchControllerVergil(byte8 * baseAddr)
-// {
-// 	if (!baseAddr)
-// 	{
-// 		return true;
-// 	}
-// 	else if (baseAddr == Actor_actorBaseAddr[0])
-// 	{
-// 		return true;
-// 	}
-// 	else if (baseAddr == Actor_actorBaseAddr[1])
-// 	{
-// 		return true;
-// 	}
-
-// 	auto & actorData = *reinterpret_cast<ActorDataVergil *>(baseAddr);
-
-// 	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
-
-// 	if (actorData.mode == ACTOR_MODE_MISSION_18)
-// 	{
-// 		return true;
-// 	}
-
-// 	if (actorData.var_3F19 == true)
-// 	{
-// 		return false;
-// 	}
-
-// 	StyleSwitchController            (actorData, playerData);
-// 	MeleeWeaponSwitchControllerVergil (actorData, playerData);
-
-// 	return true;
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// bool WeaponSwitchControllerVergil(ActorDataVergil & actorData)
-// {
-// 	if (actorData.mode == ACTOR_MODE_MISSION_18)
-// 	{
-// 		return true;
-// 	}
-
-// 	if (actorData.var_3F19 == true)
-// 	{
-// 		return false;
-// 	}
-
-// 	MeleeWeaponSwitchControllerVergil(actorData);
-
-// 	return true;
-// }
-
-
-
-
-// @Todo: Don't discard!
-
-// export void Actor_DeactivateDevilForm(byte8 * baseAddr)
-// {
-// 	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
-
-// 	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
-
-// 	switch (actorData.character)
-// 	{
-// 		case CHAR_DANTE:
-// 		{
-// 			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(baseAddr);
-// 			break;
-// 		}
-// 		case CHAR_BOB:
-// 		{
-// 			auto & actorData2 = *reinterpret_cast<ActorDataBob *>(baseAddr);
-// 			break;
-// 		}
-// 		case CHAR_LADY:
-// 		{
-// 			auto & actorData2 = *reinterpret_cast<ActorDataLady *>(baseAddr);
-// 			break;
-// 		}
-// 		case CHAR_VERGIL:
-// 		{
-// 			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(baseAddr);
-// 			UpdateMeleeWeapon(actorData2, playerData);
-// 			break;
-// 		}
-// 	}
-// }
-
-
-
-
-
-
-
-
-
-
-
 #pragma endregion
 
 #pragma region Events
@@ -5167,14 +3569,6 @@ bool customize = false;
 
 export void Actor_CreateMainActor(byte8 * baseAddr)
 {
-
-
-	//mainActorBaseAddr = baseAddr;
-
-	lockOnActorBaseAddr = baseAddr;
-
-
-
 	if (!activeConfig.Actor.enable)
 	{
 		return;
@@ -8866,24 +7260,24 @@ export void Actor_Init()
 		*/
 	}
 
-	// Update Lock-On
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
-			0x48, 0x8B, 0x09,                                           // mov rcx,[rcx]
-			0xFF, 0x81, 0x08, 0x62, 0x00, 0x00,                         // inc [rcx+00006208]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1BB74E), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<byte8 ***>(func.sect0 + 2) = &lockOnActorBaseAddr;
-		UpdateLockOnAddr[0] = func.addr;
-		/*
-		dmc3.exe+1BB6FC - 48 8B 47 18       - mov rax,[rdi+18]
-		dmc3.exe+1BB700 - FF 80 08620000    - inc [rax+00006208]
-		dmc3.exe+1BB74E - 48 8B 91 D8510000 - mov rdx,[rcx+000051D8]
-		*/
-	}
+	// // Update Lock-On
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
+	// 		0x48, 0x8B, 0x09,                                           // mov rcx,[rcx]
+	// 		0xFF, 0x81, 0x08, 0x62, 0x00, 0x00,                         // inc [rcx+00006208]
+	// 	};
+	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1BB74E), false, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 2) = &lockOnActorBaseAddr;
+	// 	UpdateLockOnAddr[0] = func.addr;
+	// 	/*
+	// 	dmc3.exe+1BB6FC - 48 8B 47 18       - mov rax,[rdi+18]
+	// 	dmc3.exe+1BB700 - FF 80 08620000    - inc [rax+00006208]
+	// 	dmc3.exe+1BB74E - 48 8B 91 D8510000 - mov rdx,[rcx+000051D8]
+	// 	*/
+	// }
 
 
 
@@ -8937,113 +7331,113 @@ export void Actor_Init()
 	// 	dmc3.exe+1BB77C - 48 8B 5C 24 30 - mov rbx,[rsp+30]
 	// 	*/
 	// }
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0xBD, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rbp
-			0x48, 0x8B, 0x6D, 0x00,                                     // mov rbp,[rbp+00]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1BC0CA), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<byte8 ***>(func.sect0 + 2) = &lockOnActorBaseAddr;
-		UpdateLockOnAddr[1] = func.addr;
-		/*
-		dmc3.exe+1BC0C5 - 4A 8B 6C C0 18 - mov rbp,[rax+r8*8+18]
-		dmc3.exe+1BC0CA - 48 8B CD       - mov rcx,rbp
-		*/
-	}
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0xBD, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rbp
+	// 		0x48, 0x8B, 0x6D, 0x00,                                     // mov rbp,[rbp+00]
+	// 	};
+	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1BC0CA), false, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 2) = &lockOnActorBaseAddr;
+	// 	UpdateLockOnAddr[1] = func.addr;
+	// 	/*
+	// 	dmc3.exe+1BC0C5 - 4A 8B 6C C0 18 - mov rbp,[rax+r8*8+18]
+	// 	dmc3.exe+1BC0CA - 48 8B CD       - mov rcx,rbp
+	// 	*/
+	// }
 
-	// Camera Update Lock-On
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0x8B, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // mov rcx,[dmc3.exe+C90E28]
-			0x48, 0xBD, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rbp
-			0x48, 0x8B, 0x6D, 0x00,                                     // mov rbp,[rbp+00]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x56979), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-		*reinterpret_cast<byte8 ***>(func.sect0 + 9) = &lockOnActorBaseAddr;
-		Camera_UpdateLockOnAddr[0] = func.addr;
-		/*
-		dmc3.exe+5696E - 48 8B 0D B3A4C300 - mov rcx,[dmc3.exe+C90E28]
-		dmc3.exe+56975 - 48 8B 69 18       - mov rbp,[rcx+18]
-		dmc3.exe+56979 - E8 223F1600       - call dmc3.exe+1BA8A0
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00,                   // mov rax,[dmc3.exe+C90E28]
-			0x49, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov r8
-			0x4D, 0x8B, 0x00,                                           // mov r8,[r8]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1BA8AB), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-		*reinterpret_cast<byte8 ***>(func.sect0 + 9) = &lockOnActorBaseAddr;
-		Camera_UpdateLockOnAddr[1] = func.addr;
-		/*
-		dmc3.exe+1BA8A0 - 48 8B 05 8165AD00 - mov rax,[dmc3.exe+C90E28]
-		dmc3.exe+1BA8A7 - 4C 8B 41 18       - mov r8,[rcx+18]
-		dmc3.exe+1BA8AB - 80 78 10 01       - cmp byte ptr [rax+10],01
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0x8B, 0xF8,                                           // mov rdi,rax
-			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
-			0x48, 0x8B, 0x09,                                           // mov rcx,[rcx]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x5698C), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<byte8 ***>(func.sect0 + 5) = &lockOnActorBaseAddr;
-		Camera_UpdateLockOnAddr[2] = func.addr;
-		/*
-		dmc3.exe+5697E - 48 8B 15 A3A4C300 - mov rdx,[dmc3.exe+C90E28]
-		dmc3.exe+56985 - 48 8B F8          - mov rdi,rax
-		dmc3.exe+56988 - 48 8B 4A 18       - mov rcx,[rdx+18]
-		dmc3.exe+5698C - E8 AF511900       - call dmc3.exe+1EBB40
-		*/
-	}
+	// // Camera Update Lock-On
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0x8B, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // mov rcx,[dmc3.exe+C90E28]
+	// 		0x48, 0xBD, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rbp
+	// 		0x48, 0x8B, 0x6D, 0x00,                                     // mov rbp,[rbp+00]
+	// 	};
+	// 	auto func = CreateFunction(0, (appBaseAddr + 0x56979), false, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
+	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 9) = &lockOnActorBaseAddr;
+	// 	Camera_UpdateLockOnAddr[0] = func.addr;
+	// 	/*
+	// 	dmc3.exe+5696E - 48 8B 0D B3A4C300 - mov rcx,[dmc3.exe+C90E28]
+	// 	dmc3.exe+56975 - 48 8B 69 18       - mov rbp,[rcx+18]
+	// 	dmc3.exe+56979 - E8 223F1600       - call dmc3.exe+1BA8A0
+	// 	*/
+	// }
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00,                   // mov rax,[dmc3.exe+C90E28]
+	// 		0x49, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov r8
+	// 		0x4D, 0x8B, 0x00,                                           // mov r8,[r8]
+	// 	};
+	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1BA8AB), false, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
+	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 9) = &lockOnActorBaseAddr;
+	// 	Camera_UpdateLockOnAddr[1] = func.addr;
+	// 	/*
+	// 	dmc3.exe+1BA8A0 - 48 8B 05 8165AD00 - mov rax,[dmc3.exe+C90E28]
+	// 	dmc3.exe+1BA8A7 - 4C 8B 41 18       - mov r8,[rcx+18]
+	// 	dmc3.exe+1BA8AB - 80 78 10 01       - cmp byte ptr [rax+10],01
+	// 	*/
+	// }
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0x8B, 0xF8,                                           // mov rdi,rax
+	// 		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
+	// 		0x48, 0x8B, 0x09,                                           // mov rcx,[rcx]
+	// 	};
+	// 	auto func = CreateFunction(0, (appBaseAddr + 0x5698C), false, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 5) = &lockOnActorBaseAddr;
+	// 	Camera_UpdateLockOnAddr[2] = func.addr;
+	// 	/*
+	// 	dmc3.exe+5697E - 48 8B 15 A3A4C300 - mov rdx,[dmc3.exe+C90E28]
+	// 	dmc3.exe+56985 - 48 8B F8          - mov rdi,rax
+	// 	dmc3.exe+56988 - 48 8B 4A 18       - mov rcx,[rdx+18]
+	// 	dmc3.exe+5698C - E8 AF511900       - call dmc3.exe+1EBB40
+	// 	*/
+	// }
 
-	// HUD Update Lock-On
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0x8B, 0xCB,                                           // mov rcx,rbx
-			0x48, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rsi
-			0x48, 0x8B, 0x36,                                           // mov rsi,[rsi]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x297356), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<byte8 ***>(func.sect0 + 5) = &lockOnActorBaseAddr;
-		HUD_UpdateLockOnAddr[0] = func.addr;
-		/*
-		dmc3.exe+29734F - 48 8B CB    - mov rcx,rbx
-		dmc3.exe+297352 - 48 8B 70 18 - mov rsi,[rax+18]
-		dmc3.exe+297356 - E8 852ADFFF - call dmc3.exe+89DE0
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
-			0x48, 0x8B, 0x09,                                           // mov rcx,[rcx]
-			0x48, 0x89, 0x4D, 0xB0,                                     // mov [rbp-50],rcx
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x296EE8), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<byte8 ***>(func.sect0 + 2) = &lockOnActorBaseAddr;
-		HUD_UpdateLockOnAddr[1] = func.addr;
-		/*
-		dmc3.exe+296EE0 - 48 8B 48 18 - mov rcx,[rax+18]
-		dmc3.exe+296EE4 - 48 89 4D B0 - mov [rbp-50],rcx
-		dmc3.exe+296EE8 - E8 833CF6FF - call dmc3.exe+1FAB70
-		*/
-	}
+	// // HUD Update Lock-On
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0x8B, 0xCB,                                           // mov rcx,rbx
+	// 		0x48, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rsi
+	// 		0x48, 0x8B, 0x36,                                           // mov rsi,[rsi]
+	// 	};
+	// 	auto func = CreateFunction(0, (appBaseAddr + 0x297356), false, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 5) = &lockOnActorBaseAddr;
+	// 	HUD_UpdateLockOnAddr[0] = func.addr;
+	// 	/*
+	// 	dmc3.exe+29734F - 48 8B CB    - mov rcx,rbx
+	// 	dmc3.exe+297352 - 48 8B 70 18 - mov rsi,[rax+18]
+	// 	dmc3.exe+297356 - E8 852ADFFF - call dmc3.exe+89DE0
+	// 	*/
+	// }
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
+	// 		0x48, 0x8B, 0x09,                                           // mov rcx,[rcx]
+	// 		0x48, 0x89, 0x4D, 0xB0,                                     // mov [rbp-50],rcx
+	// 	};
+	// 	auto func = CreateFunction(0, (appBaseAddr + 0x296EE8), false, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 2) = &lockOnActorBaseAddr;
+	// 	HUD_UpdateLockOnAddr[1] = func.addr;
+	// 	/*
+	// 	dmc3.exe+296EE0 - 48 8B 48 18 - mov rcx,[rax+18]
+	// 	dmc3.exe+296EE4 - 48 89 4D B0 - mov [rbp-50],rcx
+	// 	dmc3.exe+296EE8 - E8 833CF6FF - call dmc3.exe+1FAB70
+	// 	*/
+	// }
 }
 
 export void Actor_Toggle(bool enable)
@@ -10007,454 +8401,13 @@ export void Actor_SceneMissionStart()
 	{
 		auto & playerData = activeConfig.Actor.playerData[player][entity];
 
+		playerData.style = playerData.startStyle;
 		playerData.meleeWeaponIndex  = 0;
 		playerData.rangedWeaponIndex = 0;
 	}}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #endif
 
 #ifdef __GARBAGE__
-
-
-
-
-
-
-
-	// @Todo: Update Style Icon during actor init.
-	// if player 0 and entity main
-
-
-
-	//// @Todo: Create function.
-	//for_all(uint8, player, MAX_PLAYER){
-	//for_all(uint8, entity, MAX_ENTITY)
-	//{
-	//	auto & character = activeConfig.Actor.character[player][entity];
-	//	switch (character)
-	//	{
-	//	case CHAR_DANTE:
-	//	{
-	//		g_newMeleeWeapon [player][entity] = activeConfig.Actor.meleeWeaponDante [player][entity][0];
-	//		g_newRangedWeapon[player][entity] = activeConfig.Actor.rangedWeaponDante[player][entity][0];
-	//		break;
-	//	}
-	//	case CHAR_VERGIL:
-	//	{
-	//		g_newMeleeWeapon[player][entity] = activeConfig.Actor.meleeWeaponVergil[player][entity][0];
-	//		break;
-	//	}
-	//	}
-	//}}
-
-
-
-
-
-
-
-	{
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-		auto func = CreateFunction(DoppelgangerRateController, (appBaseAddr + 0x1E25D2), true, false, 0, sizeof(sect1));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteJump((appBaseAddr + 0x1E25C1), func.addr, 2);
-		/*
-		dmc3.exe+1E25C1 - 80 BB 62630000 01 - cmp byte ptr [rbx+00006362],01
-		dmc3.exe+1E25D2 - 8B 43 78          - mov eax,[rbx+78]
-		*/
-	}
-
-
-
-
-
-	// @Todo: Check range.
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x53,                                     //push rbx
-			0x48, 0x83, 0xEC, 0x20,                   //sub rsp,20
-			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, //cmp byte ptr [rcx+0000B8C0],04
-			0x0F, 0x83, 0x00, 0x00, 0x00, 0x00,       //jae dmc3.exe+1EBF90
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1EBCF6), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.addr + 7) = offsetof(ActorData, newGamepad);
-		*reinterpret_cast<uint8 *>(func.addr + 0xB) = MAX_PLAYER;
-		WriteAddress((func.addr + 0xC), (appBaseAddr + 0x1EBF90), 6);
-		WriteJump((appBaseAddr + 0x1EBCF0), func.addr, 1);
-		/*
-		dmc3.exe+1EBCF0 - 40 53             - push rbx
-		dmc3.exe+1EBCF2 - 48 83 EC 20       - sub rsp,20
-		dmc3.exe+1EBCF6 - 48 8B 05 2B51AA00 - mov rax,[dmc3.exe+C90E28]
-		*/
-	}
-
-
-bool DoppelgangerRateController(ActorData & actorData)
-{
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
-
-
-	auto & rate = actorData.cloneRate;
-
-
-	if (!enableDoppelganger)
-	{
-		return false;
-	}
-
-	if (actorData.newEntity != ENTITY_MAIN)
-	{
-		return false;
-	}
-
-
-	if
-	(
-		(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)) &&
-		(actorData.buttons[2] & GetBinding(BINDING_TAUNT))
-	)
-	{
-		if (rate >= 2)
-		{
-			rate = 0;
-		}
-		else
-		{
-			rate++;
-		}
-	}
-
-	return true;
-}
-
-
-	//LogFunction();
-
-	//RegisterWeapon_Init();
-		Write<uint32>((appBaseAddr + 0x1EBD17 + 2), (enable) ? offsetof(ActorData, newGamepad) : offsetof(ActorData, id));
-		/*
-		dmc3.exe+1EBD17 - 80 B9 18010000 00 - cmp byte ptr [rcx+00000118],00
-		dmc3.exe+1EBD1E - 0F85 9B000000     - jne dmc3.exe+1EBDBF
-		*/
-
-// @Todo: Together with melee weapon switch controller change to global gamepad.
-
-
-
-
-
-
-
-	// if (character == static_cast<uint8>(cloneActorData.character))
-	// {
-	// 	// Enter
-	// 	Function(actorData, cloneActorData);
-	// }
-	// else
-	// {
-	// 	// Leave
-	// 	Function(cloneActorData, actorData);
-	// }
-
-
-
-
-
-
-
-
-
-	// if (character != lastCharacter)
-	// {
-	// 	if (character == static_cast<uint8>(cloneActorData.character))
-	// 	{
-	// 		// Enter
-	// 		Function(actorData, cloneActorData);
-	// 	}
-	// 	else
-	// 	{
-	// 		// Leave
-	// 		Function(cloneActorData, actorData);
-	// 	}
-	// }
-	// else
-	// {
-	// 	execute = true;
-	// }
-	
-
-	// @Todo: Doppelganger check.
-	// if (enableDoppelganger)
-	// {
-	// 	return;
-	// }
-
-				auto weapon = idleActorData2.activeMeleeWeaponIndex;
-				if (weapon > 2)
-				{
-					weapon = 0;
-				}
-
-
-				auto style = idleActorData2.style;
-				if (style > STYLE_DOPPELGANGER)
-				{
-					style = STYLE_SWORDMASTER;
-				}
-				style -= STYLE_SWORDMASTER;
-
-				auto meleeWeapon = idleActorData2.meleeWeaponIndex;
-				if (meleeWeapon > WEAPON_BEOWULF_DANTE)
-				{
-					meleeWeapon = WEAPON_REBELLION;
-				}
-				meleeWeapon -= WEAPON_REBELLION;
-
-				auto rangedWeapon = idleActorData2.rangedWeaponIndex;
-				if (rangedWeapon > WEAPON_KALINA_ANN)
-				{
-					rangedWeapon = WEAPON_EBONY_IVORY;
-				}
-				rangedWeapon -= WEAPON_EBONY_IVORY;
-
-				if (IsActive(activeActorData2))
-				{
-					bool skip = false;
-
-					switch (style)
-					{
-						case STYLE_SWORDMASTER:
-						{
-							skip = BufferExecute
-							(
-								activeActorData,
-								idleActorData,
-								NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER,
-								BINDING_STYLE_ACTION,
-								swordmaster[meleeWeapon]
-							);
-							break;
-						}
-						case STYLE_GUNSLINGER:
-						{
-							skip = BufferExecute
-							(
-								activeActorData,
-								idleActorData,
-								NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER,
-								BINDING_STYLE_ACTION,
-								gunslinger[rangedWeapon]
-							);
-							break;
-						}
-						case STYLE_TRICKSTER:
-						{
-							skip = BufferExecute
-							(
-								activeActorData,
-								idleActorData,
-								NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER,
-								BINDING_STYLE_ACTION,
-								trickster
-							);
-							break;
-						}
-						case STYLE_ROYALGUARD:
-						{
-							skip = BufferExecute
-							(
-								activeActorData,
-								idleActorData,
-								NEXT_ACTION_REQUEST_POLICY_ROYALGUARD,
-								BINDING_STYLE_ACTION,
-								royalguard
-							);
-							break;
-						}
-					}
-
-					if (skip)
-					{
-						break;
-					}
-					else if
-					(
-						BufferExecute
-						(
-							activeActorData,
-							idleActorData,
-							NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK,
-							BINDING_MELEE_ATTACK,
-							meleeAttackDante[meleeWeapon]
-						)
-					)
-					{
-						break;
-					}
-				}
-				else
-				{
-					execute = false;
-
-
-					// if (activeCharacter != character)
-					// {
-						activeCharacter = character;
-
-						ToggleActor(activeActorData, false);
-						ToggleActor(idleActorData  , true );
-					// }
-					// else
-					// {
-					// 	ToggleActor(activeActorData, true );
-					// 	ToggleActor(idleActorData  , false);
-					// }
-
-
-					// activeCharacter = character;
-
-					// // activeActorData.newEnable = false;
-					// // idleActorData.newEnable = true;
-
-
-
-
-
-
-					// ToggleActor(activeActorData, false);
-					// ToggleActor(idleActorData  , true );
-
-
-
-
-
-				}
-
-
-
-
-		// if somehow active switch
-
-
-
-
-		for_all(uint8, policy, 16)
-		{
-			if (activeActorData.nextActionRequestPolicy[policy] != 0)
-			{
-
-			}
-		}
-
-
-
-		else if (activeActorData.nextActionRequestPolicy[policy] == NEXT_ACTION_REQUEST_POLICY_EXECUTE)
-		{
-			//execute = false;
-
-
-
-
-
-
-
-			if (idleActorData.bufferedAction)
-			{
-				char buffer[64] = {};
-				snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE buffer %u", idleActorData.bufferedAction);
-				//MessageBoxA(0, buffer, 0, 0);
-
-				execute = false;
-
-				activeCharacter = character;
-
-				// activeActorData.newEnable = false;
-
-				// idleActorData.newEnable = true;
-
-
-
-
-
-
-
-
-				ToggleActor(activeActorData, false);
-				ToggleActor(idleActorData  , true );
-
-
-
-				idleActorData.state &= ~STATE_BUSY;
-
-				return true;
-			}
-
-			auto action = GetAction(activeActorData, binding, map);
-			if (action)
-			{
-
-				execute = false;
-
-
-				char buffer[64] = {};
-				snprintf(buffer, sizeof(buffer), "NEXT_ACTION_REQUEST_POLICY_EXECUTE %u", action);
-				//MessageBoxA(0, buffer, 0, 0);
-
-
-
-				//execute = false;
-
-				activeCharacter = character;
-
-				// activeActorData.newEnable = false;
-
-				// idleActorData.newEnable = true;
-
-
-
-
-
-				ToggleActor(activeActorData, false);
-				ToggleActor(idleActorData  , true );
-
-
-				idleActorData.bufferedAction = action;
-				idleActorData.state &= ~STATE_BUSY;
-
-				return true;
-			}
-		}
-
-		// if (!execute)
-		// {
-		// 	return;
-		// }
-
-		//ToggleInput(activeActorData, false);
-
-
 #endif
