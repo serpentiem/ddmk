@@ -192,11 +192,11 @@ void ToggleInput
 	}
 	else
 	{
-		actorData.newButtonMask =
-		(
-			GetBinding(BINDING_CHANGE_DEVIL_ARMS) |
-			GetBinding(BINDING_CHANGE_GUN       )
-		);
+		actorData.newButtonMask = 0;
+		// (
+		// 	GetBinding(BINDING_CHANGE_DEVIL_ARMS) |
+		// 	GetBinding(BINDING_CHANGE_GUN       )
+		// );
 		actorData.newEnableLeftStick = false;
 	}
 }
@@ -603,6 +603,27 @@ bool IsActive(T & actorData)
 	}
 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
+
+
+		if
+		(
+			(motionData.group == MOTION_GROUP_VERGIL_BASE) &&
+			(motionData.index == 49)
+		)
+		{
+			return false;
+		}
+		else if
+		(
+			(motionData.group == MOTION_GROUP_VERGIL_BASE) &&
+			(motionData.index == 50)
+		)
+		{
+			return false;
+		}
+
+
+
 		if
 		(
 			(motionData.group == MOTION_GROUP_VERGIL_BASE) &&
@@ -872,20 +893,34 @@ bool DoppelgangerCheck(T & actorData)
 				return false;
 			}
 		}
+
+		return true;
 	}
-	else
+
+
+	auto & gamepad = GetGamepad(actorData.newPlayer);
+
+
+
+
+	// else
+	// {
+	// 	if (actorData.newEntity == ENTITY_MAIN)
+	// 	{
+	// 		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	// 		{
+	// 			return false;
+	// 		}
+	// 	}
+	// 	// else
+	// 	// {
+	// 	// 	return false;
+	// 	// }
+	// }
+
+	if (gamepad.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
 	{
-		if (actorData.newEntity == ENTITY_MAIN)
-		{
-			if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-			{
-				return false;
-			}
-		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	return true;
@@ -3022,6 +3057,8 @@ void StyleSwitchController
 			style = STYLE_QUICKSILVER;
 		}
 
+		//MessageBoxA(0, "get here!", 0, 0);
+
 		playerData.style = style;
 
 		update = true;
@@ -3153,7 +3190,11 @@ void StyleSwitchController
 		return;
 	}
 
-	if (actorData.newEntity != ENTITY_MAIN)
+	if
+	(
+		//enableDoppelganger &&
+		(actorData.newEntity != ENTITY_MAIN)
+	)
 	{
 		return;
 	}
@@ -3217,6 +3258,24 @@ void MeleeWeaponSwitchController
 	}
 
 
+	if
+	(
+		!enableDoppelganger &&
+		(actorData.newEntity != ENTITY_MAIN)
+	)
+	{
+		return;
+	}
+
+
+
+
+
+
+
+
+
+
 
 	// if (enableDoppelganger)
 	// {
@@ -3275,14 +3334,12 @@ void MeleeWeaponSwitchController
 	// }
 
 
+	auto & gamepad = GetGamepad(actorData.newPlayer);
 
 
-
-
-
-	if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+	if (gamepad.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
 	{
-		if (actorData.buttons[0] & GetBinding(BINDING_TAUNT))
+		if (gamepad.buttons[0] & GetBinding(BINDING_TAUNT))
 		{
 			Back();
 		}
@@ -3291,13 +3348,37 @@ void MeleeWeaponSwitchController
 			Forward();
 		}
 	}
-	else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
+	else if (gamepad.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
 	{
 		if constexpr (TypeMatch<T, ActorDataVergil>::value)
 		{
 			Back();
 		}
 	}
+
+
+
+
+
+	// if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+	// {
+	// 	// @Todo: Replace with gamepad, because actor won't have bindings when switched.
+	// 	if (actorData.buttons[0] & GetBinding(BINDING_TAUNT))
+	// 	{
+	// 		Back();
+	// 	}
+	// 	else
+	// 	{
+	// 		Forward();
+	// 	}
+	// }
+	// else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
+	// {
+	// 	if constexpr (TypeMatch<T, ActorDataVergil>::value)
+	// 	{
+	// 		Back();
+	// 	}
+	// }
 
 
 
@@ -3558,206 +3639,6 @@ bool WeaponSwitchController(byte8 * baseAddr)
 	CharacterSwitchController(actorData);
 
 	return true;
-}
-
-#pragma endregion
-
-#pragma region Events
-
-bool Actor_spawnActors = false;
-bool customize = false;
-
-export void Actor_CreateMainActor(byte8 * baseAddr)
-{
-	if (!activeConfig.Actor.enable)
-	{
-		return;
-	}
-
-	LogFunction(baseAddr);
-
-	Actor_actorBaseAddr.Clear();
-	Actor_actorBaseAddr[0] = baseAddr;
-	Actor_actorBaseAddr.count = 2;
-
-	File_dynamicFiles.Clear();
-
-	Actor_spawnActors = true;
-}
-
-export void Actor_CreateCloneActor(byte8 * baseAddr)
-{
-	if (!activeConfig.Actor.enable)
-	{
-		return;
-	}
-
-	LogFunction(baseAddr);
-
-	Actor_actorBaseAddr[1] = baseAddr;
-}
-
-export void Actor_Main()
-{
-	if (!activeConfig.Actor.enable)
-	{
-		return;
-	}
-
-	LogFunction();
-
-	if (customize)
-	{
-		customize = false;
-		Log("customize");
-		return;
-	}
-
-	IntroduceEventData(return);
-	IntroduceStagePositionData(return);
-
-	auto & pos = stagePositionData[eventData.position];
-
-	auto Convert = [](float32 rotation)
-	{
-		float32 value = rotation;
-
-		value /= 360.0f;
-		value *= 6.28f;
-		value *= 65536.0f;
-		value /= 6.28f;
-
-		return static_cast<uint16>(value);
-	};
-
-	actorSpawnHelper.position = { pos.x, pos.y, pos.z, 1 };
-	actorSpawnHelper.rotation = Convert(pos.rotation);
-	actorSpawnHelper.event = pos.event;
-}
-
-export void Actor_Customize()
-{
-	if (!activeConfig.Actor.enable)
-	{
-		return;
-	}
-
-	LogFunction();
-
-	customize = true;
-
-	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28); // @Todo: IntroduceMainActorData.
-	if (!pool)
-	{
-		return;
-	}
-	if (!pool[3])
-	{
-		return;
-	}
-	auto & actorData = *reinterpret_cast<ActorData *>(pool[3]);
-
-	actorSpawnHelper.position = actorData.position;
-	actorSpawnHelper.rotation = actorData.rotation;
-	actorSpawnHelper.event = 0;
-
-	SetMainActor(Actor_actorBaseAddr[0]);
-}
-
-export void Actor_Delete()
-{
-	if (!activeConfig.Actor.enable)
-	{
-		return;
-	}
-
-	LogFunction();
-
-	// @Todo: Create function: SaveWeaponIndices.
-	for_all(uint8, player, MAX_PLAYER){
-	for_all(uint8, entity, MAX_ENTITY)
-	{
-		auto & activePlayerData = activeConfig.Actor.playerData[player][entity];
-		auto & queuedPlayerData = queuedConfig.Actor.playerData[player][entity];
-
-		queuedPlayerData.meleeWeaponIndex = activePlayerData.meleeWeaponIndex;
-		queuedPlayerData.rangedWeaponIndex = activePlayerData.rangedWeaponIndex;
-	}}
-
-	SetMainActor(Actor_actorBaseAddr[0]);
-}
-
-export void Actor_MainLoopOnce()
-{
-	if (!activeConfig.Actor.enable)
-	{
-		return;
-	}
-
-	if (Actor_spawnActors)
-	{
-		Actor_spawnActors = false;
-
-		LogFunction();
-
-		SpawnActors();
-	}
-}
-
-export void Actor_MainLoopOnceSync()
-{
-	if (!activeConfig.Actor.enable)
-	{
-		return;
-	}
-
-	LogFunction();
-
-	if (!Actor_actorBaseAddr[2])
-	{
-		Log("Actor_actorBaseAddr[2] 0");
-		return;
-	}
-
-	SetMainActor(Actor_actorBaseAddr[2]);
-}
-
-export void Actor_ActorLoop(byte8 * baseAddr)
-{
-	if (!baseAddr)
-	{
-		return;
-	}
-	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
-
-	switch (actorData.character)
-	{
-		case CHAR_DANTE:
-		{
-			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(baseAddr);
-			UpdateModelPartitions(actorData2);
-			break;
-		}
-		case CHAR_BOB:
-		{
-			auto & actorData2 = *reinterpret_cast<ActorDataBob *>(baseAddr);
-			UpdateModelPartitions(actorData2);
-			break;
-		}
-		case CHAR_LADY:
-		{
-			auto & actorData2 = *reinterpret_cast<ActorDataLady *>(baseAddr);
-			UpdateModelPartitions(actorData2);
-			break;
-		}
-		case CHAR_VERGIL:
-		{
-			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(baseAddr);
-			UpdateModelPartitions(actorData2);
-			IsMeleeWeaponReadyVergilFix(actorData2);
-			break;
-		}
-	}
 }
 
 #pragma endregion
@@ -6155,22 +6036,7 @@ void ToggleWeaponCountAdjustments(bool enable)
 
 #pragma endregion
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#pragma region Color
 
 void SetColorAirHike
 (
@@ -6385,24 +6251,12 @@ void InitColor()
 	*/
 }
 
+#pragma endregion
 
-
-
-
-
-
-
-
-
-
+// @Todo: Recheck.
 void ToggleMainActorFixes(bool enable)
 {
 	LogFunction(enable);
-
-
-
-
-
 
 	{
 		auto dest = (appBaseAddr + 0x1F83D7);
@@ -6432,44 +6286,6 @@ void ToggleMainActorFixes(bool enable)
 		dmc3.exe+1F83E9 - 75 0E             - jne dmc3.exe+1F83F9
 		*/
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	Write<uint32>((appBaseAddr + 0x1F5FC6 + 2), offsetof(ActorData, newIsClone));
 	/*
@@ -6533,95 +6349,11 @@ void ToggleStyleFixes(bool enable)
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// @Todo: Decimate.
 bool DevilDoppelgangerCheck(ActorData & actorData)
 {
-
-
 	return DoppelgangerCheck(actorData);
-
-
-
-	// auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
-
-	// if (enableDoppelganger)
-	// {
-	// 	if (actorData.newEntity == ENTITY_MAIN)
-	// 	{
-	// 		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	// 		{
-	// 			return false;
-	// 		}
-	// 	}
-	// 	else
-	// 	{
-	// 		if (!(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)))
-	// 		{
-	// 			return false;
-	// 		}
-	// 	}
-	// }
-	// else
-	// {
-	// 	// if (actorData.newEntity == ENTITY_MAIN)
-	// 	{
-	// 		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	// 		{
-	// 			return false;
-	// 		}
-	// 	}
-	// 	// else
-	// 	// {
-	// 	// 	return false;
-	// 	// }
-	// }
-
-
-
-	// if (enableDoppelganger)
-	// {
-	// 	if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	// 	{
-	// 		if (actorData.newEntity == ENTITY_MAIN)
-	// 		{
-	// 			return false;
-	// 		}
-	// 	}
-	// 	else
-	// 	{
-	// 		if (actorData.newEntity == ENTITY_CLONE)
-	// 		{
-	// 			return false;
-	// 		}
-	// 	}
-	// }
-	// else
-	// {
-	// 	if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	// 	{
-	// 		return false;
-	// 	}
-	// }
-
-	//return true;
 }
-
-
-
-
 
 void ActivateDevil(ActorData & actorData)
 {
@@ -6664,20 +6396,6 @@ void DeactivateDevil(ActorData & actorData)
 
 	func_1F94D0(actorData, DEVIL_FLUX_END);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void ActivateDoppelganger(ActorData & actorData)
 {
@@ -6724,55 +6442,16 @@ void ActivateDoppelganger(ActorData & actorData)
 	dmc3.exe+1E92DC - E8 7F1B0000 - call dmc3.exe+1EAE60
 	*/
 
-
-
-
-
 	ToggleActor(cloneActorData, true);
-
-
-
-
-
-
-
-	// if (actorData.devil)
-	// {
-	// 	cloneActorData.devil = true;
-
-	// 	auto newMeleeWeapon = cloneActorData.newMeleeWeapons[cloneActorData.newMeleeWeaponIndex];
-
-	// 	switch (cloneActorData.character)
-	// 	{
-	// 		case CHAR_DANTE:
-	// 		{
-	// 			auto & cloneActorData2 = *reinterpret_cast<ActorDataDante *>(&cloneActorData);
-	// 			UpdateDevil(cloneActorData2, newMeleeWeapon);
-	// 			break;
-	// 		}
-	// 		case CHAR_VERGIL:
-	// 		{
-	// 			auto & cloneActorData2 = *reinterpret_cast<ActorDataVergil *>(&cloneActorData);
-	// 			UpdateDevil(cloneActorData2, newMeleeWeapon);
-	// 			break;
-	// 		}
-	// 	}
-
-	// 	func_1F94D0(cloneActorData, DEVIL_FLUX_START);
-	// }
 }
 
 void DeactivateDoppelganger(ActorData & actorData)
 {
-
-
 	if (!actorData.cloneBaseAddr)
 	{
 		return;
 	}
 	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
-
-
 
 	actorData.doppelganger = false;
 	/*
@@ -6797,18 +6476,8 @@ void DeactivateDoppelganger(ActorData & actorData)
 	dmc3.exe+1E2B46 - 89 8B C43E0000    - mov [rbx+00003EC4],ecx
 	*/
 
-
 	ToggleActor(cloneActorData, false);
-
-
-
-
-
-
 }
-
-
-
 
 // @Todo: Create CollisionData.
 void UpdateCollisionData(ActorData & actorData)
@@ -8373,10 +8042,206 @@ export void Actor_Toggle(bool enable)
 	// }
 }
 
+#pragma region Events
 
+bool Actor_spawnActors = false;
+bool customize = false;
 
+export void Actor_CreateMainActor(byte8 * baseAddr)
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
 
+	LogFunction(baseAddr);
 
+	Actor_actorBaseAddr.Clear();
+	Actor_actorBaseAddr[0] = baseAddr;
+	Actor_actorBaseAddr.count = 2;
+
+	File_dynamicFiles.Clear();
+
+	Actor_spawnActors = true;
+}
+
+export void Actor_CreateCloneActor(byte8 * baseAddr)
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction(baseAddr);
+
+	Actor_actorBaseAddr[1] = baseAddr;
+}
+
+export void Actor_Main()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	if (customize)
+	{
+		customize = false;
+		Log("customize");
+		return;
+	}
+
+	IntroduceEventData(return);
+	IntroduceStagePositionData(return);
+
+	auto & pos = stagePositionData[eventData.position];
+
+	auto Convert = [](float32 rotation)
+	{
+		float32 value = rotation;
+
+		value /= 360.0f;
+		value *= 6.28f;
+		value *= 65536.0f;
+		value /= 6.28f;
+
+		return static_cast<uint16>(value);
+	};
+
+	actorSpawnHelper.position = { pos.x, pos.y, pos.z, 1 };
+	actorSpawnHelper.rotation = Convert(pos.rotation);
+	actorSpawnHelper.event = pos.event;
+}
+
+export void Actor_Customize()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	customize = true;
+
+	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28); // @Todo: IntroduceMainActorData.
+	if (!pool)
+	{
+		return;
+	}
+	if (!pool[3])
+	{
+		return;
+	}
+	auto & actorData = *reinterpret_cast<ActorData *>(pool[3]);
+
+	actorSpawnHelper.position = actorData.position;
+	actorSpawnHelper.rotation = actorData.rotation;
+	actorSpawnHelper.event = 0;
+
+	SetMainActor(Actor_actorBaseAddr[0]);
+}
+
+export void Actor_Delete()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	for_all(uint8, player, MAX_PLAYER){
+	for_all(uint8, entity, MAX_ENTITY)
+	{
+		auto & activePlayerData = activeConfig.Actor.playerData[player][entity];
+		auto & queuedPlayerData = queuedConfig.Actor.playerData[player][entity];
+
+		queuedPlayerData.meleeWeaponIndex = activePlayerData.meleeWeaponIndex;
+		queuedPlayerData.rangedWeaponIndex = activePlayerData.rangedWeaponIndex;
+	}}
+
+	SetMainActor(Actor_actorBaseAddr[0]);
+}
+
+export void Actor_MainLoopOnce()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	if (Actor_spawnActors)
+	{
+		Actor_spawnActors = false;
+
+		LogFunction();
+
+		SpawnActors();
+	}
+}
+
+export void Actor_MainLoopOnceSync()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	if (!Actor_actorBaseAddr[2])
+	{
+		Log("Actor_actorBaseAddr[2] 0");
+		return;
+	}
+
+	SetMainActor(Actor_actorBaseAddr[2]);
+}
+
+export void Actor_ActorLoop(byte8 * baseAddr)
+{
+	if (!baseAddr)
+	{
+		return;
+	}
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+
+	switch (actorData.character)
+	{
+		case CHAR_DANTE:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(baseAddr);
+			UpdateModelPartitions(actorData2);
+			break;
+		}
+		case CHAR_BOB:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataBob *>(baseAddr);
+			UpdateModelPartitions(actorData2);
+			break;
+		}
+		case CHAR_LADY:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataLady *>(baseAddr);
+			UpdateModelPartitions(actorData2);
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(baseAddr);
+			UpdateModelPartitions(actorData2);
+			IsMeleeWeaponReadyVergilFix(actorData2);
+			break;
+		}
+	}
+}
+
+#pragma endregion
+
+#pragma region Scenes
 
 export void Actor_SceneMain()
 {
@@ -8406,6 +8271,8 @@ export void Actor_SceneMissionStart()
 		playerData.rangedWeaponIndex = 0;
 	}}
 }
+
+#pragma endregion
 
 #endif
 
