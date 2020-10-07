@@ -966,7 +966,7 @@ void Repair()
 	}
 }
 
-const char * ResetMotionState_buttonNames[] =
+const char * RemoveBusyFlag_buttonNames[] =
 {
 	"GAMEPAD_LEFT_TRIGGER",
 	"GAMEPAD_RIGHT_TRIGGER",
@@ -986,7 +986,7 @@ const char * ResetMotionState_buttonNames[] =
 	"GAMEPAD_LEFT",
 };
 
-byte16 ResetMotionState_buttonMap[] =
+byte16 RemoveBusyFlag_buttonMap[] =
 {
 	GAMEPAD_LEFT_TRIGGER,
 	GAMEPAD_RIGHT_TRIGGER,
@@ -1006,24 +1006,24 @@ byte16 ResetMotionState_buttonMap[] =
 	GAMEPAD_LEFT,
 };
 
-uint8 ResetMotionState_buttonIndex = 0;
+uint8 RemoveBusyFlag_buttonIndex = 0;
 
-void ResetMotionState_Init()
+void RemoveBusyFlag_Init()
 {
-	UpdateMapIndex(ResetMotionState_buttonMap, ResetMotionState_buttonIndex, activeConfig.ResetMotionState.button);
+	UpdateMapIndex(RemoveBusyFlag_buttonMap, RemoveBusyFlag_buttonIndex, activeConfig.RemoveBusyFlag.button);
 }
 
-void ResetMotionState()
+void RemoveBusyFlag()
 {
 	if (ImGui::CollapsingHeader("Reset Motion State"))
 	{
 		ImGui::Text("");
-		GUI_Checkbox("Enable", activeConfig.ResetMotionState.enable);
+		GUI_Checkbox("Enable", activeConfig.RemoveBusyFlag.enable);
 		ImGui::Text("");
 		GUI_Button("Reset");
 		ImGui::Text("");
 		ImGui::PushItemWidth(200);
-		GUI_ComboMap("Button", ResetMotionState_buttonNames, ResetMotionState_buttonMap, ResetMotionState_buttonIndex, activeConfig.ResetMotionState.button, ImGuiComboFlags_HeightLargest);
+		GUI_ComboMap("Button", RemoveBusyFlag_buttonNames, RemoveBusyFlag_buttonMap, RemoveBusyFlag_buttonIndex, activeConfig.RemoveBusyFlag.button, ImGuiComboFlags_HeightLargest);
 		ImGui::PopItemWidth();
 		ImGui::Text("");
 	}
@@ -1387,7 +1387,7 @@ void Main()
 		Dante();
 		Other();
 		Repair();
-		ResetMotionState();
+		RemoveBusyFlag();
 		Speed();
 		StyleSwitchController();
 		System();
@@ -1424,7 +1424,7 @@ export void GUI_Init()
 	Actor_UpdateWeaponIndices();
 	Arcade_Init();
 	Cosmetics_Init();
-	ResetMotionState_Init();
+	RemoveBusyFlag_Init();
 }
 
 #ifdef __GARBAGE__

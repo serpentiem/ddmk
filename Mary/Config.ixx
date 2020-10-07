@@ -248,7 +248,7 @@ export struct Config
 		bool   enable = false;
 		byte16 button = GAMEPAD_UP;
 	}
-	ResetMotionState;
+	RemoveBusyFlag;
 	struct
 	{
 		float32 gunStingerDuration   [2] = { 8  , 8   };

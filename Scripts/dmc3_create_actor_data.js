@@ -506,6 +506,7 @@ var extra =
 
 
 	[ "newExecuteStyleSwitch"     , "bool"   ],
+	[ "newExecuteRemoveBusyFlag"     , "bool"   ],
 
 
 

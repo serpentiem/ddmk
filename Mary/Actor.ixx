@@ -2688,6 +2688,52 @@ void ToggleIsWeaponReady(bool enable)
 
 #pragma region Controllers
 
+
+
+
+
+void RemoveBusyFlagController(byte8 * baseAddr)
+{
+	if (!baseAddr)
+	{
+		return;
+	}
+	if (baseAddr == Actor_actorBaseAddr[0])
+	{
+		return;
+	}
+	if (baseAddr == Actor_actorBaseAddr[1])
+	{
+		return;
+	}
+	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+
+
+
+	//auto & execute = actorData.newExecuteRemoveBusyFlag;
+
+	if (actorData.buttons[2] & activeConfig.RemoveBusyFlag.button)
+	{
+		actorData.state &= ~STATE_BUSY;
+	}
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
 void CharacterSwitchController(byte8 * baseAddr)
 {
 	if (!baseAddr)
@@ -3635,6 +3681,8 @@ bool WeaponSwitchController(byte8 * baseAddr)
 	{
 		RangedWeaponSwitchController(actorData, playerData);
 	}
+
+	RemoveBusyFlagController(actorData);
 
 	CharacterSwitchController(actorData);
 
