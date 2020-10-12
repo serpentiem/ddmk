@@ -1,21 +1,12 @@
-#ifndef __MODULE_SCENE__
-#define __MODULE_SCENE__
-
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
-export module ModuleName(Scene);
+export module Scene;
 
-import ModuleName(Actor);
-import ModuleName(Config);
-import ModuleName(Event);
-
-#ifdef __INTELLISENSE__
-#include "Actor.ixx"
-#include "Config.ixx"
-#include "Event.ixx"
-#endif
+import Actor;
+import Config;
+import Event;
 
 export uint8 g_scene = 0;
 
@@ -227,8 +218,6 @@ export void Scene_Init()
 		*/
 	}
 }
-
-#endif
 
 #ifdef __GARBAGE__
 #endif

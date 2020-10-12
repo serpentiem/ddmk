@@ -1,15 +1,8 @@
-#ifndef __MODULE_CORE_MEMORY__
-#define __MODULE_CORE_MEMORY__
-
 module;
 #include "Includes.h"
-export module ModuleName(Core_Memory);
+export module Core_Memory;
 
-import ModuleName(Core_Log);
-
-#ifdef __INTELLISENSE__
-#include "Log.ixx"
-#endif
+import Core_Log;
 
 constexpr bool debug = false;
 
@@ -558,5 +551,3 @@ export bool Core_Memory_Init(uint32 size = 0)
 
 	return true;
 }
-
-#endif

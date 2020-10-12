@@ -1,11 +1,8 @@
-#ifndef __MODULE_WINDOW__
-#define __MODULE_WINDOW__
-
 module;
 #include "../Core/Core.h"
 
 #include "../ImGui/imgui.h"
-export module ModuleName(Window);
+export module Window;
 
 export uint32 Window_width  = 0;
 export uint32 Window_height = 0;
@@ -26,5 +23,3 @@ export void Window_ToggleForceFocus(bool enable)
 	// Enable Background Gamepad Input
 	WriteAddress((appBaseAddr + 0x41C0A), (enable) ? (appBaseAddr + 0x41C10) : (appBaseAddr + 0x42016), 6);
 }
-
-#endif

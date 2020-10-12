@@ -1,11 +1,10 @@
-#ifndef __MODULE_INTERNAL__
-#define __MODULE_INTERNAL__
-
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
-export module ModuleName(Internal);
+export module Internal;
+
+// $DataStart
 
 export typedef void(__fastcall * func_897B0_t)(ModelData & modelData);
 export typedef void(__fastcall * func_89450_t)(ModelData & modelData);
@@ -58,6 +57,7 @@ export typedef void(__fastcall * func_1F92C0_t)(byte8 * actorData, uint32 phase)
 export typedef void(__fastcall * func_1F97F0_t)(byte8 * actorData, bool noMotion); // Update devil model and play motion.
 export typedef void(__fastcall * func_1F94D0_t)(byte8 * actorData, uint8 index); // Devil Flux
 export typedef void(__fastcall * func_1EAE60_t)(byte8 * actorData, uint8 index); // Play Doppelganger Effect
+export typedef float32(__fastcall * func_32E5F0_t)(vec4 & position);
 export typedef void(__fastcall * func_89E30_t)(ModelData & modelData, uint32 index); // Call after icon update.
 export typedef void(__fastcall * func_1B9FA0_t)(byte8 * addr); // Adjust file pointers.
 export typedef void(__fastcall * func_223AC0_t)(byte8 * actorData); // Create Spiral Swords.
@@ -130,6 +130,7 @@ export func_1F92C0_t func_1F92C0 = 0; // (byte8 * actorData, uint32 phase)
 export func_1F97F0_t func_1F97F0 = 0; // (byte8 * actorData, bool noMotion)
 export func_1F94D0_t func_1F94D0 = 0; // (byte8 * actorData, uint8 index)
 export func_1EAE60_t func_1EAE60 = 0; // (byte8 * actorData, uint8 index)
+export func_32E5F0_t func_32E5F0 = 0; // (vec4 & position)
 export func_89E30_t func_89E30 = 0; // (ModelData & modelData, uint32 index)
 export func_1B9FA0_t func_1B9FA0 = 0; // (byte8 * addr)
 export func_223AC0_t func_223AC0 = 0; // (byte8 * actorData)
@@ -359,6 +360,10 @@ export void Internal_Init()
 		func_1EAE60 = (func_1EAE60_t)func.addr;
 	}
 	{
+		auto func = CreateFunction((appBaseAddr + 0x32E5F0), 0, true, false);
+		func_32E5F0 = (func_32E5F0_t)func.addr;
+	}
+	{
 		auto func = CreateFunction((appBaseAddr + 0x89E30));
 		func_89E30 = (func_89E30_t)func.addr;
 	}
@@ -440,4 +445,4 @@ export void Internal_Init()
 	}
 }
 
-#endif
+// $DataEnd

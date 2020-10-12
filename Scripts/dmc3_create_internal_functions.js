@@ -262,6 +262,69 @@ dmc3.exe+1BB69D - E8 4E2F1700           - call dmc3.exe+32E5F0 { actor position 
 
 ];
 
+var filename = "../Mary/Internal.ixx"
+
+var file = fs.readFileSync(filename, "utf8");
+
+var startTag = /\/\/ \$DataStart$/;
+var endTag   = /\/\/ \$DataEnd$/;
+
+var startTagLine = -1;
+var endTagLine   = -1;
+
+var obj = file.match(/[\S\s]*?\r\n/g);
+
+for (var index = 0; index < obj.length; index++)
+{
+	var str = obj[index].substring(0, (obj[index].length - 2));
+	if (str.match(startTag))
+	{
+		startTagLine = index;
+		break;
+	}
+}
+
+if (startTagLine == -1)
+{
+	console.log("Start tag not found.");
+	return;
+}
+
+for (var index = 0; index < obj.length; index++)
+{
+	var str = obj[index].substring(0, (obj[index].length - 2));
+	if (str.match(endTag))
+	{
+		endTagLine = index;
+		break;
+	}
+}
+
+if (endTagLine == -1)
+{
+	console.log("End tag not found.");
+	return;
+}
+
+if (endTagLine < startTagLine)
+{
+	console.log("End tag appears before start tag.");
+	return;
+}
+
+console.log("startTagLine " + (startTagLine + 1));
+console.log("endTagLine   " + (endTagLine   + 1));
+
+for (var index = 0; index <= startTagLine; index++)
+{
+	var str = obj[index].substring(0, (obj[index].length - 2));
+	c += str + NEW_LINE;
+}
+
+c += NEW_LINE;
+
+
+
 for (var index = 0; index < items.length; index++)
 {
 	var off                = items[index][0];
@@ -292,16 +355,6 @@ for (var index = 0; index < items.length; index++)
 	c_init += "\t}" + NEW_LINE;
 }
 
-c += "#ifndef __MODULE_INTERNAL__" + NEW_LINE;
-c += "#define __MODULE_INTERNAL__" + NEW_LINE;
-c += NEW_LINE;
-c += "module;" + NEW_LINE;
-c += "#include \"../Core/Core.h\"" + NEW_LINE;
-c += NEW_LINE;
-c += "#include \"Vars.h\"" + NEW_LINE;
-c += "export module ModuleName(Internal);" + NEW_LINE;
-c += NEW_LINE;
-
 c += c_typedefs;
 c += NEW_LINE;
 
@@ -314,7 +367,14 @@ c += "\tLogFunction();" + NEW_LINE;
 c += c_init;
 c += "}" + NEW_LINE;
 
-c += NEW_LINE;
-c += "#endif" + NEW_LINE;
 
-fs.writeFileSync("../Mary/Internal.ixx", c);
+
+c += NEW_LINE;
+
+for (var index = endTagLine; index < obj.length; index++)
+{
+	var str = obj[index].substring(0, (obj[index].length - 2));
+	c += str + NEW_LINE;
+}
+
+fs.writeFileSync(filename, c);

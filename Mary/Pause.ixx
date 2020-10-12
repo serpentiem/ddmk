@@ -1,15 +1,8 @@
-#ifndef __MODULE_PAUSE__
-#define __MODULE_PAUSE__
-
 module;
 #include "../Core/Core.h"
-export module ModuleName(Pause);
+export module Pause;
 
-import ModuleName(Config);
-
-#ifdef __INTELLISENSE__
-#include "Config.ixx"
-#endif
+import Config;
 
 export bool pause = false;
 
@@ -27,5 +20,3 @@ export void Pause(bool enable)
 		}
 	}
 }
-
-#endif

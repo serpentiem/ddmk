@@ -1,6 +1,3 @@
-#ifndef __MODULE_GUI__
-#define __MODULE_GUI__
-
 module;
 #include "../Core/Core.h"
 
@@ -8,43 +5,24 @@ module;
 
 #include "Locale.h"
 #include "Vars.h"
-export module ModuleName(GUI);
+export module GUI;
 
-import ModuleName(Core_GUI);
+import Core_GUI;
 
-import ModuleName(Actor);
-import ModuleName(Arcade);
-import ModuleName(Camera);
-import ModuleName(Config);
-import ModuleName(Event);
-import ModuleName(File);
-import ModuleName(Internal);
-import ModuleName(Model);
-import ModuleName(Pause);
-import ModuleName(Scene);
-import ModuleName(Speed);
-import ModuleName(State);
-import ModuleName(Training);
-import ModuleName(Window);
-
-#ifdef __INTELLISENSE__
-#include "../Core/GUI.ixx"
-
-#include "Actor.ixx"
-#include "Arcade.ixx"
-#include "Camera.ixx"
-#include "Config.ixx"
-#include "Event.ixx"
-#include "File.ixx"
-#include "Internal.ixx"
-#include "Model.ixx"
-#include "Pause.ixx"
-#include "Scene.ixx"
-#include "Speed.ixx"
-#include "State.ixx"
-#include "Training.ixx"
-#include "Window.ixx"
-#endif
+import Actor;
+import Arcade;
+import Camera;
+import Config;
+import Event;
+import File;
+import Internal;
+import Model;
+import Pause;
+import Scene;
+import Speed;
+import State;
+import Training;
+import Window;
 
 #define debug true
 
@@ -184,7 +162,7 @@ uint8 Actor_meleeWeapons[] =
 	WEAPON_BEOWULF_DANTE,
 	WEAPON_YAMATO_VERGIL,
 	WEAPON_BEOWULF_VERGIL,
-	WEAPON_FORCE_EDGE,
+	WEAPON_YAMATO_FORCE_EDGE,
 };
 
 uint8 Actor_meleeWeaponIndices[MAX_PLAYER][MAX_ENTITY][MELEE_WEAPON_COUNT] = {};
@@ -1660,6 +1638,49 @@ export void GUI_Init()
 
 
 
+
+// #ifndef __MODULE_GUI__
+// #define __MODULE_GUI__
+
+//export module ModuleName(GUI);
+
+// import ModuleName(Core_GUI);
+
+// import ModuleName(Actor);
+// import ModuleName(Arcade);
+// import ModuleName(Camera);
+// import ModuleName(Config);
+// import ModuleName(Event);
+// import ModuleName(File);
+// import ModuleName(Internal);
+// import ModuleName(Model);
+// import ModuleName(Pause);
+// import ModuleName(Scene);
+// import ModuleName(Speed);
+// import ModuleName(State);
+// import ModuleName(Training);
+// import ModuleName(Window);
+
+// #ifdef __INTELLISENSE__
+// #include "../Core/GUI.ixx"
+
+// #include "Actor.ixx"
+// #include "Arcade.ixx"
+// #include "Camera.ixx"
+// #include "Config.ixx"
+// #include "Event.ixx"
+// #include "File.ixx"
+// #include "Internal.ixx"
+// #include "Model.ixx"
+// #include "Pause.ixx"
+// #include "Scene.ixx"
+// #include "Speed.ixx"
+// #include "State.ixx"
+// #include "Training.ixx"
+// #include "Window.ixx"
+// #endif
+
+
 void Actor_WeaponSelectFunction
 (
 	const char * label,
@@ -1923,14 +1944,14 @@ void Actor_WeaponSelectFunction
 //	WEAPON_BEOWULF_DANTE,
 //	WEAPON_YAMATO_VERGIL,
 //	WEAPON_BEOWULF_VERGIL,
-//	WEAPON_FORCE_EDGE,
+//	WEAPON_YAMATO_FORCE_EDGE,
 //};
 //
 //uint8 Actor_meleeWeaponMapVergil[] =
 //{
 //	WEAPON_YAMATO_VERGIL,
 //	WEAPON_BEOWULF_VERGIL,
-//	WEAPON_FORCE_EDGE,
+//	WEAPON_YAMATO_FORCE_EDGE,
 //	WEAPON_REBELLION,
 //	WEAPON_CERBERUS,
 //	WEAPON_AGNI_RUDRA,
@@ -1939,10 +1960,5 @@ void Actor_WeaponSelectFunction
 //};
 //
 //uint8 Actor_meleeWeaponIndex[MAX_PLAYER][MAX_ENTITY][MAX_CHAR][MELEE_WEAPON_COUNT] = {};
-
-
-
-
-#endif
 
 #endif

@@ -1,11 +1,8 @@
-#ifndef __MODULE_CORE_LOG__
-#define __MODULE_CORE_LOG__
-
 module;
 #include "Includes.h"
-export module ModuleName(Core_Log);
+export module Core_Log;
 
-import ModuleName(Core_Utility);
+import Core_Utility;
 
 #ifdef __INTELLISENSE__
 #include "Utility.ixx"
@@ -92,5 +89,3 @@ export void Core_Log_Init
 	snprintf(Core_Log_path, sizeof(Core_Log_path), "%s\\%s", directoryName, filename);
 	DeleteFileA(Core_Log_path);
 }
-
-#endif

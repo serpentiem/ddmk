@@ -1,12 +1,9 @@
-#ifndef __MODULE_CORE_GUI__
-#define __MODULE_CORE_GUI__
-
 module;
 #include "Core.h"
 
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_internal.h"
-export module ModuleName(Core_GUI);
+export module Core_GUI;
 
 //constexpr bool debug = true;
 
@@ -576,5 +573,3 @@ bool GUI_ColorPalette
 
 	return update;
 }
-
-#endif

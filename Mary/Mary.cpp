@@ -1,46 +1,24 @@
 #include "../Core/Core.h"
 
-import ModuleName(Actor);
-import ModuleName(Arcade);
-import ModuleName(Camera);
-//import ModuleName(Color);
-import ModuleName(Config);
-import ModuleName(Dante);
-import ModuleName(Event);
-import ModuleName(File);
-import ModuleName(GUI);
-import ModuleName(Hooks);
-import ModuleName(HUD);
-import ModuleName(Internal);
-import ModuleName(Memory);
-//import ModuleName(Mobility);
-import ModuleName(Model);
-import ModuleName(Scene);
-import ModuleName(Training);
-//import ModuleName(Update);
-import ModuleName(Window);
-
-#ifdef __INTELLISENSE__
-#include "Actor.ixx"
-#include "Arcade.ixx"
-#include "Camera.ixx"
-//#include "Color.ixx"
-#include "Config.ixx"
-#include "Dante.ixx"
-#include "Event.ixx"
-#include "File.ixx"
-#include "GUI.ixx"
-#include "Hooks.ixx"
-#include "HUD.ixx"
-#include "Internal.ixx"
-#include "Memory.ixx"
-//#include "Mobility.ixx"
-#include "Model.ixx"
-#include "Scene.ixx"
-#include "Training.ixx"
-//#include "Update.ixx"
-#include "Window.ixx"
-#endif
+import Actor;
+import Arcade;
+import Camera;
+//import Color;
+import Config;
+import Dante;
+import Event;
+import File;
+import GUI;
+import Hooks;
+import HUD;
+import Internal;
+import Memory;
+//import Mobility;
+import Model;
+import Scene;
+import Training;
+//import Update;
+import Window;
 
 uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {

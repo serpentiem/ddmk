@@ -1,17 +1,10 @@
-#ifndef __MODULE_TRAINING__
-#define __MODULE_TRAINING__
-
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
-export module ModuleName(Training);
+export module Training;
 
-import ModuleName(State);
-
-#ifdef __INTELLISENSE__
-#include "State.ixx"
-#endif
+import State;
 
 export void Training_ToggleInfiniteHitPoints(bool enable)
 {
@@ -89,5 +82,3 @@ export void Training_ToggleDisableTimer(bool enable)
 	}
 	Write<byte8>((appBaseAddr + 0x27F332), (enable) ? 0xEB : 0x74);
 }
-
-#endif

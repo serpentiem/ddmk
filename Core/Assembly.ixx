@@ -1,9 +1,6 @@
-#ifndef __MODULE_CORE_ASSEMBLY__
-#define __MODULE_CORE_ASSEMBLY__
-
 module;
 #include "Includes.h"
-export module ModuleName(Core_Assembly);
+export module Core_Assembly;
 
 export constexpr byte8 mov_rcx_rax[] =
 {
@@ -84,5 +81,3 @@ export constexpr byte8 mov_rcx_r15[] =
 {
 	0x49, 0x8B, 0xCF, // mov rcx,r15
 };
-
-#endif

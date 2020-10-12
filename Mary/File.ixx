@@ -1,6 +1,3 @@
-#ifndef __MODULE_FILE__
-#define __MODULE_FILE__
-
 module;
 #include "../Core/Core.h"
 
@@ -8,17 +5,11 @@ module;
 #include "../Zip/zip.h"
 
 #include "Vars.h"
-export module ModuleName(File);
+export module File;
 
-import ModuleName(Config);
-import ModuleName(Internal);
-import ModuleName(Memory);
-
-#ifdef __INTELLISENSE__
-#include "Config.ixx"
-#include "Internal.ixx"
-#include "Memory.ixx"
-#endif
+import Config;
+import Internal;
+import Memory;
 
 constexpr bool debug = false;
 
@@ -401,5 +392,3 @@ export bool File_Init()
 
 	return true;
 }
-
-#endif

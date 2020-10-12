@@ -1,19 +1,11 @@
-#ifndef __MODULE_BOSS_RUSH__
-#define __MODULE_BOSS_RUSH__
-
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
-export module ModuleName(BossRush);
+export module BossRush;
 
-import ModuleName(Config);
-import ModuleName(Internal);
-
-#ifdef __INTELLISENSE__
-#include "Config.ixx"
-#include "Internal.ixx"
-#endif
+import Config;
+import Internal;
 
 export void BossRush_SetRoom()
 {
@@ -444,5 +436,3 @@ export void BossRush_Main()
 	}
 	}
 }
-
-#endif

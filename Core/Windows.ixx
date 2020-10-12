@@ -1,9 +1,6 @@
-#ifndef __MODULE_WINDOWS__
-#define __MODULE_WINDOWS__
-
 module;
 #include "Includes.h"
-export module ModuleName(Core_Windows);
+export module Core_Windows;
 
 export inline bool Windows_GetTicksPerSecond(uint64 * var)
 {
@@ -59,5 +56,3 @@ export bool Windows_GetWindowPos(HWND window, POINT * point)
 	point->y = rect.top;
 	return true;
 }
-
-#endif

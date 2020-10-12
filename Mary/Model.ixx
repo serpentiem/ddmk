@@ -1,17 +1,10 @@
-#ifndef __MODULE_MODEL__
-#define __MODULE_MODEL__
-
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
-export module ModuleName(Model);
+export module Model;
 
-import ModuleName(Internal);
-
-#ifdef __INTELLISENSE__
-#include "Internal.ixx"
-#endif
+import Internal;
 
 export void RegisterModel
 (
@@ -81,8 +74,6 @@ export void ResetModel(ModelData & modelData)
 	memset(&modelData, 0, sizeof(ModelData));
 	func_89270(modelData);
 }
-
-#endif
 
 #ifdef __GARBAGE__
 #endif

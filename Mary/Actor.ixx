@@ -1,36 +1,18 @@
-
-
-
 // @Todo: Air Stinger, Air Lunar Phase and Nevan instant Vortex.
-
-
-
-#ifndef __MODULE_ACTOR__
-#define __MODULE_ACTOR__
 
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
-export module ModuleName(Actor);
+export module Actor;
 
-import ModuleName(Config);
-import ModuleName(File);
-import ModuleName(HUD);
-import ModuleName(Internal);
-import ModuleName(Input);
-import ModuleName(Memory);
-import ModuleName(Model);
-
-#ifdef __INTELLISENSE__
-#include "Config.ixx"
-#include "File.ixx"
-#include "HUD.ixx"
-#include "Internal.ixx"
-#include "Input.ixx"
-#include "Memory.ixx"
-#include "Model.ixx"
-#endif
+import Config;
+import File;
+import HUD;
+import Internal;
+import Input;
+import Memory;
+import Model;
 
 constexpr bool debug = true;
 
@@ -361,7 +343,7 @@ void InitRegisterWeapon()
 	RegisterWeapon[WEAPON_KALINA_ANN    ] = func_22BA30;
 	RegisterWeapon[WEAPON_YAMATO_VERGIL ] = func_22D960;
 	RegisterWeapon[WEAPON_BEOWULF_VERGIL] = func_228CF0;
-	RegisterWeapon[WEAPON_FORCE_EDGE    ] = func_2298E0;
+	RegisterWeapon[WEAPON_YAMATO_FORCE_EDGE    ] = func_2298E0;
 	RegisterWeapon[WEAPON_YAMATO_BOB    ] = func_231A30;
 }
 
@@ -404,7 +386,7 @@ bool IsVergilMeleeWeapon(uint8 weapon)
 	if
 	(
 		(weapon >= WEAPON_YAMATO_VERGIL) &&
-		(weapon <= WEAPON_FORCE_EDGE   )
+		(weapon <= WEAPON_YAMATO_FORCE_EDGE   )
 	)
 	{
 		return true;
@@ -1955,7 +1937,7 @@ void UpdateForm
 			else
 			{
 				auto weapon = actorData.activeMeleeWeaponIndex;
-				if ((weapon < WEAPON_YAMATO_VERGIL) || (weapon > WEAPON_FORCE_EDGE))
+				if ((weapon < WEAPON_YAMATO_VERGIL) || (weapon > WEAPON_YAMATO_FORCE_EDGE))
 				{
 					weapon = WEAPON_YAMATO_VERGIL;
 				}
@@ -8908,8 +8890,6 @@ export void Actor_SceneMissionStart()
 }
 
 #pragma endregion
-
-#endif
 
 #ifdef __GARBAGE__
 #endif

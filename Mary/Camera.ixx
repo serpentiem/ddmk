@@ -1,17 +1,10 @@
-#ifndef __MODULE_CAMERA__
-#define __MODULE_CAMERA__
-
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
-export module ModuleName(Camera);
+export module Camera;
 
-import ModuleName(Config);
-
-#ifdef __INTELLISENSE__
-#include "Config.ixx"
-#endif
+import Config;
 
 // @Todo: Update with CAMERA_DATA.
 export void Camera_Update(Config & config)
@@ -40,5 +33,3 @@ export void Camera_ToggleInvertX(bool enable)
 	Write<byte32>((appBaseAddr + 0x51267), (enable) ? GAMEPAD_LEFT  : GAMEPAD_RIGHT); // Fast turn left.
 	Write<byte32>((appBaseAddr + 0x51296), (enable) ? GAMEPAD_RIGHT : GAMEPAD_LEFT ); // Fast turn right.
 }
-
-#endif

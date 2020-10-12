@@ -1,11 +1,8 @@
-#ifndef __MODULE_STATE__
-#define __MODULE_STATE__
-
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
-export module ModuleName(State);
+export module State;
 
 export inline bool ActorAvailable()
 {
@@ -34,5 +31,3 @@ export inline bool InGame()
 	}
 	return true;
 }
-
-#endif

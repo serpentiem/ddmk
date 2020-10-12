@@ -1,21 +1,12 @@
-#ifndef __MODULE_HUD__
-#define __MODULE_HUD__
-
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
-export module ModuleName(HUD);
+export module HUD;
 
-import ModuleName(File);
-import ModuleName(Internal);
-import ModuleName(Model);
-
-#ifdef __INTELLISENSE__
-#include "File.ixx"
-#include "Internal.ixx"
-#include "Model.ixx"
-#endif
+import File;
+import Internal;
+import Model;
 
 struct HUDIconHelper
 {
@@ -163,8 +154,6 @@ export void HUD_Init()
 
 	InitIcons();
 }
-
-#endif
 
 #ifdef __GARBAGE__
 

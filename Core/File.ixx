@@ -1,17 +1,9 @@
-#ifndef __MODULE_CORE_FILE__
-#define __MODULE_CORE_FILE__
-
 module;
 #include "Includes.h"
-export module ModuleName(Core_File);
+export module Core_File;
 
-import ModuleName(Core_Log);
-import ModuleName(Core_Memory);
-
-#ifdef __INTELLISENSE__
-#include "Log.ixx"
-#include "Memory.ixx"
-#endif
+import Core_Log;
+import Core_Memory;
 
 export byte8 * LoadFile
 (
@@ -98,5 +90,3 @@ export bool CheckFile(const char * filename)
 
 	return true;
 }
-
-#endif

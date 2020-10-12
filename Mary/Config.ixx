@@ -1,11 +1,8 @@
-#ifndef __MODULE_CONFIG__
-#define __MODULE_CONFIG__
-
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
-export module ModuleName(Config);
+export module Config;
 
 #define debug true
 
@@ -428,7 +425,7 @@ export void ApplyDefaultPlayerData
 			{
 				WEAPON_YAMATO_VERGIL,
 				WEAPON_BEOWULF_VERGIL,
-				WEAPON_FORCE_EDGE,
+				WEAPON_YAMATO_FORCE_EDGE,
 			},
 			MELEE_WEAPON_COUNT_VERGIL,
 			0
@@ -497,5 +494,3 @@ export void Config_Init
 		ApplyDefaultPlayerData(queuedConfig.Actor.playerData [player][entity], CHAR_DANTE);
 	}}
 }
-
-#endif

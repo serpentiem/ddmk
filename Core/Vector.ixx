@@ -1,17 +1,9 @@
-#ifndef __MODULE_CORE_VECTOR__
-#define __MODULE_CORE_VECTOR__
-
 module;
 #include "Includes.h"
-export module ModuleName(Core_Vector);
+export module Core_Vector;
 
-import ModuleName(Core_Log);
-import ModuleName(Core_Memory);
-
-#ifdef __INTELLISENSE__
-#include "Log.ixx"
-#include "Memory.ixx"
-#endif
+import Core_Log;
+import Core_Memory;
 
 export template <typename T>
 struct Vector
@@ -184,5 +176,3 @@ void UpdateMapIndex
 
 	Log("No match.");
 }
-
-#endif

@@ -1,6 +1,3 @@
-#ifndef __MODULE_HOOKS__
-#define __MODULE_HOOKS__
-
 module;
 #include "../Core/Core.h"
 
@@ -11,25 +8,15 @@ module;
 #include <Xinput.h>
 
 #include "../ImGui/imgui.h"
-export module ModuleName(Hooks);
+export module Hooks;
 
-import ModuleName(ImGui_D3D11);
-import ModuleName(ImGui_DirectInput8);
-import ModuleName(ImGui_User);
-import ModuleName(Config);
-import ModuleName(GUI);
-import ModuleName(Pause);
-import ModuleName(Window);
-
-#ifdef __INTELLISENSE__
-#include "../Core/ImGui_D3D11.ixx"
-#include "../Core/ImGui_DirectInput8.ixx"
-#include "../Core/ImGui_User.ixx"
-#include "Config.ixx"
-#include "GUI.ixx"
-#include "Pause.ixx"
-#include "Window.ixx"
-#endif
+import ImGui_D3D11;
+import ImGui_DirectInput8;
+import ImGui_User;
+import Config;
+import GUI;
+import Pause;
+import Window;
 
 constexpr bool debug = false;
 
@@ -1131,5 +1118,3 @@ export void Hooks_Init()
 		WriteJump((appBaseAddr + 0x41C40), func.addr);
 	}
 }
-
-#endif

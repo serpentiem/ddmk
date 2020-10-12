@@ -1,9 +1,6 @@
-#ifndef __MODULE_MEMORY__
-#define __MODULE_MEMORY__
-
 module;
 #include "../Core/Core.h"
-export module ModuleName(Memory);
+export module Memory;
 
 export enum MEMORY_SIZE
 {
@@ -128,5 +125,3 @@ export byte8 * GetMasterPointer()
 	}
 	return *reinterpret_cast<byte8 **>(dest + 0x18 + 0x10);
 }
-
-#endif

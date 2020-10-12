@@ -1,16 +1,13 @@
 // Modified from
 // https://github.com/ocornut/imgui/blob/e0cab5664adf02c030f9cf2a05d2c334638a85f8/examples/imgui_impl_dx11.cpp
 
-#ifndef __MODULE_IMGUI_D3D11__
-#define __MODULE_IMGUI_D3D11__
-
 module;
 #include "Core.h"
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include "../ImGui/imgui.h"
-export module ModuleName(ImGui_D3D11);
+export module ImGui_D3D11;
 
 // DirectX data
 static ID3D11Device*            g_pd3dDevice = NULL;
@@ -488,5 +485,3 @@ export void ImGui_D3D11_NewFrame()
     if (!g_pFontSampler)
         ImGui_D3D11_CreateDeviceObjects();
 }
-
-#endif

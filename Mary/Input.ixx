@@ -1,11 +1,8 @@
-#ifndef __MODULE_INPUT__
-#define __MODULE_INPUT__
-
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
-export module ModuleName(Input);
+export module Input;
 
 export enum TILT_DIRECTION
 {
@@ -67,5 +64,3 @@ export inline uint8 GetRelativeTiltDirection(byte8 * baseAddr)
 	}
 	return TILT_DIRECTION_NEUTRAL;
 }
-
-#endif

@@ -1,9 +1,6 @@
-#ifndef __MODULE_CORE_UTILITY__
-#define __MODULE_CORE_UTILITY__
-
 module;
 #include "Includes.h"
-export module ModuleName(Core_Utility);
+export module Core_Utility;
 
 export template
 <
@@ -73,5 +70,3 @@ constexpr auto countof(T(&array)[count])
 //{
 //	return static_cast<T1>(count);
 //}
-
-#endif

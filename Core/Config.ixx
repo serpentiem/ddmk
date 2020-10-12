@@ -1,20 +1,11 @@
-
 // @Research: Update.
-
-#ifndef __MODULE_CORE_CONFIG__
-#define __MODULE_CORE_CONFIG__
 
 module;
 #include "Includes.h"
-export module ModuleName(Core_Config);
+export module Core_Config;
 
-import ModuleName(Core_File);
-import ModuleName(Core_Log);
-
-#ifdef __INTELLISENSE__
-#include "File.ixx"
-#include "Log.ixx"
-#endif
+import Core_File;
+import Core_Log;
 
 char     g_path[64] = {};
 byte8  * g_addr     = 0;
@@ -60,5 +51,3 @@ export void Core_Config_Init
 	g_addr = reinterpret_cast<byte8 *>(addr);
 	g_size = size;
 }
-
-#endif

@@ -1,25 +1,14 @@
-#ifndef __MODULE_EVENT__
-#define __MODULE_EVENT__
-
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
-export module ModuleName(Event);
+export module Event;
 
-import ModuleName(Actor);
-import ModuleName(Arcade);
-import ModuleName(BossRush);
-import ModuleName(File);
-import ModuleName(Model);
-
-#ifdef __INTELLISENSE__
-#include "Actor.ixx"
-#include "Arcade.ixx"
-#include "BossRush.ixx"
-#include "File.ixx"
-#include "Model.ixx"
-#endif
+import Actor;
+import Arcade;
+import BossRush;
+import File;
+import Model;
 
 constexpr bool debug = true;
 
@@ -710,8 +699,6 @@ export void Event_ToggleSkipCutscenes(bool enable)
 	WriteAddress((appBaseAddr + 0x238CD8), (enable) ? (appBaseAddr + 0x238CDE) : (appBaseAddr + 0x238E62), 6);
 	WriteAddress((appBaseAddr + 0x238CE3), (enable) ? (appBaseAddr + 0x238CE9) : (appBaseAddr + 0x238E62), 6);
 }
-
-#endif
 
 #ifdef __GARBAGE__
 #endif

@@ -1,17 +1,10 @@
-#ifndef __MODULE_DANTE__
-#define __MODULE_DANTE__
-
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
-export module ModuleName(Dante);
+export module Dante;
 
-import ModuleName(Config);
-
-#ifdef __INTELLISENSE__
-#include "Config.ixx"
-#endif
+import Config;
 
 byte8 * Dante_rainStorm = 0;
 
@@ -173,6 +166,4 @@ export void Dante_CrazyCombo_SetLevelMultiplier(uint8 multiplier)
 }
 
 #ifdef __GARBAGE__
-#endif
-
 #endif
