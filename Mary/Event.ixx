@@ -11,7 +11,6 @@ import ModuleName(Actor);
 import ModuleName(Arcade);
 import ModuleName(BossRush);
 import ModuleName(File);
-import ModuleName(Mobility);
 import ModuleName(Model);
 
 #ifdef __INTELLISENSE__
@@ -19,7 +18,6 @@ import ModuleName(Model);
 #include "Arcade.ixx"
 #include "BossRush.ixx"
 #include "File.ixx"
-#include "Mobility.ixx"
 #include "Model.ixx"
 #endif
 
@@ -333,10 +331,10 @@ void ActorLoop(byte8 * baseAddr)
 	Actor_ActorLoop(baseAddr);
 }
 
-void SkyStarReset(byte8 * baseAddr)
-{
-	Mobility::SkyStarReset(baseAddr);
-}
+// void SkyStarReset(byte8 * baseAddr)
+// {
+// 	Mobility::SkyStarReset(baseAddr);
+// }
 
 
 
@@ -633,143 +631,23 @@ export void Event_Init()
 		*/
 	}
 
-	// Sky Star Reset
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
-		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1DFEAE), func.addr, 1);
-		/*
-		dmc3.exe+1DFEAE - 88 8B 5D630000 - mov [rbx+0000635D],cl
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
-		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1DFFB6), func.addr, 1);
-		/*
-		dmc3.exe+1DFFB6 - 88 8B 5D630000 - mov [rbx+0000635D],cl
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x41, 0x88, 0x89, 0x5D, 0x63, 0x00, 0x00, //mov [r9+0000635D],cl
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x49, 0x8B, 0xC9, //mov rcx,r9
-		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1E07A2), func.addr, 2);
-		/*
-		dmc3.exe+1E07A2 - 41 88 89 5D630000 - mov [r9+0000635D],cl
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
-		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1E0D81), func.addr, 1);
-		/*
-		dmc3.exe+1E0D81 - 88 8B 5D630000 - mov [rbx+0000635D],cl
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x49, 0x8B, 0xC8, //mov rcx,r8
-		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1E0F64), func.addr, 2);
-		/*
-		dmc3.exe+1E0F64 - 41 88 88 5D630000 - mov [r8+0000635D],cl
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x49, 0x8B, 0xC8, //mov rcx,r8
-		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1E0FBD), func.addr, 2);
-		/*
-		dmc3.exe+1E0FBD - 41 88 88 5D630000 - mov [r8+0000635D],cl
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
-		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1E16D2), func.addr, 1);
-		/*
-		dmc3.exe+1E16D2 - 88 8B 5D630000 - mov [rbx+0000635D],cl
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x88, 0x83, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],al
-		};
-		constexpr byte8 sect1[] =
-		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
-		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1E66AC), func.addr, 1);
-		/*
-		dmc3.exe+1E66AC - 88 83 5D630000 - mov [rbx+0000635D],al
-		*/
-	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	{
 		constexpr byte8 sect0[] =

@@ -8,8 +8,14 @@ module;
 #include "../ImGui/imgui_internal.h"
 export module ModuleName(Core_GUI);
 
-export int GUI_id = 0;
-export bool GUI_save = false;
+//constexpr bool debug = true;
+
+#define debug true
+
+
+export int     GUI_id          = 0;
+export bool    GUI_save        = false;
+export float32 GUI_saveTimeout = 0;
 
 export inline void GUI_PushId()
 {
@@ -47,6 +53,23 @@ export bool GUI_Checkbox
 	if (update)
 	{
 		GUI_save = true;
+	}
+
+	return update;
+}
+
+export bool GUI_Checkbox
+(
+	const char * label,
+	bool & var,
+	bool & var2
+)
+{
+	auto update = GUI_Checkbox(label, var2);
+
+	if (update)
+	{
+		var = var2;
 	}
 
 	return update;
@@ -149,6 +172,36 @@ bool GUI_InputDefault
 	if (update)
 	{
 		GUI_save = true;
+	}
+
+	return update;
+}
+
+export template <typename T>
+bool GUI_InputDefault
+(
+	const char * label,
+	T & var,
+	T & var2,
+	T & defaultVar,
+	T step = 1,
+	const char * format = 0,
+	ImGuiInputTextFlags flags = 0
+)
+{
+	auto update = GUI_InputDefault
+	(
+		label,
+		var2,
+		defaultVar,
+		step,
+		format,
+		flags
+	);
+
+	if (update)
+	{
+		var = var2;
 	}
 
 	return update;
@@ -397,59 +450,39 @@ export bool GUI_ColorEdit4
 {
 	bool update = false;
 
-	//float32 var2[4] = {};
-
-
-	// @Todo: Remove.
-
-
-
-
-
-
 	GUI_PushId();
 	if (ImGui::ColorEdit4(label, var2, flags))
 	{
 		update = true;
 
-
 		for_all(uint8, index, 4)
 		{
 			var[index] = static_cast<uint8>(var2[index] * 255);
 		}
-
-
 	}
 	GUI_PopId();
 
 	if (update)
 	{
 		GUI_save = true;
-
-
-
-
 	}
 
-	ImGui::Text("");
-
-	ImGui::Text("var[0] %u", var[0]);
-	ImGui::Text("var[1] %u", var[1]);
-	ImGui::Text("var[2] %u", var[2]);
-	ImGui::Text("var[3] %u", var[3]);
-
-	ImGui::Text("var2[0] %f", var2[0]);
-	ImGui::Text("var2[1] %f", var2[1]);
-	ImGui::Text("var2[2] %f", var2[2]);
-	ImGui::Text("var2[3] %f", var2[3]);
-
-	ImGui::Text("");
+	if constexpr (debug)
+	{
+		ImGui::Text("");
+		ImGui::Text("var [0] %u", var [0]);
+		ImGui::Text("var [1] %u", var [1]);
+		ImGui::Text("var [2] %u", var [2]);
+		ImGui::Text("var [3] %u", var [3]);
+		ImGui::Text("var2[0] %f", var2[0]);
+		ImGui::Text("var2[1] %f", var2[1]);
+		ImGui::Text("var2[2] %f", var2[2]);
+		ImGui::Text("var2[3] %f", var2[3]);
+		ImGui::Text("");
+	}
 
 	return update;
 }
-
-
-
 
 export bool GUI_Color
 (
@@ -459,6 +492,34 @@ export bool GUI_Color
 )
 {
 	return GUI_ColorEdit4(label, var, var2, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaPreview);
+}
+
+export bool GUI_Color
+(
+	const char * label,
+	uint8(&var)[4],
+	uint8(&var2)[4],
+	float32(&var3)[4]
+)
+{
+	auto update = GUI_Color
+	(
+		label,
+		var2,
+		var3
+	);
+
+	if (update)
+	{
+		memcpy(var, var2, sizeof(var2));
+
+		if constexpr (debug)
+		{
+			Log("GUI_Color memcpy size %u", sizeof(var2));
+		}
+	}
+
+	return update;
 }
 
 export template<uint8 count>
@@ -478,10 +539,40 @@ bool GUI_ColorPalette
 		{
 			update = true;
 		}
+
 		ImGui::SameLine(0, style.ItemInnerSpacing.x);
 	}
 
 	ImGui::Text(label);
+
+	return update;
+}
+
+export template<uint8 count>
+bool GUI_ColorPalette
+(
+	const char * label,
+	uint8(&vars)[count][4],
+	uint8(&vars2)[count][4],
+	float32(&vars3)[count][4]
+)
+{
+	auto update = GUI_ColorPalette
+	(
+		label,
+		vars2,
+		vars3
+	);
+
+	if (update)
+	{
+		memcpy(vars, vars2, sizeof(vars2));
+
+		if constexpr (debug)
+		{
+			Log("GUI_ColorPalette memcpy size %u", sizeof(vars2));
+		}
+	}
 
 	return update;
 }

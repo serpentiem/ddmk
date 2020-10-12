@@ -7,6 +7,8 @@ module;
 #include "Vars.h"
 export module ModuleName(Config);
 
+#define debug true
+
 #pragma pack(push, 1)
 export struct Config
 {
@@ -251,6 +253,12 @@ export struct Config
 	RemoveBusyFlag;
 	struct
 	{
+		bool   enable = false;
+		byte16 button = GAMEPAD_BACK;
+	}
+	ResetPermissions;
+	struct
+	{
 		float32 gunStingerDuration   [2] = { 8  , 8   };
 		float32 gunStingerRange      [2] = { 200, 200 };
 		float32 airGunStingerDuration[2] = { 8  , 8   };
@@ -301,15 +309,15 @@ export struct Config
 		Devil;
 	}
 	Speed;
-	struct
-	{
-		bool noDoubleTap = false;
-	}
-	StyleSwitchController;
+	// struct
+	// {
+	// 	bool noDoubleTap = false;
+	// }
+	// StyleSwitchController;
 	struct
 	{
 		bool chronoSwords = false;
-		bool dante        = false;
+		//bool dante        = false;
 	}
 	SummonedSwords;
 	struct
@@ -432,11 +440,21 @@ export void ApplyDefaultPlayerData
 
 export void SaveConfig()
 {
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
+
 	SaveFile(g_path, reinterpret_cast<byte8 *>(&activeConfig), sizeof(Config));
 }
 
 export void LoadConfig()
 {
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
+
 	byte8 * file = 0;
 	uint32 size = 0;
 

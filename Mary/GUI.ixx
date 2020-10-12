@@ -170,9 +170,9 @@ const char * Actor_meleeWeaponNames[] =
 	"Agni & Rudra",
 	"Nevan",
 	"Beowulf Dante",
-	"Yamato Vergil",
+	"Yamato",
 	"Beowulf Vergil",
-	"Force Edge",
+	"Yamato & Force Edge",
 };
 
 uint8 Actor_meleeWeapons[] =
@@ -765,38 +765,87 @@ void Cosmetics()
 		GUI_Button("Reset");
 		GUI_SectionEnd();
 
+
+		// @Todo: Requires Actor module.
+
+
+
+
 		GUI_SectionStart("Color");
 
 
-		//ImGui::Text("airHike[0][0] %u", activeConfig.Color.airHike[0][0]);
-		//ImGui::Text("airHike[0][1] %u", activeConfig.Color.airHike[0][1]);
-		//ImGui::Text("airHike[0][2] %u", activeConfig.Color.airHike[0][2]);
-		//ImGui::Text("airHike[0][3] %u", activeConfig.Color.airHike[0][3]);
 
 
-		GUI_ColorPalette("Air Hike", activeConfig.Color.airHike, Color.airHike);
-
-
-
-
-
-
+		GUI_ColorPalette
+		(
+			"Air Hike",
+			activeConfig.Color.airHike,
+			queuedConfig.Color.airHike,
+			Color.airHike
+		);
 		ImGui::Text("");
+
 		ImGui::Text("Trickster");
-		GUI_Color("Sky Star", activeConfig.Color.Trickster.skyStar, Color.Trickster.skyStar);
+		GUI_Color
+		(
+			"Sky Star",
+			activeConfig.Color.Trickster.skyStar,
+			queuedConfig.Color.Trickster.skyStar,
+			Color.Trickster.skyStar
+		);
 		ImGui::Text("");
+
 		ImGui::Text("Royalguard");
-		GUI_Color("Ultimate", activeConfig.Color.Royalguard.ultimate, Color.Royalguard.ultimate);
+		GUI_Color
+		(
+			"Ultimate",
+			activeConfig.Color.Royalguard.ultimate,
+			queuedConfig.Color.Royalguard.ultimate,
+			Color.Royalguard.ultimate
+		);
 		ImGui::Text("");
+
 		ImGui::Text("Doppelganger");
-		GUI_Color("Clone", activeConfig.Color.Doppelganger.clone, Color.Doppelganger.clone);
+		GUI_Color
+		(
+			"Clone",
+			activeConfig.Color.Doppelganger.clone,
+			queuedConfig.Color.Doppelganger.clone,
+			Color.Doppelganger.clone
+		);
 		ImGui::Text("");
+
 		ImGui::Text("Aura");
-		GUI_ColorPalette("Dante", activeConfig.Color.Aura.dante, Color.Aura.dante);
-		GUI_Color("Sparda", activeConfig.Color.Aura.sparda, Color.Aura.sparda);
-		GUI_ColorPalette("Vergil", activeConfig.Color.Aura.vergil, Color.Aura.vergil);
-		GUI_Color("Nero Angelo", activeConfig.Color.Aura.neroAngelo, Color.Aura.neroAngelo);
+		GUI_ColorPalette
+		(
+			"Dante",
+			activeConfig.Color.Aura.dante,
+			queuedConfig.Color.Aura.dante,
+			Color.Aura.dante
+		);
+		GUI_Color
+		(
+			"Sparda",
+			activeConfig.Color.Aura.sparda,
+			queuedConfig.Color.Aura.sparda,
+			Color.Aura.sparda
+		);
+		GUI_ColorPalette
+		(
+			"Vergil",
+			activeConfig.Color.Aura.vergil,
+			queuedConfig.Color.Aura.vergil,
+			Color.Aura.vergil
+		);
+		GUI_Color
+		(
+			"Nero Angelo",
+			activeConfig.Color.Aura.neroAngelo,
+			queuedConfig.Color.Aura.neroAngelo,
+			Color.Aura.neroAngelo
+		);
 		ImGui::Text("");
+
 		GUI_Button("Reset");
 		GUI_SectionEnd();
 
@@ -805,18 +854,31 @@ void Cosmetics()
 
 
 
+
 		GUI_SectionStart("Other");
-		GUI_Checkbox("No Devil Form", activeConfig.noDevilForm);
-
-		GUI_Checkbox("Hide Beowulf Dante", activeConfig.BeowulfDante.hide);
-		GUI_Checkbox("Hide Beowulf Vergil", activeConfig.BeowulfVergil.hide);
-
-
-
-
-
-
+		GUI_Checkbox
+		(
+			"No Devil Form",
+			activeConfig.noDevilForm,
+			queuedConfig.noDevilForm
+		);
+		GUI_Checkbox
+		(
+			"Hide Beowulf Dante",
+			activeConfig.BeowulfDante.hide,
+			queuedConfig.BeowulfDante.hide
+		);
+		GUI_Checkbox
+		(
+			"Hide Beowulf Vergil",
+			activeConfig.BeowulfVergil.hide,
+			queuedConfig.BeowulfVergil.hide
+		);
 		ImGui::Text("");
+
+
+
+
 	}
 }
 
@@ -825,6 +887,7 @@ void ActionData
 (
 	const char * label,
 	T(&vars)[2],
+	T(&vars2)[2],
 	T(&defaultVars)[2],
 	T step = 1,
 	const char * format = 0,
@@ -835,9 +898,27 @@ void ActionData
 	auto & style = ImGui::GetStyle();
 
 	ImGui::PushItemWidth(width);
-	GUI_InputDefault(""   , vars[0], defaultVars[0], step, format, flags);
+	GUI_InputDefault
+	(
+		"",
+		vars[0],
+		vars2[0],
+		defaultVars[0],
+		step,
+		format,
+		flags
+	);
 	ImGui::SameLine(0, style.ItemInnerSpacing.x);
-	GUI_InputDefault(label, vars[1], defaultVars[1], step, format, flags);
+	GUI_InputDefault
+	(
+		label,
+		vars[1],
+		vars2[1],
+		defaultVars[1],
+		step,
+		format,
+		flags
+	);
 	ImGui::PopItemWidth();
 }
 
@@ -850,83 +931,104 @@ void Dante()
 		{
 		}
 		GUI_SectionEnd();
+		ImGui::Text("");
+
+		// @Todo: Add requires actor module.
+		// @Todo: Move mobility to actor.
+
+
+
+
+
+
 
 		GUI_SectionStart("Air Hike");
 		GUI_Checkbox("Core Ability", activeConfig.AirHike.coreAbility);
 		ImGui::Text("");
-		ActionData<uint8>("Count", activeConfig.AirHike.count, defaultConfig.AirHike.count);
+		ActionData<uint8>
+		(
+			"Count",
+			activeConfig.AirHike.count,
+			queuedConfig.AirHike.count,
+			defaultConfig.AirHike.count
+		);
 		GUI_SectionEnd();
+		ImGui::Text("");
 
 		GUI_SectionStart("Trickster");
-		ActionData<uint8>("Dash Count"     , activeConfig.Trickster.dashCount    , defaultConfig.Trickster.dashCount    );
-		ActionData<uint8>("Sky Star Count" , activeConfig.Trickster.skyStarCount , defaultConfig.Trickster.skyStarCount );
-		ActionData<uint8>("Air Trick Count", activeConfig.Trickster.airTrickCount, defaultConfig.Trickster.airTrickCount);
+		ActionData<uint8>
+		(
+			"Dash Count",
+			activeConfig.Trickster.dashCount,
+			queuedConfig.Trickster.dashCount,
+			defaultConfig.Trickster.dashCount
+		);
+		ActionData<uint8>
+		(
+			"Sky Star Count",
+			activeConfig.Trickster.skyStarCount,
+			queuedConfig.Trickster.skyStarCount,
+			defaultConfig.Trickster.skyStarCount
+		);
+		ActionData<uint8>
+		(
+			"Air Trick Count",
+			activeConfig.Trickster.airTrickCount,
+			queuedConfig.Trickster.airTrickCount,
+			defaultConfig.Trickster.airTrickCount
+		);
 		GUI_SectionEnd();
+		ImGui::Text("");
 
 		GUI_SectionStart("Rebellion");
-		GUI_Checkbox("Infinite Sword Pierce", activeConfig.Rebellion.infiniteSwordPierce);
+		GUI_Checkbox
+		(
+			"Infinite Sword Pierce",
+			activeConfig.Rebellion.infiniteSwordPierce,
+			queuedConfig.Rebellion.infiniteSwordPierce
+		);
+		// ImGui::Text("");
+		// ActionData<float32>("Stinger Duration"    , activeConfig.Rebellion.stingerDuration   , defaultConfig.Rebellion.stingerDuration   , 1 , "%.0f");
+		// ActionData<float32>("Stinger Range"       , activeConfig.Rebellion.stingerRange      , defaultConfig.Rebellion.stingerRange      , 10, "%.0f");
+		// ActionData<float32>("Air Stinger Duration", activeConfig.Rebellion.airStingerDuration, defaultConfig.Rebellion.airStingerDuration, 1 , "%.0f");
+		// ActionData<float32>("Air Stinger Range"   , activeConfig.Rebellion.airStingerRange   , defaultConfig.Rebellion.airStingerRange   , 10, "%.0f");
+		GUI_SectionEnd();
 		ImGui::Text("");
-		ActionData<float32>("Stinger Duration"    , activeConfig.Rebellion.stingerDuration   , defaultConfig.Rebellion.stingerDuration   , 1 , "%.0f");
-		ActionData<float32>("Stinger Range"       , activeConfig.Rebellion.stingerRange      , defaultConfig.Rebellion.stingerRange      , 10, "%.0f");
-		ActionData<float32>("Air Stinger Duration", activeConfig.Rebellion.airStingerDuration, defaultConfig.Rebellion.airStingerDuration, 1 , "%.0f");
-		ActionData<float32>("Air Stinger Range"   , activeConfig.Rebellion.airStingerRange   , defaultConfig.Rebellion.airStingerRange   , 10, "%.0f");
-		GUI_SectionEnd();
 
-		//GUI_SectionStart("Cerberus");
-		//ActionData<float32>("Revolver Height", activeConfig.Cerberus.revolverHeight, defaultConfig.Cerberus.revolverHeight, 0.5f, "%.1f");
-		//GUI_SectionEnd();
+		// GUI_SectionStart("Agni & Rudra");
+		// ActionData<float32>("Jet-Stream Duration", activeConfig.AgniRudra.jetStreamDuration, defaultConfig.AgniRudra.jetStreamDuration, 1 , "%.0f");
+		// ActionData<float32>("Jet-Stream Range"   , activeConfig.AgniRudra.jetStreamRange   , defaultConfig.AgniRudra.jetStreamRange   , 10, "%.0f");
+		// GUI_SectionEnd();
 
-		GUI_SectionStart("Agni & Rudra");
-		ActionData<float32>("Jet-Stream Duration", activeConfig.AgniRudra.jetStreamDuration, defaultConfig.AgniRudra.jetStreamDuration, 1 , "%.0f");
-		ActionData<float32>("Jet-Stream Range"   , activeConfig.AgniRudra.jetStreamRange   , defaultConfig.AgniRudra.jetStreamRange   , 10, "%.0f");
-		GUI_SectionEnd();
+		// GUI_SectionStart("Nevan");
+		// ActionData<float32>("Reverb Shock Duration", activeConfig.Nevan.reverbShockDuration, defaultConfig.Nevan.reverbShockDuration, 1 , "%.0f");
+		// ActionData<float32>("Reverb Shock Range"   , activeConfig.Nevan.reverbShockRange   , defaultConfig.Nevan.reverbShockRange   , 10, "%.0f");
+		// GUI_SectionEnd();
 
-		GUI_SectionStart("Nevan");
-		ActionData<float32>("Reverb Shock Duration", activeConfig.Nevan.reverbShockDuration, defaultConfig.Nevan.reverbShockDuration, 1 , "%.0f");
-		ActionData<float32>("Reverb Shock Range"   , activeConfig.Nevan.reverbShockRange   , defaultConfig.Nevan.reverbShockRange   , 10, "%.0f");
-		GUI_SectionEnd();
-
-		GUI_SectionStart("Beowulf");
-		//GUI_Checkbox("Hide", activeConfig.Beowulf.hide);
-		//ImGui::Text("");
-		ActionData<float32>("Straight Duration"    , activeConfig.BeowulfDante.straightDuration   , defaultConfig.BeowulfDante.straightDuration   , 1 , "%.0f");
-		ActionData<float32>("Straight Range"       , activeConfig.BeowulfDante.straightRange      , defaultConfig.BeowulfDante.straightRange      , 10, "%.0f");
-		ActionData<float32>("Air Straight Duration", activeConfig.BeowulfDante.airStraightDuration, defaultConfig.BeowulfDante.airStraightDuration, 1 , "%.0f");
-		ActionData<float32>("Air Straight Range"   , activeConfig.BeowulfDante.airStraightRange   , defaultConfig.BeowulfDante.airStraightRange   , 10, "%.0f");
-		//ActionData<float32>("Rising Dragon Height" , activeConfig.BeowulfDante.risingDragonHeight , defaultConfig.BeowulfDante.risingDragonHeight , 10, "%.1f");
-		GUI_SectionEnd();
+		// GUI_SectionStart("Beowulf");
+		// ActionData<float32>("Straight Duration"    , activeConfig.BeowulfDante.straightDuration   , defaultConfig.BeowulfDante.straightDuration   , 1 , "%.0f");
+		// ActionData<float32>("Straight Range"       , activeConfig.BeowulfDante.straightRange      , defaultConfig.BeowulfDante.straightRange      , 10, "%.0f");
+		// ActionData<float32>("Air Straight Duration", activeConfig.BeowulfDante.airStraightDuration, defaultConfig.BeowulfDante.airStraightDuration, 1 , "%.0f");
+		// ActionData<float32>("Air Straight Range"   , activeConfig.BeowulfDante.airStraightRange   , defaultConfig.BeowulfDante.airStraightRange   , 10, "%.0f");
+		// GUI_SectionEnd();
 
 		GUI_SectionStart("Ebony & Ivory");
 		GUI_Checkbox("Foursome Time", activeConfig.EbonyIvory.foursomeTime);
 		GUI_Checkbox("Infinite Rain Storm", activeConfig.EbonyIvory.infiniteRainStorm);
 		GUI_SectionEnd();
+		ImGui::Text("");
 
-		GUI_SectionStart("Shotgun");
-		ActionData<float32>("Gun Stinger Duration"    , activeConfig.Shotgun.gunStingerDuration   , defaultConfig.Shotgun.gunStingerDuration   , 1 , "%.0f");
-		ActionData<float32>("Gun Stinger Range"       , activeConfig.Shotgun.gunStingerRange      , defaultConfig.Shotgun.gunStingerRange      , 10, "%.0f");
-		ActionData<float32>("Air Gun Stinger Duration", activeConfig.Shotgun.airGunStingerDuration, defaultConfig.Shotgun.airGunStingerDuration, 1 , "%.0f");
-		ActionData<float32>("Air Gun Stinger Range"   , activeConfig.Shotgun.airGunStingerRange   , defaultConfig.Shotgun.airGunStingerRange   , 10, "%.0f");
-		GUI_SectionEnd();
+		// GUI_SectionStart("Shotgun");
+		// ActionData<float32>("Gun Stinger Duration"    , activeConfig.Shotgun.gunStingerDuration   , defaultConfig.Shotgun.gunStingerDuration   , 1 , "%.0f");
+		// ActionData<float32>("Gun Stinger Range"       , activeConfig.Shotgun.gunStingerRange      , defaultConfig.Shotgun.gunStingerRange      , 10, "%.0f");
+		// ActionData<float32>("Air Gun Stinger Duration", activeConfig.Shotgun.airGunStingerDuration, defaultConfig.Shotgun.airGunStingerDuration, 1 , "%.0f");
+		// ActionData<float32>("Air Gun Stinger Range"   , activeConfig.Shotgun.airGunStingerRange   , defaultConfig.Shotgun.airGunStingerRange   , 10, "%.0f");
+		// GUI_SectionEnd();
 
 		GUI_SectionStart("Artemis");
 		GUI_Checkbox("Swap Normal Shot and Multi Lock", activeConfig.Artemis.swapNormalShotAndMultiLock);
 		GUI_Checkbox("Instant Full Charge", activeConfig.Artemis.instantFullCharge);
-		GUI_SectionEnd();
-
-		GUI_SectionStart("Summoned Swords");
-		GUI_Checkbox("Enable", activeConfig.SummonedSwords.dante);
 		ImGui::Text("");
-
-
-		//GUI_SectionEnd();
-
-
-
-		//ImGui::PushItemWidth(150);
-
-		//GUI_Checkbox("Summoned Swords", activeConfig.summonedSwords);
-		//ImGui::PopItemWidth();
-		//ImGui::Text("");
 	}
 }
 
@@ -1015,7 +1117,7 @@ void RemoveBusyFlag_Init()
 
 void RemoveBusyFlag()
 {
-	if (ImGui::CollapsingHeader("Reset Motion State"))
+	if (ImGui::CollapsingHeader("Remove Busy Flag"))
 	{
 		ImGui::Text("");
 		GUI_Checkbox("Enable", activeConfig.RemoveBusyFlag.enable);
@@ -1023,11 +1125,95 @@ void RemoveBusyFlag()
 		GUI_Button("Reset");
 		ImGui::Text("");
 		ImGui::PushItemWidth(200);
-		GUI_ComboMap("Button", RemoveBusyFlag_buttonNames, RemoveBusyFlag_buttonMap, RemoveBusyFlag_buttonIndex, activeConfig.RemoveBusyFlag.button, ImGuiComboFlags_HeightLargest);
+		GUI_ComboMap
+		(
+			"Button",
+			RemoveBusyFlag_buttonNames,
+			RemoveBusyFlag_buttonMap,
+			RemoveBusyFlag_buttonIndex,
+			activeConfig.RemoveBusyFlag.button,
+			ImGuiComboFlags_HeightLargest
+		);
 		ImGui::PopItemWidth();
 		ImGui::Text("");
 	}
 }
+
+
+const char * ResetPermissions_buttonNames[] =
+{
+	"GAMEPAD_LEFT_TRIGGER",
+	"GAMEPAD_RIGHT_TRIGGER",
+	"GAMEPAD_LEFT_SHOULDER",
+	"GAMEPAD_RIGHT_SHOULDER",
+	"GAMEPAD_Y",
+	"GAMEPAD_B",
+	"GAMEPAD_A",
+	"GAMEPAD_X",
+	"GAMEPAD_BACK",
+	"GAMEPAD_LEFT_THUMB",
+	"GAMEPAD_RIGHT_THUMB",
+	"GAMEPAD_START",
+	"GAMEPAD_UP",
+	"GAMEPAD_RIGHT",
+	"GAMEPAD_DOWN",
+	"GAMEPAD_LEFT",
+};
+
+byte16 ResetPermissions_buttonMap[] =
+{
+	GAMEPAD_LEFT_TRIGGER,
+	GAMEPAD_RIGHT_TRIGGER,
+	GAMEPAD_LEFT_SHOULDER,
+	GAMEPAD_RIGHT_SHOULDER,
+	GAMEPAD_Y,
+	GAMEPAD_B,
+	GAMEPAD_A,
+	GAMEPAD_X,
+	GAMEPAD_BACK,
+	GAMEPAD_LEFT_THUMB,
+	GAMEPAD_RIGHT_THUMB,
+	GAMEPAD_START,
+	GAMEPAD_UP,
+	GAMEPAD_RIGHT,
+	GAMEPAD_DOWN,
+	GAMEPAD_LEFT,
+};
+
+uint8 ResetPermissions_buttonIndex = 0;
+
+void ResetPermissions_Init()
+{
+	UpdateMapIndex(ResetPermissions_buttonMap, ResetPermissions_buttonIndex, activeConfig.ResetPermissions.button);
+}
+
+void ResetPermissions()
+{
+	if (ImGui::CollapsingHeader("Reset Permissions"))
+	{
+		ImGui::Text("");
+		GUI_Checkbox("Enable", activeConfig.ResetPermissions.enable);
+		ImGui::Text("");
+		GUI_Button("Reset");
+		ImGui::Text("");
+		ImGui::PushItemWidth(200);
+		GUI_ComboMap
+		(
+			"Button",
+			ResetPermissions_buttonNames,
+			ResetPermissions_buttonMap,
+			ResetPermissions_buttonIndex,
+			activeConfig.ResetPermissions.button,
+			ImGuiComboFlags_HeightLargest
+		);
+		ImGui::PopItemWidth();
+		ImGui::Text("");
+	}
+}
+
+
+
+
 
 void Speed()
 {
@@ -1074,17 +1260,17 @@ void Speed()
 	}
 }
 
-void StyleSwitchController()
-{
-	if (ImGui::CollapsingHeader("Style Switch Controller"))
-	{
-		ImGui::Text("");
+// void StyleSwitchController()
+// {
+// 	if (ImGui::CollapsingHeader("Style Switch Controller"))
+// 	{
+// 		ImGui::Text("");
 
-		GUI_Checkbox("No Double Tap", activeConfig.StyleSwitchController.noDoubleTap);
+// 		GUI_Checkbox("No Double Tap", activeConfig.StyleSwitchController.noDoubleTap);
 
-		ImGui::Text("");
-	}
-}
+// 		ImGui::Text("");
+// 	}
+// }
 
 const char * Graphics_vSyncNames[] =
 {
@@ -1202,17 +1388,35 @@ void Vergil()
 		//GUI_SectionEnd();
 
 		GUI_SectionStart("Dark Slayer");
-		ActionData<uint8>("Air Trick Count" , activeConfig.DarkSlayer.airTrickCount , defaultConfig.DarkSlayer.airTrickCount );
-		ActionData<uint8>("Trick Up Count"  , activeConfig.DarkSlayer.trickUpCount  , defaultConfig.DarkSlayer.trickUpCount  );
-		ActionData<uint8>("Trick Down Count", activeConfig.DarkSlayer.trickDownCount, defaultConfig.DarkSlayer.trickDownCount);
+		ActionData<uint8>
+		(
+			"Air Trick Count",
+			activeConfig.DarkSlayer.airTrickCount,
+			queuedConfig.DarkSlayer.airTrickCount,
+			defaultConfig.DarkSlayer.airTrickCount
+		);
+		ActionData<uint8>
+		(
+			"Trick Up Count",
+			activeConfig.DarkSlayer.trickUpCount,
+			queuedConfig.DarkSlayer.trickUpCount,
+			defaultConfig.DarkSlayer.trickUpCount
+		);
+		ActionData<uint8>
+		(
+			"Trick Down Count",
+			activeConfig.DarkSlayer.trickDownCount,
+			queuedConfig.DarkSlayer.trickDownCount,
+			defaultConfig.DarkSlayer.trickDownCount
+		);
 		GUI_SectionEnd();
 
-		GUI_SectionStart("Yamato");
-		ActionData<float32>("Rapid Slash Duration", activeConfig.Yamato.rapidSlashDuration, defaultConfig.Yamato.rapidSlashDuration, 1 , "%.0f");
-		ActionData<float32>("Rapid Slash Range"   , activeConfig.Yamato.rapidSlashRange   , defaultConfig.Yamato.rapidSlashRange   , 10, "%.0f");
-		ActionData<float32>("Judgement Cut Count" , activeConfig.Yamato.judgementCutCount , defaultConfig.Yamato.judgementCutCount , 1 , "%.0f");
-		ActionData<float32>("Judgement Cut Range" , activeConfig.Yamato.judgementCutRange , defaultConfig.Yamato.judgementCutRange , 10, "%.0f");
-		GUI_SectionEnd();
+		// GUI_SectionStart("Yamato");
+		// ActionData<float32>("Rapid Slash Duration", activeConfig.Yamato.rapidSlashDuration, defaultConfig.Yamato.rapidSlashDuration, 1 , "%.0f");
+		// ActionData<float32>("Rapid Slash Range"   , activeConfig.Yamato.rapidSlashRange   , defaultConfig.Yamato.rapidSlashRange   , 10, "%.0f");
+		// ActionData<float32>("Judgement Cut Count" , activeConfig.Yamato.judgementCutCount , defaultConfig.Yamato.judgementCutCount , 1 , "%.0f");
+		// ActionData<float32>("Judgement Cut Range" , activeConfig.Yamato.judgementCutRange , defaultConfig.Yamato.judgementCutRange , 10, "%.0f");
+		// GUI_SectionEnd();
 
 		//GUI_SectionStart("Beowulf");
 		////GUI_Checkbox("Hide", activeConfig.Beowulf.hide);
@@ -1222,11 +1426,11 @@ void Vergil()
 
 		GUI_SectionStart("Force Edge");
 		GUI_Checkbox("Infinite Round Trip", activeConfig.ForceEdge.infiniteRoundTrip);
-		ImGui::Text("");
-		ActionData<float32>("Stinger Duration"    , activeConfig.ForceEdge.stingerDuration   , defaultConfig.ForceEdge.stingerDuration   , 1 , "%.0f");
-		ActionData<float32>("Stinger Range"       , activeConfig.ForceEdge.stingerRange      , defaultConfig.ForceEdge.stingerRange      , 10, "%.0f");
-		ActionData<float32>("Air Stinger Duration", activeConfig.ForceEdge.airStingerDuration, defaultConfig.ForceEdge.airStingerDuration, 1 , "%.0f");
-		ActionData<float32>("Air Stinger Range"   , activeConfig.ForceEdge.airStingerRange   , defaultConfig.ForceEdge.airStingerRange   , 10, "%.0f");
+		// ImGui::Text("");
+		// ActionData<float32>("Stinger Duration"    , activeConfig.ForceEdge.stingerDuration   , defaultConfig.ForceEdge.stingerDuration   , 1 , "%.0f");
+		// ActionData<float32>("Stinger Range"       , activeConfig.ForceEdge.stingerRange      , defaultConfig.ForceEdge.stingerRange      , 10, "%.0f");
+		// ActionData<float32>("Air Stinger Duration", activeConfig.ForceEdge.airStingerDuration, defaultConfig.ForceEdge.airStingerDuration, 1 , "%.0f");
+		// ActionData<float32>("Air Stinger Range"   , activeConfig.ForceEdge.airStingerRange   , defaultConfig.ForceEdge.airStingerRange   , 10, "%.0f");
 		GUI_SectionEnd();
 
 		GUI_SectionStart("Summoned Swords");
@@ -1388,8 +1592,9 @@ void Main()
 		Other();
 		Repair();
 		RemoveBusyFlag();
+		ResetPermissions();
 		Speed();
-		StyleSwitchController();
+		//StyleSwitchController();
 		System();
 		Teleporter();
 		Training();
@@ -1409,13 +1614,36 @@ export void GUI_Render()
 		Main();
 	}
 
-	if (GUI_save)
+	auto TimeoutFunction = [&]()
 	{
-		GUI_save = false;
+		auto & save        = GUI_save;
+		auto & saveTimeout = GUI_saveTimeout;
 
-		Log("SaveConfig");
-		SaveConfig();
-	}
+		if (saveTimeout > 0)
+		{
+			saveTimeout -= 1.0f;
+		}
+		else if (saveTimeout < 0)
+		{
+			saveTimeout = 0;
+		}
+
+		if (save)
+		{
+			if (saveTimeout > 0)
+			{
+				return;
+			}
+
+			save = false;
+
+			saveTimeout = 6;
+
+			SaveConfig();
+		}
+	};
+
+	TimeoutFunction();
 }
 
 export void GUI_Init()
@@ -1425,6 +1653,7 @@ export void GUI_Init()
 	Arcade_Init();
 	Cosmetics_Init();
 	RemoveBusyFlag_Init();
+	ResetPermissions_Init();
 }
 
 #ifdef __GARBAGE__
