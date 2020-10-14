@@ -38,10 +38,16 @@ export void Arcade_InitSession()
 
 	if (activeConfig.Arcade.character == CHAR_DANTE)
 	{
-		sessionData.weapons[0] = activeConfig.Arcade.meleeWeapons[0];
-		sessionData.weapons[1] = activeConfig.Arcade.meleeWeapons[1];
-		sessionData.weapons[2] = activeConfig.Arcade.rangedWeapons[0];
-		sessionData.weapons[3] = activeConfig.Arcade.rangedWeapons[1];
+		memcpy
+		(
+			sessionData.weapons,
+			activeConfig.Arcade.weapons,
+			4
+		);
+		// sessionData.weapons[0] = activeConfig.Arcade.meleeWeapons[0];
+		// sessionData.weapons[1] = activeConfig.Arcade.meleeWeapons[1];
+		// sessionData.weapons[2] = activeConfig.Arcade.rangedWeapons[0];
+		// sessionData.weapons[3] = activeConfig.Arcade.rangedWeapons[1];
 	}
 
 	sessionData.costume = activeConfig.Arcade.costume;

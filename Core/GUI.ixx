@@ -5,10 +5,7 @@ module;
 #include "../ImGui/imgui_internal.h"
 export module Core_GUI;
 
-//constexpr bool debug = true;
-
 #define debug true
-
 
 export int     GUI_id          = 0;
 export bool    GUI_save        = false;
@@ -37,6 +34,18 @@ export bool GUI_Button
 	return update;
 }
 
+export bool GUI_ResetButton()
+{
+	auto update = GUI_Button("Reset");
+
+	if (update)
+	{
+		GUI_save = true;
+	}
+
+	return update;
+}
+
 export bool GUI_Checkbox
 (
 	const char * label,
@@ -55,14 +64,18 @@ export bool GUI_Checkbox
 	return update;
 }
 
-export bool GUI_Checkbox
+export bool GUI_Checkbox2
 (
 	const char * label,
 	bool & var,
 	bool & var2
 )
 {
-	auto update = GUI_Checkbox(label, var2);
+	auto update = GUI_Checkbox
+	(
+		label,
+		var2
+	);
 
 	if (update)
 	{
@@ -109,12 +122,40 @@ bool GUI_Input
 }
 
 export template <typename T>
+bool GUI_Input2
+(
+	const char * label,
+	T & var,
+	T & var2,
+	T step = 1,
+	const char * format = 0,
+	ImGuiInputTextFlags flags = 0
+)
+{
+	auto update = GUI_Input
+	(
+		label,
+		var2,
+		step,
+		format,
+		flags
+	);
+
+	if (update)
+	{
+		var = var2;
+	}
+
+	return update;
+}
+
+export template <typename T>
 bool GUI_InputDefault
 (
 	const char * label,
 	T & var,
 	T & defaultVar,
-	T step = 1,
+	const T step = 1,
 	const char * format = 0,
 	ImGuiInputTextFlags flags = 0
 )
@@ -175,13 +216,13 @@ bool GUI_InputDefault
 }
 
 export template <typename T>
-bool GUI_InputDefault
+bool GUI_InputDefault2
 (
 	const char * label,
 	T & var,
 	T & var2,
 	T & defaultVar,
-	T step = 1,
+	const T step = 1,
 	const char * format = 0,
 	ImGuiInputTextFlags flags = 0
 )
@@ -262,6 +303,32 @@ bool GUI_Slider
 	return update;
 }
 
+export template <typename T>
+bool GUI_Slider2
+(
+	const char * label,
+	T & var,
+	T & var2,
+	const T min,
+	const T max
+)
+{
+	auto update = GUI_Slider
+	(
+		label,
+		var2,
+		min,
+		max
+	);
+
+	if (update)
+	{
+		var = var2;
+	}
+
+	return update;
+}
+
 export bool GUI_Selectable
 (
 	const char * label,
@@ -315,6 +382,36 @@ bool GUI_Combo
 	return update;
 }
 
+export template
+<
+	typename varType,
+	uint8 count
+>
+bool GUI_Combo2
+(
+	const char * label,
+	const char *(&names)[count],
+	varType & var,
+	varType & var2,
+	ImGuiComboFlags flags = 0
+)
+{
+	auto update = GUI_Combo
+	(
+		label,
+		names,
+		var2,
+		flags
+	);
+
+	if (update)
+	{
+		var = var2;
+	}
+
+	return update;
+}
+
 // @Todo: Update names. Prefer items and itemIndex.
 export template
 <
@@ -357,31 +454,48 @@ bool GUI_ComboMap
 		GUI_save = true;
 	}
 
+	if constexpr (debug)
+	{
+		ImGui::Text("value %u", var  );
+		ImGui::Text("index %u", index);
+	}
+
 	return update;
 }
 
-//export template
-//<
-//	typename varType,
-//	uint8 mapItemCount
-//>
-//void GUI_UpdateComboMapIndex
-//(
-//	varType(&map)[mapItemCount],
-//	uint8 & index,
-//	varType & var
-//)
-//{
-//	for_all(uint8, mapIndex, mapItemCount)
-//	{
-//		auto & mapItem = map[mapIndex];
-//		if (mapItem == var)
-//		{
-//			index = mapIndex;
-//			break;
-//		}
-//	}
-//}
+export template
+<
+	typename varType,
+	uint8 mapItemCount
+>
+bool GUI_ComboMap2
+(
+	const char * label,
+	const char *(&names)[mapItemCount],
+	varType(&map)[mapItemCount],
+	uint8 & index,
+	varType & var,
+	varType & var2,
+	ImGuiComboFlags flags = 0
+)
+{
+	auto update = GUI_ComboMap
+	(
+		label,
+		names,
+		map,
+		index,
+		var2,
+		flags
+	);
+
+	if (update)
+	{
+		var = var2;
+	}
+
+	return update;
+}
 
 export inline void GUI_SectionStart(const char * label)
 {
@@ -412,30 +526,6 @@ export inline void GUI_PopDisable(bool condition)
 		ImGui::PopItemFlag();
 	}
 }
-
-//export bool GUI_ColorEdit4
-//(
-//	const char * label,
-//	float32(&var)[4],
-//	ImGuiColorEditFlags flags = 0
-//)
-//{
-//	bool update = false;
-//
-//	GUI_PushId();
-//	if (ImGui::ColorEdit4(label, var, flags))
-//	{
-//		update = true;
-//	}
-//	GUI_PopId();
-//
-//	if (update)
-//	{
-//		GUI_save = true;
-//	}
-//
-//	return update;
-//}
 
 export bool GUI_ColorEdit4
 (
@@ -491,7 +581,7 @@ export bool GUI_Color
 	return GUI_ColorEdit4(label, var, var2, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaPreview);
 }
 
-export bool GUI_Color
+export bool GUI_Color2
 (
 	const char * label,
 	uint8(&var)[4],
@@ -546,7 +636,7 @@ bool GUI_ColorPalette
 }
 
 export template<uint8 count>
-bool GUI_ColorPalette
+bool GUI_ColorPalette2
 (
 	const char * label,
 	uint8(&vars)[count][4],
@@ -573,3 +663,6 @@ bool GUI_ColorPalette
 
 	return update;
 }
+
+#ifdef __GARBAGE__
+#endif

@@ -176,3 +176,39 @@ void UpdateMapIndex
 
 	Log("No match.");
 }
+
+
+
+// export template
+// <
+// 	typename varType,
+// 	uint8 mapItemCount
+// >
+// void UpdateMapIndex
+// (
+// 	varType(&map)[mapItemCount],
+// 	uint8 & index,
+// 	varType & var,
+// 	varType & var2
+// )
+// {
+// 	auto
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

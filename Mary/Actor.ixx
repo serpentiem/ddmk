@@ -3061,7 +3061,7 @@ void StyleSwitchController
 	PlayerData & playerData
 )
 {
-	auto & enableQuicksilver  = activeConfig.Actor.enableQuicksilver [actorData.newPlayer]; // @Todo: Single switch.
+	auto & enableQuicksilver  = activeConfig.Actor.enableQuicksilver;
 	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 
 	auto & execute = actorData.newExecuteStyleSwitch;

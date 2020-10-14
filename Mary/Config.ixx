@@ -14,14 +14,16 @@ export struct Config
 		bool enable = true;
 		PlayerData playerData[MAX_PLAYER][MAX_ENTITY] = {};
 		uint8 playerCount = 1;
-		bool enableQuicksilver[MAX_PLAYER] =
-		{
-			true,
-			true,
-			true,
-			true,
-		};
+		bool enableQuicksilver = true;
+		// bool enableQuicksilver[MAX_PLAYER] =
+		// {
+		// 	true,
+		// 	true,
+		// 	true,
+		// 	true,
+		// };
 		bool enableDoppelganger[MAX_PLAYER] = {};
+		bool showIdleActors = false;
 	}
 	Actor;
 	struct
@@ -51,14 +53,10 @@ export struct Config
 		uint8   character      = CHAR_DANTE;
 		uint8   costume        = 0;
 		uint32  style          = STYLE_TRICKSTER;
-		// @Todo: Change to weapons.
-		uint8 meleeWeapons[2] =
+		uint8 weapons[4] =
 		{
 			WEAPON_REBELLION,
 			WEAPON_CERBERUS,
-		};
-		uint8 rangedWeapons[2] =
-		{
 			WEAPON_EBONY_IVORY,
 			WEAPON_SHOTGUN,
 		};
