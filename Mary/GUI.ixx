@@ -19,6 +19,7 @@ import Event;
 import File;
 import Internal;
 import Model;
+// import OrbReach;
 import Pause;
 import Scene;
 import Speed;
@@ -1507,39 +1508,66 @@ void Other()
 		ImGui::Text("");
 		if (GUI_ResetButton())
 		{
+			activeConfig.MagicPointsDepletionValues.quicksilver  = queuedConfig.MagicPointsDepletionValues.quicksilver  = defaultConfig.MagicPointsDepletionValues.quicksilver;
+			activeConfig.MagicPointsDepletionValues.doppelganger = queuedConfig.MagicPointsDepletionValues.doppelganger = defaultConfig.MagicPointsDepletionValues.doppelganger;
+			activeConfig.MagicPointsDepletionValues.devil        = queuedConfig.MagicPointsDepletionValues.devil        = defaultConfig.MagicPointsDepletionValues.devil;
+			activeConfig.crazyComboLevelMultiplier               = queuedConfig.crazyComboLevelMultiplier               = defaultConfig.crazyComboLevelMultiplier;
+			activeConfig.weaponSwitchTimeout                     = queuedConfig.weaponSwitchTimeout                     = defaultConfig.weaponSwitchTimeout;
+			activeConfig.orbReach                                = queuedConfig.orbReach                                = defaultConfig.orbReach;
+
+			UpdateMagicPointsDepletionValues();
+			UpdateOrbReach();
 		}
 		GUI_SectionEnd();
 		ImGui::Text("");
 
 		GUI_SectionStart("Magic Points Depletion Rate");
 		ImGui::PushItemWidth(150);
-		GUI_InputDefault2
+		if
 		(
-			"Quicksilver",
-			activeConfig.MagicPointsDepletionRate.quicksilver,
-			queuedConfig.MagicPointsDepletionRate.quicksilver,
-			defaultConfig.MagicPointsDepletionRate.quicksilver,
-			1.0f,
-			"%.1f"
-		);
-		GUI_InputDefault2
+			GUI_InputDefault2
+			(
+				"Quicksilver",
+				activeConfig.MagicPointsDepletionValues.quicksilver,
+				queuedConfig.MagicPointsDepletionValues.quicksilver,
+				defaultConfig.MagicPointsDepletionValues.quicksilver,
+				1.0f,
+				"%.1f"
+			)
+		)
+		{
+			UpdateMagicPointsDepletionValues();
+		}
+		if
 		(
-			"Doppelganger",
-			activeConfig.MagicPointsDepletionRate.doppelganger,
-			queuedConfig.MagicPointsDepletionRate.doppelganger,
-			defaultConfig.MagicPointsDepletionRate.doppelganger,
-			1.0f,
-			"%.1f"
-		);
-		GUI_InputDefault2
+			GUI_InputDefault2
+			(
+				"Doppelganger",
+				activeConfig.MagicPointsDepletionValues.doppelganger,
+				queuedConfig.MagicPointsDepletionValues.doppelganger,
+				defaultConfig.MagicPointsDepletionValues.doppelganger,
+				1.0f,
+				"%.1f"
+			)
+		)
+		{
+			UpdateMagicPointsDepletionValues();
+		}
+		if
 		(
-			"Devil",
-			activeConfig.MagicPointsDepletionRate.devil,
-			queuedConfig.MagicPointsDepletionRate.devil,
-			defaultConfig.MagicPointsDepletionRate.devil,
-			1.0f,
-			"%.1f"
-		);
+			GUI_InputDefault2
+			(
+				"Devil",
+				activeConfig.MagicPointsDepletionValues.devil,
+				queuedConfig.MagicPointsDepletionValues.devil,
+				defaultConfig.MagicPointsDepletionValues.devil,
+				1.0f,
+				"%.1f"
+			)
+		)
+		{
+			UpdateMagicPointsDepletionValues();
+		}
 		ImGui::PopItemWidth();
 		GUI_SectionEnd();
 		ImGui::Text("");
@@ -1561,15 +1589,21 @@ void Other()
 			1.0f,
 			"%.0f"
 		);
-		GUI_InputDefault2
+		if
 		(
-			"Orb Reach",
-			activeConfig.orbReach,
-			queuedConfig.orbReach,
-			defaultConfig.orbReach,
-			100.0f,
-			"%.0f"
-		);
+			GUI_InputDefault2
+			(
+				"Orb Reach",
+				activeConfig.orbReach,
+				queuedConfig.orbReach,
+				defaultConfig.orbReach,
+				100.0f,
+				"%.0f"
+			)
+		)
+		{
+			UpdateOrbReach();
+		}
 		ImGui::PopItemWidth();
 
 		ImGui::Text("");

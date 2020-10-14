@@ -218,11 +218,11 @@ export struct Config
 	Input;
 	struct
 	{
-		float32 quicksilver  = 16.5f;
+		float32 quicksilver  = 13.75f;
 		float32 doppelganger = 16.5f;
-		float32 devil        = 11;
+		float32 devil        = 11.0f;
 	}
-	MagicPointsDepletionRate;
+	MagicPointsDepletionValues;
 	struct
 	{
 		float32 reverbShockDuration[2] = { 12 , 12  };

@@ -181,12 +181,10 @@ void Write
 	VirtualProtect(addr, (size + padSize), protection, &protection);
 }
 
-// @Todo: Relative.
-// @Todo: void *.
 export void WriteAddress
 (
 	byte8  * addr,
-	byte8  * dest,
+	void   * dest,
 	uint32   size,
 	byte8    header   = 0,
 	uint32   padSize  = 0,
@@ -202,11 +200,11 @@ export void WriteAddress
 		}
 		if (size == 2)
 		{
-			*(int8 *)(addr + (size - 1)) = (int8)(dest - addr - size);
+			*reinterpret_cast<int8 *>(addr + (size - 1)) = static_cast<int8>(reinterpret_cast<byte8 *>(dest) - addr - size);
 		}
 		else
 		{
-			*(int32 *)(addr + (size - 4)) = (int32)(dest - addr - size);
+			*reinterpret_cast<int32 *>(addr + (size - 4)) = static_cast<int32>(reinterpret_cast<byte8 *>(dest) - addr - size);
 		}
 		if (padSize)
 		{
@@ -219,7 +217,7 @@ export void WriteAddress
 export inline void WriteCall
 (
 	byte8  * addr,
-	byte8  * dest,
+	void   * dest,
 	uint32   padSize  = 0,
 	byte8    padValue = 0x90
 )
@@ -230,7 +228,7 @@ export inline void WriteCall
 export inline void WriteJump
 (
 	byte8  * addr,
-	byte8  * dest,
+	void   * dest,
 	uint32   padSize  = 0,
 	byte8    padValue = 0x90
 )

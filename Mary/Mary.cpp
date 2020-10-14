@@ -15,6 +15,7 @@ import Internal;
 import Memory;
 //import Mobility;
 import Model;
+//import OrbReach;
 import Scene;
 import Training;
 //import Update;
@@ -65,6 +66,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		Memory_ToggleExtendVectors(true);
 
+
+		
 
 
 
@@ -136,7 +139,18 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		//Model_Init();
 
-		WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2); // force collect orbs
+		//WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2); // force collect orbs
+
+
+
+
+
+
+		// OrbReach_Init();
+		// OrbReach_Update();
+
+		//return 1;
+
 
 
 		//ToggleUpdateWeapon(true);

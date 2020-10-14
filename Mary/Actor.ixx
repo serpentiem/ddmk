@@ -908,6 +908,34 @@ bool DoppelgangerCheck(T & actorData)
 	return true;
 }
 
+// @Todo: Sparda flag and template.
+bool IsNeroAngelo(ActorDataVergil & actorData)
+{
+	if
+	(
+		(actorData.character == CHAR_VERGIL) &&
+		actorData.neroAngelo &&
+		actorData.devil
+	)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 #pragma endregion
 
 #pragma region File
@@ -1924,10 +1952,10 @@ void UpdateForm
 			// @Todo: Update name.
 			if (actorData.neroAngelo)
 			{
-				if (actorData.queuedMeleeWeaponIndex == 2)
-				{
-					actorData.queuedMeleeWeaponIndex = 0;
-				}
+				// if (actorData.queuedMeleeWeaponIndex == 2)
+				// {
+				// 	actorData.queuedMeleeWeaponIndex = 0;
+				// }
 
 				actorData.queuedModelIndex       = 1;
 				actorData.activeModelIndexMirror = 1;
@@ -2080,7 +2108,18 @@ void UpdateMeleeWeapon
 	{
 		if (IsVergilMeleeWeapon(weapon))
 		{
-			actorData.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
+			// if
+			// (
+			// 	IsNeroAngelo(actorData) &&
+			// 	(weapon == WEAPON_YAMATO_FORCE_EDGE)
+			// )
+			// {
+			// 	actorData.queuedMeleeWeaponIndex = 0;
+			// }
+			// else
+			// {
+				actorData.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
+			//}
 		}
 	}
 
@@ -2177,7 +2216,18 @@ void UpdateCloneMeleeWeapon(T & actorData)
 
 			if (IsVergilMeleeWeapon(weapon))
 			{
-				cloneActorData2.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
+				// if
+				// (
+				// 	IsNeroAngelo(cloneActorData2) &&
+				// 	(weapon == WEAPON_YAMATO_FORCE_EDGE)
+				// )
+				// {
+				// 	cloneActorData2.queuedMeleeWeaponIndex = 0;
+				// }
+				// else
+				// {
+					cloneActorData2.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
+				//}
 			}
 
 			break;
@@ -3244,6 +3294,7 @@ void StyleSwitchController
 	HUD_UpdateStyleIcon(CHAR_DANTE, playerData.style);
 }
 
+// @Todo: Check for < 2.
 template <typename T>
 void MeleeWeaponSwitchController
 (
@@ -3260,6 +3311,10 @@ void MeleeWeaponSwitchController
 	
 	bool update = false;
 
+	bool forward = false;
+	bool back = false;
+
+
 	auto Forward = [&]()
 	{
 		if (playerData.meleeWeaponIndex == (playerData.meleeWeaponCount - 1))
@@ -3271,6 +3326,8 @@ void MeleeWeaponSwitchController
 			playerData.meleeWeaponIndex++;
 		}
 		update = true;
+
+		forward = true;
 	};
 
 	auto Back = [&]()
@@ -3284,6 +3341,8 @@ void MeleeWeaponSwitchController
 			playerData.meleeWeaponIndex--;
 		}
 		update = true;
+
+		back = true;
 	};
 
 
@@ -3503,6 +3562,47 @@ void MeleeWeaponSwitchController
 
 	actorData.meleeWeaponSwitchTimeout = activeConfig.weaponSwitchTimeout;
 
+
+
+	{
+		auto weapon = playerData.meleeWeapons[playerData.meleeWeaponIndex];
+
+
+
+		auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
+		if
+		(
+			
+			IsNeroAngelo(actorData2) &&
+			(weapon == WEAPON_YAMATO_FORCE_EDGE)
+		)
+		{
+			if (forward)
+			{
+				Forward();
+			}
+			else if (back)
+			{
+				Back();
+			}
+			//HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, WEAPON_YAMATO_VERGIL);
+		}
+		// else
+		// {
+		// 	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, weapon);
+		// }
+	}
+
+
+
+
+
+
+
+
+
+
+
 	UpdateMeleeWeapon(actorData, playerData);
 
 	UpdateCloneMeleeWeapon(actorData);
@@ -3522,6 +3622,26 @@ void MeleeWeaponSwitchController
 	IntroduceHUDPointers(return);
 
 	auto weapon = playerData.meleeWeapons[playerData.meleeWeaponIndex];
+
+
+	// auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
+
+	// if
+	// (
+	// 	// @Todo: Sparda flag and template.
+	// 	IsNeroAngelo(actorData2) &&
+	// 	(weapon == WEAPON_YAMATO_FORCE_EDGE)
+	// )
+	// {
+	// 	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, WEAPON_YAMATO_VERGIL);
+	// }
+	// else
+	// {
+	// 	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, weapon);
+	// }
+
+
+
 
 	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, weapon);
 
@@ -6650,6 +6770,125 @@ void ToggleMobility(bool enable)
 
 #pragma endregion
 
+#pragma region Magic Points Depletion Values
+
+float32 * magicPointsDepletionValueQuicksilverDest  = 0;
+float32 * magicPointsDepletionValueDoppelgangerDest = 0;
+float32 * magicPointsDepletionValueDevilDest        = 0;
+
+void InitMagicPointsDepletionValues()
+{
+	LogFunction();
+
+	auto dest = HighAlloc(12);
+	if (!dest)
+	{
+		Log("HighAlloc failed.");
+
+		return;
+	}
+
+	magicPointsDepletionValueQuicksilverDest  = reinterpret_cast<float32 *>(dest + 0);
+	magicPointsDepletionValueDoppelgangerDest = reinterpret_cast<float32 *>(dest + 4);
+	magicPointsDepletionValueDevilDest        = reinterpret_cast<float32 *>(dest + 8);
+
+	// Quicksilver
+	{
+		auto dest = (appBaseAddr + 0x1F8A40);
+
+		constexpr byte8 buffer[] =
+		{
+			0xF3, 0x0F, 0x59, 0x0D, 0x00, 0x00, 0x00, 0x00, // mulss xmm1,[]
+		};
+		vp_memcpy(dest, buffer, sizeof(buffer));
+
+		WriteAddress(dest, magicPointsDepletionValueQuicksilverDest, 8);
+		/*
+		dmc3.exe+1F8A40 - F3 0F59 88 70010000 - mulss xmm1,[rax+00000170]
+		dmc3.exe+1F8A48 - E8 238DFEFF         - call dmc3.exe+1E1770
+		*/
+	}
+
+	// Doppelganger
+	{
+		auto dest = (appBaseAddr + 0x1F89D1);
+
+		constexpr byte8 buffer[] =
+		{
+			0xF3, 0x0F, 0x59, 0x0D, 0x00, 0x00, 0x00, 0x00, // mulss xmm1,[]
+		};
+		vp_memcpy(dest, buffer, sizeof(buffer));
+
+		WriteAddress(dest, magicPointsDepletionValueDoppelgangerDest, 8);
+		/*
+		dmc3.exe+1F89D1 - F3 0F59 88 74010000 - mulss xmm1,[rax+00000174]
+		dmc3.exe+1F89D9 - E8 928DFEFF         - call dmc3.exe+1E1770
+		*/
+	}
+
+	// Devil
+	{
+		auto dest = (appBaseAddr + 0x1F8B49);
+
+		constexpr byte8 buffer[] =
+		{
+			0xF3, 0x0F, 0x59, 0x0D, 0x00, 0x00, 0x00, 0x00, // mulss xmm1,[]
+		};
+		vp_memcpy(dest, buffer, sizeof(buffer));
+
+		WriteAddress(dest, magicPointsDepletionValueDevilDest, 8);
+		/*
+		dmc3.exe+1F8B49 - F3 0F59 88 78010000 - mulss xmm1,[rax+00000178]
+		dmc3.exe+1F8B51 - E8 1A8CFEFF         - call dmc3.exe+1E1770
+		*/
+	}
+}
+
+export void UpdateMagicPointsDepletionValues()
+{
+	LogFunction();
+
+	*magicPointsDepletionValueQuicksilverDest  = activeConfig.MagicPointsDepletionValues.quicksilver;
+	*magicPointsDepletionValueDoppelgangerDest = activeConfig.MagicPointsDepletionValues.doppelganger;
+	*magicPointsDepletionValueDevilDest        = activeConfig.MagicPointsDepletionValues.devil;
+}
+
+#pragma endregion
+
+#pragma region Orb Reach
+
+float32 * orbReachDest = 0;
+
+void InitOrbReach()
+{
+	LogFunction();
+
+	auto dest = HighAlloc(4);
+	if (!dest)
+	{
+		Log("HighAlloc failed.");
+
+		return;
+	}
+
+	orbReachDest = reinterpret_cast<float32 *>(dest);
+
+	WriteAddress((appBaseAddr + 0x1B655F), dest, 8);
+	/*
+	dmc3.exe+1B655F - F3 0F10 35 2DFB3000- movss xmm6,[dmc3.exe+4C6094]
+	dmc3.exe+1B6567 - EB 2B              - jmp dmc3.exe+1B6594
+	*/
+}
+
+export void UpdateOrbReach()
+{
+	LogFunction();
+
+	*orbReachDest = activeConfig.orbReach;
+}
+
+#pragma endregion
+
 #pragma region Color
 
 void SetColorAirHike
@@ -7140,6 +7379,10 @@ export void Actor_Init()
 	InitRegisterWeapon();
 	InitIsWeaponReady();
 	InitMobility();
+	// InitMagicPointsDepletionValues();
+	// UpdateMagicPointsDepletionValues();
+	// InitOrbReach();
+	// UpdateOrbReach();
 	InitColor();
 
 	// Force Visible HUD
