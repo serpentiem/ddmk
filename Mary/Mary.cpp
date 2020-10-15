@@ -5,7 +5,7 @@ import Arcade;
 import Camera;
 //import Color;
 import Config;
-import Dante;
+//import Dante;
 import Event;
 import File;
 import GUI;
@@ -117,7 +117,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Camera_ToggleInvertX(activeConfig.Camera.invertX);
 
 
-		Dante_Init();
+		//Dante_Init();
 
 
 

@@ -198,15 +198,6 @@ export struct Config
 	File;
 	struct
 	{
-		bool infiniteRoundTrip = false;
-		float32 stingerDuration   [2] = { 16 , 16  };
-		float32 stingerRange      [2] = { 560, 560 };
-		float32 airStingerDuration[2] = { 16 , 16  };
-		float32 airStingerRange   [2] = { 560, 560 };
-	}
-	ForceEdge;
-	struct
-	{
 		uint32 frameRate = 60;
 		uint8  vSync     = 0;
 	}
@@ -344,6 +335,15 @@ export struct Config
 		float32 judgementCutRange [2] = { 500, 500 };
 	}
 	Yamato;
+	struct
+	{
+		bool infiniteRoundTrip = false;
+		float32 stingerDuration   [2] = { 16 , 16  };
+		float32 stingerRange      [2] = { 560, 560 };
+		float32 airStingerDuration[2] = { 16 , 16  };
+		float32 airStingerRange   [2] = { 560, 560 };
+	}
+	YamatoForceEdge;
 };
 #pragma pack(pop)
 
@@ -440,7 +440,7 @@ export void SaveConfig()
 		LogFunction();
 	}
 
-	SaveFile(g_path, reinterpret_cast<byte8 *>(&activeConfig), sizeof(Config));
+	SaveFile(g_path, reinterpret_cast<byte8 *>(&queuedConfig), sizeof(Config));
 }
 
 export void LoadConfig()

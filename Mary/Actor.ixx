@@ -6768,6 +6768,37 @@ void ToggleMobility(bool enable)
 	}
 }
 
+
+
+
+
+
+
+bool g_quicksilver = false;
+
+void ActivateQuicksilver(ActorData & actorData)
+{
+	g_quicksilver = true;
+}
+
+void DeactivateQuicksilver(ActorData & actorData)
+{
+	g_quicksilver = false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #pragma endregion
 
 #pragma region Magic Points Depletion Values
@@ -7358,11 +7389,58 @@ byte8  * PositionUpdateEbonyIvoryAddr     = 0;
 byte8  * PositionUpdateArtemisAddr        = 0;
 byte8  * WeaponSwitchControllerDanteAddr  = 0;
 byte8  * WeaponSwitchControllerVergilAddr = 0;
-byte8  * DevilDoppelgangerCheckAddr       = 0;
-byte8  * ActivateDevilAddr                = 0;
-byte8  * DeactivateDevilAddr              = 0;
-byte8  * ActivateDoppelgangerAddr         = 0;
-byte8  * DeactivateDoppelgangerAddr       = 0;
+
+
+
+
+
+
+
+
+byte8  * ActivateQuicksilverAddr      = 0;
+byte8  * DeactivateQuicksilverAddr[2] = {};
+byte8  * ActivateDoppelgangerAddr     = 0;
+byte8  * DeactivateDoppelgangerAddr   = 0; // @Todo: Check for run out function.
+byte8  * DevilDoppelgangerCheckAddr   = 0;
+byte8  * ActivateDevilAddr            = 0;
+byte8  * DeactivateDevilAddr          = 0;
+
+
+
+
+
+
+
+
+
+
+void Init()
+{
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 byte8  * PositionUpdateAddr[8]            = {};
 byte8  * InputUpdateAddr[8]               = {};
 byte8  * UpdateCollisionDataAddr          = 0;
@@ -7370,6 +7448,34 @@ byte8  * ResetBufferedActionAddr          = 0;
 byte8  * UpdateLockOnAddr[8]              = {};
 byte8  * HUD_UpdateLockOnAddr[8]          = {};
 byte8  * Camera_UpdateLockOnAddr[8]       = {};
+
+
+
+byte8 * EbonyIvoryRainStormCheckAddr = 0;
+
+byte8 * SummonedSwordsQuicksilverCheckAddr = 0;
+
+
+
+bool EbonyIvoryRainStormCheck(ActorData & actorData)
+{
+	if (actorData.buttons[0] & GetBinding(BINDING_STYLE_ACTION))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+
+
+
+
+
+
+
+
+
 
 export void Actor_Init()
 {
@@ -7564,6 +7670,73 @@ export void Actor_Init()
 		auto func = CreateFunction(DeactivateDevil);
 		DeactivateDevilAddr = func.addr;
 	}
+
+
+
+
+
+
+	// Activate Quicksilver
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xC6, 0x87, 0x61, 0x63, 0x00, 0x00, 0x01, // mov byte ptr [rdi+00006361],01
+		};
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rdi,
+		};
+		auto func = CreateFunction(ActivateQuicksilver, (appBaseAddr + 0x1E94B1), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		ActivateQuicksilverAddr = func.addr;
+		/*
+		dmc3.exe+1E94AA - C6 87 61630000 01       - mov byte ptr [rdi+00006361],01
+		dmc3.exe+1E94B1 - C7 87 40630000 02000000 - mov [rdi+00006340],00000002
+		*/
+	}
+
+	// Deactivate Quicksilver
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x40, 0x88, 0xB7, 0x61, 0x63, 0x00, 0x00, // mov [rdi+00006361],sil
+		};
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rdi,
+		};
+		auto func = CreateFunction(DeactivateQuicksilver, (appBaseAddr + 0x1E9558), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		DeactivateQuicksilverAddr[0] = func.addr;
+		/*
+		dmc3.exe+1E9551 - 40 88 B7 61630000 - mov [rdi+00006361],sil
+		dmc3.exe+1E9558 - 89 B7 40630000    - mov [rdi+00006340],esi
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xC6, 0x81, 0x61, 0x63, 0x00, 0x00, 0x00, // mov byte ptr [rcx+00006361],00
+		};
+		auto func = CreateFunction(DeactivateQuicksilver, (appBaseAddr + 0x1EAC20), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		DeactivateQuicksilverAddr[1] = func.addr;
+		/*
+		dmc3.exe+1EAC19 - C6 81 61630000 00       - mov byte ptr [rcx+00006361],00
+		dmc3.exe+1EAC20 - C7 81 40630000 00000000 - mov [rcx+00006340],00000000
+		*/
+	}
+
+
+
+
+
+
+
+
+
 
 	// Activate Doppelganger
 	{
@@ -7770,6 +7943,8 @@ export void Actor_Init()
 		*/
 	}
 
+
+	// @Todo: Review.
 	// Reset Buffered Action
 	{
 		constexpr byte8 sect0[] =
@@ -7787,6 +7962,72 @@ export void Actor_Init()
 		dmc3.exe+1E0EB9 - 41 88 80 103F0000 - mov [r8+00003F10],al
 		*/
 	}
+
+
+
+
+	// Ebony & Ivory Rain Storm Check
+	{
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                         // test al,al
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, // je dmc3.exe+20CC14
+		};
+		auto func = CreateFunction(EbonyIvoryRainStormCheck, (appBaseAddr + 0x20CC20), true, false, 0, sizeof(sect1), sizeof(sect2));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x20CC14), 6);
+		EbonyIvoryRainStormCheckAddr = func.addr;
+		/*
+		dmc3.exe+20CC0F - 0FA3 C1             - bt ecx,eax
+		dmc3.exe+20CC12 - 72 0C               - jb dmc3.exe+20CC20
+		dmc3.exe+20CC14 - BF 01000000         - mov edi,00000001
+		dmc3.exe+20CC20 - F3 0F10 83 383E0000 - movss xmm0,[rbx+00003E38]
+		*/
+	}
+
+
+
+	// Summoned Swords Quicksilver Check
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
+			0x8A, 0x00,                                                 // mov al,[rax]
+			0x84, 0xC0,                                                 // test al,al
+			0x75, 0x05,                                                 // jne short
+			0xF3, 0x0F, 0x5C, 0x43, 0x14,                               // subss xmm0,[rbx+14]
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x1DB8FD), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<bool **>(func.sect0 + 2) = &g_quicksilver;
+		SummonedSwordsQuicksilverCheckAddr = func.addr;
+		/*
+		dmc3.exe+1DB8F8 - F3 0F5C 43 14 - subss xmm0,[rbx+14]
+		dmc3.exe+1DB8FD - 0F2F F0       - comiss xmm6,xmm0
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// // Update Lock-On
 	// {
@@ -8294,6 +8535,90 @@ export void Actor_Toggle(bool enable)
 		*/
 	}
 
+
+
+
+
+
+
+
+	// Activate Quicksilver
+	{
+		auto dest = (appBaseAddr + 0x1E94AA);
+		if (enable)
+		{
+			WriteJump(dest, ActivateQuicksilverAddr, 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xC6, 0x87, 0x61, 0x63, 0x00, 0x00, 0x01, // mov byte ptr [rdi+00006361],01
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E94AA - C6 87 61630000 01       - mov byte ptr [rdi+00006361],01
+		dmc3.exe+1E94B1 - C7 87 40630000 02000000 - mov [rdi+00006340],00000002
+		*/
+	}
+
+	// Deactivate Quicksilver
+	{
+		auto dest = (appBaseAddr + 0x1E9551);
+		if (enable)
+		{
+			WriteJump(dest, DeactivateQuicksilverAddr[0], 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x40, 0x88, 0xB7, 0x61, 0x63, 0x00, 0x00, // mov [rdi+00006361],sil
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E9551 - 40 88 B7 61630000 - mov [rdi+00006361],sil
+		dmc3.exe+1E9558 - 89 B7 40630000    - mov [rdi+00006340],esi
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1EAC19);
+		if (enable)
+		{
+			WriteJump(dest, DeactivateQuicksilverAddr[1], 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xC6, 0x81, 0x61, 0x63, 0x00, 0x00, 0x00, // mov byte ptr [rcx+00006361],00
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1EAC19 - C6 81 61630000 00       - mov byte ptr [rcx+00006361],00
+		dmc3.exe+1EAC20 - C7 81 40630000 00000000 - mov [rcx+00006340],00000000
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	// Activate Doppelganger
 	{
 		auto dest = (appBaseAddr + 0x1E9216);
@@ -8589,8 +8914,6 @@ export void Actor_Toggle(bool enable)
 
 
 
-	
-	
 
 
 
@@ -8598,8 +8921,11 @@ export void Actor_Toggle(bool enable)
 
 
 
-	
 
+
+
+
+	// @Todo: Review.
 	// Reset Lock-On
 	{
 		auto dest = (appBaseAddr + 0x1F8401);
@@ -8901,6 +9227,318 @@ export void Actor_Toggle(bool enable)
 	// 	*/
 	// }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// @Todo: Move.
+export void ToggleAirHikeCoreAbility(bool enable)
+{
+	LogFunction(enable);
+
+	Write<byte8>((appBaseAddr + 0x1E9B0E), (enable) ? 0xEB : 0x74);
+	/*
+	dmc3.exe+1E9B0E - 74 32    - je dmc3.exe+1E9B42
+	dmc3.exe+1E9B10 - 80 F9 02 - cmp cl,02
+	*/
+}
+
+export void ToggleRebellionInfiniteSwordPierce(bool enable)
+{
+	LogFunction(enable);
+
+	{
+		auto dest = (appBaseAddr + 0x1CC9A4);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 5);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xF3, 0x0F, 0x5C, 0x4B, 0x14, // subss xmm1,[rbx+14]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1CC9A4 - F3 0F5C 4B 14 - subss xmm1,[rbx+14]
+		dmc3.exe+1CC9A9 - 0F2F C1       - comiss xmm0,xmm1
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1CDA1B);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 4);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xF3, 0x0F, 0x5C, 0xC1, // subss xmm0,xmm1
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1CDA1B - F3 0F5C C1             - subss xmm0,xmm1
+		dmc3.exe+1CDA1F - 44 0F29 9C 24 A0000000 - movaps [rsp+000000A0],xmm11
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1CDD64);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 5);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xF3, 0x0F, 0x5C, 0x4B, 0x14, // subss xmm1,[rbx+14]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1CDD64 - F3 0F5C 4B 14 - subss xmm1,[rbx+14]
+		dmc3.exe+1CDD69 - 0F2F C1       - comiss xmm0,xmm1
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1CDDCE);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 4);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xF3, 0x0F, 0x5C, 0xCA, // subss xmm1,xmm2
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1CDDCE - F3 0F5C CA - subss xmm1,xmm2
+		dmc3.exe+1CDDD2 - 0F2F C1    - comiss xmm0,xmm1
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x21562E);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 5);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xF3, 0x0F, 0x5C, 0x47, 0x14, // subss xmm0,[rdi+14]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+21562E - F3 0F5C 47 14 - subss xmm0,[rdi+14]
+		dmc3.exe+215633 - 0F2F F0       - comiss xmm6,xmm0
+		*/
+	}
+}
+
+export void ToggleYamatoForceEdgeInfiniteRoundTrip(bool enable)
+{
+	LogFunction(enable);
+
+	{
+		auto dest = (appBaseAddr + 0x1D86DD);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 5);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xF3, 0x0F, 0x5C, 0x47, 0x14, // subss xmm0,[rdi+14]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1D86DD - F3 0F5C 47 14 - subss xmm0,[rdi+14]
+		dmc3.exe+1D86E2 - 0F2F F0       - comiss xmm6,xmm0
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x222921);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 5);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xF3, 0x0F, 0x5C, 0x47, 0x14, // subss xmm0,[rdi+14]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+222921 - F3 0F5C 47 14 - subss xmm0,[rdi+14]
+		dmc3.exe+222926 - 0F2F F0       - comiss xmm6,xmm0
+		*/
+	}
+}
+
+export void ToggleEbonyIvoryFoursomeTime(bool enable)
+{
+	LogFunction(enable);
+
+	WriteAddress((appBaseAddr + 0x1E24F6), (enable) ? (appBaseAddr + 0x1E24FC) : (appBaseAddr + 0x1E259C), 6);
+	/*
+	dmc3.exe+1E24F6 - 0F85 A0000000  - jne dmc3.exe+1E259C
+	dmc3.exe+1E24FC - 48 89 7C 24 30 - mov [rsp+30],rdi
+	*/
+
+	WriteAddress((appBaseAddr + 0x20D188), (enable) ? (appBaseAddr + 0x20D18A) : (appBaseAddr + 0x20D1AB), 2);
+	/*
+	dmc3.exe+20D188 - 75 21               - jne dmc3.exe+20D1AB
+	dmc3.exe+20D18A - F3 0F10 83 2C690000 - movss xmm0,[rbx+0000692C]
+	*/
+}
+
+
+
+export void ToggleEbonyIvoryInfiniteRainStorm(bool enable)
+{
+	LogFunction(enable);
+
+	auto dest = (appBaseAddr + 0x20CC0F);
+	if (enable)
+	{
+		WriteJump(dest, EbonyIvoryRainStormCheckAddr);
+	}
+	else
+	{
+		constexpr byte8 buffer[] =
+		{
+			0x0F, 0xA3, 0xC1, // bt ecx,eax
+			0x72, 0x0C,       // jb dmc3.exe+20CC20
+		};
+		vp_memcpy(dest, buffer, sizeof(buffer));
+	}
+	/*
+	dmc3.exe+20CC0F - 0FA3 C1             - bt ecx,eax
+	dmc3.exe+20CC12 - 72 0C               - jb dmc3.exe+20CC20
+	dmc3.exe+20CC14 - BF 01000000         - mov edi,00000001
+	dmc3.exe+20CC20 - F3 0F10 83 383E0000 - movss xmm0,[rbx+00003E38]
+	*/
+}
+
+export void ToggleArtemisSwapNormalShotAndMultiLock(bool enable)
+{
+	LogFunction(enable);
+
+	{
+		auto dest = (appBaseAddr + 0x215C78);
+		if (enable)
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xC6, 0x87, 0x80, 0xB8, 0x00, 0x00, 0x01, // mov byte ptr [rdi+0000B880],01
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x44, 0x88, 0xB7, 0x80, 0xB8, 0x00, 0x00, // mov [rdi+0000B880],r14l
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+215C78 - 44 88 B7 80B80000 - mov [rdi+0000B880],r14l
+		dmc3.exe+215C7F - 83 F8 02          - cmp eax,02
+		*/
+	}
+
+	Write<uint8>((appBaseAddr + 0x215CD4 + 6), (enable) ? 0 : 1);
+	/*
+	dmc3.exe+215CD4 - C6 87 80B80000 01 - mov byte ptr [rdi+0000B880],01
+	dmc3.exe+215CDB - 44 0F28 C7        - movaps xmm8,xmm7
+	*/
+}
+
+export void ToggleArtemisInstantFullCharge(bool enable)
+{
+	LogFunction(enable);
+
+	WriteAddress((appBaseAddr + 0x215E42), (enable) ? (appBaseAddr + 0x215E48) : (appBaseAddr + 0x215F78), 6);
+	/*
+	dmc3.exe+215E42 - 0F82 30010000 - jb dmc3.exe+215F78
+	dmc3.exe+215E48 - 0F2F C1       - comiss xmm0,xmm1
+	*/
+}
+
+export void UpdateCrazyComboLevelMultiplier()
+{
+	LogFunction();
+
+	Write<uint8>((appBaseAddr + 0x5898DE), activeConfig.crazyComboLevelMultiplier);
+	Write<uint8>((appBaseAddr + 0x58999E), activeConfig.crazyComboLevelMultiplier);
+	Write<uint8>((appBaseAddr + 0x589A5E), activeConfig.crazyComboLevelMultiplier);
+}
+
+
+
+export void ToggleChronoSwords(bool enable)
+{
+	{
+		auto dest = (appBaseAddr + 0x1DB8F8);
+		if (enable)
+		{
+			WriteJump(dest, SummonedSwordsQuicksilverCheckAddr);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xF3, 0x0F, 0x5C, 0x43, 0x14, // subss xmm0,[rbx+14]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1DB8F8 - F3 0F5C 43 14 - subss xmm0,[rbx+14]
+		dmc3.exe+1DB8FD - 0F2F F0       - comiss xmm6,xmm0
+		*/
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #pragma region Events
 

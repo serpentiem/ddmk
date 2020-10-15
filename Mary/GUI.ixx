@@ -1,5 +1,3 @@
-// @Todo: Review Inits.
-
 module;
 #include "../Core/Core.h"
 
@@ -19,7 +17,6 @@ import Event;
 import File;
 import Internal;
 import Model;
-// import OrbReach;
 import Pause;
 import Scene;
 import Speed;
@@ -1270,7 +1267,15 @@ void Cosmetics()
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-		GUI_SectionStart("Other");
+		ImGui::Text("Other");
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Requires Actor module."
+		);
+		ImGui::Text("");
+
 		GUI_Checkbox2
 		(
 			"Hide Beowulf Dante",
@@ -1345,17 +1350,6 @@ void Dante()
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-		// @Todo: Add requires actor module.
-		// @Todo: Move mobility to actor.
-
-
-
-
-
-
-
-		//GUI_SectionStart("Air Hike");
-
 		ImGui::Text("Air Hike");
 		ImGui::SameLine();
 		TooltipHelper
@@ -1365,8 +1359,25 @@ void Dante()
 		);
 		ImGui::Text("");
 
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Core Ability",
+				activeConfig.AirHike.coreAbility,
+				queuedConfig.AirHike.coreAbility
+			)
+		)
+		{
+			//Dante_AirHike_ToggleCoreAbility(activeConfig.AirHike.coreAbility);
 
-		GUI_Checkbox("Core Ability", activeConfig.AirHike.coreAbility);
+
+
+		}
+
+
+
+
 		ImGui::Text("");
 		ActionData<uint8>
 		(
@@ -1992,14 +2003,31 @@ void Vergil()
 	if (ImGui::CollapsingHeader("Vergil"))
 	{
 		ImGui::Text("");
-		//GUI_Checkbox("Enable", activeConfig.enable);
-		//ImGui::Text("");
-		GUI_ResetButton();
+
+		if (GUI_ResetButton())
+		{
+			memcpy
+			(
+				&queuedConfig.DarkSlayer,
+				&defaultConfig.DarkSlayer,
+				sizeof(Config::DarkSlayer)
+			);
+			memcpy
+			(
+				&activeConfig.DarkSlayer,
+				&queuedConfig.DarkSlayer,
+				sizeof(Config::DarkSlayer)
+			);
+
+			activeConfig.YamatoForceEdge.infiniteRoundTrip = queuedConfig.YamatoForceEdge.infiniteRoundTrip = defaultConfig.YamatoForceEdge.infiniteRoundTrip;
+
+			ToggleYamatoForceEdgeInfiniteRoundTrip(activeConfig.YamatoForceEdge.infiniteRoundTrip);
+
+			activeConfig.SummonedSwords.chronoSwords = queuedConfig.SummonedSwords.chronoSwords = defaultConfig.SummonedSwords.chronoSwords;
+
+			ToggleChronoSwords(activeConfig.SummonedSwords.chronoSwords);
+		}
 		ImGui::Text("");
-		//GUI_SectionEnd();
-
-		//GUI_SectionStart("Dark Slayer");
-
 
 		ImGui::Text("Dark Slayer");
 		ImGui::SameLine();
@@ -2048,23 +2076,24 @@ void Vergil()
 		//ActionData<float32>("Rising Sun Height", activeConfig.Beowulf.risingSunHeight, defaultConfig.Beowulf.risingSunHeight, 1 , "%.0f");
 		//GUI_SectionEnd();
 
-		GUI_SectionStart("Force Edge");
+		GUI_SectionStart("Yamato & Force Edge");
 		if
 		(
 			GUI_Checkbox2
 			(
 				"Infinite Round Trip",
-				activeConfig.ForceEdge.infiniteRoundTrip,
-				queuedConfig.ForceEdge.infiniteRoundTrip
+				activeConfig.YamatoForceEdge.infiniteRoundTrip,
+				queuedConfig.YamatoForceEdge.infiniteRoundTrip
 			)
 		)
 		{
+			ToggleYamatoForceEdgeInfiniteRoundTrip(activeConfig.YamatoForceEdge.infiniteRoundTrip);
 		}
 		// ImGui::Text("");
-		// ActionData<float32>("Stinger Duration"    , activeConfig.ForceEdge.stingerDuration   , defaultConfig.ForceEdge.stingerDuration   , 1 , "%.0f");
-		// ActionData<float32>("Stinger Range"       , activeConfig.ForceEdge.stingerRange      , defaultConfig.ForceEdge.stingerRange      , 10, "%.0f");
-		// ActionData<float32>("Air Stinger Duration", activeConfig.ForceEdge.airStingerDuration, defaultConfig.ForceEdge.airStingerDuration, 1 , "%.0f");
-		// ActionData<float32>("Air Stinger Range"   , activeConfig.ForceEdge.airStingerRange   , defaultConfig.ForceEdge.airStingerRange   , 10, "%.0f");
+		// ActionData<float32>("Stinger Duration"    , activeConfig.YamatoForceEdge.stingerDuration   , defaultConfig.YamatoForceEdge.stingerDuration   , 1 , "%.0f");
+		// ActionData<float32>("Stinger Range"       , activeConfig.YamatoForceEdge.stingerRange      , defaultConfig.YamatoForceEdge.stingerRange      , 10, "%.0f");
+		// ActionData<float32>("Air Stinger Duration", activeConfig.YamatoForceEdge.airStingerDuration, defaultConfig.YamatoForceEdge.airStingerDuration, 1 , "%.0f");
+		// ActionData<float32>("Air Stinger Range"   , activeConfig.YamatoForceEdge.airStingerRange   , defaultConfig.YamatoForceEdge.airStingerRange   , 10, "%.0f");
 		GUI_SectionEnd();
 		ImGui::Text("");
 
@@ -2079,6 +2108,7 @@ void Vergil()
 			)
 		)
 		{
+			ToggleChronoSwords(activeConfig.SummonedSwords.chronoSwords);
 		}
 
 		ImGui::Text("");
@@ -2137,7 +2167,10 @@ export void GUI_Render()
 {
 	GUI_id = 0;
 
-	Overlay();
+	if constexpr (debug)
+	{
+		Overlay();
+	}
 
 	if (pause)
 	{
