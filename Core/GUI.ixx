@@ -99,11 +99,12 @@ bool GUI_Input
 	auto update = ImGui::InputScalar
 	(
 		label,
-		(TypeMatch<T, uint8  >::value) ? ImGuiDataType_U8    :
-		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16   :
-		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32   :
-		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64   :
-		(TypeMatch<T, float32>::value) ? ImGuiDataType_Float :
+		(TypeMatch<T, uint8  >::value) ? ImGuiDataType_U8     :
+		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16    :
+		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32    :
+		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64    :
+		(TypeMatch<T, float32>::value) ? ImGuiDataType_Float  :
+		(TypeMatch<T, double >::value) ? ImGuiDataType_Double :
 		0,
 		&var,
 		(step == 0) ? 0 : &step,
@@ -177,11 +178,12 @@ bool GUI_InputDefault
 	auto update = ImGui::InputScalar
 	(
 		"",
-		(TypeMatch<T, uint8  >::value) ? ImGuiDataType_U8    :
-		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16   :
-		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32   :
-		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64   :
-		(TypeMatch<T, float32>::value) ? ImGuiDataType_Float :
+		(TypeMatch<T, uint8  >::value) ? ImGuiDataType_U8     :
+		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16    :
+		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32    :
+		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64    :
+		(TypeMatch<T, float32>::value) ? ImGuiDataType_Float  :
+		(TypeMatch<T, double >::value) ? ImGuiDataType_Double :
 		0,
 		&var,
 		(step == 0) ? 0 : &step,
@@ -261,11 +263,12 @@ bool GUI_Slider
 	auto update = ImGui::SliderScalar
 	(
 		label,
-		(TypeMatch<T, uint8  >::value) ? ImGuiDataType_U8    :
-		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16   :
-		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32   :
-		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64   :
-		(TypeMatch<T, float32>::value) ? ImGuiDataType_Float :
+		(TypeMatch<T, uint8  >::value) ? ImGuiDataType_U8     :
+		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16    :
+		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32    :
+		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64    :
+		(TypeMatch<T, float32>::value) ? ImGuiDataType_Float  :
+		(TypeMatch<T, double >::value) ? ImGuiDataType_Double :
 		0,
 		&var,
 		&min,

@@ -15,6 +15,7 @@ import Camera;
 import Config;
 import Event;
 import File;
+import Graphics;
 import Internal;
 import Model;
 import Pause;
@@ -131,7 +132,7 @@ void Overlay()
 			ImGui::PopStyleColor();
 		}
 
-		ImGui::Text("%.3f FPS", (ImGui::GetIO().Framerate));
+		ImGui::Text("%.2f FPS", (ImGui::GetIO().Framerate));
 
 		ImGui::Text("g_scene %u", g_scene);
 
@@ -1346,6 +1347,76 @@ void Dante()
 		ImGui::Text("");
 		if (GUI_ResetButton())
 		{
+			memcpy
+			(
+				&queuedConfig.AirHike,
+				&defaultConfig.AirHike,
+				sizeof(Config::AirHike)
+			);
+			memcpy
+			(
+				&activeConfig.AirHike,
+				&queuedConfig.AirHike,
+				sizeof(Config::AirHike)
+			);
+			ToggleAirHikeCoreAbility(activeConfig.AirHike.coreAbility);
+
+			memcpy
+			(
+				&queuedConfig.Trickster,
+				&defaultConfig.Trickster,
+				sizeof(Config::Trickster)
+			);
+			memcpy
+			(
+				&activeConfig.Trickster,
+				&queuedConfig.Trickster,
+				sizeof(Config::Trickster)
+			);
+
+			memcpy
+			(
+				&queuedConfig.Rebellion,
+				&defaultConfig.Rebellion,
+				sizeof(Config::Rebellion)
+			);
+			memcpy
+			(
+				&activeConfig.Rebellion,
+				&queuedConfig.Rebellion,
+				sizeof(Config::Rebellion)
+			);
+			ToggleRebellionInfiniteSwordPierce(activeConfig.Rebellion.infiniteSwordPierce);
+
+			memcpy
+			(
+				&queuedConfig.EbonyIvory,
+				&defaultConfig.EbonyIvory,
+				sizeof(Config::EbonyIvory)
+			);
+			memcpy
+			(
+				&activeConfig.EbonyIvory,
+				&queuedConfig.EbonyIvory,
+				sizeof(Config::EbonyIvory)
+			);
+			ToggleEbonyIvoryFoursomeTime(activeConfig.EbonyIvory.foursomeTime);
+			ToggleEbonyIvoryInfiniteRainStorm(activeConfig.EbonyIvory.infiniteRainStorm);
+
+			memcpy
+			(
+				&queuedConfig.Artemis,
+				&defaultConfig.Artemis,
+				sizeof(Config::Artemis)
+			);
+			memcpy
+			(
+				&activeConfig.Artemis,
+				&queuedConfig.Artemis,
+				sizeof(Config::Artemis)
+			);
+			ToggleArtemisSwapNormalShotAndMultiLock(activeConfig.Artemis.swapNormalShotAndMultiLock);
+			ToggleArtemisInstantFullCharge(activeConfig.Artemis.instantFullCharge);
 		}
 		GUI_SectionEnd();
 		ImGui::Text("");
@@ -1369,14 +1440,8 @@ void Dante()
 			)
 		)
 		{
-			//Dante_AirHike_ToggleCoreAbility(activeConfig.AirHike.coreAbility);
-
-
-
+			ToggleAirHikeCoreAbility(activeConfig.AirHike.coreAbility);
 		}
-
-
-
 
 		ImGui::Text("");
 		ActionData<uint8>
@@ -1389,9 +1454,6 @@ void Dante()
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-		//GUI_SectionStart("Trickster");
-
-
 		ImGui::Text("Trickster");
 		ImGui::SameLine();
 		TooltipHelper
@@ -1400,8 +1462,6 @@ void Dante()
 			"Requires Actor module."
 		);
 		ImGui::Text("");
-
-
 
 		ActionData<uint8>
 		(
@@ -1428,12 +1488,21 @@ void Dante()
 		ImGui::Text("");
 
 		GUI_SectionStart("Rebellion");
-		GUI_Checkbox2
+		if
 		(
-			"Infinite Sword Pierce",
-			activeConfig.Rebellion.infiniteSwordPierce,
-			queuedConfig.Rebellion.infiniteSwordPierce
-		);
+			GUI_Checkbox2
+			(
+				"Infinite Sword Pierce",
+				activeConfig.Rebellion.infiniteSwordPierce,
+				queuedConfig.Rebellion.infiniteSwordPierce
+			)
+		)
+		{
+			ToggleRebellionInfiniteSwordPierce(activeConfig.Rebellion.infiniteSwordPierce);
+		}
+
+
+
 		// ImGui::Text("");
 		// ActionData<float32>("Stinger Duration"    , activeConfig.Rebellion.stingerDuration   , defaultConfig.Rebellion.stingerDuration   , 1 , "%.0f");
 		// ActionData<float32>("Stinger Range"       , activeConfig.Rebellion.stingerRange      , defaultConfig.Rebellion.stingerRange      , 10, "%.0f");
@@ -1460,8 +1529,33 @@ void Dante()
 		// GUI_SectionEnd();
 
 		GUI_SectionStart("Ebony & Ivory");
-		GUI_Checkbox("Foursome Time", activeConfig.EbonyIvory.foursomeTime);
-		GUI_Checkbox("Infinite Rain Storm", activeConfig.EbonyIvory.infiniteRainStorm);
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Foursome Time",
+				activeConfig.EbonyIvory.foursomeTime,
+				queuedConfig.EbonyIvory.foursomeTime
+			)
+		)
+		{
+			ToggleEbonyIvoryFoursomeTime(activeConfig.EbonyIvory.foursomeTime);
+		}
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Infinite Rain Storm",
+				activeConfig.EbonyIvory.infiniteRainStorm,
+				queuedConfig.EbonyIvory.infiniteRainStorm
+			)
+		)
+		{
+			ToggleEbonyIvoryInfiniteRainStorm(activeConfig.EbonyIvory.infiniteRainStorm);
+		}
+
 		GUI_SectionEnd();
 		ImGui::Text("");
 
@@ -1473,8 +1567,33 @@ void Dante()
 		// GUI_SectionEnd();
 
 		GUI_SectionStart("Artemis");
-		GUI_Checkbox("Swap Normal Shot and Multi Lock", activeConfig.Artemis.swapNormalShotAndMultiLock);
-		GUI_Checkbox("Instant Full Charge", activeConfig.Artemis.instantFullCharge);
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Swap Normal Shot and Multi Lock",
+				activeConfig.Artemis.swapNormalShotAndMultiLock,
+				queuedConfig.Artemis.swapNormalShotAndMultiLock
+			)
+		)
+		{
+			ToggleArtemisSwapNormalShotAndMultiLock(activeConfig.Artemis.swapNormalShotAndMultiLock);
+		}
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Instant Full Charge",
+				activeConfig.Artemis.instantFullCharge,
+				queuedConfig.Artemis.instantFullCharge
+			)
+		)
+		{
+			ToggleArtemisInstantFullCharge(activeConfig.Artemis.instantFullCharge);
+		}
+
 		ImGui::Text("");
 	}
 }
@@ -1532,7 +1651,7 @@ void Other()
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-		GUI_SectionStart("Magic Points Depletion Rate");
+		GUI_SectionStart("Magic Points Depletion Values");
 		ImGui::PushItemWidth(150);
 		if
 		(
@@ -1543,7 +1662,7 @@ void Other()
 				queuedConfig.MagicPointsDepletionValues.quicksilver,
 				defaultConfig.MagicPointsDepletionValues.quicksilver,
 				1.0f,
-				"%.1f"
+				"%.2f"
 			)
 		)
 		{
@@ -1919,7 +2038,30 @@ void System()
 
 		GUI_SectionStart("Graphics");
 		ImGui::PushItemWidth(150);
-		GUI_InputDefault("Frame Rate", activeConfig.Graphics.frameRate, defaultConfig.Graphics.frameRate);
+
+
+
+		if
+		(
+			GUI_InputDefault2
+			(
+				"Frame Rate",
+				activeConfig.Graphics.frameRate,
+				queuedConfig.Graphics.frameRate,
+				defaultConfig.Graphics.frameRate,
+				1.0,
+				"%.2f",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			)
+		)
+		{
+			UpdateFrameRate();
+		}
+
+
+
+
+
 		GUI_Combo("V-Sync", Graphics_vSyncNames, activeConfig.Graphics.vSync);
 		ImGui::PopItemWidth();
 		GUI_SectionEnd();

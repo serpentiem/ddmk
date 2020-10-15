@@ -198,7 +198,7 @@ export struct Config
 	File;
 	struct
 	{
-		uint32 frameRate = 60;
+		double frameRate = 60.0;
 		uint8  vSync     = 0;
 	}
 	Graphics;

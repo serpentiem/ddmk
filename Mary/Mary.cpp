@@ -3,23 +3,21 @@
 import Actor;
 import Arcade;
 import Camera;
-//import Color;
 import Config;
-//import Dante;
 import Event;
 import File;
+import Graphics;
 import GUI;
 import Hooks;
 import HUD;
 import Internal;
 import Memory;
-//import Mobility;
 import Model;
-//import OrbReach;
 import Scene;
 import Training;
-//import Update;
 import Window;
+
+#define debug true
 
 uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {
@@ -52,6 +50,11 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
+
+
+
+
+
 		if (!Memory_Init())
 		{
 			Log("Memory_Init failed.");
@@ -76,6 +79,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 			Log("File_Init failed.");
 			return 0;
 		}
+
+		Graphics_Init();
+
 
 		Actor_Init();
 		Actor_Toggle(activeConfig.Actor.enable);
@@ -139,7 +145,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		//Model_Init();
 
-		//WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2); // force collect orbs
+		
 
 
 
@@ -178,23 +184,6 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		//System_Actor_ToggleDoppelgangerFixes(true);
 		//System_Actor_ToggleModelFixes(true);
 		//System_Actor_ToggleDisableIdleTimer(true);
-
-
-
-
-
-
-
-
-		// Disable Idle Timer
-
-		{
-			vp_memset((appBaseAddr + 0x1F2A38), 0x90, 5); // Dante
-			vp_memset((appBaseAddr + 0x1F29AE), 0x90, 5); // Vergil
-		}
-
-
-
 
 
 
@@ -322,6 +311,24 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
+
+		if constexpr (debug)
+		{
+			// Disable Idle Timer
+			vp_memset((appBaseAddr + 0x1F2A38), 0x90, 5); // Dante
+			vp_memset((appBaseAddr + 0x1F29AE), 0x90, 5); // Vergil
+
+			// Force Visible HUD
+			Write<byte8>((appBaseAddr + 0x27E800), 0xEB);
+			Write<byte8>((appBaseAddr + 0x27DF3E), 0xEB);
+			Write<byte16>((appBaseAddr + 0x280DB9), 0xE990);
+
+			// Disable Style Rank Sub
+			vp_memset((appBaseAddr + 0x27A39C), 0x90, 5);
+
+			// Force Collect Orbs
+			WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2);
+		}
 	}
 	return 1;
 }

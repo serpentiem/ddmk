@@ -160,6 +160,7 @@ void EndMotion(T & actorData)
 	actorData.eventData[0].index = 2;
 }
 
+// @Todo: Update.
 template <typename T>
 void ToggleInput
 (
@@ -7234,53 +7235,7 @@ void ToggleStyleFixes(bool enable)
 	}
 }
 
-// @Todo: Decimate.
-bool DevilDoppelgangerCheck(ActorData & actorData)
-{
-	return DoppelgangerCheck(actorData);
-}
 
-void ActivateDevil(ActorData & actorData)
-{
-	switch (actorData.character)
-	{
-		case CHAR_DANTE:
-		{
-			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(&actorData);
-			UpdateForm(actorData2);
-			break;
-		}
-		case CHAR_VERGIL:
-		{
-			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
-			UpdateForm(actorData2);
-			break;
-		}
-	}
-
-	func_1F94D0(actorData, DEVIL_FLUX_START);
-}
-
-void DeactivateDevil(ActorData & actorData)
-{
-	switch (actorData.character)
-	{
-		case CHAR_DANTE:
-		{
-			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(&actorData);
-			UpdateForm(actorData2);
-			break;
-		}
-		case CHAR_VERGIL:
-		{
-			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
-			UpdateForm(actorData2);
-			break;
-		}
-	}
-
-	func_1F94D0(actorData, DEVIL_FLUX_END);
-}
 
 void ActivateDoppelganger(ActorData & actorData)
 {
@@ -7364,6 +7319,77 @@ void DeactivateDoppelganger(ActorData & actorData)
 	ToggleActor(cloneActorData, false);
 }
 
+
+
+
+// @Todo: Decimate.
+bool DevilDoppelgangerCheck(ActorData & actorData)
+{
+	return DoppelgangerCheck(actorData);
+}
+
+void ActivateDevil(ActorData & actorData)
+{
+	switch (actorData.character)
+	{
+		case CHAR_DANTE:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(&actorData);
+			UpdateForm(actorData2);
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
+			UpdateForm(actorData2);
+			break;
+		}
+	}
+
+	func_1F94D0(actorData, DEVIL_FLUX_START);
+}
+
+void DeactivateDevil(ActorData & actorData)
+{
+	switch (actorData.character)
+	{
+		case CHAR_DANTE:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataDante *>(&actorData);
+			UpdateForm(actorData2);
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
+			UpdateForm(actorData2);
+			break;
+		}
+	}
+
+	func_1F94D0(actorData, DEVIL_FLUX_END);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // @Todo: Create CollisionData.
 void UpdateCollisionData(ActorData & actorData)
 {
@@ -7372,88 +7398,6 @@ void UpdateCollisionData(ActorData & actorData)
 	actorData.collisionIndex = (actorData.newEnable) ? 0 : 1;
 }
 
-
-
-
-
-
-
-
-
-byte8  * UpdateModelDanteAddr             = 0;
-byte8  * UpdateModelVergilAddr            = 0;
-uint32 * modelPhysicsMetadataPoolOff      = 0;
-byte8  * CoatUpdateDanteAddr              = 0;
-byte8  * CoatUpdateVergilAddr             = 0;
-byte8  * PositionUpdateEbonyIvoryAddr     = 0;
-byte8  * PositionUpdateArtemisAddr        = 0;
-byte8  * WeaponSwitchControllerDanteAddr  = 0;
-byte8  * WeaponSwitchControllerVergilAddr = 0;
-
-
-
-
-
-
-
-
-byte8  * ActivateQuicksilverAddr      = 0;
-byte8  * DeactivateQuicksilverAddr[2] = {};
-byte8  * ActivateDoppelgangerAddr     = 0;
-byte8  * DeactivateDoppelgangerAddr   = 0; // @Todo: Check for run out function.
-byte8  * DevilDoppelgangerCheckAddr   = 0;
-byte8  * ActivateDevilAddr            = 0;
-byte8  * DeactivateDevilAddr          = 0;
-
-
-
-
-
-
-
-
-
-
-void Init()
-{
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-byte8  * PositionUpdateAddr[8]            = {};
-byte8  * InputUpdateAddr[8]               = {};
-byte8  * UpdateCollisionDataAddr          = 0;
-byte8  * ResetBufferedActionAddr          = 0;
-byte8  * UpdateLockOnAddr[8]              = {};
-byte8  * HUD_UpdateLockOnAddr[8]          = {};
-byte8  * Camera_UpdateLockOnAddr[8]       = {};
-
-
-
-byte8 * EbonyIvoryRainStormCheckAddr = 0;
-
-byte8 * SummonedSwordsQuicksilverCheckAddr = 0;
 
 
 
@@ -7477,6 +7421,43 @@ bool EbonyIvoryRainStormCheck(ActorData & actorData)
 
 
 
+
+
+byte8  * UpdateModelDanteAddr               = 0;
+byte8  * UpdateModelVergilAddr              = 0;
+uint32 * modelPhysicsMetadataPoolOff        = 0;
+byte8  * CoatUpdateDanteAddr                = 0;
+byte8  * CoatUpdateVergilAddr               = 0;
+byte8  * PositionUpdateEbonyIvoryAddr       = 0;
+byte8  * PositionUpdateArtemisAddr          = 0;
+byte8  * WeaponSwitchControllerDanteAddr    = 0;
+byte8  * WeaponSwitchControllerVergilAddr   = 0;
+byte8  * ActivateQuicksilverAddr            = 0;
+byte8  * DeactivateQuicksilverAddr[2]       = {};
+byte8  * ActivateDoppelgangerAddr           = 0;
+byte8  * DeactivateDoppelgangerAddr         = 0; // @Todo: Check for run out function.
+byte8  * DevilDoppelgangerCheckAddr         = 0;
+byte8  * ActivateDevilAddr                  = 0;
+byte8  * DeactivateDevilAddr                = 0;
+byte8  * InputUpdateAddr[8]                 = {};
+byte8  * UpdateCollisionDataAddr            = 0;
+byte8  * EbonyIvoryRainStormCheckAddr       = 0;
+byte8  * SummonedSwordsQuicksilverCheckAddr = 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export void Actor_Init()
 {
 	LogFunction();
@@ -7485,19 +7466,7 @@ export void Actor_Init()
 	InitRegisterWeapon();
 	InitIsWeaponReady();
 	InitMobility();
-	// InitMagicPointsDepletionValues();
-	// UpdateMagicPointsDepletionValues();
-	// InitOrbReach();
-	// UpdateOrbReach();
 	InitColor();
-
-	// Force Visible HUD
-	Write<byte8>((appBaseAddr + 0x27E800), 0xEB);
-	Write<byte8>((appBaseAddr + 0x27DF3E), 0xEB);
-	Write<byte16>((appBaseAddr + 0x280DB9), 0xE990);
-
-	// Disable Style Rank Sub
-	vp_memset((appBaseAddr + 0x27A39C), 0x90, 5);
 
 	if (!Actor_actorBaseAddr.Init(512))
 	{
@@ -7636,46 +7605,6 @@ export void Actor_Init()
 		WeaponSwitchControllerVergilAddr = func.addr;
 	}
 
-	// Devil Doppelganger Check
-	{
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rdi,
-		};
-		constexpr byte8 sect2[] =
-		{
-			0x84, 0xC0,                               // test al,al
-			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       // je dmc3.exe+1E7926
-			0x40, 0x38, 0xB7, 0x9B, 0x3E, 0x00, 0x00, // cmp [rdi+00003E9B],sil
-		};
-		auto func = CreateFunction(DevilDoppelgangerCheck, (appBaseAddr + 0x1E77E3), true, false, 0, sizeof(sect1), sizeof(sect2));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E7926), 6);
-		DevilDoppelgangerCheckAddr = func.addr;
-		/*
-		dmc3.exe+1E77DC - 40 38 B7 9B3E0000 - cmp [rdi+00003E9B],sil
-		dmc3.exe+1E77E3 - 0F85 D4000000     - jne dmc3.exe+1E78BD
-		*/
-	}
-
-	// Activate Devil
-	{
-		auto func = CreateFunction(ActivateDevil);
-		ActivateDevilAddr = func.addr;
-	}
-
-	// Deactivate Devil
-	{
-		auto func = CreateFunction(DeactivateDevil);
-		DeactivateDevilAddr = func.addr;
-	}
-
-
-
-
-
-
 	// Activate Quicksilver
 	{
 		constexpr byte8 sect0[] =
@@ -7729,15 +7658,6 @@ export void Actor_Init()
 		*/
 	}
 
-
-
-
-
-
-
-
-
-
 	// Activate Doppelganger
 	{
 		auto func = CreateFunction(ActivateDoppelganger, (appBaseAddr + 0x1E930E));
@@ -7754,93 +7674,39 @@ export void Actor_Init()
 		DeactivateDoppelgangerAddr = func.addr;
 	}
 
-	// Position Updates
+	// Devil Doppelganger Check
 	{
-		constexpr byte8 sect0[] =
+		constexpr byte8 sect1[] =
 		{
-			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
-			0x74, 0x01,                               // je short
-			0xC3,                                     // ret
-			0x48, 0x89, 0x5C, 0x24, 0x08,             // mov [rsp+08],rbx
+			mov_rcx_rdi,
 		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1FB305), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable);
-		PositionUpdateAddr[0] = func.addr;
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                               // test al,al
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       // je dmc3.exe+1E7926
+			0x40, 0x38, 0xB7, 0x9B, 0x3E, 0x00, 0x00, // cmp [rdi+00003E9B],sil
+		};
+		auto func = CreateFunction(DevilDoppelgangerCheck, (appBaseAddr + 0x1E77E3), true, false, 0, sizeof(sect1), sizeof(sect2));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E7926), 6);
+		DevilDoppelgangerCheckAddr = func.addr;
 		/*
-		dmc3.exe+1FB300 - 48 89 5C 24 08 - mov [rsp+08],rbx
-		dmc3.exe+1FB305 - 57             - push rdi
+		dmc3.exe+1E77DC - 40 38 B7 9B3E0000 - cmp [rdi+00003E9B],sil
+		dmc3.exe+1E77E3 - 0F85 D4000000     - jne dmc3.exe+1E78BD
 		*/
 	}
+
+	// Activate Devil
 	{
-		constexpr byte8 sect0[] =
-		{
-			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
-			0x74, 0x01,                               // je short
-			0xC3,                                     // ret
-			0x48, 0x89, 0x5C, 0x24, 0x08,             // mov [rsp+08],rbx
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1FBE25), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable);
-		PositionUpdateAddr[1] = func.addr;
-		/*
-		dmc3.exe+1FBE20 - 48 89 5C 24 08 - mov [rsp+08],rbx
-		dmc3.exe+1FBE25 - 57             - push rdi
-		*/
+		auto func = CreateFunction(ActivateDevil);
+		ActivateDevilAddr = func.addr;
 	}
+
+	// Deactivate Devil
 	{
-		constexpr byte8 sect0[] =
-		{
-			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
-			0x74, 0x01,                               // je short
-			0xC3,                                     // ret
-			0x40, 0x57,                               // push rdi
-			0x48, 0x83, 0xEC, 0x20,                   // sub rsp,20
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1FB476), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable);
-		PositionUpdateAddr[2] = func.addr;
-		/*
-		dmc3.exe+1FB470 - 40 57                - push rdi
-		dmc3.exe+1FB472 - 48 83 EC 20          - sub rsp,20
-		dmc3.exe+1FB476 - 66 83 B9 0A750000 35 - cmp word ptr [rcx+0000750A],35
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
-			0x74, 0x01,                               // je short
-			0xC3,                                     // ret
-			0x48, 0x89, 0x5C, 0x24, 0x10,             // mov [rsp+10],rbx
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1FB545), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable);
-		PositionUpdateAddr[3] = func.addr;
-		/*
-		dmc3.exe+1FB540 - 48 89 5C 24 10 - mov [rsp+10],rbx
-		dmc3.exe+1FB545 - 57             - push rdi
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x80, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rcx+0000B8C0],01
-			0x74, 0x01,                               // je short
-			0xC3,                                     // ret
-			0x48, 0x89, 0x5C, 0x24, 0x18,             // mov [rsp+18],rbx
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1FBEE5), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEnable);
-		PositionUpdateAddr[4] = func.addr;
-		/*
-		dmc3.exe+1FBEE0 - 48 89 5C 24 18 - mov [rsp+18],rbx
-		dmc3.exe+1FBEE5 - 48 89 7C 24 20 - mov [rsp+20],rdi
-		*/
+		auto func = CreateFunction(DeactivateDevil);
+		DeactivateDevilAddr = func.addr;
 	}
 
 	// Input Updates
@@ -7943,29 +7809,6 @@ export void Actor_Init()
 		*/
 	}
 
-
-	// @Todo: Review.
-	// Reset Buffered Action
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x41, 0x80, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [r8+0000B8C0],01
-			0x75, 0x07,                                     // jne short
-			0x41, 0x88, 0x80, 0xA8, 0x3F, 0x00, 0x00,       // mov [r8+00003FA8],al
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1E0EB9), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newEnable);
-		ResetBufferedActionAddr = func.addr;
-		/*
-		dmc3.exe+1E0EB2 - 41 88 80 A83F0000 - mov [r8+00003FA8],al
-		dmc3.exe+1E0EB9 - 41 88 80 103F0000 - mov [r8+00003F10],al
-		*/
-	}
-
-
-
-
 	// Ebony & Ivory Rain Storm Check
 	{
 		constexpr byte8 sect1[] =
@@ -7990,8 +7833,6 @@ export void Actor_Init()
 		*/
 	}
 
-
-
 	// Summoned Swords Quicksilver Check
 	{
 		constexpr byte8 sect0[] =
@@ -8011,202 +7852,6 @@ export void Actor_Init()
 		dmc3.exe+1DB8FD - 0F2F F0       - comiss xmm6,xmm0
 		*/
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// // Update Lock-On
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
-	// 		0x48, 0x8B, 0x09,                                           // mov rcx,[rcx]
-	// 		0xFF, 0x81, 0x08, 0x62, 0x00, 0x00,                         // inc [rcx+00006208]
-	// 	};
-	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1BB74E), false, true, sizeof(sect0));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 2) = &lockOnActorBaseAddr;
-	// 	UpdateLockOnAddr[0] = func.addr;
-	// 	/*
-	// 	dmc3.exe+1BB6FC - 48 8B 47 18       - mov rax,[rdi+18]
-	// 	dmc3.exe+1BB700 - FF 80 08620000    - inc [rax+00006208]
-	// 	dmc3.exe+1BB74E - 48 8B 91 D8510000 - mov rdx,[rcx+000051D8]
-	// 	*/
-	// }
-
-
-
-
-
-
-
-
-
-
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x55,                                                       // push rbp
-	// 		0x56,                                                       // push rsi
-	// 		0x57,                                                       // push rdi
-	// 		0x48, 0xBD, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rbp
-	// 		0x48, 0x8B, 0x75, 0x00,                                     // mov rsi,[rbp+00]
-	// 		0x48, 0x85, 0xF6,                                           // test rsi,rsi
-	// 		0x74, 0x49,                                                 // je short
-	// 		0xBF, 0x02, 0x00, 0x00, 0x00,                               // mov edi,00000002
-	// 		0x3B, 0x7D, 0x08,                                           // cmp edi,[rbp+08]
-	// 		0x73, 0x3F,                                                 // jae short
-	// 		0x48, 0x8B, 0x0C, 0xFE,                                     // mov rcx,[rsi+rdi*8]
-	// 		0x48, 0x85, 0xC9,                                           // test rcx,rcx
-	// 		0x74, 0x32,                                                 // je short
-	// 		0x48, 0x8B, 0x91, 0xD8, 0x51, 0x00, 0x00,                   // mov rdx,[rcx+000051D8]
-	// 		0x48, 0x85, 0xD2,                                           // test rdx,rdx
-	// 		0x74, 0x26,                                                 // je short
-	// 		0x48, 0x8B, 0x42, 0x08,                                     // mov rax,[rdx+08]
-	// 		0x48, 0x89, 0x81, 0xD8, 0x51, 0x00, 0x00,                   // mov [rcx+000051D8],rax
-	// 		0x48, 0x89, 0x1A,                                           // mov [rdx],rbx
-	// 		0x48, 0x8B, 0x81, 0xD0, 0x51, 0x00, 0x00,                   // mov rax,[rcx+000051D0]
-	// 		0x48, 0x89, 0x42, 0x08,                                     // mov [rdx+08],rax
-	// 		0x48, 0x89, 0x91, 0xD0, 0x51, 0x00, 0x00,                   // mov [rcx+000051D0],rdx
-	// 		0xFF, 0x81, 0x08, 0x62, 0x00, 0x00,                         // inc [rcx+00006208]
-	// 		0xFF, 0xC7,                                                 // inc edi
-	// 		0xEB, 0xBC,                                                 // jmp short
-	// 		0x5F,                                                       // pop rdi
-	// 		0x5E,                                                       // pop rsi
-	// 		0x5D,                                                       // pop rbp
-	// 		0xB0, 0x01,                                                 // mov al,01
-	// 	};
-	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1BB77C), false, true, sizeof(sect0));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	*reinterpret_cast<void **>(func.sect0 + 5) = &Actor_actorBaseAddr;
-	// 	UpdateLockOnAddr[0] = func.addr;
-	// 	/*
-	// 	dmc3.exe+1BB6FC - 48 8B 47 18    - mov rax,[rdi+18]
-	// 	dmc3.exe+1BB700 - FF 80 08620000 - inc [rax+00006208]
-	// 	dmc3.exe+1BB77C - 48 8B 5C 24 30 - mov rbx,[rsp+30]
-	// 	*/
-	// }
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0xBD, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rbp
-	// 		0x48, 0x8B, 0x6D, 0x00,                                     // mov rbp,[rbp+00]
-	// 	};
-	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1BC0CA), false, true, sizeof(sect0));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 2) = &lockOnActorBaseAddr;
-	// 	UpdateLockOnAddr[1] = func.addr;
-	// 	/*
-	// 	dmc3.exe+1BC0C5 - 4A 8B 6C C0 18 - mov rbp,[rax+r8*8+18]
-	// 	dmc3.exe+1BC0CA - 48 8B CD       - mov rcx,rbp
-	// 	*/
-	// }
-
-	// // Camera Update Lock-On
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0x8B, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // mov rcx,[dmc3.exe+C90E28]
-	// 		0x48, 0xBD, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rbp
-	// 		0x48, 0x8B, 0x6D, 0x00,                                     // mov rbp,[rbp+00]
-	// 	};
-	// 	auto func = CreateFunction(0, (appBaseAddr + 0x56979), false, true, sizeof(sect0));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 9) = &lockOnActorBaseAddr;
-	// 	Camera_UpdateLockOnAddr[0] = func.addr;
-	// 	/*
-	// 	dmc3.exe+5696E - 48 8B 0D B3A4C300 - mov rcx,[dmc3.exe+C90E28]
-	// 	dmc3.exe+56975 - 48 8B 69 18       - mov rbp,[rcx+18]
-	// 	dmc3.exe+56979 - E8 223F1600       - call dmc3.exe+1BA8A0
-	// 	*/
-	// }
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00,                   // mov rax,[dmc3.exe+C90E28]
-	// 		0x49, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov r8
-	// 		0x4D, 0x8B, 0x00,                                           // mov r8,[r8]
-	// 	};
-	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1BA8AB), false, true, sizeof(sect0));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 9) = &lockOnActorBaseAddr;
-	// 	Camera_UpdateLockOnAddr[1] = func.addr;
-	// 	/*
-	// 	dmc3.exe+1BA8A0 - 48 8B 05 8165AD00 - mov rax,[dmc3.exe+C90E28]
-	// 	dmc3.exe+1BA8A7 - 4C 8B 41 18       - mov r8,[rcx+18]
-	// 	dmc3.exe+1BA8AB - 80 78 10 01       - cmp byte ptr [rax+10],01
-	// 	*/
-	// }
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0x8B, 0xF8,                                           // mov rdi,rax
-	// 		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
-	// 		0x48, 0x8B, 0x09,                                           // mov rcx,[rcx]
-	// 	};
-	// 	auto func = CreateFunction(0, (appBaseAddr + 0x5698C), false, true, sizeof(sect0));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 5) = &lockOnActorBaseAddr;
-	// 	Camera_UpdateLockOnAddr[2] = func.addr;
-	// 	/*
-	// 	dmc3.exe+5697E - 48 8B 15 A3A4C300 - mov rdx,[dmc3.exe+C90E28]
-	// 	dmc3.exe+56985 - 48 8B F8          - mov rdi,rax
-	// 	dmc3.exe+56988 - 48 8B 4A 18       - mov rcx,[rdx+18]
-	// 	dmc3.exe+5698C - E8 AF511900       - call dmc3.exe+1EBB40
-	// 	*/
-	// }
-
-	// // HUD Update Lock-On
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0x8B, 0xCB,                                           // mov rcx,rbx
-	// 		0x48, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rsi
-	// 		0x48, 0x8B, 0x36,                                           // mov rsi,[rsi]
-	// 	};
-	// 	auto func = CreateFunction(0, (appBaseAddr + 0x297356), false, true, sizeof(sect0));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 5) = &lockOnActorBaseAddr;
-	// 	HUD_UpdateLockOnAddr[0] = func.addr;
-	// 	/*
-	// 	dmc3.exe+29734F - 48 8B CB    - mov rcx,rbx
-	// 	dmc3.exe+297352 - 48 8B 70 18 - mov rsi,[rax+18]
-	// 	dmc3.exe+297356 - E8 852ADFFF - call dmc3.exe+89DE0
-	// 	*/
-	// }
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
-	// 		0x48, 0x8B, 0x09,                                           // mov rcx,[rcx]
-	// 		0x48, 0x89, 0x4D, 0xB0,                                     // mov [rbp-50],rcx
-	// 	};
-	// 	auto func = CreateFunction(0, (appBaseAddr + 0x296EE8), false, true, sizeof(sect0));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	*reinterpret_cast<byte8 ***>(func.sect0 + 2) = &lockOnActorBaseAddr;
-	// 	HUD_UpdateLockOnAddr[1] = func.addr;
-	// 	/*
-	// 	dmc3.exe+296EE0 - 48 8B 48 18 - mov rcx,[rax+18]
-	// 	dmc3.exe+296EE4 - 48 89 4D B0 - mov [rbp-50],rcx
-	// 	dmc3.exe+296EE8 - E8 833CF6FF - call dmc3.exe+1FAB70
-	// 	*/
-	// }
 }
 
 export void Actor_Toggle(bool enable)
@@ -8360,8 +8005,6 @@ export void Actor_Toggle(bool enable)
 	{
 		WriteAddress((appBaseAddr + 0x218982), (enable) ? (appBaseAddr + 0x218988) : (appBaseAddr + 0x218F81), 6);
 		/*
-		dmc3.exe+21897C - 8D 41 FF          - lea eax,[rcx-01]
-		dmc3.exe+21897F - 83 F8 01          - cmp eax,01
 		dmc3.exe+218982 - 0F87 F9050000     - ja dmc3.exe+218F81
 		dmc3.exe+218988 - 83 BF 183A0000 01 - cmp dword ptr [rdi+00003A18],01
 		*/
@@ -8440,6 +8083,115 @@ export void Actor_Toggle(bool enable)
 		/*
 		dmc3.exe+1E25E1 - E8 EA470000 - call dmc3.exe+1E6DD0
 		dmc3.exe+1E25E6 - EB 08       - jmp dmc3.exe+1E25F0
+		*/
+	}
+
+	// Activate Quicksilver
+	{
+		auto dest = (appBaseAddr + 0x1E94AA);
+		if (enable)
+		{
+			WriteJump(dest, ActivateQuicksilverAddr, 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xC6, 0x87, 0x61, 0x63, 0x00, 0x00, 0x01, // mov byte ptr [rdi+00006361],01
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E94AA - C6 87 61630000 01       - mov byte ptr [rdi+00006361],01
+		dmc3.exe+1E94B1 - C7 87 40630000 02000000 - mov [rdi+00006340],00000002
+		*/
+	}
+
+	// Deactivate Quicksilver
+	{
+		auto dest = (appBaseAddr + 0x1E9551);
+		if (enable)
+		{
+			WriteJump(dest, DeactivateQuicksilverAddr[0], 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x40, 0x88, 0xB7, 0x61, 0x63, 0x00, 0x00, // mov [rdi+00006361],sil
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E9551 - 40 88 B7 61630000 - mov [rdi+00006361],sil
+		dmc3.exe+1E9558 - 89 B7 40630000    - mov [rdi+00006340],esi
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1EAC19);
+		if (enable)
+		{
+			WriteJump(dest, DeactivateQuicksilverAddr[1], 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xC6, 0x81, 0x61, 0x63, 0x00, 0x00, 0x00, // mov byte ptr [rcx+00006361],00
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1EAC19 - C6 81 61630000 00       - mov byte ptr [rcx+00006361],00
+		dmc3.exe+1EAC20 - C7 81 40630000 00000000 - mov [rcx+00006340],00000000
+		*/
+	}
+
+	// Activate Doppelganger
+	{
+		auto dest = (appBaseAddr + 0x1E9216);
+		if (enable)
+		{
+			WriteJump(dest, ActivateDoppelgangerAddr);
+		}
+		else
+		{
+			WriteCall(dest, (appBaseAddr + 0x1FAA00));
+		}
+		/*
+		dmc3.exe+1E9216 - E8 E5170100 - call dmc3.exe+1FAA00
+		dmc3.exe+1E930E - B0 01       - mov al,01
+		*/
+	}
+
+	// Deactivate Doppelganger
+	{
+		auto dest = (appBaseAddr + 0x1E2AA0);
+		if (enable)
+		{
+			WriteJump(dest, DeactivateDoppelgangerAddr, 1);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x40, 0x53,             // push rbx
+				0x48, 0x83, 0xEC, 0x20, // sub rsp,20
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E2AA0 - 40 53       - push rbx
+		dmc3.exe+1E2AA2 - 48 83 EC 20 - sub rsp,20
+		*/
+	}
+
+	// Disable Doppelganger Rate Controller
+	{
+		Write<byte8>((appBaseAddr + 0x1E25C8), (enable) ? 0xEB : 0x75);
+		/*
+		dmc3.exe+1E25C1 - 80 BB 62630000 01 - cmp byte ptr [rbx+00006362],01
+		dmc3.exe+1E25C8 - 75 08             - jne dmc3.exe+1E25D2
 		*/
 	}
 
@@ -8535,245 +8287,13 @@ export void Actor_Toggle(bool enable)
 		*/
 	}
 
-
-
-
-
-
-
-
-	// Activate Quicksilver
-	{
-		auto dest = (appBaseAddr + 0x1E94AA);
-		if (enable)
-		{
-			WriteJump(dest, ActivateQuicksilverAddr, 2);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0xC6, 0x87, 0x61, 0x63, 0x00, 0x00, 0x01, // mov byte ptr [rdi+00006361],01
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1E94AA - C6 87 61630000 01       - mov byte ptr [rdi+00006361],01
-		dmc3.exe+1E94B1 - C7 87 40630000 02000000 - mov [rdi+00006340],00000002
-		*/
-	}
-
-	// Deactivate Quicksilver
-	{
-		auto dest = (appBaseAddr + 0x1E9551);
-		if (enable)
-		{
-			WriteJump(dest, DeactivateQuicksilverAddr[0], 2);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x40, 0x88, 0xB7, 0x61, 0x63, 0x00, 0x00, // mov [rdi+00006361],sil
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1E9551 - 40 88 B7 61630000 - mov [rdi+00006361],sil
-		dmc3.exe+1E9558 - 89 B7 40630000    - mov [rdi+00006340],esi
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1EAC19);
-		if (enable)
-		{
-			WriteJump(dest, DeactivateQuicksilverAddr[1], 2);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0xC6, 0x81, 0x61, 0x63, 0x00, 0x00, 0x00, // mov byte ptr [rcx+00006361],00
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1EAC19 - C6 81 61630000 00       - mov byte ptr [rcx+00006361],00
-		dmc3.exe+1EAC20 - C7 81 40630000 00000000 - mov [rcx+00006340],00000000
-		*/
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// Activate Doppelganger
-	{
-		auto dest = (appBaseAddr + 0x1E9216);
-		if (enable)
-		{
-			WriteJump(dest, ActivateDoppelgangerAddr);
-		}
-		else
-		{
-			WriteCall(dest, (appBaseAddr + 0x1FAA00));
-		}
-		/*
-		dmc3.exe+1E9216 - E8 E5170100 - call dmc3.exe+1FAA00
-		dmc3.exe+1E930E - B0 01       - mov al,01
-		*/
-	}
-
-	// Deactivate Doppelganger
-	{
-		auto dest = (appBaseAddr + 0x1E2AA0);
-		if (enable)
-		{
-			WriteJump(dest, DeactivateDoppelgangerAddr, 1);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x40, 0x53,             // push rbx
-				0x48, 0x83, 0xEC, 0x20, // sub rsp,20
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1E2AA0 - 40 53       - push rbx
-		dmc3.exe+1E2AA2 - 48 83 EC 20 - sub rsp,20
-		*/
-	}
-
-	// Disable Doppelganger Rate Controller
-	{
-		Write<byte8>((appBaseAddr + 0x1E25C8), (enable) ? 0xEB : 0x75);
-		/*
-		dmc3.exe+1E25C1 - 80 BB 62630000 01 - cmp byte ptr [rbx+00006362],01
-		dmc3.exe+1E25C8 - 75 08             - jne dmc3.exe+1E25D2
-		*/
-	}
-
-	// Position Updates
-	// {
-	// 	auto dest = (appBaseAddr + 0x1FB300);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, PositionUpdateAddr[0]);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x89, 0x5C, 0x24, 0x08, // mov [rsp+08],rbx
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1FB300 - 48 89 5C 24 08 - mov [rsp+08],rbx
-	// 	dmc3.exe+1FB305 - 57             - push rdi
-	// 	*/
-	// }
-	// {
-	// 	auto dest = (appBaseAddr + 0x1FBE20);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, PositionUpdateAddr[1]);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x89, 0x5C, 0x24, 0x08, // mov [rsp+08],rbx
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1FBE20 - 48 89 5C 24 08 - mov [rsp+08],rbx
-	// 	dmc3.exe+1FBE25 - 57             - push rdi
-	// 	*/
-	// }
-	// {
-	// 	auto dest = (appBaseAddr + 0x1FB470);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, PositionUpdateAddr[2], 1);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x40, 0x57,             // push rdi
-	// 			0x48, 0x83, 0xEC, 0x20, // sub rsp,20
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1FB470 - 40 57                - push rdi
-	// 	dmc3.exe+1FB472 - 48 83 EC 20          - sub rsp,20
-	// 	dmc3.exe+1FB476 - 66 83 B9 0A750000 35 - cmp word ptr [rcx+0000750A],35
-	// 	*/
-	// }
-	// {
-	// 	auto dest = (appBaseAddr + 0x1FB540);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, PositionUpdateAddr[3]);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x89, 0x5C, 0x24, 0x10, // mov [rsp+10],rbx
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1FB540 - 48 89 5C 24 10 - mov [rsp+10],rbx
-	// 	dmc3.exe+1FB545 - 57             - push rdi
-	// 	*/
-	// }
-	// {
-	// 	auto dest = (appBaseAddr + 0x1FBEE0);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, PositionUpdateAddr[4]);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x89, 0x5C, 0x24, 0x18, // mov [rsp+18],rbx
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1FBEE0 - 48 89 5C 24 18 - mov [rsp+18],rbx
-	// 	dmc3.exe+1FBEE5 - 48 89 7C 24 20 - mov [rsp+20],rdi
-	// 	*/
-	// }
-
 	// Input Updates
 	{
 		// Disable Actor Id Check
 		WriteAddress((appBaseAddr + 0x1EBD1E), (enable) ? (appBaseAddr + 0x1EBD24) : (appBaseAddr + 0x1EBDBF), 6);
 		/*
-		dmc3.exe+1EBD17 - 80 B9 18010000 00 - cmp byte ptr [rcx+00000118],00
-		dmc3.exe+1EBD1E - 0F85 9B000000     - jne dmc3.exe+1EBDBF
-		dmc3.exe+1EBD24 - 33 D2             - xor edx,edx
+		dmc3.exe+1EBD1E - 0F85 9B000000 - jne dmc3.exe+1EBDBF
+		dmc3.exe+1EBD24 - 33 D2         - xor edx,edx
 		*/
 	}
 	{
@@ -8888,42 +8408,6 @@ export void Actor_Toggle(bool enable)
 		dmc3.exe+1EF001 - 83 BE 943E0000 03 - cmp dword ptr [rsi+00003E94],03
 		*/
 	}
-
-	// // Reset Buffered Action
-	// {
-	// 	auto dest = (appBaseAddr + 0x1E0EB2);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, ResetBufferedActionAddr, 2);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x41, 0x88, 0x80, 0xA8, 0x3F, 0x00, 0x00, // mov [r8+00003FA8],al
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1E0EB2 - 41 88 80 A83F0000 - mov [r8+00003FA8],al
-	// 	dmc3.exe+1E0EB9 - 41 88 80 103F0000 - mov [r8+00003F10],al
-	// 	*/
-	// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	// @Todo: Review.
 	// Reset Lock-On
@@ -9045,201 +8529,8 @@ export void Actor_Toggle(bool enable)
 		dmc3.exe+1BA5C9 - 44 89 98 08620000 - mov [rax+00006208],r11d
 		*/
 	}
-
-
-	
-
-
-
-
-
-
-
-	// // Update Lock-On
-	// {
-	// 	auto dest = (appBaseAddr + 0x1BB6FC);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, UpdateLockOnAddr[0], 5);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x8B, 0x47, 0x18,             // mov rax,[rdi+18]
-	// 			0xFF, 0x80, 0x08, 0x62, 0x00, 0x00, // inc [rax+00006208]
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// }
-
-
-
-
-
-
-
-
-
-
-	// {
-	// 	auto dest = (appBaseAddr + 0x1BC0C5);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, UpdateLockOnAddr[1]);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x4A, 0x8B, 0x6C, 0xC0, 0x18, // mov rbp,[rax+r8*8+18]
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1BC0C5 - 4A 8B 6C C0 18 - mov rbp,[rax+r8*8+18]
-	// 	dmc3.exe+1BC0CA - 48 8B CD       - mov rcx,rbp
-	// 	*/
-	// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// // Camera Update Lock-On
-	// {
-	// 	auto dest = (appBaseAddr + 0x5696E);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, Camera_UpdateLockOnAddr[0], 6);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x8B, 0x0D, 0xB3, 0xA4, 0xC3, 0x00, // mov rcx,[dmc3.exe+C90E28]
-	// 			0x48, 0x8B, 0x69, 0x18,                   // mov rbp,[rcx+18]
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+5696E - 48 8B 0D B3A4C300 - mov rcx,[dmc3.exe+C90E28]
-	// 	dmc3.exe+56975 - 48 8B 69 18       - mov rbp,[rcx+18]
-	// 	dmc3.exe+56979 - E8 223F1600       - call dmc3.exe+1BA8A0
-	// 	*/
-	// }
-	// {
-	// 	auto dest = (appBaseAddr + 0x1BA8A0);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, Camera_UpdateLockOnAddr[1], 6);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x8B, 0x05, 0x81, 0x65, 0xAD, 0x00, // mov rax,[dmc3.exe+C90E28]
-	// 			0x4C, 0x8B, 0x41, 0x18,                   // mov r8,[rcx+18]
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1BA8A0 - 48 8B 05 8165AD00 - mov rax,[dmc3.exe+C90E28]
-	// 	dmc3.exe+1BA8A7 - 4C 8B 41 18       - mov r8,[rcx+18]
-	// 	dmc3.exe+1BA8AB - 80 78 10 01       - cmp byte ptr [rax+10],01
-	// 	*/
-	// }
-	// {
-	// 	auto dest = (appBaseAddr + 0x5697E);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, Camera_UpdateLockOnAddr[2], 9);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x8B, 0x15, 0xA3, 0xA4, 0xC3, 0x00, // mov rdx,[dmc3.exe+C90E28]
-	// 			0x48, 0x8B, 0xF8,                         // mov rdi,rax
-	// 			0x48, 0x8B, 0x4A, 0x18,                   // mov rcx,[rdx+18]
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+5697E - 48 8B 15 A3A4C300 - mov rdx,[dmc3.exe+C90E28]
-	// 	dmc3.exe+56985 - 48 8B F8          - mov rdi,rax
-	// 	dmc3.exe+56988 - 48 8B 4A 18       - mov rcx,[rdx+18]
-	// 	dmc3.exe+5698C - E8 AF511900       - call dmc3.exe+1EBB40
-	// 	*/
-	// }
-
-	// // HUD Update Lock-On
-	// {
-	// 	auto dest = (appBaseAddr + 0x29734F);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, HUD_UpdateLockOnAddr[0], 2);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x8B, 0xCB,       // mov rcx,rbx
-	// 			0x48, 0x8B, 0x70, 0x18, // mov rsi,[rax+18]
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+29734F - 48 8B CB    - mov rcx,rbx
-	// 	dmc3.exe+297352 - 48 8B 70 18 - mov rsi,[rax+18]
-	// 	dmc3.exe+297356 - E8 852ADFFF - call dmc3.exe+89DE0
-	// 	*/
-	// }
-	// {
-	// 	auto dest = (appBaseAddr + 0x296EE0);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, HUD_UpdateLockOnAddr[1], 3);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x48, 0x8B, 0x48, 0x18, // mov rcx,[rax+18]
-	// 			0x48, 0x89, 0x4D, 0xB0, // mov [rbp-50],rcx
-	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+296EE0 - 48 8B 48 18 - mov rcx,[rax+18]
-	// 	dmc3.exe+296EE4 - 48 89 4D B0 - mov [rbp-50],rcx
-	// 	dmc3.exe+296EE8 - E8 833CF6FF - call dmc3.exe+1FAB70
-	// 	*/
-	// }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-// @Todo: Move.
 export void ToggleAirHikeCoreAbility(bool enable)
 {
 	LogFunction(enable);
@@ -9413,8 +8704,6 @@ export void ToggleEbonyIvoryFoursomeTime(bool enable)
 	*/
 }
 
-
-
 export void ToggleEbonyIvoryInfiniteRainStorm(bool enable)
 {
 	LogFunction(enable);
@@ -9496,8 +8785,6 @@ export void UpdateCrazyComboLevelMultiplier()
 	Write<uint8>((appBaseAddr + 0x589A5E), activeConfig.crazyComboLevelMultiplier);
 }
 
-
-
 export void ToggleChronoSwords(bool enable)
 {
 	{
@@ -9520,25 +8807,6 @@ export void ToggleChronoSwords(bool enable)
 		*/
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #pragma region Events
 
@@ -9764,7 +9032,7 @@ export void Actor_SceneMissionStart()
 	{
 		auto & playerData = activeConfig.Actor.playerData[player][entity];
 
-		playerData.style = playerData.startStyle;
+		playerData.style = playerData.startStyle; // @Todo: Review.
 		playerData.meleeWeaponIndex  = 0;
 		playerData.rangedWeaponIndex = 0;
 	}}
