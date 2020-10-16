@@ -7,78 +7,96 @@ export module Speed;
 import Config;
 import State;
 
-float32 * Speed_turbo             = 0;
-float32 * Speed_actor             = 0;
-float32 * Speed_Quicksilver_actor = 0;
-float32 * Speed_Quicksilver_enemy = 0;
+float * turboAddr            = 0;
+float * actorAddr            = 0;
+float * quicksilverActorAddr = 0;
+float * quicksilverEnemyAddr = 0;
 
-// @Todo: Update.
-export void Speed_Update(Config & config)
+export void UpdateSpeedValues()
 {
 	LogFunction();
 
-	*Speed_turbo             = config.Speed.Main.turbo;
-	*Speed_actor             = config.Speed.Main.actor;
-	*Speed_Quicksilver_actor = config.Speed.Quicksilver.actor;
-	*Speed_Quicksilver_enemy = config.Speed.Quicksilver.enemy;
+	Write<float>((appBaseAddr + 0x32694E + 2), activeConfig.Speed.main);
+	/*
+	dmc3.exe+32694E - C7 01 0000803F - mov [rcx],3F800000
+	dmc3.exe+326954 - C3             - ret 
+	*/
 
-	// Main
+	*turboAddr = activeConfig.Speed.turbo;
+	WriteAddress((appBaseAddr + 0x23E639), turboAddr, 8);
+	/*
+	dmc3.exe+23E639 - F3 0F10 05 FFDF2800 - movss xmm0,[dmc3.exe+4CC640]
+	dmc3.exe+23E641 - F3 0F11 05 4747AB00 - movss [dmc3.exe+CF2D90],xmm0
+	*/
+
+	*actorAddr = activeConfig.Speed.actor;
+	WriteAddress((appBaseAddr + 0x1F8CA6), actorAddr, 8);
+	/*
+	dmc3.exe+1F8CA6 - F3 0F10 05 BE481600 - movss xmm0,[dmc3.exe+35D56C]
+	dmc3.exe+1F8CAE - EB 08               - jmp dmc3.exe+1F8CB8
+	*/
+
+	Write<float32>((appBaseAddr + 0x326ADA + 3), activeConfig.Speed.enemy);
+	/*
+	dmc3.exe+326ADA - C7 41 10 0000803F - mov [rcx+10],3F800000
+	dmc3.exe+326AE1 - 80 B9 AC000000 01 - cmp byte ptr [rcx+000000AC],01
+	*/
+
+	WriteAddress((appBaseAddr + 0x27A982), quicksilverActorAddr, 8);
+	WriteAddress((appBaseAddr + 0x27A98A), quicksilverEnemyAddr, 8);
+	/*
+	dmc3.exe+27A982 - F3 0F10 05 6E432500 - movss xmm0,[dmc3.exe+4CECF8]
+	dmc3.exe+27A98A - F3 0F10 0D 5ADB2500 - movss xmm1,[dmc3.exe+4D84EC]
+	*/
+
+	float * devilSpeedValues = reinterpret_cast<float *>(appBaseAddr + 0x58B0B8);
+
+	vp_memcpy
+	(
+		&devilSpeedValues[DEVIL_SPEED_DANTE_REBELLION],
+		activeConfig.Speed.devilDante,
+		sizeof(activeConfig.Speed.devilDante)
+	);
+
+	vp_memcpy
+	(
+		&devilSpeedValues[DEVIL_SPEED_VERGIL_YAMATO],
+		activeConfig.Speed.devilVergil,
+		sizeof(activeConfig.Speed.devilVergil)
+	);
+
+	vp_memcpy
+	(
+		&devilSpeedValues[DEVIL_SPEED_NERO_ANGELO_YAMATO],
+		activeConfig.Speed.neroAngelo,
+		sizeof(activeConfig.Speed.neroAngelo)
+	);
+
+	auto & speed = *reinterpret_cast<float *>(appBaseAddr + 0xCF2D90);
+	auto & turbo = *reinterpret_cast<bool *>(appBaseAddr + 0xD6CEA9);
+
+	if (!InGame())
 	{
-		Write<float32>((appBaseAddr + 0x326950), config.Speed.Main.base);
-		WriteAddress((appBaseAddr + 0x23E639), (byte8 *)Speed_turbo, 8);
-		WriteAddress((appBaseAddr + 0x1F8CA6), (byte8 *)Speed_actor, 8);
-		Write<float32>((appBaseAddr + 0x326ADD), config.Speed.Main.enemy);
+		return;
 	}
-	// Devil
-	{
-		float32 * speed = (float32 *)(appBaseAddr + 0x58B0B8);
-		vp_memcpy
-		(
-			&speed[SPEED_DEVIL_DANTE_REBELLION],
-			config.Speed.Devil.dante,
-			sizeof(config.Speed.Devil.dante)
-		);
-		vp_memcpy
-		(
-			&speed[SPEED_DEVIL_VERGIL_YAMATO],
-			config.Speed.Devil.vergil,
-			sizeof(config.Speed.Devil.vergil)
-		);
-		vp_memcpy
-		(
-			&speed[SPEED_DEVIL_NERO_ANGELO_YAMATO],
-			config.Speed.Devil.neroAngelo,
-			sizeof(config.Speed.Devil.neroAngelo)
-		);
-	}
-	// Quicksilver
-	{
-		WriteAddress((appBaseAddr + 0x27A982), (byte8 *)Speed_Quicksilver_actor, 8);
-		WriteAddress((appBaseAddr + 0x27A98A), (byte8 *)Speed_Quicksilver_enemy, 8);
-	}
-	// Live
-	{
-		auto & speed = *(float32 *)(appBaseAddr + 0xCF2D90);
-		auto & turbo = *(bool    *)(appBaseAddr + 0xD6CEA9);
-		if (!InGame())
-		{
-			return;
-		}
-		speed = (turbo) ? config.Speed.Main.turbo : config.Speed.Main.base;
-	}
+	
+	speed = (turbo) ? activeConfig.Speed.turbo : activeConfig.Speed.main;
 }
 
 export void Speed_Init()
 {
 	LogFunction();
-	auto addr = reinterpret_cast<float32 *>(HighAlloc(16));
-	if (!addr)
+
+	auto dest = reinterpret_cast<float *>(HighAlloc(16));
+	if (!dest)
 	{
 		Log("HighAlloc failed.");
+
 		return;
 	}
-	Speed_turbo             = &addr[0];
-	Speed_actor             = &addr[1];
-	Speed_Quicksilver_actor = &addr[2];
-	Speed_Quicksilver_enemy = &addr[3];
+
+	turboAddr            = &dest[0];
+	actorAddr            = &dest[1];
+	quicksilverActorAddr = &dest[2];
+	quicksilverEnemyAddr = &dest[3];
 }

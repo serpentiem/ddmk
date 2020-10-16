@@ -14,6 +14,7 @@ import Internal;
 import Memory;
 import Model;
 import Scene;
+import Speed;
 import Training;
 import Window;
 
@@ -110,6 +111,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 		Scene_Init();
+
+		Speed_Init();
+
 
 		Training_ToggleInfiniteHitPoints  (activeConfig.Training.infiniteHitPoints  );
 		Training_ToggleInfiniteMagicPoints(activeConfig.Training.infiniteMagicPoints);

@@ -254,45 +254,61 @@ export struct Config
 	struct
 	{
 		bool enable = false;
-		struct
+
+		float main  = 1.0f;
+		float turbo = 1.2f;
+		float actor = 1.0f;
+		float enemy = 1.0f;
+
+
+		float quicksilverActor = 1.05f;
+		float quicksilverEnemy = 0.33f;
+
+
+
+		float devilDante[6] =
 		{
-			float32 base  = 1;
-			float32 turbo = 1.2f;
-			float32 actor = 1;
-			float32 enemy = 1;
-		}
-		Main;
-		struct
+			1.1f,
+			1.2f,
+			1.05f,
+			1.1f,
+			1.05f,
+			1.1f,
+		};
+		float devilVergil[3] =
 		{
-			float32 actor = 1.05f;
-			float32 enemy = 0.33f;
-		}
-		Quicksilver;
-		struct
+			1.2f,
+			1.2f,
+			1.2f,
+		};
+		float neroAngelo[2] =
 		{
-			float32 dante[6] =
-			{
-				1.1f,
-				1.2f,
-				1.05f,
-				1.1f,
-				1.05f,
-				1.1f,
-			};
-			float32 vergil[3] =
-			{
-				1.2f,
-				1.2f,
-				1.2f,
-			};
-			float32 neroAngelo[3] =
-			{
-				1,
-				1,
-				1,
-			};
-		}
-		Devil;
+			1.0f,
+			1.0f,
+		};
+
+
+
+
+
+
+
+
+		// struct
+		// {
+
+		// }
+		// Main;
+		// struct
+		// {
+
+		// }
+		// Quicksilver;
+		// struct
+		// {
+
+		// }
+		// Devil;
 	}
 	Speed;
 	// struct

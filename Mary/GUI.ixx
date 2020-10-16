@@ -1955,6 +1955,72 @@ void ResetPermissions()
 	}
 }
 
+const char * devilSpeedNamesDante[] =
+{
+	"Rebellion",
+	"Cerberus",
+	"Agni & Rudra",
+	"Nevan",
+	"Beowulf",
+	"Sparda",
+};
+
+const char * devilSpeedNamesVergil[] =
+{
+	"Yamato",
+	"Beowulf",
+	"Yamato & Force Edge",
+};
+
+const char * speedNamesNeroAngelo[] =
+{
+	"Yamato",
+	"Beowulf",
+};
+
+
+
+
+
+
+template <typename T>
+bool GUI_InputDefault2Speed
+(
+	const char * label,
+	T & var,
+	T & var2,
+	T & defaultVar,
+	const T step = 1,
+	const char * format = 0,
+	ImGuiInputTextFlags flags = 0
+)
+{
+	auto update = GUI_InputDefault2
+	(
+		label,
+		var,
+		var2,
+		defaultVar,
+		step,
+		format,
+		flags
+	);
+
+	if (update)
+	{
+		UpdateSpeedValues();
+	}
+
+	return update;
+}
+
+
+
+
+
+
+
+
 void Speed()
 {
 	if (ImGui::CollapsingHeader("Speed"))
@@ -1962,38 +2028,188 @@ void Speed()
 		ImGui::Text("");
 
 		GUI_Checkbox("Enable", activeConfig.Speed.enable);
+
+
 		ImGui::Text("");
 		GUI_ResetButton();
 		GUI_SectionEnd();
 		ImGui::PushItemWidth(200);
+
+
+
+
 		GUI_SectionStart("Main");
-		GUI_InputDefault("Base" , activeConfig.Speed.Main.base , defaultConfig.Speed.Main.base , 0.1f, "%.2f");
-		GUI_InputDefault("Turbo", activeConfig.Speed.Main.turbo, defaultConfig.Speed.Main.turbo, 0.1f, "%.2f");
-		GUI_InputDefault("Actor", activeConfig.Speed.Main.actor, defaultConfig.Speed.Main.actor, 0.1f, "%.2f");
-		GUI_InputDefault("Enemy", activeConfig.Speed.Main.enemy, defaultConfig.Speed.Main.enemy, 0.1f, "%.2f");
+
+
+
+		GUI_InputDefault2Speed
+		(
+			"Base",
+			activeConfig.Speed.main,
+			queuedConfig.Speed.main,
+			defaultConfig.Speed.main,
+			0.1f,
+			"%.2f"
+		);
+
+
+
+
+
+
+		GUI_InputDefault2Speed
+		(
+			"Turbo",
+			activeConfig.Speed.turbo,
+			queuedConfig.Speed.turbo,
+			defaultConfig.Speed.turbo,
+			0.1f,
+			"%.2f"
+		);
+
+
+
+
+
+
+
+		GUI_InputDefault2Speed
+		(
+			"Actor",
+			activeConfig.Speed.actor,
+			queuedConfig.Speed.actor,
+			defaultConfig.Speed.actor,
+			0.1f,
+			"%.2f"
+		);
+
+
+
+
+		GUI_InputDefault2Speed
+		(
+			"Enemy",
+			activeConfig.Speed.enemy,
+			queuedConfig.Speed.enemy,
+			defaultConfig.Speed.enemy,
+			0.1f,
+			"%.2f"
+		);
+
+
+
+
 		GUI_SectionEnd();
+
+
 		GUI_SectionStart("Quicksilver");
-		GUI_InputDefault("Actor", activeConfig.Speed.Quicksilver.actor, defaultConfig.Speed.Quicksilver.actor, 0.1f, "%.2f");
-		GUI_InputDefault("Enemy", activeConfig.Speed.Quicksilver.enemy, defaultConfig.Speed.Quicksilver.enemy, 0.1f, "%.2f");
+
+		GUI_InputDefault2Speed
+		(
+			"Actor",
+			activeConfig.Speed.quicksilverActor,
+			queuedConfig.Speed.quicksilverActor,
+			defaultConfig.Speed.quicksilverActor,
+			0.1f,
+			"%.2f"
+		);
+
+
+		GUI_InputDefault2Speed
+		(
+			"Enemy",
+			activeConfig.Speed.quicksilverEnemy,
+			queuedConfig.Speed.quicksilverEnemy,
+			defaultConfig.Speed.quicksilverEnemy,
+			0.1f,
+			"%.2f"
+		);
+
+
+
 		GUI_SectionEnd();
+		ImGui::Text("");
+
+
+
+
 		GUI_SectionStart("Devil");
+
 		ImGui::Text("Dante");
-		GUI_InputDefault("Rebellion"   , activeConfig.Speed.Devil.dante[0], defaultConfig.Speed.Devil.dante[0], 0.1f, "%.2f");
-		GUI_InputDefault("Cerberus"    , activeConfig.Speed.Devil.dante[1], defaultConfig.Speed.Devil.dante[1], 0.1f, "%.2f");
-		GUI_InputDefault("Agni & Rudra", activeConfig.Speed.Devil.dante[2], defaultConfig.Speed.Devil.dante[2], 0.1f, "%.2f");
-		GUI_InputDefault("Nevan"       , activeConfig.Speed.Devil.dante[3], defaultConfig.Speed.Devil.dante[3], 0.1f, "%.2f");
-		GUI_InputDefault("Beowulf"     , activeConfig.Speed.Devil.dante[4], defaultConfig.Speed.Devil.dante[4], 0.1f, "%.2f");
-		GUI_InputDefault("Sparda"      , activeConfig.Speed.Devil.dante[5], defaultConfig.Speed.Devil.dante[5], 0.1f, "%.2f");
+		for_all(uint8, index, countof(activeConfig.Speed.devilDante))
+		{
+			GUI_InputDefault2Speed
+			(
+				devilSpeedNamesDante[index],
+				activeConfig.Speed.devilDante[index],
+				queuedConfig.Speed.devilDante[index],
+				defaultConfig.Speed.devilDante[index],
+				0.1f,
+				"%.2f"
+			);
+		}
 		ImGui::Text("");
+
 		ImGui::Text("Vergil");
-		GUI_InputDefault("Yamato"    , activeConfig.Speed.Devil.vergil[0], defaultConfig.Speed.Devil.vergil[0], 0.1f, "%.2f");
-		GUI_InputDefault("Beowulf"   , activeConfig.Speed.Devil.vergil[1], defaultConfig.Speed.Devil.vergil[1], 0.1f, "%.2f");
-		GUI_InputDefault("Force Edge", activeConfig.Speed.Devil.vergil[2], defaultConfig.Speed.Devil.vergil[2], 0.1f, "%.2f");
+		for_all(uint8, index, countof(activeConfig.Speed.devilVergil))
+		{
+			GUI_InputDefault2Speed
+			(
+				devilSpeedNamesVergil[index],
+				activeConfig.Speed.devilVergil[index],
+				queuedConfig.Speed.devilVergil[index],
+				defaultConfig.Speed.devilVergil[index],
+				0.1f,
+				"%.2f"
+			);
+		}
 		ImGui::Text("");
-		ImGui::Text("Nero Angelo");
-		GUI_InputDefault("Yamato"    , activeConfig.Speed.Devil.neroAngelo[0], defaultConfig.Speed.Devil.neroAngelo[0], 0.1f, "%.2f");
-		GUI_InputDefault("Beowulf"   , activeConfig.Speed.Devil.neroAngelo[1], defaultConfig.Speed.Devil.neroAngelo[1], 0.1f, "%.2f");
-		GUI_InputDefault("Force Edge", activeConfig.Speed.Devil.neroAngelo[2], defaultConfig.Speed.Devil.neroAngelo[2], 0.1f, "%.2f");
+
+		ImGui::Text("NeroAngelo");
+		for_all(uint8, index, countof(activeConfig.Speed.neroAngelo))
+		{
+			GUI_InputDefault2Speed
+			(
+				speedNamesNeroAngelo[index],
+				activeConfig.Speed.neroAngelo[index],
+				queuedConfig.Speed.neroAngelo[index],
+				defaultConfig.Speed.neroAngelo[index],
+				0.1f,
+				"%.2f"
+			);
+		}
+		ImGui::Text("");
+
+
+
+
+
+
+
+		// GUI_InputDefault2Speed
+		// (
+		// 	"Rebellion",
+		// 	activeConfig.Speed.Devil.dante[0],
+		// 	defaultConfig.Speed.Devil.dante[0], 0.1f, "%.2f");
+		// GUI_InputDefault("Cerberus"    , activeConfig.Speed.Devil.dante[1], defaultConfig.Speed.Devil.dante[1], 0.1f, "%.2f");
+		// GUI_InputDefault("Agni & Rudra", activeConfig.Speed.Devil.dante[2], defaultConfig.Speed.Devil.dante[2], 0.1f, "%.2f");
+		// GUI_InputDefault("Nevan"       , activeConfig.Speed.Devil.dante[3], defaultConfig.Speed.Devil.dante[3], 0.1f, "%.2f");
+		// GUI_InputDefault("Beowulf"     , activeConfig.Speed.Devil.dante[4], defaultConfig.Speed.Devil.dante[4], 0.1f, "%.2f");
+		// GUI_InputDefault("Sparda"      , activeConfig.Speed.Devil.dante[5], defaultConfig.Speed.Devil.dante[5], 0.1f, "%.2f");
+
+
+
+
+		// ImGui::Text("");
+		// ImGui::Text("Vergil");
+		// GUI_InputDefault("Yamato"    , activeConfig.Speed.Devil.vergil[0], defaultConfig.Speed.Devil.vergil[0], 0.1f, "%.2f");
+		// GUI_InputDefault("Beowulf"   , activeConfig.Speed.Devil.vergil[1], defaultConfig.Speed.Devil.vergil[1], 0.1f, "%.2f");
+		// GUI_InputDefault("Force Edge", activeConfig.Speed.Devil.vergil[2], defaultConfig.Speed.Devil.vergil[2], 0.1f, "%.2f");
+		// ImGui::Text("");
+		// ImGui::Text("Nero Angelo");
+		// GUI_InputDefault("Yamato"    , activeConfig.Speed.Devil.neroAngelo[0], defaultConfig.Speed.Devil.neroAngelo[0], 0.1f, "%.2f");
+		// GUI_InputDefault("Beowulf"   , activeConfig.Speed.Devil.neroAngelo[1], defaultConfig.Speed.Devil.neroAngelo[1], 0.1f, "%.2f");
+		// GUI_InputDefault("Force Edge", activeConfig.Speed.Devil.neroAngelo[2], defaultConfig.Speed.Devil.neroAngelo[2], 0.1f, "%.2f");
 		ImGui::PopItemWidth();
 
 		ImGui::Text("");
@@ -2024,20 +2240,68 @@ void System()
 	if (ImGui::CollapsingHeader("System"))
 	{
 		ImGui::Text("");
+
+
+
 		GUI_SectionStart("Event");
-		GUI_Checkbox("Skip Intro"    , activeConfig.Event.skipIntro    );
-		if (GUI_Checkbox("Skip Cutscenes", activeConfig.Event.skipCutscenes))
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Skip Intro",
+				activeConfig.Event.skipIntro,
+				queuedConfig.Event.skipIntro
+			)
+		)
+		{
+			Event_ToggleSkipIntro(activeConfig.Event.skipIntro);
+		}
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Skip Cutscenes",
+				activeConfig.Event.skipCutscenes,
+				queuedConfig.Event.skipCutscenes
+			)
+		)
 		{
 			Event_ToggleSkipCutscenes(activeConfig.Event.skipCutscenes);
 		}
+
 		GUI_SectionEnd();
+		ImGui::Text("");
+
+
+
 
 		GUI_SectionStart("File");
-		GUI_Checkbox("Prefer Local Files", activeConfig.File.preferLocalFiles);
+
+
+
+		GUI_Checkbox2
+		(
+			"Prefer Local Files",
+			activeConfig.File.preferLocalFiles,
+			queuedConfig.File.preferLocalFiles
+		);
+
+
+
+
 		GUI_SectionEnd();
+		ImGui::Text("");
+
+
+
 
 		GUI_SectionStart("Graphics");
 		ImGui::PushItemWidth(150);
+
+
+
 
 
 
@@ -2062,16 +2326,67 @@ void System()
 
 
 
-		GUI_Combo("V-Sync", Graphics_vSyncNames, activeConfig.Graphics.vSync);
+		GUI_Combo2
+		(
+			"V-Sync",
+			Graphics_vSyncNames,
+			activeConfig.Graphics.vSync,
+			queuedConfig.Graphics.vSync
+		);
+
+
+
+
+
+
+
+
+
+
+
+
+
 		ImGui::PopItemWidth();
 		GUI_SectionEnd();
+		ImGui::Text("");
+
+
+
 
 		GUI_SectionStart("Input");
-		GUI_Checkbox("Hide Mouse Cursor", activeConfig.Input.hideMouseCursor);
+
+		GUI_Checkbox2
+		(
+			"Hide Mouse Cursor",
+			activeConfig.Input.hideMouseCursor,
+			queuedConfig.Input.hideMouseCursor
+		);
 		GUI_SectionEnd();
+		ImGui::Text("");
+
+
 
 		GUI_SectionStart("Window");
-		GUI_Checkbox("Force Focus", activeConfig.Window.forceFocus);
+
+
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Force Focus",
+				activeConfig.Window.forceFocus,
+				queuedConfig.Window.forceFocus
+			)
+		)
+		{
+			Window_ToggleForceFocus(activeConfig.Window.forceFocus);
+		}
+
+
+
+
+
 		ImGui::Text("");
 	}
 }
@@ -2121,21 +2436,80 @@ void Training()
 {
 	if (ImGui::CollapsingHeader("Training"))
 	{
-		//ImGui::Text("");
-		//GUI_Checkbox("Enable", activeConfig.Training.enable);
-		//ImGui::Text("");
-		//GUI_ResetButton();
 		ImGui::Text("");
-		if (GUI_Checkbox("Infinite Hit Points", activeConfig.Training.infiniteHitPoints))
+
+
+
+		if (GUI_ResetButton())
+		{
+			memcpy
+			(
+				&queuedConfig.Training,
+				&defaultConfig.Training,
+				sizeof(Config::Training)
+			);
+			memcpy
+			(
+				&activeConfig.Training,
+				&queuedConfig.Training,
+				sizeof(Config::Training)
+			);
+			Training_ToggleInfiniteHitPoints  (activeConfig.Training.infiniteHitPoints  );
+			Training_ToggleInfiniteMagicPoints(activeConfig.Training.infiniteMagicPoints);
+			Training_ToggleDisableTimer       (activeConfig.Training.disableTimer       );
+		}
+		GUI_SectionEnd();
+		ImGui::Text("");
+
+
+
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Infinite Hit Points",
+				activeConfig.Training.infiniteHitPoints,
+				queuedConfig.Training.infiniteHitPoints
+			)
+		)
 		{
 			Training_ToggleInfiniteHitPoints(activeConfig.Training.infiniteHitPoints);
 		}
-		if (GUI_Checkbox("Infinite Magic Points", activeConfig.Training.infiniteMagicPoints))
+
+
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Infinite Magic Points",
+				activeConfig.Training.infiniteMagicPoints,
+				queuedConfig.Training.infiniteMagicPoints
+			)
+		)
 		{
+			Training_ToggleInfiniteMagicPoints(activeConfig.Training.infiniteMagicPoints);
 		}
-		if (GUI_Checkbox("Disable Timer", activeConfig.Training.disableTimer))
+
+
+
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Disable Timer",
+				activeConfig.Training.disableTimer,
+				queuedConfig.Training.disableTimer
+			)
+		)
 		{
+			Training_ToggleDisableTimer(activeConfig.Training.disableTimer);
 		}
+
+
+
 		ImGui::Text("");
 	}
 }
@@ -2169,7 +2543,13 @@ void Vergil()
 
 			ToggleChronoSwords(activeConfig.SummonedSwords.chronoSwords);
 		}
+		//ImGui::Text("");
+
+
+		GUI_SectionEnd();
 		ImGui::Text("");
+
+
 
 		ImGui::Text("Dark Slayer");
 		ImGui::SameLine();
