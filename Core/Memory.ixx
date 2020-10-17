@@ -162,7 +162,8 @@ export inline byte8 * HighAlloc(uint32 size)
 export template <typename T>
 void Write
 (
-	byte8  * addr,
+	//byte8  * addr,
+	void   * addr,
 	T        value,
 	uint32   padSize  = 0,
 	byte8    padValue = 0x90
@@ -175,7 +176,8 @@ void Write
 		*(T *)addr = value;
 		if (padSize)
 		{
-			memset((addr + size), padValue, padSize);
+			//memset((addr + size), padValue, padSize);
+			memset((reinterpret_cast<byte8 *>(addr) + size), padValue, padSize);
 		}
 	}
 	VirtualProtect(addr, (size + padSize), protection, &protection);

@@ -85,6 +85,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 		Actor_Init();
+
+
+
 		Actor_Toggle(activeConfig.Actor.enable);
 
 
@@ -99,8 +102,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 		Event_ToggleSkipIntro    (activeConfig.Event.skipIntro);
-		//Event_ToggleSkipCutscenes(activeConfig.Event.skipCutscenes);
-		Event_ToggleSkipCutscenes(false);
+		Event_ToggleSkipCutscenes(activeConfig.Event.skipCutscenes);
+		//Event_ToggleSkipCutscenes(false);
 		//FMOD_Init();
 		Hooks_Init();
 		//Internal_Init();

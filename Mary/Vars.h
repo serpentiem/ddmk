@@ -831,11 +831,11 @@ enum DEVIL_SPEED
 	DEVIL_SPEED_DANTE_NEVAN,
 	DEVIL_SPEED_DANTE_BEOWULF,
 	DEVIL_SPEED_DANTE_SPARDA,
-	DEVIL_SPEED_VERGIL_YAMATO = 8,
+	DEVIL_SPEED_VERGIL_YAMATO = 0,
 	DEVIL_SPEED_VERGIL_BEOWULF,
-	DEVIL_SPEED_VERGIL_FORCE_EDGE,
-	DEVIL_SPEED_NERO_ANGELO_YAMATO,
-	DEVIL_SPEED_NERO_ANGELO_BEOWULF,
+	DEVIL_SPEED_VERGIL_YAMATO_FORCE_EDGE,
+	DEVIL_SPEED_VERGIL_NERO_ANGELO_YAMATO,
+	DEVIL_SPEED_VERGIL_NERO_ANGELO_BEOWULF,
 };
 
 enum ACTOR_EVENT
@@ -1995,7 +1995,10 @@ struct ActorData
 {
 	_(8);
 	uint8 status; // 8
-	_(111);
+	_(11);
+	float32 speed; // 0x14
+	float32 speedMultiplier; // 0x18
+	_(92);
 	uint32 character; // 0x78
 	_(4);
 	vec4 position; // 0x80
@@ -2192,9 +2195,10 @@ struct ActorData
 	bool newEnableRightStick; // 0x1CAD3
 	bool newEnableLeftStick; // 0x1CAD4
 	bool newExecuteStyleSwitch; // 0x1CAD5
-	bool newEnable; // 0x1CAD6
-	uint8 newAirStingerCount; // 0x1CAD7
-	_(8);
+	bool newExecuteRemoveBusyFlag; // 0x1CAD6
+	bool newEnable; // 0x1CAD7
+	uint8 newAirStingerCount; // 0x1CAD8
+	_(7);
 	byte32 newEffectIndices[8]; // 0x1CAE0
 	uint32 newLastVar; // 0x1CB00
 
@@ -2208,7 +2212,10 @@ struct ActorDataDante
 {
 	_(8);
 	uint8 status; // 8
-	_(111);
+	_(11);
+	float32 speed; // 0x14
+	float32 speedMultiplier; // 0x18
+	_(92);
 	uint32 character; // 0x78
 	_(4);
 	vec4 position; // 0x80
@@ -2429,9 +2436,10 @@ struct ActorDataDante
 	bool newEnableRightStick; // 0x1CAD3
 	bool newEnableLeftStick; // 0x1CAD4
 	bool newExecuteStyleSwitch; // 0x1CAD5
-	bool newEnable; // 0x1CAD6
-	uint8 newAirStingerCount; // 0x1CAD7
-	_(8);
+	bool newExecuteRemoveBusyFlag; // 0x1CAD6
+	bool newEnable; // 0x1CAD7
+	uint8 newAirStingerCount; // 0x1CAD8
+	_(7);
 	byte32 newEffectIndices[8]; // 0x1CAE0
 	uint32 newLastVar; // 0x1CB00
 
@@ -2445,7 +2453,10 @@ struct ActorDataBob
 {
 	_(8);
 	uint8 status; // 8
-	_(111);
+	_(11);
+	float32 speed; // 0x14
+	float32 speedMultiplier; // 0x18
+	_(92);
 	uint32 character; // 0x78
 	_(4);
 	vec4 position; // 0x80
@@ -2642,9 +2653,10 @@ struct ActorDataBob
 	bool newEnableRightStick; // 0x1CAD3
 	bool newEnableLeftStick; // 0x1CAD4
 	bool newExecuteStyleSwitch; // 0x1CAD5
-	bool newEnable; // 0x1CAD6
-	uint8 newAirStingerCount; // 0x1CAD7
-	_(8);
+	bool newExecuteRemoveBusyFlag; // 0x1CAD6
+	bool newEnable; // 0x1CAD7
+	uint8 newAirStingerCount; // 0x1CAD8
+	_(7);
 	byte32 newEffectIndices[8]; // 0x1CAE0
 	uint32 newLastVar; // 0x1CB00
 
@@ -2658,7 +2670,10 @@ struct ActorDataLady
 {
 	_(8);
 	uint8 status; // 8
-	_(111);
+	_(11);
+	float32 speed; // 0x14
+	float32 speedMultiplier; // 0x18
+	_(92);
 	uint32 character; // 0x78
 	_(4);
 	vec4 position; // 0x80
@@ -2855,9 +2870,10 @@ struct ActorDataLady
 	bool newEnableRightStick; // 0x1CAD3
 	bool newEnableLeftStick; // 0x1CAD4
 	bool newExecuteStyleSwitch; // 0x1CAD5
-	bool newEnable; // 0x1CAD6
-	uint8 newAirStingerCount; // 0x1CAD7
-	_(8);
+	bool newExecuteRemoveBusyFlag; // 0x1CAD6
+	bool newEnable; // 0x1CAD7
+	uint8 newAirStingerCount; // 0x1CAD8
+	_(7);
 	byte32 newEffectIndices[8]; // 0x1CAE0
 	uint32 newLastVar; // 0x1CB00
 
@@ -2871,7 +2887,10 @@ struct ActorDataVergil
 {
 	_(8);
 	uint8 status; // 8
-	_(111);
+	_(11);
+	float32 speed; // 0x14
+	float32 speedMultiplier; // 0x18
+	_(92);
 	uint32 character; // 0x78
 	_(4);
 	vec4 position; // 0x80
@@ -3080,9 +3099,10 @@ struct ActorDataVergil
 	bool newEnableRightStick; // 0x1CAD3
 	bool newEnableLeftStick; // 0x1CAD4
 	bool newExecuteStyleSwitch; // 0x1CAD5
-	bool newEnable; // 0x1CAD6
-	uint8 newAirStingerCount; // 0x1CAD7
-	_(8);
+	bool newExecuteRemoveBusyFlag; // 0x1CAD6
+	bool newEnable; // 0x1CAD7
+	uint8 newAirStingerCount; // 0x1CAD8
+	_(7);
 	byte32 newEffectIndices[8]; // 0x1CAE0
 	uint32 newLastVar; // 0x1CB00
 
@@ -3093,6 +3113,8 @@ struct ActorDataVergil
 };
 
 static_assert(offsetof(ActorData, status) == 8);
+static_assert(offsetof(ActorData, speed) == 0x14);
+static_assert(offsetof(ActorData, speedMultiplier) == 0x18);
 static_assert(offsetof(ActorData, character) == 0x78);
 static_assert(offsetof(ActorData, position) == 0x80);
 static_assert(offsetof(ActorData, pull) == 0x94);
@@ -3230,12 +3252,15 @@ static_assert(offsetof(ActorData, newButtonMask) == 0x1CAD1);
 static_assert(offsetof(ActorData, newEnableRightStick) == 0x1CAD3);
 static_assert(offsetof(ActorData, newEnableLeftStick) == 0x1CAD4);
 static_assert(offsetof(ActorData, newExecuteStyleSwitch) == 0x1CAD5);
-static_assert(offsetof(ActorData, newEnable) == 0x1CAD6);
-static_assert(offsetof(ActorData, newAirStingerCount) == 0x1CAD7);
+static_assert(offsetof(ActorData, newExecuteRemoveBusyFlag) == 0x1CAD6);
+static_assert(offsetof(ActorData, newEnable) == 0x1CAD7);
+static_assert(offsetof(ActorData, newAirStingerCount) == 0x1CAD8);
 static_assert(offsetof(ActorData, newEffectIndices) == 0x1CAE0);
 static_assert(offsetof(ActorData, newLastVar) == 0x1CB00);
 
 static_assert(offsetof(ActorDataDante, status) == 8);
+static_assert(offsetof(ActorDataDante, speed) == 0x14);
+static_assert(offsetof(ActorDataDante, speedMultiplier) == 0x18);
 static_assert(offsetof(ActorDataDante, character) == 0x78);
 static_assert(offsetof(ActorDataDante, position) == 0x80);
 static_assert(offsetof(ActorDataDante, pull) == 0x94);
@@ -3390,12 +3415,15 @@ static_assert(offsetof(ActorDataDante, newButtonMask) == 0x1CAD1);
 static_assert(offsetof(ActorDataDante, newEnableRightStick) == 0x1CAD3);
 static_assert(offsetof(ActorDataDante, newEnableLeftStick) == 0x1CAD4);
 static_assert(offsetof(ActorDataDante, newExecuteStyleSwitch) == 0x1CAD5);
-static_assert(offsetof(ActorDataDante, newEnable) == 0x1CAD6);
-static_assert(offsetof(ActorDataDante, newAirStingerCount) == 0x1CAD7);
+static_assert(offsetof(ActorDataDante, newExecuteRemoveBusyFlag) == 0x1CAD6);
+static_assert(offsetof(ActorDataDante, newEnable) == 0x1CAD7);
+static_assert(offsetof(ActorDataDante, newAirStingerCount) == 0x1CAD8);
 static_assert(offsetof(ActorDataDante, newEffectIndices) == 0x1CAE0);
 static_assert(offsetof(ActorDataDante, newLastVar) == 0x1CB00);
 
 static_assert(offsetof(ActorDataBob, status) == 8);
+static_assert(offsetof(ActorDataBob, speed) == 0x14);
+static_assert(offsetof(ActorDataBob, speedMultiplier) == 0x18);
 static_assert(offsetof(ActorDataBob, character) == 0x78);
 static_assert(offsetof(ActorDataBob, position) == 0x80);
 static_assert(offsetof(ActorDataBob, pull) == 0x94);
@@ -3533,12 +3561,15 @@ static_assert(offsetof(ActorDataBob, newButtonMask) == 0x1CAD1);
 static_assert(offsetof(ActorDataBob, newEnableRightStick) == 0x1CAD3);
 static_assert(offsetof(ActorDataBob, newEnableLeftStick) == 0x1CAD4);
 static_assert(offsetof(ActorDataBob, newExecuteStyleSwitch) == 0x1CAD5);
-static_assert(offsetof(ActorDataBob, newEnable) == 0x1CAD6);
-static_assert(offsetof(ActorDataBob, newAirStingerCount) == 0x1CAD7);
+static_assert(offsetof(ActorDataBob, newExecuteRemoveBusyFlag) == 0x1CAD6);
+static_assert(offsetof(ActorDataBob, newEnable) == 0x1CAD7);
+static_assert(offsetof(ActorDataBob, newAirStingerCount) == 0x1CAD8);
 static_assert(offsetof(ActorDataBob, newEffectIndices) == 0x1CAE0);
 static_assert(offsetof(ActorDataBob, newLastVar) == 0x1CB00);
 
 static_assert(offsetof(ActorDataLady, status) == 8);
+static_assert(offsetof(ActorDataLady, speed) == 0x14);
+static_assert(offsetof(ActorDataLady, speedMultiplier) == 0x18);
 static_assert(offsetof(ActorDataLady, character) == 0x78);
 static_assert(offsetof(ActorDataLady, position) == 0x80);
 static_assert(offsetof(ActorDataLady, pull) == 0x94);
@@ -3676,12 +3707,15 @@ static_assert(offsetof(ActorDataLady, newButtonMask) == 0x1CAD1);
 static_assert(offsetof(ActorDataLady, newEnableRightStick) == 0x1CAD3);
 static_assert(offsetof(ActorDataLady, newEnableLeftStick) == 0x1CAD4);
 static_assert(offsetof(ActorDataLady, newExecuteStyleSwitch) == 0x1CAD5);
-static_assert(offsetof(ActorDataLady, newEnable) == 0x1CAD6);
-static_assert(offsetof(ActorDataLady, newAirStingerCount) == 0x1CAD7);
+static_assert(offsetof(ActorDataLady, newExecuteRemoveBusyFlag) == 0x1CAD6);
+static_assert(offsetof(ActorDataLady, newEnable) == 0x1CAD7);
+static_assert(offsetof(ActorDataLady, newAirStingerCount) == 0x1CAD8);
 static_assert(offsetof(ActorDataLady, newEffectIndices) == 0x1CAE0);
 static_assert(offsetof(ActorDataLady, newLastVar) == 0x1CB00);
 
 static_assert(offsetof(ActorDataVergil, status) == 8);
+static_assert(offsetof(ActorDataVergil, speed) == 0x14);
+static_assert(offsetof(ActorDataVergil, speedMultiplier) == 0x18);
 static_assert(offsetof(ActorDataVergil, character) == 0x78);
 static_assert(offsetof(ActorDataVergil, position) == 0x80);
 static_assert(offsetof(ActorDataVergil, pull) == 0x94);
@@ -3827,8 +3861,9 @@ static_assert(offsetof(ActorDataVergil, newButtonMask) == 0x1CAD1);
 static_assert(offsetof(ActorDataVergil, newEnableRightStick) == 0x1CAD3);
 static_assert(offsetof(ActorDataVergil, newEnableLeftStick) == 0x1CAD4);
 static_assert(offsetof(ActorDataVergil, newExecuteStyleSwitch) == 0x1CAD5);
-static_assert(offsetof(ActorDataVergil, newEnable) == 0x1CAD6);
-static_assert(offsetof(ActorDataVergil, newAirStingerCount) == 0x1CAD7);
+static_assert(offsetof(ActorDataVergil, newExecuteRemoveBusyFlag) == 0x1CAD6);
+static_assert(offsetof(ActorDataVergil, newEnable) == 0x1CAD7);
+static_assert(offsetof(ActorDataVergil, newAirStingerCount) == 0x1CAD8);
 static_assert(offsetof(ActorDataVergil, newEffectIndices) == 0x1CAE0);
 static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CB00);
 
@@ -3905,7 +3940,7 @@ constexpr MotionArchiveHelper motionArchiveHelperVergil[] =
 	{ MOTION_GROUP_VERGIL_DARK_SLAYER           , pl021_00_6 },
 	{ MOTION_GROUP_VERGIL_NERO_ANGELO_YAMATO    , pl021_00_7 },
 	{ MOTION_GROUP_VERGIL_NERO_ANGELO_BEOWULF   , pl021_00_8 },
-	{ MOTION_GROUP_VERGIL_NERO_ANGELO_FORCE_EDGE, pl021_00_9 },
+	{ MOTION_GROUP_VERGIL_NERO_ANGELO_FORCE_EDGE, pl021_00_9 }, // @Todo: Review.
 };
 
 

@@ -1,3 +1,6 @@
+// @Todo: Enter returns true.
+// @Todo: Round values.
+
 module;
 #include "../Core/Core.h"
 
@@ -1970,12 +1973,8 @@ const char * devilSpeedNamesVergil[] =
 	"Yamato",
 	"Beowulf",
 	"Yamato & Force Edge",
-};
-
-const char * speedNamesNeroAngelo[] =
-{
-	"Yamato",
-	"Beowulf",
+	"Nero Angelo Yamato",
+	"Nero Angelo Beowulf",
 };
 
 
@@ -2073,15 +2072,7 @@ void Speed()
 
 
 
-		GUI_InputDefault2Speed
-		(
-			"Actor",
-			activeConfig.Speed.actor,
-			queuedConfig.Speed.actor,
-			defaultConfig.Speed.actor,
-			0.1f,
-			"%.2f"
-		);
+
 
 
 
@@ -2133,6 +2124,20 @@ void Speed()
 
 
 
+		GUI_InputDefault2Speed
+		(
+			"Human",
+			activeConfig.Speed.human,
+			queuedConfig.Speed.human,
+			defaultConfig.Speed.human,
+			0.1f,
+			"%.2f"
+		);
+
+
+
+
+
 		GUI_SectionStart("Devil");
 
 		ImGui::Text("Dante");
@@ -2165,20 +2170,20 @@ void Speed()
 		}
 		ImGui::Text("");
 
-		ImGui::Text("NeroAngelo");
-		for_all(uint8, index, countof(activeConfig.Speed.neroAngelo))
-		{
-			GUI_InputDefault2Speed
-			(
-				speedNamesNeroAngelo[index],
-				activeConfig.Speed.neroAngelo[index],
-				queuedConfig.Speed.neroAngelo[index],
-				defaultConfig.Speed.neroAngelo[index],
-				0.1f,
-				"%.2f"
-			);
-		}
-		ImGui::Text("");
+		// ImGui::Text("NeroAngelo");
+		// for_all(uint8, index, countof(activeConfig.Speed.neroAngelo))
+		// {
+		// 	GUI_InputDefault2Speed
+		// 	(
+		// 		speedNamesNeroAngelo[index],
+		// 		activeConfig.Speed.neroAngelo[index],
+		// 		queuedConfig.Speed.neroAngelo[index],
+		// 		defaultConfig.Speed.neroAngelo[index],
+		// 		0.1f,
+		// 		"%.2f"
+		// 	);
+		// }
+		// ImGui::Text("");
 
 
 

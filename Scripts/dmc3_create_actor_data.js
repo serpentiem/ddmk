@@ -25,6 +25,10 @@ const SIZE_VERGIL = 0xB8C0;
 var items =
 [
 	[ "status"                              , "uint8"                   , 8                                ],
+
+	[ "speed"                              , "float32"                   , 0x14                                ],
+	[ "speedMultiplier"                              , "float32"                   , 0x18                                ],
+
 	[ "character"                           , "uint32"                  , 0x78                             ],
 	[ "position"                            , "vec4"                    , 0x80                             ],
 	[ "pull"                                , "float32"                 , 0x94                             ],
@@ -152,11 +156,12 @@ var items =
 	[ "bufferedAction"                      , "uint8"                   , 0x3FA8                           ],
 	[ "chainCount"                          , "uint8"                   , 0x3FAC                           ],
 	[ "expertise[16]"                       , "byte32"                  , 0x3FEC                           ],
+	//[ ""                        , "float32"                 , 0x402C                           ],
 	[ "maxHitPoints"                        , "float32"                 , 0x40EC                           ],
 	[ "hitPoints"                           , "float32"                 , 0x411C                           ],
 
 
-	
+
 
 
 	[ "targetBaseAddr"                      , "byte8 *"                 , 0x6328                           ],

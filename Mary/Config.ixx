@@ -11,7 +11,7 @@ export struct Config
 {
 	struct
 	{
-		bool enable = true;
+		bool enable = false;
 		PlayerData playerData[MAX_PLAYER][MAX_ENTITY] = {};
 		uint8 playerCount = 1;
 		bool enableQuicksilver = true;
@@ -257,15 +257,12 @@ export struct Config
 
 		float main  = 1.0f;
 		float turbo = 1.2f;
-		float actor = 1.0f;
 		float enemy = 1.0f;
-
 
 		float quicksilverActor = 1.05f;
 		float quicksilverEnemy = 0.33f;
 
-
-
+		float human = 1.0f;
 		float devilDante[6] =
 		{
 			1.1f,
@@ -275,51 +272,19 @@ export struct Config
 			1.05f,
 			1.1f,
 		};
-		float devilVergil[3] =
+		float devilVergil[5] =
 		{
 			1.2f,
 			1.2f,
 			1.2f,
-		};
-		float neroAngelo[2] =
-		{
 			1.0f,
 			1.0f,
 		};
-
-
-
-
-
-
-
-
-		// struct
-		// {
-
-		// }
-		// Main;
-		// struct
-		// {
-
-		// }
-		// Quicksilver;
-		// struct
-		// {
-
-		// }
-		// Devil;
 	}
 	Speed;
-	// struct
-	// {
-	// 	bool noDoubleTap = false;
-	// }
-	// StyleSwitchController;
 	struct
 	{
 		bool chronoSwords = false;
-		//bool dante        = false;
 	}
 	SummonedSwords;
 	struct

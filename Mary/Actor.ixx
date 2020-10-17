@@ -7140,6 +7140,172 @@ void InitColor()
 
 #pragma endregion
 
+#pragma region Speed
+
+byte8 * UpdateActorSpeedAddr = 0;
+
+void UpdateActorSpeed(byte8 * baseAddr)
+{
+	for_all(uint32, index, Actor_actorBaseAddr.count)
+	{
+		if (baseAddr != Actor_actorBaseAddr[index])
+		{
+			continue;
+		}
+
+		auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+
+		if (actorData.devil)
+		{
+			switch (actorData.character)
+			{
+				case CHAR_DANTE:
+				{
+					auto & actorData2 = *reinterpret_cast<ActorDataDante *>(&actorData);
+
+					auto devilIndex = actorData2.meleeWeaponIndex;
+					if (devilIndex > 4)
+					{
+						devilIndex = 0;
+					}
+
+					if (actorData2.sparda)
+					{
+						devilIndex = DEVIL_SPEED_DANTE_SPARDA;
+					}
+
+					actorData.speed *= activeConfig.Speed.devilDante[devilIndex];
+
+					break;
+				}
+				case CHAR_VERGIL:
+				{
+					auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
+
+					auto devilIndex = actorData2.activeMeleeWeaponIndex;
+					if (devilIndex > 2)
+					{
+						devilIndex = 0;
+					}
+
+					if (actorData2.neroAngelo)
+					{
+						devilIndex += 3;
+					}
+
+					actorData.speed *= activeConfig.Speed.devilVergil[devilIndex];
+
+					break;
+				}
+			}
+		}
+		else
+		{
+			actorData.speed *= activeConfig.Speed.human;
+		}
+	}
+}
+
+void InitSpeed()
+{
+	LogFunction();
+
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xF3, 0x0F, 0x11, 0x43, 0x14, // movss [rbx+14],xmm0
+		};
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+		auto func = CreateFunction(UpdateActorSpeed, (appBaseAddr + 0x3261D2), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		UpdateActorSpeedAddr = func.addr;
+		/*
+		dmc3.exe+3261CD - F3 0F11 43 14 - movss [rbx+14],xmm0
+		dmc3.exe+3261D2 - 48 83 C4 20   - add rsp,20
+		*/
+	}
+}
+
+void ToggleSpeed(bool enable)
+{
+	LogFunction(enable);
+
+	// Devil Speed Values Dante
+	{
+		auto items = reinterpret_cast<float *>(appBaseAddr + 0x58B0B8);
+
+		if (enable)
+		{
+			for_all(uint8, itemIndex, countof(activeConfig.Speed.devilDante))
+			{
+				auto & item = items[itemIndex];
+
+				Write<float>(&item, 1.0f);
+			}
+		}
+		else
+		{
+			vp_memcpy(items, defaultConfig.Speed.devilDante, sizeof(defaultConfig.Speed.devilDante));
+		}
+		/*
+		dmc3.exe+1F8C24 - F3 41 0F10 84 8C B8B05800 - MOVSS XMM0,[R12+RCX*4+0058B0B8]
+		*/
+	}
+
+	// Devil Speed Values Vergil
+	{
+		auto items = reinterpret_cast<float *>(appBaseAddr + 0x58B0D8);
+
+		if (enable)
+		{
+			for_all(uint8, itemIndex, countof(activeConfig.Speed.devilVergil))
+			{
+				auto & item = items[itemIndex];
+
+				Write<float>(&item, 1.0f);
+			}
+		}
+		else
+		{
+			vp_memcpy(items, defaultConfig.Speed.devilVergil, sizeof(defaultConfig.Speed.devilVergil));
+		}
+		/*
+		dmc3.exe+1F8C48 - F3 41 0F10 84 8C D8B05800 - MOVSS XMM0,[R12+RCX*4+0058B0D8]
+		dmc3.exe+1F8C5B - F3 41 0F10 84 84 D8B05800 - MOVSS XMM0,[R12+RAX*4+0058B0D8]
+		*/
+	}
+
+	// Update Actor Speed
+	{
+		auto dest = (appBaseAddr + 0x3261CD);
+		if (enable)
+		{
+			WriteJump(dest, UpdateActorSpeedAddr);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xF3, 0x0F, 0x11, 0x43, 0x14, // movss [rbx+14],xmm0
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+3261CD - F3 0F11 43 14 - movss [rbx+14],xmm0
+		dmc3.exe+3261D2 - 48 83 C4 20   - add rsp,20
+		*/
+	}
+}
+
+
+
+
+#pragma endregion
+
 // @Todo: Recheck.
 void ToggleMainActorFixes(bool enable)
 {
@@ -7468,6 +7634,7 @@ export void Actor_Init()
 	InitIsWeaponReady();
 	InitMobility();
 	InitColor();
+	InitSpeed();
 
 	if (!Actor_actorBaseAddr.Init(512))
 	{
@@ -7866,6 +8033,7 @@ export void Actor_Toggle(bool enable)
 	ToggleStyleFixes            (enable);
 	ToggleIsWeaponReady         (enable);
 	ToggleMobility              (enable);
+	ToggleSpeed                 (enable);
 
 	// Actor Data Size
 	{
