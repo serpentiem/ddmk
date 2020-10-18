@@ -976,7 +976,27 @@ struct StagePositionData
 
 
 
+// $CameraDataStart
 
+struct CameraData
+{
+	_(176);
+	byte8 * targetBaseAddr; // 0xB0
+	_(24);
+	float height; // 0xD0
+	float tilt; // 0xD4
+	float zoom; // 0xD8
+	_(4);
+	float zoomLockOn; // 0xE0
+};
+
+static_assert(offsetof(CameraData, targetBaseAddr) == 0xB0);
+static_assert(offsetof(CameraData, height) == 0xD0);
+static_assert(offsetof(CameraData, tilt) == 0xD4);
+static_assert(offsetof(CameraData, zoom) == 0xD8);
+static_assert(offsetof(CameraData, zoomLockOn) == 0xE0);
+
+// $CameraDataEnd
 
 
 
@@ -993,7 +1013,7 @@ if (!name[147])\
 {\
 	__VA_ARGS__;\
 }\
-auto & cameraData = *reinterpret_cast<CAMERA_DATA *>(name[147])
+auto & cameraData = *reinterpret_cast<CameraData *>(name[147])
 #define IntroduceCameraData(...) _IntroduceCameraData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
 
 #define _IntroduceHUDPointers(name, ...)\
@@ -1200,20 +1220,20 @@ if (!stagePositionData)\
 
 
 
-struct CAMERA_DATA
-{
-	_(176);
-	byte8 * targetBaseAddr;
-	_(24);
-	float32 height;
-	float32 tilt;
-	float32 zoom;
-};
+// struct CAMERA_DATA
+// {
+// 	_(176);
+// 	byte8 * targetBaseAddr;
+// 	_(24);
+// 	float32 height;
+// 	float32 tilt;
+// 	float32 zoom;
+// };
 
-static_assert(offsetof(CAMERA_DATA, targetBaseAddr) == 0xB0);
-static_assert(offsetof(CAMERA_DATA, height) == 0xD0);
-static_assert(offsetof(CAMERA_DATA, tilt) == 0xD4);
-static_assert(offsetof(CAMERA_DATA, zoom) == 0xD8);
+// static_assert(offsetof(CAMERA_DATA, targetBaseAddr) == 0xB0);
+// static_assert(offsetof(CAMERA_DATA, height) == 0xD0);
+// static_assert(offsetof(CAMERA_DATA, tilt) == 0xD4);
+// static_assert(offsetof(CAMERA_DATA, zoom) == 0xD8);
 
 
 

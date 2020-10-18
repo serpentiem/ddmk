@@ -54,6 +54,7 @@ var typeHelper =
 	[ "byte32"                    , "4 Bytes", 4   , true  ],
 	[ "byte64"                    , "8 Bytes", 8   , true  ],
 	[ "float32"                   , "Float", 4   , false ],
+	[ "float"                   , "Float", 4   , false ],
 	// Structures
 	[ "vec4"                      , ""       , 16  , false ],
 
@@ -84,6 +85,7 @@ var typeHelper =
 	[ "RecoveryData" , "" , 112 , false ],
 	[ "WeaponData" , "" , 296 , false ],
 	[ "PlayerData" , "" , 18, false ],
+	[ "CameraData" , "" , 512, false ],
 	//[ "CloneData" , "" , 116 , false ],
 ];
 

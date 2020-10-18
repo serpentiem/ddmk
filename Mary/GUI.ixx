@@ -1076,6 +1076,67 @@ void Camera()
 		{
 			Camera_ToggleInvertX(activeConfig.Camera.invertX);
 		}
+		ImGui::Text("");
+
+		GUI_InputDefault2
+		(
+			"Height",
+			activeConfig.Camera.height,
+			queuedConfig.Camera.height,
+			defaultConfig.Camera.height,
+			100.0f,
+			"%.1f"
+		);
+
+		GUI_InputDefault2
+		(
+			"Tilt",
+			activeConfig.Camera.tilt,
+			queuedConfig.Camera.tilt,
+			defaultConfig.Camera.tilt,
+			100.0f,
+			"%.1f"
+		);
+
+		GUI_InputDefault2
+		(
+			"Zoom",
+			activeConfig.Camera.zoom,
+			queuedConfig.Camera.zoom,
+			defaultConfig.Camera.zoom,
+			100.0f,
+			"%.1f"
+		);
+
+		GUI_InputDefault2
+		(
+			"Zoom Lock-On",
+			activeConfig.Camera.zoomLockOn,
+			queuedConfig.Camera.zoomLockOn,
+			defaultConfig.Camera.zoomLockOn,
+			100.0f,
+			"%.1f"
+		);
+
+		GUI_Checkbox2
+		(
+			"Apply Config",
+			activeConfig.Camera.applyConfig,
+			queuedConfig.Camera.applyConfig
+		);
+
+		GUI_InputDefault2
+		(
+			"Timeout",
+			activeConfig.Camera.timeout,
+			queuedConfig.Camera.timeout,
+			defaultConfig.Camera.timeout
+		);
+
+
+
+
+
 
 		ImGui::Text("");
 	}
@@ -2026,36 +2087,47 @@ void Speed()
 	{
 		ImGui::Text("");
 
-		GUI_Checkbox("Enable", activeConfig.Speed.enable);
+		//GUI_Checkbox("Enable", activeConfig.Speed.enable);
 
 
+		//ImGui::Text("");
+		if (GUI_ResetButton())
+		{
+
+		}
 		ImGui::Text("");
-		GUI_ResetButton();
-		GUI_SectionEnd();
+
+
+
+
+		//GUI_SectionEnd();
+		//ImGui::Text("");
+
+
+
+
+
+
+
 		ImGui::PushItemWidth(200);
 
 
 
 
-		GUI_SectionStart("Main");
+		//GUI_SectionStart("Main");
 
 
 
 		GUI_InputDefault2Speed
 		(
-			"Base",
+			"Main",
 			activeConfig.Speed.main,
 			queuedConfig.Speed.main,
 			defaultConfig.Speed.main,
 			0.1f,
-			"%.2f"
+			"%.2f",
+			ImGuiInputTextFlags_EnterReturnsTrue
 		);
-
-
-
-
-
-
 		GUI_InputDefault2Speed
 		(
 			"Turbo",
@@ -2063,20 +2135,9 @@ void Speed()
 			queuedConfig.Speed.turbo,
 			defaultConfig.Speed.turbo,
 			0.1f,
-			"%.2f"
+			"%.2f",
+			ImGuiInputTextFlags_EnterReturnsTrue
 		);
-
-
-
-
-
-
-
-
-
-
-
-
 		GUI_InputDefault2Speed
 		(
 			"Enemy",
@@ -2084,42 +2145,50 @@ void Speed()
 			queuedConfig.Speed.enemy,
 			defaultConfig.Speed.enemy,
 			0.1f,
-			"%.2f"
+			"%.2f",
+			ImGuiInputTextFlags_EnterReturnsTrue
 		);
 
 
 
 
-		GUI_SectionEnd();
 
 
-		GUI_SectionStart("Quicksilver");
-
-		GUI_InputDefault2Speed
-		(
-			"Actor",
-			activeConfig.Speed.quicksilverActor,
-			queuedConfig.Speed.quicksilverActor,
-			defaultConfig.Speed.quicksilverActor,
-			0.1f,
-			"%.2f"
-		);
 
 
-		GUI_InputDefault2Speed
-		(
-			"Enemy",
-			activeConfig.Speed.quicksilverEnemy,
-			queuedConfig.Speed.quicksilverEnemy,
-			defaultConfig.Speed.quicksilverEnemy,
-			0.1f,
-			"%.2f"
-		);
+
+
+
+
+
+		//GUI_SectionEnd();
+
+
+		//GUI_SectionStart("Quicksilver");
+
+
+
 
 
 
 		GUI_SectionEnd();
 		ImGui::Text("");
+
+
+
+
+
+		//GUI_SectionStart("Actor");
+
+		ImGui::Text("Actor");
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Requires Actor module."
+		);
+		ImGui::Text("");
+
 
 
 
@@ -2131,16 +2200,12 @@ void Speed()
 			queuedConfig.Speed.human,
 			defaultConfig.Speed.human,
 			0.1f,
-			"%.2f"
+			"%.2f",
+			ImGuiInputTextFlags_EnterReturnsTrue
 		);
+		//ImGui::Text("");
 
-
-
-
-
-		GUI_SectionStart("Devil");
-
-		ImGui::Text("Dante");
+		ImGui::Text("Devil Dante");
 		for_all(uint8, index, countof(activeConfig.Speed.devilDante))
 		{
 			GUI_InputDefault2Speed
@@ -2150,12 +2215,15 @@ void Speed()
 				queuedConfig.Speed.devilDante[index],
 				defaultConfig.Speed.devilDante[index],
 				0.1f,
-				"%.2f"
+				"%.2f",
+				ImGuiInputTextFlags_EnterReturnsTrue
 			);
 		}
-		ImGui::Text("");
+		//ImGui::Text("");
 
-		ImGui::Text("Vergil");
+
+
+		ImGui::Text("Devil Vergil");
 		for_all(uint8, index, countof(activeConfig.Speed.devilVergil))
 		{
 			GUI_InputDefault2Speed
@@ -2165,25 +2233,40 @@ void Speed()
 				queuedConfig.Speed.devilVergil[index],
 				defaultConfig.Speed.devilVergil[index],
 				0.1f,
-				"%.2f"
+				"%.2f",
+				ImGuiInputTextFlags_EnterReturnsTrue
 			);
 		}
+		//ImGui::Text("");
+
+
+		GUI_SectionEnd();
 		ImGui::Text("");
 
-		// ImGui::Text("NeroAngelo");
-		// for_all(uint8, index, countof(activeConfig.Speed.neroAngelo))
-		// {
-		// 	GUI_InputDefault2Speed
-		// 	(
-		// 		speedNamesNeroAngelo[index],
-		// 		activeConfig.Speed.neroAngelo[index],
-		// 		queuedConfig.Speed.neroAngelo[index],
-		// 		defaultConfig.Speed.neroAngelo[index],
-		// 		0.1f,
-		// 		"%.2f"
-		// 	);
-		// }
-		// ImGui::Text("");
+
+		GUI_SectionStart("Quicksilver");
+
+
+		GUI_InputDefault2Speed
+		(
+			"Actor",
+			activeConfig.Speed.quicksilverActor,
+			queuedConfig.Speed.quicksilverActor,
+			defaultConfig.Speed.quicksilverActor,
+			0.1f,
+			"%.2f",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+		GUI_InputDefault2Speed
+		(
+			"Enemy",
+			activeConfig.Speed.quicksilverEnemy,
+			queuedConfig.Speed.quicksilverEnemy,
+			defaultConfig.Speed.quicksilverEnemy,
+			0.1f,
+			"%.2f",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
 
 
 
@@ -2191,30 +2274,12 @@ void Speed()
 
 
 
-		// GUI_InputDefault2Speed
-		// (
-		// 	"Rebellion",
-		// 	activeConfig.Speed.Devil.dante[0],
-		// 	defaultConfig.Speed.Devil.dante[0], 0.1f, "%.2f");
-		// GUI_InputDefault("Cerberus"    , activeConfig.Speed.Devil.dante[1], defaultConfig.Speed.Devil.dante[1], 0.1f, "%.2f");
-		// GUI_InputDefault("Agni & Rudra", activeConfig.Speed.Devil.dante[2], defaultConfig.Speed.Devil.dante[2], 0.1f, "%.2f");
-		// GUI_InputDefault("Nevan"       , activeConfig.Speed.Devil.dante[3], defaultConfig.Speed.Devil.dante[3], 0.1f, "%.2f");
-		// GUI_InputDefault("Beowulf"     , activeConfig.Speed.Devil.dante[4], defaultConfig.Speed.Devil.dante[4], 0.1f, "%.2f");
-		// GUI_InputDefault("Sparda"      , activeConfig.Speed.Devil.dante[5], defaultConfig.Speed.Devil.dante[5], 0.1f, "%.2f");
 
 
 
 
-		// ImGui::Text("");
-		// ImGui::Text("Vergil");
-		// GUI_InputDefault("Yamato"    , activeConfig.Speed.Devil.vergil[0], defaultConfig.Speed.Devil.vergil[0], 0.1f, "%.2f");
-		// GUI_InputDefault("Beowulf"   , activeConfig.Speed.Devil.vergil[1], defaultConfig.Speed.Devil.vergil[1], 0.1f, "%.2f");
-		// GUI_InputDefault("Force Edge", activeConfig.Speed.Devil.vergil[2], defaultConfig.Speed.Devil.vergil[2], 0.1f, "%.2f");
-		// ImGui::Text("");
-		// ImGui::Text("Nero Angelo");
-		// GUI_InputDefault("Yamato"    , activeConfig.Speed.Devil.neroAngelo[0], defaultConfig.Speed.Devil.neroAngelo[0], 0.1f, "%.2f");
-		// GUI_InputDefault("Beowulf"   , activeConfig.Speed.Devil.neroAngelo[1], defaultConfig.Speed.Devil.neroAngelo[1], 0.1f, "%.2f");
-		// GUI_InputDefault("Force Edge", activeConfig.Speed.Devil.neroAngelo[2], defaultConfig.Speed.Devil.neroAngelo[2], 0.1f, "%.2f");
+
+
 		ImGui::PopItemWidth();
 
 		ImGui::Text("");

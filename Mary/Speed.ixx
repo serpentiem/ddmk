@@ -28,7 +28,7 @@ export void UpdateSpeedValues()
 	dmc3.exe+23E641 - F3 0F11 05 4747AB00 - movss [dmc3.exe+CF2D90],xmm0
 	*/
 
-	Write<float32>((appBaseAddr + 0x326ADA + 3), activeConfig.Speed.enemy);
+	Write<float>((appBaseAddr + 0x326ADA + 3), activeConfig.Speed.enemy);
 	/*
 	dmc3.exe+326ADA - C7 41 10 0000803F - mov [rcx+10],3F800000
 	dmc3.exe+326AE1 - 80 B9 AC000000 01 - cmp byte ptr [rcx+000000AC],01

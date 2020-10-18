@@ -116,7 +116,7 @@ export struct Config
 		float32 zoom        = 460;
 		float32 zoomLockOn  = 400;
 		bool    applyConfig = false;
-		uint32  rate        = 1000;
+		float timeout        = 500;
 	}
 	Camera;
 	struct

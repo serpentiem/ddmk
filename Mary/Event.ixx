@@ -7,6 +7,10 @@ export module Event;
 import Actor;
 import Arcade;
 import BossRush;
+
+import Config;
+
+
 import File;
 import Model;
 
@@ -303,10 +307,106 @@ void MainLoopOnceSync()
 	}
 }
 
+
+
+
+
+
+/*
+void Camera_Update(CONFIG & config)
+{
+	// @Todo: Add to vars.
+	auto addr = *(byte8 **)(appBaseAddr + 0xC8FBD0);
+	if (!addr)
+	{
+		return;
+	}
+	addr = *(byte8 **)(addr + 0x498);
+	if (!addr)
+	{
+		return;
+	}
+	auto & height     = *(float32 *)(addr + 0xD0) = config.Camera.height;
+	auto & tilt       = *(float32 *)(addr + 0xD4) = config.Camera.tilt;
+	auto & zoom       = *(float32 *)(addr + 0xD8) = config.Camera.zoom;
+	auto & zoomLockOn = *(float32 *)(addr + 0xE0) = config.Camera.zoomLockOn;
+}
+*/
+
+
+
+float cameraTimeout = 0;
+
+
+void UpdateCamera()
+{
+
+	if (cameraTimeout > 0)
+	{
+		cameraTimeout -= 10.0f;
+	}
+	else if (cameraTimeout < 0)
+	{
+		cameraTimeout = 0;
+	}
+
+
+
+	if (cameraTimeout > 0)
+	{
+		return;
+	}
+
+
+
+	if (!activeConfig.Camera.applyConfig)
+	{
+		return;
+	}
+
+
+
+
+
+
+
+	IntroduceCameraData(return);
+
+	cameraData.height     = activeConfig.Camera.height;
+	cameraData.tilt       = activeConfig.Camera.tilt;
+	cameraData.zoom       = activeConfig.Camera.zoom;
+	cameraData.zoomLockOn = activeConfig.Camera.zoomLockOn;
+
+	cameraTimeout = activeConfig.Camera.timeout;
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
 void MainLoop()
 {
 	MainLoopOnce();
 	MainLoopOnceSync();
+
+
+	UpdateCamera();
+
+
+
+
 }
 
 void ActorLoop(byte8 * baseAddr)
