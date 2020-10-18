@@ -1058,10 +1058,74 @@ void BossRush()
 	}
 }
 
+
+
+
+
+
+export template <typename T>
+bool GUI_InputDefault2Camera
+(
+	const char * label,
+	T & var,
+	T & var2,
+	T & var3,
+	T & defaultVar,
+	const T step = 1,
+	const char * format = 0,
+	ImGuiInputTextFlags flags = 0
+)
+{
+	ImGui::PushItemWidth(100);
+	GUI_Input
+	(
+		"",
+		var,
+		0.0f,
+		format,
+		ImGuiInputTextFlags_ReadOnly
+	);
+	ImGui::PopItemWidth();
+
+	ImGui::SameLine();
+
+	ImGui::PushItemWidth(169);
+	auto update = GUI_InputDefault2
+	(
+		label,
+		var2,
+		var3,
+		defaultVar,
+		step,
+		format,
+		flags
+	);
+	ImGui::PopItemWidth();
+
+	return update;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 void Camera()
 {
 	if (ImGui::CollapsingHeader("Camera"))
 	{
+		ImGui::Text("");
+
+		if (GUI_ResetButton())
+		{
+		}
 		ImGui::Text("");
 
 		if
@@ -1076,46 +1140,76 @@ void Camera()
 		{
 			Camera_ToggleInvertX(activeConfig.Camera.invertX);
 		}
+
+		GUI_SectionEnd();
 		ImGui::Text("");
 
-		GUI_InputDefault2
+		//GUI_SectionStart("Live");
+
+		//ImGui::Text("Values");
+		//ImGui::SameLine();
+
+
+
+
+
+		IntroduceCameraData(return);
+
+
+		TooltipHelper
+		(
+			"(?)",
+			"Left: Live Right: Config"
+		);
+		ImGui::Text("");
+
+
+		GUI_InputDefault2Camera
 		(
 			"Height",
+			cameraData.height,
 			activeConfig.Camera.height,
 			queuedConfig.Camera.height,
 			defaultConfig.Camera.height,
-			100.0f,
-			"%.1f"
+			10.0f,
+			"%.3f",
+			ImGuiInputTextFlags_EnterReturnsTrue
 		);
 
-		GUI_InputDefault2
+		GUI_InputDefault2Camera
 		(
 			"Tilt",
+			cameraData.tilt,
 			activeConfig.Camera.tilt,
 			queuedConfig.Camera.tilt,
 			defaultConfig.Camera.tilt,
-			100.0f,
-			"%.1f"
+			10.0f,
+			"%.3f",
+			ImGuiInputTextFlags_EnterReturnsTrue
 		);
 
-		GUI_InputDefault2
+		GUI_InputDefault2Camera
 		(
 			"Zoom",
+			cameraData.zoom,
 			activeConfig.Camera.zoom,
 			queuedConfig.Camera.zoom,
 			defaultConfig.Camera.zoom,
-			100.0f,
-			"%.1f"
+			10.0f,
+			"%.3f",
+			ImGuiInputTextFlags_EnterReturnsTrue
 		);
 
-		GUI_InputDefault2
+		GUI_InputDefault2Camera
 		(
 			"Zoom Lock-On",
+			cameraData.zoomLockOn,
 			activeConfig.Camera.zoomLockOn,
 			queuedConfig.Camera.zoomLockOn,
 			defaultConfig.Camera.zoomLockOn,
-			100.0f,
-			"%.1f"
+			10.0f,
+			"%.3f",
+			ImGuiInputTextFlags_EnterReturnsTrue
 		);
 
 		GUI_Checkbox2
@@ -1125,13 +1219,8 @@ void Camera()
 			queuedConfig.Camera.applyConfig
 		);
 
-		GUI_InputDefault2
-		(
-			"Timeout",
-			activeConfig.Camera.timeout,
-			queuedConfig.Camera.timeout,
-			defaultConfig.Camera.timeout
-		);
+
+
 
 
 
@@ -1490,7 +1579,9 @@ void Dante()
 		TooltipHelper
 		(
 			"(?)",
-			"Requires Actor module."
+			"Requires Actor module.\n"
+			"\n"
+			"Left: Human Right: Devil"
 		);
 		ImGui::Text("");
 
@@ -1523,7 +1614,9 @@ void Dante()
 		TooltipHelper
 		(
 			"(?)",
-			"Requires Actor module."
+			"Requires Actor module.\n"
+			"\n"
+			"Left: Human Right: Devil"
 		);
 		ImGui::Text("");
 
@@ -1809,8 +1902,65 @@ void Repair()
 	if (ImGui::CollapsingHeader("Repair"))
 	{
 		ImGui::Text("");
-		GUI_Button("Reset Weapons");
-		GUI_Button("Reset Ranged Weapon Levels");
+
+		if (GUI_Button("Reset Weapons"))
+		{
+			if (!InGame())
+			{
+				return;
+			}
+			for_all(uint32, index, Actor_actorBaseAddr.count)
+			{
+				if (!Actor_actorBaseAddr[index])
+				{
+					continue;
+				}
+				auto & actorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[index]);
+
+				switch (actorData.character)
+				{
+					case CHAR_DANTE:
+					{
+						actorData.weapons[0] = WEAPON_REBELLION;
+						actorData.weapons[1] = WEAPON_CERBERUS;
+						actorData.weapons[2] = WEAPON_EBONY_IVORY;
+						actorData.weapons[3] = WEAPON_SHOTGUN;
+						actorData.weapons[4] = WEAPON_VOID;
+
+						break;
+					}
+					case CHAR_VERGIL:
+					{
+						actorData.weapons[0] = WEAPON_YAMATO_VERGIL;
+						actorData.weapons[1] = WEAPON_BEOWULF_VERGIL;
+						actorData.weapons[2] = WEAPON_YAMATO_FORCE_EDGE;
+						actorData.weapons[3] = WEAPON_VOID;
+						actorData.weapons[4] = WEAPON_VOID;
+						
+						break;
+					}
+				}
+			}
+		}
+
+		if (GUI_Button("Reset Ranged Weapon Levels"))
+		{
+			if (!InGame())
+			{
+				return;
+			}
+			for_all(uint32, index, Actor_actorBaseAddr.count)
+			{
+				if (!Actor_actorBaseAddr[index])
+				{
+					continue;
+				}
+				auto & actorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[index]);
+
+				memset(actorData.weaponLevels, 0, sizeof(actorData.weaponLevels));
+			}
+		}
+
 		ImGui::Text("");
 	}
 }
@@ -2041,7 +2191,8 @@ const char * devilSpeedNamesVergil[] =
 
 
 
-
+// @Todo: EnterReturnsTrue.
+// @Todo: Apply rounding.
 
 template <typename T>
 bool GUI_InputDefault2Speed
@@ -2626,7 +2777,9 @@ void Vergil()
 		TooltipHelper
 		(
 			"(?)",
-			"Requires Actor module."
+			"Requires Actor module.\n"
+			"\n"
+			"Left: Human Right: Devil"
 		);
 		ImGui::Text("");
 
