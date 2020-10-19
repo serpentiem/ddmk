@@ -1,0 +1,12 @@
+/.vs
+Scripts/*
+!Scripts/*.js
+!Scripts/*.cpp
+*.bat
+*.dll.intermediate.manifest
+*.exe
+*.exp
+*.ifc
+*.lib
+*.obj
+*.pdb
