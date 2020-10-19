@@ -7628,7 +7628,7 @@ byte8  * DeactivateDoppelgangerAddr         = 0; // @Todo: Check for run out fun
 byte8  * DevilDoppelgangerCheckAddr         = 0;
 byte8  * ActivateDevilAddr                  = 0;
 byte8  * DeactivateDevilAddr                = 0;
-byte8  * InputUpdateAddr[8]                 = {};
+byte8  * InputUpdateAddr[16]                = {};
 byte8  * UpdateCollisionDataAddr            = 0;
 byte8  * EbonyIvoryRainStormCheckAddr       = 0;
 byte8  * SummonedSwordsQuicksilverCheckAddr = 0;
@@ -8044,6 +8044,21 @@ export void Actor_Init()
 		/*
 		dmc3.exe+1EBE98 - E8 B30D1400       - call dmc3.exe+32CC50
 		dmc3.exe+1EBE9D - 66 89 83 0A750000 - mov [rbx+0000750A],ax
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+2ACD0
+			0x44, 0x8B, 0xC7,             // mov r8d,edi
+		};
+		auto func = CreateFunction(0, (appBaseAddr + 0x2AFC6), false, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteCall(func.sect0, (appBaseAddr + 0x2ACD0));
+		InputUpdateAddr[8] = func.addr;
+		/*
+		dmc3.exe+2AFA5 - E8 26FDFFFF - call dmc3.exe+2ACD0
+		dmc3.exe+2AFC6 - 49 6B C8 2C - imul rcx,r8,2C
 		*/
 	}
 
@@ -8684,6 +8699,41 @@ export void Actor_Toggle(bool enable)
 		dmc3.exe+1EBE9D - 66 89 83 0A750000 - mov [rbx+0000750A],ax
 		*/
 	}
+
+	// @Todo: Review.
+	WriteAddress((appBaseAddr + 0x32D0AA), (enable) ? (appBaseAddr + 0x32D0B0) : (appBaseAddr + 0x32D346), 6);
+	/*
+	dmc3.exe+32D0AA - 0F85 96020000  - jne dmc3.exe+32D346
+	dmc3.exe+32D0B0 - 4C 8D 44 24 38 - lea r8,[rsp+38]
+	*/
+
+	Write<uint8>((appBaseAddr + 0x2AF8F + 2), (enable) ? 3 : 1); // @Todo: MAX_PLAYER.
+	/*
+	dmc3.exe+2AF8F - 83 F9 01 - cmp ecx,01
+	dmc3.exe+2AF92 - 76 11    - jna dmc3.exe+2AFA5
+	*/
+
+	{
+		auto dest = (appBaseAddr + 0x2AFA5);
+		if (enable)
+		{
+			WriteJump(dest, InputUpdateAddr[8]);
+		}
+		else
+		{
+			WriteCall(dest, (appBaseAddr + 0x2ACD0));
+		}
+		/*
+		dmc3.exe+2AFA5 - E8 26FDFFFF - call dmc3.exe+2ACD0
+		dmc3.exe+2AFC6 - 49 6B C8 2C - imul rcx,r8,2C
+		*/
+	}
+
+	Write<byte32>((appBaseAddr + 0x32CFB6 + 3), (enable) ? 0x63C : 0x624);
+	/*
+	dmc3.exe+32CFB6 - 48 81 FE 24060000 - cmp rsi,00000624
+	dmc3.exe+32CFBD - 0F8C 7DFEFFFF     - jl dmc3.exe+32CE40
+	*/
 
 	// Update Collision Data
 	{
