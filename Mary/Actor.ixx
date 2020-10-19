@@ -136,7 +136,12 @@ void CopyState
 	idleActorData.styleRank      = activeActorData.styleRank;
 	idleActorData.styleMeter     = activeActorData.styleMeter;
 
-	memcpy(idleActorData.nextActionRequestPolicy, activeActorData.nextActionRequestPolicy, 64);
+	memcpy
+	(
+		idleActorData.nextActionRequestPolicy,
+		activeActorData.nextActionRequestPolicy,
+		sizeof(activeActorData.nextActionRequestPolicy)
+	);
 
 	idleActorData.permissions = activeActorData.permissions;
 	idleActorData.state       = activeActorData.state;
@@ -161,7 +166,6 @@ void EndMotion(T & actorData)
 	actorData.eventData[0].index = 2;
 }
 
-// @Todo: Update.
 template <typename T>
 void ToggleInput
 (
@@ -169,20 +173,8 @@ void ToggleInput
 	bool enable
 )
 {
-	if (enable)
-	{
-		actorData.newButtonMask      = 0xFFFF;
-		actorData.newEnableLeftStick = true;
-	}
-	else
-	{
-		actorData.newButtonMask = 0;
-		// (
-		// 	GetBinding(BINDING_CHANGE_DEVIL_ARMS) |
-		// 	GetBinding(BINDING_CHANGE_GUN       )
-		// );
-		actorData.newEnableLeftStick = false;
-	}
+	actorData.newButtonMask = (enable) ? 0xFFFF : 0;
+	actorData.newEnableLeftStick = enable;
 }
 
 template <typename T>
@@ -197,10 +189,13 @@ void ToggleActor
 
 	ToggleInput(actorData, enable);
 
-	// @Todo: Show Idle Actors.
 	actorData.visible = (enable) ? 1 : 0;
 
-	// @Todo: Update with mobility values.
+	if (activeConfig.Actor.showIdleActors)
+	{
+		actorData.visible = 1;
+	}
+
 	if (!enable)
 	{
 		actorData.airHikeCount   = 1;
@@ -2354,6 +2349,32 @@ byte8 * CreateActor
 	{
 		UpdateActor(actorData);
 	}
+
+
+
+
+
+	auto UpdateShadow = [&]()
+	{
+		if (!Actor_actorBaseAddr[0])
+		{
+			return;
+		}
+		auto & mainActorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[0]);
+
+		actorData.shadow = mainActorData.shadow;
+	};
+
+	UpdateShadow();
+
+
+
+
+
+
+
+
+
 
 	UpdateMotionArchives(actorData);
 
@@ -8696,6 +8717,93 @@ export void Actor_Toggle(bool enable)
 		/*
 		dmc3.exe+1BA5C5 - 49 8B 42 18       - mov rax,[r10+18]
 		dmc3.exe+1BA5C9 - 44 89 98 08620000 - mov [rax+00006208],r11d
+		*/
+	}
+
+	// Disable Reset Visibility
+	{
+		auto dest = (appBaseAddr + 0x1F8AEE);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 10);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xC7, 0x87, 0x20, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, // mov [rdi+00000120],00000001
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001
+		dmc3.exe+1F8AF8 - 80 BF 9B3E0000 01       - cmp byte ptr [rdi+00003E9B],01
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1F7CBA);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 10);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xC7, 0x83, 0x20, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, // mov [rbx+00000120],00000001
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1F7CBA - C7 83 20010000 01000000 - mov [rbx+00000120],00000001
+		dmc3.exe+1F7CC4 - E8 474E0000             - call dmc3.exe+1FCB10
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1DFC7F);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 6);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x89, 0x81, 0x20, 0x01, 0x00, 0x00, // mov [rcx+00000120],eax
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1DFC7F - 89 81 20010000    - mov [rcx+00000120],eax
+		dmc3.exe+1DFC85 - 48 89 81 583E0000 - mov [rcx+00003E58],rax
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1FCA43);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 6);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x89, 0x91, 0x20, 0x01, 0x00, 0x00, // mov [rcx+00000120],edx
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1FCA43 - 89 91 20010000 - mov [rcx+00000120],edx
+		dmc3.exe+1FCA49 - 8B EA          - mov ebp,edx
+		*/
+	}
+
+	// Force Update Summoned Swords
+	{
+		WriteAddress((appBaseAddr + 0x1DAF30), (enable) ? (appBaseAddr + 0x1DAF36) : (appBaseAddr + 0x1DB099), 6);
+		/*
+		dmc3.exe+1DAF30 - 0F84 63010000     - je dmc3.exe+1DB099
+		dmc3.exe+1DAF36 - C6 81 E80D0000 00 - mov byte ptr [rcx+00000DE8],00
 		*/
 	}
 }

@@ -2456,6 +2456,7 @@ const char * Graphics_vSyncNames[] =
 	"Force On",
 };
 
+// @Todo: Reset Button.
 void System()
 {
 	if (ImGui::CollapsingHeader("System"))
@@ -2880,6 +2881,49 @@ void Main()
 	if (ImGui::Begin("DDMK 2.7", &pause))
 	{
 		ImGui::Text("");
+
+
+
+		
+
+
+		static float scale = 1.0f;
+
+		if
+		(
+			GUI_Input
+			(
+				"Scaling",
+				scale,
+				0.1f,
+				"%.2f",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			)
+		)
+		{
+		}
+
+		if (GUI_Button("Style"))
+		{
+			auto & style = ImGui::GetStyle();
+
+			style.ScaleAllSizes(scale);
+		}
+
+		if (GUI_Button("SetWindotFontScale"))
+		{
+			ImGui::SetWindowFontScale(scale);
+		}
+
+
+
+
+
+
+
+
+
+
 
 		Actor();
 		Arcade();
