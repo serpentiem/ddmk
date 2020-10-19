@@ -1,4 +1,3 @@
-// @Todo: Fix devil speed index.
 // @Todo: Air Stinger, Air Lunar Phase and Nevan instant Vortex.
 
 module;
@@ -4662,6 +4661,20 @@ void ToggleRelocations(bool enable)
 			// Write<uint32>((appBaseAddr + 0x123DF9 + 3), (enable) ? newOff : off); // dmc3.exe+123DF9 - BA 10030000 - MOV EDX,00000310
 			// Write<uint32>((appBaseAddr + 0x271850 + 3), (enable) ? newOff : off); // dmc3.exe+271850 - 48 81 C1 10030000 - ADD RCX,00000310
 		}
+		// 0x1820
+		{
+			constexpr auto off = (offsetof(ActorData, modelPhysicsMetadataPool[0][0]) - 0x60);
+			constexpr auto newOff = (offsetof(ActorData, newModelPhysicsMetadataPool[0][0]) - 0x60);
+			static_assert(off == 0x1820);
+			// Other
+			Write<uint32>((appBaseAddr + 0x1ED65A + 4), (enable) ? newOff : off); // dmc3.exe+1ED65A - 48 8B 94 C3 20180000 - MOV RDX,[RBX+RAX*8+00001820]
+			// Unknown
+			// Write<uint32>((appBaseAddr + 0xFA7F2 + 3), (enable) ? newOff : off); // dmc3.exe+FA7F2 - 48 8D 8E 20180000 - LEA RCX,[RSI+00001820]
+			// Write<uint32>((appBaseAddr + 0xFA85E + 3), (enable) ? newOff : off); // dmc3.exe+FA85E - 48 8D 8E 20180000 - LEA RCX,[RSI+00001820]
+			// Write<uint32>((appBaseAddr + 0xFA8B2 + 3), (enable) ? newOff : off); // dmc3.exe+FA8B2 - 48 8D 8E 20180000 - LEA RCX,[RSI+00001820]
+			// Write<uint32>((appBaseAddr + 0xFA91C + 3), (enable) ? newOff : off); // dmc3.exe+FA91C - 48 8D 8E 20180000 - LEA RCX,[RSI+00001820]
+			// Write<uint32>((appBaseAddr + 0x152706 + 2), (enable) ? newOff : off); // dmc3.exe+152706 - 80 BF 20180000 01 - CMP BYTE PTR [RDI+00001820],01
+		}
 	}
 	// 0x1888
 	{
@@ -5720,9 +5733,9 @@ void ToggleRelocations(bool enable)
 		constexpr auto off = offsetof(ActorData, submodelInit[8]);
 		constexpr auto newOff = offsetof(ActorData, newSubmodelInit[8]);
 		static_assert(off == 0x9AC8);
-		// Update Actor Bob 32 Byte Offset
+		// Update Actor Bob
 		// Write<uint32>((appBaseAddr + 0x226318 + 3), (enable) ? newOff : off); // dmc3.exe+226318 - 49 89 B6 C89A0000 - MOV [R14+00009AC8],RSI
-		// Update Actor Vergil 32 Byte Offset
+		// Update Actor Vergil
 		// Write<uint32>((appBaseAddr + 0x220CC4 + 4), (enable) ? newOff : off); // dmc3.exe+220CC4 - 4D 89 B4 24 C89A0000 - MOV [R12+00009AC8],R14
 	}
 	// 0x9AD0
@@ -5743,9 +5756,9 @@ void ToggleRelocations(bool enable)
 		Write<uint32>((appBaseAddr + 0x2141F8 + 3), (enable) ? newOff : off); // dmc3.exe+2141F8 - 48 8D 8E D09A0000 - LEA RCX,[RSI+00009AD0]
 		Write<uint32>((appBaseAddr + 0x2145DC + 4), (enable) ? newOff : off); // dmc3.exe+2145DC - 48 8B BC 33 D09A0000 - MOV RDI,[RBX+RSI+00009AD0]
 		Write<uint32>((appBaseAddr + 0x2145E7 + 3), (enable) ? newOff : off); // dmc3.exe+2145E7 - 48 8D 8E D09A0000 - LEA RCX,[RSI+00009AD0]
-		// Update Actor Bob 32 Byte Offset
+		// Update Actor Bob
 		// Write<uint32>((appBaseAddr + 0x22631F + 3), (enable) ? newOff : off); // dmc3.exe+22631F - 49 89 B6 D09A0000 - MOV [R14+00009AD0],RSI
-		// Update Actor Vergil 32 Byte Offset
+		// Update Actor Vergil
 		// Write<uint32>((appBaseAddr + 0x220CCF + 4), (enable) ? newOff : off); // dmc3.exe+220CCF - 4D 89 B4 24 D09A0000 - MOV [R12+00009AD0],R14
 		// Update Model Dante
 		Write<uint32>((appBaseAddr + 0x214DED + 3), (enable) ? newOff : off); // dmc3.exe+214DED - 49 8B BE D09A0000 - MOV RDI,[R14+00009AD0]
@@ -5985,7 +5998,6 @@ void ToggleRelocations(bool enable)
 		Write<uint32>((appBaseAddr + 0x214AB5 + 3), (enable) ? newOff : off); // dmc3.exe+214AB5 - 48 8D 96 C0AA0000 - LEA RDX,[RSI+0000AAC0]
 	}
 }
-
 
 void ToggleModelCountAdjustments(bool enable)
 {

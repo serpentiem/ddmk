@@ -1,10 +1,3 @@
-
-
-// @Research: To module or not to module.
-
-
-
-
 #pragma once
 #include "../Core/DataTypes.h"
 

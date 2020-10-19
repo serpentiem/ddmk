@@ -30,6 +30,8 @@ export void Training_ToggleInfiniteMagicPoints(bool enable)
 	{
 		vp_memset((appBaseAddr + 0x1E1842), 0x90, 4); // Tick
 		vp_memset((appBaseAddr + 0x1E788A), 0x90, 4); // Charge
+
+		// @Todo: Update.
 		//if (InGame())
 		//{
 		//	//auto count = System_Actor_GetActorCount();
