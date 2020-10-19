@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Eva.cpp" />
+    <ClCompile Include="..\ImGui\imgui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_demo.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_draw.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_widgets.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="Locale.cpp" />
+    <ClCompile Include="Game\BossRush.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Input.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ResetMotionState.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Training.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="System\State.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\LockOn.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Arcade.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Actor.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Dante.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\WeaponSwitcher.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Event.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\MissionSelect.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Window.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Hotkeys.cpp" />
+    <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="..\Core\Config.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\GUI.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\ImGui_D3D11.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\ImGui_DirectInput8.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\ImGui_User.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Log.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Memory.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Utility.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\Windows.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Hooks.cpp" />
+    <ClCompile Include="..\Core\File.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Graphics.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{098fbf10-f470-41b4-89ed-d9057f0ee8a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{ec37382e-ac05-4bc0-ab55-6bc9585c0dcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{6690b1ea-7f9f-4921-b376-7af9d1b7a07f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{3e97f78d-17c4-4a40-910c-02ae235c3c8b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\ImGui\imconfig.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGui\imgui.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGui\imgui_internal.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGui\imstb_rectpack.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGui\imstb_textedit.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGui\imstb_truetype.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="Locale.h" />
+    <ClInclude Include="GUI.h" />
+    <ClInclude Include="Game\BossRush.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Input.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ResetMotionState.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Training.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="System\State.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\LockOn.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Arcade.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Actor.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Dante.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\WeaponSwitcher.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Event.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Vars.h" />
+    <ClInclude Include="Game\MissionSelect.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Window.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Hotkeys.h" />
+    <ClInclude Include="Pause.h" />
+    <ClInclude Include="..\Core\Config.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\DataTypes.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\GUI.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\ImGui_D3D11.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\ImGui_DirectInput8.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\ImGui_User.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Log.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Memory.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\String.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Utility.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Vector.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\Windows.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Message.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Hooks.h" />
+    <ClInclude Include="..\Core\Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Core\File.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Graphics.h">
+      <Filter>System</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
