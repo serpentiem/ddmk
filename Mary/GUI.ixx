@@ -1,3 +1,5 @@
+// @Todo: Main, Mission Select and Mission Start reset g_character values.
+// @Todo: If system is not doppelganger, do not show weapon dialog. Hmmm, maybe important for Dante I guess.
 // @Todo: Enter returns true.
 // @Todo: Round values.
 
@@ -29,6 +31,193 @@ import Training;
 import Window;
 
 #define debug true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const char * buttonNames[] =
+{
+	"Left Trigger",
+	"Right Trigger",
+	"Left Shoulder",
+	"Right Shoulder",
+	"Y",
+	"B",
+	"A",
+	"X",
+	"Back",
+	"Left Thumb",
+	"Right Thumb",
+	"Start",
+	"Up",
+	"Right",
+	"Down",
+	"Left",
+};
+
+byte16 buttons[] =
+{
+	GAMEPAD_LEFT_TRIGGER,
+	GAMEPAD_RIGHT_TRIGGER,
+	GAMEPAD_LEFT_SHOULDER,
+	GAMEPAD_RIGHT_SHOULDER,
+	GAMEPAD_Y,
+	GAMEPAD_B,
+	GAMEPAD_A,
+	GAMEPAD_X,
+	GAMEPAD_BACK,
+	GAMEPAD_LEFT_THUMB,
+	GAMEPAD_RIGHT_THUMB,
+	GAMEPAD_START,
+	GAMEPAD_UP,
+	GAMEPAD_RIGHT,
+	GAMEPAD_DOWN,
+	GAMEPAD_LEFT,
+};
+
+const char * playerNames[MAX_PLAYER] =
+{
+	"Player 1",
+	"Player 2",
+	"Player 3",
+	"Player 4",
+};
+
+const char * entityNames[MAX_ENTITY] =
+{
+	"Main",
+	"Clone",
+};
+
+const char * directionNames[MAX_DIRECTION] =
+{
+	"Up",
+	"Right",
+	"Down",
+	"Left",
+};
+
+const char * characterNames[] =
+{
+	"Dante",
+	"Bob",
+	"Lady",
+	"Vergil",
+};
+
+const char * styleNames[] =
+{
+	"Swordmaster",
+	"Gunslinger",
+	"Trickster",
+	"Royalguard",
+	"Quicksilver",
+	"Doppelganger",
+};
+
+const char * meleeWeaponNamesDante[] =
+{
+	"Rebellion",
+	"Cerberus",
+	"Agni & Rudra",
+	"Nevan",
+	"Beowulf",
+};
+
+uint8 meleeWeaponsDante[] =
+{
+	WEAPON_REBELLION,
+	WEAPON_CERBERUS,
+	WEAPON_AGNI_RUDRA,
+	WEAPON_NEVAN,
+	WEAPON_BEOWULF_DANTE,
+};
+
+const char * meleeWeaponNamesVergil[] =
+{
+	"Yamato",
+	"Beowulf",
+	"Yamato & Force Edge",
+};
+
+uint8 meleeWeaponsVergil[] =
+{
+	WEAPON_YAMATO_VERGIL,
+	WEAPON_BEOWULF_VERGIL,
+	WEAPON_YAMATO_FORCE_EDGE,
+};
+
+const char * rangedWeaponNamesDante[] =
+{
+	"Ebony & Ivory",
+	"Shotgun",
+	"Artemis",
+	"Spiral",
+	"Kalina Ann",
+};
+
+uint8 rangedWeaponsDante[] =
+{
+	WEAPON_EBONY_IVORY,
+	WEAPON_SHOTGUN,
+	WEAPON_ARTEMIS,
+	WEAPON_SPIRAL,
+	WEAPON_KALINA_ANN,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // @Todo: Update.
 enum FONT_
@@ -171,199 +360,103 @@ void Overlay()
 
 
 
-const char * Actor_playerNames[MAX_PLAYER] =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const char * Actor_systemNames[] =
 {
-	"Player 1",
-	"Player 2",
-	"Player 3",
-	"Player 4",
+	"Default",
+	"Doppelganger",
+	"Character Switcher",
 };
 
-const char * Actor_characterNames[] =
-{
-	"Dante",
-	"Bob",
-	"Lady",
-	"Vergil",
-};
 
 
 
 
 
-
-const char * Actor_meleeWeaponNamesDante[] =
-{
-	"Rebellion",
-	"Cerberus",
-	"Agni & Rudra",
-	"Nevan",
-	"Beowulf",
-};
-
-uint8 Actor_meleeWeaponsDante[] =
-{
-	WEAPON_REBELLION,
-	WEAPON_CERBERUS,
-	WEAPON_AGNI_RUDRA,
-	WEAPON_NEVAN,
-	WEAPON_BEOWULF_DANTE,
-};
-
-uint8 Actor_meleeWeaponIndexDante[MAX_PLAYER][MAX_ENTITY] = {};
-
-const char * Actor_meleeWeaponNamesVergil[] =
-{
-	"Yamato",
-	"Beowulf",
-	"Yamato & Force Edge",
-};
-
-uint8 Actor_meleeWeaponsVergil[] =
-{
-	WEAPON_YAMATO_VERGIL,
-	WEAPON_BEOWULF_VERGIL,
-	WEAPON_YAMATO_FORCE_EDGE,
-};
-
-uint8 Actor_meleeWeaponIndexVergil[MAX_PLAYER][MAX_ENTITY] = {};
+#define Actor_characterNames characterNames
 
 
 
+#define Actor_meleeWeaponNamesDante meleeWeaponNamesDante
+#define Actor_meleeWeaponsDante meleeWeaponsDante
+
+#define Actor_meleeWeaponNamesVergil meleeWeaponNamesVergil
+#define Actor_meleeWeaponsVergil meleeWeaponsVergil
+
+uint8 Actor_meleeWeaponIndices[MAX_PLAYER][MAX_DIRECTION][MELEE_WEAPON_COUNT] = {};
 
 
+#define Actor_rangedWeaponNamesDante rangedWeaponNamesDante
+#define Actor_rangedWeaponsDante rangedWeaponsDante
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-const char * Actor_meleeWeaponNames[] =
-{
-	"Rebellion",
-	"Cerberus",
-	"Agni & Rudra",
-	"Nevan",
-	"Beowulf Dante",
-	"Yamato",
-	"Beowulf Vergil",
-	"Yamato & Force Edge",
-};
-
-uint8 Actor_meleeWeapons[] =
-{
-	WEAPON_REBELLION,
-	WEAPON_CERBERUS,
-	WEAPON_AGNI_RUDRA,
-	WEAPON_NEVAN,
-	WEAPON_BEOWULF_DANTE,
-	WEAPON_YAMATO_VERGIL,
-	WEAPON_BEOWULF_VERGIL,
-	WEAPON_YAMATO_FORCE_EDGE,
-};
-
-uint8 Actor_meleeWeaponIndices[MAX_PLAYER][MAX_ENTITY][MELEE_WEAPON_COUNT] = {};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const char * Actor_rangedWeaponNames[] =
-{
-	"Ebony & Ivory",
-	"Shotgun",
-	"Artemis",
-	"Spiral",
-	"Kalina Ann",
-};
-
-uint8 Actor_rangedWeapons[] =
-{
-	WEAPON_EBONY_IVORY,
-	WEAPON_SHOTGUN,
-	WEAPON_ARTEMIS,
-	WEAPON_SPIRAL,
-	WEAPON_KALINA_ANN,
-};
-
-uint8 Actor_rangedWeaponIndices[MAX_PLAYER][MAX_ENTITY][RANGED_WEAPON_COUNT] = {};
+uint8 Actor_rangedWeaponIndices[MAX_PLAYER][MAX_DIRECTION][RANGED_WEAPON_COUNT] = {};
 
 void Actor_UpdateIndices()
 {
-	for_all(uint8, player, MAX_PLAYER){
-	for_all(uint8, entity, MAX_ENTITY)
+	for_all(uint8, player, MAX_PLAYER   ){
+	for_all(uint8, index , MAX_DIRECTION)
 	{
-		auto & playerData = queuedConfig.Actor.playerData[player][entity];
+		auto & playerData = queuedConfig.Actor.playerData[player][index];
 
 		switch (playerData.character)
 		{
 			case CHAR_DANTE:
 			{
-				UpdateMapIndex
-				(
-					Actor_meleeWeaponsDante,
-					Actor_meleeWeaponIndexDante[player][entity],
-					playerData.meleeWeapons[0]
-				);
+				for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT)
+				{
+					UpdateMapIndex
+					(
+						Actor_meleeWeaponsDante,
+						Actor_meleeWeaponIndices[player][index][meleeWeaponIndex],
+						playerData.meleeWeapons[meleeWeaponIndex]
+					);
+				}
+
+				for_all(uint8, rangedWeaponIndex, RANGED_WEAPON_COUNT)
+				{
+					UpdateMapIndex
+					(
+						Actor_rangedWeaponsDante,
+						Actor_rangedWeaponIndices[player][index][rangedWeaponIndex],
+						playerData.rangedWeapons[rangedWeaponIndex]
+					);
+				}
 
 				break;
 			}
 			case CHAR_VERGIL:
 			{
-				UpdateMapIndex
-				(
-					Actor_meleeWeaponsVergil,
-					Actor_meleeWeaponIndexVergil[player][entity],
-					playerData.meleeWeapons[0]
-				);
+				for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT)
+				{
+					UpdateMapIndex
+					(
+						Actor_meleeWeaponsVergil,
+						Actor_meleeWeaponIndices[player][index][meleeWeaponIndex],
+						playerData.meleeWeapons[meleeWeaponIndex]
+					);
+				}
 
 				break;
 			}
-		}
-
-		for_each(uint8, index, 1, MELEE_WEAPON_COUNT)
-		{
-			UpdateMapIndex
-			(
-				Actor_meleeWeapons,
-				Actor_meleeWeaponIndices[player][entity][index],
-				playerData.meleeWeapons[index]
-			);
-		}
-
-		if (playerData.character != CHAR_DANTE)
-		{
-			return;
-		}
-
-		for_each(uint8, index, 1, RANGED_WEAPON_COUNT)
-		{
-			UpdateMapIndex
-			(
-				Actor_rangedWeapons,
-				Actor_rangedWeaponIndices[player][entity][index],
-				playerData.rangedWeapons[index]
-			);
 		}
 	}}
 }
@@ -371,10 +464,20 @@ void Actor_UpdateIndices()
 void Actor_PlayerTab
 (
 	uint8 player,
-	uint8 entity
+	uint8 index
 )
 {
-	auto & playerData = queuedConfig.Actor.playerData[player][entity];
+	auto & playerData = queuedConfig.Actor.playerData[player][index];
+
+	if (queuedConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER)
+	{
+		GUI_Checkbox
+		(
+			"Enable",
+			playerData.enable
+		);
+		ImGui::Text("");
+	}
 
 	ImGui::PushItemWidth(150);
 	if (GUI_Combo("Character", Actor_characterNames, playerData.character))
@@ -418,45 +521,42 @@ void Actor_PlayerTab
 	{
 		case CHAR_DANTE:
 		{
-			GUI_ComboMap
-			(
-				"",
-				Actor_meleeWeaponNamesDante,
-				Actor_meleeWeaponsDante,
-				Actor_meleeWeaponIndexDante[player][entity],
-				playerData.meleeWeapons[0]
-			);
+			for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT)
+			{
+				bool condition = (meleeWeaponIndex >= playerData.meleeWeaponCount);
+				GUI_PushDisable(condition);
+				GUI_ComboMap
+				(
+					"",
+					Actor_meleeWeaponNamesDante,
+					Actor_meleeWeaponsDante,
+					Actor_meleeWeaponIndices[player][index][meleeWeaponIndex],
+					playerData.meleeWeapons[meleeWeaponIndex]
+				);
+				GUI_PopDisable(condition);
+			}
 
 			break;
 		}
 		case CHAR_VERGIL:
 		{
-			GUI_ComboMap
-			(
-				"",
-				Actor_meleeWeaponNamesVergil,
-				Actor_meleeWeaponsVergil,
-				Actor_meleeWeaponIndexVergil[player][entity],
-				playerData.meleeWeapons[0]
-			);
+			for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT)
+			{
+				bool condition = (meleeWeaponIndex >= playerData.meleeWeaponCount);
+				GUI_PushDisable(condition);
+				GUI_ComboMap
+				(
+					"",
+					Actor_meleeWeaponNamesVergil,
+					Actor_meleeWeaponsVergil,
+					Actor_meleeWeaponIndices[player][index][meleeWeaponIndex],
+					playerData.meleeWeapons[meleeWeaponIndex]
+				);
+				GUI_PopDisable(condition);
+			}
 
 			break;
 		}
-	}
-
-	for_each(uint8, index, 1, MELEE_WEAPON_COUNT)
-	{
-		bool condition = (index >= playerData.meleeWeaponCount);
-		GUI_PushDisable(condition);
-		GUI_ComboMap
-		(
-			"",
-			Actor_meleeWeaponNames,
-			Actor_meleeWeapons,
-			Actor_meleeWeaponIndices[player][entity][index],
-			playerData.meleeWeapons[index]
-		);
-		GUI_PopDisable(condition);
 	}
 
 	ImGui::PopItemWidth();
@@ -474,23 +574,34 @@ void Actor_PlayerTab
 
 	GUI_Slider<uint8>("", playerData.rangedWeaponCount, 1, RANGED_WEAPON_COUNT);
 
-	for_all(uint8, index, RANGED_WEAPON_COUNT)
+	for_all(uint8, rangedWeaponIndex, RANGED_WEAPON_COUNT)
 	{
-		bool condition = (index >= playerData.rangedWeaponCount);
+		bool condition = (rangedWeaponIndex >= playerData.rangedWeaponCount);
 		GUI_PushDisable(condition);
 		GUI_ComboMap
 		(
 			"",
-			Actor_rangedWeaponNames,
-			Actor_rangedWeapons,
-			Actor_rangedWeaponIndices[player][entity][index],
-			playerData.rangedWeapons[index]
+			Actor_rangedWeaponNamesDante,
+			Actor_rangedWeaponsDante,
+			Actor_rangedWeaponIndices[player][index][rangedWeaponIndex],
+			playerData.rangedWeapons[rangedWeaponIndex]
 		);
 		GUI_PopDisable(condition);
 	}
 
 	ImGui::PopItemWidth();
 }
+
+
+
+
+
+
+
+
+
+
+
 
 void Actor()
 {
@@ -542,13 +653,57 @@ void Actor()
 		}
 		ImGui::Text("");
 
-		GUI_Checkbox2
+
+		GUI_Checkbox
 		(
-			"Show Idle Actors",
-			activeConfig.Actor.showIdleActors,
-			queuedConfig.Actor.showIdleActors
+			"Enable Quicksilver",
+			queuedConfig.Actor.enableQuicksilver
 		);
 		ImGui::Text("");
+
+
+
+
+		ImGui::PushItemWidth(200);
+		if
+		(
+			GUI_Combo
+			(
+				"System",
+				Actor_systemNames,
+				queuedConfig.Actor.system
+			)
+		)
+		{
+		}
+		ImGui::PopItemWidth();
+		ImGui::Text("");
+
+
+
+
+
+
+
+
+		if (queuedConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER)
+		{
+			GUI_Checkbox2
+			(
+				"Show Idle Actors",
+				activeConfig.Actor.showIdleActors,
+				queuedConfig.Actor.showIdleActors
+			);
+			ImGui::Text("");
+		}
+
+
+
+
+
+
+
+
 
 		ImGui::PushItemWidth(200);
 		GUI_Slider<uint8>("Player Count", queuedConfig.Actor.playerCount, 1, MAX_PLAYER);
@@ -563,35 +718,41 @@ void Actor()
 
 				GUI_PushDisable(condition);
 
-				if (ImGui::BeginTabItem(Actor_playerNames[player]))
+				if (ImGui::BeginTabItem(playerNames[player]))
 				{
 					ImGui::Text("");
 
-					if (player == 0)
+					switch (queuedConfig.Actor.system)
 					{
-						GUI_Checkbox("Enable Quicksilver", queuedConfig.Actor.enableQuicksilver);
-					}
-
-					if (GUI_Checkbox("Enable Doppelganger", queuedConfig.Actor.enableDoppelganger[player]))
-					{
-						for_all(uint8, entity, MAX_ENTITY)
+						case ACTOR_SYSTEM_DEFAULT:
 						{
-							auto & playerData = queuedConfig.Actor.playerData[player][entity];
-
-							ApplyDefaultPlayerData(playerData, playerData.character);
-
-							Actor_UpdateIndices();
+							Actor_PlayerTab(player, 0);
+							ImGui::Text("");
+							break;
+						}
+						case ACTOR_SYSTEM_DOPPELGANGER:
+						{
+							for_all(uint8, entity, MAX_ENTITY)
+							{
+								GUI_SectionStart(entityNames[entity]);
+								Actor_PlayerTab(player, entity);
+								GUI_SectionEnd();
+								ImGui::Text("");
+							}
+							break;
+						}
+						case ACTOR_SYSTEM_CHARACTER_SWITCHER:
+						{
+							for_all(uint8, direction, MAX_DIRECTION)
+							{
+								GUI_SectionStart(directionNames[direction]);
+								Actor_PlayerTab(player, direction);
+								GUI_SectionEnd();
+								ImGui::Text("");
+							}
+							break;
 						}
 					}
-					ImGui::Text("");
-
-					GUI_SectionStart("Main");
-					Actor_PlayerTab(player, ENTITY_MAIN);
-					GUI_SectionEnd();
-					ImGui::Text("");
-
-					GUI_SectionStart("Clone");
-					Actor_PlayerTab(player, ENTITY_CLONE);
 
 					ImGui::EndTabItem();
 				}
@@ -606,6 +767,7 @@ void Actor()
 	}
 }
 
+// @Todo: Update.
 const char * Arcade_missionNames[] =
 {
 	"Movie",
@@ -685,63 +847,15 @@ const char * Arcade_floorNames[] =
 	"Jester 3",
 };
 
-const char * Arcade_characterNames[] =
-{
-	"Dante",
-	"Bob",
-	"Lady",
-	"Vergil",
-};
+#define Arcade_meleeWeaponNamesDante meleeWeaponNamesDante
+#define Arcade_meleeWeaponsDante meleeWeaponsDante
 
-const char * Arcade_styleNames[] =
-{
-	"Swordmaster",
-	"Gunslinger",
-	"Trickster",
-	"Royalguard",
-	"Quicksilver",
-	"Doppelganger",
-};
+uint8 Arcade_meleeWeaponIndexDante[2] = {};
 
-const char * Arcade_meleeWeaponNames[] =
-{
-	"Rebellion",
-	"Cerberus",
-	"Agni & Rudra",
-	"Nevan",
-	"Beowulf",
-};
+#define Arcade_rangedWeaponNamesDante rangedWeaponNamesDante
+#define Arcade_rangedWeaponsDante rangedWeaponsDante
 
-uint8 Arcade_meleeWeaponMap[] =
-{
-	WEAPON_REBELLION,
-	WEAPON_CERBERUS,
-	WEAPON_AGNI_RUDRA,
-	WEAPON_NEVAN,
-	WEAPON_BEOWULF_DANTE,
-};
-
-uint8 Arcade_meleeWeaponIndex[2] = {};
-
-const char * Arcade_rangedWeaponNames[] =
-{
-	"Ebony & Ivory",
-	"Shotgun",
-	"Artemis",
-	"Spiral",
-	"Kalina Ann",
-};
-
-uint8 Arcade_rangedWeaponMap[] =
-{
-	WEAPON_EBONY_IVORY,
-	WEAPON_SHOTGUN,
-	WEAPON_ARTEMIS,
-	WEAPON_SPIRAL,
-	WEAPON_KALINA_ANN,
-};
-
-uint8 Arcade_rangedWeaponIndex[2] = {};
+uint8 Arcade_rangedWeaponIndexDante[2] = {};
 
 void Arcade_UpdateIndices()
 {
@@ -753,26 +867,26 @@ void Arcade_UpdateIndices()
 	);
 	UpdateMapIndex
 	(
-		Arcade_meleeWeaponMap,
-		Arcade_meleeWeaponIndex[0],
+		Arcade_meleeWeaponsDante,
+		Arcade_meleeWeaponIndexDante[0],
 		activeConfig.Arcade.weapons[0]
 	);
 	UpdateMapIndex
 	(
-		Arcade_meleeWeaponMap,
-		Arcade_meleeWeaponIndex[1],
+		Arcade_meleeWeaponsDante,
+		Arcade_meleeWeaponIndexDante[1],
 		activeConfig.Arcade.weapons[1]
 	);
 	UpdateMapIndex
 	(
-		Arcade_rangedWeaponMap,
-		Arcade_rangedWeaponIndex[0],
+		Arcade_rangedWeaponsDante,
+		Arcade_rangedWeaponIndexDante[0],
 		activeConfig.Arcade.weapons[2]
 	);
 	UpdateMapIndex
 	(
-		Arcade_rangedWeaponMap,
-		Arcade_rangedWeaponIndex[1],
+		Arcade_rangedWeaponsDante,
+		Arcade_rangedWeaponIndexDante[1],
 		activeConfig.Arcade.weapons[3]
 	);
 }
@@ -910,7 +1024,7 @@ void Arcade()
 		GUI_Combo2
 		(
 			"Character",
-			Arcade_characterNames,
+			characterNames,
 			activeConfig.Arcade.character,
 			queuedConfig.Arcade.character
 		);
@@ -931,43 +1045,43 @@ void Arcade()
 			GUI_Combo2
 			(
 				"Style",
-				Arcade_styleNames,
+				styleNames,
 				activeConfig.Arcade.style,
 				queuedConfig.Arcade.style
 			);
 			GUI_ComboMap2
 			(
 				"Melee Weapon 1",
-				Arcade_meleeWeaponNames,
-				Arcade_meleeWeaponMap,
-				Arcade_meleeWeaponIndex[0],
+				meleeWeaponNamesDante,
+				meleeWeaponsDante,
+				Arcade_meleeWeaponIndexDante[0],
 				activeConfig.Arcade.weapons[0],
 				queuedConfig.Arcade.weapons[0]
 			);
 			GUI_ComboMap2
 			(
 				"Melee Weapon 2",
-				Arcade_meleeWeaponNames,
-				Arcade_meleeWeaponMap,
-				Arcade_meleeWeaponIndex[1],
+				meleeWeaponNamesDante,
+				meleeWeaponsDante,
+				Arcade_meleeWeaponIndexDante[1],
 				activeConfig.Arcade.weapons[1],
 				queuedConfig.Arcade.weapons[1]
 			);
 			GUI_ComboMap2
 			(
 				"Ranged Weapon 1",
-				Arcade_rangedWeaponNames,
-				Arcade_rangedWeaponMap,
-				Arcade_rangedWeaponIndex[0],
+				rangedWeaponNamesDante,
+				rangedWeaponsDante,
+				Arcade_rangedWeaponIndexDante[0],
 				activeConfig.Arcade.weapons[2],
 				queuedConfig.Arcade.weapons[2]
 			);
 			GUI_ComboMap2
 			(
 				"Ranged Weapon 2",
-				Arcade_rangedWeaponNames,
-				Arcade_rangedWeaponMap,
-				Arcade_rangedWeaponIndex[1],
+				rangedWeaponNamesDante,
+				rangedWeaponsDante,
+				Arcade_rangedWeaponIndexDante[1],
 				activeConfig.Arcade.weapons[3],
 				queuedConfig.Arcade.weapons[3]
 			);
@@ -1965,45 +2079,10 @@ void Repair()
 	}
 }
 
-const char * RemoveBusyFlag_buttonNames[] =
-{
-	"Left Trigger",
-	"Right Trigger",
-	"Left Shoulder",
-	"Right Shoulder",
-	"Y",
-	"B",
-	"A",
-	"X",
-	"Back",
-	"Left Thumb",
-	"Right Thumb",
-	"Start",
-	"Up",
-	"Right",
-	"Down",
-	"Left",
-};
 
-byte16 RemoveBusyFlag_buttonMap[] =
-{
-	GAMEPAD_LEFT_TRIGGER,
-	GAMEPAD_RIGHT_TRIGGER,
-	GAMEPAD_LEFT_SHOULDER,
-	GAMEPAD_RIGHT_SHOULDER,
-	GAMEPAD_Y,
-	GAMEPAD_B,
-	GAMEPAD_A,
-	GAMEPAD_X,
-	GAMEPAD_BACK,
-	GAMEPAD_LEFT_THUMB,
-	GAMEPAD_RIGHT_THUMB,
-	GAMEPAD_START,
-	GAMEPAD_UP,
-	GAMEPAD_RIGHT,
-	GAMEPAD_DOWN,
-	GAMEPAD_LEFT,
-};
+
+#define RemoveBusyFlag_buttonNames buttonNames
+#define RemoveBusyFlag_buttons buttons
 
 uint8 RemoveBusyFlag_buttonIndex = 0;
 
@@ -2011,7 +2090,7 @@ void RemoveBusyFlag_UpdateIndices()
 {
 	UpdateMapIndex
 	(
-		RemoveBusyFlag_buttonMap,
+		RemoveBusyFlag_buttons,
 		RemoveBusyFlag_buttonIndex,
 		activeConfig.RemoveBusyFlag.button
 	);
@@ -2055,7 +2134,7 @@ void RemoveBusyFlag()
 		(
 			"Button",
 			RemoveBusyFlag_buttonNames,
-			RemoveBusyFlag_buttonMap,
+			RemoveBusyFlag_buttons,
 			RemoveBusyFlag_buttonIndex,
 			activeConfig.RemoveBusyFlag.button,
 			queuedConfig.RemoveBusyFlag.button,
@@ -2067,45 +2146,8 @@ void RemoveBusyFlag()
 	}
 }
 
-const char * ResetPermissions_buttonNames[] =
-{
-	"Left Trigger",
-	"Right Trigger",
-	"Left Shoulder",
-	"Right Shoulder",
-	"Y",
-	"B",
-	"A",
-	"X",
-	"Back",
-	"Left Thumb",
-	"Right Thumb",
-	"Start",
-	"Up",
-	"Right",
-	"Down",
-	"Left",
-};
-
-byte16 ResetPermissions_buttonMap[] =
-{
-	GAMEPAD_LEFT_TRIGGER,
-	GAMEPAD_RIGHT_TRIGGER,
-	GAMEPAD_LEFT_SHOULDER,
-	GAMEPAD_RIGHT_SHOULDER,
-	GAMEPAD_Y,
-	GAMEPAD_B,
-	GAMEPAD_A,
-	GAMEPAD_X,
-	GAMEPAD_BACK,
-	GAMEPAD_LEFT_THUMB,
-	GAMEPAD_RIGHT_THUMB,
-	GAMEPAD_START,
-	GAMEPAD_UP,
-	GAMEPAD_RIGHT,
-	GAMEPAD_DOWN,
-	GAMEPAD_LEFT,
-};
+#define ResetPermissions_buttonNames buttonNames
+#define ResetPermissions_buttons buttons
 
 uint8 ResetPermissions_buttonIndex = 0;
 
@@ -2113,7 +2155,7 @@ void ResetPermissions_UpdateIndices()
 {
 	UpdateMapIndex
 	(
-		ResetPermissions_buttonMap,
+		ResetPermissions_buttons,
 		ResetPermissions_buttonIndex,
 		activeConfig.ResetPermissions.button
 	);
@@ -2157,7 +2199,7 @@ void ResetPermissions()
 		(
 			"Button",
 			ResetPermissions_buttonNames,
-			ResetPermissions_buttonMap,
+			ResetPermissions_buttons,
 			ResetPermissions_buttonIndex,
 			activeConfig.ResetPermissions.button,
 			queuedConfig.ResetPermissions.button,
@@ -2884,36 +2926,22 @@ void Main()
 
 
 
-		
 
 
-		static float scale = 1.0f;
 
-		if
-		(
-			GUI_Input
-			(
-				"Scaling",
-				scale,
-				0.1f,
-				"%.2f",
-				ImGuiInputTextFlags_EnterReturnsTrue
-			)
-		)
-		{
-		}
 
-		if (GUI_Button("Style"))
-		{
-			auto & style = ImGui::GetStyle();
 
-			style.ScaleAllSizes(scale);
-		}
+		// if (GUI_Button("Style"))
+		// {
+		// 	auto & style = ImGui::GetStyle();
 
-		if (GUI_Button("SetWindotFontScale"))
-		{
-			ImGui::SetWindowFontScale(scale);
-		}
+		// 	style.ScaleAllSizes(scale);
+		// }
+
+		// if (GUI_Button("SetWindotFontScale"))
+		// {
+		// 	ImGui::SetWindowFontScale(scale);
+		// }
 
 
 
@@ -2946,6 +2974,26 @@ void Main()
 		Teleporter();
 		Training();
 		Vergil();
+		ImGui::Text("");
+
+		// static float scale = 1.0f;
+
+		// ImGui::PushItemWidth(150.0f);
+		// if
+		// (
+		// 	GUI_Input
+		// 	(
+		// 		"Scale",
+		// 		scale,
+		// 		0.1f,
+		// 		"%.2f",
+		// 		ImGuiInputTextFlags_EnterReturnsTrue
+		// 	)
+		// )
+		// {
+		// 	ImGui::SetWindowFontScale(scale);
+		// }
+		// ImGui::PopItemWidth();
 
 		ImGui::Text("");
 	}
@@ -3010,4 +3058,62 @@ export void GUI_Init()
 }
 
 #ifdef __GARBAGE__
+
+
+
+const char * Actor_meleeWeaponNames[] =
+{
+	"Rebellion",
+	"Cerberus",
+	"Agni & Rudra",
+	"Nevan",
+	"Beowulf Dante",
+	"Yamato",
+	"Beowulf Vergil",
+	"Yamato & Force Edge",
+};
+
+uint8 Actor_meleeWeapons[] =
+{
+	WEAPON_REBELLION,
+	WEAPON_CERBERUS,
+	WEAPON_AGNI_RUDRA,
+	WEAPON_NEVAN,
+	WEAPON_BEOWULF_DANTE,
+	WEAPON_YAMATO_VERGIL,
+	WEAPON_BEOWULF_VERGIL,
+	WEAPON_YAMATO_FORCE_EDGE,
+};
+
+uint8 Actor_meleeWeaponIndices[MAX_PLAYER][MAX_ENTITY][MELEE_WEAPON_COUNT] = {};
+
+
+
+		switch (playerData.character)
+		{
+			case CHAR_DANTE:
+			{
+				UpdateMapIndex
+				(
+					Actor_meleeWeaponsDante,
+					Actor_meleeWeaponIndexDante[player][entity],
+					playerData.meleeWeapons[0]
+				);
+
+				break;
+			}
+			case CHAR_VERGIL:
+			{
+				UpdateMapIndex
+				(
+					Actor_meleeWeaponsVergil,
+					Actor_meleeWeaponIndexVergil[player][entity],
+					playerData.meleeWeapons[0]
+				);
+
+				break;
+			}
+		}
+
+
 #endif

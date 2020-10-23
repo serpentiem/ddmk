@@ -12,18 +12,11 @@ export struct Config
 	struct
 	{
 		bool enable = false;
-		PlayerData playerData[MAX_PLAYER][MAX_ENTITY] = {};
-		uint8 playerCount = 1;
 		bool enableQuicksilver = true;
-		// bool enableQuicksilver[MAX_PLAYER] =
-		// {
-		// 	true,
-		// 	true,
-		// 	true,
-		// 	true,
-		// };
-		bool enableDoppelganger[MAX_PLAYER] = {};
+		uint8 system = ACTOR_SYSTEM_DEFAULT;
 		bool showIdleActors = false;
+		PlayerData playerData[MAX_PLAYER][MAX_DIRECTION] = {};
+		uint8 playerCount = 1;
 	}
 	Actor;
 	struct
@@ -348,11 +341,11 @@ export void ApplyDefaultPlayerData
 	{
 		playerData =
 		{
+			true,
 			CHAR_DANTE,
 			0,
 			false,
 			CHAR_DANTE,
-			STYLE_TRICKSTER,
 			STYLE_TRICKSTER,
 			{
 				WEAPON_REBELLION,
@@ -379,6 +372,7 @@ export void ApplyDefaultPlayerData
 	{
 		playerData =
 		{
+			true,
 			CHAR_BOB
 		};
 		break;
@@ -387,6 +381,7 @@ export void ApplyDefaultPlayerData
 	{
 		playerData =
 		{
+			true,
 			CHAR_LADY
 		};
 		break;
@@ -395,11 +390,11 @@ export void ApplyDefaultPlayerData
 	{
 		playerData =
 		{
+			true,
 			CHAR_VERGIL,
 			0,
 			false,
 			CHAR_DANTE,
-			STYLE_DARK_SLAYER,
 			STYLE_DARK_SLAYER,
 			{
 				WEAPON_YAMATO_VERGIL,
@@ -465,11 +460,11 @@ export void Config_Init
 
 	snprintf(g_path, sizeof(g_path), "%s\\%s", directoryName, filename);
 
-	for_all(uint8, player, MAX_PLAYER){
-	for_all(uint8, entity, MAX_ENTITY)
+	for_all(uint8, player, MAX_PLAYER   ){
+	for_all(uint8, index , MAX_DIRECTION)
 	{
-		ApplyDefaultPlayerData(defaultConfig.Actor.playerData[player][entity], CHAR_DANTE);
-		ApplyDefaultPlayerData(activeConfig.Actor.playerData [player][entity], CHAR_DANTE);
-		ApplyDefaultPlayerData(queuedConfig.Actor.playerData [player][entity], CHAR_DANTE);
+		ApplyDefaultPlayerData(defaultConfig.Actor.playerData[player][index], index);
+		ApplyDefaultPlayerData(activeConfig.Actor.playerData [player][index], index);
+		ApplyDefaultPlayerData(queuedConfig.Actor.playerData [player][index], index);
 	}}
 }

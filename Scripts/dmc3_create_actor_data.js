@@ -452,7 +452,7 @@ var extra =
 
 
 	[ "newPlayer"             , "uint8" ],
-	[ "newEntity"             , "uint8" ],
+	[ "newIndex"              , "uint8" ],
 	[ "newForceFiles"         , "bool"  ],
 	[ "newForceFilesCharacter", "uint8" ],
 

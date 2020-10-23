@@ -150,6 +150,7 @@ export struct MixedVector
 };
 
 // @Research: Less modular design.
+// @Todo: Move to Utility.
 export template
 <
 	typename varType,
@@ -157,7 +158,7 @@ export template
 >
 void UpdateMapIndex
 (
-	varType(&map)[mapItemCount],
+	const varType(&map)[mapItemCount],
 	uint8 & index,
 	varType & var
 )

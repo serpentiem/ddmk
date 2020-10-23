@@ -340,6 +340,7 @@ export void BossRush_Main()
 
 	auto PlayTrack = [](const char * filename)
 	{
+		LogFunction();
 		func_32BE20((appBaseAddr + 0xCF3700));
 		func_32BA90((appBaseAddr + 0xCF3708), filename, 0, 0);
 	};

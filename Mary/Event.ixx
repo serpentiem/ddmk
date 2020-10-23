@@ -234,6 +234,7 @@ bool EventOnce(EventData & eventData)
 	{
 		Log("Main");
 		Actor_Main();
+		BossRush_Main();
 		break;
 	}
 	case EVENT_TELEPORT:
@@ -403,6 +404,9 @@ void MainLoop()
 
 
 	UpdateCamera();
+
+
+	CharacterSwitchController();
 
 
 

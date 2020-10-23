@@ -20,16 +20,58 @@ constexpr bool debug = true;
 
 export Vector<byte8 *> Actor_actorBaseAddr;
 
+
+byte8 * g_actorBaseAddr[MAX_PLAYER][MAX_DIRECTION] = {};
+
+
+
+//void * g_actorBaseAddr[MAX_PLAYER][MAX_CHAR] = {};
+bool    g_executeButton        [MAX_PLAYER][MAX_DIRECTION]= {};
+
+
+
 __declspec(dllexport) uint8   g_character      [MAX_PLAYER] = {};
 __declspec(dllexport) uint8   g_lastCharacter  [MAX_PLAYER] = {};
 __declspec(dllexport) uint8   g_activeCharacter[MAX_PLAYER] = {};
-__declspec(dllexport) uint8   g_motionGroup    [MAX_PLAYER] = {};
-__declspec(dllexport) uint8   g_lastMotionGroup[MAX_PLAYER] = {};
-__declspec(dllexport) uint8   g_motionIndex    [MAX_PLAYER] = {};
-__declspec(dllexport) uint8   g_lastMotionIndex[MAX_PLAYER] = {};
-__declspec(dllexport) float32 g_timeout        [MAX_PLAYER] = {};
-__declspec(dllexport) bool    g_execute1       [MAX_PLAYER] = {};
-__declspec(dllexport) bool    g_execute2       [MAX_PLAYER] = {};
+__declspec(dllexport) bool    g_executeFunction        [MAX_PLAYER] = {};
+
+
+
+
+
+// bool g_executeUp   [MAX_PLAYER] = {};
+// bool g_executeRight[MAX_PLAYER] = {};
+// bool g_executeDown [MAX_PLAYER] = {};
+// bool g_executeLeft [MAX_PLAYER] = {};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 byte8 * GetActorBaseAddr[MAX_REGISTER] = {};
 
@@ -544,6 +586,7 @@ bool IsWeaponActive(T & actorData)
 	return false;
 }
 
+// @Todo: Change to actorData.character. Saves a lot of headache.
 template <typename T>
 bool IsActive(T & actorData)
 {
@@ -851,14 +894,15 @@ void IsMeleeWeaponReadyVergilFix(ActorDataVergil & actorData)
 	}
 }
 
-template <typename T>
-bool DoppelgangerCheck(T & actorData)
-{
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 
-	if (enableDoppelganger)
+
+
+template <typename T>
+bool DoppelgangerButtonCheck(T & actorData)
+{
+	if (activeConfig.Actor.system == ACTOR_SYSTEM_DOPPELGANGER)
 	{
-		if (actorData.newEntity == ENTITY_MAIN)
+		if (actorData.newIndex == ENTITY_MAIN)
 		{
 			if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
 			{
@@ -872,34 +916,6 @@ bool DoppelgangerCheck(T & actorData)
 				return false;
 			}
 		}
-
-		return true;
-	}
-
-
-	auto & gamepad = GetGamepad(actorData.newPlayer);
-
-
-
-
-	// else
-	// {
-	// 	if (actorData.newEntity == ENTITY_MAIN)
-	// 	{
-	// 		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	// 		{
-	// 			return false;
-	// 		}
-	// 	}
-	// 	// else
-	// 	// {
-	// 	// 	return false;
-	// 	// }
-	// }
-
-	if (gamepad.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	{
-		return false;
 	}
 
 	return true;
@@ -2092,8 +2108,6 @@ void UpdateMeleeWeapon
 	auto & character     = g_character    [actorData.newPlayer];
 	auto & lastCharacter = g_lastCharacter[actorData.newPlayer];
 
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
-
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
 		if (IsDanteMeleeWeapon(weapon))
@@ -2105,22 +2119,11 @@ void UpdateMeleeWeapon
 	{
 		if (IsVergilMeleeWeapon(weapon))
 		{
-			// if
-			// (
-			// 	IsNeroAngelo(actorData) &&
-			// 	(weapon == WEAPON_YAMATO_FORCE_EDGE)
-			// )
-			// {
-			// 	actorData.queuedMeleeWeaponIndex = 0;
-			// }
-			// else
-			// {
-				actorData.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
-			//}
+			actorData.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
 		}
 	}
 
-	if (actorData.newEntity != ENTITY_MAIN)
+	if (actorData.newIndex != ENTITY_MAIN)
 	{
 		return;
 	}
@@ -2170,83 +2173,18 @@ void UpdateWeapons
 }
 
 template <typename T>
-void UpdateCloneMeleeWeapon(T & actorData)
-{
-	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
-
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
-
-	auto weapon = playerData.meleeWeapons[playerData.meleeWeaponIndex];
-
-	if (enableDoppelganger)
-	{
-		return;
-	}
-
-	if (actorData.newEntity != ENTITY_MAIN)
-	{
-		return;
-	}
-
-	if (!actorData.cloneBaseAddr)
-	{
-		return;
-	}
-	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
-
-	switch (cloneActorData.character)
-	{
-		case CHAR_DANTE:
-		{
-			auto & cloneActorData2 = *reinterpret_cast<ActorDataDante *>(&cloneActorData);
-
-			if (IsDanteMeleeWeapon(weapon))
-			{
-				cloneActorData2.meleeWeaponIndex = weapon;
-			}
-
-			break;
-		}
-		case CHAR_VERGIL:
-		{
-			auto & cloneActorData2 = *reinterpret_cast<ActorDataVergil *>(&cloneActorData);
-
-			if (IsVergilMeleeWeapon(weapon))
-			{
-				// if
-				// (
-				// 	IsNeroAngelo(cloneActorData2) &&
-				// 	(weapon == WEAPON_YAMATO_FORCE_EDGE)
-				// )
-				// {
-				// 	cloneActorData2.queuedMeleeWeaponIndex = 0;
-				// }
-				// else
-				// {
-					cloneActorData2.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
-				//}
-			}
-
-			break;
-		}
-	}
-}
-
-template <typename T>
 byte8 * CreateActor
 (
 	uint8 player,
-	uint8 entity
+	uint8 index
 )
 {
 	if constexpr (debug)
 	{
-		LogFunction(player, entity);
+		LogFunction(player, index);
 	}
 
 	IntroduceMissionActorData(return 0);
-
-	
 
 	auto baseAddr = func_1DE820(GetCharacterId<T>::value, 0, false);
 	if (!baseAddr)
@@ -2255,13 +2193,9 @@ byte8 * CreateActor
 	}
 	auto & actorData = *reinterpret_cast<T *>(baseAddr);
 
-	auto & playerData = activeConfig.Actor.playerData[player][entity];
-
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[player];
+	auto & playerData = activeConfig.Actor.playerData[player][index];
 
 	UpdateFileData(actorData);
-
-	//HoboBreak();
 
 	InitActor(actorData, activeMissionActorData);
 
@@ -2296,50 +2230,11 @@ byte8 * CreateActor
 
 	UpdateCostumeFileData(actorData);
 
-
-
-
-
-
-
-
-
-
-
 	actorData.newPlayer              = player;
-	actorData.newEntity              = entity;
+	actorData.newIndex               = index;
 	actorData.newForceFiles          = playerData.forceFiles;
 	actorData.newForceFilesCharacter = playerData.forceFilesCharacter;
 	actorData.newGamepad             = player;
-
-
-
-
-
-
-
-	// actorData.newButtonMask       = 0xFFFF;
-	// actorData.newEnableRightStick = true;
-	// actorData.newEnableLeftStick  = true;
-
-
-
-
-
-
-
-	
-	
-
-
-
-
-
-
-
-
-
-	
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
@@ -2350,11 +2245,8 @@ byte8 * CreateActor
 		UpdateActor(actorData);
 	}
 
-
-
-
-
-	auto UpdateShadow = [&]()
+	//auto UpdateShadow = [&]()
+	[&]()
 	{
 		if (!Actor_actorBaseAddr[0])
 		{
@@ -2363,9 +2255,9 @@ byte8 * CreateActor
 		auto & mainActorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[0]);
 
 		actorData.shadow = mainActorData.shadow;
-	};
+	}();
 
-	UpdateShadow();
+	//UpdateShadow();
 
 
 
@@ -2393,14 +2285,15 @@ byte8 * CreateActor
 
 	UpdateStyle(actorData, playerData);
 
-	if
-	(
-		(player == 0) &&
-		(entity == ENTITY_MAIN)
-	)
-	{
-		HUD_UpdateStyleIcon(playerData.character, playerData.style);
-	}
+	// @Todo: Update.
+	// if
+	// (
+	// 	(player == 0) &&
+	// 	(index == 0)
+	// )
+	// {
+	// 	HUD_UpdateStyleIcon(playerData.character, playerData.style);
+	// }
 
 	InitWeapons(actorData);
 
@@ -2426,9 +2319,9 @@ byte8 * CreateActor
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		for_each(uint8, index, WEAPON_EBONY_IVORY, WEAPON_COUNT_DANTE)
+		for_each(uint8, weaponIndex, WEAPON_EBONY_IVORY, WEAPON_COUNT_DANTE)
 		{
-			actorData.newWeaponLevels[index] = 2;
+			actorData.newWeaponLevels[weaponIndex] = 2;
 		}
 	}
 
@@ -2437,87 +2330,79 @@ byte8 * CreateActor
 
 
 
-
-	if (entity == ENTITY_MAIN)
+	switch (activeConfig.Actor.system)
 	{
-		auto & character       = g_character      [player];
-		auto & lastCharacter   = g_lastCharacter  [player];
-		auto & activeCharacter = g_activeCharacter[player];
-
-		activeCharacter = lastCharacter = character = GetCharacterId<T>::value;
-
-		auto weapon = playerData.meleeWeapons[playerData.meleeWeaponIndex];
-
-		if
-		(
-			(actorData.character == CHAR_DANTE) &&
-			!IsDanteMeleeWeapon(weapon)
-		)
+		case ACTOR_SYSTEM_DEFAULT:
 		{
-			playerData.meleeWeaponIndex = 0;
+			ToggleActor(actorData, true);
 
-			UpdateMeleeWeapon(actorData, playerData);
+			break;
 		}
-		else if
-		(
-			(actorData.character == CHAR_VERGIL) &&
-			!IsVergilMeleeWeapon(weapon)
-		)
+		case ACTOR_SYSTEM_DOPPELGANGER:
 		{
-			playerData.meleeWeaponIndex = 0;
+			if (index == ENTITY_MAIN)
+			{
+				ToggleActor(actorData, true);
+			}
+			else
+			{
+				ToggleActor(actorData, false);
 
-			UpdateMeleeWeapon(actorData, playerData);
+				actorData.newIsClone = true;
+			}
+
+			break;
 		}
+		case ACTOR_SYSTEM_CHARACTER_SWITCHER:
+		{
+			if (static_cast<uint8>(actorData.character) == g_activeCharacter[player])
+			{
+				ToggleActor(actorData, true);
+			}
+			else
+			{
+				ToggleActor(actorData, false);
+			}
 
-
-		// if (IsDanteMeleeWeapon(weapon))
-		// {
-		// 	character = CHAR_DANTE;
-		// }
-		// else if (IsVergilMeleeWeapon(weapon))
-		// {
-		// 	character = CHAR_VERGIL;
-		// }
-
-		ToggleActor(actorData, true);
+			break;
+		}
 	}
-	else
+
+
+
+
+
+
+
+
+
+
+	// @Todo: Capture Arkham's grab.
+	if (actorData.mode == ACTOR_MODE_MISSION_19)
 	{
-		if (enableDoppelganger)
-		{
-			actorData.newIsClone = true;
-		}
-
-		ToggleActor(actorData, false);
+		actorData.mode = ACTOR_MODE_DEFAULT;
 	}
 
 
 
 
 
-
-	// if
-	// (
-	// 	(enableDoppelganger) &&
-	// 	(entity == ENTITY_CLONE)
-	// )
-	// {
-	// 	actorData.newIsClone = true;
-
-
-	// 	//actorData.newGamepad          = player;
-	// 	//actorData.newButtonMask       = 0;
-	// 	//actorData.newEnableRightStick = false;
-	// 	//actorData.newEnableLeftStick  = false;
-
-
-
-
-	// }
 
 	func_1DFC20(actorData);
 
 	Actor_actorBaseAddr.Push(actorData);
+
+
+	if (activeConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER)
+	{
+		g_actorBaseAddr[player][index] = actorData;
+	}
+
+
+
+
+
+
 
 	return actorData;
 }
@@ -2547,37 +2432,37 @@ ActorSpawnHelper actorSpawnHelper = {};
 byte8 * SpawnActor
 (
 	uint8 player,
-	uint8 entity
+	uint8 index
 )
 {
 	byte8 * baseAddr = 0;
 
 
-	auto & playerData = activeConfig.Actor.playerData[player][entity];
+	auto & playerData = activeConfig.Actor.playerData[player][index];
 
 
 
-	//auto character = activeConfig.Actor.character[player][entity];
+	//auto character = activeConfig.Actor.character[player][index];
 	switch (playerData.character)
 	{
 	case CHAR_DANTE:
 	{
-		baseAddr = CreateActor<ActorDataDante>(player, entity);
+		baseAddr = CreateActor<ActorDataDante>(player, index);
 		break;
 	}
 	case CHAR_BOB:
 	{
-		baseAddr = CreateActor<ActorDataBob>(player, entity);
+		baseAddr = CreateActor<ActorDataBob>(player, index);
 		break;
 	}
 	case CHAR_LADY:
 	{
-		baseAddr = CreateActor<ActorDataLady>(player, entity);
+		baseAddr = CreateActor<ActorDataLady>(player, index);
 		break;
 	}
 	case CHAR_VERGIL:
 	{
-		baseAddr = CreateActor<ActorDataVergil>(player, entity);
+		baseAddr = CreateActor<ActorDataVergil>(player, index);
 		break;
 	}
 	}
@@ -2598,16 +2483,20 @@ byte8 * SpawnActor
 	actorData.rotation = actorSpawnHelper.rotation;
 
 
+	actorData.var_3E10[8] = actorSpawnHelper.event;
 
-	// @Todo: Update.
-	if (entity == ENTITY_MAIN)
-	{
-		actorData.var_3E10[8] = actorSpawnHelper.event;
-	}
-	else
-	{
-		actorData.position.y = 10500;
-	}
+
+
+
+	// // @Todo: Update.
+	// if (index == ENTITY_MAIN)
+	// {
+		
+	// }
+	// else
+	// {
+	// 	actorData.position.y = 10500;
+	// }
 
 	// if (actorData.newChildBaseAddr)
 	// {
@@ -2621,30 +2510,67 @@ byte8 * SpawnActor
 }
 
 
-// @Todo: Update names.
+
+
+
+
+
 export void SpawnActors()
 {
 	LogFunction();
 
 	for_all(uint8, player, activeConfig.Actor.playerCount)
 	{
-		auto mainBaseAddr = SpawnActor(player, ENTITY_MAIN);
-		if (!mainBaseAddr)
+		switch (activeConfig.Actor.system)
 		{
-			continue;
+			case ACTOR_SYSTEM_DEFAULT:
+			{
+				SpawnActor(player, 0);
+
+				break;
+			}
+			case ACTOR_SYSTEM_DOPPELGANGER:
+			{
+				auto baseAddr = SpawnActor(player, ENTITY_MAIN);
+				if (!baseAddr)
+				{
+					goto LoopContinue;
+				}
+				auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+
+				auto cloneBaseAddr = SpawnActor(player, ENTITY_CLONE);
+				if (!cloneBaseAddr)
+				{
+					goto LoopContinue;
+				}
+				auto & cloneActorData = *reinterpret_cast<ActorData *>(cloneBaseAddr);
+
+				actorData.cloneBaseAddr = cloneActorData;
+
+				break;
+			}
+			case ACTOR_SYSTEM_CHARACTER_SWITCHER:
+			{
+				for_all(uint8, direction, MAX_DIRECTION)
+				{
+					auto & playerData = activeConfig.Actor.playerData[player][direction];
+
+					if (!playerData.enable)
+					{
+						continue;
+					}
+
+					auto baseAddr = SpawnActor(player, direction);
+					if (!baseAddr)
+					{
+						goto LoopContinue;
+					}
+				}
+				break;
+			}
 		}
-		auto & mainActorData = *reinterpret_cast<ActorData *>(mainBaseAddr);
 
-		auto cloneBaseAddr = SpawnActor(player, ENTITY_CLONE);
-		if (!cloneBaseAddr)
-		{
-			continue;
-		}
-		auto & cloneActorData = *reinterpret_cast<ActorData *>(cloneBaseAddr);
-
-		mainActorData.cloneBaseAddr = cloneActorData;
-
-		UpdateCloneMeleeWeapon(mainActorData);
+		LoopContinue:;
 	}
 }
 
@@ -2801,331 +2727,22 @@ void ResetPermissionsController(byte8 * baseAddr)
 
 
 
-void CharacterSwitchController(byte8 * baseAddr)
-{
-	if (!baseAddr)
-	{
-		return;
-	}
-	if (baseAddr == Actor_actorBaseAddr[0])
-	{
-		return;
-	}
-	if (baseAddr == Actor_actorBaseAddr[1])
-	{
-		return;
-	}
-	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
-
-	if (actorData.newEntity != ENTITY_MAIN)
-	{
-		return;
-	}
-
-	if (!actorData.cloneBaseAddr)
-	{
-		return;
-	}
-	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
-
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
-
-	if (enableDoppelganger)
-	{
-		return;
-	}
-
-	auto & character       = g_character      [actorData.newPlayer];
-	auto & lastCharacter   = g_lastCharacter  [actorData.newPlayer];
-	auto & activeCharacter = g_activeCharacter[actorData.newPlayer];
-	auto & motionGroup     = g_motionGroup    [actorData.newPlayer];
-	auto & lastMotionGroup = g_lastMotionGroup[actorData.newPlayer];
-	auto & motionIndex     = g_motionIndex    [actorData.newPlayer];
-	auto & lastMotionIndex = g_lastMotionIndex[actorData.newPlayer];
-	auto & timeout         = g_timeout        [actorData.newPlayer];
-	auto & execute1        = g_execute1       [actorData.newPlayer];
-	auto & execute2        = g_execute2       [actorData.newPlayer];
-
-	auto SetTimeout = [&]
-	(
-		uint8 group,
-		uint8 index,
-		float32 value
-	)
-	{
-		motionGroup = group;
-		motionIndex = index;
-
-		if
-		(
-			(lastMotionGroup != motionGroup) &&
-			(lastMotionIndex != motionIndex)
-		)
-		{
-			lastMotionGroup = motionGroup;
-			lastMotionIndex = motionIndex;
-
-			timeout = value;
-		}
-	};
-
-	auto TimeoutFunction = [&]
-	(
-		ActorData & activeActorData,
-		ActorData & idleActorData
-	)
-	{
-		switch (activeActorData.character)
-		{
-			case CHAR_VERGIL:
-			{
-				auto & activeActorData2 = *reinterpret_cast<ActorDataVergil *>(&activeActorData);
-				auto & idleActorData2 = *reinterpret_cast<ActorDataDante *>(&idleActorData);
-				auto & motionData = activeActorData.motionData[UPPER_BODY];
-
-				if
-				(
-					(motionData.group == MOTION_GROUP_VERGIL_DARK_SLAYER) &&
-					(motionData.index == 0)
-				)
-				{
-					SetTimeout
-					(
-						motionData.group,
-						motionData.index,
-						25
-					);
-				}
-				else if
-				(
-					(motionData.group == MOTION_GROUP_VERGIL_DARK_SLAYER) &&
-					(motionData.index == 1)
-				)
-				{
-					SetTimeout
-					(
-						motionData.group,
-						motionData.index,
-						25
-					);
-				}
 
-				break;
-			}
-		}
-	};
 
-	auto Function = [&]
-	(
-		ActorData & activeActorData,
-		ActorData & idleActorData
-	)
-	{
-		if (activeCharacter == character)
-		{
-			execute1 = false;
 
-			ToggleInput(activeActorData, true );
-			ToggleInput(idleActorData  , false);
 
-			return;
-		}
 
-		if (timeout > 0)
-		{
-			return;
-		}
 
-		switch (activeActorData.character)
-		{
-			case CHAR_DANTE:
-			{
-				auto & activeActorData2 = *reinterpret_cast<ActorDataDante *>(&activeActorData);
-				auto & idleActorData2 = *reinterpret_cast<ActorDataVergil *>(&idleActorData);
 
-				if (IsActive(activeActorData2))
-				{
 
 
 
 
 
 
-					if (IsActive(idleActorData2))
-					{
-						execute1 = false;
 
-						activeCharacter = character;
 
-						ToggleActor(activeActorData, false);
-						ToggleActor(idleActorData  , true );
 
-						//CopyPull(activeActorData, idleActorData);
-
-						EndMotion(activeActorData);
-
-						UpdatePermissions(idleActorData);
-					}
-				}
-				else
-				{
-					execute1 = false;
-
-					activeCharacter = character;
-
-					ToggleActor(activeActorData, false);
-					ToggleActor(idleActorData  , true );
-
-					EndMotion(activeActorData);
-
-					//CopyPull(activeActorData, idleActorData);
-
-					UpdatePermissions(idleActorData);
-				}
-
-				break;
-			}
-			case CHAR_VERGIL:
-			{
-				auto & activeActorData2 = *reinterpret_cast<ActorDataVergil *>(&activeActorData);
-				auto & idleActorData2 = *reinterpret_cast<ActorDataDante *>(&idleActorData);
-
-
-
-				// auto & motionData = activeActorData.motionData[UPPER_BODY];
-
-				// if (motionData.group == MOTION_GROUP_VERGIL_DARK_SLAYER)
-				// {
-				// 	SetTimeout(motionData.group, 500);
-				// }
-
-				// if (activeCharacter == CHAR_VERGIL)
-				// {
-
-				// }
-
-
-
-
-				if (IsActive(activeActorData2))
-				{
-
-
-
-
-
-
-					if (IsActive(idleActorData2))
-					{
-						execute1 = false;
-
-						activeCharacter = character;
-
-						ToggleActor(activeActorData, false);
-						ToggleActor(idleActorData  , true );
-
-						EndMotion(activeActorData);
-
-						//CopyPull(activeActorData, idleActorData);
-
-						UpdatePermissions(idleActorData);
-					}
-				}
-				else
-				{
-					execute1 = false;
-
-					activeCharacter = character;
-
-					ToggleActor(activeActorData, false);
-					ToggleActor(idleActorData  , true );
-
-					EndMotion(activeActorData);
-
-					//CopyPull(activeActorData, idleActorData);
-
-					UpdatePermissions(idleActorData);
-				}
-
-				break;
-			}
-		}
-	};
-
-	if (lastCharacter != character)
-	{
-		lastCharacter = character;
-
-		if (character == static_cast<uint8>(actorData.character))
-		{
-			ToggleInput(actorData     , true );
-			ToggleInput(cloneActorData, false);
-		}
-		else
-		{
-			ToggleInput(actorData     , false);
-			ToggleInput(cloneActorData, true );
-		}
-
-		execute1 = true;
-	}
-
-	if (execute1)
-	{
-		if (activeCharacter == static_cast<uint8>(actorData.character))
-		{
-			Function(actorData, cloneActorData);
-		}
-		else
-		{
-			Function(cloneActorData, actorData);
-		}
-	}
-
-	if (activeCharacter == static_cast<uint8>(actorData.character))
-	{
-		TimeoutFunction(actorData, cloneActorData);
-	}
-	else
-	{
-		TimeoutFunction(cloneActorData, actorData);
-	}
-
-	if (timeout > 0)
-	{
-		timeout -= 1.0f;
-	}
-	else if (timeout < 0)
-	{
-		timeout = 0;
-	}
-
-	if (timeout == 0)
-	{
-		if (execute2)
-		{
-			execute2 = false;
-
-			motionGroup     = 255;
-			lastMotionGroup = 255;
-			motionIndex     = 255;
-			lastMotionIndex = 255;
-		}
-	}
-	else
-	{
-		execute2 = true;
-	}
-
-	if (actorData.newEnable)
-	{
-		CopyState(actorData, cloneActorData);
-	}
-	else
-	{
-		CopyState(cloneActorData, actorData);
-	}
-}
 
 template <typename T>
 void StyleSwitchController
@@ -3135,7 +2752,6 @@ void StyleSwitchController
 )
 {
 	auto & enableQuicksilver  = activeConfig.Actor.enableQuicksilver;
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
 
 	auto & execute = actorData.newExecuteStyleSwitch;
 
@@ -3157,7 +2773,7 @@ void StyleSwitchController
 				return;
 			}
 
-			if (actorData.newEntity != ENTITY_MAIN)
+			if (actorData.newIndex != ENTITY_MAIN)
 			{
 				return;
 			}
@@ -3170,20 +2786,14 @@ void StyleSwitchController
 			style = STYLE_QUICKSILVER;
 		}
 
-		//MessageBoxA(0, "get here!", 0, 0);
-
 		playerData.style = style;
 
 		update = true;
 	};
 
-
-
-
-
-	if (enableDoppelganger)
+	if (activeConfig.Actor.system == ACTOR_SYSTEM_DOPPELGANGER)
 	{
-		if (actorData.newEntity == ENTITY_MAIN)
+		if (actorData.newIndex == ENTITY_MAIN)
 		{
 			if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
 			{
@@ -3201,15 +2811,10 @@ void StyleSwitchController
 		}
 	}
 
-
-	if (!DoppelgangerCheck(actorData))
+	if (!DoppelgangerButtonCheck(actorData))
 	{
 		return;
 	}
-
-
-
-
 
 	switch (actorData.character)
 	{
@@ -3251,44 +2856,6 @@ void StyleSwitchController
 		}
 	}
 
-
-	// if (actorData.character == CHAR_DANTE)
-	// {
-	// 	if (actorData.buttons[2] & GetBinding(BINDING_ITEM_SCREEN))
-	// 	{
-	// 		SetStyle(STYLE_TRICKSTER);
-	// 	}
-	// 	else if (actorData.buttons[2] & GetBinding(BINDING_MAP_SCREEN))
-	// 	{
-	// 		SetStyle(STYLE_SWORDMASTER);
-	// 	}
-	// 	else if (actorData.buttons[2] & GetBinding(BINDING_EQUIP_SCREEN))
-	// 	{
-	// 		SetStyle(STYLE_ROYALGUARD);
-	// 	}
-	// 	else if (actorData.buttons[2] & GetBinding(BINDING_FILE_SCREEN))
-	// 	{
-	// 		SetStyle(STYLE_GUNSLINGER);
-	// 	}
-	// 	else
-	// 	{
-	// 		execute = true;
-	// 	}
-	// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	sect0:;
 
 	if (!update)
@@ -3303,21 +2870,58 @@ void StyleSwitchController
 		return;
 	}
 
-	if
-	(
-		//enableDoppelganger &&
-		(actorData.newEntity != ENTITY_MAIN)
-	)
+	if (static_cast<uint8>(actorData.character) != g_activeCharacter[actorData.newPlayer])
 	{
 		return;
 	}
 
 	IntroduceHUDPointers(return);
 
-	HUD_UpdateStyleIcon(CHAR_DANTE, playerData.style);
+	switch (static_cast<uint8>(actorData.character))
+	{
+		case CHAR_DANTE:
+		{
+			HUD_UpdateStyleIcon(CHAR_DANTE, playerData.style);
+			break;
+		}
+		case CHAR_BOB:
+		{
+			HUD_UpdateStyleIcon(CHAR_VERGIL, STYLE_DARK_SLAYER);
+			break;
+		}
+		case CHAR_LADY:
+		{
+			HUD_UpdateStyleIcon(CHAR_DANTE, STYLE_GUNSLINGER);
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			HUD_UpdateStyleIcon(CHAR_VERGIL, playerData.style);
+			break;
+		}
+	}
 }
 
-// @Todo: Check for < 2.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 template <typename T>
 void MeleeWeaponSwitchController
 (
@@ -3330,13 +2934,15 @@ void MeleeWeaponSwitchController
 		return;
 	}
 
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
-	
+	if (playerData.meleeWeaponCount < 2)
+	{
+		return;
+	}
+
 	bool update = false;
 
 	bool forward = false;
 	bool back = false;
-
 
 	auto Forward = [&]()
 	{
@@ -3368,100 +2974,14 @@ void MeleeWeaponSwitchController
 		back = true;
 	};
 
-
-
-
-
-
-
-	if (!DoppelgangerCheck(actorData))
+	if (!DoppelgangerButtonCheck(actorData))
 	{
 		return;
 	}
 
-
-	if
-	(
-		!enableDoppelganger &&
-		(actorData.newEntity != ENTITY_MAIN)
-	)
+	if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
 	{
-		return;
-	}
-
-
-
-
-
-
-
-
-
-
-
-	// if (enableDoppelganger)
-	// {
-	// 	if (actorData.newEntity == ENTITY_MAIN)
-	// 	{
-	// 		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	// 		{
-	// 			return;
-	// 		}
-	// 	}
-	// 	else
-	// 	{
-	// 		if (!(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)))
-	// 		{
-	// 			return;
-	// 		}
-	// 	}
-	// }
-	// else
-	// {
-	// 	if (actorData.newEntity == ENTITY_MAIN)
-	// 	{
-	// 		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	// 		{
-	// 			return;
-	// 		}
-	// 	}
-	// 	else
-	// 	{
-	// 		return;
-	// 	}
-	// }
-
-
-
-
-
-
-	// if
-	// (
-	// 	enableDoppelganger &&
-	// 	(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	// )
-	// {
-	// 	if (actorData.newEntity == ENTITY_MAIN)
-	// 	{
-	// 		return;
-	// 	}
-	// }
-	// else
-	// {
-	// 	if (actorData.newEntity == ENTITY_CLONE)
-	// 	{
-	// 		return;
-	// 	}
-	// }
-
-
-	auto & gamepad = GetGamepad(actorData.newPlayer);
-
-
-	if (gamepad.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
-	{
-		if (gamepad.buttons[0] & GetBinding(BINDING_TAUNT))
+		if (actorData.buttons[0] & GetBinding(BINDING_TAUNT))
 		{
 			Back();
 		}
@@ -3470,113 +2990,13 @@ void MeleeWeaponSwitchController
 			Forward();
 		}
 	}
-	else if (gamepad.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
+	else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
 	{
 		if constexpr (TypeMatch<T, ActorDataVergil>::value)
 		{
 			Back();
 		}
 	}
-
-
-
-
-
-	// if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
-	// {
-	// 	// @Todo: Replace with gamepad, because actor won't have bindings when switched.
-	// 	if (actorData.buttons[0] & GetBinding(BINDING_TAUNT))
-	// 	{
-	// 		Back();
-	// 	}
-	// 	else
-	// 	{
-	// 		Forward();
-	// 	}
-	// }
-	// else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
-	// {
-	// 	if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	// 	{
-	// 		Back();
-	// 	}
-	// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// if
-	// (
-	// 	enableDoppelganger &&
-	// 	(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	// )
-	// {
-	// 	if (actorData.newEntity == ENTITY_MAIN)
-	// 	{
-	// 		return;
-	// 	}
-	// }
-	// else
-	// {
-	// 	if (actorData.newEntity == ENTITY_CLONE)
-	// 	{
-	// 		return;
-	// 	}
-	// }
-
-	// if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
-	// {
-	// 	if (actorData.buttons[0] & GetBinding(BINDING_TAUNT))
-	// 	{
-	// 		Back();
-	// 	}
-	// 	else
-	// 	{
-	// 		Forward();
-	// 	}
-	// }
-	// else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
-	// {
-	// 	if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	// 	{
-	// 		Back();
-	// 	}
-	// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	if (!update)
 	{
@@ -3585,17 +3005,14 @@ void MeleeWeaponSwitchController
 
 	actorData.meleeWeaponSwitchTimeout = activeConfig.weaponSwitchTimeout;
 
-
-
+	// Nero Angelo Fix
 	{
 		auto weapon = playerData.meleeWeapons[playerData.meleeWeaponIndex];
 
-
-
 		auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
+
 		if
 		(
-			
 			IsNeroAngelo(actorData2) &&
 			(weapon == WEAPON_YAMATO_FORCE_EDGE)
 		)
@@ -3608,27 +3025,10 @@ void MeleeWeaponSwitchController
 			{
 				Back();
 			}
-			//HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, WEAPON_YAMATO_VERGIL);
 		}
-		// else
-		// {
-		// 	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, weapon);
-		// }
 	}
 
-
-
-
-
-
-
-
-
-
-
 	UpdateMeleeWeapon(actorData, playerData);
-
-	UpdateCloneMeleeWeapon(actorData);
 
 	UpdateForm(actorData);
 
@@ -3637,7 +3037,19 @@ void MeleeWeaponSwitchController
 		return;
 	}
 
-	if (actorData.newEntity != ENTITY_MAIN)
+	if
+	(
+		(activeConfig.Actor.system == ACTOR_SYSTEM_DOPPELGANGER) &&
+		(actorData.newIndex != ENTITY_MAIN)
+	)
+	{
+		return;
+	}
+	else if
+	(
+		(activeConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER) &&
+		(static_cast<uint8>(actorData.character) != g_activeCharacter[actorData.newPlayer])
+	)
 	{
 		return;
 	}
@@ -3645,26 +3057,6 @@ void MeleeWeaponSwitchController
 	IntroduceHUDPointers(return);
 
 	auto weapon = playerData.meleeWeapons[playerData.meleeWeaponIndex];
-
-
-	// auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
-
-	// if
-	// (
-	// 	// @Todo: Sparda flag and template.
-	// 	IsNeroAngelo(actorData2) &&
-	// 	(weapon == WEAPON_YAMATO_FORCE_EDGE)
-	// )
-	// {
-	// 	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, WEAPON_YAMATO_VERGIL);
-	// }
-	// else
-	// {
-	// 	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, weapon);
-	// }
-
-
-
 
 	HUD_UpdateWeaponIcon(HUD_BOTTOM_MELEE_WEAPON_1, weapon);
 
@@ -3685,8 +3077,11 @@ void RangedWeaponSwitchController
 		return;
 	}
 
-	auto & enableDoppelganger = activeConfig.Actor.enableDoppelganger[actorData.newPlayer];
-	
+	if (playerData.rangedWeaponCount < 2)
+	{
+		return;
+	}
+
 	bool update = false;
 
 	auto Forward = [&]()
@@ -3715,26 +3110,7 @@ void RangedWeaponSwitchController
 		update = true;
 	};
 
-	// if
-	// (
-	// 	enableDoppelganger &&
-	// 	(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
-	// )
-	// {
-	// 	if (actorData.newEntity == ENTITY_MAIN)
-	// 	{
-	// 		return;
-	// 	}
-	// }
-	// else
-	// {
-	// 	if (actorData.newEntity == ENTITY_CLONE)
-	// 	{
-	// 		return;
-	// 	}
-	// }
-
-	if (!DoppelgangerCheck(actorData))
+	if (!DoppelgangerButtonCheck(actorData))
 	{
 		return;
 	}
@@ -3765,7 +3141,19 @@ void RangedWeaponSwitchController
 		return;
 	}
 
-	if (actorData.newEntity != ENTITY_MAIN)
+	if
+	(
+		(activeConfig.Actor.system == ACTOR_SYSTEM_DOPPELGANGER) &&
+		(actorData.newIndex != ENTITY_MAIN)
+	)
+	{
+		return;
+	}
+	else if
+	(
+		(activeConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER) &&
+		(static_cast<uint8>(actorData.character) != g_activeCharacter[actorData.newPlayer])
+	)
 	{
 		return;
 	}
@@ -3798,7 +3186,7 @@ bool WeaponSwitchController(byte8 * baseAddr)
 	}
 	auto & actorData = *reinterpret_cast<T *>(baseAddr);
 
-	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newEntity];
+	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newIndex];
 
 	if (actorData.mode == ACTOR_MODE_MISSION_18)
 	{
@@ -3823,10 +3211,211 @@ bool WeaponSwitchController(byte8 * baseAddr)
 
 	ResetPermissionsController(actorData);
 
-	CharacterSwitchController(actorData);
-
 	return true;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export void CharacterSwitchController()
+{
+	for_all(uint8, player, activeConfig.Actor.playerCount)
+	{
+		auto & gamepad = GetGamepad(player);
+
+		auto & actorBaseAddr   = g_actorBaseAddr  [player];
+
+		auto & character       = g_character      [player];
+		auto & lastCharacter   = g_lastCharacter  [player];
+		auto & activeCharacter = g_activeCharacter[player];
+		//auto & executeButton   = g_executeButton  [player];
+		auto & executeFunction = g_executeFunction[player];
+
+
+
+		// auto & executeUp    = g_executeUp   [player];
+		// auto & executeRight = g_executeRight[player];
+		// auto & executeDown  = g_executeDown [player];
+		// auto & executeLeft  = g_executeLeft [player];
+
+
+
+
+
+
+		constexpr byte16 buttons[MAX_DIRECTION] =
+		{
+			GAMEPAD_UP,
+			GAMEPAD_RIGHT,
+			GAMEPAD_DOWN,
+			GAMEPAD_LEFT,
+		};
+
+		for_all(uint8, direction, MAX_DIRECTION)
+		{
+			auto & button = buttons[direction];
+			auto & executeButton = g_executeButton[player][direction];
+
+			if
+			(
+				(gamepad.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)) &&
+				(gamepad.buttons[0] & button)
+			)
+			{
+				if (executeButton)
+				{
+					executeButton = false;
+
+					character = activeConfig.Actor.playerData[player][direction].character;
+				}
+			}
+			else
+			{
+				executeButton = true;
+			}
+		}
+
+
+
+
+		
+		for_all(uint8, direction, MAX_DIRECTION)
+		{
+			if (!g_actorBaseAddr[player][direction])
+			{
+				continue;
+			}
+			auto & actorData = *reinterpret_cast<ActorData *>(g_actorBaseAddr[player][direction]);
+
+			if (static_cast<uint8>(actorData.character) != activeCharacter)
+			{
+				continue;
+			}
+
+			auto & activeActorData = actorData;
+
+
+
+		}
+
+
+		// determine active and idle actor base addresses.
+
+		// if actorData.character == g_activeCharacter active
+		// if actorData.character == g_character idle
+
+
+
+
+
+		auto & activeActorData = *reinterpret_cast<ActorData *>(actorBaseAddr[activeCharacter]);
+
+		auto Function = [&]()
+		{
+			auto & idleActorData = *reinterpret_cast<ActorData *>(actorBaseAddr[character]);
+
+			if (!executeFunction)
+			{
+				return;
+			}
+
+			if (IsActive(activeActorData))
+			{
+				if (IsActive(idleActorData))
+				{
+					executeFunction = false;
+
+					activeCharacter = character;
+
+					ToggleActor(activeActorData, false);
+					ToggleActor(idleActorData  , true );
+
+					EndMotion(activeActorData);
+
+					UpdatePermissions(idleActorData);
+				}
+			}
+			else
+			{
+				executeFunction = false;
+
+				activeCharacter = character;
+
+				ToggleActor(activeActorData, false);
+				ToggleActor(idleActorData  , true );
+
+				EndMotion(activeActorData);
+
+				UpdatePermissions(idleActorData);
+			}
+		};
+
+		if (lastCharacter != character)
+		{
+			lastCharacter = character;
+
+			auto & idleActorData = *reinterpret_cast<ActorData *>(actorBaseAddr[character]);
+
+			ToggleInput(activeActorData, false);
+			ToggleInput(idleActorData  , true );
+
+			executeFunction = true;
+		}
+
+		Function();
+
+		for_all(uint8, index, MAX_CHAR)
+		{
+			if (index == activeCharacter)
+			{
+				continue;
+			}
+
+			auto & idleActorData = *reinterpret_cast<ActorData *>(actorBaseAddr[index]);
+
+			CopyState(activeActorData, idleActorData);
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #pragma endregion
 
@@ -7524,9 +7113,9 @@ void DeactivateDoppelganger(ActorData & actorData)
 
 
 // @Todo: Decimate.
-bool DevilDoppelgangerCheck(ActorData & actorData)
+bool DevilDoppelgangerButtonCheck(ActorData & actorData)
 {
-	return DoppelgangerCheck(actorData);
+	return DoppelgangerButtonCheck(actorData);
 }
 
 void ActivateDevil(ActorData & actorData)
@@ -7637,7 +7226,7 @@ byte8  * ActivateQuicksilverAddr            = 0;
 byte8  * DeactivateQuicksilverAddr[2]       = {};
 byte8  * ActivateDoppelgangerAddr           = 0;
 byte8  * DeactivateDoppelgangerAddr         = 0; // @Todo: Check for run out function.
-byte8  * DevilDoppelgangerCheckAddr         = 0;
+byte8  * DevilDoppelgangerButtonCheckAddr         = 0;
 byte8  * ActivateDevilAddr                  = 0;
 byte8  * DeactivateDevilAddr                = 0;
 byte8  * InputUpdateAddr[16]                = {};
@@ -7888,11 +7477,11 @@ export void Actor_Init()
 			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00,       // je dmc3.exe+1E7926
 			0x40, 0x38, 0xB7, 0x9B, 0x3E, 0x00, 0x00, // cmp [rdi+00003E9B],sil
 		};
-		auto func = CreateFunction(DevilDoppelgangerCheck, (appBaseAddr + 0x1E77E3), true, false, 0, sizeof(sect1), sizeof(sect2));
+		auto func = CreateFunction(DevilDoppelgangerButtonCheck, (appBaseAddr + 0x1E77E3), true, false, 0, sizeof(sect1), sizeof(sect2));
 		memcpy(func.sect1, sect1, sizeof(sect1));
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E7926), 6);
-		DevilDoppelgangerCheckAddr = func.addr;
+		DevilDoppelgangerButtonCheckAddr = func.addr;
 		/*
 		dmc3.exe+1E77DC - 40 38 B7 9B3E0000 - cmp [rdi+00003E9B],sil
 		dmc3.exe+1E77E3 - 0F85 D4000000     - jne dmc3.exe+1E78BD
@@ -8494,7 +8083,7 @@ export void Actor_Toggle(bool enable)
 		auto dest = (appBaseAddr + 0x1E77DC);
 		if (enable)
 		{
-			WriteJump(dest, DevilDoppelgangerCheckAddr, 2);
+			WriteJump(dest, DevilDoppelgangerButtonCheckAddr, 2);
 		}
 		else
 		{
@@ -9252,6 +8841,8 @@ export void ToggleChronoSwords(bool enable)
 
 #pragma region Events
 
+// @Todo: Add event tag.
+
 bool Actor_spawnActors = false;
 bool customize = false;
 
@@ -9361,13 +8952,14 @@ export void Actor_Delete()
 
 	LogFunction();
 
-	for_all(uint8, player, MAX_PLAYER){
-	for_all(uint8, entity, MAX_ENTITY)
+	for_all(uint8, player, MAX_PLAYER   ){
+	for_all(uint8, index , MAX_DIRECTION)
 	{
-		auto & activePlayerData = activeConfig.Actor.playerData[player][entity];
-		auto & queuedPlayerData = queuedConfig.Actor.playerData[player][entity];
+		auto & activePlayerData = activeConfig.Actor.playerData[player][index];
+		auto & queuedPlayerData = queuedConfig.Actor.playerData[player][index];
 
-		queuedPlayerData.meleeWeaponIndex = activePlayerData.meleeWeaponIndex;
+		queuedPlayerData.style             = activePlayerData.style;
+		queuedPlayerData.meleeWeaponIndex  = activePlayerData.meleeWeaponIndex;
 		queuedPlayerData.rangedWeaponIndex = activePlayerData.rangedWeaponIndex;
 	}}
 
@@ -9469,12 +9061,27 @@ export void Actor_SceneMissionStart()
 {
 	LogFunction();
 
-	for_all(uint8, player, MAX_PLAYER){
-	for_all(uint8, entity, MAX_ENTITY)
+	for_all(uint8, player, MAX_PLAYER   ){
+	for_all(uint8, index , MAX_DIRECTION)
 	{
-		auto & playerData = activeConfig.Actor.playerData[player][entity];
+		auto & playerData = activeConfig.Actor.playerData[player][index];
 
-		playerData.style = playerData.startStyle; // @Todo: Review.
+		switch (playerData.character)
+		{
+			case CHAR_DANTE:
+			{
+				playerData.style = STYLE_TRICKSTER;
+
+				break;
+			}
+			case CHAR_VERGIL:
+			{
+				playerData.style = STYLE_DARK_SLAYER;
+
+				break;
+			}
+		}
+
 		playerData.meleeWeaponIndex  = 0;
 		playerData.rangedWeaponIndex = 0;
 	}}
