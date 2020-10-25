@@ -37,6 +37,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Config_Init("configs", "Mary.bin");
 		LoadConfig();
 
+		queuedConfig.Actor.playerData[0][1].enable = false;
+		queuedConfig.Actor.playerData[0][2].enable = false;
+
 		if (!Memory_Init())
 		{
 			Log("Memory_Init failed.");

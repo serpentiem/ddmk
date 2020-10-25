@@ -1,4 +1,3 @@
-// @Todo: Main, Mission Select and Mission Start reset g_character values.
 // @Todo: If system is not doppelganger, do not show weapon dialog. Hmmm, maybe important for Dante I guess.
 // @Todo: Enter returns true.
 // @Todo: Round values.
@@ -368,17 +367,7 @@ void Overlay()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+#pragma region Actor
 
 const char * Actor_systemNames[] =
 {
@@ -387,23 +376,13 @@ const char * Actor_systemNames[] =
 	"Character Switcher",
 };
 
-
-
-
-
-
 #define Actor_characterNames characterNames
-
-
-
 #define Actor_meleeWeaponNamesDante meleeWeaponNamesDante
 #define Actor_meleeWeaponsDante meleeWeaponsDante
-
 #define Actor_meleeWeaponNamesVergil meleeWeaponNamesVergil
 #define Actor_meleeWeaponsVergil meleeWeaponsVergil
 
 uint8 Actor_meleeWeaponIndices[MAX_PLAYER][MAX_DIRECTION][MELEE_WEAPON_COUNT] = {};
-
 
 #define Actor_rangedWeaponNamesDante rangedWeaponNamesDante
 #define Actor_rangedWeaponsDante rangedWeaponsDante
@@ -469,23 +448,28 @@ void Actor_PlayerTab
 {
 	auto & playerData = queuedConfig.Actor.playerData[player][index];
 
-	if (queuedConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER)
+	if (!playerData.enable)
 	{
-		GUI_Checkbox
-		(
-			"Enable",
-			playerData.enable
-		);
-		ImGui::Text("");
+		return;
 	}
 
 	ImGui::PushItemWidth(150);
-	if (GUI_Combo("Character", Actor_characterNames, playerData.character))
+
+	if
+	(
+		GUI_Combo
+		(
+			"Character",
+			Actor_characterNames,
+			playerData.character
+		)
+	)
 	{
 		ApplyDefaultPlayerData(playerData, playerData.character);
 
 		Actor_UpdateIndices();
 	}
+
 	ImGui::PopItemWidth();
 
 	if
@@ -499,65 +483,26 @@ void Actor_PlayerTab
 
 	ImGui::PushItemWidth(150);
 
-	GUI_Input("Costume", playerData.costume);
-	GUI_Checkbox("Force Files", playerData.forceFiles);
+	GUI_Input
+	(
+		"Costume",
+		playerData.costume
+	);
+	GUI_Checkbox
+	(
+		"Force Files",
+		playerData.forceFiles
+	);
 
 	bool condition = !playerData.forceFiles;
 	GUI_PushDisable(condition);
-	GUI_Combo("Character", Actor_characterNames, playerData.forceFilesCharacter);
+	GUI_Combo
+	(
+		"Character",
+		Actor_characterNames,
+		playerData.forceFilesCharacter
+	);
 	GUI_PopDisable(condition);
-
-	ImGui::PopItemWidth();
-
-	ImGui::Text("");
-
-	ImGui::Text("Melee Weapons");
-
-	ImGui::PushItemWidth(200);
-
-	GUI_Slider<uint8>("", playerData.meleeWeaponCount, 1, MELEE_WEAPON_COUNT);
-
-	switch (playerData.character)
-	{
-		case CHAR_DANTE:
-		{
-			for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT)
-			{
-				bool condition = (meleeWeaponIndex >= playerData.meleeWeaponCount);
-				GUI_PushDisable(condition);
-				GUI_ComboMap
-				(
-					"",
-					Actor_meleeWeaponNamesDante,
-					Actor_meleeWeaponsDante,
-					Actor_meleeWeaponIndices[player][index][meleeWeaponIndex],
-					playerData.meleeWeapons[meleeWeaponIndex]
-				);
-				GUI_PopDisable(condition);
-			}
-
-			break;
-		}
-		case CHAR_VERGIL:
-		{
-			for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT)
-			{
-				bool condition = (meleeWeaponIndex >= playerData.meleeWeaponCount);
-				GUI_PushDisable(condition);
-				GUI_ComboMap
-				(
-					"",
-					Actor_meleeWeaponNamesVergil,
-					Actor_meleeWeaponsVergil,
-					Actor_meleeWeaponIndices[player][index][meleeWeaponIndex],
-					playerData.meleeWeapons[meleeWeaponIndex]
-				);
-				GUI_PopDisable(condition);
-			}
-
-			break;
-		}
-	}
 
 	ImGui::PopItemWidth();
 
@@ -568,13 +513,41 @@ void Actor_PlayerTab
 
 	ImGui::Text("");
 
-	ImGui::Text("Ranged Weapons");
-
 	ImGui::PushItemWidth(200);
 
-	GUI_Slider<uint8>("", playerData.rangedWeaponCount, 1, RANGED_WEAPON_COUNT);
+	ImGui::Text("Melee Weapons");
+	GUI_Slider<uint8>
+	(
+		"",
+		playerData.meleeWeaponCount,
+		1,
+		MELEE_WEAPON_COUNT_DANTE
+	);
+	for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT_DANTE)
+	{
+		bool condition = (meleeWeaponIndex >= playerData.meleeWeaponCount);
+		GUI_PushDisable(condition);
+		GUI_ComboMap
+		(
+			"",
+			Actor_meleeWeaponNamesDante,
+			Actor_meleeWeaponsDante,
+			Actor_meleeWeaponIndices[player][index][meleeWeaponIndex],
+			playerData.meleeWeapons[meleeWeaponIndex]
+		);
+		GUI_PopDisable(condition);
+	}
+	ImGui::Text("");
 
-	for_all(uint8, rangedWeaponIndex, RANGED_WEAPON_COUNT)
+	ImGui::Text("Ranged Weapons");
+	GUI_Slider<uint8>
+	(
+		"",
+		playerData.rangedWeaponCount,
+		1,
+		RANGED_WEAPON_COUNT_DANTE
+	);
+	for_all(uint8, rangedWeaponIndex, RANGED_WEAPON_COUNT_DANTE)
 	{
 		bool condition = (rangedWeaponIndex >= playerData.rangedWeaponCount);
 		GUI_PushDisable(condition);
@@ -591,17 +564,6 @@ void Actor_PlayerTab
 
 	ImGui::PopItemWidth();
 }
-
-
-
-
-
-
-
-
-
-
-
 
 void Actor()
 {
@@ -653,60 +615,44 @@ void Actor()
 		}
 		ImGui::Text("");
 
-
-		GUI_Checkbox
-		(
-			"Enable Quicksilver",
-			queuedConfig.Actor.enableQuicksilver
-		);
-		ImGui::Text("");
-
-
-
-
-		ImGui::PushItemWidth(200);
-		if
-		(
-			GUI_Combo
+		for_all(uint8, systemIndex, MAX_ACTOR_SYSTEM)
+		{
+			if
 			(
-				"System",
-				Actor_systemNames,
-				queuedConfig.Actor.system
+				GUI_RadioButton
+				(
+					Actor_systemNames[systemIndex],
+					queuedConfig.Actor.system,
+					systemIndex
+				)
 			)
-		)
-		{
+			{
+				for_all(uint8, player   , MAX_PLAYER   )
+				for_all(uint8, direction, MAX_DIRECTION){
+				{
+					auto & playerData = queuedConfig.Actor.playerData[player][direction];
+
+					ApplyDefaultPlayerData(playerData, direction);
+
+					Actor_UpdateIndices();
+				}}
+			}
+
+			if (systemIndex < (MAX_ACTOR_SYSTEM - 1))
+			{
+				ImGui::SameLine();
+			}
 		}
-		ImGui::PopItemWidth();
 		ImGui::Text("");
 
-
-
-
-
-
-
-
-		if (queuedConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER)
-		{
-			GUI_Checkbox2
-			(
-				"Show Idle Actors",
-				activeConfig.Actor.showIdleActors,
-				queuedConfig.Actor.showIdleActors
-			);
-			ImGui::Text("");
-		}
-
-
-
-
-
-
-
-
-
 		ImGui::PushItemWidth(200);
-		GUI_Slider<uint8>("Player Count", queuedConfig.Actor.playerCount, 1, MAX_PLAYER);
+		GUI_Slider<uint8>
+		(
+			"Player Count",
+			queuedConfig.Actor.playerCount,
+			1,
+			MAX_PLAYER
+		);
 		ImGui::PopItemWidth();
 		ImGui::Text("");
 
@@ -727,7 +673,7 @@ void Actor()
 						case ACTOR_SYSTEM_DEFAULT:
 						{
 							Actor_PlayerTab(player, 0);
-							ImGui::Text("");
+
 							break;
 						}
 						case ACTOR_SYSTEM_DOPPELGANGER:
@@ -735,20 +681,42 @@ void Actor()
 							for_all(uint8, entity, MAX_ENTITY)
 							{
 								GUI_SectionStart(entityNames[entity]);
+
 								Actor_PlayerTab(player, entity);
-								GUI_SectionEnd();
-								ImGui::Text("");
+
+								if (entity != (MAX_ENTITY - 1))
+								{
+									GUI_SectionEnd();
+									ImGui::Text("");
+								}
 							}
+
 							break;
 						}
 						case ACTOR_SYSTEM_CHARACTER_SWITCHER:
 						{
 							for_all(uint8, direction, MAX_DIRECTION)
 							{
-								GUI_SectionStart(directionNames[direction]);
+								auto & playerData = queuedConfig.Actor.playerData[player][direction];
+
+								GUI_Checkbox
+								(
+									directionNames[direction],
+									playerData.enable
+								);
+
+								if (playerData.enable)
+								{
+									ImGui::Text("");
+								}
+
 								Actor_PlayerTab(player, direction);
-								GUI_SectionEnd();
-								ImGui::Text("");
+
+								if (direction != (MAX_DIRECTION - 1))
+								{
+									GUI_SectionEnd();
+									ImGui::Text("");
+								}
 							}
 							break;
 						}
@@ -762,10 +730,44 @@ void Actor()
 
 			ImGui::EndTabBar();
 		}
+		GUI_SectionEnd();
+		ImGui::Text("");
+
+		GUI_Checkbox
+		(
+			"Enable Quicksilver",
+			queuedConfig.Actor.enableQuicksilver
+		);
+
+		if (queuedConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER)
+		{
+			GUI_Checkbox2
+			(
+				"Show Idle Actors",
+				activeConfig.Actor.showIdleActors,
+				queuedConfig.Actor.showIdleActors
+			);
+		}
 
 		ImGui::Text("");
 	}
 }
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // @Todo: Update.
 const char * Arcade_missionNames[] =
@@ -3014,7 +3016,7 @@ export void GUI_Render()
 		Main();
 	}
 
-	auto TimeoutFunction = [&]()
+	[&]()
 	{
 		auto & save        = GUI_save;
 		auto & saveTimeout = GUI_saveTimeout;
@@ -3041,9 +3043,26 @@ export void GUI_Render()
 
 			SaveConfig();
 		}
-	};
+	}();
 
-	TimeoutFunction();
+
+	// static bool enable = true;
+	// ImGui::ShowDemoWindow(&enable);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 export void GUI_Init()
@@ -3059,60 +3078,13 @@ export void GUI_Init()
 
 #ifdef __GARBAGE__
 
-
-
-const char * Actor_meleeWeaponNames[] =
-{
-	"Rebellion",
-	"Cerberus",
-	"Agni & Rudra",
-	"Nevan",
-	"Beowulf Dante",
-	"Yamato",
-	"Beowulf Vergil",
-	"Yamato & Force Edge",
-};
-
-uint8 Actor_meleeWeapons[] =
-{
-	WEAPON_REBELLION,
-	WEAPON_CERBERUS,
-	WEAPON_AGNI_RUDRA,
-	WEAPON_NEVAN,
-	WEAPON_BEOWULF_DANTE,
-	WEAPON_YAMATO_VERGIL,
-	WEAPON_BEOWULF_VERGIL,
-	WEAPON_YAMATO_FORCE_EDGE,
-};
-
-uint8 Actor_meleeWeaponIndices[MAX_PLAYER][MAX_ENTITY][MELEE_WEAPON_COUNT] = {};
-
-
-
-		switch (playerData.character)
+		for_all(uint8, direction, MAX_DIRECTION)
 		{
-			case CHAR_DANTE:
-			{
-				UpdateMapIndex
-				(
-					Actor_meleeWeaponsDante,
-					Actor_meleeWeaponIndexDante[player][entity],
-					playerData.meleeWeapons[0]
-				);
-
-				break;
-			}
-			case CHAR_VERGIL:
-			{
-				UpdateMapIndex
-				(
-					Actor_meleeWeaponsVergil,
-					Actor_meleeWeaponIndexVergil[player][entity],
-					playerData.meleeWeapons[0]
-				);
-
-				break;
-			}
+			GUI_Checkbox
+			(
+				"Enable",
+				queuedConfig.Actor.playerData[0][direction].enable
+			);
 		}
 
 

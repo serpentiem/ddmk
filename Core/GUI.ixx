@@ -667,5 +667,30 @@ bool GUI_ColorPalette2
 	return update;
 }
 
+export template <typename varType>
+bool GUI_RadioButton
+(
+	const char * label,
+	varType & var,
+	varType value
+)
+{
+	bool update = false;
+
+	GUI_PushId();
+
+	bool selected = (var == value);
+
+	if (ImGui::RadioButton(label, selected))
+	{
+		update = true;
+		var = value;
+	}
+
+	GUI_PopId();
+
+	return update;
+}
+
 #ifdef __GARBAGE__
 #endif

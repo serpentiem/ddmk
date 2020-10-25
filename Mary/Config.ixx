@@ -11,12 +11,12 @@ export struct Config
 {
 	struct
 	{
-		bool enable = false;
-		bool enableQuicksilver = true;
-		uint8 system = ACTOR_SYSTEM_DEFAULT;
-		bool showIdleActors = false;
-		PlayerData playerData[MAX_PLAYER][MAX_DIRECTION] = {};
+		bool enable = true;
+		uint8 system = ACTOR_SYSTEM_CHARACTER_SWITCHER;
+		bool showIdleActors = true;
 		uint8 playerCount = 1;
+		PlayerData playerData[MAX_PLAYER][MAX_DIRECTION] = {};
+		bool enableQuicksilver = true;
 	}
 	Actor;
 	struct
