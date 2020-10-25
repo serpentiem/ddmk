@@ -229,11 +229,11 @@ var items =
 
 
 
-	[ "activeMeleeWeaponIndex"              , "uint32"                  , 0x6484, CHAR_VERGIL              ],
-	[ "queuedMeleeWeaponIndex"              , "uint32"                  , 0x6488, CHAR_VERGIL              ],
-	[ "activeWeapon"                        , "uint8"                   , 0x648D, CHAR_DANTE               ],
-	[ "meleeWeaponIndex"                    , "uint32"                  , 0x6490, CHAR_DANTE               ],
-	[ "rangedWeaponIndex"                   , "uint32"                  , 0x6494, CHAR_DANTE               ],
+	[ "activeMeleeWeaponIndex"              , "uint32"                  , 0x6484,               ],
+	[ "queuedMeleeWeaponIndex"              , "uint32"                  , 0x6488,               ],
+	[ "activeWeapon"                        , "uint8"                   , 0x648D,                ],
+	[ "meleeWeaponIndex"                    , "uint32"                  , 0x6490,                ],
+	[ "rangedWeaponIndex"                   , "uint32"                  , 0x6494,                ],
 
 
 
@@ -243,8 +243,8 @@ var items =
 	[ "weaponLevels[5]"                     , "uint32"                  , 0x64DC                           ],
 
 	
-	[ "activeMeleeWeapon"                   , "uint8"                   , 0x64F0, CHAR_DANTE               ],
-	[ "activeRangedWeapon"                  , "uint8"                   , 0x64F1, CHAR_DANTE               ],
+	[ "activeMeleeWeapon"                   , "uint8"                   , 0x64F0,                ],
+	[ "activeRangedWeapon"                  , "uint8"                   , 0x64F1,                ],
 	
 	[ "weaponTimers[5]"                     , "float32"                 , 0x64F4                           ],
 

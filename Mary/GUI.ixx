@@ -1,7 +1,3 @@
-// @Todo: If system is not doppelganger, do not show weapon dialog. Hmmm, maybe important for Dante I guess.
-// @Todo: Enter returns true.
-// @Todo: Round values.
-
 module;
 #include "../Core/Core.h"
 
@@ -178,31 +174,82 @@ uint8 rangedWeaponsDante[] =
 	WEAPON_KALINA_ANN,
 };
 
+const char * missionNames[] =
+{
+	"Movie",
+	"Mission 1",
+	"Mission 2",
+	"Mission 3",
+	"Mission 4",
+	"Mission 5",
+	"Mission 6",
+	"Mission 7",
+	"Mission 8",
+	"Mission 9",
+	"Mission 10",
+	"Mission 11",
+	"Mission 12",
+	"Mission 13",
+	"Mission 14",
+	"Mission 15",
+	"Mission 16",
+	"Mission 17",
+	"Mission 18",
+	"Mission 19",
+	"Mission 20",
+	"Bloody Palace",
+};
 
+const char * modeNames[] =
+{
+	"Easy",
+	"Normal",
+	"Hard",
+	"Very Hard",
+	"Dante Must Die",
+	"Heaven or Hell",
+};
 
+uint32 modes[] =
+{
+	MODE_EASY,
+	MODE_NORMAL,
+	MODE_HARD,
+	MODE_VERY_HARD,
+	MODE_DANTE_MUST_DIE,
+	MODE_HARD,
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const char * floorNames[] =
+{
+	"Floor 1",
+	"Floor 2",
+	"Floor 3",
+	"Floor 4",
+	"Floor 5",
+	"Floor 6",
+	"Floor 7",
+	"Floor 8",
+	"Floor 9",
+	"Floor 10",
+	"Cerberus",
+	"Gigapede",
+	"Agni & Rudra",
+	"Nevan",
+	"Beowulf",
+	"Geryon",
+	"Doppelganger",
+	"Leviathan",
+	"Damned Chessmen",
+	"Vergil 1",
+	"Vergil 2",
+	"Vergil 3",
+	"Lady",
+	"Arkham",
+	"Jester 1",
+	"Jester 2",
+	"Jester 3",
+};
 
 
 
@@ -289,7 +336,7 @@ void TooltipHelper
 
 
 
-
+// @Todo: Update.
 bool Overlay_enable = true;
 bool Overlay_run = false;
 ImVec2 Overlay_size = ImVec2(300, 300);
@@ -391,31 +438,33 @@ uint8 Actor_rangedWeaponIndices[MAX_PLAYER][MAX_DIRECTION][RANGED_WEAPON_COUNT] 
 
 void Actor_UpdateIndices()
 {
-	for_all(uint8, player, MAX_PLAYER   ){
-	for_all(uint8, index , MAX_DIRECTION)
+	LogFunction();
+
+	for_all(uint8, player   , MAX_PLAYER   ){
+	for_all(uint8, direction, MAX_DIRECTION)
 	{
-		auto & playerData = queuedConfig.Actor.playerData[player][index];
+		auto & playerData = queuedConfig.Actor.playerData[player][direction];
 
 		switch (playerData.character)
 		{
 			case CHAR_DANTE:
 			{
-				for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT)
+				for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT_DANTE)
 				{
 					UpdateMapIndex
 					(
 						Actor_meleeWeaponsDante,
-						Actor_meleeWeaponIndices[player][index][meleeWeaponIndex],
+						Actor_meleeWeaponIndices[player][direction][meleeWeaponIndex],
 						playerData.meleeWeapons[meleeWeaponIndex]
 					);
 				}
 
-				for_all(uint8, rangedWeaponIndex, RANGED_WEAPON_COUNT)
+				for_all(uint8, rangedWeaponIndex, RANGED_WEAPON_COUNT_DANTE)
 				{
 					UpdateMapIndex
 					(
 						Actor_rangedWeaponsDante,
-						Actor_rangedWeaponIndices[player][index][rangedWeaponIndex],
+						Actor_rangedWeaponIndices[player][direction][rangedWeaponIndex],
 						playerData.rangedWeapons[rangedWeaponIndex]
 					);
 				}
@@ -424,12 +473,12 @@ void Actor_UpdateIndices()
 			}
 			case CHAR_VERGIL:
 			{
-				for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT)
+				for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT_VERGIL)
 				{
 					UpdateMapIndex
 					(
 						Actor_meleeWeaponsVergil,
-						Actor_meleeWeaponIndices[player][index][meleeWeaponIndex],
+						Actor_meleeWeaponIndices[player][direction][meleeWeaponIndex],
 						playerData.meleeWeapons[meleeWeaponIndex]
 					);
 				}
@@ -755,136 +804,56 @@ void Actor()
 
 #pragma endregion
 
+#pragma region Arcade
 
+#define Arcade_missionNames missionNames
 
-
-
-
-
-
-
-
-
-
-
-
-
-// @Todo: Update.
-const char * Arcade_missionNames[] =
-{
-	"Movie",
-	"Mission 1",
-	"Mission 2",
-	"Mission 3",
-	"Mission 4",
-	"Mission 5",
-	"Mission 6",
-	"Mission 7",
-	"Mission 8",
-	"Mission 9",
-	"Mission 10",
-	"Mission 11",
-	"Mission 12",
-	"Mission 13",
-	"Mission 14",
-	"Mission 15",
-	"Mission 16",
-	"Mission 17",
-	"Mission 18",
-	"Mission 19",
-	"Mission 20",
-	"Bloody Palace",
-};
-
-const char * Arcade_modeNames[] =
-{
-	"Easy",
-	"Normal",
-	"Hard",
-	"Very Hard",
-	"Dante Must Die",
-	"Heaven or Hell",
-};
-
-uint32 Arcade_modeMap[] =
-{
-	MODE_EASY,
-	MODE_NORMAL,
-	MODE_HARD,
-	MODE_VERY_HARD,
-	MODE_DANTE_MUST_DIE,
-	MODE_HARD,
-};
-
+#define Arcade_modeNames modeNames
+#define Arcade_modes modes
 uint8 Arcade_modeIndex = 0;
 
-const char * Arcade_floorNames[] =
-{
-	"Floor 1",
-	"Floor 2",
-	"Floor 3",
-	"Floor 4",
-	"Floor 5",
-	"Floor 6",
-	"Floor 7",
-	"Floor 8",
-	"Floor 9",
-	"Floor 10",
-	"Cerberus",
-	"Gigapede",
-	"Agni & Rudra",
-	"Nevan",
-	"Beowulf",
-	"Geryon",
-	"Doppelganger",
-	"Leviathan",
-	"Damned Chessmen",
-	"Vergil 1",
-	"Vergil 2",
-	"Vergil 3",
-	"Lady",
-	"Arkham",
-	"Jester 1",
-	"Jester 2",
-	"Jester 3",
-};
+#define Arcade_floorNames floorNames
 
 #define Arcade_meleeWeaponNamesDante meleeWeaponNamesDante
 #define Arcade_meleeWeaponsDante meleeWeaponsDante
-
 uint8 Arcade_meleeWeaponIndexDante[2] = {};
 
 #define Arcade_rangedWeaponNamesDante rangedWeaponNamesDante
 #define Arcade_rangedWeaponsDante rangedWeaponsDante
-
 uint8 Arcade_rangedWeaponIndexDante[2] = {};
 
 void Arcade_UpdateIndices()
 {
+	LogFunction();
+
 	UpdateMapIndex
 	(
-		Arcade_modeMap,
+		Arcade_modes,
 		Arcade_modeIndex,
 		activeConfig.Arcade.mode
 	);
+
 	UpdateMapIndex
 	(
 		Arcade_meleeWeaponsDante,
 		Arcade_meleeWeaponIndexDante[0],
 		activeConfig.Arcade.weapons[0]
 	);
+
 	UpdateMapIndex
 	(
 		Arcade_meleeWeaponsDante,
 		Arcade_meleeWeaponIndexDante[1],
 		activeConfig.Arcade.weapons[1]
 	);
+
 	UpdateMapIndex
 	(
 		Arcade_rangedWeaponsDante,
 		Arcade_rangedWeaponIndexDante[0],
 		activeConfig.Arcade.weapons[2]
 	);
+
 	UpdateMapIndex
 	(
 		Arcade_rangedWeaponsDante,
@@ -954,7 +923,7 @@ void Arcade()
 			(
 				"Mode",
 				Arcade_modeNames,
-				Arcade_modeMap,
+				Arcade_modes,
 				Arcade_modeIndex,
 				activeConfig.Arcade.mode,
 				queuedConfig.Arcade.mode
@@ -1094,6 +1063,10 @@ void Arcade()
 	}
 }
 
+#pragma endregion
+
+#pragma region Boss Rush
+
 void BossRush()
 {
 	if (ImGui::CollapsingHeader("Boss Rush"))
@@ -1174,13 +1147,12 @@ void BossRush()
 	}
 }
 
+#pragma endregion
 
-
-
-
+#pragma region Camera
 
 export template <typename T>
-bool GUI_InputDefault2Camera
+void GUI_InputDefault2Camera
 (
 	const char * label,
 	T & var,
@@ -1192,21 +1164,17 @@ bool GUI_InputDefault2Camera
 	ImGuiInputTextFlags flags = 0
 )
 {
-	ImGui::PushItemWidth(100);
+	ImGui::PushItemWidth(150);
 	GUI_Input
 	(
 		"",
 		var,
-		0.0f,
+		step,
 		format,
-		ImGuiInputTextFlags_ReadOnly
+		flags
 	);
-	ImGui::PopItemWidth();
-
 	ImGui::SameLine();
-
-	ImGui::PushItemWidth(169);
-	auto update = GUI_InputDefault2
+	GUI_InputDefault2
 	(
 		label,
 		var2,
@@ -1218,20 +1186,12 @@ bool GUI_InputDefault2Camera
 	);
 	ImGui::PopItemWidth();
 
-	return update;
+	if constexpr (debug)
+	{
+		ImGui::Text("%f", var );
+		ImGui::Text("%f", var2);
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 void Camera()
 {
@@ -1241,6 +1201,20 @@ void Camera()
 
 		if (GUI_ResetButton())
 		{
+			memcpy
+			(
+				&queuedConfig.Camera,
+				&defaultConfig.Camera,
+				sizeof(Config::Camera)
+			);
+			memcpy
+			(
+				&activeConfig.Camera,
+				&queuedConfig.Camera,
+				sizeof(Config::Camera)
+			);
+
+			Camera_ToggleInvertX(activeConfig.Camera.invertX);
 		}
 		ImGui::Text("");
 
@@ -1257,95 +1231,81 @@ void Camera()
 			Camera_ToggleInvertX(activeConfig.Camera.invertX);
 		}
 
-		GUI_SectionEnd();
-		ImGui::Text("");
+		[]()
+		{
+			IntroduceCameraData(return);
 
-		//GUI_SectionStart("Live");
+			GUI_SectionEnd();
+			ImGui::Text("");
 
-		//ImGui::Text("Values");
-		//ImGui::SameLine();
+			TooltipHelper
+			(
+				"(?)",
+				"Left: Live Right: Config"
+			);
+			ImGui::Text("");
 
+			GUI_InputDefault2Camera
+			(
+				"Height",
+				cameraData.height,
+				activeConfig.Camera.height,
+				queuedConfig.Camera.height,
+				defaultConfig.Camera.height,
+				10.0f,
+				"%.0f",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+			GUI_InputDefault2Camera
+			(
+				"Tilt",
+				cameraData.tilt,
+				activeConfig.Camera.tilt,
+				queuedConfig.Camera.tilt,
+				defaultConfig.Camera.tilt,
+				0.05f,
+				"%.2f",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+			GUI_InputDefault2Camera
+			(
+				"Zoom",
+				cameraData.zoom,
+				activeConfig.Camera.zoom,
+				queuedConfig.Camera.zoom,
+				defaultConfig.Camera.zoom,
+				10.0f,
+				"%.0f",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+			GUI_InputDefault2Camera
+			(
+				"Zoom Lock-On",
+				cameraData.zoomLockOn,
+				activeConfig.Camera.zoomLockOn,
+				queuedConfig.Camera.zoomLockOn,
+				defaultConfig.Camera.zoomLockOn,
+				10.0f,
+				"%.0f",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+			ImGui::Text("");
 
-
-
-
-		IntroduceCameraData(return);
-
-
-		TooltipHelper
-		(
-			"(?)",
-			"Left: Live Right: Config"
-		);
-		ImGui::Text("");
-
-
-		GUI_InputDefault2Camera
-		(
-			"Height",
-			cameraData.height,
-			activeConfig.Camera.height,
-			queuedConfig.Camera.height,
-			defaultConfig.Camera.height,
-			10.0f,
-			"%.3f",
-			ImGuiInputTextFlags_EnterReturnsTrue
-		);
-
-		GUI_InputDefault2Camera
-		(
-			"Tilt",
-			cameraData.tilt,
-			activeConfig.Camera.tilt,
-			queuedConfig.Camera.tilt,
-			defaultConfig.Camera.tilt,
-			10.0f,
-			"%.3f",
-			ImGuiInputTextFlags_EnterReturnsTrue
-		);
-
-		GUI_InputDefault2Camera
-		(
-			"Zoom",
-			cameraData.zoom,
-			activeConfig.Camera.zoom,
-			queuedConfig.Camera.zoom,
-			defaultConfig.Camera.zoom,
-			10.0f,
-			"%.3f",
-			ImGuiInputTextFlags_EnterReturnsTrue
-		);
-
-		GUI_InputDefault2Camera
-		(
-			"Zoom Lock-On",
-			cameraData.zoomLockOn,
-			activeConfig.Camera.zoomLockOn,
-			queuedConfig.Camera.zoomLockOn,
-			defaultConfig.Camera.zoomLockOn,
-			10.0f,
-			"%.3f",
-			ImGuiInputTextFlags_EnterReturnsTrue
-		);
-
-		GUI_Checkbox2
-		(
-			"Apply Config",
-			activeConfig.Camera.applyConfig,
-			queuedConfig.Camera.applyConfig
-		);
-
-
-
-
-
-
-
-
+			GUI_Checkbox2
+			(
+				"Apply Config",
+				activeConfig.Camera.applyConfig,
+				queuedConfig.Camera.applyConfig
+			);
+		}();
 
 		ImGui::Text("");
 	}
 }
+
+#pragma endregion
+
+#pragma region Cosmetics
 
 struct
 {
@@ -1397,6 +1357,8 @@ Color;
 
 void Color_UpdateValues()
 {
+	LogFunction();
+
 	constexpr uint8 itemCount = (sizeof(Color) / 4);
 
 	auto items = reinterpret_cast<uint8 *>(activeConfig.Color.airHike);
@@ -1568,6 +1530,10 @@ void Cosmetics()
 		ImGui::Text("");
 	}
 }
+
+#pragma endregion
+
+#pragma region Dante
 
 template <typename T>
 void ActionData
@@ -1871,6 +1837,10 @@ void Dante()
 	}
 }
 
+#pragma endregion
+
+#pragma region Debug
+
 void Debug()
 {
 	if (ImGui::CollapsingHeader("Debug"))
@@ -1903,6 +1873,10 @@ void Debug()
 		ImGui::Text("");
 	}
 }
+
+#pragma endregion
+
+#pragma region Other
 
 void Other()
 {
@@ -2013,6 +1987,10 @@ void Other()
 	}
 }
 
+#pragma endregion
+
+#pragma region Repair
+
 void Repair()
 {
 	if (ImGui::CollapsingHeader("Repair"))
@@ -2081,7 +2059,9 @@ void Repair()
 	}
 }
 
+#pragma endregion
 
+#pragma region Remove Busy Flag
 
 #define RemoveBusyFlag_buttonNames buttonNames
 #define RemoveBusyFlag_buttons buttons
@@ -2090,6 +2070,8 @@ uint8 RemoveBusyFlag_buttonIndex = 0;
 
 void RemoveBusyFlag_UpdateIndices()
 {
+	LogFunction();
+
 	UpdateMapIndex
 	(
 		RemoveBusyFlag_buttons,
@@ -2148,6 +2130,10 @@ void RemoveBusyFlag()
 	}
 }
 
+#pragma endregion
+
+#pragma region Reset Permissions
+
 #define ResetPermissions_buttonNames buttonNames
 #define ResetPermissions_buttons buttons
 
@@ -2155,6 +2141,8 @@ uint8 ResetPermissions_buttonIndex = 0;
 
 void ResetPermissions_UpdateIndices()
 {
+	LogFunction();
+
 	UpdateMapIndex
 	(
 		ResetPermissions_buttons,
@@ -2213,6 +2201,10 @@ void ResetPermissions()
 	}
 }
 
+#pragma endregion
+
+#pragma region Speed
+
 const char * devilSpeedNamesDante[] =
 {
 	"Rebellion",
@@ -2231,9 +2223,6 @@ const char * devilSpeedNamesVergil[] =
 	"Nero Angelo Yamato",
 	"Nero Angelo Beowulf",
 };
-
-
-
 
 // @Todo: EnterReturnsTrue.
 // @Todo: Apply rounding.
@@ -2268,13 +2257,6 @@ bool GUI_InputDefault2Speed
 
 	return update;
 }
-
-
-
-
-
-
-
 
 void Speed()
 {
@@ -2481,17 +2463,9 @@ void Speed()
 	}
 }
 
-// void StyleSwitchController()
-// {
-// 	if (ImGui::CollapsingHeader("Style Switch Controller"))
-// 	{
-// 		ImGui::Text("");
+#pragma endregion
 
-// 		GUI_Checkbox("No Double Tap", activeConfig.StyleSwitchController.noDoubleTap);
-
-// 		ImGui::Text("");
-// 	}
-// }
+#pragma region System
 
 const char * Graphics_vSyncNames[] =
 {
@@ -2500,14 +2474,85 @@ const char * Graphics_vSyncNames[] =
 	"Force On",
 };
 
-// @Todo: Reset Button.
 void System()
 {
 	if (ImGui::CollapsingHeader("System"))
 	{
 		ImGui::Text("");
 
+		if (GUI_ResetButton())
+		{
+			memcpy
+			(
+				&queuedConfig.Event,
+				&defaultConfig.Event,
+				sizeof(Config::Event)
+			);
+			memcpy
+			(
+				&activeConfig.Event,
+				&queuedConfig.Event,
+				sizeof(Config::Event)
+			);
 
+			memcpy
+			(
+				&queuedConfig.File,
+				&defaultConfig.File,
+				sizeof(Config::File)
+			);
+			memcpy
+			(
+				&activeConfig.File,
+				&queuedConfig.File,
+				sizeof(Config::File)
+			);
+
+			memcpy
+			(
+				&queuedConfig.Graphics,
+				&defaultConfig.Graphics,
+				sizeof(Config::Graphics)
+			);
+			memcpy
+			(
+				&activeConfig.Graphics,
+				&queuedConfig.Graphics,
+				sizeof(Config::Graphics)
+			);
+
+			memcpy
+			(
+				&queuedConfig.Input,
+				&defaultConfig.Input,
+				sizeof(Config::Input)
+			);
+			memcpy
+			(
+				&activeConfig.Input,
+				&queuedConfig.Input,
+				sizeof(Config::Input)
+			);
+
+			memcpy
+			(
+				&queuedConfig.Window,
+				&defaultConfig.Window,
+				sizeof(Config::Window)
+			);
+			memcpy
+			(
+				&activeConfig.Window,
+				&queuedConfig.Window,
+				sizeof(Config::Window)
+			);
+
+			Event_ToggleSkipIntro(activeConfig.Event.skipIntro);
+			Event_ToggleSkipCutscenes(activeConfig.Event.skipCutscenes);
+			UpdateFrameRate();
+			Window_ToggleForceFocus(activeConfig.Window.forceFocus);
+		}
+		ImGui::Text("");
 
 		GUI_SectionStart("Event");
 
@@ -2540,36 +2585,18 @@ void System()
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-
-
-
 		GUI_SectionStart("File");
-
-
-
 		GUI_Checkbox2
 		(
 			"Prefer Local Files",
 			activeConfig.File.preferLocalFiles,
 			queuedConfig.File.preferLocalFiles
 		);
-
-
-
-
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-
-
-
 		GUI_SectionStart("Graphics");
 		ImGui::PushItemWidth(150);
-
-
-
-
-
 
 		if
 		(
@@ -2588,10 +2615,6 @@ void System()
 			UpdateFrameRate();
 		}
 
-
-
-
-
 		GUI_Combo2
 		(
 			"V-Sync",
@@ -2599,28 +2622,11 @@ void System()
 			activeConfig.Graphics.vSync,
 			queuedConfig.Graphics.vSync
 		);
-
-
-
-
-
-
-
-
-
-
-
-
-
 		ImGui::PopItemWidth();
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-
-
-
 		GUI_SectionStart("Input");
-
 		GUI_Checkbox2
 		(
 			"Hide Mouse Cursor",
@@ -2630,11 +2636,7 @@ void System()
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-
-
 		GUI_SectionStart("Window");
-
-
 
 		if
 		(
@@ -2649,13 +2651,13 @@ void System()
 			Window_ToggleForceFocus(activeConfig.Window.forceFocus);
 		}
 
-
-
-
-
 		ImGui::Text("");
 	}
 }
+
+#pragma endregion
+
+#pragma region Teleporter
 
 void Teleporter()
 {
@@ -2697,6 +2699,10 @@ void Teleporter()
 		ImGui::Text("");
 	}
 }
+
+#pragma endregion
+
+#pragma region Training
 
 void Training()
 {
@@ -2779,6 +2785,10 @@ void Training()
 		ImGui::Text("");
 	}
 }
+
+#pragma endregion
+
+#pragma region Vergil
 
 void Vergil()
 {
@@ -2905,6 +2915,10 @@ void Vergil()
 	}
 }
 
+#pragma endregion
+
+#pragma region Main
+
 bool Main_run = false;
 
 void Main()
@@ -2976,7 +2990,8 @@ void Main()
 		Teleporter();
 		Training();
 		Vergil();
-		ImGui::Text("");
+
+		// ImGui::Text("");
 
 		// static float scale = 1.0f;
 
@@ -3001,6 +3016,8 @@ void Main()
 	}
 	ImGui::End();
 }
+
+#pragma endregion
 
 export void GUI_Render()
 {
@@ -3045,28 +3062,14 @@ export void GUI_Render()
 		}
 	}();
 
-
 	// static bool enable = true;
 	// ImGui::ShowDemoWindow(&enable);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 export void GUI_Init()
 {
+	LogFunction();
+
 	BuildFonts();
 
 	Actor_UpdateIndices();
@@ -3077,15 +3080,4 @@ export void GUI_Init()
 }
 
 #ifdef __GARBAGE__
-
-		for_all(uint8, direction, MAX_DIRECTION)
-		{
-			GUI_Checkbox
-			(
-				"Enable",
-				queuedConfig.Actor.playerData[0][direction].enable
-			);
-		}
-
-
 #endif
