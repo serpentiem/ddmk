@@ -1,3 +1,6 @@
+// @Todo: Capture Doppelganger run out event.
+// @Todo: UpdateShadow stand alone function.
+// @Todo: Update Bob style.
 // @Todo: Add Bob to IsActive.
 // @Todo: Color Toggle.
 // @Todo: Air Stinger, Air Lunar Phase and Nevan instant Vortex.
@@ -16,7 +19,7 @@ import Input;
 import Memory;
 import Model;
 
-constexpr bool debug = true;
+#define debug true
 
 #pragma region Main
 
@@ -191,7 +194,11 @@ void ToggleActor
 
 	actorData.visible = (enable) ? 1 : 0;
 
-	if (activeConfig.Actor.showIdleActors)
+	if
+	(
+		(activeConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER) &&
+		activeConfig.Actor.showIdleActors
+	)
 	{
 		actorData.visible = 1;
 	}
@@ -210,6 +217,7 @@ void ToggleActor
 
 	if
 	(
+		(activeConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER) &&
 		(actorData.newPlayer == 0) &&
 		enable
 	)
@@ -2844,18 +2852,38 @@ void StyleSwitchController
 
 	UpdateStyle(actorData, playerData);
 
+	IntroduceHUDPointers(return);
+
 	if (actorData.newPlayer != 0)
 	{
 		return;
 	}
 
-	if (static_cast<uint8>(actorData.character) != g_activeCharacter[actorData.newPlayer])
+	switch (activeConfig.Actor.system)
 	{
-		return;
+		case ACTOR_SYSTEM_DOPPELGANGER:
+		{
+			if (actorData.newIndex != ENTITY_MAIN)
+			{
+				return;
+			}
+
+			break;
+		}
+		case ACTOR_SYSTEM_CHARACTER_SWITCHER:
+		{
+			auto & activeCharacter = g_activeCharacter[actorData.newPlayer];
+
+			if (static_cast<uint8>(actorData.character) != activeCharacter)
+			{
+				return;
+			}
+
+			break;
+		}
 	}
 
-	IntroduceHUDPointers(return);
-
+	// @Todo: Update.
 	switch (static_cast<uint8>(actorData.character))
 	{
 		case CHAR_DANTE:
@@ -2863,16 +2891,16 @@ void StyleSwitchController
 			HUD_UpdateStyleIcon(CHAR_DANTE, playerData.style);
 			break;
 		}
-		case CHAR_BOB:
-		{
-			HUD_UpdateStyleIcon(CHAR_VERGIL, STYLE_DARK_SLAYER);
-			break;
-		}
-		case CHAR_LADY:
-		{
-			HUD_UpdateStyleIcon(CHAR_DANTE, STYLE_GUNSLINGER);
-			break;
-		}
+		// case CHAR_BOB:
+		// {
+		// 	HUD_UpdateStyleIcon(CHAR_VERGIL, STYLE_DARK_SLAYER);
+		// 	break;
+		// }
+		// case CHAR_LADY:
+		// {
+		// 	HUD_UpdateStyleIcon(CHAR_DANTE, STYLE_GUNSLINGER);
+		// 	break;
+		// }
 		case CHAR_VERGIL:
 		{
 			HUD_UpdateStyleIcon(CHAR_VERGIL, playerData.style);

@@ -11,7 +11,7 @@ import Config;
 import Internal;
 import Memory;
 
-constexpr bool debug = false;
+#define debug false
 
 struct FileVectorMetadata
 {

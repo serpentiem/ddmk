@@ -887,8 +887,7 @@ struct Size_##size\
 
 
 
-
-
+// @Todo: Rename.
 struct ActorEventData
 {
 	uint32 index;
@@ -896,7 +895,7 @@ struct ActorEventData
 };
 
 
-
+// @Todo: Update.
 // $SessionDataStart
 
 struct SESSION_DATA

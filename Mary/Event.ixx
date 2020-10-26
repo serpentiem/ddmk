@@ -14,9 +14,7 @@ import Config;
 import File;
 import Model;
 
-constexpr bool debug = true;
-
-
+#define debug true
 
 
 //bool MainLoop_run = false;

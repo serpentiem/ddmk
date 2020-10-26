@@ -326,15 +326,7 @@ void TooltipHelper
 
 
 
-
-
-
-
-
-
-
-
-
+#pragma region Overlay
 
 // @Todo: Update.
 bool Overlay_enable = true;
@@ -401,18 +393,7 @@ void Overlay()
 	ImGui::PopStyleVar(3);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
+#pragma endregion
 
 #pragma region Actor
 
@@ -1405,7 +1386,7 @@ void Cosmetics()
 		TooltipHelper
 		(
 			"(?)",
-			"Requires Actor module."
+			"Requires enabled Actor module."
 		);
 		ImGui::Text("");
 
@@ -1504,7 +1485,7 @@ void Cosmetics()
 		TooltipHelper
 		(
 			"(?)",
-			"Requires Actor module."
+			"Requires enabled Actor module."
 		);
 		ImGui::Text("");
 
@@ -1594,7 +1575,6 @@ void Dante()
 				&queuedConfig.AirHike,
 				sizeof(Config::AirHike)
 			);
-			ToggleAirHikeCoreAbility(activeConfig.AirHike.coreAbility);
 
 			memcpy
 			(
@@ -1621,7 +1601,6 @@ void Dante()
 				&queuedConfig.Rebellion,
 				sizeof(Config::Rebellion)
 			);
-			ToggleRebellionInfiniteSwordPierce(activeConfig.Rebellion.infiniteSwordPierce);
 
 			memcpy
 			(
@@ -1635,8 +1614,6 @@ void Dante()
 				&queuedConfig.EbonyIvory,
 				sizeof(Config::EbonyIvory)
 			);
-			ToggleEbonyIvoryFoursomeTime(activeConfig.EbonyIvory.foursomeTime);
-			ToggleEbonyIvoryInfiniteRainStorm(activeConfig.EbonyIvory.infiniteRainStorm);
 
 			memcpy
 			(
@@ -1650,8 +1627,13 @@ void Dante()
 				&queuedConfig.Artemis,
 				sizeof(Config::Artemis)
 			);
+
+			ToggleAirHikeCoreAbility               (activeConfig.AirHike.coreAbility               );
+			ToggleRebellionInfiniteSwordPierce     (activeConfig.Rebellion.infiniteSwordPierce     );
+			ToggleEbonyIvoryFoursomeTime           (activeConfig.EbonyIvory.foursomeTime           );
+			ToggleEbonyIvoryInfiniteRainStorm      (activeConfig.EbonyIvory.infiniteRainStorm      );
 			ToggleArtemisSwapNormalShotAndMultiLock(activeConfig.Artemis.swapNormalShotAndMultiLock);
-			ToggleArtemisInstantFullCharge(activeConfig.Artemis.instantFullCharge);
+			ToggleArtemisInstantFullCharge         (activeConfig.Artemis.instantFullCharge         );
 		}
 		GUI_SectionEnd();
 		ImGui::Text("");
@@ -1661,7 +1643,7 @@ void Dante()
 		TooltipHelper
 		(
 			"(?)",
-			"Requires Actor module.\n"
+			"Requires enabled Actor module.\n"
 			"\n"
 			"Left: Human Right: Devil"
 		);
@@ -1681,7 +1663,8 @@ void Dante()
 		}
 
 		ImGui::Text("");
-		ActionData<uint8>
+
+		ActionData
 		(
 			"Count",
 			activeConfig.AirHike.count,
@@ -1696,27 +1679,27 @@ void Dante()
 		TooltipHelper
 		(
 			"(?)",
-			"Requires Actor module.\n"
+			"Requires enabled Actor module.\n"
 			"\n"
 			"Left: Human Right: Devil"
 		);
 		ImGui::Text("");
 
-		ActionData<uint8>
+		ActionData
 		(
 			"Dash Count",
 			activeConfig.Trickster.dashCount,
 			queuedConfig.Trickster.dashCount,
 			defaultConfig.Trickster.dashCount
 		);
-		ActionData<uint8>
+		ActionData
 		(
 			"Sky Star Count",
 			activeConfig.Trickster.skyStarCount,
 			queuedConfig.Trickster.skyStarCount,
 			defaultConfig.Trickster.skyStarCount
 		);
-		ActionData<uint8>
+		ActionData
 		(
 			"Air Trick Count",
 			activeConfig.Trickster.airTrickCount,
@@ -1739,8 +1722,6 @@ void Dante()
 		{
 			ToggleRebellionInfiniteSwordPierce(activeConfig.Rebellion.infiniteSwordPierce);
 		}
-
-
 
 		// ImGui::Text("");
 		// ActionData<float32>("Stinger Duration"    , activeConfig.Rebellion.stingerDuration   , defaultConfig.Rebellion.stingerDuration   , 1 , "%.0f");
@@ -2264,36 +2245,26 @@ void Speed()
 	{
 		ImGui::Text("");
 
-		//GUI_Checkbox("Enable", activeConfig.Speed.enable);
-
-
-		//ImGui::Text("");
 		if (GUI_ResetButton())
 		{
+			memcpy
+			(
+				&queuedConfig.Speed,
+				&defaultConfig.Speed,
+				sizeof(Config::Speed)
+			);
+			memcpy
+			(
+				&activeConfig.Speed,
+				&queuedConfig.Speed,
+				sizeof(Config::Speed)
+			);
 
+			UpdateSpeedValues();
 		}
 		ImGui::Text("");
 
-
-
-
-		//GUI_SectionEnd();
-		//ImGui::Text("");
-
-
-
-
-
-
-
 		ImGui::PushItemWidth(200);
-
-
-
-
-		//GUI_SectionStart("Main");
-
-
 
 		GUI_InputDefault2Speed
 		(
@@ -2325,50 +2296,17 @@ void Speed()
 			"%.2f",
 			ImGuiInputTextFlags_EnterReturnsTrue
 		);
-
-
-
-
-
-
-
-
-
-
-
-
-
-		//GUI_SectionEnd();
-
-
-		//GUI_SectionStart("Quicksilver");
-
-
-
-
-
-
 		GUI_SectionEnd();
 		ImGui::Text("");
-
-
-
-
-
-		//GUI_SectionStart("Actor");
 
 		ImGui::Text("Actor");
 		ImGui::SameLine();
 		TooltipHelper
 		(
 			"(?)",
-			"Requires Actor module."
+			"Requires enabled Actor module."
 		);
 		ImGui::Text("");
-
-
-
-
 
 		GUI_InputDefault2Speed
 		(
@@ -2380,8 +2318,6 @@ void Speed()
 			"%.2f",
 			ImGuiInputTextFlags_EnterReturnsTrue
 		);
-		//ImGui::Text("");
-
 		ImGui::Text("Devil Dante");
 		for_all(uint8, index, countof(activeConfig.Speed.devilDante))
 		{
@@ -2396,10 +2332,6 @@ void Speed()
 				ImGuiInputTextFlags_EnterReturnsTrue
 			);
 		}
-		//ImGui::Text("");
-
-
-
 		ImGui::Text("Devil Vergil");
 		for_all(uint8, index, countof(activeConfig.Speed.devilVergil))
 		{
@@ -2414,16 +2346,10 @@ void Speed()
 				ImGuiInputTextFlags_EnterReturnsTrue
 			);
 		}
-		//ImGui::Text("");
-
-
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-
 		GUI_SectionStart("Quicksilver");
-
-
 		GUI_InputDefault2Speed
 		(
 			"Actor",
@@ -2444,18 +2370,6 @@ void Speed()
 			"%.2f",
 			ImGuiInputTextFlags_EnterReturnsTrue
 		);
-
-
-
-
-
-
-
-
-
-
-
-
 
 		ImGui::PopItemWidth();
 
@@ -2552,6 +2466,7 @@ void System()
 			UpdateFrameRate();
 			Window_ToggleForceFocus(activeConfig.Window.forceFocus);
 		}
+		GUI_SectionEnd();
 		ImGui::Text("");
 
 		GUI_SectionStart("Event");
@@ -2663,6 +2578,8 @@ void Teleporter()
 {
 	if (ImGui::CollapsingHeader("Teleporter"))
 	{
+		ImGui::Text("");
+
 		auto Draw = []()
 		{
 			if (!InGame())
@@ -2671,7 +2588,8 @@ void Teleporter()
 			}
 			IntroduceEventData(return false);
 			IntroduceNextEventData(return false);
-			float32 width = 150;
+
+			constexpr float width = 150;
 
 			ImGui::PushItemWidth(width);
 			ImGui::Text("Current");
@@ -2683,19 +2601,17 @@ void Teleporter()
 			if (GUI_Button("Teleport", ImVec2(width, ImGui::GetFrameHeight())))
 			{
 				eventData.event = EVENT_TELEPORT;
-
-				//Actor_Teleport();
 			}
 			ImGui::PopItemWidth();
 
 			return true;
 		};
 
-		ImGui::Text("");
 		if (!Draw())
 		{
 			ImGui::Text("Invalid Pointer");
 		}
+
 		ImGui::Text("");
 	}
 }
@@ -2709,8 +2625,6 @@ void Training()
 	if (ImGui::CollapsingHeader("Training"))
 	{
 		ImGui::Text("");
-
-
 
 		if (GUI_ResetButton())
 		{
@@ -2726,15 +2640,12 @@ void Training()
 				&queuedConfig.Training,
 				sizeof(Config::Training)
 			);
+
 			Training_ToggleInfiniteHitPoints  (activeConfig.Training.infiniteHitPoints  );
 			Training_ToggleInfiniteMagicPoints(activeConfig.Training.infiniteMagicPoints);
 			Training_ToggleDisableTimer       (activeConfig.Training.disableTimer       );
 		}
-		GUI_SectionEnd();
 		ImGui::Text("");
-
-
-
 
 		if
 		(
@@ -2749,8 +2660,6 @@ void Training()
 			Training_ToggleInfiniteHitPoints(activeConfig.Training.infiniteHitPoints);
 		}
 
-
-
 		if
 		(
 			GUI_Checkbox2
@@ -2764,9 +2673,6 @@ void Training()
 			Training_ToggleInfiniteMagicPoints(activeConfig.Training.infiniteMagicPoints);
 		}
 
-
-
-
 		if
 		(
 			GUI_Checkbox2
@@ -2779,8 +2685,6 @@ void Training()
 		{
 			Training_ToggleDisableTimer(activeConfig.Training.disableTimer);
 		}
-
-
 
 		ImGui::Text("");
 	}
@@ -2812,16 +2716,11 @@ void Vergil()
 			);
 
 			activeConfig.YamatoForceEdge.infiniteRoundTrip = queuedConfig.YamatoForceEdge.infiniteRoundTrip = defaultConfig.YamatoForceEdge.infiniteRoundTrip;
+			activeConfig.SummonedSwords.chronoSwords       = queuedConfig.SummonedSwords.chronoSwords       = defaultConfig.SummonedSwords.chronoSwords;
 
 			ToggleYamatoForceEdgeInfiniteRoundTrip(activeConfig.YamatoForceEdge.infiniteRoundTrip);
-
-			activeConfig.SummonedSwords.chronoSwords = queuedConfig.SummonedSwords.chronoSwords = defaultConfig.SummonedSwords.chronoSwords;
-
-			ToggleChronoSwords(activeConfig.SummonedSwords.chronoSwords);
+			ToggleChronoSwords                    (activeConfig.SummonedSwords.chronoSwords      );
 		}
-		//ImGui::Text("");
-
-
 		GUI_SectionEnd();
 		ImGui::Text("");
 
@@ -2832,7 +2731,7 @@ void Vergil()
 		TooltipHelper
 		(
 			"(?)",
-			"Requires Actor module.\n"
+			"Requires enabled Actor module.\n"
 			"\n"
 			"Left: Human Right: Devil"
 		);
@@ -2936,7 +2835,7 @@ void Main()
 		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
 	}
 
-	if (ImGui::Begin("DDMK 2.7", &pause))
+	if (ImGui::Begin("DDMK 2.7 Mary Nightly 26 October 2020", &pause))
 	{
 		ImGui::Text("");
 
