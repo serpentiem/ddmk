@@ -797,9 +797,18 @@ export void Event_ToggleSkipIntro(bool enable)
 export void Event_ToggleSkipCutscenes(bool enable)
 {
 	LogFunction(enable);
+
 	WriteAddress((appBaseAddr + 0x238CCA), (enable) ? (appBaseAddr + 0x238CD0) : (appBaseAddr + 0x238E62), 6);
-	WriteAddress((appBaseAddr + 0x238CD8), (enable) ? (appBaseAddr + 0x238CDE) : (appBaseAddr + 0x238E62), 6);
-	WriteAddress((appBaseAddr + 0x238CE3), (enable) ? (appBaseAddr + 0x238CE9) : (appBaseAddr + 0x238E62), 6);
+	/*
+	dmc3.exe+238CCA - 0F85 92010000 - jne dmc3.exe+238E62
+	dmc3.exe+238CD0 - 8B 43 1C      - mov eax,[rbx+1C]
+	*/
+
+	WriteAddress((appBaseAddr + 0x23918A), (enable) ? (appBaseAddr + 0x23918C) : (appBaseAddr + 0x2391A4), 2);
+	/*
+	dmc3.exe+23918A - 75 18    - jne dmc3.exe+2391A4
+	dmc3.exe+23918C - 8B 43 1C - mov eax,[rbx+1C]
+	*/
 }
 
 #ifdef __GARBAGE__
