@@ -20,7 +20,7 @@ import GUI;
 import Pause;
 import Window;
 
-#define debug true
+#define debug false
 
 enum DM_
 {

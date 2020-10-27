@@ -4,7 +4,7 @@ export module Core_Memory;
 
 import Core_Log;
 
-constexpr bool debug = false;
+#define debug false
 
 export enum REGISTER
 {

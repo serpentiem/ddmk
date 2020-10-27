@@ -25,7 +25,7 @@ import State;
 import Training;
 import Window;
 
-#define debug true
+#define debug false
 
 
 
@@ -2835,7 +2835,7 @@ void Main()
 		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
 	}
 
-	if (ImGui::Begin("DDMK 2.7 Mary Nightly 26 October 2020", &pause))
+	if (ImGui::Begin("DDMK 2.7 Mary Nightly 27 October 2020", &pause))
 	{
 		ImGui::Text("");
 

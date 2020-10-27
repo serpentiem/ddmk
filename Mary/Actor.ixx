@@ -19,7 +19,7 @@ import Input;
 import Memory;
 import Model;
 
-#define debug true
+#define debug false
 
 #pragma region Main
 
@@ -111,6 +111,7 @@ void SetMainActor(byte8 * baseAddr)
 	}
 }
 
+// @Todo: Add idle timer.
 template
 <
 	typename T1,
