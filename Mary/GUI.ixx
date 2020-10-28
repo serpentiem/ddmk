@@ -25,7 +25,7 @@ import State;
 import Training;
 import Window;
 
-#define debug false
+#define debug true
 
 
 
@@ -392,6 +392,89 @@ void Overlay()
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar(3);
 }
+
+
+
+// @Todo: Update.
+// bool Overlay_enable = true;
+// bool Overlay_run = false;
+// ImVec2 Overlay_size = ImVec2(300, 300);
+
+void Overlay2()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		ImGui::SetNextWindowSize(ImVec2((300 + 16), (300 + 16)));
+		ImGui::SetNextWindowPos(ImVec2(200, 0));
+	}
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+	if (ImGui::Begin("GUI_Overlay2", &Overlay_enable, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		auto & io = ImGui::GetIO();
+		ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_16]);
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+
+		ImGui::Text("Actor");
+
+		for_all(uint32, index, Actor_actorBaseAddr.count)
+		{
+			ImGui::Text("%.4u %.16llX", index, Actor_actorBaseAddr[index]);
+		}
+
+		if (Actor_actorBaseAddr.count > 0)
+		{
+			ImGui::Text("");
+		}
+
+		//for_all(uint8, player, MAX_PLAYER)
+		{
+			constexpr uint8 player = 0;
+
+			for_all(uint8, direction, MAX_DIRECTION)
+			{
+				ImGui::Text("%.4u %.16llX", direction, g_actorBaseAddr[player][direction]);
+			}
+
+			auto & character       = g_character      [player];
+			auto & lastCharacter   = g_lastCharacter  [player];
+			auto & activeCharacter = g_activeCharacter[player];
+			auto & executeFunction = g_executeFunction[player];
+
+			ImGui::Text("character        %u", character      );
+			ImGui::Text("lastCharacter    %u", lastCharacter  );
+			ImGui::Text("activeCharacter  %u", activeCharacter);
+
+			for_all(uint8, direction, MAX_DIRECTION)
+			{
+				auto & executeButton = g_executeButton[player][direction];
+
+				ImGui::Text("executeButton[%u] %u", direction, executeButton );
+			}
+
+			ImGui::Text("executeFunction  %u", executeFunction);
+		}
+
+		ImGui::PopStyleColor();
+		ImGui::PopFont();
+	}
+	ImGui::End();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar(3);
+}
+
+
+
+
+
+
+
+
+
 
 #pragma endregion
 
@@ -1859,6 +1942,13 @@ void Debug()
 
 #pragma region Other
 
+const char * dotShadowNames[] =
+{
+	"Enable",
+	"Disable",
+	"Disable Actor Only"
+};
+
 void Other()
 {
 	if (ImGui::CollapsingHeader("Other"))
@@ -1876,6 +1966,28 @@ void Other()
 			UpdateMagicPointsDepletionValues();
 			UpdateOrbReach();
 		}
+		GUI_SectionEnd();
+		ImGui::Text("");
+
+		ImGui::Text("Dot Shadow");
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module."
+		);
+		ImGui::Text("");
+
+		for_all(uint8, dotShadowIndex, countof(dotShadowNames))
+		{
+			GUI_RadioButton
+			(
+				dotShadowNames[dotShadowIndex],
+				queuedConfig.dotShadow,
+				dotShadowIndex
+			);
+		}
+
 		GUI_SectionEnd();
 		ImGui::Text("");
 
@@ -2839,8 +2951,37 @@ void Main()
 	{
 		ImGui::Text("");
 
+		static bool enable = false;
+		GUI_Checkbox("Enable", enable);
+
+		static uint32 actorIndex = 0;
+		GUI_Input
+		(
+			"actorIndex",
+			actorIndex
+		);
+
+		if (GUI_Button("Toggle Actor"))
+		{
+			[]()
+			{
+				auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
+				if (!actorBaseAddr)
+				{
+					return;
+				}
+				auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+				ToggleActor(actorData, enable);
+			}();
+		}
+
+		ImGui::Text("");
 
 
+		// if (GUI_Button("Relocate"))
+		// {
+		// 	Actor_MiniToggle(enable);
+		// }
 
 
 
@@ -2925,6 +3066,7 @@ export void GUI_Render()
 	if constexpr (debug)
 	{
 		Overlay();
+		Overlay2();
 	}
 
 	if (pause)

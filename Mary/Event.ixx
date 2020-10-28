@@ -14,7 +14,7 @@ import Config;
 import File;
 import Model;
 
-#define debug false
+#define debug true
 
 
 //bool MainLoop_run = false;
@@ -28,17 +28,15 @@ import Model;
 
 
 
-void SetPool()
-{
-	LogFunction();
-}
+// void SetPool()
+// {
+// 	LogFunction();
+// }
 
-void ClearPool()
-{
-	LogFunction();
-	File_dynamicFiles.Clear();
-	Actor_actorBaseAddr.Clear();
-}
+// void ClearPool()
+// {
+// 	LogFunction();
+// }
 
 
 
@@ -740,34 +738,34 @@ export void Event_Init()
 
 
 
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0x89, 0x15, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rdx
-		};
-		auto func = CreateFunction(SetPool, (appBaseAddr + 0x23E69F), true, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-		WriteJump((appBaseAddr + 0x23E698), func.addr, 2);
-		/*
-		dmc3.exe+23E698 - 48 89 15 8927A500 - mov [dmc3.exe+C90E28],rdx
-		dmc3.exe+23E69F - 48 8D 83 D06A0000 - lea rax,[rbx+00006AD0]
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0x89, 0x0D, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rcx
-		};
-		auto func = CreateFunction(ClearPool, (appBaseAddr + 0x23B39A), true, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-		WriteJump((appBaseAddr + 0x23B393), func.addr, 2);
-		/*
-		dmc3.exe+23B393 - 48 89 0D 8E5AA500 - mov [dmc3.exe+C90E28],rcx
-		dmc3.exe+23B39A - 48 89 0D 975AA500 - mov [dmc3.exe+C90E38],rcx
-		*/
-	}
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0x89, 0x15, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rdx
+	// 	};
+	// 	auto func = CreateFunction(SetPool, (appBaseAddr + 0x23E69F), true, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
+	// 	WriteJump((appBaseAddr + 0x23E698), func.addr, 2);
+	// 	/*
+	// 	dmc3.exe+23E698 - 48 89 15 8927A500 - mov [dmc3.exe+C90E28],rdx
+	// 	dmc3.exe+23E69F - 48 8D 83 D06A0000 - lea rax,[rbx+00006AD0]
+	// 	*/
+	// }
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0x89, 0x0D, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rcx
+	// 	};
+	// 	auto func = CreateFunction(ClearPool, (appBaseAddr + 0x23B39A), true, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
+	// 	WriteJump((appBaseAddr + 0x23B393), func.addr, 2);
+	// 	/*
+	// 	dmc3.exe+23B393 - 48 89 0D 8E5AA500 - mov [dmc3.exe+C90E28],rcx
+	// 	dmc3.exe+23B39A - 48 89 0D 975AA500 - mov [dmc3.exe+C90E38],rcx
+	// 	*/
+	// }
 }
 
 export void Event_ToggleSkipIntro(bool enable)

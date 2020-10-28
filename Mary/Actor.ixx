@@ -1,3 +1,4 @@
+// @Todo: Quick Drive.
 // @Todo: Capture Doppelganger run out event.
 // @Todo: UpdateShadow stand alone function.
 // @Todo: Update Bob style.
@@ -19,20 +20,20 @@ import Input;
 import Memory;
 import Model;
 
-#define debug false
+#define debug true
 
 #pragma region Main
 
 export Vector<byte8 *> Actor_actorBaseAddr;
 
-__declspec(dllexport) byte8 * g_actorBaseAddr[MAX_PLAYER][MAX_DIRECTION] = {};
+export byte8 * g_actorBaseAddr[MAX_PLAYER][MAX_DIRECTION] = {};
 
-__declspec(dllexport) uint8 g_character [MAX_PLAYER] = {};
-__declspec(dllexport) uint8 g_lastCharacter [MAX_PLAYER] = {};
-__declspec(dllexport) uint8 g_activeCharacter[MAX_PLAYER] = {};
+export uint8 g_character [MAX_PLAYER] = {};
+export uint8 g_lastCharacter [MAX_PLAYER] = {};
+export uint8 g_activeCharacter[MAX_PLAYER] = {};
 
-__declspec(dllexport) bool g_executeButton [MAX_PLAYER] = {};
-__declspec(dllexport) bool g_executeFunction [MAX_PLAYER] = {};
+export bool g_executeButton [MAX_PLAYER][MAX_DIRECTION] = {};
+export bool g_executeFunction [MAX_PLAYER] = {};
 
 byte8 * GetActorBaseAddr[MAX_REGISTER] = {};
 
@@ -111,7 +112,6 @@ void SetMainActor(byte8 * baseAddr)
 	}
 }
 
-// @Todo: Add idle timer.
 template
 <
 	typename T1,
@@ -146,6 +146,7 @@ void CopyState
 		sizeof(activeActorData.nextActionRequestPolicy)
 	);
 
+	idleActorData.idleTimer   = activeActorData.idleTimer;
 	idleActorData.permissions = activeActorData.permissions;
 	idleActorData.state       = activeActorData.state;
 	idleActorData.lastState   = activeActorData.lastState;
@@ -181,7 +182,7 @@ void ToggleInput
 	actorData.newEnableLeftStick = enable;
 }
 
-template <typename T>
+export template <typename T>
 void ToggleActor
 (
 	T & actorData,
@@ -194,6 +195,8 @@ void ToggleActor
 	ToggleInput(actorData, enable);
 
 	actorData.visible = (enable) ? 1 : 0;
+
+	actorData.shadow = (enable) ? 1 : 0; // @Research: Add mission 2 exception.
 
 	if
 	(
@@ -530,6 +533,19 @@ bool IsWeaponActive(T & actorData)
 
 			break;
 		}
+		case CHAR_BOB:
+		{
+			if
+			(
+				(motionData.group == MOTION_GROUP_BOB_YAMATO ) &&
+				(motionData.index > 0)
+			)
+			{
+				return true;
+			}
+
+			break;
+		}
 		case CHAR_VERGIL:
 		{
 			if
@@ -567,12 +583,17 @@ bool IsActive(T & actorData)
 	{
 		case CHAR_DANTE:
 		{
-			if
-			(
-				(motionData.group == MOTION_GROUP_DANTE_BASE) &&
-				(motionData.index > 0)
-			)
+			if (motionData.group == MOTION_GROUP_DANTE_BASE)
 			{
+				switch (motionData.index)
+				{
+					case 0:
+					case 3:
+					{
+						return false;
+					}
+				}
+
 				return true;
 			}
 			else if
@@ -598,14 +619,75 @@ bool IsActive(T & actorData)
 
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHAR_BOB:
 		{
-			if
+			if (motionData.group == MOTION_GROUP_BOB_BASE)
+			{
+				switch (motionData.index)
+				{
+					case 0:
+					case 3:
+					{
+						return false;
+					}
+				}
+
+				return true;
+			}
+			else if
 			(
-				(motionData.group == MOTION_GROUP_VERGIL_BASE) &&
-				(motionData.index > 0)
+				(motionData.group >= MOTION_GROUP_BOB_DAMAGE) &&
+				(motionData.group <= MOTION_GROUP_BOB_TAUNTS)
 			)
 			{
+				return true;
+			}
+			else if (IsWeaponActive(actorData))
+			{
+				return true;
+			}
+
+			break;
+		}
+		case CHAR_LADY:
+		{
+			if (motionData.group == MOTION_GROUP_LADY_BASE)
+			{
+				switch (motionData.index)
+				{
+					case 0:
+					case 3:
+					{
+						return false;
+					}
+				}
+
+				return true;
+			}
+			else if
+			(
+				(motionData.group >= MOTION_GROUP_LADY_DAMAGE) &&
+				(motionData.group <= MOTION_GROUP_LADY_TAUNTS)
+			)
+			{
+				return true;
+			}
+
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			if (motionData.group == MOTION_GROUP_VERGIL_BASE)
+			{
+				switch (motionData.index)
+				{
+					case 0:
+					case 3:
+					{
+						return false;
+					}
+				}
+
 				return true;
 			}
 			else if
@@ -620,7 +702,7 @@ bool IsActive(T & actorData)
 			{
 				return true;
 			}
-			else if (motionData.group >= MOTION_GROUP_VERGIL_DARK_SLAYER)
+			else if (motionData.group == MOTION_GROUP_VERGIL_DARK_SLAYER)
 			{
 				return true;
 			}
@@ -2224,17 +2306,19 @@ byte8 * CreateActor
 		UpdateActor(actorData);
 	}
 
-	//auto UpdateShadow = [&]()
-	[&]()
-	{
-		if (!Actor_actorBaseAddr[0])
-		{
-			return;
-		}
-		auto & mainActorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[0]);
+	actorData.shadow = 1;
 
-		actorData.shadow = mainActorData.shadow;
-	}();
+	//auto UpdateShadow = [&]()
+	// [&]()
+	// {
+	// 	if (!Actor_actorBaseAddr[0])
+	// 	{
+	// 		return;
+	// 	}
+	// 	auto & mainActorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[0]);
+
+	// 	actorData.shadow = mainActorData.shadow;
+	// }();
 
 	//UpdateShadow();
 
@@ -3249,7 +3333,7 @@ export void CharacterSwitchController()
 		auto & character       = g_character      [player];
 		auto & lastCharacter   = g_lastCharacter  [player];
 		auto & activeCharacter = g_activeCharacter[player];
-		auto & executeButton   = g_executeButton  [player];
+		
 		auto & executeFunction = g_executeFunction[player];
 
 		constexpr byte16 buttons[MAX_DIRECTION] =
@@ -3262,6 +3346,12 @@ export void CharacterSwitchController()
 
 		for_all(uint8, direction, MAX_DIRECTION)
 		{
+
+			auto & executeButton   = g_executeButton  [player][direction];
+
+
+
+
 			auto & playerData = activeConfig.Actor.playerData[player][direction];
 
 			if (!playerData.enable)
@@ -3462,40 +3552,11 @@ export void CharacterSwitchController()
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #pragma endregion
 
 #pragma region Relocations
 
-void ToggleRelocations(bool enable)
+export void ToggleRelocations(bool enable)
 {
 	LogFunction(enable);
 
@@ -4447,7 +4508,7 @@ void ToggleRelocations(bool enable)
 	// 0x1AC0
 	{
 		constexpr auto off = offsetof(ActorData, modelPhysicsMetadataPool[3][0]);
-		constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[6][0]); // -> [6]
+		constexpr auto newOff = offsetof(ActorData, newModelPhysicsMetadataPool[6][0]); // [3] -> [6]
 		static_assert(off == 0x1AC0);
 		// func_1EF040
 		Write<uint32>((appBaseAddr + 0x1EF0A9 + 3), (enable) ? newOff : off); // dmc3.exe+1EF0A9 - 49 8D AD C01A0000 - LEA RBP,[R13+00001AC0]
@@ -7269,7 +7330,41 @@ bool EbonyIvoryRainStormCheck(ActorData & actorData)
 
 
 
+bool DotShadowCheck(byte8 * dest)
+{
+	if (!dest)
+	{
+		return false;
+	}
 
+	switch (activeConfig.dotShadow)
+	{
+		case DOT_SHADOW_DISABLE:
+		{
+			return true;
+		}
+		case DOT_SHADOW_DISABLE_ACTOR_ONLY:
+		{
+			auto baseAddr = *reinterpret_cast<byte8 **>(dest + 0xC0);
+			if (!baseAddr)
+			{
+				break;
+			}
+
+			for_all(uint32, index, Actor_actorBaseAddr.count)
+			{
+				if (baseAddr == Actor_actorBaseAddr[index])
+				{
+					return true;
+				}
+			}
+
+			break;
+		}
+	}
+
+	return false;
+}
 
 
 
@@ -7298,6 +7393,7 @@ byte8  * InputUpdateAddr[16]                = {};
 byte8  * UpdateCollisionDataAddr            = 0;
 byte8  * EbonyIvoryRainStormCheckAddr       = 0;
 byte8  * SummonedSwordsQuicksilverCheckAddr = 0;
+byte8  * DotShadowCheckAddr = 0;
 
 
 
@@ -7330,18 +7426,6 @@ export void Actor_Init()
 		return;
 	}
 
-	// Update Model Dante
-	{
-		auto func = CreateFunction(UpdateModel<ActorDataDante>);
-		UpdateModelDanteAddr = func.addr;
-	}
-
-	// Update Model Vergil
-	{
-		auto func = CreateFunction(UpdateModel<ActorDataVergil>);
-		UpdateModelVergilAddr = func.addr;
-	}
-
 	// Model Physics Metadata Pool Offsets
 	{
 		auto & off = modelPhysicsMetadataPoolOff;
@@ -7357,6 +7441,18 @@ export void Actor_Init()
 		{
 			off[index] = (index * 24);
 		}
+	}
+
+	// Update Model Dante
+	{
+		auto func = CreateFunction(UpdateModel<ActorDataDante>);
+		UpdateModelDanteAddr = func.addr;
+	}
+
+	// Update Model Vergil
+	{
+		auto func = CreateFunction(UpdateModel<ActorDataVergil>);
+		UpdateModelVergilAddr = func.addr;
 	}
 
 	// Coat Update Dante
@@ -7792,7 +7888,71 @@ export void Actor_Init()
 		dmc3.exe+1DB8FD - 0F2F F0       - comiss xmm6,xmm0
 		*/
 	}
+
+	// Dot Shadow Check
+	{
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,             // test al,al
+			0x74, 0x01,             // je short
+			0xC3,                   // ret
+			0x40, 0x53,             // push rbx
+			0x48, 0x83, 0xEC, 0x20, // sub rsp,20
+		};
+		auto func = CreateFunction(DotShadowCheck, (appBaseAddr + 0x93D66), true, false, 0, 0, sizeof(sect2));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		DotShadowCheckAddr = func.addr;
+		/*
+		dmc3.exe+93D60 - 40 53       - push rbx
+		dmc3.exe+93D62 - 48 83 EC 20 - sub rsp,20
+		dmc3.exe+93D66 - 48 8B D9    - mov rbx,rcx
+		*/
+	}
 }
+
+
+
+export void Actor_MiniToggle(bool enable)
+{
+	LogFunction(enable);
+
+	// Actor Data Size
+	{
+		constexpr uint32 size = (128 * 1024);
+		// Dante
+		Write<uint32>((appBaseAddr + 0x1DEBE1 + 1), (enable) ? size : ACTOR_DATA_SIZE_DANTE); // dmc3.exe+1DEBE1 - BA C0B80000 - mov edx,0000B8C0
+		// Bob
+		Write<uint32>((appBaseAddr + 0x1DEAC8 + 1), (enable) ? size : ACTOR_DATA_SIZE_BOB); // dmc3.exe+1DEAC8 - BA 80B60000 - mov edx,0000B680
+		// Lady
+		Write<uint32>((appBaseAddr + 0x1DE9CC + 1), (enable) ? size : ACTOR_DATA_SIZE_LADY); // dmc3.exe+1DE9CC - BA 80820000 - mov edx,00008280
+		// Vergil
+		Write<uint32>((appBaseAddr + 0x1DE8B3 + 1), (enable) ? size : ACTOR_DATA_SIZE_VERGIL); // dmc3.exe+1DE8B3 - BA C0B80000 - mov edx,0000B8C0
+	}
+
+	ToggleRelocations           (enable);
+	ToggleModelCountAdjustments (enable);
+	ToggleWeaponCountAdjustments(enable);
+
+	// Update Model Dante
+	{
+		auto dest = (appBaseAddr + 0x212CB3);
+		if (enable)
+		{
+			WriteCall(dest, UpdateModelDanteAddr);
+		}
+		else
+		{
+			WriteCall(dest, (appBaseAddr + 0x214D50));
+		}
+		/*
+		dmc3.exe+212CB3 - E8 98200000       - call dmc3.exe+214D50
+		dmc3.exe+212CB8 - 48 8D 86 A0380000 - lea rax,[rsi+000038A0]
+		*/
+	}
+}
+
+
+
 
 export void Actor_Toggle(bool enable)
 {
@@ -7818,6 +7978,18 @@ export void Actor_Toggle(bool enable)
 		Write<uint32>((appBaseAddr + 0x1DE9CC + 1), (enable) ? size : ACTOR_DATA_SIZE_LADY); // dmc3.exe+1DE9CC - BA 80820000 - mov edx,00008280
 		// Vergil
 		Write<uint32>((appBaseAddr + 0x1DE8B3 + 1), (enable) ? size : ACTOR_DATA_SIZE_VERGIL); // dmc3.exe+1DE8B3 - BA C0B80000 - mov edx,0000B8C0
+	}
+
+	// Model Physics Metadata Pool Offsets
+	{
+		auto off = reinterpret_cast<byte8 *>(modelPhysicsMetadataPoolOff);
+		auto defaultOff = (appBaseAddr + 0x4E0328);
+		WriteAddress((appBaseAddr + 0x1FA60B), (enable) ? off : defaultOff, 7); // dmc3.exe+1FA60B - 48 8D 0D 165D2E00 - lea rcx,[dmc3.exe+4E0328]
+		WriteAddress((appBaseAddr + 0x1FAA57), (enable) ? off : defaultOff, 7); // dmc3.exe+1FAA57 - 48 8D 0D CA582E00 - lea rcx,[dmc3.exe+4E0328]
+		WriteAddress((appBaseAddr + 0x1FAA77), (enable) ? off : defaultOff, 7); // dmc3.exe+1FAA77 - 48 8D 15 AA582E00 - lea rdx,[dmc3.exe+4E0328]
+		WriteAddress((appBaseAddr + 0x1FAA97), (enable) ? off : defaultOff, 7); // dmc3.exe+1FAA97 - 4C 8D 05 8A582E00 - lea r8,[dmc3.exe+4E0328]
+		WriteAddress((appBaseAddr + 0x1FB031), (enable) ? off : defaultOff, 7); // dmc3.exe+1FB031 - 48 8D 3D F0522E00 - lea rdi,[dmc3.exe+4E0328]
+		WriteAddress((appBaseAddr + 0x1FBAC4), (enable) ? off : defaultOff, 7); // dmc3.exe+1FBAC4 - 48 8D 3D 5D482E00 - lea rdi,[dmc3.exe+4E0328]
 	}
 
 	// Update Model Dante
@@ -7886,18 +8058,6 @@ export void Actor_Toggle(bool enable)
 		dmc3.exe+22285C - E8 BF0B0000       - call dmc3.exe+223420
 		dmc3.exe+222861 - 48 8D B7 40750000 - lea rsi,[rdi+00007540]
 		*/
-	}
-
-	// Model Physics Metadata Pool Offsets
-	{
-		auto off = reinterpret_cast<byte8 *>(modelPhysicsMetadataPoolOff);
-		auto defaultOff = (appBaseAddr + 0x4E0328);
-		WriteAddress((appBaseAddr + 0x1FA60B), (enable) ? off : defaultOff, 7); // dmc3.exe+1FA60B - 48 8D 0D 165D2E00 - lea rcx,[dmc3.exe+4E0328]
-		WriteAddress((appBaseAddr + 0x1FAA57), (enable) ? off : defaultOff, 7); // dmc3.exe+1FAA57 - 48 8D 0D CA582E00 - lea rcx,[dmc3.exe+4E0328]
-		WriteAddress((appBaseAddr + 0x1FAA77), (enable) ? off : defaultOff, 7); // dmc3.exe+1FAA77 - 48 8D 15 AA582E00 - lea rdx,[dmc3.exe+4E0328]
-		WriteAddress((appBaseAddr + 0x1FAA97), (enable) ? off : defaultOff, 7); // dmc3.exe+1FAA97 - 4C 8D 05 8A582E00 - lea r8,[dmc3.exe+4E0328]
-		WriteAddress((appBaseAddr + 0x1FB031), (enable) ? off : defaultOff, 7); // dmc3.exe+1FB031 - 48 8D 3D F0522E00 - lea rdi,[dmc3.exe+4E0328]
-		WriteAddress((appBaseAddr + 0x1FBAC4), (enable) ? off : defaultOff, 7); // dmc3.exe+1FBAC4 - 48 8D 3D 5D482E00 - lea rdi,[dmc3.exe+4E0328]
 	}
 
 	// Coat Update Dante
@@ -8625,6 +8785,29 @@ export void Actor_Toggle(bool enable)
 		dmc3.exe+1DAF36 - C6 81 E80D0000 00 - mov byte ptr [rcx+00000DE8],00
 		*/
 	}
+
+	// Dot Shadow Check
+	{
+		auto dest = (appBaseAddr + 0x93D60);
+		if (enable)
+		{
+			WriteJump(dest, DotShadowCheckAddr, 1);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x40, 0x53,             // push rbx
+				0x48, 0x83, 0xEC, 0x20, // sub rsp,20
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+93D60 - 40 53       - push rbx
+		dmc3.exe+93D62 - 48 83 EC 20 - sub rsp,20
+		dmc3.exe+93D66 - 48 8B D9    - mov rbx,rcx
+		*/
+	}
 }
 
 export void ToggleAirHikeCoreAbility(bool enable)
@@ -8921,9 +9104,6 @@ export void Actor_CreateMainActor(byte8 * baseAddr)
 	LogFunction(baseAddr);
 
 	Actor_actorBaseAddr.Clear();
-	Actor_actorBaseAddr[0] = baseAddr;
-	Actor_actorBaseAddr.count = 2;
-
 
 	memset
 	(
@@ -8932,12 +9112,10 @@ export void Actor_CreateMainActor(byte8 * baseAddr)
 		sizeof(g_actorBaseAddr)
 	);
 
-
-
-
-
-
 	File_dynamicFiles.Clear();
+
+	Actor_actorBaseAddr[0] = baseAddr;
+	Actor_actorBaseAddr.count = 2;
 
 	Actor_spawnActors = true;
 }
@@ -9030,11 +9208,22 @@ export void Actor_Delete()
 
 	LogFunction();
 
-	for_all(uint8, player, MAX_PLAYER   ){
-	for_all(uint8, index , MAX_DIRECTION)
+	Actor_actorBaseAddr.Clear();
+
+	memset
+	(
+		g_actorBaseAddr,
+		0,
+		sizeof(g_actorBaseAddr)
+	);
+
+	File_dynamicFiles.Clear();
+
+	for_all(uint8, player   , MAX_PLAYER   ){
+	for_all(uint8, direction, MAX_DIRECTION)
 	{
-		auto & activePlayerData = activeConfig.Actor.playerData[player][index];
-		auto & queuedPlayerData = queuedConfig.Actor.playerData[player][index];
+		auto & activePlayerData = activeConfig.Actor.playerData[player][direction];
+		auto & queuedPlayerData = queuedConfig.Actor.playerData[player][direction];
 
 		queuedPlayerData.style             = activePlayerData.style;
 		queuedPlayerData.meleeWeaponIndex  = activePlayerData.meleeWeaponIndex;
@@ -9118,6 +9307,11 @@ export void Actor_MainLoopOnceSync()
 
 export void Actor_ActorLoop(byte8 * baseAddr)
 {
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
 	if (!baseAddr)
 	{
 		return;

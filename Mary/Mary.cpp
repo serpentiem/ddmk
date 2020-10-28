@@ -61,6 +61,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Actor_Init();
 		Actor_Toggle(activeConfig.Actor.enable);
 
+		//Actor_MiniToggle(true);
+
 		Arcade_Toggle(activeConfig.Arcade.enable);
 
 		Camera_ToggleInvertX(activeConfig.Camera.invertX);
