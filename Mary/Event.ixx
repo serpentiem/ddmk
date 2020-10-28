@@ -14,7 +14,7 @@ import Config;
 import File;
 import Model;
 
-#define debug true
+#define debug false
 
 
 //bool MainLoop_run = false;

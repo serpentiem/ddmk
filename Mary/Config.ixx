@@ -4,14 +4,14 @@ module;
 #include "Vars.h"
 export module Config;
 
-#define debug true
+#define debug false
 
 #pragma pack(push, 1)
 export struct Config
 {
 	struct
 	{
-		bool enable = true;
+		bool enable = false;
 		uint8 system = ACTOR_SYSTEM_DEFAULT;
 		bool showIdleActors = false;
 		uint8 playerCount = 1;
@@ -33,7 +33,7 @@ export struct Config
 	AirHike;
 	struct
 	{
-		bool    enable         = true;
+		bool    enable         = false;
 		uint32  mission        = 17;
 		uint32  mode           = MODE_NORMAL;
 		uint32  room           = 900;
@@ -103,7 +103,7 @@ export struct Config
 	BossRush;
 	struct
 	{
-		bool    invertX     = true;
+		bool    invertX     = false;
 		float32 height      = 140;
 		float32 tilt        = 0.25f;
 		float32 zoom        = 460;
@@ -181,8 +181,8 @@ export struct Config
 	EbonyIvory;
 	struct
 	{
-		bool skipIntro     = true;
-		bool skipCutscenes = true;
+		bool skipIntro     = false;
+		bool skipCutscenes = false;
 	}
 	Event;
 	struct

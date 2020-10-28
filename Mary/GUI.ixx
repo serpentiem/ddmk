@@ -25,7 +25,7 @@ import State;
 import Training;
 import Window;
 
-#define debug true
+#define debug false
 
 
 
@@ -2947,35 +2947,35 @@ void Main()
 		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
 	}
 
-	if (ImGui::Begin("DDMK 2.7 Mary Nightly 27 October 2020", &pause))
+	if (ImGui::Begin("DDMK 2.7 Mary Nightly 28 October 2020", &pause))
 	{
 		ImGui::Text("");
 
-		static bool enable = false;
-		GUI_Checkbox("Enable", enable);
+		// static bool enable = false;
+		// GUI_Checkbox("Enable", enable);
 
-		static uint32 actorIndex = 0;
-		GUI_Input
-		(
-			"actorIndex",
-			actorIndex
-		);
+		// static uint32 actorIndex = 0;
+		// GUI_Input
+		// (
+		// 	"actorIndex",
+		// 	actorIndex
+		// );
 
-		if (GUI_Button("Toggle Actor"))
-		{
-			[]()
-			{
-				auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
-				if (!actorBaseAddr)
-				{
-					return;
-				}
-				auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-				ToggleActor(actorData, enable);
-			}();
-		}
+		// if (GUI_Button("Toggle Actor"))
+		// {
+		// 	[]()
+		// 	{
+		// 		auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
+		// 		if (!actorBaseAddr)
+		// 		{
+		// 			return;
+		// 		}
+		// 		auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+		// 		ToggleActor(actorData, enable);
+		// 	}();
+		// }
 
-		ImGui::Text("");
+		// ImGui::Text("");
 
 
 		// if (GUI_Button("Relocate"))

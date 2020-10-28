@@ -1,8 +1,5 @@
 // @Todo: Quick Drive.
 // @Todo: Capture Doppelganger run out event.
-// @Todo: UpdateShadow stand alone function.
-// @Todo: Update Bob style.
-// @Todo: Add Bob to IsActive.
 // @Todo: Color Toggle.
 // @Todo: Air Stinger, Air Lunar Phase and Nevan instant Vortex.
 
@@ -20,7 +17,7 @@ import Input;
 import Memory;
 import Model;
 
-#define debug true
+#define debug false
 
 #pragma region Main
 
@@ -9208,6 +9205,8 @@ export void Actor_Delete()
 
 	LogFunction();
 
+	SetMainActor(Actor_actorBaseAddr[0]);
+
 	Actor_actorBaseAddr.Clear();
 
 	memset
@@ -9229,8 +9228,6 @@ export void Actor_Delete()
 		queuedPlayerData.meleeWeaponIndex  = activePlayerData.meleeWeaponIndex;
 		queuedPlayerData.rangedWeaponIndex = activePlayerData.rangedWeaponIndex;
 	}}
-
-	SetMainActor(Actor_actorBaseAddr[0]);
 }
 
 export void Actor_MainLoopOnce()

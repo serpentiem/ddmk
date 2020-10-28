@@ -1,4 +1,3 @@
-// @Todo: Move window if debug only.
 // @Todo: Update.
 
 module;
@@ -274,8 +273,11 @@ HWND User_Hook_CreateWindowExW
 	LPVOID    parameter
 )
 {
-	x = 0;
-	y = 0;
+	if constexpr (debug)
+	{
+		x = 0;
+		y = 0;
+	}
 	Log
 	(
 		"%s "
@@ -763,9 +765,12 @@ HRESULT DirectInput8_Hook_GetDeviceStateKeyboard
 	{
 		memset(buffer, 0, bufferSize);
 	}
-	WindowSize1(state);
-	WindowSize2(state);
-	WindowSize3(state);
+	if constexpr (debug)
+	{
+		WindowSize1(state);
+		WindowSize2(state);
+		WindowSize3(state);
+	}
 	return 0;
 }
 
