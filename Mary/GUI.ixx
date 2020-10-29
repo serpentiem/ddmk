@@ -25,7 +25,7 @@ import State;
 import Training;
 import Window;
 
-#define debug false
+#define debug true
 
 
 
@@ -2043,13 +2043,21 @@ void Other()
 		ImGui::Text("");
 
 		ImGui::PushItemWidth(150);
-		GUI_InputDefault2
+
+		if
 		(
-			"Crazy Combo Level Multiplier",
-			activeConfig.crazyComboLevelMultiplier,
-			queuedConfig.crazyComboLevelMultiplier,
-			defaultConfig.crazyComboLevelMultiplier
-		);
+			GUI_InputDefault2
+			(
+				"Crazy Combo Level Multiplier",
+				activeConfig.crazyComboLevelMultiplier,
+				queuedConfig.crazyComboLevelMultiplier,
+				defaultConfig.crazyComboLevelMultiplier
+			)
+		)
+		{
+			UpdateCrazyComboLevelMultiplier();
+		}
+
 		GUI_InputDefault2
 		(
 			"Weapon Switch Timeout",

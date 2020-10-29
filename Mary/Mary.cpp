@@ -17,7 +17,7 @@ import Speed;
 import Training;
 import Window;
 
-#define debug false
+#define debug true
 
 uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {
@@ -60,6 +60,11 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		Actor_Init();
 		Actor_Toggle(activeConfig.Actor.enable);
+
+		UpdateCrazyComboLevelMultiplier();
+
+
+
 
 		//Actor_MiniToggle(true);
 

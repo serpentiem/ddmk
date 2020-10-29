@@ -4,16 +4,16 @@ module;
 #include "Vars.h"
 export module Config;
 
-#define debug false
+#define debug true
 
 #pragma pack(push, 1)
 export struct Config
 {
 	struct
 	{
-		bool enable = false;
-		uint8 system = ACTOR_SYSTEM_DEFAULT;
-		bool showIdleActors = false;
+		bool enable = true;
+		uint8 system = ACTOR_SYSTEM_CHARACTER_SWITCHER;
+		bool showIdleActors = true;
 		uint8 playerCount = 1;
 		PlayerData playerData[MAX_PLAYER][MAX_DIRECTION] = {};
 		bool enableQuicksilver = true;
@@ -33,16 +33,16 @@ export struct Config
 	AirHike;
 	struct
 	{
-		bool    enable         = false;
-		uint32  mission        = 17;
-		uint32  mode           = MODE_NORMAL;
-		uint32  room           = 900;
-		uint32  position       = 0;
-		bool    ignoreRoom     = false;
-		bool    ignorePosition = false;
+		bool    enable         = true;
+		uint32  mission        = 3;
+		uint32  mode           = MODE_DANTE_MUST_DIE;
+		uint32  room           = 5;
+		uint32  position       = 3;
+		bool    ignoreRoom     = true;
+		bool    ignorePosition = true;
 		uint8   floor          = 0;
-		float32 hitPoints      = 6000;
-		float32 magicPoints    = 3000;
+		float32 hitPoints      = 20000;
+		float32 magicPoints    = 10000;
 		uint8   character      = CHAR_DANTE;
 		uint8   costume        = 0;
 		uint32  style          = STYLE_TRICKSTER;
@@ -103,7 +103,7 @@ export struct Config
 	BossRush;
 	struct
 	{
-		bool    invertX     = false;
+		bool    invertX     = true;
 		float32 height      = 140;
 		float32 tilt        = 0.25f;
 		float32 zoom        = 460;
@@ -159,7 +159,7 @@ export struct Config
 		Aura;
 	}
 	Color;
-	uint8 crazyComboLevelMultiplier = 6;
+	uint8 crazyComboLevelMultiplier = 2; // 6
 	struct
 	{
 		uint8 airTrickCount [2] = { 1, 1 };
@@ -181,8 +181,8 @@ export struct Config
 	EbonyIvory;
 	struct
 	{
-		bool skipIntro     = false;
-		bool skipCutscenes = false;
+		bool skipIntro     = true;
+		bool skipCutscenes = true;
 	}
 	Event;
 	struct
