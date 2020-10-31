@@ -80,7 +80,7 @@ enum DEVIL
 	MAX_DEVIL = 7,
 };
 
-enum STYLE_
+enum STYLE
 {
 	STYLE_SWORDMASTER,
 	STYLE_GUNSLINGER,
@@ -90,7 +90,6 @@ enum STYLE_
 	STYLE_DOPPELGANGER,
 	STYLE_DARK_SLAYER = 2,
 	MAX_STYLE = 6,
-	//STYLE_VOID = 255,
 };
 
 enum WEAPON
@@ -2002,6 +2001,13 @@ enum DOT_SHADOW
 
 
 
+enum
+{
+	STYLE_COUNT = 4,
+};
+
+
+
 struct PlayerData
 {
 	bool enable;
@@ -2009,7 +2015,10 @@ struct PlayerData
 	uint8 costume;
 	bool forceFiles;
 	uint8 forceFilesCharacter;
-	uint8 style;
+	uint8 styles[STYLE_COUNT][2];
+	uint8 styleIndices[STYLE_COUNT];
+	byte16 styleButtons[STYLE_COUNT];
+	uint8 styleButtonIndex;
 	uint8 meleeWeapons[MELEE_WEAPON_COUNT];
 	uint8 meleeWeaponCount;
 	uint8 meleeWeaponIndex;

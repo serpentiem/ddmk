@@ -13,10 +13,10 @@ export struct Config
 	{
 		bool enable = true;
 		uint8 system = ACTOR_SYSTEM_CHARACTER_SWITCHER;
-		bool showIdleActors = true;
+		// bool showIdleActors = true;
 		uint8 playerCount = 1;
 		PlayerData playerData[MAX_PLAYER][MAX_DIRECTION] = {};
-		bool enableQuicksilver = true;
+		// bool enableQuicksilver = true;
 	}
 	Actor;
 	struct
@@ -225,12 +225,13 @@ export struct Config
 		float32 airStingerRange   [2] = { 560, 560 };
 	}
 	Rebellion;
-	struct
-	{
-		bool   enable = false;
-		byte16 button = GAMEPAD_UP;
-	}
-	RemoveBusyFlag;
+	bool removeBusyFlag = false;
+	// struct
+	// {
+	// 	bool   enable = false;
+	// 	byte16 button = GAMEPAD_UP;
+	// }
+	// RemoveBusyFlag;
 	struct
 	{
 		bool   enable = false;
@@ -347,7 +348,32 @@ export void ApplyDefaultPlayerData
 			0,
 			false,
 			CHAR_DANTE,
-			STYLE_TRICKSTER,
+			{
+				{
+					STYLE_TRICKSTER,
+					STYLE_TRICKSTER,
+				},
+				{
+					STYLE_SWORDMASTER,
+					STYLE_SWORDMASTER,
+				},
+				{
+					STYLE_ROYALGUARD,
+					STYLE_QUICKSILVER,
+				},
+				{
+					STYLE_GUNSLINGER,
+					STYLE_GUNSLINGER,
+				},
+			},
+			{},
+			{
+				GAMEPAD_UP,
+				GAMEPAD_RIGHT,
+				GAMEPAD_DOWN,
+				GAMEPAD_LEFT,
+			},
+			0,
 			{
 				WEAPON_REBELLION,
 				WEAPON_CERBERUS,
@@ -396,7 +422,32 @@ export void ApplyDefaultPlayerData
 			0,
 			false,
 			CHAR_DANTE,
-			STYLE_DARK_SLAYER,
+			{
+				{
+					STYLE_DARK_SLAYER,
+					STYLE_DARK_SLAYER,
+				},
+				{
+					STYLE_DARK_SLAYER,
+					STYLE_DARK_SLAYER,
+				},
+				{
+					STYLE_DARK_SLAYER,
+					STYLE_QUICKSILVER,
+				},
+				{
+					STYLE_DARK_SLAYER,
+					STYLE_DARK_SLAYER,
+				},
+			},
+			{},
+			{
+				GAMEPAD_UP,
+				GAMEPAD_RIGHT,
+				GAMEPAD_DOWN,
+				GAMEPAD_LEFT,
+			},
+			0,
 			{
 				WEAPON_YAMATO_VERGIL,
 				WEAPON_BEOWULF_VERGIL,

@@ -114,7 +114,7 @@ const char * characterNames[] =
 	"Vergil",
 };
 
-const char * styleNames[] =
+const char * styleNamesDante[] =
 {
 	"Swordmaster",
 	"Gunslinger",
@@ -123,6 +123,42 @@ const char * styleNames[] =
 	"Quicksilver",
 	"Doppelganger",
 };
+
+uint8 stylesDante[] =
+{
+	STYLE_SWORDMASTER,
+	STYLE_GUNSLINGER,
+	STYLE_TRICKSTER,
+	STYLE_ROYALGUARD,
+	STYLE_QUICKSILVER,
+	STYLE_DOPPELGANGER,
+};
+
+const char * styleNamesVergil[] =
+{
+	"Dark Slayer",
+	"Quicksilver",
+	"Doppelganger",
+};
+
+uint8 stylesVergil[] =
+{
+	STYLE_DARK_SLAYER,
+	STYLE_QUICKSILVER,
+	STYLE_DOPPELGANGER,
+};
+
+
+
+
+
+
+
+
+
+
+
+
 
 const char * meleeWeaponNamesDante[] =
 {
@@ -487,7 +523,39 @@ const char * Actor_systemNames[] =
 	"Character Switcher",
 };
 
+
+
 #define Actor_characterNames characterNames
+
+
+
+
+
+
+
+
+#define Actor_styleButtonNames buttonNames
+#define Actor_styleButtons buttons
+
+uint8 Actor_styleButtonIndices[MAX_PLAYER][MAX_DIRECTION][4] = {};
+
+
+
+
+#define Actor_styleNamesDante styleNamesDante
+#define Actor_stylesDante stylesDante
+
+#define Actor_styleNamesVergil styleNamesVergil
+#define Actor_stylesVergil stylesVergil
+
+uint8 Actor_styleIndices[MAX_PLAYER][MAX_DIRECTION][4][2] = {};
+
+
+
+
+
+
+
 #define Actor_meleeWeaponNamesDante meleeWeaponNamesDante
 #define Actor_meleeWeaponsDante meleeWeaponsDante
 #define Actor_meleeWeaponNamesVergil meleeWeaponNamesVergil
@@ -509,49 +577,96 @@ void Actor_UpdateIndices()
 	{
 		auto & playerData = queuedConfig.Actor.playerData[player][direction];
 
-		switch (playerData.character)
+		for_all(uint8, styleIndex, 4)
 		{
-			case CHAR_DANTE:
+			UpdateMapIndex
+			(
+				Actor_styleButtons,
+				Actor_styleButtonIndices[player][direction][styleIndex],
+				playerData.styleButtons[styleIndex]
+			);
+
+			switch (playerData.character)
 			{
-				for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT_DANTE)
+				case CHAR_DANTE:
 				{
 					UpdateMapIndex
 					(
-						Actor_meleeWeaponsDante,
-						Actor_meleeWeaponIndices[player][direction][meleeWeaponIndex],
-						playerData.meleeWeapons[meleeWeaponIndex]
+						Actor_stylesDante,
+						Actor_styleIndices[player][direction][styleIndex][0],
+						playerData.styles[styleIndex][0]
 					);
-				}
 
-				for_all(uint8, rangedWeaponIndex, RANGED_WEAPON_COUNT_DANTE)
+					UpdateMapIndex
+					(
+						Actor_stylesDante,
+						Actor_styleIndices[player][direction][styleIndex][1],
+						playerData.styles[styleIndex][1]
+					);
+
+					break;
+				}
+				case CHAR_VERGIL:
 				{
 					UpdateMapIndex
 					(
-						Actor_rangedWeaponsDante,
-						Actor_rangedWeaponIndices[player][direction][rangedWeaponIndex],
-						playerData.rangedWeapons[rangedWeaponIndex]
+						Actor_stylesVergil,
+						Actor_styleIndices[player][direction][styleIndex][0],
+						playerData.styles[styleIndex][0]
 					);
-				}
 
-				break;
+					UpdateMapIndex
+					(
+						Actor_stylesVergil,
+						Actor_styleIndices[player][direction][styleIndex][1],
+						playerData.styles[styleIndex][1]
+					);
+
+					break;
+				}
 			}
-			case CHAR_VERGIL:
-			{
-				for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT_VERGIL)
-				{
-					UpdateMapIndex
-					(
-						Actor_meleeWeaponsVergil,
-						Actor_meleeWeaponIndices[player][direction][meleeWeaponIndex],
-						playerData.meleeWeapons[meleeWeaponIndex]
-					);
-				}
+		}
 
-				break;
-			}
+		if (playerData.character != CHAR_DANTE)
+		{
+			return;
+		}
+
+		for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT_DANTE)
+		{
+			UpdateMapIndex
+			(
+				Actor_meleeWeaponsDante,
+				Actor_meleeWeaponIndices[player][direction][meleeWeaponIndex],
+				playerData.meleeWeapons[meleeWeaponIndex]
+			);
+		}
+
+		for_all(uint8, rangedWeaponIndex, RANGED_WEAPON_COUNT_DANTE)
+		{
+			UpdateMapIndex
+			(
+				Actor_rangedWeaponsDante,
+				Actor_rangedWeaponIndices[player][direction][rangedWeaponIndex],
+				playerData.rangedWeapons[rangedWeaponIndex]
+			);
 		}
 	}}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void Actor_PlayerTab
 (
@@ -619,12 +734,113 @@ void Actor_PlayerTab
 
 	ImGui::PopItemWidth();
 
+	ImGui::Text("");
+
+	ImGui::Text("Styles");
+	ImGui::PushItemWidth(150);
+
+	for_all(uint8, styleIndex, 4)
+	{
+		if constexpr (debug)
+		{
+			ImGui::Text("");
+			ImGui::Text("%u", styleIndex);
+		}
+
+		GUI_ComboMap
+		(
+			"",
+			Actor_styleButtonNames,
+			Actor_styleButtons,
+			Actor_styleButtonIndices[player][index][styleIndex],
+			playerData.styleButtons[styleIndex],
+			ImGuiComboFlags_HeightLargest
+		);
+
+		switch (playerData.character)
+		{
+			case CHAR_DANTE:
+			{
+				if constexpr (!debug)
+				{
+					ImGui::SameLine();
+				}
+				GUI_ComboMap
+				(
+					"",
+					styleNamesDante,
+					stylesDante,
+					Actor_styleIndices[player][index][styleIndex][0],
+					playerData.styles[styleIndex][0]
+				);
+				if constexpr (!debug)
+				{
+					ImGui::SameLine();
+				}
+				GUI_ComboMap
+				(
+					"",
+					styleNamesDante,
+					stylesDante,
+					Actor_styleIndices[player][index][styleIndex][1],
+					playerData.styles[styleIndex][1]
+				);
+
+				break;
+			}
+			case CHAR_VERGIL:
+			{
+				if constexpr (!debug)
+				{
+					ImGui::SameLine();
+				}
+				GUI_ComboMap
+				(
+					"",
+					styleNamesVergil,
+					stylesVergil,
+					Actor_styleIndices[player][index][styleIndex][0],
+					playerData.styles[styleIndex][0]
+				);
+				if constexpr (!debug)
+				{
+					ImGui::SameLine();
+				}
+				GUI_ComboMap
+				(
+					"",
+					styleNamesVergil,
+					stylesVergil,
+					Actor_styleIndices[player][index][styleIndex][1],
+					playerData.styles[styleIndex][1]
+				);
+
+				break;
+			}
+		}
+	}
+
+	ImGui::PopItemWidth();
+
+
+
+
+
+
+
+
+
+
+
+
 	if (playerData.character != CHAR_DANTE)
 	{
 		return;
 	}
 
+
 	ImGui::Text("");
+
 
 	ImGui::PushItemWidth(200);
 
@@ -725,6 +941,8 @@ void Actor()
 
 				Actor_Toggle(activeConfig.Actor.enable);
 			}
+
+			activeConfig.removeBusyFlag = queuedConfig.removeBusyFlag = defaultConfig.removeBusyFlag;
 		}
 		ImGui::Text("");
 
@@ -846,21 +1064,28 @@ void Actor()
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-		GUI_Checkbox
+		GUI_Checkbox2
 		(
-			"Enable Quicksilver",
-			queuedConfig.Actor.enableQuicksilver
+			"Remove Busy Flag",
+			activeConfig.removeBusyFlag,
+			queuedConfig.removeBusyFlag
 		);
 
-		if (queuedConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER)
-		{
-			GUI_Checkbox2
-			(
-				"Show Idle Actors",
-				activeConfig.Actor.showIdleActors,
-				queuedConfig.Actor.showIdleActors
-			);
-		}
+		// GUI_Checkbox
+		// (
+		// 	"Enable Quicksilver",
+		// 	queuedConfig.Actor.enableQuicksilver
+		// );
+
+		// if (queuedConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER)
+		// {
+		// 	GUI_Checkbox2
+		// 	(
+		// 		"Show Idle Actors",
+		// 		activeConfig.Actor.showIdleActors,
+		// 		queuedConfig.Actor.showIdleActors
+		// 	);
+		// }
 
 		ImGui::Text("");
 	}
@@ -1080,7 +1305,7 @@ void Arcade()
 			GUI_Combo2
 			(
 				"Style",
-				styleNames,
+				styleNamesDante,
 				activeConfig.Arcade.style,
 				queuedConfig.Arcade.style
 			);
@@ -2164,72 +2389,72 @@ void Repair()
 
 #pragma region Remove Busy Flag
 
-#define RemoveBusyFlag_buttonNames buttonNames
-#define RemoveBusyFlag_buttons buttons
+// #define RemoveBusyFlag_buttonNames buttonNames
+// #define RemoveBusyFlag_buttons buttons
 
-uint8 RemoveBusyFlag_buttonIndex = 0;
+// uint8 RemoveBusyFlag_buttonIndex = 0;
 
-void RemoveBusyFlag_UpdateIndices()
-{
-	LogFunction();
+// void RemoveBusyFlag_UpdateIndices()
+// {
+// 	LogFunction();
 
-	UpdateMapIndex
-	(
-		RemoveBusyFlag_buttons,
-		RemoveBusyFlag_buttonIndex,
-		activeConfig.RemoveBusyFlag.button
-	);
-}
+// 	UpdateMapIndex
+// 	(
+// 		RemoveBusyFlag_buttons,
+// 		RemoveBusyFlag_buttonIndex,
+// 		activeConfig.RemoveBusyFlag.button
+// 	);
+// }
 
-void RemoveBusyFlag()
-{
-	if (ImGui::CollapsingHeader("Remove Busy Flag"))
-	{
-		ImGui::Text("");
+// void RemoveBusyFlag()
+// {
+// 	if (ImGui::CollapsingHeader("Remove Busy Flag"))
+// 	{
+// 		ImGui::Text("");
 
-		GUI_Checkbox2
-		(
-			"Enable",
-			activeConfig.RemoveBusyFlag.enable,
-			queuedConfig.RemoveBusyFlag.enable
-		);
-		ImGui::Text("");
+// 		GUI_Checkbox2
+// 		(
+// 			"Enable",
+// 			activeConfig.RemoveBusyFlag.enable,
+// 			queuedConfig.RemoveBusyFlag.enable
+// 		);
+// 		ImGui::Text("");
 
-		if (GUI_ResetButton())
-		{
-			memcpy
-			(
-				&queuedConfig.RemoveBusyFlag,
-				&defaultConfig.RemoveBusyFlag,
-				sizeof(Config::RemoveBusyFlag)
-			);
-			memcpy
-			(
-				&activeConfig.RemoveBusyFlag,
-				&queuedConfig.RemoveBusyFlag,
-				sizeof(Config::RemoveBusyFlag)
-			);
+// 		if (GUI_ResetButton())
+// 		{
+// 			memcpy
+// 			(
+// 				&queuedConfig.RemoveBusyFlag,
+// 				&defaultConfig.RemoveBusyFlag,
+// 				sizeof(Config::RemoveBusyFlag)
+// 			);
+// 			memcpy
+// 			(
+// 				&activeConfig.RemoveBusyFlag,
+// 				&queuedConfig.RemoveBusyFlag,
+// 				sizeof(Config::RemoveBusyFlag)
+// 			);
 
-			RemoveBusyFlag_UpdateIndices();
-		}
-		ImGui::Text("");
+// 			RemoveBusyFlag_UpdateIndices();
+// 		}
+// 		ImGui::Text("");
 
-		ImGui::PushItemWidth(150);
-		GUI_ComboMap2
-		(
-			"Button",
-			RemoveBusyFlag_buttonNames,
-			RemoveBusyFlag_buttons,
-			RemoveBusyFlag_buttonIndex,
-			activeConfig.RemoveBusyFlag.button,
-			queuedConfig.RemoveBusyFlag.button,
-			ImGuiComboFlags_HeightLargest
-		);
-		ImGui::PopItemWidth();
+// 		ImGui::PushItemWidth(150);
+// 		GUI_ComboMap2
+// 		(
+// 			"Button",
+// 			RemoveBusyFlag_buttonNames,
+// 			RemoveBusyFlag_buttons,
+// 			RemoveBusyFlag_buttonIndex,
+// 			activeConfig.RemoveBusyFlag.button,
+// 			queuedConfig.RemoveBusyFlag.button,
+// 			ImGuiComboFlags_HeightLargest
+// 		);
+// 		ImGui::PopItemWidth();
 
-		ImGui::Text("");
-	}
-}
+// 		ImGui::Text("");
+// 	}
+// }
 
 #pragma endregion
 
@@ -3031,7 +3256,7 @@ void Main()
 
 		Other();
 		Repair();
-		RemoveBusyFlag();
+		// RemoveBusyFlag();
 		ResetPermissions();
 		Speed();
 		System();
@@ -3124,7 +3349,7 @@ export void GUI_Init()
 	Actor_UpdateIndices();
 	Arcade_UpdateIndices();
 	Color_UpdateValues();
-	RemoveBusyFlag_UpdateIndices();
+	// RemoveBusyFlag_UpdateIndices();
 	ResetPermissions_UpdateIndices();
 }
 
