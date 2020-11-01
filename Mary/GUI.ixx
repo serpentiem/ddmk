@@ -25,7 +25,7 @@ import State;
 import Training;
 import Window;
 
-#define debug true
+#define debug false
 
 
 
@@ -536,7 +536,10 @@ const char * Actor_systemNames[] =
 	"Character Switcher",
 };
 
+#define Actor_systemButtons buttons
+#define Actor_systemButtonNames buttonNames
 
+uint8 Actor_systemButtonIndex = 0;
 
 #define Actor_characterNames characterNames
 
@@ -584,6 +587,13 @@ uint8 Actor_rangedWeaponIndices[MAX_PLAYER][MAX_DIRECTION][RANGED_WEAPON_COUNT] 
 void Actor_UpdateIndices()
 {
 	LogFunction();
+
+	UpdateMapIndex
+	(
+		Actor_systemButtons,
+		Actor_systemButtonIndex,
+		queuedConfig.Actor.systemButton
+	);
 
 	for_all(uint8, player   , MAX_PLAYER   ){
 	for_all(uint8, direction, MAX_DIRECTION)
@@ -988,6 +998,19 @@ void Actor()
 			}
 		}
 		ImGui::Text("");
+
+		// ImGui::PushItemWidth(200);
+		// GUI_ComboMap
+		// (
+		// 	"",
+		// 	Actor_systemButtonNames,
+		// 	Actor_systemButtons,
+		// 	Actor_systemButtonIndex,
+		// 	queuedConfig.Actor.systemButton,
+		// 	ImGuiComboFlags_HeightLargest
+		// );
+		// ImGui::PopItemWidth();
+		// ImGui::Text("");
 
 		ImGui::PushItemWidth(200);
 		GUI_Slider<uint8>
@@ -3193,7 +3216,7 @@ void Main()
 		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
 	}
 
-	if (ImGui::Begin("DDMK 2.7 Mary Nightly 28 October 2020", &pause))
+	if (ImGui::Begin("DDMK 2.7 Mary Nightly 1 November 2020", &pause))
 	{
 		ImGui::Text("");
 

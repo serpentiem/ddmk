@@ -5,7 +5,7 @@ module;
 #include "../ImGui/imgui_internal.h"
 export module Core_GUI;
 
-#define debug true
+#define debug false
 
 export int     GUI_id          = 0;
 export bool    GUI_save        = false;

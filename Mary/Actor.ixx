@@ -17,7 +17,7 @@ import Input;
 import Memory;
 import Model;
 
-#define debug true
+#define debug false
 
 #pragma region Main
 
@@ -3038,26 +3038,6 @@ void StyleSwitchController
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 template <typename T>
 void MeleeWeaponSwitchController
 (
@@ -3407,7 +3387,7 @@ export void CharacterSwitchController()
 
 			if
 			(
-				(gamepad.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)) &&
+				(gamepad.buttons[0] & activeConfig.Actor.systemButton) &&
 				(gamepad.buttons[0] & button)
 			)
 			{
