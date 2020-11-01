@@ -6536,40 +6536,6 @@ export void UpdateMagicPointsDepletionValues()
 
 #pragma endregion
 
-#pragma region Orb Reach
-
-float32 * orbReachDest = 0;
-
-void InitOrbReach()
-{
-	LogFunction();
-
-	auto dest = HighAlloc(4);
-	if (!dest)
-	{
-		Log("HighAlloc failed.");
-
-		return;
-	}
-
-	orbReachDest = reinterpret_cast<float32 *>(dest);
-
-	WriteAddress((appBaseAddr + 0x1B655F), dest, 8);
-	/*
-	dmc3.exe+1B655F - F3 0F10 35 2DFB3000- movss xmm6,[dmc3.exe+4C6094]
-	dmc3.exe+1B6567 - EB 2B              - jmp dmc3.exe+1B6594
-	*/
-}
-
-export void UpdateOrbReach()
-{
-	LogFunction();
-
-	*orbReachDest = activeConfig.orbReach;
-}
-
-#pragma endregion
-
 #pragma region Color
 
 void SetColorAirHike

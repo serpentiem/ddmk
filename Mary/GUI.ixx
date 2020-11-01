@@ -18,6 +18,7 @@ import File;
 import Graphics;
 import Internal;
 import Model;
+import Other;
 import Pause;
 import Scene;
 import Speed;

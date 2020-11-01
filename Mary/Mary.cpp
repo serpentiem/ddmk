@@ -12,6 +12,7 @@ import Hooks;
 import HUD;
 import Internal;
 import Memory;
+import Other;
 import Scene;
 import Speed;
 import Training;
@@ -82,6 +83,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Hooks_Init();
 
 		HUD_Init();
+
+		Other_Init();
+		UpdateOrbReach();
 
 		Scene_Init();
 
