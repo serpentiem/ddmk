@@ -111,6 +111,7 @@ void SetRoom()
 void SetNextRoom()
 {
 	LogFunction();
+	Actor_SetNextRoom();
 	BossRush_SetNextRoom();
 }
 
@@ -527,6 +528,19 @@ export void Event_Init()
 		dmc3.exe+1AA8CC - C3                - ret
 		*/
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+	// Set Next Room
 	{
 		constexpr byte8 sect0[] =
 		{
@@ -545,6 +559,53 @@ export void Event_Init()
 		dmc3.exe+1A6002 - EB 23             - jmp dmc3.exe+1A6027
 		*/
 	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x66, 0x89, 0x81, 0x66, 0x01, 0x00, 0x00, // mov [rcx+00000166],ax
+		};
+		auto func = CreateFunction(SetNextRoom, (appBaseAddr + 0x1A6114), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteJump((appBaseAddr + 0x1A610D), func.addr, 2);
+		/*
+		dmc3.exe+1A610D - 66 89 81 66010000 - mov [rcx+00000166],ax
+		dmc3.exe+1A6114 - 89 A9 60010000    - mov [rcx+00000160],ebp
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x66, 0x89, 0x8E, 0x66, 0x01, 0x00, 0x00, // mov [rsi+00000166],cx
+		};
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rsi,
+		};
+		auto func = CreateFunction(SetNextRoom, (appBaseAddr + 0x1A6687), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteJump((appBaseAddr + 0x1A6680), func.addr, 2);
+		/*
+		dmc3.exe+1A6680 - 66 89 8E 66010000 - mov [rsi+00000166],cx
+		dmc3.exe+1A6687 - 40 38 BE C6000000 - cmp [rsi+000000C6],dil
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	{
 		constexpr byte8 sect0[] =
 		{

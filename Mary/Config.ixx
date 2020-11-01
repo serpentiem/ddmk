@@ -34,10 +34,10 @@ export struct Config
 	struct
 	{
 		bool    enable         = true;
-		uint32  mission        = 3;
+		uint32  mission        = 12;
 		uint32  mode           = MODE_DANTE_MUST_DIE;
-		uint32  room           = 5;
-		uint32  position       = 3;
+		uint32  room           = 900;
+		uint32  position       = 0;
 		bool    ignoreRoom     = true;
 		bool    ignorePosition = true;
 		uint8   floor          = 0;

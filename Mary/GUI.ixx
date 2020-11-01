@@ -402,6 +402,19 @@ void Overlay()
 
 		ImGui::Text("g_scene %u", g_scene);
 
+		[&]()
+		{
+			if (!InGame())
+			{
+				return;
+			}
+
+			IntroduceEventData(return);
+
+			ImGui::Text("%u", eventData.room);
+			ImGui::Text("%u", eventData.position);
+		}();
+
 		constexpr uint32 off[] =
 		{
 			0xCA8910,
