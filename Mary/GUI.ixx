@@ -26,7 +26,7 @@ import State;
 import Training;
 import Window;
 
-#define debug false
+#define debug true
 
 
 
@@ -1559,6 +1559,11 @@ void Camera()
 
 		[]()
 		{
+			if (g_scene != SCENE_GAME)
+			{
+				return;
+			}
+
 			IntroduceCameraData(return);
 
 			GUI_SectionEnd();
@@ -3221,31 +3226,53 @@ void Main()
 	{
 		ImGui::Text("");
 
-		// static bool enable = false;
-		// GUI_Checkbox("Enable", enable);
 
-		// static uint32 actorIndex = 0;
-		// GUI_Input
-		// (
-		// 	"actorIndex",
-		// 	actorIndex
-		// );
 
-		// if (GUI_Button("Toggle Actor"))
+		static uint32 actorIndex = 0;
+		GUI_Input
+		(
+			"actorIndex",
+			actorIndex
+		);
+
+		// if (GUI_Button("Lock Actor"))
 		// {
-		// 	[]()
+		// 	auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
+		// 	if (!actorBaseAddr)
 		// 	{
-		// 		auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
-		// 		if (!actorBaseAddr)
-		// 		{
-		// 			return;
-		// 		}
-		// 		auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-		// 		ToggleActor(actorData, enable);
-		// 	}();
+		// 		return;
+		// 	}
+		// 	LockActor(actorBaseAddr);
 		// }
 
-		// ImGui::Text("");
+		// if (GUI_Button("Unlock Actor"))
+		// {
+		// 	auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
+		// 	if (!actorBaseAddr)
+		// 	{
+		// 		return;
+		// 	}
+		// 	UnlockActor(actorBaseAddr);
+		// }
+
+		static bool enable = false;
+		GUI_Checkbox("Enable", enable);
+
+		if (GUI_Button("Toggle Actor"))
+		{
+			[]()
+			{
+				auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
+				if (!actorBaseAddr)
+				{
+					return;
+				}
+				auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+				ToggleActor(actorData, enable);
+			}();
+		}
+
+		ImGui::Text("");
 
 
 		// if (GUI_Button("Relocate"))

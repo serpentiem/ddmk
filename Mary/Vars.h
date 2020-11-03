@@ -196,7 +196,8 @@ enum MOTION_GROUP_
 	MOTION_GROUP_VERGIL_NERO_ANGELO_YAMATO,
 	MOTION_GROUP_VERGIL_NERO_ANGELO_BEOWULF,
 	MOTION_GROUP_VERGIL_NERO_ANGELO_FORCE_EDGE,
-	MAX_MOTION_GROUP = 32,
+	MOTION_GROUP_IN_GAME_CUTSCENE = 33,
+	MAX_MOTION_GROUP = 34,
 };
 
 enum NEXT_ACTION_REQUEST_POLICY
@@ -2032,6 +2033,43 @@ struct PlayerData
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+// $CollisionDataStart
+
+struct CollisionData
+{
+	_(4);
+	uint32 index; // 4
+	_(520);
+	vec4 data; // 0x210
+	_(112);
+};
+
+static_assert(offsetof(CollisionData, index) == 4);
+static_assert(offsetof(CollisionData, data) == 0x210);
+static_assert(sizeof(CollisionData) == 656);
+
+// $CollisionDataEnd
+
+
+
+
+
+
+
+
+
 //constexpr uint64 playerDataSize = sizeof(PlayerData);
 
 
@@ -2075,8 +2113,7 @@ struct ActorData
 	float32 motionSpeed; // 0x3894
 	float32 motionSpeedMultiplier; // 0x3898
 	_(4);
-	byte8 * motionArchives[32]; // 0x38A0
-	_(16);
+	byte8 * motionArchives[34]; // 0x38A0
 	MotionData motionData[2]; // 0x39B0
 	MotionData motionDataMirror[3]; // 0x39B4
 	_(2);
@@ -2200,10 +2237,7 @@ struct ActorData
 	_(36);
 	BodyPartData bodyPartData[3][2]; // 0x6950
 	_(576);
-	byte8 var_7250[4]; // 0x7250
-	uint32 collisionIndex; // 0x7254
-	_(520);
-	vec4 interactionData[8]; // 0x7460
+	CollisionData collisionData; // 0x7250
 	byte16 buttons[4]; // 0x74E0
 	_(16);
 	uint16 rightStickPosition; // 0x74F8
@@ -2301,8 +2335,7 @@ struct ActorDataDante
 	float32 motionSpeed; // 0x3894
 	float32 motionSpeedMultiplier; // 0x3898
 	_(4);
-	byte8 * motionArchives[32]; // 0x38A0
-	_(16);
+	byte8 * motionArchives[34]; // 0x38A0
 	MotionData motionData[2]; // 0x39B0
 	MotionData motionDataMirror[3]; // 0x39B4
 	_(2);
@@ -2427,10 +2460,7 @@ struct ActorDataDante
 	_(36);
 	BodyPartData bodyPartData[3][2]; // 0x6950
 	_(576);
-	byte8 var_7250[4]; // 0x7250
-	uint32 collisionIndex; // 0x7254
-	_(520);
-	vec4 interactionData[8]; // 0x7460
+	CollisionData collisionData; // 0x7250
 	byte16 buttons[4]; // 0x74E0
 	_(16);
 	uint16 rightStickPosition; // 0x74F8
@@ -2545,8 +2575,7 @@ struct ActorDataBob
 	float32 motionSpeed; // 0x3894
 	float32 motionSpeedMultiplier; // 0x3898
 	_(4);
-	byte8 * motionArchives[32]; // 0x38A0
-	_(16);
+	byte8 * motionArchives[34]; // 0x38A0
 	MotionData motionData[2]; // 0x39B0
 	MotionData motionDataMirror[3]; // 0x39B4
 	_(2);
@@ -2670,10 +2699,7 @@ struct ActorDataBob
 	_(36);
 	BodyPartData bodyPartData[3][2]; // 0x6950
 	_(576);
-	byte8 var_7250[4]; // 0x7250
-	uint32 collisionIndex; // 0x7254
-	_(520);
-	vec4 interactionData[8]; // 0x7460
+	CollisionData collisionData; // 0x7250
 	byte16 buttons[4]; // 0x74E0
 	_(16);
 	uint16 rightStickPosition; // 0x74F8
@@ -2771,8 +2797,7 @@ struct ActorDataLady
 	float32 motionSpeed; // 0x3894
 	float32 motionSpeedMultiplier; // 0x3898
 	_(4);
-	byte8 * motionArchives[32]; // 0x38A0
-	_(16);
+	byte8 * motionArchives[34]; // 0x38A0
 	MotionData motionData[2]; // 0x39B0
 	MotionData motionDataMirror[3]; // 0x39B4
 	_(2);
@@ -2896,10 +2921,7 @@ struct ActorDataLady
 	_(36);
 	BodyPartData bodyPartData[3][2]; // 0x6950
 	_(576);
-	byte8 var_7250[4]; // 0x7250
-	uint32 collisionIndex; // 0x7254
-	_(520);
-	vec4 interactionData[8]; // 0x7460
+	CollisionData collisionData; // 0x7250
 	byte16 buttons[4]; // 0x74E0
 	_(16);
 	uint16 rightStickPosition; // 0x74F8
@@ -2997,8 +3019,7 @@ struct ActorDataVergil
 	float32 motionSpeed; // 0x3894
 	float32 motionSpeedMultiplier; // 0x3898
 	_(4);
-	byte8 * motionArchives[32]; // 0x38A0
-	_(16);
+	byte8 * motionArchives[34]; // 0x38A0
 	MotionData motionData[2]; // 0x39B0
 	MotionData motionDataMirror[3]; // 0x39B4
 	_(2);
@@ -3123,10 +3144,7 @@ struct ActorDataVergil
 	_(36);
 	BodyPartData bodyPartData[3][2]; // 0x6950
 	_(576);
-	byte8 var_7250[4]; // 0x7250
-	uint32 collisionIndex; // 0x7254
-	_(520);
-	vec4 interactionData[8]; // 0x7460
+	CollisionData collisionData; // 0x7250
 	byte16 buttons[4]; // 0x74E0
 	_(16);
 	uint16 rightStickPosition; // 0x74F8
@@ -3303,9 +3321,7 @@ static_assert(offsetof(ActorData, styleRank) == 0x6510);
 static_assert(offsetof(ActorData, styleMeter) == 0x6514);
 static_assert(offsetof(ActorData, inputData) == 0x6674);
 static_assert(offsetof(ActorData, bodyPartData) == 0x6950);
-static_assert(offsetof(ActorData, var_7250) == 0x7250);
-static_assert(offsetof(ActorData, collisionIndex) == 0x7254);
-static_assert(offsetof(ActorData, interactionData) == 0x7460);
+static_assert(offsetof(ActorData, collisionData) == 0x7250);
 static_assert(offsetof(ActorData, buttons) == 0x74E0);
 static_assert(offsetof(ActorData, rightStickPosition) == 0x74F8);
 static_assert(offsetof(ActorData, rightStickRadius) == 0x74FA);
@@ -3457,9 +3473,7 @@ static_assert(offsetof(ActorDataDante, styleRank) == 0x6510);
 static_assert(offsetof(ActorDataDante, styleMeter) == 0x6514);
 static_assert(offsetof(ActorDataDante, inputData) == 0x6674);
 static_assert(offsetof(ActorDataDante, bodyPartData) == 0x6950);
-static_assert(offsetof(ActorDataDante, var_7250) == 0x7250);
-static_assert(offsetof(ActorDataDante, collisionIndex) == 0x7254);
-static_assert(offsetof(ActorDataDante, interactionData) == 0x7460);
+static_assert(offsetof(ActorDataDante, collisionData) == 0x7250);
 static_assert(offsetof(ActorDataDante, buttons) == 0x74E0);
 static_assert(offsetof(ActorDataDante, rightStickPosition) == 0x74F8);
 static_assert(offsetof(ActorDataDante, rightStickRadius) == 0x74FA);
@@ -3621,9 +3635,7 @@ static_assert(offsetof(ActorDataBob, styleRank) == 0x6510);
 static_assert(offsetof(ActorDataBob, styleMeter) == 0x6514);
 static_assert(offsetof(ActorDataBob, inputData) == 0x6674);
 static_assert(offsetof(ActorDataBob, bodyPartData) == 0x6950);
-static_assert(offsetof(ActorDataBob, var_7250) == 0x7250);
-static_assert(offsetof(ActorDataBob, collisionIndex) == 0x7254);
-static_assert(offsetof(ActorDataBob, interactionData) == 0x7460);
+static_assert(offsetof(ActorDataBob, collisionData) == 0x7250);
 static_assert(offsetof(ActorDataBob, buttons) == 0x74E0);
 static_assert(offsetof(ActorDataBob, rightStickPosition) == 0x74F8);
 static_assert(offsetof(ActorDataBob, rightStickRadius) == 0x74FA);
@@ -3774,9 +3786,7 @@ static_assert(offsetof(ActorDataLady, styleRank) == 0x6510);
 static_assert(offsetof(ActorDataLady, styleMeter) == 0x6514);
 static_assert(offsetof(ActorDataLady, inputData) == 0x6674);
 static_assert(offsetof(ActorDataLady, bodyPartData) == 0x6950);
-static_assert(offsetof(ActorDataLady, var_7250) == 0x7250);
-static_assert(offsetof(ActorDataLady, collisionIndex) == 0x7254);
-static_assert(offsetof(ActorDataLady, interactionData) == 0x7460);
+static_assert(offsetof(ActorDataLady, collisionData) == 0x7250);
 static_assert(offsetof(ActorDataLady, buttons) == 0x74E0);
 static_assert(offsetof(ActorDataLady, rightStickPosition) == 0x74F8);
 static_assert(offsetof(ActorDataLady, rightStickRadius) == 0x74FA);
@@ -3928,9 +3938,7 @@ static_assert(offsetof(ActorDataVergil, styleRank) == 0x6510);
 static_assert(offsetof(ActorDataVergil, styleMeter) == 0x6514);
 static_assert(offsetof(ActorDataVergil, inputData) == 0x6674);
 static_assert(offsetof(ActorDataVergil, bodyPartData) == 0x6950);
-static_assert(offsetof(ActorDataVergil, var_7250) == 0x7250);
-static_assert(offsetof(ActorDataVergil, collisionIndex) == 0x7254);
-static_assert(offsetof(ActorDataVergil, interactionData) == 0x7460);
+static_assert(offsetof(ActorDataVergil, collisionData) == 0x7250);
 static_assert(offsetof(ActorDataVergil, buttons) == 0x74E0);
 static_assert(offsetof(ActorDataVergil, rightStickPosition) == 0x74F8);
 static_assert(offsetof(ActorDataVergil, rightStickRadius) == 0x74FA);

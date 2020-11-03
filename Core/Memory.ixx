@@ -188,31 +188,35 @@ export void WriteAddress
 	byte8  * addr,
 	void   * dest,
 	uint32   size,
-	byte8    header   = 0,
+	byte8    value    = 0,
 	uint32   padSize  = 0,
-	byte8    padValue = 0x90
+	byte8    padValue = 0x90,
+	uint32   off      = 0
 )
 {
 	byte32 protection = 0;
+
 	VirtualProtect(addr, (size + padSize), PAGE_EXECUTE_READWRITE, &protection);
+
+	if (value)
 	{
-		if (header)
-		{
-			addr[0] = header;
-		}
-		if (size == 2)
-		{
-			*reinterpret_cast<int8 *>(addr + (size - 1)) = static_cast<int8>(reinterpret_cast<byte8 *>(dest) - addr - size);
-		}
-		else
-		{
-			*reinterpret_cast<int32 *>(addr + (size - 4)) = static_cast<int32>(reinterpret_cast<byte8 *>(dest) - addr - size);
-		}
-		if (padSize)
-		{
-			memset((addr + size), padValue, padSize);
-		}
+		addr[0] = value;
 	}
+
+	if (size == 2)
+	{
+		*reinterpret_cast<int8 *>(addr + (size - 1 - off)) = static_cast<int8>(reinterpret_cast<byte8 *>(dest) - addr - size);
+	}
+	else
+	{
+		*reinterpret_cast<int32 *>(addr + (size - 4 - off)) = static_cast<int32>(reinterpret_cast<byte8 *>(dest) - addr - size);
+	}
+
+	if (padSize)
+	{
+		memset((addr + size), padValue, padSize);
+	}
+
 	VirtualProtect(addr, (size + padSize), protection, &protection);
 }
 

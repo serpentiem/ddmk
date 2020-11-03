@@ -86,7 +86,7 @@ var typeHelper =
 	[ "WeaponData" , "" , 296 , false ],
 	[ "PlayerData" , "" , 18, false ],
 	[ "CameraData" , "" , 512, false ],
-	//[ "CloneData" , "" , 116 , false ],
+	[ "CollisionData" , "" , 656, false ],
 ];
 
 // function Template(typeString)

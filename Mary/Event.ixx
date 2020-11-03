@@ -137,22 +137,22 @@ bool SetTrack
 
 
 
-void LockActor(byte8 * baseAddr)
-{
-	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
-	actorData.newButtonMask = 0;
-	actorData.newEnableRightStick = false;
-	actorData.newEnableLeftStick = false;
-}
+// export void LockActor(byte8 * baseAddr)
+// {
+// 	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+// 	actorData.newButtonMask = 0;
+// 	actorData.newEnableRightStick = false;
+// 	actorData.newEnableLeftStick = false;
+// }
 
 
-void UnlockActor(byte8 * baseAddr)
-{
-	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
-	actorData.newButtonMask = 0xFFFF;
-	actorData.newEnableRightStick = true;
-	actorData.newEnableLeftStick = true;
-}
+// export void UnlockActor(byte8 * baseAddr)
+// {
+// 	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+// 	actorData.newButtonMask = 0xFFFF;
+// 	actorData.newEnableRightStick = true;
+// 	actorData.newEnableLeftStick = true;
+// }
 
 
 
@@ -163,8 +163,6 @@ void CreateMainActor(byte8 * baseAddr)
 	memset(Event_run, 0, MAX_EVENT);
 	MainLoopOnce_run = false;
 	MainLoopOnceSync_run = false;
-
-	//LockActor(baseAddr);
 
 	Actor_CreateMainActor(baseAddr);
 
@@ -178,7 +176,6 @@ void Main_CreateMainActor(byte8 * baseAddr)
 	return CreateMainActor(baseAddr);
 }
 
-
 void Customize_CreateMainActor(byte8 * baseAddr)
 {
 	LogFunction();
@@ -187,11 +184,17 @@ void Customize_CreateMainActor(byte8 * baseAddr)
 }
 
 
+
 void CreateCloneActor(byte8 * baseAddr)
 {
-	//UnlockActor(baseAddr);
-
 	Actor_CreateCloneActor(baseAddr);
+}
+
+void Main_CreateCloneActor(byte8 * baseAddr)
+{
+	LogFunction();
+
+	return CreateCloneActor(baseAddr);
 }
 
 void UpdateActorDante_CreateCloneActor(byte8 * baseAddr)
@@ -438,7 +441,19 @@ void ActorLoop(byte8 * baseAddr)
 // 	Actor_DeactivateDevilForm(baseAddr);
 // }
 
+void InGameCutsceneStart()
+{
+	LogFunction();
 
+	Actor_InGameCutsceneStart();
+}
+
+void InGameCutsceneEnd()
+{
+	LogFunction();
+
+	Actor_InGameCutsceneEnd();
+}
 
 
 
@@ -690,6 +705,25 @@ export void Event_Init()
 		{
 			mov_rcx_rax,
 		};
+		auto func = CreateFunction(Main_CreateCloneActor, (appBaseAddr + 0x211E88), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
+		WriteJump((appBaseAddr + 0x211E83), func.addr);
+		/*
+		dmc3.exe+211E83 - E8 98C9FCFF       - call dmc3.exe+1DE820
+		dmc3.exe+211E88 - 48 89 83 78640000 - mov [rbx+00006478],rax
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+1DE820
+		};
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rax,
+		};
 		auto func = CreateFunction(UpdateActorDante_CreateCloneActor, (appBaseAddr + 0x2134E3), true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
@@ -700,6 +734,8 @@ export void Event_Init()
 		dmc3.exe+2134E3 - 48 89 86 78640000 - mov [rsi+00006478],rax
 		*/
 	}
+
+
 
 
 
@@ -781,14 +817,35 @@ export void Event_Init()
 		*/
 	}
 
-
-
-
-
-
-
-
-
+	// In-Game Cutscenes
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xC6, 0x05, 0x00, 0x00, 0x00, 0x00, 0x01, // mov byte ptr [dmc3.exe+5D113D],01
+		};
+		auto func = CreateFunction(InGameCutsceneStart, (appBaseAddr + 0x23DD73), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteAddress(func.sect0, (appBaseAddr + 0x5D113D), 7, 0, 0, 0, 1);
+		WriteJump((appBaseAddr + 0x23DD6C), func.addr, 2);
+		/*
+		dmc3.exe+23DD6C - C6 05 CA333900 01 - mov byte ptr [dmc3.exe+5D113D],01
+		dmc3.exe+23DD73 - E8 988B0E00       - call dmc3.exe+326910
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xC6, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, // mov byte ptr [dmc3.exe+5D113D],00
+		};
+		auto func = CreateFunction(InGameCutsceneEnd, (appBaseAddr + 0x23DEAA), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		WriteAddress(func.sect0, (appBaseAddr + 0x5D113D), 7, 0, 0, 0, 1);
+		WriteJump((appBaseAddr + 0x23DEA3), func.addr, 2);
+		/*
+		dmc3.exe+23DEA3 - C6 05 93323900 00       - mov byte ptr [dmc3.exe+5D113D],00
+		dmc3.exe+23DEAA - C7 05 ECAAA700 00000000 - mov [dmc3.exe+CB89A0],00000000
+		*/
+	}
 
 
 

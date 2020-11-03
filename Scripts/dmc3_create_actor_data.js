@@ -60,7 +60,7 @@ var items =
 
 	[ "motionSpeed"          , "float32"                 , 0x3894                           ],
 	[ "motionSpeedMultiplier", "float32"                 , 0x3898                           ],
-	[ "motionArchives[32]"                   , "byte8 *"                 , 0x38A0                           ],
+	[ "motionArchives[34]"                   , "byte8 *"                 , 0x38A0                           ],
 	[ "motionData[2]"                       , "MotionData"             , 0x39B0                           ],
 	[ "motionDataMirror[3]"                 , "MotionData"             , 0x39B4                           ],
 	[ ""                                    , "uint32"                  , 0x39BC                           ],
@@ -285,12 +285,21 @@ var items =
 
 
 
-	[ "[4]"                      , "byte8"                  , 0x7250                           ],
+	[ "collisionData"                      , "CollisionData"                  , 0x7250                           ],
 
 
 
-	[ "collisionIndex"                      , "uint32"                  , 0x7254                           ],
-	[ "interactionData[8]"                  , "vec4"                    , 0x7460                           ],
+	// [ "[4]"                      , "byte8"                  , 0x7250                           ],
+	// [ "collisionIndex"                      , "uint32"                  , 0x7254                           ],
+	// [ "interactionData[8]"                  , "vec4"                    , 0x7460                           ],
+
+
+
+
+
+
+
+
 	[ "buttons[4]"                          , "byte16"                  , 0x74E0                           ],
 	[ "rightStickPosition"                  , "uint16"                  , 0x74F8                           ],
 	[ "rightStickRadius"                    , "uint16"                  , 0x74FA                           ],

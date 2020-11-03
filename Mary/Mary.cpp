@@ -18,7 +18,7 @@ import Speed;
 import Training;
 import Window;
 
-#define debug false
+#define debug true
 
 uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {
@@ -64,12 +64,10 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		UpdateCrazyComboLevelMultiplier();
 
-
-
-
-		//Actor_MiniToggle(true);
-
 		Arcade_Toggle(activeConfig.Arcade.enable);
+
+		ToggleArtemisSwapNormalShotAndMultiLock(activeConfig.Artemis.swapNormalShotAndMultiLock);
+		ToggleArtemisInstantFullCharge         (activeConfig.Artemis.instantFullCharge         );
 
 		Camera_ToggleInvertX(activeConfig.Camera.invertX);
 
