@@ -538,7 +538,7 @@ var extra =
 	//[ "newSect[8]"             , "bool"    ],
 
 
-	[ "newEnable"           , "bool"    ],
+	//[ "newEnable"           , "bool"    ],
 
 
 	// [ "newBufferedActionPolicy", "uint8"   ],
@@ -548,6 +548,13 @@ var extra =
 
 
 	
+
+
+
+	[ "newEnableCollision", "bool" ],
+
+
+
 
 
 

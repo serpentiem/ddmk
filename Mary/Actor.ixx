@@ -224,7 +224,7 @@ void ToggleActor
 	bool enable
 )
 {
-	actorData.newEnable = enable;
+	//actorData.newEnable = enable;
 	actorData.collisionData.index = (enable) ? 0 : 1;
 
 	ToggleInput(actorData, enable);
@@ -7102,12 +7102,12 @@ void DeactivateDevil(ActorData & actorData)
 
 // @Todo: Update.
 // @Todo: Create CollisionData.
-void UpdateCollisionData(ActorData & actorData)
-{
-	LogFunction(actorData.operator byte8 *());
+// void UpdateCollisionData(ActorData & actorData)
+// {
+// 	LogFunction(actorData.operator byte8 *());
 
-	actorData.collisionData.index = (actorData.newEnable) ? 0 : 1;
-}
+// 	//actorData.collisionData.index = (actorData.newEnable) ? 0 : 1;
+// }
 
 
 
@@ -7200,6 +7200,31 @@ void ResetActorMode()
 // }
 
 
+bool CollisionCheck(byte8 * collisionDataAddr)
+{
+	auto baseAddr = (collisionDataAddr - offsetof(ActorData, collisionData));
+
+	for_all(uint32, index, Actor_actorBaseAddr.count)
+	{
+		auto actorBaseAddr = Actor_actorBaseAddr[index];
+		if (!actorBaseAddr)
+		{
+			continue;
+		}
+		else if (actorBaseAddr != baseAddr)
+		{
+			continue;
+		}
+		auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+
+		return !actorData.newEnableCollision;
+	}
+
+	return false;
+}
+
+
+
 
 
 
@@ -7221,16 +7246,16 @@ byte8  * DevilSystemButtonCheckAddr         = 0;
 byte8  * ActivateDevilAddr                  = 0;
 byte8  * DeactivateDevilAddr                = 0;
 byte8  * InputUpdateAddr[16]                = {};
-byte8  * UpdateCollisionDataAddr            = 0;
+//byte8  * UpdateCollisionDataAddr            = 0;
 byte8  * EbonyIvoryRainStormCheckAddr       = 0;
 byte8  * SummonedSwordsQuicksilverCheckAddr = 0;
 byte8  * DotShadowCheckAddr = 0;
 byte8 * ResetActorModeAddr = 0;
 // byte8 * DisableActorDataCopyCheckAddr = 0;
 
+//byte8 * CollisionUpdateAddr = 0;
 
-
-
+byte8 * CollisionCheckAddr = 0;
 
 
 
@@ -7651,26 +7676,26 @@ export void Actor_Init()
 		*/
 	}
 
-	// Update Collision Data
-	{
-		constexpr byte8 sect0[] =
-		{
-			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+5C260
-		};
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rsi,
-		};
-		auto func = CreateFunction(UpdateCollisionData, (appBaseAddr + 0x1EF001), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall(func.sect0, (appBaseAddr + 0x5C260));
-		UpdateCollisionDataAddr = func.addr;
-		/*
-		dmc3.exe+1EEFFC - E8 5FD2E6FF       - call dmc3.exe+5C260
-		dmc3.exe+1EF001 - 83 BE 943E0000 03 - cmp dword ptr [rsi+00003E94],03
-		*/
-	}
+	// // Update Collision Data
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+5C260
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rsi,
+	// 	};
+	// 	auto func = CreateFunction(UpdateCollisionData, (appBaseAddr + 0x1EF001), true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	WriteCall(func.sect0, (appBaseAddr + 0x5C260));
+	// 	UpdateCollisionDataAddr = func.addr;
+	// 	/*
+	// 	dmc3.exe+1EEFFC - E8 5FD2E6FF       - call dmc3.exe+5C260
+	// 	dmc3.exe+1EF001 - 83 BE 943E0000 03 - cmp dword ptr [rsi+00003E94],03
+	// 	*/
+	// }
 
 	// Ebony & Ivory Rain Storm Check
 	{
@@ -7769,6 +7794,42 @@ export void Actor_Init()
 	// 	dmc3.exe+2198D7 - 45 33 C0         - xor r8d,r8d
 	// 	*/
 	// }
+
+
+
+
+	// Collision Check
+	{
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                   // test al,al
+			0x74, 0x01,                   // je short
+			0xC3,                         // ret
+			0x48, 0x89, 0x5C, 0x24, 0x08, // mov [rsp+08],rbx
+		};
+		auto func = CreateFunction(CollisionCheck, (appBaseAddr + 0x5C325), true, false, 0, 0, sizeof(sect2));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		CollisionCheckAddr = func.addr;
+		/*
+		dmc3.exe+5C320 - 48 89 5C 24 08 - mov [rsp+08],rbx
+		dmc3.exe+5C325 - 48 89 74 24 10 - mov [rsp+10],rsi
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 export void Actor_MiniToggle(bool enable)
@@ -8420,22 +8481,22 @@ export void Actor_Toggle(bool enable)
 	dmc3.exe+32CFBD - 0F8C 7DFEFFFF     - jl dmc3.exe+32CE40
 	*/
 
-	// Update Collision Data
-	{
-		auto dest = (appBaseAddr + 0x1EEFFC);
-		if (enable)
-		{
-			WriteJump(dest, UpdateCollisionDataAddr);
-		}
-		else
-		{
-			WriteCall(dest, (appBaseAddr + 0x5C260));
-		}
-		/*
-		dmc3.exe+1EEFFC - E8 5FD2E6FF       - call dmc3.exe+5C260
-		dmc3.exe+1EF001 - 83 BE 943E0000 03 - cmp dword ptr [rsi+00003E94],03
-		*/
-	}
+	// // Update Collision Data
+	// {
+	// 	auto dest = (appBaseAddr + 0x1EEFFC);
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(dest, UpdateCollisionDataAddr);
+	// 	}
+	// 	else
+	// 	{
+	// 		WriteCall(dest, (appBaseAddr + 0x5C260));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1EEFFC - E8 5FD2E6FF       - call dmc3.exe+5C260
+	// 	dmc3.exe+1EF001 - 83 BE 943E0000 03 - cmp dword ptr [rsi+00003E94],03
+	// 	*/
+	// }
 
 	// @Todo: Review.
 	// Reset Lock-On
@@ -8709,6 +8770,27 @@ export void Actor_Toggle(bool enable)
 	// 	dmc3.exe+2198D7 - 45 33 C0         - xor r8d,r8d
 	// 	*/
 	// }
+
+	// Collision Check
+	{
+		auto dest = (appBaseAddr + 0x5C320);
+		if (enable)
+		{
+			WriteJump(dest, CollisionCheckAddr);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x48, 0x89, 0x5C, 0x24, 0x08, // mov [rsp+08],rbx
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+5C320 - 48 89 5C 24 08 - mov [rsp+08],rbx
+		dmc3.exe+5C325 - 48 89 74 24 10 - mov [rsp+10],rsi
+		*/
+	}
 }
 
 export void ToggleAirHikeCoreAbility(bool enable)
