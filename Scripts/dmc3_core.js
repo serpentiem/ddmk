@@ -34,84 +34,85 @@ function Align(boundary)
 var typeHelper =
 [
 	// Built-in Primitives
-	[ "bool"                      , "Byte"   , 1   , false ],
-	[ "int"                       , "4 Bytes", 4   , false ],
+	[ "bool"                    , "Byte"   , 1   , false ],
+	[ "int"                     , "4 Bytes", 4   , false ],
+	[ "void"                    , ""       , 0   , false ],
 	// Primitives
-	[ "bool8"                     , "Byte"   , 1   , false ],
-	[ "bool16"                    , "2 Bytes", 2   , false ],
-	[ "bool32"                    , "4 Bytes", 4   , false ],
-	[ "bool64"                    , "8 Bytes", 8   , false ],
-	[ "int8"                      , "Byte"   , 1   , false ],
-	[ "int16"                     , "2 Bytes", 2   , false ],
-	[ "int32"                     , "4 Bytes", 4   , false ],
-	[ "int64"                     , "8 Bytes", 8   , false ],
-	[ "uint8"                     , "Byte"   , 1   , false ],
-	[ "uint16"                    , "2 Bytes", 2   , false ],
-	[ "uint32"                    , "4 Bytes", 4   , false ],
-	[ "uint64"                    , "8 Bytes", 8   , false ],
-	[ "byte8"                     , "Byte"   , 1   , true  ],
-	[ "byte16"                    , "2 Bytes", 2   , true  ],
-	[ "byte32"                    , "4 Bytes", 4   , true  ],
-	[ "byte64"                    , "8 Bytes", 8   , true  ],
-	[ "float32"                   , "Float", 4   , false ],
-	[ "float"                   , "Float", 4   , false ],
+	[ "bool8"                   , "Byte"   , 1   , false ],
+	[ "bool16"                  , "2 Bytes", 2   , false ],
+	[ "bool32"                  , "4 Bytes", 4   , false ],
+	[ "bool64"                  , "8 Bytes", 8   , false ],
+	[ "int8"                    , "Byte"   , 1   , false ],
+	[ "int16"                   , "2 Bytes", 2   , false ],
+	[ "int32"                   , "4 Bytes", 4   , false ],
+	[ "int64"                   , "8 Bytes", 8   , false ],
+	[ "uint8"                   , "Byte"   , 1   , false ],
+	[ "uint16"                  , "2 Bytes", 2   , false ],
+	[ "uint32"                  , "4 Bytes", 4   , false ],
+	[ "uint64"                  , "8 Bytes", 8   , false ],
+	[ "byte8"                   , "Byte"   , 1   , true  ],
+	[ "byte16"                  , "2 Bytes", 2   , true  ],
+	[ "byte32"                  , "4 Bytes", 4   , true  ],
+	[ "byte64"                  , "8 Bytes", 8   , true  ],
+	[ "float"                   , "Float"  , 4   , false ],
 	// Structures
-	[ "vec4"                      , ""       , 16  , false ],
+	[ "vec4"                    , ""       , 16  , false ],
 
-
-
-
-	[ "InputData"                , ""       , 12  , false ],
-	[ "MotionData"               , ""       , 2   , false ],
+	[ "InputData"               , ""       , 12  , false ],
+	[ "MotionData"              , ""       , 2   , false ],
 	[ "ActorEventData"          , ""       , 8   , false ],
 
 
-	[ "ModelMetadata"            , ""       , 80  , false ],
-	[ "ModelData"                , ""       , 1920, false ],
-	[ "DevilModelMetadataDante"   , ""       , 33  , false ],
-	
-	// [ "SHADOW_DATA"               , ""       , 192 , false ],
-	// [ "PHYSICS_DATA"              , ""       , 240 , false ],
-	
+	[ "ModelMetadata"           , ""       , 80  , false ],
+	[ "ModelData"               , ""       , 1920, false ],
+	[ "DevilModelMetadataDante" , ""       , 33  , false ],
 
+	[ "ShadowData"              , ""       , 192 , false ],
+	[ "PhysicsData"             , ""       , 240 , false ],
+	[ "PhysicsMetadata"         , ""       , 320 , false ],
+	[ "PhysicsLinkData"         , ""       , 192 , false ],
+	[ "PhysicsLinkMetadata"     , ""       , 264 , false ],
 
-	[ "ShadowData"           , "" , 192 , false ],
-	[ "PhysicsData"          , "" , 240 , false ],
-	[ "PhysicsMetadata"      , "" , 320 , false ],
-	[ "PhysicsLinkData"     , "" , 192 , false ],
-	[ "PhysicsLinkMetadata" , "" , 264 , false ],
-
-	[ "BodyPartData" , "" , 288 , false ],
-	[ "RecoveryData" , "" , 112 , false ],
-	[ "WeaponData" , "" , 296 , false ],
-	[ "PlayerData" , "" , 18, false ],
-	[ "CameraData" , "" , 512, false ],
-	[ "CollisionData" , "" , 656, false ],
+	[ "BodyPartData"            , ""       , 288 , false ],
+	[ "RecoveryData"            , ""       , 112 , false ],
+	[ "WeaponData"              , ""       , 296 , false ],
+	[ "PlayerData"              , ""       , 18  , false ],
+	[ "CameraData"              , ""       , 512 , false ],
+	[ "CollisionData"           , ""       , 656 , false ],
 ];
 
-// function Template(typeString)
-// {
-// 	var items = typeHelper;
-// 	for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
-// 	{
-// 		var item = items[itemIndex];
-// 		var cppName = item[0];
-// 		var ceName  = item[1];
-// 		var size    = item[2];
-// 		var hex     = item[3];
-// 		if (cppName == typeString)
-// 		{
-// 			return;
-// 		}
-// 	}
-// 	return;
-// }
-
-function IsKnownType(typeString)
+function GetItemCount(name)
 {
-	typeString = typeString.replace(/ /g, "");
-	typeString = typeString.replace(/\*/g, "");
+	var count = 1;
+
+	var items = name.match(/\[\d+?\]/g);
+	if (!items)
+	{
+		return count;
+	}
+
+	for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
+	{
+		var item = items[itemIndex];
+
+		count *= parseInt(item.match(/\[(\d+?)\]/)[1]);
+	}
+
+	return count;
+}
+
+function IsKnownType(type)
+{
+	type = type.replace(/ /g, "");
+	type = type.replace(/\*/g, "");
+
+	if (type.match(/Size_/))
+	{
+		return true;
+	}
+
 	var items = typeHelper;
+
 	for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
 	{
 		var item = items[itemIndex];
@@ -119,32 +120,33 @@ function IsKnownType(typeString)
 		var ceName  = item[1];
 		var size    = item[2];
 		var hex     = item[3];
-		if (cppName == typeString)
+
+		if (cppName == type)
 		{
 			return true;
 		}
 	}
-	if (typeString.match(/Size_/))
-	{
-		return true;
-	}
+
 	return false;
 }
 
-function GetTypeSize(typeString)
+function GetTypeSize(type)
 {
-	if (typeString.match(/\*/))
+	if (type.match(/\*/))
 	{
 		return 8;
 	}
+
 	{
-		var match = typeString.match(/Size_([\d]+?)$/);
+		var match = type.match(/Size_([\d]+?)$/);
 		if (match)
 		{
 			return parseInt(match[1]);
 		}
 	}
+
 	var items = typeHelper;
+
 	for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
 	{
 		var item = items[itemIndex];
@@ -152,13 +154,69 @@ function GetTypeSize(typeString)
 		var ceName  = item[1];
 		var size    = item[2];
 		var hex     = item[3];
-		if (cppName == typeString)
+
+		if (cppName == type)
 		{
 			return size;
 		}
 	}
+
 	return 0;
 }
+
+function IsUnion
+(
+	name,
+	type
+)
+{
+	var names = name.split(",");
+	var types = type.split(",");
+
+	if (names.length != types.length)
+	{
+		console.log("Count Mismatch");
+		console.log(name, type);
+
+		return false;
+	}
+
+	return (names.length > 1);
+}
+
+function GetUnionSize
+(
+	name,
+	type
+)
+{
+	if (!IsUnion(name, type))
+	{
+		return 0;
+	}
+
+	var names = name.split(",");
+	var types = type.split(",");
+
+	var unionSize = 1;
+
+	for (var index = 0; index < names.length; index++)
+	{
+		var count = GetItemCount(names[index]);
+		var size = GetTypeSize(types[index]);
+
+		size *= count;
+
+		if (size > unionSize)
+		{
+			unionSize = size;
+		}
+	}
+
+	return unionSize;
+}
+
+
 
 function GetVariableType(typeString)
 {

@@ -12,10 +12,8 @@ export struct Config
 	struct
 	{
 		bool enable = true;
-		uint8 system = ACTOR_SYSTEM_CHARACTER_SWITCHER;
-		byte16 systemButton = GAMEPAD_RIGHT_THUMB;
 		uint8 playerCount = 1;
-		PlayerData playerData[MAX_PLAYER][MAX_DIRECTION] = {};
+		PlayerData playerData[PLAYER_COUNT] = {};
 	}
 	Actor;
 	struct
@@ -35,10 +33,10 @@ export struct Config
 		bool    enable         = true;
 		uint32  mission        = 17;
 		uint32  mode           = MODE_DANTE_MUST_DIE;
-		uint32  room           = 102;
+		uint32  room           = 900;
 		uint32  position       = 0;
-		bool    ignoreRoom     = true;
-		bool    ignorePosition = true;
+		bool    ignoreRoom     = false;
+		bool    ignorePosition = false;
 		uint8   floor          = 0;
 		float32 hitPoints      = 20000;
 		float32 magicPoints    = 10000;
@@ -330,128 +328,130 @@ export void ApplyDefaultPlayerData
 {
 	memset(&playerData, 0, sizeof(PlayerData));
 
-	switch (character)
-	{
-	case CHAR_DANTE:
-	{
-		playerData =
-		{
-			true,
-			CHAR_DANTE,
-			0,
-			false,
-			CHAR_DANTE,
-			{
-				{
-					STYLE_TRICKSTER,
-					STYLE_TRICKSTER,
-				},
-				{
-					STYLE_SWORDMASTER,
-					STYLE_SWORDMASTER,
-				},
-				{
-					STYLE_ROYALGUARD,
-					STYLE_QUICKSILVER,
-				},
-				{
-					STYLE_GUNSLINGER,
-					STYLE_DOPPELGANGER,
-				},
-			},
-			{},
-			{
-				GAMEPAD_UP,
-				GAMEPAD_RIGHT,
-				GAMEPAD_DOWN,
-				GAMEPAD_LEFT,
-			},
-			0,
-			{
-				WEAPON_REBELLION,
-				WEAPON_CERBERUS,
-				WEAPON_AGNI_RUDRA,
-				WEAPON_NEVAN,
-				WEAPON_BEOWULF_DANTE,
-			},
-			MELEE_WEAPON_COUNT_DANTE,
-			0,
-			{
-				WEAPON_EBONY_IVORY,
-				WEAPON_SHOTGUN,
-				WEAPON_ARTEMIS,
-				WEAPON_SPIRAL,
-				WEAPON_KALINA_ANN,
-			},
-			RANGED_WEAPON_COUNT_DANTE,
-			0
-		};
-		break;
-	};
-	case CHAR_BOB:
-	{
-		playerData =
-		{
-			true,
-			CHAR_BOB
-		};
-		break;
-	};
-	case CHAR_LADY:
-	{
-		playerData =
-		{
-			true,
-			CHAR_LADY
-		};
-		break;
-	};
-	case CHAR_VERGIL:
-	{
-		playerData =
-		{
-			true,
-			CHAR_VERGIL,
-			0,
-			false,
-			CHAR_DANTE,
-			{
-				{
-					STYLE_DARK_SLAYER,
-					STYLE_DARK_SLAYER,
-				},
-				{
-					STYLE_DARK_SLAYER,
-					STYLE_DARK_SLAYER,
-				},
-				{
-					STYLE_DARK_SLAYER,
-					STYLE_QUICKSILVER,
-				},
-				{
-					STYLE_DARK_SLAYER,
-					STYLE_DOPPELGANGER,
-				},
-			},
-			{},
-			{
-				GAMEPAD_UP,
-				GAMEPAD_RIGHT,
-				GAMEPAD_DOWN,
-				GAMEPAD_LEFT,
-			},
-			0,
-			{
-				WEAPON_YAMATO_VERGIL,
-				WEAPON_BEOWULF_VERGIL,
-				WEAPON_YAMATO_FORCE_EDGE,
-			},
-			MELEE_WEAPON_COUNT_VERGIL,
-			0
-		};
-		break;
-	};
-	}
+	return;
+
+	// switch (character)
+	// {
+	// case CHAR_DANTE:
+	// {
+	// 	playerData =
+	// 	{
+	// 		true,
+	// 		CHAR_DANTE,
+	// 		0,
+	// 		false,
+	// 		CHAR_DANTE,
+	// 		{
+	// 			{
+	// 				STYLE_TRICKSTER,
+	// 				STYLE_TRICKSTER,
+	// 			},
+	// 			{
+	// 				STYLE_SWORDMASTER,
+	// 				STYLE_SWORDMASTER,
+	// 			},
+	// 			{
+	// 				STYLE_ROYALGUARD,
+	// 				STYLE_QUICKSILVER,
+	// 			},
+	// 			{
+	// 				STYLE_GUNSLINGER,
+	// 				STYLE_DOPPELGANGER,
+	// 			},
+	// 		},
+	// 		{},
+	// 		{
+	// 			GAMEPAD_UP,
+	// 			GAMEPAD_RIGHT,
+	// 			GAMEPAD_DOWN,
+	// 			GAMEPAD_LEFT,
+	// 		},
+	// 		0,
+	// 		{
+	// 			WEAPON_REBELLION,
+	// 			WEAPON_CERBERUS,
+	// 			WEAPON_AGNI_RUDRA,
+	// 			WEAPON_NEVAN,
+	// 			WEAPON_BEOWULF_DANTE,
+	// 		},
+	// 		MELEE_WEAPON_COUNT_DANTE,
+	// 		0,
+	// 		{
+	// 			WEAPON_EBONY_IVORY,
+	// 			WEAPON_SHOTGUN,
+	// 			WEAPON_ARTEMIS,
+	// 			WEAPON_SPIRAL,
+	// 			WEAPON_KALINA_ANN,
+	// 		},
+	// 		RANGED_WEAPON_COUNT_DANTE,
+	// 		0
+	// 	};
+	// 	break;
+	// };
+	// case CHAR_BOB:
+	// {
+	// 	playerData =
+	// 	{
+	// 		true,
+	// 		CHAR_BOB
+	// 	};
+	// 	break;
+	// };
+	// case CHAR_LADY:
+	// {
+	// 	playerData =
+	// 	{
+	// 		true,
+	// 		CHAR_LADY
+	// 	};
+	// 	break;
+	// };
+	// case CHAR_VERGIL:
+	// {
+	// 	playerData =
+	// 	{
+	// 		true,
+	// 		CHAR_VERGIL,
+	// 		0,
+	// 		false,
+	// 		CHAR_DANTE,
+	// 		{
+	// 			{
+	// 				STYLE_DARK_SLAYER,
+	// 				STYLE_DARK_SLAYER,
+	// 			},
+	// 			{
+	// 				STYLE_DARK_SLAYER,
+	// 				STYLE_DARK_SLAYER,
+	// 			},
+	// 			{
+	// 				STYLE_DARK_SLAYER,
+	// 				STYLE_QUICKSILVER,
+	// 			},
+	// 			{
+	// 				STYLE_DARK_SLAYER,
+	// 				STYLE_DOPPELGANGER,
+	// 			},
+	// 		},
+	// 		{},
+	// 		{
+	// 			GAMEPAD_UP,
+	// 			GAMEPAD_RIGHT,
+	// 			GAMEPAD_DOWN,
+	// 			GAMEPAD_LEFT,
+	// 		},
+	// 		0,
+	// 		{
+	// 			WEAPON_YAMATO_VERGIL,
+	// 			WEAPON_BEOWULF_VERGIL,
+	// 			WEAPON_YAMATO_FORCE_EDGE,
+	// 		},
+	// 		MELEE_WEAPON_COUNT_VERGIL,
+	// 		0
+	// 	};
+	// 	break;
+	// };
+	// }
 }
 
 export void SaveConfig()
@@ -505,11 +505,11 @@ export void Config_Init
 
 	snprintf(g_path, sizeof(g_path), "%s\\%s", directoryName, filename);
 
-	for_all(uint8, player, MAX_PLAYER   ){
-	for_all(uint8, index , MAX_DIRECTION)
-	{
-		ApplyDefaultPlayerData(defaultConfig.Actor.playerData[player][index], index);
-		ApplyDefaultPlayerData(activeConfig.Actor.playerData [player][index], index);
-		ApplyDefaultPlayerData(queuedConfig.Actor.playerData [player][index], index);
-	}}
+	// for_all(uint8, player, MAX_PLAYER   ){
+	// for_all(uint8, index , MAX_DIRECTION)
+	// {
+	// 	ApplyDefaultPlayerData(defaultConfig.Actor.playerData[player][index], index);
+	// 	ApplyDefaultPlayerData(activeConfig.Actor.playerData [player][index], index);
+	// 	ApplyDefaultPlayerData(queuedConfig.Actor.playerData [player][index], index);
+	// }}
 }

@@ -1,13 +1,3 @@
-
-
-// @Todo: Create CollisionData.
-
-
-
-
-
-
-
 var fs = require("fs");
 
 eval(fs.readFileSync("dmc3_core.js", "utf8"));
@@ -26,19 +16,19 @@ var items =
 [
 	[ "status"                              , "uint8"                   , 8                                ],
 
-	[ "speed"                              , "float32"                   , 0x14                                ],
-	[ "speedMultiplier"                              , "float32"                   , 0x18                                ],
+	[ "speed"                              , "float"                   , 0x14                                ],
+	[ "speedMultiplier"                              , "float"                   , 0x18                                ],
 
 	[ "character"                           , "uint32"                  , 0x78                             ],
 	[ "position"                            , "vec4"                    , 0x80                             ],
-	[ "pull"                                , "float32"                 , 0x94                             ],
-	[ "pullMultiplier"                      , "float32"                 , 0xA4                             ],
+	[ "pull"                                , "float"                 , 0x94                             ],
+	[ "pullMultiplier"                      , "float"                 , 0xA4                             ],
 	[ "rotation"                            , "uint16"                  , 0xC0                             ],
 	[ "id"                                  , "uint8"                   , 0x118                            ],
 	[ "isClone"                             , "bool32"                  , 0x11C                            ],
 	[ "visible"                             , "uint32"                  , 0x120                            ],
-	[ ""                                    , "float32"                 , 0x1C0                            ],
-	[ ""                                    , "float32"                 , 0x1C4                            ],
+	[ ""                                    , "float"                 , 0x1C0                            ],
+	[ ""                                    , "float"                 , 0x1C4                            ],
 
 	[ "modelData[3]"                   , "ModelData"        , 0x200  ],
 	[ "modelPhysicsMetadataPool[4][24]", "PhysicsMetadata *", 0x1880 ],
@@ -58,8 +48,8 @@ var items =
 
 
 
-	[ "motionSpeed"          , "float32"                 , 0x3894                           ],
-	[ "motionSpeedMultiplier", "float32"                 , 0x3898                           ],
+	[ "motionSpeed"          , "float"                 , 0x3894                           ],
+	[ "motionSpeedMultiplier", "float"                 , 0x3898                           ],
 	[ "motionArchives[34]"                   , "byte8 *"                 , 0x38A0                           ],
 	[ "motionData[2]"                       , "MotionData"             , 0x39B0                           ],
 	[ "motionDataMirror[3]"                 , "MotionData"             , 0x39B4                           ],
@@ -80,8 +70,8 @@ var items =
 	[ "actionData[6]"                       , "byte8 *"                 , 0x3DD0                           ],
 	[ "eventData[2]"                        , "ActorEventData"        , 0x3E00                           ],
 	[ "[32]"                                , "uint8"                   , 0x3E10                           ],
-	[ "motionTimer"                         , "float32"                 , 0x3E34                           ],
-	[ "idleTimer"                           , "float32"                 , 0x3E38                           ],
+	[ "motionTimer"                         , "float"                 , 0x3E34                           ],
+	[ "idleTimer"                           , "float"                 , 0x3E38                           ],
 	[ "permissions"                         , "byte32"                  , 0x3E60                           ],
 	[ "state"                               , "byte32"                  , 0x3E64                           ],
 	[ "lastState"                           , "byte32"                  , 0x3E68                           ],
@@ -114,15 +104,27 @@ var items =
 	[ "mode"                                , "uint32"                  , 0x3E94                           ],
 	[ "devil"                               , "bool"                    , 0x3E9B                           ],
 	[ "costume"                             , "uint8"                   , 0x3E9E                           ],
-	[ "sparda"                              , "bool"                    , 0x3E9F, CHAR_DANTE               ],
-	[ "neroAngelo"                          , "bool"                    , 0x3E9F, CHAR_VERGIL              ],
 
 
 
 
+	[ "sparda,neroAngelo"                              , "bool,bool"                    , 0x3E9F               ],
+
+
+	
+
+
+	// [ "sparda"                              , "bool"                    , 0x3E9F, CHAR_DANTE               ],
+	// [ "neroAngelo"                          , "bool"                    , 0x3E9F, CHAR_VERGIL              ],
 
 
 
+	//[ "sparda/neroAngelo"                          , "bool/bool"                    , 0x3E9F,   ],
+
+	//[ "sparda/neroAngelo/mundus", "bool/uint32/uint64", 0x3E9F ],
+
+
+	
 
 
 
@@ -131,15 +133,15 @@ var items =
 
 
 	[ "useHolyWater"                        , "bool"                    , 0x3EA4                           ],
-	[ "magicPoints"                         , "float32"                 , 0x3EB8                           ],
-	[ "maxMagicPoints"                      , "float32"                 , 0x3EBC                           ],
+	[ "magicPoints"                         , "float"                 , 0x3EB8                           ],
+	[ "maxMagicPoints"                      , "float"                 , 0x3EBC                           ],
 
 
 
 
 
-	[ ""                                    , "float32"                  , 0x3EC4                           ],
-	[ ""                                    , "float32"                  , 0x3EC8                           ],
+	[ ""                                    , "float"                  , 0x3EC4                           ],
+	[ ""                                    , "float"                  , 0x3EC8                           ],
 
 
 
@@ -156,9 +158,9 @@ var items =
 	[ "bufferedAction"                      , "uint8"                   , 0x3FA8                           ],
 	[ "chainCount"                          , "uint8"                   , 0x3FAC                           ],
 	[ "expertise[16]"                       , "byte32"                  , 0x3FEC                           ],
-	//[ ""                        , "float32"                 , 0x402C                           ],
-	[ "maxHitPoints"                        , "float32"                 , 0x40EC                           ],
-	[ "hitPoints"                           , "float32"                 , 0x411C                           ],
+	//[ ""                        , "float"                 , 0x402C                           ],
+	[ "maxHitPoints"                        , "float"                 , 0x40EC                           ],
+	[ "hitPoints"                           , "float"                 , 0x411C                           ],
 
 
 
@@ -182,14 +184,14 @@ var items =
 	[ "trickDownCount"                      , "uint8"                   , 0x6360,               ],
 	[ "quicksilver"                         , "bool"                    , 0x6361               ],
 	[ "doppelganger"                        , "bool"                    , 0x6362               ],
-	[ "styleExperience"                     , "float32"                 , 0x6364                           ],
+	[ "styleExperience"                     , "float"                 , 0x6364                           ],
 
 
 
 
 
 
-
+	// @Todo: Add CloneData.
 
 
 	[ "[40]"                       , "byte8"                    , 0x6410                           ],
@@ -206,6 +208,7 @@ var items =
 
 
 	[ "[32]"                       , "byte8"                    , 0x6458                           ],
+	// @Todo: Rename to cloneActorBaseAddr.
 	[ "cloneBaseAddr"                       , "byte8 *"                 , 0x6478                           ],
 	[ "cloneIsControlledByPlayer"           , "bool"                    , 0x6480                           ],
 
@@ -246,15 +249,15 @@ var items =
 	[ "activeMeleeWeapon"                   , "uint8"                   , 0x64F0,                ],
 	[ "activeRangedWeapon"                  , "uint8"                   , 0x64F1,                ],
 	
-	[ "weaponTimers[5]"                     , "float32"                 , 0x64F4                           ],
+	[ "weaponTimers[5]"                     , "float"                 , 0x64F4                           ],
 
-	[ "meleeWeaponSwitchTimeout"            , "float32"                 , 0x6508,                ],
-	[ "rangedWeaponSwitchTimeout"           , "float32"                 , 0x650C,                ],
-	// [ "meleeWeaponSwitchForwardTimeout"     , "float32"                 , 0x6508, CHAR_VERGIL              ],
-	// [ "meleeWeaponSwitchBackTimeout"        , "float32"                 , 0x650C, CHAR_VERGIL              ],
+	[ "meleeWeaponSwitchTimeout"            , "float"                 , 0x6508,                ],
+	[ "rangedWeaponSwitchTimeout"           , "float"                 , 0x650C,                ],
+	// [ "meleeWeaponSwitchForwardTimeout"     , "float"                 , 0x6508, CHAR_VERGIL              ],
+	// [ "meleeWeaponSwitchBackTimeout"        , "float"                 , 0x650C, CHAR_VERGIL              ],
 	
 	[ "styleRank"                           , "uint32"                  , 0x6510                           ],
-	[ "styleMeter"                          , "float32"                 , 0x6514                           ],
+	[ "styleMeter"                          , "float"                 , 0x6514                           ],
 	[ "inputData[58]"                       , "InputData"              , 0x6674                           ],
 
 
@@ -352,7 +355,7 @@ var items =
 
 
 
-	[ "artemisChargeValue[2]"               , "float32"                 , 0xB868, CHAR_DANTE               ],
+	[ "artemisChargeValue[2]"               , "float"                 , 0xB868, CHAR_DANTE               ],
 	[ "artemisChargeFlags[2]"               , "byte32"                  , 0xB87C, CHAR_DANTE               ],
 ];
 
@@ -368,6 +371,10 @@ var items =
 var extra =
 [
 	[ "newFirstVar", "uint32" ],
+
+
+	//[ "var,var2,var3", "bool,int,uint16" ],
+
 
 
 	// __NEW_PRIME__
@@ -443,7 +450,7 @@ var extra =
 	[ "newWeaponData[10]"   , "WeaponData *" ],
 	[ "newWeaponStatus[10]" , "uint32"  ],
 	[ "newWeaponLevels[10]" , "uint32"  ],
-	[ "newWeaponTimers[10]" , "float32" ],
+	[ "newWeaponTimers[10]" , "float" ],
 
 
 
@@ -460,8 +467,15 @@ var extra =
 
 
 
-	[ "newPlayer"             , "uint8" ],
-	[ "newIndex"              , "uint8" ],
+	[ "newPlayerIndex"             , "uint8" ],
+	[ "newCharacterIndex"             , "uint8" ],
+	[ "newEntityIndex"             , "uint8" ],
+
+
+
+
+
+
 	[ "newForceFiles"         , "bool"  ],
 	[ "newForceFilesCharacter", "uint8" ],
 
@@ -639,17 +653,17 @@ function CreateActorDataFunction
 (
 	structName,
 	name,
-	type
+	type,
+	tabs = "\t",
+	incPos = true
 )
 {
 	if (!IsKnownType(type))
 	{
 		console.log("Unknown " + type);
+
 		return;
 	}
-
-	var count = 1;
-	var size = GetTypeSize(type);
 
 	if (name == "")
 	{
@@ -660,16 +674,8 @@ function CreateActorDataFunction
 		name = "var_" + pos.toString(16).toUpperCase() + name;
 	}
 
-	{
-		var matches = name.match(/\[\d+?\]/g);
-		if (matches)
-		{
-			for (var matchIndex = 0; matchIndex < matches.length; matchIndex++)
-			{
-				count *= parseInt(matches[matchIndex].match(/\[(\d+?)\]/)[1]);
-			}
-		}
-	}
+	var count = GetItemCount(name);
+	var size = GetTypeSize(type);
 
 	size *= count;
 
@@ -683,11 +689,58 @@ function CreateActorDataFunction
 		posString = pos.toString();
 	}
 
-	c += "\t" + type + " " + name + "; // " + posString + NEW_LINE;
+	c += tabs + type + " " + name + "; // " + posString + NEW_LINE;
 
 	c_assert += "static_assert(offsetof(" + structName + ", " + name.split("[")[0] + ") == " + posString + ");" + NEW_LINE;
 
+	if (!incPos)
+	{
+		return;
+	}
+
 	pos += size;
+}
+
+function CreateActorDataFunction2
+(
+	structName,
+	name,
+	type
+)
+{
+	if (!IsUnion(name, type))
+	{
+		CreateActorDataFunction
+		(
+			structName,
+			name,
+			type
+		);
+
+		return;
+	}
+
+	c += "\tunion" + NEW_LINE;
+	c += "\t{" + NEW_LINE;
+
+	var names = name.split(",");
+	var types = type.split(",");
+
+	for (var index = 0; index < names.length; index++)
+	{
+		CreateActorDataFunction
+		(
+			structName,
+			names[index],
+			types[index],
+			"\t\t",
+			false
+		);
+	}
+
+	c += "\t};" + NEW_LINE;
+
+	pos += GetUnionSize(name, type);
 }
 
 function CreateActorData
@@ -723,7 +776,12 @@ function CreateActorData
 
 		pos = off;
 
-		CreateActorDataFunction(structName, name, type);
+		CreateActorDataFunction2
+		(
+			structName,
+			name,
+			type
+		);
 	}
 
 	var diff = (SIZE_DANTE - pos);
@@ -731,6 +789,8 @@ function CreateActorData
 	{
 		c += "\t_(" + diff.toString() + ");" + NEW_LINE;
 	}
+
+
 
 	pos = SIZE_DANTE;
 
@@ -743,7 +803,24 @@ function CreateActorData
 
 		var lastPos = pos;
 
-		if (type.match(/\*/))
+		if (IsUnion(name, type))
+		{
+			var unionSize = GetUnionSize(name, type);
+
+			if (unionSize >= 8)
+			{
+				Align(16);
+			}
+			else if
+			(
+				(unionSize >= 4) &&
+				(unionSize < 8)
+			)
+			{
+				Align(8);
+			}
+		}
+		else if (type.match(/\*/))
 		{
 			Align(16);
 		}
@@ -758,7 +835,12 @@ function CreateActorData
 			c += "\t_(" + diff.toString() + ");" + NEW_LINE;
 		}
 
-		CreateActorDataFunction(structName, name, type);
+		CreateActorDataFunction2
+		(
+			structName,
+			name,
+			type
+		);
 	}
 
 	c += "" + NEW_LINE;
