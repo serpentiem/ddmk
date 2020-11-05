@@ -1988,13 +1988,13 @@ enum ACTOR_DATA_SIZE
 
 
 
-enum ACTOR_SYSTEM
-{
-	ACTOR_SYSTEM_DEFAULT,
-	ACTOR_SYSTEM_DOPPELGANGER,
-	ACTOR_SYSTEM_CHARACTER_SWITCHER,
-	MAX_ACTOR_SYSTEM,
-};
+// enum ACTOR_SYSTEM
+// {
+// 	ACTOR_SYSTEM_DEFAULT,
+// 	ACTOR_SYSTEM_DOPPELGANGER,
+// 	ACTOR_SYSTEM_CHARACTER_SWITCHER,
+// 	MAX_ACTOR_SYSTEM,
+// };
 
 
 enum DOT_SHADOW
@@ -2023,6 +2023,7 @@ enum
 
 struct CharacterData
 {
+	uint8 character;
 	uint8 costume;
 	bool forceFiles;
 	uint8 forceFilesCharacter;
@@ -2044,7 +2045,6 @@ struct CharacterData
 struct PlayerData
 {
 	uint8 characterCount;
-	uint8 characters[CHARACTER_COUNT][ENTITY_COUNT];
 	uint8 characterIndex;
 
 	CharacterData characterData[CHARACTER_COUNT][ENTITY_COUNT];

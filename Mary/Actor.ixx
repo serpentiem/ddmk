@@ -1,3 +1,4 @@
+// @Todo: More getters.
 // @Todo: Quick Drive.
 // @Todo: Capture Doppelganger run out event.
 // @Todo: Color Toggle.
@@ -23,9 +24,6 @@ import Model;
 
 export Vector<byte8 *> Actor_actorBaseAddr;
 
-
-
-
 export byte8 * g_actorBaseAddr[PLAYER_COUNT][CHARACTER_COUNT] = {};
 
 export uint8 g_character[PLAYER_COUNT] = {};
@@ -34,6 +32,28 @@ export uint8 g_activeCharacter[PLAYER_COUNT] = {};
 
 export bool g_executeButton[PLAYER_COUNT] = {};
 export bool g_executeFunction[PLAYER_COUNT] = {};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2198,11 +2218,12 @@ void InitWeapons(T & actorData)
 	}
 }
 
+
+
 template <typename T>
 void UpdateStyle(T & actorData)
 {
-	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayerIndex];
-	auto & characterData = playerData.characterData[actorData.newCharacterIndex][actorData.newEntityIndex];
+	auto & characterData = GetCharacterData(actorData);
 
 	auto & styleIndex = characterData.styleIndices[characterData.styleButtonIndex];
 	auto & style = characterData.styles[characterData.styleButtonIndex][styleIndex];
@@ -2210,12 +2231,10 @@ void UpdateStyle(T & actorData)
 	actorData.style = style;
 }
 
-// @Todo: Update.
 template <typename T>
 void UpdateMeleeWeapon(T & actorData)
 {
-	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayerIndex];
-	auto & characterData = playerData.characterData[actorData.newCharacterIndex][actorData.newEntityIndex];
+	auto & characterData = GetCharacterData(actorData);
 
 	if (characterData.meleeWeaponIndex >= characterData.meleeWeaponCount)
 	{
@@ -2224,8 +2243,11 @@ void UpdateMeleeWeapon(T & actorData)
 
 	auto weapon = characterData.meleeWeapons[characterData.meleeWeaponIndex];
 
-	auto & character     = g_character    [actorData.newPlayerIndex];
-	auto & lastCharacter = g_lastCharacter[actorData.newPlayerIndex];
+	weapon = 3;
+
+	Log("weapon %u", weapon);
+
+	Log("meleeWeapon %u", characterData.meleeWeapons[characterData.meleeWeaponIndex]);
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
@@ -2241,27 +2263,12 @@ void UpdateMeleeWeapon(T & actorData)
 			actorData.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
 		}
 	}
-
-	if (actorData.newEntityIndex != ENTITY_MAIN)
-	{
-		return;
-	}
-
-	if (IsDanteMeleeWeapon(weapon))
-	{
-		character = CHAR_DANTE;
-	}
-	else if (IsVergilMeleeWeapon(weapon))
-	{
-		character = CHAR_VERGIL;
-	}
 }
 
 template <typename T>
 void UpdateRangedWeapon(T & actorData)
 {
-	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayerIndex];
-	auto & characterData = playerData.characterData[actorData.newCharacterIndex][actorData.newEntityIndex];
+	auto & characterData = GetCharacterData(actorData);
 
 	if (characterData.rangedWeaponIndex >= characterData.rangedWeaponCount)
 	{
@@ -2309,13 +2316,16 @@ byte8 * CreateActor
 		entityIndex
 	);
 
-	auto & playerData = activeConfig.Actor.playerData[playerIndex];
-	auto & character = playerData.characters[characterIndex][entityIndex];
-	auto & characterData = playerData.characterData[characterIndex][entityIndex];
+	auto & characterData = GetCharacterData
+	(
+		playerIndex,
+		characterIndex,
+		entityIndex
+	);
 
 	IntroduceMissionActorData(return 0);
 
-	auto actorBaseAddr = func_1DE820(character, 0, false);
+	auto actorBaseAddr = func_1DE820(characterData.character, 0, false);
 	if (!actorBaseAddr)
 	{
 		return 0;
@@ -2568,11 +2578,21 @@ byte8 * SpawnActor
 {
 	byte8 * actorBaseAddr = 0;
 
-	auto & playerData = activeConfig.Actor.playerData[playerIndex];
 
-	auto & character = playerData.characters[characterIndex][entityIndex];
+	auto & characterData = GetCharacterData
+	(
+		playerIndex,
+		characterIndex,
+		entityIndex
+	);
 
-	switch (character)
+
+
+	// auto & playerData = activeConfig.Actor.playerData[playerIndex];
+
+	// auto & character = playerData.characters[characterIndex][entityIndex];
+
+	switch (characterData.character)
 	{
 		case CHAR_DANTE:
 		{
@@ -3290,17 +3310,18 @@ export void CharacterSwitchController()
 		return;
 	}
 
-	for_all(uint8, player, activeConfig.Actor.playerCount)
+	for_all(uint8, playerIndex, activeConfig.Actor.playerCount)
 	{
-		auto & playerData = activeConfig.Actor.playerData[player];
+		auto & playerData = GetPlayerData(playerIndex);
+		auto & characterData = playerData.characterData[playerData.characterIndex][ENTITY_MAIN];
 
-		auto & gamepad = GetGamepad(player);
+		auto & gamepad = GetGamepad(playerIndex);
 
-		auto & character       = g_character      [player];
-		auto & lastCharacter   = g_lastCharacter  [player];
-		auto & activeCharacter = g_activeCharacter[player];
-		auto & executeButton   = g_executeButton  [player];
-		auto & executeFunction = g_executeFunction[player];
+		auto & character       = g_character      [playerIndex];
+		auto & lastCharacter   = g_lastCharacter  [playerIndex];
+		auto & activeCharacter = g_activeCharacter[playerIndex];
+		auto & executeButton   = g_executeButton  [playerIndex];
+		auto & executeFunction = g_executeFunction[playerIndex];
 
 		byte8 * activeActorBaseAddr = 0;
 		byte8 * idleActorBaseAddr   = 0;
@@ -3318,7 +3339,7 @@ export void CharacterSwitchController()
 					playerData.characterIndex = 0;
 				}
 
-				character = playerData.characters[playerData.characterIndex][0];
+				character = characterData.character;
 			}
 		}
 		else
@@ -3330,7 +3351,7 @@ export void CharacterSwitchController()
 
 		for_all(uint8, characterIndex, CHARACTER_COUNT)
 		{
-			auto actorBaseAddr = g_actorBaseAddr[player][characterIndex];
+			auto actorBaseAddr = g_actorBaseAddr[playerIndex][characterIndex];
 			if (!actorBaseAddr)
 			{
 				continue;
@@ -3415,7 +3436,7 @@ export void CharacterSwitchController()
 
 		for_all(uint8, characterIndex, CHARACTER_COUNT)
 		{
-			auto actorBaseAddr = g_actorBaseAddr[player][characterIndex];
+			auto actorBaseAddr = g_actorBaseAddr[playerIndex][characterIndex];
 			if (!actorBaseAddr)
 			{
 				continue;

@@ -26,7 +26,7 @@ import State;
 import Training;
 import Window;
 
-#define debug true
+#define debug false
 
 
 
@@ -481,33 +481,33 @@ void Overlay2()
 			ImGui::Text("");
 		}
 
-		//for_all(uint8, player, MAX_PLAYER)
-		{
-			constexpr uint8 player = 0;
+		// //for_all(uint8, player, MAX_PLAYER)
+		// {
+		// 	constexpr uint8 player = 0;
 
-			for_all(uint8, direction, MAX_DIRECTION)
-			{
-				ImGui::Text("%.4u %.16llX", direction, g_actorBaseAddr[player][direction]);
-			}
+		// 	for_all(uint8, direction, MAX_DIRECTION)
+		// 	{
+		// 		ImGui::Text("%.4u %.16llX", direction, g_actorBaseAddr[player][direction]);
+		// 	}
 
-			auto & character       = g_character      [player];
-			auto & lastCharacter   = g_lastCharacter  [player];
-			auto & activeCharacter = g_activeCharacter[player];
-			auto & executeFunction = g_executeFunction[player];
+		// 	auto & character       = g_character      [player];
+		// 	auto & lastCharacter   = g_lastCharacter  [player];
+		// 	auto & activeCharacter = g_activeCharacter[player];
+		// 	auto & executeFunction = g_executeFunction[player];
 
-			ImGui::Text("character        %u", character      );
-			ImGui::Text("lastCharacter    %u", lastCharacter  );
-			ImGui::Text("activeCharacter  %u", activeCharacter);
+		// 	ImGui::Text("character        %u", character      );
+		// 	ImGui::Text("lastCharacter    %u", lastCharacter  );
+		// 	ImGui::Text("activeCharacter  %u", activeCharacter);
 
-			for_all(uint8, direction, MAX_DIRECTION)
-			{
-				auto & executeButton = g_executeButton[player][direction];
+		// 	for_all(uint8, direction, MAX_DIRECTION)
+		// 	{
+		// 		auto & executeButton = g_executeButton[player][direction];
 
-				ImGui::Text("executeButton[%u] %u", direction, executeButton );
-			}
+		// 		ImGui::Text("executeButton[%u] %u", direction, executeButton );
+		// 	}
 
-			ImGui::Text("executeFunction  %u", executeFunction);
-		}
+		// 	ImGui::Text("executeFunction  %u", executeFunction);
+		// }
 
 		ImGui::PopStyleColor();
 		ImGui::PopFont();
@@ -530,34 +530,14 @@ void Overlay2()
 
 #pragma region Actor
 
-const char * Actor_systemNames[] =
-{
-	"Default",
-	"Doppelganger",
-	"Character Switcher",
-};
-
-#define Actor_systemButtons buttons
-#define Actor_systemButtonNames buttonNames
-
-uint8 Actor_systemButtonIndex = 0;
+#define Actor_entityNames entityNames
 
 #define Actor_characterNames characterNames
-
-
-
-
-
-
-
 
 #define Actor_styleButtonNames buttonNames
 #define Actor_styleButtons buttons
 
-uint8 Actor_styleButtonIndices[MAX_PLAYER][MAX_DIRECTION][4] = {};
-
-
-
+uint8 Actor_styleButtonIndices[PLAYER_COUNT][CHARACTER_COUNT][ENTITY_COUNT][STYLE_COUNT] = {};
 
 #define Actor_styleNamesDante styleNamesDante
 #define Actor_stylesDante stylesDante
@@ -565,67 +545,59 @@ uint8 Actor_styleButtonIndices[MAX_PLAYER][MAX_DIRECTION][4] = {};
 #define Actor_styleNamesVergil styleNamesVergil
 #define Actor_stylesVergil stylesVergil
 
-uint8 Actor_styleIndices[MAX_PLAYER][MAX_DIRECTION][4][2] = {};
-
-
-
-
-
-
+uint8 Actor_styleIndices[PLAYER_COUNT][CHARACTER_COUNT][ENTITY_COUNT][STYLE_COUNT][2] = {};
 
 #define Actor_meleeWeaponNamesDante meleeWeaponNamesDante
 #define Actor_meleeWeaponsDante meleeWeaponsDante
 #define Actor_meleeWeaponNamesVergil meleeWeaponNamesVergil
 #define Actor_meleeWeaponsVergil meleeWeaponsVergil
 
-uint8 Actor_meleeWeaponIndices[MAX_PLAYER][MAX_DIRECTION][MELEE_WEAPON_COUNT] = {};
+uint8 Actor_meleeWeaponIndices[PLAYER_COUNT][CHARACTER_COUNT][ENTITY_COUNT][MELEE_WEAPON_COUNT] = {};
 
 #define Actor_rangedWeaponNamesDante rangedWeaponNamesDante
 #define Actor_rangedWeaponsDante rangedWeaponsDante
 
-uint8 Actor_rangedWeaponIndices[MAX_PLAYER][MAX_DIRECTION][RANGED_WEAPON_COUNT] = {};
+uint8 Actor_rangedWeaponIndices[PLAYER_COUNT][CHARACTER_COUNT][ENTITY_COUNT][RANGED_WEAPON_COUNT] = {};
 
 void Actor_UpdateIndices()
 {
 	LogFunction();
 
-	UpdateMapIndex
-	(
-		Actor_systemButtons,
-		Actor_systemButtonIndex,
-		queuedConfig.Actor.systemButton
-	);
-
-	for_all(uint8, player   , MAX_PLAYER   ){
-	for_all(uint8, direction, MAX_DIRECTION)
+	for_all(uint8, playerIndex   , PLAYER_COUNT   ){
+	for_all(uint8, characterIndex, CHARACTER_COUNT){
+	for_all(uint8, entityIndex   , ENTITY_COUNT   )
 	{
-		auto & playerData = queuedConfig.Actor.playerData[player][direction];
+		auto & characterData = GetCharacterData
+		(
+			playerIndex,
+			characterIndex,
+			entityIndex
+		);
 
-		for_all(uint8, styleIndex, 4)
+		for_all(uint8, styleIndex, STYLE_COUNT)
 		{
 			UpdateMapIndex
 			(
 				Actor_styleButtons,
-				Actor_styleButtonIndices[player][direction][styleIndex],
-				playerData.styleButtons[styleIndex]
+				Actor_styleButtonIndices[playerIndex][characterIndex][entityIndex][styleIndex],
+				characterData.styleButtons[styleIndex]
 			);
 
-			switch (playerData.character)
+			switch (characterData.character)
 			{
 				case CHAR_DANTE:
 				{
 					UpdateMapIndex
 					(
 						Actor_stylesDante,
-						Actor_styleIndices[player][direction][styleIndex][0],
-						playerData.styles[styleIndex][0]
+						Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][0],
+						characterData.styles[styleIndex][0]
 					);
-
 					UpdateMapIndex
 					(
 						Actor_stylesDante,
-						Actor_styleIndices[player][direction][styleIndex][1],
-						playerData.styles[styleIndex][1]
+						Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][1],
+						characterData.styles[styleIndex][1]
 					);
 
 					break;
@@ -635,15 +607,14 @@ void Actor_UpdateIndices()
 					UpdateMapIndex
 					(
 						Actor_stylesVergil,
-						Actor_styleIndices[player][direction][styleIndex][0],
-						playerData.styles[styleIndex][0]
+						Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][0],
+						characterData.styles[styleIndex][0]
 					);
-
 					UpdateMapIndex
 					(
 						Actor_stylesVergil,
-						Actor_styleIndices[player][direction][styleIndex][1],
-						playerData.styles[styleIndex][1]
+						Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][1],
+						characterData.styles[styleIndex][1]
 					);
 
 					break;
@@ -651,9 +622,9 @@ void Actor_UpdateIndices()
 			}
 		}
 
-		if (playerData.character != CHAR_DANTE)
+		if (characterData.character != CHAR_DANTE)
 		{
-			return;
+			continue;
 		}
 
 		for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT_DANTE)
@@ -661,8 +632,8 @@ void Actor_UpdateIndices()
 			UpdateMapIndex
 			(
 				Actor_meleeWeaponsDante,
-				Actor_meleeWeaponIndices[player][direction][meleeWeaponIndex],
-				playerData.meleeWeapons[meleeWeaponIndex]
+				Actor_meleeWeaponIndices[playerIndex][characterIndex][entityIndex][meleeWeaponIndex],
+				characterData.meleeWeapons[meleeWeaponIndex]
 			);
 		}
 
@@ -671,11 +642,11 @@ void Actor_UpdateIndices()
 			UpdateMapIndex
 			(
 				Actor_rangedWeaponsDante,
-				Actor_rangedWeaponIndices[player][direction][rangedWeaponIndex],
-				playerData.rangedWeapons[rangedWeaponIndex]
+				Actor_rangedWeaponIndices[playerIndex][characterIndex][entityIndex][rangedWeaponIndex],
+				characterData.rangedWeapons[rangedWeaponIndex]
 			);
 		}
-	}}
+	}}}
 }
 
 
@@ -686,84 +657,99 @@ void Actor_UpdateIndices()
 
 
 
+const char * characterTabNames[CHARACTER_COUNT] =
+{
+	"Character 1",
+	"Character 2",
+	"Character 3",
+};
+
+#define Actor_characterTabNames characterTabNames
 
 
 
 
 
-
-void Actor_PlayerTab
+void Actor_CharacterTab
 (
-	uint8 player,
-	uint8 index
+	uint8 playerIndex,
+	uint8 characterIndex,
+	uint8 entityIndex
 )
 {
-	auto & playerData = queuedConfig.Actor.playerData[player][index];
-
-	if (!playerData.enable)
-	{
-		return;
-	}
-
-	ImGui::PushItemWidth(150);
-
-	if
-	(
-		GUI_Combo
-		(
-			"Character",
-			Actor_characterNames,
-			playerData.character
-		)
-	)
-	{
-		ApplyDefaultPlayerData(playerData, playerData.character);
-
-		Actor_UpdateIndices();
-	}
-
-	ImGui::PopItemWidth();
-
-	if
-	(
-		(playerData.character == CHAR_BOB ) ||
-		(playerData.character == CHAR_LADY)
-	)
-	{
-		return;
-	}
-
-	ImGui::PushItemWidth(150);
-
-	GUI_Input
-	(
-		"Costume",
-		playerData.costume
-	);
-	GUI_Checkbox
-	(
-		"Force Files",
-		playerData.forceFiles
-	);
-
-	bool condition = !playerData.forceFiles;
-	GUI_PushDisable(condition);
-	GUI_Combo
-	(
-		"Character",
-		Actor_characterNames,
-		playerData.forceFilesCharacter
-	);
-	GUI_PopDisable(condition);
-
-	ImGui::PopItemWidth();
-
+	ImGui::Text(Actor_entityNames[entityIndex]);
 	ImGui::Text("");
+
+	{
+		auto & characterData = GetQueuedCharacterData
+		(
+			playerIndex,
+			characterIndex,
+			entityIndex
+		);
+
+		ImGui::PushItemWidth(150);
+		if
+		(
+			GUI_Combo
+			(
+				"Character",
+				Actor_characterNames,
+				characterData.character
+			)
+		)
+		{
+			ApplyDefaultCharacterData(characterData, characterData.character);
+
+			Actor_UpdateIndices();
+		}
+		ImGui::PopItemWidth();
+
+		if
+		(
+			(characterData.character == CHAR_BOB ) ||
+			(characterData.character == CHAR_LADY)
+		)
+		{
+			return;
+		}
+
+		ImGui::PushItemWidth(150);
+		GUI_Input
+		(
+			"Costume",
+			characterData.costume
+		);
+		GUI_Checkbox
+		(
+			"Force Files",
+			characterData.forceFiles
+		);
+		{
+			bool condition = !characterData.forceFiles;
+			GUI_PushDisable(condition);
+			GUI_Combo
+			(
+				"Character",
+				Actor_characterNames,
+				characterData.forceFilesCharacter
+			);
+			GUI_PopDisable(condition);
+		}
+		ImGui::PopItemWidth();
+		ImGui::Text("");
+	}
+
+	auto & characterData = GetCharacterData
+	(
+		playerIndex,
+		characterIndex,
+		entityIndex
+	);
 
 	ImGui::Text("Styles");
 	ImGui::PushItemWidth(150);
-
-	for_all(uint8, styleIndex, 4)
+	for_all(uint8, styleIndex, STYLE_COUNT)
 	{
 		if constexpr (debug)
 		{
@@ -776,26 +762,27 @@ void Actor_PlayerTab
 			"",
 			Actor_styleButtonNames,
 			Actor_styleButtons,
-			Actor_styleButtonIndices[player][index][styleIndex],
-			playerData.styleButtons[styleIndex],
+			Actor_styleButtonIndices[playerIndex][characterIndex][entityIndex][styleIndex],
+			characterData.styleButtons[styleIndex],
 			ImGuiComboFlags_HeightLargest
 		);
 
-		switch (playerData.character)
+		if constexpr (!debug)
+		{
+			ImGui::SameLine();
+		}
+
+		switch (characterData.character)
 		{
 			case CHAR_DANTE:
 			{
-				if constexpr (!debug)
-				{
-					ImGui::SameLine();
-				}
 				GUI_ComboMap
 				(
 					"",
 					styleNamesDante,
 					stylesDante,
-					Actor_styleIndices[player][index][styleIndex][0],
-					playerData.styles[styleIndex][0]
+					Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][0],
+					characterData.styles[styleIndex][0]
 				);
 				if constexpr (!debug)
 				{
@@ -806,25 +793,21 @@ void Actor_PlayerTab
 					"",
 					styleNamesDante,
 					stylesDante,
-					Actor_styleIndices[player][index][styleIndex][1],
-					playerData.styles[styleIndex][1]
+					Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][1],
+					characterData.styles[styleIndex][1]
 				);
 
 				break;
 			}
 			case CHAR_VERGIL:
 			{
-				if constexpr (!debug)
-				{
-					ImGui::SameLine();
-				}
 				GUI_ComboMap
 				(
 					"",
 					styleNamesVergil,
 					stylesVergil,
-					Actor_styleIndices[player][index][styleIndex][0],
-					playerData.styles[styleIndex][0]
+					Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][0],
+					characterData.styles[styleIndex][0]
 				);
 				if constexpr (!debug)
 				{
@@ -835,58 +818,42 @@ void Actor_PlayerTab
 					"",
 					styleNamesVergil,
 					stylesVergil,
-					Actor_styleIndices[player][index][styleIndex][1],
-					playerData.styles[styleIndex][1]
+					Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][1],
+					characterData.styles[styleIndex][1]
 				);
 
 				break;
 			}
 		}
 	}
-
 	ImGui::PopItemWidth();
 
-
-
-
-
-
-
-
-
-
-
-
-	if (playerData.character != CHAR_DANTE)
+	if (characterData.character != CHAR_DANTE)
 	{
 		return;
 	}
-
-
 	ImGui::Text("");
 
-
-	ImGui::PushItemWidth(200);
-
 	ImGui::Text("Melee Weapons");
+	ImGui::PushItemWidth(200);
 	GUI_Slider<uint8>
 	(
 		"",
-		playerData.meleeWeaponCount,
+		characterData.meleeWeaponCount,
 		1,
 		MELEE_WEAPON_COUNT_DANTE
 	);
 	for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT_DANTE)
 	{
-		bool condition = (meleeWeaponIndex >= playerData.meleeWeaponCount);
+		bool condition = (meleeWeaponIndex >= characterData.meleeWeaponCount);
 		GUI_PushDisable(condition);
 		GUI_ComboMap
 		(
 			"",
 			Actor_meleeWeaponNamesDante,
 			Actor_meleeWeaponsDante,
-			Actor_meleeWeaponIndices[player][index][meleeWeaponIndex],
-			playerData.meleeWeapons[meleeWeaponIndex]
+			Actor_meleeWeaponIndices[playerIndex][characterIndex][entityIndex][meleeWeaponIndex],
+			characterData.meleeWeapons[meleeWeaponIndex]
 		);
 		GUI_PopDisable(condition);
 	}
@@ -896,26 +863,89 @@ void Actor_PlayerTab
 	GUI_Slider<uint8>
 	(
 		"",
-		playerData.rangedWeaponCount,
+		characterData.rangedWeaponCount,
 		1,
 		RANGED_WEAPON_COUNT_DANTE
 	);
 	for_all(uint8, rangedWeaponIndex, RANGED_WEAPON_COUNT_DANTE)
 	{
-		bool condition = (rangedWeaponIndex >= playerData.rangedWeaponCount);
+		bool condition = (rangedWeaponIndex >= characterData.rangedWeaponCount);
 		GUI_PushDisable(condition);
 		GUI_ComboMap
 		(
 			"",
 			Actor_rangedWeaponNamesDante,
 			Actor_rangedWeaponsDante,
-			Actor_rangedWeaponIndices[player][index][rangedWeaponIndex],
-			playerData.rangedWeapons[rangedWeaponIndex]
+			Actor_rangedWeaponIndices[playerIndex][characterIndex][entityIndex][rangedWeaponIndex],
+			characterData.rangedWeapons[rangedWeaponIndex]
 		);
 		GUI_PopDisable(condition);
 	}
-
 	ImGui::PopItemWidth();
+}
+
+
+
+/*
+GetDefaultPlayerData
+GetActivePlayerData
+GetQueuedPlayerData
+*/
+
+
+
+
+
+void Actor_PlayerTab(uint8 playerIndex)
+{
+	auto & playerData = GetPlayerData(playerIndex);
+
+	ImGui::PushItemWidth(200);
+	GUI_Slider<uint8>
+	(
+		"Character Count",
+		playerData.characterCount,
+		1,
+		CHARACTER_COUNT
+	);
+	ImGui::PopItemWidth();
+	ImGui::Text("");
+
+	if (ImGui::BeginTabBar("CharacterTabs"))
+	{
+		for_all(uint8, characterIndex, CHARACTER_COUNT)
+		{
+			auto condition = (characterIndex >= playerData.characterCount);
+
+			GUI_PushDisable(condition);
+
+			if (ImGui::BeginTabItem(characterTabNames[characterIndex]))
+			{
+				ImGui::Text("");
+
+				for_all(uint8, entityIndex, ENTITY_COUNT)
+				{
+					Actor_CharacterTab
+					(
+						playerIndex,
+						characterIndex,
+						entityIndex
+					);
+
+					if (entityIndex < (ENTITY_COUNT - 1))
+					{
+						ImGui::Text("");
+					}
+				}
+
+				ImGui::EndTabItem();
+			}
+
+			GUI_PopDisable(condition);
+		}
+
+		ImGui::EndTabBar();
+	}
 }
 
 void Actor()
@@ -970,35 +1000,35 @@ void Actor()
 		}
 		ImGui::Text("");
 
-		for_all(uint8, systemIndex, MAX_ACTOR_SYSTEM)
-		{
-			if
-			(
-				GUI_RadioButton
-				(
-					Actor_systemNames[systemIndex],
-					queuedConfig.Actor.system,
-					systemIndex
-				)
-			)
-			{
-				for_all(uint8, player   , MAX_PLAYER   )
-				for_all(uint8, direction, MAX_DIRECTION){
-				{
-					auto & playerData = queuedConfig.Actor.playerData[player][direction];
+		// for_all(uint8, systemIndex, MAX_ACTOR_SYSTEM)
+		// {
+		// 	if
+		// 	(
+		// 		GUI_RadioButton
+		// 		(
+		// 			Actor_systemNames[systemIndex],
+		// 			queuedConfig.Actor.system,
+		// 			systemIndex
+		// 		)
+		// 	)
+		// 	{
+		// 		for_all(uint8, player   , MAX_PLAYER   )
+		// 		for_all(uint8, direction, MAX_DIRECTION){
+		// 		{
+		// 			auto & playerData = queuedConfig.Actor.playerData[player][direction];
 
-					ApplyDefaultPlayerData(playerData, direction);
+		// 			ApplyDefaultPlayerData(playerData, direction);
 
-					Actor_UpdateIndices();
-				}}
-			}
+		// 			Actor_UpdateIndices();
+		// 		}}
+		// 	}
 
-			if (systemIndex < (MAX_ACTOR_SYSTEM - 1))
-			{
-				ImGui::SameLine();
-			}
-		}
-		ImGui::Text("");
+		// 	if (systemIndex < (MAX_ACTOR_SYSTEM - 1))
+		// 	{
+		// 		ImGui::SameLine();
+		// 	}
+		// }
+		// ImGui::Text("");
 
 		// ImGui::PushItemWidth(200);
 		// GUI_ComboMap
@@ -1019,76 +1049,24 @@ void Actor()
 			"Player Count",
 			queuedConfig.Actor.playerCount,
 			1,
-			MAX_PLAYER
+			PLAYER_COUNT
 		);
 		ImGui::PopItemWidth();
 		ImGui::Text("");
 
 		if (ImGui::BeginTabBar("PlayerTabs"))
 		{
-			for_all(uint8, player, MAX_PLAYER)
+			for_all(uint8, playerIndex, PLAYER_COUNT)
 			{
-				auto condition = (player >= queuedConfig.Actor.playerCount);
+				auto condition = (playerIndex >= queuedConfig.Actor.playerCount);
 
 				GUI_PushDisable(condition);
 
-				if (ImGui::BeginTabItem(playerNames[player]))
+				if (ImGui::BeginTabItem(playerNames[playerIndex]))
 				{
 					ImGui::Text("");
 
-					switch (queuedConfig.Actor.system)
-					{
-						case ACTOR_SYSTEM_DEFAULT:
-						{
-							Actor_PlayerTab(player, 0);
-
-							break;
-						}
-						case ACTOR_SYSTEM_DOPPELGANGER:
-						{
-							for_all(uint8, entity, MAX_ENTITY)
-							{
-								GUI_SectionStart(entityNames[entity]);
-
-								Actor_PlayerTab(player, entity);
-
-								if (entity != (MAX_ENTITY - 1))
-								{
-									GUI_SectionEnd();
-									ImGui::Text("");
-								}
-							}
-
-							break;
-						}
-						case ACTOR_SYSTEM_CHARACTER_SWITCHER:
-						{
-							for_all(uint8, direction, MAX_DIRECTION)
-							{
-								auto & playerData = queuedConfig.Actor.playerData[player][direction];
-
-								GUI_Checkbox
-								(
-									directionNames[direction],
-									playerData.enable
-								);
-
-								if (playerData.enable)
-								{
-									ImGui::Text("");
-								}
-
-								Actor_PlayerTab(player, direction);
-
-								if (direction != (MAX_DIRECTION - 1))
-								{
-									GUI_SectionEnd();
-									ImGui::Text("");
-								}
-							}
-							break;
-						}
-					}
+					Actor_PlayerTab(playerIndex);
 
 					ImGui::EndTabItem();
 				}
@@ -3418,4 +3396,89 @@ export void GUI_Init()
 }
 
 #ifdef __GARBAGE__
+
+
+
+	ImGui::Text("Character Count");
+	GUI_Slider<uint8>
+	(
+		"",
+		playerData.meleeWeaponCount,
+		1,
+		MELEE_WEAPON_COUNT_DANTE
+	);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+switch (queuedConfig.Actor.system)
+{
+case ACTOR_SYSTEM_DEFAULT:
+{
+	Actor_PlayerTab(playerIndex, 0);
+
+	break;
+}
+case ACTOR_SYSTEM_DOPPELGANGER:
+{
+	for_all(uint8, entity, MAX_ENTITY)
+	{
+		GUI_SectionStart(entityNames[entity]);
+
+		Actor_PlayerTab(playerIndex, entity);
+
+		if (entity != (MAX_ENTITY - 1))
+		{
+			GUI_SectionEnd();
+			ImGui::Text("");
+		}
+	}
+
+	break;
+}
+case ACTOR_SYSTEM_CHARACTER_SWITCHER:
+{
+	for_all(uint8, direction, MAX_DIRECTION)
+	{
+		auto & playerData = queuedConfig.Actor.playerData[playerIndex][direction];
+
+		GUI_Checkbox
+		(
+			directionNames[direction],
+			playerData.enable
+		);
+
+		if (playerData.enable)
+		{
+			ImGui::Text("");
+		}
+
+		Actor_PlayerTab(playerIndex, direction);
+
+		if (direction != (MAX_DIRECTION - 1))
+		{
+			GUI_SectionEnd();
+			ImGui::Text("");
+		}
+	}
+	break;
+}
+
+
 #endif

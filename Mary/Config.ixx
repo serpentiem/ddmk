@@ -320,138 +320,297 @@ export Config queuedConfig;
 
 char g_path[64] = {};
 
-export void ApplyDefaultPlayerData
+// $GetDataStart
+
+export PlayerData & GetDefaultPlayerData(uint8 playerIndex)
+{
+	return defaultConfig.Actor.playerData[playerIndex];
+}
+
+export PlayerData & GetActivePlayerData(uint8 playerIndex)
+{
+	return activeConfig.Actor.playerData[playerIndex];
+}
+
+export PlayerData & GetQueuedPlayerData(uint8 playerIndex)
+{
+	return queuedConfig.Actor.playerData[playerIndex];
+}
+
+export PlayerData & GetPlayerData(uint8 playerIndex)
+{
+	return GetActivePlayerData(playerIndex);
+}
+
+export template <typename T>
+PlayerData & GetDefaultPlayerData(T & actorData)
+{
+	return GetDefaultPlayerData(actorData.newPlayerIndex);
+}
+
+export template <typename T>
+PlayerData & GetActivePlayerData(T & actorData)
+{
+	return GetActivePlayerData(actorData.newPlayerIndex);
+}
+
+export template <typename T>
+PlayerData & GetQueuedPlayerData(T & actorData)
+{
+	return GetQueuedPlayerData(actorData.newPlayerIndex);
+}
+
+export template <typename T>
+PlayerData & GetPlayerData(T & actorData)
+{
+	return GetPlayerData(actorData.newPlayerIndex);
+}
+
+export CharacterData & GetDefaultCharacterData
 (
-	PlayerData & playerData,
+	uint8 playerIndex,
+	uint8 characterIndex,
+	uint8 entityIndex
+)
+{
+	auto & playerData = GetDefaultPlayerData(playerIndex);
+
+	return playerData.characterData[characterIndex][entityIndex];
+}
+
+export CharacterData & GetActiveCharacterData
+(
+	uint8 playerIndex,
+	uint8 characterIndex,
+	uint8 entityIndex
+)
+{
+	auto & playerData = GetActivePlayerData(playerIndex);
+
+	return playerData.characterData[characterIndex][entityIndex];
+}
+
+export CharacterData & GetQueuedCharacterData
+(
+	uint8 playerIndex,
+	uint8 characterIndex,
+	uint8 entityIndex
+)
+{
+	auto & playerData = GetQueuedPlayerData(playerIndex);
+
+	return playerData.characterData[characterIndex][entityIndex];
+}
+
+export CharacterData & GetCharacterData
+(
+	uint8 playerIndex,
+	uint8 characterIndex,
+	uint8 entityIndex
+)
+{
+	auto & playerData = GetPlayerData(playerIndex);
+
+	return playerData.characterData[characterIndex][entityIndex];
+}
+
+export template <typename T>
+CharacterData & GetDefaultCharacterData(T & actorData)
+{
+	return GetDefaultCharacterData
+	(
+		actorData.newPlayerIndex,
+		actorData.newCharacterIndex,
+		actorData.newEntityIndex
+	);
+}
+
+export template <typename T>
+CharacterData & GetActiveCharacterData(T & actorData)
+{
+	return GetActiveCharacterData
+	(
+		actorData.newPlayerIndex,
+		actorData.newCharacterIndex,
+		actorData.newEntityIndex
+	);
+}
+
+export template <typename T>
+CharacterData & GetQueuedCharacterData(T & actorData)
+{
+	return GetQueuedCharacterData
+	(
+		actorData.newPlayerIndex,
+		actorData.newCharacterIndex,
+		actorData.newEntityIndex
+	);
+}
+
+export template <typename T>
+CharacterData & GetCharacterData(T & actorData)
+{
+	return GetCharacterData
+	(
+		actorData.newPlayerIndex,
+		actorData.newCharacterIndex,
+		actorData.newEntityIndex
+	);
+}
+
+// $GetDataEnd
+
+export void ApplyDefaultCharacterData
+(
+	CharacterData & characterData,
 	uint8 character
 )
 {
-	memset(&playerData, 0, sizeof(PlayerData));
+	memset
+	(
+		&characterData,
+		0,
+		sizeof(CharacterData)
+	);
 
-	return;
+	switch (character)
+	{
+		case CHAR_DANTE:
+		{
+			characterData =
+			{
+				CHAR_DANTE,
+				0,
+				false,
+				CHAR_DANTE,
+				{
+					{
+						STYLE_TRICKSTER,
+						STYLE_TRICKSTER,
+					},
+					{
+						STYLE_SWORDMASTER,
+						STYLE_QUICKSILVER,
+					},
+					{
+						STYLE_ROYALGUARD,
+						STYLE_ROYALGUARD,
+					},
+					{
+						STYLE_GUNSLINGER,
+						STYLE_DOPPELGANGER,
+					},
+				},
+				{},
+				{
+					GAMEPAD_UP,
+					GAMEPAD_RIGHT,
+					GAMEPAD_DOWN,
+					GAMEPAD_LEFT,
+				},
+				0,
+				MELEE_WEAPON_COUNT_DANTE,
+				{
+					WEAPON_REBELLION,
+					WEAPON_CERBERUS,
+					WEAPON_AGNI_RUDRA,
+					WEAPON_NEVAN,
+					WEAPON_BEOWULF_DANTE,
+				},
+				0,
+				RANGED_WEAPON_COUNT_DANTE,
+				{
+					WEAPON_EBONY_IVORY,
+					WEAPON_SHOTGUN,
+					WEAPON_ARTEMIS,
+					WEAPON_SPIRAL,
+					WEAPON_KALINA_ANN,
+				},
+				0
+			};
 
-	// switch (character)
-	// {
-	// case CHAR_DANTE:
-	// {
-	// 	playerData =
-	// 	{
-	// 		true,
-	// 		CHAR_DANTE,
-	// 		0,
-	// 		false,
-	// 		CHAR_DANTE,
-	// 		{
-	// 			{
-	// 				STYLE_TRICKSTER,
-	// 				STYLE_TRICKSTER,
-	// 			},
-	// 			{
-	// 				STYLE_SWORDMASTER,
-	// 				STYLE_SWORDMASTER,
-	// 			},
-	// 			{
-	// 				STYLE_ROYALGUARD,
-	// 				STYLE_QUICKSILVER,
-	// 			},
-	// 			{
-	// 				STYLE_GUNSLINGER,
-	// 				STYLE_DOPPELGANGER,
-	// 			},
-	// 		},
-	// 		{},
-	// 		{
-	// 			GAMEPAD_UP,
-	// 			GAMEPAD_RIGHT,
-	// 			GAMEPAD_DOWN,
-	// 			GAMEPAD_LEFT,
-	// 		},
-	// 		0,
-	// 		{
-	// 			WEAPON_REBELLION,
-	// 			WEAPON_CERBERUS,
-	// 			WEAPON_AGNI_RUDRA,
-	// 			WEAPON_NEVAN,
-	// 			WEAPON_BEOWULF_DANTE,
-	// 		},
-	// 		MELEE_WEAPON_COUNT_DANTE,
-	// 		0,
-	// 		{
-	// 			WEAPON_EBONY_IVORY,
-	// 			WEAPON_SHOTGUN,
-	// 			WEAPON_ARTEMIS,
-	// 			WEAPON_SPIRAL,
-	// 			WEAPON_KALINA_ANN,
-	// 		},
-	// 		RANGED_WEAPON_COUNT_DANTE,
-	// 		0
-	// 	};
-	// 	break;
-	// };
-	// case CHAR_BOB:
-	// {
-	// 	playerData =
-	// 	{
-	// 		true,
-	// 		CHAR_BOB
-	// 	};
-	// 	break;
-	// };
-	// case CHAR_LADY:
-	// {
-	// 	playerData =
-	// 	{
-	// 		true,
-	// 		CHAR_LADY
-	// 	};
-	// 	break;
-	// };
-	// case CHAR_VERGIL:
-	// {
-	// 	playerData =
-	// 	{
-	// 		true,
-	// 		CHAR_VERGIL,
-	// 		0,
-	// 		false,
-	// 		CHAR_DANTE,
-	// 		{
-	// 			{
-	// 				STYLE_DARK_SLAYER,
-	// 				STYLE_DARK_SLAYER,
-	// 			},
-	// 			{
-	// 				STYLE_DARK_SLAYER,
-	// 				STYLE_DARK_SLAYER,
-	// 			},
-	// 			{
-	// 				STYLE_DARK_SLAYER,
-	// 				STYLE_QUICKSILVER,
-	// 			},
-	// 			{
-	// 				STYLE_DARK_SLAYER,
-	// 				STYLE_DOPPELGANGER,
-	// 			},
-	// 		},
-	// 		{},
-	// 		{
-	// 			GAMEPAD_UP,
-	// 			GAMEPAD_RIGHT,
-	// 			GAMEPAD_DOWN,
-	// 			GAMEPAD_LEFT,
-	// 		},
-	// 		0,
-	// 		{
-	// 			WEAPON_YAMATO_VERGIL,
-	// 			WEAPON_BEOWULF_VERGIL,
-	// 			WEAPON_YAMATO_FORCE_EDGE,
-	// 		},
-	// 		MELEE_WEAPON_COUNT_VERGIL,
-	// 		0
-	// 	};
-	// 	break;
-	// };
-	// }
+			break;
+		};
+		case CHAR_BOB:
+		{
+			characterData =
+			{
+				CHAR_BOB
+			};
+
+			break;
+		};
+		case CHAR_LADY:
+		{
+			characterData =
+			{
+				CHAR_LADY
+			};
+			
+			break;
+		};
+		case CHAR_VERGIL:
+		{
+			characterData =
+			{
+				CHAR_VERGIL,
+				0,
+				false,
+				CHAR_DANTE,
+				{
+					{
+						STYLE_DARK_SLAYER,
+						STYLE_DARK_SLAYER,
+					},
+					{
+						STYLE_DARK_SLAYER,
+						STYLE_QUICKSILVER,
+					},
+					{
+						STYLE_DARK_SLAYER,
+						STYLE_DARK_SLAYER,
+					},
+					{
+						STYLE_DARK_SLAYER,
+						STYLE_DOPPELGANGER,
+					},
+				},
+				{},
+				{
+					GAMEPAD_UP,
+					GAMEPAD_RIGHT,
+					GAMEPAD_DOWN,
+					GAMEPAD_LEFT,
+				},
+				0,
+				MELEE_WEAPON_COUNT_VERGIL,
+				{
+					WEAPON_YAMATO_VERGIL,
+					WEAPON_BEOWULF_VERGIL,
+					WEAPON_YAMATO_FORCE_EDGE,
+				},
+				0
+			};
+
+			break;
+		};
+	}
+}
+
+export void ApplyDefaultPlayerData(PlayerData & playerData)
+{
+	playerData.characterCount = 2;
+	playerData.characterIndex = 0;
+
+	for_all(uint8, characterIndex, CHARACTER_COUNT){
+	for_all(uint8, entityIndex   , ENTITY_COUNT   )
+	{
+		ApplyDefaultCharacterData
+		(
+			playerData.characterData[characterIndex][entityIndex],
+			CHAR_DANTE
+		);
+	}}
 }
 
 export void SaveConfig()
@@ -505,11 +664,33 @@ export void Config_Init
 
 	snprintf(g_path, sizeof(g_path), "%s\\%s", directoryName, filename);
 
-	// for_all(uint8, player, MAX_PLAYER   ){
-	// for_all(uint8, index , MAX_DIRECTION)
+	for_all(uint8, playerIndex, PLAYER_COUNT)
+	{
+		ApplyDefaultPlayerData(defaultConfig.Actor.playerData[playerIndex]);
+		ApplyDefaultPlayerData(activeConfig.Actor.playerData[playerIndex]);
+		ApplyDefaultPlayerData(queuedConfig.Actor.playerData[playerIndex]);
+	}
+
+
+
+	// for_all(uint8, playerIndex   , PLAYER_COUNT   ){
+	// for_all(uint8, characterIndex, CHARACTER_COUNT){
+	// for_all(uint8, entityIndex   , ENTITY_COUNT   )
 	// {
-	// 	ApplyDefaultPlayerData(defaultConfig.Actor.playerData[player][index], index);
-	// 	ApplyDefaultPlayerData(activeConfig.Actor.playerData [player][index], index);
-	// 	ApplyDefaultPlayerData(queuedConfig.Actor.playerData [player][index], index);
-	// }}
+	// 	ApplyDefaultCharacterData
+	// 	(
+	// 		defaultConfig.Actor.playerData[playerIndex].characterData[characterIndex][entityIndex],
+	// 		CHAR_DANTE
+	// 	);
+	// 	ApplyDefaultCharacterData
+	// 	(
+	// 		activeConfig.Actor.playerData[playerIndex].characterData[characterIndex][entityIndex],
+	// 		CHAR_DANTE
+	// 	);
+	// 	ApplyDefaultCharacterData
+	// 	(
+	// 		queuedConfig.Actor.playerData[playerIndex].characterData[characterIndex][entityIndex],
+	// 		CHAR_DANTE
+	// 	);
+	// }}}
 }

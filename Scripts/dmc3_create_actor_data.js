@@ -467,9 +467,9 @@ var extra =
 
 
 
-	[ "newPlayerIndex"             , "uint8" ],
-	[ "newCharacterIndex"             , "uint8" ],
-	[ "newEntityIndex"             , "uint8" ],
+	[ "newPlayerIndex"   , "uint8" ],
+	[ "newCharacterIndex", "uint8" ],
+	[ "newEntityIndex"   , "uint8" ],
 
 
 
@@ -488,7 +488,7 @@ var extra =
 
 
 
-
+	// @Todo: shoulda be index.
 	[ "newGamepad"             , "uint8"   ],
 	[ "newButtonMask"          , "byte16"  ],
 	[ "newEnableRightStick"    , "bool"    ],
