@@ -2046,6 +2046,8 @@ struct PlayerData
 {
 	uint8 characterCount;
 	uint8 characterIndex;
+	uint8 lastCharacterIndex;
+	uint8 activeCharacterIndex;
 
 	CharacterData characterData[CHARACTER_COUNT][ENTITY_COUNT];
 };
