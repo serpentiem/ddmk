@@ -743,13 +743,6 @@ void Actor_CharacterTab
 	ImGui::PopItemWidth();
 	ImGui::Text("");
 
-
-
-
-
-
-
-
 	ImGui::Text("Styles");
 	ImGui::PushItemWidth(150);
 	for_all(uint8, styleIndex, STYLE_COUNT)
@@ -2167,6 +2160,7 @@ void Other()
 		);
 		ImGui::Text("");
 
+		// @Todo: Update to active.
 		for_all(uint8, dotShadowIndex, countof(dotShadowNames))
 		{
 			GUI_RadioButton

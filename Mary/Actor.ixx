@@ -1,3 +1,5 @@
+
+// @Todo: Missing Doppelganger deactivate instruction for Bob.
 // @Todo: More getters.
 // @Todo: Quick Drive.
 // @Todo: Capture Doppelganger run out event.
@@ -213,10 +215,88 @@ void CopyState
 		sizeof(activeActorData.nextActionRequestPolicy)
 	);
 
+
+
+	// memset
+	// (
+	// 	idleActorData.nextActionRequestPolicy,
+	// 	0,
+	// 	sizeof(idleActorData.nextActionRequestPolicy)
+	// );
+
+	// idleActorData.nextActionRequestPolicy[0] = activeActorData.nextActionRequestPolicy[0];
+
+
+
+	//idleActorData.nextActionRequestPolicy[1] = 0;
+
+
+	// memcpy
+	// (
+	// 	idleActorData.eventData,
+	// 	activeActorData.eventData,
+	// 	sizeof(activeActorData.eventData)
+	// );
+
+	// memcpy
+	// (
+	// 	idleActorData.var_3E10,
+	// 	activeActorData.var_3E10,
+	// 	sizeof(activeActorData.var_3E10)
+	// );
+
+
+
+
+
+
 	idleActorData.idleTimer   = activeActorData.idleTimer;
 	idleActorData.permissions = activeActorData.permissions;
 	idleActorData.state       = activeActorData.state;
 	idleActorData.lastState   = activeActorData.lastState;
+
+	// if (idleActorData.lastState & STATE_BUSY)
+	// {
+	// 	idleActorData.lastState &= ~STATE_BUSY;
+	// }
+
+	//actorData.state &= ~STATE_BUSY;
+
+	//idleActorData.permissions = 0x1C1B;
+
+
+
+	// idleActorData.state = activeActorData.state;
+
+	// if (idleActorData.state & STATE_IN_AIR)
+	// {
+	// 	idleActorData.state = STATE_IN_AIR;
+	// }
+	// else if (idleActorData.state & STATE_ON_FLOOR)
+	// {
+	// 	idleActorData.state = STATE_ON_FLOOR;
+	// }
+
+	// idleActorData.lastState = idleActorData.state;
+
+
+
+
+
+
+
+
+
+
+
+
+	//idleActorData.lastState   = activeActorData.lastState;
+
+
+
+
+
+
 }
 
 template<typename T>
@@ -256,9 +336,7 @@ void ToggleActor
 	bool enable
 )
 {
-	//actorData.newEnable = enable;
-	//actorData.collisionData.index = (enable) ? 0 : 1;
-
+	auto & playerData = GetPlayerData(actorData);
 
 	actorData.newEnableCollision = enable;
 
@@ -272,15 +350,6 @@ void ToggleActor
 	}
 
 	actorData.shadow = (enable) ? 1 : 0; // @Research: Add mission 2 exception.
-
-	// if
-	// (
-	// 	(activeConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER) &&
-	// 	activeConfig.Actor.showIdleActors
-	// )
-	// {
-	// 	actorData.visible = 1;
-	// }
 
 	if (!enable)
 	{
@@ -296,8 +365,8 @@ void ToggleActor
 
 	if
 	(
-		// (activeConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER) &&
 		(actorData.newPlayerIndex == 0) &&
+		(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
 		(actorData.newEntityIndex == ENTITY_MAIN) &&
 		enable
 	)
@@ -2002,20 +2071,20 @@ void UpdateActorDante(ActorDataDante & actorData)
 		}
 	}
 
-	func_2EE060(actorData.var_6410, 60);
-	/*
-	dmc3.exe+2134C6 - 48 8D 8E 10640000 - lea rcx,[rsi+00006410]
-	dmc3.exe+2134CD - BA 3C000000       - mov edx,0000003C
-	dmc3.exe+2134D2 - E8 89AB0D00       - call dmc3.exe+2EE060
-	*/
+	// func_2EE060(actorData.var_6410, 60);
+	// /*
+	// dmc3.exe+2134C6 - 48 8D 8E 10640000 - lea rcx,[rsi+00006410]
+	// dmc3.exe+2134CD - BA 3C000000       - mov edx,0000003C
+	// dmc3.exe+2134D2 - E8 89AB0D00       - call dmc3.exe+2EE060
+	// */
 
-	func_2C6150(actorData.var_6458, 0x49000, -2);
-	/*
-	dmc3.exe+214B37 - 48 8D 8E 58640000 - lea rcx,[rsi+00006458]
-	dmc3.exe+214B3E - BA 00900400       - mov edx,00049000
-	dmc3.exe+214B43 - 41 B8 FEFFFFFF    - mov r8d,FFFFFFFE
-	dmc3.exe+214B49 - E8 02160B00       - call dmc3.exe+2C6150
-	*/
+	// func_2C6150(actorData.var_6458, 0x49000, -2);
+	// /*
+	// dmc3.exe+214B37 - 48 8D 8E 58640000 - lea rcx,[rsi+00006458]
+	// dmc3.exe+214B3E - BA 00900400       - mov edx,00049000
+	// dmc3.exe+214B43 - 41 B8 FEFFFFFF    - mov r8d,FFFFFFFE
+	// dmc3.exe+214B49 - E8 02160B00       - call dmc3.exe+2C6150
+	// */
 
 	actorData.actionData[0] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x590598);
 	actorData.actionData[1] = *reinterpret_cast<byte8 **>(appBaseAddr + 0x58A2A0);
@@ -2263,6 +2332,7 @@ auto GetRangedWeapon(T & actorData)
 template <typename T>
 void UpdateStyle(T & actorData)
 {
+	LogFunction(actorData.operator byte8 *());
 	// auto & characterData = GetCharacterData(actorData);
 
 	// auto & styleIndex = characterData.styleIndices[characterData.styleButtonIndex];
@@ -2274,6 +2344,7 @@ void UpdateStyle(T & actorData)
 template <typename T>
 void UpdateMeleeWeapon(T & actorData)
 {
+	LogFunction(actorData.operator byte8 *());
 	auto & characterData = GetCharacterData(actorData);
 
 	if (characterData.meleeWeaponIndex >= characterData.meleeWeaponCount)
@@ -2313,6 +2384,7 @@ void UpdateMeleeWeapon(T & actorData)
 template <typename T>
 void UpdateRangedWeapon(T & actorData)
 {
+	LogFunction(actorData.operator byte8 *());
 	auto & characterData = GetCharacterData(actorData);
 
 	if (characterData.rangedWeaponIndex >= characterData.rangedWeaponCount)
@@ -2336,6 +2408,7 @@ void UpdateRangedWeapon(T & actorData)
 template <typename T>
 void UpdateWeapons(T & actorData)
 {
+	LogFunction(actorData.operator byte8 *());
 	UpdateMeleeWeapon (actorData);
 	UpdateRangedWeapon(actorData);
 }
@@ -2433,6 +2506,24 @@ byte8 * CreateActor
 	}
 
 
+	if (entityIndex == ENTITY_MAIN)
+	{
+		func_2EE060(actorData.var_6410, 60);
+		/*
+		dmc3.exe+2134C6 - 48 8D 8E 10640000 - lea rcx,[rsi+00006410]
+		dmc3.exe+2134CD - BA 3C000000       - mov edx,0000003C
+		dmc3.exe+2134D2 - E8 89AB0D00       - call dmc3.exe+2EE060
+		*/
+
+		func_2C6150(actorData.var_6458, 0x49000, -2);
+		/*
+		dmc3.exe+214B37 - 48 8D 8E 58640000 - lea rcx,[rsi+00006458]
+		dmc3.exe+214B3E - BA 00900400       - mov edx,00049000
+		dmc3.exe+214B43 - 41 B8 FEFFFFFF    - mov r8d,FFFFFFFE
+		dmc3.exe+214B49 - E8 02160B00       - call dmc3.exe+2C6150
+		*/
+	}
+
 
 
 
@@ -2519,6 +2610,7 @@ byte8 * CreateActor
 	if
 	(
 		(playerIndex == 0) &&
+		(characterIndex == playerData.activeCharacterIndex) &&
 		(entityIndex == ENTITY_MAIN)
 	)
 	{
@@ -2987,6 +3079,8 @@ void StyleSwitchController(T & actorData)
 	if (activeConfig.removeBusyFlag)
 	{
 		actorData.state &= ~STATE_BUSY;
+
+		Log("%llX Remove Busy Flag", actorData.operator byte8 *());
 	}
 
 	if (actorData.newPlayerIndex != 0)
@@ -3279,12 +3373,6 @@ bool WeaponSwitchController(byte8 * actorBaseAddr)
 	}
 	auto & actorData = *reinterpret_cast<T *>(actorBaseAddr);
 
-	// auto & playerData = activeConfig.Actor.playerData[actorData.newPlayerIndex];
-	// auto & characterData = playerData.characterData[actorData.newCharacterIndex][actorData.newEntityIndex];
-
-
-	//auto & playerData = activeConfig.Actor.playerData[actorData.newPlayer][actorData.newIndex];
-
 	if (actorData.mode == ACTOR_MODE_MISSION_18)
 	{
 		return true;
@@ -3304,12 +3392,14 @@ bool WeaponSwitchController(byte8 * actorBaseAddr)
 		RangedWeaponSwitchController(actorData);
 	}
 
-	// RemoveBusyFlagController(actorData);
-
 	ResetPermissionsController(actorData);
 
 	return true;
 }
+
+
+
+
 
 
 
@@ -3334,39 +3424,14 @@ export void CharacterSwitchController()
 	for_all(uint8, playerIndex, activeConfig.Actor.playerCount)
 	{
 		auto & playerData = GetPlayerData(playerIndex);
-		//auto & characterData = playerData.characterData[playerData.characterIndex][ENTITY_MAIN];
 
 		auto & gamepad = GetGamepad(playerIndex);
 
-		// auto & character       = g_character      [playerIndex];
-		// auto & lastCharacter   = g_lastCharacter  [playerIndex];
-		// auto & activeCharacter = g_activeCharacter[playerIndex];
 		auto & executeButton   = g_executeButton  [playerIndex];
 		auto & executeFunction = g_executeFunction[playerIndex];
 
 		byte8 * activeActorBaseAddr = 0;
 		byte8 * idleActorBaseAddr   = 0;
-
-		if (gamepad.buttons[0] & GAMEPAD_RIGHT_THUMB)
-		{
-			if (executeButton)
-			{
-				executeButton = false;
-
-				playerData.characterIndex++;
-
-				if (playerData.characterIndex >= playerData.characterCount)
-				{
-					playerData.characterIndex = 0;
-				}
-			}
-		}
-		else
-		{
-			executeButton = true;
-		}
-
-
 
 		for_each(uint32, index, 2, Actor_actorBaseAddr.count)
 		{
@@ -3388,10 +3453,8 @@ export void CharacterSwitchController()
 			else if (actorData.newCharacterIndex == playerData.activeCharacterIndex)
 			{
 				activeActorBaseAddr = actorBaseAddr;
-			}
-			else if (actorData.newCharacterIndex == playerData.characterIndex)
-			{
-				idleActorBaseAddr = actorBaseAddr;
+
+				break;
 			}
 		}
 
@@ -3401,16 +3464,79 @@ export void CharacterSwitchController()
 		}
 		auto & activeActorData = *reinterpret_cast<ActorData *>(activeActorBaseAddr);
 
-		if (!idleActorBaseAddr)
+
+
+		[&]()
 		{
-			continue;
-		}
-		auto & idleActorData = *reinterpret_cast<ActorData *>(idleActorBaseAddr);
+			if (playerData.characterCount < 2)
+			{
+				return;
+			}
+			else if (activeActorData.doppelganger)
+			{
+				return;
+			}
 
+			if (gamepad.buttons[0] & GAMEPAD_RIGHT_THUMB)
+			{
+				if (executeButton)
+				{
+					executeButton = false;
 
+					playerData.characterIndex++;
 
-		auto Function = [&]()
-		{
+					if (playerData.characterIndex >= playerData.characterCount)
+					{
+						playerData.characterIndex = 0;
+					}
+				}
+			}
+			else
+			{
+				executeButton = true;
+			}
+
+			for_each(uint32, index, 2, Actor_actorBaseAddr.count)
+			{
+				auto actorBaseAddr = Actor_actorBaseAddr[index];
+				if (!actorBaseAddr)
+				{
+					continue;
+				}
+				auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+
+				if (actorData.newPlayerIndex != playerIndex)
+				{
+					continue;
+				}
+				else if (actorData.newEntityIndex != ENTITY_MAIN)
+				{
+					continue;
+				}
+				else if (actorData.newCharacterIndex == playerData.characterIndex)
+				{
+					idleActorBaseAddr = actorBaseAddr;
+
+					break;
+				}
+			}
+
+			if (!idleActorBaseAddr)
+			{
+				return;
+			}
+			auto & idleActorData = *reinterpret_cast<ActorData *>(idleActorBaseAddr);
+
+			if (playerData.lastCharacterIndex != playerData.characterIndex)
+			{
+				playerData.lastCharacterIndex = playerData.characterIndex;
+
+				ToggleInput(activeActorData, false);
+				ToggleInput(idleActorData  , true );
+
+				executeFunction = true;
+			}
+
 			if (!executeFunction)
 			{
 				return;
@@ -3422,7 +3548,6 @@ export void CharacterSwitchController()
 				{
 					executeFunction = false;
 
-					//activeCharacter = character;
 					playerData.activeCharacterIndex = playerData.characterIndex;
 
 					ToggleActor(activeActorData, false);
@@ -3437,7 +3562,6 @@ export void CharacterSwitchController()
 			{
 				executeFunction = false;
 
-				//activeCharacter = character;
 				playerData.activeCharacterIndex = playerData.characterIndex;
 
 				ToggleActor(activeActorData, false);
@@ -3447,19 +3571,7 @@ export void CharacterSwitchController()
 
 				UpdatePermissions(idleActorData);
 			}
-		};
-
-		if (playerData.lastCharacterIndex != playerData.characterIndex)
-		{
-			playerData.lastCharacterIndex = playerData.characterIndex;
-
-			ToggleInput(activeActorData, false);
-			ToggleInput(idleActorData  , true );
-
-			executeFunction = true;
-		}
-
-		Function();
+		}();
 
 
 
@@ -3476,12 +3588,17 @@ export void CharacterSwitchController()
 			{
 				continue;
 			}
-			else if (actorData.newCharacterIndex == playerData.activeCharacterIndex)
+			else if
+			(
+				(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
+				(actorData.newEntityIndex == ENTITY_MAIN)
+			)
 			{
 				continue;
 			}
 			else if
 			(
+				(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
 				(actorData.newEntityIndex == ENTITY_CLONE) &&
 				actorData.doppelganger
 			)
@@ -5671,6 +5788,7 @@ byte8 * trickDownProxy      = 0;
 byte8 * airTrickDanteFix    = 0;
 byte8 * airTrickVergilFix   = 0;
 
+// @Todo: Change to event.
 template
 <
 	uint32 index,
@@ -6856,6 +6974,13 @@ void ToggleStyleFixes(bool enable)
 		dmc3.exe+1E7F5F - 74 15             - je dmc3.exe+1E7F76
 		*/
 	}
+
+	// Disable Dante Check
+	Write<byte8>((appBaseAddr + 0x1E8F98), (enable) ? 0xEB : 0x74);
+	/*
+	dmc3.exe+1E8F98 - 74 0D - je dmc3.exe+1E8FA7
+	dmc3.exe+1E8F9A - 32 C0 - xor al,al
+	*/
 }
 
 
@@ -6908,6 +7033,7 @@ void ActivateDoppelganger(ActorData & actorData)
 	ToggleActor(cloneActorData, true);
 }
 
+// @Todo: Review.
 void DeactivateDoppelganger(ActorData & actorData)
 {
 	if (!actorData.cloneBaseAddr)
@@ -6920,6 +7046,9 @@ void DeactivateDoppelganger(ActorData & actorData)
 	/*
 	dmc3.exe+1E2AD8 - C6 81 62630000 00 - mov byte ptr [rcx+00006362],00
 	*/
+
+	cloneActorData.doppelganger = false;
+
 
 	actorData.var_6340 = 0;
 	actorData.var_6454 = 0;

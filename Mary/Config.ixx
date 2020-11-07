@@ -608,7 +608,7 @@ export void ApplyDefaultPlayerData(PlayerData & playerData)
 		ApplyDefaultCharacterData
 		(
 			playerData.characterData[characterIndex][entityIndex],
-			CHAR_DANTE
+			(characterIndex == 1) ? CHAR_VERGIL : CHAR_DANTE
 		);
 	}}
 }
@@ -670,27 +670,4 @@ export void Config_Init
 		ApplyDefaultPlayerData(activeConfig.Actor.playerData[playerIndex]);
 		ApplyDefaultPlayerData(queuedConfig.Actor.playerData[playerIndex]);
 	}
-
-
-
-	// for_all(uint8, playerIndex   , PLAYER_COUNT   ){
-	// for_all(uint8, characterIndex, CHARACTER_COUNT){
-	// for_all(uint8, entityIndex   , ENTITY_COUNT   )
-	// {
-	// 	ApplyDefaultCharacterData
-	// 	(
-	// 		defaultConfig.Actor.playerData[playerIndex].characterData[characterIndex][entityIndex],
-	// 		CHAR_DANTE
-	// 	);
-	// 	ApplyDefaultCharacterData
-	// 	(
-	// 		activeConfig.Actor.playerData[playerIndex].characterData[characterIndex][entityIndex],
-	// 		CHAR_DANTE
-	// 	);
-	// 	ApplyDefaultCharacterData
-	// 	(
-	// 		queuedConfig.Actor.playerData[playerIndex].characterData[characterIndex][entityIndex],
-	// 		CHAR_DANTE
-	// 	);
-	// }}}
 }
