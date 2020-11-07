@@ -3008,6 +3008,49 @@ void StyleSwitchController(T & actorData)
 
 	bool update = false;
 
+	{
+		bool condition = (actorData.buttons[0] & GAMEPAD_RIGHT_THUMB);
+
+		if (actorData.newEntityIndex == ENTITY_MAIN)
+		{
+			if (condition)
+			{
+				return;
+			}
+		}
+		else
+		{
+			if (!condition)
+			{
+				return;
+			}
+		}
+	}
+
+
+
+
+
+
+	// if (actorData.newEntityIndex == ENTITY_MAIN)
+	// {
+	// 	if (actorData.buttons[2] & GAMEPAD_RIGHT_THUMB)
+	// 	{
+	// 		return;
+	// 	}
+	// }
+	// else if (actorData.newEntityIndex == ENTITY_CLONE)
+	// {
+	// 	if ((!actorData.buttons[2] & GAMEPAD_RIGHT_THUMB))
+	// 	{
+	// 		return;
+	// 	}
+	// }
+
+
+
+
+
 	for_all(uint8, styleButtonIndex, STYLE_COUNT)
 	{
 		auto & styleButton = characterData.styleButtons[styleButtonIndex];
@@ -5777,29 +5820,25 @@ void ToggleWeaponCountAdjustments(bool enable)
 
 #pragma region Mobility
 
-// @Todo: Review.
+byte8 * dashAddr                   = 0;
+byte8 * skyStarAddr                = 0;
+byte8 * airTrickDanteAddr          = 0;
+byte8 * airTrickVergilAddr         = 0;
+byte8 * trickUpAddr                = 0;
+byte8 * trickDownAddr              = 0;
+byte8 * skyStarResetAddr[8]        = {};
+byte8 * airTrickVergilResetFixAddr = 0;
 
-byte8 * dashProxy           = 0;
-byte8 * skyStarProxy        = 0;
-byte8 * airTrickDanteProxy  = 0;
-byte8 * airTrickVergilProxy = 0;
-byte8 * trickUpProxy        = 0;
-byte8 * trickDownProxy      = 0;
-byte8 * airTrickDanteFix    = 0;
-byte8 * airTrickVergilFix   = 0;
-
-// @Todo: Change to event.
-template
-<
-	uint32 index,
-	typename T
->
-uint32 MobilityFunction(T & actorData, uint8 & var, uint8(&array)[2])
+template <uint32 event>
+uint32 MobilityFunction
+(
+	ActorData & actorData,
+	uint8 & var,
+	uint8(&array)[2]
+)
 {
-	uint8 track = (actorData.devil) ? 1 : 0;
-
-	// Required since there is no reset when hitting the floor.
-	if constexpr (index != ACTOR_EVENT_DANTE_DASH)
+	// Required, because there is no reset when hitting the floor.
+	if constexpr (event != ACTOR_EVENT_DANTE_DASH)
 	{
 		if (actorData.state & STATE_ON_FLOOR)
 		{
@@ -5807,101 +5846,137 @@ uint32 MobilityFunction(T & actorData, uint8 & var, uint8(&array)[2])
 		}
 	}
 
-	if (var >= array[track])
+	uint8 index = (actorData.devil) ? 1 : 0;
+
+	if (var >= array[index])
 	{
 		return 0;
 	}
 
 	var++;
 
-	return index;
+	return event;
 }
 
-auto Dash(ActorDataDante & actorData)
+auto Dash(ActorData & actorData)
 {
-	return MobilityFunction<ACTOR_EVENT_DANTE_DASH>(actorData, actorData.dashCount, activeConfig.Trickster.dashCount);
+	return MobilityFunction<ACTOR_EVENT_DANTE_DASH>
+	(
+		actorData,
+		actorData.dashCount,
+		activeConfig.Trickster.dashCount
+	);
 }
 
-auto SkyStar(ActorDataDante & actorData)
+auto SkyStar(ActorData & actorData)
 {
-	return MobilityFunction<ACTOR_EVENT_DANTE_SKY_STAR>(actorData, actorData.skyStarCount, activeConfig.Trickster.skyStarCount);
+	return MobilityFunction<ACTOR_EVENT_DANTE_SKY_STAR>
+	(
+		actorData,
+		actorData.skyStarCount,
+		activeConfig.Trickster.skyStarCount
+	);
 }
 
-auto AirTrickDante(ActorDataDante & actorData)
+auto AirTrickDante(ActorData & actorData)
 {
 	actorData.var_3E10[26] = (actorData.state & STATE_ON_FLOOR) ? 1 : 0;
 
-	return MobilityFunction<ACTOR_EVENT_DANTE_AIR_TRICK>(actorData, actorData.airTrickCount, activeConfig.Trickster.airTrickCount);
+	return MobilityFunction<ACTOR_EVENT_DANTE_AIR_TRICK>
+	(
+		actorData,
+		actorData.airTrickCount,
+		activeConfig.Trickster.airTrickCount
+	);
 }
 
-auto AirTrickVergil(ActorDataVergil & actorData)
+auto AirTrickVergil(ActorData & actorData)
 {
-	return MobilityFunction<ACTOR_EVENT_VERGIL_AIR_TRICK>(actorData, actorData.airTrickCount, activeConfig.DarkSlayer.airTrickCount);
+	return MobilityFunction<ACTOR_EVENT_VERGIL_AIR_TRICK>
+	(
+		actorData,
+		actorData.airTrickCount,
+		activeConfig.DarkSlayer.airTrickCount
+	);
 }
 
-auto TrickUp(ActorDataVergil & actorData)
+auto TrickUp(ActorData & actorData)
 {
-	return MobilityFunction<ACTOR_EVENT_VERGIL_TRICK_UP>(actorData, actorData.trickUpCount, activeConfig.DarkSlayer.trickUpCount);
+	return MobilityFunction<ACTOR_EVENT_VERGIL_TRICK_UP>
+	(
+		actorData,
+		actorData.trickUpCount,
+		activeConfig.DarkSlayer.trickUpCount
+	);
 }
 
-auto TrickDown(ActorDataVergil & actorData)
+auto TrickDown(ActorData & actorData)
 {
-	return MobilityFunction<ACTOR_EVENT_VERGIL_TRICK_DOWN>(actorData, actorData.trickDownCount, activeConfig.DarkSlayer.trickDownCount);
+	return MobilityFunction<ACTOR_EVENT_VERGIL_TRICK_DOWN>
+	(
+		actorData,
+		actorData.trickDownCount,
+		activeConfig.DarkSlayer.trickDownCount
+	);
 }
 
-template <typename T>
-void SkyStarResetFunction(T & actorData)
+void SkyStarReset(byte8 * actorBaseAddr)
 {
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	if (!actorBaseAddr)
 	{
-		actorData.skyStarCount = 0;
-		actorData.newAirStingerCount = 0;
+		return;
 	}
+	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+
+	actorData.skyStarCount = 0;
 
 	if (actorData.state & STATE_ON_FLOOR)
 	{
 		auto & event = actorData.eventData[1].index;
 
-		if constexpr (TypeMatch<T, ActorDataDante>::value)
+		switch (actorData.character)
 		{
-			if (event == ACTOR_EVENT_DANTE_AIR_TRICK)
+			case CHAR_DANTE:
 			{
-				actorData.airTrickCount = 1;
+				switch (event)
+				{
+					case ACTOR_EVENT_DANTE_AIR_TRICK:
+					{
+						actorData.airTrickCount = 1;
+
+						break;
+					}
+				}
+
+				break;
+			}
+			case CHAR_VERGIL:
+			{
+				switch (event)
+				{
+					case ACTOR_EVENT_VERGIL_AIR_TRICK:
+					{
+						actorData.airTrickCount = 1;
+
+						break;
+					}
+					case ACTOR_EVENT_VERGIL_TRICK_UP:
+					{
+						actorData.trickUpCount = 1;
+
+						break;
+					}
+					case ACTOR_EVENT_VERGIL_TRICK_DOWN:
+					{
+						actorData.trickDownCount = 1;
+
+						break;
+					}
+				}
+
+				break;
 			}
 		}
-		else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-		{
-			if (event == ACTOR_EVENT_VERGIL_AIR_TRICK)
-			{
-				actorData.airTrickCount = 1;
-			}
-			else if (event == ACTOR_EVENT_VERGIL_TRICK_UP)
-			{
-				actorData.trickUpCount = 1;
-			}
-			else if (event == ACTOR_EVENT_VERGIL_TRICK_DOWN)
-			{
-				actorData.trickDownCount = 1;
-			}
-		}
-	}
-}
-
-void SkyStarReset(byte8 * baseAddr)
-{
-	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
-
-	if (actorData.character == CHAR_DANTE)
-	{
-		auto & actorData = *reinterpret_cast<ActorDataDante *>(baseAddr);
-
-		SkyStarResetFunction(actorData);
-	}
-	else if (actorData.character == CHAR_VERGIL)
-	{
-		auto & actorData = *reinterpret_cast<ActorDataVergil *>(baseAddr);
-
-		SkyStarResetFunction(actorData);
 	}
 }
 
@@ -5913,7 +5988,7 @@ void InitMobility()
 	{
 		constexpr byte8 sect1[] =
 		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
+			mov_rcx_rbx,
 		};
 		constexpr byte8 sect2[] =
 		{
@@ -5925,15 +6000,16 @@ void InitMobility()
 		memcpy(func.sect1, sect1, sizeof(sect1));
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E64A9), 6);
+
 		return func.addr;
 	};
 
-	dashProxy           = CreateMobilityFunction(Dash          );
-	skyStarProxy        = CreateMobilityFunction(SkyStar       );
-	airTrickDanteProxy  = CreateMobilityFunction(AirTrickDante );
-	airTrickVergilProxy = CreateMobilityFunction(AirTrickVergil);
-	trickUpProxy        = CreateMobilityFunction(TrickUp       );
-	trickDownProxy      = CreateMobilityFunction(TrickDown     );
+	dashAddr           = CreateMobilityFunction(Dash          );
+	skyStarAddr        = CreateMobilityFunction(SkyStar       );
+	airTrickDanteAddr  = CreateMobilityFunction(AirTrickDante );
+	airTrickVergilAddr = CreateMobilityFunction(AirTrickVergil);
+	trickUpAddr        = CreateMobilityFunction(TrickUp       );
+	trickDownAddr      = CreateMobilityFunction(TrickDown     );
 
 	// Sky Star Reset
 	{
@@ -5943,14 +6019,15 @@ void InitMobility()
 		};
 		constexpr byte8 sect1[] =
 		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
+			mov_rcx_rbx,
 		};
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1DFEAE), func.addr, 1);
+		skyStarResetAddr[0] = func.addr;
 		/*
 		dmc3.exe+1DFEAE - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		dmc3.exe+1DFEB4 - 89 AB 74630000 - mov [rbx+00006374],ebp
 		*/
 	}
 	{
@@ -5960,14 +6037,15 @@ void InitMobility()
 		};
 		constexpr byte8 sect1[] =
 		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
+			mov_rcx_rbx,
 		};
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1DFFB6), func.addr, 1);
+		skyStarResetAddr[1] = func.addr;
 		/*
-		dmc3.exe+1DFFB6 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		dmc3.exe+1DFFB6 - 88 8B 5D630000    - mov [rbx+0000635D],cl
+		dmc3.exe+1DFFBC - 40 88 AB AE3F0000 - mov [rbx+00003FAE],bpl
 		*/
 	}
 	{
@@ -5977,14 +6055,15 @@ void InitMobility()
 		};
 		constexpr byte8 sect1[] =
 		{
-			0x49, 0x8B, 0xC9, //mov rcx,r9
+			mov_rcx_r9,
 		};
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1E07A2), func.addr, 2);
+		skyStarResetAddr[2] = func.addr;
 		/*
 		dmc3.exe+1E07A2 - 41 88 89 5D630000 - mov [r9+0000635D],cl
+		dmc3.exe+1E07A9 - EB 06             - jmp dmc3.exe+1E07B1
 		*/
 	}
 	{
@@ -5994,14 +6073,15 @@ void InitMobility()
 		};
 		constexpr byte8 sect1[] =
 		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
+			mov_rcx_rbx,
 		};
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1E0D81), func.addr, 1);
+		skyStarResetAddr[3] = func.addr;
 		/*
 		dmc3.exe+1E0D81 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		dmc3.exe+1E0D87 - 39 7B 78       - cmp [rbx+78],edi
 		*/
 	}
 	{
@@ -6011,14 +6091,15 @@ void InitMobility()
 		};
 		constexpr byte8 sect1[] =
 		{
-			0x49, 0x8B, 0xC8, //mov rcx,r8
+			mov_rcx_r8,
 		};
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1E0F64), func.addr, 2);
+		skyStarResetAddr[4] = func.addr;
 		/*
 		dmc3.exe+1E0F64 - 41 88 88 5D630000 - mov [r8+0000635D],cl
+		dmc3.exe+1E0F6B - EB 5E             - jmp dmc3.exe+1E0FCB
 		*/
 	}
 	{
@@ -6028,14 +6109,15 @@ void InitMobility()
 		};
 		constexpr byte8 sect1[] =
 		{
-			0x49, 0x8B, 0xC8, //mov rcx,r8
+			mov_rcx_r8,
 		};
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1E0FBD), func.addr, 2);
+		skyStarResetAddr[5] = func.addr;
 		/*
 		dmc3.exe+1E0FBD - 41 88 88 5D630000 - mov [r8+0000635D],cl
+		dmc3.exe+1E0FC4 - 41 FE 88 133F0000 - dec [r8+00003F13]
 		*/
 	}
 	{
@@ -6045,14 +6127,15 @@ void InitMobility()
 		};
 		constexpr byte8 sect1[] =
 		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
+			mov_rcx_rbx,
 		};
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1E16D2), func.addr, 1);
+		skyStarResetAddr[6] = func.addr;
 		/*
 		dmc3.exe+1E16D2 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		dmc3.exe+1E16D8 - 39 7B 78       - cmp [rbx+78],edi
 		*/
 	}
 	{
@@ -6062,18 +6145,19 @@ void InitMobility()
 		};
 		constexpr byte8 sect1[] =
 		{
-			0x48, 0x8B, 0xCB, //mov rcx,rbx
+			mov_rcx_rbx,
 		};
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1E66AC), func.addr, 1);
+		skyStarResetAddr[7] = func.addr;
 		/*
-		dmc3.exe+1E66AC - 88 83 5D630000 - mov [rbx+0000635D],al
+		dmc3.exe+1E66AC - 88 83 5D630000   - mov [rbx+0000635D],al
+		dmc3.exe+1E66B2 - 0FB6 83 A43F0000 - movzx eax,byte ptr [rbx+00003FA4]
 		*/
 	}
 
-	// Trick Up and Trick Down are reset when hitting the floor, Air Trick is not. Let's fix it.
+	// Air Trick Vergil Reset Fix
 	{
 		constexpr byte8 sect0[] =
 		{
@@ -6082,7 +6166,7 @@ void InitMobility()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1F07DD), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		airTrickVergilFix = func.addr;
+		airTrickVergilResetFixAddr = func.addr;
 		/*
 		dmc3.exe+1F07D6 - C6 83 103E0000 03 - mov byte ptr [rbx+00003E10],03
 		dmc3.exe+1F07DD - E9 3C060000       - jmp dmc3.exe+1F0E1E
@@ -6097,7 +6181,7 @@ void ToggleMobility(bool enable)
 		auto dest = (appBaseAddr + 0x1E66CB);
 		if (enable)
 		{
-			WriteJump(dest, dashProxy, 1);
+			WriteJump(dest, dashAddr, 1);
 		}
 		else
 		{
@@ -6109,6 +6193,7 @@ void ToggleMobility(bool enable)
 		}
 		/*
 		dmc3.exe+1E66CB - 8B 8B 58630000 - mov ecx,[rbx+00006358]
+		dmc3.exe+1E66D1 - 85 C9          - test ecx,ecx
 		*/
 	}
 
@@ -6118,7 +6203,7 @@ void ToggleMobility(bool enable)
 
 		if (enable)
 		{
-			WriteJump(dest, skyStarProxy, 2);
+			WriteJump(dest, skyStarAddr, 2);
 		}
 		else
 		{
@@ -6126,11 +6211,11 @@ void ToggleMobility(bool enable)
 			{
 				0x83, 0xBB, 0x58, 0x63, 0x00, 0x00, 0x01, //cmp dword ptr [rbx+00006358],01
 			};
-
 			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
 		/*
 		dmc3.exe+1E6689 - 83 BB 58630000 01 - cmp dword ptr [rbx+00006358],01
+		dmc3.exe+1E6690 - 0F8C 13FEFFFF     - jl dmc3.exe+1E64A9
 		*/
 	}
 
@@ -6140,7 +6225,7 @@ void ToggleMobility(bool enable)
 
 		if (enable)
 		{
-			WriteJump(dest, airTrickDanteProxy, 2);
+			WriteJump(dest, airTrickDanteAddr, 2);
 		}
 		else
 		{
@@ -6148,11 +6233,11 @@ void ToggleMobility(bool enable)
 			{
 				0x83, 0xBB, 0x58, 0x63, 0x00, 0x00, 0x02, //cmp dword ptr [rbx+00006358],02
 			};
-
 			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
 		/*
 		dmc3.exe+1E6612 - 83 BB 58630000 02 - cmp dword ptr [rbx+00006358],02
+		dmc3.exe+1E6619 - 0F85 8AFEFFFF     - jne dmc3.exe+1E64A9
 		*/
 	}
 
@@ -6162,7 +6247,7 @@ void ToggleMobility(bool enable)
 
 		if (enable)
 		{
-			WriteJump(dest, airTrickVergilProxy, 1);
+			WriteJump(dest, airTrickVergilAddr, 1);
 		}
 		else
 		{
@@ -6170,11 +6255,11 @@ void ToggleMobility(bool enable)
 			{
 				0x8B, 0x83, 0x64, 0x3E, 0x00, 0x00, //mov eax,[rbx+00003E64]
 			};
-
 			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
 		/*
 		dmc3.exe+1E6842 - 8B 83 643E0000 - mov eax,[rbx+00003E64]
+		dmc3.exe+1E6848 - A8 01          - test al,01
 		*/
 	}
 
@@ -6184,7 +6269,7 @@ void ToggleMobility(bool enable)
 
 		if (enable)
 		{
-			WriteJump(dest, trickUpProxy, 2);
+			WriteJump(dest, trickUpAddr, 2);
 		}
 		else
 		{
@@ -6192,11 +6277,11 @@ void ToggleMobility(bool enable)
 			{
 				0x83, 0xBB, 0x58, 0x63, 0x00, 0x00, 0x01, //cmp dword ptr [rbx+00006358],01
 			};
-
 			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
 		/*
 		dmc3.exe+1E67D5 - 83 BB 58630000 01 - cmp dword ptr [rbx+00006358],01
+		dmc3.exe+1E67DC - 0F8C C7FCFFFF     - jl dmc3.exe+1E64A9
 		*/
 	}
 
@@ -6206,7 +6291,7 @@ void ToggleMobility(bool enable)
 
 		if (enable)
 		{
-			WriteJump(dest, trickDownProxy, 2);
+			WriteJump(dest, trickDownAddr, 2);
 		}
 		else
 		{
@@ -6214,33 +6299,209 @@ void ToggleMobility(bool enable)
 			{
 				0x83, 0xBB, 0x58, 0x63, 0x00, 0x00, 0x02, //cmp dword ptr [rbx+00006358],02
 			};
-
 			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
 		/*
 		dmc3.exe+1E6768 - 83 BB 58630000 02 - cmp dword ptr [rbx+00006358],02
+		dmc3.exe+1E676F - 0F85 34FDFFFF     - jne dmc3.exe+1E64A9
 		*/
 	}
 
-	// Adjust Reset Values
-	// Air Trick, Trick Up
-	Write<uint16>((appBaseAddr + 0x1DFEA5 + 7), (enable) ? 0 : 257);
-	Write<uint16>((appBaseAddr + 0x1DFFA6 + 7), (enable) ? 0 : 257);
-	Write<uint16>((appBaseAddr + 0x1E0790 + 8), (enable) ? 0 : 257);
-	Write<uint16>((appBaseAddr + 0x1E0D64 + 7), (enable) ? 0 : 257);
-	Write<uint16>((appBaseAddr + 0x1E0F52 + 8), (enable) ? 0 : 257);
-	Write<uint16>((appBaseAddr + 0x1E0FAB + 8), (enable) ? 0 : 257);
-	Write<uint16>((appBaseAddr + 0x1E16B5 + 7), (enable) ? 0 : 257);
-	// Trick Up, Trick Down
-	Write<uint16>((appBaseAddr + 0x1F07CD + 7), (enable) ? 0 : 257);
-	// Trick Up
-	Write<uint8>((appBaseAddr + 0x1DFE9E + 6), (enable) ? 0 : 1);
-	Write<uint8>((appBaseAddr + 0x1DFFAF + 6), (enable) ? 0 : 1);
-	Write<uint8>((appBaseAddr + 0x1E079A + 7), (enable) ? 0 : 1);
-	Write<uint8>((appBaseAddr + 0x1E0D6D + 6), (enable) ? 0 : 1);
-	Write<uint8>((appBaseAddr + 0x1E0F5C + 7), (enable) ? 0 : 1);
-	Write<uint8>((appBaseAddr + 0x1E0FB5 + 7), (enable) ? 0 : 1);
-	Write<uint8>((appBaseAddr + 0x1E16BE + 6), (enable) ? 0 : 1);
+	// Sky Star Reset
+	{
+		auto dest = (appBaseAddr + 0x1DFEAE);
+		if (enable)
+		{
+			WriteCall(dest, skyStarResetAddr[0], 1);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1DFEAE - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		dmc3.exe+1DFEB4 - 89 AB 74630000 - mov [rbx+00006374],ebp
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1DFFB6);
+		if (enable)
+		{
+			WriteCall(dest, skyStarResetAddr[1], 1);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1DFFB6 - 88 8B 5D630000    - mov [rbx+0000635D],cl
+		dmc3.exe+1DFFBC - 40 88 AB AE3F0000 - mov [rbx+00003FAE],bpl
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1E07A2);
+		if (enable)
+		{
+			WriteCall(dest, skyStarResetAddr[2], 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x41, 0x88, 0x89, 0x5D, 0x63, 0x00, 0x00, //mov [r9+0000635D],cl
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E07A2 - 41 88 89 5D630000 - mov [r9+0000635D],cl
+		dmc3.exe+1E07A9 - EB 06             - jmp dmc3.exe+1E07B1
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1E0D81);
+		if (enable)
+		{
+			WriteCall(dest, skyStarResetAddr[3], 1);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E0D81 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		dmc3.exe+1E0D87 - 39 7B 78       - cmp [rbx+78],edi
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1E0F64);
+		if (enable)
+		{
+			WriteCall(dest, skyStarResetAddr[4], 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E0F64 - 41 88 88 5D630000 - mov [r8+0000635D],cl
+		dmc3.exe+1E0F6B - EB 5E             - jmp dmc3.exe+1E0FCB
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1E0FBD);
+		if (enable)
+		{
+			WriteCall(dest, skyStarResetAddr[5], 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E0FBD - 41 88 88 5D630000 - mov [r8+0000635D],cl
+		dmc3.exe+1E0FC4 - 41 FE 88 133F0000 - dec [r8+00003F13]
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1E16D2);
+		if (enable)
+		{
+			WriteCall(dest, skyStarResetAddr[6], 1);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E16D2 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		dmc3.exe+1E16D8 - 39 7B 78       - cmp [rbx+78],edi
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1E66AC);
+		if (enable)
+		{
+			WriteCall(dest, skyStarResetAddr[7], 1);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x88, 0x83, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],al
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E66AC - 88 83 5D630000   - mov [rbx+0000635D],al
+		dmc3.exe+1E66B2 - 0FB6 83 A43F0000 - movzx eax,byte ptr [rbx+00003FA4]
+		*/
+	}
+
+	// Air Trick, Trick Up Reset
+	Write<uint16>((appBaseAddr + 0x1DFEA5 + 7), (enable) ? 0 : 257); // dmc3.exe+1DFEA5 - 66 C7 83 5E630000 0101 - mov word ptr [rbx+0000635E],0101
+	Write<uint16>((appBaseAddr + 0x1DFFA6 + 7), (enable) ? 0 : 257); // dmc3.exe+1DFFA6 - 66 C7 83 5E630000 0101 - mov word ptr [rbx+0000635E],0101
+	Write<uint16>((appBaseAddr + 0x1E0790 + 8), (enable) ? 0 : 257); // dmc3.exe+1E0790 - 66 41 C7 81 5E630000 0101 - mov word ptr [r9+0000635E],0101
+	Write<uint16>((appBaseAddr + 0x1E0D64 + 7), (enable) ? 0 : 257); // dmc3.exe+1E0D64 - 66 C7 83 5E630000 0101 - mov word ptr [rbx+0000635E],0101
+	Write<uint16>((appBaseAddr + 0x1E0F52 + 8), (enable) ? 0 : 257); // dmc3.exe+1E0F52 - 66 41 C7 80 5E630000 0101 - mov word ptr [r8+0000635E],0101
+	Write<uint16>((appBaseAddr + 0x1E0FAB + 8), (enable) ? 0 : 257); // dmc3.exe+1E0FAB - 66 41 C7 80 5E630000 0101 - mov word ptr [r8+0000635E],0101
+	Write<uint16>((appBaseAddr + 0x1E16B5 + 7), (enable) ? 0 : 257); // dmc3.exe+1E16B5 - 66 C7 83 5E630000 0101 - mov word ptr [rbx+0000635E],0101
+
+	// Air Trick Vergil Reset Fix
+	{
+		auto dest = (appBaseAddr + 0x1F07D6);
+		if (enable)
+		{
+			WriteJump(dest, airTrickVergilResetFixAddr, 2);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xC6, 0x83, 0x10, 0x3E, 0x00, 0x00, 0x03, //mov byte ptr [rbx+00003E10],03
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1F07D6 - C6 83 103E0000 03 - mov byte ptr [rbx+00003E10],03
+		dmc3.exe+1F07DD - E9 3C060000       - jmp dmc3.exe+1F0E1E
+		*/
+	}
+
+	// Trick Up, Trick Down Reset
+	Write<uint16>((appBaseAddr + 0x1F07CD + 7), (enable) ? 0 : 257); // dmc3.exe+1F07CD - 66 C7 83 5F630000 0101 - mov word ptr [rbx+0000635F],0101
+
+	// Trick Up Reset
+	Write<uint8>((appBaseAddr + 0x1DFE9E + 6), (enable) ? 0 : 1); // dmc3.exe+1DFE9E - C6 83 60630000 01 - mov byte ptr [rbx+00006360],01
+	Write<uint8>((appBaseAddr + 0x1DFFAF + 6), (enable) ? 0 : 1); // dmc3.exe+1DFFAF - C6 83 60630000 01 - mov byte ptr [rbx+00006360],01
+	Write<uint8>((appBaseAddr + 0x1E079A + 7), (enable) ? 0 : 1); // dmc3.exe+1E079A - 41 C6 81 60630000 01 - mov byte ptr [r9+00006360],01
+	Write<uint8>((appBaseAddr + 0x1E0D6D + 6), (enable) ? 0 : 1); // dmc3.exe+1E0D6D - C6 83 60630000 01 - mov byte ptr [rbx+00006360],01
+	Write<uint8>((appBaseAddr + 0x1E0F5C + 7), (enable) ? 0 : 1); // dmc3.exe+1E0F5C - 41 C6 80 60630000 01 - mov byte ptr [r8+00006360],01
+	Write<uint8>((appBaseAddr + 0x1E0FB5 + 7), (enable) ? 0 : 1); // dmc3.exe+1E0FB5 - 41 C6 80 60630000 01 - mov byte ptr [r8+00006360],01
+	Write<uint8>((appBaseAddr + 0x1E16BE + 6), (enable) ? 0 : 1); // dmc3.exe+1E16BE - C6 83 60630000 01 - mov byte ptr [rbx+00006360],01
 
 	// Air Trick Dante Floor
 	{
@@ -6259,6 +6520,7 @@ void ToggleMobility(bool enable)
 		}
 		/*
 		dmc3.exe+1F2228 - C6 87 5E630000 00 - mov byte ptr [rdi+0000635E],00
+		dmc3.exe+1F222F - 88 87 2C3E0000    - mov [rdi+00003E2C],al
 		*/
 	}
 
@@ -6279,6 +6541,7 @@ void ToggleMobility(bool enable)
 		}
 		/*
 		dmc3.exe+1F0C92 - 40 88 BB 5E630000 - mov [rbx+0000635E],dil
+		dmc3.exe+1F0C99 - 83 BB 6C3E0000 00 - cmp dword ptr [rbx+00003E6C],00
 		*/
 	}
 
@@ -6299,6 +6562,7 @@ void ToggleMobility(bool enable)
 		}
 		/*
 		dmc3.exe+1F0B2A - 40 88 BB 5F630000 - mov [rbx+0000635F],dil
+		dmc3.exe+1F0B31 - E9 63010000       - jmp dmc3.exe+1F0C99
 		*/
 	}
 
@@ -6319,27 +6583,7 @@ void ToggleMobility(bool enable)
 		}
 		/*
 		dmc3.exe+1F0A33 - 40 88 BB 60630000 - mov [rbx+00006360],dil
-		*/
-	}
-
-	// Air Trick Vergil Fix
-	{
-		auto dest = (appBaseAddr + 0x1F07D6);
-		if (enable)
-		{
-			WriteJump(dest, airTrickVergilFix, 2);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0xC6, 0x83, 0x10, 0x3E, 0x00, 0x00, 0x03, //mov byte ptr [rbx+00003E10],03
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1F07D6 - C6 83 103E0000 03 - mov byte ptr [rbx+00003E10],03
-		dmc3.exe+1F07DD - E9 3C060000       - jmp dmc3.exe+1F0E1E
+		dmc3.exe+1F0A3A - E9 5A020000       - jmp dmc3.exe+1F0C99
 		*/
 	}
 }
@@ -6914,9 +7158,10 @@ void ToggleMainActorFixes(bool enable)
 		*/
 	}
 
-	Write<uint32>((appBaseAddr + 0x1F5FC6 + 2), offsetof(ActorData, newIsClone));
+	Write<uint32>((appBaseAddr + 0x1F5FC6 + 2), (enable) ? offsetof(ActorData, newIsClone) : offsetof(ActorData, isClone));
 	/*
-	dmc3.exe+1F5FC6 - 83 B9 1C010000 01     - cmp dword ptr [rcx+0000011C],01 { 1 }
+	dmc3.exe+1F5FC6 - 83 B9 C8CA0100 01 - cmp dword ptr [rcx+0001CAC8],01
+	dmc3.exe+1F5FCD - 48 8B D9          - mov rbx,rcx
 	*/
 }
 
@@ -7043,12 +7288,7 @@ void DeactivateDoppelganger(ActorData & actorData)
 	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
 
 	actorData.doppelganger = false;
-	/*
-	dmc3.exe+1E2AD8 - C6 81 62630000 00 - mov byte ptr [rcx+00006362],00
-	*/
-
 	cloneActorData.doppelganger = false;
-
 
 	actorData.var_6340 = 0;
 	actorData.var_6454 = 0;
@@ -7057,11 +7297,9 @@ void DeactivateDoppelganger(ActorData & actorData)
 	dmc3.exe+1E2AF6 - C7 81 54640000 00000000 - mov [rcx+00006454],00000000
 	*/
 
-
-
 	// only if devil, but shouldn't matter
 
-	actorData.var_3EC4 = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x1F0);
+	// actorData.var_3EC4 = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x1F0);
 	/*
 	dmc3.exe+1E2B37 - 48 8B 83 E83D0000 - mov rax,[rbx+00003DE8]
 	dmc3.exe+1E2B40 - 8B 88 F0010000    - mov ecx,[rax+000001F0]
@@ -9467,6 +9705,13 @@ export void Actor_MainLoopOnceSync()
 	// 	}
 	// }
 }
+
+/*
+
+dmc3.exe+1F5FC6 - 83 B9 C8CA0100 01     - cmp dword ptr [rcx+0001CAC8],01 { 1 }
+
+
+*/
 
 // @Todo: Add 0 and 1 check and rename to actorBaseAddr.
 export void Actor_ActorLoop(byte8 * baseAddr)
