@@ -26,7 +26,7 @@ var items =
 	[ "rotation"                            , "uint16"                  , 0xC0                             ],
 	[ "id"                                  , "uint8"                   , 0x118                            ],
 	[ "isClone"                             , "bool32"                  , 0x11C                            ],
-	[ "visible"                             , "uint32"                  , 0x120                            ],
+	[ "visibility"                             , "uint32"                  , 0x120                            ],
 	[ ""                                    , "float"                 , 0x1C0                            ],
 	[ ""                                    , "float"                 , 0x1C4                            ],
 
@@ -186,6 +186,8 @@ var items =
 	[ "doppelganger"                        , "bool"                    , 0x6362               ],
 	[ "styleExperience"                     , "float"                 , 0x6364                           ],
 
+	[ "speedMode"                         , "uint32"                    , 0x63D4               ],
+
 
 
 
@@ -241,7 +243,7 @@ var items =
 
 
 	[ "weapons[5]"                          , "uint8"                   , 0x6498                           ],
-	[ "weaponData[5]"                       , "WeaponData *"            , 0x64A0                           ],
+	[ "weaponDataAddr[5]"                   , "WeaponData *"            , 0x64A0                           ],
 	[ "weaponStatus[5]"                     , "uint32"                  , 0x64C8                           ],
 	[ "weaponLevels[5]"                     , "uint32"                  , 0x64DC                           ],
 
@@ -447,7 +449,7 @@ var extra =
 
 
 	[ "newWeapons[10]"      , "uint8"   ],
-	[ "newWeaponData[10]"   , "WeaponData *" ],
+	[ "newWeaponDataAddr[10]"   , "WeaponData *" ],
 	[ "newWeaponStatus[10]" , "uint32"  ],
 	[ "newWeaponLevels[10]" , "uint32"  ],
 	[ "newWeaponTimers[10]" , "float" ],

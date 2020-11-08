@@ -33,7 +33,7 @@ export Vector<byte8 *> Actor_actorBaseAddr;
 // export uint8 g_activeCharacter[PLAYER_COUNT] = {};
 
 
-
+bool g_quicksilver = false;
 
 
 
@@ -180,7 +180,9 @@ void SetMainActor(byte8 * baseAddr)
 	}();
 }
 
-// @Todo: Add quicksilver flag.
+
+
+
 template
 <
 	typename T1,
@@ -207,6 +209,21 @@ void CopyState
 	idleActorData.maxMagicPoints = activeActorData.maxMagicPoints;
 	idleActorData.styleRank      = activeActorData.styleRank;
 	idleActorData.styleMeter     = activeActorData.styleMeter;
+
+
+
+
+
+
+
+
+
+	//auto & speedMode = *reinterpret_cast<uint32 *>(baseAddr + 0x63D0 + 4);
+
+	
+
+	// idleActorData.quicksilver = activeActorData.quicksilver;
+	// idleActorData.speedMode = activeActorData.speedMode;
 
 	memcpy
 	(
@@ -342,12 +359,40 @@ void ToggleActor
 
 	ToggleInput(actorData, enable);
 
-	actorData.visible = (enable) ? 1 : 0;
 
-	if constexpr (debug)
+
+
+
+
 	{
-		actorData.visible = 1;
+		uint32 value = (g_quicksilver) ? 2 : 1;
+
+		actorData.visibility = (enable) ? value : 0;
+
+		if constexpr (debug)
+		{
+			actorData.visibility = value;
+		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	actorData.shadow = (enable) ? 1 : 0; // @Research: Add mission 2 exception.
 
@@ -1122,20 +1167,18 @@ bool SystemButtonCheck(T & actorData)
 	return true;
 }
 
-// @Todo: Sparda flag and template.
-bool IsNeroAngelo(ActorDataVergil & actorData)
+
+
+
+template <typename T>
+bool IsNeroAngelo(T & actorData)
 {
-	if
+	return
 	(
 		(actorData.character == CHAR_VERGIL) &&
 		actorData.neroAngelo &&
 		actorData.devil
-	)
-	{
-		return true;
-	}
-
-	return false;
+	);
 }
 
 
@@ -2147,7 +2190,7 @@ void UpdateForm
 			}
 			else
 			{
-				auto weapon = actorData.meleeWeaponIndex;
+				auto weapon = (WEAPON_REBELLION + actorData.meleeWeaponIndex);
 				if (weapon > WEAPON_BEOWULF_DANTE)
 				{
 					weapon = WEAPON_REBELLION;
@@ -2163,14 +2206,8 @@ void UpdateForm
 		}
 		else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 		{
-			// @Todo: Update name.
 			if (actorData.neroAngelo)
 			{
-				// if (actorData.queuedMeleeWeaponIndex == 2)
-				// {
-				// 	actorData.queuedMeleeWeaponIndex = 0;
-				// }
-
 				actorData.queuedModelIndex       = 1;
 				actorData.activeModelIndexMirror = 1;
 				actorData.activeDevil            = DEVIL_NERO_ANGELO;
@@ -2178,8 +2215,12 @@ void UpdateForm
 			}
 			else
 			{
-				auto weapon = actorData.activeMeleeWeaponIndex;
-				if ((weapon < WEAPON_YAMATO_VERGIL) || (weapon > WEAPON_YAMATO_FORCE_EDGE))
+				auto weapon = (WEAPON_YAMATO_VERGIL + actorData.queuedMeleeWeaponIndex);
+				if
+				(
+					(weapon < WEAPON_YAMATO_VERGIL    ) ||
+					(weapon > WEAPON_YAMATO_FORCE_EDGE)
+				)
 				{
 					weapon = WEAPON_YAMATO_VERGIL;
 				}
@@ -2264,7 +2305,7 @@ void InitWeapons(T & actorData)
 		0;
 
 		actorData.newWeapons[index] = weapon;
-		actorData.newWeaponData[index] = RegisterWeapon[weapon](actorData, weapon);
+		actorData.newWeaponDataAddr[index] = RegisterWeapon[weapon](actorData, weapon);
 		actorData.newWeaponStatus[index] = WEAPON_STATUS_READY;
 	}
 
@@ -2284,7 +2325,7 @@ void InitWeapons(T & actorData)
 
 		if (actorData.neroAngelo)
 		{
-			actorData.newWeaponData[3] = func_22CF00(actorData, 0);
+			actorData.newWeaponDataAddr[3] = func_22CF00(actorData, 0);
 		}
 	}
 }
@@ -2414,7 +2455,9 @@ void UpdateWeapons(T & actorData)
 }
 
 
-// @Todo: Update Character kinda, check characterIndex in create actor func and reset indices.
+
+
+
 
 
 
@@ -2464,26 +2507,28 @@ byte8 * CreateActor
 	{
 		switch (actorData.costume)
 		{
-		case COSTUME_DANTE_DMC1:
-		case COSTUME_DANTE_DMC1_NO_COAT:
-		case COSTUME_DANTE_SPARDA:
-		case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
-		{
-			actorData.sparda = true;
-			break;
-		}
+			case COSTUME_DANTE_DMC1:
+			case COSTUME_DANTE_DMC1_NO_COAT:
+			case COSTUME_DANTE_SPARDA:
+			case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
+			{
+				actorData.sparda = true;
+
+				break;
+			}
 		}
 	}
 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 	{
 		switch (actorData.costume)
 		{
-		case COSTUME_VERGIL_SPARDA:
-		case COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS:
-		{
-			actorData.neroAngelo = true;
-			break;
-		}
+			case COSTUME_VERGIL_SPARDA:
+			case COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS:
+			{
+				actorData.neroAngelo = true;
+
+				break;
+			}
 		}
 	}
 
@@ -2523,6 +2568,9 @@ byte8 * CreateActor
 		dmc3.exe+214B49 - E8 02160B00       - call dmc3.exe+2C6150
 		*/
 	}
+
+
+
 
 
 
@@ -3027,30 +3075,6 @@ void StyleSwitchController(T & actorData)
 		}
 	}
 
-
-
-
-
-
-	// if (actorData.newEntityIndex == ENTITY_MAIN)
-	// {
-	// 	if (actorData.buttons[2] & GAMEPAD_RIGHT_THUMB)
-	// 	{
-	// 		return;
-	// 	}
-	// }
-	// else if (actorData.newEntityIndex == ENTITY_CLONE)
-	// {
-	// 	if ((!actorData.buttons[2] & GAMEPAD_RIGHT_THUMB))
-	// 	{
-	// 		return;
-	// 	}
-	// }
-
-
-
-
-
 	for_all(uint8, styleButtonIndex, STYLE_COUNT)
 	{
 		auto & styleButton = characterData.styleButtons[styleButtonIndex];
@@ -3080,7 +3104,12 @@ void StyleSwitchController(T & actorData)
 			{
 				case STYLE_QUICKSILVER:
 				{
-					if (actorData.newPlayerIndex != 0)
+					if
+					(
+						(actorData.newPlayerIndex != 0) ||
+						(actorData.newCharacterIndex != 0) ||
+						(actorData.newEntityIndex != ENTITY_MAIN)
+					)
 					{
 						styleIndex = lastStyleIndex;
 
@@ -3130,10 +3159,6 @@ void StyleSwitchController(T & actorData)
 	{
 		return;
 	}
-	else if (actorData.newCharacterIndex != playerData.activeCharacterIndex)
-	{
-		return;
-	}
 	else if (actorData.newEntityIndex != ENTITY_MAIN)
 	{
 		return;
@@ -3151,20 +3176,38 @@ void MeleeWeaponSwitchController(T & actorData)
 {
 	auto & characterData = GetCharacterData(actorData);
 
-	if (0 < actorData.meleeWeaponSwitchTimeout)
-	{
-		return;
-	}
-
-	if (characterData.meleeWeaponCount < 2)
-	{
-		return;
-	}
-
 	bool update = false;
 
 	bool forward = false;
 	bool back = false;
+
+	{
+		bool condition = (actorData.buttons[0] & GAMEPAD_RIGHT_THUMB);
+
+		if (actorData.newEntityIndex == ENTITY_MAIN)
+		{
+			if (condition)
+			{
+				return;
+			}
+		}
+		else
+		{
+			if (!condition)
+			{
+				return;
+			}
+		}
+	}
+
+	if (0 < actorData.meleeWeaponSwitchTimeout)
+	{
+		return;
+	}
+	else if (characterData.meleeWeaponCount < 2)
+	{
+		return;
+	}
 
 	auto Forward = [&]()
 	{
@@ -3196,13 +3239,6 @@ void MeleeWeaponSwitchController(T & actorData)
 		back = true;
 	};
 
-	// if (!SystemButtonCheck(actorData))
-	// {
-	// 	return;
-	// }
-
-
-
 	if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
 	{
 		if (actorData.buttons[0] & GetBinding(BINDING_TAUNT))
@@ -3231,13 +3267,11 @@ void MeleeWeaponSwitchController(T & actorData)
 
 	// Nero Angelo Fix
 	{
-		auto weapon = characterData.meleeWeapons[characterData.meleeWeaponIndex];
-
-		auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
+		auto weapon = GetMeleeWeapon(actorData);
 
 		if
 		(
-			IsNeroAngelo(actorData2) &&
+			IsNeroAngelo(actorData) &&
 			(weapon == WEAPON_YAMATO_FORCE_EDGE)
 		)
 		{
@@ -3265,31 +3299,13 @@ void MeleeWeaponSwitchController(T & actorData)
 		return;
 	}
 
-
-
-
-
 	IntroduceHUDPointers(return);
-
-	// @Todo: Add GetMeleeWeapon.
-	//auto weapon = characterData.meleeWeapons[characterData.meleeWeaponIndex];
-
-	//auto weapon = GetMeleeWeapon(actorData);
 
 	HUD_UpdateWeaponIcon
 	(
 		HUD_BOTTOM_MELEE_WEAPON_1,
 		GetMeleeWeapon(actorData)
 	);
-
-
-
-
-
-
-
-
-
 
 	func_280120(hudBottom, 1, 0); // @Todo: Enums.
 
@@ -3299,20 +3315,37 @@ void MeleeWeaponSwitchController(T & actorData)
 template <typename T>
 void RangedWeaponSwitchController(T & actorData)
 {
-	auto & playerData = activeConfig.Actor.playerData[actorData.newPlayerIndex];
-	auto & characterData = playerData.characterData[actorData.newCharacterIndex][actorData.newEntityIndex];
+	auto & characterData = GetCharacterData(actorData);
+
+	bool update = false;
+
+	{
+		bool condition = (actorData.buttons[0] & GAMEPAD_RIGHT_THUMB);
+
+		if (actorData.newEntityIndex == ENTITY_MAIN)
+		{
+			if (condition)
+			{
+				return;
+			}
+		}
+		else
+		{
+			if (!condition)
+			{
+				return;
+			}
+		}
+	}
 
 	if (0 < actorData.rangedWeaponSwitchTimeout)
 	{
 		return;
 	}
-
-	if (characterData.rangedWeaponCount < 2)
+	else if (characterData.rangedWeaponCount < 2)
 	{
 		return;
 	}
-
-	bool update = false;
 
 	auto Forward = [&]()
 	{
@@ -3340,11 +3373,6 @@ void RangedWeaponSwitchController(T & actorData)
 		update = true;
 	};
 
-	if (!SystemButtonCheck(actorData))
-	{
-		return;
-	}
-
 	if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
 	{
 		if (actorData.buttons[0] & GetBinding(BINDING_TAUNT))
@@ -3370,29 +3398,18 @@ void RangedWeaponSwitchController(T & actorData)
 	{
 		return;
 	}
-
-	// if
-	// (
-	// 	(activeConfig.Actor.system == ACTOR_SYSTEM_DOPPELGANGER) &&
-	// 	(actorData.newIndex != ENTITY_MAIN)
-	// )
-	// {
-	// 	return;
-	// }
-	// else if
-	// (
-	// 	(activeConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER) &&
-	// 	(static_cast<uint8>(actorData.character) != g_activeCharacter[actorData.newPlayer])
-	// )
-	// {
-	// 	return;
-	// }
+	else if (actorData.newEntityIndex != ENTITY_MAIN)
+	{
+		return;
+	}
 
 	IntroduceHUDPointers(return);
 
-	auto weapon = characterData.rangedWeapons[characterData.rangedWeaponIndex];
-
-	HUD_UpdateWeaponIcon(HUD_BOTTOM_RANGED_WEAPON_1, weapon);
+	HUD_UpdateWeaponIcon
+	(
+		HUD_BOTTOM_RANGED_WEAPON_1,
+		GetRangedWeapon(actorData)
+	);
 
 	func_280120(hudBottom, 0, 0); // @Todo: Enums.
 
@@ -4791,8 +4808,8 @@ export void ToggleRelocations(bool enable)
 	}
 	// 0x64A0
 	{
-		constexpr auto off = offsetof(ActorData, weaponData[0]);
-		constexpr auto newOff = offsetof(ActorData, newWeaponData[0]);
+		constexpr auto off = offsetof(ActorData, weaponDataAddr[0]);
+		constexpr auto newOff = offsetof(ActorData, newWeaponDataAddr[0]);
 		static_assert(off == 0x64A0);
 		// Register Weapons
 		Write<uint32>((appBaseAddr + 0x1DED55 + 3), (enable) ? newOff : off); // dmc3.exe+1DED55 - 48 8D B1 A0640000 - LEA RSI,[RCX+000064A0]
@@ -4846,16 +4863,16 @@ export void ToggleRelocations(bool enable)
 	}
 	// 0x64B0
 	{
-		constexpr auto off = offsetof(ActorData, weaponData[2]);
-		constexpr auto newOff = offsetof(ActorData, newWeaponData[2]);
+		constexpr auto off = offsetof(ActorData, weaponDataAddr[2]);
+		constexpr auto newOff = offsetof(ActorData, newWeaponDataAddr[2]);
 		static_assert(off == 0x64B0);
 		// Register Weapons
 		Write<uint32>((appBaseAddr + 0x1DEE3E + 3), (enable) ? newOff : off); // dmc3.exe+1DEE3E - 48 8D B3 B0640000 - LEA RSI,[RBX+000064B0]
 	}
 	// 0x64B8
 	{
-		constexpr auto off = offsetof(ActorData, weaponData[3]);
-		constexpr auto newOff = offsetof(ActorData, newWeaponData[3]);
+		constexpr auto off = offsetof(ActorData, weaponDataAddr[3]);
+		constexpr auto newOff = offsetof(ActorData, newWeaponDataAddr[3]);
 		static_assert(off == 0x64B8);
 		// Register Weapons
 		Write<uint32>((appBaseAddr + 0x1DEF27 + 3), (enable) ? newOff : off); // dmc3.exe+1DEF27 - 48 89 83 B8640000 - MOV [RBX+000064B8],RAX
@@ -6593,18 +6610,153 @@ void ToggleMobility(bool enable)
 
 
 
-
-bool g_quicksilver = false;
-
-void ActivateQuicksilver(ActorData & actorData)
+void UpdateColorMatrices(ActorData & actorData)
 {
+	LogFunction();
+
+	if (actorData.visibility != 0)
+	{
+		actorData.visibility = (g_quicksilver) ? 2 : 1; // @Todo: Add enums.
+	}
+
+	uint16 value = (g_quicksilver) ? 128 : 0;
+
+	{
+		auto dest = reinterpret_cast<byte8 *>(&actorData.newModelData[0]);
+
+		*reinterpret_cast<uint16 *>(dest + 0x80 + 0x214) = value;
+	}
+
+	if (actorData.character == CHAR_BOB)
+	{
+		auto dest = reinterpret_cast<byte8 *>(&actorData);
+
+		*reinterpret_cast<uint16 *>(dest + 0x13E10 + 0x214) = value;
+	}
+
+	for_all(uint8, weaponIndex, WEAPON_COUNT)
+	{
+		auto & weapon = actorData.newWeapons[weaponIndex];
+		if (weapon >= MAX_WEAPON)
+		{
+			continue;
+		}
+
+		auto weaponDataAddr = actorData.newWeaponDataAddr[weaponIndex];
+		if (!weaponDataAddr)
+		{
+			continue;
+		}
+
+		auto dest = reinterpret_cast<byte8 *>(weaponDataAddr);
+
+		constexpr uint32 offs[MAX_WEAPON] =
+		{
+			0x280,
+			0x880,
+			0x340,
+			0x300,
+			0x3C0,
+			0,
+			0x280,
+			0x400,
+			0x200,
+			0x280,
+			0,
+			0,
+			0x3C0,
+			0x280,
+			0,
+		};
+
+		auto off = offs[weapon];
+
+		switch (weapon)
+		{
+			case WEAPON_EBONY_IVORY:
+			{
+				Log("ebony ivory %u", weapon);
+
+				*reinterpret_cast<uint16 *>(dest + 0x200 + 0x214) = value;
+				*reinterpret_cast<uint16 *>(dest + 0x980 + 0x214) = value;
+
+				break;
+			}
+			case WEAPON_YAMATO_VERGIL:
+			case WEAPON_YAMATO_BOB:
+			{
+				Log("yamato %u", weapon);
+
+				*reinterpret_cast<uint16 *>(dest + 0xF00  + 0x214) = value;
+				*reinterpret_cast<uint16 *>(dest + 0x1680 + 0x214) = value;
+
+				break;
+			}
+			default:
+			{
+				Log("default %u", weapon);
+
+				*reinterpret_cast<uint16 *>(dest + off + 0x214) = value;
+
+				break;
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+__declspec(dllexport) void ActivateQuicksilver(ActorData & actorData)
+{
+	LogFunction();
+
 	g_quicksilver = true;
+
+	for_each(uint32, index, 2, Actor_actorBaseAddr.count)
+	{
+		auto actorBaseAddr = Actor_actorBaseAddr[index];
+		if (!actorBaseAddr)
+		{
+			continue;
+		}
+		auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+
+		UpdateColorMatrices(actorData);
+
+		// func_1FCA20(actorBaseAddr, 2);
+	}
 }
 
-void DeactivateQuicksilver(ActorData & actorData)
+__declspec(dllexport) void DeactivateQuicksilver(ActorData & actorData)
 {
+	LogFunction();
+
 	g_quicksilver = false;
+
+	for_each(uint32, index, 2, Actor_actorBaseAddr.count)
+	{
+		auto actorBaseAddr = Actor_actorBaseAddr[index];
+		if (!actorBaseAddr)
+		{
+			continue;
+		}
+		auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+
+		//func_1FCA20(actorBaseAddr, 1);
+
+
+		UpdateColorMatrices(actorData);
+	}
 }
+
+
 
 
 
@@ -6928,6 +7080,12 @@ void InitColor()
 
 byte8 * UpdateActorSpeedAddr = 0;
 
+// @Todo: Quicksilver enemy speed.
+// @Todo: Check turbo modifier.
+// @Todo: Add quicksilver check.
+// Geryon turns Quicksilver forcefully off.
+// When hit by Geryon's Time Lag, Quicksilver is turned off.
+// So we can easily check against quicksilver flag.
 void UpdateActorSpeed(byte8 * baseAddr)
 {
 	for_all(uint32, index, Actor_actorBaseAddr.count)
@@ -6939,13 +7097,17 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 		auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 
-		auto & speedMode = *reinterpret_cast<uint32 *>(baseAddr + 0x63D0 + 4);
+		actorData.speed = 1.0f;
+
+		continue;
+
+		//auto & speedMode = *reinterpret_cast<uint32 *>(baseAddr + 0x63D0 + 4);
 		/*
 		dmc3.exe+1F8787 - 48 8D 8F D0630000 - lea rcx,[rdi+000063D0]
 		dmc3.exe+1F878E - E8 2D200800       - call dmc3.exe+27A7C0
 		*/
 
-		switch (speedMode)
+		switch (actorData.speedMode)
 		{
 			case 0:
 				actorData.speed = 1.0f;
@@ -8000,25 +8162,25 @@ export void Actor_Init()
 		*/
 	}
 
-	// Summoned Swords Quicksilver Check
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
-			0x8A, 0x00,                                                 // mov al,[rax]
-			0x84, 0xC0,                                                 // test al,al
-			0x75, 0x05,                                                 // jne short
-			0xF3, 0x0F, 0x5C, 0x43, 0x14,                               // subss xmm0,[rbx+14]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1DB8FD), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<bool **>(func.sect0 + 2) = &g_quicksilver;
-		SummonedSwordsQuicksilverCheckAddr = func.addr;
-		/*
-		dmc3.exe+1DB8F8 - F3 0F5C 43 14 - subss xmm0,[rbx+14]
-		dmc3.exe+1DB8FD - 0F2F F0       - comiss xmm6,xmm0
-		*/
-	}
+	// // Summoned Swords Quicksilver Check
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
+	// 		0x8A, 0x00,                                                 // mov al,[rax]
+	// 		0x84, 0xC0,                                                 // test al,al
+	// 		0x75, 0x05,                                                 // jne short
+	// 		0xF3, 0x0F, 0x5C, 0x43, 0x14,                               // subss xmm0,[rbx+14]
+	// 	};
+	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1DB8FD), false, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	*reinterpret_cast<bool **>(func.sect0 + 2) = &g_quicksilver;
+	// 	SummonedSwordsQuicksilverCheckAddr = func.addr;
+	// 	/*
+	// 	dmc3.exe+1DB8F8 - F3 0F5C 43 14 - subss xmm0,[rbx+14]
+	// 	dmc3.exe+1DB8FD - 0F2F F0       - comiss xmm6,xmm0
+	// 	*/
+	// }
 
 	// Dot Shadow Check
 	{
@@ -9328,25 +9490,26 @@ export void UpdateCrazyComboLevelMultiplier()
 
 export void ToggleChronoSwords(bool enable)
 {
-	{
-		auto dest = (appBaseAddr + 0x1DB8F8);
-		if (enable)
-		{
-			WriteJump(dest, SummonedSwordsQuicksilverCheckAddr);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0xF3, 0x0F, 0x5C, 0x43, 0x14, // subss xmm0,[rbx+14]
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1DB8F8 - F3 0F5C 43 14 - subss xmm0,[rbx+14]
-		dmc3.exe+1DB8FD - 0F2F F0       - comiss xmm6,xmm0
-		*/
-	}
+	return;
+	// {
+	// 	auto dest = (appBaseAddr + 0x1DB8F8);
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(dest, SummonedSwordsQuicksilverCheckAddr);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0xF3, 0x0F, 0x5C, 0x43, 0x14, // subss xmm0,[rbx+14]
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1DB8F8 - F3 0F5C 43 14 - subss xmm0,[rbx+14]
+	// 	dmc3.exe+1DB8FD - 0F2F F0       - comiss xmm6,xmm0
+	// 	*/
+	// }
 }
 
 #pragma region Events

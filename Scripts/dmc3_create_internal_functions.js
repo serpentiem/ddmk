@@ -139,6 +139,10 @@ var items =
 
 
 
+	[ 0x1FCA20 , "void", "byte8 * actorBaseAddr, uint32 visibility", "", "Update Color Matrices" ],
+
+
+
 
 
 	[ 0x32E5F0, "float32"   , "vec4 & position", "0, true, false", "" ],
@@ -172,8 +176,7 @@ dmc3.exe+1BB69D - E8 4E2F1700           - call dmc3.exe+32E5F0 { actor position 
 	[ 0x8AC80 , "void"   , "ModelData & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool"    , "0, true, true, 0, 0, 0, 0, 1", "Play Motion"                         ],
 
 
-
-
+	
 
 
 	[ 0x1EFB90, "void", "byte8 * actorData, uint32 group, uint32 index, float32, int8, uint8, uint8", "0, true, true, 0, 0, 0, 0, 3", "Play motion and update state." ],

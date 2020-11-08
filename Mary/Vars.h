@@ -117,7 +117,7 @@ enum WEAPON
 	WEAPON_VOID = 255,
 };
 
-enum WEAPON_COUNT
+enum
 {
 	WEAPON_COUNT_DANTE = 10,
 	WEAPON_COUNT_BOB = 1,
@@ -2013,6 +2013,7 @@ enum
 	ENTITY_COUNT = 2,
 	CHARACTER_COUNT = 3,
 	STYLE_COUNT = 4,
+	WEAPON_COUNT = 10,
 };
 
 
@@ -2123,7 +2124,7 @@ struct ActorData
 	uint8 id; // 0x118
 	_(3);
 	bool32 isClone; // 0x11C
-	uint32 visible; // 0x120
+	uint32 visibility; // 0x120
 	_(156);
 	float var_1C0; // 0x1C0
 	float var_1C4; // 0x1C4
@@ -2230,7 +2231,9 @@ struct ActorData
 	bool doppelganger; // 0x6362
 	_(1);
 	float styleExperience; // 0x6364
-	_(168);
+	_(108);
+	uint32 speedMode; // 0x63D4
+	_(56);
 	byte8 var_6410[40]; // 0x6410
 	byte8 * var_6438; // 0x6438
 	uint32 var_6440; // 0x6440
@@ -2250,7 +2253,7 @@ struct ActorData
 	uint32 rangedWeaponIndex; // 0x6494
 	uint8 weapons[5]; // 0x6498
 	_(3);
-	WeaponData * weaponData[5]; // 0x64A0
+	WeaponData * weaponDataAddr[5]; // 0x64A0
 	uint32 weaponStatus[5]; // 0x64C8
 	uint32 weaponLevels[5]; // 0x64DC
 	uint8 activeMeleeWeapon; // 0x64F0
@@ -2300,7 +2303,7 @@ struct ActorData
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x1ABE0
 	uint8 newWeapons[10]; // 0x1C9E0
 	_(6);
-	WeaponData * newWeaponData[10]; // 0x1C9F0
+	WeaponData * newWeaponDataAddr[10]; // 0x1C9F0
 	uint32 newWeaponStatus[10]; // 0x1CA40
 	_(8);
 	uint32 newWeaponLevels[10]; // 0x1CA70
@@ -2351,7 +2354,7 @@ struct ActorDataDante
 	uint8 id; // 0x118
 	_(3);
 	bool32 isClone; // 0x11C
-	uint32 visible; // 0x120
+	uint32 visibility; // 0x120
 	_(156);
 	float var_1C0; // 0x1C0
 	float var_1C4; // 0x1C4
@@ -2458,7 +2461,9 @@ struct ActorDataDante
 	bool doppelganger; // 0x6362
 	_(1);
 	float styleExperience; // 0x6364
-	_(168);
+	_(108);
+	uint32 speedMode; // 0x63D4
+	_(56);
 	byte8 var_6410[40]; // 0x6410
 	byte8 * var_6438; // 0x6438
 	uint32 var_6440; // 0x6440
@@ -2478,7 +2483,7 @@ struct ActorDataDante
 	uint32 rangedWeaponIndex; // 0x6494
 	uint8 weapons[5]; // 0x6498
 	_(3);
-	WeaponData * weaponData[5]; // 0x64A0
+	WeaponData * weaponDataAddr[5]; // 0x64A0
 	uint32 weaponStatus[5]; // 0x64C8
 	uint32 weaponLevels[5]; // 0x64DC
 	uint8 activeMeleeWeapon; // 0x64F0
@@ -2545,7 +2550,7 @@ struct ActorDataDante
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x1ABE0
 	uint8 newWeapons[10]; // 0x1C9E0
 	_(6);
-	WeaponData * newWeaponData[10]; // 0x1C9F0
+	WeaponData * newWeaponDataAddr[10]; // 0x1C9F0
 	uint32 newWeaponStatus[10]; // 0x1CA40
 	_(8);
 	uint32 newWeaponLevels[10]; // 0x1CA70
@@ -2596,7 +2601,7 @@ struct ActorDataBob
 	uint8 id; // 0x118
 	_(3);
 	bool32 isClone; // 0x11C
-	uint32 visible; // 0x120
+	uint32 visibility; // 0x120
 	_(156);
 	float var_1C0; // 0x1C0
 	float var_1C4; // 0x1C4
@@ -2703,7 +2708,9 @@ struct ActorDataBob
 	bool doppelganger; // 0x6362
 	_(1);
 	float styleExperience; // 0x6364
-	_(168);
+	_(108);
+	uint32 speedMode; // 0x63D4
+	_(56);
 	byte8 var_6410[40]; // 0x6410
 	byte8 * var_6438; // 0x6438
 	uint32 var_6440; // 0x6440
@@ -2723,7 +2730,7 @@ struct ActorDataBob
 	uint32 rangedWeaponIndex; // 0x6494
 	uint8 weapons[5]; // 0x6498
 	_(3);
-	WeaponData * weaponData[5]; // 0x64A0
+	WeaponData * weaponDataAddr[5]; // 0x64A0
 	uint32 weaponStatus[5]; // 0x64C8
 	uint32 weaponLevels[5]; // 0x64DC
 	uint8 activeMeleeWeapon; // 0x64F0
@@ -2773,7 +2780,7 @@ struct ActorDataBob
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x1ABE0
 	uint8 newWeapons[10]; // 0x1C9E0
 	_(6);
-	WeaponData * newWeaponData[10]; // 0x1C9F0
+	WeaponData * newWeaponDataAddr[10]; // 0x1C9F0
 	uint32 newWeaponStatus[10]; // 0x1CA40
 	_(8);
 	uint32 newWeaponLevels[10]; // 0x1CA70
@@ -2824,7 +2831,7 @@ struct ActorDataLady
 	uint8 id; // 0x118
 	_(3);
 	bool32 isClone; // 0x11C
-	uint32 visible; // 0x120
+	uint32 visibility; // 0x120
 	_(156);
 	float var_1C0; // 0x1C0
 	float var_1C4; // 0x1C4
@@ -2931,7 +2938,9 @@ struct ActorDataLady
 	bool doppelganger; // 0x6362
 	_(1);
 	float styleExperience; // 0x6364
-	_(168);
+	_(108);
+	uint32 speedMode; // 0x63D4
+	_(56);
 	byte8 var_6410[40]; // 0x6410
 	byte8 * var_6438; // 0x6438
 	uint32 var_6440; // 0x6440
@@ -2951,7 +2960,7 @@ struct ActorDataLady
 	uint32 rangedWeaponIndex; // 0x6494
 	uint8 weapons[5]; // 0x6498
 	_(3);
-	WeaponData * weaponData[5]; // 0x64A0
+	WeaponData * weaponDataAddr[5]; // 0x64A0
 	uint32 weaponStatus[5]; // 0x64C8
 	uint32 weaponLevels[5]; // 0x64DC
 	uint8 activeMeleeWeapon; // 0x64F0
@@ -3001,7 +3010,7 @@ struct ActorDataLady
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x1ABE0
 	uint8 newWeapons[10]; // 0x1C9E0
 	_(6);
-	WeaponData * newWeaponData[10]; // 0x1C9F0
+	WeaponData * newWeaponDataAddr[10]; // 0x1C9F0
 	uint32 newWeaponStatus[10]; // 0x1CA40
 	_(8);
 	uint32 newWeaponLevels[10]; // 0x1CA70
@@ -3052,7 +3061,7 @@ struct ActorDataVergil
 	uint8 id; // 0x118
 	_(3);
 	bool32 isClone; // 0x11C
-	uint32 visible; // 0x120
+	uint32 visibility; // 0x120
 	_(156);
 	float var_1C0; // 0x1C0
 	float var_1C4; // 0x1C4
@@ -3159,7 +3168,9 @@ struct ActorDataVergil
 	bool doppelganger; // 0x6362
 	_(1);
 	float styleExperience; // 0x6364
-	_(168);
+	_(108);
+	uint32 speedMode; // 0x63D4
+	_(56);
 	byte8 var_6410[40]; // 0x6410
 	byte8 * var_6438; // 0x6438
 	uint32 var_6440; // 0x6440
@@ -3179,7 +3190,7 @@ struct ActorDataVergil
 	uint32 rangedWeaponIndex; // 0x6494
 	uint8 weapons[5]; // 0x6498
 	_(3);
-	WeaponData * weaponData[5]; // 0x64A0
+	WeaponData * weaponDataAddr[5]; // 0x64A0
 	uint32 weaponStatus[5]; // 0x64C8
 	uint32 weaponLevels[5]; // 0x64DC
 	uint8 activeMeleeWeapon; // 0x64F0
@@ -3237,7 +3248,7 @@ struct ActorDataVergil
 	PhysicsLinkData newDevilSubmodelPhysicsLinkData[10][4]; // 0x1ABE0
 	uint8 newWeapons[10]; // 0x1C9E0
 	_(6);
-	WeaponData * newWeaponData[10]; // 0x1C9F0
+	WeaponData * newWeaponDataAddr[10]; // 0x1C9F0
 	uint32 newWeaponStatus[10]; // 0x1CA40
 	_(8);
 	uint32 newWeaponLevels[10]; // 0x1CA70
@@ -3277,7 +3288,7 @@ static_assert(offsetof(ActorData, pullMultiplier) == 0xA4);
 static_assert(offsetof(ActorData, rotation) == 0xC0);
 static_assert(offsetof(ActorData, id) == 0x118);
 static_assert(offsetof(ActorData, isClone) == 0x11C);
-static_assert(offsetof(ActorData, visible) == 0x120);
+static_assert(offsetof(ActorData, visibility) == 0x120);
 static_assert(offsetof(ActorData, var_1C0) == 0x1C0);
 static_assert(offsetof(ActorData, var_1C4) == 0x1C4);
 static_assert(offsetof(ActorData, modelData) == 0x200);
@@ -3349,6 +3360,7 @@ static_assert(offsetof(ActorData, trickDownCount) == 0x6360);
 static_assert(offsetof(ActorData, quicksilver) == 0x6361);
 static_assert(offsetof(ActorData, doppelganger) == 0x6362);
 static_assert(offsetof(ActorData, styleExperience) == 0x6364);
+static_assert(offsetof(ActorData, speedMode) == 0x63D4);
 static_assert(offsetof(ActorData, var_6410) == 0x6410);
 static_assert(offsetof(ActorData, var_6438) == 0x6438);
 static_assert(offsetof(ActorData, var_6440) == 0x6440);
@@ -3363,7 +3375,7 @@ static_assert(offsetof(ActorData, activeWeapon) == 0x648D);
 static_assert(offsetof(ActorData, meleeWeaponIndex) == 0x6490);
 static_assert(offsetof(ActorData, rangedWeaponIndex) == 0x6494);
 static_assert(offsetof(ActorData, weapons) == 0x6498);
-static_assert(offsetof(ActorData, weaponData) == 0x64A0);
+static_assert(offsetof(ActorData, weaponDataAddr) == 0x64A0);
 static_assert(offsetof(ActorData, weaponStatus) == 0x64C8);
 static_assert(offsetof(ActorData, weaponLevels) == 0x64DC);
 static_assert(offsetof(ActorData, activeMeleeWeapon) == 0x64F0);
@@ -3400,7 +3412,7 @@ static_assert(offsetof(ActorData, newDevilModelPhysicsMetadataPool) == 0x19CE0);
 static_assert(offsetof(ActorData, newDevilSubmodelPhysicsData) == 0x1A280);
 static_assert(offsetof(ActorData, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
 static_assert(offsetof(ActorData, newWeapons) == 0x1C9E0);
-static_assert(offsetof(ActorData, newWeaponData) == 0x1C9F0);
+static_assert(offsetof(ActorData, newWeaponDataAddr) == 0x1C9F0);
 static_assert(offsetof(ActorData, newWeaponStatus) == 0x1CA40);
 static_assert(offsetof(ActorData, newWeaponLevels) == 0x1CA70);
 static_assert(offsetof(ActorData, newWeaponTimers) == 0x1CAA0);
@@ -3431,7 +3443,7 @@ static_assert(offsetof(ActorDataDante, pullMultiplier) == 0xA4);
 static_assert(offsetof(ActorDataDante, rotation) == 0xC0);
 static_assert(offsetof(ActorDataDante, id) == 0x118);
 static_assert(offsetof(ActorDataDante, isClone) == 0x11C);
-static_assert(offsetof(ActorDataDante, visible) == 0x120);
+static_assert(offsetof(ActorDataDante, visibility) == 0x120);
 static_assert(offsetof(ActorDataDante, var_1C0) == 0x1C0);
 static_assert(offsetof(ActorDataDante, var_1C4) == 0x1C4);
 static_assert(offsetof(ActorDataDante, modelData) == 0x200);
@@ -3503,6 +3515,7 @@ static_assert(offsetof(ActorDataDante, trickDownCount) == 0x6360);
 static_assert(offsetof(ActorDataDante, quicksilver) == 0x6361);
 static_assert(offsetof(ActorDataDante, doppelganger) == 0x6362);
 static_assert(offsetof(ActorDataDante, styleExperience) == 0x6364);
+static_assert(offsetof(ActorDataDante, speedMode) == 0x63D4);
 static_assert(offsetof(ActorDataDante, var_6410) == 0x6410);
 static_assert(offsetof(ActorDataDante, var_6438) == 0x6438);
 static_assert(offsetof(ActorDataDante, var_6440) == 0x6440);
@@ -3517,7 +3530,7 @@ static_assert(offsetof(ActorDataDante, activeWeapon) == 0x648D);
 static_assert(offsetof(ActorDataDante, meleeWeaponIndex) == 0x6490);
 static_assert(offsetof(ActorDataDante, rangedWeaponIndex) == 0x6494);
 static_assert(offsetof(ActorDataDante, weapons) == 0x6498);
-static_assert(offsetof(ActorDataDante, weaponData) == 0x64A0);
+static_assert(offsetof(ActorDataDante, weaponDataAddr) == 0x64A0);
 static_assert(offsetof(ActorDataDante, weaponStatus) == 0x64C8);
 static_assert(offsetof(ActorDataDante, weaponLevels) == 0x64DC);
 static_assert(offsetof(ActorDataDante, activeMeleeWeapon) == 0x64F0);
@@ -3565,7 +3578,7 @@ static_assert(offsetof(ActorDataDante, newDevilModelPhysicsMetadataPool) == 0x19
 static_assert(offsetof(ActorDataDante, newDevilSubmodelPhysicsData) == 0x1A280);
 static_assert(offsetof(ActorDataDante, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
 static_assert(offsetof(ActorDataDante, newWeapons) == 0x1C9E0);
-static_assert(offsetof(ActorDataDante, newWeaponData) == 0x1C9F0);
+static_assert(offsetof(ActorDataDante, newWeaponDataAddr) == 0x1C9F0);
 static_assert(offsetof(ActorDataDante, newWeaponStatus) == 0x1CA40);
 static_assert(offsetof(ActorDataDante, newWeaponLevels) == 0x1CA70);
 static_assert(offsetof(ActorDataDante, newWeaponTimers) == 0x1CAA0);
@@ -3596,7 +3609,7 @@ static_assert(offsetof(ActorDataBob, pullMultiplier) == 0xA4);
 static_assert(offsetof(ActorDataBob, rotation) == 0xC0);
 static_assert(offsetof(ActorDataBob, id) == 0x118);
 static_assert(offsetof(ActorDataBob, isClone) == 0x11C);
-static_assert(offsetof(ActorDataBob, visible) == 0x120);
+static_assert(offsetof(ActorDataBob, visibility) == 0x120);
 static_assert(offsetof(ActorDataBob, var_1C0) == 0x1C0);
 static_assert(offsetof(ActorDataBob, var_1C4) == 0x1C4);
 static_assert(offsetof(ActorDataBob, modelData) == 0x200);
@@ -3668,6 +3681,7 @@ static_assert(offsetof(ActorDataBob, trickDownCount) == 0x6360);
 static_assert(offsetof(ActorDataBob, quicksilver) == 0x6361);
 static_assert(offsetof(ActorDataBob, doppelganger) == 0x6362);
 static_assert(offsetof(ActorDataBob, styleExperience) == 0x6364);
+static_assert(offsetof(ActorDataBob, speedMode) == 0x63D4);
 static_assert(offsetof(ActorDataBob, var_6410) == 0x6410);
 static_assert(offsetof(ActorDataBob, var_6438) == 0x6438);
 static_assert(offsetof(ActorDataBob, var_6440) == 0x6440);
@@ -3682,7 +3696,7 @@ static_assert(offsetof(ActorDataBob, activeWeapon) == 0x648D);
 static_assert(offsetof(ActorDataBob, meleeWeaponIndex) == 0x6490);
 static_assert(offsetof(ActorDataBob, rangedWeaponIndex) == 0x6494);
 static_assert(offsetof(ActorDataBob, weapons) == 0x6498);
-static_assert(offsetof(ActorDataBob, weaponData) == 0x64A0);
+static_assert(offsetof(ActorDataBob, weaponDataAddr) == 0x64A0);
 static_assert(offsetof(ActorDataBob, weaponStatus) == 0x64C8);
 static_assert(offsetof(ActorDataBob, weaponLevels) == 0x64DC);
 static_assert(offsetof(ActorDataBob, activeMeleeWeapon) == 0x64F0);
@@ -3719,7 +3733,7 @@ static_assert(offsetof(ActorDataBob, newDevilModelPhysicsMetadataPool) == 0x19CE
 static_assert(offsetof(ActorDataBob, newDevilSubmodelPhysicsData) == 0x1A280);
 static_assert(offsetof(ActorDataBob, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
 static_assert(offsetof(ActorDataBob, newWeapons) == 0x1C9E0);
-static_assert(offsetof(ActorDataBob, newWeaponData) == 0x1C9F0);
+static_assert(offsetof(ActorDataBob, newWeaponDataAddr) == 0x1C9F0);
 static_assert(offsetof(ActorDataBob, newWeaponStatus) == 0x1CA40);
 static_assert(offsetof(ActorDataBob, newWeaponLevels) == 0x1CA70);
 static_assert(offsetof(ActorDataBob, newWeaponTimers) == 0x1CAA0);
@@ -3750,7 +3764,7 @@ static_assert(offsetof(ActorDataLady, pullMultiplier) == 0xA4);
 static_assert(offsetof(ActorDataLady, rotation) == 0xC0);
 static_assert(offsetof(ActorDataLady, id) == 0x118);
 static_assert(offsetof(ActorDataLady, isClone) == 0x11C);
-static_assert(offsetof(ActorDataLady, visible) == 0x120);
+static_assert(offsetof(ActorDataLady, visibility) == 0x120);
 static_assert(offsetof(ActorDataLady, var_1C0) == 0x1C0);
 static_assert(offsetof(ActorDataLady, var_1C4) == 0x1C4);
 static_assert(offsetof(ActorDataLady, modelData) == 0x200);
@@ -3822,6 +3836,7 @@ static_assert(offsetof(ActorDataLady, trickDownCount) == 0x6360);
 static_assert(offsetof(ActorDataLady, quicksilver) == 0x6361);
 static_assert(offsetof(ActorDataLady, doppelganger) == 0x6362);
 static_assert(offsetof(ActorDataLady, styleExperience) == 0x6364);
+static_assert(offsetof(ActorDataLady, speedMode) == 0x63D4);
 static_assert(offsetof(ActorDataLady, var_6410) == 0x6410);
 static_assert(offsetof(ActorDataLady, var_6438) == 0x6438);
 static_assert(offsetof(ActorDataLady, var_6440) == 0x6440);
@@ -3836,7 +3851,7 @@ static_assert(offsetof(ActorDataLady, activeWeapon) == 0x648D);
 static_assert(offsetof(ActorDataLady, meleeWeaponIndex) == 0x6490);
 static_assert(offsetof(ActorDataLady, rangedWeaponIndex) == 0x6494);
 static_assert(offsetof(ActorDataLady, weapons) == 0x6498);
-static_assert(offsetof(ActorDataLady, weaponData) == 0x64A0);
+static_assert(offsetof(ActorDataLady, weaponDataAddr) == 0x64A0);
 static_assert(offsetof(ActorDataLady, weaponStatus) == 0x64C8);
 static_assert(offsetof(ActorDataLady, weaponLevels) == 0x64DC);
 static_assert(offsetof(ActorDataLady, activeMeleeWeapon) == 0x64F0);
@@ -3873,7 +3888,7 @@ static_assert(offsetof(ActorDataLady, newDevilModelPhysicsMetadataPool) == 0x19C
 static_assert(offsetof(ActorDataLady, newDevilSubmodelPhysicsData) == 0x1A280);
 static_assert(offsetof(ActorDataLady, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
 static_assert(offsetof(ActorDataLady, newWeapons) == 0x1C9E0);
-static_assert(offsetof(ActorDataLady, newWeaponData) == 0x1C9F0);
+static_assert(offsetof(ActorDataLady, newWeaponDataAddr) == 0x1C9F0);
 static_assert(offsetof(ActorDataLady, newWeaponStatus) == 0x1CA40);
 static_assert(offsetof(ActorDataLady, newWeaponLevels) == 0x1CA70);
 static_assert(offsetof(ActorDataLady, newWeaponTimers) == 0x1CAA0);
@@ -3904,7 +3919,7 @@ static_assert(offsetof(ActorDataVergil, pullMultiplier) == 0xA4);
 static_assert(offsetof(ActorDataVergil, rotation) == 0xC0);
 static_assert(offsetof(ActorDataVergil, id) == 0x118);
 static_assert(offsetof(ActorDataVergil, isClone) == 0x11C);
-static_assert(offsetof(ActorDataVergil, visible) == 0x120);
+static_assert(offsetof(ActorDataVergil, visibility) == 0x120);
 static_assert(offsetof(ActorDataVergil, var_1C0) == 0x1C0);
 static_assert(offsetof(ActorDataVergil, var_1C4) == 0x1C4);
 static_assert(offsetof(ActorDataVergil, modelData) == 0x200);
@@ -3976,6 +3991,7 @@ static_assert(offsetof(ActorDataVergil, trickDownCount) == 0x6360);
 static_assert(offsetof(ActorDataVergil, quicksilver) == 0x6361);
 static_assert(offsetof(ActorDataVergil, doppelganger) == 0x6362);
 static_assert(offsetof(ActorDataVergil, styleExperience) == 0x6364);
+static_assert(offsetof(ActorDataVergil, speedMode) == 0x63D4);
 static_assert(offsetof(ActorDataVergil, var_6410) == 0x6410);
 static_assert(offsetof(ActorDataVergil, var_6438) == 0x6438);
 static_assert(offsetof(ActorDataVergil, var_6440) == 0x6440);
@@ -3990,7 +4006,7 @@ static_assert(offsetof(ActorDataVergil, activeWeapon) == 0x648D);
 static_assert(offsetof(ActorDataVergil, meleeWeaponIndex) == 0x6490);
 static_assert(offsetof(ActorDataVergil, rangedWeaponIndex) == 0x6494);
 static_assert(offsetof(ActorDataVergil, weapons) == 0x6498);
-static_assert(offsetof(ActorDataVergil, weaponData) == 0x64A0);
+static_assert(offsetof(ActorDataVergil, weaponDataAddr) == 0x64A0);
 static_assert(offsetof(ActorDataVergil, weaponStatus) == 0x64C8);
 static_assert(offsetof(ActorDataVergil, weaponLevels) == 0x64DC);
 static_assert(offsetof(ActorDataVergil, activeMeleeWeapon) == 0x64F0);
@@ -4032,7 +4048,7 @@ static_assert(offsetof(ActorDataVergil, newDevilModelPhysicsMetadataPool) == 0x1
 static_assert(offsetof(ActorDataVergil, newDevilSubmodelPhysicsData) == 0x1A280);
 static_assert(offsetof(ActorDataVergil, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
 static_assert(offsetof(ActorDataVergil, newWeapons) == 0x1C9E0);
-static_assert(offsetof(ActorDataVergil, newWeaponData) == 0x1C9F0);
+static_assert(offsetof(ActorDataVergil, newWeaponDataAddr) == 0x1C9F0);
 static_assert(offsetof(ActorDataVergil, newWeaponStatus) == 0x1CA40);
 static_assert(offsetof(ActorDataVergil, newWeaponLevels) == 0x1CA70);
 static_assert(offsetof(ActorDataVergil, newWeaponTimers) == 0x1CAA0);
