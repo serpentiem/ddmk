@@ -1,3 +1,5 @@
+// @Todo: Update.
+
 module;
 #include "../Core/Core.h"
 
@@ -7,8 +9,8 @@ export module Scene;
 import Actor;
 import Config;
 import Event;
+import Global;
 
-export uint8 g_scene = 0;
 
 
 void SetScene

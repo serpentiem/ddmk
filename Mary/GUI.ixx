@@ -15,14 +15,15 @@ import Camera;
 import Config;
 import Event;
 import File;
+import Global;
 import Graphics;
 import Internal;
 import Model;
 import Other;
-import Pause;
+//import Pause;
 import Scene;
 import Speed;
-import State;
+//import State;
 import Training;
 import Window;
 
@@ -3138,7 +3139,7 @@ void Main()
 		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
 	}
 
-	if (ImGui::Begin("DDMK 2.7 Mary Nightly 1 November 2020", &pause))
+	if (ImGui::Begin("DDMK 2.7 Mary Nightly 1 November 2020", &g_pause))
 	{
 		ImGui::Text("");
 
@@ -3282,7 +3283,7 @@ export void GUI_Render()
 		Overlay2();
 	}
 
-	if (pause)
+	if (g_pause)
 	{
 		Main();
 	}

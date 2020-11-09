@@ -1,3 +1,5 @@
+// @Todo: Update.
+
 module;
 #include "../Core/Core.h"
 
@@ -24,6 +26,8 @@ export inline byte16 GetBinding(uint8 index)
 	return (reinterpret_cast<byte16 *>(appBaseAddr + 0xD6CE80 + 0xA))[index];
 }
 
+// @Todo: Clean, add proper indices.
+// @Todo: Use ActorData.
 export inline uint8 GetRelativeTiltDirection(byte8 * baseAddr)
 {
 	auto & gamepad = GetGamepad(0);

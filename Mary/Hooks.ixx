@@ -16,8 +16,8 @@ import ImGui_D3D11;
 import ImGui_DirectInput8;
 import ImGui_User;
 import Config;
+import Global;
 import GUI;
-import Pause;
 import Window;
 
 #define debug true
@@ -209,15 +209,34 @@ LRESULT User_Hook_WindowProc
 	}
 	switch (message)
 	{
-	case WM_SETCURSOR:
-		ImGui_User_UpdateMouseCursor(window);
-		break;
-	case WM_CHAR:
-		ImGui::GetIO().AddInputCharacter((uint16)wParameter);
-		return 0;
-	case DM_PAUSE:
-		Pause(pause);
-		return 1;
+		case WM_SETCURSOR:
+		{
+			ImGui_User_UpdateMouseCursor(window);
+
+			break;
+		}
+		case WM_CHAR:
+		{
+			ImGui::GetIO().AddInputCharacter((uint16)wParameter);
+
+			return 0;
+		}
+		case DM_PAUSE:
+		{
+			if (g_pause)
+			{
+				Windows_ToggleCursor(true);
+			}
+			else
+			{
+				if (activeConfig.Input.hideMouseCursor)
+				{
+					Windows_ToggleCursor(false);
+				}
+			}
+
+			return 1;
+		}
 	}
 	return User_WindowProc
 	(
@@ -620,7 +639,7 @@ void TogglePause(byte8 * state)
 	{
 		if (execute)
 		{
-			pause = !pause;
+			g_pause = !g_pause;
 			PostMessageA(appWindow, DM_PAUSE, 0, 0);
 			execute = false;
 		}
@@ -761,7 +780,7 @@ HRESULT DirectInput8_Hook_GetDeviceStateKeyboard
 	byte * state = (byte *)buffer;
 	ImGui_DirectInput8_UpdateKeyboard(state);
 	TogglePause(state);
-	if (pause)
+	if (g_pause)
 	{
 		memset(buffer, 0, bufferSize);
 	}
@@ -782,7 +801,7 @@ byte32 DirectInput8_UpdateMouseThread(LPVOID parameter)
 	LogFunction();
 	do
 	{
-		if (appWindow && pause)
+		if (appWindow && g_pause)
 		{
 			DirectInput8_mouse->GetDeviceState(sizeof(DIMOUSESTATE2), &DirectInput8_mouseState);
 			ImGui_DirectInput8_UpdateMouse(appWindow, &DirectInput8_mouseState);
@@ -881,8 +900,7 @@ byte32 DirectInput8_CreateMouseThread(LPVOID parameter)
 	return 1;
 }
 
-
-
+// @Todo: Update.
 byte32 XInput_Hook_GetState
 (
 	byte32          userIndex,

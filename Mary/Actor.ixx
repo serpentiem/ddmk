@@ -14,6 +14,7 @@ export module Actor;
 
 import Config;
 import File;
+import Global;
 import HUD;
 import Internal;
 import Input;
@@ -33,7 +34,7 @@ export Vector<byte8 *> Actor_actorBaseAddr;
 // export uint8 g_activeCharacter[PLAYER_COUNT] = {};
 
 
-bool g_quicksilver = false;
+
 
 
 
@@ -183,15 +184,20 @@ void SetMainActor(byte8 * baseAddr)
 
 
 
-template
-<
-	typename T1,
-	typename T2
->
+// template
+// <
+// 	typename T1,
+// 	typename T2
+// >
+
+
+
+
+
 void CopyState
 (
-	T1 & activeActorData,
-	T2 & idleActorData
+	ActorData & activeActorData,
+	ActorData & idleActorData
 )
 {
 	idleActorData.position       = activeActorData.position;
@@ -212,6 +218,26 @@ void CopyState
 
 
 
+
+	[&]()
+	{
+		auto mainActorBaseAddr = Actor_actorBaseAddr[2];
+		if (!mainActorBaseAddr)
+		{
+			return;
+		}
+		auto & mainActorData = *reinterpret_cast<ActorData *>(mainActorBaseAddr);
+
+		// auto idleActorBaseAddr = reinterpret_cast<byte8 *>(&idleActorData);
+
+		// if (idleActorBaseAddr == mainActorBaseAddr)
+		// {
+		// 	return;
+		// }
+
+		idleActorData.speedMode = mainActorData.speedMode;
+		idleActorData.quicksilver = mainActorData.quicksilver;
+	}();
 
 
 
@@ -6612,7 +6638,7 @@ void ToggleMobility(bool enable)
 
 void UpdateColorMatrices(ActorData & actorData)
 {
-	LogFunction();
+	//LogFunction();
 
 	if (actorData.visibility != 0)
 	{
@@ -6675,7 +6701,7 @@ void UpdateColorMatrices(ActorData & actorData)
 		{
 			case WEAPON_EBONY_IVORY:
 			{
-				Log("ebony ivory %u", weapon);
+				//Log("ebony ivory %u", weapon);
 
 				*reinterpret_cast<uint16 *>(dest + 0x200 + 0x214) = value;
 				*reinterpret_cast<uint16 *>(dest + 0x980 + 0x214) = value;
@@ -6685,7 +6711,7 @@ void UpdateColorMatrices(ActorData & actorData)
 			case WEAPON_YAMATO_VERGIL:
 			case WEAPON_YAMATO_BOB:
 			{
-				Log("yamato %u", weapon);
+				//Log("yamato %u", weapon);
 
 				*reinterpret_cast<uint16 *>(dest + 0xF00  + 0x214) = value;
 				*reinterpret_cast<uint16 *>(dest + 0x1680 + 0x214) = value;
@@ -6694,7 +6720,7 @@ void UpdateColorMatrices(ActorData & actorData)
 			}
 			default:
 			{
-				Log("default %u", weapon);
+				//Log("default %u", weapon);
 
 				*reinterpret_cast<uint16 *>(dest + off + 0x214) = value;
 
@@ -6711,13 +6737,22 @@ void UpdateColorMatrices(ActorData & actorData)
 
 
 
-
-
-__declspec(dllexport) void ActivateQuicksilver(ActorData & actorData)
+inline void QuicksilverFunction
+(
+	byte8 * actorBaseAddr,
+	bool enable
+)
 {
-	LogFunction();
+	if (!actorBaseAddr)
+	{
+		return;
+	}
+	else if (actorBaseAddr != Actor_actorBaseAddr[2])
+	{
+		return;
+	}
 
-	g_quicksilver = true;
+	g_quicksilver = enable;
 
 	for_each(uint32, index, 2, Actor_actorBaseAddr.count)
 	{
@@ -6729,32 +6764,50 @@ __declspec(dllexport) void ActivateQuicksilver(ActorData & actorData)
 		auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
 
 		UpdateColorMatrices(actorData);
-
-		// func_1FCA20(actorBaseAddr, 2);
 	}
 }
 
-__declspec(dllexport) void DeactivateQuicksilver(ActorData & actorData)
+void ActivateQuicksilver(byte8 * actorBaseAddr)
 {
-	LogFunction();
-
-	g_quicksilver = false;
-
-	for_each(uint32, index, 2, Actor_actorBaseAddr.count)
+	if constexpr (debug)
 	{
-		auto actorBaseAddr = Actor_actorBaseAddr[index];
-		if (!actorBaseAddr)
-		{
-			continue;
-		}
-		auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-
-		//func_1FCA20(actorBaseAddr, 1);
-
-
-		UpdateColorMatrices(actorData);
+		LogFunction(actorBaseAddr);
 	}
+
+	QuicksilverFunction
+	(
+		actorBaseAddr,
+		true
+	);
 }
+
+void DeactivateQuicksilver(byte8 * actorBaseAddr)
+{
+	if constexpr (debug)
+	{
+		LogFunction(actorBaseAddr);
+	}
+
+	QuicksilverFunction
+	(
+		actorBaseAddr,
+		false
+	);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7086,103 +7139,113 @@ byte8 * UpdateActorSpeedAddr = 0;
 // Geryon turns Quicksilver forcefully off.
 // When hit by Geryon's Time Lag, Quicksilver is turned off.
 // So we can easily check against quicksilver flag.
+
+
+
+
+
 void UpdateActorSpeed(byte8 * baseAddr)
 {
+	if (!baseAddr)
+	{
+		return;
+	}
+
 	for_all(uint32, index, Actor_actorBaseAddr.count)
 	{
-		if (baseAddr != Actor_actorBaseAddr[index])
+		auto actorBaseAddr = Actor_actorBaseAddr[index];
+		if (actorBaseAddr != baseAddr)
 		{
 			continue;
 		}
+		auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
 
-		auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+		auto value = (GetTurbo()) ? activeConfig.Speed.turbo : activeConfig.Speed.main;
 
-		actorData.speed = 1.0f;
-
-		continue;
-
-		//auto & speedMode = *reinterpret_cast<uint32 *>(baseAddr + 0x63D0 + 4);
-		/*
-		dmc3.exe+1F8787 - 48 8D 8F D0630000 - lea rcx,[rdi+000063D0]
-		dmc3.exe+1F878E - E8 2D200800       - call dmc3.exe+27A7C0
-		*/
-
-		switch (actorData.speedMode)
+		if (g_quicksilver)
 		{
-			case 0:
-				actorData.speed = 1.0f;
-
-				break;
-			case 1:
+			switch (actorData.speedMode)
 			{
-				actorData.speed = 0;
-
-				goto LoopContinue;
-			}
-			case 2:
-			{
-				actorData.speed = 0.2f;
-
-				goto LoopContinue;
-			}
-			case 3:
-			{
-				actorData.speed = 1.0f;
-
-				goto LoopContinue;
-			}
-		}
-
-		if (actorData.devil)
-		{
-			switch (actorData.character)
-			{
-				case CHAR_DANTE:
+				case 2:
 				{
-					auto & actorData2 = *reinterpret_cast<ActorDataDante *>(&actorData);
+					value *= activeConfig.Speed.quicksilverActor;
 
-					auto devilIndex = actorData2.meleeWeaponIndex;
-					if (devilIndex > 4)
-					{
-						devilIndex = 0;
-					}
-
-					if (actorData2.sparda)
-					{
-						devilIndex = DEVIL_SPEED_DANTE_SPARDA;
-					}
-
-					actorData.speed *= activeConfig.Speed.devilDante[devilIndex];
-
-					break;
-				}
-				case CHAR_VERGIL:
-				{
-					auto & actorData2 = *reinterpret_cast<ActorDataVergil *>(&actorData);
-
-					auto devilIndex = actorData2.activeMeleeWeaponIndex;
-					if (devilIndex > 2)
-					{
-						devilIndex = 0;
-					}
-
-					if (actorData2.neroAngelo)
-					{
-						devilIndex += 3;
-					}
-
-					actorData.speed *= activeConfig.Speed.devilVergil[devilIndex];
-
-					break;
+					goto LoopContinue;
 				}
 			}
 		}
 		else
 		{
-			actorData.speed *= activeConfig.Speed.human;
+			switch (actorData.speedMode)
+			{
+				case 1:
+				{
+					value = 0;
+
+					goto LoopContinue;
+				}
+				case 2:
+				{
+					value *= 0.2f;
+
+					goto LoopContinue;
+				}
+			}
+		}
+
+		if (!actorData.devil)
+		{
+			value *= activeConfig.Speed.human;
+		}
+		else
+		{
+			switch (actorData.character)
+			{
+				case CHAR_DANTE:
+				{
+					auto devilIndex = actorData.meleeWeaponIndex;
+					if (devilIndex > 4)
+					{
+						devilIndex = 0;
+					}
+
+					if (actorData.sparda)
+					{
+						devilIndex = DEVIL_SPEED_DANTE_SPARDA;
+					}
+
+					value *= activeConfig.Speed.devilDante[devilIndex];
+
+					break;
+				}
+				case CHAR_VERGIL:
+				{
+					auto devilIndex = actorData.queuedMeleeWeaponIndex;
+					if (devilIndex > 2)
+					{
+						devilIndex = 0;
+					}
+
+					if (actorData.neroAngelo)
+					{
+						if (devilIndex > 1)
+						{
+							devilIndex = 0;
+						}
+
+						devilIndex += 3;
+					}
+
+					value *= activeConfig.Speed.devilVergil[devilIndex];
+
+					break;
+				}
+			}
 		}
 
 		LoopContinue:;
+
+		actorData.speed = value;
 	}
 }
 
@@ -7697,6 +7760,15 @@ byte8 * ResetActorModeAddr = 0;
 //byte8 * CollisionUpdateAddr = 0;
 
 byte8 * CollisionCheckAddr = 0;
+
+
+
+
+//byte8 * QuicksilverCheckAddr = 0;
+
+
+
+
 
 
 
@@ -8257,20 +8329,22 @@ export void Actor_Init()
 		*/
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	// // Quicksilver Check
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
+	// 		0x80, 0x38, 0x01,                                           // cmp byte ptr [rax],01
+	// 	};
+	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1F8A07), false, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	*reinterpret_cast<bool **>(func.sect0 + 2) = &g_quicksilver;
+	// 	QuicksilverCheckAddr = func.addr;
+	// 	/*
+	// 	dmc3.exe+1F8A00 - 80 BF 61630000 01 - cmp byte ptr [rdi+00006361],01
+	// 	dmc3.exe+1F8A07 - 0F85 9F000000     - jne dmc3.exe+1F8AAC
+	// 	*/
+	// }
 }
 
 export void Actor_MiniToggle(bool enable)
@@ -9232,6 +9306,27 @@ export void Actor_Toggle(bool enable)
 		dmc3.exe+5C325 - 48 89 74 24 10 - mov [rsp+10],rsi
 		*/
 	}
+
+	// // Quicksilver Check
+	// {
+	// 	auto dest = (appBaseAddr + 0x1F8A00);
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(dest, QuicksilverCheckAddr, 2);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x80, 0xBF, 0x61, 0x63, 0x00, 0x00, 0x01, // cmp byte ptr [rdi+00006361],01
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1F8A00 - 80 BF 61630000 01 - cmp byte ptr [rdi+00006361],01
+	// 	dmc3.exe+1F8A07 - 0F85 9F000000     - jne dmc3.exe+1F8AAC
+	// 	*/
+	// }
 }
 
 export void ToggleAirHikeCoreAbility(bool enable)

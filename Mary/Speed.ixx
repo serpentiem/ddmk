@@ -5,7 +5,7 @@ module;
 export module Speed;
 
 import Config;
-import State;
+import Global;
 
 float * turboAddr            = 0;
 float * quicksilverActorAddr = 0;
@@ -15,7 +15,7 @@ export void UpdateSpeedValues()
 {
 	LogFunction();
 
-	Write<float>((appBaseAddr + 0x32694E + 2), activeConfig.Speed.main);
+	Write((appBaseAddr + 0x32694E + 2), activeConfig.Speed.main);
 	/*
 	dmc3.exe+32694E - C7 01 0000803F - mov [rcx],3F800000
 	dmc3.exe+326954 - C3             - ret 
@@ -28,7 +28,7 @@ export void UpdateSpeedValues()
 	dmc3.exe+23E641 - F3 0F11 05 4747AB00 - movss [dmc3.exe+CF2D90],xmm0
 	*/
 
-	Write<float>((appBaseAddr + 0x326ADA + 3), activeConfig.Speed.enemy);
+	Write((appBaseAddr + 0x326ADA + 3), activeConfig.Speed.enemy);
 	/*
 	dmc3.exe+326ADA - C7 41 10 0000803F - mov [rcx+10],3F800000
 	dmc3.exe+326AE1 - 80 B9 AC000000 01 - cmp byte ptr [rcx+000000AC],01
@@ -43,15 +43,13 @@ export void UpdateSpeedValues()
 	dmc3.exe+27A98A - F3 0F10 0D 5ADB2500 - movss xmm1,[dmc3.exe+4D84EC]
 	*/
 
-	auto & speed = *reinterpret_cast<float *>(appBaseAddr + 0xCF2D90);
-	auto & turbo = *reinterpret_cast<bool *>(appBaseAddr + 0xD6CEA9);
-
-	if (!InGame())
+	if (g_scene == SCENE_GAME)
 	{
-		return;
+		auto & value = *reinterpret_cast<float *>(appBaseAddr + 0xCF2D90);
+		auto & turbo = GetTurbo();
+
+		value = (turbo) ? activeConfig.Speed.turbo : activeConfig.Speed.main;
 	}
-	
-	speed = (turbo) ? activeConfig.Speed.turbo : activeConfig.Speed.main;
 }
 
 export void Speed_Init()
