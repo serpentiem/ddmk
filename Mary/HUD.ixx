@@ -87,8 +87,8 @@ void InitIcons()
 
 export void HUD_UpdateStyleIcon
 (
-	uint8 character,
-	uint8 style
+	uint8 style,
+	uint8 character
 )
 {
 	if (style >= MAX_STYLE)
@@ -102,13 +102,14 @@ export void HUD_UpdateStyleIcon
 
 	ResetModel(modelData);
 
-	// byte8 * modelFile   = 0;
-	// byte8 * textureFile = 0;
-
 	auto modelFile   = styleIcons[style].modelFile;
 	auto textureFile = styleIcons[style].textureFile;
 
-	if ((character == CHAR_VERGIL) && (style == STYLE_DARK_SLAYER))
+	if
+	(
+		(character == CHAR_VERGIL) &&
+		(style == STYLE_DARK_SLAYER)
+	)
 	{
 		modelFile   = darkSlayerIcon.modelFile;
 		textureFile = darkSlayerIcon.textureFile;
@@ -137,9 +138,6 @@ export void HUD_UpdateWeaponIcon
 	auto & modelData = *reinterpret_cast<ModelData *>(hudBottom + hudBottomOffs[index]);
 
 	ResetModel(modelData);
-
-	//byte8 * modelFile   = 0;
-	//byte8 * textureFile = 0;
 
 	auto modelFile   = weaponIcons[weapon].modelFile;
 	auto textureFile = weaponIcons[weapon].textureFile;

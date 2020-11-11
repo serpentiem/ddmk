@@ -485,7 +485,7 @@ var extra =
 
 
 
-
+	[ "newEnableVisibility", "bool" ],
 
 
 

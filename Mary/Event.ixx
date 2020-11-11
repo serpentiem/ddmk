@@ -7,78 +7,20 @@ export module Event;
 import Actor;
 import Arcade;
 import BossRush;
-
 import Config;
-
-
 import File;
+import Global;
 import Model;
 
-#define debug false
-
-
-//bool MainLoop_run = false;
-
-
-
-
-
-
-
-
-
-
-// void SetPool()
-// {
-// 	LogFunction();
-// }
-
-// void ClearPool()
-// {
-// 	LogFunction();
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//bool Main_run = false;
-//bool Teleport_run = false;
-//bool Customize_run = false;
-//bool Delete_run = false;
-
+#define debug true
 
 bool Event_run[MAX_EVENT] = {};
-
-bool MainLoopOnce_run = false;
+bool MainLoopOnce_run     = false;
 bool MainLoopOnceSync_run = false;
+bool ActorLoopOnce_run    = false;
+
+
+
 
 
 
@@ -136,82 +78,57 @@ bool SetTrack
 
 
 
-
-// export void LockActor(byte8 * baseAddr)
-// {
-// 	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
-// 	actorData.newButtonMask = 0;
-// 	actorData.newEnableRightStick = false;
-// 	actorData.newEnableLeftStick = false;
-// }
-
-
-// export void UnlockActor(byte8 * baseAddr)
-// {
-// 	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
-// 	actorData.newButtonMask = 0xFFFF;
-// 	actorData.newEnableRightStick = true;
-// 	actorData.newEnableLeftStick = true;
-// }
-
-
-
-
-
-void CreateMainActor(byte8 * baseAddr)
+void CreateMainActor(byte8 * actorBaseAddr)
 {
 	memset(Event_run, 0, MAX_EVENT);
-	MainLoopOnce_run = false;
+
+	MainLoopOnce_run     = false;
 	MainLoopOnceSync_run = false;
+	ActorLoopOnce_run    = false;
 
-	Actor_CreateMainActor(baseAddr);
+	Actor_CreateMainActor(actorBaseAddr);
 
-	Arcade_CreateMainActor(baseAddr);
+	Arcade_CreateMainActor(actorBaseAddr);
 }
 
-void Main_CreateMainActor(byte8 * baseAddr)
+void Main_CreateMainActor(byte8 * actorBaseAddr)
 {
-	LogFunction();
+	LogFunction(actorBaseAddr);
 
-	return CreateMainActor(baseAddr);
+	return CreateMainActor(actorBaseAddr);
 }
 
-void Customize_CreateMainActor(byte8 * baseAddr)
+void Customize_CreateMainActor(byte8 * actorBaseAddr)
 {
-	LogFunction();
+	LogFunction(actorBaseAddr);
 
-	return CreateMainActor(baseAddr);
+	return CreateMainActor(actorBaseAddr);
 }
 
 
 
-void CreateCloneActor(byte8 * baseAddr)
+void CreateCloneActor(byte8 * actorBaseAddr)
 {
-	Actor_CreateCloneActor(baseAddr);
+	Actor_CreateCloneActor(actorBaseAddr);
 }
 
-void Main_CreateCloneActor(byte8 * baseAddr)
+void Main_CreateCloneActor(byte8 * actorBaseAddr)
 {
-	LogFunction();
+	LogFunction(actorBaseAddr);
 
-	return CreateCloneActor(baseAddr);
+	return CreateCloneActor(actorBaseAddr);
 }
 
-void UpdateActorDante_CreateCloneActor(byte8 * baseAddr)
+void UpdateActorDante_CreateCloneActor(byte8 * actorBaseAddr)
 {
-	LogFunction();
+	LogFunction(actorBaseAddr);
 
-	return CreateCloneActor(baseAddr);
+	return CreateCloneActor(actorBaseAddr);
 }
-
-
-
-
 
 
 
 // @Todo: Update names.
-
 bool EventOnce(EventData & eventData)
 {
 	auto event = eventData.event;
@@ -278,6 +195,53 @@ void EventHandler(EventData & eventData)
 	EventLoop(eventData);
 }
 
+
+
+
+// @Todo: Move to Camera.
+
+float cameraTimeout = 0;
+
+void UpdateCamera()
+{
+
+	if (cameraTimeout > 0)
+	{
+		cameraTimeout -= 10.0f;
+	}
+	else if (cameraTimeout < 0)
+	{
+		cameraTimeout = 0;
+	}
+
+	if (cameraTimeout > 0)
+	{
+		return;
+	}
+
+	if (!activeConfig.Camera.applyConfig)
+	{
+		return;
+	}
+
+	IntroduceCameraData(return);
+
+	cameraData.height     = activeConfig.Camera.height;
+	cameraData.tilt       = activeConfig.Camera.tilt;
+	cameraData.zoom       = activeConfig.Camera.zoom;
+	cameraData.zoomLockOn = activeConfig.Camera.zoomLockOn;
+
+	cameraTimeout = activeConfig.Camera.timeout;
+}
+
+
+
+
+
+
+
+
+
 void MainLoopOnce()
 {
 	if (!MainLoopOnce_run)
@@ -292,8 +256,7 @@ void MainLoopOnce()
 
 void MainLoopOnceSync()
 {
-	auto & cutsceneBar = *reinterpret_cast<bool *>(appBaseAddr + 0x5D113D);
-	if (cutsceneBar)
+	if (InCutscene())
 	{
 		return;
 	}
@@ -308,138 +271,50 @@ void MainLoopOnceSync()
 	}
 }
 
-
-
-
-
-
-/*
-void Camera_Update(CONFIG & config)
-{
-	// @Todo: Add to vars.
-	auto addr = *(byte8 **)(appBaseAddr + 0xC8FBD0);
-	if (!addr)
-	{
-		return;
-	}
-	addr = *(byte8 **)(addr + 0x498);
-	if (!addr)
-	{
-		return;
-	}
-	auto & height     = *(float32 *)(addr + 0xD0) = config.Camera.height;
-	auto & tilt       = *(float32 *)(addr + 0xD4) = config.Camera.tilt;
-	auto & zoom       = *(float32 *)(addr + 0xD8) = config.Camera.zoom;
-	auto & zoomLockOn = *(float32 *)(addr + 0xE0) = config.Camera.zoomLockOn;
-}
-*/
-
-
-
-float cameraTimeout = 0;
-
-
-void UpdateCamera()
-{
-
-	if (cameraTimeout > 0)
-	{
-		cameraTimeout -= 10.0f;
-	}
-	else if (cameraTimeout < 0)
-	{
-		cameraTimeout = 0;
-	}
-
-
-
-	if (cameraTimeout > 0)
-	{
-		return;
-	}
-
-
-
-	if (!activeConfig.Camera.applyConfig)
-	{
-		return;
-	}
-
-
-
-
-
-
-
-	IntroduceCameraData(return);
-
-	cameraData.height     = activeConfig.Camera.height;
-	cameraData.tilt       = activeConfig.Camera.tilt;
-	cameraData.zoom       = activeConfig.Camera.zoom;
-	cameraData.zoomLockOn = activeConfig.Camera.zoomLockOn;
-
-	cameraTimeout = activeConfig.Camera.timeout;
-
-
-
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
 void MainLoop()
 {
 	MainLoopOnce();
-	MainLoopOnceSync();
 
+	MainLoopOnceSync();
 
 	UpdateCamera();
 
-
 	CharacterSwitchController();
-
-
-
-
 }
 
-void ActorLoop(byte8 * baseAddr)
-{
-	static bool run = false;
-	if (!run)
-	{
-		run = true;
-		LogFunction();
-	}
-	Actor_ActorLoop(baseAddr);
-}
 
-// void SkyStarReset(byte8 * baseAddr)
+
+
+
+
+
+
+
+
+
+
+
+
+// void ActorLoopOnce(byte8 * actorBaseAddr)
 // {
-// 	Mobility::SkyStarReset(baseAddr);
-// }
-
-
-
-// void DeactivateDevilForm(byte8 * baseAddr)
-// {
-// 	if (!baseAddr)
+// 	if (!ActorLoopOnce_run)
 // 	{
-// 		return;
-// 	}
+// 		ActorLoopOnce_run = true;
 
-// 	Actor_DeactivateDevilForm(baseAddr);
+// 		LogFunction(actorBaseAddr);
+
+// 		Actor_ActorLoopOnce(actorBaseAddr);
+// 	}
 // }
+
+void ActorLoop(byte8 * actorBaseAddr)
+{
+	// ActorLoopOnce(actorBaseAddr);
+
+	Actor_ActorLoop(actorBaseAddr);
+}
+
+
 
 void InGameCutsceneStart()
 {
@@ -457,40 +332,9 @@ void InGameCutsceneEnd()
 
 
 
-
 export void Event_Init()
 {
 	LogFunction();
-
-
-
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x40, 0x88, 0xB7, 0x9B, 0x3E, 0x00, 0x00, // mov [rdi+00003E9B],sil
-	// 	};
-	// 	constexpr byte8 sect1[] =
-	// 	{
-	// 		mov_rcx_rdi,
-	// 	};
-	// 	auto func = CreateFunction(DeactivateDevilForm, (appBaseAddr + 0x1E78C6), true, true, sizeof(sect0), sizeof(sect1));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	memcpy(func.sect1, sect1, sizeof(sect1));
-	// 	WriteJump((appBaseAddr + 0x1E78BF), func.addr, 2);
-	// 	/*
-	// 	dmc3.exe+1E78BF - 40 88 B7 9B3E0000 - mov [rdi+00003E9B],sil
-	// 	dmc3.exe+1E78C6 - 48 8B CF          - mov rcx,rdi
-	// 	*/
-	// }
-
-
-
-
-
-
-
-
-
 
 	// Main
 	{
@@ -777,27 +621,54 @@ export void Event_Init()
 		*/
 	}
 
+
+
+
 	// Loops
+
+
+
+
+
 	{
 		constexpr byte8 sect0[] =
 		{
-			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+23B060
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+23D230
 		};
-		auto func = CreateFunction(MainLoop, (appBaseAddr + 0x23D4B7), true, true, sizeof(sect0));
+		auto func = CreateFunction(MainLoop, (appBaseAddr + 0x23B43C), true, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteCall(func.sect0, (appBaseAddr + 0x23B060));
-		WriteJump((appBaseAddr + 0x23D4B2), func.addr);
+		WriteCall(func.sect0, (appBaseAddr + 0x23D230));
+		WriteJump((appBaseAddr + 0x23B437), func.addr);
 		/*
-		dmc3.exe+23D4B2 - E8 A9DBFFFF - call dmc3.exe+23B060
-		dmc3.exe+23D4B7 - 84 C0       - test al,al
+		dmc3.exe+23B437 - E8 F41D0000 - call dmc3.exe+23D230
+		dmc3.exe+23B43C - 33 C0       - xor eax,eax
 		*/
 	}
+
+
+
+
+
+
+
+
+
+
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+23B060
+	// 	};
+	// 	auto func = CreateFunction(MainLoop, (appBaseAddr + 0x23D4B7), true, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	WriteCall(func.sect0, (appBaseAddr + 0x23B060));
+	// 	WriteJump((appBaseAddr + 0x23D4B2), func.addr);
+	// 	/*
+	// 	dmc3.exe+23D4B2 - E8 A9DBFFFF - call dmc3.exe+23B060
+	// 	dmc3.exe+23D4B7 - 84 C0       - test al,al
+	// 	*/
+	// }
 	{
-		/*
-		dmc3.exe+1E25EB - E8 F0820000 - call dmc3.exe+1EA8E0 - Weapon Switch Controller Dante
-		dmc3.exe+1F900E - E8 5D94FEFF - call dmc3.exe+1E2470 - Actor Input Handler
-		dmc3.exe+1DFA96 - E8 05890100 - call dmc3.exe+1F83A0 - Actor Main Update
-		*/
 		constexpr byte8 sect0[] =
 		{
 			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+1F83A0
@@ -846,44 +717,6 @@ export void Event_Init()
 		dmc3.exe+23DEAA - C7 05 ECAAA700 00000000 - mov [dmc3.exe+CB89A0],00000000
 		*/
 	}
-
-
-
-
-
-
-
-
-
-
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0x89, 0x15, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rdx
-	// 	};
-	// 	auto func = CreateFunction(SetPool, (appBaseAddr + 0x23E69F), true, true, sizeof(sect0));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-	// 	WriteJump((appBaseAddr + 0x23E698), func.addr, 2);
-	// 	/*
-	// 	dmc3.exe+23E698 - 48 89 15 8927A500 - mov [dmc3.exe+C90E28],rdx
-	// 	dmc3.exe+23E69F - 48 8D 83 D06A0000 - lea rax,[rbx+00006AD0]
-	// 	*/
-	// }
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0x89, 0x0D, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rcx
-	// 	};
-	// 	auto func = CreateFunction(ClearPool, (appBaseAddr + 0x23B39A), true, true, sizeof(sect0));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
-	// 	WriteJump((appBaseAddr + 0x23B393), func.addr, 2);
-	// 	/*
-	// 	dmc3.exe+23B393 - 48 89 0D 8E5AA500 - mov [dmc3.exe+C90E28],rcx
-	// 	dmc3.exe+23B39A - 48 89 0D 975AA500 - mov [dmc3.exe+C90E38],rcx
-	// 	*/
-	// }
 }
 
 export void Event_ToggleSkipIntro(bool enable)
@@ -928,4 +761,182 @@ export void Event_ToggleSkipCutscenes(bool enable)
 }
 
 #ifdef __GARBAGE__
+
+
+
+
+
+
+
+
+
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x40, 0x88, 0xB7, 0x9B, 0x3E, 0x00, 0x00, // mov [rdi+00003E9B],sil
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rdi,
+	// 	};
+	// 	auto func = CreateFunction(DeactivateDevilForm, (appBaseAddr + 0x1E78C6), true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	WriteJump((appBaseAddr + 0x1E78BF), func.addr, 2);
+	// 	/*
+	// 	dmc3.exe+1E78BF - 40 88 B7 9B3E0000 - mov [rdi+00003E9B],sil
+	// 	dmc3.exe+1E78C6 - 48 8B CF          - mov rcx,rdi
+	// 	*/
+	// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// void SkyStarReset(byte8 * baseAddr)
+// {
+// 	Mobility::SkyStarReset(baseAddr);
+// }
+
+
+
+// void DeactivateDevilForm(byte8 * baseAddr)
+// {
+// 	if (!baseAddr)
+// 	{
+// 		return;
+// 	}
+
+// 	Actor_DeactivateDevilForm(baseAddr);
+// }
+
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0x89, 0x15, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rdx
+	// 	};
+	// 	auto func = CreateFunction(SetPool, (appBaseAddr + 0x23E69F), true, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
+	// 	WriteJump((appBaseAddr + 0x23E698), func.addr, 2);
+	// 	/*
+	// 	dmc3.exe+23E698 - 48 89 15 8927A500 - mov [dmc3.exe+C90E28],rdx
+	// 	dmc3.exe+23E69F - 48 8D 83 D06A0000 - lea rax,[rbx+00006AD0]
+	// 	*/
+	// }
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0x89, 0x0D, 0x00, 0x00, 0x00, 0x00, //mov [dmc3.exe+C90E28],rcx
+	// 	};
+	// 	auto func = CreateFunction(ClearPool, (appBaseAddr + 0x23B39A), true, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
+	// 	WriteJump((appBaseAddr + 0x23B393), func.addr, 2);
+	// 	/*
+	// 	dmc3.exe+23B393 - 48 89 0D 8E5AA500 - mov [dmc3.exe+C90E28],rcx
+	// 	dmc3.exe+23B39A - 48 89 0D 975AA500 - mov [dmc3.exe+C90E38],rcx
+	// 	*/
+	// }
+
+		/*
+		dmc3.exe+1E25EB - E8 F0820000 - call dmc3.exe+1EA8E0 - Weapon Switch Controller Dante
+		dmc3.exe+1F900E - E8 5D94FEFF - call dmc3.exe+1E2470 - Actor Input Handler
+		dmc3.exe+1DFA96 - E8 05890100 - call dmc3.exe+1F83A0 - Actor Main Update
+		*/
+
+
+
+
+
+
+//bool MainLoop_run = false;
+
+
+
+
+
+
+
+
+
+
+
+// export void LockActor(byte8 * baseAddr)
+// {
+// 	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+// 	actorData.newButtonMask = 0;
+// 	actorData.newEnableRightStick = false;
+// 	actorData.newEnableLeftStick = false;
+// }
+
+
+// export void UnlockActor(byte8 * baseAddr)
+// {
+// 	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+// 	actorData.newButtonMask = 0xFFFF;
+// 	actorData.newEnableRightStick = true;
+// 	actorData.newEnableLeftStick = true;
+// }
+
+
+
+
+
+
+
+
+
+
+/*
+void Camera_Update(CONFIG & config)
+{
+	// @Todo: Add to vars.
+	auto addr = *(byte8 **)(appBaseAddr + 0xC8FBD0);
+	if (!addr)
+	{
+		return;
+	}
+	addr = *(byte8 **)(addr + 0x498);
+	if (!addr)
+	{
+		return;
+	}
+	auto & height     = *(float32 *)(addr + 0xD0) = config.Camera.height;
+	auto & tilt       = *(float32 *)(addr + 0xD4) = config.Camera.tilt;
+	auto & zoom       = *(float32 *)(addr + 0xD8) = config.Camera.zoom;
+	auto & zoomLockOn = *(float32 *)(addr + 0xE0) = config.Camera.zoomLockOn;
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//bool Main_run = false;
+//bool Teleport_run = false;
+//bool Customize_run = false;
+//bool Delete_run = false;
+
+
 #endif

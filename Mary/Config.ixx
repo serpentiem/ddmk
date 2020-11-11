@@ -31,12 +31,12 @@ export struct Config
 	struct
 	{
 		bool    enable         = true;
-		uint32  mission        = 17;
+		uint32  mission        = 19;
 		uint32  mode           = MODE_DANTE_MUST_DIE;
-		uint32  room           = 900;
+		uint32  room           = 102;
 		uint32  position       = 0;
-		bool    ignoreRoom     = false;
-		bool    ignorePosition = false;
+		bool    ignoreRoom     = true;
+		bool    ignorePosition = true;
 		uint8   floor          = 0;
 		float32 hitPoints      = 20000;
 		float32 magicPoints    = 10000;
@@ -74,7 +74,7 @@ export struct Config
 	BeowulfVergil;
 	struct
 	{
-		bool enable = false;
+		bool enable = true;
 		struct
 		{
 			bool skipJester = false;
@@ -93,7 +93,7 @@ export struct Config
 		Mission17;
 		struct
 		{
-			bool skipArkhamPart1 = false;
+			bool skipArkhamPart1 = true;
 		}
 		Mission19;
 	}
@@ -599,6 +599,8 @@ export void ApplyDefaultCharacterData
 
 export void ApplyDefaultPlayerData(PlayerData & playerData)
 {
+	playerData.button = GAMEPAD_RIGHT_THUMB;
+
 	playerData.characterCount = 2;
 	playerData.characterIndex = 0;
 

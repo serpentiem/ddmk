@@ -29,3 +29,8 @@ export auto & GetTurbo()
 {
 	return *reinterpret_cast<bool *>(appBaseAddr + 0xD6CEA9);
 }
+
+export auto & InCutscene()
+{
+	return *reinterpret_cast<bool *>(appBaseAddr + 0x5D113D);
+}

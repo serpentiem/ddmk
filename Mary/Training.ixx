@@ -4,6 +4,12 @@ module;
 #include "Vars.h"
 export module Training;
 
+
+/*
+dmc3.exe+1E1884 - F3 0F5C C8            - subss xmm1,xmm0
+
+*/
+
 export void Training_ToggleInfiniteHitPoints(bool enable)
 {
 	LogFunction(enable);
@@ -25,6 +31,27 @@ export void Training_ToggleInfiniteHitPoints(bool enable)
 		/*
 		dmc3.exe+88517 - F3 41 0F5C C0 - subss xmm0,xmm8
 		dmc3.exe+8851C - F3 0F11 40 08 - movss [rax+08],xmm0
+		*/
+	}
+
+	// Arkham Drain
+	{
+		auto dest = (appBaseAddr + 0x1E1884);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 4);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xF3, 0x0F, 0x5C, 0xC8, // subss xmm1,xmm0
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E1884 - F3 0F5C C8 - subss xmm1,xmm0
+		dmc3.exe+1E1888 - 0F57 C0    - xorps xmm0,xmm0
 		*/
 	}
 }

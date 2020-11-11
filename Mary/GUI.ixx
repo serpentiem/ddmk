@@ -539,6 +539,11 @@ const char * Actor_playerTabNames[PLAYER_COUNT] =
 	"Player 4",
 };
 
+#define Actor_buttonNames buttonNames
+#define Actor_buttons buttons
+
+uint8 Actor_buttonIndices[PLAYER_COUNT] = {};
+
 const char * Actor_characterTabNames[CHARACTER_COUNT] =
 {
 	"Character 1",
@@ -579,90 +584,101 @@ void Actor_UpdateIndices()
 {
 	LogFunction();
 
-	for_all(uint8, playerIndex   , PLAYER_COUNT   ){
-	for_all(uint8, characterIndex, CHARACTER_COUNT){
-	for_all(uint8, entityIndex   , ENTITY_COUNT   )
+	for_all(uint8, playerIndex, PLAYER_COUNT)
 	{
-		auto & characterData = GetCharacterData
+		auto & playerData = GetPlayerData(playerIndex);
+
+		UpdateMapIndex
 		(
-			playerIndex,
-			characterIndex,
-			entityIndex
+			Actor_buttons,
+			Actor_buttonIndices[playerIndex],
+			playerData.button
 		);
 
-		for_all(uint8, styleIndex, STYLE_COUNT)
+		for_all(uint8, characterIndex, CHARACTER_COUNT){
+		for_all(uint8, entityIndex   , ENTITY_COUNT   )
 		{
-			UpdateMapIndex
+			auto & characterData = GetCharacterData
 			(
-				Actor_styleButtons,
-				Actor_styleButtonIndices[playerIndex][characterIndex][entityIndex][styleIndex],
-				characterData.styleButtons[styleIndex]
+				playerIndex,
+				characterIndex,
+				entityIndex
 			);
 
-			switch (characterData.character)
+			for_all(uint8, styleIndex, STYLE_COUNT)
 			{
-				case CHAR_DANTE:
-				{
-					UpdateMapIndex
-					(
-						Actor_stylesDante,
-						Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][0],
-						characterData.styles[styleIndex][0]
-					);
-					UpdateMapIndex
-					(
-						Actor_stylesDante,
-						Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][1],
-						characterData.styles[styleIndex][1]
-					);
+				UpdateMapIndex
+				(
+					Actor_styleButtons,
+					Actor_styleButtonIndices[playerIndex][characterIndex][entityIndex][styleIndex],
+					characterData.styleButtons[styleIndex]
+				);
 
-					break;
-				}
-				case CHAR_VERGIL:
+				switch (characterData.character)
 				{
-					UpdateMapIndex
-					(
-						Actor_stylesVergil,
-						Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][0],
-						characterData.styles[styleIndex][0]
-					);
-					UpdateMapIndex
-					(
-						Actor_stylesVergil,
-						Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][1],
-						characterData.styles[styleIndex][1]
-					);
+					case CHAR_DANTE:
+					{
+						UpdateMapIndex
+						(
+							Actor_stylesDante,
+							Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][0],
+							characterData.styles[styleIndex][0]
+						);
+						UpdateMapIndex
+						(
+							Actor_stylesDante,
+							Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][1],
+							characterData.styles[styleIndex][1]
+						);
 
-					break;
+						break;
+					}
+					case CHAR_VERGIL:
+					{
+						UpdateMapIndex
+						(
+							Actor_stylesVergil,
+							Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][0],
+							characterData.styles[styleIndex][0]
+						);
+						UpdateMapIndex
+						(
+							Actor_stylesVergil,
+							Actor_styleIndices[playerIndex][characterIndex][entityIndex][styleIndex][1],
+							characterData.styles[styleIndex][1]
+						);
+
+						break;
+					}
 				}
 			}
-		}
 
-		if (characterData.character != CHAR_DANTE)
-		{
-			continue;
-		}
+			if (characterData.character != CHAR_DANTE)
+			{
+				continue;
+			}
 
-		for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT_DANTE)
-		{
-			UpdateMapIndex
-			(
-				Actor_meleeWeaponsDante,
-				Actor_meleeWeaponIndices[playerIndex][characterIndex][entityIndex][meleeWeaponIndex],
-				characterData.meleeWeapons[meleeWeaponIndex]
-			);
-		}
+			for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT_DANTE)
+			{
+				UpdateMapIndex
+				(
+					Actor_meleeWeaponsDante,
+					Actor_meleeWeaponIndices[playerIndex][characterIndex][entityIndex][meleeWeaponIndex],
+					characterData.meleeWeapons[meleeWeaponIndex]
+				);
+			}
 
-		for_all(uint8, rangedWeaponIndex, RANGED_WEAPON_COUNT_DANTE)
-		{
-			UpdateMapIndex
-			(
-				Actor_rangedWeaponsDante,
-				Actor_rangedWeaponIndices[playerIndex][characterIndex][entityIndex][rangedWeaponIndex],
-				characterData.rangedWeapons[rangedWeaponIndex]
-			);
-		}
-	}}}
+			for_all(uint8, rangedWeaponIndex, RANGED_WEAPON_COUNT_DANTE)
+			{
+				UpdateMapIndex
+				(
+					Actor_rangedWeaponsDante,
+					Actor_rangedWeaponIndices[playerIndex][characterIndex][entityIndex][rangedWeaponIndex],
+					characterData.rangedWeapons[rangedWeaponIndex]
+				);
+			}
+		}}
+	}
 }
 
 void Actor_CharacterTab
@@ -894,6 +910,20 @@ void Actor_PlayerTab(uint8 playerIndex)
 {
 	auto & activePlayerData = GetActivePlayerData(playerIndex);
 	auto & queuedPlayerData = GetQueuedPlayerData(playerIndex);
+
+	ImGui::PushItemWidth(200);
+	GUI_ComboMap2
+	(
+		"Button",
+		Actor_buttonNames,
+		Actor_buttons,
+		Actor_buttonIndices[playerIndex],
+		activePlayerData.button,
+		queuedPlayerData.button,
+		ImGuiComboFlags_HeightLargest
+	);
+	ImGui::PopItemWidth();
+	ImGui::Text("");
 
 	ImGui::PushItemWidth(200);
 	GUI_Slider2<uint8>
