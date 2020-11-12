@@ -3209,13 +3209,13 @@ void Main()
 		{
 			[]()
 			{
-				auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
-				if (!actorBaseAddr)
-				{
-					return;
-				}
-				auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-				ToggleActor(actorData, enable);
+				// auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
+				// if (!actorBaseAddr)
+				// {
+				// 	return;
+				// }
+				// auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+				ToggleActor(actorIndex, enable);
 			}();
 		}
 

@@ -267,7 +267,7 @@ void MainLoopOnceSync()
 
 		LogFunction();
 
-		Actor_MainLoopOnceSync();
+		//Actor_MainLoopOnceSync();
 	}
 }
 

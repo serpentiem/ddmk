@@ -1182,7 +1182,27 @@ if (!stagePositionData)\
 }
 #define IntroduceStagePositionData(...) _IntroduceStagePositionData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
 
+#define IntroduceActorData(name, ...)\
+auto actorBaseAddr = Actor_actorBaseAddr[name];\
+if (!actorBaseAddr)\
+{\
+	__VA_ARGS__;\
+}\
+auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr)
 
+#define _IntroduceMainActorData(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+auto mainActorBaseAddr = name[3];\
+if (!mainActorBaseAddr)\
+{\
+	__VA_ARGS__;\
+}\
+auto & mainActorData = *reinterpret_cast<ActorData *>(mainActorBaseAddr)
+#define IntroduceMainActorData(...) _IntroduceMainActorData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
 
 
 
@@ -2322,14 +2342,15 @@ struct ActorData
 	bool newForceFiles; // 0x1CACF
 	uint8 newForceFilesCharacter; // 0x1CAD0
 	bool newEnableVisibility; // 0x1CAD1
-	uint8 newGamepad; // 0x1CAD2
-	byte16 newButtonMask; // 0x1CAD3
-	bool newEnableRightStick; // 0x1CAD5
-	bool newEnableLeftStick; // 0x1CAD6
-	bool newExecuteStyleSwitch; // 0x1CAD7
-	bool newExecuteRemoveBusyFlag; // 0x1CAD8
-	uint8 newAirStingerCount; // 0x1CAD9
-	_(6);
+	bool newLastEnableVisibility; // 0x1CAD2
+	uint8 newGamepad; // 0x1CAD3
+	byte16 newButtonMask; // 0x1CAD4
+	bool newEnableRightStick; // 0x1CAD6
+	bool newEnableLeftStick; // 0x1CAD7
+	bool newExecuteStyleSwitch; // 0x1CAD8
+	bool newExecuteRemoveBusyFlag; // 0x1CAD9
+	uint8 newAirStingerCount; // 0x1CADA
+	_(5);
 	byte32 newEffectIndices[8]; // 0x1CAE0
 	bool newEnableCollision; // 0x1CB00
 	uint32 newLastVar; // 0x1CB01
@@ -2570,14 +2591,15 @@ struct ActorDataDante
 	bool newForceFiles; // 0x1CACF
 	uint8 newForceFilesCharacter; // 0x1CAD0
 	bool newEnableVisibility; // 0x1CAD1
-	uint8 newGamepad; // 0x1CAD2
-	byte16 newButtonMask; // 0x1CAD3
-	bool newEnableRightStick; // 0x1CAD5
-	bool newEnableLeftStick; // 0x1CAD6
-	bool newExecuteStyleSwitch; // 0x1CAD7
-	bool newExecuteRemoveBusyFlag; // 0x1CAD8
-	uint8 newAirStingerCount; // 0x1CAD9
-	_(6);
+	bool newLastEnableVisibility; // 0x1CAD2
+	uint8 newGamepad; // 0x1CAD3
+	byte16 newButtonMask; // 0x1CAD4
+	bool newEnableRightStick; // 0x1CAD6
+	bool newEnableLeftStick; // 0x1CAD7
+	bool newExecuteStyleSwitch; // 0x1CAD8
+	bool newExecuteRemoveBusyFlag; // 0x1CAD9
+	uint8 newAirStingerCount; // 0x1CADA
+	_(5);
 	byte32 newEffectIndices[8]; // 0x1CAE0
 	bool newEnableCollision; // 0x1CB00
 	uint32 newLastVar; // 0x1CB01
@@ -2801,14 +2823,15 @@ struct ActorDataBob
 	bool newForceFiles; // 0x1CACF
 	uint8 newForceFilesCharacter; // 0x1CAD0
 	bool newEnableVisibility; // 0x1CAD1
-	uint8 newGamepad; // 0x1CAD2
-	byte16 newButtonMask; // 0x1CAD3
-	bool newEnableRightStick; // 0x1CAD5
-	bool newEnableLeftStick; // 0x1CAD6
-	bool newExecuteStyleSwitch; // 0x1CAD7
-	bool newExecuteRemoveBusyFlag; // 0x1CAD8
-	uint8 newAirStingerCount; // 0x1CAD9
-	_(6);
+	bool newLastEnableVisibility; // 0x1CAD2
+	uint8 newGamepad; // 0x1CAD3
+	byte16 newButtonMask; // 0x1CAD4
+	bool newEnableRightStick; // 0x1CAD6
+	bool newEnableLeftStick; // 0x1CAD7
+	bool newExecuteStyleSwitch; // 0x1CAD8
+	bool newExecuteRemoveBusyFlag; // 0x1CAD9
+	uint8 newAirStingerCount; // 0x1CADA
+	_(5);
 	byte32 newEffectIndices[8]; // 0x1CAE0
 	bool newEnableCollision; // 0x1CB00
 	uint32 newLastVar; // 0x1CB01
@@ -3032,14 +3055,15 @@ struct ActorDataLady
 	bool newForceFiles; // 0x1CACF
 	uint8 newForceFilesCharacter; // 0x1CAD0
 	bool newEnableVisibility; // 0x1CAD1
-	uint8 newGamepad; // 0x1CAD2
-	byte16 newButtonMask; // 0x1CAD3
-	bool newEnableRightStick; // 0x1CAD5
-	bool newEnableLeftStick; // 0x1CAD6
-	bool newExecuteStyleSwitch; // 0x1CAD7
-	bool newExecuteRemoveBusyFlag; // 0x1CAD8
-	uint8 newAirStingerCount; // 0x1CAD9
-	_(6);
+	bool newLastEnableVisibility; // 0x1CAD2
+	uint8 newGamepad; // 0x1CAD3
+	byte16 newButtonMask; // 0x1CAD4
+	bool newEnableRightStick; // 0x1CAD6
+	bool newEnableLeftStick; // 0x1CAD7
+	bool newExecuteStyleSwitch; // 0x1CAD8
+	bool newExecuteRemoveBusyFlag; // 0x1CAD9
+	uint8 newAirStingerCount; // 0x1CADA
+	_(5);
 	byte32 newEffectIndices[8]; // 0x1CAE0
 	bool newEnableCollision; // 0x1CB00
 	uint32 newLastVar; // 0x1CB01
@@ -3271,14 +3295,15 @@ struct ActorDataVergil
 	bool newForceFiles; // 0x1CACF
 	uint8 newForceFilesCharacter; // 0x1CAD0
 	bool newEnableVisibility; // 0x1CAD1
-	uint8 newGamepad; // 0x1CAD2
-	byte16 newButtonMask; // 0x1CAD3
-	bool newEnableRightStick; // 0x1CAD5
-	bool newEnableLeftStick; // 0x1CAD6
-	bool newExecuteStyleSwitch; // 0x1CAD7
-	bool newExecuteRemoveBusyFlag; // 0x1CAD8
-	uint8 newAirStingerCount; // 0x1CAD9
-	_(6);
+	bool newLastEnableVisibility; // 0x1CAD2
+	uint8 newGamepad; // 0x1CAD3
+	byte16 newButtonMask; // 0x1CAD4
+	bool newEnableRightStick; // 0x1CAD6
+	bool newEnableLeftStick; // 0x1CAD7
+	bool newExecuteStyleSwitch; // 0x1CAD8
+	bool newExecuteRemoveBusyFlag; // 0x1CAD9
+	uint8 newAirStingerCount; // 0x1CADA
+	_(5);
 	byte32 newEffectIndices[8]; // 0x1CAE0
 	bool newEnableCollision; // 0x1CB00
 	uint32 newLastVar; // 0x1CB01
@@ -3434,13 +3459,14 @@ static_assert(offsetof(ActorData, newEntityIndex) == 0x1CACE);
 static_assert(offsetof(ActorData, newForceFiles) == 0x1CACF);
 static_assert(offsetof(ActorData, newForceFilesCharacter) == 0x1CAD0);
 static_assert(offsetof(ActorData, newEnableVisibility) == 0x1CAD1);
-static_assert(offsetof(ActorData, newGamepad) == 0x1CAD2);
-static_assert(offsetof(ActorData, newButtonMask) == 0x1CAD3);
-static_assert(offsetof(ActorData, newEnableRightStick) == 0x1CAD5);
-static_assert(offsetof(ActorData, newEnableLeftStick) == 0x1CAD6);
-static_assert(offsetof(ActorData, newExecuteStyleSwitch) == 0x1CAD7);
-static_assert(offsetof(ActorData, newExecuteRemoveBusyFlag) == 0x1CAD8);
-static_assert(offsetof(ActorData, newAirStingerCount) == 0x1CAD9);
+static_assert(offsetof(ActorData, newLastEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(ActorData, newGamepad) == 0x1CAD3);
+static_assert(offsetof(ActorData, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(ActorData, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(ActorData, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(ActorData, newExecuteStyleSwitch) == 0x1CAD8);
+static_assert(offsetof(ActorData, newExecuteRemoveBusyFlag) == 0x1CAD9);
+static_assert(offsetof(ActorData, newAirStingerCount) == 0x1CADA);
 static_assert(offsetof(ActorData, newEffectIndices) == 0x1CAE0);
 static_assert(offsetof(ActorData, newEnableCollision) == 0x1CB00);
 static_assert(offsetof(ActorData, newLastVar) == 0x1CB01);
@@ -3601,13 +3627,14 @@ static_assert(offsetof(ActorDataDante, newEntityIndex) == 0x1CACE);
 static_assert(offsetof(ActorDataDante, newForceFiles) == 0x1CACF);
 static_assert(offsetof(ActorDataDante, newForceFilesCharacter) == 0x1CAD0);
 static_assert(offsetof(ActorDataDante, newEnableVisibility) == 0x1CAD1);
-static_assert(offsetof(ActorDataDante, newGamepad) == 0x1CAD2);
-static_assert(offsetof(ActorDataDante, newButtonMask) == 0x1CAD3);
-static_assert(offsetof(ActorDataDante, newEnableRightStick) == 0x1CAD5);
-static_assert(offsetof(ActorDataDante, newEnableLeftStick) == 0x1CAD6);
-static_assert(offsetof(ActorDataDante, newExecuteStyleSwitch) == 0x1CAD7);
-static_assert(offsetof(ActorDataDante, newExecuteRemoveBusyFlag) == 0x1CAD8);
-static_assert(offsetof(ActorDataDante, newAirStingerCount) == 0x1CAD9);
+static_assert(offsetof(ActorDataDante, newLastEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(ActorDataDante, newGamepad) == 0x1CAD3);
+static_assert(offsetof(ActorDataDante, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(ActorDataDante, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(ActorDataDante, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(ActorDataDante, newExecuteStyleSwitch) == 0x1CAD8);
+static_assert(offsetof(ActorDataDante, newExecuteRemoveBusyFlag) == 0x1CAD9);
+static_assert(offsetof(ActorDataDante, newAirStingerCount) == 0x1CADA);
 static_assert(offsetof(ActorDataDante, newEffectIndices) == 0x1CAE0);
 static_assert(offsetof(ActorDataDante, newEnableCollision) == 0x1CB00);
 static_assert(offsetof(ActorDataDante, newLastVar) == 0x1CB01);
@@ -3757,13 +3784,14 @@ static_assert(offsetof(ActorDataBob, newEntityIndex) == 0x1CACE);
 static_assert(offsetof(ActorDataBob, newForceFiles) == 0x1CACF);
 static_assert(offsetof(ActorDataBob, newForceFilesCharacter) == 0x1CAD0);
 static_assert(offsetof(ActorDataBob, newEnableVisibility) == 0x1CAD1);
-static_assert(offsetof(ActorDataBob, newGamepad) == 0x1CAD2);
-static_assert(offsetof(ActorDataBob, newButtonMask) == 0x1CAD3);
-static_assert(offsetof(ActorDataBob, newEnableRightStick) == 0x1CAD5);
-static_assert(offsetof(ActorDataBob, newEnableLeftStick) == 0x1CAD6);
-static_assert(offsetof(ActorDataBob, newExecuteStyleSwitch) == 0x1CAD7);
-static_assert(offsetof(ActorDataBob, newExecuteRemoveBusyFlag) == 0x1CAD8);
-static_assert(offsetof(ActorDataBob, newAirStingerCount) == 0x1CAD9);
+static_assert(offsetof(ActorDataBob, newLastEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(ActorDataBob, newGamepad) == 0x1CAD3);
+static_assert(offsetof(ActorDataBob, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(ActorDataBob, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(ActorDataBob, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(ActorDataBob, newExecuteStyleSwitch) == 0x1CAD8);
+static_assert(offsetof(ActorDataBob, newExecuteRemoveBusyFlag) == 0x1CAD9);
+static_assert(offsetof(ActorDataBob, newAirStingerCount) == 0x1CADA);
 static_assert(offsetof(ActorDataBob, newEffectIndices) == 0x1CAE0);
 static_assert(offsetof(ActorDataBob, newEnableCollision) == 0x1CB00);
 static_assert(offsetof(ActorDataBob, newLastVar) == 0x1CB01);
@@ -3913,13 +3941,14 @@ static_assert(offsetof(ActorDataLady, newEntityIndex) == 0x1CACE);
 static_assert(offsetof(ActorDataLady, newForceFiles) == 0x1CACF);
 static_assert(offsetof(ActorDataLady, newForceFilesCharacter) == 0x1CAD0);
 static_assert(offsetof(ActorDataLady, newEnableVisibility) == 0x1CAD1);
-static_assert(offsetof(ActorDataLady, newGamepad) == 0x1CAD2);
-static_assert(offsetof(ActorDataLady, newButtonMask) == 0x1CAD3);
-static_assert(offsetof(ActorDataLady, newEnableRightStick) == 0x1CAD5);
-static_assert(offsetof(ActorDataLady, newEnableLeftStick) == 0x1CAD6);
-static_assert(offsetof(ActorDataLady, newExecuteStyleSwitch) == 0x1CAD7);
-static_assert(offsetof(ActorDataLady, newExecuteRemoveBusyFlag) == 0x1CAD8);
-static_assert(offsetof(ActorDataLady, newAirStingerCount) == 0x1CAD9);
+static_assert(offsetof(ActorDataLady, newLastEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(ActorDataLady, newGamepad) == 0x1CAD3);
+static_assert(offsetof(ActorDataLady, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(ActorDataLady, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(ActorDataLady, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(ActorDataLady, newExecuteStyleSwitch) == 0x1CAD8);
+static_assert(offsetof(ActorDataLady, newExecuteRemoveBusyFlag) == 0x1CAD9);
+static_assert(offsetof(ActorDataLady, newAirStingerCount) == 0x1CADA);
 static_assert(offsetof(ActorDataLady, newEffectIndices) == 0x1CAE0);
 static_assert(offsetof(ActorDataLady, newEnableCollision) == 0x1CB00);
 static_assert(offsetof(ActorDataLady, newLastVar) == 0x1CB01);
@@ -4074,13 +4103,14 @@ static_assert(offsetof(ActorDataVergil, newEntityIndex) == 0x1CACE);
 static_assert(offsetof(ActorDataVergil, newForceFiles) == 0x1CACF);
 static_assert(offsetof(ActorDataVergil, newForceFilesCharacter) == 0x1CAD0);
 static_assert(offsetof(ActorDataVergil, newEnableVisibility) == 0x1CAD1);
-static_assert(offsetof(ActorDataVergil, newGamepad) == 0x1CAD2);
-static_assert(offsetof(ActorDataVergil, newButtonMask) == 0x1CAD3);
-static_assert(offsetof(ActorDataVergil, newEnableRightStick) == 0x1CAD5);
-static_assert(offsetof(ActorDataVergil, newEnableLeftStick) == 0x1CAD6);
-static_assert(offsetof(ActorDataVergil, newExecuteStyleSwitch) == 0x1CAD7);
-static_assert(offsetof(ActorDataVergil, newExecuteRemoveBusyFlag) == 0x1CAD8);
-static_assert(offsetof(ActorDataVergil, newAirStingerCount) == 0x1CAD9);
+static_assert(offsetof(ActorDataVergil, newLastEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(ActorDataVergil, newGamepad) == 0x1CAD3);
+static_assert(offsetof(ActorDataVergil, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(ActorDataVergil, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(ActorDataVergil, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(ActorDataVergil, newExecuteStyleSwitch) == 0x1CAD8);
+static_assert(offsetof(ActorDataVergil, newExecuteRemoveBusyFlag) == 0x1CAD9);
+static_assert(offsetof(ActorDataVergil, newAirStingerCount) == 0x1CADA);
 static_assert(offsetof(ActorDataVergil, newEffectIndices) == 0x1CAE0);
 static_assert(offsetof(ActorDataVergil, newEnableCollision) == 0x1CB00);
 static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CB01);

@@ -1,3 +1,4 @@
+// @Todo: Add !InCutscene to CreateActor.
 // @Todo: Missing Doppelganger deactivate instruction for Bob.
 // @Todo: More getters.
 // @Todo: Quick Drive.
@@ -61,11 +62,25 @@ void InitGetActorBaseAddr()
 	}
 }
 
-void SetMainActor(byte8 * baseAddr)
-{
-	LogFunction(baseAddr);
 
-	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+
+
+
+
+
+
+export void SetMainActor(ActorData & actorData)
+{
+	//LogFunction(actorBaseAddr);
+
+	//auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+
+	auto actorBaseAddr = reinterpret_cast<byte8 *>(&actorData);
+
+	LogFunction(actorBaseAddr);
+
+
+
 
 	// Main
 	[&]()
@@ -75,7 +90,7 @@ void SetMainActor(byte8 * baseAddr)
 		{
 			return;
 		}
-		pool[3] = baseAddr;
+		pool[3] = actorBaseAddr;
 	}();
 
 	// Style Rank
@@ -102,7 +117,7 @@ void SetMainActor(byte8 * baseAddr)
 	[&]()
 	{
 		IntroduceCameraData(return);
-		cameraData.targetBaseAddr = baseAddr;
+		cameraData.targetBaseAddr = actorBaseAddr;
 	}();
 
 	// Camera 2
@@ -117,7 +132,7 @@ void SetMainActor(byte8 * baseAddr)
 		{
 			return;
 		}
-		*reinterpret_cast<byte8 **>(pool[5] + 0x5470 + 0xB0) = baseAddr;
+		*reinterpret_cast<byte8 **>(pool[5] + 0x5470 + 0xB0) = actorBaseAddr;
 		/*
 		dmc3.exe+23CC94 - 48 8D 8F 70540000 - lea rcx,[rdi+00005470]
 		dmc3.exe+57B32 - 48 89 93 B0000000  - mov [rbx+000000B0],rdx
@@ -136,9 +151,79 @@ void SetMainActor(byte8 * baseAddr)
 		{
 			return;
 		}
-		*reinterpret_cast<byte8 **>(pool[5] + 0x2CB8) = baseAddr;
+		*reinterpret_cast<byte8 **>(pool[5] + 0x2CB8) = actorBaseAddr;
 	}();
 }
+
+export void SetMainActor(uint32 index)
+{
+	IntroduceActorData(index, return);
+
+	SetMainActor(actorData);
+}
+
+
+
+
+
+
+
+
+
+
+
+// void UpdateMainActor()
+// {
+// 	for_each(uint32, index, 2, Actor_actorBaseAddr.count)
+// 	{
+// 		auto actorBaseAddr = Actor_actorBaseAddr[index];
+// 		if (!actorBaseAddr)
+// 		{
+// 			continue;
+// 		}
+// 		auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+// 		auto & playerData = GetPlayerData(actorData);
+
+// 		if
+// 		(
+// 			(actorData.newPlayerIndex == 0) &&
+// 			(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
+// 			(actorData.newEntityIndex == ENTITY_MAIN)
+// 		)
+// 		{
+// 			SetMainActor(actorData);
+
+// 			break;
+// 		}
+// 	}
+// }
+
+// void ResetMainActor()
+// {
+// 	auto actorBaseAddr = Actor_actorBaseAddr[0];
+// 	if (!actorBaseAddr)
+// 	{
+// 		return;
+// 	}
+// 	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+
+// 	SetMainActor(act);
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void CopyState
 (
@@ -218,54 +303,34 @@ void ToggleInput
 	actorData.newEnableLeftStick = enable;
 }
 
-// @Todo: Update.
-export template <typename T>
-void ToggleActor
+
+
+
+export void ToggleActor
 (
-	T & actorData,
+	ActorData & actorData,
 	bool enable
 )
 {
-	auto & playerData = GetPlayerData(actorData);
-
 	actorData.newEnableCollision = enable;
 
 	ToggleInput(actorData, enable);
 
+	actorData.newEnableVisibility = enable;
 
-
-
-
-
+	// @Research: Check visibility access.
 	{
 		uint32 value = (g_quicksilver) ? 2 : 1;
 
 		actorData.visibility = (enable) ? value : 0;
+
+		// @Todo: Add g_forceVisibleActors
 
 		if constexpr (debug)
 		{
 			actorData.visibility = value;
 		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	actorData.shadow = (enable) ? 1 : 0; // @Research: Add mission 2 exception.
 
@@ -280,18 +345,54 @@ void ToggleActor
 		actorData.trickUpCount   = 0;
 		actorData.trickDownCount = 0;
 	}
-
-	// if
-	// (
-	// 	(actorData.newPlayerIndex == 0) &&
-	// 	(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
-	// 	(actorData.newEntityIndex == ENTITY_MAIN) &&
-	// 	enable
-	// )
-	// {
-	// 	SetMainActor(actorData);
-	// }
 }
+
+export void ToggleActor
+(
+	uint32 index,
+	bool enable
+)
+{
+	IntroduceActorData(index, return);
+
+	ToggleActor(actorData, enable);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export template <typename T>
 struct GetCharacterId
@@ -2572,18 +2673,19 @@ byte8 * CreateActor
 
 
 
-	if
-	(
-		(characterIndex == playerData.activeCharacterIndex) &&
-		(entityIndex == ENTITY_MAIN)
-	)
-	{
-		ToggleActor(actorData, true);
-	}
-	else
-	{
-		ToggleActor(actorData, false);
-	}
+	// if
+	// (
+	// 	!InCutscene() &&
+	// 	(characterIndex == playerData.activeCharacterIndex) &&
+	// 	(entityIndex == ENTITY_MAIN)
+	// )
+	// {
+	// 	ToggleActor(actorData, true);
+	// }
+	// else
+	// {
+	// 	ToggleActor(actorData, false);
+	// }
 
 	if (entityIndex == ENTITY_CLONE)
 	{
@@ -2615,7 +2717,10 @@ byte8 * CreateActor
 	return actorBaseAddr;
 }
 
-// @Todo: If in cutscene hide actors.
+
+
+
+
 byte8 * SpawnActor
 (
 	uint8 playerIndex,
@@ -8057,26 +8162,7 @@ export void Actor_Init()
 		*/
 	}
 
-	// // Update Collision Data
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+5C260
-	// 	};
-	// 	constexpr byte8 sect1[] =
-	// 	{
-	// 		mov_rcx_rsi,
-	// 	};
-	// 	auto func = CreateFunction(UpdateCollisionData, (appBaseAddr + 0x1EF001), true, true, sizeof(sect0), sizeof(sect1));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	memcpy(func.sect1, sect1, sizeof(sect1));
-	// 	WriteCall(func.sect0, (appBaseAddr + 0x5C260));
-	// 	UpdateCollisionDataAddr = func.addr;
-	// 	/*
-	// 	dmc3.exe+1EEFFC - E8 5FD2E6FF       - call dmc3.exe+5C260
-	// 	dmc3.exe+1EF001 - 83 BE 943E0000 03 - cmp dword ptr [rsi+00003E94],03
-	// 	*/
-	// }
+
 
 	// Ebony & Ivory Rain Storm Check
 	{
@@ -8157,24 +8243,7 @@ export void Actor_Init()
 		*/
 	}
 
-	// // Disable Actor Data Copy Check
-	// {
-	// 	constexpr byte8 sect2[] =
-	// 	{
-	// 		0x84, 0xC0,                               // test al,al
-	// 		0x74, 0x01,                               // je short
-	// 		0xC3,                                     // ret
-	// 		0x0F, 0xB6, 0x81, 0x00, 0x00, 0x00, 0x00, // movzx eax,byte ptr [rcx+00006498]
-	// 	};
-	// 	auto func = CreateFunction(DisableActorDataCopyCheck, (appBaseAddr + 0x2198D7), true, false, 0, 0, sizeof(sect2));
-	// 	memcpy(func.sect2, sect2, sizeof(sect2));
-	// 	*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ActorData, newWeapons);
-	// 	DisableActorDataCopyCheckAddr = func.addr,
-	// 	/*
-	// 	dmc3.exe+2198D0 - 0FB6 81 98640000 - movzx eax,byte ptr [rcx+00006498]
-	// 	dmc3.exe+2198D7 - 45 33 C0         - xor r8d,r8d
-	// 	*/
-	// }
+
 
 
 
@@ -8196,23 +8265,6 @@ export void Actor_Init()
 		dmc3.exe+5C325 - 48 89 74 24 10 - mov [rsp+10],rsi
 		*/
 	}
-
-	// // Quicksilver Check
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
-	// 		0x80, 0x38, 0x01,                                           // cmp byte ptr [rax],01
-	// 	};
-	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1F8A07), false, true, sizeof(sect0));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	*reinterpret_cast<bool **>(func.sect0 + 2) = &g_quicksilver;
-	// 	QuicksilverCheckAddr = func.addr;
-	// 	/*
-	// 	dmc3.exe+1F8A00 - 80 BF 61630000 01 - cmp byte ptr [rdi+00006361],01
-	// 	dmc3.exe+1F8A07 - 0F85 9F000000     - jne dmc3.exe+1F8AAC
-	// 	*/
-	// }
 
 
 
@@ -9814,7 +9866,7 @@ export void Actor_Customize()
 
 	LogFunction();
 
-	SetMainActor(Actor_actorBaseAddr[0]);
+	SetMainActor(0);
 }
 
 export void Actor_Delete()
@@ -9826,12 +9878,72 @@ export void Actor_Delete()
 
 	LogFunction();
 
-	SetMainActor(Actor_actorBaseAddr[0]);
+	SetMainActor(0);
 
 	Actor_actorBaseAddr.Clear();
 
 	File_dynamicFiles.Clear();
 }
+
+
+
+
+
+
+
+export void Actor_InGameCutsceneStart()
+{
+	LogFunction();
+
+	ToggleActor(0, true);
+	ToggleActor(1, true);
+
+	for_each(uint32, index, 2, Actor_actorBaseAddr.count)
+	{
+		ToggleActor(index, false);
+	}
+
+	SetMainActor(0);
+}
+
+export void Actor_InGameCutsceneEnd()
+{
+	LogFunction();
+
+	ToggleActor(0, false);
+	ToggleActor(1, false);
+
+	for_each(uint32, index, 2, Actor_actorBaseAddr.count)
+	{
+		IntroduceActorData(index, continue);
+
+		auto & playerData = GetPlayerData(actorData);
+
+		if
+		(
+			(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
+			(actorData.newEntityIndex == ENTITY_MAIN)
+		)
+		{
+			ToggleActor(actorData, true);
+
+			if (actorData.newPlayerIndex == 0)
+			{
+				SetMainActor(actorData);
+			}
+		}
+		else
+		{
+			ToggleActor(actorData, false);
+		}
+	}
+}
+
+
+
+
+
+
 
 export void Actor_MainLoopOnce()
 {
@@ -9840,159 +9952,87 @@ export void Actor_MainLoopOnce()
 		return;
 	}
 
-	if (Actor_spawnActors)
-	{
-		Actor_spawnActors = false;
-
-		LogFunction();
-
-		SpawnActors();
-	}
-
-
-	// @Todo: Lambda.
-
-	IntroduceSessionData();
-	IntroduceEventData(return);
-
-	if (sessionData.mission != 19)
-	{
-		return;
-	}
-	else if (eventData.room != 421)
-	{
-		return;
-	}
-
-	auto actorBaseAddr = Actor_actorBaseAddr[1];
-	if (!actorBaseAddr)
-	{
-		return;
-	}
-	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-
-	if (actorData.character != CHAR_BOB)
-	{
-		return;
-	}
-
-	ToggleActor(actorData, true);
-
-	Log("Toggled Bob.");
-}
-
-
-// export void Actor_ActorLoopOnce(byte8 * actorBaseAddr)
-// {
-// 	if (!activeConfig.Actor.enable)
-// 	{
-// 		return;
-// 	}
-
-// 	if (Actor_actorBaseAddr.count <= 2)
-// 	{
-// 		return;
-// 	}
-
-// 	if (!Actor_actorBaseAddr[2])
-// 	{
-// 		return;
-// 	}
-
-// 	if (actorBaseAddr != Actor_actorBaseAddr[2])
-// 	{
-// 		return;
-// 	}
-
-// 	LogFunction();
-
-// 	// SpawnActors();
-
-// 	// Log("no helpin' it");
-// }
-
-
-
-// @Todo: Somewhat redundant.
-export void Actor_MainLoopOnceSync()
-{
-	if (!activeConfig.Actor.enable)
-	{
-		return;
-	}
-
 	LogFunction();
 
-	// if (!Actor_actorBaseAddr[2])
+	SpawnActors();
+
+
+	if (!InCutscene())
+	{
+		Actor_InGameCutsceneEnd();
+	}
+
+	// [&]()
 	// {
-	// 	Log("Actor_actorBaseAddr[2] 0");
-
-	// 	return;
-	// }
-
-	// SetMainActor(Actor_actorBaseAddr[2]);
-
-
-
-
-	// switch (activeConfig.Actor.system)
-	// {
-	// 	case ACTOR_SYSTEM_DEFAULT:
-	// 	case ACTOR_SYSTEM_DOPPELGANGER:
+	// 	if (InCutscene())
 	// 	{
-	// 		if (!Actor_actorBaseAddr[2])
-	// 		{
-	// 			Log("Actor_actorBaseAddr[2] 0");
-
-	// 			break;
-	// 		}
-
-	// 		SetMainActor(Actor_actorBaseAddr[2]);
-
-	// 		break;
+	// 		return;
 	// 	}
-	// 	case ACTOR_SYSTEM_CHARACTER_SWITCHER:
+
+	// 	for_each(uint32, index, 2, Actor_actorBaseAddr.count)
 	// 	{
-	// 		constexpr uint8 player = 0;
+	// 		IntroduceActorData(index, continue);
 
-	// 		for_all(uint8, direction, MAX_DIRECTION)
+	// 		auto & playerData = GetPlayerData(actorData);
+
+	// 		if
+	// 		(
+	// 			(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
+	// 			(actorData.newEntityIndex == ENTITY_MAIN)
+	// 		)
 	// 		{
-	// 			auto & playerData = activeConfig.Actor.playerData[player][direction];
+	// 			ToggleActor(actorData, true);
 
-	// 			auto & character       = g_character      [player];
-	// 			auto & lastCharacter   = g_lastCharacter  [player];
-	// 			auto & activeCharacter = g_activeCharacter[player];
-
-	// 			if (!playerData.enable)
+	// 			if (actorData.newPlayerIndex == 0)
 	// 			{
-	// 				continue;
-	// 			}
-
-	// 			if (playerData.character == character)
-	// 			{
-	// 				SetMainActor(g_actorBaseAddr[player][direction]);
-
-	// 				break;
+	// 				SetMainActor(actorData);
 	// 			}
 	// 		}
-
-	// 		break;
+	// 		else
+	// 		{
+	// 			ToggleActor(actorData, false);
+	// 		}
 	// 	}
-	// }
+	// }();
+
+
+
+
+
+
+
+
+
+
+
+
+
+	[&]()
+	{
+		IntroduceSessionData();
+		IntroduceEventData(return);
+
+		if (sessionData.mission != 19)
+		{
+			return;
+		}
+		else if (eventData.room != 421)
+		{
+			return;
+		}
+
+		IntroduceActorData(1, return);
+
+		if (actorData.character != CHAR_BOB)
+		{
+			return;
+		}
+
+		ToggleActor(actorData, true);
+
+		Log("Toggled Bob.");
+	}();
 }
-
-/*
-
-dmc3.exe+1F5FC6 - 83 B9 C8CA0100 01     - cmp dword ptr [rcx+0001CAC8],01 { 1 }
-
-
-*/
-
-
-
-
-
-
 
 export void Actor_ActorLoop(byte8 * actorBaseAddr)
 {
@@ -10044,6 +10084,37 @@ export void Actor_ActorLoop(byte8 * actorBaseAddr)
 			break;
 		}
 	}
+
+
+
+
+
+	IntroduceMainActorData(return);
+
+	if (actorBaseAddr != Actor_actorBaseAddr[0])
+	{
+		return;
+	}
+
+	actorData.position = mainActorData.position;
+	actorData.rotation = mainActorData.rotation;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 
@@ -10060,56 +10131,29 @@ export void Actor_ActorLoop(byte8 * actorBaseAddr)
 
 
 
+// void ToggleVisibility
+// (
+// 	ActorData & actorData,
+// 	bool enable
+// )
+// {
+// 	actorData.newLastEnableVisibility = actorData.newEnableVisibility;
+// 	actorData.newEnableVisibility = enable;
+// }
 
-// @Todo: Reconsider.
-export void Actor_InGameCutsceneStart()
-{
-	LogFunction();
 
-	auto mainActorBaseAddr = Actor_actorBaseAddr[0];
-	if (!mainActorBaseAddr)
-	{
-		return;
-	}
-	auto & mainActorData = *reinterpret_cast<ActorData *>(mainActorBaseAddr);
 
-	auto actorBaseAddr = Actor_actorBaseAddr[2];
-	if (!actorBaseAddr)
-	{
-		return;
-	}
-	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
 
-	mainActorData.position = actorData.position;
-	mainActorData.rotation = actorData.rotation;
+// @Todo: Put main actor copy position into actor loop.
 
-	SetMainActor(mainActorBaseAddr);
 
-	//ToggleActor(mainActorData, true);
-}
+// @Research: Just use IntroduceMainActorData.
 
-export void Actor_InGameCutsceneEnd()
-{
-	LogFunction();
 
-	auto mainActorBaseAddr = Actor_actorBaseAddr[0];
-	if (!mainActorBaseAddr)
-	{
-		return;
-	}
-	auto & mainActorData = *reinterpret_cast<ActorData *>(mainActorBaseAddr);
 
-	auto actorBaseAddr = Actor_actorBaseAddr[2];
-	if (!actorBaseAddr)
-	{
-		return;
-	}
-	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
 
-	SetMainActor(actorBaseAddr);
 
-	// ToggleActor(mainActorData, false);
-}
+
 
 
 
@@ -10304,5 +10348,199 @@ export void Actor_SceneMissionStart()
 	// 	0,
 	// 	sizeof(g_actorBaseAddr)
 	// );
+
+	// // Quicksilver Check
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
+	// 		0x80, 0x38, 0x01,                                           // cmp byte ptr [rax],01
+	// 	};
+	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1F8A07), false, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	*reinterpret_cast<bool **>(func.sect0 + 2) = &g_quicksilver;
+	// 	QuicksilverCheckAddr = func.addr;
+	// 	/*
+	// 	dmc3.exe+1F8A00 - 80 BF 61630000 01 - cmp byte ptr [rdi+00006361],01
+	// 	dmc3.exe+1F8A07 - 0F85 9F000000     - jne dmc3.exe+1F8AAC
+	// 	*/
+	// }
+
+
+// // Disable Actor Data Copy Check
+	// {
+	// 	constexpr byte8 sect2[] =
+	// 	{
+	// 		0x84, 0xC0,                               // test al,al
+	// 		0x74, 0x01,                               // je short
+	// 		0xC3,                                     // ret
+	// 		0x0F, 0xB6, 0x81, 0x00, 0x00, 0x00, 0x00, // movzx eax,byte ptr [rcx+00006498]
+	// 	};
+	// 	auto func = CreateFunction(DisableActorDataCopyCheck, (appBaseAddr + 0x2198D7), true, false, 0, 0, sizeof(sect2));
+	// 	memcpy(func.sect2, sect2, sizeof(sect2));
+	// 	*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ActorData, newWeapons);
+	// 	DisableActorDataCopyCheckAddr = func.addr,
+	// 	/*
+	// 	dmc3.exe+2198D0 - 0FB6 81 98640000 - movzx eax,byte ptr [rcx+00006498]
+	// 	dmc3.exe+2198D7 - 45 33 C0         - xor r8d,r8d
+	// 	*/
+	// }
+
+	// // Update Collision Data
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+5C260
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rsi,
+	// 	};
+	// 	auto func = CreateFunction(UpdateCollisionData, (appBaseAddr + 0x1EF001), true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	WriteCall(func.sect0, (appBaseAddr + 0x5C260));
+	// 	UpdateCollisionDataAddr = func.addr;
+	// 	/*
+	// 	dmc3.exe+1EEFFC - E8 5FD2E6FF       - call dmc3.exe+5C260
+	// 	dmc3.exe+1EF001 - 83 BE 943E0000 03 - cmp dword ptr [rsi+00003E94],03
+	// 	*/
+	// }
+
+
+
+	if (Actor_spawnActors)
+	{
+		Actor_spawnActors = false;
+
+
+	}
+
+
+
+
+
+// export void Actor_ActorLoopOnce(byte8 * actorBaseAddr)
+// {
+// 	if (!activeConfig.Actor.enable)
+// 	{
+// 		return;
+// 	}
+
+// 	if (Actor_actorBaseAddr.count <= 2)
+// 	{
+// 		return;
+// 	}
+
+// 	if (!Actor_actorBaseAddr[2])
+// 	{
+// 		return;
+// 	}
+
+// 	if (actorBaseAddr != Actor_actorBaseAddr[2])
+// 	{
+// 		return;
+// 	}
+
+// 	LogFunction();
+
+// 	// SpawnActors();
+
+// 	// Log("no helpin' it");
+// }
+
+
+
+// @Todo: Somewhat redundant.
+export void Actor_MainLoopOnceSync()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	// if (!Actor_actorBaseAddr[2])
+	// {
+	// 	Log("Actor_actorBaseAddr[2] 0");
+
+	// 	return;
+	// }
+
+	// SetMainActor(Actor_actorBaseAddr[2]);
+
+
+
+
+	// switch (activeConfig.Actor.system)
+	// {
+	// 	case ACTOR_SYSTEM_DEFAULT:
+	// 	case ACTOR_SYSTEM_DOPPELGANGER:
+	// 	{
+	// 		if (!Actor_actorBaseAddr[2])
+	// 		{
+	// 			Log("Actor_actorBaseAddr[2] 0");
+
+	// 			break;
+	// 		}
+
+	// 		SetMainActor(Actor_actorBaseAddr[2]);
+
+	// 		break;
+	// 	}
+	// 	case ACTOR_SYSTEM_CHARACTER_SWITCHER:
+	// 	{
+	// 		constexpr uint8 player = 0;
+
+	// 		for_all(uint8, direction, MAX_DIRECTION)
+	// 		{
+	// 			auto & playerData = activeConfig.Actor.playerData[player][direction];
+
+	// 			auto & character       = g_character      [player];
+	// 			auto & lastCharacter   = g_lastCharacter  [player];
+	// 			auto & activeCharacter = g_activeCharacter[player];
+
+	// 			if (!playerData.enable)
+	// 			{
+	// 				continue;
+	// 			}
+
+	// 			if (playerData.character == character)
+	// 			{
+	// 				SetMainActor(g_actorBaseAddr[player][direction]);
+
+	// 				break;
+	// 			}
+	// 		}
+
+	// 		break;
+	// 	}
+	// }
+}
+
+/*
+
+dmc3.exe+1F5FC6 - 83 B9 C8CA0100 01     - cmp dword ptr [rcx+0001CAC8],01 { 1 }
+
+
+*/
+
+
+
+	// if
+	// (
+	// 	(actorData.newPlayerIndex == 0) &&
+	// 	(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
+	// 	(actorData.newEntityIndex == ENTITY_MAIN) &&
+	// 	enable
+	// )
+	// {
+	// 	SetMainActor(actorData);
+	// }
+
+	// @Todo: Update.
+	// auto & playerData = GetPlayerData(actorData);
+
 
 #endif
