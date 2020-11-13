@@ -27,7 +27,7 @@ import Speed;
 import Training;
 import Window;
 
-#define debug true
+#define debug false
 
 
 
@@ -3169,89 +3169,31 @@ void Main()
 		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
 	}
 
-	if (ImGui::Begin("DDMK 2.7 Mary Nightly 1 November 2020", &g_pause))
+	if (ImGui::Begin("DDMK 2.7 Mary Nightly 13 November 2020", &g_pause))
 	{
 		ImGui::Text("");
 
-
-
-		static uint32 actorIndex = 0;
-		GUI_Input
-		(
-			"actorIndex",
-			actorIndex
-		);
-
-		// if (GUI_Button("Lock Actor"))
-		// {
-		// 	auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
-		// 	if (!actorBaseAddr)
-		// 	{
-		// 		return;
-		// 	}
-		// 	LockActor(actorBaseAddr);
-		// }
-
-		// if (GUI_Button("Unlock Actor"))
-		// {
-		// 	auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
-		// 	if (!actorBaseAddr)
-		// 	{
-		// 		return;
-		// 	}
-		// 	UnlockActor(actorBaseAddr);
-		// }
-
-		static bool enable = false;
-		GUI_Checkbox("Enable", enable);
-
-		if (GUI_Button("Toggle Actor"))
+		if constexpr (debug)
 		{
-			[]()
+			static uint32 actorIndex = 0;
+			static bool enable = false;
+
+			GUI_Input
+			(
+				"actorIndex",
+				actorIndex
+			);
+			GUI_Checkbox
+			(
+				"Enable",
+				enable
+			);
+			if (GUI_Button("Toggle Actor"))
 			{
-				// auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
-				// if (!actorBaseAddr)
-				// {
-				// 	return;
-				// }
-				// auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
 				ToggleActor(actorIndex, enable);
-			}();
+			}
+			ImGui::Text("");
 		}
-
-		ImGui::Text("");
-
-
-		// if (GUI_Button("Relocate"))
-		// {
-		// 	Actor_MiniToggle(enable);
-		// }
-
-
-
-
-
-		// if (GUI_Button("Style"))
-		// {
-		// 	auto & style = ImGui::GetStyle();
-
-		// 	style.ScaleAllSizes(scale);
-		// }
-
-		// if (GUI_Button("SetWindotFontScale"))
-		// {
-		// 	ImGui::SetWindowFontScale(scale);
-		// }
-
-
-
-
-
-
-
-
-
-
 
 		Actor();
 		Arcade();
@@ -3508,5 +3450,56 @@ case ACTOR_SYSTEM_CHARACTER_SWITCHER:
 		// 		queuedConfig.Actor.showIdleActors
 		// 	);
 		// }
+
+
+
+
+		// if (GUI_Button("Lock Actor"))
+		// {
+		// 	auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
+		// 	if (!actorBaseAddr)
+		// 	{
+		// 		return;
+		// 	}
+		// 	LockActor(actorBaseAddr);
+		// }
+
+		// if (GUI_Button("Unlock Actor"))
+		// {
+		// 	auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
+		// 	if (!actorBaseAddr)
+		// 	{
+		// 		return;
+		// 	}
+		// 	UnlockActor(actorBaseAddr);
+		// }
+
+
+
+
+		// if (GUI_Button("Relocate"))
+		// {
+		// 	Actor_MiniToggle(enable);
+		// }
+
+
+
+
+
+		// if (GUI_Button("Style"))
+		// {
+		// 	auto & style = ImGui::GetStyle();
+
+		// 	style.ScaleAllSizes(scale);
+		// }
+
+		// if (GUI_Button("SetWindotFontScale"))
+		// {
+		// 	ImGui::SetWindowFontScale(scale);
+		// }
+
+
+
+
 
 #endif

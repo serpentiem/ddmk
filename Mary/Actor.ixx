@@ -1,6 +1,9 @@
+// @Todo: Cleanup.
+// @Todo: Disable Character Switch Controller in mission 18.
+// @Todo: Capture grabbed state.
+// @Todo: Bob Quicksilver.
 // @Todo: Get resurrect variable.
 // @Research: Main actor and actor 0.
-// @Todo: Apply main actor state in cutscene to all actors.
 // @Todo: Quick Drive.
 // @Todo: Capture Doppelganger run out event.
 // @Todo: Color Toggle.
@@ -21,7 +24,7 @@ import Input;
 import Memory;
 import Model;
 
-#define debug true
+#define debug false
 
 #pragma region Main
 
@@ -3615,6 +3618,8 @@ export void CharacterSwitchController()
 							GetStyle(characterData),
 							characterData.character
 						);
+
+						SetMainActor(idleActorData);
 					}
 				}
 			}
@@ -3640,6 +3645,8 @@ export void CharacterSwitchController()
 						GetStyle(characterData),
 						characterData.character
 					);
+
+					SetMainActor(idleActorData);
 				}
 			}
 		}();
@@ -6745,7 +6752,10 @@ inline void QuicksilverFunction
 
 	g_quicksilver = enable;
 
-	for_each(uint32, index, 2, Actor_actorBaseAddr.count)
+
+	// @Research: Should be for_all.
+	//for_each(uint32, index, 2, Actor_actorBaseAddr.count)
+	for_all(uint32, index, Actor_actorBaseAddr.count)
 	{
 		auto actorBaseAddr = Actor_actorBaseAddr[index];
 		if (!actorBaseAddr)
@@ -9882,10 +9892,15 @@ export void Actor_Delete()
 
 	LogFunction();
 
-	IntroduceMissionActorData(return);
 
-	activeMissionActorData.hitPoints = 300.0f;
-	queuedMissionActorData.hitPoints = 300.0f;
+
+
+
+
+	// IntroduceMissionActorData(return);
+
+	// activeMissionActorData.hitPoints = 300.0f;
+	// queuedMissionActorData.hitPoints = 300.0f;
 
 	// @Todo: Add hit points variable and set here. Apply in CreateActor.
 
@@ -9897,6 +9912,12 @@ export void Actor_Delete()
 }
 
 
+export void Actor_EventContinue()
+{
+	LogFunction();
+
+	SetMainActor(0);
+}
 
 
 
@@ -10074,27 +10095,22 @@ export void Actor_ActorLoop(byte8 * actorBaseAddr)
 
 	[&]()
 	{
-		// if (InCutscene())
-		// {
-		// 	if (actorBaseAddr == Actor_actorBaseAddr[0])
-		// 	{
-		// 		return;
-		// 	}
+		IntroduceMainActorData(return);
 
-		// 	CopyMainActorState(actorData);
-		// }
-		// else
-		if (!InCutscene())
+		if (InCutscene())
 		{
-			if (actorBaseAddr != Actor_actorBaseAddr[0])
-			{
-				return;
-			}
-
-			IntroduceMainActorData(return);
-
-			CopyState(mainActorData, actorData);
+			return;
 		}
+		else if (actorBaseAddr != Actor_actorBaseAddr[0])
+		{
+			return;
+		}
+		else if (actorBaseAddr == mainActorBaseAddr)
+		{
+			return;
+		}
+
+		CopyState(mainActorData, actorData);
 	}();
 }
 

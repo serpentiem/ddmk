@@ -12,7 +12,7 @@ import File;
 import Global;
 import Model;
 
-#define debug true
+#define debug false
 
 bool Event_run[MAX_EVENT] = {};
 bool MainLoopOnce_run     = false;
@@ -231,7 +231,7 @@ void UpdateCamera()
 	cameraData.zoom       = activeConfig.Camera.zoom;
 	cameraData.zoomLockOn = activeConfig.Camera.zoomLockOn;
 
-	cameraTimeout = activeConfig.Camera.timeout;
+	cameraTimeout = 500.0f;
 }
 
 
@@ -329,6 +329,32 @@ void InGameCutsceneEnd()
 
 	Actor_InGameCutsceneEnd();
 }
+
+
+
+
+
+void EventContinue()
+{
+	LogFunction();
+
+	Actor_EventContinue();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -715,6 +741,16 @@ export void Event_Init()
 		/*
 		dmc3.exe+23DEA3 - C6 05 93323900 00       - mov byte ptr [dmc3.exe+5D113D],00
 		dmc3.exe+23DEAA - C7 05 ECAAA700 00000000 - mov [dmc3.exe+CB89A0],00000000
+		*/
+	}
+
+	// Continue
+	{
+		auto func = CreateFunction(EventContinue, (appBaseAddr + 0x23BD66));
+		WriteAddress((appBaseAddr + 0x23BCA0), func.addr, 6);
+		/*
+		dmc3.exe+23BCA0 - 0F84 C0000000 - je dmc3.exe+23BD66
+		dmc3.exe+23BCA6 - 83 E8 01      - sub eax,01
 		*/
 	}
 }

@@ -125,6 +125,13 @@ export void Arcade_SetRoom()
 
 export void Arcade_CreateMainActor(byte8 * baseAddr)
 {
+	return;
+	
+	if (!activeConfig.Arcade.enable)
+	{
+		return;
+	}
+
 	LogFunction(baseAddr);
 
 	// Unlock Weapon Files
