@@ -375,6 +375,12 @@ var extra =
 	[ "newFirstVar", "uint32" ],
 
 
+
+	
+
+
+
+
 	//[ "var,var2,var3", "bool,int,uint16" ],
 
 
@@ -486,7 +492,7 @@ var extra =
 
 
 	[ "newEnableVisibility", "bool" ],
-	[ "newLastEnableVisibility", "bool" ],
+	//[ "newLastEnableVisibility", "bool" ],
 
 
 
@@ -570,6 +576,9 @@ var extra =
 
 	[ "newEnableCollision", "bool" ],
 
+
+
+	[ "newActorLoopRun", "bool" ],
 
 
 

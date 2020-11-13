@@ -107,7 +107,10 @@ export void HUD_UpdateStyleIcon
 
 	if
 	(
-		(character == CHAR_VERGIL) &&
+		(
+			(character == CHAR_BOB   ) ||
+			(character == CHAR_VERGIL)
+		) &&
 		(style == STYLE_DARK_SLAYER)
 	)
 	{

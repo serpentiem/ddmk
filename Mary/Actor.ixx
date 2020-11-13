@@ -1,7 +1,6 @@
-// @Todo: Update Bob style and icon.
-// @Todo: Add !InCutscene to CreateActor.
-// @Todo: Missing Doppelganger deactivate instruction for Bob.
-// @Todo: More getters.
+// @Todo: Get resurrect variable.
+// @Research: Main actor and actor 0.
+// @Todo: Apply main actor state in cutscene to all actors.
 // @Todo: Quick Drive.
 // @Todo: Capture Doppelganger run out event.
 // @Todo: Color Toggle.
@@ -72,16 +71,9 @@ void InitGetActorBaseAddr()
 
 export void SetMainActor(ActorData & actorData)
 {
-	//LogFunction(actorBaseAddr);
-
-	//auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-
 	auto actorBaseAddr = reinterpret_cast<byte8 *>(&actorData);
 
 	LogFunction(actorBaseAddr);
-
-
-
 
 	// Main
 	[&]()
@@ -94,25 +86,48 @@ export void SetMainActor(ActorData & actorData)
 		pool[3] = actorBaseAddr;
 	}();
 
-	// Style Rank
+	// Life
 	[&]()
 	{
-		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
 		if (!pool)
 		{
 			return;
 		}
-		if (!pool[12])
+		if (!pool[5])
 		{
 			return;
 		}
-		auto dest = *reinterpret_cast<byte8 **>(pool[12]);
-		if (!dest)
-		{
-			return;
-		}
-		*reinterpret_cast<uint32 **>(dest + 0x3D10) = &actorData.styleRank;
+		*reinterpret_cast<byte8 **>(pool[5] + 0x2CB8) = actorBaseAddr;
 	}();
+
+
+
+
+
+
+
+
+
+	// // Style Rank
+	// [&]()
+	// {
+	// 	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+	// 	if (!pool)
+	// 	{
+	// 		return;
+	// 	}
+	// 	if (!pool[12])
+	// 	{
+	// 		return;
+	// 	}
+	// 	auto dest = *reinterpret_cast<byte8 **>(pool[12]);
+	// 	if (!dest)
+	// 	{
+	// 		return;
+	// 	}
+	// 	*reinterpret_cast<uint32 **>(dest + 0x3D10) = &actorData.styleRank;
+	// }();
 
 	// // Camera
 	// [&]()
@@ -139,21 +154,6 @@ export void SetMainActor(ActorData & actorData)
 	// 	dmc3.exe+57B32 - 48 89 93 B0000000  - mov [rbx+000000B0],rdx
 	// 	*/
 	// }();
-
-	// Life
-	[&]()
-	{
-		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);
-		if (!pool)
-		{
-			return;
-		}
-		if (!pool[5])
-		{
-			return;
-		}
-		*reinterpret_cast<byte8 **>(pool[5] + 0x2CB8) = actorBaseAddr;
-	}();
 }
 
 export void SetMainActor(uint32 index)
@@ -162,55 +162,6 @@ export void SetMainActor(uint32 index)
 
 	SetMainActor(actorData);
 }
-
-
-
-
-
-
-
-
-
-
-
-// void UpdateMainActor()
-// {
-// 	for_each(uint32, index, 2, Actor_actorBaseAddr.count)
-// 	{
-// 		auto actorBaseAddr = Actor_actorBaseAddr[index];
-// 		if (!actorBaseAddr)
-// 		{
-// 			continue;
-// 		}
-// 		auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-// 		auto & playerData = GetPlayerData(actorData);
-
-// 		if
-// 		(
-// 			(actorData.newPlayerIndex == 0) &&
-// 			(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
-// 			(actorData.newEntityIndex == ENTITY_MAIN)
-// 		)
-// 		{
-// 			SetMainActor(actorData);
-
-// 			break;
-// 		}
-// 	}
-// }
-
-// void ResetMainActor()
-// {
-// 	auto actorBaseAddr = Actor_actorBaseAddr[0];
-// 	if (!actorBaseAddr)
-// 	{
-// 		return;
-// 	}
-// 	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-
-// 	SetMainActor(act);
-// }
-
 
 
 
@@ -273,6 +224,67 @@ void CopyState
 		idleActorData.quicksilver = mainActorData.quicksilver;
 	}();
 }
+
+
+
+
+template <typename T>
+void CopyMainActorState(T & actorData)
+{
+	auto mainActorBaseAddr = Actor_actorBaseAddr[0];
+	if (!mainActorBaseAddr)
+	{
+		return;
+	}
+	auto & mainActorData = *reinterpret_cast<ActorData *>(mainActorBaseAddr);
+
+	actorData.position = mainActorData.position;
+	actorData.rotation = mainActorData.rotation;
+
+	actorData.shadow = mainActorData.shadow;
+
+	memcpy
+	(
+		actorData.eventData,
+		mainActorData.eventData,
+		sizeof(mainActorData.eventData)
+	);
+
+	memcpy
+	(
+		actorData.var_3E10,
+		mainActorData.var_3E10,
+		sizeof(mainActorData.var_3E10)
+	);
+
+	actorData.mode = mainActorData.mode;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 template<typename T>
 void UpdatePermissions(T & actorData)
@@ -2421,18 +2433,22 @@ void UpdateMotionArchives(T & actorData)
 	}
 }
 
-template <typename T>
-void InitStyle(T & actorData)
-{
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
-	{
-		actorData.style = STYLE_TRICKSTER;
-	}
-	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	{
-		actorData.style = STYLE_DARK_SLAYER;
-	}
-}
+// template <typename T>
+// void InitStyle(T & actorData)
+// {
+// 	if constexpr (TypeMatch<T, ActorDataDante>::value)
+// 	{
+// 		actorData.style = STYLE_TRICKSTER;
+// 	}
+// 	else if constexpr (TypeMatch<T, ActorDataBob>::value)
+// 	{
+// 		actorData.style = STYLE_DARK_SLAYER;
+// 	}
+// 	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
+// 	{
+// 		actorData.style = STYLE_DARK_SLAYER;
+// 	}
+// }
 
 // @Todo: Update.
 template <typename T>
@@ -2715,7 +2731,6 @@ byte8 * CreateActor
 		UpdateActor(actorData);
 	}
 
-
 	if (entityIndex == ENTITY_MAIN)
 	{
 		func_2EE060(actorData.var_6410, 60);
@@ -2734,89 +2749,7 @@ byte8 * CreateActor
 		*/
 	}
 
-
-
-
-
-
-
-	// @Todo: Update.
-	// actorData.shadow = 1;
-
-	//auto UpdateShadow = [&]()
-	// [&]()
-	// {
-	// 	if (!Actor_actorBaseAddr[0])
-	// 	{
-	// 		return;
-	// 	}
-	// 	auto & mainActorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[0]);
-
-	// 	actorData.shadow = mainActorData.shadow;
-	// }();
-
-	//UpdateShadow();
-
-
-	// @Todo: Update.
-	[&]()
-	{
-		if (!Actor_actorBaseAddr[0])
-		{
-			return;
-		}
-		auto & mainActorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[0]);
-
-		// actorData.position = mainActorData.position;
-		// actorData.rotation = mainActorData.rotation;
-
-		actorData.shadow = mainActorData.shadow;
-
-		// memcpy
-		// (
-		// 	actorData.eventData,
-		// 	mainActorData.eventData,
-		// 	sizeof(mainActorData.eventData)
-		// );
-
-		// memcpy
-		// (
-		// 	actorData.var_3E10,
-		// 	mainActorData.var_3E10,
-		// 	sizeof(mainActorData.var_3E10)
-		// );
-
-		actorData.mode = mainActorData.mode;
-	}();
-
-
-
-
-
-	// actorData.position = actorSpawnHelper.position;
-	// actorData.rotation = actorSpawnHelper.rotation;
-
-	// actorData.var_3E10[8] = actorSpawnHelper.event;
-
-
-
-
-
-
 	UpdateMotionArchives(actorData);
-
-
-
-
-
-
-
-
-
-
-
-
-	InitStyle(actorData);
 
 	UpdateStyle(actorData);
 
@@ -2850,48 +2783,17 @@ byte8 * CreateActor
 		}
 	}
 
-
-
-
-
-
-
-	// if
-	// (
-	// 	!InCutscene() &&
-	// 	(characterIndex == playerData.activeCharacterIndex) &&
-	// 	(entityIndex == ENTITY_MAIN)
-	// )
-	// {
-	// 	ToggleActor(actorData, true);
-	// }
-	// else
-	// {
-	// 	ToggleActor(actorData, false);
-	// }
-
 	if (entityIndex == ENTITY_CLONE)
 	{
 		actorData.newIsClone = true;
 	}
 
-
-
-
-
-
-
-
-
+	CopyMainActorState(actorData);
 
 	if (actorData.mode == ACTOR_MODE_MISSION_19)
 	{
 		actorData.mode = ACTOR_MODE_DEFAULT;
 	}
-
-
-
-
 
 	func_1DFC20(actorData);
 
@@ -9858,23 +9760,23 @@ export void Actor_SetNextRoom()
 	IntroduceEventData(return);
 	IntroduceNextEventData(return);
 
-	switch (nextEventData.room)
-	{
-		case 239: // Temperance Wagon Altar of Evil
-		{
-			if (nextEventData.position >= 2)
-			{
-				nextEventData.position = 1;
-			}
-		}
-		case 240: // Temperance Wagon Torture Chamber
-		{
-			if (nextEventData.position >= 2)
-			{
-				nextEventData.position = 0;
-			}
-		}
-	}
+	// switch (nextEventData.room)
+	// {
+	// 	case 239: // Temperance Wagon Altar of Evil
+	// 	{
+	// 		if (nextEventData.position >= 2)
+	// 		{
+	// 			nextEventData.position = 1;
+	// 		}
+	// 	}
+	// 	case 240: // Temperance Wagon Torture Chamber
+	// 	{
+	// 		if (nextEventData.position >= 2)
+	// 		{
+	// 			nextEventData.position = 0;
+	// 		}
+	// 	}
+	// }
 }
 
 export void Actor_CreateMainActor(byte8 * baseAddr)
@@ -9979,6 +9881,13 @@ export void Actor_Delete()
 	}
 
 	LogFunction();
+
+	IntroduceMissionActorData(return);
+
+	activeMissionActorData.hitPoints = 300.0f;
+	queuedMissionActorData.hitPoints = 300.0f;
+
+	// @Todo: Add hit points variable and set here. Apply in CreateActor.
 
 	SetMainActor(0);
 
@@ -10103,6 +10012,18 @@ export void Actor_ActorLoop(byte8 * actorBaseAddr)
 	}
 	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
 
+	if (!actorData.newActorLoopRun)
+	{
+		actorData.newActorLoopRun = true;
+
+		LogFunction(actorBaseAddr);
+	}
+
+
+
+
+
+
 
 
 	UpdateModelPartitions(actorData);
@@ -10151,32 +10072,30 @@ export void Actor_ActorLoop(byte8 * actorBaseAddr)
 
 
 
-	IntroduceMainActorData(return);
-
-	if (actorBaseAddr != Actor_actorBaseAddr[0])
+	[&]()
 	{
-		return;
-	}
+		// if (InCutscene())
+		// {
+		// 	if (actorBaseAddr == Actor_actorBaseAddr[0])
+		// 	{
+		// 		return;
+		// 	}
 
-	actorData.position = mainActorData.position;
-	actorData.rotation = mainActorData.rotation;
+		// 	CopyMainActorState(actorData);
+		// }
+		// else
+		if (!InCutscene())
+		{
+			if (actorBaseAddr != Actor_actorBaseAddr[0])
+			{
+				return;
+			}
 
+			IntroduceMainActorData(return);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+			CopyState(mainActorData, actorData);
+		}
+	}();
 }
 
 
@@ -10652,6 +10571,138 @@ dmc3.exe+1F5FC6 - 83 B9 C8CA0100 01     - cmp dword ptr [rcx+0001CAC8],01 { 1 }
 	// 		}
 	// 	}
 	// }();
+
+
+
+
+
+
+	// @Todo: Update.
+	// actorData.shadow = 1;
+
+	//auto UpdateShadow = [&]()
+	// [&]()
+	// {
+	// 	if (!Actor_actorBaseAddr[0])
+	// 	{
+	// 		return;
+	// 	}
+	// 	auto & mainActorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[0]);
+
+	// 	actorData.shadow = mainActorData.shadow;
+	// }();
+
+	//UpdateShadow();
+
+
+	// @Todo: Update.
+	// [&]()
+	// {
+	// 	if (!Actor_actorBaseAddr[0])
+	// 	{
+	// 		return;
+	// 	}
+	// 	auto & mainActorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[0]);
+
+	// 	actorData.position = mainActorData.position;
+	// 	actorData.rotation = mainActorData.rotation;
+
+	// 	actorData.shadow = mainActorData.shadow;
+
+	// 	memcpy
+	// 	(
+	// 		actorData.eventData,
+	// 		mainActorData.eventData,
+	// 		sizeof(mainActorData.eventData)
+	// 	);
+
+	// 	memcpy
+	// 	(
+	// 		actorData.var_3E10,
+	// 		mainActorData.var_3E10,
+	// 		sizeof(mainActorData.var_3E10)
+	// 	);
+
+	// 	actorData.mode = mainActorData.mode;
+	// }();
+
+
+
+	
+
+
+
+	// actorData.position = actorSpawnHelper.position;
+	// actorData.rotation = actorSpawnHelper.rotation;
+
+	// actorData.var_3E10[8] = actorSpawnHelper.event;
+
+
+
+	// if
+	// (
+	// 	!InCutscene() &&
+	// 	(characterIndex == playerData.activeCharacterIndex) &&
+	// 	(entityIndex == ENTITY_MAIN)
+	// )
+	// {
+	// 	ToggleActor(actorData, true);
+	// }
+	// else
+	// {
+	// 	ToggleActor(actorData, false);
+	// }
+
+
+
+
+
+
+
+
+
+
+// void UpdateMainActor()
+// {
+// 	for_each(uint32, index, 2, Actor_actorBaseAddr.count)
+// 	{
+// 		auto actorBaseAddr = Actor_actorBaseAddr[index];
+// 		if (!actorBaseAddr)
+// 		{
+// 			continue;
+// 		}
+// 		auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+// 		auto & playerData = GetPlayerData(actorData);
+
+// 		if
+// 		(
+// 			(actorData.newPlayerIndex == 0) &&
+// 			(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
+// 			(actorData.newEntityIndex == ENTITY_MAIN)
+// 		)
+// 		{
+// 			SetMainActor(actorData);
+
+// 			break;
+// 		}
+// 	}
+// }
+
+// void ResetMainActor()
+// {
+// 	auto actorBaseAddr = Actor_actorBaseAddr[0];
+// 	if (!actorBaseAddr)
+// 	{
+// 		return;
+// 	}
+// 	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+
+// 	SetMainActor(act);
+// }
+
+
+
+
 
 
 #endif

@@ -33,8 +33,8 @@ export struct Config
 		bool    enable         = true;
 		uint32  mission        = 17;
 		uint32  mode           = MODE_DANTE_MUST_DIE;
-		uint32  room           = 900;
-		uint32  position       = 0;
+		uint32  room           = 400;
+		uint32  position       = 1;
 		bool    ignoreRoom     = false;
 		bool    ignorePosition = false;
 		uint8   floor          = 0;
@@ -535,7 +535,36 @@ export void ApplyDefaultCharacterData
 		{
 			characterData =
 			{
-				CHAR_BOB
+				CHAR_BOB,
+				0,
+				false,
+				CHAR_DANTE,
+				{
+					{
+						STYLE_DARK_SLAYER,
+						STYLE_DARK_SLAYER,
+					},
+					{
+						STYLE_DARK_SLAYER,
+						STYLE_DARK_SLAYER,
+					},
+					{
+						STYLE_DARK_SLAYER,
+						STYLE_DARK_SLAYER,
+					},
+					{
+						STYLE_DARK_SLAYER,
+						STYLE_DARK_SLAYER,
+					},
+				},
+				{},
+				{
+					GAMEPAD_UP,
+					GAMEPAD_RIGHT,
+					GAMEPAD_DOWN,
+					GAMEPAD_LEFT,
+				},
+				0
 			};
 
 			break;
