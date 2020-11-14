@@ -27,7 +27,7 @@ import Speed;
 import Training;
 import Window;
 
-#define debug false
+#define debug true
 
 
 

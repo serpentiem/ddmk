@@ -12,7 +12,7 @@ import File;
 import Global;
 import Model;
 
-#define debug false
+#define debug true
 
 bool Event_run[MAX_EVENT] = {};
 bool MainLoopOnce_run     = false;
@@ -53,7 +53,7 @@ void SetRoom()
 void SetNextRoom()
 {
 	LogFunction();
-	Actor_SetNextRoom();
+	//Actor_SetNextRoom();
 	BossRush_SetNextRoom();
 }
 
@@ -150,7 +150,7 @@ bool EventOnce(EventData & eventData)
 	case EVENT_MAIN:
 	{
 		Log("Main");
-		Actor_Main();
+		//Actor_Main();
 		BossRush_Main();
 		break;
 	}

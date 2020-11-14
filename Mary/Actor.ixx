@@ -1,3 +1,4 @@
+// @Todo: Add Air Hike to Mobility.
 // @Todo: Cleanup.
 // @Todo: Disable Character Switch Controller in mission 18.
 // @Todo: Capture grabbed state.
@@ -24,7 +25,7 @@ import Input;
 import Memory;
 import Model;
 
-#define debug false
+#define debug true
 
 #pragma region Main
 
@@ -46,7 +47,7 @@ void InitGetActorBaseAddr()
 		};
 		for_all(uint8, index, MAX_REGISTER)
 		{
-			auto func = CreateFunction(0, 0, false, true, sizeof(sect0));
+			auto func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
 			memcpy(func.sect0, sect0, sizeof(sect0));
 			WriteAddress((func.sect0 + 0xC), (appBaseAddr + 0xC90E28), 7);
 			GetActorBaseAddr[index] = func.addr;
@@ -426,6 +427,7 @@ struct GetCharacterId
 
 
 
+// @Todo: Use CharacterData.
 // @Todo: 2 or CharacterModelData.
 struct CharacterModelData
 {
@@ -1550,14 +1552,14 @@ void InitModel
 template <typename T>
 void UpdateModel(T & actorData)
 {
-	CharacterModelData characterData;
+	CharacterModelData characterModelData;
 
-	characterData.Update(actorData);
+	characterModelData.Update(actorData);
 
-	auto & character     = characterData.character;
-	auto & costume       = characterData.costume;
-	auto & costumeFileId = characterData.costumeFileId;
-	auto & coat          = characterData.coat;
+	auto & character     = characterModelData.character;
+	auto & costume       = characterModelData.costume;
+	auto & costumeFileId = characterModelData.costumeFileId;
+	auto & coat          = characterModelData.coat;
 
 	auto & file = File_staticFiles[costumeFileId];
 
@@ -2687,32 +2689,40 @@ byte8 * CreateActor
 
 	actorData.costume = characterData.costume;
 
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
-		switch (actorData.costume)
-		{
-			case COSTUME_DANTE_DMC1:
-			case COSTUME_DANTE_DMC1_NO_COAT:
-			case COSTUME_DANTE_SPARDA:
-			case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
-			{
-				actorData.sparda = true;
+		bool value = false;
 
-				break;
+		if constexpr (TypeMatch<T, ActorDataDante>::value)
+		{
+			switch (actorData.costume)
+			{
+				case COSTUME_DANTE_DMC1:
+				case COSTUME_DANTE_DMC1_NO_COAT:
+				case COSTUME_DANTE_SPARDA:
+				case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
+				{
+					value = true;
+
+					break;
+				}
 			}
+
+			actorData.sparda = value;
 		}
-	}
-	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	{
-		switch (actorData.costume)
+		else if constexpr (TypeMatch<T, ActorDataVergil>::value)
 		{
-			case COSTUME_VERGIL_SPARDA:
-			case COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS:
+			switch (actorData.costume)
 			{
-				actorData.neroAngelo = true;
+				case COSTUME_VERGIL_SPARDA:
+				case COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS:
+				{
+					value = true;
 
-				break;
+					break;
+				}
 			}
+
+			actorData.neroAngelo = value;
 		}
 	}
 
@@ -2933,12 +2943,12 @@ export void SpawnActors()
 			}
 			auto & cloneActorData = *reinterpret_cast<ActorData *>(cloneActorBaseAddr);
 
-			actorData.position = mainActorData.position;
-			actorData.rotation = mainActorData.rotation;
+			// actorData.position = mainActorData.position;
+			// actorData.rotation = mainActorData.rotation;
 			actorData.cloneBaseAddr = cloneActorBaseAddr;
 
-			cloneActorData.position = mainActorData.position;
-			cloneActorData.rotation = mainActorData.rotation;
+			// cloneActorData.position = mainActorData.position;
+			// cloneActorData.rotation = mainActorData.rotation;
 		}
 	}
 }
@@ -3594,6 +3604,7 @@ export void CharacterSwitchController()
 				return;
 			}
 
+			// @Todo: Create function.
 			if (IsActive(activeActorData))
 			{
 				if (IsActive(idleActorData))
@@ -6727,6 +6738,60 @@ void UpdateColorMatrices(ActorData & actorData)
 
 
 
+void PlayQuicksilverMotion
+(
+	byte8 * actorBaseAddr,
+	uint32 archiveIndex,
+	uint32 fileIndex
+)
+{
+	if (!actorBaseAddr)
+	{
+		return;
+	}
+	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+
+	auto PlayMotion = [&]()
+	{
+		func_1EFB90
+		(
+			actorBaseAddr,
+			archiveIndex,
+			fileIndex,
+			-1.0f,
+			-1,
+			2,
+			5
+		);
+	};
+
+	if (actorData.character == CHAR_VERGIL)
+	{
+		auto & motionArchive = actorData.motionArchives[3];
+		auto lastMotionArchive = motionArchive;
+
+		motionArchive = File_staticFiles[pl000_00_25];
+
+		PlayMotion();
+
+		motionArchive = lastMotionArchive;
+	}
+	else
+	{
+		PlayMotion();
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 inline void QuicksilverFunction
@@ -7756,6 +7821,8 @@ byte8 * ResetVisibilityAddr[2]              = {};
 byte8 * EnableVisibilityCheckAddr[2] = {};
 
 
+byte8 * PlayQuicksilverMotionAddr[2] = {};
+
 
 
 
@@ -8375,6 +8442,45 @@ export void Actor_Init()
 		dmc3.exe+1FDE29 - 48 89 5C 24 30    - mov [rsp+30],rbx
 		*/
 	}
+
+
+
+
+	// Play Quicksilver Motion
+	{
+		auto func = CreateFunction(PlayQuicksilverMotion, (appBaseAddr + 0x1F63B7));
+		PlayQuicksilverMotionAddr[0] = func.addr;
+		/*
+		dmc3.exe+1F63B2 - E8 D997FFFF - call dmc3.exe+1EFB90
+		dmc3.exe+1F63B7 - BA 01000000 - mov edx,00000001
+		*/
+	}
+	{
+		auto func = CreateFunction(PlayQuicksilverMotion, (appBaseAddr + 0x1F63DB));
+		PlayQuicksilverMotionAddr[1] = func.addr;
+		/*
+		dmc3.exe+1F63D6 - E8 B597FFFF    - call dmc3.exe+1EFB90
+		dmc3.exe+1F63DB - FE 83 103E0000 - inc byte ptr [rbx+00003E10]
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 export void Actor_MiniToggle(bool enable)
@@ -9451,6 +9557,57 @@ export void Actor_Toggle(bool enable)
 		dmc3.exe+1FDE29 - 48 89 5C 24 30    - mov [rsp+30],rbx
 		*/
 	}
+
+
+
+	// Play Quicksilver Motion
+	{
+		auto dest = (appBaseAddr + 0x1F63B2);
+		if (enable)
+		{
+			WriteJump(dest, PlayQuicksilverMotionAddr[0]);
+		}
+		else
+		{
+			WriteCall(dest, (appBaseAddr + 0x1EFB90));
+		}
+		/*
+		dmc3.exe+1F63B2 - E8 D997FFFF - call dmc3.exe+1EFB90
+		dmc3.exe+1F63B7 - BA 01000000 - mov edx,00000001
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1F63D6);
+		if (enable)
+		{
+			WriteJump(dest, PlayQuicksilverMotionAddr[1]);
+		}
+		else
+		{
+			WriteCall(dest, (appBaseAddr + 0x1EFB90));
+		}
+		/*
+		dmc3.exe+1F63D6 - E8 B597FFFF    - call dmc3.exe+1EFB90
+		dmc3.exe+1F63DB - FE 83 103E0000 - inc byte ptr [rbx+00003E10]
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 export void ToggleAirHikeCoreAbility(bool enable)
@@ -9735,87 +9892,22 @@ export void ToggleChronoSwords(bool enable)
 
 // @Todo: Add event tag.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-bool Actor_spawnActors = false;
-bool customize = false;
-
-export void Actor_SetNextRoom()
+export void Actor_CreateMainActor(byte8 * actorBaseAddr)
 {
 	if (!activeConfig.Actor.enable)
 	{
 		return;
 	}
 
-	LogFunction();
-
-	IntroduceEventData(return);
-	IntroduceNextEventData(return);
-
-	// switch (nextEventData.room)
-	// {
-	// 	case 239: // Temperance Wagon Altar of Evil
-	// 	{
-	// 		if (nextEventData.position >= 2)
-	// 		{
-	// 			nextEventData.position = 1;
-	// 		}
-	// 	}
-	// 	case 240: // Temperance Wagon Torture Chamber
-	// 	{
-	// 		if (nextEventData.position >= 2)
-	// 		{
-	// 			nextEventData.position = 0;
-	// 		}
-	// 	}
-	// }
-}
-
-export void Actor_CreateMainActor(byte8 * baseAddr)
-{
-	if (!activeConfig.Actor.enable)
-	{
-		return;
-	}
-
-	LogFunction(baseAddr);
+	LogFunction(actorBaseAddr);
 
 	Actor_actorBaseAddr.Clear();
 
 	File_dynamicFiles.Clear();
 
-	Actor_actorBaseAddr[0] = baseAddr;
+	Actor_actorBaseAddr[0] = actorBaseAddr;
 	Actor_actorBaseAddr.count = 2;
-
-	Actor_spawnActors = true;
 }
-
-/*
-if mission is 19
-room is arkahm room
-enemy id is arkham
-ToggleActor true
-*/
-
-// @Todo: Update.
 
 export void Actor_CreateCloneActor(byte8 * actorBaseAddr)
 {
@@ -9827,48 +9919,6 @@ export void Actor_CreateCloneActor(byte8 * actorBaseAddr)
 	LogFunction(actorBaseAddr);
 
 	Actor_actorBaseAddr[1] = actorBaseAddr;
-
-	IntroduceSessionData();
-
-	if (sessionData.mission != 19)
-	{
-		return;
-	}
-
-	IntroduceEventData(return);
-
-	if (eventData.room != 421)
-	{
-		return;
-	}
-
-	if (!actorBaseAddr)
-	{
-		return;
-	}
-	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-
-	Log("got here though");
-
-	//ToggleActor(actorData, true);
-
-
-	actorData.newEnableCollision = true;
-
-	//ToggleInput(actorData, true);
-
-	actorData.newButtonMask = 0xFFFF;
-	actorData.newEnableLeftStick = true;
-}
-
-export void Actor_Main()
-{
-	if (!activeConfig.Actor.enable)
-	{
-		return;
-	}
-
-	LogFunction();
 }
 
 export void Actor_Customize()
@@ -9891,18 +9941,6 @@ export void Actor_Delete()
 	}
 
 	LogFunction();
-
-
-
-
-
-
-	// IntroduceMissionActorData(return);
-
-	// activeMissionActorData.hitPoints = 300.0f;
-	// queuedMissionActorData.hitPoints = 300.0f;
-
-	// @Todo: Add hit points variable and set here. Apply in CreateActor.
 
 	SetMainActor(0);
 
@@ -10020,6 +10058,7 @@ export void Actor_MainLoopOnce()
 	}();
 }
 
+// @Todo: Update.
 export void Actor_ActorLoop(byte8 * actorBaseAddr)
 {
 	if (!activeConfig.Actor.enable)
@@ -10114,49 +10153,6 @@ export void Actor_ActorLoop(byte8 * actorBaseAddr)
 	}();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// void ToggleVisibility
-// (
-// 	ActorData & actorData,
-// 	bool enable
-// )
-// {
-// 	actorData.newLastEnableVisibility = actorData.newEnableVisibility;
-// 	actorData.newEnableVisibility = enable;
-// }
-
-
-
-
-// @Todo: Put main actor copy position into actor loop.
-
-
-// @Research: Just use IntroduceMainActorData.
-
-
-
-
-
-
-
-
-
-
-
-
 #pragma endregion
 
 #pragma region Scenes
@@ -10213,243 +10209,142 @@ export void Actor_SceneMissionStart()
 
 #ifdef __GARBAGE__
 
-	// @Research: Maybe requires Clear as well.
-	customize = true;
-
-	// auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28); // @Todo: IntroduceMainActorData.
-	// if (!pool)
-	// {
-	// 	return;
-	// }
-	// if (!pool[3])
-	// {
-	// 	return;
-	// }
-	// auto & actorData = *reinterpret_cast<ActorData *>(pool[3]);
-
-	// actorSpawnHelper.position = actorData.position;
-	// actorSpawnHelper.rotation = actorData.rotation;
-	// actorSpawnHelper.event = 0;
-
-	// if (customize)
-	// {
-	// 	customize = false;
-	// 	Log("customize");
-	// 	return;
-	// }
-
-	// IntroduceEventData(return);
-	// IntroduceStagePositionData(return);
-
-	// auto & pos = stagePositionData[eventData.position];
-
-	// auto Convert = [](float32 rotation)
-	// {
-	// 	float32 value = rotation;
-
-	// 	value /= 360.0f;
-	// 	value *= 6.28f;
-	// 	value *= 65536.0f;
-	// 	value /= 6.28f;
-
-	// 	return static_cast<uint16>(value);
-	// };
-
-	// actorSpawnHelper.position = { pos.x, pos.y, pos.z, 1 };
-	// actorSpawnHelper.rotation = Convert(pos.rotation);
-	// actorSpawnHelper.event = pos.event;
-
-	// memset
-	// (
-	// 	g_actorBaseAddr,
-	// 	0,
-	// 	sizeof(g_actorBaseAddr)
-	// );
-
-
-
-	// [&]()
-	// {
-	// 	if (!baseAddr)
-	// 	{
-	// 		return;
-	// 	}
-	// 	auto & mainActorData = *reinterpret_cast<ActorData *>(baseAddr);
-
-	// 	memset
-	// 	(
-	// 		mainActorData.newWeapons,
-	// 		WEAPON_VOID,
-	// 		sizeof(mainActorData.newWeapons)
-	// 	);
-
-	// 	memset
-	// 	(
-	// 		mainActorData.newWeaponStatus,
-	// 		WEAPON_STATUS_DISABLED,
-	// 		sizeof(mainActorData.newWeaponStatus)
-	// 	);
-	// }();
-
-
-
-	// [&]()
-	// {
-	// 	if (!baseAddr)
-	// 	{
-	// 		return;
-	// 	}
-	// 	auto & mainActorData = *reinterpret_cast<ActorData *>(baseAddr);
-
-	// 	switch (mainActorData.character)
-	// 	{
-	// 		case CHAR_DANTE:
-	// 		{
-	// 			auto & mainActorData2 = *reinterpret_cast<ActorDataDante *>(&mainActorData);
-
-	// 			UpdateMotionArchives(mainActorData2);
-
-	// 			break;
-	// 		}
-	// 		case CHAR_BOB:
-	// 		{
-	// 			auto & mainActorData2 = *reinterpret_cast<ActorDataBob *>(&mainActorData);
-
-	// 			UpdateMotionArchives(mainActorData2);
-
-	// 			break;
-	// 		}
-	// 		case CHAR_LADY:
-	// 		{
-	// 			auto & mainActorData2 = *reinterpret_cast<ActorDataLady *>(&mainActorData);
-
-	// 			UpdateMotionArchives(mainActorData2);
-
-	// 			break;
-	// 		}
-	// 		case CHAR_VERGIL:
-	// 		{
-	// 			auto & mainActorData2 = *reinterpret_cast<ActorDataVergil *>(&mainActorData);
-
-	// 			UpdateMotionArchives(mainActorData2);
-
-	// 			break;
-	// 		}
-	// 	}
-	// }();
-
-
-	// memset
-	// (
-	// 	g_actorBaseAddr,
-	// 	0,
-	// 	sizeof(g_actorBaseAddr)
-	// );
-
-	// // Quicksilver Check
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
-	// 		0x80, 0x38, 0x01,                                           // cmp byte ptr [rax],01
-	// 	};
-	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1F8A07), false, true, sizeof(sect0));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	*reinterpret_cast<bool **>(func.sect0 + 2) = &g_quicksilver;
-	// 	QuicksilverCheckAddr = func.addr;
-	// 	/*
-	// 	dmc3.exe+1F8A00 - 80 BF 61630000 01 - cmp byte ptr [rdi+00006361],01
-	// 	dmc3.exe+1F8A07 - 0F85 9F000000     - jne dmc3.exe+1F8AAC
-	// 	*/
-	// }
-
-
-// // Disable Actor Data Copy Check
-	// {
-	// 	constexpr byte8 sect2[] =
-	// 	{
-	// 		0x84, 0xC0,                               // test al,al
-	// 		0x74, 0x01,                               // je short
-	// 		0xC3,                                     // ret
-	// 		0x0F, 0xB6, 0x81, 0x00, 0x00, 0x00, 0x00, // movzx eax,byte ptr [rcx+00006498]
-	// 	};
-	// 	auto func = CreateFunction(DisableActorDataCopyCheck, (appBaseAddr + 0x2198D7), true, false, 0, 0, sizeof(sect2));
-	// 	memcpy(func.sect2, sect2, sizeof(sect2));
-	// 	*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ActorData, newWeapons);
-	// 	DisableActorDataCopyCheckAddr = func.addr,
-	// 	/*
-	// 	dmc3.exe+2198D0 - 0FB6 81 98640000 - movzx eax,byte ptr [rcx+00006498]
-	// 	dmc3.exe+2198D7 - 45 33 C0         - xor r8d,r8d
-	// 	*/
-	// }
-
-	// // Update Collision Data
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+5C260
-	// 	};
-	// 	constexpr byte8 sect1[] =
-	// 	{
-	// 		mov_rcx_rsi,
-	// 	};
-	// 	auto func = CreateFunction(UpdateCollisionData, (appBaseAddr + 0x1EF001), true, true, sizeof(sect0), sizeof(sect1));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	memcpy(func.sect1, sect1, sizeof(sect1));
-	// 	WriteCall(func.sect0, (appBaseAddr + 0x5C260));
-	// 	UpdateCollisionDataAddr = func.addr;
-	// 	/*
-	// 	dmc3.exe+1EEFFC - E8 5FD2E6FF       - call dmc3.exe+5C260
-	// 	dmc3.exe+1EF001 - 83 BE 943E0000 03 - cmp dword ptr [rsi+00003E94],03
-	// 	*/
-	// }
-
-
-
-	if (Actor_spawnActors)
-	{
-		Actor_spawnActors = false;
-
-
-	}
 
 
 
 
 
-// export void Actor_ActorLoopOnce(byte8 * actorBaseAddr)
+
+
+
+
+// void ToggleVisibility
+// (
+// 	ActorData & actorData,
+// 	bool enable
+// )
+// {
+// 	actorData.newLastEnableVisibility = actorData.newEnableVisibility;
+// 	actorData.newEnableVisibility = enable;
+// }
+
+
+
+
+// @Todo: Put main actor copy position into actor loop.
+
+
+// @Research: Just use IntroduceMainActorData.
+
+
+	// IntroduceMissionActorData(return);
+
+	// activeMissionActorData.hitPoints = 300.0f;
+	// queuedMissionActorData.hitPoints = 300.0f;
+
+	// @Todo: Add hit points variable and set here. Apply in CreateActor.
+
+
+
+/*
+if mission is 19
+room is arkahm room
+enemy id is arkham
+ToggleActor true
+*/
+
+// @Todo: Update.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// bool Actor_spawnActors = false;
+// bool customize = false;
+
+// export void Actor_SetNextRoom()
 // {
 // 	if (!activeConfig.Actor.enable)
 // 	{
 // 		return;
 // 	}
 
-// 	if (Actor_actorBaseAddr.count <= 2)
-// 	{
-// 		return;
-// 	}
-
-// 	if (!Actor_actorBaseAddr[2])
-// 	{
-// 		return;
-// 	}
-
-// 	if (actorBaseAddr != Actor_actorBaseAddr[2])
-// 	{
-// 		return;
-// 	}
-
 // 	LogFunction();
 
-// 	// SpawnActors();
+// 	IntroduceEventData(return);
+// 	IntroduceNextEventData(return);
 
-// 	// Log("no helpin' it");
+// 	// switch (nextEventData.room)
+// 	// {
+// 	// 	case 239: // Temperance Wagon Altar of Evil
+// 	// 	{
+// 	// 		if (nextEventData.position >= 2)
+// 	// 		{
+// 	// 			nextEventData.position = 1;
+// 	// 		}
+// 	// 	}
+// 	// 	case 240: // Temperance Wagon Torture Chamber
+// 	// 	{
+// 	// 		if (nextEventData.position >= 2)
+// 	// 		{
+// 	// 			nextEventData.position = 0;
+// 	// 		}
+// 	// 	}
+// 	// }
 // }
 
+	// IntroduceSessionData();
+
+	// if (sessionData.mission != 19)
+	// {
+	// 	return;
+	// }
+
+	// IntroduceEventData(return);
+
+	// if (eventData.room != 421)
+	// {
+	// 	return;
+	// }
+
+	// if (!actorBaseAddr)
+	// {
+	// 	return;
+	// }
+	// auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+
+	// Log("got here though");
+
+	// //ToggleActor(actorData, true);
 
 
-// @Todo: Somewhat redundant.
-export void Actor_MainLoopOnceSync()
+	// actorData.newEnableCollision = true;
+
+	// //ToggleInput(actorData, true);
+
+	// actorData.newButtonMask = 0xFFFF;
+	// actorData.newEnableLeftStick = true;
+
+	//Actor_spawnActors = true;
+
+export void Actor_Main()
 {
 	if (!activeConfig.Actor.enable)
 	{
@@ -10457,268 +10352,7 @@ export void Actor_MainLoopOnceSync()
 	}
 
 	LogFunction();
-
-	// if (!Actor_actorBaseAddr[2])
-	// {
-	// 	Log("Actor_actorBaseAddr[2] 0");
-
-	// 	return;
-	// }
-
-	// SetMainActor(Actor_actorBaseAddr[2]);
-
-
-
-
-	// switch (activeConfig.Actor.system)
-	// {
-	// 	case ACTOR_SYSTEM_DEFAULT:
-	// 	case ACTOR_SYSTEM_DOPPELGANGER:
-	// 	{
-	// 		if (!Actor_actorBaseAddr[2])
-	// 		{
-	// 			Log("Actor_actorBaseAddr[2] 0");
-
-	// 			break;
-	// 		}
-
-	// 		SetMainActor(Actor_actorBaseAddr[2]);
-
-	// 		break;
-	// 	}
-	// 	case ACTOR_SYSTEM_CHARACTER_SWITCHER:
-	// 	{
-	// 		constexpr uint8 player = 0;
-
-	// 		for_all(uint8, direction, MAX_DIRECTION)
-	// 		{
-	// 			auto & playerData = activeConfig.Actor.playerData[player][direction];
-
-	// 			auto & character       = g_character      [player];
-	// 			auto & lastCharacter   = g_lastCharacter  [player];
-	// 			auto & activeCharacter = g_activeCharacter[player];
-
-	// 			if (!playerData.enable)
-	// 			{
-	// 				continue;
-	// 			}
-
-	// 			if (playerData.character == character)
-	// 			{
-	// 				SetMainActor(g_actorBaseAddr[player][direction]);
-
-	// 				break;
-	// 			}
-	// 		}
-
-	// 		break;
-	// 	}
-	// }
 }
-
-/*
-
-dmc3.exe+1F5FC6 - 83 B9 C8CA0100 01     - cmp dword ptr [rcx+0001CAC8],01 { 1 }
-
-
-*/
-
-
-
-	// if
-	// (
-	// 	(actorData.newPlayerIndex == 0) &&
-	// 	(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
-	// 	(actorData.newEntityIndex == ENTITY_MAIN) &&
-	// 	enable
-	// )
-	// {
-	// 	SetMainActor(actorData);
-	// }
-
-	// @Todo: Update.
-	// auto & playerData = GetPlayerData(actorData);
-
-
-	{
-
-
-		return false;
-	}
-	else if constexpr (TypeMatch<T, ActorDataVergil>::value)
-	{
-
-
-		return false;
-	}
-
-	return true;
-
-
-	// [&]()
-	// {
-	// 	if (InCutscene())
-	// 	{
-	// 		return;
-	// 	}
-
-	// 	for_each(uint32, index, 2, Actor_actorBaseAddr.count)
-	// 	{
-	// 		IntroduceActorData(index, continue);
-
-	// 		auto & playerData = GetPlayerData(actorData);
-
-	// 		if
-	// 		(
-	// 			(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
-	// 			(actorData.newEntityIndex == ENTITY_MAIN)
-	// 		)
-	// 		{
-	// 			ToggleActor(actorData, true);
-
-	// 			if (actorData.newPlayerIndex == 0)
-	// 			{
-	// 				SetMainActor(actorData);
-	// 			}
-	// 		}
-	// 		else
-	// 		{
-	// 			ToggleActor(actorData, false);
-	// 		}
-	// 	}
-	// }();
-
-
-
-
-
-
-	// @Todo: Update.
-	// actorData.shadow = 1;
-
-	//auto UpdateShadow = [&]()
-	// [&]()
-	// {
-	// 	if (!Actor_actorBaseAddr[0])
-	// 	{
-	// 		return;
-	// 	}
-	// 	auto & mainActorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[0]);
-
-	// 	actorData.shadow = mainActorData.shadow;
-	// }();
-
-	//UpdateShadow();
-
-
-	// @Todo: Update.
-	// [&]()
-	// {
-	// 	if (!Actor_actorBaseAddr[0])
-	// 	{
-	// 		return;
-	// 	}
-	// 	auto & mainActorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[0]);
-
-	// 	actorData.position = mainActorData.position;
-	// 	actorData.rotation = mainActorData.rotation;
-
-	// 	actorData.shadow = mainActorData.shadow;
-
-	// 	memcpy
-	// 	(
-	// 		actorData.eventData,
-	// 		mainActorData.eventData,
-	// 		sizeof(mainActorData.eventData)
-	// 	);
-
-	// 	memcpy
-	// 	(
-	// 		actorData.var_3E10,
-	// 		mainActorData.var_3E10,
-	// 		sizeof(mainActorData.var_3E10)
-	// 	);
-
-	// 	actorData.mode = mainActorData.mode;
-	// }();
-
-
-
-	
-
-
-
-	// actorData.position = actorSpawnHelper.position;
-	// actorData.rotation = actorSpawnHelper.rotation;
-
-	// actorData.var_3E10[8] = actorSpawnHelper.event;
-
-
-
-	// if
-	// (
-	// 	!InCutscene() &&
-	// 	(characterIndex == playerData.activeCharacterIndex) &&
-	// 	(entityIndex == ENTITY_MAIN)
-	// )
-	// {
-	// 	ToggleActor(actorData, true);
-	// }
-	// else
-	// {
-	// 	ToggleActor(actorData, false);
-	// }
-
-
-
-
-
-
-
-
-
-
-// void UpdateMainActor()
-// {
-// 	for_each(uint32, index, 2, Actor_actorBaseAddr.count)
-// 	{
-// 		auto actorBaseAddr = Actor_actorBaseAddr[index];
-// 		if (!actorBaseAddr)
-// 		{
-// 			continue;
-// 		}
-// 		auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-// 		auto & playerData = GetPlayerData(actorData);
-
-// 		if
-// 		(
-// 			(actorData.newPlayerIndex == 0) &&
-// 			(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
-// 			(actorData.newEntityIndex == ENTITY_MAIN)
-// 		)
-// 		{
-// 			SetMainActor(actorData);
-
-// 			break;
-// 		}
-// 	}
-// }
-
-// void ResetMainActor()
-// {
-// 	auto actorBaseAddr = Actor_actorBaseAddr[0];
-// 	if (!actorBaseAddr)
-// 	{
-// 		return;
-// 	}
-// 	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-
-// 	SetMainActor(act);
-// }
-
-
-
-
 
 
 #endif

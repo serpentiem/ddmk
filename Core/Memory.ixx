@@ -275,7 +275,7 @@ export void vp_memcpy
 	VirtualProtect(dest, size, protection, &protection);
 }
 
-export struct FUNC
+export struct FunctionData
 {
 	byte8 *  addr;
 	byte8 *  sect0;
@@ -284,12 +284,8 @@ export struct FUNC
 	byte8 ** cache;
 };
 
-// @Todo: Add xmm register saving.
-// @Todo: Add size3 for stuff directly after the call.
-// @Todo: Add noReturn argument.
-// @Todo: Create template. Section and size details are known at compile time.
-// @Todo: Omit payload. Just write directly to dest.
-export FUNC CreateFunction
+// @Research: Add xmm register saving.
+export FunctionData CreateFunction
 (
 	void   * funcAddr      = 0,
 	byte8  * jumpAddr      = 0,
@@ -299,220 +295,223 @@ export FUNC CreateFunction
 	uint32   size1         = 0,
 	uint32   size2         = 0,
 	uint32   cacheSize     = 0,
-	uint32   count         = 0
+	uint32   count         = 0,
+	bool     noReturn      = false
 )
 {
-	byte8 payload[2048];
-	uint32 pos = 0;
-	uint32 off0;
-	uint32 off1;
-	uint32 off2;
-	uint32 offJump;
-	FUNC func = {};
+	FunctionData func = {};
+	uint32       pos  = 0;
 
-	auto Feed = [&](byte8 * buffer, uint32 size)
+	auto Feed = [&]
+	(
+		const byte8 * buffer,
+		uint32 bufferSize,
+		bool adjustPosition = true
+	)
 	{
-		memcpy((payload + pos), buffer, size);
-		pos += size;
+		memcpy
+		(
+			(func.addr + pos),
+			buffer,
+			bufferSize
+		);
+
+		if (!adjustPosition)
+		{
+			return;
+		}
+
+		pos += bufferSize;
 	};
 
-	off0 = pos;
+	Align<uint32>(g_pos, 0x10);
+
+	func.addr = (g_addr + g_pos);
+
+	func.sect0 = (func.addr + pos);
 	pos += size0;
 
 	if (saveRegisters)
 	{
 		if (noResult)
 		{
-			byte8 buffer[] =
+			constexpr byte8 buffer[] =
 			{
-				0x50, //push rax
+				0x50, // push rax
 			};
 			Feed(buffer, sizeof(buffer));
 		}
+
 		if (count)
 		{
 			if (noResult)
 			{
-				byte8 buffer[] =
+				constexpr byte8 buffer[] =
 				{
-					0x48, 0x8D, 0x44, 0x24, 0x08, //lea rax,[rsp+08]
+					0x48, 0x8D, 0x44, 0x24, 0x08, // lea rax,[rsp+08]
 				};
 				Feed(buffer, sizeof(buffer));
 			}
 			else
 			{
-				byte8 buffer[] =
+				constexpr byte8 buffer[] =
 				{
-					0x48, 0x8B, 0xC4, //mov rax,rsp
+					0x48, 0x8B, 0xC4, // mov rax,rsp
 				};
 				Feed(buffer, sizeof(buffer));
 			}
 		}
+
 		{
-			byte8 buffer[] =
+			constexpr byte8 buffer[] =
 			{
-				0x51,                   //push rcx
-				0x52,                   //push rdx
-				0x53,                   //push rbx
-				0x54,                   //push rsp
-				0x55,                   //push rbp
-				0x56,                   //push rsi
-				0x57,                   //push rdi
-				0x41, 0x50,             //push r8
-				0x41, 0x51,             //push r9
-				0x41, 0x52,             //push r10
-				0x41, 0x53,             //push r11
-				0x41, 0x54,             //push r12
-				0x41, 0x55,             //push r13
-				0x41, 0x56,             //push r14
-				0x41, 0x57,             //push r15
-				0x9C,                   //pushfq
-				0x48, 0x8B, 0xEC,       //mov rbp,rsp
-				0x40, 0x80, 0xE4, 0xF0, //and spl,F0
+				0x51,                   // push rcx
+				0x52,                   // push rdx
+				0x53,                   // push rbx
+				0x54,                   // push rsp
+				0x55,                   // push rbp
+				0x56,                   // push rsi
+				0x57,                   // push rdi
+				0x41, 0x50,             // push r8
+				0x41, 0x51,             // push r9
+				0x41, 0x52,             // push r10
+				0x41, 0x53,             // push r11
+				0x41, 0x54,             // push r12
+				0x41, 0x55,             // push r13
+				0x41, 0x56,             // push r14
+				0x41, 0x57,             // push r15
+				0x9C,                   // pushfq
+				0x48, 0x8B, 0xEC,       // mov rbp,rsp
 			};
 			Feed(buffer, sizeof(buffer));
 		}
 
-
-		// @Todo: Merge and set 4 as default argument.
-
 		if (count)
 		{
-			byte8 buffer[] =
+			constexpr byte8 buffer[] =
 			{
-				0x48, 0x81, 0xEC, 0x00, 0x00, 0x00, 0x00, //sub rsp
+				0x48, 0x81, 0xEC, 0x20, 0x00, 0x00, 0x00, // sub rsp,00000020
 			};
-			auto & sub = *(uint32 *)(buffer + 3) += (count * 8);
-			if (count & (1 << 0))
-			{
-				sub += 8;
-			}
-			sub += 0x20;
-			Feed(buffer, sizeof(buffer));
+			Feed(buffer, sizeof(buffer), false);
+			*reinterpret_cast<uint32 *>(func.addr + pos + 3) += (count * 8);
+			pos += sizeof(buffer);
 		}
 		else
 		{
-			byte8 buffer[] =
+			constexpr byte8 buffer[] =
 			{
-				0x48, 0x83, 0xEC, 0x20, //sub rsp,20
+				0x48, 0x83, 0xEC, 0x20, // sub rsp,20
 			};
 			Feed(buffer, sizeof(buffer));
 		}
 
-
-
-
-
-
-		// @Research: rbp might be a better fit, will result in wide offset though.
-
-		// @Todo: if count > 4
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x40, 0x80, 0xE4, 0xF0, // and spl,F0
+			};
+			Feed(buffer, sizeof(buffer));
+		}
 
 		if (count)
 		{
-			byte8 buffer[] =
+			constexpr byte8 buffer[] =
 			{
-				0x51,                         //push rcx
-				0x56,                         //push rsi
-				0x57,                         //push rdi
-				0xB9, 0x00, 0x00, 0x00, 0x00, //mov ecx,count
-				0x48, 0x8D, 0x70, 0x28,       //lea rsi,[rax+28] return addr + shadow space
-				0x48, 0x8D, 0x7C, 0x24, 0x38, //lea rdi,[rsp+38] rdi + rsi + rcx + shadow space
-				0xF3, 0x48, 0xA5,             //repe movsq
-				0x5F,                         //pop rdi
-				0x5E,                         //pop rsi
-				0x59,                         //pop rcx
+				0x51,                         // push rcx
+				0x56,                         // push rsi
+				0x57,                         // push rdi
+				0xB9, 0x00, 0x00, 0x00, 0x00, // mov ecx
+				0x48, 0x8D, 0x70, 0x28,       // lea rsi,[rax+28] return addr + shadow space
+				0x48, 0x8D, 0x7C, 0x24, 0x38, // lea rdi,[rsp+38] rdi + rsi + rcx + shadow space
+				0xF3, 0x48, 0xA5,             // repe movsq
+				0x5F,                         // pop rdi
+				0x5E,                         // pop rsi
+				0x59,                         // pop rcx
 			};
-			*(uint32 *)(buffer + 4) = count;
-			Feed(buffer, sizeof(buffer));
+			Feed(buffer, sizeof(buffer), false);
+			*reinterpret_cast<uint32 *>(func.addr + pos + 4) = count;
+			pos += sizeof(buffer);
 		}
 	}
 
-	off1 = pos;
+	func.sect1 = (func.addr + pos);
 	pos += size1;
 
 	if (funcAddr)
 	{
-		byte8 buffer[] =
+		constexpr byte8 buffer[] =
 		{
-			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,funcAddr
-			0xFF, 0xD0,                                                 //call rax
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
+			0xFF, 0xD0,                                                 // call rax
 		};
-		*(void **)(buffer + 2) = funcAddr;
-		Feed(buffer, sizeof(buffer));
+		Feed(buffer, sizeof(buffer), false);
+		*reinterpret_cast<void **>(func.addr + pos + 2) = funcAddr;
+		pos += sizeof(buffer);
 	}
+
 	if (saveRegisters)
 	{
-		byte8 buffer[] =
+		constexpr byte8 buffer[] =
 		{
-			0x48, 0x8B, 0xE5, //mov rsp,rbp
-			0x9D,             //popfq
-			0x41, 0x5F,       //pop r15
-			0x41, 0x5E,       //pop r14
-			0x41, 0x5D,       //pop r13
-			0x41, 0x5C,       //pop r12
-			0x41, 0x5B,       //pop r11
-			0x41, 0x5A,       //pop r10
-			0x41, 0x59,       //pop r9
-			0x41, 0x58,       //pop r8
-			0x5F,             //pop rdi
-			0x5E,             //pop rsi
-			0x5D,             //pop rbp
-			0x5C,             //pop rsp
-			0x5B,             //pop rbx
-			0x5A,             //pop rdx
-			0x59,             //pop rcx
+			0x48, 0x8B, 0xE5, // mov rsp,rbp
+			0x9D,             // popfq
+			0x41, 0x5F,       // pop r15
+			0x41, 0x5E,       // pop r14
+			0x41, 0x5D,       // pop r13
+			0x41, 0x5C,       // pop r12
+			0x41, 0x5B,       // pop r11
+			0x41, 0x5A,       // pop r10
+			0x41, 0x59,       // pop r9
+			0x41, 0x58,       // pop r8
+			0x5F,             // pop rdi
+			0x5E,             // pop rsi
+			0x5D,             // pop rbp
+			0x5C,             // pop rsp
+			0x5B,             // pop rbx
+			0x5A,             // pop rdx
+			0x59,             // pop rcx
 		};
 		Feed(buffer, sizeof(buffer));
+
 		if (noResult)
 		{
-			byte8 buffer[] =
+			constexpr byte8 buffer[] =
 			{
-				0x58, //pop rax
+				0x58, // pop rax
 			};
 			Feed(buffer, sizeof(buffer));
 		}
 	}
 
-	off2 = pos;
+	func.sect2 = (func.addr + pos);
 	pos += size2;
 
-	offJump = pos;
 	if (jumpAddr)
 	{
-		byte8 buffer[] =
-		{
-			0xE9, 0x00, 0x00, 0x00, 0x00, //jmp
-		};
-		Feed(buffer, sizeof(buffer));
+		WriteJump((func.addr + pos), jumpAddr);
+
+		pos += 5;
 	}
 	else
 	{
-		byte8 buffer[] =
+		if (!noReturn)
 		{
-			0xC3, //ret
-		};
-		Feed(buffer, sizeof(buffer));
+			constexpr byte8 buffer[] =
+			{
+				0xC3, // ret
+			};
+			Feed(buffer, sizeof(buffer));
+		}
 	}
 
-	Align<uint32>(g_pos, 0x10);
-	func.addr = (g_addr + g_pos);
-	memcpy(func.addr, payload, pos);
 	g_pos += pos;
-
-	if (jumpAddr)
-	{
-		WriteJump((func.addr + offJump), jumpAddr);
-	}
-
-	func.sect0 = (func.addr + off0);
-	func.sect1 = (func.addr + off1);
-	func.sect2 = (func.addr + off2);
 
 	if (cacheSize)
 	{
 		Align<uint32>(g_pos, 0x10);
-		func.cache = (byte8 **)(g_addr + g_pos);
+
+		func.cache = reinterpret_cast<byte8 **>(g_addr + g_pos);
+
 		g_pos += cacheSize;
 	}
 

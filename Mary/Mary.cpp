@@ -18,7 +18,7 @@ import Speed;
 import Training;
 import Window;
 
-#define debug false
+#define debug true
 
 uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {
@@ -37,6 +37,25 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		Config_Init("configs", "Mary.bin");
 		LoadConfig();
+
+		
+		
+		{
+			auto & activePlayerData = GetActivePlayerData(0);
+			auto & queuedPlayerData = GetQueuedPlayerData(0);
+			ApplyDefaultCharacterData
+			(
+				activePlayerData.characterData[0][0],
+				3
+			);
+			ApplyDefaultCharacterData
+			(
+				queuedPlayerData.characterData[0][0],
+				3
+			);
+		}
+
+
 
 		if (!Memory_Init())
 		{
