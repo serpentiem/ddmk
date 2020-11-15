@@ -7641,7 +7641,13 @@ void ToggleStyleFixes(bool enable)
 
 void ActivateDoppelganger(ActorData & actorData)
 {
-	Log("ActivateDoppelganger %llX", actorData.operator byte8 *());
+	//Log("ActivateDoppelganger %llX", actorData.operator byte8 *());
+
+
+
+	LogFunction(actorData.operator byte8 *());
+
+
 
 	if (!actorData.cloneBaseAddr)
 	{
@@ -7649,30 +7655,32 @@ void ActivateDoppelganger(ActorData & actorData)
 	}
 	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
 
-	actorData.doppelganger = true;
-	/*
-	dmc3.exe+1E9224 - C6 87 62630000 01 - mov byte ptr [rdi+00006362],01
-	*/
+	// actorData.doppelganger = true;
+	// /*
+	// dmc3.exe+1E9224 - C6 87 62630000 01 - mov byte ptr [rdi+00006362],01
+	// */
 
-	actorData.var_6340 = 3;
-	actorData.var_6454 = 1;
-	/*
-	dmc3.exe+1E922B - C7 87 40630000 03000000 - mov [rdi+00006340],00000003
-	dmc3.exe+1E9235 - C7 87 54640000 01000000 - mov [rdi+00006454],00000001
-	*/
+	// actorData.var_6340 = 3;
+	// actorData.var_6454 = 1;
+	// /*
+	// dmc3.exe+1E922B - C7 87 40630000 03000000 - mov [rdi+00006340],00000003
+	// dmc3.exe+1E9235 - C7 87 54640000 01000000 - mov [rdi+00006454],00000001
+	// */
 
-	actorData.var_3EC8 = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x1EC);
-	/*
-	dmc3.exe+1E921B - 48 8B 87 E83D0000 - mov rax,[rdi+00003DE8]
-	dmc3.exe+1E923F - 8B 88 EC010000    - mov ecx,[rax+000001EC]
-	dmc3.exe+1E924B - 89 8F C83E0000    - mov [rdi+00003EC8],ecx
-	*/
+	// @Research: Reconsider.
+
+	// actorData.var_3EC8 = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x1EC);
+	// /*
+	// dmc3.exe+1E921B - 48 8B 87 E83D0000 - mov rax,[rdi+00003DE8]
+	// dmc3.exe+1E923F - 8B 88 EC010000    - mov ecx,[rax+000001EC]
+	// dmc3.exe+1E924B - 89 8F C83E0000    - mov [rdi+00003EC8],ecx
+	// */
 
 	memset(actorData.var_6438, 0, (actorData.var_6440 * 46));
 	/*
-	dmc3.exe+1E92AA - 48 8B 8F 38640000 - mov rcx,[rdi+00006438]
 	dmc3.exe+1E9222 - 33 D2             - xor edx,edx
 	dmc3.exe+1E92A3 - 48 63 87 40640000 - movsxd rax,dword ptr [rdi+00006440]
+	dmc3.exe+1E92AA - 48 8B 8F 38640000 - mov rcx,[rdi+00006438]
 	dmc3.exe+1E92B1 - 4C 6B C0 2E       - imul r8,rax,2E
 	dmc3.exe+1E92B5 - E8 30D91500       - call dmc3.exe+346BEA
 	*/
@@ -7689,10 +7697,20 @@ void ActivateDoppelganger(ActorData & actorData)
 	ToggleActor(cloneActorData, true);
 }
 
+
+
+
+
+
 // @Todo: Review.
 void DeactivateDoppelganger(ActorData & actorData)
 {
-	Log("DeactivateDoppelganger %llX", actorData.operator byte8 *());
+	//Log("DeactivateDoppelganger %llX", actorData.operator byte8 *());
+
+
+	LogFunction(actorData.operator byte8 *());
+
+
 
 	if (!actorData.cloneBaseAddr)
 	{
@@ -7700,26 +7718,49 @@ void DeactivateDoppelganger(ActorData & actorData)
 	}
 	auto & cloneActorData = *reinterpret_cast<ActorData *>(actorData.cloneBaseAddr);
 
-	actorData.doppelganger = false;
-	cloneActorData.doppelganger = false;
-
-	actorData.var_6340 = 0;
-	actorData.var_6454 = 0;
+	func_1EAE60(actorData, 1);
 	/*
-	dmc3.exe+1E2AEC - C7 81 40630000 00000000 - mov [rcx+00006340],00000000
-	dmc3.exe+1E2AF6 - C7 81 54640000 00000000 - mov [rcx+00006454],00000000
+	dmc3.exe+1E9339 - B2 01       - mov dl,01
+	dmc3.exe+1E9351 - 48 8B CF    - mov rcx,rdi
+	dmc3.exe+1E9354 - E8 071B0000 - call dmc3.exe+1EAE60
 	*/
 
-	// only if devil, but shouldn't matter
 
-	// actorData.var_3EC4 = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x1F0);
-	/*
-	dmc3.exe+1E2B37 - 48 8B 83 E83D0000 - mov rax,[rbx+00003DE8]
-	dmc3.exe+1E2B40 - 8B 88 F0010000    - mov ecx,[rax+000001F0]
-	dmc3.exe+1E2B46 - 89 8B C43E0000    - mov [rbx+00003EC4],ecx
-	*/
+
+
+
+
+
+
+
+
+	// actorData.doppelganger = false;
+	// cloneActorData.doppelganger = false;
+
+	// actorData.var_6340 = 0;
+	// actorData.var_6454 = 0;
+	// /*
+	// dmc3.exe+1E2AEC - C7 81 40630000 00000000 - mov [rcx+00006340],00000000
+	// dmc3.exe+1E2AF6 - C7 81 54640000 00000000 - mov [rcx+00006454],00000000
+	// */
+
+	// // only if devil, but shouldn't matter
+
+	// // actorData.var_3EC4 = *reinterpret_cast<float32 *>(actorData.actionData[3] + 0x1F0);
+	// /*
+	// dmc3.exe+1E2B37 - 48 8B 83 E83D0000 - mov rax,[rbx+00003DE8]
+	// dmc3.exe+1E2B40 - 8B 88 F0010000    - mov ecx,[rax+000001F0]
+	// dmc3.exe+1E2B46 - 89 8B C43E0000    - mov [rbx+00003EC4],ecx
+	// */
 
 	ToggleActor(cloneActorData, false);
+
+
+
+	EndMotion(cloneActorData);
+
+
+
 }
 
 
@@ -7904,7 +7945,29 @@ void ResetVisibility(ActorData & actorData)
 
 
 
+// void MagicPointsRunOut(ActorData & actorData)
+// {
+// 	LogFunction(actorData.operator byte8 *());
 
+// 	Log("doppelganger %u", actorData.doppelganger);
+
+// 	auto cloneActorBaseAddr = actorData.cloneBaseAddr;
+// 	if (!cloneActorBaseAddr)
+// 	{
+// 		return;
+// 	}
+// 	auto & cloneActorData = *reinterpret_cast<ActorData *>(cloneActorBaseAddr);
+
+// 	Log("doppelganger %u", cloneActorData.doppelganger);
+
+// 	ToggleInput(cloneActorData, false);
+
+
+
+
+
+
+// }
 
 
 
@@ -7921,8 +7984,13 @@ byte8  * WeaponSwitchControllerDanteAddr    = 0;
 byte8  * WeaponSwitchControllerVergilAddr   = 0;
 byte8  * ActivateQuicksilverAddr            = 0;
 byte8  * DeactivateQuicksilverAddr[2]       = {};
+
+
 byte8  * ActivateDoppelgangerAddr           = 0;
-byte8  * DeactivateDoppelgangerAddr         = 0; // @Todo: Check for run out function.
+byte8  * DeactivateDoppelgangerAddr[2] = {};
+
+
+
 byte8  * DevilSystemButtonCheckAddr         = 0;
 byte8  * ActivateDevilAddr                  = 0;
 byte8  * DeactivateDevilAddr                = 0;
@@ -7940,7 +8008,7 @@ byte8 * EnableVisibilityCheckAddr[2] = {};
 byte8 * PlayQuicksilverMotionAddr[2] = {};
 
 
-
+// byte8 * MagicPointsRunOutAddr = 0;
 
 
 
@@ -8145,22 +8213,96 @@ export void Actor_Init()
 		*/
 	}
 
+
+
+
+
 	// Activate Doppelganger
 	{
-		auto func = CreateFunction(ActivateDoppelganger, (appBaseAddr + 0x1E930E));
+		constexpr byte8 sect0[] =
+		{
+			0xC7, 0x87, 0x54, 0x64, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, // mov [rdi+00006454],00000001
+		};
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rdi,
+		};
+		auto func = CreateFunction(ActivateDoppelganger, (appBaseAddr + 0x1E930E), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
 		ActivateDoppelgangerAddr = func.addr;
 		/*
-		dmc3.exe+1E9216 - E8 E5170100 - call dmc3.exe+1FAA00
-		dmc3.exe+1E930E - B0 01       - mov al,01
+		dmc3.exe+1E9235 - C7 87 54640000 01000000 - mov [rdi+00006454],00000001
+		dmc3.exe+1E923F - 8B 88 EC010000          - mov ecx,[rax+000001EC]
+		dmc3.exe+1E930E - B0 01                   - mov al,01
 		*/
 	}
 
 	// Deactivate Doppelganger
 	{
-		auto func = CreateFunction(DeactivateDoppelganger);
-		DeactivateDoppelgangerAddr = func.addr;
+		constexpr byte8 sect0[] =
+		{
+			0xC7, 0x87, 0x54, 0x64, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, // mov [rdi+00006454],00000002
+		};
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rdi,
+		};
+		auto func = CreateFunction(DeactivateDoppelganger, (appBaseAddr + 0x1E930E), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		DeactivateDoppelgangerAddr[0] = func.addr;
+		/*
+		dmc3.exe+1E933B - C7 87 54640000 02000000 - mov [rdi+00006454],00000002
+		dmc3.exe+1E9345 - 8B 88 EC010000          - mov ecx,[rax+000001EC]
+		dmc3.exe+1E930E - B0 01                   - mov al,01
+		*/
+	}
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xC7, 0x87, 0x54, 0x64, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, // mov [rdi+00006454],00000002
+		};
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rdi,
+		};
+		auto func = CreateFunction(DeactivateDoppelganger, (appBaseAddr + 0x1F8A00), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		DeactivateDoppelgangerAddr[1] = func.addr;
+		/*
+		dmc3.exe+1F89E9 - C7 87 54640000 02000000 - mov [rdi+00006454],00000002
+		dmc3.exe+1F89F3 - 48 8B CF                - mov rcx,rdi
+		dmc3.exe+1F8A00 - 80 BF 61630000 01       - cmp byte ptr [rdi+00006361],01
+		*/
 	}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// @Todo: Update.
 	// Devil Doppelganger Check
 	{
 		constexpr byte8 sect1[] =
@@ -8183,6 +8325,23 @@ export void Actor_Init()
 		dmc3.exe+1E77E3 - 0F85 D4000000     - jne dmc3.exe+1E78BD
 		*/
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// Activate Devil
 	{
@@ -8584,7 +8743,20 @@ export void Actor_Init()
 
 
 
-
+	// // Magic Points Run Out
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0xC7, 0x81, 0xB8, 0x3E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov [rcx+00003EB8],00000000
+	// 	};
+	// 	auto func = CreateFunction(MagicPointsRunOut, (appBaseAddr + 0x1E1860), true, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	MagicPointsRunOutAddr = func.addr;
+	// 	/*
+	// 	dmc3.exe+1E1856 - C7 81 B83E0000 00000000 - mov [rcx+00003EB8],00000000
+	// 	dmc3.exe+1E1860 - F3 0F10 81 B83E0000     - movss xmm0,[rcx+00003EB8]
+	// 	*/
+	// }
 
 
 
@@ -8935,44 +9107,91 @@ export void Actor_Toggle(bool enable)
 		*/
 	}
 
+
+
+
+
+
+
 	// Activate Doppelganger
 	{
-		auto dest = (appBaseAddr + 0x1E9216);
+		auto dest = (appBaseAddr + 0x1E9235);
 		if (enable)
 		{
-			WriteJump(dest, ActivateDoppelgangerAddr);
-		}
-		else
-		{
-			WriteCall(dest, (appBaseAddr + 0x1FAA00));
-		}
-		/*
-		dmc3.exe+1E9216 - E8 E5170100 - call dmc3.exe+1FAA00
-		dmc3.exe+1E930E - B0 01       - mov al,01
-		*/
-	}
-
-	// Deactivate Doppelganger
-	{
-		auto dest = (appBaseAddr + 0x1E2AA0);
-		if (enable)
-		{
-			WriteJump(dest, DeactivateDoppelgangerAddr, 1);
+			WriteJump(dest, ActivateDoppelgangerAddr, 5);
 		}
 		else
 		{
 			constexpr byte8 buffer[] =
 			{
-				0x40, 0x53,             // push rbx
-				0x48, 0x83, 0xEC, 0x20, // sub rsp,20
+				0xC7, 0x87, 0x54, 0x64, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, // mov [rdi+00006454],00000001
 			};
 			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
 		/*
-		dmc3.exe+1E2AA0 - 40 53       - push rbx
-		dmc3.exe+1E2AA2 - 48 83 EC 20 - sub rsp,20
+		dmc3.exe+1E9235 - C7 87 54640000 01000000 - mov [rdi+00006454],00000001
+		dmc3.exe+1E923F - 8B 88 EC010000          - mov ecx,[rax+000001EC]
+		dmc3.exe+1E930E - B0 01                   - mov al,01
 		*/
 	}
+
+	// Deactivate Doppelganger
+	{
+		auto dest = (appBaseAddr + 0x1E933B);
+		if (enable)
+		{
+			WriteJump(dest, DeactivateDoppelgangerAddr[0], 5);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xC7, 0x87, 0x54, 0x64, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, // mov [rdi+00006454],00000002
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E933B - C7 87 54640000 02000000 - mov [rdi+00006454],00000002
+		dmc3.exe+1E9345 - 8B 88 EC010000          - mov ecx,[rax+000001EC]
+		dmc3.exe+1E930E - B0 01                   - mov al,01
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1F89E9);
+		if (enable)
+		{
+			WriteJump(dest, DeactivateDoppelgangerAddr[1], 5);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xC7, 0x87, 0x54, 0x64, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, // mov [rdi+00006454],00000002
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1F89E9 - C7 87 54640000 02000000 - mov [rdi+00006454],00000002
+		dmc3.exe+1F89F3 - 48 8B CF                - mov rcx,rdi
+		dmc3.exe+1F8A00 - 80 BF 61630000 01       - cmp byte ptr [rdi+00006361],01
+		*/
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// Disable Doppelganger Rate Controller
 	{
@@ -9711,19 +9930,26 @@ export void Actor_Toggle(bool enable)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+	// // Magic Points Run Out
+	// {
+	// 	auto dest = (appBaseAddr + 0x1E1856);
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(dest, MagicPointsRunOutAddr, 5);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0xC7, 0x81, 0xB8, 0x3E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov [rcx+00003EB8],00000000
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1E1856 - C7 81 B83E0000 00000000 - mov [rcx+00003EB8],00000000
+	// 	dmc3.exe+1E1860 - F3 0F10 81 B83E0000     - movss xmm0,[rcx+00003EB8]
+	// 	*/
+	// }
 }
 
 export void ToggleAirHikeCoreAbility(bool enable)
@@ -10469,6 +10695,9 @@ export void Actor_Main()
 
 	LogFunction();
 }
+
+
+
 
 
 #endif
