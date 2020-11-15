@@ -3160,7 +3160,15 @@ void Main()
 	{
 		Main_run = true;
 		ImGui::SetNextWindowSize(ImVec2(600, 650));
-		ImGui::SetNextWindowPos(ImVec2(650, 50));
+
+		if constexpr (debug)
+		{
+			ImGui::SetNextWindowPos(ImVec2(650, 50));
+		}
+		else
+		{
+			ImGui::SetNextWindowPos(ImVec2(0, 0));
+		}
 
 		//ImGuiIO & io = ImGui::GetIO();
 		//io.FontDefault = io.Fonts->Fonts[FONT_MAIN];

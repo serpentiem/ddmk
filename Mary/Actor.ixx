@@ -1,8 +1,6 @@
-// @Todo: Add Air Hike to Mobility.
 // @Todo: Cleanup.
-// @Todo: Disable Character Switch Controller in mission 18.
+// @Todo: Disable Character Switch Controller in mission 18 floor.
 // @Todo: Capture grabbed state.
-// @Todo: Bob Quicksilver.
 // @Todo: Get resurrect variable.
 // @Research: Main actor and actor 0.
 // @Todo: Quick Drive.
@@ -5866,23 +5864,45 @@ void ToggleWeaponCountAdjustments(bool enable)
 
 #pragma region Mobility
 
-byte8 * dashAddr                   = 0;
-byte8 * skyStarAddr                = 0;
-byte8 * airTrickDanteAddr          = 0;
-byte8 * airTrickVergilAddr         = 0;
-byte8 * trickUpAddr                = 0;
-byte8 * trickDownAddr              = 0;
-byte8 * skyStarResetAddr[8]        = {};
-byte8 * airTrickVergilResetFixAddr = 0;
+byte8 * AirHikeAddr                = 0;
+byte8 * DashAddr                   = 0;
+byte8 * SkyStarAddr                = 0;
+byte8 * AirTrickDanteAddr          = 0;
+byte8 * AirTrickVergilAddr         = 0;
+byte8 * TrickUpAddr                = 0;
+byte8 * TrickDownAddr              = 0;
+byte8 * SkyStarResetAddr[8]        = {};
+byte8 * AirTrickVergilResetFixAddr = 0;
+
+bool AirHike(ActorData & actorData)
+{
+	uint8 index = (actorData.devil) ? 1 : 0;
+
+	if (actorData.character != CHAR_DANTE)
+	{
+		return false;
+	}
+	else if (actorData.airHikeCount >= activeConfig.AirHike.count[index])
+	{
+		return false;
+	}
+
+	actorData.airHikeCount++;
+
+	return true;
+}
 
 template <uint32 event>
 uint32 MobilityFunction
 (
 	ActorData & actorData,
+	uint8 action,
 	uint8 & var,
 	uint8(&array)[2]
 )
 {
+	uint8 index = (actorData.devil) ? 1 : 0;
+
 	// Required, because there is no reset when hitting the floor.
 	if constexpr (event != ACTOR_EVENT_DANTE_DASH)
 	{
@@ -5892,8 +5912,6 @@ uint32 MobilityFunction
 		}
 	}
 
-	uint8 index = (actorData.devil) ? 1 : 0;
-
 	if (var >= array[index])
 	{
 		return 0;
@@ -5901,79 +5919,107 @@ uint32 MobilityFunction
 
 	var++;
 
+	actorData.lastAction = actorData.action;
+	actorData.action = action;
+
 	return event;
 }
 
-auto Dash(ActorData & actorData)
+auto Dash
+(
+	ActorData & actorData,
+	uint8 action
+)
 {
 	return MobilityFunction<ACTOR_EVENT_DANTE_DASH>
 	(
 		actorData,
+		action,
 		actorData.dashCount,
 		activeConfig.Trickster.dashCount
 	);
 }
 
-auto SkyStar(ActorData & actorData)
+auto SkyStar
+(
+	ActorData & actorData,
+	uint8 action
+)
 {
 	return MobilityFunction<ACTOR_EVENT_DANTE_SKY_STAR>
 	(
 		actorData,
+		action,
 		actorData.skyStarCount,
 		activeConfig.Trickster.skyStarCount
 	);
 }
 
-auto AirTrickDante(ActorData & actorData)
+auto AirTrickDante
+(
+	ActorData & actorData,
+	uint8 action
+)
 {
 	actorData.var_3E10[26] = (actorData.state & STATE_ON_FLOOR) ? 1 : 0;
 
 	return MobilityFunction<ACTOR_EVENT_DANTE_AIR_TRICK>
 	(
 		actorData,
+		action,
 		actorData.airTrickCount,
 		activeConfig.Trickster.airTrickCount
 	);
 }
 
-auto AirTrickVergil(ActorData & actorData)
+auto AirTrickVergil
+(
+	ActorData & actorData,
+	uint8 action
+)
 {
 	return MobilityFunction<ACTOR_EVENT_VERGIL_AIR_TRICK>
 	(
 		actorData,
+		action,
 		actorData.airTrickCount,
 		activeConfig.DarkSlayer.airTrickCount
 	);
 }
 
-auto TrickUp(ActorData & actorData)
+auto TrickUp
+(
+	ActorData & actorData,
+	uint8 action
+)
 {
 	return MobilityFunction<ACTOR_EVENT_VERGIL_TRICK_UP>
 	(
 		actorData,
+		action,
 		actorData.trickUpCount,
 		activeConfig.DarkSlayer.trickUpCount
 	);
 }
 
-auto TrickDown(ActorData & actorData)
+auto TrickDown
+(
+	ActorData & actorData,
+	uint8 action
+)
 {
 	return MobilityFunction<ACTOR_EVENT_VERGIL_TRICK_DOWN>
 	(
 		actorData,
+		action,
 		actorData.trickDownCount,
 		activeConfig.DarkSlayer.trickDownCount
 	);
 }
 
-void SkyStarReset(byte8 * actorBaseAddr)
+void SkyStarReset(ActorData & actorData)
 {
-	if (!actorBaseAddr)
-	{
-		return;
-	}
-	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
-
+	actorData.airHikeCount = 0;
 	actorData.skyStarCount = 0;
 
 	if (actorData.state & STATE_ON_FLOOR)
@@ -6030,17 +6076,45 @@ void InitMobility()
 {
 	LogFunction();
 
-	auto CreateMobilityFunction = [](void * dest)
+	// Air Hike
 	{
+		constexpr byte8 sect0[] =
+		{
+			0xBA, 0x02, 0x00, 0x00, 0x00, // mov edx,00000002
+		};
 		constexpr byte8 sect1[] =
 		{
 			mov_rcx_rbx,
 		};
 		constexpr byte8 sect2[] =
 		{
-			0x85, 0xC0,                         //test eax,eax
-			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, //je dmc3.exe+1E64A9
-			0x8B, 0xD0,                         //mov edx,eax
+			0x84, 0xC0,                         // test al,al
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, // je dmc3.exe+1E9B3A
+		};
+		auto func = CreateFunction(AirHike, (appBaseAddr + 0x1E9B53), true, false, sizeof(sect0), sizeof(sect1), sizeof(sect2));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E9B3A), 6);
+		AirHikeAddr = func.addr;
+		/*
+		dmc3.exe+1E9B4E - BA 02000000 - mov edx,00000002
+		dmc3.exe+1E9B53 - 48 8B CB    - mov rcx,rbx
+		*/
+	}
+
+	auto CreateMobilityFunction = [](void * dest)
+	{
+		constexpr byte8 sect1[] =
+		{
+			0x48, 0x8B, 0xCB, // mov rcx,rbx
+			0x8A, 0x57, 0x08, // mov dl,[rdi+08]
+		};
+		constexpr byte8 sect2[] =
+		{
+			0x85, 0xC0,                         // test eax,eax
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, // je dmc3.exe+1E64A9
+			0x8B, 0xD0,                         // mov edx,eax
 		};
 		auto func = CreateFunction(dest, (appBaseAddr + 0x1E666D), true, false, 0, sizeof(sect1), sizeof(sect2));
 		memcpy(func.sect1, sect1, sizeof(sect1));
@@ -6050,12 +6124,12 @@ void InitMobility()
 		return func.addr;
 	};
 
-	dashAddr           = CreateMobilityFunction(Dash          );
-	skyStarAddr        = CreateMobilityFunction(SkyStar       );
-	airTrickDanteAddr  = CreateMobilityFunction(AirTrickDante );
-	airTrickVergilAddr = CreateMobilityFunction(AirTrickVergil);
-	trickUpAddr        = CreateMobilityFunction(TrickUp       );
-	trickDownAddr      = CreateMobilityFunction(TrickDown     );
+	DashAddr           = CreateMobilityFunction(Dash          );
+	SkyStarAddr        = CreateMobilityFunction(SkyStar       );
+	AirTrickDanteAddr  = CreateMobilityFunction(AirTrickDante );
+	AirTrickVergilAddr = CreateMobilityFunction(AirTrickVergil);
+	TrickUpAddr        = CreateMobilityFunction(TrickUp       );
+	TrickDownAddr      = CreateMobilityFunction(TrickDown     );
 
 	// Sky Star Reset
 	{
@@ -6070,7 +6144,7 @@ void InitMobility()
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		skyStarResetAddr[0] = func.addr;
+		SkyStarResetAddr[0] = func.addr;
 		/*
 		dmc3.exe+1DFEAE - 88 8B 5D630000 - mov [rbx+0000635D],cl
 		dmc3.exe+1DFEB4 - 89 AB 74630000 - mov [rbx+00006374],ebp
@@ -6088,7 +6162,7 @@ void InitMobility()
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		skyStarResetAddr[1] = func.addr;
+		SkyStarResetAddr[1] = func.addr;
 		/*
 		dmc3.exe+1DFFB6 - 88 8B 5D630000    - mov [rbx+0000635D],cl
 		dmc3.exe+1DFFBC - 40 88 AB AE3F0000 - mov [rbx+00003FAE],bpl
@@ -6106,7 +6180,7 @@ void InitMobility()
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		skyStarResetAddr[2] = func.addr;
+		SkyStarResetAddr[2] = func.addr;
 		/*
 		dmc3.exe+1E07A2 - 41 88 89 5D630000 - mov [r9+0000635D],cl
 		dmc3.exe+1E07A9 - EB 06             - jmp dmc3.exe+1E07B1
@@ -6124,7 +6198,7 @@ void InitMobility()
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		skyStarResetAddr[3] = func.addr;
+		SkyStarResetAddr[3] = func.addr;
 		/*
 		dmc3.exe+1E0D81 - 88 8B 5D630000 - mov [rbx+0000635D],cl
 		dmc3.exe+1E0D87 - 39 7B 78       - cmp [rbx+78],edi
@@ -6142,7 +6216,7 @@ void InitMobility()
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		skyStarResetAddr[4] = func.addr;
+		SkyStarResetAddr[4] = func.addr;
 		/*
 		dmc3.exe+1E0F64 - 41 88 88 5D630000 - mov [r8+0000635D],cl
 		dmc3.exe+1E0F6B - EB 5E             - jmp dmc3.exe+1E0FCB
@@ -6160,7 +6234,7 @@ void InitMobility()
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		skyStarResetAddr[5] = func.addr;
+		SkyStarResetAddr[5] = func.addr;
 		/*
 		dmc3.exe+1E0FBD - 41 88 88 5D630000 - mov [r8+0000635D],cl
 		dmc3.exe+1E0FC4 - 41 FE 88 133F0000 - dec [r8+00003F13]
@@ -6178,7 +6252,7 @@ void InitMobility()
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		skyStarResetAddr[6] = func.addr;
+		SkyStarResetAddr[6] = func.addr;
 		/*
 		dmc3.exe+1E16D2 - 88 8B 5D630000 - mov [rbx+0000635D],cl
 		dmc3.exe+1E16D8 - 39 7B 78       - cmp [rbx+78],edi
@@ -6196,7 +6270,7 @@ void InitMobility()
 		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		skyStarResetAddr[7] = func.addr;
+		SkyStarResetAddr[7] = func.addr;
 		/*
 		dmc3.exe+1E66AC - 88 83 5D630000   - mov [rbx+0000635D],al
 		dmc3.exe+1E66B2 - 0FB6 83 A43F0000 - movzx eax,byte ptr [rbx+00003FA4]
@@ -6212,7 +6286,7 @@ void InitMobility()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x1F07DD), false, true, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		airTrickVergilResetFixAddr = func.addr;
+		AirTrickVergilResetFixAddr = func.addr;
 		/*
 		dmc3.exe+1F07D6 - C6 83 103E0000 03 - mov byte ptr [rbx+00003E10],03
 		dmc3.exe+1F07DD - E9 3C060000       - jmp dmc3.exe+1F0E1E
@@ -6222,12 +6296,59 @@ void InitMobility()
 
 void ToggleMobility(bool enable)
 {
+	// Air Hike
+	{
+		WriteAddress((appBaseAddr + 0x1E9AB0), (enable) ? (appBaseAddr + 0x1E9AB6) : (appBaseAddr + 0x1E9B3A), 6);
+		/*
+		dmc3.exe+1E9AB0 - 0F8E 84000000  - jng dmc3.exe+1E9B3A
+		dmc3.exe+1E9AB6 - 48 89 7C 24 30 - mov [rsp+30],rdi
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1E9B4E);
+		if (enable)
+		{
+			WriteJump(dest, AirHikeAddr);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xBA, 0x02, 0x00, 0x00, 0x00, // mov edx,00000002
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E9B4E - BA 02000000 - mov edx,00000002
+		dmc3.exe+1E9B53 - 48 8B CB    - mov rcx,rbx
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1E0FF6);
+		if (enable)
+		{
+			vp_memset(dest, 0x90, 7);
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x41, 0xFE, 0x88, 0x11, 0x3F, 0x00, 0x00, // dec [r8+00003F11]
+			};
+			vp_memcpy(dest, buffer, sizeof(buffer));
+		}
+		/*
+		dmc3.exe+1E0FF6 - 41 FE 88 113F0000    - dec [r8+00003F11]
+		dmc3.exe+1E0FFD - 41 C6 80 123F0000 00 - mov byte ptr [r8+00003F12],00
+		*/
+	}
+
 	// Dash
 	{
 		auto dest = (appBaseAddr + 0x1E66CB);
 		if (enable)
 		{
-			WriteJump(dest, dashAddr, 1);
+			WriteJump(dest, DashAddr, 1);
 		}
 		else
 		{
@@ -6249,7 +6370,7 @@ void ToggleMobility(bool enable)
 
 		if (enable)
 		{
-			WriteJump(dest, skyStarAddr, 2);
+			WriteJump(dest, SkyStarAddr, 2);
 		}
 		else
 		{
@@ -6271,7 +6392,7 @@ void ToggleMobility(bool enable)
 
 		if (enable)
 		{
-			WriteJump(dest, airTrickDanteAddr, 2);
+			WriteJump(dest, AirTrickDanteAddr, 2);
 		}
 		else
 		{
@@ -6293,7 +6414,7 @@ void ToggleMobility(bool enable)
 
 		if (enable)
 		{
-			WriteJump(dest, airTrickVergilAddr, 1);
+			WriteJump(dest, AirTrickVergilAddr, 1);
 		}
 		else
 		{
@@ -6315,7 +6436,7 @@ void ToggleMobility(bool enable)
 
 		if (enable)
 		{
-			WriteJump(dest, trickUpAddr, 2);
+			WriteJump(dest, TrickUpAddr, 2);
 		}
 		else
 		{
@@ -6337,7 +6458,7 @@ void ToggleMobility(bool enable)
 
 		if (enable)
 		{
-			WriteJump(dest, trickDownAddr, 2);
+			WriteJump(dest, TrickDownAddr, 2);
 		}
 		else
 		{
@@ -6358,7 +6479,7 @@ void ToggleMobility(bool enable)
 		auto dest = (appBaseAddr + 0x1DFEAE);
 		if (enable)
 		{
-			WriteCall(dest, skyStarResetAddr[0], 1);
+			WriteCall(dest, SkyStarResetAddr[0], 1);
 		}
 		else
 		{
@@ -6377,7 +6498,7 @@ void ToggleMobility(bool enable)
 		auto dest = (appBaseAddr + 0x1DFFB6);
 		if (enable)
 		{
-			WriteCall(dest, skyStarResetAddr[1], 1);
+			WriteCall(dest, SkyStarResetAddr[1], 1);
 		}
 		else
 		{
@@ -6396,7 +6517,7 @@ void ToggleMobility(bool enable)
 		auto dest = (appBaseAddr + 0x1E07A2);
 		if (enable)
 		{
-			WriteCall(dest, skyStarResetAddr[2], 2);
+			WriteCall(dest, SkyStarResetAddr[2], 2);
 		}
 		else
 		{
@@ -6415,7 +6536,7 @@ void ToggleMobility(bool enable)
 		auto dest = (appBaseAddr + 0x1E0D81);
 		if (enable)
 		{
-			WriteCall(dest, skyStarResetAddr[3], 1);
+			WriteCall(dest, SkyStarResetAddr[3], 1);
 		}
 		else
 		{
@@ -6434,7 +6555,7 @@ void ToggleMobility(bool enable)
 		auto dest = (appBaseAddr + 0x1E0F64);
 		if (enable)
 		{
-			WriteCall(dest, skyStarResetAddr[4], 2);
+			WriteCall(dest, SkyStarResetAddr[4], 2);
 		}
 		else
 		{
@@ -6453,7 +6574,7 @@ void ToggleMobility(bool enable)
 		auto dest = (appBaseAddr + 0x1E0FBD);
 		if (enable)
 		{
-			WriteCall(dest, skyStarResetAddr[5], 2);
+			WriteCall(dest, SkyStarResetAddr[5], 2);
 		}
 		else
 		{
@@ -6472,7 +6593,7 @@ void ToggleMobility(bool enable)
 		auto dest = (appBaseAddr + 0x1E16D2);
 		if (enable)
 		{
-			WriteCall(dest, skyStarResetAddr[6], 1);
+			WriteCall(dest, SkyStarResetAddr[6], 1);
 		}
 		else
 		{
@@ -6491,7 +6612,7 @@ void ToggleMobility(bool enable)
 		auto dest = (appBaseAddr + 0x1E66AC);
 		if (enable)
 		{
-			WriteCall(dest, skyStarResetAddr[7], 1);
+			WriteCall(dest, SkyStarResetAddr[7], 1);
 		}
 		else
 		{
@@ -6521,7 +6642,7 @@ void ToggleMobility(bool enable)
 		auto dest = (appBaseAddr + 0x1F07D6);
 		if (enable)
 		{
-			WriteJump(dest, airTrickVergilResetFixAddr, 2);
+			WriteJump(dest, AirTrickVergilResetFixAddr, 2);
 		}
 		else
 		{
@@ -6633,11 +6754,6 @@ void ToggleMobility(bool enable)
 		*/
 	}
 }
-
-
-
-
-
 
 void UpdateColorMatrices(ActorData & actorData)
 {
