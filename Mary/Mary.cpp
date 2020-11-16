@@ -40,20 +40,63 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		
 		
-		// {
-		// 	auto & activePlayerData = GetActivePlayerData(0);
-		// 	auto & queuedPlayerData = GetQueuedPlayerData(0);
-		// 	ApplyDefaultCharacterData
-		// 	(
-		// 		activePlayerData.characterData[0][0],
-		// 		3
-		// 	);
-		// 	ApplyDefaultCharacterData
-		// 	(
-		// 		queuedPlayerData.characterData[0][0],
-		// 		3
-		// 	);
-		// }
+		{
+			// auto & activePlayerData = GetActivePlayerData(0);
+			// auto & queuedPlayerData = GetQueuedPlayerData(0);
+			// ApplyDefaultCharacterData
+			// (
+			// 	activePlayerData.characterData[0][0],
+			// 	3
+			// );
+			// ApplyDefaultCharacterData
+			// (
+			// 	queuedPlayerData.characterData[0][0],
+			// 	3
+			// );
+			auto & activeCharacterData = GetActiveCharacterData
+			(
+				0,
+				0,
+				0
+			);
+			auto & queuedCharacterData = GetQueuedCharacterData
+			(
+				0,
+				0,
+				0
+			);
+			activeCharacterData.costume = 1;
+			queuedCharacterData.costume = 1;
+		}
+
+		{
+			// auto & activePlayerData = GetActivePlayerData(0);
+			// auto & queuedPlayerData = GetQueuedPlayerData(0);
+			// ApplyDefaultCharacterData
+			// (
+			// 	activePlayerData.characterData[0][0],
+			// 	3
+			// );
+			// ApplyDefaultCharacterData
+			// (
+			// 	queuedPlayerData.characterData[0][0],
+			// 	3
+			// );
+			auto & activeCharacterData = GetActiveCharacterData
+			(
+				0,
+				0,
+				1
+			);
+			auto & queuedCharacterData = GetQueuedCharacterData
+			(
+				0,
+				0,
+				1
+			);
+			activeCharacterData.costume = 1;
+			queuedCharacterData.costume = 1;
+		}
 
 
 

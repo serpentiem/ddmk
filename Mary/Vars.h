@@ -23,6 +23,16 @@ enum CLONE_STATUS
 
 
 
+enum CopyStateFlags
+{
+	CopyStateFlags_EventData = 1 << 0,
+	CopyStateFlags_Mode      = 1 << 1,
+};
+
+
+
+
+
 enum WEAPON_STATUS
 {
 	WEAPON_STATUS_READY,
@@ -153,13 +163,15 @@ enum
 
 
 
-
+// @Todo: Remove.
 enum WEAPON_TYPE_
 {
 	WEAPON_TYPE_MELEE,
 	WEAPON_TYPE_RANGED,
 };
 
+
+// @Todo: Update.
 enum MOTION_GROUP_
 {
 	MOTION_GROUP_DANTE_BASE,
@@ -775,11 +787,6 @@ enum SUBEVENT
 
 
 
-
-
-
-
-
 enum GAMEPAD
 {
 	GAMEPAD_LEFT_TRIGGER   = 0x0001,
@@ -891,6 +898,34 @@ struct Size_##size\
 #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
 
 #pragma pack(push, 1)
+
+
+
+
+
+
+
+// $StyleDataStart
+
+struct StyleData
+{
+	uint32 rank; // 0
+	float meter; // 4
+	_(328);
+	float quotient; // 0x150
+	float dividend; // 0x154
+	float divisor; // 0x158
+	_(4);
+};
+
+static_assert(offsetof(StyleData, rank) == 0);
+static_assert(offsetof(StyleData, meter) == 4);
+static_assert(offsetof(StyleData, quotient) == 0x150);
+static_assert(offsetof(StyleData, dividend) == 0x154);
+static_assert(offsetof(StyleData, divisor) == 0x158);
+static_assert(sizeof(StyleData) == 352);
+
+// $StyleDataEnd
 
 
 
@@ -1188,27 +1223,40 @@ if (!stagePositionData)\
 }
 #define IntroduceStagePositionData(...) _IntroduceStagePositionData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
 
-#define IntroduceActorData(name, ...)\
-auto actorBaseAddr = Actor_actorBaseAddr[name];\
-if (!actorBaseAddr)\
-{\
-	__VA_ARGS__;\
-}\
-auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr)
-
-#define _IntroduceMainActorData(name, ...)\
-auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);\
+#define IntroduceActorData(name, name2, name3, ...)\
+auto name = name3;\
 if (!name)\
 {\
 	__VA_ARGS__;\
 }\
-auto mainActorBaseAddr = name[3];\
-if (!mainActorBaseAddr)\
-{\
-	__VA_ARGS__;\
-}\
-auto & mainActorData = *reinterpret_cast<ActorData *>(mainActorBaseAddr)
-#define IntroduceMainActorData(...) _IntroduceMainActorData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+auto & name2 = *reinterpret_cast<ActorData *>(name);
+
+
+
+
+
+
+// #define IntroduceAcawaqwatorData(name, ...)\
+// auto actorBaseAddr = Actor_actorBaseAddr[name];\
+// if (!actorBaseAddr)\
+// {\
+// 	__VA_ARGS__;\
+// }\
+// auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr)
+
+// #define _IntroduceMainActorData(name, ...)\
+// auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);\
+// if (!name)\
+// {\
+// 	__VA_ARGS__;\
+// }\
+// auto mainActorBaseAddr = name[3];\
+// if (!mainActorBaseAddr)\
+// {\
+// 	__VA_ARGS__;\
+// }\
+// auto & mainActorData = *reinterpret_cast<ActorData *>(mainActorBaseAddr)
+// #define IntroduceMainActorData(...) _IntroduceMainActorData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
 
 
 
@@ -2271,9 +2319,9 @@ struct ActorData
 	uint32 var_6440; // 0x6440
 	_(12);
 	uint32 cloneRate; // 0x6450
-	uint32 var_6454; // 0x6454
+	uint32 cloneStatus; // 0x6454
 	byte8 var_6458[32]; // 0x6458
-	byte8 * cloneBaseAddr; // 0x6478
+	byte8 * cloneActorBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
 	_(3);
 	uint32 activeMeleeWeaponIndex; // 0x6484
@@ -2294,9 +2342,8 @@ struct ActorData
 	float weaponTimers[5]; // 0x64F4
 	float meleeWeaponSwitchTimeout; // 0x6508
 	float rangedWeaponSwitchTimeout; // 0x650C
-	uint32 styleRank; // 0x6510
-	float styleMeter; // 0x6514
-	_(348);
+	StyleData styleData; // 0x6510
+	float var_6670; // 0x6670
 	InputData inputData[58]; // 0x6674
 	_(36);
 	BodyPartData bodyPartData[3][2]; // 0x6950
@@ -2503,9 +2550,9 @@ struct ActorDataDante
 	uint32 var_6440; // 0x6440
 	_(12);
 	uint32 cloneRate; // 0x6450
-	uint32 var_6454; // 0x6454
+	uint32 cloneStatus; // 0x6454
 	byte8 var_6458[32]; // 0x6458
-	byte8 * cloneBaseAddr; // 0x6478
+	byte8 * cloneActorBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
 	_(3);
 	uint32 activeMeleeWeaponIndex; // 0x6484
@@ -2526,9 +2573,8 @@ struct ActorDataDante
 	float weaponTimers[5]; // 0x64F4
 	float meleeWeaponSwitchTimeout; // 0x6508
 	float rangedWeaponSwitchTimeout; // 0x650C
-	uint32 styleRank; // 0x6510
-	float styleMeter; // 0x6514
-	_(348);
+	StyleData styleData; // 0x6510
+	float var_6670; // 0x6670
 	InputData inputData[58]; // 0x6674
 	_(36);
 	BodyPartData bodyPartData[3][2]; // 0x6950
@@ -2752,9 +2798,9 @@ struct ActorDataBob
 	uint32 var_6440; // 0x6440
 	_(12);
 	uint32 cloneRate; // 0x6450
-	uint32 var_6454; // 0x6454
+	uint32 cloneStatus; // 0x6454
 	byte8 var_6458[32]; // 0x6458
-	byte8 * cloneBaseAddr; // 0x6478
+	byte8 * cloneActorBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
 	_(3);
 	uint32 activeMeleeWeaponIndex; // 0x6484
@@ -2775,9 +2821,8 @@ struct ActorDataBob
 	float weaponTimers[5]; // 0x64F4
 	float meleeWeaponSwitchTimeout; // 0x6508
 	float rangedWeaponSwitchTimeout; // 0x650C
-	uint32 styleRank; // 0x6510
-	float styleMeter; // 0x6514
-	_(348);
+	StyleData styleData; // 0x6510
+	float var_6670; // 0x6670
 	InputData inputData[58]; // 0x6674
 	_(36);
 	BodyPartData bodyPartData[3][2]; // 0x6950
@@ -2984,9 +3029,9 @@ struct ActorDataLady
 	uint32 var_6440; // 0x6440
 	_(12);
 	uint32 cloneRate; // 0x6450
-	uint32 var_6454; // 0x6454
+	uint32 cloneStatus; // 0x6454
 	byte8 var_6458[32]; // 0x6458
-	byte8 * cloneBaseAddr; // 0x6478
+	byte8 * cloneActorBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
 	_(3);
 	uint32 activeMeleeWeaponIndex; // 0x6484
@@ -3007,9 +3052,8 @@ struct ActorDataLady
 	float weaponTimers[5]; // 0x64F4
 	float meleeWeaponSwitchTimeout; // 0x6508
 	float rangedWeaponSwitchTimeout; // 0x650C
-	uint32 styleRank; // 0x6510
-	float styleMeter; // 0x6514
-	_(348);
+	StyleData styleData; // 0x6510
+	float var_6670; // 0x6670
 	InputData inputData[58]; // 0x6674
 	_(36);
 	BodyPartData bodyPartData[3][2]; // 0x6950
@@ -3216,9 +3260,9 @@ struct ActorDataVergil
 	uint32 var_6440; // 0x6440
 	_(12);
 	uint32 cloneRate; // 0x6450
-	uint32 var_6454; // 0x6454
+	uint32 cloneStatus; // 0x6454
 	byte8 var_6458[32]; // 0x6458
-	byte8 * cloneBaseAddr; // 0x6478
+	byte8 * cloneActorBaseAddr; // 0x6478
 	bool cloneIsControlledByPlayer; // 0x6480
 	_(3);
 	uint32 activeMeleeWeaponIndex; // 0x6484
@@ -3239,9 +3283,8 @@ struct ActorDataVergil
 	float weaponTimers[5]; // 0x64F4
 	float meleeWeaponSwitchTimeout; // 0x6508
 	float rangedWeaponSwitchTimeout; // 0x650C
-	uint32 styleRank; // 0x6510
-	float styleMeter; // 0x6514
-	_(348);
+	StyleData styleData; // 0x6510
+	float var_6670; // 0x6670
 	InputData inputData[58]; // 0x6674
 	_(36);
 	BodyPartData bodyPartData[3][2]; // 0x6950
@@ -3407,9 +3450,9 @@ static_assert(offsetof(ActorData, var_6410) == 0x6410);
 static_assert(offsetof(ActorData, var_6438) == 0x6438);
 static_assert(offsetof(ActorData, var_6440) == 0x6440);
 static_assert(offsetof(ActorData, cloneRate) == 0x6450);
-static_assert(offsetof(ActorData, var_6454) == 0x6454);
+static_assert(offsetof(ActorData, cloneStatus) == 0x6454);
 static_assert(offsetof(ActorData, var_6458) == 0x6458);
-static_assert(offsetof(ActorData, cloneBaseAddr) == 0x6478);
+static_assert(offsetof(ActorData, cloneActorBaseAddr) == 0x6478);
 static_assert(offsetof(ActorData, cloneIsControlledByPlayer) == 0x6480);
 static_assert(offsetof(ActorData, activeMeleeWeaponIndex) == 0x6484);
 static_assert(offsetof(ActorData, queuedMeleeWeaponIndex) == 0x6488);
@@ -3425,8 +3468,8 @@ static_assert(offsetof(ActorData, activeRangedWeapon) == 0x64F1);
 static_assert(offsetof(ActorData, weaponTimers) == 0x64F4);
 static_assert(offsetof(ActorData, meleeWeaponSwitchTimeout) == 0x6508);
 static_assert(offsetof(ActorData, rangedWeaponSwitchTimeout) == 0x650C);
-static_assert(offsetof(ActorData, styleRank) == 0x6510);
-static_assert(offsetof(ActorData, styleMeter) == 0x6514);
+static_assert(offsetof(ActorData, styleData) == 0x6510);
+static_assert(offsetof(ActorData, var_6670) == 0x6670);
 static_assert(offsetof(ActorData, inputData) == 0x6674);
 static_assert(offsetof(ActorData, bodyPartData) == 0x6950);
 static_assert(offsetof(ActorData, collisionData) == 0x7250);
@@ -3564,9 +3607,9 @@ static_assert(offsetof(ActorDataDante, var_6410) == 0x6410);
 static_assert(offsetof(ActorDataDante, var_6438) == 0x6438);
 static_assert(offsetof(ActorDataDante, var_6440) == 0x6440);
 static_assert(offsetof(ActorDataDante, cloneRate) == 0x6450);
-static_assert(offsetof(ActorDataDante, var_6454) == 0x6454);
+static_assert(offsetof(ActorDataDante, cloneStatus) == 0x6454);
 static_assert(offsetof(ActorDataDante, var_6458) == 0x6458);
-static_assert(offsetof(ActorDataDante, cloneBaseAddr) == 0x6478);
+static_assert(offsetof(ActorDataDante, cloneActorBaseAddr) == 0x6478);
 static_assert(offsetof(ActorDataDante, cloneIsControlledByPlayer) == 0x6480);
 static_assert(offsetof(ActorDataDante, activeMeleeWeaponIndex) == 0x6484);
 static_assert(offsetof(ActorDataDante, queuedMeleeWeaponIndex) == 0x6488);
@@ -3582,8 +3625,8 @@ static_assert(offsetof(ActorDataDante, activeRangedWeapon) == 0x64F1);
 static_assert(offsetof(ActorDataDante, weaponTimers) == 0x64F4);
 static_assert(offsetof(ActorDataDante, meleeWeaponSwitchTimeout) == 0x6508);
 static_assert(offsetof(ActorDataDante, rangedWeaponSwitchTimeout) == 0x650C);
-static_assert(offsetof(ActorDataDante, styleRank) == 0x6510);
-static_assert(offsetof(ActorDataDante, styleMeter) == 0x6514);
+static_assert(offsetof(ActorDataDante, styleData) == 0x6510);
+static_assert(offsetof(ActorDataDante, var_6670) == 0x6670);
 static_assert(offsetof(ActorDataDante, inputData) == 0x6674);
 static_assert(offsetof(ActorDataDante, bodyPartData) == 0x6950);
 static_assert(offsetof(ActorDataDante, collisionData) == 0x7250);
@@ -3732,9 +3775,9 @@ static_assert(offsetof(ActorDataBob, var_6410) == 0x6410);
 static_assert(offsetof(ActorDataBob, var_6438) == 0x6438);
 static_assert(offsetof(ActorDataBob, var_6440) == 0x6440);
 static_assert(offsetof(ActorDataBob, cloneRate) == 0x6450);
-static_assert(offsetof(ActorDataBob, var_6454) == 0x6454);
+static_assert(offsetof(ActorDataBob, cloneStatus) == 0x6454);
 static_assert(offsetof(ActorDataBob, var_6458) == 0x6458);
-static_assert(offsetof(ActorDataBob, cloneBaseAddr) == 0x6478);
+static_assert(offsetof(ActorDataBob, cloneActorBaseAddr) == 0x6478);
 static_assert(offsetof(ActorDataBob, cloneIsControlledByPlayer) == 0x6480);
 static_assert(offsetof(ActorDataBob, activeMeleeWeaponIndex) == 0x6484);
 static_assert(offsetof(ActorDataBob, queuedMeleeWeaponIndex) == 0x6488);
@@ -3750,8 +3793,8 @@ static_assert(offsetof(ActorDataBob, activeRangedWeapon) == 0x64F1);
 static_assert(offsetof(ActorDataBob, weaponTimers) == 0x64F4);
 static_assert(offsetof(ActorDataBob, meleeWeaponSwitchTimeout) == 0x6508);
 static_assert(offsetof(ActorDataBob, rangedWeaponSwitchTimeout) == 0x650C);
-static_assert(offsetof(ActorDataBob, styleRank) == 0x6510);
-static_assert(offsetof(ActorDataBob, styleMeter) == 0x6514);
+static_assert(offsetof(ActorDataBob, styleData) == 0x6510);
+static_assert(offsetof(ActorDataBob, var_6670) == 0x6670);
 static_assert(offsetof(ActorDataBob, inputData) == 0x6674);
 static_assert(offsetof(ActorDataBob, bodyPartData) == 0x6950);
 static_assert(offsetof(ActorDataBob, collisionData) == 0x7250);
@@ -3889,9 +3932,9 @@ static_assert(offsetof(ActorDataLady, var_6410) == 0x6410);
 static_assert(offsetof(ActorDataLady, var_6438) == 0x6438);
 static_assert(offsetof(ActorDataLady, var_6440) == 0x6440);
 static_assert(offsetof(ActorDataLady, cloneRate) == 0x6450);
-static_assert(offsetof(ActorDataLady, var_6454) == 0x6454);
+static_assert(offsetof(ActorDataLady, cloneStatus) == 0x6454);
 static_assert(offsetof(ActorDataLady, var_6458) == 0x6458);
-static_assert(offsetof(ActorDataLady, cloneBaseAddr) == 0x6478);
+static_assert(offsetof(ActorDataLady, cloneActorBaseAddr) == 0x6478);
 static_assert(offsetof(ActorDataLady, cloneIsControlledByPlayer) == 0x6480);
 static_assert(offsetof(ActorDataLady, activeMeleeWeaponIndex) == 0x6484);
 static_assert(offsetof(ActorDataLady, queuedMeleeWeaponIndex) == 0x6488);
@@ -3907,8 +3950,8 @@ static_assert(offsetof(ActorDataLady, activeRangedWeapon) == 0x64F1);
 static_assert(offsetof(ActorDataLady, weaponTimers) == 0x64F4);
 static_assert(offsetof(ActorDataLady, meleeWeaponSwitchTimeout) == 0x6508);
 static_assert(offsetof(ActorDataLady, rangedWeaponSwitchTimeout) == 0x650C);
-static_assert(offsetof(ActorDataLady, styleRank) == 0x6510);
-static_assert(offsetof(ActorDataLady, styleMeter) == 0x6514);
+static_assert(offsetof(ActorDataLady, styleData) == 0x6510);
+static_assert(offsetof(ActorDataLady, var_6670) == 0x6670);
 static_assert(offsetof(ActorDataLady, inputData) == 0x6674);
 static_assert(offsetof(ActorDataLady, bodyPartData) == 0x6950);
 static_assert(offsetof(ActorDataLady, collisionData) == 0x7250);
@@ -4046,9 +4089,9 @@ static_assert(offsetof(ActorDataVergil, var_6410) == 0x6410);
 static_assert(offsetof(ActorDataVergil, var_6438) == 0x6438);
 static_assert(offsetof(ActorDataVergil, var_6440) == 0x6440);
 static_assert(offsetof(ActorDataVergil, cloneRate) == 0x6450);
-static_assert(offsetof(ActorDataVergil, var_6454) == 0x6454);
+static_assert(offsetof(ActorDataVergil, cloneStatus) == 0x6454);
 static_assert(offsetof(ActorDataVergil, var_6458) == 0x6458);
-static_assert(offsetof(ActorDataVergil, cloneBaseAddr) == 0x6478);
+static_assert(offsetof(ActorDataVergil, cloneActorBaseAddr) == 0x6478);
 static_assert(offsetof(ActorDataVergil, cloneIsControlledByPlayer) == 0x6480);
 static_assert(offsetof(ActorDataVergil, activeMeleeWeaponIndex) == 0x6484);
 static_assert(offsetof(ActorDataVergil, queuedMeleeWeaponIndex) == 0x6488);
@@ -4064,8 +4107,8 @@ static_assert(offsetof(ActorDataVergil, activeRangedWeapon) == 0x64F1);
 static_assert(offsetof(ActorDataVergil, weaponTimers) == 0x64F4);
 static_assert(offsetof(ActorDataVergil, meleeWeaponSwitchTimeout) == 0x6508);
 static_assert(offsetof(ActorDataVergil, rangedWeaponSwitchTimeout) == 0x650C);
-static_assert(offsetof(ActorDataVergil, styleRank) == 0x6510);
-static_assert(offsetof(ActorDataVergil, styleMeter) == 0x6514);
+static_assert(offsetof(ActorDataVergil, styleData) == 0x6510);
+static_assert(offsetof(ActorDataVergil, var_6670) == 0x6670);
 static_assert(offsetof(ActorDataVergil, inputData) == 0x6674);
 static_assert(offsetof(ActorDataVergil, bodyPartData) == 0x6950);
 static_assert(offsetof(ActorDataVergil, collisionData) == 0x7250);

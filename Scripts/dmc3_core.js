@@ -79,6 +79,7 @@ var typeHelper =
 	[ "PlayerData"              , ""       , 18  , false ],
 	[ "CameraData"              , ""       , 512 , false ],
 	[ "CollisionData"           , ""       , 656 , false ],
+	[ "StyleData"           , ""       , 352 , false ],
 ];
 
 function GetItemCount(name)

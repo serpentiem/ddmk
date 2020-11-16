@@ -31,12 +31,12 @@ export struct Config
 	struct
 	{
 		bool    enable         = true;
-		uint32  mission        = 17;
+		uint32  mission        = 2;
 		uint32  mode           = MODE_DANTE_MUST_DIE;
 		uint32  room           = 900;
 		uint32  position       = 0;
-		bool    ignoreRoom     = false;
-		bool    ignorePosition = false;
+		bool    ignoreRoom     = true;
+		bool    ignorePosition = true;
 		uint8   floor          = 0;
 		float32 hitPoints      = 20000;
 		float32 magicPoints    = 10000;
@@ -276,7 +276,7 @@ export struct Config
 	{
 		bool enable              = false;
 		bool infiniteHitPoints   = false;
-		bool infiniteMagicPoints = false;
+		bool infiniteMagicPoints = true;
 		bool disableTimer        = false;
 	}
 	Training;

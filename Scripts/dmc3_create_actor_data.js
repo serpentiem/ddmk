@@ -193,26 +193,15 @@ var items =
 
 
 
-	// @Todo: Add CloneData.
-
-
-	[ "[40]"                       , "byte8"                    , 0x6410                           ],
-	[ ""                       , "byte8 *"                    , 0x6438                           ],
-	[ ""                       , "uint32"                    , 0x6440                           ],
-	[ "cloneRate"                       , "uint32"                    , 0x6450                           ],
-
-
-
-
-	[ ""                       , "uint32"                    , 0x6454                           ],
-
-
-
-
-	[ "[32]"                       , "byte8"                    , 0x6458                           ],
-	// @Todo: Rename to cloneActorBaseAddr.
-	[ "cloneBaseAddr"                       , "byte8 *"                 , 0x6478                           ],
-	[ "cloneIsControlledByPlayer"           , "bool"                    , 0x6480                           ],
+	// @Research: Consider CloneData.
+	[ "[40]"                     , "byte8"   , 0x6410 ],
+	[ ""                         , "byte8 *" , 0x6438 ],
+	[ ""                         , "uint32"  , 0x6440 ],
+	[ "cloneRate"                , "uint32"  , 0x6450 ],
+	[ "cloneStatus"              , "uint32"  , 0x6454 ],
+	[ "[32]"                     , "byte8"   , 0x6458 ],
+	[ "cloneActorBaseAddr"       , "byte8 *" , 0x6478 ],
+	[ "cloneIsControlledByPlayer", "bool"    , 0x6480 ],
 
 
 
@@ -258,8 +247,25 @@ var items =
 	// [ "meleeWeaponSwitchForwardTimeout"     , "float"                 , 0x6508, CHAR_VERGIL              ],
 	// [ "meleeWeaponSwitchBackTimeout"        , "float"                 , 0x650C, CHAR_VERGIL              ],
 	
-	[ "styleRank"                           , "uint32"                  , 0x6510                           ],
-	[ "styleMeter"                          , "float"                 , 0x6514                           ],
+	[ "styleData"                           , "StyleData"                  , 0x6510                           ],
+	// [ "styleRank"                           , "uint32"                  , 0x6510                           ],
+	// [ "styleMeter"                          , "float"                 , 0x6514                           ],
+
+
+
+
+	
+	[ ""                          , "float"                 , 0x6670                           ],
+
+
+
+
+
+
+
+
+
+
 	[ "inputData[58]"                       , "InputData"              , 0x6674                           ],
 
 
