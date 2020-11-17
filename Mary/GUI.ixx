@@ -522,6 +522,95 @@ void Overlay2()
 
 
 
+void MissionOverlay()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+		ImGui::SetNextWindowSize(ImVec2((300 + 16), (300 + 16)));
+		ImGui::SetNextWindowPos(ImVec2(300, 300));
+	}
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1, 1));
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+	if
+	(
+		ImGui::Begin
+		(
+			"GUI_MissionOverlay",
+			&Overlay_enable,
+			ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize
+		)
+	)
+	{
+		auto & io = ImGui::GetIO();
+		ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_16]);
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+
+		ImGui::Text("Mission");
+
+		[&]()
+		{
+			IntroduceMissionData(return);
+
+			auto time = (static_cast<float>(missionData.time) / 60.0f);
+
+			ImGui::Text("Time           %.2f", time);
+			ImGui::Text("Damage         %u", missionData.damage);
+			ImGui::Text("Orbs Collected %u", missionData.orbsCollected);
+			ImGui::Text("Items Used     %u", missionData.itemsUsed);
+			ImGui::Text("Kill Count     %u", missionData.killCount);
+
+			auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+			if (!pool)
+			{
+				return;
+			}
+
+			IntroduceActorData(actorBaseAddr, actorData, pool[3], return);
+
+			auto stylePoints = (actorData.styleData.quotient * 100.0f);
+			//ImGui::Text("Orbs Collected %u", missionData.orbsCollected);
+			ImGui::Text("Style Points   %.2f", stylePoints);
+		}();
+
+		ImGui::PopStyleColor();
+		ImGui::PopFont();
+	}
+	ImGui::End();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar(3);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3262,6 +3351,8 @@ export void GUI_Render()
 		Overlay();
 		Overlay2();
 	}
+
+	MissionOverlay();
 
 	if (g_pause)
 	{

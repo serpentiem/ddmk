@@ -1,6 +1,7 @@
 NEW_LINE = "\r\n";
 
 var c = "";
+var c_assert = "";
 var pos = 0;
 
 function lz(n)
@@ -370,4 +371,189 @@ function GroupEnd()
 {
 	c += "</CheatEntries>" + NEW_LINE;
 	c += "</CheatEntry>" + NEW_LINE;
+}
+
+
+
+var Tag_start = -1;
+var Tag_end   = -1;
+
+function Tag_GetLineIndex
+(
+	lines,
+	tag
+)
+{
+	for (var lineIndex = 0; lineIndex < lines.length; lineIndex++)
+	{
+		var line = lines[lineIndex].substring(0, (lines[lineIndex].length - 2));
+
+		if (line.match(tag))
+		{
+			return lineIndex;
+		}
+	}
+
+	return -1;
+}
+
+function Tag_Init
+(
+	lines,
+	startTag,
+	endTag
+)
+{
+	Tag_start = Tag_GetLineIndex(lines, startTag);
+	Tag_end   = Tag_GetLineIndex(lines, endTag  );
+
+	if (Tag_start < 0)
+	{
+		console.log("Start tag not found.");
+	
+		return false;
+	}
+	else if (Tag_end < 0)
+	{
+		console.log("End tag not found.");
+	
+		return false;
+	}
+	else if (Tag_end < Tag_start)
+	{
+		console.log("End tag appears before start tag.");
+	
+		return false;
+	}
+	
+	console.log("Tag_start " + (Tag_start + 1));
+	console.log("Tag_end   " + (Tag_end   + 1));
+
+	return true;
+}
+
+function Tag_CopyUntil(lines)
+{
+	for (var lineIndex = 0; lineIndex <= Tag_start; lineIndex++)
+	{
+		var line = lines[lineIndex].substring(0, (lines[lineIndex].length - 2));
+
+		c += line + NEW_LINE;
+	}
+
+	c += NEW_LINE;
+}
+
+function Tag_CopyAfter(lines)
+{
+	for (var lineIndex = Tag_end; lineIndex < lines.length; lineIndex++)
+	{
+		var line = lines[lineIndex].substring(0, (lines[lineIndex].length - 2));
+
+		c += line + NEW_LINE;
+	}
+}
+
+function CreateStruct
+(
+	structName,
+	structSize,
+	items
+)
+{
+	c += "struct " + structName + NEW_LINE;
+	c += "{" + NEW_LINE;
+	
+	pos = 0;
+	
+	for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
+	{
+		var name = items[itemIndex][0];
+		var type = items[itemIndex][1];
+		var off  = items[itemIndex][2];
+	
+		if ((name == "") || (name.substring(0, 1) == "["))
+		{
+			name = "var_" + off.toString(16).toUpperCase();
+		}
+		
+		var lastPos = pos;
+		
+		if (off != undefined)
+		{
+			var diff = (off - pos);
+			if (diff)
+			{
+				c += "\t_(" + diff.toString() + ");" + NEW_LINE;
+			}
+			pos = off;
+		}
+		else
+		{
+			if (type.match(/\*/))
+			{
+				Align(8);
+			}
+			else if (name.match(/\[/))
+			{
+				Align(4);
+			}
+			var diff = (pos - lastPos);
+			if (diff)
+			{
+				c += "\t_(" + diff.toString() + ");" + NEW_LINE;
+			}
+		}
+	
+		var posString = "";
+		if (pos >= 10)
+		{
+			posString = "0x" + pos.toString(16).toUpperCase();
+		}
+		else
+		{
+			posString = pos.toString();
+		}
+	
+		c += "\t" + type + " " + name + "; // " + posString + NEW_LINE;
+		c_assert += "static_assert(offsetof(" + structName + ", " + name.split("[")[0] + ") == " + posString + ");" + NEW_LINE;
+	
+		var size = GetTypeSize(type);
+		
+		{
+			var match = name.match(/\[\d+?\]/g);
+			if (match)
+			{
+				for (var matchIndex = 0; matchIndex < match.length; matchIndex++)
+				{
+					var count = parseInt(match[matchIndex].match(/\[(\d+?)\]/)[1]);
+					size *= count;
+				}
+			}
+		}
+		
+		pos += size;
+	}
+	
+	var off = structSize;
+	
+	if (pos < off)
+	{
+		var diff = (off - pos);
+		if (diff)
+		{
+			c += "\t_(" + diff.toString() + ");" + NEW_LINE;
+		}
+		pos = off;
+	}
+	
+	c += "};" + NEW_LINE;
+	
+	c += NEW_LINE;
+	
+	c_assert += "static_assert(sizeof(" + structName + ") == " + structSize.toString() + ");" + NEW_LINE;
+	
+	c += c_assert;
+	
+	c += NEW_LINE;
 }

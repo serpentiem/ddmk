@@ -1084,7 +1084,39 @@ dmc3.exe+23E691 - 48 8D 93 80010000 - lea rdx,[rbx+00000180]
 
 
 
-// @Todo: Update.
+// $MissionDataStart
+
+struct MissionData
+{
+	_(56);
+	uint32 orbs; // 0x38
+	_(108);
+	uint32 time; // 0xA8
+	uint32 damage; // 0xAC
+	uint32 orbsCollected; // 0xB0
+	uint32 itemsUsed; // 0xB4
+	uint32 killCount; // 0xB8
+	_(4);
+};
+
+static_assert(offsetof(MissionData, orbs) == 0x38);
+static_assert(offsetof(MissionData, time) == 0xA8);
+static_assert(offsetof(MissionData, damage) == 0xAC);
+static_assert(offsetof(MissionData, orbsCollected) == 0xB0);
+static_assert(offsetof(MissionData, itemsUsed) == 0xB4);
+static_assert(offsetof(MissionData, killCount) == 0xB8);
+static_assert(sizeof(MissionData) == 192);
+
+// $MissionDataEnd
+
+#define _IntroduceMissionData(name, ...)\
+auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E30);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+auto & missionData = *reinterpret_cast<MissionData *>(name)
+#define IntroduceMissionData(...) _IntroduceMissionData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
 
 // $MissionActorDataStart
 
