@@ -1,80 +1,6 @@
-NEW_LINE = "\r\n";
-
 var fs = require("fs");
 
-var c = "";
-
-
-
-var filename = "../Mary/Vars.h"
-
-
-
-var file = fs.readFileSync(filename, "utf8");
-
-var startTag = /\/\/ \$CacheFileStart$/;
-var endTag   = /\/\/ \$CacheFileEnd$/;
-
-var startTagLine = -1;
-var endTagLine   = -1;
-
-var obj = file.match(/[\S\s]*?\r\n/g);
-
-for (var index = 0; index < obj.length; index++)
-{
-	var str = obj[index].substring(0, (obj[index].length - 2));
-	if (str.match(startTag))
-	{
-		startTagLine = index;
-		break;
-	}
-}
-
-if (startTagLine == -1)
-{
-	console.log("Start tag not found.");
-	return;
-}
-
-for (var index = 0; index < obj.length; index++)
-{
-	var str = obj[index].substring(0, (obj[index].length - 2));
-	if (str.match(endTag))
-	{
-		endTagLine = index;
-		break;
-	}
-}
-
-if (endTagLine == -1)
-{
-	console.log("End tag not found.");
-	return;
-}
-
-if (endTagLine < startTagLine)
-{
-	console.log("End tag appears before start tag.");
-	return;
-}
-
-console.log("startTagLine " + (startTagLine + 1));
-console.log("endTagLine   " + (endTagLine   + 1));
-
-for (var index = 0; index <= startTagLine; index++)
-{
-	var str = obj[index].substring(0, (obj[index].length - 2));
-	c += str + NEW_LINE;
-}
-
-c += NEW_LINE;
-
-
-
-
-
-
-
+eval(fs.readFileSync("dmc3_core.js", "utf8"));
 
 var items =
 [
@@ -169,13 +95,41 @@ var items =
 	[ "id100V"             , "id"     ],
 ];
 
+var filename = "../Mary/Vars.h"
+
+var file = fs.readFileSync(filename, "utf8");
+
+var lines = file.match(/[\S\s]*?\r\n/g);
+
+if
+(
+	!Tag_Init
+	(
+		lines,
+		/\/\/ \$CacheFileStart$/,
+		/\/\/ \$CacheFileEnd$/
+	)
+)
+{
+	console.log("Tag_Init failed.");
+
+	return;
+}
+
+Tag_CopyUntil(lines);
+
+
+
 c += "enum CACHE_FILE" + NEW_LINE;
 c += "{" + NEW_LINE;
 
-for (var index = 0; index < items.length; index++)
+for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
 {
-	var name = items[index][0];
-	var type = items[index][1];
+	var item = items[itemIndex];
+
+	var name = item[0];
+	var type = item[1];
+
 	c += "\t" + name + "," + NEW_LINE;
 }
 
@@ -183,6 +137,8 @@ c += "\tMAX_CACHE_FILE," + NEW_LINE;
 c += "};" + NEW_LINE;
 
 c += NEW_LINE;
+
+
 
 c += "struct CacheFileHelper" + NEW_LINE;
 c += "{" + NEW_LINE;
@@ -195,10 +151,13 @@ c += NEW_LINE;
 c += "constexpr CacheFileHelper cacheFileHelper[MAX_CACHE_FILE] =" + NEW_LINE;
 c += "{" + NEW_LINE;
 
-for (var index = 0; index < items.length; index++)
+for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
 {
-	var name = items[index][0];
-	var type = items[index][1];
+	var item = items[itemIndex];
+
+	var name = item[0];
+	var type = item[1];
+
 	c += "\t{ \"" + name + ".pac\", \"";
 
 	if (type == "obj")
@@ -231,33 +190,10 @@ for (var index = 0; index < items.length; index++)
 
 c += "};" + NEW_LINE;
 
-
 c += NEW_LINE;
 
 
 
+Tag_CopyAfter(lines);
 
-
-for (var index = endTagLine; index < obj.length; index++)
-{
-	var str = obj[index].substring(0, (obj[index].length - 2));
-	c += str + NEW_LINE;
-}
-
-
-
-
-
-//fs.writeFileSync("../Mary/ActorData.h", c);
-
-
-
-
-
-//fs.writeFileSync("cacheFiles.txt", c);
 fs.writeFileSync(filename, c);
-
-
-
-
-

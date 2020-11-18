@@ -5791,14 +5791,19 @@ void ToggleWeaponCountAdjustments(bool enable)
 
 #pragma region Mobility
 
-byte8 * AirHikeAddr                = 0;
-byte8 * DashAddr                   = 0;
-byte8 * SkyStarAddr                = 0;
-byte8 * AirTrickDanteAddr          = 0;
-byte8 * AirTrickVergilAddr         = 0;
-byte8 * TrickUpAddr                = 0;
-byte8 * TrickDownAddr              = 0;
-byte8 * SkyStarResetAddr[8]        = {};
+byte8 * AirHikeAddr                  = 0;
+byte8 * KickJumpAddr                 = 0;
+byte8 * WallHikeAddr                 = 0;
+byte8 * DashAddr                     = 0;
+byte8 * SkyStarAddr                  = 0;
+byte8 * AirTrickDanteAddr            = 0;
+byte8 * AirTrickVergilAddr           = 0;
+byte8 * TrickUpAddr                  = 0;
+byte8 * TrickDownAddr                = 0;
+byte8 * ResetMobilityCountersAddr[6] = {};
+
+
+
 byte8 * AirTrickVergilResetFixAddr = 0;
 
 bool AirHike(ActorData & actorData)
@@ -5944,60 +5949,94 @@ auto TrickDown
 	);
 }
 
-void SkyStarReset(ActorData & actorData)
+// void SkyStarReset(ActorData & actorData)
+// {
+// 	actorData.airHikeCount = 0;
+// 	actorData.skyStarCount = 0;
+
+// 	if (actorData.state & STATE_ON_FLOOR)
+// 	{
+// 		auto & event = actorData.eventData[1].index;
+
+// 		switch (actorData.character)
+// 		{
+// 			case CHAR_DANTE:
+// 			{
+// 				switch (event)
+// 				{
+// 					case ACTOR_EVENT_DANTE_AIR_TRICK:
+// 					{
+// 						actorData.airTrickCount = 1;
+
+// 						break;
+// 					}
+// 				}
+
+// 				break;
+// 			}
+// 			case CHAR_VERGIL:
+// 			{
+// 				switch (event)
+// 				{
+// 					case ACTOR_EVENT_VERGIL_AIR_TRICK:
+// 					{
+// 						actorData.airTrickCount = 1;
+
+// 						break;
+// 					}
+// 					case ACTOR_EVENT_VERGIL_TRICK_UP:
+// 					{
+// 						actorData.trickUpCount = 1;
+
+// 						break;
+// 					}
+// 					case ACTOR_EVENT_VERGIL_TRICK_DOWN:
+// 					{
+// 						actorData.trickDownCount = 1;
+
+// 						break;
+// 					}
+// 				}
+
+// 				break;
+// 			}
+// 		}
+// 	}
+// }
+
+
+
+
+void ResetMobilityCounters(ActorData & actorData)
 {
-	actorData.airHikeCount = 0;
-	actorData.skyStarCount = 0;
+	LogFunction(actorData.operator byte8 *());
 
-	if (actorData.state & STATE_ON_FLOOR)
-	{
-		auto & event = actorData.eventData[1].index;
-
-		switch (actorData.character)
-		{
-			case CHAR_DANTE:
-			{
-				switch (event)
-				{
-					case ACTOR_EVENT_DANTE_AIR_TRICK:
-					{
-						actorData.airTrickCount = 1;
-
-						break;
-					}
-				}
-
-				break;
-			}
-			case CHAR_VERGIL:
-			{
-				switch (event)
-				{
-					case ACTOR_EVENT_VERGIL_AIR_TRICK:
-					{
-						actorData.airTrickCount = 1;
-
-						break;
-					}
-					case ACTOR_EVENT_VERGIL_TRICK_UP:
-					{
-						actorData.trickUpCount = 1;
-
-						break;
-					}
-					case ACTOR_EVENT_VERGIL_TRICK_DOWN:
-					{
-						actorData.trickDownCount = 1;
-
-						break;
-					}
-				}
-
-				break;
-			}
-		}
-	}
+	actorData.newAirHikeCount    = 0;
+	actorData.newKickJumpCount   = 0;
+	actorData.newWallHikeCount   = 0;
+	actorData.newDashCount       = 0;
+	actorData.newSkyStarCount    = 0;
+	actorData.newAirTrickCount   = 0;
+	actorData.newTrickUpCount    = 0;
+	actorData.newTrickDownCount  = 0;
+	actorData.newAirStingerCount = 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void InitMobility()
 {
@@ -6030,6 +6069,55 @@ void InitMobility()
 		*/
 	}
 
+	// Kick Jump
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xBA, 0x03, 0x00, 0x00, 0x00, // mov edx,00000003
+		};
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                         // test al,al
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, // je dmc3.exe+1EA3DF
+		};
+		auto func = CreateFunction(KickJump, (appBaseAddr + 0x1EA389), true, true, sizeof(sect0), sizeof(sect1));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect1, sect1, sizeof(sect1));
+		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1EA3DF), 6);
+		KickJumpAddr = func.addr;
+		/*
+		dmc3.exe+1EA384 - BA 03000000       - mov edx,00000003
+		dmc3.exe+1EA389 - C6 83 093F0000 04 - mov byte ptr [rbx+00003F09],04
+		*/
+	}
+
+	// Wall Hike
+	{
+		constexpr byte8 sect0[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+1E0740
+		};
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                         // test al,al
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, // je dmc3.exe+1E64A9
+		};
+		auto func = CreateFunction(WallHike, (appBaseAddr + 0x1E654E), true, true, sizeof(sect0), 0, sizeof(sect2));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		memcpy(func.sect2, sect2, sizeof(sect2));
+		WriteCall(func.sect0, (appBaseAddr + 0x1E0740));
+		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E64A9), 6);
+		WallHikeAddr = func.addr;
+		/*
+		dmc3.exe+1E6549 - E8 F2A1FFFF - call dmc3.exe+1E0740
+		dmc3.exe+1E654E - B0 01       - mov al,01
+		*/
+	}
+
 	auto CreateMobilityFunction = [](void * dest)
 	{
 		constexpr byte8 sect1[] =
@@ -6058,168 +6146,373 @@ void InitMobility()
 	TrickUpAddr        = CreateMobilityFunction(TrickUp       );
 	TrickDownAddr      = CreateMobilityFunction(TrickDown     );
 
-	// Sky Star Reset
+	// Reset Mobility Counters
 	{
 		constexpr byte8 sect0[] =
 		{
-			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+			0x0F, 0xB7, 0x93, 0xC0, 0x00, 0x00, 0x00, // movzx edx,word ptr [rbx+000000C0]
 		};
 		constexpr byte8 sect1[] =
 		{
 			mov_rcx_rbx,
 		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		auto func = CreateFunction(ResetMobilityCounters, (appBaseAddr + 0x1DFEDB), true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		SkyStarResetAddr[0] = func.addr;
+		ResetMobilityCountersAddr[0] = func.addr;
 		/*
-		dmc3.exe+1DFEAE - 88 8B 5D630000 - mov [rbx+0000635D],cl
-		dmc3.exe+1DFEB4 - 89 AB 74630000 - mov [rbx+00006374],ebp
+		dmc3.exe+1DFED4 - 0FB7 93 C0000000 - movzx edx,word ptr [rbx+000000C0]
+		dmc3.exe+1DFEDB - E9 03010000      - jmp dmc3.exe+1DFFE3
 		*/
 	}
 	{
 		constexpr byte8 sect0[] =
 		{
-			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+			0x0F, 0xB7, 0x93, 0xD0, 0x3E, 0x00, 0x00, // movzx edx,word ptr [rbx+00003ED0]
 		};
 		constexpr byte8 sect1[] =
 		{
 			mov_rcx_rbx,
 		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		auto func = CreateFunction(ResetMobilityCounters, (appBaseAddr + 0x1DFFE3), true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		SkyStarResetAddr[1] = func.addr;
+		ResetMobilityCountersAddr[1] = func.addr;
 		/*
-		dmc3.exe+1DFFB6 - 88 8B 5D630000    - mov [rbx+0000635D],cl
-		dmc3.exe+1DFFBC - 40 88 AB AE3F0000 - mov [rbx+00003FAE],bpl
+		dmc3.exe+1DFFDC - 0FB7 93 D03E0000    - movzx edx,word ptr [rbx+00003ED0]
+		dmc3.exe+1DFFE3 - F3 0F10 15 81D51700 - movss xmm2,[dmc3.exe+35D56C]
 		*/
 	}
 	{
 		constexpr byte8 sect0[] =
 		{
-			0x41, 0x88, 0x89, 0x5D, 0x63, 0x00, 0x00, //mov [r9+0000635D],cl
+			0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, // mov eax,[dmc3.exe+58A098]
 		};
 		constexpr byte8 sect1[] =
 		{
 			mov_rcx_r9,
 		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		auto func = CreateFunction(ResetMobilityCounters, (appBaseAddr + 0x1E07DB), true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		SkyStarResetAddr[2] = func.addr;
+		WriteAddress(func.sect0, (appBaseAddr + 0x58A098), 6);
+		ResetMobilityCountersAddr[2] = func.addr;
 		/*
-		dmc3.exe+1E07A2 - 41 88 89 5D630000 - mov [r9+0000635D],cl
-		dmc3.exe+1E07A9 - EB 06             - jmp dmc3.exe+1E07B1
+		dmc3.exe+1E07D5 - 8B 05 BD983A00 - mov eax,[dmc3.exe+58A098]
+		dmc3.exe+1E07DB - BA 1F000000    - mov edx,0000001F
 		*/
 	}
 	{
 		constexpr byte8 sect0[] =
 		{
-			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+			0xF3, 0x0F, 0x10, 0x15, 0x00, 0x00, 0x00, 0x00, // movss xmm2,[dmc3.exe+35D56C]
 		};
 		constexpr byte8 sect1[] =
 		{
 			mov_rcx_rbx,
 		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		auto func = CreateFunction(ResetMobilityCounters, (appBaseAddr + 0x1E0DA2), true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		SkyStarResetAddr[3] = func.addr;
+		WriteAddress(func.sect0, (appBaseAddr + 0x35D56C), 8);
+		ResetMobilityCountersAddr[3] = func.addr;
 		/*
-		dmc3.exe+1E0D81 - 88 8B 5D630000 - mov [rbx+0000635D],cl
-		dmc3.exe+1E0D87 - 39 7B 78       - cmp [rbx+78],edi
+		dmc3.exe+1E0D9A - F3 0F10 15 CAC71700 - movss xmm2,[dmc3.exe+35D56C]
+		dmc3.exe+1E0DA2 - 48 8B CB            - mov rcx,rbx
 		*/
 	}
 	{
 		constexpr byte8 sect0[] =
 		{
-			0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
+			0x41, 0x83, 0x78, 0x78, 0x00,                                     // cmp dword ptr [r8+78],00
+			0x41, 0xC7, 0x80, 0x74, 0x63, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov [r8+00006374],00000000
+			0x41, 0xC6, 0x80, 0xAE, 0x3F, 0x00, 0x00, 0x00,                   // mov byte ptr [r8+00003FAE],00
+			0x74, 0x10,                                                       // je dmc3.exe+1E0FF5
+			0x41, 0xC6, 0x80, 0x13, 0x3F, 0x00, 0x00, 0x00,                   // mov byte ptr [r8+00003F13],00
+			0x41, 0xC6, 0x80, 0x11, 0x3F, 0x00, 0x00, 0x00,                   // mov byte ptr [r8+00003F11],00
 		};
 		constexpr byte8 sect1[] =
 		{
 			mov_rcx_r8,
 		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		auto func = CreateFunction(ResetMobilityCounters, 0, true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		SkyStarResetAddr[4] = func.addr;
+		ResetMobilityCountersAddr[4] = func.addr;
 		/*
-		dmc3.exe+1E0F64 - 41 88 88 5D630000 - mov [r8+0000635D],cl
-		dmc3.exe+1E0F6B - EB 5E             - jmp dmc3.exe+1E0FCB
+		dmc3.exe+1E0FCB - 41 83 78 78 00             - cmp dword ptr [r8+78],00
+		dmc3.exe+1E0FD0 - 41 C7 80 74630000 00000000 - mov [r8+00006374],00000000
+		dmc3.exe+1E0FDB - 41 C6 80 AE3F0000 00       - mov byte ptr [r8+00003FAE],00
+		dmc3.exe+1E0FE3 - 74 10                      - je dmc3.exe+1E0FF5
+		dmc3.exe+1E0FE5 - 41 C6 80 133F0000 00       - mov byte ptr [r8+00003F13],00
+		dmc3.exe+1E0FED - 41 C6 80 113F0000 00       - mov byte ptr [r8+00003F11],00
+		dmc3.exe+1E0FF5 - C3                         - ret
 		*/
 	}
 	{
 		constexpr byte8 sect0[] =
 		{
-			0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
-		};
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_r8,
-		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		SkyStarResetAddr[5] = func.addr;
-		/*
-		dmc3.exe+1E0FBD - 41 88 88 5D630000 - mov [r8+0000635D],cl
-		dmc3.exe+1E0FC4 - 41 FE 88 133F0000 - dec [r8+00003F13]
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+			0xF3, 0x0F, 0x10, 0x15, 0x00, 0x00, 0x00, 0x00, // movss xmm2,[dmc3.exe+35D56C]
 		};
 		constexpr byte8 sect1[] =
 		{
 			mov_rcx_rbx,
 		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+		auto func = CreateFunction(ResetMobilityCounters, (appBaseAddr + 0x1E16F3), true, true, sizeof(sect0), sizeof(sect1));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect1, sect1, sizeof(sect1));
-		SkyStarResetAddr[6] = func.addr;
+		WriteAddress(func.sect0, (appBaseAddr + 0x35D56C), 8);
+		ResetMobilityCountersAddr[5] = func.addr;
 		/*
-		dmc3.exe+1E16D2 - 88 8B 5D630000 - mov [rbx+0000635D],cl
-		dmc3.exe+1E16D8 - 39 7B 78       - cmp [rbx+78],edi
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x88, 0x83, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],al
-		};
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-		auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		SkyStarResetAddr[7] = func.addr;
-		/*
-		dmc3.exe+1E66AC - 88 83 5D630000   - mov [rbx+0000635D],al
-		dmc3.exe+1E66B2 - 0FB6 83 A43F0000 - movzx eax,byte ptr [rbx+00003FA4]
+		dmc3.exe+1E16EB - F3 0F10 15 79BE1700 - movss xmm2,[dmc3.exe+35D56C]
+		dmc3.exe+1E16F3 - 48 8B CB            - mov rcx,rbx
 		*/
 	}
 
-	// Air Trick Vergil Reset Fix
-	{
-		constexpr byte8 sect0[] =
-		{
-			0xC6, 0x83, 0x5E, 0x63, 0x00, 0x00, 0x00, //mov byte ptr [rbx+0000635E],00
-			0xC6, 0x83, 0x10, 0x3E, 0x00, 0x00, 0x03, //mov byte ptr [rbx+00003E10],03
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1F07DD), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		AirTrickVergilResetFixAddr = func.addr;
-		/*
-		dmc3.exe+1F07D6 - C6 83 103E0000 03 - mov byte ptr [rbx+00003E10],03
-		dmc3.exe+1F07DD - E9 3C060000       - jmp dmc3.exe+1F0E1E
-		*/
-	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// // Sky Star Reset
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rbx,
+	// 	};
+	// 	auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	SkyStarResetAddr[0] = func.addr;
+	// 	/*
+	// 	dmc3.exe+1DFEAE - 88 8B 5D630000 - mov [rbx+0000635D],cl
+	// 	dmc3.exe+1DFEB4 - 89 AB 74630000 - mov [rbx+00006374],ebp
+	// 	*/
+	// }
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rbx,
+	// 	};
+	// 	auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	SkyStarResetAddr[1] = func.addr;
+	// 	/*
+	// 	dmc3.exe+1DFFB6 - 88 8B 5D630000    - mov [rbx+0000635D],cl
+	// 	dmc3.exe+1DFFBC - 40 88 AB AE3F0000 - mov [rbx+00003FAE],bpl
+	// 	*/
+	// }
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x41, 0x88, 0x89, 0x5D, 0x63, 0x00, 0x00, //mov [r9+0000635D],cl
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_r9,
+	// 	};
+	// 	auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	SkyStarResetAddr[2] = func.addr;
+	// 	/*
+	// 	dmc3.exe+1E07A2 - 41 88 89 5D630000 - mov [r9+0000635D],cl
+	// 	dmc3.exe+1E07A9 - EB 06             - jmp dmc3.exe+1E07B1
+	// 	*/
+	// }
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rbx,
+	// 	};
+	// 	auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	SkyStarResetAddr[3] = func.addr;
+	// 	/*
+	// 	dmc3.exe+1E0D81 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+	// 	dmc3.exe+1E0D87 - 39 7B 78       - cmp [rbx+78],edi
+	// 	*/
+	// }
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_r8,
+	// 	};
+	// 	auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	SkyStarResetAddr[4] = func.addr;
+	// 	/*
+	// 	dmc3.exe+1E0F64 - 41 88 88 5D630000 - mov [r8+0000635D],cl
+	// 	dmc3.exe+1E0F6B - EB 5E             - jmp dmc3.exe+1E0FCB
+	// 	*/
+	// }
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_r8,
+	// 	};
+	// 	auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	SkyStarResetAddr[5] = func.addr;
+	// 	/*
+	// 	dmc3.exe+1E0FBD - 41 88 88 5D630000 - mov [r8+0000635D],cl
+	// 	dmc3.exe+1E0FC4 - 41 FE 88 133F0000 - dec [r8+00003F13]
+	// 	*/
+	// }
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rbx,
+	// 	};
+	// 	auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	SkyStarResetAddr[6] = func.addr;
+	// 	/*
+	// 	dmc3.exe+1E16D2 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+	// 	dmc3.exe+1E16D8 - 39 7B 78       - cmp [rbx+78],edi
+	// 	*/
+	// }
+
+
+/*
+movzx *,byte ptr [*]
+mov [*+00003F11],*
+movzx *,byte ptr [*+01]
+mov [*+00003F12],*
+movzx *,byte ptr [*+02]
+mov [*+00003F13],*
+*/
+
+
+
+
+
+	// sky star event trash
+
+
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x88, 0x83, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],al
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rbx,
+	// 	};
+	// 	auto func = CreateFunction(SkyStarReset, 0, true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	SkyStarResetAddr[7] = func.addr;
+	// 	/*
+	// 	dmc3.exe+1E66AC - 88 83 5D630000   - mov [rbx+0000635D],al
+	// 	dmc3.exe+1E66B2 - 0FB6 83 A43F0000 - movzx eax,byte ptr [rbx+00003FA4]
+	// 	*/
+	// }
+
+
+
+
+
+
+	// event
+
+	// // Air Trick Vergil Reset Fix
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0xC6, 0x83, 0x5E, 0x63, 0x00, 0x00, 0x00, //mov byte ptr [rbx+0000635E],00
+	// 		0xC6, 0x83, 0x10, 0x3E, 0x00, 0x00, 0x03, //mov byte ptr [rbx+00003E10],03
+	// 	};
+	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1F07DD), false, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	AirTrickVergilResetFixAddr = func.addr;
+	// 	/*
+	// 	dmc3.exe+1F07D6 - C6 83 103E0000 03 - mov byte ptr [rbx+00003E10],03
+	// 	dmc3.exe+1F07DD - E9 3C060000       - jmp dmc3.exe+1F0E1E
+	// 	*/
+	// }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 void ToggleMobility(bool enable)
 {
@@ -6250,23 +6543,56 @@ void ToggleMobility(bool enable)
 		dmc3.exe+1E9B53 - 48 8B CB    - mov rcx,rbx
 		*/
 	}
+
+	// Kick Jump
 	{
-		auto dest = (appBaseAddr + 0x1E0FF6);
+		WriteAddress((appBaseAddr + 0x1EA231), (enable) ? (appBaseAddr + 0x1EA233) : (appBaseAddr + 0x1EA222), 2);
+		/*
+		dmc3.exe+1EA231 - 7E EF          - jle dmc3.exe+1EA222
+		dmc3.exe+1EA233 - 48 89 7C 24 48 - mov [rsp+48],rdi
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1EA384);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 7);
+			WriteJump(dest, KickJumpAddr);
 		}
 		else
 		{
 			constexpr byte8 buffer[] =
 			{
-				0x41, 0xFE, 0x88, 0x11, 0x3F, 0x00, 0x00, // dec [r8+00003F11]
+				0xBA, 0x03, 0x00, 0x00, 0x00, // mov edx,00000003
 			};
 			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
 		/*
-		dmc3.exe+1E0FF6 - 41 FE 88 113F0000    - dec [r8+00003F11]
-		dmc3.exe+1E0FFD - 41 C6 80 123F0000 00 - mov byte ptr [r8+00003F12],00
+		dmc3.exe+1EA384 - BA 03000000       - mov edx,00000003
+		dmc3.exe+1EA389 - C6 83 093F0000 04 - mov byte ptr [rbx+00003F09],04
+		*/
+	}
+
+	// Wall Hike
+	{
+		WriteAddress((appBaseAddr + 0x1E6084), (enable) ? (appBaseAddr + 0x1E608A) : (appBaseAddr + 0x1E62B5), 6);
+		/*
+		dmc3.exe+1E6084 - 0F8E 2B020000     - jng dmc3.exe+1E62B5
+		dmc3.exe+1E608A - 48 8B 83 E83D0000 - mov rax,[rbx+00003DE8]
+		*/
+	}
+	{
+		auto dest = (appBaseAddr + 0x1E6549);
+		if (enable)
+		{
+			WriteJump(dest, WallHikeAddr);
+		}
+		else
+		{
+			WriteCall(dest, (appBaseAddr + 0x1E0740));
+		}
+		/*
+		dmc3.exe+1E6549 - E8 F2A1FFFF - call dmc3.exe+1E0740
+		dmc3.exe+1E654E - B0 01       - mov al,01
 		*/
 	}
 
@@ -6401,285 +6727,463 @@ void ToggleMobility(bool enable)
 		*/
 	}
 
-	// Sky Star Reset
+	// Reset Mobility Counters
 	{
-		auto dest = (appBaseAddr + 0x1DFEAE);
+		auto dest = (appBaseAddr + 0x1DFED4);
 		if (enable)
 		{
-			WriteCall(dest, SkyStarResetAddr[0], 1);
+			WriteJump(dest, ResetMobilityCountersAddr[0], 2);
 		}
 		else
 		{
 			constexpr byte8 buffer[] =
 			{
-				0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+				0x0F, 0xB7, 0x93, 0xC0, 0x00, 0x00, 0x00, // movzx edx,word ptr [rbx+000000C0]
 			};
 			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
 		/*
-		dmc3.exe+1DFEAE - 88 8B 5D630000 - mov [rbx+0000635D],cl
-		dmc3.exe+1DFEB4 - 89 AB 74630000 - mov [rbx+00006374],ebp
+		dmc3.exe+1DFED4 - 0FB7 93 C0000000 - movzx edx,word ptr [rbx+000000C0]
+		dmc3.exe+1DFEDB - E9 03010000      - jmp dmc3.exe+1DFFE3
 		*/
 	}
 	{
-		auto dest = (appBaseAddr + 0x1DFFB6);
+		auto dest = (appBaseAddr + 0x1DFFDC);
 		if (enable)
 		{
-			WriteCall(dest, SkyStarResetAddr[1], 1);
+			WriteJump(dest, ResetMobilityCountersAddr[1], 2);
 		}
 		else
 		{
 			constexpr byte8 buffer[] =
 			{
-				0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+				0x0F, 0xB7, 0x93, 0xD0, 0x3E, 0x00, 0x00, // movzx edx,word ptr [rbx+00003ED0]
 			};
 			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
 		/*
-		dmc3.exe+1DFFB6 - 88 8B 5D630000    - mov [rbx+0000635D],cl
-		dmc3.exe+1DFFBC - 40 88 AB AE3F0000 - mov [rbx+00003FAE],bpl
+		dmc3.exe+1DFFDC - 0FB7 93 D03E0000    - movzx edx,word ptr [rbx+00003ED0]
+		dmc3.exe+1DFFE3 - F3 0F10 15 81D51700 - movss xmm2,[dmc3.exe+35D56C]
 		*/
 	}
 	{
-		auto dest = (appBaseAddr + 0x1E07A2);
+		auto dest = (appBaseAddr + 0x1E07D5);
 		if (enable)
 		{
-			WriteCall(dest, SkyStarResetAddr[2], 2);
+			WriteJump(dest, ResetMobilityCountersAddr[2], 1);
 		}
 		else
 		{
 			constexpr byte8 buffer[] =
 			{
-				0x41, 0x88, 0x89, 0x5D, 0x63, 0x00, 0x00, //mov [r9+0000635D],cl
+				0x8B, 0x05, 0xBD, 0x98, 0x3A, 0x00, // mov eax,[dmc3.exe+58A098]
 			};
 			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
 		/*
-		dmc3.exe+1E07A2 - 41 88 89 5D630000 - mov [r9+0000635D],cl
-		dmc3.exe+1E07A9 - EB 06             - jmp dmc3.exe+1E07B1
+		dmc3.exe+1E07D5 - 8B 05 BD983A00 - mov eax,[dmc3.exe+58A098]
+		dmc3.exe+1E07DB - BA 1F000000    - mov edx,0000001F
 		*/
 	}
 	{
-		auto dest = (appBaseAddr + 0x1E0D81);
+		auto dest = (appBaseAddr + 0x1E0D9A);
 		if (enable)
 		{
-			WriteCall(dest, SkyStarResetAddr[3], 1);
+			WriteJump(dest, ResetMobilityCountersAddr[3], 3);
 		}
 		else
 		{
 			constexpr byte8 buffer[] =
 			{
-				0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+				0xF3, 0x0F, 0x10, 0x15, 0xCA, 0xC7, 0x17, 0x00, // movss xmm2,[dmc3.exe+35D56C]
 			};
 			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
 		/*
-		dmc3.exe+1E0D81 - 88 8B 5D630000 - mov [rbx+0000635D],cl
-		dmc3.exe+1E0D87 - 39 7B 78       - cmp [rbx+78],edi
+		dmc3.exe+1E0D9A - F3 0F10 15 CAC71700 - movss xmm2,[dmc3.exe+35D56C]
+		dmc3.exe+1E0DA2 - 48 8B CB            - mov rcx,rbx
 		*/
 	}
 	{
-		auto dest = (appBaseAddr + 0x1E0F64);
+		auto dest = (appBaseAddr + 0x1E0FCB);
 		if (enable)
 		{
-			WriteCall(dest, SkyStarResetAddr[4], 2);
+			WriteJump(dest, ResetMobilityCountersAddr[4]);
 		}
 		else
 		{
 			constexpr byte8 buffer[] =
 			{
-				0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
+				0x41, 0x83, 0x78, 0x78, 0x00,                                     // cmp dword ptr [r8+78],00
+				0x41, 0xC7, 0x80, 0x74, 0x63, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov [r8+00006374],00000000
+				0x41, 0xC6, 0x80, 0xAE, 0x3F, 0x00, 0x00, 0x00,                   // mov byte ptr [r8+00003FAE],00
+				0x74, 0x10,                                                       // je dmc3.exe+1E0FF5
+				0x41, 0xC6, 0x80, 0x13, 0x3F, 0x00, 0x00, 0x00,                   // mov byte ptr [r8+00003F13],00
+				0x41, 0xC6, 0x80, 0x11, 0x3F, 0x00, 0x00, 0x00,                   // mov byte ptr [r8+00003F11],00
+				0xC3,                                                             // ret
 			};
 			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
 		/*
-		dmc3.exe+1E0F64 - 41 88 88 5D630000 - mov [r8+0000635D],cl
-		dmc3.exe+1E0F6B - EB 5E             - jmp dmc3.exe+1E0FCB
+		dmc3.exe+1E0FCB - 41 83 78 78 00             - cmp dword ptr [r8+78],00
+		dmc3.exe+1E0FD0 - 41 C7 80 74630000 00000000 - mov [r8+00006374],00000000
+		dmc3.exe+1E0FDB - 41 C6 80 AE3F0000 00       - mov byte ptr [r8+00003FAE],00
+		dmc3.exe+1E0FE3 - 74 10                      - je dmc3.exe+1E0FF5
+		dmc3.exe+1E0FE5 - 41 C6 80 133F0000 00       - mov byte ptr [r8+00003F13],00
+		dmc3.exe+1E0FED - 41 C6 80 113F0000 00       - mov byte ptr [r8+00003F11],00
+		dmc3.exe+1E0FF5 - C3                         - ret
 		*/
 	}
 	{
-		auto dest = (appBaseAddr + 0x1E0FBD);
+		auto dest = (appBaseAddr + 0x1E16EB);
 		if (enable)
 		{
-			WriteCall(dest, SkyStarResetAddr[5], 2);
+			WriteJump(dest, ResetMobilityCountersAddr[5], 3);
 		}
 		else
 		{
 			constexpr byte8 buffer[] =
 			{
-				0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
+				0xF3, 0x0F, 0x10, 0x15, 0x79, 0xBE, 0x17, 0x00, // movss xmm2,[dmc3.exe+35D56C]
 			};
 			vp_memcpy(dest, buffer, sizeof(buffer));
 		}
 		/*
-		dmc3.exe+1E0FBD - 41 88 88 5D630000 - mov [r8+0000635D],cl
-		dmc3.exe+1E0FC4 - 41 FE 88 133F0000 - dec [r8+00003F13]
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1E16D2);
-		if (enable)
-		{
-			WriteCall(dest, SkyStarResetAddr[6], 1);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1E16D2 - 88 8B 5D630000 - mov [rbx+0000635D],cl
-		dmc3.exe+1E16D8 - 39 7B 78       - cmp [rbx+78],edi
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1E66AC);
-		if (enable)
-		{
-			WriteCall(dest, SkyStarResetAddr[7], 1);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x88, 0x83, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],al
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1E66AC - 88 83 5D630000   - mov [rbx+0000635D],al
-		dmc3.exe+1E66B2 - 0FB6 83 A43F0000 - movzx eax,byte ptr [rbx+00003FA4]
+		dmc3.exe+1E16EB - F3 0F10 15 79BE1700 - movss xmm2,[dmc3.exe+35D56C]
+		dmc3.exe+1E16F3 - 48 8B CB            - mov rcx,rbx
 		*/
 	}
 
-	// Air Trick, Trick Up Reset
-	Write<uint16>((appBaseAddr + 0x1DFEA5 + 7), (enable) ? 0 : 257); // dmc3.exe+1DFEA5 - 66 C7 83 5E630000 0101 - mov word ptr [rbx+0000635E],0101
-	Write<uint16>((appBaseAddr + 0x1DFFA6 + 7), (enable) ? 0 : 257); // dmc3.exe+1DFFA6 - 66 C7 83 5E630000 0101 - mov word ptr [rbx+0000635E],0101
-	Write<uint16>((appBaseAddr + 0x1E0790 + 8), (enable) ? 0 : 257); // dmc3.exe+1E0790 - 66 41 C7 81 5E630000 0101 - mov word ptr [r9+0000635E],0101
-	Write<uint16>((appBaseAddr + 0x1E0D64 + 7), (enable) ? 0 : 257); // dmc3.exe+1E0D64 - 66 C7 83 5E630000 0101 - mov word ptr [rbx+0000635E],0101
-	Write<uint16>((appBaseAddr + 0x1E0F52 + 8), (enable) ? 0 : 257); // dmc3.exe+1E0F52 - 66 41 C7 80 5E630000 0101 - mov word ptr [r8+0000635E],0101
-	Write<uint16>((appBaseAddr + 0x1E0FAB + 8), (enable) ? 0 : 257); // dmc3.exe+1E0FAB - 66 41 C7 80 5E630000 0101 - mov word ptr [r8+0000635E],0101
-	Write<uint16>((appBaseAddr + 0x1E16B5 + 7), (enable) ? 0 : 257); // dmc3.exe+1E16B5 - 66 C7 83 5E630000 0101 - mov word ptr [rbx+0000635E],0101
 
-	// Air Trick Vergil Reset Fix
-	{
-		auto dest = (appBaseAddr + 0x1F07D6);
-		if (enable)
-		{
-			WriteJump(dest, AirTrickVergilResetFixAddr, 2);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0xC6, 0x83, 0x10, 0x3E, 0x00, 0x00, 0x03, //mov byte ptr [rbx+00003E10],03
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1F07D6 - C6 83 103E0000 03 - mov byte ptr [rbx+00003E10],03
-		dmc3.exe+1F07DD - E9 3C060000       - jmp dmc3.exe+1F0E1E
-		*/
-	}
 
-	// Trick Up, Trick Down Reset
-	Write<uint16>((appBaseAddr + 0x1F07CD + 7), (enable) ? 0 : 257); // dmc3.exe+1F07CD - 66 C7 83 5F630000 0101 - mov word ptr [rbx+0000635F],0101
 
-	// Trick Up Reset
-	Write<uint8>((appBaseAddr + 0x1DFE9E + 6), (enable) ? 0 : 1); // dmc3.exe+1DFE9E - C6 83 60630000 01 - mov byte ptr [rbx+00006360],01
-	Write<uint8>((appBaseAddr + 0x1DFFAF + 6), (enable) ? 0 : 1); // dmc3.exe+1DFFAF - C6 83 60630000 01 - mov byte ptr [rbx+00006360],01
-	Write<uint8>((appBaseAddr + 0x1E079A + 7), (enable) ? 0 : 1); // dmc3.exe+1E079A - 41 C6 81 60630000 01 - mov byte ptr [r9+00006360],01
-	Write<uint8>((appBaseAddr + 0x1E0D6D + 6), (enable) ? 0 : 1); // dmc3.exe+1E0D6D - C6 83 60630000 01 - mov byte ptr [rbx+00006360],01
-	Write<uint8>((appBaseAddr + 0x1E0F5C + 7), (enable) ? 0 : 1); // dmc3.exe+1E0F5C - 41 C6 80 60630000 01 - mov byte ptr [r8+00006360],01
-	Write<uint8>((appBaseAddr + 0x1E0FB5 + 7), (enable) ? 0 : 1); // dmc3.exe+1E0FB5 - 41 C6 80 60630000 01 - mov byte ptr [r8+00006360],01
-	Write<uint8>((appBaseAddr + 0x1E16BE + 6), (enable) ? 0 : 1); // dmc3.exe+1E16BE - C6 83 60630000 01 - mov byte ptr [rbx+00006360],01
 
-	// Air Trick Dante Floor
-	{
-		auto dest = (appBaseAddr + 0x1F2228);
-		if (enable)
-		{
-			vp_memset(dest, 0x90, 7);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0xC6, 0x87, 0x5E, 0x63, 0x00, 0x00, 0x00, //mov byte ptr [rdi+0000635E],00
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1F2228 - C6 87 5E630000 00 - mov byte ptr [rdi+0000635E],00
-		dmc3.exe+1F222F - 88 87 2C3E0000    - mov [rdi+00003E2C],al
-		*/
-	}
 
-	// Air Trick Vergil Floor
-	{
-		auto dest = (appBaseAddr + 0x1F0C92);
-		if (enable)
-		{
-			vp_memset(dest, 0x90, 7);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x40, 0x88, 0xBB, 0x5E, 0x63, 0x00, 0x00, //mov [rbx+0000635E],dil
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1F0C92 - 40 88 BB 5E630000 - mov [rbx+0000635E],dil
-		dmc3.exe+1F0C99 - 83 BB 6C3E0000 00 - cmp dword ptr [rbx+00003E6C],00
-		*/
-	}
 
-	// Trick Up Floor
-	{
-		auto dest = (appBaseAddr + 0x1F0B2A);
-		if (enable)
-		{
-			vp_memset(dest, 0x90, 7);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x40, 0x88, 0xBB, 0x5F, 0x63, 0x00, 0x00, //mov [rbx+0000635F],dil
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1F0B2A - 40 88 BB 5F630000 - mov [rbx+0000635F],dil
-		dmc3.exe+1F0B31 - E9 63010000       - jmp dmc3.exe+1F0C99
-		*/
-	}
 
-	// Trick Down Floor
-	{
-		auto dest = (appBaseAddr + 0x1F0A33);
-		if (enable)
-		{
-			vp_memset(dest, 0x90, 7);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x40, 0x88, 0xBB, 0x60, 0x63, 0x00, 0x00, //mov [rbx+00006360],dil
-			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
-		}
-		/*
-		dmc3.exe+1F0A33 - 40 88 BB 60630000 - mov [rbx+00006360],dil
-		dmc3.exe+1F0A3A - E9 5A020000       - jmp dmc3.exe+1F0C99
-		*/
-	}
+
+
+
+
+
+
+
+
+	// {
+	// 	auto dest = (appBaseAddr + 0x1E0FF6);
+	// 	if (enable)
+	// 	{
+	// 		vp_memset(dest, 0x90, 15);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x41, 0xFE, 0x88, 0x11, 0x3F, 0x00, 0x00,       // dec [r8+00003F11]
+	// 			0x41, 0xC6, 0x80, 0x12, 0x3F, 0x00, 0x00, 0x00, // mov byte ptr [r8+00003F12],00
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1E0FF6 - 41 FE 88 113F0000    - dec [r8+00003F11]
+	// 	dmc3.exe+1E0FFD - 41 C6 80 123F0000 00 - mov byte ptr [r8+00003F12],00
+	// 	dmc3.exe+1E1005 - EB C4                - jmp dmc3.exe+1E0FCB
+	// 	*/
+	// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// // Sky Star Reset
+	// {
+	// 	auto dest = (appBaseAddr + 0x1DFEAE);
+	// 	if (enable)
+	// 	{
+	// 		WriteCall(dest, SkyStarResetAddr[0], 1);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1DFEAE - 88 8B 5D630000 - mov [rbx+0000635D],cl
+	// 	dmc3.exe+1DFEB4 - 89 AB 74630000 - mov [rbx+00006374],ebp
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1DFFB6);
+	// 	if (enable)
+	// 	{
+	// 		WriteCall(dest, SkyStarResetAddr[1], 1);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1DFFB6 - 88 8B 5D630000    - mov [rbx+0000635D],cl
+	// 	dmc3.exe+1DFFBC - 40 88 AB AE3F0000 - mov [rbx+00003FAE],bpl
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1E07A2);
+	// 	if (enable)
+	// 	{
+	// 		WriteCall(dest, SkyStarResetAddr[2], 2);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x41, 0x88, 0x89, 0x5D, 0x63, 0x00, 0x00, //mov [r9+0000635D],cl
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1E07A2 - 41 88 89 5D630000 - mov [r9+0000635D],cl
+	// 	dmc3.exe+1E07A9 - EB 06             - jmp dmc3.exe+1E07B1
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1E0D81);
+	// 	if (enable)
+	// 	{
+	// 		WriteCall(dest, SkyStarResetAddr[3], 1);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1E0D81 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+	// 	dmc3.exe+1E0D87 - 39 7B 78       - cmp [rbx+78],edi
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1E0F64);
+	// 	if (enable)
+	// 	{
+	// 		WriteCall(dest, SkyStarResetAddr[4], 2);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1E0F64 - 41 88 88 5D630000 - mov [r8+0000635D],cl
+	// 	dmc3.exe+1E0F6B - EB 5E             - jmp dmc3.exe+1E0FCB
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1E0FBD);
+	// 	if (enable)
+	// 	{
+	// 		WriteCall(dest, SkyStarResetAddr[5], 2);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x41, 0x88, 0x88, 0x5D, 0x63, 0x00, 0x00, //mov [r8+0000635D],cl
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1E0FBD - 41 88 88 5D630000 - mov [r8+0000635D],cl
+	// 	dmc3.exe+1E0FC4 - 41 FE 88 133F0000 - dec [r8+00003F13]
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1E16D2);
+	// 	if (enable)
+	// 	{
+	// 		WriteCall(dest, SkyStarResetAddr[6], 1);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x88, 0x8B, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],cl
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1E16D2 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+	// 	dmc3.exe+1E16D8 - 39 7B 78       - cmp [rbx+78],edi
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1E66AC);
+	// 	if (enable)
+	// 	{
+	// 		WriteCall(dest, SkyStarResetAddr[7], 1);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x88, 0x83, 0x5D, 0x63, 0x00, 0x00, //mov [rbx+0000635D],al
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1E66AC - 88 83 5D630000   - mov [rbx+0000635D],al
+	// 	dmc3.exe+1E66B2 - 0FB6 83 A43F0000 - movzx eax,byte ptr [rbx+00003FA4]
+	// 	*/
+	// }
+
+	// // Air Trick, Trick Up Reset
+	// Write<uint16>((appBaseAddr + 0x1DFEA5 + 7), (enable) ? 0 : 257); // dmc3.exe+1DFEA5 - 66 C7 83 5E630000 0101 - mov word ptr [rbx+0000635E],0101
+	// Write<uint16>((appBaseAddr + 0x1DFFA6 + 7), (enable) ? 0 : 257); // dmc3.exe+1DFFA6 - 66 C7 83 5E630000 0101 - mov word ptr [rbx+0000635E],0101
+	// Write<uint16>((appBaseAddr + 0x1E0790 + 8), (enable) ? 0 : 257); // dmc3.exe+1E0790 - 66 41 C7 81 5E630000 0101 - mov word ptr [r9+0000635E],0101
+	// Write<uint16>((appBaseAddr + 0x1E0D64 + 7), (enable) ? 0 : 257); // dmc3.exe+1E0D64 - 66 C7 83 5E630000 0101 - mov word ptr [rbx+0000635E],0101
+	// Write<uint16>((appBaseAddr + 0x1E0F52 + 8), (enable) ? 0 : 257); // dmc3.exe+1E0F52 - 66 41 C7 80 5E630000 0101 - mov word ptr [r8+0000635E],0101
+	// Write<uint16>((appBaseAddr + 0x1E0FAB + 8), (enable) ? 0 : 257); // dmc3.exe+1E0FAB - 66 41 C7 80 5E630000 0101 - mov word ptr [r8+0000635E],0101
+	// Write<uint16>((appBaseAddr + 0x1E16B5 + 7), (enable) ? 0 : 257); // dmc3.exe+1E16B5 - 66 C7 83 5E630000 0101 - mov word ptr [rbx+0000635E],0101
+
+	// // Air Trick Vergil Reset Fix
+	// {
+	// 	auto dest = (appBaseAddr + 0x1F07D6);
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(dest, AirTrickVergilResetFixAddr, 2);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0xC6, 0x83, 0x10, 0x3E, 0x00, 0x00, 0x03, //mov byte ptr [rbx+00003E10],03
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1F07D6 - C6 83 103E0000 03 - mov byte ptr [rbx+00003E10],03
+	// 	dmc3.exe+1F07DD - E9 3C060000       - jmp dmc3.exe+1F0E1E
+	// 	*/
+	// }
+
+	// // Trick Up, Trick Down Reset
+	// Write<uint16>((appBaseAddr + 0x1F07CD + 7), (enable) ? 0 : 257); // dmc3.exe+1F07CD - 66 C7 83 5F630000 0101 - mov word ptr [rbx+0000635F],0101
+
+	// // Trick Up Reset
+	// Write<uint8>((appBaseAddr + 0x1DFE9E + 6), (enable) ? 0 : 1); // dmc3.exe+1DFE9E - C6 83 60630000 01 - mov byte ptr [rbx+00006360],01
+	// Write<uint8>((appBaseAddr + 0x1DFFAF + 6), (enable) ? 0 : 1); // dmc3.exe+1DFFAF - C6 83 60630000 01 - mov byte ptr [rbx+00006360],01
+	// Write<uint8>((appBaseAddr + 0x1E079A + 7), (enable) ? 0 : 1); // dmc3.exe+1E079A - 41 C6 81 60630000 01 - mov byte ptr [r9+00006360],01
+	// Write<uint8>((appBaseAddr + 0x1E0D6D + 6), (enable) ? 0 : 1); // dmc3.exe+1E0D6D - C6 83 60630000 01 - mov byte ptr [rbx+00006360],01
+	// Write<uint8>((appBaseAddr + 0x1E0F5C + 7), (enable) ? 0 : 1); // dmc3.exe+1E0F5C - 41 C6 80 60630000 01 - mov byte ptr [r8+00006360],01
+	// Write<uint8>((appBaseAddr + 0x1E0FB5 + 7), (enable) ? 0 : 1); // dmc3.exe+1E0FB5 - 41 C6 80 60630000 01 - mov byte ptr [r8+00006360],01
+	// Write<uint8>((appBaseAddr + 0x1E16BE + 6), (enable) ? 0 : 1); // dmc3.exe+1E16BE - C6 83 60630000 01 - mov byte ptr [rbx+00006360],01
+
+	// // Air Trick Dante Floor
+	// {
+	// 	auto dest = (appBaseAddr + 0x1F2228);
+	// 	if (enable)
+	// 	{
+	// 		vp_memset(dest, 0x90, 7);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0xC6, 0x87, 0x5E, 0x63, 0x00, 0x00, 0x00, //mov byte ptr [rdi+0000635E],00
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1F2228 - C6 87 5E630000 00 - mov byte ptr [rdi+0000635E],00
+	// 	dmc3.exe+1F222F - 88 87 2C3E0000    - mov [rdi+00003E2C],al
+	// 	*/
+	// }
+
+	// // Air Trick Vergil Floor
+	// {
+	// 	auto dest = (appBaseAddr + 0x1F0C92);
+	// 	if (enable)
+	// 	{
+	// 		vp_memset(dest, 0x90, 7);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x40, 0x88, 0xBB, 0x5E, 0x63, 0x00, 0x00, //mov [rbx+0000635E],dil
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1F0C92 - 40 88 BB 5E630000 - mov [rbx+0000635E],dil
+	// 	dmc3.exe+1F0C99 - 83 BB 6C3E0000 00 - cmp dword ptr [rbx+00003E6C],00
+	// 	*/
+	// }
+
+	// // Trick Up Floor
+	// {
+	// 	auto dest = (appBaseAddr + 0x1F0B2A);
+	// 	if (enable)
+	// 	{
+	// 		vp_memset(dest, 0x90, 7);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x40, 0x88, 0xBB, 0x5F, 0x63, 0x00, 0x00, //mov [rbx+0000635F],dil
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1F0B2A - 40 88 BB 5F630000 - mov [rbx+0000635F],dil
+	// 	dmc3.exe+1F0B31 - E9 63010000       - jmp dmc3.exe+1F0C99
+	// 	*/
+	// }
+
+	// // Trick Down Floor
+	// {
+	// 	auto dest = (appBaseAddr + 0x1F0A33);
+	// 	if (enable)
+	// 	{
+	// 		vp_memset(dest, 0x90, 7);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x40, 0x88, 0xBB, 0x60, 0x63, 0x00, 0x00, //mov [rbx+00006360],dil
+	// 		};
+	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1F0A33 - 40 88 BB 60630000 - mov [rbx+00006360],dil
+	// 	dmc3.exe+1F0A3A - E9 5A020000       - jmp dmc3.exe+1F0C99
+	// 	*/
+	// }
 }
 
 

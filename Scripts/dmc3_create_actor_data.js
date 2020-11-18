@@ -149,9 +149,23 @@ var items =
 
 	[ ""                                    , "uint16"                  , 0x3ED2                           ],
 	[ "cameraDirection"                     , "uint16"                  , 0x3ED8                           ],
+
+
+
+
+
+	
+
+
 	[ "airHikeCount"                        , "uint8"                   , 0x3F11                           ],
 	[ "kickJumpCount"                       , "uint8"                   , 0x3F12                           ],
 	[ "wallHikeCount"                       , "uint8"                   , 0x3F13                           ],
+	[ "enableAirRaid"                       , "bool"                    , 0x3F14                           ],
+
+
+
+
+
 	[ ""                                    , "bool"                    , 0x3F19                           ],
 	[ "action"                              , "uint8"                   , 0x3FA4                           ],
 	[ "lastAction"                          , "uint8"                   , 0x3FA5                           ],
@@ -171,6 +185,7 @@ var items =
 	
 
 	[ "style"                               , "uint32"                  , 0x6338                           ],
+	[ "wallHikeDirection"                               , "uint32"                  , 0x633C                           ],
 
 
 	[ ""                      , "uint32"                 , 0x6340                           ],

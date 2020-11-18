@@ -163,6 +163,8 @@ function GetTypeSize(type)
 		}
 	}
 
+	console.log("Size 0");
+
 	return 0;
 }
 
@@ -410,22 +412,22 @@ function Tag_Init
 	if (Tag_start < 0)
 	{
 		console.log("Start tag not found.");
-	
+
 		return false;
 	}
 	else if (Tag_end < 0)
 	{
 		console.log("End tag not found.");
-	
+
 		return false;
 	}
 	else if (Tag_end < Tag_start)
 	{
 		console.log("End tag appears before start tag.");
-	
+
 		return false;
 	}
-	
+
 	console.log("Tag_start " + (Tag_start + 1));
 	console.log("Tag_end   " + (Tag_end   + 1));
 
@@ -463,48 +465,33 @@ function CreateStruct
 {
 	c += "struct " + structName + NEW_LINE;
 	c += "{" + NEW_LINE;
-	
+
 	pos = 0;
-	
+
 	for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
 	{
-		var name = items[itemIndex][0];
-		var type = items[itemIndex][1];
-		var off  = items[itemIndex][2];
-	
-		if ((name == "") || (name.substring(0, 1) == "["))
+		var item = items[itemIndex];
+
+		var name = item[0];
+		var type = item[1];
+		var off  = item[2];
+
+		if
+		(
+			(name == "") ||
+			(name.substring(0, 1) == "[")
+		)
 		{
 			name = "var_" + off.toString(16).toUpperCase();
 		}
-		
-		var lastPos = pos;
-		
-		if (off != undefined)
+
+		var diff = (off - pos);
+		if (diff)
 		{
-			var diff = (off - pos);
-			if (diff)
-			{
-				c += "\t_(" + diff.toString() + ");" + NEW_LINE;
-			}
-			pos = off;
+			c += "\t_(" + diff.toString() + ");" + NEW_LINE;
 		}
-		else
-		{
-			if (type.match(/\*/))
-			{
-				Align(8);
-			}
-			else if (name.match(/\[/))
-			{
-				Align(4);
-			}
-			var diff = (pos - lastPos);
-			if (diff)
-			{
-				c += "\t_(" + diff.toString() + ");" + NEW_LINE;
-			}
-		}
-	
+		pos = off;
+
 		var posString = "";
 		if (pos >= 10)
 		{
@@ -514,12 +501,12 @@ function CreateStruct
 		{
 			posString = pos.toString();
 		}
-	
+
 		c += "\t" + type + " " + name + "; // " + posString + NEW_LINE;
 		c_assert += "static_assert(offsetof(" + structName + ", " + name.split("[")[0] + ") == " + posString + ");" + NEW_LINE;
-	
+
 		var size = GetTypeSize(type);
-		
+
 		{
 			var match = name.match(/\[\d+?\]/g);
 			if (match)
@@ -531,29 +518,29 @@ function CreateStruct
 				}
 			}
 		}
-		
+
 		pos += size;
 	}
-	
-	var off = structSize;
-	
-	if (pos < off)
+
+	if (pos < structSize)
 	{
-		var diff = (off - pos);
+		var diff = (structSize - pos);
 		if (diff)
 		{
 			c += "\t_(" + diff.toString() + ");" + NEW_LINE;
 		}
-		pos = off;
+		pos = structSize;
 	}
-	
+
 	c += "};" + NEW_LINE;
-	
+
 	c += NEW_LINE;
-	
-	c_assert += "static_assert(sizeof(" + structName + ") == " + structSize.toString() + ");" + NEW_LINE;
-	
+
+	c_assert += "static_assert(sizeof(" + structName + ") == " + pos.toString() + ");" + NEW_LINE;
+
 	c += c_assert;
-	
+
+	c_assert = "";
+
 	c += NEW_LINE;
 }

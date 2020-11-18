@@ -521,15 +521,34 @@ void Overlay2()
 
 
 
-
 void MissionOverlay()
 {
+	if (!activeConfig.MissionOverlay.enable)
+	{
+		return;
+	}
+
 	static bool run = false;
 	if (!run)
 	{
 		run = true;
-		ImGui::SetNextWindowSize(ImVec2((300 + 16), (300 + 16)));
-		ImGui::SetNextWindowPos(ImVec2(300, 300));
+
+		ImGui::SetNextWindowSize
+		(
+			ImVec2
+			(
+				(300.0f + 16.0f),
+				(300.0f + 16.0f)
+			)
+		);
+		ImGui::SetNextWindowPos
+		(
+			ImVec2
+			(
+				static_cast<float>(activeConfig.MissionOverlay.x),
+				static_cast<float>(activeConfig.MissionOverlay.y)
+			)
+		);
 	}
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
@@ -540,14 +559,39 @@ void MissionOverlay()
 		ImGui::Begin
 		(
 			"GUI_MissionOverlay",
-			&Overlay_enable,
+			&activeConfig.MissionOverlay.enable,
 			ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize
 		)
 	)
 	{
+		{
+			auto pos = ImGui::GetWindowPos();
+
+			auto x = static_cast<uint32>(pos.x);
+			auto y = static_cast<uint32>(pos.y);
+
+			if
+			(
+				(activeConfig.MissionOverlay.x != x) ||
+				(activeConfig.MissionOverlay.y != y)
+			)
+			{
+				activeConfig.MissionOverlay.x = queuedConfig.MissionOverlay.x = x;
+				activeConfig.MissionOverlay.y = queuedConfig.MissionOverlay.y = y;
+
+				GUI_save = true;
+			}
+		}
+
 		auto & io = ImGui::GetIO();
+
 		ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_16]);
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+
+		ImGui::PushStyleColor
+		(
+			ImGuiCol_Text,
+			*reinterpret_cast<ImVec4 *>(&activeConfig.MissionOverlay.color)
+		);
 
 		ImGui::Text("Mission");
 
@@ -555,9 +599,25 @@ void MissionOverlay()
 		{
 			IntroduceMissionData(return);
 
-			auto time = (static_cast<float>(missionData.time) / 60.0f);
+			auto timeData = TimeData
+			(
+				static_cast<float>(missionData.frameCount),
+				60.0f
+			);
 
-			ImGui::Text("Time           %.2f", time);
+
+
+
+
+
+			ImGui::Text
+			(
+				"Time           %02u:%02u:%02u.%03u",
+				timeData.hours,
+				timeData.minutes,
+				timeData.seconds,
+				timeData.milliseconds
+			);
 			ImGui::Text("Damage         %u", missionData.damage);
 			ImGui::Text("Orbs Collected %u", missionData.orbsCollected);
 			ImGui::Text("Items Used     %u", missionData.itemsUsed);
@@ -572,7 +632,7 @@ void MissionOverlay()
 			IntroduceActorData(actorBaseAddr, actorData, pool[3], return);
 
 			auto stylePoints = (actorData.styleData.quotient * 100.0f);
-			//ImGui::Text("Orbs Collected %u", missionData.orbsCollected);
+
 			ImGui::Text("Style Points   %.2f", stylePoints);
 		}();
 
@@ -2696,7 +2756,7 @@ void Speed()
 			queuedConfig.Speed.main,
 			defaultConfig.Speed.main,
 			0.1f,
-			"%.2f",
+			"%g",
 			ImGuiInputTextFlags_EnterReturnsTrue
 		);
 		GUI_InputDefault2Speed
@@ -2706,7 +2766,7 @@ void Speed()
 			queuedConfig.Speed.turbo,
 			defaultConfig.Speed.turbo,
 			0.1f,
-			"%.2f",
+			"%g",
 			ImGuiInputTextFlags_EnterReturnsTrue
 		);
 		GUI_InputDefault2Speed
@@ -2716,7 +2776,7 @@ void Speed()
 			queuedConfig.Speed.enemy,
 			defaultConfig.Speed.enemy,
 			0.1f,
-			"%.2f",
+			"%g",
 			ImGuiInputTextFlags_EnterReturnsTrue
 		);
 		GUI_SectionEnd();
@@ -2738,7 +2798,7 @@ void Speed()
 			queuedConfig.Speed.human,
 			defaultConfig.Speed.human,
 			0.1f,
-			"%.2f",
+			"%g",
 			ImGuiInputTextFlags_EnterReturnsTrue
 		);
 		ImGui::Text("Devil Dante");
@@ -2751,7 +2811,7 @@ void Speed()
 				queuedConfig.Speed.devilDante[index],
 				defaultConfig.Speed.devilDante[index],
 				0.1f,
-				"%.2f",
+				"%g",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			);
 		}
@@ -2765,7 +2825,7 @@ void Speed()
 				queuedConfig.Speed.devilVergil[index],
 				defaultConfig.Speed.devilVergil[index],
 				0.1f,
-				"%.2f",
+				"%g",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			);
 		}
@@ -2780,7 +2840,7 @@ void Speed()
 			queuedConfig.Speed.quicksilverActor,
 			defaultConfig.Speed.quicksilverActor,
 			0.1f,
-			"%.2f",
+			"%g",
 			ImGuiInputTextFlags_EnterReturnsTrue
 		);
 		GUI_InputDefault2Speed
@@ -2790,7 +2850,7 @@ void Speed()
 			queuedConfig.Speed.quicksilverEnemy,
 			defaultConfig.Speed.quicksilverEnemy,
 			0.1f,
-			"%.2f",
+			"%g",
 			ImGuiInputTextFlags_EnterReturnsTrue
 		);
 
@@ -3109,6 +3169,61 @@ void Training()
 			Training_ToggleDisableTimer(activeConfig.Training.disableTimer);
 		}
 
+		GUI_SectionEnd();
+		ImGui::Text("");
+
+
+		GUI_SectionStart("Mission Overlay");
+
+		GUI_Checkbox2
+		(
+			"Enable",
+			activeConfig.MissionOverlay.enable,
+			queuedConfig.MissionOverlay.enable
+		);
+		ImGui::Text("");
+
+		if (GUI_ResetButton())
+		{
+			memcpy
+			(
+				&queuedConfig.MissionOverlay,
+				&defaultConfig.MissionOverlay,
+				sizeof(queuedConfig.MissionOverlay)
+			);
+			memcpy
+			(
+				&activeConfig.MissionOverlay,
+				&queuedConfig.MissionOverlay,
+				sizeof(activeConfig.MissionOverlay)
+			);
+
+			ImGui::SetWindowPos
+			(
+				"GUI_MissionOverlay",
+				ImVec2
+				(
+					static_cast<float>(activeConfig.MissionOverlay.x),
+					static_cast<float>(activeConfig.MissionOverlay.y)
+				)
+			);
+		}
+		ImGui::Text("");
+
+		bool condition = !activeConfig.MissionOverlay.enable;
+
+		GUI_PushDisable(condition);
+
+		GUI_Color2
+		(
+			"Color",
+			activeConfig.MissionOverlay.color,
+			queuedConfig.MissionOverlay.color,
+			ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaPreview
+		);
+
+		GUI_PopDisable(condition);
+
 		ImGui::Text("");
 	}
 }
@@ -3352,7 +3467,14 @@ export void GUI_Render()
 		Overlay2();
 	}
 
+
+
+
+
+
 	MissionOverlay();
+
+
 
 	if (g_pause)
 	{

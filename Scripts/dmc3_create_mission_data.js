@@ -5,7 +5,7 @@ eval(fs.readFileSync("dmc3_core.js", "utf8"));
 var items =
 [
 	[ "orbs"         , "uint32", 0x38 ],
-	[ "time"         , "uint32", 0xA8 ],
+	[ "frameCount"   , "uint32", 0xA8 ],
 	[ "damage"       , "uint32", 0xAC ],
 	[ "orbsCollected", "uint32", 0xB0 ],
 	[ "itemsUsed"    , "uint32", 0xB4 ],

@@ -9,7 +9,7 @@ export module Core_GUI;
 
 export int     GUI_id          = 0;
 export bool    GUI_save        = false;
-export float32 GUI_saveTimeout = 0;
+export float GUI_saveTimeout = 0;
 
 export inline void GUI_PushId()
 {
@@ -103,7 +103,7 @@ bool GUI_Input
 		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16    :
 		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32    :
 		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64    :
-		(TypeMatch<T, float32>::value) ? ImGuiDataType_Float  :
+		(TypeMatch<T, float>::value) ? ImGuiDataType_Float  :
 		(TypeMatch<T, double >::value) ? ImGuiDataType_Double :
 		0,
 		&var,
@@ -182,7 +182,7 @@ bool GUI_InputDefault
 		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16    :
 		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32    :
 		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64    :
-		(TypeMatch<T, float32>::value) ? ImGuiDataType_Float  :
+		(TypeMatch<T, float>::value) ? ImGuiDataType_Float  :
 		(TypeMatch<T, double >::value) ? ImGuiDataType_Double :
 		0,
 		&var,
@@ -267,7 +267,7 @@ bool GUI_Slider
 		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16    :
 		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32    :
 		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64    :
-		(TypeMatch<T, float32>::value) ? ImGuiDataType_Float  :
+		(TypeMatch<T, float>::value) ? ImGuiDataType_Float  :
 		(TypeMatch<T, double >::value) ? ImGuiDataType_Double :
 		0,
 		&var,
@@ -534,7 +534,7 @@ export bool GUI_ColorEdit4
 (
 	const char * label,
 	uint8(&var)[4],
-	float32(&var2)[4],
+	float(&var2)[4],
 	ImGuiColorEditFlags flags = 0
 )
 {
@@ -578,7 +578,7 @@ export bool GUI_Color
 (
 	const char * label,
 	uint8(&var)[4],
-	float32(&var2)[4]
+	float(&var2)[4]
 )
 {
 	return GUI_ColorEdit4(label, var, var2, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaPreview);
@@ -589,7 +589,7 @@ export bool GUI_Color2
 	const char * label,
 	uint8(&var)[4],
 	uint8(&var2)[4],
-	float32(&var3)[4]
+	float(&var3)[4]
 )
 {
 	auto update = GUI_Color
@@ -617,7 +617,7 @@ bool GUI_ColorPalette
 (
 	const char * label,
 	uint8(&vars)[count][4],
-	float32(&vars2)[count][4]
+	float(&vars2)[count][4]
 )
 {
 	bool update = false;
@@ -644,7 +644,7 @@ bool GUI_ColorPalette2
 	const char * label,
 	uint8(&vars)[count][4],
 	uint8(&vars2)[count][4],
-	float32(&vars3)[count][4]
+	float(&vars3)[count][4]
 )
 {
 	auto update = GUI_ColorPalette
@@ -691,6 +691,93 @@ bool GUI_RadioButton
 
 	return update;
 }
+
+
+
+
+
+
+export bool GUI_Color
+(
+	const char * label,
+	float(&var)[4],
+	ImGuiColorEditFlags flags = 0
+)
+{
+	GUI_PushId();
+
+	auto update = ImGui::ColorEdit4
+	(
+		label,
+		var,
+		flags
+	);
+
+	GUI_PopId();
+
+	if (update)
+	{
+		GUI_save = true;
+	}
+
+	if constexpr (debug)
+	{
+		ImGui::Text("var[0] %f", var[0]);
+		ImGui::Text("var[1] %f", var[1]);
+		ImGui::Text("var[2] %f", var[2]);
+		ImGui::Text("var[3] %f", var[3]);
+	}
+
+	return update;
+}
+
+
+
+
+
+
+
+export bool GUI_Color2
+(
+	const char * label,
+	float(&var)[4],
+	float(&var2)[4],
+	ImGuiColorEditFlags flags = 0
+)
+{
+	auto update = GUI_Color
+	(
+		label,
+		var2,
+		flags
+	);
+
+	if (update)
+	{
+		memcpy(var, var2, sizeof(var));
+	}
+
+	return update;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifdef __GARBAGE__
 #endif

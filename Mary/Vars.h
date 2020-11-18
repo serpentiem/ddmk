@@ -21,6 +21,13 @@ enum CLONE_STATUS
 	CLONE_STATUS_DECOMMISSION,
 };
 
+enum WALL_HIKE_DIRECTION
+{
+	WALL_HIKE_DIRECTION_RIGHT,
+	WALL_HIKE_DIRECTION_LEFT,
+	WALL_HIKE_DIRECTION_FORWARD,
+};
+
 
 
 enum CopyStateFlags
@@ -28,6 +35,67 @@ enum CopyStateFlags
 	CopyStateFlags_EventData = 1 << 0,
 	CopyStateFlags_Mode      = 1 << 1,
 };
+
+
+
+enum DEVIL_FLUX_
+{
+	DEVIL_FLUX_START = 1,
+	DEVIL_FLUX_END   = 2,
+};
+
+
+
+enum ACTOR_DATA_SIZE
+{
+	ACTOR_DATA_SIZE_DANTE  = 47296,
+	ACTOR_DATA_SIZE_BOB    = 46720,
+	ACTOR_DATA_SIZE_LADY   = 33408,
+	ACTOR_DATA_SIZE_VERGIL = 47296,
+};
+
+
+
+
+
+
+enum DOT_SHADOW
+{
+	DOT_SHADOW_ENABLE,
+	DOT_SHADOW_DISABLE,
+	DOT_SHADOW_DISABLE_ACTOR_ONLY,
+};
+
+
+
+
+enum
+{
+	PLAYER_COUNT = 4,
+	ENTITY_COUNT = 2,
+	CHARACTER_COUNT = 3,
+	STYLE_COUNT = 4,
+	WEAPON_COUNT = 10,
+};
+
+
+
+
+
+
+
+enum FILE_STATUS
+{
+	FILE_STATUS_READY = 3,
+};
+
+enum FILE_MODE
+{
+	FILE_MODE_MEMORY,
+	FILE_MODE_ARCHIVE,
+	FILE_MODE_LOCAL,
+};
+
 
 
 
@@ -163,12 +231,6 @@ enum
 
 
 
-// @Todo: Remove.
-enum WEAPON_TYPE_
-{
-	WEAPON_TYPE_MELEE,
-	WEAPON_TYPE_RANGED,
-};
 
 
 // @Todo: Update.
@@ -462,27 +524,6 @@ enum STATE
 	STATE_BUSY = 0x10000,
 };
 
-//enum BODY_PART_
-//{
-//	BODY_PART_LOWER,
-//	BODY_PART_UPPER,
-//};
-
-//enum MODEL_PART_
-//{
-//	MODEL_PART_BASE,
-//	MODEL_PART_AMULET,
-//	MODEL_PART_COAT,
-//	MAX_MODEL_PART,
-//};
-//
-//enum DEVIL_MODEL_PART_
-//{
-//	DEVIL_MODEL_PART_BASE,
-//	DEVIL_MODEL_PART_WINGS,
-//	DEVIL_MODEL_PART_COAT,
-//	MAX_DEVIL_MODEL_PART,
-//};
 
 
 
@@ -808,6 +849,9 @@ enum GAMEPAD
 	GAMEPAD_LEFT           = 0x8000,
 };
 
+
+
+
 enum DIRECTION
 {
 	DIRECTION_UP,
@@ -885,950 +929,7 @@ enum ACTOR_MODE
 
 
 
-#define IntroduceSizeStruct(size)\
-struct Size_##size\
-{\
-	byte8 data[size];\
-	operator byte8 *()\
-	{\
-		return reinterpret_cast<byte8 *>(this);\
-	}\
-}
 
-#define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
-
-#pragma pack(push, 1)
-
-
-
-
-
-
-
-// $StyleDataStart
-
-struct StyleData
-{
-	uint32 rank; // 0
-	float meter; // 4
-	_(328);
-	float quotient; // 0x150
-	float dividend; // 0x154
-	float divisor; // 0x158
-	_(4);
-};
-
-static_assert(offsetof(StyleData, rank) == 0);
-static_assert(offsetof(StyleData, meter) == 4);
-static_assert(offsetof(StyleData, quotient) == 0x150);
-static_assert(offsetof(StyleData, dividend) == 0x154);
-static_assert(offsetof(StyleData, divisor) == 0x158);
-static_assert(sizeof(StyleData) == 352);
-
-// $StyleDataEnd
-
-
-
-
-
-
-// @Todo: Rename.
-struct ActorEventData
-{
-	uint32 index;
-	uint32 lastIndex;
-};
-
-
-// @Todo: Update.
-// $SessionDataStart
-
-struct SESSION_DATA
-{
-	uint32 mission; // 0
-	_(8);
-	uint32 mode; // 0xC
-	bool oneHitKill; // 0x10
-	_(1);
-	bool enableTutorial; // 0x12
-	bool useGoldOrb; // 0x13
-	_(8);
-	bool bloodyPalace; // 0x1C
-	_(24);
-	uint8 goldOrbCount; // 0x35
-	_(16);
-	bool unlock[14]; // 0x46
-	_(48);
-	uint8 weapons[4]; // 0x84
-	_(72);
-	uint8 costume; // 0xD0
-	bool unlockDevilTrigger; // 0xD1
-	_(2);
-	float32 hitPoints; // 0xD4
-	float32 magicPoints; // 0xD8
-	uint32 style; // 0xDC
-	uint32 styleLevel[6]; // 0xE0
-	float32 styleExperience[6]; // 0xF8
-	byte32 expertise[8]; // 0x110
-};
-
-static_assert(offsetof(SESSION_DATA, mission) == 0);
-static_assert(offsetof(SESSION_DATA, mode) == 0xC);
-static_assert(offsetof(SESSION_DATA, oneHitKill) == 0x10);
-static_assert(offsetof(SESSION_DATA, enableTutorial) == 0x12);
-static_assert(offsetof(SESSION_DATA, useGoldOrb) == 0x13);
-static_assert(offsetof(SESSION_DATA, bloodyPalace) == 0x1C);
-static_assert(offsetof(SESSION_DATA, goldOrbCount) == 0x35);
-static_assert(offsetof(SESSION_DATA, unlock) == 0x46);
-static_assert(offsetof(SESSION_DATA, weapons) == 0x84);
-static_assert(offsetof(SESSION_DATA, costume) == 0xD0);
-static_assert(offsetof(SESSION_DATA, unlockDevilTrigger) == 0xD1);
-static_assert(offsetof(SESSION_DATA, hitPoints) == 0xD4);
-static_assert(offsetof(SESSION_DATA, magicPoints) == 0xD8);
-static_assert(offsetof(SESSION_DATA, style) == 0xDC);
-static_assert(offsetof(SESSION_DATA, styleLevel) == 0xE0);
-static_assert(offsetof(SESSION_DATA, styleExperience) == 0xF8);
-static_assert(offsetof(SESSION_DATA, expertise) == 0x110);
-
-// $SessionDataEnd
-
-struct EventData
-{
-	_(24);
-	uint32 room;
-	uint32 position;
-	uint32 event;
-	_(8);
-	uint32 subevent;
-};
-
-struct NextEventData
-{
-	_(356);
-	uint16 room;
-	uint16 position;
-};
-
-struct StagePositionData
-{
-	uint8 event;
-	_(3);
-	float32 x;
-	float32 y;
-	float32 z;
-	float32 rotation;
-	_(28);
-};
-
-
-
-
-// $CameraDataStart
-
-struct CameraData
-{
-	_(176);
-	byte8 * targetBaseAddr; // 0xB0
-	_(24);
-	float height; // 0xD0
-	float tilt; // 0xD4
-	float zoom; // 0xD8
-	_(4);
-	float zoomLockOn; // 0xE0
-};
-
-static_assert(offsetof(CameraData, targetBaseAddr) == 0xB0);
-static_assert(offsetof(CameraData, height) == 0xD0);
-static_assert(offsetof(CameraData, tilt) == 0xD4);
-static_assert(offsetof(CameraData, zoom) == 0xD8);
-static_assert(offsetof(CameraData, zoomLockOn) == 0xE0);
-
-// $CameraDataEnd
-
-
-
-
-
-
-#define _IntroduceCameraData(name, ...)\
-auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC8FBD0);\
-if (!name)\
-{\
-	__VA_ARGS__;\
-}\
-if (!name[147])\
-{\
-	__VA_ARGS__;\
-}\
-auto & cameraData = *reinterpret_cast<CameraData *>(name[147])
-#define IntroduceCameraData(...) _IntroduceCameraData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
-
-#define _IntroduceHUDPointers(name, ...)\
-auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E28);\
-if (!name)\
-{\
-	__VA_ARGS__;\
-}\
-name -= 0x180;\
-auto hudTop    = *reinterpret_cast<byte8 **>(name + 0x1B070);\
-auto hudBottom = *reinterpret_cast<byte8 **>(name + 0x1B078)
-#define IntroduceHUDPointers(...) _IntroduceHUDPointers(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
-/*
-dmc3.exe+23E691 - 48 8D 93 80010000 - lea rdx,[rbx+00000180]
-*/
-
-
-
-
-
-
-
-
-// $MissionDataStart
-
-struct MissionData
-{
-	_(56);
-	uint32 orbs; // 0x38
-	_(108);
-	uint32 time; // 0xA8
-	uint32 damage; // 0xAC
-	uint32 orbsCollected; // 0xB0
-	uint32 itemsUsed; // 0xB4
-	uint32 killCount; // 0xB8
-	_(4);
-};
-
-static_assert(offsetof(MissionData, orbs) == 0x38);
-static_assert(offsetof(MissionData, time) == 0xA8);
-static_assert(offsetof(MissionData, damage) == 0xAC);
-static_assert(offsetof(MissionData, orbsCollected) == 0xB0);
-static_assert(offsetof(MissionData, itemsUsed) == 0xB4);
-static_assert(offsetof(MissionData, killCount) == 0xB8);
-static_assert(sizeof(MissionData) == 192);
-
-// $MissionDataEnd
-
-#define _IntroduceMissionData(name, ...)\
-auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E30);\
-if (!name)\
-{\
-	__VA_ARGS__;\
-}\
-auto & missionData = *reinterpret_cast<MissionData *>(name)
-#define IntroduceMissionData(...) _IntroduceMissionData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
-
-// $MissionActorDataStart
-
-struct QueuedMissionActorData
-{
-	uint8 weapons[5]; // 0
-	_(75);
-	float32 hitPoints; // 0x50
-	float32 magicPoints; // 0x54
-	uint32 style; // 0x58
-	uint32 styleLevel[6]; // 0x5C
-	float32 styleExperience[6]; // 0x74
-	byte32 expertise[8]; // 0x8C
-};
-
-static_assert(offsetof(QueuedMissionActorData, weapons) == 0);
-static_assert(offsetof(QueuedMissionActorData, hitPoints) == 0x50);
-static_assert(offsetof(QueuedMissionActorData, magicPoints) == 0x54);
-static_assert(offsetof(QueuedMissionActorData, style) == 0x58);
-static_assert(offsetof(QueuedMissionActorData, styleLevel) == 0x5C);
-static_assert(offsetof(QueuedMissionActorData, styleExperience) == 0x74);
-static_assert(offsetof(QueuedMissionActorData, expertise) == 0x8C);
-
-struct ActiveMissionActorData
-{
-	_(80);
-	float32 hitPoints; // 0x50
-	float32 magicPoints; // 0x54
-	uint32 style; // 0x58
-	uint32 styleLevel[6]; // 0x5C
-	float32 styleExperience[6]; // 0x74
-	byte32 expertise[8]; // 0x8C
-};
-
-static_assert(offsetof(ActiveMissionActorData, hitPoints) == 0x50);
-static_assert(offsetof(ActiveMissionActorData, magicPoints) == 0x54);
-static_assert(offsetof(ActiveMissionActorData, style) == 0x58);
-static_assert(offsetof(ActiveMissionActorData, styleLevel) == 0x5C);
-static_assert(offsetof(ActiveMissionActorData, styleExperience) == 0x74);
-static_assert(offsetof(ActiveMissionActorData, expertise) == 0x8C);
-
-// $MissionActorDataEnd
-
-#define _IntroduceMissionActorData(name, ...)\
-auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E30);\
-if (!name)\
-{\
-	__VA_ARGS__;\
-}\
-auto & queuedMissionActorData = *reinterpret_cast<QueuedMissionActorData *>(name + 0xC0 );\
-auto & activeMissionActorData = *reinterpret_cast<ActiveMissionActorData *>(name + 0x16C)
-#define IntroduceMissionActorData(...) _IntroduceMissionActorData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
-
-
-
-
-
-
-
-
-
-
-
-
-// #define _IntroduceMissionActorDataPointers(name, ...)\
-// auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E30);\
-// if (!name)\
-// {\
-// 	__VA_ARGS__;\
-// }\
-// auto missionActorData_C0  = reinterpret_cast<byte8 *>(name + 0xC0 );\
-// auto missionActorData_16C = reinterpret_cast<byte8 *>(name + 0x16C)
-// #define IntroduceMissionActorDataPointers(...) _IntroduceMissionActorDataPointers(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
-
-
-
-
-
-
-
-#define IntroduceSessionData() auto & sessionData = *reinterpret_cast<SESSION_DATA *>(appBaseAddr + 0xC8F250)
-
-#define _IntroduceEventData(name, ...)\
-auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
-if (!name)\
-{\
-	__VA_ARGS__;\
-}\
-if (!name[8])\
-{\
-	__VA_ARGS__;\
-}\
-auto & eventData = *reinterpret_cast<EventData *>(name[8])
-#define IntroduceEventData(...) _IntroduceEventData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
-
-#define _IntroduceNextEventData(name, ...)\
-auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
-if (!name)\
-{\
-	__VA_ARGS__;\
-}\
-if (!name[12])\
-{\
-	__VA_ARGS__;\
-}\
-auto & nextEventData = *reinterpret_cast<NextEventData *>(name[12])
-#define IntroduceNextEventData(...) _IntroduceNextEventData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
-
-#define _IntroduceEventFlags(name, ...)\
-auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E30);\
-if (!name)\
-{\
-	__VA_ARGS__;\
-}\
-if (!name[1])\
-{\
-	__VA_ARGS__;\
-}\
-auto eventFlags = reinterpret_cast<byte32 *>(name[1])
-#define IntroduceEventFlags(...) _IntroduceEventFlags(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
-
-#define _IntroduceStagePositionData(name, ...)\
-auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
-if (!name)\
-{\
-	__VA_ARGS__;\
-}\
-if (!name[8])\
-{\
-	__VA_ARGS__;\
-}\
-auto stagePositionData = *reinterpret_cast<StagePositionData **>(name[8] + 0x2CB0);\
-if (!stagePositionData)\
-{\
-	__VA_ARGS__;\
-}
-#define IntroduceStagePositionData(...) _IntroduceStagePositionData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
-
-#define IntroduceActorData(name, name2, name3, ...)\
-auto name = name3;\
-if (!name)\
-{\
-	__VA_ARGS__;\
-}\
-auto & name2 = *reinterpret_cast<ActorData *>(name);
-
-
-
-
-
-
-// #define IntroduceAcawaqwatorData(name, ...)\
-// auto actorBaseAddr = Actor_actorBaseAddr[name];\
-// if (!actorBaseAddr)\
-// {\
-// 	__VA_ARGS__;\
-// }\
-// auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr)
-
-// #define _IntroduceMainActorData(name, ...)\
-// auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);\
-// if (!name)\
-// {\
-// 	__VA_ARGS__;\
-// }\
-// auto mainActorBaseAddr = name[3];\
-// if (!mainActorBaseAddr)\
-// {\
-// 	__VA_ARGS__;\
-// }\
-// auto & mainActorData = *reinterpret_cast<ActorData *>(mainActorBaseAddr)
-// #define IntroduceMainActorData(...) _IntroduceMainActorData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// struct CAMERA_DATA
-// {
-// 	_(176);
-// 	byte8 * targetBaseAddr;
-// 	_(24);
-// 	float32 height;
-// 	float32 tilt;
-// 	float32 zoom;
-// };
-
-// static_assert(offsetof(CAMERA_DATA, targetBaseAddr) == 0xB0);
-// static_assert(offsetof(CAMERA_DATA, height) == 0xD0);
-// static_assert(offsetof(CAMERA_DATA, tilt) == 0xD4);
-// static_assert(offsetof(CAMERA_DATA, zoom) == 0xD8);
-
-
-
-
-
-
-
-
-
-
-
-enum FILE_STATUS
-{
-	FILE_STATUS_READY = 3,
-};
-
-enum FILE_MODE
-{
-	FILE_MODE_MEMORY,
-	FILE_MODE_ARCHIVE,
-	FILE_MODE_LOCAL,
-};
-
-
-
-
-struct ArchiveData
-{
-	byte8 signature[4];
-	uint32 fileCount;
-	uint32 fileOff[128];
-};
-
-struct StringData
-{
-	_(8);
-	const char * string;
-};
-
-struct FileData
-{
-	uint32 category;
-	uint32 status;
-	uint16 id;
-	_(6);
-	void * callback;
-	StringData * stringData;
-	byte8 * file;
-	_(32);
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct PS2_GAMEPAD
-{
-	_(16);
-	uint8  vibration[4];
-	byte16 buttons[6];
-	uint8  rightStickX;
-	uint8  rightStickY;
-	uint8  leftStickX;
-	uint8  leftStickY;
-	_(12);
-	uint16 rightStickDirection[4];
-	uint16 leftStickDirection[4];
-	uint16 rightStickDirectionFast[2];
-	uint16 leftStickDirectionFast[2];
-	uint16 rightStickPosition;
-	uint16 leftStickPosition;
-	uint16 rightStickDifference;
-	uint16 leftStickDifference;
-};
-
-struct ENGINE_GAMEPAD
-{
-	byte16 buttons[4];
-	uint16 buttonsTimer[2];
-	uint16 rightStickDirection[4];
-	uint16 rightStickTimer[2];
-	uint16 rightStickPosition;
-	uint16 rightStickRadius;
-	uint16 leftStickDirection[4];
-	uint16 leftStickTimer[2];
-	uint16 leftStickPosition;
-	uint16 leftStickRadius;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct MEMORY_OBJECT
-{
-	byte8 * addr;
-	byte8 * end;
-	uint32 last;
-	uint32 boundary;
-	uint32 size;
-	uint32 pipe;
-	uint32 count;
-	byte8 padding[4];
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct MotionData
-{
-	uint8 index;
-	uint8 group;
-};
-
-
-
-
-
-
-
-
-
-struct InputData
-{
-	byte8 flags[8];
-	float32 value;
-};
-
-
-
-
-
-
-
-
-struct ShadowData
-{
-	_(192);
-};
-
-static_assert(sizeof(ShadowData) == 0xC0);
-
-
-
-struct PhysicsData
-{
-	_(240);
-};
-
-static_assert(sizeof(PhysicsData) == 0xF0);
-
-
-
-
-
-struct PhysicsLinkData
-{
-	_(40);
-	bool32 enable;
-	_(4);
-	PhysicsData * physicsData;
-	_(72);
-	vec4 data[4];
-};
-
-static_assert(offsetof(PhysicsLinkData, enable) == 0x28);
-static_assert(offsetof(PhysicsLinkData, physicsData) == 0x30);
-static_assert(offsetof(PhysicsLinkData, data) == 0x80);
-static_assert(sizeof(PhysicsLinkData) == 0xC0);
-
-
-
-
-
-
-
-
-struct PhysicsMetadata
-{
-	_(256);
-	PhysicsLinkData * physicsLinkData;
-	vec4 * vertices;
-	PhysicsData * physicsData;
-	_(40);
-};
-
-static_assert(offsetof(PhysicsMetadata, physicsLinkData) == 0x100);
-static_assert(offsetof(PhysicsMetadata, vertices) == 0x108);
-static_assert(offsetof(PhysicsMetadata, physicsData) == 0x110);
-static_assert(sizeof(PhysicsMetadata) == 0x140);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//struct PhysicsLinkMetadata
-//{
-//	_(256);
-//	PhysicsLinkData * devilPhysicsData;
-//};
-
-//static_assert(offsetof(PhysicsLinkMetadata, devilPhysicsData) == 0x100);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct BodyPartData
-{
-	_(288);
-};
-
-static_assert(sizeof(BodyPartData) == 0x120);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//struct DevilPhysicsData
-//{
-//	DevilPhysicsMetadata metadata[2];
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//};
-//
-//static_assert(sizeof(DevilPhysicsData) == 0x300);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct ModelMetadata
-{
-	uint8 count;
-	_(15);
-	vec4 vertices[3];
-	_(16);
-};
-
-static_assert(sizeof(ModelMetadata) == 80);
-
-
-
-
-
-
-struct DevilModelMetadata
-{
-	uint8 modelIndex;
-	uint8 modelPhysicsMetadataIndex;
-};
-
-struct DevilSubmodelMetadata
-{
-	uint8 submodelIndex;
-	uint8 devilModelPhysicsMetadataIndex;
-	uint8 devilSubmodelIndex;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct DevilModelMetadata1 : DevilModelMetadata
-{
-	DevilSubmodelMetadata devilSubmodelMetadata;
-};
-
-struct DevilModelMetadata2 : DevilModelMetadata
-{
-	DevilSubmodelMetadata devilSubmodelMetadata[2];
-};
-
-struct DevilModelMetadataDante
-{
-	DevilModelMetadata2 Rebellion;
-	DevilModelMetadata1 Cerberus;
-	DevilModelMetadata  AgniRudra;
-	DevilModelMetadata2 Nevan;
-	DevilModelMetadata1 Beowulf;
-	DevilModelMetadata1 Sparda;
-
-	DevilModelMetadata2 & operator[](uint8 index)
-	{
-		switch (index)
-		{
-		case DEVIL_REBELLION:
-		{
-			return Rebellion;
-		}
-		case DEVIL_CERBERUS:
-		{
-			return *reinterpret_cast<DevilModelMetadata2 *>(&Cerberus);
-		}
-		case DEVIL_AGNI_RUDRA:
-		{
-			return *reinterpret_cast<DevilModelMetadata2 *>(&AgniRudra);
-		}
-		case DEVIL_NEVAN:
-		{
-			return Nevan;
-		}
-		case DEVIL_BEOWULF:
-		{
-			return *reinterpret_cast<DevilModelMetadata2 *>(&Beowulf);
-		}
-		case DEVIL_SPARDA:
-		{
-			return *reinterpret_cast<DevilModelMetadata2 *>(&Sparda);
-		}
-		}
-		return Rebellion;
-	}
-};
-
-static_assert(sizeof(DevilModelMetadataDante) == 33);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-enum DEVIL_FLUX_
-{
-	DEVIL_FLUX_START = 1,
-	DEVIL_FLUX_END   = 2,
-};
-
-
-
-
-
-
-
-
-
-//constexpr uint16 File_costumeMapDante[MAX_COSTUME_DANTE] =
-//{
-//	pl000,
-//	pl011,
-//	pl013,
-//	pl015,
-//	pl016,
-//	pl018,
-//	pl013,
-//	pl018,
-//};
 
 
 
@@ -1942,24 +1043,566 @@ constexpr uint32 hudBottomOffs[] =
 
 
 
-//struct MODEL_FILE_HELPER
-//{
-//	struct Data
-//	{
-//		uint16 cacheFileId;
-//		uint8  fileIndex;
-//	};
-//	Data model;
-//	Data texture;
-//	Data shadow;
-//	Data physics;
-//};
-//
-//typedef MODEL_FILE_HELPER DEVIL_MODEL_FILE_HELPER;
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+#define IntroduceSizeStruct(size)\
+struct Size_##size\
+{\
+	byte8 data[size];\
+	operator byte8 *()\
+	{\
+		return reinterpret_cast<byte8 *>(this);\
+	}\
+}
+
+#define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
+
+#pragma pack(push, 1)
+
+
+
+
+IntroduceSizeStruct(32);
+IntroduceSizeStruct(112);
+IntroduceSizeStruct(192);
+IntroduceSizeStruct(240);
+IntroduceSizeStruct(288);
+IntroduceSizeStruct(768);
+
+
+
+
+
+
+
+// $SessionDataStart
+
+struct SessionData
+{
+	uint32 mission; // 0
+	_(8);
+	uint32 mode; // 0xC
+	bool oneHitKill; // 0x10
+	_(1);
+	bool enableTutorial; // 0x12
+	bool useGoldOrb; // 0x13
+	uint8 character; // 0x14
+	_(7);
+	bool bloodyPalace; // 0x1C
+	_(24);
+	uint8 goldOrbCount; // 0x35
+	_(16);
+	bool unlock[14]; // 0x46
+	_(48);
+	uint8 weapons[4]; // 0x84
+	_(72);
+	uint8 costume; // 0xD0
+	bool unlockDevilTrigger; // 0xD1
+	_(2);
+	float hitPoints; // 0xD4
+	float magicPoints; // 0xD8
+	uint32 style; // 0xDC
+	uint32 styleLevel[6]; // 0xE0
+	float styleExperience[6]; // 0xF8
+	byte32 expertise[8]; // 0x110
+};
+
+static_assert(offsetof(SessionData, mission) == 0);
+static_assert(offsetof(SessionData, mode) == 0xC);
+static_assert(offsetof(SessionData, oneHitKill) == 0x10);
+static_assert(offsetof(SessionData, enableTutorial) == 0x12);
+static_assert(offsetof(SessionData, useGoldOrb) == 0x13);
+static_assert(offsetof(SessionData, character) == 0x14);
+static_assert(offsetof(SessionData, bloodyPalace) == 0x1C);
+static_assert(offsetof(SessionData, goldOrbCount) == 0x35);
+static_assert(offsetof(SessionData, unlock) == 0x46);
+static_assert(offsetof(SessionData, weapons) == 0x84);
+static_assert(offsetof(SessionData, costume) == 0xD0);
+static_assert(offsetof(SessionData, unlockDevilTrigger) == 0xD1);
+static_assert(offsetof(SessionData, hitPoints) == 0xD4);
+static_assert(offsetof(SessionData, magicPoints) == 0xD8);
+static_assert(offsetof(SessionData, style) == 0xDC);
+static_assert(offsetof(SessionData, styleLevel) == 0xE0);
+static_assert(offsetof(SessionData, styleExperience) == 0xF8);
+static_assert(offsetof(SessionData, expertise) == 0x110);
+static_assert(sizeof(SessionData) == 304);
+
+// $SessionDataEnd
+
+#define IntroduceSessionData() auto & sessionData = *reinterpret_cast<SessionData *>(appBaseAddr + 0xC8F250)
+
+// $MissionDataStart
+
+struct MissionData
+{
+	_(56);
+	uint32 orbs; // 0x38
+	_(108);
+	uint32 frameCount; // 0xA8
+	uint32 damage; // 0xAC
+	uint32 orbsCollected; // 0xB0
+	uint32 itemsUsed; // 0xB4
+	uint32 killCount; // 0xB8
+	_(4);
+};
+
+static_assert(offsetof(MissionData, orbs) == 0x38);
+static_assert(offsetof(MissionData, frameCount) == 0xA8);
+static_assert(offsetof(MissionData, damage) == 0xAC);
+static_assert(offsetof(MissionData, orbsCollected) == 0xB0);
+static_assert(offsetof(MissionData, itemsUsed) == 0xB4);
+static_assert(offsetof(MissionData, killCount) == 0xB8);
+static_assert(sizeof(MissionData) == 192);
+
+// $MissionDataEnd
+
+#define _IntroduceMissionData(name, ...)\
+auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E30);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+auto & missionData = *reinterpret_cast<MissionData *>(name)
+#define IntroduceMissionData(...) _IntroduceMissionData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+// $MissionActorDataStart
+
+struct QueuedMissionActorData
+{
+	uint8 weapons[5]; // 0
+	_(75);
+	float hitPoints; // 0x50
+	float magicPoints; // 0x54
+	uint32 style; // 0x58
+	uint32 styleLevel[6]; // 0x5C
+	float styleExperience[6]; // 0x74
+	byte32 expertise[8]; // 0x8C
+};
+
+static_assert(offsetof(QueuedMissionActorData, weapons) == 0);
+static_assert(offsetof(QueuedMissionActorData, hitPoints) == 0x50);
+static_assert(offsetof(QueuedMissionActorData, magicPoints) == 0x54);
+static_assert(offsetof(QueuedMissionActorData, style) == 0x58);
+static_assert(offsetof(QueuedMissionActorData, styleLevel) == 0x5C);
+static_assert(offsetof(QueuedMissionActorData, styleExperience) == 0x74);
+static_assert(offsetof(QueuedMissionActorData, expertise) == 0x8C);
+static_assert(sizeof(QueuedMissionActorData) == 172);
+
+struct ActiveMissionActorData
+{
+	uint8 weapons[5]; // 0
+	_(51);
+	uint32 style; // 0x38
+	uint32 styleLevel; // 0x3C
+	byte32 expertise[8]; // 0x40
+	float styleExperience; // 0x60
+	float hitPoints; // 0x64
+	float maxHitPoints; // 0x68
+	float magicPoints; // 0x6C
+	float maxMagicPoints; // 0x70
+};
+
+static_assert(offsetof(ActiveMissionActorData, weapons) == 0);
+static_assert(offsetof(ActiveMissionActorData, style) == 0x38);
+static_assert(offsetof(ActiveMissionActorData, styleLevel) == 0x3C);
+static_assert(offsetof(ActiveMissionActorData, expertise) == 0x40);
+static_assert(offsetof(ActiveMissionActorData, styleExperience) == 0x60);
+static_assert(offsetof(ActiveMissionActorData, hitPoints) == 0x64);
+static_assert(offsetof(ActiveMissionActorData, maxHitPoints) == 0x68);
+static_assert(offsetof(ActiveMissionActorData, magicPoints) == 0x6C);
+static_assert(offsetof(ActiveMissionActorData, maxMagicPoints) == 0x70);
+static_assert(sizeof(ActiveMissionActorData) == 116);
+
+// $MissionActorDataEnd
+
+#define _IntroduceMissionActorData(name, ...)\
+auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E30);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+auto & queuedMissionActorData = *reinterpret_cast<QueuedMissionActorData *>(name + 0xC0 );\
+auto & activeMissionActorData = *reinterpret_cast<ActiveMissionActorData *>(name + 0x16C)
+#define IntroduceMissionActorData(...) _IntroduceMissionActorData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+// $StyleDataStart
+
+struct StyleData
+{
+	uint32 rank; // 0
+	float meter; // 4
+	_(328);
+	float quotient; // 0x150
+	float dividend; // 0x154
+	float divisor; // 0x158
+	_(4);
+};
+
+static_assert(offsetof(StyleData, rank) == 0);
+static_assert(offsetof(StyleData, meter) == 4);
+static_assert(offsetof(StyleData, quotient) == 0x150);
+static_assert(offsetof(StyleData, dividend) == 0x154);
+static_assert(offsetof(StyleData, divisor) == 0x158);
+static_assert(sizeof(StyleData) == 352);
+
+// $StyleDataEnd
+
+// @Todo: Create scripts.
+struct EventData
+{
+	_(24);
+	uint32 room;
+	uint32 position;
+	uint32 event;
+	_(8);
+	uint32 subevent;
+};
+
+struct NextEventData
+{
+	_(356);
+	uint16 room;
+	uint16 position;
+};
+
+#define _IntroduceEventData(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+if (!name[8])\
+{\
+	__VA_ARGS__;\
+}\
+auto & eventData = *reinterpret_cast<EventData *>(name[8])
+#define IntroduceEventData(...) _IntroduceEventData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+#define _IntroduceNextEventData(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+if (!name[12])\
+{\
+	__VA_ARGS__;\
+}\
+auto & nextEventData = *reinterpret_cast<NextEventData *>(name[12])
+#define IntroduceNextEventData(...) _IntroduceNextEventData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+#define _IntroduceEventFlags(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E30);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+if (!name[1])\
+{\
+	__VA_ARGS__;\
+}\
+auto eventFlags = reinterpret_cast<byte32 *>(name[1])
+#define IntroduceEventFlags(...) _IntroduceEventFlags(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+// $CollisionDataStart
+
+struct CollisionData
+{
+	_(4);
+	uint32 index; // 4
+	_(520);
+	vec4 data; // 0x210
+	_(112);
+};
+
+static_assert(offsetof(CollisionData, index) == 4);
+static_assert(offsetof(CollisionData, data) == 0x210);
+static_assert(sizeof(CollisionData) == 656);
+
+// $CollisionDataEnd
+
+// $CameraDataStart
+
+struct CameraData
+{
+	_(176);
+	byte8 * targetBaseAddr; // 0xB0
+	_(24);
+	float height; // 0xD0
+	float tilt; // 0xD4
+	float zoom; // 0xD8
+	_(4);
+	float zoomLockOn; // 0xE0
+};
+
+static_assert(offsetof(CameraData, targetBaseAddr) == 0xB0);
+static_assert(offsetof(CameraData, height) == 0xD0);
+static_assert(offsetof(CameraData, tilt) == 0xD4);
+static_assert(offsetof(CameraData, zoom) == 0xD8);
+static_assert(offsetof(CameraData, zoomLockOn) == 0xE0);
+static_assert(sizeof(CameraData) == 228);
+
+// $CameraDataEnd
+
+#define _IntroduceCameraData(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC8FBD0);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+if (!name[147])\
+{\
+	__VA_ARGS__;\
+}\
+auto & cameraData = *reinterpret_cast<CameraData *>(name[147])
+#define IntroduceCameraData(...) _IntroduceCameraData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+#define _IntroduceHUDPointers(name, ...)\
+auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E28);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+name -= 0x180;\
+auto hudTop    = *reinterpret_cast<byte8 **>(name + 0x1B070);\
+auto hudBottom = *reinterpret_cast<byte8 **>(name + 0x1B078)
+#define IntroduceHUDPointers(...) _IntroduceHUDPointers(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+/*
+dmc3.exe+23E691 - 48 8D 93 80010000 - lea rdx,[rbx+00000180]
+*/
+
+struct ArchiveData
+{
+	byte8 signature[4];
+	uint32 fileCount;
+	uint32 fileOff[128];
+};
+
+struct StringData
+{
+	_(8);
+	const char * string;
+};
+
+struct FileData
+{
+	uint32 category;
+	uint32 status;
+	uint16 id;
+	_(6);
+	void * callback;
+	StringData * stringData;
+	byte8 * file;
+	_(32);
+};
+
+// @Todo: Update names.
+
+struct MEMORY_OBJECT
+{
+	byte8 * addr;
+	byte8 * end;
+	uint32 last;
+	uint32 boundary;
+	uint32 size;
+	uint32 pipe;
+	uint32 count;
+	byte8 padding[4];
+};
+
+struct PS2_GAMEPAD
+{
+	_(16);
+	uint8  vibration[4];
+	byte16 buttons[6];
+	uint8  rightStickX;
+	uint8  rightStickY;
+	uint8  leftStickX;
+	uint8  leftStickY;
+	_(12);
+	uint16 rightStickDirection[4];
+	uint16 leftStickDirection[4];
+	uint16 rightStickDirectionFast[2];
+	uint16 leftStickDirectionFast[2];
+	uint16 rightStickPosition;
+	uint16 leftStickPosition;
+	uint16 rightStickDifference;
+	uint16 leftStickDifference;
+};
+
+struct ENGINE_GAMEPAD
+{
+	byte16 buttons[4];
+	uint16 buttonsTimer[2];
+	uint16 rightStickDirection[4];
+	uint16 rightStickTimer[2];
+	uint16 rightStickPosition;
+	uint16 rightStickRadius;
+	uint16 leftStickDirection[4];
+	uint16 leftStickTimer[2];
+	uint16 leftStickPosition;
+	uint16 leftStickRadius;
+};
+
+// @Todo: Order.
+
+// @Todo: Rename.
+struct ActorEventData
+{
+	uint32 index;
+	uint32 lastIndex;
+};
+
+struct MotionData
+{
+	uint8 index;
+	uint8 group;
+};
+
+struct InputData
+{
+	byte8 flags[8];
+	float32 value;
+};
+
+struct ShadowData
+{
+	_(192);
+};
+
+static_assert(sizeof(ShadowData) == 0xC0);
+
+struct PhysicsData
+{
+	_(240);
+};
+
+static_assert(sizeof(PhysicsData) == 0xF0);
+
+struct PhysicsLinkData
+{
+	_(40);
+	bool32 enable;
+	_(4);
+	PhysicsData * physicsData;
+	_(72);
+	vec4 data[4];
+};
+
+static_assert(offsetof(PhysicsLinkData, enable) == 0x28);
+static_assert(offsetof(PhysicsLinkData, physicsData) == 0x30);
+static_assert(offsetof(PhysicsLinkData, data) == 0x80);
+static_assert(sizeof(PhysicsLinkData) == 0xC0);
+
+struct PhysicsMetadata
+{
+	_(256);
+	PhysicsLinkData * physicsLinkData;
+	vec4 * vertices;
+	PhysicsData * physicsData;
+	_(40);
+};
+
+static_assert(offsetof(PhysicsMetadata, physicsLinkData) == 0x100);
+static_assert(offsetof(PhysicsMetadata, vertices) == 0x108);
+static_assert(offsetof(PhysicsMetadata, physicsData) == 0x110);
+static_assert(sizeof(PhysicsMetadata) == 0x140);
+
+struct BodyPartData
+{
+	_(288);
+};
+
+static_assert(sizeof(BodyPartData) == 0x120);
+
+struct ModelMetadata
+{
+	uint8 count;
+	_(15);
+	vec4 vertices[3];
+	_(16);
+};
+
+static_assert(sizeof(ModelMetadata) == 80);
+
+struct DevilModelMetadata
+{
+	uint8 modelIndex;
+	uint8 modelPhysicsMetadataIndex;
+};
+
+struct DevilSubmodelMetadata
+{
+	uint8 submodelIndex;
+	uint8 devilModelPhysicsMetadataIndex;
+	uint8 devilSubmodelIndex;
+};
+
+struct DevilModelMetadata1 : DevilModelMetadata
+{
+	DevilSubmodelMetadata devilSubmodelMetadata;
+};
+
+struct DevilModelMetadata2 : DevilModelMetadata
+{
+	DevilSubmodelMetadata devilSubmodelMetadata[2];
+};
+
+struct DevilModelMetadataDante
+{
+	DevilModelMetadata2 Rebellion;
+	DevilModelMetadata1 Cerberus;
+	DevilModelMetadata  AgniRudra;
+	DevilModelMetadata2 Nevan;
+	DevilModelMetadata1 Beowulf;
+	DevilModelMetadata1 Sparda;
+
+	DevilModelMetadata2 & operator[](uint8 index)
+	{
+		switch (index)
+		{
+		case DEVIL_REBELLION:
+		{
+			return Rebellion;
+		}
+		case DEVIL_CERBERUS:
+		{
+			return *reinterpret_cast<DevilModelMetadata2 *>(&Cerberus);
+		}
+		case DEVIL_AGNI_RUDRA:
+		{
+			return *reinterpret_cast<DevilModelMetadata2 *>(&AgniRudra);
+		}
+		case DEVIL_NEVAN:
+		{
+			return Nevan;
+		}
+		case DEVIL_BEOWULF:
+		{
+			return *reinterpret_cast<DevilModelMetadata2 *>(&Beowulf);
+		}
+		case DEVIL_SPARDA:
+		{
+			return *reinterpret_cast<DevilModelMetadata2 *>(&Sparda);
+		}
+		}
+		return Rebellion;
+	}
+};
+
+static_assert(sizeof(DevilModelMetadataDante) == 33);
 
 struct ModelPartitionData
 {
@@ -2004,11 +1647,6 @@ static_assert(offsetof(ModelData, Motion.init) == 0x690);
 static_assert(offsetof(ModelData, Motion.timer) == 0x6B4);
 static_assert(sizeof(ModelData) == 0x780);
 
-
-
-
-
-
 struct RecoveryData
 {
 	byte8 ** functions;
@@ -2021,51 +1659,6 @@ struct RecoveryData
 static_assert(offsetof(RecoveryData, init) == 0x20);
 static_assert(offsetof(RecoveryData, data) == 0x30);
 static_assert(sizeof(RecoveryData) == 0x70);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//struct SHADOW_DATA
-//{
-//	_(192);
-//	operator byte8 *()
-//	{
-//		return reinterpret_cast<byte8 *>(this);
-//	}
-//};
-//
-//static_assert(sizeof(SHADOW_DATA) == 0xC0);
-//
-//struct PHYSICS_DATA
-//{
-//	_(240);
-//	operator byte8 *()
-//	{
-//		return reinterpret_cast<byte8 *>(this);
-//	}
-//};
-//
-//static_assert(sizeof(PHYSICS_DATA) == 0xF0);
-
-
-IntroduceSizeStruct(32);
-IntroduceSizeStruct(112);
-IntroduceSizeStruct(192);
-IntroduceSizeStruct(240);
-IntroduceSizeStruct(288);
-IntroduceSizeStruct(768);
-
-
 
 struct WeaponData
 {
@@ -2080,51 +1673,6 @@ struct WeaponData
 static_assert(offsetof(WeaponData, weapon) == 0x112);
 static_assert(offsetof(WeaponData, value) == 0x118);
 static_assert(offsetof(WeaponData, actorBaseAddr) == 0x120);
-
-
-
-enum ACTOR_DATA_SIZE
-{
-	ACTOR_DATA_SIZE_DANTE  = 47296,
-	ACTOR_DATA_SIZE_BOB    = 46720,
-	ACTOR_DATA_SIZE_LADY   = 33408,
-	ACTOR_DATA_SIZE_VERGIL = 47296,
-};
-
-
-
-
-// enum ACTOR_SYSTEM
-// {
-// 	ACTOR_SYSTEM_DEFAULT,
-// 	ACTOR_SYSTEM_DOPPELGANGER,
-// 	ACTOR_SYSTEM_CHARACTER_SWITCHER,
-// 	MAX_ACTOR_SYSTEM,
-// };
-
-
-enum DOT_SHADOW
-{
-	DOT_SHADOW_ENABLE,
-	DOT_SHADOW_DISABLE,
-	DOT_SHADOW_DISABLE_ACTOR_ONLY,
-};
-
-
-
-
-enum
-{
-	PLAYER_COUNT = 4,
-	ENTITY_COUNT = 2,
-	CHARACTER_COUNT = 3,
-	STYLE_COUNT = 4,
-	WEAPON_COUNT = 10,
-};
-
-
-
-
 
 
 
@@ -2160,58 +1708,6 @@ struct PlayerData
 
 	CharacterData characterData[CHARACTER_COUNT][ENTITY_COUNT];
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// $CollisionDataStart
-
-struct CollisionData
-{
-	_(4);
-	uint32 index; // 4
-	_(520);
-	vec4 data; // 0x210
-	_(112);
-};
-
-static_assert(offsetof(CollisionData, index) == 4);
-static_assert(offsetof(CollisionData, data) == 0x210);
-static_assert(sizeof(CollisionData) == 656);
-
-// $CollisionDataEnd
-
-
-
-
-
-
-
-
-
-//constexpr uint64 playerDataSize = sizeof(PlayerData);
-
-
-
-
 
 // $ActorDataStart
 
@@ -4198,12 +3694,21 @@ static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CB02);
 
 // $ActorDataEnd
 
+#define IntroduceActorData(name, name2, name3, ...)\
+auto name = name3;\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+auto & name2 = *reinterpret_cast<ActorData *>(name);
+
 #pragma pack(pop)
 
 #undef _
 
 
 
+// @Todo: Update.
 
 struct MotionArchiveHelper
 {
@@ -4440,16 +3945,38 @@ constexpr BossHelper bossHelper[] =
 	{ 411, 0, "afs/sound/Versil_03.adx"  }, // Vergil 3
 };
 
-
-
-
-
-
-
-
-
-
-
-
 #ifdef __GARBAGE__
+
+
+// @Todo: Remove.
+enum WEAPON_TYPE_
+{
+	WEAPON_TYPE_MELEE,
+	WEAPON_TYPE_RANGED,
+};
+
+//enum BODY_PART_
+//{
+//	BODY_PART_LOWER,
+//	BODY_PART_UPPER,
+//};
+
+//enum MODEL_PART_
+//{
+//	MODEL_PART_BASE,
+//	MODEL_PART_AMULET,
+//	MODEL_PART_COAT,
+//	MAX_MODEL_PART,
+//};
+//
+//enum DEVIL_MODEL_PART_
+//{
+//	DEVIL_MODEL_PART_BASE,
+//	DEVIL_MODEL_PART_WINGS,
+//	DEVIL_MODEL_PART_COAT,
+//	MAX_DEVIL_MODEL_PART,
+//};
+
+
+
 #endif

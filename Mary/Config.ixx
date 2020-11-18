@@ -18,8 +18,8 @@ export struct Config
 	Actor;
 	struct
 	{
-		float32 jetStreamDuration[2] = {};
-		float32 jetStreamRange   [2] = {};
+		float jetStreamDuration[2] = {};
+		float jetStreamRange   [2] = {};
 	}
 	AgniRudra;
 	struct
@@ -31,15 +31,15 @@ export struct Config
 	struct
 	{
 		bool    enable         = true;
-		uint32  mission        = 2;
+		uint32  mission        = 17;
 		uint32  mode           = MODE_DANTE_MUST_DIE;
 		uint32  room           = 900;
 		uint32  position       = 0;
-		bool    ignoreRoom     = true;
-		bool    ignorePosition = true;
+		bool    ignoreRoom     = false;
+		bool    ignorePosition = false;
 		uint8   floor          = 0;
-		float32 hitPoints      = 20000;
-		float32 magicPoints    = 10000;
+		float hitPoints      = 20000;
+		float magicPoints    = 10000;
 		uint8   character      = CHAR_DANTE;
 		uint8   costume        = 0;
 		uint32  style          = STYLE_TRICKSTER;
@@ -61,10 +61,10 @@ export struct Config
 	struct
 	{
 		bool hide = false;
-		float32 straightDuration   [2] = { 7   , 7    };
-		float32 straightRange      [2] = { 350 , 350  };
-		float32 airStraightDuration[2] = { 7   , 7    };
-		float32 airStraightRange   [2] = { 350 , 350  };
+		float straightDuration   [2] = { 7   , 7    };
+		float straightRange      [2] = { 350 , 350  };
+		float airStraightDuration[2] = { 7   , 7    };
+		float airStraightRange   [2] = { 350 , 350  };
 	}
 	BeowulfDante;
 	struct
@@ -101,10 +101,10 @@ export struct Config
 	struct
 	{
 		bool    invertX     = true;
-		float32 height      = 140;
-		float32 tilt        = 0.25f;
-		float32 zoom        = 460;
-		float32 zoomLockOn  = 400;
+		float height      = 140;
+		float tilt        = 0.25f;
+		float zoom        = 460;
+		float zoomLockOn  = 400;
 		bool    applyConfig = false;
 	}
 	Camera;
@@ -199,26 +199,34 @@ export struct Config
 	Input;
 	struct
 	{
-		float32 quicksilver  = 13.75f;
-		float32 doppelganger = 16.5f;
-		float32 devil        = 11.0f;
+		float quicksilver  = 13.75f;
+		float doppelganger = 16.5f;
+		float devil        = 11.0f;
 	}
 	MagicPointsDepletionValues;
 	struct
 	{
-		float32 reverbShockDuration[2] = { 12 , 12  };
-		float32 reverbShockRange   [2] = { 300, 300 };
+		bool enable = false;
+		uint32 x = 0;
+		uint32 y = 0;
+		float color[4] = { 1.0f, 0, 0, 1.0f };
+	}
+	MissionOverlay;
+	struct
+	{
+		float reverbShockDuration[2] = { 12 , 12  };
+		float reverbShockRange   [2] = { 300, 300 };
 	}
 	Nevan;
 	bool noDevilForm = false;
-	float32 orbReach = 300;
+	float orbReach = 300;
 	struct
 	{
 		bool infiniteSwordPierce = false;
-		float32 stingerDuration   [2] = { 16 , 16  };
-		float32 stingerRange      [2] = { 560, 560 };
-		float32 airStingerDuration[2] = { 16 , 16  };
-		float32 airStingerRange   [2] = { 560, 560 };
+		float stingerDuration   [2] = { 16 , 16  };
+		float stingerRange      [2] = { 560, 560 };
+		float airStingerDuration[2] = { 16 , 16  };
+		float airStingerRange   [2] = { 560, 560 };
 	}
 	Rebellion;
 	bool removeBusyFlag = false;
@@ -230,10 +238,10 @@ export struct Config
 	ResetPermissions;
 	struct
 	{
-		float32 gunStingerDuration   [2] = { 8  , 8   };
-		float32 gunStingerRange      [2] = { 200, 200 };
-		float32 airGunStingerDuration[2] = { 8  , 8   };
-		float32 airGunStingerRange   [2] = { 200, 200 };
+		float gunStingerDuration   [2] = { 8  , 8   };
+		float gunStingerRange      [2] = { 200, 200 };
+		float airGunStingerDuration[2] = { 8  , 8   };
+		float airGunStingerRange   [2] = { 200, 200 };
 	}
 	Shotgun;
 	struct
@@ -287,7 +295,7 @@ export struct Config
 		uint8 airTrickCount[2] = { 1, 1 };
 	}
 	Trickster;
-	float32 weaponSwitchTimeout = 1;
+	float weaponSwitchTimeout = 1;
 	struct
 	{
 		bool forceFocus = true;
@@ -295,19 +303,19 @@ export struct Config
 	Window;
 	struct
 	{
-		float32 rapidSlashDuration[2] = { 5  , 5   };
-		float32 rapidSlashRange   [2] = { 330, 330 };
-		float32 judgementCutCount [2] = { 2  , 2   };
-		float32 judgementCutRange [2] = { 500, 500 };
+		float rapidSlashDuration[2] = { 5  , 5   };
+		float rapidSlashRange   [2] = { 330, 330 };
+		float judgementCutCount [2] = { 2  , 2   };
+		float judgementCutRange [2] = { 500, 500 };
 	}
 	Yamato;
 	struct
 	{
 		bool infiniteRoundTrip = false;
-		float32 stingerDuration   [2] = { 16 , 16  };
-		float32 stingerRange      [2] = { 560, 560 };
-		float32 airStingerDuration[2] = { 16 , 16  };
-		float32 airStingerRange   [2] = { 560, 560 };
+		float stingerDuration   [2] = { 16 , 16  };
+		float stingerRange      [2] = { 560, 560 };
+		float airStingerDuration[2] = { 16 , 16  };
+		float airStingerRange   [2] = { 560, 560 };
 	}
 	YamatoForceEdge;
 };
@@ -456,7 +464,6 @@ CharacterData & GetCharacterData(T & actorData)
 		actorData.newEntityIndex
 	);
 }
-
 // $GetDataEnd
 
 export void ApplyDefaultCharacterData

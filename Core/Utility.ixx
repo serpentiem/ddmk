@@ -28,45 +28,34 @@ constexpr auto countof(T(&array)[count])
 	return count;
 }
 
-//// @Todo: Update.
-//template <typename T>
-//T Reverse(T * var)
-//{
-//	constexpr uint8 size = (uint8)sizeof(T);
-//	T value = 0;
-//	for (uint8 index = 0; index < size; index++)
-//	{
-//		((byte8 *)&value)[index] = ((byte8 *)var)[(size - 1 - index)];
-//	}
-//	return value;
-//}
-//
-//// @Todo: Update.
-//float32 hexstrtof(const char * str)
-//{
-//	if (strlen(str) != 8)
-//	{
-//		return 0;
-//	}
-//	float32 value = 0;
-//	char buffer[3];
-//	for (uint8 i = 0; i < 4; i++)
-//	{
-//		buffer[0] = str[(0 + (i * 2))];
-//		buffer[1] = str[(1 + (i * 2))];
-//		buffer[2] = 0;
-//		*(byte8 *)((byte8 *)&value + (3 - i)) = (byte8)strtoul(buffer, 0, 16);
-//	}
-//	return value;
-//}
+export struct TimeData
+{
+	uint32 milliseconds;
+	uint32 seconds;
+	uint32 minutes;
+	uint32 hours;
 
-//export template
-//<
-//	typename T1,
-//	typename T2,
-//	uint64 count
-//>
-//constexpr auto countof(T2(&array)[count])
-//{
-//	return static_cast<T1>(count);
-//}
+	TimeData
+	(
+		float frameCount,
+		float frameRate
+	)
+	{
+		constexpr uint32 oneSecond = 1000;
+		constexpr uint32 oneMinute = (60 * oneSecond);
+		constexpr uint32 oneHour = (60 * oneMinute);
+
+		auto time = static_cast<uint32>((frameCount / frameRate) * 1000.0f);
+
+		hours = (time / oneHour);
+		time -= (hours * oneHour);
+
+		minutes = (time / oneMinute);
+		time -= (minutes * oneMinute);
+
+		seconds = (time / oneSecond);
+		time -= (seconds * oneSecond);
+
+		milliseconds = time;
+	}
+};

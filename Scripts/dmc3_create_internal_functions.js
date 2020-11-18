@@ -269,62 +269,24 @@ var filename = "../Mary/Internal.ixx"
 
 var file = fs.readFileSync(filename, "utf8");
 
-var startTag = /\/\/ \$DataStart$/;
-var endTag   = /\/\/ \$DataEnd$/;
+var lines = file.match(/[\S\s]*?\r\n/g);
 
-var startTagLine = -1;
-var endTagLine   = -1;
-
-var obj = file.match(/[\S\s]*?\r\n/g);
-
-for (var index = 0; index < obj.length; index++)
+if
+(
+	!Tag_Init
+	(
+		lines,
+		/\/\/ \$DataStart$/,
+		/\/\/ \$DataEnd$/
+	)
+)
 {
-	var str = obj[index].substring(0, (obj[index].length - 2));
-	if (str.match(startTag))
-	{
-		startTagLine = index;
-		break;
-	}
-}
+	console.log("Tag_Init failed.");
 
-if (startTagLine == -1)
-{
-	console.log("Start tag not found.");
 	return;
 }
 
-for (var index = 0; index < obj.length; index++)
-{
-	var str = obj[index].substring(0, (obj[index].length - 2));
-	if (str.match(endTag))
-	{
-		endTagLine = index;
-		break;
-	}
-}
-
-if (endTagLine == -1)
-{
-	console.log("End tag not found.");
-	return;
-}
-
-if (endTagLine < startTagLine)
-{
-	console.log("End tag appears before start tag.");
-	return;
-}
-
-console.log("startTagLine " + (startTagLine + 1));
-console.log("endTagLine   " + (endTagLine   + 1));
-
-for (var index = 0; index <= startTagLine; index++)
-{
-	var str = obj[index].substring(0, (obj[index].length - 2));
-	c += str + NEW_LINE;
-}
-
-c += NEW_LINE;
+Tag_CopyUntil(lines);
 
 
 
@@ -370,14 +332,10 @@ c += "\tLogFunction();" + NEW_LINE;
 c += c_init;
 c += "}" + NEW_LINE;
 
-
-
 c += NEW_LINE;
 
-for (var index = endTagLine; index < obj.length; index++)
-{
-	var str = obj[index].substring(0, (obj[index].length - 2));
-	c += str + NEW_LINE;
-}
+
+
+Tag_CopyAfter(lines);
 
 fs.writeFileSync(filename, c);
