@@ -596,12 +596,22 @@ var extra =
 
 
 	[ "newEnableCollision", "bool" ],
+	
 
 
 
 	[ "newActorLoopRun", "bool" ],
 
 
+
+	[ "newAirHikeCount"  , "uint8" ],
+	[ "newKickJumpCount" , "uint8" ],
+	[ "newWallHikeCount" , "uint8" ],
+	[ "newDashCount"     , "uint8" ],
+	[ "newSkyStarCount"  , "uint8" ],
+	[ "newAirTrickCount" , "uint8" ],
+	[ "newTrickUpCount"  , "uint8" ],
+	[ "newTrickDownCount", "uint8" ],
 
 
 

@@ -28,9 +28,22 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		Log("Session started.");
 
-		if (!Core_Memory_Init((64 * 1024 * 1024)))
+		if (!Core_Memory_Init(64 * 1024 * 1024))
 		{
 			Log("Core_Memory_Init failed.");
+
+			return 0;
+		}
+		else if
+		(
+			!backupHelper.Init
+			(
+				(8 * 1024 * 1024),
+				4096
+			)
+		)
+		{
+			Log("backupHelper.Init failed.");
 
 			return 0;
 		}
@@ -38,8 +51,6 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Config_Init("configs", "Mary.bin");
 		LoadConfig();
 
-		
-		
 		{
 			// auto & activePlayerData = GetActivePlayerData(0);
 			// auto & queuedPlayerData = GetQueuedPlayerData(0);

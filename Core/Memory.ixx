@@ -159,7 +159,7 @@ export inline byte8 * HighAlloc(uint32 size)
 	);
 }
 
-// @Todo: Add code mismatch functionality.
+// @Todo: Update.
 export template <typename T>
 void Write
 (
@@ -259,7 +259,7 @@ export void vp_memset
 	VirtualProtect(addr, size, protection, &protection);
 }
 
-// @Todo: CopyMemory.
+// @Todo: Mark obsolete.
 export void vp_memcpy
 (
 	void       * dest,
@@ -274,6 +274,203 @@ export void vp_memcpy
 	}
 	VirtualProtect(dest, size, protection, &protection);
 }
+
+export enum
+{
+	CopyMemoryFlags_VirtualProtectDestination = 1 << 0,
+	CopyMemoryFlags_VirtualProtectSource      = 1 << 1,
+};
+
+export void CopyMemory
+(
+	void * destination,
+	const void * source,
+	uint32 size,
+	byte32 flags = 0
+)
+{
+	byte32 protectionDestination = 0;
+	byte32 protectionSource = 0;
+
+	if (flags & CopyMemoryFlags_VirtualProtectDestination)
+	{
+		VirtualProtect
+		(
+			destination,
+			size,
+			PAGE_EXECUTE_READWRITE,
+			&protectionDestination
+		);
+	}
+
+	if (flags & CopyMemoryFlags_VirtualProtectSource)
+	{
+		VirtualProtect
+		(
+			const_cast<void *>(source),
+			size,
+			PAGE_EXECUTE_READWRITE,
+			&protectionSource
+		);
+	}
+
+	memcpy
+	(
+		destination,
+		source,
+		size
+	);
+
+	if (flags & CopyMemoryFlags_VirtualProtectDestination)
+	{
+		VirtualProtect
+		(
+			destination,
+			size,
+			protectionDestination,
+			&protectionDestination
+		);
+	}
+
+	if (flags & CopyMemoryFlags_VirtualProtectSource)
+	{
+		VirtualProtect
+		(
+			const_cast<void *>(source),
+			size,
+			protectionSource,
+			&protectionSource
+		);
+	}
+}
+
+export struct BackupHelper
+{
+	struct Metadata
+	{
+		byte8 * addr;
+		uint32 size;
+		byte8 * dataAddr;
+	};
+
+	byte8 * dataAddr;
+	uint32 pos;
+	Metadata * metadataAddr;
+	uint32 count;
+
+	bool Init
+	(
+		uint32 dataSize,
+		uint32 metadataSize
+	);
+	void Save
+	(
+		byte8 * addr,
+		uint32 size
+	);
+	void Restore
+	(
+		byte8 * addr
+	);
+};
+
+bool BackupHelper::Init
+(
+	uint32 dataSize,
+	uint32 metadataSize
+)
+{
+	dataAddr = HighAlloc(dataSize);
+	if (!dataAddr)
+	{
+		Log("HighAlloc failed.");
+
+		return false;
+	}
+
+	metadataAddr = reinterpret_cast<Metadata *>(HighAlloc(metadataSize));
+	if (!metadataAddr)
+	{
+		Log("HighAlloc failed.");
+
+		return false;
+	}
+
+	return true;
+}
+
+void BackupHelper::Save
+(
+	byte8 * addr,
+	uint32 size
+)
+{
+	byte32 protection = 0;
+
+	VirtualProtect
+	(
+		addr,
+		size,
+		PAGE_EXECUTE_READWRITE,
+		&protection
+	);
+
+	CopyMemory
+	(
+		(dataAddr + pos),
+		addr,
+		size
+	);
+
+	auto & metadata = metadataAddr[count];
+
+	metadata.addr = addr;
+	metadata.size = size;
+	metadata.dataAddr = (dataAddr + pos);
+
+	pos += size;
+
+	count++;
+
+	VirtualProtect
+	(
+		addr,
+		size,
+		protection,
+		&protection
+	);
+}
+
+void BackupHelper::Restore(byte8 * addr)
+{
+	for_all(uint32, metadataIndex, count)
+	{
+		auto & metadata = metadataAddr[metadataIndex];
+
+		if (metadata.addr != addr)
+		{
+			continue;
+		}
+
+		CopyMemory
+		(
+			metadata.addr,
+			metadata.dataAddr,
+			metadata.size,
+			CopyMemoryFlags_VirtualProtectDestination
+		);
+
+		return;
+	}
+
+	auto off = static_cast<uint32>(addr - appBaseAddr);
+
+	Log("%s failed.", FUNC_NAME);
+
+	Log("No Match dmc3.exe+%X", off);
+}
+
+export BackupHelper backupHelper = {};
 
 export struct FunctionData
 {
@@ -518,6 +715,118 @@ export FunctionData CreateFunction
 	return func;
 }
 
+// void Compare
+// (
+// 	byte8 * addr,
+// 	const byte8 * addr2,
+// 	uint32 size
+// )
+// {
+// 	bool mismatch = false;
+
+// 	byte32 protection = 0;
+
+// 	VirtualProtect
+// 	(
+// 		addr,
+// 		size,
+// 		PAGE_EXECUTE_READWRITE,
+// 		&protection
+// 	);
+
+// 	for_all(uint32, index, size)
+// 	{
+// 		if (addr[index] != addr2[index])
+// 		{
+// 			mismatch = true;
+
+// 			break;
+// 		}
+// 	}
+
+// 	if (mismatch)
+// 	{
+// 		char buffer[512];
+// 		uint32 pos;
+
+// 		auto off = static_cast<uint32>(addr - appBaseAddr);
+
+// 		snprintf
+// 		(
+// 			buffer,
+// 			sizeof(buffer),
+// 			"Data Mismatch dmc3.exe+%X",
+// 			off
+// 		);
+
+// 		Log(buffer);
+
+// 		snprintf
+// 		(
+// 			buffer,
+// 			sizeof(buffer),
+// 			"app"
+// 		);
+
+// 		pos = 3;
+
+// 		for_all(uint32, index, size)
+// 		{
+// 			snprintf
+// 			(
+// 				(buffer + pos),
+// 				(sizeof(buffer) - pos),
+// 				" %02X",
+// 				addr[index]
+// 			);
+
+// 			pos += 3;
+// 		}
+
+// 		Log(buffer);
+
+// 		snprintf
+// 		(
+// 			buffer,
+// 			sizeof(buffer),
+// 			"mod"
+// 		);
+
+// 		pos = 3;
+
+// 		for_all(uint32, index, size)
+// 		{
+// 			snprintf
+// 			(
+// 				(buffer + pos),
+// 				(sizeof(buffer) - pos),
+// 				" %02X",
+// 				addr2[index]
+// 			);
+
+// 			pos += 3;
+// 		}
+
+// 		Log(buffer);
+
+// 		MessageBoxA
+// 		(
+// 			0,
+// 			"Data Mismatch",
+// 			0,
+// 			MB_ICONERROR
+// 		);
+// 	}
+
+// 	VirtualProtect
+// 	(
+// 		addr,
+// 		size,
+// 		protection,
+// 		&protection
+// 	);
+// }
+
 export bool Core_Memory_Init(uint32 size = 0)
 {
 	LogFunction();
@@ -534,7 +843,7 @@ export bool Core_Memory_Init(uint32 size = 0)
 
 	Log("%u %s", moduleEntry.th32ProcessID, moduleEntry.szModule);
 
-	Log("appStart %llX", appBaseAddr            );
+	Log("appStart %llX", appBaseAddr);
 	Log("appEnd   %llX", (appBaseAddr + appSize));
 
 	if (!size)

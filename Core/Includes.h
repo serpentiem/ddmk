@@ -11,5 +11,7 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 
+#undef CopyMemory
+
 #include "Datatypes.h"
 #include "Macros.h"
