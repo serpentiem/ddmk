@@ -1,3 +1,5 @@
+// @Todo: Actor reset doesn't trigger Actor_Toggle.
+
 module;
 #include "../Core/Core.h"
 
@@ -509,6 +511,10 @@ void Overlay2()
 
 		// 	ImGui::Text("executeFunction  %u", executeFunction);
 		// }
+
+		ImGui::Text("Backup");
+		ImGui::Text("count %u", backupHelper.count);
+
 
 		ImGui::PopStyleColor();
 		ImGui::PopFont();
@@ -3405,6 +3411,16 @@ void Main()
 				ToggleActor(actorIndex, enable);
 			}
 			ImGui::Text("");
+
+
+			if (GUI_Button("Backup"))
+			{
+				Log("Backup");
+				Log("dataAddr %llX", backupHelper.dataAddr);
+				Log("count %u", backupHelper.count);
+			}
+
+
 		}
 
 		Actor();

@@ -472,7 +472,7 @@ void BackupHelper::Restore(byte8 * addr)
 
 export BackupHelper backupHelper = {};
 
-export struct FunctionData
+export struct Function
 {
 	byte8 *  addr;
 	byte8 *  sect0;
@@ -482,7 +482,7 @@ export struct FunctionData
 };
 
 // @Research: Add xmm register saving.
-export FunctionData CreateFunction
+export Function CreateFunction
 (
 	void   * funcAddr      = 0,
 	byte8  * jumpAddr      = 0,
@@ -496,7 +496,7 @@ export FunctionData CreateFunction
 	bool     noReturn      = false
 )
 {
-	FunctionData func = {};
+	Function func = {};
 	uint32       pos  = 0;
 
 	auto Feed = [&]
