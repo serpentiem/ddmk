@@ -1,3 +1,4 @@
+// @Todo: Update config.
 // @Todo: Other crash.
 // @Todo: Cleanup.
 // @Todo: Disable Character Switch Controller in mission 18 floor and in cutscenes.
@@ -5791,52 +5792,59 @@ void ToggleWeaponCountAdjustments(bool enable)
 
 #pragma region Mobility
 
-// byte8 * AirHikeAddr                  = 0;
-// byte8 * KickJumpAddr                 = 0;
-// byte8 * WallHikeAddr                 = 0;
-// byte8 * DashAddr                     = 0;
-// byte8 * SkyStarAddr                  = 0;
-// byte8 * AirTrickDanteAddr            = 0;
-// byte8 * AirTrickVergilAddr           = 0;
-// byte8 * TrickUpAddr                  = 0;
-// byte8 * TrickDownAddr                = 0;
-// byte8 * ResetMobilityCountersAddr[6] = {};
-
-
-
-// byte8 * AirTrickVergilResetFixAddr = 0;
-
-bool AirHike(ActorData & actorData)
+bool MobilityFunction
+(
+	ActorData & actorData,
+	uint8 & var,
+	uint8(&array)[2]
+)
 {
 	uint8 index = (actorData.devil) ? 1 : 0;
 
+	if (var >= array[index])
+	{
+		return false;
+	}
+
+	var++;
+
+	return true;
+}
+
+bool AirHike(ActorData & actorData)
+{
 	if (actorData.character != CHAR_DANTE)
 	{
 		return false;
 	}
-	else if (actorData.newAirHikeCount >= activeConfig.AirHike.count[index])
-	{
-		return false;
-	}
 
-	actorData.newAirHikeCount++;
-
-	return true;
+	return MobilityFunction
+	(
+		actorData,
+		actorData.newAirHikeCount,
+		activeConfig.AirHike.count
+	);
 }
 
 bool KickJump(ActorData & actorData)
 {
-	return true;
+	return MobilityFunction
+	(
+		actorData,
+		actorData.newKickJumpCount,
+		activeConfig.kickJumpCount
+	);
 }
 
 bool WallHike(ActorData & actorData)
 {
-	return true;
+	return MobilityFunction
+	(
+		actorData,
+		actorData.newWallHikeCount,
+		activeConfig.wallHikeCount
+	);
 }
-
-
-
-
 
 template <uint32 event>
 uint32 MobilityFunction
@@ -5963,65 +5971,14 @@ auto TrickDown
 	);
 }
 
-// void SkyStarReset(ActorData & actorData)
-// {
-// 	actorData.airHikeCount = 0;
-// 	actorData.skyStarCount = 0;
+void ResetDash(ActorData & actorData)
+{
+	LogFunction(actorData.operator byte8 *());
 
-// 	if (actorData.state & STATE_ON_FLOOR)
-// 	{
-// 		auto & event = actorData.eventData[1].index;
+	actorData.newDashCount = 0;
+}
 
-// 		switch (actorData.character)
-// 		{
-// 			case CHAR_DANTE:
-// 			{
-// 				switch (event)
-// 				{
-// 					case ACTOR_EVENT_DANTE_AIR_TRICK:
-// 					{
-// 						actorData.airTrickCount = 1;
-
-// 						break;
-// 					}
-// 				}
-
-// 				break;
-// 			}
-// 			case CHAR_VERGIL:
-// 			{
-// 				switch (event)
-// 				{
-// 					case ACTOR_EVENT_VERGIL_AIR_TRICK:
-// 					{
-// 						actorData.airTrickCount = 1;
-
-// 						break;
-// 					}
-// 					case ACTOR_EVENT_VERGIL_TRICK_UP:
-// 					{
-// 						actorData.trickUpCount = 1;
-
-// 						break;
-// 					}
-// 					case ACTOR_EVENT_VERGIL_TRICK_DOWN:
-// 					{
-// 						actorData.trickDownCount = 1;
-
-// 						break;
-// 					}
-// 				}
-
-// 				break;
-// 			}
-// 		}
-// 	}
-// }
-
-
-
-
-void ResetMobilityCounters(ActorData & actorData)
+void ResetSkyStar(ActorData & actorData)
 {
 	LogFunction(actorData.operator byte8 *());
 
@@ -6034,43 +5991,54 @@ void ResetMobilityCounters(ActorData & actorData)
 	actorData.newTrickUpCount    = 0;
 	actorData.newTrickDownCount  = 0;
 	actorData.newAirStingerCount = 0;
+
+	if (actorData.state & STATE_ON_FLOOR)
+	{
+		switch (actorData.character)
+		{
+			case CHAR_DANTE:
+			{
+				switch (actorData.eventData[0].index)
+				{
+					case ACTOR_EVENT_DANTE_AIR_TRICK:
+					{
+						actorData.newAirTrickCount = 1;
+
+						break;
+					}
+				}
+
+				break;
+			}
+			case CHAR_VERGIL:
+			{
+				switch (actorData.eventData[0].index)
+				{
+					case ACTOR_EVENT_VERGIL_AIR_TRICK:
+					{
+						actorData.newAirTrickCount = 1;
+
+						break;
+					}
+					case ACTOR_EVENT_VERGIL_TRICK_UP:
+					{
+						actorData.newTrickUpCount = 1;
+
+						break;
+					}
+					case ACTOR_EVENT_VERGIL_TRICK_DOWN:
+					{
+						actorData.newTrickDownCount = 1;
+
+						break;
+					}
+				}
+
+				break;
+			}
+		}
+	}
 }
-
-
-void UpdateMobilityCounters
-(
-	ActorData & actorData,
-	uint32 index
-)
-{
-	LogFunction(actorData.operator byte8 *(), index);
-
-
-	/*
-	0 jump
-	2 air hike
-	3 kick jump
-	4 jump cancel
-	7 wall hike end
-	8 leap from ledge
-	*/
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void ToggleMobility(bool enable)
 {
@@ -6202,23 +6170,23 @@ void ToggleMobility(bool enable)
 		{
 			0x84, 0xC0,                         // test al,al
 			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, // je dmc3.exe+1E64A9
+			0xE8, 0x00, 0x00, 0x00, 0x00,       // call dmc3.exe+1E0740
 		};
 		constexpr uint32 size0 = 5;
 		constexpr uint32 size2 = sizeof(sect2);
 
 		if (!run)
 		{
-			func = CreateFunction(WallHike, jumpAddr, true, false, size0, 0, size2);
-			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			func = CreateFunction(WallHike, jumpAddr, true, false, 0, 0, size2);
 			CopyMemory(func.sect2, sect2, size2);
-			WriteCall(func.sect0, (appBaseAddr + 0x1E0740));
 			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E64A9), 6);
+			WriteCall((func.sect2 + 8), (appBaseAddr + 0x1E0740));
 			backupHelper.Save(addr, size0);
 		}
 
 		if (enable)
 		{
-			WriteJump(addr, func.addr, (size0 - 5));
+			WriteJump(addr, func.addr);
 		}
 		else
 		{
@@ -6419,13 +6387,13 @@ void ToggleMobility(bool enable)
 		}
 	}
 
-	// Reset Mobility Counters
+	// Reset Dash
 	{
-		auto addr     = (appBaseAddr + 0x1DFED4);
-		auto jumpAddr = (appBaseAddr + 0x1DFEDB);
+		auto addr     = (appBaseAddr + 0x1E0AFE);
+		auto jumpAddr = (appBaseAddr + 0x1E0B05);
 		/*
-		dmc3.exe+1DFED4 - 0FB7 93 C0000000 - movzx edx,word ptr [rbx+000000C0]
-		dmc3.exe+1DFEDB - E9 03010000      - jmp dmc3.exe+1DFFE3
+		dmc3.exe+1E0AFE - 40 88 BB 5C630000 - mov [rbx+0000635C],dil
+		dmc3.exe+1E0B05 - 8B 83 003E0000    - mov eax,[rbx+00003E00]
 		*/
 
 		static Function func = {};
@@ -6439,7 +6407,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(ResetMobilityCounters, jumpAddr, true, true, size0, size1);
+			func = CreateFunction(ResetDash, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
@@ -6455,11 +6423,11 @@ void ToggleMobility(bool enable)
 		}
 	}
 	{
-		auto addr     = (appBaseAddr + 0x1DFFDC);
-		auto jumpAddr = (appBaseAddr + 0x1DFFE3);
+		auto addr     = (appBaseAddr + 0x1F8059);
+		auto jumpAddr = (appBaseAddr + 0x1F8060);
 		/*
-		dmc3.exe+1DFFDC - 0FB7 93 D03E0000    - movzx edx,word ptr [rbx+00003ED0]
-		dmc3.exe+1DFFE3 - F3 0F10 15 81D51700 - movss xmm2,[dmc3.exe+35D56C]
+		dmc3.exe+1F8059 - 40 88 BB 5C630000 - mov [rbx+0000635C],dil
+		dmc3.exe+1F8060 - C6 83 153F0000 04 - mov byte ptr [rbx+00003F15],04
 		*/
 
 		static Function func = {};
@@ -6473,7 +6441,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(ResetMobilityCounters, jumpAddr, true, true, size0, size1);
+			func = CreateFunction(ResetDash, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
@@ -6489,11 +6457,115 @@ void ToggleMobility(bool enable)
 		}
 	}
 	{
-		auto addr     = (appBaseAddr + 0x1E07D5);
-		auto jumpAddr = (appBaseAddr + 0x1E07DB);
+		auto addr     = (appBaseAddr + 0x1F8383);
+		auto jumpAddr = (appBaseAddr + 0x1F838A);
 		/*
-		dmc3.exe+1E07D5 - 8B 05 BD983A00 - mov eax,[dmc3.exe+58A098]
-		dmc3.exe+1E07DB - BA 1F000000    - mov edx,0000001F
+		dmc3.exe+1F8383 - 40 88 BB 5C630000 - mov [rbx+0000635C],dil
+		dmc3.exe+1F838A - 48 89 BB C43E0000 - mov [rbx+00003EC4],rdi
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+		constexpr uint32 size0 = 7;
+		constexpr uint32 size1 = sizeof(sect1);
+
+		if (!run)
+		{
+			func = CreateFunction(ResetDash, jumpAddr, true, true, size0, size1);
+			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, size1);
+			backupHelper.Save(addr, size0);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size0 - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Reset Sky Star
+	{
+		auto addr     = (appBaseAddr + 0x1DFEAE);
+		auto jumpAddr = (appBaseAddr + 0x1DFEB4);
+		/*
+		dmc3.exe+1DFEAE - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		dmc3.exe+1DFEB4 - 89 AB 74630000 - mov [rbx+00006374],ebp
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+		constexpr uint32 size0 = 6;
+		constexpr uint32 size1 = sizeof(sect1);
+
+		if (!run)
+		{
+			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
+			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, size1);
+			backupHelper.Save(addr, size0);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size0 - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1DFFB6);
+		auto jumpAddr = (appBaseAddr + 0x1DFFBC);
+		/*
+		dmc3.exe+1DFFB6 - 88 8B 5D630000    - mov [rbx+0000635D],cl
+		dmc3.exe+1DFFBC - 40 88 AB AE3F0000 - mov [rbx+00003FAE],bpl
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+		constexpr uint32 size0 = 6;
+		constexpr uint32 size1 = sizeof(sect1);
+
+		if (!run)
+		{
+			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
+			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, size1);
+			backupHelper.Save(addr, size0);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size0 - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1E07A2);
+		auto jumpAddr = (appBaseAddr + 0x1E07A9);
+		/*
+		dmc3.exe+1E07A2 - 41 88 89 5D630000 - mov [r9+0000635D],cl
+		dmc3.exe+1E07A9 - EB 06             - jmp dmc3.exe+1E07B1
 		*/
 
 		static Function func = {};
@@ -6502,15 +6574,14 @@ void ToggleMobility(bool enable)
 		{
 			mov_rcx_r9,
 		};
-		constexpr uint32 size0 = 6;
+		constexpr uint32 size0 = 7;
 		constexpr uint32 size1 = sizeof(sect1);
 
 		if (!run)
 		{
-			func = CreateFunction(ResetMobilityCounters, jumpAddr, true, true, size0, size1);
+			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
-			WriteAddress(func.sect0, (appBaseAddr + 0x58A098), size0);
 			backupHelper.Save(addr, size0);
 		}
 
@@ -6524,11 +6595,11 @@ void ToggleMobility(bool enable)
 		}
 	}
 	{
-		auto addr     = (appBaseAddr + 0x1E0D9A);
-		auto jumpAddr = (appBaseAddr + 0x1E0DA2);
+		auto addr     = (appBaseAddr + 0x1E0D81);
+		auto jumpAddr = (appBaseAddr + 0x1E0D87);
 		/*
-		dmc3.exe+1E0D9A - F3 0F10 15 CAC71700 - movss xmm2,[dmc3.exe+35D56C]
-		dmc3.exe+1E0DA2 - 48 8B CB            - mov rcx,rbx
+		dmc3.exe+1E0D81 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		dmc3.exe+1E0D87 - 39 7B 78       - cmp [rbx+78],edi
 		*/
 
 		static Function func = {};
@@ -6537,15 +6608,14 @@ void ToggleMobility(bool enable)
 		{
 			mov_rcx_rbx,
 		};
-		constexpr uint32 size0 = 8;
+		constexpr uint32 size0 = 6;
 		constexpr uint32 size1 = sizeof(sect1);
 
 		if (!run)
 		{
-			func = CreateFunction(ResetMobilityCounters, jumpAddr, true, true, size0, size1);
+			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
-			WriteAddress(func.sect0, (appBaseAddr + 0x35D56C), size0);
 			backupHelper.Save(addr, size0);
 		}
 
@@ -6558,27 +6628,28 @@ void ToggleMobility(bool enable)
 			backupHelper.Restore(addr);
 		}
 	}
-
-
-
-
 	{
-		auto addr     = (appBaseAddr + 0x1E0EE0);
-		auto jumpAddr = (appBaseAddr + 0x1E0EE6);
+		auto addr     = (appBaseAddr + 0x1E0F64);
+		auto jumpAddr = (appBaseAddr + 0x1E0F6B);
 		/*
-		dmc3.exe+1E0EE0 - 4C 8B C1      - mov r8,rcx
-		dmc3.exe+1E0EE3 - 83 FA 0B      - cmp edx,0B
-		dmc3.exe+1E0EE6 - 0F87 DF000000 - ja dmc3.exe+1E0FCB
+		dmc3.exe+1E0F64 - 41 88 88 5D630000 - mov [r8+0000635D],cl
+		dmc3.exe+1E0F6B - EB 5E             - jmp dmc3.exe+1E0FCB
 		*/
 
 		static Function func = {};
 
-		constexpr uint32 size0 = 6;
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_r8,
+		};
+		constexpr uint32 size0 = 7;
+		constexpr uint32 size1 = sizeof(sect1);
 
 		if (!run)
 		{
-			func = CreateFunction(UpdateMobilityCounters, jumpAddr, true, true, size0);
+			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
 		}
 
@@ -6591,53 +6662,46 @@ void ToggleMobility(bool enable)
 			backupHelper.Restore(addr);
 		}
 	}
-
-
-
-	// {
-	// 	auto addr = (appBaseAddr + 0x1E0FCB);
-	// 	/*
-	// 	dmc3.exe+1E0FCB - 41 83 78 78 00             - cmp dword ptr [r8+78],00
-	// 	dmc3.exe+1E0FD0 - 41 C7 80 74630000 00000000 - mov [r8+00006374],00000000
-	// 	dmc3.exe+1E0FDB - 41 C6 80 AE3F0000 00       - mov byte ptr [r8+00003FAE],00
-	// 	dmc3.exe+1E0FE3 - 74 10                      - je dmc3.exe+1E0FF5
-	// 	dmc3.exe+1E0FE5 - 41 C6 80 133F0000 00       - mov byte ptr [r8+00003F13],00
-	// 	dmc3.exe+1E0FED - 41 C6 80 113F0000 00       - mov byte ptr [r8+00003F11],00
-	// 	dmc3.exe+1E0FF5 - C3                         - ret
-	// 	*/
-
-	// 	static Function func = {};
-
-	// 	constexpr byte8 sect1[] =
-	// 	{
-	// 		mov_rcx_r8,
-	// 	};
-	// 	constexpr uint32 size0 = 42;
-	// 	constexpr uint32 size1 = sizeof(sect1);
-
-	// 	if (!run)
-	// 	{
-	// 		func = CreateFunction(ResetMobilityCounters, 0, true, true, size0, size1);
-	// 		CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
-	// 		CopyMemory(func.sect1, sect1, size1);
-	// 		backupHelper.Save(addr, size0);
-	// 	}
-
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(addr, func.addr);
-	// 	}
-	// 	else
-	// 	{
-	// 		backupHelper.Restore(addr);
-	// 	}
-	// }
 	{
-		auto addr     = (appBaseAddr + 0x1E16EB);
-		auto jumpAddr = (appBaseAddr + 0x1E16F3);
+		auto addr     = (appBaseAddr + 0x1E0FBD);
+		auto jumpAddr = (appBaseAddr + 0x1E0FC4);
 		/*
-		dmc3.exe+1E16EB - F3 0F10 15 79BE1700 - movss xmm2,[dmc3.exe+35D56C]
-		dmc3.exe+1E16F3 - 48 8B CB            - mov rcx,rbx
+		dmc3.exe+1E0FBD - 41 88 88 5D630000 - mov [r8+0000635D],cl
+		dmc3.exe+1E0FC4 - 41 FE 88 133F0000 - dec [r8+00003F13]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_r8,
+		};
+		constexpr uint32 size0 = 7;
+		constexpr uint32 size1 = sizeof(sect1);
+
+		if (!run)
+		{
+			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
+			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, size1);
+			backupHelper.Save(addr, size0);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size0 - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1E16D2);
+		auto jumpAddr = (appBaseAddr + 0x1E16D8);
+		/*
+		dmc3.exe+1E16D2 - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		dmc3.exe+1E16D8 - 39 7B 78       - cmp [rbx+78],edi
 		*/
 
 		static Function func = {};
@@ -6646,15 +6710,14 @@ void ToggleMobility(bool enable)
 		{
 			mov_rcx_rbx,
 		};
-		constexpr uint32 size0 = 8;
+		constexpr uint32 size0 = 6;
 		constexpr uint32 size1 = sizeof(sect1);
 
 		if (!run)
 		{
-			func = CreateFunction(ResetMobilityCounters, jumpAddr, true, true, size0, size1);
+			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
-			WriteAddress(func.sect0, (appBaseAddr + 0x35D56C), size0);
 			backupHelper.Save(addr, size0);
 		}
 
@@ -11524,6 +11587,440 @@ void ToggleMobility2(bool enable)
 }
 
 
+
+
+
+
+
+	// Reset Mobility Counters
+	{
+		auto addr     = (appBaseAddr + 0x1DFEAE);
+		auto jumpAddr = (appBaseAddr + 0x1DFEB4);
+		/*
+		dmc3.exe+1DFEAE - 88 8B 5D630000 - mov [rbx+0000635D],cl
+		dmc3.exe+1DFEB4 - 89 AB 74630000 - mov [rbx+00006374],ebp
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+		constexpr uint32 size0 = 6;
+		constexpr uint32 size1 = sizeof(sect1);
+
+		if (!run)
+		{
+			func = CreateFunction(0, jumpAddr, true, true, size0, size1);
+			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, size1);
+			backupHelper.Save(addr, size0);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size0 - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/*
+	dmc3.exe+1DFED4 - 0FB7 93 C0000000 - movzx edx,word ptr [rbx+000000C0]
+	dmc3.exe+1DFEDB - E9 03010000      - jmp dmc3.exe+1DFFE3
+	*/
+	/*
+	dmc3.exe+1DFFDC - 0FB7 93 D03E0000    - movzx edx,word ptr [rbx+00003ED0]
+	dmc3.exe+1DFFE3 - F3 0F10 15 81D51700 - movss xmm2,[dmc3.exe+35D56C]
+	*/
+	/*
+	dmc3.exe+1E07D5 - 8B 05 BD983A00 - mov eax,[dmc3.exe+58A098]
+	dmc3.exe+1E07DB - BA 1F000000    - mov edx,0000001F
+	*/
+	/*
+	dmc3.exe+1E0D9A - F3 0F10 15 CAC71700 - movss xmm2,[dmc3.exe+35D56C]
+	dmc3.exe+1E0DA2 - 48 8B CB            - mov rcx,rbx
+	*/
+	/*
+	dmc3.exe+1E0EE0 - 4C 8B C1      - mov r8,rcx
+	dmc3.exe+1E0EE3 - 83 FA 0B      - cmp edx,0B
+	dmc3.exe+1E0EE6 - 0F87 DF000000 - ja dmc3.exe+1E0FCB
+	*/
+	/*
+	dmc3.exe+1E0FCB - 41 83 78 78 00             - cmp dword ptr [r8+78],00
+	dmc3.exe+1E0FD0 - 41 C7 80 74630000 00000000 - mov [r8+00006374],00000000
+	dmc3.exe+1E0FDB - 41 C6 80 AE3F0000 00       - mov byte ptr [r8+00003FAE],00
+	dmc3.exe+1E0FE3 - 74 10                      - je dmc3.exe+1E0FF5
+	dmc3.exe+1E0FE5 - 41 C6 80 133F0000 00       - mov byte ptr [r8+00003F13],00
+	dmc3.exe+1E0FED - 41 C6 80 113F0000 00       - mov byte ptr [r8+00003F11],00
+	dmc3.exe+1E0FF5 - C3                         - ret
+	*/
+	/*
+	dmc3.exe+1E16EB - F3 0F10 15 79BE1700 - movss xmm2,[dmc3.exe+35D56C]
+	dmc3.exe+1E16F3 - 48 8B CB            - mov rcx,rbx
+	*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// // Reset Mobility Counters
+	// {
+	// 	auto addr     = (appBaseAddr + 0x1DFED4);
+	// 	auto jumpAddr = (appBaseAddr + 0x1DFEDB);
+	// 	/*
+	// 	dmc3.exe+1DFED4 - 0FB7 93 C0000000 - movzx edx,word ptr [rbx+000000C0]
+	// 	dmc3.exe+1DFEDB - E9 03010000      - jmp dmc3.exe+1DFFE3
+	// 	*/
+
+	// 	static Function func = {};
+
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rbx,
+	// 	};
+	// 	constexpr uint32 size0 = 7;
+	// 	constexpr uint32 size1 = sizeof(sect1);
+
+	// 	if (!run)
+	// 	{
+	// 		func = CreateFunction(ResetMobilityCounters, jumpAddr, true, true, size0, size1);
+	// 		CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+	// 		CopyMemory(func.sect1, sect1, size1);
+	// 		backupHelper.Save(addr, size0);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(addr, func.addr, (size0 - 5));
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+	// {
+	// 	auto addr     = (appBaseAddr + 0x1DFFDC);
+	// 	auto jumpAddr = (appBaseAddr + 0x1DFFE3);
+	// 	/*
+	// 	dmc3.exe+1DFFDC - 0FB7 93 D03E0000    - movzx edx,word ptr [rbx+00003ED0]
+	// 	dmc3.exe+1DFFE3 - F3 0F10 15 81D51700 - movss xmm2,[dmc3.exe+35D56C]
+	// 	*/
+
+	// 	static Function func = {};
+
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rbx,
+	// 	};
+	// 	constexpr uint32 size0 = 7;
+	// 	constexpr uint32 size1 = sizeof(sect1);
+
+	// 	if (!run)
+	// 	{
+	// 		func = CreateFunction(ResetMobilityCounters, jumpAddr, true, true, size0, size1);
+	// 		CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+	// 		CopyMemory(func.sect1, sect1, size1);
+	// 		backupHelper.Save(addr, size0);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(addr, func.addr, (size0 - 5));
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+	// {
+	// 	auto addr     = (appBaseAddr + 0x1E07D5);
+	// 	auto jumpAddr = (appBaseAddr + 0x1E07DB);
+	// 	/*
+	// 	dmc3.exe+1E07D5 - 8B 05 BD983A00 - mov eax,[dmc3.exe+58A098]
+	// 	dmc3.exe+1E07DB - BA 1F000000    - mov edx,0000001F
+	// 	*/
+
+	// 	static Function func = {};
+
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_r9,
+	// 	};
+	// 	constexpr uint32 size0 = 6;
+	// 	constexpr uint32 size1 = sizeof(sect1);
+
+	// 	if (!run)
+	// 	{
+	// 		func = CreateFunction(ResetMobilityCounters, jumpAddr, true, true, size0, size1);
+	// 		CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+	// 		CopyMemory(func.sect1, sect1, size1);
+	// 		WriteAddress(func.sect0, (appBaseAddr + 0x58A098), size0);
+	// 		backupHelper.Save(addr, size0);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(addr, func.addr, (size0 - 5));
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+	// {
+	// 	auto addr     = (appBaseAddr + 0x1E0D9A);
+	// 	auto jumpAddr = (appBaseAddr + 0x1E0DA2);
+	// 	/*
+	// 	dmc3.exe+1E0D9A - F3 0F10 15 CAC71700 - movss xmm2,[dmc3.exe+35D56C]
+	// 	dmc3.exe+1E0DA2 - 48 8B CB            - mov rcx,rbx
+	// 	*/
+
+	// 	static Function func = {};
+
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rbx,
+	// 	};
+	// 	constexpr uint32 size0 = 8;
+	// 	constexpr uint32 size1 = sizeof(sect1);
+
+	// 	if (!run)
+	// 	{
+	// 		func = CreateFunction(ResetMobilityCounters, jumpAddr, true, true, size0, size1);
+	// 		CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+	// 		CopyMemory(func.sect1, sect1, size1);
+	// 		WriteAddress(func.sect0, (appBaseAddr + 0x35D56C), size0);
+	// 		backupHelper.Save(addr, size0);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(addr, func.addr, (size0 - 5));
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+
+
+
+
+	// {
+	// 	auto addr     = (appBaseAddr + 0x1E0EE0);
+	// 	auto jumpAddr = (appBaseAddr + 0x1E0EE6);
+	// 	/*
+	// 	dmc3.exe+1E0EE0 - 4C 8B C1      - mov r8,rcx
+	// 	dmc3.exe+1E0EE3 - 83 FA 0B      - cmp edx,0B
+	// 	dmc3.exe+1E0EE6 - 0F87 DF000000 - ja dmc3.exe+1E0FCB
+	// 	*/
+
+	// 	static Function func = {};
+
+	// 	constexpr uint32 size0 = 6;
+
+	// 	if (!run)
+	// 	{
+	// 		func = CreateFunction(UpdateMobilityCounters, jumpAddr, true, true, size0);
+	// 		CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+	// 		backupHelper.Save(addr, size0);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(addr, func.addr, (size0 - 5));
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+
+
+
+	// // {
+	// // 	auto addr = (appBaseAddr + 0x1E0FCB);
+	// // 	/*
+	// // 	dmc3.exe+1E0FCB - 41 83 78 78 00             - cmp dword ptr [r8+78],00
+	// // 	dmc3.exe+1E0FD0 - 41 C7 80 74630000 00000000 - mov [r8+00006374],00000000
+	// // 	dmc3.exe+1E0FDB - 41 C6 80 AE3F0000 00       - mov byte ptr [r8+00003FAE],00
+	// // 	dmc3.exe+1E0FE3 - 74 10                      - je dmc3.exe+1E0FF5
+	// // 	dmc3.exe+1E0FE5 - 41 C6 80 133F0000 00       - mov byte ptr [r8+00003F13],00
+	// // 	dmc3.exe+1E0FED - 41 C6 80 113F0000 00       - mov byte ptr [r8+00003F11],00
+	// // 	dmc3.exe+1E0FF5 - C3                         - ret
+	// // 	*/
+
+	// // 	static Function func = {};
+
+	// // 	constexpr byte8 sect1[] =
+	// // 	{
+	// // 		mov_rcx_r8,
+	// // 	};
+	// // 	constexpr uint32 size0 = 42;
+	// // 	constexpr uint32 size1 = sizeof(sect1);
+
+	// // 	if (!run)
+	// // 	{
+	// // 		func = CreateFunction(ResetMobilityCounters, 0, true, true, size0, size1);
+	// // 		CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+	// // 		CopyMemory(func.sect1, sect1, size1);
+	// // 		backupHelper.Save(addr, size0);
+	// // 	}
+
+	// // 	if (enable)
+	// // 	{
+	// // 		WriteJump(addr, func.addr);
+	// // 	}
+	// // 	else
+	// // 	{
+	// // 		backupHelper.Restore(addr);
+	// // 	}
+	// // }
+	// {
+	// 	auto addr     = (appBaseAddr + 0x1E16EB);
+	// 	auto jumpAddr = (appBaseAddr + 0x1E16F3);
+	// 	/*
+	// 	dmc3.exe+1E16EB - F3 0F10 15 79BE1700 - movss xmm2,[dmc3.exe+35D56C]
+	// 	dmc3.exe+1E16F3 - 48 8B CB            - mov rcx,rbx
+	// 	*/
+
+	// 	static Function func = {};
+
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rbx,
+	// 	};
+	// 	constexpr uint32 size0 = 8;
+	// 	constexpr uint32 size1 = sizeof(sect1);
+
+	// 	if (!run)
+	// 	{
+	// 		func = CreateFunction(ResetMobilityCounters, jumpAddr, true, true, size0, size1);
+	// 		CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+	// 		CopyMemory(func.sect1, sect1, size1);
+	// 		WriteAddress(func.sect0, (appBaseAddr + 0x35D56C), size0);
+	// 		backupHelper.Save(addr, size0);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(addr, func.addr, (size0 - 5));
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+
+
+
+// void UpdateMobilityCounters
+// (
+// 	ActorData & actorData,
+// 	uint32 index
+// )
+// {
+// 	LogFunction(actorData.operator byte8 *(), index);
+
+
+// 	/*
+// 	0 jump
+// 	2 air hike
+// 	3 kick jump
+// 	4 jump cancel
+// 	7 wall hike end
+// 	8 leap from ledge
+// 	*/
+
+
+// }
+
+
+
+
+
+
+
+// void SkyStarReset(ActorData & actorData)
+// {
+// 	actorData.airHikeCount = 0;
+// 	actorData.skyStarCount = 0;
+
+
+// }
+
+
+
+
+
+
+
+
+// byte8 * AirHikeAddr                  = 0;
+// byte8 * KickJumpAddr                 = 0;
+// byte8 * WallHikeAddr                 = 0;
+// byte8 * DashAddr                     = 0;
+// byte8 * SkyStarAddr                  = 0;
+// byte8 * AirTrickDanteAddr            = 0;
+// byte8 * AirTrickVergilAddr           = 0;
+// byte8 * TrickUpAddr                  = 0;
+// byte8 * TrickDownAddr                = 0;
+// byte8 * ResetMobilityCountersAddr[6] = {};
+
+
+
+// byte8 * AirTrickVergilResetFixAddr = 0;
 
 
 

@@ -197,6 +197,7 @@ export struct Config
 		bool hideMouseCursor = true;
 	}
 	Input;
+	uint8 kickJumpCount[2] = { 1, 1 };
 	struct
 	{
 		float quicksilver  = 13.75f;
@@ -295,6 +296,7 @@ export struct Config
 		uint8 airTrickCount[2] = { 1, 1 };
 	}
 	Trickster;
+	uint8 wallHikeCount[2] = { 1, 1 };
 	float weaponSwitchTimeout = 1;
 	struct
 	{
