@@ -76,7 +76,24 @@ void LogFunctionHelper
 	T2 var2
 )
 {
-	Log("%s %u %u", funcName, var, var2);
+	if constexpr
+	(
+		TypeMatch<T1, byte8 *>::value &&
+		TypeMatch<T2, uint32>::value
+	)
+	{
+		Log
+		(
+			"%s %llX %u",
+			funcName,
+			var,
+			var2
+		);
+	}
+	else
+	{
+		Log("%s %u %u", funcName, var, var2);
+	}
 }
 
 export template
