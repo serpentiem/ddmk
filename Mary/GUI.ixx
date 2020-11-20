@@ -22,10 +22,8 @@ import Graphics;
 import Internal;
 import Model;
 import Other;
-//import Pause;
 import Scene;
 import Speed;
-//import State;
 import Training;
 import Window;
 
@@ -2027,18 +2025,18 @@ void Dante()
 				sizeof(Config::AirHike)
 			);
 
-			memcpy
-			(
-				&queuedConfig.Trickster,
-				&defaultConfig.Trickster,
-				sizeof(Config::Trickster)
-			);
-			memcpy
-			(
-				&activeConfig.Trickster,
-				&queuedConfig.Trickster,
-				sizeof(Config::Trickster)
-			);
+			// memcpy
+			// (
+			// 	&queuedConfig.Trickster,
+			// 	&defaultConfig.Trickster,
+			// 	sizeof(Config::Trickster)
+			// );
+			// memcpy
+			// (
+			// 	&activeConfig.Trickster,
+			// 	&queuedConfig.Trickster,
+			// 	sizeof(Config::Trickster)
+			// );
 
 			memcpy
 			(
@@ -2115,48 +2113,6 @@ void Dante()
 
 		ImGui::Text("");
 
-		ActionData
-		(
-			"Count",
-			activeConfig.AirHike.count,
-			queuedConfig.AirHike.count,
-			defaultConfig.AirHike.count
-		);
-		GUI_SectionEnd();
-		ImGui::Text("");
-
-		ImGui::Text("Trickster");
-		ImGui::SameLine();
-		TooltipHelper
-		(
-			"(?)",
-			"Requires enabled Actor module.\n"
-			"\n"
-			"Left: Human Right: Devil"
-		);
-		ImGui::Text("");
-
-		ActionData
-		(
-			"Dash Count",
-			activeConfig.Trickster.dashCount,
-			queuedConfig.Trickster.dashCount,
-			defaultConfig.Trickster.dashCount
-		);
-		ActionData
-		(
-			"Sky Star Count",
-			activeConfig.Trickster.skyStarCount,
-			queuedConfig.Trickster.skyStarCount,
-			defaultConfig.Trickster.skyStarCount
-		);
-		ActionData
-		(
-			"Air Trick Count",
-			activeConfig.Trickster.airTrickCount,
-			queuedConfig.Trickster.airTrickCount,
-			defaultConfig.Trickster.airTrickCount
-		);
 		GUI_SectionEnd();
 		ImGui::Text("");
 
@@ -2302,6 +2258,93 @@ void Debug()
 		{
 			PlayTrack(buffer);
 		}
+		ImGui::Text("");
+	}
+}
+
+#pragma endregion
+
+#pragma region Mobility
+
+void Mobility()
+{
+	if (ImGui::CollapsingHeader("Mobility"))
+	{
+		ImGui::Text("");
+
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module.\n"
+			"\n"
+			"Left: Human Right: Devil"
+		);
+		ImGui::Text("");
+
+		ActionData
+		(
+			"Air Hike Count",
+			activeConfig.airHikeCount,
+			queuedConfig.airHikeCount,
+			defaultConfig.airHikeCount
+		);
+		ActionData
+		(
+			"Kick Jump Count",
+			activeConfig.kickJumpCount,
+			queuedConfig.kickJumpCount,
+			defaultConfig.kickJumpCount
+		);
+		ActionData
+		(
+			"Wall Hike Count",
+			activeConfig.wallHikeCount,
+			queuedConfig.wallHikeCount,
+			defaultConfig.wallHikeCount
+		);
+		ActionData
+		(
+			"Dash Count",
+			activeConfig.dashCount,
+			queuedConfig.dashCount,
+			defaultConfig.dashCount
+		);
+		ActionData
+		(
+			"Sky Star Count",
+			activeConfig.skyStarCount,
+			queuedConfig.skyStarCount,
+			defaultConfig.skyStarCount
+		);
+		ActionData
+		(
+			"Air Trick Count Dante",
+			activeConfig.airTrickCountDante,
+			queuedConfig.airTrickCountDante,
+			defaultConfig.airTrickCountDante
+		);
+		ActionData
+		(
+			"Air Trick Count Vergil",
+			activeConfig.airTrickCountVergil,
+			queuedConfig.airTrickCountVergil,
+			defaultConfig.airTrickCountVergil
+		);
+		ActionData
+		(
+			"Trick Up Count",
+			activeConfig.trickUpCount,
+			queuedConfig.trickUpCount,
+			defaultConfig.trickUpCount
+		);
+		ActionData<uint8>
+		(
+			"Trick Down Count",
+			activeConfig.trickDownCount,
+			queuedConfig.trickDownCount,
+			defaultConfig.trickDownCount
+		);
+
 		ImGui::Text("");
 	}
 }
@@ -3246,18 +3289,18 @@ void Vergil()
 
 		if (GUI_ResetButton())
 		{
-			memcpy
-			(
-				&queuedConfig.DarkSlayer,
-				&defaultConfig.DarkSlayer,
-				sizeof(Config::DarkSlayer)
-			);
-			memcpy
-			(
-				&activeConfig.DarkSlayer,
-				&queuedConfig.DarkSlayer,
-				sizeof(Config::DarkSlayer)
-			);
+			// memcpy
+			// (
+			// 	&queuedConfig.DarkSlayer,
+			// 	&defaultConfig.DarkSlayer,
+			// 	sizeof(Config::DarkSlayer)
+			// );
+			// memcpy
+			// (
+			// 	&activeConfig.DarkSlayer,
+			// 	&queuedConfig.DarkSlayer,
+			// 	sizeof(Config::DarkSlayer)
+			// );
 
 			activeConfig.YamatoForceEdge.infiniteRoundTrip = queuedConfig.YamatoForceEdge.infiniteRoundTrip = defaultConfig.YamatoForceEdge.infiniteRoundTrip;
 			activeConfig.SummonedSwords.chronoSwords       = queuedConfig.SummonedSwords.chronoSwords       = defaultConfig.SummonedSwords.chronoSwords;
@@ -3282,27 +3325,7 @@ void Vergil()
 		ImGui::Text("");
 
 
-		ActionData<uint8>
-		(
-			"Air Trick Count",
-			activeConfig.DarkSlayer.airTrickCount,
-			queuedConfig.DarkSlayer.airTrickCount,
-			defaultConfig.DarkSlayer.airTrickCount
-		);
-		ActionData<uint8>
-		(
-			"Trick Up Count",
-			activeConfig.DarkSlayer.trickUpCount,
-			queuedConfig.DarkSlayer.trickUpCount,
-			defaultConfig.DarkSlayer.trickUpCount
-		);
-		ActionData<uint8>
-		(
-			"Trick Down Count",
-			activeConfig.DarkSlayer.trickDownCount,
-			queuedConfig.DarkSlayer.trickDownCount,
-			defaultConfig.DarkSlayer.trickDownCount
-		);
+
 		GUI_SectionEnd();
 		ImGui::Text("");
 
@@ -3435,6 +3458,7 @@ void Main()
 			Debug();
 		}
 
+		Mobility();
 		Other();
 		Repair();
 		// RemoveBusyFlag();

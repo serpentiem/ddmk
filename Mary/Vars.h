@@ -1458,11 +1458,10 @@ struct ENGINE_GAMEPAD
 
 // @Todo: Order.
 
-// @Todo: Rename.
 struct ActorEventData
 {
-	uint32 index;
-	uint32 lastIndex;
+	uint32 event;
+	uint32 lastEvent;
 };
 
 struct MotionData

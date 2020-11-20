@@ -1,3 +1,5 @@
+// @Todo: Create order script.
+
 module;
 #include "../Core/Core.h"
 
@@ -25,7 +27,6 @@ export struct Config
 	struct
 	{
 		bool coreAbility = false;
-		uint8 count[2] = { 1, 1 };
 	}
 	AirHike;
 	struct
@@ -100,12 +101,12 @@ export struct Config
 	BossRush;
 	struct
 	{
-		bool    invertX     = true;
+		bool  invertX     = true;
 		float height      = 140;
 		float tilt        = 0.25f;
 		float zoom        = 460;
 		float zoomLockOn  = 400;
-		bool    applyConfig = false;
+		bool  applyConfig = false;
 	}
 	Camera;
 	struct
@@ -155,14 +156,7 @@ export struct Config
 		Aura;
 	}
 	Color;
-	uint8 crazyComboLevelMultiplier = 2; // 6
-	struct
-	{
-		uint8 airTrickCount [2] = { 1, 1 };
-		uint8 trickUpCount  [2] = { 1, 1 };
-		uint8 trickDownCount[2] = { 1, 1 };
-	}
-	DarkSlayer;
+	uint8 crazyComboLevelMultiplier = 6; // 6
 	struct
 	{
 		bool noColor = false;
@@ -197,7 +191,6 @@ export struct Config
 		bool hideMouseCursor = true;
 	}
 	Input;
-	uint8 kickJumpCount[2] = { 1, 1 };
 	struct
 	{
 		float quicksilver  = 13.75f;
@@ -283,20 +276,12 @@ export struct Config
 	SummonedSwords;
 	struct
 	{
-		bool enable              = false;
+		bool enable              = false; // @Todo: Remove.
 		bool infiniteHitPoints   = false;
 		bool infiniteMagicPoints = true;
 		bool disableTimer        = false;
 	}
 	Training;
-	struct
-	{
-		uint8 dashCount    [2] = { 3, 3 };
-		uint8 skyStarCount [2] = { 1, 1 };
-		uint8 airTrickCount[2] = { 1, 1 };
-	}
-	Trickster;
-	uint8 wallHikeCount[2] = { 1, 1 };
 	float weaponSwitchTimeout = 1;
 	struct
 	{
@@ -320,6 +305,15 @@ export struct Config
 		float airStingerRange   [2] = { 560, 560 };
 	}
 	YamatoForceEdge;
+	uint8 airHikeCount       [2] = { 1, 1 };
+	uint8 kickJumpCount      [2] = { 1, 1 };
+	uint8 wallHikeCount      [2] = { 1, 1 };
+	uint8 dashCount          [2] = { 3, 3 };
+	uint8 skyStarCount       [2] = { 1, 1 };
+	uint8 airTrickCountDante [2] = { 1, 1 };
+	uint8 airTrickCountVergil[2] = { 1, 1 };
+	uint8 trickUpCount       [2] = { 1, 1 };
+	uint8 trickDownCount     [2] = { 1, 1 };
 };
 #pragma pack(pop)
 
