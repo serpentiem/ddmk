@@ -48,69 +48,95 @@ export inline void LogFunctionHelper(const char * funcName)
 }
 
 export template <typename T>
-void LogFunctionHelper(const char * funcName, T var)
-{
-	if constexpr (TypeMatch<T, byte8 *>::value)
-	{
-		Log("%s %llX", funcName, var);
-	}
-	else if constexpr (TypeMatch<T, const char *>::value)
-	{
-		Log("%s %s", funcName, var);
-	}
-	else
-	{
-		Log("%s %u", funcName, var);
-	}
-}
-
-export template
-<
-	typename T1,
-	typename T2
->
 void LogFunctionHelper
 (
 	const char * funcName,
-	T1 var,
-	T2 var2
+	T var
 )
 {
-	if constexpr
-	(
-		TypeMatch<T1, byte8 *>::value &&
-		TypeMatch<T2, uint32>::value
-	)
-	{
-		Log
-		(
-			"%s %llX %u",
-			funcName,
-			var,
-			var2
-		);
-	}
-	else
-	{
-		Log("%s %u %u", funcName, var, var2);
-	}
+	const char * format =
+	(TypeMatch<T, byte8 *>::value) ? "%s %llX" :
+	"%s %u";
+
+	Log(format, funcName, var);
 }
 
-export template
-<
-	typename T1,
-	typename T2,
-	typename T3
->
-void LogFunctionHelper
+// export template
+// <
+// 	typename T,
+// 	typename T2
+// >
+// void LogFunctionHelper
+// (
+// 	const char * funcName,
+// 	T var,
+// 	T2 var2
+// )
+// {
+// 	if constexpr
+// 	(
+// 		TypeMatch<T, byte8 *>::value &&
+// 		TypeMatch<T2, uint32>::value
+// 	)
+// 	{
+// 		Log
+// 		(
+// 			"%s %llX %u",
+// 			funcName,
+// 			var,
+// 			var2
+// 		);
+// 	}
+// 	else
+// 	{
+// 		Log("%s %u %u", funcName, var, var2);
+// 	}
+// }
+
+// export template
+// <
+// 	typename T1,
+// 	typename T2,
+// 	typename T3
+// >
+// void LogFunctionHelper
+// (
+// 	const char * funcName,
+// 	T1 var,
+// 	T2 var2,
+// 	T3 var3
+// )
+// {
+// 	Log("%s %u %u %u", funcName, var, var2, var3);
+// }
+
+export template <typename ... Args>
+void Print(const char * format, Args ... args)
+{
+	char buffer[512];
+
+	snprintf(buffer, sizeof(buffer), format, args ...);
+
+	printf("%s\n", buffer);
+}
+
+export inline void PrintFunctionHelper(const char * funcName)
+{
+	Print(funcName);
+}
+
+export template <typename T>
+void PrintFunctionHelper
 (
 	const char * funcName,
-	T1 var,
-	T2 var2,
-	T3 var3
+	T var
 )
 {
-	Log("%s %u %u %u", funcName, var, var2, var3);
+	const char * format =
+	(TypeMatch<T, byte8 *>::value) ? "%s %llX" :
+	"%s %u";
+
+	Print(format, funcName, var);
 }
 
 export void Core_Log_Init

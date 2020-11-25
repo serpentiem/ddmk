@@ -2586,12 +2586,12 @@ byte8 * CreateActor
 	uint8 entityIndex
 )
 {
-	LogFunction
-	(
-		playerIndex,
-		characterIndex,
-		entityIndex
-	);
+	// LogFunction
+	// (
+	// 	playerIndex,
+	// 	characterIndex,
+	// 	entityIndex
+	// );
 
 	auto & playerData = GetPlayerData(playerIndex);
 	auto & characterData = GetCharacterData
@@ -6087,7 +6087,7 @@ void ToggleMobility(bool enable)
 		if (!run)
 		{
 			func = CreateFunction(AirHike, jumpAddr, true, false, size0, size1, size2);
-			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			CopyMemory(func.sect2, sect2, size2);
 			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E9B3A), 6);
@@ -6138,7 +6138,7 @@ void ToggleMobility(bool enable)
 		if (!run)
 		{
 			func = CreateFunction(KickJump, jumpAddr, true, false, size0, size1, size2);
-			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			CopyMemory(func.sect2, sect2, size2);
 			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1EA3DF), 6);
@@ -6415,7 +6415,7 @@ void ToggleMobility(bool enable)
 		if (!run)
 		{
 			func = CreateFunction(ResetDash, jumpAddr, true, true, size0, size1);
-			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
 		}
@@ -6449,7 +6449,7 @@ void ToggleMobility(bool enable)
 		if (!run)
 		{
 			func = CreateFunction(ResetDash, jumpAddr, true, true, size0, size1);
-			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
 		}
@@ -6483,7 +6483,7 @@ void ToggleMobility(bool enable)
 		if (!run)
 		{
 			func = CreateFunction(ResetDash, jumpAddr, true, true, size0, size1);
-			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
 		}
@@ -6519,7 +6519,7 @@ void ToggleMobility(bool enable)
 		if (!run)
 		{
 			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
-			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
 		}
@@ -6553,7 +6553,7 @@ void ToggleMobility(bool enable)
 		if (!run)
 		{
 			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
-			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
 		}
@@ -6587,7 +6587,7 @@ void ToggleMobility(bool enable)
 		if (!run)
 		{
 			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
-			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
 		}
@@ -6621,7 +6621,7 @@ void ToggleMobility(bool enable)
 		if (!run)
 		{
 			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
-			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
 		}
@@ -6655,7 +6655,7 @@ void ToggleMobility(bool enable)
 		if (!run)
 		{
 			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
-			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
 		}
@@ -6689,7 +6689,7 @@ void ToggleMobility(bool enable)
 		if (!run)
 		{
 			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
-			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
 		}
@@ -6723,7 +6723,7 @@ void ToggleMobility(bool enable)
 		if (!run)
 		{
 			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
-			CopyMemory(func.sect0, addr, size0, CopyMemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
 		}

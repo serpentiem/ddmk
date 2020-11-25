@@ -59,3 +59,45 @@ export struct TimeData
 		milliseconds = time;
 	}
 };
+
+export template
+<
+	typename T,
+	uint8 count
+>
+bool SignatureMatch
+(
+	byte8 * signature,
+	T(&array)[count]
+)
+{
+	uint8 signatureIndex = 0;
+
+	while (signatureIndex < count)
+	{
+		if (signature[signatureIndex] != array[signatureIndex])
+		{
+			break;
+		}
+
+		signatureIndex++;
+	}
+
+	return (signatureIndex == count);
+}
+
+// @Research: Consider reference.
+export template <typename T>
+T Reverse(T * varAddr)
+{
+	constexpr uint8 size = static_cast<uint8>(sizeof(T));
+
+	T var = 0;
+
+	for_all(uint8, index, size)
+	{
+		reinterpret_cast<byte8 *>(&var)[index] = reinterpret_cast<byte8 *>(varAddr)[(size - 1 - index)];
+	}
+
+	return var;
+}

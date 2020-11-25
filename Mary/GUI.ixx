@@ -23,6 +23,7 @@ import Internal;
 import Model;
 import Other;
 import Scene;
+import Sound;
 import Speed;
 import Training;
 import Window;
@@ -3497,6 +3498,167 @@ void Main()
 
 #pragma endregion
 
+
+
+
+
+
+
+
+void Sound()
+{
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+
+		ImGui::SetNextWindowSize(ImVec2(600, 650));
+		ImGui::SetNextWindowPos(ImVec2(0, 0));
+	}
+
+	if (ImGui::Begin("Sound", &g_pause))
+	{
+		ImGui::Text("");
+
+		static byte8 * headMetadataAddr = 0;
+
+		ImGui::PushItemWidth(200);
+		GUI_Input<uint64>
+		(
+			"Head Metadata Address",
+			*reinterpret_cast<uint64 *>(&headMetadataAddr),
+			0,
+			"%llX",
+			ImGuiInputTextFlags_CharsHexadecimal |
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+		ImGui::PopItemWidth();
+		ImGui::Text("");
+
+		[&]()
+		{
+			if (!headMetadataAddr)
+			{
+				return;
+			}
+
+			auto & headMetadata = *reinterpret_cast<HeadMetadata *>(headMetadataAddr);
+
+			auto & vagiMetadata = *reinterpret_cast<VagiMetadata *>(headMetadataAddr + headMetadata.vagiMetadataOff);
+
+
+
+
+
+
+			if (ImGui::CollapsingHeader("Vagi"))
+			{
+				ImGui::Text("");
+
+				ImGui::PushItemWidth(200);
+
+				GUI_Input<uint32>
+				(
+					"size",
+					vagiMetadata.size,
+					0,
+					"%X",
+					ImGuiInputTextFlags_CharsHexadecimal |
+					ImGuiInputTextFlags_EnterReturnsTrue
+				);
+				GUI_Input<uint32>
+				(
+					"last",
+					vagiMetadata.last,
+					0
+				);
+
+				ImGui::Text("");
+
+				auto itemCount = (vagiMetadata.last + 1);
+
+				ImGui::Text("itemCount %u", itemCount);
+
+				for_all(uint32, itemIndex, itemCount)
+				{
+					auto & item = vagiMetadata.items[itemIndex];
+
+					ImGui::Text("");
+
+					ImGui::Text("%u", itemIndex);
+					GUI_Input<uint32>
+					(
+						"off",
+						item.off,
+						0,
+						"%X",
+						ImGuiInputTextFlags_CharsHexadecimal |
+						ImGuiInputTextFlags_EnterReturnsTrue
+					);
+					GUI_Input<uint32>
+					(
+						"size",
+						item.size,
+						0,
+						"%X",
+						ImGuiInputTextFlags_CharsHexadecimal |
+						ImGuiInputTextFlags_EnterReturnsTrue
+					);
+					GUI_Input<uint32>
+					(
+						"sampleRate",
+						item.sampleRate,
+						1000,
+						"%u",
+						ImGuiInputTextFlags_EnterReturnsTrue
+					);
+				}
+
+				ImGui::PopItemWidth();
+
+				ImGui::Text("");
+			}
+
+
+
+
+
+
+
+
+
+			// ImGui::Text("%c", vagiMetadata.signature[0]);
+			// ImGui::SameLine();
+			// ImGui::Text("%c", vagiMetadata.signature[1]);
+			// ImGui::SameLine();
+			// ImGui::Text("%c", vagiMetadata.signature[2]);
+			// ImGui::SameLine();
+			// ImGui::Text("%c", vagiMetadata.signature[3]);
+
+
+
+		}();
+
+		ImGui::Text("");
+	}
+	ImGui::End();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export void GUI_Render()
 {
 	GUI_id = 0;
@@ -3519,6 +3681,7 @@ export void GUI_Render()
 	if (g_pause)
 	{
 		Main();
+		Sound();
 	}
 
 	[&]()

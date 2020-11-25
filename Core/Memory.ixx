@@ -243,8 +243,8 @@ export inline void WriteJump
 	WriteAddress(addr, dest, 5, 0xE9, padSize, padValue);
 }
 
-// @Todo: SetMemory.
-export void vp_memset
+// @Todo: Remove.
+export __declspec(deprecated) void vp_memset
 (
 	void   * addr,
 	byte8    value,
@@ -259,8 +259,7 @@ export void vp_memset
 	VirtualProtect(addr, size, protection, &protection);
 }
 
-// @Todo: Mark obsolete.
-export void vp_memcpy
+export __declspec(deprecated) void vp_memcpy
 (
 	void       * dest,
 	const void * addr,
@@ -275,11 +274,59 @@ export void vp_memcpy
 	VirtualProtect(dest, size, protection, &protection);
 }
 
-export enum
+
+
+
+
+
+
+
+
+enum
 {
-	CopyMemoryFlags_VirtualProtectDestination = 1 << 0,
-	CopyMemoryFlags_VirtualProtectSource      = 1 << 1,
+	MemoryFlags_VirtualProtectDestination = 1 << 0,
+	MemoryFlags_VirtualProtectSource      = 1 << 1,
 };
+
+export void SetMemory
+(
+	void * addr,
+	byte8 value,
+	uint32 size,
+	byte32 flags = 0
+)
+{
+	byte32 protection = 0;
+
+	if (flags & MemoryFlags_VirtualProtectDestination)
+	{
+		VirtualProtect
+		(
+			addr,
+			size,
+			PAGE_EXECUTE_READWRITE,
+			&protection
+		);
+	}
+
+	memset
+	(
+		addr,
+		value,
+		size
+	);
+
+	if (flags & MemoryFlags_VirtualProtectDestination)
+	{
+		VirtualProtect
+		(
+			addr,
+			size,
+			protection,
+			&protection
+		);
+	}
+}
 
 export void CopyMemory
 (
@@ -292,7 +339,7 @@ export void CopyMemory
 	byte32 protectionDestination = 0;
 	byte32 protectionSource = 0;
 
-	if (flags & CopyMemoryFlags_VirtualProtectDestination)
+	if (flags & MemoryFlags_VirtualProtectDestination)
 	{
 		VirtualProtect
 		(
@@ -303,7 +350,7 @@ export void CopyMemory
 		);
 	}
 
-	if (flags & CopyMemoryFlags_VirtualProtectSource)
+	if (flags & MemoryFlags_VirtualProtectSource)
 	{
 		VirtualProtect
 		(
@@ -321,7 +368,7 @@ export void CopyMemory
 		size
 	);
 
-	if (flags & CopyMemoryFlags_VirtualProtectDestination)
+	if (flags & MemoryFlags_VirtualProtectDestination)
 	{
 		VirtualProtect
 		(
@@ -332,7 +379,7 @@ export void CopyMemory
 		);
 	}
 
-	if (flags & CopyMemoryFlags_VirtualProtectSource)
+	if (flags & MemoryFlags_VirtualProtectSource)
 	{
 		VirtualProtect
 		(
@@ -344,13 +391,14 @@ export void CopyMemory
 	}
 }
 
+// @Todo: Prefer off instead of dataAddr for metadata.
 export struct BackupHelper
 {
 	struct Metadata
 	{
-		byte8 * addr;
-		uint32 size;
 		byte8 * dataAddr;
+		uint32 size;
+		byte8 * addr;
 	};
 
 	byte8 * dataAddr;
@@ -457,7 +505,7 @@ void BackupHelper::Restore(byte8 * addr)
 			metadata.addr,
 			metadata.dataAddr,
 			metadata.size,
-			CopyMemoryFlags_VirtualProtectDestination
+			MemoryFlags_VirtualProtectDestination
 		);
 
 		return;

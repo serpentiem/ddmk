@@ -6,6 +6,7 @@ import Camera;
 import Config;
 import Event;
 import File;
+import FMOD;
 import Graphics;
 import GUI;
 import Hooks;
@@ -14,6 +15,7 @@ import Internal;
 import Memory;
 import Other;
 import Scene;
+import Sound;
 import Speed;
 import Training;
 import Window;
@@ -129,6 +131,13 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 			return 0;
 		}
 
+		if (!FMOD_Init())
+		{
+			Log("FMOD_Init failed.");
+
+			return 0;
+		}
+
 		Actor_Init();
 		Actor_Toggle(activeConfig.Actor.enable);
 
@@ -156,6 +165,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		UpdateOrbReach();
 
 		Scene_Init();
+
+		Sound_Toggle(true);
 
 		Speed_Init();
 		UpdateSpeedValues();

@@ -1,3 +1,5 @@
+// @Todo: Update!
+
 module;
 #include "../Core/Core.h"
 
@@ -146,7 +148,7 @@ bool File_ExtractFile(const char * filename)
 	return true;
 }
 
-byte8 * File_LoadFile
+export byte8 * File_LoadFile
 (
 	const char * filename,
 	uint32     * size = 0,
@@ -183,6 +185,8 @@ byte8 * File_LoadFile
 	return file;
 }
 
+
+// @Todo: Update.
 void File_AdjustPointers(byte8 * archive)
 {
 	if constexpr (debug)
@@ -309,6 +313,7 @@ export void File_UpdateFileData
 	uint16 fileId
 )
 {
+	// @Todo: Add source.
 	auto & fileData = (reinterpret_cast<FileData *>(appBaseAddr + 0xC99D30))[fileDataId];
 
 	memset(&fileData, 0, sizeof(FileData));

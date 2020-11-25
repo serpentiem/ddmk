@@ -1,3 +1,5 @@
+// @Todo: Update.
+
 #ifdef offsetof
 #undef offsetof
 #endif
@@ -7,23 +9,19 @@
 #define offsetof(s, m) reinterpret_cast<uint32>(&(*reinterpret_cast<s *>(0)).m)
 #endif
 
-//#define for_all(type, name, end) for (type name = 0; name < end; name++)
-
-#define for_each(type, name, start, end) for (type name = start; name < end; name++)
-
-#define for_all(type, name, end) for_each(type, name, 0, end)
-
-
-
+#define for_each(type, name, start, end, ...) for (type name = start; name < end; name++ __VA_OPT__(,) __VA_ARGS__)
+#define for_all(type, name, end, ...) for_each(type, name, 0, end __VA_OPT__(,) __VA_ARGS__)
 
 #define HoboBreak() MessageBoxA(0, "break1", 0, 0); MessageBoxA(0, "break2", 0, 0)
 
 #define FUNC_NAME __FUNCTION__
 
-#define LogFunction(...) LogFunctionHelper(FUNC_NAME, __VA_ARGS__)
+#define LogFunction(...) LogFunctionHelper(FUNC_NAME __VA_OPT__(,) __VA_ARGS__)
 
-#define LogFunctionStart() Log("%s Start", FUNC_NAME)
-#define LogFunctionEnd() Log("%s End", FUNC_NAME)
+#define PrintFunction(...) PrintFunctionHelper(FUNC_NAME __VA_OPT__(,) __VA_ARGS__)
+
+// #define LogFunctionStart() Log("%s Start", FUNC_NAME)
+// #define LogFunctionEnd() Log("%s End", FUNC_NAME)
 
 #define _Prep_Merge(a, b) a##b
 #define Prep_Merge(a, b) _Prep_Merge(a, b)
@@ -44,3 +42,7 @@
 #define mov_rcx_r13 0x49, 0x8B, 0xCD // mov rcx,r13
 #define mov_rcx_r14 0x49, 0x8B, 0xCE // mov rcx,r14
 #define mov_rcx_r15 0x49, 0x8B, 0xCF // mov rcx,r15
+
+
+// @Todo: Add ecx.
+
