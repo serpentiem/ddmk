@@ -1,50 +1,92 @@
 #include "../Core/Core.h"
 
-const char * libName  = "dinput8.dll";
-const char * funcName = "DirectInput8Create";
+typedef void(__fastcall * DirectInput8_Create_t)();
 
-HMODULE   lib[2]   = {};
-void    * procAddr = 0;
+DirectInput8_Create_t DirectInput8_Create = 0;
 
 extern "C" void Create()
 {
-	return ((void(__fastcall *)())procAddr)();
+	return DirectInput8_Create();
 }
-
-// #pragma comment(linker, "/export:DirectInput8Create=Create")
 
 bool Init()
 {
 	LogFunction();
 
+	byte32 error = 0;
+	const char * libName = "dinput8.dll";
 	char directory[128];
 	char path[256];
-	GetSystemDirectoryA(directory, sizeof(directory));
-	snprintf(path, sizeof(path), "%s\\%s", directory, libName);
 
-	lib[0] = LoadLibraryA(path);
-	if (!lib[0])
+	GetSystemDirectoryA
+	(
+		directory,
+		sizeof(directory)
+	);
+
+	snprintf
+	(
+		path,
+		sizeof(path),
+		"%s\\%s",
+		directory,
+		libName
+	);
+
+	SetLastError(0);
+
+	auto lib = LoadLibraryA(path);
+
+	error = GetLastError();
+
+	if (!lib)
 	{
-		Log("Critical error: LoadLibrary failed. %s %X", path, GetLastError());
+		Log("LoadLibraryA failed. %X", error);
+
 		return false;
 	}
-	procAddr = GetProcAddress(lib[0], funcName);
-	if (!procAddr)
+
+	// DirectInput8_Create
 	{
-		Log("Critical error: GetProcAddress failed. %s %X", funcName, GetLastError());
-		return false;
+		const char * funcName = "DirectInput8Create";
+
+		SetLastError(0);
+
+		auto funcAddr = GetProcAddress(lib, funcName);
+
+		error = GetLastError();
+
+		if (!funcAddr)
+		{
+			Log("GetProcAddress failed. %s %X", funcName, error);
+
+			return false;
+		}
+
+		DirectInput8_Create = reinterpret_cast<DirectInput8_Create_t>(funcAddr);
 	}
+
 	return true;
 }
 
 void Load()
 {
 	LogFunction();
+
+	byte32 error = 0;
+
 	MODULEENTRY32 me32 = {};
 	me32.dwSize = sizeof(MODULEENTRY32);
-	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, GetCurrentProcessId());
+
+	auto snapshot = CreateToolhelp32Snapshot
+	(
+		TH32CS_SNAPMODULE,
+		0
+	);
+
 	Module32First(snapshot, &me32);
-	const char * str[][2] =
+
+	const char * names[][2] =
 	{
 		{
 			"dmc1.exe",
@@ -63,38 +105,64 @@ void Load()
 			"Kyrie.dll",
 		}
 	};
-	const char * libName = 0;
-	for (uint8 i = 0; i < countof(str); i++)
+
+	for_all(uint8, index, countof(names))
 	{
-		if (_stricmp(me32.szModule, str[i][0]) == 0)
+		auto moduleName = names[index][0];
+		auto libName    = names[index][1];
+
+		if
+		(
+			strncmp
+			(
+				me32.szModule,
+				moduleName,
+				sizeof(moduleName)
+			) == 0
+		)
 		{
-			libName = str[i][1];
+			Log(moduleName);
+			Log(libName);
+
+			SetLastError(0);
+
+			auto lib = LoadLibraryA(libName);
+
+			error = GetLastError();
+
+			if (!lib)
+			{
+				Log("LoadLibraryA failed. %X", error);
+			}
+
 			break;
 		}
 	}
-	if (!libName)
-	{
-		Log("Warning: No match.");
-		return;
-	}
-	lib[1] = LoadLibraryA(libName);
-	if (!lib[1])
-	{
-		Log("Critical error: LoadLibrary failed. %s %X", libName, GetLastError());
-	}
 }
 
-DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
+byte32 DllMain
+(
+	HINSTANCE instance,
+	byte32 reason,
+	void * reserved
+)
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
 		Core_Log_Init("logs", "dinput8.txt");
+
 		Log("Session started.");
+
 		if (!Init())
 		{
 			return 0;
 		}
+
 		Load();
 	}
+
 	return 1;
 }
+
+#ifdef __GARBAGE__
+#endif

@@ -826,6 +826,23 @@ void ProcessSoundFiles()
 	{
 		"snd_sty02.pac",
 		"snd_sty03.pac",
+		"snd_sty04.pac",
+		"snd_sty05.pac",
+		"snd_sty06.pac",
+		"snd_sty07.pac",
+		"snd_wp00b.pac",
+		"snd_wp01b.pac",
+		"snd_wp02b.pac",
+		"snd_wp03b.pac",
+		"snd_wp04b.pac",
+		"snd_wp05b.pac",
+		"snd_wp06b.pac",
+		"snd_wp07b.pac",
+		"snd_wp08b.pac",
+		"snd_wp09b.pac",
+		"snd_wp11b.pac",
+		"snd_wp12b.pac",
+		"snd_wp13b.pac",
 	};
 
 	for_all(uint8, fileIndex, countof(filenames))
