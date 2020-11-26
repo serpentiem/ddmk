@@ -6,7 +6,7 @@ export module FMOD;
 
 #define debug true
 
-enum
+export enum
 {
 	FMOD_OK                     = 0,
 	FMOD_CREATECOMPRESSEDSAMPLE = 0x00000200,
@@ -15,16 +15,16 @@ enum
 	FMOD_CACHE_SIZE             = (128 * 1024 * 1024),
 };
 
-typedef int32  FMOD_RESULT;
-typedef uint32 FMOD_MODE;
-typedef void   FMOD_SYSTEM;
-typedef void   FMOD_SOUND;
+export typedef int32  FMOD_RESULT;
+export typedef uint32 FMOD_MODE;
+export typedef void   FMOD_SYSTEM;
+export typedef void   FMOD_SOUND;
 
 #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
 
 #pragma pack(push, 1)
 
-struct FMOD_CREATESOUNDEXINFO
+export struct FMOD_CREATESOUNDEXINFO
 {
 	int32 cbsize;
 	uint32 length;
@@ -35,7 +35,7 @@ struct FMOD_CREATESOUNDEXINFO
 
 #undef _
 
-typedef FMOD_RESULT(__fastcall * FMOD_System_CreateSound_t)
+export typedef FMOD_RESULT(__fastcall * FMOD_System_CreateSound_t)
 (
 	FMOD_SYSTEM            *  system,
 	void                   *  addr,
@@ -44,7 +44,7 @@ typedef FMOD_RESULT(__fastcall * FMOD_System_CreateSound_t)
 	FMOD_SOUND             ** sound
 );
 
-FMOD_System_CreateSound_t FMOD_System_CreateSound = 0;
+export FMOD_System_CreateSound_t FMOD_System_CreateSound = 0;
 
 export bool FMOD_Init()
 {

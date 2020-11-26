@@ -6,8 +6,40 @@ export module Sound;
 
 import File;
 import FMOD;
+import Global;
 
 #define debug true
+
+enum
+{
+	ARCHIVE_METADATA_SIZE   = 8,
+	HEAD_METADATA_SIZE      = 32,
+	PROG_SECT_ITEM_SIZE     = 14,
+	PROG_SECT_METADATA_SIZE = 8,
+	PROG_METADATA_SIZE      = 16,
+	SMPL_ITEM_SIZE          = 12,
+	SMPL_METADATA_SIZE      = 16,
+	VAGI_ITEM_SIZE          = 16,
+	VAGI_METADATA_SIZE      = 16,
+	WAVE_METADATA_SIZE      = 64,
+	SOUND_DATA_SIZE         = 24,
+};
+
+enum
+{
+	CHANNEL_SYSTEM,
+	CHANNEL_COMMON,
+	CHANNEL_STYLE_WEAPON,
+	CHANNEL_WEAPON1,
+	CHANNEL_WEAPON2,
+	CHANNEL_WEAPON3,
+	CHANNEL_WEAPON4,
+	CHANNEL_ENEMY,
+	CHANNEL_ROOM,
+	CHANNEL_MUSIC,
+	CHANNEL_DEMO,
+	MAX_CHANNEL = 16,
+};
 
 enum
 {
@@ -37,16 +69,10 @@ enum
 
 enum
 {
-	ARCHIVE_METADATA_SIZE   = 8,
-	HEAD_METADATA_SIZE      = 32,
-	PROG_SECT_ITEM_SIZE     = 14,
-	PROG_SECT_METADATA_SIZE = 8,
-	PROG_METADATA_SIZE      = 16,
-	SMPL_ITEM_SIZE          = 12,
-	SMPL_METADATA_SIZE      = 16,
-	VAGI_ITEM_SIZE          = 16,
-	VAGI_METADATA_SIZE      = 16,
-	WAVE_METADATA_SIZE      = 64,
+	HELPER_COMMON_DANTE,
+	HELPER_COMMON_VERGIL,
+	HELPER_STYLE_WEAPON,
+	HELPER_COUNT,
 };
 
 #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
@@ -134,21 +160,28 @@ export struct WaveMetadata
 	char name[32];
 };
 
+export struct SoundData
+{
+	uint64 off;
+	uint64 size;
+	FMOD_SOUND * fmodSoundAddr;
+};
+
 #pragma pack(pop)
 
 #undef _
 
 
 
-bool IsArchive(ArchiveMetadata & archiveMetadata)
+bool IsArchive(byte8 * addr)
 {
 	constexpr byte8 signature1[] = { 'P', 'A', 'C' };
 	constexpr byte8 signature2[] = { 'P', 'N', 'S', 'T' };
 
 	if
 	(
-		SignatureMatch(archiveMetadata.signature, signature1) ||
-		SignatureMatch(archiveMetadata.signature, signature2)
+		SignatureMatch(addr, signature1) ||
+		SignatureMatch(addr, signature2)
 	)
 	{
 		return true;
@@ -157,32 +190,32 @@ bool IsArchive(ArchiveMetadata & archiveMetadata)
 	return false;
 }
 
-bool IsHead(HeadMetadata & headMetadata)
+bool IsHead(byte8 * addr)
 {
 	constexpr byte8 signature[] = { 'H', 'e', 'a', 'd', };
 
-	return SignatureMatch(headMetadata.signature, signature);
+	return SignatureMatch(addr, signature);
 }
 
-bool IsProg(ProgMetadata & progMetadata)
+bool IsProg(byte8 * addr)
 {
 	constexpr byte8 signature[] = { 'P', 'r', 'o', 'g', };
 
-	return SignatureMatch(progMetadata.signature, signature);
+	return SignatureMatch(addr, signature);
 }
 
-bool IsSmpl(SmplMetadata & smplMetadata)
+bool IsSmpl(byte8 * addr)
 {
 	constexpr byte8 signature[] = { 'S', 'm', 'p', 'l', };
 
-	return SignatureMatch(smplMetadata.signature, signature);
+	return SignatureMatch(addr, signature);
 }
 
-bool IsVagi(VagiMetadata & vagiMetadata)
+bool IsVagi(byte8 * addr)
 {
 	constexpr byte8 signature[] = { 'V', 'a', 'g', 'i', };
 
-	return SignatureMatch(vagiMetadata.signature, signature);
+	return SignatureMatch(addr, signature);
 }
 
 bool IsWave(byte8 * addr)
@@ -193,6 +226,351 @@ bool IsWave(byte8 * addr)
 }
 
 
+
+struct HeadHelper
+{
+	byte8 * dataAddr;
+	uint32 pos;
+	uint32 count;
+
+	bool Init(uint32 dataSize);
+
+	void Push
+	(
+		void * addr,
+		uint32 size
+	);
+};
+
+bool HeadHelper::Init(uint32 dataSize)
+{
+	LogFunction();
+
+	dataAddr = Alloc(dataSize);
+	if (!dataAddr)
+	{
+		Log("Alloc failed.");
+
+		return false;
+	}
+
+	auto & headMetadata = *reinterpret_cast<HeadMetadata *>(dataAddr);
+
+	headMetadata.signature[0] = 'H';
+	headMetadata.signature[1] = 'e';
+	headMetadata.signature[2] = 'a';
+	headMetadata.signature[3] = 'd';
+
+	pos = HEAD_METADATA_SIZE;
+
+	return true;
+}
+
+void HeadHelper::Push
+(
+	void * addr,
+	uint32 size
+)
+{
+	LogFunction();
+
+	CopyMemory
+	(
+		(dataAddr + pos),
+		addr,
+		size
+	);
+
+	pos += size;
+
+	Log("pos %X", pos);
+
+	Align<uint32>
+	(
+		pos,
+		0x10,
+		dataAddr,
+		0xFF
+	);
+
+	Log("pos %X", pos);
+}
+
+struct ProgHelper
+{
+	byte8 * dataAddr;
+	uint32 pos;
+	uint32 count;
+
+	bool Init
+	(
+		uint32 dataSize,
+		uint32 sectCount
+	);
+
+	void Push
+	(
+		ProgSectMetadata & progSectMetadata,
+		uint16 smplItemCount,
+		uint8 sectIndex
+	);
+
+	ProgSectMetadata & operator[](uint8 sectIndex);
+};
+
+bool ProgHelper::Init
+(
+	uint32 dataSize,
+	uint32 sectCount
+)
+{
+	LogFunction();
+
+	dataAddr = Alloc(dataSize);
+	if (!dataAddr)
+	{
+		Log("Alloc failed.");
+
+		return false;
+	}
+
+	auto & progMetadata = *reinterpret_cast<ProgMetadata *>(dataAddr);
+
+	progMetadata.signature[0] = 'P';
+	progMetadata.signature[1] = 'r';
+	progMetadata.signature[2] = 'o';
+	progMetadata.signature[3] = 'g';
+
+	pos = PROG_METADATA_SIZE;
+
+	if (sectCount > 0)
+	{
+		progMetadata.last = (sectCount - 1);
+
+		uint32 size = (sectCount * 4);
+
+		SetMemory
+		(
+			progMetadata.sectOffs,
+			0xFF,
+			size
+		);
+
+		pos += size;
+	}
+
+	return true;
+}
+
+void ProgHelper::Push
+(
+	ProgSectMetadata & progSectMetadata,
+	uint16 smplItemCount,
+	uint8 sectIndex
+)
+{
+	LogFunction();
+
+	auto & progMetadata = *reinterpret_cast<ProgMetadata *>(dataAddr);
+
+	auto & progSectMetadata2 = *reinterpret_cast<ProgSectMetadata *>(dataAddr + pos);
+
+	uint32 size = (PROG_SECT_METADATA_SIZE + (PROG_SECT_ITEM_SIZE * progSectMetadata.itemCount));
+
+	CopyMemory
+	(
+		&progSectMetadata2,
+		&progSectMetadata,
+		size
+	);
+
+	for_all(uint8, itemIndex, progSectMetadata2.itemCount)
+	{
+		auto & item = progSectMetadata2.items[itemIndex];
+
+		item.smplItemIndex += smplItemCount;
+	}
+
+	progMetadata.sectOffs[sectIndex] = pos;
+
+	pos += size;
+	count++;
+
+	progMetadata.size = pos;
+}
+
+ProgSectMetadata & ProgHelper::operator[](uint8 sectIndex)
+{
+	auto & progMetadata = *reinterpret_cast<ProgMetadata *>(dataAddr);
+
+	return *reinterpret_cast<ProgSectMetadata *>(dataAddr + progMetadata.sectOffs[sectIndex]);
+}
+
+struct SmplHelper
+{
+	byte8 * dataAddr;
+	uint32 pos;
+	uint32 count;
+
+	bool Init(uint32 dataSize);
+
+	void Push
+	(
+		SmplItem & smplItem,
+		uint16 vagiItemCount
+	);
+
+	SmplItem & operator[](uint8 itemIndex);
+};
+
+bool SmplHelper::Init(uint32 dataSize)
+{
+	LogFunction();
+
+	dataAddr = Alloc(dataSize);
+	if (!dataAddr)
+	{
+		Log("Alloc failed.");
+
+		return false;
+	}
+
+	auto & smplMetadata = *reinterpret_cast<SmplMetadata *>(dataAddr);
+
+	smplMetadata.signature[0] = 'S';
+	smplMetadata.signature[1] = 'm';
+	smplMetadata.signature[2] = 'p';
+	smplMetadata.signature[3] = 'l';
+
+	pos = SMPL_METADATA_SIZE;
+
+	return true;
+}
+
+void SmplHelper::Push
+(
+	SmplItem & smplItem,
+	uint16 vagiItemCount
+)
+{
+	LogFunction();
+
+	auto & smplMetadata = *reinterpret_cast<SmplMetadata *>(dataAddr);
+
+	auto & smplItem2 = *reinterpret_cast<SmplItem *>(dataAddr + pos);
+
+	constexpr uint32 size = SMPL_ITEM_SIZE;
+
+	CopyMemory
+	(
+		&smplItem2,
+		&smplItem,
+		size
+	);
+
+	smplItem2.vagiItemIndex += vagiItemCount;
+
+	smplMetadata.last = count;
+
+	pos += size;
+	count++;
+
+	smplMetadata.size = pos;
+}
+
+SmplItem & SmplHelper::operator[](uint8 itemIndex)
+{
+	return reinterpret_cast<SmplItem *>(dataAddr + SMPL_METADATA_SIZE)[itemIndex];
+}
+
+struct VagiHelper
+{
+	byte8 * dataAddr;
+	uint32 pos;
+	uint32 count;
+
+	bool Init(uint32 dataSize);
+
+	void Push(VagiItem & vagiItem);
+
+	VagiItem & operator[](uint32 itemIndex);
+
+	void UpdateOffsets();
+};
+
+bool VagiHelper::Init(uint32 dataSize)
+{
+	LogFunction();
+
+	dataAddr = Alloc(dataSize);
+	if (!dataAddr)
+	{
+		Log("Alloc failed.");
+
+		return false;
+	}
+
+	auto & vagiMetadata = *reinterpret_cast<VagiMetadata *>(dataAddr);
+
+	vagiMetadata.signature[0] = 'V';
+	vagiMetadata.signature[1] = 'a';
+	vagiMetadata.signature[2] = 'g';
+	vagiMetadata.signature[3] = 'i';
+
+	pos = VAGI_METADATA_SIZE;
+
+	return true;
+}
+
+void VagiHelper::Push(VagiItem & vagiItem)
+{
+	LogFunction();
+
+	auto & vagiMetadata = *reinterpret_cast<VagiMetadata *>(dataAddr);
+
+	auto & vagiItem2 = *reinterpret_cast<VagiItem *>(dataAddr + pos);
+
+	constexpr uint32 size = VAGI_ITEM_SIZE;
+
+	CopyMemory
+	(
+		&vagiItem2,
+		&vagiItem,
+		size
+	);
+
+	vagiItem2.off = 0;
+
+	vagiMetadata.last = count;
+
+	pos += size;
+	count++;
+
+	vagiMetadata.size = pos;
+}
+
+VagiItem & VagiHelper::operator[](uint32 itemIndex)
+{
+	return reinterpret_cast<VagiItem *>(dataAddr + VAGI_METADATA_SIZE)[itemIndex];
+}
+
+void VagiHelper::UpdateOffsets()
+{
+	LogFunction();
+
+	uint32 off = 0;
+
+	for_all(uint32, itemIndex, count)
+	{
+		auto & item = (*this)[itemIndex];
+
+		item.off = off;
+
+		off += item.size;
+
+		Log("off %X", item.off);
+	}
+}
 
 struct WaveHelper
 {
@@ -278,7 +656,7 @@ WaveMetadata & WaveHelper::operator[](uint32 index)
 	return *reinterpret_cast<WaveMetadata *>(dataAddr + metadata.off);
 }
 
-struct VagiHelper
+struct SoundHelper
 {
 	byte8 * dataAddr;
 	uint32 pos;
@@ -286,14 +664,12 @@ struct VagiHelper
 
 	bool Init(uint32 dataSize);
 
-	void Push(VagiItem & vagiItem);
+	void Push(SoundData & soundData);
 
-	VagiItem & operator[](uint32 itemIndex);
-
-	void UpdateOffsets();
+	SoundData & operator[](uint32 index);
 };
 
-bool VagiHelper::Init(uint32 dataSize)
+bool SoundHelper::Init(uint32 dataSize)
 {
 	LogFunction();
 
@@ -305,335 +681,64 @@ bool VagiHelper::Init(uint32 dataSize)
 		return false;
 	}
 
-	auto & vagiMetadata = *reinterpret_cast<VagiMetadata *>(dataAddr);
-
-	vagiMetadata.signature[0] = 'V';
-	vagiMetadata.signature[1] = 'a';
-	vagiMetadata.signature[2] = 'g';
-	vagiMetadata.signature[3] = 'i';
-
-	pos = VAGI_METADATA_SIZE;
-
 	return true;
 }
 
-void VagiHelper::Push(VagiItem & vagiItem)
+// @Research: Somewhat redundant.
+void SoundHelper::Push(SoundData & soundData)
 {
 	LogFunction();
 
-	auto & vagiMetadata = *reinterpret_cast<VagiMetadata *>(dataAddr);
-
-	auto & vagiItem2 = *reinterpret_cast<VagiItem *>(dataAddr + pos);
-
-	uint32 size = VAGI_ITEM_SIZE;
-
-	CopyMemory
-	(
-		&vagiItem2,
-		&vagiItem,
-		size
-	);
-
-	vagiItem2.off = 0;
-
-	vagiMetadata.last = count;
-
-	pos += size;
-	count++;
-
-	vagiMetadata.size = pos;
-}
-
-VagiItem & VagiHelper::operator[](uint32 itemIndex)
-{
-	return reinterpret_cast<VagiItem *>(dataAddr + VAGI_METADATA_SIZE)[itemIndex];
-}
-
-void VagiHelper::UpdateOffsets()
-{
-	LogFunction();
-
-	uint32 off = 0;
-
-	for_all(uint32, itemIndex, count)
-	{
-		auto & item = (*this)[itemIndex];
-
-		item.off = off;
-
-		off += item.size;
-
-		Log("off %X", item.off);
-	}
-}
-
-struct SmplHelper
-{
-	byte8 * dataAddr;
-	uint32 pos;
-	uint32 count;
-
-	bool Init(uint32 dataSize);
-
-	void Push
-	(
-		SmplItem & smplItem,
-		uint16 vagiItemCount
-	);
-
-	SmplItem & operator[](uint8 itemIndex);
-};
-
-bool SmplHelper::Init(uint32 dataSize)
-{
-	LogFunction();
-
-	dataAddr = Alloc(dataSize);
-	if (!dataAddr)
-	{
-		Log("Alloc failed.");
-
-		return false;
-	}
-
-	auto & smplMetadata = *reinterpret_cast<SmplMetadata *>(dataAddr);
-
-	smplMetadata.signature[0] = 'S';
-	smplMetadata.signature[1] = 'm';
-	smplMetadata.signature[2] = 'p';
-	smplMetadata.signature[3] = 'l';
-
-	pos = SMPL_METADATA_SIZE;
-
-	return true;
-}
-
-void SmplHelper::Push
-(
-	SmplItem & smplItem,
-	uint16 vagiItemCount
-)
-{
-	LogFunction();
-
-	auto & smplMetadata = *reinterpret_cast<SmplMetadata *>(dataAddr);
-
-	auto & smplItem2 = *reinterpret_cast<SmplItem *>(dataAddr + pos);
-
-	uint32 size = SMPL_ITEM_SIZE;
-
-	CopyMemory
-	(
-		&smplItem2,
-		&smplItem,
-		size
-	);
-
-	smplItem2.vagiItemIndex += vagiItemCount;
-
-	smplMetadata.last = count;
-
-	pos += size;
-	count++;
-
-	smplMetadata.size = pos;
-}
-
-SmplItem & SmplHelper::operator[](uint8 itemIndex)
-{
-	return reinterpret_cast<SmplItem *>(dataAddr + SMPL_METADATA_SIZE)[itemIndex];
-}
-
-struct ProgHelper
-{
-	byte8 * dataAddr;
-	uint32 pos;
-	uint32 count;
-
-	bool Init(uint32 dataSize);
-
-	void Push
-	(
-		ProgSectMetadata & progSectMetadata,
-		uint16 smplItemCount,
-		uint8 sectIndex
-	);
-
-	ProgSectMetadata & operator[](uint8 sectIndex);
-};
-
-bool ProgHelper::Init(uint32 dataSize)
-{
-	LogFunction();
-
-	dataAddr = Alloc(dataSize);
-	if (!dataAddr)
-	{
-		Log("Alloc failed.");
-
-		return false;
-	}
-
-	auto & progMetadata = *reinterpret_cast<ProgMetadata *>(dataAddr);
-
-	progMetadata.signature[0] = 'P';
-	progMetadata.signature[1] = 'r';
-	progMetadata.signature[2] = 'o';
-	progMetadata.signature[3] = 'g';
-
-	progMetadata.last = (MAX_PROG_SECT - 1);
-
-	constexpr uint32 size = (MAX_PROG_SECT * 4);
-
-	SetMemory
-	(
-		progMetadata.sectOffs,
-		0xFF,
-		size
-	);
-
-	pos = (PROG_METADATA_SIZE + size);
-
-	return true;
-}
-
-void ProgHelper::Push
-(
-	ProgSectMetadata & progSectMetadata,
-	uint16 smplItemCount,
-	uint8 sectIndex
-)
-{
-	LogFunction();
-
-	auto & progMetadata = *reinterpret_cast<ProgMetadata *>(dataAddr);
-
-	auto & progSectMetadata2 = *reinterpret_cast<ProgSectMetadata *>(dataAddr + pos);
-
-	uint32 size = (PROG_SECT_METADATA_SIZE + (PROG_SECT_ITEM_SIZE * progSectMetadata.itemCount));
-
-	CopyMemory
-	(
-		&progSectMetadata2,
-		&progSectMetadata,
-		size
-	);
-
-	for_all(uint8, itemIndex, progSectMetadata2.itemCount)
-	{
-		auto & item = progSectMetadata2.items[itemIndex];
-
-		item.smplItemIndex += smplItemCount;
-	}
-
-	progMetadata.sectOffs[sectIndex] = pos;
-
-	pos += size;
-	count++;
-
-	progMetadata.size = pos;
-}
-
-ProgSectMetadata & ProgHelper::operator[](uint8 sectIndex)
-{
-	auto & progMetadata = *reinterpret_cast<ProgMetadata *>(dataAddr);
-
-	return *reinterpret_cast<ProgSectMetadata *>(dataAddr + progMetadata.sectOffs[sectIndex]);
-}
-
-struct HeadHelper
-{
-	byte8 * dataAddr;
-	uint32 pos;
-	uint32 count;
-
-	bool Init(uint32 dataSize);
-
-	void Push
-	(
-		void * addr,
-		uint32 size
-	);
-};
-
-bool HeadHelper::Init(uint32 dataSize)
-{
-	LogFunction();
-
-	dataAddr = Alloc(dataSize);
-	if (!dataAddr)
-	{
-		Log("Alloc failed.");
-
-		return false;
-	}
-
-	auto & headMetadata = *reinterpret_cast<HeadMetadata *>(dataAddr);
-
-	headMetadata.signature[0] = 'H';
-	headMetadata.signature[1] = 'e';
-	headMetadata.signature[2] = 'a';
-	headMetadata.signature[3] = 'd';
-
-	pos = HEAD_METADATA_SIZE;
-
-	return true;
-}
-
-void HeadHelper::Push
-(
-	void * addr,
-	uint32 size
-)
-{
-	LogFunction();
+	constexpr uint32 size = SOUND_DATA_SIZE;
 
 	CopyMemory
 	(
 		(dataAddr + pos),
-		addr,
+		&soundData,
 		size
 	);
 
 	pos += size;
-
-	Log("pos %X", pos);
-
-	Align<uint32>
-	(
-		pos,
-		0x10,
-		dataAddr,
-		0xFF
-	);
-
-	Log("pos %X", pos);
+	count++;
 }
 
+SoundData & SoundHelper::operator[](uint32 index)
+{
+	return reinterpret_cast<SoundData *>(dataAddr)[index];
+}
 
+HeadHelper  g_headHelper [HELPER_COUNT] = {};
+ProgHelper  g_progHelper [HELPER_COUNT] = {};
+SmplHelper  g_smplHelper [HELPER_COUNT] = {};
+VagiHelper  g_vagiHelper [HELPER_COUNT] = {};
+WaveHelper  g_waveHelper [HELPER_COUNT] = {};
+SoundHelper g_soundHelper[HELPER_COUNT] = {};
 
-WaveHelper waveHelper = {};
-VagiHelper vagiHelper = {};
-SmplHelper smplHelper = {};
-ProgHelper progHelper = {};
-HeadHelper headHelper = {};
-
-
-
-void Decompile(byte8 * archive)
+void Decompile
+(
+	byte8 * archive,
+	uint8 helperIndex
+)
 {
 	LogFunction();
 
+	auto & headHelper  = g_headHelper [helperIndex];
+	auto & progHelper  = g_progHelper [helperIndex];
+	auto & smplHelper  = g_smplHelper [helperIndex];
+	auto & vagiHelper  = g_vagiHelper [helperIndex];
+	auto & waveHelper  = g_waveHelper [helperIndex];
+	auto & soundHelper = g_soundHelper[helperIndex];
+
 	Log("archive %llX", archive);
 
-	auto & archiveMetadata = *reinterpret_cast<ArchiveMetadata *>(archive);
-
-	if (!IsArchive(archiveMetadata))
+	if (!IsArchive(archive))
 	{
 		Log("IsArchive failed.");
 
 		return;
 	}
+
+	auto & archiveMetadata = *reinterpret_cast<ArchiveMetadata *>(archive);
 
 	uint32 waveCount = 0;
 
@@ -646,27 +751,28 @@ void Decompile(byte8 * archive)
 		Log("fileOff %X", fileOff);
 		Log("file %llX", file);
 
-		// @Todo: Check for byte8 * signature and do not assume metadata.
-
-		auto & headMetadata = *reinterpret_cast<HeadMetadata *>(file);
-		auto headMetadataAddr = reinterpret_cast<byte8 *>(&headMetadata);
-
-		if (IsHead(headMetadata))
+		if (IsHead(file))
 		{
+			auto headMetadataAddr = file;
+			auto & headMetadata = *reinterpret_cast<HeadMetadata *>(headMetadataAddr);
+
 			Log("Head");
 			Log("headMetadataAddr %llX", headMetadataAddr);
 
-			auto & progMetadata = *reinterpret_cast<ProgMetadata *>(file + headMetadata.progMetadataOff);
-			auto progMetadataAddr = reinterpret_cast<byte8 *>(&progMetadata);
+			auto progMetadataAddr = (file + headMetadata.progMetadataOff);
 
-			if (IsProg(progMetadata))
+			if (IsProg(progMetadataAddr))
 			{
+				auto & progMetadata = *reinterpret_cast<ProgMetadata *>(progMetadataAddr);
+
 				Log("Prog");
 				Log("progMetadataAddr %llX", progMetadataAddr);
 				Log("size %X", progMetadata.size);
 				Log("last %u", progMetadata.last);
 
 				auto sectCount = static_cast<uint8>(progMetadata.last + 1);
+
+				Log("sectCount %u", sectCount);
 
 				for_all(uint8, sectIndex, sectCount)
 				{
@@ -678,8 +784,8 @@ void Decompile(byte8 * archive)
 
 					Log("sectOff %X", sectOff);
 
-					auto & progSectMetadata = *reinterpret_cast<ProgSectMetadata *>(progMetadataAddr + sectOff);
-					auto progSectMetadataAddr = reinterpret_cast<byte8 *>(&progSectMetadata);
+					auto progSectMetadataAddr = (progMetadataAddr + sectOff);
+					auto & progSectMetadata = *reinterpret_cast<ProgSectMetadata *>(progSectMetadataAddr);
 
 					Log("ProgSectMetadata");
 					Log("progSectMetadataAddr %llX", progSectMetadataAddr);
@@ -694,11 +800,12 @@ void Decompile(byte8 * archive)
 				}
 			}
 
-			auto & smplMetadata = *reinterpret_cast<SmplMetadata *>(file + headMetadata.smplMetadataOff);
-			auto smplMetadataAddr = reinterpret_cast<byte8 *>(&smplMetadata);
+			auto smplMetadataAddr = (file + headMetadata.smplMetadataOff);
 
-			if (IsSmpl(smplMetadata))
+			if (IsSmpl(smplMetadataAddr))
 			{
+				auto & smplMetadata = *reinterpret_cast<SmplMetadata *>(smplMetadataAddr);
+
 				Log("Smpl");
 				Log("smplMetadataAddr %llX", smplMetadataAddr);
 				Log("size %X", smplMetadata.size);
@@ -720,11 +827,12 @@ void Decompile(byte8 * archive)
 				}
 			}
 
-			auto & vagiMetadata = *reinterpret_cast<VagiMetadata *>(file + headMetadata.vagiMetadataOff);
-			auto vagiMetadataAddr = reinterpret_cast<byte8 *>(&vagiMetadata);
+			auto vagiMetadataAddr = (file + headMetadata.vagiMetadataOff);
 
-			if (IsVagi(vagiMetadata))
+			if (IsVagi(vagiMetadataAddr))
 			{
+				auto & vagiMetadata = *reinterpret_cast<VagiMetadata *>(vagiMetadataAddr);
+
 				Log("Vagi");
 				Log("vagiMetadataAddr %llX", vagiMetadataAddr);
 				Log("size %X", vagiMetadata.size);
@@ -742,8 +850,6 @@ void Decompile(byte8 * archive)
 
 					vagiHelper.Push(item);
 				}
-
-				vagiHelper.UpdateOffsets();
 			}
 		}
 		else if (IsWave(file))
@@ -782,9 +888,16 @@ void Decompile(byte8 * archive)
 
 
 
-void Compile()
+void Compile(uint8 helperIndex)
 {
 	LogFunction();
+
+	auto & headHelper  = g_headHelper [helperIndex];
+	auto & progHelper  = g_progHelper [helperIndex];
+	auto & smplHelper  = g_smplHelper [helperIndex];
+	auto & vagiHelper  = g_vagiHelper [helperIndex];
+	auto & waveHelper  = g_waveHelper [helperIndex];
+	auto & soundHelper = g_soundHelper[helperIndex];
 
 	auto & headMetadata = *reinterpret_cast<HeadMetadata *>(headHelper.dataAddr);
 
@@ -817,78 +930,98 @@ void Compile()
 
 
 
-
 void ProcessSoundFiles()
 {
 	LogFunction();
 
-	const char * filenames[] =
+	// Style Weapon
 	{
-		"snd_sty02.pac",
-		"snd_sty03.pac",
-		"snd_sty04.pac",
-		"snd_sty05.pac",
-		"snd_sty06.pac",
-		"snd_sty07.pac",
-		"snd_wp00b.pac",
-		"snd_wp01b.pac",
-		"snd_wp02b.pac",
-		"snd_wp03b.pac",
-		"snd_wp04b.pac",
-		"snd_wp05b.pac",
-		"snd_wp06b.pac",
-		"snd_wp07b.pac",
-		"snd_wp08b.pac",
-		"snd_wp09b.pac",
-		"snd_wp11b.pac",
-		"snd_wp12b.pac",
-		"snd_wp13b.pac",
-	};
+		Log("Style Weapon");
 
-	for_all(uint8, fileIndex, countof(filenames))
-	{
-		auto filename = filenames[fileIndex];
+		constexpr uint8 helperIndex = HELPER_STYLE_WEAPON;
 
-		byte8 * file = 0;
-		uint32 fileSize = 0;
+		auto & headHelper  = g_headHelper [helperIndex];
+		auto & progHelper  = g_progHelper [helperIndex];
+		auto & smplHelper  = g_smplHelper [helperIndex];
+		auto & vagiHelper  = g_vagiHelper [helperIndex];
+		auto & waveHelper  = g_waveHelper [helperIndex];
+		auto & soundHelper = g_soundHelper[helperIndex];
 
-		file = File_LoadFile(filename, &fileSize);
-		if (!file)
+		const char * filenames[] =
 		{
-			Log("File_LoadFile failed.");
+			"snd_sty02.pac",
+			"snd_sty03.pac",
+			"snd_sty04.pac",
+			"snd_sty05.pac",
+			"snd_sty06.pac",
+			"snd_sty07.pac",
+			"snd_wp00b.pac",
+			"snd_wp01b.pac",
+			"snd_wp02b.pac",
+			"snd_wp03b.pac",
+			"snd_wp04b.pac",
+			"snd_wp05b.pac",
+			"snd_wp06b.pac",
+			"snd_wp07b.pac",
+			"snd_wp08b.pac",
+			"snd_wp09b.pac",
+			"snd_wp11b.pac",
+			"snd_wp12b.pac",
+			"snd_wp13b.pac",
+		};
 
-			return;
+		for_all(uint8, fileIndex, countof(filenames))
+		{
+			auto filename = filenames[fileIndex];
+
+			byte8 * file = 0;
+			uint32 fileSize = 0;
+
+			file = File_LoadFile(filename, &fileSize);
+			if (!file)
+			{
+				Log("File_LoadFile failed.");
+
+				return;
+			}
+
+			Decompile(file, helperIndex);
 		}
 
-		Decompile(file);
+		vagiHelper.UpdateOffsets();
+
+		Log("progHelper");
+		Log("dataAddr %llX", progHelper.dataAddr);
+		Log("pos      %X", progHelper.pos);
+		Log("count    %u", progHelper.count);
+
+		Log("smplHelper");
+		Log("dataAddr %llX", smplHelper.dataAddr);
+		Log("pos      %X", smplHelper.pos);
+		Log("count    %u", smplHelper.count);
+
+		Log("vagiHelper");
+		Log("dataAddr %llX", vagiHelper.dataAddr);
+		Log("pos      %X", vagiHelper.pos);
+		Log("count    %u", vagiHelper.count);
+
+		Log("waveHelper");
+		Log("dataAddr %llX", waveHelper.dataAddr);
+		Log("pos      %X", waveHelper.pos);
+		Log("count    %u", waveHelper.count);
+
+		Compile(helperIndex);
+
+		Log("headHelper");
+		Log("dataAddr %llX", headHelper.dataAddr);
+		Log("pos      %X", headHelper.pos);
+		Log("count    %u", headHelper.count);
+
+		Log("soundHelper");
+		Log("dataAddr %llX", soundHelper.dataAddr);
+		Log("pos      %X", soundHelper.pos);
+		Log("count    %u", soundHelper.count);
 	}
-
-	Log("progHelper");
-	Log("dataAddr %llX", progHelper.dataAddr);
-	Log("pos      %X", progHelper.pos);
-	Log("count    %u", progHelper.count);
-
-	Log("smplHelper");
-	Log("dataAddr %llX", smplHelper.dataAddr);
-	Log("pos      %X", smplHelper.pos);
-	Log("count    %u", smplHelper.count);
-
-	Log("vagiHelper");
-	Log("dataAddr %llX", vagiHelper.dataAddr);
-	Log("pos      %X", vagiHelper.pos);
-	Log("count    %u", vagiHelper.count);
-
-	Log("waveHelper");
-	Log("dataAddr %llX", waveHelper.dataAddr);
-	Log("pos      %X", waveHelper.pos);
-	Log("count    %u", waveHelper.count);
-
-	Compile();
-
-	Log("headHelper");
-	Log("dataAddr %llX", headHelper.dataAddr);
-	Log("pos      %X", headHelper.pos);
-	Log("count    %u", headHelper.count);
 }
 
 export void Sound_Toggle(bool enable)
@@ -899,42 +1032,60 @@ export void Sound_Toggle(bool enable)
 
 	if (!run)
 	{
-		if
-		(
-			!waveHelper.Init
+		for_all(uint8, helperIndex, HELPER_COUNT)
+		{
+			Log("helperIndex %u", helperIndex);
+
+			auto & headHelper  = g_headHelper [helperIndex];
+			auto & progHelper  = g_progHelper [helperIndex];
+			auto & smplHelper  = g_smplHelper [helperIndex];
+			auto & vagiHelper  = g_vagiHelper [helperIndex];
+			auto & waveHelper  = g_waveHelper [helperIndex];
+			auto & soundHelper = g_soundHelper[helperIndex];
+
+			if (!headHelper.Init(1 * 1024 * 1024))
+			{
+				Log("headHelper.Init failed.");
+
+				return;
+			}
+			else if (!progHelper.Init(1 * 1024 * 1024))
+			{
+				Log("progHelper.Init failed.");
+
+				return;
+			}
+			else if (!smplHelper.Init(1 * 1024 * 1024))
+			{
+				Log("smplHelper.Init failed.");
+
+				return;
+			}
+			else if (!vagiHelper.Init(1 * 1024 * 1024))
+			{
+				Log("vagiHelper.Init failed.");
+
+				return;
+			}
+			else if
 			(
-				(32 * 1024 * 1024),
-				4096
+				!waveHelper.Init
+				(
+					(8 * 1024 * 1024),
+					8192
+				)
 			)
-		)
-		{
-			Log("waveHelper.Init failed.");
+			{
+				Log("waveHelper.Init failed.");
 
-			return;
-		}
-		else if (!vagiHelper.Init(1 * 1024 * 1024))
-		{
-			Log("vagiHelper.Init failed.");
+				return;
+			}
+			else if (!soundHelper.Init(1 * 1024 * 1024))
+			{
+				Log("soundHelper.Init failed.");
 
-			return;
-		}
-		else if (!smplHelper.Init(1 * 1024 * 1024))
-		{
-			Log("smplHelper.Init failed.");
-
-			return;
-		}
-		else if (!progHelper.Init(1 * 1024 * 1024))
-		{
-			Log("progHelper.Init failed.");
-
-			return;
-		}
-		else if (!headHelper.Init(1 * 1024 * 1024))
-		{
-			Log("headHelper.Init failed.");
-
-			return;
+				return;
+			}
 		}
 	}
 
