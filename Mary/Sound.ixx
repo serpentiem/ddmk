@@ -1,3 +1,5 @@
+// @Todo: Move sound files to static files.
+
 module;
 #include "../Core/Core.h"
 
@@ -73,6 +75,13 @@ enum
 	HELPER_COMMON_VERGIL,
 	HELPER_STYLE_WEAPON,
 	HELPER_COUNT,
+};
+
+constexpr uint32 g_sectCount[HELPER_COUNT] =
+{
+	3,
+	3,
+	108,
 };
 
 #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
@@ -926,6 +935,58 @@ void Compile(uint8 helperIndex)
 	);
 
 	headMetadata.size = headHelper.pos;
+
+	if (vagiHelper.count != waveHelper.count)
+	{
+		Log("Count mismatch.");
+
+		return;
+	}
+
+	uint32 off = 0;
+
+	for_all(uint32, index, waveHelper.count)
+	{
+		auto & vagiItem = vagiHelper[index];
+		auto & waveMetadata = waveHelper[index];
+
+		auto waveSize = (Reverse(&waveMetadata.reverseSize) + 0x30);
+
+		auto fmodSystem = *reinterpret_cast<FMOD_SYSTEM **>(appBaseAddr + 0x5DE3D0);
+		/*
+		dmc3.exe+32255 - 48 8B 0D 74C15A00 - mov rcx,[dmc3.exe+5DE3D0]
+		*/
+
+		FMOD_CREATESOUNDEXINFO fmodCreateSoundExInfo = {};
+		fmodCreateSoundExInfo.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
+		fmodCreateSoundExInfo.length = waveSize;
+
+		SoundData soundData = {};
+		soundData.off = off;
+		soundData.size = vagiItem.size;
+
+		auto result = FMOD_System_CreateSound
+		(
+			fmodSystem,
+			&waveMetadata,
+			FMOD_CREATECOMPRESSEDSAMPLE |
+			FMOD_OPENMEMORY |
+			FMOD_LOWMEM,
+			&fmodCreateSoundExInfo,
+			&soundData.fmodSoundAddr
+		);
+
+		if (result != FMOD_OK)
+		{
+			Log("FMOD_System_CreateSound failed. %X", result);
+
+			return;
+		}
+
+		soundHelper.Push(soundData);
+
+		off += vagiItem.size;
+	}
 }
 
 
@@ -933,6 +994,69 @@ void Compile(uint8 helperIndex)
 void ProcessSoundFiles()
 {
 	LogFunction();
+
+	// Common Dante
+	{
+		Log("Common Dante");
+
+		constexpr uint8 helperIndex = HELPER_COMMON_DANTE;
+
+		auto & headHelper  = g_headHelper [helperIndex];
+		auto & progHelper  = g_progHelper [helperIndex];
+		auto & smplHelper  = g_smplHelper [helperIndex];
+		auto & vagiHelper  = g_vagiHelper [helperIndex];
+		auto & waveHelper  = g_waveHelper [helperIndex];
+		auto & soundHelper = g_soundHelper[helperIndex];
+
+		auto filename = "snd_com0.pac";
+
+		byte8 * file = 0;
+		uint32 fileSize = 0;
+
+		file = File_LoadFile(filename, &fileSize);
+		if (!file)
+		{
+			Log("File_LoadFile failed. %s", filename);
+
+			return;
+		}
+
+		Decompile(file, helperIndex);
+
+		vagiHelper.UpdateOffsets();
+
+		Log("progHelper");
+		Log("dataAddr %llX", progHelper.dataAddr);
+		Log("pos      %X", progHelper.pos);
+		Log("count    %u", progHelper.count);
+
+		Log("smplHelper");
+		Log("dataAddr %llX", smplHelper.dataAddr);
+		Log("pos      %X", smplHelper.pos);
+		Log("count    %u", smplHelper.count);
+
+		Log("vagiHelper");
+		Log("dataAddr %llX", vagiHelper.dataAddr);
+		Log("pos      %X", vagiHelper.pos);
+		Log("count    %u", vagiHelper.count);
+
+		Log("waveHelper");
+		Log("dataAddr %llX", waveHelper.dataAddr);
+		Log("pos      %X", waveHelper.pos);
+		Log("count    %u", waveHelper.count);
+
+		Compile(helperIndex);
+
+		Log("headHelper");
+		Log("dataAddr %llX", headHelper.dataAddr);
+		Log("pos      %X", headHelper.pos);
+		Log("count    %u", headHelper.count);
+
+		Log("soundHelper");
+		Log("dataAddr %llX", soundHelper.dataAddr);
+		Log("pos      %X", soundHelper.pos);
+		Log("count    %u", soundHelper.count);
+	}
 
 	// Style Weapon
 	{
@@ -980,7 +1104,7 @@ void ProcessSoundFiles()
 			file = File_LoadFile(filename, &fileSize);
 			if (!file)
 			{
-				Log("File_LoadFile failed.");
+				Log("File_LoadFile failed. %s", filename);
 
 				return;
 			}
@@ -1049,7 +1173,14 @@ export void Sound_Toggle(bool enable)
 
 				return;
 			}
-			else if (!progHelper.Init(1 * 1024 * 1024))
+			else if
+			(
+				!progHelper.Init
+				(
+					(1 * 1024 * 1024),
+					g_sectCount[helperIndex]
+				)
+			)
 			{
 				Log("progHelper.Init failed.");
 
