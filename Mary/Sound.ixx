@@ -25,6 +25,8 @@ enum
 	VAGI_METADATA_SIZE      = 16,
 	WAVE_METADATA_SIZE      = 64,
 	SOUND_DATA_SIZE         = 24,
+	DBST_METADATA_SIZE      = 16,
+	DBST_ITEM_SIZE          = 32,
 };
 
 enum
@@ -73,7 +75,8 @@ enum
 {
 	HELPER_COMMON_DANTE,
 	HELPER_COMMON_VERGIL,
-	HELPER_STYLE_WEAPON,
+	HELPER_STYLE_WEAPON_DANTE,
+	HELPER_STYLE_WEAPON_VERGIL,
 	HELPER_COUNT,
 };
 
@@ -81,6 +84,7 @@ constexpr uint32 g_sectCount[HELPER_COUNT] =
 {
 	3,
 	3,
+	108,
 	108,
 };
 
@@ -176,6 +180,14 @@ export struct SoundData
 	FMOD_SOUND * fmodSoundAddr;
 };
 
+export struct DbstMetadata
+{
+	byte8 signature[4];
+	_(4);
+	uint32 size;
+	_(4);
+};
+
 #pragma pack(pop)
 
 #undef _
@@ -233,6 +245,16 @@ bool IsWave(byte8 * addr)
 
 	return SignatureMatch(addr, signature);
 }
+
+bool IsDbst(byte8 * addr)
+{
+	constexpr byte8 signature[] = { 'd', 'b', 's', 'T', };
+
+	return SignatureMatch(addr, signature);
+}
+
+
+
 
 
 
@@ -693,7 +715,6 @@ bool SoundHelper::Init(uint32 dataSize)
 	return true;
 }
 
-// @Research: Somewhat redundant.
 void SoundHelper::Push(SoundData & soundData)
 {
 	LogFunction();
@@ -716,12 +737,63 @@ SoundData & SoundHelper::operator[](uint32 index)
 	return reinterpret_cast<SoundData *>(dataAddr)[index];
 }
 
+struct DbstHelper
+{
+	byte8 * dataAddr;
+	uint32 pos;
+	uint32 count;
+
+	bool Init(uint32 dataSize);
+
+	void Push(DbstMetadata & soundData);
+
+	DbstMetadata & operator[](uint32 index);
+};
+
+bool DbstHelper::Init(uint32 dataSize)
+{
+	LogFunction();
+
+	dataAddr = Alloc(dataSize);
+	if (!dataAddr)
+	{
+		Log("Alloc failed.");
+
+		return false;
+	}
+
+	return true;
+}
+
+void DbstHelper::Push(DbstMetadata & dbstMetadata)
+{
+	LogFunction();
+
+	auto size = (dbstMetadata.size + DBST_METADATA_SIZE);
+
+	CopyMemory
+	(
+		(dataAddr + pos),
+		&dbstMetadata,
+		size
+	);
+
+	pos += size;
+	count++;
+}
+
+DbstMetadata & DbstHelper::operator[](uint32 index)
+{
+	return reinterpret_cast<DbstMetadata *>(dataAddr)[index];
+}
+
 HeadHelper  g_headHelper [HELPER_COUNT] = {};
 ProgHelper  g_progHelper [HELPER_COUNT] = {};
 SmplHelper  g_smplHelper [HELPER_COUNT] = {};
 VagiHelper  g_vagiHelper [HELPER_COUNT] = {};
 WaveHelper  g_waveHelper [HELPER_COUNT] = {};
 SoundHelper g_soundHelper[HELPER_COUNT] = {};
+DbstHelper  g_dbstHelper [HELPER_COUNT] = {};
 
 void Decompile
 (
@@ -737,6 +809,7 @@ void Decompile
 	auto & vagiHelper  = g_vagiHelper [helperIndex];
 	auto & waveHelper  = g_waveHelper [helperIndex];
 	auto & soundHelper = g_soundHelper[helperIndex];
+	auto & dbstHelper  = g_dbstHelper [helperIndex];
 
 	Log("archive %llX", archive);
 
@@ -892,6 +965,15 @@ void Decompile
 				pos += size;
 			}
 		}
+		else if (IsDbst(file))
+		{
+			Log("Dbst");
+
+			auto dbstMetadataAddr = file;
+			auto & dbstMetadata = *reinterpret_cast<DbstMetadata *>(dbstMetadataAddr);
+
+			dbstHelper.Push(dbstMetadata);
+		}
 	}
 }
 
@@ -907,6 +989,7 @@ void Compile(uint8 helperIndex)
 	auto & vagiHelper  = g_vagiHelper [helperIndex];
 	auto & waveHelper  = g_waveHelper [helperIndex];
 	auto & soundHelper = g_soundHelper[helperIndex];
+	auto & dbstHelper  = g_dbstHelper [helperIndex];
 
 	auto & headMetadata = *reinterpret_cast<HeadMetadata *>(headHelper.dataAddr);
 
@@ -1007,6 +1090,7 @@ void ProcessSoundFiles()
 		auto & vagiHelper  = g_vagiHelper [helperIndex];
 		auto & waveHelper  = g_waveHelper [helperIndex];
 		auto & soundHelper = g_soundHelper[helperIndex];
+		auto & dbstHelper  = g_dbstHelper [helperIndex];
 
 		auto filename = "snd_com0.pac";
 
@@ -1020,6 +1104,8 @@ void ProcessSoundFiles()
 
 			return;
 		}
+
+		Log(filename);
 
 		Decompile(file, helperIndex);
 
@@ -1045,6 +1131,11 @@ void ProcessSoundFiles()
 		Log("pos      %X", waveHelper.pos);
 		Log("count    %u", waveHelper.count);
 
+		Log("dbstHelper");
+		Log("dataAddr %llX", dbstHelper.dataAddr);
+		Log("pos      %X", dbstHelper.pos);
+		Log("count    %u", dbstHelper.count);
+
 		Compile(helperIndex);
 
 		Log("headHelper");
@@ -1058,11 +1149,11 @@ void ProcessSoundFiles()
 		Log("count    %u", soundHelper.count);
 	}
 
-	// Style Weapon
+	// Common Vergil
 	{
-		Log("Style Weapon");
+		Log("Common Vergil");
 
-		constexpr uint8 helperIndex = HELPER_STYLE_WEAPON;
+		constexpr uint8 helperIndex = HELPER_COMMON_VERGIL;
 
 		auto & headHelper  = g_headHelper [helperIndex];
 		auto & progHelper  = g_progHelper [helperIndex];
@@ -1070,6 +1161,78 @@ void ProcessSoundFiles()
 		auto & vagiHelper  = g_vagiHelper [helperIndex];
 		auto & waveHelper  = g_waveHelper [helperIndex];
 		auto & soundHelper = g_soundHelper[helperIndex];
+		auto & dbstHelper  = g_dbstHelper [helperIndex];
+
+		auto filename = "snd_com3.pac";
+
+		byte8 * file = 0;
+		uint32 fileSize = 0;
+
+		file = File_LoadFile(filename, &fileSize);
+		if (!file)
+		{
+			Log("File_LoadFile failed. %s", filename);
+
+			return;
+		}
+
+		Log(filename);
+
+		Decompile(file, helperIndex);
+
+		vagiHelper.UpdateOffsets();
+
+		Log("progHelper");
+		Log("dataAddr %llX", progHelper.dataAddr);
+		Log("pos      %X", progHelper.pos);
+		Log("count    %u", progHelper.count);
+
+		Log("smplHelper");
+		Log("dataAddr %llX", smplHelper.dataAddr);
+		Log("pos      %X", smplHelper.pos);
+		Log("count    %u", smplHelper.count);
+
+		Log("vagiHelper");
+		Log("dataAddr %llX", vagiHelper.dataAddr);
+		Log("pos      %X", vagiHelper.pos);
+		Log("count    %u", vagiHelper.count);
+
+		Log("waveHelper");
+		Log("dataAddr %llX", waveHelper.dataAddr);
+		Log("pos      %X", waveHelper.pos);
+		Log("count    %u", waveHelper.count);
+
+		Log("dbstHelper");
+		Log("dataAddr %llX", dbstHelper.dataAddr);
+		Log("pos      %X", dbstHelper.pos);
+		Log("count    %u", dbstHelper.count);
+
+		Compile(helperIndex);
+
+		Log("headHelper");
+		Log("dataAddr %llX", headHelper.dataAddr);
+		Log("pos      %X", headHelper.pos);
+		Log("count    %u", headHelper.count);
+
+		Log("soundHelper");
+		Log("dataAddr %llX", soundHelper.dataAddr);
+		Log("pos      %X", soundHelper.pos);
+		Log("count    %u", soundHelper.count);
+	}
+
+	// Style Weapon Dante
+	{
+		Log("Style Weapon Dante");
+
+		constexpr uint8 helperIndex = HELPER_STYLE_WEAPON_DANTE;
+
+		auto & headHelper  = g_headHelper [helperIndex];
+		auto & progHelper  = g_progHelper [helperIndex];
+		auto & smplHelper  = g_smplHelper [helperIndex];
+		auto & vagiHelper  = g_vagiHelper [helperIndex];
+		auto & waveHelper  = g_waveHelper [helperIndex];
+		auto & soundHelper = g_soundHelper[helperIndex];
+		auto & dbstHelper  = g_dbstHelper [helperIndex];
 
 		const char * filenames[] =
 		{
@@ -1077,8 +1240,7 @@ void ProcessSoundFiles()
 			"snd_sty03.pac",
 			"snd_sty04.pac",
 			"snd_sty05.pac",
-			"snd_sty06.pac",
-			"snd_sty07.pac",
+			//"snd_sty06.pac",
 			"snd_wp00b.pac",
 			"snd_wp01b.pac",
 			"snd_wp02b.pac",
@@ -1089,9 +1251,6 @@ void ProcessSoundFiles()
 			"snd_wp07b.pac",
 			"snd_wp08b.pac",
 			"snd_wp09b.pac",
-			"snd_wp11b.pac",
-			"snd_wp12b.pac",
-			"snd_wp13b.pac",
 		};
 
 		for_all(uint8, fileIndex, countof(filenames))
@@ -1108,6 +1267,8 @@ void ProcessSoundFiles()
 
 				return;
 			}
+
+			Log(filename);
 
 			Decompile(file, helperIndex);
 		}
@@ -1134,6 +1295,96 @@ void ProcessSoundFiles()
 		Log("pos      %X", waveHelper.pos);
 		Log("count    %u", waveHelper.count);
 
+		Log("dbstHelper");
+		Log("dataAddr %llX", dbstHelper.dataAddr);
+		Log("pos      %X", dbstHelper.pos);
+		Log("count    %u", dbstHelper.count);
+
+		Compile(helperIndex);
+
+		Log("headHelper");
+		Log("dataAddr %llX", headHelper.dataAddr);
+		Log("pos      %X", headHelper.pos);
+		Log("count    %u", headHelper.count);
+
+		Log("soundHelper");
+		Log("dataAddr %llX", soundHelper.dataAddr);
+		Log("pos      %X", soundHelper.pos);
+		Log("count    %u", soundHelper.count);
+	}
+
+	// Style Weapon Vergil
+	{
+		Log("Style Weapon Vergil");
+
+		constexpr uint8 helperIndex = HELPER_STYLE_WEAPON_VERGIL;
+
+		auto & headHelper  = g_headHelper [helperIndex];
+		auto & progHelper  = g_progHelper [helperIndex];
+		auto & smplHelper  = g_smplHelper [helperIndex];
+		auto & vagiHelper  = g_vagiHelper [helperIndex];
+		auto & waveHelper  = g_waveHelper [helperIndex];
+		auto & soundHelper = g_soundHelper[helperIndex];
+		auto & dbstHelper  = g_dbstHelper [helperIndex];
+
+		const char * filenames[] =
+		{
+			// "snd_sty04.pac",
+			// "snd_sty05.pac",
+			// "snd_sty06.pac",
+			"snd_sty07.pac",
+			"snd_wp11a.pac",
+			"snd_wp12a.pac",
+			"snd_wp13a.pac",
+		};
+
+		for_all(uint8, fileIndex, countof(filenames))
+		{
+			auto filename = filenames[fileIndex];
+
+			byte8 * file = 0;
+			uint32 fileSize = 0;
+
+			file = File_LoadFile(filename, &fileSize);
+			if (!file)
+			{
+				Log("File_LoadFile failed. %s", filename);
+
+				return;
+			}
+
+			Log(filename);
+
+			Decompile(file, helperIndex);
+		}
+
+		vagiHelper.UpdateOffsets();
+
+		Log("progHelper");
+		Log("dataAddr %llX", progHelper.dataAddr);
+		Log("pos      %X", progHelper.pos);
+		Log("count    %u", progHelper.count);
+
+		Log("smplHelper");
+		Log("dataAddr %llX", smplHelper.dataAddr);
+		Log("pos      %X", smplHelper.pos);
+		Log("count    %u", smplHelper.count);
+
+		Log("vagiHelper");
+		Log("dataAddr %llX", vagiHelper.dataAddr);
+		Log("pos      %X", vagiHelper.pos);
+		Log("count    %u", vagiHelper.count);
+
+		Log("waveHelper");
+		Log("dataAddr %llX", waveHelper.dataAddr);
+		Log("pos      %X", waveHelper.pos);
+		Log("count    %u", waveHelper.count);
+
+		Log("dbstHelper");
+		Log("dataAddr %llX", dbstHelper.dataAddr);
+		Log("pos      %X", dbstHelper.pos);
+		Log("count    %u", dbstHelper.count);
+
 		Compile(helperIndex);
 
 		Log("headHelper");
@@ -1147,6 +1398,246 @@ void ProcessSoundFiles()
 		Log("count    %u", soundHelper.count);
 	}
 }
+
+
+
+
+
+
+byte8 * GetHeadMetadataAddress
+(
+	uint32 channelIndex,
+	byte8 * addr
+)
+{
+	LogFunction();
+
+	switch (channelIndex)
+	{
+		case CHANNEL_COMMON:
+		{
+			switch (g_character)
+			{
+				case CHAR_DANTE:
+				{
+					return g_headHelper[HELPER_COMMON_DANTE].dataAddr;
+				}
+				case CHAR_VERGIL:
+				{
+					return g_headHelper[HELPER_COMMON_VERGIL].dataAddr;
+				}
+			}
+
+			break;
+		}
+		case CHANNEL_STYLE_WEAPON:
+		{
+			switch (g_character)
+			{
+				case CHAR_DANTE:
+				{
+					return g_headHelper[HELPER_STYLE_WEAPON_DANTE].dataAddr;
+				}
+				case CHAR_VERGIL:
+				{
+					return g_headHelper[HELPER_STYLE_WEAPON_VERGIL].dataAddr;
+				}
+			}
+
+			break;
+		}
+	}
+
+	return addr;
+}
+
+uint64 GetChannelOffset
+(
+	uint32 channelIndex,
+	uint64 off
+)
+{
+	switch (channelIndex)
+	{
+		case CHANNEL_COMMON:
+		case CHANNEL_STYLE_WEAPON:
+		{
+			return 0;
+		}
+	}
+
+	return off;
+}
+
+uint32 GetSoundDataCount
+(
+	byte8 * addr,
+	uint32 count
+)
+{
+	auto & channelIndex = *reinterpret_cast<uint8 *>(addr + 0xC);
+
+	switch (channelIndex)
+	{
+		case CHANNEL_COMMON:
+		{
+			switch (g_character)
+			{
+				case CHAR_DANTE:
+				{
+					return g_soundHelper[HELPER_COMMON_DANTE].count;
+				}
+				case CHAR_VERGIL:
+				{
+					return g_soundHelper[HELPER_COMMON_VERGIL].count;
+				}
+			}
+
+			break;
+		}
+		case CHANNEL_STYLE_WEAPON:
+		{
+			switch (g_character)
+			{
+				case CHAR_DANTE:
+				{
+					return g_soundHelper[HELPER_STYLE_WEAPON_DANTE].count;
+				}
+				case CHAR_VERGIL:
+				{
+					return g_soundHelper[HELPER_STYLE_WEAPON_VERGIL].count;
+				}
+			}
+
+			break;
+		}
+	}
+
+	return count;
+}
+
+byte8 * GetSoundDataAddress
+(
+	byte8 * addr,
+	byte8 * dataAddr
+)
+{
+	auto & channelIndex = *reinterpret_cast<uint8 *>(addr + 0xC);
+
+	switch (channelIndex)
+	{
+		case CHANNEL_COMMON:
+		{
+			switch (g_character)
+			{
+				case CHAR_DANTE:
+				{
+					return g_soundHelper[HELPER_COMMON_DANTE].dataAddr;
+				}
+				case CHAR_VERGIL:
+				{
+					return g_soundHelper[HELPER_COMMON_VERGIL].dataAddr;
+				}
+			}
+
+			break;
+		}
+		case CHANNEL_STYLE_WEAPON:
+		{
+			switch (g_character)
+			{
+				case CHAR_DANTE:
+				{
+					return g_soundHelper[HELPER_STYLE_WEAPON_DANTE].dataAddr;
+				}
+				case CHAR_VERGIL:
+				{
+					return g_soundHelper[HELPER_STYLE_WEAPON_VERGIL].dataAddr;
+				}
+			}
+
+			break;
+		}
+	}
+
+	return dataAddr;
+}
+
+
+
+
+
+// @Todo: Rename to Item.
+byte8 * GetDbstMetadataAddress
+(
+	uint32 channelIndex,
+	uint32 itemIndex,
+	byte8 * addr // @Research: defaultAddr.
+)
+{
+	LogFunction();
+
+	byte8 * dest = 0;
+
+	uint32 off = (DBST_METADATA_SIZE + (itemIndex * DBST_ITEM_SIZE));
+
+	switch (channelIndex)
+	{
+		case CHANNEL_COMMON:
+		{
+			switch (g_character)
+			{
+				case CHAR_DANTE:
+				{
+					dest = g_dbstHelper[HELPER_COMMON_DANTE].dataAddr;
+
+					break;
+				}
+				case CHAR_VERGIL:
+				{
+					dest = g_dbstHelper[HELPER_COMMON_VERGIL].dataAddr;
+
+					break;
+				}
+			}
+
+			break;
+		}
+		case CHANNEL_STYLE_WEAPON:
+		{
+			switch (g_character)
+			{
+				case CHAR_DANTE:
+				{
+					dest = reinterpret_cast<byte8 *>(&g_dbstHelper[HELPER_STYLE_WEAPON_DANTE][0]);
+
+					break;
+				}
+				case CHAR_VERGIL:
+				{
+					dest = reinterpret_cast<byte8 *>(&g_dbstHelper[HELPER_STYLE_WEAPON_VERGIL][0]);
+
+					break;
+				}
+			}
+
+			break;
+		}
+	}
+
+	if (!dest)
+	{
+		return addr;
+	}
+
+	return (dest + off);
+}
+
+
+
+
+
+
 
 export void Sound_Toggle(bool enable)
 {
@@ -1166,6 +1657,7 @@ export void Sound_Toggle(bool enable)
 			auto & vagiHelper  = g_vagiHelper [helperIndex];
 			auto & waveHelper  = g_waveHelper [helperIndex];
 			auto & soundHelper = g_soundHelper[helperIndex];
+			auto & dbstHelper  = g_dbstHelper [helperIndex];
 
 			if (!headHelper.Init(1 * 1024 * 1024))
 			{
@@ -1217,6 +1709,12 @@ export void Sound_Toggle(bool enable)
 
 				return;
 			}
+			else if (!dbstHelper.Init(1 * 1024 * 1024))
+			{
+				Log("dbstHelper.Init failed.");
+
+				return;
+			}
 		}
 	}
 
@@ -1250,6 +1748,218 @@ export void Sound_Toggle(bool enable)
 			backupHelper.Restore(addr);
 		}
 	}
+
+	// Get Head Metadata Address
+	{
+		auto addr     = (appBaseAddr + 0x33A35B);
+		auto jumpAddr = (appBaseAddr + 0x33A360);
+		/*
+		dmc3.exe+33A35B - E8 40FBFFFF - call dmc3.exe+339EA0
+		dmc3.exe+33A360 - 40 0FB6 D5  - movzx edx,bpl
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_ecx_r15d,
+			mov_rdx_rax,
+		};
+		constexpr uint32 size0 = 5;
+		constexpr uint32 size1 = sizeof(sect1);
+
+		if (!run)
+		{
+			func = CreateFunction(GetHeadMetadataAddress, jumpAddr, true, false, size0, size1);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, size1);
+			WriteCall(func.sect0, (appBaseAddr + 0x339EA0));
+			backupHelper.Save(addr, size0);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Get Channel Offset
+	{
+		auto addr     = (appBaseAddr + 0x33A3A1);
+		auto jumpAddr = (appBaseAddr + 0x33A3A6);
+		/*
+		dmc3.exe+33A3A1 - E8 EAFAFFFF   - call dmc3.exe+339E90
+		dmc3.exe+33A3A6 - 44 0FB6 47 05 - movzx r8d,byte ptr [rdi+05]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_ecx_r15d,
+			mov_rdx_rax,
+		};
+		constexpr uint32 size0 = 5;
+		constexpr uint32 size1 = sizeof(sect1);
+
+		if (!run)
+		{
+			func = CreateFunction(GetChannelOffset, jumpAddr, true, false, size0, size1);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, size1);
+			WriteCall(func.sect0, (appBaseAddr + 0x339E90));
+			backupHelper.Save(addr, size0);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Get Sound Data Count
+	{
+		auto addr     = (appBaseAddr + 0x321C7);
+		auto jumpAddr = (appBaseAddr + 0x321CD);
+		/*
+		dmc3.exe+321C7 - 8B 15 27C35A00 - mov edx,[dmc3.exe+5DE4F4]
+		dmc3.exe+321CD - 33 F6          - xor esi,esi
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect2[] =
+		{
+			mov_edx_eax,
+		};
+		constexpr uint32 size0 = 6;
+		constexpr uint32 size2 = sizeof(sect2);
+
+		if (!run)
+		{
+			func = CreateFunction(GetSoundDataCount, jumpAddr, true, false, size0, 0, size2);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect2, sect2, size2);
+			WriteAddress(func.sect0, (appBaseAddr + 0x5DE4F4), size0);
+			backupHelper.Save(addr, size0);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size0 - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Get Sound Data Address
+	{
+		auto addr     = (appBaseAddr + 0x321E0);
+		auto jumpAddr = (appBaseAddr + 0x321E7);
+		/*
+		dmc3.exe+321E0 - 48 8D 3D C9C35A00 - lea rdi,[dmc3.exe+5DE5B0]
+		dmc3.exe+321E7 - 48 8B CF          - mov rcx,rdi
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+			mov_rdx_rdi,
+		};
+		constexpr byte8 sect2[] =
+		{
+			0x48, 0x8B, 0xF8, // mov rdi,rax
+			0x8B, 0xC6,       // mov eax,esi
+		};
+		constexpr uint32 size0 = 7;
+		constexpr uint32 size1 = sizeof(sect1);
+		constexpr uint32 size2 = sizeof(sect2);
+
+		if (!run)
+		{
+			func = CreateFunction(GetSoundDataAddress, jumpAddr, true, false, size0, size1, size2);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, size1);
+			CopyMemory(func.sect2, sect2, size2);
+			WriteAddress(func.sect0, (appBaseAddr + 0x5DE5B0), size0);
+			backupHelper.Save(addr, size0);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size0 - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Disable Equipment Check
+	Write<byte8>((appBaseAddr + 0x33995C), (enable) ? 0xEB : 0x74);
+	/*
+	dmc3.exe+33995C - 74 12    - je dmc3.exe+339970
+	dmc3.exe+33995E - 41 FF C2 - inc r10d
+	*/
+
+	// Get Dbst Metadata Address
+	{
+		auto addr     = (appBaseAddr + 0x33947B);
+		auto jumpAddr = (appBaseAddr + 0x339480);
+		/*
+		dmc3.exe+33947B - E8 20F1FFFF - call dmc3.exe+3385A0
+		dmc3.exe+339480 - 4C 8B E0    - mov r12,rax
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_ecx_edi,
+			mov_edx_ebx,
+			0x4C, 0x8B, 0xC0, // mov r8,rax
+		};
+		constexpr uint32 size0 = 5;
+		constexpr uint32 size1 = sizeof(sect1);
+
+		if (!run)
+		{
+			func = CreateFunction(GetDbstMetadataAddress, jumpAddr, true, false, size0, size1);
+			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, size1);
+			WriteCall(func.sect0, (appBaseAddr + 0x3385A0));
+			backupHelper.Save(addr, size0);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+
+
+
+
+
 
 	run = true;
 }
