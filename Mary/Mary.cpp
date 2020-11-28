@@ -166,7 +166,15 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		Scene_Init();
 
-		Sound_Toggle(true);
+		if (!Sound_Init())
+		{
+			Log("Sound_Init failed.");
+
+			return 0;
+		}
+
+		// Sound_Init();
+		// Sound_Toggle(true);
 
 		Speed_Init();
 		UpdateSpeedValues();

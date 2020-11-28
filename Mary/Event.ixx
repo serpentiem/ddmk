@@ -11,6 +11,7 @@ import Config;
 import File;
 import Global;
 import Model;
+import Sound;
 
 #define debug true
 
@@ -152,6 +153,11 @@ bool EventOnce(EventData & eventData)
 		Log("Main");
 		//Actor_Main();
 		BossRush_Main();
+
+		Sound_EventMain();
+
+
+
 		break;
 	}
 	case EVENT_TELEPORT:
@@ -174,6 +180,12 @@ bool EventOnce(EventData & eventData)
 	{
 		Log("Delete %u", eventData.subevent);
 		Actor_Delete();
+
+
+		Sound_EventDelete();
+
+
+
 		break;
 	}
 	}

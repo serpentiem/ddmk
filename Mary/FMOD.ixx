@@ -95,12 +95,18 @@ export bool FMOD_Init()
 	Log("FMOD_System_CreateSound %llX", FMOD_System_CreateSound);
 
 
+	// @Todo: Update.
+	Write<uint32>((appBaseAddr + 0x32635 + 1), FMOD_CACHE_SIZE);
+	/*
+	dmc3.exe+32635 - B9 00003002    - mov ecx,02300000
+	dmc3.exe+3263A - FF 15 20CE3100 - call qword ptr [dmc3.exe+34F460]
+	*/
 
-
-
-
-
-
+	Write<uint32>((appBaseAddr + 0x32658 + 1), FMOD_CACHE_SIZE);
+	/*
+	dmc3.exe+32658 - BA 00003002 - mov edx,02300000
+	dmc3.exe+3265D - E8 A62D3100 - call dmc3.exe+345408
+	*/
 
 
 

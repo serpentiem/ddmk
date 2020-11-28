@@ -180,12 +180,18 @@ export struct SoundData
 	FMOD_SOUND * fmodSoundAddr;
 };
 
+export struct DbstItem
+{
+	_(32);
+};
+
 export struct DbstMetadata
 {
 	byte8 signature[4];
 	_(4);
 	uint32 size;
-	_(4);
+	uint32 itemCount;
+	DbstItem items[1];
 };
 
 #pragma pack(pop)
@@ -1404,13 +1410,23 @@ void ProcessSoundFiles()
 
 
 
-byte8 * GetHeadMetadataAddress
-(
-	uint32 channelIndex,
-	byte8 * addr
-)
+
+
+
+
+
+
+// @Todo: Can also be dataAddr.
+byte8 * GetDbstMetadataAddress(uint32 channelIndex)
 {
 	LogFunction();
+
+	auto pool = reinterpret_cast<byte8 **>(appBaseAddr + 0xD6E610);
+	/*
+	dmc3.exe+33AB12 - 48 8D 0D F73AA300 - lea rcx,[dmc3.exe+D6E610]
+	*/
+
+	auto dbstMetadataAddr = pool[channelIndex];
 
 	switch (channelIndex)
 	{
@@ -1420,11 +1436,15 @@ byte8 * GetHeadMetadataAddress
 			{
 				case CHAR_DANTE:
 				{
-					return g_headHelper[HELPER_COMMON_DANTE].dataAddr;
+					dbstMetadataAddr = reinterpret_cast<byte8 *>(&g_dbstHelper[HELPER_COMMON_DANTE][0]);
+
+					break;
 				}
 				case CHAR_VERGIL:
 				{
-					return g_headHelper[HELPER_COMMON_VERGIL].dataAddr;
+					dbstMetadataAddr = reinterpret_cast<byte8 *>(&g_dbstHelper[HELPER_COMMON_VERGIL][0]);
+
+					break;
 				}
 			}
 
@@ -1436,11 +1456,98 @@ byte8 * GetHeadMetadataAddress
 			{
 				case CHAR_DANTE:
 				{
-					return g_headHelper[HELPER_STYLE_WEAPON_DANTE].dataAddr;
+					dbstMetadataAddr = reinterpret_cast<byte8 *>(&g_dbstHelper[HELPER_STYLE_WEAPON_DANTE][0]);
+
+					break;
 				}
 				case CHAR_VERGIL:
 				{
-					return g_headHelper[HELPER_STYLE_WEAPON_VERGIL].dataAddr;
+					dbstMetadataAddr = reinterpret_cast<byte8 *>(&g_dbstHelper[HELPER_STYLE_WEAPON_VERGIL][0]);
+
+					break;
+				}
+			}
+
+			break;
+		}
+	}
+
+	return dbstMetadataAddr;
+}
+
+byte8 * GetDbstItemAddress
+(
+	uint32 channelIndex,
+	uint32 itemIndex
+)
+{
+	LogFunction();
+
+	auto dbstMetadataAddr = GetDbstMetadataAddress(channelIndex);
+	if (!dbstMetadataAddr)
+	{
+		return 0;
+	}
+	auto & dbstMetadata = *reinterpret_cast<DbstMetadata *>(dbstMetadataAddr);
+
+	if (itemIndex >= dbstMetadata.itemCount)
+	{
+		return 0;
+	}
+
+	auto & item = dbstMetadata.items[itemIndex];
+
+	return reinterpret_cast<byte8 *>(&item);
+}
+
+byte8 * GetHeadMetadataAddress(uint32 channelIndex)
+{
+	LogFunction();
+
+	auto pool = reinterpret_cast<byte8 **>(appBaseAddr + 0xD6E590);
+	/*
+	dmc3.exe+339EAA - 48 8D 0D DF46A300 - lea rcx,[dmc3.exe+D6E590]
+	*/
+
+	auto addr = pool[channelIndex];
+
+	switch (channelIndex)
+	{
+		case CHANNEL_COMMON:
+		{
+			switch (g_character)
+			{
+				case CHAR_DANTE:
+				{
+					addr = g_headHelper[HELPER_COMMON_DANTE].dataAddr;
+
+					break;
+				}
+				case CHAR_VERGIL:
+				{
+					addr = g_headHelper[HELPER_COMMON_VERGIL].dataAddr;
+
+					break;
+				}
+			}
+
+			break;
+		}
+		case CHANNEL_STYLE_WEAPON:
+		{
+			switch (g_character)
+			{
+				case CHAR_DANTE:
+				{
+					addr = g_headHelper[HELPER_STYLE_WEAPON_DANTE].dataAddr;
+
+					break;
+				}
+				case CHAR_VERGIL:
+				{
+					addr = g_headHelper[HELPER_STYLE_WEAPON_VERGIL].dataAddr;
+
+					break;
 				}
 			}
 
@@ -1451,12 +1558,13 @@ byte8 * GetHeadMetadataAddress
 	return addr;
 }
 
-uint64 GetChannelOffset
-(
-	uint32 channelIndex,
-	uint64 off
-)
+uint64 GetChannelOffset(uint32 channelIndex)
 {
+	auto offs = reinterpret_cast<uint64 *>(appBaseAddr + 0xD6E4C0);
+	/*
+	dmc3.exe+339D6A - 48 8D 0D 4F47A300 - lea rcx,[dmc3.exe+D6E4C0]
+	*/
+
 	switch (channelIndex)
 	{
 		case CHANNEL_COMMON:
@@ -1466,16 +1574,19 @@ uint64 GetChannelOffset
 		}
 	}
 
+	auto & off = offs[channelIndex];
+
 	return off;
 }
 
-uint32 GetSoundDataCount
-(
-	byte8 * addr,
-	uint32 count
-)
+uint32 GetSoundDataCount(byte8 * addr)
 {
 	auto & channelIndex = *reinterpret_cast<uint8 *>(addr + 0xC);
+
+	auto count = *reinterpret_cast<uint32 *>(appBaseAddr + 0x5DE4F4);
+	/*
+	dmc3.exe+321C7 - 8B 15 27C35A00 - mov edx,[dmc3.exe+5DE4F4]
+	*/
 
 	switch (channelIndex)
 	{
@@ -1485,11 +1596,15 @@ uint32 GetSoundDataCount
 			{
 				case CHAR_DANTE:
 				{
-					return g_soundHelper[HELPER_COMMON_DANTE].count;
+					count = g_soundHelper[HELPER_COMMON_DANTE].count;
+
+					break;
 				}
 				case CHAR_VERGIL:
 				{
-					return g_soundHelper[HELPER_COMMON_VERGIL].count;
+					count = g_soundHelper[HELPER_COMMON_VERGIL].count;
+
+					break;
 				}
 			}
 
@@ -1501,11 +1616,15 @@ uint32 GetSoundDataCount
 			{
 				case CHAR_DANTE:
 				{
-					return g_soundHelper[HELPER_STYLE_WEAPON_DANTE].count;
+					count = g_soundHelper[HELPER_STYLE_WEAPON_DANTE].count;
+
+					break;
 				}
 				case CHAR_VERGIL:
 				{
-					return g_soundHelper[HELPER_STYLE_WEAPON_VERGIL].count;
+					count = g_soundHelper[HELPER_STYLE_WEAPON_VERGIL].count;
+
+					break;
 				}
 			}
 
@@ -1516,14 +1635,16 @@ uint32 GetSoundDataCount
 	return count;
 }
 
-byte8 * GetSoundDataAddress
-(
-	byte8 * addr,
-	byte8 * dataAddr
-)
+// @Todo: Update.
+byte8 * GetSoundDataAddress(byte8 * addr)
 {
 	auto & channelIndex = *reinterpret_cast<uint8 *>(addr + 0xC);
 
+	auto addr2 = reinterpret_cast<byte8 *>(appBaseAddr + 0x5DE5B0);
+	/*
+	dmc3.exe+321E0 - 48 8D 3D C9C35A00 - lea rdi,[dmc3.exe+5DE5B0]
+	*/
+
 	switch (channelIndex)
 	{
 		case CHANNEL_COMMON:
@@ -1532,11 +1653,15 @@ byte8 * GetSoundDataAddress
 			{
 				case CHAR_DANTE:
 				{
-					return g_soundHelper[HELPER_COMMON_DANTE].dataAddr;
+					addr2 = g_soundHelper[HELPER_COMMON_DANTE].dataAddr;
+
+					break;
 				}
 				case CHAR_VERGIL:
 				{
-					return g_soundHelper[HELPER_COMMON_VERGIL].dataAddr;
+					addr2 = g_soundHelper[HELPER_COMMON_VERGIL].dataAddr;
+
+					break;
 				}
 			}
 
@@ -1548,11 +1673,15 @@ byte8 * GetSoundDataAddress
 			{
 				case CHAR_DANTE:
 				{
-					return g_soundHelper[HELPER_STYLE_WEAPON_DANTE].dataAddr;
+					addr2 = g_soundHelper[HELPER_STYLE_WEAPON_DANTE].dataAddr;
+
+					break;
 				}
 				case CHAR_VERGIL:
 				{
-					return g_soundHelper[HELPER_STYLE_WEAPON_VERGIL].dataAddr;
+					addr2 = g_soundHelper[HELPER_STYLE_WEAPON_VERGIL].dataAddr;
+
+					break;
 				}
 			}
 
@@ -1560,161 +1689,88 @@ byte8 * GetSoundDataAddress
 		}
 	}
 
-	return dataAddr;
+	return addr2;
 }
 
 
 
 
 
-// @Todo: Rename to Item.
-byte8 * GetDbstMetadataAddress
-(
-	uint32 channelIndex,
-	uint32 itemIndex,
-	byte8 * addr // @Research: defaultAddr.
-)
+
+
+
+
+export bool Sound_Init()
 {
 	LogFunction();
 
-	byte8 * dest = 0;
-
-	uint32 off = (DBST_METADATA_SIZE + (itemIndex * DBST_ITEM_SIZE));
-
-	switch (channelIndex)
+	for_all(uint8, helperIndex, HELPER_COUNT)
 	{
-		case CHANNEL_COMMON:
+		Log("helperIndex %u", helperIndex);
+
+		auto & headHelper  = g_headHelper [helperIndex];
+		auto & progHelper  = g_progHelper [helperIndex];
+		auto & smplHelper  = g_smplHelper [helperIndex];
+		auto & vagiHelper  = g_vagiHelper [helperIndex];
+		auto & waveHelper  = g_waveHelper [helperIndex];
+		auto & soundHelper = g_soundHelper[helperIndex];
+		auto & dbstHelper  = g_dbstHelper [helperIndex];
+
+		if (!headHelper.Init(1 * 1024 * 1024))
 		{
-			switch (g_character)
-			{
-				case CHAR_DANTE:
-				{
-					dest = g_dbstHelper[HELPER_COMMON_DANTE].dataAddr;
+			Log("headHelper.Init failed.");
 
-					break;
-				}
-				case CHAR_VERGIL:
-				{
-					dest = g_dbstHelper[HELPER_COMMON_VERGIL].dataAddr;
-
-					break;
-				}
-			}
-
-			break;
+			return false;
 		}
-		case CHANNEL_STYLE_WEAPON:
+		else if
+		(
+			!progHelper.Init
+			(
+				(1 * 1024 * 1024),
+				g_sectCount[helperIndex]
+			)
+		)
 		{
-			switch (g_character)
-			{
-				case CHAR_DANTE:
-				{
-					dest = reinterpret_cast<byte8 *>(&g_dbstHelper[HELPER_STYLE_WEAPON_DANTE][0]);
+			Log("progHelper.Init failed.");
 
-					break;
-				}
-				case CHAR_VERGIL:
-				{
-					dest = reinterpret_cast<byte8 *>(&g_dbstHelper[HELPER_STYLE_WEAPON_VERGIL][0]);
-
-					break;
-				}
-			}
-
-			break;
+			return false;
 		}
-	}
-
-	if (!dest)
-	{
-		return addr;
-	}
-
-	return (dest + off);
-}
-
-
-
-
-
-
-
-export void Sound_Toggle(bool enable)
-{
-	LogFunction(enable);
-
-	static bool run = false;
-
-	if (!run)
-	{
-		for_all(uint8, helperIndex, HELPER_COUNT)
+		else if (!smplHelper.Init(1 * 1024 * 1024))
 		{
-			Log("helperIndex %u", helperIndex);
+			Log("smplHelper.Init failed.");
 
-			auto & headHelper  = g_headHelper [helperIndex];
-			auto & progHelper  = g_progHelper [helperIndex];
-			auto & smplHelper  = g_smplHelper [helperIndex];
-			auto & vagiHelper  = g_vagiHelper [helperIndex];
-			auto & waveHelper  = g_waveHelper [helperIndex];
-			auto & soundHelper = g_soundHelper[helperIndex];
-			auto & dbstHelper  = g_dbstHelper [helperIndex];
+			return false;
+		}
+		else if (!vagiHelper.Init(1 * 1024 * 1024))
+		{
+			Log("vagiHelper.Init failed.");
 
-			if (!headHelper.Init(1 * 1024 * 1024))
-			{
-				Log("headHelper.Init failed.");
-
-				return;
-			}
-			else if
+			return false;
+		}
+		else if
+		(
+			!waveHelper.Init
 			(
-				!progHelper.Init
-				(
-					(1 * 1024 * 1024),
-					g_sectCount[helperIndex]
-				)
+				(8 * 1024 * 1024),
+				8192
 			)
-			{
-				Log("progHelper.Init failed.");
+		)
+		{
+			Log("waveHelper.Init failed.");
 
-				return;
-			}
-			else if (!smplHelper.Init(1 * 1024 * 1024))
-			{
-				Log("smplHelper.Init failed.");
+			return false;
+		}
+		else if (!soundHelper.Init(1 * 1024 * 1024))
+		{
+			Log("soundHelper.Init failed.");
 
-				return;
-			}
-			else if (!vagiHelper.Init(1 * 1024 * 1024))
-			{
-				Log("vagiHelper.Init failed.");
+			return false;
+		}
+		else if (!dbstHelper.Init(1 * 1024 * 1024))
+		{
+			Log("dbstHelper.Init failed.");
 
-				return;
-			}
-			else if
-			(
-				!waveHelper.Init
-				(
-					(8 * 1024 * 1024),
-					8192
-				)
-			)
-			{
-				Log("waveHelper.Init failed.");
-
-				return;
-			}
-			else if (!soundHelper.Init(1 * 1024 * 1024))
-			{
-				Log("soundHelper.Init failed.");
-
-				return;
-			}
-			else if (!dbstHelper.Init(1 * 1024 * 1024))
-			{
-				Log("dbstHelper.Init failed.");
-
-				return;
-			}
+			return false;
 		}
 	}
 
@@ -1729,19 +1785,82 @@ export void Sound_Toggle(bool enable)
 		dmc3.exe+32905 - CC - int 3
 		*/
 
+		auto func = CreateFunction(ProcessSoundFiles);
+
+		WriteJump(addr, func.addr);
+	}
+
+	return true;
+}
+
+export void Sound_Toggle(bool enable)
+{
+	LogFunction(enable);
+
+	static bool run = false;
+
+	// Get Dbst Metadata Address
+	{
+		auto addr     = (appBaseAddr + 0x33AE40);
+		auto jumpAddr = (appBaseAddr + 0x33AE47);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+33AE40 - 4C 8B 38   - mov r15,[rax]
+		dmc3.exe+33AE43 - 45 0FB7 E5 - movzx r12d,r13w
+		dmc3.exe+33AE47 - 4D 85 FF   - test r15,r15
+		*/
+
 		static Function func = {};
 
-		constexpr uint32 size0 = 5;
+		constexpr byte8 sect0[] =
+		{
+			push_rax,
+		};
+		constexpr byte8 sect2[] =
+		{
+			mov_r15_rax,
+			pop_rax,
+			0x45, 0x0F, 0xB7, 0xE5, // movzx r12d,r13w
+		};
 
 		if (!run)
 		{
-			func = CreateFunction(ProcessSoundFiles);
-			backupHelper.Save(addr, size0);
+			backupHelper.Save(addr, size);
+			func = CreateFunction(GetDbstMetadataAddress, jumpAddr, true, false, sizeof(sect0), 0, sizeof(sect2));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
 
 		if (enable)
 		{
-			WriteJump(addr, func.addr);
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Get Dbst Item Address
+	{
+		auto addr = (appBaseAddr + 0x33AB10);
+		constexpr uint32 size = 9;
+		/*
+		dmc3.exe+33AB10 - 8B C1             - mov eax,ecx
+		dmc3.exe+33AB12 - 48 8D 0D F73AA300 - lea rcx,[dmc3.exe+D6E610]
+		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(GetDbstItemAddress, 0, true, false);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
 		}
 		else
 		{
@@ -1751,35 +1870,24 @@ export void Sound_Toggle(bool enable)
 
 	// Get Head Metadata Address
 	{
-		auto addr     = (appBaseAddr + 0x33A35B);
-		auto jumpAddr = (appBaseAddr + 0x33A360);
+		auto addr = (appBaseAddr + 0x339EA0);
+		constexpr uint32 size = 5;
 		/*
-		dmc3.exe+33A35B - E8 40FBFFFF - call dmc3.exe+339EA0
-		dmc3.exe+33A360 - 40 0FB6 D5  - movzx edx,bpl
+		dmc3.exe+339EA0 - 83 F9 10 - cmp ecx,10
+		dmc3.exe+339EA3 - 72 03    - jb dmc3.exe+339EA8
 		*/
 
 		static Function func = {};
 
-		constexpr byte8 sect1[] =
-		{
-			mov_ecx_r15d,
-			mov_rdx_rax,
-		};
-		constexpr uint32 size0 = 5;
-		constexpr uint32 size1 = sizeof(sect1);
-
 		if (!run)
 		{
-			func = CreateFunction(GetHeadMetadataAddress, jumpAddr, true, false, size0, size1);
-			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
-			CopyMemory(func.sect1, sect1, size1);
-			WriteCall(func.sect0, (appBaseAddr + 0x339EA0));
-			backupHelper.Save(addr, size0);
+			backupHelper.Save(addr, size);
+			func = CreateFunction(GetHeadMetadataAddress, 0, true, false);
 		}
 
 		if (enable)
 		{
-			WriteJump(addr, func.addr);
+			WriteJump(addr, func.addr, (size - 5));
 		}
 		else
 		{
@@ -1789,35 +1897,24 @@ export void Sound_Toggle(bool enable)
 
 	// Get Channel Offset
 	{
-		auto addr     = (appBaseAddr + 0x33A3A1);
-		auto jumpAddr = (appBaseAddr + 0x33A3A6);
+		auto addr = (appBaseAddr + 0x339D60);
+		constexpr uint32 size = 5;
 		/*
-		dmc3.exe+33A3A1 - E8 EAFAFFFF   - call dmc3.exe+339E90
-		dmc3.exe+33A3A6 - 44 0FB6 47 05 - movzx r8d,byte ptr [rdi+05]
+		dmc3.exe+339D60 - 83 F9 10 - cmp ecx,10
+		dmc3.exe+339D63 - 72 03    - jb dmc3.exe+339D68
 		*/
 
 		static Function func = {};
 
-		constexpr byte8 sect1[] =
-		{
-			mov_ecx_r15d,
-			mov_rdx_rax,
-		};
-		constexpr uint32 size0 = 5;
-		constexpr uint32 size1 = sizeof(sect1);
-
 		if (!run)
 		{
-			func = CreateFunction(GetChannelOffset, jumpAddr, true, false, size0, size1);
-			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
-			CopyMemory(func.sect1, sect1, size1);
-			WriteCall(func.sect0, (appBaseAddr + 0x339E90));
-			backupHelper.Save(addr, size0);
+			backupHelper.Save(addr, size);
+			func = CreateFunction(GetChannelOffset, 0, true, false);
 		}
 
 		if (enable)
 		{
-			WriteJump(addr, func.addr);
+			WriteJump(addr, func.addr, (size - 5));
 		}
 		else
 		{
@@ -1829,6 +1926,7 @@ export void Sound_Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x321C7);
 		auto jumpAddr = (appBaseAddr + 0x321CD);
+		constexpr uint32 size = 6;
 		/*
 		dmc3.exe+321C7 - 8B 15 27C35A00 - mov edx,[dmc3.exe+5DE4F4]
 		dmc3.exe+321CD - 33 F6          - xor esi,esi
@@ -1840,21 +1938,17 @@ export void Sound_Toggle(bool enable)
 		{
 			mov_edx_eax,
 		};
-		constexpr uint32 size0 = 6;
-		constexpr uint32 size2 = sizeof(sect2);
 
 		if (!run)
 		{
-			func = CreateFunction(GetSoundDataCount, jumpAddr, true, false, size0, 0, size2);
-			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
-			CopyMemory(func.sect2, sect2, size2);
-			WriteAddress(func.sect0, (appBaseAddr + 0x5DE4F4), size0);
-			backupHelper.Save(addr, size0);
+			backupHelper.Save(addr, size);
+			func = CreateFunction(GetSoundDataCount, jumpAddr, true, false, 0, 0, sizeof(sect2));
+			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
 
 		if (enable)
 		{
-			WriteJump(addr, func.addr, (size0 - 5));
+			WriteJump(addr, func.addr, (size - 5));
 		}
 		else
 		{
@@ -1866,6 +1960,7 @@ export void Sound_Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x321E0);
 		auto jumpAddr = (appBaseAddr + 0x321E7);
+		constexpr uint32 size = 7;
 		/*
 		dmc3.exe+321E0 - 48 8D 3D C9C35A00 - lea rdi,[dmc3.exe+5DE5B0]
 		dmc3.exe+321E7 - 48 8B CF          - mov rcx,rdi
@@ -1873,33 +1968,28 @@ export void Sound_Toggle(bool enable)
 
 		static Function func = {};
 
-		constexpr byte8 sect1[] =
+		constexpr byte8 sect0[] =
 		{
-			mov_rcx_rbx,
-			mov_rdx_rdi,
+			push_rax,
 		};
+
 		constexpr byte8 sect2[] =
 		{
-			0x48, 0x8B, 0xF8, // mov rdi,rax
-			0x8B, 0xC6,       // mov eax,esi
+			mov_rdi_rax,
+			pop_rax,
 		};
-		constexpr uint32 size0 = 7;
-		constexpr uint32 size1 = sizeof(sect1);
-		constexpr uint32 size2 = sizeof(sect2);
 
 		if (!run)
 		{
-			func = CreateFunction(GetSoundDataAddress, jumpAddr, true, false, size0, size1, size2);
-			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
-			CopyMemory(func.sect1, sect1, size1);
-			CopyMemory(func.sect2, sect2, size2);
-			WriteAddress(func.sect0, (appBaseAddr + 0x5DE5B0), size0);
-			backupHelper.Save(addr, size0);
+			backupHelper.Save(addr, size);
+			func = CreateFunction(GetSoundDataAddress, jumpAddr, true, false, sizeof(sect0), 0, sizeof(sect2));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
 
 		if (enable)
 		{
-			WriteJump(addr, func.addr, (size0 - 5));
+			WriteJump(addr, func.addr, (size - 5));
 		}
 		else
 		{
@@ -1914,55 +2004,32 @@ export void Sound_Toggle(bool enable)
 	dmc3.exe+33995E - 41 FF C2 - inc r10d
 	*/
 
-	// Get Dbst Metadata Address
-	{
-		auto addr     = (appBaseAddr + 0x33947B);
-		auto jumpAddr = (appBaseAddr + 0x339480);
-		/*
-		dmc3.exe+33947B - E8 20F1FFFF - call dmc3.exe+3385A0
-		dmc3.exe+339480 - 4C 8B E0    - mov r12,rax
-		*/
-
-		static Function func = {};
-
-		constexpr byte8 sect1[] =
-		{
-			mov_ecx_edi,
-			mov_edx_ebx,
-			0x4C, 0x8B, 0xC0, // mov r8,rax
-		};
-		constexpr uint32 size0 = 5;
-		constexpr uint32 size1 = sizeof(sect1);
-
-		if (!run)
-		{
-			func = CreateFunction(GetDbstMetadataAddress, jumpAddr, true, false, size0, size1);
-			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
-			CopyMemory(func.sect1, sect1, size1);
-			WriteCall(func.sect0, (appBaseAddr + 0x3385A0));
-			backupHelper.Save(addr, size0);
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr);
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-
-
-
-
-
-
-
-
 	run = true;
 }
+
+export void Sound_EventMain()
+{
+	LogFunction();
+
+	Sound_Toggle(true);
+}
+
+export void Sound_EventDelete()
+{
+	LogFunction();
+
+	Sound_Toggle(false);
+}
+
+
+
+
+
+
+
+
+
+
 
 #ifdef __GARBAGE__
 #endif
