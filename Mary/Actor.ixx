@@ -482,8 +482,8 @@ void CharacterModelData::Update(T & actorData)
 		(
 			(costume == COSTUME_VERGIL_DEFAULT                      ) ||
 			(costume == COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS) ||
-			(costume == COSTUME_VERGIL_SPARDA                       ) ||
-			(costume == COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS )
+			(costume == COSTUME_VERGIL_NERO_ANGELO                       ) ||
+			(costume == COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS )
 		)
 		? true : false;
 		break;
@@ -2131,8 +2131,8 @@ void UpdateModelPartitions(ActorData & actorData)
 
 					break;
 				}
-				case COSTUME_VERGIL_SPARDA:
-				case COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS:
+				case COSTUME_VERGIL_NERO_ANGELO:
+				case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
 				{
 					modelPartitionData[0 ].value = 3; // Neck
 					modelPartitionData[1 ].value = 3; // Face
@@ -2641,8 +2641,8 @@ byte8 * CreateActor
 		{
 			switch (actorData.costume)
 			{
-				case COSTUME_VERGIL_SPARDA:
-				case COSTUME_VERGIL_SPARDA_INFINITE_MAGIC_POINTS:
+				case COSTUME_VERGIL_NERO_ANGELO:
+				case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
 				{
 					value = true;
 

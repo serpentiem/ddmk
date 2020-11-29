@@ -1,5 +1,3 @@
-// @Todo: Move sound files to static files.
-
 module;
 #include "../Core/Core.h"
 
@@ -73,10 +71,13 @@ enum
 
 enum
 {
-	HELPER_COMMON_DANTE,
-	HELPER_COMMON_VERGIL,
+	HELPER_COMMON_DANTE_DEFAULT,
+	HELPER_COMMON_DANTE_NO_COAT,
+	HELPER_COMMON_VERGIL_DEFAULT,
+	HELPER_COMMON_VERGIL_NERO_ANGELO,
 	HELPER_STYLE_WEAPON_DANTE,
-	HELPER_STYLE_WEAPON_VERGIL,
+	HELPER_STYLE_WEAPON_VERGIL_DEFAULT,
+	HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO,
 	HELPER_COUNT,
 };
 
@@ -84,6 +85,9 @@ constexpr uint32 g_sectCount[HELPER_COUNT] =
 {
 	3,
 	3,
+	3,
+	3,
+	108,
 	108,
 	108,
 };
@@ -261,8 +265,55 @@ bool IsDbst(byte8 * addr)
 
 
 
+struct DbstHelper
+{
+	byte8 * dataAddr;
+	uint32 pos;
+	uint32 count;
 
+	bool Init(uint32 dataSize);
 
+	void Push(DbstMetadata & soundData);
+
+	DbstMetadata & operator[](uint32 index);
+};
+
+bool DbstHelper::Init(uint32 dataSize)
+{
+	LogFunction();
+
+	dataAddr = Alloc(dataSize);
+	if (!dataAddr)
+	{
+		Log("Alloc failed.");
+
+		return false;
+	}
+
+	return true;
+}
+
+void DbstHelper::Push(DbstMetadata & dbstMetadata)
+{
+	LogFunction();
+
+	auto size = (dbstMetadata.size + DBST_METADATA_SIZE);
+
+	CopyMemory
+	(
+		(dataAddr + pos),
+		&dbstMetadata,
+		size
+	);
+
+	pos += size;
+	count++;
+}
+
+DbstMetadata & DbstHelper::operator[](uint32 index)
+{
+	return reinterpret_cast<DbstMetadata *>(dataAddr)[index];
+}
 
 struct HeadHelper
 {
@@ -743,63 +794,22 @@ SoundData & SoundHelper::operator[](uint32 index)
 	return reinterpret_cast<SoundData *>(dataAddr)[index];
 }
 
-struct DbstHelper
-{
-	byte8 * dataAddr;
-	uint32 pos;
-	uint32 count;
-
-	bool Init(uint32 dataSize);
-
-	void Push(DbstMetadata & soundData);
-
-	DbstMetadata & operator[](uint32 index);
-};
-
-bool DbstHelper::Init(uint32 dataSize)
-{
-	LogFunction();
-
-	dataAddr = Alloc(dataSize);
-	if (!dataAddr)
-	{
-		Log("Alloc failed.");
-
-		return false;
-	}
-
-	return true;
-}
-
-void DbstHelper::Push(DbstMetadata & dbstMetadata)
-{
-	LogFunction();
-
-	auto size = (dbstMetadata.size + DBST_METADATA_SIZE);
-
-	CopyMemory
-	(
-		(dataAddr + pos),
-		&dbstMetadata,
-		size
-	);
-
-	pos += size;
-	count++;
-}
-
-DbstMetadata & DbstHelper::operator[](uint32 index)
-{
-	return reinterpret_cast<DbstMetadata *>(dataAddr)[index];
-}
-
+DbstHelper  g_dbstHelper [HELPER_COUNT] = {};
 HeadHelper  g_headHelper [HELPER_COUNT] = {};
 ProgHelper  g_progHelper [HELPER_COUNT] = {};
 SmplHelper  g_smplHelper [HELPER_COUNT] = {};
 VagiHelper  g_vagiHelper [HELPER_COUNT] = {};
 WaveHelper  g_waveHelper [HELPER_COUNT] = {};
 SoundHelper g_soundHelper[HELPER_COUNT] = {};
-DbstHelper  g_dbstHelper [HELPER_COUNT] = {};
+
+#define IntroduceHelpers(name)\
+auto & dbstHelper  = g_dbstHelper [name];\
+auto & headHelper  = g_headHelper [name];\
+auto & progHelper  = g_progHelper [name];\
+auto & smplHelper  = g_smplHelper [name];\
+auto & vagiHelper  = g_vagiHelper [name];\
+auto & waveHelper  = g_waveHelper [name];\
+auto & soundHelper = g_soundHelper[name]
 
 void Decompile
 (
@@ -809,13 +819,7 @@ void Decompile
 {
 	LogFunction();
 
-	auto & headHelper  = g_headHelper [helperIndex];
-	auto & progHelper  = g_progHelper [helperIndex];
-	auto & smplHelper  = g_smplHelper [helperIndex];
-	auto & vagiHelper  = g_vagiHelper [helperIndex];
-	auto & waveHelper  = g_waveHelper [helperIndex];
-	auto & soundHelper = g_soundHelper[helperIndex];
-	auto & dbstHelper  = g_dbstHelper [helperIndex];
+	IntroduceHelpers(helperIndex);
 
 	Log("archive %llX", archive);
 
@@ -839,7 +843,16 @@ void Decompile
 		Log("fileOff %X", fileOff);
 		Log("file %llX", file);
 
-		if (IsHead(file))
+		if (IsDbst(file))
+		{
+			Log("Dbst");
+
+			auto dbstMetadataAddr = file;
+			auto & dbstMetadata = *reinterpret_cast<DbstMetadata *>(dbstMetadataAddr);
+
+			dbstHelper.Push(dbstMetadata);
+		}
+		else if (IsHead(file))
 		{
 			auto headMetadataAddr = file;
 			auto & headMetadata = *reinterpret_cast<HeadMetadata *>(headMetadataAddr);
@@ -971,31 +984,39 @@ void Decompile
 				pos += size;
 			}
 		}
-		else if (IsDbst(file))
-		{
-			Log("Dbst");
-
-			auto dbstMetadataAddr = file;
-			auto & dbstMetadata = *reinterpret_cast<DbstMetadata *>(dbstMetadataAddr);
-
-			dbstHelper.Push(dbstMetadata);
-		}
 	}
+
+	Log("dbstHelper");
+	Log("dataAddr %llX", dbstHelper.dataAddr);
+	Log("pos      %X", dbstHelper.pos);
+	Log("count    %u", dbstHelper.count);
+
+	Log("progHelper");
+	Log("dataAddr %llX", progHelper.dataAddr);
+	Log("pos      %X", progHelper.pos);
+	Log("count    %u", progHelper.count);
+
+	Log("smplHelper");
+	Log("dataAddr %llX", smplHelper.dataAddr);
+	Log("pos      %X", smplHelper.pos);
+	Log("count    %u", smplHelper.count);
+
+	Log("vagiHelper");
+	Log("dataAddr %llX", vagiHelper.dataAddr);
+	Log("pos      %X", vagiHelper.pos);
+	Log("count    %u", vagiHelper.count);
+
+	Log("waveHelper");
+	Log("dataAddr %llX", waveHelper.dataAddr);
+	Log("pos      %X", waveHelper.pos);
+	Log("count    %u", waveHelper.count);
 }
-
-
 
 void Compile(uint8 helperIndex)
 {
 	LogFunction();
 
-	auto & headHelper  = g_headHelper [helperIndex];
-	auto & progHelper  = g_progHelper [helperIndex];
-	auto & smplHelper  = g_smplHelper [helperIndex];
-	auto & vagiHelper  = g_vagiHelper [helperIndex];
-	auto & waveHelper  = g_waveHelper [helperIndex];
-	auto & soundHelper = g_soundHelper[helperIndex];
-	auto & dbstHelper  = g_dbstHelper [helperIndex];
+	IntroduceHelpers(helperIndex);
 
 	auto & headMetadata = *reinterpret_cast<HeadMetadata *>(headHelper.dataAddr);
 
@@ -1076,332 +1097,155 @@ void Compile(uint8 helperIndex)
 
 		off += vagiItem.size;
 	}
+
+	Log("headHelper");
+	Log("dataAddr %llX", headHelper.dataAddr);
+	Log("pos      %X", headHelper.pos);
+	Log("count    %u", headHelper.count);
+
+	Log("soundHelper");
+	Log("dataAddr %llX", soundHelper.dataAddr);
+	Log("pos      %X", soundHelper.pos);
+	Log("count    %u", soundHelper.count);
 }
 
+inline void Single
+(
+	const char * message,
+	const uint8 helperIndex,
+	const uint8 fileIndex
+)
+{
+	Log(message);
 
+	IntroduceHelpers(helperIndex);
+
+	auto file = File_staticFiles[fileIndex];
+
+	Decompile(file, helperIndex);
+
+	vagiHelper.UpdateOffsets();
+
+	Compile(helperIndex);
+};
+
+template <uint8 count>
+void Multi
+(
+	const char * message,
+	const uint8 helperIndex,
+	const uint8(&fileIndices)[count]
+)
+{
+	Log(message);
+
+	IntroduceHelpers(helperIndex);
+
+	for_all(uint8, index, count)
+	{
+		auto fileIndex = fileIndices[index];
+
+		auto file = File_staticFiles[fileIndex];
+
+		Decompile(file, helperIndex);
+	}
+
+	vagiHelper.UpdateOffsets();
+
+	Compile(helperIndex);
+}
 
 void ProcessSoundFiles()
 {
 	LogFunction();
 
-	// Common Dante
+	Single
+	(
+		"Common Dante Default",
+		HELPER_COMMON_DANTE_DEFAULT,
+		snd_com0
+	);
+	Single
+	(
+		"Common Dante No Coat",
+		HELPER_COMMON_DANTE_NO_COAT,
+		snd_com0a
+	);
+	Single
+	(
+		"Common Vergil Default",
+		HELPER_COMMON_VERGIL_DEFAULT,
+		snd_com3
+	);
+	Single
+	(
+		"Common Vergil Nero Angelo",
+		HELPER_COMMON_VERGIL_NERO_ANGELO,
+		snd_com3a
+	);
+
 	{
-		Log("Common Dante");
-
-		constexpr uint8 helperIndex = HELPER_COMMON_DANTE;
-
-		auto & headHelper  = g_headHelper [helperIndex];
-		auto & progHelper  = g_progHelper [helperIndex];
-		auto & smplHelper  = g_smplHelper [helperIndex];
-		auto & vagiHelper  = g_vagiHelper [helperIndex];
-		auto & waveHelper  = g_waveHelper [helperIndex];
-		auto & soundHelper = g_soundHelper[helperIndex];
-		auto & dbstHelper  = g_dbstHelper [helperIndex];
-
-		auto filename = "snd_com0.pac";
-
-		byte8 * file = 0;
-		uint32 fileSize = 0;
-
-		file = File_LoadFile(filename, &fileSize);
-		if (!file)
+		constexpr uint8 fileIndices[] =
 		{
-			Log("File_LoadFile failed. %s", filename);
-
-			return;
-		}
-
-		Log(filename);
-
-		Decompile(file, helperIndex);
-
-		vagiHelper.UpdateOffsets();
-
-		Log("progHelper");
-		Log("dataAddr %llX", progHelper.dataAddr);
-		Log("pos      %X", progHelper.pos);
-		Log("count    %u", progHelper.count);
-
-		Log("smplHelper");
-		Log("dataAddr %llX", smplHelper.dataAddr);
-		Log("pos      %X", smplHelper.pos);
-		Log("count    %u", smplHelper.count);
-
-		Log("vagiHelper");
-		Log("dataAddr %llX", vagiHelper.dataAddr);
-		Log("pos      %X", vagiHelper.pos);
-		Log("count    %u", vagiHelper.count);
-
-		Log("waveHelper");
-		Log("dataAddr %llX", waveHelper.dataAddr);
-		Log("pos      %X", waveHelper.pos);
-		Log("count    %u", waveHelper.count);
-
-		Log("dbstHelper");
-		Log("dataAddr %llX", dbstHelper.dataAddr);
-		Log("pos      %X", dbstHelper.pos);
-		Log("count    %u", dbstHelper.count);
-
-		Compile(helperIndex);
-
-		Log("headHelper");
-		Log("dataAddr %llX", headHelper.dataAddr);
-		Log("pos      %X", headHelper.pos);
-		Log("count    %u", headHelper.count);
-
-		Log("soundHelper");
-		Log("dataAddr %llX", soundHelper.dataAddr);
-		Log("pos      %X", soundHelper.pos);
-		Log("count    %u", soundHelper.count);
-	}
-
-	// Common Vergil
-	{
-		Log("Common Vergil");
-
-		constexpr uint8 helperIndex = HELPER_COMMON_VERGIL;
-
-		auto & headHelper  = g_headHelper [helperIndex];
-		auto & progHelper  = g_progHelper [helperIndex];
-		auto & smplHelper  = g_smplHelper [helperIndex];
-		auto & vagiHelper  = g_vagiHelper [helperIndex];
-		auto & waveHelper  = g_waveHelper [helperIndex];
-		auto & soundHelper = g_soundHelper[helperIndex];
-		auto & dbstHelper  = g_dbstHelper [helperIndex];
-
-		auto filename = "snd_com3.pac";
-
-		byte8 * file = 0;
-		uint32 fileSize = 0;
-
-		file = File_LoadFile(filename, &fileSize);
-		if (!file)
-		{
-			Log("File_LoadFile failed. %s", filename);
-
-			return;
-		}
-
-		Log(filename);
-
-		Decompile(file, helperIndex);
-
-		vagiHelper.UpdateOffsets();
-
-		Log("progHelper");
-		Log("dataAddr %llX", progHelper.dataAddr);
-		Log("pos      %X", progHelper.pos);
-		Log("count    %u", progHelper.count);
-
-		Log("smplHelper");
-		Log("dataAddr %llX", smplHelper.dataAddr);
-		Log("pos      %X", smplHelper.pos);
-		Log("count    %u", smplHelper.count);
-
-		Log("vagiHelper");
-		Log("dataAddr %llX", vagiHelper.dataAddr);
-		Log("pos      %X", vagiHelper.pos);
-		Log("count    %u", vagiHelper.count);
-
-		Log("waveHelper");
-		Log("dataAddr %llX", waveHelper.dataAddr);
-		Log("pos      %X", waveHelper.pos);
-		Log("count    %u", waveHelper.count);
-
-		Log("dbstHelper");
-		Log("dataAddr %llX", dbstHelper.dataAddr);
-		Log("pos      %X", dbstHelper.pos);
-		Log("count    %u", dbstHelper.count);
-
-		Compile(helperIndex);
-
-		Log("headHelper");
-		Log("dataAddr %llX", headHelper.dataAddr);
-		Log("pos      %X", headHelper.pos);
-		Log("count    %u", headHelper.count);
-
-		Log("soundHelper");
-		Log("dataAddr %llX", soundHelper.dataAddr);
-		Log("pos      %X", soundHelper.pos);
-		Log("count    %u", soundHelper.count);
-	}
-
-	// Style Weapon Dante
-	{
-		Log("Style Weapon Dante");
-
-		constexpr uint8 helperIndex = HELPER_STYLE_WEAPON_DANTE;
-
-		auto & headHelper  = g_headHelper [helperIndex];
-		auto & progHelper  = g_progHelper [helperIndex];
-		auto & smplHelper  = g_smplHelper [helperIndex];
-		auto & vagiHelper  = g_vagiHelper [helperIndex];
-		auto & waveHelper  = g_waveHelper [helperIndex];
-		auto & soundHelper = g_soundHelper[helperIndex];
-		auto & dbstHelper  = g_dbstHelper [helperIndex];
-
-		const char * filenames[] =
-		{
-			"snd_sty02.pac",
-			"snd_sty03.pac",
-			"snd_sty04.pac",
-			"snd_sty05.pac",
-			//"snd_sty06.pac",
-			"snd_wp00b.pac",
-			"snd_wp01b.pac",
-			"snd_wp02b.pac",
-			"snd_wp03b.pac",
-			"snd_wp04b.pac",
-			"snd_wp05b.pac",
-			"snd_wp06b.pac",
-			"snd_wp07b.pac",
-			"snd_wp08b.pac",
-			"snd_wp09b.pac",
+			snd_sty02,
+			snd_sty03,
+			snd_sty04,
+			snd_sty05,
+			snd_sty06,
+			snd_wp00b,
+			snd_wp01b,
+			snd_wp02b,
+			snd_wp03b,
+			snd_wp04b,
+			snd_wp05b,
+			snd_wp06b,
+			snd_wp07b,
+			snd_wp08b,
+			snd_wp09b,
 		};
 
-		for_all(uint8, fileIndex, countof(filenames))
-		{
-			auto filename = filenames[fileIndex];
-
-			byte8 * file = 0;
-			uint32 fileSize = 0;
-
-			file = File_LoadFile(filename, &fileSize);
-			if (!file)
-			{
-				Log("File_LoadFile failed. %s", filename);
-
-				return;
-			}
-
-			Log(filename);
-
-			Decompile(file, helperIndex);
-		}
-
-		vagiHelper.UpdateOffsets();
-
-		Log("progHelper");
-		Log("dataAddr %llX", progHelper.dataAddr);
-		Log("pos      %X", progHelper.pos);
-		Log("count    %u", progHelper.count);
-
-		Log("smplHelper");
-		Log("dataAddr %llX", smplHelper.dataAddr);
-		Log("pos      %X", smplHelper.pos);
-		Log("count    %u", smplHelper.count);
-
-		Log("vagiHelper");
-		Log("dataAddr %llX", vagiHelper.dataAddr);
-		Log("pos      %X", vagiHelper.pos);
-		Log("count    %u", vagiHelper.count);
-
-		Log("waveHelper");
-		Log("dataAddr %llX", waveHelper.dataAddr);
-		Log("pos      %X", waveHelper.pos);
-		Log("count    %u", waveHelper.count);
-
-		Log("dbstHelper");
-		Log("dataAddr %llX", dbstHelper.dataAddr);
-		Log("pos      %X", dbstHelper.pos);
-		Log("count    %u", dbstHelper.count);
-
-		Compile(helperIndex);
-
-		Log("headHelper");
-		Log("dataAddr %llX", headHelper.dataAddr);
-		Log("pos      %X", headHelper.pos);
-		Log("count    %u", headHelper.count);
-
-		Log("soundHelper");
-		Log("dataAddr %llX", soundHelper.dataAddr);
-		Log("pos      %X", soundHelper.pos);
-		Log("count    %u", soundHelper.count);
+		Multi
+		(
+			"Style Weapon Dante",
+			HELPER_STYLE_WEAPON_DANTE,
+			fileIndices
+		);
 	}
 
-	// Style Weapon Vergil
 	{
-		Log("Style Weapon Vergil");
-
-		constexpr uint8 helperIndex = HELPER_STYLE_WEAPON_VERGIL;
-
-		auto & headHelper  = g_headHelper [helperIndex];
-		auto & progHelper  = g_progHelper [helperIndex];
-		auto & smplHelper  = g_smplHelper [helperIndex];
-		auto & vagiHelper  = g_vagiHelper [helperIndex];
-		auto & waveHelper  = g_waveHelper [helperIndex];
-		auto & soundHelper = g_soundHelper[helperIndex];
-		auto & dbstHelper  = g_dbstHelper [helperIndex];
-
-		const char * filenames[] =
+		constexpr uint8 fileIndices[] =
 		{
-			// "snd_sty04.pac",
-			// "snd_sty05.pac",
-			// "snd_sty06.pac",
-			"snd_sty07.pac",
-			"snd_wp11a.pac",
-			"snd_wp12a.pac",
-			"snd_wp13a.pac",
+			snd_sty07,
+			snd_sty08,
+			snd_wp11a,
+			snd_wp12a,
+			snd_wp13a,
 		};
 
-		for_all(uint8, fileIndex, countof(filenames))
+		Multi
+		(
+			"Style Weapon Vergil Default",
+			HELPER_STYLE_WEAPON_VERGIL_DEFAULT,
+			fileIndices
+		);
+	}
+
+	{
+		constexpr uint8 fileIndices[] =
 		{
-			auto filename = filenames[fileIndex];
+			snd_sty07,
+			snd_sty08,
+			snd_wp11b,
+			snd_wp12b,
+			snd_wp13b,
+		};
 
-			byte8 * file = 0;
-			uint32 fileSize = 0;
-
-			file = File_LoadFile(filename, &fileSize);
-			if (!file)
-			{
-				Log("File_LoadFile failed. %s", filename);
-
-				return;
-			}
-
-			Log(filename);
-
-			Decompile(file, helperIndex);
-		}
-
-		vagiHelper.UpdateOffsets();
-
-		Log("progHelper");
-		Log("dataAddr %llX", progHelper.dataAddr);
-		Log("pos      %X", progHelper.pos);
-		Log("count    %u", progHelper.count);
-
-		Log("smplHelper");
-		Log("dataAddr %llX", smplHelper.dataAddr);
-		Log("pos      %X", smplHelper.pos);
-		Log("count    %u", smplHelper.count);
-
-		Log("vagiHelper");
-		Log("dataAddr %llX", vagiHelper.dataAddr);
-		Log("pos      %X", vagiHelper.pos);
-		Log("count    %u", vagiHelper.count);
-
-		Log("waveHelper");
-		Log("dataAddr %llX", waveHelper.dataAddr);
-		Log("pos      %X", waveHelper.pos);
-		Log("count    %u", waveHelper.count);
-
-		Log("dbstHelper");
-		Log("dataAddr %llX", dbstHelper.dataAddr);
-		Log("pos      %X", dbstHelper.pos);
-		Log("count    %u", dbstHelper.count);
-
-		Compile(helperIndex);
-
-		Log("headHelper");
-		Log("dataAddr %llX", headHelper.dataAddr);
-		Log("pos      %X", headHelper.pos);
-		Log("count    %u", headHelper.count);
-
-		Log("soundHelper");
-		Log("dataAddr %llX", soundHelper.dataAddr);
-		Log("pos      %X", soundHelper.pos);
-		Log("count    %u", soundHelper.count);
+		Multi
+		(
+			"Style Weapon Vergil Nero Angelo",
+			HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO,
+			fileIndices
+		);
 	}
 }
 
@@ -1416,7 +1260,9 @@ void ProcessSoundFiles()
 
 
 
-// @Todo: Can also be dataAddr.
+
+
+
 byte8 * GetDbstMetadataAddress(uint32 channelIndex)
 {
 	LogFunction();
@@ -1428,6 +1274,8 @@ byte8 * GetDbstMetadataAddress(uint32 channelIndex)
 
 	auto dbstMetadataAddr = pool[channelIndex];
 
+	uint8 helperIndex = 0;
+
 	switch (channelIndex)
 	{
 		case CHANNEL_COMMON:
@@ -1436,13 +1284,39 @@ byte8 * GetDbstMetadataAddress(uint32 channelIndex)
 			{
 				case CHAR_DANTE:
 				{
-					dbstMetadataAddr = reinterpret_cast<byte8 *>(&g_dbstHelper[HELPER_COMMON_DANTE][0]);
+					helperIndex = HELPER_COMMON_DANTE_DEFAULT;
+
+					switch (g_costume)
+					{
+						case COSTUME_DANTE_DEFAULT_NO_COAT:
+						case COSTUME_DANTE_DMC1_NO_COAT:
+						{
+							helperIndex = HELPER_COMMON_DANTE_NO_COAT;
+
+							break;
+						}
+					}
+
+					dbstMetadataAddr = g_dbstHelper[helperIndex].dataAddr;
 
 					break;
 				}
 				case CHAR_VERGIL:
 				{
-					dbstMetadataAddr = reinterpret_cast<byte8 *>(&g_dbstHelper[HELPER_COMMON_VERGIL][0]);
+					helperIndex = HELPER_COMMON_VERGIL_DEFAULT;
+
+					switch (g_costume)
+					{
+						case COSTUME_VERGIL_NERO_ANGELO:
+						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+						{
+							helperIndex = HELPER_COMMON_VERGIL_NERO_ANGELO;
+
+							break;
+						}
+					}
+
+					dbstMetadataAddr = g_dbstHelper[helperIndex].dataAddr;
 
 					break;
 				}
@@ -1456,13 +1330,28 @@ byte8 * GetDbstMetadataAddress(uint32 channelIndex)
 			{
 				case CHAR_DANTE:
 				{
-					dbstMetadataAddr = reinterpret_cast<byte8 *>(&g_dbstHelper[HELPER_STYLE_WEAPON_DANTE][0]);
+					helperIndex = HELPER_STYLE_WEAPON_DANTE;
+
+					dbstMetadataAddr = g_dbstHelper[helperIndex].dataAddr;
 
 					break;
 				}
 				case CHAR_VERGIL:
 				{
-					dbstMetadataAddr = reinterpret_cast<byte8 *>(&g_dbstHelper[HELPER_STYLE_WEAPON_VERGIL][0]);
+					helperIndex = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+
+					switch (g_costume)
+					{
+						case COSTUME_VERGIL_NERO_ANGELO:
+						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+						{
+							helperIndex = HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO;
+
+							break;
+						}
+					}
+
+					dbstMetadataAddr = g_dbstHelper[helperIndex].dataAddr;
 
 					break;
 				}
@@ -1474,6 +1363,21 @@ byte8 * GetDbstMetadataAddress(uint32 channelIndex)
 
 	return dbstMetadataAddr;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 byte8 * GetDbstItemAddress
 (
@@ -1511,6 +1415,8 @@ byte8 * GetHeadMetadataAddress(uint32 channelIndex)
 
 	auto addr = pool[channelIndex];
 
+	uint8 helperIndex = 0;
+
 	switch (channelIndex)
 	{
 		case CHANNEL_COMMON:
@@ -1519,13 +1425,39 @@ byte8 * GetHeadMetadataAddress(uint32 channelIndex)
 			{
 				case CHAR_DANTE:
 				{
-					addr = g_headHelper[HELPER_COMMON_DANTE].dataAddr;
+					helperIndex = HELPER_COMMON_DANTE_DEFAULT;
+
+					switch (g_costume)
+					{
+						case COSTUME_DANTE_DEFAULT_NO_COAT:
+						case COSTUME_DANTE_DMC1_NO_COAT:
+						{
+							helperIndex = HELPER_COMMON_DANTE_NO_COAT;
+
+							break;
+						}
+					}
+
+					addr = g_headHelper[helperIndex].dataAddr;
 
 					break;
 				}
 				case CHAR_VERGIL:
 				{
-					addr = g_headHelper[HELPER_COMMON_VERGIL].dataAddr;
+					helperIndex = HELPER_COMMON_VERGIL_DEFAULT;
+
+					switch (g_costume)
+					{
+						case COSTUME_VERGIL_NERO_ANGELO:
+						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+						{
+							helperIndex = HELPER_COMMON_VERGIL_NERO_ANGELO;
+
+							break;
+						}
+					}
+
+					addr = g_headHelper[helperIndex].dataAddr;
 
 					break;
 				}
@@ -1539,13 +1471,28 @@ byte8 * GetHeadMetadataAddress(uint32 channelIndex)
 			{
 				case CHAR_DANTE:
 				{
-					addr = g_headHelper[HELPER_STYLE_WEAPON_DANTE].dataAddr;
+					helperIndex = HELPER_STYLE_WEAPON_DANTE;
+
+					addr = g_headHelper[helperIndex].dataAddr;
 
 					break;
 				}
 				case CHAR_VERGIL:
 				{
-					addr = g_headHelper[HELPER_STYLE_WEAPON_VERGIL].dataAddr;
+					helperIndex = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+
+					switch (g_costume)
+					{
+						case COSTUME_VERGIL_NERO_ANGELO:
+						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+						{
+							helperIndex = HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO;
+
+							break;
+						}
+					}
+
+					addr = g_headHelper[helperIndex].dataAddr;
 
 					break;
 				}
@@ -1588,6 +1535,8 @@ uint32 GetSoundDataCount(byte8 * addr)
 	dmc3.exe+321C7 - 8B 15 27C35A00 - mov edx,[dmc3.exe+5DE4F4]
 	*/
 
+	uint8 helperIndex = 0;
+
 	switch (channelIndex)
 	{
 		case CHANNEL_COMMON:
@@ -1596,13 +1545,39 @@ uint32 GetSoundDataCount(byte8 * addr)
 			{
 				case CHAR_DANTE:
 				{
-					count = g_soundHelper[HELPER_COMMON_DANTE].count;
+					helperIndex = HELPER_COMMON_DANTE_DEFAULT;
+
+					switch (g_costume)
+					{
+						case COSTUME_DANTE_DEFAULT_NO_COAT:
+						case COSTUME_DANTE_DMC1_NO_COAT:
+						{
+							helperIndex = HELPER_COMMON_DANTE_NO_COAT;
+
+							break;
+						}
+					}
+
+					count = g_soundHelper[helperIndex].count;
 
 					break;
 				}
 				case CHAR_VERGIL:
 				{
-					count = g_soundHelper[HELPER_COMMON_VERGIL].count;
+					helperIndex = HELPER_COMMON_VERGIL_DEFAULT;
+
+					switch (g_costume)
+					{
+						case COSTUME_VERGIL_NERO_ANGELO:
+						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+						{
+							helperIndex = HELPER_COMMON_VERGIL_NERO_ANGELO;
+
+							break;
+						}
+					}
+
+					count = g_soundHelper[helperIndex].count;
 
 					break;
 				}
@@ -1616,13 +1591,28 @@ uint32 GetSoundDataCount(byte8 * addr)
 			{
 				case CHAR_DANTE:
 				{
-					count = g_soundHelper[HELPER_STYLE_WEAPON_DANTE].count;
+					helperIndex = HELPER_STYLE_WEAPON_DANTE;
+
+					count = g_soundHelper[helperIndex].count;
 
 					break;
 				}
 				case CHAR_VERGIL:
 				{
-					count = g_soundHelper[HELPER_STYLE_WEAPON_VERGIL].count;
+					helperIndex = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+
+					switch (g_costume)
+					{
+						case COSTUME_VERGIL_NERO_ANGELO:
+						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+						{
+							helperIndex = HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO;
+
+							break;
+						}
+					}
+
+					count = g_soundHelper[helperIndex].count;
 
 					break;
 				}
@@ -1645,6 +1635,8 @@ byte8 * GetSoundDataAddress(byte8 * addr)
 	dmc3.exe+321E0 - 48 8D 3D C9C35A00 - lea rdi,[dmc3.exe+5DE5B0]
 	*/
 
+	uint8 helperIndex = 0;
+
 	switch (channelIndex)
 	{
 		case CHANNEL_COMMON:
@@ -1653,13 +1645,39 @@ byte8 * GetSoundDataAddress(byte8 * addr)
 			{
 				case CHAR_DANTE:
 				{
-					addr2 = g_soundHelper[HELPER_COMMON_DANTE].dataAddr;
+					helperIndex = HELPER_COMMON_DANTE_DEFAULT;
+
+					switch (g_costume)
+					{
+						case COSTUME_DANTE_DEFAULT_NO_COAT:
+						case COSTUME_DANTE_DMC1_NO_COAT:
+						{
+							helperIndex = HELPER_COMMON_DANTE_NO_COAT;
+
+							break;
+						}
+					}
+
+					addr2 = g_soundHelper[helperIndex].dataAddr;
 
 					break;
 				}
 				case CHAR_VERGIL:
 				{
-					addr2 = g_soundHelper[HELPER_COMMON_VERGIL].dataAddr;
+					helperIndex = HELPER_COMMON_VERGIL_DEFAULT;
+
+					switch (g_costume)
+					{
+						case COSTUME_VERGIL_NERO_ANGELO:
+						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+						{
+							helperIndex = HELPER_COMMON_VERGIL_NERO_ANGELO;
+
+							break;
+						}
+					}
+
+					addr2 = g_soundHelper[helperIndex].dataAddr;
 
 					break;
 				}
@@ -1673,13 +1691,28 @@ byte8 * GetSoundDataAddress(byte8 * addr)
 			{
 				case CHAR_DANTE:
 				{
-					addr2 = g_soundHelper[HELPER_STYLE_WEAPON_DANTE].dataAddr;
+					helperIndex = HELPER_STYLE_WEAPON_DANTE;
+
+					addr2 = g_soundHelper[helperIndex].dataAddr;
 
 					break;
 				}
 				case CHAR_VERGIL:
 				{
-					addr2 = g_soundHelper[HELPER_STYLE_WEAPON_VERGIL].dataAddr;
+					helperIndex = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+
+					switch (g_costume)
+					{
+						case COSTUME_VERGIL_NERO_ANGELO:
+						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+						{
+							helperIndex = HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO;
+
+							break;
+						}
+					}
+
+					addr2 = g_soundHelper[helperIndex].dataAddr;
 
 					break;
 				}

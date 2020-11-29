@@ -8,6 +8,7 @@ export bool  g_pause       = false;
 export uint8 g_scene       = 0;
 export bool  g_quicksilver = false;
 export uint8 g_character   = 0;
+export uint8 g_costume     = 0;
 
 export bool InGame()
 {

@@ -56,6 +56,23 @@ var items =
 	[ "plwp_laser"         , "obj"    ],
 	[ "plwp_rifle"         , "obj"    ],
 	[ "plwp_ladygun"       , "obj"    ],
+	[ "snd_com0"           , "se"     ],
+	[ "snd_com0a"          , "se"     ],
+	[ "snd_sty02"          , "se"     ],
+	[ "snd_sty03"          , "se"     ],
+	[ "snd_sty04"          , "se"     ],
+	[ "snd_sty05"          , "se"     ],
+	[ "snd_sty06"          , "se"     ],
+	[ "snd_wp00b"          , "se"     ],
+	[ "snd_wp01b"          , "se"     ],
+	[ "snd_wp02b"          , "se"     ],
+	[ "snd_wp03b"          , "se"     ],
+	[ "snd_wp04b"          , "se"     ],
+	[ "snd_wp05b"          , "se"     ],
+	[ "snd_wp06b"          , "se"     ],
+	[ "snd_wp07b"          , "se"     ],
+	[ "snd_wp08b"          , "se"     ],
+	[ "snd_wp09b"          , "se"     ],
 	// Bob
 	[ "pl001"              , "obj"    ],
 	[ "pl001_00_0"         , "motion" ],
@@ -89,6 +106,16 @@ var items =
 	[ "plwp_newvergilfight", "obj"    ],
 	[ "plwp_forceedge"     , "obj"    ],
 	[ "plwp_nerosword"     , "obj"    ],
+	[ "snd_com3"           , "se"     ],
+	[ "snd_com3a"          , "se"     ],
+	[ "snd_sty07"          , "se"     ],
+	[ "snd_sty08"          , "se"     ],
+	[ "snd_wp11a"          , "se"     ],
+	[ "snd_wp11b"          , "se"     ],
+	[ "snd_wp12a"          , "se"     ],
+	[ "snd_wp12b"          , "se"     ],
+	[ "snd_wp13a"          , "se"     ],
+	[ "snd_wp13b"          , "se"     ],
 	// Other
 	[ "em034"              , "obj"    ],
 	[ "id100"              , "id"     ],
@@ -184,6 +211,10 @@ for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
 			}
 			c += "id\\\\id" + str + "\\\\" + name + ".pac";
 		}
+	}
+	else if (type == "se")
+	{
+		c += "se\\\\" + name + ".pac";
 	}
 	c += "\" }," + NEW_LINE;
 }
