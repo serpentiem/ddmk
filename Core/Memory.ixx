@@ -1,3 +1,5 @@
+// @Todo: Merge File, Log and Memory when doing the Windows module.
+
 module;
 #include "Includes.h"
 export module Core_Memory;

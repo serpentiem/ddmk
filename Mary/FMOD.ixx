@@ -6,6 +6,8 @@ export module FMOD;
 
 #define debug true
 
+export bool FMOD_init = false;
+
 export enum
 {
 	FMOD_OK                     = 0,
@@ -19,6 +21,7 @@ export typedef int32  FMOD_RESULT;
 export typedef uint32 FMOD_MODE;
 export typedef void   FMOD_SYSTEM;
 export typedef void   FMOD_SOUND;
+export typedef void   FMOD_CHANNEL;
 
 #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
 
@@ -45,6 +48,14 @@ export typedef FMOD_RESULT(__fastcall * FMOD_System_CreateSound_t)
 );
 
 export FMOD_System_CreateSound_t FMOD_System_CreateSound = 0;
+
+export typedef FMOD_RESULT(__fastcall * FMOD_Channel_SetVolume_t)
+(
+	FMOD_CHANNEL * channel,
+	float          volume
+);
+
+export FMOD_Channel_SetVolume_t FMOD_Channel_SetVolume = 0;
 
 export bool FMOD_Init()
 {
@@ -93,6 +104,48 @@ export bool FMOD_Init()
 
 
 	Log("FMOD_System_CreateSound %llX", FMOD_System_CreateSound);
+
+
+	// FMOD_Channel_SetVolume
+	{
+		const char * funcName = "FMOD_Channel_SetVolume";
+
+		SetLastError(0);
+
+		auto funcAddr = GetProcAddress(lib, funcName);
+
+		error = GetLastError();
+
+		if (!funcAddr)
+		{
+			Log("GetProcAddress failed. %s %X", funcName, error);
+
+			return false;
+		}
+
+		FMOD_Channel_SetVolume = reinterpret_cast<FMOD_Channel_SetVolume_t>(funcAddr);
+	}
+
+
+	Log("FMOD_Channel_SetVolume %llX", FMOD_Channel_SetVolume);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	// @Todo: Update.

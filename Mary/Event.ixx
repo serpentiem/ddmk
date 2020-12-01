@@ -778,7 +778,13 @@ export void Event_ToggleSkipIntro(bool enable)
 		auto dest = (appBaseAddr + 0x243531);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 2);
+			SetMemory
+			(
+				dest,
+				0x90,
+				2,
+				MemoryFlags_VirtualProtectDestination
+			);
 		}
 		else
 		{
@@ -786,7 +792,13 @@ export void Event_ToggleSkipIntro(bool enable)
 			{
 				0xFF, 0xC8, //dec eax
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory
+			(
+				dest,
+				buffer,
+				sizeof(buffer),
+				MemoryFlags_VirtualProtectDestination
+			);
 		}
 	}
 }

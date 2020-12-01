@@ -314,6 +314,20 @@ export struct Config
 	uint8 airTrickCountVergil[2] = { 1, 1 };
 	uint8 trickUpCount       [2] = { 1, 1 };
 	uint8 trickDownCount     [2] = { 1, 1 };
+	float channelVolumes[MAX_CHANNEL] =
+	{
+		1.0f,
+		1.0f,
+		1.0f,
+		1.0f,
+		1.0f,
+		1.0f,
+		1.0f,
+		1.0f,
+		1.0f,
+		1.0f,
+		1.0f,
+	};
 };
 #pragma pack(pop)
 

@@ -1,3 +1,6 @@
+// @Todo: Update all sizeof(Config::X)!
+// @Todo: Add Jukebox.
+// @Todo: Add ResetButton to Graphics.
 // @Todo: Actor reset doesn't trigger Actor_Toggle.
 
 module;
@@ -17,6 +20,7 @@ import Camera;
 import Config;
 import Event;
 import File;
+import FMOD;
 import Global;
 import Graphics;
 import Internal;
@@ -2239,12 +2243,6 @@ void Debug()
 		GUI_Checkbox("One Hit Kill", sessionData.oneHitKill);
 		ImGui::Text("");
 
-		auto PlayTrack = [](const char * filename)
-		{
-			func_32BE20((appBaseAddr + 0xCF3700));
-			func_32BA90((appBaseAddr + 0xCF3708), filename, 0, 0);
-		};
-
 		static char buffer[512] = { "afs/sound/Battle_00.ogg" };
 		static char filename[256] = { "Battle_00.ogg" };
 
@@ -2921,6 +2919,21 @@ const char * Graphics_vSyncNames[] =
 	"Force On",
 };
 
+const char * Sound_channelNames[MAX_CHANNEL] =
+{
+	"System",
+	"Common",
+	"Style Weapon",
+	"Weapon 1",
+	"Weapon 2",
+	"Weapon 3",
+	"Weapon 4",
+	"Enemy",
+	"Room",
+	"Music",
+	"Demo",
+};
+
 void System()
 {
 	if (ImGui::CollapsingHeader("System"))
@@ -3083,6 +3096,67 @@ void System()
 		);
 		GUI_SectionEnd();
 		ImGui::Text("");
+
+		GUI_SectionStart("Sound");
+
+		ImGui::Text("Channel Volumes");
+
+		ImGui::Text("");
+
+		if (GUI_ResetButton())
+		{
+			CopyMemory
+			(
+				queuedConfig.channelVolumes,
+				defaultConfig.channelVolumes,
+				sizeof(queuedConfig.channelVolumes)
+			);
+			CopyMemory
+			(
+				activeConfig.channelVolumes,
+				queuedConfig.channelVolumes,
+				sizeof(activeConfig.channelVolumes)
+			);
+
+			UpdateVolumes();
+		}
+
+		ImGui::Text("");
+
+		ImGui::PushItemWidth(150);
+
+		for_all(uint8, channelIndex, MAX_CHANNEL)
+		{
+			if
+			(
+				GUI_InputDefault2
+				(
+					Sound_channelNames[channelIndex],
+					activeConfig.channelVolumes[channelIndex],
+					queuedConfig.channelVolumes[channelIndex],
+					defaultConfig.channelVolumes[channelIndex],
+					0.1f,
+					"%g",
+					ImGuiInputTextFlags_EnterReturnsTrue
+				)
+			)
+			{
+				SetVolume(channelIndex, activeConfig.channelVolumes[channelIndex]);
+			}
+		}
+
+
+
+
+		ImGui::PopItemWidth();
+
+		GUI_SectionEnd();
+		ImGui::Text("");
+
+
+
+
+
 
 		GUI_SectionStart("Window");
 
@@ -3519,6 +3593,66 @@ void Sound()
 	if (ImGui::Begin("Sound", &g_pause))
 	{
 		ImGui::Text("");
+
+
+
+		static uint32 fmodChannelIndex = 0;
+		static FMOD_CHANNEL * fmodChannelAddr = 0;
+		static float volume = 1.0f;
+		static FMOD_RESULT fmodResult = 0;
+
+		ImGui::PushItemWidth(200);
+		if
+		(
+			GUI_Input<uint32>
+			(
+				"FMOD Channel Index",
+				fmodChannelIndex,
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			)
+		)
+		{
+			fmodChannelAddr = reinterpret_cast<FMOD_CHANNEL **>(appBaseAddr + 0x5DE3E0)[fmodChannelIndex];
+		}
+		GUI_Input<uint64>
+		(
+			"FMOD Channel Address",
+			*reinterpret_cast<uint64 *>(&fmodChannelAddr),
+			0,
+			"%llX",
+			ImGuiInputTextFlags_CharsHexadecimal |
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+		GUI_Input<float>
+		(
+			"Volume",
+			volume,
+			0.1f,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+		ImGui::PopItemWidth();
+		ImGui::Text("");
+
+		if (GUI_Button("SetVolume"))
+		{
+			fmodResult = FMOD_Channel_SetVolume
+			(
+				fmodChannelAddr,
+				volume
+			);
+		}
+
+		ImGui::Text("fmodResult %X", fmodResult);
+
+
+
+
+
+
+
 
 		static byte8 * headMetadataAddr = 0;
 

@@ -1,12 +1,16 @@
+// @Todo: Use MAX_PROG_SECT regardless of common.
+
 module;
 #include "../Core/Core.h"
 
 #include "Vars.h"
 export module Sound;
 
+import Config;
 import File;
 import FMOD;
 import Global;
+import Internal;
 
 #define debug true
 
@@ -25,22 +29,6 @@ enum
 	SOUND_DATA_SIZE         = 24,
 	DBST_METADATA_SIZE      = 16,
 	DBST_ITEM_SIZE          = 32,
-};
-
-enum
-{
-	CHANNEL_SYSTEM,
-	CHANNEL_COMMON,
-	CHANNEL_STYLE_WEAPON,
-	CHANNEL_WEAPON1,
-	CHANNEL_WEAPON2,
-	CHANNEL_WEAPON3,
-	CHANNEL_WEAPON4,
-	CHANNEL_ENEMY,
-	CHANNEL_ROOM,
-	CHANNEL_MUSIC,
-	CHANNEL_DEMO,
-	MAX_CHANNEL = 16,
 };
 
 enum
@@ -201,6 +189,74 @@ export struct DbstMetadata
 #pragma pack(pop)
 
 #undef _
+
+
+
+
+
+
+export void PlayTrack(const char * filename)
+{
+	func_32BE20((appBaseAddr + 0xCF3700));
+	func_32BA90((appBaseAddr + 0xCF3708), filename, 0, 0);
+};
+
+export void SetVolume
+(
+	uint8 channelIndex,
+	float volume
+)
+{
+	LogFunction(channelIndex, volume);
+
+	if (!FMOD_init)
+	{
+		Log("!FMOD_init");
+
+		return;
+	}
+
+	auto channelAddr = reinterpret_cast<FMOD_CHANNEL **>(appBaseAddr + 0x5DE3E0)[channelIndex];
+	/*
+	dmc3.exe+3271E - 48 8D 3D BBBC5A00 - lea rdi,[dmc3.exe+5DE3E0]
+	*/
+
+	auto result = FMOD_Channel_SetVolume
+	(
+		channelAddr,
+		volume
+	);
+
+	if (result != FMOD_OK)
+	{
+		Log("FMOD_Channel_SetVolume failed. %u %X", channelIndex, result);
+
+		return;
+	}
+}
+
+export inline void UpdateVolumes()
+{
+	for_all(uint8, channelIndex, MAX_CHANNEL)
+	{
+		SetVolume
+		(
+			channelIndex,
+			activeConfig.channelVolumes[channelIndex]
+		);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1155,9 +1211,38 @@ void Multi
 	Compile(helperIndex);
 }
 
-void ProcessSoundFiles()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void FMOD_InitComplete()
 {
 	LogFunction();
+
+	FMOD_init = true;
+
+
+	UpdateVolumes();
+
+
+
+
+
+
+
+
+
+
 
 	Single
 	(
@@ -1818,7 +1903,7 @@ export bool Sound_Init()
 		dmc3.exe+32905 - CC - int 3
 		*/
 
-		auto func = CreateFunction(ProcessSoundFiles);
+		auto func = CreateFunction(FMOD_InitComplete);
 
 		WriteJump(addr, func.addr);
 	}
@@ -1828,6 +1913,8 @@ export bool Sound_Init()
 
 export void Sound_Toggle(bool enable)
 {
+	return;
+
 	LogFunction(enable);
 
 	static bool run = false;
@@ -2053,14 +2140,6 @@ export void Sound_EventDelete()
 
 	Sound_Toggle(false);
 }
-
-
-
-
-
-
-
-
 
 
 

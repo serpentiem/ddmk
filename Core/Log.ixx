@@ -1,3 +1,5 @@
+// @Todo: Merge File, Log and Memory when doing the Windows module.
+
 module;
 #include "Includes.h"
 export module Core_Log;
@@ -60,6 +62,69 @@ void LogFunctionHelper
 
 	Log(format, funcName, var);
 }
+
+export template
+<
+typename T,
+typename T2
+>
+void LogFunctionHelper
+(
+	const char * funcName,
+	T var,
+	T2 var2
+)
+{
+	char format[128] = {};
+	uint32 pos = 0;
+
+	auto Feed = [&](const char * name)
+	{
+		auto size = static_cast<uint32>(strlen(name));
+
+		memcpy
+		(
+			(format + pos),
+			name,
+			size
+		);
+
+		pos += size;
+	};
+
+	Feed("%s ");
+
+	if constexpr (TypeMatch<T, byte8 *>::value)
+	{
+		Feed("%llX ");
+	}
+	else if constexpr (TypeMatch<T, float>::value)
+	{
+		Feed("%g ");
+	}
+	else
+	{
+		Feed("%u ");
+	}
+
+	if constexpr (TypeMatch<T2, byte8 *>::value)
+	{
+		Feed("%llX");
+	}
+	else if constexpr (TypeMatch<T2, float>::value)
+	{
+		Feed("%g");
+	}
+	else
+	{
+		Feed("%u");
+	}
+
+	Log(format, funcName, var, var2);
+}
+
+
+
 
 // export template
 // <

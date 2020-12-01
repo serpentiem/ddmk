@@ -1,13 +1,11 @@
-// @Todo: Update.
-
 #ifdef offsetof
 #undef offsetof
 #endif
-#ifndef __INTELLISENSE__
+// #ifndef __INTELLISENSE__
 #define offsetof(s, m) __builtin_offsetof(s, m)
-#else
-#define offsetof(s, m) reinterpret_cast<uint32>(&(*reinterpret_cast<s *>(0)).m)
-#endif
+// #else
+// #define offsetof(s, m) reinterpret_cast<uint32>(&(*reinterpret_cast<s *>(0)).m)
+// #endif
 
 #define for_each(type, name, start, end, ...) for (type name = start; name < end; name++ __VA_OPT__(,) __VA_ARGS__)
 #define for_all(type, name, end, ...) for_each(type, name, 0, end __VA_OPT__(,) __VA_ARGS__)
@@ -19,6 +17,18 @@
 #define LogFunction(...) LogFunctionHelper(FUNC_NAME __VA_OPT__(,) __VA_ARGS__)
 
 #define PrintFunction(...) PrintFunctionHelper(FUNC_NAME __VA_OPT__(,) __VA_ARGS__)
+
+#define DebugLog(...)\
+if constexpr (debug)\
+{\
+	Log(__VA_ARGS__);\
+}
+
+#define DebugLogFunction(...)\
+if constexpr (debug)\
+{\
+	LogFunction(__VA_ARGS__);\
+}
 
 #define _Prep_Merge(a, b) a##b
 #define Prep_Merge(a, b) _Prep_Merge(a, b)
