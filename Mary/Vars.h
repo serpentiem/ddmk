@@ -1601,7 +1601,10 @@ static_assert(sizeof(PhysicsMetadata) == 0x140);
 
 struct BodyPartData
 {
-	_(288);
+	_(104);
+	byte8 ** motionArchives;
+	_(176);
+	//_(288);
 };
 
 static_assert(sizeof(BodyPartData) == 0x120);
@@ -3874,7 +3877,7 @@ if (!name)\
 {\
 	__VA_ARGS__;\
 }\
-auto & name2 = *reinterpret_cast<ActorData *>(name);
+auto & name2 = *reinterpret_cast<ActorData *>(name)
 
 #pragma pack(pop)
 

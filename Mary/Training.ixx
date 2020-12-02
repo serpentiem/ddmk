@@ -18,7 +18,7 @@ export void Training_ToggleInfiniteHitPoints(bool enable)
 		auto dest = (appBaseAddr + 0x88517);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 5);
+			SetMemory(dest, 0x90, 5, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -26,7 +26,7 @@ export void Training_ToggleInfiniteHitPoints(bool enable)
 			{
 				0xF3, 0x41, 0x0F, 0x5C, 0xC0, // subss xmm0,xmm8
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+88517 - F3 41 0F5C C0 - subss xmm0,xmm8
@@ -39,7 +39,7 @@ export void Training_ToggleInfiniteHitPoints(bool enable)
 		auto dest = (appBaseAddr + 0x1E1884);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 4);
+			SetMemory(dest, 0x90, 4, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -47,7 +47,7 @@ export void Training_ToggleInfiniteHitPoints(bool enable)
 			{
 				0xF3, 0x0F, 0x5C, 0xC8, // subss xmm1,xmm0
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1E1884 - F3 0F5C C8 - subss xmm1,xmm0
@@ -65,7 +65,7 @@ export void Training_ToggleInfiniteMagicPoints(bool enable)
 		auto dest = (appBaseAddr + 0x1E1842);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 4);
+			SetMemory(dest, 0x90, 4, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -73,7 +73,7 @@ export void Training_ToggleInfiniteMagicPoints(bool enable)
 			{
 				0xF3, 0x0F, 0x5C, 0xC8, // subss xmm1,xmm0
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1E1842 - F3 0F5C C8 - subss xmm1,xmm0
@@ -86,7 +86,7 @@ export void Training_ToggleInfiniteMagicPoints(bool enable)
 		auto dest = (appBaseAddr + 0x1E788A);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 4);
+			SetMemory(dest, 0x90, 4, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -94,7 +94,7 @@ export void Training_ToggleInfiniteMagicPoints(bool enable)
 			{
 				0xF3, 0x0F, 0x5C, 0xC1, // subss xmm0,xmm1
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1E788A - F3 0F5C C1          - subss xmm0,xmm1
@@ -111,7 +111,7 @@ export void Training_ToggleDisableTimer(bool enable)
 		auto dest = (appBaseAddr + 0x27EF74);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 4);
+			SetMemory(dest, 0x90, 4, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -119,7 +119,7 @@ export void Training_ToggleDisableTimer(bool enable)
 			{
 				0xF3, 0x0F, 0x5C, 0xC8, // subss xmm1,xmm0
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+27EF74 - F3 0F5C C8 - subss xmm1,xmm0

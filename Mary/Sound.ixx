@@ -1913,7 +1913,7 @@ export bool Sound_Init()
 
 export void Sound_Toggle(bool enable)
 {
-	return;
+	//return;
 
 	LogFunction(enable);
 

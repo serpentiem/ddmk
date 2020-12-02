@@ -6862,7 +6862,7 @@ void InitMagicPointsDepletionValues()
 		{
 			0xF3, 0x0F, 0x59, 0x0D, 0x00, 0x00, 0x00, 0x00, // mulss xmm1,[]
 		};
-		vp_memcpy(dest, buffer, sizeof(buffer));
+		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 
 		WriteAddress(dest, magicPointsDepletionValueQuicksilverDest, 8);
 		/*
@@ -6879,7 +6879,7 @@ void InitMagicPointsDepletionValues()
 		{
 			0xF3, 0x0F, 0x59, 0x0D, 0x00, 0x00, 0x00, 0x00, // mulss xmm1,[]
 		};
-		vp_memcpy(dest, buffer, sizeof(buffer));
+		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 
 		WriteAddress(dest, magicPointsDepletionValueDoppelgangerDest, 8);
 		/*
@@ -6896,7 +6896,7 @@ void InitMagicPointsDepletionValues()
 		{
 			0xF3, 0x0F, 0x59, 0x0D, 0x00, 0x00, 0x00, 0x00, // mulss xmm1,[]
 		};
-		vp_memcpy(dest, buffer, sizeof(buffer));
+		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 
 		WriteAddress(dest, magicPointsDepletionValueDevilDest, 8);
 		/*
@@ -7127,7 +7127,7 @@ void InitColor()
 	}
 
 	// Aura Vergil Fix
-	vp_memset((appBaseAddr + 0x90C32), 0x90, 4);
+	SetMemory((appBaseAddr + 0x90C32), 0x90, 4, MemoryFlags_VirtualProtectDestination);
 	/*
 	dmc3.exe+90C32 - 44 0FB6 EB - movzx r13d,bl
 	*/
@@ -7300,7 +7300,7 @@ void ToggleSpeed(bool enable)
 		}
 		else
 		{
-			vp_memcpy(items, defaultConfig.Speed.devilDante, sizeof(defaultConfig.Speed.devilDante));
+			CopyMemory(items, defaultConfig.Speed.devilDante, sizeof(defaultConfig.Speed.devilDante), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1F8C24 - F3 41 0F10 84 8C B8B05800 - MOVSS XMM0,[R12+RCX*4+0058B0B8]
@@ -7322,7 +7322,7 @@ void ToggleSpeed(bool enable)
 		}
 		else
 		{
-			vp_memcpy(items, defaultConfig.Speed.devilVergil, sizeof(defaultConfig.Speed.devilVergil));
+			CopyMemory(items, defaultConfig.Speed.devilVergil, sizeof(defaultConfig.Speed.devilVergil), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1F8C48 - F3 41 0F10 84 8C D8B05800 - MOVSS XMM0,[R12+RCX*4+0058B0D8]
@@ -7343,7 +7343,7 @@ void ToggleSpeed(bool enable)
 			{
 				0xF3, 0x0F, 0x11, 0x43, 0x14, // movss [rbx+14],xmm0
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+3261CD - F3 0F11 43 14 - movss [rbx+14],xmm0
@@ -7357,6 +7357,94 @@ void ToggleSpeed(bool enable)
 
 #pragma endregion
 
+#pragma region Sound
+
+void UpdateGlobalCharacterCostume(byte8 * bodyPartDataAddr)
+{
+	if (!bodyPartDataAddr)
+	{
+		return;
+	}
+	auto & bodyPartData = *reinterpret_cast<BodyPartData *>(bodyPartDataAddr);
+
+	if (!bodyPartData.motionArchives)
+	{
+		return;
+	}
+
+	IntroduceActorData
+	(
+		actorBaseAddr,
+		actorData,
+		(reinterpret_cast<byte8 *>(bodyPartData.motionArchives) - offsetof(ActorData, motionArchives)),
+		return
+	);
+
+
+
+
+
+
+
+
+
+	g_character = static_cast<uint8>(actorData.character);
+	g_costume = actorData.costume;
+}
+
+void ToggleSound(bool enable)
+{
+	static bool run = false;
+
+	// Melee Weapon Sounds
+	{
+		auto addr     = (appBaseAddr + 0x59E3B);
+		auto jumpAddr = (appBaseAddr + 0x59E40);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+59E3B - E8 F0FA2D00       - call dmc3.exe+339930
+		dmc3.exe+59E40 - C6 83 09010000 01 - mov byte ptr [rbx+00000109],01
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteCall(func.sect2, (appBaseAddr + 0x339930));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	run = true;
+}
+
+
+
+
+
+
+
+#pragma endregion
+
+
+
 // @Todo: Recheck.
 void ToggleMainActorFixes(bool enable)
 {
@@ -7366,12 +7454,12 @@ void ToggleMainActorFixes(bool enable)
 		auto dest = (appBaseAddr + 0x1F83D7);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 18);
+			SetMemory(dest, 0x90, 18, MemoryFlags_VirtualProtectDestination);
 			constexpr byte8 buffer[] =
 			{
 				0x40, 0x38, 0xB7, 0x62, 0x63, 0x00, 0x00, // cmp [rdi+00006362],sil
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -7381,7 +7469,7 @@ void ToggleMainActorFixes(bool enable)
 				0x48, 0x8B, 0x41, 0x18,                   // mov rax,[rcx+18]
 				0x40, 0x38, 0xB0, 0x62, 0x63, 0x00, 0x00, // cmp [rax+00006362],sil
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1F83D7 - 48 8B 0D 4A8AA900 - mov rcx,[dmc3.exe+C90E28]
@@ -8837,7 +8925,7 @@ export void Actor_Toggle(bool enable)
 		auto dest = (appBaseAddr + 0x215577);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 5);
+			SetMemory(dest, 0x90, 5, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -8854,7 +8942,7 @@ export void Actor_Toggle(bool enable)
 		auto dest = (appBaseAddr + 0x22285C);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 5);
+			SetMemory(dest, 0x90, 5, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -8879,7 +8967,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x48, 0x8B, 0x96, 0x98, 0x18, 0x00, 0x00, // mov rdx,[rsi+00001898]
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+2120C4 - 48 8B 96 98180000 - mov rdx,[rsi+00001898]
@@ -8900,7 +8988,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x48, 0x8B, 0x96, 0x98, 0x18, 0x00, 0x00, // mov rdx,[rsi+00001898]
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+220506 - 48 8B 96 98180000 - mov rdx,[rsi+00001898]
@@ -8930,7 +9018,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x0F, 0xB6, 0x90, 0x9E, 0x3E, 0x00, 0x00, // movzx edx,byte ptr [rax+00003E9E]
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+22B60F - 0FB6 90 9E3E0000 - movzx edx,byte ptr [rax+00003E9E]
@@ -8951,7 +9039,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x0F, 0xB6, 0x82, 0x9E, 0x3E, 0x00, 0x00, // movzx eax,byte ptr [rdx+00003E9E]
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+22EC27 - 0FB6 82 9E3E0000 - movzx eax,byte ptr [rdx+00003E9E]
@@ -9006,7 +9094,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0xC6, 0x87, 0x61, 0x63, 0x00, 0x00, 0x01, // mov byte ptr [rdi+00006361],01
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1E94AA - C6 87 61630000 01       - mov byte ptr [rdi+00006361],01
@@ -9027,7 +9115,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x40, 0x88, 0xB7, 0x61, 0x63, 0x00, 0x00, // mov [rdi+00006361],sil
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1E9551 - 40 88 B7 61630000 - mov [rdi+00006361],sil
@@ -9046,7 +9134,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0xC6, 0x81, 0x61, 0x63, 0x00, 0x00, 0x00, // mov byte ptr [rcx+00006361],00
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1EAC19 - C6 81 61630000 00       - mov byte ptr [rcx+00006361],00
@@ -9073,7 +9161,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0xC7, 0x87, 0x54, 0x64, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, // mov [rdi+00006454],00000001
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1E9235 - C7 87 54640000 01000000 - mov [rdi+00006454],00000001
@@ -9095,7 +9183,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0xC7, 0x87, 0x54, 0x64, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, // mov [rdi+00006454],00000002
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1E933B - C7 87 54640000 02000000 - mov [rdi+00006454],00000002
@@ -9115,7 +9203,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0xC7, 0x87, 0x54, 0x64, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, // mov [rdi+00006454],00000002
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1F89E9 - C7 87 54640000 02000000 - mov [rdi+00006454],00000002
@@ -9169,7 +9257,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x40, 0x38, 0xB7, 0x9B, 0x3E, 0x00, 0x00, // cmp [rdi+00003E9B],sil
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1E77DC - 40 38 B7 9B3E0000 - cmp [rdi+00003E9B],sil
@@ -9182,7 +9270,7 @@ export void Actor_Toggle(bool enable)
 		auto dest = (appBaseAddr + 0x1E78A5);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 5);
+			SetMemory(dest, 0x90, 5, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -9214,7 +9302,7 @@ export void Actor_Toggle(bool enable)
 		auto dest = (appBaseAddr + 0x1E78C9);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 5);
+			SetMemory(dest, 0x90, 5, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -9292,7 +9380,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x66, 0x89, 0x8B, 0xE4, 0x74, 0x00, 0x00, // mov [rbx+000074E4],cx
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1EBD64 - 66 89 8B E4740000 - mov [rbx+000074E4],cx
@@ -9311,7 +9399,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x66, 0x89, 0x93, 0xE6, 0x74, 0x00, 0x00, // mov [rbx+000074E6],dx
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1EBD75 - 66 89 93 E6740000 - mov [rbx+000074E6],dx
@@ -9437,12 +9525,12 @@ export void Actor_Toggle(bool enable)
 		auto dest = (appBaseAddr + 0x1F8401);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 7);
+			SetMemory(dest, 0x90, 7, MemoryFlags_VirtualProtectDestination);
 			constexpr byte8 buffer[] =
 			{
 				mov_rcx_rdi,
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -9450,7 +9538,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x0F, 0xB6, 0x97, 0x18, 0x01, 0x00, 0x00, // movzx edx,byte ptr [rdi+00000118]
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1F8401 - 0FB6 97 18010000 - movzx edx,byte ptr [rdi+00000118]
@@ -9461,12 +9549,12 @@ export void Actor_Toggle(bool enable)
 		auto dest = (appBaseAddr + 0x1F90BD);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 14);
+			SetMemory(dest, 0x90, 14, MemoryFlags_VirtualProtectDestination);
 			constexpr byte8 buffer[] =
 			{
 				mov_rcx_rdi,
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -9475,7 +9563,7 @@ export void Actor_Toggle(bool enable)
 				0x0F, 0xB6, 0x97, 0x18, 0x01, 0x00, 0x00, // movzx edx,byte ptr [rdi+00000118]
 				0x48, 0x8B, 0x0D, 0x5D, 0x7D, 0xA9, 0x00, // mov rcx,[dmc3.exe+C90E28]
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1F90BD - 0FB6 97 18010000  - movzx edx,byte ptr [rdi+00000118]
@@ -9486,7 +9574,7 @@ export void Actor_Toggle(bool enable)
 		auto dest = (appBaseAddr + 0x1BA560);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 3);
+			SetMemory(dest, 0x90, 3, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -9494,7 +9582,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x48, 0x63, 0xC2, // movsxd rax,edx
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1BA560 - 48 63 C2       - movsxd rax,edx
@@ -9505,12 +9593,12 @@ export void Actor_Toggle(bool enable)
 		auto dest = (appBaseAddr + 0x1BA569);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 9);
+			SetMemory(dest, 0x90, 9, MemoryFlags_VirtualProtectDestination);
 			constexpr byte8 buffer[] =
 			{
 				0x4C, 0x8B, 0xC1, // mov r8,rcx
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -9519,7 +9607,7 @@ export void Actor_Toggle(bool enable)
 				0x4C, 0x8B, 0x44, 0xC1, 0x18, // mov r8,[rcx+rax*8+18]
 				0x4C, 0x8D, 0x14, 0xC1,       // lea r10,[rcx+rax*8]
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1BA569 - 4C 8B 44 C1 18 - mov r8,[rcx+rax*8+18]
@@ -9530,12 +9618,12 @@ export void Actor_Toggle(bool enable)
 		auto dest = (appBaseAddr + 0x1BA5C5);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 11);
+			SetMemory(dest, 0x90, 11, MemoryFlags_VirtualProtectDestination);
 			constexpr byte8 buffer[] =
 			{
 				0x45, 0x89, 0x98, 0x40, 0x20, 0x00, 0x00, // mov [r8+00002040],r11d
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -9544,7 +9632,7 @@ export void Actor_Toggle(bool enable)
 				0x49, 0x8B, 0x42, 0x18,                   // mov rax,[r10+18]
 				0x44, 0x89, 0x98, 0x08, 0x62, 0x00, 0x00, // mov [rax+00006208],r11d
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1BA5C5 - 49 8B 42 18       - mov rax,[r10+18]
@@ -9557,7 +9645,7 @@ export void Actor_Toggle(bool enable)
 	// 	auto dest = (appBaseAddr + 0x1F8AEE);
 	// 	if (enable)
 	// 	{
-	// 		vp_memset(dest, 0x90, 10);
+	// 		SetMemory(dest, 0x90, 10, MemoryFlags_VirtualProtectDestination);
 	// 	}
 	// 	else
 	// 	{
@@ -9565,7 +9653,7 @@ export void Actor_Toggle(bool enable)
 	// 		{
 	// 			0xC7, 0x87, 0x20, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, // mov [rdi+00000120],00000001
 	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 	// 	}
 	// 	/*
 	// 	dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001
@@ -9576,7 +9664,7 @@ export void Actor_Toggle(bool enable)
 	// 	auto dest = (appBaseAddr + 0x1F7CBA);
 	// 	if (enable)
 	// 	{
-	// 		vp_memset(dest, 0x90, 10);
+	// 		SetMemory(dest, 0x90, 10, MemoryFlags_VirtualProtectDestination);
 	// 	}
 	// 	else
 	// 	{
@@ -9584,7 +9672,7 @@ export void Actor_Toggle(bool enable)
 	// 		{
 	// 			0xC7, 0x83, 0x20, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, // mov [rbx+00000120],00000001
 	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 	// 	}
 	// 	/*
 	// 	dmc3.exe+1F7CBA - C7 83 20010000 01000000 - mov [rbx+00000120],00000001
@@ -9595,7 +9683,7 @@ export void Actor_Toggle(bool enable)
 	// 	auto dest = (appBaseAddr + 0x1DFC7F);
 	// 	if (enable)
 	// 	{
-	// 		vp_memset(dest, 0x90, 6);
+	// 		SetMemory(dest, 0x90, 6, MemoryFlags_VirtualProtectDestination);
 	// 	}
 	// 	else
 	// 	{
@@ -9603,7 +9691,7 @@ export void Actor_Toggle(bool enable)
 	// 		{
 	// 			0x89, 0x81, 0x20, 0x01, 0x00, 0x00, // mov [rcx+00000120],eax
 	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 	// 	}
 	// 	/*
 	// 	dmc3.exe+1DFC7F - 89 81 20010000    - mov [rcx+00000120],eax
@@ -9614,7 +9702,7 @@ export void Actor_Toggle(bool enable)
 	// 	auto dest = (appBaseAddr + 0x1FCA43);
 	// 	if (enable)
 	// 	{
-	// 		vp_memset(dest, 0x90, 6);
+	// 		SetMemory(dest, 0x90, 6, MemoryFlags_VirtualProtectDestination);
 	// 	}
 	// 	else
 	// 	{
@@ -9622,7 +9710,7 @@ export void Actor_Toggle(bool enable)
 	// 		{
 	// 			0x89, 0x91, 0x20, 0x01, 0x00, 0x00, // mov [rcx+00000120],edx
 	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 	// 	}
 	// 	/*
 	// 	dmc3.exe+1FCA43 - 89 91 20010000 - mov [rcx+00000120],edx
@@ -9653,7 +9741,7 @@ export void Actor_Toggle(bool enable)
 				0x40, 0x53,             // push rbx
 				0x48, 0x83, 0xEC, 0x20, // sub rsp,20
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+93D60 - 40 53       - push rbx
@@ -9675,7 +9763,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x48, 0x8B, 0x5C, 0x24, 0x50, // mov rbx,[rsp+50]
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1E14E1 - 48 8B 5C 24 50 - mov rbx,[rsp+50]
@@ -9696,7 +9784,7 @@ export void Actor_Toggle(bool enable)
 	// 		{
 	// 			0x0F, 0xB6, 0x81, 0x98, 0x64, 0x00, 0x00, // movzx eax,byte ptr [rcx+00006498]
 	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 	// 	}
 	// 	/*
 	// 	dmc3.exe+2198D0 - 0FB6 81 98640000 - movzx eax,byte ptr [rcx+00006498]
@@ -9717,7 +9805,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x48, 0x89, 0x5C, 0x24, 0x08, // mov [rsp+08],rbx
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+5C320 - 48 89 5C 24 08 - mov [rsp+08],rbx
@@ -9738,7 +9826,7 @@ export void Actor_Toggle(bool enable)
 	// 		{
 	// 			0x80, 0xBF, 0x61, 0x63, 0x00, 0x00, 0x01, // cmp byte ptr [rdi+00006361],01
 	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 	// 	}
 	// 	/*
 	// 	dmc3.exe+1F8A00 - 80 BF 61630000 01 - cmp byte ptr [rdi+00006361],01
@@ -9764,7 +9852,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x89, 0x8F, 0x20, 0x01, 0x00, 0x00, // mov [rdi+00000120],ecx
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1F1F2C - 89 8F 20010000 - mov [rdi+00000120],ecx
@@ -9785,7 +9873,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x89, 0xBB, 0x20, 0x01, 0x00, 0x00, // mov [rbx+00000120],edi
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1F071E - 89 BB 20010000    - mov [rbx+00000120],edi
@@ -9810,7 +9898,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x83, 0xB9, 0x20, 0x01, 0x00, 0x00, 0x00, // cmp dword ptr [rcx+00000120],00
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1DFD16 - 83 B9 20010000 00 - cmp dword ptr [rcx+00000120],00
@@ -9831,7 +9919,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x83, 0xB8, 0x20, 0x01, 0x00, 0x00, 0x00, // cmp dword ptr [rax+00000120],00
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1FDE20 - 83 B8 20010000 00 - cmp dword ptr [rax+00000120],00
@@ -9890,7 +9978,7 @@ export void Actor_Toggle(bool enable)
 	// 		{
 	// 			0xC7, 0x81, 0xB8, 0x3E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov [rcx+00003EB8],00000000
 	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 	// 	}
 	// 	/*
 	// 	dmc3.exe+1E1856 - C7 81 B83E0000 00000000 - mov [rcx+00003EB8],00000000
@@ -9906,7 +9994,7 @@ export void Actor_Toggle(bool enable)
 		auto dest = (appBaseAddr + 0x2BAA90);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 7);
+			SetMemory(dest, 0x90, 7, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -9914,7 +10002,7 @@ export void Actor_Toggle(bool enable)
 			{
 				0x48, 0x89, 0x91, 0x10, 0x3D, 0x00, 0x00, // mov [rcx+00003D10],rdx
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+2BAA90 - 48 89 91 103D0000 - mov [rcx+00003D10],rdx
@@ -9925,7 +10013,7 @@ export void Actor_Toggle(bool enable)
 
 
 
-
+	ToggleSound(enable);
 
 
 
@@ -9955,7 +10043,7 @@ export void ToggleRebellionInfiniteSwordPierce(bool enable)
 		auto dest = (appBaseAddr + 0x1CC9A4);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 5);
+			SetMemory(dest, 0x90, 5, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -9963,7 +10051,7 @@ export void ToggleRebellionInfiniteSwordPierce(bool enable)
 			{
 				0xF3, 0x0F, 0x5C, 0x4B, 0x14, // subss xmm1,[rbx+14]
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1CC9A4 - F3 0F5C 4B 14 - subss xmm1,[rbx+14]
@@ -9974,7 +10062,7 @@ export void ToggleRebellionInfiniteSwordPierce(bool enable)
 		auto dest = (appBaseAddr + 0x1CDA1B);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 4);
+			SetMemory(dest, 0x90, 4, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -9982,7 +10070,7 @@ export void ToggleRebellionInfiniteSwordPierce(bool enable)
 			{
 				0xF3, 0x0F, 0x5C, 0xC1, // subss xmm0,xmm1
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1CDA1B - F3 0F5C C1             - subss xmm0,xmm1
@@ -9993,7 +10081,7 @@ export void ToggleRebellionInfiniteSwordPierce(bool enable)
 		auto dest = (appBaseAddr + 0x1CDD64);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 5);
+			SetMemory(dest, 0x90, 5, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -10001,7 +10089,7 @@ export void ToggleRebellionInfiniteSwordPierce(bool enable)
 			{
 				0xF3, 0x0F, 0x5C, 0x4B, 0x14, // subss xmm1,[rbx+14]
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1CDD64 - F3 0F5C 4B 14 - subss xmm1,[rbx+14]
@@ -10012,7 +10100,7 @@ export void ToggleRebellionInfiniteSwordPierce(bool enable)
 		auto dest = (appBaseAddr + 0x1CDDCE);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 4);
+			SetMemory(dest, 0x90, 4, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -10020,7 +10108,7 @@ export void ToggleRebellionInfiniteSwordPierce(bool enable)
 			{
 				0xF3, 0x0F, 0x5C, 0xCA, // subss xmm1,xmm2
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1CDDCE - F3 0F5C CA - subss xmm1,xmm2
@@ -10031,7 +10119,7 @@ export void ToggleRebellionInfiniteSwordPierce(bool enable)
 		auto dest = (appBaseAddr + 0x21562E);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 5);
+			SetMemory(dest, 0x90, 5, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -10039,7 +10127,7 @@ export void ToggleRebellionInfiniteSwordPierce(bool enable)
 			{
 				0xF3, 0x0F, 0x5C, 0x47, 0x14, // subss xmm0,[rdi+14]
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+21562E - F3 0F5C 47 14 - subss xmm0,[rdi+14]
@@ -10056,7 +10144,7 @@ export void ToggleYamatoForceEdgeInfiniteRoundTrip(bool enable)
 		auto dest = (appBaseAddr + 0x1D86DD);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 5);
+			SetMemory(dest, 0x90, 5, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -10064,7 +10152,7 @@ export void ToggleYamatoForceEdgeInfiniteRoundTrip(bool enable)
 			{
 				0xF3, 0x0F, 0x5C, 0x47, 0x14, // subss xmm0,[rdi+14]
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+1D86DD - F3 0F5C 47 14 - subss xmm0,[rdi+14]
@@ -10075,7 +10163,7 @@ export void ToggleYamatoForceEdgeInfiniteRoundTrip(bool enable)
 		auto dest = (appBaseAddr + 0x222921);
 		if (enable)
 		{
-			vp_memset(dest, 0x90, 5);
+			SetMemory(dest, 0x90, 5, MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -10083,7 +10171,7 @@ export void ToggleYamatoForceEdgeInfiniteRoundTrip(bool enable)
 			{
 				0xF3, 0x0F, 0x5C, 0x47, 0x14, // subss xmm0,[rdi+14]
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+222921 - F3 0F5C 47 14 - subss xmm0,[rdi+14]
@@ -10125,7 +10213,7 @@ export void ToggleEbonyIvoryInfiniteRainStorm(bool enable)
 			0x0F, 0xA3, 0xC1, // bt ecx,eax
 			0x72, 0x0C,       // jb dmc3.exe+20CC20
 		};
-		vp_memcpy(dest, buffer, sizeof(buffer));
+		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 	}
 	/*
 	dmc3.exe+20CC0F - 0FA3 C1             - bt ecx,eax
@@ -10147,7 +10235,7 @@ export void ToggleArtemisSwapNormalShotAndMultiLock(bool enable)
 			{
 				0xC6, 0x87, 0x80, 0xB8, 0x00, 0x00, 0x01, // mov byte ptr [rdi+0000B880],01
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		else
 		{
@@ -10155,7 +10243,7 @@ export void ToggleArtemisSwapNormalShotAndMultiLock(bool enable)
 			{
 				0x44, 0x88, 0xB7, 0x80, 0xB8, 0x00, 0x00, // mov [rdi+0000B880],r14l
 			};
-			vp_memcpy(dest, buffer, sizeof(buffer));
+			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 		}
 		/*
 		dmc3.exe+215C78 - 44 88 B7 80B80000 - mov [rdi+0000B880],r14l
@@ -10205,7 +10293,7 @@ export void ToggleChronoSwords(bool enable)
 	// 		{
 	// 			0xF3, 0x0F, 0x5C, 0x43, 0x14, // subss xmm0,[rbx+14]
 	// 		};
-	// 		vp_memcpy(dest, buffer, sizeof(buffer));
+	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
 	// 	}
 	// 	/*
 	// 	dmc3.exe+1DB8F8 - F3 0F5C 43 14 - subss xmm0,[rbx+14]

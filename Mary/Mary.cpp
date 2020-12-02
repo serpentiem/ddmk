@@ -185,13 +185,13 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		Window_ToggleForceFocus(true);
 
-		vp_memset((appBaseAddr + 0x5505B5), 0, 23); // Remove FMODGetCodecDescription label.
+		SetMemory((appBaseAddr + 0x5505B5), 0, 23, MemoryFlags_VirtualProtectDestination); // Remove FMODGetCodecDescription label.
 
 		if constexpr (debug)
 		{
 			// Disable Idle Timer
-			vp_memset((appBaseAddr + 0x1F2A38), 0x90, 5); // Dante
-			vp_memset((appBaseAddr + 0x1F29AE), 0x90, 5); // Vergil
+			SetMemory((appBaseAddr + 0x1F2A38), 0x90, 5, MemoryFlags_VirtualProtectDestination); // Dante
+			SetMemory((appBaseAddr + 0x1F29AE), 0x90, 5, MemoryFlags_VirtualProtectDestination); // Vergil
 
 			// Force Visible HUD
 			Write<byte8>((appBaseAddr + 0x27E800), 0xEB);
@@ -199,7 +199,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 			Write<byte16>((appBaseAddr + 0x280DB9), 0xE990);
 
 			// Disable Style Rank Sub
-			vp_memset((appBaseAddr + 0x27A39C), 0x90, 5);
+			SetMemory((appBaseAddr + 0x27A39C), 0x90, 5, MemoryFlags_VirtualProtectDestination);
 
 			// Force Collect Orbs
 			WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2);
