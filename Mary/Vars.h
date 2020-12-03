@@ -1758,6 +1758,26 @@ static_assert(offsetof(WeaponData, actorBaseAddr) == 0x120);
 
 
 
+struct SummonedSwordsData
+{
+	_(1376);
+	byte8 * actorBaseAddr;
+};
+
+static_assert(offsetof(SummonedSwordsData, actorBaseAddr) == 0x560);
+
+
+
+
+
+
+
+
+
+
+
+
+
 struct CharacterData
 {
 	uint8 character;

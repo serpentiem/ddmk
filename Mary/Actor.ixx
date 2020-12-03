@@ -7359,44 +7359,85 @@ void ToggleSpeed(bool enable)
 
 #pragma region Sound
 
-void UpdateGlobalCharacterCostume(byte8 * bodyPartDataAddr)
+inline void UpdateGlobalCharacterCostume(byte8 * actorBaseAddr)
 {
-	if (!bodyPartDataAddr)
+	if (!actorBaseAddr)
 	{
 		return;
 	}
-	auto & bodyPartData = *reinterpret_cast<BodyPartData *>(bodyPartDataAddr);
-
-	if (!bodyPartData.motionArchives)
-	{
-		return;
-	}
-
-	IntroduceActorData
-	(
-		actorBaseAddr,
-		actorData,
-		(reinterpret_cast<byte8 *>(bodyPartData.motionArchives) - offsetof(ActorData, motionArchives)),
-		return
-	);
-
-
-
-
-
-
-
-
+	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
 
 	g_character = static_cast<uint8>(actorData.character);
 	g_costume = actorData.costume;
+}
+
+template <typename T>
+void UpdateGlobalCharacterCostumeByData(byte8 * dataAddr)
+{
+	if (!dataAddr)
+	{
+		return;
+	}
+
+	byte8 * actorBaseAddr = 0;
+
+	if constexpr (TypeMatch<T, BodyPartData>::value)
+	{
+		auto & bodyPartData = *reinterpret_cast<BodyPartData *>(dataAddr);
+
+		actorBaseAddr = (reinterpret_cast<byte8 *>(bodyPartData.motionArchives) - offsetof(ActorData, motionArchives));
+	}
+	else if constexpr (TypeMatch<T, SummonedSwordsData>::value)
+	{
+		auto & summonedSwordsData = *reinterpret_cast<SummonedSwordsData *>(dataAddr);
+
+		actorBaseAddr = summonedSwordsData.actorBaseAddr;
+	}
+
+	UpdateGlobalCharacterCostume(actorBaseAddr);
 }
 
 void ToggleSound(bool enable)
 {
 	static bool run = false;
 
-	// Melee Weapon Sounds
+	// Taunt & Style
+	{
+		auto addr     = (appBaseAddr + 0x59DFB);
+		auto jumpAddr = (appBaseAddr + 0x59E00);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+59DFB - E8 20F52D00       - call dmc3.exe+339320
+		dmc3.exe+59E00 - C6 83 08010000 01 - mov byte ptr [rbx+00000108],01
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalCharacterCostumeByData<BodyPartData>, jumpAddr, true, true, 0, sizeof(sect1), size);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteCall(func.sect2, (appBaseAddr + 0x339320));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Melee Weapon
 	{
 		auto addr     = (appBaseAddr + 0x59E3B);
 		auto jumpAddr = (appBaseAddr + 0x59E40);
@@ -7404,6 +7445,78 @@ void ToggleSound(bool enable)
 		/*
 		dmc3.exe+59E3B - E8 F0FA2D00       - call dmc3.exe+339930
 		dmc3.exe+59E40 - C6 83 09010000 01 - mov byte ptr [rbx+00000109],01
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalCharacterCostumeByData<BodyPartData>, jumpAddr, true, true, 0, sizeof(sect1), size);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteCall(func.sect2, (appBaseAddr + 0x339930));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Ebony & Ivory
+	{
+		auto addr     = (appBaseAddr + 0x216CC3);
+		auto jumpAddr = (appBaseAddr + 0x216CC8);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+216CC3 - E8 682C1200 - call dmc3.exe+339930
+		dmc3.exe+216CC8 - 83 FB 09    - cmp ebx,09
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rdi,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteCall(func.sect2, (appBaseAddr + 0x339930));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Shotgun
+	{
+		auto addr     = (appBaseAddr + 0x218212);
+		auto jumpAddr = (appBaseAddr + 0x218217);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+218212 - E8 19171200 - call dmc3.exe+339930
+		dmc3.exe+218217 - 40 0FB6 C6  - movzx eax,sil
 		*/
 
 		static Function func = {};
@@ -7432,14 +7545,152 @@ void ToggleSound(bool enable)
 		}
 	}
 
+	// Artemis
+	{
+		auto addr     = (appBaseAddr + 0x216042);
+		auto jumpAddr = (appBaseAddr + 0x216047);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+216042 - E8 E9381200    - call dmc3.exe+339930
+		dmc3.exe+216047 - FE 87 7EB80000 - inc byte ptr [rdi+0000B87E]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rdi,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteCall(func.sect2, (appBaseAddr + 0x339930));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Spiral
+	{
+		auto addr     = (appBaseAddr + 0x20877F);
+		auto jumpAddr = (appBaseAddr + 0x208784);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+20877F - E8 AC111300    - call dmc3.exe+339930
+		dmc3.exe+208784 - FE 83 153E0000 - inc byte ptr [rbx+00003E15]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteCall(func.sect2, (appBaseAddr + 0x339930));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Kalina Ann
+	{
+		auto addr     = (appBaseAddr + 0x206212);
+		auto jumpAddr = (appBaseAddr + 0x206217);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+206212 - E8 19371300    - call dmc3.exe+339930
+		dmc3.exe+206217 - FE 83 153E0000 - inc byte ptr [rbx+00003E15]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteCall(func.sect2, (appBaseAddr + 0x339930));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Summoned Swords
+	{
+		auto addr     = (appBaseAddr + 0x1DBA94);
+		auto jumpAddr = (appBaseAddr + 0x1DBA99);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1DBA94 - E8 97DE1500      - call dmc3.exe+339930
+		dmc3.exe+1DBA99 - 0FB6 8B F20D0000 - movzx ecx,byte ptr [rbx+00000DF2]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalCharacterCostumeByData<SummonedSwordsData>, jumpAddr, true, true, 0, sizeof(sect1), size);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteCall(func.sect2, (appBaseAddr + 0x339930));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
 	run = true;
 }
-
-
-
-
-
-
 
 #pragma endregion
 
