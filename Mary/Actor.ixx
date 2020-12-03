@@ -1,11 +1,25 @@
-// @Todo: Vergil Doppelganger crashes game when entering elevator.
-// @Todo: Other crash.
+
+
+
+
+
+
+
+
+
+
 // @Todo: Cleanup.
 // @Todo: Capture grabbed state.
 // @Todo: Get resurrect variable.
 // @Todo: Quick Drive.
 // @Todo: Color Toggle.
 // @Todo: Air Stinger, Air Lunar Phase and Nevan instant Vortex.
+
+
+
+
+
+
 
 module;
 #include "../Core/Core.h"
@@ -28,40 +42,22 @@ import Model;
 
 export Vector<byte8 *> Actor_actorBaseAddr;
 
-byte8 * GetActorBaseAddr[MAX_REGISTER] = {};
 
-void InitGetActorBaseAddr()
-{
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0x8B, 0x80, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rax+000000C0]
-			0x48, 0x85, 0xC0,                         // test rax,rax
-			0x75, 0x0B,                               // jne short
-			0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, // mov rax,[dmc3.exe+C90E28]
-			0x48, 0x8B, 0x40, 0x18,                   // mov rax,[rax+18]
-			0xC3,                                     // ret
-		};
-		for_all(uint8, index, MAX_REGISTER)
-		{
-			auto func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
-			memcpy(func.sect0, sect0, sizeof(sect0));
-			WriteAddress((func.sect0 + 0xC), (appBaseAddr + 0xC90E28), 7);
-			GetActorBaseAddr[index] = func.addr;
 
-			if (index < R8)
-			{
-				*reinterpret_cast<byte8 *>(func.sect0) = 0x48;
-				*reinterpret_cast<byte8 *>(func.sect0 + 2) = (0x80 + index);
-			}
-			else
-			{
-				*reinterpret_cast<byte8 *>(func.sect0) = 0x49;
-				*reinterpret_cast<byte8 *>(func.sect0 + 2) = (0x80 + (index - R8));
-			}
-		}
-	}
-}
+
+typedef byte8 *(__fastcall * GetActorBaseAddressByEffectData_t)(byte8 * effectDataAddr);
+
+GetActorBaseAddressByEffectData_t GetActorBaseAddressByEffectData = 0;
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6919,6 +6915,8 @@ export void UpdateMagicPointsDepletionValues()
 
 #pragma region Color
 
+// @Todo: Rename to SetXColor.
+
 void SetColorAirHike
 (
 	ActorDataDante & actorData,
@@ -7078,59 +7076,186 @@ void InitColor()
 		*/
 	}
 
-	// Aura Start
+
+
+
+
+
+
+
+	static bool run = false;
+
+
+
+
+
+
+	// // Aura Start
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0xBA, 0x01, 0x00, 0x00, 0x00, // mov edx,00000001
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rbx,
+	// 		call,
+	// 		mov_rcx_rax,
+	// 		0x48, 0x8D, 0x55, 0xA7, // lea rdx,[rbp-59]
+	// 	};
+	// 	auto func = CreateFunction(SetColorAura, (appBaseAddr + 0x8E457), true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	WriteCall((func.sect1 + 3), GetActorBaseAddressByEffectData);
+	// 	WriteJump((appBaseAddr + 0x8E452), func.addr);
+	// 	/*
+	// 	dmc3.exe+8E452 - BA 01000000 - mov edx,00000001
+	// 	dmc3.exe+8E457 - E8 34C61600 - call dmc3.exe+1FAA90
+	// 	*/
+	// }
+
+	constexpr bool enable = true;
+
+
+
+	// Devil Aura Start
 	{
-		constexpr byte8 sect0[] =
-		{
-			0xE8, 0x00, 0x00, 0x00, 0x00, // call
-			0x48, 0x8B, 0xC8,             // mov rcx,rax
-			0x48, 0x8D, 0x55, 0xA7,       // lea rdx,[rbp-59]
-		};
-		constexpr byte8 sect2[] =
-		{
-			0xBA, 0x01, 0x00, 0x00, 0x00, // mov edx,00000001
-		};
-		auto func = CreateFunction(SetColorAura, (appBaseAddr + 0x8E457), true, true, sizeof(sect0), 0, sizeof(sect2));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		WriteCall(func.sect0, GetActorBaseAddr[RBX]);
-		WriteJump((appBaseAddr + 0x8E452), func.addr);
+		auto addr     = (appBaseAddr + 0x8E452);
+		auto jumpAddr = (appBaseAddr + 0x8E457);
+		constexpr uint32 size = 5;
 		/*
 		dmc3.exe+8E452 - BA 01000000 - mov edx,00000001
 		dmc3.exe+8E457 - E8 34C61600 - call dmc3.exe+1FAA90
 		*/
-	}
 
-	// Aura Loop
-	{
+		static Function func = {};
+
 		constexpr byte8 sect0[] =
 		{
-			0xE8, 0x00, 0x00, 0x00, 0x00, // call
-			0x48, 0x8B, 0xC8,             // mov rcx,rax
-			0x48, 0x8D, 0x54, 0x24, 0x30, // lea rdx,[rsp+30]
+			0x48, 0x8D, 0x45, 0xA7, // lea rax,[rbp-59]
 		};
-		constexpr byte8 sect2[] =
+		constexpr byte8 sect1[] =
 		{
-			0x48, 0x8B, 0x06, // mov rax,[rsi]
-			0x48, 0x85, 0xC0, // test rax,rax
+			mov_rdx_rax,
+			mov_rcx_rbx,
+			call,
+			mov_rcx_rax,
 		};
-		auto func = CreateFunction(SetColorAura, (appBaseAddr + 0x90C69), true, true, sizeof(sect0), 0, sizeof(sect2));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		WriteCall(func.sect0, GetActorBaseAddr[RDI]);
-		WriteJump((appBaseAddr + 0x90C63), func.addr, 1);
-		/*
-		dmc3.exe+90C63 - 48 8B 06 - mov rax,[rsi]
-		dmc3.exe+90C66 - 48 85 C0 - test rax,rax
-		dmc3.exe+90C69 - 74 32    - je dmc3.exe+90C9D
-		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SetColorAura, jumpAddr, true, true, sizeof(sect0), sizeof(sect1), size);
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteCall((func.sect1 + 6), GetActorBaseAddressByEffectData);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
+
+
+
+
+
+
+
+
+	// Devil Aura Loop
+	{
+		auto addr     = (appBaseAddr + 0x90C9D);
+		auto jumpAddr = (appBaseAddr + 0x90CA4);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+90C9D - 0FB6 8F D4000000 - movzx ecx,byte ptr [rdi+000000D4]
+		dmc3.exe+90CA4 - 85 C9            - test ecx,ecx
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0x8D, 0x44, 0x24, 0x30, // lea rax,[rsp+30]
+		};
+		constexpr byte8 sect1[] =
+		{
+			mov_rdx_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SetColorAura, jumpAddr, true, true, sizeof(sect0), sizeof(sect1), size);
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteCall((func.sect1 + 6), GetActorBaseAddressByEffectData);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+
+
+
+	// // Aura Loop
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0x8B, 0x06, // mov rax,[rsi]
+	// 		0x48, 0x85, 0xC0, // test rax,rax
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rdi,
+	// 		call,
+	// 		mov_rcx_rax,
+	// 		0x48, 0x8D, 0x54, 0x24, 0x30, // lea rdx,[rsp+30]
+	// 	};
+
+	// 	auto func = CreateFunction(SetColorAura, (appBaseAddr + 0x90C69), true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	WriteCall((func.sect1 + 3), GetActorBaseAddressByEffectData);
+	// 	WriteJump((appBaseAddr + 0x90C63), func.addr, 1);
+	// 	/*
+	// 	dmc3.exe+90C63 - 48 8B 06 - mov rax,[rsi]
+	// 	dmc3.exe+90C66 - 48 85 C0 - test rax,rax
+	// 	dmc3.exe+90C69 - 74 32    - je dmc3.exe+90C9D
+	// 	*/
+	// }
 
 	// Aura Vergil Fix
 	SetMemory((appBaseAddr + 0x90C32), 0x90, 4, MemoryFlags_VirtualProtectDestination);
 	/*
 	dmc3.exe+90C32 - 44 0FB6 EB - movzx r13d,bl
 	*/
+
+
+	run = true;
+
+
+
 }
 
 #pragma endregion
@@ -7696,10 +7821,132 @@ void ToggleSound(bool enable)
 
 
 
-// @Todo: Recheck.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// @Todo: Recheck and move to Toggle.
 void ToggleMainActorFixes(bool enable)
 {
 	LogFunction(enable);
+
+
+	// Disable Doppelganger rotation update during camera angle update.
+	Write<byte8>((appBaseAddr + 0x55F6F), (enable) ? 0xEB : 0x75);
+	/*
+	dmc3.exe+55F6F - 75 10       - jne dmc3.exe+55F81
+	dmc3.exe+55F71 - 48 8B 49 20 - mov rcx,[rcx+20]
+	*/
+
+
+	static bool run = false;
+
+
+// Devil Aura Position Update
+{
+	auto addr     = (appBaseAddr + 0x90B21);
+	auto jumpAddr = (appBaseAddr + 0x90B26);
+	constexpr uint32 size = 5;
+	/*
+	dmc3.exe+90B21 - BB 01000000 - mov ebx,00000001
+	dmc3.exe+90B26 - 8B D3       - mov edx,ebx
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect1[] =
+	{
+		mov_rcx_rdi,
+		call,
+		mov_rcx_rax,
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, false, size, sizeof(sect1));
+		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		CopyMemory(func.sect1, sect1, sizeof(sect1));
+		WriteCall((func.sect1 + 3), GetActorBaseAddressByEffectData);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+
+
+// // Devil Aura Position
+// {
+// 	auto addr     = (appBaseAddr + 0x90B21);
+// 	auto jumpAddr = (appBaseAddr + 0x90B26);
+// 	constexpr uint32 size = 5;
+// 	/*
+// 	dmc3.exe+90B21 - BB 01000000 - mov ebx,00000001
+// 	dmc3.exe+90B26 - 8B D3       - mov edx,ebx
+// 	*/
+
+// 	static Function func = {};
+
+// 	constexpr byte8 sect0[] =
+// 	{
+// 	};
+// 	constexpr byte8 sect1[] =
+// 	{
+// 	};
+// 	constexpr byte8 sect2[] =
+// 	{
+// 	};
+
+// 	if (!run)
+// 	{
+// 		backupHelper.Save(addr, size);
+// 		func = CreateFunction(0, jumpAddr, true, true, sizeof(sect0), sizeof(sect1), sizeof(sect2));
+// 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+// 		CopyMemory(func.sect0, sect0, sizeof(sect0));
+// 		CopyMemory(func.sect1, sect1, sizeof(sect1));
+// 		CopyMemory(func.sect2, sect2, sizeof(sect2));
+// 	}
+
+// 	if (enable)
+// 	{
+// 		WriteJump(addr, func.addr, (size - 5));
+// 	}
+// 	else
+// 	{
+// 		backupHelper.Restore(addr);
+// 	}
+// }
+
+
+	run = true;
+
+
+
 
 	{
 		auto dest = (appBaseAddr + 0x1F83D7);
@@ -8298,7 +8545,37 @@ export void Actor_Init()
 {
 	LogFunction();
 
-	InitGetActorBaseAddr();
+	static bool run = false;
+
+	// Get Actor Base Address By Effect Data
+	{
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0x8B, 0x81, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rcx+000000C0]
+			0x48, 0x85, 0xC0,                         // test rax,rax
+			0x75, 0x0B,                               // jne short
+			0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, // mov rax,[dmc3.exe+C90E28]
+			0x48, 0x8B, 0x40, 0x18,                   // mov rax,[rax+18]
+			0xC3,                                     // ret
+		};
+
+		if (!run)
+		{
+			func = CreateFunction(0, 0, false, false, sizeof(sect0), 0, 0, 0, 0, true);
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteAddress((func.sect0 + 0xC), (appBaseAddr + 0xC90E28), 7);
+			GetActorBaseAddressByEffectData = reinterpret_cast<GetActorBaseAddressByEffectData_t>(func.addr);
+		}
+	}
+
+	run = true;
+
+
+
+
+	//InitGetActorBaseAddressByEffectData();
 	InitRegisterWeapon();
 	InitIsWeaponReady();
 	//InitMobility();
@@ -9103,6 +9380,10 @@ export void Actor_Toggle(bool enable)
 {
 	LogFunction(enable);
 
+
+
+
+
 	ToggleRelocations           (enable);
 	ToggleModelCountAdjustments (enable);
 	ToggleWeaponCountAdjustments(enable);
@@ -9111,6 +9392,20 @@ export void Actor_Toggle(bool enable)
 	ToggleIsWeaponReady         (enable);
 	ToggleMobility              (enable);
 	ToggleSpeed                 (enable);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// Actor Data Size
 	{
@@ -10924,4 +11219,55 @@ export void Actor_SceneMissionStart()
 #pragma endregion
 
 #ifdef __GARBAGE__
+
+
+
+
+// // @Todo: Rename to ByEffectData.
+// byte8 * GetActorBaseAddressByEffectData[MAX_REGISTER] = {};
+
+// void InitGetActorBaseAddressByEffectData()
+// {
+// 	{
+// 		constexpr byte8 sect0[] =
+// 		{
+// 			0x48, 0x8B, 0x80, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rax+000000C0]
+// 			0x48, 0x85, 0xC0,                         // test rax,rax
+// 			0x75, 0x0B,                               // jne short
+// 			0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, // mov rax,[dmc3.exe+C90E28]
+// 			0x48, 0x8B, 0x40, 0x18,                   // mov rax,[rax+18]
+// 			0xC3,                                     // ret
+// 		};
+// 		for_all(uint8, index, MAX_REGISTER)
+// 		{
+// 			auto func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
+// 			memcpy(func.sect0, sect0, sizeof(sect0));
+
+// 			if (index < 8)
+// 			{
+// 				*reinterpret_cast<byte8 *>(func.sect0) = 0x48;
+// 				*reinterpret_cast<byte8 *>(func.sect0 + 2) = (0x80 + index);
+// 			}
+// 			else
+// 			{
+// 				*reinterpret_cast<byte8 *>(func.sect0) = 0x49;
+// 				*reinterpret_cast<byte8 *>(func.sect0 + 2) = (0x80 + (index - 8));
+// 			}
+
+// 			WriteAddress((func.sect0 + 0xC), (appBaseAddr + 0xC90E28), 7);
+// 			GetActorBaseAddressByEffectData[index] = func.addr;
+// 		}
+// 	}
+// }
+
+
+
+
+
+
+//byte8 * GetActorBaseAddressByEffectData()
+
+
+
+
 #endif

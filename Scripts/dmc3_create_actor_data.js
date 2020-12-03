@@ -149,6 +149,7 @@ var items =
 
 	[ ""                                    , "uint16"                  , 0x3ED2                           ],
 	[ "cameraDirection"                     , "uint16"                  , 0x3ED8                           ],
+	[ ""                     , "float"                  , 0x3EDC                           ],
 
 
 
