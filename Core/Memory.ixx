@@ -284,12 +284,139 @@ export __declspec(deprecated) void vp_memcpy
 
 
 
-enum
+
+
+
+export struct ProtectionHelper
+{
+	struct Metadata
+	{
+		byte8 * addr;
+		uint32 size;
+		byte32 protection;
+	};
+
+	Metadata * metadataAddr;
+	uint32 count;
+
+	bool Init(uint32 metadataSize);
+
+	void Push
+	(
+		byte8 * addr,
+		uint32 size
+	);
+
+	void Pop();
+};
+
+bool ProtectionHelper::Init(uint32 metadataSize)
+{
+	metadataAddr = reinterpret_cast<Metadata *>(HighAlloc(metadataSize));
+	if (!metadataAddr)
+	{
+		Log("HighAlloc failed.");
+
+		return false;
+	}
+
+	return true;
+}
+
+void ProtectionHelper::Push
+(
+	byte8 * addr,
+	uint32 size
+)
+{
+	auto & metadata = metadataAddr[count];
+
+	byte32 error = 0;
+	byte32 protection = 0;
+
+	SetLastError(0);
+
+	if
+	(
+		VirtualProtect
+		(
+			addr,
+			size,
+			PAGE_EXECUTE_READWRITE,
+			&protection
+		) == 0
+	)
+	{
+		Log
+		(
+			"VirtualProtect failed. %llX %u %X",
+			addr,
+			size,
+			error
+		);
+
+		return;
+	}
+
+	metadata.addr = addr;
+	metadata.size = size;
+	metadata.protection = protection;
+
+	count++;
+}
+
+void ProtectionHelper::Pop()
+{
+	if (count < 1)
+	{
+		return;
+	}
+
+	auto & metadata = metadataAddr[count];
+
+	byte32 error = 0;
+	byte32 protection = 0;
+
+	SetLastError(0);
+
+	if
+	(
+		VirtualProtect
+		(
+			metadata.addr,
+			metadata.size,
+			metadata.protection,
+			&protection
+		) == 0
+	)
+	{
+		Log
+		(
+			"VirtualProtect failed. %llX %u %X",
+			metadata.addr,
+			metadata.size,
+			error
+		);
+
+		return;
+	}
+
+	metadata.addr = 0;
+	metadata.size = 0;
+	metadata.protection = 0;
+
+	count--;
+}
+
+export ProtectionHelper protectionHelper = {};
+
+export enum
 {
 	MemoryFlags_VirtualProtectDestination = 1 << 0,
 	MemoryFlags_VirtualProtectSource      = 1 << 1,
 };
 
+// @Todo: Implement ProtectionHelper.
 export void SetMemory
 (
 	void * addr,

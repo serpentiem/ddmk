@@ -7860,6 +7860,17 @@ void ToggleMainActorFixes(bool enable)
 	static bool run = false;
 
 
+/*
+
+dmc3.exe+1F956C - 89 05 5298A900        - mov [dmc3.exe+C92DC4],eax { (31) }
+dmc3.exe+1F9572 - 89 0D 5098A900        - mov [dmc3.exe+C92DC8],ecx { (124) }
+
+
+dmc3.exe+1F952C - 81 0D 9E98A900 00060000 - or [dmc3.exe+C92DD4],00000600 { (0),1536 }
+
+
+*/
+
 // Devil Aura Position Update
 {
 	auto addr     = (appBaseAddr + 0x90B21);
@@ -7941,6 +7952,341 @@ void ToggleMainActorFixes(bool enable)
 // 		backupHelper.Restore(addr);
 // 	}
 // }
+
+
+
+
+
+
+
+
+// Devil Flux End Dante
+{
+	auto addr = (appBaseAddr + 0x1F9542);
+	constexpr uint32 size = 6;
+	/*
+	dmc3.exe+1F9542 - 8B 05 7C98A900 - mov eax,[dmc3.exe+C92DC4]
+	dmc3.exe+1F9548 - 8B 0D 7A98A900 - mov ecx,[dmc3.exe+C92DC8]
+	*/
+
+	constexpr byte8 sect0[] =
+	{
+		0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+	}
+
+	if (enable)
+	{
+		protectionHelper.Push(addr, size);
+		CopyMemory(addr, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+		protectionHelper.Pop();
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr = (appBaseAddr + 0x1F9548);
+	constexpr uint32 size = 6;
+	/*
+	dmc3.exe+1F9548 - 8B 0D 7A98A900 - mov ecx,[dmc3.exe+C92DC8]
+	dmc3.exe+1F954E - 83 C8 01       - or eax,01
+	*/
+
+	constexpr byte8 sect0[] =
+	{
+		0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+	}
+
+	if (enable)
+	{
+		protectionHelper.Push(addr, size);
+		CopyMemory(addr, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+		protectionHelper.Pop();
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr = (appBaseAddr + 0x1F956C);
+	constexpr uint32 size = 6;
+	/*
+	dmc3.exe+1F956C - 89 05 5298A900 - mov [dmc3.exe+C92DC4],eax
+	dmc3.exe+1F9572 - 89 0D 5098A900 - mov [dmc3.exe+C92DC8],ecx
+	*/
+
+	constexpr byte8 sect0[] =
+	{
+		0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+	}
+
+	if (enable)
+	{
+		protectionHelper.Push(addr, size);
+		CopyMemory(addr, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+		protectionHelper.Pop();
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr = (appBaseAddr + 0x1F9572);
+	constexpr uint32 size = 6;
+	/*
+	dmc3.exe+1F9572 - 89 0D 5098A900 - mov [dmc3.exe+C92DC8],ecx
+	dmc3.exe+1F9578 - 48 83 C4 20    - add rsp,20
+	*/
+
+	constexpr byte8 sect0[] =
+	{
+		0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+	}
+
+	if (enable)
+	{
+		protectionHelper.Push(addr, size);
+		CopyMemory(addr, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+		protectionHelper.Pop();
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+// Devil Flux End Bob Vergil
+{
+	auto addr = (appBaseAddr + 0x1F950C);
+	constexpr uint32 size = 6;
+	/*
+	dmc3.exe+1F950C - 8B 05 B298A900 - mov eax,[dmc3.exe+C92DC4]
+	dmc3.exe+1F9512 - 8B 0D B098A900 - mov ecx,[dmc3.exe+C92DC8]
+	*/
+
+	constexpr byte8 sect0[] =
+	{
+		0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+	}
+
+	if (enable)
+	{
+		protectionHelper.Push(addr, size);
+		CopyMemory(addr, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+		protectionHelper.Pop();
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr = (appBaseAddr + 0x1F9512);
+	constexpr uint32 size = 6;
+	/*
+	dmc3.exe+1F9512 - 8B 0D B098A900 - mov ecx,[dmc3.exe+C92DC8]
+	dmc3.exe+1F9518 - 83 C8 40       - or eax,40
+	*/
+
+	constexpr byte8 sect0[] =
+	{
+		0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+	}
+
+	if (enable)
+	{
+		protectionHelper.Push(addr, size);
+		CopyMemory(addr, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+		protectionHelper.Pop();
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+{
+	auto addr = (appBaseAddr + 0x1F9526);
+	constexpr uint32 size = 6;
+	/*
+	dmc3.exe+1F9526 - 89 05 9898A900          - mov [dmc3.exe+C92DC4],eax
+	dmc3.exe+1F952C - 81 0D 9E98A900 00060000 - or [dmc3.exe+C92DD4],00000600
+	*/
+
+	constexpr byte8 sect0[] =
+	{
+		0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+	}
+
+	if (enable)
+	{
+		protectionHelper.Push(addr, size);
+		CopyMemory(addr, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+		protectionHelper.Pop();
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+{
+	auto addr = (appBaseAddr + 0x1F9536);
+	constexpr uint32 size = 6;
+	/*
+	dmc3.exe+1F9536 - 89 0D 8C98A900 - mov [dmc3.exe+C92DC8],ecx
+	dmc3.exe+1F953C - 48 83 C4 20    - add rsp,20
+	*/
+
+	constexpr byte8 sect0[] =
+	{
+		0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+	}
+
+	if (enable)
+	{
+		protectionHelper.Push(addr, size);
+		CopyMemory(addr, sect0, sizeof(sect0));
+		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+		protectionHelper.Pop();
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // Devil Flux End
+// {
+// 	auto addr     = (appBaseAddr + 0x1F9542);
+// 	auto jumpAddr = (appBaseAddr + 0x1F954E);
+// 	constexpr uint32 size = 6;
+// 	/*
+// 	dmc3.exe+1F9542 - 8B 05 7C98A900 - mov eax,[dmc3.exe+C92DC4]
+// 	dmc3.exe+1F9548 - 8B 0D 7A98A900 - mov ecx,[dmc3.exe+C92DC8]
+// 	dmc3.exe+1F954E - 83 C8 01       - or eax,01
+// 	*/
+
+// 	static Function func = {};
+
+// 	constexpr byte8 sect0[] =
+// 	{
+// 		0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
+// 		0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
+// 	};
+
+// 	if (!run)
+// 	{
+// 		backupHelper.Save(addr, size);
+// 		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+// 		CopyMemory(func.sect0, sect0, sizeof(sect0));
+// 		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEffectIndices[0]);
+// 		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ActorData, newEffectIndices[1]);
+// 	}
+
+// 	if (enable)
+// 	{
+// 		WriteJump(addr, func.addr, (size - 5));
+// 	}
+// 	else
+// 	{
+// 		backupHelper.Restore(addr);
+// 	}
+// }
+
+// /*
+// dmc3.exe+1F950C - 8B 05 B298A900        - mov eax,[dmc3.exe+C92DC4] { (0) }
+// dmc3.exe+1F9512 - 8B 0D B098A900        - mov ecx,[dmc3.exe+C92DC8] { (0) }
+
+// */
+
+
+
+
+
+
+
+
+
+
 
 
 	run = true;

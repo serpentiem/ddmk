@@ -36,6 +36,12 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 			return 0;
 		}
+		else if (!protectionHelper.Init(4096))
+		{
+			Log("protectionHelper.Init failed.");
+
+			return 0;
+		}
 		else if
 		(
 			!backupHelper.Init

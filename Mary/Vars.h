@@ -38,11 +38,21 @@ enum CopyStateFlags
 
 
 
-enum DEVIL_FLUX_
+enum
 {
 	DEVIL_FLUX_START = 1,
 	DEVIL_FLUX_END   = 2,
 };
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1905,7 +1915,9 @@ struct ActorData
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
-	_(55);
+	_(2);
+	float var_3EDC; // 0x3EDC
+	_(49);
 	uint8 airHikeCount; // 0x3F11
 	uint8 kickJumpCount; // 0x3F12
 	uint8 wallHikeCount; // 0x3F13
@@ -2033,19 +2045,19 @@ struct ActorData
 	bool newExecuteStyleSwitch; // 0x1CAD7
 	bool newExecuteRemoveBusyFlag; // 0x1CAD8
 	uint8 newAirStingerCount; // 0x1CAD9
-	_(6);
-	byte32 newEffectIndices[8]; // 0x1CAE0
-	bool newEnableCollision; // 0x1CB00
-	bool newActorLoopRun; // 0x1CB01
-	uint8 newAirHikeCount; // 0x1CB02
-	uint8 newKickJumpCount; // 0x1CB03
-	uint8 newWallHikeCount; // 0x1CB04
-	uint8 newDashCount; // 0x1CB05
-	uint8 newSkyStarCount; // 0x1CB06
-	uint8 newAirTrickCount; // 0x1CB07
-	uint8 newTrickUpCount; // 0x1CB08
-	uint8 newTrickDownCount; // 0x1CB09
-	uint32 newLastVar; // 0x1CB0A
+	bool newEnableCollision; // 0x1CADA
+	bool newActorLoopRun; // 0x1CADB
+	uint8 newAirHikeCount; // 0x1CADC
+	uint8 newKickJumpCount; // 0x1CADD
+	uint8 newWallHikeCount; // 0x1CADE
+	uint8 newDashCount; // 0x1CADF
+	uint8 newSkyStarCount; // 0x1CAE0
+	uint8 newAirTrickCount; // 0x1CAE1
+	uint8 newTrickUpCount; // 0x1CAE2
+	uint8 newTrickDownCount; // 0x1CAE3
+	_(12);
+	uint32 newEffectIndices[2]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CAF8
 
 	operator byte8 *()
 	{
@@ -2145,7 +2157,9 @@ struct ActorDataDante
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
-	_(55);
+	_(2);
+	float var_3EDC; // 0x3EDC
+	_(49);
 	uint8 airHikeCount; // 0x3F11
 	uint8 kickJumpCount; // 0x3F12
 	uint8 wallHikeCount; // 0x3F13
@@ -2290,19 +2304,19 @@ struct ActorDataDante
 	bool newExecuteStyleSwitch; // 0x1CAD7
 	bool newExecuteRemoveBusyFlag; // 0x1CAD8
 	uint8 newAirStingerCount; // 0x1CAD9
-	_(6);
-	byte32 newEffectIndices[8]; // 0x1CAE0
-	bool newEnableCollision; // 0x1CB00
-	bool newActorLoopRun; // 0x1CB01
-	uint8 newAirHikeCount; // 0x1CB02
-	uint8 newKickJumpCount; // 0x1CB03
-	uint8 newWallHikeCount; // 0x1CB04
-	uint8 newDashCount; // 0x1CB05
-	uint8 newSkyStarCount; // 0x1CB06
-	uint8 newAirTrickCount; // 0x1CB07
-	uint8 newTrickUpCount; // 0x1CB08
-	uint8 newTrickDownCount; // 0x1CB09
-	uint32 newLastVar; // 0x1CB0A
+	bool newEnableCollision; // 0x1CADA
+	bool newActorLoopRun; // 0x1CADB
+	uint8 newAirHikeCount; // 0x1CADC
+	uint8 newKickJumpCount; // 0x1CADD
+	uint8 newWallHikeCount; // 0x1CADE
+	uint8 newDashCount; // 0x1CADF
+	uint8 newSkyStarCount; // 0x1CAE0
+	uint8 newAirTrickCount; // 0x1CAE1
+	uint8 newTrickUpCount; // 0x1CAE2
+	uint8 newTrickDownCount; // 0x1CAE3
+	_(12);
+	uint32 newEffectIndices[2]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CAF8
 
 	operator byte8 *()
 	{
@@ -2402,7 +2416,9 @@ struct ActorDataBob
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
-	_(55);
+	_(2);
+	float var_3EDC; // 0x3EDC
+	_(49);
 	uint8 airHikeCount; // 0x3F11
 	uint8 kickJumpCount; // 0x3F12
 	uint8 wallHikeCount; // 0x3F13
@@ -2530,19 +2546,19 @@ struct ActorDataBob
 	bool newExecuteStyleSwitch; // 0x1CAD7
 	bool newExecuteRemoveBusyFlag; // 0x1CAD8
 	uint8 newAirStingerCount; // 0x1CAD9
-	_(6);
-	byte32 newEffectIndices[8]; // 0x1CAE0
-	bool newEnableCollision; // 0x1CB00
-	bool newActorLoopRun; // 0x1CB01
-	uint8 newAirHikeCount; // 0x1CB02
-	uint8 newKickJumpCount; // 0x1CB03
-	uint8 newWallHikeCount; // 0x1CB04
-	uint8 newDashCount; // 0x1CB05
-	uint8 newSkyStarCount; // 0x1CB06
-	uint8 newAirTrickCount; // 0x1CB07
-	uint8 newTrickUpCount; // 0x1CB08
-	uint8 newTrickDownCount; // 0x1CB09
-	uint32 newLastVar; // 0x1CB0A
+	bool newEnableCollision; // 0x1CADA
+	bool newActorLoopRun; // 0x1CADB
+	uint8 newAirHikeCount; // 0x1CADC
+	uint8 newKickJumpCount; // 0x1CADD
+	uint8 newWallHikeCount; // 0x1CADE
+	uint8 newDashCount; // 0x1CADF
+	uint8 newSkyStarCount; // 0x1CAE0
+	uint8 newAirTrickCount; // 0x1CAE1
+	uint8 newTrickUpCount; // 0x1CAE2
+	uint8 newTrickDownCount; // 0x1CAE3
+	_(12);
+	uint32 newEffectIndices[2]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CAF8
 
 	operator byte8 *()
 	{
@@ -2642,7 +2658,9 @@ struct ActorDataLady
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
-	_(55);
+	_(2);
+	float var_3EDC; // 0x3EDC
+	_(49);
 	uint8 airHikeCount; // 0x3F11
 	uint8 kickJumpCount; // 0x3F12
 	uint8 wallHikeCount; // 0x3F13
@@ -2770,19 +2788,19 @@ struct ActorDataLady
 	bool newExecuteStyleSwitch; // 0x1CAD7
 	bool newExecuteRemoveBusyFlag; // 0x1CAD8
 	uint8 newAirStingerCount; // 0x1CAD9
-	_(6);
-	byte32 newEffectIndices[8]; // 0x1CAE0
-	bool newEnableCollision; // 0x1CB00
-	bool newActorLoopRun; // 0x1CB01
-	uint8 newAirHikeCount; // 0x1CB02
-	uint8 newKickJumpCount; // 0x1CB03
-	uint8 newWallHikeCount; // 0x1CB04
-	uint8 newDashCount; // 0x1CB05
-	uint8 newSkyStarCount; // 0x1CB06
-	uint8 newAirTrickCount; // 0x1CB07
-	uint8 newTrickUpCount; // 0x1CB08
-	uint8 newTrickDownCount; // 0x1CB09
-	uint32 newLastVar; // 0x1CB0A
+	bool newEnableCollision; // 0x1CADA
+	bool newActorLoopRun; // 0x1CADB
+	uint8 newAirHikeCount; // 0x1CADC
+	uint8 newKickJumpCount; // 0x1CADD
+	uint8 newWallHikeCount; // 0x1CADE
+	uint8 newDashCount; // 0x1CADF
+	uint8 newSkyStarCount; // 0x1CAE0
+	uint8 newAirTrickCount; // 0x1CAE1
+	uint8 newTrickUpCount; // 0x1CAE2
+	uint8 newTrickDownCount; // 0x1CAE3
+	_(12);
+	uint32 newEffectIndices[2]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CAF8
 
 	operator byte8 *()
 	{
@@ -2882,7 +2900,9 @@ struct ActorDataVergil
 	uint16 var_3ED2; // 0x3ED2
 	_(4);
 	uint16 cameraDirection; // 0x3ED8
-	_(55);
+	_(2);
+	float var_3EDC; // 0x3EDC
+	_(49);
 	uint8 airHikeCount; // 0x3F11
 	uint8 kickJumpCount; // 0x3F12
 	uint8 wallHikeCount; // 0x3F13
@@ -3018,19 +3038,19 @@ struct ActorDataVergil
 	bool newExecuteStyleSwitch; // 0x1CAD7
 	bool newExecuteRemoveBusyFlag; // 0x1CAD8
 	uint8 newAirStingerCount; // 0x1CAD9
-	_(6);
-	byte32 newEffectIndices[8]; // 0x1CAE0
-	bool newEnableCollision; // 0x1CB00
-	bool newActorLoopRun; // 0x1CB01
-	uint8 newAirHikeCount; // 0x1CB02
-	uint8 newKickJumpCount; // 0x1CB03
-	uint8 newWallHikeCount; // 0x1CB04
-	uint8 newDashCount; // 0x1CB05
-	uint8 newSkyStarCount; // 0x1CB06
-	uint8 newAirTrickCount; // 0x1CB07
-	uint8 newTrickUpCount; // 0x1CB08
-	uint8 newTrickDownCount; // 0x1CB09
-	uint32 newLastVar; // 0x1CB0A
+	bool newEnableCollision; // 0x1CADA
+	bool newActorLoopRun; // 0x1CADB
+	uint8 newAirHikeCount; // 0x1CADC
+	uint8 newKickJumpCount; // 0x1CADD
+	uint8 newWallHikeCount; // 0x1CADE
+	uint8 newDashCount; // 0x1CADF
+	uint8 newSkyStarCount; // 0x1CAE0
+	uint8 newAirTrickCount; // 0x1CAE1
+	uint8 newTrickUpCount; // 0x1CAE2
+	uint8 newTrickDownCount; // 0x1CAE3
+	_(12);
+	uint32 newEffectIndices[2]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CAF8
 
 	operator byte8 *()
 	{
@@ -3097,6 +3117,7 @@ static_assert(offsetof(ActorData, var_3EC4) == 0x3EC4);
 static_assert(offsetof(ActorData, var_3EC8) == 0x3EC8);
 static_assert(offsetof(ActorData, var_3ED2) == 0x3ED2);
 static_assert(offsetof(ActorData, cameraDirection) == 0x3ED8);
+static_assert(offsetof(ActorData, var_3EDC) == 0x3EDC);
 static_assert(offsetof(ActorData, airHikeCount) == 0x3F11);
 static_assert(offsetof(ActorData, kickJumpCount) == 0x3F12);
 static_assert(offsetof(ActorData, wallHikeCount) == 0x3F13);
@@ -3192,18 +3213,18 @@ static_assert(offsetof(ActorData, newEnableLeftStick) == 0x1CAD6);
 static_assert(offsetof(ActorData, newExecuteStyleSwitch) == 0x1CAD7);
 static_assert(offsetof(ActorData, newExecuteRemoveBusyFlag) == 0x1CAD8);
 static_assert(offsetof(ActorData, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(ActorData, newEffectIndices) == 0x1CAE0);
-static_assert(offsetof(ActorData, newEnableCollision) == 0x1CB00);
-static_assert(offsetof(ActorData, newActorLoopRun) == 0x1CB01);
-static_assert(offsetof(ActorData, newAirHikeCount) == 0x1CB02);
-static_assert(offsetof(ActorData, newKickJumpCount) == 0x1CB03);
-static_assert(offsetof(ActorData, newWallHikeCount) == 0x1CB04);
-static_assert(offsetof(ActorData, newDashCount) == 0x1CB05);
-static_assert(offsetof(ActorData, newSkyStarCount) == 0x1CB06);
-static_assert(offsetof(ActorData, newAirTrickCount) == 0x1CB07);
-static_assert(offsetof(ActorData, newTrickUpCount) == 0x1CB08);
-static_assert(offsetof(ActorData, newTrickDownCount) == 0x1CB09);
-static_assert(offsetof(ActorData, newLastVar) == 0x1CB0A);
+static_assert(offsetof(ActorData, newEnableCollision) == 0x1CADA);
+static_assert(offsetof(ActorData, newActorLoopRun) == 0x1CADB);
+static_assert(offsetof(ActorData, newAirHikeCount) == 0x1CADC);
+static_assert(offsetof(ActorData, newKickJumpCount) == 0x1CADD);
+static_assert(offsetof(ActorData, newWallHikeCount) == 0x1CADE);
+static_assert(offsetof(ActorData, newDashCount) == 0x1CADF);
+static_assert(offsetof(ActorData, newSkyStarCount) == 0x1CAE0);
+static_assert(offsetof(ActorData, newAirTrickCount) == 0x1CAE1);
+static_assert(offsetof(ActorData, newTrickUpCount) == 0x1CAE2);
+static_assert(offsetof(ActorData, newTrickDownCount) == 0x1CAE3);
+static_assert(offsetof(ActorData, newEffectIndices) == 0x1CAF0);
+static_assert(offsetof(ActorData, newLastVar) == 0x1CAF8);
 
 static_assert(offsetof(ActorDataDante, status) == 8);
 static_assert(offsetof(ActorDataDante, speed) == 0x14);
@@ -3264,6 +3285,7 @@ static_assert(offsetof(ActorDataDante, var_3EC4) == 0x3EC4);
 static_assert(offsetof(ActorDataDante, var_3EC8) == 0x3EC8);
 static_assert(offsetof(ActorDataDante, var_3ED2) == 0x3ED2);
 static_assert(offsetof(ActorDataDante, cameraDirection) == 0x3ED8);
+static_assert(offsetof(ActorDataDante, var_3EDC) == 0x3EDC);
 static_assert(offsetof(ActorDataDante, airHikeCount) == 0x3F11);
 static_assert(offsetof(ActorDataDante, kickJumpCount) == 0x3F12);
 static_assert(offsetof(ActorDataDante, wallHikeCount) == 0x3F13);
@@ -3370,18 +3392,18 @@ static_assert(offsetof(ActorDataDante, newEnableLeftStick) == 0x1CAD6);
 static_assert(offsetof(ActorDataDante, newExecuteStyleSwitch) == 0x1CAD7);
 static_assert(offsetof(ActorDataDante, newExecuteRemoveBusyFlag) == 0x1CAD8);
 static_assert(offsetof(ActorDataDante, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(ActorDataDante, newEffectIndices) == 0x1CAE0);
-static_assert(offsetof(ActorDataDante, newEnableCollision) == 0x1CB00);
-static_assert(offsetof(ActorDataDante, newActorLoopRun) == 0x1CB01);
-static_assert(offsetof(ActorDataDante, newAirHikeCount) == 0x1CB02);
-static_assert(offsetof(ActorDataDante, newKickJumpCount) == 0x1CB03);
-static_assert(offsetof(ActorDataDante, newWallHikeCount) == 0x1CB04);
-static_assert(offsetof(ActorDataDante, newDashCount) == 0x1CB05);
-static_assert(offsetof(ActorDataDante, newSkyStarCount) == 0x1CB06);
-static_assert(offsetof(ActorDataDante, newAirTrickCount) == 0x1CB07);
-static_assert(offsetof(ActorDataDante, newTrickUpCount) == 0x1CB08);
-static_assert(offsetof(ActorDataDante, newTrickDownCount) == 0x1CB09);
-static_assert(offsetof(ActorDataDante, newLastVar) == 0x1CB0A);
+static_assert(offsetof(ActorDataDante, newEnableCollision) == 0x1CADA);
+static_assert(offsetof(ActorDataDante, newActorLoopRun) == 0x1CADB);
+static_assert(offsetof(ActorDataDante, newAirHikeCount) == 0x1CADC);
+static_assert(offsetof(ActorDataDante, newKickJumpCount) == 0x1CADD);
+static_assert(offsetof(ActorDataDante, newWallHikeCount) == 0x1CADE);
+static_assert(offsetof(ActorDataDante, newDashCount) == 0x1CADF);
+static_assert(offsetof(ActorDataDante, newSkyStarCount) == 0x1CAE0);
+static_assert(offsetof(ActorDataDante, newAirTrickCount) == 0x1CAE1);
+static_assert(offsetof(ActorDataDante, newTrickUpCount) == 0x1CAE2);
+static_assert(offsetof(ActorDataDante, newTrickDownCount) == 0x1CAE3);
+static_assert(offsetof(ActorDataDante, newEffectIndices) == 0x1CAF0);
+static_assert(offsetof(ActorDataDante, newLastVar) == 0x1CAF8);
 
 static_assert(offsetof(ActorDataBob, status) == 8);
 static_assert(offsetof(ActorDataBob, speed) == 0x14);
@@ -3442,6 +3464,7 @@ static_assert(offsetof(ActorDataBob, var_3EC4) == 0x3EC4);
 static_assert(offsetof(ActorDataBob, var_3EC8) == 0x3EC8);
 static_assert(offsetof(ActorDataBob, var_3ED2) == 0x3ED2);
 static_assert(offsetof(ActorDataBob, cameraDirection) == 0x3ED8);
+static_assert(offsetof(ActorDataBob, var_3EDC) == 0x3EDC);
 static_assert(offsetof(ActorDataBob, airHikeCount) == 0x3F11);
 static_assert(offsetof(ActorDataBob, kickJumpCount) == 0x3F12);
 static_assert(offsetof(ActorDataBob, wallHikeCount) == 0x3F13);
@@ -3537,18 +3560,18 @@ static_assert(offsetof(ActorDataBob, newEnableLeftStick) == 0x1CAD6);
 static_assert(offsetof(ActorDataBob, newExecuteStyleSwitch) == 0x1CAD7);
 static_assert(offsetof(ActorDataBob, newExecuteRemoveBusyFlag) == 0x1CAD8);
 static_assert(offsetof(ActorDataBob, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(ActorDataBob, newEffectIndices) == 0x1CAE0);
-static_assert(offsetof(ActorDataBob, newEnableCollision) == 0x1CB00);
-static_assert(offsetof(ActorDataBob, newActorLoopRun) == 0x1CB01);
-static_assert(offsetof(ActorDataBob, newAirHikeCount) == 0x1CB02);
-static_assert(offsetof(ActorDataBob, newKickJumpCount) == 0x1CB03);
-static_assert(offsetof(ActorDataBob, newWallHikeCount) == 0x1CB04);
-static_assert(offsetof(ActorDataBob, newDashCount) == 0x1CB05);
-static_assert(offsetof(ActorDataBob, newSkyStarCount) == 0x1CB06);
-static_assert(offsetof(ActorDataBob, newAirTrickCount) == 0x1CB07);
-static_assert(offsetof(ActorDataBob, newTrickUpCount) == 0x1CB08);
-static_assert(offsetof(ActorDataBob, newTrickDownCount) == 0x1CB09);
-static_assert(offsetof(ActorDataBob, newLastVar) == 0x1CB0A);
+static_assert(offsetof(ActorDataBob, newEnableCollision) == 0x1CADA);
+static_assert(offsetof(ActorDataBob, newActorLoopRun) == 0x1CADB);
+static_assert(offsetof(ActorDataBob, newAirHikeCount) == 0x1CADC);
+static_assert(offsetof(ActorDataBob, newKickJumpCount) == 0x1CADD);
+static_assert(offsetof(ActorDataBob, newWallHikeCount) == 0x1CADE);
+static_assert(offsetof(ActorDataBob, newDashCount) == 0x1CADF);
+static_assert(offsetof(ActorDataBob, newSkyStarCount) == 0x1CAE0);
+static_assert(offsetof(ActorDataBob, newAirTrickCount) == 0x1CAE1);
+static_assert(offsetof(ActorDataBob, newTrickUpCount) == 0x1CAE2);
+static_assert(offsetof(ActorDataBob, newTrickDownCount) == 0x1CAE3);
+static_assert(offsetof(ActorDataBob, newEffectIndices) == 0x1CAF0);
+static_assert(offsetof(ActorDataBob, newLastVar) == 0x1CAF8);
 
 static_assert(offsetof(ActorDataLady, status) == 8);
 static_assert(offsetof(ActorDataLady, speed) == 0x14);
@@ -3609,6 +3632,7 @@ static_assert(offsetof(ActorDataLady, var_3EC4) == 0x3EC4);
 static_assert(offsetof(ActorDataLady, var_3EC8) == 0x3EC8);
 static_assert(offsetof(ActorDataLady, var_3ED2) == 0x3ED2);
 static_assert(offsetof(ActorDataLady, cameraDirection) == 0x3ED8);
+static_assert(offsetof(ActorDataLady, var_3EDC) == 0x3EDC);
 static_assert(offsetof(ActorDataLady, airHikeCount) == 0x3F11);
 static_assert(offsetof(ActorDataLady, kickJumpCount) == 0x3F12);
 static_assert(offsetof(ActorDataLady, wallHikeCount) == 0x3F13);
@@ -3704,18 +3728,18 @@ static_assert(offsetof(ActorDataLady, newEnableLeftStick) == 0x1CAD6);
 static_assert(offsetof(ActorDataLady, newExecuteStyleSwitch) == 0x1CAD7);
 static_assert(offsetof(ActorDataLady, newExecuteRemoveBusyFlag) == 0x1CAD8);
 static_assert(offsetof(ActorDataLady, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(ActorDataLady, newEffectIndices) == 0x1CAE0);
-static_assert(offsetof(ActorDataLady, newEnableCollision) == 0x1CB00);
-static_assert(offsetof(ActorDataLady, newActorLoopRun) == 0x1CB01);
-static_assert(offsetof(ActorDataLady, newAirHikeCount) == 0x1CB02);
-static_assert(offsetof(ActorDataLady, newKickJumpCount) == 0x1CB03);
-static_assert(offsetof(ActorDataLady, newWallHikeCount) == 0x1CB04);
-static_assert(offsetof(ActorDataLady, newDashCount) == 0x1CB05);
-static_assert(offsetof(ActorDataLady, newSkyStarCount) == 0x1CB06);
-static_assert(offsetof(ActorDataLady, newAirTrickCount) == 0x1CB07);
-static_assert(offsetof(ActorDataLady, newTrickUpCount) == 0x1CB08);
-static_assert(offsetof(ActorDataLady, newTrickDownCount) == 0x1CB09);
-static_assert(offsetof(ActorDataLady, newLastVar) == 0x1CB0A);
+static_assert(offsetof(ActorDataLady, newEnableCollision) == 0x1CADA);
+static_assert(offsetof(ActorDataLady, newActorLoopRun) == 0x1CADB);
+static_assert(offsetof(ActorDataLady, newAirHikeCount) == 0x1CADC);
+static_assert(offsetof(ActorDataLady, newKickJumpCount) == 0x1CADD);
+static_assert(offsetof(ActorDataLady, newWallHikeCount) == 0x1CADE);
+static_assert(offsetof(ActorDataLady, newDashCount) == 0x1CADF);
+static_assert(offsetof(ActorDataLady, newSkyStarCount) == 0x1CAE0);
+static_assert(offsetof(ActorDataLady, newAirTrickCount) == 0x1CAE1);
+static_assert(offsetof(ActorDataLady, newTrickUpCount) == 0x1CAE2);
+static_assert(offsetof(ActorDataLady, newTrickDownCount) == 0x1CAE3);
+static_assert(offsetof(ActorDataLady, newEffectIndices) == 0x1CAF0);
+static_assert(offsetof(ActorDataLady, newLastVar) == 0x1CAF8);
 
 static_assert(offsetof(ActorDataVergil, status) == 8);
 static_assert(offsetof(ActorDataVergil, speed) == 0x14);
@@ -3776,6 +3800,7 @@ static_assert(offsetof(ActorDataVergil, var_3EC4) == 0x3EC4);
 static_assert(offsetof(ActorDataVergil, var_3EC8) == 0x3EC8);
 static_assert(offsetof(ActorDataVergil, var_3ED2) == 0x3ED2);
 static_assert(offsetof(ActorDataVergil, cameraDirection) == 0x3ED8);
+static_assert(offsetof(ActorDataVergil, var_3EDC) == 0x3EDC);
 static_assert(offsetof(ActorDataVergil, airHikeCount) == 0x3F11);
 static_assert(offsetof(ActorDataVergil, kickJumpCount) == 0x3F12);
 static_assert(offsetof(ActorDataVergil, wallHikeCount) == 0x3F13);
@@ -3876,18 +3901,18 @@ static_assert(offsetof(ActorDataVergil, newEnableLeftStick) == 0x1CAD6);
 static_assert(offsetof(ActorDataVergil, newExecuteStyleSwitch) == 0x1CAD7);
 static_assert(offsetof(ActorDataVergil, newExecuteRemoveBusyFlag) == 0x1CAD8);
 static_assert(offsetof(ActorDataVergil, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(ActorDataVergil, newEffectIndices) == 0x1CAE0);
-static_assert(offsetof(ActorDataVergil, newEnableCollision) == 0x1CB00);
-static_assert(offsetof(ActorDataVergil, newActorLoopRun) == 0x1CB01);
-static_assert(offsetof(ActorDataVergil, newAirHikeCount) == 0x1CB02);
-static_assert(offsetof(ActorDataVergil, newKickJumpCount) == 0x1CB03);
-static_assert(offsetof(ActorDataVergil, newWallHikeCount) == 0x1CB04);
-static_assert(offsetof(ActorDataVergil, newDashCount) == 0x1CB05);
-static_assert(offsetof(ActorDataVergil, newSkyStarCount) == 0x1CB06);
-static_assert(offsetof(ActorDataVergil, newAirTrickCount) == 0x1CB07);
-static_assert(offsetof(ActorDataVergil, newTrickUpCount) == 0x1CB08);
-static_assert(offsetof(ActorDataVergil, newTrickDownCount) == 0x1CB09);
-static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CB0A);
+static_assert(offsetof(ActorDataVergil, newEnableCollision) == 0x1CADA);
+static_assert(offsetof(ActorDataVergil, newActorLoopRun) == 0x1CADB);
+static_assert(offsetof(ActorDataVergil, newAirHikeCount) == 0x1CADC);
+static_assert(offsetof(ActorDataVergil, newKickJumpCount) == 0x1CADD);
+static_assert(offsetof(ActorDataVergil, newWallHikeCount) == 0x1CADE);
+static_assert(offsetof(ActorDataVergil, newDashCount) == 0x1CADF);
+static_assert(offsetof(ActorDataVergil, newSkyStarCount) == 0x1CAE0);
+static_assert(offsetof(ActorDataVergil, newAirTrickCount) == 0x1CAE1);
+static_assert(offsetof(ActorDataVergil, newTrickUpCount) == 0x1CAE2);
+static_assert(offsetof(ActorDataVergil, newTrickDownCount) == 0x1CAE3);
+static_assert(offsetof(ActorDataVergil, newEffectIndices) == 0x1CAF0);
+static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CAF8);
 
 // $ActorDataEnd
 

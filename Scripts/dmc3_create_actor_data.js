@@ -589,7 +589,7 @@ var extra =
 	// [ "newBufferedActionPolicy", "uint8"   ],
 	[ "newAirStingerCount"     , "uint8"   ],
 	// [ "newDevilAura"           , "byte8 *" ],
-	[ "newEffectIndices[8]"    , "byte32"  ],
+	//[ "newEffectIndices[8]"    , "byte32"  ],
 
 
 	
@@ -613,6 +613,19 @@ var extra =
 	[ "newAirTrickCount" , "uint8" ],
 	[ "newTrickUpCount"  , "uint8" ],
 	[ "newTrickDownCount", "uint8" ],
+
+
+
+
+
+	[ "newEffectIndices[2]", "uint32" ],
+
+
+
+
+
+	//["",""],
+
 
 
 
