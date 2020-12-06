@@ -618,7 +618,7 @@ var extra =
 
 
 
-	[ "newEffectIndices[2]", "uint32" ],
+	[ "newEffectIndices[16]", "uint32" ],
 
 
 

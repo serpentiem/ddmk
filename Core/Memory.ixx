@@ -285,7 +285,7 @@ export __declspec(deprecated) void vp_memcpy
 
 
 
-
+uint32 failCounter = 0;
 
 export struct ProtectionHelper
 {
@@ -329,6 +329,12 @@ void ProtectionHelper::Push
 	uint32 size
 )
 {
+	LogFunction();
+
+	Log("count %u", count);
+
+
+
 	auto & metadata = metadataAddr[count];
 
 	byte32 error = 0;
@@ -355,24 +361,39 @@ void ProtectionHelper::Push
 			error
 		);
 
-		return;
+		failCounter++;
+
+		Log("failCounter %u", failCounter);
+
+		//return;
 	}
 
 	metadata.addr = addr;
 	metadata.size = size;
 	metadata.protection = protection;
 
+	Log("addr       %llX", addr);
+	Log("size       %u", size);
+	Log("protection %X", protection);
+
+
+
 	count++;
 }
 
 void ProtectionHelper::Pop()
 {
+
+	LogFunction();
+
+	Log("count %u", count);
+
 	if (count < 1)
 	{
 		return;
 	}
 
-	auto & metadata = metadataAddr[count];
+	auto & metadata = metadataAddr[(count - 1)];
 
 	byte32 error = 0;
 	byte32 protection = 0;
@@ -398,8 +419,19 @@ void ProtectionHelper::Pop()
 			error
 		);
 
-		return;
+		failCounter++;
+
+		Log("failCounter %u", failCounter);
+
+		//return;
 	}
+
+	Log("addr       %llX", metadata.addr);
+	Log("size       %u", metadata.size);
+	Log("protection %X", metadata.protection);
+
+
+
 
 	metadata.addr = 0;
 	metadata.size = 0;

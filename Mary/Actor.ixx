@@ -5791,6 +5791,10597 @@ void ToggleWeaponCountAdjustments(bool enable)
 	Write<uint8>((appBaseAddr + 0x222F40 + 2), (enable) ? newCount : count); // dmc3.exe+222F40 - 83 F9 05 - cmp ecx,05
 }
 
+
+
+
+
+
+
+
+
+void ToggleEffectRelocations(bool enable)
+{
+	LogFunction(enable);
+
+	
+	static bool run = false;
+
+	{
+		auto addr     = (appBaseAddr + 0x8DC1C);
+		auto jumpAddr = (appBaseAddr + 0x8DC23);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+8DC1C - 8B 84 96 C02DC900 - MOV EAX,[RSI+RDX*4+00C92DC0]
+		dmc3.exe+8DC23
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rbx,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8DC41);
+		auto jumpAddr = (appBaseAddr + 0x8DC48);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+8DC41 - 31 84 96 C02DC900 - XOR [RSI+RDX*4+00C92DC0],EAX
+		dmc3.exe+8DC48
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rbx,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x84, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],eax
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8F9C5);
+		auto jumpAddr = (appBaseAddr + 0x8F9CD);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8F9C5 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+8F9CD
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8F9EE);
+		auto jumpAddr = (appBaseAddr + 0x8F9F6);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8F9EE - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+8F9F6
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8FA18);
+		auto jumpAddr = (appBaseAddr + 0x8FA20);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8FA18 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+8FA20
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8FBA1);
+		auto jumpAddr = (appBaseAddr + 0x8FBA9);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8FBA1 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+8FBA9
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8FBCA);
+		auto jumpAddr = (appBaseAddr + 0x8FBD2);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8FBCA - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+8FBD2
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8FBF4);
+		auto jumpAddr = (appBaseAddr + 0x8FBFC);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8FBF4 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+8FBFC
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8FD14);
+		auto jumpAddr = (appBaseAddr + 0x8FD1C);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8FD14 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+8FD1C
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8FDB6);
+		auto jumpAddr = (appBaseAddr + 0x8FDBE);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8FDB6 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+8FDBE
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8FDDC);
+		auto jumpAddr = (appBaseAddr + 0x8FDE4);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8FDDC - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+8FDE4
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8FEA9);
+		auto jumpAddr = (appBaseAddr + 0x8FEB1);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8FEA9 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+8FEB1
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8FECF);
+		auto jumpAddr = (appBaseAddr + 0x8FED7);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8FECF - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+8FED7
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8FFA0);
+		auto jumpAddr = (appBaseAddr + 0x8FFA8);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8FFA0 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+8FFA8
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8FFCA);
+		auto jumpAddr = (appBaseAddr + 0x8FFD2);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8FFCA - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+8FFD2
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9014C);
+		auto jumpAddr = (appBaseAddr + 0x90154);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9014C - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+90154
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90172);
+		auto jumpAddr = (appBaseAddr + 0x9017A);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90172 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+9017A
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9021F);
+		auto jumpAddr = (appBaseAddr + 0x90227);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9021F - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+90227
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90245);
+		auto jumpAddr = (appBaseAddr + 0x9024D);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90245 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+9024D
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x902F2);
+		auto jumpAddr = (appBaseAddr + 0x902FA);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+902F2 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+902FA
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90318);
+		auto jumpAddr = (appBaseAddr + 0x90320);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90318 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+90320
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9044F);
+		auto jumpAddr = (appBaseAddr + 0x90457);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9044F - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+90457
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9047F);
+		auto jumpAddr = (appBaseAddr + 0x90487);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9047F - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+90487
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90504);
+		auto jumpAddr = (appBaseAddr + 0x9050C);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90504 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+9050C
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90534);
+		auto jumpAddr = (appBaseAddr + 0x9053C);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90534 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+9053C
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9065D);
+		auto jumpAddr = (appBaseAddr + 0x90665);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9065D - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+90665
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90846);
+		auto jumpAddr = (appBaseAddr + 0x9084E);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90846 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+9084E
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9086C);
+		auto jumpAddr = (appBaseAddr + 0x90874);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9086C - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+90874
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x909F9);
+		auto jumpAddr = (appBaseAddr + 0x90A01);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+909F9 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+90A01
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90A29);
+		auto jumpAddr = (appBaseAddr + 0x90A31);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90A29 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+90A31
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90A55);
+		auto jumpAddr = (appBaseAddr + 0x90A5D);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90A55 - 43 31 9C 84 C02DC900 - XOR [R12+R8*4+00C92DC0],EBX
+		dmc3.exe+90A5D
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x42, 0x31, 0x9C, 0x81, 0x00, 0x00, 0x00, 0x00, // xor [rcx+r8*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x12) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90D21);
+		auto jumpAddr = (appBaseAddr + 0x90D29);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90D21 - 41 8B 84 91 C02DC900 - MOV EAX,[R9+RDX*4+00C92DC0]
+		dmc3.exe+90D29
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90D4F);
+		auto jumpAddr = (appBaseAddr + 0x90D57);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90D4F - 41 31 84 91 C02DC900 - XOR [R9+RDX*4+00C92DC0],EAX
+		dmc3.exe+90D57
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x84, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],eax
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90E2D);
+		auto jumpAddr = (appBaseAddr + 0x90E35);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90E2D - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+90E35
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90E5C);
+		auto jumpAddr = (appBaseAddr + 0x90E64);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90E5C - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+90E64
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90F3A);
+		auto jumpAddr = (appBaseAddr + 0x90F42);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90F3A - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+90F42
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x90F70);
+		auto jumpAddr = (appBaseAddr + 0x90F78);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+90F70 - 41 31 84 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EAX
+		dmc3.exe+90F78
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x84, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],eax
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91021);
+		auto jumpAddr = (appBaseAddr + 0x91029);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91021 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91029
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91076);
+		auto jumpAddr = (appBaseAddr + 0x9107E);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91076 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+9107E
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x910F3);
+		auto jumpAddr = (appBaseAddr + 0x910FB);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+910F3 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+910FB
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91126);
+		auto jumpAddr = (appBaseAddr + 0x9112E);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91126 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+9112E
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x911B2);
+		auto jumpAddr = (appBaseAddr + 0x911BA);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+911B2 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+911BA
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91217);
+		auto jumpAddr = (appBaseAddr + 0x9121F);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91217 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+9121F
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91266);
+		auto jumpAddr = (appBaseAddr + 0x9126E);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91266 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+9126E
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x912D5);
+		auto jumpAddr = (appBaseAddr + 0x912DD);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+912D5 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+912DD
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x912FB);
+		auto jumpAddr = (appBaseAddr + 0x91303);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+912FB - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+91303
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91351);
+		auto jumpAddr = (appBaseAddr + 0x91359);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91351 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91359
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x913A0);
+		auto jumpAddr = (appBaseAddr + 0x913A8);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+913A0 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+913A8
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x913EF);
+		auto jumpAddr = (appBaseAddr + 0x913F7);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+913EF - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+913F7
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91457);
+		auto jumpAddr = (appBaseAddr + 0x9145F);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91457 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+9145F
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x914A0);
+		auto jumpAddr = (appBaseAddr + 0x914A8);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+914A0 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+914A8
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9150F);
+		auto jumpAddr = (appBaseAddr + 0x91517);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9150F - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91517
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91535);
+		auto jumpAddr = (appBaseAddr + 0x9153D);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91535 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+9153D
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9159B);
+		auto jumpAddr = (appBaseAddr + 0x915A3);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9159B - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+915A3
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x915E7);
+		auto jumpAddr = (appBaseAddr + 0x915EF);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+915E7 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+915EF
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9161C);
+		auto jumpAddr = (appBaseAddr + 0x91624);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9161C - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91624
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x916F6);
+		auto jumpAddr = (appBaseAddr + 0x916FE);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+916F6 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+916FE
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9171F);
+		auto jumpAddr = (appBaseAddr + 0x91727);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9171F - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91727
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9174B);
+		auto jumpAddr = (appBaseAddr + 0x91753);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9174B - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+91753
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x917CF);
+		auto jumpAddr = (appBaseAddr + 0x917D7);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+917CF - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+917D7
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x917FB);
+		auto jumpAddr = (appBaseAddr + 0x91803);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+917FB - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+91803
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91848);
+		auto jumpAddr = (appBaseAddr + 0x91850);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91848 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91850
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91874);
+		auto jumpAddr = (appBaseAddr + 0x9187C);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91874 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+9187C
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x918A7);
+		auto jumpAddr = (appBaseAddr + 0x918AF);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+918A7 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+918AF
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x918D3);
+		auto jumpAddr = (appBaseAddr + 0x918DB);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+918D3 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+918DB
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9190A);
+		auto jumpAddr = (appBaseAddr + 0x91912);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9190A - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91912
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9193C);
+		auto jumpAddr = (appBaseAddr + 0x91944);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9193C - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91944
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91995);
+		auto jumpAddr = (appBaseAddr + 0x9199D);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91995 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+9199D
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x919C5);
+		auto jumpAddr = (appBaseAddr + 0x919CD);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+919C5 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+919CD
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91AB9);
+		auto jumpAddr = (appBaseAddr + 0x91AC1);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91AB9 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91AC1
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91B05);
+		auto jumpAddr = (appBaseAddr + 0x91B0D);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91B05 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91B0D
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91B50);
+		auto jumpAddr = (appBaseAddr + 0x91B58);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91B50 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91B58
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91B86);
+		auto jumpAddr = (appBaseAddr + 0x91B8E);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91B86 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91B8E
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91C75);
+		auto jumpAddr = (appBaseAddr + 0x91C7D);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91C75 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91C7D
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91D32);
+		auto jumpAddr = (appBaseAddr + 0x91D3A);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91D32 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91D3A
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91DD3);
+		auto jumpAddr = (appBaseAddr + 0x91DDB);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91DD3 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91DDB
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91DF8);
+		auto jumpAddr = (appBaseAddr + 0x91E00);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91DF8 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91E00
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91E24);
+		auto jumpAddr = (appBaseAddr + 0x91E2C);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91E24 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+91E2C
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91E73);
+		auto jumpAddr = (appBaseAddr + 0x91E7B);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91E73 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91E7B
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91ED4);
+		auto jumpAddr = (appBaseAddr + 0x91EDC);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91ED4 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91EDC
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91F0F);
+		auto jumpAddr = (appBaseAddr + 0x91F17);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91F0F - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91F17
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91F4F);
+		auto jumpAddr = (appBaseAddr + 0x91F57);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91F4F - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91F57
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91FA1);
+		auto jumpAddr = (appBaseAddr + 0x91FA9);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91FA1 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91FA9
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x91FDF);
+		auto jumpAddr = (appBaseAddr + 0x91FE7);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+91FDF - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+91FE7
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x92020);
+		auto jumpAddr = (appBaseAddr + 0x92028);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+92020 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+92028
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9207E);
+		auto jumpAddr = (appBaseAddr + 0x92086);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9207E - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+92086
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x920C9);
+		auto jumpAddr = (appBaseAddr + 0x920D1);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+920C9 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+920D1
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x920FE);
+		auto jumpAddr = (appBaseAddr + 0x92106);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+920FE - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+92106
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9218A);
+		auto jumpAddr = (appBaseAddr + 0x92192);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9218A - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+92192
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x921EC);
+		auto jumpAddr = (appBaseAddr + 0x921F4);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+921EC - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+921F4
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x92215);
+		auto jumpAddr = (appBaseAddr + 0x9221D);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+92215 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+9221D
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x92245);
+		auto jumpAddr = (appBaseAddr + 0x9224D);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+92245 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+9224D
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9232F);
+		auto jumpAddr = (appBaseAddr + 0x92337);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9232F - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+92337
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x92370);
+		auto jumpAddr = (appBaseAddr + 0x92378);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+92370 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+92378
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x923B1);
+		auto jumpAddr = (appBaseAddr + 0x923B9);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+923B1 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+923B9
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x923F2);
+		auto jumpAddr = (appBaseAddr + 0x923FA);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+923F2 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+923FA
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9244D);
+		auto jumpAddr = (appBaseAddr + 0x92455);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9244D - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+92455
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9247D);
+		auto jumpAddr = (appBaseAddr + 0x92485);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9247D - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+92485
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x92598);
+		auto jumpAddr = (appBaseAddr + 0x925A0);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+92598 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+925A0
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x925D9);
+		auto jumpAddr = (appBaseAddr + 0x925E1);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+925D9 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+925E1
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9261A);
+		auto jumpAddr = (appBaseAddr + 0x92622);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9261A - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+92622
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x92671);
+		auto jumpAddr = (appBaseAddr + 0x92679);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+92671 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+92679
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x926B2);
+		auto jumpAddr = (appBaseAddr + 0x926BA);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+926B2 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+926BA
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9271F);
+		auto jumpAddr = (appBaseAddr + 0x92727);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9271F - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+92727
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x92760);
+		auto jumpAddr = (appBaseAddr + 0x92768);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+92760 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+92768
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9278C);
+		auto jumpAddr = (appBaseAddr + 0x92794);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9278C - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+92794
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x927CD);
+		auto jumpAddr = (appBaseAddr + 0x927D5);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+927CD - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+927D5
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x92802);
+		auto jumpAddr = (appBaseAddr + 0x9280A);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+92802 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+9280A
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9286D);
+		auto jumpAddr = (appBaseAddr + 0x92875);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9286D - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+92875
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9288F);
+		auto jumpAddr = (appBaseAddr + 0x92897);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9288F - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+92897
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x928D8);
+		auto jumpAddr = (appBaseAddr + 0x928E0);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+928D8 - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+928E0
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x9290D);
+		auto jumpAddr = (appBaseAddr + 0x92915);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+9290D - 41 8B 84 94 C02DC900 - MOV EAX,[R12+RDX*4+00C92DC0]
+		dmc3.exe+92915
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x92933);
+		auto jumpAddr = (appBaseAddr + 0x9293B);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+92933 - 41 31 9C 94 C02DC900 - XOR [R12+RDX*4+00C92DC0],EBX
+		dmc3.exe+9293B
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[0]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8DC62);
+		auto jumpAddr = (appBaseAddr + 0x8DC69);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+8DC62 - 8B 84 96 D82DC900 - MOV EAX,[RSI+RDX*4+00C92DD8]
+		dmc3.exe+8DC69
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rbx,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[6]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8DC87);
+		auto jumpAddr = (appBaseAddr + 0x8DC8E);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+8DC87 - 31 84 96 D82DC900 - XOR [RSI+RDX*4+00C92DD8],EAX
+		dmc3.exe+8DC8E
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rbx,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x84, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],eax
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[6]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8F7EF);
+		auto jumpAddr = (appBaseAddr + 0x8F7F7);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8F7EF - 41 8B 84 94 D82DC900 - MOV EAX,[R12+RDX*4+00C92DD8]
+		dmc3.exe+8F7F7
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			mov_rcx_rdi,
+			call,
+			pop_rcx,
+			0x8B, 0x84, 0x90, 0x00, 0x00, 0x00, 0x00, // mov eax,[rax+rdx*4+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 4), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(ActorData, newEffectIndices[6]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x8F815);
+		auto jumpAddr = (appBaseAddr + 0x8F81D);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+8F815 - 41 31 9C 94 D82DC900 - XOR [R12+RDX*4+00C92DD8],EBX
+		dmc3.exe+8F81D
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			push_rax,
+			mov_rcx_rdi,
+			call,
+			mov_rcx_rax,
+			pop_rax,
+			0x31, 0x9C, 0x91, 0x00, 0x00, 0x00, 0x00, // xor [rcx+rdx*4+0000B8C0],ebx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 5), GetActorBaseAddressByEffectData);
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(ActorData, newEffectIndices[6]);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1E0B1F);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1E0B1F - 81 0D 9722AB00 00000080 - OR [7FF6784E2DC0],80000000
+		dmc3.exe+1E0B29
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rbx+0000B8C0],80000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1EE0ED);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1EE0ED - 81 0D C94CAA00 00000080 - OR [7FF6784E2DC0],80000000
+		dmc3.exe+1EE0F7
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rbx+0000B8C0],80000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F1712);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F1712 - 81 0D A416AA00 00000010 - OR [7FF6784E2DC0],10000000
+		dmc3.exe+1F171C
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // or [rbx+0000B8C0],10000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F2C26);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F2C26 - 81 0D 9001AA00 00000080 - OR [7FF6784E2DC0],80000000
+		dmc3.exe+1F2C30
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rbx+0000B8C0],80000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F2D56);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F2D56 - 81 0D 6000AA00 00000080 - OR [7FF6784E2DC0],80000000
+		dmc3.exe+1F2D60
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rbx+0000B8C0],80000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F31CC);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F31CC - 81 0D EAFBA900 00000080 - OR [7FF6784E2DC0],80000000
+		dmc3.exe+1F31D6
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rbx+0000B8C0],80000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F57D0);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F57D0 - 81 0D E6D5A900 00000020 - OR [7FF6784E2DC0],20000000
+		dmc3.exe+1F57DA
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, // or [rsi+0000B8C0],20000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F5E47);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F5E47 - 81 0D 6FCFA900 00000020 - OR [7FF6784E2DC0],20000000
+		dmc3.exe+1F5E51
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, // or [rsi+0000B8C0],20000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F6C21);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F6C21 - 81 0D 95C1A900 00000010 - OR [7FF6784E2DC0],10000000
+		dmc3.exe+1F6C2B
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // or [rbx+0000B8C0],10000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20115E);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20115E - 81 0D 581CA900 00400000 - OR [7FF6784E2DC0],00004000
+		dmc3.exe+201168
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, // or [rbx+0000B8C0],00004000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x205846);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+205846 - 81 0D 70D5A800 00100000 - OR [7FF6784E2DC0],00001000
+		dmc3.exe+205850
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, // or [rdi+0000B8C0],00001000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2058FE);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2058FE - 81 0D B8D4A800 00100000 - OR [7FF6784E2DC0],00001000
+		dmc3.exe+205908
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, // or [rdi+0000B8C0],00001000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x205AC7);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+205AC7 - 81 0D EFD2A800 00200000 - OR [7FF6784E2DC0],00002000
+		dmc3.exe+205AD1
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, // or [rdi+0000B8C0],00002000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2091BD);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2091BD - 81 0D F99BA800 00080000 - OR [7FF6784E2DC0],00000800
+		dmc3.exe+2091C7
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rdi+0000B8C0],00000800
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2092A7);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2092A7 - 81 0D 0F9BA800 00080000 - OR [7FF6784E2DC0],00000800
+		dmc3.exe+2092B1
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rdi+0000B8C0],00000800
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20A29A);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20A29A - 81 0D 1C8BA800 00000400 - OR [7FF6784E2DC0],00040000
+		dmc3.exe+20A2A4
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, // or [rbx+0000B8C0],00040000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20AA0E);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20AA0E - 81 0D A883A800 00000400 - OR [7FF6784E2DC0],00040000
+		dmc3.exe+20AA18
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, // or [rdi+0000B8C0],00040000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20AC23);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20AC23 - 81 0D 9381A800 00000400 - OR [7FF6784E2DC0],00040000
+		dmc3.exe+20AC2D
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, // or [rdi+0000B8C0],00040000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20ACAD);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20ACAD - 81 0D 0981A800 00000400 - OR [7FF6784E2DC0],00040000
+		dmc3.exe+20ACB7
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, // or [rdi+0000B8C0],00040000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20B34B);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20B34B - 81 0D 6B7AA800 00800000 - OR [7FF6784E2DC0],00008000
+		dmc3.exe+20B355
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20B84C);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20B84C - 81 0D 6A75A800 00800000 - OR [7FF6784E2DC0],00008000
+		dmc3.exe+20B856
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20E921);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20E921 - 81 0D 9544A800 00000008 - OR [7FF6784E2DC0],08000000
+		dmc3.exe+20E92B
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, // or [rdi+0000B8C0],08000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20F09E);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20F09E - 81 0D 183DA800 00000008 - OR [7FF6784E2DC0],08000000
+		dmc3.exe+20F0A8
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, // or [rdi+0000B8C0],08000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20FBEE);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20FBEE - 81 0D C831A800 00400000 - OR [7FF6784E2DC0],00004000
+		dmc3.exe+20FBF8
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, // or [rbx+0000B8C0],00004000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20FEAC);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20FEAC - 81 0D 0A2FA800 00000200 - OR [7FF6784E2DC0],00020000
+		dmc3.exe+20FEB6
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2107BE);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2107BE - 81 0D F825A800 00040000 - OR [7FF6784E2DC0],00000400
+		dmc3.exe+2107C8
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x210881);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+210881 - 81 0D 3525A800 00040000 - OR [7FF6784E2DC0],00000400
+		dmc3.exe+21088B
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x211937);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+211937 - 81 0D 7F14A800 00040000 - OR [7FF6784E2DC0],00000400
+		dmc3.exe+211941
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x211A99);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+211A99 - 81 0D 1D13A800 00040000 - OR [7FF6784E2DC0],00000400
+		dmc3.exe+211AA3
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x215D50);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+215D50 - 81 0D 66D0A700 00000040 - OR [7FF6784E2DC0],40000000
+		dmc3.exe+215D5A
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, // or [rdi+0000B8C0],40000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x215F9C);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+215F9C - 81 0D 1ACEA700 00000040 - OR [7FF6784E2DC0],40000000
+		dmc3.exe+215FA6
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, // or [rdi+0000B8C0],40000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21622B);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21622B - 81 0D 8BCBA700 0000E001 - OR [7FF6784E2DC0],01E00000
+		dmc3.exe+216235
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x01, // or [rdi+0000B8C0],01E00000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x216434);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+216434 - 81 0D 82C9A700 00000006 - OR [7FF6784E2DC0],06000000
+		dmc3.exe+21643E
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06, // or [rdi+0000B8C0],06000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1E14C4);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1E14C4 - 81 0D F618AB00 00000008 - OR [7FF6784E2DC4],08000000
+		dmc3.exe+1E14CE
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, // or [rbx+0000B8C0],08000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F7CD2);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F7CD2 - 81 0D E8B0A900 00000008 - OR [7FF6784E2DC4],08000000
+		dmc3.exe+1F7CDC
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, // or [rbx+0000B8C0],08000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F950C);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F950C - 8B 05 B298A900 - MOV EAX,[7FF6784E2DC4]
+		dmc3.exe+1F9512
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F9526);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F9526 - 89 05 9898A900 - MOV [7FF6784E2DC4],EAX
+		dmc3.exe+1F952C
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F9542);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F9542 - 8B 05 7C98A900 - MOV EAX,[7FF6784E2DC4]
+		dmc3.exe+1F9548
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F956C);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F956C - 89 05 5298A900 - MOV [7FF6784E2DC4],EAX
+		dmc3.exe+1F9572
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x201513);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+201513 - 81 0D A718A900 00001000 - OR [7FF6784E2DC4],00100000
+		dmc3.exe+20151D
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, // or [rbx+0000B8C0],00100000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20222C);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20222C - 81 0D 8E0BA900 00800000 - OR [7FF6784E2DC4],00008000
+		dmc3.exe+202236
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2022EB);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2022EB - 81 0D CF0AA900 00800000 - OR [7FF6784E2DC4],00008000
+		dmc3.exe+2022F5
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2023AA);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2023AA - 81 0D 100AA900 00800000 - OR [7FF6784E2DC4],00008000
+		dmc3.exe+2023B4
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x202517);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+202517 - 81 0D A308A900 00000100 - OR [7FF6784E2DC4],00010000
+		dmc3.exe+202521
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rbx+0000B8C0],00010000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2025DA);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2025DA - 81 0D E007A900 00000100 - OR [7FF6784E2DC4],00010000
+		dmc3.exe+2025E4
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rbx+0000B8C0],00010000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2029E3);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2029E3 - 81 0D D703A900 00000800 - OR [7FF6784E2DC4],00080000
+		dmc3.exe+2029ED
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x202AEC);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+202AEC - 81 0D CE02A900 00000800 - OR [7FF6784E2DC4],00080000
+		dmc3.exe+202AF6
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20302B);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20302B - 81 0D 8FFDA800 00000010 - OR [7FF6784E2DC4],10000000
+		dmc3.exe+203035
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // or [rbx+0000B8C0],10000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20364D);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20364D - 81 0D 6DF7A800 00002000 - OR [7FF6784E2DC4],00200000
+		dmc3.exe+203657
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, // or [rbx+0000B8C0],00200000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x204320);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+204320 - 81 0D 9AEAA800 00008000 - OR [7FF6784E2DC4],00800000
+		dmc3.exe+20432A
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, // or [rbx+0000B8C0],00800000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20436C);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20436C - 81 0D 4EEAA800 00004000 - OR [7FF6784E2DC4],00400000
+		dmc3.exe+204376
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, // or [rbx+0000B8C0],00400000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20441E);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20441E - 81 0D 9CE9A800 00004000 - OR [7FF6784E2DC4],00400000
+		dmc3.exe+204428
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, // or [rbx+0000B8C0],00400000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x204840);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+204840 - 81 0D 7AE5A800 00000200 - OR [7FF6784E2DC4],00020000
+		dmc3.exe+20484A
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x209E7B);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+209E7B - 81 0D 3F8FA800 00040000 - OR [7FF6784E2DC4],00000400
+		dmc3.exe+209E85
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x209F1D);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+209F1D - 81 0D 9D8EA800 00040000 - OR [7FF6784E2DC4],00000400
+		dmc3.exe+209F27
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20A195);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20A195 - 81 0D 258CA800 00000080 - OR [7FF6784E2DC4],80000000
+		dmc3.exe+20A19F
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rbx+0000B8C0],80000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20A2A4);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20A2A4 - 81 0D 168BA800 00000001 - OR [7FF6784E2DC4],01000000
+		dmc3.exe+20A2AE
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, // or [rbx+0000B8C0],01000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20A5B3);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20A5B3 - 81 0D 0788A800 00100000 - OR [7FF6784E2DC4],00001000
+		dmc3.exe+20A5BD
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, // or [rbx+0000B8C0],00001000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20A601);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20A601 - 81 0D B987A800 00080000 - OR [7FF6784E2DC4],00000800
+		dmc3.exe+20A60B
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rbx+0000B8C0],00000800
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20A740);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20A740 - 81 0D 7A86A800 00080000 - OR [7FF6784E2DC4],00000800
+		dmc3.exe+20A74A
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rbx+0000B8C0],00000800
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20AED5);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20AED5 - 81 0D E57EA800 00000400 - OR [7FF6784E2DC4],00040000
+		dmc3.exe+20AEDF
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, // or [rbx+0000B8C0],00040000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20AF98);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20AF98 - 81 0D 227EA800 00000400 - OR [7FF6784E2DC4],00040000
+		dmc3.exe+20AFA2
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, // or [rbx+0000B8C0],00040000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20B0A2);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20B0A2 - 81 0D 187DA800 00000002 - OR [7FF6784E2DC4],02000000
+		dmc3.exe+20B0AC
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, // or [rbx+0000B8C0],02000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20B33F);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20B33F - 81 0D 7B7AA800 00000020 - OR [7FF6784E2DC4],20000000
+		dmc3.exe+20B349
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, // or [rbx+0000B8C0],20000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20B83F);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20B83F - 81 0D 7B75A800 00000020 - OR [7FF6784E2DC4],20000000
+		dmc3.exe+20B849
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, // or [rbx+0000B8C0],20000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20C73F);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20C73F - 81 0D 7B66A800 00000004 - OR [7FF6784E2DC4],04000000
+		dmc3.exe+20C749
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, // or [rdi+0000B8C0],04000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20E10D);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20E10D - 81 0D AD4CA800 00020000 - OR [7FF6784E2DC4],00000200
+		dmc3.exe+20E117
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, // or [rbx+0000B8C0],00000200
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20F253);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20F253 - 81 0D 673BA800 00000040 - OR [7FF6784E2DC4],40000000
+		dmc3.exe+20F25D
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, // or [rdi+0000B8C0],40000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20F30A);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20F30A - 81 0D B03AA800 00000040 - OR [7FF6784E2DC4],40000000
+		dmc3.exe+20F314
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, // or [rdi+0000B8C0],40000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2100E0);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+2100E0 - 83 0D DD2CA800 20 - OR DWORD PTR [7FF6784E2DC4],20
+		dmc3.exe+2100E7
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x20, // or dword ptr [rdi+0000B8C0],20
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x8CBF0);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+8CBF0 - 81 0D CE61C000 00004000 - OR [7FF6784E2DC8],00400000
+		dmc3.exe+8CBFA
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, // or [rbx+0000B8C0],00400000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x8CC7B);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+8CC7B - 81 0D 4361C000 00008000 - OR [7FF6784E2DC8],00800000
+		dmc3.exe+8CC85
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, // or [rbx+0000B8C0],00800000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x8CC8E);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+8CC8E - 81 0D 3061C000 00008000 - OR [7FF6784E2DC8],00800000
+		dmc3.exe+8CC98
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, // or [rbx+0000B8C0],00800000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F9512);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F9512 - 8B 0D B098A900 - MOV ECX,[7FF6784E2DC8]
+		dmc3.exe+1F9518
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F9536);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F9536 - 89 0D 8C98A900 - MOV [7FF6784E2DC8],ECX
+		dmc3.exe+1F953C
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F9548);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F9548 - 8B 0D 7A98A900 - MOV ECX,[7FF6784E2DC8]
+		dmc3.exe+1F954E
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F9572);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F9572 - 89 0D 5098A900 - MOV [7FF6784E2DC8],ECX
+		dmc3.exe+1F9578
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1FED7B);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1FED7B - 8B 15 4740A900 - MOV EDX,[7FF6784E2DC8]
+		dmc3.exe+1FED81
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x8B, 0x93, 0x00, 0x00, 0x00, 0x00, // mov edx,[rbx+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1FED93);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1FED93 - 89 15 2F40A900 - MOV [7FF6784E2DC8],EDX
+		dmc3.exe+1FED99
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x89, 0x93, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],edx
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1FFE52);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1FFE52 - 81 0D 6C2FA900 00020000 - OR [7FF6784E2DC8],00000200
+		dmc3.exe+1FFE5C
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, // or [rbx+0000B8C0],00000200
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20181D);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20181D - 81 0D A115A900 00000001 - OR [7FF6784E2DC8],01000000
+		dmc3.exe+201827
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, // or [rdi+0000B8C0],01000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2019DF);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2019DF - 81 0D DF13A900 00000001 - OR [7FF6784E2DC8],01000000
+		dmc3.exe+2019E9
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, // or [rdi+0000B8C0],01000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x203F83);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+203F83 - 81 0D 3BEEA800 00002000 - OR [7FF6784E2DC8],00200000
+		dmc3.exe+203F8D
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, // or [rbx+0000B8C0],00200000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x209A16);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+209A16 - 81 0D A893A800 00040000 - OR [7FF6784E2DC8],00000400
+		dmc3.exe+209A20
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x209C11);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+209C11 - 81 0D AD91A800 00001000 - OR [7FF6784E2DC8],00100000
+		dmc3.exe+209C1B
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, // or [rbx+0000B8C0],00100000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20A019);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20A019 - 81 0D A58DA800 00000002 - OR [7FF6784E2DC8],02000000
+		dmc3.exe+20A023
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, // or [rbx+0000B8C0],02000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20D73D);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20D73D - 81 0D 8156A800 00000800 - OR [7FF6784E2DC8],00080000
+		dmc3.exe+20D747
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rdi+0000B8C0],00080000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20D858);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20D858 - 81 0D 6655A800 00000800 - OR [7FF6784E2DC8],00080000
+		dmc3.exe+20D862
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x224C96);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+224C96 - 81 0D 28E1A600 00080000 - OR [7FF6784E2DC8],00000800
+		dmc3.exe+224CA0
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rbx+0000B8C0],00000800
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x224CE7);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+224CE7 - 81 0D D7E0A600 00400000 - OR [7FF6784E2DC8],00004000
+		dmc3.exe+224CF1
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, // or [rbx+0000B8C0],00004000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x224DE6);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+224DE6 - 81 0D D8DFA600 00080000 - OR [7FF6784E2DC8],00000800
+		dmc3.exe+224DF0
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rbx+0000B8C0],00000800
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x224E37);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+224E37 - 81 0D 87DFA600 00800000 - OR [7FF6784E2DC8],00008000
+		dmc3.exe+224E41
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x224F36);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+224F36 - 81 0D 88DEA600 00080000 - OR [7FF6784E2DC8],00000800
+		dmc3.exe+224F40
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rbx+0000B8C0],00000800
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x224F87);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+224F87 - 81 0D 37DEA600 00000100 - OR [7FF6784E2DC8],00010000
+		dmc3.exe+224F91
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rbx+0000B8C0],00010000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x225142);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+225142 - 81 0D 7CDCA600 00200000 - OR [7FF6784E2DC8],00002000
+		dmc3.exe+22514C
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, // or [rbx+0000B8C0],00002000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2253F3);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2253F3 - 81 0D CBD9A600 00080000 - OR [7FF6784E2DC8],00000800
+		dmc3.exe+2253FD
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rbx+0000B8C0],00000800
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x225440);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+225440 - 81 0D 7ED9A600 00000100 - OR [7FF6784E2DC8],00010000
+		dmc3.exe+22544A
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rbx+0000B8C0],00010000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2254AC);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2254AC - 81 0D 12D9A600 00800000 - OR [7FF6784E2DC8],00008000
+		dmc3.exe+2254B6
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2255A3);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2255A3 - 81 0D 1BD8A600 00100200 - OR [7FF6784E2DC8],00021000
+		dmc3.exe+2255AD
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x02, 0x00, // or [rbx+0000B8C0],00021000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[2]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x8CC05);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+8CC05 - 81 0D BD61C000 00000040 - OR [7FF6784E2DCC],40000000
+		dmc3.exe+8CC0F
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, // or [rbx+0000B8C0],40000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1E0B2B);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1E0B2B - 81 0D 9722AB00 00000200 - OR [7FF6784E2DCC],00020000
+		dmc3.exe+1E0B35
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1EE0F9);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1EE0F9 - 81 0D C94CAA00 00000200 - OR [7FF6784E2DCC],00020000
+		dmc3.exe+1EE103
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F1721);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F1721 - 81 0D A116AA00 00200000 - OR [7FF6784E2DCC],00002000
+		dmc3.exe+1F172B
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, // or [rbx+0000B8C0],00002000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F2C44);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F2C44 - 81 0D 7E01AA00 00000200 - OR [7FF6784E2DCC],00020000
+		dmc3.exe+1F2C4E
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F2D6C);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F2D6C - 81 0D 5600AA00 00000200 - OR [7FF6784E2DCC],00020000
+		dmc3.exe+1F2D76
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F31D8);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F31D8 - 81 0D EAFBA900 00000200 - OR [7FF6784E2DCC],00020000
+		dmc3.exe+1F31E2
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F57DC);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F57DC - 81 0D E6D5A900 00800000 - OR [7FF6784E2DCC],00008000
+		dmc3.exe+1F57E6
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rsi+0000B8C0],00008000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F5E53);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F5E53 - 81 0D 6FCFA900 00800000 - OR [7FF6784E2DCC],00008000
+		dmc3.exe+1F5E5D
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rsi+0000B8C0],00008000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1FFE6B);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1FFE6B - 81 0D 572FA900 00000010 - OR [7FF6784E2DCC],10000000
+		dmc3.exe+1FFE75
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // or [rbx+0000B8C0],10000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20116D);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+20116D - 83 0D 581CA900 10 - OR DWORD PTR [7FF6784E2DCC],10
+		dmc3.exe+201174
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x10, // or dword ptr [rbx+0000B8C0],10
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20151F);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20151F - 81 0D A318A900 00008000 - OR [7FF6784E2DCC],00800000
+		dmc3.exe+201529
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, // or [rbx+0000B8C0],00800000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x201836);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+201836 - 81 0D 8C15A900 00000080 - OR [7FF6784E2DCC],80000000
+		dmc3.exe+201840
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rdi+0000B8C0],80000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2019EE);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2019EE - 81 0D D413A900 00000080 - OR [7FF6784E2DCC],80000000
+		dmc3.exe+2019F8
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rdi+0000B8C0],80000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20224A);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20224A - 81 0D 780BA900 00000800 - OR [7FF6784E2DCC],00080000
+		dmc3.exe+202254
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2022F7);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2022F7 - 81 0D CB0AA900 00000800 - OR [7FF6784E2DCC],00080000
+		dmc3.exe+202301
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2023C6);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2023C6 - 81 0D FC09A900 00000800 - OR [7FF6784E2DCC],00080000
+		dmc3.exe+2023D0
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x202523);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+202523 - 81 0D 9F08A900 00001000 - OR [7FF6784E2DCC],00100000
+		dmc3.exe+20252D
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, // or [rbx+0000B8C0],00100000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2025E6);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2025E6 - 81 0D DC07A900 00001000 - OR [7FF6784E2DCC],00100000
+		dmc3.exe+2025F0
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, // or [rbx+0000B8C0],00100000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2029FF);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2029FF - 81 0D C303A900 00004000 - OR [7FF6784E2DCC],00400000
+		dmc3.exe+202A09
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, // or [rbx+0000B8C0],00400000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x202AF8);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+202AF8 - 81 0D CA02A900 00004000 - OR [7FF6784E2DCC],00400000
+		dmc3.exe+202B02
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, // or [rbx+0000B8C0],00400000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x203041);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+203041 - 81 0D 81FDA800 00000008 - OR [7FF6784E2DCC],08000000
+		dmc3.exe+20304B
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, // or [rbx+0000B8C0],08000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20366E);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20366E - 81 0D 54F7A800 00000001 - OR [7FF6784E2DCC],01000000
+		dmc3.exe+203678
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, // or [rbx+0000B8C0],01000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x203F8F);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+203F8F - 81 0D 33EEA800 00000020 - OR [7FF6784E2DCC],20000000
+		dmc3.exe+203F99
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, // or [rbx+0000B8C0],20000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x204335);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+204335 - 81 0D 8DEAA800 00000004 - OR [7FF6784E2DCC],04000000
+		dmc3.exe+20433F
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, // or [rbx+0000B8C0],04000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x204388);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+204388 - 81 0D 3AEAA800 00000002 - OR [7FF6784E2DCC],02000000
+		dmc3.exe+204392
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, // or [rbx+0000B8C0],02000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20442A);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20442A - 81 0D 98E9A800 00000002 - OR [7FF6784E2DCC],02000000
+		dmc3.exe+204434
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, // or [rbx+0000B8C0],02000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20484C);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+20484C - 81 0D 76E5A800 00002000 - OR [7FF6784E2DCC],00200000
+		dmc3.exe+204856
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, // or [rbx+0000B8C0],00200000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x205864);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+205864 - 83 0D 61D5A800 04 - OR DWORD PTR [7FF6784E2DCC],04
+		dmc3.exe+20586B
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x04, // or dword ptr [rdi+0000B8C0],04
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x205913);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+205913 - 83 0D B2D4A800 04 - OR DWORD PTR [7FF6784E2DCC],04
+		dmc3.exe+20591A
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x04, // or dword ptr [rdi+0000B8C0],04
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x205AD3);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+205AD3 - 83 0D F2D2A800 08 - OR DWORD PTR [7FF6784E2DCC],08
+		dmc3.exe+205ADA
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x08, // or dword ptr [rdi+0000B8C0],08
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2091E0);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+2091E0 - 83 0D E59BA800 02 - OR DWORD PTR [7FF6784E2DCC],02
+		dmc3.exe+2091E7
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x02, // or dword ptr [rdi+0000B8C0],02
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2092B6);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+2092B6 - 83 0D 0F9BA800 02 - OR DWORD PTR [7FF6784E2DCC],02
+		dmc3.exe+2092BD
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x02, // or dword ptr [rdi+0000B8C0],02
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x20FBFD);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+20FBFD - 83 0D C831A800 10 - OR DWORD PTR [7FF6784E2DCC],10
+		dmc3.exe+20FC04
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x10, // or dword ptr [rbx+0000B8C0],10
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x211950);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+211950 - 83 0D 7514A800 01 - OR DWORD PTR [7FF6784E2DCC],01
+		dmc3.exe+211957
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x01, // or dword ptr [rbx+0000B8C0],01
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x211AA5);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+211AA5 - 83 0D 2013A800 01 - OR DWORD PTR [7FF6784E2DCC],01
+		dmc3.exe+211AAC
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x01, // or dword ptr [rbx+0000B8C0],01
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x215D66);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+215D66 - 81 0D 5CD0A700 00000100 - OR [7FF6784E2DCC],00010000
+		dmc3.exe+215D70
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rdi+0000B8C0],00010000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21605D);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21605D - 81 0D 65CDA700 00000100 - OR [7FF6784E2DCC],00010000
+		dmc3.exe+216067
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rdi+0000B8C0],00010000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21630D);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21630D - 81 0D B5CAA700 80070000 - OR [7FF6784E2DCC],00000780
+		dmc3.exe+216317
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x80, 0x07, 0x00, 0x00, // or [rdi+0000B8C0],00000780
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2164AF);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2164AF - 81 0D 13C9A700 00180000 - OR [7FF6784E2DCC],00001800
+		dmc3.exe+2164B9
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, // or [rdi+0000B8C0],00001800
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[3]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21B696);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21B696 - 81 0D 3077A700 00020000 - OR [7FF6784E2DD0],00000200
+		dmc3.exe+21B6A0
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, // or [rbx+0000B8C0],00000200
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21B85A);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+21B85A - 83 0D 6F75A700 40 - OR DWORD PTR [7FF6784E2DD0],40
+		dmc3.exe+21B861
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x40, // or dword ptr [rbx+0000B8C0],40
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21BB16);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21BB16 - 81 0D B072A700 00000002 - OR [7FF6784E2DD0],02000000
+		dmc3.exe+21BB20
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, // or [rbx+0000B8C0],02000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21BB40);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21BB40 - 81 0D 8672A700 00000002 - OR [7FF6784E2DD0],02000000
+		dmc3.exe+21BB4A
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, // or [rbx+0000B8C0],02000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21BEE2);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21BEE2 - 81 0D E46EA700 00000001 - OR [7FF6784E2DD0],01000000
+		dmc3.exe+21BEEC
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, // or [rbx+0000B8C0],01000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21BF11);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21BF11 - 81 0D B56EA700 00000001 - OR [7FF6784E2DD0],01000000
+		dmc3.exe+21BF1B
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, // or [rbx+0000B8C0],01000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21C1C6);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21C1C6 - 81 0D 006CA700 00020000 - OR [7FF6784E2DD0],00000200
+		dmc3.exe+21C1D0
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, // or [rbx+0000B8C0],00000200
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21C34A);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21C34A - 81 0D 7C6AA700 80000000 - OR [7FF6784E2DD0],00000080
+		dmc3.exe+21C354
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, // or [rbx+0000B8C0],00000080
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21C57A);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21C57A - 81 0D 4C68A700 00020000 - OR [7FF6784E2DD0],00000200
+		dmc3.exe+21C584
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, // or [rbx+0000B8C0],00000200
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21C703);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21C703 - 81 0D C366A700 00010000 - OR [7FF6784E2DD0],00000100
+		dmc3.exe+21C70D
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, // or [rbx+0000B8C0],00000100
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21D04D);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21D04D - 81 0D 795DA700 000C0000 - OR [7FF6784E2DD0],00000C00
+		dmc3.exe+21D057
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, // or [rdi+0000B8C0],00000C00
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21D228);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21D228 - 81 0D 9E5BA700 00000200 - OR [7FF6784E2DD0],00020000
+		dmc3.exe+21D232
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rdi+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21DA15);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+21DA15 - 8B 0D B553A700 - MOV ECX,[7FF6784E2DD0]
+		dmc3.exe+21DA1B
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21DA2F);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+21DA2F - 89 0D 9B53A700 - MOV [7FF6784E2DD0],ECX
+		dmc3.exe+21DA35
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21DEBE);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21DEBE - 81 0D 084FA700 00000004 - OR [7FF6784E2DD0],04000000
+		dmc3.exe+21DEC8
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, // or [rbx+0000B8C0],04000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21E885);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21E885 - 81 0D 4145A700 00100000 - OR [7FF6784E2DD0],00001000
+		dmc3.exe+21E88F
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, // or [rbx+0000B8C0],00001000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21F56D);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21F56D - 81 0D 5938A700 00000200 - OR [7FF6784E2DD0],00020000
+		dmc3.exe+21F577
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rdi+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21F61A);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21F61A - 81 0D AC37A700 00000200 - OR [7FF6784E2DD0],00020000
+		dmc3.exe+21F624
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rdi+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21FBF2);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21FBF2 - 81 0D D431A700 00000020 - OR [7FF6784E2DD0],20000000
+		dmc3.exe+21FBFC
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, // or [rbx+0000B8C0],20000000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[4]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F952C);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F952C - 81 0D 9E98A900 00060000 - OR [7FF6784E2DD4],00000600
+		dmc3.exe+1F9536
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, // or [rbx+0000B8C0],00000600
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[5]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21AED9);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21AED9 - 81 0D F17EA700 00400000 - OR [7FF6784E2DD4],00004000
+		dmc3.exe+21AEE3
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, // or [rdi+0000B8C0],00004000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[5]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21B13A);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21B13A - 81 0D 907CA700 00010000 - OR [7FF6784E2DD4],00000100
+		dmc3.exe+21B144
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, // or [rbx+0000B8C0],00000100
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[5]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21EB8A);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21EB8A - 81 0D 4042A700 00080000 - OR [7FF6784E2DD4],00000800
+		dmc3.exe+21EB94
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rdi+0000B8C0],00000800
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[5]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21EC17);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21EC17 - 81 0D B341A700 00080000 - OR [7FF6784E2DD4],00000800
+		dmc3.exe+21EC21
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rdi+0000B8C0],00000800
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[5]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21EDBB);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21EDBB - 81 0D 0F40A700 00100000 - OR [7FF6784E2DD4],00001000
+		dmc3.exe+21EDC5
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, // or [rdi+0000B8C0],00001000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[5]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21F865);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+21F865 - 09 05 6935A700 - OR [7FF6784E2DD4],EAX
+		dmc3.exe+21F86B
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x09, 0x83, 0x00, 0x00, 0x00, 0x00, // or [rbx+0000B8C0],eax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[5]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21F955);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+21F955 - 83 0D 7834A700 08 - OR DWORD PTR [7FF6784E2DD4],08
+		dmc3.exe+21F95C
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x08, // or dword ptr [rbx+0000B8C0],08
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[5]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21FA45);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+21FA45 - 83 0D 8833A700 10 - OR DWORD PTR [7FF6784E2DD4],10
+		dmc3.exe+21FA4C
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x10, // or dword ptr [rbx+0000B8C0],10
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[5]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21FF82);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+21FF82 - 83 0D 4B2EA700 02 - OR DWORD PTR [7FF6784E2DD4],02
+		dmc3.exe+21FF89
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x02, // or dword ptr [rbx+0000B8C0],02
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[5]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2201E4);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+2201E4 - 83 0D E92BA700 20 - OR DWORD PTR [7FF6784E2DD4],20
+		dmc3.exe+2201EB
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x20, // or dword ptr [rbx+0000B8C0],20
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[5]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1FDEE2);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1FDEE2 - 81 0D EC4EA900 00001800 - OR [7FF6784E2DD8],00180000
+		dmc3.exe+1FDEEC
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x00, // or [rbx+0000B8C0],00180000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[6]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x215854);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+215854 - 81 0D 7AD5A700 00001800 - OR [7FF6784E2DD8],00180000
+		dmc3.exe+21585E
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x00, // or [rdi+0000B8C0],00180000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[6]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x215A73);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+215A73 - 81 0D 5BD3A700 00001800 - OR [7FF6784E2DD8],00180000
+		dmc3.exe+215A7D
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x00, // or [rdi+0000B8C0],00180000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[6]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F9590);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F9590 - 8B 05 4698A900 - MOV EAX,[7FF6784E2DDC]
+		dmc3.exe+1F9596
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[7]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F95AA);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F95AA - 89 05 2C98A900 - MOV [7FF6784E2DDC],EAX
+		dmc3.exe+1F95B0
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[7]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F95C6);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F95C6 - 8B 05 1098A900 - MOV EAX,[7FF6784E2DDC]
+		dmc3.exe+1F95CC
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[7]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F95F0);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F95F0 - 89 05 E697A900 - MOV [7FF6784E2DDC],EAX
+		dmc3.exe+1F95F6
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[7]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F9596);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F9596 - 8B 0D 4498A900 - MOV ECX,[7FF6784E2DE0]
+		dmc3.exe+1F959C
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[8]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F95BA);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F95BA - 89 0D 2098A900 - MOV [7FF6784E2DE0],ECX
+		dmc3.exe+1F95C0
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[8]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F95CC);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F95CC - 8B 0D 0E98A900 - MOV ECX,[7FF6784E2DE0]
+		dmc3.exe+1F95D2
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[8]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F95F6);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1F95F6 - 89 0D E497A900 - MOV [7FF6784E2DE0],ECX
+		dmc3.exe+1F95FC
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[8]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1FDEF8);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1FDEF8 - 83 0D E54EA900 60 - OR DWORD PTR [7FF6784E2DE4],60
+		dmc3.exe+1FDEFF
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x60, // or dword ptr [rbx+0000B8C0],60
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[9]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21586A);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+21586A - 83 0D 73D5A700 60 - OR DWORD PTR [7FF6784E2DE4],60
+		dmc3.exe+215871
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x60, // or dword ptr [rdi+0000B8C0],60
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[9]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x215A7F);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+215A7F - 83 0D 5ED3A700 60 - OR DWORD PTR [7FF6784E2DE4],60
+		dmc3.exe+215A86
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x60, // or dword ptr [rdi+0000B8C0],60
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[9]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x1F95B0);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1F95B0 - 81 0D 3298A900 00060000 - OR [7FF6784E2DEC],00000600
+		dmc3.exe+1F95BA
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, // or [rbx+0000B8C0],00000600
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x219B4E);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+219B4E - 81 0D 9492A700 00800000 - OR [7FF6784E2DEC],00008000
+		dmc3.exe+219B58
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x219B95);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+219B95 - 81 0D 4D92A700 00000100 - OR [7FF6784E2DEC],00010000
+		dmc3.exe+219B9F
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rbx+0000B8C0],00010000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x219BD8);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+219BD8 - 81 0D 0A92A700 00000200 - OR [7FF6784E2DEC],00020000
+		dmc3.exe+219BE2
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21CD33);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21CD33 - 81 0D AF60A700 00000100 - OR [7FF6784E2DEC],00010000
+		dmc3.exe+21CD3D
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rbx+0000B8C0],00010000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21F3F1);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+21F3F1 - 81 0D F139A700 00000200 - OR [7FF6784E2DEC],00020000
+		dmc3.exe+21F3FB
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x21FFA1);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+21FFA1 - 83 0D 442EA700 20 - OR DWORD PTR [7FF6784E2DEC],20
+		dmc3.exe+21FFA8
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x20, // or dword ptr [rbx+0000B8C0],20
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x2201EB);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+2201EB - 81 0D F72BA700 00800000 - OR [7FF6784E2DEC],00008000
+		dmc3.exe+2201F5
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x222BEF);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+222BEF - 81 0D F301A700 00800000 - OR [7FF6784E2DEC],00008000
+		dmc3.exe+222BF9
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rdi+0000B8C0],00008000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x222C8A);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+222C8A - 81 0D 5801A700 00800000 - OR [7FF6784E2DEC],00008000
+		dmc3.exe+222C94
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rdi+0000B8C0],00008000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x222D66);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+222D66 - 81 0D 7C00A700 00000100 - OR [7FF6784E2DEC],00010000
+		dmc3.exe+222D70
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rdi+0000B8C0],00010000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x222E0E);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+222E0E - 81 0D D4FFA600 00000100 - OR [7FF6784E2DEC],00010000
+		dmc3.exe+222E18
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rdi+0000B8C0],00010000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x222EB9);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+222EB9 - 81 0D 29FFA600 00000200 - OR [7FF6784E2DEC],00020000
+		dmc3.exe+222EC3
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rdi+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x222F1A);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+222F1A - 81 0D C8FEA600 00000200 - OR [7FF6784E2DEC],00020000
+		dmc3.exe+222F24
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rdi+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x222FDC);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+222FDC - 81 0D 06FEA600 00000200 - OR [7FF6784E2DEC],00020000
+		dmc3.exe+222FE6
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rdi+0000B8C0],00020000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x22D175);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+22D175 - 81 0D 6D5CA600 00000800 - OR [7FF6784E2DEC],00080000
+		dmc3.exe+22D17F
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rdi+0000B8C0],00080000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x22D32B);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+22D32B - 81 0D B75AA600 00000800 - OR [7FF6784E2DEC],00080000
+		dmc3.exe+22D335
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr = (appBaseAddr + 0x22D406);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+22D406 - 81 0D DC59A600 00000800 - OR [7FF6784E2DEC],00080000
+		dmc3.exe+22D410
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			protectionHelper.Push(addr, size);
+			CopyMemory(addr, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[11]);
+			protectionHelper.Pop();
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	run = true;
+}
+
 #pragma endregion
 
 #pragma region Mobility
@@ -7859,440 +18450,7 @@ void ToggleMainActorFixes(bool enable)
 
 	static bool run = false;
 
-
-/*
-
-dmc3.exe+1F956C - 89 05 5298A900        - mov [dmc3.exe+C92DC4],eax { (31) }
-dmc3.exe+1F9572 - 89 0D 5098A900        - mov [dmc3.exe+C92DC8],ecx { (124) }
-
-
-dmc3.exe+1F952C - 81 0D 9E98A900 00060000 - or [dmc3.exe+C92DD4],00000600 { (0),1536 }
-
-
-*/
-
-// Devil Aura Position Update
-{
-	auto addr     = (appBaseAddr + 0x90B21);
-	auto jumpAddr = (appBaseAddr + 0x90B26);
-	constexpr uint32 size = 5;
-	/*
-	dmc3.exe+90B21 - BB 01000000 - mov ebx,00000001
-	dmc3.exe+90B26 - 8B D3       - mov edx,ebx
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect1[] =
-	{
-		mov_rcx_rdi,
-		call,
-		mov_rcx_rax,
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, false, size, sizeof(sect1));
-		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-		CopyMemory(func.sect1, sect1, sizeof(sect1));
-		WriteCall((func.sect1 + 3), GetActorBaseAddressByEffectData);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-
-
-
-// // Devil Aura Position
-// {
-// 	auto addr     = (appBaseAddr + 0x90B21);
-// 	auto jumpAddr = (appBaseAddr + 0x90B26);
-// 	constexpr uint32 size = 5;
-// 	/*
-// 	dmc3.exe+90B21 - BB 01000000 - mov ebx,00000001
-// 	dmc3.exe+90B26 - 8B D3       - mov edx,ebx
-// 	*/
-
-// 	static Function func = {};
-
-// 	constexpr byte8 sect0[] =
-// 	{
-// 	};
-// 	constexpr byte8 sect1[] =
-// 	{
-// 	};
-// 	constexpr byte8 sect2[] =
-// 	{
-// 	};
-
-// 	if (!run)
-// 	{
-// 		backupHelper.Save(addr, size);
-// 		func = CreateFunction(0, jumpAddr, true, true, sizeof(sect0), sizeof(sect1), sizeof(sect2));
-// 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-// 		CopyMemory(func.sect0, sect0, sizeof(sect0));
-// 		CopyMemory(func.sect1, sect1, sizeof(sect1));
-// 		CopyMemory(func.sect2, sect2, sizeof(sect2));
-// 	}
-
-// 	if (enable)
-// 	{
-// 		WriteJump(addr, func.addr, (size - 5));
-// 	}
-// 	else
-// 	{
-// 		backupHelper.Restore(addr);
-// 	}
-// }
-
-
-
-
-
-
-
-
-// Devil Flux End Dante
-{
-	auto addr = (appBaseAddr + 0x1F9542);
-	constexpr uint32 size = 6;
-	/*
-	dmc3.exe+1F9542 - 8B 05 7C98A900 - mov eax,[dmc3.exe+C92DC4]
-	dmc3.exe+1F9548 - 8B 0D 7A98A900 - mov ecx,[dmc3.exe+C92DC8]
-	*/
-
-	constexpr byte8 sect0[] =
-	{
-		0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-	}
-
-	if (enable)
-	{
-		protectionHelper.Push(addr, size);
-		CopyMemory(addr, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
-		protectionHelper.Pop();
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr = (appBaseAddr + 0x1F9548);
-	constexpr uint32 size = 6;
-	/*
-	dmc3.exe+1F9548 - 8B 0D 7A98A900 - mov ecx,[dmc3.exe+C92DC8]
-	dmc3.exe+1F954E - 83 C8 01       - or eax,01
-	*/
-
-	constexpr byte8 sect0[] =
-	{
-		0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-	}
-
-	if (enable)
-	{
-		protectionHelper.Push(addr, size);
-		CopyMemory(addr, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
-		protectionHelper.Pop();
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr = (appBaseAddr + 0x1F956C);
-	constexpr uint32 size = 6;
-	/*
-	dmc3.exe+1F956C - 89 05 5298A900 - mov [dmc3.exe+C92DC4],eax
-	dmc3.exe+1F9572 - 89 0D 5098A900 - mov [dmc3.exe+C92DC8],ecx
-	*/
-
-	constexpr byte8 sect0[] =
-	{
-		0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-	}
-
-	if (enable)
-	{
-		protectionHelper.Push(addr, size);
-		CopyMemory(addr, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
-		protectionHelper.Pop();
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr = (appBaseAddr + 0x1F9572);
-	constexpr uint32 size = 6;
-	/*
-	dmc3.exe+1F9572 - 89 0D 5098A900 - mov [dmc3.exe+C92DC8],ecx
-	dmc3.exe+1F9578 - 48 83 C4 20    - add rsp,20
-	*/
-
-	constexpr byte8 sect0[] =
-	{
-		0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-	}
-
-	if (enable)
-	{
-		protectionHelper.Push(addr, size);
-		CopyMemory(addr, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
-		protectionHelper.Pop();
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-
-// Devil Flux End Bob Vergil
-{
-	auto addr = (appBaseAddr + 0x1F950C);
-	constexpr uint32 size = 6;
-	/*
-	dmc3.exe+1F950C - 8B 05 B298A900 - mov eax,[dmc3.exe+C92DC4]
-	dmc3.exe+1F9512 - 8B 0D B098A900 - mov ecx,[dmc3.exe+C92DC8]
-	*/
-
-	constexpr byte8 sect0[] =
-	{
-		0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-	}
-
-	if (enable)
-	{
-		protectionHelper.Push(addr, size);
-		CopyMemory(addr, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
-		protectionHelper.Pop();
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr = (appBaseAddr + 0x1F9512);
-	constexpr uint32 size = 6;
-	/*
-	dmc3.exe+1F9512 - 8B 0D B098A900 - mov ecx,[dmc3.exe+C92DC8]
-	dmc3.exe+1F9518 - 83 C8 40       - or eax,40
-	*/
-
-	constexpr byte8 sect0[] =
-	{
-		0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-	}
-
-	if (enable)
-	{
-		protectionHelper.Push(addr, size);
-		CopyMemory(addr, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
-		protectionHelper.Pop();
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-
-{
-	auto addr = (appBaseAddr + 0x1F9526);
-	constexpr uint32 size = 6;
-	/*
-	dmc3.exe+1F9526 - 89 05 9898A900          - mov [dmc3.exe+C92DC4],eax
-	dmc3.exe+1F952C - 81 0D 9E98A900 00060000 - or [dmc3.exe+C92DD4],00000600
-	*/
-
-	constexpr byte8 sect0[] =
-	{
-		0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-	}
-
-	if (enable)
-	{
-		protectionHelper.Push(addr, size);
-		CopyMemory(addr, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[0]);
-		protectionHelper.Pop();
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-
-{
-	auto addr = (appBaseAddr + 0x1F9536);
-	constexpr uint32 size = 6;
-	/*
-	dmc3.exe+1F9536 - 89 0D 8C98A900 - mov [dmc3.exe+C92DC8],ecx
-	dmc3.exe+1F953C - 48 83 C4 20    - add rsp,20
-	*/
-
-	constexpr byte8 sect0[] =
-	{
-		0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-	}
-
-	if (enable)
-	{
-		protectionHelper.Push(addr, size);
-		CopyMemory(addr, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(addr + 2) = offsetof(ActorData, newEffectIndices[1]);
-		protectionHelper.Pop();
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // Devil Flux End
-// {
-// 	auto addr     = (appBaseAddr + 0x1F9542);
-// 	auto jumpAddr = (appBaseAddr + 0x1F954E);
-// 	constexpr uint32 size = 6;
-// 	/*
-// 	dmc3.exe+1F9542 - 8B 05 7C98A900 - mov eax,[dmc3.exe+C92DC4]
-// 	dmc3.exe+1F9548 - 8B 0D 7A98A900 - mov ecx,[dmc3.exe+C92DC8]
-// 	dmc3.exe+1F954E - 83 C8 01       - or eax,01
-// 	*/
-
-// 	static Function func = {};
-
-// 	constexpr byte8 sect0[] =
-// 	{
-// 		0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
-// 		0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
-// 	};
-
-// 	if (!run)
-// 	{
-// 		backupHelper.Save(addr, size);
-// 		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-// 		CopyMemory(func.sect0, sect0, sizeof(sect0));
-// 		*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(ActorData, newEffectIndices[0]);
-// 		*reinterpret_cast<uint32 *>(func.sect0 + 8) = offsetof(ActorData, newEffectIndices[1]);
-// 	}
-
-// 	if (enable)
-// 	{
-// 		WriteJump(addr, func.addr, (size - 5));
-// 	}
-// 	else
-// 	{
-// 		backupHelper.Restore(addr);
-// 	}
-// }
-
-// /*
-// dmc3.exe+1F950C - 8B 05 B298A900        - mov eax,[dmc3.exe+C92DC4] { (0) }
-// dmc3.exe+1F9512 - 8B 0D B098A900        - mov ecx,[dmc3.exe+C92DC8] { (0) }
-
-// */
-
-
-
-
-
-
-
-
-
-
-
-
 	run = true;
-
-
-
 
 	{
 		auto dest = (appBaseAddr + 0x1F83D7);
@@ -9733,6 +19891,14 @@ export void Actor_Toggle(bool enable)
 	ToggleRelocations           (enable);
 	ToggleModelCountAdjustments (enable);
 	ToggleWeaponCountAdjustments(enable);
+
+
+
+	ToggleEffectRelocations(enable);
+
+
+
+
 	ToggleMainActorFixes        (enable);
 	ToggleStyleFixes            (enable);
 	ToggleIsWeaponReady         (enable);
@@ -11565,55 +21731,4 @@ export void Actor_SceneMissionStart()
 #pragma endregion
 
 #ifdef __GARBAGE__
-
-
-
-
-// // @Todo: Rename to ByEffectData.
-// byte8 * GetActorBaseAddressByEffectData[MAX_REGISTER] = {};
-
-// void InitGetActorBaseAddressByEffectData()
-// {
-// 	{
-// 		constexpr byte8 sect0[] =
-// 		{
-// 			0x48, 0x8B, 0x80, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rax+000000C0]
-// 			0x48, 0x85, 0xC0,                         // test rax,rax
-// 			0x75, 0x0B,                               // jne short
-// 			0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, // mov rax,[dmc3.exe+C90E28]
-// 			0x48, 0x8B, 0x40, 0x18,                   // mov rax,[rax+18]
-// 			0xC3,                                     // ret
-// 		};
-// 		for_all(uint8, index, MAX_REGISTER)
-// 		{
-// 			auto func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
-// 			memcpy(func.sect0, sect0, sizeof(sect0));
-
-// 			if (index < 8)
-// 			{
-// 				*reinterpret_cast<byte8 *>(func.sect0) = 0x48;
-// 				*reinterpret_cast<byte8 *>(func.sect0 + 2) = (0x80 + index);
-// 			}
-// 			else
-// 			{
-// 				*reinterpret_cast<byte8 *>(func.sect0) = 0x49;
-// 				*reinterpret_cast<byte8 *>(func.sect0 + 2) = (0x80 + (index - 8));
-// 			}
-
-// 			WriteAddress((func.sect0 + 0xC), (appBaseAddr + 0xC90E28), 7);
-// 			GetActorBaseAddressByEffectData[index] = func.addr;
-// 		}
-// 	}
-// }
-
-
-
-
-
-
-//byte8 * GetActorBaseAddressByEffectData()
-
-
-
-
 #endif

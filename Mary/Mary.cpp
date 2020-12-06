@@ -47,7 +47,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 			!backupHelper.Init
 			(
 				(8 * 1024 * 1024),
-				4096
+				(1 * 1024 * 1024)
 			)
 		)
 		{

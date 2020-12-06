@@ -2056,8 +2056,8 @@ struct ActorData
 	uint8 newTrickUpCount; // 0x1CAE2
 	uint8 newTrickDownCount; // 0x1CAE3
 	_(12);
-	uint32 newEffectIndices[2]; // 0x1CAF0
-	uint32 newLastVar; // 0x1CAF8
+	uint32 newEffectIndices[16]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CB30
 
 	operator byte8 *()
 	{
@@ -2315,8 +2315,8 @@ struct ActorDataDante
 	uint8 newTrickUpCount; // 0x1CAE2
 	uint8 newTrickDownCount; // 0x1CAE3
 	_(12);
-	uint32 newEffectIndices[2]; // 0x1CAF0
-	uint32 newLastVar; // 0x1CAF8
+	uint32 newEffectIndices[16]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CB30
 
 	operator byte8 *()
 	{
@@ -2557,8 +2557,8 @@ struct ActorDataBob
 	uint8 newTrickUpCount; // 0x1CAE2
 	uint8 newTrickDownCount; // 0x1CAE3
 	_(12);
-	uint32 newEffectIndices[2]; // 0x1CAF0
-	uint32 newLastVar; // 0x1CAF8
+	uint32 newEffectIndices[16]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CB30
 
 	operator byte8 *()
 	{
@@ -2799,8 +2799,8 @@ struct ActorDataLady
 	uint8 newTrickUpCount; // 0x1CAE2
 	uint8 newTrickDownCount; // 0x1CAE3
 	_(12);
-	uint32 newEffectIndices[2]; // 0x1CAF0
-	uint32 newLastVar; // 0x1CAF8
+	uint32 newEffectIndices[16]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CB30
 
 	operator byte8 *()
 	{
@@ -3049,8 +3049,8 @@ struct ActorDataVergil
 	uint8 newTrickUpCount; // 0x1CAE2
 	uint8 newTrickDownCount; // 0x1CAE3
 	_(12);
-	uint32 newEffectIndices[2]; // 0x1CAF0
-	uint32 newLastVar; // 0x1CAF8
+	uint32 newEffectIndices[16]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CB30
 
 	operator byte8 *()
 	{
@@ -3224,7 +3224,7 @@ static_assert(offsetof(ActorData, newAirTrickCount) == 0x1CAE1);
 static_assert(offsetof(ActorData, newTrickUpCount) == 0x1CAE2);
 static_assert(offsetof(ActorData, newTrickDownCount) == 0x1CAE3);
 static_assert(offsetof(ActorData, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorData, newLastVar) == 0x1CAF8);
+static_assert(offsetof(ActorData, newLastVar) == 0x1CB30);
 
 static_assert(offsetof(ActorDataDante, status) == 8);
 static_assert(offsetof(ActorDataDante, speed) == 0x14);
@@ -3403,7 +3403,7 @@ static_assert(offsetof(ActorDataDante, newAirTrickCount) == 0x1CAE1);
 static_assert(offsetof(ActorDataDante, newTrickUpCount) == 0x1CAE2);
 static_assert(offsetof(ActorDataDante, newTrickDownCount) == 0x1CAE3);
 static_assert(offsetof(ActorDataDante, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorDataDante, newLastVar) == 0x1CAF8);
+static_assert(offsetof(ActorDataDante, newLastVar) == 0x1CB30);
 
 static_assert(offsetof(ActorDataBob, status) == 8);
 static_assert(offsetof(ActorDataBob, speed) == 0x14);
@@ -3571,7 +3571,7 @@ static_assert(offsetof(ActorDataBob, newAirTrickCount) == 0x1CAE1);
 static_assert(offsetof(ActorDataBob, newTrickUpCount) == 0x1CAE2);
 static_assert(offsetof(ActorDataBob, newTrickDownCount) == 0x1CAE3);
 static_assert(offsetof(ActorDataBob, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorDataBob, newLastVar) == 0x1CAF8);
+static_assert(offsetof(ActorDataBob, newLastVar) == 0x1CB30);
 
 static_assert(offsetof(ActorDataLady, status) == 8);
 static_assert(offsetof(ActorDataLady, speed) == 0x14);
@@ -3739,7 +3739,7 @@ static_assert(offsetof(ActorDataLady, newAirTrickCount) == 0x1CAE1);
 static_assert(offsetof(ActorDataLady, newTrickUpCount) == 0x1CAE2);
 static_assert(offsetof(ActorDataLady, newTrickDownCount) == 0x1CAE3);
 static_assert(offsetof(ActorDataLady, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorDataLady, newLastVar) == 0x1CAF8);
+static_assert(offsetof(ActorDataLady, newLastVar) == 0x1CB30);
 
 static_assert(offsetof(ActorDataVergil, status) == 8);
 static_assert(offsetof(ActorDataVergil, speed) == 0x14);
@@ -3912,7 +3912,7 @@ static_assert(offsetof(ActorDataVergil, newAirTrickCount) == 0x1CAE1);
 static_assert(offsetof(ActorDataVergil, newTrickUpCount) == 0x1CAE2);
 static_assert(offsetof(ActorDataVergil, newTrickDownCount) == 0x1CAE3);
 static_assert(offsetof(ActorDataVergil, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CAF8);
+static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CB30);
 
 // $ActorDataEnd
 
