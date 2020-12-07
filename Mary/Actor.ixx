@@ -5803,7 +5803,6 @@ void ToggleEffectRelocations(bool enable)
 {
 	LogFunction(enable);
 
-	
 	static bool run = false;
 
 	{
@@ -10360,6 +10359,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rbx+0000B8C0],80000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10390,6 +10390,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rbx+0000B8C0],80000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10420,6 +10421,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // or [rbx+0000B8C0],10000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10450,6 +10452,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rbx+0000B8C0],80000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10480,6 +10483,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rbx+0000B8C0],80000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10510,6 +10514,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rbx+0000B8C0],80000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10540,6 +10545,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, // or [rsi+0000B8C0],20000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10570,6 +10576,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, // or [rsi+0000B8C0],20000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10600,6 +10607,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // or [rbx+0000B8C0],10000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10630,6 +10638,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, // or [rbx+0000B8C0],00004000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10660,6 +10669,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, // or [rdi+0000B8C0],00001000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10690,6 +10700,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, // or [rdi+0000B8C0],00001000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10720,6 +10731,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, // or [rdi+0000B8C0],00002000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10750,6 +10762,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rdi+0000B8C0],00000800
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10780,6 +10793,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rdi+0000B8C0],00000800
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10810,6 +10824,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, // or [rbx+0000B8C0],00040000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10840,6 +10855,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, // or [rdi+0000B8C0],00040000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10870,6 +10886,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, // or [rdi+0000B8C0],00040000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10900,6 +10917,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, // or [rdi+0000B8C0],00040000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10930,6 +10948,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10960,6 +10979,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -10990,6 +11010,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, // or [rdi+0000B8C0],08000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11020,6 +11041,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, // or [rdi+0000B8C0],08000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11050,6 +11072,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, // or [rbx+0000B8C0],00004000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11080,6 +11103,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11110,6 +11134,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11140,6 +11165,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11170,6 +11196,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11200,6 +11227,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11230,6 +11258,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, // or [rdi+0000B8C0],40000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11260,6 +11289,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, // or [rdi+0000B8C0],40000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11290,6 +11320,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x01, // or [rdi+0000B8C0],01E00000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11320,6 +11351,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06, // or [rdi+0000B8C0],06000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11350,6 +11382,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, // or [rbx+0000B8C0],08000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11380,6 +11413,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, // or [rbx+0000B8C0],08000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11410,6 +11444,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11440,6 +11475,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11470,6 +11506,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11500,6 +11537,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11530,6 +11568,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, // or [rbx+0000B8C0],00100000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11560,6 +11599,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11590,6 +11630,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11620,6 +11661,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11650,6 +11692,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rbx+0000B8C0],00010000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11680,6 +11723,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rbx+0000B8C0],00010000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11710,6 +11754,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11740,6 +11785,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11770,6 +11816,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // or [rbx+0000B8C0],10000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11800,6 +11847,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, // or [rbx+0000B8C0],00200000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11830,6 +11878,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, // or [rbx+0000B8C0],00800000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11860,6 +11909,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, // or [rbx+0000B8C0],00400000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11890,6 +11940,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, // or [rbx+0000B8C0],00400000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11920,6 +11971,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11950,6 +12002,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -11980,6 +12033,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12010,6 +12064,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rbx+0000B8C0],80000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12040,6 +12095,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, // or [rbx+0000B8C0],01000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12070,6 +12126,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, // or [rbx+0000B8C0],00001000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12100,6 +12157,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rbx+0000B8C0],00000800
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12130,6 +12188,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rbx+0000B8C0],00000800
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12160,6 +12219,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, // or [rbx+0000B8C0],00040000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12190,6 +12250,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, // or [rbx+0000B8C0],00040000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12220,6 +12281,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, // or [rbx+0000B8C0],02000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12250,6 +12312,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, // or [rbx+0000B8C0],20000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12280,6 +12343,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, // or [rbx+0000B8C0],20000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12310,6 +12374,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, // or [rdi+0000B8C0],04000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12340,6 +12405,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, // or [rbx+0000B8C0],00000200
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12370,6 +12436,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, // or [rdi+0000B8C0],40000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12400,6 +12467,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, // or [rdi+0000B8C0],40000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12430,6 +12498,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x20, // or dword ptr [rdi+0000B8C0],20
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12460,6 +12529,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, // or [rbx+0000B8C0],00400000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12490,6 +12560,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, // or [rbx+0000B8C0],00800000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12520,6 +12591,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, // or [rbx+0000B8C0],00800000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12550,6 +12622,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12580,6 +12653,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12610,6 +12684,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12640,6 +12715,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12670,6 +12746,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x8B, 0x93, 0x00, 0x00, 0x00, 0x00, // mov edx,[rbx+0000B8C0]
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12700,6 +12777,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x89, 0x93, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],edx
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12730,6 +12808,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, // or [rbx+0000B8C0],00000200
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12760,6 +12839,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, // or [rdi+0000B8C0],01000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12790,6 +12870,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, // or [rdi+0000B8C0],01000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12820,6 +12901,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, // or [rbx+0000B8C0],00200000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12850,6 +12932,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, // or [rbx+0000B8C0],00000400
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12880,6 +12963,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, // or [rbx+0000B8C0],00100000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12910,6 +12994,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, // or [rbx+0000B8C0],02000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12940,6 +13025,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rdi+0000B8C0],00080000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -12970,6 +13056,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13000,6 +13087,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rbx+0000B8C0],00000800
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13030,6 +13118,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, // or [rbx+0000B8C0],00004000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13060,6 +13149,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rbx+0000B8C0],00000800
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13090,6 +13180,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13120,6 +13211,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rbx+0000B8C0],00000800
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13150,6 +13242,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rbx+0000B8C0],00010000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13180,6 +13273,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, // or [rbx+0000B8C0],00002000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13210,6 +13304,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rbx+0000B8C0],00000800
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13240,6 +13335,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rbx+0000B8C0],00010000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13270,6 +13366,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13300,6 +13397,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x02, 0x00, // or [rbx+0000B8C0],00021000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13330,6 +13428,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, // or [rbx+0000B8C0],40000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13360,6 +13459,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13390,6 +13490,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13420,6 +13521,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, // or [rbx+0000B8C0],00002000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13450,6 +13552,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13480,6 +13583,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13510,6 +13614,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13540,6 +13645,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rsi+0000B8C0],00008000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13570,6 +13676,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rsi+0000B8C0],00008000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13600,6 +13707,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // or [rbx+0000B8C0],10000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13630,6 +13738,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x10, // or dword ptr [rbx+0000B8C0],10
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13660,6 +13769,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, // or [rbx+0000B8C0],00800000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13690,6 +13800,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rdi+0000B8C0],80000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13720,6 +13831,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, // or [rdi+0000B8C0],80000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13750,6 +13862,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13780,6 +13893,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13810,6 +13924,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13840,6 +13955,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, // or [rbx+0000B8C0],00100000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13870,6 +13986,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, // or [rbx+0000B8C0],00100000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13900,6 +14017,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, // or [rbx+0000B8C0],00400000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13930,6 +14048,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, // or [rbx+0000B8C0],00400000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13960,6 +14079,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, // or [rbx+0000B8C0],08000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -13990,6 +14110,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, // or [rbx+0000B8C0],01000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14020,6 +14141,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, // or [rbx+0000B8C0],20000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14050,6 +14172,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, // or [rbx+0000B8C0],04000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14080,6 +14203,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, // or [rbx+0000B8C0],02000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14110,6 +14234,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, // or [rbx+0000B8C0],02000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14140,6 +14265,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, // or [rbx+0000B8C0],00200000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14170,6 +14296,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x04, // or dword ptr [rdi+0000B8C0],04
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14200,6 +14327,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x04, // or dword ptr [rdi+0000B8C0],04
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14230,6 +14358,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x08, // or dword ptr [rdi+0000B8C0],08
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14260,6 +14389,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x02, // or dword ptr [rdi+0000B8C0],02
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14290,6 +14420,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x02, // or dword ptr [rdi+0000B8C0],02
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14320,6 +14451,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x10, // or dword ptr [rbx+0000B8C0],10
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14350,6 +14482,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x01, // or dword ptr [rbx+0000B8C0],01
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14380,6 +14513,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x01, // or dword ptr [rbx+0000B8C0],01
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14410,6 +14544,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rdi+0000B8C0],00010000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14440,6 +14575,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rdi+0000B8C0],00010000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14470,6 +14606,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x80, 0x07, 0x00, 0x00, // or [rdi+0000B8C0],00000780
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14500,6 +14637,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x00, 0x00, // or [rdi+0000B8C0],00001800
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14530,6 +14668,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, // or [rbx+0000B8C0],00000200
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14560,6 +14699,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x40, // or dword ptr [rbx+0000B8C0],40
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14590,6 +14730,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, // or [rbx+0000B8C0],02000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14620,6 +14761,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, // or [rbx+0000B8C0],02000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14650,6 +14792,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, // or [rbx+0000B8C0],01000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14680,6 +14823,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, // or [rbx+0000B8C0],01000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14710,6 +14854,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, // or [rbx+0000B8C0],00000200
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14740,6 +14885,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, // or [rbx+0000B8C0],00000080
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14770,6 +14916,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, // or [rbx+0000B8C0],00000200
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14800,6 +14947,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, // or [rbx+0000B8C0],00000100
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14830,6 +14978,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, // or [rdi+0000B8C0],00000C00
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14860,6 +15009,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rdi+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14890,6 +15040,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14920,6 +15071,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14950,6 +15102,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, // or [rbx+0000B8C0],04000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -14980,6 +15133,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, // or [rbx+0000B8C0],00001000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15010,6 +15164,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rdi+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15040,6 +15195,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rdi+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15070,6 +15226,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, // or [rbx+0000B8C0],20000000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15100,6 +15257,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, // or [rbx+0000B8C0],00000600
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15130,6 +15288,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, // or [rdi+0000B8C0],00004000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15160,6 +15319,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, // or [rbx+0000B8C0],00000100
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15190,6 +15350,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rdi+0000B8C0],00000800
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15220,6 +15381,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, // or [rdi+0000B8C0],00000800
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15250,6 +15412,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, // or [rdi+0000B8C0],00001000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15280,6 +15443,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x09, 0x83, 0x00, 0x00, 0x00, 0x00, // or [rbx+0000B8C0],eax
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15310,6 +15474,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x08, // or dword ptr [rbx+0000B8C0],08
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15340,6 +15505,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x10, // or dword ptr [rbx+0000B8C0],10
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15370,6 +15536,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x02, // or dword ptr [rbx+0000B8C0],02
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15400,6 +15567,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x20, // or dword ptr [rbx+0000B8C0],20
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15430,6 +15598,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x00, // or [rbx+0000B8C0],00180000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15460,6 +15629,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x00, // or [rdi+0000B8C0],00180000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15490,6 +15660,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x00, // or [rdi+0000B8C0],00180000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15520,6 +15691,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15550,6 +15722,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15580,6 +15753,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x8B, 0x83, 0x00, 0x00, 0x00, 0x00, // mov eax,[rbx+0000B8C0]
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15610,6 +15784,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x89, 0x83, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],eax
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15640,6 +15815,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15670,6 +15846,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15700,6 +15877,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x8B, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov ecx,[rbx+0000B8C0]
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15730,6 +15908,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x89, 0x8B, 0x00, 0x00, 0x00, 0x00, // mov [rbx+0000B8C0],ecx
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15760,6 +15939,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x60, // or dword ptr [rbx+0000B8C0],60
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15790,6 +15970,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x60, // or dword ptr [rdi+0000B8C0],60
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15820,6 +16001,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x60, // or dword ptr [rdi+0000B8C0],60
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15850,6 +16032,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, // or [rbx+0000B8C0],00000600
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15880,6 +16063,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15910,6 +16094,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rbx+0000B8C0],00010000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15940,6 +16125,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -15970,6 +16156,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rbx+0000B8C0],00010000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -16000,6 +16187,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rbx+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -16030,6 +16218,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x83, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x20, // or dword ptr [rbx+0000B8C0],20
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -16060,6 +16249,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rbx+0000B8C0],00008000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -16090,6 +16280,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rdi+0000B8C0],00008000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -16120,6 +16311,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, // or [rdi+0000B8C0],00008000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -16150,6 +16342,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rdi+0000B8C0],00010000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -16180,6 +16373,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, // or [rdi+0000B8C0],00010000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -16210,6 +16404,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rdi+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -16240,6 +16435,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rdi+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -16270,6 +16466,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, // or [rdi+0000B8C0],00020000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -16300,6 +16497,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rdi+0000B8C0],00080000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -16330,6 +16528,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
@@ -16360,6 +16559,7 @@ void ToggleEffectRelocations(bool enable)
 		{
 			0x81, 0x8B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, // or [rbx+0000B8C0],00080000
 		};
+		static_assert(sizeof(sect0) == size);
 
 		if (!run)
 		{
