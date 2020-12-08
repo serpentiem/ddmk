@@ -30,9 +30,15 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		Log("Session started.");
 
-		if (!Core_Memory_Init(64 * 1024 * 1024))
+		if (!Core_Memory_Init())
 		{
 			Log("Core_Memory_Init failed.");
+
+			return 0;
+		}
+		else if (!memoryData.Init(64 * 1024 * 1024))
+		{
+			Log("memoryData.Init failed.");
 
 			return 0;
 		}

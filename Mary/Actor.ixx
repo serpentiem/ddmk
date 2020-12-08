@@ -1,25 +1,7 @@
-
-
-
-
-
-
-
-
-
-
 // @Todo: Cleanup.
-// @Todo: Capture grabbed state.
-// @Todo: Get resurrect variable.
 // @Todo: Quick Drive.
 // @Todo: Color Toggle.
 // @Todo: Air Stinger, Air Lunar Phase and Nevan instant Vortex.
-
-
-
-
-
-
 
 module;
 #include "../Core/Core.h"
@@ -42,28 +24,9 @@ import Model;
 
 export Vector<byte8 *> Actor_actorBaseAddr;
 
-
-
-
 typedef byte8 *(__fastcall * GetActorBaseAddressByEffectData_t)(byte8 * effectDataAddr);
 
 GetActorBaseAddressByEffectData_t GetActorBaseAddressByEffectData = 0;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export template <typename T>
 void SetMainActor(T & actorData)

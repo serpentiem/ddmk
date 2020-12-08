@@ -33,39 +33,61 @@ export byte8  * appBaseAddr = 0;
 export uint32   appSize     = 0;
 export HWND     appWindow   = 0;
 
-SYSTEM_INFO   systemInfo = {};
-byte8       * g_addr     = 0;
-uint32        g_pos      = 0;
+SYSTEM_INFO systemInfo = {};
 
 export template <typename T>
-bool Align(T & pos, T boundary, byte8 * addr = 0, byte8 pad = 0)
+T Align
+(
+	T & pos,
+	T boundary,
+	byte8 * addr = 0,
+	byte8 pad = 0
+)
 {
 	T remainder = (pos % boundary);
+
 	if (remainder)
 	{
 		T size = (boundary - remainder);
+
 		if (addr)
 		{
 			memset((addr + pos), pad, size);
 		}
+
 		pos += size;
-		return true;
 	}
-	return false;
+
+	return remainder;
 }
 
-export byte8 * Alloc(uint32 size)
+export byte8 * Alloc
+(
+	uint32 size,
+	byte8 * dest = 0
+)
 {
 	byte8 * addr = 0;
 	byte32 error = 0;
 
 	SetLastError(0);
-	addr = reinterpret_cast<byte8 *>(VirtualAlloc(0, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
+
+	addr = reinterpret_cast<byte8 *>
+	(
+		VirtualAlloc
+		(
+			dest,
+			size,
+			MEM_COMMIT | MEM_RESERVE,
+			PAGE_EXECUTE_READWRITE
+		)
+	);
+
 	error = GetLastError();
+
 	if (!addr)
 	{
 		Log("VirtualAlloc failed. %X", error);
-		return 0;
 	}
 
 	return addr;
@@ -74,42 +96,70 @@ export byte8 * Alloc(uint32 size)
 export byte8 * AllocEx
 (
 	uint32 size,
-	uint64 pos,
+	uint64 start,
 	uint64 end
 )
 {
-	MEMORY_BASIC_INFORMATION mbi = {};
-	bool match = false;
-	byte8 * addr = 0;
-	byte32 error = 0;
-
 	if constexpr (debug)
 	{
 		LogFunction();
-		Log("size %X", size);
-		Log("pos  %llX", pos);
-		Log("end  %llX", end);
+
+		Log("size  %X", size);
+		Log("start %llX", start);
+		Log("end   %llX", end);
 	}
+
+	byte8 * addr = 0;
+
+	auto pos = start;
+
+	MEMORY_BASIC_INFORMATION mbi = {};
+	bool match = false;
+	byte32 error = 0;
 
 	do
 	{
-		VirtualQuery(reinterpret_cast<void *>(pos), &mbi, sizeof(mbi));
-		if ((mbi.RegionSize >= size) && (mbi.State == MEM_FREE))
+		SetLastError(0);
+
+		if
+		(
+			VirtualQuery
+			(
+				reinterpret_cast<void *>(pos),
+				&mbi,
+				sizeof(mbi)
+			) == 0
+		)
+		{
+			error = GetLastError();
+
+			Log("VirtualQuery failed. %X", error);
+		}
+
+		if
+		(
+			(mbi.RegionSize >= size) &&
+			(mbi.State == MEM_FREE)
+		)
 		{
 			if constexpr (debug)
 			{
-				Log("pos        %llX", pos           );
+				Log("pos        %llX", pos);
 				Log("regionSize %llX", mbi.RegionSize);
-				Log("state      %X"  , mbi.State     );
+				Log("state      %X", mbi.State);
 			}
-			auto result = Align<uint64>(pos, systemInfo.dwAllocationGranularity);
-			if (!result)
+
+			auto remainder = Align<uint64>(pos, systemInfo.dwAllocationGranularity);
+			if (!remainder)
 			{
 				match = true;
+
 				break;
 			}
+
 			continue;
 		}
+
 		pos += mbi.RegionSize;
 	}
 	while (pos < end);
@@ -121,16 +171,24 @@ export byte8 * AllocEx
 
 	addr = reinterpret_cast<byte8 *>(mbi.BaseAddress);
 
-	SetLastError(0);
-	addr = reinterpret_cast<byte8 *>(VirtualAlloc(addr, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
-	error = GetLastError();
-	if (!addr)
-	{
-		Log("VirtualAlloc failed. %X", error);
-		return 0;
-	}
+	addr = Alloc(size, addr);
 
-	VirtualQuery(addr, &mbi, sizeof(mbi));
+	SetLastError(0);
+
+	if
+	(
+		VirtualQuery
+		(
+			addr,
+			&mbi,
+			sizeof(mbi)
+		) == 0
+	)
+	{
+		error = GetLastError();
+
+		Log("VirtualQuery failed. %X", error);
+	}
 
 	if constexpr (debug)
 	{
@@ -161,132 +219,36 @@ export inline byte8 * HighAlloc(uint32 size)
 	);
 }
 
-// @Todo: Update.
-export template <typename T>
-void Write
-(
-	//byte8  * addr,
-	void   * addr,
-	T        value,
-	uint32   padSize  = 0,
-	byte8    padValue = 0x90
-)
+export struct MemoryData
 {
-	constexpr uint32 size = sizeof(T);
-	byte32 protection = 0;
-	VirtualProtect(addr, (size + padSize), PAGE_EXECUTE_READWRITE, &protection);
+	byte8 * dataAddr;
+	uint32 pos;
+	uint32 end;
+	uint32 count;
+
+	bool Init(uint32 dataSize);
+};
+
+bool MemoryData::Init(uint32 dataSize)
+{
+	dataAddr = HighAlloc(dataSize);
+	if (!dataAddr)
 	{
-		*(T *)addr = value;
-		if (padSize)
-		{
-			//memset((addr + size), padValue, padSize);
-			memset((reinterpret_cast<byte8 *>(addr) + size), padValue, padSize);
-		}
+		Log("HighAlloc failed.");
+
+		return false;
 	}
-	VirtualProtect(addr, (size + padSize), protection, &protection);
+
+	memset(dataAddr, 0xCC, dataSize);
+
+	end = dataSize;
+
+	return true;
 }
 
-export void WriteAddress
-(
-	byte8  * addr,
-	void   * dest,
-	uint32   size,
-	byte8    value    = 0,
-	uint32   padSize  = 0,
-	byte8    padValue = 0x90,
-	uint32   off      = 0
-)
-{
-	byte32 protection = 0;
+export MemoryData memoryData = {};
 
-	VirtualProtect(addr, (size + padSize), PAGE_EXECUTE_READWRITE, &protection);
-
-	if (value)
-	{
-		addr[0] = value;
-	}
-
-	if (size == 2)
-	{
-		*reinterpret_cast<int8 *>(addr + (size - 1 - off)) = static_cast<int8>(reinterpret_cast<byte8 *>(dest) - addr - size);
-	}
-	else
-	{
-		*reinterpret_cast<int32 *>(addr + (size - 4 - off)) = static_cast<int32>(reinterpret_cast<byte8 *>(dest) - addr - size);
-	}
-
-	if (padSize)
-	{
-		memset((addr + size), padValue, padSize);
-	}
-
-	VirtualProtect(addr, (size + padSize), protection, &protection);
-}
-
-export inline void WriteCall
-(
-	byte8  * addr,
-	void   * dest,
-	uint32   padSize  = 0,
-	byte8    padValue = 0x90
-)
-{
-	WriteAddress(addr, dest, 5, 0xE8, padSize, padValue);
-}
-
-export inline void WriteJump
-(
-	byte8  * addr,
-	void   * dest,
-	uint32   padSize  = 0,
-	byte8    padValue = 0x90
-)
-{
-	WriteAddress(addr, dest, 5, 0xE9, padSize, padValue);
-}
-
-// @Todo: Remove.
-export __declspec(deprecated) void vp_memset
-(
-	void   * addr,
-	byte8    value,
-	uint32   size
-)
-{
-	byte32 protection = 0;
-	VirtualProtect(addr, size, PAGE_EXECUTE_READWRITE, &protection);
-	{
-		memset(addr, value, size);
-	}
-	VirtualProtect(addr, size, protection, &protection);
-}
-
-export __declspec(deprecated) void vp_memcpy
-(
-	void       * dest,
-	const void * addr,
-	uint32       size
-)
-{
-	byte32 protection = 0;
-	VirtualProtect(dest, size, PAGE_EXECUTE_READWRITE, &protection);
-	{
-		memcpy(dest, addr, size);
-	}
-	VirtualProtect(dest, size, protection, &protection);
-}
-
-
-
-
-
-
-
-
-
-
-uint32 failCounter = 0;
-
+// @Research: Prefer void *.
 export struct ProtectionHelper
 {
 	struct Metadata
@@ -329,11 +291,12 @@ void ProtectionHelper::Push
 	uint32 size
 )
 {
-	LogFunction();
+	if constexpr (debug)
+	{
+		LogFunction();
 
-	Log("count %u", count);
-
-
+		Log("count %u", count);
+	}
 
 	auto & metadata = metadataAddr[count];
 
@@ -353,40 +316,33 @@ void ProtectionHelper::Push
 		) == 0
 	)
 	{
-		Log
-		(
-			"VirtualProtect failed. %llX %u %X",
-			addr,
-			size,
-			error
-		);
+		error = GetLastError();
 
-		failCounter++;
-
-		Log("failCounter %u", failCounter);
-
-		//return;
+		Log("VirtualProtect failed. %X", error);
 	}
 
 	metadata.addr = addr;
 	metadata.size = size;
 	metadata.protection = protection;
 
-	Log("addr       %llX", addr);
-	Log("size       %u", size);
-	Log("protection %X", protection);
-
-
+	if constexpr (debug)
+	{
+		Log("metadata.addr       %llX", metadata.addr);
+		Log("metadata.size       %u", metadata.size);
+		Log("metadata.protection %X", metadata.protection);
+	}
 
 	count++;
 }
 
 void ProtectionHelper::Pop()
 {
+	if constexpr (debug)
+	{
+		LogFunction();
 
-	LogFunction();
-
-	Log("count %u", count);
+		Log("count %u", count);
+	}
 
 	if (count < 1)
 	{
@@ -411,27 +367,17 @@ void ProtectionHelper::Pop()
 		) == 0
 	)
 	{
-		Log
-		(
-			"VirtualProtect failed. %llX %u %X",
-			metadata.addr,
-			metadata.size,
-			error
-		);
+		error = GetLastError();
 
-		failCounter++;
-
-		Log("failCounter %u", failCounter);
-
-		//return;
+		Log("VirtualProtect failed. %X", error);
 	}
 
-	Log("addr       %llX", metadata.addr);
-	Log("size       %u", metadata.size);
-	Log("protection %X", metadata.protection);
-
-
-
+	if constexpr (debug)
+	{
+		Log("metadata.addr       %llX", metadata.addr);
+		Log("metadata.size       %u", metadata.size);
+		Log("metadata.protection %X", metadata.protection);
+	}
 
 	metadata.addr = 0;
 	metadata.size = 0;
@@ -448,7 +394,6 @@ export enum
 	MemoryFlags_VirtualProtectSource      = 1 << 1,
 };
 
-// @Todo: Implement ProtectionHelper.
 export void SetMemory
 (
 	void * addr,
@@ -461,13 +406,7 @@ export void SetMemory
 
 	if (flags & MemoryFlags_VirtualProtectDestination)
 	{
-		VirtualProtect
-		(
-			addr,
-			size,
-			PAGE_EXECUTE_READWRITE,
-			&protection
-		);
+		protectionHelper.Push(reinterpret_cast<byte8 *>(addr), size);
 	}
 
 	memset
@@ -479,13 +418,7 @@ export void SetMemory
 
 	if (flags & MemoryFlags_VirtualProtectDestination)
 	{
-		VirtualProtect
-		(
-			addr,
-			size,
-			protection,
-			&protection
-		);
+		protectionHelper.Pop();
 	}
 }
 
@@ -497,29 +430,14 @@ export void CopyMemory
 	byte32 flags = 0
 )
 {
-	byte32 protectionDestination = 0;
-	byte32 protectionSource = 0;
-
 	if (flags & MemoryFlags_VirtualProtectDestination)
 	{
-		VirtualProtect
-		(
-			destination,
-			size,
-			PAGE_EXECUTE_READWRITE,
-			&protectionDestination
-		);
+		protectionHelper.Push(reinterpret_cast<byte8 *>(destination), size);
 	}
 
 	if (flags & MemoryFlags_VirtualProtectSource)
 	{
-		VirtualProtect
-		(
-			const_cast<void *>(source),
-			size,
-			PAGE_EXECUTE_READWRITE,
-			&protectionSource
-		);
+		protectionHelper.Push(reinterpret_cast<byte8 *>(const_cast<void *>(source)), size);
 	}
 
 	memcpy
@@ -529,41 +447,29 @@ export void CopyMemory
 		size
 	);
 
-	if (flags & MemoryFlags_VirtualProtectDestination)
-	{
-		VirtualProtect
-		(
-			destination,
-			size,
-			protectionDestination,
-			&protectionDestination
-		);
-	}
-
 	if (flags & MemoryFlags_VirtualProtectSource)
 	{
-		VirtualProtect
-		(
-			const_cast<void *>(source),
-			size,
-			protectionSource,
-			&protectionSource
-		);
+		protectionHelper.Pop();
+	}
+
+	if (flags & MemoryFlags_VirtualProtectDestination)
+	{
+		protectionHelper.Pop();
 	}
 }
 
-// @Todo: Prefer off instead of dataAddr for metadata.
 export struct BackupHelper
 {
 	struct Metadata
 	{
-		byte8 * dataAddr;
+		uint32 off;
 		uint32 size;
 		byte8 * addr;
 	};
 
 	byte8 * dataAddr;
 	uint32 pos;
+	uint32 end;
 	Metadata * metadataAddr;
 	uint32 count;
 
@@ -597,6 +503,8 @@ bool BackupHelper::Init
 		return false;
 	}
 
+	end = dataSize;
+
 	metadataAddr = reinterpret_cast<Metadata *>(HighAlloc(metadataSize));
 	if (!metadataAddr)
 	{
@@ -614,40 +522,23 @@ void BackupHelper::Save
 	uint32 size
 )
 {
-	byte32 protection = 0;
-
-	VirtualProtect
-	(
-		addr,
-		size,
-		PAGE_EXECUTE_READWRITE,
-		&protection
-	);
-
 	CopyMemory
 	(
 		(dataAddr + pos),
 		addr,
-		size
+		size,
+		MemoryFlags_VirtualProtectSource
 	);
 
 	auto & metadata = metadataAddr[count];
 
-	metadata.addr = addr;
+	metadata.off = pos;
 	metadata.size = size;
-	metadata.dataAddr = (dataAddr + pos);
+	metadata.addr = addr;
 
 	pos += size;
 
 	count++;
-
-	VirtualProtect
-	(
-		addr,
-		size,
-		protection,
-		&protection
-	);
 }
 
 void BackupHelper::Restore(byte8 * addr)
@@ -664,7 +555,7 @@ void BackupHelper::Restore(byte8 * addr)
 		CopyMemory
 		(
 			metadata.addr,
-			metadata.dataAddr,
+			(dataAddr + metadata.off),
 			metadata.size,
 			MemoryFlags_VirtualProtectDestination
 		);
@@ -680,6 +571,96 @@ void BackupHelper::Restore(byte8 * addr)
 }
 
 export BackupHelper backupHelper = {};
+
+export template <typename T>
+void Write
+(
+	void   * addr,
+	T        value,
+	uint32   padSize  = 0,
+	byte8    padValue = 0x90
+)
+{
+	constexpr uint32 size = sizeof(T);
+
+	protectionHelper.Push(reinterpret_cast<byte8 *>(addr), size);
+
+	*reinterpret_cast<T *>(addr) = value;
+
+	if (padSize)
+	{
+		SetMemory
+		(
+			(reinterpret_cast<byte8 *>(addr) + size),
+			padValue,
+			padSize
+		);
+	}
+
+	protectionHelper.Pop();
+}
+
+export void WriteAddress
+(
+	byte8  * addr,
+	void   * dest,
+	uint32   size,
+	byte8    value    = 0,
+	uint32   padSize  = 0,
+	byte8    padValue = 0x90,
+	uint32   off      = 0
+)
+{
+	protectionHelper.Push(addr, (size + padSize));
+
+	if (value)
+	{
+		addr[0] = value;
+	}
+
+	if (size == 2)
+	{
+		*reinterpret_cast<int8 *>(addr + (size - 1 - off)) = static_cast<int8>(reinterpret_cast<byte8 *>(dest) - addr - size);
+	}
+	else
+	{
+		*reinterpret_cast<int32 *>(addr + (size - 4 - off)) = static_cast<int32>(reinterpret_cast<byte8 *>(dest) - addr - size);
+	}
+
+	if (padSize)
+	{
+		SetMemory
+		(
+			(addr + size),
+			padValue,
+			padSize
+		);
+	}
+
+	protectionHelper.Pop();
+}
+
+export inline void WriteCall
+(
+	byte8  * addr,
+	void   * dest,
+	uint32   padSize  = 0,
+	byte8    padValue = 0x90
+)
+{
+	WriteAddress(addr, dest, 5, 0xE8, padSize, padValue);
+}
+
+export inline void WriteJump
+(
+	byte8  * addr,
+	void   * dest,
+	uint32   padSize  = 0,
+	byte8    padValue = 0x90
+)
+{
+	WriteAddress(addr, dest, 5, 0xE9, padSize, padValue);
+}
 
 export struct Function
 {
@@ -730,9 +711,9 @@ export Function CreateFunction
 		pos += bufferSize;
 	};
 
-	Align<uint32>(g_pos, 0x10);
+	Align<uint32>(memoryData.pos, 0x10);
 
-	func.addr = (g_addr + g_pos);
+	func.addr = (memoryData.dataAddr + memoryData.pos);
 
 	func.sect0 = (func.addr + pos);
 	pos += size0;
@@ -910,133 +891,21 @@ export Function CreateFunction
 		}
 	}
 
-	g_pos += pos;
+	memoryData.pos += pos;
 
 	if (cacheSize)
 	{
-		Align<uint32>(g_pos, 0x10);
+		Align<uint32>(memoryData.pos, 0x10);
 
-		func.cache = reinterpret_cast<byte8 **>(g_addr + g_pos);
+		func.cache = reinterpret_cast<byte8 **>(memoryData.dataAddr + memoryData.pos);
 
-		g_pos += cacheSize;
+		memoryData.pos += cacheSize;
 	}
 
 	return func;
 }
 
-// void Compare
-// (
-// 	byte8 * addr,
-// 	const byte8 * addr2,
-// 	uint32 size
-// )
-// {
-// 	bool mismatch = false;
-
-// 	byte32 protection = 0;
-
-// 	VirtualProtect
-// 	(
-// 		addr,
-// 		size,
-// 		PAGE_EXECUTE_READWRITE,
-// 		&protection
-// 	);
-
-// 	for_all(uint32, index, size)
-// 	{
-// 		if (addr[index] != addr2[index])
-// 		{
-// 			mismatch = true;
-
-// 			break;
-// 		}
-// 	}
-
-// 	if (mismatch)
-// 	{
-// 		char buffer[512];
-// 		uint32 pos;
-
-// 		auto off = static_cast<uint32>(addr - appBaseAddr);
-
-// 		snprintf
-// 		(
-// 			buffer,
-// 			sizeof(buffer),
-// 			"Data Mismatch dmc3.exe+%X",
-// 			off
-// 		);
-
-// 		Log(buffer);
-
-// 		snprintf
-// 		(
-// 			buffer,
-// 			sizeof(buffer),
-// 			"app"
-// 		);
-
-// 		pos = 3;
-
-// 		for_all(uint32, index, size)
-// 		{
-// 			snprintf
-// 			(
-// 				(buffer + pos),
-// 				(sizeof(buffer) - pos),
-// 				" %02X",
-// 				addr[index]
-// 			);
-
-// 			pos += 3;
-// 		}
-
-// 		Log(buffer);
-
-// 		snprintf
-// 		(
-// 			buffer,
-// 			sizeof(buffer),
-// 			"mod"
-// 		);
-
-// 		pos = 3;
-
-// 		for_all(uint32, index, size)
-// 		{
-// 			snprintf
-// 			(
-// 				(buffer + pos),
-// 				(sizeof(buffer) - pos),
-// 				" %02X",
-// 				addr2[index]
-// 			);
-
-// 			pos += 3;
-// 		}
-
-// 		Log(buffer);
-
-// 		MessageBoxA
-// 		(
-// 			0,
-// 			"Data Mismatch",
-// 			0,
-// 			MB_ICONERROR
-// 		);
-// 	}
-
-// 	VirtualProtect
-// 	(
-// 		addr,
-// 		size,
-// 		protection,
-// 		&protection
-// 	);
-// }
-
-export bool Core_Memory_Init(uint32 size = 0)
+export bool Core_Memory_Init()
 {
 	LogFunction();
 
@@ -1055,21 +924,84 @@ export bool Core_Memory_Init(uint32 size = 0)
 	Log("appStart %llX", appBaseAddr);
 	Log("appEnd   %llX", (appBaseAddr + appSize));
 
-	if (!size)
-	{
-		return true;
-	}
-
 	GetSystemInfo(&systemInfo);
-
-	g_addr = HighAlloc(size);
-	if (!g_addr)
-	{
-		Log("HighAlloc failed.");
-		return false;
-	}
-
-	memset(g_addr, 0xCC, size);
 
 	return true;
 }
+
+
+
+
+
+
+
+
+// @Todo: Create structure.
+// byte8       * memoryData.dataAddr     = 0;
+// uint32        memoryData.pos      = 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// SetLastError(0);
+	// addr = reinterpret_cast<byte8 *>(VirtualAlloc(addr, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
+	// error = GetLastError();
+	// if (!addr)
+	// {
+	// 	Log("VirtualAlloc failed. %X", error);
+	// 	return 0;
+	// }
+
+
+
+
+
+
+	//VirtualQuery(addr, &mbi, sizeof(mbi));
+
+
+// @Todo: Remove.
+// export __declspec(deprecated) void vp_memset
+// (
+// 	void   * addr,
+// 	byte8    value,
+// 	uint32   size
+// )
+// {
+// 	byte32 protection = 0;
+// 	VirtualProtect(addr, size, PAGE_EXECUTE_READWRITE, &protection);
+// 	{
+// 		memset(addr, value, size);
+// 	}
+// 	VirtualProtect(addr, size, protection, &protection);
+// }
+
+// export __declspec(deprecated) void vp_memcpy
+// (
+// 	void       * dest,
+// 	const void * addr,
+// 	uint32       size
+// )
+// {
+// 	byte32 protection = 0;
+// 	VirtualProtect(dest, size, PAGE_EXECUTE_READWRITE, &protection);
+// 	{
+// 		memcpy(dest, addr, size);
+// 	}
+// 	VirtualProtect(dest, size, protection, &protection);
+// }
+
+
+
+
+

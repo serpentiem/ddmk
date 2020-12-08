@@ -16,6 +16,7 @@ export enum MEMORY_SIZE
 
 constexpr uint32 vectorItemCount = 4096;
 
+// @Todo: Rename.
 export byte8 * Memory_main = 0;
 
 byte8 * effectManagerData = 0;
@@ -118,6 +119,7 @@ export void Memory_ToggleExtendVectors(bool enable)
 	}
 }
 
+// @Todo: Remove.
 export byte8 * GetMasterPointer()
 {
 	auto dest = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC8F970 + 0x1478 + 0x10);

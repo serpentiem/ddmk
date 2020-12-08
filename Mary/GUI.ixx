@@ -475,6 +475,26 @@ void Overlay2()
 		ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_16]);
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
 
+
+		ImGui::Text("Memory Data");
+		ImGui::Text("pos   %u", memoryData.pos);
+		ImGui::Text("end   %u", memoryData.end);
+		ImGui::Text("count %u", memoryData.count);
+		ImGui::Text("");
+
+		ImGui::Text("Backup Helper");
+		ImGui::Text("pos   %u", backupHelper.pos);
+		ImGui::Text("end   %u", backupHelper.end);
+		ImGui::Text("count %u", backupHelper.count);
+		ImGui::Text("");
+
+
+
+
+
+
+
+
 		ImGui::Text("Actor");
 
 		for_all(uint32, index, Actor_actorBaseAddr.count)
@@ -515,8 +535,7 @@ void Overlay2()
 		// 	ImGui::Text("executeFunction  %u", executeFunction);
 		// }
 
-		ImGui::Text("Backup");
-		ImGui::Text("count %u", backupHelper.count);
+
 
 
 		ImGui::PopStyleColor();
