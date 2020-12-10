@@ -36,3 +36,14 @@ export auto & InCutscene()
 {
 	return *reinterpret_cast<bool *>(appBaseAddr + 0x5D113D);
 }
+
+export bool InCredits()
+{
+	auto pool = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E28);
+	if (!pool)
+	{
+		return false;
+	}
+
+	return *reinterpret_cast<bool *>(pool + 0x11);
+}

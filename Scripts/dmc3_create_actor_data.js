@@ -67,64 +67,29 @@ var items =
 
 	[ "[2]", "byte8"                  , 0x3C50                           ],
 
-	[ "actionData[6]"                       , "byte8 *"                 , 0x3DD0                           ],
-	[ "eventData[2]"                        , "ActorEventData"        , 0x3E00                           ],
-	[ "[32]"                                , "uint8"                   , 0x3E10                           ],
-	[ "motionTimer"                         , "float"                 , 0x3E34                           ],
-	[ "idleTimer"                           , "float"                 , 0x3E38                           ],
-	[ "permissions"                         , "byte32"                  , 0x3E60                           ],
-	[ "state"                               , "byte32"                  , 0x3E64                           ],
-	[ "lastState"                           , "byte32"                  , 0x3E68                           ],
+	[ "actionData[6]"          , "byte8 *"       , 0x3DD0 ],
+	[ "eventData[2]"           , "ActorEventData", 0x3E00 ],
+	[ "[32]"                   , "uint8"         , 0x3E10 ],
+	[ "motionTimer"            , "float"         , 0x3E34 ],
+	[ "idleTimer"              , "float"         , 0x3E38 ],
+	[ "permissions"            , "byte32"        , 0x3E60 ],
+	[ "state"                  , "byte32"        , 0x3E64 ],
+	[ "lastState"              , "byte32"        , 0x3E68 ],
+	[ "activeModelIndex"       , "uint32"        , 0x3E6C ],
+	[ "queuedModelIndex"       , "uint32"        , 0x3E70 ],
+	[ "devilModels[3]"         , "uint32"        , 0x3E74 ],
+	[ "modelState"             , "uint8"         , 0x3E80 ],
+	[ "lockOn"                 , "bool32"        , 0x3E84 ],
+	[ "activeModelIndexMirror" , "uint32"        , 0x3E88 ],
+	[ "activeDevil"            , "uint32"        , 0x3E8C ],
+	[ "airRaid"                , "uint32"        , 0x3E90 ],
+	[ "mode"                   , "uint32"        , 0x3E94 ],
+	[ "dead"                   , "bool"          , 0x3E99 ],
+	[ "devil"                  , "bool"          , 0x3E9B ],
+	[ "costume"                , "uint8"         , 0x3E9E ],
+	[ "sparda,neroAngelo"      , "bool,bool"     , 0x3E9F ],
 
 
-
-
-
-	[ "activeModelIndex"                    , "uint32"                  , 0x3E6C                           ],
-	[ "queuedModelIndex"                    , "uint32"                  , 0x3E70                           ],
-
-	[ "devilModels[3]"                      , "uint32"                  , 0x3E74                           ],
-
-	[ "modelState"                          , "uint8"                   , 0x3E80                           ],
-	[ "lockOn"                              , "bool32"                  , 0x3E84                           ],
-
-
-
-	
-	[ "activeModelIndexMirror"              , "uint32"                  , 0x3E88                           ],
-
-
-
-
-
-
-	[ "activeDevil"                         , "uint32"                  , 0x3E8C                           ],
-
-	[ "airRaid"                             , "uint32"                  , 0x3E90                           ],
-	[ "mode"                                , "uint32"                  , 0x3E94                           ],
-	[ "devil"                               , "bool"                    , 0x3E9B                           ],
-	[ "costume"                             , "uint8"                   , 0x3E9E                           ],
-
-
-
-
-	[ "sparda,neroAngelo"                              , "bool,bool"                    , 0x3E9F               ],
-
-
-	
-
-
-	// [ "sparda"                              , "bool"                    , 0x3E9F, CHAR_DANTE               ],
-	// [ "neroAngelo"                          , "bool"                    , 0x3E9F, CHAR_VERGIL              ],
-
-
-
-	//[ "sparda/neroAngelo"                          , "bool/bool"                    , 0x3E9F,   ],
-
-	//[ "sparda/neroAngelo/mundus", "bool/uint32/uint64", 0x3E9F ],
-
-
-	
 
 
 

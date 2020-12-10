@@ -1,3 +1,6 @@
+// @Todo: Update byte8 * addr philosophy.
+// @Todo: Move helpers.
+// @Todo: Eradicate last memsets and memcpys.
 // @Todo: Merge File, Log and Memory when doing the Windows module.
 
 module;
@@ -402,8 +405,6 @@ export void SetMemory
 	byte32 flags = 0
 )
 {
-	byte32 protection = 0;
-
 	if (flags & MemoryFlags_VirtualProtectDestination)
 	{
 		protectionHelper.Push(reinterpret_cast<byte8 *>(addr), size);
@@ -928,80 +929,3 @@ export bool Core_Memory_Init()
 
 	return true;
 }
-
-
-
-
-
-
-
-
-// @Todo: Create structure.
-// byte8       * memoryData.dataAddr     = 0;
-// uint32        memoryData.pos      = 0;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// SetLastError(0);
-	// addr = reinterpret_cast<byte8 *>(VirtualAlloc(addr, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
-	// error = GetLastError();
-	// if (!addr)
-	// {
-	// 	Log("VirtualAlloc failed. %X", error);
-	// 	return 0;
-	// }
-
-
-
-
-
-
-	//VirtualQuery(addr, &mbi, sizeof(mbi));
-
-
-// @Todo: Remove.
-// export __declspec(deprecated) void vp_memset
-// (
-// 	void   * addr,
-// 	byte8    value,
-// 	uint32   size
-// )
-// {
-// 	byte32 protection = 0;
-// 	VirtualProtect(addr, size, PAGE_EXECUTE_READWRITE, &protection);
-// 	{
-// 		memset(addr, value, size);
-// 	}
-// 	VirtualProtect(addr, size, protection, &protection);
-// }
-
-// export __declspec(deprecated) void vp_memcpy
-// (
-// 	void       * dest,
-// 	const void * addr,
-// 	uint32       size
-// )
-// {
-// 	byte32 protection = 0;
-// 	VirtualProtect(dest, size, PAGE_EXECUTE_READWRITE, &protection);
-// 	{
-// 		memcpy(dest, addr, size);
-// 	}
-// 	VirtualProtect(dest, size, protection, &protection);
-// }
-
-
-
-
-

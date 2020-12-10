@@ -1894,7 +1894,9 @@ struct ActorData
 	uint32 activeDevil; // 0x3E8C
 	uint32 airRaid; // 0x3E90
 	uint32 mode; // 0x3E94
-	_(3);
+	_(1);
+	bool dead; // 0x3E99
+	_(1);
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
@@ -2056,8 +2058,8 @@ struct ActorData
 	uint8 newTrickUpCount; // 0x1CAE2
 	uint8 newTrickDownCount; // 0x1CAE3
 	_(12);
-	uint32 newEffectIndices[16]; // 0x1CAF0
-	uint32 newLastVar; // 0x1CB30
+	uint32 newEffectIndices[12]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CB20
 
 	operator byte8 *()
 	{
@@ -2136,7 +2138,9 @@ struct ActorDataDante
 	uint32 activeDevil; // 0x3E8C
 	uint32 airRaid; // 0x3E90
 	uint32 mode; // 0x3E94
-	_(3);
+	_(1);
+	bool dead; // 0x3E99
+	_(1);
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
@@ -2315,8 +2319,8 @@ struct ActorDataDante
 	uint8 newTrickUpCount; // 0x1CAE2
 	uint8 newTrickDownCount; // 0x1CAE3
 	_(12);
-	uint32 newEffectIndices[16]; // 0x1CAF0
-	uint32 newLastVar; // 0x1CB30
+	uint32 newEffectIndices[12]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CB20
 
 	operator byte8 *()
 	{
@@ -2395,7 +2399,9 @@ struct ActorDataBob
 	uint32 activeDevil; // 0x3E8C
 	uint32 airRaid; // 0x3E90
 	uint32 mode; // 0x3E94
-	_(3);
+	_(1);
+	bool dead; // 0x3E99
+	_(1);
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
@@ -2557,8 +2563,8 @@ struct ActorDataBob
 	uint8 newTrickUpCount; // 0x1CAE2
 	uint8 newTrickDownCount; // 0x1CAE3
 	_(12);
-	uint32 newEffectIndices[16]; // 0x1CAF0
-	uint32 newLastVar; // 0x1CB30
+	uint32 newEffectIndices[12]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CB20
 
 	operator byte8 *()
 	{
@@ -2637,7 +2643,9 @@ struct ActorDataLady
 	uint32 activeDevil; // 0x3E8C
 	uint32 airRaid; // 0x3E90
 	uint32 mode; // 0x3E94
-	_(3);
+	_(1);
+	bool dead; // 0x3E99
+	_(1);
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
@@ -2799,8 +2807,8 @@ struct ActorDataLady
 	uint8 newTrickUpCount; // 0x1CAE2
 	uint8 newTrickDownCount; // 0x1CAE3
 	_(12);
-	uint32 newEffectIndices[16]; // 0x1CAF0
-	uint32 newLastVar; // 0x1CB30
+	uint32 newEffectIndices[12]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CB20
 
 	operator byte8 *()
 	{
@@ -2879,7 +2887,9 @@ struct ActorDataVergil
 	uint32 activeDevil; // 0x3E8C
 	uint32 airRaid; // 0x3E90
 	uint32 mode; // 0x3E94
-	_(3);
+	_(1);
+	bool dead; // 0x3E99
+	_(1);
 	bool devil; // 0x3E9B
 	_(2);
 	uint8 costume; // 0x3E9E
@@ -3049,8 +3059,8 @@ struct ActorDataVergil
 	uint8 newTrickUpCount; // 0x1CAE2
 	uint8 newTrickDownCount; // 0x1CAE3
 	_(12);
-	uint32 newEffectIndices[16]; // 0x1CAF0
-	uint32 newLastVar; // 0x1CB30
+	uint32 newEffectIndices[12]; // 0x1CAF0
+	uint32 newLastVar; // 0x1CB20
 
 	operator byte8 *()
 	{
@@ -3106,6 +3116,7 @@ static_assert(offsetof(ActorData, activeModelIndexMirror) == 0x3E88);
 static_assert(offsetof(ActorData, activeDevil) == 0x3E8C);
 static_assert(offsetof(ActorData, airRaid) == 0x3E90);
 static_assert(offsetof(ActorData, mode) == 0x3E94);
+static_assert(offsetof(ActorData, dead) == 0x3E99);
 static_assert(offsetof(ActorData, devil) == 0x3E9B);
 static_assert(offsetof(ActorData, costume) == 0x3E9E);
 static_assert(offsetof(ActorData, sparda) == 0x3E9F);
@@ -3224,7 +3235,7 @@ static_assert(offsetof(ActorData, newAirTrickCount) == 0x1CAE1);
 static_assert(offsetof(ActorData, newTrickUpCount) == 0x1CAE2);
 static_assert(offsetof(ActorData, newTrickDownCount) == 0x1CAE3);
 static_assert(offsetof(ActorData, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorData, newLastVar) == 0x1CB30);
+static_assert(offsetof(ActorData, newLastVar) == 0x1CB20);
 
 static_assert(offsetof(ActorDataDante, status) == 8);
 static_assert(offsetof(ActorDataDante, speed) == 0x14);
@@ -3274,6 +3285,7 @@ static_assert(offsetof(ActorDataDante, activeModelIndexMirror) == 0x3E88);
 static_assert(offsetof(ActorDataDante, activeDevil) == 0x3E8C);
 static_assert(offsetof(ActorDataDante, airRaid) == 0x3E90);
 static_assert(offsetof(ActorDataDante, mode) == 0x3E94);
+static_assert(offsetof(ActorDataDante, dead) == 0x3E99);
 static_assert(offsetof(ActorDataDante, devil) == 0x3E9B);
 static_assert(offsetof(ActorDataDante, costume) == 0x3E9E);
 static_assert(offsetof(ActorDataDante, sparda) == 0x3E9F);
@@ -3403,7 +3415,7 @@ static_assert(offsetof(ActorDataDante, newAirTrickCount) == 0x1CAE1);
 static_assert(offsetof(ActorDataDante, newTrickUpCount) == 0x1CAE2);
 static_assert(offsetof(ActorDataDante, newTrickDownCount) == 0x1CAE3);
 static_assert(offsetof(ActorDataDante, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorDataDante, newLastVar) == 0x1CB30);
+static_assert(offsetof(ActorDataDante, newLastVar) == 0x1CB20);
 
 static_assert(offsetof(ActorDataBob, status) == 8);
 static_assert(offsetof(ActorDataBob, speed) == 0x14);
@@ -3453,6 +3465,7 @@ static_assert(offsetof(ActorDataBob, activeModelIndexMirror) == 0x3E88);
 static_assert(offsetof(ActorDataBob, activeDevil) == 0x3E8C);
 static_assert(offsetof(ActorDataBob, airRaid) == 0x3E90);
 static_assert(offsetof(ActorDataBob, mode) == 0x3E94);
+static_assert(offsetof(ActorDataBob, dead) == 0x3E99);
 static_assert(offsetof(ActorDataBob, devil) == 0x3E9B);
 static_assert(offsetof(ActorDataBob, costume) == 0x3E9E);
 static_assert(offsetof(ActorDataBob, sparda) == 0x3E9F);
@@ -3571,7 +3584,7 @@ static_assert(offsetof(ActorDataBob, newAirTrickCount) == 0x1CAE1);
 static_assert(offsetof(ActorDataBob, newTrickUpCount) == 0x1CAE2);
 static_assert(offsetof(ActorDataBob, newTrickDownCount) == 0x1CAE3);
 static_assert(offsetof(ActorDataBob, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorDataBob, newLastVar) == 0x1CB30);
+static_assert(offsetof(ActorDataBob, newLastVar) == 0x1CB20);
 
 static_assert(offsetof(ActorDataLady, status) == 8);
 static_assert(offsetof(ActorDataLady, speed) == 0x14);
@@ -3621,6 +3634,7 @@ static_assert(offsetof(ActorDataLady, activeModelIndexMirror) == 0x3E88);
 static_assert(offsetof(ActorDataLady, activeDevil) == 0x3E8C);
 static_assert(offsetof(ActorDataLady, airRaid) == 0x3E90);
 static_assert(offsetof(ActorDataLady, mode) == 0x3E94);
+static_assert(offsetof(ActorDataLady, dead) == 0x3E99);
 static_assert(offsetof(ActorDataLady, devil) == 0x3E9B);
 static_assert(offsetof(ActorDataLady, costume) == 0x3E9E);
 static_assert(offsetof(ActorDataLady, sparda) == 0x3E9F);
@@ -3739,7 +3753,7 @@ static_assert(offsetof(ActorDataLady, newAirTrickCount) == 0x1CAE1);
 static_assert(offsetof(ActorDataLady, newTrickUpCount) == 0x1CAE2);
 static_assert(offsetof(ActorDataLady, newTrickDownCount) == 0x1CAE3);
 static_assert(offsetof(ActorDataLady, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorDataLady, newLastVar) == 0x1CB30);
+static_assert(offsetof(ActorDataLady, newLastVar) == 0x1CB20);
 
 static_assert(offsetof(ActorDataVergil, status) == 8);
 static_assert(offsetof(ActorDataVergil, speed) == 0x14);
@@ -3789,6 +3803,7 @@ static_assert(offsetof(ActorDataVergil, activeModelIndexMirror) == 0x3E88);
 static_assert(offsetof(ActorDataVergil, activeDevil) == 0x3E8C);
 static_assert(offsetof(ActorDataVergil, airRaid) == 0x3E90);
 static_assert(offsetof(ActorDataVergil, mode) == 0x3E94);
+static_assert(offsetof(ActorDataVergil, dead) == 0x3E99);
 static_assert(offsetof(ActorDataVergil, devil) == 0x3E9B);
 static_assert(offsetof(ActorDataVergil, costume) == 0x3E9E);
 static_assert(offsetof(ActorDataVergil, sparda) == 0x3E9F);
@@ -3912,7 +3927,7 @@ static_assert(offsetof(ActorDataVergil, newAirTrickCount) == 0x1CAE1);
 static_assert(offsetof(ActorDataVergil, newTrickUpCount) == 0x1CAE2);
 static_assert(offsetof(ActorDataVergil, newTrickDownCount) == 0x1CAE3);
 static_assert(offsetof(ActorDataVergil, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CB30);
+static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CB20);
 
 // $ActorDataEnd
 

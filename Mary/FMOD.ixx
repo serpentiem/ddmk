@@ -4,7 +4,7 @@ module;
 #include "Vars.h"
 export module FMOD;
 
-#define debug true
+#define debug false
 
 export bool FMOD_init = false;
 

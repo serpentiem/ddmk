@@ -32,7 +32,7 @@ import Speed;
 import Training;
 import Window;
 
-#define debug true
+#define debug false
 
 
 
@@ -3504,7 +3504,7 @@ void Main()
 		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
 	}
 
-	if (ImGui::Begin("DDMK 2.7 Mary Nightly 13 November 2020", &g_pause))
+	if (ImGui::Begin("DDMK 2.7 Mary Nightly 10 December 2020", &g_pause))
 	{
 		ImGui::Text("");
 
@@ -3834,7 +3834,11 @@ export void GUI_Render()
 	if (g_pause)
 	{
 		Main();
-		Sound();
+
+		if constexpr (debug)
+		{
+			Sound();
+		}
 	}
 
 	[&]()

@@ -13,7 +13,7 @@ import Global;
 import Model;
 import Sound;
 
-#define debug true
+#define debug false
 
 bool Event_run[MAX_EVENT] = {};
 bool MainLoopOnce_run     = false;

@@ -20,7 +20,7 @@ import Speed;
 import Training;
 import Window;
 
-#define debug true
+#define debug false
 
 uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {

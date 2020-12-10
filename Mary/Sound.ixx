@@ -12,7 +12,7 @@ import FMOD;
 import Global;
 import Internal;
 
-#define debug true
+#define debug false
 
 enum
 {
@@ -351,7 +351,10 @@ bool DbstHelper::Init(uint32 dataSize)
 
 void DbstHelper::Push(DbstMetadata & dbstMetadata)
 {
-	LogFunction();
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
 
 	auto size = (dbstMetadata.size + DBST_METADATA_SIZE);
 
@@ -416,7 +419,10 @@ void HeadHelper::Push
 	uint32 size
 )
 {
-	LogFunction();
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
 
 	CopyMemory
 	(
@@ -427,7 +433,10 @@ void HeadHelper::Push
 
 	pos += size;
 
-	Log("pos %X", pos);
+	if constexpr (debug)
+	{
+		Log("pos %X", pos);
+	}
 
 	Align<uint32>
 	(
@@ -437,7 +446,10 @@ void HeadHelper::Push
 		0xFF
 	);
 
-	Log("pos %X", pos);
+	if constexpr (debug)
+	{
+		Log("pos %X", pos);
+	}
 }
 
 struct ProgHelper
@@ -513,7 +525,10 @@ void ProgHelper::Push
 	uint8 sectIndex
 )
 {
-	LogFunction();
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
 
 	auto & progMetadata = *reinterpret_cast<ProgMetadata *>(dataAddr);
 
@@ -597,7 +612,10 @@ void SmplHelper::Push
 	uint16 vagiItemCount
 )
 {
-	LogFunction();
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
 
 	auto & smplMetadata = *reinterpret_cast<SmplMetadata *>(dataAddr);
 
@@ -668,7 +686,10 @@ bool VagiHelper::Init(uint32 dataSize)
 
 void VagiHelper::Push(VagiItem & vagiItem)
 {
-	LogFunction();
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
 
 	auto & vagiMetadata = *reinterpret_cast<VagiMetadata *>(dataAddr);
 
@@ -700,7 +721,10 @@ VagiItem & VagiHelper::operator[](uint32 itemIndex)
 
 void VagiHelper::UpdateOffsets()
 {
-	LogFunction();
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
 
 	uint32 off = 0;
 
@@ -712,7 +736,10 @@ void VagiHelper::UpdateOffsets()
 
 		off += item.size;
 
-		Log("off %X", item.off);
+		if constexpr (debug)
+		{
+			Log("off %X", item.off);
+		}
 	}
 }
 
@@ -776,7 +803,10 @@ void WaveHelper::Push
 	uint32 size
 )
 {
-	LogFunction();
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
 
 	CopyMemory
 	(
@@ -830,7 +860,10 @@ bool SoundHelper::Init(uint32 dataSize)
 
 void SoundHelper::Push(SoundData & soundData)
 {
-	LogFunction();
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
 
 	constexpr uint32 size = SOUND_DATA_SIZE;
 
@@ -877,7 +910,10 @@ void Decompile
 
 	IntroduceHelpers(helperIndex);
 
-	Log("archive %llX", archive);
+	if constexpr (debug)
+	{
+		Log("archive %llX", archive);
+	}
 
 	if (!IsArchive(archive))
 	{
@@ -895,13 +931,19 @@ void Decompile
 		auto & fileOff = archiveMetadata.fileOffs[fileIndex];
 		auto file = reinterpret_cast<byte8 *>(archive + fileOff);
 
-		Log("fileIndex %u", fileIndex);
-		Log("fileOff %X", fileOff);
-		Log("file %llX", file);
+		if constexpr (debug)
+		{
+			Log("fileIndex %u", fileIndex);
+			Log("fileOff %X", fileOff);
+			Log("file %llX", file);
+		}
 
 		if (IsDbst(file))
 		{
-			Log("Dbst");
+			if constexpr (debug)
+			{
+				Log("Dbst");
+			}
 
 			auto dbstMetadataAddr = file;
 			auto & dbstMetadata = *reinterpret_cast<DbstMetadata *>(dbstMetadataAddr);
@@ -913,8 +955,11 @@ void Decompile
 			auto headMetadataAddr = file;
 			auto & headMetadata = *reinterpret_cast<HeadMetadata *>(headMetadataAddr);
 
-			Log("Head");
-			Log("headMetadataAddr %llX", headMetadataAddr);
+			if constexpr (debug)
+			{
+				Log("Head");
+				Log("headMetadataAddr %llX", headMetadataAddr);
+			}
 
 			auto progMetadataAddr = (file + headMetadata.progMetadataOff);
 
@@ -922,14 +967,20 @@ void Decompile
 			{
 				auto & progMetadata = *reinterpret_cast<ProgMetadata *>(progMetadataAddr);
 
-				Log("Prog");
-				Log("progMetadataAddr %llX", progMetadataAddr);
-				Log("size %X", progMetadata.size);
-				Log("last %u", progMetadata.last);
+				if constexpr (debug)
+				{
+					Log("Prog");
+					Log("progMetadataAddr %llX", progMetadataAddr);
+					Log("size %X", progMetadata.size);
+					Log("last %u", progMetadata.last);
+				}
 
 				auto sectCount = static_cast<uint8>(progMetadata.last + 1);
 
-				Log("sectCount %u", sectCount);
+				if constexpr (debug)
+				{
+					Log("sectCount %u", sectCount);
+				}
 
 				for_all(uint8, sectIndex, sectCount)
 				{
@@ -939,14 +990,20 @@ void Decompile
 						continue;
 					}
 
-					Log("sectOff %X", sectOff);
+					if constexpr (debug)
+					{
+						Log("sectOff %X", sectOff);
+					}
 
 					auto progSectMetadataAddr = (progMetadataAddr + sectOff);
 					auto & progSectMetadata = *reinterpret_cast<ProgSectMetadata *>(progSectMetadataAddr);
 
-					Log("ProgSectMetadata");
-					Log("progSectMetadataAddr %llX", progSectMetadataAddr);
-					Log("itemCount %u", progSectMetadata.itemCount);
+					if constexpr (debug)
+					{
+						Log("ProgSectMetadata");
+						Log("progSectMetadataAddr %llX", progSectMetadataAddr);
+						Log("itemCount %u", progSectMetadata.itemCount);
+					}
 
 					progHelper.Push
 					(
@@ -963,14 +1020,20 @@ void Decompile
 			{
 				auto & smplMetadata = *reinterpret_cast<SmplMetadata *>(smplMetadataAddr);
 
-				Log("Smpl");
-				Log("smplMetadataAddr %llX", smplMetadataAddr);
-				Log("size %X", smplMetadata.size);
-				Log("last %u", smplMetadata.last);
+				if constexpr (debug)
+				{
+					Log("Smpl");
+					Log("smplMetadataAddr %llX", smplMetadataAddr);
+					Log("size %X", smplMetadata.size);
+					Log("last %u", smplMetadata.last);
+				}
 
 				auto itemCount = (smplMetadata.last + 1);
 
-				Log("itemCount %u", itemCount);
+				if constexpr (debug)
+				{
+					Log("itemCount %u", itemCount);
+				}
 
 				for_all(uint32, itemIndex, itemCount)
 				{
@@ -990,16 +1053,22 @@ void Decompile
 			{
 				auto & vagiMetadata = *reinterpret_cast<VagiMetadata *>(vagiMetadataAddr);
 
-				Log("Vagi");
-				Log("vagiMetadataAddr %llX", vagiMetadataAddr);
-				Log("size %X", vagiMetadata.size);
-				Log("last %u", vagiMetadata.last);
+				if constexpr (debug)
+				{
+					Log("Vagi");
+					Log("vagiMetadataAddr %llX", vagiMetadataAddr);
+					Log("size %X", vagiMetadata.size);
+					Log("last %u", vagiMetadata.last);
+				}
 
 				auto itemCount = (vagiMetadata.last + 1);
 
 				waveCount = itemCount;
 
-				Log("itemCount %u", itemCount);
+				if constexpr (debug)
+				{
+					Log("itemCount %u", itemCount);
+				}
 
 				for_all(uint32, itemIndex, itemCount)
 				{
@@ -1011,8 +1080,11 @@ void Decompile
 		}
 		else if (IsWave(file))
 		{
-			Log("Wave");
-			Log("waveCount %u", waveCount);
+			if constexpr (debug)
+			{
+				Log("Wave");
+				Log("waveCount %u", waveCount);
+			}
 
 			uint32 pos = 0;
 
@@ -1029,7 +1101,10 @@ void Decompile
 
 				auto size = (Reverse(&waveMetadata.reverseSize) + 0x30);
 
-				Log("size %X", size);
+				if constexpr (debug)
+				{
+					Log("size %X", size);
+				}
 
 				waveHelper.Push
 				(
@@ -1042,30 +1117,33 @@ void Decompile
 		}
 	}
 
-	Log("dbstHelper");
-	Log("dataAddr %llX", dbstHelper.dataAddr);
-	Log("pos      %X", dbstHelper.pos);
-	Log("count    %u", dbstHelper.count);
+	if constexpr (debug)
+	{
+		Log("dbstHelper");
+		Log("dataAddr %llX", dbstHelper.dataAddr);
+		Log("pos      %X", dbstHelper.pos);
+		Log("count    %u", dbstHelper.count);
 
-	Log("progHelper");
-	Log("dataAddr %llX", progHelper.dataAddr);
-	Log("pos      %X", progHelper.pos);
-	Log("count    %u", progHelper.count);
+		Log("progHelper");
+		Log("dataAddr %llX", progHelper.dataAddr);
+		Log("pos      %X", progHelper.pos);
+		Log("count    %u", progHelper.count);
 
-	Log("smplHelper");
-	Log("dataAddr %llX", smplHelper.dataAddr);
-	Log("pos      %X", smplHelper.pos);
-	Log("count    %u", smplHelper.count);
+		Log("smplHelper");
+		Log("dataAddr %llX", smplHelper.dataAddr);
+		Log("pos      %X", smplHelper.pos);
+		Log("count    %u", smplHelper.count);
 
-	Log("vagiHelper");
-	Log("dataAddr %llX", vagiHelper.dataAddr);
-	Log("pos      %X", vagiHelper.pos);
-	Log("count    %u", vagiHelper.count);
+		Log("vagiHelper");
+		Log("dataAddr %llX", vagiHelper.dataAddr);
+		Log("pos      %X", vagiHelper.pos);
+		Log("count    %u", vagiHelper.count);
 
-	Log("waveHelper");
-	Log("dataAddr %llX", waveHelper.dataAddr);
-	Log("pos      %X", waveHelper.pos);
-	Log("count    %u", waveHelper.count);
+		Log("waveHelper");
+		Log("dataAddr %llX", waveHelper.dataAddr);
+		Log("pos      %X", waveHelper.pos);
+		Log("count    %u", waveHelper.count);
+	}
 }
 
 void Compile(uint8 helperIndex)
@@ -1154,15 +1232,18 @@ void Compile(uint8 helperIndex)
 		off += vagiItem.size;
 	}
 
-	Log("headHelper");
-	Log("dataAddr %llX", headHelper.dataAddr);
-	Log("pos      %X", headHelper.pos);
-	Log("count    %u", headHelper.count);
+	if constexpr (debug)
+	{
+		Log("headHelper");
+		Log("dataAddr %llX", headHelper.dataAddr);
+		Log("pos      %X", headHelper.pos);
+		Log("count    %u", headHelper.count);
 
-	Log("soundHelper");
-	Log("dataAddr %llX", soundHelper.dataAddr);
-	Log("pos      %X", soundHelper.pos);
-	Log("count    %u", soundHelper.count);
+		Log("soundHelper");
+		Log("dataAddr %llX", soundHelper.dataAddr);
+		Log("pos      %X", soundHelper.pos);
+		Log("count    %u", soundHelper.count);
+	}
 }
 
 inline void Single
@@ -1350,7 +1431,10 @@ void FMOD_InitComplete()
 
 byte8 * GetDbstMetadataAddress(uint32 channelIndex)
 {
-	LogFunction();
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
 
 	auto pool = reinterpret_cast<byte8 **>(appBaseAddr + 0xD6E610);
 	/*
@@ -1470,7 +1554,10 @@ byte8 * GetDbstItemAddress
 	uint32 itemIndex
 )
 {
-	LogFunction();
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
 
 	auto dbstMetadataAddr = GetDbstMetadataAddress(channelIndex);
 	if (!dbstMetadataAddr)
@@ -1491,7 +1578,10 @@ byte8 * GetDbstItemAddress
 
 byte8 * GetHeadMetadataAddress(uint32 channelIndex)
 {
-	LogFunction();
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
 
 	auto pool = reinterpret_cast<byte8 **>(appBaseAddr + 0xD6E590);
 	/*

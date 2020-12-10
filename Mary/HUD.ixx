@@ -5,8 +5,11 @@ module;
 export module HUD;
 
 import File;
+import Global;
 import Internal;
 import Model;
+
+#define debug false
 
 struct HUDIconHelper
 {
@@ -91,12 +94,22 @@ export void HUD_UpdateStyleIcon
 	uint8 character
 )
 {
-	if (style >= MAX_STYLE)
+	if
+	(
+		(InCutscene()) ||
+		(InCredits()) ||
+		(style >= MAX_STYLE)
+	)
 	{
 		return;
 	}
 
 	IntroduceHUDPointers(return);
+
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
 
 	auto & modelData = *reinterpret_cast<ModelData *>(hudTop + hudTopOffs[HUD_TOP_STYLE_ICON]);
 
@@ -125,18 +138,28 @@ export void HUD_UpdateStyleIcon
 	auto & effect = *reinterpret_cast<uint8 *>(hudTop + 0x690E) = map[style];
 }
 
-export void HUD_UpdateWeaponIcon
+export bool HUD_UpdateWeaponIcon
 (
 	uint8 index,
 	uint8 weapon
 )
 {
-	if (weapon >= MAX_WEAPON)
+	if
+	(
+		(InCutscene()) ||
+		(InCredits()) ||
+		(weapon >= MAX_WEAPON)
+	)
 	{
-		return;
+		return false;
 	}
 
-	IntroduceHUDPointers(return);
+	IntroduceHUDPointers(return false);
+
+	if constexpr (debug)
+	{
+		LogFunction();
+	}
 
 	auto & modelData = *reinterpret_cast<ModelData *>(hudBottom + hudBottomOffs[index]);
 
@@ -147,6 +170,8 @@ export void HUD_UpdateWeaponIcon
 
 	func_89960(modelData, modelFile, textureFile);
 	func_89E30(modelData, 1);
+
+	return true;
 }
 
 export void HUD_Init()
@@ -157,54 +182,4 @@ export void HUD_Init()
 }
 
 #ifdef __GARBAGE__
-
-
-
-// @Todo: Either create helper for this or access actor data.
-//bool HUD_updateStyleIcon = false;
-//
-//void HUD_Update()
-//{
-//	if (!HUD_updateStyleIcon)
-//	{
-//		return;
-//	}
-//	if (!HUD_IsVisible())
-//	{
-//		return;
-//	}
-//	HUD_updateStyleIcon = false;
-//	//HUD_UpdateStyleIcon();
-//}
-
-
-
-
-
-
-
-
-
-
-
-
-//inline bool HUD_IsVisible()
-//{
-//	if (!InGame())
-//	{
-//		return false;
-//	}
-//	// @Todo: Update pointer!
-//	byte8 ** addr = (byte8 **)(appBaseAddr + 0xCF2520);
-//	byte8 * item = addr[44];
-//	if (!item)
-//	{
-//		return false;
-//	}
-//	uint8 & alpha = *(uint8 *)(item + 0x6920);
-//	return (alpha > 0) ? true : false;
-//}
-
-
-
 #endif

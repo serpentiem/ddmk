@@ -6,14 +6,14 @@ module;
 #include "Vars.h"
 export module Config;
 
-#define debug true
+#define debug false
 
 #pragma pack(push, 1)
 export struct Config
 {
 	struct
 	{
-		bool enable = true;
+		bool enable = false;
 		uint8 playerCount = 1;
 		PlayerData playerData[PLAYER_COUNT] = {};
 	}
@@ -31,7 +31,7 @@ export struct Config
 	AirHike;
 	struct
 	{
-		bool    enable         = true;
+		bool    enable         = false;
 		uint32  mission        = 17;
 		uint32  mode           = MODE_DANTE_MUST_DIE;
 		uint32  room           = 900;
@@ -156,7 +156,7 @@ export struct Config
 		Aura;
 	}
 	Color;
-	uint8 crazyComboLevelMultiplier = 6; // 6
+	uint8 crazyComboLevelMultiplier = 6;
 	struct
 	{
 		bool noColor = false;
@@ -171,8 +171,8 @@ export struct Config
 	EbonyIvory;
 	struct
 	{
-		bool skipIntro     = true;
-		bool skipCutscenes = true;
+		bool skipIntro     = false;
+		bool skipCutscenes = false;
 	}
 	Event;
 	struct
@@ -276,9 +276,8 @@ export struct Config
 	SummonedSwords;
 	struct
 	{
-		bool enable              = false; // @Todo: Remove.
 		bool infiniteHitPoints   = false;
-		bool infiniteMagicPoints = true;
+		bool infiniteMagicPoints = false;
 		bool disableTimer        = false;
 	}
 	Training;
