@@ -32,7 +32,7 @@ import Speed;
 import Training;
 import Window;
 
-#define debug false
+#define debug true
 
 
 
@@ -501,6 +501,16 @@ void Overlay2()
 		{
 			ImGui::Text("%.4u %.16llX", index, Actor_actorBaseAddr[index]);
 		}
+
+		for_all(uint32, actorIndex, Actor_actorBaseAddr.count)
+		{
+			IntroduceActorData(actorBaseAddr, actorData, Actor_actorBaseAddr[actorIndex], continue);
+
+			ImGui::Text("%.4u %u", actorIndex, IsActive(actorData));
+		}
+
+
+
 
 		if (Actor_actorBaseAddr.count > 0)
 		{
@@ -2534,13 +2544,26 @@ void Repair()
 			{
 				return;
 			}
-			for_all(uint32, index, Actor_actorBaseAddr.count)
+			for_all(uint32, actorIndex, Actor_actorBaseAddr.count)
 			{
-				if (!Actor_actorBaseAddr[index])
-				{
-					continue;
-				}
-				auto & actorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[index]);
+				IntroduceActorData(actorBaseAddr, actorData, Actor_actorBaseAddr[actorIndex], continue);
+				//IntroduceActorDataNoCreate(Actor_actorBaseAddr[actorIndex], actorData, continue);
+
+
+
+
+
+
+
+
+
+
+
+				// if (!Actor_actorBaseAddr[index])
+				// {
+				// 	continue;
+				// }
+				// auto & actorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[index]);
 
 				switch (actorData.character)
 				{
@@ -2574,15 +2597,21 @@ void Repair()
 			{
 				return;
 			}
-			for_all(uint32, index, Actor_actorBaseAddr.count)
+			for_all(uint32, actorIndex, Actor_actorBaseAddr.count)
 			{
-				if (!Actor_actorBaseAddr[index])
-				{
-					continue;
-				}
-				auto & actorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[index]);
+				IntroduceActorData(actorBaseAddr, actorData, Actor_actorBaseAddr[actorIndex], continue);
+				// if (!Actor_actorBaseAddr[index])
+				// {
+				// 	continue;
+				// }
+				// auto & actorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[index]);
 
-				memset(actorData.weaponLevels, 0, sizeof(actorData.weaponLevels));
+				SetMemory
+				(
+					actorData.weaponLevels,
+					0,
+					sizeof(actorData.weaponLevels)
+				);
 			}
 		}
 
@@ -3407,21 +3436,19 @@ void Vergil()
 
 
 
-		ImGui::Text("Dark Slayer");
-		ImGui::SameLine();
-		TooltipHelper
-		(
-			"(?)",
-			"Requires enabled Actor module.\n"
-			"\n"
-			"Left: Human Right: Devil"
-		);
-		ImGui::Text("");
+		// ImGui::Text("Dark Slayer");
+		// ImGui::SameLine();
+		// TooltipHelper
+		// (
+		// 	"(?)",
+		// 	"Requires enabled Actor module."
+		// );
+		// ImGui::Text("");
 
 
 
-		GUI_SectionEnd();
-		ImGui::Text("");
+		// GUI_SectionEnd();
+		// ImGui::Text("");
 
 		// GUI_SectionStart("Yamato");
 		// ActionData<float32>("Rapid Slash Duration", activeConfig.Yamato.rapidSlashDuration, defaultConfig.Yamato.rapidSlashDuration, 1 , "%.0f");
@@ -3457,7 +3484,24 @@ void Vergil()
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-		GUI_SectionStart("Summoned Swords");
+
+		ImGui::Text("Summoned Swords");
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module."
+		);
+		ImGui::Text("");
+
+
+
+		// GUI_SectionEnd();
+		// ImGui::Text("");
+
+
+
+		//GUI_SectionStart("Summoned Swords");
 		if
 		(
 			GUI_Checkbox2

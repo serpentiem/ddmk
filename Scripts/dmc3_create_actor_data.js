@@ -552,6 +552,7 @@ var extra =
 
 
 	// [ "newBufferedActionPolicy", "uint8"   ],
+	[ "newAirStinger"     , "bool"   ],
 	[ "newAirStingerCount"     , "uint8"   ],
 	// [ "newDevilAura"           , "byte8 *" ],
 	//[ "newEffectIndices[8]"    , "byte32"  ],

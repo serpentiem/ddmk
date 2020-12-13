@@ -20,7 +20,7 @@ import Speed;
 import Training;
 import Window;
 
-#define debug false
+#define debug true
 
 uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {
@@ -65,19 +65,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Config_Init("configs", "Mary.bin");
 		LoadConfig();
 
+		if constexpr (debug)
 		{
-			// auto & activePlayerData = GetActivePlayerData(0);
-			// auto & queuedPlayerData = GetQueuedPlayerData(0);
-			// ApplyDefaultCharacterData
-			// (
-			// 	activePlayerData.characterData[0][0],
-			// 	3
-			// );
-			// ApplyDefaultCharacterData
-			// (
-			// 	queuedPlayerData.characterData[0][0],
-			// 	3
-			// );
 			auto & activeCharacterData = GetActiveCharacterData
 			(
 				0,
@@ -94,19 +83,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 			queuedCharacterData.costume = 1;
 		}
 
+		if constexpr (debug)
 		{
-			// auto & activePlayerData = GetActivePlayerData(0);
-			// auto & queuedPlayerData = GetQueuedPlayerData(0);
-			// ApplyDefaultCharacterData
-			// (
-			// 	activePlayerData.characterData[0][0],
-			// 	3
-			// );
-			// ApplyDefaultCharacterData
-			// (
-			// 	queuedPlayerData.characterData[0][0],
-			// 	3
-			// );
 			auto & activeCharacterData = GetActiveCharacterData
 			(
 				0,
@@ -155,10 +133,27 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 		UpdateCrazyComboLevelMultiplier();
 
-		Arcade_Toggle(activeConfig.Arcade.enable);
 
+		ToggleAirHikeCoreAbility               (activeConfig.AirHike.coreAbility               );
+		ToggleRebellionInfiniteSwordPierce     (activeConfig.Rebellion.infiniteSwordPierce     );
+		ToggleYamatoForceEdgeInfiniteRoundTrip (activeConfig.YamatoForceEdge.infiniteRoundTrip );
+		ToggleEbonyIvoryFoursomeTime           (activeConfig.EbonyIvory.foursomeTime           );
+		ToggleEbonyIvoryInfiniteRainStorm      (activeConfig.EbonyIvory.infiniteRainStorm      );
 		ToggleArtemisSwapNormalShotAndMultiLock(activeConfig.Artemis.swapNormalShotAndMultiLock);
 		ToggleArtemisInstantFullCharge         (activeConfig.Artemis.instantFullCharge         );
+		ToggleChronoSwords                     (activeConfig.SummonedSwords.chronoSwords       );
+
+
+
+
+
+
+
+
+
+		Arcade_Toggle(activeConfig.Arcade.enable);
+
+
 
 		Camera_ToggleInvertX(activeConfig.Camera.invertX);
 

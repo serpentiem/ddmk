@@ -1,10 +1,10 @@
+// @Todo: Add Air Raid to IsActive.
 // @Todo: Disable Doppelganger on death.
 // @Todo: Merge Reset Permissions.
 // @Todo: Cleanup.
-// @Todo: Fix Chrono Swords.
-// @Todo: Quick Drive.
 // @Todo: Color Toggle.
 // @Todo: Air Stinger, Air Lunar Phase and Nevan instant Vortex.
+// @Todo: Quick Drive.
 
 module;
 #include "../Core/Core.h"
@@ -859,7 +859,7 @@ bool IsWeaponActive(T & actorData)
 	return false;
 }
 
-template <typename T>
+export template <typename T>
 bool IsActive(T & actorData)
 {
 	auto & motionData = actorData.motionData[UPPER_BODY];
@@ -17034,7 +17034,14 @@ void ResetSkyStar(ActorData & actorData)
 	actorData.newAirTrickCount   = 0;
 	actorData.newTrickUpCount    = 0;
 	actorData.newTrickDownCount  = 0;
-	actorData.newAirStingerCount = 0;
+
+	if (!actorData.newAirStinger)
+	{
+		actorData.newAirStingerCount = 0;
+	}
+
+	// actorData.newAirStinger = false;
+
 
 	if (actorData.state & STATE_ON_FLOOR)
 	{
@@ -19479,7 +19486,7 @@ byte8  * ActivateDevilAddr                  = 0;
 byte8  * DeactivateDevilAddr                = 0;
 byte8  * InputUpdateAddr[16]                = {};
 byte8  * EbonyIvoryRainStormCheckAddr       = 0;
-byte8  * SummonedSwordsQuicksilverCheckAddr = 0;
+//byte8  * SummonedSwordsQuicksilverCheckAddr = 0;
 byte8  * DotShadowCheckAddr                 = 0;
 byte8 * ResetActorModeAddr                  = 0;
 byte8 * CollisionCheckAddr                  = 0;
@@ -19495,11 +19502,166 @@ byte8 * PlayQuicksilverMotionAddr[2] = {};
 
 
 
+
+
+
+
+// @Todo: Add tilt direction check.
+void ActionLoopDante(byte8 * actorBaseAddr)
+{
+	IntroduceActorDataNoCreate(actorBaseAddr, actorData, return);
+
+	uint8 index = (actorData.devil) ? 1 : 0;
+
+	if
+	(
+		(actorData.action == ACTION_DANTE_REBELLION_HELM_BREAKER) &&
+		(actorData.state & STATE_IN_AIR) &&
+		(actorData.newAirStingerCount < activeConfig.Rebellion.airStingerCount[index])
+	)
+	{
+		actorData.action = ACTION_DANTE_REBELLION_STINGER_LEVEL_2;
+	}
+
+
+
+
+	// if
+	// (
+	// 	(actorData.action == ACTION_DANTE_REBELLION_STINGER_LEVEL_2) &&
+	// 	(actorData.state & STATE_IN_AIR) &&
+	// 	(actorData.var_3E10[0] == 1)
+	// )
+	// {
+	// 	actorData.newAirStingerCount++;
+	// }
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+bool RebellionAirStingerCheck(ActorData & actorData)
+{
+	uint8 index = (actorData.devil) ? 1 : 0;
+
+	if
+	(
+		//(actorData.newAirStingerCount < activeConfig.Rebellion.airStingerCount[index]) &&
+		(actorData.state & STATE_IN_AIR) &&
+		(actorData.action == ACTION_DANTE_REBELLION_STINGER_LEVEL_2) &&
+		(actorData.motionData[1].group == MOTION_GROUP_DANTE_REBELLION)
+	)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool EndActionLedge(byte8 * actorBaseAddr)
+{
+	IntroduceActorDataNoCreate(actorBaseAddr, actorData, return false);
+
+	switch (actorData.character)
+	{
+		case CHAR_DANTE:
+		{
+			if (RebellionAirStingerCheck(actorData))
+			{
+				return true;
+			}
+
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			break;
+		}
+	}
+
+	return false;
+}
+
+bool DecreaseAltitude(byte8 * actorBaseAddr)
+{
+	IntroduceActorDataNoCreate(actorBaseAddr, actorData, return false);
+
+	switch (actorData.character)
+	{
+		case CHAR_DANTE:
+		{
+			if (RebellionAirStingerCheck(actorData))
+			{
+				return true;
+			}
+
+			break;
+		}
+		case CHAR_VERGIL:
+		{
+			break;
+		}
+	}
+
+	return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export void Actor_Init()
 {
 	LogFunction();
 
 	static bool run = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// Get Actor Base Address By Effect Data
 	{
@@ -19524,7 +19686,13 @@ export void Actor_Init()
 		}
 	}
 
-	run = true;
+
+
+
+
+
+
+
 
 
 
@@ -20060,26 +20228,6 @@ export void Actor_Init()
 		*/
 	}
 
-	// // Summoned Swords Quicksilver Check
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
-	// 		0x8A, 0x00,                                                 // mov al,[rax]
-	// 		0x84, 0xC0,                                                 // test al,al
-	// 		0x75, 0x05,                                                 // jne short
-	// 		0xF3, 0x0F, 0x5C, 0x43, 0x14,                               // subss xmm0,[rbx+14]
-	// 	};
-	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1DB8FD), false, true, sizeof(sect0));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	*reinterpret_cast<bool **>(func.sect0 + 2) = &g_quicksilver;
-	// 	SummonedSwordsQuicksilverCheckAddr = func.addr;
-	// 	/*
-	// 	dmc3.exe+1DB8F8 - F3 0F5C 43 14 - subss xmm0,[rbx+14]
-	// 	dmc3.exe+1DB8FD - 0F2F F0       - comiss xmm6,xmm0
-	// 	*/
-	// }
-
 	// Dot Shadow Check
 	{
 		constexpr byte8 sect2[] =
@@ -20285,47 +20433,76 @@ export void Actor_Init()
 
 
 
+
+
+
+
+
+
+
+	// // Summoned Swords Quicksilver Check
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
+	// 		0x8A, 0x00,                                                 // mov al,[rax]
+	// 		0x84, 0xC0,                                                 // test al,al
+	// 		0x75, 0x05,                                                 // jne short
+	// 		0xF3, 0x0F, 0x5C, 0x43, 0x14,                               // subss xmm0,[rbx+14]
+	// 	};
+	// 	auto func = CreateFunction(0, (appBaseAddr + 0x1DB8FD), false, true, sizeof(sect0));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	*reinterpret_cast<bool **>(func.sect0 + 2) = &g_quicksilver;
+	// 	SummonedSwordsQuicksilverCheckAddr = func.addr;
+	// 	/*
+	// 	dmc3.exe+1DB8F8 - F3 0F5C 43 14 - subss xmm0,[rbx+14]
+	// 	dmc3.exe+1DB8FD - 0F2F F0       - comiss xmm6,xmm0
+	// 	*/
+	// }
+
+
+	run = true;
 }
 
 // @Todo: Remove.
-export void Actor_MiniToggle(bool enable)
-{
-	LogFunction(enable);
+// export void Actor_MiniToggle(bool enable)
+// {
+// 	LogFunction(enable);
 
-	// Actor Data Size
-	{
-		constexpr uint32 size = (128 * 1024);
-		// Dante
-		Write<uint32>((appBaseAddr + 0x1DEBE1 + 1), (enable) ? size : ACTOR_DATA_SIZE_DANTE); // dmc3.exe+1DEBE1 - BA C0B80000 - mov edx,0000B8C0
-		// Bob
-		Write<uint32>((appBaseAddr + 0x1DEAC8 + 1), (enable) ? size : ACTOR_DATA_SIZE_BOB); // dmc3.exe+1DEAC8 - BA 80B60000 - mov edx,0000B680
-		// Lady
-		Write<uint32>((appBaseAddr + 0x1DE9CC + 1), (enable) ? size : ACTOR_DATA_SIZE_LADY); // dmc3.exe+1DE9CC - BA 80820000 - mov edx,00008280
-		// Vergil
-		Write<uint32>((appBaseAddr + 0x1DE8B3 + 1), (enable) ? size : ACTOR_DATA_SIZE_VERGIL); // dmc3.exe+1DE8B3 - BA C0B80000 - mov edx,0000B8C0
-	}
+// 	// Actor Data Size
+// 	{
+// 		constexpr uint32 size = (128 * 1024);
+// 		// Dante
+// 		Write<uint32>((appBaseAddr + 0x1DEBE1 + 1), (enable) ? size : ACTOR_DATA_SIZE_DANTE); // dmc3.exe+1DEBE1 - BA C0B80000 - mov edx,0000B8C0
+// 		// Bob
+// 		Write<uint32>((appBaseAddr + 0x1DEAC8 + 1), (enable) ? size : ACTOR_DATA_SIZE_BOB); // dmc3.exe+1DEAC8 - BA 80B60000 - mov edx,0000B680
+// 		// Lady
+// 		Write<uint32>((appBaseAddr + 0x1DE9CC + 1), (enable) ? size : ACTOR_DATA_SIZE_LADY); // dmc3.exe+1DE9CC - BA 80820000 - mov edx,00008280
+// 		// Vergil
+// 		Write<uint32>((appBaseAddr + 0x1DE8B3 + 1), (enable) ? size : ACTOR_DATA_SIZE_VERGIL); // dmc3.exe+1DE8B3 - BA C0B80000 - mov edx,0000B8C0
+// 	}
 
-	ToggleRelocations           (enable);
-	ToggleModelCountAdjustments (enable);
-	ToggleWeaponCountAdjustments(enable);
+// 	ToggleRelocations           (enable);
+// 	ToggleModelCountAdjustments (enable);
+// 	ToggleWeaponCountAdjustments(enable);
 
-	// Update Model Dante
-	{
-		auto dest = (appBaseAddr + 0x212CB3);
-		if (enable)
-		{
-			WriteCall(dest, UpdateModelDanteAddr);
-		}
-		else
-		{
-			WriteCall(dest, (appBaseAddr + 0x214D50));
-		}
-		/*
-		dmc3.exe+212CB3 - E8 98200000       - call dmc3.exe+214D50
-		dmc3.exe+212CB8 - 48 8D 86 A0380000 - lea rax,[rsi+000038A0]
-		*/
-	}
-}
+// 	// Update Model Dante
+// 	{
+// 		auto dest = (appBaseAddr + 0x212CB3);
+// 		if (enable)
+// 		{
+// 			WriteCall(dest, UpdateModelDanteAddr);
+// 		}
+// 		else
+// 		{
+// 			WriteCall(dest, (appBaseAddr + 0x214D50));
+// 		}
+// 		/*
+// 		dmc3.exe+212CB3 - E8 98200000       - call dmc3.exe+214D50
+// 		dmc3.exe+212CB8 - 48 8D 86 A0380000 - lea rax,[rsi+000038A0]
+// 		*/
+// 	}
+// }
 
 
 
@@ -20364,9 +20541,351 @@ export void Actor_Toggle(bool enable)
 
 
 
+	static bool run = false;
+
+	// Action Loop Dante
+	{
+		auto addr     = (appBaseAddr + 0x1FDF10);
+		auto jumpAddr = (appBaseAddr + 0x1FDF17);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1FDF10 - 0FB6 81 A43F0000 - movzx eax,byte ptr [rcx+00003FA4]
+		dmc3.exe+1FDF17 - FF C8            - dec eax
+		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(ActionLoopDante, jumpAddr, true, true, 0, 0, size);
+			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 
 
 
+
+
+
+
+
+
+
+
+
+	// 
+	{
+		auto addr     = (appBaseAddr + 0x2093DC);
+		auto jumpAddr = (appBaseAddr + 0x2093E3);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+2093DC - C6 87 2A3E0000 01 - mov byte ptr [rdi+00003E2A],01
+		dmc3.exe+2093E3 - EB 74             - jmp dmc3.exe+209459
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0xF6, 0x87, 0x64, 0x3E, 0x00, 0x00, 0x02, // test byte ptr [rdi+00003E64],02
+			0x74, 0x06,                               // je short
+			0xFE, 0x87, 0x00, 0x00, 0x00, 0x00,       // inc byte ptr [rdi+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, (size + sizeof(sect0)));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory((func.sect0 + size), sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(func.sect0 + size + 0xB) = offsetof(ActorData, newAirStingerCount);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+// 
+{
+	auto addr     = (appBaseAddr + 0x209199);
+	auto jumpAddr = (appBaseAddr + 0x2091A0);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+209199 - C6 87 2A3E0000 00 - mov byte ptr [rdi+00003E2A],00
+	dmc3.exe+2091A0 - 48 8B CF          - mov rcx,rdi
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0xF6, 0x87, 0x64, 0x3E, 0x00, 0x00, 0x02,                   // test byte ptr [rdi+00003E64],02
+		0x74, 0x0A,                                                 // je short
+		0xC7, 0x87, 0x60, 0x3E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov [rdi+00003E60]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, (size + sizeof(sect0)));
+		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		CopyMemory((func.sect0 + size), sect0, sizeof(sect0));
+		*reinterpret_cast<byte32 *>(func.sect0 + size + 0xF) = 0xC08;
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+test byte ptr [rdi+00003E64],02
+je short
+mov byte ptr [rdi+0000B8C0],01
+inc byte ptr [rdi+0000B8C0]
+*/
+
+
+
+
+
+
+
+
+	// 
+	{
+		auto addr     = (appBaseAddr + 0x209459);
+		auto jumpAddr = (appBaseAddr + 0x209462);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+209459 - 80 BF 2A3E0000 01 - cmp byte ptr [rdi+00003E2A],01
+		dmc3.exe+209460 - 75 45             - jne dmc3.exe+2094A7
+		dmc3.exe+209462 - 0FB7 97 C0000000  - movzx edx,word ptr [rdi+000000C0]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0xF6, 0x87, 0x64, 0x3E, 0x00, 0x00, 0x02, // test byte ptr [rdi+00003E64],02
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       // jne dmc3.exe+2094A7
+			0x80, 0xBF, 0x2A, 0x3E, 0x00, 0x00, 0x01, // cmp byte ptr [rdi+00003E2A],01
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,       // jne dmc3.exe+2094A7
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteAddress((func.sect0 + 7), (appBaseAddr + 0x2094A7), 6);
+			WriteAddress((func.sect0 + 0x14), (appBaseAddr + 0x2094A7), 6);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// End Action Ledge
+	{
+		auto addr     = (appBaseAddr + 0x1E7BF2);
+		auto jumpAddr = (appBaseAddr + 0x1E7BF7);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1E7BF2 - E8 A981FFFF - call dmc3.exe+1DFDA0
+		dmc3.exe+1E7BF7 - B0 01       - mov al,01
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                               // test al,al
+			0x75, 0x13,                               // jne short
+			0xC6, 0x83, 0x00, 0x00, 0x00, 0x00, 0x01, // mov byte ptr [rbx+0000B8C0],01
+			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+1DFDA0
+			0xC6, 0x83, 0x00, 0x00, 0x00, 0x00, 0x00, // mov byte ptr [rbx+0000B8C0],00
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(EndActionLedge, jumpAddr, true, false, 0, 0, sizeof(sect2));
+			CopyMemory(func.sect2, sect2, sizeof(sect2));
+			*reinterpret_cast<uint32 *>(func.sect2 + 6) = offsetof(ActorData, newAirStinger);
+			WriteCall((func.sect2 + 0xB), (appBaseAddr + 0x1DFDA0));
+			*reinterpret_cast<uint32 *>(func.sect2 + 0x12) = offsetof(ActorData, newAirStinger);
+
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+// 	// 
+// 	{
+// 		auto addr     = (appBaseAddr + 0x209453);
+// 		auto jumpAddr = (appBaseAddr + 0x209459);
+// 		constexpr uint32 size = 6;
+// 		/*
+// dmc3.exe+2093DC - C6 87 2A3E0000 01     - mov byte ptr [rdi+00003E2A],01
+// dmc3.exe+2093E3 - EB 74                 - jmp dmc3.exe+209459
+// 		*/
+
+// 		static Function func = {};
+
+// 		constexpr byte8 sect0[] =
+// 		{
+// 			0xF6, 0x87, 0x64, 0x3E, 0x00, 0x00, 0x02, // test byte ptr [rdi+00003E64],02
+// 			0x74, 0x06,                               // je short
+// 			0xFE, 0x87, 0x00, 0x00, 0x00, 0x00,       // inc byte ptr [rdi+0000B8C0]
+// 		};
+
+// 		if (!run)
+// 		{
+// 			backupHelper.Save(addr, size);
+// 			func = CreateFunction(0, jumpAddr, false, true, (size + sizeof(sect0)));
+// 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+// 			CopyMemory((func.sect0 + size), sect0, sizeof(sect0));
+// 			*reinterpret_cast<uint32 *>(func.sect0 + size + 0xB) = offsetof(ActorData, newAirStingerCount);
+// 		}
+
+// 		if (enable)
+// 		{
+// 			WriteJump(addr, func.addr, (size - 5));
+// 		}
+// 		else
+// 		{
+// 			backupHelper.Restore(addr);
+// 		}
+// 	}
+
+
+// 
+{
+	auto addr     = (appBaseAddr + 0x1F9189);
+	auto jumpAddr = (appBaseAddr + 0x1F9191);
+	constexpr uint32 size = 8;
+	/*
+	dmc3.exe+1F9189 - F3 0F5C 05 AFCD2C00 - subss xmm0,[dmc3.exe+4C5F40]
+	dmc3.exe+1F9191 - F3 0F11 87 84000000 - movss [rdi+00000084],xmm0
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect1[] =
+	{
+		mov_rcx_rdi,
+	};
+	constexpr byte8 sect2[] =
+	{
+		0x84, 0xC0, // test al,al
+		0x75, 0x08, // jne short
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(DecreaseAltitude, jumpAddr, true, false, 0, sizeof(sect1), (sizeof(sect2) + size));
+		CopyMemory(func.sect1, sect1, sizeof(sect1));
+		CopyMemory(func.sect2, sect2, sizeof(sect2));
+		CopyMemory((func.sect2 + sizeof(sect2)), addr, size, MemoryFlags_VirtualProtectSource);
+		WriteAddress((func.sect2 + sizeof(sect2)), (appBaseAddr + 0x4C5F40), size);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+
+
+
+
+
+
+
+	run = true;
 
 
 	// Actor Data Size
@@ -21788,26 +22307,50 @@ export void UpdateCrazyComboLevelMultiplier()
 
 export void ToggleChronoSwords(bool enable)
 {
-	return;
-	// {
-	// 	auto dest = (appBaseAddr + 0x1DB8F8);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, SummonedSwordsQuicksilverCheckAddr);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0xF3, 0x0F, 0x5C, 0x43, 0x14, // subss xmm0,[rbx+14]
-	// 		};
-	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1DB8F8 - F3 0F5C 43 14 - subss xmm0,[rbx+14]
-	// 	dmc3.exe+1DB8FD - 0F2F F0       - comiss xmm6,xmm0
-	// 	*/
-	// }
+	LogFunction(enable);
+
+	static bool run = false;
+
+	{
+		auto addr     = (appBaseAddr + 0x1DB8F8);
+		auto jumpAddr = (appBaseAddr + 0x1DB8FD);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1DB8F8 - F3 0F5C 43 14 - subss xmm0,[rbx+14]
+		dmc3.exe+1DB8FD - 0F2F F0       - comiss xmm6,xmm0
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
+			0x8A, 0x00,                                                 // mov al,[rax]
+			0x84, 0xC0,                                                 // test al,al
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00,                         // jne dmc3.exe+1DB8FD
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<bool **>(func.sect0 + 2) = &g_quicksilver;
+			WriteAddress((func.sect0 + 0xE), (appBaseAddr + 0x1DB8FD), 6);
+			CopyMemory((func.sect0 + sizeof(sect0)), addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	run = true;
 }
 
 #pragma region Events
