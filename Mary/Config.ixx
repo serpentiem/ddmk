@@ -216,14 +216,12 @@ export struct Config
 	float orbReach = 300;
 	struct
 	{
-		bool infiniteSwordPierce = false;
+		bool  infiniteSwordPierce = false;
 		float stingerDuration   [2] = { 16 , 16  };
 		float stingerRange      [2] = { 560, 560 };
-		float airStingerDuration[2] = { 16 , 16  };
-		float airStingerRange   [2] = { 560, 560 };
-
-
-		uint8 airStingerCount[2] = { 1, 1 };
+		uint8 airStingerCount   [2] = { 1  , 1   };
+		float airStingerDuration[2] = { 4  , 4   };
+		float airStingerRange   [2] = { 140, 140 };
 	}
 	Rebellion;
 	bool removeBusyFlag = false;
@@ -294,7 +292,7 @@ export struct Config
 	{
 		float rapidSlashDuration[2] = { 5  , 5   };
 		float rapidSlashRange   [2] = { 330, 330 };
-		float judgementCutCount [2] = { 2  , 2   };
+		uint8 judgementCutCount [2] = { 2  , 2   };
 		float judgementCutRange [2] = { 500, 500 };
 	}
 	Yamato;
@@ -303,8 +301,9 @@ export struct Config
 		bool infiniteRoundTrip = false;
 		float stingerDuration   [2] = { 16 , 16  };
 		float stingerRange      [2] = { 560, 560 };
-		float airStingerDuration[2] = { 16 , 16  };
-		float airStingerRange   [2] = { 560, 560 };
+		uint8 airStingerCount   [2] = { 1  , 1   };
+		float airStingerDuration[2] = { 4  , 4   };
+		float airStingerRange   [2] = { 140, 140 };
 	}
 	YamatoForceEdge;
 	uint8 airHikeCount       [2] = { 1, 1 };

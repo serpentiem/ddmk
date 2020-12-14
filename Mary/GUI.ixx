@@ -2164,6 +2164,80 @@ void Dante()
 			ToggleRebellionInfiniteSwordPierce(activeConfig.Rebellion.infiniteSwordPierce);
 		}
 
+ImGui::Text("");
+
+
+		// ImGui::Text("Air Hike");
+		// ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Left: Human Right: Devil"
+		);
+		
+
+
+
+		ActionData
+		(
+			"Stinger Duration",
+			activeConfig.Rebellion.stingerDuration,
+			queuedConfig.Rebellion.stingerDuration,
+			defaultConfig.Rebellion.stingerDuration,
+			1.0f,
+			"%g"
+		);
+		ActionData
+		(
+			"Stinger Range",
+			activeConfig.Rebellion.stingerRange,
+			queuedConfig.Rebellion.stingerRange,
+			defaultConfig.Rebellion.stingerRange,
+			10.0f,
+			"%g"
+		);
+
+
+
+
+		ActionData
+		(
+			"Air Stinger Count",
+			activeConfig.Rebellion.airStingerCount,
+			queuedConfig.Rebellion.airStingerCount,
+			defaultConfig.Rebellion.airStingerCount
+		);
+
+		ActionData
+		(
+			"Air Stinger Duration",
+			activeConfig.Rebellion.airStingerDuration,
+			queuedConfig.Rebellion.airStingerDuration,
+			defaultConfig.Rebellion.airStingerDuration,
+			1.0f,
+			"%g"
+		);
+		ActionData
+		(
+			"Air Stinger Range",
+			activeConfig.Rebellion.airStingerRange,
+			queuedConfig.Rebellion.airStingerRange,
+			defaultConfig.Rebellion.airStingerRange,
+			10.0f,
+			"%g"
+		);
+
+
+
+
+
+
+
+
+
+
+
+
 		// ImGui::Text("");
 		// ActionData<float32>("Stinger Duration"    , activeConfig.Rebellion.stingerDuration   , defaultConfig.Rebellion.stingerDuration   , 1 , "%.0f");
 		// ActionData<float32>("Stinger Range"       , activeConfig.Rebellion.stingerRange      , defaultConfig.Rebellion.stingerRange      , 10, "%.0f");
@@ -3450,7 +3524,24 @@ void Vergil()
 		// GUI_SectionEnd();
 		// ImGui::Text("");
 
-		// GUI_SectionStart("Yamato");
+		GUI_SectionStart("Yamato");
+		ImGui::Text("");
+
+
+
+		ActionData
+		(
+			"Judgement Cut Count",
+			activeConfig.Yamato.judgementCutCount,
+			queuedConfig.Yamato.judgementCutCount,
+			defaultConfig.Yamato.judgementCutCount
+		);
+
+
+
+
+
+
 		// ActionData<float32>("Rapid Slash Duration", activeConfig.Yamato.rapidSlashDuration, defaultConfig.Yamato.rapidSlashDuration, 1 , "%.0f");
 		// ActionData<float32>("Rapid Slash Range"   , activeConfig.Yamato.rapidSlashRange   , defaultConfig.Yamato.rapidSlashRange   , 10, "%.0f");
 		// ActionData<float32>("Judgement Cut Count" , activeConfig.Yamato.judgementCutCount , defaultConfig.Yamato.judgementCutCount , 1 , "%.0f");
@@ -3476,6 +3567,77 @@ void Vergil()
 		{
 			ToggleYamatoForceEdgeInfiniteRoundTrip(activeConfig.YamatoForceEdge.infiniteRoundTrip);
 		}
+
+
+ImGui::Text("");
+
+
+		// ImGui::Text("Air Hike");
+		// ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Left: Human Right: Devil"
+		);
+		
+
+
+
+		ActionData
+		(
+			"Stinger Duration",
+			activeConfig.YamatoForceEdge.stingerDuration,
+			queuedConfig.YamatoForceEdge.stingerDuration,
+			defaultConfig.YamatoForceEdge.stingerDuration,
+			1.0f,
+			"%g"
+		);
+		ActionData
+		(
+			"Stinger Range",
+			activeConfig.YamatoForceEdge.stingerRange,
+			queuedConfig.YamatoForceEdge.stingerRange,
+			defaultConfig.YamatoForceEdge.stingerRange,
+			10.0f,
+			"%g"
+		);
+
+
+
+
+		ActionData
+		(
+			"Air Stinger Count",
+			activeConfig.YamatoForceEdge.airStingerCount,
+			queuedConfig.YamatoForceEdge.airStingerCount,
+			defaultConfig.YamatoForceEdge.airStingerCount
+		);
+
+		ActionData
+		(
+			"Air Stinger Duration",
+			activeConfig.YamatoForceEdge.airStingerDuration,
+			queuedConfig.YamatoForceEdge.airStingerDuration,
+			defaultConfig.YamatoForceEdge.airStingerDuration,
+			1.0f,
+			"%g"
+		);
+		ActionData
+		(
+			"Air Stinger Range",
+			activeConfig.YamatoForceEdge.airStingerRange,
+			queuedConfig.YamatoForceEdge.airStingerRange,
+			defaultConfig.YamatoForceEdge.airStingerRange,
+			10.0f,
+			"%g"
+		);
+
+
+
+
+
+
+
 		// ImGui::Text("");
 		// ActionData<float32>("Stinger Duration"    , activeConfig.YamatoForceEdge.stingerDuration   , defaultConfig.YamatoForceEdge.stingerDuration   , 1 , "%.0f");
 		// ActionData<float32>("Stinger Range"       , activeConfig.YamatoForceEdge.stingerRange      , defaultConfig.YamatoForceEdge.stingerRange      , 10, "%.0f");

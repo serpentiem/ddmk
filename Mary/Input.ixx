@@ -1,5 +1,3 @@
-// @Todo: Update.
-
 module;
 #include "../Core/Core.h"
 
@@ -26,18 +24,18 @@ export inline byte16 GetBinding(uint8 index)
 	return (reinterpret_cast<byte16 *>(appBaseAddr + 0xD6CE80 + 0xA))[index];
 }
 
-// @Todo: Clean, add proper indices.
-// @Todo: Use ActorData.
-export inline uint8 GetRelativeTiltDirection(byte8 * baseAddr)
+export inline uint8 GetRelativeTiltDirection(ActorData & actorData)
 {
 	auto & gamepad = GetGamepad(0);
-	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
 	uint16 relativeTilt = 0;
+
 	if (gamepad.leftStickRadius < LEFT_STICK_DEADZONE)
 	{
 		return TILT_DIRECTION_NEUTRAL;
 	}
+
 	relativeTilt = (actorData.actorCameraDirection - gamepad.leftStickPosition);
+
 	{
 		uint16 value = (relativeTilt - 0x6000);
 		if (value <= 0x4000)
@@ -66,5 +64,6 @@ export inline uint8 GetRelativeTiltDirection(byte8 * baseAddr)
 			return TILT_DIRECTION_LEFT;
 		}
 	}
+
 	return TILT_DIRECTION_NEUTRAL;
 }
