@@ -461,6 +461,7 @@ export void CopyMemory
 
 export struct BackupHelper
 {
+	// @Research: addr first, off last.
 	struct Metadata
 	{
 		uint32 off;

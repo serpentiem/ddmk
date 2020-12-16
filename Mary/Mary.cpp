@@ -128,8 +128,21 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 			return 0;
 		}
 
+
+
+
 		Actor_Init();
-		Actor_Toggle(activeConfig.Actor.enable);
+
+		Actor_Toggle(false);
+
+		if (activeConfig.Actor.enable)
+		{
+			Actor_Toggle(activeConfig.Actor.enable);
+		}
+
+
+
+
 
 		UpdateCrazyComboLevelMultiplier();
 
