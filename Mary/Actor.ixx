@@ -19479,7 +19479,10 @@ void ResetVisibility(ActorData & actorData)
 // byte8  * DevilButtonCheckAddr         = 0;
 // byte8  * ActivateDevilAddr                  = 0;
 // byte8  * DeactivateDevilAddr                = 0;
-byte8  * InputUpdateAddr[16]                = {};
+// byte8  * InputUpdateAddr[16]                = {};
+
+
+
 byte8  * EbonyIvoryRainStormCheckAddr       = 0;
 byte8  * DotShadowCheckAddr                 = 0;
 byte8 * ResetActorModeAddr                  = 0;
@@ -19754,168 +19757,15 @@ export void Actor_Init()
 
 
 
-	// Input Updates
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x0F, 0xB6, 0x93, 0x00, 0x00, 0x00, 0x00, // movzx edx,byte ptr [rbx+0000B8C0]
-			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+32CC70
-			0x66, 0x23, 0x83, 0x00, 0x00, 0x00, 0x00, // and ax,[rbx+0000B8C0]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD32), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newGamepad);
-		WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC70));
-		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ActorData, newButtonMask);
-		InputUpdateAddr[0] = func.addr;
-		/*
-		dmc3.exe+1EBD2D - E8 3E0F1400 - call dmc3.exe+32CC70
-		dmc3.exe+1EBD32 - 33 D2       - xor edx,edx
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x0F, 0xB6, 0x93, 0x00, 0x00, 0x00, 0x00, // movzx edx,byte ptr [rbx+0000B8C0]
-			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+32CC80
-			0x66, 0x23, 0x83, 0x00, 0x00, 0x00, 0x00, // and ax,[rbx+0000B8C0]
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD47), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newGamepad);
-		WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC80));
-		*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ActorData, newButtonMask);
-		InputUpdateAddr[1] = func.addr;
-		/*
-		dmc3.exe+1EBD42 - E8 390F1400      - call dmc3.exe+32CC80
-		dmc3.exe+1EBD47 - 0FB7 93 E0740000 - movzx edx,word ptr [rbx+000074E0]
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x66, 0x23, 0x8B, 0x00, 0x00, 0x00, 0x00, //and cx,[rbx+0000B8C0]
-			0x66, 0x89, 0x8B, 0xE4, 0x74, 0x00, 0x00, //mov [rbx+000074E4],cx
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD6B), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newButtonMask);
-		InputUpdateAddr[2] = func.addr;
-		/*
-		dmc3.exe+1EBD64 - 66 89 8B E4740000 - mov [rbx+000074E4],cx
-		dmc3.exe+1EBD6B - 66 23 D0          - and dx,ax
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x66, 0x23, 0x93, 0x00, 0x00, 0x00, 0x00, //and dx,[rbx+0000B8C0]
-			0x66, 0x89, 0x93, 0xE6, 0x74, 0x00, 0x00, //mov [rbx+000074E6],dx
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD7C), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newButtonMask);
-		InputUpdateAddr[3] = func.addr;
-		/*
-		dmc3.exe+1EBD75 - 66 89 93 E6740000 - mov [rbx+000074E6],dx
-		dmc3.exe+1EBD7C - 33 D2             - xor edx,edx
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x0F, 0xB6, 0x93, 0x00, 0x00, 0x00, 0x00, // movzx edx,byte ptr [rbx+0000B8C0]
-			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+32CC10
-			0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rbx+0000B8C0],01
-			0x74, 0x03,                               // je short
-			0x66, 0x31, 0xC0,                         // xor ax,ax
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD83), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newGamepad);
-		WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC10));
-		*reinterpret_cast<uint32 *>(func.sect0 + 0xE) = offsetof(ActorData, newEnableRightStick);
-		InputUpdateAddr[4] = func.addr;
-		/*
-		dmc3.exe+1EBD7E - E8 8D0E1400 - call dmc3.exe+32CC10
-		dmc3.exe+1EBD83 - 33 D2       - xor edx,edx
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x0F, 0xB6, 0x93, 0x00, 0x00, 0x00, 0x00, // movzx edx,byte ptr [rbx+0000B8C0]
-			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+32CC10
-			0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rbx+0000B8C0],01
-			0x74, 0x03,                               // je short
-			0x66, 0x31, 0xC0,                         // xor ax,ax
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1EBD9C), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newGamepad);
-		WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC10));
-		*reinterpret_cast<uint32 *>(func.sect0 + 0xE) = offsetof(ActorData, newEnableLeftStick);
-		InputUpdateAddr[5] = func.addr;
-		/*
-		dmc3.exe+1EBD97 - E8 740E1400 - call dmc3.exe+32CC10
-		dmc3.exe+1EBD9C - 45 33 C0    - xor r8d,r8d
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x0F, 0xB6, 0x93, 0x00, 0x00, 0x00, 0x00, // movzx edx,byte ptr [rbx+0000B8C0]
-			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+32CC50
-			0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rbx+0000B8C0],01
-			0x74, 0x03,                               // je short
-			0x66, 0x31, 0xC0,                         // xor ax,ax
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1EBDB4), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newGamepad);
-		WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC50));
-		*reinterpret_cast<uint32 *>(func.sect0 + 0xE) = offsetof(ActorData, newEnableRightStick);
-		InputUpdateAddr[6] = func.addr;
-		/*
-		dmc3.exe+1EBDAF - E8 9C0E1400 - call dmc3.exe+32CC50
-		dmc3.exe+1EBDB4 - 33 D2       - xor edx,edx
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0x0F, 0xB6, 0x93, 0x00, 0x00, 0x00, 0x00, // movzx edx,byte ptr [rbx+0000B8C0]
-			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+32CC50
-			0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rbx+0000B8C0],01
-			0x74, 0x03,                               // je short
-			0x66, 0x31, 0xC0,                         // xor ax,ax
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1EBE9D), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newGamepad);
-		WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC50));
-		*reinterpret_cast<uint32 *>(func.sect0 + 0xE) = offsetof(ActorData, newEnableLeftStick);
-		InputUpdateAddr[7] = func.addr;
-		/*
-		dmc3.exe+1EBE98 - E8 B30D1400       - call dmc3.exe+32CC50
-		dmc3.exe+1EBE9D - 66 89 83 0A750000 - mov [rbx+0000750A],ax
-		*/
-	}
-	{
-		constexpr byte8 sect0[] =
-		{
-			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+2ACD0
-			0x44, 0x8B, 0xC7,             // mov r8d,edi
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x2AFC6), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		WriteCall(func.sect0, (appBaseAddr + 0x2ACD0));
-		InputUpdateAddr[8] = func.addr;
-		/*
-		dmc3.exe+2AFA5 - E8 26FDFFFF - call dmc3.exe+2ACD0
-		dmc3.exe+2AFC6 - 49 6B C8 2C - imul rcx,r8,2C
-		*/
-	}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20914,14 +20764,391 @@ export void Actor_Toggle(bool enable)
 		}
 	}
 
+	// Input Update Disable Actor Id Check
+	{
+		WriteAddress((appBaseAddr + 0x1EBD1E), (enable) ? (appBaseAddr + 0x1EBD24) : (appBaseAddr + 0x1EBDBF), 6);
+		/*
+		dmc3.exe+1EBD1E - 0F85 9B000000 - jne dmc3.exe+1EBDBF
+		dmc3.exe+1EBD24 - 33 D2         - xor edx,edx
+		*/
+	}
 
+	// Input Update
+	{
+		auto addr     = (appBaseAddr + 0x1EBD2D);
+		auto jumpAddr = (appBaseAddr + 0x1EBD32);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1EBD2D - E8 3E0F1400 - call dmc3.exe+32CC70
+		dmc3.exe+1EBD32 - 33 D2       - xor edx,edx
+		*/
 
+		static Function func = {};
 
+		constexpr byte8 sect0[] =
+		{
+			0x0F, 0xB6, 0x93, 0x00, 0x00, 0x00, 0x00, // movzx edx,byte ptr [rbx+0000B8C0]
+			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+32CC70
+			0x66, 0x23, 0x83, 0x00, 0x00, 0x00, 0x00, // and ax,[rbx+0000B8C0]
+		};
 
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newGamepad);
+			WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC70));
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ActorData, newButtonMask);
+		}
 
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 
+	// Input Update 2
+	{
+		auto addr     = (appBaseAddr + 0x1EBD42);
+		auto jumpAddr = (appBaseAddr + 0x1EBD47);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1EBD42 - E8 390F1400      - call dmc3.exe+32CC80
+		dmc3.exe+1EBD47 - 0FB7 93 E0740000 - movzx edx,word ptr [rbx+000074E0]
+		*/
 
+		static Function func = {};
 
+		constexpr byte8 sect0[] =
+		{
+			0x0F, 0xB6, 0x93, 0x00, 0x00, 0x00, 0x00, // movzx edx,byte ptr [rbx+0000B8C0]
+			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+32CC80
+			0x66, 0x23, 0x83, 0x00, 0x00, 0x00, 0x00, // and ax,[rbx+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newGamepad);
+			WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC80));
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xF) = offsetof(ActorData, newButtonMask);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Input Update 3
+	{
+		auto addr     = (appBaseAddr + 0x1EBD64);
+		auto jumpAddr = (appBaseAddr + 0x1EBD6B);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1EBD64 - 66 89 8B E4740000 - mov [rbx+000074E4],cx
+		dmc3.exe+1EBD6B - 66 23 D0          - and dx,ax
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x66, 0x23, 0x8B, 0x00, 0x00, 0x00, 0x00, //and cx,[rbx+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			CopyMemory((func.sect0 + sizeof(sect0)), addr, size, MemoryFlags_VirtualProtectSource);
+			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newButtonMask);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Input Update 4
+	{
+		auto addr     = (appBaseAddr + 0x1EBD75);
+		auto jumpAddr = (appBaseAddr + 0x1EBD7C);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1EBD75 - 66 89 93 E6740000 - mov [rbx+000074E6],dx
+		dmc3.exe+1EBD7C - 33 D2             - xor edx,edx
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x66, 0x23, 0x93, 0x00, 0x00, 0x00, 0x00, //and dx,[rbx+0000B8C0]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			CopyMemory((func.sect0 + sizeof(sect0)), addr, size, MemoryFlags_VirtualProtectSource);
+			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newButtonMask);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Input Update 5
+	{
+		auto addr     = (appBaseAddr + 0x1EBD7E);
+		auto jumpAddr = (appBaseAddr + 0x1EBD83);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1EBD7E - E8 8D0E1400 - call dmc3.exe+32CC10
+		dmc3.exe+1EBD83 - 33 D2       - xor edx,edx
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x0F, 0xB6, 0x93, 0x00, 0x00, 0x00, 0x00, // movzx edx,byte ptr [rbx+0000B8C0]
+			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+32CC10
+			0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rbx+0000B8C0],01
+			0x74, 0x03,                               // je short
+			0x66, 0x31, 0xC0,                         // xor ax,ax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newGamepad);
+			WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC10));
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xE) = offsetof(ActorData, newEnableRightStick);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Input Update 6
+	{
+		auto addr     = (appBaseAddr + 0x1EBD97);
+		auto jumpAddr = (appBaseAddr + 0x1EBD9C);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1EBD97 - E8 740E1400 - call dmc3.exe+32CC10
+		dmc3.exe+1EBD9C - 45 33 C0    - xor r8d,r8d
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x0F, 0xB6, 0x93, 0x00, 0x00, 0x00, 0x00, // movzx edx,byte ptr [rbx+0000B8C0]
+			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+32CC10
+			0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rbx+0000B8C0],01
+			0x74, 0x03,                               // je short
+			0x66, 0x31, 0xC0,                         // xor ax,ax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newGamepad);
+			WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC10));
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xE) = offsetof(ActorData, newEnableLeftStick);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Input Update 7
+	{
+		auto addr     = (appBaseAddr + 0x1EBDAF);
+		auto jumpAddr = (appBaseAddr + 0x1EBDB4);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1EBDAF - E8 9C0E1400 - call dmc3.exe+32CC50
+		dmc3.exe+1EBDB4 - 33 D2       - xor edx,edx
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x0F, 0xB6, 0x93, 0x00, 0x00, 0x00, 0x00, // movzx edx,byte ptr [rbx+0000B8C0]
+			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+32CC50
+			0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rbx+0000B8C0],01
+			0x74, 0x03,                               // je short
+			0x66, 0x31, 0xC0,                         // xor ax,ax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newGamepad);
+			WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC50));
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xE) = offsetof(ActorData, newEnableRightStick);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Input Updates 8
+	{
+		auto addr     = (appBaseAddr + 0x1EBE98);
+		auto jumpAddr = (appBaseAddr + 0x1EBE9D);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1EBE98 - E8 B30D1400       - call dmc3.exe+32CC50
+		dmc3.exe+1EBE9D - 66 89 83 0A750000 - mov [rbx+0000750A],ax
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x0F, 0xB6, 0x93, 0x00, 0x00, 0x00, 0x00, // movzx edx,byte ptr [rbx+0000B8C0]
+			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+32CC50
+			0x80, 0xBB, 0x00, 0x00, 0x00, 0x00, 0x01, // cmp byte ptr [rbx+0000B8C0],01
+			0x74, 0x03,                               // je short
+			0x66, 0x31, 0xC0,                         // xor ax,ax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(ActorData, newGamepad);
+			WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC50));
+			*reinterpret_cast<uint32 *>(func.sect0 + 0xE) = offsetof(ActorData, newEnableLeftStick);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Extend Input Loop
+	{
+		WriteAddress((appBaseAddr + 0x32D0AA), (enable) ? (appBaseAddr + 0x32D0B0) : (appBaseAddr + 0x32D346), 6);
+		/*
+		dmc3.exe+32D0AA - 0F85 96020000  - jne dmc3.exe+32D346
+		dmc3.exe+32D0B0 - 4C 8D 44 24 38 - lea r8,[rsp+38]
+		*/
+	}
+
+	// Extend Input Loop 2
+	{
+		Write<uint8>((appBaseAddr + 0x2AF8F + 2), (enable) ? 3 : 1);
+		/*
+		dmc3.exe+2AF8F - 83 F9 01 - cmp ecx,01
+		dmc3.exe+2AF92 - 76 11    - jna dmc3.exe+2AFA5
+		*/
+	}
+
+	// Extend Input Loop 3
+	{
+		auto addr     = (appBaseAddr + 0x2AFA5);
+		auto jumpAddr = (appBaseAddr + 0x2AFC6);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+2AFA5 - E8 26FDFFFF - call dmc3.exe+2ACD0
+		dmc3.exe+2AFC6 - 49 6B C8 2C - imul rcx,r8,2C
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+2ACD0
+			0x44, 0x8B, 0xC7,             // mov r8d,edi
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall(func.sect0, (appBaseAddr + 0x2ACD0));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Extend Input Loop 4
+	{
+		Write<byte32>((appBaseAddr + 0x32CFB6 + 3), (enable) ? 0x63C : 0x624);
+		/*
+		dmc3.exe+32CFB6 - 48 81 FE 24060000 - cmp rsi,00000624
+		dmc3.exe+32CFBD - 0F8C 7DFEFFFF     - jl dmc3.exe+32CE40
+		*/
+	}
 
 
 
@@ -20938,178 +21165,46 @@ export void Actor_Toggle(bool enable)
 	ToggleFixWeaponShadows(enable);
 	ToggleFixDevilAura    (enable);
 
-	// Input Updates
-	{
-		// Disable Actor Id Check
-		WriteAddress((appBaseAddr + 0x1EBD1E), (enable) ? (appBaseAddr + 0x1EBD24) : (appBaseAddr + 0x1EBDBF), 6);
-		/*
-		dmc3.exe+1EBD1E - 0F85 9B000000 - jne dmc3.exe+1EBDBF
-		dmc3.exe+1EBD24 - 33 D2         - xor edx,edx
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1EBD2D);
-		if (enable)
-		{
-			WriteJump(dest, InputUpdateAddr[0]);
-		}
-		else
-		{
-			WriteCall(dest, (appBaseAddr + 0x32CC70));
-		}
-		/*
-		dmc3.exe+1EBD2D - E8 3E0F1400 - call dmc3.exe+32CC70
-		dmc3.exe+1EBD32 - 33 D2       - xor edx,edx
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1EBD42);
-		if (enable)
-		{
-			WriteJump(dest, InputUpdateAddr[1]);
-		}
-		else
-		{
-			WriteCall(dest, (appBaseAddr + 0x32CC80));
-		}
-		/*
-		dmc3.exe+1EBD42 - E8 390F1400      - call dmc3.exe+32CC80
-		dmc3.exe+1EBD47 - 0FB7 93 E0740000 - movzx edx,word ptr [rbx+000074E0]
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1EBD64);
-		if (enable)
-		{
-			WriteJump(dest, InputUpdateAddr[2], 2);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x66, 0x89, 0x8B, 0xE4, 0x74, 0x00, 0x00, // mov [rbx+000074E4],cx
-			};
-			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-		}
-		/*
-		dmc3.exe+1EBD64 - 66 89 8B E4740000 - mov [rbx+000074E4],cx
-		dmc3.exe+1EBD6B - 66 23 D0          - and dx,ax
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1EBD75);
-		if (enable)
-		{
-			WriteJump(dest, InputUpdateAddr[3], 2);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x66, 0x89, 0x93, 0xE6, 0x74, 0x00, 0x00, // mov [rbx+000074E6],dx
-			};
-			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-		}
-		/*
-		dmc3.exe+1EBD75 - 66 89 93 E6740000 - mov [rbx+000074E6],dx
-		dmc3.exe+1EBD7C - 33 D2             - xor edx,edx
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1EBD7E);
-		if (enable)
-		{
-			WriteJump(dest, InputUpdateAddr[4]);
-		}
-		else
-		{
-			WriteCall(dest, (appBaseAddr + 0x32CC10));
-		}
-		/*
-		dmc3.exe+1EBD7E - E8 8D0E1400 - call dmc3.exe+32CC10
-		dmc3.exe+1EBD83 - 33 D2       - xor edx,edx
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1EBD97);
-		if (enable)
-		{
-			WriteJump(dest, InputUpdateAddr[5]);
-		}
-		else
-		{
-			WriteCall(dest, (appBaseAddr + 0x32CC10));
-		}
-		/*
-		dmc3.exe+1EBD97 - E8 740E1400 - call dmc3.exe+32CC10
-		dmc3.exe+1EBD9C - 45 33 C0    - xor r8d,r8d
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1EBDAF);
-		if (enable)
-		{
-			WriteJump(dest, InputUpdateAddr[6]);
-		}
-		else
-		{
-			WriteCall(dest, (appBaseAddr + 0x32CC50));
-		}
-		/*
-		dmc3.exe+1EBDAF - E8 9C0E1400 - call dmc3.exe+32CC50
-		dmc3.exe+1EBDB4 - 33 D2       - xor edx,edx
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1EBE98);
-		if (enable)
-		{
-			WriteJump(dest, InputUpdateAddr[7]);
-		}
-		else
-		{
-			WriteCall(dest, (appBaseAddr + 0x32CC50));
-		}
-		/*
-		dmc3.exe+1EBE98 - E8 B30D1400       - call dmc3.exe+32CC50
-		dmc3.exe+1EBE9D - 66 89 83 0A750000 - mov [rbx+0000750A],ax
-		*/
-	}
 
-	// @Todo: Review.
-	WriteAddress((appBaseAddr + 0x32D0AA), (enable) ? (appBaseAddr + 0x32D0B0) : (appBaseAddr + 0x32D346), 6);
-	/*
-	dmc3.exe+32D0AA - 0F85 96020000  - jne dmc3.exe+32D346
-	dmc3.exe+32D0B0 - 4C 8D 44 24 38 - lea r8,[rsp+38]
-	*/
 
-	Write<uint8>((appBaseAddr + 0x2AF8F + 2), (enable) ? 3 : 1); // @Todo: MAX_PLAYER.
-	/*
-	dmc3.exe+2AF8F - 83 F9 01 - cmp ecx,01
-	dmc3.exe+2AF92 - 76 11    - jna dmc3.exe+2AFA5
-	*/
 
-	{
-		auto dest = (appBaseAddr + 0x2AFA5);
-		if (enable)
-		{
-			WriteJump(dest, InputUpdateAddr[8]);
-		}
-		else
-		{
-			WriteCall(dest, (appBaseAddr + 0x2ACD0));
-		}
-		/*
-		dmc3.exe+2AFA5 - E8 26FDFFFF - call dmc3.exe+2ACD0
-		dmc3.exe+2AFC6 - 49 6B C8 2C - imul rcx,r8,2C
-		*/
-	}
 
-	Write<byte32>((appBaseAddr + 0x32CFB6 + 3), (enable) ? 0x63C : 0x624);
-	/*
-	dmc3.exe+32CFB6 - 48 81 FE 24060000 - cmp rsi,00000624
-	dmc3.exe+32CFBD - 0F8C 7DFEFFFF     - jl dmc3.exe+32CE40
-	*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// // Update Collision Data
 	// {
