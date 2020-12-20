@@ -1,4 +1,3 @@
-// @Todo: Fix Quicksilver alpha, again.
 // @Todo: Disable Doppelganger on death.
 // @Todo: Merge Reset Permissions.
 // @Todo: Cleanup.
@@ -19093,6 +19092,11 @@ void DeactivateDevil(ActorData & actorData)
 
 void UpdateColorMatrices(ActorData & actorData)
 {
+	if constexpr (debug)
+	{
+		LogFunction(actorData.operator byte8 *());
+	}
+
 	if (actorData.visibility != 0)
 	{
 		actorData.visibility = (g_quicksilver) ? 2 : 1;
@@ -19100,8 +19104,14 @@ void UpdateColorMatrices(ActorData & actorData)
 
 	uint16 value = (g_quicksilver) ? 128 : 0;
 
+	for_all(uint8, index, countof(actorData.newModelData))
 	{
-		auto dest = reinterpret_cast<byte8 *>(&actorData.newModelData[0]);
+		if (!actorData.newModelData[index].visible)
+		{
+			continue;
+		}
+
+		auto dest = reinterpret_cast<byte8 *>(&actorData.newModelData[index]);
 
 		*reinterpret_cast<uint16 *>(dest + 0x80 + 0x214) = value;
 	}
