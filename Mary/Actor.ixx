@@ -30,6 +30,25 @@ typedef byte8 *(__fastcall * GetActorBaseAddressByEffectData_t)(byte8 * effectDa
 
 GetActorBaseAddressByEffectData_t GetActorBaseAddressByEffectData = 0;
 
+
+
+typedef void(__fastcall * ResetLockOn_t)(ActorData & actorData);
+
+ResetLockOn_t ResetLockOn = 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export template <typename T>
 void SetMainActor(T & actorData)
 {
@@ -19693,8 +19712,27 @@ bool DecreaseAltitude(byte8 * actorBaseAddr)
 
 
 
+// void ResetLockOn(ActorData & actorData)
+// {
+// 	auto & lockOnData = *reinterpret_cast<LockOnData *>(reinterpret_cast<byte8 *>(&actorData) + 0x41C8);
+
+// 	lockOnData.var_1000 = 0;
+// 	lockOnData.var_1008 = 0;
+// 	lockOnData.var_1010 = lockOnData.items;
+// 	lockOnData.var_2040 = 0;
+
+// 	for_each(uint32, itemIndex, 1, 256)
+// 	{
+// 		auto & item = lockOnData.items[itemIndex];
+// 		auto & lastItem = lockOnData.items[(itemIndex - 1)];
+
+// 		lastItem.nextAddr = reinterpret_cast<byte8 *>(&item);
+// 	}
+// }
 
 
+
+//byte8 * ResetLockOn
 
 
 
@@ -19778,7 +19816,7 @@ export void Actor_Init()
 
 
 
-
+	// @Todo: Move to its on toggle.
 	// Ebony & Ivory Rain Storm Check
 	{
 		constexpr byte8 sect1[] =
@@ -21163,6 +21201,353 @@ export void Actor_Toggle(bool enable)
 
 
 
+	// Reset Lock-On
+	{
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x41, 0xB9, 0xFF, 0x00, 0x00, 0x00,       // mov r9d,000000FF
+			0x4C, 0x8D, 0x81, 0xC8, 0x41, 0x00, 0x00, // lea r8,[rcx+000041C8]
+			0xBA, 0x01, 0x00, 0x00, 0x00,             // mov edx,00000001
+			0x45, 0x33, 0xDB,                         // xor r11d,r11d
+			0x49, 0x8D, 0x40, 0x08,                   // lea rax,[r8+08]
+			0x4D, 0x89, 0x98, 0x08, 0x10, 0x00, 0x00, // mov [r8+00001008],r11
+			0x49, 0x89, 0x80, 0x10, 0x10, 0x00, 0x00, // mov [r8+00001010],rax
+			0x49, 0x8D, 0x40, 0x10,                   // lea rax,[r8+10]
+			0x48, 0x63, 0xCA,                         // movsxd rcx,edx
+			0x48, 0x8D, 0x40, 0x10,                   // lea rax,[rax+10]
+			0x48, 0xC1, 0xE1, 0x04,                   // shl rcx,04
+			0xFF, 0xC2,                               // inc edx
+			0x48, 0x83, 0xC1, 0x08,                   // add rcx,08
+			0x49, 0x03, 0xC8,                         // add rcx,r8
+			0x48, 0x89, 0x48, 0xF0,                   // mov [rax-10],rcx
+			0x49, 0x83, 0xE9, 0x01,                   // sub r9,01
+			0x75, 0xE2,                               // jne short
+			0x4D, 0x89, 0x98, 0x00, 0x10, 0x00, 0x00, // mov [r8+00001000],r11
+			0x45, 0x89, 0x98, 0x40, 0x20, 0x00, 0x00, // mov [r8+00002040],r11d
+			0xC3,                                     // ret
+		};
+
+		if (!run)
+		{
+			func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			ResetLockOn = reinterpret_cast<ResetLockOn_t>(func.addr);
+		}
+	}
+
+	// Reset Lock-On 2
+	{
+		auto addr     = (appBaseAddr + 0x1F8408);
+		auto jumpAddr = (appBaseAddr + 0x1F840D);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1F8408 - E8 5321FCFF         - call dmc3.exe+1BA560
+		dmc3.exe+1F840D - 44 0FB6 87 18010000 - movzx r8d,byte ptr [rdi+00000118]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			mov_rcx_rdi,
+			call,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 3), ResetLockOn);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Reset Lock-On 3
+	{
+		auto addr     = (appBaseAddr + 0x1F90CB);
+		auto jumpAddr = (appBaseAddr + 0x1F90D0);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1F90CB - E8 9014FCFF      - call dmc3.exe+1BA560
+		dmc3.exe+1F90D0 - 0FBF 87 C0000000 - movsx eax,word ptr [rdi+000000C0]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			mov_rcx_rdi,
+			call,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			WriteCall((func.sect0 + 3), ResetLockOn);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+// // New Reset Lock-On
+// {
+// 	auto addr     = (appBaseAddr + 0x1F8408);
+// 	auto jumpAddr = (appBaseAddr + 0x1F840D);
+// 	constexpr uint32 size = 5;
+// 	/*
+// 	dmc3.exe+1F8408 - E8 5321FCFF         - call dmc3.exe+1BA560
+// 	dmc3.exe+1F840D - 44 0FB6 87 18010000 - movzx r8d,byte ptr [rdi+00000118]
+// 	*/
+
+// 	static Function func = {};
+
+// 	constexpr byte8 sect1[] =
+// 	{
+// 		mov_rcx_rdi,
+// 	};
+
+// 	if (!run)
+// 	{
+// 		backupHelper.Save(addr, size);
+// 		func = CreateFunction(ResetLockOn, jumpAddr, true, true, 0, sizeof(sect1));
+// 		CopyMemory(func.sect1, sect1, sizeof(sect1));
+// 	}
+
+// 	if (enable)
+// 	{
+// 		WriteJump(addr, func.addr, (size - 5));
+// 	}
+// 	else
+// 	{
+// 		backupHelper.Restore(addr);
+// 	}
+// }
+
+// // New Reset Lock-On 2
+// {
+// 	auto addr     = (appBaseAddr + 0x1F90CB);
+// 	auto jumpAddr = (appBaseAddr + 0x1F90D0);
+// 	constexpr uint32 size = 5;
+// 	/*
+// 	dmc3.exe+1F90CB - E8 9014FCFF      - call dmc3.exe+1BA560
+// 	dmc3.exe+1F90D0 - 0FBF 87 C0000000 - movsx eax,word ptr [rdi+000000C0]
+// 	*/
+
+// 	static Function func = {};
+
+// 	constexpr byte8 sect1[] =
+// 	{
+// 		mov_rcx_rdi,
+// 	};
+
+// 	if (!run)
+// 	{
+// 		backupHelper.Save(addr, size);
+// 		func = CreateFunction(ResetLockOn, jumpAddr, true, true, 0, sizeof(sect1));
+// 		CopyMemory(func.sect1, sect1, sizeof(sect1));
+// 	}
+
+// 	if (enable)
+// 	{
+// 		WriteJump(addr, func.addr, (size - 5));
+// 	}
+// 	else
+// 	{
+// 		backupHelper.Restore(addr);
+// 	}
+// }
+
+
+
+
+
+
+
+
+	// // Reset Lock-On
+	// {
+	// 	auto addr = (appBaseAddr + 0x1F8401);
+	// 	constexpr uint32 size = 7;
+	// 	/*
+	// 	dmc3.exe+1F8401 - 0FB6 97 18010000 - movzx edx,byte ptr [rdi+00000118]
+	// 	dmc3.exe+1F8408 - E8 5321FCFF      - call dmc3.exe+1BA560
+	// 	*/
+
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		mov_rcx_rdi,
+	// 	};
+
+	// 	if (!run)
+	// 	{
+	// 		backupHelper.Save(addr, size);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+	// 		CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+
+	// // Reset Lock-On 2
+	// {
+	// 	auto addr = (appBaseAddr + 0x1F90BD);
+	// 	constexpr uint32 size = 14;
+	// 	/*
+	// 	dmc3.exe+1F90BD - 0FB6 97 18010000  - movzx edx,byte ptr [rdi+00000118]
+	// 	dmc3.exe+1F90C4 - 48 8B 0D 5D7DA900 - mov rcx,[dmc3.exe+C90E28]
+	// 	dmc3.exe+1F90CB - E8 9014FCFF       - call dmc3.exe+1BA560
+	// 	*/
+
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		mov_rcx_rdi,
+	// 	};
+
+	// 	if (!run)
+	// 	{
+	// 		backupHelper.Save(addr, size);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+	// 		CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+
+	// // Reset Lock-On 3
+	// {
+	// 	auto addr = (appBaseAddr + 0x1BA560);
+	// 	constexpr uint32 size = 3;
+	// 	/*
+	// 	dmc3.exe+1BA560 - 48 63 C2       - movsxd rax,edx
+	// 	dmc3.exe+1BA563 - 41 B9 FF000000 - mov r9d,000000FF
+	// 	*/
+
+	// 	if (!run)
+	// 	{
+	// 		backupHelper.Save(addr, size);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+
+	// // Reset Lock-On 4
+	// {
+	// 	auto addr = (appBaseAddr + 0x1BA569);
+	// 	constexpr uint32 size = 9;
+	// 	/*
+	// 	dmc3.exe+1BA569 - 4C 8B 44 C1 18    - mov r8,[rcx+rax*8+18]
+	// 	dmc3.exe+1BA56E - 4C 8D 14 C1       - lea r10,[rcx+rax*8]
+	// 	dmc3.exe+1BA572 - 49 81 C0 C8410000 - add r8,000041C8
+	// 	*/
+
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		mov_r8_rcx,
+	// 	};
+
+	// 	if (!run)
+	// 	{
+	// 		backupHelper.Save(addr, size);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+	// 		CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+
+	// // Reset Lock-On 5
+	// {
+	// 	auto addr = (appBaseAddr + 0x1BA5C5);
+	// 	constexpr uint32 size = 11;
+	// 	/*
+	// 	dmc3.exe+1BA5C5 - 49 8B 42 18       - mov rax,[r10+18]
+	// 	dmc3.exe+1BA5C9 - 44 89 98 08620000 - mov [rax+00006208],r11d
+	// 	dmc3.exe+1BA5D0 - C3                - ret
+	// 	*/
+
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x45, 0x89, 0x98, 0x40, 0x20, 0x00, 0x00, // mov [r8+00002040],r11d
+	// 	};
+
+	// 	if (!run)
+	// 	{
+	// 		backupHelper.Save(addr, size);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+	// 		CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21213,224 +21598,6 @@ export void Actor_Toggle(bool enable)
 
 
 
-
-
-
-	// // Update Collision Data
-	// {
-	// 	auto dest = (appBaseAddr + 0x1EEFFC);
-	// 	if (enable)
-	// 	{
-	// 		WriteJump(dest, UpdateCollisionDataAddr);
-	// 	}
-	// 	else
-	// 	{
-	// 		WriteCall(dest, (appBaseAddr + 0x5C260));
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1EEFFC - E8 5FD2E6FF       - call dmc3.exe+5C260
-	// 	dmc3.exe+1EF001 - 83 BE 943E0000 03 - cmp dword ptr [rsi+00003E94],03
-	// 	*/
-	// }
-
-	// @Todo: Review.
-	// Reset Lock-On
-	{
-		auto dest = (appBaseAddr + 0x1F8401);
-		if (enable)
-		{
-			SetMemory(dest, 0x90, 7, MemoryFlags_VirtualProtectDestination);
-			constexpr byte8 buffer[] =
-			{
-				mov_rcx_rdi,
-			};
-			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x0F, 0xB6, 0x97, 0x18, 0x01, 0x00, 0x00, // movzx edx,byte ptr [rdi+00000118]
-			};
-			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-		}
-		/*
-		dmc3.exe+1F8401 - 0FB6 97 18010000 - movzx edx,byte ptr [rdi+00000118]
-		dmc3.exe+1F8408 - E8 5321FCFF      - call dmc3.exe+1BA560
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1F90BD);
-		if (enable)
-		{
-			SetMemory(dest, 0x90, 14, MemoryFlags_VirtualProtectDestination);
-			constexpr byte8 buffer[] =
-			{
-				mov_rcx_rdi,
-			};
-			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x0F, 0xB6, 0x97, 0x18, 0x01, 0x00, 0x00, // movzx edx,byte ptr [rdi+00000118]
-				0x48, 0x8B, 0x0D, 0x5D, 0x7D, 0xA9, 0x00, // mov rcx,[dmc3.exe+C90E28]
-			};
-			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-		}
-		/*
-		dmc3.exe+1F90BD - 0FB6 97 18010000  - movzx edx,byte ptr [rdi+00000118]
-		dmc3.exe+1F90C4 - 48 8B 0D 5D7DA900 - mov rcx,[dmc3.exe+C90E28]
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1BA560);
-		if (enable)
-		{
-			SetMemory(dest, 0x90, 3, MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x48, 0x63, 0xC2, // movsxd rax,edx
-			};
-			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-		}
-		/*
-		dmc3.exe+1BA560 - 48 63 C2       - movsxd rax,edx
-		dmc3.exe+1BA563 - 41 B9 FF000000 - mov r9d,000000FF
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1BA569);
-		if (enable)
-		{
-			SetMemory(dest, 0x90, 9, MemoryFlags_VirtualProtectDestination);
-			constexpr byte8 buffer[] =
-			{
-				0x4C, 0x8B, 0xC1, // mov r8,rcx
-			};
-			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x4C, 0x8B, 0x44, 0xC1, 0x18, // mov r8,[rcx+rax*8+18]
-				0x4C, 0x8D, 0x14, 0xC1,       // lea r10,[rcx+rax*8]
-			};
-			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-		}
-		/*
-		dmc3.exe+1BA569 - 4C 8B 44 C1 18 - mov r8,[rcx+rax*8+18]
-		dmc3.exe+1BA56E - 4C 8D 14 C1    - lea r10,[rcx+rax*8]
-		*/
-	}
-	{
-		auto dest = (appBaseAddr + 0x1BA5C5);
-		if (enable)
-		{
-			SetMemory(dest, 0x90, 11, MemoryFlags_VirtualProtectDestination);
-			constexpr byte8 buffer[] =
-			{
-				0x45, 0x89, 0x98, 0x40, 0x20, 0x00, 0x00, // mov [r8+00002040],r11d
-			};
-			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0x49, 0x8B, 0x42, 0x18,                   // mov rax,[r10+18]
-				0x44, 0x89, 0x98, 0x08, 0x62, 0x00, 0x00, // mov [rax+00006208],r11d
-			};
-			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-		}
-		/*
-		dmc3.exe+1BA5C5 - 49 8B 42 18       - mov rax,[r10+18]
-		dmc3.exe+1BA5C9 - 44 89 98 08620000 - mov [rax+00006208],r11d
-		*/
-	}
-
-	// // Disable Reset Visibility
-	// {
-	// 	auto dest = (appBaseAddr + 0x1F8AEE);
-	// 	if (enable)
-	// 	{
-	// 		SetMemory(dest, 0x90, 10, MemoryFlags_VirtualProtectDestination);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0xC7, 0x87, 0x20, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, // mov [rdi+00000120],00000001
-	// 		};
-	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001
-	// 	dmc3.exe+1F8AF8 - 80 BF 9B3E0000 01       - cmp byte ptr [rdi+00003E9B],01
-	// 	*/
-	// }
-	// {
-	// 	auto dest = (appBaseAddr + 0x1F7CBA);
-	// 	if (enable)
-	// 	{
-	// 		SetMemory(dest, 0x90, 10, MemoryFlags_VirtualProtectDestination);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0xC7, 0x83, 0x20, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, // mov [rbx+00000120],00000001
-	// 		};
-	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1F7CBA - C7 83 20010000 01000000 - mov [rbx+00000120],00000001
-	// 	dmc3.exe+1F7CC4 - E8 474E0000             - call dmc3.exe+1FCB10
-	// 	*/
-	// }
-	// {
-	// 	auto dest = (appBaseAddr + 0x1DFC7F);
-	// 	if (enable)
-	// 	{
-	// 		SetMemory(dest, 0x90, 6, MemoryFlags_VirtualProtectDestination);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x89, 0x81, 0x20, 0x01, 0x00, 0x00, // mov [rcx+00000120],eax
-	// 		};
-	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1DFC7F - 89 81 20010000    - mov [rcx+00000120],eax
-	// 	dmc3.exe+1DFC85 - 48 89 81 583E0000 - mov [rcx+00003E58],rax
-	// 	*/
-	// }
-	// {
-	// 	auto dest = (appBaseAddr + 0x1FCA43);
-	// 	if (enable)
-	// 	{
-	// 		SetMemory(dest, 0x90, 6, MemoryFlags_VirtualProtectDestination);
-	// 	}
-	// 	else
-	// 	{
-	// 		constexpr byte8 buffer[] =
-	// 		{
-	// 			0x89, 0x91, 0x20, 0x01, 0x00, 0x00, // mov [rcx+00000120],edx
-	// 		};
-	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-	// 	}
-	// 	/*
-	// 	dmc3.exe+1FCA43 - 89 91 20010000 - mov [rcx+00000120],edx
-	// 	dmc3.exe+1FCA49 - 8B EA          - mov ebp,edx
-	// 	*/
-	// }
 
 	// Force Update Summoned Swords
 	{
@@ -23666,8 +23833,99 @@ inc byte ptr [rdi+0000B8C0]
 
 
 
+	// // Disable Reset Visibility
+	// {
+	// 	auto dest = (appBaseAddr + 0x1F8AEE);
+	// 	if (enable)
+	// 	{
+	// 		SetMemory(dest, 0x90, 10, MemoryFlags_VirtualProtectDestination);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0xC7, 0x87, 0x20, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, // mov [rdi+00000120],00000001
+	// 		};
+	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001
+	// 	dmc3.exe+1F8AF8 - 80 BF 9B3E0000 01       - cmp byte ptr [rdi+00003E9B],01
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1F7CBA);
+	// 	if (enable)
+	// 	{
+	// 		SetMemory(dest, 0x90, 10, MemoryFlags_VirtualProtectDestination);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0xC7, 0x83, 0x20, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, // mov [rbx+00000120],00000001
+	// 		};
+	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1F7CBA - C7 83 20010000 01000000 - mov [rbx+00000120],00000001
+	// 	dmc3.exe+1F7CC4 - E8 474E0000             - call dmc3.exe+1FCB10
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1DFC7F);
+	// 	if (enable)
+	// 	{
+	// 		SetMemory(dest, 0x90, 6, MemoryFlags_VirtualProtectDestination);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x89, 0x81, 0x20, 0x01, 0x00, 0x00, // mov [rcx+00000120],eax
+	// 		};
+	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1DFC7F - 89 81 20010000    - mov [rcx+00000120],eax
+	// 	dmc3.exe+1DFC85 - 48 89 81 583E0000 - mov [rcx+00003E58],rax
+	// 	*/
+	// }
+	// {
+	// 	auto dest = (appBaseAddr + 0x1FCA43);
+	// 	if (enable)
+	// 	{
+	// 		SetMemory(dest, 0x90, 6, MemoryFlags_VirtualProtectDestination);
+	// 	}
+	// 	else
+	// 	{
+	// 		constexpr byte8 buffer[] =
+	// 		{
+	// 			0x89, 0x91, 0x20, 0x01, 0x00, 0x00, // mov [rcx+00000120],edx
+	// 		};
+	// 		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1FCA43 - 89 91 20010000 - mov [rcx+00000120],edx
+	// 	dmc3.exe+1FCA49 - 8B EA          - mov ebp,edx
+	// 	*/
+	// }
 
-
-
+	// // Update Collision Data
+	// {
+	// 	auto dest = (appBaseAddr + 0x1EEFFC);
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(dest, UpdateCollisionDataAddr);
+	// 	}
+	// 	else
+	// 	{
+	// 		WriteCall(dest, (appBaseAddr + 0x5C260));
+	// 	}
+	// 	/*
+	// 	dmc3.exe+1EEFFC - E8 5FD2E6FF       - call dmc3.exe+5C260
+	// 	dmc3.exe+1EF001 - 83 BE 943E0000 03 - cmp dword ptr [rsi+00003E94],03
+	// 	*/
+	// }
 
 #endif

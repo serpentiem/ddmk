@@ -1781,6 +1781,36 @@ static_assert(offsetof(SummonedSwordsData, actorBaseAddr) == 0x560);
 
 
 
+struct LockOnData
+{
+	struct Item
+	{
+		byte8 * addr;
+		byte8 * nextAddr;
+	};
+
+	_(8);
+	Item items[255];
+	_(8);
+	byte8 * var_1000;
+	byte8 * var_1008;
+	Item * var_1010;
+	_(4136);
+	uint32 var_2040;
+};
+
+static_assert(offsetof(LockOnData, items) == 8);
+static_assert(offsetof(LockOnData, var_1000) == 0x1000);
+static_assert(offsetof(LockOnData, var_1008) == 0x1008);
+static_assert(offsetof(LockOnData, var_1010) == 0x1010);
+static_assert(offsetof(LockOnData, var_2040) == 0x2040);
+static_assert(sizeof(LockOnData) == 8260);
+
+
+
+
+
+
 
 
 
