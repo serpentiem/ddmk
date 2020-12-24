@@ -1,3 +1,4 @@
+// @Todo: Fix No Devil Form.
 // @Todo: Disable Doppelganger on death.
 // @Todo: Merge Reset Permissions.
 // @Todo: Cleanup.
@@ -28,8 +29,6 @@ export Vector<byte8 *> Actor_actorBaseAddr;
 typedef byte8 *(__fastcall * GetActorBaseAddressByEffectData_t)(byte8 * effectDataAddr);
 
 GetActorBaseAddressByEffectData_t GetActorBaseAddressByEffectData = 0;
-
-
 
 typedef void(__fastcall * ResetLockOn_t)(ActorData & actorData);
 
@@ -17980,9 +17979,7 @@ export void UpdateMagicPointsDepletionValues()
 
 #pragma region Color
 
-// @Todo: Rename to SetXColor.
-
-void SetColorAirHike
+void SetAirHikeColor
 (
 	ActorDataDante & actorData,
 	byte8 * dest
@@ -17994,10 +17991,10 @@ void SetColorAirHike
 		meleeWeaponIndex = 0;
 	}
 
-	memcpy(dest, activeConfig.Color.airHike[meleeWeaponIndex], 4);
+	CopyMemory(dest, activeConfig.Color.airHike[meleeWeaponIndex], 4);
 }
 
-void SetColorAura
+void SetDevilAuraColor
 (
 	ActorData & actorData,
 	byte8 * dest
@@ -18013,7 +18010,7 @@ void SetColorAura
 
 			if (actorData2.sparda)
 			{
-				memcpy(dest, activeConfig.Color.Aura.sparda, 4);
+				CopyMemory(dest, activeConfig.Color.Aura.sparda, 4);
 			}
 			else
 			{
@@ -18023,7 +18020,7 @@ void SetColorAura
 					meleeWeaponIndex = 0;
 				}
 
-				memcpy(dest, activeConfig.Color.Aura.dante[meleeWeaponIndex], 4);
+				CopyMemory(dest, activeConfig.Color.Aura.dante[meleeWeaponIndex], 4);
 			}
 			break;
 		}
@@ -18033,7 +18030,7 @@ void SetColorAura
 
 			if (actorData2.neroAngelo)
 			{
-				memcpy(dest, activeConfig.Color.Aura.neroAngelo, 4);
+				CopyMemory(dest, activeConfig.Color.Aura.neroAngelo, 4);
 			}
 			else
 			{
@@ -18043,145 +18040,207 @@ void SetColorAura
 					activeMeleeWeaponIndex = 0;
 				}
 
-				memcpy(dest, activeConfig.Color.Aura.vergil[activeMeleeWeaponIndex], 4);
+				CopyMemory(dest, activeConfig.Color.Aura.vergil[activeMeleeWeaponIndex], 4);
 			}
 			break;
 		}
 	}
 }
 
-// @Todo: Toggle.
-void InitColor()
+void ToggleColor(bool enable)
 {
-	LogFunction();
+	LogFunction(enable);
+
+	static bool run = false;
 
 	// Air Hike
 	{
+		auto addr = (appBaseAddr + 0x1F66DD);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1F66DD - E8 1E66E9FF   - call dmc3.exe+8CD00
+		dmc3.exe+1F66E2 - 0FB6 44 24 44 - movzx eax,byte ptr [rsp+44]
+		*/
+
+		static Function func = {};
+
 		constexpr byte8 sect1[] =
 		{
 			mov_rcx_rbx,
 		};
-		auto func = CreateFunction(SetColorAirHike, 0, true, true, 0, sizeof(sect1));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		WriteCall((appBaseAddr + 0x1F66DD), func.addr);
-		/*
-		dmc3.exe+1F66DD - E8 1E66E9FF - call dmc3.exe+8CD00
-		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SetAirHikeColor, 0, true, true, 0, sizeof(sect1));
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteCall(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
 
 	// Trickster Sky Star
 	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0xBF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rdi
-			0x8B, 0x3F,                                                 // mov edi,[rdi]
-			0x89, 0xB8, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],edi
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x8E340), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Trickster.skyStar;
-		WriteJump((appBaseAddr + 0x8E330), func.addr, 4);
+		auto addr     = (appBaseAddr + 0x8E330);
+		auto jumpAddr = (appBaseAddr + 0x8E340);
+		constexpr uint32 size = 9;
 		/*
 		dmc3.exe+8E330 - 66 C7 80 E0000000 FF00  - mov word ptr [rax+000000E0],00FF
 		dmc3.exe+8E340 - C7 80 DC000000 02000000 - mov [rax+000000DC],00000002
 		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
+			0x8B, 0x09,                                                 // mov ecx,[rcx]
+			0x89, 0x88, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],ecx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 3) = activeConfig.Color.Trickster.skyStar;
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
 
 	// Royalguard Ultimate Start
 	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
-			0x8B, 0x09,                                                 // mov ecx,[rcx]
-			0x89, 0x88, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],ecx
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x8E84C), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Royalguard.ultimate;
-		WriteJump((appBaseAddr + 0x8E83C), func.addr, 4);
+		auto addr     = (appBaseAddr + 0x8E83C);
+		auto jumpAddr = (appBaseAddr + 0x8E84C);
+		constexpr uint32 size = 9;
 		/*
 		dmc3.exe+8E83C - 66 C7 80 E0000000 8F70  - mov word ptr [rax+000000E0],708F
 		dmc3.exe+8E84C - C7 80 DC000000 02000000 - mov [rax+000000DC],00000002
 		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
+			0x8B, 0x09,                                                 // mov ecx,[rcx]
+			0x89, 0x88, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],ecx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 3) = activeConfig.Color.Royalguard.ultimate;
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
 
 	// Royalguard Ultimate End
 	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
-			0x8B, 0x09,                                                 // mov ecx,[rcx]
-			0x89, 0x88, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],ecx
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x91154), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Royalguard.ultimate;
-		WriteJump((appBaseAddr + 0x91144), func.addr, 4);
+		auto addr     = (appBaseAddr + 0x91144);
+		auto jumpAddr = (appBaseAddr + 0x91154);
+		constexpr uint32 size = 9;
 		/*
 		dmc3.exe+91144 - 66 C7 80 E0000000 8F70  - mov word ptr [rax+000000E0],708F
 		dmc3.exe+91154 - C7 80 DC000000 02000000 - mov [rax+000000DC],00000002
 		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rcx,
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx
+			0x8B, 0x09,                                                 // mov ecx,[rcx]
+			0x89, 0x88, 0xE0, 0x00, 0x00, 0x00,                         // mov [rax+000000E0],ecx
+			pop_rcx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 3) = activeConfig.Color.Royalguard.ultimate;
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
 
 	// Doppelganger Clone
 	{
-		constexpr byte8 sect0[] =
-		{
-			0x48, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rsi
-			0x8B, 0x36,                                                 // mov esi,[rsi]
-			0x89, 0xB7, 0x28, 0x3A, 0x00, 0x00,                         // mov [rdi+00003A28],esi
-		};
-		auto func = CreateFunction(0, (appBaseAddr + 0x1FCD7D), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = activeConfig.Color.Doppelganger.clone;
-		WriteJump((appBaseAddr + 0x1FCD73), func.addr, 5);
+		auto addr     = (appBaseAddr + 0x1FCD73);
+		auto jumpAddr = (appBaseAddr + 0x1FCD7D);
+		constexpr uint32 size = 10;
 		/*
 		dmc3.exe+1FCD73 - C7 87 283A0000 10101030 - mov [rdi+00003A28],30101010
 		dmc3.exe+1FCD7D - 89 87 243A0000          - mov [rdi+00003A24],eax
 		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			push_rax,
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
+			0x8B, 0x00,                                                 // mov eax,[rax]
+			0x89, 0x87, 0x28, 0x3A, 0x00, 0x00,                         // mov [rdi+00003A28],eax
+			pop_rax,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 3) = activeConfig.Color.Doppelganger.clone;
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
-
-
-
-
-
-
-
-
-	static bool run = false;
-
-
-
-
-
-
-	// // Aura Start
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0xBA, 0x01, 0x00, 0x00, 0x00, // mov edx,00000001
-	// 	};
-	// 	constexpr byte8 sect1[] =
-	// 	{
-	// 		mov_rcx_rbx,
-	// 		call,
-	// 		mov_rcx_rax,
-	// 		0x48, 0x8D, 0x55, 0xA7, // lea rdx,[rbp-59]
-	// 	};
-	// 	auto func = CreateFunction(SetColorAura, (appBaseAddr + 0x8E457), true, true, sizeof(sect0), sizeof(sect1));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	memcpy(func.sect1, sect1, sizeof(sect1));
-	// 	WriteCall((func.sect1 + 3), GetActorBaseAddressByEffectData);
-	// 	WriteJump((appBaseAddr + 0x8E452), func.addr);
-	// 	/*
-	// 	dmc3.exe+8E452 - BA 01000000 - mov edx,00000001
-	// 	dmc3.exe+8E457 - E8 34C61600 - call dmc3.exe+1FAA90
-	// 	*/
-	// }
-
-	constexpr bool enable = true;
-
-
 
 	// Devil Aura Start
 	{
@@ -18210,7 +18269,7 @@ void InitColor()
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetColorAura, jumpAddr, true, true, sizeof(sect0), sizeof(sect1), size);
+			func = CreateFunction(SetDevilAuraColor, jumpAddr, true, true, sizeof(sect0), sizeof(sect1), size);
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
@@ -18226,13 +18285,6 @@ void InitColor()
 			backupHelper.Restore(addr);
 		}
 	}
-
-
-
-
-
-
-
 
 	// Devil Aura Loop
 	{
@@ -18261,7 +18313,7 @@ void InitColor()
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetColorAura, jumpAddr, true, true, sizeof(sect0), sizeof(sect1), size);
+			func = CreateFunction(SetDevilAuraColor, jumpAddr, true, true, sizeof(sect0), sizeof(sect1), size);
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
@@ -18278,49 +18330,31 @@ void InitColor()
 		}
 	}
 
+	// Devil Aura Vergil Fix
+	{
+		auto addr = (appBaseAddr + 0x90C32);
+		constexpr uint32 size = 4;
+		/*
+		dmc3.exe+90C32 - 44 0FB6 EB        - movzx r13d,bl
+		dmc3.exe+90C36 - C6 05 6322C000 0E - mov byte ptr [dmc3.exe+C92EA0],0E
+		*/
 
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
 
-
-
-
-	// // Aura Loop
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0x8B, 0x06, // mov rax,[rsi]
-	// 		0x48, 0x85, 0xC0, // test rax,rax
-	// 	};
-	// 	constexpr byte8 sect1[] =
-	// 	{
-	// 		mov_rcx_rdi,
-	// 		call,
-	// 		mov_rcx_rax,
-	// 		0x48, 0x8D, 0x54, 0x24, 0x30, // lea rdx,[rsp+30]
-	// 	};
-
-	// 	auto func = CreateFunction(SetColorAura, (appBaseAddr + 0x90C69), true, true, sizeof(sect0), sizeof(sect1));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	memcpy(func.sect1, sect1, sizeof(sect1));
-	// 	WriteCall((func.sect1 + 3), GetActorBaseAddressByEffectData);
-	// 	WriteJump((appBaseAddr + 0x90C63), func.addr, 1);
-	// 	/*
-	// 	dmc3.exe+90C63 - 48 8B 06 - mov rax,[rsi]
-	// 	dmc3.exe+90C66 - 48 85 C0 - test rax,rax
-	// 	dmc3.exe+90C69 - 74 32    - je dmc3.exe+90C9D
-	// 	*/
-	// }
-
-	// Aura Vergil Fix
-	SetMemory((appBaseAddr + 0x90C32), 0x90, 4, MemoryFlags_VirtualProtectDestination);
-	/*
-	dmc3.exe+90C32 - 44 0FB6 EB - movzx r13d,bl
-	*/
-
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 
 	run = true;
-
-
-
 }
 
 #pragma endregion
@@ -19781,7 +19815,7 @@ export void Actor_Init()
 
 	InitRegisterWeapon();
 	InitIsWeaponReady();
-	InitColor();
+	//InitColor();
 	InitSpeed();
 
 	// Reset Actor Mode
@@ -21933,6 +21967,7 @@ export void Actor_Toggle(bool enable)
 	ToggleStyleFixes      (enable);
 	ToggleIsWeaponReady   (enable);
 	ToggleMobility        (enable);
+	ToggleColor(enable);
 	ToggleSpeed           (enable);
 	ToggleFixWeaponShadows(enable);
 	ToggleFixDevilAura    (enable);
@@ -22656,4 +22691,107 @@ export void Actor_SceneMissionStart()
 #pragma endregion
 
 #ifdef __GARBAGE__
+
+// @Todo: Toggle.
+void InitColor()
+{
+	LogFunction();
+
+	return;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	static bool run = false;
+
+
+
+
+
+
+	// // Aura Start
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0xBA, 0x01, 0x00, 0x00, 0x00, // mov edx,00000001
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rbx,
+	// 		call,
+	// 		mov_rcx_rax,
+	// 		0x48, 0x8D, 0x55, 0xA7, // lea rdx,[rbp-59]
+	// 	};
+	// 	auto func = CreateFunction(SetDevilAuraColor, (appBaseAddr + 0x8E457), true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	WriteCall((func.sect1 + 3), GetActorBaseAddressByEffectData);
+	// 	WriteJump((appBaseAddr + 0x8E452), func.addr);
+	// 	/*
+	// 	dmc3.exe+8E452 - BA 01000000 - mov edx,00000001
+	// 	dmc3.exe+8E457 - E8 34C61600 - call dmc3.exe+1FAA90
+	// 	*/
+	// }
+
+	constexpr bool enable = true;
+
+
+
+
+
+
+
+
+
+
+	// // Aura Loop
+	// {
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x48, 0x8B, 0x06, // mov rax,[rsi]
+	// 		0x48, 0x85, 0xC0, // test rax,rax
+	// 	};
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rdi,
+	// 		call,
+	// 		mov_rcx_rax,
+	// 		0x48, 0x8D, 0x54, 0x24, 0x30, // lea rdx,[rsp+30]
+	// 	};
+
+	// 	auto func = CreateFunction(SetDevilAuraColor, (appBaseAddr + 0x90C69), true, true, sizeof(sect0), sizeof(sect1));
+	// 	memcpy(func.sect0, sect0, sizeof(sect0));
+	// 	memcpy(func.sect1, sect1, sizeof(sect1));
+	// 	WriteCall((func.sect1 + 3), GetActorBaseAddressByEffectData);
+	// 	WriteJump((appBaseAddr + 0x90C63), func.addr, 1);
+	// 	/*
+	// 	dmc3.exe+90C63 - 48 8B 06 - mov rax,[rsi]
+	// 	dmc3.exe+90C66 - 48 85 C0 - test rax,rax
+	// 	dmc3.exe+90C69 - 74 32    - je dmc3.exe+90C9D
+	// 	*/
+	// }
+
+
+
+
+	run = true;
+
+
+
+}
+
+
+
 #endif
