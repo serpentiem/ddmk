@@ -34,7 +34,13 @@ typedef void(__fastcall * ResetLockOn_t)(ActorData & actorData);
 
 ResetLockOn_t ResetLockOn = 0;
 
+typedef WeaponData *(__fastcall * RegisterWeapon_t)
+(
+	byte8 * actorData,
+	uint32 weapon
+);
 
+RegisterWeapon_t RegisterWeapon[MAX_WEAPON] = {};
 
 
 
@@ -483,31 +489,7 @@ void CharacterModelData::Update(T & actorData)
 
 
 
-typedef WeaponData *(__fastcall * RegisterWeapon_t)
-(
-	byte8 * actorData,
-	uint32 weapon
-);
 
-RegisterWeapon_t RegisterWeapon[MAX_WEAPON] = {};
-
-void InitRegisterWeapon()
-{
-	RegisterWeapon[WEAPON_REBELLION        ] = func_2310B0;
-	RegisterWeapon[WEAPON_CERBERUS         ] = func_22EC90;
-	RegisterWeapon[WEAPON_AGNI_RUDRA       ] = func_227870;
-	RegisterWeapon[WEAPON_NEVAN            ] = func_22A1E0;
-	RegisterWeapon[WEAPON_BEOWULF_DANTE    ] = func_228CF0;
-	RegisterWeapon[WEAPON_EBONY_IVORY      ] = func_22B0C0;
-	RegisterWeapon[WEAPON_SHOTGUN          ] = func_2306B0;
-	RegisterWeapon[WEAPON_ARTEMIS          ] = func_22C4A0;
-	RegisterWeapon[WEAPON_SPIRAL           ] = func_2300A0;
-	RegisterWeapon[WEAPON_KALINA_ANN       ] = func_22BA30;
-	RegisterWeapon[WEAPON_YAMATO_VERGIL    ] = func_22D960;
-	RegisterWeapon[WEAPON_BEOWULF_VERGIL   ] = func_228CF0;
-	RegisterWeapon[WEAPON_YAMATO_FORCE_EDGE] = func_2298E0;
-	RegisterWeapon[WEAPON_YAMATO_BOB       ] = func_231A30;
-}
 
 // @Todo: Move.
 void ToggleFixWeaponShadows(bool enable)
@@ -1145,14 +1127,9 @@ bool IsMeleeWeaponReady
 	return false;
 }
 
-bool IsMeleeWeaponReadyProxy(WeaponData & weaponData)
+bool IsMeleeWeaponReady(WeaponData & weaponData)
 {
-	auto actorBaseAddr = weaponData.actorBaseAddr;
-	if (!actorBaseAddr)
-	{
-		return true;
-	}
-	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+	IntroduceActorData(actorBaseAddr, actorData, weaponData.actorBaseAddr, return true);
 
 	return IsMeleeWeaponReady(actorData, weaponData.weapon);
 }
@@ -1191,7 +1168,7 @@ bool IsRangedWeaponReady
 	return false;
 }
 
-bool IsRangedWeaponReadyProxy(WeaponData & weaponData)
+bool IsRangedWeaponReady(WeaponData & weaponData)
 {
 	if (!weaponData.actorBaseAddr)
 	{
@@ -1215,91 +1192,210 @@ void IsMeleeWeaponReadyVergilFix(ActorData & actorData)
 	}
 }
 
-byte8 * IsMeleeWeaponReadyProxyAddr      = 0;
-byte8 * IsMeleeWeaponReadyProxyShowAddr  = 0;
-byte8 * IsRangedWeaponReadyProxyAddr     = 0;
-byte8 * IsRangedWeaponReadyProxyShowAddr = 0;
-
-void InitIsWeaponReady()
-{
-	LogFunction();
-
-	// Melee
-	{
-		auto func = CreateFunction(IsMeleeWeaponReadyProxy, 0, true, false);
-		IsMeleeWeaponReadyProxyAddr = func.addr;
-	}
-	{
-		constexpr byte8 sect2[] =
-		{
-			0x84, 0xC0,                   // test al,al
-			0x74, 0x05,                   // je short
-			0xE9, 0x00, 0x00, 0x00, 0x00, // jmp dmc3.exe+1FDE10
-		};
-		auto func = CreateFunction(IsMeleeWeaponReadyProxy, 0, true, false, 0, 0, sizeof(sect2));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-		IsMeleeWeaponReadyProxyShowAddr = func.addr;
-	}
-
-	// Ranged
-	{
-		auto func = CreateFunction(IsRangedWeaponReadyProxy, 0, true, false);
-		IsRangedWeaponReadyProxyAddr = func.addr;
-	}
-	{
-		constexpr byte8 sect2[] =
-		{
-			0x84, 0xC0,                   // test al,al
-			0x74, 0x05,                   // je short
-			0xE9, 0x00, 0x00, 0x00, 0x00, // jmp dmc3.exe+1FDE10
-		};
-		auto func = CreateFunction(IsRangedWeaponReadyProxy, 0, true, false, 0, 0, sizeof(sect2));
-		memcpy(func.sect2, sect2, sizeof(sect2));
-		WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-		IsRangedWeaponReadyProxyAddr = func.addr;
-	}
-}
-
 void ToggleIsWeaponReady(bool enable)
 {
 	LogFunction(enable);
 
+	static bool run = false;
+
+	static byte8 * IsMeleeWeaponReadyAddr      = 0;
+	static byte8 * IsMeleeWeaponReadyShowAddr  = 0;
+	static byte8 * IsRangedWeaponReadyAddr     = 0;
+	static byte8 * IsRangedWeaponReadyShowAddr = 0;
+
+	// Melee
+	{
+		if (!run)
+		{
+			auto func = CreateFunction(static_cast<bool(__fastcall *)(WeaponData &)>(IsMeleeWeaponReady), 0, true, false);
+			IsMeleeWeaponReadyAddr = func.addr;
+		}
+	}
+	{
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                         // test al,al
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00, // jne dmc3.exe+1FDE10
+		};
+
+		if (!run)
+		{
+			auto func = CreateFunction(static_cast<bool(__fastcall *)(WeaponData &)>(IsMeleeWeaponReady), 0, true, false, 0, 0, sizeof(sect2));
+			CopyMemory(func.sect2, sect2, sizeof(sect2));
+			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1FDE10), 6);
+			IsMeleeWeaponReadyShowAddr = func.addr;
+		}
+	}
+
+	// Ranged
+	{
+		if (!run)
+		{
+			auto func = CreateFunction(static_cast<bool(__fastcall *)(WeaponData &)>(IsRangedWeaponReady), 0, true, false);
+			IsRangedWeaponReadyAddr = func.addr;
+		}
+	}
+	{
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                         // test al,al
+			0x0F, 0x85, 0x00, 0x00, 0x00, 0x00, // jne dmc3.exe+1FDE10
+		};
+
+		if (!run)
+		{
+			auto func = CreateFunction(static_cast<bool(__fastcall *)(WeaponData &)>(IsRangedWeaponReady), 0, true, false, 0, 0, sizeof(sect2));
+			CopyMemory(func.sect2, sect2, sizeof(sect2));
+			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1FDE10), 6);
+			IsRangedWeaponReadyShowAddr = func.addr;
+		}
+	}
+
 	// Rebellion
-	WriteCall((appBaseAddr + 0x23162E), (enable) ? IsMeleeWeaponReadyProxyAddr : (appBaseAddr + 0x1FD3E0));
-	/*
-	dmc3.exe+23162E - E8 ADBDFCFF - call dmc3.exe+1FD3E0
-	*/
+	{
+		auto addr = (appBaseAddr + 0x23162E);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+23162E - E8 ADBDFCFF - call dmc3.exe+1FD3E0
+		dmc3.exe+231633 - 84 C0       - test al,al
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			WriteCall(addr, IsMeleeWeaponReadyAddr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 
 	// Cerberus
-	WriteCall((appBaseAddr + 0x22FAD4), (enable) ? IsMeleeWeaponReadyProxyAddr : (appBaseAddr + 0x1FD3E0));
-	/*
-	dmc3.exe+22FAD4 - E8 07D9FCFF - call dmc3.exe+1FD3E0
-	*/
+	{
+		auto addr = (appBaseAddr + 0x22FAD4);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+22FAD4 - E8 07D9FCFF - call dmc3.exe+1FD3E0
+		dmc3.exe+22FAD9 - 84 C0       - test al,al
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			WriteCall(addr, IsMeleeWeaponReadyAddr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 
 	// Agni & Rudra
-	WriteCall((appBaseAddr + 0x2288A4), (enable) ? IsMeleeWeaponReadyProxyAddr : (appBaseAddr + 0x1FD3E0));
-	/*
-	dmc3.exe+2288A4 - E8 374BFDFF - call dmc3.exe+1FD3E0
-	*/
+	{
+		auto addr = (appBaseAddr + 0x2288A4);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+2288A4 - E8 374BFDFF      - call dmc3.exe+1FD3E0
+		dmc3.exe+2288A9 - 44 0F28 74 24 30 - movaps xmm14,[rsp+30]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			WriteCall(addr, IsMeleeWeaponReadyAddr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 
 	// Nevan
-	WriteCall((appBaseAddr + 0x22AD2D), (enable) ? IsMeleeWeaponReadyProxyAddr : (appBaseAddr + 0x1FD3E0));
-	/*
-	dmc3.exe+22AD2D - E8 AE26FDFF - call dmc3.exe+1FD3E0
-	*/
+	{
+		auto addr = (appBaseAddr + 0x22AD2D);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+22AD2D - E8 AE26FDFF    - call dmc3.exe+1FD3E0
+		dmc3.exe+22AD32 - 48 8B 74 24 40 - mov rsi,[rsp+40]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			WriteCall(addr, IsMeleeWeaponReadyAddr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 
 	// Beowulf
-	WriteCall((appBaseAddr + 0x2295B7), (enable) ? IsMeleeWeaponReadyProxyShowAddr : (appBaseAddr + 0x1FDE10));
-	/*
-	dmc3.exe+2295B7 - E8 5448FDFF - call dmc3.exe+1FDE10
-	*/
+	{
+		auto addr = (appBaseAddr + 0x2295B7);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+2295B7 - E8 5448FDFF    - call dmc3.exe+1FDE10
+		dmc3.exe+2295BC - 48 8B 7C 24 50 - mov rdi,[rsp+50]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			WriteCall(addr, IsMeleeWeaponReadyShowAddr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 
 	// Artemis
-	WriteCall((appBaseAddr + 0x22CBC8), (enable) ? IsRangedWeaponReadyProxyAddr : (appBaseAddr + 0x1FDE10));
-	/*
-	dmc3.exe+22CBC8 - E8 4312FDFF - call dmc3.exe+1FDE10
-	*/
+	{
+		auto addr = (appBaseAddr + 0x22CBC8);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+22CBC8 - E8 4312FDFF    - call dmc3.exe+1FDE10
+		dmc3.exe+22CBCD - 48 8B 5C 24 48 - mov rbx,[rsp+48]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			WriteCall(addr, IsRangedWeaponReadyShowAddr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	run = true;
 }
 
 #pragma endregion
@@ -1341,7 +1437,7 @@ void ToggleIsWeaponReady(bool enable)
 
 
 
-
+// @Todo: Remove.
 template <typename T>
 bool SystemButtonCheck(T & actorData)
 {
@@ -18481,37 +18577,53 @@ void UpdateActorSpeed(byte8 * baseAddr)
 	}
 }
 
-void InitSpeed()
-{
-	LogFunction();
-
-	{
-		constexpr byte8 sect0[] =
-		{
-			0xF3, 0x0F, 0x11, 0x43, 0x14, // movss [rbx+14],xmm0
-		};
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-		auto func = CreateFunction(UpdateActorSpeed, (appBaseAddr + 0x3261D2), true, true, sizeof(sect0), sizeof(sect1));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		memcpy(func.sect1, sect1, sizeof(sect1));
-		UpdateActorSpeedAddr = func.addr;
-		/*
-		dmc3.exe+3261CD - F3 0F11 43 14 - movss [rbx+14],xmm0
-		dmc3.exe+3261D2 - 48 83 C4 20   - add rsp,20
-		*/
-	}
-}
-
 void ToggleSpeed(bool enable)
 {
 	LogFunction(enable);
 
+	static bool run = false;
+
+	// Update Actor Speed
+	{
+		auto addr     = (appBaseAddr + 0x3261CD);
+		auto jumpAddr = (appBaseAddr + 0x3261D2);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+3261CD - F3 0F11 43 14 - movss [rbx+14],xmm0
+		dmc3.exe+3261D2 - 48 83 C4 20   - add rsp,20
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateActorSpeed, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
 	// Devil Speed Values Dante
 	{
 		auto items = reinterpret_cast<float *>(appBaseAddr + 0x58B0B8);
+		/*
+		dmc3.exe+1F8C24 - F3 41 0F10 84 8C B8B05800 - MOVSS XMM0,[R12+RCX*4+0058B0B8]
+		*/
 
 		if (enable)
 		{
@@ -18526,14 +18638,14 @@ void ToggleSpeed(bool enable)
 		{
 			CopyMemory(items, defaultConfig.Speed.devilDante, sizeof(defaultConfig.Speed.devilDante), MemoryFlags_VirtualProtectDestination);
 		}
-		/*
-		dmc3.exe+1F8C24 - F3 41 0F10 84 8C B8B05800 - MOVSS XMM0,[R12+RCX*4+0058B0B8]
-		*/
 	}
 
 	// Devil Speed Values Vergil
 	{
 		auto items = reinterpret_cast<float *>(appBaseAddr + 0x58B0D8);
+		/*
+		dmc3.exe+1F8C48 - F3 41 0F10 84 8C D8B05800 - MOVSS XMM0,[R12+RCX*4+0058B0D8]
+		*/
 
 		if (enable)
 		{
@@ -18548,33 +18660,13 @@ void ToggleSpeed(bool enable)
 		{
 			CopyMemory(items, defaultConfig.Speed.devilVergil, sizeof(defaultConfig.Speed.devilVergil), MemoryFlags_VirtualProtectDestination);
 		}
-		/*
-		dmc3.exe+1F8C48 - F3 41 0F10 84 8C D8B05800 - MOVSS XMM0,[R12+RCX*4+0058B0D8]
-		dmc3.exe+1F8C5B - F3 41 0F10 84 84 D8B05800 - MOVSS XMM0,[R12+RAX*4+0058B0D8]
-		*/
 	}
 
-	// Update Actor Speed
-	{
-		auto dest = (appBaseAddr + 0x3261CD);
-		if (enable)
-		{
-			WriteJump(dest, UpdateActorSpeedAddr);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0xF3, 0x0F, 0x11, 0x43, 0x14, // movss [rbx+14],xmm0
-			};
-			CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-		}
-		/*
-		dmc3.exe+3261CD - F3 0F11 43 14 - movss [rbx+14],xmm0
-		dmc3.exe+3261D2 - 48 83 C4 20   - add rsp,20
-		*/
-	}
+	run = true;
 }
+
+
+
 
 
 
@@ -19778,6 +19870,31 @@ export void Actor_Init()
 {
 	LogFunction();
 
+	// Reset Actor Mode
+	{
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0x8B, 0x5C, 0x24, 0x50, // mov rbx,[rsp+50]
+		};
+		auto func = CreateFunction(ResetActorMode, (appBaseAddr + 0x1E14E6), true, true, sizeof(sect0));
+		memcpy(func.sect0, sect0, sizeof(sect0));
+		ResetActorModeAddr = func.addr;
+		/*
+		dmc3.exe+1E14E1 - 48 8B 5C 24 50 - mov rbx,[rsp+50]
+		dmc3.exe+1E14E6 - 48 83 C4 40    - add rsp,40
+		*/
+	}
+}
+
+
+
+
+
+
+export void Actor_Toggle(bool enable)
+{
+	LogFunction(enable);
+
 	static bool run = false;
 
 	if (!run)
@@ -19813,72 +19930,26 @@ export void Actor_Init()
 		}
 	}
 
-	InitRegisterWeapon();
-	InitIsWeaponReady();
-	//InitColor();
-	InitSpeed();
-
-	// Reset Actor Mode
+	// Register Weapon
 	{
-		constexpr byte8 sect0[] =
+		if (!run)
 		{
-			0x48, 0x8B, 0x5C, 0x24, 0x50, // mov rbx,[rsp+50]
-		};
-		auto func = CreateFunction(ResetActorMode, (appBaseAddr + 0x1E14E6), true, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
-		ResetActorModeAddr = func.addr;
-		/*
-		dmc3.exe+1E14E1 - 48 8B 5C 24 50 - mov rbx,[rsp+50]
-		dmc3.exe+1E14E6 - 48 83 C4 40    - add rsp,40
-		*/
+			RegisterWeapon[WEAPON_REBELLION        ] = func_2310B0;
+			RegisterWeapon[WEAPON_CERBERUS         ] = func_22EC90;
+			RegisterWeapon[WEAPON_AGNI_RUDRA       ] = func_227870;
+			RegisterWeapon[WEAPON_NEVAN            ] = func_22A1E0;
+			RegisterWeapon[WEAPON_BEOWULF_DANTE    ] = func_228CF0;
+			RegisterWeapon[WEAPON_EBONY_IVORY      ] = func_22B0C0;
+			RegisterWeapon[WEAPON_SHOTGUN          ] = func_2306B0;
+			RegisterWeapon[WEAPON_ARTEMIS          ] = func_22C4A0;
+			RegisterWeapon[WEAPON_SPIRAL           ] = func_2300A0;
+			RegisterWeapon[WEAPON_KALINA_ANN       ] = func_22BA30;
+			RegisterWeapon[WEAPON_YAMATO_VERGIL    ] = func_22D960;
+			RegisterWeapon[WEAPON_BEOWULF_VERGIL   ] = func_228CF0;
+			RegisterWeapon[WEAPON_YAMATO_FORCE_EDGE] = func_2298E0;
+			RegisterWeapon[WEAPON_YAMATO_BOB       ] = func_231A30;
+		}
 	}
-
-	run = true;
-}
-
-
-
-
-
-
-export void Actor_Toggle(bool enable)
-{
-	LogFunction(enable);
-
-	static bool run = false;
-
-	// if (!run)
-	// {
-	// 	if (!Actor_actorBaseAddr.Init(512))
-	// 	{
-	// 		Log("Actor_actorBaseAddr.Init failed.");
-
-	// 		return;
-	// 	}
-	// }
-
-	// // Get Actor Base Address By Effect Data
-	// {
-	// 	static Function func = {};
-
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0x8B, 0x81, 0xC0, 0x00, 0x00, 0x00, // mov rax,[rcx+000000C0]
-	// 		0x48, 0x85, 0xC0,                         // test rax,rax
-	// 		0x75, 0x0B,                               // jne short
-	// 		0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00, // mov rax,[dmc3.exe+C90E28]
-	// 		0x48, 0x8B, 0x40, 0x18,                   // mov rax,[rax+18]
-	// 		0xC3,                                     // ret
-	// 	};
-
-	// 	if (!run)
-	// 	{
-	// 		func = CreateFunction(0, 0, false, false, sizeof(sect0), 0, 0, 0, 0, true);
-	// 		CopyMemory(func.sect0, sect0, sizeof(sect0));
-	// 		WriteAddress((func.sect0 + 0xC), (appBaseAddr + 0xC90E28), 7);
-	// 		GetActorBaseAddressByEffectData = reinterpret_cast<GetActorBaseAddressByEffectData_t>(func.addr);
-	// 	}
-	// }
 
 	// Actor Data Size
 	{
@@ -22792,6 +22863,54 @@ void InitColor()
 
 }
 
+// @Todo: Remove.
+// byte8 * IsMeleeWeaponReadyProxyAddr      = 0;
+// byte8 * IsMeleeWeaponReadyProxyShowAddr  = 0;
+// byte8 * IsRangedWeaponReadyProxyAddr     = 0;
+// byte8 * IsRangedWeaponReadyProxyShowAddr = 0;
 
+
+
+// // @Todo: Merge.
+// void InitIsWeaponReady()
+// {
+// 	LogFunction();
+
+// 	// Melee
+// 	{
+// 		auto func = CreateFunction(IsMeleeWeaponReadyProxy, 0, true, false);
+// 		IsMeleeWeaponReadyProxyAddr = func.addr;
+// 	}
+// 	{
+// 		constexpr byte8 sect2[] =
+// 		{
+// 			0x84, 0xC0,                   // test al,al
+// 			0x74, 0x05,                   // je short
+// 			0xE9, 0x00, 0x00, 0x00, 0x00, // jmp dmc3.exe+1FDE10
+// 		};
+// 		auto func = CreateFunction(IsMeleeWeaponReadyProxy, 0, true, false, 0, 0, sizeof(sect2));
+// 		memcpy(func.sect2, sect2, sizeof(sect2));
+// 		WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+// 		IsMeleeWeaponReadyProxyShowAddr = func.addr;
+// 	}
+
+// 	// Ranged
+// 	{
+// 		auto func = CreateFunction(IsRangedWeaponReadyProxy, 0, true, false);
+// 		IsRangedWeaponReadyProxyAddr = func.addr;
+// 	}
+// 	{
+// 		constexpr byte8 sect2[] =
+// 		{
+// 			0x84, 0xC0,                   // test al,al
+// 			0x74, 0x05,                   // je short
+// 			0xE9, 0x00, 0x00, 0x00, 0x00, // jmp dmc3.exe+1FDE10
+// 		};
+// 		auto func = CreateFunction(IsRangedWeaponReadyProxy, 0, true, false, 0, 0, sizeof(sect2));
+// 		memcpy(func.sect2, sect2, sizeof(sect2));
+// 		WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
+// 		IsRangedWeaponReadyProxyAddr = func.addr;
+// 	}
+// }
 
 #endif
