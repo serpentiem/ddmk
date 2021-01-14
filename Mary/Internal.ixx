@@ -24,6 +24,7 @@ export typedef void(__fastcall * func_2CA2F0_t)(PhysicsData & physicsData, void 
 export typedef void *(__fastcall * func_2C6150_t)(void * dest, uint32 size, int32 mode); // Alloc
 export typedef bool(__fastcall * func_1FD3E0_t)(WeaponData & weaponData, uint8); // IsWeaponReady
 export typedef void(__fastcall * func_1FDE10_t)(WeaponData & weaponData); // Show Weapon
+export typedef void(__fastcall * func_3391C0_t)(void *, int32, int32, int32, int32); // Play Sound
 export typedef void(__fastcall * func_2EE3D0_t)(byte8 * dest);
 export typedef void(__fastcall * func_1FAF40_t)(byte8 * baseAddr);
 export typedef void(__fastcall * func_1EEF80_t)(byte8 * baseAddr);
@@ -98,6 +99,7 @@ export func_2CA2F0_t func_2CA2F0 = 0; // (PhysicsData & physicsData, void * dest
 export func_2C6150_t func_2C6150 = 0; // (void * dest, uint32 size, int32 mode)
 export func_1FD3E0_t func_1FD3E0 = 0; // (WeaponData & weaponData, uint8)
 export func_1FDE10_t func_1FDE10 = 0; // (WeaponData & weaponData)
+export func_3391C0_t func_3391C0 = 0; // (void *, int32, int32, int32, int32)
 export func_2EE3D0_t func_2EE3D0 = 0; // (byte8 * dest)
 export func_1FAF40_t func_1FAF40 = 0; // (byte8 * baseAddr)
 export func_1EEF80_t func_1EEF80 = 0; // (byte8 * baseAddr)
@@ -222,6 +224,10 @@ export void Internal_Init()
 	{
 		auto func = CreateFunction((appBaseAddr + 0x1FDE10));
 		func_1FDE10 = (func_1FDE10_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x3391C0), 0, true, true, 0, 0, 0, 0, 1);
+		func_3391C0 = (func_3391C0_t)func.addr;
 	}
 	{
 		auto func = CreateFunction((appBaseAddr + 0x2EE3D0));

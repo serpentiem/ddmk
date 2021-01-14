@@ -85,6 +85,7 @@ export bool GUI_Checkbox2
 	return update;
 }
 
+// @Todo: Extend.
 export template <typename T>
 bool GUI_Input
 (
@@ -415,7 +416,6 @@ bool GUI_Combo2
 	return update;
 }
 
-// @Todo: Update names. Prefer items and itemIndex.
 export template
 <
 	typename varType,
@@ -424,8 +424,8 @@ export template
 bool GUI_ComboMap
 (
 	const char * label,
-	const char *(&names)[mapItemCount],
-	varType(&map)[mapItemCount],
+	const char *(&names)[mapItemCount], // @Todo: Use mapItemNames.
+	varType(&map)[mapItemCount], // @Todo: Use mapItems.
 	uint8 & index,
 	varType & var,
 	ImGuiComboFlags flags = 0
@@ -435,10 +435,11 @@ bool GUI_ComboMap
 	GUI_PushId();
 	if (ImGui::BeginCombo(label, names[index], flags))
 	{
-		for_all(uint8, mapIndex, mapItemCount)
+		for_all(uint8, mapIndex, mapItemCount) // @Todo: mapItemIndex.
 		{
 			auto & mapItem = map[mapIndex];
-			bool selected = (mapIndex == index) ? true : false;
+			bool selected = (mapIndex == index) ? true : false; // @Todo: Redundant.
+			// @Todo: Remove Push and Pop.
 			GUI_PushId();
 			if (GUI_Selectable(names[mapIndex], &selected))
 			{
@@ -667,6 +668,7 @@ bool GUI_ColorPalette2
 	return update;
 }
 
+// @Todo: Create RadioButton2.
 export template <typename varType>
 bool GUI_RadioButton
 (

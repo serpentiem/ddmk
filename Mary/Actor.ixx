@@ -1,8 +1,7 @@
+// @Todo: Cleanup.
+// @Todo: Fix devil form for arbitrary weapon switch controller.
 // @Todo: Fix No Devil Form.
 // @Todo: Disable Doppelganger on death.
-// @Todo: Merge Reset Permissions.
-// @Todo: Cleanup.
-// @Todo: Color Toggle.
 // @Todo: Quick Drive.
 
 module;
@@ -19,6 +18,7 @@ import Internal;
 import Input;
 import Memory;
 import Model;
+import Sound;
 
 #define debug false
 
@@ -33,6 +33,25 @@ GetActorBaseAddressByEffectData_t GetActorBaseAddressByEffectData = 0;
 typedef void(__fastcall * ResetLockOn_t)(ActorData & actorData);
 
 ResetLockOn_t ResetLockOn = 0;
+
+typedef bool(__fastcall * UpdateLockOn_t)
+(
+	byte8 * actorBaseAddr,
+	byte8 * dest
+);
+
+UpdateLockOn_t UpdateLockOn = 0;
+
+
+
+
+
+
+
+
+
+
+
 
 typedef WeaponData *(__fastcall * RegisterWeapon_t)
 (
@@ -1033,7 +1052,7 @@ bool IsMeleeWeaponReady
 			}
 			else
 			{
-				if ((weapon == WEAPON_BEOWULF_DANTE) && activeConfig.BeowulfDante.hide)
+				if ((weapon == WEAPON_BEOWULF_DANTE) && activeConfig.hideBeowulfDante)
 				{
 					return false;
 				}
@@ -1089,7 +1108,7 @@ bool IsMeleeWeaponReady
 			}
 			else
 			{
-				if ((weapon == WEAPON_BEOWULF_VERGIL) && activeConfig.BeowulfVergil.hide)
+				if ((weapon == WEAPON_BEOWULF_VERGIL) && activeConfig.hideBeowulfVergil)
 				{
 					return false;
 				}
@@ -1479,7 +1498,7 @@ bool SystemButtonCheck(T & actorData)
 
 
 
-template <typename T>
+export template <typename T>
 bool IsNeroAngelo(T & actorData)
 {
 	return
@@ -2731,7 +2750,11 @@ auto GetRangedWeapon(T & actorData)
 template <typename T>
 void UpdateStyle(T & actorData)
 {
-	LogFunction(actorData.operator byte8 *());
+	if constexpr (debug)
+	{
+		LogFunction(actorData.operator byte8 *());
+	}
+	
 	// auto & characterData = GetCharacterData(actorData);
 
 	// auto & styleIndex = characterData.styleIndices[characterData.styleButtonIndex];
@@ -2743,7 +2766,11 @@ void UpdateStyle(T & actorData)
 template <typename T>
 void UpdateMeleeWeapon(T & actorData)
 {
-	LogFunction(actorData.operator byte8 *());
+	if constexpr (debug)
+	{
+		LogFunction(actorData.operator byte8 *());
+	}
+
 	auto & characterData = GetCharacterData(actorData);
 
 	if (characterData.meleeWeaponIndex >= characterData.meleeWeaponCount)
@@ -2751,18 +2778,7 @@ void UpdateMeleeWeapon(T & actorData)
 		characterData.meleeWeaponIndex = 0;
 	}
 
-	//auto weapon = characterData.meleeWeapons[characterData.meleeWeaponIndex];
-
 	auto weapon = GetMeleeWeapon(actorData);
-
-
-
-
-	// weapon = 3;
-
-	// Log("weapon %u", weapon);
-
-	// Log("meleeWeapon %u", characterData.meleeWeapons[characterData.meleeWeaponIndex]);
 
 	if constexpr (TypeMatch<T, ActorDataDante>::value)
 	{
@@ -2783,7 +2799,11 @@ void UpdateMeleeWeapon(T & actorData)
 template <typename T>
 void UpdateRangedWeapon(T & actorData)
 {
-	LogFunction(actorData.operator byte8 *());
+	if constexpr (debug)
+	{
+		LogFunction(actorData.operator byte8 *());
+	}
+
 	auto & characterData = GetCharacterData(actorData);
 
 	if (characterData.rangedWeaponIndex >= characterData.rangedWeaponCount)
@@ -3129,98 +3149,29 @@ export void SpawnActors()
 
 #pragma endregion
 
-
-
-
-
-
-
 #pragma region Controllers
 
-
-
-
-
-// void RemoveBusyFlagController(byte8 * baseAddr)
-// {
-// 	if (!activeConfig.RemoveBusyFlag.enable)
-// 	{
-// 		return;
-// 	}
-
-// 	if (!baseAddr)
-// 	{
-// 		return;
-// 	}
-// 	if (baseAddr == Actor_actorBaseAddr[0])
-// 	{
-// 		return;
-// 	}
-// 	if (baseAddr == Actor_actorBaseAddr[1])
-// 	{
-// 		return;
-// 	}
-// 	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
-
-// 	if (actorData.buttons[2] & activeConfig.RemoveBusyFlag.button)
-// 	{
-// 		actorData.state &= ~STATE_BUSY;
-// 	}
-// }
-
-void ResetPermissionsController(byte8 * baseAddr)
+// @Todo: Move.
+void ResetPermissionsController(byte8 * actorBaseAddr)
 {
-	if (!activeConfig.ResetPermissions.enable)
+	if
+	(
+		!activeConfig.resetPermissions ||
+		!actorBaseAddr ||
+		(actorBaseAddr == Actor_actorBaseAddr[0]) ||
+		(actorBaseAddr == Actor_actorBaseAddr[1])
+	)
 	{
 		return;
 	}
 
-	if (!baseAddr)
-	{
-		return;
-	}
-	if (baseAddr == Actor_actorBaseAddr[0])
-	{
-		return;
-	}
-	if (baseAddr == Actor_actorBaseAddr[1])
-	{
-		return;
-	}
-	auto & actorData = *reinterpret_cast<ActorData *>(baseAddr);
+	IntroduceActorDataNoBaseAddress(actorData, actorBaseAddr, return);
 
-	if (actorData.buttons[2] & activeConfig.ResetPermissions.button)
+	if (actorData.buttons[2] & GetBinding(BINDING_TAUNT))
 	{
 		actorData.permissions = 0x1C1B;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 template <typename T>
 void StyleSwitchController(T & actorData)
@@ -3326,7 +3277,10 @@ void StyleSwitchController(T & actorData)
 	{
 		actorData.state &= ~STATE_BUSY;
 
-		Log("%llX Remove Busy Flag", actorData.operator byte8 *());
+		if constexpr (debug)
+		{
+			Log("%llX Remove Busy Flag", actorData.operator byte8 *());
+		}
 	}
 
 	if (actorData.newPlayerIndex != 0)
@@ -3345,8 +3299,9 @@ void StyleSwitchController(T & actorData)
 	);
 }
 
+// @Todo: Update Nero Angelo fix.
 template <typename T>
-void MeleeWeaponSwitchController(T & actorData)
+void LinearMeleeWeaponSwitchController(T & actorData)
 {
 	auto & playerData = GetPlayerData(actorData);
 	auto & characterData = GetCharacterData(actorData);
@@ -3495,7 +3450,7 @@ void MeleeWeaponSwitchController(T & actorData)
 }
 
 template <typename T>
-void RangedWeaponSwitchController(T & actorData)
+void LinearRangedWeaponSwitchController(T & actorData)
 {
 	auto & playerData = GetPlayerData(actorData);
 	auto & characterData = GetCharacterData(actorData);
@@ -3606,6 +3561,188 @@ void RangedWeaponSwitchController(T & actorData)
 	func_1EB0E0(actorData, 4);
 }
 
+// @Research: Consider weapon type template.
+template <typename T>
+void ArbitraryMeleeWeaponSwitchController(T & actorData)
+{
+	auto & characterData = GetCharacterData(actorData);
+
+	auto & gamepad = GetGamepad(actorData.newPlayerIndex);
+
+	if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
+	{
+		return;
+	}
+
+	g_disableCameraRotation = true;
+
+	if (gamepad.rightStickRadius < RIGHT_STICK_DEADZONE)
+	{
+		return;
+	}
+
+	auto & pos = gamepad.rightStickPosition;
+
+	uint8 meleeWeaponIndex = 0;
+	uint8 meleeWeaponCount = characterData.meleeWeaponCount;
+
+	if
+	(
+		(
+			(pos <= -26214) &&
+			(pos >= -32768)
+		) ||
+		(
+			(pos <= 32767) &&
+			(pos >= 26214)
+		)
+	)
+	{
+		meleeWeaponIndex = 0;
+	}
+	else if
+	(
+		(pos < 26214) &&
+		(pos >= 13107)
+	)
+	{
+		meleeWeaponIndex = 1;
+	}
+	else if
+	(
+		(pos < 13107) &&
+		(pos >= 0)
+	)
+	{
+		meleeWeaponIndex = 2;
+	}
+	else if
+	(
+		(pos <= -1) &&
+		(pos > -13107)
+	)
+	{
+		meleeWeaponIndex = 3;
+	}
+	else if
+	(
+		(pos <= -13107) &&
+		(pos > -26214)
+	)
+	{
+		meleeWeaponIndex = 4;
+	}
+
+	if (IsNeroAngelo(actorData))
+	{
+		meleeWeaponCount = 2;
+	}
+
+	if (meleeWeaponIndex >= meleeWeaponCount)
+	{
+		return;
+	}
+
+	characterData.meleeWeaponIndex = meleeWeaponIndex;
+
+	if (characterData.lastMeleeWeaponIndex != characterData.meleeWeaponIndex)
+	{
+		characterData.lastMeleeWeaponIndex = characterData.meleeWeaponIndex;
+
+		UpdateMeleeWeapon(actorData);
+
+		PlaySound(0, 12);
+	}
+}
+
+template <typename T>
+void ArbitraryRangedWeaponSwitchController(T & actorData)
+{
+	auto & characterData = GetCharacterData(actorData);
+
+	auto & gamepad = GetGamepad(actorData.newPlayerIndex);
+
+	if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_GUN)))
+	{
+		return;
+	}
+
+	g_disableCameraRotation = true;
+
+	if (gamepad.rightStickRadius < RIGHT_STICK_DEADZONE)
+	{
+		return;
+	}
+
+	auto & pos = gamepad.rightStickPosition;
+
+	uint8 rangedWeaponIndex = 0;
+	uint8 rangedWeaponCount = characterData.rangedWeaponCount;
+
+	if
+	(
+		(
+			(pos <= -26214) &&
+			(pos >= -32768)
+		) ||
+		(
+			(pos <= 32767) &&
+			(pos >= 26214)
+		)
+	)
+	{
+		rangedWeaponIndex = 0;
+	}
+	else if
+	(
+		(pos < 26214) &&
+		(pos >= 13107)
+	)
+	{
+		rangedWeaponIndex = 1;
+	}
+	else if
+	(
+		(pos < 13107) &&
+		(pos >= 0)
+	)
+	{
+		rangedWeaponIndex = 2;
+	}
+	else if
+	(
+		(pos <= -1) &&
+		(pos > -13107)
+	)
+	{
+		rangedWeaponIndex = 3;
+	}
+	else if
+	(
+		(pos <= -13107) &&
+		(pos > -26214)
+	)
+	{
+		rangedWeaponIndex = 4;
+	}
+
+	if (rangedWeaponIndex >= rangedWeaponCount)
+	{
+		return;
+	}
+
+	characterData.rangedWeaponIndex = rangedWeaponIndex;
+
+	if (characterData.lastRangedWeaponIndex != characterData.rangedWeaponIndex)
+	{
+		characterData.lastRangedWeaponIndex = characterData.rangedWeaponIndex;
+
+		UpdateRangedWeapon(actorData);
+
+		PlaySound(0, 12);
+	}
+}
+
 template <typename T>
 bool WeaponSwitchController(byte8 * actorBaseAddr)
 {
@@ -3620,6 +3757,13 @@ bool WeaponSwitchController(byte8 * actorBaseAddr)
 	}
 	auto & actorData = *reinterpret_cast<T *>(actorBaseAddr);
 
+	auto & playerData = GetPlayerData(actorData);
+
+	auto & characterData = GetCharacterData(actorData);
+
+
+
+
 	if (actorData.mode == ACTOR_MODE_MISSION_18)
 	{
 		return true;
@@ -3631,11 +3775,35 @@ bool WeaponSwitchController(byte8 * actorBaseAddr)
 
 	StyleSwitchController(actorData);
 
-	MeleeWeaponSwitchController(actorData);
-
-	if constexpr (TypeMatch<T, ActorDataDante>::value)
+	if
+	(
+		(actorData.newPlayerIndex == 0) &&
+		(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
+		(actorData.newEntityIndex == ENTITY_MAIN)
+	)
 	{
-		RangedWeaponSwitchController(actorData);
+		g_disableCameraRotation = false;
+
+		if (characterData.meleeWeaponSwitchType == WEAPON_SWITCH_TYPE_ARBITRARY)
+		{
+			ArbitraryMeleeWeaponSwitchController(actorData);
+		}
+		else
+		{
+			LinearMeleeWeaponSwitchController(actorData);
+		}
+
+		if constexpr (TypeMatch<T, ActorDataDante>::value)
+		{
+			if (characterData.rangedWeaponSwitchType == WEAPON_SWITCH_TYPE_ARBITRARY)
+			{
+				ArbitraryRangedWeaponSwitchController(actorData);
+			}
+			else
+			{
+				LinearRangedWeaponSwitchController(actorData);
+			}
+		}
 	}
 
 	ResetPermissionsController(actorData);
@@ -17205,7 +17373,7 @@ void ResetSkyStar(ActorData & actorData)
 
 void ToggleMobility(bool enable)
 {
-	LogFunction();
+	LogFunction(enable);
 
 	static bool run = false;
 
@@ -17985,91 +18153,6 @@ void PlayQuicksilverMotion
 
 
 
-
-#pragma endregion
-
-#pragma region Magic Points Depletion Values
-
-float32 * magicPointsDepletionValueQuicksilverDest  = 0;
-float32 * magicPointsDepletionValueDoppelgangerDest = 0;
-float32 * magicPointsDepletionValueDevilDest        = 0;
-
-void InitMagicPointsDepletionValues()
-{
-	LogFunction();
-
-	auto dest = HighAlloc(12);
-	if (!dest)
-	{
-		Log("HighAlloc failed.");
-
-		return;
-	}
-
-	magicPointsDepletionValueQuicksilverDest  = reinterpret_cast<float32 *>(dest + 0);
-	magicPointsDepletionValueDoppelgangerDest = reinterpret_cast<float32 *>(dest + 4);
-	magicPointsDepletionValueDevilDest        = reinterpret_cast<float32 *>(dest + 8);
-
-	// Quicksilver
-	{
-		auto dest = (appBaseAddr + 0x1F8A40);
-
-		constexpr byte8 buffer[] =
-		{
-			0xF3, 0x0F, 0x59, 0x0D, 0x00, 0x00, 0x00, 0x00, // mulss xmm1,[]
-		};
-		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-
-		WriteAddress(dest, magicPointsDepletionValueQuicksilverDest, 8);
-		/*
-		dmc3.exe+1F8A40 - F3 0F59 88 70010000 - mulss xmm1,[rax+00000170]
-		dmc3.exe+1F8A48 - E8 238DFEFF         - call dmc3.exe+1E1770
-		*/
-	}
-
-	// Doppelganger
-	{
-		auto dest = (appBaseAddr + 0x1F89D1);
-
-		constexpr byte8 buffer[] =
-		{
-			0xF3, 0x0F, 0x59, 0x0D, 0x00, 0x00, 0x00, 0x00, // mulss xmm1,[]
-		};
-		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-
-		WriteAddress(dest, magicPointsDepletionValueDoppelgangerDest, 8);
-		/*
-		dmc3.exe+1F89D1 - F3 0F59 88 74010000 - mulss xmm1,[rax+00000174]
-		dmc3.exe+1F89D9 - E8 928DFEFF         - call dmc3.exe+1E1770
-		*/
-	}
-
-	// Devil
-	{
-		auto dest = (appBaseAddr + 0x1F8B49);
-
-		constexpr byte8 buffer[] =
-		{
-			0xF3, 0x0F, 0x59, 0x0D, 0x00, 0x00, 0x00, 0x00, // mulss xmm1,[]
-		};
-		CopyMemory(dest, buffer, sizeof(buffer), MemoryFlags_VirtualProtectDestination);
-
-		WriteAddress(dest, magicPointsDepletionValueDevilDest, 8);
-		/*
-		dmc3.exe+1F8B49 - F3 0F59 88 78010000 - mulss xmm1,[rax+00000178]
-		dmc3.exe+1F8B51 - E8 1A8CFEFF         - call dmc3.exe+1E1770
-		*/
-	}
-}
-
-export void UpdateMagicPointsDepletionValues()
-{
-	LogFunction();
-
-	*magicPointsDepletionValueQuicksilverDest  = activeConfig.MagicPointsDepletionValues.quicksilver;
-	*magicPointsDepletionValueDoppelgangerDest = activeConfig.MagicPointsDepletionValues.doppelganger;
-	*magicPointsDepletionValueDevilDest        = activeConfig.MagicPointsDepletionValues.devil;
-}
 
 #pragma endregion
 
@@ -19010,9 +19093,95 @@ void ToggleSound(bool enable)
 
 #pragma endregion
 
+#pragma region Damage
+
+float ApplyDamage
+(
+	byte8 * dest,
+	float value
+)
+{
+	if constexpr (debug)
+	{
+		Log
+		(
+			"%llX %f",
+			dest,
+			value
+		);
+	}
+
+	bool match = false;
+
+	// Main Actor
+	[&]()
+	{
+		IntroduceMainActorData(actorBaseAddr, actorData, return);
+
+		if (((dest + 8) - offsetof(ActorData, hitPoints)) == actorBaseAddr)
+		{
+			match = true;
+
+			value *= activeConfig.damageActorMultiplier;
+		}
+	}();
+
+	// Actor
+	if (!match)
+	{
+		for_all(uint32, actorIndex, Actor_actorBaseAddr.count)
+		{
+			IntroduceActorData(actorBaseAddr, actorData, Actor_actorBaseAddr[actorIndex], continue);
+
+			if (((dest + 8) - offsetof(ActorData, hitPoints)) != actorBaseAddr)
+			{
+				continue;
+			}
+
+			match = true;
+
+			value *= activeConfig.damageActorMultiplier;
+
+			break;
+		}
+	}
+
+	// Enemy
+	if (!match)
+	{
+		value *= activeConfig.damageEnemyMultiplier;
+
+		IntroduceMainActorDataNoBaseAddress(actorData, return value);
+
+		if (actorData.styleData.rank < activeConfig.damageStyleRank)
+		{
+			return 0;
+		}
+	}
+
+	return value;
+}
+
+/*
+rsp 0000006277AFFA80
+rsp 0000006277AFF9F8
+rsp 0000006277AFF8F8
+
+rsp 0000006277AFF8F8
+rsp 0000006277AFF9F8
+rsp 0000006277AFFA80
+*/
 
 
 
+
+
+
+
+
+
+
+#pragma endregion
 
 
 
@@ -19504,11 +19673,31 @@ bool DotShadowCheck(byte8 * dest)
 				break;
 			}
 
-			for_all(uint32, index, Actor_actorBaseAddr.count)
+			// Main Actor
 			{
-				if (baseAddr == Actor_actorBaseAddr[index])
+				IntroduceMainActorData(actorBaseAddr, actorData, break);
+
+				if (baseAddr == actorBaseAddr)
 				{
 					return true;
+				}
+			}
+
+			// Actor
+			{
+				if (!activeConfig.Actor.enable)
+				{
+					break;
+				}
+
+				for_all(uint32, actorIndex, Actor_actorBaseAddr.count)
+				{
+					IntroduceActorData(actorBaseAddr, actorData, Actor_actorBaseAddr[actorIndex], continue);
+
+					if (baseAddr == actorBaseAddr)
+					{
+						return true;
+					}
 				}
 			}
 
@@ -19634,16 +19823,13 @@ void ResetVisibility(ActorData & actorData)
 // byte8  * ActivateDevilAddr                  = 0;
 // byte8  * DeactivateDevilAddr                = 0;
 // byte8  * InputUpdateAddr[16]                = {};
-
-
-
-byte8  * EbonyIvoryRainStormCheckAddr       = 0;
-byte8  * DotShadowCheckAddr                 = 0;
+// byte8  * EbonyIvoryRainStormCheckAddr       = 0;
+// byte8  * DotShadowCheckAddr                 = 0;
 byte8 * ResetActorModeAddr                  = 0;
-byte8 * CollisionCheckAddr                  = 0;
-byte8 * ResetVisibilityAddr[2]              = {};
-byte8 * EnableVisibilityCheckAddr[2] = {};
-byte8 * PlayQuicksilverMotionAddr[2] = {};
+// byte8 * CollisionCheckAddr                  = 0;
+// byte8 * ResetVisibilityAddr[2]              = {};
+// byte8 * EnableVisibilityCheckAddr[2] = {};
+// byte8 * PlayQuicksilverMotionAddr[2] = {};
 
 
 
@@ -19708,7 +19894,7 @@ uint32 GetYamatoJudgementCutCount(ActorData & actorData)
 
 void SetAction(byte8 * actorBaseAddr)
 {
-	IntroduceActorDataNoCreate(actorBaseAddr, actorData, return);
+	IntroduceActorDataNoBaseAddress(actorData, actorBaseAddr, return);
 
 	uint8 index = (actorData.devil) ? 1 : 0;
 
@@ -19806,7 +19992,7 @@ bool AirStingerCheck(ActorData & actorData)
 
 bool EndActionLedge(byte8 * actorBaseAddr)
 {
-	IntroduceActorDataNoCreate(actorBaseAddr, actorData, return false);
+	IntroduceActorDataNoBaseAddress(actorData, actorBaseAddr, return false);
 
 	if (AirStingerCheck(actorData))
 	{
@@ -19818,7 +20004,7 @@ bool EndActionLedge(byte8 * actorBaseAddr)
 
 bool DecreaseAltitude(byte8 * actorBaseAddr)
 {
-	IntroduceActorDataNoCreate(actorBaseAddr, actorData, return false);
+	IntroduceActorDataNoBaseAddress(actorData, actorBaseAddr, return false);
 
 	if (AirStingerCheck(actorData))
 	{
@@ -19866,6 +20052,9 @@ bool DecreaseAltitude(byte8 * actorBaseAddr)
 
 
 
+
+
+
 export void Actor_Init()
 {
 	LogFunction();
@@ -19884,6 +20073,243 @@ export void Actor_Init()
 		dmc3.exe+1E14E6 - 48 83 C4 40    - add rsp,40
 		*/
 	}
+}
+
+
+
+
+void UpdateLockOns(byte8 * dest)
+{
+	IntroduceMainActorData(actorBaseAddr, actorData, return);
+
+	for_all(uint32, actorIndex, Actor_actorBaseAddr.count)
+	{
+		IntroduceActorData(actorBaseAddr2, actorData2, Actor_actorBaseAddr[actorIndex], continue);
+
+		if (actorBaseAddr2 == actorBaseAddr)
+		{
+			continue;
+		}
+
+		UpdateLockOn(actorBaseAddr2, dest);
+	}
+}
+
+
+
+
+export void ToggleDeplete(bool enable)
+{
+	LogFunction(enable);
+
+	static bool run = false;
+
+	// Deplete Quicksilver
+	{
+		auto addr     = (appBaseAddr + 0x1F8A40);
+		auto jumpAddr = (appBaseAddr + 0x1F8A48);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+1F8A40 - F3 0F59 88 70010000 - mulss xmm1,[rax+00000170]
+		dmc3.exe+1F8A48 - E8 238DFEFF         - call dmc3.exe+1E1770
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
+			0xF3, 0x0F, 0x59, 0x08,                                     // mulss xmm1,[rax]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<float **>(func.sect0 + 2) = &activeConfig.depleteQuicksilver;
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Deplete Doppelganger
+	{
+		auto addr     = (appBaseAddr + 0x1F89D1);
+		auto jumpAddr = (appBaseAddr + 0x1F89D9);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+1F89D1 - F3 0F59 88 74010000 - mulss xmm1,[rax+00000174]
+		dmc3.exe+1F89D9 - E8 928DFEFF         - call dmc3.exe+1E1770
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
+			0xF3, 0x0F, 0x59, 0x08,                                     // mulss xmm1,[rax]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<float **>(func.sect0 + 2) = &activeConfig.depleteDoppelganger;
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Deplete Devil
+	{
+		auto addr     = (appBaseAddr + 0x1F8B49);
+		auto jumpAddr = (appBaseAddr + 0x1F8B51);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+1F8B49 - F3 0F59 88 78010000 - mulss xmm1,[rax+00000178]
+		dmc3.exe+1F8B51 - E8 1A8CFEFF         - call dmc3.exe+1E1770
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
+			0xF3, 0x0F, 0x59, 0x08,                                     // mulss xmm1,[rax]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<float **>(func.sect0 + 2) = &activeConfig.depleteDevil;
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	run = true;
+}
+
+export void ToggleOrbReach(bool enable)
+{
+	LogFunction(enable);
+
+	static bool run = false;
+
+	{
+		auto addr     = (appBaseAddr + 0x1B655F);
+		auto jumpAddr = (appBaseAddr + 0x1B6567);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+1B655F - F3 0F10 35 2DFB3000 - movss xmm6,[dmc3.exe+4C6094]
+		dmc3.exe+1B6567 - EB 2B               - jmp dmc3.exe+1B6594
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x50,                                                       // push rax
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
+			0xF3, 0x0F, 0x10, 0x30,                                     // movss xmm6,[rax]
+			0x58,                                                       // pop rax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<float **>(func.sect0 + 3) = &activeConfig.orbReach;
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	run = true;
+}
+
+export void ToggleDamage(bool enable)
+{
+	LogFunction(enable);
+
+	static bool run = false;
+
+	// Apply Damage
+	{
+		auto addr     = (appBaseAddr + 0x88512);
+		auto jumpAddr = (appBaseAddr + 0x88517);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+88512 - F3 0F10 40 08 - movss xmm0,[rax+08]
+		dmc3.exe+88517 - F3 41 0F5C C0 - subss xmm0,xmm8
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rax,
+			0xF3, 0x41, 0x0F, 0x10, 0xC8, // movss xmm1,xmm8
+		};
+
+		constexpr byte8 sect2[] =
+		{
+			0xF3, 0x44, 0x0F, 0x10, 0xC0, // movss xmm8,xmm0
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(ApplyDamage, jumpAddr, true, true, 0, sizeof(sect1), (sizeof(sect2) + size), 0, 0, true, true, false);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			CopyMemory(func.sect2, sect2, sizeof(sect2));
+			CopyMemory((func.sect2 + sizeof(sect2)), addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	run = true;
 }
 
 
@@ -21194,6 +21620,86 @@ export void Actor_Toggle(bool enable)
 		}
 	}
 
+	// Update Lock-On
+	{
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x53,                                     // push rbx
+			0x48, 0x8B, 0xDA,                         // mov rbx,rdx
+			0xFF, 0x81, 0x08, 0x62, 0x00, 0x00,       // inc [rcx+00006208]
+			0x48, 0x8B, 0x91, 0xD8, 0x51, 0x00, 0x00, // mov rdx,[rcx+000051D8]
+			0x48, 0x85, 0xD2,                         // test rdx,rdx
+			0x74, 0x24,                               // je short
+			0x48, 0x8B, 0x42, 0x08,                   // mov rax,[rdx+08]
+			0x48, 0x89, 0x81, 0xD8, 0x51, 0x00, 0x00, // mov [rcx+000051D8],rax
+			0x48, 0x89, 0x1A,                         // mov [rdx],rbx
+			0x48, 0x8B, 0x81, 0xD0, 0x51, 0x00, 0x00, // mov rax,[rcx+000051D0]
+			0x48, 0x89, 0x42, 0x08,                   // mov [rdx+08],rax
+			0x48, 0x89, 0x91, 0xD0, 0x51, 0x00, 0x00, // mov [rcx+000051D0],rdx
+			0xB0, 0x01,                               // mov al,01
+			0x5B,                                     // pop rbx
+			0xC3,                                     // ret
+			0x30, 0xC0,                               // xor al,al
+			0x5B,                                     // pop rbx
+			0xC3,                                     // ret
+		};
+
+		if (!run)
+		{
+			func = CreateFunction(0, 0, false, false, sizeof(sect0), 0, 0, 0, 0, true);
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			UpdateLockOn = reinterpret_cast<UpdateLockOn_t>(func.addr);
+		}
+	}
+
+	// Update Lock-On 2
+	{
+		auto addr     = (appBaseAddr + 0x1BB6FC);
+		auto jumpAddr = (appBaseAddr + 0x1BB706);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+1BB6FC - 48 8B 47 18    - mov rax,[rdi+18]
+		dmc3.exe+1BB700 - FF 80 08620000 - inc [rax+00006208]
+		dmc3.exe+1BB706 - 48 8B 47 20    - mov rax,[rdi+20]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateLockOns, jumpAddr, true, true, 0, sizeof(sect1), size);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
 	// Dot Shadow Check
 	{
 		auto addr     = (appBaseAddr + 0x93D60);
@@ -22043,6 +22549,7 @@ export void Actor_Toggle(bool enable)
 	ToggleFixWeaponShadows(enable);
 	ToggleFixDevilAura    (enable);
 	ToggleSound           (enable);
+	//ToggleMagicPointsDepletionValues(enable);
 
 	// @Todo: Check if still required.
 	// Reset Actor Mode
@@ -22068,6 +22575,33 @@ export void Actor_Toggle(bool enable)
 
 	run = true;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export void ToggleAirHikeCoreAbility(bool enable)
 {
@@ -22356,6 +22890,7 @@ export void UpdateCrazyComboLevelMultiplier()
 	Write<uint8>((appBaseAddr + 0x589A5E), activeConfig.crazyComboLevelMultiplier);
 }
 
+// @Todo: Update name.
 export void ToggleChronoSwords(bool enable)
 {
 	LogFunction(enable);
@@ -22763,14 +23298,18 @@ export void Actor_SceneMissionStart()
 
 #ifdef __GARBAGE__
 
-// @Todo: Toggle.
-void InitColor()
+
+#pragma region Magic Points Depletion Values
+
+export float * magicPointsDepletionValueQuicksilverAddr  = 0;
+export float * magicPointsDepletionValueDoppelgangerAddr = 0;
+export float * magicPointsDepletionValueDevilAddr        = 0;
+
+void InitMagicPointsDepletionValues(bool enable)
 {
-	LogFunction();
+	LogFunction(enable);
 
-	return;
-
-
+	static bool run = false
 
 
 
@@ -22782,135 +23321,124 @@ void InitColor()
 
 
 
+	// Quicksilver
+	{
+		auto addr = (appBaseAddr + 0x1F8A40);
+		constexpr uint32 size = 8;
 
 
+		constexpr byte8 sect0[] =
+		{
+			0xF3, 0x0F, 0x59, 0x0D, 0x00, 0x00, 0x00, 0x00, // mulss xmm1,[]
+		};
 
-	static bool run = false;
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
 
+		if (enable)
+		{
+			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+			WriteAddress(addr, magicPointsDepletionValueQuicksilverAddr, size);
+			magicPointsDepletionValueQuicksilver = activeConfig.magicPointsDepletionValueQuicksilver;
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 
+	// Doppelganger
+	{
+		auto addr = (appBaseAddr + 0x1F89D1);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+1F89D1 - F3 0F59 88 74010000 - mulss xmm1,[rax+00000174]
+		dmc3.exe+1F89D9 - E8 928DFEFF         - call dmc3.exe+1E1770
+		*/
 
+		constexpr byte8 sect0[] =
+		{
+			0xF3, 0x0F, 0x59, 0x0D, 0x00, 0x00, 0x00, 0x00, // mulss xmm1,[]
+		};
 
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
 
+		if (enable)
+		{
+			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+			WriteAddress(addr, magicPointsDepletionValueDoppelgangerAddr, size);
+			magicPointsDepletionValueDoppelganger = activeConfig.magicPointsDepletionValueDoppelganger;
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 
-	// // Aura Start
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0xBA, 0x01, 0x00, 0x00, 0x00, // mov edx,00000001
-	// 	};
-	// 	constexpr byte8 sect1[] =
-	// 	{
-	// 		mov_rcx_rbx,
-	// 		call,
-	// 		mov_rcx_rax,
-	// 		0x48, 0x8D, 0x55, 0xA7, // lea rdx,[rbp-59]
-	// 	};
-	// 	auto func = CreateFunction(SetDevilAuraColor, (appBaseAddr + 0x8E457), true, true, sizeof(sect0), sizeof(sect1));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	memcpy(func.sect1, sect1, sizeof(sect1));
-	// 	WriteCall((func.sect1 + 3), GetActorBaseAddressByEffectData);
-	// 	WriteJump((appBaseAddr + 0x8E452), func.addr);
-	// 	/*
-	// 	dmc3.exe+8E452 - BA 01000000 - mov edx,00000001
-	// 	dmc3.exe+8E457 - E8 34C61600 - call dmc3.exe+1FAA90
-	// 	*/
-	// }
+	// Devil
+	{
+		auto addr = (appBaseAddr + 0x1F8B49);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+1F8B49 - F3 0F59 88 78010000 - mulss xmm1,[rax+00000178]
+		dmc3.exe+1F8B51 - E8 1A8CFEFF         - call dmc3.exe+1E1770
+		*/
 
-	constexpr bool enable = true;
+		constexpr byte8 sect0[] =
+		{
+			0xF3, 0x0F, 0x59, 0x0D, 0x00, 0x00, 0x00, 0x00, // mulss xmm1,[]
+		};
 
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
 
-
-
-
-
-
-
-
-
-	// // Aura Loop
-	// {
-	// 	constexpr byte8 sect0[] =
-	// 	{
-	// 		0x48, 0x8B, 0x06, // mov rax,[rsi]
-	// 		0x48, 0x85, 0xC0, // test rax,rax
-	// 	};
-	// 	constexpr byte8 sect1[] =
-	// 	{
-	// 		mov_rcx_rdi,
-	// 		call,
-	// 		mov_rcx_rax,
-	// 		0x48, 0x8D, 0x54, 0x24, 0x30, // lea rdx,[rsp+30]
-	// 	};
-
-	// 	auto func = CreateFunction(SetDevilAuraColor, (appBaseAddr + 0x90C69), true, true, sizeof(sect0), sizeof(sect1));
-	// 	memcpy(func.sect0, sect0, sizeof(sect0));
-	// 	memcpy(func.sect1, sect1, sizeof(sect1));
-	// 	WriteCall((func.sect1 + 3), GetActorBaseAddressByEffectData);
-	// 	WriteJump((appBaseAddr + 0x90C63), func.addr, 1);
-	// 	/*
-	// 	dmc3.exe+90C63 - 48 8B 06 - mov rax,[rsi]
-	// 	dmc3.exe+90C66 - 48 85 C0 - test rax,rax
-	// 	dmc3.exe+90C69 - 74 32    - je dmc3.exe+90C9D
-	// 	*/
-	// }
-
-
-
-
-	run = true;
-
-
-
+		if (enable)
+		{
+			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+			WriteAddress(addr, magicPointsDepletionValueDevilAddr, size);
+			magicPointsDepletionValueDevil = activeConfig.magicPointsDepletionValueDevil;
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 }
 
-// @Todo: Remove.
-// byte8 * IsMeleeWeaponReadyProxyAddr      = 0;
-// byte8 * IsMeleeWeaponReadyProxyShowAddr  = 0;
-// byte8 * IsRangedWeaponReadyProxyAddr     = 0;
-// byte8 * IsRangedWeaponReadyProxyShowAddr = 0;
 
 
 
-// // @Todo: Merge.
-// void InitIsWeaponReady()
+
+
+
+
+
+
+// export void UpdateMagicPointsDepletionValues()
 // {
 // 	LogFunction();
 
-// 	// Melee
-// 	{
-// 		auto func = CreateFunction(IsMeleeWeaponReadyProxy, 0, true, false);
-// 		IsMeleeWeaponReadyProxyAddr = func.addr;
-// 	}
-// 	{
-// 		constexpr byte8 sect2[] =
-// 		{
-// 			0x84, 0xC0,                   // test al,al
-// 			0x74, 0x05,                   // je short
-// 			0xE9, 0x00, 0x00, 0x00, 0x00, // jmp dmc3.exe+1FDE10
-// 		};
-// 		auto func = CreateFunction(IsMeleeWeaponReadyProxy, 0, true, false, 0, 0, sizeof(sect2));
-// 		memcpy(func.sect2, sect2, sizeof(sect2));
-// 		WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-// 		IsMeleeWeaponReadyProxyShowAddr = func.addr;
-// 	}
-
-// 	// Ranged
-// 	{
-// 		auto func = CreateFunction(IsRangedWeaponReadyProxy, 0, true, false);
-// 		IsRangedWeaponReadyProxyAddr = func.addr;
-// 	}
-// 	{
-// 		constexpr byte8 sect2[] =
-// 		{
-// 			0x84, 0xC0,                   // test al,al
-// 			0x74, 0x05,                   // je short
-// 			0xE9, 0x00, 0x00, 0x00, 0x00, // jmp dmc3.exe+1FDE10
-// 		};
-// 		auto func = CreateFunction(IsRangedWeaponReadyProxy, 0, true, false, 0, 0, sizeof(sect2));
-// 		memcpy(func.sect2, sect2, sizeof(sect2));
-// 		WriteJump((func.sect2 + 4), (appBaseAddr + 0x1FDE10));
-// 		IsRangedWeaponReadyProxyAddr = func.addr;
-// 	}
+// 	*magicPointsDepletionValueQuicksilverAddr  = activeConfig.MagicPointsDepletionValues.quicksilver;
+// 	*magicPointsDepletionValueDoppelgangerAddr = activeConfig.MagicPointsDepletionValues.doppelganger;
+// 	*magicPointsDepletionValueDevilAddr        = activeConfig.MagicPointsDepletionValues.devil;
 // }
+
+
+
+
+
+
+#pragma endregion
+
+
+
+
 
 #endif

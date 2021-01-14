@@ -57,6 +57,24 @@ var items =
 
 
 
+	
+	[ 0x3391C0, "void", "void *, int32, int32, int32, int32", "0, true, true, 0, 0, 0, 0, 1", "Play Sound" ],
+
+/*
+dmc3.exe+2A02E3 - 48 8D 0D A6D9AC00     - lea rcx,[dmc3.exe+D6DC90] { (1) }
+dmc3.exe+2A02E1 - 33 D2                 - xor edx,edx
+dmc3.exe+2A02EA - 45 8D 41 02           - lea r8d,[r9+02]
+dmc3.exe+2A02D9 - 45 33 C9              - xor r9d,r9d
+dmc3.exe+2A02DC - 44 89 7C 24 20        - mov [rsp+20],r15d
+dmc3.exe+2A02EE - E8 CD8E0900           - call dmc3.exe+3391C0
+*/
+
+
+
+/*
+// @Todo: Add to CleanPDB.
+dmc3.exe+280F3F - 41 B8 0C000000        - mov r8d,Mary.stbi__vertically_flip_on_load_local { 0000000C }
+*/
 
 
 

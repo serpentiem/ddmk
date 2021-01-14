@@ -196,7 +196,7 @@ HWND User_Hook_CreateWindowExW
 		instance,
 		parameter
 	);
-	if (Config.System.Input.hideMouseCursor)
+	if (Config.System.hideMouseCursor)
 	{
 		ToggleCursor(false);
 	}

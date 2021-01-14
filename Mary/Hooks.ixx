@@ -20,7 +20,7 @@ import Global;
 import GUI;
 import Window;
 
-#define debug true
+#define debug false
 
 enum DM_
 {
@@ -95,9 +95,9 @@ User_WindowProc_t       User_WindowProc       = 0;
 //	LPARAM lParameter
 //);
 
-ID3D11Device           * D3D11_device           = 0;
-ID3D11DeviceContext    * D3D11_deviceContext    = 0;
-ID3D11RenderTargetView * D3D11_renderTargetView = 0;
+// ID3D11Device           * D3D11_device           = 0;
+// ID3D11DeviceContext    * D3D11_deviceContext    = 0;
+// ID3D11RenderTargetView * D3D11_renderTargetView = 0;
 
 
 
@@ -229,7 +229,7 @@ LRESULT User_Hook_WindowProc
 			}
 			else
 			{
-				if (activeConfig.Input.hideMouseCursor)
+				if (activeConfig.hideMouseCursor)
 				{
 					Windows_ToggleCursor(false);
 				}
@@ -326,7 +326,7 @@ HWND User_Hook_CreateWindowExW
 		instance,
 		parameter
 	);
-	if (activeConfig.Input.hideMouseCursor)
+	if (activeConfig.hideMouseCursor)
 	{
 		Windows_ToggleCursor(false);
 	}
@@ -428,9 +428,9 @@ HRESULT DXGI_Hook_Present
 	//}
 
 
-	if (activeConfig.Graphics.vSync != 0)
+	if (activeConfig.vSync != 0)
 	{
-		syncInterval = (activeConfig.Graphics.vSync - 1);
+		syncInterval = (activeConfig.vSync - 1);
 	}
 
 
@@ -676,7 +676,7 @@ void WindowSize1(byte8 * state)
 			(
 				appWindow,
 				0,
-				0,
+				1920,
 				0,
 				640,
 				360,
@@ -716,7 +716,7 @@ void WindowSize2(byte8 * state)
 			(
 				appWindow,
 				0,
-				0,
+				1920,
 				0,
 				1280,
 				720,
@@ -756,7 +756,7 @@ void WindowSize3(byte8 * state)
 			(
 				appWindow,
 				0,
-				0,
+				1920,
 				0,
 				1920,
 				1080,

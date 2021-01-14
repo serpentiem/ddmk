@@ -238,12 +238,12 @@ void UpdateCamera()
 
 	IntroduceCameraData(return);
 
-	cameraData.height     = activeConfig.Camera.height;
-	cameraData.tilt       = activeConfig.Camera.tilt;
-	cameraData.zoom       = activeConfig.Camera.zoom;
-	cameraData.zoomLockOn = activeConfig.Camera.zoomLockOn;
+	cameraData.height         = activeConfig.Camera.height;
+	cameraData.tilt           = activeConfig.Camera.tilt;
+	cameraData.distance       = activeConfig.Camera.distance;
+	cameraData.distanceLockOn = activeConfig.Camera.distanceLockOn;
 
-	cameraTimeout = 500.0f;
+	cameraTimeout = 500.0f; // @Todo: Include frame rate.
 }
 
 

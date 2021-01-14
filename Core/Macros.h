@@ -33,6 +33,36 @@ if constexpr (debug)\
 #define _Prep_Merge(a, b) a##b
 #define Prep_Merge(a, b) _Prep_Merge(a, b)
 
+#define ResetConfigGroup(name)\
+CopyMemory\
+(\
+	&queuedConfig.name,\
+	&defaultConfig.name,\
+	sizeof(queuedConfig.name)\
+);\
+CopyMemory\
+(\
+	&activeConfig.name,\
+	&queuedConfig.name,\
+	sizeof(activeConfig.name)\
+)
+
+#define ResetConfigEntry(name) activeConfig.name = queuedConfig.name = defaultConfig.name
+
+#define ResetConfigArray(name)\
+CopyMemory\
+(\
+	queuedConfig.name,\
+	defaultConfig.name,\
+	sizeof(queuedConfig.name)\
+);\
+CopyMemory\
+(\
+	activeConfig.name,\
+	queuedConfig.name,\
+	sizeof(activeConfig.name)\
+)
+
 #define mov_eax_eax   0x8B, 0xC0       // mov eax,eax
 #define mov_eax_ecx   0x8B, 0xC1       // mov eax,ecx
 #define mov_eax_edx   0x8B, 0xC2       // mov eax,edx

@@ -20,7 +20,21 @@ typedef unsigned short     byte16;
 typedef unsigned long      byte32;
 typedef unsigned long long byte64;
 
-typedef float float32;
+typedef float  float32;
+typedef double float64;
+
+struct vec2
+{
+	float32 x;
+	float32 y;
+};
+
+struct vec3
+{
+	float32 x;
+	float32 y;
+	float32 z;
+};
 
 struct vec4
 {

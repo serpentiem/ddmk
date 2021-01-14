@@ -1,15 +1,20 @@
-// @Todo: Update all sizeof(Config::X)!
-// @Todo: Add Jukebox.
-// @Todo: Add ResetButton to Graphics.
-// @Todo: Actor reset doesn't trigger Actor_Toggle.
+// @Todo: Add description for arbitrary weapon switcher.
 
 module;
 #include "../Core/Core.h"
+
+// @Todo: Define as extern.
+#include <shellapi.h>
 
 #include "../ImGui/imgui.h"
 
 #include "Locale.h"
 #include "Vars.h"
+
+#include <d3d11.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "../stb/stb_image.h"
 export module GUI;
 
 import Core_GUI;
@@ -24,6 +29,7 @@ import FMOD;
 import Global;
 import Graphics;
 import Internal;
+import Input;
 import Model;
 import Other;
 import Scene;
@@ -32,24 +38,11 @@ import Speed;
 import Training;
 import Window;
 
-#define debug true
+#define debug false
 
+//float textWidth = 500.0f;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// @Todo: Create region.
 
 const char * buttonNames[] =
 {
@@ -155,18 +148,6 @@ uint8 stylesVergil[] =
 	STYLE_DOPPELGANGER,
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
 const char * meleeWeaponNamesDante[] =
 {
 	"Rebellion",
@@ -215,6 +196,24 @@ uint8 rangedWeaponsDante[] =
 	WEAPON_ARTEMIS,
 	WEAPON_SPIRAL,
 	WEAPON_KALINA_ANN,
+};
+
+const char * weaponSwitchTypeNames[] =
+{
+	"Linear",
+	"Arbitrary",
+};
+
+const char * styleRankNames[] =
+{
+	"None",
+	"Dope",
+	"Crazy",
+	"Blast",
+	"Alright",
+	"Sweet",
+	"Showtime",
+	"Stylish",
 };
 
 const char * missionNames[] =
@@ -294,19 +293,339 @@ const char * floorNames[] =
 	"Jester 3",
 };
 
+const char * sceneNames[] =
+{
+	"SCENE_BOOT",
+	"SCENE_INTRO",
+	"SCENE_MAIN",
+	"SCENE_MISSION_SELECT",
+	"SCENE_LOAD",
+	"SCENE_GAME",
+	"SCENE_CUTSCENE",
+	"SCENE_MISSION_START",
+	"SCENE_MISSION_RESULT",
+	"SCENE_GAME_OVER",
+};
 
+const char * trackFilenames[] =
+{
+	"Battle_00.ogg",
+	"Battle_01.ogg",
+	"Battle_01b.ogg",
+	"Battle_02.ogg",
+	"Battle_03.ogg",
+	"Battle_04.ogg",
+	"Battle_05.ogg",
+	"Battle_06.ogg",
+	"Battle_07.ogg",
+	"Battle_08.ogg",
+	"Battle_0a.ogg",
+	"Boss_01.ogg",
+	"Boss_01b.ogg",
+	"Boss_02.ogg",
+	"Boss_02b.ogg",
+	"Boss_03.ogg",
+	"Boss_03b.ogg",
+	"Boss_04.ogg",
+	"Boss_04b.ogg",
+	"Boss_05.ogg",
+	"Boss_05b.ogg",
+	"Boss_06.ogg",
+	"Boss_06b.ogg",
+	"Boss_07.ogg",
+	"Boss_08.ogg",
+	"Boss_08b.ogg",
+	"Boss_09.ogg",
+	"Continue.ogg",
+	"dummy.ogg",
+	"Hine_01.ogg",
+	"Hine_02.ogg",
+	"Jester.ogg",
+	"Jikushinzou.ogg",
+	"Kaze_01.ogg",
+	"Kaze_02.ogg",
+	"Kaze_03.ogg",
+	"Kaze_04.ogg",
+	"Kaze_05.ogg",
+	"Kaze_06.ogg",
+	"Lady.ogg",
+	"m01_c00.ogg",
+	"m01_v00.ogg",
+	"m01_v01.ogg",
+	"m01_v02.ogg",
+	"m01_v03.ogg",
+	"m01_v04.ogg",
+	"m01_v05.ogg",
+	"m01_v06.ogg",
+	"m01_v07.ogg",
+	"m01_v08.ogg",
+	"m01_v09.ogg",
+	"m02_c01.ogg",
+	"m02_s00.ogg",
+	"m03_b00.ogg",
+	"m03_b01.ogg",
+	"m03_c00.ogg",
+	"m03_s00.ogg",
+	"m03_s01.ogg",
+	"m04_c00.ogg",
+	"m04_s00.ogg",
+	"m05_b00.ogg",
+	"m05_c00.ogg",
+	"m05_s00.ogg",
+	"m06_c00.ogg",
+	"m07_b00.ogg",
+	"m07_s00.ogg",
+	"m08_c00.ogg",
+	"m09_b00.ogg",
+	"m09_b01.ogg",
+	"m09_c00.ogg",
+	"m10_c00.ogg",
+	"m10_s00.ogg",
+	"m11_b00.ogg",
+	"m11_b01.ogg",
+	"m11_c00.ogg",
+	"m11_s00.ogg",
+	"m12_b00.ogg",
+	"m12_b01.ogg",
+	"m12_b02.ogg",
+	"m12_c00.ogg",
+	"m12_s00.ogg",
+	"m13_b00.ogg",
+	"m13_s00.ogg",
+	"m14_s01.ogg",
+	"m15_c00.ogg",
+	"m15_s00.ogg",
+	"m16_b00.ogg",
+	"m16_c00.ogg",
+	"m16_s00.ogg",
+	"m17_b00.ogg",
+	"m17_c00.ogg",
+	"m17_s00.ogg",
+	"m18_c00.ogg",
+	"m18_s00.ogg",
+	"m19_b00.ogg",
+	"m19_b01.ogg",
+	"m19_s00.ogg",
+	"m20_b00.ogg",
+	"m20_c00.ogg",
+	"m20_s00.ogg",
+	"m99_c00.ogg",
+	"m99_c01.ogg",
+	"m99_c03.ogg",
+	"Maguma.ogg",
+	"Mizu_01.ogg",
+	"Mizu_02.ogg",
+	"M_clear.ogg",
+	"m_demo_02_001.ogg",
+	"m_demo_04_004.ogg",
+	"m_demo_04_004v.ogg",
+	"m_demo_04_014.ogg",
+	"m_demo_06_007.ogg",
+	"m_demo_06_011.ogg",
+	"m_demo_06_012.ogg",
+	"m_demo_09_003.ogg",
+	"m_demo_09_003v.ogg",
+	"m_demo_10_002.ogg",
+	"m_demo_10_002v.ogg",
+	"m_demo_10_004.ogg",
+	"m_demo_10_005.ogg",
+	"m_demo_12_004.ogg",
+	"m_demo_12_005.ogg",
+	"m_demo_15_001.ogg",
+	"m_demo_15_001v.ogg",
+	"m_demo_19_001.ogg",
+	"m_demo_19_016.ogg",
+	"M_start.ogg",
+	"M_start2.ogg",
+	"Nausica.ogg",
+	"Option.ogg",
+	"Result.ogg",
+	"Room_01.ogg",
+	"Sm_clear.ogg",
+	"Sm_failure.ogg",
+	"Staffroll.ogg",
+	"Stage_01.ogg",
+	"Stage_02.ogg",
+	"Stage_02b.ogg",
+	"Stage_03.ogg",
+	"Stage_04.ogg",
+	"Stage_04b.ogg",
+	"Stage_05.ogg",
+	"Stage_05b.ogg",
+	"Stage_06.ogg",
+	"Stage_07.ogg",
+	"Stage_08.ogg",
+	"Stage_09.ogg",
+	"Torocco.ogg",
+	"T_boss.ogg",
+	"T_bossb.ogg",
+	"Versil_01.ogg",
+	"Versil_02.ogg",
+	"Versil_03.ogg",
+	"ZZZ.ogg",
+};
 
+const char * trackNames[] =
+{
+	"Battle_00",
+	"Battle_01",
+	"Battle_01b",
+	"Battle_02",
+	"Battle_03",
+	"Battle_04",
+	"Battle_05",
+	"Battle_06",
+	"Battle_07",
+	"Battle_08",
+	"Battle_0a",
+	"Boss_01",
+	"Boss_01b",
+	"Boss_02",
+	"Boss_02b",
+	"Boss_03",
+	"Boss_03b",
+	"Boss_04",
+	"Boss_04b",
+	"Boss_05",
+	"Boss_05b",
+	"Boss_06",
+	"Boss_06b",
+	"Boss_07",
+	"Boss_08",
+	"Boss_08b",
+	"Boss_09",
+	"Continue",
+	"dummy",
+	"Hine_01",
+	"Hine_02",
+	"Jester",
+	"Jikushinzou",
+	"Kaze_01",
+	"Kaze_02",
+	"Kaze_03",
+	"Kaze_04",
+	"Kaze_05",
+	"Kaze_06",
+	"Lady",
+	"m01_c00",
+	"m01_v00",
+	"m01_v01",
+	"m01_v02",
+	"m01_v03",
+	"m01_v04",
+	"m01_v05",
+	"m01_v06",
+	"m01_v07",
+	"m01_v08",
+	"m01_v09",
+	"m02_c01",
+	"m02_s00",
+	"m03_b00",
+	"m03_b01",
+	"m03_c00",
+	"m03_s00",
+	"m03_s01",
+	"m04_c00",
+	"m04_s00",
+	"m05_b00",
+	"m05_c00",
+	"m05_s00",
+	"m06_c00",
+	"m07_b00",
+	"m07_s00",
+	"m08_c00",
+	"m09_b00",
+	"m09_b01",
+	"m09_c00",
+	"m10_c00",
+	"m10_s00",
+	"m11_b00",
+	"m11_b01",
+	"m11_c00",
+	"m11_s00",
+	"m12_b00",
+	"m12_b01",
+	"m12_b02",
+	"m12_c00",
+	"m12_s00",
+	"m13_b00",
+	"m13_s00",
+	"m14_s01",
+	"m15_c00",
+	"m15_s00",
+	"m16_b00",
+	"m16_c00",
+	"m16_s00",
+	"m17_b00",
+	"m17_c00",
+	"m17_s00",
+	"m18_c00",
+	"m18_s00",
+	"m19_b00",
+	"m19_b01",
+	"m19_s00",
+	"m20_b00",
+	"m20_c00",
+	"m20_s00",
+	"m99_c00",
+	"m99_c01",
+	"m99_c03",
+	"Maguma",
+	"Mizu_01",
+	"Mizu_02",
+	"M_clear",
+	"m_demo_02_001",
+	"m_demo_04_004",
+	"m_demo_04_004v",
+	"m_demo_04_014",
+	"m_demo_06_007",
+	"m_demo_06_011",
+	"m_demo_06_012",
+	"m_demo_09_003",
+	"m_demo_09_003v",
+	"m_demo_10_002",
+	"m_demo_10_002v",
+	"m_demo_10_004",
+	"m_demo_10_005",
+	"m_demo_12_004",
+	"m_demo_12_005",
+	"m_demo_15_001",
+	"m_demo_15_001v",
+	"m_demo_19_001",
+	"m_demo_19_016",
+	"M_start",
+	"M_start2",
+	"Nausica",
+	"Option",
+	"Result",
+	"Room_01",
+	"Sm_clear",
+	"Sm_failure",
+	"Staffroll",
+	"Stage_01",
+	"Stage_02",
+	"Stage_02b",
+	"Stage_03",
+	"Stage_04",
+	"Stage_04b",
+	"Stage_05",
+	"Stage_05b",
+	"Stage_06",
+	"Stage_07",
+	"Stage_08",
+	"Stage_09",
+	"Torocco",
+	"T_boss",
+	"T_bossb",
+	"Versil_01",
+	"Versil_02",
+	"Versil_03",
+	"ZZZ",
+};
 
+static_assert(countof(trackFilenames) == countof(trackNames));
 
-
-
-
-
-
-
-
-
-
+// @Todo: Add event names.
 
 // @Todo: Update.
 enum FONT_
@@ -339,10 +658,6 @@ void BuildFonts()
 	io.Fonts->Build();
 }
 
-
-
-
-
 void TooltipHelper
 (
 	const char * name,
@@ -358,16 +673,1288 @@ void TooltipHelper
 	}
 }
 
+void DescriptionHelper
+(
+	const char * description,
+	float width = 500.0f
+)
+{
+	ImGui::PushTextWrapPos(width);
+	ImGui::Text(description);
+	ImGui::PopTextWrapPos();
+}
+
+#pragma region Texture
+
+// @Todo: Move to Core.
+
+// @Research: Not neccessarily required.
+struct ImageData
+{
+	void * addr;
+	int width;
+	int height;
+};
+
+ID3D11ShaderResourceView * CreateTexture(const char * filename)
+{
+	Log("%s %s", FUNC_NAME, filename);
+
+	ImageData                       imageData              = {};
+	D3D11_TEXTURE2D_DESC            textureDesc            = {};
+	D3D11_SUBRESOURCE_DATA          subresourceData        = {};
+	ID3D11Texture2D *               texture                = 0;
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc = {};
+	ID3D11ShaderResourceView *      shaderResourceView     = 0;
+
+	imageData.addr = stbi_load
+	(
+		filename,
+		&imageData.width,
+		&imageData.height,
+		0,
+		4
+	);
+
+	if (!imageData.addr)
+	{
+		Log("stbi_load failed. %s", filename);
+
+		return 0;
+	}
+
+	textureDesc.Width            = imageData.width;
+	textureDesc.Height           = imageData.height;
+	textureDesc.MipLevels        = 1;
+	textureDesc.ArraySize        = 1;
+	textureDesc.Format           = DXGI_FORMAT_R8G8B8A8_UNORM;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.Usage            = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags        = D3D11_BIND_SHADER_RESOURCE;
+
+	subresourceData.pSysMem     = imageData.addr;
+	subresourceData.SysMemPitch = (textureDesc.Width * 4);
+
+	D3D11_device->CreateTexture2D
+	(
+		&textureDesc,
+		&subresourceData,
+		&texture
+	);
+
+	shaderResourceViewDesc.Format              = DXGI_FORMAT_R8G8B8A8_UNORM;
+	shaderResourceViewDesc.ViewDimension       = D3D11_SRV_DIMENSION_TEXTURE2D;
+	shaderResourceViewDesc.Texture2D.MipLevels = textureDesc.MipLevels;
+
+	D3D11_device->CreateShaderResourceView
+	(
+		texture,
+		&shaderResourceViewDesc,
+		&shaderResourceView
+	);
+
+	texture->Release();
+
+	stbi_image_free(imageData.addr);
+
+	return shaderResourceView;
+}
+
+struct TextureData
+{
+	bool run;
+	const char * label;
+	bool enable;
+	ID3D11ShaderResourceView * textureAddr;
+	ImVec2 size;
+	ImVec2 pos;
+
+	void Render(ImGuiWindowFlags windowFlags = 0);
+	void Render
+	(
+		void * sizeAddr,
+		void * posAddr
+	);
+	void UpdatePosition(void * posAddr);
+	void Settings();
+	void Settings
+	(
+		void * sizeAddr,
+		void * posAddr
+	);
+};
+
+void TextureData::Render(ImGuiWindowFlags windowFlags)
+{
+	if
+	(
+		!enable ||
+		!textureAddr
+	)
+	{
+		return;
+	}
+
+	if (!run)
+	{
+		run = true;
+
+		ImGui::SetNextWindowPos(pos);
+	}
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+
+	if
+	(
+		ImGui::Begin
+		(
+			label,
+			&enable,
+			ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | windowFlags
+		)
+	)
+	{
+		pos = ImGui::GetWindowPos();
+
+		ImGui::Image
+		(
+			textureAddr,
+			size
+		);
+	}
+
+	ImGui::End();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar(2);
+}
+
+void TextureData::Render
+(
+	void * sizeAddr,
+	void * posAddr
+)
+{
+	if
+	(
+		!enable      ||
+		!textureAddr ||
+		!sizeAddr    ||
+		!posAddr
+	)
+	{
+		return;
+	}
+
+	auto & size2 = *reinterpret_cast<ImVec2 *>(sizeAddr);
+	auto & pos2 = *reinterpret_cast<ImVec2 *>(posAddr);
+
+	if (!run)
+	{
+		run = true;
+
+		ImGui::SetNextWindowPos(pos2);
+	}
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(0, 0));
+
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+
+	if
+	(
+		ImGui::Begin
+		(
+			label,
+			&enable,
+			ImGuiWindowFlags_NoTitleBar |
+			ImGuiWindowFlags_AlwaysAutoResize
+		)
+	)
+	{
+		pos2 = ImGui::GetWindowPos();
+
+		ImGui::Image
+		(
+			textureAddr,
+			size2
+		);
+	}
+
+	ImGui::End();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar(4);
+}
+
+void TextureData::UpdatePosition(void * posAddr)
+{
+	if (!posAddr)
+	{
+		return;
+	}
+
+	auto & pos2 = *reinterpret_cast<ImVec2 *>(posAddr);
+
+	ImGui::SetWindowPos(label, pos2);
+}
+
+void TextureData::Settings()
+{
+	ImGui::Text(label);
+
+	GUI_Checkbox
+	(
+		"Enable",
+		enable
+	);
+
+	ImGui::PushItemWidth(200);
+
+	GUI_Input<float>
+	(
+		"Width",
+		size.x,
+		1,
+		"%g",
+		ImGuiInputTextFlags_EnterReturnsTrue
+	);
+	GUI_Input<float>
+	(
+		"Height",
+		size.y,
+		1,
+		"%g",
+		ImGuiInputTextFlags_EnterReturnsTrue
+	);
+
+	if
+	(
+		GUI_Input<float>
+		(
+			"X",
+			pos.x,
+			1,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		)
+	)
+	{
+		ImGui::SetWindowPos(label, pos);
+	}
+	if
+	(
+		GUI_Input<float>
+		(
+			"Y",
+			pos.y,
+			1,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		)
+	)
+	{
+		ImGui::SetWindowPos(label, pos);
+	}
+
+	ImGui::PopItemWidth();
+}
+
+void TextureData::Settings
+(
+	void * sizeAddr,
+	void * posAddr
+)
+{
+	if
+	(
+		!sizeAddr ||
+		!posAddr
+	)
+	{
+		return;
+	}
+
+	auto & size2 = *reinterpret_cast<ImVec2 *>(sizeAddr);
+	auto & pos2 = *reinterpret_cast<ImVec2 *>(posAddr);
+
+	ImGui::Text(label);
+
+	if constexpr (debug)
+	{
+		GUI_Checkbox
+		(
+			"Enable",
+			enable
+		);
+	}
+
+	ImGui::PushItemWidth(200);
+
+	GUI_Input<float>
+	(
+		"Width",
+		size2.x,
+		1,
+		"%g",
+		ImGuiInputTextFlags_EnterReturnsTrue
+	);
+	GUI_Input<float>
+	(
+		"Height",
+		size2.y,
+		1,
+		"%g",
+		ImGuiInputTextFlags_EnterReturnsTrue
+	);
+
+	if
+	(
+		GUI_Input<float>
+		(
+			"X",
+			pos2.x,
+			1,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		)
+	)
+	{
+		ImGui::SetWindowPos(label, pos2);
+	}
+	if
+	(
+		GUI_Input<float>
+		(
+			"Y",
+			pos2.y,
+			1,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		)
+	)
+	{
+		ImGui::SetWindowPos(label, pos2);
+	}
+
+	ImGui::PopItemWidth();
+}
+
+enum
+{
+	TEXTURE_ARROW_0,
+	TEXTURE_ARROW_72,
+	TEXTURE_ARROW_144,
+	TEXTURE_ARROW_216,
+	TEXTURE_ARROW_288,
+	TEXTURE_BACKGROUND,
+	TEXTURE_HIGHLIGHT,
+	//TEXTURE_STENCIL,
+	TEXTURE_WEAPON_REBELLION,
+	TEXTURE_WEAPON_REBELLION_2,
+	TEXTURE_WEAPON_FORCE_EDGE,
+	TEXTURE_WEAPON_CERBERUS,
+	TEXTURE_WEAPON_AGNI_RUDRA,
+	TEXTURE_WEAPON_NEVAN,
+	TEXTURE_WEAPON_BEOWULF_DANTE,
+	TEXTURE_WEAPON_EBONY_IVORY,
+	TEXTURE_WEAPON_SHOTGUN,
+	TEXTURE_WEAPON_ARTEMIS,
+	TEXTURE_WEAPON_SPIRAL,
+	TEXTURE_WEAPON_KALINA_ANN,
+	TEXTURE_WEAPON_YAMATO_VERGIL,
+	TEXTURE_WEAPON_YAMATO_NERO_ANGELO,
+	TEXTURE_WEAPON_BEOWULF_VERGIL,
+	TEXTURE_WEAPON_BEOWULF_NERO_ANGELO,
+	TEXTURE_WEAPON_YAMATO_FORCE_EDGE,
+	TEXTURE_COUNT,
+};
+
+const char * textureFilenames[] =
+{
+	"arrow_0.png",
+	"arrow_72.png",
+	"arrow_144.png",
+	"arrow_216.png",
+	"arrow_288.png",
+	"background.png",
+	"highlight.png",
+	//"stencil.png",
+	"weapon_0000_0000.png",
+	"weapon_0000_0001.png",
+	"weapon_0000_0002.png",
+	"weapon_0001.png",
+	"weapon_0002.png",
+	"weapon_0003.png",
+	"weapon_0004.png",
+	"weapon_0005.png",
+	"weapon_0006.png",
+	"weapon_0007.png",
+	"weapon_0008.png",
+	"weapon_0009.png",
+	"weapon_0011_0000.png",
+	"weapon_0011_0001.png",
+	"weapon_0012_0000.png",
+	"weapon_0012_0001.png",
+	"weapon_0013.png",
+};
+
+ID3D11ShaderResourceView * textureAddrs[TEXTURE_COUNT] = {};
+
+constexpr uint8 textureWeaponMap[MAX_WEAPON] =
+{
+	TEXTURE_WEAPON_REBELLION,
+	TEXTURE_WEAPON_CERBERUS,
+	TEXTURE_WEAPON_AGNI_RUDRA,
+	TEXTURE_WEAPON_NEVAN,
+	TEXTURE_WEAPON_BEOWULF_DANTE,
+	TEXTURE_WEAPON_EBONY_IVORY,
+	TEXTURE_WEAPON_SHOTGUN,
+	TEXTURE_WEAPON_ARTEMIS,
+	TEXTURE_WEAPON_SPIRAL,
+	TEXTURE_WEAPON_KALINA_ANN,
+	0,
+	TEXTURE_WEAPON_YAMATO_VERGIL,
+	TEXTURE_WEAPON_BEOWULF_VERGIL,
+	TEXTURE_WEAPON_YAMATO_FORCE_EDGE,
+	0,
+};
+
+constexpr uint8 textureArrowMap[5] =
+{
+	TEXTURE_ARROW_0,
+	TEXTURE_ARROW_288,
+	TEXTURE_ARROW_216,
+	TEXTURE_ARROW_144,
+	TEXTURE_ARROW_72,
+};
+
+bool g_showTextures = false;
+
+void CreateTextures()
+{
+	char path[128];
+
+	for_all(uint8, textureIndex, TEXTURE_COUNT)
+	{
+		snprintf
+		(
+			path,
+			sizeof(path),
+			"images/%s",
+			textureFilenames[textureIndex]
+		);
+
+		textureAddrs[textureIndex] = CreateTexture(path);
+	}
+}
+
+//TextureData stencil = {};
+
+#pragma endregion
+
+#pragma region Weapon Switch Controllers
+
+struct WeaponSwitchControllerTextureData
+{
+	TextureData backgrounds[5];
+	TextureData icons[5];
+	TextureData highlights[5];
+	TextureData arrow;
+};
+
+WeaponSwitchControllerTextureData meleeWeaponSwitchControllerTextureData = {};
+
+const char * meleeWeaponSwitchControllerBackgroundNames[5] =
+{
+	"MeleeWeaponSwitchControllerBackground0",
+	"MeleeWeaponSwitchControllerBackground1",
+	"MeleeWeaponSwitchControllerBackground2",
+	"MeleeWeaponSwitchControllerBackground3",
+	"MeleeWeaponSwitchControllerBackground4",
+};
+
+const char * meleeWeaponSwitchControllerIconNames[5] =
+{
+	"MeleeWeaponSwitchControllerIcon0",
+	"MeleeWeaponSwitchControllerIcon1",
+	"MeleeWeaponSwitchControllerIcon2",
+	"MeleeWeaponSwitchControllerIcon3",
+	"MeleeWeaponSwitchControllerIcon4",
+};
+
+const char * meleeWeaponSwitchControllerHighlightNames[5] =
+{
+	"MeleeWeaponSwitchControllerHighlight0",
+	"MeleeWeaponSwitchControllerHighlight1",
+	"MeleeWeaponSwitchControllerHighlight2",
+	"MeleeWeaponSwitchControllerHighlight3",
+	"MeleeWeaponSwitchControllerHighlight4",
+};
+
+const char * meleeWeaponSwitchControllerArrowName = "MeleeWeaponSwitchControllerArrow";
+
+
+
+WeaponSwitchControllerTextureData rangedWeaponSwitchControllerTextureData = {};
+
+const char * rangedWeaponSwitchControllerBackgroundNames[5] =
+{
+	"RangedWeaponSwitchControllerBackground0",
+	"RangedWeaponSwitchControllerBackground1",
+	"RangedWeaponSwitchControllerBackground2",
+	"RangedWeaponSwitchControllerBackground3",
+	"RangedWeaponSwitchControllerBackground4",
+};
+
+const char * rangedWeaponSwitchControllerIconNames[5] =
+{
+	"RangedWeaponSwitchControllerIcon0",
+	"RangedWeaponSwitchControllerIcon1",
+	"RangedWeaponSwitchControllerIcon2",
+	"RangedWeaponSwitchControllerIcon3",
+	"RangedWeaponSwitchControllerIcon4",
+};
+
+const char * rangedWeaponSwitchControllerHighlightNames[5] =
+{
+	"RangedWeaponSwitchControllerHighlight0",
+	"RangedWeaponSwitchControllerHighlight1",
+	"RangedWeaponSwitchControllerHighlight2",
+	"RangedWeaponSwitchControllerHighlight3",
+	"RangedWeaponSwitchControllerHighlight4",
+};
+
+const char * rangedWeaponSwitchControllerArrowName = "RangedWeaponSwitchControllerArrow";
+
+
+
+void MeleeWeaponSwitchController()
+{
+	auto & textureData = meleeWeaponSwitchControllerTextureData;
+	auto & textureData2 = activeConfig.meleeWeaponSwitchControllerTextureData2;
+
+	if (g_showTextures)
+	{
+		for_all(uint8, index, 5)
+		{
+			textureData.backgrounds[index].Render
+			(
+				&textureData2.backgrounds[index].size,
+				&textureData2.backgrounds[index].pos
+			);
+		}
+
+		{
+			constexpr uint8 textureIds[5] =
+			{
+				TEXTURE_WEAPON_REBELLION,
+				TEXTURE_WEAPON_CERBERUS,
+				TEXTURE_WEAPON_AGNI_RUDRA,
+				TEXTURE_WEAPON_NEVAN,
+				TEXTURE_WEAPON_BEOWULF_DANTE,
+			};
+
+			for_all(uint8, index, 5)
+			{
+				auto textureId = textureIds[index];
+				if (textureId >= TEXTURE_COUNT)
+				{
+					textureId = 0;
+				}
+
+				textureData.icons[index].textureAddr = textureAddrs[textureId];
+
+				textureData.icons[index].Render
+				(
+					&textureData2.icons[index].size,
+					&textureData2.icons[index].pos
+				);
+			}
+		}
+
+		textureData.highlights[0].Render
+		(
+			&textureData2.highlights[0].size,
+			&textureData2.highlights[0].pos
+		);
+
+		{
+			textureData.arrow.textureAddr = textureAddrs[TEXTURE_ARROW_0];
+
+			textureData.arrow.Render
+			(
+				&textureData2.arrow.size,
+				&textureData2.arrow.pos
+			);
+		}
+
+		return;
+	}
+
+
+
+	IntroduceSessionData();
+
+	if (!InGame())
+	{
+		return;
+	}
+
+	IntroduceMainActorData(actorBaseAddr, actorData, return);
+
+	auto & characterData = GetCharacterData(actorData);
+
+	auto & gamepad = GetGamepad(actorData.newPlayerIndex);
+
+	if
+	(
+		InCredits() ||
+		!activeConfig.Actor.enable ||
+		(characterData.meleeWeaponSwitchType != WEAPON_SWITCH_TYPE_ARBITRARY) ||
+		!(
+			(characterData.character == CHAR_DANTE ) ||
+			(characterData.character == CHAR_VERGIL)
+		)
+	)
+	{
+		return;
+	}
+
+	if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
+	{
+		return;
+	}
+
+	auto count = characterData.meleeWeaponCount;
+
+	if (characterData.character == CHAR_VERGIL)
+	{
+		count = (IsNeroAngelo(actorData)) ? 2 : 3;
+	}
+
+	for_all(uint8, index, count)
+	{
+		textureData.backgrounds[index].Render
+		(
+			&textureData2.backgrounds[index].size,
+			&textureData2.backgrounds[index].pos
+		);
+	}
+
+	{
+		for_all(uint8, index, count)
+		{
+			auto weapon = characterData.meleeWeapons[index];
+			if (weapon >= MAX_WEAPON)
+			{
+				weapon = 0;
+			}
+
+			auto textureId = textureWeaponMap[weapon];
+			if (textureId >= TEXTURE_COUNT)
+			{
+				textureId = 0;
+			}
+
+			switch (weapon)
+			{
+				case WEAPON_REBELLION:
+				{
+					if (sessionData.unlockDevilTrigger)
+					{
+						textureId = TEXTURE_WEAPON_REBELLION_2;
+					}
+
+					if (actorData.sparda)
+					{
+						textureId = TEXTURE_WEAPON_FORCE_EDGE;
+					}
+
+					break;
+				}
+				case WEAPON_YAMATO_VERGIL:
+				{
+					if (IsNeroAngelo(actorData))
+					{
+						textureId = TEXTURE_WEAPON_YAMATO_NERO_ANGELO;
+					}
+
+					break;
+				}
+				case WEAPON_BEOWULF_VERGIL:
+				{
+					if (IsNeroAngelo(actorData))
+					{
+						textureId = TEXTURE_WEAPON_BEOWULF_NERO_ANGELO;
+					}
+
+					break;
+				}
+			}
+
+			textureData.icons[index].textureAddr = textureAddrs[textureId];
+
+			textureData.icons[index].Render
+			(
+				&textureData2.icons[index].size,
+				&textureData2.icons[index].pos
+			);
+		}
+	}
+
+	auto meleeWeaponIndex = characterData.meleeWeaponIndex;
+	if (meleeWeaponIndex >= 5)
+	{
+		meleeWeaponIndex = 0;
+	}
+
+	textureData.highlights[meleeWeaponIndex].Render
+	(
+		&textureData2.highlights[meleeWeaponIndex].size,
+		&textureData2.highlights[meleeWeaponIndex].pos
+	);
+
+	{
+		auto textureId = textureArrowMap[meleeWeaponIndex];
+
+		textureData.arrow.textureAddr = textureAddrs[textureId];
+
+		textureData.arrow.Render
+		(
+			&textureData2.arrow.size,
+			&textureData2.arrow.pos
+		);
+	}
+}
+
+void RangedWeaponSwitchController()
+{
+	auto & textureData = rangedWeaponSwitchControllerTextureData;
+	auto & textureData2 = activeConfig.rangedWeaponSwitchControllerTextureData2;
+
+	if (g_showTextures)
+	{
+		for_all(uint8, index, 5)
+		{
+			textureData.backgrounds[index].Render
+			(
+				&textureData2.backgrounds[index].size,
+				&textureData2.backgrounds[index].pos
+			);
+		}
+
+		{
+			constexpr uint8 textureIds[5] =
+			{
+				TEXTURE_WEAPON_EBONY_IVORY,
+				TEXTURE_WEAPON_SHOTGUN,
+				TEXTURE_WEAPON_ARTEMIS,
+				TEXTURE_WEAPON_SPIRAL,
+				TEXTURE_WEAPON_KALINA_ANN,
+			};
+
+			for_all(uint8, index, 5)
+			{
+				auto textureId = textureIds[index];
+				if (textureId >= TEXTURE_COUNT)
+				{
+					textureId = 0;
+				}
+
+				textureData.icons[index].textureAddr = textureAddrs[textureId];
+
+				textureData.icons[index].Render
+				(
+					&textureData2.icons[index].size,
+					&textureData2.icons[index].pos
+				);
+			}
+		}
+
+		textureData.highlights[0].Render
+		(
+			&textureData2.highlights[0].size,
+			&textureData2.highlights[0].pos
+		);
+
+		{
+			textureData.arrow.textureAddr = textureAddrs[TEXTURE_ARROW_0];
+
+			textureData.arrow.Render
+			(
+				&textureData2.arrow.size,
+				&textureData2.arrow.pos
+			);
+		}
+
+		return;
+	}
+
+
+
+	IntroduceSessionData();
+
+	if (!InGame())
+	{
+		return;
+	}
+
+	IntroduceMainActorData(actorBaseAddr, actorData, return);
+
+	auto & characterData = GetCharacterData(actorData);
+
+	auto & gamepad = GetGamepad(actorData.newPlayerIndex);
+
+	if
+	(
+		InCredits() ||
+		!activeConfig.Actor.enable ||
+		(characterData.rangedWeaponSwitchType != WEAPON_SWITCH_TYPE_ARBITRARY) ||
+		(characterData.character != CHAR_DANTE)
+	)
+	{
+		return;
+	}
+
+	if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_GUN)))
+	{
+		return;
+	}
+
+	auto count = characterData.rangedWeaponCount;
+
+	for_all(uint8, index, count)
+	{
+		textureData.backgrounds[index].Render
+		(
+			&textureData2.backgrounds[index].size,
+			&textureData2.backgrounds[index].pos
+		);
+	}
+
+	{
+		for_all(uint8, index, count)
+		{
+			auto weapon = characterData.rangedWeapons[index];
+			if (weapon >= MAX_WEAPON)
+			{
+				weapon = 0;
+			}
+
+			auto textureId = textureWeaponMap[weapon];
+			if (textureId >= TEXTURE_COUNT)
+			{
+				textureId = 0;
+			}
+
+			textureData.icons[index].textureAddr = textureAddrs[textureId];
+
+			textureData.icons[index].Render
+			(
+				&textureData2.icons[index].size,
+				&textureData2.icons[index].pos
+			);
+		}
+	}
+
+	auto rangedWeaponIndex = characterData.rangedWeaponIndex;
+	if (rangedWeaponIndex >= 5)
+	{
+		rangedWeaponIndex = 0;
+	}
+
+	textureData.highlights[rangedWeaponIndex].Render
+	(
+		&textureData2.highlights[rangedWeaponIndex].size,
+		&textureData2.highlights[rangedWeaponIndex].pos
+	);
+
+	{
+		auto textureId = textureArrowMap[rangedWeaponIndex];
+
+		textureData.arrow.textureAddr = textureAddrs[textureId];
+
+		textureData.arrow.Render
+		(
+			&textureData2.arrow.size,
+			&textureData2.arrow.pos
+		);
+	}
+}
+
+void WeaponSwitchController()
+{
+	static bool run = false;
+
+	if (!run)
+	{
+		run = true;
 
 
 
 
+		// stencil =
+		// {
+		// 	false,
+		// 	"Stencil",
+		// 	false,
+		// 	textureAddrs[TEXTURE_STENCIL],
+		// 	ImVec2
+		// 	(
+		// 		700,
+		// 		700
+		// 	),
+		// 	ImVec2
+		// 	(
+		// 		1220,
+		// 		380
+		// 	)
+		// };
 
 
 
+		for_all(uint8, index, 5)
+		{
+			meleeWeaponSwitchControllerTextureData.backgrounds[index] =
+			{
+				false,
+				meleeWeaponSwitchControllerBackgroundNames[index],
+				true,
+				textureAddrs[TEXTURE_BACKGROUND]
+			};
+		}
+
+		for_all(uint8, index, 5)
+		{
+			meleeWeaponSwitchControllerTextureData.icons[index] =
+			{
+				false,
+				meleeWeaponSwitchControllerIconNames[index],
+				true
+			};
+		}
+
+		for_all(uint8, index, 5)
+		{
+			meleeWeaponSwitchControllerTextureData.highlights[index] =
+			{
+				false,
+				meleeWeaponSwitchControllerHighlightNames[index],
+				true,
+				textureAddrs[TEXTURE_HIGHLIGHT]
+			};
+		}
+
+		meleeWeaponSwitchControllerTextureData.arrow =
+		{
+			false,
+			meleeWeaponSwitchControllerArrowName,
+			true
+		};
 
 
 
+		for_all(uint8, index, 5)
+		{
+			rangedWeaponSwitchControllerTextureData.backgrounds[index] =
+			{
+				false,
+				rangedWeaponSwitchControllerBackgroundNames[index],
+				true,
+				textureAddrs[TEXTURE_BACKGROUND]
+			};
+		}
+
+		for_all(uint8, index, 5)
+		{
+			rangedWeaponSwitchControllerTextureData.icons[index] =
+			{
+				false,
+				rangedWeaponSwitchControllerIconNames[index],
+				true
+			};
+		}
+
+		for_all(uint8, index, 5)
+		{
+			rangedWeaponSwitchControllerTextureData.highlights[index] =
+			{
+				false,
+				rangedWeaponSwitchControllerHighlightNames[index],
+				true,
+				textureAddrs[TEXTURE_HIGHLIGHT]
+			};
+		}
+
+		rangedWeaponSwitchControllerTextureData.arrow =
+		{
+			false,
+			rangedWeaponSwitchControllerArrowName,
+			true
+		};
+	}
+
+	//stencil.Render();
+
+	MeleeWeaponSwitchController();
+	RangedWeaponSwitchController();
+}
+
+void UpdateWeaponSwitchControllerTexturePositions()
+{
+	// Melee
+	{
+		auto & textureData = meleeWeaponSwitchControllerTextureData;
+		auto & textureData2 = activeConfig.meleeWeaponSwitchControllerTextureData2;
+
+		for_all(uint8, index, 5)
+		{
+			textureData.backgrounds[index].UpdatePosition(&textureData2.backgrounds[index].pos);
+		}
+
+		for_all(uint8, index, 5)
+		{
+			textureData.icons[index].UpdatePosition(&textureData2.icons[index].pos);
+		}
+
+		for_all(uint8, index, 5)
+		{
+			textureData.highlights[index].UpdatePosition(&textureData2.highlights[index].pos);
+		}
+
+		textureData.arrow.UpdatePosition(&textureData2.arrow.pos);
+	}
+
+	// Ranged
+	{
+		auto & textureData = rangedWeaponSwitchControllerTextureData;
+		auto & textureData2 = activeConfig.rangedWeaponSwitchControllerTextureData2;
+
+		for_all(uint8, index, 5)
+		{
+			textureData.backgrounds[index].UpdatePosition(&textureData2.backgrounds[index].pos);
+		}
+
+		for_all(uint8, index, 5)
+		{
+			textureData.icons[index].UpdatePosition(&textureData2.icons[index].pos);
+		}
+
+		for_all(uint8, index, 5)
+		{
+			textureData.highlights[index].UpdatePosition(&textureData2.highlights[index].pos);
+		}
+
+		textureData.arrow.UpdatePosition(&textureData2.arrow.pos);
+	}
+}
+
+void WeaponSwitchControllerSettings()
+{
+	if (GUI_ResetButton())
+	{
+		ResetConfigGroup(meleeWeaponSwitchControllerTextureData2);
+		ResetConfigGroup(rangedWeaponSwitchControllerTextureData2);
+
+		UpdateWeaponSwitchControllerTexturePositions();
+	}
+	ImGui::Text("");
+
+	GUI_Checkbox
+	(
+		"Show Textures",
+		g_showTextures
+	);
+	ImGui::Text("");
+
+	const float defaultWidth = 1920;
+	const float defaultHeight = 1080;
+
+	static float targetWidth = 1280;
+	static float targetHeight = 720;
+
+	ImGui::PushItemWidth(200);
+
+	GUI_Input
+	(
+		"Target Width",
+		targetWidth,
+		1.0f,
+		"%g"
+	);
+
+	GUI_Input
+	(
+		"Target Height",
+		targetHeight,
+		1.0f,
+		"%g"
+	);
+
+	if (GUI_Button("Update"))
+	{
+		// Melee
+		{
+			const float multiplier = (targetWidth / defaultWidth);
+
+			CopyMemory
+			(
+				&queuedConfig.meleeWeaponSwitchControllerTextureData2,
+				&defaultConfig.meleeWeaponSwitchControllerTextureData2,
+				sizeof(queuedConfig.meleeWeaponSwitchControllerTextureData2)
+			);
+
+			auto & textureData2 = queuedConfig.meleeWeaponSwitchControllerTextureData2;
+
+			auto values = reinterpret_cast<float *>(&textureData2);
+			uint32 count = (sizeof(textureData2) / 4);
+
+			for_all(uint32, index, count)
+			{
+				auto & value = values[index];
+
+				value *= multiplier;
+			}
+
+			CopyMemory
+			(
+				&activeConfig.meleeWeaponSwitchControllerTextureData2,
+				&queuedConfig.meleeWeaponSwitchControllerTextureData2,
+				sizeof(activeConfig.meleeWeaponSwitchControllerTextureData2)
+			);
+		}
+
+		// Ranged
+		{
+			const float multiplier = (targetWidth / defaultWidth);
+
+			CopyMemory
+			(
+				&queuedConfig.rangedWeaponSwitchControllerTextureData2,
+				&defaultConfig.rangedWeaponSwitchControllerTextureData2,
+				sizeof(queuedConfig.rangedWeaponSwitchControllerTextureData2)
+			);
+
+			auto & textureData2 = queuedConfig.rangedWeaponSwitchControllerTextureData2;
+
+			auto values = reinterpret_cast<float *>(&textureData2);
+			uint32 count = (sizeof(textureData2) / 4);
+
+			for_all(uint32, index, count)
+			{
+				auto & value = values[index];
+
+				value *= multiplier;
+			}
+
+			CopyMemory
+			(
+				&activeConfig.rangedWeaponSwitchControllerTextureData2,
+				&queuedConfig.rangedWeaponSwitchControllerTextureData2,
+				sizeof(activeConfig.rangedWeaponSwitchControllerTextureData2)
+			);
+		}
+
+		UpdateWeaponSwitchControllerTexturePositions();
+
+		GUI_save = true;
+	}
+	ImGui::Text("");
+
+	ImGui::PopItemWidth();
+
+
+
+	// Melee
+	{
+		auto & textureData = meleeWeaponSwitchControllerTextureData;
+		auto & textureData2 = activeConfig.meleeWeaponSwitchControllerTextureData2;
+
+		for_all(uint8, index, 5)
+		{
+			textureData.backgrounds[index].Settings
+			(
+				&textureData2.backgrounds[index].size,
+				&textureData2.backgrounds[index].pos
+			);
+			ImGui::Text("");
+		}
+
+		for_all(uint8, index, 5)
+		{
+			textureData.icons[index].Settings
+			(
+				&textureData2.icons[index].size,
+				&textureData2.icons[index].pos
+			);
+			ImGui::Text("");
+		}
+
+		for_all(uint8, index, 5)
+		{
+			textureData.highlights[index].Settings
+			(
+				&textureData2.highlights[index].size,
+				&textureData2.highlights[index].pos
+			);
+			ImGui::Text("");
+		}
+
+		textureData.arrow.Settings
+		(
+			&textureData2.arrow.size,
+			&textureData2.arrow.pos
+		);
+		ImGui::Text("");
+	}
+
+	// Ranged
+	{
+		auto & textureData = rangedWeaponSwitchControllerTextureData;
+		auto & textureData2 = activeConfig.rangedWeaponSwitchControllerTextureData2;
+
+		for_all(uint8, index, 5)
+		{
+			textureData.backgrounds[index].Settings
+			(
+				&textureData2.backgrounds[index].size,
+				&textureData2.backgrounds[index].pos
+			);
+			ImGui::Text("");
+		}
+
+		for_all(uint8, index, 5)
+		{
+			textureData.icons[index].Settings
+			(
+				&textureData2.icons[index].size,
+				&textureData2.icons[index].pos
+			);
+			ImGui::Text("");
+		}
+
+		for_all(uint8, index, 5)
+		{
+			textureData.highlights[index].Settings
+			(
+				&textureData2.highlights[index].size,
+				&textureData2.highlights[index].pos
+			);
+			ImGui::Text("");
+		}
+
+		textureData.arrow.Settings
+		(
+			&textureData2.arrow.size,
+			&textureData2.arrow.pos
+		);
+	}
+}
+
+#pragma endregion
 
 #pragma region Overlay
 
@@ -375,6 +1962,19 @@ void TooltipHelper
 bool Overlay_enable = true;
 bool Overlay_run = false;
 ImVec2 Overlay_size = ImVec2(300, 300);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void Overlay()
 {
@@ -407,7 +2007,22 @@ void Overlay()
 
 		ImGui::Text("%.2f FPS", (ImGui::GetIO().Framerate));
 
-		ImGui::Text("g_scene %u", g_scene);
+		//ImGui::Text("g_scene %u", g_scene);
+
+		{
+			if (g_scene >= MAX_SCENE)
+			{
+				ImGui::Text("Unknown");
+			}
+			else
+			{
+				ImGui::Text(sceneNames[g_scene]);
+			}
+		}
+
+
+
+
 
 		[&]()
 		{
@@ -767,6 +2382,8 @@ uint8 Actor_meleeWeaponIndices[PLAYER_COUNT][CHARACTER_COUNT][ENTITY_COUNT][MELE
 
 uint8 Actor_rangedWeaponIndices[PLAYER_COUNT][CHARACTER_COUNT][ENTITY_COUNT][RANGED_WEAPON_COUNT] = {};
 
+#define Actor_weaponSwitchTypeNames weaponSwitchTypeNames
+
 void Actor_UpdateIndices()
 {
 	LogFunction();
@@ -1033,40 +2650,115 @@ void Actor_CharacterTab
 	}
 	ImGui::PopItemWidth();
 
+	bool condition =
+	(
+		(
+			(playerIndex == 0) &&
+			(entityIndex == ENTITY_MAIN)
+		) ||
+		(queuedCharacterData.character == CHAR_DANTE)
+	);
+
+	if (condition)
+	{
+		ImGui::Text("");
+		ImGui::Text("Melee Weapons");
+
+		if (queuedCharacterData.meleeWeaponSwitchType == WEAPON_SWITCH_TYPE_LINEAR)
+		{
+			ImGui::SameLine();
+			TooltipHelper
+			(
+				"(?)",
+				"Hold the taunt button during the switch to go back."
+			);
+		}
+
+		ImGui::PushItemWidth(200);
+	}
+
+	if
+	(
+		(playerIndex == 0) &&
+		(entityIndex == ENTITY_MAIN)
+	)
+	{
+		GUI_Combo2
+		(
+			"",
+			Actor_weaponSwitchTypeNames,
+			activeCharacterData.meleeWeaponSwitchType,
+			queuedCharacterData.meleeWeaponSwitchType
+		);
+	}
+
+	if (queuedCharacterData.character == CHAR_DANTE)
+	{
+		GUI_Slider2<uint8>
+		(
+			"",
+			activeCharacterData.meleeWeaponCount,
+			queuedCharacterData.meleeWeaponCount,
+			1,
+			MELEE_WEAPON_COUNT_DANTE
+		);
+		for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT_DANTE)
+		{
+			bool condition = (meleeWeaponIndex >= queuedCharacterData.meleeWeaponCount);
+			GUI_PushDisable(condition);
+			GUI_ComboMap2
+			(
+				"",
+				Actor_meleeWeaponNamesDante,
+				Actor_meleeWeaponsDante,
+				Actor_meleeWeaponIndices[playerIndex][characterIndex][entityIndex][meleeWeaponIndex],
+				activeCharacterData.meleeWeapons[meleeWeaponIndex],
+				queuedCharacterData.meleeWeapons[meleeWeaponIndex]
+			);
+			GUI_PopDisable(condition);
+		}
+	}
+
+	if (condition)
+	{
+		ImGui::PopItemWidth();
+	}
+
 	if (queuedCharacterData.character != CHAR_DANTE)
 	{
 		return;
 	}
-	ImGui::Text("");
 
-	ImGui::Text("Melee Weapons");
-	ImGui::PushItemWidth(200);
-	GUI_Slider2<uint8>
-	(
-		"",
-		activeCharacterData.meleeWeaponCount,
-		queuedCharacterData.meleeWeaponCount,
-		1,
-		MELEE_WEAPON_COUNT_DANTE
-	);
-	for_all(uint8, meleeWeaponIndex, MELEE_WEAPON_COUNT_DANTE)
+	ImGui::Text("");
+	ImGui::Text("Ranged Weapons");
+
+	if (queuedCharacterData.rangedWeaponSwitchType == WEAPON_SWITCH_TYPE_LINEAR)
 	{
-		bool condition = (meleeWeaponIndex >= queuedCharacterData.meleeWeaponCount);
-		GUI_PushDisable(condition);
-		GUI_ComboMap2
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Hold the taunt button during the switch to go back."
+		);
+	}
+
+	ImGui::PushItemWidth(200);
+
+	if
+	(
+		(playerIndex == 0) &&
+		(entityIndex == ENTITY_MAIN)
+	)
+	{
+		GUI_Combo2
 		(
 			"",
-			Actor_meleeWeaponNamesDante,
-			Actor_meleeWeaponsDante,
-			Actor_meleeWeaponIndices[playerIndex][characterIndex][entityIndex][meleeWeaponIndex],
-			activeCharacterData.meleeWeapons[meleeWeaponIndex],
-			queuedCharacterData.meleeWeapons[meleeWeaponIndex]
+			Actor_weaponSwitchTypeNames,
+			activeCharacterData.rangedWeaponSwitchType,
+			queuedCharacterData.rangedWeaponSwitchType
 		);
-		GUI_PopDisable(condition);
 	}
-	ImGui::Text("");
 
-	ImGui::Text("Ranged Weapons");
 	GUI_Slider2<uint8>
 	(
 		"",
@@ -1090,6 +2782,7 @@ void Actor_CharacterTab
 		);
 		GUI_PopDisable(condition);
 	}
+
 	ImGui::PopItemWidth();
 }
 
@@ -1110,6 +2803,15 @@ void Actor_PlayerTab(uint8 playerIndex)
 		ImGuiComboFlags_HeightLargest
 	);
 	ImGui::PopItemWidth();
+	ImGui::SameLine();
+	TooltipHelper
+	(
+		"(?)",
+		"Multi-purpose button.\n"
+		"Main purpose is to switch characters.\n"
+		"While Doppelganger is active it's used to control the clone's state.\n"
+		"Hold the button and switch style or weapon to trigger the action for the clone.\n"
+	);
 	ImGui::Text("");
 
 	ImGui::PushItemWidth(200);
@@ -1167,7 +2869,17 @@ void Actor()
 	{
 		ImGui::Text("");
 
-		if (GUI_Checkbox("Enable", queuedConfig.Actor.enable))
+		DescriptionHelper("Custom actor creation and spawn system. Required for many features like character-, style- and weapon-switching.");
+		ImGui::Text("");
+
+		if
+		(
+			GUI_Checkbox
+			(
+				"Enable",
+				queuedConfig.Actor.enable
+			)
+		)
 		{
 			if
 			(
@@ -1184,21 +2896,11 @@ void Actor()
 
 		if (GUI_ResetButton())
 		{
-			memcpy
-			(
-				&activeConfig.Actor,
-				&defaultConfig.Actor,
-				sizeof(Config::Actor)
-			);
+			auto enable = activeConfig.Actor.enable;
 
-			memcpy
-			(
-				&queuedConfig.Actor,
-				&defaultConfig.Actor,
-				sizeof(Config::Actor)
-			);
-
-			activeConfig.removeBusyFlag = queuedConfig.removeBusyFlag = defaultConfig.removeBusyFlag;
+			ResetConfigGroup(Actor);
+			ResetConfigEntry(removeBusyFlag);
+			ResetConfigEntry(resetPermissions);
 
 			Actor_UpdateIndices();
 
@@ -1210,14 +2912,18 @@ void Actor()
 			{
 				Actor_Toggle(activeConfig.Actor.enable);
 			}
+			else
+			{
+				activeConfig.Actor.enable = enable;
+			}
 		}
 		ImGui::Text("");
 
 		ImGui::PushItemWidth(200);
-		// @Todo: 2.
-		GUI_Slider<uint8>
+		GUI_Slider2<uint8>
 		(
 			"Player Count",
+			activeConfig.Actor.playerCount,
 			queuedConfig.Actor.playerCount,
 			1,
 			PLAYER_COUNT
@@ -1255,6 +2961,27 @@ void Actor()
 			"Remove Busy Flag",
 			activeConfig.removeBusyFlag,
 			queuedConfig.removeBusyFlag
+		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Removes the actor's busy flag when switching styles.\n"
+			"Allows you to do insane combos or just look stupid."
+		);
+
+		GUI_Checkbox2
+		(
+			"Reset Permissions",
+			activeConfig.resetPermissions,
+			queuedConfig.resetPermissions
+		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Press the taunt button to reset the actor's permissions.\n"
+			"Useful when getting stuck."
 		);
 
 		ImGui::Text("");
@@ -1327,6 +3054,9 @@ void Arcade()
 	{
 		ImGui::Text("");
 
+		DescriptionHelper("Go to a specific point in the game. Triggered in the main menu.");
+		ImGui::Text("");
+
 		if
 		(
 			GUI_Checkbox2
@@ -1343,18 +3073,7 @@ void Arcade()
 
 		if (GUI_ResetButton())
 		{
-			memcpy
-			(
-				&queuedConfig.Arcade,
-				&defaultConfig.Arcade,
-				sizeof(Config::Arcade)
-			);
-			memcpy
-			(
-				&activeConfig.Arcade,
-				&queuedConfig.Arcade,
-				sizeof(Config::Arcade)
-			);
+			ResetConfigGroup(Arcade);
 
 			Arcade_UpdateIndices();
 
@@ -1363,6 +3082,7 @@ void Arcade()
 		ImGui::Text("");
 
 		ImGui::PushItemWidth(200);
+
 		GUI_Combo2
 		(
 			"Mission",
@@ -1387,34 +3107,58 @@ void Arcade()
 				activeConfig.Arcade.mode,
 				queuedConfig.Arcade.mode
 			);
-			GUI_InputDefault2
-			(
-				"Room",
-				activeConfig.Arcade.room,
-				queuedConfig.Arcade.room,
-				defaultConfig.Arcade.room
-			);
-			ImGui::SameLine();
-			GUI_Checkbox2
-			(
-				"Ignore",
-				activeConfig.Arcade.ignoreRoom,
-				queuedConfig.Arcade.ignoreRoom
-			);
-			GUI_InputDefault2
-			(
-				"Position",
-				activeConfig.Arcade.position,
-				queuedConfig.Arcade.position,
-				defaultConfig.Arcade.position
-			);
-			ImGui::SameLine();
-			GUI_Checkbox2
-			(
-				"Ignore",
-				activeConfig.Arcade.ignorePosition,
-				queuedConfig.Arcade.ignorePosition
-			);
+
+			// Room
+			{
+				bool condition = activeConfig.Arcade.ignoreRoom;
+
+				GUI_PushDisable(condition);
+
+				GUI_InputDefault2
+				(
+					"Room",
+					activeConfig.Arcade.room,
+					queuedConfig.Arcade.room,
+					defaultConfig.Arcade.room
+				);
+
+				GUI_PopDisable(condition);
+
+				ImGui::SameLine();
+
+				GUI_Checkbox2
+				(
+					"Ignore",
+					activeConfig.Arcade.ignoreRoom,
+					queuedConfig.Arcade.ignoreRoom
+				);
+			}
+
+			// Position
+			{
+				bool condition = activeConfig.Arcade.ignorePosition;
+
+				GUI_PushDisable(condition);
+
+				GUI_InputDefault2
+				(
+					"Position",
+					activeConfig.Arcade.position,
+					queuedConfig.Arcade.position,
+					defaultConfig.Arcade.position
+				);
+
+				GUI_PopDisable(condition);
+
+				ImGui::SameLine();
+
+				GUI_Checkbox2
+				(
+					"Ignore",
+					activeConfig.Arcade.ignorePosition,
+					queuedConfig.Arcade.ignorePosition
+				);
+			}
 		}
 
 		if (activeConfig.Arcade.mission == 21)
@@ -1532,6 +3276,9 @@ void BossRush()
 	{
 		ImGui::Text("");
 
+		ImGui::Text("Go directly to the boss battle.");
+		ImGui::Text("");
+
 		GUI_Checkbox2
 		(
 			"Enable",
@@ -1542,18 +3289,7 @@ void BossRush()
 
 		if (GUI_ResetButton())
 		{
-			memcpy
-			(
-				&queuedConfig.BossRush,
-				&defaultConfig.BossRush,
-				sizeof(Config::BossRush)
-			);
-			memcpy
-			(
-				&activeConfig.BossRush,
-				&queuedConfig.BossRush,
-				sizeof(Config::BossRush)
-			);
+			ResetConfigGroup(BossRush);
 		}
 		GUI_SectionEnd();
 		ImGui::Text("");
@@ -1660,20 +3396,25 @@ void Camera()
 
 		if (GUI_ResetButton())
 		{
-			memcpy
-			(
-				&queuedConfig.Camera,
-				&defaultConfig.Camera,
-				sizeof(Config::Camera)
-			);
-			memcpy
-			(
-				&activeConfig.Camera,
-				&queuedConfig.Camera,
-				sizeof(Config::Camera)
-			);
+			ResetConfigGroup(Camera);
+			ResetConfigEntry(disableCenterCamera);
 
 			Camera_ToggleInvertX(activeConfig.Camera.invertX);
+
+			[]()
+			{
+				if (g_scene != SCENE_GAME)
+				{
+					return;
+				}
+
+				IntroduceCameraData(return);
+
+				cameraData.height         = activeConfig.Camera.height;
+				cameraData.tilt           = activeConfig.Camera.tilt;
+				cameraData.distance       = activeConfig.Camera.distance;
+				cameraData.distanceLockOn = activeConfig.Camera.distanceLockOn;
+			}();
 		}
 		ImGui::Text("");
 
@@ -1689,6 +3430,13 @@ void Camera()
 		{
 			Camera_ToggleInvertX(activeConfig.Camera.invertX);
 		}
+
+		GUI_Checkbox2
+		(
+			"Disable Center Camera",
+			activeConfig.disableCenterCamera,
+			queuedConfig.disableCenterCamera
+		);
 
 		[]()
 		{
@@ -1733,22 +3481,22 @@ void Camera()
 			);
 			GUI_InputDefault2Camera
 			(
-				"Zoom",
-				cameraData.zoom,
-				activeConfig.Camera.zoom,
-				queuedConfig.Camera.zoom,
-				defaultConfig.Camera.zoom,
+				"Distance",
+				cameraData.distance,
+				activeConfig.Camera.distance,
+				queuedConfig.Camera.distance,
+				defaultConfig.Camera.distance,
 				10.0f,
 				"%.0f",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			);
 			GUI_InputDefault2Camera
 			(
-				"Zoom Lock-On",
-				cameraData.zoomLockOn,
-				activeConfig.Camera.zoomLockOn,
-				queuedConfig.Camera.zoomLockOn,
-				defaultConfig.Camera.zoomLockOn,
+				"Distance Lock-On",
+				cameraData.distanceLockOn,
+				activeConfig.Camera.distanceLockOn,
+				queuedConfig.Camera.distanceLockOn,
+				defaultConfig.Camera.distanceLockOn,
 				10.0f,
 				"%.0f",
 				ImGuiInputTextFlags_EnterReturnsTrue
@@ -1842,24 +3590,13 @@ void Cosmetics()
 
 		if (GUI_ResetButton())
 		{
-			memcpy
-			(
-				&queuedConfig.Color,
-				&defaultConfig.Color,
-				sizeof(Config::Color)
-			);
-			memcpy
-			(
-				&activeConfig.Color,
-				&queuedConfig.Color,
-				sizeof(Config::Color)
-			);
+			ResetConfigGroup(Color);
+
+			ResetConfigEntry(hideBeowulfDante);
+			ResetConfigEntry(hideBeowulfVergil);
+			ResetConfigEntry(noDevilForm);
 
 			Color_UpdateValues();
-
-			activeConfig.BeowulfDante.hide  = queuedConfig.BeowulfDante.hide  = defaultConfig.BeowulfDante.hide;
-			activeConfig.BeowulfVergil.hide = queuedConfig.BeowulfVergil.hide = defaultConfig.BeowulfVergil.hide;
-			activeConfig.noDevilForm        = queuedConfig.noDevilForm        = defaultConfig.noDevilForm;
 		}
 		GUI_SectionEnd();
 		ImGui::Text("");
@@ -1875,18 +3612,7 @@ void Cosmetics()
 
 		if (GUI_ResetButton())
 		{
-			memcpy
-			(
-				&queuedConfig.Color,
-				&defaultConfig.Color,
-				sizeof(Config::Color)
-			);
-			memcpy
-			(
-				&activeConfig.Color,
-				&queuedConfig.Color,
-				sizeof(Config::Color)
-			);
+			ResetConfigGroup(Color);
 
 			Color_UpdateValues();
 		}
@@ -1975,14 +3701,14 @@ void Cosmetics()
 		GUI_Checkbox2
 		(
 			"Hide Beowulf Dante",
-			activeConfig.BeowulfDante.hide,
-			queuedConfig.BeowulfDante.hide
+			activeConfig.hideBeowulfDante,
+			queuedConfig.hideBeowulfDante
 		);
 		GUI_Checkbox2
 		(
 			"Hide Beowulf Vergil",
-			activeConfig.BeowulfVergil.hide,
-			queuedConfig.BeowulfVergil.hide
+			activeConfig.hideBeowulfVergil,
+			queuedConfig.hideBeowulfVergil
 		);
 		GUI_Checkbox2
 		(
@@ -1997,8 +3723,74 @@ void Cosmetics()
 
 #pragma endregion
 
+#pragma region Damage
+
+#define Damage_styleRankNames styleRankNames
+
+void Damage()
+{
+	if (ImGui::CollapsingHeader("Damage"))
+	{
+		ImGui::Text("");
+
+		if (GUI_ResetButton())
+		{
+			ResetConfigEntry(damageActorMultiplier);
+			ResetConfigEntry(damageEnemyMultiplier);
+			ResetConfigEntry(damageStyleRank);
+		}
+		ImGui::Text("");
+
+		TooltipHelper
+		(
+			"(?)",
+			"Multiplier values are for RECEIVED damage."
+		);
+		ImGui::Text("");
+
+		ImGui::PushItemWidth(150);
+
+		GUI_InputDefault2
+		(
+			"Actor Multiplier",
+			activeConfig.damageActorMultiplier,
+			queuedConfig.damageActorMultiplier,
+			defaultConfig.damageActorMultiplier,
+			0.1f,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+
+		GUI_InputDefault2
+		(
+			"Enemy Multiplier",
+			activeConfig.damageEnemyMultiplier,
+			queuedConfig.damageEnemyMultiplier,
+			defaultConfig.damageEnemyMultiplier,
+			0.1f,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+
+		GUI_Combo2
+		(
+			"Style Rank",
+			Damage_styleRankNames,
+			activeConfig.damageStyleRank,
+			queuedConfig.damageStyleRank
+		);
+
+		ImGui::PopItemWidth();
+
+		ImGui::Text("");
+	}
+}
+
+#pragma endregion
+
 #pragma region Dante
 
+// @Todo: Move.
 template <typename T>
 void ActionData
 (
@@ -2044,84 +3836,50 @@ void Dante()
 	if (ImGui::CollapsingHeader("Dante"))
 	{
 		ImGui::Text("");
+
 		if (GUI_ResetButton())
 		{
-			memcpy
-			(
-				&queuedConfig.AirHike,
-				&defaultConfig.AirHike,
-				sizeof(Config::AirHike)
-			);
-			memcpy
-			(
-				&activeConfig.AirHike,
-				&queuedConfig.AirHike,
-				sizeof(Config::AirHike)
-			);
+			ResetConfigEntry(airHikeCoreAbility);
+			ResetConfigGroup(Rebellion);
+			ResetConfigGroup(EbonyIvory);
+			ResetConfigGroup(Artemis);
 
-			// memcpy
-			// (
-			// 	&queuedConfig.Trickster,
-			// 	&defaultConfig.Trickster,
-			// 	sizeof(Config::Trickster)
-			// );
-			// memcpy
-			// (
-			// 	&activeConfig.Trickster,
-			// 	&queuedConfig.Trickster,
-			// 	sizeof(Config::Trickster)
-			// );
-
-			memcpy
-			(
-				&queuedConfig.Rebellion,
-				&defaultConfig.Rebellion,
-				sizeof(Config::Rebellion)
-			);
-			memcpy
-			(
-				&activeConfig.Rebellion,
-				&queuedConfig.Rebellion,
-				sizeof(Config::Rebellion)
-			);
-
-			memcpy
-			(
-				&queuedConfig.EbonyIvory,
-				&defaultConfig.EbonyIvory,
-				sizeof(Config::EbonyIvory)
-			);
-			memcpy
-			(
-				&activeConfig.EbonyIvory,
-				&queuedConfig.EbonyIvory,
-				sizeof(Config::EbonyIvory)
-			);
-
-			memcpy
-			(
-				&queuedConfig.Artemis,
-				&defaultConfig.Artemis,
-				sizeof(Config::Artemis)
-			);
-			memcpy
-			(
-				&activeConfig.Artemis,
-				&queuedConfig.Artemis,
-				sizeof(Config::Artemis)
-			);
-
-			ToggleAirHikeCoreAbility               (activeConfig.AirHike.coreAbility               );
+			ToggleAirHikeCoreAbility               (activeConfig.airHikeCoreAbility                );
 			ToggleRebellionInfiniteSwordPierce     (activeConfig.Rebellion.infiniteSwordPierce     );
 			ToggleEbonyIvoryFoursomeTime           (activeConfig.EbonyIvory.foursomeTime           );
 			ToggleEbonyIvoryInfiniteRainStorm      (activeConfig.EbonyIvory.infiniteRainStorm      );
 			ToggleArtemisSwapNormalShotAndMultiLock(activeConfig.Artemis.swapNormalShotAndMultiLock);
 			ToggleArtemisInstantFullCharge         (activeConfig.Artemis.instantFullCharge         );
 		}
+
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-		ImGui::Text("Air Hike");
+		GUI_SectionStart("Air Hike");
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Core Ability",
+				activeConfig.airHikeCoreAbility,
+				queuedConfig.airHikeCoreAbility
+			)
+		)
+		{
+			ToggleAirHikeCoreAbility(activeConfig.airHikeCoreAbility);
+		}
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Makes Air Hike available for all melee weapons."
+		);
+
+		GUI_SectionEnd();
+		ImGui::Text("");
+
+		ImGui::Text("Rebellion");
 		ImGui::SameLine();
 		TooltipHelper
 		(
@@ -2136,25 +3894,6 @@ void Dante()
 		(
 			GUI_Checkbox2
 			(
-				"Core Ability",
-				activeConfig.AirHike.coreAbility,
-				queuedConfig.AirHike.coreAbility
-			)
-		)
-		{
-			ToggleAirHikeCoreAbility(activeConfig.AirHike.coreAbility);
-		}
-
-		ImGui::Text("");
-
-		GUI_SectionEnd();
-		ImGui::Text("");
-
-		GUI_SectionStart("Rebellion");
-		if
-		(
-			GUI_Checkbox2
-			(
 				"Infinite Sword Pierce",
 				activeConfig.Rebellion.infiniteSwordPierce,
 				queuedConfig.Rebellion.infiniteSwordPierce
@@ -2163,20 +3902,7 @@ void Dante()
 		{
 			ToggleRebellionInfiniteSwordPierce(activeConfig.Rebellion.infiniteSwordPierce);
 		}
-
-ImGui::Text("");
-
-
-		// ImGui::Text("Air Hike");
-		// ImGui::SameLine();
-		TooltipHelper
-		(
-			"(?)",
-			"Left: Human Right: Devil"
-		);
-		
-
-
+		ImGui::Text("");
 
 		ActionData
 		(
@@ -2196,10 +3922,6 @@ ImGui::Text("");
 			10.0f,
 			"%g"
 		);
-
-
-
-
 		ActionData
 		(
 			"Air Stinger Count",
@@ -2207,7 +3929,6 @@ ImGui::Text("");
 			queuedConfig.Rebellion.airStingerCount,
 			defaultConfig.Rebellion.airStingerCount
 		);
-
 		ActionData
 		(
 			"Air Stinger Duration",
@@ -2227,41 +3948,8 @@ ImGui::Text("");
 			"%g"
 		);
 
-
-
-
-
-
-
-
-
-
-
-
-		// ImGui::Text("");
-		// ActionData<float32>("Stinger Duration"    , activeConfig.Rebellion.stingerDuration   , defaultConfig.Rebellion.stingerDuration   , 1 , "%.0f");
-		// ActionData<float32>("Stinger Range"       , activeConfig.Rebellion.stingerRange      , defaultConfig.Rebellion.stingerRange      , 10, "%.0f");
-		// ActionData<float32>("Air Stinger Duration", activeConfig.Rebellion.airStingerDuration, defaultConfig.Rebellion.airStingerDuration, 1 , "%.0f");
-		// ActionData<float32>("Air Stinger Range"   , activeConfig.Rebellion.airStingerRange   , defaultConfig.Rebellion.airStingerRange   , 10, "%.0f");
 		GUI_SectionEnd();
 		ImGui::Text("");
-
-		// GUI_SectionStart("Agni & Rudra");
-		// ActionData<float32>("Jet-Stream Duration", activeConfig.AgniRudra.jetStreamDuration, defaultConfig.AgniRudra.jetStreamDuration, 1 , "%.0f");
-		// ActionData<float32>("Jet-Stream Range"   , activeConfig.AgniRudra.jetStreamRange   , defaultConfig.AgniRudra.jetStreamRange   , 10, "%.0f");
-		// GUI_SectionEnd();
-
-		// GUI_SectionStart("Nevan");
-		// ActionData<float32>("Reverb Shock Duration", activeConfig.Nevan.reverbShockDuration, defaultConfig.Nevan.reverbShockDuration, 1 , "%.0f");
-		// ActionData<float32>("Reverb Shock Range"   , activeConfig.Nevan.reverbShockRange   , defaultConfig.Nevan.reverbShockRange   , 10, "%.0f");
-		// GUI_SectionEnd();
-
-		// GUI_SectionStart("Beowulf");
-		// ActionData<float32>("Straight Duration"    , activeConfig.BeowulfDante.straightDuration   , defaultConfig.BeowulfDante.straightDuration   , 1 , "%.0f");
-		// ActionData<float32>("Straight Range"       , activeConfig.BeowulfDante.straightRange      , defaultConfig.BeowulfDante.straightRange      , 10, "%.0f");
-		// ActionData<float32>("Air Straight Duration", activeConfig.BeowulfDante.airStraightDuration, defaultConfig.BeowulfDante.airStraightDuration, 1 , "%.0f");
-		// ActionData<float32>("Air Straight Range"   , activeConfig.BeowulfDante.airStraightRange   , defaultConfig.BeowulfDante.airStraightRange   , 10, "%.0f");
-		// GUI_SectionEnd();
 
 		GUI_SectionStart("Ebony & Ivory");
 
@@ -2293,13 +3981,6 @@ ImGui::Text("");
 
 		GUI_SectionEnd();
 		ImGui::Text("");
-
-		// GUI_SectionStart("Shotgun");
-		// ActionData<float32>("Gun Stinger Duration"    , activeConfig.Shotgun.gunStingerDuration   , defaultConfig.Shotgun.gunStingerDuration   , 1 , "%.0f");
-		// ActionData<float32>("Gun Stinger Range"       , activeConfig.Shotgun.gunStingerRange      , defaultConfig.Shotgun.gunStingerRange      , 10, "%.0f");
-		// ActionData<float32>("Air Gun Stinger Duration", activeConfig.Shotgun.airGunStingerDuration, defaultConfig.Shotgun.airGunStingerDuration, 1 , "%.0f");
-		// ActionData<float32>("Air Gun Stinger Range"   , activeConfig.Shotgun.airGunStingerRange   , defaultConfig.Shotgun.airGunStingerRange   , 10, "%.0f");
-		// GUI_SectionEnd();
 
 		GUI_SectionStart("Artemis");
 
@@ -2342,24 +4023,105 @@ void Debug()
 	if (ImGui::CollapsingHeader("Debug"))
 	{
 		ImGui::Text("");
+
 		IntroduceSessionData();
+
 		GUI_Checkbox("One Hit Kill", sessionData.oneHitKill);
+
+		ImGui::Text("");
+	}
+}
+
+#pragma endregion
+
+#pragma region GUI
+
+void GUI()
+{
+	if (ImGui::CollapsingHeader("GUI"))
+	{
 		ImGui::Text("");
 
-		static char buffer[512] = { "afs/sound/Battle_00.ogg" };
-		static char filename[256] = { "Battle_00.ogg" };
+		WeaponSwitchControllerSettings();
+
+		ImGui::Text("");
+	}
+}
+
+#pragma endregion
+
+#pragma region Jukebox
+
+#define Jukebox_trackFilenames trackFilenames
+#define Jukebox_trackNames trackNames
+
+void Jukebox()
+{
+	if (ImGui::CollapsingHeader("Jukebox"))
+	{
+		ImGui::Text("");
+
+		static char path[512];
+		static char filename[256];
+		static uint32 index = 0;
+		static bool run = false;
+
+		if (!run)
+		{
+			run = true;
+
+			snprintf
+			(
+				filename,
+				sizeof(filename),
+				"%s",
+				Jukebox_trackFilenames[index]
+			);
+		}
 
 		ImGui::PushItemWidth(200);
-		if (ImGui::InputText("Filename", filename, sizeof(filename)))
+
+		ImGui::InputText
+		(
+			"Filename",
+			filename,
+			sizeof(filename)
+		);
+
+		if
+		(
+			GUI_Combo
+			(
+				"",
+				Jukebox_trackNames,
+				index
+			)
+		)
 		{
-			snprintf(buffer, sizeof(buffer), "afs/sound/%s", filename);
+			snprintf
+			(
+				filename,
+				sizeof(filename),
+				"%s",
+				Jukebox_trackFilenames[index]
+			);
 		}
+
 		ImGui::PopItemWidth();
 
 		if (GUI_Button("Play Track"))
 		{
-			PlayTrack(buffer);
+			snprintf
+			(
+				path,
+				sizeof(path),
+				"afs/sound/%s",
+				filename
+			);
+
+			PlayTrack(path);
 		}
+
 		ImGui::Text("");
 	}
 }
@@ -2372,6 +4134,20 @@ void Mobility()
 {
 	if (ImGui::CollapsingHeader("Mobility"))
 	{
+		ImGui::Text("");
+
+		if (GUI_ResetButton())
+		{
+			ResetConfigArray(airHikeCount);
+			ResetConfigArray(kickJumpCount);
+			ResetConfigArray(wallHikeCount);
+			ResetConfigArray(dashCount);
+			ResetConfigArray(skyStarCount);
+			ResetConfigArray(airTrickCountDante);
+			ResetConfigArray(airTrickCountVergil);
+			ResetConfigArray(trickUpCount);
+			ResetConfigArray(trickDownCount);
+		}
 		ImGui::Text("");
 
 		TooltipHelper
@@ -2439,7 +4215,7 @@ void Mobility()
 			queuedConfig.trickUpCount,
 			defaultConfig.trickUpCount
 		);
-		ActionData<uint8>
+		ActionData
 		(
 			"Trick Down Count",
 			activeConfig.trickDownCount,
@@ -2455,6 +4231,7 @@ void Mobility()
 
 #pragma region Other
 
+// @Todo: Move.
 const char * dotShadowNames[] =
 {
 	"Enable",
@@ -2467,96 +4244,61 @@ void Other()
 	if (ImGui::CollapsingHeader("Other"))
 	{
 		ImGui::Text("");
+
 		if (GUI_ResetButton())
 		{
-			activeConfig.MagicPointsDepletionValues.quicksilver  = queuedConfig.MagicPointsDepletionValues.quicksilver  = defaultConfig.MagicPointsDepletionValues.quicksilver;
-			activeConfig.MagicPointsDepletionValues.doppelganger = queuedConfig.MagicPointsDepletionValues.doppelganger = defaultConfig.MagicPointsDepletionValues.doppelganger;
-			activeConfig.MagicPointsDepletionValues.devil        = queuedConfig.MagicPointsDepletionValues.devil        = defaultConfig.MagicPointsDepletionValues.devil;
-			activeConfig.crazyComboLevelMultiplier               = queuedConfig.crazyComboLevelMultiplier               = defaultConfig.crazyComboLevelMultiplier;
-			activeConfig.weaponSwitchTimeout                     = queuedConfig.weaponSwitchTimeout                     = defaultConfig.weaponSwitchTimeout;
-			activeConfig.orbReach                                = queuedConfig.orbReach                                = defaultConfig.orbReach;
+			ResetConfigEntry(dotShadow);
+			ResetConfigEntry(depleteQuicksilver);
+			ResetConfigEntry(depleteDoppelganger);
+			ResetConfigEntry(depleteDevil);
+			ResetConfigEntry(crazyComboLevelMultiplier);
+			ResetConfigEntry(weaponSwitchTimeout);
+			ResetConfigEntry(orbReach);
 
-			UpdateMagicPointsDepletionValues();
-			UpdateOrbReach();
+			UpdateCrazyComboLevelMultiplier();
 		}
-		GUI_SectionEnd();
 		ImGui::Text("");
 
-		ImGui::Text("Dot Shadow");
-		ImGui::SameLine();
-		TooltipHelper
+		ImGui::PushItemWidth(200);
+
+		GUI_Combo2
 		(
-			"(?)",
-			"Requires enabled Actor module."
+			"Dot Shadow",
+			dotShadowNames,
+			activeConfig.dotShadow,
+			queuedConfig.dotShadow
 		);
-		ImGui::Text("");
 
-		// @Todo: Update to active.
-		for_all(uint8, dotShadowIndex, countof(dotShadowNames))
-		{
-			GUI_RadioButton
-			(
-				dotShadowNames[dotShadowIndex],
-				queuedConfig.dotShadow,
-				dotShadowIndex
-			);
-		}
-
-		GUI_SectionEnd();
-		ImGui::Text("");
-
-		GUI_SectionStart("Magic Points Depletion Values");
-		ImGui::PushItemWidth(150);
-		if
+		GUI_InputDefault2
 		(
-			GUI_InputDefault2
-			(
-				"Quicksilver",
-				activeConfig.MagicPointsDepletionValues.quicksilver,
-				queuedConfig.MagicPointsDepletionValues.quicksilver,
-				defaultConfig.MagicPointsDepletionValues.quicksilver,
-				1.0f,
-				"%.2f"
-			)
-		)
-		{
-			UpdateMagicPointsDepletionValues();
-		}
-		if
+			"Deplete Quicksilver",
+			activeConfig.depleteQuicksilver,
+			queuedConfig.depleteQuicksilver,
+			defaultConfig.depleteQuicksilver,
+			1.0f,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+		GUI_InputDefault2
 		(
-			GUI_InputDefault2
-			(
-				"Doppelganger",
-				activeConfig.MagicPointsDepletionValues.doppelganger,
-				queuedConfig.MagicPointsDepletionValues.doppelganger,
-				defaultConfig.MagicPointsDepletionValues.doppelganger,
-				1.0f,
-				"%.1f"
-			)
-		)
-		{
-			UpdateMagicPointsDepletionValues();
-		}
-		if
+			"Deplete Doppelganger",
+			activeConfig.depleteDoppelganger,
+			queuedConfig.depleteDoppelganger,
+			defaultConfig.depleteDoppelganger,
+			1.0f,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+		GUI_InputDefault2
 		(
-			GUI_InputDefault2
-			(
-				"Devil",
-				activeConfig.MagicPointsDepletionValues.devil,
-				queuedConfig.MagicPointsDepletionValues.devil,
-				defaultConfig.MagicPointsDepletionValues.devil,
-				1.0f,
-				"%.1f"
-			)
-		)
-		{
-			UpdateMagicPointsDepletionValues();
-		}
-		ImGui::PopItemWidth();
-		GUI_SectionEnd();
-		ImGui::Text("");
-
-		ImGui::PushItemWidth(150);
+			"Deplete Devil",
+			activeConfig.depleteDevil,
+			queuedConfig.depleteDevil,
+			defaultConfig.depleteDevil,
+			1.0f,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
 
 		if
 		(
@@ -2579,23 +4321,21 @@ void Other()
 			queuedConfig.weaponSwitchTimeout,
 			defaultConfig.weaponSwitchTimeout,
 			1.0f,
-			"%.0f"
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
 		);
-		if
+
+		GUI_InputDefault2
 		(
-			GUI_InputDefault2
-			(
-				"Orb Reach",
-				activeConfig.orbReach,
-				queuedConfig.orbReach,
-				defaultConfig.orbReach,
-				100.0f,
-				"%.0f"
-			)
-		)
-		{
-			UpdateOrbReach();
-		}
+			"Orb Reach",
+			activeConfig.orbReach,
+			queuedConfig.orbReach,
+			defaultConfig.orbReach,
+			100.0f,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+
 		ImGui::PopItemWidth();
 
 		ImGui::Text("");
@@ -2606,6 +4346,8 @@ void Other()
 
 #pragma region Repair
 
+// @Todo: Add main actor.
+
 void Repair()
 {
 	if (ImGui::CollapsingHeader("Repair"))
@@ -2614,222 +4356,66 @@ void Repair()
 
 		if (GUI_Button("Reset Weapons"))
 		{
-			if (!InGame())
+			[&]()
 			{
-				return;
-			}
-			for_all(uint32, actorIndex, Actor_actorBaseAddr.count)
-			{
-				IntroduceActorData(actorBaseAddr, actorData, Actor_actorBaseAddr[actorIndex], continue);
-				//IntroduceActorDataNoCreate(Actor_actorBaseAddr[actorIndex], actorData, continue);
-
-
-
-
-
-
-
-
-
-
-
-				// if (!Actor_actorBaseAddr[index])
-				// {
-				// 	continue;
-				// }
-				// auto & actorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[index]);
-
-				switch (actorData.character)
+				if (!InGame())
 				{
-					case CHAR_DANTE:
-					{
-						actorData.weapons[0] = WEAPON_REBELLION;
-						actorData.weapons[1] = WEAPON_CERBERUS;
-						actorData.weapons[2] = WEAPON_EBONY_IVORY;
-						actorData.weapons[3] = WEAPON_SHOTGUN;
-						actorData.weapons[4] = WEAPON_VOID;
+					return;
+				}
 
-						break;
-					}
-					case CHAR_VERGIL:
+				for_all(uint32, actorIndex, Actor_actorBaseAddr.count)
+				{
+					IntroduceActorData(actorBaseAddr, actorData, Actor_actorBaseAddr[actorIndex], continue);
+
+					switch (actorData.character)
 					{
-						actorData.weapons[0] = WEAPON_YAMATO_VERGIL;
-						actorData.weapons[1] = WEAPON_BEOWULF_VERGIL;
-						actorData.weapons[2] = WEAPON_YAMATO_FORCE_EDGE;
-						actorData.weapons[3] = WEAPON_VOID;
-						actorData.weapons[4] = WEAPON_VOID;
-						
-						break;
+						case CHAR_DANTE:
+						{
+							actorData.weapons[0] = WEAPON_REBELLION;
+							actorData.weapons[1] = WEAPON_CERBERUS;
+							actorData.weapons[2] = WEAPON_EBONY_IVORY;
+							actorData.weapons[3] = WEAPON_SHOTGUN;
+							actorData.weapons[4] = WEAPON_VOID;
+
+							break;
+						}
+						case CHAR_VERGIL:
+						{
+							actorData.weapons[0] = WEAPON_YAMATO_VERGIL;
+							actorData.weapons[1] = WEAPON_BEOWULF_VERGIL;
+							actorData.weapons[2] = WEAPON_YAMATO_FORCE_EDGE;
+							actorData.weapons[3] = WEAPON_VOID;
+							actorData.weapons[4] = WEAPON_VOID;
+
+							break;
+						}
 					}
 				}
-			}
+			}();
 		}
 
 		if (GUI_Button("Reset Ranged Weapon Levels"))
 		{
-			if (!InGame())
+			[&]()
 			{
-				return;
-			}
-			for_all(uint32, actorIndex, Actor_actorBaseAddr.count)
-			{
-				IntroduceActorData(actorBaseAddr, actorData, Actor_actorBaseAddr[actorIndex], continue);
-				// if (!Actor_actorBaseAddr[index])
-				// {
-				// 	continue;
-				// }
-				// auto & actorData = *reinterpret_cast<ActorData *>(Actor_actorBaseAddr[index]);
+				if (!InGame())
+				{
+					return;
+				}
 
-				SetMemory
-				(
-					actorData.weaponLevels,
-					0,
-					sizeof(actorData.weaponLevels)
-				);
-			}
+				for_all(uint32, actorIndex, Actor_actorBaseAddr.count)
+				{
+					IntroduceActorData(actorBaseAddr, actorData, Actor_actorBaseAddr[actorIndex], continue);
+
+					SetMemory
+					(
+						actorData.weaponLevels,
+						0,
+						sizeof(actorData.weaponLevels)
+					);
+				}
+			}();
 		}
-
-		ImGui::Text("");
-	}
-}
-
-#pragma endregion
-
-#pragma region Remove Busy Flag
-
-// #define RemoveBusyFlag_buttonNames buttonNames
-// #define RemoveBusyFlag_buttons buttons
-
-// uint8 RemoveBusyFlag_buttonIndex = 0;
-
-// void RemoveBusyFlag_UpdateIndices()
-// {
-// 	LogFunction();
-
-// 	UpdateMapIndex
-// 	(
-// 		RemoveBusyFlag_buttons,
-// 		RemoveBusyFlag_buttonIndex,
-// 		activeConfig.RemoveBusyFlag.button
-// 	);
-// }
-
-// void RemoveBusyFlag()
-// {
-// 	if (ImGui::CollapsingHeader("Remove Busy Flag"))
-// 	{
-// 		ImGui::Text("");
-
-// 		GUI_Checkbox2
-// 		(
-// 			"Enable",
-// 			activeConfig.RemoveBusyFlag.enable,
-// 			queuedConfig.RemoveBusyFlag.enable
-// 		);
-// 		ImGui::Text("");
-
-// 		if (GUI_ResetButton())
-// 		{
-// 			memcpy
-// 			(
-// 				&queuedConfig.RemoveBusyFlag,
-// 				&defaultConfig.RemoveBusyFlag,
-// 				sizeof(Config::RemoveBusyFlag)
-// 			);
-// 			memcpy
-// 			(
-// 				&activeConfig.RemoveBusyFlag,
-// 				&queuedConfig.RemoveBusyFlag,
-// 				sizeof(Config::RemoveBusyFlag)
-// 			);
-
-// 			RemoveBusyFlag_UpdateIndices();
-// 		}
-// 		ImGui::Text("");
-
-// 		ImGui::PushItemWidth(150);
-// 		GUI_ComboMap2
-// 		(
-// 			"Button",
-// 			RemoveBusyFlag_buttonNames,
-// 			RemoveBusyFlag_buttons,
-// 			RemoveBusyFlag_buttonIndex,
-// 			activeConfig.RemoveBusyFlag.button,
-// 			queuedConfig.RemoveBusyFlag.button,
-// 			ImGuiComboFlags_HeightLargest
-// 		);
-// 		ImGui::PopItemWidth();
-
-// 		ImGui::Text("");
-// 	}
-// }
-
-#pragma endregion
-
-#pragma region Reset Permissions
-
-#define ResetPermissions_buttonNames buttonNames
-#define ResetPermissions_buttons buttons
-
-uint8 ResetPermissions_buttonIndex = 0;
-
-void ResetPermissions_UpdateIndices()
-{
-	LogFunction();
-
-	UpdateMapIndex
-	(
-		ResetPermissions_buttons,
-		ResetPermissions_buttonIndex,
-		activeConfig.ResetPermissions.button
-	);
-}
-
-void ResetPermissions()
-{
-	if (ImGui::CollapsingHeader("Reset Permissions"))
-	{
-		ImGui::Text("");
-
-		GUI_Checkbox2
-		(
-			"Enable",
-			activeConfig.ResetPermissions.enable,
-			queuedConfig.ResetPermissions.enable
-		);
-		ImGui::Text("");
-
-		if (GUI_ResetButton())
-		{
-			memcpy
-			(
-				&queuedConfig.ResetPermissions,
-				&defaultConfig.ResetPermissions,
-				sizeof(Config::ResetPermissions)
-			);
-			memcpy
-			(
-				&activeConfig.ResetPermissions,
-				&queuedConfig.ResetPermissions,
-				sizeof(Config::ResetPermissions)
-			);
-
-			ResetPermissions_UpdateIndices();
-		}
-		ImGui::Text("");
-
-		ImGui::PushItemWidth(150);
-		GUI_ComboMap2
-		(
-			"Button",
-			ResetPermissions_buttonNames,
-			ResetPermissions_buttons,
-			ResetPermissions_buttonIndex,
-			activeConfig.ResetPermissions.button,
-			queuedConfig.ResetPermissions.button,
-			ImGuiComboFlags_HeightLargest
-		);
-		ImGui::PopItemWidth();
 
 		ImGui::Text("");
 	}
@@ -2900,18 +4486,7 @@ void Speed()
 
 		if (GUI_ResetButton())
 		{
-			memcpy
-			(
-				&queuedConfig.Speed,
-				&defaultConfig.Speed,
-				sizeof(Config::Speed)
-			);
-			memcpy
-			(
-				&activeConfig.Speed,
-				&queuedConfig.Speed,
-				sizeof(Config::Speed)
-			);
+			ResetConfigGroup(Speed);
 
 			UpdateSpeedValues();
 		}
@@ -3034,6 +4609,7 @@ void Speed()
 
 #pragma region System
 
+// @Todo: Move.
 const char * Graphics_vSyncNames[] =
 {
 	"Auto",
@@ -3064,75 +4640,20 @@ void System()
 
 		if (GUI_ResetButton())
 		{
-			memcpy
-			(
-				&queuedConfig.Event,
-				&defaultConfig.Event,
-				sizeof(Config::Event)
-			);
-			memcpy
-			(
-				&activeConfig.Event,
-				&queuedConfig.Event,
-				sizeof(Config::Event)
-			);
+			ResetConfigEntry(skipIntro);
+			ResetConfigEntry(skipCutscenes);
+			ResetConfigEntry(preferLocalFiles);
+			ResetConfigEntry(frameRate);
+			ResetConfigEntry(vSync);
+			ResetConfigEntry(hideMouseCursor);
+			ResetConfigArray(channelVolumes);
+			ResetConfigEntry(forceWindowFocus);
 
-			memcpy
-			(
-				&queuedConfig.File,
-				&defaultConfig.File,
-				sizeof(Config::File)
-			);
-			memcpy
-			(
-				&activeConfig.File,
-				&queuedConfig.File,
-				sizeof(Config::File)
-			);
-
-			memcpy
-			(
-				&queuedConfig.Graphics,
-				&defaultConfig.Graphics,
-				sizeof(Config::Graphics)
-			);
-			memcpy
-			(
-				&activeConfig.Graphics,
-				&queuedConfig.Graphics,
-				sizeof(Config::Graphics)
-			);
-
-			memcpy
-			(
-				&queuedConfig.Input,
-				&defaultConfig.Input,
-				sizeof(Config::Input)
-			);
-			memcpy
-			(
-				&activeConfig.Input,
-				&queuedConfig.Input,
-				sizeof(Config::Input)
-			);
-
-			memcpy
-			(
-				&queuedConfig.Window,
-				&defaultConfig.Window,
-				sizeof(Config::Window)
-			);
-			memcpy
-			(
-				&activeConfig.Window,
-				&queuedConfig.Window,
-				sizeof(Config::Window)
-			);
-
-			Event_ToggleSkipIntro(activeConfig.Event.skipIntro);
-			Event_ToggleSkipCutscenes(activeConfig.Event.skipCutscenes);
+			Event_ToggleSkipIntro(activeConfig.skipIntro);
+			Event_ToggleSkipCutscenes(activeConfig.skipCutscenes);
 			UpdateFrameRate();
-			Window_ToggleForceFocus(activeConfig.Window.forceFocus);
+			UpdateVolumes();
+			Window_ToggleForceFocus(activeConfig.forceWindowFocus);
 		}
 		GUI_SectionEnd();
 		ImGui::Text("");
@@ -3144,12 +4665,12 @@ void System()
 			GUI_Checkbox2
 			(
 				"Skip Intro",
-				activeConfig.Event.skipIntro,
-				queuedConfig.Event.skipIntro
+				activeConfig.skipIntro,
+				queuedConfig.skipIntro
 			)
 		)
 		{
-			Event_ToggleSkipIntro(activeConfig.Event.skipIntro);
+			Event_ToggleSkipIntro(activeConfig.skipIntro);
 		}
 
 		if
@@ -3157,12 +4678,12 @@ void System()
 			GUI_Checkbox2
 			(
 				"Skip Cutscenes",
-				activeConfig.Event.skipCutscenes,
-				queuedConfig.Event.skipCutscenes
+				activeConfig.skipCutscenes,
+				queuedConfig.skipCutscenes
 			)
 		)
 		{
-			Event_ToggleSkipCutscenes(activeConfig.Event.skipCutscenes);
+			Event_ToggleSkipCutscenes(activeConfig.skipCutscenes);
 		}
 
 		GUI_SectionEnd();
@@ -3172,23 +4693,34 @@ void System()
 		GUI_Checkbox2
 		(
 			"Prefer Local Files",
-			activeConfig.File.preferLocalFiles,
-			queuedConfig.File.preferLocalFiles
+			activeConfig.preferLocalFiles,
+			queuedConfig.preferLocalFiles
 		);
+
 		GUI_SectionEnd();
 		ImGui::Text("");
 
 		GUI_SectionStart("Graphics");
+
 		ImGui::PushItemWidth(150);
+
+		if (GUI_ResetButton())
+		{
+			ResetConfigEntry(frameRate);
+			ResetConfigEntry(vSync);
+
+			UpdateFrameRate();
+		}
+		ImGui::Text("");
 
 		if
 		(
 			GUI_InputDefault2
 			(
 				"Frame Rate",
-				activeConfig.Graphics.frameRate,
-				queuedConfig.Graphics.frameRate,
-				defaultConfig.Graphics.frameRate,
+				activeConfig.frameRate,
+				queuedConfig.frameRate,
+				defaultConfig.frameRate,
 				1.0,
 				"%.2f",
 				ImGuiInputTextFlags_EnterReturnsTrue
@@ -3202,47 +4734,38 @@ void System()
 		(
 			"V-Sync",
 			Graphics_vSyncNames,
-			activeConfig.Graphics.vSync,
-			queuedConfig.Graphics.vSync
+			activeConfig.vSync,
+			queuedConfig.vSync
 		);
+
 		ImGui::PopItemWidth();
+
 		GUI_SectionEnd();
 		ImGui::Text("");
 
 		GUI_SectionStart("Input");
+
 		GUI_Checkbox2
 		(
 			"Hide Mouse Cursor",
-			activeConfig.Input.hideMouseCursor,
-			queuedConfig.Input.hideMouseCursor
+			activeConfig.hideMouseCursor,
+			queuedConfig.hideMouseCursor
 		);
+
 		GUI_SectionEnd();
 		ImGui::Text("");
 
 		GUI_SectionStart("Sound");
 
 		ImGui::Text("Channel Volumes");
-
 		ImGui::Text("");
 
 		if (GUI_ResetButton())
 		{
-			CopyMemory
-			(
-				queuedConfig.channelVolumes,
-				defaultConfig.channelVolumes,
-				sizeof(queuedConfig.channelVolumes)
-			);
-			CopyMemory
-			(
-				activeConfig.channelVolumes,
-				queuedConfig.channelVolumes,
-				sizeof(activeConfig.channelVolumes)
-			);
+			ResetConfigArray(channelVolumes);
 
 			UpdateVolumes();
 		}
-
 		ImGui::Text("");
 
 		ImGui::PushItemWidth(150);
@@ -3267,18 +4790,10 @@ void System()
 			}
 		}
 
-
-
-
 		ImGui::PopItemWidth();
 
 		GUI_SectionEnd();
 		ImGui::Text("");
-
-
-
-
-
 
 		GUI_SectionStart("Window");
 
@@ -3287,12 +4802,12 @@ void System()
 			GUI_Checkbox2
 			(
 				"Force Focus",
-				activeConfig.Window.forceFocus,
-				queuedConfig.Window.forceFocus
+				activeConfig.forceWindowFocus,
+				queuedConfig.forceWindowFocus
 			)
 		)
 		{
-			Window_ToggleForceFocus(activeConfig.Window.forceFocus);
+			Window_ToggleForceFocus(activeConfig.forceWindowFocus);
 		}
 
 		ImGui::Text("");
@@ -3355,24 +4870,32 @@ void Training()
 	{
 		ImGui::Text("");
 
+		auto ResetMissionOverlay = [&]()
+		{
+			ResetConfigGroup(MissionOverlay);
+
+			ImGui::SetWindowPos
+			(
+				"GUI_MissionOverlay",
+				ImVec2
+				(
+					static_cast<float>(activeConfig.MissionOverlay.x),
+					static_cast<float>(activeConfig.MissionOverlay.y)
+				)
+			);
+		};
+
 		if (GUI_ResetButton())
 		{
-			memcpy
-			(
-				&queuedConfig.Training,
-				&defaultConfig.Training,
-				sizeof(Config::Training)
-			);
-			memcpy
-			(
-				&activeConfig.Training,
-				&queuedConfig.Training,
-				sizeof(Config::Training)
-			);
+			ResetConfigEntry(infiniteHitPoints);
+			ResetConfigEntry(infiniteMagicPoints);
+			ResetConfigEntry(disableTimer);
 
-			Training_ToggleInfiniteHitPoints  (activeConfig.Training.infiniteHitPoints  );
-			Training_ToggleInfiniteMagicPoints(activeConfig.Training.infiniteMagicPoints);
-			Training_ToggleDisableTimer       (activeConfig.Training.disableTimer       );
+			Training_ToggleInfiniteHitPoints  (activeConfig.infiniteHitPoints  );
+			Training_ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
+			Training_ToggleDisableTimer       (activeConfig.disableTimer       );
+
+			ResetMissionOverlay();
 		}
 		ImGui::Text("");
 
@@ -3381,12 +4904,12 @@ void Training()
 			GUI_Checkbox2
 			(
 				"Infinite Hit Points",
-				activeConfig.Training.infiniteHitPoints,
-				queuedConfig.Training.infiniteHitPoints
+				activeConfig.infiniteHitPoints,
+				queuedConfig.infiniteHitPoints
 			)
 		)
 		{
-			Training_ToggleInfiniteHitPoints(activeConfig.Training.infiniteHitPoints);
+			Training_ToggleInfiniteHitPoints(activeConfig.infiniteHitPoints);
 		}
 
 		if
@@ -3394,12 +4917,12 @@ void Training()
 			GUI_Checkbox2
 			(
 				"Infinite Magic Points",
-				activeConfig.Training.infiniteMagicPoints,
-				queuedConfig.Training.infiniteMagicPoints
+				activeConfig.infiniteMagicPoints,
+				queuedConfig.infiniteMagicPoints
 			)
 		)
 		{
-			Training_ToggleInfiniteMagicPoints(activeConfig.Training.infiniteMagicPoints);
+			Training_ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
 		}
 
 		if
@@ -3407,12 +4930,12 @@ void Training()
 			GUI_Checkbox2
 			(
 				"Disable Timer",
-				activeConfig.Training.disableTimer,
-				queuedConfig.Training.disableTimer
+				activeConfig.disableTimer,
+				queuedConfig.disableTimer
 			)
 		)
 		{
-			Training_ToggleDisableTimer(activeConfig.Training.disableTimer);
+			Training_ToggleDisableTimer(activeConfig.disableTimer);
 		}
 
 		GUI_SectionEnd();
@@ -3431,28 +4954,7 @@ void Training()
 
 		if (GUI_ResetButton())
 		{
-			memcpy
-			(
-				&queuedConfig.MissionOverlay,
-				&defaultConfig.MissionOverlay,
-				sizeof(queuedConfig.MissionOverlay)
-			);
-			memcpy
-			(
-				&activeConfig.MissionOverlay,
-				&queuedConfig.MissionOverlay,
-				sizeof(activeConfig.MissionOverlay)
-			);
-
-			ImGui::SetWindowPos
-			(
-				"GUI_MissionOverlay",
-				ImVec2
-				(
-					static_cast<float>(activeConfig.MissionOverlay.x),
-					static_cast<float>(activeConfig.MissionOverlay.y)
-				)
-			);
+			ResetMissionOverlay();
 		}
 		ImGui::Text("");
 
@@ -3486,48 +4988,27 @@ void Vergil()
 
 		if (GUI_ResetButton())
 		{
-			// memcpy
-			// (
-			// 	&queuedConfig.DarkSlayer,
-			// 	&defaultConfig.DarkSlayer,
-			// 	sizeof(Config::DarkSlayer)
-			// );
-			// memcpy
-			// (
-			// 	&activeConfig.DarkSlayer,
-			// 	&queuedConfig.DarkSlayer,
-			// 	sizeof(Config::DarkSlayer)
-			// );
-
-			activeConfig.YamatoForceEdge.infiniteRoundTrip = queuedConfig.YamatoForceEdge.infiniteRoundTrip = defaultConfig.YamatoForceEdge.infiniteRoundTrip;
-			activeConfig.SummonedSwords.chronoSwords       = queuedConfig.SummonedSwords.chronoSwords       = defaultConfig.SummonedSwords.chronoSwords;
+			ResetConfigGroup(Yamato);
+			ResetConfigGroup(YamatoForceEdge);
+			ResetConfigGroup(SummonedSwords);
 
 			ToggleYamatoForceEdgeInfiniteRoundTrip(activeConfig.YamatoForceEdge.infiniteRoundTrip);
 			ToggleChronoSwords                    (activeConfig.SummonedSwords.chronoSwords      );
 		}
+
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-
-
-		// ImGui::Text("Dark Slayer");
-		// ImGui::SameLine();
-		// TooltipHelper
-		// (
-		// 	"(?)",
-		// 	"Requires enabled Actor module."
-		// );
-		// ImGui::Text("");
-
-
-
-		// GUI_SectionEnd();
-		// ImGui::Text("");
-
-		GUI_SectionStart("Yamato");
+		ImGui::Text("Yamato");
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module.\n"
+			"\n"
+			"Left: Human Right: Devil"
+		);
 		ImGui::Text("");
-
-
 
 		ActionData
 		(
@@ -3537,24 +5018,20 @@ void Vergil()
 			defaultConfig.Yamato.judgementCutCount
 		);
 
+		GUI_SectionEnd();
+		ImGui::Text("");
 
+		ImGui::Text("Yamato & Force Edge");
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module.\n"
+			"\n"
+			"Left: Human Right: Devil"
+		);
+		ImGui::Text("");
 
-
-
-
-		// ActionData<float32>("Rapid Slash Duration", activeConfig.Yamato.rapidSlashDuration, defaultConfig.Yamato.rapidSlashDuration, 1 , "%.0f");
-		// ActionData<float32>("Rapid Slash Range"   , activeConfig.Yamato.rapidSlashRange   , defaultConfig.Yamato.rapidSlashRange   , 10, "%.0f");
-		// ActionData<float32>("Judgement Cut Count" , activeConfig.Yamato.judgementCutCount , defaultConfig.Yamato.judgementCutCount , 1 , "%.0f");
-		// ActionData<float32>("Judgement Cut Range" , activeConfig.Yamato.judgementCutRange , defaultConfig.Yamato.judgementCutRange , 10, "%.0f");
-		// GUI_SectionEnd();
-
-		//GUI_SectionStart("Beowulf");
-		////GUI_Checkbox("Hide", activeConfig.Beowulf.hide);
-		////ImGui::Text("");
-		//ActionData<float32>("Rising Sun Height", activeConfig.Beowulf.risingSunHeight, defaultConfig.Beowulf.risingSunHeight, 1 , "%.0f");
-		//GUI_SectionEnd();
-
-		GUI_SectionStart("Yamato & Force Edge");
 		if
 		(
 			GUI_Checkbox2
@@ -3567,21 +5044,7 @@ void Vergil()
 		{
 			ToggleYamatoForceEdgeInfiniteRoundTrip(activeConfig.YamatoForceEdge.infiniteRoundTrip);
 		}
-
-
-ImGui::Text("");
-
-
-		// ImGui::Text("Air Hike");
-		// ImGui::SameLine();
-		TooltipHelper
-		(
-			"(?)",
-			"Left: Human Right: Devil"
-		);
-		
-
-
+		ImGui::Text("");
 
 		ActionData
 		(
@@ -3601,10 +5064,6 @@ ImGui::Text("");
 			10.0f,
 			"%g"
 		);
-
-
-
-
 		ActionData
 		(
 			"Air Stinger Count",
@@ -3632,38 +5091,11 @@ ImGui::Text("");
 			"%g"
 		);
 
-
-
-
-
-
-
-		// ImGui::Text("");
-		// ActionData<float32>("Stinger Duration"    , activeConfig.YamatoForceEdge.stingerDuration   , defaultConfig.YamatoForceEdge.stingerDuration   , 1 , "%.0f");
-		// ActionData<float32>("Stinger Range"       , activeConfig.YamatoForceEdge.stingerRange      , defaultConfig.YamatoForceEdge.stingerRange      , 10, "%.0f");
-		// ActionData<float32>("Air Stinger Duration", activeConfig.YamatoForceEdge.airStingerDuration, defaultConfig.YamatoForceEdge.airStingerDuration, 1 , "%.0f");
-		// ActionData<float32>("Air Stinger Range"   , activeConfig.YamatoForceEdge.airStingerRange   , defaultConfig.YamatoForceEdge.airStingerRange   , 10, "%.0f");
 		GUI_SectionEnd();
 		ImGui::Text("");
 
+		GUI_SectionStart("Summoned Swords");
 
-		ImGui::Text("Summoned Swords");
-		ImGui::SameLine();
-		TooltipHelper
-		(
-			"(?)",
-			"Requires enabled Actor module."
-		);
-		ImGui::Text("");
-
-
-
-		// GUI_SectionEnd();
-		// ImGui::Text("");
-
-
-
-		//GUI_SectionStart("Summoned Swords");
 		if
 		(
 			GUI_Checkbox2
@@ -3676,6 +5108,12 @@ ImGui::Text("");
 		{
 			ToggleChronoSwords(activeConfig.SummonedSwords.chronoSwords);
 		}
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module."
+		);
 
 		ImGui::Text("");
 	}
@@ -3710,47 +5148,39 @@ void Main()
 		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
 	}
 
-	if (ImGui::Begin("DDMK 2.7 Mary Nightly 10 December 2020", &g_pause))
+	if (ImGui::Begin("DDMK 2.7 Mary Nightly 14 January 2021", &g_pause))
 	{
 		ImGui::Text("");
 
-		if constexpr (debug)
+		ImGui::Text
+		(
+			"If you like my work and wish to support me, consider becoming my patron.\n"
+			"You can click on the button below to open my Patreon page.\n"
+			"\n"
+			"Cheers!"
+		);
+		ImGui::Text("");
+
+		if (GUI_Button("Open Patreon Page"))
 		{
-			static uint32 actorIndex = 0;
-			static bool enable = false;
-
-			GUI_Input
+			ShellExecuteA
 			(
-				"actorIndex",
-				actorIndex
+				0,
+				"open",
+				"https://www.patreon.com/serpentiem",
+				0,
+				0,
+				SW_SHOW
 			);
-			GUI_Checkbox
-			(
-				"Enable",
-				enable
-			);
-			if (GUI_Button("Toggle Actor"))
-			{
-				ToggleActor(actorIndex, enable);
-			}
-			ImGui::Text("");
-
-
-			if (GUI_Button("Backup"))
-			{
-				Log("Backup");
-				Log("dataAddr %llX", backupHelper.dataAddr);
-				Log("count %u", backupHelper.count);
-			}
-
-
 		}
+		ImGui::Text("");
 
 		Actor();
 		Arcade();
 		BossRush();
 		Camera();
 		Cosmetics();
+		Damage();
 		Dante();
 
 		if constexpr (debug)
@@ -3758,37 +5188,16 @@ void Main()
 			Debug();
 		}
 
+		GUI();
+		Jukebox();
 		Mobility();
 		Other();
 		Repair();
-		// RemoveBusyFlag();
-		ResetPermissions();
 		Speed();
 		System();
 		Teleporter();
 		Training();
 		Vergil();
-
-		// ImGui::Text("");
-
-		// static float scale = 1.0f;
-
-		// ImGui::PushItemWidth(150.0f);
-		// if
-		// (
-		// 	GUI_Input
-		// 	(
-		// 		"Scale",
-		// 		scale,
-		// 		0.1f,
-		// 		"%.2f",
-		// 		ImGuiInputTextFlags_EnterReturnsTrue
-		// 	)
-		// )
-		// {
-		// 	ImGui::SetWindowFontScale(scale);
-		// }
-		// ImGui::PopItemWidth();
 
 		ImGui::Text("");
 	}
@@ -3797,15 +5206,13 @@ void Main()
 
 #pragma endregion
 
+#pragma region Sound
 
-
-
-
-
-
+// @Todo: Remake.
 
 void Sound()
 {
+	return;
 	static bool run = false;
 	if (!run)
 	{
@@ -4003,23 +5410,21 @@ void Sound()
 	ImGui::End();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#pragma endregion
 
 export void GUI_Render()
 {
+	static bool run = false;
+
+	if (!run)
+	{
+		run = true;
+
+		LogFunction();
+
+		CreateTextures();
+	}
+
 	GUI_id = 0;
 
 	if constexpr (debug)
@@ -4028,23 +5433,18 @@ export void GUI_Render()
 		Overlay2();
 	}
 
-
-
-
-
-
 	MissionOverlay();
 
-
+	WeaponSwitchController();
 
 	if (g_pause)
 	{
 		Main();
 
-		if constexpr (debug)
-		{
-			Sound();
-		}
+		// if constexpr (debug)
+		// {
+		// 	Sound();
+		// }
 	}
 
 	[&]()
@@ -4089,204 +5489,96 @@ export void GUI_Init()
 	Actor_UpdateIndices();
 	Arcade_UpdateIndices();
 	Color_UpdateValues();
-	// RemoveBusyFlag_UpdateIndices();
-	ResetPermissions_UpdateIndices();
+
+	
+	
+	
+	//ResetPermissions_UpdateIndices();
 }
 
 #ifdef __GARBAGE__
 
 
 
-	ImGui::Text("Character Count");
-	GUI_Slider<uint8>
-	(
-		"",
-		playerData.meleeWeaponCount,
-		1,
-		MELEE_WEAPON_COUNT_DANTE
-	);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-switch (queuedConfig.Actor.system)
-{
-case ACTOR_SYSTEM_DEFAULT:
-{
-	Actor_PlayerTab(playerIndex, 0);
-
-	break;
-}
-case ACTOR_SYSTEM_DOPPELGANGER:
-{
-	for_all(uint8, entity, MAX_ENTITY)
-	{
-		GUI_SectionStart(entityNames[entity]);
-
-		Actor_PlayerTab(playerIndex, entity);
-
-		if (entity != (MAX_ENTITY - 1))
-		{
-			GUI_SectionEnd();
-			ImGui::Text("");
-		}
-	}
-
-	break;
-}
-case ACTOR_SYSTEM_CHARACTER_SWITCHER:
-{
-	for_all(uint8, direction, MAX_DIRECTION)
-	{
-		auto & playerData = queuedConfig.Actor.playerData[playerIndex][direction];
-
-		GUI_Checkbox
-		(
-			directionNames[direction],
-			playerData.enable
-		);
-
-		if (playerData.enable)
-		{
-			ImGui::Text("");
-		}
-
-		Actor_PlayerTab(playerIndex, direction);
-
-		if (direction != (MAX_DIRECTION - 1))
-		{
-			GUI_SectionEnd();
-			ImGui::Text("");
-		}
-	}
-	break;
-}
-
-		// for_all(uint8, systemIndex, MAX_ACTOR_SYSTEM)
+		// [&]()
 		// {
+		// 	if (!magicPointsDepletionValueQuicksilverAddr)
+		// 	{
+		// 		return;
+		// 	}
+		// 	auto & magicPointsDepletionValueQuicksilver = *magicPointsDepletionValueQuicksilverAddr;
+
 		// 	if
 		// 	(
-		// 		GUI_RadioButton
+		// 		GUI_InputDefault2
 		// 		(
-		// 			Actor_systemNames[systemIndex],
-		// 			queuedConfig.Actor.system,
-		// 			systemIndex
+		// 			"Quicksilver",
+		// 			activeConfig.magicPointsDepletionValueQuicksilver,
+		// 			queuedConfig.magicPointsDepletionValueQuicksilver,
+		// 			defaultConfig.magicPointsDepletionValueQuicksilver,
+		// 			1.0f,
+		// 			"%g",
+		// 			ImGuiInputTextFlags_EnterReturnsTrue
 		// 		)
 		// 	)
 		// 	{
-		// 		for_all(uint8, player   , MAX_PLAYER   )
-		// 		for_all(uint8, direction, MAX_DIRECTION){
-		// 		{
-		// 			auto & playerData = queuedConfig.Actor.playerData[player][direction];
-
-		// 			ApplyDefaultPlayerData(playerData, direction);
-
-		// 			Actor_UpdateIndices();
-		// 		}}
+		// 		magicPointsDepletionValueQuicksilver = activeConfig.magicPointsDepletionValueQuicksilver;
 		// 	}
+		// }();
 
-		// 	if (systemIndex < (MAX_ACTOR_SYSTEM - 1))
-		// 	{
-		// 		ImGui::SameLine();
-		// 	}
-		// }
-		// ImGui::Text("");
-
-		// ImGui::PushItemWidth(200);
-		// GUI_ComboMap
-		// (
-		// 	"",
-		// 	Actor_systemButtonNames,
-		// 	Actor_systemButtons,
-		// 	Actor_systemButtonIndex,
-		// 	queuedConfig.Actor.systemButton,
-		// 	ImGuiComboFlags_HeightLargest
-		// );
-		// ImGui::PopItemWidth();
-		// ImGui::Text("");
-
-
-		// GUI_Checkbox
-		// (
-		// 	"Enable Quicksilver",
-		// 	queuedConfig.Actor.enableQuicksilver
-		// );
-
-		// if (queuedConfig.Actor.system == ACTOR_SYSTEM_CHARACTER_SWITCHER)
+		// [&]()
 		// {
-		// 	GUI_Checkbox2
+		// 	if (!magicPointsDepletionValueDoppelgangerAddr)
+		// 	{
+		// 		return;
+		// 	}
+		// 	auto & magicPointsDepletionValueDoppelganger = *magicPointsDepletionValueDoppelgangerAddr;
+
+		// 	if
 		// 	(
-		// 		"Show Idle Actors",
-		// 		activeConfig.Actor.showIdleActors,
-		// 		queuedConfig.Actor.showIdleActors
-		// 	);
-		// }
+		// 		GUI_InputDefault2
+		// 		(
+		// 			"Doppelganger",
+		// 			activeConfig.magicPointsDepletionValueDoppelganger,
+		// 			queuedConfig.magicPointsDepletionValueDoppelganger,
+		// 			defaultConfig.magicPointsDepletionValueDoppelganger,
+		// 			1.0f,
+		// 			"%g",
+		// 			ImGuiInputTextFlags_EnterReturnsTrue
+		// 		)
+		// 	)
+		// 	{
+		// 		magicPointsDepletionValueDoppelganger = activeConfig.magicPointsDepletionValueDoppelganger;
+		// 	}
+		// }();
 
-
-
-
-		// if (GUI_Button("Lock Actor"))
+		// [&]()
 		// {
-		// 	auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
-		// 	if (!actorBaseAddr)
+		// 	if (!magicPointsDepletionValueDevilAddr)
 		// 	{
 		// 		return;
 		// 	}
-		// 	LockActor(actorBaseAddr);
-		// }
+		// 	auto & magicPointsDepletionValueDevil = *magicPointsDepletionValueDevilAddr;
 
-		// if (GUI_Button("Unlock Actor"))
-		// {
-		// 	auto actorBaseAddr = Actor_actorBaseAddr[actorIndex];
-		// 	if (!actorBaseAddr)
+		// 	if
+		// 	(
+		// 		GUI_InputDefault2
+		// 		(
+		// 			"Devil",
+		// 			activeConfig.magicPointsDepletionValueDevil,
+		// 			queuedConfig.magicPointsDepletionValueDevil,
+		// 			defaultConfig.magicPointsDepletionValueDevil,
+		// 			1.0f,
+		// 			"%g",
+		// 			ImGuiInputTextFlags_EnterReturnsTrue
+		// 		)
+		// 	)
 		// 	{
-		// 		return;
+		// 		magicPointsDepletionValueDevil = activeConfig.magicPointsDepletionValueDevil;
 		// 	}
-		// 	UnlockActor(actorBaseAddr);
-		// }
-
-
-
-
-		// if (GUI_Button("Relocate"))
-		// {
-		// 	Actor_MiniToggle(enable);
-		// }
-
-
-
-
-
-		// if (GUI_Button("Style"))
-		// {
-		// 	auto & style = ImGui::GetStyle();
-
-		// 	style.ScaleAllSizes(scale);
-		// }
-
-		// if (GUI_Button("SetWindotFontScale"))
-		// {
-		// 	ImGui::SetWindowFontScale(scale);
-		// }
-
-
-
+		// }();
 
 
 #endif

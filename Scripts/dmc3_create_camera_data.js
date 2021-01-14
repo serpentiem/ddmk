@@ -7,8 +7,8 @@ var items =
 	[ "targetBaseAddr", "byte8 *", 0xB0 ],
 	[ "height"        , "float"  , 0xD0 ],
 	[ "tilt"          , "float"  , 0xD4 ],
-	[ "zoom"          , "float"  , 0xD8 ],
-	[ "zoomLockOn"    , "float"  , 0xE0 ],
+	[ "distance"          , "float"  , 0xD8 ],
+	[ "distanceLockOn"    , "float"  , 0xE0 ],
 ];
 
 var filename = "../Mary/Vars.h"

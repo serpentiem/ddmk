@@ -96,17 +96,17 @@ void GUI_System_Graphics()
 	ImGui::PushItemWidth(150);
 	GUI_InputEx<uint32>
 	(
-		Locale.System.Graphics.frameRate,
-		Config.System.Graphics.frameRate
+		Locale.System.frameRate,
+		Config.System.frameRate
 	);
 	ImGui::SameLine();
-	GUI_Tooltip(Locale.System.Graphics.frameRateHint);
+	GUI_Tooltip(Locale.System.frameRateHint);
 	GUI_Combo<uint8>
 	(
 		Locale.System.Graphics.VSync.label,
 		Locale.System.Graphics.VSync.items,
 		countof(Locale.System.Graphics.VSync.items),
-		Config.System.Graphics.vSync
+		Config.System.vSync
 	);
 	ImGui::PopItemWidth();
 }

@@ -1,3 +1,4 @@
+// @Todo: Update.
 module;
 #include "../Core/Core.h"
 
@@ -47,5 +48,5 @@ export void UpdateFrameRate()
 {
 	LogFunction();
 
-	*g_frequencyAddr = (g_defaultFrequency * (60.0 / activeConfig.Graphics.frameRate));
+	*g_frequencyAddr = (g_defaultFrequency * (60.0 / activeConfig.frameRate));
 }

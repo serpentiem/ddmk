@@ -1,3 +1,5 @@
+// @Todo: Update order.
+
 #include "../Core/Core.h"
 
 import Actor;
@@ -20,7 +22,7 @@ import Speed;
 import Training;
 import Window;
 
-#define debug true
+#define debug false
 
 uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {
@@ -144,10 +146,34 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
+		Camera_Toggle(false);
+		Camera_Toggle(true);
+
+		ToggleDeplete(false);
+		ToggleDeplete(true);
+
+		ToggleOrbReach(false);
+		ToggleOrbReach(true);
+
+		ToggleDamage(false);
+		ToggleDamage(true);
+
+
+
+
+
+
+
+
+
+
+
+
+
 		UpdateCrazyComboLevelMultiplier();
 
 
-		ToggleAirHikeCoreAbility               (activeConfig.AirHike.coreAbility               );
+		ToggleAirHikeCoreAbility               (activeConfig.airHikeCoreAbility               );
 		ToggleRebellionInfiniteSwordPierce     (activeConfig.Rebellion.infiniteSwordPierce     );
 		ToggleYamatoForceEdgeInfiniteRoundTrip (activeConfig.YamatoForceEdge.infiniteRoundTrip );
 		ToggleEbonyIvoryFoursomeTime           (activeConfig.EbonyIvory.foursomeTime           );
@@ -171,8 +197,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Camera_ToggleInvertX(activeConfig.Camera.invertX);
 
 		Event_Init();
-		Event_ToggleSkipIntro    (activeConfig.Event.skipIntro);
-		Event_ToggleSkipCutscenes(activeConfig.Event.skipCutscenes);
+		Event_ToggleSkipIntro    (activeConfig.skipIntro    );
+		Event_ToggleSkipCutscenes(activeConfig.skipCutscenes);
 
 		Graphics_Init();
 		UpdateFrameRate();
@@ -180,9 +206,6 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Hooks_Init();
 
 		HUD_Init();
-
-		Other_Init();
-		UpdateOrbReach();
 
 		Scene_Init();
 
@@ -193,15 +216,12 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 			return 0;
 		}
 
-		// Sound_Init();
-		// Sound_Toggle(true);
-
 		Speed_Init();
 		UpdateSpeedValues();
 
-		Training_ToggleInfiniteHitPoints  (activeConfig.Training.infiniteHitPoints  );
-		Training_ToggleInfiniteMagicPoints(activeConfig.Training.infiniteMagicPoints);
-		Training_ToggleDisableTimer       (activeConfig.Training.disableTimer       );
+		Training_ToggleInfiniteHitPoints  (activeConfig.infiniteHitPoints  );
+		Training_ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
+		Training_ToggleDisableTimer       (activeConfig.disableTimer       );
 
 		Window_ToggleForceFocus(true);
 

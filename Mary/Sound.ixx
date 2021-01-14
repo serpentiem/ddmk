@@ -194,6 +194,21 @@ export struct DbstMetadata
 
 
 
+export void PlaySound
+(
+	int32 group,
+	int32 index
+)
+{
+	func_3391C0
+	(
+		(appBaseAddr + 0xD6DC90),
+		group,
+		index,
+		0,
+		0
+	);
+}
 
 export void PlayTrack(const char * filename)
 {

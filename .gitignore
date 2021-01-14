@@ -3,10 +3,14 @@ Scripts/*
 !Scripts/*.js
 !Scripts/*.cpp
 *.bat
-*.dll.intermediate.manifest
+*.manifest
 *.exe
 *.exp
+*.i
 *.ifc
+*.iobj
+*.ipdb
 *.lib
 *.obj
 *.pdb
+CleanPDB.cpp

@@ -13,38 +13,28 @@ export struct Config
 {
 	struct
 	{
-		bool enable = true;
+		bool enable = false;
 		uint8 playerCount = 1;
 		PlayerData playerData[PLAYER_COUNT] = {};
 	}
 	Actor;
+	bool airHikeCoreAbility = false;
 	struct
 	{
-		float jetStreamDuration[2] = {};
-		float jetStreamRange   [2] = {};
-	}
-	AgniRudra;
-	struct
-	{
-		bool coreAbility = false;
-	}
-	AirHike;
-	struct
-	{
-		bool    enable         = true;
-		uint32  mission        = 17;
-		uint32  mode           = MODE_DANTE_MUST_DIE;
-		uint32  room           = 900;
-		uint32  position       = 0;
-		bool    ignoreRoom     = false;
-		bool    ignorePosition = false;
-		uint8   floor          = 0;
-		float hitPoints      = 20000;
-		float magicPoints    = 10000;
-		uint8   character      = CHAR_DANTE;
-		uint8   costume        = 0;
-		uint32  style          = STYLE_TRICKSTER;
-		uint8 weapons[4] =
+		bool   enable         = false;
+		uint32 mission        = 17;
+		uint32 mode           = MODE_NORMAL;
+		uint32 room           = 900;
+		uint32 position       = 0;
+		bool   ignoreRoom     = false;
+		bool   ignorePosition = false;
+		uint8  floor          = 0;
+		float  hitPoints      = 20000;
+		float  magicPoints    = 10000;
+		uint8  character      = CHAR_DANTE;
+		uint8  costume        = 0;
+		uint32 style          = STYLE_TRICKSTER;
+		uint8  weapons[4]     =
 		{
 			WEAPON_REBELLION,
 			WEAPON_CERBERUS,
@@ -59,20 +49,20 @@ export struct Config
 		bool instantFullCharge          = false;
 	}
 	Artemis;
-	struct
-	{
-		bool hide = false;
-		float straightDuration   [2] = { 7   , 7    };
-		float straightRange      [2] = { 350 , 350  };
-		float airStraightDuration[2] = { 7   , 7    };
-		float airStraightRange   [2] = { 350 , 350  };
-	}
-	BeowulfDante;
-	struct
-	{
-		bool hide = false;
-	}
-	BeowulfVergil;
+
+
+
+	bool hideBeowulfDante = false;
+	bool hideBeowulfVergil = false;
+
+
+
+
+
+
+
+
+
 	struct
 	{
 		bool enable = false;
@@ -99,16 +89,30 @@ export struct Config
 		Mission19;
 	}
 	BossRush;
+
+
+
+
+
+
+
 	struct
 	{
-		bool  invertX     = true;
-		float height      = 140;
-		float tilt        = 0.25f;
-		float zoom        = 460;
-		float zoomLockOn  = 400;
-		bool  applyConfig = false;
+		bool  invertX        = false;
+		float height         = 140.0f;
+		float tilt           = 0.25f;
+		float distance       = 460.0f;
+		float distanceLockOn = 400.0f;
+		bool  applyConfig    = false;
 	}
 	Camera;
+
+
+
+
+
+
+
 	struct
 	{
 		uint8 airHike[5][4] =
@@ -157,11 +161,18 @@ export struct Config
 	}
 	Color;
 	uint8 crazyComboLevelMultiplier = 6;
-	struct
-	{
-		bool noColor = false;
-	}
-	Doppelganger;
+
+
+
+
+
+
+
+
+
+
+
+
 	uint8 dotShadow = DOT_SHADOW_ENABLE;
 	struct
 	{
@@ -169,35 +180,37 @@ export struct Config
 		bool infiniteRainStorm = false;
 	}
 	EbonyIvory;
-	struct
-	{
-		bool skipIntro     = true;
-		bool skipCutscenes = true;
-	}
-	Event;
-	struct
-	{
-		bool preferLocalFiles = true;
-	}
-	File;
-	struct
-	{
-		double frameRate = 60.0;
-		uint8  vSync     = 0;
-	}
-	Graphics;
-	struct
-	{
-		bool hideMouseCursor = true;
-	}
-	Input;
-	struct
-	{
-		float quicksilver  = 13.75f;
-		float doppelganger = 16.5f;
-		float devil        = 11.0f;
-	}
-	MagicPointsDepletionValues;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	float depleteQuicksilver  = 13.75f;
+	float depleteDoppelganger = 16.5f;
+	float depleteDevil        = 11.0f;
+
+
+
+
+
+
+
+
+
+
+
+
 	struct
 	{
 		bool enable = false;
@@ -206,14 +219,18 @@ export struct Config
 		float color[4] = { 1.0f, 0, 0, 1.0f };
 	}
 	MissionOverlay;
-	struct
-	{
-		float reverbShockDuration[2] = { 12 , 12  };
-		float reverbShockRange   [2] = { 300, 300 };
-	}
-	Nevan;
+
+
+
+
+
+
+
+
+
+
 	bool noDevilForm = false;
-	float orbReach = 300;
+	float orbReach = 300.0f;
 	struct
 	{
 		bool  infiniteSwordPierce = false;
@@ -225,24 +242,28 @@ export struct Config
 	}
 	Rebellion;
 	bool removeBusyFlag = false;
-	struct
-	{
-		bool   enable = false;
-		byte16 button = GAMEPAD_BACK;
-	}
-	ResetPermissions;
-	struct
-	{
-		float gunStingerDuration   [2] = { 8  , 8   };
-		float gunStingerRange      [2] = { 200, 200 };
-		float airGunStingerDuration[2] = { 8  , 8   };
-		float airGunStingerRange   [2] = { 200, 200 };
-	}
-	Shotgun;
-	struct
-	{
-		bool enable = false;
+	bool resetPermissions = false;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	struct
+	{
 		float main  = 1.0f;
 		float turbo = 1.2f;
 		float enemy = 1.0f;
@@ -270,32 +291,57 @@ export struct Config
 		};
 	}
 	Speed;
+
+
+
+
+
+
+
 	struct
 	{
 		bool chronoSwords = false;
 	}
 	SummonedSwords;
+
+
+
+
+
+
+
+
+
+
+
+	bool infiniteHitPoints   = false;
+	bool infiniteMagicPoints = false;
+	bool disableTimer        = false;
+
+
+
+
+
+	float weaponSwitchTimeout = 12;
+
+
+
+
+
+
+
+
 	struct
 	{
-		bool infiniteHitPoints   = false;
-		bool infiniteMagicPoints = true;
-		bool disableTimer        = false;
-	}
-	Training;
-	float weaponSwitchTimeout = 1;
-	struct
-	{
-		bool forceFocus = true;
-	}
-	Window;
-	struct
-	{
-		float rapidSlashDuration[2] = { 5  , 5   };
-		float rapidSlashRange   [2] = { 330, 330 };
-		uint8 judgementCutCount [2] = { 2  , 2   };
-		float judgementCutRange [2] = { 500, 500 };
+		uint8 judgementCutCount[2] = { 2, 2 };
 	}
 	Yamato;
+
+
+
+
+
+
 	struct
 	{
 		bool infiniteRoundTrip = false;
@@ -306,6 +352,12 @@ export struct Config
 		float airStingerRange   [2] = { 140, 140 };
 	}
 	YamatoForceEdge;
+
+
+
+
+
+
 	uint8 airHikeCount       [2] = { 1, 1 };
 	uint8 kickJumpCount      [2] = { 1, 1 };
 	uint8 wallHikeCount      [2] = { 1, 1 };
@@ -329,6 +381,189 @@ export struct Config
 		1.0f,
 		1.0f,
 	};
+	WeaponSwitchControllerTextureData2 meleeWeaponSwitchControllerTextureData2 =
+	{
+		{
+			{
+				{ 256 , 256 },
+				{ 1442, 403 },
+			},
+			{
+				{ 256 , 256 },
+				{ 1651, 555 },
+			},
+			{
+				{ 256 , 256 },
+				{ 1571, 801 },
+			},
+			{
+				{ 256 , 256 },
+				{ 1313, 801 },
+			},
+			{
+				{ 256 , 256 },
+				{ 1233, 555 },
+			},
+		},
+		{
+			{
+				{ 256 , 256 },
+				{ 1442, 403 },
+			},
+			{
+				{ 256 , 256 },
+				{ 1651, 555 },
+			},
+			{
+				{ 256 , 256 },
+				{ 1571, 801 },
+			},
+			{
+				{ 256 , 256 },
+				{ 1313, 801 },
+			},
+			{
+				{ 256 , 256 },
+				{ 1233, 555 },
+			},
+		},
+		{
+			{
+				{ 256 , 256 },
+				{ 1442, 403 },
+			},
+			{
+				{ 256 , 256 },
+				{ 1651, 555 },
+			},
+			{
+				{ 256 , 256 },
+				{ 1571, 801 },
+			},
+			{
+				{ 256 , 256 },
+				{ 1313, 801 },
+			},
+			{
+				{ 256 , 256 },
+				{ 1233, 555 },
+			},
+		},
+		{
+			{ 128 , 128 },
+			{ 1506, 671 },
+		},
+	};
+	WeaponSwitchControllerTextureData2 rangedWeaponSwitchControllerTextureData2 =
+	{
+		{
+			{
+				{ 256, 256 },
+				{ 222, 403 },
+			},
+			{
+				{ 256, 256 },
+				{ 431, 555 },
+			},
+			{
+				{ 256, 256 },
+				{ 351, 801 },
+			},
+			{
+				{ 256, 256 },
+				{ 93 , 801 },
+			},
+			{
+				{ 256, 256 },
+				{ 13 , 555 },
+			},
+		},
+		{
+			{
+				{ 256, 256 },
+				{ 222, 403 },
+			},
+			{
+				{ 256, 256 },
+				{ 431, 555 },
+			},
+			{
+				{ 256, 256 },
+				{ 351, 801 },
+			},
+			{
+				{ 256, 256 },
+				{ 93 , 801 },
+			},
+			{
+				{ 256, 256 },
+				{ 13 , 555 },
+			},
+		},
+		{
+			{
+				{ 256, 256 },
+				{ 222, 403 },
+			},
+			{
+				{ 256, 256 },
+				{ 431, 555 },
+			},
+			{
+				{ 256, 256 },
+				{ 351, 801 },
+			},
+			{
+				{ 256, 256 },
+				{ 93 , 801 },
+			},
+			{
+				{ 256, 256 },
+				{ 13 , 555 },
+			},
+		},
+		{
+			{ 128, 128 },
+			{ 286, 671 },
+		},
+	};
+
+
+
+
+
+
+	bool disableCenterCamera = false;
+
+
+	float damageActorMultiplier = 1.0f;
+	float damageEnemyMultiplier = 1.0f;
+	uint32 damageStyleRank = STYLE_RANK_NONE;
+
+
+
+	bool skipIntro     = false;
+	bool skipCutscenes = false;
+
+	bool preferLocalFiles = true;
+
+	double frameRate = 60.0;
+	uint8  vSync     = 0;
+
+	bool hideMouseCursor = true;
+
+	bool forceWindowFocus = true;
+
+
+
+
+
+
+
+
+
+
+
 };
 #pragma pack(pop)
 
@@ -535,6 +770,8 @@ export void ApplyDefaultCharacterData
 					WEAPON_BEOWULF_DANTE,
 				},
 				0,
+				0,
+				WEAPON_SWITCH_TYPE_LINEAR,
 				RANGED_WEAPON_COUNT_DANTE,
 				{
 					WEAPON_EBONY_IVORY,
@@ -543,7 +780,9 @@ export void ApplyDefaultCharacterData
 					WEAPON_SPIRAL,
 					WEAPON_KALINA_ANN,
 				},
-				0
+				0,
+				0,
+				WEAPON_SWITCH_TYPE_LINEAR
 			};
 
 			break;
@@ -552,36 +791,7 @@ export void ApplyDefaultCharacterData
 		{
 			characterData =
 			{
-				CHAR_BOB,
-				0,
-				false,
-				CHAR_DANTE,
-				{
-					{
-						STYLE_DARK_SLAYER,
-						STYLE_DARK_SLAYER,
-					},
-					{
-						STYLE_DARK_SLAYER,
-						STYLE_DARK_SLAYER,
-					},
-					{
-						STYLE_DARK_SLAYER,
-						STYLE_DARK_SLAYER,
-					},
-					{
-						STYLE_DARK_SLAYER,
-						STYLE_DARK_SLAYER,
-					},
-				},
-				{},
-				{
-					GAMEPAD_UP,
-					GAMEPAD_RIGHT,
-					GAMEPAD_DOWN,
-					GAMEPAD_LEFT,
-				},
-				0
+				CHAR_BOB
 			};
 
 			break;
@@ -635,7 +845,9 @@ export void ApplyDefaultCharacterData
 					WEAPON_BEOWULF_VERGIL,
 					WEAPON_YAMATO_FORCE_EDGE,
 				},
-				0
+				0,
+				0,
+				WEAPON_SWITCH_TYPE_LINEAR
 			};
 
 			break;

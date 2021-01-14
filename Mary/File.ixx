@@ -374,7 +374,7 @@ export bool File_Init()
 	{
 		constexpr byte8 sect0[] =
 		{
-			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&activeConfig.System.File.preferLocalFiles
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //mov rax,&activeConfig.System.preferLocalFiles
 			0x8A, 0x00,                                                 //mov al,[rax]
 			0x84, 0xC0,                                                 //test al,al
 			0x74, 0x0F,                                                 //je short
@@ -388,7 +388,7 @@ export bool File_Init()
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x2FDB1), false, false, sizeof(sect0));
 		memcpy(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<bool **>(func.sect0 + 2) = &activeConfig.File.preferLocalFiles;
+		*reinterpret_cast<bool **>(func.sect0 + 2) = &activeConfig.preferLocalFiles;
 		*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = FILE_MODE_LOCAL;
 		WriteCall((func.sect0 + 0x15), (appBaseAddr + 0x327430));
 		WriteCall((func.sect0 + 0x2A), (appBaseAddr + 0x327430));

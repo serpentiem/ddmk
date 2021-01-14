@@ -45,6 +45,83 @@ enum
 };
 
 
+enum
+{
+	STYLE_RANK_NONE,
+	STYLE_RANK_DOPE,
+	STYLE_RANK_CRAZY,
+	STYLE_RANK_BLAST,
+	STYLE_RANK_ALRIGHT,
+	STYLE_RANK_SWEET,
+	STYLE_RANK_SHOWTIME,
+	STYLE_RANK_STYLISH,
+	STYLE_RANK_COUNT,
+};
+
+
+
+
+
+
+// enum WEAPON_SWITCH_CONTROLLER
+// {
+// 	WEAPON_SWITCH_CONTROLLER_DEFAULT = -1,
+// 	WEAPON_SWITCH_CONTROLLER_2,
+// 	WEAPON_SWITCH_CONTROLLER_3,
+// 	WEAPON_SWITCH_CONTROLLER_4,
+// 	WEAPON_SWITCH_CONTROLLER_5,
+// 	WEAPON_SWITCH_CONTROLLER_COUNT,
+// };
+
+//static_assert(WEAPON_SWITCH_CONTROLLER_COUNT == 4);
+
+
+// constexpr uint8 weaponSwitchControllerItemCounts[WEAPON_SWITCH_CONTROLLER_COUNT] =
+// {
+// 	2,
+// 	3,
+// 	4,
+// 	5,
+// };
+
+
+
+
+enum WEAPON_SWITCH_TYPE
+{
+	WEAPON_SWITCH_TYPE_LINEAR,
+	WEAPON_SWITCH_TYPE_ARBITRARY,
+	WEAPON_SWITCH_TYPE_COUNT,
+};
+
+
+
+
+
+
+struct WeaponSwitchControllerTextureData2
+{
+	struct Metadata
+	{
+		vec2 size;
+		vec2 pos;
+	};
+
+	Metadata backgrounds[5];
+	Metadata icons[5];
+	Metadata highlights[5];
+	Metadata arrow;
+};
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -874,6 +951,22 @@ enum SCENE
 	MAX_SCENE,
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 enum EVENT
 {
 	EVENT_INIT,
@@ -955,6 +1048,11 @@ enum DIRECTION
 enum LEFT_STICK
 {
 	LEFT_STICK_DEADZONE = 52,
+};
+
+enum RIGHT_STICK
+{
+	RIGHT_STICK_DEADZONE = 70,
 };
 
 enum BINDING
@@ -1432,16 +1530,16 @@ struct CameraData
 	_(24);
 	float height; // 0xD0
 	float tilt; // 0xD4
-	float zoom; // 0xD8
+	float distance; // 0xD8
 	_(4);
-	float zoomLockOn; // 0xE0
+	float distanceLockOn; // 0xE0
 };
 
 static_assert(offsetof(CameraData, targetBaseAddr) == 0xB0);
 static_assert(offsetof(CameraData, height) == 0xD0);
 static_assert(offsetof(CameraData, tilt) == 0xD4);
-static_assert(offsetof(CameraData, zoom) == 0xD8);
-static_assert(offsetof(CameraData, zoomLockOn) == 0xE0);
+static_assert(offsetof(CameraData, distance) == 0xD8);
+static_assert(offsetof(CameraData, distanceLockOn) == 0xE0);
 static_assert(sizeof(CameraData) == 228);
 
 // $CameraDataEnd
@@ -1538,12 +1636,12 @@ struct ENGINE_GAMEPAD
 	uint16 buttonsTimer[2];
 	uint16 rightStickDirection[4];
 	uint16 rightStickTimer[2];
-	uint16 rightStickPosition;
-	uint16 rightStickRadius;
+	int16 rightStickPosition;
+	int16 rightStickRadius;
 	uint16 leftStickDirection[4];
 	uint16 leftStickTimer[2];
-	uint16 leftStickPosition;
-	uint16 leftStickRadius;
+	int16 leftStickPosition;
+	int16 leftStickRadius;
 };
 
 // @Todo: Order.
@@ -1833,10 +1931,14 @@ struct CharacterData
 	uint8 meleeWeaponCount;
 	uint8 meleeWeapons[MELEE_WEAPON_COUNT];
 	uint8 meleeWeaponIndex;
+	uint8 lastMeleeWeaponIndex;
+	uint8 meleeWeaponSwitchType;
 
 	uint8 rangedWeaponCount;
 	uint8 rangedWeapons[RANGED_WEAPON_COUNT];
 	uint8 rangedWeaponIndex;
+	uint8 lastRangedWeaponIndex;
+	uint8 rangedWeaponSwitchType;
 };
 
 struct PlayerData
@@ -3971,6 +4073,54 @@ static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CB20);
 
 // $ActorDataEnd
 
+#define IntroduceActorDataNoBaseAddress(actorDataName, source, ...)\
+if (!source)\
+{\
+	__VA_ARGS__;\
+}\
+auto & actorDataName = *reinterpret_cast<ActorData *>(source)
+
+#define IntroduceActorData(actorBaseAddrName, actorDataName, source, ...)\
+auto actorBaseAddrName = source;\
+IntroduceActorDataNoBaseAddress(actorDataName, actorBaseAddrName, __VA_ARGS__)
+
+#define _IntroduceMainActorDataNoBaseAddress(poolName, actorDataName, ...)\
+auto poolName = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);\
+if (!poolName)\
+{\
+	__VA_ARGS__;\
+}\
+IntroduceActorDataNoBaseAddress(actorDataName, poolName[3], __VA_ARGS__)
+#define IntroduceMainActorDataNoBaseAddress(actorDataName, ...) _IntroduceMainActorDataNoBaseAddress(Prep_Merge(pool_, __LINE__), actorDataName, __VA_ARGS__)
+
+#define _IntroduceMainActorData(poolName, actorBaseAddrName, actorDataName, ...)\
+auto poolName = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);\
+if (!poolName)\
+{\
+	__VA_ARGS__;\
+}\
+IntroduceActorData(actorBaseAddrName, actorDataName, poolName[3], __VA_ARGS__)
+#define IntroduceMainActorData(actorBaseAddrName, actorDataName, ...) _IntroduceMainActorData(Prep_Merge(pool_, __LINE__), actorBaseAddrName, actorDataName, __VA_ARGS__)
+
+
+
+
+
+
+
+// @Todo: Remove.
+/*
+
+
+
+
+
+
+
+
+
+
+// @Todo: Should be called no baseAddr.
 #define IntroduceActorDataNoCreate(name, name2, ...)\
 if (!name)\
 {\
@@ -3981,6 +4131,94 @@ auto & name2 = *reinterpret_cast<ActorData *>(name)
 #define IntroduceActorData(name, name2, name3, ...)\
 auto name = name3;\
 IntroduceActorDataNoCreate(name, name2, __VA_ARGS__)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IntroduceActorData(actorBaseAddrName, actorDataName, poolName[3], __VA_ARGS__)
+
+
+
+
+
+
+
+
+
+
+#define IntroduceMissionData(...) _IntroduceMissionData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#define IntroduceActorData(actorBaseAddrName, actorDataName, source, ...)
+
+
+#define _IntroduceMissionData(name, ...)\
+auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E30);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+auto & missionData = *reinterpret_cast<MissionData *>(name)
+#define IntroduceMissionData(...) _IntroduceMissionData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+
+
+#define _IntroduceMainActorData(poolName, actorBaseAddrName, actorDataName, ...)
+#define _IntroduceMainActorData(name, name2, name3, ...)
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+if (!name)
+{
+	__VA_ARGS__;
+}
+IntroduceActorData(name2, name3, name[3], __VA_ARGS__)
+
+
+
+
+
+
+
+auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+if (!pool)
+{
+	return value;
+}
+IntroduceActorData(actorBaseAddr, actorData, pool[3], return value);
+
+
+
+
+*/
+
+
+
+
+
+
 
 #pragma pack(pop)
 

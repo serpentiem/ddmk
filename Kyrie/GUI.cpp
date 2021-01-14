@@ -293,7 +293,7 @@ void GUI_System_Input()
 {
 	GUI_Hyperlink("Input");
 	ImGui::Text("");
-	GUI_Checkbox("Hide Mouse Cursor", Config.System.Input.hideMouseCursor);
+	GUI_Checkbox("Hide Mouse Cursor", Config.System.hideMouseCursor);
 }
 
 void GUI_System_Memory()

@@ -1,4 +1,4 @@
-// @Todo: Review.
+// @Todo: Update.
 
 module;
 #include "../Core/Core.h"
@@ -9,13 +9,21 @@ export module Window;
 export uint32 Window_width  = 0;
 export uint32 Window_height = 0;
 
-// @Todo: Update.
-export void Window_UpdateSize(uint32 width, uint32 height)
+export void Window_UpdateSize
+(
+	uint32 width,
+	uint32 height
+)
 {
 	Log("%s %u %u", FUNC_NAME, width, height);
 	Window_width  = width;
 	Window_height = height;
-	ImGui::GetIO().DisplaySize = ImVec2((float32)width, (float32)height);
+	ImGui::GetIO().DisplaySize =
+	ImVec2
+	(
+		static_cast<float>(width + 1920),
+		static_cast<float>(height + 1080)
+	);
 }
 
 export void Window_ToggleForceFocus(bool enable)

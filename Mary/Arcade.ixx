@@ -125,7 +125,7 @@ export void Arcade_SetRoom()
 
 export void Arcade_CreateMainActor(byte8 * baseAddr)
 {
-	return;
+	//return;
 	
 	if (!activeConfig.Arcade.enable)
 	{

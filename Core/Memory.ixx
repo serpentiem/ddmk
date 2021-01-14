@@ -673,23 +673,24 @@ export struct Function
 	byte8 ** cache;
 };
 
-// @Research: Add xmm register saving.
 export Function CreateFunction
 (
-	void   * funcAddr      = 0,
-	byte8  * jumpAddr      = 0,
-	bool     saveRegisters = true,
-	bool     noResult      = true,
-	uint32   size0         = 0,
-	uint32   size1         = 0,
-	uint32   size2         = 0,
-	uint32   cacheSize     = 0,
-	uint32   count         = 0,
-	bool     noReturn      = false
+	void   * funcAddr         = 0,
+	byte8  * jumpAddr         = 0,
+	bool     saveRegisters    = true,
+	bool     noResult         = true,
+	uint32   size0            = 0,
+	uint32   size1            = 0,
+	uint32   size2            = 0,
+	uint32   cacheSize        = 0,
+	uint32   count            = 0,
+	bool     noReturn         = false,
+	bool     saveXMMRegisters = false,
+	bool     noXMMResult      = true
 )
 {
 	Function func = {};
-	uint32       pos  = 0;
+	uint32   pos  = 0;
 
 	auto Feed = [&]
 	(
@@ -698,6 +699,7 @@ export Function CreateFunction
 		bool adjustPosition = true
 	)
 	{
+		// @Todo: Use CopyMemory.
 		memcpy
 		(
 			(func.addr + pos),
@@ -726,7 +728,7 @@ export Function CreateFunction
 		{
 			constexpr byte8 buffer[] =
 			{
-				0x50, // push rax
+				push_rax,
 			};
 			Feed(buffer, sizeof(buffer));
 		}
@@ -752,6 +754,7 @@ export Function CreateFunction
 		}
 
 		{
+			// @Todo: Replace with macros.
 			constexpr byte8 buffer[] =
 			{
 				0x51,                   // push rcx
@@ -770,7 +773,54 @@ export Function CreateFunction
 				0x41, 0x56,             // push r14
 				0x41, 0x57,             // push r15
 				0x9C,                   // pushfq
-				0x48, 0x8B, 0xEC,       // mov rbp,rsp
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+
+		if (saveXMMRegisters)
+		{
+			{
+				constexpr byte8 buffer[] =
+				{
+					0x48, 0x81, 0xEC, 0x00, 0x01, 0x00, 0x00, // sub rsp,00000100
+				};
+				Feed(buffer, sizeof(buffer));
+			}
+			if (noXMMResult)
+			{
+				constexpr byte8 buffer[] =
+				{
+					0x0F, 0x11, 0x84, 0x24, 0xF0, 0x00, 0x00, 0x00,       // movups [rsp+000000F0],xmm0
+				};
+				Feed(buffer, sizeof(buffer));
+			}
+			{
+				constexpr byte8 buffer[] =
+				{
+					0x0F, 0x11, 0x8C, 0x24, 0xE0, 0x00, 0x00, 0x00,       // movups [rsp+000000E0],xmm1
+					0x0F, 0x11, 0x94, 0x24, 0xD0, 0x00, 0x00, 0x00,       // movups [rsp+000000D0],xmm2
+					0x0F, 0x11, 0x9C, 0x24, 0xC0, 0x00, 0x00, 0x00,       // movups [rsp+000000C0],xmm3
+					0x0F, 0x11, 0xA4, 0x24, 0xB0, 0x00, 0x00, 0x00,       // movups [rsp+000000B0],xmm4
+					0x0F, 0x11, 0xAC, 0x24, 0xA0, 0x00, 0x00, 0x00,       // movups [rsp+000000A0],xmm5
+					0x0F, 0x11, 0xB4, 0x24, 0x90, 0x00, 0x00, 0x00,       // movups [rsp+00000090],xmm6
+					0x0F, 0x11, 0xBC, 0x24, 0x80, 0x00, 0x00, 0x00,       // movups [rsp+00000080],xmm7
+					0x44, 0x0F, 0x11, 0x84, 0x24, 0x70, 0x00, 0x00, 0x00, // movups [rsp+00000070],xmm8
+					0x44, 0x0F, 0x11, 0x8C, 0x24, 0x60, 0x00, 0x00, 0x00, // movups [rsp+00000060],xmm9
+					0x44, 0x0F, 0x11, 0x94, 0x24, 0x50, 0x00, 0x00, 0x00, // movups [rsp+00000050],xmm10
+					0x44, 0x0F, 0x11, 0x9C, 0x24, 0x40, 0x00, 0x00, 0x00, // movups [rsp+00000040],xmm11
+					0x44, 0x0F, 0x11, 0xA4, 0x24, 0x30, 0x00, 0x00, 0x00, // movups [rsp+00000030],xmm12
+					0x44, 0x0F, 0x11, 0xAC, 0x24, 0x20, 0x00, 0x00, 0x00, // movups [rsp+00000020],xmm13
+					0x44, 0x0F, 0x11, 0xB4, 0x24, 0x10, 0x00, 0x00, 0x00, // movups [rsp+00000010],xmm14
+					0x44, 0x0F, 0x11, 0xBC, 0x24, 0x00, 0x00, 0x00, 0x00, // movups [rsp+00000000],xmm15
+				};
+				Feed(buffer, sizeof(buffer));
+			}
+		}
+
+		{
+			constexpr byte8 buffer[] =
+			{
+				mov_rbp_rsp,
 			};
 			Feed(buffer, sizeof(buffer));
 		}
@@ -840,27 +890,77 @@ export Function CreateFunction
 
 	if (saveRegisters)
 	{
-		constexpr byte8 buffer[] =
 		{
-			0x48, 0x8B, 0xE5, // mov rsp,rbp
-			0x9D,             // popfq
-			0x41, 0x5F,       // pop r15
-			0x41, 0x5E,       // pop r14
-			0x41, 0x5D,       // pop r13
-			0x41, 0x5C,       // pop r12
-			0x41, 0x5B,       // pop r11
-			0x41, 0x5A,       // pop r10
-			0x41, 0x59,       // pop r9
-			0x41, 0x58,       // pop r8
-			0x5F,             // pop rdi
-			0x5E,             // pop rsi
-			0x5D,             // pop rbp
-			0x5C,             // pop rsp
-			0x5B,             // pop rbx
-			0x5A,             // pop rdx
-			0x59,             // pop rcx
-		};
-		Feed(buffer, sizeof(buffer));
+			constexpr byte8 buffer[] =
+			{
+				mov_rsp_rbp,
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+
+		if (saveXMMRegisters)
+		{
+			{
+				constexpr byte8 buffer[] =
+				{
+					0x44, 0x0F, 0x10, 0xBC, 0x24, 0x00, 0x00, 0x00, 0x00, // movups xmm15,[rsp+00000000]
+					0x44, 0x0F, 0x10, 0xB4, 0x24, 0x10, 0x00, 0x00, 0x00, // movups xmm14,[rsp+00000010]
+					0x44, 0x0F, 0x10, 0xAC, 0x24, 0x20, 0x00, 0x00, 0x00, // movups xmm13,[rsp+00000020]
+					0x44, 0x0F, 0x10, 0xA4, 0x24, 0x30, 0x00, 0x00, 0x00, // movups xmm12,[rsp+00000030]
+					0x44, 0x0F, 0x10, 0x9C, 0x24, 0x40, 0x00, 0x00, 0x00, // movups xmm11,[rsp+00000040]
+					0x44, 0x0F, 0x10, 0x94, 0x24, 0x50, 0x00, 0x00, 0x00, // movups xmm10,[rsp+00000050]
+					0x44, 0x0F, 0x10, 0x8C, 0x24, 0x60, 0x00, 0x00, 0x00, // movups xmm9,[rsp+00000060]
+					0x44, 0x0F, 0x10, 0x84, 0x24, 0x70, 0x00, 0x00, 0x00, // movups xmm8,[rsp+00000070]
+					0x0F, 0x10, 0xBC, 0x24, 0x80, 0x00, 0x00, 0x00,       // movups xmm7,[rsp+00000080]
+					0x0F, 0x10, 0xB4, 0x24, 0x90, 0x00, 0x00, 0x00,       // movups xmm6,[rsp+00000090]
+					0x0F, 0x10, 0xAC, 0x24, 0xA0, 0x00, 0x00, 0x00,       // movups xmm5,[rsp+000000A0]
+					0x0F, 0x10, 0xA4, 0x24, 0xB0, 0x00, 0x00, 0x00,       // movups xmm4,[rsp+000000B0]
+					0x0F, 0x10, 0x9C, 0x24, 0xC0, 0x00, 0x00, 0x00,       // movups xmm3,[rsp+000000C0]
+					0x0F, 0x10, 0x94, 0x24, 0xD0, 0x00, 0x00, 0x00,       // movups xmm2,[rsp+000000D0]
+					0x0F, 0x10, 0x8C, 0x24, 0xE0, 0x00, 0x00, 0x00,       // movups xmm1,[rsp+000000E0]
+				};
+				Feed(buffer, sizeof(buffer));
+			}
+			if (noXMMResult)
+			{
+				constexpr byte8 buffer[] =
+				{
+					0x0F, 0x10, 0x84, 0x24, 0xF0, 0x00, 0x00, 0x00,       // movups xmm0,[rsp+000000F0]
+				};
+				Feed(buffer, sizeof(buffer));
+			}
+			{
+				constexpr byte8 buffer[] =
+				{
+					0x48, 0x81, 0xC4, 0x00, 0x01, 0x00, 0x00, // add rsp,00000100
+				};
+				Feed(buffer, sizeof(buffer));
+			}
+		}
+
+		{
+			// @Todo: Replace with macros.
+			constexpr byte8 buffer[] =
+			{
+				0x9D,             // popfq
+				0x41, 0x5F,       // pop r15
+				0x41, 0x5E,       // pop r14
+				0x41, 0x5D,       // pop r13
+				0x41, 0x5C,       // pop r12
+				0x41, 0x5B,       // pop r11
+				0x41, 0x5A,       // pop r10
+				0x41, 0x59,       // pop r9
+				0x41, 0x58,       // pop r8
+				0x5F,             // pop rdi
+				0x5E,             // pop rsi
+				0x5D,             // pop rbp
+				0x5C,             // pop rsp
+				0x5B,             // pop rbx
+				0x5A,             // pop rdx
+				0x59,             // pop rcx
+			};
+			Feed(buffer, sizeof(buffer));
+		}
 
 		if (noResult)
 		{

@@ -1,14 +1,21 @@
 module;
 #include "../Core/Core.h"
 
+#include <d3d11.h>
+
 #include "Vars.h"
 export module Global;
 
-export bool  g_pause       = false;
-export uint8 g_scene       = 0;
-export bool  g_quicksilver = false;
-export uint8 g_character   = 0;
-export uint8 g_costume     = 0;
+export bool  g_pause                 = false;
+export uint8 g_scene                 = 0;
+export bool  g_quicksilver           = false;
+export uint8 g_character             = 0;
+export uint8 g_costume               = 0;
+export bool  g_disableCameraRotation = false;
+
+export ID3D11Device           * D3D11_device           = 0;
+export ID3D11DeviceContext    * D3D11_deviceContext    = 0;
+export ID3D11RenderTargetView * D3D11_renderTargetView = 0;
 
 export bool InGame()
 {

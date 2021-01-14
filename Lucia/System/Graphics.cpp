@@ -6,7 +6,7 @@ void System_Graphics_UpdateFrameRate(CONFIG & config)
 {
 	LogFunction();
 
-	System_Graphics_frameRateMultiplier = ((float32)60 / (float32)config.System.Graphics.frameRate);
+	System_Graphics_frameRateMultiplier = ((float32)60 / (float32)config.System.frameRate);
 
 	auto addr = (float64 *)(appBaseAddr + 0x5A58C8);
 	constexpr uint64 size = 8;
