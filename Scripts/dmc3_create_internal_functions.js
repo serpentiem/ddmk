@@ -52,13 +52,54 @@ var items =
 
 
 
+
+/*
+mov byte ptr [rsp],3A
+mov byte ptr [rsp+4],00
+
+mov rcx,[dmc3.exe+C90E10]
+mov rcx,[rcx+28]
+lea rcx,[rcx+CB0]
+
+lea rdx,[rsp]
+
+call dmc3.exe+1A4680
+*/
+
+/*
+dmc3.exe+212013 - 48 8D 8B 10640000     - lea rcx,[rbx+00006410]
+dmc3.exe+21201A - E8 A1BF0D00           - call dmc3.exe+2EDFC0
+dmc3.exe+21201F - 48 8D 8B 58640000     - lea rcx,[rbx+00006458]
+dmc3.exe+212026 - E8 E5561200           - call dmc3.exe+337710
+*/
+
+[ 0x2EDFC0, "void", "byte8 *", "", "" ],
+[ 0x337710, "void", "byte8 *", "", "" ],
+
+
+
+
 	
+	[ 0x1A4680, "byte8 *", "byte8 *, CreateEnemyData &", "0, true, false", "Create Enemy" ],
 
 
 
 
 	
 	[ 0x3391C0, "void", "void *, int32, int32, int32, int32", "0, true, true, 0, 0, 0, 0, 1", "Play Sound" ],
+
+
+/*
+mov rcx,[dmc3.exe+C90E10]
+mov rcx,[rcx+28]
+lea rcx,[rcx+CB0]
+
+lea rdx,[rsp]
+
+call dmc3.exe+1A4680
+*/
+
+
 
 /*
 dmc3.exe+2A02E3 - 48 8D 0D A6D9AC00     - lea rcx,[dmc3.exe+D6DC90] { (1) }

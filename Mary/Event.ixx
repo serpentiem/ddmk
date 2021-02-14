@@ -8,6 +8,7 @@ import Actor;
 import Arcade;
 import BossRush;
 import Config;
+import Enemy;
 import File;
 import Global;
 import Model;
@@ -90,6 +91,8 @@ void CreateMainActor(byte8 * actorBaseAddr)
 	Actor_CreateMainActor(actorBaseAddr);
 
 	Arcade_CreateMainActor(actorBaseAddr);
+
+	Enemy_CreateMainActor(actorBaseAddr);
 }
 
 void Main_CreateMainActor(byte8 * actorBaseAddr)
@@ -128,7 +131,7 @@ void UpdateActorDante_CreateCloneActor(byte8 * actorBaseAddr)
 }
 
 
-
+// @Todo: Remove bool.
 // @Todo: Update names.
 bool EventOnce(EventData & eventData)
 {
@@ -180,6 +183,7 @@ bool EventOnce(EventData & eventData)
 	{
 		Log("Delete %u", eventData.subevent);
 		Actor_Delete();
+		Enemy_Delete();
 
 
 		Sound_EventDelete();
@@ -195,16 +199,33 @@ bool EventOnce(EventData & eventData)
 
 void EventLoop(EventData & eventData)
 {
-	return;
+
+	switch (eventData.event)
+	{
+		case EVENT_MAIN:
+		{
+			Enemy_Main();
+
+			break;
+		}
+	}
+
+
+
+
+
+	//return;
 }
 
 void EventHandler(EventData & eventData)
 {
-	if (EventOnce(eventData))
-	{
-		return;
-	}
+	EventOnce(eventData);
 	EventLoop(eventData);
+
+	// if ()
+	// {
+	// 	return;
+	// }
 }
 
 
@@ -263,6 +284,7 @@ void MainLoopOnce()
 		LogFunction();
 
 		Actor_MainLoopOnce();
+		Enemy_MainLoopOnce();
 	}
 }
 

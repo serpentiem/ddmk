@@ -266,6 +266,7 @@ function GetShowAsHex(typeString)
 	return false;
 }
 
+// @Todo: Add array.
 function CreateCheatEntry
 (
 	description,

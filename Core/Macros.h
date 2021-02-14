@@ -1,3 +1,12 @@
+
+
+#pragma once
+
+
+
+
+
+
 #ifdef offsetof
 #undef offsetof
 #endif
@@ -33,35 +42,61 @@ if constexpr (debug)\
 #define _Prep_Merge(a, b) a##b
 #define Prep_Merge(a, b) _Prep_Merge(a, b)
 
-#define ResetConfigGroup(name)\
-CopyMemory\
-(\
-	&queuedConfig.name,\
-	&defaultConfig.name,\
-	sizeof(queuedConfig.name)\
-);\
-CopyMemory\
-(\
-	&activeConfig.name,\
-	&queuedConfig.name,\
-	sizeof(activeConfig.name)\
-)
 
-#define ResetConfigEntry(name) activeConfig.name = queuedConfig.name = defaultConfig.name
 
-#define ResetConfigArray(name)\
-CopyMemory\
-(\
-	queuedConfig.name,\
-	defaultConfig.name,\
-	sizeof(queuedConfig.name)\
-);\
-CopyMemory\
+// #define ResetConfigEntry(name) activeConfig.name = queuedConfig.name = defaultConfig.name
+
+
+// #define ResetConfigStructure(name)\
+// CopyMemory\
+// (\
+// 	&queuedConfig.name,\
+// 	&defaultConfig.name,\
+// 	sizeof(queuedConfig.name)\
+// );\
+// CopyMemory\
+// (\
+// 	&activeConfig.name,\
+// 	&queuedConfig.name,\
+// 	sizeof(activeConfig.name)\
+// )
+
+
+
+// #define ResetConfigArray(name)\
+// CopyMemory\
+// (\
+// 	queuedConfig.name,\
+// 	defaultConfig.name,\
+// 	sizeof(queuedConfig.name)\
+// );\
+// CopyMemory\
+// (\
+// 	activeConfig.name,\
+// 	queuedConfig.name,\
+// 	sizeof(activeConfig.name)\
+// )
+
+
+
+#define ResetConfig(name)\
+ResetConfigHelper\
 (\
 	activeConfig.name,\
 	queuedConfig.name,\
-	sizeof(activeConfig.name)\
+	defaultConfig.name\
 )
+
+
+
+
+
+
+
+
+
+
+
 
 #define mov_eax_eax   0x8B, 0xC0       // mov eax,eax
 #define mov_eax_ecx   0x8B, 0xC1       // mov eax,ecx
@@ -616,3 +651,6 @@ CopyMemory\
 #define call      0xE8, 0x00, 0x00, 0x00, 0x00 // call
 #define jmp       0xE9, 0x00, 0x00, 0x00, 0x00 // jmp
 #define jmp_short 0xEB, 0x00                   // jmp
+
+#define NamespaceStart(name) namespace name {
+#define NamespaceEnd() }

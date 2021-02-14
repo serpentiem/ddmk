@@ -28,9 +28,25 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
+
+
+
+
+
 		Core_Log_Init("logs", "Mary.txt");
 
+
+
+
 		Log("Session started.");
+		//Log("Session twice started.");
+
+
+
+
+
+
+		//return 1;
 
 		if (!Core_Memory_Init())
 		{
@@ -38,13 +54,27 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 			return 0;
 		}
-		else if (!memoryData.Init(64 * 1024 * 1024))
+
+		if (!memoryData.InitData(64 * 1024 * 1024))
 		{
-			Log("memoryData.Init failed.");
+			Log("memoryData.InitData failed.");
 
 			return 0;
 		}
-		else if (!protectionHelper.Init(4096))
+
+		SetMemory
+		(
+			memoryData.dataAddr,
+			0xCC,
+			memoryData.dataSize
+		);
+
+		// HoboBreak();
+
+
+
+
+		if (!protectionHelper.Init(4096))
 		{
 			Log("protectionHelper.Init failed.");
 
@@ -64,44 +94,64 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 			return 0;
 		}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		Config_Init("configs", "Mary.bin");
 		LoadConfig();
 
-		if constexpr (debug)
-		{
-			auto & activeCharacterData = GetActiveCharacterData
-			(
-				0,
-				0,
-				0
-			);
-			auto & queuedCharacterData = GetQueuedCharacterData
-			(
-				0,
-				0,
-				0
-			);
-			activeCharacterData.costume = 1;
-			queuedCharacterData.costume = 1;
-		}
+		// if constexpr (debug)
+		// {
+		// 	auto & activeCharacterData = GetActiveCharacterData
+		// 	(
+		// 		0,
+		// 		0,
+		// 		0
+		// 	);
+		// 	auto & queuedCharacterData = GetQueuedCharacterData
+		// 	(
+		// 		0,
+		// 		0,
+		// 		0
+		// 	);
+		// 	activeCharacterData.costume = 1;
+		// 	queuedCharacterData.costume = 1;
+		// }
 
-		if constexpr (debug)
-		{
-			auto & activeCharacterData = GetActiveCharacterData
-			(
-				0,
-				0,
-				1
-			);
-			auto & queuedCharacterData = GetQueuedCharacterData
-			(
-				0,
-				0,
-				1
-			);
-			activeCharacterData.costume = 1;
-			queuedCharacterData.costume = 1;
-		}
+		// if constexpr (debug)
+		// {
+		// 	auto & activeCharacterData = GetActiveCharacterData
+		// 	(
+		// 		0,
+		// 		0,
+		// 		1
+		// 	);
+		// 	auto & queuedCharacterData = GetQueuedCharacterData
+		// 	(
+		// 		0,
+		// 		0,
+		// 		1
+		// 	);
+		// 	activeCharacterData.costume = 1;
+		// 	queuedCharacterData.costume = 1;
+		// }
 
 
 
@@ -173,7 +223,8 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		UpdateCrazyComboLevelMultiplier();
 
 
-		ToggleAirHikeCoreAbility               (activeConfig.airHikeCoreAbility               );
+		ToggleAirHikeCoreAbility               (activeConfig.airHikeCoreAbility                );
+		ToggleRoyalguardForceJustFrameRelease  (activeConfig.Royalguard.forceJustFrameRelease  );
 		ToggleRebellionInfiniteSwordPierce     (activeConfig.Rebellion.infiniteSwordPierce     );
 		ToggleYamatoForceEdgeInfiniteRoundTrip (activeConfig.YamatoForceEdge.infiniteRoundTrip );
 		ToggleEbonyIvoryFoursomeTime           (activeConfig.EbonyIvory.foursomeTime           );

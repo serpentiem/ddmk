@@ -60,6 +60,38 @@ enum
 
 
 
+// enum
+// {
+// 	ENEMY_,
+// };
+
+
+/*
+em000.pac
+em006.pac
+em007.pac
+em008.pac
+em010.pac
+em011.pac
+em012.pac
+em013.pac
+em014.pac
+em016.pac
+em017.pac
+em021.pac
+em023.pac
+em025.pac
+em026.pac
+em027.pac
+em028.pac
+em029.pac
+em030.pac
+em031.pac
+em032.pac
+em034.pac
+em035.pac
+em037.pac
+*/
 
 
 
@@ -85,7 +117,7 @@ enum
 // };
 
 
-
+// @Todo: Add weapon type.
 
 enum WEAPON_SWITCH_TYPE
 {
@@ -97,21 +129,6 @@ enum WEAPON_SWITCH_TYPE
 
 
 
-
-
-struct WeaponSwitchControllerTextureData2
-{
-	struct Metadata
-	{
-		vec2 size;
-		vec2 pos;
-	};
-
-	Metadata backgrounds[5];
-	Metadata icons[5];
-	Metadata highlights[5];
-	Metadata arrow;
-};
 
 
 
@@ -171,10 +188,10 @@ enum
 
 
 
-enum FILE_STATUS
-{
-	FILE_STATUS_READY = 3,
-};
+
+
+
+
 
 enum FILE_MODE
 {
@@ -685,7 +702,7 @@ enum HUD_BOTTOM
 
 // $CacheFileStart
 
-enum CACHE_FILE
+enum
 {
 	pl000,
 	pl011,
@@ -795,19 +812,68 @@ enum CACHE_FILE
 	snd_wp12b,
 	snd_wp13a,
 	snd_wp13b,
+	em000,
+	em006,
+	em007,
+	em008,
+	em010,
+	em011,
+	em012,
+	em013,
+	em014,
+	em016,
+	em017,
+	em021,
+	em023,
+	em025,
+	em026,
+	em027,
+	em028,
+	em029,
+	em030,
+	em031,
+	em032,
 	em034,
+	em035,
+	em037,
+	snd_em00a,
+	snd_em00b,
+	snd_em06,
+	snd_em07,
+	snd_em08,
+	snd_em10,
+	snd_em11,
+	snd_em12,
+	snd_em13,
+	snd_em14,
+	snd_em16,
+	snd_em17,
+	snd_em21,
+	snd_em23,
+	snd_em25,
+	snd_em26,
+	snd_em27,
+	snd_em28,
+	snd_em29,
+	snd_em30,
+	snd_em31,
+	snd_em32,
+	snd_em34,
+	snd_em35,
+	snd_em37,
+	snd_emsr,
 	id100,
 	id100V,
-	MAX_CACHE_FILE,
+	CACHE_FILE_COUNT,
 };
 
 struct CacheFileHelper
 {
-	const char * name;
-	const char * type;
+	const char * filename;
+	const char * typeName;
 };
 
-constexpr CacheFileHelper cacheFileHelper[MAX_CACHE_FILE] =
+constexpr CacheFileHelper cacheFileHelpers[CACHE_FILE_COUNT] =
 {
 	{ "pl000.pac", "obj\\pl000.pac" },
 	{ "pl011.pac", "obj\\pl011.pac" },
@@ -917,10 +983,61 @@ constexpr CacheFileHelper cacheFileHelper[MAX_CACHE_FILE] =
 	{ "snd_wp12b.pac", "se\\snd_wp12b.pac" },
 	{ "snd_wp13a.pac", "se\\snd_wp13a.pac" },
 	{ "snd_wp13b.pac", "se\\snd_wp13b.pac" },
+	{ "em000.pac", "obj\\em000.pac" },
+	{ "em006.pac", "obj\\em006.pac" },
+	{ "em007.pac", "obj\\em007.pac" },
+	{ "em008.pac", "obj\\em008.pac" },
+	{ "em010.pac", "obj\\em010.pac" },
+	{ "em011.pac", "obj\\em011.pac" },
+	{ "em012.pac", "obj\\em012.pac" },
+	{ "em013.pac", "obj\\em013.pac" },
+	{ "em014.pac", "obj\\em014.pac" },
+	{ "em016.pac", "obj\\em016.pac" },
+	{ "em017.pac", "obj\\em017.pac" },
+	{ "em021.pac", "obj\\em021.pac" },
+	{ "em023.pac", "obj\\em023.pac" },
+	{ "em025.pac", "obj\\em025.pac" },
+	{ "em026.pac", "obj\\em026.pac" },
+	{ "em027.pac", "obj\\em027.pac" },
+	{ "em028.pac", "obj\\em028.pac" },
+	{ "em029.pac", "obj\\em029.pac" },
+	{ "em030.pac", "obj\\em030.pac" },
+	{ "em031.pac", "obj\\em031.pac" },
+	{ "em032.pac", "obj\\em032.pac" },
 	{ "em034.pac", "obj\\em034.pac" },
+	{ "em035.pac", "obj\\em035.pac" },
+	{ "em037.pac", "obj\\em037.pac" },
+	{ "snd_em00a.pac", "se\\snd_em00a.pac" },
+	{ "snd_em00b.pac", "se\\snd_em00b.pac" },
+	{ "snd_em06.pac", "se\\snd_em06.pac" },
+	{ "snd_em07.pac", "se\\snd_em07.pac" },
+	{ "snd_em08.pac", "se\\snd_em08.pac" },
+	{ "snd_em10.pac", "se\\snd_em10.pac" },
+	{ "snd_em11.pac", "se\\snd_em11.pac" },
+	{ "snd_em12.pac", "se\\snd_em12.pac" },
+	{ "snd_em13.pac", "se\\snd_em13.pac" },
+	{ "snd_em14.pac", "se\\snd_em14.pac" },
+	{ "snd_em16.pac", "se\\snd_em16.pac" },
+	{ "snd_em17.pac", "se\\snd_em17.pac" },
+	{ "snd_em21.pac", "se\\snd_em21.pac" },
+	{ "snd_em23.pac", "se\\snd_em23.pac" },
+	{ "snd_em25.pac", "se\\snd_em25.pac" },
+	{ "snd_em26.pac", "se\\snd_em26.pac" },
+	{ "snd_em27.pac", "se\\snd_em27.pac" },
+	{ "snd_em28.pac", "se\\snd_em28.pac" },
+	{ "snd_em29.pac", "se\\snd_em29.pac" },
+	{ "snd_em30.pac", "se\\snd_em30.pac" },
+	{ "snd_em31.pac", "se\\snd_em31.pac" },
+	{ "snd_em32.pac", "se\\snd_em32.pac" },
+	{ "snd_em34.pac", "se\\snd_em34.pac" },
+	{ "snd_em35.pac", "se\\snd_em35.pac" },
+	{ "snd_em37.pac", "se\\snd_em37.pac" },
+	{ "snd_emsr.pac", "se\\snd_emsr.pac" },
 	{ "id100.pac", "id\\id100\\id100.pac" },
 	{ "id100V.pac", "id\\id100\\id100V.pac" },
 };
+
+static_assert(countof(cacheFileHelpers) == CACHE_FILE_COUNT);
 
 // $CacheFileEnd
 
@@ -1120,7 +1237,7 @@ enum ACTOR_MODE
 
 
 
-
+// @Todo: Change to count.
 
 constexpr uint16 costumeFileIdsDante[MAX_COSTUME_DANTE] =
 {
@@ -1153,6 +1270,16 @@ constexpr uint16 costumeFileIdsVergil[MAX_COSTUME_VERGIL] =
 	pl026,
 	pl026,
 };
+
+constexpr uint8 costumeCounts[MAX_CHAR] =
+{
+	MAX_COSTUME_DANTE,
+	MAX_COSTUME_BOB,
+	MAX_COSTUME_LADY,
+	MAX_COSTUME_VERGIL,
+};
+
+
 
 
 
@@ -1245,6 +1372,15 @@ constexpr uint32 hudBottomOffs[] =
 
 
 
+
+
+#define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
+
+#pragma pack(push, 1)
+
+
+
+
 #define IntroduceSizeStruct(size)\
 struct Size_##size\
 {\
@@ -1254,11 +1390,6 @@ struct Size_##size\
 		return reinterpret_cast<byte8 *>(this);\
 	}\
 }
-
-#define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
-
-#pragma pack(push, 1)
-
 
 
 
@@ -1571,44 +1702,282 @@ auto hudBottom = *reinterpret_cast<byte8 **>(name + 0x1B078)
 dmc3.exe+23E691 - 48 8D 93 80010000 - lea rdx,[rbx+00000180]
 */
 
-struct ArchiveData
+
+
+
+
+
+// @Todo: Update.
+
+// struct ArchiveData
+// {
+// 	byte8 signature[4];
+// 	uint32 fileCount;
+// 	uint32 fileOff[128];
+// };
+
+
+struct ArchiveMetadata
 {
 	byte8 signature[4];
 	uint32 fileCount;
-	uint32 fileOff[128];
+	uint32 fileOffs[1];
 };
 
-struct StringData
+
+// @Todo: FILE_DATA_STATUS
+
+
+
+
+enum
+{
+	FILE_DATA_STATUS_FREE,
+	FILE_DATA_STATUS_IN_USE = 3,
+};
+
+struct FileDataTypeData
 {
 	_(8);
-	const char * string;
+	const char * typeName;
 };
 
 struct FileData
 {
-	uint32 category;
+	uint32 group;
 	uint32 status;
-	uint16 id;
-	_(6);
-	void * callback;
-	StringData * stringData;
+	_(16);
+	FileDataTypeData * typeDataAddr;
 	byte8 * file;
 	_(32);
 };
 
-// @Todo: Update names.
+static_assert(sizeof(FileData) == 72);
 
-struct MEMORY_OBJECT
+struct FileDataMetadata
 {
-	byte8 * addr;
-	byte8 * end;
-	uint32 last;
+	void * funcAddrs;
+	void * lastAddr;
+	void * nextAddr;
+	FileData * fileDataAddr;
+	_(4);
+	uint32 category;
+	uint32 fileSetIndex;
+	_(4);
+};
+
+static_assert(sizeof(FileDataMetadata) == 48);
+
+
+enum
+{
+	ENEMY_FILE_DATA_EM000,
+	ENEMY_FILE_DATA_EM006,
+	ENEMY_FILE_DATA_EM007,
+	ENEMY_FILE_DATA_EM008,
+	ENEMY_FILE_DATA_EM010,
+	ENEMY_FILE_DATA_EM011,
+	ENEMY_FILE_DATA_EM012,
+	ENEMY_FILE_DATA_EM013,
+	ENEMY_FILE_DATA_EM014,
+	ENEMY_FILE_DATA_EM016,
+	ENEMY_FILE_DATA_EM017,
+	ENEMY_FILE_DATA_EM021,
+	ENEMY_FILE_DATA_EM023,
+	ENEMY_FILE_DATA_EM025,
+	ENEMY_FILE_DATA_EM026,
+	ENEMY_FILE_DATA_EM027,
+	ENEMY_FILE_DATA_EM028,
+	ENEMY_FILE_DATA_EM029,
+	ENEMY_FILE_DATA_EM030,
+	ENEMY_FILE_DATA_EM031,
+	ENEMY_FILE_DATA_EM032,
+	ENEMY_FILE_DATA_EM034,
+	ENEMY_FILE_DATA_EM035,
+	ENEMY_FILE_DATA_EM037,
+	ENEMY_FILE_DATA_COUNT,
+};
+
+
+
+enum
+{
+	ENEMY_LADY = 55,
+	ENEMY_COUNT = 64,
+	CREATE_ENEMY_COUNT = 30,
+};
+
+
+enum
+{
+	ENEMY_FILE_SET_EM000,
+	ENEMY_FILE_SET_EM006,
+	ENEMY_FILE_SET_EM007,
+	ENEMY_FILE_SET_EM008,
+	ENEMY_FILE_SET_EM000_2,
+	ENEMY_FILE_SET_EM010,
+	ENEMY_FILE_SET_EM011,
+	ENEMY_FILE_SET_EM012,
+	ENEMY_FILE_SET_EM013,
+	ENEMY_FILE_SET_EM014,
+	ENEMY_FILE_SET_EM000_3,
+	ENEMY_FILE_SET_EM016,
+	ENEMY_FILE_SET_EM017,
+	ENEMY_FILE_SET_EM021,
+	ENEMY_FILE_SET_EM023,
+	ENEMY_FILE_SET_EM000_4,
+	ENEMY_FILE_SET_EM025,
+	ENEMY_FILE_SET_EM026,
+	ENEMY_FILE_SET_EM026_2,
+	ENEMY_FILE_SET_EM028,
+	ENEMY_FILE_SET_EM029,
+	ENEMY_FILE_SET_EM030,
+	ENEMY_FILE_SET_EM031,
+	ENEMY_FILE_SET_EM032,
+	ENEMY_FILE_SET_EM032_2,
+	ENEMY_FILE_SET_EM034,
+	ENEMY_FILE_SET_EM035,
+	ENEMY_FILE_SET_EM037,
+	ENEMY_FILE_SET_EM000_5,
+	ENEMY_FILE_SET_EM000_6,
+	ENEMY_FILE_SET_COUNT,
+};
+
+
+
+
+
+
+
+
+
+/*
+Config::CreateEnemyData
+
+Config_CreateEnemyData
+
+ConfigCreateEnemyData
+*/
+
+
+
+// @Todo: Create script.
+
+// struct CreateEnemyData
+// {
+// 	uint32 enemy;
+// 	_(12);
+// 	vec4 position;
+// 	uint16 rotation,
+// 	uint16 spawnMethod;
+// 	_(4);
+// 	uint32 variant;
+// 	_(128);
+// };
+
+// static_assert(offsetof(CreateEnemyData, variant) == 0x28);
+
+
+
+// $CreateEnemyDataStart
+
+struct CreateEnemyData
+{
+	uint32 enemy; // 0
+	_(12);
+	vec4 position; // 0x10
+	uint16 rotation; // 0x20
+	uint16 spawnMethod; // 0x22
+	_(4);
+	uint32 variant; // 0x28
+	_(84);
+};
+
+static_assert(offsetof(CreateEnemyData, enemy) == 0);
+static_assert(offsetof(CreateEnemyData, position) == 0x10);
+static_assert(offsetof(CreateEnemyData, rotation) == 0x20);
+static_assert(offsetof(CreateEnemyData, spawnMethod) == 0x22);
+static_assert(offsetof(CreateEnemyData, variant) == 0x28);
+static_assert(sizeof(CreateEnemyData) == 128);
+
+// $CreateEnemyDataEnd
+
+
+
+
+struct EnemyVectorData
+{
+	byte8 * baseAddr;
+	byte8 * nextAddr;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+struct RegionData
+{
+	byte8 * metadataAddr;
+	byte8 * dataAddr;
+	uint32 capacity;
 	uint32 boundary;
 	uint32 size;
 	uint32 pipe;
 	uint32 count;
-	byte8 padding[4];
+	_(4);
 };
+
+
+
+
+
+// #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
+
+// #pragma pack(push, 1)
+
+
+
+// #pragma pack(pop)
+
+// #undef _
+
+
+
+
+
+
+
+
+
+// @Todo: Update names.
+
+// struct MEMORY_OBJECT
+// {
+// 	byte8 * addr;
+// 	byte8 * end;
+// 	uint32 last;
+// 	uint32 boundary;
+// 	uint32 size;
+// 	uint32 pipe;
+// 	uint32 count;
+// 	byte8 padding[4];
+// };
 
 struct PS2_GAMEPAD
 {
@@ -1749,6 +2118,8 @@ struct DevilModelMetadata2 : DevilModelMetadata
 {
 	DevilSubmodelMetadata devilSubmodelMetadata[2];
 };
+
+// @Todo: Cleanup.
 
 struct DevilModelMetadataDante
 {
@@ -1920,8 +2291,10 @@ struct CharacterData
 {
 	uint8 character;
 	uint8 costume;
+	bool ignoreCostume;
 	bool forceFiles;
 	uint8 forceFilesCharacter;
+	uint8 forceFilesCostume;
 
 	uint8 styles[STYLE_COUNT][2];
 	uint8 styleIndices[STYLE_COUNT];
@@ -2171,26 +2544,27 @@ struct ActorData
 	uint8 newEntityIndex; // 0x1CACE
 	bool newForceFiles; // 0x1CACF
 	uint8 newForceFilesCharacter; // 0x1CAD0
-	bool newEnableVisibility; // 0x1CAD1
-	uint8 newGamepad; // 0x1CAD2
-	byte16 newButtonMask; // 0x1CAD3
-	bool newEnableRightStick; // 0x1CAD5
-	bool newEnableLeftStick; // 0x1CAD6
-	bool newExecuteStyleSwitch; // 0x1CAD7
-	bool newExecuteRemoveBusyFlag; // 0x1CAD8
-	bool newAirStinger; // 0x1CAD9
-	uint8 newAirStingerCount; // 0x1CADA
-	bool newEnableCollision; // 0x1CADB
-	bool newActorLoopRun; // 0x1CADC
-	uint8 newAirHikeCount; // 0x1CADD
-	uint8 newKickJumpCount; // 0x1CADE
-	uint8 newWallHikeCount; // 0x1CADF
-	uint8 newDashCount; // 0x1CAE0
-	uint8 newSkyStarCount; // 0x1CAE1
-	uint8 newAirTrickCount; // 0x1CAE2
-	uint8 newTrickUpCount; // 0x1CAE3
-	uint8 newTrickDownCount; // 0x1CAE4
-	_(11);
+	uint8 newForceFilesCostume; // 0x1CAD1
+	bool newEnableVisibility; // 0x1CAD2
+	uint8 newGamepad; // 0x1CAD3
+	byte16 newButtonMask; // 0x1CAD4
+	bool newEnableRightStick; // 0x1CAD6
+	bool newEnableLeftStick; // 0x1CAD7
+	bool newExecuteStyleSwitch; // 0x1CAD8
+	bool newExecuteRemoveBusyFlag; // 0x1CAD9
+	bool newAirStinger; // 0x1CADA
+	uint8 newAirStingerCount; // 0x1CADB
+	bool newEnableCollision; // 0x1CADC
+	bool newActorLoopRun; // 0x1CADD
+	uint8 newAirHikeCount; // 0x1CADE
+	uint8 newKickJumpCount; // 0x1CADF
+	uint8 newWallHikeCount; // 0x1CAE0
+	uint8 newDashCount; // 0x1CAE1
+	uint8 newSkyStarCount; // 0x1CAE2
+	uint8 newAirTrickCount; // 0x1CAE3
+	uint8 newTrickUpCount; // 0x1CAE4
+	uint8 newTrickDownCount; // 0x1CAE5
+	_(10);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
 
@@ -2433,26 +2807,27 @@ struct ActorDataDante
 	uint8 newEntityIndex; // 0x1CACE
 	bool newForceFiles; // 0x1CACF
 	uint8 newForceFilesCharacter; // 0x1CAD0
-	bool newEnableVisibility; // 0x1CAD1
-	uint8 newGamepad; // 0x1CAD2
-	byte16 newButtonMask; // 0x1CAD3
-	bool newEnableRightStick; // 0x1CAD5
-	bool newEnableLeftStick; // 0x1CAD6
-	bool newExecuteStyleSwitch; // 0x1CAD7
-	bool newExecuteRemoveBusyFlag; // 0x1CAD8
-	bool newAirStinger; // 0x1CAD9
-	uint8 newAirStingerCount; // 0x1CADA
-	bool newEnableCollision; // 0x1CADB
-	bool newActorLoopRun; // 0x1CADC
-	uint8 newAirHikeCount; // 0x1CADD
-	uint8 newKickJumpCount; // 0x1CADE
-	uint8 newWallHikeCount; // 0x1CADF
-	uint8 newDashCount; // 0x1CAE0
-	uint8 newSkyStarCount; // 0x1CAE1
-	uint8 newAirTrickCount; // 0x1CAE2
-	uint8 newTrickUpCount; // 0x1CAE3
-	uint8 newTrickDownCount; // 0x1CAE4
-	_(11);
+	uint8 newForceFilesCostume; // 0x1CAD1
+	bool newEnableVisibility; // 0x1CAD2
+	uint8 newGamepad; // 0x1CAD3
+	byte16 newButtonMask; // 0x1CAD4
+	bool newEnableRightStick; // 0x1CAD6
+	bool newEnableLeftStick; // 0x1CAD7
+	bool newExecuteStyleSwitch; // 0x1CAD8
+	bool newExecuteRemoveBusyFlag; // 0x1CAD9
+	bool newAirStinger; // 0x1CADA
+	uint8 newAirStingerCount; // 0x1CADB
+	bool newEnableCollision; // 0x1CADC
+	bool newActorLoopRun; // 0x1CADD
+	uint8 newAirHikeCount; // 0x1CADE
+	uint8 newKickJumpCount; // 0x1CADF
+	uint8 newWallHikeCount; // 0x1CAE0
+	uint8 newDashCount; // 0x1CAE1
+	uint8 newSkyStarCount; // 0x1CAE2
+	uint8 newAirTrickCount; // 0x1CAE3
+	uint8 newTrickUpCount; // 0x1CAE4
+	uint8 newTrickDownCount; // 0x1CAE5
+	_(10);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
 
@@ -2678,26 +3053,27 @@ struct ActorDataBob
 	uint8 newEntityIndex; // 0x1CACE
 	bool newForceFiles; // 0x1CACF
 	uint8 newForceFilesCharacter; // 0x1CAD0
-	bool newEnableVisibility; // 0x1CAD1
-	uint8 newGamepad; // 0x1CAD2
-	byte16 newButtonMask; // 0x1CAD3
-	bool newEnableRightStick; // 0x1CAD5
-	bool newEnableLeftStick; // 0x1CAD6
-	bool newExecuteStyleSwitch; // 0x1CAD7
-	bool newExecuteRemoveBusyFlag; // 0x1CAD8
-	bool newAirStinger; // 0x1CAD9
-	uint8 newAirStingerCount; // 0x1CADA
-	bool newEnableCollision; // 0x1CADB
-	bool newActorLoopRun; // 0x1CADC
-	uint8 newAirHikeCount; // 0x1CADD
-	uint8 newKickJumpCount; // 0x1CADE
-	uint8 newWallHikeCount; // 0x1CADF
-	uint8 newDashCount; // 0x1CAE0
-	uint8 newSkyStarCount; // 0x1CAE1
-	uint8 newAirTrickCount; // 0x1CAE2
-	uint8 newTrickUpCount; // 0x1CAE3
-	uint8 newTrickDownCount; // 0x1CAE4
-	_(11);
+	uint8 newForceFilesCostume; // 0x1CAD1
+	bool newEnableVisibility; // 0x1CAD2
+	uint8 newGamepad; // 0x1CAD3
+	byte16 newButtonMask; // 0x1CAD4
+	bool newEnableRightStick; // 0x1CAD6
+	bool newEnableLeftStick; // 0x1CAD7
+	bool newExecuteStyleSwitch; // 0x1CAD8
+	bool newExecuteRemoveBusyFlag; // 0x1CAD9
+	bool newAirStinger; // 0x1CADA
+	uint8 newAirStingerCount; // 0x1CADB
+	bool newEnableCollision; // 0x1CADC
+	bool newActorLoopRun; // 0x1CADD
+	uint8 newAirHikeCount; // 0x1CADE
+	uint8 newKickJumpCount; // 0x1CADF
+	uint8 newWallHikeCount; // 0x1CAE0
+	uint8 newDashCount; // 0x1CAE1
+	uint8 newSkyStarCount; // 0x1CAE2
+	uint8 newAirTrickCount; // 0x1CAE3
+	uint8 newTrickUpCount; // 0x1CAE4
+	uint8 newTrickDownCount; // 0x1CAE5
+	_(10);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
 
@@ -2923,26 +3299,27 @@ struct ActorDataLady
 	uint8 newEntityIndex; // 0x1CACE
 	bool newForceFiles; // 0x1CACF
 	uint8 newForceFilesCharacter; // 0x1CAD0
-	bool newEnableVisibility; // 0x1CAD1
-	uint8 newGamepad; // 0x1CAD2
-	byte16 newButtonMask; // 0x1CAD3
-	bool newEnableRightStick; // 0x1CAD5
-	bool newEnableLeftStick; // 0x1CAD6
-	bool newExecuteStyleSwitch; // 0x1CAD7
-	bool newExecuteRemoveBusyFlag; // 0x1CAD8
-	bool newAirStinger; // 0x1CAD9
-	uint8 newAirStingerCount; // 0x1CADA
-	bool newEnableCollision; // 0x1CADB
-	bool newActorLoopRun; // 0x1CADC
-	uint8 newAirHikeCount; // 0x1CADD
-	uint8 newKickJumpCount; // 0x1CADE
-	uint8 newWallHikeCount; // 0x1CADF
-	uint8 newDashCount; // 0x1CAE0
-	uint8 newSkyStarCount; // 0x1CAE1
-	uint8 newAirTrickCount; // 0x1CAE2
-	uint8 newTrickUpCount; // 0x1CAE3
-	uint8 newTrickDownCount; // 0x1CAE4
-	_(11);
+	uint8 newForceFilesCostume; // 0x1CAD1
+	bool newEnableVisibility; // 0x1CAD2
+	uint8 newGamepad; // 0x1CAD3
+	byte16 newButtonMask; // 0x1CAD4
+	bool newEnableRightStick; // 0x1CAD6
+	bool newEnableLeftStick; // 0x1CAD7
+	bool newExecuteStyleSwitch; // 0x1CAD8
+	bool newExecuteRemoveBusyFlag; // 0x1CAD9
+	bool newAirStinger; // 0x1CADA
+	uint8 newAirStingerCount; // 0x1CADB
+	bool newEnableCollision; // 0x1CADC
+	bool newActorLoopRun; // 0x1CADD
+	uint8 newAirHikeCount; // 0x1CADE
+	uint8 newKickJumpCount; // 0x1CADF
+	uint8 newWallHikeCount; // 0x1CAE0
+	uint8 newDashCount; // 0x1CAE1
+	uint8 newSkyStarCount; // 0x1CAE2
+	uint8 newAirTrickCount; // 0x1CAE3
+	uint8 newTrickUpCount; // 0x1CAE4
+	uint8 newTrickDownCount; // 0x1CAE5
+	_(10);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
 
@@ -3176,26 +3553,27 @@ struct ActorDataVergil
 	uint8 newEntityIndex; // 0x1CACE
 	bool newForceFiles; // 0x1CACF
 	uint8 newForceFilesCharacter; // 0x1CAD0
-	bool newEnableVisibility; // 0x1CAD1
-	uint8 newGamepad; // 0x1CAD2
-	byte16 newButtonMask; // 0x1CAD3
-	bool newEnableRightStick; // 0x1CAD5
-	bool newEnableLeftStick; // 0x1CAD6
-	bool newExecuteStyleSwitch; // 0x1CAD7
-	bool newExecuteRemoveBusyFlag; // 0x1CAD8
-	bool newAirStinger; // 0x1CAD9
-	uint8 newAirStingerCount; // 0x1CADA
-	bool newEnableCollision; // 0x1CADB
-	bool newActorLoopRun; // 0x1CADC
-	uint8 newAirHikeCount; // 0x1CADD
-	uint8 newKickJumpCount; // 0x1CADE
-	uint8 newWallHikeCount; // 0x1CADF
-	uint8 newDashCount; // 0x1CAE0
-	uint8 newSkyStarCount; // 0x1CAE1
-	uint8 newAirTrickCount; // 0x1CAE2
-	uint8 newTrickUpCount; // 0x1CAE3
-	uint8 newTrickDownCount; // 0x1CAE4
-	_(11);
+	uint8 newForceFilesCostume; // 0x1CAD1
+	bool newEnableVisibility; // 0x1CAD2
+	uint8 newGamepad; // 0x1CAD3
+	byte16 newButtonMask; // 0x1CAD4
+	bool newEnableRightStick; // 0x1CAD6
+	bool newEnableLeftStick; // 0x1CAD7
+	bool newExecuteStyleSwitch; // 0x1CAD8
+	bool newExecuteRemoveBusyFlag; // 0x1CAD9
+	bool newAirStinger; // 0x1CADA
+	uint8 newAirStingerCount; // 0x1CADB
+	bool newEnableCollision; // 0x1CADC
+	bool newActorLoopRun; // 0x1CADD
+	uint8 newAirHikeCount; // 0x1CADE
+	uint8 newKickJumpCount; // 0x1CADF
+	uint8 newWallHikeCount; // 0x1CAE0
+	uint8 newDashCount; // 0x1CAE1
+	uint8 newSkyStarCount; // 0x1CAE2
+	uint8 newAirTrickCount; // 0x1CAE3
+	uint8 newTrickUpCount; // 0x1CAE4
+	uint8 newTrickDownCount; // 0x1CAE5
+	_(10);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
 
@@ -3353,25 +3731,26 @@ static_assert(offsetof(ActorData, newCharacterIndex) == 0x1CACD);
 static_assert(offsetof(ActorData, newEntityIndex) == 0x1CACE);
 static_assert(offsetof(ActorData, newForceFiles) == 0x1CACF);
 static_assert(offsetof(ActorData, newForceFilesCharacter) == 0x1CAD0);
-static_assert(offsetof(ActorData, newEnableVisibility) == 0x1CAD1);
-static_assert(offsetof(ActorData, newGamepad) == 0x1CAD2);
-static_assert(offsetof(ActorData, newButtonMask) == 0x1CAD3);
-static_assert(offsetof(ActorData, newEnableRightStick) == 0x1CAD5);
-static_assert(offsetof(ActorData, newEnableLeftStick) == 0x1CAD6);
-static_assert(offsetof(ActorData, newExecuteStyleSwitch) == 0x1CAD7);
-static_assert(offsetof(ActorData, newExecuteRemoveBusyFlag) == 0x1CAD8);
-static_assert(offsetof(ActorData, newAirStinger) == 0x1CAD9);
-static_assert(offsetof(ActorData, newAirStingerCount) == 0x1CADA);
-static_assert(offsetof(ActorData, newEnableCollision) == 0x1CADB);
-static_assert(offsetof(ActorData, newActorLoopRun) == 0x1CADC);
-static_assert(offsetof(ActorData, newAirHikeCount) == 0x1CADD);
-static_assert(offsetof(ActorData, newKickJumpCount) == 0x1CADE);
-static_assert(offsetof(ActorData, newWallHikeCount) == 0x1CADF);
-static_assert(offsetof(ActorData, newDashCount) == 0x1CAE0);
-static_assert(offsetof(ActorData, newSkyStarCount) == 0x1CAE1);
-static_assert(offsetof(ActorData, newAirTrickCount) == 0x1CAE2);
-static_assert(offsetof(ActorData, newTrickUpCount) == 0x1CAE3);
-static_assert(offsetof(ActorData, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(ActorData, newForceFilesCostume) == 0x1CAD1);
+static_assert(offsetof(ActorData, newEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(ActorData, newGamepad) == 0x1CAD3);
+static_assert(offsetof(ActorData, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(ActorData, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(ActorData, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(ActorData, newExecuteStyleSwitch) == 0x1CAD8);
+static_assert(offsetof(ActorData, newExecuteRemoveBusyFlag) == 0x1CAD9);
+static_assert(offsetof(ActorData, newAirStinger) == 0x1CADA);
+static_assert(offsetof(ActorData, newAirStingerCount) == 0x1CADB);
+static_assert(offsetof(ActorData, newEnableCollision) == 0x1CADC);
+static_assert(offsetof(ActorData, newActorLoopRun) == 0x1CADD);
+static_assert(offsetof(ActorData, newAirHikeCount) == 0x1CADE);
+static_assert(offsetof(ActorData, newKickJumpCount) == 0x1CADF);
+static_assert(offsetof(ActorData, newWallHikeCount) == 0x1CAE0);
+static_assert(offsetof(ActorData, newDashCount) == 0x1CAE1);
+static_assert(offsetof(ActorData, newSkyStarCount) == 0x1CAE2);
+static_assert(offsetof(ActorData, newAirTrickCount) == 0x1CAE3);
+static_assert(offsetof(ActorData, newTrickUpCount) == 0x1CAE4);
+static_assert(offsetof(ActorData, newTrickDownCount) == 0x1CAE5);
 static_assert(offsetof(ActorData, newEffectIndices) == 0x1CAF0);
 static_assert(offsetof(ActorData, newLastVar) == 0x1CB20);
 
@@ -3534,25 +3913,26 @@ static_assert(offsetof(ActorDataDante, newCharacterIndex) == 0x1CACD);
 static_assert(offsetof(ActorDataDante, newEntityIndex) == 0x1CACE);
 static_assert(offsetof(ActorDataDante, newForceFiles) == 0x1CACF);
 static_assert(offsetof(ActorDataDante, newForceFilesCharacter) == 0x1CAD0);
-static_assert(offsetof(ActorDataDante, newEnableVisibility) == 0x1CAD1);
-static_assert(offsetof(ActorDataDante, newGamepad) == 0x1CAD2);
-static_assert(offsetof(ActorDataDante, newButtonMask) == 0x1CAD3);
-static_assert(offsetof(ActorDataDante, newEnableRightStick) == 0x1CAD5);
-static_assert(offsetof(ActorDataDante, newEnableLeftStick) == 0x1CAD6);
-static_assert(offsetof(ActorDataDante, newExecuteStyleSwitch) == 0x1CAD7);
-static_assert(offsetof(ActorDataDante, newExecuteRemoveBusyFlag) == 0x1CAD8);
-static_assert(offsetof(ActorDataDante, newAirStinger) == 0x1CAD9);
-static_assert(offsetof(ActorDataDante, newAirStingerCount) == 0x1CADA);
-static_assert(offsetof(ActorDataDante, newEnableCollision) == 0x1CADB);
-static_assert(offsetof(ActorDataDante, newActorLoopRun) == 0x1CADC);
-static_assert(offsetof(ActorDataDante, newAirHikeCount) == 0x1CADD);
-static_assert(offsetof(ActorDataDante, newKickJumpCount) == 0x1CADE);
-static_assert(offsetof(ActorDataDante, newWallHikeCount) == 0x1CADF);
-static_assert(offsetof(ActorDataDante, newDashCount) == 0x1CAE0);
-static_assert(offsetof(ActorDataDante, newSkyStarCount) == 0x1CAE1);
-static_assert(offsetof(ActorDataDante, newAirTrickCount) == 0x1CAE2);
-static_assert(offsetof(ActorDataDante, newTrickUpCount) == 0x1CAE3);
-static_assert(offsetof(ActorDataDante, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(ActorDataDante, newForceFilesCostume) == 0x1CAD1);
+static_assert(offsetof(ActorDataDante, newEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(ActorDataDante, newGamepad) == 0x1CAD3);
+static_assert(offsetof(ActorDataDante, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(ActorDataDante, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(ActorDataDante, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(ActorDataDante, newExecuteStyleSwitch) == 0x1CAD8);
+static_assert(offsetof(ActorDataDante, newExecuteRemoveBusyFlag) == 0x1CAD9);
+static_assert(offsetof(ActorDataDante, newAirStinger) == 0x1CADA);
+static_assert(offsetof(ActorDataDante, newAirStingerCount) == 0x1CADB);
+static_assert(offsetof(ActorDataDante, newEnableCollision) == 0x1CADC);
+static_assert(offsetof(ActorDataDante, newActorLoopRun) == 0x1CADD);
+static_assert(offsetof(ActorDataDante, newAirHikeCount) == 0x1CADE);
+static_assert(offsetof(ActorDataDante, newKickJumpCount) == 0x1CADF);
+static_assert(offsetof(ActorDataDante, newWallHikeCount) == 0x1CAE0);
+static_assert(offsetof(ActorDataDante, newDashCount) == 0x1CAE1);
+static_assert(offsetof(ActorDataDante, newSkyStarCount) == 0x1CAE2);
+static_assert(offsetof(ActorDataDante, newAirTrickCount) == 0x1CAE3);
+static_assert(offsetof(ActorDataDante, newTrickUpCount) == 0x1CAE4);
+static_assert(offsetof(ActorDataDante, newTrickDownCount) == 0x1CAE5);
 static_assert(offsetof(ActorDataDante, newEffectIndices) == 0x1CAF0);
 static_assert(offsetof(ActorDataDante, newLastVar) == 0x1CB20);
 
@@ -3704,25 +4084,26 @@ static_assert(offsetof(ActorDataBob, newCharacterIndex) == 0x1CACD);
 static_assert(offsetof(ActorDataBob, newEntityIndex) == 0x1CACE);
 static_assert(offsetof(ActorDataBob, newForceFiles) == 0x1CACF);
 static_assert(offsetof(ActorDataBob, newForceFilesCharacter) == 0x1CAD0);
-static_assert(offsetof(ActorDataBob, newEnableVisibility) == 0x1CAD1);
-static_assert(offsetof(ActorDataBob, newGamepad) == 0x1CAD2);
-static_assert(offsetof(ActorDataBob, newButtonMask) == 0x1CAD3);
-static_assert(offsetof(ActorDataBob, newEnableRightStick) == 0x1CAD5);
-static_assert(offsetof(ActorDataBob, newEnableLeftStick) == 0x1CAD6);
-static_assert(offsetof(ActorDataBob, newExecuteStyleSwitch) == 0x1CAD7);
-static_assert(offsetof(ActorDataBob, newExecuteRemoveBusyFlag) == 0x1CAD8);
-static_assert(offsetof(ActorDataBob, newAirStinger) == 0x1CAD9);
-static_assert(offsetof(ActorDataBob, newAirStingerCount) == 0x1CADA);
-static_assert(offsetof(ActorDataBob, newEnableCollision) == 0x1CADB);
-static_assert(offsetof(ActorDataBob, newActorLoopRun) == 0x1CADC);
-static_assert(offsetof(ActorDataBob, newAirHikeCount) == 0x1CADD);
-static_assert(offsetof(ActorDataBob, newKickJumpCount) == 0x1CADE);
-static_assert(offsetof(ActorDataBob, newWallHikeCount) == 0x1CADF);
-static_assert(offsetof(ActorDataBob, newDashCount) == 0x1CAE0);
-static_assert(offsetof(ActorDataBob, newSkyStarCount) == 0x1CAE1);
-static_assert(offsetof(ActorDataBob, newAirTrickCount) == 0x1CAE2);
-static_assert(offsetof(ActorDataBob, newTrickUpCount) == 0x1CAE3);
-static_assert(offsetof(ActorDataBob, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(ActorDataBob, newForceFilesCostume) == 0x1CAD1);
+static_assert(offsetof(ActorDataBob, newEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(ActorDataBob, newGamepad) == 0x1CAD3);
+static_assert(offsetof(ActorDataBob, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(ActorDataBob, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(ActorDataBob, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(ActorDataBob, newExecuteStyleSwitch) == 0x1CAD8);
+static_assert(offsetof(ActorDataBob, newExecuteRemoveBusyFlag) == 0x1CAD9);
+static_assert(offsetof(ActorDataBob, newAirStinger) == 0x1CADA);
+static_assert(offsetof(ActorDataBob, newAirStingerCount) == 0x1CADB);
+static_assert(offsetof(ActorDataBob, newEnableCollision) == 0x1CADC);
+static_assert(offsetof(ActorDataBob, newActorLoopRun) == 0x1CADD);
+static_assert(offsetof(ActorDataBob, newAirHikeCount) == 0x1CADE);
+static_assert(offsetof(ActorDataBob, newKickJumpCount) == 0x1CADF);
+static_assert(offsetof(ActorDataBob, newWallHikeCount) == 0x1CAE0);
+static_assert(offsetof(ActorDataBob, newDashCount) == 0x1CAE1);
+static_assert(offsetof(ActorDataBob, newSkyStarCount) == 0x1CAE2);
+static_assert(offsetof(ActorDataBob, newAirTrickCount) == 0x1CAE3);
+static_assert(offsetof(ActorDataBob, newTrickUpCount) == 0x1CAE4);
+static_assert(offsetof(ActorDataBob, newTrickDownCount) == 0x1CAE5);
 static_assert(offsetof(ActorDataBob, newEffectIndices) == 0x1CAF0);
 static_assert(offsetof(ActorDataBob, newLastVar) == 0x1CB20);
 
@@ -3874,25 +4255,26 @@ static_assert(offsetof(ActorDataLady, newCharacterIndex) == 0x1CACD);
 static_assert(offsetof(ActorDataLady, newEntityIndex) == 0x1CACE);
 static_assert(offsetof(ActorDataLady, newForceFiles) == 0x1CACF);
 static_assert(offsetof(ActorDataLady, newForceFilesCharacter) == 0x1CAD0);
-static_assert(offsetof(ActorDataLady, newEnableVisibility) == 0x1CAD1);
-static_assert(offsetof(ActorDataLady, newGamepad) == 0x1CAD2);
-static_assert(offsetof(ActorDataLady, newButtonMask) == 0x1CAD3);
-static_assert(offsetof(ActorDataLady, newEnableRightStick) == 0x1CAD5);
-static_assert(offsetof(ActorDataLady, newEnableLeftStick) == 0x1CAD6);
-static_assert(offsetof(ActorDataLady, newExecuteStyleSwitch) == 0x1CAD7);
-static_assert(offsetof(ActorDataLady, newExecuteRemoveBusyFlag) == 0x1CAD8);
-static_assert(offsetof(ActorDataLady, newAirStinger) == 0x1CAD9);
-static_assert(offsetof(ActorDataLady, newAirStingerCount) == 0x1CADA);
-static_assert(offsetof(ActorDataLady, newEnableCollision) == 0x1CADB);
-static_assert(offsetof(ActorDataLady, newActorLoopRun) == 0x1CADC);
-static_assert(offsetof(ActorDataLady, newAirHikeCount) == 0x1CADD);
-static_assert(offsetof(ActorDataLady, newKickJumpCount) == 0x1CADE);
-static_assert(offsetof(ActorDataLady, newWallHikeCount) == 0x1CADF);
-static_assert(offsetof(ActorDataLady, newDashCount) == 0x1CAE0);
-static_assert(offsetof(ActorDataLady, newSkyStarCount) == 0x1CAE1);
-static_assert(offsetof(ActorDataLady, newAirTrickCount) == 0x1CAE2);
-static_assert(offsetof(ActorDataLady, newTrickUpCount) == 0x1CAE3);
-static_assert(offsetof(ActorDataLady, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(ActorDataLady, newForceFilesCostume) == 0x1CAD1);
+static_assert(offsetof(ActorDataLady, newEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(ActorDataLady, newGamepad) == 0x1CAD3);
+static_assert(offsetof(ActorDataLady, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(ActorDataLady, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(ActorDataLady, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(ActorDataLady, newExecuteStyleSwitch) == 0x1CAD8);
+static_assert(offsetof(ActorDataLady, newExecuteRemoveBusyFlag) == 0x1CAD9);
+static_assert(offsetof(ActorDataLady, newAirStinger) == 0x1CADA);
+static_assert(offsetof(ActorDataLady, newAirStingerCount) == 0x1CADB);
+static_assert(offsetof(ActorDataLady, newEnableCollision) == 0x1CADC);
+static_assert(offsetof(ActorDataLady, newActorLoopRun) == 0x1CADD);
+static_assert(offsetof(ActorDataLady, newAirHikeCount) == 0x1CADE);
+static_assert(offsetof(ActorDataLady, newKickJumpCount) == 0x1CADF);
+static_assert(offsetof(ActorDataLady, newWallHikeCount) == 0x1CAE0);
+static_assert(offsetof(ActorDataLady, newDashCount) == 0x1CAE1);
+static_assert(offsetof(ActorDataLady, newSkyStarCount) == 0x1CAE2);
+static_assert(offsetof(ActorDataLady, newAirTrickCount) == 0x1CAE3);
+static_assert(offsetof(ActorDataLady, newTrickUpCount) == 0x1CAE4);
+static_assert(offsetof(ActorDataLady, newTrickDownCount) == 0x1CAE5);
 static_assert(offsetof(ActorDataLady, newEffectIndices) == 0x1CAF0);
 static_assert(offsetof(ActorDataLady, newLastVar) == 0x1CB20);
 
@@ -4049,25 +4431,26 @@ static_assert(offsetof(ActorDataVergil, newCharacterIndex) == 0x1CACD);
 static_assert(offsetof(ActorDataVergil, newEntityIndex) == 0x1CACE);
 static_assert(offsetof(ActorDataVergil, newForceFiles) == 0x1CACF);
 static_assert(offsetof(ActorDataVergil, newForceFilesCharacter) == 0x1CAD0);
-static_assert(offsetof(ActorDataVergil, newEnableVisibility) == 0x1CAD1);
-static_assert(offsetof(ActorDataVergil, newGamepad) == 0x1CAD2);
-static_assert(offsetof(ActorDataVergil, newButtonMask) == 0x1CAD3);
-static_assert(offsetof(ActorDataVergil, newEnableRightStick) == 0x1CAD5);
-static_assert(offsetof(ActorDataVergil, newEnableLeftStick) == 0x1CAD6);
-static_assert(offsetof(ActorDataVergil, newExecuteStyleSwitch) == 0x1CAD7);
-static_assert(offsetof(ActorDataVergil, newExecuteRemoveBusyFlag) == 0x1CAD8);
-static_assert(offsetof(ActorDataVergil, newAirStinger) == 0x1CAD9);
-static_assert(offsetof(ActorDataVergil, newAirStingerCount) == 0x1CADA);
-static_assert(offsetof(ActorDataVergil, newEnableCollision) == 0x1CADB);
-static_assert(offsetof(ActorDataVergil, newActorLoopRun) == 0x1CADC);
-static_assert(offsetof(ActorDataVergil, newAirHikeCount) == 0x1CADD);
-static_assert(offsetof(ActorDataVergil, newKickJumpCount) == 0x1CADE);
-static_assert(offsetof(ActorDataVergil, newWallHikeCount) == 0x1CADF);
-static_assert(offsetof(ActorDataVergil, newDashCount) == 0x1CAE0);
-static_assert(offsetof(ActorDataVergil, newSkyStarCount) == 0x1CAE1);
-static_assert(offsetof(ActorDataVergil, newAirTrickCount) == 0x1CAE2);
-static_assert(offsetof(ActorDataVergil, newTrickUpCount) == 0x1CAE3);
-static_assert(offsetof(ActorDataVergil, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(ActorDataVergil, newForceFilesCostume) == 0x1CAD1);
+static_assert(offsetof(ActorDataVergil, newEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(ActorDataVergil, newGamepad) == 0x1CAD3);
+static_assert(offsetof(ActorDataVergil, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(ActorDataVergil, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(ActorDataVergil, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(ActorDataVergil, newExecuteStyleSwitch) == 0x1CAD8);
+static_assert(offsetof(ActorDataVergil, newExecuteRemoveBusyFlag) == 0x1CAD9);
+static_assert(offsetof(ActorDataVergil, newAirStinger) == 0x1CADA);
+static_assert(offsetof(ActorDataVergil, newAirStingerCount) == 0x1CADB);
+static_assert(offsetof(ActorDataVergil, newEnableCollision) == 0x1CADC);
+static_assert(offsetof(ActorDataVergil, newActorLoopRun) == 0x1CADD);
+static_assert(offsetof(ActorDataVergil, newAirHikeCount) == 0x1CADE);
+static_assert(offsetof(ActorDataVergil, newKickJumpCount) == 0x1CADF);
+static_assert(offsetof(ActorDataVergil, newWallHikeCount) == 0x1CAE0);
+static_assert(offsetof(ActorDataVergil, newDashCount) == 0x1CAE1);
+static_assert(offsetof(ActorDataVergil, newSkyStarCount) == 0x1CAE2);
+static_assert(offsetof(ActorDataVergil, newAirTrickCount) == 0x1CAE3);
+static_assert(offsetof(ActorDataVergil, newTrickUpCount) == 0x1CAE4);
+static_assert(offsetof(ActorDataVergil, newTrickDownCount) == 0x1CAE5);
 static_assert(offsetof(ActorDataVergil, newEffectIndices) == 0x1CAF0);
 static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CB20);
 
@@ -4104,115 +4487,76 @@ IntroduceActorData(actorBaseAddrName, actorDataName, poolName[3], __VA_ARGS__)
 
 
 
+// $EnemyDataStart
 
+struct EnemyData
+{
+	_(40);
+	byte8 * lastBaseAddr; // 0x28
+	byte8 * nextBaseAddr; // 0x30
+	_(16);
+	byte8 * baseAddr; // 0x48
+	_(40);
+	uint32 enemy; // 0x78
+	_(4);
+	vec4 position; // 0x80
+};
 
+static_assert(offsetof(EnemyData, lastBaseAddr) == 0x28);
+static_assert(offsetof(EnemyData, nextBaseAddr) == 0x30);
+static_assert(offsetof(EnemyData, baseAddr) == 0x48);
+static_assert(offsetof(EnemyData, enemy) == 0x78);
+static_assert(offsetof(EnemyData, position) == 0x80);
+static_assert(sizeof(EnemyData) == 144);
 
+// $EnemyDataEnd
 
-// @Todo: Remove.
+// @Todo: Update.
+#define IntroduceEnemyDataNoBaseAddress(enemyDataName, source, ...)\
+if (!source)\
+{\
+	__VA_ARGS__;\
+}\
+auto & enemyDataName = *reinterpret_cast<EnemyData *>(source)
+
+#define IntroduceEnemyData(enemyBaseAddrName, enemyDataName, source, ...)\
+auto enemyBaseAddrName = source;\
+IntroduceEnemyDataNoBaseAddress(enemyDataName, enemyBaseAddrName, __VA_ARGS__)
+
+#define _IntroduceDefaultEnemyDataNoBaseAddress(poolName, enemyDataName, enemyIndexName, ...)\
+auto poolName = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);\
+if (!poolName)\
+{\
+	__VA_ARGS__;\
+}\
+if (!poolName[8])\
+{\
+	__VA_ARGS__;\
+}\
+IntroduceEnemyDataNoBaseAddress(enemyDataName, poolName[8] + 0x48 + (enemyIndexName * 0x10), __VA_ARGS__)
+#define IntroduceDefaultEnemyDataNoBaseAddress(enemyDataName, enemyIndexName, ...) _IntroduceDefaultEnemyDataNoBaseAddress(Prep_Merge(pool_, __LINE__), enemyDataName, enemyIndexName, __VA_ARGS__)
+
+#define _IntroduceDefaultEnemyData(poolName, enemyBaseAddrName, enemyDataName, enemyIndexName, ...)\
+auto poolName = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);\
+if (!poolName)\
+{\
+	__VA_ARGS__;\
+}\
+if (!poolName[8])\
+{\
+	__VA_ARGS__;\
+}\
+IntroduceEnemyData(enemyBaseAddrName, enemyDataName, poolName[8] + 0x48 + (enemyIndexName * 0x10), __VA_ARGS__)
+#define IntroduceDefaultEnemyData(enemyBaseAddrName, enemyDataName, enemyIndexName, ...) _IntroduceDefaultEnemyData(Prep_Merge(pool_, __LINE__), enemyBaseAddrName, enemyDataName, enemyIndexName, __VA_ARGS__)
+
 /*
-
-
-
-
-
-
-
-
-
-
-// @Todo: Should be called no baseAddr.
-#define IntroduceActorDataNoCreate(name, name2, ...)\
-if (!name)\
-{\
-	__VA_ARGS__;\
-}\
-auto & name2 = *reinterpret_cast<ActorData *>(name)
-
-#define IntroduceActorData(name, name2, name3, ...)\
-auto name = name3;\
-IntroduceActorDataNoCreate(name, name2, __VA_ARGS__)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-IntroduceActorData(actorBaseAddrName, actorDataName, poolName[3], __VA_ARGS__)
-
-
-
-
-
-
-
-
-
-
-#define IntroduceMissionData(...) _IntroduceMissionData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#define IntroduceActorData(actorBaseAddrName, actorDataName, source, ...)
-
-
-#define _IntroduceMissionData(name, ...)\
-auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E30);\
-if (!name)\
-{\
-	__VA_ARGS__;\
-}\
-auto & missionData = *reinterpret_cast<MissionData *>(name)
-#define IntroduceMissionData(...) _IntroduceMissionData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
-
-
-
-#define _IntroduceMainActorData(poolName, actorBaseAddrName, actorDataName, ...)
-#define _IntroduceMainActorData(name, name2, name3, ...)
-auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-if (!name)
-{
-	__VA_ARGS__;
-}
-IntroduceActorData(name2, name3, name[3], __VA_ARGS__)
-
-
-
-
-
-
-
-auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-if (!pool)
-{
-	return value;
-}
-IntroduceActorData(actorBaseAddr, actorData, pool[3], return value);
-
-
-
-
+dmc3.exe+1AC743 - 48 8B 05 DE46AE00 - mov rax,[dmc3.exe+C90E28]
+dmc3.exe+1AC74D - 48 8B 48 40       - mov rcx,[rax+40]
+dmc3.exe+1A52FC - 48 8D 43 48       - lea rax,[rbx+48]
 */
+
+
+
 
 
 

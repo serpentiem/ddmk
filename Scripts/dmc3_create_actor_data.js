@@ -473,6 +473,7 @@ var extra =
 
 	[ "newForceFiles"         , "bool"  ],
 	[ "newForceFilesCharacter", "uint8" ],
+	[ "newForceFilesCostume", "uint8" ],
 
 
 

@@ -18,6 +18,7 @@ export void ImGui_User_Init()
 	CursorMap[ImGuiMouseCursor_Hand      ] = IDC_HAND;
 }
 
+// @Todo: Update.
 export void ImGui_User_UpdateMouseCursor(HWND window)
 {
 	if (!window)
@@ -29,7 +30,7 @@ export void ImGui_User_UpdateMouseCursor(HWND window)
 	if (lastCursor != cursor)
 	{
 		lastCursor = cursor;
-		if ((cursor >= 0) && (cursor < countof(CursorMap)))
+		if ((cursor >= 0) && (cursor < static_cast<ImGuiMouseCursor>(countof(CursorMap))))
 		{
 			HCURSOR texture = LoadCursorA(0, CursorMap[cursor]);
 			SetClassLongPtrA(window, GCLP_HCURSOR, (LONG_PTR)texture);

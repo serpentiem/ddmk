@@ -100,10 +100,13 @@ export bool FMOD_Init()
 		}
 
 		FMOD_System_CreateSound = reinterpret_cast<FMOD_System_CreateSound_t>(funcAddr);
+
+		if constexpr (debug)
+		{
+			Log("%s %llX", funcName, FMOD_System_CreateSound);
+		}
 	}
 
-
-	Log("FMOD_System_CreateSound %llX", FMOD_System_CreateSound);
 
 
 	// FMOD_Channel_SetVolume
@@ -124,31 +127,15 @@ export bool FMOD_Init()
 		}
 
 		FMOD_Channel_SetVolume = reinterpret_cast<FMOD_Channel_SetVolume_t>(funcAddr);
+
+		if constexpr (debug)
+		{
+			Log("%s %llX", funcName, FMOD_Channel_SetVolume);
+		}
 	}
 
 
-	Log("FMOD_Channel_SetVolume %llX", FMOD_Channel_SetVolume);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// @Todo: Update.
 	Write<uint32>((appBaseAddr + 0x32635 + 1), FMOD_CACHE_SIZE);
 	/*
 	dmc3.exe+32635 - B9 00003002    - mov ecx,02300000
@@ -160,17 +147,6 @@ export bool FMOD_Init()
 	dmc3.exe+32658 - BA 00003002 - mov edx,02300000
 	dmc3.exe+3265D - E8 A62D3100 - call dmc3.exe+345408
 	*/
-
-
-
-
-
-
-	// // Set cache size.
-	// Write<dword>((appBaseAddr + 0x32636), FMOD_CACHE_SIZE);
-	// Write<dword>((appBaseAddr + 0x32659), FMOD_CACHE_SIZE);
-	// return true;
-
 
 	return true;
 }

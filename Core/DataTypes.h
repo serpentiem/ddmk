@@ -23,6 +23,38 @@ typedef unsigned long long byte64;
 typedef float  float32;
 typedef double float64;
 
+// template <typename T>
+// struct vec2Base
+// {
+// 	T x;
+// 	T y;
+// };
+
+// template <typename T>
+// struct vec2 : vec2Base<T>
+// {
+// };
+
+// template <>
+// struct vec2<uint32> : vec2Base<uint32>
+// {
+// 	vec2<uint32> & operator=(const vec2 & var)
+// 	{
+// 		x = static_cast<uint32>(var.x);
+// 		y = static_cast<uint32>(var.y);
+
+// 		return *this;
+// 	}
+// 	bool operator==(const vec2 & var)
+// 	{
+// 		return
+// 		(
+// 			(x == static_cast<uint32>(var.x)) &&
+// 			(y == static_cast<uint32>(var.y))
+// 		);
+// 	}
+// };
+
 struct vec2
 {
 	float32 x;

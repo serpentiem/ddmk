@@ -4,12 +4,11 @@ eval(fs.readFileSync("dmc3_core.js", "utf8"));
 
 var items =
 [
-	[ "rotation", "float", 0x70 ],
-	[ "targetBaseAddr", "byte8 *", 0xB0 ],
-	[ "height"        , "float"  , 0xD0 ],
-	[ "tilt"          , "float"  , 0xD4 ],
-	[ "distance"          , "float"  , 0xD8 ],
-	[ "distanceLockOn"    , "float"  , 0xE0 ],
+	[ "lastBaseAddr", "byte8 *", 0x28 ],
+	[ "nextBaseAddr", "byte8 *", 0x30 ],
+	[ "baseAddr"    , "byte8 *", 0x48 ],
+	[ "enemy"       , "uint32" , 0x78 ],
+	[ "position"    , "vec4"   , 0x80 ],
 ];
 
 var filename = "../Mary/Vars.h"
@@ -23,8 +22,8 @@ if
 	!Tag_Init
 	(
 		lines,
-		/\/\/ \$CameraDataStart$/,
-		/\/\/ \$CameraDataEnd$/
+		/\/\/ \$EnemyDataStart$/,
+		/\/\/ \$EnemyDataEnd$/
 	)
 )
 {
@@ -37,7 +36,7 @@ Tag_CopyUntil(lines);
 
 CreateStruct
 (
-	"CameraData",
+	"EnemyData",
 	0,
 	items
 );

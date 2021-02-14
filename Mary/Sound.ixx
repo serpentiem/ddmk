@@ -84,12 +84,12 @@ constexpr uint32 g_sectCount[HELPER_COUNT] =
 
 #pragma pack(push, 1)
 
-export struct ArchiveMetadata
-{
-	byte8 signature[4];
-	uint32 fileCount;
-	uint32 fileOffs[1];
-};
+// export struct ArchiveMetadata
+// {
+// 	byte8 signature[4];
+// 	uint32 fileCount;
+// 	uint32 fileOffs[1];
+// };
 
 export struct HeadMetadata
 {
@@ -275,22 +275,22 @@ export inline void UpdateVolumes()
 
 
 
-bool IsArchive(byte8 * addr)
-{
-	constexpr byte8 signature1[] = { 'P', 'A', 'C' };
-	constexpr byte8 signature2[] = { 'P', 'N', 'S', 'T' };
+// bool IsArchive(byte8 * addr)
+// {
+// 	constexpr byte8 signature1[] = { 'P', 'A', 'C' };
+// 	constexpr byte8 signature2[] = { 'P', 'N', 'S', 'T' };
 
-	if
-	(
-		SignatureMatch(addr, signature1) ||
-		SignatureMatch(addr, signature2)
-	)
-	{
-		return true;
-	}
+// 	if
+// 	(
+// 		SignatureMatch(addr, signature1) ||
+// 		SignatureMatch(addr, signature2)
+// 	)
+// 	{
+// 		return true;
+// 	}
 
-	return false;
-}
+// 	return false;
+// }
 
 bool IsHead(byte8 * addr)
 {

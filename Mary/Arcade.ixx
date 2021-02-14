@@ -24,7 +24,7 @@ export void Arcade_InitSession()
 		sessionData.mode = activeConfig.Arcade.mode;
 	}
 
-	sessionData.enableTutorial = false;
+	sessionData.enableTutorial = true;
 	sessionData.useGoldOrb = true;
 
 	if (activeConfig.Arcade.mission == 21)
@@ -38,6 +38,7 @@ export void Arcade_InitSession()
 
 	if (activeConfig.Arcade.character == CHAR_DANTE)
 	{
+		// @Todo: Update.
 		memcpy
 		(
 			sessionData.weapons,
@@ -125,8 +126,6 @@ export void Arcade_SetRoom()
 
 export void Arcade_CreateMainActor(byte8 * baseAddr)
 {
-	//return;
-	
 	if (!activeConfig.Arcade.enable)
 	{
 		return;
@@ -134,27 +133,52 @@ export void Arcade_CreateMainActor(byte8 * baseAddr)
 
 	LogFunction(baseAddr);
 
-	// Unlock Weapon Files
+	// Unlock Files
+	[&]()
 	{
 		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-		if (!pool)
+		if
+		(
+			!pool ||
+			!pool[1] ||
+			!pool[6]
+		)
 		{
 			return;
 		}
-		if (!pool[6])
-		{
-			return;
-		}
-		auto unlock = reinterpret_cast<byte8 *>(pool[6] + 0x7E2);
-		memset(unlock, 0xFF, 8);
-		/*
-		dmc3.exe+2A9F6D - 48 8B 05 B46E9E00    - mov rax,[dmc3.exe+C90E28]
-		dmc3.exe+2A9F74 - 48 8B 50 30          - mov rdx,[rax+30]
-		dmc3.exe+2A9F7C - 41 84 84 10 E2070000 - test [r8+rdx+000007E2],al
-		*/
-	}
+
+		SetMemory((pool[1] + 0x82), 0xFF, 11);
+		SetMemory((pool[1] + 0x8E), 0xFF, 1);
+		SetMemory((pool[6] + 0x7E4), 0xFF, 6);
+	}();
+
+	auto & unlock = *reinterpret_cast<byte32(*)[4]>(appBaseAddr + 0x564594);
+
+	unlock[0] |= 1;
+
+	/*
+	dmc3.exe+2AADD0 - 44 84 94 19 82000000 - test [rcx+rbx+00000082],r10l
+	dmc3.exe+2AA003 - 41 84 84 10 8A000000 - test [r8+rdx+0000008A],al
+	dmc3.exe+2AA1BF - 0FB6 99 8E000000     - movzx ebx,byte ptr [rcx+0000008E]
+	dmc3.exe+2A9F7C - 41 84 84 10 E2070000 - test [r8+rdx+000007E2],al
+	*/
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// @Todo: Update.
 export void Arcade_Toggle(bool enable)
 {
 	LogFunction(enable);

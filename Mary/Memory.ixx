@@ -49,6 +49,9 @@ export bool Memory_Init()
 		*/
 	}
 
+
+	// 256 actually
+
 	// Increase main memory from 260 MB to 300 MB.
 	{
 		constexpr uint32 size = (300 * 1024 * 1024);
@@ -58,7 +61,7 @@ export bool Memory_Init()
 
 	// Increase section from 5 MB to 16 MB.
 	{
-		constexpr uint32 size = (16 * 1024 * 1024);
+		constexpr uint32 size = (64 * 1024 * 1024);
 		Write<uint32>((appBaseAddr + 0x2C6065), size);
 		Write<uint32>((appBaseAddr + 0x2C6082), size);
 	}

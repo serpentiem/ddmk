@@ -24,6 +24,9 @@ export typedef void(__fastcall * func_2CA2F0_t)(PhysicsData & physicsData, void 
 export typedef void *(__fastcall * func_2C6150_t)(void * dest, uint32 size, int32 mode); // Alloc
 export typedef bool(__fastcall * func_1FD3E0_t)(WeaponData & weaponData, uint8); // IsWeaponReady
 export typedef void(__fastcall * func_1FDE10_t)(WeaponData & weaponData); // Show Weapon
+export typedef void(__fastcall * func_2EDFC0_t)(byte8 *);
+export typedef void(__fastcall * func_337710_t)(byte8 *);
+export typedef byte8 *(__fastcall * func_1A4680_t)(byte8 *, CreateEnemyData &); // Create Enemy
 export typedef void(__fastcall * func_3391C0_t)(void *, int32, int32, int32, int32); // Play Sound
 export typedef void(__fastcall * func_2EE3D0_t)(byte8 * dest);
 export typedef void(__fastcall * func_1FAF40_t)(byte8 * baseAddr);
@@ -99,6 +102,9 @@ export func_2CA2F0_t func_2CA2F0 = 0; // (PhysicsData & physicsData, void * dest
 export func_2C6150_t func_2C6150 = 0; // (void * dest, uint32 size, int32 mode)
 export func_1FD3E0_t func_1FD3E0 = 0; // (WeaponData & weaponData, uint8)
 export func_1FDE10_t func_1FDE10 = 0; // (WeaponData & weaponData)
+export func_2EDFC0_t func_2EDFC0 = 0; // (byte8 *)
+export func_337710_t func_337710 = 0; // (byte8 *)
+export func_1A4680_t func_1A4680 = 0; // (byte8 *, CreateEnemyData &)
 export func_3391C0_t func_3391C0 = 0; // (void *, int32, int32, int32, int32)
 export func_2EE3D0_t func_2EE3D0 = 0; // (byte8 * dest)
 export func_1FAF40_t func_1FAF40 = 0; // (byte8 * baseAddr)
@@ -224,6 +230,18 @@ export void Internal_Init()
 	{
 		auto func = CreateFunction((appBaseAddr + 0x1FDE10));
 		func_1FDE10 = (func_1FDE10_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x2EDFC0));
+		func_2EDFC0 = (func_2EDFC0_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x337710));
+		func_337710 = (func_337710_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x1A4680), 0, true, false);
+		func_1A4680 = (func_1A4680_t)func.addr;
 	}
 	{
 		auto func = CreateFunction((appBaseAddr + 0x3391C0), 0, true, true, 0, 0, 0, 0, 1);

@@ -1,3 +1,4 @@
+// @Todo: Clean.
 // @Todo: Create order script.
 
 module;
@@ -211,17 +212,6 @@ export struct Config
 
 
 
-	struct
-	{
-		bool enable = false;
-		uint32 x = 0;
-		uint32 y = 0;
-		float color[4] = { 1.0f, 0, 0, 1.0f };
-	}
-	MissionOverlay;
-
-
-
 
 
 
@@ -322,7 +312,7 @@ export struct Config
 
 
 
-	float weaponSwitchTimeout = 12;
+	float linearWeaponSwitchTimeout = 12;
 
 
 
@@ -381,7 +371,28 @@ export struct Config
 		1.0f,
 		1.0f,
 	};
-	WeaponSwitchControllerTextureData2 meleeWeaponSwitchControllerTextureData2 =
+
+
+
+
+
+
+
+	struct TextureData
+	{
+		vec2 size;
+		vec2 pos;
+	};
+
+	struct WeaponSwitchControllerTextureData
+	{
+		TextureData backgrounds[5];
+		TextureData icons[5];
+		TextureData highlights[5];
+		TextureData arrow;
+	};
+
+	WeaponSwitchControllerTextureData meleeWeaponSwitchControllerTextureData =
 	{
 		{
 			{
@@ -454,7 +465,7 @@ export struct Config
 			{ 1506, 671 },
 		},
 	};
-	WeaponSwitchControllerTextureData2 rangedWeaponSwitchControllerTextureData2 =
+	WeaponSwitchControllerTextureData rangedWeaponSwitchControllerTextureData =
 	{
 		{
 			{
@@ -536,6 +547,7 @@ export struct Config
 	bool disableCenterCamera = false;
 
 
+	// @Todo: Create struct.
 	float damageActorMultiplier = 1.0f;
 	float damageEnemyMultiplier = 1.0f;
 	uint32 damageStyleRank = STYLE_RANK_NONE;
@@ -556,6 +568,74 @@ export struct Config
 
 
 
+	struct CreateEnemyData
+	{
+		uint32 enemy;
+		uint32 variant;
+		vec4 position;
+		uint16 rotation;
+		bool useMainActorData;
+		uint16 spawnMethod;
+		bool autoSpawn;
+	};
+	uint8 createEnemyCount = 1;
+	CreateEnemyData createEnemyData[30] = {};
+
+
+
+
+
+
+
+
+
+
+	struct OverlayData
+	{
+		bool enable = false;
+		vec2 pos = { 8, 8 };
+		float color[4] = { 1.0f, 0, 0, 1.0f };
+	};
+
+	struct MainOverlayData : OverlayData
+	{
+		bool showFocus = true;
+		bool showFPS = true;
+		bool showScene = true;
+		bool showEventData = true;
+		bool showPosition = true;
+		bool showRegionData = true;
+
+		MainOverlayData()
+		{
+			if constexpr (debug)
+			{
+				enable = true;
+			}
+		}
+	}
+	mainOverlayData;
+
+	OverlayData missionOverlayData;
+
+
+
+	struct
+	{
+		bool forceJustFrameRelease = false;
+	}
+	Royalguard;
+
+
+
+
+
+
+
+
+
+	//MainOverlay, Overlay3;
+//OverlayData MissionOverlay;
 
 
 
@@ -570,6 +650,35 @@ export struct Config
 export Config defaultConfig;
 export Config activeConfig;
 export Config queuedConfig;
+
+export template <typename T>
+void ResetConfigHelper
+(
+	T & activeData,
+	T & queuedData,
+	T & defaultData
+)
+{
+	if constexpr (debug)
+	{
+		LogFunction();
+
+		Log("size %u", sizeof(activeData));
+	}
+
+	CopyMemory
+	(
+		&queuedData,
+		&defaultData,
+		sizeof(queuedData)
+	);
+	CopyMemory
+	(
+		&activeData,
+		&queuedData,
+		sizeof(activeData)
+	);
+}
 
 char g_path[64] = {};
 
@@ -734,7 +843,9 @@ export void ApplyDefaultCharacterData
 				CHAR_DANTE,
 				0,
 				false,
+				false,
 				CHAR_DANTE,
+				0,
 				{
 					{
 						STYLE_TRICKSTER,
@@ -812,7 +923,9 @@ export void ApplyDefaultCharacterData
 				CHAR_VERGIL,
 				0,
 				false,
+				false,
 				CHAR_DANTE,
+				0,
 				{
 					{
 						STYLE_DARK_SLAYER,
@@ -880,7 +993,19 @@ export void SaveConfig()
 		LogFunction();
 	}
 
-	SaveFile(g_path, reinterpret_cast<byte8 *>(&queuedConfig), sizeof(Config));
+
+	if
+	(
+		!SaveFile
+		(
+			g_path,
+			&queuedConfig,
+			sizeof(Config)
+		)
+	)
+	{
+		Log("SaveFile failed.");
+	}
 }
 
 export void LoadConfig()
@@ -890,27 +1015,101 @@ export void LoadConfig()
 		LogFunction();
 	}
 
-	byte8 * file = 0;
-	uint32 size = 0;
+	HANDLE file = 0;
+	uint64 size = 0;
 
-	file = LoadFile(g_path, &size);
-	if (!file)
+	file = OpenFile
+	(
+		g_path,
+		FileFlags_Read
+	);
+	if (file == INVALID_HANDLE_VALUE)
 	{
+
+		Log("Invalid handle bro.");
+
+
 		SaveConfig();
+
 		return;
 	}
 
+	size = GetFileSize(file);
 	if (size != sizeof(Config))
 	{
 		Log("Size mismatch.");
 
+		if (!CloseFile(file))
+		{
+			Log("CloseFile failed.");
+		}
+
 		SaveConfig();
+
 		return;
 	}
 
-	memcpy(&activeConfig, file, size);
-	memcpy(&queuedConfig, file, size);
+	Log("Very valid file.");
+
+
+	//HoboBreak();
+
+	if
+	(
+		!LoadFile
+		(
+			file,
+			size,
+			&activeConfig
+		)
+	)
+	{
+		Log("LoadFile failed. &activeConfig");
+	}
+
+	if
+	(
+		!LoadFile
+		(
+			file,
+			size,
+			&queuedConfig
+		)
+	)
+	{
+		Log("LoadFile failed. &queuedConfig");
+	}
+
+
+
+	// LoadFile
+	// (
+	// 	file,
+	// 	size,
+	// 	&queuedConfig
+	// )
+
+
+
+	if (!CloseFile(file))
+	{
+		Log("CloseFile failed.");
+	}
+
+
+
+
+
+	// CopyMemory(&activeConfig, file, size);
+	// CopyMemory(&queuedConfig, file, size);
 }
+
+
+
+
+
+
+
 
 export void Config_Init
 (

@@ -116,8 +116,58 @@ var items =
 	[ "snd_wp12b"          , "se"     ],
 	[ "snd_wp13a"          , "se"     ],
 	[ "snd_wp13b"          , "se"     ],
-	// Other
+	// Enemy
+	[ "em000"              , "obj"    ],
+	[ "em006"              , "obj"    ],
+	[ "em007"              , "obj"    ],
+	[ "em008"              , "obj"    ],
+	[ "em010"              , "obj"    ],
+	[ "em011"              , "obj"    ],
+	[ "em012"              , "obj"    ],
+	[ "em013"              , "obj"    ],
+	[ "em014"              , "obj"    ],
+	[ "em016"              , "obj"    ],
+	[ "em017"              , "obj"    ],
+	[ "em021"              , "obj"    ],
+	[ "em023"              , "obj"    ],
+	[ "em025"              , "obj"    ],
+	[ "em026"              , "obj"    ],
+	[ "em027"              , "obj"    ],
+	[ "em028"              , "obj"    ],
+	[ "em029"              , "obj"    ],
+	[ "em030"              , "obj"    ],
+	[ "em031"              , "obj"    ],
+	[ "em032"              , "obj"    ],
 	[ "em034"              , "obj"    ],
+	[ "em035"              , "obj"    ],
+	[ "em037"              , "obj"    ],
+	[ "snd_em00a"          , "se"     ],
+	[ "snd_em00b"          , "se"     ],
+	[ "snd_em06"           , "se"     ],
+	[ "snd_em07"           , "se"     ],
+	[ "snd_em08"           , "se"     ],
+	[ "snd_em10"           , "se"     ],
+	[ "snd_em11"           , "se"     ],
+	[ "snd_em12"           , "se"     ],
+	[ "snd_em13"           , "se"     ],
+	[ "snd_em14"           , "se"     ],
+	[ "snd_em16"           , "se"     ],
+	[ "snd_em17"           , "se"     ],
+	[ "snd_em21"           , "se"     ],
+	[ "snd_em23"           , "se"     ],
+	[ "snd_em25"           , "se"     ],
+	[ "snd_em26"           , "se"     ],
+	[ "snd_em27"           , "se"     ],
+	[ "snd_em28"           , "se"     ],
+	[ "snd_em29"           , "se"     ],
+	[ "snd_em30"           , "se"     ],
+	[ "snd_em31"           , "se"     ],
+	[ "snd_em32"           , "se"     ],
+	[ "snd_em34"           , "se"     ],
+	[ "snd_em35"           , "se"     ],
+	[ "snd_em37"           , "se"     ],
+	[ "snd_emsr"           , "se"     ],
+	// Other
 	[ "id100"              , "id"     ],
 	[ "id100V"             , "id"     ],
 ];
@@ -147,7 +197,7 @@ Tag_CopyUntil(lines);
 
 
 
-c += "enum CACHE_FILE" + NEW_LINE;
+c += "enum" + NEW_LINE;
 c += "{" + NEW_LINE;
 
 for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
@@ -160,7 +210,7 @@ for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
 	c += "\t" + name + "," + NEW_LINE;
 }
 
-c += "\tMAX_CACHE_FILE," + NEW_LINE;
+c += "\tCACHE_FILE_COUNT," + NEW_LINE;
 c += "};" + NEW_LINE;
 
 c += NEW_LINE;
@@ -169,13 +219,13 @@ c += NEW_LINE;
 
 c += "struct CacheFileHelper" + NEW_LINE;
 c += "{" + NEW_LINE;
-c += "\tconst char * name;" + NEW_LINE;
-c += "\tconst char * type;" + NEW_LINE;
+c += "\tconst char * filename;" + NEW_LINE;
+c += "\tconst char * typeName;" + NEW_LINE;
 c += "};" + NEW_LINE;
 
 c += NEW_LINE;
 
-c += "constexpr CacheFileHelper cacheFileHelper[MAX_CACHE_FILE] =" + NEW_LINE;
+c += "constexpr CacheFileHelper cacheFileHelpers[CACHE_FILE_COUNT] =" + NEW_LINE;
 c += "{" + NEW_LINE;
 
 for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
@@ -220,6 +270,10 @@ for (var itemIndex = 0; itemIndex < items.length; itemIndex++)
 }
 
 c += "};" + NEW_LINE;
+
+c += NEW_LINE;
+
+c += "static_assert(countof(cacheFileHelpers) == CACHE_FILE_COUNT);" + NEW_LINE;
 
 c += NEW_LINE;
 
