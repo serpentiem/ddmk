@@ -10,3 +10,5 @@ Part of this project uses [Dear ImGui](https://github.com/ocornut/imgui).
 Part of this project uses [libzip](https://github.com/nih-at/libzip).
 
 Part of this project uses [zlib](https://github.com/madler/zlib).
+
+Part of this project uses [stb_image](https://github.com/nothings/stb).
