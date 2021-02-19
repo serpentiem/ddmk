@@ -223,12 +223,17 @@ LRESULT User_Hook_WindowProc
 		}
 		case DM_PAUSE:
 		{
+			ImGuiIO& io = ImGui::GetIO();
 			if (g_pause)
 			{
-				Windows_ToggleCursor(true);
+				// FIXME: workaround for unaligned cursor in windowed mode
+				// hide hardware cursor and show software one
+				io.MouseDrawCursor = true;
+				//Windows_ToggleCursor(true);
 			}
 			else
 			{
+				io.MouseDrawCursor = false;
 				if (activeConfig.hideMouseCursor)
 				{
 					Windows_ToggleCursor(false);
