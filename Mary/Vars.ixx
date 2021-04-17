@@ -1489,6 +1489,31 @@ export enum
 
 
 
+export constexpr uint32 enemyMotionArchivesOffs[] =
+{
+	0x698 , // Damned Chessmen Pawn, Knight, Bishop, Rook, Queen, King
+	0x6C0 , // Blood-Goyle
+	0x6D0 , // Pride, Gluttony, Lust, Sloth, Wrath, Envy
+	0x780 , // Soul Eater
+	0xA58 , // Enigma
+	0xA98 , // Doppelganger
+	0x1130, // Geryon
+	0x1158, // Agni & Rudra
+	0x14F0, // The Fallen
+	0x1B48, // Arkham
+	0x2160, // Dullahan
+	0x23C0, // Jester
+	0x2C20, // Arachne
+	0x2E18, // Nevan
+	0x3940, // Greed, Abyss
+	0x4020, // Beowulf
+	0x49C8, // Hell Vanguard
+	0x5410, // Lady
+	0xD7B0, // Cerberus
+	0xE7D0, // Vergil
+};
+
+
 
 
 

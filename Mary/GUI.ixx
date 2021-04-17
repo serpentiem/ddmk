@@ -1,5 +1,19 @@
 // @Todo: Add description for arbitrary weapon switcher.
 
+
+/*
+some enemy ids are only for spawning
+
+some enemies require speciifc enviromnets
+
+or circumstance4s
+
+conditions to not crash the game
+
+depend on other enemies
+
+*/
+
 module;
 
 

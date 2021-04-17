@@ -2068,30 +2068,7 @@ bool UpdateGlobalActorHelperIndex(BodyPartData * bodyPartDataAddr)
 
 
 
-// @Todo: Add enemy name and move to Vars.
-constexpr uint32 g_motionArchivesOffs[] =
-{
-	0x698 , // Damned Chessmen Pawn, Knight, Bishop, Rook, Queen, King
-	0x6C0 , // Blood-Goyle
-	0x6D0 , // Pride, Gluttony, Lust, Sloth, Wrath, Envy
-	0x780 , // Soul Eater
-	0xA58 , // Enigma
-	0xA98 , // Doppelganger
-	0x1130, // Geryon
-	0x1158, // Agni & Rudra
-	0x14F0, // The Fallen
-	0x1B48, // Arkham
-	0x2160, // Dullahan
-	0x23C0, // Jester
-	0x2C20, // Arachne
-	0x2E18, // Nevan
-	0x3940, // Greed, Abyss
-	0x4020, // Beowulf
-	0x49C8, // Hell Vanguard
-	0x5410, // Lady
-	0xD7B0, // Cerberus
-	0xE7D0, // Vergil
-};
+
 
 byte8 * GetEnemyBaseAddressByMotionArchivesOffset(BodyPartData * bodyPartDataAddr)
 {
@@ -2106,9 +2083,9 @@ byte8 * GetEnemyBaseAddressByMotionArchivesOffset(BodyPartData * bodyPartDataAdd
 		return 0;
 	}
 
-	for_all(uint8, index, countof(g_motionArchivesOffs))
+	for_all(uint8, index, countof(enemyMotionArchivesOffs))
 	{
-		auto & off = g_motionArchivesOffs[index];
+		auto & off = enemyMotionArchivesOffs[index];
 
 		auto baseAddr = (reinterpret_cast<byte8 *>(bodyPartData.motionArchives) - off);
 
@@ -2192,339 +2169,13 @@ void UpdateGlobalHelperIndices(BodyPartData * bodyPartDataAddr)
 
 
 
+namespaceStart(Sound);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export void Sound_UpdateEnemyCount(byte8 * addr)
+export void Toggle(bool enable)
 {
-	LogFunction();
-
-	auto & helperIndex = g_helperIndices[CHANNEL_ENEMY];
-
-
-
-	auto Function = [&](byte8 * enemyBaseAddr) -> bool
-	{
-		auto & enemyData = *reinterpret_cast<EnemyData *>(enemyBaseAddr);
-
-		helperIndex = GetEnemyHelperIndex(enemyData);
-
-		Log("helperIndex %u", helperIndex);
-
-		return true;
-	};
-
-	EnemyForAll(Function);
-}
-
-
-
-
-
-
-
-
-
-
-
-export void Sound_Toggle(bool enable)
-{
-	//return;
-
 	LogFunction(enable);
 
 	static bool run = false;
-
-
-
-
-	{
-		auto addr     = (appBaseAddr + 0x59DE0);
-		auto jumpAddr = (appBaseAddr + 0x59DE7);
-		constexpr uint32 size = 7;
-
-		static Function func = {};
-
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
-			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
-			CopyMemory(func.sect1, sect1, sizeof(sect1));
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-	{
-		auto addr     = (appBaseAddr + 0x59E2F);
-		auto jumpAddr = (appBaseAddr + 0x59E36);
-		constexpr uint32 size = 7;
-
-		static Function func = {};
-
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
-			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
-			CopyMemory(func.sect1, sect1, sizeof(sect1));
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-	{
-		auto addr     = (appBaseAddr + 0x59E75);
-		auto jumpAddr = (appBaseAddr + 0x59E7C);
-		constexpr uint32 size = 7;
-
-		static Function func = {};
-
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
-			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
-			CopyMemory(func.sect1, sect1, sizeof(sect1));
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-	{
-		auto addr     = (appBaseAddr + 0x59EBD);
-		auto jumpAddr = (appBaseAddr + 0x59EC4);
-		constexpr uint32 size = 7;
-
-		static Function func = {};
-
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
-			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
-			CopyMemory(func.sect1, sect1, sizeof(sect1));
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-	{
-		auto addr     = (appBaseAddr + 0x59F69);
-		auto jumpAddr = (appBaseAddr + 0x59F70);
-		constexpr uint32 size = 7;
-
-		static Function func = {};
-
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
-			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
-			CopyMemory(func.sect1, sect1, sizeof(sect1));
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-	{
-		auto addr     = (appBaseAddr + 0x5A051);
-		auto jumpAddr = (appBaseAddr + 0x5A058);
-		constexpr uint32 size = 7;
-
-		static Function func = {};
-
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
-			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
-			CopyMemory(func.sect1, sect1, sizeof(sect1));
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-	{
-		auto addr     = (appBaseAddr + 0x5A087);
-		auto jumpAddr = (appBaseAddr + 0x5A08E);
-		constexpr uint32 size = 7;
-
-		static Function func = {};
-
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
-			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
-			CopyMemory(func.sect1, sect1, sizeof(sect1));
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-	{
-		auto addr     = (appBaseAddr + 0x5A0CA);
-		auto jumpAddr = (appBaseAddr + 0x5A0D1);
-		constexpr uint32 size = 7;
-
-		static Function func = {};
-
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
-			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
-			CopyMemory(func.sect1, sect1, sizeof(sect1));
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	// Get Dbst Metadata Address
 	{
@@ -2734,1109 +2385,1959 @@ export void Sound_Toggle(bool enable)
 	run = true;
 }
 
-
-
-
-
-
-
-
-
-
-
-export void Sound_EventMain()
-{
-	LogFunction();
-
-	Sound_Toggle(true);
-}
-
-export void Sound_EventDelete()
-{
-	LogFunction();
-
-	Sound_Toggle(false);
-}
-
-
-
-
-
-
-
-
-
-export void ToggleSoundRelocations(bool enable)
+export void ToggleRelocations(bool enable)
 {
 	LogFunction(enable);
 
 	static bool run = false;
 
+	// $RelocationDataStart
 
 {
-	auto addr     = (appBaseAddr + 0x16975C);
-	auto jumpAddr = (appBaseAddr + 0x169763);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+16975C - 48 8D 0D 2D45C000 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+169763
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
 	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
+		auto addr     = (appBaseAddr + 0x59DE0);
+		auto jumpAddr = (appBaseAddr + 0x59DE7);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+59DE0 - 48 8D 0D A93ED100 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+59DE7
+		*/
 
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
+	{
+		auto addr     = (appBaseAddr + 0x59E2F);
+		auto jumpAddr = (appBaseAddr + 0x59E36);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+59E2F - 48 8D 0D 5A3ED100 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+59E36
+		*/
 
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
-	else
 	{
-		backupHelper.Restore(addr);
+		auto addr     = (appBaseAddr + 0x59E75);
+		auto jumpAddr = (appBaseAddr + 0x59E7C);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+59E75 - 48 8D 0D 143ED100 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+59E7C
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x59EBD);
+		auto jumpAddr = (appBaseAddr + 0x59EC4);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+59EBD - 48 8D 0D CC3DD100 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+59EC4
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x59F69);
+		auto jumpAddr = (appBaseAddr + 0x59F70);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+59F69 - 48 8D 0D 203DD100 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+59F70
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x5A051);
+		auto jumpAddr = (appBaseAddr + 0x5A058);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+5A051 - 48 8D 0D 383CD100 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+5A058
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x5A087);
+		auto jumpAddr = (appBaseAddr + 0x5A08E);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+5A087 - 48 8D 0D 023CD100 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+5A08E
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x5A0CA);
+		auto jumpAddr = (appBaseAddr + 0x5A0D1);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+5A0CA - 48 8D 0D BF3BD100 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+5A0D1
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x16975C);
+		auto jumpAddr = (appBaseAddr + 0x169763);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+16975C - 48 8D 0D 2D45C000 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+169763
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x169800);
+		auto jumpAddr = (appBaseAddr + 0x169807);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+169800 - 48 8D 0D 8944C000 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+169807
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1699AB);
+		auto jumpAddr = (appBaseAddr + 0x1699B2);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1699AB - 48 8D 0D DE42C000 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1699B2
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x169A7B);
+		auto jumpAddr = (appBaseAddr + 0x169A82);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+169A7B - 48 8D 0D 0E42C000 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+169A82
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x169FFA);
+		auto jumpAddr = (appBaseAddr + 0x16A001);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+169FFA - 48 8D 0D 8F3CC000 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+16A001
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x16BD37);
+		auto jumpAddr = (appBaseAddr + 0x16BD3E);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+16BD37 - 48 8D 0D 521FC000 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+16BD3E
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x16D694);
+		auto jumpAddr = (appBaseAddr + 0x16D69B);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+16D694 - 48 8D 0D F505C000 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+16D69B
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x16EFFB);
+		auto jumpAddr = (appBaseAddr + 0x16F002);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+16EFFB - 48 8D 0D 8EECBF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+16F002
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x171E82);
+		auto jumpAddr = (appBaseAddr + 0x171E89);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+171E82 - 48 8D 0D 07BEBF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+171E89
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x17268E);
+		auto jumpAddr = (appBaseAddr + 0x172695);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+17268E - 48 8D 0D FBB5BF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+172695
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x172700);
+		auto jumpAddr = (appBaseAddr + 0x172707);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+172700 - 48 8D 0D 89B5BF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+172707
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x172753);
+		auto jumpAddr = (appBaseAddr + 0x17275A);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+172753 - 48 8D 0D 36B5BF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+17275A
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x172B9D);
+		auto jumpAddr = (appBaseAddr + 0x172BA4);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+172B9D - 48 8D 0D ECB0BF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+172BA4
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x172F86);
+		auto jumpAddr = (appBaseAddr + 0x172F8D);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+172F86 - 48 8D 0D 03ADBF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+172F8D
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x17389D);
+		auto jumpAddr = (appBaseAddr + 0x1738A4);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+17389D - 48 8D 0D ECA3BF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1738A4
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x173CFD);
+		auto jumpAddr = (appBaseAddr + 0x173D04);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+173CFD - 48 8D 0D 8C9FBF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+173D04
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1777D5);
+		auto jumpAddr = (appBaseAddr + 0x1777DC);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1777D5 - 48 8D 0D B464BF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1777DC
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x178C29);
+		auto jumpAddr = (appBaseAddr + 0x178C30);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+178C29 - 48 8D 0D 6050BF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+178C30
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x17B167);
+		auto jumpAddr = (appBaseAddr + 0x17B16E);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+17B167 - 48 8D 0D 222BBF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+17B16E
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x17B185);
+		auto jumpAddr = (appBaseAddr + 0x17B18C);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+17B185 - 48 8D 0D 042BBF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+17B18C
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x17B6C5);
+		auto jumpAddr = (appBaseAddr + 0x17B6CC);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+17B6C5 - 48 8D 0D C425BF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+17B6CC
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x17CB9E);
+		auto jumpAddr = (appBaseAddr + 0x17CBA5);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+17CB9E - 48 8D 0D EB10BF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+17CBA5
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x17CBC6);
+		auto jumpAddr = (appBaseAddr + 0x17CBCD);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+17CBC6 - 48 8D 0D C310BF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+17CBCD
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x17CDD3);
+		auto jumpAddr = (appBaseAddr + 0x17CDDA);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+17CDD3 - 48 8D 0D B60EBF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+17CDDA
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x17CF01);
+		auto jumpAddr = (appBaseAddr + 0x17CF08);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+17CF01 - 48 8D 0D 880DBF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+17CF08
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x17CF44);
+		auto jumpAddr = (appBaseAddr + 0x17CF4B);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+17CF44 - 48 8D 0D 450DBF00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+17CF4B
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1802E0);
+		auto jumpAddr = (appBaseAddr + 0x1802E7);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1802E0 - 48 8D 0D A9D9BE00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1802E7
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1879B0);
+		auto jumpAddr = (appBaseAddr + 0x1879B7);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1879B0 - 48 8D 0D D962BE00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1879B7
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x18802F);
+		auto jumpAddr = (appBaseAddr + 0x188036);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+18802F - 48 8D 0D 5A5CBE00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+188036
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1883C7);
+		auto jumpAddr = (appBaseAddr + 0x1883CE);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1883C7 - 48 8D 0D C258BE00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1883CE
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x18887B);
+		auto jumpAddr = (appBaseAddr + 0x188882);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+18887B - 48 8D 0D 0E54BE00 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+188882
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1D881E);
+		auto jumpAddr = (appBaseAddr + 0x1D8825);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1D881E - 48 8D 0D 6B54B900 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1D8825
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1D8EE7);
+		auto jumpAddr = (appBaseAddr + 0x1D8EEE);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1D8EE7 - 48 8D 0D A24DB900 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1D8EEE
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1D9383);
+		auto jumpAddr = (appBaseAddr + 0x1D938A);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1D9383 - 48 8D 0D 0649B900 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1D938A
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1D9C70);
+		auto jumpAddr = (appBaseAddr + 0x1D9C77);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1D9C70 - 48 8D 0D 1940B900 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1D9C77
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1DB4FC);
+		auto jumpAddr = (appBaseAddr + 0x1DB503);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1DB4FC - 48 8D 0D 8D27B900 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1DB503
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1DB927);
+		auto jumpAddr = (appBaseAddr + 0x1DB92E);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1DB927 - 48 8D 0D 6223B900 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1DB92E
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1DBA89);
+		auto jumpAddr = (appBaseAddr + 0x1DBA90);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1DBA89 - 48 8D 0D 0022B900 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1DBA90
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1DBE68);
+		auto jumpAddr = (appBaseAddr + 0x1DBE6F);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1DBE68 - 48 8D 0D 211EB900 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+1DBE6F
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x216CB4);
+		auto jumpAddr = (appBaseAddr + 0x216CBB);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+216CB4 - 48 8D 0D D56FB500 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+216CBB
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x21820B);
+		auto jumpAddr = (appBaseAddr + 0x218212);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+21820B - 48 8D 0D 7E5AB500 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+218212
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x223BB7);
+		auto jumpAddr = (appBaseAddr + 0x223BBE);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+223BB7 - 48 8D 0D D2A0B400 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+223BBE
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x22401F);
+		auto jumpAddr = (appBaseAddr + 0x224026);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+22401F - 48 8D 0D 6A9CB400 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+224026
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x2240B8);
+		auto jumpAddr = (appBaseAddr + 0x2240BF);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+2240B8 - 48 8D 0D D19BB400 - LEA RCX,[dmc3.exe+D6DC90]
+		dmc3.exe+2240BF
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+			0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+			0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
 }
-{
-	auto addr     = (appBaseAddr + 0x169800);
-	auto jumpAddr = (appBaseAddr + 0x169807);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+169800 - 48 8D 0D 8944C000 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+169807
-	*/
 
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x1699AB);
-	auto jumpAddr = (appBaseAddr + 0x1699B2);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+1699AB - 48 8D 0D DE42C000 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+1699B2
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x169A7B);
-	auto jumpAddr = (appBaseAddr + 0x169A82);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+169A7B - 48 8D 0D 0E42C000 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+169A82
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x169FFA);
-	auto jumpAddr = (appBaseAddr + 0x16A001);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+169FFA - 48 8D 0D 8F3CC000 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+16A001
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x16BD37);
-	auto jumpAddr = (appBaseAddr + 0x16BD3E);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+16BD37 - 48 8D 0D 521FC000 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+16BD3E
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x16D694);
-	auto jumpAddr = (appBaseAddr + 0x16D69B);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+16D694 - 48 8D 0D F505C000 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+16D69B
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x16EFFB);
-	auto jumpAddr = (appBaseAddr + 0x16F002);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+16EFFB - 48 8D 0D 8EECBF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+16F002
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x171E82);
-	auto jumpAddr = (appBaseAddr + 0x171E89);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+171E82 - 48 8D 0D 07BEBF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+171E89
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x17268E);
-	auto jumpAddr = (appBaseAddr + 0x172695);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+17268E - 48 8D 0D FBB5BF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+172695
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x172700);
-	auto jumpAddr = (appBaseAddr + 0x172707);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+172700 - 48 8D 0D 89B5BF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+172707
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x172753);
-	auto jumpAddr = (appBaseAddr + 0x17275A);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+172753 - 48 8D 0D 36B5BF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+17275A
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x172B9D);
-	auto jumpAddr = (appBaseAddr + 0x172BA4);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+172B9D - 48 8D 0D ECB0BF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+172BA4
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x172F86);
-	auto jumpAddr = (appBaseAddr + 0x172F8D);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+172F86 - 48 8D 0D 03ADBF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+172F8D
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x17389D);
-	auto jumpAddr = (appBaseAddr + 0x1738A4);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+17389D - 48 8D 0D ECA3BF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+1738A4
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x173CFD);
-	auto jumpAddr = (appBaseAddr + 0x173D04);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+173CFD - 48 8D 0D 8C9FBF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+173D04
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x1777D5);
-	auto jumpAddr = (appBaseAddr + 0x1777DC);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+1777D5 - 48 8D 0D B464BF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+1777DC
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x178C29);
-	auto jumpAddr = (appBaseAddr + 0x178C30);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+178C29 - 48 8D 0D 6050BF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+178C30
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x17B167);
-	auto jumpAddr = (appBaseAddr + 0x17B16E);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+17B167 - 48 8D 0D 222BBF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+17B16E
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x17B185);
-	auto jumpAddr = (appBaseAddr + 0x17B18C);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+17B185 - 48 8D 0D 042BBF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+17B18C
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x17B6C5);
-	auto jumpAddr = (appBaseAddr + 0x17B6CC);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+17B6C5 - 48 8D 0D C425BF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+17B6CC
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x17CB9E);
-	auto jumpAddr = (appBaseAddr + 0x17CBA5);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+17CB9E - 48 8D 0D EB10BF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+17CBA5
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x17CBC6);
-	auto jumpAddr = (appBaseAddr + 0x17CBCD);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+17CBC6 - 48 8D 0D C310BF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+17CBCD
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x17CDD3);
-	auto jumpAddr = (appBaseAddr + 0x17CDDA);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+17CDD3 - 48 8D 0D B60EBF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+17CDDA
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x17CF01);
-	auto jumpAddr = (appBaseAddr + 0x17CF08);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+17CF01 - 48 8D 0D 880DBF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+17CF08
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x17CF44);
-	auto jumpAddr = (appBaseAddr + 0x17CF4B);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+17CF44 - 48 8D 0D 450DBF00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+17CF4B
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x1802E0);
-	auto jumpAddr = (appBaseAddr + 0x1802E7);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+1802E0 - 48 8D 0D A9D9BE00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+1802E7
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-{
-	auto addr     = (appBaseAddr + 0x18887B);
-	auto jumpAddr = (appBaseAddr + 0x188882);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+18887B - 48 8D 0D 0E54BE00 - LEA RCX,[dmc3.exe+D6DC90]
-	dmc3.exe+188882
-	*/
-
-	static Function func = {};
-
-	constexpr byte8 sect0[] =
-	{
-		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
-		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
-		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
-	};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
-		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
-		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-
-
-
-
+	// $RelocationDataEnd
 
 	run = true;
 }
 
+export void EventMain()
+{
+	LogFunction();
+
+	Toggle(true);
+}
+
+export void EventDelete()
+{
+	LogFunction();
+
+	Toggle(false);
+}
+
+export void UpdateEnemyCount(byte8 * addr)
+{
+	LogFunction();
+
+	auto & helperIndex = g_helperIndices[CHANNEL_ENEMY];
 
 
 
+	auto Function = [&](byte8 * enemyBaseAddr) -> bool
+	{
+		auto & enemyData = *reinterpret_cast<EnemyData *>(enemyBaseAddr);
 
+		helperIndex = GetEnemyHelperIndex(enemyData);
 
+		Log("helperIndex %u", helperIndex);
 
+		return true;
+	};
 
+	EnemyForAll(Function);
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
+namespaceEnd();
 
 #ifdef __GARBAGE__
 #endif

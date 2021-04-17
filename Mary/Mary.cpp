@@ -200,9 +200,16 @@ uint32 DllMain
 		Hooks_Init();
 
 
-		ToggleSoundRelocations(false);
-		ToggleSoundRelocations(true);
+		Sound::ToggleRelocations(false);
+		Sound::ToggleRelocations(true);
 
+
+/*
+dmc3.exe+27A39C - 90                    - nop 
+
+F3 0F 11 4B 04
+
+*/
 
 		SetMemory((appBaseAddr + 0x5505B5), 0, 23, MemoryFlags_VirtualProtectDestination); // Remove FMODGetCodecDescription label.
 

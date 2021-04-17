@@ -1,15 +1,13 @@
 *
 
-# !.git
-# !.git/*
+
+
 !Core
 !Core/*
 !dinput8
 !dinput8/*
 # !Eva
 # !Eva/*
-# !ImGui
-# !ImGui/*
 # !Kyrie
 # !Kyrie/*
 # !Lucia
@@ -18,13 +16,12 @@
 !Mary/*
 !Scripts
 !Scripts/*.js
-# !Scripts/*.cpp
 !stb
 !stb/*
-# !Zip
-# !Zip/*
 
 
 
-
-
+.gitignore
+.gitmodules
+LICENSE.txt
+README.md

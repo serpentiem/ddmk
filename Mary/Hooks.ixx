@@ -1017,7 +1017,7 @@ void WindowSize1(byte8 * state)
 			(
 				appWindow,
 				0,
-				1920,
+				0,
 				0,
 				640,
 				360,
@@ -1057,10 +1057,10 @@ void WindowSize2(byte8 * state)
 			(
 				appWindow,
 				0,
-				1920,
 				0,
-				1280,
-				720,
+				0,
+				1920,
+				1080,
 				0
 			);
 		}

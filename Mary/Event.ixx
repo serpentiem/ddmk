@@ -168,7 +168,7 @@ bool EventOnce(EventData & eventData)
 		//Actor_Main();
 		BossRush_Main();
 
-		Sound_EventMain();
+		Sound::EventMain();
 
 
 
@@ -197,7 +197,7 @@ bool EventOnce(EventData & eventData)
 		Enemy_Delete();
 
 
-		Sound_EventDelete();
+		Sound::EventDelete();
 
 
 
@@ -413,7 +413,7 @@ void UpdateEnemyCount(byte8 * addr)
 	Log("count %u", count);
 
 
-	Sound_UpdateEnemyCount(addr);
+	Sound::UpdateEnemyCount(addr);
 
 
 
