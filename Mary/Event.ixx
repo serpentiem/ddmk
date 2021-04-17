@@ -1,8 +1,19 @@
 module;
-#include "../Core/Core.h"
 
-#include "Vars.h"
+#include "../Core/Macros.h" //
+
+// #include "../Core/Core.h"
+
+// #include "Vars.h"
 export module Event;
+
+import Core;
+
+
+import Vars;
+
+#define memset SetMemory
+#define memcpy CopyMemory
 
 import Actor;
 import Arcade;
@@ -385,16 +396,159 @@ void EventContinue()
 
 
 
+void UpdateEnemyCount(byte8 * addr)
+{
+
+
+	if (!addr)
+	{
+		return;
+	}
+
+	LogFunction();
+
+
+	auto & count = *reinterpret_cast<uint32 *>(addr + 0x28);
+
+	Log("count %u", count);
+
+
+	Sound_UpdateEnemyCount(addr);
+
+
+
+}
 
 
 
 
 
 
+export void Event_Toggle(bool enable)
+{
+	LogFunction(enable);
+
+	static bool run = false;
+
+	// Update Enemy Count
+	{
+		auto addr     = (appBaseAddr + 0x1A5348);
+		auto jumpAddr = (appBaseAddr + 0x1A534F);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1A5348 - 89 73 28    - mov [rbx+28],esi
+		dmc3.exe+1A534B - 66 89 73 25 - mov [rbx+25],si
+		dmc3.exe+1A534F - C6 43 24 01 - mov byte ptr [rbx+24],01
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateEnemyCount, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1A4F82);
+		auto jumpAddr = (appBaseAddr + 0x1A4F8A);
+		constexpr uint32 size = 8;
+		/*
+		dmc3.exe+1A4F82 - 41 FF 42 28       - inc [r10+28]
+		dmc3.exe+1A4F86 - 44 8B 4A 78       - mov r9d,[rdx+78]
+		dmc3.exe+1A4F8A - 48 8B 05 97BEAE00 - mov rax,[dmc3.exe+C90E28]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_r10,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateEnemyCount, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x1A4FED);
+		auto jumpAddr = (appBaseAddr + 0x1A4FF4);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1A4FED - FF 4B 28    - dec [rbx+28]
+		dmc3.exe+1A4FF0 - 83 7F 78 1B - cmp dword ptr [rdi+78],1B
+		dmc3.exe+1A4FF4 - 75 03       - jne dmc3.exe+1A4FF9
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateEnemyCount, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	run = true;
+}
 
 export void Event_Init()
 {
 	LogFunction();
+
+
+
+
+
+
+
+
+
 
 	// Main
 	{

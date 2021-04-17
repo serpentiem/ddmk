@@ -1,15 +1,47 @@
 module;
-#include "Core.h"
-
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_internal.h"
 export module Core_GUI;
+
+import Core;
+
+#include "Macros.h"
 
 #define debug false
 
 export int     GUI_id          = 0;
 export bool    GUI_save        = false;
 export float GUI_saveTimeout = 0;
+
+template <typename T>
+struct GetImGuiDataType
+{
+	static constexpr ImGuiDataType value =
+	(TypeMatch<T, int8  >::value) ? ImGuiDataType_S8     :
+	(TypeMatch<T, int16 >::value) ? ImGuiDataType_S16    :
+	(TypeMatch<T, int32 >::value) ? ImGuiDataType_S32    :
+	(TypeMatch<T, int64 >::value) ? ImGuiDataType_S64    :
+	(TypeMatch<T, uint8 >::value) ? ImGuiDataType_U8     :
+	(TypeMatch<T, uint16>::value) ? ImGuiDataType_U16    :
+	(TypeMatch<T, uint32>::value) ? ImGuiDataType_U32    :
+	(TypeMatch<T, uint64>::value) ? ImGuiDataType_U64    :
+	(TypeMatch<T, float >::value) ? ImGuiDataType_Float  :
+	(TypeMatch<T, double>::value) ? ImGuiDataType_Double :
+	0;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export inline void GUI_PushId()
 {
@@ -100,13 +132,7 @@ bool GUI_Input
 	auto update = ImGui::InputScalar
 	(
 		label,
-		(TypeMatch<T, uint8  >::value) ? ImGuiDataType_U8     :
-		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16    :
-		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32    :
-		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64    :
-		(TypeMatch<T, float>::value) ? ImGuiDataType_Float  :
-		(TypeMatch<T, double >::value) ? ImGuiDataType_Double :
-		0,
+		GetImGuiDataType<T>::value,
 		&var,
 		(step == 0) ? 0 : &step,
 		(step == 0) ? 0 : &step,
@@ -151,6 +177,12 @@ bool GUI_Input2
 	return update;
 }
 
+
+
+
+
+
+
 export template <typename T>
 bool GUI_InputDefault
 (
@@ -179,13 +211,7 @@ bool GUI_InputDefault
 	auto update = ImGui::InputScalar
 	(
 		"",
-		(TypeMatch<T, uint8  >::value) ? ImGuiDataType_U8     :
-		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16    :
-		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32    :
-		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64    :
-		(TypeMatch<T, float>::value) ? ImGuiDataType_Float  :
-		(TypeMatch<T, double >::value) ? ImGuiDataType_Double :
-		0,
+		GetImGuiDataType<T>::value,
 		&var,
 		(step == 0) ? 0 : &step,
 		(step == 0) ? 0 : &step,
@@ -264,13 +290,7 @@ bool GUI_Slider
 	auto update = ImGui::SliderScalar
 	(
 		label,
-		(TypeMatch<T, uint8  >::value) ? ImGuiDataType_U8     :
-		(TypeMatch<T, uint16 >::value) ? ImGuiDataType_U16    :
-		(TypeMatch<T, uint32 >::value) ? ImGuiDataType_U32    :
-		(TypeMatch<T, uint64 >::value) ? ImGuiDataType_U64    :
-		(TypeMatch<T, float>::value) ? ImGuiDataType_Float  :
-		(TypeMatch<T, double >::value) ? ImGuiDataType_Double :
-		0,
+		GetImGuiDataType<T>::value,
 		&var,
 		&min,
 		&max,

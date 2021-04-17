@@ -1,17 +1,30 @@
-/.vs
-Scripts/*
+*
+
+# !.git
+# !.git/*
+!Core
+!Core/*
+!dinput8
+!dinput8/*
+# !Eva
+# !Eva/*
+# !ImGui
+# !ImGui/*
+# !Kyrie
+# !Kyrie/*
+# !Lucia
+# !Lucia/*
+!Mary
+!Mary/*
+!Scripts
 !Scripts/*.js
-!Scripts/*.cpp
-*.bat
-*.manifest
-*.exe
-*.exp
-*.i
-*.ifc
-*.iobj
-*.ipdb
-*.lib
-*.obj
-*.pdb
-CleanPDB.cpp
-main.cpp
+# !Scripts/*.cpp
+!stb
+!stb/*
+# !Zip
+# !Zip/*
+
+
+
+
+

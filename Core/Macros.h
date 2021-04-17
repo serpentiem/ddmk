@@ -1,20 +1,9 @@
-
-
 #pragma once
 
-
-
-
-
-
-#ifdef offsetof
-#undef offsetof
-#endif
-// #ifndef __INTELLISENSE__
-#define offsetof(s, m) __builtin_offsetof(s, m)
-// #else
-// #define offsetof(s, m) reinterpret_cast<uint32>(&(*reinterpret_cast<s *>(0)).m)
+// #ifdef offsetof
+// #undef offsetof
 // #endif
+#define offsetof(s, m) __builtin_offsetof(s, m)
 
 #define for_each(type, name, start, end, ...) for (type name = start; name < end; name++ __VA_OPT__(,) __VA_ARGS__)
 #define for_all(type, name, end, ...) for_each(type, name, 0, end __VA_OPT__(,) __VA_ARGS__)
@@ -27,55 +16,23 @@
 
 #define PrintFunction(...) PrintFunctionHelper(FUNC_NAME __VA_OPT__(,) __VA_ARGS__)
 
-#define DebugLog(...)\
-if constexpr (debug)\
-{\
-	Log(__VA_ARGS__);\
-}
+// #define DebugLog(...)\
+// if constexpr (debug)\
+// {\
+// 	Log(__VA_ARGS__);\
+// }
 
-#define DebugLogFunction(...)\
-if constexpr (debug)\
-{\
-	LogFunction(__VA_ARGS__);\
-}
+// #define DebugLogFunction(...)\
+// if constexpr (debug)\
+// {\
+// 	LogFunction(__VA_ARGS__);\
+// }
 
 #define _Prep_Merge(a, b) a##b
 #define Prep_Merge(a, b) _Prep_Merge(a, b)
 
-
-
-// #define ResetConfigEntry(name) activeConfig.name = queuedConfig.name = defaultConfig.name
-
-
-// #define ResetConfigStructure(name)\
-// CopyMemory\
-// (\
-// 	&queuedConfig.name,\
-// 	&defaultConfig.name,\
-// 	sizeof(queuedConfig.name)\
-// );\
-// CopyMemory\
-// (\
-// 	&activeConfig.name,\
-// 	&queuedConfig.name,\
-// 	sizeof(activeConfig.name)\
-// )
-
-
-
-// #define ResetConfigArray(name)\
-// CopyMemory\
-// (\
-// 	queuedConfig.name,\
-// 	defaultConfig.name,\
-// 	sizeof(queuedConfig.name)\
-// );\
-// CopyMemory\
-// (\
-// 	activeConfig.name,\
-// 	queuedConfig.name,\
-// 	sizeof(activeConfig.name)\
-// )
+#define _Prep_String(a) #a
+#define Prep_String(a) _Prep_String(a)
 
 
 
@@ -87,7 +44,13 @@ ResetConfigHelper\
 	defaultConfig.name\
 )
 
-
+#define SetConfig(name)\
+SetConfigHelper\
+(\
+	activeConfig.name,\
+	queuedConfig.name,\
+	defaultConfig.name\
+)
 
 
 
@@ -652,5 +615,489 @@ ResetConfigHelper\
 #define jmp       0xE9, 0x00, 0x00, 0x00, 0x00 // jmp
 #define jmp_short 0xEB, 0x00                   // jmp
 
-#define NamespaceStart(name) namespace name {
-#define NamespaceEnd() }
+
+
+
+
+
+#define namespaceStart(name) namespace name {
+#define namespaceEnd() }
+
+// #define exportStart() export {
+// #define exportEnd() }
+
+
+
+
+
+
+#define IntroduceSizeStruct(size)\
+struct Size_##size\
+{\
+	byte8 data[size];\
+	operator byte8 *()\
+	{\
+		return reinterpret_cast<byte8 *>(this);\
+	}\
+}
+
+
+
+#define IntroduceSessionData() auto & sessionData = *reinterpret_cast<SessionData *>(appBaseAddr + 0xC8F250)
+
+
+#define _IntroduceMissionData(name, ...)\
+auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E30);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+auto & missionData = *reinterpret_cast<MissionData *>(name)
+#define IntroduceMissionData(...) _IntroduceMissionData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+
+
+
+#define _IntroduceMissionActorData(name, ...)\
+auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E30);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+auto & queuedMissionActorData = *reinterpret_cast<QueuedMissionActorData *>(name + 0xC0 );\
+auto & activeMissionActorData = *reinterpret_cast<ActiveMissionActorData *>(name + 0x16C)
+#define IntroduceMissionActorData(...) _IntroduceMissionActorData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+
+#define _IntroduceEventData(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+if (!name[8])\
+{\
+	__VA_ARGS__;\
+}\
+auto & eventData = *reinterpret_cast<EventData *>(name[8])
+#define IntroduceEventData(...) _IntroduceEventData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+#define _IntroduceNextEventData(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E10);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+if (!name[12])\
+{\
+	__VA_ARGS__;\
+}\
+auto & nextEventData = *reinterpret_cast<NextEventData *>(name[12])
+#define IntroduceNextEventData(...) _IntroduceNextEventData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+#define _IntroduceEventFlags(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E30);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+if (!name[1])\
+{\
+	__VA_ARGS__;\
+}\
+auto eventFlags = reinterpret_cast<byte32 *>(name[1])
+#define IntroduceEventFlags(...) _IntroduceEventFlags(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+
+#define _IntroduceCameraData(name, ...)\
+auto name = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC8FBD0);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+if (!name[147])\
+{\
+	__VA_ARGS__;\
+}\
+auto & cameraData = *reinterpret_cast<CameraData *>(name[147])
+#define IntroduceCameraData(...) _IntroduceCameraData(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+
+
+
+#define _IntroduceHUDPointers(name, ...)\
+auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E28);\
+if (!name)\
+{\
+	__VA_ARGS__;\
+}\
+name -= 0x180;\
+auto hudTop    = *reinterpret_cast<byte8 **>(name + 0x1B070);\
+auto hudBottom = *reinterpret_cast<byte8 **>(name + 0x1B078)
+#define IntroduceHUDPointers(...) _IntroduceHUDPointers(Prep_Merge(pool_, __LINE__), __VA_ARGS__)
+/*
+dmc3.exe+23E691 - 48 8D 93 80010000 - lea rdx,[rbx+00000180]
+*/
+
+
+#define IntroduceActorDataNoBaseAddress(actorDataName, source, ...)\
+if (!source)\
+{\
+	__VA_ARGS__;\
+}\
+auto & actorDataName = *reinterpret_cast<ActorData *>(source)
+
+#define IntroduceActorData(actorBaseAddrName, actorDataName, source, ...)\
+auto actorBaseAddrName = source;\
+IntroduceActorDataNoBaseAddress(actorDataName, actorBaseAddrName, __VA_ARGS__)
+
+#define _IntroduceMainActorDataNoBaseAddress(poolName, actorDataName, ...)\
+auto poolName = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);\
+if (!poolName)\
+{\
+	__VA_ARGS__;\
+}\
+IntroduceActorDataNoBaseAddress(actorDataName, poolName[3], __VA_ARGS__)
+#define IntroduceMainActorDataNoBaseAddress(actorDataName, ...) _IntroduceMainActorDataNoBaseAddress(Prep_Merge(pool_, __LINE__), actorDataName, __VA_ARGS__)
+
+#define _IntroduceMainActorData(poolName, actorBaseAddrName, actorDataName, ...)\
+auto poolName = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);\
+if (!poolName)\
+{\
+	__VA_ARGS__;\
+}\
+IntroduceActorData(actorBaseAddrName, actorDataName, poolName[3], __VA_ARGS__)
+#define IntroduceMainActorData(actorBaseAddrName, actorDataName, ...) _IntroduceMainActorData(Prep_Merge(pool_, __LINE__), actorBaseAddrName, actorDataName, __VA_ARGS__)
+
+
+
+#define IntroduceEnemyDataNoBaseAddress(enemyDataName, source, ...)\
+if (!source)\
+{\
+	__VA_ARGS__;\
+}\
+auto & enemyDataName = *reinterpret_cast<EnemyData *>(source)
+
+#define IntroduceEnemyData(enemyBaseAddrName, enemyDataName, source, ...)\
+auto enemyBaseAddrName = source;\
+IntroduceEnemyDataNoBaseAddress(enemyDataName, enemyBaseAddrName, __VA_ARGS__)
+
+#define _IntroduceDefaultEnemyDataNoBaseAddress(poolName, enemyDataName, enemyIndexName, ...)\
+auto poolName = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);\
+if (!poolName)\
+{\
+	__VA_ARGS__;\
+}\
+if (!poolName[8])\
+{\
+	__VA_ARGS__;\
+}\
+IntroduceEnemyDataNoBaseAddress(enemyDataName, poolName[8] + 0x48 + (enemyIndexName * 0x10), __VA_ARGS__)
+#define IntroduceDefaultEnemyDataNoBaseAddress(enemyDataName, enemyIndexName, ...) _IntroduceDefaultEnemyDataNoBaseAddress(Prep_Merge(pool_, __LINE__), enemyDataName, enemyIndexName, __VA_ARGS__)
+
+#define _IntroduceDefaultEnemyData(poolName, enemyBaseAddrName, enemyDataName, enemyIndexName, ...)\
+auto poolName = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);\
+if (!poolName)\
+{\
+	__VA_ARGS__;\
+}\
+if (!poolName[8])\
+{\
+	__VA_ARGS__;\
+}\
+IntroduceEnemyData(enemyBaseAddrName, enemyDataName, poolName[8] + 0x48 + (enemyIndexName * 0x10), __VA_ARGS__)
+#define IntroduceDefaultEnemyData(enemyBaseAddrName, enemyDataName, enemyIndexName, ...) _IntroduceDefaultEnemyData(Prep_Merge(pool_, __LINE__), enemyBaseAddrName, enemyDataName, enemyIndexName, __VA_ARGS__)
+
+/*
+dmc3.exe+1AC743 - 48 8B 05 DE46AE00 - mov rax,[dmc3.exe+C90E28]
+dmc3.exe+1AC74D - 48 8B 48 40       - mov rcx,[rax+40]
+dmc3.exe+1A52FC - 48 8D 43 48       - lea rax,[rbx+48]
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#ifdef __GARBAGE__
+
+// #define namespaceStart(name) namespace name {
+// #define namespaceEnd() }
+
+// #ifndef __INTELLISENSE__
+// #else
+// #define offsetof(s, m) reinterpret_cast<uint32>(&(*reinterpret_cast<s *>(0)).m)
+// #endif
+// #define ResetConfigEntry(name) activeConfig.name = queuedConfig.name = defaultConfig.name
+
+
+// #define ResetConfigStructure(name)\
+// CopyMemory\
+// (\
+// 	&queuedConfig.name,\
+// 	&defaultConfig.name,\
+// 	sizeof(queuedConfig.name)\
+// );\
+// CopyMemory\
+// (\
+// 	&activeConfig.name,\
+// 	&queuedConfig.name,\
+// 	sizeof(activeConfig.name)\
+// )
+
+
+
+// #define ResetConfigArray(name)\
+// CopyMemory\
+// (\
+// 	queuedConfig.name,\
+// 	defaultConfig.name,\
+// 	sizeof(queuedConfig.name)\
+// );\
+// CopyMemory\
+// (\
+// 	activeConfig.name,\
+// 	queuedConfig.name,\
+// 	sizeof(activeConfig.name)\
+// )
+
+
+
+#endif

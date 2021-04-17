@@ -1,3 +1,7 @@
+
+// @Todo: Move.
+
+
 var lz = function(n)
 {
 	var str = "";

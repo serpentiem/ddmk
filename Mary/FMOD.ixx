@@ -1,8 +1,19 @@
 module;
-#include "../Core/Core.h"
 
-#include "Vars.h"
+#include "../Core/Macros.h" //
+// #include "../Core/Core.h"
+
+// #include "Vars.h"
 export module FMOD;
+
+import Core;
+
+
+
+import Vars;
+
+
+import Windows;
 
 #define debug false
 
@@ -66,15 +77,15 @@ export bool FMOD_Init()
 	const char * libName = "fmod64.dll";
 
 
-	SetLastError(0);
+	Windows::SetLastError(0);
 
-	auto lib = LoadLibraryA(libName);
+	auto lib = Windows::LoadLibraryA(libName);
 
-	error = GetLastError();
+	error = Windows::GetLastError();
 
 	if (!lib)
 	{
-		Log("LoadLibraryA failed. %X", error);
+		Log("Windows::LoadLibraryA failed. %X", error);
 
 		return false;
 	}
@@ -86,11 +97,11 @@ export bool FMOD_Init()
 	{
 		const char * funcName = "FMOD_System_CreateSound";
 
-		SetLastError(0);
+		Windows::SetLastError(0);
 
-		auto funcAddr = GetProcAddress(lib, funcName);
+		auto funcAddr = Windows::GetProcAddress(lib, funcName);
 
-		error = GetLastError();
+		error = Windows::GetLastError();
 
 		if (!funcAddr)
 		{
@@ -113,11 +124,11 @@ export bool FMOD_Init()
 	{
 		const char * funcName = "FMOD_Channel_SetVolume";
 
-		SetLastError(0);
+		Windows::SetLastError(0);
 
-		auto funcAddr = GetProcAddress(lib, funcName);
+		auto funcAddr = Windows::GetProcAddress(lib, funcName);
 
-		error = GetLastError();
+		error = Windows::GetLastError();
 
 		if (!funcAddr)
 		{

@@ -1,10 +1,18 @@
+
+
+
+
 // @Todo: Use reinterpret_cast.
 
-module;
-#include "../Core/Core.h"
 
-#include "Vars.h"
+
 export module Internal;
+
+import Core;
+
+#include "../Core/Macros.h"
+
+import Vars;
 
 // $DataStart
 

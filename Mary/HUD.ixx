@@ -1,8 +1,18 @@
 module;
-#include "../Core/Core.h"
+// #include "../Core/Core.h"
 
-#include "Vars.h"
+// #include "Vars.h"
+
+#include "../Core/Macros.h" //
+
 export module HUD;
+
+import Core;
+
+
+
+import Vars;
+
 
 import File;
 import Global;

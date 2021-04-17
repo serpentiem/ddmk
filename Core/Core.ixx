@@ -1,9 +1,30 @@
+// @Todo: Create IsInvalidHandle function.
 // @Todo: Update Inits.
 // @Todo: Update LogFunctionHelpers.
 
 module;
-#include "Includes.h"
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 export module Core;
+
+export import DataTypes;
+
+
+
+#include "Macros.h"
+
+
+
+
+
+
+
+import Windows;
+
+using namespace Windows;
+
 
 #define debug false
 
@@ -64,6 +85,28 @@ constexpr auto countof(T (&)[count])
 {
 	return count;
 }
+
+// export struct SizeData
+// {
+// 	uint32 width;
+// 	uint32 height;
+// 	vec2 size;
+
+// 	void Update
+// 	(
+// 		uint32 newWidth,
+// 		uint32 newHeight
+// 	)
+// 	{
+// 		width = newWidth;
+// 		height = newHeight;
+// 		size =
+// 		{
+// 			static_cast<float>(width),
+// 			static_cast<float>(height)
+// 		};
+// 	}
+// };
 
 export struct TimeData
 {
@@ -575,7 +618,7 @@ export HANDLE OpenFile
 		);
 	}
 
-	if (file == INVALID_HANDLE_VALUE)
+	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
 	{
 		error = GetLastError();
 
@@ -587,7 +630,7 @@ export HANDLE OpenFile
 		// 	flags
 		// );
 
-		return INVALID_HANDLE_VALUE;
+		return reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE);
 	}
 
 	return file;
@@ -601,7 +644,7 @@ export bool CloseFile(HANDLE file)
 		// Log("file %llX", file);
 	}
 
-	if (file == INVALID_HANDLE_VALUE)
+	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
 	{
 		return 0;
 	}
@@ -630,7 +673,7 @@ export uint64 GetFileSize(HANDLE file)
 		// Log("file %llX", file);
 	}
 
-	if (file == INVALID_HANDLE_VALUE)
+	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
 	{
 		return 0;
 	}
@@ -696,7 +739,7 @@ export bool LoadFile
 
 	if
 	(
-		(file == INVALID_HANDLE_VALUE) ||
+		(file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE)) ||
 		(size == 0) ||
 		!dest
 	)
@@ -854,7 +897,7 @@ export byte8 * LoadFile(const char * name)
 		name,
 		FileFlags_Read
 	);
-	if (file == INVALID_HANDLE_VALUE)
+	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
 	{
 		//Log("OpenFile failed. %s", name);
 
@@ -898,7 +941,7 @@ export bool SaveFile
 {
 	if
 	(
-		(file == INVALID_HANDLE_VALUE) ||
+		(file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE)) ||
 		!addr ||
 		(size == 0)
 	)
@@ -978,7 +1021,7 @@ export bool SaveFile
 		name,
 		flags
 	);
-	if (file == INVALID_HANDLE_VALUE)
+	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
 	{
 		return false;
 	}
@@ -2326,7 +2369,7 @@ export bool Core_Memory_Init()
 	MODULEENTRY32 moduleEntry = {};
 	HANDLE snapshot = 0;
 
-	moduleEntry.dwSize = sizeof(MODULEENTRY32);
+	moduleEntry.dwSize = sizeof(moduleEntry);
 	snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
 	Module32First(snapshot, &moduleEntry);
 
@@ -2338,6 +2381,8 @@ export bool Core_Memory_Init()
 	Log("appStart %llX", appBaseAddr);
 	Log("appEnd   %llX", (appBaseAddr + appSize));
 
+	Log("appSize %X", appSize);
+
 	GetSystemInfo(&systemInfo);
 
 	return true;
@@ -2347,7 +2392,15 @@ export bool Core_Memory_Init()
 
 #pragma endregion
 
+
+
+
+
 #pragma region Windows
+
+
+
+
 
 export inline bool Windows_GetTicksPerSecond(uint64 * var)
 {
@@ -2388,23 +2441,147 @@ export void Windows_ToggleCursor(bool enable)
 	}
 }
 
-export bool Windows_GetWindowPos(HWND window, POINT * point)
+// export bool Windows_GetWindowPos(HWND window, POINT * point)
+// {
+// 	if (!window)
+// 	{
+// 		return false;
+// 	}
+// 	RECT rect = {};
+// 	if (!GetWindowRect(window, &rect))
+// 	{
+// 		return false;
+// 	}
+// 	point->x = rect.left;
+// 	point->y = rect.top;
+// 	return true;
+// }
+
+// POINT Windows_GetWindowSize(HWND windowHandle)
+// {
+// 	RECT rect = {};
+
+// 	GetWindowRect
+// 	(
+// 		windowHandle,
+// 		&rect
+// 	);
+
+// 	POINT point = {};
+
+// 	point.x = (rect.right - rect.left);
+// 	point.y = (rect.bottom - rect.top);
+
+// 	return point;
+// }
+
+// POINT Windows_GetClientSize(HWND windowHandle)
+// {
+// 	RECT rect = {};
+
+// 	GetClientRect
+// 	(
+// 		windowHandle,
+// 		&rect
+// 	);
+
+// 	POINT point = {};
+
+// 	point.x = rect.right;
+// 	point.y = rect.bottom;
+
+// 	return point;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+// POINT Windows_GetWindowSize(HWND windowHandle)
+// {
+// 	POINT size = {};
+
+// 	RECT rect = {};
+
+// 	GetWindowRect
+// 	(
+// 		windowHandle,
+// 		&rect
+// 	);
+
+
+
+
+
+// }
+
+
+
+
+
+
+
+
+export bool IsBorderless(HWND windowHandle)
 {
-	if (!window)
+	auto style = GetWindowLongA
+	(
+		windowHandle,
+		GWL_STYLE
+	);
+
+	if (style & WS_BORDER)
 	{
 		return false;
 	}
-	RECT rect = {};
-	if (!GetWindowRect(window, &rect))
-	{
-		return false;
-	}
-	point->x = rect.left;
-	point->y = rect.top;
+
 	return true;
 }
 
+
+
+
+
+
+
+
+
+
+
+
 #pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifdef __GARBAGE__
 

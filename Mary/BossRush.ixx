@@ -1,8 +1,22 @@
 module;
-#include "../Core/Core.h"
+// #include "../Core/Core.h"
 
-#include "Vars.h"
+// #include "Vars.h"
+
+#include <string.h>
+
+
+#include "../Core/Macros.h" //
+
 export module BossRush;
+
+import Core;
+
+
+import Vars;
+
+// #define memset SetMemory
+// #define memcpy CopyMemory
 
 import Config;
 import Internal;

@@ -1,21 +1,57 @@
-module;
-#include "../Core/Core.h"
-
-#include <d3d11.h>
-
-#include "Vars.h"
 export module Global;
+
+import Core;
+
+#include "../Core/Macros.h"
+
+import DXGI;
+import D3D11;
+import DI8;
+
+import Vars;
+
+using namespace DXGI;
+using namespace D3D11;
+using namespace DI8;
+
+export namespace DXGI
+{
+	IDXGISwapChain * swapChain = 0;
+}
+
+export namespace D3D11
+{
+	ID3D11Device           * device           = 0;
+	ID3D11DeviceContext    * deviceContext    = 0;
+	ID3D11RenderTargetView * renderTargetView = 0;
+}
+
+export namespace DI8
+{
+	IDirectInput8W       * deviceInterface = 0;
+	IDirectInputDevice8W * mouse           = 0;
+	DIMOUSESTATE2          mouseState      = {};
+}
+
+export vec2 g_windowSize = {};
+export vec2 g_clientSize = {};
+export vec2 g_renderSize = {};
+
+
+
 
 export bool  g_pause                 = false;
 export uint8 g_scene                 = 0;
 export bool  g_quicksilver           = false;
-export uint8 g_character             = 0;
-export uint8 g_costume               = 0;
 export bool  g_disableCameraRotation = false;
 
-export ID3D11Device           * D3D11_device           = 0;
-export ID3D11DeviceContext    * D3D11_deviceContext    = 0;
-export ID3D11RenderTargetView * D3D11_renderTargetView = 0;
+export Vector<byte8 *> Actor_actorBaseAddrs = {};
+
+export uint8 g_helperIndices[MAX_CHANNEL] = {};
+
+
+
+
 
 export bool InGame()
 {
@@ -54,3 +90,22 @@ export bool InCredits()
 
 	return *reinterpret_cast<bool *>(pool + 0x11);
 }
+
+
+// export bool IsBorderless()
+// {
+// 	return *reinterpret_cast<bool *>(appBaseAddr + 0x5EA130 + 0x679);
+// 	/*
+// 	dmc3.exe+47DEA - 48 8D 0D 3F235A00 - lea rcx,[dmc3.exe+5EA130]
+// 	dmc3.exe+36E60 - 0FB6 81 79060000  - movzx eax,byte ptr [rcx+00000679]
+// 	*/
+// }
+
+
+
+
+
+
+
+
+

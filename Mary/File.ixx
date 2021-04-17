@@ -1,17 +1,32 @@
+
+
+
 module;
-#include "../Core/Core.h"
-
-#define ZIP_STATIC
 #include "../Zip/zip.h"
-
-#include "Vars.h"
 export module File;
+
+
+
+import Core;
+
+#include "../Core/Macros.h"
+
+import Windows;
+
+import Vars;
+
 
 import Config;
 import Internal;
 import Memory;
 
+using namespace Windows;
+
 #define debug false
+
+
+
+
 
 export bool IsArchive(byte8 * addr)
 {
@@ -340,7 +355,7 @@ byte8 * FileManager::Push
 		path,
 		FileFlags_Read
 	);
-	if (file == INVALID_HANDLE_VALUE)
+	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
 	{
 		Log("OpenFile failed. %s", path);
 
@@ -361,7 +376,7 @@ byte8 * FileManager::Push
 			path,
 			FileFlags_Read
 		);
-		if (file == INVALID_HANDLE_VALUE)
+		if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
 		{
 			Log("OpenFile failed. %s", path);
 

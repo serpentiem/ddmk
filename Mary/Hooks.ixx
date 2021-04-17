@@ -1,225 +1,445 @@
-// @Todo: Update.
-
 module;
-#include "../Core/Core.h"
-
-#include <d3d11.h>
-#define DIRECTINPUT_VERSION 0x800
-#include <dinput.h>
-#include <dxgi.h>
-#include <Xinput.h>
-
 #include "../ImGui/imgui.h"
 export module Hooks;
 
-import ImGui_D3D11;
-import ImGui_DirectInput8;
-import ImGui_User;
+import Core;
+
+#include "../Core/Macros.h"
+
+import Windows;
+import DXGI;
+import D3D11;
+import DI8;
+import XI;
+
+import Core_ImGui;
+
 import Config;
 import Global;
+import Graphics;
 import GUI;
 import Window;
+import Vars;
 
-#define debug false
+using namespace Windows;
+using namespace DXGI;
+using namespace D3D11;
+using namespace DI8;
+using namespace XI;
 
-enum DM_
+#define debug true
+
+enum
 {
 	DM_PAUSE = WM_USER,
 };
 
-typedef ATOM(* User_RegisterClassExW_t)
+
+
+
+
+POINT GetWindowSize(HWND windowHandle)
+{
+	POINT point = {};
+	RECT  rect  = {};
+
+	if (!windowHandle)
+	{
+		return point;
+	}
+
+	GetWindowRect
+	(
+		windowHandle,
+		&rect
+	);
+
+	point.x = (rect.right  - rect.left);
+	point.y = (rect.bottom - rect.top );
+
+	return point;
+}
+
+POINT GetClientSize(HWND windowHandle)
+{
+	POINT point = {};
+	RECT  rect  = {};
+	RECT  rect2 = {};
+
+	if (!windowHandle)
+	{
+		return point;
+	}
+
+	GetWindowRect
+	(
+		appWindow,
+		&rect
+	);
+
+	auto style = GetWindowLongA
+	(
+		appWindow,
+		GWL_STYLE
+	);
+
+	AdjustWindowRect
+	(
+		&rect2,
+		style,
+		0
+	);
+
+	rect.left   -= rect2.left;
+	rect.top    -= rect2.top;
+	rect.right  -= rect2.right;
+	rect.bottom -= rect2.bottom;
+
+	point.x = (rect.right  - rect.left);
+	point.y = (rect.bottom - rect.top );
+
+	return point;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void UpdateGlobalWindowSize()
+{
+	if (!appWindow)
+	{
+		return;
+	}
+
+	auto size = GetWindowSize(appWindow);
+
+	g_windowSize =
+	{
+		static_cast<float>(size.x),
+		static_cast<float>(size.y)
+	};
+
+	Log
+	(
+		"%s %g %g",
+		FUNC_NAME,
+		g_windowSize.x,
+		g_windowSize.y
+	);
+}
+
+void UpdateGlobalClientSize()
+{
+	if (!appWindow)
+	{
+		return;
+	}
+
+	auto size = GetClientSize(appWindow);
+
+	g_clientSize =
+	{
+		static_cast<float>(size.x),
+		static_cast<float>(size.y)
+	};
+
+	Log
+	(
+		"%s %g %g",
+		FUNC_NAME,
+		g_clientSize.x,
+		g_clientSize.y
+	);
+}
+
+void UpdateGlobalRenderSize
 (
-	WNDCLASSEXW *
-);
-typedef HWND(* User_CreateWindowExW_t)
+	uint32 width,
+	uint32 height
+)
+{
+	g_renderSize =
+	{
+		static_cast<float>(width),
+		static_cast<float>(height)
+	};
+
+	Log
+	(
+		"%s %g %g",
+		FUNC_NAME,
+		g_renderSize.x,
+		g_renderSize.y
+	);
+}
+
+
+
+
+
+
+
+//namespaceStart(ImGui::DI8);
+
+void UpdateMousePositionMultiplier()
+{
+	using namespace ImGui::DI8;
+
+	if
+	(
+		(g_clientSize.x < 1) ||
+		(g_clientSize.y < 1) ||
+		(g_renderSize.x < 1) ||
+		(g_renderSize.y < 1)
+	)
+	{
+		mousePositionMultiplier.x = 1;
+		mousePositionMultiplier.y = 1;
+	}
+	else
+	{
+		mousePositionMultiplier.x = (g_renderSize.x / g_clientSize.x);
+		mousePositionMultiplier.y = (g_renderSize.y / g_clientSize.y);
+	}
+
+	Log
+	(
+		"%s %g %g",
+		FUNC_NAME,
+		mousePositionMultiplier.x,
+		mousePositionMultiplier.y
+	);
+}
+
+//namespaceEnd();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+template
+<
+	typename T,
+	typename T2
+>
+void Install
 (
-	byte32    ,
-	LPCWSTR  ,
-	LPCWSTR  ,
-	byte32    ,
-	int      ,
-	int      ,
-	int      ,
-	int      ,
-	HWND     ,
-	HMENU    ,
-	HINSTANCE,
-	LPVOID
-);
-typedef LRESULT(* User_WindowProc_t)
+	void * dest,
+	T & baseFuncAddr,
+	T2 & hookFuncAddr
+)
+{
+	auto & funcAddr = *reinterpret_cast<T *>(dest);
+
+	protectionHelper.Push
+	(
+		&funcAddr,
+		8
+	);
+
+	baseFuncAddr = funcAddr;
+
+	funcAddr = hookFuncAddr;
+
+	protectionHelper.Pop();
+}
+
+#pragma region Windows
+
+namespaceStart(Windows);
+
+typedef WNDPROC WindowProc_t;
+typedef decltype(RegisterClassExW) * RegisterClassExW_t;
+typedef decltype(CreateWindowExW) * CreateWindowExW_t;
+
+namespaceEnd();
+
+
+
+namespaceStart(Base::Windows);
+
+::Windows::WindowProc_t WindowProc = 0;
+::Windows::RegisterClassExW_t RegisterClassExW = 0;
+::Windows::CreateWindowExW_t CreateWindowExW = 0;
+
+namespaceEnd();
+
+
+
+namespaceStart(Hook::Windows);
+
+LRESULT WindowProc
 (
-	HWND,
-	UINT,
-	WPARAM,
-	LPARAM
-);
-
-User_RegisterClassExW_t User_RegisterClassExW = 0;
-User_CreateWindowExW_t  User_CreateWindowExW  = 0;
-User_WindowProc_t       User_WindowProc       = 0;
-
-
-
-
-
-
-
-
-
-
-
-//ATOM User_Hook_RegisterClassExW
-//(
-//	WNDCLASSEXW * windowClass
-//);
-//HWND User_Hook_CreateWindowExW
-//(
-//	byte32     exStyle,
-//	LPCWSTR   className,
-//	LPCWSTR   windowName,
-//	byte32     style,
-//	int       x,
-//	int       y,
-//	int       width,
-//	int       height,
-//	HWND      parentWindow,
-//	HMENU     menu,
-//	HINSTANCE instance,
-//	LPVOID    parameter
-//);
-//LRESULT User_Hook_WindowProc
-//(
-//	HWND   window,
-//	UINT   message,
-//	WPARAM wParameter,
-//	LPARAM lParameter
-//);
-
-// ID3D11Device           * D3D11_device           = 0;
-// ID3D11DeviceContext    * D3D11_deviceContext    = 0;
-// ID3D11RenderTargetView * D3D11_renderTargetView = 0;
-
-
-
-
-
-
-
-typedef HRESULT(* D3D11_CreateDeviceAndSwapChain_t)
-(
-	IDXGIAdapter         * ,
-	D3D_DRIVER_TYPE        ,
-	HMODULE                ,
-	UINT                   ,
-	D3D_FEATURE_LEVEL    * ,
-	UINT                   ,
-	UINT                   ,
-	DXGI_SWAP_CHAIN_DESC * ,
-	IDXGISwapChain       **,
-	ID3D11Device         **,
-	D3D_FEATURE_LEVEL    * ,
-	ID3D11DeviceContext  **
-);
-
-D3D11_CreateDeviceAndSwapChain_t D3D11_CreateDeviceAndSwapChain = 0;
-
-//HRESULT D3D11_Hook_CreateDeviceAndSwapChain
-//(
-//	IDXGIAdapter         *  adapter,
-//	D3D_DRIVER_TYPE         driverType,
-//	HMODULE                 software,
-//	UINT                    flags,
-//	D3D_FEATURE_LEVEL    *  featureLevels,
-//	UINT                    featureLevelCount,
-//	UINT                    SDKVersion,
-//	DXGI_SWAP_CHAIN_DESC *  swapChainDescription,
-//	IDXGISwapChain       ** swapChain,
-//	ID3D11Device         ** device,
-//	D3D_FEATURE_LEVEL    *  featureLevel,
-//	ID3D11DeviceContext  ** deviceContext
-//);
-
-
-
-
-
-
-IDXGISwapChain * DXGI_swapChain = 0;
-
-typedef HRESULT(* DXGI_Present_t)
-(
-	IDXGISwapChain *,
-	UINT            ,
-	UINT
-);
-typedef HRESULT(* DXGI_ResizeBuffers_t)
-(
-	IDXGISwapChain *,
-	UINT            ,
-	UINT            ,
-	UINT            ,
-	DXGI_FORMAT     ,
-	UINT
-);
-
-DXGI_Present_t       DXGI_Present       = 0;
-DXGI_ResizeBuffers_t DXGI_ResizeBuffers = 0;
-
-//HRESULT DXGI_Hook_Present
-//(
-//	IDXGISwapChain * swapChain,
-//	UINT             syncInterval,
-//	UINT             flags
-//);
-//HRESULT DXGI_Hook_ResizeBuffers
-//(
-//	IDXGISwapChain * swapChain,
-//	UINT             bufferCount,
-//	UINT             width,
-//	UINT             height,
-//	DXGI_FORMAT      newFormat,
-//	UINT             swapChainFlags
-//);
-
-IDirectInput8W       * DirectInput8_deviceInterface = 0;
-IDirectInputDevice8W * DirectInput8_mouse           = 0;
-DIMOUSESTATE2          DirectInput8_mouseState      = {};
-
-//static byte32 DirectInput8_CreateMouseThread(LPVOID parameter);
-//static byte32 DirectInput8_UpdateMouseThread(LPVOID parameter);
-//static byte32 DirectInput8_AcquireMouseThread(LPVOID parameter);
-
-
-
-
-
-LRESULT User_Hook_WindowProc
-(
-	HWND   window,
-	UINT   message,
+	HWND windowHandle,
+	UINT message,
 	WPARAM wParameter,
 	LPARAM lParameter
 )
 {
+
+	// static UINT lastMessage = 0;
+
+
+	// if (lastMessage != 0)
+	// {
+	// 	switch (lastMessage)
+	// 	{
+	// 		case WM_STYLECHANGED:
+	// 		{
+
+
+	// 		// Log("WM_STYLECHANGED");
+
+	// 		// UpdateGlobalWindowSize();
+	// 		// UpdateGlobalClientSize();
+	// 		// ImGui::DI8::UpdateMousePositionMultiplier
+	// 		// (
+	// 		// 	g_clientSize,
+	// 		// 	g_renderSize
+	// 		// );
+
+	// 		lastMessage = 0;
+
+	// 			break;
+
+
+	// 		}
+	// 	}
+	// }
+
+
+
+
+	auto result = ::Base::Windows::WindowProc
+	(
+		windowHandle,
+		message,
+		wParameter,
+		lParameter
+	);
+
+	auto error = GetLastError();
+
+
+
+
+
+
+
+
+
 	static bool run = false;
 	if (!run)
 	{
 		run = true;
-		LogFunction();
+
+		Log
+		(
+			"%s "
+			"%llX "
+			"%X "
+			"%llX "
+			"%llX",
+			FUNC_NAME,
+			windowHandle,
+			message,
+			wParameter,
+			lParameter
+		);
 	}
+
 	switch (message)
 	{
+		case WM_SIZE:
+		{
+			if (!appWindow)
+			{
+				break;
+			}
+
+			auto width = static_cast<uint16>(lParameter);
+			auto height = static_cast<uint16>(lParameter >> 16);
+
+			Log("WM_SIZE %u %u", width, height);
+
+			UpdateGlobalWindowSize();
+			UpdateGlobalClientSize();
+			UpdateMousePositionMultiplier();
+
+			break;
+		}
+		case WM_STYLECHANGED:
+		{
+			if (!appWindow)
+			{
+				break;
+			}
+
+			auto style = GetWindowLongA
+			(
+				appWindow,
+				GWL_STYLE
+			);
+
+			Log("WM_STYLECHANGED %X", style);
+
+			UpdateGlobalWindowSize();
+			UpdateGlobalClientSize();
+			UpdateMousePositionMultiplier();
+
+			break;
+		}
+		// case WM_SHOWWINDOW:
+		// {
+		// 	Log("WM_SHOWWINDOW");
+
+
+
+
+
+		// 	break;
+		// }
 		case WM_SETCURSOR:
 		{
-			ImGui_User_UpdateMouseCursor(window);
+			ImGui::UpdateMouseCursor(windowHandle);
 
 			break;
 		}
 		case WM_CHAR:
 		{
-			ImGui::GetIO().AddInputCharacter((uint16)wParameter);
+			auto character = static_cast<uint16>(wParameter);
 
-			return 0;
+			auto & io = ImGui::GetIO();
+
+			io.AddInputCharacter(character);
+
+			break;
 		}
 		case DM_PAUSE:
 		{
@@ -235,97 +455,119 @@ LRESULT User_Hook_WindowProc
 				}
 			}
 
-			return 1;
+			break;
 		}
 	}
-	return User_WindowProc
-	(
-		window,
-		message,
-		wParameter,
-		lParameter
-	);
+
+	// return ::Base::Windows::WindowProc
+	// (
+	// 	windowHandle,
+	// 	message,
+	// 	wParameter,
+	// 	lParameter
+	// );
+
+
+	SetLastError(error);
+
+	return result;
+
+
+
 }
 
-
-
-
-
-
-
-ATOM User_Hook_RegisterClassExW
-(
-	WNDCLASSEXW * windowClass
-)
+ATOM RegisterClassExW(const WNDCLASSEXW * windowClassAddr)
 {
+	Log
+	(
+		"%s "
+		"%llX",
+		FUNC_NAME,
+		windowClassAddr
+	);
+
+	// if (!windowClassAddr)
+	// {
+	// 	return 0;
+	// }
+
+	auto & windowClass = *const_cast<WNDCLASSEXW *>(windowClassAddr);
+
 	static bool run = false;
 	if (!run)
 	{
 		run = true;
+
 		ImGui::CreateContext();
-		ImGui::GetIO().IniFilename = 0;
-		ImGui_User_Init();
-		ImGui_DirectInput8_Init();
+
+		auto & io = ImGui::GetIO();
+
+		io.IniFilename = 0;
+
+		ImGui::DI8::Init();
+
 		GUI_Init();
-		User_WindowProc = windowClass->lpfnWndProc;
-		windowClass->lpfnWndProc = User_Hook_WindowProc;
+
+		::Base::Windows::WindowProc = windowClass.lpfnWndProc;
+
+		windowClass.lpfnWndProc = ::Hook::Windows::WindowProc;
 	}
-	return User_RegisterClassExW
-	(
-		windowClass
-	);
+
+	return ::Base::Windows::RegisterClassExW(windowClassAddr);
 }
 
-HWND User_Hook_CreateWindowExW
+HWND CreateWindowExW
 (
-	byte32     exStyle,
-	LPCWSTR   className,
-	LPCWSTR   windowName,
-	byte32     style,
-	int       x,
-	int       y,
-	int       width,
-	int       height,
-	HWND      parentWindow,
-	HMENU     menu,
-	HINSTANCE instance,
-	LPVOID    parameter
+	DWORD dwExStyle,
+	LPCWSTR lpClassName,
+	LPCWSTR lpWindowName,
+	DWORD dwStyle,
+	int X,
+	int Y,
+	int nWidth,
+	int nHeight,
+	HWND hWndParent,
+	HMENU hMenu,
+	HINSTANCE hInstance,
+	LPVOID lpParam
 )
 {
 	if constexpr (debug)
 	{
-		x = 0;
-		y = 0;
+		X = 0;
+		Y = 0;
 	}
+
 	Log
 	(
 		"%s "
 		"%X "
+		"%llX "
+		"%llX "
 		"%X "
-		"%X "
-		"%X "
-		"%u "
-		"%u "
-		"%u "
-		"%u "
-		"%X "
-		"%X "
-		"%X "
-		"%X",
+		"%d "
+		"%d "
+		"%d "
+		"%d "
+		"%llX "
+		"%llX "
+		"%llX "
+		"%llX",
 		FUNC_NAME,
-		exStyle,
-		className,
-		windowName,
-		style,
-		x,
-		y,
-		width,
-		height,
-		parentWindow,
-		menu,
-		instance,
-		parameter
+		dwExStyle,
+		lpClassName,
+		lpWindowName,
+		dwStyle,
+		X,
+		Y,
+		nWidth,
+		nHeight,
+		hWndParent,
+		hMenu,
+		hInstance,
+		lpParam
 	);
+
 	if (activeConfig.hideMouseCursor)
 	{
 		Windows_ToggleCursor(false);
@@ -334,22 +576,35 @@ HWND User_Hook_CreateWindowExW
 	{
 		Windows_ToggleCursor(true);
 	}
-	return User_CreateWindowExW
+
+	return ::Base::Windows::CreateWindowExW
 	(
-		exStyle,
-		className,
-		windowName,
-		style,
-		x,
-		y,
-		width,
-		height,
-		parentWindow,
-		menu,
-		instance,
-		parameter
+		dwExStyle,
+		lpClassName,
+		lpWindowName,
+		dwStyle,
+		X,
+		Y,
+		nWidth,
+		nHeight,
+		hWndParent,
+		hMenu,
+		hInstance,
+		lpParam
 	);
 }
+
+namespaceEnd();
+
+#pragma endregion
+
+
+
+
+
+
+
+
 
 
 
@@ -357,22 +612,27 @@ void CreateRenderTarget()
 {
 	LogFunction();
 	ID3D11Texture2D * backBuffer = 0;
-	DXGI_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void **)&backBuffer);
-	D3D11_device->CreateRenderTargetView(backBuffer, 0, &D3D11_renderTargetView);
+	::DXGI::swapChain->GetBuffer
+	(
+		0,
+		D3D11::IID_ID3D11Texture2D,
+		reinterpret_cast<void **>(&backBuffer)
+	);
+	::D3D11::device->CreateRenderTargetView(backBuffer, 0, &::D3D11::renderTargetView);
 	backBuffer->Release();
 }
 
 void RemoveRenderTarget()
 {
 	LogFunction();
-	if (!D3D11_renderTargetView)
+	if (!::D3D11::renderTargetView)
 	{
 		return;
 	}
 	float32 clearColor[4] = {};
-	D3D11_deviceContext->ClearRenderTargetView(D3D11_renderTargetView, clearColor);
-	D3D11_renderTargetView->Release();
-	D3D11_renderTargetView = 0;
+	::D3D11::deviceContext->ClearRenderTargetView(::D3D11::renderTargetView, clearColor);
+	::D3D11::renderTargetView->Release();
+	::D3D11::renderTargetView = 0;
 }
 
 void Timestep()
@@ -396,19 +656,53 @@ void Timestep()
 
 
 
+#pragma region DXGI
 
+namespaceStart(DXGI);
 
-HRESULT DXGI_Hook_Present
+typedef HRESULT(__fastcall * Present_t)
 (
-	IDXGISwapChain * swapChain,
-	UINT             syncInterval,
-	UINT             flags
+	IDXGISwapChain * SwapChain,
+	UINT SyncInterval,
+	UINT Flags
+);
+typedef HRESULT (__fastcall * ResizeBuffers_t)
+(
+	IDXGISwapChain * SwapChain,
+	UINT BufferCount,
+	UINT Width,
+	UINT Height,
+	DXGI_FORMAT NewFormat,
+	UINT SwapChainFlags
+);
+
+namespaceEnd();
+
+
+
+namespaceStart(Base::DXGI);
+
+::DXGI::Present_t Present = 0;
+::DXGI::ResizeBuffers_t ResizeBuffers = 0;
+
+namespaceEnd();
+
+
+
+namespaceStart(Hook::DXGI);
+
+HRESULT Present
+(
+	IDXGISwapChain * SwapChain,
+	UINT SyncInterval,
+	UINT Flags
 )
 {
 	static bool run = false;
 	if (!run)
 	{
 		run = true;
+
 		Log
 		(
 			"%s "
@@ -416,59 +710,52 @@ HRESULT DXGI_Hook_Present
 			"%u "
 			"%X",
 			FUNC_NAME,
-			swapChain,
-			syncInterval,
-			flags
+			SwapChain,
+			SyncInterval,
+			Flags
 		);
 	}
 
-	//if constexpr (debug)
-	//{
-	//	syncInterval = 0;
-	//}
-
-
 	if (activeConfig.vSync != 0)
 	{
-		syncInterval = (activeConfig.vSync - 1);
+		SyncInterval = (activeConfig.vSync - 1);
 	}
 
+	ImGui::D3D11::NewFrame();
 
-
-
-
-
-
-
-	ImGui_D3D11_NewFrame();
 	Timestep();
+
 	ImGui::NewFrame();
+
 	GUI_Render();
+
 	ImGui::Render();
-	D3D11_deviceContext->OMSetRenderTargets(1, &D3D11_renderTargetView, 0);
-	ImGui_D3D11_RenderDrawData(ImGui::GetDrawData());
-	return DXGI_Present
+
+	::D3D11::deviceContext->OMSetRenderTargets
 	(
-		swapChain,
-		syncInterval,
-		flags
+		1,
+		&::D3D11::renderTargetView,
+		0
+	);
+
+	ImGui::D3D11::RenderDrawData(ImGui::GetDrawData());
+
+	return ::Base::DXGI::Present
+	(
+		SwapChain,
+		SyncInterval,
+		Flags
 	);
 }
 
-
-
-
-
-
-
-HRESULT DXGI_Hook_ResizeBuffers
+HRESULT ResizeBuffers
 (
-	IDXGISwapChain * swapChain,
-	UINT             bufferCount,
-	UINT             width,
-	UINT             height,
-	DXGI_FORMAT      newFormat,
-	UINT             swapChainFlags
+	IDXGISwapChain * SwapChain,
+	UINT BufferCount,
+	UINT Width,
+	UINT Height,
+	DXGI_FORMAT NewFormat,
+	UINT SwapChainFlags
 )
 {
 	Log
@@ -478,145 +765,199 @@ HRESULT DXGI_Hook_ResizeBuffers
 		"%u "
 		"%u "
 		"%u "
-		"%X "
+		"%d "
 		"%X",
 		FUNC_NAME,
-		swapChain,
-		bufferCount,
-		width,
-		height,
-		newFormat,
-		swapChainFlags
+		SwapChain,
+		BufferCount,
+		Width,
+		Height,
+		NewFormat,
+		SwapChainFlags
 	);
+
 	RemoveRenderTarget();
-	HRESULT result = DXGI_ResizeBuffers
+
+	auto result = ::Base::DXGI::ResizeBuffers
 	(
-		swapChain,
-		bufferCount,
-		width,
-		height,
-		newFormat,
-		swapChainFlags
+		SwapChain,
+		BufferCount,
+		Width,
+		Height,
+		NewFormat,
+		SwapChainFlags
 	);
-	byte32 error = GetLastError();
+
+	auto error = GetLastError();
+
 	CreateRenderTarget();
-	Window_UpdateSize((uint32)width, (uint32)height);
+
+	// UpdateRenderSize
+	// (
+	// 	Width,
+	// 	Height
+	// );
+
 	SetLastError(error);
+
 	return result;
 }
 
+namespaceEnd();
+
+#pragma endregion
+
+#pragma region D3D11
+
+namespaceStart(D3D11);
+
+typedef decltype(D3D11CreateDeviceAndSwapChain) * D3D11CreateDeviceAndSwapChain_t;
+
+namespaceEnd();
 
 
 
+namespaceStart(Base::D3D11);
+
+::D3D11::D3D11CreateDeviceAndSwapChain_t D3D11CreateDeviceAndSwapChain = 0;
+
+namespaceEnd();
 
 
 
+namespaceStart(Hook::D3D11);
 
-
-
-
-
-
-
-
-
-
-HRESULT D3D11_Hook_CreateDeviceAndSwapChain
+HRESULT D3D11CreateDeviceAndSwapChain
 (
-	IDXGIAdapter         *  adapter,
-	D3D_DRIVER_TYPE         driverType,
-	HMODULE                 software,
-	UINT                    flags,
-	D3D_FEATURE_LEVEL    *  featureLevels,
-	UINT                    featureLevelCount,
-	UINT                    SDKVersion,
-	DXGI_SWAP_CHAIN_DESC *  swapChainDescription,
-	IDXGISwapChain       ** swapChain,
-	ID3D11Device         ** device,
-	D3D_FEATURE_LEVEL    *  featureLevel,
-	ID3D11DeviceContext  ** deviceContext
+	IDXGIAdapter* pAdapter,
+	D3D_DRIVER_TYPE DriverType,
+	HMODULE Software,
+	UINT Flags,
+	const D3D_FEATURE_LEVEL* pFeatureLevels,
+	UINT FeatureLevels,
+	UINT SDKVersion,
+	const DXGI_SWAP_CHAIN_DESC* pSwapChainDesc,
+	IDXGISwapChain** ppSwapChain,
+	ID3D11Device** ppDevice,
+	D3D_FEATURE_LEVEL* pFeatureLevel,
+	ID3D11DeviceContext** ppImmediateContext
 )
 {
 	Log
 	(
 		"%s "
 		"%llX "
-		"%u "
+		"%X "
 		"%llX "
 		"%X "
 		"%llX "
-		"%u "
-		"%u "
+		"%X "
+		"%X "
 		"%llX "
 		"%llX "
 		"%llX "
 		"%llX "
 		"%llX",
 		FUNC_NAME,
-		adapter,
-		driverType,
-		software,
-		flags,
-		featureLevels,
-		featureLevelCount,
+		pAdapter,
+		DriverType,
+		Software,
+		Flags,
+		pFeatureLevels,
+		FeatureLevels,
 		SDKVersion,
-		swapChainDescription,
-		swapChain,
-		device,
-		featureLevel,
-		deviceContext
+		pSwapChainDesc,
+		ppSwapChain,
+		ppDevice,
+		pFeatureLevel,
+		ppImmediateContext
 	);
-	HRESULT result = D3D11_CreateDeviceAndSwapChain
+
+	auto result = ::Base::D3D11::D3D11CreateDeviceAndSwapChain
 	(
-		adapter,
-		driverType,
-		software,
-		flags,
-		featureLevels,
-		featureLevelCount,
+		pAdapter,
+		DriverType,
+		Software,
+		Flags,
+		pFeatureLevels,
+		FeatureLevels,
 		SDKVersion,
-		swapChainDescription,
-		swapChain,
-		device,
-		featureLevel,
-		deviceContext
+		pSwapChainDesc,
+		ppSwapChain,
+		ppDevice,
+		pFeatureLevel,
+		ppImmediateContext
 	);
-	byte32 error = GetLastError();
-	D3D11_device = *device;
-	D3D11_deviceContext = *deviceContext;
-	DXGI_swapChain = *swapChain;
-	appWindow = swapChainDescription->OutputWindow;
-	// @Audit: Remove cast?
-	Window_UpdateSize((uint32)swapChainDescription->BufferDesc.Width, (uint32)swapChainDescription->BufferDesc.Height);
-	ImGui_D3D11_Init(D3D11_device, D3D11_deviceContext);
+
+	auto error = GetLastError();
+
+	::D3D11::device = *ppDevice;
+	::D3D11::deviceContext = *ppImmediateContext;
+	::DXGI::swapChain = *ppSwapChain;
+
+	appWindow = pSwapChainDesc->OutputWindow;
+
+	UpdateGlobalWindowSize();
+	UpdateGlobalClientSize();
+	UpdateGlobalRenderSize
+	(
+		pSwapChainDesc->BufferDesc.Width,
+		pSwapChainDesc->BufferDesc.Height
+	);
+
+	ImGui::UpdateDisplaySize
+	(
+		pSwapChainDesc->BufferDesc.Width,
+		pSwapChainDesc->BufferDesc.Height
+	);
+
+	UpdateMousePositionMultiplier();
+
+	ImGui::D3D11::Init
+	(
+		::D3D11::device,
+		::D3D11::deviceContext
+	);
+
 	CreateRenderTarget();
-	//InstallStart:
+
+	[&]()
 	{
-		if ((result != 0) || !swapChain || !*swapChain)
+		if ((result != 0) || !ppSwapChain || !*ppSwapChain)
 		{
-			goto InstallEnd;
-		}
-		byte ** funcAddr = *(byte ***)*swapChain;
-		if (!funcAddr)
-		{
-			goto InstallEnd;
-		}
-		DXGI_Present = (DXGI_Present_t)funcAddr[8];
-
-		if constexpr (debug)
-		{
-			Log("DXGI_Present %llX", DXGI_Present);
+			return;
 		}
 
-		Write<void *>((byte *)&funcAddr[8], DXGI_Hook_Present);
+		// @Research: Quadruple pointer and dereference twice or use global swap chain.
+		auto funcAddrs = *reinterpret_cast<byte8 ***>(*ppSwapChain);
+		if (!funcAddrs)
+		{
+			return;
+		}
 
-		DXGI_ResizeBuffers = (DXGI_ResizeBuffers_t)funcAddr[13];
-		Write<void *>((byte *)&funcAddr[13], DXGI_Hook_ResizeBuffers);
-	}
-	InstallEnd:
+		Install
+		(
+			&funcAddrs[8],
+			::Base::DXGI::Present,
+			::Hook::DXGI::Present
+		);
+
+		Install
+		(
+			&funcAddrs[13],
+			::Base::DXGI::ResizeBuffers,
+			::Hook::DXGI::ResizeBuffers
+		);
+	}();
+
 	SetLastError(error);
+
 	return result;
 }
+
+namespaceEnd();
+
+#pragma endregion
 
 void TogglePause(byte8 * state)
 {
@@ -770,188 +1111,299 @@ void WindowSize3(byte8 * state)
 	}
 }
 
-HRESULT DirectInput8_Hook_GetDeviceStateKeyboard
+#pragma region DI8
+
+namespaceStart(DI8);
+
+typedef HRESULT(__fastcall * GetDeviceStateA_t)
 (
-	IDirectInputDevice8A * device,
-	byte32                  bufferSize,
-	LPVOID                 buffer
+	IDirectInputDevice8A * pDevice,
+	DWORD BufferSize,
+	LPVOID Buffer
+);
+
+namespaceEnd();
+
+
+
+namespaceStart(Base::DI8);
+
+::DI8::GetDeviceStateA_t GetDeviceStateA = 0;
+
+namespaceEnd();
+
+
+
+namespaceStart(Hook::DI8)
+
+HRESULT GetDeviceStateA
+(
+	IDirectInputDevice8A * pDevice,
+	DWORD BufferSize,
+	LPVOID Buffer
 )
 {
-	byte * state = (byte *)buffer;
-	ImGui_DirectInput8_UpdateKeyboard(state);
+	auto state = reinterpret_cast<byte8 *>(Buffer);
+
+
+
+	ImGui::DI8::UpdateKeyboard(state);
+
 	TogglePause(state);
+
 	if (g_pause)
 	{
-		memset(buffer, 0, bufferSize);
+		memset(Buffer, 0, BufferSize);
 	}
+
 	if constexpr (debug)
 	{
 		WindowSize1(state);
 		WindowSize2(state);
 		WindowSize3(state);
 	}
+
 	return 0;
 }
 
+namespaceEnd();
 
 
 
-byte32 DirectInput8_UpdateMouseThread(LPVOID parameter)
+namespaceStart(DI8);
+
+byte32 UpdateMouseThread(LPVOID parameter)
 {
 	LogFunction();
-	do
+
+	while (true)
 	{
 		if (appWindow && g_pause)
 		{
-			DirectInput8_mouse->GetDeviceState(sizeof(DIMOUSESTATE2), &DirectInput8_mouseState);
-			ImGui_DirectInput8_UpdateMouse(appWindow, &DirectInput8_mouseState);
+			::DI8::mouse->GetDeviceState
+			(
+				sizeof(DIMOUSESTATE2),
+				&::DI8::mouseState
+			);
+
+			ImGui::DI8::UpdateMouse
+			(
+				appWindow,
+				&::DI8::mouseState
+			);
 		}
+
 		Sleep(10);
 	}
-	while (true);
+
 	return 1;
 }
 
-byte32 DirectInput8_AcquireMouseThread(LPVOID parameter)
+byte32 AcquireMouseThread(LPVOID parameter)
 {
-
-
-
-	do
+	while (true)
 	{
-		//LoopStart:
+		[&]()
 		{
 			if (GetForegroundWindow() != appWindow)
 			{
-				goto LoopEnd;
+				return;
 			}
-			if (!DirectInput8_mouse)
+
+			if (!::DI8::mouse)
 			{
-				goto LoopEnd;
+				return;
 			}
-			DirectInput8_mouse->Acquire();
-		}
-		LoopEnd:
+
+			::DI8::mouse->Acquire();
+		}();
+
 		Sleep(100);
 	}
-	while (true);
+
 	return 1;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-byte32 DirectInput8_CreateMouseThread(LPVOID parameter)
+byte32 CreateMouseThread(LPVOID parameter)
 {
-
-	
-
-
-
-	do
+	while (true)
 	{
 		if (appWindow)
 		{
 			break;
 		}
+
 		Sleep(100);
 	}
-	while (true);
+
 	LogFunction();
+
 	HRESULT result = 0;
-	result = DirectInput8Create((HINSTANCE)appBaseAddr, 0x800, IID_IDirectInput8W, (void **)&DirectInput8_deviceInterface, 0);
+	byte32 error = 0;
+
+	result = ::DI8::DirectInput8Create
+	(
+		reinterpret_cast<HINSTANCE>(appBaseAddr),
+		0x800,
+		IID_IDirectInput8W,
+		reinterpret_cast<void **>(&::DI8::deviceInterface),
+		0
+	);
 	if (result != DI_OK)
 	{
-		Log("Create %X %X", result, GetLastError());
+		error = GetLastError();
+
+		Log("Create %X %X", result, error);
+
 		goto Return;
 	}
-	result = DirectInput8_deviceInterface->CreateDevice(GUID_SysMouse, &DirectInput8_mouse, 0);
+
+	result = ::DI8::deviceInterface->CreateDevice
+	(
+		GUID_SysMouse,
+		&::DI8::mouse,
+		0
+	);
 	if (result != DI_OK)
 	{
-		Log("CreateDevice %X %X", result, GetLastError());
+		error = GetLastError();
+
+		Log("CreateDevice %X %X", result, error);
+
 		goto Return;
 	}
-	result = DirectInput8_mouse->SetCooperativeLevel(appWindow, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
+
+	result = ::DI8::mouse->SetCooperativeLevel
+	(
+		appWindow,
+		DISCL_NONEXCLUSIVE |
+		DISCL_FOREGROUND
+	);
 	if (result != DI_OK)
 	{
-		Log("SetCooperativeLevel %X %X", result, GetLastError());
+		error = GetLastError();
+
+		Log("SetCooperativeLevel %X %X", result, error);
+
 		goto Return;
 	}
-	result = DirectInput8_mouse->SetDataFormat(&c_dfDIMouse2);
+
+	result = ::DI8::mouse->SetDataFormat(&c_dfDIMouse2);
 	if (result != DI_OK)
 	{
-		Log("SetDataFormat %X %X", result, GetLastError());
+		error = GetLastError();
+
+		Log("SetDataFormat %X %X", result, error);
+
 		goto Return;
 	}
-	result = DirectInput8_mouse->Acquire();
-	CreateThread(0, 4096, DirectInput8_UpdateMouseThread, 0, 0, 0);
-	CreateThread(0, 4096, DirectInput8_AcquireMouseThread, 0, 0, 0);
+
+	result = ::DI8::mouse->Acquire();
+
+	CreateThread
+	(
+		0,
+		4096,
+		::DI8::UpdateMouseThread,
+		0,
+		0,
+		0
+	);
+
+	CreateThread
+	(
+		0,
+		4096,
+		::DI8::AcquireMouseThread,
+		0,
+		0,
+		0
+	);
+
 	Return:
+
 	return 1;
 }
 
-// @Todo: Update.
-byte32 XInput_Hook_GetState
+namespaceEnd();
+
+#pragma endregion
+
+#pragma region XI
+
+namespaceStart(XI);
+
+typedef decltype(XInputGetState) * XInputGetState_t;
+
+namespaceEnd();
+
+
+
+namespaceStart(Base::XI);
+
+::XI::XInputGetState_t XInputGetState = 0;
+
+namespaceEnd();
+
+
+
+namespaceStart(Hook::XI);
+
+DWORD XInputGetState
 (
-	byte32          userIndex,
-	XINPUT_STATE * state
+	DWORD dwUserIndex,
+	XINPUT_STATE* pState
 )
 {
-	//if (pause)
-	//{
-	//	memset(state, 0, sizeof(XINPUT_STATE));
-	//}
+	if (g_pause)
+	{
+		SetMemory(pState, 0, sizeof(XINPUT_STATE));
+	}
+
 	return 0;
 }
 
+namespaceEnd();
+
+#pragma endregion
+
+
+
+
+
+
+// @Todo: Remove redundant ::.
+// @Todo: Remove auto result from input functions.
 export void Hooks_Init()
 {
 	LogFunction();
-	// @Todo: byte8 *
+
+	Install
+	(
+		(appBaseAddr + 0x34F308),
+		::Base::Windows::RegisterClassExW,
+		::Hook::Windows::RegisterClassExW
+	);
+
+	Install
+	(
+		(appBaseAddr + 0x34F300),
+		::Base::Windows::CreateWindowExW,
+		::Hook::Windows::CreateWindowExW
+	);
+
+	Install
+	(
+		(appBaseAddr + 0x34F650),
+		::Base::D3D11::D3D11CreateDeviceAndSwapChain,
+		::Hook::D3D11::D3D11CreateDeviceAndSwapChain
+	);
+
+	//HoboBreak();
+
+	// @Todo: Add pattern to CreateFunction.
 	{
-		byte * addr = (appBaseAddr + 0x34F308);
-		User_RegisterClassExW = *(User_RegisterClassExW_t *)addr;
-		Write<void *>(addr, User_Hook_RegisterClassExW);
-	}
-	{
-		byte * addr = (appBaseAddr + 0x34F300);
-		User_CreateWindowExW = *(User_CreateWindowExW_t *)addr;
-		Write<void *>(addr, User_Hook_CreateWindowExW);
-	}
-	{
-		byte * addr = (appBaseAddr + 0x34F650);
-		D3D11_CreateDeviceAndSwapChain = *(D3D11_CreateDeviceAndSwapChain_t *)addr;
-
-		if constexpr (debug)
-		{
-			Log("D3D11_CreateDeviceAndSwapChain %llX", D3D11_CreateDeviceAndSwapChain);
-		}
-
-		Write<void *>(addr, D3D11_Hook_CreateDeviceAndSwapChain);
-	}
-
-	Write<byte32>((appBaseAddr + 0x47F58), DISCL_NONEXCLUSIVE | DISCL_FOREGROUND); // SetCooperativeLevelKeyboard
-
-
-
-	
-
-
-
-
-
-	{
-		byte8 sect0[] =
+		constexpr byte8 sect0[] =
 		{
 			0x48, 0x8B, 0x01,       //mov rax,[rcx]
 			0x50,                   //push rax
@@ -968,7 +1420,7 @@ export void Hooks_Init()
 			0x48, 0x8B, 0x55, 0x10, //mov rdx,[rbp+10]
 			0x4C, 0x8B, 0x45, 0x08, //mov r8,[rbp+08]
 		};
-		byte8 sect2[] =
+		constexpr byte8 sect2[] =
 		{
 			0x48, 0x8B, 0xE5, //mov rsp,rbp
 			0x5D,             //pop rbp
@@ -977,43 +1429,13 @@ export void Hooks_Init()
 			0x59,             //pop rcx
 			0x58,             //pop rax
 		};
-
-		//HoboBreak();
-
-
-		auto func = ::CreateFunction(DirectInput8_Hook_GetDeviceStateKeyboard, (appBaseAddr + 0x41DA6), false, true, sizeof(sect0), 0, sizeof(sect2));
+		auto func = CreateFunction(::Hook::DI8::GetDeviceStateA, (appBaseAddr + 0x41DA6), false, true, sizeof(sect0), 0, sizeof(sect2));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x41DA0), func.addr, 1);
 	}
-
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	{
-		byte8 sect0[] =
+		constexpr byte8 sect0[] =
 		{
 			0xBA, 0x00, 0x01, 0x00, 0x00, //mov edx,00000100
 			0x50,                         //push rax
@@ -1030,7 +1452,7 @@ export void Hooks_Init()
 			0x48, 0x8B, 0x55, 0x10,       //mov rdx,[rbp+10]
 			0x4C, 0x8B, 0x45, 0x08,       //mov r8,[rbp+08]
 		};
-		byte8 sect2[] =
+		constexpr byte8 sect2[] =
 		{
 			0x48, 0x8B, 0xE5, //mov rsp,rbp
 			0x5D,             //pop rbp
@@ -1039,25 +1461,21 @@ export void Hooks_Init()
 			0x59,             //pop rcx
 			0x58,             //pop rax
 		};
-		auto func = CreateFunction(DirectInput8_Hook_GetDeviceStateKeyboard, (appBaseAddr + 0x482B5), false, true, sizeof(sect0), 0, sizeof(sect2));
+		auto func = CreateFunction(::Hook::DI8::GetDeviceStateA, (appBaseAddr + 0x482B5), false, true, sizeof(sect0), 0, sizeof(sect2));
 		memcpy(func.sect0, sect0, sizeof(sect0));
 		memcpy(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x482AD), func.addr);
 	}
 
+	CreateThread(0, 4096, ::DI8::CreateMouseThread, 0, 0, 0);
 
-	
-
-
-
-
-
-	CreateThread(0, 4096, DirectInput8_CreateMouseThread, 0, 0, 0);
-
-
+	if constexpr (debug)
+	{
+		Write<byte32>((appBaseAddr + 0x47F58), DISCL_NONEXCLUSIVE | DISCL_FOREGROUND); // SetCooperativeLevelKeyboard
+	}
 
 	{
-		byte8 sect0[] =
+		constexpr byte8 sect0[] =
 		{
 			0x50,                         //push rax
 			0x51,                         //push rcx
@@ -1071,7 +1489,7 @@ export void Hooks_Init()
 			0x48, 0x8B, 0x4D, 0x10,       //mov rcx,[rbp+10]
 			0x48, 0x8B, 0x55, 0x08,       //mov rdx,[rbp+08]
 		};
-		byte8 sect2[] =
+		constexpr byte8 sect2[] =
 		{
 			0x48, 0x8B, 0xE5,             //mov rsp,rbp
 			0x5D,                         //pop rbp
@@ -1079,14 +1497,14 @@ export void Hooks_Init()
 			0x59,                         //pop rcx
 			0x58,                         //pop rax
 		};
-		auto func = CreateFunction(XInput_Hook_GetState, (appBaseAddr + 0x41A88), false, true, sizeof(sect0), 0, sizeof(sect2));
-		memcpy(func.sect0, sect0, sizeof(sect0));
+		auto func = CreateFunction(::Hook::XI::XInputGetState, (appBaseAddr + 0x41A88), false, true, sizeof(sect0), 0, sizeof(sect2));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x3453F6));
-		memcpy(func.sect2, sect2, sizeof(sect2));
+		CopyMemory(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x41A83), func.addr);
 	}
 	{
-		byte8 sect0[] =
+		constexpr byte8 sect0[] =
 		{
 			0x50,                         //push rax
 			0x51,                         //push rcx
@@ -1100,7 +1518,7 @@ export void Hooks_Init()
 			0x48, 0x8B, 0x4D, 0x10,       //mov rcx,[rbp+10]
 			0x48, 0x8B, 0x55, 0x08,       //mov rdx,[rbp+08]
 		};
-		byte8 sect2[] =
+		constexpr byte8 sect2[] =
 		{
 			0x48, 0x8B, 0xE5,             //mov rsp,rbp
 			0x5D,                         //pop rbp
@@ -1108,14 +1526,14 @@ export void Hooks_Init()
 			0x59,                         //pop rcx
 			0x58,                         //pop rax
 		};
-		auto func = CreateFunction(XInput_Hook_GetState, (appBaseAddr + 0x41AFF), false, true, sizeof(sect0), 0, sizeof(sect2));
-		memcpy(func.sect0, sect0, sizeof(sect0));
+		auto func = CreateFunction(::Hook::XI::XInputGetState, (appBaseAddr + 0x41AFF), false, true, sizeof(sect0), 0, sizeof(sect2));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x3453F6));
-		memcpy(func.sect2, sect2, sizeof(sect2));
+		CopyMemory(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x41AFA), func.addr);
 	}
 	{
-		byte8 sect0[] =
+		constexpr byte8 sect0[] =
 		{
 			0x50,                         //push rax
 			0x51,                         //push rcx
@@ -1129,7 +1547,7 @@ export void Hooks_Init()
 			0x48, 0x8B, 0x4D, 0x10,       //mov rcx,[rbp+10]
 			0x48, 0x8B, 0x55, 0x08,       //mov rdx,[rbp+08]
 		};
-		byte8 sect2[] =
+		constexpr byte8 sect2[] =
 		{
 			0x48, 0x8B, 0xE5,             //mov rsp,rbp
 			0x5D,                         //pop rbp
@@ -1137,10 +1555,13 @@ export void Hooks_Init()
 			0x59,                         //pop rcx
 			0x58,                         //pop rax
 		};
-		auto func = CreateFunction(XInput_Hook_GetState, (appBaseAddr + 0x41C45), false, true, sizeof(sect0), 0, sizeof(sect2));
-		memcpy(func.sect0, sect0, sizeof(sect0));
+		auto func = CreateFunction(::Hook::XI::XInputGetState, (appBaseAddr + 0x41C45), false, true, sizeof(sect0), 0, sizeof(sect2));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x3453F6));
-		memcpy(func.sect2, sect2, sizeof(sect2));
+		CopyMemory(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x41C40), func.addr);
 	}
 }
+
+#ifdef __GARBAGE__
+#endif

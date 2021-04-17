@@ -1,10 +1,13 @@
+// @Todo: Update order.
 // @Todo: Use MAX_PROG_SECT regardless of common.
 
-module;
-#include "../Core/Core.h"
-
-#include "Vars.h"
 export module Sound;
+
+import Core;
+
+#include "../Core/Macros.h"
+
+import Vars;
 
 import Config;
 import File;
@@ -12,62 +15,7 @@ import FMOD;
 import Global;
 import Internal;
 
-#define debug false
-
-enum
-{
-	ARCHIVE_METADATA_SIZE   = 8,
-	HEAD_METADATA_SIZE      = 32,
-	PROG_SECT_ITEM_SIZE     = 14,
-	PROG_SECT_METADATA_SIZE = 8,
-	PROG_METADATA_SIZE      = 16,
-	SMPL_ITEM_SIZE          = 12,
-	SMPL_METADATA_SIZE      = 16,
-	VAGI_ITEM_SIZE          = 16,
-	VAGI_METADATA_SIZE      = 16,
-	WAVE_METADATA_SIZE      = 64,
-	SOUND_DATA_SIZE         = 24,
-	DBST_METADATA_SIZE      = 16,
-	DBST_ITEM_SIZE          = 32,
-};
-
-enum
-{
-	PROG_SECT_REBELLION,
-	PROG_SECT_CERBERUS,
-	PROG_SECT_AGNI_RUDRA,
-	PROG_SECT_NEVAN,
-	PROG_SECT_BEOWULF_DANTE,
-	PROG_SECT_EBONY_IVORY,
-	PROG_SECT_SHOTGUN,
-	PROG_SECT_ARTEMIS,
-	PROG_SECT_SPIRAL,
-	PROG_SECT_KALINA_ANN,
-	PROG_SECT_YAMATO = 11,
-	PROG_SECT_BEOWULF_VERGIL,
-	PROG_SECT_YAMATO_FORCE_EDGE,
-	PROG_SECT_SWORDMASTER = 100,
-	PROG_SECT_GUNSLINGER,
-	PROG_SECT_TRICKSTER,
-	PROG_SECT_ROYALGUARD,
-	PROG_SECT_QUICKSILVER,
-	PROG_SECT_DOPPELGANGER,
-	PROG_SECT_BATTLE_OF_BROTHERS,
-	PROG_SECT_DARK_SLAYER,
-	MAX_PROG_SECT,
-};
-
-enum
-{
-	HELPER_COMMON_DANTE_DEFAULT,
-	HELPER_COMMON_DANTE_NO_COAT,
-	HELPER_COMMON_VERGIL_DEFAULT,
-	HELPER_COMMON_VERGIL_NERO_ANGELO,
-	HELPER_STYLE_WEAPON_DANTE,
-	HELPER_STYLE_WEAPON_VERGIL_DEFAULT,
-	HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO,
-	HELPER_COUNT,
-};
+#define debug true
 
 constexpr uint32 g_sectCount[HELPER_COUNT] =
 {
@@ -78,6 +26,18 @@ constexpr uint32 g_sectCount[HELPER_COUNT] =
 	108,
 	108,
 	108,
+	50,
+	50,
+	50,
+	50,
+	50,
+	50,
+	50,
+	50,
+	50,
+	50,
+	50,
+	50,
 };
 
 #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
@@ -1316,6 +1276,15 @@ void Multi
 
 
 
+// byte8 * dbstVergil = 0;
+// byte8 * dbstLady = 0;
+
+
+// namespaceStart(Sound);
+
+// export uint8 id = 0;
+
+// namespaceEnd();
 
 
 
@@ -1428,7 +1397,135 @@ void FMOD_InitComplete()
 			fileIndices
 		);
 	}
+
+
+
+
+
+	[&]()
+	{
+		auto file = File_staticFiles[snd_stay][1];
+
+		if
+		(
+			!file ||
+			!IsDbst(file)
+		)
+		{
+			return;
+		}
+
+		auto dbstMetadataAddr = file;
+		auto & dbstMetadata = *reinterpret_cast<DbstMetadata *>(dbstMetadataAddr);
+		auto & dbstHelper = g_dbstHelper[HELPER_ENEMY_LESSER_ENEMIES];
+
+		dbstHelper.Push(dbstMetadata);
+
+		if constexpr (debug)
+		{
+			// @Todo: Create Print or Log func.
+			Log("dbstHelper");
+			Log("dataAddr %llX", dbstHelper.dataAddr);
+			Log("pos      %X", dbstHelper.pos);
+			Log("count    %u", dbstHelper.count);
+		}
+	}();
+
+	{
+		constexpr uint8 fileIndices[] =
+		{
+			snd_em00a,
+			snd_em06,
+			snd_em07,
+			snd_em08,
+			snd_em10,
+			snd_em11,
+			snd_em12,
+			snd_em13,
+			snd_em14,
+			snd_em16,
+			snd_em17,
+			snd_em21,
+		};
+
+		Multi
+		(
+			"Lesser Enemies",
+			HELPER_ENEMY_LESSER_ENEMIES,
+			fileIndices
+		);
+	}
+
+
+	// @Todo: Do for actor as well.
+	struct SingleHelper
+	{
+		const char * name;
+		uint8 helperIndex;
+		uint8 fileIndex;
+	};
+
+	constexpr SingleHelper singleHelpers[] =
+	{
+		{ "Enemy Gigapede"    , HELPER_ENEMY_GIGAPEDE    , snd_em23 },
+		{ "Enemy Cerberus"    , HELPER_ENEMY_CERBERUS    , snd_em25 },
+		{ "Enemy Agni & Rudra", HELPER_ENEMY_AGNI_RUDRA  , snd_em26 },
+		{ "Enemy Nevan"       , HELPER_ENEMY_NEVAN       , snd_em28 },
+		{ "Enemy Geryon"      , HELPER_ENEMY_GERYON      , snd_em29 },
+		{ "Enemy Beowulf"     , HELPER_ENEMY_BEOWULF     , snd_em30 },
+		{ "Enemy Doppelganger", HELPER_ENEMY_DOPPELGANGER, snd_em31 },
+		{ "Enemy Arkham"      , HELPER_ENEMY_ARKHAM      , snd_em32 },
+		{ "Enemy Lady"        , HELPER_ENEMY_LADY        , snd_em34 },
+		{ "Enemy Vergil"      , HELPER_ENEMY_VERGIL      , snd_em35 },
+		{ "Enemy Jester"      , HELPER_ENEMY_JESTER      , snd_em37 },
+	};
+
+	for_all(uint8, index, countof(singleHelpers))
+	{
+		auto & singleHelper = singleHelpers[index];
+
+		Single
+		(
+			singleHelper.name,
+			singleHelper.helperIndex,
+			singleHelper.fileIndex
+		);
+	}
+
+
+
+	// {
+	// 	// constexpr uint8 fileIndices[] =
+	// 	// {
+	// 	// 	snd_em34,
+	// 	// 	//snd_em35,
+	// 	// };
+
+	// 	Single
+	// 	(
+	// 		"Lady",
+	// 		HELPER_ENEMY_LADY,
+	// 		snd_em34
+	// 	);
+	// }
+
+	// {
+	// 	// constexpr uint8 fileIndices[] =
+	// 	// {
+	// 	// 	snd_em35,
+	// 	// };
+
+	// 	Single
+	// 	(
+	// 		"Vergil",
+	// 		HELPER_ENEMY_VERGIL,
+	// 		snd_em35
+	// 	);
+	// }
+
+
 }
+
 
 
 
@@ -1458,95 +1555,27 @@ byte8 * GetDbstMetadataAddress(uint32 channelIndex)
 
 	auto dbstMetadataAddr = pool[channelIndex];
 
-	uint8 helperIndex = 0;
+	//uint8 helperIndex = 0;
 
 	switch (channelIndex)
 	{
 		case CHANNEL_COMMON:
-		{
-			switch (g_character)
-			{
-				case CHAR_DANTE:
-				{
-					helperIndex = HELPER_COMMON_DANTE_DEFAULT;
-
-					switch (g_costume)
-					{
-						case COSTUME_DANTE_DEFAULT_NO_COAT:
-						case COSTUME_DANTE_DMC1_NO_COAT:
-						{
-							helperIndex = HELPER_COMMON_DANTE_NO_COAT;
-
-							break;
-						}
-					}
-
-					dbstMetadataAddr = g_dbstHelper[helperIndex].dataAddr;
-
-					break;
-				}
-				case CHAR_VERGIL:
-				{
-					helperIndex = HELPER_COMMON_VERGIL_DEFAULT;
-
-					switch (g_costume)
-					{
-						case COSTUME_VERGIL_NERO_ANGELO:
-						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
-						{
-							helperIndex = HELPER_COMMON_VERGIL_NERO_ANGELO;
-
-							break;
-						}
-					}
-
-					dbstMetadataAddr = g_dbstHelper[helperIndex].dataAddr;
-
-					break;
-				}
-			}
-
-			break;
-		}
 		case CHANNEL_STYLE_WEAPON:
+		case CHANNEL_ENEMY:
 		{
-			switch (g_character)
-			{
-				case CHAR_DANTE:
-				{
-					helperIndex = HELPER_STYLE_WEAPON_DANTE;
+			auto & helperIndex = g_helperIndices[channelIndex];
 
-					dbstMetadataAddr = g_dbstHelper[helperIndex].dataAddr;
-
-					break;
-				}
-				case CHAR_VERGIL:
-				{
-					helperIndex = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
-
-					switch (g_costume)
-					{
-						case COSTUME_VERGIL_NERO_ANGELO:
-						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
-						{
-							helperIndex = HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO;
-
-							break;
-						}
-					}
-
-					dbstMetadataAddr = g_dbstHelper[helperIndex].dataAddr;
-
-					break;
-				}
-			}
+			dbstMetadataAddr = g_dbstHelper[helperIndex].dataAddr;
 
 			break;
 		}
 	}
 
+	Log("dbstMetadataAddr %llX", dbstMetadataAddr);
+
 	return dbstMetadataAddr;
 }
+
 
 
 
@@ -1574,6 +1603,9 @@ byte8 * GetDbstItemAddress
 		LogFunction();
 	}
 
+	Log("channelIndex %u", channelIndex);
+	Log("itemIndex %u", itemIndex);
+
 	auto dbstMetadataAddr = GetDbstMetadataAddress(channelIndex);
 	if (!dbstMetadataAddr)
 	{
@@ -1583,6 +1615,8 @@ byte8 * GetDbstItemAddress
 
 	if (itemIndex >= dbstMetadata.itemCount)
 	{
+		Log("Exceeding count.");
+
 		return 0;
 	}
 
@@ -1605,92 +1639,23 @@ byte8 * GetHeadMetadataAddress(uint32 channelIndex)
 
 	auto addr = pool[channelIndex];
 
-	uint8 helperIndex = 0;
+	//uint8 helperIndex = 0;
 
 	switch (channelIndex)
 	{
 		case CHANNEL_COMMON:
-		{
-			switch (g_character)
-			{
-				case CHAR_DANTE:
-				{
-					helperIndex = HELPER_COMMON_DANTE_DEFAULT;
-
-					switch (g_costume)
-					{
-						case COSTUME_DANTE_DEFAULT_NO_COAT:
-						case COSTUME_DANTE_DMC1_NO_COAT:
-						{
-							helperIndex = HELPER_COMMON_DANTE_NO_COAT;
-
-							break;
-						}
-					}
-
-					addr = g_headHelper[helperIndex].dataAddr;
-
-					break;
-				}
-				case CHAR_VERGIL:
-				{
-					helperIndex = HELPER_COMMON_VERGIL_DEFAULT;
-
-					switch (g_costume)
-					{
-						case COSTUME_VERGIL_NERO_ANGELO:
-						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
-						{
-							helperIndex = HELPER_COMMON_VERGIL_NERO_ANGELO;
-
-							break;
-						}
-					}
-
-					addr = g_headHelper[helperIndex].dataAddr;
-
-					break;
-				}
-			}
-
-			break;
-		}
 		case CHANNEL_STYLE_WEAPON:
+		case CHANNEL_ENEMY:
 		{
-			switch (g_character)
-			{
-				case CHAR_DANTE:
-				{
-					helperIndex = HELPER_STYLE_WEAPON_DANTE;
+			auto & helperIndex = g_helperIndices[channelIndex];
 
-					addr = g_headHelper[helperIndex].dataAddr;
-
-					break;
-				}
-				case CHAR_VERGIL:
-				{
-					helperIndex = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
-
-					switch (g_costume)
-					{
-						case COSTUME_VERGIL_NERO_ANGELO:
-						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
-						{
-							helperIndex = HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO;
-
-							break;
-						}
-					}
-
-					addr = g_headHelper[helperIndex].dataAddr;
-
-					break;
-				}
-			}
+			addr = g_headHelper[helperIndex].dataAddr;
 
 			break;
 		}
 	}
+
+	Log("addr %llX", addr);
 
 	return addr;
 }
@@ -1706,6 +1671,7 @@ uint64 GetChannelOffset(uint32 channelIndex)
 	{
 		case CHANNEL_COMMON:
 		case CHANNEL_STYLE_WEAPON:
+		case CHANNEL_ENEMY:
 		{
 			return 0;
 		}
@@ -1716,6 +1682,8 @@ uint64 GetChannelOffset(uint32 channelIndex)
 	return off;
 }
 
+
+
 uint32 GetSoundDataCount(byte8 * addr)
 {
 	auto & channelIndex = *reinterpret_cast<uint8 *>(addr + 0xC);
@@ -1725,92 +1693,23 @@ uint32 GetSoundDataCount(byte8 * addr)
 	dmc3.exe+321C7 - 8B 15 27C35A00 - mov edx,[dmc3.exe+5DE4F4]
 	*/
 
-	uint8 helperIndex = 0;
+	//uint8 helperIndex = 0;
 
 	switch (channelIndex)
 	{
 		case CHANNEL_COMMON:
-		{
-			switch (g_character)
-			{
-				case CHAR_DANTE:
-				{
-					helperIndex = HELPER_COMMON_DANTE_DEFAULT;
-
-					switch (g_costume)
-					{
-						case COSTUME_DANTE_DEFAULT_NO_COAT:
-						case COSTUME_DANTE_DMC1_NO_COAT:
-						{
-							helperIndex = HELPER_COMMON_DANTE_NO_COAT;
-
-							break;
-						}
-					}
-
-					count = g_soundHelper[helperIndex].count;
-
-					break;
-				}
-				case CHAR_VERGIL:
-				{
-					helperIndex = HELPER_COMMON_VERGIL_DEFAULT;
-
-					switch (g_costume)
-					{
-						case COSTUME_VERGIL_NERO_ANGELO:
-						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
-						{
-							helperIndex = HELPER_COMMON_VERGIL_NERO_ANGELO;
-
-							break;
-						}
-					}
-
-					count = g_soundHelper[helperIndex].count;
-
-					break;
-				}
-			}
-
-			break;
-		}
 		case CHANNEL_STYLE_WEAPON:
+		case CHANNEL_ENEMY:
 		{
-			switch (g_character)
-			{
-				case CHAR_DANTE:
-				{
-					helperIndex = HELPER_STYLE_WEAPON_DANTE;
+			auto & helperIndex = g_helperIndices[channelIndex];
 
-					count = g_soundHelper[helperIndex].count;
-
-					break;
-				}
-				case CHAR_VERGIL:
-				{
-					helperIndex = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
-
-					switch (g_costume)
-					{
-						case COSTUME_VERGIL_NERO_ANGELO:
-						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
-						{
-							helperIndex = HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO;
-
-							break;
-						}
-					}
-
-					count = g_soundHelper[helperIndex].count;
-
-					break;
-				}
-			}
+			count = g_soundHelper[helperIndex].count;
 
 			break;
 		}
 	}
+
+	Log("count %u", count);
 
 	return count;
 }
@@ -1830,87 +1729,18 @@ byte8 * GetSoundDataAddress(byte8 * addr)
 	switch (channelIndex)
 	{
 		case CHANNEL_COMMON:
-		{
-			switch (g_character)
-			{
-				case CHAR_DANTE:
-				{
-					helperIndex = HELPER_COMMON_DANTE_DEFAULT;
-
-					switch (g_costume)
-					{
-						case COSTUME_DANTE_DEFAULT_NO_COAT:
-						case COSTUME_DANTE_DMC1_NO_COAT:
-						{
-							helperIndex = HELPER_COMMON_DANTE_NO_COAT;
-
-							break;
-						}
-					}
-
-					addr2 = g_soundHelper[helperIndex].dataAddr;
-
-					break;
-				}
-				case CHAR_VERGIL:
-				{
-					helperIndex = HELPER_COMMON_VERGIL_DEFAULT;
-
-					switch (g_costume)
-					{
-						case COSTUME_VERGIL_NERO_ANGELO:
-						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
-						{
-							helperIndex = HELPER_COMMON_VERGIL_NERO_ANGELO;
-
-							break;
-						}
-					}
-
-					addr2 = g_soundHelper[helperIndex].dataAddr;
-
-					break;
-				}
-			}
-
-			break;
-		}
 		case CHANNEL_STYLE_WEAPON:
+		case CHANNEL_ENEMY:
 		{
-			switch (g_character)
-			{
-				case CHAR_DANTE:
-				{
-					helperIndex = HELPER_STYLE_WEAPON_DANTE;
+			auto & helperIndex = g_helperIndices[channelIndex];
 
-					addr2 = g_soundHelper[helperIndex].dataAddr;
-
-					break;
-				}
-				case CHAR_VERGIL:
-				{
-					helperIndex = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
-
-					switch (g_costume)
-					{
-						case COSTUME_VERGIL_NERO_ANGELO:
-						case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
-						{
-							helperIndex = HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO;
-
-							break;
-						}
-					}
-
-					addr2 = g_soundHelper[helperIndex].dataAddr;
-
-					break;
-				}
-			}
+			addr2 = g_soundHelper[helperIndex].dataAddr;
 
 			break;
 		}
 	}
+
+	Log("addr2 %llX", addr2);
 
 	return addr2;
 }
@@ -1923,6 +1753,10 @@ byte8 * GetSoundDataAddress(byte8 * addr)
 
 
 
+
+
+// @Todo: Update memory sizes.
+
 export bool Sound_Init()
 {
 	LogFunction();
@@ -1931,13 +1765,15 @@ export bool Sound_Init()
 	{
 		Log("helperIndex %u", helperIndex);
 
-		auto & headHelper  = g_headHelper [helperIndex];
-		auto & progHelper  = g_progHelper [helperIndex];
-		auto & smplHelper  = g_smplHelper [helperIndex];
-		auto & vagiHelper  = g_vagiHelper [helperIndex];
-		auto & waveHelper  = g_waveHelper [helperIndex];
-		auto & soundHelper = g_soundHelper[helperIndex];
-		auto & dbstHelper  = g_dbstHelper [helperIndex];
+		// auto & headHelper  = g_headHelper [helperIndex];
+		// auto & progHelper  = g_progHelper [helperIndex];
+		// auto & smplHelper  = g_smplHelper [helperIndex];
+		// auto & vagiHelper  = g_vagiHelper [helperIndex];
+		// auto & waveHelper  = g_waveHelper [helperIndex];
+		// auto & soundHelper = g_soundHelper[helperIndex];
+		// auto & dbstHelper  = g_dbstHelper [helperIndex];
+
+		IntroduceHelpers(helperIndex);
 
 		if (!headHelper.Init(1 * 1024 * 1024))
 		{
@@ -1974,7 +1810,7 @@ export bool Sound_Init()
 		(
 			!waveHelper.Init
 			(
-				(8 * 1024 * 1024),
+				(16 * 1024 * 1024),
 				8192
 			)
 		)
@@ -1989,7 +1825,7 @@ export bool Sound_Init()
 
 			return false;
 		}
-		else if (!dbstHelper.Init(1 * 1024 * 1024))
+		else if (!dbstHelper.Init(8 * 1024 * 1024))
 		{
 			Log("dbstHelper.Init failed.");
 
@@ -2016,6 +1852,408 @@ export bool Sound_Init()
 	return true;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+template <typename T>
+void ActorForAll(T & func)
+{
+	for_all(uint64, actorIndex, Actor_actorBaseAddrs.count)
+	{
+		auto actorBaseAddr = Actor_actorBaseAddrs[actorIndex];
+
+		if (func(actorBaseAddr))
+		{
+			break;
+		}
+	}
+}
+
+template <typename T>
+void EnemyForAll(T & func)
+{
+	// Not necessary. Some enemies don't even use this. Gigapede for example.
+
+	// auto firstBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2550);
+	// auto lastBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2750);
+	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+
+	if
+	(
+		// !firstBaseAddr ||
+		// !lastBaseAddr ||
+		!pool ||
+		!pool[8]
+	)
+	{
+		return;
+	}
+
+	auto & count = *reinterpret_cast<uint32 *>(pool[8] + 0x28);
+	auto dataAddr = reinterpret_cast<EnemyVectorData *>(pool[8] + 0x48);
+
+	for_all(uint32, index, 50)
+	{
+		auto & data = dataAddr[index];
+
+		if
+		(
+			!data.baseAddr
+			// (data.baseAddr < firstBaseAddr) ||
+			// (data.baseAddr > lastBaseAddr)
+		)
+		{
+			continue;
+		}
+
+		if (func(data.baseAddr))
+		{
+			break;
+		}
+	}
+}
+
+
+
+byte8 * GetActorBaseAddressByMotionArchivesOffset(BodyPartData * bodyPartDataAddr)
+{
+	if (!bodyPartDataAddr)
+	{
+		return 0;
+	}
+	auto & bodyPartData = *reinterpret_cast<BodyPartData *>(bodyPartDataAddr);
+
+	if (!bodyPartData.motionArchives)
+	{
+		return 0;
+	}
+
+	constexpr auto off = offsetof(ActorData, motionArchives);
+
+	auto baseAddr = (reinterpret_cast<byte8 *>(bodyPartData.motionArchives) - off);
+
+	bool match = false;
+
+
+
+	auto Function = [&](byte8 * actorBaseAddr) -> bool
+	{
+		if (actorBaseAddr == baseAddr)
+		{
+			match = true;
+
+			return true;
+		}
+
+		return false;
+	};
+
+	ActorForAll(Function);
+
+
+
+	if (!match)
+	{
+		return 0;
+	}
+
+	return baseAddr;
+}
+
+bool UpdateGlobalActorHelperIndex(BodyPartData * bodyPartDataAddr)
+{
+	auto actorBaseAddr = GetActorBaseAddressByMotionArchivesOffset(bodyPartDataAddr);
+	if (!actorBaseAddr)
+	{
+		return false;
+	}
+
+	auto & actorData = *reinterpret_cast<ActorData *>(actorBaseAddr);
+
+	auto character = static_cast<uint8>(actorData.character);
+	auto costume = actorData.costume;
+
+	// Common
+	{
+		auto & helperIndex = g_helperIndices[CHANNEL_COMMON];
+
+		switch (character)
+		{
+			case CHAR_DANTE:
+			{
+				helperIndex = HELPER_COMMON_DANTE_DEFAULT;
+
+				switch (costume)
+				{
+					case COSTUME_DANTE_DEFAULT_NO_COAT:
+					case COSTUME_DANTE_DMC1_NO_COAT:
+					{
+						helperIndex = HELPER_COMMON_DANTE_NO_COAT;
+
+						break;
+					}
+				}
+
+				break;
+			}
+			case CHAR_VERGIL:
+			{
+				helperIndex = HELPER_COMMON_VERGIL_DEFAULT;
+
+				switch (costume)
+				{
+					case COSTUME_VERGIL_NERO_ANGELO:
+					case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+					{
+						helperIndex = HELPER_COMMON_VERGIL_NERO_ANGELO;
+
+						break;
+					}
+				}
+
+				break;
+			}
+		}
+	}
+
+	// Style Weapon
+	{
+		auto & helperIndex = g_helperIndices[CHANNEL_STYLE_WEAPON];
+
+		switch (character)
+		{
+			case CHAR_DANTE:
+			{
+				helperIndex = HELPER_STYLE_WEAPON_DANTE;
+
+				break;
+			}
+			case CHAR_VERGIL:
+			{
+				helperIndex = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
+
+				switch (costume)
+				{
+					case COSTUME_VERGIL_NERO_ANGELO:
+					case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+					{
+						helperIndex = HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO;
+
+						break;
+					}
+				}
+
+				break;
+			}
+		}
+	}
+
+	return true;
+}
+
+
+
+// @Todo: Add enemy name and move to Vars.
+constexpr uint32 g_motionArchivesOffs[] =
+{
+	0x698 , // Damned Chessmen Pawn, Knight, Bishop, Rook, Queen, King
+	0x6C0 , // Blood-Goyle
+	0x6D0 , // Pride, Gluttony, Lust, Sloth, Wrath, Envy
+	0x780 , // Soul Eater
+	0xA58 , // Enigma
+	0xA98 , // Doppelganger
+	0x1130, // Geryon
+	0x1158, // Agni & Rudra
+	0x14F0, // The Fallen
+	0x1B48, // Arkham
+	0x2160, // Dullahan
+	0x23C0, // Jester
+	0x2C20, // Arachne
+	0x2E18, // Nevan
+	0x3940, // Greed, Abyss
+	0x4020, // Beowulf
+	0x49C8, // Hell Vanguard
+	0x5410, // Lady
+	0xD7B0, // Cerberus
+	0xE7D0, // Vergil
+};
+
+byte8 * GetEnemyBaseAddressByMotionArchivesOffset(BodyPartData * bodyPartDataAddr)
+{
+	if (!bodyPartDataAddr)
+	{
+		return 0;
+	}
+	auto & bodyPartData = *reinterpret_cast<BodyPartData *>(bodyPartDataAddr);
+
+	if (!bodyPartData.motionArchives)
+	{
+		return 0;
+	}
+
+	for_all(uint8, index, countof(g_motionArchivesOffs))
+	{
+		auto & off = g_motionArchivesOffs[index];
+
+		auto baseAddr = (reinterpret_cast<byte8 *>(bodyPartData.motionArchives) - off);
+
+		bool match = false;
+
+
+
+		auto Function = [&](byte8 * enemyBaseAddr) -> bool
+		{
+			if (enemyBaseAddr == baseAddr)
+			{
+				match = true;
+
+				return true;
+			}
+
+			return false;
+		};
+
+		EnemyForAll(Function);
+
+
+
+		if (!match)
+		{
+			continue;
+		}
+
+		return baseAddr;
+	}
+
+	return 0;
+}
+
+
+
+uint8 GetEnemyHelperIndex(EnemyData & enemyData)
+{
+	auto enemy = static_cast<uint8>(enemyData.enemy);
+	if (enemy >= ENEMY_COUNT)
+	{
+		enemy = 0;
+	}
+
+	return enemyHelperIndices[enemy];
+}
+
+bool UpdateGlobalEnemyHelperIndex(BodyPartData * bodyPartDataAddr)
+{
+	auto & helperIndex = g_helperIndices[CHANNEL_ENEMY];
+
+	auto enemyBaseAddr = GetEnemyBaseAddressByMotionArchivesOffset(bodyPartDataAddr);
+	if (!enemyBaseAddr)
+	{
+		return false;
+	}
+
+	auto & enemyData = *reinterpret_cast<EnemyData *>(enemyBaseAddr);
+
+	Log("enemy %u", enemyData.enemy);
+
+	helperIndex = GetEnemyHelperIndex(enemyData);
+
+	return true;
+}
+
+
+
+void UpdateGlobalHelperIndices(BodyPartData * bodyPartDataAddr)
+{
+	if (UpdateGlobalActorHelperIndex(bodyPartDataAddr))
+	{
+		return;
+	}
+
+	if (UpdateGlobalEnemyHelperIndex(bodyPartDataAddr))
+	{
+		return;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export void Sound_UpdateEnemyCount(byte8 * addr)
+{
+	LogFunction();
+
+	auto & helperIndex = g_helperIndices[CHANNEL_ENEMY];
+
+
+
+	auto Function = [&](byte8 * enemyBaseAddr) -> bool
+	{
+		auto & enemyData = *reinterpret_cast<EnemyData *>(enemyBaseAddr);
+
+		helperIndex = GetEnemyHelperIndex(enemyData);
+
+		Log("helperIndex %u", helperIndex);
+
+		return true;
+	};
+
+	EnemyForAll(Function);
+}
+
+
+
+
+
+
+
+
+
+
+
 export void Sound_Toggle(bool enable)
 {
 	//return;
@@ -2023,6 +2261,270 @@ export void Sound_Toggle(bool enable)
 	LogFunction(enable);
 
 	static bool run = false;
+
+
+
+
+	{
+		auto addr     = (appBaseAddr + 0x59DE0);
+		auto jumpAddr = (appBaseAddr + 0x59DE7);
+		constexpr uint32 size = 7;
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x59E2F);
+		auto jumpAddr = (appBaseAddr + 0x59E36);
+		constexpr uint32 size = 7;
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x59E75);
+		auto jumpAddr = (appBaseAddr + 0x59E7C);
+		constexpr uint32 size = 7;
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x59EBD);
+		auto jumpAddr = (appBaseAddr + 0x59EC4);
+		constexpr uint32 size = 7;
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x59F69);
+		auto jumpAddr = (appBaseAddr + 0x59F70);
+		constexpr uint32 size = 7;
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x5A051);
+		auto jumpAddr = (appBaseAddr + 0x5A058);
+		constexpr uint32 size = 7;
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x5A087);
+		auto jumpAddr = (appBaseAddr + 0x5A08E);
+		constexpr uint32 size = 7;
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+	{
+		auto addr     = (appBaseAddr + 0x5A0CA);
+		auto jumpAddr = (appBaseAddr + 0x5A0D1);
+		constexpr uint32 size = 7;
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// Get Dbst Metadata Address
 	{
@@ -2232,6 +2734,16 @@ export void Sound_Toggle(bool enable)
 	run = true;
 }
 
+
+
+
+
+
+
+
+
+
+
 export void Sound_EventMain()
 {
 	LogFunction();
@@ -2245,6 +2757,1084 @@ export void Sound_EventDelete()
 
 	Sound_Toggle(false);
 }
+
+
+
+
+
+
+
+
+
+export void ToggleSoundRelocations(bool enable)
+{
+	LogFunction(enable);
+
+	static bool run = false;
+
+
+{
+	auto addr     = (appBaseAddr + 0x16975C);
+	auto jumpAddr = (appBaseAddr + 0x169763);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+16975C - 48 8D 0D 2D45C000 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+169763
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x169800);
+	auto jumpAddr = (appBaseAddr + 0x169807);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+169800 - 48 8D 0D 8944C000 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+169807
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x1699AB);
+	auto jumpAddr = (appBaseAddr + 0x1699B2);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+1699AB - 48 8D 0D DE42C000 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+1699B2
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x169A7B);
+	auto jumpAddr = (appBaseAddr + 0x169A82);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+169A7B - 48 8D 0D 0E42C000 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+169A82
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x169FFA);
+	auto jumpAddr = (appBaseAddr + 0x16A001);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+169FFA - 48 8D 0D 8F3CC000 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+16A001
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x16BD37);
+	auto jumpAddr = (appBaseAddr + 0x16BD3E);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+16BD37 - 48 8D 0D 521FC000 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+16BD3E
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x16D694);
+	auto jumpAddr = (appBaseAddr + 0x16D69B);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+16D694 - 48 8D 0D F505C000 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+16D69B
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x16EFFB);
+	auto jumpAddr = (appBaseAddr + 0x16F002);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+16EFFB - 48 8D 0D 8EECBF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+16F002
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x171E82);
+	auto jumpAddr = (appBaseAddr + 0x171E89);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+171E82 - 48 8D 0D 07BEBF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+171E89
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x17268E);
+	auto jumpAddr = (appBaseAddr + 0x172695);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+17268E - 48 8D 0D FBB5BF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+172695
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x172700);
+	auto jumpAddr = (appBaseAddr + 0x172707);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+172700 - 48 8D 0D 89B5BF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+172707
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x172753);
+	auto jumpAddr = (appBaseAddr + 0x17275A);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+172753 - 48 8D 0D 36B5BF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+17275A
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x172B9D);
+	auto jumpAddr = (appBaseAddr + 0x172BA4);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+172B9D - 48 8D 0D ECB0BF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+172BA4
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x172F86);
+	auto jumpAddr = (appBaseAddr + 0x172F8D);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+172F86 - 48 8D 0D 03ADBF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+172F8D
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x17389D);
+	auto jumpAddr = (appBaseAddr + 0x1738A4);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+17389D - 48 8D 0D ECA3BF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+1738A4
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x173CFD);
+	auto jumpAddr = (appBaseAddr + 0x173D04);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+173CFD - 48 8D 0D 8C9FBF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+173D04
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x1777D5);
+	auto jumpAddr = (appBaseAddr + 0x1777DC);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+1777D5 - 48 8D 0D B464BF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+1777DC
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x178C29);
+	auto jumpAddr = (appBaseAddr + 0x178C30);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+178C29 - 48 8D 0D 6050BF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+178C30
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x17B167);
+	auto jumpAddr = (appBaseAddr + 0x17B16E);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+17B167 - 48 8D 0D 222BBF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+17B16E
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x17B185);
+	auto jumpAddr = (appBaseAddr + 0x17B18C);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+17B185 - 48 8D 0D 042BBF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+17B18C
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x17B6C5);
+	auto jumpAddr = (appBaseAddr + 0x17B6CC);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+17B6C5 - 48 8D 0D C425BF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+17B6CC
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x17CB9E);
+	auto jumpAddr = (appBaseAddr + 0x17CBA5);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+17CB9E - 48 8D 0D EB10BF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+17CBA5
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x17CBC6);
+	auto jumpAddr = (appBaseAddr + 0x17CBCD);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+17CBC6 - 48 8D 0D C310BF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+17CBCD
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x17CDD3);
+	auto jumpAddr = (appBaseAddr + 0x17CDDA);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+17CDD3 - 48 8D 0D B60EBF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+17CDDA
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x17CF01);
+	auto jumpAddr = (appBaseAddr + 0x17CF08);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+17CF01 - 48 8D 0D 880DBF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+17CF08
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x17CF44);
+	auto jumpAddr = (appBaseAddr + 0x17CF4B);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+17CF44 - 48 8D 0D 450DBF00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+17CF4B
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x1802E0);
+	auto jumpAddr = (appBaseAddr + 0x1802E7);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+1802E0 - 48 8D 0D A9D9BE00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+1802E7
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+{
+	auto addr     = (appBaseAddr + 0x18887B);
+	auto jumpAddr = (appBaseAddr + 0x188882);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+18887B - 48 8D 0D 0E54BE00 - LEA RCX,[dmc3.exe+D6DC90]
+	dmc3.exe+188882
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect0[] =
+	{
+		0x48, 0xB9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rcx,0
+		0xC6, 0x01, 0x00,                                           // mov byte ptr [rcx],0
+		0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00,                   // lea rcx,[dmc3.exe+D6DC90]
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
+		*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+		*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
+		WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+
+
+
+
+	run = true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,8 +1,20 @@
+
+
 // @Todo: Review.
 
-module;
-#include "../Core/Core.h"
+
+
+
+
 export module Memory;
+
+import Core;
+
+#include "../Core/Macros.h"
+
+//import Vars;
+
+
 
 export enum MEMORY_SIZE
 {

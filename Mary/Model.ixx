@@ -1,8 +1,18 @@
 module;
-#include "../Core/Core.h"
 
-#include "Vars.h"
+#include "../Core/Macros.h" //
+
+// #include "../Core/Core.h"
+
+// #include "Vars.h"
 export module Model;
+
+
+import Core;
+
+
+
+import Vars;
 
 import Internal;
 
@@ -71,7 +81,7 @@ export void ResetModel(ModelData & modelData)
 {
 	func_897B0(modelData);
 	func_89450(modelData);
-	memset(&modelData, 0, sizeof(ModelData));
+	SetMemory(&modelData, 0, sizeof(ModelData));
 	func_89270(modelData);
 }
 

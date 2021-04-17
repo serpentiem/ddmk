@@ -1,17 +1,24 @@
-// @Todo: Update.
-module;
-#include "../Core/Core.h"
-
-#include "Vars.h"
 export module Graphics;
 
+import Core;
+
+#include "../Core/Macros.h"
+
+import Core_ImGui;
+
 import Config;
+import Global;
+import Vars;
 
 double g_defaultFrequency = 0;
 
 double * g_frequencyAddr = 0;
 
-export void Graphics_Init()
+
+
+namespaceStart(Graphics);
+
+export void Init()
 {
 	LogFunction();
 
@@ -34,7 +41,7 @@ export void Graphics_Init()
 			0x48, 0x8D, 0x4C, 0x24, 0x20,                   // lea rcx,[rsp+20]
 		};
 		auto func = CreateFunction(0, (appBaseAddr + 0x2C5EB5), false, true, sizeof(sect0));
-		memcpy(func.sect0, sect0, sizeof(sect0));
+		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		WriteAddress(func.sect0, g_frequencyAddr, 8);
 		WriteJump((appBaseAddr + 0x2C5EB0), func.addr);
 		/*
@@ -44,9 +51,50 @@ export void Graphics_Init()
 	}
 }
 
+namespaceEnd();
+
+
+
 export void UpdateFrameRate()
 {
 	LogFunction();
 
 	*g_frequencyAddr = (g_defaultFrequency * (60.0 / activeConfig.frameRate));
 }
+
+// export void UpdateRenderSize
+// (
+// 	uint32 width,
+// 	uint32 height
+// )
+// {
+// 	Log
+// 	(
+// 		"%s "
+// 		"%u "
+// 		"%u",
+// 		FUNC_NAME,
+// 		width,
+// 		height
+// 	);
+
+// 	renderWidth = width;
+// 	renderHeight = height;
+// 	renderSize =
+// 	{
+// 		static_cast<float>(width),
+// 		static_cast<float>(height)
+// 	};
+
+// 	ImGui::UpdateDisplaySize
+// 	(
+// 		width,
+// 		height
+// 	);
+
+// 	ImGui::DI8::UpdateMouseMultiplier
+// 	(
+// 		windowSize,
+// 		renderSize
+// 	);
+// }

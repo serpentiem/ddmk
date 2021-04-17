@@ -1,8 +1,19 @@
 module;
-#include "../Core/Core.h"
 
-#include "Vars.h"
+#include "../Core/Macros.h" //
+// #include "../Core/Core.h"
+
+// #include "Vars.h"
 export module Input;
+
+
+import Core;
+
+
+
+import Vars;
+
+
 
 export enum TILT_DIRECTION
 {

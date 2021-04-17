@@ -1,8 +1,20 @@
 module;
-#include "../Core/Core.h"
 
-#include "Vars.h"
+#include "../Core/Macros.h" //
+// #include "../Core/Core.h"
+
+// #include "Vars.h"
 export module Arcade;
+
+
+import Core;
+
+
+import Vars;
+
+
+#define memset SetMemory
+#define memcpy CopyMemory
 
 import Config;
 

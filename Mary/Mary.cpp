@@ -1,52 +1,54 @@
-// @Todo: Update order.
+// @Todo: Update imports.
+// @Todo: Update inits.
 
-#include "../Core/Core.h"
+import Core;
+
+#include "../Core/Macros.h"
+
+import Windows;
+
+import Vars;
 
 import Actor;
 import Arcade;
+import BossRush;
 import Camera;
 import Config;
+import Enemy;
 import Event;
 import File;
 import FMOD;
+import Global;
 import Graphics;
 import GUI;
 import Hooks;
 import HUD;
+import Input;
 import Internal;
 import Memory;
-import Other;
+import Model;
 import Scene;
 import Sound;
 import Speed;
 import Training;
 import Window;
 
-#define debug false
+using namespace Windows;
 
-uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
+#define debug true
+
+uint32 DllMain
+(
+	HINSTANCE instance,
+	uint32 reason,
+	LPVOID reserved
+)
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
-
-
-
-
-
 		Core_Log_Init("logs", "Mary.txt");
 
-
-
-
 		Log("Session started.");
-		//Log("Session twice started.");
-
-
-
-
-
-
-		//return 1;
 
 		if (!Core_Memory_Init())
 		{
@@ -69,11 +71,6 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 			memoryData.dataSize
 		);
 
-		// HoboBreak();
-
-
-
-
 		if (!protectionHelper.Init(4096))
 		{
 			Log("protectionHelper.Init failed.");
@@ -94,64 +91,9 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 			return 0;
 		}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		Config_Init("configs", "Mary.bin");
+
 		LoadConfig();
-
-		// if constexpr (debug)
-		// {
-		// 	auto & activeCharacterData = GetActiveCharacterData
-		// 	(
-		// 		0,
-		// 		0,
-		// 		0
-		// 	);
-		// 	auto & queuedCharacterData = GetQueuedCharacterData
-		// 	(
-		// 		0,
-		// 		0,
-		// 		0
-		// 	);
-		// 	activeCharacterData.costume = 1;
-		// 	queuedCharacterData.costume = 1;
-		// }
-
-		// if constexpr (debug)
-		// {
-		// 	auto & activeCharacterData = GetActiveCharacterData
-		// 	(
-		// 		0,
-		// 		0,
-		// 		1
-		// 	);
-		// 	auto & queuedCharacterData = GetQueuedCharacterData
-		// 	(
-		// 		0,
-		// 		0,
-		// 		1
-		// 	);
-		// 	activeCharacterData.costume = 1;
-		// 	queuedCharacterData.costume = 1;
-		// }
 
 
 
@@ -182,7 +124,6 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-
 		Actor_Init();
 
 		Actor_Toggle(false);
@@ -191,10 +132,6 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		{
 			Actor_Toggle(activeConfig.Actor.enable);
 		}
-
-
-
-
 
 		Camera_Toggle(false);
 		Camera_Toggle(true);
@@ -210,18 +147,7 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-
-
-
-
-
-
-
-
-
-
 		UpdateCrazyComboLevelMultiplier();
-
 
 		ToggleAirHikeCoreAbility               (activeConfig.airHikeCoreAbility                );
 		ToggleRoyalguardForceJustFrameRelease  (activeConfig.Royalguard.forceJustFrameRelease  );
@@ -235,26 +161,21 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 
 
 
-
-
-
-
-
-
 		Arcade_Toggle(activeConfig.Arcade.enable);
 
-
-
 		Camera_ToggleInvertX(activeConfig.Camera.invertX);
+
+
+		Event_Toggle(false);
+		Event_Toggle(true);
+
 
 		Event_Init();
 		Event_ToggleSkipIntro    (activeConfig.skipIntro    );
 		Event_ToggleSkipCutscenes(activeConfig.skipCutscenes);
 
-		Graphics_Init();
+		Graphics::Init();
 		UpdateFrameRate();
-
-		Hooks_Init();
 
 		HUD_Init();
 
@@ -274,7 +195,14 @@ uint32 DllMain(HINSTANCE instance, uint32 reason, LPVOID reserved)
 		Training_ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
 		Training_ToggleDisableTimer       (activeConfig.disableTimer       );
 
-		Window_ToggleForceFocus(true);
+		Window::ToggleForceFocus(true);
+
+		Hooks_Init();
+
+
+		ToggleSoundRelocations(false);
+		ToggleSoundRelocations(true);
+
 
 		SetMemory((appBaseAddr + 0x5505B5), 0, 23, MemoryFlags_VirtualProtectDestination); // Remove FMODGetCodecDescription label.
 

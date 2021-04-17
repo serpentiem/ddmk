@@ -1,13 +1,50 @@
 // @Todo: Clean.
 // @Todo: Create order script.
 
-module;
-#include "../Core/Core.h"
 
-#include "Vars.h"
+
+
+module;
+#include <stdio.h>
+#include <string.h>
+
+
+// #include <Windows.h>
+// #include <TlHelp32.h>
+// #include <shellapi.h>
+// #include <dxgi.h>
+// #include <d3d11.h>
+// #include <d3dcompiler.h>
+// #define DIRECTINPUT_VERSION 0x800
+// #include <dinput.h>
+// #include <Xinput.h>
+
+
 export module Config;
 
-#define debug false
+import Core;
+
+#include "../Core/Macros.h"
+
+
+
+
+import Windows;
+
+using namespace Windows;
+
+
+
+
+import Vars;
+
+
+
+
+
+//import Windows;
+
+#define debug true
 
 #pragma pack(push, 1)
 export struct Config
@@ -22,7 +59,7 @@ export struct Config
 	bool airHikeCoreAbility = false;
 	struct
 	{
-		bool   enable         = false;
+		bool   enable         = true;
 		uint32 mission        = 17;
 		uint32 mode           = MODE_NORMAL;
 		uint32 room           = 900;
@@ -99,7 +136,7 @@ export struct Config
 
 	struct
 	{
-		bool  invertX        = false;
+		bool  invertX        = true;
 		float height         = 140.0f;
 		float tilt           = 0.25f;
 		float distance       = 460.0f;
@@ -305,7 +342,7 @@ export struct Config
 
 
 	bool infiniteHitPoints   = false;
-	bool infiniteMagicPoints = false;
+	bool infiniteMagicPoints = true;
 	bool disableTimer        = false;
 
 
@@ -554,8 +591,8 @@ export struct Config
 
 
 
-	bool skipIntro     = false;
-	bool skipCutscenes = false;
+	bool skipIntro     = true;
+	bool skipCutscenes = true;
 
 	bool preferLocalFiles = true;
 
@@ -564,7 +601,35 @@ export struct Config
 
 	bool hideMouseCursor = true;
 
+
+	// @Todo: Remove.
 	bool forceWindowFocus = true;
+
+	// uint32 windowWidth = 1920;
+	// uint32 windowHeight = 1080;
+
+	// int32 windowX = 0;
+	// int32 windowY = 0;
+
+
+
+	// struct
+	// {
+	// 	uint32 width      = 1920;
+	// 	uint32 height     = 1080;
+	// 	int32  x          = 0;
+	// 	int32  y          = 0;
+
+	// 	bool setSize = true;
+	// 	bool setPosition = true;
+	// 	bool forceFocus = true;
+	// }
+	// Window;
+
+
+	float globalScale = 1;
+
+
 
 
 
@@ -574,7 +639,7 @@ export struct Config
 		uint32 variant;
 		vec4 position;
 		uint16 rotation;
-		bool useMainActorData;
+		bool useMainActorData = true;
 		uint16 spawnMethod;
 		bool autoSpawn;
 	};
@@ -601,10 +666,11 @@ export struct Config
 	{
 		bool showFocus = true;
 		bool showFPS = true;
+		bool showSizes = true;
 		bool showScene = true;
 		bool showEventData = true;
 		bool showPosition = true;
-		bool showRegionData = true;
+		bool showRegionData = (debug) ? true : false;
 
 		MainOverlayData()
 		{
@@ -659,12 +725,12 @@ void ResetConfigHelper
 	T & defaultData
 )
 {
-	if constexpr (debug)
-	{
-		LogFunction();
+	// if constexpr (debug)
+	// {
+	// 	LogFunction();
 
-		Log("size %u", sizeof(activeData));
-	}
+	// 	Log("size %u", sizeof(activeData));
+	// }
 
 	CopyMemory
 	(
@@ -679,6 +745,24 @@ void ResetConfigHelper
 		sizeof(activeData)
 	);
 }
+
+
+// export template <typename T>
+// void SetConfigHelper
+// (
+// 	T & activeData,
+// 	T & queuedData,
+// 	T & defaultData,
+// 	T value
+// )
+// {
+// 	activeData = queuedData = value;
+// }
+
+
+
+
+
 
 char g_path[64] = {};
 
@@ -1023,12 +1107,8 @@ export void LoadConfig()
 		g_path,
 		FileFlags_Read
 	);
-	if (file == INVALID_HANDLE_VALUE)
+	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
 	{
-
-		Log("Invalid handle bro.");
-
-
 		SaveConfig();
 
 		return;
