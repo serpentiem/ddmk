@@ -1,7 +1,4 @@
 *
-
-
-
 !Core
 !Core/*
 !dinput8
@@ -18,10 +15,7 @@
 !Scripts/*.js
 !stb
 !stb/*
-
-
-
-.gitignore
-.gitmodules
-LICENSE.txt
-README.md
+!.gitignore
+!.gitmodules
+!LICENSE.txt
+!README.md

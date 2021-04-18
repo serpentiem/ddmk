@@ -3,6 +3,11 @@
 
 
 
+
+
+
+
+" \], \/\/ [A-Za-z0-9]
 */
 
 const CHANNEL_SYSTEM       = 0;
@@ -136,7 +141,7 @@ let items =
 	[ "dmc3.exe+66206 - 48 8D 0D 837AD000 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Ebony & Ivory Wild Stomp
 	[ "dmc3.exe+6693E - 48 8D 0D 4B73D000 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Ebony & Ivory Wild Stomp
 	[ "dmc3.exe+66C3A - 48 8D 0D 4F70D000 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Pride Hit Floor
-	[ "dmc3.exe+66ED7 - 48 8D 0D B26DD000 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
+	[ "dmc3.exe+66ED7 - 48 8D 0D B26DD000 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Agni & Rudra Sword Dance
 	[ "dmc3.exe+66FA0 - 48 8D 0D E96CD000 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Mission 3
 	[ "dmc3.exe+671A3 - 48 8D 0D E66AD000 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Mission 3
 	[ "dmc3.exe+67283 - 48 8D 0D 066AD000 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Mission 3
@@ -279,8 +284,8 @@ let items =
 	[ "dmc3.exe+EE21E - 48 8D 0D 6BFAC700 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
 	[ "dmc3.exe+12EF29 - 48 8D 0D 60EDC300 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
 	[ "dmc3.exe+12EFE8 - 48 8D 0D A1ECC300 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+135C68 - 48 8D 0D 2180C300 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+135C90 - 48 8D 0D F97FC300 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
+	[ "dmc3.exe+135C68 - 48 8D 0D 2180C300 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Nevan Lightning Floor
+	[ "dmc3.exe+135C90 - 48 8D 0D F97FC300 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Nevan Lightning Floor
 	[ "dmc3.exe+13A811 - 48 8D 0D 7834C300 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
 	[ "dmc3.exe+13A841 - 48 8D 0D 4834C300 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
 	[ "dmc3.exe+14996E - 48 8D 0D 1B43C200 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
@@ -411,31 +416,31 @@ let items =
 	[ "dmc3.exe+1B9F40 - 48 8D 0D 493DBB00 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Now Loading
 	[ "dmc3.exe+1B9F6A - 48 8D 0D 1F3DBB00 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Now Loading
 	[ "dmc3.exe+1C46B5 - 48 8D 0D D495BA00 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+1CBB03 - 48 8D 0D 8621BA00 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Rebellion Drive
-	[ "dmc3.exe+1CBF64 - 48 8D 0D 251DBA00 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Rebellion Drive
+	[ "dmc3.exe+1CBB03 - 48 8D 0D 8621BA00 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Rebellion Drive
+	[ "dmc3.exe+1CBF64 - 48 8D 0D 251DBA00 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Rebellion Drive
 	[ "dmc3.exe+1CD944 - 48 8D 0D 4503BA00 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+1CD97B - 48 8D 0D 0E03BA00 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Rebellion Sword Pierce Hurl Back
-	[ "dmc3.exe+1CE059 - 48 8D 0D 30FCB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Rebellion Sword Pierce
-	[ "dmc3.exe+1CE0AC - 48 8D 0D DDFBB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Rebellion Sword Pierce
+	[ "dmc3.exe+1CD97B - 48 8D 0D 0E03BA00 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Rebellion Sword Pierce Hurl Back
+	[ "dmc3.exe+1CE059 - 48 8D 0D 30FCB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Rebellion Sword Pierce
+	[ "dmc3.exe+1CE0AC - 48 8D 0D DDFBB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Rebellion Sword Pierce
 	[ "dmc3.exe+1CE0D8 - 48 8D 0D B1FBB900 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+1CE9B8 - 48 8D 0D D1F2B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Spiral Crazy Combo
-	[ "dmc3.exe+1CF013 - 48 8D 0D 76ECB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Spiral Shot
-	[ "dmc3.exe+1CFDDC - 48 8D 0D ADDEB900 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+1CFE53 - 48 8D 0D 36DEB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Artemis Shot
-	[ "dmc3.exe+1D0010 - 48 8D 0D 79DCB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Artemis Shot
-	[ "dmc3.exe+1D0A1E - 48 8D 0D 6BD2B900 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+1D0F34 - 48 8D 0D 55CDB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Kalina Ann Shot
-	[ "dmc3.exe+1D195D - 48 8D 0D 2CC3B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Kalina Ann Hysteric
-	[ "dmc3.exe+1D255F - 48 8D 0D 2AB7B900 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
+	[ "dmc3.exe+1CE9B8 - 48 8D 0D D1F2B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Spiral Crazy Combo
+	[ "dmc3.exe+1CF013 - 48 8D 0D 76ECB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Spiral Shot
+	[ "dmc3.exe+1CFDDC - 48 8D 0D ADDEB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Artemis Shot
+	[ "dmc3.exe+1CFE53 - 48 8D 0D 36DEB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Artemis Shot
+	[ "dmc3.exe+1D0010 - 48 8D 0D 79DCB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Artemis Shot
+	[ "dmc3.exe+1D0A1E - 48 8D 0D 6BD2B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Artemis Shot
+	[ "dmc3.exe+1D0F34 - 48 8D 0D 55CDB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Kalina Ann Shot
+	[ "dmc3.exe+1D195D - 48 8D 0D 2CC3B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Kalina Ann Hysteric
+	[ "dmc3.exe+1D255F - 48 8D 0D 2AB7B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Kalina Ann Grapple
 	[ "dmc3.exe+1D34C4 - 48 8D 0D C5A7B900 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+1D34FA - 48 8D 0D 8FA7B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Kalina Ann Grapple
-	[ "dmc3.exe+1D4520 - 48 8D 0D 6997B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Beowulf Fireball
-	[ "dmc3.exe+1D6843 - 48 8D 0D 4674B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Nevan
-	[ "dmc3.exe+1D6870 - 48 8D 0D 1974B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Nevan
-	[ "dmc3.exe+1D6979 - 48 8D 0D 1073B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Nevan
-	[ "dmc3.exe+1D6DF1 - 48 8D 0D 986EB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Nevan
-	[ "dmc3.exe+1D7896 - 48 8D 0D F363B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Artemis Acid Rain
-	[ "dmc3.exe+1D8165 - 48 8D 0D 245BB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Artemis Acid Rain
+	[ "dmc3.exe+1D34FA - 48 8D 0D 8FA7B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Kalina Ann Grapple
+	[ "dmc3.exe+1D4520 - 48 8D 0D 6997B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Beowulf Fireball
+	[ "dmc3.exe+1D6843 - 48 8D 0D 4674B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Nevan
+	[ "dmc3.exe+1D6870 - 48 8D 0D 1974B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Nevan
+	[ "dmc3.exe+1D6979 - 48 8D 0D 1073B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Nevan
+	[ "dmc3.exe+1D6DF1 - 48 8D 0D 986EB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Nevan
+	[ "dmc3.exe+1D7896 - 48 8D 0D F363B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Artemis Acid Rain
+	[ "dmc3.exe+1D8165 - 48 8D 0D 245BB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Artemis Acid Rain
 	[ "dmc3.exe+1D881E - 48 8D 0D 6B54B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_DEFAULT ], // Force Edge Round Trip
 	[ "dmc3.exe+1D8EE7 - 48 8D 0D A24DB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_DEFAULT ], // Force Edge Round Trip
 	[ "dmc3.exe+1D9383 - 48 8D 0D 0649B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_DEFAULT ], // Force Edge Round Trip
@@ -444,85 +449,85 @@ let items =
 	[ "dmc3.exe+1DB927 - 48 8D 0D 6223B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_DEFAULT ], // Summoned Swords
 	[ "dmc3.exe+1DBA89 - 48 8D 0D 0022B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_DEFAULT ], // Summoned Swords
 	[ "dmc3.exe+1DBE68 - 48 8D 0D 211EB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_DEFAULT ], // Storm Swords
-	[ "dmc3.exe+1DC9C0 - 48 8D 0D C912B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Yamato Nero Angelo Fireball
-	[ "dmc3.exe+1DCD22 - 48 8D 0D 670FB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Yamato Nero Angelo Fireball
-	[ "dmc3.exe+1E0AD8 - 48 8D 0D B1D1B800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // After taunt
+	[ "dmc3.exe+1DC9C0 - 48 8D 0D C912B900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO ], // Yamato Nero Angelo Fireball
+	[ "dmc3.exe+1DCD22 - 48 8D 0D 670FB900 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO ], // Yamato Nero Angelo Fireball
+	[ "dmc3.exe+1E0AD8 - 48 8D 0D B1D1B800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // After Taunt
 	[ "dmc3.exe+1E7828 - 48 8D 0D 6164B800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Devil Form
 	[ "dmc3.exe+1E78FF - 48 8D 0D 8A63B800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Devil Form
-	[ "dmc3.exe+1E9506 - 48 8D 0D 8347B800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Quicksilver Time Lag
-	[ "dmc3.exe+1E958B - 48 8D 0D FE46B800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Quicksilver Time Lag
-	[ "dmc3.exe+1EAC41 - 48 8D 0D 4830B800 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+1EAEAA - 48 8D 0D DF2DB800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Doppelganger
-	[ "dmc3.exe+1EAF41 - 48 8D 0D 482DB800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Doppelganger
-	[ "dmc3.exe+1EAFA6 - 48 8D 0D E32CB800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Doppelganger
+	[ "dmc3.exe+1E9506 - 48 8D 0D 8347B800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Quicksilver Time Lag
+	[ "dmc3.exe+1E958B - 48 8D 0D FE46B800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Quicksilver Time Lag
+	[ "dmc3.exe+1EAC41 - 48 8D 0D 4830B800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Quicksilver Deactivate Run Out
+	[ "dmc3.exe+1EAEAA - 48 8D 0D DF2DB800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Doppelganger Activate
+	[ "dmc3.exe+1EAF41 - 48 8D 0D 482DB800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Doppelganger Deactivate
+	[ "dmc3.exe+1EAFA6 - 48 8D 0D E32CB800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Doppelganger Activate
 	[ "dmc3.exe+1EC095 - 48 8D 0D F41BB800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Damage
 	[ "dmc3.exe+1ED684 - 48 8D 0D 0506B800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Deflect
 	[ "dmc3.exe+1EDB09 - 48 8D 0D 8001B800 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Poison
 	[ "dmc3.exe+1EDD11 - 48 8D 0D 78FFB700 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Death
-	[ "dmc3.exe+1EE768 - 48 8D 0D 21F5B700 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Royalguard Break
+	[ "dmc3.exe+1EE768 - 48 8D 0D 21F5B700 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Royalguard Break
 	[ "dmc3.exe+1F109C - 48 8D 0D EDCBB700 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+1F3778 - 48 8D 0D 11A5B700 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Royalguard Block
+	[ "dmc3.exe+1F3778 - 48 8D 0D 11A5B700 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Royalguard Block
 	[ "dmc3.exe+1F413D - 48 8D 0D 4C9BB700 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
 	[ "dmc3.exe+1F428A - 48 8D 0D FF99B700 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
 	[ "dmc3.exe+1F8462 - 48 8D 0D 2758B700 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+1F8A8E - 48 8D 0D FB51B700 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Quicksilver Time Lag
+	[ "dmc3.exe+1F8A8E - 48 8D 0D FB51B700 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Quicksilver Time Lag
 	[ "dmc3.exe+1F8BC0 - 48 8D 0D C950B700 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
 	[ "dmc3.exe+1F8F00 - 48 8D 0D 894DB700 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
 	[ "dmc3.exe+1F8F7A - 48 8D 0D 0F4DB700 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Devil Form
 	[ "dmc3.exe+1F9289 - 48 8D 0D 004AB700 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+1FEFC4 - 48 8D 0D C5ECB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Agni & Rudra Million Slash Crazy Combo
-	[ "dmc3.exe+200631 - 48 8D 0D 58D6B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Ebony & Ivory Wild Stomp Crazy Combo
-	[ "dmc3.exe+2016C3 - 48 8D 0D C6C5B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Beowulf Crazy Combo
-	[ "dmc3.exe+201AE5 - 48 8D 0D A4C1B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Beowulf Straight
-	[ "dmc3.exe+201B1A - 48 8D 0D 6FC1B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Beowulf Straight
-	[ "dmc3.exe+201B3A - 48 8D 0D 4FC1B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Beowulf Straight
-	[ "dmc3.exe+201CCE - 48 8D 0D BBBFB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Beowulf Straight
-	[ "dmc3.exe+201CEB - 48 8D 0D 9EBFB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Beowulf Straight
-	[ "dmc3.exe+204186 - 48 8D 0D 039BB600 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+205E12 - 48 8D 0D 777EB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Rebellion Helm Breaker
-	[ "dmc3.exe+206207 - 48 8D 0D 827AB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Kalina Ann Shot
-	[ "dmc3.exe+20726E - 48 8D 0D 1B6AB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Cerberus Satellite Crazy Combo
+	[ "dmc3.exe+1FEFC4 - 48 8D 0D C5ECB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Agni & Rudra Million Slash Crazy Combo
+	[ "dmc3.exe+200631 - 48 8D 0D 58D6B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Ebony & Ivory Wild Stomp Crazy Combo
+	[ "dmc3.exe+2016C3 - 48 8D 0D C6C5B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Beowulf Crazy Combo
+	[ "dmc3.exe+201AE5 - 48 8D 0D A4C1B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Beowulf Straight
+	[ "dmc3.exe+201B1A - 48 8D 0D 6FC1B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Beowulf Straight
+	[ "dmc3.exe+201B3A - 48 8D 0D 4FC1B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Beowulf Straight
+	[ "dmc3.exe+201CCE - 48 8D 0D BBBFB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Beowulf Straight
+	[ "dmc3.exe+201CEB - 48 8D 0D 9EBFB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Beowulf Straight
+	[ "dmc3.exe+204186 - 48 8D 0D 039BB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Nevan Crazy Combo
+	[ "dmc3.exe+205E12 - 48 8D 0D 777EB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Rebellion Helm Breaker
+	[ "dmc3.exe+206207 - 48 8D 0D 827AB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Kalina Ann Shot
+	[ "dmc3.exe+20726E - 48 8D 0D 1B6AB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Cerberus Satellite Crazy Combo
 	[ "dmc3.exe+207F30 - 48 8D 0D 595DB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Pole Dance
 	[ "dmc3.exe+20809E - 48 8D 0D EB5BB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Pole Dance
-	[ "dmc3.exe+208774 - 48 8D 0D 1555B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Spiral Shot
-	[ "dmc3.exe+209E41 - 48 8D 0D 483EB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Agni & Rudra Tornado Crazy Combo
-	[ "dmc3.exe+20B25D - 48 8D 0D 2C2AB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Beowulf Rising Dragon Crazy Combo
-	[ "dmc3.exe+20C43E - 48 8D 0D 4B18B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Nevan Crazy Combo
-	[ "dmc3.exe+20C761 - 48 8D 0D 2815B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Nevan
-	[ "dmc3.exe+20C78D - 48 8D 0D FC14B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Nevan
-	[ "dmc3.exe+20C7FC - 48 8D 0D 8D14B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Nevan
-	[ "dmc3.exe+20C8B7 - 48 8D 0D D213B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Nevan
-	[ "dmc3.exe+20D625 - 48 8D 0D 6406B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Artemis Acid Rain
-	[ "dmc3.exe+20D78B - 48 8D 0D FE04B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Artemis Acid Rain Crazy Combo
-	[ "dmc3.exe+20DD2D - 48 8D 0D 5CFFB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Cerberus Million Carats Crazy Combo
-	[ "dmc3.exe+20E3CA - 48 8D 0D BFF8B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Spiral
-	[ "dmc3.exe+20E6F3 - 48 8D 0D 96F5B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Spiral Crazy Combo
-	[ "dmc3.exe+20E773 - 48 8D 0D 16F5B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Spiral Crazy Combo
-	[ "dmc3.exe+20EE73 - 48 8D 0D 16EEB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Shotgun Gun Stinger Crazy Combo
-	[ "dmc3.exe+210593 - 48 8D 0D F6D6B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Rebellion Dance Macabre
-	[ "dmc3.exe+21072B - 48 8D 0D 5ED5B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Rebellion Dance Macabre Crazy Combo
-	[ "dmc3.exe+211BD9 - 48 8D 0D B0C0B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Rebellion Million Stab Crazy Combo
-	[ "dmc3.exe+2156B2 - 48 8D 0D D785B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Rebellion Sword Pierce Hurl Back
-	[ "dmc3.exe+215B1E - 48 8D 0D 6B81B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Rebellion Charge
-	[ "dmc3.exe+215DC5 - 48 8D 0D C47EB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Artemis Charge
-	[ "dmc3.exe+215F64 - 48 8D 0D 257DB500 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+216037 - 48 8D 0D 527CB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Artemis Charge Air Charge
-	[ "dmc3.exe+216177 - 48 8D 0D 127BB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Ebony & Ivory Charge
-	[ "dmc3.exe+2161CB - 48 8D 0D BE7AB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Ebony & Ivory Charge
-	[ "dmc3.exe+21638C - 48 8D 0D FD78B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Shotgun Charge
-	[ "dmc3.exe+2163E0 - 48 8D 0D A978B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Shotgun Charge
-	[ "dmc3.exe+21655A - 48 8D 0D 2F77B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Ebony & Ivory Charge
+	[ "dmc3.exe+208774 - 48 8D 0D 1555B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Spiral Shot
+	[ "dmc3.exe+209E41 - 48 8D 0D 483EB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Agni & Rudra Tornado Crazy Combo
+	[ "dmc3.exe+20B25D - 48 8D 0D 2C2AB600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Beowulf Rising Dragon Crazy Combo
+	[ "dmc3.exe+20C43E - 48 8D 0D 4B18B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Nevan Crazy Combo
+	[ "dmc3.exe+20C761 - 48 8D 0D 2815B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Nevan
+	[ "dmc3.exe+20C78D - 48 8D 0D FC14B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Nevan
+	[ "dmc3.exe+20C7FC - 48 8D 0D 8D14B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Nevan
+	[ "dmc3.exe+20C8B7 - 48 8D 0D D213B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Nevan
+	[ "dmc3.exe+20D625 - 48 8D 0D 6406B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Artemis Acid Rain
+	[ "dmc3.exe+20D78B - 48 8D 0D FE04B600 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Artemis Acid Rain Crazy Combo
+	[ "dmc3.exe+20DD2D - 48 8D 0D 5CFFB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Cerberus Million Carats Crazy Combo
+	[ "dmc3.exe+20E3CA - 48 8D 0D BFF8B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Spiral
+	[ "dmc3.exe+20E6F3 - 48 8D 0D 96F5B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Spiral Crazy Combo
+	[ "dmc3.exe+20E773 - 48 8D 0D 16F5B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Spiral Crazy Combo
+	[ "dmc3.exe+20EE73 - 48 8D 0D 16EEB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Shotgun Gun Stinger Crazy Combo
+	[ "dmc3.exe+210593 - 48 8D 0D F6D6B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Rebellion Dance Macabre
+	[ "dmc3.exe+21072B - 48 8D 0D 5ED5B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Rebellion Dance Macabre Crazy Combo
+	[ "dmc3.exe+211BD9 - 48 8D 0D B0C0B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Rebellion Million Stab Crazy Combo
+	[ "dmc3.exe+2156B2 - 48 8D 0D D785B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Rebellion Sword Pierce Hurl Back
+	[ "dmc3.exe+215B1E - 48 8D 0D 6B81B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Rebellion Charge
+	[ "dmc3.exe+215DC5 - 48 8D 0D C47EB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Artemis Charge
+	[ "dmc3.exe+215F64 - 48 8D 0D 257DB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Artemis Multi Charge
+	[ "dmc3.exe+216037 - 48 8D 0D 527CB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Artemis Charge Air Charge
+	[ "dmc3.exe+216177 - 48 8D 0D 127BB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Ebony & Ivory Charge
+	[ "dmc3.exe+2161CB - 48 8D 0D BE7AB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Ebony & Ivory Charge
+	[ "dmc3.exe+21638C - 48 8D 0D FD78B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Shotgun Charge
+	[ "dmc3.exe+2163E0 - 48 8D 0D A978B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Shotgun Charge
+	[ "dmc3.exe+21655A - 48 8D 0D 2F77B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Ebony & Ivory Charge
 	[ "dmc3.exe+216CB4 - 48 8D 0D D56FB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Ebony & Ivory Normal Shot Air Shot
-	[ "dmc3.exe+216D55 - 48 8D 0D 346FB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Ebony & Ivory Charge
-	[ "dmc3.exe+216FF3 - 48 8D 0D 966CB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Ebony & Ivory Charge
-	[ "dmc3.exe+218177 - 48 8D 0D 125BB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Shotgun Shot
+	[ "dmc3.exe+216D55 - 48 8D 0D 346FB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Ebony & Ivory Charge
+	[ "dmc3.exe+216FF3 - 48 8D 0D 966CB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Ebony & Ivory Charge
+	[ "dmc3.exe+218177 - 48 8D 0D 125BB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Shotgun Shot
 	[ "dmc3.exe+21820B - 48 8D 0D 7E5AB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Shotgun Normal Shot Air Shot
-	[ "dmc3.exe+218496 - 48 8D 0D F357B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Shotgun Gun Stinger
-	[ "dmc3.exe+21CD6B - 48 8D 0D 1E0FB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Yamato Judgement Cut
-	[ "dmc3.exe+21CE68 - 48 8D 0D 210EB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Yamato Judgement Cut
-	[ "dmc3.exe+222CD0 - 48 8D 0D B9AFB400 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Yamato Nero Angelo Fireball
-	[ "dmc3.exe+222E54 - 48 8D 0D 35AEB400 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Yamato Charge
-	[ "dmc3.exe+223022 - 48 8D 0D 67ACB400 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Force Edge Charge
+	[ "dmc3.exe+218496 - 48 8D 0D F357B500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_DANTE ], // Shotgun Gun Stinger
+	[ "dmc3.exe+21CD6B - 48 8D 0D 1E0FB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_DEFAULT ], // Yamato Judgement Cut
+	[ "dmc3.exe+21CE68 - 48 8D 0D 210EB500 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_DEFAULT ], // Yamato Judgement Cut
+	[ "dmc3.exe+222CD0 - 48 8D 0D B9AFB400 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO ], // Yamato Nero Angelo Fireball
+	[ "dmc3.exe+222E54 - 48 8D 0D 35AEB400 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_DEFAULT ], // Yamato Charge
+	[ "dmc3.exe+223022 - 48 8D 0D 67ACB400 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_DEFAULT ], // Force Edge Charge
 	[ "dmc3.exe+223BB7 - 48 8D 0D D2A0B400 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_DEFAULT ], // Spiral Swords
 	[ "dmc3.exe+22401F - 48 8D 0D 6A9CB400 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_DEFAULT ], // Blistering Swords
 	[ "dmc3.exe+2240B8 - 48 8D 0D D19BB400 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_STYLE_WEAPON, HELPER_STYLE_WEAPON_VERGIL_DEFAULT ], // Storm Swords
@@ -642,8 +647,8 @@ let items =
 	[ "dmc3.exe+26A91D - 48 8D 0D 6C33B000 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
 	[ "dmc3.exe+26B548 - 48 8D 0D 4127B000 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Mission 3 Crystal
 	[ "dmc3.exe+26B74C - 48 8D 0D 3D25B000 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Mission 3 Crystal Break
-	[ "dmc3.exe+26C6D4 - 48 8D 0D B515B000 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
-	[ "dmc3.exe+26C876 - 48 8D 0D 1314B000 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
+	[ "dmc3.exe+26C6D4 - 48 8D 0D B515B000 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Mission 17
+	[ "dmc3.exe+26C876 - 48 8D 0D 1314B000 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Mission 17
 	[ "dmc3.exe+26D252 - 48 8D 0D 370AB000 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Mission 8
 	[ "dmc3.exe+26D26B - 48 8D 0D 1E0AB000 - LEA RCX,[dmc3.exe+D6DC90]" ], // 
 	[ "dmc3.exe+26DC90 - 48 8D 0D F9FFAF00 - LEA RCX,[dmc3.exe+D6DC90]", CHANNEL_IGNORE ], // Mission 3
@@ -958,8 +963,8 @@ let items =
 ];
 
 
-ScopeStart();
 
+tabCount = 1;
 
 for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
 {
@@ -1107,7 +1112,7 @@ for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
 	// console.log("$" + match[3] + "$");
 }
 
-ScopeEnd();
+tabCount = 0;
 
 c += NEW_LINE;
 
