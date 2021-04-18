@@ -44,7 +44,7 @@ import Vars;
 
 //import Windows;
 
-#define debug true
+#define debug false
 
 #pragma pack(push, 1)
 export struct Config
@@ -59,7 +59,7 @@ export struct Config
 	bool airHikeCoreAbility = false;
 	struct
 	{
-		bool   enable         = true;
+		bool   enable         = (debug) ? true : false;
 		uint32 mission        = 17;
 		uint32 mode           = MODE_NORMAL;
 		uint32 room           = 900;
@@ -136,7 +136,7 @@ export struct Config
 
 	struct
 	{
-		bool  invertX        = true;
+		bool  invertX        = (debug) ? true : false;
 		float height         = 140.0f;
 		float tilt           = 0.25f;
 		float distance       = 460.0f;
@@ -591,8 +591,8 @@ export struct Config
 
 
 
-	bool skipIntro     = true;
-	bool skipCutscenes = true;
+	bool skipIntro     = (debug) ? true : false;
+	bool skipCutscenes = (debug) ? true : false;
 
 	bool preferLocalFiles = true;
 

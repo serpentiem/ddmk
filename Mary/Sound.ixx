@@ -15,7 +15,7 @@ import FMOD;
 import Global;
 import Internal;
 
-#define debug true
+#define debug false
 
 constexpr uint32 g_sectCount[HELPER_COUNT] =
 {
@@ -7335,6 +7335,11 @@ export void ToggleRelocations(bool enable)
 
 export void EventMain()
 {
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
 	LogFunction();
 
 	Toggle(true);
@@ -7342,6 +7347,11 @@ export void EventMain()
 
 export void EventDelete()
 {
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
 	LogFunction();
 
 	Toggle(false);
@@ -7349,6 +7359,11 @@ export void EventDelete()
 
 export void UpdateEnemyCount(byte8 * addr)
 {
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
 	LogFunction();
 
 	auto & helperIndex = g_helperIndices[CHANNEL_ENEMY];

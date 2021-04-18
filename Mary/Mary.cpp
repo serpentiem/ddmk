@@ -35,7 +35,7 @@ import Window;
 
 using namespace Windows;
 
-#define debug true
+#define debug false
 
 uint32 DllMain
 (
@@ -133,6 +133,8 @@ uint32 DllMain
 			Actor_Toggle(activeConfig.Actor.enable);
 		}
 
+
+
 		Camera_Toggle(false);
 		Camera_Toggle(true);
 
@@ -181,12 +183,23 @@ uint32 DllMain
 
 		Scene_Init();
 
+
+
 		if (!Sound_Init())
 		{
 			Log("Sound_Init failed.");
 
 			return 0;
 		}
+
+		Sound::ToggleRelocations(false);
+
+		if (activeConfig.Actor.enable)
+		{
+			Sound::ToggleRelocations(activeConfig.Actor.enable);
+		}
+
+
 
 		Speed_Init();
 		UpdateSpeedValues();
@@ -200,16 +213,14 @@ uint32 DllMain
 		Hooks_Init();
 
 
-		Sound::ToggleRelocations(false);
-		Sound::ToggleRelocations(true);
 
 
-/*
-dmc3.exe+27A39C - 90                    - nop 
 
-F3 0F 11 4B 04
 
-*/
+
+
+
+
 
 		SetMemory((appBaseAddr + 0x5505B5), 0, 23, MemoryFlags_VirtualProtectDestination); // Remove FMODGetCodecDescription label.
 

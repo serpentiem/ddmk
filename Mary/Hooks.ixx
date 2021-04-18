@@ -27,7 +27,7 @@ using namespace D3D11;
 using namespace DI8;
 using namespace XI;
 
-#define debug true
+#define debug false
 
 enum
 {
@@ -1134,7 +1134,7 @@ namespaceEnd();
 
 
 
-namespaceStart(Hook::DI8)
+namespaceStart(Hook::DI8);
 
 HRESULT GetDeviceStateA
 (
@@ -1469,10 +1469,7 @@ export void Hooks_Init()
 
 	CreateThread(0, 4096, ::DI8::CreateMouseThread, 0, 0, 0);
 
-	if constexpr (debug)
-	{
-		Write<byte32>((appBaseAddr + 0x47F58), DISCL_NONEXCLUSIVE | DISCL_FOREGROUND); // SetCooperativeLevelKeyboard
-	}
+	Write<byte32>((appBaseAddr + 0x47F58), DISCL_NONEXCLUSIVE | DISCL_FOREGROUND); // SetCooperativeLevelKeyboard
 
 	{
 		constexpr byte8 sect0[] =

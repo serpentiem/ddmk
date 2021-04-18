@@ -1,67 +1,24 @@
 // @Todo: Add description for arbitrary weapon switcher.
-
-
-/*
-some enemy ids are only for spawning
-
-some enemies require speciifc enviromnets
-
-or circumstance4s
-
-conditions to not crash the game
-
-depend on other enemies
-
-*/
+// @Todo: Add GUI_PushPopDisable to Arcade section.
 
 module;
-
-
-// #include <Windows.h>
-// #include <TlHelp32.h>
-// #include <shellapi.h>
-// #include <dxgi.h>
-// #include <d3d11.h>
-// #include <d3dcompiler.h>
-// #define DIRECTINPUT_VERSION 0x800
-// #include <dinput.h>
-// #include <Xinput.h>
-
-
 #include "../ImGui/imgui.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../stb/stb_image.h"
-
 export module GUI;
-
-
-
 
 import Core;
 
-
 #include "../Core/Macros.h"
 
-
-
 import Vars;
-
-// #define memset SetMemory
-// #define memcpy CopyMemory
-
-
 
 import Windows;
 import DXGI;
 import D3D11;
 
 import Core_GUI;
-
-
-//import Core_GUI;
-
-
 
 import Actor;
 import Arcade;
@@ -82,14 +39,11 @@ import Speed;
 import Training;
 import Window;
 
-
-
-
 using namespace Windows;
 using namespace DXGI;
 using namespace D3D11;
 
-#define debug true
+#define debug false
 
 #pragma region Common
 
@@ -2613,6 +2567,7 @@ void Actor()
 				activeConfig.Actor.enable = queuedConfig.Actor.enable;
 
 				Actor_Toggle(activeConfig.Actor.enable);
+				Sound::ToggleRelocations(activeConfig.Actor.enable);
 			}
 		}
 		ImGui::Text("");
@@ -2634,6 +2589,7 @@ void Actor()
 			)
 			{
 				Actor_Toggle(activeConfig.Actor.enable);
+				Sound::ToggleRelocations(activeConfig.Actor.enable);
 			}
 			else
 			{
@@ -6781,7 +6737,7 @@ void Main()
 		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
 	}
 
-	if (ImGui::Begin("DDMK 2.7 Mary Nightly 14 February 2021", &g_pause))
+	if (ImGui::Begin("DDMK 2.7 Mary Nightly 18 April 2021", &g_pause))
 	{
 		ImGui::Text("");
 
@@ -6800,54 +6756,54 @@ void Main()
 
 
 
-		ImGui::Text("");
+		// ImGui::Text("");
 
-		{
-			static int32 group = 0;
-			static int32 index = 0;
+		// {
+		// 	static int32 group = 0;
+		// 	static int32 index = 0;
 
-			ImGui::PushItemWidth(150);
+		// 	ImGui::PushItemWidth(150);
 
-			GUI_Input<uint8>
-			(
-				"Helper Index",
-				g_helperIndices[CHANNEL_COMMON],
-				1,
-				"%u",
-				ImGuiInputTextFlags_EnterReturnsTrue
-			);
+		// 	GUI_Input<uint8>
+		// 	(
+		// 		"Helper Index",
+		// 		g_helperIndices[CHANNEL_COMMON],
+		// 		1,
+		// 		"%u",
+		// 		ImGuiInputTextFlags_EnterReturnsTrue
+		// 	);
 
 
-			GUI_Input<int32>
-			(
-				"Group",
-				group,
-				1,
-				"%d",
-				ImGuiInputTextFlags_EnterReturnsTrue
-			);
-			GUI_Input<int32>
-			(
-				"Index",
-				index,
-				1,
-				"%d",
-				ImGuiInputTextFlags_EnterReturnsTrue
-			);
+		// 	GUI_Input<int32>
+		// 	(
+		// 		"Group",
+		// 		group,
+		// 		1,
+		// 		"%d",
+		// 		ImGuiInputTextFlags_EnterReturnsTrue
+		// 	);
+		// 	GUI_Input<int32>
+		// 	(
+		// 		"Index",
+		// 		index,
+		// 		1,
+		// 		"%d",
+		// 		ImGuiInputTextFlags_EnterReturnsTrue
+		// 	);
 
-			ImGui::PopItemWidth();
+		// 	ImGui::PopItemWidth();
 
-			if (GUI_Button("Play Sound"))
-			{
-				PlaySound
-				(
-					group,
-					index
-				);
-			}
-		}
+		// 	if (GUI_Button("Play Sound"))
+		// 	{
+		// 		PlaySound
+		// 		(
+		// 			group,
+		// 			index
+		// 		);
+		// 	}
+		// }
 
-		ImGui::Text("");
+		// ImGui::Text("");
 
 
 
