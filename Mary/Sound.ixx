@@ -1571,7 +1571,10 @@ byte8 * GetDbstMetadataAddress(uint32 channelIndex)
 		}
 	}
 
-	Log("dbstMetadataAddr %llX", dbstMetadataAddr);
+	if constexpr (debug)
+	{
+		Log("dbstMetadataAddr %llX", dbstMetadataAddr);
+	}
 
 	return dbstMetadataAddr;
 }
@@ -1601,10 +1604,9 @@ byte8 * GetDbstItemAddress
 	if constexpr (debug)
 	{
 		LogFunction();
+		Log("channelIndex %u", channelIndex);
+		Log("itemIndex %u", itemIndex);
 	}
-
-	Log("channelIndex %u", channelIndex);
-	Log("itemIndex %u", itemIndex);
 
 	auto dbstMetadataAddr = GetDbstMetadataAddress(channelIndex);
 	if (!dbstMetadataAddr)
@@ -1655,7 +1657,10 @@ byte8 * GetHeadMetadataAddress(uint32 channelIndex)
 		}
 	}
 
-	Log("addr %llX", addr);
+	if constexpr (debug)
+	{
+		Log("addr %llX", addr);
+	}
 
 	return addr;
 }
@@ -1709,7 +1714,10 @@ uint32 GetSoundDataCount(byte8 * addr)
 		}
 	}
 
-	Log("count %u", count);
+	if constexpr (debug)
+	{
+		Log("count %u", count);
+	}
 
 	return count;
 }
@@ -1740,7 +1748,10 @@ byte8 * GetSoundDataAddress(byte8 * addr)
 		}
 	}
 
-	Log("addr2 %llX", addr2);
+	if constexpr (debug)
+	{
+		Log("addr2 %llX", addr2);
+	}
 
 	return addr2;
 }
@@ -2145,7 +2156,10 @@ bool UpdateGlobalEnemyHelperIndex(BodyPartData * bodyPartDataAddr)
 
 	auto & enemyData = *reinterpret_cast<EnemyData *>(enemyBaseAddr);
 
-	Log("enemy %u", enemyData.enemy);
+	if constexpr (debug)
+	{
+		Log("enemy %u", enemyData.enemy);
+	}
 
 	helperIndex = GetEnemyHelperIndex(enemyData);
 

@@ -342,7 +342,7 @@ export struct Config
 
 
 	bool infiniteHitPoints   = false;
-	bool infiniteMagicPoints = true;
+	bool infiniteMagicPoints = (debug) ? true : false;
 	bool disableTimer        = false;
 
 

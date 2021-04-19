@@ -23591,6 +23591,7 @@ export void Actor_SceneMain()
 	LogFunction();
 
 	Actor_Toggle(activeConfig.Actor.enable);
+	Sound::ToggleRelocations(activeConfig.Actor.enable);
 }
 
 export void Actor_SceneMissionSelect()
@@ -23598,6 +23599,7 @@ export void Actor_SceneMissionSelect()
 	LogFunction();
 
 	Actor_Toggle(activeConfig.Actor.enable);
+	Sound::ToggleRelocations(activeConfig.Actor.enable);
 }
 
 export void Actor_SceneMissionStart()
