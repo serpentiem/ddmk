@@ -1,5 +1,6 @@
 *
 !.github
+!.github/*
 !Core
 !Core/*
 !dinput8
