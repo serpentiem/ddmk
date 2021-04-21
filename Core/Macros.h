@@ -646,6 +646,8 @@ struct Size_##size\
 #define IntroduceSessionData() auto & sessionData = *reinterpret_cast<SessionData *>(appBaseAddr + 0xC8F250)
 
 
+// @Research: Consider C90E10 + 58.
+
 #define _IntroduceMissionData(name, ...)\
 auto name = *reinterpret_cast<byte8 **>(appBaseAddr + 0xC90E30);\
 if (!name)\

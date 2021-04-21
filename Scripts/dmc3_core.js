@@ -117,6 +117,47 @@ function GetLine
 	return lines[lineIndex].substring(0, (lines[lineIndex].length - 2));
 }
 
+
+
+
+function ReplaceAll
+(
+	name,
+	pattern,
+	replace
+)
+{
+	let newPattern = new RegExp(pattern);
+
+	let count = 0;
+
+	while (true)
+	{
+		let match = name.match(newPattern);
+		if (!match)
+		{
+			break;
+		}
+
+		name = name.replace(newPattern, replace);
+
+		count++;
+	}
+
+	// console.log("count " + count);
+
+	return name;
+}
+
+
+
+
+
+
+
+
+
+
 function CleanStream()
 {
 	let c_new = "";

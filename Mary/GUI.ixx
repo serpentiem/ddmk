@@ -43,7 +43,53 @@ using namespace Windows;
 using namespace DXGI;
 using namespace D3D11;
 
-#define debug false
+#define debug true
+
+
+
+
+
+
+
+
+// @Research: Where to put this?
+export void ToggleCursor()
+{
+	if
+	(
+		g_pause ||
+		g_showItemWindow
+
+	)
+	{
+		Windows_ToggleCursor(true);
+	}
+	else
+	{
+		if (activeConfig.hideMouseCursor)
+		{
+			Windows_ToggleCursor(false);
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #pragma region Common
 
@@ -2560,6 +2606,7 @@ void Actor()
 		{
 			if
 			(
+				// @Todo: Add SCENE_BOOT.
 				(g_scene == SCENE_MAIN          ) ||
 				(g_scene == SCENE_MISSION_SELECT)
 			)
@@ -3750,6 +3797,1041 @@ bool showFileDataWindow = false;
 bool showRegionDataWindow = false;
 bool showSoundWindow = false;
 
+bool showMissionDataWindow = false;
+
+//bool showItemWindow = true;
+
+
+
+
+// @Todo: Move to Vars.
+
+constexpr uint32 itemVitalStarSmallPrices[] =
+{
+	500,
+	750,
+	1200,
+	1800,
+	2500,
+	3500,
+	5000,
+};
+
+constexpr uint32 itemVitalStarLargePrices[] =
+{
+	2000,
+	3000,
+	4500,
+	6000,
+	7500,
+	10000,
+};
+
+constexpr uint32 itemDevilStarPrices[] =
+{
+	3000,
+	5000,
+	7000,
+	9000,
+	10000,
+};
+
+constexpr uint32 itemHolyWaterPrices[] =
+{
+	10000,
+	15000,
+	20000,
+	25000,
+	30000,
+};
+
+constexpr uint32 itemBlueOrbPrices[] =
+{
+	5000,
+	10000,
+	15000,
+	20000,
+	30000,
+	50000,
+};
+
+constexpr uint32 itemPurpleOrbPrices[] =
+{
+	3000,
+	5000,
+	7000,
+	9000,
+	10000,
+	20000,
+	30000,
+};
+
+constexpr uint32 itemGoldOrbPrices[] =
+{
+	10000,
+	15000,
+	20000,
+};
+
+constexpr uint32 itemYellowOrbPrices[] =
+{
+	1000,
+	1500,
+	2000,
+	3000,
+};
+
+
+
+
+
+
+
+struct ItemHelper
+{
+	const uint8    itemIndex;
+	const uint8    buyIndex;
+	const uint8    itemCount;
+	const uint32 * prices;
+	const uint8    priceCount;
+};
+
+constexpr ItemHelper itemHelpers[] =
+{
+	{ ITEM_VITAL_STAR_SMALL, BUY_VITAL_STAR_SMALL, 30, itemVitalStarSmallPrices, static_cast<uint8>(countof(itemVitalStarSmallPrices)) },
+	{ ITEM_VITAL_STAR_LARGE, BUY_VITAL_STAR_LARGE, 30, itemVitalStarLargePrices, static_cast<uint8>(countof(itemVitalStarLargePrices)) },
+	{ ITEM_DEVIL_STAR      , BUY_DEVIL_STAR      , 10, itemDevilStarPrices     , static_cast<uint8>(countof(itemDevilStarPrices     )) },
+	{ ITEM_HOLY_WATER      , BUY_HOLY_WATER      , 30, itemHolyWaterPrices     , static_cast<uint8>(countof(itemHolyWaterPrices     )) },
+	{ ITEM_BLUE_ORB        , BUY_BLUE_ORB        , 6 , itemBlueOrbPrices       , static_cast<uint8>(countof(itemBlueOrbPrices       )) },
+	{ ITEM_PURPLE_ORB      , BUY_PURPLE_ORB      , 7 , itemPurpleOrbPrices     , static_cast<uint8>(countof(itemPurpleOrbPrices     )) },
+	{ ITEM_GOLD_ORB        , BUY_GOLD_ORB        , 3 , itemGoldOrbPrices       , static_cast<uint8>(countof(itemGoldOrbPrices       )) },
+	{ ITEM_YELLOW_ORB      , BUY_YELLOW_ORB      , 99, itemYellowOrbPrices     , static_cast<uint8>(countof(itemYellowOrbPrices     )) },
+};
+
+
+
+
+void ItemWindow()
+{
+
+
+	static uint8 selectIndex = 0;
+	static bool executeUp = true;
+	static bool executeDown = true;
+	static bool executeA = true;
+	static bool executeB = true;
+
+
+	static bool executeUp2 = true;
+	static bool executeDown2 = true;
+
+
+
+	if (!g_showItemWindow)
+	{
+		return;
+	}
+
+	if (g_lastShowItemWindow != g_showItemWindow)
+	{
+		g_lastShowItemWindow = g_showItemWindow;
+
+		ToggleDisableGetInput(true);
+
+		selectIndex = 0;
+	}
+
+
+
+
+	IntroduceMissionData(return);
+
+	IntroduceEventData(return);
+
+
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+
+		ImGui::SetNextWindowSize
+		(
+			ImVec2
+			(
+				500,
+				900
+			)
+		);
+		ImGui::SetNextWindowPos
+		(
+			ImVec2
+			(
+				0,
+				0
+			)
+		);
+	}
+
+
+
+
+
+
+
+
+	if (ImGui::Begin("ItemWindow", &g_showItemWindow))
+	{
+		ImGui::Text("");
+
+
+		ImGui::Text("%u Red Orbs", missionData.orbs);
+
+
+		
+
+		ImGui::Text("selectIndex %u", selectIndex);
+
+
+		for_all(uint8, itemHelperIndex, countof(itemHelpers))
+		{
+			auto & itemHelper = itemHelpers[itemHelperIndex];
+
+			auto & itemCount = missionData.itemCount[itemHelper.itemIndex];
+			auto & buyCount = missionData.buyCount[itemHelper.buyIndex];
+
+			uint32 price = 0;
+
+			if (buyCount >= itemHelper.priceCount)
+			{
+				price = itemHelper.prices[(itemHelper.priceCount - 1)];
+			}
+			else
+			{
+				price = itemHelper.prices[buyCount];
+			}
+
+
+			// if constexpr (debug)
+			// {
+			// 	ImGui::Text("%.4u", itemHelperIndex);
+			// 	ImGui::SameLine();
+			// }
+
+
+			ImGui::Text("%u", price);
+			ImGui::SameLine(60);
+
+			ImGui::Text("%s", itemNames[itemHelper.itemIndex]);
+			ImGui::SameLine(190);
+
+
+			// ImGui::Text
+			// (
+			// 	"%u",
+			// 	itemHelperIndex,
+			// 	price,
+			// 	itemNames[itemHelper.itemIndex]
+			// );
+			// ImGui::SameLine(200);
+
+			ImGui::Text("%.2u / %.2u", itemCount, itemHelper.itemCount);
+			ImGui::SameLine();
+
+
+
+
+
+			// if constexpr (debug)
+			// {
+				
+			// 	ImGui::Text("%u", buyCount);
+			// 	ImGui::SameLine();
+			// }
+
+
+
+			
+			
+
+
+
+
+			auto BuyItem = [&]()
+			{
+				if
+				(
+					(itemCount >= itemHelper.itemCount) ||
+					(missionData.orbs < price)
+				)
+				{
+					PlaySound
+					(
+						0,
+						19
+					);
+
+					return;
+				}
+
+				itemCount++;
+				buyCount++;
+
+				if (buyCount > 254)
+				{
+					buyCount = 254;
+				}
+
+				missionData.orbs -= price;
+
+				PlaySound
+				(
+					0,
+					18
+				);
+			};
+
+
+
+
+
+
+
+
+			if (GUI_Button("Buy"))
+			{
+				BuyItem();
+			}
+
+
+
+
+
+
+
+			if (selectIndex == itemHelperIndex)
+			{
+				ImGui::SameLine();
+				ImGui::Text("<-");
+			}
+
+			auto & gamepad = GetGamepad(0);
+
+			if (gamepad.buttons[0] & GAMEPAD_UP)
+			{
+				if (executeUp)
+				{
+					executeUp = false;
+
+					if (selectIndex > 0)
+					{
+						selectIndex--;
+					}
+					else
+					{
+						selectIndex = static_cast<uint8>(countof(itemHelpers) - 1);
+					}
+
+					PlaySound
+					(
+						0,
+						2
+					);
+				}
+			}
+			else
+			{
+				executeUp = true;
+			}
+
+
+
+			if (gamepad.leftStickDirection[0] & GAMEPAD_UP)
+			{
+				if (executeUp2)
+				{
+					executeUp2 = false;
+
+					if (selectIndex > 0)
+					{
+						selectIndex--;
+					}
+					else
+					{
+						selectIndex = static_cast<uint8>(countof(itemHelpers) - 1);
+					}
+
+					PlaySound
+					(
+						0,
+						2
+					);
+				}
+			}
+			else
+			{
+				executeUp2 = true;
+			}
+
+
+
+
+
+
+
+
+
+
+
+			if (gamepad.buttons[0] & GAMEPAD_DOWN)
+			{
+				if (executeDown)
+				{
+					executeDown = false;
+
+					if (selectIndex < static_cast<uint8>(countof(itemHelpers) - 1))
+					{
+						selectIndex++;
+					}
+					else
+					{
+						selectIndex = 0;
+					}
+
+					PlaySound
+					(
+						0,
+						2
+					);
+				}
+			}
+			else
+			{
+				executeDown = true;
+			}
+
+
+
+
+			if (gamepad.leftStickDirection[0] & GAMEPAD_DOWN)
+			{
+				if (executeDown2)
+				{
+					executeDown2 = false;
+
+					if (selectIndex < static_cast<uint8>(countof(itemHelpers) - 1))
+					{
+						selectIndex++;
+					}
+					else
+					{
+						selectIndex = 0;
+					}
+
+					PlaySound
+					(
+						0,
+						2
+					);
+				}
+			}
+			else
+			{
+				executeDown2 = true;
+			}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			if (gamepad.buttons[0] & GAMEPAD_A)
+			{
+				if (executeA)
+				{
+					executeA = false;
+
+					BuyItem();
+				}
+			}
+			else
+			{
+				executeA = true;
+			}
+
+			if (gamepad.buttons[0] & GAMEPAD_B)
+			{
+				if (executeB)
+				{
+					executeB = false;
+
+					//BuyItem();
+					g_showItemWindow = false;
+					g_lastShowItemWindow = g_showItemWindow;
+
+					ToggleDisableGetInput(false);
+
+					PlaySound
+					(
+						0,
+						3
+					);
+
+
+
+				}
+			}
+			else
+			{
+				executeB = true;
+			}
+
+
+
+
+
+
+
+		}
+
+		ImGui::Text("");
+
+
+
+
+
+
+
+
+	}
+
+	ImGui::End();
+}
+
+
+
+
+
+
+
+
+
+void MissionDataWindow()
+{
+	if (!showMissionDataWindow)
+	{
+		return;
+	}
+
+	IntroduceMissionData(return);
+
+	IntroduceEventData(return);
+
+
+
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+
+		ImGui::SetNextWindowSize
+		(
+			ImVec2
+			(
+				500,
+				900
+			)
+		);
+		ImGui::SetNextWindowPos
+		(
+			ImVec2
+			(
+				0,
+				0
+			)
+		);
+	}
+
+
+	
+
+
+
+
+	if (ImGui::Begin("MissionData", &showMissionDataWindow))
+	{
+		ImGui::Text("");
+
+		// auto GetBuyIndex = [&](uint8 itemIndex) -> uint8
+		// {
+		// 	switch (itemIndex)
+		// 	{
+		// 		case ITEM_VITAL_STAR_SMALL:
+		// 		{
+		// 			return BUY_VITAL_STAR_SMALL;
+		// 		}
+		// 		case ITEM_VITAL_STAR_LARGE:
+		// 		{
+		// 			return BUY_VITAL_STAR_LARGE;
+		// 		}
+		// 		case ITEM_DEVIL_STAR:
+		// 		{
+		// 			return BUY_DEVIL_STAR;
+		// 		}
+		// 		case ITEM_HOLY_WATER:
+		// 		{
+		// 			return BUY_HOLY_WATER;
+		// 		}
+		// 		case ITEM_BLUE_ORB:
+		// 		{
+		// 			return BUY_BLUE_ORB;
+		// 		}
+		// 		case ITEM_PURPLE_ORB:
+		// 		{
+		// 			return BUY_PURPLE_ORB;
+		// 		}
+		// 		case ITEM_GOLD_ORB:
+		// 		{
+		// 			return BUY_GOLD_ORB;
+		// 		}
+		// 		case ITEM_YELLOW_ORB:
+		// 		{
+		// 			return BUY_YELLOW_ORB;
+		// 		}
+		// 	}
+
+		// 	return 0;
+		// };
+
+		// auto GetMaxItemCount = [&](uint8 itemIndex)
+		// {
+		// 	switch (itemIndex)
+		// 	{
+		// 		case ITEM_VITAL_STAR_SMALL:
+		// 		case ITEM_VITAL_STAR_LARGE:
+		// 		{
+		// 			return 30;
+		// 		}
+		// 		case ITEM_DEVIL_STAR:
+		// 		{
+		// 			return 10;
+		// 		}
+		// 		case ITEM_HOLY_WATER:
+		// 		{
+		// 			return 30;
+		// 		}
+		// 		case ITEM_BLUE_ORB:
+		// 		{
+		// 			return 6;
+		// 		}
+		// 		case ITEM_PURPLE_ORB:
+		// 		{
+		// 			return 7;
+		// 		}
+		// 		case ITEM_GOLD_ORB:
+		// 		{
+		// 			return 3;
+		// 		}
+		// 		case ITEM_YELLOW_ORB:
+		// 		{
+		// 			return 99;
+		// 		}
+		// 	}
+
+		// 	return 0;
+		// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		// auto GetItemPrice = [&](uint8 itemIndex) -> uint32
+		// {
+		// 	if (itemIndex >= ITEM_COUNT)
+		// 	{
+		// 		itemIndex = 0;
+		// 	}
+
+		// 	auto buyIndex = GetBuyIndex(itemIndex);
+
+		// 	auto & itemCount = missionData.itemCount[itemIndex];
+		// 	auto & buyCount = missionData.buyCount[buyIndex];
+
+		// 	const uint32 * prices = 0;
+		// 	uint8 priceCount = 0;
+
+
+
+		// 	switch (itemIndex)
+		// 	{
+		// 		case ITEM_VITAL_STAR_SMALL:
+		// 		{
+		// 			prices = itemVitalStarSmallPrices;
+
+		// 			priceCount = countof(itemVitalStarSmallPrices);
+
+		// 			break;
+		// 		}
+		// 	}
+
+
+
+		// 	if (!prices)
+		// 	{
+		// 		return 0;
+		// 	}
+
+
+
+		// 	uint32 price = 0;
+
+		// 	if (buyCount >= priceCount)
+		// 	{
+		// 		price = prices[(priceCount - 1)];
+		// 	}
+		// 	else
+		// 	{
+		// 		price = prices[buyCount];
+		// 	}
+
+		// 	return price;
+		// };
+
+
+		for_all(uint8, itemHelperIndex, countof(itemHelpers))
+		{
+			auto & itemHelper = itemHelpers[itemHelperIndex];
+
+			auto & itemCount = missionData.itemCount[itemHelper.itemIndex];
+			auto & buyCount = missionData.buyCount[itemHelper.buyIndex];
+
+			uint32 price = 0;
+
+			if (buyCount >= itemHelper.priceCount)
+			{
+				price = itemHelper.prices[(itemHelper.priceCount - 1)];
+			}
+			else
+			{
+				price = itemHelper.prices[buyCount];
+			}
+
+
+			// if constexpr (debug)
+			// {
+			// 	ImGui::Text("%.4u", itemHelperIndex);
+			// 	ImGui::SameLine();
+			// }
+
+
+			ImGui::Text("%u", price);
+			ImGui::SameLine(60);
+
+			ImGui::Text("%s", itemNames[itemHelper.itemIndex]);
+			ImGui::SameLine(190);
+
+
+			// ImGui::Text
+			// (
+			// 	"%u",
+			// 	itemHelperIndex,
+			// 	price,
+			// 	itemNames[itemHelper.itemIndex]
+			// );
+			// ImGui::SameLine(200);
+
+			ImGui::Text("%.2u / %.2u", itemCount, itemHelper.itemCount);
+			ImGui::SameLine();
+
+
+
+
+
+			// if constexpr (debug)
+			// {
+				
+			// 	ImGui::Text("%u", buyCount);
+			// 	ImGui::SameLine();
+			// }
+
+
+
+			
+			
+
+
+
+
+			auto BuyItem = [&]()
+			{
+				if
+				(
+					(itemCount >= itemHelper.itemCount) ||
+					(missionData.orbs < price)
+				)
+				{
+					PlaySound
+					(
+						0,
+						19
+					);
+
+					return;
+				}
+
+				itemCount++;
+				buyCount++;
+
+				if (buyCount > 254)
+				{
+					buyCount = 254;
+				}
+
+				missionData.orbs -= price;
+
+				PlaySound
+				(
+					0,
+					18
+				);
+			};
+
+
+
+
+
+
+
+
+			if (GUI_Button("Buy"))
+			{
+				BuyItem();
+			}
+
+
+			static uint8 selectIndex = 0;
+
+			if (selectIndex == itemHelperIndex)
+			{
+				ImGui::SameLine();
+				ImGui::Text("<-");
+			}
+
+			auto & gamepad = GetGamepad(0);
+
+			if (gamepad.buttons[0] & GAMEPAD_UP)
+			{
+				if (selectIndex > 0)
+				{
+					selectIndex--;
+				}
+				else
+				{
+					selectIndex = static_cast<uint8>(countof(itemHelpers) - 1);
+				}
+			}
+
+			if (gamepad.buttons[0] & GAMEPAD_DOWN)
+			{
+				if (selectIndex < static_cast<uint8>(countof(itemHelpers) - 1))
+				{
+					selectIndex++;
+				}
+				else
+				{
+					selectIndex = 0;
+				}
+			}
+
+
+
+
+
+
+
+
+
+
+
+		}
+
+		ImGui::Text("");
+
+
+
+
+
+
+		// GUI_Input<uint8>
+		// (
+		// 	"Vital Star Small",
+		// 	missionData.itemCount[ITEM_VITAL_STAR_SMALL],
+		// 	0,
+		// 	"%u",
+		// 	ImGuiInputTextFlags_EnterReturnsTrue
+		// );
+
+		// ImGui::Text("Vital Star Small");
+		// ImGui::SameLine();
+
+		// if (GUI_Button("Buy"))
+		// {
+		// 	auto & count = missionData.itemCount[ITEM_VITAL_STAR_SMALL];
+
+		// 	count++;
+
+
+
+		// }
+
+
+
+
+
+
+
+		ImGui::PushItemWidth(200);
+
+		GUI_Input<uint32>
+		(
+			"Red Orbs",
+			missionData.orbs,
+			1000,
+			"%u",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+
+		ImGui::PopItemWidth();
+
+
+
+		ImGui::Text("");
+
+
+
+
+		ImGui::Text("Item Count");
+		ImGui::Text("");
+
+		ImGui::PushItemWidth(150);
+
+		for_all(uint8, itemIndex, ITEM_COUNT)
+		{
+			ImGui::Text("%.4u %llX", itemIndex, &missionData.itemCount[itemIndex]);
+			ImGui::SameLine();
+
+			GUI_Input<uint8>
+			(
+				itemNames[itemIndex],
+				missionData.itemCount[itemIndex],
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+		}
+
+		ImGui::PopItemWidth();
+
+		ImGui::Text("");
+
+
+
+
+		ImGui::Text("Buy Count");
+		ImGui::Text("");
+
+		ImGui::PushItemWidth(150);
+
+		for_all(uint8, buyIndex, BUY_COUNT)
+		{
+			ImGui::Text("%.4u %llX", buyIndex, &missionData.buyCount[buyIndex]);
+			ImGui::SameLine();
+
+			GUI_Input<uint8>
+			(
+				buyNames[buyIndex],
+				missionData.buyCount[buyIndex],
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+		}
+
+		ImGui::PopItemWidth();
+
+
+		ImGui::Text("");
+
+		if (GUI_Button("Status"))
+		{
+			eventData.event = EVENT_STATUS;
+		}
+
+		if (GUI_Button("Customize"))
+		{
+			eventData.event = EVENT_CUSTOMIZE;
+		}
+
+
+
+
+
+
+		ImGui::Text("");
+	}
+
+	ImGui::End();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 struct FileContainer : Container<>
@@ -4511,9 +5593,24 @@ void Debug()
 	{
 		ImGui::Text("");
 
+
+		if (GUI_Button("Mission Data"))
+		{
+			showMissionDataWindow = true;
+		}
+
+
+
 		IntroduceSessionData();
 
 		GUI_Checkbox("One Hit Kill", sessionData.oneHitKill);
+
+
+
+
+
+
+
 
 		ImGui::Text("");
 	}
@@ -6741,6 +7838,29 @@ void Main()
 	{
 		ImGui::Text("");
 
+		if (GUI_Button("Item Window"))
+		{
+			g_showItemWindow = true;
+
+		}
+
+
+
+
+
+
+
+
+		if (GUI_Button("Toggle Get Input true"))
+		{
+			ToggleDisableGetInput(true);
+		}
+
+		if (GUI_Button("Toggle Get Input false"))
+		{
+			ToggleDisableGetInput(false);
+		}
+
 
 		// GUI_Input<uint8>
 		// (
@@ -6756,54 +7876,54 @@ void Main()
 
 
 
-		// ImGui::Text("");
+		ImGui::Text("");
 
-		// {
-		// 	static int32 group = 0;
-		// 	static int32 index = 0;
+		{
+			static int32 group = 0;
+			static int32 index = 0;
 
-		// 	ImGui::PushItemWidth(150);
+			ImGui::PushItemWidth(150);
 
-		// 	GUI_Input<uint8>
-		// 	(
-		// 		"Helper Index",
-		// 		g_helperIndices[CHANNEL_COMMON],
-		// 		1,
-		// 		"%u",
-		// 		ImGuiInputTextFlags_EnterReturnsTrue
-		// 	);
+			// GUI_Input<uint8>
+			// (
+			// 	"Helper Index",
+			// 	g_helperIndices[CHANNEL_COMMON],
+			// 	1,
+			// 	"%u",
+			// 	ImGuiInputTextFlags_EnterReturnsTrue
+			// );
 
 
-		// 	GUI_Input<int32>
-		// 	(
-		// 		"Group",
-		// 		group,
-		// 		1,
-		// 		"%d",
-		// 		ImGuiInputTextFlags_EnterReturnsTrue
-		// 	);
-		// 	GUI_Input<int32>
-		// 	(
-		// 		"Index",
-		// 		index,
-		// 		1,
-		// 		"%d",
-		// 		ImGuiInputTextFlags_EnterReturnsTrue
-		// 	);
+			GUI_Input<int32>
+			(
+				"Group",
+				group,
+				1,
+				"%d",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+			GUI_Input<int32>
+			(
+				"Index",
+				index,
+				1,
+				"%d",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
 
-		// 	ImGui::PopItemWidth();
+			ImGui::PopItemWidth();
 
-		// 	if (GUI_Button("Play Sound"))
-		// 	{
-		// 		PlaySound
-		// 		(
-		// 			group,
-		// 			index
-		// 		);
-		// 	}
-		// }
+			if (GUI_Button("Play Sound"))
+			{
+				PlaySound
+				(
+					group,
+					index
+				);
+			}
+		}
 
-		// ImGui::Text("");
+		ImGui::Text("");
 
 
 
@@ -7003,307 +8123,307 @@ void Main()
 		// 	);
 		// }
 
-		if constexpr (debug)
-		{
+		// if constexpr (debug)
+		// {
 
 			
 			
 
 
 
-			// GUI_Input<uint8>
-			// (
-			// 	"g_action",
-			// 	g_action
-			// );
+		// 	// GUI_Input<uint8>
+		// 	// (
+		// 	// 	"g_action",
+		// 	// 	g_action
+		// 	// );
 
-			// if (GUI_Button("// Log run"))
-			// {
-			// 	// Log("MissionOverlay.run %u", activeConfig.missionOverlayData.run);
-			// }
-
-
-
-			if (GUI_Button("File Data"))
-			{
-				showFileDataWindow = true;
-			}
-			ImGui::SameLine();
-			if (GUI_Button("Region Data"))
-			{
-				showRegionDataWindow = true;
-			}
-			ImGui::SameLine();
-			if (GUI_Button("Sound"))
-			{
-				showSoundWindow = true;
-			}
-			ImGui::Text("");
-		}
+		// 	// if (GUI_Button("// Log run"))
+		// 	// {
+		// 	// 	// Log("MissionOverlay.run %u", activeConfig.missionOverlayData.run);
+		// 	// }
 
 
-		if constexpr (debug)
-		{
-			static uint16 cacheFileIndex = em035;
-			static byte8 * file = 0;
-			static uint32 fileSize = 0;
-			static uint16 fileDataIndex = 233;
 
-			ImGui::PushItemWidth(200);
-			GUI_Input<uint16>
-			(
-				"Cache File Index",
-				cacheFileIndex
-			);
-			GUI_Input<uint64>
-			(
-				"File",
-				*reinterpret_cast<uint64 *>(&file),
-				0,
-				"%llX",
-				ImGuiInputTextFlags_EnterReturnsTrue |
-				ImGuiInputTextFlags_CharsHexadecimal
-			);
-			GUI_Input<uint32>
-			(
-				"File Size",
-				fileSize
-			);
-			GUI_Input<uint16>
-			(
-				"File Data Index",
-				fileDataIndex
-			);
-			ImGui::PopItemWidth();
+		// 	if (GUI_Button("File Data"))
+		// 	{
+		// 		showFileDataWindow = true;
+		// 	}
+		// 	ImGui::SameLine();
+		// 	if (GUI_Button("Region Data"))
+		// 	{
+		// 		showRegionDataWindow = true;
+		// 	}
+		// 	ImGui::SameLine();
+		// 	if (GUI_Button("Sound"))
+		// 	{
+		// 		showSoundWindow = true;
+		// 	}
+		// 	ImGui::Text("");
+		// }
 
-			if (GUI_Button("Load Pride"))
-			{
-				File_UpdateFileData(fileDataIndex, cacheFileIndex);
-			}
-		}
 
-		if constexpr (debug)
-		{
-			static char buffer[8];
-			static byte8 * file = 0;
-			static uint32 fileIndex = 0;
+		// if constexpr (debug)
+		// {
+		// 	static uint16 cacheFileIndex = em035;
+		// 	static byte8 * file = 0;
+		// 	static uint32 fileSize = 0;
+		// 	static uint16 fileDataIndex = 233;
+
+		// 	ImGui::PushItemWidth(200);
+		// 	GUI_Input<uint16>
+		// 	(
+		// 		"Cache File Index",
+		// 		cacheFileIndex
+		// 	);
+		// 	GUI_Input<uint64>
+		// 	(
+		// 		"File",
+		// 		*reinterpret_cast<uint64 *>(&file),
+		// 		0,
+		// 		"%llX",
+		// 		ImGuiInputTextFlags_EnterReturnsTrue |
+		// 		ImGuiInputTextFlags_CharsHexadecimal
+		// 	);
+		// 	GUI_Input<uint32>
+		// 	(
+		// 		"File Size",
+		// 		fileSize
+		// 	);
+		// 	GUI_Input<uint16>
+		// 	(
+		// 		"File Data Index",
+		// 		fileDataIndex
+		// 	);
+		// 	ImGui::PopItemWidth();
+
+		// 	if (GUI_Button("Load Pride"))
+		// 	{
+		// 		File_UpdateFileData(fileDataIndex, cacheFileIndex);
+		// 	}
+		// }
+
+		// if constexpr (debug)
+		// {
+		// 	static char buffer[8];
+		// 	static byte8 * file = 0;
+		// 	static uint32 fileIndex = 0;
 			
-			static char subbuffer[8];
-			static byte8 * subfile = 0;
-			static uint32 subfileIndex = 0;
+		// 	static char subbuffer[8];
+		// 	static byte8 * subfile = 0;
+		// 	static uint32 subfileIndex = 0;
 
-			ImGui::PushItemWidth(50);
-			ImGui::InputText
-			(
-				"",
-				buffer,
-				sizeof(buffer)
-			);
-			ImGui::PopItemWidth();
-			ImGui::SameLine();
-			ImGui::PushItemWidth(150);
-			GUI_Input<uint64>
-			(
-				"",
-				*reinterpret_cast<uint64 *>(&file),
-				0,
-				"%llX",
-				ImGuiInputTextFlags_CharsHexadecimal |
-				ImGuiInputTextFlags_EnterReturnsTrue
-			);
-			ImGui::SameLine();
-			GUI_Input<uint32>
-			(
-				"",
-				fileIndex
-			);
-			ImGui::PopItemWidth();
-			ImGui::SameLine();
-			if (GUI_Button("Set File"))
-			{
-				file = File_staticFiles[em034][fileIndex];
+		// 	ImGui::PushItemWidth(50);
+		// 	ImGui::InputText
+		// 	(
+		// 		"",
+		// 		buffer,
+		// 		sizeof(buffer)
+		// 	);
+		// 	ImGui::PopItemWidth();
+		// 	ImGui::SameLine();
+		// 	ImGui::PushItemWidth(150);
+		// 	GUI_Input<uint64>
+		// 	(
+		// 		"",
+		// 		*reinterpret_cast<uint64 *>(&file),
+		// 		0,
+		// 		"%llX",
+		// 		ImGuiInputTextFlags_CharsHexadecimal |
+		// 		ImGuiInputTextFlags_EnterReturnsTrue
+		// 	);
+		// 	ImGui::SameLine();
+		// 	GUI_Input<uint32>
+		// 	(
+		// 		"",
+		// 		fileIndex
+		// 	);
+		// 	ImGui::PopItemWidth();
+		// 	ImGui::SameLine();
+		// 	if (GUI_Button("Set File"))
+		// 	{
+		// 		file = File_staticFiles[em034][fileIndex];
 
-				SetMemory
-				(
-					buffer,
-					0,
-					sizeof(buffer)
-				);
+		// 		SetMemory
+		// 		(
+		// 			buffer,
+		// 			0,
+		// 			sizeof(buffer)
+		// 		);
 
-				[&]()
-				{
-					if (!file)
-					{
-						return;
-					}
+		// 		[&]()
+		// 		{
+		// 			if (!file)
+		// 			{
+		// 				return;
+		// 			}
 
-					CopyMemory
-					(
-						buffer,
-						file,
-						4
-					);
-				}();
-			}
-
-
+		// 			CopyMemory
+		// 			(
+		// 				buffer,
+		// 				file,
+		// 				4
+		// 			);
+		// 		}();
+		// 	}
 
 
 
 
 
 
-			ImGui::PushItemWidth(50);
-			ImGui::InputText
-			(
-				"",
-				subbuffer,
-				sizeof(subbuffer)
-			);
-			ImGui::PopItemWidth();
-			ImGui::SameLine();
-			ImGui::PushItemWidth(150);
-			GUI_Input<uint64>
-			(
-				"",
-				*reinterpret_cast<uint64 *>(&subfile),
-				0,
-				"%llX",
-				ImGuiInputTextFlags_CharsHexadecimal |
-				ImGuiInputTextFlags_EnterReturnsTrue
-			);
-			ImGui::SameLine();
-			GUI_Input<uint32>
-			(
-				"",
-				subfileIndex
-			);
-			ImGui::PopItemWidth();
-			ImGui::SameLine();
-			if (GUI_Button("Set Subfile"))
-			{
-				[&]()
-				{
-					auto subarchive = file;
-					if (!subarchive)
-					{
-						return;
-					}
 
-					auto & subarchiveMetadata = *reinterpret_cast<ArchiveMetadata *>(subarchive);
 
-					if
-					(
-						(subarchiveMetadata.signature[0] != 'P') ||
-						(subarchiveMetadata.signature[1] != 'A') ||
-						(subarchiveMetadata.signature[2] != 'C')
-					)
-					{
-						MessageBoxA
-						(
-							0,
-							"Wrong Signature",
-							0,
-							0
-						);
+		// 	ImGui::PushItemWidth(50);
+		// 	ImGui::InputText
+		// 	(
+		// 		"",
+		// 		subbuffer,
+		// 		sizeof(subbuffer)
+		// 	);
+		// 	ImGui::PopItemWidth();
+		// 	ImGui::SameLine();
+		// 	ImGui::PushItemWidth(150);
+		// 	GUI_Input<uint64>
+		// 	(
+		// 		"",
+		// 		*reinterpret_cast<uint64 *>(&subfile),
+		// 		0,
+		// 		"%llX",
+		// 		ImGuiInputTextFlags_CharsHexadecimal |
+		// 		ImGuiInputTextFlags_EnterReturnsTrue
+		// 	);
+		// 	ImGui::SameLine();
+		// 	GUI_Input<uint32>
+		// 	(
+		// 		"",
+		// 		subfileIndex
+		// 	);
+		// 	ImGui::PopItemWidth();
+		// 	ImGui::SameLine();
+		// 	if (GUI_Button("Set Subfile"))
+		// 	{
+		// 		[&]()
+		// 		{
+		// 			auto subarchive = file;
+		// 			if (!subarchive)
+		// 			{
+		// 				return;
+		// 			}
 
-						return;
-					}
+		// 			auto & subarchiveMetadata = *reinterpret_cast<ArchiveMetadata *>(subarchive);
 
-					if (subfileIndex >= subarchiveMetadata.fileCount)
-					{
-						MessageBoxA
-						(
-							0,
-							"Out of range.",
-							0,
-							0
-						);
+		// 			if
+		// 			(
+		// 				(subarchiveMetadata.signature[0] != 'P') ||
+		// 				(subarchiveMetadata.signature[1] != 'A') ||
+		// 				(subarchiveMetadata.signature[2] != 'C')
+		// 			)
+		// 			{
+		// 				MessageBoxA
+		// 				(
+		// 					0,
+		// 					"Wrong Signature",
+		// 					0,
+		// 					0
+		// 				);
 
-						return;
-					}
+		// 				return;
+		// 			}
 
-					auto subfileOff = subarchiveMetadata.fileOffs[subfileIndex];
-					if (!subfileOff)
-					{
-						return;
-					}
+		// 			if (subfileIndex >= subarchiveMetadata.fileCount)
+		// 			{
+		// 				MessageBoxA
+		// 				(
+		// 					0,
+		// 					"Out of range.",
+		// 					0,
+		// 					0
+		// 				);
 
-					subfile = (file + subfileOff);
+		// 				return;
+		// 			}
 
-					SetMemory
-					(
-						subbuffer,
-						0,
-						sizeof(subbuffer)
-					);
+		// 			auto subfileOff = subarchiveMetadata.fileOffs[subfileIndex];
+		// 			if (!subfileOff)
+		// 			{
+		// 				return;
+		// 			}
 
-					if (!subfile)
-					{
-						return;
-					}
+		// 			subfile = (file + subfileOff);
 
-					CopyMemory
-					(
-						subbuffer,
-						(subfile + 4),
-						3
-					);
-				}();
-			}
+		// 			SetMemory
+		// 			(
+		// 				subbuffer,
+		// 				0,
+		// 				sizeof(subbuffer)
+		// 			);
 
-			if (GUI_Button("Play File Motion"))
-			{
-				[&]()
-				{
-					IntroduceMainActorData(actorBaseAddr, actorData, return);
+		// 			if (!subfile)
+		// 			{
+		// 				return;
+		// 			}
 
-					func_8AC80
-					(
-						actorData.newModelData[0],
-						UPPER_BODY,
-						file,
-						0,
-						false
-					);
-					func_8AC80
-					(
-						actorData.newModelData[0],
-						LOWER_BODY,
-						file,
-						0,
-						false
-					);
-				}();
-			}
+		// 			CopyMemory
+		// 			(
+		// 				subbuffer,
+		// 				(subfile + 4),
+		// 				3
+		// 			);
+		// 		}();
+		// 	}
 
-			if (GUI_Button("Play Subfile Motion"))
-			{
-				[&]()
-				{
-					IntroduceMainActorData(actorBaseAddr, actorData, return);
+		// 	if (GUI_Button("Play File Motion"))
+		// 	{
+		// 		[&]()
+		// 		{
+		// 			IntroduceMainActorData(actorBaseAddr, actorData, return);
 
-					func_8AC80
-					(
-						actorData.newModelData[0],
-						UPPER_BODY,
-						subfile,
-						0,
-						false
-					);
-					func_8AC80
-					(
-						actorData.newModelData[0],
-						LOWER_BODY,
-						subfile,
-						0,
-						false
-					);
-				}();
-			}
+		// 			func_8AC80
+		// 			(
+		// 				actorData.newModelData[0],
+		// 				UPPER_BODY,
+		// 				file,
+		// 				0,
+		// 				false
+		// 			);
+		// 			func_8AC80
+		// 			(
+		// 				actorData.newModelData[0],
+		// 				LOWER_BODY,
+		// 				file,
+		// 				0,
+		// 				false
+		// 			);
+		// 		}();
+		// 	}
 
-			ImGui::Text("");
-		}
+		// 	if (GUI_Button("Play Subfile Motion"))
+		// 	{
+		// 		[&]()
+		// 		{
+		// 			IntroduceMainActorData(actorBaseAddr, actorData, return);
+
+		// 			func_8AC80
+		// 			(
+		// 				actorData.newModelData[0],
+		// 				UPPER_BODY,
+		// 				subfile,
+		// 				0,
+		// 				false
+		// 			);
+		// 			func_8AC80
+		// 			(
+		// 				actorData.newModelData[0],
+		// 				LOWER_BODY,
+		// 				subfile,
+		// 				0,
+		// 				false
+		// 			);
+		// 		}();
+		// 	}
+
+		// 	ImGui::Text("");
+		// }
 
 
 
@@ -7419,12 +8539,18 @@ export void GUI_Render()
 
 	WeaponSwitchController();
 
+	ItemWindow();
+
 	if (g_pause)
 	{
 		Main();
 
 		if constexpr (debug)
 		{
+
+			MissionDataWindow();
+
+
 			FileDataWindow();
 			RegionDataWindow();
 			SoundWindow();

@@ -1136,6 +1136,281 @@ IntroduceSizeStruct(240);
 IntroduceSizeStruct(288);
 IntroduceSizeStruct(768);
 
+
+
+
+// $ItemStart
+
+export const char * itemNames[] =
+{
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Gold Orb",
+	"Yellow Orb",
+	"Blue Orb",
+	"Purple Orb",
+	"Blue Orb Fragment",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Vital Star Large",
+	"Vital Star Small",
+	"Devil Star",
+	"Holy Water",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Astronomical Board",
+	"Vajura",
+	"Unknown",
+	"Soul of Steel",
+	"Essence of Fighting",
+	"Essence of Technique",
+	"Essence of Intelligence",
+	"Orihalcon Fragment",
+	"Siren's Shriek",
+	"Crystal Skull",
+	"Ignis Fatuus",
+	"Ambrosia",
+	"Stone Mask",
+	"Neo-Generator",
+	"Haywire Neo-Generator",
+	"Orihalcon",
+	"Orihalcon Fragment Right",
+	"Orihalcon Fragment Bottom",
+	"Orihalcon Fragment Left",
+	"Golden Sun",
+	"Onyx Moonshard",
+	"Samsara",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+	"Unknown",
+};
+
+export enum
+{
+	ITEM_UNKNOWN_0,
+	ITEM_UNKNOWN_1,
+	ITEM_UNKNOWN_2,
+	ITEM_UNKNOWN_3,
+	ITEM_UNKNOWN_4,
+	ITEM_GOLD_ORB,
+	ITEM_YELLOW_ORB,
+	ITEM_BLUE_ORB,
+	ITEM_PURPLE_ORB,
+	ITEM_BLUE_ORB_FRAGMENT,
+	ITEM_UNKNOWN_5,
+	ITEM_UNKNOWN_6,
+	ITEM_UNKNOWN_7,
+	ITEM_UNKNOWN_8,
+	ITEM_UNKNOWN_9,
+	ITEM_UNKNOWN_10,
+	ITEM_VITAL_STAR_LARGE,
+	ITEM_VITAL_STAR_SMALL,
+	ITEM_DEVIL_STAR,
+	ITEM_HOLY_WATER,
+	ITEM_UNKNOWN_11,
+	ITEM_UNKNOWN_12,
+	ITEM_UNKNOWN_13,
+	ITEM_UNKNOWN_14,
+	ITEM_UNKNOWN_15,
+	ITEM_UNKNOWN_16,
+	ITEM_UNKNOWN_17,
+	ITEM_UNKNOWN_18,
+	ITEM_UNKNOWN_19,
+	ITEM_UNKNOWN_20,
+	ITEM_UNKNOWN_21,
+	ITEM_UNKNOWN_22,
+	ITEM_UNKNOWN_23,
+	ITEM_UNKNOWN_24,
+	ITEM_UNKNOWN_25,
+	ITEM_UNKNOWN_26,
+	ITEM_ASTRONOMICAL_BOARD,
+	ITEM_VAJURA,
+	ITEM_UNKNOWN_27,
+	ITEM_SOUL_OF_STEEL,
+	ITEM_ESSENCE_OF_FIGHTING,
+	ITEM_ESSENCE_OF_TECHNIQUE,
+	ITEM_ESSENCE_OF_INTELLIGENCE,
+	ITEM_ORIHALCON_FRAGMENT,
+	ITEM_SIRENS_SHRIEK,
+	ITEM_CRYSTAL_SKULL,
+	ITEM_IGNIS_FATUUS,
+	ITEM_AMBROSIA,
+	ITEM_STONE_MASK,
+	ITEM_NEO_GENERATOR,
+	ITEM_HAYWIRE_NEO_GENERATOR,
+	ITEM_ORIHALCON,
+	ITEM_ORIHALCON_FRAGMENT_RIGHT,
+	ITEM_ORIHALCON_FRAGMENT_BOTTOM,
+	ITEM_ORIHALCON_FRAGMENT_LEFT,
+	ITEM_GOLDEN_SUN,
+	ITEM_ONYX_MOONSHARD,
+	ITEM_SAMSARA,
+	ITEM_UNKNOWN_28,
+	ITEM_UNKNOWN_29,
+	ITEM_UNKNOWN_30,
+	ITEM_UNKNOWN_31,
+	ITEM_COUNT,
+};
+
+export const char * buyNames[] =
+{
+	"Vital Star Small",
+	"Vital Star Large",
+	"Devil Star",
+	"Holy Water",
+	"Blue Orb",
+	"Purple Orb",
+	"Gold Orb",
+	"Yellow Orb",
+};
+
+export enum
+{
+	BUY_VITAL_STAR_SMALL,
+	BUY_VITAL_STAR_LARGE,
+	BUY_DEVIL_STAR,
+	BUY_HOLY_WATER,
+	BUY_BLUE_ORB,
+	BUY_PURPLE_ORB,
+	BUY_GOLD_ORB,
+	BUY_YELLOW_ORB,
+	BUY_COUNT,
+};
+
+// $ItemEnd
+
+
+/*
+
+prices
+
+BUY_VITAL_STAR_SMALL,
+
+500
+750
+1200
+1800
+2500
+3500
+5000
+
+BUY_VITAL_STAR_LARGE,
+
+2000
+3000
+4500
+6000
+7500
+10000
+
+BUY_DEVIL_STAR,
+
+3000
+5000
+7000
+9000
+10000
+
+
+
+
+BUY_HOLY_WATER,
+10000
+15000
+20000
+25000
+30000
+
+
+
+
+
+
+BUY_BLUE_ORB,
+
+
+5000
+10000
+15000
+20000
+30000
+50000
+
+
+
+
+BUY_PURPLE_ORB,
+
+3000
+5000
+7000
+9000
+10000
+20000
+30000
+
+
+
+
+
+BUY_GOLD_ORB,
+
+10000
+15000
+20000
+
+
+
+
+BUY_YELLOW_ORB,
+
+1000
+1500
+2000
+3000
+
+
+
+
+
+
+
+
+
+
+
+*/
+
+
+
+
+
+
+
+
+
 // $SessionDataStart
 
 export struct SessionData
@@ -1151,10 +1426,27 @@ export struct SessionData
 	_(7);
 	bool bloodyPalace; // 0x1C
 	_(24);
+
+	//uint8 itemCount[20];
+
+
 	uint8 goldOrbCount; // 0x35
 	_(16);
+
+
+// 0x43 holy water count
+
+
+
+
+
 	bool unlock[14]; // 0x46
 	_(48);
+
+// buy count here
+
+
+
 	uint8 weapons[4]; // 0x84
 	_(72);
 	uint8 costume; // 0xD0
@@ -1190,13 +1482,74 @@ static_assert(sizeof(SessionData) == 304);
 
 // $SessionDataEnd
 
+
+// @Todo: Add item entries.
+// @Todo: Create item buy count indices.
+
+
+
+
+// export enum
+// {
+// 	ITEM_GOLD_ORB = 5,
+// 	ITEM_YELLOW_ORB,
+// 	ITEM_BLUE_ORB,
+// 	ITEM_PURPLE_ORB,
+// 	ITEM_BLUE_ORB_FRAGMENT,
+
+
+
+
+
+
+// 	ITEM_VITAL_STAR_LARGE = 16,
+// 	ITEM_VITAL_STAR_SMALL,
+// 	ITEM_DEVIL_STAR,
+// 	ITEM_HOLY_WATER,
+
+// 	ITEM_ASTRONOMICAL_BOARD = 36,
+// 	ITEM_VAJURA,
+// 	ITEM_,
+// 	ITEM_,
+// 	ITEM_,
+// 	ITEM_,
+// 	ITEM_,
+// 	ITEM_,
+
+
+
+
+// };
+
+// export enum
+// {
+// 	BUY_ITEM_VITAL_STAR_SMALL,
+// 	BUY_ITEM_VITAL_STAR_LARGE,
+// 	BUY_ITEM_DEVIL_STAR,
+// 	BUY_ITEM_HOLY_WATER,
+// 	BUY_ITEM_BLUE_ORB,
+// 	BUY_ITEM_PURPLE_ORB,
+// 	BUY_ITEM_GOLD_ORB,
+// 	BUY_ITEM_YELLOW_ORB,
+// };
+
+
+
+
+
+
+
+
+
 // $MissionDataStart
 
 export struct MissionData
 {
 	_(56);
 	uint32 orbs; // 0x38
-	_(108);
+	uint8 itemCount[62]; // 0x3C
+	uint8 buyCount[8]; // 0x7A
+	_(38);
 	uint32 frameCount; // 0xA8
 	uint32 damage; // 0xAC
 	uint32 orbsCollected; // 0xB0
@@ -1206,11 +1559,14 @@ export struct MissionData
 };
 
 static_assert(offsetof(MissionData, orbs) == 0x38);
+static_assert(offsetof(MissionData, itemCount) == 0x3C);
+static_assert(offsetof(MissionData, buyCount) == 0x7A);
 static_assert(offsetof(MissionData, frameCount) == 0xA8);
 static_assert(offsetof(MissionData, damage) == 0xAC);
 static_assert(offsetof(MissionData, orbsCollected) == 0xB0);
 static_assert(offsetof(MissionData, itemsUsed) == 0xB4);
 static_assert(offsetof(MissionData, killCount) == 0xB8);
+
 static_assert(sizeof(MissionData) == 192);
 
 // $MissionDataEnd

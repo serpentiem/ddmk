@@ -15,9 +15,22 @@ var items =
 	[ "useGoldOrb"        , "bool"  , 0x13  ],
 	[ "character"         , "uint8" , 0x14  ],
 	[ "bloodyPalace"      , "bool"  , 0x1C  ],
-	[ "goldOrbCount"      , "uint8" , 0x35  ],
+
+
+
+[ "itemCount[20]"      , "uint8" , 0x30  ],
+
+
+	//[ "goldOrbCount"      , "uint8" , 0x35  ],
+
+
+
+
+
+
 	[ "unlock[14]"        , "bool"  , 0x46  ],
-	[ "weapons[4]"        , "uint8" , 0x84  ],
+	[ "weapons[8]"        , "uint8" , 0x84  ],
+	[ "rangedWeaponLevels[5]", "uint32" , 0xA0  ],
 	[ "costume"           , "uint8" , 0xD0  ],
 	[ "unlockDevilTrigger", "bool"  , 0xD1  ],
 	[ "hitPoints"         , "float" , 0xD4  ],

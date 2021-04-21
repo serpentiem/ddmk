@@ -18,6 +18,7 @@ import Config;
 import Global;
 import Graphics;
 import GUI;
+import Input;
 import Window;
 import Vars;
 
@@ -443,17 +444,7 @@ LRESULT WindowProc
 		}
 		case DM_PAUSE:
 		{
-			if (g_pause)
-			{
-				Windows_ToggleCursor(true);
-			}
-			else
-			{
-				if (activeConfig.hideMouseCursor)
-				{
-					Windows_ToggleCursor(false);
-				}
-			}
+			ToggleCursor();
 
 			break;
 		}
@@ -568,14 +559,7 @@ HWND CreateWindowExW
 		lpParam
 	);
 
-	if (activeConfig.hideMouseCursor)
-	{
-		Windows_ToggleCursor(false);
-	}
-	else
-	{
-		Windows_ToggleCursor(true);
-	}
+	ToggleCursor();
 
 	return ::Base::Windows::CreateWindowExW
 	(
@@ -688,6 +672,48 @@ namespaceStart(Base::DXGI);
 namespaceEnd();
 
 
+// void UpdateGamepad()
+// {
+
+// 	if (!g_pause)
+// 	{
+// 		return;
+// 	}
+
+
+// 	auto & io = ImGui::GetIO();
+
+// 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+
+// 	io.BackendFlags |= ImGuiBackendFlags_HasGamepad;
+
+// 	auto & gamepad = GetGamepad(0);
+
+// 	if (gamepad.buttons[0] & GAMEPAD_A)
+// 	{
+// 		io.NavInputs[ImGuiNavInput_LStickUp] = 1.0f;
+// 	}
+
+// 	if (gamepad.buttons[0] & GAMEPAD_RIGHT)
+// 	{
+// 		io.NavInputs[ImGuiNavInput_DpadRight] = 1.0f;
+// 	}
+
+// 	if (gamepad.buttons[0] & GAMEPAD_DOWN)
+// 	{
+// 		io.NavInputs[ImGuiNavInput_LStickDown] = 1.0f;
+// 	}
+
+// 	if (gamepad.buttons[0] & GAMEPAD_LEFT)
+// 	{
+// 		io.NavInputs[ImGuiNavInput_DpadLeft] = 1.0f;
+// 	}
+// }
+
+
+
+
+
 
 namespaceStart(Hook::DXGI);
 
@@ -724,6 +750,8 @@ HRESULT Present
 	ImGui::D3D11::NewFrame();
 
 	Timestep();
+
+	//UpdateGamepad();
 
 	ImGui::NewFrame();
 
@@ -1178,7 +1206,15 @@ byte32 UpdateMouseThread(LPVOID parameter)
 
 	while (true)
 	{
-		if (appWindow && g_pause)
+		// @Research: Better solution.
+		if
+		(
+			appWindow &&
+			(
+				g_pause ||
+				g_showItemWindow
+			)
+		)
 		{
 			::DI8::mouse->GetDeviceState
 			(

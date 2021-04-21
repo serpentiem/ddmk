@@ -124,6 +124,9 @@ uint32 DllMain
 
 
 
+		ToggleDisableGetInput(false);
+
+
 		Actor_Init();
 
 		Actor_Toggle(false);
@@ -216,7 +219,7 @@ uint32 DllMain
 
 
 
-
+		Log("&leftStickDirection[0] %X", offsetof(ENGINE_GAMEPAD, leftStickDirection[0]));
 
 
 
