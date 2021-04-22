@@ -3911,8 +3911,11 @@ constexpr ItemHelper itemHelpers[] =
 
 
 
+
 void ItemWindow()
 {
+
+
 
 
 	static uint8 selectIndex = 0;
@@ -3926,6 +3929,122 @@ void ItemWindow()
 	static bool executeDown2 = true;
 
 
+	auto & gamepad = GetGamepad(0);
+
+
+	//static float timeout = 0;
+
+
+
+	IntroduceMissionData(return);
+
+	IntroduceEventData(return);
+
+
+
+	auto Open = [&]()
+	{
+		ToggleCursor();
+
+		ToggleDisableGetInput(true);
+
+		selectIndex = 0;
+
+		// SetMemory
+		// (
+		// 	gamepad.buttons,
+		// 	0,
+		// 	sizeof(gamepad.buttons)
+		// );
+
+		g_timeout = 30.0f;
+	};
+
+	auto Close = [&]()
+	{
+		g_showItemWindow = false;
+		g_lastShowItemWindow = false;
+
+		ToggleCursor();
+
+		ToggleDisableGetInput(false);
+
+		PlaySound
+		(
+			0,
+			3
+		);
+	};
+
+	auto GetItemCount = [&](const ItemHelper & itemHelper) -> uint8 &
+	{
+		return missionData.itemCount[itemHelper.itemIndex];
+	};
+
+	auto GetBuyCount = [&](const ItemHelper & itemHelper) -> uint8 &
+	{
+		return missionData.buyCount[itemHelper.buyIndex];
+	};
+
+	auto GetPrice = [&](const ItemHelper & itemHelper)
+	{
+		uint32 price = 0;
+
+		auto & buyCount = GetBuyCount(itemHelper);
+
+		if (buyCount >= itemHelper.priceCount)
+		{
+			price = itemHelper.prices[(itemHelper.priceCount - 1)];
+		}
+		else
+		{
+			price = itemHelper.prices[buyCount];
+		}
+
+		return price;
+	};
+
+	auto BuyItem = [&](uint8 itemHelperIndex)
+	{
+		auto & itemHelper = itemHelpers[itemHelperIndex];
+
+		auto & itemCount = GetItemCount(itemHelper);
+		auto & buyCount = GetBuyCount(itemHelper);
+		auto price = GetPrice(itemHelper);
+
+		if
+		(
+			(itemCount >= itemHelper.itemCount) ||
+			(missionData.orbs < price)
+		)
+		{
+			PlaySound
+			(
+				0,
+				19
+			);
+
+			return;
+		}
+
+		itemCount++;
+		buyCount++;
+
+		if (buyCount > 254)
+		{
+			buyCount = 254;
+		}
+
+		missionData.orbs -= price;
+
+		PlaySound
+		(
+			0,
+			18
+		);
+	};
+
+
 
 	if (!g_showItemWindow)
 	{
@@ -3936,18 +4055,8 @@ void ItemWindow()
 	{
 		g_lastShowItemWindow = g_showItemWindow;
 
-		ToggleDisableGetInput(true);
-
-		selectIndex = 0;
+		Open();
 	}
-
-
-
-
-	IntroduceMissionData(return);
-
-	IntroduceEventData(return);
-
 
 	static bool run = false;
 	if (!run)
@@ -3958,8 +4067,8 @@ void ItemWindow()
 		(
 			ImVec2
 			(
-				500,
-				900
+				350,
+				350
 			)
 		);
 		ImGui::SetNextWindowPos
@@ -3972,44 +4081,30 @@ void ItemWindow()
 		);
 	}
 
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
 
-
-
-
-
-
-
-	if (ImGui::Begin("ItemWindow", &g_showItemWindow))
+	if
+	(
+		ImGui::Begin
+		(
+			"ItemWindow",
+			&g_showItemWindow,
+			ImGuiWindowFlags_NoTitleBar |
+			ImGuiWindowFlags_NoResize
+		)
+	)
 	{
-		ImGui::Text("");
-
-
 		ImGui::Text("%u Red Orbs", missionData.orbs);
-
-
-		
-
-		ImGui::Text("selectIndex %u", selectIndex);
-
+		ImGui::Text("");
 
 		for_all(uint8, itemHelperIndex, countof(itemHelpers))
 		{
 			auto & itemHelper = itemHelpers[itemHelperIndex];
 
-			auto & itemCount = missionData.itemCount[itemHelper.itemIndex];
-			auto & buyCount = missionData.buyCount[itemHelper.buyIndex];
-
-			uint32 price = 0;
-
-			if (buyCount >= itemHelper.priceCount)
-			{
-				price = itemHelper.prices[(itemHelper.priceCount - 1)];
-			}
-			else
-			{
-				price = itemHelper.prices[buyCount];
-			}
-
+			auto & itemCount = GetItemCount(itemHelper);
+			auto & buyCount = GetBuyCount(itemHelper);
+			auto price = GetPrice(itemHelper);
 
 			// if constexpr (debug)
 			// {
@@ -4017,13 +4112,11 @@ void ItemWindow()
 			// 	ImGui::SameLine();
 			// }
 
-
 			ImGui::Text("%u", price);
 			ImGui::SameLine(60);
 
 			ImGui::Text("%s", itemNames[itemHelper.itemIndex]);
 			ImGui::SameLine(190);
-
 
 			// ImGui::Text
 			// (
@@ -4037,10 +4130,6 @@ void ItemWindow()
 			ImGui::Text("%.2u / %.2u", itemCount, itemHelper.itemCount);
 			ImGui::SameLine();
 
-
-
-
-
 			// if constexpr (debug)
 			// {
 				
@@ -4048,65 +4137,10 @@ void ItemWindow()
 			// 	ImGui::SameLine();
 			// }
 
-
-
-			
-			
-
-
-
-
-			auto BuyItem = [&]()
-			{
-				if
-				(
-					(itemCount >= itemHelper.itemCount) ||
-					(missionData.orbs < price)
-				)
-				{
-					PlaySound
-					(
-						0,
-						19
-					);
-
-					return;
-				}
-
-				itemCount++;
-				buyCount++;
-
-				if (buyCount > 254)
-				{
-					buyCount = 254;
-				}
-
-				missionData.orbs -= price;
-
-				PlaySound
-				(
-					0,
-					18
-				);
-			};
-
-
-
-
-
-
-
-
 			if (GUI_Button("Buy"))
 			{
-				BuyItem();
+				BuyItem(itemHelperIndex);
 			}
-
-
-
-
-
-
 
 			if (selectIndex == itemHelperIndex)
 			{
@@ -4114,197 +4148,197 @@ void ItemWindow()
 				ImGui::Text("<-");
 			}
 
-			auto & gamepad = GetGamepad(0);
-
-			if (gamepad.buttons[0] & GAMEPAD_UP)
+			if constexpr (debug)
 			{
-				if (executeUp)
-				{
-					executeUp = false;
-
-					if (selectIndex > 0)
-					{
-						selectIndex--;
-					}
-					else
-					{
-						selectIndex = static_cast<uint8>(countof(itemHelpers) - 1);
-					}
-
-					PlaySound
-					(
-						0,
-						2
-					);
-				}
+				ImGui::Text("buyCount %u", buyCount);
 			}
-			else
-			{
-				executeUp = true;
-			}
-
-
-
-			if (gamepad.leftStickDirection[0] & GAMEPAD_UP)
-			{
-				if (executeUp2)
-				{
-					executeUp2 = false;
-
-					if (selectIndex > 0)
-					{
-						selectIndex--;
-					}
-					else
-					{
-						selectIndex = static_cast<uint8>(countof(itemHelpers) - 1);
-					}
-
-					PlaySound
-					(
-						0,
-						2
-					);
-				}
-			}
-			else
-			{
-				executeUp2 = true;
-			}
-
-
-
-
-
-
-
-
-
-
-
-			if (gamepad.buttons[0] & GAMEPAD_DOWN)
-			{
-				if (executeDown)
-				{
-					executeDown = false;
-
-					if (selectIndex < static_cast<uint8>(countof(itemHelpers) - 1))
-					{
-						selectIndex++;
-					}
-					else
-					{
-						selectIndex = 0;
-					}
-
-					PlaySound
-					(
-						0,
-						2
-					);
-				}
-			}
-			else
-			{
-				executeDown = true;
-			}
-
-
-
-
-			if (gamepad.leftStickDirection[0] & GAMEPAD_DOWN)
-			{
-				if (executeDown2)
-				{
-					executeDown2 = false;
-
-					if (selectIndex < static_cast<uint8>(countof(itemHelpers) - 1))
-					{
-						selectIndex++;
-					}
-					else
-					{
-						selectIndex = 0;
-					}
-
-					PlaySound
-					(
-						0,
-						2
-					);
-				}
-			}
-			else
-			{
-				executeDown2 = true;
-			}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			if (gamepad.buttons[0] & GAMEPAD_A)
-			{
-				if (executeA)
-				{
-					executeA = false;
-
-					BuyItem();
-				}
-			}
-			else
-			{
-				executeA = true;
-			}
-
-			if (gamepad.buttons[0] & GAMEPAD_B)
-			{
-				if (executeB)
-				{
-					executeB = false;
-
-					//BuyItem();
-					g_showItemWindow = false;
-					g_lastShowItemWindow = g_showItemWindow;
-
-					ToggleDisableGetInput(false);
-
-					PlaySound
-					(
-						0,
-						3
-					);
-
-
-
-				}
-			}
-			else
-			{
-				executeB = true;
-			}
-
-
 
 
 
 
 
 		}
-
 		ImGui::Text("");
+
+		if (GUI_Button("Close"))
+		{
+			Close();
+		}
+		ImGui::Text("");
+
+
+
+
+		if (gamepad.buttons[0] & GAMEPAD_A)
+		{
+			if (executeA)
+			{
+				executeA = false;
+
+				BuyItem(selectIndex);
+			}
+		}
+		else
+		{
+			executeA = true;
+		}
+
+
+
+
+
+
+		if (gamepad.buttons[0] & GAMEPAD_UP)
+		{
+			if (executeUp)
+			{
+				executeUp = false;
+
+				if (selectIndex > 0)
+				{
+					selectIndex--;
+				}
+				else
+				{
+					selectIndex = static_cast<uint8>(countof(itemHelpers) - 1);
+				}
+
+				PlaySound
+				(
+					0,
+					2
+				);
+			}
+		}
+		else
+		{
+			executeUp = true;
+		}
+
+
+
+		if (gamepad.leftStickDirection[0] & GAMEPAD_UP)
+		{
+			if (executeUp2)
+			{
+				executeUp2 = false;
+
+				if (selectIndex > 0)
+				{
+					selectIndex--;
+				}
+				else
+				{
+					selectIndex = static_cast<uint8>(countof(itemHelpers) - 1);
+				}
+
+				PlaySound
+				(
+					0,
+					2
+				);
+			}
+		}
+		else
+		{
+			executeUp2 = true;
+		}
+
+
+
+
+
+
+
+
+
+
+
+		if (gamepad.buttons[0] & GAMEPAD_DOWN)
+		{
+			if (executeDown)
+			{
+				executeDown = false;
+
+				if (selectIndex < static_cast<uint8>(countof(itemHelpers) - 1))
+				{
+					selectIndex++;
+				}
+				else
+				{
+					selectIndex = 0;
+				}
+
+				PlaySound
+				(
+					0,
+					2
+				);
+			}
+		}
+		else
+		{
+			executeDown = true;
+		}
+
+
+
+
+		if (gamepad.leftStickDirection[0] & GAMEPAD_DOWN)
+		{
+			if (executeDown2)
+			{
+				executeDown2 = false;
+
+				if (selectIndex < static_cast<uint8>(countof(itemHelpers) - 1))
+				{
+					selectIndex++;
+				}
+				else
+				{
+					selectIndex = 0;
+				}
+
+				PlaySound
+				(
+					0,
+					2
+				);
+			}
+		}
+		else
+		{
+			executeDown2 = true;
+		}
+
+
+
+		if (gamepad.buttons[0] & GAMEPAD_B)
+		{
+			if (executeB)
+			{
+				executeB = false;
+
+				if (g_timeout < 1)
+				{
+					Close();
+				}
+			}
+		}
+		else
+		{
+			executeB = true;
+		}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4316,6 +4350,22 @@ void ItemWindow()
 	}
 
 	ImGui::End();
+
+	ImGui::PopStyleVar(2);
+
+
+
+
+
+
+	if (g_timeout > 0)
+	{
+		g_timeout--;
+	}
+
+
+
+
 }
 
 
@@ -4518,61 +4568,61 @@ void MissionDataWindow()
 		// };
 
 
-		for_all(uint8, itemHelperIndex, countof(itemHelpers))
-		{
-			auto & itemHelper = itemHelpers[itemHelperIndex];
+		// for_all(uint8, itemHelperIndex, countof(itemHelpers))
+		// {
+		// 	auto & itemHelper = itemHelpers[itemHelperIndex];
 
-			auto & itemCount = missionData.itemCount[itemHelper.itemIndex];
-			auto & buyCount = missionData.buyCount[itemHelper.buyIndex];
+		// 	auto & itemCount = missionData.itemCount[itemHelper.itemIndex];
+		// 	auto & buyCount = missionData.buyCount[itemHelper.buyIndex];
 
-			uint32 price = 0;
+		// 	uint32 price = 0;
 
-			if (buyCount >= itemHelper.priceCount)
-			{
-				price = itemHelper.prices[(itemHelper.priceCount - 1)];
-			}
-			else
-			{
-				price = itemHelper.prices[buyCount];
-			}
-
-
-			// if constexpr (debug)
-			// {
-			// 	ImGui::Text("%.4u", itemHelperIndex);
-			// 	ImGui::SameLine();
-			// }
+		// 	if (buyCount >= itemHelper.priceCount)
+		// 	{
+		// 		price = itemHelper.prices[(itemHelper.priceCount - 1)];
+		// 	}
+		// 	else
+		// 	{
+		// 		price = itemHelper.prices[buyCount];
+		// 	}
 
 
-			ImGui::Text("%u", price);
-			ImGui::SameLine(60);
-
-			ImGui::Text("%s", itemNames[itemHelper.itemIndex]);
-			ImGui::SameLine(190);
-
-
-			// ImGui::Text
-			// (
-			// 	"%u",
-			// 	itemHelperIndex,
-			// 	price,
-			// 	itemNames[itemHelper.itemIndex]
-			// );
-			// ImGui::SameLine(200);
-
-			ImGui::Text("%.2u / %.2u", itemCount, itemHelper.itemCount);
-			ImGui::SameLine();
+		// 	// if constexpr (debug)
+		// 	// {
+		// 	// 	ImGui::Text("%.4u", itemHelperIndex);
+		// 	// 	ImGui::SameLine();
+		// 	// }
 
 
+		// 	ImGui::Text("%u", price);
+		// 	ImGui::SameLine(60);
+
+		// 	ImGui::Text("%s", itemNames[itemHelper.itemIndex]);
+		// 	ImGui::SameLine(190);
+
+
+		// 	// ImGui::Text
+		// 	// (
+		// 	// 	"%u",
+		// 	// 	itemHelperIndex,
+		// 	// 	price,
+		// 	// 	itemNames[itemHelper.itemIndex]
+		// 	// );
+		// 	// ImGui::SameLine(200);
+
+		// 	ImGui::Text("%.2u / %.2u", itemCount, itemHelper.itemCount);
+		// 	ImGui::SameLine();
 
 
 
-			// if constexpr (debug)
-			// {
+
+
+		// 	// if constexpr (debug)
+		// 	// {
 				
-			// 	ImGui::Text("%u", buyCount);
-			// 	ImGui::SameLine();
-			// }
+		// 	// 	ImGui::Text("%u", buyCount);
+		// 	// 	ImGui::SameLine();
+		// 	// }
 
 
 
@@ -4582,88 +4632,86 @@ void MissionDataWindow()
 
 
 
-			auto BuyItem = [&]()
-			{
-				if
-				(
-					(itemCount >= itemHelper.itemCount) ||
-					(missionData.orbs < price)
-				)
-				{
-					PlaySound
-					(
-						0,
-						19
-					);
+		// 	auto BuyItem = [&]()
+		// 	{
+		// 		if
+		// 		(
+		// 			(itemCount >= itemHelper.itemCount) ||
+		// 			(missionData.orbs < price)
+		// 		)
+		// 		{
+		// 			PlaySound
+		// 			(
+		// 				0,
+		// 				19
+		// 			);
 
-					return;
-				}
+		// 			return;
+		// 		}
 
-				itemCount++;
-				buyCount++;
+		// 		itemCount++;
+		// 		buyCount++;
 
-				if (buyCount > 254)
-				{
-					buyCount = 254;
-				}
+		// 		if (buyCount > 254)
+		// 		{
+		// 			buyCount = 254;
+		// 		}
 
-				missionData.orbs -= price;
+		// 		missionData.orbs -= price;
 
-				PlaySound
-				(
-					0,
-					18
-				);
-			};
-
-
+		// 		PlaySound
+		// 		(
+		// 			0,
+		// 			18
+		// 		);
+		// 	};
 
 
 
 
 
 
-			if (GUI_Button("Buy"))
-			{
-				BuyItem();
-			}
 
 
-			static uint8 selectIndex = 0;
-
-			if (selectIndex == itemHelperIndex)
-			{
-				ImGui::SameLine();
-				ImGui::Text("<-");
-			}
-
-			auto & gamepad = GetGamepad(0);
-
-			if (gamepad.buttons[0] & GAMEPAD_UP)
-			{
-				if (selectIndex > 0)
-				{
-					selectIndex--;
-				}
-				else
-				{
-					selectIndex = static_cast<uint8>(countof(itemHelpers) - 1);
-				}
-			}
-
-			if (gamepad.buttons[0] & GAMEPAD_DOWN)
-			{
-				if (selectIndex < static_cast<uint8>(countof(itemHelpers) - 1))
-				{
-					selectIndex++;
-				}
-				else
-				{
-					selectIndex = 0;
-				}
-			}
+		// 	if (GUI_Button("Buy"))
+		// 	{
+		// 		BuyItem();
+		// 	}
 
 
+		// 	static uint8 selectIndex = 0;
+
+		// 	if (selectIndex == itemHelperIndex)
+		// 	{
+		// 		ImGui::SameLine();
+		// 		ImGui::Text("<-");
+		// 	}
+
+		// 	auto & gamepad = GetGamepad(0);
+
+		// 	if (gamepad.buttons[0] & GAMEPAD_UP)
+		// 	{
+		// 		if (selectIndex > 0)
+		// 		{
+		// 			selectIndex--;
+		// 		}
+		// 		else
+		// 		{
+		// 			selectIndex = static_cast<uint8>(countof(itemHelpers) - 1);
+		// 		}
+		// 	}
+
+		// 	if (gamepad.buttons[0] & GAMEPAD_DOWN)
+		// 	{
+		// 		if (selectIndex < static_cast<uint8>(countof(itemHelpers) - 1))
+		// 		{
+		// 			selectIndex++;
+		// 		}
+		// 		else
+		// 		{
+		// 			selectIndex = 0;
+		// 		}
+		// 	}
 
 
 
@@ -4673,9 +4721,11 @@ void MissionDataWindow()
 
 
 
-		}
 
-		ImGui::Text("");
+
+		// }
+
+		// ImGui::Text("");
 
 
 
@@ -6597,6 +6647,12 @@ void Overlay2Window()
 		{
 			ImGui::Text("g_helperIndices[%u] %u", index, g_helperIndices[index]);
 		}
+		ImGui::Text("");
+
+		ImGui::Text("g_showItemWindow %u", g_showItemWindow);
+		ImGui::Text("g_lastShowItemWindow %u", g_lastShowItemWindow);
+		ImGui::Text("g_timeout %g", g_timeout);
+		ImGui::Text("");
 
 		if (showEnemyData)
 		{
@@ -6831,8 +6887,9 @@ void Overlays()
 
 #pragma region Repair
 
-// @Todo: Add main actor.
-// @Todo: Add description.
+
+
+
 
 void Repair()
 {
@@ -6840,68 +6897,176 @@ void Repair()
 	{
 		ImGui::Text("");
 
+
+
+		DescriptionHelper
+		(
+			"Fix wrong values. "
+			"Can be accessed while in the mission select menu. "
+			"Save your game after applying a fix."
+		);
+
+
+
+
+
+
+
+
+
+
+		ImGui::Text("");
+
+		bool condition = (g_scene != SCENE_MISSION_SELECT);
+
+		GUI_PushDisable(condition);
+
 		if (GUI_Button("Reset Weapons"))
 		{
 			[&]()
 			{
-				if (!InGame())
-				{
-					return;
-				}
+				IntroduceSessionData();
 
-				for_all(uint32, actorIndex, Actor_actorBaseAddrs.count)
-				{
-					IntroduceActorData(actorBaseAddr, actorData, Actor_actorBaseAddrs[actorIndex], continue);
+				SetMemory
+				(
+					sessionData.weapons,
+					0,
+					sizeof(sessionData.weapons)
+				);
 
-					switch (actorData.character)
+				switch (sessionData.character)
+				{
+					case CHAR_DANTE:
 					{
-						case CHAR_DANTE:
-						{
-							actorData.weapons[0] = WEAPON_REBELLION;
-							actorData.weapons[1] = WEAPON_CERBERUS;
-							actorData.weapons[2] = WEAPON_EBONY_IVORY;
-							actorData.weapons[3] = WEAPON_SHOTGUN;
-							actorData.weapons[4] = WEAPON_VOID;
+						sessionData.weapons[0] = WEAPON_REBELLION;
+						sessionData.weapons[1] = WEAPON_CERBERUS;
+						sessionData.weapons[2] = WEAPON_EBONY_IVORY;
+						sessionData.weapons[3] = WEAPON_SHOTGUN;
+						sessionData.weapons[4] = WEAPON_VOID;
 
-							break;
-						}
-						case CHAR_VERGIL:
-						{
-							actorData.weapons[0] = WEAPON_YAMATO_VERGIL;
-							actorData.weapons[1] = WEAPON_BEOWULF_VERGIL;
-							actorData.weapons[2] = WEAPON_YAMATO_FORCE_EDGE;
-							actorData.weapons[3] = WEAPON_VOID;
-							actorData.weapons[4] = WEAPON_VOID;
+						break;
+					}
+					case CHAR_VERGIL:
+					{
+						sessionData.weapons[0] = WEAPON_YAMATO_VERGIL;
+						sessionData.weapons[1] = WEAPON_BEOWULF_VERGIL;
+						sessionData.weapons[2] = WEAPON_YAMATO_FORCE_EDGE;
+						sessionData.weapons[3] = WEAPON_VOID;
+						sessionData.weapons[4] = WEAPON_VOID;
 
-							break;
-						}
+						break;
 					}
 				}
+
+				sessionData.meleeWeaponIndex = 0;
+				sessionData.rangedWeaponIndex = 2;
 			}();
 		}
 
-		if (GUI_Button("Reset Ranged Weapon Levels"))
+
+
+
+
+
+
+		if (GUI_Button("Reset Weapon Levels"))
 		{
 			[&]()
 			{
-				if (!InGame())
-				{
-					return;
-				}
+				IntroduceSessionData();
 
-				for_all(uint32, actorIndex, Actor_actorBaseAddrs.count)
-				{
-					IntroduceActorData(actorBaseAddr, actorData, Actor_actorBaseAddrs[actorIndex], continue);
-
-					SetMemory
-					(
-						actorData.weaponLevels,
-						0,
-						sizeof(actorData.weaponLevels)
-					);
-				}
+				SetMemory
+				(
+					sessionData.rangedWeaponLevels,
+					0,
+					sizeof(sessionData.rangedWeaponLevels)
+				);
 			}();
 		}
+
+		GUI_PopDisable(condition);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		// if (GUI_Button("Reset Weapons"))
+		// {
+		// 	[&]()
+		// 	{
+		// 		if (!InGame())
+		// 		{
+		// 			return;
+		// 		}
+
+		// 		for_all(uint32, actorIndex, Actor_actorBaseAddrs.count)
+		// 		{
+		// 			IntroduceActorData(actorBaseAddr, actorData, Actor_actorBaseAddrs[actorIndex], continue);
+
+		// 			switch (actorData.character)
+		// 			{
+		// 				case CHAR_DANTE:
+		// 				{
+		// 					actorData.weapons[0] = WEAPON_REBELLION;
+		// 					actorData.weapons[1] = WEAPON_CERBERUS;
+		// 					actorData.weapons[2] = WEAPON_EBONY_IVORY;
+		// 					actorData.weapons[3] = WEAPON_SHOTGUN;
+		// 					actorData.weapons[4] = WEAPON_VOID;
+
+		// 					break;
+		// 				}
+		// 				case CHAR_VERGIL:
+		// 				{
+		// 					actorData.weapons[0] = WEAPON_YAMATO_VERGIL;
+		// 					actorData.weapons[1] = WEAPON_BEOWULF_VERGIL;
+		// 					actorData.weapons[2] = WEAPON_YAMATO_FORCE_EDGE;
+		// 					actorData.weapons[3] = WEAPON_VOID;
+		// 					actorData.weapons[4] = WEAPON_VOID;
+
+		// 					break;
+		// 				}
+		// 			}
+		// 		}
+		// 	}();
+		// }
+
+		// if (GUI_Button("Reset Ranged Weapon Levels"))
+		// {
+		// 	[&]()
+		// 	{
+		// 		if (!InGame())
+		// 		{
+		// 			return;
+		// 		}
+
+		// 		for_all(uint32, actorIndex, Actor_actorBaseAddrs.count)
+		// 		{
+		// 			IntroduceActorData(actorBaseAddr, actorData, Actor_actorBaseAddrs[actorIndex], continue);
+
+		// 			SetMemory
+		// 			(
+		// 				actorData.weaponLevels,
+		// 				0,
+		// 				sizeof(actorData.weaponLevels)
+		// 			);
+		// 		}
+		// 	}();
+		// }
 
 		ImGui::Text("");
 	}
@@ -7838,11 +8003,10 @@ void Main()
 	{
 		ImGui::Text("");
 
-		if (GUI_Button("Item Window"))
-		{
-			g_showItemWindow = true;
-
-		}
+		// if (GUI_Button("Item Window"))
+		// {
+		// 	g_showItemWindow = true;
+		// }
 
 
 

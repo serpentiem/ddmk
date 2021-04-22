@@ -1425,30 +1425,18 @@ export struct SessionData
 	uint8 character; // 0x14
 	_(7);
 	bool bloodyPalace; // 0x1C
-	_(24);
-
-	//uint8 itemCount[20];
-
-
-	uint8 goldOrbCount; // 0x35
-	_(16);
-
-
-// 0x43 holy water count
-
-
-
-
-
+	_(15);
+	uint32 redOrbs; // 0x2C
+	uint8 itemCounts[20]; // 0x30
+	_(2);
 	bool unlock[14]; // 0x46
 	_(48);
-
-// buy count here
-
-
-
-	uint8 weapons[4]; // 0x84
-	_(72);
+	uint8 weapons[8]; // 0x84
+	_(20);
+	uint32 rangedWeaponLevels[5]; // 0xA0
+	_(20);
+	uint32 meleeWeaponIndex; // 0xC8
+	uint32 rangedWeaponIndex; // 0xCC
 	uint8 costume; // 0xD0
 	bool unlockDevilTrigger; // 0xD1
 	_(2);
@@ -1467,9 +1455,13 @@ static_assert(offsetof(SessionData, enableTutorial) == 0x12);
 static_assert(offsetof(SessionData, useGoldOrb) == 0x13);
 static_assert(offsetof(SessionData, character) == 0x14);
 static_assert(offsetof(SessionData, bloodyPalace) == 0x1C);
-static_assert(offsetof(SessionData, goldOrbCount) == 0x35);
+static_assert(offsetof(SessionData, redOrbs) == 0x2C);
+static_assert(offsetof(SessionData, itemCounts) == 0x30);
 static_assert(offsetof(SessionData, unlock) == 0x46);
 static_assert(offsetof(SessionData, weapons) == 0x84);
+static_assert(offsetof(SessionData, rangedWeaponLevels) == 0xA0);
+static_assert(offsetof(SessionData, meleeWeaponIndex) == 0xC8);
+static_assert(offsetof(SessionData, rangedWeaponIndex) == 0xCC);
 static_assert(offsetof(SessionData, costume) == 0xD0);
 static_assert(offsetof(SessionData, unlockDevilTrigger) == 0xD1);
 static_assert(offsetof(SessionData, hitPoints) == 0xD4);
@@ -1478,6 +1470,7 @@ static_assert(offsetof(SessionData, style) == 0xDC);
 static_assert(offsetof(SessionData, styleLevel) == 0xE0);
 static_assert(offsetof(SessionData, styleExperience) == 0xF8);
 static_assert(offsetof(SessionData, expertise) == 0x110);
+
 static_assert(sizeof(SessionData) == 304);
 
 // $SessionDataEnd

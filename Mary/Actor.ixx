@@ -20519,6 +20519,35 @@ export void ToggleDamage(bool enable)
 
 
 
+/*
+
+dmc3.exe+32B0CD - 48 8B 05 545D9600     - mov rax,[dmc3.exe+C90E28] { (01A44000) }
+
+dmc3.exe+32B0CD - 48 8B 05 545D9600     - mov rax,[dmc3.exe+C90E28] { (0) }
+dmc3.exe+32B0D4 - 48 8B 1D 555D9600     - mov rbx,[dmc3.exe+C90E30] { (0) }
+dmc3.exe+32B0DB - 48 8B 48 18           - mov rcx,[rax+18]
+dmc3.exe+32B0DF - 48 8D 93 6C010000     - lea rdx,[rbx+0000016C]
+
+
+
+*/
+
+
+byte8 * SaveFix(byte8 * actorBaseAddr)
+{
+	auto newActorBaseAddr = Actor_actorBaseAddrs[0];
+	if (newActorBaseAddr != 0)
+	{
+		return newActorBaseAddr;
+	}
+
+	return actorBaseAddr;
+}
+
+
+
+
+
 
 
 export void Actor_Toggle(bool enable)
@@ -22792,14 +22821,64 @@ export void Actor_Toggle(bool enable)
 		*/
 	}
 
+	// Disable Trigger Customize Menu
+	{
+		auto addr = (appBaseAddr + 0x1A9619);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1A9619 - E8 F21B0900 - call dmc3.exe+23B210
+		dmc3.exe+1A961E - EB B0       - jmp dmc3.exe+1A95D0
+		*/
 
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
 
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 
+	// Save Fix
+	{
+		auto addr     = (appBaseAddr + 0x32B0DF);
+		auto jumpAddr = (appBaseAddr + 0x32B0E6);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+32B0DF - 48 8D 93 6C010000 - lea rdx,[rbx+0000016C]
+		dmc3.exe+32B0E6 - 48 8B 01          - mov rax,[rcx]
+		*/
 
+		static Function func = {};
 
+		constexpr byte8 sect2[] =
+		{
+			mov_rcx_rax,
+		};
 
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SaveFix, jumpAddr, true, false, size, 0, sizeof(sect2));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect2, sect2, sizeof(sect2));
+		}
 
-
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 
 
 

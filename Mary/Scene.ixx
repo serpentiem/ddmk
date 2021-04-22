@@ -149,6 +149,46 @@ export void Scene_Init()
 		*/
 	}
 
+// @Todo: Update!
+
+static bool run = false;
+
+constexpr bool enable = true;
+
+{
+	auto addr     = (appBaseAddr + 0x2405A7);
+	auto jumpAddr = (appBaseAddr + 0x2405AE);
+	constexpr uint32 size = 7;
+	/*
+	dmc3.exe+2405A7 - C7 41 38 03000000 - mov [rcx+38],00000003
+	dmc3.exe+2405AE - 33 C0             - xor eax,eax
+	*/
+
+	static Function func = {};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(SceneMissionSelect, jumpAddr, true, true, size);
+		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+run = false;
+
+
+
+
+
 	{
 		constexpr byte8 sect0[] =
 		{

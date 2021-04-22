@@ -44,9 +44,26 @@ export void Arcade_InitSession()
 		sessionData.bloodyPalace = true;
 	}
 
-	sessionData.goldOrbCount = 3;
+	//sessionData.goldOrbCount = 3;
+	sessionData.itemCounts[ITEM_GOLD_ORB] = 3;
 
-	memset(sessionData.unlock, 1, 14);
+
+	if constexpr (debug)
+	{
+		sessionData.redOrbs = 1500000;
+	}
+
+
+
+
+
+
+	SetMemory
+	(
+		sessionData.unlock,
+		1,
+		sizeof(sessionData.unlock)
+	);
 
 	if (activeConfig.Arcade.character == CHAR_DANTE)
 	{
@@ -62,6 +79,14 @@ export void Arcade_InitSession()
 		// sessionData.weapons[2] = activeConfig.Arcade.rangedWeapons[0];
 		// sessionData.weapons[3] = activeConfig.Arcade.rangedWeapons[1];
 	}
+
+	sessionData.rangedWeaponLevels[0] = 2;
+	sessionData.rangedWeaponLevels[1] = 2;
+	sessionData.rangedWeaponLevels[2] = 2;
+	sessionData.rangedWeaponLevels[3] = 2;
+	sessionData.rangedWeaponLevels[4] = 2;
+
+
 
 	sessionData.costume = activeConfig.Arcade.costume;
 	sessionData.unlockDevilTrigger = true;

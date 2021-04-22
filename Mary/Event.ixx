@@ -398,25 +398,27 @@ void EventContinue()
 
 void UpdateEnemyCount(byte8 * addr)
 {
-
-
 	if (!addr)
 	{
 		return;
 	}
 
-	LogFunction();
-
-
 	auto & count = *reinterpret_cast<uint32 *>(addr + 0x28);
 
-	Log("count %u", count);
-
+	Log("%s %u", FUNC_NAME, count);
 
 	Sound::UpdateEnemyCount(addr);
+}
 
 
+void TriggerCustomizeMenu()
+{
+	LogFunction();
 
+	if (activeConfig.Actor.enable)
+	{
+		g_showItemWindow = true;
+	}
 }
 
 
@@ -534,12 +536,46 @@ export void Event_Toggle(bool enable)
 		}
 	}
 
+	// Trigger Customize Menu
+	{
+		auto addr     = (appBaseAddr + 0x1A9609);
+		auto jumpAddr = (appBaseAddr + 0x1A9610);
+		constexpr uint32 size = 7;
+		/*
+		dmc3.exe+1A9609 - 48 8B 8B B00A0000 - mov rcx,[rbx+00000AB0]
+		dmc3.exe+1A9610 - 33 D2             - xor edx,edx
+		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(TriggerCustomizeMenu, jumpAddr, true, true, size);
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
 	run = true;
 }
 
 export void Event_Init()
 {
 	LogFunction();
+
+
+
 
 
 

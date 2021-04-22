@@ -50,10 +50,10 @@ export Vector<byte8 *> Actor_actorBaseAddrs = {};
 export uint8 g_helperIndices[MAX_CHANNEL] = {};
 
 
-export bool g_showItemWindow = false;
+export bool g_showItemWindow     = false;
 export bool g_lastShowItemWindow = false;
 
-
+export float g_timeout = 0;
 
 
 export bool InGame()
