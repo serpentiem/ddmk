@@ -18,6 +18,9 @@ import Vars;
 
 import Config;
 
+#define debug true
+
+
 export void Arcade_InitSession()
 {
 	if (!activeConfig.Arcade.enable)

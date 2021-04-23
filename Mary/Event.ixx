@@ -22,6 +22,7 @@ import Config;
 import Enemy;
 import File;
 import Global;
+import Item;
 import Model;
 import Sound;
 
@@ -31,6 +32,18 @@ bool Event_run[MAX_EVENT] = {};
 bool MainLoopOnce_run     = false;
 bool MainLoopOnceSync_run = false;
 bool ActorLoopOnce_run    = false;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -162,47 +175,55 @@ bool EventOnce(EventData & eventData)
 
 	switch (eventData.event)
 	{
-	case EVENT_MAIN:
-	{
-		Log("Main");
-		//Actor_Main();
-		BossRush_Main();
+		case EVENT_MAIN:
+		{
+			Log("Main");
+			//Actor_Main();
+			BossRush_Main();
 
-		Sound::EventMain();
-
-
-
-		break;
-	}
-	case EVENT_TELEPORT:
-	{
-		Log("Teleport");
-		break;
-	}
-	case EVENT_DEATH:
-	{
-		Log("Death");
-		break;
-	}
-	case EVENT_CUSTOMIZE:
-	{
-		Log("Customize");
-		Actor_Customize();
-		break;
-	}
-	case EVENT_DELETE:
-	{
-		Log("Delete %u", eventData.subevent);
-		Actor_Delete();
-		Enemy_Delete();
-
-
-		Sound::EventDelete();
+			Sound::EventMain();
 
 
 
-		break;
-	}
+			break;
+		}
+		case EVENT_TELEPORT:
+		{
+			Log("Teleport");
+
+			break;
+		}
+		case EVENT_DEATH:
+		{
+			Log("Death");
+
+			break;
+		}
+		case EVENT_CUSTOMIZE:
+		{
+			Log("Customize");
+
+			// @Todo: Remove.
+			Actor_Customize();
+
+			break;
+		}
+		case EVENT_DELETE:
+		{
+			Log("Delete %u", eventData.subevent);
+
+			Actor_Delete();
+			Enemy_Delete();
+			Sound::EventDelete();
+
+			Item::EventDelete();
+
+
+			// g_showItemWindow     = false;
+			// g_lastShowItemWindow = false;
+
+			break;
+		}
 	}
 
 	return false;
@@ -415,10 +436,7 @@ void TriggerCustomizeMenu()
 {
 	LogFunction();
 
-	if (activeConfig.Actor.enable)
-	{
-		g_showItemWindow = true;
-	}
+	Item::EventTriggerCustomizeMenu();
 }
 
 

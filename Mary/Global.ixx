@@ -37,10 +37,6 @@ export vec2 g_windowSize = {};
 export vec2 g_clientSize = {};
 export vec2 g_renderSize = {};
 
-
-
-
-export bool  g_pause                 = false;
 export uint8 g_scene                 = 0;
 export bool  g_quicksilver           = false;
 export bool  g_disableCameraRotation = false;
@@ -49,11 +45,14 @@ export Vector<byte8 *> Actor_actorBaseAddrs = {};
 
 export uint8 g_helperIndices[MAX_CHANNEL] = {};
 
-
+export bool g_show               = false;
+export bool g_lastShow           = false;
 export bool g_showItemWindow     = false;
 export bool g_lastShowItemWindow = false;
 
+// @Todo: Remove.
 export float g_timeout = 0;
+
 
 
 export bool InGame()

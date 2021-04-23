@@ -30,10 +30,17 @@ using namespace XI;
 
 #define debug false
 
-enum
-{
-	DM_PAUSE = WM_USER,
-};
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -442,12 +449,6 @@ LRESULT WindowProc
 
 			break;
 		}
-		case DM_PAUSE:
-		{
-			ToggleCursor();
-
-			break;
-		}
 	}
 
 	// return ::Base::Windows::WindowProc
@@ -586,6 +587,16 @@ namespaceEnd();
 
 
 
+void UpdateShow()
+{
+	if (g_lastShow != g_show)
+	{
+		g_lastShow = g_show;
+
+		ToggleCursor();
+	}
+}
+
 
 
 
@@ -672,43 +683,9 @@ namespaceStart(Base::DXGI);
 namespaceEnd();
 
 
-// void UpdateGamepad()
-// {
-
-// 	if (!g_pause)
-// 	{
-// 		return;
-// 	}
 
 
-// 	auto & io = ImGui::GetIO();
 
-// 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-
-// 	io.BackendFlags |= ImGuiBackendFlags_HasGamepad;
-
-// 	auto & gamepad = GetGamepad(0);
-
-// 	if (gamepad.buttons[0] & GAMEPAD_A)
-// 	{
-// 		io.NavInputs[ImGuiNavInput_LStickUp] = 1.0f;
-// 	}
-
-// 	if (gamepad.buttons[0] & GAMEPAD_RIGHT)
-// 	{
-// 		io.NavInputs[ImGuiNavInput_DpadRight] = 1.0f;
-// 	}
-
-// 	if (gamepad.buttons[0] & GAMEPAD_DOWN)
-// 	{
-// 		io.NavInputs[ImGuiNavInput_LStickDown] = 1.0f;
-// 	}
-
-// 	if (gamepad.buttons[0] & GAMEPAD_LEFT)
-// 	{
-// 		io.NavInputs[ImGuiNavInput_DpadLeft] = 1.0f;
-// 	}
-// }
 
 
 
@@ -747,11 +724,13 @@ HRESULT Present
 		SyncInterval = (activeConfig.vSync - 1);
 	}
 
+
+	UpdateShow();
+
+
 	ImGui::D3D11::NewFrame();
 
 	Timestep();
-
-	//UpdateGamepad();
 
 	ImGui::NewFrame();
 
@@ -987,15 +966,18 @@ namespaceEnd();
 
 #pragma endregion
 
-void TogglePause(byte8 * state)
+void ToggleShow(byte8 * state)
 {
 	static bool execute = true;
+
 	constexpr byte8 keys[] =
 	{
 		DIK_LCONTROL,
 		DIK_D,
 	};
+
 	uint8 keysDown = 0;
+
 	for_all(uint8, index, countof(keys))
 	{
 		auto & key = keys[index];
@@ -1004,12 +986,13 @@ void TogglePause(byte8 * state)
 			keysDown++;
 		}
 	}
+
 	if (keysDown == countof(keys))
 	{
 		if (execute)
 		{
-			g_pause = !g_pause;
-			PostMessageA(appWindow, DM_PAUSE, 0, 0);
+			g_show = !g_show;
+
 			execute = false;
 		}
 	}
@@ -1177,11 +1160,16 @@ HRESULT GetDeviceStateA
 
 	ImGui::DI8::UpdateKeyboard(state);
 
-	TogglePause(state);
+	ToggleShow(state);
 
-	if (g_pause)
+	if (g_show)
 	{
-		memset(Buffer, 0, BufferSize);
+		SetMemory
+		(
+			Buffer,
+			0,
+			BufferSize
+		);
 	}
 
 	if constexpr (debug)
@@ -1206,12 +1194,11 @@ byte32 UpdateMouseThread(LPVOID parameter)
 
 	while (true)
 	{
-		// @Research: Better solution.
 		if
 		(
 			appWindow &&
 			(
-				g_pause ||
+				g_show ||
 				g_showItemWindow
 			)
 		)
@@ -1391,7 +1378,7 @@ DWORD XInputGetState
 	XINPUT_STATE* pState
 )
 {
-	if (g_pause)
+	if (g_show)
 	{
 		SetMemory(pState, 0, sizeof(XINPUT_STATE));
 	}

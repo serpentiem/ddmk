@@ -1757,6 +1757,90 @@ static_assert(sizeof(FileDataMetadata) == 48);
 
 
 
+export constexpr uint32 itemVitalStarSmallPrices[] =
+{
+	500,
+	750,
+	1200,
+	1800,
+	2500,
+	3500,
+	5000,
+};
+
+export constexpr uint32 itemVitalStarLargePrices[] =
+{
+	2000,
+	3000,
+	4500,
+	6000,
+	7500,
+	10000,
+};
+
+export constexpr uint32 itemDevilStarPrices[] =
+{
+	3000,
+	5000,
+	7000,
+	9000,
+	10000,
+};
+
+export constexpr uint32 itemHolyWaterPrices[] =
+{
+	10000,
+	15000,
+	20000,
+	25000,
+	30000,
+};
+
+export constexpr uint32 itemBlueOrbPrices[] =
+{
+	5000,
+	10000,
+	15000,
+	20000,
+	30000,
+	50000,
+};
+
+export constexpr uint32 itemPurpleOrbPrices[] =
+{
+	3000,
+	5000,
+	7000,
+	9000,
+	10000,
+	20000,
+	30000,
+};
+
+export constexpr uint32 itemGoldOrbPrices[] =
+{
+	10000,
+	15000,
+	20000,
+};
+
+export constexpr uint32 itemYellowOrbPrices[] =
+{
+	1000,
+	1500,
+	2000,
+	3000,
+};
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2103,6 +2187,9 @@ static_assert(ENEMY_COUNT == 64);
 
 
 
+
+
+
 export enum
 {
 	ENEMY_FILE_DATA_EM000,
@@ -2251,6 +2338,40 @@ export struct RegionData
 	uint32 count;
 	_(4);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
 

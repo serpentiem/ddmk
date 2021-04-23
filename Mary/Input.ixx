@@ -1,19 +1,12 @@
-module;
-
-#include "../Core/Macros.h" //
-// #include "../Core/Core.h"
-
-// #include "Vars.h"
 export module Input;
-
 
 import Core;
 
+#include "../Core/Macros.h"
 
-
+import Config;
+import Global;
 import Vars;
-
-
 
 export enum TILT_DIRECTION
 {
@@ -24,6 +17,25 @@ export enum TILT_DIRECTION
 	TILT_DIRECTION_LEFT,
 	MAX_TILT_DIRECTION,
 };
+
+export void ToggleCursor()
+{
+	if
+	(
+		g_show ||
+		g_showItemWindow
+	)
+	{
+		Windows_ToggleCursor(true);
+	}
+	else
+	{
+		if (activeConfig.hideMouseCursor)
+		{
+			Windows_ToggleCursor(false);
+		}
+	}
+}
 
 export inline ENGINE_GAMEPAD & GetGamepad(uint8 index)
 {
