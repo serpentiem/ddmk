@@ -1,3 +1,5 @@
+// @Todo: Unify functions so we only have to provide items.
+
 let fs = require("fs");
 let vm = require("vm");
 
@@ -10,16 +12,16 @@ ClearAll();
 // #region Mission Data
 {
 
-var items =
+let items =
 [
-	[ "orbs"         , "uint32", [], 0x38 ],
-	[ "itemCount[62]", "uint8" , [], 0x3C ],
-	[ "buyCount[8]"  , "uint8" , [], 0x7A ],
-	[ "frameCount"   , "uint32", [], 0xA8 ],
-	[ "damage"       , "uint32", [], 0xAC ],
-	[ "orbsCollected", "uint32", [], 0xB0 ],
-	[ "itemsUsed"    , "uint32", [], 0xB4 ],
-	[ "killCount"    , "uint32", [], 0xB8 ],
+	[ "redOrbs"       , "uint32", [], 0x38 ],
+	[ "itemCounts[62]", "uint8" , [], 0x3C ],
+	[ "buyCounts[8]"  , "uint8" , [], 0x7A ],
+	[ "frameCount"    , "uint32", [], 0xA8 ],
+	[ "damage"        , "uint32", [], 0xAC ],
+	[ "orbsCollected" , "uint32", [], 0xB0 ],
+	[ "itemsUsed"     , "uint32", [], 0xB4 ],
+	[ "killCount"     , "uint32", [], 0xB8 ],
 ];
 
 const SIZE = 192;
@@ -95,29 +97,10 @@ ClearAll();
 }
 // #endregion
 
-
-
-
-
 // #region Session Data
 {
 
-// var items =
-// [
-// 	[ "orbs"         , "uint32", [], 0x38 ],
-// 	[ "itemCount[62]", "uint8" , [], 0x3C ],
-// 	[ "buyCount[8]"  , "uint8" , [], 0x7A ],
-// 	[ "frameCount"   , "uint32", [], 0xA8 ],
-// 	[ "damage"       , "uint32", [], 0xAC ],
-// 	[ "orbsCollected", "uint32", [], 0xB0 ],
-// 	[ "itemsUsed"    , "uint32", [], 0xB4 ],
-// 	[ "killCount"    , "uint32", [], 0xB8 ],
-// ];
-
-// const SIZE = 192;
-
-
-var items =
+let items =
 [
 	[ "mission"              , "uint32", [], 0     ],
 	[ "mode"                 , "uint32", [], 0xC   ],
@@ -126,7 +109,7 @@ var items =
 	[ "useGoldOrb"           , "bool"  , [], 0x13  ],
 	[ "character"            , "uint8" , [], 0x14  ],
 	[ "bloodyPalace"         , "bool"  , [], 0x1C  ],
-	[ "redOrbs"         , "uint32"  , [], 0x2C  ],
+	[ "redOrbs"              , "uint32", [], 0x2C  ],
 	[ "itemCounts[20]"       , "uint8" , [], 0x30  ],
 	[ "unlock[14]"           , "bool"  , [], 0x46  ],
 	[ "weapons[8]"           , "uint8" , [], 0x84  ],

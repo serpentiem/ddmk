@@ -1,25 +1,14 @@
-module;
-
-#include "../Core/Macros.h" //
-// #include "../Core/Core.h"
-
-// #include "Vars.h"
 export module Arcade;
-
 
 import Core;
 
+#include "../Core/Macros.h"
 
 import Vars;
 
-
-#define memset SetMemory
-#define memcpy CopyMemory
-
 import Config;
 
-#define debug true
-
+#define debug false
 
 export void Arcade_InitSession()
 {
@@ -47,19 +36,12 @@ export void Arcade_InitSession()
 		sessionData.bloodyPalace = true;
 	}
 
-	//sessionData.goldOrbCount = 3;
-	sessionData.itemCounts[ITEM_GOLD_ORB] = 3;
-
-
 	if constexpr (debug)
 	{
 		sessionData.redOrbs = 1500000;
 	}
 
-
-
-
-
+	sessionData.itemCounts[ITEM_GOLD_ORB] = 3;
 
 	SetMemory
 	(
@@ -70,17 +52,12 @@ export void Arcade_InitSession()
 
 	if (activeConfig.Arcade.character == CHAR_DANTE)
 	{
-		// @Todo: Update.
-		memcpy
+		CopyMemory
 		(
 			sessionData.weapons,
 			activeConfig.Arcade.weapons,
-			4
+			sizeof(sessionData.weapons)
 		);
-		// sessionData.weapons[0] = activeConfig.Arcade.meleeWeapons[0];
-		// sessionData.weapons[1] = activeConfig.Arcade.meleeWeapons[1];
-		// sessionData.weapons[2] = activeConfig.Arcade.rangedWeapons[0];
-		// sessionData.weapons[3] = activeConfig.Arcade.rangedWeapons[1];
 	}
 
 	sessionData.rangedWeaponLevels[0] = 2;
@@ -88,8 +65,6 @@ export void Arcade_InitSession()
 	sessionData.rangedWeaponLevels[2] = 2;
 	sessionData.rangedWeaponLevels[3] = 2;
 	sessionData.rangedWeaponLevels[4] = 2;
-
-
 
 	sessionData.costume = activeConfig.Arcade.costume;
 	sessionData.unlockDevilTrigger = true;
@@ -101,16 +76,31 @@ export void Arcade_InitSession()
 		sessionData.style = activeConfig.Arcade.style;
 	}
 
-	memset(sessionData.styleLevel, 0, (MAX_STYLE * 4));
+	SetMemory
+	(
+		sessionData.styleLevel,
+		0,
+		sizeof(sessionData.styleLevel)
+	);
 
 	sessionData.styleLevel[0] = 2;
 	sessionData.styleLevel[1] = 2;
 	sessionData.styleLevel[2] = 2;
 	sessionData.styleLevel[3] = 2;
 
-	memset(sessionData.styleExperience, 0, (MAX_STYLE * 4));
+	SetMemory
+	(
+		sessionData.styleExperience,
+		0,
+		sizeof(sessionData.styleExperience)
+	);
 
-	memset(sessionData.expertise, 0xFF, (8 * 4));
+	SetMemory
+	(
+		sessionData.expertise,
+		0xFF,
+		sizeof(sessionData.expertise)
+	);
 
 	auto & controllerMagic = *reinterpret_cast<uint32 *>(appBaseAddr + 0x553000) = 0;
 }

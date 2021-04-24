@@ -44,7 +44,7 @@ using namespace Windows;
 using namespace DXGI;
 using namespace D3D11;
 
-#define debug true
+#define debug false
 
 
 
@@ -3958,8 +3958,8 @@ void MissionDataWindow()
 
 		// 	auto buyIndex = GetBuyIndex(itemIndex);
 
-		// 	auto & itemCount = missionData.itemCount[itemIndex];
-		// 	auto & buyCount = missionData.buyCount[buyIndex];
+		// 	auto & itemCount = missionData.itemCounts[itemIndex];
+		// 	auto & buyCount = missionData.buyCounts[buyIndex];
 
 		// 	const uint32 * prices = 0;
 		// 	uint8 priceCount = 0;
@@ -4006,8 +4006,8 @@ void MissionDataWindow()
 		// {
 		// 	auto & itemHelper = itemHelpers[itemHelperIndex];
 
-		// 	auto & itemCount = missionData.itemCount[itemHelper.itemIndex];
-		// 	auto & buyCount = missionData.buyCount[itemHelper.buyIndex];
+		// 	auto & itemCount = missionData.itemCounts[itemHelper.itemIndex];
+		// 	auto & buyCount = missionData.buyCounts[itemHelper.buyIndex];
 
 		// 	uint32 price = 0;
 
@@ -4071,7 +4071,7 @@ void MissionDataWindow()
 		// 		if
 		// 		(
 		// 			(itemCount >= itemHelper.itemCount) ||
-		// 			(missionData.orbs < price)
+		// 			(missionData.redOrbs < price)
 		// 		)
 		// 		{
 		// 			PlaySound
@@ -4091,7 +4091,7 @@ void MissionDataWindow()
 		// 			buyCount = 254;
 		// 		}
 
-		// 		missionData.orbs -= price;
+		// 		missionData.redOrbs -= price;
 
 		// 		PlaySound
 		// 		(
@@ -4169,7 +4169,7 @@ void MissionDataWindow()
 		// GUI_Input<uint8>
 		// (
 		// 	"Vital Star Small",
-		// 	missionData.itemCount[ITEM_VITAL_STAR_SMALL],
+		// 	missionData.itemCounts[ITEM_VITAL_STAR_SMALL],
 		// 	0,
 		// 	"%u",
 		// 	ImGuiInputTextFlags_EnterReturnsTrue
@@ -4180,7 +4180,7 @@ void MissionDataWindow()
 
 		// if (GUI_Button("Buy"))
 		// {
-		// 	auto & count = missionData.itemCount[ITEM_VITAL_STAR_SMALL];
+		// 	auto & count = missionData.itemCounts[ITEM_VITAL_STAR_SMALL];
 
 		// 	count++;
 
@@ -4199,7 +4199,7 @@ void MissionDataWindow()
 		GUI_Input<uint32>
 		(
 			"Red Orbs",
-			missionData.orbs,
+			missionData.redOrbs,
 			1000,
 			"%u",
 			ImGuiInputTextFlags_EnterReturnsTrue
@@ -4221,13 +4221,13 @@ void MissionDataWindow()
 
 		for_all(uint8, itemIndex, ITEM_COUNT)
 		{
-			ImGui::Text("%.4u %llX", itemIndex, &missionData.itemCount[itemIndex]);
+			ImGui::Text("%.4u %llX", itemIndex, &missionData.itemCounts[itemIndex]);
 			ImGui::SameLine();
 
 			GUI_Input<uint8>
 			(
 				itemNames[itemIndex],
-				missionData.itemCount[itemIndex],
+				missionData.itemCounts[itemIndex],
 				1,
 				"%u",
 				ImGuiInputTextFlags_EnterReturnsTrue
@@ -4248,13 +4248,13 @@ void MissionDataWindow()
 
 		for_all(uint8, buyIndex, BUY_COUNT)
 		{
-			ImGui::Text("%.4u %llX", buyIndex, &missionData.buyCount[buyIndex]);
+			ImGui::Text("%.4u %llX", buyIndex, &missionData.buyCounts[buyIndex]);
 			ImGui::SameLine();
 
 			GUI_Input<uint8>
 			(
 				buyNames[buyIndex],
-				missionData.buyCount[buyIndex],
+				missionData.buyCounts[buyIndex],
 				1,
 				"%u",
 				ImGuiInputTextFlags_EnterReturnsTrue
@@ -7440,7 +7440,7 @@ void Main()
 	(
 		ImGui::Begin
 		(
-			"DDMK 2.7 Mary Nightly 18 April 2021",
+			"DDMK 2.7 Mary Nightly 24 April 2021",
 			&g_show
 		)
 	)
@@ -7459,15 +7459,15 @@ void Main()
 
 
 
-		if (GUI_Button("Toggle Get Input true"))
-		{
-			ToggleDisableGetInput(true);
-		}
+		// if (GUI_Button("Toggle Get Input true"))
+		// {
+		// 	ToggleDisableGetInput(true);
+		// }
 
-		if (GUI_Button("Toggle Get Input false"))
-		{
-			ToggleDisableGetInput(false);
-		}
+		// if (GUI_Button("Toggle Get Input false"))
+		// {
+		// 	ToggleDisableGetInput(false);
+		// }
 
 
 		// GUI_Input<uint8>
@@ -7483,55 +7483,55 @@ void Main()
 
 
 
+		// @Todo: Move to Debug.
+		// ImGui::Text("");
 
-		ImGui::Text("");
+		// {
+		// 	static int32 group = 0;
+		// 	static int32 index = 0;
 
-		{
-			static int32 group = 0;
-			static int32 index = 0;
+		// 	ImGui::PushItemWidth(150);
 
-			ImGui::PushItemWidth(150);
-
-			// GUI_Input<uint8>
-			// (
-			// 	"Helper Index",
-			// 	g_helperIndices[CHANNEL_COMMON],
-			// 	1,
-			// 	"%u",
-			// 	ImGuiInputTextFlags_EnterReturnsTrue
-			// );
+		// 	// GUI_Input<uint8>
+		// 	// (
+		// 	// 	"Helper Index",
+		// 	// 	g_helperIndices[CHANNEL_COMMON],
+		// 	// 	1,
+		// 	// 	"%u",
+		// 	// 	ImGuiInputTextFlags_EnterReturnsTrue
+		// 	// );
 
 
-			GUI_Input<int32>
-			(
-				"Group",
-				group,
-				1,
-				"%d",
-				ImGuiInputTextFlags_EnterReturnsTrue
-			);
-			GUI_Input<int32>
-			(
-				"Index",
-				index,
-				1,
-				"%d",
-				ImGuiInputTextFlags_EnterReturnsTrue
-			);
+		// 	GUI_Input<int32>
+		// 	(
+		// 		"Group",
+		// 		group,
+		// 		1,
+		// 		"%d",
+		// 		ImGuiInputTextFlags_EnterReturnsTrue
+		// 	);
+		// 	GUI_Input<int32>
+		// 	(
+		// 		"Index",
+		// 		index,
+		// 		1,
+		// 		"%d",
+		// 		ImGuiInputTextFlags_EnterReturnsTrue
+		// 	);
 
-			ImGui::PopItemWidth();
+		// 	ImGui::PopItemWidth();
 
-			if (GUI_Button("Play Sound"))
-			{
-				PlaySound
-				(
-					group,
-					index
-				);
-			}
-		}
+		// 	if (GUI_Button("Play Sound"))
+		// 	{
+		// 		PlaySound
+		// 		(
+		// 			group,
+		// 			index
+		// 		);
+		// 	}
+		// }
 
-		ImGui::Text("");
+		// ImGui::Text("");
 
 
 

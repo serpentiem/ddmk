@@ -1539,9 +1539,9 @@ static_assert(sizeof(SessionData) == 304);
 export struct MissionData
 {
 	_(56);
-	uint32 orbs; // 0x38
-	uint8 itemCount[62]; // 0x3C
-	uint8 buyCount[8]; // 0x7A
+	uint32 redOrbs; // 0x38
+	uint8 itemCounts[62]; // 0x3C
+	uint8 buyCounts[8]; // 0x7A
 	_(38);
 	uint32 frameCount; // 0xA8
 	uint32 damage; // 0xAC
@@ -1551,9 +1551,9 @@ export struct MissionData
 	_(4);
 };
 
-static_assert(offsetof(MissionData, orbs) == 0x38);
-static_assert(offsetof(MissionData, itemCount) == 0x3C);
-static_assert(offsetof(MissionData, buyCount) == 0x7A);
+static_assert(offsetof(MissionData, redOrbs) == 0x38);
+static_assert(offsetof(MissionData, itemCounts) == 0x3C);
+static_assert(offsetof(MissionData, buyCounts) == 0x7A);
 static_assert(offsetof(MissionData, frameCount) == 0xA8);
 static_assert(offsetof(MissionData, damage) == 0xAC);
 static_assert(offsetof(MissionData, orbsCollected) == 0xB0);

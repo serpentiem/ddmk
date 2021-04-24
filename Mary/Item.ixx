@@ -16,9 +16,6 @@ import Vars;
 
 #define debug false
 
-
-// @CheckLater: Moving to Vars causes internal compiler error in MSVC.
-
 struct ItemHelper
 {
 	const uint8    itemIndex;
@@ -28,6 +25,7 @@ struct ItemHelper
 	const uint8    priceCount;
 };
 
+// @Research: Moving to Vars causes internal compiler error in MSVC.
 constexpr ItemHelper itemHelpers[] =
 {
 	{ ITEM_VITAL_STAR_SMALL, BUY_VITAL_STAR_SMALL, 30, itemVitalStarSmallPrices, static_cast<uint8>(countof(itemVitalStarSmallPrices)) },
@@ -42,11 +40,49 @@ constexpr ItemHelper itemHelpers[] =
 
 
 
+uint8 selectIndex = 0;
+
+
+
+void Open()
+{
+	ToggleCursor();
+
+	ToggleDisableGetInput(true);
+
+	selectIndex = 0;
+
+	g_timeout = 30.0f;
+};
+
+void Close()
+{
+	g_showItemWindow     = false;
+	g_lastShowItemWindow = false;
+
+	ToggleCursor();
+
+	ToggleDisableGetInput(false);
+
+	PlaySound
+	(
+		0,
+		3
+	);
+};
+
+
+
+
+
+
+
 
 
 export void ItemWindow()
 {
-	static uint8 selectIndex = 0;
+
+	// @Todo: Global and array.
 	static bool executeUp = true;
 	static bool executeDown = true;
 	static bool executeA = true;
@@ -74,48 +110,16 @@ export void ItemWindow()
 
 
 
-	auto Open = [&]()
-	{
-		ToggleCursor();
 
-		ToggleDisableGetInput(true);
-
-		selectIndex = 0;
-
-		// SetMemory
-		// (
-		// 	gamepad.buttons,
-		// 	0,
-		// 	sizeof(gamepad.buttons)
-		// );
-
-		g_timeout = 30.0f;
-	};
-
-	auto Close = [&]()
-	{
-		g_showItemWindow     = false;
-		g_lastShowItemWindow = false;
-
-		ToggleCursor();
-
-		ToggleDisableGetInput(false);
-
-		PlaySound
-		(
-			0,
-			3
-		);
-	};
 
 	auto GetItemCount = [&](const ItemHelper & itemHelper) -> uint8 &
 	{
-		return missionData.itemCount[itemHelper.itemIndex];
+		return missionData.itemCounts[itemHelper.itemIndex];
 	};
 
 	auto GetBuyCount = [&](const ItemHelper & itemHelper) -> uint8 &
 	{
-		return missionData.buyCount[itemHelper.buyIndex];
+		return missionData.buyCounts[itemHelper.buyIndex];
 	};
 
 	auto GetPrice = [&](const ItemHelper & itemHelper)
@@ -147,7 +151,7 @@ export void ItemWindow()
 		if
 		(
 			(itemCount >= itemHelper.itemCount) ||
-			(missionData.orbs < price)
+			(missionData.redOrbs < price)
 		)
 		{
 			PlaySound
@@ -167,7 +171,7 @@ export void ItemWindow()
 			buyCount = 254;
 		}
 
-		missionData.orbs -= price;
+		missionData.redOrbs -= price;
 
 		PlaySound
 		(
@@ -227,7 +231,7 @@ export void ItemWindow()
 		)
 	)
 	{
-		ImGui::Text("%u Red Orbs", missionData.orbs);
+		ImGui::Text("%u Red Orbs", missionData.redOrbs);
 		ImGui::Text("");
 
 		for_all(uint8, itemHelperIndex, countof(itemHelpers))
@@ -506,20 +510,29 @@ namespaceStart(Item);
 
 export void EventDelete()
 {
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
 	LogFunction();
 
-	g_showItemWindow     = false;
-	g_lastShowItemWindow = false;
+	if (g_showItemWindow)
+	{
+		Close();
+	}
 }
 
 export void EventTriggerCustomizeMenu()
 {
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
 	LogFunction();
 
-	if (activeConfig.Actor.enable)
-	{
-		g_showItemWindow = true;
-	}
+	g_showItemWindow = true;
 }
 
 namespaceEnd();
