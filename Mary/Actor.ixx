@@ -40,7 +40,7 @@ import Memory;
 import Model;
 import Sound;
 
-#define debug false
+#define debug true
 
 #pragma region Main
 
@@ -1776,6 +1776,18 @@ void InitModel
 	recoveryData.init = false;
 	memset(recoveryData.data, 0, 32);
 
+	Log("InitModel for %llX", actorData.operator byte8 *());
+	Log("character %u", actorData.character);
+
+
+
+
+
+
+	
+
+	// Dante file is different.
+
 	auto file = File_staticFiles[pl000][5]; // @Todo: Update.
 
 	func_594B0
@@ -1808,6 +1820,7 @@ void InitModel
 	func_30E630(dest, 0);
 }
 
+// @Todo: Add LogFunctionStart and verbose switch.
 template <typename T>
 void UpdateModel(T & actorData)
 {
@@ -1890,6 +1903,10 @@ void UpdateModel(T & actorData)
 		physicsFile = file[18];
 	}
 
+	Log("reach here. 1");
+
+
+
 	RegisterModel
 	(
 		actorData.newSubmodelData[submodelIndex],
@@ -1897,12 +1914,17 @@ void UpdateModel(T & actorData)
 		textureFile
 	);
 
+
+	Log("reach here. 2");
+
 	func_8A000
 	(
 		actorData.newSubmodelData[submodelIndex],
 		0,
 		&actorData.submodelPhysicsMetadataPool[0]
 	);
+
+	Log("reach here. 3");
 
 	actorData.newSubmodelInit[submodelIndex] = true;
 
@@ -1921,6 +1943,8 @@ void UpdateModel(T & actorData)
 		);
 	}
 
+	Log("reach here. 4");
+
 	actorData.newSubmodelInit[submodelIndex] = true;
 
 	RegisterPhysics
@@ -1930,6 +1954,8 @@ void UpdateModel(T & actorData)
 		&actorData.submodelPhysicsMetadataPool[0]
 	);
 
+	Log("reach here. 5");
+
 	func_2CA2F0
 	(
 		actorData.submodelPhysicsData,
@@ -1938,6 +1964,8 @@ void UpdateModel(T & actorData)
 		actorData.modelMetadata,
 		(coat) ? 6 : 1
 	);
+
+	Log("reach here. 6");
 
 	if (coat)
 	{
@@ -1958,6 +1986,8 @@ void UpdateModel(T & actorData)
 		actorData.modelMetadata[0].vertices[1] = g_vertices[24];
 		actorData.modelMetadata[0].vertices[2] = g_vertices[25];
 	}
+
+	Log("reach here. 7");
 }
 
 template <typename T>
@@ -2544,9 +2574,22 @@ void UpdateActorDante(ActorDataDante & actorData)
 
 	UpdateModel(actorData);
 
+	Log("reach here 8");
+
 	func_1EF040(actorData, 0);
+
+	Log("reach here 9");
+
 	func_1EEF80(actorData);
+
+	Log("reach here 10");
+
+
 	func_1EF040(actorData, 3);
+
+	Log("reach here 11");
+
+
 
 	if (actorData.sparda)
 	{
@@ -22882,6 +22925,11 @@ export void Actor_Toggle(bool enable)
 
 
 
+
+
+
+
+
 	run = true;
 }
 
@@ -23458,6 +23506,22 @@ export void Actor_EventContinue()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export void Actor_InGameCutsceneStart()
 {
 	LogFunction();
@@ -23660,6 +23724,60 @@ export void Actor_ActorLoop(byte8 * actorBaseAddr)
 		IsMeleeWeaponReadyVergilFix(actorData);
 	}
 }
+
+
+
+bool missionSelectForceConfirm = false;
+
+export void Actor_TriggerRestartMission(byte8 * addr)
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	auto & index = *reinterpret_cast<uint32 *>(addr + 0xCC) = 2;
+
+	missionSelectForceConfirm = true;
+}
+
+export void Actor_MissionSelectCheckConfirm(byte8 * addr)
+{
+	if
+	(
+		!activeConfig.Actor.enable ||
+		!missionSelectForceConfirm
+	)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	auto & var_8 = *reinterpret_cast<uint8 *>(addr + 8) = 9;
+	auto & var_6280 = *reinterpret_cast<uint32 *>(addr + 0x6280) = 1;
+
+	/*
+	dmc3.exe+29A200 - 80 79 08 09    - cmp byte ptr [rcx+08],09
+	dmc3.exe+29A209 - 8B 81 80620000 - mov eax,[rcx+00006280]
+	*/
+
+	missionSelectForceConfirm = false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 #pragma endregion
 

@@ -44,7 +44,7 @@ using namespace Windows;
 using namespace DXGI;
 using namespace D3D11;
 
-#define debug false
+#define debug true
 
 
 
@@ -5077,6 +5077,23 @@ void Debug()
 	{
 		ImGui::Text("");
 
+		if (GUI_Button("File Data"))
+		{
+			showFileDataWindow = true;
+		}
+		ImGui::SameLine();
+		if (GUI_Button("Region Data"))
+		{
+			showRegionDataWindow = true;
+		}
+		ImGui::SameLine();
+		if (GUI_Button("Sound"))
+		{
+			showSoundWindow = true;
+		}
+		ImGui::Text("");
+
+
 
 		if (GUI_Button("Mission Data"))
 		{
@@ -7752,22 +7769,7 @@ void Main()
 
 
 
-		// 	if (GUI_Button("File Data"))
-		// 	{
-		// 		showFileDataWindow = true;
-		// 	}
-		// 	ImGui::SameLine();
-		// 	if (GUI_Button("Region Data"))
-		// 	{
-		// 		showRegionDataWindow = true;
-		// 	}
-		// 	ImGui::SameLine();
-		// 	if (GUI_Button("Sound"))
-		// 	{
-		// 		showSoundWindow = true;
-		// 	}
-		// 	ImGui::Text("");
-		// }
+
 
 
 		// if constexpr (debug)

@@ -44,7 +44,7 @@ import Vars;
 
 //import Windows;
 
-#define debug false
+#define debug true
 
 #pragma pack(push, 1)
 export struct Config

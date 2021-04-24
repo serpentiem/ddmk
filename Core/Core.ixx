@@ -2027,6 +2027,7 @@ export struct Function
 	byte8 ** cache;
 };
 
+// @Todo: Increase Memory Data count.
 export Function CreateFunction
 (
 	void   * funcAddr         = 0,

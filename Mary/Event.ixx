@@ -439,6 +439,18 @@ void TriggerCustomizeMenu()
 	Item::EventTriggerCustomizeMenu();
 }
 
+void TriggerRestartMission(byte8 * addr)
+{
+	LogFunction();
+
+	Actor_TriggerRestartMission(addr);
+}
+
+void MissionSelectCheckConfirm(byte8 * addr)
+{
+	Actor_MissionSelectCheckConfirm(addr);
+}
+
 
 
 
@@ -571,6 +583,70 @@ export void Event_Toggle(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(TriggerCustomizeMenu, jumpAddr, true, true, size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Trigger Restart Mission
+	{
+		auto addr     = (appBaseAddr + 0x29FE12);
+		auto jumpAddr = (appBaseAddr + 0x29FE17);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+29FE12 - E8 A9930900 - call dmc3.exe+3391C0
+		dmc3.exe+29FE17 - FE 45 09    - inc byte ptr [rbp+09]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			mov_rcx_rbp,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(TriggerRestartMission, jumpAddr, true, true, (size + sizeof(sect0)));
+			CopyMemory((func.sect0 + size), sect0, sizeof(sect0));
+			WriteCall(func.sect0, (appBaseAddr + 0x3391C0));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Mission Select Check Confirm
+	{
+		auto addr     = (appBaseAddr + 0x1BDDD4);
+		auto jumpAddr = (appBaseAddr + 0x1BDDD9);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+1BDDD4 - E8 27C40D00 - call dmc3.exe+29A200
+		dmc3.exe+1BDDD9 - 89 43 44    - mov [rbx+44],eax
+		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(MissionSelectCheckConfirm, jumpAddr, true, true, 0, 0, size);
+			WriteCall(func.sect2, (appBaseAddr + 0x29A200));
 		}
 
 		if (enable)
