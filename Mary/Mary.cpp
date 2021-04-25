@@ -179,8 +179,8 @@ uint32 DllMain
 
 
 		Event_Init();
-		Event_ToggleSkipIntro    (activeConfig.skipIntro    );
-		Event_ToggleSkipCutscenes(activeConfig.skipCutscenes);
+		ToggleSkipIntro    (activeConfig.skipIntro    );
+		ToggleSkipCutscenes(activeConfig.skipCutscenes);
 
 		Graphics::Init();
 		UpdateFrameRate();

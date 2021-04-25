@@ -44,7 +44,7 @@ using namespace Windows;
 using namespace DXGI;
 using namespace D3D11;
 
-#define debug true
+#define debug false
 
 
 
@@ -6755,8 +6755,8 @@ void System()
 			ResetConfig(channelVolumes);
 			ResetConfig(forceWindowFocus);
 
-			Event_ToggleSkipIntro(activeConfig.skipIntro);
-			Event_ToggleSkipCutscenes(activeConfig.skipCutscenes);
+			ToggleSkipIntro(activeConfig.skipIntro);
+			ToggleSkipCutscenes(activeConfig.skipCutscenes);
 			UpdateFrameRate();
 			UpdateVolumes();
 			Window::ToggleForceFocus(activeConfig.forceWindowFocus);
@@ -6776,7 +6776,7 @@ void System()
 			)
 		)
 		{
-			Event_ToggleSkipIntro(activeConfig.skipIntro);
+			ToggleSkipIntro(activeConfig.skipIntro);
 		}
 
 		if
@@ -6789,7 +6789,7 @@ void System()
 			)
 		)
 		{
-			Event_ToggleSkipCutscenes(activeConfig.skipCutscenes);
+			ToggleSkipCutscenes(activeConfig.skipCutscenes);
 		}
 
 		GUI_SectionEnd();
@@ -7457,7 +7457,7 @@ void Main()
 	(
 		ImGui::Begin
 		(
-			"DDMK 2.7 Mary Nightly 24 April 2021",
+			"DDMK 2.7 Mary Nightly 25 April 2021",
 			&g_show
 		)
 	)

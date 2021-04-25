@@ -417,6 +417,9 @@ void EventContinue()
 
 
 
+
+
+
 void UpdateEnemyCount(byte8 * addr)
 {
 	if (!addr)
@@ -432,6 +435,25 @@ void UpdateEnemyCount(byte8 * addr)
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void TriggerCustomizeMenu()
 {
 	LogFunction();
@@ -444,12 +466,35 @@ void TriggerRestartMission(byte8 * addr)
 	LogFunction();
 
 	Actor_TriggerRestartMission(addr);
+
+	if (!g_pauseForceQuitMission)
+	{
+		return;
+	}
+
+	g_pauseForceQuitMission = false;
+
+	auto & index = *reinterpret_cast<uint32 *>(addr + 0xCC) = 2;
 }
 
 void MissionSelectCheckConfirm(byte8 * addr)
 {
-	Actor_MissionSelectCheckConfirm(addr);
+	if (!g_missionSelectForceConfirm)
+	{
+		return;
+	}
+
+	g_missionSelectForceConfirm = false;
+
+	auto & var_8 = *reinterpret_cast<uint8 *>(addr + 8) = 9;
+	auto & var_6280 = *reinterpret_cast<uint32 *>(addr + 0x6280) = 1;
+
+	/*
+	dmc3.exe+29A200 - 80 79 08 09    - cmp byte ptr [rcx+08],09
+	dmc3.exe+29A209 - 8B 81 80620000 - mov eax,[rcx+00006280]
+	*/
 }
+
 
 
 
@@ -1073,58 +1118,9 @@ export void Event_Init()
 	}
 }
 
-export void Event_ToggleSkipIntro(bool enable)
-{
-	LogFunction(enable);
-	WriteAddress((appBaseAddr + 0x2383F2), (enable) ? (appBaseAddr + 0x2383F8) : (appBaseAddr + 0x238527), 6); // Skip Message
-	WriteAddress((appBaseAddr + 0x241789), (enable) ? (appBaseAddr + 0x24178B) : (appBaseAddr + 0x2417A6), 2); // Skip Video
-	Write<uint8>((appBaseAddr + 0x238704), (enable) ? 0 : 1); // Hide Rebellion
-	// Disable Video Timer
-	{
-		auto dest = (appBaseAddr + 0x243531);
-		if (enable)
-		{
-			SetMemory
-			(
-				dest,
-				0x90,
-				2,
-				MemoryFlags_VirtualProtectDestination
-			);
-		}
-		else
-		{
-			constexpr byte8 buffer[] =
-			{
-				0xFF, 0xC8, //dec eax
-			};
-			CopyMemory
-			(
-				dest,
-				buffer,
-				sizeof(buffer),
-				MemoryFlags_VirtualProtectDestination
-			);
-		}
-	}
-}
 
-export void Event_ToggleSkipCutscenes(bool enable)
-{
-	LogFunction(enable);
 
-	WriteAddress((appBaseAddr + 0x238CCA), (enable) ? (appBaseAddr + 0x238CD0) : (appBaseAddr + 0x238E62), 6);
-	/*
-	dmc3.exe+238CCA - 0F85 92010000 - jne dmc3.exe+238E62
-	dmc3.exe+238CD0 - 8B 43 1C      - mov eax,[rbx+1C]
-	*/
 
-	WriteAddress((appBaseAddr + 0x23918A), (enable) ? (appBaseAddr + 0x23918C) : (appBaseAddr + 0x2391A4), 2);
-	/*
-	dmc3.exe+23918A - 75 18    - jne dmc3.exe+2391A4
-	dmc3.exe+23918C - 8B 43 1C - mov eax,[rbx+1C]
-	*/
-}
 
 #ifdef __GARBAGE__
 

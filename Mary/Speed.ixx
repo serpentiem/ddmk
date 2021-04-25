@@ -32,6 +32,13 @@ export void UpdateSpeedValues()
 	dmc3.exe+326954 - C3             - ret 
 	*/
 
+	// Cutscene
+	Write((appBaseAddr + 0x2D4D12 + 6), activeConfig.Speed.main);
+	/*
+	dmc3.exe+2D4D12 - C7 05 74E0A100 0000803F - mov [dmc3.exe+CF2D90],3F800000
+	dmc3.exe+2D4D1C - 48 8B F2                - mov rsi,rdx
+	*/
+
 	*turboAddr = activeConfig.Speed.turbo;
 	WriteAddress((appBaseAddr + 0x23E639), turboAddr, 8);
 	/*

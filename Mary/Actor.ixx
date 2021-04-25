@@ -40,7 +40,7 @@ import Memory;
 import Model;
 import Sound;
 
-#define debug true
+#define debug false
 
 #pragma region Main
 
@@ -1776,8 +1776,8 @@ void InitModel
 	recoveryData.init = false;
 	memset(recoveryData.data, 0, 32);
 
-	Log("InitModel for %llX", actorData.operator byte8 *());
-	Log("character %u", actorData.character);
+	// Log("InitModel for %llX", actorData.operator byte8 *());
+	// Log("character %u", actorData.character);
 
 
 
@@ -1903,7 +1903,7 @@ void UpdateModel(T & actorData)
 		physicsFile = file[18];
 	}
 
-	Log("reach here. 1");
+	// Log("reach here. 1");
 
 
 
@@ -1915,7 +1915,7 @@ void UpdateModel(T & actorData)
 	);
 
 
-	Log("reach here. 2");
+	// Log("reach here. 2");
 
 	func_8A000
 	(
@@ -1924,7 +1924,7 @@ void UpdateModel(T & actorData)
 		&actorData.submodelPhysicsMetadataPool[0]
 	);
 
-	Log("reach here. 3");
+	// Log("reach here. 3");
 
 	actorData.newSubmodelInit[submodelIndex] = true;
 
@@ -1943,7 +1943,7 @@ void UpdateModel(T & actorData)
 		);
 	}
 
-	Log("reach here. 4");
+	// Log("reach here. 4");
 
 	actorData.newSubmodelInit[submodelIndex] = true;
 
@@ -1954,7 +1954,7 @@ void UpdateModel(T & actorData)
 		&actorData.submodelPhysicsMetadataPool[0]
 	);
 
-	Log("reach here. 5");
+	// Log("reach here. 5");
 
 	func_2CA2F0
 	(
@@ -1965,7 +1965,7 @@ void UpdateModel(T & actorData)
 		(coat) ? 6 : 1
 	);
 
-	Log("reach here. 6");
+	// Log("reach here. 6");
 
 	if (coat)
 	{
@@ -1987,7 +1987,7 @@ void UpdateModel(T & actorData)
 		actorData.modelMetadata[0].vertices[2] = g_vertices[25];
 	}
 
-	Log("reach here. 7");
+	// Log("reach here. 7");
 }
 
 template <typename T>
@@ -2574,20 +2574,20 @@ void UpdateActorDante(ActorDataDante & actorData)
 
 	UpdateModel(actorData);
 
-	Log("reach here 8");
+	// Log("reach here 8");
 
 	func_1EF040(actorData, 0);
 
-	Log("reach here 9");
+	// Log("reach here 9");
 
 	func_1EEF80(actorData);
 
-	Log("reach here 10");
+	// Log("reach here 10");
 
 
 	func_1EF040(actorData, 3);
 
-	Log("reach here 11");
+	// Log("reach here 11");
 
 
 
@@ -23727,7 +23727,7 @@ export void Actor_ActorLoop(byte8 * actorBaseAddr)
 
 
 
-bool missionSelectForceConfirm = false;
+//bool missionSelectForceConfirm = false;
 
 export void Actor_TriggerRestartMission(byte8 * addr)
 {
@@ -23738,34 +23738,23 @@ export void Actor_TriggerRestartMission(byte8 * addr)
 
 	LogFunction();
 
-	auto & index = *reinterpret_cast<uint32 *>(addr + 0xCC) = 2;
+	g_pauseForceQuitMission     = true;
+	g_missionSelectForceConfirm = true;
 
-	missionSelectForceConfirm = true;
+	ToggleSkipCutscenes(true);
 }
 
-export void Actor_MissionSelectCheckConfirm(byte8 * addr)
-{
-	if
-	(
-		!activeConfig.Actor.enable ||
-		!missionSelectForceConfirm
-	)
-	{
-		return;
-	}
+// export void Actor_MissionSelectCheckConfirm(byte8 * addr)
+// {
+// 	if (!activeConfig.Actor.enable)
+// 	{
+// 		return;
+// 	}
 
-	LogFunction();
+// 	LogFunction();
 
-	auto & var_8 = *reinterpret_cast<uint8 *>(addr + 8) = 9;
-	auto & var_6280 = *reinterpret_cast<uint32 *>(addr + 0x6280) = 1;
-
-	/*
-	dmc3.exe+29A200 - 80 79 08 09    - cmp byte ptr [rcx+08],09
-	dmc3.exe+29A209 - 8B 81 80620000 - mov eax,[rcx+00006280]
-	*/
-
-	missionSelectForceConfirm = false;
-}
+// 	g_missionSelectForceConfirm = true;
+// }
 
 
 
@@ -23831,6 +23820,8 @@ export void Actor_SceneMissionStart()
 			characterData.rangedWeaponIndex = 0;
 		}}
 	}
+
+	ToggleSkipCutscenes(activeConfig.skipCutscenes);
 }
 
 #pragma endregion
