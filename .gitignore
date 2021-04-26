@@ -17,6 +17,7 @@
 !Scripts/*.js
 !stb
 !stb/*
+!.gitattributes
 !.gitignore
 !.gitmodules
 !LICENSE.txt
