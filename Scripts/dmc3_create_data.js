@@ -200,6 +200,205 @@ ClearAll();
 
 
 
+// #region Event Data
+{
+
+
+/*
+
+export struct EventData
+{
+	_(24);
+	uint32 room;
+	uint32 position;
+	uint32 event;
+	_(8);
+	uint32 subevent; // @Todo: rather next screen
+};
+
+*/
+
+
+let items =
+[
+	[ "room"      , "uint32", [], 0x18 ],
+	[ "position"  , "uint32", [], 0x1C ],
+	[ "event"     , "uint32", [], 0x20 ],
+	[ "subevent"  , "uint32", [], 0x24 ],
+	[ "screen"    , "uint32", [], 0x28 ],
+	[ "nextScreen", "uint32", [], 0x2C ],
+];
+
+
+
+CreateTuple
+(
+	"EventData",
+	items,
+	0,
+	0,
+	TupleFlags_Export
+);
+
+
+
+ClearAsserts();
+
+CreateTupleAsserts
+(
+	"EventData",
+	items,
+	0,
+	0,
+	TupleFlags_NoTypeAssert
+);
+
+MergeAsserts();
+FeedAsserts();
+
+CleanStream();
+
+
+
+let c_new = c;
+
+c = "";
+
+let filename = "../Mary/Vars.ixx";
+
+let file = fs.readFileSync(filename, "utf8");
+
+let lines = GetLines(file);
+
+if
+(
+	!Tag_Init
+	(
+		lines,
+		/\/\/ \$EventDataStart$/,
+		/\/\/ \$EventDataEnd$/
+	)
+)
+{
+	console.log("Tag_Init failed.");
+
+	return;
+}
+
+Tag_CopyUntil(lines);
+
+c += c_new;
+
+Tag_CopyAfter(lines);
+
+fs.writeFileSync(filename, c);
+
+
+
+ClearAll();
+
+}
+// #endregion
+
+
+
+
+// #region Next Event Data
+{
+
+let items =
+[
+	[ "room"      , "uint16", [], 0x164 ],
+	[ "position"  , "uint16", [], 0x166 ],
+];
+
+
+
+CreateTuple
+(
+	"NextEventData",
+	items,
+	0,
+	0,
+	TupleFlags_Export
+);
+
+
+
+ClearAsserts();
+
+CreateTupleAsserts
+(
+	"NextEventData",
+	items,
+	0,
+	0,
+	TupleFlags_NoTypeAssert
+);
+
+MergeAsserts();
+FeedAsserts();
+
+CleanStream();
+
+
+
+let c_new = c;
+
+c = "";
+
+let filename = "../Mary/Vars.ixx";
+
+let file = fs.readFileSync(filename, "utf8");
+
+let lines = GetLines(file);
+
+if
+(
+	!Tag_Init
+	(
+		lines,
+		/\/\/ \$NextEventDataStart$/,
+		/\/\/ \$NextEventDataEnd$/
+	)
+)
+{
+	console.log("Tag_Init failed.");
+
+	return;
+}
+
+Tag_CopyUntil(lines);
+
+c += c_new;
+
+Tag_CopyAfter(lines);
+
+fs.writeFileSync(filename, c);
+
+
+
+ClearAll();
+
+}
+// #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

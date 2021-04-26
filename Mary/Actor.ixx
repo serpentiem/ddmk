@@ -23727,9 +23727,7 @@ export void Actor_ActorLoop(byte8 * actorBaseAddr)
 
 
 
-//bool missionSelectForceConfirm = false;
-
-export void Actor_TriggerRestartMission(byte8 * addr)
+export void Actor_SetNextScreen(EventData & eventData)
 {
 	if (!activeConfig.Actor.enable)
 	{
@@ -23738,11 +23736,39 @@ export void Actor_TriggerRestartMission(byte8 * addr)
 
 	LogFunction();
 
-	g_pauseForceQuitMission     = true;
-	g_missionSelectForceConfirm = true;
+	switch (eventData.nextScreen)
+	{
+		case SCREEN_MISSION_START:
+		{
+			eventData.nextScreen = SCREEN_MISSION_SELECT;
 
-	ToggleSkipCutscenes(true);
+			g_missionSelectForceConfirm = true;
+
+			ToggleSkipCutscenes(true);
+
+			break;
+		}
+	}
 }
+
+
+
+//bool missionSelectForceConfirm = false;
+
+// export void Actor_TriggerRestartMission(EventData & eventData)
+// {
+// 	if (!activeConfig.Actor.enable)
+// 	{
+// 		return;
+// 	}
+
+// 	LogFunction();
+
+// 	g_pauseForceQuitMission     = true;
+// 	g_missionSelectForceConfirm = true;
+
+// 	ToggleSkipCutscenes(true);
+// }
 
 // export void Actor_MissionSelectCheckConfirm(byte8 * addr)
 // {

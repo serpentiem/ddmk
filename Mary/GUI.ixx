@@ -4750,6 +4750,153 @@ void FileDataWindow()
 
 
 
+
+/*
+
+export struct EventData
+{
+	_(24);
+	uint32 room; // 0x18
+	uint32 position; // 0x1C
+	uint32 event; // 0x20
+	uint32 subevent; // 0x24
+	uint32 screen; // 0x28
+	uint32 nextScreen; // 0x2C
+};
+
+*/
+
+bool showEventDataWindow = false;
+
+
+
+
+void EventDataWindow()
+{
+	if (!showEventDataWindow)
+	{
+		return;
+	}
+
+	IntroduceEventData(return);
+
+	static EventData eventData2 = {};
+
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+
+		ImGui::SetNextWindowSize
+		(
+			ImVec2
+			(
+				700,
+				700
+			)
+		);
+		ImGui::SetNextWindowPos
+		(
+			ImVec2
+			(
+				0,
+				0
+			)
+		);
+	}
+
+
+
+	if
+	(
+		ImGui::Begin
+		(
+			"EventData",
+			&showEventDataWindow
+		)
+	)
+	{
+		ImGui::Text("");
+
+		ImGui::PushItemWidth(150);
+
+		GUI_Input<uint32>
+		(
+			"room",
+			eventData2.room,
+			1,
+			"%u",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+		GUI_Input<uint32>
+		(
+			"position",
+			eventData2.position,
+			1,
+			"%u",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+		GUI_Input<uint32>
+		(
+			"event",
+			eventData2.event,
+			1,
+			"%u",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+		GUI_Input<uint32>
+		(
+			"subevent",
+			eventData2.subevent,
+			1,
+			"%u",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+		GUI_Input<uint32>
+		(
+			"screen",
+			eventData2.screen,
+			1,
+			"%u",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+		GUI_Input<uint32>
+		(
+			"nextScreen",
+			eventData2.nextScreen,
+			1,
+			"%u",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+
+		ImGui::PopItemWidth();
+
+		ImGui::Text("");
+
+		if (GUI_Button("Apply"))
+		{
+			eventData.room       = eventData2.room;
+			eventData.position   = eventData2.position;
+			eventData.event      = eventData2.event;
+			eventData.subevent   = eventData2.subevent;
+			eventData.screen     = eventData2.screen;
+			eventData.nextScreen = eventData2.nextScreen;
+		}
+
+		ImGui::Text("");
+	}
+
+	ImGui::End();
+}
+
+
+
+
+
+
+
+
+
 void RegionDataWindow()
 {
 	static bool run = false;
@@ -5080,6 +5227,11 @@ void Debug()
 		if (GUI_Button("File Data"))
 		{
 			showFileDataWindow = true;
+		}
+		ImGui::SameLine();
+		if (GUI_Button("EventData"))
+		{
+			showEventDataWindow = true;
 		}
 		ImGui::SameLine();
 		if (GUI_Button("Region Data"))
@@ -7457,7 +7609,7 @@ void Main()
 	(
 		ImGui::Begin
 		(
-			"DDMK 2.7 Mary Nightly 25 April 2021",
+			"DDMK 2.7 Mary Nightly 26 April 2021",
 			&g_show
 		)
 	)
@@ -8165,6 +8317,7 @@ export void GUI_Render()
 
 
 			FileDataWindow();
+			EventDataWindow();
 			RegionDataWindow();
 			SoundWindow();
 		}

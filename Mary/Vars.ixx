@@ -897,7 +897,10 @@ static_assert(countof(cacheFileHelpers) == CACHE_FILE_COUNT);
 
 // $CacheFileEnd
 
-export enum SCENE
+
+
+
+export enum
 {
 	SCENE_BOOT,
 	SCENE_INTRO,
@@ -912,7 +915,7 @@ export enum SCENE
 	MAX_SCENE,
 };
 
-export enum EVENT
+export enum
 {
 	EVENT_INIT,
 	EVENT_MAIN,
@@ -930,11 +933,51 @@ export enum EVENT
 	MAX_EVENT,
 };
 
-export enum SUBEVENT
+export enum
 {
-	SUBEVENT_MISSION_START  = 7,
-	SUBEVENT_MISSION_SELECT = 8,
+	SCREEN_MISSION_CLEAR = 5,
+	SCREEN_GAME_OVER,
+	SCREEN_MISSION_START,
+	SCREEN_MISSION_SELECT,
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export enum GAMEPAD
 {
@@ -1135,6 +1178,48 @@ IntroduceSizeStruct(192);
 IntroduceSizeStruct(240);
 IntroduceSizeStruct(288);
 IntroduceSizeStruct(768);
+
+
+
+// $EventDataStart
+
+export struct EventData
+{
+	_(24);
+	uint32 room; // 0x18
+	uint32 position; // 0x1C
+	uint32 event; // 0x20
+	uint32 subevent; // 0x24
+	uint32 screen; // 0x28
+	uint32 nextScreen; // 0x2C
+};
+
+static_assert(offsetof(EventData, room) == 0x18);
+static_assert(offsetof(EventData, position) == 0x1C);
+static_assert(offsetof(EventData, event) == 0x20);
+static_assert(offsetof(EventData, subevent) == 0x24);
+static_assert(offsetof(EventData, screen) == 0x28);
+static_assert(offsetof(EventData, nextScreen) == 0x2C);
+
+static_assert(sizeof(EventData) == 48);
+
+// $EventDataEnd
+
+// $NextEventDataStart
+
+export struct NextEventData
+{
+	_(356);
+	uint16 room; // 0x164
+	uint16 position; // 0x166
+};
+
+static_assert(offsetof(NextEventData, room) == 0x164);
+static_assert(offsetof(NextEventData, position) == 0x166);
+
+static_assert(sizeof(NextEventData) == 360);
+
+// $NextEventDataEnd
 
 
 
@@ -1636,23 +1721,7 @@ static_assert(sizeof(StyleData) == 352);
 
 // $StyleDataEnd
 
-// @Todo: Create scripts.
-export struct EventData
-{
-	_(24);
-	uint32 room;
-	uint32 position;
-	uint32 event;
-	_(8);
-	uint32 subevent;
-};
 
-export struct NextEventData
-{
-	_(356);
-	uint16 room;
-	uint16 position;
-};
 
 // $CollisionDataStart
 

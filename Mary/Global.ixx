@@ -50,7 +50,7 @@ export bool g_lastShow           = false;
 export bool g_showItemWindow     = false;
 export bool g_lastShowItemWindow = false;
 
-export bool g_pauseForceQuitMission     = false;
+// export bool g_pauseForceQuitMission     = false;
 export bool g_missionSelectForceConfirm = false;
 
 
