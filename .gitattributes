@@ -1,2 +1,2 @@
 *.ixx linguist-language=C++
-Mary/*.ixx linguist-language=C++
+*/*.ixx linguist-language=C++
