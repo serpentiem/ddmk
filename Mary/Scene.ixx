@@ -7,6 +7,7 @@ import Core;
 import Actor;
 import Config;
 import Global;
+import Item;
 import Vars;
 
 
@@ -36,7 +37,7 @@ void SceneMain()
 
 	SetScene(SCENE_MAIN, true);
 
-	Actor_SceneMain();
+	Item::SceneMain();
 }
 
 void SceneMissionSelect()
@@ -45,7 +46,18 @@ void SceneMissionSelect()
 
 	SetScene(SCENE_MISSION_SELECT, true);
 
-	Actor_SceneMissionSelect();
+	Item::SceneMissionSelect();
+}
+
+void SceneMissionStart()
+{
+	LogFunction();
+
+	SetScene(SCENE_MISSION_START, true);
+
+	Actor::SceneMissionStart();
+
+	Item::SceneMissionStart();
 }
 
 void SceneGame()
@@ -53,6 +65,8 @@ void SceneGame()
 	LogFunction();
 
 	SetScene(SCENE_GAME);
+
+	Actor::SceneGame();
 }
 
 void SceneCutscene()
@@ -62,21 +76,17 @@ void SceneCutscene()
 	SetScene(SCENE_CUTSCENE);
 }
 
-void SceneMissionStart()
-{
-	LogFunction();
-
-	SetScene(SCENE_MISSION_START, true);
-
-	Actor_SceneMissionStart();
-}
-
 void SceneMissionResult()
 {
 	LogFunction();
 
 	SetScene(SCENE_MISSION_RESULT);
 }
+
+
+
+
+
 
 // @Todo: Update.
 export void Scene_Init()

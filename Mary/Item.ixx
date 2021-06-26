@@ -523,7 +523,7 @@ export void EventDelete()
 	}
 }
 
-export void EventTriggerCustomizeMenu()
+export void TriggerCustomizeMenu()
 {
 	if (!activeConfig.Actor.enable)
 	{
@@ -534,5 +534,68 @@ export void EventTriggerCustomizeMenu()
 
 	g_showItemWindow = true;
 }
+
+
+
+
+
+
+export void SceneMain()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	IntroduceSessionData();
+
+	g_haywireNeoGenerator = false;
+}
+
+export void SceneMissionSelect()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	IntroduceSessionData();
+
+	g_haywireNeoGenerator = false;
+}
+
+export void SceneMissionStart()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	IntroduceSessionData();
+
+	g_haywireNeoGenerator =
+	(
+		(sessionData.mission == 12) &&
+		!activeConfig.BossRush.enable
+	) ? true : false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 namespaceEnd();

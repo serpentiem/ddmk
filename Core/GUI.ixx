@@ -27,12 +27,16 @@ struct GetImGuiDataType
 	(TypeMatch<T, uint64>::value) ? ImGuiDataType_U64    :
 	(TypeMatch<T, float >::value) ? ImGuiDataType_Float  :
 	(TypeMatch<T, double>::value) ? ImGuiDataType_Double :
+	(TypeMatch<T, bool  >::value) ? ImGuiDataType_U8     :
 	0;
 };
 
 
 
-
+export enum
+{
+	SectionFlags_NoNewLine = 1 << 0,
+};
 
 
 
@@ -527,9 +531,13 @@ export inline void GUI_SectionStart(const char * label)
 	ImGui::Text("");
 }
 
-export inline void GUI_SectionEnd()
+export inline void GUI_SectionEnd(byte64 flags = 0)
 {
-	ImGui::Text("");
+	if (!(flags & SectionFlags_NoNewLine))
+	{
+		ImGui::Text("");
+	}
+
 	ImGui::Separator();
 }
 

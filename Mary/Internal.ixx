@@ -1,11 +1,5 @@
-
-
-
-
-// @Todo: Use reinterpret_cast.
-
-
-
+module;
+#include <xmmintrin.h>
 export module Internal;
 
 import Core;
@@ -32,9 +26,11 @@ export typedef void(__fastcall * func_2CA2F0_t)(PhysicsData & physicsData, void 
 export typedef void *(__fastcall * func_2C6150_t)(void * dest, uint32 size, int32 mode); // Alloc
 export typedef bool(__fastcall * func_1FD3E0_t)(WeaponData & weaponData, uint8); // IsWeaponReady
 export typedef void(__fastcall * func_1FDE10_t)(WeaponData & weaponData); // Show Weapon
+export typedef void(__fastcall * func_8BF30_t)(uint32 index, void * dest, byte8 * baseAddr);
 export typedef void(__fastcall * func_2EDFC0_t)(byte8 *);
 export typedef void(__fastcall * func_337710_t)(byte8 *);
-export typedef byte8 *(__fastcall * func_1A4680_t)(byte8 *, CreateEnemyData &); // Create Enemy
+export typedef bool(__fastcall * func_27AA90_t)(void *, uint32, void *, float);
+export typedef byte8 *(__fastcall * func_1A4680_t)(byte8 *, const CreateEnemyActorData &); // Create Enemy Actor
 export typedef void(__fastcall * func_3391C0_t)(void *, int32, int32, int32, int32); // Play Sound
 export typedef void(__fastcall * func_2EE3D0_t)(byte8 * dest);
 export typedef void(__fastcall * func_1FAF40_t)(byte8 * baseAddr);
@@ -78,11 +74,14 @@ export typedef void(__fastcall * func_1B9FA0_t)(byte8 * addr); // Adjust file po
 export typedef void(__fastcall * func_223AC0_t)(byte8 * actorData); // Create Spiral Swords.
 export typedef void(__fastcall * func_223F50_t)(byte8 * actorData, uint32 index); // Specific Summoned Swords.
 export typedef void(__fastcall * func_223BE0_t)(byte8 * actorData, uint32 index); // Shoot Summoned Sword. Use index 52.
+export typedef void(__fastcall * func_594B0_t)(BodyPartData & bodyPartData, byte8 * file, uint32 bodyPart, uint32, byte8 ** motionArchives, byte8 *** modelDataFunctions, PhysicsMetadata ** modelPhysicsMetadataPool, float32 * motionSpeed, void *);
 export typedef void(__fastcall * func_5A290_t)(byte8 * body, uint32 group, uint32 index, uint16, uint8, uint8); // Play Motion
 export typedef void(__fastcall * func_8AC80_t)(ModelData & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool); // Play Motion
 export typedef void(__fastcall * func_1EFB90_t)(byte8 * actorData, uint32 group, uint32 index, float32, int8, uint8, uint8); // Play motion and update state.
 export typedef void(__fastcall * func_1DFDA0_t)(byte8 *, uint32, uint8, float32, float32, uint8); // Drop1
 export typedef void(__fastcall * func_1FB300_t)(byte8 * actorData, uint32 direction, float32 value); // Adjust Position
+export typedef void(__fastcall * func_1E09D0_t)(byte8 * actorBaseAddr, uint32 event);
+export typedef byte8 *(__fastcall * func_175210_t)(vec4 *, vec4 *, __m128); // Boss Lady Grenade
 export typedef void(__fastcall * func_1E0800_t)(byte8 * actorData, uint32 index, uint32, uint32); // Trigger Attack
 export typedef void(__fastcall * func_211100_t)(byte8 * actorData); // Rebellion Combo 1 Part 3
 export typedef void(__fastcall * func_1F01F0_t)(byte8 * actorData, uint32 index); // Reset State
@@ -90,7 +89,6 @@ export typedef void(__fastcall * func_2F74E0_t)(byte8 * dest, uint32 index); // 
 export typedef void(__fastcall * func_2F7350_t)(byte8 * dest, uint32 index); // Hide Model Partition
 export typedef void(__fastcall * func_32BE20_t)(byte8 * dest); // Init Track
 export typedef void(__fastcall * func_32BA90_t)(byte8 * dest, const char * filename, uint32, uint32); // Set Track
-export typedef void(__fastcall * func_594B0_t)(BodyPartData & bodyPartData, byte8 * file, uint32 bodyPart, uint32, byte8 ** motionArchives, byte8 *** modelDataFunctions, PhysicsMetadata ** modelPhysicsMetadataPool, float32 * motionSpeed, void *);
 export typedef byte8 *(__fastcall * func_8A520_t)(ModelData & modelData);
 export typedef void(__fastcall * func_30E630_t)(byte8 * dest, uint32 index);
 
@@ -110,9 +108,11 @@ export func_2CA2F0_t func_2CA2F0 = 0; // (PhysicsData & physicsData, void * dest
 export func_2C6150_t func_2C6150 = 0; // (void * dest, uint32 size, int32 mode)
 export func_1FD3E0_t func_1FD3E0 = 0; // (WeaponData & weaponData, uint8)
 export func_1FDE10_t func_1FDE10 = 0; // (WeaponData & weaponData)
+export func_8BF30_t func_8BF30 = 0; // (uint32 index, void * dest, byte8 * baseAddr)
 export func_2EDFC0_t func_2EDFC0 = 0; // (byte8 *)
 export func_337710_t func_337710 = 0; // (byte8 *)
-export func_1A4680_t func_1A4680 = 0; // (byte8 *, CreateEnemyData &)
+export func_27AA90_t func_27AA90 = 0; // (void *, uint32, void *, float)
+export func_1A4680_t func_1A4680 = 0; // (byte8 *, const CreateEnemyActorData &)
 export func_3391C0_t func_3391C0 = 0; // (void *, int32, int32, int32, int32)
 export func_2EE3D0_t func_2EE3D0 = 0; // (byte8 * dest)
 export func_1FAF40_t func_1FAF40 = 0; // (byte8 * baseAddr)
@@ -156,11 +156,14 @@ export func_1B9FA0_t func_1B9FA0 = 0; // (byte8 * addr)
 export func_223AC0_t func_223AC0 = 0; // (byte8 * actorData)
 export func_223F50_t func_223F50 = 0; // (byte8 * actorData, uint32 index)
 export func_223BE0_t func_223BE0 = 0; // (byte8 * actorData, uint32 index)
+export func_594B0_t func_594B0 = 0; // (BodyPartData & bodyPartData, byte8 * file, uint32 bodyPart, uint32, byte8 ** motionArchives, byte8 *** modelDataFunctions, PhysicsMetadata ** modelPhysicsMetadataPool, float32 * motionSpeed, void *)
 export func_5A290_t func_5A290 = 0; // (byte8 * body, uint32 group, uint32 index, uint16, uint8, uint8)
 export func_8AC80_t func_8AC80 = 0; // (ModelData & modelData, uint32 bodyPart, byte8 * motionFile, uint32, bool)
 export func_1EFB90_t func_1EFB90 = 0; // (byte8 * actorData, uint32 group, uint32 index, float32, int8, uint8, uint8)
 export func_1DFDA0_t func_1DFDA0 = 0; // (byte8 *, uint32, uint8, float32, float32, uint8)
 export func_1FB300_t func_1FB300 = 0; // (byte8 * actorData, uint32 direction, float32 value)
+export func_1E09D0_t func_1E09D0 = 0; // (byte8 * actorBaseAddr, uint32 event)
+export func_175210_t func_175210 = 0; // (vec4 *, vec4 *, __m128)
 export func_1E0800_t func_1E0800 = 0; // (byte8 * actorData, uint32 index, uint32, uint32)
 export func_211100_t func_211100 = 0; // (byte8 * actorData)
 export func_1F01F0_t func_1F01F0 = 0; // (byte8 * actorData, uint32 index)
@@ -168,7 +171,6 @@ export func_2F74E0_t func_2F74E0 = 0; // (byte8 * dest, uint32 index)
 export func_2F7350_t func_2F7350 = 0; // (byte8 * dest, uint32 index)
 export func_32BE20_t func_32BE20 = 0; // (byte8 * dest)
 export func_32BA90_t func_32BA90 = 0; // (byte8 * dest, const char * filename, uint32, uint32)
-export func_594B0_t func_594B0 = 0; // (BodyPartData & bodyPartData, byte8 * file, uint32 bodyPart, uint32, byte8 ** motionArchives, byte8 *** modelDataFunctions, PhysicsMetadata ** modelPhysicsMetadataPool, float32 * motionSpeed, void *)
 export func_8A520_t func_8A520 = 0; // (ModelData & modelData)
 export func_30E630_t func_30E630 = 0; // (byte8 * dest, uint32 index)
 
@@ -240,12 +242,20 @@ export void Internal_Init()
 		func_1FDE10 = (func_1FDE10_t)func.addr;
 	}
 	{
+		auto func = CreateFunction((appBaseAddr + 0x8BF30));
+		func_8BF30 = (func_8BF30_t)func.addr;
+	}
+	{
 		auto func = CreateFunction((appBaseAddr + 0x2EDFC0));
 		func_2EDFC0 = (func_2EDFC0_t)func.addr;
 	}
 	{
 		auto func = CreateFunction((appBaseAddr + 0x337710));
 		func_337710 = (func_337710_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x27AA90));
+		func_27AA90 = (func_27AA90_t)func.addr;
 	}
 	{
 		auto func = CreateFunction((appBaseAddr + 0x1A4680), 0, true, false);
@@ -424,6 +434,10 @@ export void Internal_Init()
 		func_223BE0 = (func_223BE0_t)func.addr;
 	}
 	{
+		auto func = CreateFunction((appBaseAddr + 0x594B0), 0, true, true, 0, 0, 0, 0, 5);
+		func_594B0 = (func_594B0_t)func.addr;
+	}
+	{
 		auto func = CreateFunction((appBaseAddr + 0x5A290), 0, true, true, 0, 0, 0, 0, 2);
 		func_5A290 = (func_5A290_t)func.addr;
 	}
@@ -442,6 +456,14 @@ export void Internal_Init()
 	{
 		auto func = CreateFunction((appBaseAddr + 0x1FB300));
 		func_1FB300 = (func_1FB300_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x1E09D0));
+		func_1E09D0 = (func_1E09D0_t)func.addr;
+	}
+	{
+		auto func = CreateFunction((appBaseAddr + 0x175210), 0, true, false, 0, 0, 0, 0, 0, false, true);
+		func_175210 = (func_175210_t)func.addr;
 	}
 	{
 		auto func = CreateFunction((appBaseAddr + 0x1E0800));
@@ -470,10 +492,6 @@ export void Internal_Init()
 	{
 		auto func = CreateFunction((appBaseAddr + 0x32BA90));
 		func_32BA90 = (func_32BA90_t)func.addr;
-	}
-	{
-		auto func = CreateFunction((appBaseAddr + 0x594B0), 0, true, true, 0, 0, 0, 0, 5);
-		func_594B0 = (func_594B0_t)func.addr;
 	}
 	{
 		auto func = CreateFunction((appBaseAddr + 0x8A520), 0, true, false);

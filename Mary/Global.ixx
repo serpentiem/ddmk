@@ -14,6 +14,17 @@ using namespace DXGI;
 using namespace D3D11;
 using namespace DI8;
 
+
+#define debug false
+
+
+
+
+
+
+
+
+
 export namespace DXGI
 {
 	IDXGISwapChain * swapChain = 0;
@@ -41,7 +52,74 @@ export uint8 g_scene                 = 0;
 export bool  g_quicksilver           = false;
 export bool  g_disableCameraRotation = false;
 
-export Vector<byte8 *> Actor_actorBaseAddrs = {};
+//export uint32 g_actorMode = 0;
+
+export bool g_haywireNeoGenerator = false;
+
+
+
+
+export bool g_resetBossVergil[PLAYER_COUNT] = {};
+
+
+
+
+export Vector<byte8 *> g_playerActorBaseAddrs = {};
+//export Vector<byte8 *> g_enemyActorBaseAddrs = {};
+
+
+export NewActorData g_defaultNewActorData[ENTITY_COUNT] = {};
+export NewActorData g_newActorData[PLAYER_COUNT][CHARACTER_COUNT][ENTITY_COUNT] = {};
+
+
+export void ClearActorData()
+{
+	LogFunction();
+
+	g_playerActorBaseAddrs.Clear();
+	//g_enemyActorBaseAddrs.Clear();
+
+	SetMemory
+	(
+		g_defaultNewActorData,
+		0,
+		sizeof(g_defaultNewActorData)
+	);
+
+	SetMemory
+	(
+		g_newActorData,
+		0,
+		sizeof(g_newActorData)
+	);
+}
+
+
+
+
+
+
+
+
+
+
+// @Research: Could add out of range handling.
+export auto & GetNewActorData
+(
+	uint8 playerIndex,
+	uint8 characterIndex,
+	uint8 entityIndex
+)
+{
+	return g_newActorData[playerIndex][characterIndex][entityIndex];
+}
+
+
+
+
+
+
+
 
 export uint8 g_helperIndices[MAX_CHANNEL] = {};
 
@@ -59,6 +137,25 @@ export bool g_missionSelectForceConfirm = false;
 
 // @Todo: Remove.
 export float g_timeout = 0;
+export bool g_visible = false;
+export float g_characterSwitchTimeout[4] = {};
+export uint32 g_eventNevan = 0;
+export bool g_setEventNevan = false;
+
+
+
+export namespaceStart(BossVergil);
+
+uint32 variant = 0;
+
+namespaceEnd();
+
+
+// uint32 g_bossVergilVariant = 0;
+// uint32 g_variantBossVergil = 0;
+
+
+
 
 
 
@@ -131,13 +228,64 @@ export void ToggleSkipCutscenes(bool enable)
 
 
 
+// @Todo: Re-evaluate reasons for these being in here.
+export template <typename T>
+void ActorForAll(T & func)
+{
+	for_all(uint64, actorIndex, g_playerActorBaseAddrs.count)
+	{
+		auto actorBaseAddr = g_playerActorBaseAddrs[actorIndex];
 
+		if (func(actorBaseAddr))
+		{
+			break;
+		}
+	}
+}
 
+export template <typename T>
+void EnemyForAll(T & func)
+{
+	// Not necessary. Some enemies don't even use this. Gigapede for example.
 
+	// auto firstBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2550);
+	// auto lastBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2750);
+	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
 
+	if
+	(
+		// !firstBaseAddr ||
+		// !lastBaseAddr ||
+		!pool ||
+		!pool[8]
+	)
+	{
+		return;
+	}
 
+	auto & count = *reinterpret_cast<uint32 *>(pool[8] + 0x28);
+	auto dataAddr = reinterpret_cast<EnemyVectorDataMetadata *>(pool[8] + 0x48);
 
+	for_all(uint32, index, 50)
+	{
+		auto & data = dataAddr[index];
 
+		if
+		(
+			!data.baseAddr
+			// (data.baseAddr < firstBaseAddr) ||
+			// (data.baseAddr > lastBaseAddr)
+		)
+		{
+			continue;
+		}
+
+		if (func(data.baseAddr))
+		{
+			break;
+		}
+	}
+}
 
 
 
@@ -158,7 +306,8 @@ export bool InGame()
 	return true;
 }
 
-export auto & GetTurbo()
+// @Todo: Rename to IsTurbo.
+export auto & IsTurbo()
 {
 	return *reinterpret_cast<bool *>(appBaseAddr + 0xD6CEA9);
 }
@@ -188,6 +337,22 @@ export bool InCredits()
 // 	dmc3.exe+36E60 - 0FB6 81 79060000  - movzx eax,byte ptr [rcx+00000679]
 // 	*/
 // }
+
+
+// @Research: Consider SCENE_MISSION_START as well.
+export bool IsActorConfigScene()
+{
+	if
+	(
+		(g_scene == SCENE_MAIN          ) ||
+		(g_scene == SCENE_MISSION_SELECT)
+	)
+	{
+		return true;
+	}
+
+	return false;
+}
 
 
 

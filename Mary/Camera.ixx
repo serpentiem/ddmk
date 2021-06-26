@@ -1,33 +1,24 @@
-module;
-// #include "../Core/Core.h"
-
-// #include "Vars.h"
-
-#include "../Core/Macros.h" //
-
 export module Camera;
 
 import Core;
 
-
-import Vars;
-
-// #define memset SetMemory
-// #define memcpy CopyMemory
+#include "../Core/Macros.h"
 
 import Config;
 import Global;
+import Vars;
 
 
 
+namespaceStart(Camera);
 
-
-
-
-
-export void Camera_Toggle(bool enable)
+export void Toggle(bool enable)
 {
+	LogFunction(enable);
+
 	static bool run = false;
+
+
 
 	// Turn Right
 	{
@@ -115,6 +106,52 @@ export void Camera_Toggle(bool enable)
 		}
 	}
 
+	// Camera Auto Adjust
+	{
+		auto addr     = (appBaseAddr + 0x579F2);
+		auto jumpAddr = (appBaseAddr + 0x579FD);
+		constexpr uint32 size = 11;
+		/*
+		dmc3.exe+579F2 - 0F29 47 70       - movaps [rdi+70],xmm0
+		dmc3.exe+579F6 - 0F29 8F 80000000 - movaps [rdi+00000080],xmm1
+		dmc3.exe+579FD - E8 5EFA2600      - call dmc3.exe+2C7460
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
+			0x8A, 0x00,                                                 // mov al,[rax]
+			0x84, 0xC0,                                                 // test al,al
+			0x74, 0x0E,                                                 // je short
+			0x3C, 0x01,                                                 // cmp al,01
+			0x75, 0x15,                                                 // jne short
+			0x8A, 0x87, 0xD8, 0x01, 0x00, 0x00,                         // mov al,[rdi+000001D8]
+			0x84, 0xC0,                                                 // test al,al
+			0x74, 0x0B,                                                 // je short
+			0x0F, 0x29, 0x47, 0x70,                                     // movaps [rdi+70],xmm0
+			0x0F, 0x29, 0x8F, 0x80, 0x00, 0x00, 0x00,                   // movaps [rdi+00000080],xmm1
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &activeConfig.cameraAutoAdjust;
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
 	// Center Camera
 	{
 		auto addr     = (appBaseAddr + 0x577BA);
@@ -157,23 +194,13 @@ export void Camera_Toggle(bool enable)
 		}
 	}
 
+
+
 	run = true;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 // @Todo: Update.
-export void Camera_ToggleInvertX(bool enable)
+export void ToggleInvertX(bool enable)
 {
 	LogFunction(enable);
 
@@ -185,20 +212,47 @@ export void Camera_ToggleInvertX(bool enable)
 
 
 
+/*
+dmc3.exe+55FC0 - 0FB6 05 69B8C300      - movzx eax,byte ptr [dmc3.exe+C91830] { (9) }
+
+*/
+
+
+export void ToggleDisableBossCamera(bool enable)
+{
+	LogFunction(enable);
+
+	static bool run = false;
 
 
 
+	{
+		auto addr = (appBaseAddr + 0x55FD2);
+		constexpr uint32 size = 14;
+		/*
+		dmc3.exe+55FD2 - 48 89 83 98040000 - mov [rbx+00000498],rax
+		dmc3.exe+55FD9 - 4C 89 A3 B0040000 - mov [rbx+000004B0],r12
+		dmc3.exe+55FE0 - EB 15             - jmp dmc3.exe+55FF7
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
 
 
 
+	run = true;
+}
 
-
-
-
-
-
-
-
-
-
-
+namespaceEnd();

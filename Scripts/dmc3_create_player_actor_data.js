@@ -1,24 +1,35 @@
+
+// @Todo: Merge with create data.
+
 let fs = require("fs");
 let vm = require("vm");
 
-vm.runInThisContext(fs.readFileSync("dmc3_core.js", "utf8"));
+vm.runInThisContext(fs.readFileSync("core.js", "utf8"));
 
-const SIZE_BASE   = 0x7540;
-const SIZE_DANTE  = 0xB8C0;
-const SIZE_BOB    = 0xB680;
-const SIZE_LADY   = 0x8280;
-const SIZE_VERGIL = 0xB8C0;
+const SIZE_BASE          = 200;
+const SIZE_PLAYER_BASE   = 0x7540;
+const SIZE_PLAYER_DANTE  = 0xB8C0;
+const SIZE_PLAYER_BOB    = 0xB680;
+const SIZE_PLAYER_LADY   = 0x8280;
+const SIZE_PLAYER_VERGIL = 0xB8C0;
 
 let itemsBase =
 [
-	[ "status"                         , "uint8"             , [], 8      ],
-	[ "speed"                          , "float"             , [], 0x14   ],
-	[ "speedMultiplier"                , "float"             , [], 0x18   ],
-	[ "character"                      , "uint32"            , [], 0x78   ],
-	[ "position"                       , "vec4"              , [], 0x80   ],
-	[ "pull"                           , "float"             , [], 0x94   ],
-	[ "pullMultiplier"                 , "float"             , [], 0xA4   ],
-	[ "rotation"                       , "uint16"            , [], 0xC0   ],
+	// [ "status"                         , "uint8"             , [], 8      ],
+	// [ "speed"                          , "float"             , [], 0x14   ],
+	// [ "speedMultiplier"                , "float"             , [], 0x18   ],
+	// [ "visible"                        , "bool"              , [], 0x5D   ],
+	// [ "character"                      , "uint32"            , [], 0x78   ],
+	// [ "position"                       , "vec4"              , [], 0x80   ],
+	// [ "pull"                           , "float"             , [], 0x94   ],
+	// [ "pullMultiplier"                 , "float"             , [], 0xA4   ],
+	// [ "rotation"                       , "uint16"            , [], 0xC0   ],
+
+
+
+
+
+
 	[ "id"                             , "uint8"             , [], 0x118  ],
 	[ "isClone"                        , "bool32"            , [], 0x11C  ],
 	[ "visibility"                     , "uint32"            , [], 0x120  ],
@@ -89,7 +100,85 @@ let itemsBase =
 	[ "expertise[16]"                  , "byte32"            , [], 0x3FEC ],
 	[ "maxHitPoints"                   , "float"             , [], 0x40EC ],
 	[ "hitPoints"                      , "float"             , [], 0x411C ],
+
+
+
+/*
+
+41C0 lock on data start
+51D0 last lock on data addr
+51D8 last lock on data addr
+6208 lock on data count
+6300 vec4 target position
+
+
+
+*/
+
+
+
+	// base addr + 60
 	[ "targetBaseAddr"                 , "byte8 *"           , [], 0x6328 ],
+
+
+/*
+
+lock on gui data
+
+
+*/
+
+
+/*
+
+lock on data
+
+16 bytes of trash
+
+target gui lock on data addr
+
+apparently 255 entries
+
+addr
+nextAddr
+
+
+
+gui lock on data
+
+82 bytes
+
+judging by
+
+dmc3.exe+1BBE2E - 66 44 89 77 50        - mov [rdi+50],r14w
+
+
+
+
+if newPlayerIndex == 0
+use 1
+
+if 1 use 0
+
+if player is 0
+
+update gui lock on data as well
+
+2 functions
+
+fill position stuff
+
+
+
+
+
+
+*/
+
+
+
+
+
 	[ "style"                          , "uint32"            , [], 0x6338 ],
 	[ "wallHikeDirection"              , "uint32"            , [], 0x633C ],
 	[ ""                               , "uint32"            , [], 0x6340 ],
@@ -205,6 +294,7 @@ let itemsNew =
 	[ "newPlayerIndex"                         , "uint8"            , [], ],
 	[ "newCharacterIndex"                      , "uint8"            , [], ],
 	[ "newEntityIndex"                         , "uint8"            , [], ],
+	// [ "newContainerIndex"                      , "uint8"            , [], ],
 
 	[ "newForceFiles"                          , "bool"             , [], ],
 	[ "newForceFilesCharacter"                 , "uint8"            , [], ],
@@ -285,10 +375,10 @@ function AlignFunction
 
 CreateTuple
 (
-	"ActorDataBase",
+	"PlayerActorDataBase : ActorDataBase",
 	itemsBase,
+	SIZE_PLAYER_BASE,
 	SIZE_BASE,
-	0,
 	TupleFlags_Export |
 	TupleFlags_NoScopeEnd
 );
@@ -314,10 +404,10 @@ ClearAsserts();
 
 CreateTupleAsserts
 (
-	"ActorDataBase",
+	"PlayerActorDataBase",
 	itemsBase,
+	SIZE_PLAYER_BASE,
 	SIZE_BASE,
-	0,
 	TupleFlags_NoTypeAssert,
 	PositionFlags_Hex
 );
@@ -345,14 +435,14 @@ for (let index = 0; index < helpers.length; index++)
 	let name  = helper[0];
 	let items = helper[1];
 
-	let tuplename = "ActorData" + name;
+	let tuplename = "PlayerActorData" + name;
 
 	CreateTuple
 	(
-		tuplename + " : ActorDataBase",
+		tuplename + " : PlayerActorDataBase",
 		items,
-		SIZE_DANTE,
-		SIZE_BASE,
+		SIZE_PLAYER_DANTE,
+		SIZE_PLAYER_BASE,
 		TupleFlags_Export |
 		TupleFlags_NoScopeEnd
 	);
@@ -360,7 +450,7 @@ for (let index = 0; index < helpers.length; index++)
 	CreateTupleFunction
 	(
 		itemsNew,
-		SIZE_DANTE,
+		SIZE_PLAYER_DANTE,
 		0,
 		AlignFunction
 	);
@@ -377,8 +467,8 @@ for (let index = 0; index < helpers.length; index++)
 	(
 		tuplename,
 		items,
-		SIZE_DANTE,
-		SIZE_BASE,
+		SIZE_PLAYER_DANTE,
+		SIZE_PLAYER_BASE,
 		TupleFlags_NoTypeAssert |
 		TupleFlags_NoSizeAssert,
 		PositionFlags_Hex,
@@ -390,7 +480,7 @@ for (let index = 0; index < helpers.length; index++)
 		tuplename,
 		itemsNew,
 		0,
-		SIZE_DANTE,
+		SIZE_PLAYER_DANTE,
 		TupleFlags_NoTypeAssert |
 		TupleFlags_NoSizeAssert,
 		PositionFlags_Hex,
@@ -424,8 +514,8 @@ if
 	!Tag_Init
 	(
 		lines,
-		/\/\/ \$ActorDataStart$/,
-		/\/\/ \$ActorDataEnd$/
+		/\/\/ \$PlayerActorDataStart$/,
+		/\/\/ \$PlayerActorDataEnd$/
 	)
 )
 {
@@ -482,7 +572,7 @@ for (let actorIndex = 0; actorIndex < actorCount; actorIndex++)
 		itemsNew,
 		"Mary.Actor::Actor_actorBaseAddr",
 		[ posName ],
-		SIZE_DANTE,
+		SIZE_PLAYER_DANTE,
 		0,
 		AlignFunction
 	);

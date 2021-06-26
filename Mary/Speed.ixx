@@ -52,8 +52,8 @@ export void UpdateSpeedValues()
 	dmc3.exe+326AE1 - 80 B9 AC000000 01 - cmp byte ptr [rcx+000000AC],01
 	*/
 
-	*quicksilverActorAddr = activeConfig.Speed.quicksilverActor;
-	*quicksilverEnemyAddr = activeConfig.Speed.quicksilverEnemy;
+	*quicksilverActorAddr = activeConfig.Speed.quicksilverPlayerActor;
+	*quicksilverEnemyAddr = activeConfig.Speed.quicksilverEnemyActor;
 	WriteAddress((appBaseAddr + 0x27A982), quicksilverActorAddr, 8);
 	WriteAddress((appBaseAddr + 0x27A98A), quicksilverEnemyAddr, 8);
 	/*
@@ -64,7 +64,7 @@ export void UpdateSpeedValues()
 	if (g_scene == SCENE_GAME)
 	{
 		auto & value = *reinterpret_cast<float *>(appBaseAddr + 0xCF2D90);
-		auto & turbo = GetTurbo();
+		auto & turbo = IsTurbo();
 
 		value = (turbo) ? activeConfig.Speed.turbo : activeConfig.Speed.main;
 	}

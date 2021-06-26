@@ -1,3 +1,7 @@
+
+// @todo: heaven or hell not working!
+
+
 export module Arcade;
 
 import Core;
@@ -10,7 +14,12 @@ import Config;
 
 #define debug false
 
-export void Arcade_InitSession()
+
+
+
+namespaceStart(Arcade);
+
+export void InitSession()
 {
 	if (!activeConfig.Arcade.enable)
 	{
@@ -105,7 +114,7 @@ export void Arcade_InitSession()
 	auto & controllerMagic = *reinterpret_cast<uint32 *>(appBaseAddr + 0x553000) = 0;
 }
 
-export void Arcade_SetCharacter(byte8 * dest)
+export void SetCharacter(byte8 * dest)
 {
 	if (!activeConfig.Arcade.enable)
 	{
@@ -116,7 +125,7 @@ export void Arcade_SetCharacter(byte8 * dest)
 	auto & character = *reinterpret_cast<uint8 *>(dest + 0x4565) = activeConfig.Arcade.character;
 }
 
-export void Arcade_SetRoom()
+export void SetRoom()
 {
 	if (!activeConfig.Arcade.enable || activeConfig.BossRush.enable)
 	{
@@ -144,17 +153,17 @@ export void Arcade_SetRoom()
 	if (sessionData.mission == 21)
 	{
 		auto floor = activeConfig.Arcade.floor;
-		if (floor >= countof(Arcade_floorHelper))
+		if (floor >= countof(floorHelpers))
 		{
 			floor = 0;
 		}
 
-		nextEventData.room     = Arcade_floorHelper[floor].room;
-		nextEventData.position = Arcade_floorHelper[floor].position;
+		nextEventData.room     = floorHelpers[floor].room;
+		nextEventData.position = floorHelpers[floor].position;
 	}
 }
 
-export void Arcade_CreateMainActor(byte8 * baseAddr)
+export void EventCreateMainActor(byte8 * baseAddr)
 {
 	if (!activeConfig.Arcade.enable)
 	{
@@ -209,7 +218,7 @@ export void Arcade_CreateMainActor(byte8 * baseAddr)
 
 
 // @Todo: Update.
-export void Arcade_Toggle(bool enable)
+export void Toggle(bool enable)
 {
 	LogFunction(enable);
 	Write<byte8>((appBaseAddr + 0x2433FB), (enable) ? 0xEB : 0x74); // Force new game.
@@ -221,3 +230,18 @@ export void Arcade_Toggle(bool enable)
 	// @Todo: Lazy solution, update proper vars!
 	Write<byte8>((appBaseAddr + 0x1AA791), (enable) ? 0xEB : 0x75); // Skip orb notifications.
 }
+
+
+
+namespaceEnd();
+
+
+
+
+
+
+
+
+
+
+

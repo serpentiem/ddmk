@@ -191,5 +191,139 @@ export void HUD_Init()
 	InitIcons();
 }
 
+
+
+export void ToggleHideMainHUD(bool enable)
+{
+	static bool run = false;
+
+
+
+	// Top
+	{
+		auto addr = (appBaseAddr + 0x27E59C);
+		constexpr uint32 size = 2;
+		/*
+		dmc3.exe+27E59C - 75 0F    - jne dmc3.exe+27E5AD
+		dmc3.exe+27E59E - 48 8B D7 - mov rdx,rdi
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			Write<byte8>(addr, 0xEB);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Bottom
+	{
+		auto addr = (appBaseAddr + 0x2810F8);
+		constexpr uint32 size = 2;
+		/*
+		dmc3.exe+2810F8 - 75 0F    - jne dmc3.exe+281109
+		dmc3.exe+2810FA - 49 8B D6 - mov rdx,r14
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			Write<byte8>(addr, 0xEB);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Lock-On
+	{
+		auto addr = (appBaseAddr + 0x296E77);
+		constexpr uint32 size = 2;
+		/*
+		dmc3.exe+296E77 - 75 14    - jne dmc3.exe+296E8D
+		dmc3.exe+296E79 - 48 8B D3 - mov rdx,rbx
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			Write<byte8>(addr, 0xEB);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	run = true;
+}
+
+export void ToggleHideBossHUD(bool enable)
+{
+	static bool run = false;
+
+
+
+	{
+		auto addr = (appBaseAddr + 0x27FF69);
+		constexpr uint32 size = 2;
+		/*
+		dmc3.exe+27FF69 - 75 0F    - jne dmc3.exe+27FF7A
+		dmc3.exe+27FF6B - 48 8B D7 - mov rdx,rdi
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			Write<byte8>(addr, 0xEB);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	run = true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #ifdef __GARBAGE__
 #endif

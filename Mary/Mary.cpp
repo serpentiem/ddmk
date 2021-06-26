@@ -9,12 +9,13 @@ import Windows;
 
 import Vars;
 
+import ActorBase;
+import ActorRelocations;
 import Actor;
 import Arcade;
 import BossRush;
 import Camera;
 import Config;
-import Enemy;
 import Event;
 import File;
 import FMOD;
@@ -28,6 +29,7 @@ import Internal;
 import Memory;
 import Model;
 import Scene;
+import SoundRelocations;
 import Sound;
 import Speed;
 import Training;
@@ -128,9 +130,24 @@ uint32 DllMain
 
 
 
+		// Global_Toggle(false);
+		// Global_Toggle(true);
 
 
-		Actor_Init();
+		// ActorBase::Toggle(false);
+		// ActorBase::Toggle(true);
+
+
+
+		//Actor_Init();
+
+		// @Todo: Re-evaluate.
+		if (!Sound_Init())
+		{
+			Log("Sound_Init failed.");
+
+			return 0;
+		}
 
 		Actor_Toggle(false);
 
@@ -140,9 +157,37 @@ uint32 DllMain
 		}
 
 
+		ToggleBossLadyFixes(false);
+		ToggleBossLadyFixes(activeConfig.enableBossLadyFixes);
 
-		Camera_Toggle(false);
-		Camera_Toggle(true);
+		ToggleBossVergilFixes(false);
+		ToggleBossVergilFixes(activeConfig.enableBossVergilFixes);
+
+
+
+
+
+
+		Camera::Toggle(false);
+		Camera::Toggle(true);
+
+		Camera::ToggleInvertX(false);
+		Camera::ToggleInvertX(activeConfig.cameraInvertX);
+
+		Camera::ToggleDisableBossCamera(false);
+		Camera::ToggleDisableBossCamera(activeConfig.disableBossCamera);
+
+
+
+
+
+
+
+		ToggleNoDevilForm(false);
+		ToggleNoDevilForm(activeConfig.noDevilForm);
+
+
+
 
 		ToggleDeplete(false);
 		ToggleDeplete(true);
@@ -169,9 +214,11 @@ uint32 DllMain
 
 
 
-		Arcade_Toggle(activeConfig.Arcade.enable);
+		Arcade::Toggle(activeConfig.Arcade.enable);
 
-		Camera_ToggleInvertX(activeConfig.Camera.invertX);
+
+
+
 
 
 		Event_Toggle(false);
@@ -187,23 +234,20 @@ uint32 DllMain
 
 		HUD_Init();
 
+		ToggleHideMainHUD(false);
+		ToggleHideMainHUD(activeConfig.hideMainHUD);
+
+		ToggleHideBossHUD(false);
+		ToggleHideBossHUD(activeConfig.hideBossHUD);
+
+
+
+
 		Scene_Init();
 
 
 
-		if (!Sound_Init())
-		{
-			Log("Sound_Init failed.");
 
-			return 0;
-		}
-
-		Sound::ToggleRelocations(false);
-
-		if (activeConfig.Actor.enable)
-		{
-			Sound::ToggleRelocations(activeConfig.Actor.enable);
-		}
 
 
 
@@ -222,7 +266,7 @@ uint32 DllMain
 
 
 
-		Log("&leftStickDirection[0] %X", offsetof(ENGINE_GAMEPAD, leftStickDirection[0]));
+		//Log("&leftStickDirection[0] %X", offsetof(ENGINE_GAMEPAD, leftStickDirection[0]));
 
 		//Log("&g_showItemWindow %llX", &g_show)
 
@@ -236,16 +280,43 @@ uint32 DllMain
 			SetMemory((appBaseAddr + 0x1F2A38), 0x90, 5, MemoryFlags_VirtualProtectDestination); // Dante
 			SetMemory((appBaseAddr + 0x1F29AE), 0x90, 5, MemoryFlags_VirtualProtectDestination); // Vergil
 
-			// Force Visible HUD
-			Write<byte8>((appBaseAddr + 0x27E800), 0xEB);
-			Write<byte8>((appBaseAddr + 0x27DF3E), 0xEB);
-			Write<byte16>((appBaseAddr + 0x280DB9), 0xE990);
 
-			// Disable Style Rank Sub
-			SetMemory((appBaseAddr + 0x27A39C), 0x90, 5, MemoryFlags_VirtualProtectDestination);
 
-			// Force Collect Orbs
-			WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2);
+// Disable Set Boss Camera
+
+// SetMemory
+// (
+// 	(appBaseAddr + 0x55FD2),
+// 	0x90,
+// 	7,
+// 	MemoryFlags_VirtualProtectDestination
+// );
+
+/*
+dmc3.exe+55FD2 - 48 89 83 98040000 - mov [rbx+00000498],rax
+dmc3.exe+55FD9 - 4C 89 A3 B0040000 - mov [rbx+000004B0],r12
+*/
+
+
+
+
+
+
+
+
+
+
+
+			// // Force Visible HUD
+			// Write<byte8>((appBaseAddr + 0x27E800), 0xEB);
+			// Write<byte8>((appBaseAddr + 0x27DF3E), 0xEB);
+			// Write<byte16>((appBaseAddr + 0x280DB9), 0xE990);
+
+			// // Disable Style Rank Sub
+			// SetMemory((appBaseAddr + 0x27A39C), 0x90, 5, MemoryFlags_VirtualProtectDestination);
+
+			// // Force Collect Orbs
+			// WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2);
 		}
 	}
 

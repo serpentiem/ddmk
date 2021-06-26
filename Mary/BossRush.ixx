@@ -18,10 +18,26 @@ import Vars;
 // #define memset SetMemory
 // #define memcpy CopyMemory
 
+/*
+eventData
+*/
 import Config;
 import Internal;
 
-export void BossRush_SetRoom()
+
+
+
+
+
+
+namespaceStart(BossRush);
+
+
+
+
+
+
+export void SetRoom()
 {
 	if (!activeConfig.BossRush.enable)
 	{
@@ -41,7 +57,7 @@ export void BossRush_SetRoom()
 		nextEventData.position = bossHelper[boss].position;
 	};
 
-	if (nextEventData.room == missionStartHelper[sessionData.mission].room)
+	if (nextEventData.room == missionStartHelpers[sessionData.mission].room)
 	{
 		switch (sessionData.mission)
 		{
@@ -170,7 +186,7 @@ export void BossRush_SetRoom()
 	}
 }
 
-export void BossRush_SetNextRoom()
+export void SetNextRoom()
 {
 	if (!activeConfig.BossRush.enable)
 	{
@@ -284,7 +300,7 @@ export void BossRush_SetNextRoom()
 	}
 }
 
-export void BossRush_SetContinueRoom()
+export void SetContinueRoom()
 {
 	if (!activeConfig.BossRush.enable)
 	{
@@ -302,7 +318,7 @@ export void BossRush_SetContinueRoom()
 	nextEventData.position = static_cast<uint16>(eventData.position);
 }
 
-export bool BossRush_SetTrack(const char * filename)
+export bool SetTrack(const char * filename)
 {
 	if (!activeConfig.BossRush.enable)
 	{
@@ -338,7 +354,7 @@ export bool BossRush_SetTrack(const char * filename)
 	return true;
 }
 
-export void BossRush_Main()
+export void EventMain()
 {
 	if (!activeConfig.BossRush.enable)
 	{
@@ -450,3 +466,17 @@ export void BossRush_Main()
 	}
 	}
 }
+
+
+
+
+namespaceEnd();
+
+
+
+
+
+
+
+
+

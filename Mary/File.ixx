@@ -100,6 +100,9 @@ void AdjustPointers(byte8 * archive)
 	}
 }
 
+// @Todo: Add LoadFileFromZip.
+// filename, dest = 0
+
 bool ExtractFile(const char * name)
 {
 	if constexpr (debug)
@@ -254,6 +257,9 @@ struct FileManager : Container<>
 	);
 	Metadata & operator[](uint64 index);
 };
+
+
+// @Todo: Add GetFileSize(uint32 fileIndex).
 
 byte8 * FileManager::Metadata::operator[](uint32 fileIndex)
 {
@@ -523,7 +529,7 @@ export FileManager File_dynamicFiles;
 
 FileDataTypeData fileDataTypeData[CACHE_FILE_COUNT] = {};
 
-byte8 * demo_pl000_00_3 = 0;
+export byte8 * demo_pl000_00_3 = 0;
 
 export void File_UpdateFileData
 (
@@ -538,7 +544,7 @@ export void File_UpdateFileData
 		sizeof(fileData)
 	);
 
-	fileData.status       = FILE_DATA_STATUS_IN_USE;
+	fileData.status       = FILE_DATA_STATUS::IN_USE;
 	fileData.typeDataAddr = &fileDataTypeData[cacheFileIndex];
 	fileData.file         = File_staticFiles[cacheFileIndex];
 }
@@ -563,7 +569,7 @@ export void File_UpdateFileData
 }
 
 export FileData enemyFileData[ENEMY_FILE_DATA_COUNT] = {};
-export FileDataMetadata enemyFileDataMetadata[ENEMY_COUNT] = {};
+export FileDataMetadata enemyFileDataMetadata[ENEMY::COUNT] = {};
 
 export bool File_Init()
 {
@@ -765,12 +771,12 @@ export bool File_Init()
 			{ ENEMY_FILE_DATA_EM000, ENEMY_FILE_SET_EM000 }, // Unknown
 		};
 
-		static_assert(countof(helpers) == ENEMY_COUNT);
+		static_assert(countof(helpers) == ENEMY::COUNT);
 
-		for_all(uint8, index, ENEMY_COUNT)
+		for_all(uint8, index, ENEMY::COUNT)
 		{
 			bool lastCondition = (index > 0);
-			bool nextCondition = (index < (ENEMY_COUNT - 1));
+			bool nextCondition = (index < (ENEMY::COUNT - 1));
 
 			uint8 lastIndex = (lastCondition) ? (index - 1) : 0;
 			uint8 nextIndex = (nextCondition) ? (index + 1) : 0;
@@ -802,6 +808,25 @@ export bool File_Init()
 		Log("enemyFileData         %.16llX", enemyFileData);
 		Log("enemyFileDataMetadata %.16llX", enemyFileDataMetadata);
 	}
+
+
+
+
+
+
+	// Demo Rebellion Motion File
+	[&]()
+	{
+		const char * filename = "demo_pl000_00_3.pac";
+
+		auto & file = demo_pl000_00_3 = File_staticFiles.Push(filename);
+		if (!file)
+		{
+			return;
+		}
+
+		AdjustPointers(file);
+	}();
 
 
 

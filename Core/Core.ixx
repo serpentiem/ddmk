@@ -7,24 +7,17 @@ module;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <xmmintrin.h>
 export module Core;
 
 export import DataTypes;
 
-
-
 #include "Macros.h"
-
-
-
-
-
-
 
 import Windows;
 
 using namespace Windows;
-
 
 #define debug false
 
@@ -252,6 +245,14 @@ void UpdateMapIndex
 
 	Log("No match.");
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -1424,6 +1425,55 @@ struct Container<T>
 	bool Init(uint64 size);
 	void Push(const T & var);
 	void Pop();
+
+
+	void Remove(uint64 index)
+	{
+		if
+		(
+			(count == 0) ||
+			(index >= count)
+		)
+		{
+			return;
+		}
+
+		auto remainingCount = (count - index - 1);
+
+		if (remainingCount == 0)
+		{
+			SetMemory
+			(
+				&dataAddr[index],
+				0,
+				sizeof(T)
+			);
+
+			count--;
+
+			return;
+		}
+
+		auto remainingSize = (sizeof(T) * remainingCount);
+
+		CopyMemory
+		(
+			&dataAddr[index],
+			&dataAddr[(index + 1)],
+			remainingSize
+		);
+
+		SetMemory
+		(
+			&dataAddr[(count - 1)],
+			0,
+			sizeof(T)
+		);
+
+		count--;
+	}
+
+
 	void Clear();
 	T & operator[](uint64 index);
 };

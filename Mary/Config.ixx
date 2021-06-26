@@ -1,57 +1,28 @@
-// @Todo: Clean.
-// @Todo: Create order script.
-
-
-
-
 module;
 #include <stdio.h>
 #include <string.h>
-
-
-// #include <Windows.h>
-// #include <TlHelp32.h>
-// #include <shellapi.h>
-// #include <dxgi.h>
-// #include <d3d11.h>
-// #include <d3dcompiler.h>
-// #define DIRECTINPUT_VERSION 0x800
-// #include <dinput.h>
-// #include <Xinput.h>
-
-
 export module Config;
 
 import Core;
 
 #include "../Core/Macros.h"
 
-
-
-
 import Windows;
 
 using namespace Windows;
 
-
-
-
 import Vars;
 
-
-
-
-
-//import Windows;
-
 #define debug false
+
+
 
 #pragma pack(push, 1)
 export struct Config
 {
 	struct
 	{
-		bool enable = false;
+		bool enable = (debug) ? true : false;
 		uint8 playerCount = 1;
 		PlayerData playerData[PLAYER_COUNT] = {};
 	}
@@ -70,7 +41,7 @@ export struct Config
 		float  hitPoints      = 20000;
 		float  magicPoints    = 10000;
 		uint8  character      = CHAR_DANTE;
-		uint8  costume        = 0;
+		uint8  costume        = (debug) ? 1 : 0;
 		uint32 style          = STYLE_TRICKSTER;
 		uint8  weapons[4]     =
 		{
@@ -134,16 +105,19 @@ export struct Config
 
 
 
-	struct
-	{
-		bool  invertX        = (debug) ? true : false;
-		float height         = 140.0f;
-		float tilt           = 0.25f;
-		float distance       = 460.0f;
-		float distanceLockOn = 400.0f;
-		bool  applyConfig    = false;
-	}
-	Camera;
+	// struct
+	// {
+		
+	// 	// float height         = 140.0f;
+	// 	// float tilt           = 0.25f;
+	// 	// float distance       = 460.0f;
+	// 	// float distanceLockOn = 400.0f;
+	// 	// bool  applyConfig    = false;
+	// }
+	// Camera;
+
+
+
 
 
 
@@ -257,7 +231,7 @@ export struct Config
 
 
 	bool noDevilForm = false;
-	float orbReach = 300.0f;
+	float orbReach = (debug) ? 9000.0f : 300.0f;
 	struct
 	{
 		bool  infiniteSwordPierce = false;
@@ -268,7 +242,14 @@ export struct Config
 		float airStingerRange   [2] = { 140, 140 };
 	}
 	Rebellion;
-	bool removeBusyFlag = false;
+
+
+
+
+
+
+
+
 	bool resetPermissions = false;
 
 
@@ -295,8 +276,8 @@ export struct Config
 		float turbo = 1.2f;
 		float enemy = 1.0f;
 
-		float quicksilverActor = 1.05f;
-		float quicksilverEnemy = 0.33f;
+		float quicksilverPlayerActor = 1.05f;
+		float quicksilverEnemyActor  = 0.33f;
 
 		float human = 1.0f;
 		float devilDante[6] =
@@ -349,7 +330,7 @@ export struct Config
 
 
 
-	float linearWeaponSwitchTimeout = 12;
+	float linearWeaponSwitchTimeout = (debug) ? 6 : 12;
 
 
 
@@ -577,11 +558,12 @@ export struct Config
 	};
 
 
+	bool forceIconFocus = false;
 
 
 
 
-	bool disableCenterCamera = false;
+
 
 
 	// @Todo: Create struct.
@@ -599,7 +581,7 @@ export struct Config
 	double frameRate = 60.0;
 	uint8  vSync     = 0;
 
-	bool hideMouseCursor = true;
+	bool hideMouseCursor = (debug) ? false : true;
 
 
 	// @Todo: Remove.
@@ -633,18 +615,20 @@ export struct Config
 
 
 
-	struct CreateEnemyData
-	{
-		uint32 enemy;
-		uint32 variant;
-		vec4 position;
-		uint16 rotation;
-		bool useMainActorData = true;
-		uint16 spawnMethod;
-		bool autoSpawn;
-	};
-	uint8 createEnemyCount = 1;
-	CreateEnemyData createEnemyData[30] = {};
+	// struct CreateEnemyActorData
+	// {
+	// 	uint32 enemy;
+	// 	uint32 variant;
+	// 	vec4 position;
+	// 	uint16 rotation;
+	// 	bool useMainActorData = true;
+	// 	uint16 spawnMethod;
+	// 	bool autoSpawn;
+	// };
+	uint8 enemyCount = 1;
+	ConfigCreateEnemyActorData configCreateEnemyActorData[30] = {};
+
+	bool enemyAutoSpawn = false;
 
 
 
@@ -686,6 +670,29 @@ export struct Config
 
 
 
+	// struct NewMovesOverlayData : OverlayData
+	// {
+	// 	NewMovesOverlayData()
+	// 	{
+	// 		color[0] = 1.0f;
+	// 		color[1] = 1.0f;
+	// 		color[2] = 1.0f;
+	// 		color[3] = 1.0f;
+	// 	}
+	// };
+
+	OverlayData newMovesOverlayDataDante;
+	OverlayData newMovesOverlayDataVergil;
+	OverlayData newMovesOverlayDataBossLady;
+	OverlayData newMovesOverlayDataBossVergil;
+
+
+
+
+
+
+
+
 	struct
 	{
 		bool forceJustFrameRelease = false;
@@ -694,18 +701,57 @@ export struct Config
 
 
 
+	// @Todo: To avoid surprising file size prefer _(n) and static_assert
+	// to get correct alignment.
+
+	float __declspec(align(16)) kalinaAnnHookGrenadeHeight = 1280.0f;
+	float __declspec(align(16)) kalinaAnnHookGrenadeTime   = 90.0f;
+	vec4  __declspec(align(16)) kalinaAnnHookMultiplier    =
+	{
+		1.0f,
+		1.0f,
+		1.0f,
+		1.0f,
+	};
 
 
 
 
 
 
-	//MainOverlay, Overlay3;
-//OverlayData MissionOverlay;
+	bool  cameraInvertX       = (debug) ? true : false;
+	uint8 cameraAutoAdjust    = 0;
+	bool  disableCenterCamera = (debug) ? true : false;
+	bool  disableBossCamera   = (debug) ? true : false;
 
 
 
 
+
+
+
+
+	bool enableBossLadyFixes   = false;
+	bool enableBossVergilFixes = false;
+	bool enablePVPFixes        = false;
+
+
+	bool hideMainHUD = false;
+	bool hideBossHUD = false;
+
+
+
+
+
+
+
+
+
+
+	bool soundIgnoreEnemyData = false;
+
+
+	bool why = false;
 
 
 
@@ -1049,6 +1095,24 @@ export void ApplyDefaultCharacterData
 
 			break;
 		};
+		case CHAR_BOSS_LADY:
+		{
+			characterData =
+			{
+				CHAR_BOSS_LADY
+			};
+			
+			break;
+		};
+		case CHAR_BOSS_VERGIL:
+		{
+			characterData =
+			{
+				CHAR_BOSS_VERGIL
+			};
+			
+			break;
+		};
 	}
 }
 
@@ -1072,10 +1136,8 @@ export void ApplyDefaultPlayerData(PlayerData & playerData)
 
 export void SaveConfig()
 {
-	if constexpr (debug)
-	{
-		LogFunction();
-	}
+	DebugLogFunction();
+
 
 
 	if
@@ -1092,12 +1154,14 @@ export void SaveConfig()
 	}
 }
 
+
+
+
 export void LoadConfig()
 {
-	if constexpr (debug)
-	{
-		LogFunction();
-	}
+	DebugLogFunction();
+
+
 
 	HANDLE file = 0;
 	uint64 size = 0;
@@ -1109,12 +1173,27 @@ export void LoadConfig()
 	);
 	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
 	{
+		Log("OpenFile failed.");
+
+		Log("New Config");
+
 		SaveConfig();
 
 		return;
 	}
 
+
+
 	size = GetFileSize(file);
+
+	Log("fileSize      %llu", size                 );
+	Log("Config        %llu", sizeof(Config)       );
+	Log("activeConfig  %llu", sizeof(activeConfig) );
+	Log("queuedConfig  %llu", sizeof(queuedConfig) );
+	Log("defaultConfig %llu", sizeof(defaultConfig));
+
+
+
 	if (size != sizeof(Config))
 	{
 		Log("Size mismatch.");
@@ -1124,50 +1203,43 @@ export void LoadConfig()
 			Log("CloseFile failed.");
 		}
 
+		Log("New Config");
+
 		SaveConfig();
 
 		return;
 	}
 
-	Log("Very valid file.");
 
 
-	//HoboBreak();
+	Log("Valid Config");
 
-	if
-	(
-		!LoadFile
-		(
-			file,
-			size,
-			&activeConfig
-		)
-	)
+
+
+	[&]()
 	{
-		Log("LoadFile failed. &activeConfig");
-	}
-
-	if
-	(
-		!LoadFile
+		if
 		(
-			file,
-			size,
-			&queuedConfig
+			!LoadFile
+			(
+				file,
+				size,
+				&activeConfig
+			)
 		)
-	)
-	{
-		Log("LoadFile failed. &queuedConfig");
-	}
+		{
+			Log("LoadFile failed.");
 
+			return;
+		}
 
-
-	// LoadFile
-	// (
-	// 	file,
-	// 	size,
-	// 	&queuedConfig
-	// )
+		CopyMemory
+		(
+			&queuedConfig,
+			&activeConfig,
+			sizeof(queuedConfig)
+		);
+	}();
 
 
 
@@ -1175,13 +1247,6 @@ export void LoadConfig()
 	{
 		Log("CloseFile failed.");
 	}
-
-
-
-
-
-	// CopyMemory(&activeConfig, file, size);
-	// CopyMemory(&queuedConfig, file, size);
 }
 
 

@@ -1,4 +1,4 @@
-const debug = true;
+const debug = false;
 
 const TypeFlags_NoTypeAssert = 1 << 0;
 const TypeFlags_NoSizeAssert = 1 << 1;
@@ -119,6 +119,136 @@ function GetLine
 
 
 
+function Log(name)
+{
+	console.log(name);
+}
+
+function DebugLog(name)
+{
+	if (!debug)
+	{
+		return;
+	}
+
+	console.log(name);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+function Substring
+(
+	name,
+	pos,
+	size
+)
+{
+	return name.substring(pos, (pos + size));
+}
+
+function IsWhitespace(name)
+{
+	if (name.match(/ |\t|\r|\n/))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+function IsAlphanumerical(name)
+{
+	if (name.match(/[A-Za-z0-9]/))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+function IsFunctionGlyph(name)
+{
+	if (name.match(/[A-Za-z0-9_]/))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+function CleanScopeGlyph
+(
+	name,
+	glyph
+)
+{
+	let escapedGlyph = "\\" + glyph;
+
+	name = ReplaceAll
+	(
+		name,
+		(" " + escapedGlyph),
+		glyph
+	);
+
+	name = ReplaceAll
+	(
+		name,
+		(escapedGlyph + " "),
+		glyph
+	);
+
+	return name;
+}
+
+function Clean(name)
+{
+	name = ReplaceAll(name, "\r", "");
+	name = ReplaceAll(name, "\t", "");
+
+	name = ReplaceAll(name, "\n", " ");
+
+	name = ReplaceAll(name, "  ", " ");
+
+	name = name.replace(/^ /, "");
+	name = name.replace(/ $/, "");
+
+	name = CleanScopeGlyph(name, "(");
+	name = CleanScopeGlyph(name, ")");
+
+	name = CleanScopeGlyph(name, "{");
+	name = CleanScopeGlyph(name, "}");
+
+	name = CleanScopeGlyph(name, "[");
+	name = CleanScopeGlyph(name, "]");
+
+	name = ReplaceAll(name, ",\\(", ", (");
+	name = ReplaceAll(name, ",\\{", ", {");
+	name = ReplaceAll(name, ",\\[", ", [");
+
+	return name;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 function ReplaceAll
 (
@@ -127,6 +257,43 @@ function ReplaceAll
 	replace
 )
 {
+
+	if (name == undefined)
+	{
+		console.log("name undefined");
+
+		return name;
+	}
+	else if (name == "")
+	{
+		console.log("name empty");
+
+		return name;
+	}
+	else if (pattern == undefined)
+	{
+		console.log("pattern undefined");
+
+		return name;
+	}
+	else if (pattern == "")
+	{
+		console.log("pattern empty");
+
+		return name;
+	}
+
+	// console.log(name);
+	// console.log(pattern);
+	// console.log(replace);
+
+
+
+
+
+
+
+
 	let newPattern = new RegExp(pattern);
 
 	let count = 0;
@@ -139,15 +306,61 @@ function ReplaceAll
 			break;
 		}
 
+
+
 		name = name.replace(newPattern, replace);
 
 		count++;
+
+
+
+
+		if (count >= 10)
+		{
+
+			// console.log(match);
+			// console.log(newPattern);
+
+			//break;
+		}
 	}
 
 	// console.log("count " + count);
 
 	return name;
 }
+
+
+
+
+// function ReplaceAll
+// (
+// 	name,
+// 	pattern,
+// 	replace
+// )
+// {
+// 	let newPattern = new RegExp(pattern);
+
+// 	let count = 0;
+
+// 	while (true)
+// 	{
+// 		let match = name.match(newPattern);
+// 		if (!match)
+// 		{
+// 			break;
+// 		}
+
+// 		name = name.replace(newPattern, replace);
+
+// 		count++;
+// 	}
+
+// 	// console.log("count " + count);
+
+// 	return name;
+// }
 
 
 
@@ -411,6 +624,7 @@ let typeSizes =
 	[ "CameraData"             , 512  ],
 	[ "CollisionData"          , 656  ],
 	[ "StyleData"              , 352  ],
+	[ "EnemyVectorMetadata"              , 16  ],
 ];
 
 function GetTypeSize(typename)

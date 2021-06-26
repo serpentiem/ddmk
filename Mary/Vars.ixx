@@ -1,3 +1,9 @@
+
+// @Todo: Move to Global.
+
+
+
+
 export module Vars;
 
 import Core;
@@ -6,6 +12,243 @@ import Core;
 
 
 
+
+export enum
+{
+	CreateEnemyActorFlags_Reset = 1 << 0,
+};
+
+
+namespaceStart(QUICKSILVER_STAGE);
+enum
+{
+	DEFAULT,
+	TO_ON,
+	ON,
+	TO_OFF,
+	OFF,
+};
+namespaceEnd();
+
+
+
+
+
+
+
+
+
+namespaceStart(EFFECT);
+enum
+{
+	CLEAR = 0x8000000, // dmc3.exe+1F7CD2 - 81 8B F4CA0100 00000008 - or [rbx+0001CAF4],08000000
+};
+namespaceEnd();
+
+
+
+
+
+namespaceStart(EVENT_ENEMY);
+enum
+{
+	IDLE = 13,
+	SPAWN,
+	DEATH = 20,
+};
+namespaceEnd();
+
+
+
+
+
+export namespaceStart(EVENT_BOSS_LADY);
+enum
+{
+	PISTOL_LOCK_ON_WALK = 23,
+	PISTOL_LOCK_ON,
+	PISTOL_SHOT,
+	SMG_ROUNDHOUSE,
+	KALINA_ANN_CHARGED_SHOT,
+	KALINA_ANN_HYSTERIC,
+	KALINA_ANN_HOOK,
+	GRENADE_THROW,
+	FALL_BACK,
+	FALL_BACK_SHOOT,
+	FALL_BACK_RECOVER,
+	FALL_BACK_RECOVER_CROSSBOW,
+	FALL_BACK_HIT_FLOOR,
+	TROOPER_ROLL,
+	WHEEL_BACK,
+	WHEEL_RIGHT,
+	WHEEL_LEFT,
+	RUN,
+	BLOCK,
+	BLOCK_2,
+	BLOCK_3,
+	PISTOL_RELOAD,
+	SMG_RELOAD,
+	DEATH,
+	RUN_SHORT,
+	PISTOL_LOCK_ON_WALK_2,
+	SMG_ROUNDHOUSE_2,
+	KALINA_ANN_CHARGED_SHOT_2,
+	IDLE,
+};
+namespaceEnd();
+
+static_assert(EVENT_BOSS_LADY::IDLE == 51);
+
+
+
+
+export namespaceStart(EVENT_BOSS_VERGIL);
+enum
+{
+	IDLE = 23,
+	DEATH,
+	WALK,
+	IDLE_2,
+	IDLE_3,
+	WALK_2,
+	STRAFE,
+	STRAFE_2,
+	IDLE_4,
+	TAUNT,
+	YAMATO_COMBO,
+	YAMATO_COMBO_2,
+	YAMATO_FORCE_EDGE_COMBO,
+	YAMATO_FORCE_EDGE_COMBO_2,
+	YAMATO_UPPER_SLASH,
+	BEOWULF_COMBO,
+	BEOWULF_COMBO_2,
+	AIR_TRICK,
+	CRASH,
+	TRICK_UP,
+	TRICK_DOWN,
+	YAMATO_3_JUDGEMENT_CUTS,
+	YAMATO_RAPID_SLASH,
+	FORCE_EDGE_STINGER,
+	YAMATO_JUDGEMENT_CUT,
+	YAMATO_3_JUDGEMENT_CUTS_2,
+	AIR_TRICK_2,
+	DAMAGE,
+	BLOCK,
+	DAMAGE_2,
+	DAMAGE_3,
+	DAMAGE_4,
+	DAMAGE_5,
+	TAUNT_2,
+	STRONG_SHIELD,
+	FORCE_EDGE_ROUND_TRIP,
+	FORCE_EDGE_HELM_BREAKER,
+	FORCE_EDGE_4_HELM_BREAKERS,
+	CRASH_2,
+	TRICK_BACK,
+	YAMATO_SUPER_JUDGEMENT_CUT,
+	YAMATO_SUPER_JUDGEMENT_CUT_FOLLOW,
+	SHIELD,
+	YAMATO_DEFLECT,
+	LEAVE_DEVIL_FORM,
+	REST_IN_PEACE,
+};
+namespaceEnd();
+
+static_assert(EVENT_BOSS_VERGIL::LEAVE_DEVIL_FORM == 67);
+
+
+
+// first scan human
+
+
+/*
+
+bossVergil_variant
+
+variantBossVergil
+
+BossVergil
+
+taunt increases variable
+
+if greater than max
+
+reset
+
+b forward beowulf shield
+b back force edge shield
+
+left shoulder toggle devil true
+
+
+
+
+
+*/
+
+
+
+
+export namespaceStart(COLLISION_GROUP);
+enum
+{
+	PLAYER = 0,
+	ENEMY  = 2,
+};
+namespaceEnd();
+
+
+
+
+
+export namespaceStart(CollisionFlags);
+enum
+{
+	Zero   = 0,
+	Player = 0x30443, // dmc3.exe+173B5D - C7 86 D0020000 43040300 - mov [rsi+000002D0],00030443
+	Enemy  = 0x3050C, // dmc3.exe+173B76 - C7 86 D0020000 0C050300 - mov [rsi+000002D0],0003050C
+};
+namespaceEnd();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export enum
+{
+	Visibility_Default,
+	Visibility_Show,
+	Visibility_Hide,
+};
+
+
+
+
+
+
+
+
+export enum
+{
+	ACTOR_TYPE_PLAYER,
+	ACTOR_TYPE_ENEMY,
+	ACTOR_TYPE_COUNT,
+};
 
 
 
@@ -23,6 +266,33 @@ export enum ENTITY
 	ENTITY_CLONE,
 	MAX_ENTITY,
 };
+
+export enum
+{
+	PLAYER_COUNT = 4,
+	ENTITY_COUNT = 2,
+	CHARACTER_COUNT = 3,
+	STYLE_COUNT = 4,
+	WEAPON_COUNT = 10,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export enum CLONE_STATUS
 {
@@ -42,6 +312,7 @@ export enum CopyStateFlags
 {
 	CopyStateFlags_EventData = 1 << 0,
 	CopyStateFlags_Mode      = 1 << 1,
+	CopyStateFlags_FixPermissions      = 1 << 2,
 };
 
 export enum
@@ -49,6 +320,11 @@ export enum
 	DEVIL_FLUX_START = 1,
 	DEVIL_FLUX_END   = 2,
 };
+
+/*
+3 glow on
+4 glow off
+*/
 
 export enum
 {
@@ -87,14 +363,7 @@ export enum DOT_SHADOW
 	DOT_SHADOW_DISABLE_ACTOR_ONLY,
 };
 
-export enum
-{
-	PLAYER_COUNT = 4,
-	ENTITY_COUNT = 2,
-	CHARACTER_COUNT = 3,
-	STYLE_COUNT = 4,
-	WEAPON_COUNT = 10,
-};
+
 
 export enum FILE_MODE
 {
@@ -144,8 +413,9 @@ export enum CHAR_
 	CHAR_BOB,
 	CHAR_LADY,
 	CHAR_VERGIL,
-	CHAR_VOID = 255,
-	MAX_CHAR = 4,
+	MAX_CHAR,
+	CHAR_BOSS_LADY,
+	CHAR_BOSS_VERGIL,
 };
 
 export enum COSTUME_
@@ -218,6 +488,9 @@ export enum WEAPON
 	WEAPON_VOID = 255,
 };
 
+
+
+
 export enum
 {
 	WEAPON_COUNT_DANTE = 10,
@@ -231,278 +504,334 @@ export enum
 	RANGED_WEAPON_COUNT_DANTE = 5,
 };
 
-// @Todo: Update.
-export enum MOTION_GROUP_
+export namespaceStart(MOTION_GROUP_DANTE);
+enum
 {
-	MOTION_GROUP_DANTE_BASE,
-	MOTION_GROUP_DANTE_DAMAGE,
-	MOTION_GROUP_DANTE_TAUNTS,
-	MOTION_GROUP_DANTE_REBELLION,
-	MOTION_GROUP_DANTE_CERBERUS,
-	MOTION_GROUP_DANTE_AGNI_RUDRA,
-	MOTION_GROUP_DANTE_NEVAN,
-	MOTION_GROUP_DANTE_BEOWULF,
-	MOTION_GROUP_DANTE_EBONY_IVORY,
-	MOTION_GROUP_DANTE_SHOTGUN,
-	MOTION_GROUP_DANTE_ARTEMIS,
-	MOTION_GROUP_DANTE_SPIRAL,
-	MOTION_GROUP_DANTE_KALINA_ANN,
-	MOTION_GROUP_DANTE_SWORDMASTER_REBELLION,
-	MOTION_GROUP_DANTE_SWORDMASTER_CERBERUS,
-	MOTION_GROUP_DANTE_SWORDMASTER_AGNI_RUDRA,
-	MOTION_GROUP_DANTE_SWORDMASTER_NEVAN,
-	MOTION_GROUP_DANTE_SWORDMASTER_BEOWULF,
-	MOTION_GROUP_DANTE_GUNSLINGER_EBONY_IVORY,
-	MOTION_GROUP_DANTE_GUNSLINGER_SHOTGUN,
-	MOTION_GROUP_DANTE_GUNSLINGER_ARTEMIS,
-	MOTION_GROUP_DANTE_GUNSLINGER_SPIRAL,
-	MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN,
-	MOTION_GROUP_DANTE_TRICKSTER,
-	MOTION_GROUP_DANTE_ROYALGUARD,
-	MOTION_GROUP_DANTE_QUICKSILVER,
-	MOTION_GROUP_DANTE_DOPPELGANGER,
-	MOTION_GROUP_BOB_BASE = 0,
-	MOTION_GROUP_BOB_DAMAGE,
-	MOTION_GROUP_BOB_TAUNTS,
-	MOTION_GROUP_BOB_YAMATO = 31,
-	MOTION_GROUP_LADY_BASE = 0,
-	MOTION_GROUP_LADY_DAMAGE,
-	MOTION_GROUP_LADY_TAUNTS,
-	MOTION_GROUP_VERGIL_BASE = 0,
-	MOTION_GROUP_VERGIL_DAMAGE,
-	MOTION_GROUP_VERGIL_TAUNTS,
-	MOTION_GROUP_VERGIL_YAMATO,
-	MOTION_GROUP_VERGIL_BEOWULF,
-	MOTION_GROUP_VERGIL_YAMATO_FORCE_EDGE,
-	MOTION_GROUP_VERGIL_DARK_SLAYER,
-	MOTION_GROUP_VERGIL_NERO_ANGELO_YAMATO,
-	MOTION_GROUP_VERGIL_NERO_ANGELO_BEOWULF,
-	MOTION_GROUP_VERGIL_NERO_ANGELO_FORCE_EDGE,
-	MOTION_GROUP_IN_GAME_CUTSCENE = 33,
-	MAX_MOTION_GROUP = 34,
+	BASE,
+	DAMAGE,
+	TAUNTS,
+	REBELLION,
+	CERBERUS,
+	AGNI_RUDRA,
+	NEVAN,
+	BEOWULF,
+	EBONY_IVORY,
+	SHOTGUN,
+	ARTEMIS,
+	SPIRAL,
+	KALINA_ANN,
+	SWORDMASTER_REBELLION,
+	SWORDMASTER_CERBERUS,
+	SWORDMASTER_AGNI_RUDRA,
+	SWORDMASTER_NEVAN,
+	SWORDMASTER_BEOWULF,
+	GUNSLINGER_EBONY_IVORY,
+	GUNSLINGER_SHOTGUN,
+	GUNSLINGER_ARTEMIS,
+	GUNSLINGER_SPIRAL,
+	GUNSLINGER_KALINA_ANN,
+	TRICKSTER,
+	ROYALGUARD,
+	QUICKSILVER,
+	DOPPELGANGER,
 };
+namespaceEnd();
 
-export enum NEXT_ACTION_REQUEST_POLICY
+export namespaceStart(MOTION_GROUP_BOB);
+enum
 {
-	NEXT_ACTION_REQUEST_POLICY_IGNORE,
-	NEXT_ACTION_REQUEST_POLICY_BUFFER,
-	NEXT_ACTION_REQUEST_POLICY_EXECUTE,
+	BASE,
+	DAMAGE,
+	TAUNTS,
+	YAMATO = 31,
+};
+namespaceEnd();
+
+export namespaceStart(MOTION_GROUP_LADY);
+enum
+{
+	BASE,
+	DAMAGE,
+	TAUNTS,
+};
+namespaceEnd();
+
+export namespaceStart(MOTION_GROUP_VERGIL);
+enum
+{
+	BASE,
+	DAMAGE,
+	TAUNTS,
+	YAMATO,
+	BEOWULF,
+	YAMATO_FORCE_EDGE,
+	DARK_SLAYER,
+	NERO_ANGELO_YAMATO,
+	NERO_ANGELO_BEOWULF,
+	NERO_ANGELO_FORCE_EDGE,
+};
+namespaceEnd();
+
+export namespaceStart(MOTION_GROUP);
+enum
+{
+	CUTSCENE = 33,
+	MAX = 34,
+};
+namespaceEnd();
+
+
+
+
+
+
+
+
+export namespaceStart(NEXT_ACTION_REQUEST_POLICY);
+enum
+{
+	IGNORE,
+	BUFFER,
+	EXECUTE,
 	// Indices
-	NEXT_ACTION_REQUEST_POLICY_MELEE_ATTACK = 0,
-	NEXT_ACTION_REQUEST_POLICY_SWORDMASTER_GUNSLINGER = 4,
-	NEXT_ACTION_REQUEST_POLICY_JUMP_ROLL = 5,
-	NEXT_ACTION_REQUEST_POLICY_ROYALGUARD = 6,
-	NEXT_ACTION_REQUEST_POLICY_TRICKSTER_DARK_SLAYER = 8,
-	NEXT_ACTION_REQUEST_POLICY_RANGED_ATTACK = 10,
-	NEXT_ACTION_REQUEST_POLICY_END = 15,
+	MELEE_ATTACK = 0,
+	SWORDMASTER_GUNSLINGER = 4,
+	JUMP_ROLL = 5,
+	ROYALGUARD = 6,
+	TRICKSTER_DARK_SLAYER = 8,
+	RANGED_ATTACK = 10,
+	END = 15,
 };
+namespaceEnd();
 
-export enum ACTION
+
+
+
+
+
+
+
+
+export namespaceStart(ACTION_DANTE);
+enum
 {
-	ACTION_DANTE_REBELLION_COMBO_1_PART_1 = 1,
-	ACTION_DANTE_REBELLION_COMBO_1_PART_2,
-	ACTION_DANTE_REBELLION_COMBO_1_PART_3,
-	ACTION_DANTE_REBELLION_COMBO_2_PART_2,
-	ACTION_DANTE_REBELLION_COMBO_2_PART_3,
-	ACTION_DANTE_REBELLION_HELM_BREAKER,
-	ACTION_DANTE_REBELLION_STINGER_LEVEL_1,
-	ACTION_DANTE_REBELLION_STINGER_LEVEL_2,
-	ACTION_DANTE_REBELLION_LEAP,
-	ACTION_DANTE_REBELLION_HIGH_TIME,
-	ACTION_DANTE_REBELLION_HIGH_TIME_LAUNCH,
-	ACTION_DANTE_REBELLION_KICK_1,
-	ACTION_DANTE_REBELLION_DRIVE_1,
-	ACTION_DANTE_REBELLION_MILLION_STAB,
-	ACTION_DANTE_REBELLION_SWORD_PIERCE,
-	ACTION_DANTE_REBELLION_PROP_SHREDDER_1,
-	ACTION_DANTE_REBELLION_DIVEKICK,
-	ACTION_DANTE_REBELLION_KICK_2,
-	ACTION_DANTE_REBELLION_AERIAL_RAVE_PART_1,
-	ACTION_DANTE_REBELLION_AERIAL_RAVE_PART_2,
-	ACTION_DANTE_REBELLION_AERIAL_RAVE_PART_3,
-	ACTION_DANTE_REBELLION_AERIAL_RAVE_PART_4,
-	ACTION_DANTE_REBELLION_SWORD_PIERCE_RETURN,
-	ACTION_DANTE_REBELLION_PROP_SHREDDER_2,
-	ACTION_DANTE_REBELLION_DRIVE_2,
-	ACTION_DANTE_CERBERUS_COMBO_1_PART_1 = 30,
-	ACTION_DANTE_CERBERUS_COMBO_1_PART_2,
-	ACTION_DANTE_CERBERUS_COMBO_1_PART_3,
-	ACTION_DANTE_CERBERUS_COMBO_1_PART_4,
-	ACTION_DANTE_CERBERUS_COMBO_1_PART_5,
-	ACTION_DANTE_CERBERUS_COMBO_2_PART_3,
-	ACTION_DANTE_CERBERUS_COMBO_2_PART_4,
-	ACTION_DANTE_CERBERUS_WINDMILL,
-	ACTION_DANTE_CERBERUS_REVOLVER_LEVEL_1,
-	ACTION_DANTE_CERBERUS_REVOLVER_LEVEL_2,
-	ACTION_DANTE_CERBERUS_SWING,
-	ACTION_DANTE_CERBERUS_SATELLITE,
-	ACTION_DANTE_CERBERUS_FLICKER,
-	ACTION_DANTE_CERBERUS_AIR_FLICKER,
-	ACTION_DANTE_CERBERUS_CRYSTAL,
-	ACTION_DANTE_CERBERUS_MILLION_CARATS,
-	ACTION_DANTE_CERBERUS_ICE_AGE,
-	ACTION_DANTE_AGNI_RUDRA_COMBO_1_PART_1 = 50,
-	ACTION_DANTE_AGNI_RUDRA_COMBO_1_PART_2,
-	ACTION_DANTE_AGNI_RUDRA_COMBO_1_PART_3,
-	ACTION_DANTE_AGNI_RUDRA_COMBO_1_PART_4,
-	ACTION_DANTE_AGNI_RUDRA_COMBO_1_PART_5,
-	ACTION_DANTE_AGNI_RUDRA_COMBO_2_PART_2,
-	ACTION_DANTE_AGNI_RUDRA_COMBO_2_PART_3,
-	ACTION_DANTE_AGNI_RUDRA_COMBO_3_PART_3,
-	ACTION_DANTE_AGNI_RUDRA_JET_STREAM_LEVEL_1,
-	ACTION_DANTE_AGNI_RUDRA_JET_STREAM_LEVEL_2,
-	ACTION_DANTE_AGNI_RUDRA_JET_STREAM_LEVEL_3,
-	ACTION_DANTE_AGNI_RUDRA_AERIAL_CROSS,
-	ACTION_DANTE_AGNI_RUDRA_WHIRLWIND,
-	ACTION_DANTE_AGNI_RUDRA_WHIRLWIND_LAUNCH,
-	ACTION_DANTE_AGNI_RUDRA_MILLION_SLASH,
-	ACTION_DANTE_AGNI_RUDRA_CROSSED_SWORDS,
-	ACTION_DANTE_AGNI_RUDRA_CRAWLER,
-	ACTION_DANTE_AGNI_RUDRA_TWISTER,
-	ACTION_DANTE_AGNI_RUDRA_SKY_DANCE_PART_1,
-	ACTION_DANTE_AGNI_RUDRA_SKY_DANCE_PART_2,
-	ACTION_DANTE_AGNI_RUDRA_SKY_DANCE_PART_3,
-	ACTION_DANTE_AGNI_RUDRA_TEMPEST,
-	ACTION_DANTE_NEVAN_TUNE_UP = 80,
-	ACTION_DANTE_NEVAN_COMBO_1,
-	ACTION_DANTE_NEVAN_COMBO_2,
-	ACTION_DANTE_NEVAN_JAM_SESSION,
-	ACTION_DANTE_NEVAN_BAT_RIFT_LEVEL_1,
-	ACTION_DANTE_NEVAN_BAT_RIFT_LEVEL_2,
-	ACTION_DANTE_NEVAN_REVERB_SHOCK_LEVEL_1,
-	ACTION_DANTE_NEVAN_REVERB_SHOCK_LEVEL_2,
-	ACTION_DANTE_NEVAN_AIR_PLAY,
-	ACTION_DANTE_NEVAN_SLASH,
-	ACTION_DANTE_NEVAN_AIR_SLASH_PART_1,
-	ACTION_DANTE_NEVAN_AIR_SLASH_PART_2,
-	ACTION_DANTE_NEVAN_FEEDBACK,
-	ACTION_DANTE_NEVAN_CRAZY_ROLL,
-	ACTION_DANTE_NEVAN_DISTORTION,
-	ACTION_DANTE_NEVAN_VORTEX,
-	ACTION_DANTE_NEVAN_THUNDER_BOLT,
-	ACTION_DANTE_BEOWULF_COMBO_1_PART_1 = 110,
-	ACTION_DANTE_BEOWULF_COMBO_1_PART_2,
-	ACTION_DANTE_BEOWULF_COMBO_1_PART_3,
-	ACTION_DANTE_BEOWULF_COMBO_2_PART_3,
-	ACTION_DANTE_BEOWULF_COMBO_2_PART_4,
-	ACTION_DANTE_BEOWULF_HYPER_FIST,
-	ACTION_DANTE_BEOWULF_KILLER_BEE,
-	ACTION_DANTE_BEOWULF_BEAST_UPPERCUT,
-	ACTION_DANTE_BEOWULF_RISING_DRAGON,
-	ACTION_DANTE_BEOWULF_RISING_DRAGON_LAUNCH,
-	ACTION_DANTE_BEOWULF_RISING_DRAGON_WHIRLWIND,
-	ACTION_DANTE_BEOWULF_STRAIGHT_LEVEL_1,
-	ACTION_DANTE_BEOWULF_STRAIGHT_LEVEL_2,
-	ACTION_DANTE_BEOWULF_ZODIAC,
-	ACTION_DANTE_BEOWULF_VOLCANO,
-	ACTION_DANTE_BEOWULF_AIR_VOLCANO,
-	ACTION_DANTE_BEOWULF_TORNADO,
-	ACTION_DANTE_BEOWULF_THE_HAMMER,
-	ACTION_DANTE_BEOWULF_REAL_IMPACT,
-	ACTION_DANTE_EBONY_IVORY_NORMAL_SHOT = 130,
-	ACTION_DANTE_EBONY_IVORY_CHARGED_SHOT,
-	ACTION_DANTE_EBONY_IVORY_AIR_NORMAL_SHOT,
-	ACTION_DANTE_EBONY_IVORY_AIR_CHARGED_SHOT,
-	ACTION_DANTE_EBONY_IVORY_TWOSOME_TIME,
-	ACTION_DANTE_EBONY_IVORY_RAIN_STORM,
-	ACTION_DANTE_EBONY_IVORY_WILD_STOMP,
-	ACTION_DANTE_SHOTGUN_NORMAL_SHOT = 140,
-	ACTION_DANTE_SHOTGUN_CHARGED_SHOT,
-	ACTION_DANTE_SHOTGUN_AIR_NORMAL_SHOT,
-	ACTION_DANTE_SHOTGUN_AIR_CHARGED_SHOT,
-	ACTION_DANTE_SHOTGUN_FIREWORKS,
-	ACTION_DANTE_SHOTGUN_AIR_FIREWORKS,
-	ACTION_DANTE_SHOTGUN_GUN_STINGER,
-	ACTION_DANTE_SHOTGUN_POINT_BLANK,
-	ACTION_DANTE_ARTEMIS_NORMAL_SHOT = 150,
-	ACTION_DANTE_ARTEMIS_AIR_NORMAL_SHOT,
-	ACTION_DANTE_ARTEMIS_MULTI_LOCK_SHOT,
-	ACTION_DANTE_ARTEMIS_AIR_MULTI_LOCK_SHOT,
-	ACTION_DANTE_ARTEMIS_SPHERE,
-	ACTION_DANTE_ARTEMIS_ACID_RAIN,
-	ACTION_DANTE_SPIRAL_NORMAL_SHOT = 160,
-	ACTION_DANTE_SPIRAL_SNIPER,
-	ACTION_DANTE_SPIRAL_TRICK_SHOT,
-	ACTION_DANTE_KALINA_ANN_NORMAL_SHOT = 170,
-	ACTION_DANTE_KALINA_ANN_HYSTERIC,
-	ACTION_DANTE_KALINA_ANN_GRAPPLE,
-	ACTION_DANTE_TRICKSTER_DASH = 180,
-	ACTION_DANTE_TRICKSTER_SKY_STAR,
-	ACTION_DANTE_TRICKSTER_AIR_TRICK,
-	ACTION_DANTE_TRICKSTER_WALL_HIKE,
-	ACTION_DANTE_ROYALGUARD_RELEASE_1 = 190,
-	ACTION_DANTE_ROYALGUARD_RELEASE_2,
-	ACTION_DANTE_ROYALGUARD_RELEASE_3,
-	ACTION_DANTE_ROYALGUARD_RELEASE_4,
-	ACTION_DANTE_ROYALGUARD_AIR_RELEASE_1,
-	ACTION_DANTE_ROYALGUARD_AIR_RELEASE_2,
-	ACTION_DANTE_ROYALGUARD_AIR_RELEASE_3,
-	ACTION_DANTE_ROYALGUARD_AIR_RELEASE_4,
-	ACTION_DANTE_REBELLION_DANCE_MACABRE_PART_1 = 200,
-	ACTION_DANTE_REBELLION_DANCE_MACABRE_PART_2,
-	ACTION_DANTE_REBELLION_DANCE_MACABRE_PART_3,
-	ACTION_DANTE_REBELLION_DANCE_MACABRE_PART_4,
-	ACTION_DANTE_REBELLION_DANCE_MACABRE_PART_5,
-	ACTION_DANTE_REBELLION_DANCE_MACABRE_PART_6,
-	ACTION_DANTE_REBELLION_DANCE_MACABRE_PART_7,
-	ACTION_DANTE_REBELLION_DANCE_MACABRE_PART_8,
-	ACTION_DANTE_REBELLION_CRAZY_DANCE,
-	ACTION_DANTE_POLE_PLAY,
-	ACTION_VERGIL_YAMATO_COMBO_PART_1 = 1,
-	ACTION_VERGIL_YAMATO_COMBO_PART_2,
-	ACTION_VERGIL_YAMATO_COMBO_PART_3,
-	ACTION_VERGIL_YAMATO_RAPID_SLASH_LEVEL_1,
-	ACTION_VERGIL_YAMATO_RAPID_SLASH_LEVEL_2,
-	ACTION_VERGIL_YAMATO_LEAP,
-	ACTION_VERGIL_YAMATO_UPPER_SLASH_PART_1,
-	ACTION_VERGIL_YAMATO_UPPER_SLASH_PART_2,
-	ACTION_VERGIL_YAMATO_JUDGEMENT_CUT_LEVEL_1,
-	ACTION_VERGIL_YAMATO_JUDGEMENT_CUT_LEVEL_2,
-	ACTION_VERGIL_YAMATO_AERIAL_RAVE_PART_1,
-	ACTION_VERGIL_YAMATO_AERIAL_RAVE_PART_2,
-	ACTION_VERGIL_BEOWULF_COMBO_PART_1 = 20,
-	ACTION_VERGIL_BEOWULF_COMBO_PART_2,
-	ACTION_VERGIL_BEOWULF_COMBO_PART_3,
-	ACTION_VERGIL_BEOWULF_STARFALL_LEVEL_1,
-	ACTION_VERGIL_BEOWULF_STARFALL_LEVEL_2,
-	ACTION_VERGIL_BEOWULF_RISING_SUN,
-	ACTION_VERGIL_BEOWULF_LUNAR_PHASE_LEVEL_1,
-	ACTION_VERGIL_BEOWULF_LUNAR_PHASE_LEVEL_2,
-	ACTION_VERGIL_YAMATO_FORCE_EDGE_COMBO_PART_1 = 30,
-	ACTION_VERGIL_YAMATO_FORCE_EDGE_COMBO_PART_2,
-	ACTION_VERGIL_YAMATO_FORCE_EDGE_COMBO_PART_3,
-	ACTION_VERGIL_YAMATO_FORCE_EDGE_COMBO_PART_4,
-	ACTION_VERGIL_YAMATO_FORCE_EDGE_HELM_BREAKER_LEVEL_1,
-	ACTION_VERGIL_YAMATO_FORCE_EDGE_HELM_BREAKER_LEVEL_2,
-	ACTION_VERGIL_YAMATO_FORCE_EDGE_HIGH_TIME,
-	ACTION_VERGIL_YAMATO_FORCE_EDGE_HIGH_TIME_LAUNCH,
-	ACTION_VERGIL_YAMATO_FORCE_EDGE_STINGER_LEVEL_1,
-	ACTION_VERGIL_YAMATO_FORCE_EDGE_STINGER_LEVEL_2,
-	ACTION_VERGIL_YAMATO_FORCE_EDGE_ROUND_TRIP,
-	ACTION_VERGIL_YAMATO_FORCE_EDGE_KICK,
-	ACTION_VERGIL_SUMMONED_SWORDS_SHOOT = 52,
-	ACTION_VERGIL_SUMMONED_SWORDS_SPIRAL_SWORDS,
-	ACTION_VERGIL_SUMMONED_SWORDS_BLISTERING_SWORDS,
-	ACTION_VERGIL_SUMMONED_SWORDS_SWORD_STORM,
-	ACTION_VERGIL_DARK_SLAYER_AIR_TRICK = 60,
-	ACTION_VERGIL_DARK_SLAYER_TRICK_UP,
-	ACTION_VERGIL_DARK_SLAYER_TRICK_DOWN,
-	ACTION_VERGIL_NERO_ANGELO_COMBO_1_PART_1 = 70,
-	ACTION_VERGIL_NERO_ANGELO_COMBO_1_PART_2,
-	ACTION_VERGIL_NERO_ANGELO_COMBO_1_PART_3,
-	ACTION_VERGIL_NERO_ANGELO_HELM_BREAKER,
-	ACTION_VERGIL_NERO_ANGELO_HIGH_TIME,
-	ACTION_VERGIL_NERO_ANGELO_HIGH_TIME_LAUNCH,
-	ACTION_VERGIL_NERO_ANGELO_STINGER,
-	ACTION_VERGIL_NERO_ANGELO_FIREBALL_1,
-	ACTION_VERGIL_NERO_ANGELO_COMBO_2_PART_1 = 90,
-	ACTION_VERGIL_NERO_ANGELO_COMBO_2_PART_2,
-	ACTION_VERGIL_NERO_ANGELO_COMBO_2_PART_3,
-	ACTION_VERGIL_NERO_ANGELO_DIVEKICK,
-	ACTION_VERGIL_NERO_ANGELO_ROUNDHOUSE_KICK,
-	ACTION_VERGIL_NERO_ANGELO_UPPERCUT,
-	ACTION_VERGIL_NERO_ANGELO_FIREBALL_2,
+	REBELLION_COMBO_1_PART_1 = 1,
+	REBELLION_COMBO_1_PART_2,
+	REBELLION_COMBO_1_PART_3,
+	REBELLION_COMBO_2_PART_2,
+	REBELLION_COMBO_2_PART_3,
+	REBELLION_HELM_BREAKER,
+	REBELLION_STINGER_LEVEL_1,
+	REBELLION_STINGER_LEVEL_2,
+	REBELLION_LEAP,
+	REBELLION_HIGH_TIME,
+	REBELLION_HIGH_TIME_LAUNCH,
+	REBELLION_KICK_1,
+	REBELLION_DRIVE_1,
+	REBELLION_MILLION_STAB,
+	REBELLION_SWORD_PIERCE,
+	REBELLION_PROP_SHREDDER_1,
+	REBELLION_DIVEKICK,
+	REBELLION_KICK_2,
+	REBELLION_AERIAL_RAVE_PART_1,
+	REBELLION_AERIAL_RAVE_PART_2,
+	REBELLION_AERIAL_RAVE_PART_3,
+	REBELLION_AERIAL_RAVE_PART_4,
+	REBELLION_SWORD_PIERCE_RETURN,
+	REBELLION_PROP_SHREDDER_2,
+	REBELLION_DRIVE_2,
+	CERBERUS_COMBO_1_PART_1 = 30,
+	CERBERUS_COMBO_1_PART_2,
+	CERBERUS_COMBO_1_PART_3,
+	CERBERUS_COMBO_1_PART_4,
+	CERBERUS_COMBO_1_PART_5,
+	CERBERUS_COMBO_2_PART_3,
+	CERBERUS_COMBO_2_PART_4,
+	CERBERUS_WINDMILL,
+	CERBERUS_REVOLVER_LEVEL_1,
+	CERBERUS_REVOLVER_LEVEL_2,
+	CERBERUS_SWING,
+	CERBERUS_SATELLITE,
+	CERBERUS_FLICKER,
+	CERBERUS_AIR_FLICKER,
+	CERBERUS_CRYSTAL,
+	CERBERUS_MILLION_CARATS,
+	CERBERUS_ICE_AGE,
+	AGNI_RUDRA_COMBO_1_PART_1 = 50,
+	AGNI_RUDRA_COMBO_1_PART_2,
+	AGNI_RUDRA_COMBO_1_PART_3,
+	AGNI_RUDRA_COMBO_1_PART_4,
+	AGNI_RUDRA_COMBO_1_PART_5,
+	AGNI_RUDRA_COMBO_2_PART_2,
+	AGNI_RUDRA_COMBO_2_PART_3,
+	AGNI_RUDRA_COMBO_3_PART_3,
+	AGNI_RUDRA_JET_STREAM_LEVEL_1,
+	AGNI_RUDRA_JET_STREAM_LEVEL_2,
+	AGNI_RUDRA_JET_STREAM_LEVEL_3,
+	AGNI_RUDRA_AERIAL_CROSS,
+	AGNI_RUDRA_WHIRLWIND,
+	AGNI_RUDRA_WHIRLWIND_LAUNCH,
+	AGNI_RUDRA_MILLION_SLASH,
+	AGNI_RUDRA_CROSSED_SWORDS,
+	AGNI_RUDRA_CRAWLER,
+	AGNI_RUDRA_TWISTER,
+	AGNI_RUDRA_SKY_DANCE_PART_1,
+	AGNI_RUDRA_SKY_DANCE_PART_2,
+	AGNI_RUDRA_SKY_DANCE_PART_3,
+	AGNI_RUDRA_TEMPEST,
+	NEVAN_TUNE_UP = 80,
+	NEVAN_COMBO_1,
+	NEVAN_COMBO_2,
+	NEVAN_JAM_SESSION,
+	NEVAN_BAT_RIFT_LEVEL_1,
+	NEVAN_BAT_RIFT_LEVEL_2,
+	NEVAN_REVERB_SHOCK_LEVEL_1,
+	NEVAN_REVERB_SHOCK_LEVEL_2,
+	NEVAN_AIR_PLAY,
+	NEVAN_SLASH,
+	NEVAN_AIR_SLASH_PART_1,
+	NEVAN_AIR_SLASH_PART_2,
+	NEVAN_FEEDBACK,
+	NEVAN_CRAZY_ROLL,
+	NEVAN_DISTORTION,
+	NEVAN_VORTEX,
+	NEVAN_THUNDER_BOLT,
+	BEOWULF_COMBO_1_PART_1 = 110,
+	BEOWULF_COMBO_1_PART_2,
+	BEOWULF_COMBO_1_PART_3,
+	BEOWULF_COMBO_2_PART_3,
+	BEOWULF_COMBO_2_PART_4,
+	BEOWULF_HYPER_FIST,
+	BEOWULF_KILLER_BEE,
+	BEOWULF_BEAST_UPPERCUT,
+	BEOWULF_RISING_DRAGON,
+	BEOWULF_RISING_DRAGON_LAUNCH,
+	BEOWULF_RISING_DRAGON_WHIRLWIND,
+	BEOWULF_STRAIGHT_LEVEL_1,
+	BEOWULF_STRAIGHT_LEVEL_2,
+	BEOWULF_ZODIAC,
+	BEOWULF_VOLCANO,
+	BEOWULF_AIR_VOLCANO,
+	BEOWULF_TORNADO,
+	BEOWULF_THE_HAMMER,
+	BEOWULF_REAL_IMPACT,
+	EBONY_IVORY_NORMAL_SHOT = 130,
+	EBONY_IVORY_CHARGED_SHOT,
+	EBONY_IVORY_AIR_NORMAL_SHOT,
+	EBONY_IVORY_AIR_CHARGED_SHOT,
+	EBONY_IVORY_TWOSOME_TIME,
+	EBONY_IVORY_RAIN_STORM,
+	EBONY_IVORY_WILD_STOMP,
+	SHOTGUN_NORMAL_SHOT = 140,
+	SHOTGUN_CHARGED_SHOT,
+	SHOTGUN_AIR_NORMAL_SHOT,
+	SHOTGUN_AIR_CHARGED_SHOT,
+	SHOTGUN_FIREWORKS,
+	SHOTGUN_AIR_FIREWORKS,
+	SHOTGUN_GUN_STINGER,
+	SHOTGUN_POINT_BLANK,
+	ARTEMIS_NORMAL_SHOT = 150,
+	ARTEMIS_AIR_NORMAL_SHOT,
+	ARTEMIS_MULTI_LOCK_SHOT,
+	ARTEMIS_AIR_MULTI_LOCK_SHOT,
+	ARTEMIS_SPHERE,
+	ARTEMIS_ACID_RAIN,
+	SPIRAL_NORMAL_SHOT = 160,
+	SPIRAL_SNIPER,
+	SPIRAL_TRICK_SHOT,
+	KALINA_ANN_NORMAL_SHOT = 170,
+	KALINA_ANN_HYSTERIC,
+	KALINA_ANN_GRAPPLE,
+	TRICKSTER_DASH = 180,
+	TRICKSTER_SKY_STAR,
+	TRICKSTER_AIR_TRICK,
+	TRICKSTER_WALL_HIKE,
+	ROYALGUARD_RELEASE_1 = 190,
+	ROYALGUARD_RELEASE_2,
+	ROYALGUARD_RELEASE_3,
+	ROYALGUARD_RELEASE_4,
+	ROYALGUARD_AIR_RELEASE_1,
+	ROYALGUARD_AIR_RELEASE_2,
+	ROYALGUARD_AIR_RELEASE_3,
+	ROYALGUARD_AIR_RELEASE_4,
+	REBELLION_DANCE_MACABRE_PART_1 = 200,
+	REBELLION_DANCE_MACABRE_PART_2,
+	REBELLION_DANCE_MACABRE_PART_3,
+	REBELLION_DANCE_MACABRE_PART_4,
+	REBELLION_DANCE_MACABRE_PART_5,
+	REBELLION_DANCE_MACABRE_PART_6,
+	REBELLION_DANCE_MACABRE_PART_7,
+	REBELLION_DANCE_MACABRE_PART_8,
+	REBELLION_CRAZY_DANCE,
+	POLE_PLAY,
 };
+namespaceEnd();
+
+export namespaceStart(ACTION_VERGIL);
+enum
+{
+	YAMATO_COMBO_PART_1 = 1,
+	YAMATO_COMBO_PART_2,
+	YAMATO_COMBO_PART_3,
+	YAMATO_RAPID_SLASH_LEVEL_1,
+	YAMATO_RAPID_SLASH_LEVEL_2,
+	YAMATO_LEAP,
+	YAMATO_UPPER_SLASH_PART_1,
+	YAMATO_UPPER_SLASH_PART_2,
+	YAMATO_JUDGEMENT_CUT_LEVEL_1,
+	YAMATO_JUDGEMENT_CUT_LEVEL_2,
+	YAMATO_AERIAL_RAVE_PART_1,
+	YAMATO_AERIAL_RAVE_PART_2,
+	BEOWULF_COMBO_PART_1 = 20,
+	BEOWULF_COMBO_PART_2,
+	BEOWULF_COMBO_PART_3,
+	BEOWULF_STARFALL_LEVEL_1,
+	BEOWULF_STARFALL_LEVEL_2,
+	BEOWULF_RISING_SUN,
+	BEOWULF_LUNAR_PHASE_LEVEL_1,
+	BEOWULF_LUNAR_PHASE_LEVEL_2,
+	YAMATO_FORCE_EDGE_COMBO_PART_1 = 30,
+	YAMATO_FORCE_EDGE_COMBO_PART_2,
+	YAMATO_FORCE_EDGE_COMBO_PART_3,
+	YAMATO_FORCE_EDGE_COMBO_PART_4,
+	YAMATO_FORCE_EDGE_HELM_BREAKER_LEVEL_1,
+	YAMATO_FORCE_EDGE_HELM_BREAKER_LEVEL_2,
+	YAMATO_FORCE_EDGE_HIGH_TIME,
+	YAMATO_FORCE_EDGE_HIGH_TIME_LAUNCH,
+	YAMATO_FORCE_EDGE_STINGER_LEVEL_1,
+	YAMATO_FORCE_EDGE_STINGER_LEVEL_2,
+	YAMATO_FORCE_EDGE_ROUND_TRIP,
+	YAMATO_FORCE_EDGE_KICK,
+	SUMMONED_SWORDS_SHOOT = 52,
+	SUMMONED_SWORDS_SPIRAL_SWORDS,
+	SUMMONED_SWORDS_BLISTERING_SWORDS,
+	SUMMONED_SWORDS_SWORD_STORM,
+	DARK_SLAYER_AIR_TRICK = 60,
+	DARK_SLAYER_TRICK_UP,
+	DARK_SLAYER_TRICK_DOWN,
+	NERO_ANGELO_COMBO_1_PART_1 = 70,
+	NERO_ANGELO_COMBO_1_PART_2,
+	NERO_ANGELO_COMBO_1_PART_3,
+	NERO_ANGELO_HELM_BREAKER,
+	NERO_ANGELO_HIGH_TIME,
+	NERO_ANGELO_HIGH_TIME_LAUNCH,
+	NERO_ANGELO_STINGER,
+	NERO_ANGELO_FIREBALL_1,
+	NERO_ANGELO_COMBO_2_PART_1 = 90,
+	NERO_ANGELO_COMBO_2_PART_2,
+	NERO_ANGELO_COMBO_2_PART_3,
+	NERO_ANGELO_DIVEKICK,
+	NERO_ANGELO_ROUNDHOUSE_KICK,
+	NERO_ANGELO_UPPERCUT,
+	NERO_ANGELO_FIREBALL_2,
+};
+namespaceEnd();
+
+
+
+
+
+
 
 export enum PERMISSION
 {
@@ -1038,6 +1367,16 @@ export enum BINDING
 	BINDING_TAUNT,
 };
 
+
+
+
+
+
+
+
+
+
+
 export enum DEVIL_SPEED
 {
 	DEVIL_SPEED_DANTE_REBELLION,
@@ -1053,16 +1392,141 @@ export enum DEVIL_SPEED
 	DEVIL_SPEED_VERGIL_NERO_ANGELO_BEOWULF,
 };
 
-export enum ACTOR_EVENT
+
+/*
+
+opening a can of worms
+
+
+
+
+
+*/
+
+
+
+
+
+
+
+// $ActorEventStart
+
+export namespaceStart(ACTOR_EVENT);
+enum
 {
-	ACTOR_EVENT_DANTE_AIR_HIKE = 7,
-	ACTOR_EVENT_DANTE_DASH = 22,
-	ACTOR_EVENT_DANTE_SKY_STAR,
-	ACTOR_EVENT_DANTE_AIR_TRICK,
-	ACTOR_EVENT_VERGIL_AIR_TRICK = 27,
-	ACTOR_EVENT_VERGIL_TRICK_UP,
-	ACTOR_EVENT_VERGIL_TRICK_DOWN,
+	UNKNOWN_0,
+	UNKNOWN_1,
+	UNKNOWN_2,
+	UNKNOWN_3,
+	UNKNOWN_4,
+	JUMP,
+	UNKNOWN_5,
+	AIR_HIKE,
+	UNKNOWN_6,
+	UNKNOWN_7,
+	LOCK_ON,
+	UNKNOWN_8,
+	UNKNOWN_9,
+	UNKNOWN_10,
+	UNKNOWN_11,
+	UNKNOWN_12,
+	UNKNOWN_13,
+	ATTACK,
+	TAUNT,
+	ROYALGUARD_BLOCK,
+	ROYALGUARD_BLOCK_CONNECT,
+	ROYALGUARD_RELEASE_BLOCKED,
+	TRICKSTER_DASH,
+	TRICKSTER_SKY_STAR,
+	TRICKSTER_AIR_TRICK,
+	QUICKSILVER_TIME_LAG,
+	UNKNOWN_14,
+	DARK_SLAYER_AIR_TRICK,
+	DARK_SLAYER_TRICK_UP,
+	DARK_SLAYER_TRICK_DOWN,
+	MELEE_ATTACK_BLOCKED,
+	UNKNOWN_15,
+	UNKNOWN_16,
+	UNKNOWN_17,
+	UNKNOWN_18,
+	UNKNOWN_19,
+	UNKNOWN_20,
+	UNKNOWN_21,
+	UNKNOWN_22,
+	UNKNOWN_23,
+	NEVAN_AIR_RAID,
+	SUPER_JUMP,
+	UNKNOWN_24,
+	HOLY_WATER,
+	UNKNOWN_25,
+	DEATH,
+	COUNT,
 };
+namespaceEnd();
+
+// $ActorEventEnd
+
+static_assert(ACTOR_EVENT::JUMP                   == 5 );
+static_assert(ACTOR_EVENT::TRICKSTER_DASH         == 22);
+static_assert(ACTOR_EVENT::TRICKSTER_SKY_STAR     == 23);
+static_assert(ACTOR_EVENT::TRICKSTER_AIR_TRICK    == 24);
+static_assert(ACTOR_EVENT::DARK_SLAYER_AIR_TRICK  == 27);
+static_assert(ACTOR_EVENT::DARK_SLAYER_TRICK_UP   == 28);
+static_assert(ACTOR_EVENT::DARK_SLAYER_TRICK_DOWN == 29);
+static_assert(ACTOR_EVENT::NEVAN_AIR_RAID         == 40);
+static_assert(ACTOR_EVENT::COUNT                  == 46);
+
+
+
+
+
+
+
+// export namespaceStart(ACTOR_EVENT);
+// enum
+// {
+// 	JUMP = 5,
+// 	AIR_HIKE = 7,
+
+
+
+
+// 	ATTACK = 17,
+// 	TAUNT,
+// 	ROYALGUARD_BLOCK,
+// 	ROYALGUARD_BLOCK_CONNECT,
+// 	ATTACK_BLOCKED,
+// 	TRICKSTER_DASH,
+// 	TRICKSTER_SKY_STAR,
+// 	TRICKSTER_AIR_TRICK,
+// 	QUICKSILVER_TIME_LAG,
+// 	DARK_SLAYER_AIR_TRICK = 27,
+// 	DARK_SLAYER_TRICK_UP,
+// 	DARK_SLAYER_TRICK_DOWN,
+// 	MELEE_ATTACK_BLOCKED,
+// 	NEVAN_AIR_RAID = 40,
+// 	SUPER_JUMP,
+// 	HOLY_WATER = 43,
+// 	DEATH = 45,
+// };
+// namespaceEnd();
+
+// export namespaceStart(ACTOR_EVENT_VERGIL);
+// enum
+// {
+
+// };
+// namespaceEnd();
+
+
+
+
+
+
+
+
+
+
 
 export enum ACTOR_MODE
 {
@@ -1071,6 +1535,13 @@ export enum ACTOR_MODE
 	ACTOR_MODE_MISSION_18,
 	ACTOR_MODE_MISSION_19,
 };
+
+
+
+
+
+
+
 
 // @Todo: Change to count.
 
@@ -1717,25 +2188,63 @@ static_assert(offsetof(StyleData, meter) == 4);
 static_assert(offsetof(StyleData, quotient) == 0x150);
 static_assert(offsetof(StyleData, dividend) == 0x154);
 static_assert(offsetof(StyleData, divisor) == 0x158);
+
 static_assert(sizeof(StyleData) == 352);
 
 // $StyleDataEnd
 
 
+// $CollisionDataMetadataStart
+
+export struct CollisionDataMetadata
+{
+	_(48);
+	vec4 data[8]; // 0x30
+	_(32);
+	void * collisionDataAddr; // 0xD0
+	_(8);
+	vec4 data2[3]; // 0xE0
+	byte8 * files[2]; // 0x110
+	uint32 mode; // 0x120
+	_(12);
+	vec4 data3; // 0x130
+	float heightAdjustment; // 0x140
+};
+
+static_assert(offsetof(CollisionDataMetadata, data) == 0x30);
+static_assert(offsetof(CollisionDataMetadata, collisionDataAddr) == 0xD0);
+static_assert(offsetof(CollisionDataMetadata, data2) == 0xE0);
+static_assert(offsetof(CollisionDataMetadata, files) == 0x110);
+static_assert(offsetof(CollisionDataMetadata, mode) == 0x120);
+static_assert(offsetof(CollisionDataMetadata, data3) == 0x130);
+static_assert(offsetof(CollisionDataMetadata, heightAdjustment) == 0x140);
+
+static_assert(sizeof(CollisionDataMetadata) == 324);
+
+// $CollisionDataMetadataEnd
 
 // $CollisionDataStart
 
 export struct CollisionData
 {
 	_(4);
-	uint32 index; // 4
-	_(520);
-	vec4 data; // 0x210
-	_(112);
+	uint32 group; // 4
+	_(128);
+	CollisionDataMetadata * metadataAddr; // 0x88
+	_(160);
+	byte8 * baseAddr; // 0x130
+	_(8);
+	byte32 flags; // 0x140
+	_(204);
+	vec4 data[8]; // 0x210
 };
 
-static_assert(offsetof(CollisionData, index) == 4);
+static_assert(offsetof(CollisionData, group) == 4);
+static_assert(offsetof(CollisionData, metadataAddr) == 0x88);
+static_assert(offsetof(CollisionData, baseAddr) == 0x130);
+static_assert(offsetof(CollisionData, flags) == 0x140);
 static_assert(offsetof(CollisionData, data) == 0x210);
+
 static_assert(sizeof(CollisionData) == 656);
 
 // $CollisionDataEnd
@@ -1744,7 +2253,11 @@ static_assert(sizeof(CollisionData) == 656);
 
 export struct CameraData
 {
-	_(176);
+	_(32);
+	float fov; // 0x20
+	_(76);
+	vec4 data[2]; // 0x70
+	_(32);
 	byte8 * targetBaseAddr; // 0xB0
 	_(24);
 	float height; // 0xD0
@@ -1755,14 +2268,49 @@ export struct CameraData
 	_(284);
 };
 
+static_assert(offsetof(CameraData, fov) == 0x20);
+static_assert(offsetof(CameraData, data) == 0x70);
 static_assert(offsetof(CameraData, targetBaseAddr) == 0xB0);
 static_assert(offsetof(CameraData, height) == 0xD0);
 static_assert(offsetof(CameraData, tilt) == 0xD4);
 static_assert(offsetof(CameraData, distance) == 0xD8);
 static_assert(offsetof(CameraData, distanceLockOn) == 0xE0);
+
 static_assert(sizeof(CameraData) == 512);
 
 // $CameraDataEnd
+
+
+
+
+
+export struct NewArchiveMetadata
+{
+	byte8 signature[4];
+	uint32 fileCount;
+	uint32 fileOffs[1];
+
+	// operator byte8 *()
+	// {
+	// 	return reinterpret_cast<byte8 *>(this);
+	// }
+
+
+	byte8 * operator[](uint32 fileIndex)
+	{
+		if (fileIndex >= fileCount)
+		{
+			return 0;
+		}
+
+		auto file = reinterpret_cast<byte8 *>(this);
+
+		auto fileOff = fileOffs[fileIndex];
+
+		return (file + fileOff);
+	}
+};
+
 
 // @Todo: Update if statements.
 // @Todo: Create preprocess script.
@@ -1783,45 +2331,100 @@ export struct ArchiveMetadata
 	uint32 fileOffs[1];
 };
 
-// @Todo: FILE_DATA_STATUS
 
-export enum
+
+
+
+
+
+
+
+// $FileDataStatusStart
+
+export namespaceStart(FILE_DATA_STATUS);
+enum
 {
-	FILE_DATA_STATUS_FREE,
-	FILE_DATA_STATUS_IN_USE = 3,
+	FREE,
+	UNKNOWN_0,
+	UNKNOWN_1,
+	IN_USE,
 };
+namespaceEnd();
+
+// $FileDataStatusEnd
+
+static_assert(FILE_DATA_STATUS::IN_USE == 3);
+
+
+
+
+// $FileDataTypeDataStart
 
 export struct FileDataTypeData
 {
 	_(8);
-	const char * typeName;
+	const char * typeName; // 8
 };
+
+static_assert(offsetof(FileDataTypeData, typeName) == 8);
+
+static_assert(sizeof(FileDataTypeData) == 16);
+
+// $FileDataTypeDataEnd
+
+
+
+// $FileDataStart
 
 export struct FileData
 {
-	uint32 group;
-	uint32 status;
+	uint32 group; // 0
+	uint32 status; // 4
 	_(16);
-	FileDataTypeData * typeDataAddr;
-	byte8 * file;
+	FileDataTypeData * typeDataAddr; // 0x18
+	byte8 * file; // 0x20
 	_(32);
 };
 
+static_assert(offsetof(FileData, group) == 0);
+static_assert(offsetof(FileData, status) == 4);
+static_assert(offsetof(FileData, typeDataAddr) == 0x18);
+static_assert(offsetof(FileData, file) == 0x20);
+
 static_assert(sizeof(FileData) == 72);
+
+// $FileDataEnd
+
+// $FileDataMetadataStart
 
 export struct FileDataMetadata
 {
-	void * funcAddrs;
-	void * lastAddr;
-	void * nextAddr;
-	FileData * fileDataAddr;
+	void * funcAddrs; // 0
+	void * lastAddr; // 8
+	void * nextAddr; // 0x10
+	FileData * fileDataAddr; // 0x18
 	_(4);
-	uint32 category;
-	uint32 fileSetIndex;
+	uint32 category; // 0x24
+	uint32 fileSetIndex; // 0x28
 	_(4);
 };
 
+static_assert(offsetof(FileDataMetadata, funcAddrs) == 0);
+static_assert(offsetof(FileDataMetadata, lastAddr) == 8);
+static_assert(offsetof(FileDataMetadata, nextAddr) == 0x10);
+static_assert(offsetof(FileDataMetadata, fileDataAddr) == 0x18);
+static_assert(offsetof(FileDataMetadata, category) == 0x24);
+static_assert(offsetof(FileDataMetadata, fileSetIndex) == 0x28);
+
 static_assert(sizeof(FileDataMetadata) == 48);
+
+// $FileDataMetadataEnd
+
+
+
+
+
+
 
 
 
@@ -1985,13 +2588,7 @@ export enum
 
 
 
-
-
-
-
-
-
-export constexpr uint32 enemyMotionArchivesOffs[] =
+export constexpr uint32 motionArchivesOffs[] =
 {
 	0x698 , // Damned Chessmen Pawn, Knight, Bishop, Rook, Queen, King
 	0x6C0 , // Blood-Goyle
@@ -2007,6 +2604,7 @@ export constexpr uint32 enemyMotionArchivesOffs[] =
 	0x23C0, // Jester
 	0x2C20, // Arachne
 	0x2E18, // Nevan
+	0x38A0, // Player Actor
 	0x3940, // Greed, Abyss
 	0x4020, // Beowulf
 	0x49C8, // Hell Vanguard
@@ -2020,77 +2618,114 @@ export constexpr uint32 enemyMotionArchivesOffs[] =
 
 
 
-// $EnemyStart
+
+
+// export constexpr uint32 enemyMotionArchivesOffs[] =
+// {
+// 	0x698 , // Damned Chessmen Pawn, Knight, Bishop, Rook, Queen, King
+// 	0x6C0 , // Blood-Goyle
+// 	0x6D0 , // Pride, Gluttony, Lust, Sloth, Wrath, Envy
+// 	0x780 , // Soul Eater
+// 	0xA58 , // Enigma
+// 	0xA98 , // Doppelganger
+// 	0x1130, // Geryon
+// 	0x1158, // Agni & Rudra
+// 	0x14F0, // The Fallen
+// 	0x1B48, // Arkham
+// 	0x2160, // Dullahan
+// 	0x23C0, // Jester
+// 	0x2C20, // Arachne
+// 	0x2E18, // Nevan
+// 	0x3940, // Greed, Abyss
+// 	0x4020, // Beowulf
+// 	0x49C8, // Hell Vanguard
+// 	0x5410, // Lady
+// 	0xD7B0, // Cerberus
+// 	0xE7D0, // Vergil
+// };
+
 
 export enum
 {
-	ENEMY_PRIDE_1,
-	ENEMY_PRIDE_2,
-	ENEMY_PRIDE_3,
-	ENEMY_PRIDE_4,
-	ENEMY_GLUTTONY_1,
-	ENEMY_GLUTTONY_2,
-	ENEMY_GLUTTONY_3,
-	ENEMY_GLUTTONY_4,
-	ENEMY_LUST_1,
-	ENEMY_LUST_2,
-	ENEMY_LUST_3,
-	ENEMY_LUST_4,
-	ENEMY_SLOTH_1,
-	ENEMY_SLOTH_2,
-	ENEMY_SLOTH_3,
-	ENEMY_SLOTH_4,
-	ENEMY_WRATH_1,
-	ENEMY_WRATH_2,
-	ENEMY_WRATH_3,
-	ENEMY_WRATH_4,
-	ENEMY_GREED_1,
-	ENEMY_GREED_2,
-	ENEMY_GREED_3,
-	ENEMY_GREED_4,
-	ENEMY_ABYSS,
-	ENEMY_ENVY,
-	ENEMY_HELL_VANGUARD,
-	ENEMY_UNKNOWN_0,
-	ENEMY_ARACHNE,
-	ENEMY_THE_FALLEN,
-	ENEMY_DULLAHAN,
-	ENEMY_ENIGMA,
-	ENEMY_BLOOD_GOYLE,
-	ENEMY_UNKNOWN_1,
-	ENEMY_SOUL_EATER,
-	ENEMY_DAMNED_CHESSMEN_PAWN,
-	ENEMY_DAMNED_CHESSMEN_KNIGHT,
-	ENEMY_DAMNED_CHESSMEN_BISHOP,
-	ENEMY_DAMNED_CHESSMEN_ROOK,
-	ENEMY_DAMNED_CHESSMEN_QUEEN,
-	ENEMY_DAMNED_CHESSMEN_KING,
-	ENEMY_GIGAPEDE,
-	ENEMY_UNKNOWN_2,
-	ENEMY_CERBERUS,
-	ENEMY_AGNI_RUDRA_ALL,
-	ENEMY_AGNI_RUDRA,
-	ENEMY_AGNI_RUDRA_BLACK,
-	ENEMY_AGNI_RUDRA_RED,
-	ENEMY_AGNI_RUDRA_BLUE,
-	ENEMY_NEVAN,
-	ENEMY_GERYON,
-	ENEMY_BEOWULF,
-	ENEMY_DOPPELGANGER,
-	ENEMY_ARKHAM,
-	ENEMY_UNKNOWN_3,
-	ENEMY_LADY,
-	ENEMY_UNKNOWN_4,
-	ENEMY_UNKNOWN_5,
-	ENEMY_VERGIL,
-	ENEMY_UNKNOWN_6,
-	ENEMY_LEVIATHAN_HEART,
-	ENEMY_LEVIATHAN_OTHER,
-	ENEMY_JESTER,
-	ENEMY_UNKNOWN_7,
-	ENEMY_COUNT,
 	CREATE_ENEMY_COUNT = 30,
 };
+
+
+
+
+
+// $EnemyStart
+
+export namespaceStart(ENEMY);
+enum
+{
+	PRIDE_1,
+	PRIDE_2,
+	PRIDE_3,
+	PRIDE_4,
+	GLUTTONY_1,
+	GLUTTONY_2,
+	GLUTTONY_3,
+	GLUTTONY_4,
+	LUST_1,
+	LUST_2,
+	LUST_3,
+	LUST_4,
+	SLOTH_1,
+	SLOTH_2,
+	SLOTH_3,
+	SLOTH_4,
+	WRATH_1,
+	WRATH_2,
+	WRATH_3,
+	WRATH_4,
+	GREED_1,
+	GREED_2,
+	GREED_3,
+	GREED_4,
+	ABYSS,
+	ENVY,
+	HELL_VANGUARD,
+	UNKNOWN_0,
+	ARACHNE,
+	THE_FALLEN,
+	DULLAHAN,
+	ENIGMA,
+	BLOOD_GOYLE,
+	UNKNOWN_1,
+	SOUL_EATER,
+	DAMNED_CHESSMEN_PAWN,
+	DAMNED_CHESSMEN_KNIGHT,
+	DAMNED_CHESSMEN_BISHOP,
+	DAMNED_CHESSMEN_ROOK,
+	DAMNED_CHESSMEN_QUEEN,
+	DAMNED_CHESSMEN_KING,
+	GIGAPEDE,
+	UNKNOWN_2,
+	CERBERUS,
+	AGNI_RUDRA_ALL,
+	AGNI_RUDRA,
+	AGNI_RUDRA_BLACK,
+	AGNI_RUDRA_RED,
+	AGNI_RUDRA_BLUE,
+	NEVAN,
+	GERYON,
+	BEOWULF,
+	DOPPELGANGER,
+	ARKHAM,
+	UNKNOWN_3,
+	LADY,
+	UNKNOWN_4,
+	UNKNOWN_5,
+	VERGIL,
+	UNKNOWN_6,
+	LEVIATHAN_HEART,
+	LEVIATHAN_OTHER,
+	JESTER,
+	UNKNOWN_7,
+	COUNT,
+};
+namespaceEnd();
 
 export const char * enemyNames[] =
 {
@@ -2121,13 +2756,13 @@ export const char * enemyNames[] =
 	"Abyss",
 	"Envy",
 	"Hell Vanguard",
-	"Unknown",
+	"",
 	"Arachne",
 	"The Fallen",
 	"Dullahan",
 	"Enigma",
 	"Blood-Goyle",
-	"Unknown",
+	"",
 	"Soul Eater",
 	"Damned Chessmen Pawn",
 	"Damned Chessmen Knight",
@@ -2136,7 +2771,7 @@ export const char * enemyNames[] =
 	"Damned Chessmen Queen",
 	"Damned Chessmen King",
 	"Gigapede",
-	"Unknown",
+	"",
 	"Cerberus",
 	"Agni & Rudra All",
 	"Agni & Rudra",
@@ -2148,16 +2783,16 @@ export const char * enemyNames[] =
 	"Beowulf",
 	"Doppelganger",
 	"Arkham",
-	"Unknown",
+	"",
 	"Lady",
-	"Unknown",
-	"Unknown",
+	"",
+	"",
 	"Vergil",
-	"Unknown",
+	"",
 	"Leviathan Heart",
 	"Leviathan Other",
 	"Jester",
-	"Unknown",
+	"",
 };
 
 export constexpr uint8 enemyHelperIndices[] =
@@ -2230,13 +2865,17 @@ export constexpr uint8 enemyHelperIndices[] =
 
 // $EnemyEnd
 
+static_assert(ENEMY::COUNT == 64);
+static_assert(countof(enemyNames) == ENEMY::COUNT);
+static_assert(countof(enemyHelperIndices) == ENEMY::COUNT);
+
 
 
 
 // @Todo: Remove.
-static_assert(ENEMY_LADY == 55);
-static_assert(ENEMY_VERGIL == 58);
-static_assert(ENEMY_COUNT == 64);
+static_assert(ENEMY::LADY == 55);
+static_assert(ENEMY::VERGIL == 58);
+static_assert(ENEMY::COUNT == 64);
 
 
 
@@ -2256,7 +2895,7 @@ static_assert(ENEMY_COUNT == 64);
 
 
 
-
+// @Todo: Add to script.
 
 
 export enum
@@ -2344,16 +2983,16 @@ export enum
 };
 
 /*
-Config::CreateEnemyData
+Config::CreateEnemyActorData
 
-Config_CreateEnemyData
+Config_CreateEnemyActorData
 
-ConfigCreateEnemyData
+ConfigCreateEnemyActorData
 */
 
 // @Todo: Create script.
 
-// struct CreateEnemyData
+// struct CreateEnemyActorData
 // {
 // 	uint32 enemy;
 // 	_(12);
@@ -2365,36 +3004,35 @@ ConfigCreateEnemyData
 // 	_(128);
 // };
 
-// static_assert(offsetof(CreateEnemyData, variant) == 0x28);
+// static_assert(offsetof(CreateEnemyActorData, variant) == 0x28);
 
-// $CreateEnemyDataStart
 
-export struct CreateEnemyData
-{
-	uint32 enemy; // 0
-	_(12);
-	vec4 position; // 0x10
-	uint16 rotation; // 0x20
-	uint16 spawnMethod; // 0x22
-	_(4);
-	uint32 variant; // 0x28
-	_(84);
-};
+// @Todo: Add to script.
 
-static_assert(offsetof(CreateEnemyData, enemy) == 0);
-static_assert(offsetof(CreateEnemyData, position) == 0x10);
-static_assert(offsetof(CreateEnemyData, rotation) == 0x20);
-static_assert(offsetof(CreateEnemyData, spawnMethod) == 0x22);
-static_assert(offsetof(CreateEnemyData, variant) == 0x28);
-static_assert(sizeof(CreateEnemyData) == 128);
 
-// $CreateEnemyDataEnd
 
-export struct EnemyVectorData
-{
-	byte8 * baseAddr;
-	byte8 * nextAddr;
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export struct RegionData
 {
@@ -2569,6 +3207,10 @@ export struct BodyPartData
 	//_(288);
 };
 
+// @Todo: Add 0x70 ModelDataAddr.
+// @Todo: Add 0xBA busy.
+
+
 static_assert(sizeof(BodyPartData) == 0x120);
 
 export struct ModelMetadata
@@ -2658,6 +3300,7 @@ export struct ModelPartitionData
 
 static_assert(sizeof(ModelPartitionData) == 0x380);
 
+// @Todo: Add to script.
 export struct ModelData
 {
 	_(8);
@@ -2753,6 +3396,21 @@ static_assert(offsetof(LockOnData, var_1010) == 0x1010);
 static_assert(offsetof(LockOnData, var_2040) == 0x2040);
 static_assert(sizeof(LockOnData) == 8260);
 
+// New data used by both player and enemy actors.
+
+export struct NewActorData
+{
+	byte8 * baseAddr;
+	uint8 visibility;
+	bool enableCollision;
+	// @Remove
+	// bool forceCollisionFlags;
+	// byte32 collisionFlags;
+};
+
+
+
+
 export struct CharacterData
 {
 	uint8 character;
@@ -2782,6 +3440,8 @@ export struct CharacterData
 
 export struct PlayerData
 {
+	uint8 collisionGroup;
+
 	byte16 button;
 
 	uint8 characterCount;
@@ -2790,7 +3450,36 @@ export struct PlayerData
 	uint8 activeCharacterIndex;
 
 	CharacterData characterData[CHARACTER_COUNT][ENTITY_COUNT];
+
+	bool removeBusyFlag;
+
+	byte16 removeBusyFlagButtons[4] =
+	{
+		GAMEPAD_UP,
+		GAMEPAD_RIGHT,
+		GAMEPAD_DOWN,
+		GAMEPAD_LEFT,
+	};
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // $ActorDataStart
 
@@ -2801,24 +3490,56 @@ export struct ActorDataBase
 	_(11);
 	float speed; // 0x14
 	float speedMultiplier; // 0x18
-	_(92);
-	uint32 character; // 0x78
+	_(12);
+	byte8 * lastBaseAddr; // 0x28
+	byte8 * nextBaseAddr; // 0x30
+	_(16);
+	byte8 * baseAddr; // 0x48
+	_(13);
+	bool visible; // 0x5D
+	_(26);
+	union
+	{
+		uint32 character; // 0x78
+		uint32 enemy; // 0x78
+	}; // 0x78
 	_(4);
 	vec4 position; // 0x80
 	_(4);
-	float pull; // 0x94
+	float verticalPull; // 0x94
 	_(12);
-	float pullMultiplier; // 0xA4
+	float verticalPullMultiplier; // 0xA4
 	_(24);
 	uint16 rotation; // 0xC0
-	_(86);
+	_(6);
+};
+
+static_assert(offsetof(ActorDataBase, status) == 8);
+static_assert(offsetof(ActorDataBase, speed) == 0x14);
+static_assert(offsetof(ActorDataBase, speedMultiplier) == 0x18);
+static_assert(offsetof(ActorDataBase, lastBaseAddr) == 0x28);
+static_assert(offsetof(ActorDataBase, nextBaseAddr) == 0x30);
+static_assert(offsetof(ActorDataBase, baseAddr) == 0x48);
+static_assert(offsetof(ActorDataBase, visible) == 0x5D);
+static_assert(offsetof(ActorDataBase, character) == 0x78);
+static_assert(offsetof(ActorDataBase, enemy) == 0x78);
+static_assert(offsetof(ActorDataBase, position) == 0x80);
+static_assert(offsetof(ActorDataBase, verticalPull) == 0x94);
+static_assert(offsetof(ActorDataBase, verticalPullMultiplier) == 0xA4);
+static_assert(offsetof(ActorDataBase, rotation) == 0xC0);
+
+static_assert(sizeof(ActorDataBase) == 200);
+
+export struct PlayerActorDataBase : ActorDataBase
+{
+	_(80);
 	uint8 id; // 0x118
 	_(3);
 	bool32 isClone; // 0x11C
 	uint32 visibility; // 0x120
 	_(156);
-	float var_1C0; // 0x1C0
-	float var_1C4; // 0x1C4
+	float horizontalPull; // 0x1C0
+	float horizontalPullMultiplier; // 0x1C4
 	_(56);
 	ModelData modelData[3]; // 0x200
 	PhysicsMetadata * modelPhysicsMetadataPool[4][24]; // 0x1880
@@ -2910,7 +3631,9 @@ export struct ActorDataBase
 	float maxHitPoints; // 0x40EC
 	_(44);
 	float hitPoints; // 0x411C
-	_(8712);
+	_(8672);
+	vec4 targetPosition; // 0x6300
+	_(24);
 	byte8 * targetBaseAddr; // 0x6328
 	_(8);
 	uint32 style; // 0x6338
@@ -2927,15 +3650,18 @@ export struct ActorDataBase
 	bool doppelganger; // 0x6362
 	_(1);
 	float styleExperience; // 0x6364
-	_(24);
+	_(8);
+	uint32 royalguardBlockType; // 0x6370
+	_(12);
 	uint8 royalguardReleaseLevel; // 0x6380
 	uint8 royalguardReleaseEffectIndex; // 0x6381
 	_(2);
 	float royalguardReleaseDamage; // 0x6384
 	float var_6388; // 0x6388
 	float var_638C; // 0x638C
-	_(68);
-	uint32 speedMode; // 0x63D4
+	_(64);
+	uint32 var_63D0; // 0x63D0
+	uint32 quicksilverStage; // 0x63D4
 	_(56);
 	byte8 var_6410[40]; // 0x6410
 	byte8 * var_6438; // 0x6438
@@ -2990,136 +3716,131 @@ export struct ActorDataBase
 	}
 };
 
-static_assert(offsetof(ActorDataBase, status) == 8);
-static_assert(offsetof(ActorDataBase, speed) == 0x14);
-static_assert(offsetof(ActorDataBase, speedMultiplier) == 0x18);
-static_assert(offsetof(ActorDataBase, character) == 0x78);
-static_assert(offsetof(ActorDataBase, position) == 0x80);
-static_assert(offsetof(ActorDataBase, pull) == 0x94);
-static_assert(offsetof(ActorDataBase, pullMultiplier) == 0xA4);
-static_assert(offsetof(ActorDataBase, rotation) == 0xC0);
-static_assert(offsetof(ActorDataBase, id) == 0x118);
-static_assert(offsetof(ActorDataBase, isClone) == 0x11C);
-static_assert(offsetof(ActorDataBase, visibility) == 0x120);
-static_assert(offsetof(ActorDataBase, var_1C0) == 0x1C0);
-static_assert(offsetof(ActorDataBase, var_1C4) == 0x1C4);
-static_assert(offsetof(ActorDataBase, modelData) == 0x200);
-static_assert(offsetof(ActorDataBase, modelPhysicsMetadataPool) == 0x1880);
-static_assert(offsetof(ActorDataBase, modelAllocationDataCount) == 0x1B80);
-static_assert(offsetof(ActorDataBase, modelAllocationData) == 0x1B88);
-static_assert(offsetof(ActorDataBase, motionSpeed) == 0x3894);
-static_assert(offsetof(ActorDataBase, motionSpeedMultiplier) == 0x3898);
-static_assert(offsetof(ActorDataBase, motionArchives) == 0x38A0);
-static_assert(offsetof(ActorDataBase, motionData) == 0x39B0);
-static_assert(offsetof(ActorDataBase, motionDataMirror) == 0x39B4);
-static_assert(offsetof(ActorDataBase, var_39BC) == 0x39BC);
-static_assert(offsetof(ActorDataBase, var_39C0) == 0x39C0);
-static_assert(offsetof(ActorDataBase, nextActionRequestPolicy) == 0x39D0);
-static_assert(offsetof(ActorDataBase, var_3A10) == 0x3A10);
-static_assert(offsetof(ActorDataBase, shadow) == 0x3A18);
-static_assert(offsetof(ActorDataBase, lastShadow) == 0x3A1C);
-static_assert(offsetof(ActorDataBase, color) == 0x3A28);
-static_assert(offsetof(ActorDataBase, recoveryData) == 0x3B00);
-static_assert(offsetof(ActorDataBase, var_3C50) == 0x3C50);
-static_assert(offsetof(ActorDataBase, actionData) == 0x3DD0);
-static_assert(offsetof(ActorDataBase, eventData) == 0x3E00);
-static_assert(offsetof(ActorDataBase, var_3E10) == 0x3E10);
-static_assert(offsetof(ActorDataBase, motionTimer) == 0x3E34);
-static_assert(offsetof(ActorDataBase, idleTimer) == 0x3E38);
-static_assert(offsetof(ActorDataBase, permissions) == 0x3E60);
-static_assert(offsetof(ActorDataBase, state) == 0x3E64);
-static_assert(offsetof(ActorDataBase, lastState) == 0x3E68);
-static_assert(offsetof(ActorDataBase, activeModelIndex) == 0x3E6C);
-static_assert(offsetof(ActorDataBase, queuedModelIndex) == 0x3E70);
-static_assert(offsetof(ActorDataBase, devilModels) == 0x3E74);
-static_assert(offsetof(ActorDataBase, modelState) == 0x3E80);
-static_assert(offsetof(ActorDataBase, lockOn) == 0x3E84);
-static_assert(offsetof(ActorDataBase, activeModelIndexMirror) == 0x3E88);
-static_assert(offsetof(ActorDataBase, activeDevil) == 0x3E8C);
-static_assert(offsetof(ActorDataBase, airRaid) == 0x3E90);
-static_assert(offsetof(ActorDataBase, mode) == 0x3E94);
-static_assert(offsetof(ActorDataBase, dead) == 0x3E99);
-static_assert(offsetof(ActorDataBase, devil) == 0x3E9B);
-static_assert(offsetof(ActorDataBase, costume) == 0x3E9E);
-static_assert(offsetof(ActorDataBase, sparda) == 0x3E9F);
-static_assert(offsetof(ActorDataBase, neroAngelo) == 0x3E9F);
-static_assert(offsetof(ActorDataBase, useHolyWater) == 0x3EA4);
-static_assert(offsetof(ActorDataBase, magicPoints) == 0x3EB8);
-static_assert(offsetof(ActorDataBase, maxMagicPoints) == 0x3EBC);
-static_assert(offsetof(ActorDataBase, var_3EC4) == 0x3EC4);
-static_assert(offsetof(ActorDataBase, var_3EC8) == 0x3EC8);
-static_assert(offsetof(ActorDataBase, var_3ED2) == 0x3ED2);
-static_assert(offsetof(ActorDataBase, cameraDirection) == 0x3ED8);
-static_assert(offsetof(ActorDataBase, var_3EDC) == 0x3EDC);
-static_assert(offsetof(ActorDataBase, airHikeCount) == 0x3F11);
-static_assert(offsetof(ActorDataBase, kickJumpCount) == 0x3F12);
-static_assert(offsetof(ActorDataBase, wallHikeCount) == 0x3F13);
-static_assert(offsetof(ActorDataBase, enableAirRaid) == 0x3F14);
-static_assert(offsetof(ActorDataBase, var_3F19) == 0x3F19);
-static_assert(offsetof(ActorDataBase, action) == 0x3FA4);
-static_assert(offsetof(ActorDataBase, lastAction) == 0x3FA5);
-static_assert(offsetof(ActorDataBase, bufferedAction) == 0x3FA8);
-static_assert(offsetof(ActorDataBase, chainCount) == 0x3FAC);
-static_assert(offsetof(ActorDataBase, expertise) == 0x3FEC);
-static_assert(offsetof(ActorDataBase, maxHitPoints) == 0x40EC);
-static_assert(offsetof(ActorDataBase, hitPoints) == 0x411C);
-static_assert(offsetof(ActorDataBase, targetBaseAddr) == 0x6328);
-static_assert(offsetof(ActorDataBase, style) == 0x6338);
-static_assert(offsetof(ActorDataBase, wallHikeDirection) == 0x633C);
-static_assert(offsetof(ActorDataBase, var_6340) == 0x6340);
-static_assert(offsetof(ActorDataBase, styleLevel) == 0x6358);
-static_assert(offsetof(ActorDataBase, dashCount) == 0x635C);
-static_assert(offsetof(ActorDataBase, skyStarCount) == 0x635D);
-static_assert(offsetof(ActorDataBase, airTrickCount) == 0x635E);
-static_assert(offsetof(ActorDataBase, trickUpCount) == 0x635F);
-static_assert(offsetof(ActorDataBase, trickDownCount) == 0x6360);
-static_assert(offsetof(ActorDataBase, quicksilver) == 0x6361);
-static_assert(offsetof(ActorDataBase, doppelganger) == 0x6362);
-static_assert(offsetof(ActorDataBase, styleExperience) == 0x6364);
-static_assert(offsetof(ActorDataBase, royalguardReleaseLevel) == 0x6380);
-static_assert(offsetof(ActorDataBase, royalguardReleaseEffectIndex) == 0x6381);
-static_assert(offsetof(ActorDataBase, royalguardReleaseDamage) == 0x6384);
-static_assert(offsetof(ActorDataBase, var_6388) == 0x6388);
-static_assert(offsetof(ActorDataBase, var_638C) == 0x638C);
-static_assert(offsetof(ActorDataBase, speedMode) == 0x63D4);
-static_assert(offsetof(ActorDataBase, var_6410) == 0x6410);
-static_assert(offsetof(ActorDataBase, var_6438) == 0x6438);
-static_assert(offsetof(ActorDataBase, var_6440) == 0x6440);
-static_assert(offsetof(ActorDataBase, cloneRate) == 0x6450);
-static_assert(offsetof(ActorDataBase, cloneStatus) == 0x6454);
-static_assert(offsetof(ActorDataBase, var_6458) == 0x6458);
-static_assert(offsetof(ActorDataBase, cloneActorBaseAddr) == 0x6478);
-static_assert(offsetof(ActorDataBase, cloneIsControlledByPlayer) == 0x6480);
-static_assert(offsetof(ActorDataBase, activeMeleeWeaponIndex) == 0x6484);
-static_assert(offsetof(ActorDataBase, queuedMeleeWeaponIndex) == 0x6488);
-static_assert(offsetof(ActorDataBase, activeWeapon) == 0x648D);
-static_assert(offsetof(ActorDataBase, meleeWeaponIndex) == 0x6490);
-static_assert(offsetof(ActorDataBase, rangedWeaponIndex) == 0x6494);
-static_assert(offsetof(ActorDataBase, weapons) == 0x6498);
-static_assert(offsetof(ActorDataBase, weaponDataAddr) == 0x64A0);
-static_assert(offsetof(ActorDataBase, weaponStatus) == 0x64C8);
-static_assert(offsetof(ActorDataBase, weaponLevels) == 0x64DC);
-static_assert(offsetof(ActorDataBase, activeMeleeWeapon) == 0x64F0);
-static_assert(offsetof(ActorDataBase, activeRangedWeapon) == 0x64F1);
-static_assert(offsetof(ActorDataBase, weaponTimers) == 0x64F4);
-static_assert(offsetof(ActorDataBase, meleeWeaponSwitchTimeout) == 0x6508);
-static_assert(offsetof(ActorDataBase, rangedWeaponSwitchTimeout) == 0x650C);
-static_assert(offsetof(ActorDataBase, styleData) == 0x6510);
-static_assert(offsetof(ActorDataBase, var_6670) == 0x6670);
-static_assert(offsetof(ActorDataBase, inputData) == 0x6674);
-static_assert(offsetof(ActorDataBase, bodyPartData) == 0x6950);
-static_assert(offsetof(ActorDataBase, collisionData) == 0x7250);
-static_assert(offsetof(ActorDataBase, buttons) == 0x74E0);
-static_assert(offsetof(ActorDataBase, rightStickPosition) == 0x74F8);
-static_assert(offsetof(ActorDataBase, rightStickRadius) == 0x74FA);
-static_assert(offsetof(ActorDataBase, leftStickPosition) == 0x7508);
-static_assert(offsetof(ActorDataBase, leftStickRadius) == 0x750A);
-static_assert(offsetof(ActorDataBase, actorCameraDirection) == 0x750C);
-static_assert(offsetof(ActorDataBase, leftStickDirection) == 0x751C);
+static_assert(offsetof(PlayerActorDataBase, id) == 0x118);
+static_assert(offsetof(PlayerActorDataBase, isClone) == 0x11C);
+static_assert(offsetof(PlayerActorDataBase, visibility) == 0x120);
+static_assert(offsetof(PlayerActorDataBase, horizontalPull) == 0x1C0);
+static_assert(offsetof(PlayerActorDataBase, horizontalPullMultiplier) == 0x1C4);
+static_assert(offsetof(PlayerActorDataBase, modelData) == 0x200);
+static_assert(offsetof(PlayerActorDataBase, modelPhysicsMetadataPool) == 0x1880);
+static_assert(offsetof(PlayerActorDataBase, modelAllocationDataCount) == 0x1B80);
+static_assert(offsetof(PlayerActorDataBase, modelAllocationData) == 0x1B88);
+static_assert(offsetof(PlayerActorDataBase, motionSpeed) == 0x3894);
+static_assert(offsetof(PlayerActorDataBase, motionSpeedMultiplier) == 0x3898);
+static_assert(offsetof(PlayerActorDataBase, motionArchives) == 0x38A0);
+static_assert(offsetof(PlayerActorDataBase, motionData) == 0x39B0);
+static_assert(offsetof(PlayerActorDataBase, motionDataMirror) == 0x39B4);
+static_assert(offsetof(PlayerActorDataBase, var_39BC) == 0x39BC);
+static_assert(offsetof(PlayerActorDataBase, var_39C0) == 0x39C0);
+static_assert(offsetof(PlayerActorDataBase, nextActionRequestPolicy) == 0x39D0);
+static_assert(offsetof(PlayerActorDataBase, var_3A10) == 0x3A10);
+static_assert(offsetof(PlayerActorDataBase, shadow) == 0x3A18);
+static_assert(offsetof(PlayerActorDataBase, lastShadow) == 0x3A1C);
+static_assert(offsetof(PlayerActorDataBase, color) == 0x3A28);
+static_assert(offsetof(PlayerActorDataBase, recoveryData) == 0x3B00);
+static_assert(offsetof(PlayerActorDataBase, var_3C50) == 0x3C50);
+static_assert(offsetof(PlayerActorDataBase, actionData) == 0x3DD0);
+static_assert(offsetof(PlayerActorDataBase, eventData) == 0x3E00);
+static_assert(offsetof(PlayerActorDataBase, var_3E10) == 0x3E10);
+static_assert(offsetof(PlayerActorDataBase, motionTimer) == 0x3E34);
+static_assert(offsetof(PlayerActorDataBase, idleTimer) == 0x3E38);
+static_assert(offsetof(PlayerActorDataBase, permissions) == 0x3E60);
+static_assert(offsetof(PlayerActorDataBase, state) == 0x3E64);
+static_assert(offsetof(PlayerActorDataBase, lastState) == 0x3E68);
+static_assert(offsetof(PlayerActorDataBase, activeModelIndex) == 0x3E6C);
+static_assert(offsetof(PlayerActorDataBase, queuedModelIndex) == 0x3E70);
+static_assert(offsetof(PlayerActorDataBase, devilModels) == 0x3E74);
+static_assert(offsetof(PlayerActorDataBase, modelState) == 0x3E80);
+static_assert(offsetof(PlayerActorDataBase, lockOn) == 0x3E84);
+static_assert(offsetof(PlayerActorDataBase, activeModelIndexMirror) == 0x3E88);
+static_assert(offsetof(PlayerActorDataBase, activeDevil) == 0x3E8C);
+static_assert(offsetof(PlayerActorDataBase, airRaid) == 0x3E90);
+static_assert(offsetof(PlayerActorDataBase, mode) == 0x3E94);
+static_assert(offsetof(PlayerActorDataBase, dead) == 0x3E99);
+static_assert(offsetof(PlayerActorDataBase, devil) == 0x3E9B);
+static_assert(offsetof(PlayerActorDataBase, costume) == 0x3E9E);
+static_assert(offsetof(PlayerActorDataBase, sparda) == 0x3E9F);
+static_assert(offsetof(PlayerActorDataBase, neroAngelo) == 0x3E9F);
+static_assert(offsetof(PlayerActorDataBase, useHolyWater) == 0x3EA4);
+static_assert(offsetof(PlayerActorDataBase, magicPoints) == 0x3EB8);
+static_assert(offsetof(PlayerActorDataBase, maxMagicPoints) == 0x3EBC);
+static_assert(offsetof(PlayerActorDataBase, var_3EC4) == 0x3EC4);
+static_assert(offsetof(PlayerActorDataBase, var_3EC8) == 0x3EC8);
+static_assert(offsetof(PlayerActorDataBase, var_3ED2) == 0x3ED2);
+static_assert(offsetof(PlayerActorDataBase, cameraDirection) == 0x3ED8);
+static_assert(offsetof(PlayerActorDataBase, var_3EDC) == 0x3EDC);
+static_assert(offsetof(PlayerActorDataBase, airHikeCount) == 0x3F11);
+static_assert(offsetof(PlayerActorDataBase, kickJumpCount) == 0x3F12);
+static_assert(offsetof(PlayerActorDataBase, wallHikeCount) == 0x3F13);
+static_assert(offsetof(PlayerActorDataBase, enableAirRaid) == 0x3F14);
+static_assert(offsetof(PlayerActorDataBase, var_3F19) == 0x3F19);
+static_assert(offsetof(PlayerActorDataBase, action) == 0x3FA4);
+static_assert(offsetof(PlayerActorDataBase, lastAction) == 0x3FA5);
+static_assert(offsetof(PlayerActorDataBase, bufferedAction) == 0x3FA8);
+static_assert(offsetof(PlayerActorDataBase, chainCount) == 0x3FAC);
+static_assert(offsetof(PlayerActorDataBase, expertise) == 0x3FEC);
+static_assert(offsetof(PlayerActorDataBase, maxHitPoints) == 0x40EC);
+static_assert(offsetof(PlayerActorDataBase, hitPoints) == 0x411C);
+static_assert(offsetof(PlayerActorDataBase, targetPosition) == 0x6300);
+static_assert(offsetof(PlayerActorDataBase, targetBaseAddr) == 0x6328);
+static_assert(offsetof(PlayerActorDataBase, style) == 0x6338);
+static_assert(offsetof(PlayerActorDataBase, wallHikeDirection) == 0x633C);
+static_assert(offsetof(PlayerActorDataBase, var_6340) == 0x6340);
+static_assert(offsetof(PlayerActorDataBase, styleLevel) == 0x6358);
+static_assert(offsetof(PlayerActorDataBase, dashCount) == 0x635C);
+static_assert(offsetof(PlayerActorDataBase, skyStarCount) == 0x635D);
+static_assert(offsetof(PlayerActorDataBase, airTrickCount) == 0x635E);
+static_assert(offsetof(PlayerActorDataBase, trickUpCount) == 0x635F);
+static_assert(offsetof(PlayerActorDataBase, trickDownCount) == 0x6360);
+static_assert(offsetof(PlayerActorDataBase, quicksilver) == 0x6361);
+static_assert(offsetof(PlayerActorDataBase, doppelganger) == 0x6362);
+static_assert(offsetof(PlayerActorDataBase, styleExperience) == 0x6364);
+static_assert(offsetof(PlayerActorDataBase, royalguardBlockType) == 0x6370);
+static_assert(offsetof(PlayerActorDataBase, royalguardReleaseLevel) == 0x6380);
+static_assert(offsetof(PlayerActorDataBase, royalguardReleaseEffectIndex) == 0x6381);
+static_assert(offsetof(PlayerActorDataBase, royalguardReleaseDamage) == 0x6384);
+static_assert(offsetof(PlayerActorDataBase, var_6388) == 0x6388);
+static_assert(offsetof(PlayerActorDataBase, var_638C) == 0x638C);
+static_assert(offsetof(PlayerActorDataBase, var_63D0) == 0x63D0);
+static_assert(offsetof(PlayerActorDataBase, quicksilverStage) == 0x63D4);
+static_assert(offsetof(PlayerActorDataBase, var_6410) == 0x6410);
+static_assert(offsetof(PlayerActorDataBase, var_6438) == 0x6438);
+static_assert(offsetof(PlayerActorDataBase, var_6440) == 0x6440);
+static_assert(offsetof(PlayerActorDataBase, cloneRate) == 0x6450);
+static_assert(offsetof(PlayerActorDataBase, cloneStatus) == 0x6454);
+static_assert(offsetof(PlayerActorDataBase, var_6458) == 0x6458);
+static_assert(offsetof(PlayerActorDataBase, cloneActorBaseAddr) == 0x6478);
+static_assert(offsetof(PlayerActorDataBase, cloneIsControlledByPlayer) == 0x6480);
+static_assert(offsetof(PlayerActorDataBase, activeMeleeWeaponIndex) == 0x6484);
+static_assert(offsetof(PlayerActorDataBase, queuedMeleeWeaponIndex) == 0x6488);
+static_assert(offsetof(PlayerActorDataBase, activeWeapon) == 0x648D);
+static_assert(offsetof(PlayerActorDataBase, meleeWeaponIndex) == 0x6490);
+static_assert(offsetof(PlayerActorDataBase, rangedWeaponIndex) == 0x6494);
+static_assert(offsetof(PlayerActorDataBase, weapons) == 0x6498);
+static_assert(offsetof(PlayerActorDataBase, weaponDataAddr) == 0x64A0);
+static_assert(offsetof(PlayerActorDataBase, weaponStatus) == 0x64C8);
+static_assert(offsetof(PlayerActorDataBase, weaponLevels) == 0x64DC);
+static_assert(offsetof(PlayerActorDataBase, activeMeleeWeapon) == 0x64F0);
+static_assert(offsetof(PlayerActorDataBase, activeRangedWeapon) == 0x64F1);
+static_assert(offsetof(PlayerActorDataBase, weaponTimers) == 0x64F4);
+static_assert(offsetof(PlayerActorDataBase, meleeWeaponSwitchTimeout) == 0x6508);
+static_assert(offsetof(PlayerActorDataBase, rangedWeaponSwitchTimeout) == 0x650C);
+static_assert(offsetof(PlayerActorDataBase, styleData) == 0x6510);
+static_assert(offsetof(PlayerActorDataBase, var_6670) == 0x6670);
+static_assert(offsetof(PlayerActorDataBase, inputData) == 0x6674);
+static_assert(offsetof(PlayerActorDataBase, bodyPartData) == 0x6950);
+static_assert(offsetof(PlayerActorDataBase, collisionData) == 0x7250);
+static_assert(offsetof(PlayerActorDataBase, buttons) == 0x74E0);
+static_assert(offsetof(PlayerActorDataBase, rightStickPosition) == 0x74F8);
+static_assert(offsetof(PlayerActorDataBase, rightStickRadius) == 0x74FA);
+static_assert(offsetof(PlayerActorDataBase, leftStickPosition) == 0x7508);
+static_assert(offsetof(PlayerActorDataBase, leftStickRadius) == 0x750A);
+static_assert(offsetof(PlayerActorDataBase, actorCameraDirection) == 0x750C);
+static_assert(offsetof(PlayerActorDataBase, leftStickDirection) == 0x751C);
 
-static_assert(sizeof(ActorDataBase) == 0x7540);
+static_assert(sizeof(PlayerActorDataBase) == 0x7540);
 
-export struct ActorData : ActorDataBase
+export struct PlayerActorData : PlayerActorDataBase
 {
 	_(17280);
 	uint32 newFirstVar; // 0xB8C0
@@ -3161,68 +3882,70 @@ export struct ActorData : ActorDataBase
 	bool newEnableLeftStick; // 0x1CAD7
 	bool newAirStinger; // 0x1CAD8
 	uint8 newAirStingerCount; // 0x1CAD9
-	bool newEnableCollision; // 0x1CADA
-	bool newActorLoopRun; // 0x1CADB
-	uint8 newAirHikeCount; // 0x1CADC
-	uint8 newKickJumpCount; // 0x1CADD
-	uint8 newWallHikeCount; // 0x1CADE
-	uint8 newDashCount; // 0x1CADF
-	uint8 newSkyStarCount; // 0x1CAE0
-	uint8 newAirTrickCount; // 0x1CAE1
-	uint8 newTrickUpCount; // 0x1CAE2
-	uint8 newTrickDownCount; // 0x1CAE3
-	_(12);
+	bool newQuickDrive; // 0x1CADA
+	bool newEnableCollision; // 0x1CADB
+	bool newActorLoopRun; // 0x1CADC
+	uint8 newAirHikeCount; // 0x1CADD
+	uint8 newKickJumpCount; // 0x1CADE
+	uint8 newWallHikeCount; // 0x1CADF
+	uint8 newDashCount; // 0x1CAE0
+	uint8 newSkyStarCount; // 0x1CAE1
+	uint8 newAirTrickCount; // 0x1CAE2
+	uint8 newTrickUpCount; // 0x1CAE3
+	uint8 newTrickDownCount; // 0x1CAE4
+	_(11);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
 };
 
-static_assert(offsetof(ActorData, newFirstVar) == 0xB8C0);
-static_assert(offsetof(ActorData, newModelData) == 0xB8D0);
-static_assert(offsetof(ActorData, newModelPhysicsMetadataPool) == 0xE5D0);
-static_assert(offsetof(ActorData, newModelAllocationData) == 0xEB10);
-static_assert(offsetof(ActorData, newRecoveryData) == 0x12B10);
-static_assert(offsetof(ActorData, newDevilModels) == 0x12DB0);
-static_assert(offsetof(ActorData, newBodyPartData) == 0x12DD0);
-static_assert(offsetof(ActorData, newSubmodelData) == 0x13D90);
-static_assert(offsetof(ActorData, newSubmodelInit) == 0x19010);
-static_assert(offsetof(ActorData, newModelShadowData) == 0x19020);
-static_assert(offsetof(ActorData, newSubmodelShadowData) == 0x194A0);
-static_assert(offsetof(ActorData, newDevilModelPhysicsMetadataPool) == 0x19CE0);
-static_assert(offsetof(ActorData, newDevilSubmodelPhysicsData) == 0x1A280);
-static_assert(offsetof(ActorData, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
-static_assert(offsetof(ActorData, newWeapons) == 0x1C9E0);
-static_assert(offsetof(ActorData, newWeaponDataAddr) == 0x1C9F0);
-static_assert(offsetof(ActorData, newWeaponStatus) == 0x1CA40);
-static_assert(offsetof(ActorData, newWeaponLevels) == 0x1CA70);
-static_assert(offsetof(ActorData, newWeaponTimers) == 0x1CAA0);
-static_assert(offsetof(ActorData, newIsClone) == 0x1CAC8);
-static_assert(offsetof(ActorData, newPlayerIndex) == 0x1CACC);
-static_assert(offsetof(ActorData, newCharacterIndex) == 0x1CACD);
-static_assert(offsetof(ActorData, newEntityIndex) == 0x1CACE);
-static_assert(offsetof(ActorData, newForceFiles) == 0x1CACF);
-static_assert(offsetof(ActorData, newForceFilesCharacter) == 0x1CAD0);
-static_assert(offsetof(ActorData, newForceFilesCostume) == 0x1CAD1);
-static_assert(offsetof(ActorData, newEnableVisibility) == 0x1CAD2);
-static_assert(offsetof(ActorData, newGamepad) == 0x1CAD3);
-static_assert(offsetof(ActorData, newButtonMask) == 0x1CAD4);
-static_assert(offsetof(ActorData, newEnableRightStick) == 0x1CAD6);
-static_assert(offsetof(ActorData, newEnableLeftStick) == 0x1CAD7);
-static_assert(offsetof(ActorData, newAirStinger) == 0x1CAD8);
-static_assert(offsetof(ActorData, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(ActorData, newEnableCollision) == 0x1CADA);
-static_assert(offsetof(ActorData, newActorLoopRun) == 0x1CADB);
-static_assert(offsetof(ActorData, newAirHikeCount) == 0x1CADC);
-static_assert(offsetof(ActorData, newKickJumpCount) == 0x1CADD);
-static_assert(offsetof(ActorData, newWallHikeCount) == 0x1CADE);
-static_assert(offsetof(ActorData, newDashCount) == 0x1CADF);
-static_assert(offsetof(ActorData, newSkyStarCount) == 0x1CAE0);
-static_assert(offsetof(ActorData, newAirTrickCount) == 0x1CAE1);
-static_assert(offsetof(ActorData, newTrickUpCount) == 0x1CAE2);
-static_assert(offsetof(ActorData, newTrickDownCount) == 0x1CAE3);
-static_assert(offsetof(ActorData, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorData, newLastVar) == 0x1CB20);
+static_assert(offsetof(PlayerActorData, newFirstVar) == 0xB8C0);
+static_assert(offsetof(PlayerActorData, newModelData) == 0xB8D0);
+static_assert(offsetof(PlayerActorData, newModelPhysicsMetadataPool) == 0xE5D0);
+static_assert(offsetof(PlayerActorData, newModelAllocationData) == 0xEB10);
+static_assert(offsetof(PlayerActorData, newRecoveryData) == 0x12B10);
+static_assert(offsetof(PlayerActorData, newDevilModels) == 0x12DB0);
+static_assert(offsetof(PlayerActorData, newBodyPartData) == 0x12DD0);
+static_assert(offsetof(PlayerActorData, newSubmodelData) == 0x13D90);
+static_assert(offsetof(PlayerActorData, newSubmodelInit) == 0x19010);
+static_assert(offsetof(PlayerActorData, newModelShadowData) == 0x19020);
+static_assert(offsetof(PlayerActorData, newSubmodelShadowData) == 0x194A0);
+static_assert(offsetof(PlayerActorData, newDevilModelPhysicsMetadataPool) == 0x19CE0);
+static_assert(offsetof(PlayerActorData, newDevilSubmodelPhysicsData) == 0x1A280);
+static_assert(offsetof(PlayerActorData, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
+static_assert(offsetof(PlayerActorData, newWeapons) == 0x1C9E0);
+static_assert(offsetof(PlayerActorData, newWeaponDataAddr) == 0x1C9F0);
+static_assert(offsetof(PlayerActorData, newWeaponStatus) == 0x1CA40);
+static_assert(offsetof(PlayerActorData, newWeaponLevels) == 0x1CA70);
+static_assert(offsetof(PlayerActorData, newWeaponTimers) == 0x1CAA0);
+static_assert(offsetof(PlayerActorData, newIsClone) == 0x1CAC8);
+static_assert(offsetof(PlayerActorData, newPlayerIndex) == 0x1CACC);
+static_assert(offsetof(PlayerActorData, newCharacterIndex) == 0x1CACD);
+static_assert(offsetof(PlayerActorData, newEntityIndex) == 0x1CACE);
+static_assert(offsetof(PlayerActorData, newForceFiles) == 0x1CACF);
+static_assert(offsetof(PlayerActorData, newForceFilesCharacter) == 0x1CAD0);
+static_assert(offsetof(PlayerActorData, newForceFilesCostume) == 0x1CAD1);
+static_assert(offsetof(PlayerActorData, newEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(PlayerActorData, newGamepad) == 0x1CAD3);
+static_assert(offsetof(PlayerActorData, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(PlayerActorData, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(PlayerActorData, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(PlayerActorData, newAirStinger) == 0x1CAD8);
+static_assert(offsetof(PlayerActorData, newAirStingerCount) == 0x1CAD9);
+static_assert(offsetof(PlayerActorData, newQuickDrive) == 0x1CADA);
+static_assert(offsetof(PlayerActorData, newEnableCollision) == 0x1CADB);
+static_assert(offsetof(PlayerActorData, newActorLoopRun) == 0x1CADC);
+static_assert(offsetof(PlayerActorData, newAirHikeCount) == 0x1CADD);
+static_assert(offsetof(PlayerActorData, newKickJumpCount) == 0x1CADE);
+static_assert(offsetof(PlayerActorData, newWallHikeCount) == 0x1CADF);
+static_assert(offsetof(PlayerActorData, newDashCount) == 0x1CAE0);
+static_assert(offsetof(PlayerActorData, newSkyStarCount) == 0x1CAE1);
+static_assert(offsetof(PlayerActorData, newAirTrickCount) == 0x1CAE2);
+static_assert(offsetof(PlayerActorData, newTrickUpCount) == 0x1CAE3);
+static_assert(offsetof(PlayerActorData, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(PlayerActorData, newEffectIndices) == 0x1CAF0);
+static_assert(offsetof(PlayerActorData, newLastVar) == 0x1CB20);
 
-export struct ActorDataDante : ActorDataBase
+export struct PlayerActorDataDante : PlayerActorDataBase
 {
 	ModelData submodelData[5]; // 0x7540
 	bool submodelInit[5]; // 0x9AC0
@@ -3283,81 +4006,83 @@ export struct ActorDataDante : ActorDataBase
 	bool newEnableLeftStick; // 0x1CAD7
 	bool newAirStinger; // 0x1CAD8
 	uint8 newAirStingerCount; // 0x1CAD9
-	bool newEnableCollision; // 0x1CADA
-	bool newActorLoopRun; // 0x1CADB
-	uint8 newAirHikeCount; // 0x1CADC
-	uint8 newKickJumpCount; // 0x1CADD
-	uint8 newWallHikeCount; // 0x1CADE
-	uint8 newDashCount; // 0x1CADF
-	uint8 newSkyStarCount; // 0x1CAE0
-	uint8 newAirTrickCount; // 0x1CAE1
-	uint8 newTrickUpCount; // 0x1CAE2
-	uint8 newTrickDownCount; // 0x1CAE3
-	_(12);
+	bool newQuickDrive; // 0x1CADA
+	bool newEnableCollision; // 0x1CADB
+	bool newActorLoopRun; // 0x1CADC
+	uint8 newAirHikeCount; // 0x1CADD
+	uint8 newKickJumpCount; // 0x1CADE
+	uint8 newWallHikeCount; // 0x1CADF
+	uint8 newDashCount; // 0x1CAE0
+	uint8 newSkyStarCount; // 0x1CAE1
+	uint8 newAirTrickCount; // 0x1CAE2
+	uint8 newTrickUpCount; // 0x1CAE3
+	uint8 newTrickDownCount; // 0x1CAE4
+	_(11);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
 };
 
-static_assert(offsetof(ActorDataDante, submodelData) == 0x7540);
-static_assert(offsetof(ActorDataDante, submodelInit) == 0x9AC0);
-static_assert(offsetof(ActorDataDante, modelShadowData) == 0x9AD0);
-static_assert(offsetof(ActorDataDante, submodelShadowData) == 0x9D10);
-static_assert(offsetof(ActorDataDante, submodelPhysicsMetadataPool) == 0xA0D0);
-static_assert(offsetof(ActorDataDante, submodelPhysicsData) == 0xA210);
-static_assert(offsetof(ActorDataDante, devilModelPhysicsMetadataPool) == 0xA300);
-static_assert(offsetof(ActorDataDante, devilSubmodelPhysicsData) == 0xA540);
-static_assert(offsetof(ActorDataDante, devilSubmodelPhysicsLinkData) == 0xAA00);
-static_assert(offsetof(ActorDataDante, devilModelMetadata) == 0xB600);
-static_assert(offsetof(ActorDataDante, modelMetadata) == 0xB630);
-static_assert(offsetof(ActorDataDante, artemisChargeValue) == 0xB868);
-static_assert(offsetof(ActorDataDante, artemisChargeFlags) == 0xB87C);
-static_assert(offsetof(ActorDataDante, newFirstVar) == 0xB8C0);
-static_assert(offsetof(ActorDataDante, newModelData) == 0xB8D0);
-static_assert(offsetof(ActorDataDante, newModelPhysicsMetadataPool) == 0xE5D0);
-static_assert(offsetof(ActorDataDante, newModelAllocationData) == 0xEB10);
-static_assert(offsetof(ActorDataDante, newRecoveryData) == 0x12B10);
-static_assert(offsetof(ActorDataDante, newDevilModels) == 0x12DB0);
-static_assert(offsetof(ActorDataDante, newBodyPartData) == 0x12DD0);
-static_assert(offsetof(ActorDataDante, newSubmodelData) == 0x13D90);
-static_assert(offsetof(ActorDataDante, newSubmodelInit) == 0x19010);
-static_assert(offsetof(ActorDataDante, newModelShadowData) == 0x19020);
-static_assert(offsetof(ActorDataDante, newSubmodelShadowData) == 0x194A0);
-static_assert(offsetof(ActorDataDante, newDevilModelPhysicsMetadataPool) == 0x19CE0);
-static_assert(offsetof(ActorDataDante, newDevilSubmodelPhysicsData) == 0x1A280);
-static_assert(offsetof(ActorDataDante, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
-static_assert(offsetof(ActorDataDante, newWeapons) == 0x1C9E0);
-static_assert(offsetof(ActorDataDante, newWeaponDataAddr) == 0x1C9F0);
-static_assert(offsetof(ActorDataDante, newWeaponStatus) == 0x1CA40);
-static_assert(offsetof(ActorDataDante, newWeaponLevels) == 0x1CA70);
-static_assert(offsetof(ActorDataDante, newWeaponTimers) == 0x1CAA0);
-static_assert(offsetof(ActorDataDante, newIsClone) == 0x1CAC8);
-static_assert(offsetof(ActorDataDante, newPlayerIndex) == 0x1CACC);
-static_assert(offsetof(ActorDataDante, newCharacterIndex) == 0x1CACD);
-static_assert(offsetof(ActorDataDante, newEntityIndex) == 0x1CACE);
-static_assert(offsetof(ActorDataDante, newForceFiles) == 0x1CACF);
-static_assert(offsetof(ActorDataDante, newForceFilesCharacter) == 0x1CAD0);
-static_assert(offsetof(ActorDataDante, newForceFilesCostume) == 0x1CAD1);
-static_assert(offsetof(ActorDataDante, newEnableVisibility) == 0x1CAD2);
-static_assert(offsetof(ActorDataDante, newGamepad) == 0x1CAD3);
-static_assert(offsetof(ActorDataDante, newButtonMask) == 0x1CAD4);
-static_assert(offsetof(ActorDataDante, newEnableRightStick) == 0x1CAD6);
-static_assert(offsetof(ActorDataDante, newEnableLeftStick) == 0x1CAD7);
-static_assert(offsetof(ActorDataDante, newAirStinger) == 0x1CAD8);
-static_assert(offsetof(ActorDataDante, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(ActorDataDante, newEnableCollision) == 0x1CADA);
-static_assert(offsetof(ActorDataDante, newActorLoopRun) == 0x1CADB);
-static_assert(offsetof(ActorDataDante, newAirHikeCount) == 0x1CADC);
-static_assert(offsetof(ActorDataDante, newKickJumpCount) == 0x1CADD);
-static_assert(offsetof(ActorDataDante, newWallHikeCount) == 0x1CADE);
-static_assert(offsetof(ActorDataDante, newDashCount) == 0x1CADF);
-static_assert(offsetof(ActorDataDante, newSkyStarCount) == 0x1CAE0);
-static_assert(offsetof(ActorDataDante, newAirTrickCount) == 0x1CAE1);
-static_assert(offsetof(ActorDataDante, newTrickUpCount) == 0x1CAE2);
-static_assert(offsetof(ActorDataDante, newTrickDownCount) == 0x1CAE3);
-static_assert(offsetof(ActorDataDante, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorDataDante, newLastVar) == 0x1CB20);
+static_assert(offsetof(PlayerActorDataDante, submodelData) == 0x7540);
+static_assert(offsetof(PlayerActorDataDante, submodelInit) == 0x9AC0);
+static_assert(offsetof(PlayerActorDataDante, modelShadowData) == 0x9AD0);
+static_assert(offsetof(PlayerActorDataDante, submodelShadowData) == 0x9D10);
+static_assert(offsetof(PlayerActorDataDante, submodelPhysicsMetadataPool) == 0xA0D0);
+static_assert(offsetof(PlayerActorDataDante, submodelPhysicsData) == 0xA210);
+static_assert(offsetof(PlayerActorDataDante, devilModelPhysicsMetadataPool) == 0xA300);
+static_assert(offsetof(PlayerActorDataDante, devilSubmodelPhysicsData) == 0xA540);
+static_assert(offsetof(PlayerActorDataDante, devilSubmodelPhysicsLinkData) == 0xAA00);
+static_assert(offsetof(PlayerActorDataDante, devilModelMetadata) == 0xB600);
+static_assert(offsetof(PlayerActorDataDante, modelMetadata) == 0xB630);
+static_assert(offsetof(PlayerActorDataDante, artemisChargeValue) == 0xB868);
+static_assert(offsetof(PlayerActorDataDante, artemisChargeFlags) == 0xB87C);
+static_assert(offsetof(PlayerActorDataDante, newFirstVar) == 0xB8C0);
+static_assert(offsetof(PlayerActorDataDante, newModelData) == 0xB8D0);
+static_assert(offsetof(PlayerActorDataDante, newModelPhysicsMetadataPool) == 0xE5D0);
+static_assert(offsetof(PlayerActorDataDante, newModelAllocationData) == 0xEB10);
+static_assert(offsetof(PlayerActorDataDante, newRecoveryData) == 0x12B10);
+static_assert(offsetof(PlayerActorDataDante, newDevilModels) == 0x12DB0);
+static_assert(offsetof(PlayerActorDataDante, newBodyPartData) == 0x12DD0);
+static_assert(offsetof(PlayerActorDataDante, newSubmodelData) == 0x13D90);
+static_assert(offsetof(PlayerActorDataDante, newSubmodelInit) == 0x19010);
+static_assert(offsetof(PlayerActorDataDante, newModelShadowData) == 0x19020);
+static_assert(offsetof(PlayerActorDataDante, newSubmodelShadowData) == 0x194A0);
+static_assert(offsetof(PlayerActorDataDante, newDevilModelPhysicsMetadataPool) == 0x19CE0);
+static_assert(offsetof(PlayerActorDataDante, newDevilSubmodelPhysicsData) == 0x1A280);
+static_assert(offsetof(PlayerActorDataDante, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
+static_assert(offsetof(PlayerActorDataDante, newWeapons) == 0x1C9E0);
+static_assert(offsetof(PlayerActorDataDante, newWeaponDataAddr) == 0x1C9F0);
+static_assert(offsetof(PlayerActorDataDante, newWeaponStatus) == 0x1CA40);
+static_assert(offsetof(PlayerActorDataDante, newWeaponLevels) == 0x1CA70);
+static_assert(offsetof(PlayerActorDataDante, newWeaponTimers) == 0x1CAA0);
+static_assert(offsetof(PlayerActorDataDante, newIsClone) == 0x1CAC8);
+static_assert(offsetof(PlayerActorDataDante, newPlayerIndex) == 0x1CACC);
+static_assert(offsetof(PlayerActorDataDante, newCharacterIndex) == 0x1CACD);
+static_assert(offsetof(PlayerActorDataDante, newEntityIndex) == 0x1CACE);
+static_assert(offsetof(PlayerActorDataDante, newForceFiles) == 0x1CACF);
+static_assert(offsetof(PlayerActorDataDante, newForceFilesCharacter) == 0x1CAD0);
+static_assert(offsetof(PlayerActorDataDante, newForceFilesCostume) == 0x1CAD1);
+static_assert(offsetof(PlayerActorDataDante, newEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(PlayerActorDataDante, newGamepad) == 0x1CAD3);
+static_assert(offsetof(PlayerActorDataDante, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(PlayerActorDataDante, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(PlayerActorDataDante, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(PlayerActorDataDante, newAirStinger) == 0x1CAD8);
+static_assert(offsetof(PlayerActorDataDante, newAirStingerCount) == 0x1CAD9);
+static_assert(offsetof(PlayerActorDataDante, newQuickDrive) == 0x1CADA);
+static_assert(offsetof(PlayerActorDataDante, newEnableCollision) == 0x1CADB);
+static_assert(offsetof(PlayerActorDataDante, newActorLoopRun) == 0x1CADC);
+static_assert(offsetof(PlayerActorDataDante, newAirHikeCount) == 0x1CADD);
+static_assert(offsetof(PlayerActorDataDante, newKickJumpCount) == 0x1CADE);
+static_assert(offsetof(PlayerActorDataDante, newWallHikeCount) == 0x1CADF);
+static_assert(offsetof(PlayerActorDataDante, newDashCount) == 0x1CAE0);
+static_assert(offsetof(PlayerActorDataDante, newSkyStarCount) == 0x1CAE1);
+static_assert(offsetof(PlayerActorDataDante, newAirTrickCount) == 0x1CAE2);
+static_assert(offsetof(PlayerActorDataDante, newTrickUpCount) == 0x1CAE3);
+static_assert(offsetof(PlayerActorDataDante, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(PlayerActorDataDante, newEffectIndices) == 0x1CAF0);
+static_assert(offsetof(PlayerActorDataDante, newLastVar) == 0x1CB20);
 
-export struct ActorDataBob : ActorDataBase
+export struct PlayerActorDataBob : PlayerActorDataBase
 {
 	_(17280);
 	uint32 newFirstVar; // 0xB8C0
@@ -3399,68 +4124,70 @@ export struct ActorDataBob : ActorDataBase
 	bool newEnableLeftStick; // 0x1CAD7
 	bool newAirStinger; // 0x1CAD8
 	uint8 newAirStingerCount; // 0x1CAD9
-	bool newEnableCollision; // 0x1CADA
-	bool newActorLoopRun; // 0x1CADB
-	uint8 newAirHikeCount; // 0x1CADC
-	uint8 newKickJumpCount; // 0x1CADD
-	uint8 newWallHikeCount; // 0x1CADE
-	uint8 newDashCount; // 0x1CADF
-	uint8 newSkyStarCount; // 0x1CAE0
-	uint8 newAirTrickCount; // 0x1CAE1
-	uint8 newTrickUpCount; // 0x1CAE2
-	uint8 newTrickDownCount; // 0x1CAE3
-	_(12);
+	bool newQuickDrive; // 0x1CADA
+	bool newEnableCollision; // 0x1CADB
+	bool newActorLoopRun; // 0x1CADC
+	uint8 newAirHikeCount; // 0x1CADD
+	uint8 newKickJumpCount; // 0x1CADE
+	uint8 newWallHikeCount; // 0x1CADF
+	uint8 newDashCount; // 0x1CAE0
+	uint8 newSkyStarCount; // 0x1CAE1
+	uint8 newAirTrickCount; // 0x1CAE2
+	uint8 newTrickUpCount; // 0x1CAE3
+	uint8 newTrickDownCount; // 0x1CAE4
+	_(11);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
 };
 
-static_assert(offsetof(ActorDataBob, newFirstVar) == 0xB8C0);
-static_assert(offsetof(ActorDataBob, newModelData) == 0xB8D0);
-static_assert(offsetof(ActorDataBob, newModelPhysicsMetadataPool) == 0xE5D0);
-static_assert(offsetof(ActorDataBob, newModelAllocationData) == 0xEB10);
-static_assert(offsetof(ActorDataBob, newRecoveryData) == 0x12B10);
-static_assert(offsetof(ActorDataBob, newDevilModels) == 0x12DB0);
-static_assert(offsetof(ActorDataBob, newBodyPartData) == 0x12DD0);
-static_assert(offsetof(ActorDataBob, newSubmodelData) == 0x13D90);
-static_assert(offsetof(ActorDataBob, newSubmodelInit) == 0x19010);
-static_assert(offsetof(ActorDataBob, newModelShadowData) == 0x19020);
-static_assert(offsetof(ActorDataBob, newSubmodelShadowData) == 0x194A0);
-static_assert(offsetof(ActorDataBob, newDevilModelPhysicsMetadataPool) == 0x19CE0);
-static_assert(offsetof(ActorDataBob, newDevilSubmodelPhysicsData) == 0x1A280);
-static_assert(offsetof(ActorDataBob, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
-static_assert(offsetof(ActorDataBob, newWeapons) == 0x1C9E0);
-static_assert(offsetof(ActorDataBob, newWeaponDataAddr) == 0x1C9F0);
-static_assert(offsetof(ActorDataBob, newWeaponStatus) == 0x1CA40);
-static_assert(offsetof(ActorDataBob, newWeaponLevels) == 0x1CA70);
-static_assert(offsetof(ActorDataBob, newWeaponTimers) == 0x1CAA0);
-static_assert(offsetof(ActorDataBob, newIsClone) == 0x1CAC8);
-static_assert(offsetof(ActorDataBob, newPlayerIndex) == 0x1CACC);
-static_assert(offsetof(ActorDataBob, newCharacterIndex) == 0x1CACD);
-static_assert(offsetof(ActorDataBob, newEntityIndex) == 0x1CACE);
-static_assert(offsetof(ActorDataBob, newForceFiles) == 0x1CACF);
-static_assert(offsetof(ActorDataBob, newForceFilesCharacter) == 0x1CAD0);
-static_assert(offsetof(ActorDataBob, newForceFilesCostume) == 0x1CAD1);
-static_assert(offsetof(ActorDataBob, newEnableVisibility) == 0x1CAD2);
-static_assert(offsetof(ActorDataBob, newGamepad) == 0x1CAD3);
-static_assert(offsetof(ActorDataBob, newButtonMask) == 0x1CAD4);
-static_assert(offsetof(ActorDataBob, newEnableRightStick) == 0x1CAD6);
-static_assert(offsetof(ActorDataBob, newEnableLeftStick) == 0x1CAD7);
-static_assert(offsetof(ActorDataBob, newAirStinger) == 0x1CAD8);
-static_assert(offsetof(ActorDataBob, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(ActorDataBob, newEnableCollision) == 0x1CADA);
-static_assert(offsetof(ActorDataBob, newActorLoopRun) == 0x1CADB);
-static_assert(offsetof(ActorDataBob, newAirHikeCount) == 0x1CADC);
-static_assert(offsetof(ActorDataBob, newKickJumpCount) == 0x1CADD);
-static_assert(offsetof(ActorDataBob, newWallHikeCount) == 0x1CADE);
-static_assert(offsetof(ActorDataBob, newDashCount) == 0x1CADF);
-static_assert(offsetof(ActorDataBob, newSkyStarCount) == 0x1CAE0);
-static_assert(offsetof(ActorDataBob, newAirTrickCount) == 0x1CAE1);
-static_assert(offsetof(ActorDataBob, newTrickUpCount) == 0x1CAE2);
-static_assert(offsetof(ActorDataBob, newTrickDownCount) == 0x1CAE3);
-static_assert(offsetof(ActorDataBob, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorDataBob, newLastVar) == 0x1CB20);
+static_assert(offsetof(PlayerActorDataBob, newFirstVar) == 0xB8C0);
+static_assert(offsetof(PlayerActorDataBob, newModelData) == 0xB8D0);
+static_assert(offsetof(PlayerActorDataBob, newModelPhysicsMetadataPool) == 0xE5D0);
+static_assert(offsetof(PlayerActorDataBob, newModelAllocationData) == 0xEB10);
+static_assert(offsetof(PlayerActorDataBob, newRecoveryData) == 0x12B10);
+static_assert(offsetof(PlayerActorDataBob, newDevilModels) == 0x12DB0);
+static_assert(offsetof(PlayerActorDataBob, newBodyPartData) == 0x12DD0);
+static_assert(offsetof(PlayerActorDataBob, newSubmodelData) == 0x13D90);
+static_assert(offsetof(PlayerActorDataBob, newSubmodelInit) == 0x19010);
+static_assert(offsetof(PlayerActorDataBob, newModelShadowData) == 0x19020);
+static_assert(offsetof(PlayerActorDataBob, newSubmodelShadowData) == 0x194A0);
+static_assert(offsetof(PlayerActorDataBob, newDevilModelPhysicsMetadataPool) == 0x19CE0);
+static_assert(offsetof(PlayerActorDataBob, newDevilSubmodelPhysicsData) == 0x1A280);
+static_assert(offsetof(PlayerActorDataBob, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
+static_assert(offsetof(PlayerActorDataBob, newWeapons) == 0x1C9E0);
+static_assert(offsetof(PlayerActorDataBob, newWeaponDataAddr) == 0x1C9F0);
+static_assert(offsetof(PlayerActorDataBob, newWeaponStatus) == 0x1CA40);
+static_assert(offsetof(PlayerActorDataBob, newWeaponLevels) == 0x1CA70);
+static_assert(offsetof(PlayerActorDataBob, newWeaponTimers) == 0x1CAA0);
+static_assert(offsetof(PlayerActorDataBob, newIsClone) == 0x1CAC8);
+static_assert(offsetof(PlayerActorDataBob, newPlayerIndex) == 0x1CACC);
+static_assert(offsetof(PlayerActorDataBob, newCharacterIndex) == 0x1CACD);
+static_assert(offsetof(PlayerActorDataBob, newEntityIndex) == 0x1CACE);
+static_assert(offsetof(PlayerActorDataBob, newForceFiles) == 0x1CACF);
+static_assert(offsetof(PlayerActorDataBob, newForceFilesCharacter) == 0x1CAD0);
+static_assert(offsetof(PlayerActorDataBob, newForceFilesCostume) == 0x1CAD1);
+static_assert(offsetof(PlayerActorDataBob, newEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(PlayerActorDataBob, newGamepad) == 0x1CAD3);
+static_assert(offsetof(PlayerActorDataBob, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(PlayerActorDataBob, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(PlayerActorDataBob, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(PlayerActorDataBob, newAirStinger) == 0x1CAD8);
+static_assert(offsetof(PlayerActorDataBob, newAirStingerCount) == 0x1CAD9);
+static_assert(offsetof(PlayerActorDataBob, newQuickDrive) == 0x1CADA);
+static_assert(offsetof(PlayerActorDataBob, newEnableCollision) == 0x1CADB);
+static_assert(offsetof(PlayerActorDataBob, newActorLoopRun) == 0x1CADC);
+static_assert(offsetof(PlayerActorDataBob, newAirHikeCount) == 0x1CADD);
+static_assert(offsetof(PlayerActorDataBob, newKickJumpCount) == 0x1CADE);
+static_assert(offsetof(PlayerActorDataBob, newWallHikeCount) == 0x1CADF);
+static_assert(offsetof(PlayerActorDataBob, newDashCount) == 0x1CAE0);
+static_assert(offsetof(PlayerActorDataBob, newSkyStarCount) == 0x1CAE1);
+static_assert(offsetof(PlayerActorDataBob, newAirTrickCount) == 0x1CAE2);
+static_assert(offsetof(PlayerActorDataBob, newTrickUpCount) == 0x1CAE3);
+static_assert(offsetof(PlayerActorDataBob, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(PlayerActorDataBob, newEffectIndices) == 0x1CAF0);
+static_assert(offsetof(PlayerActorDataBob, newLastVar) == 0x1CB20);
 
-export struct ActorDataLady : ActorDataBase
+export struct PlayerActorDataLady : PlayerActorDataBase
 {
 	_(17280);
 	uint32 newFirstVar; // 0xB8C0
@@ -3502,68 +4229,70 @@ export struct ActorDataLady : ActorDataBase
 	bool newEnableLeftStick; // 0x1CAD7
 	bool newAirStinger; // 0x1CAD8
 	uint8 newAirStingerCount; // 0x1CAD9
-	bool newEnableCollision; // 0x1CADA
-	bool newActorLoopRun; // 0x1CADB
-	uint8 newAirHikeCount; // 0x1CADC
-	uint8 newKickJumpCount; // 0x1CADD
-	uint8 newWallHikeCount; // 0x1CADE
-	uint8 newDashCount; // 0x1CADF
-	uint8 newSkyStarCount; // 0x1CAE0
-	uint8 newAirTrickCount; // 0x1CAE1
-	uint8 newTrickUpCount; // 0x1CAE2
-	uint8 newTrickDownCount; // 0x1CAE3
-	_(12);
+	bool newQuickDrive; // 0x1CADA
+	bool newEnableCollision; // 0x1CADB
+	bool newActorLoopRun; // 0x1CADC
+	uint8 newAirHikeCount; // 0x1CADD
+	uint8 newKickJumpCount; // 0x1CADE
+	uint8 newWallHikeCount; // 0x1CADF
+	uint8 newDashCount; // 0x1CAE0
+	uint8 newSkyStarCount; // 0x1CAE1
+	uint8 newAirTrickCount; // 0x1CAE2
+	uint8 newTrickUpCount; // 0x1CAE3
+	uint8 newTrickDownCount; // 0x1CAE4
+	_(11);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
 };
 
-static_assert(offsetof(ActorDataLady, newFirstVar) == 0xB8C0);
-static_assert(offsetof(ActorDataLady, newModelData) == 0xB8D0);
-static_assert(offsetof(ActorDataLady, newModelPhysicsMetadataPool) == 0xE5D0);
-static_assert(offsetof(ActorDataLady, newModelAllocationData) == 0xEB10);
-static_assert(offsetof(ActorDataLady, newRecoveryData) == 0x12B10);
-static_assert(offsetof(ActorDataLady, newDevilModels) == 0x12DB0);
-static_assert(offsetof(ActorDataLady, newBodyPartData) == 0x12DD0);
-static_assert(offsetof(ActorDataLady, newSubmodelData) == 0x13D90);
-static_assert(offsetof(ActorDataLady, newSubmodelInit) == 0x19010);
-static_assert(offsetof(ActorDataLady, newModelShadowData) == 0x19020);
-static_assert(offsetof(ActorDataLady, newSubmodelShadowData) == 0x194A0);
-static_assert(offsetof(ActorDataLady, newDevilModelPhysicsMetadataPool) == 0x19CE0);
-static_assert(offsetof(ActorDataLady, newDevilSubmodelPhysicsData) == 0x1A280);
-static_assert(offsetof(ActorDataLady, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
-static_assert(offsetof(ActorDataLady, newWeapons) == 0x1C9E0);
-static_assert(offsetof(ActorDataLady, newWeaponDataAddr) == 0x1C9F0);
-static_assert(offsetof(ActorDataLady, newWeaponStatus) == 0x1CA40);
-static_assert(offsetof(ActorDataLady, newWeaponLevels) == 0x1CA70);
-static_assert(offsetof(ActorDataLady, newWeaponTimers) == 0x1CAA0);
-static_assert(offsetof(ActorDataLady, newIsClone) == 0x1CAC8);
-static_assert(offsetof(ActorDataLady, newPlayerIndex) == 0x1CACC);
-static_assert(offsetof(ActorDataLady, newCharacterIndex) == 0x1CACD);
-static_assert(offsetof(ActorDataLady, newEntityIndex) == 0x1CACE);
-static_assert(offsetof(ActorDataLady, newForceFiles) == 0x1CACF);
-static_assert(offsetof(ActorDataLady, newForceFilesCharacter) == 0x1CAD0);
-static_assert(offsetof(ActorDataLady, newForceFilesCostume) == 0x1CAD1);
-static_assert(offsetof(ActorDataLady, newEnableVisibility) == 0x1CAD2);
-static_assert(offsetof(ActorDataLady, newGamepad) == 0x1CAD3);
-static_assert(offsetof(ActorDataLady, newButtonMask) == 0x1CAD4);
-static_assert(offsetof(ActorDataLady, newEnableRightStick) == 0x1CAD6);
-static_assert(offsetof(ActorDataLady, newEnableLeftStick) == 0x1CAD7);
-static_assert(offsetof(ActorDataLady, newAirStinger) == 0x1CAD8);
-static_assert(offsetof(ActorDataLady, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(ActorDataLady, newEnableCollision) == 0x1CADA);
-static_assert(offsetof(ActorDataLady, newActorLoopRun) == 0x1CADB);
-static_assert(offsetof(ActorDataLady, newAirHikeCount) == 0x1CADC);
-static_assert(offsetof(ActorDataLady, newKickJumpCount) == 0x1CADD);
-static_assert(offsetof(ActorDataLady, newWallHikeCount) == 0x1CADE);
-static_assert(offsetof(ActorDataLady, newDashCount) == 0x1CADF);
-static_assert(offsetof(ActorDataLady, newSkyStarCount) == 0x1CAE0);
-static_assert(offsetof(ActorDataLady, newAirTrickCount) == 0x1CAE1);
-static_assert(offsetof(ActorDataLady, newTrickUpCount) == 0x1CAE2);
-static_assert(offsetof(ActorDataLady, newTrickDownCount) == 0x1CAE3);
-static_assert(offsetof(ActorDataLady, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorDataLady, newLastVar) == 0x1CB20);
+static_assert(offsetof(PlayerActorDataLady, newFirstVar) == 0xB8C0);
+static_assert(offsetof(PlayerActorDataLady, newModelData) == 0xB8D0);
+static_assert(offsetof(PlayerActorDataLady, newModelPhysicsMetadataPool) == 0xE5D0);
+static_assert(offsetof(PlayerActorDataLady, newModelAllocationData) == 0xEB10);
+static_assert(offsetof(PlayerActorDataLady, newRecoveryData) == 0x12B10);
+static_assert(offsetof(PlayerActorDataLady, newDevilModels) == 0x12DB0);
+static_assert(offsetof(PlayerActorDataLady, newBodyPartData) == 0x12DD0);
+static_assert(offsetof(PlayerActorDataLady, newSubmodelData) == 0x13D90);
+static_assert(offsetof(PlayerActorDataLady, newSubmodelInit) == 0x19010);
+static_assert(offsetof(PlayerActorDataLady, newModelShadowData) == 0x19020);
+static_assert(offsetof(PlayerActorDataLady, newSubmodelShadowData) == 0x194A0);
+static_assert(offsetof(PlayerActorDataLady, newDevilModelPhysicsMetadataPool) == 0x19CE0);
+static_assert(offsetof(PlayerActorDataLady, newDevilSubmodelPhysicsData) == 0x1A280);
+static_assert(offsetof(PlayerActorDataLady, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
+static_assert(offsetof(PlayerActorDataLady, newWeapons) == 0x1C9E0);
+static_assert(offsetof(PlayerActorDataLady, newWeaponDataAddr) == 0x1C9F0);
+static_assert(offsetof(PlayerActorDataLady, newWeaponStatus) == 0x1CA40);
+static_assert(offsetof(PlayerActorDataLady, newWeaponLevels) == 0x1CA70);
+static_assert(offsetof(PlayerActorDataLady, newWeaponTimers) == 0x1CAA0);
+static_assert(offsetof(PlayerActorDataLady, newIsClone) == 0x1CAC8);
+static_assert(offsetof(PlayerActorDataLady, newPlayerIndex) == 0x1CACC);
+static_assert(offsetof(PlayerActorDataLady, newCharacterIndex) == 0x1CACD);
+static_assert(offsetof(PlayerActorDataLady, newEntityIndex) == 0x1CACE);
+static_assert(offsetof(PlayerActorDataLady, newForceFiles) == 0x1CACF);
+static_assert(offsetof(PlayerActorDataLady, newForceFilesCharacter) == 0x1CAD0);
+static_assert(offsetof(PlayerActorDataLady, newForceFilesCostume) == 0x1CAD1);
+static_assert(offsetof(PlayerActorDataLady, newEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(PlayerActorDataLady, newGamepad) == 0x1CAD3);
+static_assert(offsetof(PlayerActorDataLady, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(PlayerActorDataLady, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(PlayerActorDataLady, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(PlayerActorDataLady, newAirStinger) == 0x1CAD8);
+static_assert(offsetof(PlayerActorDataLady, newAirStingerCount) == 0x1CAD9);
+static_assert(offsetof(PlayerActorDataLady, newQuickDrive) == 0x1CADA);
+static_assert(offsetof(PlayerActorDataLady, newEnableCollision) == 0x1CADB);
+static_assert(offsetof(PlayerActorDataLady, newActorLoopRun) == 0x1CADC);
+static_assert(offsetof(PlayerActorDataLady, newAirHikeCount) == 0x1CADD);
+static_assert(offsetof(PlayerActorDataLady, newKickJumpCount) == 0x1CADE);
+static_assert(offsetof(PlayerActorDataLady, newWallHikeCount) == 0x1CADF);
+static_assert(offsetof(PlayerActorDataLady, newDashCount) == 0x1CAE0);
+static_assert(offsetof(PlayerActorDataLady, newSkyStarCount) == 0x1CAE1);
+static_assert(offsetof(PlayerActorDataLady, newAirTrickCount) == 0x1CAE2);
+static_assert(offsetof(PlayerActorDataLady, newTrickUpCount) == 0x1CAE3);
+static_assert(offsetof(PlayerActorDataLady, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(PlayerActorDataLady, newEffectIndices) == 0x1CAF0);
+static_assert(offsetof(PlayerActorDataLady, newLastVar) == 0x1CB20);
 
-export struct ActorDataVergil : ActorDataBase
+export struct PlayerActorDataVergil : PlayerActorDataBase
 {
 	ModelData submodelData[5]; // 0x7540
 	bool submodelInit[5]; // 0x9AC0
@@ -3615,99 +4344,353 @@ export struct ActorDataVergil : ActorDataBase
 	bool newEnableLeftStick; // 0x1CAD7
 	bool newAirStinger; // 0x1CAD8
 	uint8 newAirStingerCount; // 0x1CAD9
-	bool newEnableCollision; // 0x1CADA
-	bool newActorLoopRun; // 0x1CADB
-	uint8 newAirHikeCount; // 0x1CADC
-	uint8 newKickJumpCount; // 0x1CADD
-	uint8 newWallHikeCount; // 0x1CADE
-	uint8 newDashCount; // 0x1CADF
-	uint8 newSkyStarCount; // 0x1CAE0
-	uint8 newAirTrickCount; // 0x1CAE1
-	uint8 newTrickUpCount; // 0x1CAE2
-	uint8 newTrickDownCount; // 0x1CAE3
-	_(12);
+	bool newQuickDrive; // 0x1CADA
+	bool newEnableCollision; // 0x1CADB
+	bool newActorLoopRun; // 0x1CADC
+	uint8 newAirHikeCount; // 0x1CADD
+	uint8 newKickJumpCount; // 0x1CADE
+	uint8 newWallHikeCount; // 0x1CADF
+	uint8 newDashCount; // 0x1CAE0
+	uint8 newSkyStarCount; // 0x1CAE1
+	uint8 newAirTrickCount; // 0x1CAE2
+	uint8 newTrickUpCount; // 0x1CAE3
+	uint8 newTrickDownCount; // 0x1CAE4
+	_(11);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
 };
 
-static_assert(offsetof(ActorDataVergil, submodelData) == 0x7540);
-static_assert(offsetof(ActorDataVergil, submodelInit) == 0x9AC0);
-static_assert(offsetof(ActorDataVergil, modelShadowData) == 0x9AF0);
-static_assert(offsetof(ActorDataVergil, submodelShadowData) == 0x9D30);
-static_assert(offsetof(ActorDataVergil, submodelPhysicsMetadataPool) == 0xA0F0);
-static_assert(offsetof(ActorDataVergil, submodelPhysicsData) == 0xA230);
-static_assert(offsetof(ActorDataVergil, modelMetadata) == 0xB640);
-static_assert(offsetof(ActorDataVergil, newFirstVar) == 0xB8C0);
-static_assert(offsetof(ActorDataVergil, newModelData) == 0xB8D0);
-static_assert(offsetof(ActorDataVergil, newModelPhysicsMetadataPool) == 0xE5D0);
-static_assert(offsetof(ActorDataVergil, newModelAllocationData) == 0xEB10);
-static_assert(offsetof(ActorDataVergil, newRecoveryData) == 0x12B10);
-static_assert(offsetof(ActorDataVergil, newDevilModels) == 0x12DB0);
-static_assert(offsetof(ActorDataVergil, newBodyPartData) == 0x12DD0);
-static_assert(offsetof(ActorDataVergil, newSubmodelData) == 0x13D90);
-static_assert(offsetof(ActorDataVergil, newSubmodelInit) == 0x19010);
-static_assert(offsetof(ActorDataVergil, newModelShadowData) == 0x19020);
-static_assert(offsetof(ActorDataVergil, newSubmodelShadowData) == 0x194A0);
-static_assert(offsetof(ActorDataVergil, newDevilModelPhysicsMetadataPool) == 0x19CE0);
-static_assert(offsetof(ActorDataVergil, newDevilSubmodelPhysicsData) == 0x1A280);
-static_assert(offsetof(ActorDataVergil, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
-static_assert(offsetof(ActorDataVergil, newWeapons) == 0x1C9E0);
-static_assert(offsetof(ActorDataVergil, newWeaponDataAddr) == 0x1C9F0);
-static_assert(offsetof(ActorDataVergil, newWeaponStatus) == 0x1CA40);
-static_assert(offsetof(ActorDataVergil, newWeaponLevels) == 0x1CA70);
-static_assert(offsetof(ActorDataVergil, newWeaponTimers) == 0x1CAA0);
-static_assert(offsetof(ActorDataVergil, newIsClone) == 0x1CAC8);
-static_assert(offsetof(ActorDataVergil, newPlayerIndex) == 0x1CACC);
-static_assert(offsetof(ActorDataVergil, newCharacterIndex) == 0x1CACD);
-static_assert(offsetof(ActorDataVergil, newEntityIndex) == 0x1CACE);
-static_assert(offsetof(ActorDataVergil, newForceFiles) == 0x1CACF);
-static_assert(offsetof(ActorDataVergil, newForceFilesCharacter) == 0x1CAD0);
-static_assert(offsetof(ActorDataVergil, newForceFilesCostume) == 0x1CAD1);
-static_assert(offsetof(ActorDataVergil, newEnableVisibility) == 0x1CAD2);
-static_assert(offsetof(ActorDataVergil, newGamepad) == 0x1CAD3);
-static_assert(offsetof(ActorDataVergil, newButtonMask) == 0x1CAD4);
-static_assert(offsetof(ActorDataVergil, newEnableRightStick) == 0x1CAD6);
-static_assert(offsetof(ActorDataVergil, newEnableLeftStick) == 0x1CAD7);
-static_assert(offsetof(ActorDataVergil, newAirStinger) == 0x1CAD8);
-static_assert(offsetof(ActorDataVergil, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(ActorDataVergil, newEnableCollision) == 0x1CADA);
-static_assert(offsetof(ActorDataVergil, newActorLoopRun) == 0x1CADB);
-static_assert(offsetof(ActorDataVergil, newAirHikeCount) == 0x1CADC);
-static_assert(offsetof(ActorDataVergil, newKickJumpCount) == 0x1CADD);
-static_assert(offsetof(ActorDataVergil, newWallHikeCount) == 0x1CADE);
-static_assert(offsetof(ActorDataVergil, newDashCount) == 0x1CADF);
-static_assert(offsetof(ActorDataVergil, newSkyStarCount) == 0x1CAE0);
-static_assert(offsetof(ActorDataVergil, newAirTrickCount) == 0x1CAE1);
-static_assert(offsetof(ActorDataVergil, newTrickUpCount) == 0x1CAE2);
-static_assert(offsetof(ActorDataVergil, newTrickDownCount) == 0x1CAE3);
-static_assert(offsetof(ActorDataVergil, newEffectIndices) == 0x1CAF0);
-static_assert(offsetof(ActorDataVergil, newLastVar) == 0x1CB20);
+static_assert(offsetof(PlayerActorDataVergil, submodelData) == 0x7540);
+static_assert(offsetof(PlayerActorDataVergil, submodelInit) == 0x9AC0);
+static_assert(offsetof(PlayerActorDataVergil, modelShadowData) == 0x9AF0);
+static_assert(offsetof(PlayerActorDataVergil, submodelShadowData) == 0x9D30);
+static_assert(offsetof(PlayerActorDataVergil, submodelPhysicsMetadataPool) == 0xA0F0);
+static_assert(offsetof(PlayerActorDataVergil, submodelPhysicsData) == 0xA230);
+static_assert(offsetof(PlayerActorDataVergil, modelMetadata) == 0xB640);
+static_assert(offsetof(PlayerActorDataVergil, newFirstVar) == 0xB8C0);
+static_assert(offsetof(PlayerActorDataVergil, newModelData) == 0xB8D0);
+static_assert(offsetof(PlayerActorDataVergil, newModelPhysicsMetadataPool) == 0xE5D0);
+static_assert(offsetof(PlayerActorDataVergil, newModelAllocationData) == 0xEB10);
+static_assert(offsetof(PlayerActorDataVergil, newRecoveryData) == 0x12B10);
+static_assert(offsetof(PlayerActorDataVergil, newDevilModels) == 0x12DB0);
+static_assert(offsetof(PlayerActorDataVergil, newBodyPartData) == 0x12DD0);
+static_assert(offsetof(PlayerActorDataVergil, newSubmodelData) == 0x13D90);
+static_assert(offsetof(PlayerActorDataVergil, newSubmodelInit) == 0x19010);
+static_assert(offsetof(PlayerActorDataVergil, newModelShadowData) == 0x19020);
+static_assert(offsetof(PlayerActorDataVergil, newSubmodelShadowData) == 0x194A0);
+static_assert(offsetof(PlayerActorDataVergil, newDevilModelPhysicsMetadataPool) == 0x19CE0);
+static_assert(offsetof(PlayerActorDataVergil, newDevilSubmodelPhysicsData) == 0x1A280);
+static_assert(offsetof(PlayerActorDataVergil, newDevilSubmodelPhysicsLinkData) == 0x1ABE0);
+static_assert(offsetof(PlayerActorDataVergil, newWeapons) == 0x1C9E0);
+static_assert(offsetof(PlayerActorDataVergil, newWeaponDataAddr) == 0x1C9F0);
+static_assert(offsetof(PlayerActorDataVergil, newWeaponStatus) == 0x1CA40);
+static_assert(offsetof(PlayerActorDataVergil, newWeaponLevels) == 0x1CA70);
+static_assert(offsetof(PlayerActorDataVergil, newWeaponTimers) == 0x1CAA0);
+static_assert(offsetof(PlayerActorDataVergil, newIsClone) == 0x1CAC8);
+static_assert(offsetof(PlayerActorDataVergil, newPlayerIndex) == 0x1CACC);
+static_assert(offsetof(PlayerActorDataVergil, newCharacterIndex) == 0x1CACD);
+static_assert(offsetof(PlayerActorDataVergil, newEntityIndex) == 0x1CACE);
+static_assert(offsetof(PlayerActorDataVergil, newForceFiles) == 0x1CACF);
+static_assert(offsetof(PlayerActorDataVergil, newForceFilesCharacter) == 0x1CAD0);
+static_assert(offsetof(PlayerActorDataVergil, newForceFilesCostume) == 0x1CAD1);
+static_assert(offsetof(PlayerActorDataVergil, newEnableVisibility) == 0x1CAD2);
+static_assert(offsetof(PlayerActorDataVergil, newGamepad) == 0x1CAD3);
+static_assert(offsetof(PlayerActorDataVergil, newButtonMask) == 0x1CAD4);
+static_assert(offsetof(PlayerActorDataVergil, newEnableRightStick) == 0x1CAD6);
+static_assert(offsetof(PlayerActorDataVergil, newEnableLeftStick) == 0x1CAD7);
+static_assert(offsetof(PlayerActorDataVergil, newAirStinger) == 0x1CAD8);
+static_assert(offsetof(PlayerActorDataVergil, newAirStingerCount) == 0x1CAD9);
+static_assert(offsetof(PlayerActorDataVergil, newQuickDrive) == 0x1CADA);
+static_assert(offsetof(PlayerActorDataVergil, newEnableCollision) == 0x1CADB);
+static_assert(offsetof(PlayerActorDataVergil, newActorLoopRun) == 0x1CADC);
+static_assert(offsetof(PlayerActorDataVergil, newAirHikeCount) == 0x1CADD);
+static_assert(offsetof(PlayerActorDataVergil, newKickJumpCount) == 0x1CADE);
+static_assert(offsetof(PlayerActorDataVergil, newWallHikeCount) == 0x1CADF);
+static_assert(offsetof(PlayerActorDataVergil, newDashCount) == 0x1CAE0);
+static_assert(offsetof(PlayerActorDataVergil, newSkyStarCount) == 0x1CAE1);
+static_assert(offsetof(PlayerActorDataVergil, newAirTrickCount) == 0x1CAE2);
+static_assert(offsetof(PlayerActorDataVergil, newTrickUpCount) == 0x1CAE3);
+static_assert(offsetof(PlayerActorDataVergil, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(PlayerActorDataVergil, newEffectIndices) == 0x1CAF0);
+static_assert(offsetof(PlayerActorDataVergil, newLastVar) == 0x1CB20);
+
+export struct EnemyActorData : ActorDataBase
+{
+};
+
+export struct EnemyActorDataPride : ActorDataBase
+{
+	_(11620);
+	float maxHitPoints; // 0x2E2C
+	_(44);
+	float hitPoints; // 0x2E5C
+	_(3028);
+	uint32 event; // 0x3A34
+	uint8 state; // 0x3A38
+};
+
+static_assert(offsetof(EnemyActorDataPride, maxHitPoints) == 0x2E2C);
+static_assert(offsetof(EnemyActorDataPride, hitPoints) == 0x2E5C);
+static_assert(offsetof(EnemyActorDataPride, event) == 0x3A34);
+static_assert(offsetof(EnemyActorDataPride, state) == 0x3A38);
+
+export struct EnemyActorDataLady : ActorDataBase
+{
+	_(21400);
+	CollisionData collisionData; // 0x5460
+	_(664);
+	uint32 event; // 0x5988
+	_(8);
+	uint8 state; // 0x5994
+	_(11);
+	uint32 pistolBullets; // 0x59A0
+	_(12);
+	uint32 grenades; // 0x59B0
+	_(4);
+	uint32 smgBullets; // 0x59B8
+	_(4);
+	vec4 nextPosition; // 0x59C0
+	_(76);
+	uint32 phase; // 0x5A1C
+	uint16 rotation2; // 0x5A20
+	_(12);
+	bool friendly; // 0x5A2E
+	_(97);
+	uint32 pistolRounds; // 0x5A90
+};
+
+static_assert(offsetof(EnemyActorDataLady, collisionData) == 0x5460);
+static_assert(offsetof(EnemyActorDataLady, event) == 0x5988);
+static_assert(offsetof(EnemyActorDataLady, state) == 0x5994);
+static_assert(offsetof(EnemyActorDataLady, pistolBullets) == 0x59A0);
+static_assert(offsetof(EnemyActorDataLady, grenades) == 0x59B0);
+static_assert(offsetof(EnemyActorDataLady, smgBullets) == 0x59B8);
+static_assert(offsetof(EnemyActorDataLady, nextPosition) == 0x59C0);
+static_assert(offsetof(EnemyActorDataLady, phase) == 0x5A1C);
+static_assert(offsetof(EnemyActorDataLady, rotation2) == 0x5A20);
+static_assert(offsetof(EnemyActorDataLady, friendly) == 0x5A2E);
+static_assert(offsetof(EnemyActorDataLady, pistolRounds) == 0x5A90);
+
+export struct EnemyActorDataVergil : ActorDataBase
+{
+	_(272);
+	float nextEventTimer; // 0x1D8
+	_(58964);
+	CollisionData collisionData; // 0xE830
+	_(104);
+	float hitPoints; // 0xEB28
+	_(584);
+	uint32 event; // 0xED74
+	_(8);
+	uint32 var_ED80; // 0xED80
+	uint8 state; // 0xED84
+	_(391);
+	uint32 variant; // 0xEF0C
+	_(9);
+	bool toggleDevil; // 0xEF19
+	_(1);
+	bool devil; // 0xEF1B
+};
+
+static_assert(offsetof(EnemyActorDataVergil, nextEventTimer) == 0x1D8);
+static_assert(offsetof(EnemyActorDataVergil, collisionData) == 0xE830);
+static_assert(offsetof(EnemyActorDataVergil, hitPoints) == 0xEB28);
+static_assert(offsetof(EnemyActorDataVergil, event) == 0xED74);
+static_assert(offsetof(EnemyActorDataVergil, var_ED80) == 0xED80);
+static_assert(offsetof(EnemyActorDataVergil, state) == 0xED84);
+static_assert(offsetof(EnemyActorDataVergil, variant) == 0xEF0C);
+static_assert(offsetof(EnemyActorDataVergil, toggleDevil) == 0xEF19);
+static_assert(offsetof(EnemyActorDataVergil, devil) == 0xEF1B);
 
 // $ActorDataEnd
 
-// $EnemyDataStart
 
-export struct EnemyData
+
+
+
+
+
+export struct ConfigCreateEnemyActorData
 {
-	_(40);
-	byte8 * lastBaseAddr; // 0x28
-	byte8 * nextBaseAddr; // 0x30
-	_(16);
-	byte8 * baseAddr; // 0x48
-	_(40);
-	uint32 enemy; // 0x78
-	_(4);
-	vec4 position; // 0x80
+	uint32 enemy;
+	uint32 variant;
+	vec4 position;
+	uint16 rotation;
+	bool useMainActorData = true;
+	uint16 spawnMethod;
 };
 
-static_assert(offsetof(EnemyData, lastBaseAddr) == 0x28);
-static_assert(offsetof(EnemyData, nextBaseAddr) == 0x30);
-static_assert(offsetof(EnemyData, baseAddr) == 0x48);
-static_assert(offsetof(EnemyData, enemy) == 0x78);
-static_assert(offsetof(EnemyData, position) == 0x80);
-static_assert(sizeof(EnemyData) == 144);
 
-// $EnemyDataEnd
+
+
+
+
+
+
+
+// $CreateEnemyActorDataStart
+
+export struct CreateEnemyActorData
+{
+	uint32 enemy; // 0
+	_(12);
+	vec4 position; // 0x10
+	uint16 rotation; // 0x20
+	uint16 spawnMethod; // 0x22
+	_(4);
+	uint32 variant; // 0x28
+	_(84);
+
+	// CreateEnemyActorData();
+	// CreateEnemyActorData(const ConfigCreateEnemyActorData & configCreateEnemyActorData)
+	// {
+	// 	enemy       = configCreateEnemyActorData.enemy;
+	// 	position    = configCreateEnemyActorData.position;
+	// 	rotation    = configCreateEnemyActorData.rotation;
+	// 	spawnMethod = configCreateEnemyActorData.spawnMethod;
+	// 	variant     = configCreateEnemyActorData.variant;
+
+	// 	[&]()
+	// 	{
+	// 		if (!configCreateEnemyActorData.useMainActorData)
+	// 		{
+	// 			return;
+	// 		}
+
+	// 		IntroduceMainActorData(mainActorData, return);
+
+	// 		position = mainActorData.position;
+	// 		rotation = mainActorData.rotation;
+	// 	}();
+	// }
+};
+
+static_assert(offsetof(CreateEnemyActorData, enemy) == 0);
+static_assert(offsetof(CreateEnemyActorData, position) == 0x10);
+static_assert(offsetof(CreateEnemyActorData, rotation) == 0x20);
+static_assert(offsetof(CreateEnemyActorData, spawnMethod) == 0x22);
+static_assert(offsetof(CreateEnemyActorData, variant) == 0x28);
+static_assert(sizeof(CreateEnemyActorData) == 128);
+
+// $CreateEnemyActorDataEnd
+
+
+
+// @Todo: Add to script.
+// CreateEnemyActorData::CreateEnemyActorData(ConfigCreateEnemyActorData & configCreateEnemyActorData)
+// {
+// 	enemy       = configCreateEnemyActorData.enemy;
+// 	position    = configCreateEnemyActorData.position;
+// 	rotation    = configCreateEnemyActorData.rotation;
+// 	spawnMethod = configCreateEnemyActorData.spawnMethod;
+// 	variant     = configCreateEnemyActorData.variant;
+
+// 	[&]()
+// 	{
+// 		if (!configCreateEnemyActorData.useMainActorData)
+// 		{
+// 			return;
+// 		}
+
+// 		IntroduceMainActorData(mainActorData, return);
+
+// 		position = mainActorData.position;
+// 		rotation = mainActorData.rotation;
+// 	}();
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+	IntroduceMainActorData(mainActorData, return 0);
+
+	CreateEnemyActorData createEnemyActorData = {};
+
+	createEnemyActorData.enemy = configCreateEnemyActorData.enemy;
+	createEnemyActorData.position = (configCreateEnemyActorData.useMainActorData) ? mainActorData.position : configCreateEnemyActorData.position;
+	createEnemyActorData.position.a = 1.0f;
+	createEnemyActorData.rotation = (configCreateEnemyActorData.useMainActorData) ? mainActorData.rotation : configCreateEnemyActorData.rotation;
+	createEnemyActorData.spawnMethod = configCreateEnemyActorData.spawnMethod;
+	createEnemyActorData.variant = configCreateEnemyActorData.variant;
+*/
+
+
+
+
+
+
+
+
+export struct EnemyVectorDataMetadata
+{
+	byte8 * baseAddr;
+	union
+	{
+		EnemyVectorDataMetadata * lastAddr;
+		EnemyVectorDataMetadata * nextAddr;
+	};
+};
+
+static_assert(sizeof(EnemyVectorDataMetadata) == 0x10);
+
+
+
+// $EnemyVectorDataStart
+
+export struct EnemyVectorData
+{
+	_(40);
+	uint32 count; // 0x28
+	_(28);
+	EnemyVectorDataMetadata metadata[50]; // 0x48
+	_(3296);
+	EnemyVectorDataMetadata * lastMetadataAddr; // 0x1048
+	EnemyVectorDataMetadata * nextMetadataAddr; // 0x1050
+};
+
+static_assert(offsetof(EnemyVectorData, count) == 0x28);
+static_assert(offsetof(EnemyVectorData, metadata) == 0x48);
+static_assert(offsetof(EnemyVectorData, lastMetadataAddr) == 0x1048);
+static_assert(offsetof(EnemyVectorData, nextMetadataAddr) == 0x1050);
+
+static_assert(sizeof(EnemyVectorData) == 4184);
+
+// $EnemyVectorDataEnd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // @Todo: Update.
 
@@ -3725,63 +4708,65 @@ export struct MotionArchiveHelper
 
 export constexpr MotionArchiveHelper motionArchiveHelperDante[] =
 {
-	{ MOTION_GROUP_DANTE_BASE                  , pl000_00_0  },
-	{ MOTION_GROUP_DANTE_DAMAGE                , pl000_00_1  },
-	{ MOTION_GROUP_DANTE_TAUNTS                , pl000_00_2  },
-	{ MOTION_GROUP_DANTE_REBELLION             , pl000_00_3  },
-	{ MOTION_GROUP_DANTE_CERBERUS              , pl000_00_4  },
-	{ MOTION_GROUP_DANTE_AGNI_RUDRA            , pl000_00_5  },
-	{ MOTION_GROUP_DANTE_NEVAN                 , pl000_00_6  },
-	{ MOTION_GROUP_DANTE_BEOWULF               , pl000_00_7  },
-	{ MOTION_GROUP_DANTE_EBONY_IVORY           , pl000_00_8  },
-	{ MOTION_GROUP_DANTE_SHOTGUN               , pl000_00_9  },
-	{ MOTION_GROUP_DANTE_ARTEMIS               , pl000_00_10 },
-	{ MOTION_GROUP_DANTE_SPIRAL                , pl000_00_11 },
-	{ MOTION_GROUP_DANTE_KALINA_ANN            , pl000_00_12 },
-	{ MOTION_GROUP_DANTE_SWORDMASTER_REBELLION , pl000_00_13 },
-	{ MOTION_GROUP_DANTE_SWORDMASTER_CERBERUS  , pl000_00_14 },
-	{ MOTION_GROUP_DANTE_SWORDMASTER_AGNI_RUDRA, pl000_00_15 },
-	{ MOTION_GROUP_DANTE_SWORDMASTER_NEVAN     , pl000_00_16 },
-	{ MOTION_GROUP_DANTE_SWORDMASTER_BEOWULF   , pl000_00_17 },
-	{ MOTION_GROUP_DANTE_GUNSLINGER_EBONY_IVORY, pl000_00_18 },
-	{ MOTION_GROUP_DANTE_GUNSLINGER_SHOTGUN    , pl000_00_19 },
-	{ MOTION_GROUP_DANTE_GUNSLINGER_ARTEMIS    , pl000_00_20 },
-	{ MOTION_GROUP_DANTE_GUNSLINGER_SPIRAL     , pl000_00_21 },
-	{ MOTION_GROUP_DANTE_GUNSLINGER_KALINA_ANN , pl000_00_22 },
-	{ MOTION_GROUP_DANTE_TRICKSTER             , pl000_00_23 },
-	{ MOTION_GROUP_DANTE_ROYALGUARD            , pl000_00_24 },
-	{ MOTION_GROUP_DANTE_QUICKSILVER           , pl000_00_25 },
-	{ MOTION_GROUP_DANTE_DOPPELGANGER          , pl000_00_26 },
+	{ MOTION_GROUP_DANTE::BASE                  , pl000_00_0  },
+	{ MOTION_GROUP_DANTE::DAMAGE                , pl000_00_1  },
+	{ MOTION_GROUP_DANTE::TAUNTS                , pl000_00_2  },
+	{ MOTION_GROUP_DANTE::REBELLION             , pl000_00_3  },
+	{ MOTION_GROUP_DANTE::CERBERUS              , pl000_00_4  },
+	{ MOTION_GROUP_DANTE::AGNI_RUDRA            , pl000_00_5  },
+	{ MOTION_GROUP_DANTE::NEVAN                 , pl000_00_6  },
+	{ MOTION_GROUP_DANTE::BEOWULF               , pl000_00_7  },
+	{ MOTION_GROUP_DANTE::EBONY_IVORY           , pl000_00_8  },
+	{ MOTION_GROUP_DANTE::SHOTGUN               , pl000_00_9  },
+	{ MOTION_GROUP_DANTE::ARTEMIS               , pl000_00_10 },
+	{ MOTION_GROUP_DANTE::SPIRAL                , pl000_00_11 },
+	{ MOTION_GROUP_DANTE::KALINA_ANN            , pl000_00_12 },
+	{ MOTION_GROUP_DANTE::SWORDMASTER_REBELLION , pl000_00_13 },
+	{ MOTION_GROUP_DANTE::SWORDMASTER_CERBERUS  , pl000_00_14 },
+	{ MOTION_GROUP_DANTE::SWORDMASTER_AGNI_RUDRA, pl000_00_15 },
+	{ MOTION_GROUP_DANTE::SWORDMASTER_NEVAN     , pl000_00_16 },
+	{ MOTION_GROUP_DANTE::SWORDMASTER_BEOWULF   , pl000_00_17 },
+	{ MOTION_GROUP_DANTE::GUNSLINGER_EBONY_IVORY, pl000_00_18 },
+	{ MOTION_GROUP_DANTE::GUNSLINGER_SHOTGUN    , pl000_00_19 },
+	{ MOTION_GROUP_DANTE::GUNSLINGER_ARTEMIS    , pl000_00_20 },
+	{ MOTION_GROUP_DANTE::GUNSLINGER_SPIRAL     , pl000_00_21 },
+	{ MOTION_GROUP_DANTE::GUNSLINGER_KALINA_ANN , pl000_00_22 },
+	{ MOTION_GROUP_DANTE::TRICKSTER             , pl000_00_23 },
+	{ MOTION_GROUP_DANTE::ROYALGUARD            , pl000_00_24 },
+	{ MOTION_GROUP_DANTE::QUICKSILVER           , pl000_00_25 },
+	{ MOTION_GROUP_DANTE::DOPPELGANGER          , pl000_00_26 },
 };
 
 export constexpr MotionArchiveHelper motionArchiveHelperBob[] =
 {
-	{ MOTION_GROUP_BOB_BASE   , pl001_00_0  },
-	{ MOTION_GROUP_BOB_DAMAGE , pl001_00_1  },
-	{ MOTION_GROUP_BOB_TAUNTS , pl001_00_2  },
-	{ MOTION_GROUP_BOB_YAMATO , pl001_00_31 },
+	{ MOTION_GROUP_BOB::BASE   , pl001_00_0  },
+	{ MOTION_GROUP_BOB::DAMAGE , pl001_00_1  },
+	{ MOTION_GROUP_BOB::TAUNTS , pl001_00_2  },
+	{ MOTION_GROUP_BOB::YAMATO , pl001_00_31 },
 };
 
 export constexpr MotionArchiveHelper motionArchiveHelperLady[] =
 {
-	{ MOTION_GROUP_LADY_BASE      , pl002_00_0  },
-	{ MOTION_GROUP_LADY_DAMAGE    , pl002_00_1  },
-	{ MOTION_GROUP_LADY_TAUNTS    , pl002_00_2  },
+	{ MOTION_GROUP_LADY::BASE      , pl002_00_0  },
+	{ MOTION_GROUP_LADY::DAMAGE    , pl002_00_1  },
+	{ MOTION_GROUP_LADY::TAUNTS    , pl002_00_2  },
 };
 
 export constexpr MotionArchiveHelper motionArchiveHelperVergil[] =
 {
-	{ MOTION_GROUP_VERGIL_BASE                  , pl021_00_0 },
-	{ MOTION_GROUP_VERGIL_DAMAGE                , pl021_00_1 },
-	{ MOTION_GROUP_VERGIL_TAUNTS                , pl021_00_2 },
-	{ MOTION_GROUP_VERGIL_YAMATO                , pl021_00_3 },
-	{ MOTION_GROUP_VERGIL_BEOWULF               , pl021_00_4 },
-	{ MOTION_GROUP_VERGIL_YAMATO_FORCE_EDGE            , pl021_00_5 },
-	{ MOTION_GROUP_VERGIL_DARK_SLAYER           , pl021_00_6 },
-	{ MOTION_GROUP_VERGIL_NERO_ANGELO_YAMATO    , pl021_00_7 },
-	{ MOTION_GROUP_VERGIL_NERO_ANGELO_BEOWULF   , pl021_00_8 },
-	{ MOTION_GROUP_VERGIL_NERO_ANGELO_FORCE_EDGE, pl021_00_9 }, // @Todo: Review.
+	{ MOTION_GROUP_VERGIL::BASE                  , pl021_00_0 },
+	{ MOTION_GROUP_VERGIL::DAMAGE                , pl021_00_1 },
+	{ MOTION_GROUP_VERGIL::TAUNTS                , pl021_00_2 },
+	{ MOTION_GROUP_VERGIL::YAMATO                , pl021_00_3 },
+	{ MOTION_GROUP_VERGIL::BEOWULF               , pl021_00_4 },
+	{ MOTION_GROUP_VERGIL::YAMATO_FORCE_EDGE            , pl021_00_5 },
+	{ MOTION_GROUP_VERGIL::DARK_SLAYER           , pl021_00_6 },
+	{ MOTION_GROUP_VERGIL::NERO_ANGELO_YAMATO    , pl021_00_7 },
+	{ MOTION_GROUP_VERGIL::NERO_ANGELO_BEOWULF   , pl021_00_8 },
+	{ MOTION_GROUP_VERGIL::NERO_ANGELO_FORCE_EDGE, pl021_00_9 }, // @Todo: Review.
 };
+
+
 
 export struct MissionStartHelper
 {
@@ -3789,7 +4774,7 @@ export struct MissionStartHelper
 	uint16 position;
 };
 
-export constexpr MissionStartHelper missionStartHelper[] =
+export constexpr MissionStartHelper missionStartHelpers[] =
 {
 	{ 0  , 0 }, // Movie
 	{ 0  , 0 }, // Mission 1
@@ -3821,7 +4806,7 @@ export struct FloorHelper
 	uint16 position;
 };
 
-export constexpr FloorHelper Arcade_floorHelper[] =
+export constexpr FloorHelper floorHelpers[] =
 {
 	{ 423, 0 }, // Floor 1
 	{ 424, 0 }, // Floor 2
@@ -3851,6 +4836,11 @@ export constexpr FloorHelper Arcade_floorHelper[] =
 	{ 448, 0 }, // Jester 2
 	{ 449, 0 }, // Jester 3
 };
+
+
+
+
+
 
 export enum BOSS
 {
