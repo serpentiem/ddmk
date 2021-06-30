@@ -291,14 +291,14 @@ void EnemyForAll(T & func)
 
 export bool InGame()
 {
-	if (g_scene != SCENE_GAME)
+	if (g_scene != SCENE::GAME)
 	{
 		return false;
 	}
 
 	IntroduceEventData(return false);
 
-	if (eventData.event != EVENT_MAIN)
+	if (eventData.event != EVENT::MAIN)
 	{
 		return false;
 	}
@@ -339,13 +339,13 @@ export bool InCredits()
 // }
 
 
-// @Research: Consider SCENE_MISSION_START as well.
+// @Research: Consider SCENE::MISSION_START as well.
 export bool IsActorConfigScene()
 {
 	if
 	(
-		(g_scene == SCENE_MAIN          ) ||
-		(g_scene == SCENE_MISSION_SELECT)
+		(g_scene == SCENE::MAIN          ) ||
+		(g_scene == SCENE::MISSION_SELECT)
 	)
 	{
 		return true;

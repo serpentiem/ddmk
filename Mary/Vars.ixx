@@ -1,4 +1,8 @@
 
+
+
+// @Todo: Check comments, lel.
+
 // @Todo: Move to Global.
 
 
@@ -9,6 +13,25 @@ export module Vars;
 import Core;
 
 #include "../Core/Macros.h"
+
+
+
+
+
+namespaceStart(SPEED);
+enum
+{
+	GLOBAL,
+	GLOBAL_2,
+	GLOBAL_3,
+	PLAYER_ACTOR,
+	ENEMY_ACTOR,
+	PLAYER_ACTOR_2,
+	ENEMY_ACTOR_2,
+	GLOBAL_4,
+};
+namespaceEnd();
+
 
 
 
@@ -31,6 +54,19 @@ enum
 namespaceEnd();
 
 
+
+
+
+
+
+namespaceStart(DERGIL);
+enum
+{
+	DEFAULT,
+	FORCE_OFF,
+	FORCE_ON,
+};
+namespaceEnd();
 
 
 
@@ -1229,46 +1265,54 @@ static_assert(countof(cacheFileHelpers) == CACHE_FILE_COUNT);
 
 
 
-export enum
+export namespaceStart(SCENE);
+enum
 {
-	SCENE_BOOT,
-	SCENE_INTRO,
-	SCENE_MAIN,
-	SCENE_MISSION_SELECT,
-	SCENE_LOAD,
-	SCENE_GAME,
-	SCENE_CUTSCENE,
-	SCENE_MISSION_START,
-	SCENE_MISSION_RESULT,
-	SCENE_GAME_OVER,
-	MAX_SCENE,
+	BOOT,
+	INTRO,
+	MAIN,
+	MISSION_SELECT,
+	LOAD,
+	GAME,
+	CUTSCENE,
+	MISSION_START,
+	MISSION_RESULT,
+	GAME_OVER,
+	COUNT,
 };
+namespaceEnd();
 
-export enum
+export namespaceStart(EVENT);
+enum
 {
-	EVENT_INIT,
-	EVENT_MAIN,
-	EVENT_TELEPORT,
-	EVENT_PAUSE,
-	EVENT_STATUS,
-	EVENT_OPTIONS,
-	EVENT_DEATH,
-	EVENT_GET_ITEM,
-	EVENT_MESSAGE,
-	EVENT_CUSTOMIZE,
-	EVENT_SAVE,
-	EVENT_DELETE,
-	EVENT_END,
-	MAX_EVENT,
+	INIT,
+	MAIN,
+	TELEPORT,
+	PAUSE,
+	STATUS,
+	OPTIONS,
+	DEATH,
+	GET_ITEM,
+	MESSAGE,
+	CUSTOMIZE,
+	SAVE,
+	DELETE,
+	END,
+	COUNT,
 };
+namespaceEnd();
 
-export enum
+export namespaceStart(SCREEN);
+enum
 {
-	SCREEN_MISSION_CLEAR = 5,
-	SCREEN_GAME_OVER,
-	SCREEN_MISSION_START,
-	SCREEN_MISSION_SELECT,
+	MISSION_CLEAR = 5,
+	GAME_OVER,
+	MISSION_START,
+	MISSION_SELECT,
 };
+namespaceEnd();
+
+
 
 
 
@@ -1338,15 +1382,20 @@ export enum DIRECTION
 	MAX_DIRECTION,
 };
 
-export enum LEFT_STICK
+
+
+
+export enum
 {
+	RIGHT_STICK,
+	LEFT_STICK,
+	RIGHT_STICK_DEADZONE = 70,
 	LEFT_STICK_DEADZONE = 52,
 };
 
-export enum RIGHT_STICK
-{
-	RIGHT_STICK_DEADZONE = 70,
-};
+
+
+
 
 export enum BINDING
 {
@@ -3349,19 +3398,47 @@ static_assert(offsetof(RecoveryData, init) == 0x20);
 static_assert(offsetof(RecoveryData, data) == 0x30);
 static_assert(sizeof(RecoveryData) == 0x70);
 
+// $WeaponDataStart
+
 export struct WeaponData
 {
-	_(274);
-	uint8 weapon;
+	_(20);
+	float speed; // 0x14
+	float speedMultiplier; // 0x18
+	_(44);
+	byte8 * baseAddr; // 0x48
+	_(194);
+	uint8 weapon; // 0x112
 	_(5);
-	uint8 value;
+	uint8 value; // 0x118
 	_(7);
-	byte8 * actorBaseAddr;
+	byte8 * actorBaseAddr; // 0x120
 };
 
+static_assert(offsetof(WeaponData, speed) == 0x14);
+static_assert(offsetof(WeaponData, speedMultiplier) == 0x18);
+static_assert(offsetof(WeaponData, baseAddr) == 0x48);
 static_assert(offsetof(WeaponData, weapon) == 0x112);
 static_assert(offsetof(WeaponData, value) == 0x118);
 static_assert(offsetof(WeaponData, actorBaseAddr) == 0x120);
+
+static_assert(sizeof(WeaponData) == 296);
+
+// $WeaponDataEnd
+
+// export struct WeaponData
+// {
+// 	_(274);
+// 	uint8 weapon;
+// 	_(5);
+// 	uint8 value;
+// 	_(7);
+// 	byte8 * actorBaseAddr;
+// };
+
+// static_assert(offsetof(WeaponData, weapon) == 0x112);
+// static_assert(offsetof(WeaponData, value) == 0x118);
+// static_assert(offsetof(WeaponData, actorBaseAddr) == 0x120);
 
 export struct SummonedSwordsData
 {
@@ -3430,12 +3507,14 @@ export struct CharacterData
 	uint8 meleeWeaponIndex;
 	uint8 lastMeleeWeaponIndex;
 	uint8 meleeWeaponSwitchType;
+	uint8 meleeWeaponSwitchStick;
 
 	uint8 rangedWeaponCount;
 	uint8 rangedWeapons[RANGED_WEAPON_COUNT];
 	uint8 rangedWeaponIndex;
 	uint8 lastRangedWeaponIndex;
 	uint8 rangedWeaponSwitchType;
+	uint8 rangedWeaponSwitchStick;
 };
 
 export struct PlayerData
@@ -3880,19 +3959,19 @@ export struct PlayerActorData : PlayerActorDataBase
 	byte16 newButtonMask; // 0x1CAD4
 	bool newEnableRightStick; // 0x1CAD6
 	bool newEnableLeftStick; // 0x1CAD7
-	bool newAirStinger; // 0x1CAD8
-	uint8 newAirStingerCount; // 0x1CAD9
-	bool newQuickDrive; // 0x1CADA
-	bool newEnableCollision; // 0x1CADB
-	bool newActorLoopRun; // 0x1CADC
-	uint8 newAirHikeCount; // 0x1CADD
-	uint8 newKickJumpCount; // 0x1CADE
-	uint8 newWallHikeCount; // 0x1CADF
-	uint8 newDashCount; // 0x1CAE0
-	uint8 newSkyStarCount; // 0x1CAE1
-	uint8 newAirTrickCount; // 0x1CAE2
-	uint8 newTrickUpCount; // 0x1CAE3
-	uint8 newTrickDownCount; // 0x1CAE4
+	bool newQuickDrive; // 0x1CAD8
+	bool newEnableCollision; // 0x1CAD9
+	bool newActorLoopRun; // 0x1CADA
+	uint8 newAirHikeCount; // 0x1CADB
+	uint8 newKickJumpCount; // 0x1CADC
+	uint8 newWallHikeCount; // 0x1CADD
+	uint8 newDashCount; // 0x1CADE
+	uint8 newSkyStarCount; // 0x1CADF
+	uint8 newAirTrickCount; // 0x1CAE0
+	uint8 newTrickUpCount; // 0x1CAE1
+	uint8 newTrickDownCount; // 0x1CAE2
+	uint8 newAirStingerCount; // 0x1CAE3
+	uint8 newAirRisingSunCount; // 0x1CAE4
 	_(11);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
@@ -3929,19 +4008,19 @@ static_assert(offsetof(PlayerActorData, newGamepad) == 0x1CAD3);
 static_assert(offsetof(PlayerActorData, newButtonMask) == 0x1CAD4);
 static_assert(offsetof(PlayerActorData, newEnableRightStick) == 0x1CAD6);
 static_assert(offsetof(PlayerActorData, newEnableLeftStick) == 0x1CAD7);
-static_assert(offsetof(PlayerActorData, newAirStinger) == 0x1CAD8);
-static_assert(offsetof(PlayerActorData, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(PlayerActorData, newQuickDrive) == 0x1CADA);
-static_assert(offsetof(PlayerActorData, newEnableCollision) == 0x1CADB);
-static_assert(offsetof(PlayerActorData, newActorLoopRun) == 0x1CADC);
-static_assert(offsetof(PlayerActorData, newAirHikeCount) == 0x1CADD);
-static_assert(offsetof(PlayerActorData, newKickJumpCount) == 0x1CADE);
-static_assert(offsetof(PlayerActorData, newWallHikeCount) == 0x1CADF);
-static_assert(offsetof(PlayerActorData, newDashCount) == 0x1CAE0);
-static_assert(offsetof(PlayerActorData, newSkyStarCount) == 0x1CAE1);
-static_assert(offsetof(PlayerActorData, newAirTrickCount) == 0x1CAE2);
-static_assert(offsetof(PlayerActorData, newTrickUpCount) == 0x1CAE3);
-static_assert(offsetof(PlayerActorData, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(PlayerActorData, newQuickDrive) == 0x1CAD8);
+static_assert(offsetof(PlayerActorData, newEnableCollision) == 0x1CAD9);
+static_assert(offsetof(PlayerActorData, newActorLoopRun) == 0x1CADA);
+static_assert(offsetof(PlayerActorData, newAirHikeCount) == 0x1CADB);
+static_assert(offsetof(PlayerActorData, newKickJumpCount) == 0x1CADC);
+static_assert(offsetof(PlayerActorData, newWallHikeCount) == 0x1CADD);
+static_assert(offsetof(PlayerActorData, newDashCount) == 0x1CADE);
+static_assert(offsetof(PlayerActorData, newSkyStarCount) == 0x1CADF);
+static_assert(offsetof(PlayerActorData, newAirTrickCount) == 0x1CAE0);
+static_assert(offsetof(PlayerActorData, newTrickUpCount) == 0x1CAE1);
+static_assert(offsetof(PlayerActorData, newTrickDownCount) == 0x1CAE2);
+static_assert(offsetof(PlayerActorData, newAirStingerCount) == 0x1CAE3);
+static_assert(offsetof(PlayerActorData, newAirRisingSunCount) == 0x1CAE4);
 static_assert(offsetof(PlayerActorData, newEffectIndices) == 0x1CAF0);
 static_assert(offsetof(PlayerActorData, newLastVar) == 0x1CB20);
 
@@ -4004,19 +4083,19 @@ export struct PlayerActorDataDante : PlayerActorDataBase
 	byte16 newButtonMask; // 0x1CAD4
 	bool newEnableRightStick; // 0x1CAD6
 	bool newEnableLeftStick; // 0x1CAD7
-	bool newAirStinger; // 0x1CAD8
-	uint8 newAirStingerCount; // 0x1CAD9
-	bool newQuickDrive; // 0x1CADA
-	bool newEnableCollision; // 0x1CADB
-	bool newActorLoopRun; // 0x1CADC
-	uint8 newAirHikeCount; // 0x1CADD
-	uint8 newKickJumpCount; // 0x1CADE
-	uint8 newWallHikeCount; // 0x1CADF
-	uint8 newDashCount; // 0x1CAE0
-	uint8 newSkyStarCount; // 0x1CAE1
-	uint8 newAirTrickCount; // 0x1CAE2
-	uint8 newTrickUpCount; // 0x1CAE3
-	uint8 newTrickDownCount; // 0x1CAE4
+	bool newQuickDrive; // 0x1CAD8
+	bool newEnableCollision; // 0x1CAD9
+	bool newActorLoopRun; // 0x1CADA
+	uint8 newAirHikeCount; // 0x1CADB
+	uint8 newKickJumpCount; // 0x1CADC
+	uint8 newWallHikeCount; // 0x1CADD
+	uint8 newDashCount; // 0x1CADE
+	uint8 newSkyStarCount; // 0x1CADF
+	uint8 newAirTrickCount; // 0x1CAE0
+	uint8 newTrickUpCount; // 0x1CAE1
+	uint8 newTrickDownCount; // 0x1CAE2
+	uint8 newAirStingerCount; // 0x1CAE3
+	uint8 newAirRisingSunCount; // 0x1CAE4
 	_(11);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
@@ -4066,19 +4145,19 @@ static_assert(offsetof(PlayerActorDataDante, newGamepad) == 0x1CAD3);
 static_assert(offsetof(PlayerActorDataDante, newButtonMask) == 0x1CAD4);
 static_assert(offsetof(PlayerActorDataDante, newEnableRightStick) == 0x1CAD6);
 static_assert(offsetof(PlayerActorDataDante, newEnableLeftStick) == 0x1CAD7);
-static_assert(offsetof(PlayerActorDataDante, newAirStinger) == 0x1CAD8);
-static_assert(offsetof(PlayerActorDataDante, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(PlayerActorDataDante, newQuickDrive) == 0x1CADA);
-static_assert(offsetof(PlayerActorDataDante, newEnableCollision) == 0x1CADB);
-static_assert(offsetof(PlayerActorDataDante, newActorLoopRun) == 0x1CADC);
-static_assert(offsetof(PlayerActorDataDante, newAirHikeCount) == 0x1CADD);
-static_assert(offsetof(PlayerActorDataDante, newKickJumpCount) == 0x1CADE);
-static_assert(offsetof(PlayerActorDataDante, newWallHikeCount) == 0x1CADF);
-static_assert(offsetof(PlayerActorDataDante, newDashCount) == 0x1CAE0);
-static_assert(offsetof(PlayerActorDataDante, newSkyStarCount) == 0x1CAE1);
-static_assert(offsetof(PlayerActorDataDante, newAirTrickCount) == 0x1CAE2);
-static_assert(offsetof(PlayerActorDataDante, newTrickUpCount) == 0x1CAE3);
-static_assert(offsetof(PlayerActorDataDante, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(PlayerActorDataDante, newQuickDrive) == 0x1CAD8);
+static_assert(offsetof(PlayerActorDataDante, newEnableCollision) == 0x1CAD9);
+static_assert(offsetof(PlayerActorDataDante, newActorLoopRun) == 0x1CADA);
+static_assert(offsetof(PlayerActorDataDante, newAirHikeCount) == 0x1CADB);
+static_assert(offsetof(PlayerActorDataDante, newKickJumpCount) == 0x1CADC);
+static_assert(offsetof(PlayerActorDataDante, newWallHikeCount) == 0x1CADD);
+static_assert(offsetof(PlayerActorDataDante, newDashCount) == 0x1CADE);
+static_assert(offsetof(PlayerActorDataDante, newSkyStarCount) == 0x1CADF);
+static_assert(offsetof(PlayerActorDataDante, newAirTrickCount) == 0x1CAE0);
+static_assert(offsetof(PlayerActorDataDante, newTrickUpCount) == 0x1CAE1);
+static_assert(offsetof(PlayerActorDataDante, newTrickDownCount) == 0x1CAE2);
+static_assert(offsetof(PlayerActorDataDante, newAirStingerCount) == 0x1CAE3);
+static_assert(offsetof(PlayerActorDataDante, newAirRisingSunCount) == 0x1CAE4);
 static_assert(offsetof(PlayerActorDataDante, newEffectIndices) == 0x1CAF0);
 static_assert(offsetof(PlayerActorDataDante, newLastVar) == 0x1CB20);
 
@@ -4122,19 +4201,19 @@ export struct PlayerActorDataBob : PlayerActorDataBase
 	byte16 newButtonMask; // 0x1CAD4
 	bool newEnableRightStick; // 0x1CAD6
 	bool newEnableLeftStick; // 0x1CAD7
-	bool newAirStinger; // 0x1CAD8
-	uint8 newAirStingerCount; // 0x1CAD9
-	bool newQuickDrive; // 0x1CADA
-	bool newEnableCollision; // 0x1CADB
-	bool newActorLoopRun; // 0x1CADC
-	uint8 newAirHikeCount; // 0x1CADD
-	uint8 newKickJumpCount; // 0x1CADE
-	uint8 newWallHikeCount; // 0x1CADF
-	uint8 newDashCount; // 0x1CAE0
-	uint8 newSkyStarCount; // 0x1CAE1
-	uint8 newAirTrickCount; // 0x1CAE2
-	uint8 newTrickUpCount; // 0x1CAE3
-	uint8 newTrickDownCount; // 0x1CAE4
+	bool newQuickDrive; // 0x1CAD8
+	bool newEnableCollision; // 0x1CAD9
+	bool newActorLoopRun; // 0x1CADA
+	uint8 newAirHikeCount; // 0x1CADB
+	uint8 newKickJumpCount; // 0x1CADC
+	uint8 newWallHikeCount; // 0x1CADD
+	uint8 newDashCount; // 0x1CADE
+	uint8 newSkyStarCount; // 0x1CADF
+	uint8 newAirTrickCount; // 0x1CAE0
+	uint8 newTrickUpCount; // 0x1CAE1
+	uint8 newTrickDownCount; // 0x1CAE2
+	uint8 newAirStingerCount; // 0x1CAE3
+	uint8 newAirRisingSunCount; // 0x1CAE4
 	_(11);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
@@ -4171,19 +4250,19 @@ static_assert(offsetof(PlayerActorDataBob, newGamepad) == 0x1CAD3);
 static_assert(offsetof(PlayerActorDataBob, newButtonMask) == 0x1CAD4);
 static_assert(offsetof(PlayerActorDataBob, newEnableRightStick) == 0x1CAD6);
 static_assert(offsetof(PlayerActorDataBob, newEnableLeftStick) == 0x1CAD7);
-static_assert(offsetof(PlayerActorDataBob, newAirStinger) == 0x1CAD8);
-static_assert(offsetof(PlayerActorDataBob, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(PlayerActorDataBob, newQuickDrive) == 0x1CADA);
-static_assert(offsetof(PlayerActorDataBob, newEnableCollision) == 0x1CADB);
-static_assert(offsetof(PlayerActorDataBob, newActorLoopRun) == 0x1CADC);
-static_assert(offsetof(PlayerActorDataBob, newAirHikeCount) == 0x1CADD);
-static_assert(offsetof(PlayerActorDataBob, newKickJumpCount) == 0x1CADE);
-static_assert(offsetof(PlayerActorDataBob, newWallHikeCount) == 0x1CADF);
-static_assert(offsetof(PlayerActorDataBob, newDashCount) == 0x1CAE0);
-static_assert(offsetof(PlayerActorDataBob, newSkyStarCount) == 0x1CAE1);
-static_assert(offsetof(PlayerActorDataBob, newAirTrickCount) == 0x1CAE2);
-static_assert(offsetof(PlayerActorDataBob, newTrickUpCount) == 0x1CAE3);
-static_assert(offsetof(PlayerActorDataBob, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(PlayerActorDataBob, newQuickDrive) == 0x1CAD8);
+static_assert(offsetof(PlayerActorDataBob, newEnableCollision) == 0x1CAD9);
+static_assert(offsetof(PlayerActorDataBob, newActorLoopRun) == 0x1CADA);
+static_assert(offsetof(PlayerActorDataBob, newAirHikeCount) == 0x1CADB);
+static_assert(offsetof(PlayerActorDataBob, newKickJumpCount) == 0x1CADC);
+static_assert(offsetof(PlayerActorDataBob, newWallHikeCount) == 0x1CADD);
+static_assert(offsetof(PlayerActorDataBob, newDashCount) == 0x1CADE);
+static_assert(offsetof(PlayerActorDataBob, newSkyStarCount) == 0x1CADF);
+static_assert(offsetof(PlayerActorDataBob, newAirTrickCount) == 0x1CAE0);
+static_assert(offsetof(PlayerActorDataBob, newTrickUpCount) == 0x1CAE1);
+static_assert(offsetof(PlayerActorDataBob, newTrickDownCount) == 0x1CAE2);
+static_assert(offsetof(PlayerActorDataBob, newAirStingerCount) == 0x1CAE3);
+static_assert(offsetof(PlayerActorDataBob, newAirRisingSunCount) == 0x1CAE4);
 static_assert(offsetof(PlayerActorDataBob, newEffectIndices) == 0x1CAF0);
 static_assert(offsetof(PlayerActorDataBob, newLastVar) == 0x1CB20);
 
@@ -4227,19 +4306,19 @@ export struct PlayerActorDataLady : PlayerActorDataBase
 	byte16 newButtonMask; // 0x1CAD4
 	bool newEnableRightStick; // 0x1CAD6
 	bool newEnableLeftStick; // 0x1CAD7
-	bool newAirStinger; // 0x1CAD8
-	uint8 newAirStingerCount; // 0x1CAD9
-	bool newQuickDrive; // 0x1CADA
-	bool newEnableCollision; // 0x1CADB
-	bool newActorLoopRun; // 0x1CADC
-	uint8 newAirHikeCount; // 0x1CADD
-	uint8 newKickJumpCount; // 0x1CADE
-	uint8 newWallHikeCount; // 0x1CADF
-	uint8 newDashCount; // 0x1CAE0
-	uint8 newSkyStarCount; // 0x1CAE1
-	uint8 newAirTrickCount; // 0x1CAE2
-	uint8 newTrickUpCount; // 0x1CAE3
-	uint8 newTrickDownCount; // 0x1CAE4
+	bool newQuickDrive; // 0x1CAD8
+	bool newEnableCollision; // 0x1CAD9
+	bool newActorLoopRun; // 0x1CADA
+	uint8 newAirHikeCount; // 0x1CADB
+	uint8 newKickJumpCount; // 0x1CADC
+	uint8 newWallHikeCount; // 0x1CADD
+	uint8 newDashCount; // 0x1CADE
+	uint8 newSkyStarCount; // 0x1CADF
+	uint8 newAirTrickCount; // 0x1CAE0
+	uint8 newTrickUpCount; // 0x1CAE1
+	uint8 newTrickDownCount; // 0x1CAE2
+	uint8 newAirStingerCount; // 0x1CAE3
+	uint8 newAirRisingSunCount; // 0x1CAE4
 	_(11);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
@@ -4276,19 +4355,19 @@ static_assert(offsetof(PlayerActorDataLady, newGamepad) == 0x1CAD3);
 static_assert(offsetof(PlayerActorDataLady, newButtonMask) == 0x1CAD4);
 static_assert(offsetof(PlayerActorDataLady, newEnableRightStick) == 0x1CAD6);
 static_assert(offsetof(PlayerActorDataLady, newEnableLeftStick) == 0x1CAD7);
-static_assert(offsetof(PlayerActorDataLady, newAirStinger) == 0x1CAD8);
-static_assert(offsetof(PlayerActorDataLady, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(PlayerActorDataLady, newQuickDrive) == 0x1CADA);
-static_assert(offsetof(PlayerActorDataLady, newEnableCollision) == 0x1CADB);
-static_assert(offsetof(PlayerActorDataLady, newActorLoopRun) == 0x1CADC);
-static_assert(offsetof(PlayerActorDataLady, newAirHikeCount) == 0x1CADD);
-static_assert(offsetof(PlayerActorDataLady, newKickJumpCount) == 0x1CADE);
-static_assert(offsetof(PlayerActorDataLady, newWallHikeCount) == 0x1CADF);
-static_assert(offsetof(PlayerActorDataLady, newDashCount) == 0x1CAE0);
-static_assert(offsetof(PlayerActorDataLady, newSkyStarCount) == 0x1CAE1);
-static_assert(offsetof(PlayerActorDataLady, newAirTrickCount) == 0x1CAE2);
-static_assert(offsetof(PlayerActorDataLady, newTrickUpCount) == 0x1CAE3);
-static_assert(offsetof(PlayerActorDataLady, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(PlayerActorDataLady, newQuickDrive) == 0x1CAD8);
+static_assert(offsetof(PlayerActorDataLady, newEnableCollision) == 0x1CAD9);
+static_assert(offsetof(PlayerActorDataLady, newActorLoopRun) == 0x1CADA);
+static_assert(offsetof(PlayerActorDataLady, newAirHikeCount) == 0x1CADB);
+static_assert(offsetof(PlayerActorDataLady, newKickJumpCount) == 0x1CADC);
+static_assert(offsetof(PlayerActorDataLady, newWallHikeCount) == 0x1CADD);
+static_assert(offsetof(PlayerActorDataLady, newDashCount) == 0x1CADE);
+static_assert(offsetof(PlayerActorDataLady, newSkyStarCount) == 0x1CADF);
+static_assert(offsetof(PlayerActorDataLady, newAirTrickCount) == 0x1CAE0);
+static_assert(offsetof(PlayerActorDataLady, newTrickUpCount) == 0x1CAE1);
+static_assert(offsetof(PlayerActorDataLady, newTrickDownCount) == 0x1CAE2);
+static_assert(offsetof(PlayerActorDataLady, newAirStingerCount) == 0x1CAE3);
+static_assert(offsetof(PlayerActorDataLady, newAirRisingSunCount) == 0x1CAE4);
 static_assert(offsetof(PlayerActorDataLady, newEffectIndices) == 0x1CAF0);
 static_assert(offsetof(PlayerActorDataLady, newLastVar) == 0x1CB20);
 
@@ -4342,19 +4421,19 @@ export struct PlayerActorDataVergil : PlayerActorDataBase
 	byte16 newButtonMask; // 0x1CAD4
 	bool newEnableRightStick; // 0x1CAD6
 	bool newEnableLeftStick; // 0x1CAD7
-	bool newAirStinger; // 0x1CAD8
-	uint8 newAirStingerCount; // 0x1CAD9
-	bool newQuickDrive; // 0x1CADA
-	bool newEnableCollision; // 0x1CADB
-	bool newActorLoopRun; // 0x1CADC
-	uint8 newAirHikeCount; // 0x1CADD
-	uint8 newKickJumpCount; // 0x1CADE
-	uint8 newWallHikeCount; // 0x1CADF
-	uint8 newDashCount; // 0x1CAE0
-	uint8 newSkyStarCount; // 0x1CAE1
-	uint8 newAirTrickCount; // 0x1CAE2
-	uint8 newTrickUpCount; // 0x1CAE3
-	uint8 newTrickDownCount; // 0x1CAE4
+	bool newQuickDrive; // 0x1CAD8
+	bool newEnableCollision; // 0x1CAD9
+	bool newActorLoopRun; // 0x1CADA
+	uint8 newAirHikeCount; // 0x1CADB
+	uint8 newKickJumpCount; // 0x1CADC
+	uint8 newWallHikeCount; // 0x1CADD
+	uint8 newDashCount; // 0x1CADE
+	uint8 newSkyStarCount; // 0x1CADF
+	uint8 newAirTrickCount; // 0x1CAE0
+	uint8 newTrickUpCount; // 0x1CAE1
+	uint8 newTrickDownCount; // 0x1CAE2
+	uint8 newAirStingerCount; // 0x1CAE3
+	uint8 newAirRisingSunCount; // 0x1CAE4
 	_(11);
 	uint32 newEffectIndices[12]; // 0x1CAF0
 	uint32 newLastVar; // 0x1CB20
@@ -4398,19 +4477,19 @@ static_assert(offsetof(PlayerActorDataVergil, newGamepad) == 0x1CAD3);
 static_assert(offsetof(PlayerActorDataVergil, newButtonMask) == 0x1CAD4);
 static_assert(offsetof(PlayerActorDataVergil, newEnableRightStick) == 0x1CAD6);
 static_assert(offsetof(PlayerActorDataVergil, newEnableLeftStick) == 0x1CAD7);
-static_assert(offsetof(PlayerActorDataVergil, newAirStinger) == 0x1CAD8);
-static_assert(offsetof(PlayerActorDataVergil, newAirStingerCount) == 0x1CAD9);
-static_assert(offsetof(PlayerActorDataVergil, newQuickDrive) == 0x1CADA);
-static_assert(offsetof(PlayerActorDataVergil, newEnableCollision) == 0x1CADB);
-static_assert(offsetof(PlayerActorDataVergil, newActorLoopRun) == 0x1CADC);
-static_assert(offsetof(PlayerActorDataVergil, newAirHikeCount) == 0x1CADD);
-static_assert(offsetof(PlayerActorDataVergil, newKickJumpCount) == 0x1CADE);
-static_assert(offsetof(PlayerActorDataVergil, newWallHikeCount) == 0x1CADF);
-static_assert(offsetof(PlayerActorDataVergil, newDashCount) == 0x1CAE0);
-static_assert(offsetof(PlayerActorDataVergil, newSkyStarCount) == 0x1CAE1);
-static_assert(offsetof(PlayerActorDataVergil, newAirTrickCount) == 0x1CAE2);
-static_assert(offsetof(PlayerActorDataVergil, newTrickUpCount) == 0x1CAE3);
-static_assert(offsetof(PlayerActorDataVergil, newTrickDownCount) == 0x1CAE4);
+static_assert(offsetof(PlayerActorDataVergil, newQuickDrive) == 0x1CAD8);
+static_assert(offsetof(PlayerActorDataVergil, newEnableCollision) == 0x1CAD9);
+static_assert(offsetof(PlayerActorDataVergil, newActorLoopRun) == 0x1CADA);
+static_assert(offsetof(PlayerActorDataVergil, newAirHikeCount) == 0x1CADB);
+static_assert(offsetof(PlayerActorDataVergil, newKickJumpCount) == 0x1CADC);
+static_assert(offsetof(PlayerActorDataVergil, newWallHikeCount) == 0x1CADD);
+static_assert(offsetof(PlayerActorDataVergil, newDashCount) == 0x1CADE);
+static_assert(offsetof(PlayerActorDataVergil, newSkyStarCount) == 0x1CADF);
+static_assert(offsetof(PlayerActorDataVergil, newAirTrickCount) == 0x1CAE0);
+static_assert(offsetof(PlayerActorDataVergil, newTrickUpCount) == 0x1CAE1);
+static_assert(offsetof(PlayerActorDataVergil, newTrickDownCount) == 0x1CAE2);
+static_assert(offsetof(PlayerActorDataVergil, newAirStingerCount) == 0x1CAE3);
+static_assert(offsetof(PlayerActorDataVergil, newAirRisingSunCount) == 0x1CAE4);
 static_assert(offsetof(PlayerActorDataVergil, newEffectIndices) == 0x1CAF0);
 static_assert(offsetof(PlayerActorDataVergil, newLastVar) == 0x1CB20);
 
@@ -4438,7 +4517,9 @@ export struct EnemyActorDataLady : ActorDataBase
 {
 	_(21400);
 	CollisionData collisionData; // 0x5460
-	_(664);
+	_(104);
+	float hitPoints; // 0x5758
+	_(556);
 	uint32 event; // 0x5988
 	_(8);
 	uint8 state; // 0x5994
@@ -4460,6 +4541,7 @@ export struct EnemyActorDataLady : ActorDataBase
 };
 
 static_assert(offsetof(EnemyActorDataLady, collisionData) == 0x5460);
+static_assert(offsetof(EnemyActorDataLady, hitPoints) == 0x5758);
 static_assert(offsetof(EnemyActorDataLady, event) == 0x5988);
 static_assert(offsetof(EnemyActorDataLady, state) == 0x5994);
 static_assert(offsetof(EnemyActorDataLady, pistolBullets) == 0x59A0);

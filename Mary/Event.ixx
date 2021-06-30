@@ -23,7 +23,7 @@ import Vars;
 
 
 
-bool Event_run[MAX_EVENT] = {};
+bool Event_run[EVENT::COUNT] = {};
 bool MainLoopOnce_run     = false;
 
 
@@ -88,7 +88,7 @@ void CreateMainActor(byte8 * actorBaseAddr)
 	(
 		Event_run,
 		0,
-		MAX_EVENT
+		sizeof(Event_run)
 	);
 
 	Actor::EventCreateMainActor(actorBaseAddr);
@@ -115,10 +115,14 @@ void UpdateEnemyCount()
 
 void EventHandler(EventData & eventData)
 {
+
+	using namespace EVENT;
+
+
 	[&]()
 	{
 		auto event = eventData.event;
-		if (event >= MAX_EVENT)
+		if (event >= COUNT)
 		{
 			return;
 		}
@@ -133,7 +137,7 @@ void EventHandler(EventData & eventData)
 
 		switch (eventData.event)
 		{
-			case EVENT_MAIN:
+			case MAIN:
 			{
 				Log("Main");
 
@@ -143,13 +147,13 @@ void EventHandler(EventData & eventData)
 
 				break;
 			}
-			case EVENT_TELEPORT:
+			case TELEPORT:
 			{
 				Log("Teleport");
 
 				break;
 			}
-			case EVENT_DEATH:
+			case DEATH:
 			{
 				Log("Death");
 
@@ -157,13 +161,13 @@ void EventHandler(EventData & eventData)
 
 				break;
 			}
-			case EVENT_CUSTOMIZE:
+			case CUSTOMIZE:
 			{
 				Log("Customize");
 
 				break;
 			}
-			case EVENT_DELETE:
+			case DELETE:
 			{
 				Log("Delete %u", eventData.subevent);
 
@@ -180,7 +184,7 @@ void EventHandler(EventData & eventData)
 
 	switch (eventData.event)
 	{
-		case EVENT_MAIN:
+		case MAIN:
 		{
 			CharacterSwitchController();
 
@@ -219,7 +223,7 @@ void ContinueGoldOrb()
 {
 	LogFunction();
 
-	Event_run[EVENT_DEATH] = false;
+	Event_run[EVENT::DEATH] = false;
 }
 
 void Continue()

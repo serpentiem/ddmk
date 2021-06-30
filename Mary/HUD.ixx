@@ -1,25 +1,18 @@
-module;
-// #include "../Core/Core.h"
-
-// #include "Vars.h"
-
-#include "../Core/Macros.h" //
-
 export module HUD;
 
 import Core;
 
-
-
-import Vars;
-
+#include "../Core/Macros.h"
 
 import File;
 import Global;
 import Internal;
 import Model;
+import Vars;
 
 #define debug false
+
+
 
 struct HUDIconHelper
 {
@@ -195,6 +188,8 @@ export void HUD_Init()
 
 export void ToggleHideMainHUD(bool enable)
 {
+	LogFunction(enable);
+
 	static bool run = false;
 
 
@@ -247,7 +242,43 @@ export void ToggleHideMainHUD(bool enable)
 		}
 	}
 
-	// Lock-On
+	// Style Rank
+	{
+		auto addr = (appBaseAddr + 0x2BB194);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+2BB194 - 0F85 18020000     - jne dmc3.exe+2BB3B2
+		dmc3.exe+2BB19A - 83 B9 203D0000 00 - cmp dword ptr [rcx+00003D20],00
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			Write<byte16>(addr, 0xE990);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	run = true;
+}
+
+export void ToggleHideLockOn(bool enable)
+{
+	LogFunction(enable);
+
+	static bool run = false;
+
+
+
 	{
 		auto addr = (appBaseAddr + 0x296E77);
 		constexpr uint32 size = 2;
@@ -278,6 +309,8 @@ export void ToggleHideMainHUD(bool enable)
 
 export void ToggleHideBossHUD(bool enable)
 {
+	LogFunction(enable);
+
 	static bool run = false;
 
 
@@ -309,21 +342,6 @@ export void ToggleHideBossHUD(bool enable)
 
 	run = true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifdef __GARBAGE__
 #endif

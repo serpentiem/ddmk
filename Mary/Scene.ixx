@@ -35,7 +35,7 @@ void SceneMain()
 {
 	LogFunction();
 
-	SetScene(SCENE_MAIN, true);
+	SetScene(SCENE::MAIN, true);
 
 	Item::SceneMain();
 }
@@ -44,7 +44,7 @@ void SceneMissionSelect()
 {
 	LogFunction();
 
-	SetScene(SCENE_MISSION_SELECT, true);
+	SetScene(SCENE::MISSION_SELECT, true);
 
 	Item::SceneMissionSelect();
 }
@@ -53,7 +53,7 @@ void SceneMissionStart()
 {
 	LogFunction();
 
-	SetScene(SCENE_MISSION_START, true);
+	SetScene(SCENE::MISSION_START, true);
 
 	Actor::SceneMissionStart();
 
@@ -64,7 +64,7 @@ void SceneGame()
 {
 	LogFunction();
 
-	SetScene(SCENE_GAME);
+	SetScene(SCENE::GAME);
 
 	Actor::SceneGame();
 }
@@ -73,14 +73,14 @@ void SceneCutscene()
 {
 	LogFunction();
 
-	SetScene(SCENE_CUTSCENE);
+	SetScene(SCENE::CUTSCENE);
 }
 
 void SceneMissionResult()
 {
 	LogFunction();
 
-	SetScene(SCENE_MISSION_RESULT);
+	SetScene(SCENE::MISSION_RESULT);
 }
 
 

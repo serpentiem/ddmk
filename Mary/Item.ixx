@@ -178,6 +178,32 @@ export void ItemWindow()
 			0,
 			18
 		);
+
+
+
+		IntroduceMainActorData(mainActorData, return);
+		IntroduceData(g_playerActorBaseAddrs[0], defaultMainActorData, PlayerActorData, return);
+
+		if (itemHelper.itemIndex == ITEM_BLUE_ORB)
+		{
+			auto value = (mainActorData.hitPoints + 1000.0f);
+
+			mainActorData.hitPoints = value;
+			mainActorData.maxHitPoints = value;
+
+			defaultMainActorData.hitPoints = value;
+			defaultMainActorData.maxHitPoints = value;
+		}
+		else if (itemHelper.itemIndex == ITEM_PURPLE_ORB)
+		{
+			auto value = (mainActorData.magicPoints + 1000.0f);
+
+			mainActorData.magicPoints = value;
+			mainActorData.maxMagicPoints = value;
+
+			defaultMainActorData.magicPoints = value;
+			defaultMainActorData.maxMagicPoints = value;
+		}
 	};
 
 

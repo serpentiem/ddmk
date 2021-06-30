@@ -1,4 +1,3 @@
-// @Todo: Fix devil form for arbitrary weapon switch controller.
 // @Todo: Remove File_dynamicFiles and update UpdateMotionArchives.
 
 module;
@@ -5014,11 +5013,10 @@ void ResetPermissionsController(byte8 * actorBaseAddr)
 
 
 
-//template <typename T>
+
+
 void RemoveBusyFlagController(byte8 * actorBaseAddr)
 {
-
-
 	if
 	(
 		!actorBaseAddr ||
@@ -5028,9 +5026,6 @@ void RemoveBusyFlagController(byte8 * actorBaseAddr)
 	{
 		return;
 	}
-
-
-	//IntroduceData(g_playerActorBaseAddrs[])
 
 	IntroduceData(actorBaseAddr, actorData, PlayerActorData, return);
 
@@ -5042,14 +5037,23 @@ void RemoveBusyFlagController(byte8 * actorBaseAddr)
 		playerIndex = 0;
 	}
 
+	auto characterIndex = actorData.newCharacterIndex;
+	if (characterIndex >= CHARACTER_COUNT)
+	{
+		characterIndex = 0;
+	}
+
+	auto entityIndex = actorData.newEntityIndex;
+	if (entityIndex >= ENTITY_COUNT)
+	{
+		entityIndex = 0;
+	}
 
 	auto & playerData = GetPlayerData(playerIndex);
 
+	auto & gamepad = GetGamepad(playerIndex);
 
-
-
-
-
+	static bool executes[PLAYER_COUNT][CHARACTER_COUNT][ENTITY_COUNT][4] = {};
 
 
 
@@ -5060,33 +5064,13 @@ void RemoveBusyFlagController(byte8 * actorBaseAddr)
 
 
 
-
-
-
-
-
-
-
-
-	auto & gamepad = GetGamepad(playerIndex);
-
-
-	static bool executes[PLAYER_COUNT][4] = {};
-
-
-
-
-
 	for_all(uint8, buttonIndex, 4)
 	{
-		auto & execute = executes[playerIndex][buttonIndex];
+		auto & execute = executes[playerIndex][characterIndex][entityIndex][buttonIndex];
 
 		auto & button = playerData.removeBusyFlagButtons[buttonIndex];
 
-		// if (button == 0)
-		// {
-		// 	continue;
-		// }
+
 
 		if (gamepad.buttons[0] & button)
 		{
@@ -5096,47 +5080,21 @@ void RemoveBusyFlagController(byte8 * actorBaseAddr)
 
 				actorData.state &= ~STATE_BUSY;
 
-				if constexpr (debug)
-				{
-					Log
-					(
-						"%u %X %llX",
-						buttonIndex,
-						button,
-						actorData.baseAddr
-					);
-				}
-
-
-
-
-
+				DebugLog
+				(
+					"%u %X %llX",
+					buttonIndex,
+					button,
+					actorData.baseAddr
+				);
 			}
 		}
 		else
 		{
 			execute = true;
 		}
-
-
-
-
-
-
 	}
-
-
-
 }
-
-
-
-/*
-	if (activeConfig.removeBusyFlag)
-	{
-
-	}
-*/
 
 
 
@@ -5541,19 +5499,26 @@ void ArbitraryMeleeWeaponSwitchController(T & actorData)
 
 	auto & gamepad = GetGamepad(actorData.newPlayerIndex);
 
+	auto leftStick = (characterData.meleeWeaponSwitchStick == LEFT_STICK);
+
+	auto radius = (leftStick) ? gamepad.leftStickRadius   : gamepad.rightStickRadius;
+	auto pos    = (leftStick) ? gamepad.leftStickPosition : gamepad.rightStickPosition;
+
+
+
 	if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
 	{
 		return;
 	}
 
-	g_disableCameraRotation = true;
+	g_disableCameraRotation = true; // @Research: Consider !leftStick.
 
-	if (gamepad.rightStickRadius < RIGHT_STICK_DEADZONE)
+	if (radius < RIGHT_STICK_DEADZONE)
 	{
 		return;
 	}
 
-	auto & pos = gamepad.rightStickPosition;
+
 
 	uint8 meleeWeaponIndex = 0;
 	uint8 meleeWeaponCount = characterData.meleeWeaponCount;
@@ -5636,6 +5601,13 @@ void ArbitraryRangedWeaponSwitchController(T & actorData)
 
 	auto & gamepad = GetGamepad(actorData.newPlayerIndex);
 
+	auto leftStick = (characterData.rangedWeaponSwitchStick == LEFT_STICK);
+
+	auto radius = (leftStick) ? gamepad.leftStickRadius   : gamepad.rightStickRadius;
+	auto pos    = (leftStick) ? gamepad.leftStickPosition : gamepad.rightStickPosition;
+
+
+
 	if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_GUN)))
 	{
 		return;
@@ -5643,12 +5615,12 @@ void ArbitraryRangedWeaponSwitchController(T & actorData)
 
 	g_disableCameraRotation = true;
 
-	if (gamepad.rightStickRadius < RIGHT_STICK_DEADZONE)
+	if (radius < RIGHT_STICK_DEADZONE)
 	{
 		return;
 	}
 
-	auto & pos = gamepad.rightStickPosition;
+
 
 	uint8 rangedWeaponIndex = 0;
 	uint8 rangedWeaponCount = characterData.rangedWeaponCount;
@@ -7095,12 +7067,86 @@ void SetNewEventBossVergil
 
 
 
-
+// @Todo: Update order.
 export void ToggleBossLadyFixes(bool enable)
 {
 	LogFunction(enable);
 
 	static bool run = false;
+
+
+
+	// Disable HUD
+	{
+		auto addr = (appBaseAddr + 0x16FD32);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+16FD32 - E8 097F0400       - call dmc3.exe+1B7C40
+		dmc3.exe+16FD37 - 48 8D 93 F8560000 - lea rdx,[rbx+000056F8]
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0x31, 0xC0, // xor rax,rax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Disable HUD 2
+	{
+		auto addr = (appBaseAddr + 0x16FD48);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+16FD48 - E8 A3F61000       - call dmc3.exe+27F3F0
+		dmc3.exe+16FD4D - 48 89 83 00590000 - mov [rbx+00005900],rax
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0x31, 0xC0, // xor rax,rax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8068,7 +8114,7 @@ dmc3.exe+16CB77 - F3 0F10 05 8DE84000   - movss xmm0,[dmc3.exe+57B40C] { (1820.0
 
 
 
-
+// @Todo: Update order.
 
 
 export void ToggleBossVergilFixes(bool enable)
@@ -8076,6 +8122,72 @@ export void ToggleBossVergilFixes(bool enable)
 	LogFunction(enable);
 
 	static bool run = false;
+
+
+
+	// Disable HUD
+	{
+		auto addr = (appBaseAddr + 0x181942);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+181942 - E8 F9620300         - call dmc3.exe+1B7C40
+		dmc3.exe+181947 - F3 0F10 97 C8EA0000 - movss xmm2,[rdi+0000EAC8]
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0x31, 0xC0, // xor rax,rax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Disable HUD 2
+	{
+		auto addr = (appBaseAddr + 0x18195C);
+		constexpr uint32 size = 5;
+		/*
+		dmc3.exe+18195C - E8 8FDA0F00       - call dmc3.exe+27F3F0
+		dmc3.exe+181961 - 48 8B 8F E01B0000 - mov rcx,[rdi+00001BE0]
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0x48, 0x31, 0xC0, // xor rax,rax
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+
 
 
 
@@ -9412,18 +9524,71 @@ void ResetSkyStar(PlayerActorData & actorData)
 
 
 
-	actorData.newAirHikeCount   = 0;
-	actorData.newKickJumpCount  = 0;
-	actorData.newWallHikeCount  = 0;
-	actorData.newDashCount      = 0;
-	actorData.newSkyStarCount   = 0;
-	actorData.newAirTrickCount  = 0;
-	actorData.newTrickUpCount   = 0;
-	actorData.newTrickDownCount = 0;
+	bool inAir     = (actorData.state     & STATE_IN_AIR);
+	bool lastInAir = (actorData.lastState & STATE_IN_AIR);
 
-	if (!actorData.newAirStinger)
+	DebugLog("action     %u", actorData.action    );
+	DebugLog("lastAction %u", actorData.lastAction);
+	DebugLog("inAir      %u", inAir               );
+	DebugLog("lastInAir  %u", lastInAir           );
+
+
+
+	if
+	(
+		// Dante Air Stinger
+		(
+			(actorData.character == CHAR_DANTE) &&
+			(actorData.action == 0) &&
+			(actorData.lastAction == ACTION_DANTE::REBELLION_STINGER_LEVEL_2) &&
+			!inAir &&
+			lastInAir
+		) ||
+		// Vergil Air Rising Sun
+		(
+			(actorData.character == CHAR_VERGIL) &&
+			(actorData.action == ACTION_VERGIL::BEOWULF_RISING_SUN) &&
+			inAir &&
+			lastInAir
+		) ||
+		// Vergil Air Stinger
+		(
+			(actorData.character == CHAR_VERGIL) &&
+			(actorData.action == 0) &&
+			(actorData.lastAction == ACTION_VERGIL::YAMATO_FORCE_EDGE_STINGER_LEVEL_2) &&
+			!inAir &&
+			lastInAir
+		)
+	)
 	{
-		actorData.newAirStingerCount = 0;
+		return;
+	}
+
+
+
+	actorData.newAirHikeCount    = 0;
+	actorData.newKickJumpCount   = 0;
+	actorData.newWallHikeCount   = 0;
+	actorData.newDashCount       = 0;
+	actorData.newSkyStarCount    = 0;
+	actorData.newAirTrickCount   = 0;
+	actorData.newTrickUpCount    = 0;
+	actorData.newTrickDownCount  = 0;
+	actorData.newAirStingerCount = 0;
+
+	if
+	(
+		(actorData.character == CHAR_VERGIL) &&
+		(actorData.action == ACTION_VERGIL::BEOWULF_RISING_SUN) &&
+		inAir &&
+		!lastInAir
+	)
+	{
+		actorData.newAirRisingSunCount = 1;
+	}
+	else
+	{
+		actorData.newAirRisingSunCount = 0;
 	}
 
 
@@ -10645,17 +10810,41 @@ void ToggleColor(bool enable)
 
 #pragma region Speed
 
-byte8 * UpdateActorSpeedAddr = 0;
+//byte8 * UpdateActorSpeedAddr = 0;
 
 
 
 // When hit by Geryon's Time Lag, Quicksilver is turned off.
-// So we can check g_quicksilver.
 
-// @Todo: Should be actorBaseAddr.
+
+// @Todo: Simplify again and if nothing matches use player1LeadActorData value.
+// @Todo: Add IsEnemy lambda.
+
+
+/*
+
+if no match check type id for player and apply player 1 speed
+
+
+
+
+
+*/
+
+
+
+
+
+
+
 void UpdateActorSpeed(byte8 * baseAddr)
 {
 
+
+	if (!baseAddr)
+	{
+		return;
+	}
 
 
 	auto & player1LeadNewActorData = GetNewActorData(0, 0, ENTITY_MAIN);
@@ -10664,6 +10853,11 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 	auto & quicksilver      = player1LeadActorData.quicksilver;
 	auto & quicksilverStage = player1LeadActorData.quicksilverStage;
+
+
+	IntroduceMainActorData(mainActorData, return);
+
+
 
 
 
@@ -10675,14 +10869,100 @@ void UpdateActorSpeed(byte8 * baseAddr)
 	{
 		IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
 
-		if (baseAddr != newActorData.baseAddr)
+
+
+
+
+
+
+
+
+
+
+
+
+		auto actorBaseAddr = newActorData.baseAddr;
+
+		if (baseAddr != actorBaseAddr)
 		{
-			continue;
+			// At this point we only know it's not the actor, but it could be a weapon from that actor.
+
+
+
+			if (characterData.character >= MAX_CHAR)
+			{
+				continue;
+			}
+
+
+
+			IntroduceData(actorBaseAddr, actorData, PlayerActorData, continue);
+
+
+
+			bool match = false;
+
+			for_all(uint8, weaponIndex, countof(actorData.newWeaponDataAddr))
+			{
+				auto weaponDataAddr = actorData.newWeaponDataAddr[weaponIndex];
+				if (!weaponDataAddr)
+				{
+					continue;
+				}
+				auto & weaponData = *weaponDataAddr;
+
+
+
+				if (baseAddr == weaponData.baseAddr)
+				{
+					match = true;
+
+					actorBaseAddr = weaponData.actorBaseAddr;
+
+					break;
+				}
+			}
+
+
+
+			if (!match)
+			{
+				continue;
+			}
 		}
 
-		IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
+
+
+		// At this point we know it's one of our actors.
+
+
+
+
+
+
+
+
+		IntroduceData(actorBaseAddr, actorData, PlayerActorData, continue);
+
+
 
 		auto value = (IsTurbo()) ? activeConfig.Speed.turbo : activeConfig.Speed.main;
+
+
+
+
+		if (mainActorData.styleData.rank >= STYLE_RANK_SWEET)
+		{
+			value *= 1.05f;
+		}
+
+
+
+
+
+
+
+
 
 
 
@@ -10690,7 +10970,16 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 		if (quicksilver)
 		{
-			if (quicksilverStage == ON)
+			// Weird, but that's the default behaviour.
+			if
+			(
+				(quicksilverStage == TO_ON) &&
+				(actorData.action != 0)
+			)
+			{
+				value = 0;
+			}
+			else if (quicksilverStage == ON)
 			{
 				value *= activeConfig.Speed.quicksilverPlayerActor;
 			}
@@ -10790,6 +11079,30 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 		actorData.speed = value;
 
+
+		if (characterData.character >= MAX_CHAR)
+		{
+			return;
+		}
+
+
+
+		for_all(uint8, weaponIndex, countof(actorData.newWeaponDataAddr))
+		{
+			auto weaponDataAddr = actorData.newWeaponDataAddr[weaponIndex];
+			if (!weaponDataAddr)
+			{
+				continue;
+			}
+			auto & weaponData = *weaponDataAddr;
+
+			weaponData.speed = value;
+		}
+
+
+
+
+
 		return;
 	}}}
 
@@ -10810,46 +11123,48 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 
 
-	// EnemyVectorData
+	// // EnemyVectorData
 
-	IntroduceEnemyVectorData(return);
+	// IntroduceEnemyVectorData(return);
 
-	for_all(uint32, enemyIndex, countof(enemyVectorData.metadata))
-	{
-		auto & metadata = enemyVectorData.metadata[enemyIndex];
+	// for_all(uint32, enemyIndex, countof(enemyVectorData.metadata))
+	// {
+	// 	auto & metadata = enemyVectorData.metadata[enemyIndex];
 
-		if (baseAddr != metadata.baseAddr)
-		{
-			continue;
-		}
+	// 	if (baseAddr != metadata.baseAddr)
+	// 	{
+	// 		continue;
+	// 	}
 
-		IntroduceData(metadata.baseAddr, actorData, EnemyActorData, continue);
+	// 	IntroduceData(metadata.baseAddr, actorData, EnemyActorData, continue);
 
-		auto value = (IsTurbo()) ? activeConfig.Speed.turbo : activeConfig.Speed.main;
-
-
-
-		using namespace QUICKSILVER_STAGE;
-
-		if (quicksilverStage == TO_ON)
-		{
-			value = 0;
-		}
-		else if
-		(
-			quicksilver &&
-			(quicksilverStage == ON)
-		)
-		{
-			value *= activeConfig.Speed.quicksilverEnemyActor;
-		}
+	// 	auto value = (IsTurbo()) ? activeConfig.Speed.turbo : activeConfig.Speed.main;
 
 
 
-		actorData.speed = value;
+	// 	using namespace QUICKSILVER_STAGE;
 
-		return;
-	}
+	// 	if (quicksilverStage == TO_ON)
+	// 	{
+	// 		value = 0;
+	// 	}
+	// 	else if
+	// 	(
+	// 		quicksilver &&
+	// 		(quicksilverStage == ON)
+	// 	)
+	// 	{
+	// 		value *= activeConfig.Speed.quicksilverEnemyActor;
+	// 	}
+
+
+
+	// 	value *= activeConfig.Speed.enemy;
+
+	// 	actorData.speed = value;
+
+	// 	return;
+	// }
 }
 
 
@@ -11965,7 +12280,7 @@ void DeactivateDoppelganger(PlayerActorData & actorData)
 
 bool DeactivateDoppelgangerDeathCheck(PlayerActorData & actorData)
 {
-	IntroduceData(actorData.cloneActorBaseAddr, cloneActorData, PlayerActorData, return false);
+	IntroduceData(actorData.cloneActorBaseAddr, cloneActorData, PlayerActorData, return true); // true to avoid clone crash.
 
 
 
@@ -12406,15 +12721,7 @@ void SetAction(byte8 * actorBaseAddr)
 
 
 
-	// if constexpr (debug)
-	// {
-	// 	Log("%llX %u", actorBaseAddr, actorData.action);
-	// }
-
-
 	DebugLog("%s %llX %u", FUNC_NAME, actorBaseAddr, actorData.action);
-
-
 
 
 
@@ -12426,8 +12733,11 @@ void SetAction(byte8 * actorBaseAddr)
 
 			actorData.motionArchives[MOTION_GROUP_DANTE::REBELLION] = File_staticFiles[pl000_00_3];
 
+
+
 			if
 			(
+				activeConfig.enableRebellionAirStinger &&
 				(actorData.action == REBELLION_HELM_BREAKER) &&
 				(actorData.newAirStingerCount < activeConfig.Rebellion.airStingerCount[index]) &&
 				lockOn &&
@@ -12435,19 +12745,12 @@ void SetAction(byte8 * actorBaseAddr)
 			)
 			{
 				actorData.action = REBELLION_STINGER_LEVEL_2;
+
 				actorData.newAirStingerCount++;
 			}
 			else if
 			(
-				(actorData.action == NEVAN_AIR_PLAY) &&
-				actorData.devil &&
-				(tiltDirection != TILT_DIRECTION_NEUTRAL)
-			)
-			{
-				actorData.action = NEVAN_VORTEX;
-			}
-			else if
-			(
+				activeConfig.enableRebellionNewDrive &&
 				(actorData.action == REBELLION_COMBO_1_PART_1) &&
 				lockOn &&
 				(tiltDirection == TILT_DIRECTION_LEFT)
@@ -12457,6 +12760,7 @@ void SetAction(byte8 * actorBaseAddr)
 			}
 			else if
 			(
+				activeConfig.enableRebellionQuickDrive &&
 				(demo_pl000_00_3 != 0) &&
 				(actorData.action == REBELLION_COMBO_1_PART_2) &&
 				(actorData.style == STYLE_SWORDMASTER) &&
@@ -12469,6 +12773,28 @@ void SetAction(byte8 * actorBaseAddr)
 
 				actorData.newQuickDrive = true;
 			}
+			else if
+			(
+				activeConfig.enableCerberusAirRevolver &&
+				(actorData.action == CERBERUS_SWING) &&
+				lockOn &&
+				(tiltDirection == TILT_DIRECTION_UP)
+			)
+			{
+				actorData.action = CERBERUS_REVOLVER_LEVEL_2;
+			}
+			else if
+			(
+				activeConfig.enableNevanNewVortex &&
+				(actorData.action == NEVAN_AIR_PLAY) &&
+				actorData.devil &&
+				(tiltDirection != TILT_DIRECTION_NEUTRAL)
+			)
+			{
+				actorData.action = NEVAN_VORTEX;
+			}
+
+
 
 			break;
 		}
@@ -12476,19 +12802,38 @@ void SetAction(byte8 * actorBaseAddr)
 		{
 			using namespace ACTION_VERGIL;
 
+
+
 			if
 			(
-				(actorData.action == YAMATO_FORCE_EDGE_HELM_BREAKER_LEVEL_2) &&
-				(actorData.newAirStingerCount < activeConfig.YamatoForceEdge.airStingerCount[index]) &&
+				activeConfig.enableYamatoVergilNewJudgementCut &&
+				(actorData.action == YAMATO_COMBO_PART_1) &&
 				lockOn &&
-				(tiltDirection == TILT_DIRECTION_UP)
+				(tiltDirection == TILT_DIRECTION_LEFT)
 			)
 			{
-				actorData.action = YAMATO_FORCE_EDGE_STINGER_LEVEL_2;
-				actorData.newAirStingerCount++;
+				actorData.action = YAMATO_JUDGEMENT_CUT_LEVEL_2;
+			}
+			// else if (actorData.action == BEOWULF_RISING_SUN)
+			// {
+			// 	actorData.newAirRisingSunCount = 1;
+			// }
+			else if
+			(
+				activeConfig.enableBeowulfVergilAirRisingSun &&
+				(actorData.action == BEOWULF_STARFALL_LEVEL_2) &&
+				(actorData.newAirRisingSunCount < activeConfig.beowulfVergilAirRisingSunCount[index]) &&
+				lockOn &&
+				(tiltDirection == TILT_DIRECTION_DOWN)
+			)
+			{
+				actorData.action = BEOWULF_RISING_SUN;
+
+				actorData.newAirRisingSunCount++;
 			}
 			else if
 			(
+				activeConfig.enableBeowulfVergilAirLunarPhase &&
 				(actorData.action == BEOWULF_STARFALL_LEVEL_2) &&
 				lockOn &&
 				(tiltDirection == TILT_DIRECTION_UP)
@@ -12498,24 +12843,7 @@ void SetAction(byte8 * actorBaseAddr)
 			}
 			else if
 			(
-				(actorData.action == YAMATO_FORCE_EDGE_COMBO_PART_1) &&
-				lockOn &&
-				(tiltDirection == TILT_DIRECTION_LEFT)
-			)
-			{
-				actorData.action = YAMATO_FORCE_EDGE_ROUND_TRIP;
-			}
-			else if
-			(
-				(actorData.action == YAMATO_COMBO_PART_1) &&
-				lockOn &&
-				(tiltDirection == TILT_DIRECTION_LEFT)
-			)
-			{
-				actorData.action = YAMATO_JUDGEMENT_CUT_LEVEL_2;
-			}
-			else if
-			(
+				activeConfig.enableYamatoForceEdgeNewComboPart4 &&
 				(actorData.action == YAMATO_FORCE_EDGE_COMBO_PART_1) &&
 				lockOn &&
 				(tiltDirection == TILT_DIRECTION_RIGHT)
@@ -12523,13 +12851,40 @@ void SetAction(byte8 * actorBaseAddr)
 			{
 				actorData.action = YAMATO_FORCE_EDGE_COMBO_PART_4;
 			}
+			else if
+			(
+				activeConfig.enableYamatoForceEdgeAirStinger &&
+				(actorData.action == YAMATO_FORCE_EDGE_HELM_BREAKER_LEVEL_2) &&
+				(actorData.newAirStingerCount < activeConfig.YamatoForceEdge.airStingerCount[index]) &&
+				lockOn &&
+				(tiltDirection == TILT_DIRECTION_UP)
+			)
+			{
+				actorData.action = YAMATO_FORCE_EDGE_STINGER_LEVEL_2;
+
+				actorData.newAirStingerCount++;
+			}
+			else if
+			(
+				activeConfig.enableYamatoForceEdgeNewRoundTrip &&
+				(actorData.action == YAMATO_FORCE_EDGE_COMBO_PART_1) &&
+				lockOn &&
+				(tiltDirection == TILT_DIRECTION_LEFT)
+			)
+			{
+				actorData.action = YAMATO_FORCE_EDGE_ROUND_TRIP;
+			}
+
+
 
 			break;
 		}
 	}
 }
 
-bool AirStingerCheck(PlayerActorData & actorData)
+
+
+bool AirActionCheck(PlayerActorData & actorData)
 {
 	switch (actorData.character)
 	{
@@ -12540,6 +12895,15 @@ bool AirStingerCheck(PlayerActorData & actorData)
 				(actorData.state & STATE_IN_AIR) &&
 				(actorData.action == ACTION_DANTE::REBELLION_STINGER_LEVEL_2) &&
 				(actorData.motionData[1].group == MOTION_GROUP_DANTE::REBELLION)
+			)
+			{
+				return true;
+			}
+			else if
+			(
+				(actorData.state & STATE_IN_AIR) &&
+				(actorData.action == ACTION_DANTE::CERBERUS_REVOLVER_LEVEL_2) &&
+				(actorData.motionData[1].group == MOTION_GROUP_DANTE::CERBERUS)
 			)
 			{
 				return true;
@@ -12566,11 +12930,29 @@ bool AirStingerCheck(PlayerActorData & actorData)
 	return false;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 bool EndActionLedge(byte8 * actorBaseAddr)
 {
 	IntroducePlayerActorData(actorBaseAddr, actorData, return false);
 
-	if (AirStingerCheck(actorData))
+	if (AirActionCheck(actorData))
 	{
 		return true;
 	}
@@ -12582,7 +12964,7 @@ bool DecreaseAltitude(byte8 * actorBaseAddr)
 {
 	IntroducePlayerActorData(actorBaseAddr, actorData, return false);
 
-	if (AirStingerCheck(actorData))
+	if (AirActionCheck(actorData))
 	{
 		return true;
 	}
@@ -12975,6 +13357,298 @@ bool SetVisible(byte8 * actorBaseAddr)
 
 	return false;
 }
+
+
+
+
+
+
+
+export void ToggleDergil(uint8 value)
+{
+	LogFunction(value);
+
+	static bool run = false;
+
+	using namespace DERGIL;
+
+
+
+// New Color
+{
+	auto addr = (appBaseAddr + 0x18412F);
+	constexpr uint32 size = 6;
+	/*
+	dmc3.exe+18412F - 83 79 78 03 - cmp dword ptr [rcx+78],03
+	dmc3.exe+184133 - 75 0F       - jne dmc3.exe+184144
+	dmc3.exe+184135 - 49 8B 45 00 - mov rax,[r13+00]
+	*/
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+	}
+
+	backupHelper.Restore(addr);
+
+	if (value == FORCE_OFF)
+	{
+		Write<byte8>((addr + 4), 0xEB);
+	}
+	else if (value == FORCE_ON)
+	{
+		SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+	}
+}
+
+// New Color 2
+{
+	auto addr = (appBaseAddr + 0x184251);
+	constexpr uint32 size = 6;
+	/*
+	dmc3.exe+184251 - 83 79 78 03 - cmp dword ptr [rcx+78],03
+	dmc3.exe+184255 - 75 0E       - jne dmc3.exe+184265
+	dmc3.exe+184257 - 48 8B 07    - mov rax,[rdi]
+	*/
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+	}
+
+	backupHelper.Restore(addr);
+
+	if (value == FORCE_OFF)
+	{
+		Write<byte8>((addr + 4), 0xEB);
+	}
+	else if (value == FORCE_ON)
+	{
+		SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+	}
+}
+
+
+// Teleport
+{
+	auto addr = (appBaseAddr + 0x180C1B);
+	constexpr uint32 size = 6;
+	/*
+	dmc3.exe+180C1B - 83 7A 78 03       - cmp dword ptr [rdx+78],03
+	dmc3.exe+180C1F - 75 2F             - jne dmc3.exe+180C50
+	dmc3.exe+180C21 - 83 B9 10EF0000 01 - cmp dword ptr [rcx+0000EF10],01
+	*/
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+	}
+
+	backupHelper.Restore(addr);
+
+	if (value == FORCE_OFF)
+	{
+		Write<byte8>((addr + 4), 0xEB);
+	}
+	else if (value == FORCE_ON)
+	{
+		SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+	}
+}
+
+
+// Teleport 2
+{
+	auto addr = (appBaseAddr + 0x17A68E);
+	constexpr uint32 size = 10;
+	/*
+	dmc3.exe+17A68E - 83 7A 78 03       - cmp dword ptr [rdx+78],03
+	dmc3.exe+17A692 - 0F85 BE030000     - jne dmc3.exe+17AA56
+	dmc3.exe+17A698 - 83 BB 10EF0000 01 - cmp dword ptr [rbx+0000EF10],01
+	*/
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+	}
+
+	backupHelper.Restore(addr);
+
+	if (value == FORCE_OFF)
+	{
+		Write<byte16>((addr + 4), 0xE990);
+	}
+	else if (value == FORCE_ON)
+	{
+		SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+	}
+}
+
+
+
+
+
+
+	// Color
+	{
+		auto addr = (appBaseAddr + 0x186414);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+186414 - 83 7A 78 03    - cmp dword ptr [rdx+78],03
+		dmc3.exe+186418 - 0F85 84010000  - jne dmc3.exe+1865A2
+		dmc3.exe+18641E - 48 89 5C 24 30 - mov [rsp+30],rbx
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		backupHelper.Restore(addr);
+
+		if (value == FORCE_OFF)
+		{
+			Write<byte16>((addr + 4), 0xE990);
+		}
+		else if (value == FORCE_ON)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+	}
+
+	// Color 2
+	{
+		auto addr = (appBaseAddr + 0x18642F);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+18642F - 83 7A 78 03 - cmp dword ptr [rdx+78],03
+		dmc3.exe+186433 - 75 63       - jne dmc3.exe+186498
+		dmc3.exe+186435 - 48 8B 03    - mov rax,[rbx]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		backupHelper.Restore(addr);
+
+		if (value == FORCE_ON)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+	}
+
+	// Color 3
+	{
+		auto addr = (appBaseAddr + 0x1864A8);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1864A8 - 83 79 78 03 - cmp dword ptr [rcx+78],03
+		dmc3.exe+1864AC - 75 6F       - jne dmc3.exe+18651D
+		dmc3.exe+1864AE - 48 8B 03    - mov rax,[rbx]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		backupHelper.Restore(addr);
+
+		if (value == FORCE_ON)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+	}
+
+	// Color 4
+	{
+		auto addr = (appBaseAddr + 0x186534);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+186534 - 83 79 78 03 - cmp dword ptr [rcx+78],03
+		dmc3.exe+186538 - 75 63       - jne dmc3.exe+18659D
+		dmc3.exe+18653A - 48 8B 03    - mov rax,[rbx]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		backupHelper.Restore(addr);
+
+		if (value == FORCE_ON)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+	}
+
+	// Sparda Aura
+	{
+		auto addr = (appBaseAddr + 0x178A04);
+		constexpr uint32 size = 2;
+		/*
+		dmc3.exe+178A04 - 75 05       - jne dmc3.exe+178A0B
+		dmc3.exe+178A06 - BA F7000000 - mov edx,000000F7
+		dmc3.exe+178A0B - E8 90F21600 - call dmc3.exe+2E7CA0
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		backupHelper.Restore(addr);
+
+		if (value == FORCE_OFF)
+		{
+			Write<byte8>(addr, 0xEB);
+		}
+		else if (value == FORCE_ON)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+	}
+
+	// Devil Aura
+	{
+		auto addr = (appBaseAddr + 0x178A59);
+		constexpr uint32 size = 10;
+		/*
+		dmc3.exe+178A59 - 83 79 78 03      - cmp dword ptr [rcx+78],03
+		dmc3.exe+178A5D - 0F84 B1000000    - je dmc3.exe+178B14
+		dmc3.exe+178A63 - 0F28 05 164B1E00 - movaps xmm0,[dmc3.exe+35D580]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		backupHelper.Restore(addr);
+
+		if (value == FORCE_OFF)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+		else if (value == FORCE_ON)
+		{
+			Write<byte16>((addr + 4), 0xE990);
+		}
+	}
+
+
+
+	run = true;
+}
+
+
+
+
+
+
 
 
 
@@ -14723,6 +15397,41 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		}
 	}
 
+	// Set Action Lock-On
+	{
+		auto addr     = (appBaseAddr + 0x1E699C);
+		auto jumpAddr = (appBaseAddr + 0x1E69A2);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+1E699C - 88 83 A43F0000 - mov [rbx+00003FA4],al
+		dmc3.exe+1E69A2 - 0FB6 4F 13     - movzx ecx,byte ptr [rdi+13]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_rbx,
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SetAction, jumpAddr, true, true, size, sizeof(sect1));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
 	// Get Rebellion Stinger Duration
 	{
 		auto addr     = (appBaseAddr + 0x20932C);
@@ -15080,7 +15789,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		}
 	}
 
-	// End Action Ledge
+	// EndActionLedge
 	{
 		auto addr     = (appBaseAddr + 0x1E7BF2);
 		auto jumpAddr = (appBaseAddr + 0x1E7BF7);
@@ -15094,11 +15803,9 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 
 		constexpr byte8 sect2[] =
 		{
-			0x84, 0xC0,                               // test al,al
-			0x75, 0x13,                               // jne short
-			0xC6, 0x83, 0x00, 0x00, 0x00, 0x00, 0x01, // mov byte ptr [rbx+0000B8C0],01
-			0xE8, 0x00, 0x00, 0x00, 0x00,             // call dmc3.exe+1DFDA0
-			0xC6, 0x83, 0x00, 0x00, 0x00, 0x00, 0x00, // mov byte ptr [rbx+0000B8C0],00
+			0x84, 0xC0,                   // test al,al
+			0x75, 0x05,                   // jne short
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+1DFDA0
 		};
 
 		if (!run)
@@ -15106,10 +15813,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 			backupHelper.Save(addr, size);
 			func = CreateFunction(EndActionLedge, jumpAddr, true, false, 0, 0, sizeof(sect2));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
-			*reinterpret_cast<uint32 *>(func.sect2 + 6) = offsetof(PlayerActorData, newAirStinger);
-			WriteCall((func.sect2 + 0xB), (appBaseAddr + 0x1DFDA0));
-			*reinterpret_cast<uint32 *>(func.sect2 + 0x12) = offsetof(PlayerActorData, newAirStinger);
-
+			WriteCall((func.sect2 + 4), (appBaseAddr + 0x1DFDA0));
 		}
 
 		if (enable)
@@ -15899,6 +16603,139 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 			backupHelper.Restore(addr);
 		}
 	}
+
+
+
+	// Disable Default Set Player Actor Speed
+	{
+		auto dest = (appBaseAddr + 0x1F8CC0);
+		/*
+		dmc3.exe+1F8CC0 - C6 05 65A1AF00 01 - mov byte ptr [dmc3.exe+CF2E2C],01
+		dmc3.exe+1F8CC7 - 48 8B CF          - mov rcx,rdi
+		*/
+
+		{
+			auto addr = (appBaseAddr + 0x1F8C2E);
+			constexpr uint32 size = 5;
+			/*
+			dmc3.exe+1F8C2E - E9 85000000       - jmp dmc3.exe+1F8CB8
+			dmc3.exe+1F8C33 - 80 BF 9F3E0000 01 - cmp byte ptr [rdi+00003E9F],01
+			*/
+
+			if (!run)
+			{
+				backupHelper.Save(addr, size);
+			}
+
+			if (enable)
+			{
+				WriteAddress(addr, dest, size);
+			}
+			else
+			{
+				backupHelper.Restore(addr);
+			}
+		}
+
+		{
+			auto addr = (appBaseAddr + 0x1F8C52);
+			constexpr uint32 size = 2;
+			/*
+			dmc3.exe+1F8C52 - EB 64             - jmp dmc3.exe+1F8CB8
+			dmc3.exe+1F8C54 - 48 63 87 88640000 - movsxd  rax,dword ptr [rdi+00006488]
+			*/
+
+			if (!run)
+			{
+				backupHelper.Save(addr, size);
+			}
+
+			if (enable)
+			{
+				WriteAddress(addr, dest, size);
+			}
+			else
+			{
+				backupHelper.Restore(addr);
+			}
+		}
+
+		{
+			auto addr = (appBaseAddr + 0x1F8C65);
+			constexpr uint32 size = 2;
+			/*
+			dmc3.exe+1F8C65 - EB 51             - jmp dmc3.exe+1F8CB8
+			dmc3.exe+1F8C67 - 83 BF 943E0000 03 - cmp dword ptr [rdi+00003E94],03
+			*/
+
+			if (!run)
+			{
+				backupHelper.Save(addr, size);
+			}
+
+			if (enable)
+			{
+				WriteAddress(addr, dest, size);
+			}
+			else
+			{
+				backupHelper.Restore(addr);
+			}
+		}
+
+		{
+			auto addr = (appBaseAddr + 0x1F8CAE);
+			constexpr uint32 size = 2;
+			/*
+			dmc3.exe+1F8CAE - EB 08               - jmp dmc3.exe+1F8CB8
+			dmc3.exe+1F8CB0 - F3 0F10 05 40602D00 - movss xmm0,[dmc3.exe+4CECF8]
+			*/
+
+			if (!run)
+			{
+				backupHelper.Save(addr, size);
+			}
+
+			if (enable)
+			{
+				WriteAddress(addr, dest, size);
+			}
+			else
+			{
+				backupHelper.Restore(addr);
+			}
+		}
+
+		// @Todo: Move up.
+		{
+			auto addr = (appBaseAddr + 0x1F8C90);
+			constexpr uint32 size = 7;
+			/*
+			dmc3.exe+1F8C90 - 83 BF 1C010000 01 - cmp dword ptr [rdi+0000011C],01
+			dmc3.exe+1F8C97 - 74 2E             - je dmc3.exe+1F8CC7
+			*/
+
+			if (!run)
+			{
+				backupHelper.Save(addr, size);
+			}
+
+			if (enable)
+			{
+				WriteNop(addr, size);
+				WriteShortJump(addr, dest);
+			}
+			else
+			{
+				backupHelper.Restore(addr);
+			}
+		}
+	}
+
+
+
+
+
 
 
 
@@ -16711,9 +17548,9 @@ export void SetNextScreen(EventData & eventData)
 
 	switch (eventData.nextScreen)
 	{
-		case SCREEN_MISSION_START:
+		case SCREEN::MISSION_START:
 		{
-			eventData.nextScreen = SCREEN_MISSION_SELECT;
+			eventData.nextScreen = SCREEN::MISSION_SELECT;
 
 			g_missionSelectForceConfirm = true;
 

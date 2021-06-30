@@ -164,7 +164,8 @@ uint32 DllMain
 		ToggleBossVergilFixes(activeConfig.enableBossVergilFixes);
 
 
-
+		ToggleDergil(false);
+		ToggleDergil(activeConfig.dergil);
 
 
 
@@ -221,11 +222,16 @@ uint32 DllMain
 
 
 
+
 		Event_Toggle(false);
 		Event_Toggle(true);
 
-
+		// @Remove
 		Event_Init();
+
+
+
+
 		ToggleSkipIntro    (activeConfig.skipIntro    );
 		ToggleSkipCutscenes(activeConfig.skipCutscenes);
 
@@ -237,6 +243,9 @@ uint32 DllMain
 		ToggleHideMainHUD(false);
 		ToggleHideMainHUD(activeConfig.hideMainHUD);
 
+		ToggleHideLockOn(false);
+		ToggleHideLockOn(activeConfig.hideLockOn);
+
 		ToggleHideBossHUD(false);
 		ToggleHideBossHUD(activeConfig.hideBossHUD);
 
@@ -247,16 +256,18 @@ uint32 DllMain
 
 
 
+		Speed::Toggle(false);
+		Speed::Toggle(true);
 
 
 
+		// Speed_Init();
+		// UpdateSpeedValues();
 
-		Speed_Init();
-		UpdateSpeedValues();
-
-		Training_ToggleInfiniteHitPoints  (activeConfig.infiniteHitPoints  );
-		Training_ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
-		Training_ToggleDisableTimer       (activeConfig.disableTimer       );
+		Training::ToggleInfiniteHitPoints  (activeConfig.infiniteHitPoints  );
+		Training::ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
+		Training::ToggleDisableTimer       (activeConfig.disableTimer       );
+		Training::ToggleInfiniteBullets    (activeConfig.infiniteBullets    );
 
 		Window::ToggleForceFocus(true);
 

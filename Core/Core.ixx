@@ -2068,6 +2068,34 @@ export auto WriteJump
 	return WriteAddress(addr, dest, 5, 0xE9, padSize, padValue);
 }
 
+export auto WriteShortJump
+(
+	byte8  * addr,
+	void   * dest,
+	uint32   padSize  = 0,
+	byte8    padValue = 0x90
+)
+{
+	return WriteAddress(addr, dest, 2, 0xEB, padSize, padValue);
+}
+
+export void WriteNop
+(
+	void * addr,
+	uint64 size
+)
+{
+	SetMemory
+	(
+		addr,
+		0x90,
+		size,
+		MemoryFlags_VirtualProtectDestination
+	);
+}
+
+
+
 export struct Function
 {
 	byte8 *  addr;

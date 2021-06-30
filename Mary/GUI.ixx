@@ -1,4 +1,3 @@
-// @Todo: Add GUI_PushPopDisable to Arcade section.
 // @Todo: Remove last macros.
 
 module;
@@ -338,6 +337,12 @@ const char * weaponSwitchTypeNames[] =
 	"Arbitrary",
 };
 
+const char * stickNames[] =
+{
+	"Right Stick",
+	"Left Stick",
+};
+
 const char * styleRankNames[] =
 {
 	"None",
@@ -429,33 +434,33 @@ const char * floorNames[] =
 
 const char * sceneNames[] =
 {
-	"SCENE_BOOT",
-	"SCENE_INTRO",
-	"SCENE_MAIN",
-	"SCENE_MISSION_SELECT",
-	"SCENE_LOAD",
-	"SCENE_GAME",
-	"SCENE_CUTSCENE",
-	"SCENE_MISSION_START",
-	"SCENE_MISSION_RESULT",
-	"SCENE_GAME_OVER",
+	"SCENE::BOOT",
+	"SCENE::INTRO",
+	"SCENE::MAIN",
+	"SCENE::MISSION_SELECT",
+	"SCENE::LOAD",
+	"SCENE::GAME",
+	"SCENE::CUTSCENE",
+	"SCENE::MISSION_START",
+	"SCENE::MISSION_RESULT",
+	"SCENE::GAME_OVER",
 };
 
 const char * eventNames[] =
 {
-	"EVENT_INIT",
-	"EVENT_MAIN",
-	"EVENT_TELEPORT",
-	"EVENT_PAUSE",
-	"EVENT_STATUS",
-	"EVENT_OPTIONS",
-	"EVENT_DEATH",
-	"EVENT_GET_ITEM",
-	"EVENT_MESSAGE",
-	"EVENT_CUSTOMIZE",
-	"EVENT_SAVE",
-	"EVENT_DELETE",
-	"EVENT_END",
+	"EVENT::INIT",
+	"EVENT::MAIN",
+	"EVENT::TELEPORT",
+	"EVENT::PAUSE",
+	"EVENT::STATUS",
+	"EVENT::OPTIONS",
+	"EVENT::DEATH",
+	"EVENT::GET_ITEM",
+	"EVENT::MESSAGE",
+	"EVENT::CUSTOMIZE",
+	"EVENT::SAVE",
+	"EVENT::DELETE",
+	"EVENT::END",
 };
 
 const char * trackFilenames[] =
@@ -2543,7 +2548,14 @@ void Actor_CharacterTab
 				TooltipHelper
 				(
 					"(?)",
-					"Hold the weapon switch button and select a weapon with the right stick."
+					"Hold the weapon switch button and select a weapon with the stick."
+				);
+
+				GUI_Combo
+				(
+					"",
+					stickNames,
+					queuedCharacterData.meleeWeaponSwitchStick
 				);
 
 				break;
@@ -2627,7 +2639,14 @@ void Actor_CharacterTab
 				TooltipHelper
 				(
 					"(?)",
-					"Hold the weapon switch button and select a weapon with the right stick."
+					"Hold the weapon switch button and select a weapon with the stick."
+				);
+
+				GUI_Combo
+				(
+					"",
+					stickNames,
+					queuedCharacterData.rangedWeaponSwitchStick
 				);
 
 				break;
@@ -3477,7 +3496,7 @@ void CameraSection()
 
 		[&]()
 		{
-			if (g_scene != SCENE_GAME)
+			if (g_scene != SCENE::GAME)
 			{
 				return;
 			}
@@ -3948,18 +3967,27 @@ void Dante()
 		if (GUI_ResetButton())
 		{
 			ResetConfig(airHikeCoreAbility);
-			ResetConfig(Royalguard);
-			ResetConfig(Rebellion);
-			ResetConfig(EbonyIvory);
-			ResetConfig(Artemis);
+			ToggleAirHikeCoreAbility(activeConfig.airHikeCoreAbility);
 
-			ToggleAirHikeCoreAbility               (activeConfig.airHikeCoreAbility                );
-			ToggleRoyalguardForceJustFrameRelease  (activeConfig.Royalguard.forceJustFrameRelease  );
-			ToggleRebellionInfiniteSwordPierce     (activeConfig.Rebellion.infiniteSwordPierce     );
-			ToggleEbonyIvoryFoursomeTime           (activeConfig.EbonyIvory.foursomeTime           );
-			ToggleEbonyIvoryInfiniteRainStorm      (activeConfig.EbonyIvory.infiniteRainStorm      );
+			ResetConfig(Royalguard);
+			ToggleRoyalguardForceJustFrameRelease(activeConfig.Royalguard.forceJustFrameRelease);
+
+			ResetConfig(Rebellion);
+			ToggleRebellionInfiniteSwordPierce(activeConfig.Rebellion.infiniteSwordPierce);
+
+			ResetConfig(EbonyIvory);
+			ToggleEbonyIvoryFoursomeTime     (activeConfig.EbonyIvory.foursomeTime     );
+			ToggleEbonyIvoryInfiniteRainStorm(activeConfig.EbonyIvory.infiniteRainStorm);
+
+			ResetConfig(Artemis);
 			ToggleArtemisSwapNormalShotAndMultiLock(activeConfig.Artemis.swapNormalShotAndMultiLock);
 			ToggleArtemisInstantFullCharge         (activeConfig.Artemis.instantFullCharge         );
+
+			ResetConfig(enableRebellionAirStinger);
+			ResetConfig(enableRebellionNewDrive  );
+			ResetConfig(enableRebellionQuickDrive);
+			ResetConfig(enableCerberusAirRevolver);
+			ResetConfig(enableNevanNewVortex     );
 		}
 
 		GUI_SectionEnd();
@@ -4032,6 +4060,31 @@ void Dante()
 		}
 		ImGui::Text("");
 
+
+
+		GUI_Checkbox2
+		(
+			"Enable Air Stinger",
+			activeConfig.enableRebellionAirStinger,
+			queuedConfig.enableRebellionAirStinger
+		);
+		GUI_Checkbox2
+		(
+			"Enable New Drive",
+			activeConfig.enableRebellionNewDrive,
+			queuedConfig.enableRebellionNewDrive
+		);
+		GUI_Checkbox2
+		(
+			"Enable Quick Drive",
+			activeConfig.enableRebellionQuickDrive,
+			queuedConfig.enableRebellionQuickDrive
+		);
+		ImGui::Text("");
+
+
+
+
 		ActionData
 		(
 			"Stinger Duration",
@@ -4050,34 +4103,77 @@ void Dante()
 			10.0f,
 			"%g"
 		);
-		ActionData
+
+
+
+
+		{
+			bool condition = !activeConfig.enableRebellionAirStinger;
+
+			GUI_PushDisable(condition);
+
+			ActionData
+			(
+				"Air Stinger Count",
+				activeConfig.Rebellion.airStingerCount,
+				queuedConfig.Rebellion.airStingerCount,
+				defaultConfig.Rebellion.airStingerCount
+			);
+			ActionData
+			(
+				"Air Stinger Duration",
+				activeConfig.Rebellion.airStingerDuration,
+				queuedConfig.Rebellion.airStingerDuration,
+				defaultConfig.Rebellion.airStingerDuration,
+				1.0f,
+				"%g"
+			);
+			ActionData
+			(
+				"Air Stinger Range",
+				activeConfig.Rebellion.airStingerRange,
+				queuedConfig.Rebellion.airStingerRange,
+				defaultConfig.Rebellion.airStingerRange,
+				10.0f,
+				"%g"
+			);
+
+			GUI_PopDisable(condition);
+		}
+
+
+		GUI_SectionEnd();
+		ImGui::Text("");
+
+
+
+		GUI_SectionStart("Cerberus");
+
+		GUI_Checkbox2
 		(
-			"Air Stinger Count",
-			activeConfig.Rebellion.airStingerCount,
-			queuedConfig.Rebellion.airStingerCount,
-			defaultConfig.Rebellion.airStingerCount
-		);
-		ActionData
-		(
-			"Air Stinger Duration",
-			activeConfig.Rebellion.airStingerDuration,
-			queuedConfig.Rebellion.airStingerDuration,
-			defaultConfig.Rebellion.airStingerDuration,
-			1.0f,
-			"%g"
-		);
-		ActionData
-		(
-			"Air Stinger Range",
-			activeConfig.Rebellion.airStingerRange,
-			queuedConfig.Rebellion.airStingerRange,
-			defaultConfig.Rebellion.airStingerRange,
-			10.0f,
-			"%g"
+			"Enable Air Revolver",
+			activeConfig.enableCerberusAirRevolver,
+			queuedConfig.enableCerberusAirRevolver
 		);
 
 		GUI_SectionEnd();
 		ImGui::Text("");
+
+
+
+		GUI_SectionStart("Nevan");
+
+		GUI_Checkbox2
+		(
+			"Enable New Vortex",
+			activeConfig.enableNevanNewVortex,
+			queuedConfig.enableNevanNewVortex
+		);
+
+		GUI_SectionEnd();
+		ImGui::Text("");
+
+
 
 		GUI_SectionStart("Ebony & Ivory");
 
@@ -4645,12 +4741,12 @@ void MissionDataWindow()
 
 		if (GUI_Button("Status"))
 		{
-			eventData.event = EVENT_STATUS;
+			eventData.event = EVENT::STATUS;
 		}
 
 		if (GUI_Button("Customize"))
 		{
-			eventData.event = EVENT_CUSTOMIZE;
+			eventData.event = EVENT::CUSTOMIZE;
 		}
 
 
@@ -6589,12 +6685,18 @@ void Enemy()
 
 
 
+
+
 		if (GUI_ResetButton())
 		{
 			ResetConfig(enemyCount);
 			ResetConfig(configCreateEnemyActorData);
+			ResetConfig(enemyAutoSpawn);
 		}
 		ImGui::Text("");
+
+
+
 
 		ImGui::PushItemWidth(200);
 
@@ -6628,9 +6730,36 @@ void Enemy()
 		}
 		ImGui::Text("");
 
+		if (GUI_Button("Kill All Ladies"))
+		{
+			[&]()
+			{
+				IntroduceEnemyVectorData(return);
 
+				LogFunction();
 
+				for_all(uint32, enemyIndex, countof(enemyVectorData.metadata))
+				{
+					auto & metadata = enemyVectorData.metadata[enemyIndex];
 
+					IntroduceData(metadata.baseAddr, actorData, EnemyActorDataLady, continue);
+
+					if
+					(
+						!actorData.baseAddr ||
+						(actorData.enemy != ENEMY::LADY)
+					)
+					{
+						continue;
+					}
+
+					actorData.event = EVENT_BOSS_LADY::DEATH;
+					actorData.state = 0;
+					actorData.friendly = false;
+				}
+			}();
+		}
+		ImGui::Text("");
 
 
 
@@ -7456,7 +7585,7 @@ void MainOverlayWindow()
 
 		if (activeConfig.mainOverlayData.showScene)
 		{
-			if (g_scene >= MAX_SCENE)
+			if (g_scene >= SCENE::COUNT)
 			{
 				ImGui::Text("Unknown");
 			}
@@ -7475,14 +7604,14 @@ void MainOverlayWindow()
 				// 	return;
 				// }
 
-				if (g_scene != SCENE_GAME)
+				if (g_scene != SCENE::GAME)
 				{
 					return;
 				}
 
 				IntroduceEventData(return);
 
-				if (eventData.event >= MAX_EVENT)
+				if (eventData.event >= EVENT::COUNT)
 				{
 					ImGui::Text("Unknown");
 				}
@@ -7505,7 +7634,7 @@ void MainOverlayWindow()
 				// 	return;
 				// }
 
-				if (g_scene != SCENE_GAME)
+				if (g_scene != SCENE::GAME)
 				{
 					return;
 				}
@@ -8352,7 +8481,7 @@ void Repair()
 
 		ImGui::Text("");
 
-		bool condition = (g_scene != SCENE_MISSION_SELECT);
+		bool condition = (g_scene != SCENE::MISSION_SELECT);
 
 		GUI_PushDisable(condition);
 
@@ -8559,13 +8688,13 @@ bool GUI_InputDefault2Speed
 
 	if (update)
 	{
-		UpdateSpeedValues();
+		Speed::Toggle(true);
 	}
 
 	return update;
 }
 
-void Speed()
+void SpeedSection()
 {
 	if (ImGui::CollapsingHeader("Speed"))
 	{
@@ -8574,8 +8703,7 @@ void Speed()
 		if (GUI_ResetButton())
 		{
 			ResetConfig(Speed);
-
-			UpdateSpeedValues();
+			Speed::Toggle(false);
 		}
 		ImGui::Text("");
 
@@ -8603,7 +8731,7 @@ void Speed()
 		);
 		GUI_InputDefault2Speed
 		(
-			"Enemy",
+			"Enemy Actor",
 			activeConfig.Speed.enemy,
 			queuedConfig.Speed.enemy,
 			defaultConfig.Speed.enemy,
@@ -8614,7 +8742,7 @@ void Speed()
 		GUI_SectionEnd();
 		ImGui::Text("");
 
-		ImGui::Text("Actor");
+		ImGui::Text("Player Actor");
 		ImGui::SameLine();
 		TooltipHelper
 		(
@@ -8633,7 +8761,10 @@ void Speed()
 			"%g",
 			ImGuiInputTextFlags_EnterReturnsTrue
 		);
+		//ImGui::Text("");
+
 		ImGui::Text("Devil Dante");
+
 		for_all(uint8, index, countof(activeConfig.Speed.devilDante))
 		{
 			GUI_InputDefault2Speed
@@ -8647,7 +8778,10 @@ void Speed()
 				ImGuiInputTextFlags_EnterReturnsTrue
 			);
 		}
+		//ImGui::Text("");
+
 		ImGui::Text("Devil Vergil");
+
 		for_all(uint8, index, countof(activeConfig.Speed.devilVergil))
 		{
 			GUI_InputDefault2Speed
@@ -8739,8 +8873,12 @@ void System()
 			UpdateFrameRate();
 
 			ResetConfig(hideMainHUD);
-			ResetConfig(hideBossHUD);
 			ToggleHideMainHUD(activeConfig.hideMainHUD);
+
+			ResetConfig(hideLockOn);
+			ToggleHideLockOn(activeConfig.hideLockOn);
+
+			ResetConfig(hideBossHUD);
 			ToggleHideBossHUD(activeConfig.hideBossHUD);
 
 			ResetConfig(hideMouseCursor);
@@ -8852,7 +8990,7 @@ void System()
 		(
 			GUI_Checkbox2
 			(
-				"Hide Main HUD",
+				"Hide Main",
 				activeConfig.hideMainHUD,
 				queuedConfig.hideMainHUD
 			)
@@ -8865,7 +9003,20 @@ void System()
 		(
 			GUI_Checkbox2
 			(
-				"Hide Boss HUD",
+				"Hide Lock-On",
+				activeConfig.hideLockOn,
+				queuedConfig.hideLockOn
+			)
+		)
+		{
+			ToggleHideLockOn(activeConfig.hideLockOn);
+		}
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Hide Boss",
 				activeConfig.hideBossHUD,
 				queuedConfig.hideBossHUD
 			)
@@ -9003,7 +9154,7 @@ void Teleporter()
 			GUI_Input<uint16>("", nextEventData.position, 1, "%u", 0);
 			if (GUI_Button("Teleport", ImVec2(width, ImGui::GetFrameHeight())))
 			{
-				eventData.event = EVENT_TELEPORT;
+				eventData.event = EVENT::TELEPORT;
 			}
 			ImGui::PopItemWidth();
 
@@ -9039,21 +9190,27 @@ void Textures()
 
 #pragma region Training
 
-void Training()
+void TrainingSection()
 {
 	if (ImGui::CollapsingHeader("Training"))
 	{
 		ImGui::Text("");
 
+
+
 		if (GUI_ResetButton())
 		{
 			ResetConfig(infiniteHitPoints);
-			ResetConfig(infiniteMagicPoints);
-			ResetConfig(disableTimer);
+			Training::ToggleInfiniteHitPoints(activeConfig.infiniteHitPoints);
 
-			Training_ToggleInfiniteHitPoints  (activeConfig.infiniteHitPoints  );
-			Training_ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
-			Training_ToggleDisableTimer       (activeConfig.disableTimer       );
+			ResetConfig(infiniteMagicPoints);
+			Training::ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
+
+			ResetConfig(disableTimer);
+			Training::ToggleDisableTimer(activeConfig.disableTimer);
+
+			ResetConfig(infiniteBullets);
+			Training::ToggleInfiniteBullets(activeConfig.infiniteBullets);
 		}
 		ImGui::Text("");
 
@@ -9067,7 +9224,7 @@ void Training()
 			)
 		)
 		{
-			Training_ToggleInfiniteHitPoints(activeConfig.infiniteHitPoints);
+			Training::ToggleInfiniteHitPoints(activeConfig.infiniteHitPoints);
 		}
 
 		if
@@ -9080,7 +9237,7 @@ void Training()
 			)
 		)
 		{
-			Training_ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
+			Training::ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
 		}
 
 		if
@@ -9093,8 +9250,23 @@ void Training()
 			)
 		)
 		{
-			Training_ToggleDisableTimer(activeConfig.disableTimer);
+			Training::ToggleDisableTimer(activeConfig.disableTimer);
 		}
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Infinite Bullets",
+				activeConfig.infiniteBullets,
+				queuedConfig.infiniteBullets
+			)
+		)
+		{
+			Training::ToggleInfiniteBullets(activeConfig.infiniteBullets);
+		}
+
+
 
 		ImGui::Text("");
 	}
@@ -9103,6 +9275,15 @@ void Training()
 #pragma endregion
 
 #pragma region Vergil
+
+
+const char * dergilNames[] =
+{
+	"Default",
+	"Force Off",
+	"Force On",
+};
+
 
 void Vergil()
 {
@@ -9113,11 +9294,23 @@ void Vergil()
 		if (GUI_ResetButton())
 		{
 			ResetConfig(Yamato);
-			ResetConfig(YamatoForceEdge);
-			ResetConfig(SummonedSwords);
 
+			ResetConfig(YamatoForceEdge);
 			ToggleYamatoForceEdgeInfiniteRoundTrip(activeConfig.YamatoForceEdge.infiniteRoundTrip);
-			ToggleChronoSwords                    (activeConfig.SummonedSwords.chronoSwords      );
+
+			ResetConfig(SummonedSwords);
+			ToggleChronoSwords(activeConfig.SummonedSwords.chronoSwords);
+
+			ResetConfig(enableYamatoVergilNewJudgementCut );
+			ResetConfig(enableBeowulfVergilAirRisingSun   );
+			ResetConfig(beowulfVergilAirRisingSunCount    );
+			ResetConfig(enableBeowulfVergilAirLunarPhase  );
+			ResetConfig(enableYamatoForceEdgeNewComboPart4);
+			ResetConfig(enableYamatoForceEdgeAirStinger   );
+			ResetConfig(enableYamatoForceEdgeNewRoundTrip );
+
+			ResetConfig(dergil);
+			ToggleDergil(activeConfig.dergil);
 		}
 
 		GUI_SectionEnd();
@@ -9134,6 +9327,14 @@ void Vergil()
 		);
 		ImGui::Text("");
 
+		GUI_Checkbox2
+		(
+			"Enable New Judgement Cut",
+			activeConfig.enableYamatoVergilNewJudgementCut,
+			queuedConfig.enableYamatoVergilNewJudgementCut
+		);
+		ImGui::Text("");
+
 		ActionData
 		(
 			"Judgement Cut Count",
@@ -9144,6 +9345,47 @@ void Vergil()
 
 		GUI_SectionEnd();
 		ImGui::Text("");
+
+
+
+		GUI_SectionStart("Beowulf");
+
+		GUI_Checkbox2
+		(
+			"Enable Air Rising Sun",
+			activeConfig.enableBeowulfVergilAirRisingSun,
+			queuedConfig.enableBeowulfVergilAirRisingSun
+		);
+		ImGui::Text("");
+
+		{
+			bool condition = !activeConfig.enableBeowulfVergilAirRisingSun;
+
+			GUI_PushDisable(condition);
+
+			ActionData
+			(
+				"Air Rising Sun Count",
+				activeConfig.beowulfVergilAirRisingSunCount,
+				queuedConfig.beowulfVergilAirRisingSunCount,
+				defaultConfig.beowulfVergilAirRisingSunCount
+			);
+
+			GUI_PopDisable(condition);
+		}
+		ImGui::Text("");
+
+		GUI_Checkbox2
+		(
+			"Enable Air Lunar Phase",
+			activeConfig.enableBeowulfVergilAirLunarPhase,
+			queuedConfig.enableBeowulfVergilAirLunarPhase
+		);
+
+		GUI_SectionEnd();
+		ImGui::Text("");
+
+
 
 		ImGui::Text("Yamato & Force Edge");
 		ImGui::SameLine();
@@ -9170,6 +9412,26 @@ void Vergil()
 		}
 		ImGui::Text("");
 
+		GUI_Checkbox2
+		(
+			"Enable New Combo Part 4",
+			activeConfig.enableYamatoForceEdgeNewComboPart4,
+			queuedConfig.enableYamatoForceEdgeNewComboPart4
+		);
+		GUI_Checkbox2
+		(
+			"Enable Air Stinger",
+			activeConfig.enableYamatoForceEdgeAirStinger,
+			queuedConfig.enableYamatoForceEdgeAirStinger
+		);
+		GUI_Checkbox2
+		(
+			"Enable New Round Trip",
+			activeConfig.enableYamatoForceEdgeNewRoundTrip,
+			queuedConfig.enableYamatoForceEdgeNewRoundTrip
+		);
+		ImGui::Text("");
+
 		ActionData
 		(
 			"Stinger Duration",
@@ -9188,32 +9450,43 @@ void Vergil()
 			10.0f,
 			"%g"
 		);
-		ActionData
-		(
-			"Air Stinger Count",
-			activeConfig.YamatoForceEdge.airStingerCount,
-			queuedConfig.YamatoForceEdge.airStingerCount,
-			defaultConfig.YamatoForceEdge.airStingerCount
-		);
 
-		ActionData
-		(
-			"Air Stinger Duration",
-			activeConfig.YamatoForceEdge.airStingerDuration,
-			queuedConfig.YamatoForceEdge.airStingerDuration,
-			defaultConfig.YamatoForceEdge.airStingerDuration,
-			1.0f,
-			"%g"
-		);
-		ActionData
-		(
-			"Air Stinger Range",
-			activeConfig.YamatoForceEdge.airStingerRange,
-			queuedConfig.YamatoForceEdge.airStingerRange,
-			defaultConfig.YamatoForceEdge.airStingerRange,
-			10.0f,
-			"%g"
-		);
+		{
+			bool condition = !activeConfig.enableYamatoForceEdgeAirStinger;
+
+			GUI_PushDisable(condition);
+
+			ActionData
+			(
+				"Air Stinger Count",
+				activeConfig.YamatoForceEdge.airStingerCount,
+				queuedConfig.YamatoForceEdge.airStingerCount,
+				defaultConfig.YamatoForceEdge.airStingerCount
+			);
+
+			ActionData
+			(
+				"Air Stinger Duration",
+				activeConfig.YamatoForceEdge.airStingerDuration,
+				queuedConfig.YamatoForceEdge.airStingerDuration,
+				defaultConfig.YamatoForceEdge.airStingerDuration,
+				1.0f,
+				"%g"
+			);
+			ActionData
+			(
+				"Air Stinger Range",
+				activeConfig.YamatoForceEdge.airStingerRange,
+				queuedConfig.YamatoForceEdge.airStingerRange,
+				defaultConfig.YamatoForceEdge.airStingerRange,
+				10.0f,
+				"%g"
+			);
+
+			GUI_PopDisable(condition);
+		}
+
+
 
 		GUI_SectionEnd();
 		ImGui::Text("");
@@ -9238,6 +9511,31 @@ void Vergil()
 			"(?)",
 			"Requires enabled Actor module."
 		);
+
+		GUI_SectionEnd();
+		ImGui::Text("");
+
+
+
+		ImGui::PushItemWidth(150.0f);
+
+		if
+		(
+			GUI_Combo2
+			(
+				"Dergil",
+				dergilNames,
+				activeConfig.dergil,
+				queuedConfig.dergil
+			)
+		)
+		{
+			ToggleDergil(activeConfig.dergil);
+		}
+
+		ImGui::PopItemWidth();
+
+
 
 		ImGui::Text("");
 	}
@@ -9374,7 +9672,7 @@ void Main()
 	(
 		ImGui::Begin
 		(
-			"DDMK 2.7 Mary Nightly 26 June 2021",
+			"DDMK 2.7 Mary Nightly 30 June 2021",
 			&g_show
 		)
 	)
@@ -9653,11 +9951,11 @@ void Main()
 		Other();
 		Overlays();
 		Repair();
-		Speed();
+		SpeedSection();
 		System();
 		Teleporter();
 		Textures();
-		Training();
+		TrainingSection();
 		Vergil();
 
 		ImGui::Text("");

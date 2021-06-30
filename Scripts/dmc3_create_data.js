@@ -650,8 +650,8 @@ let itemsPlayerNew =
 	[ "newEnableRightStick"                    , "bool"             , [], ],
 	[ "newEnableLeftStick"                     , "bool"             , [], ],
 
-	[ "newAirStinger"                          , "bool"             , [], ],
-	[ "newAirStingerCount"                     , "uint8"            , [], ],
+
+
 
 	[ "newQuickDrive"                          , "bool"             , [], ],
 
@@ -667,6 +667,10 @@ let itemsPlayerNew =
 	[ "newAirTrickCount"                       , "uint8"            , [], ],
 	[ "newTrickUpCount"                        , "uint8"            , [], ],
 	[ "newTrickDownCount"                      , "uint8"            , [], ],
+	[ "newAirStingerCount"                     , "uint8"            , [], ],
+	[ "newAirRisingSunCount"                   , "uint8"            , [], ],
+
+
 
 	[ "newEffectIndices[12]"                   , "uint32"           , [], ],
 
@@ -684,13 +688,14 @@ let itemsEnemyPride =
 let itemsEnemyLady =
 [
 	[ "collisionData", "CollisionData", [], 0x5460 ],
+	[ "hitPoints"    , "float"        , [], 0x5758 ],
 	[ "event"        , "uint32"       , [], 0x5988 ],
 	[ "state"        , "uint8"        , [], 0x5994 ],
 	[ "pistolBullets", "uint32"       , [], 0x59A0 ],
 	[ "grenades"     , "uint32"       , [], 0x59B0 ],
 	[ "smgBullets"   , "uint32"       , [], 0x59B8 ],
 	[ "nextPosition" , "vec4"         , [], 0x59C0 ],
-	[ "phase"    , "uint32"       , [], 0x5A1C ],
+	[ "phase"        , "uint32"       , [], 0x5A1C ],
 	[ "rotation2"    , "uint16"       , [], 0x5A20 ],
 	[ "friendly"     , "bool"         , [], 0x5A2E ],
 	[ "pistolRounds" , "uint32"       , [], 0x5A90 ],
@@ -1316,9 +1321,9 @@ FeedTuple
 let items =
 [
 	[ "count"           , "uint32"               , [], 0x28   ],
-	[ "metadata[50]"    , "EnemyVectorMetadata"  , [], 0x48   ],
-	[ "lastMetadataAddr", "EnemyVectorMetadata *", [], 0x1048 ],
-	[ "nextMetadataAddr", "EnemyVectorMetadata *", [], 0x1050 ],
+	[ "metadata[50]"    , "EnemyVectorDataMetadata"  , [], 0x48   ],
+	[ "lastMetadataAddr", "EnemyVectorDataMetadata *", [], 0x1048 ],
+	[ "nextMetadataAddr", "EnemyVectorDataMetadata *", [], 0x1050 ],
 ];
 
 FeedTuple
@@ -1686,6 +1691,28 @@ FeedTuple
 
 
 
+
+// #region WeaponData
+{
+
+let items =
+[
+	[ "speed"          , "float"  , [], 0x14  ],
+	[ "speedMultiplier", "float"  , [], 0x18  ],
+	[ "baseAddr"       , "byte8 *", [], 0x48  ],
+	[ "weapon"         , "uint8"  , [], 0x112 ],
+	[ "value"          , "uint8"  , [], 0x118 ],
+	[ "actorBaseAddr"  , "byte8 *", [], 0x120 ],
+];
+
+FeedTuple
+(
+	"WeaponData",
+	items
+);
+
+}
+// #endregion
 
 
 

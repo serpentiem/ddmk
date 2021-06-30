@@ -17,7 +17,12 @@ import Vars;
 
 
 
+#define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
+
 #pragma pack(push, 1)
+
+
+
 export struct Config
 {
 	struct
@@ -98,24 +103,6 @@ export struct Config
 		Mission19;
 	}
 	BossRush;
-
-
-
-
-
-
-
-	// struct
-	// {
-		
-	// 	// float height         = 140.0f;
-	// 	// float tilt           = 0.25f;
-	// 	// float distance       = 460.0f;
-	// 	// float distanceLockOn = 400.0f;
-	// 	// bool  applyConfig    = false;
-	// }
-	// Camera;
-
 
 
 
@@ -325,6 +312,7 @@ export struct Config
 	bool infiniteHitPoints   = false;
 	bool infiniteMagicPoints = (debug) ? true : false;
 	bool disableTimer        = false;
+	bool infiniteBullets     = false;
 
 
 
@@ -566,7 +554,8 @@ export struct Config
 
 
 
-	// @Todo: Create struct.
+
+
 	float damageActorMultiplier = 1.0f;
 	float damageEnemyMultiplier = 1.0f;
 	uint32 damageStyleRank = STYLE_RANK_NONE;
@@ -584,29 +573,11 @@ export struct Config
 	bool hideMouseCursor = (debug) ? false : true;
 
 
-	// @Todo: Remove.
+
+
 	bool forceWindowFocus = true;
 
-	// uint32 windowWidth = 1920;
-	// uint32 windowHeight = 1080;
 
-	// int32 windowX = 0;
-	// int32 windowY = 0;
-
-
-
-	// struct
-	// {
-	// 	uint32 width      = 1920;
-	// 	uint32 height     = 1080;
-	// 	int32  x          = 0;
-	// 	int32  y          = 0;
-
-	// 	bool setSize = true;
-	// 	bool setPosition = true;
-	// 	bool forceFocus = true;
-	// }
-	// Window;
 
 
 	float globalScale = 1;
@@ -615,16 +586,7 @@ export struct Config
 
 
 
-	// struct CreateEnemyActorData
-	// {
-	// 	uint32 enemy;
-	// 	uint32 variant;
-	// 	vec4 position;
-	// 	uint16 rotation;
-	// 	bool useMainActorData = true;
-	// 	uint16 spawnMethod;
-	// 	bool autoSpawn;
-	// };
+
 	uint8 enemyCount = 1;
 	ConfigCreateEnemyActorData configCreateEnemyActorData[30] = {};
 
@@ -670,16 +632,7 @@ export struct Config
 
 
 
-	// struct NewMovesOverlayData : OverlayData
-	// {
-	// 	NewMovesOverlayData()
-	// 	{
-	// 		color[0] = 1.0f;
-	// 		color[1] = 1.0f;
-	// 		color[2] = 1.0f;
-	// 		color[3] = 1.0f;
-	// 	}
-	// };
+
 
 	OverlayData newMovesOverlayDataDante;
 	OverlayData newMovesOverlayDataVergil;
@@ -701,12 +654,17 @@ export struct Config
 
 
 
-	// @Todo: To avoid surprising file size prefer _(n) and static_assert
-	// to get correct alignment.
 
-	float __declspec(align(16)) kalinaAnnHookGrenadeHeight = 1280.0f;
-	float __declspec(align(16)) kalinaAnnHookGrenadeTime   = 90.0f;
-	vec4  __declspec(align(16)) kalinaAnnHookMultiplier    =
+
+	// To avoid surprises by using __declspec(align) we prefer _(n) and
+	// static_assert to get the correct alignment.
+
+	_(15);
+	float kalinaAnnHookGrenadeHeight = 1280.0f;
+	_(12);
+	float kalinaAnnHookGrenadeTime = 90.0f;
+	_(12);
+	vec4 kalinaAnnHookMultiplier =
 	{
 		1.0f,
 		1.0f,
@@ -737,6 +695,7 @@ export struct Config
 
 
 	bool hideMainHUD = false;
+	bool hideLockOn = false;
 	bool hideBossHUD = false;
 
 
@@ -751,13 +710,52 @@ export struct Config
 	bool soundIgnoreEnemyData = false;
 
 
-	bool why = false;
+
+
+
+
+
+	bool enableRebellionAirStinger          = (debug) ? true : false;
+	bool enableRebellionNewDrive            = (debug) ? true : false;
+	bool enableRebellionQuickDrive          = (debug) ? true : false;
+	bool enableCerberusAirRevolver          = (debug) ? true : false;
+	bool enableNevanNewVortex               = (debug) ? true : false;
+
+	bool enableYamatoVergilNewJudgementCut  = (debug) ? true : false;
+	bool enableBeowulfVergilAirRisingSun    = (debug) ? true : false;
+	bool enableBeowulfVergilAirLunarPhase   = (debug) ? true : false;
+	bool enableYamatoForceEdgeNewComboPart4 = (debug) ? true : false;
+	bool enableYamatoForceEdgeAirStinger    = (debug) ? true : false;
+	bool enableYamatoForceEdgeNewRoundTrip  = (debug) ? true : false;
+
+
+
+
+
+	uint8 dergil = 0;
+
+
+	uint8 beowulfVergilAirRisingSunCount[2] = { 1, 1 };
+
+
+
 
 
 
 
 };
+
+static_assert((offsetof(Config, kalinaAnnHookGrenadeHeight) % 0x10) == 0);
+static_assert((offsetof(Config, kalinaAnnHookGrenadeTime  ) % 0x10) == 0);
+static_assert((offsetof(Config, kalinaAnnHookMultiplier   ) % 0x10) == 0);
+
+
+
 #pragma pack(pop)
+
+#undef _
+
+
 
 export Config defaultConfig;
 export Config activeConfig;
@@ -1013,6 +1011,7 @@ export void ApplyDefaultCharacterData
 				0,
 				0,
 				WEAPON_SWITCH_TYPE_LINEAR,
+				RIGHT_STICK,
 				RANGED_WEAPON_COUNT_DANTE,
 				{
 					WEAPON_EBONY_IVORY,
@@ -1023,7 +1022,8 @@ export void ApplyDefaultCharacterData
 				},
 				0,
 				0,
-				WEAPON_SWITCH_TYPE_LINEAR
+				WEAPON_SWITCH_TYPE_LINEAR,
+				RIGHT_STICK
 			};
 
 			break;
@@ -1090,7 +1090,8 @@ export void ApplyDefaultCharacterData
 				},
 				0,
 				0,
-				WEAPON_SWITCH_TYPE_LINEAR
+				WEAPON_SWITCH_TYPE_LINEAR,
+				RIGHT_STICK
 			};
 
 			break;
@@ -1274,4 +1275,8 @@ export void Config_Init
 		ApplyDefaultPlayerData(activeConfig.Actor.playerData[playerIndex]);
 		ApplyDefaultPlayerData(queuedConfig.Actor.playerData[playerIndex]);
 	}
+
+	DebugLog("kalinaAnnHookGrenadeHeight %llX", offsetof(Config, kalinaAnnHookGrenadeHeight));
+	DebugLog("kalinaAnnHookGrenadeTime   %llX", offsetof(Config, kalinaAnnHookGrenadeTime  ));
+	DebugLog("kalinaAnnHookMultiplier    %llX", offsetof(Config, kalinaAnnHookMultiplier   ));
 }

@@ -45,12 +45,21 @@ export void InitSession()
 		sessionData.bloodyPalace = true;
 	}
 
+
+
+	sessionData.itemCounts[ITEM_GOLD_ORB  ] = 3;
+	sessionData.itemCounts[ITEM_BLUE_ORB  ] = 6;
+	sessionData.itemCounts[ITEM_PURPLE_ORB] = 7;
+
 	if constexpr (debug)
 	{
 		sessionData.redOrbs = 1500000;
+
+		sessionData.itemCounts[ITEM_BLUE_ORB  ] = 0;
+		sessionData.itemCounts[ITEM_PURPLE_ORB] = 0;
 	}
 
-	sessionData.itemCounts[ITEM_GOLD_ORB] = 3;
+
 
 	SetMemory
 	(

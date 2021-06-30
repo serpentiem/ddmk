@@ -624,7 +624,7 @@ let typeSizes =
 	[ "CameraData"             , 512  ],
 	[ "CollisionData"          , 656  ],
 	[ "StyleData"              , 352  ],
-	[ "EnemyVectorMetadata"              , 16  ],
+	[ "EnemyVectorDataMetadata"              , 16  ],
 ];
 
 function GetTypeSize(typename)
