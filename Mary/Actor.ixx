@@ -28,6 +28,11 @@ import Vars;
 
 #define debug false
 
+#include "Macros.h"
+
+
+
+
 
 #define Break(name) MessageBoxA(0, name, 0, 0)
 
@@ -612,6 +617,31 @@ RegisterWeapon_t RegisterWeapon[MAX_WEAPON] = {};
 
 
 
+// template <typename T>
+// void SetStyleData(T & actorData)
+// {
+// 	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+// 	if
+// 	(
+// 		!pool ||
+// 		!pool[12]
+// 	)
+// 	{
+// 		return;
+// 	}
+// 	auto dest = *reinterpret_cast<byte8 **>(pool[12]);
+// 	if (!dest)
+// 	{
+// 		return;
+// 	}
+// 	*reinterpret_cast<StyleData **>(dest + 0x3D10) = &actorData.styleData;
+
+// 	DebugLog("Updated Style Data");
+// }
+
+
+
+
 
 
 
@@ -766,7 +796,14 @@ void SetMainActor(T & actorData)
 			return;
 		}
 		*reinterpret_cast<StyleData **>(dest + 0x3D10) = &actorData.styleData;
+
+		DebugLog("Updated Style Data");
 	}();
+
+
+	//SetStyleData(actorData);
+
+
 }
 
 // @Todo: Prefer uint64.
@@ -17292,8 +17329,10 @@ export void EventDelete()
 
 
 
-		// We only get here if SceneGame set the variable.
-		// So we know that if we're here, the actor module was off.
+
+
+		// We only get here if updateConfig was set by SceneGame.
+		// So if we're here, the actor module was off.
 
 
 		activeConfig.Actor.enable = lastEnable;
@@ -17307,7 +17346,9 @@ export void EventDelete()
 
 
 
-		// At this point the Actor module is disabled, so don't continue.
+
+
+
 
 		return;
 	}
@@ -17335,7 +17376,41 @@ export void EventDelete()
 
 
 
+
+
+
+	// Copy Data
+	[&]()
+	{
+		IntroduceData(g_newActorData[0][0][0].baseAddr , activeActorData, PlayerActorData, return);
+		IntroduceData(g_defaultNewActorData[0].baseAddr, actorData      , PlayerActorData, return);
+
+		actorData.hitPoints      = activeActorData.hitPoints;
+		actorData.maxHitPoints   = activeActorData.maxHitPoints;
+		actorData.magicPoints    = activeActorData.magicPoints;
+		actorData.maxMagicPoints = activeActorData.maxMagicPoints;
+
+		actorData.styleData.rank     = activeActorData.styleData.rank;
+		actorData.styleData.meter    = activeActorData.styleData.meter;
+		actorData.styleData.quotient = activeActorData.styleData.quotient;
+		actorData.styleData.dividend = activeActorData.styleData.dividend;
+		actorData.styleData.divisor  = activeActorData.styleData.divisor;
+
+		DebugLog("EventDelete Copy StyleData");
+	}();
+
+
+
+
+
+
+
+
+
 	SetMainActor(0);
+
+
+
 
 
 	//Log("SetMainActor");

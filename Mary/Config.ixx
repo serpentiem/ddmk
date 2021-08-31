@@ -15,6 +15,8 @@ import Vars;
 
 #define debug false
 
+#include "Macros.h"
+
 
 
 #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
@@ -40,8 +42,8 @@ export struct Config
 		uint32 mode           = MODE_NORMAL;
 		uint32 room           = 900;
 		uint32 position       = 0;
-		bool   ignoreRoom     = false;
-		bool   ignorePosition = false;
+		bool   ignoreRoom     = true;
+		bool   ignorePosition = true;
 		uint8  floor          = 0;
 		float  hitPoints      = 20000;
 		float  magicPoints    = 10000;
@@ -574,7 +576,7 @@ export struct Config
 
 
 
-
+	// @Update
 	bool forceWindowFocus = true;
 
 
@@ -737,6 +739,8 @@ export struct Config
 
 	uint8 beowulfVergilAirRisingSunCount[2] = { 1, 1 };
 
+
+	bool forceVisibleHUD = false;
 
 
 

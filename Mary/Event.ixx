@@ -21,6 +21,8 @@ import Vars;
 
 #define debug false
 
+#include "Macros.h"
+
 
 
 bool Event_run[EVENT::COUNT] = {};

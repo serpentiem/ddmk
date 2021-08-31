@@ -12,6 +12,8 @@ import Vars;
 
 #define debug false
 
+#include "Macros.h"
+
 
 
 struct HUDIconHelper
@@ -331,6 +333,86 @@ export void ToggleHideBossHUD(bool enable)
 		if (enable)
 		{
 			Write<byte8>(addr, 0xEB);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	run = true;
+}
+
+export void ToggleForceVisibleHUD(bool enable)
+{
+	static bool run = false;
+
+
+
+	{
+		auto addr = (appBaseAddr + 0x27E800);
+		constexpr uint32 size = 2;
+		/*
+		dmc3.exe+27E800 - 74 63          - je dmc3.exe+27E865
+		dmc3.exe+27E802 - 8B 86 28690000 - mov eax,[rsi+00006928]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			Write<byte8>(addr, 0xEB);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	{
+		auto addr = (appBaseAddr + 0x27DF3E);
+		constexpr uint32 size = 2;
+		/*
+		dmc3.exe+27DF3E - 75 59               - jne dmc3.exe+27DF99
+		dmc3.exe+27DF40 - F3 0F10 8F 18690000 - movss xmm1,[rdi+00006918]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			Write<byte8>(addr, 0xEB);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	{
+		auto addr = (appBaseAddr + 0x280DB9);
+		constexpr uint32 size = 6;
+		/*
+		dmc3.exe+280DB9 - 0F86 3F020000 - jbe dmc3.exe+280FFE
+		dmc3.exe+280DBF - 41 FE 07      - inc byte ptr [r15]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			Write<byte16>(addr, 0xE990);
 		}
 		else
 		{

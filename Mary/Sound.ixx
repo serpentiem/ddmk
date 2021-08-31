@@ -17,6 +17,8 @@ import Internal;
 
 #define debug false
 
+#include "Macros.h"
+
 constexpr uint32 g_sectCount[HELPER_COUNT] =
 {
 	3,

@@ -16,6 +16,8 @@ import Vars;
 
 #define debug false
 
+#include "Macros.h"
+
 struct ItemHelper
 {
 	const uint8    itemIndex;

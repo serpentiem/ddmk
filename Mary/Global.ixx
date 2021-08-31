@@ -1,3 +1,7 @@
+// @Cleanup
+
+
+
 export module Global;
 
 import Core;
@@ -16,6 +20,8 @@ using namespace DI8;
 
 
 #define debug false
+
+#include "Macros.h"
 
 
 

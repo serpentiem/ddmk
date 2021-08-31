@@ -1,3 +1,15 @@
+
+
+// @Todo: Create a nice forward mechanic.
+// @Todo: Detect false glyphs during search.
+
+
+
+
+
+
+
+
 let buffer = "";
 let bufferSize = 0;
 

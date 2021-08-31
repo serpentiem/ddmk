@@ -1,3 +1,4 @@
+// @Todo: Update logging.
 // @Todo: Create IsInvalidHandle function.
 // @Todo: Update Inits.
 // @Todo: Update LogFunctionHelpers.
@@ -1209,6 +1210,7 @@ struct Container<>
 	uint64 pos;
 	uint64 count;
 
+	// @Todo: Add alloc func arg.
 	bool InitData(uint64 size);
 	bool InitMetadata(uint64 size);
 	bool Init
@@ -1414,6 +1416,8 @@ byte8 * Container<>::operator[](uint64 index)
 
 
 
+// @Todo: Add Extend.
+// @Todo: Add += and -- operator I guess.
 export template <typename T>
 struct Container<T>
 {
@@ -1578,6 +1582,7 @@ struct Container<T, T2>
 	void Pop();
 	void Clear();
 	T & operator[](uint64 index);
+	// @Remove
 	template <typename U>
 	void ForEach
 	(

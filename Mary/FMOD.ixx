@@ -17,6 +17,8 @@ import Windows;
 
 #define debug false
 
+#include "Macros.h"
+
 export bool FMOD_init = false;
 
 export enum

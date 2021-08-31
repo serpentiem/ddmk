@@ -1,3 +1,11 @@
+
+
+// @Todo: namespace + uint64 indices
+// @Todo: uint64 UpdateMapIndex + add UpdateMapIndices
+// @Todo: Scaling support.
+
+
+
 module;
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_internal.h"

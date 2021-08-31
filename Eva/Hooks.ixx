@@ -1,3 +1,5 @@
+// @Todo: Adjust Mary's Hooks to match.
+
 module;
 #include "../ImGui/imgui.h"
 export module Hooks;
@@ -16,10 +18,8 @@ import Core_ImGui;
 
 import Config;
 import Global;
-import Graphics;
 import GUI;
 import Input;
-import Window;
 import Vars;
 
 using namespace Windows;
@@ -29,8 +29,6 @@ using namespace DI8;
 using namespace XI;
 
 #define debug false
-
-#include "Macros.h"
 
 
 
@@ -243,16 +241,6 @@ void UpdateMousePositionMultiplier()
 
 
 
-
-
-
-
-
-
-
-
-
-
 template
 <
 	typename T,
@@ -280,18 +268,6 @@ void Install
 
 	protectionHelper.Pop();
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -524,6 +500,8 @@ ATOM RegisterClassExW(const WNDCLASSEXW * windowClassAddr)
 		::Base::Windows::WindowProc = windowClass.lpfnWndProc;
 
 		windowClass.lpfnWndProc = ::Hook::Windows::WindowProc;
+
+		Log("reached here");
 	}
 
 	return ::Base::Windows::RegisterClassExW(windowClassAddr);
@@ -1175,9 +1153,32 @@ HRESULT GetDeviceStateA
 	LPVOID Buffer
 )
 {
+	// Required for DMC1.
+
+	//auto window = GetFocus();
+
+	// if
+	// (
+	// 	!window ||
+	// 	(window != appWindow)
+	// )
+
+
+	if (GetForegroundWindow() != appWindow)
+	{
+		SetMemory
+		(
+			Buffer,
+			0,
+			BufferSize
+		);
+
+		return 0;
+	}
+
+
+
 	auto state = reinterpret_cast<byte8 *>(Buffer);
-
-
 
 	ImGui::DI8::UpdateKeyboard(state);
 
@@ -1215,15 +1216,17 @@ byte32 UpdateMouseThread(LPVOID parameter)
 
 	while (true)
 	{
-		if
-		(
-			appWindow &&
-			(
-				g_show ||
-				g_showItemWindow
-			)
-		)
+		[&]()
 		{
+			if
+			(
+				(GetForegroundWindow() != appWindow) ||
+				!g_show
+			)
+			{
+				return;
+			}
+
 			::DI8::mouse->GetDeviceState
 			(
 				sizeof(DIMOUSESTATE2),
@@ -1235,7 +1238,7 @@ byte32 UpdateMouseThread(LPVOID parameter)
 				appWindow,
 				&::DI8::mouseState
 			);
-		}
+		}();
 
 		Sleep(10);
 	}
@@ -1249,12 +1252,11 @@ byte32 AcquireMouseThread(LPVOID parameter)
 	{
 		[&]()
 		{
-			if (GetForegroundWindow() != appWindow)
-			{
-				return;
-			}
-
-			if (!::DI8::mouse)
+			if
+			(
+				(GetForegroundWindow() != appWindow) ||
+				!::DI8::mouse
+			)
 			{
 				return;
 			}
@@ -1413,6 +1415,20 @@ namespaceEnd();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 namespaceStart(Hooks);
 
 
@@ -1425,21 +1441,21 @@ export void Init()
 
 	Install
 	(
-		(appBaseAddr + 0x34F308),
+		(appBaseAddr + 0x407318),
 		::Base::Windows::RegisterClassExW,
 		::Hook::Windows::RegisterClassExW
 	);
 
 	Install
 	(
-		(appBaseAddr + 0x34F300),
+		(appBaseAddr + 0x4072A8),
 		::Base::Windows::CreateWindowExW,
 		::Hook::Windows::CreateWindowExW
 	);
 
 	Install
 	(
-		(appBaseAddr + 0x34F650),
+		(appBaseAddr + 0x407628),
 		::Base::D3D11::D3D11CreateDeviceAndSwapChain,
 		::Hook::D3D11::D3D11CreateDeviceAndSwapChain
 	);
@@ -1452,14 +1468,13 @@ export void Init()
 
 
 	{
-		auto addr     = (appBaseAddr + 0x41DA0);
-		auto jumpAddr = (appBaseAddr + 0x41DA6);
-		constexpr uint32 size = 6;
-		constexpr uint32 size2 = 3;
+		auto addr     = (appBaseAddr + 0x156CB);
+		auto jumpAddr = (appBaseAddr + 0x156D3);
+		constexpr uint32 size = 5;
 		/*
-		dmc3.exe+41DA0 - 48 8B 01 - mov rax,[rcx]
-		dmc3.exe+41DA3 - FF 50 48 - call qword ptr [rax+48]
-		dmc3.exe+41DA6 - 85 C0    - test eax,eax
+		dmc1.exe+156CB - BA 00010000 - mov edx,00000100
+		dmc1.exe+156D0 - FF 50 48    - call qword ptr [rax+48]
+		dmc1.exe+156D3 - 85 C0       - test eax,eax
 		*/
 
 		static Function func = {};
@@ -1493,9 +1508,9 @@ export void Init()
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(::Hook::DI8::GetDeviceStateA, jumpAddr, false, true, (size2 + sizeof(sect0)), 0, sizeof(sect2));
-			CopyMemory(func.sect0, addr, size2, MemoryFlags_VirtualProtectSource);
-			CopyMemory((func.sect0 + size2), sect0, sizeof(sect0));
+			func = CreateFunction(::Hook::DI8::GetDeviceStateA, jumpAddr, false, true, (size + sizeof(sect0)), 0, sizeof(sect2));
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+			CopyMemory((func.sect0 + size), sect0, sizeof(sect0));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
 
@@ -1510,13 +1525,13 @@ export void Init()
 	}
 
 	{
-		auto addr     = (appBaseAddr + 0x482AD);
-		auto jumpAddr = (appBaseAddr + 0x482B5);
+		auto addr     = (appBaseAddr + 0x189DD);
+		auto jumpAddr = (appBaseAddr + 0x189E5);
 		constexpr uint32 size = 5;
 		/*
-		dmc3.exe+482AD - BA 00010000 - mov edx,00000100
-		dmc3.exe+482B2 - FF 50 48    - call qword ptr [rax+48]
-		dmc3.exe+482B5 - 85 C0       - test eax,eax
+		dmc1.exe+189DD - BA 00010000 - mov edx,00000100
+		dmc1.exe+189E2 - FF 50 48    - call qword ptr [rax+48]
+		dmc1.exe+189E5 - 85 C0       - test eax,eax
 		*/
 
 		static Function func = {};
@@ -1574,11 +1589,11 @@ export void Init()
 
 	// SetCooperativeLevelKeyboard
 	{
-		auto addr = (appBaseAddr + 0x47F56);
+		auto addr = (appBaseAddr + 0x18752);
 		constexpr uint32 size = 6;
 		/*
-		dmc3.exe+47F56 - 41 B8 05000000    - mov r8d,00000005
-		dmc3.exe+47F5C - 48 8B 15 6D0BBD00 - mov rdx,[dmc3.exe+C18AD0]
+		dmc1.exe+18752 - 41 B8 05000000    - mov r8d,00000005
+		dmc1.exe+18758 - 48 8B 15 A12BBF00 - mov rdx,[dmc1.exe+C0B300]
 		*/
 
 		if (!run)
@@ -1599,29 +1614,29 @@ export void Init()
 
 
 	{
-		auto addr     = (appBaseAddr + 0x41A83);
-		auto jumpAddr = (appBaseAddr + 0x41A88);
-		constexpr uint32 size = 5;
+		auto addr     = (appBaseAddr + 0x154C9);
+		auto jumpAddr = (appBaseAddr + 0x154CF);
+		constexpr uint32 size = 6;
 		/*
-		dmc3.exe+41A83 - E8 6E393000 - call dmc3.exe+3453F6
-		dmc3.exe+41A88 - 85 C0       - test eax,eax
+		dmc1.exe+154C9 - FF 15 291F3F00 - call qword ptr [dmc1.exe+4073F8]
+		dmc1.exe+154CF - 85 C0          - test eax,eax
 		*/
 
 		static Function func = {};
 
 		constexpr byte8 sect0[] =
 		{
-			0x50,                         // push rax
-			0x51,                         // push rcx
-			0x52,                         // push rdx
-			0x55,                         // push rbp
-			0x48, 0x8B, 0xEC,             // mov rbp,rsp
-			0x40, 0x80, 0xE4, 0xF0,       // and spl,F0
-			0x48, 0x83, 0xEC, 0x20,       // sub rsp,20
-			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+3453F6
-			0x48, 0x89, 0x45, 0x18,       // mov [rbp+18],rax
-			0x48, 0x8B, 0x4D, 0x10,       // mov rcx,[rbp+10]
-			0x48, 0x8B, 0x55, 0x08,       // mov rdx,[rbp+08]
+			0x50,                               // push rax
+			0x51,                               // push rcx
+			0x52,                               // push rdx
+			0x55,                               // push rbp
+			0x48, 0x8B, 0xEC,                   // mov rbp,rsp
+			0x40, 0x80, 0xE4, 0xF0,             // and spl,F0
+			0x48, 0x83, 0xEC, 0x20,             // sub rsp,20
+			0xFF, 0x15, 0x00, 0x00, 0x00, 0x00, // call qword ptr [dmc1.exe+4073F8]
+			0x48, 0x89, 0x45, 0x18,             // mov [rbp+18],rax
+			0x48, 0x8B, 0x4D, 0x10,             // mov rcx,[rbp+10]
+			0x48, 0x8B, 0x55, 0x08,             // mov rdx,[rbp+08]
 		};
 		constexpr byte8 sect2[] =
 		{
@@ -1638,113 +1653,7 @@ export void Init()
 			func = CreateFunction(::Hook::XI::XInputGetState, jumpAddr, false, true, sizeof(sect0), 0, sizeof(sect2));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
-			WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x3453F6));
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-	{
-		auto addr     = (appBaseAddr + 0x41AFA);
-		auto jumpAddr = (appBaseAddr + 0x41AFF);
-		constexpr uint32 size = 5;
-		/*
-		dmc3.exe+41AFA - E8 F7383000 - call dmc3.exe+3453F6
-		dmc3.exe+41AFF - 85 C0       - test eax,eax
-		*/
-
-		static Function func = {};
-
-		constexpr byte8 sect0[] =
-		{
-			0x50,                         // push rax
-			0x51,                         // push rcx
-			0x52,                         // push rdx
-			0x55,                         // push rbp
-			0x48, 0x8B, 0xEC,             // mov rbp,rsp
-			0x40, 0x80, 0xE4, 0xF0,       // and spl,F0
-			0x48, 0x83, 0xEC, 0x20,       // sub rsp,20
-			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+3453F6
-			0x48, 0x89, 0x45, 0x18,       // mov [rbp+18],rax
-			0x48, 0x8B, 0x4D, 0x10,       // mov rcx,[rbp+10]
-			0x48, 0x8B, 0x55, 0x08,       // mov rdx,[rbp+08]
-		};
-		constexpr byte8 sect2[] =
-		{
-			0x48, 0x8B, 0xE5, // mov rsp,rbp
-			0x5D,             // pop rbp
-			0x5A,             // pop rdx
-			0x59,             // pop rcx
-			0x58,             // pop rax
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = CreateFunction(::Hook::XI::XInputGetState, jumpAddr, false, true, sizeof(sect0), 0, sizeof(sect2));
-			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			CopyMemory(func.sect2, sect2, sizeof(sect2));
-			WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x3453F6));
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-	{
-		auto addr     = (appBaseAddr + 0x41C40);
-		auto jumpAddr = (appBaseAddr + 0x41C45);
-		constexpr uint32 size = 5;
-		/*
-		dmc3.exe+41C40 - E8 B1373000 - call dmc3.exe+3453F6
-		dmc3.exe+41C45 - 85 C0       - test eax,eax
-		*/
-
-		static Function func = {};
-
-		constexpr byte8 sect0[] =
-		{
-			0x50,                         // push rax
-			0x51,                         // push rcx
-			0x52,                         // push rdx
-			0x55,                         // push rbp
-			0x48, 0x8B, 0xEC,             // mov rbp,rsp
-			0x40, 0x80, 0xE4, 0xF0,       // and spl,F0
-			0x48, 0x83, 0xEC, 0x20,       // sub rsp,20
-			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+3453F6
-			0x48, 0x89, 0x45, 0x18,       // mov [rbp+18],rax
-			0x48, 0x8B, 0x4D, 0x10,       // mov rcx,[rbp+10]
-			0x48, 0x8B, 0x55, 0x08,       // mov rdx,[rbp+08]
-		};
-		constexpr byte8 sect2[] =
-		{
-			0x48, 0x8B, 0xE5, // mov rsp,rbp
-			0x5D,             // pop rbp
-			0x5A,             // pop rdx
-			0x59,             // pop rcx
-			0x58,             // pop rax
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = CreateFunction(::Hook::XI::XInputGetState, jumpAddr, false, true, sizeof(sect0), 0, sizeof(sect2));
-			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			CopyMemory(func.sect2, sect2, sizeof(sect2));
-			WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x3453F6));
+			WriteAddress((func.sect0 + 0xF), (appBaseAddr + 0x4073F8), 6);
 		}
 
 		if (enable)

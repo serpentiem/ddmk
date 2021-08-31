@@ -39,6 +39,8 @@ using namespace Windows;
 
 #define debug false
 
+#include "Macros.h"
+
 uint32 DllMain
 (
 	HINSTANCE instance,
@@ -79,7 +81,11 @@ uint32 DllMain
 
 			return 0;
 		}
-		else if
+
+
+
+
+		if
 		(
 			!backupHelper.Init
 			(
@@ -148,6 +154,28 @@ uint32 DllMain
 
 			return 0;
 		}
+
+
+
+		/*
+		Tldr: We often run toggle functions twice with false first to ensure that
+		backupHelper gets the correct data.
+
+		Toggle and ToggleRelocations share some addresses.
+
+		If ToggleRelocations runs first Toggle will now push the modified data
+		instead of the default one to backupHelper.
+
+		This becomes problematic when the data is later restored.
+
+		ToggleRelocations correctly writes the default data, but Toggle will write
+		the modified data and this will likely cause a crash later.
+
+		To avoid this we run the toggle functions twice. The first time with false.
+
+		This way, ToggleRelocations writes the default data and Toggle will also
+		push the default data to backupHelper.
+		*/
 
 		Actor_Toggle(false);
 
@@ -249,6 +277,8 @@ uint32 DllMain
 		ToggleHideBossHUD(false);
 		ToggleHideBossHUD(activeConfig.hideBossHUD);
 
+		ToggleForceVisibleHUD(false);
+		ToggleForceVisibleHUD(activeConfig.forceVisibleHUD);
 
 
 
@@ -269,9 +299,10 @@ uint32 DllMain
 		Training::ToggleDisableTimer       (activeConfig.disableTimer       );
 		Training::ToggleInfiniteBullets    (activeConfig.infiniteBullets    );
 
+		// @Update
 		Window::ToggleForceFocus(true);
 
-		Hooks_Init();
+		Hooks::Init();
 
 
 
@@ -315,20 +346,17 @@ dmc3.exe+55FD9 - 4C 89 A3 B0040000 - mov [rbx+000004B0],r12
 
 
 
+	// // Disable Style Rank Sub
+	// SetMemory((appBaseAddr + 0x27A39C), 0x90, 5, MemoryFlags_VirtualProtectDestination);
+
+	// // Force Collect Orbs
+	// WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2);
 
 
 
-			// // Force Visible HUD
-			// Write<byte8>((appBaseAddr + 0x27E800), 0xEB);
-			// Write<byte8>((appBaseAddr + 0x27DF3E), 0xEB);
-			// Write<byte16>((appBaseAddr + 0x280DB9), 0xE990);
-
-			// // Disable Style Rank Sub
-			// SetMemory((appBaseAddr + 0x27A39C), 0x90, 5, MemoryFlags_VirtualProtectDestination);
-
-			// // Force Collect Orbs
-			// WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2);
 		}
+
+		//HoboBreak();
 	}
 
 	return 1;

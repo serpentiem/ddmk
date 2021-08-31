@@ -9,6 +9,10 @@ import Global;
 import Vars;
 
 
+#define debug false
+
+#include "Macros.h"
+
 
 namespaceStart(Camera);
 

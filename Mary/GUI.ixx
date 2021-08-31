@@ -49,6 +49,27 @@ using namespace D3D11;
 
 #define debug false
 
+#include "Macros.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #pragma region Common
@@ -3300,7 +3321,7 @@ void BossRush()
 	{
 		ImGui::Text("");
 
-		ImGui::Text("Go directly to the boss battle.");
+		DescriptionHelper("Go directly to boss battles.");
 		ImGui::Text("");
 
 		GUI_Checkbox2
@@ -5316,7 +5337,7 @@ void ActorWindow()
 				);
 				[&]()
 				{
-					IntroduceData(newActorData.baseAddr, actorData, ActorDataBase, return);
+					IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, return);
 
 					GUI_Input
 					(
@@ -5363,6 +5384,39 @@ void ActorWindow()
 					(
 						"a",
 						actorData.position.a,
+						1.0f,
+						"%g",
+						ImGuiInputTextFlags_EnterReturnsTrue
+					);
+
+					GUI_Input
+					(
+						"Hit Points",
+						actorData.hitPoints,
+						1.0f,
+						"%g",
+						ImGuiInputTextFlags_EnterReturnsTrue
+					);
+					GUI_Input
+					(
+						"Max Hit Points",
+						actorData.maxHitPoints,
+						1.0f,
+						"%g",
+						ImGuiInputTextFlags_EnterReturnsTrue
+					);
+					GUI_Input
+					(
+						"Magic Points",
+						actorData.magicPoints,
+						1.0f,
+						"%g",
+						ImGuiInputTextFlags_EnterReturnsTrue
+					);
+					GUI_Input
+					(
+						"Max Magic Points",
+						actorData.maxMagicPoints,
 						1.0f,
 						"%g",
 						ImGuiInputTextFlags_EnterReturnsTrue
@@ -5498,7 +5552,7 @@ void ActorWindow()
 					);
 					[&]()
 					{
-						IntroduceData(newActorData.baseAddr, actorData, ActorDataBase, return);
+						IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, return);
 
 						GUI_Input
 						(
@@ -5545,6 +5599,39 @@ void ActorWindow()
 						(
 							"a",
 							actorData.position.a,
+							1.0f,
+							"%g",
+							ImGuiInputTextFlags_EnterReturnsTrue
+						);
+
+						GUI_Input
+						(
+							"Hit Points",
+							actorData.hitPoints,
+							1.0f,
+							"%g",
+							ImGuiInputTextFlags_EnterReturnsTrue
+						);
+						GUI_Input
+						(
+							"Max Hit Points",
+							actorData.maxHitPoints,
+							1.0f,
+							"%g",
+							ImGuiInputTextFlags_EnterReturnsTrue
+						);
+						GUI_Input
+						(
+							"Magic Points",
+							actorData.magicPoints,
+							1.0f,
+							"%g",
+							ImGuiInputTextFlags_EnterReturnsTrue
+						);
+						GUI_Input
+						(
+							"Max Magic Points",
+							actorData.maxMagicPoints,
 							1.0f,
 							"%g",
 							ImGuiInputTextFlags_EnterReturnsTrue
@@ -6132,6 +6219,21 @@ void Debug()
 
 
 
+
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Force Visible HUD",
+				activeConfig.forceVisibleHUD,
+				queuedConfig.forceVisibleHUD
+			)
+		)
+		{
+			ToggleForceVisibleHUD(activeConfig.forceVisibleHUD);
+		}
+		ImGui::Text("");
 
 
 
@@ -9672,7 +9774,7 @@ void Main()
 	(
 		ImGui::Begin
 		(
-			"DDMK 2.7 Mary Nightly 30 June 2021",
+			"DDMK 2.7 Mary Nightly 31 August 2021",
 			&g_show
 		)
 	)

@@ -8,6 +8,8 @@ import Vars;
 
 #define debug false
 
+#include "Macros.h"
+
 
 
 export typedef byte8 *(__fastcall * GetPlayerActorBaseAddressByEffectData_t)(byte8 * effectDataAddr);

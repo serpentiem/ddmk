@@ -14,6 +14,9 @@ import Vars;
 // @Todo: Rename to ToggleForceWindowFocus.
 export namespace Window
 {
+
+
+	// @Update
 	void ToggleForceFocus(bool enable)
 	{
 		LogFunction(enable);

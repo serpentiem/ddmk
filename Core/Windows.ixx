@@ -1633,6 +1633,7 @@ extern "C" BOOL AdjustWindowRectExForDpi
 	DWORD dwExStyle,
 	UINT dpi
 );
+extern "C" HWND GetFocus();
 
 struct __declspec(novtable) IUnknown
 {

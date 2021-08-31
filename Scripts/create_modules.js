@@ -1,7 +1,7 @@
 let fs = require("fs");
 let vm = require("vm");
 
-vm.runInThisContext(fs.readFileSync("dmc3_core.js", "utf8"));
+vm.runInThisContext(fs.readFileSync("core.js", "utf8"));
 
 ClearAll();
 
@@ -1291,6 +1291,11 @@ c += NEW_LINE;
 				[ "bMenu", "BOOL" ],
 				[ "dwExStyle", "DWORD" ],
 				[ "dpi", "UINT" ],
+			],
+			FunctionFlags_ExternC
+		],
+		[ "GetFocus", "HWND",
+			[
 			],
 			FunctionFlags_ExternC
 		],
@@ -5837,7 +5842,7 @@ c += NEW_LINE;
 
 
 
-
+// @NotUsed
 
 c += Tabs() + "#pragma pack(pop)" + NEW_LINE;
 c += NEW_LINE;

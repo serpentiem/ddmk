@@ -1,101 +1,171 @@
-#include "../Core/Core.h"
+import Core;
 
-#include "Config.h"
-#include "Hooks.h"
-//#include "Speed.h"
+#include "../Core/Macros.h"
 
-#include "System/Actor.h"
-#include "System/Event.h"
-#include "System/Graphics.h"
-#include "System/Window.h"
+import Windows;
 
-#include "Game/Arcade.h"
-#include "Game/BossRush.h"
-#include "Game/Dante.h"
-#include "Game/LockOn.h"
-#include "Game/ResetMotionState.h"
-#include "Game/Training.h"
-#include "Game/WeaponSwitcher.h"
+import Actor;
+import Arcade;
+import Config;
+import Event;
+import Global;
+import Graphics;
+import Hooks;
+import HUD;
+import Internal;
+import Training;
+import Vars;
+import Window;
 
-const char * Log_directory = "logs";
-const char * Log_file      = "Eva.txt";
+using namespace Windows;
 
-uint32 Memory_size = (64 * 1024 * 1024);
+#define debug false
 
-DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
+uint32 DllMain
+(
+	HINSTANCE instance,
+	uint32 reason,
+	LPVOID reserved
+)
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
-		Log_Init();
+		Core_Log_Init("logs", "Eva.txt");
+
 		Log("Session started.");
-		if (!Memory_Init())
+
+		if (!Core_Memory_Init())
 		{
+			Log("Core_Memory_Init failed.");
+
 			return 0;
 		}
-		Config_Init();
+
+		if (!memoryData.InitData(64 * 1024 * 1024))
+		{
+			Log("memoryData.InitData failed.");
+
+			return 0;
+		}
+
+		SetMemory
+		(
+			memoryData.dataAddr,
+			0xCC,
+			memoryData.dataSize
+		);
+
+		if (!protectionHelper.Init(4096))
+		{
+			Log("protectionHelper.Init failed.");
+
+			return 0;
+		}
+
+		if
+		(
+			!backupHelper.Init
+			(
+				(8 * 1024 * 1024),
+				(1 * 1024 * 1024)
+			)
+		)
+		{
+			Log("backupHelper.Init failed.");
+
+			return 0;
+		}
+
+		Config_Init("configs", "Eva.bin");
+
 		LoadConfig();
-		Hooks_Init();
-
-		//Speed_Init();
-		//Speed_Update(Config);
-
-		System_Actor_Init();
-		System_Event_Init();
-
-		System_Graphics_UpdateFrameRate(Config);
-
-
-		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
-
-		Game_Arcade_Toggle(Config.Game.Arcade.enable);
-		Game_BossRush_Toggle(Config.Game.BossRush.enable);
-		Game_Dante_Init();
-		Game_Dante_ForceEdge_ToggleUnlockStinger(Config.Game.Dante.ForceEdge.unlockStinger);
-		Game_Dante_ForceEdge_ToggleUnlockRoundTrip(Config.Game.Dante.ForceEdge.unlockRoundTrip);
-		Game_Dante_Sparda_ToggleUnlockDevilTrigger(Config.Game.Dante.Sparda.unlockDevilTrigger);
-		Game_Dante_Sparda_ToggleForceLoadAssets(Config.Game.Dante.Sparda.forceLoadAssets);
-		Game_Dante_Yamato_ToggleUnlock(Config.Game.Dante.Yamato.unlock);
-		Game_Dante_AirHike_ToggleCoreAbility(Config.Game.Dante.AirHike.coreAbility);
-		Game_LockOn_Init();
-		Game_LockOn_Toggle(Config.Game.LockOn.enable);
-		Game_ResetMotionState_Init();
-		Game_Training_ToggleInfiniteHitPoints(Config.Game.Training.infiniteHitPoints);
-		Game_Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
-		Game_Training_ToggleDisableTimer(Config.Game.Training.disableTimer);
-		Game_WeaponSwitcher_Init();
-		Game_WeaponSwitcher_Toggle(Config.Game.WeaponSwitcher.enable);
 
 
 
-
-
-		//Write<BYTE>((appBaseAddr + 0x4FA2B), 0x8A);   // Hit Points Sub Full
-		//vp_memset((appBaseAddr + 0x3F8D18), 0x90, 2); // Disable Main Menu Video Countdown
-		//vp_memset((appBaseAddr + 0x2C64D7), 0x90, 4); // Disable Player Idle Timer Sub
-		//Game::Training::ToggleInfiniteMagicPoints(true);
-		// Force Sparda Devil
-		//vp_memset((appBaseAddr + 0x2C56F1), 0x90, 24);
-		//vp_memset((appBaseAddr + 0x2C5697), 0x90, 2);
-		//Write<WORD>((appBaseAddr + 0x2C56A0), 0x8B90);
-		//vp_memset((appBaseAddr + 0x2C56B5), 0x90, 3);
-		//vp_memset((appBaseAddr + 0x2C56AC), 0x90, 2);
-		//vp_memset((appBaseAddr + 0x2C56C3), 0x90, 2);
-		//Write<BYTE>((appBaseAddr + 0x2C56CC), 0xEB);
-		//vp_memset((appBaseAddr + 0x2C57B0), 0x90, 6);
-		//vp_memset((appBaseAddr + 0x2C57D5), 0x90, 2);
-		//vp_memset((appBaseAddr + 0x2C57E2), 0x90, 2);
-		//vp_memset((appBaseAddr + 0x2C5A8B), 0x90, 2);
-		//Write<BYTE>((appBaseAddr + 0x2C5A94), 0xEB);
-		//vp_memset((appBaseAddr + 0x2C5B10), 0x90, 2);
-		//Write<BYTE>((appBaseAddr + 0x2C5B1C), 0xEB);
+		Internal_Init();
 
 
 
+		ToggleForceEdgeFixes(false);
+		ToggleForceEdgeFixes(activeConfig.enableForceEdgeFixes);
+
+		ToggleSpardaFixes(false);
+		ToggleSpardaFixes(activeConfig.enableSpardaFixes);
+
+		ToggleYamatoFixes(false);
+		ToggleYamatoFixes(activeConfig.enableYamatoFixes);
+
+		ToggleAirHikeCoreAbility(false);
+		ToggleAirHikeCoreAbility(activeConfig.airHikeCoreAbility);
+
+		ToggleInfiniteRoundTrip(false);
+		ToggleInfiniteRoundTrip(activeConfig.infiniteRoundTrip);
+
+		ToggleMeleeWeaponSwitchController(false);
+		ToggleMeleeWeaponSwitchController(activeConfig.enableMeleeWeaponSwitchController);
+
+		ToggleRangedWeaponSwitchController(false);
+		ToggleRangedWeaponSwitchController(activeConfig.enableRangedWeaponSwitchController);
+
+		Arcade::Toggle(false);
+		Arcade::Toggle(activeConfig.Arcade.enable);
+
+		ToggleSkipIntro(false);
+		ToggleSkipIntro(activeConfig.skipIntro);
+
+		ToggleDisablePauseRestrictions(false);
+		ToggleDisablePauseRestrictions(activeConfig.disablePauseRestrictions);
+
+		Graphics::Init();
+		UpdateFrameRate();
+
+		ToggleForceWindowFocus(false);
+		ToggleForceWindowFocus(activeConfig.forceWindowFocus);
+
+		ToggleInfiniteHitPoints(false);
+		ToggleInfiniteHitPoints(activeConfig.infiniteHitPoints);
+
+		ToggleInfiniteMagicPoints(false);
+		ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
+
+		ToggleDisableTimer(false);
+		ToggleDisableTimer(activeConfig.disableTimer);
 
 
 
+		Event::Toggle(false);
+		Event::Toggle(true);
+
+		ToggleAutoExamine(false);
+		ToggleSkipText   (false);
 
 
+
+		if constexpr (debug)
+		{
+			ToggleDisableIdleTimer(false);
+			ToggleDisableIdleTimer(activeConfig.disableIdleTimer);
+
+			ToggleScreenEffectForceMaxTimer(false);
+			ToggleScreenEffectForceMaxTimer(activeConfig.screenEffectForceMaxTimer);
+
+			ToggleForceVisibleHUD(false);
+			ToggleForceVisibleHUD(activeConfig.forceVisibleHUD);
+		}
+
+
+
+		// Remove labels.
+		SetMemory
+		(
+			(appBaseAddr + 0x50CDE6),
+			0,
+			35,
+			MemoryFlags_VirtualProtectDestination
+		);
+
+		Hooks::Init();
 	}
+
 	return 1;
 }
