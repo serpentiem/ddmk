@@ -168,7 +168,7 @@ export bool Match
 	uint32 count
 )
 {
-	for_all(uint32, index, count)
+	old_for_all(uint32, index, count)
 	{
 		if
 		(
@@ -210,7 +210,7 @@ T Reverse(T * varAddr)
 
 	T var = 0;
 
-	for_all(uint8, index, size)
+	old_for_all(uint8, index, size)
 	{
 		reinterpret_cast<byte8 *>(&var)[index] = reinterpret_cast<byte8 *>(varAddr)[(size - 1 - index)];
 	}
@@ -234,7 +234,7 @@ void UpdateMapIndex
 {
 	//LogFunction();
 
-	for_all(uint8, mapIndex, mapItemCount)
+	old_for_all(uint8, mapIndex, mapItemCount)
 	{
 		auto & mapItem = map[mapIndex];
 		if (mapItem == var)
@@ -1679,7 +1679,7 @@ void Container<T, T2>::ForEach
 	U & func
 )
 {
-	for_each(uint64, index, start, end)
+	old_for_each(uint64, index, start, end)
 	{
 		auto & data = dataAddr[index];
 
@@ -1954,7 +1954,7 @@ void BackupHelper::Save
 
 void BackupHelper::Restore(void * addr)
 {
-	for_all(uint64, index, count)
+	old_for_all(uint64, index, count)
 	{
 		auto & metadata = reinterpret_cast<Metadata *>(metadataAddr)[index];
 

@@ -209,7 +209,7 @@ export void MissionStartSetIndex()
 
 
 
-	new_for_all(itemIndex, 10)
+	for_all(itemIndex, 10)
 	{
 		ItemData item =
 		{

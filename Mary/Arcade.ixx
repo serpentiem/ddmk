@@ -1,7 +1,3 @@
-
-// @todo: heaven or hell not working!
-
-
 export module Arcade;
 
 import Core;
@@ -15,7 +11,6 @@ import Config;
 #define debug false
 
 #include "Macros.h"
-
 
 
 
@@ -36,7 +31,21 @@ export void InitSession()
 
 	if ((sessionData.mission >= 1) && (sessionData.mission <= 20))
 	{
-		sessionData.mode = activeConfig.Arcade.mode;
+		using namespace MODE;
+
+		uint32 mode       = 0;
+		bool   oneHitKill = false;
+
+		mode = activeConfig.Arcade.mode;
+
+		if (mode == HEAVEN_OR_HELL)
+		{
+			mode       = HARD;
+			oneHitKill = true;
+		}
+
+		sessionData.mode       = mode;
+		sessionData.oneHitKill = oneHitKill;
 	}
 
 	sessionData.enableTutorial = true;
@@ -70,7 +79,7 @@ export void InitSession()
 		sizeof(sessionData.unlock)
 	);
 
-	if (activeConfig.Arcade.character == CHAR_DANTE)
+	if (activeConfig.Arcade.character == CHARACTER::DANTE)
 	{
 		CopyMemory
 		(
@@ -91,7 +100,7 @@ export void InitSession()
 	sessionData.hitPoints = activeConfig.Arcade.hitPoints;
 	sessionData.magicPoints = activeConfig.Arcade.magicPoints;
 
-	if (activeConfig.Arcade.character == CHAR_DANTE)
+	if (activeConfig.Arcade.character == CHARACTER::DANTE)
 	{
 		sessionData.style = activeConfig.Arcade.style;
 	}

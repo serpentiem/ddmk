@@ -34,7 +34,7 @@ enemyMotionArchivesOffs
 
 	// NewActorData
 
-	for_all(uint8, index, countof(motionArchivesOffs))
+	old_for_all(uint8, index, countof(motionArchivesOffs))
 	{
 		auto & off = motionArchivesOffs[index];
 
@@ -46,9 +46,9 @@ enemyMotionArchivesOffs
 
 		//Log("baseAddr %llX", baseAddr);
 
-		for_all(uint8, playerIndex   , activeConfig.Actor.playerCount){
-		for_all(uint8, characterIndex, CHARACTER_COUNT               ){
-		for_all(uint8, entityIndex   , ENTITY_COUNT                  )
+		old_for_all(uint8, playerIndex   , activeConfig.Actor.playerCount){
+		old_for_all(uint8, characterIndex, CHARACTER_COUNT               ){
+		old_for_all(uint8, entityIndex   , ENTITY_COUNT                  )
 		{
 			IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
 
@@ -61,30 +61,30 @@ enemyMotionArchivesOffs
 			//Log("Match baseAddr %llX", baseAddr);
 
 
-			if (characterData.character == CHAR_BOSS_LADY)
+			if (characterData.character == CHARACTER::BOSS_LADY)
 			{
-				g_helperIndices[CHANNEL_ENEMY] = HELPER_ENEMY_LADY;
+				g_helperIndices[CHANNEL::ENEMY] = HELPER_ENEMY_LADY;
 			}
-			else if (characterData.character == CHAR_BOSS_VERGIL)
+			else if (characterData.character == CHARACTER::BOSS_VERGIL)
 			{
-				g_helperIndices[CHANNEL_ENEMY] = HELPER_ENEMY_VERGIL;
+				g_helperIndices[CHANNEL::ENEMY] = HELPER_ENEMY_VERGIL;
 			}
 			else
 			{
 				// Common
 				{
-					auto & helperIndex = g_helperIndices[CHANNEL_COMMON];
+					auto & helperIndex = g_helperIndices[CHANNEL::COMMON];
 
 					switch (characterData.character)
 					{
-						case CHAR_DANTE:
+						case CHARACTER::DANTE:
 						{
 							helperIndex = HELPER_COMMON_DANTE_DEFAULT;
 
 							switch (characterData.costume)
 							{
-								case COSTUME_DANTE_DEFAULT_NO_COAT:
-								case COSTUME_DANTE_DMC1_NO_COAT:
+								case COSTUME::DANTE_DEFAULT_NO_COAT:
+								case COSTUME::DANTE_DMC1_NO_COAT:
 								{
 									helperIndex = HELPER_COMMON_DANTE_NO_COAT;
 
@@ -94,14 +94,14 @@ enemyMotionArchivesOffs
 
 							break;
 						}
-						case CHAR_VERGIL:
+						case CHARACTER::VERGIL:
 						{
 							helperIndex = HELPER_COMMON_VERGIL_DEFAULT;
 
 							switch (characterData.costume)
 							{
-								case COSTUME_VERGIL_NERO_ANGELO:
-								case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+								case COSTUME::VERGIL_NERO_ANGELO:
+								case COSTUME::VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
 								{
 									helperIndex = HELPER_COMMON_VERGIL_NERO_ANGELO;
 
@@ -116,24 +116,24 @@ enemyMotionArchivesOffs
 
 				// Style Weapon
 				{
-					auto & helperIndex = g_helperIndices[CHANNEL_STYLE_WEAPON];
+					auto & helperIndex = g_helperIndices[CHANNEL::STYLE_WEAPON];
 
 					switch (characterData.character)
 					{
-						case CHAR_DANTE:
+						case CHARACTER::DANTE:
 						{
 							helperIndex = HELPER_STYLE_WEAPON_DANTE;
 
 							break;
 						}
-						case CHAR_VERGIL:
+						case CHARACTER::VERGIL:
 						{
 							helperIndex = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 
 							switch (characterData.costume)
 							{
-								case COSTUME_VERGIL_NERO_ANGELO:
-								case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+								case COSTUME::VERGIL_NERO_ANGELO:
+								case COSTUME::VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
 								{
 									helperIndex = HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO;
 
@@ -166,11 +166,11 @@ enemyMotionArchivesOffs
 
 	// // g_enemyActorBaseAddrs
 	// {
-	// 	auto & helperIndex = g_helperIndices[CHANNEL_ENEMY];
+	// 	auto & helperIndex = g_helperIndices[CHANNEL::ENEMY];
 
 	// 	//IntroduceEnemyVectorData(return);
 
-	// 	for_all(uint8, index, countof(motionArchivesOffs))
+	// 	old_for_all(uint8, index, countof(motionArchivesOffs))
 	// 	{
 	// 		auto & off = motionArchivesOffs[index];
 
@@ -180,7 +180,7 @@ enemyMotionArchivesOffs
 	// 			continue;
 	// 		}
 
-	// 		for_all(uint64, enemyIndex, g_enemyActorBaseAddrs.count)
+	// 		old_for_all(uint64, enemyIndex, g_enemyActorBaseAddrs.count)
 	// 		{
 	// 			// auto & metadata = enemyVectorData.metadata[enemyIndex];
 
@@ -229,11 +229,11 @@ enemyMotionArchivesOffs
 
 	// EnemyVectorData
 	{
-		auto & helperIndex = g_helperIndices[CHANNEL_ENEMY];
+		auto & helperIndex = g_helperIndices[CHANNEL::ENEMY];
 
 		IntroduceEnemyVectorData(return);
 
-		for_all(uint8, index, countof(motionArchivesOffs))
+		old_for_all(uint8, index, countof(motionArchivesOffs))
 		{
 			auto & off = motionArchivesOffs[index];
 
@@ -243,7 +243,7 @@ enemyMotionArchivesOffs
 				continue;
 			}
 
-			for_all(uint32, enemyIndex, countof(enemyVectorData.metadata))
+			old_for_all(uint32, enemyIndex, countof(enemyVectorData.metadata))
 			{
 				auto & metadata = enemyVectorData.metadata[enemyIndex];
 
@@ -597,7 +597,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -634,7 +634,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -671,7 +671,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -708,7 +708,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -745,7 +745,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -782,7 +782,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -819,7 +819,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -856,7 +856,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -893,7 +893,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -930,7 +930,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -967,7 +967,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1004,7 +1004,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1041,7 +1041,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1078,7 +1078,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1115,7 +1115,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1152,7 +1152,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_LADY;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1189,7 +1189,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1226,7 +1226,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1263,7 +1263,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1300,7 +1300,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1337,7 +1337,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1374,7 +1374,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1411,7 +1411,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1448,7 +1448,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1485,7 +1485,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1522,7 +1522,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1559,7 +1559,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1596,7 +1596,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1633,7 +1633,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1670,7 +1670,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1707,7 +1707,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_ENEMY];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::ENEMY];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_ENEMY_VERGIL;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1744,7 +1744,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1781,7 +1781,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1818,7 +1818,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1855,7 +1855,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1892,7 +1892,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1929,7 +1929,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -1966,7 +1966,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2003,7 +2003,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2040,7 +2040,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2077,7 +2077,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2114,7 +2114,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2151,7 +2151,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2188,7 +2188,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2225,7 +2225,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2262,7 +2262,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2299,7 +2299,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2336,7 +2336,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2373,7 +2373,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2410,7 +2410,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2447,7 +2447,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2484,7 +2484,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2521,7 +2521,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2558,7 +2558,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2595,7 +2595,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2632,7 +2632,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2669,7 +2669,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2706,7 +2706,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2743,7 +2743,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2780,7 +2780,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2817,7 +2817,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2854,7 +2854,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2891,7 +2891,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2928,7 +2928,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -2965,7 +2965,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3002,7 +3002,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3039,7 +3039,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3076,7 +3076,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3113,7 +3113,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3150,7 +3150,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3187,7 +3187,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3224,7 +3224,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3261,7 +3261,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3298,7 +3298,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3335,7 +3335,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3372,7 +3372,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3409,7 +3409,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3446,7 +3446,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3483,7 +3483,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3520,7 +3520,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3557,7 +3557,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3594,7 +3594,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3631,7 +3631,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3668,7 +3668,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3705,7 +3705,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3742,7 +3742,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3779,7 +3779,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3816,7 +3816,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3853,7 +3853,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3890,7 +3890,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3927,7 +3927,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -3964,7 +3964,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4001,7 +4001,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4038,7 +4038,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4075,7 +4075,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4112,7 +4112,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4149,7 +4149,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4186,7 +4186,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4223,7 +4223,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4260,7 +4260,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4297,7 +4297,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4334,7 +4334,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4371,7 +4371,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4408,7 +4408,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4445,7 +4445,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4482,7 +4482,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4519,7 +4519,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4556,7 +4556,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4593,7 +4593,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4630,7 +4630,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4667,7 +4667,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4704,7 +4704,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4741,7 +4741,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4778,7 +4778,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4815,7 +4815,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4852,7 +4852,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4889,7 +4889,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4926,7 +4926,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_DANTE;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -4963,7 +4963,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -5000,7 +5000,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -5037,7 +5037,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -5074,7 +5074,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -5111,7 +5111,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -5148,7 +5148,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -5185,7 +5185,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}
@@ -5222,7 +5222,7 @@ export void ToggleRelocations(bool enable)
 			backupHelper.Save(addr, size);
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
-			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL_STYLE_WEAPON];
+			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[CHANNEL::STYLE_WEAPON];
 			*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = HELPER_STYLE_WEAPON_VERGIL_DEFAULT;
 			WriteAddress((func.sect0 + 0xD), (appBaseAddr + 0xD6DC90), 7);
 		}

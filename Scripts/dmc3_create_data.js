@@ -1,3 +1,5 @@
+// #region Core
+
 let fs = require("fs");
 let process = require("process");
 let vm = require("vm");
@@ -108,7 +110,7 @@ function FeedTuple
 function FeedEnum
 (
 	name,
-	names,
+	items,
 	tagName = name,
 	flags = 0
 )
@@ -120,13 +122,20 @@ function FeedEnum
 
 	let unknownIndex = 0;
 
-	for (let nameIndex = 0; nameIndex < names.length; nameIndex++)
+	for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
 	{
-		let name = names[nameIndex];
+		let item = items[itemIndex];
 
-		if (name == "")
+		let name = item[0];
+		let value = item[1];
+
+		if
+		(
+			(name == "") ||
+			name.match(/unknown/i)
+		)
 		{
-			name = name + "UNKNOWN_" + unknownIndex;
+			name = "UNKNOWN_" + unknownIndex;
 
 			unknownIndex++;
 		}
@@ -139,9 +148,18 @@ function FeedEnum
 
 		name = ReplaceAll(name, " ", "_");
 
+		name = ReplaceAll(name, "'", "");
+
 		name = name.toUpperCase();
 
-		c += Tabs() + name + "," + NEW_LINE;
+		c += Tabs() + name;
+
+		if (value != "")
+		{
+			c += " = " + value;
+		}
+
+		c += "," + NEW_LINE;
 	}
 
 	ScopeEnd
@@ -160,7 +178,7 @@ function FeedEnum
 	}
 }
 
-
+// #endregion
 
 // #region MissionData
 {
@@ -299,49 +317,49 @@ let itemsBase =
 
 let itemsPlayerBase =
 [
-	[ "id"                             , "uint8"             , [], 0x118  ],
-	[ "isClone"                        , "bool32"            , [], 0x11C  ],
-	[ "visibility"                     , "uint32"            , [], 0x120  ],
-	[ "horizontalPull"                 , "float"             , [], 0x1C0  ],
-	[ "horizontalPullMultiplier"       , "float"             , [], 0x1C4  ],
-	[ "modelData[3]"                   , "ModelData"         , [], 0x200  ],
-	[ "modelPhysicsMetadataPool[4][24]", "PhysicsMetadata *" , [], 0x1880 ],
-	[ "modelAllocationDataCount"       , "uint32"            , [], 0x1B80 ],
-	[ "modelAllocationData[209]"       , "Size_32"           , [], 0x1B88 ],
-	[ "motionSpeed"                    , "float"             , [], 0x3894 ],
-	[ "motionSpeedMultiplier"          , "float"             , [], 0x3898 ],
-	[ "motionArchives[34]"             , "byte8 *"           , [], 0x38A0 ],
-	[ "motionData[2]"                  , "MotionData"        , [], 0x39B0 ],
-	[ "motionDataMirror[3]"            , "MotionData"        , [], 0x39B4 ],
-	[ ""                               , "uint32"            , [], 0x39BC ],
-	[ "[16]"                           , "uint8"             , [], 0x39C0 ],
-	[ "nextActionRequestPolicy[16]"    , "uint32"            , [], 0x39D0 ],
-	[ "[8]"                            , "uint8"             , [], 0x3A10 ],
-	[ "shadow"                         , "uint32"            , [], 0x3A18 ],
-	[ "lastShadow"                     , "uint32"            , [], 0x3A1C ],
-	[ "color"                          , "byte32"            , [], 0x3A28 ],
-	[ "recoveryData[3]"                , "RecoveryData"      , [], 0x3B00 ],
-	[ "[2]"                            , "byte8"             , [], 0x3C50 ],
-	[ "actionData[6]"                  , "byte8 *"           , [], 0x3DD0 ],
-	[ "eventData[2]"                   , "ActorEventData"    , [], 0x3E00 ],
-	[ "[32]"                           , "uint8"             , [], 0x3E10 ],
-	[ "motionTimer"                    , "float"             , [], 0x3E34 ],
-	[ "idleTimer"                      , "float"             , [], 0x3E38 ],
-	[ "permissions"                    , "byte32"            , [], 0x3E60 ],
-	[ "state"                          , "byte32"            , [], 0x3E64 ],
-	[ "lastState"                      , "byte32"            , [], 0x3E68 ],
-	[ "activeModelIndex"               , "uint32"            , [], 0x3E6C ],
-	[ "queuedModelIndex"               , "uint32"            , [], 0x3E70 ],
-	[ "devilModels[3]"                 , "uint32"            , [], 0x3E74 ],
-	[ "modelState"                     , "uint8"             , [], 0x3E80 ],
-	[ "lockOn"                         , "bool32"            , [], 0x3E84 ],
-	[ "activeModelIndexMirror"         , "uint32"            , [], 0x3E88 ],
-	[ "activeDevil"                    , "uint32"            , [], 0x3E8C ],
-	[ "airRaid"                        , "uint32"            , [], 0x3E90 ],
-	[ "mode"                           , "uint32"            , [], 0x3E94 ],
-	[ "dead"                           , "bool"              , [], 0x3E99 ],
-	[ "devil"                          , "bool"              , [], 0x3E9B ],
-	[ "costume"                        , "uint8"             , [], 0x3E9E ],
+	[ "id"                             , "uint8"            , [], 0x118  ],
+	[ "isClone"                        , "bool32"           , [], 0x11C  ],
+	[ "visibility"                     , "uint32"           , [], 0x120  ],
+	[ "horizontalPull"                 , "float"            , [], 0x1C0  ],
+	[ "horizontalPullMultiplier"       , "float"            , [], 0x1C4  ],
+	[ "modelData[3]"                   , "ModelData"        , [], 0x200  ],
+	[ "modelPhysicsMetadataPool[4][24]", "PhysicsMetadata *", [], 0x1880 ],
+	[ "modelAllocationDataCount"       , "uint32"           , [], 0x1B80 ],
+	[ "modelAllocationData[209]"       , "Size_32"          , [], 0x1B88 ],
+	[ "motionSpeed"                    , "float"            , [], 0x3894 ],
+	[ "motionSpeedMultiplier"          , "float"            , [], 0x3898 ],
+	[ "motionArchives[34]"             , "byte8 *"          , [], 0x38A0 ],
+	[ "motionData[2]"                  , "MotionData"       , [], 0x39B0 ],
+	[ "motionDataMirror[3]"            , "MotionData"       , [], 0x39B4 ],
+	[ ""                               , "uint32"           , [], 0x39BC ],
+	[ "[16]"                           , "uint8"            , [], 0x39C0 ],
+	[ "nextActionRequestPolicy[16]"    , "uint32"           , [], 0x39D0 ],
+	[ "[8]"                            , "uint8"            , [], 0x3A10 ],
+	[ "shadow"                         , "uint32"           , [], 0x3A18 ],
+	[ "lastShadow"                     , "uint32"           , [], 0x3A1C ],
+	[ "color"                          , "byte32"           , [], 0x3A28 ],
+	[ "recoveryData[3]"                , "RecoveryData"     , [], 0x3B00 ],
+	[ "[2]"                            , "byte8"            , [], 0x3C50 ],
+	[ "actionData[6]"                  , "byte8 *"          , [], 0x3DD0 ],
+	[ "eventData[2]"                   , "ActorEventData"   , [], 0x3E00 ],
+	[ "[32]"                           , "uint8"            , [], 0x3E10 ],
+	[ "motionTimer"                    , "float"            , [], 0x3E34 ],
+	[ "idleTimer"                      , "float"            , [], 0x3E38 ],
+	[ "permissions"                    , "byte32"           , [], 0x3E60 ],
+	[ "state"                          , "byte32"           , [], 0x3E64 ],
+	[ "lastState"                      , "byte32"           , [], 0x3E68 ],
+	[ "activeModelIndex"               , "uint32"           , [], 0x3E6C ],
+	[ "queuedModelIndex"               , "uint32"           , [], 0x3E70 ],
+	[ "devilModels[3]"                 , "uint32"           , [], 0x3E74 ],
+	[ "modelState"                     , "uint8"            , [], 0x3E80 ],
+	[ "lockOn"                         , "bool32"           , [], 0x3E84 ],
+	[ "activeModelIndexMirror"         , "uint32"           , [], 0x3E88 ],
+	[ "activeDevil"                    , "uint32"           , [], 0x3E8C ],
+	[ "airRaid"                        , "uint32"           , [], 0x3E90 ],
+	[ "mode"                           , "uint32"           , [], 0x3E94 ],
+	[ "dead"                           , "bool"             , [], 0x3E99 ],
+	[ "devil"                          , "bool"             , [], 0x3E9B ],
+	[ "costume"                        , "uint8"            , [], 0x3E9E ],
 	[ ""                               , "union",
 		[
 			[ "sparda"    , "bool" ],
@@ -349,231 +367,82 @@ let itemsPlayerBase =
 		],
 		0x3E9F
 	],
-	[ "useHolyWater"                   , "bool"              , [], 0x3EA4 ],
-	[ "magicPoints"                    , "float"             , [], 0x3EB8 ],
-	[ "maxMagicPoints"                 , "float"             , [], 0x3EBC ],
-	[ ""                               , "float"             , [], 0x3EC4 ],
-	[ ""                               , "float"             , [], 0x3EC8 ],
-	[ ""                               , "uint16"            , [], 0x3ED2 ],
-	[ "cameraDirection"                , "uint16"            , [], 0x3ED8 ],
-	[ ""                               , "float"             , [], 0x3EDC ],
-	[ "airHikeCount"                   , "uint8"             , [], 0x3F11 ],
-	[ "kickJumpCount"                  , "uint8"             , [], 0x3F12 ],
-	[ "wallHikeCount"                  , "uint8"             , [], 0x3F13 ],
-	[ "enableAirRaid"                  , "bool"              , [], 0x3F14 ],
-	[ ""                               , "bool"              , [], 0x3F19 ],
-	[ "action"                         , "uint8"             , [], 0x3FA4 ],
-	[ "lastAction"                     , "uint8"             , [], 0x3FA5 ],
-	[ "bufferedAction"                 , "uint8"             , [], 0x3FA8 ],
-	[ "chainCount"                     , "uint8"             , [], 0x3FAC ],
-	[ "expertise[16]"                  , "byte32"            , [], 0x3FEC ],
-	[ "maxHitPoints"                   , "float"             , [], 0x40EC ],
-	[ "hitPoints"                      , "float"             , [], 0x411C ],
-
-
-
-/*
-
-41C0 lock on data start
-51D0 last lock on data addr
-51D8 last lock on data addr
-6208 lock on data count
-6300 vec4 target position
-
-
-
-
-Update Lock-On Data Boss Vergil
-
-dmc3.exe+185724 - 48 8B 0D FDB6B000 - mov rcx,[dmc3.exe+C90E28]
-dmc3.exe+18572B - 48 8D 97 C0EA0000 - lea rdx,[rdi+0000EAC0]
-dmc3.exe+185732 - E8 095F0300       - call dmc3.exe+1BB640
-
-
-
-Update Lock-On Data Boss Lady
-
-dmc3.exe+171379 - 48 8B 0D A8FAB100     - mov rcx,[dmc3.exe+C90E28]
-dmc3.exe+171380 - 48 8D 96 F0560000     - lea rdx,[rsi+000056F0]
-dmc3.exe+171387 - E8 B4A20400           - call dmc3.exe+1BB640
-
-
-
-
-
-
-
-
-
-
-
-enemies update lock-on data
-
-rdx GUILockOnData
-
-
-
-disable boss vergil lock-on update
-
-
-
-
-
-*/
-
-
-
-	[ "targetPosition"                 , "vec4"           , [], 0x6300 ],
-
-
-
-	// base addr + 60
-	[ "targetBaseAddr"                 , "byte8 *"           , [], 0x6328 ],
-
-
-/*
-
-lock on gui data
-
-
-*/
-
-
-/*
-
-lock on data
-
-16 bytes of trash
-
-target gui lock on data addr
-
-apparently 255 entries
-
-addr
-nextAddr
-
-
-
-gui lock on data
-
-82 bytes
-
-judging by
-
-dmc3.exe+1BBE2E - 66 44 89 77 50        - mov [rdi+50],r14w
-
-
-
-
-if newPlayerIndex == 0
-use 1
-
-if 1 use 0
-
-if player is 0
-
-update gui lock on data as well
-
-2 functions
-
-fill position stuff
-
-
-
-
-
-
-
-
-
-
-*/
-
-
-
-
-
-	[ "style"                          , "uint32"            , [], 0x6338 ],
-	[ "wallHikeDirection"              , "uint32"            , [], 0x633C ],
-	[ ""                               , "uint32"            , [], 0x6340 ],
-	[ "styleLevel"                     , "uint32"            , [], 0x6358 ],
-	[ "dashCount"                      , "uint8"             , [], 0x635C ],
-	[ "skyStarCount"                   , "uint8"             , [], 0x635D ],
-	[ "airTrickCount"                  , "uint8"             , [], 0x635E ],
-	[ "trickUpCount"                   , "uint8"             , [], 0x635F ],
-	[ "trickDownCount"                 , "uint8"             , [], 0x6360 ],
-	[ "quicksilver"                    , "bool"              , [], 0x6361 ],
-	[ "doppelganger"                   , "bool"              , [], 0x6362 ],
-	[ "styleExperience"                , "float"             , [], 0x6364 ],
-	[ "royalguardBlockType"         , "uint32"             , [], 0x6370 ],
-	[ "royalguardReleaseLevel"         , "uint8"             , [], 0x6380 ],
-	[ "royalguardReleaseEffectIndex"   , "uint8"             , [], 0x6381 ],
-	[ "royalguardReleaseDamage"        , "float"             , [], 0x6384 ],
-	[ ""                               , "float"             , [], 0x6388 ],
-	[ ""                               , "float"             , [], 0x638C ],
-	[ ""                      , "uint32"            , [], 0x63D0 ],
-	[ "quicksilverStage"                      , "uint32"            , [], 0x63D4 ],
-	// @Research: Consider CloneData.
-	[ "[40]"                           , "byte8"             , [], 0x6410 ],
-	[ ""                               , "byte8 *"           , [], 0x6438 ],
-	[ ""                               , "uint32"            , [], 0x6440 ],
-	[ "cloneRate"                      , "uint32"            , [], 0x6450 ],
-	[ "cloneStatus"                    , "uint32"            , [], 0x6454 ],
-	[ "[32]"                           , "byte8"             , [], 0x6458 ],
-	[ "cloneActorBaseAddr"             , "byte8 *"           , [], 0x6478 ],
-	[ "cloneIsControlledByPlayer"      , "bool"              , [], 0x6480 ],
-	[ "activeMeleeWeaponIndex"         , "uint32"            , [], 0x6484 ],
-	[ "queuedMeleeWeaponIndex"         , "uint32"            , [], 0x6488 ],
-	[ "activeWeapon"                   , "uint8"             , [], 0x648D ],
-	[ "meleeWeaponIndex"               , "uint32"            , [], 0x6490 ],
-	[ "rangedWeaponIndex"              , "uint32"            , [], 0x6494 ],
-	[ "weapons[5]"                     , "uint8"             , [], 0x6498 ],
-	[ "weaponDataAddr[5]"              , "WeaponData *"      , [], 0x64A0 ],
-	[ "weaponStatus[5]"                , "uint32"            , [], 0x64C8 ],
-	[ "weaponLevels[5]"                , "uint32"            , [], 0x64DC ],
-	[ "activeMeleeWeapon"              , "uint8"             , [], 0x64F0 ],
-	[ "activeRangedWeapon"             , "uint8"             , [], 0x64F1 ],
-	[ "weaponTimers[5]"                , "float"             , [], 0x64F4 ],
-	[ "meleeWeaponSwitchTimeout"       , "float"             , [], 0x6508 ],
-	[ "rangedWeaponSwitchTimeout"      , "float"             , [], 0x650C ],
-	[ "styleData"                      , "StyleData"         , [], 0x6510 ],
-	[ ""                               , "float"             , [], 0x6670 ],
-	[ "inputData[58]"                  , "InputData"         , [], 0x6674 ],
-	[ "bodyPartData[3][2]"             , "BodyPartData"      , [], 0x6950 ],
-	[ "collisionData"                  , "CollisionData"     , [], 0x7250 ],
-
-
-/*
-
-
-player is target dmc3.exe+173B5D - C7 86 D0020000 43040300 - mov [rsi+000002D0],00030443
-enemy  is target dmc3.exe+173B76 - C7 86 D0020000 0C050300 - mov [rsi+000002D0],0003050C
-
-
-dmc3.exe+188825 - C7 83 C0020000 40040000 - mov [rbx+000002C0],00000440 { sjc follow collision flags
- }
-dmc3.exe+18882F - BA 11000000           - mov edx,00000011 { 17 }
-
-
-
-
-dmc3.exe+5C964 - 8B 81 40010000        - mov eax,[rcx+00000140] { collision group
- }
-
-
-
-*/
-
-
-
-
-	[ "buttons[4]"                     , "byte16"            , [], 0x74E0 ],
-	[ "rightStickPosition"             , "uint16"            , [], 0x74F8 ],
-	[ "rightStickRadius"               , "uint16"            , [], 0x74FA ],
-	[ "leftStickPosition"              , "uint16"            , [], 0x7508 ],
-	[ "leftStickRadius"                , "uint16"            , [], 0x750A ],
-	[ "actorCameraDirection"           , "uint16"            , [], 0x750C ],
-	[ "leftStickDirection[2]"          , "uint32"            , [], 0x751C ],
+	[ "useHolyWater"                , "bool"         , [], 0x3EA4 ],
+	[ "magicPoints"                 , "float"        , [], 0x3EB8 ],
+	[ "maxMagicPoints"              , "float"        , [], 0x3EBC ],
+	[ ""                            , "float"        , [], 0x3EC4 ],
+	[ ""                            , "float"        , [], 0x3EC8 ],
+	[ ""                            , "uint16"       , [], 0x3ED2 ],
+	[ "cameraDirection"             , "uint16"       , [], 0x3ED8 ],
+	[ ""                            , "float"        , [], 0x3EDC ],
+	[ "airHikeCount"                , "uint8"        , [], 0x3F11 ],
+	[ "kickJumpCount"               , "uint8"        , [], 0x3F12 ],
+	[ "wallHikeCount"               , "uint8"        , [], 0x3F13 ],
+	[ "enableAirRaid"               , "bool"         , [], 0x3F14 ],
+	[ ""                            , "bool"         , [], 0x3F19 ],
+	[ "action"                      , "uint8"        , [], 0x3FA4 ],
+	[ "lastAction"                  , "uint8"        , [], 0x3FA5 ],
+	[ "bufferedAction"              , "uint8"        , [], 0x3FA8 ],
+	[ "chainCount"                  , "uint8"        , [], 0x3FAC ],
+	[ "expertise[16]"               , "byte32"       , [], 0x3FEC ],
+	[ "maxHitPoints"                , "float"        , [], 0x40EC ],
+	[ "hitPoints"                   , "float"        , [], 0x411C ],
+	[ "targetPosition"              , "vec4"         , [], 0x6300 ],
+	[ "targetBaseAddrPlus0x60"      , "byte8 *"      , [], 0x6328 ],
+	[ "style"                       , "uint32"       , [], 0x6338 ],
+	[ "wallHikeDirection"           , "uint32"       , [], 0x633C ],
+	[ ""                            , "uint32"       , [], 0x6340 ],
+	[ "styleLevel"                  , "uint32"       , [], 0x6358 ],
+	[ "dashCount"                   , "uint8"        , [], 0x635C ],
+	[ "skyStarCount"                , "uint8"        , [], 0x635D ],
+	[ "airTrickCount"               , "uint8"        , [], 0x635E ],
+	[ "trickUpCount"                , "uint8"        , [], 0x635F ],
+	[ "trickDownCount"              , "uint8"        , [], 0x6360 ],
+	[ "quicksilver"                 , "bool"         , [], 0x6361 ],
+	[ "doppelganger"                , "bool"         , [], 0x6362 ],
+	[ "styleExperience"             , "float"        , [], 0x6364 ],
+	[ "royalguardBlockType"         , "uint32"       , [], 0x6370 ],
+	[ "royalguardReleaseLevel"      , "uint8"        , [], 0x6380 ],
+	[ "royalguardReleaseEffectIndex", "uint8"        , [], 0x6381 ],
+	[ "royalguardReleaseDamage"     , "float"        , [], 0x6384 ],
+	[ ""                            , "float"        , [], 0x6388 ],
+	[ ""                            , "float"        , [], 0x638C ],
+	[ ""                            , "uint32"       , [], 0x63D0 ],
+	[ "quicksilverStage"            , "uint32"       , [], 0x63D4 ],
+	[ "[40]"                        , "byte8"        , [], 0x6410 ],
+	[ ""                            , "byte8 *"      , [], 0x6438 ],
+	[ ""                            , "uint32"       , [], 0x6440 ],
+	[ "cloneRate"                   , "uint32"       , [], 0x6450 ],
+	[ "cloneStatus"                 , "uint32"       , [], 0x6454 ],
+	[ "[32]"                        , "byte8"        , [], 0x6458 ],
+	[ "cloneActorBaseAddr"          , "byte8 *"      , [], 0x6478 ],
+	[ "cloneIsControlledByPlayer"   , "bool"         , [], 0x6480 ],
+	[ "activeMeleeWeaponIndex"      , "uint32"       , [], 0x6484 ],
+	[ "queuedMeleeWeaponIndex"      , "uint32"       , [], 0x6488 ],
+	[ "activeWeapon"                , "uint8"        , [], 0x648D ],
+	[ "meleeWeaponIndex"            , "uint32"       , [], 0x6490 ],
+	[ "rangedWeaponIndex"           , "uint32"       , [], 0x6494 ],
+	[ "weapons[5]"                  , "uint8"        , [], 0x6498 ],
+	[ "weaponDataAddr[5]"           , "WeaponData *" , [], 0x64A0 ],
+	[ "weaponStatus[5]"             , "uint32"       , [], 0x64C8 ],
+	[ "weaponLevels[5]"             , "uint32"       , [], 0x64DC ],
+	[ "activeMeleeWeapon"           , "uint8"        , [], 0x64F0 ],
+	[ "activeRangedWeapon"          , "uint8"        , [], 0x64F1 ],
+	[ "weaponTimers[5]"             , "float"        , [], 0x64F4 ],
+	[ "meleeWeaponSwitchTimeout"    , "float"        , [], 0x6508 ],
+	[ "rangedWeaponSwitchTimeout"   , "float"        , [], 0x650C ],
+	[ "styleData"                   , "StyleData"    , [], 0x6510 ],
+	[ ""                            , "float"        , [], 0x6670 ],
+	[ "inputData[58]"               , "InputData"    , [], 0x6674 ],
+	[ "bodyPartData[3][2]"          , "BodyPartData" , [], 0x6950 ],
+	[ "collisionData"               , "CollisionData", [], 0x7250 ],
+	[ "buttons[4]"                  , "byte16"       , [], 0x74E0 ],
+	[ "rightStickPosition"          , "uint16"       , [], 0x74F8 ],
+	[ "rightStickRadius"            , "uint16"       , [], 0x74FA ],
+	[ "leftStickPosition"           , "uint16"       , [], 0x7508 ],
+	[ "leftStickRadius"             , "uint16"       , [], 0x750A ],
+	[ "actorCameraDirection"        , "uint16"       , [], 0x750C ],
+	[ "leftStickDirection[2]"       , "uint32"       , [], 0x751C ],
 ];
 
 let itemsPlayerDante =
@@ -610,7 +479,6 @@ let itemsPlayerVergil =
 let itemsPlayerNew =
 [
 	[ "newFirstVar"                            , "uint32"           , [], ],
-
 	[ "newModelData[6]"                        , "ModelData"        , [], ],
 	[ "newModelPhysicsMetadataPool[7][24]"     , "PhysicsMetadata *", [], ],
 	[ "newModelAllocationData[512]"            , "Size_32"          , [], ],
@@ -624,41 +492,26 @@ let itemsPlayerNew =
 	[ "newDevilModelPhysicsMetadataPool[5][36]", "PhysicsMetadata *", [], ],
 	[ "newDevilSubmodelPhysicsData[10]"        , "PhysicsData"      , [], ],
 	[ "newDevilSubmodelPhysicsLinkData[10][4]" , "PhysicsLinkData"  , [], ],
-
 	[ "newWeapons[10]"                         , "uint8"            , [], ],
 	[ "newWeaponDataAddr[10]"                  , "WeaponData *"     , [], ],
 	[ "newWeaponStatus[10]"                    , "uint32"           , [], ],
 	[ "newWeaponLevels[10]"                    , "uint32"           , [], ],
 	[ "newWeaponTimers[10]"                    , "float"            , [], ],
-
 	[ "newIsClone"                             , "bool32"           , [], ],
-
 	[ "newPlayerIndex"                         , "uint8"            , [], ],
 	[ "newCharacterIndex"                      , "uint8"            , [], ],
 	[ "newEntityIndex"                         , "uint8"            , [], ],
-	// [ "newContainerIndex"                      , "uint8"            , [], ],
-
 	[ "newForceFiles"                          , "bool"             , [], ],
 	[ "newForceFilesCharacter"                 , "uint8"            , [], ],
 	[ "newForceFilesCostume"                   , "uint8"            , [], ],
-
 	[ "newEnableVisibility"                    , "bool"             , [], ],
-
-	// @Todo: Should be index.
 	[ "newGamepad"                             , "uint8"            , [], ],
 	[ "newButtonMask"                          , "byte16"           , [], ],
 	[ "newEnableRightStick"                    , "bool"             , [], ],
 	[ "newEnableLeftStick"                     , "bool"             , [], ],
-
-
-
-
 	[ "newQuickDrive"                          , "bool"             , [], ],
-
 	[ "newEnableCollision"                     , "bool"             , [], ],
-
 	[ "newActorLoopRun"                        , "bool"             , [], ],
-
 	[ "newAirHikeCount"                        , "uint8"            , [], ],
 	[ "newKickJumpCount"                       , "uint8"            , [], ],
 	[ "newWallHikeCount"                       , "uint8"            , [], ],
@@ -669,20 +522,16 @@ let itemsPlayerNew =
 	[ "newTrickDownCount"                      , "uint8"            , [], ],
 	[ "newAirStingerCount"                     , "uint8"            , [], ],
 	[ "newAirRisingSunCount"                   , "uint8"            , [], ],
-
-
-
 	[ "newEffectIndices[12]"                   , "uint32"           , [], ],
-
 	[ "newLastVar"                             , "uint32"           , [], ],
 ];
 
 let itemsEnemyPride =
 [
-	[ "maxHitPoints" , "float", [], 0x2E2C ],
-	[ "hitPoints" , "float", [], 0x2E5C ],
-	[ "event" , "uint32", [], 0x3A34 ],
-	[ "state" , "uint8" , [], 0x3A38 ],
+	[ "maxHitPoints", "float" , [], 0x2E2C ],
+	[ "hitPoints"   , "float" , [], 0x2E5C ],
+	[ "event"       , "uint32", [], 0x3A34 ],
+	[ "state"       , "uint8" , [], 0x3A38 ],
 ];
 
 let itemsEnemyLady =
@@ -713,39 +562,6 @@ let itemsEnemyVergil =
 	[ "toggleDevil"   , "bool"         , [], 0xEF19 ],
 	[ "devil"         , "bool"         , [], 0xEF1B ],
 ];
-
-
-
-
-
-
-/*
-
-dmc3.exe+2C72E0 - 44 0FB7 0A            - movzx r9d,word ptr [rdx]
-
-rotation update
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -945,11 +761,6 @@ for (let index = 0; index < helpers.length; index++)
 
 
 
-
-
-
-
-
 let helpers =
 [
 	[ ""      , []               ],
@@ -997,95 +808,9 @@ for (let index = 0; index < helpers.length; index++)
 
 
 
-
 CleanStream();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const SIZE_BASE = 200;
-
-
-
 SaveStream("ActorData");
-
-
-// let c_new = c;
-
-// c = "";
-
-// let filename = "../Mary/Vars.ixx";
-
-// let file = fs.readFileSync(filename, "utf8");
-
-// let lines = GetLines(file);
-
-// if
-// (
-// 	!Tag_Init
-// 	(
-// 		lines,
-// 		/\/\/ \$ActorDataStart$/,
-// 		/\/\/ \$ActorDataEnd$/
-// 	)
-// )
-// {
-// 	console.log("Tag_Init failed.");
-
-// 	return;
-// }
-
-// Tag_CopyUntil(lines);
-
-// c += c_new;
-
-// Tag_CopyAfter(lines);
-
-// fs.writeFileSync(filename, c);
-
-// ClearAll();
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1143,36 +868,6 @@ CheatTableEnd();
 fs.writeFileSync("actor_data.txt", c);
 
 ClearAll();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
 
@@ -1232,53 +927,53 @@ dmc3.exe+5C317 - C3               - ret
 
 let names =
 [
-	"",
-	"",
-	"",
-	"",
-	"",
-	"Jump",
-	"",
-	"Air Hike",
-	"",
-	"",
-	"Lock-On",
-	"",
-	"",
-	"",
-	"",
-	"",
-	"",
-	"Attack",
-	"Taunt",
-	"Royalguard Block",
-	"Royalguard Block Connect",
-	"Royalguard Release Blocked",
-	"Trickster Dash",
-	"Trickster Sky Star",
-	"Trickster Air Trick",
-	"Quicksilver Time Lag",
-	"",
-	"Dark Slayer Air Trick",
-	"Dark Slayer Trick Up",
-	"Dark Slayer Trick Down",
-	"Melee Attack Blocked",
-	"",
-	"",
-	"",
-	"",
-	"",
-	"",
-	"",
-	"",
-	"",
-	"Nevan Air Raid",
-	"Super Jump",
-	"",
-	"Holy Water",
-	"",
-	"Death",
-	"Count",
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ "Jump"                      , "" ],
+	[ ""                          , "" ],
+	[ "Air Hike"                  , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ "Lock-On"                   , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ "Attack"                    , "" ],
+	[ "Taunt"                     , "" ],
+	[ "Royalguard Block"          , "" ],
+	[ "Royalguard Block Connect"  , "" ],
+	[ "Royalguard Release Blocked", "" ],
+	[ "Trickster Dash"            , "" ],
+	[ "Trickster Sky Star"        , "" ],
+	[ "Trickster Air Trick"       , "" ],
+	[ "Quicksilver Time Lag"      , "" ],
+	[ ""                          , "" ],
+	[ "Dark Slayer Air Trick"     , "" ],
+	[ "Dark Slayer Trick Up"      , "" ],
+	[ "Dark Slayer Trick Down"    , "" ],
+	[ "Melee Attack Blocked"      , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ ""                          , "" ],
+	[ "Nevan Air Raid"            , "" ],
+	[ "Super Jump"                , "" ],
+	[ ""                          , "" ],
+	[ "Holy Water"                , "" ],
+	[ ""                          , "" ],
+	[ "Death"                     , "" ],
+	[ "Count"                     , "" ],
 ];
 
 FeedEnum
@@ -1335,21 +1030,8 @@ FeedTuple
 }
 // #endregion
 
-
-
-
-
-
-
-
-
-
-
 // #region Enemy
-
 {
-
-
 
 let items =
 [
@@ -1431,10 +1113,10 @@ for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
 
 	let name = item[0];
 
-	names.push(name);
+	names.push([ name, "" ]);
 }
 
-names.push("COUNT");
+names.push([ "COUNT", "" ]);
 
 FeedEnum
 (
@@ -1443,57 +1125,6 @@ FeedEnum
 	"",
 	Flags_NoSave
 );
-
-
-
-
-
-
-// c += "export enum" + NEW_LINE;
-
-// ScopeStart();
-
-// let unknownIndex = 0;
-
-// for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
-// {
-// 	let item = items[itemIndex];
-
-// 	let name = item[0];
-// 	let helperIndex = item[1];
-
-// 	let enumName = name;
-
-// 	if (enumName == "Unknown")
-// 	{
-// 		enumName = enumName + "_" + unknownIndex;
-
-// 		unknownIndex++;
-// 	}
-
-// 	enumName = ReplaceAll(enumName, "-", " ");
-
-// 	enumName = ReplaceAll(enumName, "&", "");
-
-// 	enumName = ReplaceAll(enumName, "  ", " ");
-
-// 	enumName = ReplaceAll(enumName, " ", "_");
-
-// 	enumName = "ENEMY_" + enumName.toUpperCase();
-
-// 	c += Tabs() + enumName + "," + NEW_LINE;
-// }
-
-// c += Tabs() + "ENEMY_COUNT," + NEW_LINE;
-// c += Tabs() + "CREATE_ENEMY_COUNT = 30," + NEW_LINE;
-
-// ScopeEnd
-// (
-// 	"}",
-// 	ScopeFlags_Semicolon
-// );
-
-// c += NEW_LINE;
 
 
 
@@ -1548,21 +1179,14 @@ ScopeEnd
 c += NEW_LINE;
 
 
-}
-
 
 SaveStream("Enemy");
 
-
+}
 // #endregion
-
-
-
-
 
 // #region StyleData
 {
-
 
 let items =
 [
@@ -1572,7 +1196,6 @@ let items =
 	[ "dividend", "float" , [], 0x154 ],
 	[ "divisor" , "float" , [], 0x158 ],
 ];
-
 
 FeedTuple
 (
@@ -1584,19 +1207,15 @@ FeedTuple
 }
 // #endregion
 
-
-
-
-
 // #region FileDataStatus
 {
 
 let names =
 [
-	"Free",
-	"",
-	"",
-	"In Use",
+	[ "Free"  , "" ],
+	[ ""      , "" ],
+	[ ""      , "" ],
+	[ "In Use", "" ],
 ];
 
 FeedEnum
@@ -1608,14 +1227,6 @@ FeedEnum
 
 }
 // #endregion
-
-
-
-
-
-
-
-
 
 // #region FileDataTypeData
 {
@@ -1634,11 +1245,6 @@ FeedTuple
 
 }
 // #endregion
-
-
-
-
-
 
 // #region FileData
 {
@@ -1688,10 +1294,6 @@ FeedTuple
 }
 // #endregion
 
-
-
-
-
 // #region WeaponData
 {
 
@@ -1714,10 +1316,22 @@ FeedTuple
 }
 // #endregion
 
+// #region BodyPartData
+{
 
+let items =
+[
+	[ "motionArchives", "byte8 **"   , [], 0x68 ],
+	[ "modelDataAddr" , "ModelData *", [], 0x70 ],
+	[ "busy"          , "bool"       , [], 0xBA ],
+];
 
+FeedTuple
+(
+	"BodyPartData",
+	items,
+	288
+);
 
-
-
-
-
+}
+// #endregion

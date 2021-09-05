@@ -39,7 +39,7 @@ export struct Config
 	{
 		bool   enable         = (debug) ? true : false;
 		uint32 mission        = 17;
-		uint32 mode           = MODE_NORMAL;
+		uint32 mode           = MODE::NORMAL;
 		uint32 room           = 900;
 		uint32 position       = 0;
 		bool   ignoreRoom     = true;
@@ -47,15 +47,15 @@ export struct Config
 		uint8  floor          = 0;
 		float  hitPoints      = 20000;
 		float  magicPoints    = 10000;
-		uint8  character      = CHAR_DANTE;
+		uint8  character      = CHARACTER::DANTE;
 		uint8  costume        = (debug) ? 1 : 0;
-		uint32 style          = STYLE_TRICKSTER;
+		uint32 style          = STYLE::TRICKSTER;
 		uint8  weapons[4]     =
 		{
-			WEAPON_REBELLION,
-			WEAPON_CERBERUS,
-			WEAPON_EBONY_IVORY,
-			WEAPON_SHOTGUN,
+			WEAPON::REBELLION,
+			WEAPON::CERBERUS,
+			WEAPON::EBONY_IVORY,
+			WEAPON::SHOTGUN,
 		};
 	}
 	Arcade;
@@ -174,7 +174,7 @@ export struct Config
 
 
 
-	uint8 dotShadow = DOT_SHADOW_ENABLE;
+	uint8 dotShadow = DOT_SHADOW::ENABLE;
 	struct
 	{
 		bool foursomeTime      = false;
@@ -365,7 +365,7 @@ export struct Config
 	uint8 airTrickCountVergil[2] = { 1, 1 };
 	uint8 trickUpCount       [2] = { 1, 1 };
 	uint8 trickDownCount     [2] = { 1, 1 };
-	float channelVolumes[MAX_CHANNEL] =
+	float channelVolumes[CHANNEL::MAX] =
 	{
 		1.0f,
 		1.0f,
@@ -560,7 +560,7 @@ export struct Config
 
 	float damageActorMultiplier = 1.0f;
 	float damageEnemyMultiplier = 1.0f;
-	uint32 damageStyleRank = STYLE_RANK_NONE;
+	uint32 damageStyleRank = STYLE_RANK::NONE;
 
 
 
@@ -742,16 +742,31 @@ export struct Config
 
 	bool forceVisibleHUD = false;
 
+	_(6);
 
 
 
 
+	struct BarsData
+	{
+		bool enable = false;
+		bool run = false;
+		vec2 size = { 200, 30 };
+		vec2 pos = { 8, 8 };
+		uint32 lastX = 0;
+		uint32 lastY = 0;
+		float hitColor[4] = { 0, 1, 0, 1 };
+		float magicColor[4] = { 0, 0, 1, 1 };
+	};
 
+	BarsData barsData[PLAYER_COUNT];
 };
 
 static_assert((offsetof(Config, kalinaAnnHookGrenadeHeight) % 0x10) == 0);
 static_assert((offsetof(Config, kalinaAnnHookGrenadeTime  ) % 0x10) == 0);
 static_assert((offsetof(Config, kalinaAnnHookMultiplier   ) % 0x10) == 0);
+
+static_assert((offsetof(Config, barsData   ) % 0x10) == 0);
 
 
 
@@ -968,152 +983,152 @@ export void ApplyDefaultCharacterData
 
 	switch (character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
 			characterData =
 			{
-				CHAR_DANTE,
+				CHARACTER::DANTE,
 				0,
 				false,
 				false,
-				CHAR_DANTE,
+				CHARACTER::DANTE,
 				0,
 				{
 					{
-						STYLE_TRICKSTER,
-						STYLE_TRICKSTER,
+						STYLE::TRICKSTER,
+						STYLE::TRICKSTER,
 					},
 					{
-						STYLE_SWORDMASTER,
-						STYLE_QUICKSILVER,
+						STYLE::SWORDMASTER,
+						STYLE::QUICKSILVER,
 					},
 					{
-						STYLE_ROYALGUARD,
-						STYLE_ROYALGUARD,
+						STYLE::ROYALGUARD,
+						STYLE::ROYALGUARD,
 					},
 					{
-						STYLE_GUNSLINGER,
-						STYLE_DOPPELGANGER,
+						STYLE::GUNSLINGER,
+						STYLE::DOPPELGANGER,
 					},
 				},
 				{},
 				{
-					GAMEPAD_UP,
-					GAMEPAD_RIGHT,
-					GAMEPAD_DOWN,
-					GAMEPAD_LEFT,
+					GAMEPAD::UP,
+					GAMEPAD::RIGHT,
+					GAMEPAD::DOWN,
+					GAMEPAD::LEFT,
 				},
 				0,
 				MELEE_WEAPON_COUNT_DANTE,
 				{
-					WEAPON_REBELLION,
-					WEAPON_CERBERUS,
-					WEAPON_AGNI_RUDRA,
-					WEAPON_NEVAN,
-					WEAPON_BEOWULF_DANTE,
+					WEAPON::REBELLION,
+					WEAPON::CERBERUS,
+					WEAPON::AGNI_RUDRA,
+					WEAPON::NEVAN,
+					WEAPON::BEOWULF_DANTE,
 				},
 				0,
 				0,
-				WEAPON_SWITCH_TYPE_LINEAR,
+				WEAPON_SWITCH_TYPE::LINEAR,
 				RIGHT_STICK,
 				RANGED_WEAPON_COUNT_DANTE,
 				{
-					WEAPON_EBONY_IVORY,
-					WEAPON_SHOTGUN,
-					WEAPON_ARTEMIS,
-					WEAPON_SPIRAL,
-					WEAPON_KALINA_ANN,
+					WEAPON::EBONY_IVORY,
+					WEAPON::SHOTGUN,
+					WEAPON::ARTEMIS,
+					WEAPON::SPIRAL,
+					WEAPON::KALINA_ANN,
 				},
 				0,
 				0,
-				WEAPON_SWITCH_TYPE_LINEAR,
+				WEAPON_SWITCH_TYPE::LINEAR,
 				RIGHT_STICK
 			};
 
 			break;
 		};
-		case CHAR_BOB:
+		case CHARACTER::BOB:
 		{
 			characterData =
 			{
-				CHAR_BOB
+				CHARACTER::BOB
 			};
 
 			break;
 		};
-		case CHAR_LADY:
+		case CHARACTER::LADY:
 		{
 			characterData =
 			{
-				CHAR_LADY
+				CHARACTER::LADY
 			};
 			
 			break;
 		};
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
 			characterData =
 			{
-				CHAR_VERGIL,
+				CHARACTER::VERGIL,
 				0,
 				false,
 				false,
-				CHAR_DANTE,
+				CHARACTER::DANTE,
 				0,
 				{
 					{
-						STYLE_DARK_SLAYER,
-						STYLE_DARK_SLAYER,
+						STYLE::DARK_SLAYER,
+						STYLE::DARK_SLAYER,
 					},
 					{
-						STYLE_DARK_SLAYER,
-						STYLE_QUICKSILVER,
+						STYLE::DARK_SLAYER,
+						STYLE::QUICKSILVER,
 					},
 					{
-						STYLE_DARK_SLAYER,
-						STYLE_DARK_SLAYER,
+						STYLE::DARK_SLAYER,
+						STYLE::DARK_SLAYER,
 					},
 					{
-						STYLE_DARK_SLAYER,
-						STYLE_DOPPELGANGER,
+						STYLE::DARK_SLAYER,
+						STYLE::DOPPELGANGER,
 					},
 				},
 				{},
 				{
-					GAMEPAD_UP,
-					GAMEPAD_RIGHT,
-					GAMEPAD_DOWN,
-					GAMEPAD_LEFT,
+					GAMEPAD::UP,
+					GAMEPAD::RIGHT,
+					GAMEPAD::DOWN,
+					GAMEPAD::LEFT,
 				},
 				0,
 				MELEE_WEAPON_COUNT_VERGIL,
 				{
-					WEAPON_YAMATO_VERGIL,
-					WEAPON_BEOWULF_VERGIL,
-					WEAPON_YAMATO_FORCE_EDGE,
+					WEAPON::YAMATO_VERGIL,
+					WEAPON::BEOWULF_VERGIL,
+					WEAPON::YAMATO_FORCE_EDGE,
 				},
 				0,
 				0,
-				WEAPON_SWITCH_TYPE_LINEAR,
+				WEAPON_SWITCH_TYPE::LINEAR,
 				RIGHT_STICK
 			};
 
 			break;
 		};
-		case CHAR_BOSS_LADY:
+		case CHARACTER::BOSS_LADY:
 		{
 			characterData =
 			{
-				CHAR_BOSS_LADY
+				CHARACTER::BOSS_LADY
 			};
 			
 			break;
 		};
-		case CHAR_BOSS_VERGIL:
+		case CHARACTER::BOSS_VERGIL:
 		{
 			characterData =
 			{
-				CHAR_BOSS_VERGIL
+				CHARACTER::BOSS_VERGIL
 			};
 			
 			break;
@@ -1123,18 +1138,18 @@ export void ApplyDefaultCharacterData
 
 export void ApplyDefaultPlayerData(PlayerData & playerData)
 {
-	playerData.button = GAMEPAD_RIGHT_THUMB;
+	playerData.button = GAMEPAD::RIGHT_THUMB;
 
 	playerData.characterCount = 2;
 	playerData.characterIndex = 0;
 
-	for_all(uint8, characterIndex, CHARACTER_COUNT){
-	for_all(uint8, entityIndex   , ENTITY_COUNT   )
+	old_for_all(uint8, characterIndex, CHARACTER_COUNT){
+	old_for_all(uint8, entityIndex   , ENTITY_COUNT   )
 	{
 		ApplyDefaultCharacterData
 		(
 			playerData.characterData[characterIndex][entityIndex],
-			(characterIndex == 1) ? CHAR_VERGIL : CHAR_DANTE
+			(characterIndex == 1) ? CHARACTER::VERGIL : CHARACTER::DANTE
 		);
 	}}
 }
@@ -1273,7 +1288,7 @@ export void Config_Init
 
 	snprintf(g_path, sizeof(g_path), "%s\\%s", directoryName, filename);
 
-	for_all(uint8, playerIndex, PLAYER_COUNT)
+	old_for_all(uint8, playerIndex, PLAYER_COUNT)
 	{
 		ApplyDefaultPlayerData(defaultConfig.Actor.playerData[playerIndex]);
 		ApplyDefaultPlayerData(activeConfig.Actor.playerData[playerIndex]);

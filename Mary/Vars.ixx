@@ -1,13 +1,3 @@
-
-
-
-// @Todo: Check comments, lel.
-
-// @Todo: Move to Global.
-
-
-
-
 export module Vars;
 
 import Core;
@@ -16,254 +6,19 @@ import Core;
 
 
 
+#pragma region Enums
 
-
-namespaceStart(SPEED);
-enum
+export enum
 {
-	GLOBAL,
-	GLOBAL_2,
-	GLOBAL_3,
-	PLAYER_ACTOR,
-	ENEMY_ACTOR,
-	PLAYER_ACTOR_2,
-	ENEMY_ACTOR_2,
-	GLOBAL_4,
+	CopyStateFlags_EventData      = 1 << 0,
+	CopyStateFlags_Mode           = 1 << 1,
+	CopyStateFlags_FixPermissions = 1 << 2,
 };
-namespaceEnd();
-
-
-
-
 
 export enum
 {
 	CreateEnemyActorFlags_Reset = 1 << 0,
 };
-
-
-namespaceStart(QUICKSILVER_STAGE);
-enum
-{
-	DEFAULT,
-	TO_ON,
-	ON,
-	TO_OFF,
-	OFF,
-};
-namespaceEnd();
-
-
-
-
-
-
-
-namespaceStart(DERGIL);
-enum
-{
-	DEFAULT,
-	FORCE_OFF,
-	FORCE_ON,
-};
-namespaceEnd();
-
-
-
-
-
-
-
-namespaceStart(EFFECT);
-enum
-{
-	CLEAR = 0x8000000, // dmc3.exe+1F7CD2 - 81 8B F4CA0100 00000008 - or [rbx+0001CAF4],08000000
-};
-namespaceEnd();
-
-
-
-
-
-namespaceStart(EVENT_ENEMY);
-enum
-{
-	IDLE = 13,
-	SPAWN,
-	DEATH = 20,
-};
-namespaceEnd();
-
-
-
-
-
-export namespaceStart(EVENT_BOSS_LADY);
-enum
-{
-	PISTOL_LOCK_ON_WALK = 23,
-	PISTOL_LOCK_ON,
-	PISTOL_SHOT,
-	SMG_ROUNDHOUSE,
-	KALINA_ANN_CHARGED_SHOT,
-	KALINA_ANN_HYSTERIC,
-	KALINA_ANN_HOOK,
-	GRENADE_THROW,
-	FALL_BACK,
-	FALL_BACK_SHOOT,
-	FALL_BACK_RECOVER,
-	FALL_BACK_RECOVER_CROSSBOW,
-	FALL_BACK_HIT_FLOOR,
-	TROOPER_ROLL,
-	WHEEL_BACK,
-	WHEEL_RIGHT,
-	WHEEL_LEFT,
-	RUN,
-	BLOCK,
-	BLOCK_2,
-	BLOCK_3,
-	PISTOL_RELOAD,
-	SMG_RELOAD,
-	DEATH,
-	RUN_SHORT,
-	PISTOL_LOCK_ON_WALK_2,
-	SMG_ROUNDHOUSE_2,
-	KALINA_ANN_CHARGED_SHOT_2,
-	IDLE,
-};
-namespaceEnd();
-
-static_assert(EVENT_BOSS_LADY::IDLE == 51);
-
-
-
-
-export namespaceStart(EVENT_BOSS_VERGIL);
-enum
-{
-	IDLE = 23,
-	DEATH,
-	WALK,
-	IDLE_2,
-	IDLE_3,
-	WALK_2,
-	STRAFE,
-	STRAFE_2,
-	IDLE_4,
-	TAUNT,
-	YAMATO_COMBO,
-	YAMATO_COMBO_2,
-	YAMATO_FORCE_EDGE_COMBO,
-	YAMATO_FORCE_EDGE_COMBO_2,
-	YAMATO_UPPER_SLASH,
-	BEOWULF_COMBO,
-	BEOWULF_COMBO_2,
-	AIR_TRICK,
-	CRASH,
-	TRICK_UP,
-	TRICK_DOWN,
-	YAMATO_3_JUDGEMENT_CUTS,
-	YAMATO_RAPID_SLASH,
-	FORCE_EDGE_STINGER,
-	YAMATO_JUDGEMENT_CUT,
-	YAMATO_3_JUDGEMENT_CUTS_2,
-	AIR_TRICK_2,
-	DAMAGE,
-	BLOCK,
-	DAMAGE_2,
-	DAMAGE_3,
-	DAMAGE_4,
-	DAMAGE_5,
-	TAUNT_2,
-	STRONG_SHIELD,
-	FORCE_EDGE_ROUND_TRIP,
-	FORCE_EDGE_HELM_BREAKER,
-	FORCE_EDGE_4_HELM_BREAKERS,
-	CRASH_2,
-	TRICK_BACK,
-	YAMATO_SUPER_JUDGEMENT_CUT,
-	YAMATO_SUPER_JUDGEMENT_CUT_FOLLOW,
-	SHIELD,
-	YAMATO_DEFLECT,
-	LEAVE_DEVIL_FORM,
-	REST_IN_PEACE,
-};
-namespaceEnd();
-
-static_assert(EVENT_BOSS_VERGIL::LEAVE_DEVIL_FORM == 67);
-
-
-
-// first scan human
-
-
-/*
-
-bossVergil_variant
-
-variantBossVergil
-
-BossVergil
-
-taunt increases variable
-
-if greater than max
-
-reset
-
-b forward beowulf shield
-b back force edge shield
-
-left shoulder toggle devil true
-
-
-
-
-
-*/
-
-
-
-
-export namespaceStart(COLLISION_GROUP);
-enum
-{
-	PLAYER = 0,
-	ENEMY  = 2,
-};
-namespaceEnd();
-
-
-
-
-
-export namespaceStart(CollisionFlags);
-enum
-{
-	Zero   = 0,
-	Player = 0x30443, // dmc3.exe+173B5D - C7 86 D0020000 43040300 - mov [rsi+000002D0],00030443
-	Enemy  = 0x3050C, // dmc3.exe+173B76 - C7 86 D0020000 0C050300 - mov [rsi+000002D0],0003050C
-};
-namespaceEnd();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export enum
 {
@@ -272,35 +27,10 @@ export enum
 	Visibility_Hide,
 };
 
-
-
-
-
-
-
-
 export enum
 {
-	ACTOR_TYPE_PLAYER,
-	ACTOR_TYPE_ENEMY,
-	ACTOR_TYPE_COUNT,
-};
-
-
-
-
-
-
-export enum PLAYER
-{
-	MAX_PLAYER = 4,
-};
-
-export enum ENTITY
-{
-	ENTITY_MAIN,
-	ENTITY_CLONE,
-	MAX_ENTITY,
+	LOWER_BODY,
+	UPPER_BODY,
 };
 
 export enum
@@ -310,225 +40,6 @@ export enum
 	CHARACTER_COUNT = 3,
 	STYLE_COUNT = 4,
 	WEAPON_COUNT = 10,
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export enum CLONE_STATUS
-{
-	CLONE_STATUS_IDLE,
-	CLONE_STATUS_ACTIVE,
-	CLONE_STATUS_DECOMMISSION,
-};
-
-export enum WALL_HIKE_DIRECTION
-{
-	WALL_HIKE_DIRECTION_RIGHT,
-	WALL_HIKE_DIRECTION_LEFT,
-	WALL_HIKE_DIRECTION_FORWARD,
-};
-
-export enum CopyStateFlags
-{
-	CopyStateFlags_EventData = 1 << 0,
-	CopyStateFlags_Mode      = 1 << 1,
-	CopyStateFlags_FixPermissions      = 1 << 2,
-};
-
-export enum
-{
-	DEVIL_FLUX_START = 1,
-	DEVIL_FLUX_END   = 2,
-};
-
-/*
-3 glow on
-4 glow off
-*/
-
-export enum
-{
-	STYLE_RANK_NONE,
-	STYLE_RANK_DOPE,
-	STYLE_RANK_CRAZY,
-	STYLE_RANK_BLAST,
-	STYLE_RANK_ALRIGHT,
-	STYLE_RANK_SWEET,
-	STYLE_RANK_SHOWTIME,
-	STYLE_RANK_STYLISH,
-	STYLE_RANK_COUNT,
-};
-
-
-
-export enum WEAPON_SWITCH_TYPE
-{
-	WEAPON_SWITCH_TYPE_LINEAR,
-	WEAPON_SWITCH_TYPE_ARBITRARY,
-	WEAPON_SWITCH_TYPE_COUNT,
-};
-
-export enum ACTOR_DATA_SIZE
-{
-	ACTOR_DATA_SIZE_DANTE  = 47296,
-	ACTOR_DATA_SIZE_BOB    = 46720,
-	ACTOR_DATA_SIZE_LADY   = 33408,
-	ACTOR_DATA_SIZE_VERGIL = 47296,
-};
-
-export enum DOT_SHADOW
-{
-	DOT_SHADOW_ENABLE,
-	DOT_SHADOW_DISABLE,
-	DOT_SHADOW_DISABLE_ACTOR_ONLY,
-};
-
-
-
-export enum FILE_MODE
-{
-	FILE_MODE_MEMORY,
-	FILE_MODE_ARCHIVE,
-	FILE_MODE_LOCAL,
-};
-
-export enum
-{
-	CHANNEL_SYSTEM,
-	CHANNEL_COMMON,
-	CHANNEL_STYLE_WEAPON,
-	CHANNEL_WEAPON1,
-	CHANNEL_WEAPON2,
-	CHANNEL_WEAPON3,
-	CHANNEL_WEAPON4,
-	CHANNEL_ENEMY,
-	CHANNEL_ROOM,
-	CHANNEL_MUSIC,
-	CHANNEL_DEMO,
-	MAX_CHANNEL,
-};
-
-export enum WEAPON_STATUS
-{
-	WEAPON_STATUS_READY,
-	WEAPON_STATUS_ACTIVE,
-	WEAPON_STATUS_RETURN,
-	WEAPON_STATUS_END,
-	WEAPON_STATUS_DISABLED,
-};
-
-export enum MODE_
-{
-	MODE_EASY,
-	MODE_NORMAL,
-	MODE_HARD,
-	MODE_VERY_HARD,
-	MODE_DANTE_MUST_DIE,
-	MAX_MODE,
-};
-
-export enum CHAR_
-{
-	CHAR_DANTE,
-	CHAR_BOB,
-	CHAR_LADY,
-	CHAR_VERGIL,
-	MAX_CHAR,
-	CHAR_BOSS_LADY,
-	CHAR_BOSS_VERGIL,
-};
-
-export enum COSTUME_
-{
-	COSTUME_DANTE_DEFAULT,
-	COSTUME_DANTE_DEFAULT_NO_COAT,
-	COSTUME_DANTE_DEFAULT_TORN,
-	COSTUME_DANTE_DMC1,
-	COSTUME_DANTE_DMC1_NO_COAT,
-	COSTUME_DANTE_SPARDA,
-	COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS,
-	COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS,
-	COSTUME_BOB_DEFAULT = 0,
-	COSTUME_LADY_DEFAULT = 0,
-	COSTUME_LADY_LEATHER_JUMPSUIT,
-	COSTUME_VERGIL_DEFAULT = 0,
-	COSTUME_VERGIL_DEFAULT_NO_COAT,
-	COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS,
-	COSTUME_VERGIL_NERO_ANGELO,
-	COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS,
-	MAX_COSTUME = 8,
-	MAX_COSTUME_DANTE = 8,
-	MAX_COSTUME_BOB = 1,
-	MAX_COSTUME_LADY = 2,
-	MAX_COSTUME_VERGIL = 5,
-};
-
-export enum DEVIL
-{
-	DEVIL_REBELLION,
-	DEVIL_CERBERUS,
-	DEVIL_AGNI_RUDRA,
-	DEVIL_NEVAN,
-	DEVIL_BEOWULF,
-	DEVIL_SPARDA,
-	DEVIL_NERO_ANGELO,
-	DEVIL_YAMATO = 0,
-	MAX_DEVIL = 7,
-};
-
-export enum STYLE
-{
-	STYLE_SWORDMASTER,
-	STYLE_GUNSLINGER,
-	STYLE_TRICKSTER,
-	STYLE_ROYALGUARD,
-	STYLE_QUICKSILVER,
-	STYLE_DOPPELGANGER,
-	STYLE_DARK_SLAYER = 2,
-	MAX_STYLE = 6,
-};
-
-export enum WEAPON
-{
-	WEAPON_REBELLION,
-	WEAPON_CERBERUS,
-	WEAPON_AGNI_RUDRA,
-	WEAPON_NEVAN,
-	WEAPON_BEOWULF_DANTE,
-	WEAPON_EBONY_IVORY,
-	WEAPON_SHOTGUN,
-	WEAPON_ARTEMIS,
-	WEAPON_SPIRAL,
-	WEAPON_KALINA_ANN,
-	WEAPON_YAMATO_VERGIL = 11,
-	WEAPON_BEOWULF_VERGIL,
-	WEAPON_YAMATO_FORCE_EDGE,
-	WEAPON_YAMATO_BOB,
-	MAX_WEAPON,
-	WEAPON_VOID = 255,
-};
-
-
-
-
-export enum
-{
 	WEAPON_COUNT_DANTE = 10,
 	WEAPON_COUNT_BOB = 1,
 	WEAPON_COUNT_VERGIL = 3,
@@ -539,6 +50,280 @@ export enum
 	RANGED_WEAPON_COUNT = 5,
 	RANGED_WEAPON_COUNT_DANTE = 5,
 };
+
+export enum
+{
+	CREATE_ENEMY_COUNT = 30,
+};
+
+export enum
+{
+	RIGHT_STICK,
+	LEFT_STICK,
+	RIGHT_STICK_DEADZONE = 70,
+	LEFT_STICK_DEADZONE = 52,
+};
+
+export namespaceStart(GAMEPAD);
+enum
+{
+	LEFT_TRIGGER   = 0x0001,
+	RIGHT_TRIGGER  = 0x0002,
+	LEFT_SHOULDER  = 0x0004,
+	RIGHT_SHOULDER = 0x0008,
+	Y              = 0x0010,
+	B              = 0x0020,
+	A              = 0x0040,
+	X              = 0x0080,
+	BACK           = 0x0100,
+	LEFT_THUMB     = 0x0200,
+	RIGHT_THUMB    = 0x0400,
+	START          = 0x0800,
+	// Direction ids are the same for dpad, left stick and right stick.
+	UP             = 0x1000,
+	RIGHT          = 0x2000,
+	DOWN           = 0x4000,
+	LEFT           = 0x8000,
+};
+namespaceEnd();
+
+export namespaceStart(DIRECTION);
+enum
+{
+	UP,
+	RIGHT,
+	DOWN,
+	LEFT,
+	MAX,
+};
+namespaceEnd();
+
+export namespaceStart(BINDING);
+enum
+{
+	ITEM_SCREEN,
+	EQUIP_SCREEN,
+	MAP_SCREEN,
+	FILE_SCREEN,
+	MELEE_ATTACK,
+	JUMP,
+	STYLE_ACTION,
+	SHOOT,
+	DEVIL_TRIGGER,
+	CHANGE_GUN,
+	CHANGE_TARGET,
+	LOCK_ON,
+	CHANGE_DEVIL_ARMS,
+	DEFAULT_CAMERA,
+	TAUNT,
+};
+namespaceEnd();
+
+export namespaceStart(SCENE);
+enum
+{
+	BOOT,
+	INTRO,
+	MAIN,
+	MISSION_SELECT,
+	LOAD,
+	GAME,
+	CUTSCENE,
+	MISSION_START,
+	MISSION_RESULT,
+	GAME_OVER,
+	COUNT,
+};
+namespaceEnd();
+
+export namespaceStart(EVENT);
+enum
+{
+	INIT,
+	MAIN,
+	TELEPORT,
+	PAUSE,
+	STATUS,
+	OPTIONS,
+	DEATH,
+	GET_ITEM,
+	MESSAGE,
+	CUSTOMIZE,
+	SAVE,
+	DELETE,
+	END,
+	COUNT,
+};
+namespaceEnd();
+
+export namespaceStart(SCREEN);
+enum
+{
+	MISSION_CLEAR = 5,
+	GAME_OVER,
+	MISSION_START,
+	MISSION_SELECT,
+};
+namespaceEnd();
+
+export namespaceStart(MODE);
+enum
+{
+	EASY,
+	NORMAL,
+	HARD,
+	VERY_HARD,
+	DANTE_MUST_DIE,
+	MAX,
+	HEAVEN_OR_HELL, // Does not exist! Just kept for convenience.
+};
+namespaceEnd();
+
+export namespaceStart(COLLISION_GROUP);
+enum
+{
+	PLAYER = 0,
+	ENEMY  = 2,
+};
+namespaceEnd();
+
+export namespaceStart(CollisionFlags);
+enum
+{
+	Zero   = 0,
+	Player = 0x30443, // dmc3.exe+173B5D - C7 86 D0020000 43040300 - mov [rsi+000002D0],00030443
+	Enemy  = 0x3050C, // dmc3.exe+173B76 - C7 86 D0020000 0C050300 - mov [rsi+000002D0],0003050C
+};
+namespaceEnd();
+
+export namespaceStart(PLAYER_ACTOR_DATA_SIZE);
+enum
+{
+	DANTE = 47296,
+	BOB = 46720,
+	LADY = 33408,
+	VERGIL = 47296,
+};
+namespaceEnd();
+
+namespaceStart(ENTITY);
+enum
+{
+	MAIN,
+	CLONE,
+};
+namespaceEnd();
+
+export namespaceStart(CHARACTER);
+enum
+{
+	DANTE,
+	BOB,
+	LADY,
+	VERGIL,
+	MAX,
+	BOSS_LADY,
+	BOSS_VERGIL,
+};
+namespaceEnd();
+
+export namespaceStart(COSTUME);
+enum
+{
+	DANTE_DEFAULT,
+	DANTE_DEFAULT_NO_COAT,
+	DANTE_DEFAULT_TORN,
+	DANTE_DMC1,
+	DANTE_DMC1_NO_COAT,
+	DANTE_SPARDA,
+	DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS,
+	DANTE_SPARDA_INFINITE_MAGIC_POINTS,
+	BOB_DEFAULT = 0,
+	LADY_DEFAULT = 0,
+	LADY_LEATHER_JUMPSUIT,
+	VERGIL_DEFAULT = 0,
+	VERGIL_DEFAULT_NO_COAT,
+	VERGIL_DEFAULT_INFINITE_MAGIC_POINTS,
+	VERGIL_NERO_ANGELO,
+	VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS,
+	MAX = 8,
+	MAX_DANTE = 8,
+	MAX_BOB = 1,
+	MAX_LADY = 2,
+	MAX_VERGIL = 5,
+};
+namespaceEnd();
+
+export namespaceStart(STYLE);
+enum
+{
+	SWORDMASTER,
+	GUNSLINGER,
+	TRICKSTER,
+	ROYALGUARD,
+	QUICKSILVER,
+	DOPPELGANGER,
+	DARK_SLAYER = 2,
+	MAX = 6,
+};
+namespaceEnd();
+
+export namespaceStart(STYLE_RANK);
+enum
+{
+	NONE,
+	DOPE,
+	CRAZY,
+	BLAST,
+	ALRIGHT,
+	SWEET,
+	SHOWTIME,
+	STYLISH,
+	COUNT,
+};
+namespaceEnd();
+
+export namespaceStart(WEAPON);
+enum
+{
+	REBELLION,
+	CERBERUS,
+	AGNI_RUDRA,
+	NEVAN,
+	BEOWULF_DANTE,
+	EBONY_IVORY,
+	SHOTGUN,
+	ARTEMIS,
+	SPIRAL,
+	KALINA_ANN,
+	YAMATO_VERGIL = 11,
+	BEOWULF_VERGIL,
+	YAMATO_FORCE_EDGE,
+	YAMATO_BOB,
+	MAX,
+	VOID = 255,
+};
+namespaceEnd();
+
+export namespaceStart(WEAPON_SWITCH_TYPE);
+enum
+{
+	LINEAR,
+	ARBITRARY,
+	COUNT,
+};
+namespaceEnd();
+
+export namespaceStart(WEAPON_STATUS);
+enum
+{
+	READY,
+	ACTIVE,
+	RETURN,
+	END,
+	DISABLED,
+};
+namespaceEnd();
 
 export namespaceStart(MOTION_GROUP_DANTE);
 enum
@@ -615,38 +400,6 @@ enum
 	MAX = 34,
 };
 namespaceEnd();
-
-
-
-
-
-
-
-
-export namespaceStart(NEXT_ACTION_REQUEST_POLICY);
-enum
-{
-	IGNORE,
-	BUFFER,
-	EXECUTE,
-	// Indices
-	MELEE_ATTACK = 0,
-	SWORDMASTER_GUNSLINGER = 4,
-	JUMP_ROLL = 5,
-	ROYALGUARD = 6,
-	TRICKSTER_DARK_SLAYER = 8,
-	RANGED_ATTACK = 10,
-	END = 15,
-};
-namespaceEnd();
-
-
-
-
-
-
-
-
 
 export namespaceStart(ACTION_DANTE);
 enum
@@ -863,61 +616,458 @@ enum
 };
 namespaceEnd();
 
+// $ActorEventStart
 
-
-
-
-
-
-export enum PERMISSION
+export namespaceStart(ACTOR_EVENT);
+enum
 {
-	PERMISSION_UPDATE = 1,
-	PERMISSION_WALK_RUN = 2,
-	PERMISSION_JUMP_ROLL = 8,
-	PERMISSION_TARGET = 0x10,
-	PERMISSION_RELEASE = 0x20,
-	PERMISSION_INTERACTION_STYLE_ATTACK = 0x400,
-	PERMISSION_TRICKSTER_DARK_SLAYER = 0x1000000,
+	UNKNOWN_0,
+	UNKNOWN_1,
+	UNKNOWN_2,
+	UNKNOWN_3,
+	UNKNOWN_4,
+	JUMP,
+	UNKNOWN_5,
+	AIR_HIKE,
+	UNKNOWN_6,
+	UNKNOWN_7,
+	LOCK_ON,
+	UNKNOWN_8,
+	UNKNOWN_9,
+	UNKNOWN_10,
+	UNKNOWN_11,
+	UNKNOWN_12,
+	UNKNOWN_13,
+	ATTACK,
+	TAUNT,
+	ROYALGUARD_BLOCK,
+	ROYALGUARD_BLOCK_CONNECT,
+	ROYALGUARD_RELEASE_BLOCKED,
+	TRICKSTER_DASH,
+	TRICKSTER_SKY_STAR,
+	TRICKSTER_AIR_TRICK,
+	QUICKSILVER_TIME_LAG,
+	UNKNOWN_14,
+	DARK_SLAYER_AIR_TRICK,
+	DARK_SLAYER_TRICK_UP,
+	DARK_SLAYER_TRICK_DOWN,
+	MELEE_ATTACK_BLOCKED,
+	UNKNOWN_15,
+	UNKNOWN_16,
+	UNKNOWN_17,
+	UNKNOWN_18,
+	UNKNOWN_19,
+	UNKNOWN_20,
+	UNKNOWN_21,
+	UNKNOWN_22,
+	UNKNOWN_23,
+	NEVAN_AIR_RAID,
+	SUPER_JUMP,
+	UNKNOWN_24,
+	HOLY_WATER,
+	UNKNOWN_25,
+	DEATH,
+	COUNT,
+};
+namespaceEnd();
+
+// $ActorEventEnd
+
+static_assert(ACTOR_EVENT::JUMP                   == 5 );
+static_assert(ACTOR_EVENT::TRICKSTER_DASH         == 22);
+static_assert(ACTOR_EVENT::TRICKSTER_SKY_STAR     == 23);
+static_assert(ACTOR_EVENT::TRICKSTER_AIR_TRICK    == 24);
+static_assert(ACTOR_EVENT::DARK_SLAYER_AIR_TRICK  == 27);
+static_assert(ACTOR_EVENT::DARK_SLAYER_TRICK_UP   == 28);
+static_assert(ACTOR_EVENT::DARK_SLAYER_TRICK_DOWN == 29);
+static_assert(ACTOR_EVENT::NEVAN_AIR_RAID         == 40);
+static_assert(ACTOR_EVENT::COUNT                  == 46);
+
+export namespaceStart(EVENT_ENEMY);
+enum
+{
+	IDLE = 13,
+	SPAWN,
+	DEATH = 20,
+};
+namespaceEnd();
+
+export namespaceStart(EVENT_BOSS_LADY);
+enum
+{
+	PISTOL_LOCK_ON_WALK = 23,
+	PISTOL_LOCK_ON,
+	PISTOL_SHOT,
+	SMG_ROUNDHOUSE,
+	KALINA_ANN_CHARGED_SHOT,
+	KALINA_ANN_HYSTERIC,
+	KALINA_ANN_HOOK,
+	GRENADE_THROW,
+	FALL_BACK,
+	FALL_BACK_SHOOT,
+	FALL_BACK_RECOVER,
+	FALL_BACK_RECOVER_CROSSBOW,
+	FALL_BACK_HIT_FLOOR,
+	TROOPER_ROLL,
+	WHEEL_BACK,
+	WHEEL_RIGHT,
+	WHEEL_LEFT,
+	RUN,
+	BLOCK,
+	BLOCK_2,
+	BLOCK_3,
+	PISTOL_RELOAD,
+	SMG_RELOAD,
+	DEATH,
+	RUN_SHORT,
+	PISTOL_LOCK_ON_WALK_2,
+	SMG_ROUNDHOUSE_2,
+	KALINA_ANN_CHARGED_SHOT_2,
+	IDLE,
+};
+namespaceEnd();
+
+static_assert(EVENT_BOSS_LADY::IDLE == 51);
+
+export namespaceStart(EVENT_BOSS_VERGIL);
+enum
+{
+	IDLE = 23,
+	DEATH,
+	WALK,
+	IDLE_2,
+	IDLE_3,
+	WALK_2,
+	STRAFE,
+	STRAFE_2,
+	IDLE_4,
+	TAUNT,
+	YAMATO_COMBO,
+	YAMATO_COMBO_2,
+	YAMATO_FORCE_EDGE_COMBO,
+	YAMATO_FORCE_EDGE_COMBO_2,
+	YAMATO_UPPER_SLASH,
+	BEOWULF_COMBO,
+	BEOWULF_COMBO_2,
+	AIR_TRICK,
+	CRASH,
+	TRICK_UP,
+	TRICK_DOWN,
+	YAMATO_3_JUDGEMENT_CUTS,
+	YAMATO_RAPID_SLASH,
+	FORCE_EDGE_STINGER,
+	YAMATO_JUDGEMENT_CUT,
+	YAMATO_3_JUDGEMENT_CUTS_2,
+	AIR_TRICK_2,
+	DAMAGE,
+	BLOCK,
+	DAMAGE_2,
+	DAMAGE_3,
+	DAMAGE_4,
+	DAMAGE_5,
+	TAUNT_2,
+	STRONG_SHIELD,
+	FORCE_EDGE_ROUND_TRIP,
+	FORCE_EDGE_HELM_BREAKER,
+	FORCE_EDGE_4_HELM_BREAKERS,
+	CRASH_2,
+	TRICK_BACK,
+	YAMATO_SUPER_JUDGEMENT_CUT,
+	YAMATO_SUPER_JUDGEMENT_CUT_FOLLOW,
+	SHIELD,
+	YAMATO_DEFLECT,
+	LEAVE_DEVIL_FORM,
+	REST_IN_PEACE,
+};
+namespaceEnd();
+
+static_assert(EVENT_BOSS_VERGIL::LEAVE_DEVIL_FORM == 67);
+
+export namespaceStart(ACTOR_MODE);
+enum
+{
+	DEFAULT,
+	MISSION_12,
+	MISSION_18,
+	MISSION_19,
+};
+namespaceEnd();
+
+export namespaceStart(CLONE_STATUS);
+enum
+{
+	IDLE,
+	ACTIVE,
+	DECOMMISSION,
+};
+namespaceEnd();
+
+export namespaceStart(DEVIL);
+enum
+{
+	REBELLION,
+	CERBERUS,
+	AGNI_RUDRA,
+	NEVAN,
+	BEOWULF,
+	SPARDA,
+	NERO_ANGELO,
+	YAMATO = 0,
+	MAX = 7,
+};
+namespaceEnd();
+
+export namespaceStart(DEVIL_FLUX);
+enum
+{
+	START = 1,
+	END = 2,
+	GLOW_ON = 3,
+	GLOW_OFF = 4,
+};
+namespaceEnd();
+
+export namespaceStart(NEXT_ACTION_REQUEST_POLICY);
+enum
+{
+	IGNORE,
+	BUFFER,
+	EXECUTE,
+	// Indices
+	MELEE_ATTACK = 0,
+	SWORDMASTER_GUNSLINGER = 4,
+	JUMP_ROLL = 5,
+	ROYALGUARD = 6,
+	TRICKSTER_DARK_SLAYER = 8,
+	RANGED_ATTACK = 10,
+	END = 15,
+};
+namespaceEnd();
+
+namespaceStart(PERMISSION);
+enum
+{
+	UPDATE = 1,
+	WALK_RUN = 2,
+	JUMP_ROLL = 8,
+	TARGET = 0x10,
+	RELEASE = 0x20,
+	INTERACTION_STYLE_ATTACK = 0x400,
+	TRICKSTER_DARK_SLAYER = 0x1000000,
+};
+namespaceEnd();
+
+namespaceStart(STATE);
+enum
+{
+	ON_FLOOR = 1,
+	IN_AIR = 2,
+	BUSY = 0x10000,
+};
+namespaceEnd();
+
+export namespaceStart(QUICKSILVER_STAGE);
+enum
+{
+	DEFAULT,
+	TO_ON,
+	ON,
+	TO_OFF,
+	OFF,
+};
+namespaceEnd();
+
+export namespaceStart(WALL_HIKE_DIRECTION);
+enum
+{
+	RIGHT,
+	LEFT,
+	FORWARD,
+};
+namespaceEnd();
+
+export namespaceStart(SPEED);
+enum
+{
+	GLOBAL,
+	GLOBAL_2,
+	GLOBAL_3,
+	PLAYER_ACTOR,
+	ENEMY_ACTOR,
+	PLAYER_ACTOR_2,
+	ENEMY_ACTOR_2,
+	GLOBAL_4,
+};
+namespaceEnd();
+
+export namespaceStart(DEVIL_SPEED);
+enum
+{
+	DANTE_REBELLION,
+	DANTE_CERBERUS,
+	DANTE_AGNI_RUDRA,
+	DANTE_NEVAN,
+	DANTE_BEOWULF,
+	DANTE_SPARDA,
+	VERGIL_YAMATO = 0,
+	VERGIL_BEOWULF,
+	VERGIL_YAMATO_FORCE_EDGE,
+	VERGIL_NERO_ANGELO_YAMATO,
+	VERGIL_NERO_ANGELO_BEOWULF,
+};
+namespaceEnd();
+
+export namespaceStart(EFFECT);
+enum
+{
+	CLEAR = 0x8000000, // dmc3.exe+1F7CD2 - 81 8B F4CA0100 00000008 - or [rbx+0001CAF4],08000000
+};
+namespaceEnd();
+
+export namespaceStart(FILE_MODE);
+enum
+{
+	MEMORY,
+	ARCHIVE,
+	LOCAL,
+};
+namespaceEnd();
+
+export namespaceStart(CHANNEL);
+enum
+{
+	SYSTEM,
+	COMMON,
+	STYLE_WEAPON,
+	WEAPON1,
+	WEAPON2,
+	WEAPON3,
+	WEAPON4,
+	ENEMY,
+	ROOM,
+	MUSIC,
+	DEMO,
+	MAX,
+};
+namespaceEnd();
+
+export namespaceStart(HUD_TOP);
+enum
+{
+	UPPER_HIT_POINTS_FRAME,
+	UPPER_HIT_POINTS_BAR,
+	UPPER_HIT_POINTS_BACKGROUND,
+	LOWER_HIT_POINTS_FRAME,
+	LOWER_HIT_POINTS_BAR,
+	LOWER_HIT_POINTS_BACKGROUND,
+	MAGIC_ORBS,
+	STYLE_ICON,
+	RED_ORB_COUNTER,
+	UNKNOWN_0,
+	UNKNOWN_1,
+	FLUX,
+	UNKNOWN_2,
+};
+namespaceEnd();
+
+export namespaceStart(HUD_BOTTOM);
+enum
+{
+	RANGED_WEAPON_1,
+	RANGED_WEAPON_2,
+	MELEE_WEAPON_1,
+	MELEE_WEAPON_2,
+};
+namespaceEnd();
+
+export namespaceStart(DOT_SHADOW);
+enum
+{
+	ENABLE,
+	DISABLE,
+	DISABLE_ACTOR_ONLY,
+};
+namespaceEnd();
+
+export namespaceStart(DERGIL);
+enum
+{
+	DEFAULT,
+	FORCE_OFF,
+	FORCE_ON,
+};
+namespaceEnd();
+
+export enum
+{
+	ARCHIVE_METADATA_SIZE   = 8,
+	HEAD_METADATA_SIZE      = 32,
+	PROG_SECT_ITEM_SIZE     = 14,
+	PROG_SECT_METADATA_SIZE = 8,
+	PROG_METADATA_SIZE      = 16,
+	SMPL_ITEM_SIZE          = 12,
+	SMPL_METADATA_SIZE      = 16,
+	VAGI_ITEM_SIZE          = 16,
+	VAGI_METADATA_SIZE      = 16,
+	WAVE_METADATA_SIZE      = 64,
+	SOUND_DATA_SIZE         = 24,
+	DBST_METADATA_SIZE      = 16,
+	DBST_ITEM_SIZE          = 32,
 };
 
-export enum STATE
+export enum
 {
-	STATE_ON_FLOOR = 1,
-	STATE_IN_AIR = 2,
-	STATE_BUSY = 0x10000,
+	PROG_SECT_REBELLION,
+	PROG_SECT_CERBERUS,
+	PROG_SECT_AGNI_RUDRA,
+	PROG_SECT_NEVAN,
+	PROG_SECT_BEOWULF_DANTE,
+	PROG_SECT_EBONY_IVORY,
+	PROG_SECT_SHOTGUN,
+	PROG_SECT_ARTEMIS,
+	PROG_SECT_SPIRAL,
+	PROG_SECT_KALINA_ANN,
+	PROG_SECT_YAMATO = 11,
+	PROG_SECT_BEOWULF_VERGIL,
+	PROG_SECT_YAMATO_FORCE_EDGE,
+	PROG_SECT_SWORDMASTER = 100,
+	PROG_SECT_GUNSLINGER,
+	PROG_SECT_TRICKSTER,
+	PROG_SECT_ROYALGUARD,
+	PROG_SECT_QUICKSILVER,
+	PROG_SECT_DOPPELGANGER,
+	PROG_SECT_BATTLE_OF_BROTHERS,
+	PROG_SECT_DARK_SLAYER,
+	MAX_PROG_SECT,
 };
 
-export enum BODY_PART
+export enum
 {
-	LOWER_BODY,
-	UPPER_BODY,
-	MAX_BODY_PART,
+	HELPER_COMMON_DANTE_DEFAULT,
+	HELPER_COMMON_DANTE_NO_COAT,
+	HELPER_COMMON_VERGIL_DEFAULT,
+	HELPER_COMMON_VERGIL_NERO_ANGELO,
+	HELPER_STYLE_WEAPON_DANTE,
+	HELPER_STYLE_WEAPON_VERGIL_DEFAULT,
+	HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO,
+	HELPER_ENEMY_LESSER_ENEMIES,
+	HELPER_ENEMY_GIGAPEDE,
+	HELPER_ENEMY_CERBERUS,
+	HELPER_ENEMY_AGNI_RUDRA,
+	HELPER_ENEMY_NEVAN,
+	HELPER_ENEMY_GERYON,
+	HELPER_ENEMY_BEOWULF,
+	HELPER_ENEMY_DOPPELGANGER,
+	HELPER_ENEMY_ARKHAM,
+	HELPER_ENEMY_LADY,
+	HELPER_ENEMY_VERGIL,
+	HELPER_ENEMY_JESTER,
+	HELPER_COUNT,
 };
 
-export enum HUD_TOP
-{
-	HUD_TOP_UPPER_HIT_POINTS_FRAME,
-	HUD_TOP_UPPER_HIT_POINTS_BAR,
-	HUD_TOP_UPPER_HIT_POINTS_BACKGROUND,
-	HUD_TOP_LOWER_HIT_POINTS_FRAME,
-	HUD_TOP_LOWER_HIT_POINTS_BAR,
-	HUD_TOP_LOWER_HIT_POINTS_BACKGROUND,
-	HUD_TOP_MAGIC_ORBS,
-	HUD_TOP_STYLE_ICON,
-	HUD_TOP_RED_ORB_COUNTER,
-	HUD_TOP_UNKNOWN_1,
-	HUD_TOP_UNKNOWN_2,
-	HUD_TOP_FLUX,
-	HUD_TOP_UNKNOWN_3,
-};
+#pragma endregion
 
-export enum HUD_BOTTOM
-{
-	HUD_BOTTOM_RANGED_WEAPON_1,
-	HUD_BOTTOM_RANGED_WEAPON_2,
-	HUD_BOTTOM_MELEE_WEAPON_1,
-	HUD_BOTTOM_MELEE_WEAPON_2,
-};
+#pragma region Cache
 
 // $CacheFileStart
 
@@ -1262,339 +1412,11 @@ static_assert(countof(cacheFileHelpers) == CACHE_FILE_COUNT);
 
 // $CacheFileEnd
 
+#pragma endregion
 
+#pragma region constexpr
 
-
-export namespaceStart(SCENE);
-enum
-{
-	BOOT,
-	INTRO,
-	MAIN,
-	MISSION_SELECT,
-	LOAD,
-	GAME,
-	CUTSCENE,
-	MISSION_START,
-	MISSION_RESULT,
-	GAME_OVER,
-	COUNT,
-};
-namespaceEnd();
-
-export namespaceStart(EVENT);
-enum
-{
-	INIT,
-	MAIN,
-	TELEPORT,
-	PAUSE,
-	STATUS,
-	OPTIONS,
-	DEATH,
-	GET_ITEM,
-	MESSAGE,
-	CUSTOMIZE,
-	SAVE,
-	DELETE,
-	END,
-	COUNT,
-};
-namespaceEnd();
-
-export namespaceStart(SCREEN);
-enum
-{
-	MISSION_CLEAR = 5,
-	GAME_OVER,
-	MISSION_START,
-	MISSION_SELECT,
-};
-namespaceEnd();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export enum GAMEPAD
-{
-	GAMEPAD_LEFT_TRIGGER   = 0x0001,
-	GAMEPAD_RIGHT_TRIGGER  = 0x0002,
-	GAMEPAD_LEFT_SHOULDER  = 0x0004,
-	GAMEPAD_RIGHT_SHOULDER = 0x0008,
-	GAMEPAD_Y              = 0x0010,
-	GAMEPAD_B              = 0x0020,
-	GAMEPAD_A              = 0x0040,
-	GAMEPAD_X              = 0x0080,
-	GAMEPAD_BACK           = 0x0100,
-	GAMEPAD_LEFT_THUMB     = 0x0200,
-	GAMEPAD_RIGHT_THUMB    = 0x0400,
-	GAMEPAD_START          = 0x0800,
-	// Direction ids are the same for dpad, left stick and right stick.
-	GAMEPAD_UP             = 0x1000,
-	GAMEPAD_RIGHT          = 0x2000,
-	GAMEPAD_DOWN           = 0x4000,
-	GAMEPAD_LEFT           = 0x8000,
-};
-
-export enum DIRECTION
-{
-	DIRECTION_UP,
-	DIRECTION_RIGHT,
-	DIRECTION_DOWN,
-	DIRECTION_LEFT,
-	MAX_DIRECTION,
-};
-
-
-
-
-export enum
-{
-	RIGHT_STICK,
-	LEFT_STICK,
-	RIGHT_STICK_DEADZONE = 70,
-	LEFT_STICK_DEADZONE = 52,
-};
-
-
-
-
-
-export enum BINDING
-{
-	BINDING_ITEM_SCREEN,
-	BINDING_EQUIP_SCREEN,
-	BINDING_MAP_SCREEN,
-	BINDING_FILE_SCREEN,
-	BINDING_MELEE_ATTACK,
-	BINDING_JUMP,
-	BINDING_STYLE_ACTION,
-	BINDING_SHOOT,
-	BINDING_DEVIL_TRIGGER,
-	BINDING_CHANGE_GUN,
-	BINDING_CHANGE_TARGET,
-	BINDING_LOCK_ON,
-	BINDING_CHANGE_DEVIL_ARMS,
-	BINDING_DEFAULT_CAMERA,
-	BINDING_TAUNT,
-};
-
-
-
-
-
-
-
-
-
-
-
-export enum DEVIL_SPEED
-{
-	DEVIL_SPEED_DANTE_REBELLION,
-	DEVIL_SPEED_DANTE_CERBERUS,
-	DEVIL_SPEED_DANTE_AGNI_RUDRA,
-	DEVIL_SPEED_DANTE_NEVAN,
-	DEVIL_SPEED_DANTE_BEOWULF,
-	DEVIL_SPEED_DANTE_SPARDA,
-	DEVIL_SPEED_VERGIL_YAMATO = 0,
-	DEVIL_SPEED_VERGIL_BEOWULF,
-	DEVIL_SPEED_VERGIL_YAMATO_FORCE_EDGE,
-	DEVIL_SPEED_VERGIL_NERO_ANGELO_YAMATO,
-	DEVIL_SPEED_VERGIL_NERO_ANGELO_BEOWULF,
-};
-
-
-/*
-
-opening a can of worms
-
-
-
-
-
-*/
-
-
-
-
-
-
-
-// $ActorEventStart
-
-export namespaceStart(ACTOR_EVENT);
-enum
-{
-	UNKNOWN_0,
-	UNKNOWN_1,
-	UNKNOWN_2,
-	UNKNOWN_3,
-	UNKNOWN_4,
-	JUMP,
-	UNKNOWN_5,
-	AIR_HIKE,
-	UNKNOWN_6,
-	UNKNOWN_7,
-	LOCK_ON,
-	UNKNOWN_8,
-	UNKNOWN_9,
-	UNKNOWN_10,
-	UNKNOWN_11,
-	UNKNOWN_12,
-	UNKNOWN_13,
-	ATTACK,
-	TAUNT,
-	ROYALGUARD_BLOCK,
-	ROYALGUARD_BLOCK_CONNECT,
-	ROYALGUARD_RELEASE_BLOCKED,
-	TRICKSTER_DASH,
-	TRICKSTER_SKY_STAR,
-	TRICKSTER_AIR_TRICK,
-	QUICKSILVER_TIME_LAG,
-	UNKNOWN_14,
-	DARK_SLAYER_AIR_TRICK,
-	DARK_SLAYER_TRICK_UP,
-	DARK_SLAYER_TRICK_DOWN,
-	MELEE_ATTACK_BLOCKED,
-	UNKNOWN_15,
-	UNKNOWN_16,
-	UNKNOWN_17,
-	UNKNOWN_18,
-	UNKNOWN_19,
-	UNKNOWN_20,
-	UNKNOWN_21,
-	UNKNOWN_22,
-	UNKNOWN_23,
-	NEVAN_AIR_RAID,
-	SUPER_JUMP,
-	UNKNOWN_24,
-	HOLY_WATER,
-	UNKNOWN_25,
-	DEATH,
-	COUNT,
-};
-namespaceEnd();
-
-// $ActorEventEnd
-
-static_assert(ACTOR_EVENT::JUMP                   == 5 );
-static_assert(ACTOR_EVENT::TRICKSTER_DASH         == 22);
-static_assert(ACTOR_EVENT::TRICKSTER_SKY_STAR     == 23);
-static_assert(ACTOR_EVENT::TRICKSTER_AIR_TRICK    == 24);
-static_assert(ACTOR_EVENT::DARK_SLAYER_AIR_TRICK  == 27);
-static_assert(ACTOR_EVENT::DARK_SLAYER_TRICK_UP   == 28);
-static_assert(ACTOR_EVENT::DARK_SLAYER_TRICK_DOWN == 29);
-static_assert(ACTOR_EVENT::NEVAN_AIR_RAID         == 40);
-static_assert(ACTOR_EVENT::COUNT                  == 46);
-
-
-
-
-
-
-
-// export namespaceStart(ACTOR_EVENT);
-// enum
-// {
-// 	JUMP = 5,
-// 	AIR_HIKE = 7,
-
-
-
-
-// 	ATTACK = 17,
-// 	TAUNT,
-// 	ROYALGUARD_BLOCK,
-// 	ROYALGUARD_BLOCK_CONNECT,
-// 	ATTACK_BLOCKED,
-// 	TRICKSTER_DASH,
-// 	TRICKSTER_SKY_STAR,
-// 	TRICKSTER_AIR_TRICK,
-// 	QUICKSILVER_TIME_LAG,
-// 	DARK_SLAYER_AIR_TRICK = 27,
-// 	DARK_SLAYER_TRICK_UP,
-// 	DARK_SLAYER_TRICK_DOWN,
-// 	MELEE_ATTACK_BLOCKED,
-// 	NEVAN_AIR_RAID = 40,
-// 	SUPER_JUMP,
-// 	HOLY_WATER = 43,
-// 	DEATH = 45,
-// };
-// namespaceEnd();
-
-// export namespaceStart(ACTOR_EVENT_VERGIL);
-// enum
-// {
-
-// };
-// namespaceEnd();
-
-
-
-
-
-
-
-
-
-
-
-export enum ACTOR_MODE
-{
-	ACTOR_MODE_DEFAULT,
-	ACTOR_MODE_MISSION_12,
-	ACTOR_MODE_MISSION_18,
-	ACTOR_MODE_MISSION_19,
-};
-
-
-
-
-
-
-
-
-// @Todo: Change to count.
-
-export constexpr uint16 costumeFileIdsDante[MAX_COSTUME_DANTE] =
+export constexpr uint16 costumeFileIdsDante[COSTUME::MAX_DANTE] =
 {
 	pl000,
 	pl011,
@@ -1606,18 +1428,18 @@ export constexpr uint16 costumeFileIdsDante[MAX_COSTUME_DANTE] =
 	pl018,
 };
 
-export constexpr uint16 costumeFileIdsBob[MAX_COSTUME_BOB] =
+export constexpr uint16 costumeFileIdsBob[COSTUME::MAX_BOB] =
 {
 	pl001,
 };
 
-export constexpr uint16 costumeFileIdsLady[MAX_COSTUME_LADY] =
+export constexpr uint16 costumeFileIdsLady[COSTUME::MAX_LADY] =
 {
 	pl002,
 	em034,
 };
 
-export constexpr uint16 costumeFileIdsVergil[MAX_COSTUME_VERGIL] =
+export constexpr uint16 costumeFileIdsVergil[COSTUME::MAX_VERGIL] =
 {
 	pl021,
 	pl023,
@@ -1626,12 +1448,12 @@ export constexpr uint16 costumeFileIdsVergil[MAX_COSTUME_VERGIL] =
 	pl026,
 };
 
-export constexpr uint8 costumeCounts[MAX_CHAR] =
+export constexpr uint8 costumeCounts[CHARACTER::MAX] =
 {
-	MAX_COSTUME_DANTE,
-	MAX_COSTUME_BOB,
-	MAX_COSTUME_LADY,
-	MAX_COSTUME_VERGIL,
+	COSTUME::MAX_DANTE,
+	COSTUME::MAX_BOB,
+	COSTUME::MAX_LADY,
+	COSTUME::MAX_VERGIL,
 };
 
 export constexpr uint16 devilFileIdsDante[6] =
@@ -1644,23 +1466,23 @@ export constexpr uint16 devilFileIdsDante[6] =
 	pl017,
 };
 
-export constexpr uint8 weaponDevilIds[MAX_WEAPON] =
+export constexpr uint8 weaponDevilIds[WEAPON::MAX] =
 {
-	DEVIL_REBELLION,
-	DEVIL_CERBERUS,
-	DEVIL_AGNI_RUDRA,
-	DEVIL_NEVAN,
-	DEVIL_BEOWULF,
+	DEVIL::REBELLION,
+	DEVIL::CERBERUS,
+	DEVIL::AGNI_RUDRA,
+	DEVIL::NEVAN,
+	DEVIL::BEOWULF,
 	0,
 	0,
 	0,
 	0,
 	0,
 	0,
-	DEVIL_YAMATO,
-	DEVIL_BEOWULF,
-	DEVIL_YAMATO,
-	DEVIL_YAMATO,
+	DEVIL::YAMATO,
+	DEVIL::BEOWULF,
+	DEVIL::YAMATO,
+	DEVIL::YAMATO,
 };
 
 export constexpr uint32 hudTopOffs[] =
@@ -1688,61 +1510,105 @@ export constexpr uint32 hudBottomOffs[] =
 	0x1F00,
 };
 
-#define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
-
-#pragma pack(push, 1)
-
-IntroduceSizeStruct(32);
-IntroduceSizeStruct(112);
-IntroduceSizeStruct(192);
-IntroduceSizeStruct(240);
-IntroduceSizeStruct(288);
-IntroduceSizeStruct(768);
-
-
-
-// $EventDataStart
-
-export struct EventData
+export constexpr uint32 itemVitalStarSmallPrices[] =
 {
-	_(24);
-	uint32 room; // 0x18
-	uint32 position; // 0x1C
-	uint32 event; // 0x20
-	uint32 subevent; // 0x24
-	uint32 screen; // 0x28
-	uint32 nextScreen; // 0x2C
+	500,
+	750,
+	1200,
+	1800,
+	2500,
+	3500,
+	5000,
 };
 
-static_assert(offsetof(EventData, room) == 0x18);
-static_assert(offsetof(EventData, position) == 0x1C);
-static_assert(offsetof(EventData, event) == 0x20);
-static_assert(offsetof(EventData, subevent) == 0x24);
-static_assert(offsetof(EventData, screen) == 0x28);
-static_assert(offsetof(EventData, nextScreen) == 0x2C);
-
-static_assert(sizeof(EventData) == 48);
-
-// $EventDataEnd
-
-// $NextEventDataStart
-
-export struct NextEventData
+export constexpr uint32 itemVitalStarLargePrices[] =
 {
-	_(356);
-	uint16 room; // 0x164
-	uint16 position; // 0x166
+	2000,
+	3000,
+	4500,
+	6000,
+	7500,
+	10000,
 };
 
-static_assert(offsetof(NextEventData, room) == 0x164);
-static_assert(offsetof(NextEventData, position) == 0x166);
+export constexpr uint32 itemDevilStarPrices[] =
+{
+	3000,
+	5000,
+	7000,
+	9000,
+	10000,
+};
 
-static_assert(sizeof(NextEventData) == 360);
+export constexpr uint32 itemHolyWaterPrices[] =
+{
+	10000,
+	15000,
+	20000,
+	25000,
+	30000,
+};
 
-// $NextEventDataEnd
+export constexpr uint32 itemBlueOrbPrices[] =
+{
+	5000,
+	10000,
+	15000,
+	20000,
+	30000,
+	50000,
+};
 
+export constexpr uint32 itemPurpleOrbPrices[] =
+{
+	3000,
+	5000,
+	7000,
+	9000,
+	10000,
+	20000,
+	30000,
+};
 
+export constexpr uint32 itemGoldOrbPrices[] =
+{
+	10000,
+	15000,
+	20000,
+};
 
+export constexpr uint32 itemYellowOrbPrices[] =
+{
+	1000,
+	1500,
+	2000,
+	3000,
+};
+
+export constexpr uint32 motionArchivesOffs[] =
+{
+	0x698 , // Damned Chessmen Pawn, Knight, Bishop, Rook, Queen, King
+	0x6C0 , // Blood-Goyle
+	0x6D0 , // Pride, Gluttony, Lust, Sloth, Wrath, Envy
+	0x780 , // Soul Eater
+	0xA58 , // Enigma
+	0xA98 , // Doppelganger
+	0x1130, // Geryon
+	0x1158, // Agni & Rudra
+	0x14F0, // The Fallen
+	0x1B48, // Arkham
+	0x2160, // Dullahan
+	0x23C0, // Jester
+	0x2C20, // Arachne
+	0x2E18, // Nevan
+	0x38A0, // Player Actor
+	0x3940, // Greed, Abyss
+	0x4020, // Beowulf
+	0x49C8, // Hell Vanguard
+	0x5410, // Lady
+	0xD7B0, // Cerberus
+	0xE7D0, // Vergil
+};
 
 // $ItemStart
 
@@ -1905,803 +1771,6 @@ export enum
 };
 
 // $ItemEnd
-
-
-/*
-
-prices
-
-BUY_VITAL_STAR_SMALL,
-
-500
-750
-1200
-1800
-2500
-3500
-5000
-
-BUY_VITAL_STAR_LARGE,
-
-2000
-3000
-4500
-6000
-7500
-10000
-
-BUY_DEVIL_STAR,
-
-3000
-5000
-7000
-9000
-10000
-
-
-
-
-BUY_HOLY_WATER,
-10000
-15000
-20000
-25000
-30000
-
-
-
-
-
-
-BUY_BLUE_ORB,
-
-
-5000
-10000
-15000
-20000
-30000
-50000
-
-
-
-
-BUY_PURPLE_ORB,
-
-3000
-5000
-7000
-9000
-10000
-20000
-30000
-
-
-
-
-
-BUY_GOLD_ORB,
-
-10000
-15000
-20000
-
-
-
-
-BUY_YELLOW_ORB,
-
-1000
-1500
-2000
-3000
-
-
-
-
-
-
-
-
-
-
-
-*/
-
-
-
-
-
-
-
-
-
-// $SessionDataStart
-
-export struct SessionData
-{
-	uint32 mission; // 0
-	_(8);
-	uint32 mode; // 0xC
-	bool oneHitKill; // 0x10
-	_(1);
-	bool enableTutorial; // 0x12
-	bool useGoldOrb; // 0x13
-	uint8 character; // 0x14
-	_(7);
-	bool bloodyPalace; // 0x1C
-	_(15);
-	uint32 redOrbs; // 0x2C
-	uint8 itemCounts[20]; // 0x30
-	_(2);
-	bool unlock[14]; // 0x46
-	_(48);
-	uint8 weapons[8]; // 0x84
-	_(20);
-	uint32 rangedWeaponLevels[5]; // 0xA0
-	_(20);
-	uint32 meleeWeaponIndex; // 0xC8
-	uint32 rangedWeaponIndex; // 0xCC
-	uint8 costume; // 0xD0
-	bool unlockDevilTrigger; // 0xD1
-	_(2);
-	float hitPoints; // 0xD4
-	float magicPoints; // 0xD8
-	uint32 style; // 0xDC
-	uint32 styleLevel[6]; // 0xE0
-	float styleExperience[6]; // 0xF8
-	byte32 expertise[8]; // 0x110
-};
-
-static_assert(offsetof(SessionData, mission) == 0);
-static_assert(offsetof(SessionData, mode) == 0xC);
-static_assert(offsetof(SessionData, oneHitKill) == 0x10);
-static_assert(offsetof(SessionData, enableTutorial) == 0x12);
-static_assert(offsetof(SessionData, useGoldOrb) == 0x13);
-static_assert(offsetof(SessionData, character) == 0x14);
-static_assert(offsetof(SessionData, bloodyPalace) == 0x1C);
-static_assert(offsetof(SessionData, redOrbs) == 0x2C);
-static_assert(offsetof(SessionData, itemCounts) == 0x30);
-static_assert(offsetof(SessionData, unlock) == 0x46);
-static_assert(offsetof(SessionData, weapons) == 0x84);
-static_assert(offsetof(SessionData, rangedWeaponLevels) == 0xA0);
-static_assert(offsetof(SessionData, meleeWeaponIndex) == 0xC8);
-static_assert(offsetof(SessionData, rangedWeaponIndex) == 0xCC);
-static_assert(offsetof(SessionData, costume) == 0xD0);
-static_assert(offsetof(SessionData, unlockDevilTrigger) == 0xD1);
-static_assert(offsetof(SessionData, hitPoints) == 0xD4);
-static_assert(offsetof(SessionData, magicPoints) == 0xD8);
-static_assert(offsetof(SessionData, style) == 0xDC);
-static_assert(offsetof(SessionData, styleLevel) == 0xE0);
-static_assert(offsetof(SessionData, styleExperience) == 0xF8);
-static_assert(offsetof(SessionData, expertise) == 0x110);
-
-static_assert(sizeof(SessionData) == 304);
-
-// $SessionDataEnd
-
-
-// @Todo: Add item entries.
-// @Todo: Create item buy count indices.
-
-
-
-
-// export enum
-// {
-// 	ITEM_GOLD_ORB = 5,
-// 	ITEM_YELLOW_ORB,
-// 	ITEM_BLUE_ORB,
-// 	ITEM_PURPLE_ORB,
-// 	ITEM_BLUE_ORB_FRAGMENT,
-
-
-
-
-
-
-// 	ITEM_VITAL_STAR_LARGE = 16,
-// 	ITEM_VITAL_STAR_SMALL,
-// 	ITEM_DEVIL_STAR,
-// 	ITEM_HOLY_WATER,
-
-// 	ITEM_ASTRONOMICAL_BOARD = 36,
-// 	ITEM_VAJURA,
-// 	ITEM_,
-// 	ITEM_,
-// 	ITEM_,
-// 	ITEM_,
-// 	ITEM_,
-// 	ITEM_,
-
-
-
-
-// };
-
-// export enum
-// {
-// 	BUY_ITEM_VITAL_STAR_SMALL,
-// 	BUY_ITEM_VITAL_STAR_LARGE,
-// 	BUY_ITEM_DEVIL_STAR,
-// 	BUY_ITEM_HOLY_WATER,
-// 	BUY_ITEM_BLUE_ORB,
-// 	BUY_ITEM_PURPLE_ORB,
-// 	BUY_ITEM_GOLD_ORB,
-// 	BUY_ITEM_YELLOW_ORB,
-// };
-
-
-
-
-
-
-
-
-
-// $MissionDataStart
-
-export struct MissionData
-{
-	_(56);
-	uint32 redOrbs; // 0x38
-	uint8 itemCounts[62]; // 0x3C
-	uint8 buyCounts[8]; // 0x7A
-	_(38);
-	uint32 frameCount; // 0xA8
-	uint32 damage; // 0xAC
-	uint32 orbsCollected; // 0xB0
-	uint32 itemsUsed; // 0xB4
-	uint32 killCount; // 0xB8
-	_(4);
-};
-
-static_assert(offsetof(MissionData, redOrbs) == 0x38);
-static_assert(offsetof(MissionData, itemCounts) == 0x3C);
-static_assert(offsetof(MissionData, buyCounts) == 0x7A);
-static_assert(offsetof(MissionData, frameCount) == 0xA8);
-static_assert(offsetof(MissionData, damage) == 0xAC);
-static_assert(offsetof(MissionData, orbsCollected) == 0xB0);
-static_assert(offsetof(MissionData, itemsUsed) == 0xB4);
-static_assert(offsetof(MissionData, killCount) == 0xB8);
-
-static_assert(sizeof(MissionData) == 192);
-
-// $MissionDataEnd
-
-// $MissionActorDataStart
-
-export struct QueuedMissionActorData
-{
-	uint8 weapons[5]; // 0
-	_(75);
-	float hitPoints; // 0x50
-	float magicPoints; // 0x54
-	uint32 style; // 0x58
-	uint32 styleLevel[6]; // 0x5C
-	float styleExperience[6]; // 0x74
-	byte32 expertise[8]; // 0x8C
-};
-
-static_assert(offsetof(QueuedMissionActorData, weapons) == 0);
-static_assert(offsetof(QueuedMissionActorData, hitPoints) == 0x50);
-static_assert(offsetof(QueuedMissionActorData, magicPoints) == 0x54);
-static_assert(offsetof(QueuedMissionActorData, style) == 0x58);
-static_assert(offsetof(QueuedMissionActorData, styleLevel) == 0x5C);
-static_assert(offsetof(QueuedMissionActorData, styleExperience) == 0x74);
-static_assert(offsetof(QueuedMissionActorData, expertise) == 0x8C);
-static_assert(sizeof(QueuedMissionActorData) == 172);
-
-export struct ActiveMissionActorData
-{
-	uint8 weapons[5]; // 0
-	_(51);
-	uint32 style; // 0x38
-	uint32 styleLevel; // 0x3C
-	byte32 expertise[8]; // 0x40
-	float styleExperience; // 0x60
-	float hitPoints; // 0x64
-	float maxHitPoints; // 0x68
-	float magicPoints; // 0x6C
-	float maxMagicPoints; // 0x70
-};
-
-static_assert(offsetof(ActiveMissionActorData, weapons) == 0);
-static_assert(offsetof(ActiveMissionActorData, style) == 0x38);
-static_assert(offsetof(ActiveMissionActorData, styleLevel) == 0x3C);
-static_assert(offsetof(ActiveMissionActorData, expertise) == 0x40);
-static_assert(offsetof(ActiveMissionActorData, styleExperience) == 0x60);
-static_assert(offsetof(ActiveMissionActorData, hitPoints) == 0x64);
-static_assert(offsetof(ActiveMissionActorData, maxHitPoints) == 0x68);
-static_assert(offsetof(ActiveMissionActorData, magicPoints) == 0x6C);
-static_assert(offsetof(ActiveMissionActorData, maxMagicPoints) == 0x70);
-static_assert(sizeof(ActiveMissionActorData) == 116);
-
-// $MissionActorDataEnd
-
-// $StyleDataStart
-
-export struct StyleData
-{
-	uint32 rank; // 0
-	float meter; // 4
-	_(328);
-	float quotient; // 0x150
-	float dividend; // 0x154
-	float divisor; // 0x158
-	_(4);
-};
-
-static_assert(offsetof(StyleData, rank) == 0);
-static_assert(offsetof(StyleData, meter) == 4);
-static_assert(offsetof(StyleData, quotient) == 0x150);
-static_assert(offsetof(StyleData, dividend) == 0x154);
-static_assert(offsetof(StyleData, divisor) == 0x158);
-
-static_assert(sizeof(StyleData) == 352);
-
-// $StyleDataEnd
-
-
-// $CollisionDataMetadataStart
-
-export struct CollisionDataMetadata
-{
-	_(48);
-	vec4 data[8]; // 0x30
-	_(32);
-	void * collisionDataAddr; // 0xD0
-	_(8);
-	vec4 data2[3]; // 0xE0
-	byte8 * files[2]; // 0x110
-	uint32 mode; // 0x120
-	_(12);
-	vec4 data3; // 0x130
-	float heightAdjustment; // 0x140
-};
-
-static_assert(offsetof(CollisionDataMetadata, data) == 0x30);
-static_assert(offsetof(CollisionDataMetadata, collisionDataAddr) == 0xD0);
-static_assert(offsetof(CollisionDataMetadata, data2) == 0xE0);
-static_assert(offsetof(CollisionDataMetadata, files) == 0x110);
-static_assert(offsetof(CollisionDataMetadata, mode) == 0x120);
-static_assert(offsetof(CollisionDataMetadata, data3) == 0x130);
-static_assert(offsetof(CollisionDataMetadata, heightAdjustment) == 0x140);
-
-static_assert(sizeof(CollisionDataMetadata) == 324);
-
-// $CollisionDataMetadataEnd
-
-// $CollisionDataStart
-
-export struct CollisionData
-{
-	_(4);
-	uint32 group; // 4
-	_(128);
-	CollisionDataMetadata * metadataAddr; // 0x88
-	_(160);
-	byte8 * baseAddr; // 0x130
-	_(8);
-	byte32 flags; // 0x140
-	_(204);
-	vec4 data[8]; // 0x210
-};
-
-static_assert(offsetof(CollisionData, group) == 4);
-static_assert(offsetof(CollisionData, metadataAddr) == 0x88);
-static_assert(offsetof(CollisionData, baseAddr) == 0x130);
-static_assert(offsetof(CollisionData, flags) == 0x140);
-static_assert(offsetof(CollisionData, data) == 0x210);
-
-static_assert(sizeof(CollisionData) == 656);
-
-// $CollisionDataEnd
-
-// $CameraDataStart
-
-export struct CameraData
-{
-	_(32);
-	float fov; // 0x20
-	_(76);
-	vec4 data[2]; // 0x70
-	_(32);
-	byte8 * targetBaseAddr; // 0xB0
-	_(24);
-	float height; // 0xD0
-	float tilt; // 0xD4
-	float distance; // 0xD8
-	_(4);
-	float distanceLockOn; // 0xE0
-	_(284);
-};
-
-static_assert(offsetof(CameraData, fov) == 0x20);
-static_assert(offsetof(CameraData, data) == 0x70);
-static_assert(offsetof(CameraData, targetBaseAddr) == 0xB0);
-static_assert(offsetof(CameraData, height) == 0xD0);
-static_assert(offsetof(CameraData, tilt) == 0xD4);
-static_assert(offsetof(CameraData, distance) == 0xD8);
-static_assert(offsetof(CameraData, distanceLockOn) == 0xE0);
-
-static_assert(sizeof(CameraData) == 512);
-
-// $CameraDataEnd
-
-
-
-
-
-export struct NewArchiveMetadata
-{
-	byte8 signature[4];
-	uint32 fileCount;
-	uint32 fileOffs[1];
-
-	// operator byte8 *()
-	// {
-	// 	return reinterpret_cast<byte8 *>(this);
-	// }
-
-
-	byte8 * operator[](uint32 fileIndex)
-	{
-		if (fileIndex >= fileCount)
-		{
-			return 0;
-		}
-
-		auto file = reinterpret_cast<byte8 *>(this);
-
-		auto fileOff = fileOffs[fileIndex];
-
-		return (file + fileOff);
-	}
-};
-
-
-// @Todo: Update if statements.
-// @Todo: Create preprocess script.
-
-// @Todo: Update.
-
-// struct ArchiveData
-// {
-// 	byte8 signature[4];
-// 	uint32 fileCount;
-// 	uint32 fileOff[128];
-// };
-
-export struct ArchiveMetadata
-{
-	byte8 signature[4];
-	uint32 fileCount;
-	uint32 fileOffs[1];
-};
-
-
-
-
-
-
-
-
-
-// $FileDataStatusStart
-
-export namespaceStart(FILE_DATA_STATUS);
-enum
-{
-	FREE,
-	UNKNOWN_0,
-	UNKNOWN_1,
-	IN_USE,
-};
-namespaceEnd();
-
-// $FileDataStatusEnd
-
-static_assert(FILE_DATA_STATUS::IN_USE == 3);
-
-
-
-
-// $FileDataTypeDataStart
-
-export struct FileDataTypeData
-{
-	_(8);
-	const char * typeName; // 8
-};
-
-static_assert(offsetof(FileDataTypeData, typeName) == 8);
-
-static_assert(sizeof(FileDataTypeData) == 16);
-
-// $FileDataTypeDataEnd
-
-
-
-// $FileDataStart
-
-export struct FileData
-{
-	uint32 group; // 0
-	uint32 status; // 4
-	_(16);
-	FileDataTypeData * typeDataAddr; // 0x18
-	byte8 * file; // 0x20
-	_(32);
-};
-
-static_assert(offsetof(FileData, group) == 0);
-static_assert(offsetof(FileData, status) == 4);
-static_assert(offsetof(FileData, typeDataAddr) == 0x18);
-static_assert(offsetof(FileData, file) == 0x20);
-
-static_assert(sizeof(FileData) == 72);
-
-// $FileDataEnd
-
-// $FileDataMetadataStart
-
-export struct FileDataMetadata
-{
-	void * funcAddrs; // 0
-	void * lastAddr; // 8
-	void * nextAddr; // 0x10
-	FileData * fileDataAddr; // 0x18
-	_(4);
-	uint32 category; // 0x24
-	uint32 fileSetIndex; // 0x28
-	_(4);
-};
-
-static_assert(offsetof(FileDataMetadata, funcAddrs) == 0);
-static_assert(offsetof(FileDataMetadata, lastAddr) == 8);
-static_assert(offsetof(FileDataMetadata, nextAddr) == 0x10);
-static_assert(offsetof(FileDataMetadata, fileDataAddr) == 0x18);
-static_assert(offsetof(FileDataMetadata, category) == 0x24);
-static_assert(offsetof(FileDataMetadata, fileSetIndex) == 0x28);
-
-static_assert(sizeof(FileDataMetadata) == 48);
-
-// $FileDataMetadataEnd
-
-
-
-
-
-
-
-
-
-
-export constexpr uint32 itemVitalStarSmallPrices[] =
-{
-	500,
-	750,
-	1200,
-	1800,
-	2500,
-	3500,
-	5000,
-};
-
-export constexpr uint32 itemVitalStarLargePrices[] =
-{
-	2000,
-	3000,
-	4500,
-	6000,
-	7500,
-	10000,
-};
-
-export constexpr uint32 itemDevilStarPrices[] =
-{
-	3000,
-	5000,
-	7000,
-	9000,
-	10000,
-};
-
-export constexpr uint32 itemHolyWaterPrices[] =
-{
-	10000,
-	15000,
-	20000,
-	25000,
-	30000,
-};
-
-export constexpr uint32 itemBlueOrbPrices[] =
-{
-	5000,
-	10000,
-	15000,
-	20000,
-	30000,
-	50000,
-};
-
-export constexpr uint32 itemPurpleOrbPrices[] =
-{
-	3000,
-	5000,
-	7000,
-	9000,
-	10000,
-	20000,
-	30000,
-};
-
-export constexpr uint32 itemGoldOrbPrices[] =
-{
-	10000,
-	15000,
-	20000,
-};
-
-export constexpr uint32 itemYellowOrbPrices[] =
-{
-	1000,
-	1500,
-	2000,
-	3000,
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export enum
-{
-	ARCHIVE_METADATA_SIZE   = 8,
-	HEAD_METADATA_SIZE      = 32,
-	PROG_SECT_ITEM_SIZE     = 14,
-	PROG_SECT_METADATA_SIZE = 8,
-	PROG_METADATA_SIZE      = 16,
-	SMPL_ITEM_SIZE          = 12,
-	SMPL_METADATA_SIZE      = 16,
-	VAGI_ITEM_SIZE          = 16,
-	VAGI_METADATA_SIZE      = 16,
-	WAVE_METADATA_SIZE      = 64,
-	SOUND_DATA_SIZE         = 24,
-	DBST_METADATA_SIZE      = 16,
-	DBST_ITEM_SIZE          = 32,
-};
-
-export enum
-{
-	PROG_SECT_REBELLION,
-	PROG_SECT_CERBERUS,
-	PROG_SECT_AGNI_RUDRA,
-	PROG_SECT_NEVAN,
-	PROG_SECT_BEOWULF_DANTE,
-	PROG_SECT_EBONY_IVORY,
-	PROG_SECT_SHOTGUN,
-	PROG_SECT_ARTEMIS,
-	PROG_SECT_SPIRAL,
-	PROG_SECT_KALINA_ANN,
-	PROG_SECT_YAMATO = 11,
-	PROG_SECT_BEOWULF_VERGIL,
-	PROG_SECT_YAMATO_FORCE_EDGE,
-	PROG_SECT_SWORDMASTER = 100,
-	PROG_SECT_GUNSLINGER,
-	PROG_SECT_TRICKSTER,
-	PROG_SECT_ROYALGUARD,
-	PROG_SECT_QUICKSILVER,
-	PROG_SECT_DOPPELGANGER,
-	PROG_SECT_BATTLE_OF_BROTHERS,
-	PROG_SECT_DARK_SLAYER,
-	MAX_PROG_SECT,
-};
-
-export enum
-{
-	HELPER_COMMON_DANTE_DEFAULT,
-	HELPER_COMMON_DANTE_NO_COAT,
-	HELPER_COMMON_VERGIL_DEFAULT,
-	HELPER_COMMON_VERGIL_NERO_ANGELO,
-	HELPER_STYLE_WEAPON_DANTE,
-	HELPER_STYLE_WEAPON_VERGIL_DEFAULT,
-	HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO,
-	HELPER_ENEMY_LESSER_ENEMIES,
-	HELPER_ENEMY_GIGAPEDE,
-	HELPER_ENEMY_CERBERUS,
-	HELPER_ENEMY_AGNI_RUDRA,
-	HELPER_ENEMY_NEVAN,
-	HELPER_ENEMY_GERYON,
-	HELPER_ENEMY_BEOWULF,
-	HELPER_ENEMY_DOPPELGANGER,
-	HELPER_ENEMY_ARKHAM,
-	HELPER_ENEMY_LADY,
-	HELPER_ENEMY_VERGIL,
-	HELPER_ENEMY_JESTER,
-	HELPER_COUNT,
-};
-
-
-
-
-export constexpr uint32 motionArchivesOffs[] =
-{
-	0x698 , // Damned Chessmen Pawn, Knight, Bishop, Rook, Queen, King
-	0x6C0 , // Blood-Goyle
-	0x6D0 , // Pride, Gluttony, Lust, Sloth, Wrath, Envy
-	0x780 , // Soul Eater
-	0xA58 , // Enigma
-	0xA98 , // Doppelganger
-	0x1130, // Geryon
-	0x1158, // Agni & Rudra
-	0x14F0, // The Fallen
-	0x1B48, // Arkham
-	0x2160, // Dullahan
-	0x23C0, // Jester
-	0x2C20, // Arachne
-	0x2E18, // Nevan
-	0x38A0, // Player Actor
-	0x3940, // Greed, Abyss
-	0x4020, // Beowulf
-	0x49C8, // Hell Vanguard
-	0x5410, // Lady
-	0xD7B0, // Cerberus
-	0xE7D0, // Vergil
-};
-
-
-
-
-
-
-
-
-// export constexpr uint32 enemyMotionArchivesOffs[] =
-// {
-// 	0x698 , // Damned Chessmen Pawn, Knight, Bishop, Rook, Queen, King
-// 	0x6C0 , // Blood-Goyle
-// 	0x6D0 , // Pride, Gluttony, Lust, Sloth, Wrath, Envy
-// 	0x780 , // Soul Eater
-// 	0xA58 , // Enigma
-// 	0xA98 , // Doppelganger
-// 	0x1130, // Geryon
-// 	0x1158, // Agni & Rudra
-// 	0x14F0, // The Fallen
-// 	0x1B48, // Arkham
-// 	0x2160, // Dullahan
-// 	0x23C0, // Jester
-// 	0x2C20, // Arachne
-// 	0x2E18, // Nevan
-// 	0x3940, // Greed, Abyss
-// 	0x4020, // Beowulf
-// 	0x49C8, // Hell Vanguard
-// 	0x5410, // Lady
-// 	0xD7B0, // Cerberus
-// 	0xE7D0, // Vergil
-// };
-
-
-export enum
-{
-	CREATE_ENEMY_COUNT = 30,
-};
-
-
-
-
 
 // $EnemyStart
 
@@ -2914,38 +1983,11 @@ export constexpr uint8 enemyHelperIndices[] =
 
 // $EnemyEnd
 
-static_assert(ENEMY::COUNT == 64);
-static_assert(countof(enemyNames) == ENEMY::COUNT);
-static_assert(countof(enemyHelperIndices) == ENEMY::COUNT);
-
-
-
-
-// @Todo: Remove.
 static_assert(ENEMY::LADY == 55);
 static_assert(ENEMY::VERGIL == 58);
 static_assert(ENEMY::COUNT == 64);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// @Todo: Add to script.
-
+static_assert(countof(enemyNames) == ENEMY::COUNT);
+static_assert(countof(enemyHelperIndices) == ENEMY::COUNT);
 
 export enum
 {
@@ -2975,26 +2017,6 @@ export enum
 	ENEMY_FILE_DATA_EM037,
 	ENEMY_FILE_DATA_COUNT,
 };
-
-
-
-
-// #define HelperAccess(type, name, var, newName)\
-// struct Prep_Merge(type, var)\
-// {\
-// 	operator[](uint64 index)\
-// 	{\
-// 		return name[index].var;\
-// 	}\
-// };\
-// Prep_Merge(type, var) newName = {};
-
-// HelperAccess(EnemyHelper, enemyHelpers, name, enemyNames);
-
-
-
-
-
 
 export enum
 {
@@ -3031,57 +2053,417 @@ export enum
 	ENEMY_FILE_SET_COUNT,
 };
 
-/*
-Config::CreateEnemyActorData
+#pragma endregion
 
-Config_CreateEnemyActorData
+#pragma region Structs
 
-ConfigCreateEnemyActorData
-*/
+#define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
 
-// @Todo: Create script.
+#pragma pack(push, 1)
 
-// struct CreateEnemyActorData
-// {
-// 	uint32 enemy;
-// 	_(12);
-// 	vec4 position;
-// 	uint16 rotation,
-// 	uint16 spawnMethod;
-// 	_(4);
-// 	uint32 variant;
-// 	_(128);
-// };
+IntroduceSizeStruct(32);
+IntroduceSizeStruct(112);
+IntroduceSizeStruct(192);
+IntroduceSizeStruct(240);
+IntroduceSizeStruct(288);
+IntroduceSizeStruct(768);
 
-// static_assert(offsetof(CreateEnemyActorData, variant) == 0x28);
+// $EventDataStart
 
+export struct EventData
+{
+	_(24);
+	uint32 room; // 0x18
+	uint32 position; // 0x1C
+	uint32 event; // 0x20
+	uint32 subevent; // 0x24
+	uint32 screen; // 0x28
+	uint32 nextScreen; // 0x2C
+};
 
-// @Todo: Add to script.
+static_assert(offsetof(EventData, room) == 0x18);
+static_assert(offsetof(EventData, position) == 0x1C);
+static_assert(offsetof(EventData, event) == 0x20);
+static_assert(offsetof(EventData, subevent) == 0x24);
+static_assert(offsetof(EventData, screen) == 0x28);
+static_assert(offsetof(EventData, nextScreen) == 0x2C);
 
+static_assert(sizeof(EventData) == 48);
 
+// $EventDataEnd
 
+// $NextEventDataStart
 
+export struct NextEventData
+{
+	_(356);
+	uint16 room; // 0x164
+	uint16 position; // 0x166
+};
 
+static_assert(offsetof(NextEventData, room) == 0x164);
+static_assert(offsetof(NextEventData, position) == 0x166);
 
+static_assert(sizeof(NextEventData) == 360);
 
+// $NextEventDataEnd
 
+// $SessionDataStart
 
+export struct SessionData
+{
+	uint32 mission; // 0
+	_(8);
+	uint32 mode; // 0xC
+	bool oneHitKill; // 0x10
+	_(1);
+	bool enableTutorial; // 0x12
+	bool useGoldOrb; // 0x13
+	uint8 character; // 0x14
+	_(7);
+	bool bloodyPalace; // 0x1C
+	_(15);
+	uint32 redOrbs; // 0x2C
+	uint8 itemCounts[20]; // 0x30
+	_(2);
+	bool unlock[14]; // 0x46
+	_(48);
+	uint8 weapons[8]; // 0x84
+	_(20);
+	uint32 rangedWeaponLevels[5]; // 0xA0
+	_(20);
+	uint32 meleeWeaponIndex; // 0xC8
+	uint32 rangedWeaponIndex; // 0xCC
+	uint8 costume; // 0xD0
+	bool unlockDevilTrigger; // 0xD1
+	_(2);
+	float hitPoints; // 0xD4
+	float magicPoints; // 0xD8
+	uint32 style; // 0xDC
+	uint32 styleLevel[6]; // 0xE0
+	float styleExperience[6]; // 0xF8
+	byte32 expertise[8]; // 0x110
+};
 
+static_assert(offsetof(SessionData, mission) == 0);
+static_assert(offsetof(SessionData, mode) == 0xC);
+static_assert(offsetof(SessionData, oneHitKill) == 0x10);
+static_assert(offsetof(SessionData, enableTutorial) == 0x12);
+static_assert(offsetof(SessionData, useGoldOrb) == 0x13);
+static_assert(offsetof(SessionData, character) == 0x14);
+static_assert(offsetof(SessionData, bloodyPalace) == 0x1C);
+static_assert(offsetof(SessionData, redOrbs) == 0x2C);
+static_assert(offsetof(SessionData, itemCounts) == 0x30);
+static_assert(offsetof(SessionData, unlock) == 0x46);
+static_assert(offsetof(SessionData, weapons) == 0x84);
+static_assert(offsetof(SessionData, rangedWeaponLevels) == 0xA0);
+static_assert(offsetof(SessionData, meleeWeaponIndex) == 0xC8);
+static_assert(offsetof(SessionData, rangedWeaponIndex) == 0xCC);
+static_assert(offsetof(SessionData, costume) == 0xD0);
+static_assert(offsetof(SessionData, unlockDevilTrigger) == 0xD1);
+static_assert(offsetof(SessionData, hitPoints) == 0xD4);
+static_assert(offsetof(SessionData, magicPoints) == 0xD8);
+static_assert(offsetof(SessionData, style) == 0xDC);
+static_assert(offsetof(SessionData, styleLevel) == 0xE0);
+static_assert(offsetof(SessionData, styleExperience) == 0xF8);
+static_assert(offsetof(SessionData, expertise) == 0x110);
 
+static_assert(sizeof(SessionData) == 304);
 
+// $SessionDataEnd
 
+// $MissionDataStart
 
+export struct MissionData
+{
+	_(56);
+	uint32 redOrbs; // 0x38
+	uint8 itemCounts[62]; // 0x3C
+	uint8 buyCounts[8]; // 0x7A
+	_(38);
+	uint32 frameCount; // 0xA8
+	uint32 damage; // 0xAC
+	uint32 orbsCollected; // 0xB0
+	uint32 itemsUsed; // 0xB4
+	uint32 killCount; // 0xB8
+	_(4);
+};
 
+static_assert(offsetof(MissionData, redOrbs) == 0x38);
+static_assert(offsetof(MissionData, itemCounts) == 0x3C);
+static_assert(offsetof(MissionData, buyCounts) == 0x7A);
+static_assert(offsetof(MissionData, frameCount) == 0xA8);
+static_assert(offsetof(MissionData, damage) == 0xAC);
+static_assert(offsetof(MissionData, orbsCollected) == 0xB0);
+static_assert(offsetof(MissionData, itemsUsed) == 0xB4);
+static_assert(offsetof(MissionData, killCount) == 0xB8);
 
+static_assert(sizeof(MissionData) == 192);
 
+// $MissionDataEnd
 
+// $MissionActorDataStart
 
+export struct QueuedMissionActorData
+{
+	uint8 weapons[5]; // 0
+	_(75);
+	float hitPoints; // 0x50
+	float magicPoints; // 0x54
+	uint32 style; // 0x58
+	uint32 styleLevel[6]; // 0x5C
+	float styleExperience[6]; // 0x74
+	byte32 expertise[8]; // 0x8C
+};
 
+static_assert(offsetof(QueuedMissionActorData, weapons) == 0);
+static_assert(offsetof(QueuedMissionActorData, hitPoints) == 0x50);
+static_assert(offsetof(QueuedMissionActorData, magicPoints) == 0x54);
+static_assert(offsetof(QueuedMissionActorData, style) == 0x58);
+static_assert(offsetof(QueuedMissionActorData, styleLevel) == 0x5C);
+static_assert(offsetof(QueuedMissionActorData, styleExperience) == 0x74);
+static_assert(offsetof(QueuedMissionActorData, expertise) == 0x8C);
+static_assert(sizeof(QueuedMissionActorData) == 172);
 
+export struct ActiveMissionActorData
+{
+	uint8 weapons[5]; // 0
+	_(51);
+	uint32 style; // 0x38
+	uint32 styleLevel; // 0x3C
+	byte32 expertise[8]; // 0x40
+	float styleExperience; // 0x60
+	float hitPoints; // 0x64
+	float maxHitPoints; // 0x68
+	float magicPoints; // 0x6C
+	float maxMagicPoints; // 0x70
+};
 
+static_assert(offsetof(ActiveMissionActorData, weapons) == 0);
+static_assert(offsetof(ActiveMissionActorData, style) == 0x38);
+static_assert(offsetof(ActiveMissionActorData, styleLevel) == 0x3C);
+static_assert(offsetof(ActiveMissionActorData, expertise) == 0x40);
+static_assert(offsetof(ActiveMissionActorData, styleExperience) == 0x60);
+static_assert(offsetof(ActiveMissionActorData, hitPoints) == 0x64);
+static_assert(offsetof(ActiveMissionActorData, maxHitPoints) == 0x68);
+static_assert(offsetof(ActiveMissionActorData, magicPoints) == 0x6C);
+static_assert(offsetof(ActiveMissionActorData, maxMagicPoints) == 0x70);
+static_assert(sizeof(ActiveMissionActorData) == 116);
 
+// $MissionActorDataEnd
 
+// $StyleDataStart
 
+export struct StyleData
+{
+	uint32 rank; // 0
+	float meter; // 4
+	_(328);
+	float quotient; // 0x150
+	float dividend; // 0x154
+	float divisor; // 0x158
+	_(4);
+};
+
+static_assert(offsetof(StyleData, rank) == 0);
+static_assert(offsetof(StyleData, meter) == 4);
+static_assert(offsetof(StyleData, quotient) == 0x150);
+static_assert(offsetof(StyleData, dividend) == 0x154);
+static_assert(offsetof(StyleData, divisor) == 0x158);
+
+static_assert(sizeof(StyleData) == 352);
+
+// $StyleDataEnd
+
+// $CollisionDataMetadataStart
+
+export struct CollisionDataMetadata
+{
+	_(48);
+	vec4 data[8]; // 0x30
+	_(32);
+	void * collisionDataAddr; // 0xD0
+	_(8);
+	vec4 data2[3]; // 0xE0
+	byte8 * files[2]; // 0x110
+	uint32 mode; // 0x120
+	_(12);
+	vec4 data3; // 0x130
+	float heightAdjustment; // 0x140
+};
+
+static_assert(offsetof(CollisionDataMetadata, data) == 0x30);
+static_assert(offsetof(CollisionDataMetadata, collisionDataAddr) == 0xD0);
+static_assert(offsetof(CollisionDataMetadata, data2) == 0xE0);
+static_assert(offsetof(CollisionDataMetadata, files) == 0x110);
+static_assert(offsetof(CollisionDataMetadata, mode) == 0x120);
+static_assert(offsetof(CollisionDataMetadata, data3) == 0x130);
+static_assert(offsetof(CollisionDataMetadata, heightAdjustment) == 0x140);
+
+static_assert(sizeof(CollisionDataMetadata) == 324);
+
+// $CollisionDataMetadataEnd
+
+// $CollisionDataStart
+
+export struct CollisionData
+{
+	_(4);
+	uint32 group; // 4
+	_(128);
+	CollisionDataMetadata * metadataAddr; // 0x88
+	_(160);
+	byte8 * baseAddr; // 0x130
+	_(8);
+	byte32 flags; // 0x140
+	_(204);
+	vec4 data[8]; // 0x210
+};
+
+static_assert(offsetof(CollisionData, group) == 4);
+static_assert(offsetof(CollisionData, metadataAddr) == 0x88);
+static_assert(offsetof(CollisionData, baseAddr) == 0x130);
+static_assert(offsetof(CollisionData, flags) == 0x140);
+static_assert(offsetof(CollisionData, data) == 0x210);
+
+static_assert(sizeof(CollisionData) == 656);
+
+// $CollisionDataEnd
+
+// $CameraDataStart
+
+export struct CameraData
+{
+	_(32);
+	float fov; // 0x20
+	_(76);
+	vec4 data[2]; // 0x70
+	_(32);
+	byte8 * targetBaseAddr; // 0xB0
+	_(24);
+	float height; // 0xD0
+	float tilt; // 0xD4
+	float distance; // 0xD8
+	_(4);
+	float distanceLockOn; // 0xE0
+	_(284);
+};
+
+static_assert(offsetof(CameraData, fov) == 0x20);
+static_assert(offsetof(CameraData, data) == 0x70);
+static_assert(offsetof(CameraData, targetBaseAddr) == 0xB0);
+static_assert(offsetof(CameraData, height) == 0xD0);
+static_assert(offsetof(CameraData, tilt) == 0xD4);
+static_assert(offsetof(CameraData, distance) == 0xD8);
+static_assert(offsetof(CameraData, distanceLockOn) == 0xE0);
+
+static_assert(sizeof(CameraData) == 512);
+
+// $CameraDataEnd
+
+export struct NewArchiveMetadata
+{
+	byte8 signature[4];
+	uint32 fileCount;
+	uint32 fileOffs[1];
+
+	byte8 * operator[](uint32 fileIndex)
+	{
+		if (fileIndex >= fileCount)
+		{
+			return 0;
+		}
+
+		auto file = reinterpret_cast<byte8 *>(this);
+
+		auto fileOff = fileOffs[fileIndex];
+
+		return (file + fileOff);
+	}
+};
+
+export struct ArchiveMetadata
+{
+	byte8 signature[4];
+	uint32 fileCount;
+	uint32 fileOffs[1];
+};
+
+// $FileDataStatusStart
+
+export namespaceStart(FILE_DATA_STATUS);
+enum
+{
+	FREE,
+	UNKNOWN_0,
+	UNKNOWN_1,
+	IN_USE,
+};
+namespaceEnd();
+
+// $FileDataStatusEnd
+
+static_assert(FILE_DATA_STATUS::IN_USE == 3);
+
+// $FileDataTypeDataStart
+
+export struct FileDataTypeData
+{
+	_(8);
+	const char * typeName; // 8
+};
+
+static_assert(offsetof(FileDataTypeData, typeName) == 8);
+
+static_assert(sizeof(FileDataTypeData) == 16);
+
+// $FileDataTypeDataEnd
+
+// $FileDataStart
+
+export struct FileData
+{
+	uint32 group; // 0
+	uint32 status; // 4
+	_(16);
+	FileDataTypeData * typeDataAddr; // 0x18
+	byte8 * file; // 0x20
+	_(32);
+};
+
+static_assert(offsetof(FileData, group) == 0);
+static_assert(offsetof(FileData, status) == 4);
+static_assert(offsetof(FileData, typeDataAddr) == 0x18);
+static_assert(offsetof(FileData, file) == 0x20);
+
+static_assert(sizeof(FileData) == 72);
+
+// $FileDataEnd
+
+// $FileDataMetadataStart
+
+export struct FileDataMetadata
+{
+	void * funcAddrs; // 0
+	void * lastAddr; // 8
+	void * nextAddr; // 0x10
+	FileData * fileDataAddr; // 0x18
+	_(4);
+	uint32 category; // 0x24
+	uint32 fileSetIndex; // 0x28
+	_(4);
+};
+
+static_assert(offsetof(FileDataMetadata, funcAddrs) == 0);
+static_assert(offsetof(FileDataMetadata, lastAddr) == 8);
+static_assert(offsetof(FileDataMetadata, nextAddr) == 0x10);
+static_assert(offsetof(FileDataMetadata, fileDataAddr) == 0x18);
+static_assert(offsetof(FileDataMetadata, category) == 0x24);
+static_assert(offsetof(FileDataMetadata, fileSetIndex) == 0x28);
+
+static_assert(sizeof(FileDataMetadata) == 48);
+
+// $FileDataMetadataEnd
 
 export struct RegionData
 {
@@ -3094,62 +2476,6 @@ export struct RegionData
 	uint32 count;
 	_(4);
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
-
-// #pragma pack(push, 1)
-
-// #pragma pack(pop)
-
-// #undef _
-
-// @Todo: Update names.
-
-// struct MEMORY_OBJECT
-// {
-// 	byte8 * addr;
-// 	byte8 * end;
-// 	uint32 last;
-// 	uint32 boundary;
-// 	uint32 size;
-// 	uint32 pipe;
-// 	uint32 count;
-// 	byte8 padding[4];
-// };
 
 export struct PS2_GAMEPAD
 {
@@ -3184,8 +2510,6 @@ export struct ENGINE_GAMEPAD
 	int16 leftStickPosition;
 	int16 leftStickRadius;
 };
-
-// @Todo: Order.
 
 export struct ActorEventData
 {
@@ -3248,19 +2572,70 @@ static_assert(offsetof(PhysicsMetadata, vertices) == 0x108);
 static_assert(offsetof(PhysicsMetadata, physicsData) == 0x110);
 static_assert(sizeof(PhysicsMetadata) == 0x140);
 
+export struct ModelPartitionData
+{
+	uint8 value;
+	_(895);
+};
+
+static_assert(sizeof(ModelPartitionData) == 0x380);
+
+export struct ModelData
+{
+	_(8);
+	byte8 ** funcAddrs; // 8
+	_(8);
+	bool visible; // 0x18
+	bool physics; // 0x19
+	_(358);
+	ModelPartitionData * modelPartitionData; // 0x180
+	_(888);
+	struct
+	{
+		_(84);
+		float duration[2]; // 0x554
+		_(56);
+		float duration2[2]; // 0x594
+		_(244);
+		bool init; // 0x690
+		_(35);
+		float timer[2]; // 0x6B4
+	}
+	Motion; // 0x500
+	_(196);
+};
+
+static_assert(offsetof(ModelData, funcAddrs) == 8);
+static_assert(offsetof(ModelData, visible) == 0x18);
+static_assert(offsetof(ModelData, physics) == 0x19);
+static_assert(offsetof(ModelData, modelPartitionData) == 0x180);
+
+static_assert(offsetof(ModelData, Motion.duration) == 0x554);
+static_assert(offsetof(ModelData, Motion.duration2) == 0x594);
+static_assert(offsetof(ModelData, Motion.init) == 0x690);
+static_assert(offsetof(ModelData, Motion.timer) == 0x6B4);
+
+static_assert(sizeof(ModelData) == 1920);
+
+// $BodyPartDataStart
+
 export struct BodyPartData
 {
 	_(104);
-	byte8 ** motionArchives;
-	_(176);
-	//_(288);
+	byte8 ** motionArchives; // 0x68
+	ModelData * modelDataAddr; // 0x70
+	_(66);
+	bool busy; // 0xBA
+	_(101);
 };
 
-// @Todo: Add 0x70 ModelDataAddr.
-// @Todo: Add 0xBA busy.
+static_assert(offsetof(BodyPartData, motionArchives) == 0x68);
+static_assert(offsetof(BodyPartData, modelDataAddr) == 0x70);
+static_assert(offsetof(BodyPartData, busy) == 0xBA);
 
+static_assert(sizeof(BodyPartData) == 288);
 
-static_assert(sizeof(BodyPartData) == 0x120);
+// $BodyPartDataEnd
 
 export struct ModelMetadata
 {
@@ -3295,8 +2670,6 @@ export struct DevilModelMetadata2 : DevilModelMetadata
 	DevilSubmodelMetadata devilSubmodelMetadata[2];
 };
 
-// @Todo: Cleanup.
-
 export struct DevilModelMetadataDante
 {
 	DevilModelMetadata2 Rebellion;
@@ -3310,27 +2683,27 @@ export struct DevilModelMetadataDante
 	{
 		switch (index)
 		{
-		case DEVIL_REBELLION:
+		case DEVIL::REBELLION:
 		{
 			return Rebellion;
 		}
-		case DEVIL_CERBERUS:
+		case DEVIL::CERBERUS:
 		{
 			return *reinterpret_cast<DevilModelMetadata2 *>(&Cerberus);
 		}
-		case DEVIL_AGNI_RUDRA:
+		case DEVIL::AGNI_RUDRA:
 		{
 			return *reinterpret_cast<DevilModelMetadata2 *>(&AgniRudra);
 		}
-		case DEVIL_NEVAN:
+		case DEVIL::NEVAN:
 		{
 			return Nevan;
 		}
-		case DEVIL_BEOWULF:
+		case DEVIL::BEOWULF:
 		{
 			return *reinterpret_cast<DevilModelMetadata2 *>(&Beowulf);
 		}
-		case DEVIL_SPARDA:
+		case DEVIL::SPARDA:
 		{
 			return *reinterpret_cast<DevilModelMetadata2 *>(&Sparda);
 		}
@@ -3340,50 +2713,6 @@ export struct DevilModelMetadataDante
 };
 
 static_assert(sizeof(DevilModelMetadataDante) == 33);
-
-export struct ModelPartitionData
-{
-	uint8 value;
-	_(895);
-};
-
-static_assert(sizeof(ModelPartitionData) == 0x380);
-
-// @Todo: Add to script.
-export struct ModelData
-{
-	_(8);
-	byte8 ** functions;
-	_(8);
-	bool visible;
-	bool physics;
-	_(358);
-	ModelPartitionData * modelPartitionData;
-	_(888);
-	struct
-	{
-		_(84);
-		float32 duration1[2];
-		_(56);
-		float32 duration2[2];
-		_(244);
-		bool init;
-		_(35);
-		float32 timer[2];
-		_(196);
-	}
-	Motion;
-};
-
-static_assert(offsetof(ModelData, functions) == 8);
-static_assert(offsetof(ModelData, visible) == 0x18);
-static_assert(offsetof(ModelData, physics) == 0x19);
-static_assert(offsetof(ModelData, Motion) == 0x500);
-static_assert(offsetof(ModelData, Motion.duration1) == 0x554);
-static_assert(offsetof(ModelData, Motion.duration2) == 0x594);
-static_assert(offsetof(ModelData, Motion.init) == 0x690);
-static_assert(offsetof(ModelData, Motion.timer) == 0x6B4);
-static_assert(sizeof(ModelData) == 0x780);
 
 export struct RecoveryData
 {
@@ -3426,20 +2755,6 @@ static_assert(sizeof(WeaponData) == 296);
 
 // $WeaponDataEnd
 
-// export struct WeaponData
-// {
-// 	_(274);
-// 	uint8 weapon;
-// 	_(5);
-// 	uint8 value;
-// 	_(7);
-// 	byte8 * actorBaseAddr;
-// };
-
-// static_assert(offsetof(WeaponData, weapon) == 0x112);
-// static_assert(offsetof(WeaponData, value) == 0x118);
-// static_assert(offsetof(WeaponData, actorBaseAddr) == 0x120);
-
 export struct SummonedSwordsData
 {
 	_(1376);
@@ -3480,13 +2795,7 @@ export struct NewActorData
 	byte8 * baseAddr;
 	uint8 visibility;
 	bool enableCollision;
-	// @Remove
-	// bool forceCollisionFlags;
-	// byte32 collisionFlags;
 };
-
-
-
 
 export struct CharacterData
 {
@@ -3534,31 +2843,12 @@ export struct PlayerData
 
 	byte16 removeBusyFlagButtons[4] =
 	{
-		GAMEPAD_UP,
-		GAMEPAD_RIGHT,
-		GAMEPAD_DOWN,
-		GAMEPAD_LEFT,
+		GAMEPAD::UP,
+		GAMEPAD::RIGHT,
+		GAMEPAD::DOWN,
+		GAMEPAD::LEFT,
 	};
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // $ActorDataStart
 
@@ -3713,7 +3003,7 @@ export struct PlayerActorDataBase : ActorDataBase
 	_(8672);
 	vec4 targetPosition; // 0x6300
 	_(24);
-	byte8 * targetBaseAddr; // 0x6328
+	byte8 * targetBaseAddrPlus0x60; // 0x6328
 	_(8);
 	uint32 style; // 0x6338
 	uint32 wallHikeDirection; // 0x633C
@@ -3861,7 +3151,7 @@ static_assert(offsetof(PlayerActorDataBase, expertise) == 0x3FEC);
 static_assert(offsetof(PlayerActorDataBase, maxHitPoints) == 0x40EC);
 static_assert(offsetof(PlayerActorDataBase, hitPoints) == 0x411C);
 static_assert(offsetof(PlayerActorDataBase, targetPosition) == 0x6300);
-static_assert(offsetof(PlayerActorDataBase, targetBaseAddr) == 0x6328);
+static_assert(offsetof(PlayerActorDataBase, targetBaseAddrPlus0x60) == 0x6328);
 static_assert(offsetof(PlayerActorDataBase, style) == 0x6338);
 static_assert(offsetof(PlayerActorDataBase, wallHikeDirection) == 0x633C);
 static_assert(offsetof(PlayerActorDataBase, var_6340) == 0x6340);
@@ -4586,12 +3876,6 @@ static_assert(offsetof(EnemyActorDataVergil, devil) == 0xEF1B);
 
 // $ActorDataEnd
 
-
-
-
-
-
-
 export struct ConfigCreateEnemyActorData
 {
 	uint32 enemy;
@@ -4601,14 +3885,6 @@ export struct ConfigCreateEnemyActorData
 	bool useMainActorData = true;
 	uint16 spawnMethod;
 };
-
-
-
-
-
-
-
-
 
 // $CreateEnemyActorDataStart
 
@@ -4622,29 +3898,6 @@ export struct CreateEnemyActorData
 	_(4);
 	uint32 variant; // 0x28
 	_(84);
-
-	// CreateEnemyActorData();
-	// CreateEnemyActorData(const ConfigCreateEnemyActorData & configCreateEnemyActorData)
-	// {
-	// 	enemy       = configCreateEnemyActorData.enemy;
-	// 	position    = configCreateEnemyActorData.position;
-	// 	rotation    = configCreateEnemyActorData.rotation;
-	// 	spawnMethod = configCreateEnemyActorData.spawnMethod;
-	// 	variant     = configCreateEnemyActorData.variant;
-
-	// 	[&]()
-	// 	{
-	// 		if (!configCreateEnemyActorData.useMainActorData)
-	// 		{
-	// 			return;
-	// 		}
-
-	// 		IntroduceMainActorData(mainActorData, return);
-
-	// 		position = mainActorData.position;
-	// 		rotation = mainActorData.rotation;
-	// 	}();
-	// }
 };
 
 static_assert(offsetof(CreateEnemyActorData, enemy) == 0);
@@ -4655,71 +3908,6 @@ static_assert(offsetof(CreateEnemyActorData, variant) == 0x28);
 static_assert(sizeof(CreateEnemyActorData) == 128);
 
 // $CreateEnemyActorDataEnd
-
-
-
-// @Todo: Add to script.
-// CreateEnemyActorData::CreateEnemyActorData(ConfigCreateEnemyActorData & configCreateEnemyActorData)
-// {
-// 	enemy       = configCreateEnemyActorData.enemy;
-// 	position    = configCreateEnemyActorData.position;
-// 	rotation    = configCreateEnemyActorData.rotation;
-// 	spawnMethod = configCreateEnemyActorData.spawnMethod;
-// 	variant     = configCreateEnemyActorData.variant;
-
-// 	[&]()
-// 	{
-// 		if (!configCreateEnemyActorData.useMainActorData)
-// 		{
-// 			return;
-// 		}
-
-// 		IntroduceMainActorData(mainActorData, return);
-
-// 		position = mainActorData.position;
-// 		rotation = mainActorData.rotation;
-// 	}();
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-	IntroduceMainActorData(mainActorData, return 0);
-
-	CreateEnemyActorData createEnemyActorData = {};
-
-	createEnemyActorData.enemy = configCreateEnemyActorData.enemy;
-	createEnemyActorData.position = (configCreateEnemyActorData.useMainActorData) ? mainActorData.position : configCreateEnemyActorData.position;
-	createEnemyActorData.position.a = 1.0f;
-	createEnemyActorData.rotation = (configCreateEnemyActorData.useMainActorData) ? mainActorData.rotation : configCreateEnemyActorData.rotation;
-	createEnemyActorData.spawnMethod = configCreateEnemyActorData.spawnMethod;
-	createEnemyActorData.variant = configCreateEnemyActorData.variant;
-*/
-
-
-
-
-
-
-
 
 export struct EnemyVectorDataMetadata
 {
@@ -4732,8 +3920,6 @@ export struct EnemyVectorDataMetadata
 };
 
 static_assert(sizeof(EnemyVectorDataMetadata) == 0x10);
-
-
 
 // $EnemyVectorDataStart
 
@@ -4757,30 +3943,13 @@ static_assert(sizeof(EnemyVectorData) == 4184);
 
 // $EnemyVectorDataEnd
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// @Todo: Update.
-
 #pragma pack(pop)
 
 #undef _
 
-// @Todo: Update.
+#pragma endregion
+
+#pragma region Helpers
 
 export struct MotionArchiveHelper
 {
@@ -4821,17 +3990,17 @@ export constexpr MotionArchiveHelper motionArchiveHelperDante[] =
 
 export constexpr MotionArchiveHelper motionArchiveHelperBob[] =
 {
-	{ MOTION_GROUP_BOB::BASE   , pl001_00_0  },
-	{ MOTION_GROUP_BOB::DAMAGE , pl001_00_1  },
-	{ MOTION_GROUP_BOB::TAUNTS , pl001_00_2  },
-	{ MOTION_GROUP_BOB::YAMATO , pl001_00_31 },
+	{ MOTION_GROUP_BOB::BASE  , pl001_00_0  },
+	{ MOTION_GROUP_BOB::DAMAGE, pl001_00_1  },
+	{ MOTION_GROUP_BOB::TAUNTS, pl001_00_2  },
+	{ MOTION_GROUP_BOB::YAMATO, pl001_00_31 },
 };
 
 export constexpr MotionArchiveHelper motionArchiveHelperLady[] =
 {
-	{ MOTION_GROUP_LADY::BASE      , pl002_00_0  },
-	{ MOTION_GROUP_LADY::DAMAGE    , pl002_00_1  },
-	{ MOTION_GROUP_LADY::TAUNTS    , pl002_00_2  },
+	{ MOTION_GROUP_LADY::BASE  , pl002_00_0 },
+	{ MOTION_GROUP_LADY::DAMAGE, pl002_00_1 },
+	{ MOTION_GROUP_LADY::TAUNTS, pl002_00_2 },
 };
 
 export constexpr MotionArchiveHelper motionArchiveHelperVergil[] =
@@ -4841,14 +4010,12 @@ export constexpr MotionArchiveHelper motionArchiveHelperVergil[] =
 	{ MOTION_GROUP_VERGIL::TAUNTS                , pl021_00_2 },
 	{ MOTION_GROUP_VERGIL::YAMATO                , pl021_00_3 },
 	{ MOTION_GROUP_VERGIL::BEOWULF               , pl021_00_4 },
-	{ MOTION_GROUP_VERGIL::YAMATO_FORCE_EDGE            , pl021_00_5 },
+	{ MOTION_GROUP_VERGIL::YAMATO_FORCE_EDGE     , pl021_00_5 },
 	{ MOTION_GROUP_VERGIL::DARK_SLAYER           , pl021_00_6 },
 	{ MOTION_GROUP_VERGIL::NERO_ANGELO_YAMATO    , pl021_00_7 },
 	{ MOTION_GROUP_VERGIL::NERO_ANGELO_BEOWULF   , pl021_00_8 },
-	{ MOTION_GROUP_VERGIL::NERO_ANGELO_FORCE_EDGE, pl021_00_9 }, // @Todo: Review.
+	{ MOTION_GROUP_VERGIL::NERO_ANGELO_FORCE_EDGE, pl021_00_9 },
 };
-
-
 
 export struct MissionStartHelper
 {
@@ -4919,41 +4086,38 @@ export constexpr FloorHelper floorHelpers[] =
 	{ 449, 0 }, // Jester 3
 };
 
-
-
-
-
-
-export enum BOSS
+export namespaceStart(BOSS);
+enum
 {
-	BOSS_CERBERUS,
-	BOSS_GIGAPEDE,
-	BOSS_JESTER_1,
-	BOSS_AGNI_RUDRA,
-	BOSS_VERGIL_1,
-	BOSS_LEVIATHAN,
-	BOSS_NEVAN,
-	BOSS_BEOWULF,
-	BOSS_JESTER_2,
-	BOSS_GERYON_PART_1,
-	BOSS_GERYON_PART_2,
-	BOSS_VERGIL_2,
-	BOSS_LADY,
-	BOSS_JESTER_3,
-	BOSS_DOPPELGANGER,
-	BOSS_TAIZAI_REBORN,
-	BOSS_CERBERUS_REBORN,
-	BOSS_GIGAPEDE_REBORN,
-	BOSS_AGNI_RUDRA_REBORN,
-	BOSS_LEVIATHAN_REBORN,
-	BOSS_NEVAN_REBORN,
-	BOSS_BEOWULF_REBORN,
-	BOSS_GERYON_REBORN,
-	BOSS_DOPPELGANGER_REBORN,
-	BOSS_ARKHAM_PART_1,
-	BOSS_ARKHAM_PART_2,
-	BOSS_VERGIL_3,
+	CERBERUS,
+	GIGAPEDE,
+	JESTER_1,
+	AGNI_RUDRA,
+	VERGIL_1,
+	LEVIATHAN,
+	NEVAN,
+	BEOWULF,
+	JESTER_2,
+	GERYON_PART_1,
+	GERYON_PART_2,
+	VERGIL_2,
+	LADY,
+	JESTER_3,
+	DOPPELGANGER,
+	TAIZAI_REBORN,
+	CERBERUS_REBORN,
+	GIGAPEDE_REBORN,
+	AGNI_RUDRA_REBORN,
+	LEVIATHAN_REBORN,
+	NEVAN_REBORN,
+	BEOWULF_REBORN,
+	GERYON_REBORN,
+	DOPPELGANGER_REBORN,
+	ARKHAM_PART_1,
+	ARKHAM_PART_2,
+	VERGIL_3,
 };
+namespaceEnd();
 
 export struct BossHelper
 {
@@ -4962,7 +4126,7 @@ export struct BossHelper
 	const char * track;
 };
 
-export constexpr BossHelper bossHelper[] =
+export constexpr BossHelper bossHelpers[] =
 {
 	{ 6  , 2, "afs/sound/Boss_01.adx"    }, // Cerberus
 	{ 111, 0, "afs/sound/T_Boss.adx"     }, // Gigapede
@@ -4993,16 +4157,4 @@ export constexpr BossHelper bossHelper[] =
 	{ 411, 0, "afs/sound/Versil_03.adx"  }, // Vergil 3
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#pragma endregion

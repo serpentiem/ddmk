@@ -262,7 +262,7 @@ export void ItemWindow()
 		ImGui::Text("%u Red Orbs", missionData.redOrbs);
 		ImGui::Text("");
 
-		for_all(uint8, itemHelperIndex, countof(itemHelpers))
+		old_for_all(uint8, itemHelperIndex, countof(itemHelpers))
 		{
 			auto & itemHelper = itemHelpers[itemHelperIndex];
 
@@ -333,7 +333,7 @@ export void ItemWindow()
 
 
 
-		if (gamepad.buttons[0] & GAMEPAD_A)
+		if (gamepad.buttons[0] & GAMEPAD::A)
 		{
 			if (executeA)
 			{
@@ -352,7 +352,7 @@ export void ItemWindow()
 
 
 
-		if (gamepad.buttons[0] & GAMEPAD_UP)
+		if (gamepad.buttons[0] & GAMEPAD::UP)
 		{
 			if (executeUp)
 			{
@@ -381,7 +381,7 @@ export void ItemWindow()
 
 
 
-		if (gamepad.leftStickDirection[0] & GAMEPAD_UP)
+		if (gamepad.leftStickDirection[0] & GAMEPAD::UP)
 		{
 			if (executeUp2)
 			{
@@ -418,7 +418,7 @@ export void ItemWindow()
 
 
 
-		if (gamepad.buttons[0] & GAMEPAD_DOWN)
+		if (gamepad.buttons[0] & GAMEPAD::DOWN)
 		{
 			if (executeDown)
 			{
@@ -448,7 +448,7 @@ export void ItemWindow()
 
 
 
-		if (gamepad.leftStickDirection[0] & GAMEPAD_DOWN)
+		if (gamepad.leftStickDirection[0] & GAMEPAD::DOWN)
 		{
 			if (executeDown2)
 			{
@@ -477,7 +477,7 @@ export void ItemWindow()
 
 
 
-		if (gamepad.buttons[0] & GAMEPAD_B)
+		if (gamepad.buttons[0] & GAMEPAD::B)
 		{
 			if (executeB)
 			{

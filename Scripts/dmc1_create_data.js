@@ -265,6 +265,7 @@ let items =
 	[ "maxMagicPointsDevil", "uint16", [], 0x1BD4 ],
 	[ "rangedWeapon"       , "uint8" , [], 0x1C48 ],
 	[ "meleeWeaponForm"    , "uint8" , [], 0x1C4C ],
+	[ "chargeTimers[2]"    , "int16" , [], 0x1C66 ],
 ];
 
 FeedTuple

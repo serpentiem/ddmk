@@ -258,6 +258,8 @@ uint8 roundTripReturnButtonIndex = 0;
 
 uint8 resetStateButtonIndices[RESET_STATE_BUTTON_COUNT] = {};
 
+uint8 chargeButtonIndex = 0;
+
 
 
 void Actor_UpdateIndices()
@@ -275,7 +277,7 @@ void Actor_UpdateIndices()
 		activeConfig.rangedWeaponSwitchButton
 	);
 
-	new_for_all(meleeWeaponIndex, MELEE_WEAPON_COUNT)
+	for_all(meleeWeaponIndex, MELEE_WEAPON_COUNT)
 	{
 		UpdateMapIndex
 		(
@@ -284,7 +286,7 @@ void Actor_UpdateIndices()
 			activeConfig.Actor.meleeWeapons[meleeWeaponIndex]
 		);
 	}
-	new_for_all(rangedWeaponIndex, RANGED_WEAPON_COUNT)
+	for_all(rangedWeaponIndex, RANGED_WEAPON_COUNT)
 	{
 		UpdateMapIndex
 		(
@@ -301,7 +303,7 @@ void Actor_UpdateIndices()
 		activeConfig.roundTripReturnButton
 	);
 
-	new_for_all(index, RESET_STATE_BUTTON_COUNT)
+	for_all(index, RESET_STATE_BUTTON_COUNT)
 	{
 		UpdateMapIndex
 		(
@@ -310,6 +312,13 @@ void Actor_UpdateIndices()
 			activeConfig.resetStateButtons[index]
 		);
 	}
+
+	UpdateMapIndex
+	(
+		buttons,
+		chargeButtonIndex,
+		activeConfig.chargeButton
+	);
 }
 
 void ActorSection()
@@ -348,6 +357,10 @@ void ActorSection()
 
 			ResetConfig(enableResetStateController);
 			ResetConfig(resetStateButtons);
+
+			ResetConfig(enableChargeController);
+			ResetConfig(chargeButton);
+			ToggleChargeFixes(activeConfig.enableChargeController);
 
 			Actor_UpdateIndices();
 		}
@@ -571,7 +584,7 @@ void ActorSection()
 				MELEE_WEAPON_COUNT
 			);
 
-			new_for_all(meleeWeaponIndex, MELEE_WEAPON_COUNT)
+			for_all(meleeWeaponIndex, MELEE_WEAPON_COUNT)
 			{
 				bool condition = (meleeWeaponIndex >= activeConfig.Actor.meleeWeaponCount);
 
@@ -660,7 +673,7 @@ void ActorSection()
 				RANGED_WEAPON_COUNT
 			);
 
-			new_for_all(rangedWeaponIndex, RANGED_WEAPON_COUNT)
+			for_all(rangedWeaponIndex, RANGED_WEAPON_COUNT)
 			{
 				bool condition = (rangedWeaponIndex >= activeConfig.Actor.rangedWeaponCount);
 
@@ -709,7 +722,7 @@ void ActorSection()
 
 			ImGui::PushItemWidth(150.0f);
 
-			new_for_all(index, 4)
+			for_all(index, 4)
 			{
 				GUI_ComboMap2
 				(
@@ -732,7 +745,64 @@ void ActorSection()
 		}
 
 
+		GUI_SectionEnd();
+		ImGui::Text("");
 
+
+
+		GUI_SectionStart("Charge Controller");
+
+
+		// GUI_Input
+		// (
+		// 	"g_chargeValue",
+		// 	g_chargeValue
+		// );
+
+		// GUI_Input
+		// (
+		// 	"g_maxChargeValue",
+		// 	g_maxChargeValue
+		// );
+
+
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Enable",
+				activeConfig.enableChargeController,
+				queuedConfig.enableChargeController
+			)
+		)
+		{
+			ToggleChargeFixes(activeConfig.enableChargeController);
+		}
+		ImGui::Text("");
+
+		{
+			bool condition = !activeConfig.enableChargeController;
+
+			GUI_PushDisable(condition);
+
+			ImGui::PushItemWidth(150.0f);
+
+			GUI_ComboMap2
+			(
+				"",
+				buttonNames,
+				buttons,
+				chargeButtonIndex,
+				activeConfig.chargeButton,
+				queuedConfig.chargeButton,
+				ImGuiComboFlags_HeightLargest
+			);
+
+			ImGui::PopItemWidth();
+
+			GUI_PopDisable(condition);
+		}
 
 
 
@@ -1438,7 +1508,7 @@ void MainOverlayWindow()
 				ImGui::Text("state %X", sessionData.state);
 				ImGui::Text("");
 
-				new_for_all(index, 8)
+				for_all(index, 8)
 				{
 					ImGui::Text("state[%u] %X", index, actorData.state[index]);
 				}
@@ -1954,7 +2024,7 @@ void ItemWindow()
 			);
 			ImGui::Text("");
 
-			for_all(uint64, itemIndex, 50)
+			for_all(itemIndex, 50)
 			{
 				auto & item = sessionData.items[itemIndex];
 
@@ -2706,7 +2776,7 @@ void Main()
 	(
 		ImGui::Begin
 		(
-			"DDMK 2.7 Eva Nightly 31 August 2021",
+			"DDMK 2.7 Eva Nightly 5 September 2021",
 			&g_show
 		)
 	)

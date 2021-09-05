@@ -558,7 +558,7 @@ export void UpdateKeyboard(byte8 * state)
 		256
 	);
 
-	for_all(uint32, index, 256)
+	old_for_all(uint32, index, 256)
 	{
 		if (state[index] & 0x80)
 		{
@@ -602,7 +602,7 @@ export void UpdateMouse
 	io.MousePos.x *= mousePositionMultiplier.x;
 	io.MousePos.y *= mousePositionMultiplier.y;
 
-	for_all(uint8, index, 5)
+	old_for_all(uint8, index, 5)
 	{
 		// @Todo: Update.
 		io.MouseDown[index] = state->rgbButtons[index] ? true : false;

@@ -73,7 +73,7 @@ export void MissionStartSetIndex()
 		return;
 	}
 
-	for_all(uint64, index, 4)
+	for_all(index, 4)
 	{
 		auto & data = dataAddr[index];
 

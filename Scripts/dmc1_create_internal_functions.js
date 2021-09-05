@@ -23,6 +23,14 @@ let items =
 	[ 0x2C4A00, "void", "uint32 meleeWeaponForm"                   , "", "Update Melee Weapon Form" ],
 	[ 0x2C4C50, "void", "uint32 rangedWeapon"                      , "", "Update Ranged Weapon"     ],
 	[ 0x3C8DC0, "void", ""                                         , "", "Update Weapons"           ],
+
+
+	[ 0x2F0610, "void", "PlayerActorData & actorData", "", "Charge Update"           ],
+
+
+
+
+
 ];
 
 let filename = "../Eva/Internal.ixx"

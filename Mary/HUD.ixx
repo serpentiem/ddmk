@@ -22,15 +22,15 @@ struct HUDIconHelper
 	byte8 * textureFile;
 };
 
-HUDIconHelper styleIcons[MAX_STYLE] = {};
+HUDIconHelper styleIcons[STYLE::MAX] = {};
 HUDIconHelper darkSlayerIcon = {};
-HUDIconHelper weaponIcons[MAX_WEAPON] = {};
+HUDIconHelper weaponIcons[WEAPON::MAX] = {};
 
 void InitIcons()
 {
 	// Style Icons
 	{
-		constexpr uint8 fileIndices[MAX_STYLE] =
+		constexpr uint8 fileIndices[STYLE::MAX] =
 		{
 			20,
 			22,
@@ -39,7 +39,7 @@ void InitIcons()
 			26,
 			28,
 		};
-		for_all(uint8, style, countof(fileIndices))
+		old_for_all(uint8, style, countof(fileIndices))
 		{
 			auto & item = styleIcons[style];
 			auto & fileIndex = fileIndices[style];
@@ -66,9 +66,9 @@ void InitIcons()
 			36,
 			38,
 		};
-		for_all(uint8, weapon, countof(fileIndices))
+		old_for_all(uint8, weapon, countof(fileIndices))
 		{
-			auto & item = weaponIcons[(WEAPON_REBELLION + weapon)];
+			auto & item = weaponIcons[(WEAPON::REBELLION + weapon)];
 			auto & fileIndex = fileIndices[weapon];
 			item.modelFile   = File_staticFiles[id100][(fileIndex + 1)];
 			item.textureFile = File_staticFiles[id100][(fileIndex + 0)];
@@ -83,9 +83,9 @@ void InitIcons()
 			44,
 			30,
 		};
-		for_all(uint8, weapon, countof(fileIndices))
+		old_for_all(uint8, weapon, countof(fileIndices))
 		{
-			auto & item = weaponIcons[(WEAPON_YAMATO_VERGIL + weapon)];
+			auto & item = weaponIcons[(WEAPON::YAMATO_VERGIL + weapon)];
 			auto & fileIndex = fileIndices[weapon];
 			item.modelFile   = File_staticFiles[id100V][(fileIndex + 1)];
 			item.textureFile = File_staticFiles[id100V][(fileIndex + 0)];
@@ -103,7 +103,7 @@ export void HUD_UpdateStyleIcon
 	(
 		(InCutscene()) ||
 		(InCredits()) ||
-		(style >= MAX_STYLE)
+		(style >= STYLE::MAX)
 	)
 	{
 		return;
@@ -116,7 +116,7 @@ export void HUD_UpdateStyleIcon
 		LogFunction();
 	}
 
-	auto & modelData = *reinterpret_cast<ModelData *>(hudTop + hudTopOffs[HUD_TOP_STYLE_ICON]);
+	auto & modelData = *reinterpret_cast<ModelData *>(hudTop + hudTopOffs[HUD_TOP::STYLE_ICON]);
 
 	ResetModel(modelData);
 
@@ -126,10 +126,10 @@ export void HUD_UpdateStyleIcon
 	if
 	(
 		(
-			(character == CHAR_BOB   ) ||
-			(character == CHAR_VERGIL)
+			(character == CHARACTER::BOB   ) ||
+			(character == CHARACTER::VERGIL)
 		) &&
-		(style == STYLE_DARK_SLAYER)
+		(style == STYLE::DARK_SLAYER)
 	)
 	{
 		modelFile   = darkSlayerIcon.modelFile;
@@ -153,7 +153,7 @@ export bool HUD_UpdateWeaponIcon
 	(
 		(InCutscene()) ||
 		(InCredits()) ||
-		(weapon >= MAX_WEAPON)
+		(weapon >= WEAPON::MAX)
 	)
 	{
 		return false;

@@ -77,7 +77,7 @@ void AdjustPointers(byte8 * archive)
 
 	auto & archiveMetadata = *reinterpret_cast<ArchiveMetadata *>(archive);
 
-	for_all(uint32, fileIndex, archiveMetadata.fileCount)
+	old_for_all(uint32, fileIndex, archiveMetadata.fileCount)
 	{
 		auto & fileOff = archiveMetadata.fileOffs[fileIndex];
 
@@ -629,7 +629,7 @@ export bool File_Init()
 		}
 	}
 
-	for_all(uint16, cacheFileIndex, CACHE_FILE_COUNT)
+	old_for_all(uint16, cacheFileIndex, CACHE_FILE_COUNT)
 	{
 		auto & cacheFileHelper = cacheFileHelpers[cacheFileIndex];
 
@@ -683,7 +683,7 @@ export bool File_Init()
 
 		static_assert(countof(cacheFileIndices) == ENEMY_FILE_DATA_COUNT);
 
-		for_all(uint8, fileDataIndex, ENEMY_FILE_DATA_COUNT)
+		old_for_all(uint8, fileDataIndex, ENEMY_FILE_DATA_COUNT)
 		{
 			auto & fileData = enemyFileData[fileDataIndex];
 
@@ -775,7 +775,7 @@ export bool File_Init()
 
 		static_assert(countof(helpers) == ENEMY::COUNT);
 
-		for_all(uint8, index, ENEMY::COUNT)
+		old_for_all(uint8, index, ENEMY::COUNT)
 		{
 			bool lastCondition = (index > 0);
 			bool nextCondition = (index < (ENEMY::COUNT - 1));
@@ -870,7 +870,7 @@ export bool File_Init()
 			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<bool **>(func.sect0 + 2) = &activeConfig.preferLocalFiles;
-			*reinterpret_cast<uint32 *>(func.sect0 + 0x18 + 1) = FILE_MODE_LOCAL;
+			*reinterpret_cast<uint32 *>(func.sect0 + 0x18 + 1) = FILE_MODE::LOCAL;
 			WriteCall((func.sect0 + 0x1D), (appBaseAddr + 0x327430));
 			WriteCall((func.sect0 + 0x32), (appBaseAddr + 0x327430));
 		}

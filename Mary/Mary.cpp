@@ -305,12 +305,18 @@ uint32 DllMain
 		Hooks::Init();
 
 
+		Log("barsData %llX", offsetof(Config, barsData));
+
+
 
 
 
 		//Log("&leftStickDirection[0] %X", offsetof(ENGINE_GAMEPAD, leftStickDirection[0]));
 
 		//Log("&g_showItemWindow %llX", &g_show)
+
+
+		
 
 
 

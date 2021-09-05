@@ -8,15 +8,31 @@ import Config;
 import Global;
 import Vars;
 
-export enum TILT_DIRECTION
+// export enum TILT_DIRECTION
+// {
+// 	TILT_DIRECTION::NEUTRAL,
+// 	TILT_DIRECTION::UP,
+// 	TILT_DIRECTION::RIGHT,
+// 	TILT_DIRECTION::DOWN,
+// 	TILT_DIRECTION::LEFT,
+// 	MAX_TILT_DIRECTION,
+// };
+
+export namespaceStart(TILT_DIRECTION);
+enum
 {
-	TILT_DIRECTION_NEUTRAL,
-	TILT_DIRECTION_UP,
-	TILT_DIRECTION_RIGHT,
-	TILT_DIRECTION_DOWN,
-	TILT_DIRECTION_LEFT,
-	MAX_TILT_DIRECTION,
+	NEUTRAL,
+	UP,
+	RIGHT,
+	DOWN,
+	LEFT,
+	MAX,
 };
+namespaceEnd();
+
+
+
+
 
 export void ToggleCursor()
 {
@@ -51,7 +67,7 @@ export inline uint8 GetRelativeTiltDirection(PlayerActorData & actorData)
 
 	if (gamepad.leftStickRadius < LEFT_STICK_DEADZONE)
 	{
-		return TILT_DIRECTION_NEUTRAL;
+		return TILT_DIRECTION::NEUTRAL;
 	}
 
 	relativeTilt = (actorData.actorCameraDirection - gamepad.leftStickPosition);
@@ -60,32 +76,32 @@ export inline uint8 GetRelativeTiltDirection(PlayerActorData & actorData)
 		uint16 value = (relativeTilt - 0x6000);
 		if (value <= 0x4000)
 		{
-			return TILT_DIRECTION_UP;
+			return TILT_DIRECTION::UP;
 		}
 	}
 	{
 		uint16 value = (relativeTilt + 0x6000);
 		if (value <= 0x4000)
 		{
-			return TILT_DIRECTION_RIGHT;
+			return TILT_DIRECTION::RIGHT;
 		}
 	}
 	{
 		uint16 value = (relativeTilt + 0x2000);
 		if (value <= 0x4000)
 		{
-			return TILT_DIRECTION_DOWN;
+			return TILT_DIRECTION::DOWN;
 		}
 	}
 	{
 		uint16 value = (relativeTilt - 0x2000);
 		if (value <= 0x4000)
 		{
-			return TILT_DIRECTION_LEFT;
+			return TILT_DIRECTION::LEFT;
 		}
 	}
 
-	return TILT_DIRECTION_NEUTRAL;
+	return TILT_DIRECTION::NEUTRAL;
 }
 
 export void ToggleDisableGetInput(bool enable)

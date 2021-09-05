@@ -214,7 +214,7 @@ export void SetVolume
 
 export inline void UpdateVolumes()
 {
-	for_all(uint8, channelIndex, MAX_CHANNEL)
+	old_for_all(uint8, channelIndex, CHANNEL::MAX)
 	{
 		SetVolume
 		(
@@ -520,7 +520,7 @@ void ProgHelper::Push
 		size
 	);
 
-	for_all(uint8, itemIndex, progSectMetadata2.itemCount)
+	old_for_all(uint8, itemIndex, progSectMetadata2.itemCount)
 	{
 		auto & item = progSectMetadata2.items[itemIndex];
 
@@ -705,7 +705,7 @@ void VagiHelper::UpdateOffsets()
 
 	uint32 off = 0;
 
-	for_all(uint32, itemIndex, count)
+	old_for_all(uint32, itemIndex, count)
 	{
 		auto & item = (*this)[itemIndex];
 
@@ -903,7 +903,7 @@ void Decompile
 
 	uint32 waveCount = 0;
 
-	for_all(uint32, fileIndex, archiveMetadata.fileCount)
+	old_for_all(uint32, fileIndex, archiveMetadata.fileCount)
 	{
 		auto & fileOff = archiveMetadata.fileOffs[fileIndex];
 		auto file = reinterpret_cast<byte8 *>(archive + fileOff);
@@ -959,7 +959,7 @@ void Decompile
 					Log("sectCount %u", sectCount);
 				}
 
-				for_all(uint8, sectIndex, sectCount)
+				old_for_all(uint8, sectIndex, sectCount)
 				{
 					auto & sectOff = progMetadata.sectOffs[sectIndex];
 					if (sectOff == 0xFFFFFFFF)
@@ -1012,7 +1012,7 @@ void Decompile
 					Log("itemCount %u", itemCount);
 				}
 
-				for_all(uint32, itemIndex, itemCount)
+				old_for_all(uint32, itemIndex, itemCount)
 				{
 					auto & item = smplMetadata.items[itemIndex];
 
@@ -1047,7 +1047,7 @@ void Decompile
 					Log("itemCount %u", itemCount);
 				}
 
-				for_all(uint32, itemIndex, itemCount)
+				old_for_all(uint32, itemIndex, itemCount)
 				{
 					auto & item = vagiMetadata.items[itemIndex];
 
@@ -1065,7 +1065,7 @@ void Decompile
 
 			uint32 pos = 0;
 
-			for_all(uint32, waveIndex, waveCount)
+			old_for_all(uint32, waveIndex, waveCount)
 			{
 				auto wave = (file + pos);
 
@@ -1166,7 +1166,7 @@ void Compile(uint8 helperIndex)
 
 	uint32 off = 0;
 
-	for_all(uint32, index, waveHelper.count)
+	old_for_all(uint32, index, waveHelper.count)
 	{
 		auto & vagiItem = vagiHelper[index];
 		auto & waveMetadata = waveHelper[index];
@@ -1255,7 +1255,7 @@ void Multi
 
 	IntroduceHelpers(helperIndex);
 
-	for_all(uint8, index, count)
+	old_for_all(uint8, index, count)
 	{
 		auto fileIndex = fileIndices[index];
 
@@ -1482,7 +1482,7 @@ void FMOD_InitComplete()
 		{ "Enemy Jester"      , HELPER_ENEMY_JESTER      , snd_em37 },
 	};
 
-	for_all(uint8, index, countof(singleHelpers))
+	old_for_all(uint8, index, countof(singleHelpers))
 	{
 		auto & singleHelper = singleHelpers[index];
 
@@ -1561,9 +1561,9 @@ byte8 * GetDbstMetadataAddress(uint32 channelIndex)
 
 	switch (channelIndex)
 	{
-		case CHANNEL_COMMON:
-		case CHANNEL_STYLE_WEAPON:
-		case CHANNEL_ENEMY:
+		case CHANNEL::COMMON:
+		case CHANNEL::STYLE_WEAPON:
+		case CHANNEL::ENEMY:
 		{
 			auto & helperIndex = g_helperIndices[channelIndex];
 
@@ -1647,9 +1647,9 @@ byte8 * GetHeadMetadataAddress(uint32 channelIndex)
 
 	switch (channelIndex)
 	{
-		case CHANNEL_COMMON:
-		case CHANNEL_STYLE_WEAPON:
-		case CHANNEL_ENEMY:
+		case CHANNEL::COMMON:
+		case CHANNEL::STYLE_WEAPON:
+		case CHANNEL::ENEMY:
 		{
 			auto & helperIndex = g_helperIndices[channelIndex];
 
@@ -1676,9 +1676,9 @@ uint64 GetChannelOffset(uint32 channelIndex)
 
 	switch (channelIndex)
 	{
-		case CHANNEL_COMMON:
-		case CHANNEL_STYLE_WEAPON:
-		case CHANNEL_ENEMY:
+		case CHANNEL::COMMON:
+		case CHANNEL::STYLE_WEAPON:
+		case CHANNEL::ENEMY:
 		{
 			return 0;
 		}
@@ -1704,9 +1704,9 @@ uint32 GetSoundDataCount(byte8 * addr)
 
 	switch (channelIndex)
 	{
-		case CHANNEL_COMMON:
-		case CHANNEL_STYLE_WEAPON:
-		case CHANNEL_ENEMY:
+		case CHANNEL::COMMON:
+		case CHANNEL::STYLE_WEAPON:
+		case CHANNEL::ENEMY:
 		{
 			auto & helperIndex = g_helperIndices[channelIndex];
 
@@ -1738,9 +1738,9 @@ byte8 * GetSoundDataAddress(byte8 * addr)
 
 	switch (channelIndex)
 	{
-		case CHANNEL_COMMON:
-		case CHANNEL_STYLE_WEAPON:
-		case CHANNEL_ENEMY:
+		case CHANNEL::COMMON:
+		case CHANNEL::STYLE_WEAPON:
+		case CHANNEL::ENEMY:
 		{
 			auto & helperIndex = g_helperIndices[channelIndex];
 
@@ -1774,7 +1774,7 @@ export bool Sound_Init()
 {
 	LogFunction();
 
-	for_all(uint8, helperIndex, HELPER_COUNT)
+	old_for_all(uint8, helperIndex, HELPER_COUNT)
 	{
 		Log("helperIndex %u", helperIndex);
 
@@ -2124,11 +2124,11 @@ export void UpdateEnemyCount()
 
 
 
-	auto & helperIndex = g_helperIndices[CHANNEL_ENEMY];
+	auto & helperIndex = g_helperIndices[CHANNEL::ENEMY];
 
 	IntroduceEnemyVectorData(return);
 
-	for_all(uint32, enemyIndex, countof(enemyVectorData.metadata))
+	old_for_all(uint32, enemyIndex, countof(enemyVectorData.metadata))
 	{
 		auto & metadata = enemyVectorData.metadata[enemyIndex];
 

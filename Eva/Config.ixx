@@ -85,6 +85,9 @@ export struct Config
 		GAMEPAD::LEFT,
 	};
 
+	bool   enableChargeController = false;
+	byte16 chargeButton           = GAMEPAD::X;
+
 	struct
 	{
 		bool   enable          = (debug) ? true : false;

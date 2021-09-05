@@ -127,7 +127,7 @@ export auto & GetNewActorData
 
 
 
-export uint8 g_helperIndices[MAX_CHANNEL] = {};
+export uint8 g_helperIndices[CHANNEL::MAX] = {};
 
 export bool g_show               = false;
 export bool g_lastShow           = false;
@@ -238,7 +238,7 @@ export void ToggleSkipCutscenes(bool enable)
 export template <typename T>
 void ActorForAll(T & func)
 {
-	for_all(uint64, actorIndex, g_playerActorBaseAddrs.count)
+	old_for_all(uint64, actorIndex, g_playerActorBaseAddrs.count)
 	{
 		auto actorBaseAddr = g_playerActorBaseAddrs[actorIndex];
 
@@ -272,7 +272,7 @@ void EnemyForAll(T & func)
 	auto & count = *reinterpret_cast<uint32 *>(pool[8] + 0x28);
 	auto dataAddr = reinterpret_cast<EnemyVectorDataMetadata *>(pool[8] + 0x48);
 
-	for_all(uint32, index, 50)
+	old_for_all(uint32, index, 50)
 	{
 		auto & data = dataAddr[index];
 

@@ -65,7 +65,7 @@ export void RegisterPhysics
 	{
 		return;
 	}
-	for_all(uint32, index, count)
+	old_for_all(uint32, index, count)
 	{
 		func_2CA1D0
 		(

@@ -350,7 +350,7 @@ export byte8 * CreateEnemyActor
 // 	//bool yes = false;
 
 
-// 	// for_all(uint64, index, g_enemyActorBaseAddrs.count)
+// 	// old_for_all(uint64, index, g_enemyActorBaseAddrs.count)
 // 	// {
 // 	// 	LoopStart:;
 
@@ -605,7 +605,7 @@ typedef WeaponData *(__fastcall * RegisterWeapon_t)
 	uint32 weapon
 );
 
-RegisterWeapon_t RegisterWeapon[MAX_WEAPON] = {};
+RegisterWeapon_t RegisterWeapon[WEAPON::MAX] = {};
 
 
 
@@ -668,9 +668,9 @@ void SetMainActor(T & actorData)
 
 		switch (character)
 		{
-			case CHAR_DANTE:
+			case CHARACTER::DANTE:
 			{
-				if (costume >= MAX_COSTUME_DANTE)
+				if (costume >= COSTUME::MAX_DANTE)
 				{
 					costume = 0;
 				}
@@ -679,9 +679,9 @@ void SetMainActor(T & actorData)
 
 				break;
 			}
-			case CHAR_BOB:
+			case CHARACTER::BOB:
 			{
-				if (costume >= MAX_COSTUME_BOB)
+				if (costume >= COSTUME::MAX_BOB)
 				{
 					costume = 0;
 				}
@@ -690,9 +690,9 @@ void SetMainActor(T & actorData)
 
 				break;
 			}
-			case CHAR_LADY:
+			case CHARACTER::LADY:
 			{
-				if (costume >= MAX_COSTUME_LADY)
+				if (costume >= COSTUME::MAX_LADY)
 				{
 					costume = 0;
 				}
@@ -701,9 +701,9 @@ void SetMainActor(T & actorData)
 
 				break;
 			}
-			case CHAR_VERGIL:
+			case CHARACTER::VERGIL:
 			{
-				if (costume >= MAX_COSTUME_VERGIL)
+				if (costume >= COSTUME::MAX_VERGIL)
 				{
 					costume = 0;
 				}
@@ -724,7 +724,7 @@ void SetMainActor(T & actorData)
 
 
 
-		if (actorData.character == CHAR_DANTE)
+		if (actorData.character == CHARACTER::DANTE)
 		{
 			uint16 swordFileId = plwp_sword;
 
@@ -950,8 +950,8 @@ void CopyState
 	if
 	(
 		!(
-			(activeCharacterData.character < MAX_CHAR) &&
-			(characterData.character < MAX_CHAR)
+			(activeCharacterData.character < CHARACTER::MAX) &&
+			(characterData.character < CHARACTER::MAX)
 		)
 	)
 	{
@@ -979,18 +979,18 @@ void CopyState
 	}
 
 
-	actorData.state = (actorData.state & STATE_IN_AIR) ? STATE_IN_AIR : STATE_ON_FLOOR;
+	actorData.state = (actorData.state & STATE::IN_AIR) ? STATE::IN_AIR : STATE::ON_FLOOR;
 
 
 	// High Time Launch Fix
 	if
 	(
 		(actorData.permissions == 0x400) &&
-		(actorData.state & STATE_IN_AIR) &&
-		(actorData.lastState & STATE_ON_FLOOR)
+		(actorData.state & STATE::IN_AIR) &&
+		(actorData.lastState & STATE::ON_FLOOR)
 	)
 	{
-		actorData.permissions |= PERMISSION_UPDATE;
+		actorData.permissions |= PERMISSION::UPDATE;
 	}
 
 
@@ -1027,16 +1027,16 @@ uint8 GetNextMeleeAction
 
 	auto tiltDirection = GetRelativeTiltDirection(actorData);
 
-	auto inAir = (activeActorData.state & STATE_IN_AIR);
+	auto inAir = (activeActorData.state & STATE::IN_AIR);
 
 
-	auto lockOn = (gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON));
+	auto lockOn = (gamepad.buttons[0] & GetBinding(BINDING::LOCK_ON));
 
 
 
 	switch (actorData.character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
 			using namespace ACTION_DANTE;
 
@@ -1045,7 +1045,7 @@ uint8 GetNextMeleeAction
 
 			switch (weapon)
 			{
-				case WEAPON_REBELLION:
+				case WEAPON::REBELLION:
 				{
 					if (inAir)
 					{
@@ -1057,11 +1057,11 @@ uint8 GetNextMeleeAction
 
 						if (lockOn)
 						{
-							if (tiltDirection == TILT_DIRECTION_UP)
+							if (tiltDirection == TILT_DIRECTION::UP)
 							{
 								action = REBELLION_STINGER_LEVEL_2;
 							}
-							else if (tiltDirection == TILT_DIRECTION_DOWN)
+							else if (tiltDirection == TILT_DIRECTION::DOWN)
 							{
 								action = REBELLION_HIGH_TIME;
 							}
@@ -1070,7 +1070,7 @@ uint8 GetNextMeleeAction
 
 					break;
 				}
-				case WEAPON_CERBERUS:
+				case WEAPON::CERBERUS:
 				{
 					if (inAir)
 					{
@@ -1082,11 +1082,11 @@ uint8 GetNextMeleeAction
 
 						if (lockOn)
 						{
-							if (tiltDirection == TILT_DIRECTION_UP)
+							if (tiltDirection == TILT_DIRECTION::UP)
 							{
 								action = CERBERUS_REVOLVER_LEVEL_2;
 							}
-							else if (tiltDirection == TILT_DIRECTION_DOWN)
+							else if (tiltDirection == TILT_DIRECTION::DOWN)
 							{
 								action = CERBERUS_WINDMILL;
 							}
@@ -1095,7 +1095,7 @@ uint8 GetNextMeleeAction
 
 					break;
 				}
-				case WEAPON_AGNI_RUDRA:
+				case WEAPON::AGNI_RUDRA:
 				{
 					if (inAir)
 					{
@@ -1107,11 +1107,11 @@ uint8 GetNextMeleeAction
 
 						if (lockOn)
 						{
-							if (tiltDirection == TILT_DIRECTION_UP)
+							if (tiltDirection == TILT_DIRECTION::UP)
 							{
 								action = AGNI_RUDRA_JET_STREAM_LEVEL_3;
 							}
-							else if (tiltDirection == TILT_DIRECTION_DOWN)
+							else if (tiltDirection == TILT_DIRECTION::DOWN)
 							{
 								action = AGNI_RUDRA_WHIRLWIND;
 							}
@@ -1120,7 +1120,7 @@ uint8 GetNextMeleeAction
 
 					break;
 				}
-				case WEAPON_NEVAN:
+				case WEAPON::NEVAN:
 				{
 					if (inAir)
 					{
@@ -1132,11 +1132,11 @@ uint8 GetNextMeleeAction
 
 						if (lockOn)
 						{
-							if (tiltDirection == TILT_DIRECTION_UP)
+							if (tiltDirection == TILT_DIRECTION::UP)
 							{
 								action = NEVAN_REVERB_SHOCK_LEVEL_2;
 							}
-							else if (tiltDirection == TILT_DIRECTION_DOWN)
+							else if (tiltDirection == TILT_DIRECTION::DOWN)
 							{
 								action = NEVAN_BAT_RIFT_LEVEL_1;
 							}
@@ -1145,7 +1145,7 @@ uint8 GetNextMeleeAction
 
 					break;
 				}
-				case WEAPON_BEOWULF_DANTE:
+				case WEAPON::BEOWULF_DANTE:
 				{
 					if (inAir)
 					{
@@ -1157,11 +1157,11 @@ uint8 GetNextMeleeAction
 
 						if (lockOn)
 						{
-							if (tiltDirection == TILT_DIRECTION_UP)
+							if (tiltDirection == TILT_DIRECTION::UP)
 							{
 								action = BEOWULF_STRAIGHT_LEVEL_2;
 							}
-							else if (tiltDirection == TILT_DIRECTION_DOWN)
+							else if (tiltDirection == TILT_DIRECTION::DOWN)
 							{
 								action = BEOWULF_RISING_DRAGON;
 							}
@@ -1174,7 +1174,7 @@ uint8 GetNextMeleeAction
 
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
 			using namespace ACTION_VERGIL;
 
@@ -1183,7 +1183,7 @@ uint8 GetNextMeleeAction
 
 			switch (weapon)
 			{
-				case WEAPON_YAMATO_VERGIL:
+				case WEAPON::YAMATO_VERGIL:
 				{
 					if (inAir)
 					{
@@ -1195,11 +1195,11 @@ uint8 GetNextMeleeAction
 
 						if (lockOn)
 						{
-							if (tiltDirection == TILT_DIRECTION_UP)
+							if (tiltDirection == TILT_DIRECTION::UP)
 							{
 								action = YAMATO_RAPID_SLASH_LEVEL_2;
 							}
-							else if (tiltDirection == TILT_DIRECTION_DOWN)
+							else if (tiltDirection == TILT_DIRECTION::DOWN)
 							{
 								action = YAMATO_UPPER_SLASH_PART_1;
 							}
@@ -1208,7 +1208,7 @@ uint8 GetNextMeleeAction
 
 					break;
 				}
-				case WEAPON_BEOWULF_VERGIL:
+				case WEAPON::BEOWULF_VERGIL:
 				{
 					if (inAir)
 					{
@@ -1220,11 +1220,11 @@ uint8 GetNextMeleeAction
 
 						if (lockOn)
 						{
-							if (tiltDirection == TILT_DIRECTION_UP)
+							if (tiltDirection == TILT_DIRECTION::UP)
 							{
 								action = BEOWULF_LUNAR_PHASE_LEVEL_2;
 							}
-							else if (tiltDirection == TILT_DIRECTION_DOWN)
+							else if (tiltDirection == TILT_DIRECTION::DOWN)
 							{
 								action = BEOWULF_RISING_SUN;
 							}
@@ -1233,7 +1233,7 @@ uint8 GetNextMeleeAction
 
 					break;
 				}
-				case WEAPON_YAMATO_FORCE_EDGE:
+				case WEAPON::YAMATO_FORCE_EDGE:
 				{
 					if (inAir)
 					{
@@ -1245,11 +1245,11 @@ uint8 GetNextMeleeAction
 
 						if (lockOn)
 						{
-							if (tiltDirection == TILT_DIRECTION_UP)
+							if (tiltDirection == TILT_DIRECTION::UP)
 							{
 								action = YAMATO_FORCE_EDGE_STINGER_LEVEL_2;
 							}
-							else if (tiltDirection == TILT_DIRECTION_DOWN)
+							else if (tiltDirection == TILT_DIRECTION::DOWN)
 							{
 								action = YAMATO_FORCE_EDGE_HIGH_TIME;
 							}
@@ -1280,8 +1280,8 @@ uint8 GetNextMeleeAction
 	if
 	(
 		!(
-			(activeCharacterData.character < MAX_CHAR) &&
-			(characterData.character < MAX_CHAR)
+			(activeCharacterData.character < CHARACTER::MAX) &&
+			(characterData.character < CHARACTER::MAX)
 		)
 	)
 	{
@@ -1330,8 +1330,8 @@ void SetNextMeleeAction
 	if
 	(
 		!(
-			(activeCharacterData.character < MAX_CHAR) &&
-			(characterData.character < MAX_CHAR)
+			(activeCharacterData.character < CHARACTER::MAX) &&
+			(characterData.character < CHARACTER::MAX)
 		)
 	)
 	{
@@ -1388,27 +1388,27 @@ uint8 GetNextStyleAction
 
 	auto tiltDirection = GetRelativeTiltDirection(actorData);
 
-	auto inAir = (activeActorData.state & STATE_IN_AIR);
+	auto inAir = (activeActorData.state & STATE::IN_AIR);
 
-	auto lockOn = (gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON));
+	auto lockOn = (gamepad.buttons[0] & GetBinding(BINDING::LOCK_ON));
 
 
 
-	if (actorData.character != CHAR_DANTE)
+	if (actorData.character != CHARACTER::DANTE)
 	{
 		return 0;
 	}
 
 	using namespace ACTION_DANTE;
 
-	if (actorData.style == STYLE_SWORDMASTER)
+	if (actorData.style == STYLE::SWORDMASTER)
 	{
 		// @Todo: Use GetMeleeWeapon.
 		auto weapon = actorData.newWeapons[actorData.meleeWeaponIndex];
 
 		switch (weapon)
 		{
-			case WEAPON_REBELLION:
+			case WEAPON::REBELLION:
 			{
 				if (inAir)
 				{
@@ -1420,11 +1420,11 @@ uint8 GetNextStyleAction
 
 					if (lockOn)
 					{
-						if (tiltDirection == TILT_DIRECTION_UP)
+						if (tiltDirection == TILT_DIRECTION::UP)
 						{
 							action = REBELLION_SWORD_PIERCE;
 						}
-						else if (tiltDirection == TILT_DIRECTION_DOWN)
+						else if (tiltDirection == TILT_DIRECTION::DOWN)
 						{
 							action = REBELLION_DANCE_MACABRE_PART_1;
 						}
@@ -1433,7 +1433,7 @@ uint8 GetNextStyleAction
 
 				break;
 			}
-			case WEAPON_CERBERUS:
+			case WEAPON::CERBERUS:
 			{
 				if (inAir)
 				{
@@ -1445,11 +1445,11 @@ uint8 GetNextStyleAction
 
 					if (lockOn)
 					{
-						if (tiltDirection == TILT_DIRECTION_UP)
+						if (tiltDirection == TILT_DIRECTION::UP)
 						{
 							action = CERBERUS_CRYSTAL;
 						}
-						else if (tiltDirection == TILT_DIRECTION_DOWN)
+						else if (tiltDirection == TILT_DIRECTION::DOWN)
 						{
 							action = CERBERUS_ICE_AGE;
 						}
@@ -1458,7 +1458,7 @@ uint8 GetNextStyleAction
 
 				break;
 			}
-			case WEAPON_AGNI_RUDRA:
+			case WEAPON::AGNI_RUDRA:
 			{
 				if (inAir)
 				{
@@ -1470,11 +1470,11 @@ uint8 GetNextStyleAction
 
 					if (lockOn)
 					{
-						if (tiltDirection == TILT_DIRECTION_UP)
+						if (tiltDirection == TILT_DIRECTION::UP)
 						{
 							action = AGNI_RUDRA_CRAWLER;
 						}
-						else if (tiltDirection == TILT_DIRECTION_DOWN)
+						else if (tiltDirection == TILT_DIRECTION::DOWN)
 						{
 							action = AGNI_RUDRA_TWISTER;
 						}
@@ -1483,7 +1483,7 @@ uint8 GetNextStyleAction
 
 				break;
 			}
-			case WEAPON_NEVAN:
+			case WEAPON::NEVAN:
 			{
 				if (inAir)
 				{
@@ -1495,11 +1495,11 @@ uint8 GetNextStyleAction
 
 					if (lockOn)
 					{
-						if (tiltDirection == TILT_DIRECTION_UP)
+						if (tiltDirection == TILT_DIRECTION::UP)
 						{
 							action = NEVAN_FEEDBACK;
 						}
-						else if (tiltDirection == TILT_DIRECTION_DOWN)
+						else if (tiltDirection == TILT_DIRECTION::DOWN)
 						{
 							action = NEVAN_DISTORTION;
 						}
@@ -1508,7 +1508,7 @@ uint8 GetNextStyleAction
 
 				break;
 			}
-			case WEAPON_BEOWULF_DANTE:
+			case WEAPON::BEOWULF_DANTE:
 			{
 				if (inAir)
 				{
@@ -1516,7 +1516,7 @@ uint8 GetNextStyleAction
 
 					if (lockOn)
 					{
-						if (tiltDirection == TILT_DIRECTION_UP)
+						if (tiltDirection == TILT_DIRECTION::UP)
 						{
 							action = BEOWULF_AIR_VOLCANO;
 						}
@@ -1528,11 +1528,11 @@ uint8 GetNextStyleAction
 
 					if (lockOn)
 					{
-						if (tiltDirection == TILT_DIRECTION_UP)
+						if (tiltDirection == TILT_DIRECTION::UP)
 						{
 							action = BEOWULF_VOLCANO;
 						}
-						else if (tiltDirection == TILT_DIRECTION_DOWN)
+						else if (tiltDirection == TILT_DIRECTION::DOWN)
 						{
 							action = BEOWULF_REAL_IMPACT;
 						}
@@ -1543,14 +1543,14 @@ uint8 GetNextStyleAction
 			}
 		}
 	}
-	else if (actorData.style == STYLE_GUNSLINGER)
+	else if (actorData.style == STYLE::GUNSLINGER)
 	{
 		// @Todo: Use GetRangedWeapon.
 		auto weapon = actorData.newWeapons[actorData.rangedWeaponIndex];
 
 		switch (weapon)
 		{
-			case WEAPON_EBONY_IVORY:
+			case WEAPON::EBONY_IVORY:
 			{
 				if (inAir)
 				{
@@ -1563,7 +1563,7 @@ uint8 GetNextStyleAction
 
 				break;
 			}
-			case WEAPON_SHOTGUN:
+			case WEAPON::SHOTGUN:
 			{
 				if (inAir)
 				{
@@ -1575,7 +1575,7 @@ uint8 GetNextStyleAction
 
 					if (lockOn)
 					{
-						if (tiltDirection == TILT_DIRECTION_UP)
+						if (tiltDirection == TILT_DIRECTION::UP)
 						{
 							action = SHOTGUN_GUN_STINGER;
 						}
@@ -1584,7 +1584,7 @@ uint8 GetNextStyleAction
 
 				break;
 			}
-			case WEAPON_ARTEMIS:
+			case WEAPON::ARTEMIS:
 			{
 				if (inAir)
 				{
@@ -1596,7 +1596,7 @@ uint8 GetNextStyleAction
 
 					if (lockOn)
 					{
-						if (tiltDirection == TILT_DIRECTION_UP)
+						if (tiltDirection == TILT_DIRECTION::UP)
 						{
 							action = ARTEMIS_SPHERE;
 						}
@@ -1605,7 +1605,7 @@ uint8 GetNextStyleAction
 
 				break;
 			}
-			case WEAPON_SPIRAL:
+			case WEAPON::SPIRAL:
 			{
 				if (inAir)
 				{
@@ -1617,7 +1617,7 @@ uint8 GetNextStyleAction
 
 					if (lockOn)
 					{
-						if (tiltDirection == TILT_DIRECTION_UP)
+						if (tiltDirection == TILT_DIRECTION::UP)
 						{
 							action = SPIRAL_SNIPER;
 						}
@@ -1626,7 +1626,7 @@ uint8 GetNextStyleAction
 
 				break;
 			}
-			case WEAPON_KALINA_ANN:
+			case WEAPON::KALINA_ANN:
 			{
 				if (inAir)
 				{
@@ -1638,7 +1638,7 @@ uint8 GetNextStyleAction
 
 					if (lockOn)
 					{
-						if (tiltDirection == TILT_DIRECTION_UP)
+						if (tiltDirection == TILT_DIRECTION::UP)
 						{
 							action = KALINA_ANN_GRAPPLE;
 						}
@@ -1666,8 +1666,8 @@ uint8 GetNextStyleAction
 	if
 	(
 		!(
-			(activeCharacterData.character < MAX_CHAR) &&
-			(characterData.character < MAX_CHAR)
+			(activeCharacterData.character < CHARACTER::MAX) &&
+			(characterData.character < CHARACTER::MAX)
 		)
 	)
 	{
@@ -1716,8 +1716,8 @@ void SetNextStyleAction
 	if
 	(
 		!(
-			(activeCharacterData.character < MAX_CHAR) &&
-			(characterData.character < MAX_CHAR)
+			(activeCharacterData.character < CHARACTER::MAX) &&
+			(characterData.character < CHARACTER::MAX)
 		)
 	)
 	{
@@ -1916,7 +1916,7 @@ void ToggleActor
 	bool enable
 )
 {
-	if (characterData.character == CHAR_BOSS_LADY)
+	if (characterData.character == CHARACTER::BOSS_LADY)
 	{
 		auto & actorData = *reinterpret_cast<EnemyActorDataLady *>(newActorData.baseAddr);
 
@@ -1924,7 +1924,7 @@ void ToggleActor
 
 		newActorData.enableCollision = enable;
 	}
-	else if (characterData.character == CHAR_BOSS_VERGIL)
+	else if (characterData.character == CHARACTER::BOSS_VERGIL)
 	{
 		auto & actorData = *reinterpret_cast<EnemyActorDataVergil *>(newActorData.baseAddr);
 
@@ -1956,7 +1956,7 @@ void CommissionActor(T & actorData)
 	if
 	(
 		(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
-		(actorData.newEntityIndex == ENTITY_MAIN)
+		(actorData.newEntityIndex == ENTITY::MAIN)
 	)
 	{
 		ToggleActor(actorData, true);
@@ -1993,9 +1993,9 @@ void CommissionActor(T & actorData)
 
 
 
-	// if (actorData.mode == ACTOR_MODE_MISSION_19)
+	// if (actorData.mode == ACTOR_MODE::MISSION_19)
 	// {
-	// 	actorData.mode = ACTOR_MODE_DEFAULT;
+	// 	actorData.mode = ACTOR_MODE::DEFAULT;
 	// }
 }
 
@@ -2038,10 +2038,10 @@ struct GetCharacterId
 	enum
 	{
 		value =
-		(TypeMatch<T, PlayerActorDataDante >::value) ? CHAR_DANTE  :
-		(TypeMatch<T, PlayerActorDataBob   >::value) ? CHAR_BOB    :
-		(TypeMatch<T, PlayerActorDataLady  >::value) ? CHAR_LADY   :
-		(TypeMatch<T, PlayerActorDataVergil>::value) ? CHAR_VERGIL :
+		(TypeMatch<T, PlayerActorDataDante >::value) ? CHARACTER::DANTE  :
+		(TypeMatch<T, PlayerActorDataBob   >::value) ? CHARACTER::BOB    :
+		(TypeMatch<T, PlayerActorDataLady  >::value) ? CHARACTER::LADY   :
+		(TypeMatch<T, PlayerActorDataVergil>::value) ? CHARACTER::VERGIL :
 		0
 	};
 };
@@ -2068,7 +2068,7 @@ template <typename T>
 void CharacterModelData::Update(T & actorData)
 {
 	character = (actorData.newForceFiles) ? actorData.newForceFilesCharacter : static_cast<uint8>(actorData.character);
-	if (character >= MAX_CHAR)
+	if (character >= CHARACTER::MAX)
 	{
 		character = 0;
 	}
@@ -2083,9 +2083,9 @@ void CharacterModelData::Update(T & actorData)
 
 	switch (character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
-			if (costume >= MAX_COSTUME_DANTE)
+			if (costume >= COSTUME::MAX_DANTE)
 			{
 				costume = 0;
 			}
@@ -2094,12 +2094,12 @@ void CharacterModelData::Update(T & actorData)
 
 			switch (costume)
 			{
-				case COSTUME_DANTE_DEFAULT:
-				case COSTUME_DANTE_DEFAULT_TORN:
-				case COSTUME_DANTE_DMC1:
-				case COSTUME_DANTE_SPARDA:
-				case COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS:
-				case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
+				case COSTUME::DANTE_DEFAULT:
+				case COSTUME::DANTE_DEFAULT_TORN:
+				case COSTUME::DANTE_DMC1:
+				case COSTUME::DANTE_SPARDA:
+				case COSTUME::DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS:
+				case COSTUME::DANTE_SPARDA_INFINITE_MAGIC_POINTS:
 				{
 					coat = true;
 
@@ -2109,9 +2109,9 @@ void CharacterModelData::Update(T & actorData)
 
 			break;
 		}
-		case CHAR_BOB:
+		case CHARACTER::BOB:
 		{
-			if (costume >= MAX_COSTUME_BOB)
+			if (costume >= COSTUME::MAX_BOB)
 			{
 				costume = 0;
 			}
@@ -2119,9 +2119,9 @@ void CharacterModelData::Update(T & actorData)
 			coat = false;
 			break;
 		}
-		case CHAR_LADY:
+		case CHARACTER::LADY:
 		{
-			if (costume >= MAX_COSTUME_LADY)
+			if (costume >= COSTUME::MAX_LADY)
 			{
 				costume = 0;
 			}
@@ -2129,9 +2129,9 @@ void CharacterModelData::Update(T & actorData)
 			coat = false;
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
-			if (costume >= MAX_COSTUME_VERGIL)
+			if (costume >= COSTUME::MAX_VERGIL)
 			{
 				costume = 0;
 			}
@@ -2139,10 +2139,10 @@ void CharacterModelData::Update(T & actorData)
 
 			switch (costume)
 			{
-				case COSTUME_VERGIL_DEFAULT:
-				case COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS:
-				case COSTUME_VERGIL_NERO_ANGELO:
-				case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+				case COSTUME::VERGIL_DEFAULT:
+				case COSTUME::VERGIL_DEFAULT_INFINITE_MAGIC_POINTS:
+				case COSTUME::VERGIL_NERO_ANGELO:
+				case COSTUME::VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
 				{
 					coat = true;
 
@@ -2255,8 +2255,8 @@ bool IsDanteMeleeWeapon(uint8 weapon)
 {
 	if
 	(
-		(weapon >= WEAPON_REBELLION    ) &&
-		(weapon <= WEAPON_BEOWULF_DANTE)
+		(weapon >= WEAPON::REBELLION    ) &&
+		(weapon <= WEAPON::BEOWULF_DANTE)
 	)
 	{
 		return true;
@@ -2269,8 +2269,8 @@ bool IsVergilMeleeWeapon(uint8 weapon)
 {
 	if
 	(
-		(weapon >= WEAPON_YAMATO_VERGIL) &&
-		(weapon <= WEAPON_YAMATO_FORCE_EDGE   )
+		(weapon >= WEAPON::YAMATO_VERGIL) &&
+		(weapon <= WEAPON::YAMATO_FORCE_EDGE   )
 	)
 	{
 		return true;
@@ -2283,8 +2283,8 @@ bool IsDanteRangedWeapon(uint8 weapon)
 {
 	if
 	(
-		(weapon >= WEAPON_EBONY_IVORY) &&
-		(weapon <= WEAPON_KALINA_ANN )
+		(weapon >= WEAPON::EBONY_IVORY) &&
+		(weapon <= WEAPON::KALINA_ANN )
 	)
 	{
 		return true;
@@ -2341,7 +2341,7 @@ bool IsWeaponActive
 
 	switch (actorData.character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
 
 			if (!IsDanteWeapon(weapon))
@@ -2360,14 +2360,14 @@ bool IsWeaponActive
 
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
 			if (!IsVergilWeapon(weapon))
 			{
 				return false;
 			}
 
-			if (motionData.group == (MOTION_GROUP_VERGIL::YAMATO + (weapon - WEAPON_YAMATO_VERGIL)))
+			if (motionData.group == (MOTION_GROUP_VERGIL::YAMATO + (weapon - WEAPON::YAMATO_VERGIL)))
 			{
 				return true;
 			}
@@ -2389,7 +2389,7 @@ bool IsWeaponActive(T & actorData)
 
 	switch (actorData.character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
 			if
 			(
@@ -2424,7 +2424,7 @@ bool IsWeaponActive(T & actorData)
 
 			break;
 		}
-		case CHAR_BOB:
+		case CHARACTER::BOB:
 		{
 			if
 			(
@@ -2437,7 +2437,7 @@ bool IsWeaponActive(T & actorData)
 
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
 			if
 			(
@@ -2472,7 +2472,7 @@ bool IsActive(T & actorData)
 
 	switch (actorData.character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
 			using namespace MOTION_GROUP_DANTE;
 
@@ -2536,7 +2536,7 @@ bool IsActive(T & actorData)
 
 			break;
 		}
-		case CHAR_BOB:
+		case CHARACTER::BOB:
 		{
 			using namespace MOTION_GROUP_BOB;
 
@@ -2568,7 +2568,7 @@ bool IsActive(T & actorData)
 
 			break;
 		}
-		case CHAR_LADY:
+		case CHARACTER::LADY:
 		{
 			using namespace MOTION_GROUP_LADY;
 
@@ -2596,7 +2596,7 @@ bool IsActive(T & actorData)
 
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
 			using namespace MOTION_GROUP_VERGIL;
 
@@ -2645,20 +2645,20 @@ bool IsMeleeWeaponReady
 	uint8 weapon
 )
 {
-	if (weapon >= MAX_WEAPON)
+	if (weapon >= WEAPON::MAX)
 	{
 		return true;
 	}
 
 	switch (actorData.character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
 			if (actorData.devil)
 			{
 				if (actorData.sparda)
 				{
-					if (weapon == WEAPON_BEOWULF_DANTE)
+					if (weapon == WEAPON::BEOWULF_DANTE)
 					{
 						return false;
 					}
@@ -2673,7 +2673,7 @@ bool IsMeleeWeaponReady
 			}
 			else
 			{
-				if ((weapon == WEAPON_BEOWULF_DANTE) && activeConfig.hideBeowulfDante)
+				if ((weapon == WEAPON::BEOWULF_DANTE) && activeConfig.hideBeowulfDante)
 				{
 					return false;
 				}
@@ -2684,9 +2684,9 @@ bool IsMeleeWeaponReady
 				return true;
 			}
 
-			for_all(uint8, index, MELEE_WEAPON_COUNT_DANTE)
+			old_for_all(uint8, index, MELEE_WEAPON_COUNT_DANTE)
 			{
-				uint8 weapon2 = (WEAPON_REBELLION + index);
+				uint8 weapon2 = (WEAPON::REBELLION + index);
 
 				if (weapon2 == weapon)
 				{
@@ -2711,7 +2711,7 @@ bool IsMeleeWeaponReady
 
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
 			if (actorData.devil)
 			{
@@ -2729,7 +2729,7 @@ bool IsMeleeWeaponReady
 			}
 			else
 			{
-				if ((weapon == WEAPON_BEOWULF_VERGIL) && activeConfig.hideBeowulfVergil)
+				if ((weapon == WEAPON::BEOWULF_VERGIL) && activeConfig.hideBeowulfVergil)
 				{
 					return false;
 				}
@@ -2740,9 +2740,9 @@ bool IsMeleeWeaponReady
 				return true;
 			}
 
-			for_all(uint8, index, MELEE_WEAPON_COUNT_VERGIL)
+			old_for_all(uint8, index, MELEE_WEAPON_COUNT_VERGIL)
 			{
-				uint8 weapon2 = (WEAPON_YAMATO_VERGIL + index);
+				uint8 weapon2 = (WEAPON::YAMATO_VERGIL + index);
 
 				if (weapon2 == weapon)
 				{
@@ -2755,7 +2755,7 @@ bool IsMeleeWeaponReady
 				}
 			}
 
-			if (actorData.activeMeleeWeaponIndex == (weapon - WEAPON_YAMATO_VERGIL))
+			if (actorData.activeMeleeWeaponIndex == (weapon - WEAPON::YAMATO_VERGIL))
 			{
 				return true;
 			}
@@ -2785,9 +2785,9 @@ bool IsRangedWeaponReady
 		return true;
 	}
 
-	for_all(uint8, index, RANGED_WEAPON_COUNT_DANTE)
+	old_for_all(uint8, index, RANGED_WEAPON_COUNT_DANTE)
 	{
-		uint8 weapon2 = (WEAPON_EBONY_IVORY + index);
+		uint8 weapon2 = (WEAPON::EBONY_IVORY + index);
 
 		if (weapon2 == weapon)
 		{
@@ -2823,7 +2823,7 @@ void IsMeleeWeaponReadyVergilFix(PlayerActorData & actorData)
 {
 	if (actorData.activeMeleeWeaponIndex != actorData.queuedMeleeWeaponIndex)
 	{
-		uint8 weapon = (WEAPON_YAMATO_VERGIL + static_cast<uint8>(actorData.activeMeleeWeaponIndex));
+		uint8 weapon = (WEAPON::YAMATO_VERGIL + static_cast<uint8>(actorData.activeMeleeWeaponIndex));
 
 		if (!IsWeaponActive(actorData, weapon))
 		{
@@ -3085,16 +3085,16 @@ bool SystemButtonCheck(T & actorData)
 	// {
 	// 	case ACTOR_SYSTEM_DOPPELGANGER:
 	// 	{
-	// 		if (actorData.newIndex == ENTITY_MAIN)
+	// 		if (actorData.newIndex == ENTITY::MAIN)
 	// 		{
-	// 			if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	// 			if (actorData.buttons[0] & GetBinding(BINDING::DEFAULT_CAMERA))
 	// 			{
 	// 				return false;
 	// 			}
 	// 		}
 	// 		else
 	// 		{
-	// 			if (!(actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA)))
+	// 			if (!(actorData.buttons[0] & GetBinding(BINDING::DEFAULT_CAMERA)))
 	// 			{
 	// 				return false;
 	// 			}
@@ -3104,7 +3104,7 @@ bool SystemButtonCheck(T & actorData)
 	// 	}
 	// 	case ACTOR_SYSTEM_CHARACTER_SWITCHER:
 	// 	{
-	// 		if (actorData.buttons[0] & GetBinding(BINDING_DEFAULT_CAMERA))
+	// 		if (actorData.buttons[0] & GetBinding(BINDING::DEFAULT_CAMERA))
 	// 		{
 	// 			return false;
 	// 		}
@@ -3124,7 +3124,7 @@ bool IsNeroAngelo(T & actorData)
 {
 	return
 	(
-		(actorData.character == CHAR_VERGIL) &&
+		(actorData.character == CHARACTER::VERGIL) &&
 		actorData.neroAngelo &&
 		actorData.devil
 	);
@@ -3215,7 +3215,7 @@ constexpr FileDataHelper fileDataHelperVergil[] =
 template<uint8 itemCount>
 void UpdateFileDataFunction(const FileDataHelper(&items)[itemCount])
 {
-	for_all(uint8, itemIndex, itemCount)
+	old_for_all(uint8, itemIndex, itemCount)
 	{
 		auto & item = items[itemIndex];
 
@@ -3371,7 +3371,7 @@ void InitModel
 		UPPER_BODY,
 		0,
 		actorData.motionArchives,
-		&actorData.newModelData[modelIndex].functions,
+		&actorData.newModelData[modelIndex].funcAddrs,
 		actorData.newModelPhysicsMetadataPool[modelIndex],
 		&actorData.motionSpeed,
 		&actorData.collisionData
@@ -3384,7 +3384,7 @@ void InitModel
 		LOWER_BODY,
 		0,
 		actorData.motionArchives,
-		&actorData.newModelData[modelIndex].functions,
+		&actorData.newModelData[modelIndex].funcAddrs,
 		actorData.newModelPhysicsMetadataPool[modelIndex],
 		&actorData.motionSpeed,
 		0
@@ -3428,7 +3428,7 @@ void UpdateModel(T & actorData)
 	textureFile = file[0];
 	shadowFile  = file[8];
 
-	if ((character == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
+	if ((character == CHARACTER::LADY) && (costume == COSTUME::LADY_LEATHER_JUMPSUIT))
 	{
 		modelFile   = file[32];
 		textureFile = file[31];
@@ -3452,7 +3452,7 @@ void UpdateModel(T & actorData)
 	{
 		auto g_vertices = reinterpret_cast<vec4 *>(appBaseAddr + 0x58B260);
 
-		for_all(uint8, index, 6)
+		old_for_all(uint8, index, 6)
 		{
 			uint8 off = (index * 3);
 			actorData.modelMetadata[index].count = 4;
@@ -3470,7 +3470,7 @@ void UpdateModel(T & actorData)
 	shadowFile  = file[14];
 	physicsFile = file[13];
 
-	if ((character == CHAR_LADY) && (costume == COSTUME_LADY_LEATHER_JUMPSUIT))
+	if ((character == CHARACTER::LADY) && (costume == COSTUME::LADY_LEATHER_JUMPSUIT))
 	{
 		modelFile   = file[17];
 		textureFile = file[31];
@@ -3502,7 +3502,7 @@ void UpdateModel(T & actorData)
 
 	actorData.newSubmodelInit[submodelIndex] = true;
 
-	if ((character == CHAR_LADY))
+	if ((character == CHARACTER::LADY))
 	{
 		return;
 	}
@@ -3641,23 +3641,23 @@ void UpdateDevilModel
 	modelFile = file[1];
 	textureFile = file[0];
 
-	if (devil == DEVIL_AGNI_RUDRA)
+	if (devil == DEVIL::AGNI_RUDRA)
 	{
 		shadowFile = file[2];
 	}
 	else if
 	(
-		(devil == DEVIL_CERBERUS) ||
-		(devil == DEVIL_BEOWULF ) ||
-		(devil == DEVIL_SPARDA  )
+		(devil == DEVIL::CERBERUS) ||
+		(devil == DEVIL::BEOWULF ) ||
+		(devil == DEVIL::SPARDA  )
 	)
 	{
 		shadowFile = file[4];
 	}
 	else if
 	(
-		(devil == DEVIL_REBELLION) ||
-		(devil == DEVIL_NEVAN    )
+		(devil == DEVIL::REBELLION) ||
+		(devil == DEVIL::NEVAN    )
 	)
 	{
 		shadowFile = file[6];
@@ -3686,7 +3686,7 @@ void UpdateDevilModel
 	devilModelMetadata.modelIndex = modelIndex;
 	devilModelMetadata.modelPhysicsMetadataIndex = ((modelIndex * 24) + modelPhysicsMetadataIndex);
 
-	if (devil == DEVIL_AGNI_RUDRA)
+	if (devil == DEVIL::AGNI_RUDRA)
 	{
 		return;
 	}
@@ -3699,17 +3699,17 @@ void UpdateDevilModel
 
 	if
 	(
-		(devil == DEVIL_REBELLION) ||
-		(devil == DEVIL_NEVAN    )
+		(devil == DEVIL::REBELLION) ||
+		(devil == DEVIL::NEVAN    )
 	)
 	{
 		shadowFile = file[7];
 	}
 	else if
 	(
-		(devil == DEVIL_CERBERUS) ||
-		(devil == DEVIL_BEOWULF ) ||
-		(devil == DEVIL_SPARDA  )
+		(devil == DEVIL::CERBERUS) ||
+		(devil == DEVIL::BEOWULF ) ||
+		(devil == DEVIL::SPARDA  )
 	)
 	{
 		shadowFile = file[5];
@@ -3747,8 +3747,8 @@ void UpdateDevilModel
 
 	if
 	(
-		(devil == DEVIL_REBELLION) ||
-		(devil == DEVIL_NEVAN    )
+		(devil == DEVIL::REBELLION) ||
+		(devil == DEVIL::NEVAN    )
 	)
 	{
 		LinkModelPhysicsData(0, 3, 1 );
@@ -3756,8 +3756,8 @@ void UpdateDevilModel
 	}
 	else if
 	(
-		(devil == DEVIL_CERBERUS) ||
-		(devil == DEVIL_BEOWULF )
+		(devil == DEVIL::CERBERUS) ||
+		(devil == DEVIL::BEOWULF )
 	)
 	{
 		LinkModelPhysicsData(0, 3 , 1);
@@ -3778,8 +3778,8 @@ void UpdateDevilModel
 	if
 	(
 	!(
-		(devil == DEVIL_REBELLION) ||
-		(devil == DEVIL_NEVAN    )
+		(devil == DEVIL::REBELLION) ||
+		(devil == DEVIL::NEVAN    )
 	)
 	)
 	{
@@ -3861,15 +3861,15 @@ void UpdateModelPartitions(PlayerActorData & actorData)
 
 	switch (actorData.character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
-			beowulf = IsMeleeWeaponReady(actorData, WEAPON_BEOWULF_DANTE);
+			beowulf = IsMeleeWeaponReady(actorData, WEAPON::BEOWULF_DANTE);
 
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
-			beowulf = IsMeleeWeaponReady(actorData, WEAPON_BEOWULF_VERGIL);
+			beowulf = IsMeleeWeaponReady(actorData, WEAPON::BEOWULF_VERGIL);
 
 			break;
 		}
@@ -3877,11 +3877,11 @@ void UpdateModelPartitions(PlayerActorData & actorData)
 
 	switch (character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
 			switch (costume)
 			{
-				case COSTUME_DANTE_DEFAULT:
+				case COSTUME::DANTE_DEFAULT:
 				{
 					modelPartitionData[0 ].value = (beowulf) ? 2 : 3; // Hands
 					modelPartitionData[1 ].value = (beowulf) ? 3 : 2; // Fists
@@ -3903,7 +3903,7 @@ void UpdateModelPartitions(PlayerActorData & actorData)
 
 					break;
 				}
-				case COSTUME_DANTE_DEFAULT_NO_COAT:
+				case COSTUME::DANTE_DEFAULT_NO_COAT:
 				{
 					modelPartitionData[0 ].value = (beowulf) ? 2 : 3; // Hands
 					modelPartitionData[1 ].value = (beowulf) ? 3 : 2; // Fists
@@ -3924,8 +3924,8 @@ void UpdateModelPartitions(PlayerActorData & actorData)
 
 					break;
 				}
-				case COSTUME_DANTE_DEFAULT_TORN:
-				case COSTUME_DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS:
+				case COSTUME::DANTE_DEFAULT_TORN:
+				case COSTUME::DANTE_DEFAULT_TORN_INFINITE_MAGIC_POINTS:
 				{
 					modelPartitionData[0 ].value = (beowulf) ? 2 : 3; // Hands
 					modelPartitionData[1 ].value = (beowulf) ? 3 : 2; // Fists
@@ -3948,7 +3948,7 @@ void UpdateModelPartitions(PlayerActorData & actorData)
 
 					break;
 				}
-				case COSTUME_DANTE_DMC1:
+				case COSTUME::DANTE_DMC1:
 				{
 					modelPartitionData[0 ].value = (beowulf) ? 2 : 3; // Hands
 					modelPartitionData[1 ].value = (beowulf) ? 3 : 2; // Fists
@@ -3969,7 +3969,7 @@ void UpdateModelPartitions(PlayerActorData & actorData)
 
 					break;
 				}
-				case COSTUME_DANTE_DMC1_NO_COAT:
+				case COSTUME::DANTE_DMC1_NO_COAT:
 				{
 					modelPartitionData[0 ].value = (beowulf) ? 2 : 3; // Hands
 					modelPartitionData[1 ].value = (beowulf) ? 3 : 2; // Fists
@@ -3989,8 +3989,8 @@ void UpdateModelPartitions(PlayerActorData & actorData)
 
 					break;
 				}
-				case COSTUME_DANTE_SPARDA:
-				case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
+				case COSTUME::DANTE_SPARDA:
+				case COSTUME::DANTE_SPARDA_INFINITE_MAGIC_POINTS:
 				{
 					modelPartitionData[0 ].value = (beowulf) ? 2 : 3; // Hands
 					modelPartitionData[1 ].value = (beowulf) ? 3 : 2; // Fists
@@ -4013,11 +4013,11 @@ void UpdateModelPartitions(PlayerActorData & actorData)
 
 			break;
 		}
-		case CHAR_LADY:
+		case CHARACTER::LADY:
 		{
 			switch (costume)
 			{
-				case COSTUME_LADY_DEFAULT:
+				case COSTUME::LADY_DEFAULT:
 				{
 					modelPartitionData[0].value = 3; // Body
 					modelPartitionData[1].value = 3; // Face
@@ -4027,7 +4027,7 @@ void UpdateModelPartitions(PlayerActorData & actorData)
 
 					break;
 				}
-				case COSTUME_LADY_LEATHER_JUMPSUIT:
+				case COSTUME::LADY_LEATHER_JUMPSUIT:
 				{
 					modelPartitionData[0].value = 3; // Body
 					modelPartitionData[1].value = 3; // Face
@@ -4044,12 +4044,12 @@ void UpdateModelPartitions(PlayerActorData & actorData)
 
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
 			switch (costume)
 			{
-				case COSTUME_VERGIL_DEFAULT:
-				case COSTUME_VERGIL_DEFAULT_INFINITE_MAGIC_POINTS:
+				case COSTUME::VERGIL_DEFAULT:
+				case COSTUME::VERGIL_DEFAULT_INFINITE_MAGIC_POINTS:
 				{
 					modelPartitionData[0 ].value = 3; // Body
 					modelPartitionData[1 ].value = 3; // Shoulders
@@ -4065,7 +4065,7 @@ void UpdateModelPartitions(PlayerActorData & actorData)
 
 					break;
 				}
-				case COSTUME_VERGIL_DEFAULT_NO_COAT:
+				case COSTUME::VERGIL_DEFAULT_NO_COAT:
 				{
 					modelPartitionData[0 ].value = 3; // Body
 					modelPartitionData[1 ].value = 3; // Arms
@@ -4081,8 +4081,8 @@ void UpdateModelPartitions(PlayerActorData & actorData)
 
 					break;
 				}
-				case COSTUME_VERGIL_NERO_ANGELO:
-				case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+				case COSTUME::VERGIL_NERO_ANGELO:
+				case COSTUME::VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
 				{
 					modelPartitionData[0 ].value = 3; // Neck
 					modelPartitionData[1 ].value = 3; // Face
@@ -4167,13 +4167,13 @@ void UpdateActorDante(PlayerActorDataDante & actorData)
 
 	if (actorData.sparda)
 	{
-		UpdateDevilModel(actorData, DEVIL_SPARDA, 0);
+		UpdateDevilModel(actorData, DEVIL::SPARDA, 0);
 	}
 	else
 	{
-		for_all(uint8, index, 5)
+		old_for_all(uint8, index, 5)
 		{
-			UpdateDevilModel(actorData, (DEVIL_REBELLION + index), index);
+			UpdateDevilModel(actorData, (DEVIL::REBELLION + index), index);
 		}
 	}
 
@@ -4324,7 +4324,7 @@ void UpdateForm(T & actorData)
 			{
 				actorData.queuedModelIndex       = 1;
 				actorData.activeModelIndexMirror = 1;
-				actorData.activeDevil            = DEVIL_SPARDA;
+				actorData.activeDevil            = DEVIL::SPARDA;
 				actorData.airRaid                = 0;
 
 				if (activeConfig.noDevilForm)
@@ -4334,10 +4334,10 @@ void UpdateForm(T & actorData)
 			}
 			else
 			{
-				auto weapon = (WEAPON_REBELLION + actorData.meleeWeaponIndex);
-				if (weapon > WEAPON_BEOWULF_DANTE)
+				auto weapon = (WEAPON::REBELLION + actorData.meleeWeaponIndex);
+				if (weapon > WEAPON::BEOWULF_DANTE)
 				{
-					weapon = WEAPON_REBELLION;
+					weapon = WEAPON::REBELLION;
 				}
 
 				actorData.queuedModelIndex       = (1 + weapon);
@@ -4359,7 +4359,7 @@ void UpdateForm(T & actorData)
 			{
 				actorData.queuedModelIndex       = 1;
 				actorData.activeModelIndexMirror = 1;
-				actorData.activeDevil            = DEVIL_NERO_ANGELO;
+				actorData.activeDevil            = DEVIL::NERO_ANGELO;
 				actorData.airRaid                = 0;
 
 				if (activeConfig.noDevilForm)
@@ -4369,18 +4369,18 @@ void UpdateForm(T & actorData)
 			}
 			else
 			{
-				auto weapon = (WEAPON_YAMATO_VERGIL + actorData.queuedMeleeWeaponIndex);
+				auto weapon = (WEAPON::YAMATO_VERGIL + actorData.queuedMeleeWeaponIndex);
 				if
 				(
-					(weapon < WEAPON_YAMATO_VERGIL    ) ||
-					(weapon > WEAPON_YAMATO_FORCE_EDGE)
+					(weapon < WEAPON::YAMATO_VERGIL    ) ||
+					(weapon > WEAPON::YAMATO_FORCE_EDGE)
 				)
 				{
-					weapon = WEAPON_YAMATO_VERGIL;
+					weapon = WEAPON::YAMATO_VERGIL;
 				}
 
-				actorData.queuedModelIndex       = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
-				actorData.activeModelIndexMirror = (weapon == WEAPON_BEOWULF_VERGIL) ? 2 : 1;
+				actorData.queuedModelIndex       = (weapon == WEAPON::BEOWULF_VERGIL) ? 2 : 1;
+				actorData.activeModelIndexMirror = (weapon == WEAPON::BEOWULF_VERGIL) ? 2 : 1;
 				actorData.activeDevil            = static_cast<uint32>(weaponDevilIds[weapon]);
 				actorData.airRaid                = 0;
 
@@ -4413,7 +4413,7 @@ void UpdateMotionArchives(T & actorData)
 	(TypeMatch<T, PlayerActorDataVergil>::value) ? motionArchiveHelperVergil :
 	0;
 
-	for_all(uint8, index, count)
+	old_for_all(uint8, index, count)
 	{
 		auto & group = motionArchiveHelper[index].group;
 		auto & cacheFileId = motionArchiveHelper[index].cacheFileId;
@@ -4429,15 +4429,15 @@ void UpdateMotionArchives(T & actorData)
 // {
 // 	if constexpr (TypeMatch<T, PlayerActorDataDante>::value)
 // 	{
-// 		actorData.style = STYLE_TRICKSTER;
+// 		actorData.style = STYLE::TRICKSTER;
 // 	}
 // 	else if constexpr (TypeMatch<T, PlayerActorDataBob>::value)
 // 	{
-// 		actorData.style = STYLE_DARK_SLAYER;
+// 		actorData.style = STYLE::DARK_SLAYER;
 // 	}
 // 	else if constexpr (TypeMatch<T, PlayerActorDataVergil>::value)
 // 	{
-// 		actorData.style = STYLE_DARK_SLAYER;
+// 		actorData.style = STYLE::DARK_SLAYER;
 // 	}
 // }
 
@@ -4453,8 +4453,8 @@ void InitWeapons(T & actorData)
 	);
 
 	// @Research: Suspicious.
-	SetMemory(actorData.newWeapons, WEAPON_VOID, sizeof(actorData.newWeapons));
-	SetMemory(actorData.newWeaponStatus, WEAPON_STATUS_DISABLED, sizeof(actorData.newWeaponStatus));
+	SetMemory(actorData.newWeapons, WEAPON::VOID, sizeof(actorData.newWeapons));
+	SetMemory(actorData.newWeaponStatus, WEAPON_STATUS::DISABLED, sizeof(actorData.newWeaponStatus));
 
 	constexpr uint8 count =
 	(TypeMatch<T, PlayerActorDataDante >::value) ? WEAPON_COUNT_DANTE  :
@@ -4462,17 +4462,17 @@ void InitWeapons(T & actorData)
 	(TypeMatch<T, PlayerActorDataVergil>::value) ? WEAPON_COUNT_VERGIL :
 	0;
 
-	for_all(uint8, index, count)
+	old_for_all(uint8, index, count)
 	{
 		uint8 weapon =
-		(TypeMatch<T, PlayerActorDataDante >::value) ? (WEAPON_REBELLION     + index) :
-		(TypeMatch<T, PlayerActorDataBob >::value) ? (WEAPON_YAMATO_BOB     + index) :
-		(TypeMatch<T, PlayerActorDataVergil>::value) ? (WEAPON_YAMATO_VERGIL + index) :
+		(TypeMatch<T, PlayerActorDataDante >::value) ? (WEAPON::REBELLION     + index) :
+		(TypeMatch<T, PlayerActorDataBob >::value) ? (WEAPON::YAMATO_BOB     + index) :
+		(TypeMatch<T, PlayerActorDataVergil>::value) ? (WEAPON::YAMATO_VERGIL + index) :
 		0;
 
 		actorData.newWeapons[index] = weapon;
 		actorData.newWeaponDataAddr[index] = RegisterWeapon[weapon](actorData, weapon);
-		actorData.newWeaponStatus[index] = WEAPON_STATUS_READY;
+		actorData.newWeaponStatus[index] = WEAPON_STATUS::READY;
 	}
 
 	if constexpr (TypeMatch<T, PlayerActorDataDante>::value)
@@ -4585,7 +4585,7 @@ void UpdateMeleeWeapon(T & actorData)
 	{
 		if (IsVergilMeleeWeapon(weapon))
 		{
-			actorData.queuedMeleeWeaponIndex = (weapon - WEAPON_YAMATO_VERGIL);
+			actorData.queuedMeleeWeaponIndex = (weapon - WEAPON::YAMATO_VERGIL);
 		}
 	}
 }
@@ -4695,7 +4695,7 @@ byte8 * CreatePlayerActor
 	// Since Dante has more costumes, the index could go out of range.
 	{
 		auto character = characterData.character;
-		if (character >= MAX_CHAR)
+		if (character >= CHARACTER::MAX)
 		{
 			character = 0;
 		}
@@ -4716,10 +4716,10 @@ byte8 * CreatePlayerActor
 		{
 			switch (actorData.costume)
 			{
-				case COSTUME_DANTE_DMC1:
-				case COSTUME_DANTE_DMC1_NO_COAT:
-				case COSTUME_DANTE_SPARDA:
-				case COSTUME_DANTE_SPARDA_INFINITE_MAGIC_POINTS:
+				case COSTUME::DANTE_DMC1:
+				case COSTUME::DANTE_DMC1_NO_COAT:
+				case COSTUME::DANTE_SPARDA:
+				case COSTUME::DANTE_SPARDA_INFINITE_MAGIC_POINTS:
 				{
 					value = true;
 
@@ -4733,8 +4733,8 @@ byte8 * CreatePlayerActor
 		{
 			switch (actorData.costume)
 			{
-				case COSTUME_VERGIL_NERO_ANGELO:
-				case COSTUME_VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
+				case COSTUME::VERGIL_NERO_ANGELO:
+				case COSTUME::VERGIL_NERO_ANGELO_INFINITE_MAGIC_POINTS:
 				{
 					value = true;
 
@@ -4765,7 +4765,7 @@ byte8 * CreatePlayerActor
 		UpdateActor(actorData);
 	}
 
-	if (entityIndex == ENTITY_MAIN)
+	if (entityIndex == ENTITY::MAIN)
 	{
 		func_2EE060(actorData.var_6410, 60);
 		/*
@@ -4791,7 +4791,7 @@ byte8 * CreatePlayerActor
 	(
 		(playerIndex == 0) &&
 		(characterIndex == playerData.activeCharacterIndex) &&
-		(entityIndex == ENTITY_MAIN)
+		(entityIndex == ENTITY::MAIN)
 	)
 	{
 		HUD_UpdateStyleIcon
@@ -4816,13 +4816,13 @@ byte8 * CreatePlayerActor
 
 	if constexpr (TypeMatch<T, PlayerActorDataDante>::value)
 	{
-		for_each(uint8, weaponIndex, WEAPON_EBONY_IVORY, WEAPON_COUNT_DANTE)
+		old_for_each(uint8, weaponIndex, WEAPON::EBONY_IVORY, WEAPON_COUNT_DANTE)
 		{
 			actorData.newWeaponLevels[weaponIndex] = 2;
 		}
 	}
 
-	if (entityIndex == ENTITY_CLONE)
+	if (entityIndex == ENTITY::CLONE)
 	{
 		actorData.newIsClone = true;
 	}
@@ -4863,7 +4863,7 @@ byte8 * SpawnActor
 
 	switch (characterData.character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
 			actorBaseAddr = CreatePlayerActor<PlayerActorDataDante>
 			(
@@ -4874,7 +4874,7 @@ byte8 * SpawnActor
 
 			break;
 		}
-		case CHAR_BOB:
+		case CHARACTER::BOB:
 		{
 			actorBaseAddr = CreatePlayerActor<PlayerActorDataBob>
 			(
@@ -4885,7 +4885,7 @@ byte8 * SpawnActor
 
 			break;
 		}
-		case CHAR_LADY:
+		case CHARACTER::LADY:
 		{
 			actorBaseAddr = CreatePlayerActor<PlayerActorDataLady>
 			(
@@ -4896,7 +4896,7 @@ byte8 * SpawnActor
 
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
 			actorBaseAddr = CreatePlayerActor<PlayerActorDataVergil>
 			(
@@ -4907,7 +4907,7 @@ byte8 * SpawnActor
 
 			break;
 		}
-		case CHAR_BOSS_LADY:
+		case CHARACTER::BOSS_LADY:
 		{
 			[&]()
 			{
@@ -4924,7 +4924,7 @@ byte8 * SpawnActor
 
 			break;
 		}
-		case CHAR_BOSS_VERGIL:
+		case CHARACTER::BOSS_VERGIL:
 		{
 			[&]()
 			{
@@ -4957,7 +4957,7 @@ export void SpawnActors()
 
 
 
-	for_all(uint8, playerIndex, activeConfig.Actor.playerCount)
+	old_for_all(uint8, playerIndex, activeConfig.Actor.playerCount)
 	{
 		auto & playerData = GetPlayerData(playerIndex);
 
@@ -4970,13 +4970,13 @@ export void SpawnActors()
 
 
 
-		for_all(uint8, characterIndex, playerData.characterCount)
+		old_for_all(uint8, characterIndex, playerData.characterCount)
 		{
 			auto actorBaseAddr = SpawnActor
 			(
 				playerIndex,
 				characterIndex,
-				ENTITY_MAIN
+				ENTITY::MAIN
 			);
 
 			if (!actorBaseAddr)
@@ -4991,13 +4991,13 @@ export void SpawnActors()
 
 			// Commission Enemy Actor
 
-			auto & characterData = GetCharacterData(playerIndex, characterIndex, ENTITY_MAIN);
-			auto & newActorData  = GetNewActorData (playerIndex, characterIndex, ENTITY_MAIN);
+			auto & characterData = GetCharacterData(playerIndex, characterIndex, ENTITY::MAIN);
+			auto & newActorData  = GetNewActorData (playerIndex, characterIndex, ENTITY::MAIN);
 
 			if
 			(
-				(characterData.character == CHAR_BOSS_LADY  ) ||
-				(characterData.character == CHAR_BOSS_VERGIL)
+				(characterData.character == CHARACTER::BOSS_LADY  ) ||
+				(characterData.character == CHARACTER::BOSS_VERGIL)
 			)
 			{
 				ToggleActor
@@ -5016,7 +5016,7 @@ export void SpawnActors()
 			(
 				playerIndex,
 				characterIndex,
-				ENTITY_CLONE
+				ENTITY::CLONE
 			);
 		}
 	}
@@ -5042,7 +5042,7 @@ void ResetPermissionsController(byte8 * actorBaseAddr)
 
 	IntroducePlayerActorData(actorBaseAddr, actorData, return);
 
-	if (actorData.buttons[2] & GetBinding(BINDING_TAUNT))
+	if (actorData.buttons[2] & GetBinding(BINDING::TAUNT))
 	{
 		actorData.permissions = 0x1C1B;
 	}
@@ -5101,7 +5101,7 @@ void RemoveBusyFlagController(byte8 * actorBaseAddr)
 
 
 
-	for_all(uint8, buttonIndex, 4)
+	old_for_all(uint8, buttonIndex, 4)
 	{
 		auto & execute = executes[playerIndex][characterIndex][entityIndex][buttonIndex];
 
@@ -5115,7 +5115,7 @@ void RemoveBusyFlagController(byte8 * actorBaseAddr)
 			{
 				execute = false;
 
-				actorData.state &= ~STATE_BUSY;
+				actorData.state &= ~STATE::BUSY;
 
 				DebugLog
 				(
@@ -5151,7 +5151,7 @@ void StyleSwitchController(T & actorData)
 	{
 		bool condition = (actorData.buttons[0] & playerData.button);
 
-		if (actorData.newEntityIndex == ENTITY_MAIN)
+		if (actorData.newEntityIndex == ENTITY::MAIN)
 		{
 			if (condition)
 			{
@@ -5167,7 +5167,7 @@ void StyleSwitchController(T & actorData)
 		}
 	}
 
-	for_all(uint8, styleButtonIndex, STYLE_COUNT)
+	old_for_all(uint8, styleButtonIndex, STYLE_COUNT)
 	{
 		auto & styleButton = characterData.styleButtons[styleButtonIndex];
 		auto & styleIndex = characterData.styleIndices[styleButtonIndex];
@@ -5194,13 +5194,13 @@ void StyleSwitchController(T & actorData)
 
 			switch (style)
 			{
-				case STYLE_QUICKSILVER:
+				case STYLE::QUICKSILVER:
 				{
 					if
 					(
 						(actorData.newPlayerIndex != 0) ||
 						(actorData.newCharacterIndex != 0) ||
-						(actorData.newEntityIndex != ENTITY_MAIN)
+						(actorData.newEntityIndex != ENTITY::MAIN)
 					)
 					{
 						styleIndex = lastStyleIndex;
@@ -5210,9 +5210,9 @@ void StyleSwitchController(T & actorData)
 
 					break;
 				}
-				case STYLE_DOPPELGANGER:
+				case STYLE::DOPPELGANGER:
 				{
-					if (actorData.newEntityIndex != ENTITY_MAIN)
+					if (actorData.newEntityIndex != ENTITY::MAIN)
 					{
 						styleIndex = lastStyleIndex;
 
@@ -5242,7 +5242,7 @@ void StyleSwitchController(T & actorData)
 
 	// if (activeConfig.removeBusyFlag)
 	// {
-	// 	actorData.state &= ~STATE_BUSY;
+	// 	actorData.state &= ~STATE::BUSY;
 
 	// 	if constexpr (debug)
 	// 	{
@@ -5254,7 +5254,7 @@ void StyleSwitchController(T & actorData)
 	{
 		return;
 	}
-	else if (actorData.newEntityIndex != ENTITY_MAIN)
+	else if (actorData.newEntityIndex != ENTITY::MAIN)
 	{
 		return;
 	}
@@ -5281,7 +5281,7 @@ void LinearMeleeWeaponSwitchController(T & actorData)
 	{
 		bool condition = (actorData.buttons[0] & playerData.button);
 
-		if (actorData.newEntityIndex == ENTITY_MAIN)
+		if (actorData.newEntityIndex == ENTITY::MAIN)
 		{
 			if (condition)
 			{
@@ -5336,9 +5336,9 @@ void LinearMeleeWeaponSwitchController(T & actorData)
 		back = true;
 	};
 
-	if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+	if (actorData.buttons[2] & GetBinding(BINDING::CHANGE_DEVIL_ARMS))
 	{
-		if (actorData.buttons[0] & GetBinding(BINDING_TAUNT))
+		if (actorData.buttons[0] & GetBinding(BINDING::TAUNT))
 		{
 			Back();
 		}
@@ -5347,7 +5347,7 @@ void LinearMeleeWeaponSwitchController(T & actorData)
 			Forward();
 		}
 	}
-	else if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
+	else if (actorData.buttons[2] & GetBinding(BINDING::CHANGE_GUN))
 	{
 		if constexpr (TypeMatch<T, PlayerActorDataVergil>::value)
 		{
@@ -5369,7 +5369,7 @@ void LinearMeleeWeaponSwitchController(T & actorData)
 		if
 		(
 			IsNeroAngelo(actorData) &&
-			(weapon == WEAPON_YAMATO_FORCE_EDGE)
+			(weapon == WEAPON::YAMATO_FORCE_EDGE)
 		)
 		{
 			if (forward)
@@ -5391,7 +5391,7 @@ void LinearMeleeWeaponSwitchController(T & actorData)
 	{
 		return;
 	}
-	else if (actorData.newEntityIndex != ENTITY_MAIN)
+	else if (actorData.newEntityIndex != ENTITY::MAIN)
 	{
 		return;
 	}
@@ -5404,7 +5404,7 @@ void LinearMeleeWeaponSwitchController(T & actorData)
 		(
 			HUD_UpdateWeaponIcon
 			(
-				HUD_BOTTOM_MELEE_WEAPON_1,
+				HUD_BOTTOM::MELEE_WEAPON_1,
 				GetMeleeWeapon(actorData)
 			)
 		)
@@ -5427,7 +5427,7 @@ void LinearRangedWeaponSwitchController(T & actorData)
 	{
 		bool condition = (actorData.buttons[0] & playerData.button);
 
-		if (actorData.newEntityIndex == ENTITY_MAIN)
+		if (actorData.newEntityIndex == ENTITY::MAIN)
 		{
 			if (condition)
 			{
@@ -5478,9 +5478,9 @@ void LinearRangedWeaponSwitchController(T & actorData)
 		update = true;
 	};
 
-	if (actorData.buttons[2] & GetBinding(BINDING_CHANGE_GUN))
+	if (actorData.buttons[2] & GetBinding(BINDING::CHANGE_GUN))
 	{
-		if (actorData.buttons[0] & GetBinding(BINDING_TAUNT))
+		if (actorData.buttons[0] & GetBinding(BINDING::TAUNT))
 		{
 			Back();
 		}
@@ -5503,7 +5503,7 @@ void LinearRangedWeaponSwitchController(T & actorData)
 	{
 		return;
 	}
-	else if (actorData.newEntityIndex != ENTITY_MAIN)
+	else if (actorData.newEntityIndex != ENTITY::MAIN)
 	{
 		return;
 	}
@@ -5516,7 +5516,7 @@ void LinearRangedWeaponSwitchController(T & actorData)
 		(
 			HUD_UpdateWeaponIcon
 			(
-				HUD_BOTTOM_RANGED_WEAPON_1,
+				HUD_BOTTOM::RANGED_WEAPON_1,
 				GetRangedWeapon(actorData)
 			)
 		)
@@ -5543,7 +5543,7 @@ void ArbitraryMeleeWeaponSwitchController(T & actorData)
 
 
 
-	if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS)))
+	if (!(gamepad.buttons[0] & GetBinding(BINDING::CHANGE_DEVIL_ARMS)))
 	{
 		return;
 	}
@@ -5645,7 +5645,7 @@ void ArbitraryRangedWeaponSwitchController(T & actorData)
 
 
 
-	if (!(gamepad.buttons[0] & GetBinding(BINDING_CHANGE_GUN)))
+	if (!(gamepad.buttons[0] & GetBinding(BINDING::CHANGE_GUN)))
 	{
 		return;
 	}
@@ -5748,7 +5748,7 @@ bool WeaponSwitchController(byte8 * actorBaseAddr)
 
 
 
-	if (actorData.mode == ACTOR_MODE_MISSION_18)
+	if (actorData.mode == ACTOR_MODE::MISSION_18)
 	{
 		return true;
 	}
@@ -5770,12 +5770,12 @@ bool WeaponSwitchController(byte8 * actorBaseAddr)
 	(
 		(actorData.newPlayerIndex == 0) &&
 		(actorData.newCharacterIndex == playerData.activeCharacterIndex) &&
-		(actorData.newEntityIndex == ENTITY_MAIN)
+		(actorData.newEntityIndex == ENTITY::MAIN)
 	)
 	{
 		g_disableCameraRotation = false;
 
-		if (characterData.meleeWeaponSwitchType == WEAPON_SWITCH_TYPE_ARBITRARY)
+		if (characterData.meleeWeaponSwitchType == WEAPON_SWITCH_TYPE::ARBITRARY)
 		{
 			ArbitraryMeleeWeaponSwitchController(actorData);
 		}
@@ -5786,7 +5786,7 @@ bool WeaponSwitchController(byte8 * actorBaseAddr)
 
 		if constexpr (TypeMatch<T, PlayerActorDataDante>::value)
 		{
-			if (characterData.rangedWeaponSwitchType == WEAPON_SWITCH_TYPE_ARBITRARY)
+			if (characterData.rangedWeaponSwitchType == WEAPON_SWITCH_TYPE::ARBITRARY)
 			{
 				ArbitraryRangedWeaponSwitchController(actorData);
 			}
@@ -5914,8 +5914,8 @@ bool CanQueueStyleAction(T & actorData)
 
 	switch (actorData.style)
 	{
-		case STYLE_SWORDMASTER:
-		case STYLE_GUNSLINGER:
+		case STYLE::SWORDMASTER:
+		case STYLE::GUNSLINGER:
 		{
 			auto & policy = actorData.nextActionRequestPolicy[SWORDMASTER_GUNSLINGER];
 
@@ -5930,7 +5930,7 @@ bool CanQueueStyleAction(T & actorData)
 
 			break;
 		}
-		case STYLE_TRICKSTER:
+		case STYLE::TRICKSTER:
 		{
 			auto & policy = actorData.nextActionRequestPolicy[TRICKSTER_DARK_SLAYER];
 
@@ -5945,7 +5945,7 @@ bool CanQueueStyleAction(T & actorData)
 
 			break;
 		}
-		case STYLE_ROYALGUARD:
+		case STYLE::ROYALGUARD:
 		{
 			auto & policy = actorData.nextActionRequestPolicy[ROYALGUARD];
 
@@ -5984,7 +5984,7 @@ export void CharacterSwitchController()
 
 
 
-	for_all(uint8, playerIndex, activeConfig.Actor.playerCount)
+	old_for_all(uint8, playerIndex, activeConfig.Actor.playerCount)
 	{
 		auto & gamepad = GetGamepad(playerIndex);
 
@@ -6004,7 +6004,7 @@ export void CharacterSwitchController()
 		{
 			IntroducePlayerCharacterNewActorData(playerIndex);
 
-			if (activeCharacterData.character >= MAX_CHAR)
+			if (activeCharacterData.character >= CHARACTER::MAX)
 			{
 				return false;
 			}
@@ -6071,13 +6071,13 @@ export void CharacterSwitchController()
 		{
 			playerData.lastCharacterIndex = playerData.characterIndex;
 
-			// @Todo: Prefer < MAX_CHAR.
+			// @Todo: Prefer < CHARACTER::MAX.
 
-			if (activeCharacterData.character == CHAR_BOSS_LADY)
+			if (activeCharacterData.character == CHARACTER::BOSS_LADY)
 			{
 				auto & activeActorData = *reinterpret_cast<EnemyActorDataLady *>(activeNewActorData.baseAddr);
 			}
-			else if (activeCharacterData.character == CHAR_BOSS_VERGIL)
+			else if (activeCharacterData.character == CHARACTER::BOSS_VERGIL)
 			{
 				auto & activeActorData = *reinterpret_cast<EnemyActorDataVergil *>(activeNewActorData.baseAddr);
 			}
@@ -6130,7 +6130,7 @@ export void CharacterSwitchController()
 
 
 
-				if (characterData.character >= MAX_CHAR)
+				if (characterData.character >= CHARACTER::MAX)
 				{
 					SetMainActor(leadActorData);
 
@@ -6158,25 +6158,25 @@ export void CharacterSwitchController()
 				(
 					playerIndex,
 					playerData.activeCharacterIndex,
-					ENTITY_MAIN
+					ENTITY::MAIN
 				);
 
 				if
 				(
-					(activeCharacterData.character == CHAR_BOSS_LADY  ) ||
-					(activeCharacterData.character == CHAR_BOSS_VERGIL)
+					(activeCharacterData.character == CHARACTER::BOSS_LADY  ) ||
+					(activeCharacterData.character == CHARACTER::BOSS_VERGIL)
 				)
 				{
 					leadActorData.newButtonMask =
-					GetBinding(BINDING_LOCK_ON) |
-					GetBinding(BINDING_CHANGE_TARGET);
+					GetBinding(BINDING::LOCK_ON) |
+					GetBinding(BINDING::CHANGE_TARGET);
 				}
 			}
 		};
 
 
 
-		if (activeCharacterData.character == CHAR_BOSS_LADY)
+		if (activeCharacterData.character == CHARACTER::BOSS_LADY)
 		{
 			auto & activeActorData = *reinterpret_cast<EnemyActorDataLady *>(activeNewActorData.baseAddr);
 
@@ -6189,7 +6189,7 @@ export void CharacterSwitchController()
 				Update();
 			}
 		}
-		else if (activeCharacterData.character == CHAR_BOSS_VERGIL)
+		else if (activeCharacterData.character == CHARACTER::BOSS_VERGIL)
 		{
 			auto & activeActorData = *reinterpret_cast<EnemyActorDataVergil *>(activeNewActorData.baseAddr);
 
@@ -6211,7 +6211,7 @@ export void CharacterSwitchController()
 				if
 				(
 					CanQueueMeleeAttack(activeActorData) &&
-					(gamepad.buttons[0] & GetBinding(BINDING_MELEE_ATTACK)) &&
+					(gamepad.buttons[0] & GetBinding(BINDING::MELEE_ATTACK)) &&
 					(
 						GetNextMeleeAction
 						(
@@ -6246,7 +6246,7 @@ export void CharacterSwitchController()
 				else if
 				(
 					CanQueueStyleAction(activeActorData) &&
-					(gamepad.buttons[0] & GetBinding(BINDING_STYLE_ACTION)) &&
+					(gamepad.buttons[0] & GetBinding(BINDING::STYLE_ACTION)) &&
 					(
 						GetNextStyleAction
 						(
@@ -6297,9 +6297,9 @@ export void CharacterSwitchController()
 
 
 
-	for_all(uint8, playerIndex   , activeConfig.Actor.playerCount){
-	for_all(uint8, characterIndex, CHARACTER_COUNT               ){
-	for_all(uint8, entityIndex   , ENTITY_COUNT                  )
+	old_for_all(uint8, playerIndex   , activeConfig.Actor.playerCount){
+	old_for_all(uint8, characterIndex, CHARACTER_COUNT               ){
+	old_for_all(uint8, entityIndex   , ENTITY_COUNT                  )
 	{
 		IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
 
@@ -6330,7 +6330,7 @@ export void CharacterSwitchController()
 		if
 		(
 			(characterIndex == playerData.activeCharacterIndex) &&
-			(entityIndex == ENTITY_MAIN)
+			(entityIndex == ENTITY::MAIN)
 		)
 		{
 			continue;
@@ -6340,7 +6340,7 @@ export void CharacterSwitchController()
 
 		auto IsDoppelgangerActive = [&]() -> bool
 		{
-			if (mainCharacterData.character >= MAX_CHAR)
+			if (mainCharacterData.character >= CHARACTER::MAX)
 			{
 				return false;
 			}
@@ -6354,8 +6354,8 @@ export void CharacterSwitchController()
 
 		if
 		(
-			(characterData.character < MAX_CHAR) &&
-			(entityIndex == ENTITY_CLONE) &&
+			(characterData.character < CHARACTER::MAX) &&
+			(entityIndex == ENTITY::CLONE) &&
 			IsDoppelgangerActive()
 		)
 		{
@@ -6364,7 +6364,7 @@ export void CharacterSwitchController()
 
 
 
-		if (activeCharacterData.character == CHAR_BOSS_LADY)
+		if (activeCharacterData.character == CHARACTER::BOSS_LADY)
 		{
 			auto & activeActorData = *reinterpret_cast<EnemyActorDataLady *>(activeNewActorData.baseAddr);
 
@@ -6378,7 +6378,7 @@ export void CharacterSwitchController()
 			*/
 			activeCollisionDataAddr = &activeActorData.collisionData;
 		}
-		else if (activeCharacterData.character == CHAR_BOSS_VERGIL)
+		else if (activeCharacterData.character == CHARACTER::BOSS_VERGIL)
 		{
 			auto & activeActorData = *reinterpret_cast<EnemyActorDataVergil *>(activeNewActorData.baseAddr);
 
@@ -6397,7 +6397,7 @@ export void CharacterSwitchController()
 
 
 
-		if (characterData.character == CHAR_BOSS_LADY)
+		if (characterData.character == CHARACTER::BOSS_LADY)
 		{
 			auto & actorData = *reinterpret_cast<EnemyActorDataLady *>(newActorData.baseAddr);
 
@@ -6411,7 +6411,7 @@ export void CharacterSwitchController()
 			*/
 			collisionDataAddr = &actorData.collisionData;
 		}
-		else if (characterData.character == CHAR_BOSS_VERGIL)
+		else if (characterData.character == CHARACTER::BOSS_VERGIL)
 		{
 			auto & actorData = *reinterpret_cast<EnemyActorDataVergil *>(newActorData.baseAddr);
 
@@ -6552,7 +6552,7 @@ export void BossLadyController()
 
 	auto tiltDirection = GetRelativeTiltDirection(leadActorData);
 
-	auto lockOn = (gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON));
+	auto lockOn = (gamepad.buttons[0] & GetBinding(BINDING::LOCK_ON));
 
 
 
@@ -6561,7 +6561,7 @@ export void BossLadyController()
 
 
 
-	if (activeCharacterData.character != CHAR_BOSS_LADY)
+	if (activeCharacterData.character != CHARACTER::BOSS_LADY)
 	{
 		return;
 	}
@@ -6590,7 +6590,7 @@ export void BossLadyController()
 	{
 		auto & execute = executes[0];
 
-		if (gamepad.buttons[0] & GetBinding(BINDING_JUMP))
+		if (gamepad.buttons[0] & GetBinding(BINDING::JUMP))
 		{
 			if (execute)
 			{
@@ -6600,19 +6600,19 @@ export void BossLadyController()
 
 				if (lockOn)
 				{
-					if (tiltDirection == TILT_DIRECTION_UP)
+					if (tiltDirection == TILT_DIRECTION::UP)
 					{
 						event = TROOPER_ROLL;
 					}
-					else if (tiltDirection == TILT_DIRECTION_RIGHT)
+					else if (tiltDirection == TILT_DIRECTION::RIGHT)
 					{
 						event = WHEEL_RIGHT;
 					}
-					else if (tiltDirection == TILT_DIRECTION_DOWN)
+					else if (tiltDirection == TILT_DIRECTION::DOWN)
 					{
 						event = WHEEL_BACK;
 					}
-					else if (tiltDirection == TILT_DIRECTION_LEFT)
+					else if (tiltDirection == TILT_DIRECTION::LEFT)
 					{
 						event = WHEEL_LEFT;
 					}
@@ -6635,7 +6635,7 @@ export void BossLadyController()
 	{
 		auto & execute = executes[1];
 
-		if (gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+		if (gamepad.buttons[0] & GetBinding(BINDING::CHANGE_DEVIL_ARMS))
 		{
 			if (execute)
 			{
@@ -6655,7 +6655,7 @@ export void BossLadyController()
 	{
 		auto & execute = executes[2];
 
-		if (gamepad.buttons[0] & GetBinding(BINDING_CHANGE_GUN))
+		if (gamepad.buttons[0] & GetBinding(BINDING::CHANGE_GUN))
 		{
 			if (execute)
 			{
@@ -6675,7 +6675,7 @@ export void BossLadyController()
 	{
 		auto & execute = executes[3];
 
-		if (gamepad.buttons[0] & GetBinding(BINDING_SHOOT))
+		if (gamepad.buttons[0] & GetBinding(BINDING::SHOOT))
 		{
 			if (execute)
 			{
@@ -6685,7 +6685,7 @@ export void BossLadyController()
 
 				if (lockOn)
 				{
-					if (tiltDirection == TILT_DIRECTION_DOWN)
+					if (tiltDirection == TILT_DIRECTION::DOWN)
 					{
 						event = FALL_BACK_SHOOT;
 					}
@@ -6708,7 +6708,7 @@ export void BossLadyController()
 	{
 		auto & execute = executes[4];
 
-		if (gamepad.buttons[0] & GetBinding(BINDING_STYLE_ACTION))
+		if (gamepad.buttons[0] & GetBinding(BINDING::STYLE_ACTION))
 		{
 			if (execute)
 			{
@@ -6728,7 +6728,7 @@ export void BossLadyController()
 	{
 		auto & execute = executes[5];
 
-		if (gamepad.buttons[0] & GetBinding(BINDING_MELEE_ATTACK))
+		if (gamepad.buttons[0] & GetBinding(BINDING::MELEE_ATTACK))
 		{
 			if (execute)
 			{
@@ -6738,11 +6738,11 @@ export void BossLadyController()
 
 				if (lockOn)
 				{
-					if (tiltDirection == TILT_DIRECTION_UP)
+					if (tiltDirection == TILT_DIRECTION::UP)
 					{
 						event = KALINA_ANN_CHARGED_SHOT;
 					}
-					else if (tiltDirection == TILT_DIRECTION_DOWN)
+					else if (tiltDirection == TILT_DIRECTION::DOWN)
 					{
 						event = KALINA_ANN_HYSTERIC;
 					}
@@ -6762,7 +6762,7 @@ export void BossLadyController()
 	{
 		auto & execute = executes[6];
 
-		if (gamepad.buttons[0] & GetBinding(BINDING_DEVIL_TRIGGER))
+		if (gamepad.buttons[0] & GetBinding(BINDING::DEVIL_TRIGGER))
 		{
 			if (execute)
 			{
@@ -6795,7 +6795,7 @@ export void BossVergilController()
 
 	auto tiltDirection = GetRelativeTiltDirection(leadActorData);
 
-	auto lockOn = (gamepad.buttons[0] & GetBinding(BINDING_LOCK_ON));
+	auto lockOn = (gamepad.buttons[0] & GetBinding(BINDING::LOCK_ON));
 
 
 
@@ -6804,7 +6804,7 @@ export void BossVergilController()
 
 
 
-	if (activeCharacterData.character != CHAR_BOSS_VERGIL)
+	if (activeCharacterData.character != CHARACTER::BOSS_VERGIL)
 	{
 		return;
 	}
@@ -6833,7 +6833,7 @@ export void BossVergilController()
 	{
 		auto & execute = executes[0];
 
-		if (gamepad.buttons[0] & GetBinding(BINDING_MELEE_ATTACK))
+		if (gamepad.buttons[0] & GetBinding(BINDING::MELEE_ATTACK))
 		{
 			if (execute)
 			{
@@ -6843,11 +6843,11 @@ export void BossVergilController()
 
 				if (lockOn)
 				{
-					if (tiltDirection == TILT_DIRECTION_UP)
+					if (tiltDirection == TILT_DIRECTION::UP)
 					{
 						event = YAMATO_SUPER_JUDGEMENT_CUT_FOLLOW;
 					}
-					else if (tiltDirection == TILT_DIRECTION_DOWN)
+					else if (tiltDirection == TILT_DIRECTION::DOWN)
 					{
 						event = YAMATO_SUPER_JUDGEMENT_CUT;
 					}
@@ -6867,7 +6867,7 @@ export void BossVergilController()
 	{
 		auto & execute = executes[1];
 
-		if (gamepad.buttons[0] & GetBinding(BINDING_STYLE_ACTION))
+		if (gamepad.buttons[0] & GetBinding(BINDING::STYLE_ACTION))
 		{
 			if (execute)
 			{
@@ -6887,7 +6887,7 @@ export void BossVergilController()
 	{
 		auto & execute = executes[2];
 
-		if (gamepad.buttons[0] & GetBinding(BINDING_SHOOT))
+		if (gamepad.buttons[0] & GetBinding(BINDING::SHOOT))
 		{
 			if (execute)
 			{
@@ -6897,12 +6897,12 @@ export void BossVergilController()
 
 				if (lockOn)
 				{
-					if (tiltDirection == TILT_DIRECTION_UP)
+					if (tiltDirection == TILT_DIRECTION::UP)
 					{
 						event = STRONG_SHIELD;
 						activeActorData.variant = 1;
 					}
-					else if (tiltDirection == TILT_DIRECTION_DOWN)
+					else if (tiltDirection == TILT_DIRECTION::DOWN)
 					{
 						event = STRONG_SHIELD;
 						activeActorData.variant = 2;
@@ -6923,7 +6923,7 @@ export void BossVergilController()
 	{
 		auto & execute = executes[3];
 
-		if (gamepad.buttons[0] & GetBinding(BINDING_DEVIL_TRIGGER))
+		if (gamepad.buttons[0] & GetBinding(BINDING::DEVIL_TRIGGER))
 		{
 			if (execute)
 			{
@@ -6944,7 +6944,7 @@ export void BossVergilController()
 	{
 		auto & execute = executes[4];
 
-		if (gamepad.buttons[0] & GetBinding(BINDING_CHANGE_GUN))
+		if (gamepad.buttons[0] & GetBinding(BINDING::CHANGE_GUN))
 		{
 			if (execute)
 			{
@@ -6975,7 +6975,7 @@ export void BossVergilController()
 	{
 		auto & execute = executes[5];
 
-		if (gamepad.buttons[0] & GetBinding(BINDING_CHANGE_DEVIL_ARMS))
+		if (gamepad.buttons[0] & GetBinding(BINDING::CHANGE_DEVIL_ARMS))
 		{
 			if (execute)
 			{
@@ -7067,7 +7067,7 @@ void SetNewEventBossLady
 
 	if (actorData.event == FALL_BACK_SHOOT)
 	{
-		actorData.event = (gamepad.buttons[0] & GetBinding(BINDING_SHOOT)) ? FALL_BACK_RECOVER_CROSSBOW : FALL_BACK_RECOVER;
+		actorData.event = (gamepad.buttons[0] & GetBinding(BINDING::SHOOT)) ? FALL_BACK_RECOVER_CROSSBOW : FALL_BACK_RECOVER;
 		actorData.state = 0;
 
 		return;
@@ -8963,7 +8963,7 @@ export void ToggleBossVergilFixes(bool enable)
 
 // 	using namespace MOTION_GROUP;
 
-// 	for_each(uint64, actorIndex, 2, g_playerActorBaseAddrs.count)
+// 	old_for_each(uint64, actorIndex, 2, g_playerActorBaseAddrs.count)
 // 	{
 // 		IntroduceData(g_playerActorBaseAddrs[actorIndex], actorData, PlayerActorData, continue);
 
@@ -8984,9 +8984,9 @@ bool BelongsToPlayer(byte8 * baseAddr)
 		return false;
 	}
 
-	for_all(uint8, playerIndex   , activeConfig.Actor.playerCount){
-	for_all(uint8, characterIndex, CHARACTER_COUNT               ){
-	for_all(uint8, entityIndex   , ENTITY_COUNT                  )
+	old_for_all(uint8, playerIndex   , activeConfig.Actor.playerCount){
+	old_for_all(uint8, characterIndex, CHARACTER_COUNT               ){
+	old_for_all(uint8, entityIndex   , ENTITY_COUNT                  )
 	{
 		auto & newActorData = GetNewActorData
 		(
@@ -9012,9 +9012,9 @@ void SetCollisionData(CollisionData & collisionData)
 		return;
 	}
 
-	for_all(uint8, playerIndex   , activeConfig.Actor.playerCount){
-	for_all(uint8, characterIndex, CHARACTER_COUNT               ){
-	for_all(uint8, entityIndex   , ENTITY_COUNT                  )
+	old_for_all(uint8, playerIndex   , activeConfig.Actor.playerCount){
+	old_for_all(uint8, characterIndex, CHARACTER_COUNT               ){
+	old_for_all(uint8, entityIndex   , ENTITY_COUNT                  )
 	{
 		IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
 
@@ -9099,9 +9099,9 @@ bool SetLockOnTargetPosition(byte8 * dest)
 
 	auto baseAddr = (dest - offsetof(PlayerActorData, targetPosition));
 
-	for_all(uint8, playerIndex   , activeConfig.Actor.playerCount){
-	for_all(uint8, characterIndex, CHARACTER_COUNT               ){
-	for_all(uint8, entityIndex   , ENTITY_COUNT                  )
+	old_for_all(uint8, playerIndex   , activeConfig.Actor.playerCount){
+	old_for_all(uint8, characterIndex, CHARACTER_COUNT               ){
+	old_for_all(uint8, entityIndex   , ENTITY_COUNT                  )
 	{
 		auto & characterData = GetCharacterData(playerIndex, characterIndex, entityIndex);
 		auto & newActorData  = GetNewActorData (playerIndex, characterIndex, entityIndex);
@@ -9112,7 +9112,7 @@ bool SetLockOnTargetPosition(byte8 * dest)
 		(
 			(!newActorData.baseAddr) ||
 			(baseAddr != newActorData.baseAddr) ||
-			(characterData.character >= MAX_CHAR)
+			(characterData.character >= CHARACTER::MAX)
 		)
 		{
 			continue;
@@ -9120,8 +9120,8 @@ bool SetLockOnTargetPosition(byte8 * dest)
 
 		IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
 
-		auto & player1NewActorData = GetNewActorData(0, 0, ENTITY_MAIN);
-		auto & player2NewActorData = GetNewActorData(1, 0, ENTITY_MAIN);
+		auto & player1NewActorData = GetNewActorData(0, 0, ENTITY::MAIN);
+		auto & player2NewActorData = GetNewActorData(1, 0, ENTITY::MAIN);
 
 		IntroduceData(player1NewActorData.baseAddr, player1ActorData, PlayerActorData, continue);
 		IntroduceData(player2NewActorData.baseAddr, player2ActorData, PlayerActorData, continue);
@@ -9191,7 +9191,7 @@ bool SetLockOnTargetPositionGUI(byte8 * dest)
 
 	auto & position = *reinterpret_cast<vec4 *>(dest);
 
-	auto & player2NewActorData = GetNewActorData(1, 0, ENTITY_MAIN);
+	auto & player2NewActorData = GetNewActorData(1, 0, ENTITY::MAIN);
 
 	IntroduceData(player2NewActorData.baseAddr, player2ActorData, PlayerActorData, return false);
 
@@ -9257,7 +9257,7 @@ uint32 GetHitPoints(uint32 value)
 	}
 
 
-	auto & player2NewActorData = GetNewActorData(1, 0, ENTITY_MAIN);
+	auto & player2NewActorData = GetNewActorData(1, 0, ENTITY::MAIN);
 
 	IntroduceData(player2NewActorData.baseAddr, player2ActorData, PlayerActorData, return value);
 
@@ -9284,7 +9284,7 @@ uint32 GetMaxHitPoints(uint32 value)
 	}
 
 
-	auto & player2NewActorData = GetNewActorData(1, 0, ENTITY_MAIN);
+	auto & player2NewActorData = GetNewActorData(1, 0, ENTITY::MAIN);
 
 	IntroduceData(player2NewActorData.baseAddr, player2ActorData, PlayerActorData, return value);
 
@@ -9361,7 +9361,7 @@ bool MobilityFunction
 
 bool AirHike(PlayerActorData & actorData)
 {
-	if (actorData.character != CHAR_DANTE)
+	if (actorData.character != CHARACTER::DANTE)
 	{
 		return false;
 	}
@@ -9408,7 +9408,7 @@ uint32 MobilityFunction
 	// Required, because there is no reset when hitting the floor.
 	if constexpr (event != ACTOR_EVENT::TRICKSTER_DASH)
 	{
-		if (actorData.state & STATE_ON_FLOOR)
+		if (actorData.state & STATE::ON_FLOOR)
 		{
 			var = 0;
 		}
@@ -9463,7 +9463,7 @@ auto AirTrickDante
 	uint8 action
 )
 {
-	actorData.var_3E10[26] = (actorData.state & STATE_ON_FLOOR) ? 1 : 0;
+	actorData.var_3E10[26] = (actorData.state & STATE::ON_FLOOR) ? 1 : 0;
 
 	return MobilityFunction<ACTOR_EVENT::TRICKSTER_AIR_TRICK>
 	(
@@ -9561,8 +9561,8 @@ void ResetSkyStar(PlayerActorData & actorData)
 
 
 
-	bool inAir     = (actorData.state     & STATE_IN_AIR);
-	bool lastInAir = (actorData.lastState & STATE_IN_AIR);
+	bool inAir     = (actorData.state     & STATE::IN_AIR);
+	bool lastInAir = (actorData.lastState & STATE::IN_AIR);
 
 	DebugLog("action     %u", actorData.action    );
 	DebugLog("lastAction %u", actorData.lastAction);
@@ -9575,7 +9575,7 @@ void ResetSkyStar(PlayerActorData & actorData)
 	(
 		// Dante Air Stinger
 		(
-			(actorData.character == CHAR_DANTE) &&
+			(actorData.character == CHARACTER::DANTE) &&
 			(actorData.action == 0) &&
 			(actorData.lastAction == ACTION_DANTE::REBELLION_STINGER_LEVEL_2) &&
 			!inAir &&
@@ -9583,14 +9583,14 @@ void ResetSkyStar(PlayerActorData & actorData)
 		) ||
 		// Vergil Air Rising Sun
 		(
-			(actorData.character == CHAR_VERGIL) &&
+			(actorData.character == CHARACTER::VERGIL) &&
 			(actorData.action == ACTION_VERGIL::BEOWULF_RISING_SUN) &&
 			inAir &&
 			lastInAir
 		) ||
 		// Vergil Air Stinger
 		(
-			(actorData.character == CHAR_VERGIL) &&
+			(actorData.character == CHARACTER::VERGIL) &&
 			(actorData.action == 0) &&
 			(actorData.lastAction == ACTION_VERGIL::YAMATO_FORCE_EDGE_STINGER_LEVEL_2) &&
 			!inAir &&
@@ -9615,7 +9615,7 @@ void ResetSkyStar(PlayerActorData & actorData)
 
 	if
 	(
-		(actorData.character == CHAR_VERGIL) &&
+		(actorData.character == CHARACTER::VERGIL) &&
 		(actorData.action == ACTION_VERGIL::BEOWULF_RISING_SUN) &&
 		inAir &&
 		!lastInAir
@@ -9630,11 +9630,11 @@ void ResetSkyStar(PlayerActorData & actorData)
 
 
 
-	if (actorData.state & STATE_ON_FLOOR)
+	if (actorData.state & STATE::ON_FLOOR)
 	{
 		switch (actorData.character)
 		{
-			case CHAR_DANTE:
+			case CHARACTER::DANTE:
 			{
 				switch (actorData.eventData[0].event)
 				{
@@ -9648,7 +9648,7 @@ void ResetSkyStar(PlayerActorData & actorData)
 
 				break;
 			}
-			case CHAR_VERGIL:
+			case CHARACTER::VERGIL:
 			{
 				switch (actorData.eventData[0].event)
 				{
@@ -10405,7 +10405,7 @@ void PlayQuicksilverMotion
 		);
 	};
 
-	if (actorData.character == CHAR_VERGIL)
+	if (actorData.character == CHARACTER::VERGIL)
 	{
 		auto & motionArchive = actorData.motionArchives[3];
 		auto lastMotionArchive = motionArchive;
@@ -10490,7 +10490,7 @@ void SetDevilAuraColor
 
 	switch (character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
 			auto & actorData2 = *reinterpret_cast<PlayerActorDataDante *>(&actorData);
 
@@ -10510,7 +10510,7 @@ void SetDevilAuraColor
 			}
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
 			auto & actorData2 = *reinterpret_cast<PlayerActorDataVergil *>(&actorData);
 
@@ -10884,7 +10884,7 @@ void UpdateActorSpeed(byte8 * baseAddr)
 	}
 
 
-	auto & player1LeadNewActorData = GetNewActorData(0, 0, ENTITY_MAIN);
+	auto & player1LeadNewActorData = GetNewActorData(0, 0, ENTITY::MAIN);
 
 	IntroduceData(player1LeadNewActorData.baseAddr, player1LeadActorData, PlayerActorData, return);
 
@@ -10900,9 +10900,9 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 	// NewActorData
 
-	for_all(uint8, playerIndex   , PLAYER_COUNT   ){
-	for_all(uint8, characterIndex, CHARACTER_COUNT){
-	for_all(uint8, entityIndex   , ENTITY_COUNT   )
+	old_for_all(uint8, playerIndex   , PLAYER_COUNT   ){
+	old_for_all(uint8, characterIndex, CHARACTER_COUNT){
+	old_for_all(uint8, entityIndex   , ENTITY_COUNT   )
 	{
 		IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
 
@@ -10926,7 +10926,7 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 
 
-			if (characterData.character >= MAX_CHAR)
+			if (characterData.character >= CHARACTER::MAX)
 			{
 				continue;
 			}
@@ -10939,7 +10939,7 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 			bool match = false;
 
-			for_all(uint8, weaponIndex, countof(actorData.newWeaponDataAddr))
+			old_for_all(uint8, weaponIndex, countof(actorData.newWeaponDataAddr))
 			{
 				auto weaponDataAddr = actorData.newWeaponDataAddr[weaponIndex];
 				if (!weaponDataAddr)
@@ -10988,7 +10988,7 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 
 
-		if (mainActorData.styleData.rank >= STYLE_RANK_SWEET)
+		if (mainActorData.styleData.rank >= STYLE_RANK::SWEET)
 		{
 			value *= 1.05f;
 		}
@@ -11049,7 +11049,7 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 
 
-		if (characterData.character >= MAX_CHAR)
+		if (characterData.character >= CHARACTER::MAX)
 		{
 			goto Return;
 		}
@@ -11067,7 +11067,7 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 		switch (actorData.character)
 		{
-			case CHAR_DANTE:
+			case CHARACTER::DANTE:
 			{
 				auto devilIndex = actorData.meleeWeaponIndex;
 				if (devilIndex > 4)
@@ -11077,14 +11077,14 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 				if (actorData.sparda)
 				{
-					devilIndex = DEVIL_SPEED_DANTE_SPARDA;
+					devilIndex = DEVIL_SPEED::DANTE_SPARDA;
 				}
 
 				value *= activeConfig.Speed.devilDante[devilIndex];
 
 				break;
 			}
-			case CHAR_VERGIL:
+			case CHARACTER::VERGIL:
 			{
 				auto devilIndex = actorData.queuedMeleeWeaponIndex;
 				if (devilIndex > 2)
@@ -11117,14 +11117,14 @@ void UpdateActorSpeed(byte8 * baseAddr)
 		actorData.speed = value;
 
 
-		if (characterData.character >= MAX_CHAR)
+		if (characterData.character >= CHARACTER::MAX)
 		{
 			return;
 		}
 
 
 
-		for_all(uint8, weaponIndex, countof(actorData.newWeaponDataAddr))
+		old_for_all(uint8, weaponIndex, countof(actorData.newWeaponDataAddr))
 		{
 			auto weaponDataAddr = actorData.newWeaponDataAddr[weaponIndex];
 			if (!weaponDataAddr)
@@ -11164,7 +11164,7 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 	// IntroduceEnemyVectorData(return);
 
-	// for_all(uint32, enemyIndex, countof(enemyVectorData.metadata))
+	// old_for_all(uint32, enemyIndex, countof(enemyVectorData.metadata))
 	// {
 	// 	auto & metadata = enemyVectorData.metadata[enemyIndex];
 
@@ -11274,7 +11274,7 @@ void ToggleSpeed(bool enable)
 
 		if (enable)
 		{
-			for_all(uint8, itemIndex, countof(activeConfig.Speed.devilDante))
+			old_for_all(uint8, itemIndex, countof(activeConfig.Speed.devilDante))
 			{
 				auto & item = items[itemIndex];
 
@@ -11296,7 +11296,7 @@ void ToggleSpeed(bool enable)
 
 		if (enable)
 		{
-			for_all(uint8, itemIndex, countof(activeConfig.Speed.devilVergil))
+			old_for_all(uint8, itemIndex, countof(activeConfig.Speed.devilVergil))
 			{
 				auto & item = items[itemIndex];
 
@@ -11792,7 +11792,7 @@ float ApplyDamage
 	// Actor
 	if (!match)
 	{
-		for_all(uint32, actorIndex, g_playerActorBaseAddrs.count)
+		old_for_all(uint32, actorIndex, g_playerActorBaseAddrs.count)
 		{
 			IntroducePlayerActorData(actorBaseAddr, g_playerActorBaseAddrs[actorIndex], actorData, continue);
 
@@ -11999,7 +11999,7 @@ bool DevilButtonCheck(PlayerActorData & actorData)
 
 	bool condition = (actorData.buttons[0] & playerData.button);
 
-	if (actorData.newEntityIndex == ENTITY_MAIN)
+	if (actorData.newEntityIndex == ENTITY::MAIN)
 	{
 		if (condition)
 		{
@@ -12022,13 +12022,13 @@ void ActivateDevil(PlayerActorData & actorData)
 {
 	switch (actorData.character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
 			auto & actorData2 = *reinterpret_cast<PlayerActorDataDante *>(&actorData);
 			UpdateForm(actorData2);
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
 			auto & actorData2 = *reinterpret_cast<PlayerActorDataVergil *>(&actorData);
 			UpdateForm(actorData2);
@@ -12036,20 +12036,20 @@ void ActivateDevil(PlayerActorData & actorData)
 		}
 	}
 
-	func_1F94D0(actorData, DEVIL_FLUX_START);
+	func_1F94D0(actorData, DEVIL_FLUX::START);
 }
 
 void DeactivateDevil(PlayerActorData & actorData)
 {
 	switch (actorData.character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
 			auto & actorData2 = *reinterpret_cast<PlayerActorDataDante *>(&actorData);
 			UpdateForm(actorData2);
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
 			auto & actorData2 = *reinterpret_cast<PlayerActorDataVergil *>(&actorData);
 			UpdateForm(actorData2);
@@ -12057,7 +12057,7 @@ void DeactivateDevil(PlayerActorData & actorData)
 		}
 	}
 
-	func_1F94D0(actorData, DEVIL_FLUX_END);
+	func_1F94D0(actorData, DEVIL_FLUX::END);
 }
 
 
@@ -12081,7 +12081,7 @@ void UpdateColorMatrices(PlayerActorData & actorData)
 
 	uint16 value = (g_quicksilver) ? 128 : 0;
 
-	for_all(uint8, index, countof(actorData.newModelData))
+	old_for_all(uint8, index, countof(actorData.newModelData))
 	{
 		if (!actorData.newModelData[index].visible)
 		{
@@ -12093,17 +12093,17 @@ void UpdateColorMatrices(PlayerActorData & actorData)
 		*reinterpret_cast<uint16 *>(dest + 0x80 + 0x214) = value;
 	}
 
-	if (actorData.character == CHAR_BOB)
+	if (actorData.character == CHARACTER::BOB)
 	{
 		auto dest = reinterpret_cast<byte8 *>(&actorData);
 
 		*reinterpret_cast<uint16 *>(dest + 0x13E10 + 0x214) = value;
 	}
 
-	for_all(uint8, weaponIndex, WEAPON_COUNT)
+	old_for_all(uint8, weaponIndex, WEAPON_COUNT)
 	{
 		auto & weapon = actorData.newWeapons[weaponIndex];
-		if (weapon >= MAX_WEAPON)
+		if (weapon >= WEAPON::MAX)
 		{
 			continue;
 		}
@@ -12116,7 +12116,7 @@ void UpdateColorMatrices(PlayerActorData & actorData)
 
 		auto dest = reinterpret_cast<byte8 *>(weaponDataAddr);
 
-		constexpr uint32 offs[MAX_WEAPON] =
+		constexpr uint32 offs[WEAPON::MAX] =
 		{
 			0x280,
 			0x880,
@@ -12139,15 +12139,15 @@ void UpdateColorMatrices(PlayerActorData & actorData)
 
 		switch (weapon)
 		{
-			case WEAPON_EBONY_IVORY:
+			case WEAPON::EBONY_IVORY:
 			{
 				*reinterpret_cast<uint16 *>(dest + 0x200 + 0x214) = value;
 				*reinterpret_cast<uint16 *>(dest + 0x980 + 0x214) = value;
 
 				break;
 			}
-			case WEAPON_YAMATO_VERGIL:
-			case WEAPON_YAMATO_BOB:
+			case WEAPON::YAMATO_VERGIL:
+			case WEAPON::YAMATO_BOB:
 			{
 				*reinterpret_cast<uint16 *>(dest + 0xF00  + 0x214) = value;
 				*reinterpret_cast<uint16 *>(dest + 0x1680 + 0x214) = value;
@@ -12181,7 +12181,7 @@ inline void QuicksilverFunction
 
 	g_quicksilver = enable;
 
-	for_all(uint32, index, g_playerActorBaseAddrs.count)
+	old_for_all(uint32, index, g_playerActorBaseAddrs.count)
 	{
 		IntroducePlayerActorData(actorBaseAddr2, g_playerActorBaseAddrs[index], actorData2, continue);
 
@@ -12327,7 +12327,7 @@ bool DeactivateDoppelgangerDeathCheck(PlayerActorData & actorData)
 
 		cloneActorData.doppelganger = actorData.doppelganger = false;
 		actorData.var_6340 = 0;
-		actorData.cloneStatus = CLONE_STATUS_IDLE;
+		actorData.cloneStatus = CLONE_STATUS::IDLE;
 		/*
 		dmc3.exe+1E2AD8 - C6 81 62630000 00       - mov byte ptr [rcx+00006362],00
 		dmc3.exe+1E2ADF - C6 80 62630000 00       - mov byte ptr [rax+00006362],00
@@ -12351,20 +12351,20 @@ bool DeactivateDoppelgangerDeathCheck(PlayerActorData & actorData)
 
 void DecommissionDoppelgangers()
 {
-	for_all(uint64, actorIndex, g_playerActorBaseAddrs.count)
+	old_for_all(uint64, actorIndex, g_playerActorBaseAddrs.count)
 	{
 		IntroduceData(g_playerActorBaseAddrs[actorIndex], actorData, PlayerActorData, continue);
 
 		if
 		(
-			(actorData.newEntityIndex != ENTITY_MAIN) ||
+			(actorData.newEntityIndex != ENTITY::MAIN) ||
 			!actorData.doppelganger
 		)
 		{
 			continue;
 		}
 
-		actorData.cloneStatus = CLONE_STATUS_DECOMMISSION;
+		actorData.cloneStatus = CLONE_STATUS::DECOMMISSION;
 
 		DeactivateDoppelganger(actorData);
 	}
@@ -12402,7 +12402,7 @@ void DecommissionDoppelgangers()
 
 bool EbonyIvoryRainStormCheck(PlayerActorData & actorData)
 {
-	if (actorData.buttons[0] & GetBinding(BINDING_STYLE_ACTION))
+	if (actorData.buttons[0] & GetBinding(BINDING::STYLE_ACTION))
 	{
 		return true;
 	}
@@ -12422,11 +12422,11 @@ bool DotShadowCheck(byte8 * dest)
 
 	switch (activeConfig.dotShadow)
 	{
-		case DOT_SHADOW_DISABLE:
+		case DOT_SHADOW::DISABLE:
 		{
 			return true;
 		}
-		case DOT_SHADOW_DISABLE_ACTOR_ONLY:
+		case DOT_SHADOW::DISABLE_ACTOR_ONLY:
 		{
 			auto baseAddr = *reinterpret_cast<byte8 **>(dest + 0xC0);
 			if (!baseAddr)
@@ -12451,7 +12451,7 @@ bool DotShadowCheck(byte8 * dest)
 					break;
 				}
 
-				for_all(uint32, actorIndex, g_playerActorBaseAddrs.count)
+				old_for_all(uint32, actorIndex, g_playerActorBaseAddrs.count)
 				{
 					IntroducePlayerActorData(actorBaseAddr, g_playerActorBaseAddrs[actorIndex], actorData, continue);
 
@@ -12488,7 +12488,7 @@ uint8 VisibilityCheck(byte8 * baseAddr)
 
 
 
-	for_all(uint8, entityIndex, ENTITY_COUNT)
+	old_for_all(uint8, entityIndex, ENTITY_COUNT)
 	{
 		auto & newActorData = g_defaultNewActorData[entityIndex];
 
@@ -12499,7 +12499,7 @@ uint8 VisibilityCheck(byte8 * baseAddr)
 			return newActorData.visibility;
 		}
 
-		for_all(uint8, weaponIndex, WEAPON_COUNT)
+		old_for_all(uint8, weaponIndex, WEAPON_COUNT)
 		{
 			auto weaponDataAddr = actorData.newWeaponDataAddr[weaponIndex];
 			auto weaponBaseAddr = reinterpret_cast<byte8 *>(weaponDataAddr);
@@ -12513,9 +12513,9 @@ uint8 VisibilityCheck(byte8 * baseAddr)
 
 
 
-	for_all(uint8, playerIndex   , PLAYER_COUNT   ){
-	for_all(uint8, characterIndex, CHARACTER_COUNT){
-	for_all(uint8, entityIndex   , ENTITY_COUNT   )
+	old_for_all(uint8, playerIndex   , PLAYER_COUNT   ){
+	old_for_all(uint8, characterIndex, CHARACTER_COUNT){
+	old_for_all(uint8, entityIndex   , ENTITY_COUNT   )
 	{
 		IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
 
@@ -12527,12 +12527,12 @@ uint8 VisibilityCheck(byte8 * baseAddr)
 		}
 
 		// Could be boss.
-		if (characterData.character >= MAX_CHAR)
+		if (characterData.character >= CHARACTER::MAX)
 		{
 			continue;
 		}
 
-		for_all(uint8, weaponIndex, WEAPON_COUNT)
+		old_for_all(uint8, weaponIndex, WEAPON_COUNT)
 		{
 			auto weaponDataAddr = actorData.newWeaponDataAddr[weaponIndex];
 			auto weaponBaseAddr = reinterpret_cast<byte8 *>(weaponDataAddr);
@@ -12558,7 +12558,7 @@ bool CollisionCheck(byte8 * collisionDataAddr)
 
 
 
-	for_all(uint8, entityIndex, ENTITY_COUNT)
+	old_for_all(uint8, entityIndex, ENTITY_COUNT)
 	{
 		auto & newActorData = g_defaultNewActorData[entityIndex];
 
@@ -12574,19 +12574,19 @@ bool CollisionCheck(byte8 * collisionDataAddr)
 
 
 
-	for_all(uint8, playerIndex   , PLAYER_COUNT   ){
-	for_all(uint8, characterIndex, CHARACTER_COUNT){
-	for_all(uint8, entityIndex   , ENTITY_COUNT   )
+	old_for_all(uint8, playerIndex   , PLAYER_COUNT   ){
+	old_for_all(uint8, characterIndex, CHARACTER_COUNT){
+	old_for_all(uint8, entityIndex   , ENTITY_COUNT   )
 	{
 		IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
 
 		byte8 * baseAddr = 0;
 
-		if (characterData.character == CHAR_BOSS_LADY)
+		if (characterData.character == CHARACTER::BOSS_LADY)
 		{
 			baseAddr = (collisionDataAddr - offsetof(EnemyActorDataLady, collisionData));
 		}
-		else if (characterData.character == CHAR_BOSS_VERGIL)
+		else if (characterData.character == CHARACTER::BOSS_VERGIL)
 		{
 			baseAddr = (collisionDataAddr - offsetof(EnemyActorDataVergil, collisionData));
 		}
@@ -12617,7 +12617,7 @@ bool VerticalPullCheck(byte8 * actorBaseAddr)
 
 
 
-	for_all(uint8, entityIndex, ENTITY_COUNT)
+	old_for_all(uint8, entityIndex, ENTITY_COUNT)
 	{
 		auto & newActorData = g_defaultNewActorData[entityIndex];
 
@@ -12631,9 +12631,9 @@ bool VerticalPullCheck(byte8 * actorBaseAddr)
 
 
 
-	for_all(uint8, playerIndex   , PLAYER_COUNT   ){
-	for_all(uint8, characterIndex, CHARACTER_COUNT){
-	for_all(uint8, entityIndex   , ENTITY_COUNT   )
+	old_for_all(uint8, playerIndex   , PLAYER_COUNT   ){
+	old_for_all(uint8, characterIndex, CHARACTER_COUNT){
+	old_for_all(uint8, entityIndex   , ENTITY_COUNT   )
 	{
 		IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
 
@@ -12700,7 +12700,7 @@ float * GetRebellionStingerDuration(PlayerActorData & actorData)
 {
 	uint8 index = (actorData.devil) ? 1 : 0;
 
-	return (actorData.state & STATE_IN_AIR) ?
+	return (actorData.state & STATE::IN_AIR) ?
 	&activeConfig.Rebellion.airStingerDuration[index] :
 	&activeConfig.Rebellion.stingerDuration[index];
 }
@@ -12709,7 +12709,7 @@ float * GetRebellionStingerRange(PlayerActorData & actorData)
 {
 	uint8 index = (actorData.devil) ? 1 : 0;
 
-	return (actorData.state & STATE_IN_AIR) ?
+	return (actorData.state & STATE::IN_AIR) ?
 	&activeConfig.Rebellion.airStingerRange[index] :
 	&activeConfig.Rebellion.stingerRange[index];
 }
@@ -12720,7 +12720,7 @@ float * GetYamatoForceEdgeStingerDuration(PlayerActorData & actorData)
 {
 	uint8 index = (actorData.devil) ? 1 : 0;
 
-	return (actorData.state & STATE_IN_AIR) ?
+	return (actorData.state & STATE::IN_AIR) ?
 	&activeConfig.YamatoForceEdge.airStingerDuration[index] :
 	&activeConfig.YamatoForceEdge.stingerDuration[index];
 }
@@ -12729,7 +12729,7 @@ float * GetYamatoForceEdgeStingerRange(PlayerActorData & actorData)
 {
 	uint8 index = (actorData.devil) ? 1 : 0;
 
-	return (actorData.state & STATE_IN_AIR) ?
+	return (actorData.state & STATE::IN_AIR) ?
 	&activeConfig.YamatoForceEdge.airStingerRange[index] :
 	&activeConfig.YamatoForceEdge.stingerRange[index];
 }
@@ -12752,7 +12752,7 @@ void SetAction(byte8 * actorBaseAddr)
 
 	uint8 index = (actorData.devil) ? 1 : 0;
 
-	auto lockOn = (actorData.buttons[0] & GetBinding(BINDING_LOCK_ON));
+	auto lockOn = (actorData.buttons[0] & GetBinding(BINDING::LOCK_ON));
 
 	auto tiltDirection = GetRelativeTiltDirection(actorData);
 
@@ -12764,7 +12764,7 @@ void SetAction(byte8 * actorBaseAddr)
 
 	switch (actorData.character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
 			using namespace ACTION_DANTE;
 
@@ -12778,7 +12778,7 @@ void SetAction(byte8 * actorBaseAddr)
 				(actorData.action == REBELLION_HELM_BREAKER) &&
 				(actorData.newAirStingerCount < activeConfig.Rebellion.airStingerCount[index]) &&
 				lockOn &&
-				(tiltDirection == TILT_DIRECTION_UP)
+				(tiltDirection == TILT_DIRECTION::UP)
 			)
 			{
 				actorData.action = REBELLION_STINGER_LEVEL_2;
@@ -12790,7 +12790,7 @@ void SetAction(byte8 * actorBaseAddr)
 				activeConfig.enableRebellionNewDrive &&
 				(actorData.action == REBELLION_COMBO_1_PART_1) &&
 				lockOn &&
-				(tiltDirection == TILT_DIRECTION_LEFT)
+				(tiltDirection == TILT_DIRECTION::LEFT)
 			)
 			{
 				actorData.action = REBELLION_DRIVE_1;
@@ -12800,8 +12800,8 @@ void SetAction(byte8 * actorBaseAddr)
 				activeConfig.enableRebellionQuickDrive &&
 				(demo_pl000_00_3 != 0) &&
 				(actorData.action == REBELLION_COMBO_1_PART_2) &&
-				(actorData.style == STYLE_SWORDMASTER) &&
-				(actorData.buttons[0] & GetBinding(BINDING_STYLE_ACTION))
+				(actorData.style == STYLE::SWORDMASTER) &&
+				(actorData.buttons[0] & GetBinding(BINDING::STYLE_ACTION))
 			)
 			{
 				actorData.action = REBELLION_DRIVE_1;
@@ -12815,7 +12815,7 @@ void SetAction(byte8 * actorBaseAddr)
 				activeConfig.enableCerberusAirRevolver &&
 				(actorData.action == CERBERUS_SWING) &&
 				lockOn &&
-				(tiltDirection == TILT_DIRECTION_UP)
+				(tiltDirection == TILT_DIRECTION::UP)
 			)
 			{
 				actorData.action = CERBERUS_REVOLVER_LEVEL_2;
@@ -12825,7 +12825,7 @@ void SetAction(byte8 * actorBaseAddr)
 				activeConfig.enableNevanNewVortex &&
 				(actorData.action == NEVAN_AIR_PLAY) &&
 				actorData.devil &&
-				(tiltDirection != TILT_DIRECTION_NEUTRAL)
+				(tiltDirection != TILT_DIRECTION::NEUTRAL)
 			)
 			{
 				actorData.action = NEVAN_VORTEX;
@@ -12835,7 +12835,7 @@ void SetAction(byte8 * actorBaseAddr)
 
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
 			using namespace ACTION_VERGIL;
 
@@ -12846,7 +12846,7 @@ void SetAction(byte8 * actorBaseAddr)
 				activeConfig.enableYamatoVergilNewJudgementCut &&
 				(actorData.action == YAMATO_COMBO_PART_1) &&
 				lockOn &&
-				(tiltDirection == TILT_DIRECTION_LEFT)
+				(tiltDirection == TILT_DIRECTION::LEFT)
 			)
 			{
 				actorData.action = YAMATO_JUDGEMENT_CUT_LEVEL_2;
@@ -12861,7 +12861,7 @@ void SetAction(byte8 * actorBaseAddr)
 				(actorData.action == BEOWULF_STARFALL_LEVEL_2) &&
 				(actorData.newAirRisingSunCount < activeConfig.beowulfVergilAirRisingSunCount[index]) &&
 				lockOn &&
-				(tiltDirection == TILT_DIRECTION_DOWN)
+				(tiltDirection == TILT_DIRECTION::DOWN)
 			)
 			{
 				actorData.action = BEOWULF_RISING_SUN;
@@ -12873,7 +12873,7 @@ void SetAction(byte8 * actorBaseAddr)
 				activeConfig.enableBeowulfVergilAirLunarPhase &&
 				(actorData.action == BEOWULF_STARFALL_LEVEL_2) &&
 				lockOn &&
-				(tiltDirection == TILT_DIRECTION_UP)
+				(tiltDirection == TILT_DIRECTION::UP)
 			)
 			{
 				actorData.action = BEOWULF_LUNAR_PHASE_LEVEL_2;
@@ -12883,7 +12883,7 @@ void SetAction(byte8 * actorBaseAddr)
 				activeConfig.enableYamatoForceEdgeNewComboPart4 &&
 				(actorData.action == YAMATO_FORCE_EDGE_COMBO_PART_1) &&
 				lockOn &&
-				(tiltDirection == TILT_DIRECTION_RIGHT)
+				(tiltDirection == TILT_DIRECTION::RIGHT)
 			)
 			{
 				actorData.action = YAMATO_FORCE_EDGE_COMBO_PART_4;
@@ -12894,7 +12894,7 @@ void SetAction(byte8 * actorBaseAddr)
 				(actorData.action == YAMATO_FORCE_EDGE_HELM_BREAKER_LEVEL_2) &&
 				(actorData.newAirStingerCount < activeConfig.YamatoForceEdge.airStingerCount[index]) &&
 				lockOn &&
-				(tiltDirection == TILT_DIRECTION_UP)
+				(tiltDirection == TILT_DIRECTION::UP)
 			)
 			{
 				actorData.action = YAMATO_FORCE_EDGE_STINGER_LEVEL_2;
@@ -12906,7 +12906,7 @@ void SetAction(byte8 * actorBaseAddr)
 				activeConfig.enableYamatoForceEdgeNewRoundTrip &&
 				(actorData.action == YAMATO_FORCE_EDGE_COMBO_PART_1) &&
 				lockOn &&
-				(tiltDirection == TILT_DIRECTION_LEFT)
+				(tiltDirection == TILT_DIRECTION::LEFT)
 			)
 			{
 				actorData.action = YAMATO_FORCE_EDGE_ROUND_TRIP;
@@ -12925,11 +12925,11 @@ bool AirActionCheck(PlayerActorData & actorData)
 {
 	switch (actorData.character)
 	{
-		case CHAR_DANTE:
+		case CHARACTER::DANTE:
 		{
 			if
 			(
-				(actorData.state & STATE_IN_AIR) &&
+				(actorData.state & STATE::IN_AIR) &&
 				(actorData.action == ACTION_DANTE::REBELLION_STINGER_LEVEL_2) &&
 				(actorData.motionData[1].group == MOTION_GROUP_DANTE::REBELLION)
 			)
@@ -12938,7 +12938,7 @@ bool AirActionCheck(PlayerActorData & actorData)
 			}
 			else if
 			(
-				(actorData.state & STATE_IN_AIR) &&
+				(actorData.state & STATE::IN_AIR) &&
 				(actorData.action == ACTION_DANTE::CERBERUS_REVOLVER_LEVEL_2) &&
 				(actorData.motionData[1].group == MOTION_GROUP_DANTE::CERBERUS)
 			)
@@ -12948,11 +12948,11 @@ bool AirActionCheck(PlayerActorData & actorData)
 
 			break;
 		}
-		case CHAR_VERGIL:
+		case CHARACTER::VERGIL:
 		{
 			if
 			(
-				(actorData.state & STATE_IN_AIR) &&
+				(actorData.state & STATE::IN_AIR) &&
 				(actorData.action == ACTION_VERGIL::YAMATO_FORCE_EDGE_STINGER_LEVEL_2) &&
 				(actorData.motionData[1].group == MOTION_GROUP_VERGIL::YAMATO_FORCE_EDGE)
 			)
@@ -13051,7 +13051,7 @@ void UpdateLockOns(byte8 * dest)
 {
 	IntroduceMainActorData(actorBaseAddr, actorData, return);
 
-	for_all(uint32, actorIndex, g_playerActorBaseAddrs.count)
+	old_for_all(uint32, actorIndex, g_playerActorBaseAddrs.count)
 	{
 		IntroducePlayerActorData(actorBaseAddr2, g_playerActorBaseAddrs[actorIndex], actorData2, continue);
 
@@ -13730,20 +13730,20 @@ export void Actor_Toggle(bool enable)
 	{
 		if (!run)
 		{
-			RegisterWeapon[WEAPON_REBELLION        ] = func_2310B0;
-			RegisterWeapon[WEAPON_CERBERUS         ] = func_22EC90;
-			RegisterWeapon[WEAPON_AGNI_RUDRA       ] = func_227870;
-			RegisterWeapon[WEAPON_NEVAN            ] = func_22A1E0;
-			RegisterWeapon[WEAPON_BEOWULF_DANTE    ] = func_228CF0;
-			RegisterWeapon[WEAPON_EBONY_IVORY      ] = func_22B0C0;
-			RegisterWeapon[WEAPON_SHOTGUN          ] = func_2306B0;
-			RegisterWeapon[WEAPON_ARTEMIS          ] = func_22C4A0;
-			RegisterWeapon[WEAPON_SPIRAL           ] = func_2300A0;
-			RegisterWeapon[WEAPON_KALINA_ANN       ] = func_22BA30;
-			RegisterWeapon[WEAPON_YAMATO_VERGIL    ] = func_22D960;
-			RegisterWeapon[WEAPON_BEOWULF_VERGIL   ] = func_228CF0;
-			RegisterWeapon[WEAPON_YAMATO_FORCE_EDGE] = func_2298E0;
-			RegisterWeapon[WEAPON_YAMATO_BOB       ] = func_231A30;
+			RegisterWeapon[WEAPON::REBELLION        ] = func_2310B0;
+			RegisterWeapon[WEAPON::CERBERUS         ] = func_22EC90;
+			RegisterWeapon[WEAPON::AGNI_RUDRA       ] = func_227870;
+			RegisterWeapon[WEAPON::NEVAN            ] = func_22A1E0;
+			RegisterWeapon[WEAPON::BEOWULF_DANTE    ] = func_228CF0;
+			RegisterWeapon[WEAPON::EBONY_IVORY      ] = func_22B0C0;
+			RegisterWeapon[WEAPON::SHOTGUN          ] = func_2306B0;
+			RegisterWeapon[WEAPON::ARTEMIS          ] = func_22C4A0;
+			RegisterWeapon[WEAPON::SPIRAL           ] = func_2300A0;
+			RegisterWeapon[WEAPON::KALINA_ANN       ] = func_22BA30;
+			RegisterWeapon[WEAPON::YAMATO_VERGIL    ] = func_22D960;
+			RegisterWeapon[WEAPON::BEOWULF_VERGIL   ] = func_228CF0;
+			RegisterWeapon[WEAPON::YAMATO_FORCE_EDGE] = func_2298E0;
+			RegisterWeapon[WEAPON::YAMATO_BOB       ] = func_231A30;
 		}
 	}
 
@@ -13751,13 +13751,13 @@ export void Actor_Toggle(bool enable)
 	{
 		constexpr uint32 size = (128 * 1024);
 		// Dante
-		Write<uint32>((appBaseAddr + 0x1DEBE1 + 1), (enable) ? size : ACTOR_DATA_SIZE_DANTE); // dmc3.exe+1DEBE1 - BA C0B80000 - mov edx,0000B8C0
+		Write<uint32>((appBaseAddr + 0x1DEBE1 + 1), (enable) ? size : PLAYER_ACTOR_DATA_SIZE::DANTE); // dmc3.exe+1DEBE1 - BA C0B80000 - mov edx,0000B8C0
 		// Bob
-		Write<uint32>((appBaseAddr + 0x1DEAC8 + 1), (enable) ? size : ACTOR_DATA_SIZE_BOB); // dmc3.exe+1DEAC8 - BA 80B60000 - mov edx,0000B680
+		Write<uint32>((appBaseAddr + 0x1DEAC8 + 1), (enable) ? size : PLAYER_ACTOR_DATA_SIZE::BOB); // dmc3.exe+1DEAC8 - BA 80B60000 - mov edx,0000B680
 		// Lady
-		Write<uint32>((appBaseAddr + 0x1DE9CC + 1), (enable) ? size : ACTOR_DATA_SIZE_LADY); // dmc3.exe+1DE9CC - BA 80820000 - mov edx,00008280
+		Write<uint32>((appBaseAddr + 0x1DE9CC + 1), (enable) ? size : PLAYER_ACTOR_DATA_SIZE::LADY); // dmc3.exe+1DE9CC - BA 80820000 - mov edx,00008280
 		// Vergil
-		Write<uint32>((appBaseAddr + 0x1DE8B3 + 1), (enable) ? size : ACTOR_DATA_SIZE_VERGIL); // dmc3.exe+1DE8B3 - BA C0B80000 - mov edx,0000B8C0
+		Write<uint32>((appBaseAddr + 0x1DE8B3 + 1), (enable) ? size : PLAYER_ACTOR_DATA_SIZE::VERGIL); // dmc3.exe+1DE8B3 - BA C0B80000 - mov edx,0000B8C0
 	}
 
 	Actor::ToggleBase                  (enable);
@@ -13787,7 +13787,7 @@ export void Actor_Toggle(bool enable)
 				return;
 			}
 
-			for_all(uint32, index, 7)
+			old_for_all(uint32, index, 7)
 			{
 				offs[index] = (index * 24);
 			}
@@ -13885,7 +13885,7 @@ export void Actor_Toggle(bool enable)
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(PlayerActorData, newForceFiles);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(PlayerActorData, newForceFilesCharacter);
-			*reinterpret_cast<uint8 *>(func.sect0 + 0xF) = CHAR_LADY;
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xF) = CHARACTER::LADY;
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x15) = offsetof(PlayerActorData, newModelPhysicsMetadataPool[0][5]);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x1E) = offsetof(PlayerActorData, newModelPhysicsMetadataPool[0][3]);
 		}
@@ -13930,7 +13930,7 @@ export void Actor_Toggle(bool enable)
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(PlayerActorData, newForceFiles);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(PlayerActorData, newForceFilesCharacter);
-			*reinterpret_cast<uint8 *>(func.sect0 + 0xF) = CHAR_LADY;
+			*reinterpret_cast<uint8 *>(func.sect0 + 0xF) = CHARACTER::LADY;
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x15) = offsetof(PlayerActorData, newModelPhysicsMetadataPool[0][5]);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x1E) = offsetof(PlayerActorData, newModelPhysicsMetadataPool[0][3]);
 		}
@@ -17421,11 +17421,11 @@ export void EventDelete()
 
 
 
-	for_all(uint64, index, g_playerActorBaseAddrs.count)
+	old_for_all(uint64, index, g_playerActorBaseAddrs.count)
 	{
 		IntroducePlayerActorData(actorBaseAddr, g_playerActorBaseAddrs[index], actorData, continue);
 
-		if (actorData.newEntityIndex == ENTITY_MAIN)
+		if (actorData.newEntityIndex == ENTITY::MAIN)
 		{
 			func_2EDFC0(actorData.var_6410);
 			func_337710(actorData.var_6458);
@@ -17524,7 +17524,7 @@ export void InGameCutsceneStart()
 
 	using namespace MOTION_GROUP;
 
-	for_each(uint64, actorIndex, 2, g_playerActorBaseAddrs.count)
+	old_for_each(uint64, actorIndex, 2, g_playerActorBaseAddrs.count)
 	{
 		IntroduceData(g_playerActorBaseAddrs[actorIndex], actorData, PlayerActorData, continue);
 
@@ -17566,7 +17566,7 @@ export void EventMain()
 			return;
 		}
 
-		for_all(uint8, index, activeConfig.enemyCount)
+		old_for_all(uint8, index, activeConfig.enemyCount)
 		{
 			auto & configCreateEnemyActorData = activeConfig.configCreateEnemyActorData[index];
 
@@ -17604,7 +17604,7 @@ export void PlayerActorLoop(byte8 * actorBaseAddr)
 
 	UpdateModelPartitions(actorData);
 
-	if (actorData.character == CHAR_VERGIL)
+	if (actorData.character == CHARACTER::VERGIL)
 	{
 		IsMeleeWeaponReadyVergilFix(actorData);
 	}
@@ -17670,14 +17670,14 @@ export void SceneMissionStart()
 
 	LogFunction();
 
-	for_all(uint8, playerIndex, PLAYER_COUNT)
+	old_for_all(uint8, playerIndex, PLAYER_COUNT)
 	{
 		auto & playerData = GetPlayerData(playerIndex);
 
 		playerData.activeCharacterIndex = playerData.lastCharacterIndex = playerData.characterIndex = 0;
 
-		for_all(uint8, characterIndex, CHARACTER_COUNT){
-		for_all(uint8, entityIndex   , ENTITY_COUNT   )
+		old_for_all(uint8, characterIndex, CHARACTER_COUNT){
+		old_for_all(uint8, entityIndex   , ENTITY_COUNT   )
 		{
 			auto & characterData = GetCharacterData
 			(
@@ -17732,7 +17732,7 @@ export void SceneGame()
 {
 	// Preserve Indices
 
-	for_all(uint8, playerIndex, PLAYER_COUNT)
+	old_for_all(uint8, playerIndex, PLAYER_COUNT)
 	{
 		auto & activePlayerData = GetActivePlayerData(playerIndex);
 		auto & queuedPlayerData = GetQueuedPlayerData(playerIndex);
@@ -17741,8 +17741,8 @@ export void SceneGame()
 		queuedPlayerData.lastCharacterIndex   = activePlayerData.lastCharacterIndex;
 		queuedPlayerData.activeCharacterIndex = activePlayerData.activeCharacterIndex;
 
-		for_all(uint8, characterIndex, CHARACTER_COUNT){
-		for_all(uint8, entityIndex   , ENTITY_COUNT   )
+		old_for_all(uint8, characterIndex, CHARACTER_COUNT){
+		old_for_all(uint8, entityIndex   , ENTITY_COUNT   )
 		{
 			auto & activeCharacterData = GetActiveCharacterData(playerIndex, characterIndex, entityIndex);
 			auto & queuedCharacterData = GetQueuedCharacterData(playerIndex, characterIndex, entityIndex);

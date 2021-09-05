@@ -220,7 +220,7 @@ export void AddUniqueItem(ItemData & newItem)
 
 
 
-	new_for_all(itemIndex, sessionData.itemCount)
+	for_all(itemIndex, sessionData.itemCount)
 	{
 		auto & item = sessionData.items[itemIndex];
 

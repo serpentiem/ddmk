@@ -30,20 +30,9 @@ helpers.push(["IntroducePlayerActorData", (args) =>
 
 
 
-/*
-
-Mary/Vars.ixx(3747): error C2760: syntax error: unexpected token 'friend', expected 'id-expression'
-
-filename(lineIndex): message
-
-Mary\Vars.ixx(49): error C2143: syntax error: missing '}' before '=='
-
-*/
-
-
-
 	// IntroducePlayerActorData(actorBaseAddrName, actorDataName, return);
 	// IntroducePlayerActorData(actorBaseAddrName, actorBaseAddrSource, actorDataName, return);
+
 
 
 	let actorBaseAddrName   = "";
@@ -305,7 +294,7 @@ helpers.push(["IntroducePlayerCharacterNewActorData", (args) =>
 
 	let playerIndex    = "0";
 	let characterIndex = "playerData.characterIndex";
-	let entityIndex    = "ENTITY_MAIN";
+	let entityIndex    = "ENTITY::MAIN";
 
 	if (argCount >= 1)
 	{
@@ -329,16 +318,16 @@ helpers.push(["IntroducePlayerCharacterNewActorData", (args) =>
 	c += Tabs() + "auto & newActorData  = GetNewActorData (" + playerIndex + ", " + characterIndex + ", " + entityIndex + ");" + NEW_LINE;
 	c += NEW_LINE;
 
-	c += Tabs() + "auto & activeCharacterData = GetCharacterData(" + playerIndex + ", playerData.activeCharacterIndex, ENTITY_MAIN);" + NEW_LINE;
-	c += Tabs() + "auto & activeNewActorData  = GetNewActorData (" + playerIndex + ", playerData.activeCharacterIndex, ENTITY_MAIN);" + NEW_LINE;
+	c += Tabs() + "auto & activeCharacterData = GetCharacterData(" + playerIndex + ", playerData.activeCharacterIndex, ENTITY::MAIN);" + NEW_LINE;
+	c += Tabs() + "auto & activeNewActorData  = GetNewActorData (" + playerIndex + ", playerData.activeCharacterIndex, ENTITY::MAIN);" + NEW_LINE;
 	c += NEW_LINE;
 
-	c += Tabs() + "auto & leadCharacterData = GetCharacterData(" + playerIndex + ", 0, ENTITY_MAIN);" + NEW_LINE;
-	c += Tabs() + "auto & leadNewActorData  = GetNewActorData (" + playerIndex + ", 0, ENTITY_MAIN);" + NEW_LINE;
+	c += Tabs() + "auto & leadCharacterData = GetCharacterData(" + playerIndex + ", 0, ENTITY::MAIN);" + NEW_LINE;
+	c += Tabs() + "auto & leadNewActorData  = GetNewActorData (" + playerIndex + ", 0, ENTITY::MAIN);" + NEW_LINE;
 	c += NEW_LINE;
 
-	c += Tabs() + "auto & mainCharacterData = GetCharacterData(" + playerIndex + ", " + characterIndex + ", ENTITY_MAIN);" + NEW_LINE;
-	c += Tabs() + "auto & mainNewActorData  = GetNewActorData (" + playerIndex + ", " + characterIndex + ", ENTITY_MAIN);" + NEW_LINE;
+	c += Tabs() + "auto & mainCharacterData = GetCharacterData(" + playerIndex + ", " + characterIndex + ", ENTITY::MAIN);" + NEW_LINE;
+	c += Tabs() + "auto & mainNewActorData  = GetNewActorData (" + playerIndex + ", " + characterIndex + ", ENTITY::MAIN);" + NEW_LINE;
 	c += NEW_LINE;
 
 
@@ -481,37 +470,3 @@ helpers.push(["IntroduceEnemyVectorData", (args) =>
 
 	return false;
 }]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-(?<!Player|Main|Mission|active|idle)ActorData
-(?<!Player|Main|Mission|active|idle|main|clone)ActorData
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -2,8 +2,9 @@
 
 #define offsetof(s, m) __builtin_offsetof(s, m)
 
-#define for_each(type, name, start, end, ...) for (type name = start; name < end; name++ __VA_OPT__(,) __VA_ARGS__)
-#define for_all(type, name, end, ...) for_each(type, name, 0, end __VA_OPT__(,) __VA_ARGS__)
+
+#define typeof(name) decltype(name)
+
 
 #define HoboBreak() MessageBoxA(0, "break1", 0, 0); MessageBoxA(0, "break2", 0, 0)
 
@@ -11,8 +12,8 @@
 
 
 
-#define new_for_each(name, start, end) for (uint64 name = start; name < end; name++)
-#define new_for_all(name, end) new_for_each(name, 0, end)
+#define for_each(name, start, end) for (uint64 name = start; name < end; name++)
+#define for_all(name, end) for_each(name, 0, end)
 
 
 
@@ -36,26 +37,6 @@
 
 #define _Prep_String(a) #a
 #define Prep_String(a) _Prep_String(a)
-
-
-
-#define ResetConfig(name)\
-ResetConfigHelper\
-(\
-	activeConfig.name,\
-	queuedConfig.name,\
-	defaultConfig.name\
-)
-
-#define SetConfig(name)\
-SetConfigHelper\
-(\
-	activeConfig.name,\
-	queuedConfig.name,\
-	defaultConfig.name\
-)
-
-
 
 
 
@@ -638,6 +619,18 @@ struct Size_##size\
 		return reinterpret_cast<byte8 *>(this);\
 	}\
 }
+
+
+
+
+#pragma region Deprecated
+
+#define old_for_each(type, name, start, end, ...) for (type name = start; name < end; name++ __VA_OPT__(,) __VA_ARGS__)
+#define old_for_all(type, name, end, ...) old_for_each(type, name, 0, end __VA_OPT__(,) __VA_ARGS__)
+
+#pragma endregion
+
+
 
 
 

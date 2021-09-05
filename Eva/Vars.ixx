@@ -63,10 +63,12 @@ namespaceEnd();
 export namespaceStart(MODE);
 enum
 {
-	EASY = 2,
-	NORMAL = 3,
-	HARD = 5,
-	DANTE_MUST_DIE = 6,
+	EASY,
+	NORMAL,
+	HARD,
+	VERY_HARD,
+	DANTE_MUST_DIE,
+	MAX,
 };
 namespaceEnd();
 
@@ -477,6 +479,8 @@ export struct PlayerActorData
 	uint8 rangedWeapon; // 0x1C48
 	_(3);
 	uint8 meleeWeaponForm; // 0x1C4C
+	_(25);
+	int16 chargeTimers[2]; // 0x1C66
 };
 
 static_assert(offsetof(PlayerActorData, state) == 0);
@@ -492,8 +496,9 @@ static_assert(offsetof(PlayerActorData, magicPointsDevil) == 0x1BD2);
 static_assert(offsetof(PlayerActorData, maxMagicPointsDevil) == 0x1BD4);
 static_assert(offsetof(PlayerActorData, rangedWeapon) == 0x1C48);
 static_assert(offsetof(PlayerActorData, meleeWeaponForm) == 0x1C4C);
+static_assert(offsetof(PlayerActorData, chargeTimers) == 0x1C66);
 
-static_assert(sizeof(PlayerActorData) == 7245);
+static_assert(sizeof(PlayerActorData) == 7274);
 
 // $PlayerActorDataEnd
 

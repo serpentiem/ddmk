@@ -303,7 +303,7 @@ void ResetStateController()
 	constexpr uint64 count = countof(activeConfig.resetStateButtons);
 	static bool executes[count] = {};
 
-	new_for_all(index, count)
+	for_all(index, count)
 	{
 		auto & button = activeConfig.resetStateButtons[index];
 		auto & execute = executes[index];
@@ -323,6 +323,115 @@ void ResetStateController()
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+void ChargeController()
+{
+	if (!activeConfig.enableChargeController)
+	{
+		return;
+	}
+
+	IntroduceSessionData(return);
+	IntroduceMainActorData(actorData, return);
+
+	using namespace WEAPON;
+
+
+
+	if (actorData.rangedWeapon == NIGHTMARE_BETA)
+	{
+		return;
+	}
+
+
+
+	auto & load = actorData.chargeTimers[0];
+	auto & fire = actorData.chargeTimers[1];
+
+	constexpr int16 loadValue = 1;
+	constexpr int16 fireValue = 1;
+
+	int16 maxLoadValue = 60;
+	int16 maxFireValue = 30;
+
+	switch (actorData.rangedWeapon)
+	{
+		case SHOTGUN:
+		case GRENADEGUN:
+		{
+			maxLoadValue = 120;
+			maxFireValue = 90;
+
+			break;
+		}
+	}
+
+
+
+	if (sessionData.buttons[0] & activeConfig.chargeButton)
+	{
+		if (fire < 1)
+		{
+			load += loadValue;
+		}
+	}
+	else
+	{
+		if (load >= maxLoadValue)
+		{
+			fire = maxFireValue;
+		}
+
+		load = 0;
+	}
+
+
+
+	if (load < 1)
+	{
+		fire -= fireValue;
+	}
+
+
+
+	if (load > maxLoadValue)
+	{
+		load = maxLoadValue;
+	}
+	else if (load < 0)
+	{
+		load = 0;
+	}
+
+
+
+	if (fire >= maxFireValue)
+	{
+		fire = maxFireValue;
+	}
+	else if (fire < 0)
+	{
+		fire = 0;
+	}
+}
+
+
+
+
+
+
+
+
+
 
 #pragma endregion
 
@@ -354,6 +463,7 @@ export void MainLoop()
 	RangedWeaponSwitchController();
 	RoundTripReturnController();
 	ResetStateController();
+	ChargeController();
 }
 
 namespaceEnd();
@@ -1040,5 +1150,214 @@ export void ToggleDisableWeaponRestrictions(bool enable)
 
 	run = true;
 }
+
+
+
+
+
+
+export void ToggleChargeFixes(bool enable)
+{
+	//return;
+
+
+
+
+	LogFunction(enable);
+
+	static bool run = false;
+
+
+
+	// Update
+	{
+		auto addr = (appBaseAddr + 0x2CB655);
+		constexpr uint64 size = 7;
+		/*
+		dmc1.exe+2CB655 - 66 89 B3 661C0000 - mov [rbx+00001C66],si
+		dmc1.exe+2CB65C - 41 8B 80 081D0000 - mov eax,[r8+00001D08]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Lock-On Update
+	{
+		auto addr = (appBaseAddr + 0x2F0734);
+		constexpr uint64 size = 7;
+		/*
+		dmc1.exe+2F0734 - 66 89 91 661C0000       - mov [rcx+00001C66],dx
+		dmc1.exe+2F073B - F7 87 40200000 00001000 - test [rdi+00002040],100000
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Lock-On Charging
+	{
+		auto addr = (appBaseAddr + 0x2F0691);
+		constexpr uint64 size = 7;
+		/*
+		dmc1.exe+2F0691 - 66 FF 81 661C0000 - inc word ptr [rcx+00001C66]
+		dmc1.exe+2F0698 - 0FB6 83 481C0000  - movzx eax,byte ptr [rbx+00001C48]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Lock-On Charging Maybe Alastor-specific
+	{
+		auto addr = (appBaseAddr + 0x2F06DC);
+		constexpr uint64 size = 7;
+		/*
+		dmc1.exe+2F06DC - 66 89 83 661C0000 - mov [rbx+00001C66],ax
+		dmc1.exe+2F06E3 - EB 56             - jmp dmc1.exe+2F073B
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Lock-On Charge Shot Let Go Reset
+	{
+		auto addr = (appBaseAddr + 0x2F0756);
+		constexpr uint64 size = 7;
+		/*
+		dmc1.exe+2F0756 - 66 89 93 661C0000 - mov [rbx+00001C66],dx
+		dmc1.exe+2F075D - 80 BF 661E0000 02 - cmp byte ptr [rdi+00001E66],02
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	// Set Max Active Charge
+	{
+		auto addr = (appBaseAddr + 0x2F072D);
+		constexpr uint64 size = 7;
+		/*
+		dmc1.exe+2F072D - 66 89 81 681C0000 - mov [rcx+00001C68],ax
+		dmc1.exe+2F0734 - 66 89 91 661C0000 - mov [rcx+00001C66],dx
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// Sub Active Charge
+	{
+		auto addr = (appBaseAddr + 0x2CB17A);
+		constexpr uint64 size = 7;
+		/*
+		dmc1.exe+2CB17A - 66 89 83 681C0000 - mov [rbx+00001C68],ax
+		dmc1.exe+2CB181 - 0FB7 83 D81B0000  - movzx eax,word ptr [rbx+00001BD8]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	run = true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #pragma endregion

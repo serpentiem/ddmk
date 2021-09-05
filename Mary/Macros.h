@@ -1,6 +1,31 @@
 #pragma once
 
-// @Todo: Replace for_all with old_for_all and use the new version from now on.
+
+
+
+#define ResetConfig(name)\
+ResetConfigHelper\
+(\
+	activeConfig.name,\
+	queuedConfig.name,\
+	defaultConfig.name\
+)
+
+#define SetConfig(name)\
+SetConfigHelper\
+(\
+	activeConfig.name,\
+	queuedConfig.name,\
+	defaultConfig.name\
+)
+
+
+
+
+
+
+
+// @Todo: Replace old_for_all with old_old_for_all and use the new version from now on.
 
 
 

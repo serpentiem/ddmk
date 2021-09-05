@@ -9,13 +9,31 @@
 module;
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_internal.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "../stb/stb_image.h"
 export module Core_GUI;
 
 import Core;
 
 #include "Macros.h"
 
+import Windows;
+import DXGI;
+import D3D11;
+
+using namespace Windows;
+using namespace DXGI;
+using namespace D3D11;
+
 #define debug false
+
+
+
+
+
+
+
 
 export int     GUI_id          = 0;
 export bool    GUI_save        = false;
@@ -392,22 +410,29 @@ bool GUI_Combo
 )
 {
 	bool update = false;
+
 	GUI_PushId();
+
 	if (ImGui::BeginCombo(label, names[var], flags))
 	{
-		for_all(varType, index, count)
+		old_for_all(varType, index, count)
 		{
 			bool selected = (index == var) ? true : false;
+
 			GUI_PushId();
+
 			if (GUI_Selectable(names[index], &selected))
 			{
 				update = true;
 				var = index;
 			}
+
 			GUI_PopId();
 		}
+
 		ImGui::EndCombo();
 	}
+
 	GUI_PopId();
 
 	if (update)
@@ -457,7 +482,7 @@ bool GUI_ComboMap
 (
 	const char * label,
 	const char *(&names)[mapItemCount], // @Todo: Use mapItemNames.
-	varType(&map)[mapItemCount], // @Todo: Use mapItems.
+	const varType(&map)[mapItemCount], // @Todo: Use mapItems.
 	uint8 & index,
 	varType & var,
 	ImGuiComboFlags flags = 0
@@ -467,7 +492,7 @@ bool GUI_ComboMap
 	GUI_PushId();
 	if (ImGui::BeginCombo(label, names[index], flags))
 	{
-		for_all(uint8, mapIndex, mapItemCount) // @Todo: mapItemIndex.
+		old_for_all(uint8, mapIndex, mapItemCount) // @Todo: mapItemIndex.
 		{
 			auto & mapItem = map[mapIndex];
 			bool selected = (mapIndex == index) ? true : false; // @Todo: Redundant.
@@ -508,7 +533,7 @@ bool GUI_ComboMap2
 (
 	const char * label,
 	const char *(&names)[mapItemCount],
-	varType(&map)[mapItemCount],
+	const varType(&map)[mapItemCount],
 	uint8 & index,
 	varType & var,
 	varType & var2,
@@ -582,7 +607,7 @@ export bool GUI_ColorEdit4
 	{
 		update = true;
 
-		for_all(uint8, index, 4)
+		old_for_all(uint8, index, 4)
 		{
 			var[index] = static_cast<uint8>(var2[index] * 255);
 		}
@@ -660,7 +685,7 @@ bool GUI_ColorPalette
 	bool update = false;
 	auto & style = ImGui::GetStyle();
 
-	for_all(uint8, index, count)
+	old_for_all(uint8, index, count)
 	{
 		if (GUI_ColorEdit4("", vars[index], vars2[index], ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaPreview))
 		{
@@ -797,6 +822,96 @@ export bool GUI_Color2
 
 	return update;
 }
+
+
+
+
+
+
+
+
+
+
+
+export ID3D11ShaderResourceView * CreateTexture
+(
+	const char * filename,
+	ID3D11Device * device
+)
+{
+	void * addr   = 0;
+	int    width  = 0;
+	int    height = 0;
+
+	D3D11_TEXTURE2D_DESC            textureDesc            = {};
+	D3D11_SUBRESOURCE_DATA          subresourceData        = {};
+	ID3D11Texture2D *               texture                = 0;
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc = {};
+	ID3D11ShaderResourceView *      shaderResourceView     = 0;
+
+	addr = stbi_load
+	(
+		filename,
+		&width,
+		&height,
+		0,
+		4
+	);
+
+	if (!addr)
+	{
+		return 0;
+	}
+
+	textureDesc.Width            = width;
+	textureDesc.Height           = height;
+	textureDesc.MipLevels        = 1;
+	textureDesc.ArraySize        = 1;
+	textureDesc.Format           = DXGI_FORMAT_R8G8B8A8_UNORM;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.Usage            = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags        = D3D11_BIND_SHADER_RESOURCE;
+
+	subresourceData.pSysMem     = addr;
+	subresourceData.SysMemPitch = (textureDesc.Width * 4);
+
+	device->CreateTexture2D
+	(
+		&textureDesc,
+		&subresourceData,
+		&texture
+	);
+
+	shaderResourceViewDesc.Format              = DXGI_FORMAT_R8G8B8A8_UNORM;
+	shaderResourceViewDesc.ViewDimension       = D3D11_SRV_DIMENSION_TEXTURE2D;
+	shaderResourceViewDesc.Texture2D.MipLevels = textureDesc.MipLevels;
+
+	device->CreateShaderResourceView
+	(
+		texture,
+		&shaderResourceViewDesc,
+		&shaderResourceView
+	);
+
+	texture->Release();
+
+	stbi_image_free(addr);
+
+	return shaderResourceView;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

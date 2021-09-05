@@ -1441,21 +1441,21 @@ export void Init()
 
 	Install
 	(
-		(appBaseAddr + 0x407318),
+		(appBaseAddr + 0x16575C0),
 		::Base::Windows::RegisterClassExW,
 		::Hook::Windows::RegisterClassExW
 	);
 
 	Install
 	(
-		(appBaseAddr + 0x4072A8),
+		(appBaseAddr + 0x16575C8),
 		::Base::Windows::CreateWindowExW,
 		::Hook::Windows::CreateWindowExW
 	);
 
 	Install
 	(
-		(appBaseAddr + 0x407628),
+		(appBaseAddr + 0x1657DC0),
 		::Base::D3D11::D3D11CreateDeviceAndSwapChain,
 		::Hook::D3D11::D3D11CreateDeviceAndSwapChain
 	);
@@ -1468,13 +1468,13 @@ export void Init()
 
 
 	{
-		auto addr     = (appBaseAddr + 0x156CB);
-		auto jumpAddr = (appBaseAddr + 0x156D3);
-		constexpr uint32 size = 5;
+		auto addr     = (appBaseAddr + 0x3F99B);
+		auto jumpAddr = (appBaseAddr + 0x3F9A3);
+		constexpr uint64 size = 5;
 		/*
-		dmc1.exe+156CB - BA 00010000 - mov edx,00000100
-		dmc1.exe+156D0 - FF 50 48    - call qword ptr [rax+48]
-		dmc1.exe+156D3 - 85 C0       - test eax,eax
+		dmc2.exe+3F99B - BA 00010000 - mov edx,00000100
+		dmc2.exe+3F9A0 - FF 50 48    - call qword ptr [rax+48]
+		dmc2.exe+3F9A3 - 85 C0       - test eax,eax
 		*/
 
 		static Function func = {};
@@ -1525,13 +1525,13 @@ export void Init()
 	}
 
 	{
-		auto addr     = (appBaseAddr + 0x189DD);
-		auto jumpAddr = (appBaseAddr + 0x189E5);
-		constexpr uint32 size = 5;
+		auto addr     = (appBaseAddr + 0x4214D);
+		auto jumpAddr = (appBaseAddr + 0x42155);
+		constexpr uint64 size = 5;
 		/*
-		dmc1.exe+189DD - BA 00010000 - mov edx,00000100
-		dmc1.exe+189E2 - FF 50 48    - call qword ptr [rax+48]
-		dmc1.exe+189E5 - 85 C0       - test eax,eax
+		dmc2.exe+4214D - BA 00010000 - mov edx,00000100
+		dmc2.exe+42152 - FF 50 48    - call qword ptr [rax+48]
+		dmc2.exe+42155 - 85 C0       - test eax,eax
 		*/
 
 		static Function func = {};
@@ -1589,11 +1589,11 @@ export void Init()
 
 	// SetCooperativeLevelKeyboard
 	{
-		auto addr = (appBaseAddr + 0x18752);
-		constexpr uint32 size = 6;
+		auto addr = (appBaseAddr + 0x41CA6);
+		constexpr uint64 size = 6;
 		/*
-		dmc1.exe+18752 - 41 B8 05000000    - mov r8d,00000005
-		dmc1.exe+18758 - 48 8B 15 A12BBF00 - mov rdx,[dmc1.exe+C0B300]
+		dmc2.exe+41CA6 - 41 B8 05000000    - mov r8d,00000005
+		dmc2.exe+41CAC - 48 8B 15 ED06EE00 - mov rdx,[dmc2.exe+F223A0]
 		*/
 
 		if (!run)
@@ -1614,29 +1614,29 @@ export void Init()
 
 
 	{
-		auto addr     = (appBaseAddr + 0x154C9);
-		auto jumpAddr = (appBaseAddr + 0x154CF);
-		constexpr uint32 size = 6;
+		auto addr     = (appBaseAddr + 0x31025);
+		auto jumpAddr = (appBaseAddr + 0x3102A);
+		constexpr uint64 size = 5;
 		/*
-		dmc1.exe+154C9 - FF 15 291F3F00 - call qword ptr [dmc1.exe+4073F8]
-		dmc1.exe+154CF - 85 C0          - test eax,eax
+		dmc2.exe+31025 - E8 861E2C00 - call dmc2.exe+2F2EB0
+		dmc2.exe+3102A - 85 C0       - test eax,eax
 		*/
 
 		static Function func = {};
 
 		constexpr byte8 sect0[] =
 		{
-			0x50,                               // push rax
-			0x51,                               // push rcx
-			0x52,                               // push rdx
-			0x55,                               // push rbp
-			0x48, 0x8B, 0xEC,                   // mov rbp,rsp
-			0x40, 0x80, 0xE4, 0xF0,             // and spl,F0
-			0x48, 0x83, 0xEC, 0x20,             // sub rsp,20
-			0xFF, 0x15, 0x00, 0x00, 0x00, 0x00, // call qword ptr [dmc1.exe+4073F8]
-			0x48, 0x89, 0x45, 0x18,             // mov [rbp+18],rax
-			0x48, 0x8B, 0x4D, 0x10,             // mov rcx,[rbp+10]
-			0x48, 0x8B, 0x55, 0x08,             // mov rdx,[rbp+08]
+			0x50,                         // push rax
+			0x51,                         // push rcx
+			0x52,                         // push rdx
+			0x55,                         // push rbp
+			0x48, 0x8B, 0xEC,             // mov rbp,rsp
+			0x40, 0x80, 0xE4, 0xF0,       // and spl,F0
+			0x48, 0x83, 0xEC, 0x20,       // sub rsp,20
+			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc2.exe+2F2EB0
+			0x48, 0x89, 0x45, 0x18,       // mov [rbp+18],rax
+			0x48, 0x8B, 0x4D, 0x10,       // mov rcx,[rbp+10]
+			0x48, 0x8B, 0x55, 0x08,       // mov rdx,[rbp+08]
 		};
 		constexpr byte8 sect2[] =
 		{
@@ -1653,7 +1653,7 @@ export void Init()
 			func = CreateFunction(::Hook::XI::XInputGetState, jumpAddr, false, true, sizeof(sect0), 0, sizeof(sect2));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
-			WriteAddress((func.sect0 + 0xF), (appBaseAddr + 0x4073F8), 6);
+			WriteCall((func.sect0 + 0xF), (appBaseAddr + 0x2F2EB0));
 		}
 
 		if (enable)

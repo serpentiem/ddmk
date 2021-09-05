@@ -999,7 +999,7 @@ void ToggleShow(byte8 * state)
 
 	uint8 keysDown = 0;
 
-	for_all(uint8, index, countof(keys))
+	old_for_all(uint8, index, countof(keys))
 	{
 		auto & key = keys[index];
 		if (state[key] & 0x80)
@@ -1032,7 +1032,7 @@ void WindowSize1(byte8 * state)
 		DIK_1,
 	};
 	uint8 keysDown = 0;
-	for_all(uint8, index, countof(keys))
+	old_for_all(uint8, index, countof(keys))
 	{
 		auto & key = keys[index];
 		if (state[key] & 0x80)
@@ -1072,7 +1072,7 @@ void WindowSize2(byte8 * state)
 		DIK_2,
 	};
 	uint8 keysDown = 0;
-	for_all(uint8, index, countof(keys))
+	old_for_all(uint8, index, countof(keys))
 	{
 		auto & key = keys[index];
 		if (state[key] & 0x80)
@@ -1112,7 +1112,7 @@ void WindowSize3(byte8 * state)
 		DIK_3,
 	};
 	uint8 keysDown = 0;
-	for_all(uint8, index, countof(keys))
+	old_for_all(uint8, index, countof(keys))
 	{
 		auto & key = keys[index];
 		if (state[key] & 0x80)

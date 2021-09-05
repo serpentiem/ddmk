@@ -626,6 +626,7 @@ let typeSizes =
 	[ "StyleData"              , 352  ],
 	[ "EnemyVectorDataMetadata"              , 16  ],
 	[ "ItemData"              , 4  ],
+	[ "ModelPartitionData"              , 896  ],
 ];
 
 function GetTypeSize(typename)

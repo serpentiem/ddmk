@@ -86,6 +86,7 @@ uint32 DllMain
 
 
 
+
 		ToggleForceEdgeFixes(false);
 		ToggleForceEdgeFixes(activeConfig.enableForceEdgeFixes);
 
@@ -106,6 +107,11 @@ uint32 DllMain
 
 		ToggleRangedWeaponSwitchController(false);
 		ToggleRangedWeaponSwitchController(activeConfig.enableRangedWeaponSwitchController);
+
+		ToggleChargeFixes(false);
+		ToggleChargeFixes(activeConfig.enableChargeController);
+
+
 
 		Arcade::Toggle(false);
 		Arcade::Toggle(activeConfig.Arcade.enable);
