@@ -44,7 +44,7 @@ using namespace Windows;
 using namespace DXGI;
 using namespace D3D11;
 
-#define debug false
+#define debug true
 
 #include "Macros.h"
 
@@ -2693,10 +2693,12 @@ void ActorSection()
 
 			ResetConfig(enableBossLadyFixes);
 			ResetConfig(enableBossVergilFixes);
-			ResetConfig(enablePVPFixes);
-
 			ToggleBossLadyFixes  (activeConfig.enableBossLadyFixes  );
 			ToggleBossVergilFixes(activeConfig.enableBossVergilFixes);
+
+			ResetConfig(enablePVPFixes);
+
+			ResetConfig(forceSyncHitMagicPoints);
 		}
 		ImGui::Text("");
 
@@ -2793,6 +2795,14 @@ void ActorSection()
 			"Enable PVP Fixes",
 			activeConfig.enablePVPFixes,
 			queuedConfig.enablePVPFixes
+		);
+		ImGui::Text("");
+
+		GUI_Checkbox2
+		(
+			"Force Sync Hit & Magic Points",
+			activeConfig.forceSyncHitMagicPoints,
+			queuedConfig.forceSyncHitMagicPoints
 		);
 
 
@@ -3253,6 +3263,27 @@ void BarsSettingsFunction
 	ImGui::Text("");
 
 	ImGui::PushItemWidth(150);
+
+	GUI_InputDefault2
+	(
+		"Width",
+		activeData.size.x,
+		queuedData.size.x,
+		defaultData.size.x,
+		1.0f,
+		"%g",
+		ImGuiInputTextFlags_EnterReturnsTrue
+	);
+	GUI_InputDefault2
+	(
+		"Height",
+		activeData.size.y,
+		queuedData.size.y,
+		defaultData.size.y,
+		1.0f,
+		"%g",
+		ImGuiInputTextFlags_EnterReturnsTrue
+	);
 
 	if
 	(
@@ -7429,6 +7460,22 @@ void Overlay2Window()
 
 		ImGui::Text("g_haywireNeoGenerator %u", g_haywireNeoGenerator);
 		ImGui::Text("");
+
+
+		old_for_all(uint8, playerIndex, PLAYER_COUNT)
+		{
+			ImGui::Text("%.4u %g", playerIndex, g_hitPoints[playerIndex]);
+		}
+		ImGui::Text("");
+
+		old_for_all(uint8, playerIndex, PLAYER_COUNT)
+		{
+			ImGui::Text("%.4u %g", playerIndex, g_magicPoints[playerIndex]);
+		}
+		ImGui::Text("");
+
+
+
 
 		{
 			auto & gamepad = GetGamepad(0);

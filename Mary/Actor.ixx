@@ -42,10 +42,11 @@ bool updateConfig = false;
 
 
 
+// float lastHitPoints  [PLAYER_COUNT] = {};
+// float lastMagicPoints[PLAYER_COUNT] = {};
 
 
-
-
+//float hitPoints[PLAYER_COUNT] = {};
 
 
 
@@ -5983,6 +5984,15 @@ export void CharacterSwitchController()
 	static bool executes[PLAYER_COUNT] = {};
 
 
+	// static float hitPoints  [PLAYER_COUNT] = {};
+	// static float magicPoints[PLAYER_COUNT] = {};
+
+
+
+
+
+
+
 
 	old_for_all(uint8, playerIndex, activeConfig.Actor.playerCount)
 	{
@@ -6098,6 +6108,23 @@ export void CharacterSwitchController()
 
 		// At this point we have a valid new character index and we know that
 		// we want another character.
+
+
+
+		auto UpdateHitMagicPoints = [&]()
+		{
+			IntroducePlayerCharacterNewActorData(playerIndex);
+
+			if (activeCharacterData.character >= CHARACTER::MAX)
+			{
+				return;
+			}
+
+			IntroduceData(activeNewActorData.baseAddr, activeActorData, PlayerActorData, return);
+
+			g_hitPoints  [playerIndex] = activeActorData.hitPoints;
+			g_magicPoints[playerIndex] = activeActorData.magicPoints;
+		};
 
 
 
@@ -6223,6 +6250,8 @@ export void CharacterSwitchController()
 					)
 				)
 				{
+					UpdateHitMagicPoints();
+
 					CopyState
 					(
 						activeCharacterData,
@@ -6258,6 +6287,8 @@ export void CharacterSwitchController()
 					)
 				)
 				{
+					UpdateHitMagicPoints();
+
 					CopyState
 					(
 						activeCharacterData,
@@ -6281,6 +6312,8 @@ export void CharacterSwitchController()
 			}
 			else
 			{
+				UpdateHitMagicPoints();
+
 				CopyState
 				(
 					activeCharacterData,
@@ -6525,7 +6558,7 @@ export void CharacterSwitchController()
 
 
 
-	// Set default actors position.
+	// Set default actor position.
 	[&]()
 	{
 		IntroduceData(g_newActorData[0][0][0].baseAddr , activeActorData, PlayerActorData, return);
@@ -6533,6 +6566,50 @@ export void CharacterSwitchController()
 
 		actorData.position = activeActorData.position;
 		actorData.rotation = activeActorData.rotation;
+	}();
+
+
+
+	// Force Sync Hit & Magic Points
+	[&]()
+	{
+		if (!activeConfig.forceSyncHitMagicPoints)
+		{
+			return;
+		}
+
+		old_for_all(uint8, playerIndex   , activeConfig.Actor.playerCount){
+		old_for_all(uint8, characterIndex, CHARACTER_COUNT               ){
+		old_for_all(uint8, entityIndex   , ENTITY_COUNT                  )
+		{
+			IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
+
+			IntroduceData(activeNewActorData.baseAddr, activeActorData, PlayerActorData, continue);
+			IntroduceData(newActorData.baseAddr      , actorData      , PlayerActorData, continue);
+
+			if
+			(
+				(
+					(characterIndex == playerData.activeCharacterIndex) &&
+					(entityIndex == ENTITY::MAIN)
+				) ||
+				(characterData.character >= CHARACTER::MAX)
+			)
+			{
+				continue;
+			}
+
+			if (activeCharacterData.character >= CHARACTER::MAX)
+			{
+				actorData.hitPoints   = g_hitPoints  [playerIndex];
+				actorData.magicPoints = g_magicPoints[playerIndex];
+			}
+			else
+			{
+				actorData.hitPoints   = activeActorData.hitPoints;
+				actorData.magicPoints = activeActorData.magicPoints;
+			}
+		}}}
 	}();
 }
 
@@ -17763,6 +17840,20 @@ export void SceneGame()
 			queuedCharacterData.lastRangedWeaponIndex = activeCharacterData.lastRangedWeaponIndex;
 		}}
 	}
+
+
+
+	// // Update Hit & Magic Points
+
+	// old_for_all(uint8, playerIndex, PLAYER_COUNT)
+	// {
+	// 	IntroducePlayerCharacterNewActorData(playerIndex, continue);
+
+	// 	IntroduceData(activeNewActorData.baseAddr, activeActorData, PlayerActorData, continue);
+
+	// 	lastHitPoints  [playerIndex] = activeActorData.hitPoints;
+	// 	lastMagicPoints[playerIndex] = activeActorData.magicPoints;
+	// }
 
 
 

@@ -33,6 +33,14 @@ using namespace D3D11;
 
 
 
+
+
+
+
+
+
+
+
 #pragma region Common
 
 const char * Graphics_vSyncNames[] =
@@ -1122,6 +1130,15 @@ export void GUI_Render()
 export void GUI_Init()
 {
 	LogFunction();
+
+	for_all(index, 21)
+	{
+		Log("%.4llu %llu", index, helper[index]);
+		//Log("%.4llu %llu", index, helper.data[index]);
+	}
+
+
+
 
 	BuildFonts();
 

@@ -37,7 +37,7 @@ import Window;
 
 using namespace Windows;
 
-#define debug false
+#define debug true
 
 #include "Macros.h"
 

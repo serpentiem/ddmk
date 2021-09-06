@@ -140,6 +140,16 @@ export bool g_missionSelectForceConfirm = false;
 
 
 
+export float g_hitPoints  [PLAYER_COUNT] = {};
+export float g_magicPoints[PLAYER_COUNT] = {};
+
+
+
+
+
+
+
+
 
 // @Todo: Remove.
 export float g_timeout = 0;

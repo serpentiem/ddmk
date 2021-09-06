@@ -13,7 +13,7 @@ using namespace Windows;
 
 import Vars;
 
-#define debug false
+#define debug true
 
 #include "Macros.h"
 
@@ -42,8 +42,8 @@ export struct Config
 		uint32 mode           = MODE::NORMAL;
 		uint32 room           = 900;
 		uint32 position       = 0;
-		bool   ignoreRoom     = true;
-		bool   ignorePosition = true;
+		bool   ignoreRoom     = (debug) ? false : true;
+		bool   ignorePosition = (debug) ? false : true;
 		uint8  floor          = 0;
 		float  hitPoints      = 20000;
 		float  magicPoints    = 10000;
@@ -760,6 +760,13 @@ export struct Config
 	};
 
 	BarsData barsData[PLAYER_COUNT];
+
+
+
+	bool forceSyncHitMagicPoints = false;
+
+
+
 };
 
 static_assert((offsetof(Config, kalinaAnnHookGrenadeHeight) % 0x10) == 0);
