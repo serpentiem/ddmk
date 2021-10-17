@@ -1,36 +1,51 @@
-// #region Core
+// #region
+
+"use strict";
 
 let fs = require("fs");
 let process = require("process");
 let vm = require("vm");
 
-vm.runInThisContext(fs.readFileSync("core.js", "utf8"));
+vm.runInThisContext
+(
+	fs.readFileSync("../core.js"  , "utf8") +
+	fs.readFileSync("dmc3_core.js", "utf8")
+);
 
 ClearAll();
 
-
-
-const Flags_NoSave  = 1 << 0;
-const Flags_NoClear = 1 << 1;
+// #endregion
 
 
 
-function SaveStream(name)
+let location = "../Mary/Vars.ixx";
+
+let file = fs.readFileSync(location, "utf8");
+
+
+
+// #region Feed
+
+function FeedStruct
+(
+	name,
+	items,
+	size    = 0,
+	tagName = name
+)
 {
-	let c_new = c;
+	ClearAll();
 
-	c = "";
 
-	let filename = "../Mary/Vars.ixx";
 
-	let file = fs.readFileSync(filename, "utf8");
+	let c_until = "";
+	let c_after = "";
+	let c_new   = "";
 
 	let lines = GetLines(file);
 
-
-
-	let startName = new RegExp("\\/\\/ \\$" + name + "Start$");
-	let endName   = new RegExp("\\/\\/ \\$" + name + "End$"  );
+	let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
+	let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
 
 	console.log(startName);
 	console.log(endName);
@@ -52,48 +67,40 @@ function SaveStream(name)
 		return;
 	}
 
+
+
 	Tag_CopyUntil(lines);
 
-	c += c_new;
+	c_until = c;
+
+	ClearAll();
+
+
 
 	Tag_CopyAfter(lines);
 
-	fs.writeFileSync(filename, c);
-
-
+	c_after = c;
 
 	ClearAll();
-}
 
-function FeedTuple
-(
-	name,
-	items,
-	size = 0,
-	tagName = name,
-	flags = 0
-)
-{
-	CreateTuple
+
+
+	CreateStruct
 	(
 		name,
 		items,
 		size,
 		0,
-		TupleFlags_Export
+		StructFlags_Export
 	);
 
-
-
-	ClearAsserts();
-
-	CreateTupleAsserts
+	CreateStructAsserts
 	(
 		name,
 		items,
 		size,
 		0,
-		TupleFlags_NoTypeAssert
+		StructFlags_NoTypeAssert
 	);
 
 	MergeAsserts();
@@ -101,84 +108,100 @@ function FeedTuple
 
 	CleanStream();
 
-	if (!(flags & Flags_NoSave))
-	{
-		SaveStream(tagName);
-	}
+	c_new = c;
+
+	ClearAll();
+
+
+
+	file = c_until + c_new + c_after;
 }
 
 function FeedEnum
 (
 	name,
 	items,
-	tagName = name,
-	flags = 0
+	tagName = name
 )
 {
-	c += "export namespaceStart(" + name + ");" + NEW_LINE;
-	c += "enum" + NEW_LINE;
+	ClearAll();
 
-	ScopeStart();
 
-	let unknownIndex = 0;
 
-	for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
-	{
-		let item = items[itemIndex];
+	let c_until = "";
+	let c_after = "";
+	let c_new   = "";
 
-		let name = item[0];
-		let value = item[1];
+	let lines = GetLines(file);
 
-		if
+	let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
+	let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
+
+	console.log(startName);
+	console.log(endName);
+
+	if
+	(
+		!Tag_Init
 		(
-			(name == "") ||
-			name.match(/unknown/i)
+			lines,
+			startName,
+			endName
 		)
-		{
-			name = "UNKNOWN_" + unknownIndex;
+	)
+	{
+		console.log("Tag_Init failed.");
 
-			unknownIndex++;
-		}
+		process.exit(1);
 
-		name = ReplaceAll(name, "-", " ");
-
-		name = ReplaceAll(name, "&", "");
-
-		name = ReplaceAll(name, "  ", " ");
-
-		name = ReplaceAll(name, " ", "_");
-
-		name = ReplaceAll(name, "'", "");
-
-		name = name.toUpperCase();
-
-		c += Tabs() + name;
-
-		if (value != "")
-		{
-			c += " = " + value;
-		}
-
-		c += "," + NEW_LINE;
+		return;
 	}
 
-	ScopeEnd
+
+
+	Tag_CopyUntil(lines);
+
+	c_until = c;
+
+	ClearAll();
+
+
+
+	Tag_CopyAfter(lines);
+
+	c_after = c;
+
+	ClearAll();
+
+
+
+	c += "export namespaceStart(" + name + ");" + NEW_LINE;
+
+	CreateEnum
 	(
-		"}",
-		ScopeFlags_Semicolon
+		"",
+		items,
+		"",
+		EnumFlags_UpperCase
 	);
 
 	c += "namespaceEnd();" + NEW_LINE;
 	c += NEW_LINE;
 
+	CleanStream();
 
-	if (!(flags & Flags_NoSave))
-	{
-		SaveStream(tagName);
-	}
+	c_new = c;
+
+	ClearAll();
+
+
+
+	file = c_until + c_new + c_after;
 }
 
 // #endregion
+
+
 
 // #region MissionData
 {
@@ -195,7 +218,7 @@ let items =
 	[ "killCount"     , "uint32", [], 0xB8 ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"MissionData",
 	items,
@@ -219,7 +242,7 @@ let items =
 	[ "bloodyPalace"         , "bool"  , [], 0x1C  ],
 	[ "redOrbs"              , "uint32", [], 0x2C  ],
 	[ "itemCounts[20]"       , "uint8" , [], 0x30  ],
-	[ "unlock[14]"           , "bool"  , [], 0x46  ],
+	[ "unlocks[14]"          , "bool"  , [], 0x46  ],
 	[ "weapons[8]"           , "uint8" , [], 0x84  ],
 	[ "rangedWeaponLevels[5]", "uint32", [], 0xA0  ],
 	[ "meleeWeaponIndex"     , "uint32", [], 0xC8  ],
@@ -234,7 +257,7 @@ let items =
 	[ "expertise[8]"         , "byte32", [], 0x110 ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"SessionData",
 	items
@@ -256,7 +279,7 @@ let items =
 	[ "nextScreen", "uint32", [], 0x2C ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"EventData",
 	items
@@ -274,7 +297,7 @@ let items =
 	[ "position"  , "uint16", [], 0x166 ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"NextEventData",
 	items
@@ -387,8 +410,9 @@ let itemsPlayerBase =
 	[ "expertise[16]"               , "byte32"       , [], 0x3FEC ],
 	[ "maxHitPoints"                , "float"        , [], 0x40EC ],
 	[ "hitPoints"                   , "float"        , [], 0x411C ],
-	[ "targetPosition"              , "vec4"         , [], 0x6300 ],
-	[ "targetBaseAddrPlus0x60"      , "byte8 *"      , [], 0x6328 ],
+	[ "lockOnData"                  , "LockOnData"   , [], 0x41C0 ],
+	// [ "targetPosition"              , "vec4"         , [], 0x6300 ],
+	// [ "targetBaseAddrPlus0x60"      , "byte8 *"      , [], 0x6328 ],
 	[ "style"                       , "uint32"       , [], 0x6338 ],
 	[ "wallHikeDirection"           , "uint32"       , [], 0x633C ],
 	[ ""                            , "uint32"       , [], 0x6340 ],
@@ -458,8 +482,10 @@ let itemsPlayerDante =
 	[ "devilSubmodelPhysicsLinkData[4][4]"  , "PhysicsLinkData"        , [], 0xAA00 ],
 	[ "devilModelMetadata"                  , "DevilModelMetadataDante", [], 0xB600 ],
 	[ "modelMetadata[6]"                    , "ModelMetadata"          , [], 0xB630 ],
-	[ "artemisChargeValue[2]"               , "float"                  , [], 0xB868 ],
-	[ "artemisChargeFlags[2]"               , "byte32"                 , [], 0xB87C ],
+	[ "artemisChargeValues[2]"              , "float"                  , [], 0xB868 ],
+	[ "artemisStatus"                       , "uint8"                  , [], 0xB87E ],
+	[ "artemisMultiLock"                    , "bool"                   , [], 0xB880 ],
+	[ "artemisMultiLockCharged"             , "bool"                   , [], 0xB881 ],
 ];
 
 let itemsPlayerBob = [];
@@ -479,23 +505,29 @@ let itemsPlayerVergil =
 let itemsPlayerNew =
 [
 	[ "newFirstVar"                            , "uint32"           , [], ],
+	[ "_(12)"                                  , ""                 , [], ],
 	[ "newModelData[6]"                        , "ModelData"        , [], ],
 	[ "newModelPhysicsMetadataPool[7][24]"     , "PhysicsMetadata *", [], ],
 	[ "newModelAllocationData[512]"            , "Size_32"          , [], ],
 	[ "newRecoveryData[6]"                     , "RecoveryData"     , [], ],
 	[ "newDevilModels[6]"                      , "uint32"           , [], ],
+	[ "_(8)"                                   , ""                 , [], ],
 	[ "newBodyPartData[7][2]"                  , "BodyPartData"     , [], ],
 	[ "newSubmodelData[11]"                    , "ModelData"        , [], ],
 	[ "newSubmodelInit[11]"                    , "bool"             , [], ],
+	[ "_(5)"                                   , ""                 , [], ],
 	[ "newModelShadowData[6]"                  , "ShadowData"       , [], ],
 	[ "newSubmodelShadowData[11]"              , "ShadowData"       , [], ],
 	[ "newDevilModelPhysicsMetadataPool[5][36]", "PhysicsMetadata *", [], ],
 	[ "newDevilSubmodelPhysicsData[10]"        , "PhysicsData"      , [], ],
 	[ "newDevilSubmodelPhysicsLinkData[10][4]" , "PhysicsLinkData"  , [], ],
 	[ "newWeapons[10]"                         , "uint8"            , [], ],
+	[ "_(6)"                                   , ""                 , [], ],
 	[ "newWeaponDataAddr[10]"                  , "WeaponData *"     , [], ],
 	[ "newWeaponStatus[10]"                    , "uint32"           , [], ],
+	[ "_(8)"                                   , ""                 , [], ],
 	[ "newWeaponLevels[10]"                    , "uint32"           , [], ],
+	[ "_(8)"                                   , ""                 , [], ],
 	[ "newWeaponTimers[10]"                    , "float"            , [], ],
 	[ "newIsClone"                             , "bool32"           , [], ],
 	[ "newPlayerIndex"                         , "uint8"            , [], ],
@@ -522,6 +554,7 @@ let itemsPlayerNew =
 	[ "newTrickDownCount"                      , "uint8"            , [], ],
 	[ "newAirStingerCount"                     , "uint8"            , [], ],
 	[ "newAirRisingSunCount"                   , "uint8"            , [], ],
+	[ "_(11)"                                  , ""                 , [], ],
 	[ "newEffectIndices[12]"                   , "uint32"           , [], ],
 	[ "newLastVar"                             , "uint32"           , [], ],
 ];
@@ -563,85 +596,102 @@ let itemsEnemyVergil =
 	[ "devil"         , "bool"         , [], 0xEF1B ],
 ];
 
+let tagName = "ActorData";
 
 
-function AlignFunction
+
+ClearAll();
+
+
+
+let c_until = "";
+let c_after = "";
+let c_new   = "";
+
+let lines = GetLines(file);
+
+let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
+let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
+
+console.log(startName);
+console.log(endName);
+
+if
 (
-	pos,
-	name,
-	type
+	!Tag_Init
+	(
+		lines,
+		startName,
+		endName
+	)
 )
 {
-	let size = GetTypeSize(type);
+	console.log("Tag_Init failed.");
 
-	if
-	(
-		(type.match(/\*/)) ||
-		(name.match(/\[/)) ||
-		(size >= 8)
-	)
-	{
-		pos = Align
-		(
-			pos,
-			16
-		);
-	}
-	else if
-	(
-		(size >= 4) &&
-		(size < 8)
-	)
-	{
-		pos = Align
-		(
-			pos,
-			8
-		);
-	}
+	process.exit(1);
 
-	return pos;
+	return;
 }
 
 
 
-// Base
+Tag_CopyUntil(lines);
 
-CreateTuple
+c_until = c;
+
+ClearAll();
+
+
+
+Tag_CopyAfter(lines);
+
+c_after = c;
+
+ClearAll();
+
+
+
+// Base
+{
+
+CreateStruct
 (
 	"ActorDataBase",
 	itemsBase,
 	SIZE_BASE,
 	0,
-	TupleFlags_Export
+	StructFlags_Export
 );
 
 ClearAsserts();
 
-CreateTupleAsserts
+CreateStructAsserts
 (
 	"ActorDataBase",
 	itemsBase,
 	SIZE_BASE,
 	0,
-	TupleFlags_NoTypeAssert
+	StructFlags_NoTypeAssert
 );
 
 MergeAsserts();
 FeedAsserts();
 
+}
+
 
 
 // Player Base
+{
 
-CreateTuple
+CreateStruct
 (
 	"PlayerActorDataBase : ActorDataBase",
 	itemsPlayerBase,
 	SIZE_PLAYER_BASE,
 	SIZE_BASE,
-	TupleFlags_Export |
-	TupleFlags_NoScopeEnd
+	StructFlags_Export |
+	StructFlags_NoScopeEnd
 );
 
 c += NEW_LINE;
@@ -663,18 +713,22 @@ c += NEW_LINE;
 
 ClearAsserts();
 
-CreateTupleAsserts
+CreateStructAsserts
 (
 	"PlayerActorDataBase",
 	itemsPlayerBase,
 	SIZE_PLAYER_BASE,
 	SIZE_BASE,
-	TupleFlags_NoTypeAssert,
-	PositionFlags_Hex
+	StructFlags_NoTypeAssert,
+	StringFlags_Hex
 );
 
 MergeAsserts();
 FeedAsserts();
+
+}
+
+
 
 c += NEW_LINE;
 
@@ -699,24 +753,22 @@ for (let index = 0; index < helpers.length; index++)
 	let name  = helper[0];
 	let items = helper[1];
 
-	let tuplename = "PlayerActorData" + name;
+	let structName = "PlayerActorData" + name;
 
-	CreateTuple
+	CreateStruct
 	(
-		tuplename + " : PlayerActorDataBase",
+		structName + " : PlayerActorDataBase",
 		items,
 		SIZE_PLAYER_DANTE,
 		SIZE_PLAYER_BASE,
-		TupleFlags_Export |
-		TupleFlags_NoScopeEnd
+		StructFlags_Export |
+		StructFlags_NoScopeEnd
 	);
 
-	CreateTupleFunction
+	CreateStructContent
 	(
 		itemsPlayerNew,
-		SIZE_PLAYER_DANTE,
-		0,
-		AlignFunction
+		SIZE_PLAYER_DANTE
 	);
 
 	ScopeEnd
@@ -725,41 +777,46 @@ for (let index = 0; index < helpers.length; index++)
 		ScopeFlags_Semicolon
 	);
 
+
+
 	ClearAsserts();
 
-	CreateTupleAsserts
+	CreateStructAsserts
 	(
-		tuplename,
+		structName,
 		items,
 		SIZE_PLAYER_DANTE,
 		SIZE_PLAYER_BASE,
-		TupleFlags_NoTypeAssert |
-		TupleFlags_NoSizeAssert,
-		PositionFlags_Hex,
-		AlignFunction
+		StructFlags_NoTypeAssert |
+		StructFlags_NoSizeAssert,
+		StringFlags_Hex
 	);
 
-	CreateTupleAsserts
+	CreateStructAsserts
 	(
-		tuplename,
+		structName,
 		itemsPlayerNew,
 		0,
 		SIZE_PLAYER_DANTE,
-		TupleFlags_NoTypeAssert |
-		TupleFlags_NoSizeAssert,
-		PositionFlags_Hex,
-		AlignFunction
+		StructFlags_NoTypeAssert |
+		StructFlags_NoSizeAssert,
+		StringFlags_Hex
 	);
 
 	MergeAsserts();
 	FeedAsserts();
-
-	c += NEW_LINE;
 }
 
 }
 
 
+
+c += NEW_LINE;
+
+
+
+// Enemy Derived
+{
 
 let helpers =
 [
@@ -777,46 +834,59 @@ for (let index = 0; index < helpers.length; index++)
 	let items = helper[1];
 
 
-	let tuplename = "EnemyActorData" + name;
+	let structName = "EnemyActorData" + name;
 
-	CreateTuple
+	CreateStruct
 	(
-		tuplename + " : ActorDataBase",
+		structName + " : ActorDataBase",
 		items,
 		0,
 		SIZE_BASE,
-		TupleFlags_Export
+		StructFlags_Export
 	);
 
 
 
 	ClearAsserts();
 
-	CreateTupleAsserts
+	CreateStructAsserts
 	(
-		tuplename,
+		structName,
 		items,
 		0,
 		SIZE_BASE,
-		TupleFlags_NoTypeAssert |
-		TupleFlags_NoSizeAssert
+		StructFlags_NoTypeAssert |
+		StructFlags_NoSizeAssert
 	);
 
 	MergeAsserts();
 	FeedAsserts();
 }
 
+}
+
 
 
 CleanStream();
 
-SaveStream("ActorData");
+c_new = c;
+
+ClearAll();
+
+
+
+file = c_until + c_new + c_after;
 
 
 
 // Cheat Engine
+{
 
-CheatTableStart();
+ClearAll();
+
+
+
+CE_CheatTableStart();
 
 let actorCount = 4;
 
@@ -824,25 +894,25 @@ for (let actorIndex = 0; actorIndex < actorCount; actorIndex++)
 {
 	let posName = PositionName
 	(
-		(8 * actorIndex),
-		PositionFlags_Hex |
-		PositionFlags_NoPrefix
+		(g_pointerSize * actorIndex),
+		StringFlags_Hex |
+		StringFlags_NoPrefix
 	);
 
-	GroupStart
+	CE_GroupStart
 	(
 		"__" + lz(actorIndex) + "__",
 		true
 	);
 
-	CreateCheatEntries
+	CE_CreateCheatEntries
 	(
 		itemsBase,
 		"Mary.Global::g_playerActorBaseAddrs",
 		[ posName ]
 	);
 
-	CreateCheatEntries
+	CE_CreateCheatEntries
 	(
 		itemsPlayerBase,
 		"Mary.Global::g_playerActorBaseAddrs",
@@ -850,27 +920,24 @@ for (let actorIndex = 0; actorIndex < actorCount; actorIndex++)
 		SIZE_BASE
 	);
 
-	CreateCheatEntries
+	CE_CreateCheatEntries
 	(
 		itemsPlayerNew,
 		"Mary.Global::g_playerActorBaseAddrs",
 		[ posName ],
-		SIZE_PLAYER_DANTE,
-		0,
-		AlignFunction
+		SIZE_PLAYER_DANTE
 	);
 
-	GroupEnd();
+	CE_GroupEnd();
 }
 
-CheatTableEnd();
+CE_CheatTableEnd();
 
-fs.writeFileSync("actor_data.txt", c);
-
-ClearAll();
+fs.writeFileSync("dmc3_actor_data.txt", c);
 
 }
 
+}
 // #endregion
 
 // #region CollisionDataMetadata
@@ -887,7 +954,7 @@ let items =
 	[ "heightAdjustment" , "float"  , [], 0x140 ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"CollisionDataMetadata",
 	items
@@ -908,7 +975,7 @@ let items =
 	[ "data[8]"     , "vec4"                   , [], 0x210 ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"CollisionData",
 	items,
@@ -925,7 +992,7 @@ dmc3.exe+5C317 - C3               - ret
 // #region ActorEvent
 {
 
-let names =
+let items =
 [
 	[ ""                          , "" ],
 	[ ""                          , "" ],
@@ -979,7 +1046,7 @@ let names =
 FeedEnum
 (
 	"ACTOR_EVENT",
-	names,
+	items,
 	"ActorEvent"
 );
 
@@ -1000,7 +1067,7 @@ let items =
 	[ "distanceLockOn", "float"  , [], 0xE0 ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"CameraData",
 	items,
@@ -1021,7 +1088,7 @@ let items =
 	[ "nextMetadataAddr", "EnemyVectorDataMetadata *", [], 0x1050 ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"EnemyVectorData",
 	items
@@ -1101,34 +1168,99 @@ let items =
 	[ ""                      , "0"                           ],
 ];
 
+let tagName = "Enemy";
+
+
+
+ClearAll();
+
+
+
+let c_until = "";
+let c_after = "";
+let c_new   = "";
+
+let lines = GetLines(file);
+
+let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
+let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
+
+console.log(startName);
+console.log(endName);
+
+if
+(
+	!Tag_Init
+	(
+		lines,
+		startName,
+		endName
+	)
+)
+{
+	console.log("Tag_Init failed.");
+
+	process.exit(1);
+
+	return;
+}
+
+
+
+Tag_CopyUntil(lines);
+
+c_until = c;
+
+ClearAll();
+
+
+
+Tag_CopyAfter(lines);
+
+c_after = c;
+
+ClearAll();
+
 
 
 // Enum
+{
 
-let names = [];
+let items2 = [];
 
 for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
 {
 	let item = items[itemIndex];
 
-	let name = item[0];
+	let name        = item[0];
+	let helperIndex = item[1];
 
-	names.push([ name, "" ]);
+	items2.push([ name, "" ]);
 }
 
-names.push([ "COUNT", "" ]);
+items2.push([ "COUNT", "" ]);
 
-FeedEnum
+
+
+c += "export namespaceStart(ENEMY);" + NEW_LINE;
+
+CreateEnum
 (
-	"ENEMY",
-	names,
 	"",
-	Flags_NoSave
+	items2,
+	"",
+	EnumFlags_UpperCase
 );
+
+c += "namespaceEnd();" + NEW_LINE;
+c += NEW_LINE;
+
+}
 
 
 
 // Names
+{
 
 c += "export const char * enemyNames[] =" + NEW_LINE;
 
@@ -1138,7 +1270,7 @@ for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
 {
 	let item = items[itemIndex];
 
-	let name = item[0];
+	let name        = item[0];
 	let helperIndex = item[1];
 
 	c += Tabs() + "\"" + name + "\"," + NEW_LINE;
@@ -1152,9 +1284,12 @@ ScopeEnd
 
 c += NEW_LINE;
 
+}
+
 
 
 // Helper Indices
+{
 
 c += "export constexpr uint8 enemyHelperIndices[] =" + NEW_LINE;
 
@@ -1164,7 +1299,7 @@ for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
 {
 	let item = items[itemIndex];
 
-	let name = item[0];
+	let name        = item[0];
 	let helperIndex = item[1];
 
 	c += Tabs() + helperIndex + "," + NEW_LINE;
@@ -1178,9 +1313,19 @@ ScopeEnd
 
 c += NEW_LINE;
 
+}
 
 
-SaveStream("Enemy");
+
+CleanStream();
+
+c_new = c;
+
+ClearAll();
+
+
+
+file = c_until + c_new + c_after;
 
 }
 // #endregion
@@ -1197,7 +1342,7 @@ let items =
 	[ "divisor" , "float" , [], 0x158 ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"StyleData",
 	items,
@@ -1237,7 +1382,7 @@ let items =
 	[ "typeName", "const char *", [] ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"FileDataTypeData",
 	items
@@ -1259,7 +1404,7 @@ let items =
 	[ "_(32)"       , ""                  , [] ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"FileData",
 	items,
@@ -1284,7 +1429,7 @@ let items =
 	[ "_(4)"        , ""          , [] ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"FileDataMetadata",
 	items,
@@ -1307,7 +1452,7 @@ let items =
 	[ "actorBaseAddr"  , "byte8 *", [], 0x120 ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"WeaponData",
 	items
@@ -1326,7 +1471,7 @@ let items =
 	[ "busy"          , "bool"       , [], 0xBA ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"BodyPartData",
 	items,
@@ -1335,3 +1480,726 @@ FeedTuple
 
 }
 // #endregion
+
+// #region LockOnData
+{
+
+let items =
+[
+	[ ""                , "byte8 *", [], 0      ], // 41C0-41C0=0
+	[ ""                , "byte8 *", [], 0x1008 ], // 51C8-41C0=1008
+	[ ""                , "byte8 *", [], 0x1010 ], // 51D0-41C0=1010
+	[ ""                , "byte8 *", [], 0x1018 ], // 51D8-41C0=1018
+	[ "targetCount"     , "uint32" , [], 0x2048 ], // 6208-41C0=2048
+	[ "targetPosition"  , "vec4"   , [], 0x2140 ], // 6300-41C0=2140
+	[ "targetBaseAddr60", "byte8 *", [], 0x2168 ], // 6328-41C0=2168
+	[ ""                , "byte8 *", [], 0x2170 ], // 6330-41C0=2170
+];
+
+FeedStruct
+(
+	"LockOnData",
+	items,
+	8568
+);
+
+}
+// #endregion
+
+// #region CreateEnemyActorData
+{
+
+let items =
+[
+	[ "enemy"      , "uint32", [], 0    ], // dmc3.exe+97B6D - 8B 03               - mov eax,[rbx]
+	[ "position"   , "vec4"  , [], 0x10 ], // dmc3.exe+98005 - 41 0F28 87 20060000 - movaps xmm0,[r15+00000620]
+	[ "rotation"   , "uint16", [], 0x20 ], // dmc3.exe+9803C - 41 0FB7 87 30060000 - movzx eax,word ptr [r15+00000630]
+	[ "spawnMethod", "uint16", [], 0x22 ], // dmc3.exe+6843B - 0FB7 41 22          - movzx eax,word ptr [rcx+22]
+	[ "variant"    , "uint32", [], 0x28 ], // dmc3.exe+9836D - 41 39 B7 38060000   - cmp [r15+00000638],esi
+];
+
+FeedStruct
+(
+	"CreateEnemyActorData",
+	items,
+	128
+);
+
+}
+// #endregion
+
+// #region CacheFile
+{
+
+let items =
+[
+	// Dante
+	[ "pl000"              , "obj"    ],
+	[ "pl011"              , "obj"    ],
+	[ "pl013"              , "obj"    ],
+	[ "pl015"              , "obj"    ],
+	[ "pl016"              , "obj"    ],
+	[ "pl018"              , "obj"    ],
+	[ "pl005"              , "obj"    ],
+	[ "pl006"              , "obj"    ],
+	[ "pl007"              , "obj"    ],
+	[ "pl008"              , "obj"    ],
+	[ "pl009"              , "obj"    ],
+	[ "pl017"              , "obj"    ],
+	[ "pl000_00_0"         , "motion" ],
+	[ "pl000_00_1"         , "motion" ],
+	[ "pl000_00_2"         , "motion" ],
+	[ "pl000_00_3"         , "motion" ],
+	[ "pl000_00_4"         , "motion" ],
+	[ "pl000_00_5"         , "motion" ],
+	[ "pl000_00_6"         , "motion" ],
+	[ "pl000_00_7"         , "motion" ],
+	[ "pl000_00_8"         , "motion" ],
+	[ "pl000_00_9"         , "motion" ],
+	[ "pl000_00_10"        , "motion" ],
+	[ "pl000_00_11"        , "motion" ],
+	[ "pl000_00_12"        , "motion" ],
+	[ "pl000_00_13"        , "motion" ],
+	[ "pl000_00_14"        , "motion" ],
+	[ "pl000_00_15"        , "motion" ],
+	[ "pl000_00_16"        , "motion" ],
+	[ "pl000_00_17"        , "motion" ],
+	[ "pl000_00_18"        , "motion" ],
+	[ "pl000_00_19"        , "motion" ],
+	[ "pl000_00_20"        , "motion" ],
+	[ "pl000_00_21"        , "motion" ],
+	[ "pl000_00_22"        , "motion" ],
+	[ "pl000_00_23"        , "motion" ],
+	[ "pl000_00_24"        , "motion" ],
+	[ "pl000_00_25"        , "motion" ],
+	[ "pl000_00_26"        , "motion" ],
+	[ "plwp_sword"         , "obj"    ],
+	[ "plwp_sword2"        , "obj"    ],
+	[ "plwp_sword3"        , "obj"    ],
+	[ "plwp_nunchaku"      , "obj"    ],
+	[ "plwp_2sword"        , "obj"    ],
+	[ "plwp_guitar"        , "obj"    ],
+	[ "plwp_fight"         , "obj"    ],
+	[ "plwp_gun"           , "obj"    ],
+	[ "plwp_shotgun"       , "obj"    ],
+	[ "plwp_laser"         , "obj"    ],
+	[ "plwp_rifle"         , "obj"    ],
+	[ "plwp_ladygun"       , "obj"    ],
+	[ "snd_com0"           , "se"     ],
+	[ "snd_com0a"          , "se"     ],
+	[ "snd_sty02"          , "se"     ],
+	[ "snd_sty03"          , "se"     ],
+	[ "snd_sty04"          , "se"     ],
+	[ "snd_sty05"          , "se"     ],
+	[ "snd_sty06"          , "se"     ],
+	[ "snd_wp00b"          , "se"     ],
+	[ "snd_wp01b"          , "se"     ],
+	[ "snd_wp02b"          , "se"     ],
+	[ "snd_wp03b"          , "se"     ],
+	[ "snd_wp04b"          , "se"     ],
+	[ "snd_wp05b"          , "se"     ],
+	[ "snd_wp06b"          , "se"     ],
+	[ "snd_wp07b"          , "se"     ],
+	[ "snd_wp08b"          , "se"     ],
+	[ "snd_wp09b"          , "se"     ],
+	// Bob
+	[ "pl001"              , "obj"    ],
+	[ "pl001_00_0"         , "motion" ],
+	[ "pl001_00_1"         , "motion" ],
+	[ "pl001_00_2"         , "motion" ],
+	[ "pl001_00_31"        , "motion" ],
+	[ "plwp_vergilsword"   , "obj"    ],
+	// Lady
+	[ "pl002"              , "obj"    ],
+	[ "pl002_00_0"         , "motion" ],
+	[ "pl002_00_1"         , "motion" ],
+	[ "pl002_00_2"         , "motion" ],
+	// Vergil
+	[ "pl021"              , "obj"    ],
+	[ "pl023"              , "obj"    ],
+	[ "pl026"              , "obj"    ],
+	[ "pl010"              , "obj"    ],
+	[ "pl014"              , "obj"    ],
+	[ "pl025"              , "obj"    ],
+	[ "pl021_00_0"         , "motion" ],
+	[ "pl021_00_1"         , "motion" ],
+	[ "pl021_00_2"         , "motion" ],
+	[ "pl021_00_3"         , "motion" ],
+	[ "pl021_00_4"         , "motion" ],
+	[ "pl021_00_5"         , "motion" ],
+	[ "pl021_00_6"         , "motion" ],
+	[ "pl021_00_7"         , "motion" ],
+	[ "pl021_00_8"         , "motion" ],
+	[ "pl021_00_9"         , "motion" ],
+	[ "plwp_newvergilsword", "obj"    ],
+	[ "plwp_newvergilfight", "obj"    ],
+	[ "plwp_forceedge"     , "obj"    ],
+	[ "plwp_nerosword"     , "obj"    ],
+	[ "snd_com3"           , "se"     ],
+	[ "snd_com3a"          , "se"     ],
+	[ "snd_sty07"          , "se"     ],
+	[ "snd_sty08"          , "se"     ],
+	[ "snd_wp11a"          , "se"     ],
+	[ "snd_wp11b"          , "se"     ],
+	[ "snd_wp12a"          , "se"     ],
+	[ "snd_wp12b"          , "se"     ],
+	[ "snd_wp13a"          , "se"     ],
+	[ "snd_wp13b"          , "se"     ],
+	// Enemy
+	[ "em000"              , "obj"    ],
+	[ "em006"              , "obj"    ],
+	[ "em007"              , "obj"    ],
+	[ "em008"              , "obj"    ],
+	[ "em010"              , "obj"    ],
+	[ "em011"              , "obj"    ],
+	[ "em012"              , "obj"    ],
+	[ "em013"              , "obj"    ],
+	[ "em014"              , "obj"    ],
+	[ "em016"              , "obj"    ],
+	[ "em017"              , "obj"    ],
+	[ "em021"              , "obj"    ],
+	[ "em023"              , "obj"    ],
+	[ "em025"              , "obj"    ],
+	[ "em026"              , "obj"    ],
+	[ "em027"              , "obj"    ],
+	[ "em028"              , "obj"    ],
+	[ "em029"              , "obj"    ],
+	[ "em030"              , "obj"    ],
+	[ "em031"              , "obj"    ],
+	[ "em032"              , "obj"    ],
+	[ "em034"              , "obj"    ],
+	[ "em035"              , "obj"    ],
+	[ "em037"              , "obj"    ],
+	[ "snd_em00a"          , "se"     ],
+	[ "snd_em00b"          , "se"     ],
+	[ "snd_em06"           , "se"     ],
+	[ "snd_em07"           , "se"     ],
+	[ "snd_em08"           , "se"     ],
+	[ "snd_em10"           , "se"     ],
+	[ "snd_em11"           , "se"     ],
+	[ "snd_em12"           , "se"     ],
+	[ "snd_em13"           , "se"     ],
+	[ "snd_em14"           , "se"     ],
+	[ "snd_em16"           , "se"     ],
+	[ "snd_em17"           , "se"     ],
+	[ "snd_em21"           , "se"     ],
+	[ "snd_em23"           , "se"     ],
+	[ "snd_em25"           , "se"     ],
+	[ "snd_em26"           , "se"     ],
+	[ "snd_em27"           , "se"     ],
+	[ "snd_em28"           , "se"     ],
+	[ "snd_em29"           , "se"     ],
+	[ "snd_em30"           , "se"     ],
+	[ "snd_em31"           , "se"     ],
+	[ "snd_em32"           , "se"     ],
+	[ "snd_em34"           , "se"     ],
+	[ "snd_em35"           , "se"     ],
+	[ "snd_em37"           , "se"     ],
+	[ "snd_emsr"           , "se"     ],
+	[ "snd_stay"           , "se"     ],
+	// Other
+	[ "id100"              , "id"     ],
+	[ "id100V"             , "id"     ],
+];
+
+let tagName = "CacheFile";
+
+
+
+ClearAll();
+
+
+
+let c_until = "";
+let c_after = "";
+let c_new   = "";
+
+let lines = GetLines(file);
+
+let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
+let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
+
+console.log(startName);
+console.log(endName);
+
+if
+(
+	!Tag_Init
+	(
+		lines,
+		startName,
+		endName
+	)
+)
+{
+	console.log("Tag_Init failed.");
+
+	process.exit(1);
+
+	return;
+}
+
+
+
+Tag_CopyUntil(lines);
+
+c_until = c;
+
+ClearAll();
+
+
+
+Tag_CopyAfter(lines);
+
+c_after = c;
+
+ClearAll();
+
+
+
+// Enum
+{
+
+let names = [];
+
+for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
+{
+	let item = items[itemIndex];
+
+	let name        = item[0];
+	let helperIndex = item[1];
+
+	names.push([ name, "" ]);
+}
+
+names.push([ "CACHE_FILE_COUNT", "" ]);
+
+
+
+CreateEnum
+(
+	"",
+	names,
+	"",
+	EnumFlags_Export
+);
+
+c += NEW_LINE;
+
+}
+
+
+
+// Helper
+{
+
+c += "export struct CacheFileHelper" + NEW_LINE;
+
+ScopeStart();
+
+c += "\tconst char * filename;" + NEW_LINE;
+c += "\tconst char * typeName;" + NEW_LINE;
+
+ScopeEnd
+(
+	"}",
+	ScopeFlags_Semicolon
+);
+
+c += NEW_LINE;
+
+c += "export constexpr CacheFileHelper cacheFileHelpers[CACHE_FILE_COUNT] =" + NEW_LINE;
+
+ScopeStart();
+
+// @Research: Consider forward slash.
+
+for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
+{
+	let item = items[itemIndex];
+
+	let name = item[0];
+	let type = item[1];
+
+
+
+	c += Tabs() + "{ \"" + name + ".pac\", \"";
+
+	if (type == "obj")
+	{
+		c += "obj\\\\" + name + ".pac";
+	}
+	else if (type == "motion")
+	{
+		let parent = name.match(/([\S\s]+?)_/);
+		if (parent)
+		{
+			c += "motion\\\\" + parent[1] + "\\\\" + name + ".pac";
+		}
+	}
+	else if (type == "id")
+	{
+		let id = name.match(/id([0-9]+?)[A-Z]*?$/);
+		if (id)
+		{
+			let str = id[1];
+			if (str.length >= 3)
+			{
+				str = str.substring(0, (str.length - 2)) + "00";
+			}
+			c += "id\\\\id" + str + "\\\\" + name + ".pac";
+		}
+	}
+	else if (type == "se")
+	{
+		c += "se\\\\" + name + ".pac";
+	}
+	c += "\" }," + NEW_LINE;
+}
+
+ScopeEnd
+(
+	"}",
+	ScopeFlags_Semicolon
+);
+
+c += NEW_LINE;
+
+c += "static_assert(countof(cacheFileHelpers) == CACHE_FILE_COUNT);" + NEW_LINE;
+c += NEW_LINE;
+
+}
+
+
+
+CleanStream();
+
+c_new = c;
+
+ClearAll();
+
+
+
+file = c_until + c_new + c_after;
+
+}
+// #endregion
+
+// #region Item
+{
+
+let tagName = "Item";
+
+
+
+ClearAll();
+
+
+
+let c_until = "";
+let c_after = "";
+let c_new   = "";
+
+let lines = GetLines(file);
+
+let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
+let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
+
+console.log(startName);
+console.log(endName);
+
+if
+(
+	!Tag_Init
+	(
+		lines,
+		startName,
+		endName
+	)
+)
+{
+	console.log("Tag_Init failed.");
+
+	process.exit(1);
+
+	return;
+}
+
+
+
+Tag_CopyUntil(lines);
+
+c_until = c;
+
+ClearAll();
+
+
+
+Tag_CopyAfter(lines);
+
+c_after = c;
+
+ClearAll();
+
+
+
+// Default
+{
+
+let items =
+[
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ "Gold Orb"                 , "" ],
+	[ "Yellow Orb"               , "" ],
+	[ "Blue Orb"                 , "" ],
+	[ "Purple Orb"               , "" ],
+	[ "Blue Orb Fragment"        , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ "Vital Star Large"         , "" ],
+	[ "Vital Star Small"         , "" ],
+	[ "Devil Star"               , "" ],
+	[ "Holy Water"               , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ "Astronomical Board"       , "" ],
+	[ "Vajura"                   , "" ],
+	[ ""                         , "" ],
+	[ "Soul of Steel"            , "" ],
+	[ "Essence of Fighting"      , "" ],
+	[ "Essence of Technique"     , "" ],
+	[ "Essence of Intelligence"  , "" ],
+	[ "Orihalcon Fragment"       , "" ],
+	[ "Siren's Shriek"           , "" ],
+	[ "Crystal Skull"            , "" ],
+	[ "Ignis Fatuus"             , "" ],
+	[ "Ambrosia"                 , "" ],
+	[ "Stone Mask"               , "" ],
+	[ "Neo-Generator"            , "" ],
+	[ "Haywire Neo-Generator"    , "" ],
+	[ "Orihalcon"                , "" ],
+	[ "Orihalcon Fragment Right" , "" ],
+	[ "Orihalcon Fragment Bottom", "" ],
+	[ "Orihalcon Fragment Left"  , "" ],
+	[ "Golden Sun"               , "" ],
+	[ "Onyx Moonshard"           , "" ],
+	[ "Samsara"                  , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+	[ ""                         , "" ],
+];
+
+let names = [];
+
+
+
+for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
+{
+	let item = items[itemIndex];
+
+	let name  = item[0];
+	let value = item[1];
+
+	names.push(name);
+}
+
+items.push([ "COUNT", "" ]);
+
+
+
+c += "export namespaceStart(ITEM);" + NEW_LINE;
+
+CreateEnum
+(
+	"",
+	items,
+	"",
+	EnumFlags_UpperCase
+);
+
+c += "namespaceEnd();" + NEW_LINE;
+c += NEW_LINE;
+
+
+
+c += "export const char * itemNames[] =" + NEW_LINE;
+
+ScopeStart();
+
+for (let nameIndex = 0; nameIndex < names.length; nameIndex++)
+{
+	let name = names[nameIndex];
+
+	c += Tabs() + "\"" + name + "\"," + NEW_LINE;
+}
+
+ScopeEnd
+(
+	"}",
+	ScopeFlags_Semicolon
+);
+
+c += NEW_LINE;
+
+}
+
+
+
+// Buy
+{
+
+let items =
+[
+	[ "Vital Star Small", "" ],
+	[ "Vital Star Large", "" ],
+	[ "Devil Star"      , "" ],
+	[ "Holy Water"      , "" ],
+	[ "Blue Orb"        , "" ],
+	[ "Purple Orb"      , "" ],
+	[ "Gold Orb"        , "" ],
+	[ "Yellow Orb"      , "" ],
+];
+
+let names = [];
+
+
+
+for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
+{
+	let item = items[itemIndex];
+
+	let name  = item[0];
+	let value = item[1];
+
+	names.push(name);
+}
+
+items.push([ "COUNT", "" ]);
+
+
+
+c += "export namespaceStart(BUY);" + NEW_LINE;
+
+CreateEnum
+(
+	"",
+	items,
+	"",
+	EnumFlags_UpperCase
+);
+
+c += "namespaceEnd();" + NEW_LINE;
+c += NEW_LINE;
+
+
+
+c += "export const char * buyNames[] =" + NEW_LINE;
+
+ScopeStart();
+
+for (let nameIndex = 0; nameIndex < names.length; nameIndex++)
+{
+	let name = names[nameIndex];
+
+	c += Tabs() + "\"" + name + "\"," + NEW_LINE;
+}
+
+ScopeEnd
+(
+	"}",
+	ScopeFlags_Semicolon
+);
+
+c += NEW_LINE;
+
+}
+
+
+
+CleanStream();
+
+c_new = c;
+
+ClearAll();
+
+
+
+file = c_until + c_new + c_after;
+
+}
+// #endregion
+
+// #region QueuedMissionActorData
+{
+
+let items =
+[
+	[ "weapons[5]"        , "uint8" , [], 0    ],
+	[ "hitPoints"         , "float" , [], 0x50 ],
+	[ "magicPoints"       , "float" , [], 0x54 ],
+	[ "style"             , "uint32", [], 0x58 ],
+	[ "styleLevel[6]"     , "uint32", [], 0x5C ],
+	[ "styleExperience[6]", "float" , [], 0x74 ],
+	[ "expertise[8]"      , "byte32", [], 0x8C ],
+];
+
+FeedStruct
+(
+	"QueuedMissionActorData",
+	items
+);
+
+}
+// #endregion
+
+// #region ActiveMissionActorData
+{
+
+let items =
+[
+	[ "weapons[5]"     , "uint8" , [], 0    ],
+	[ "style"          , "uint32", [], 0x38 ],
+	[ "styleLevel"     , "uint32", [], 0x3C ],
+	[ "expertise[8]"   , "byte32", [], 0x40 ],
+	[ "styleExperience", "float" , [], 0x60 ],
+	[ "hitPoints"      , "float" , [], 0x64 ],
+	[ "maxHitPoints"   , "float" , [], 0x68 ],
+	[ "magicPoints"    , "float" , [], 0x6C ],
+	[ "maxMagicPoints" , "float" , [], 0x70 ],
+];
+
+FeedStruct
+(
+	"ActiveMissionActorData",
+	items
+);
+
+}
+// #endregion
+
+
+
+fs.writeFileSync(location, file);

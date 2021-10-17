@@ -1,67 +1,197 @@
-#include "../Core/Core.h"
+import Core;
 
-#include "Hooks.h"
-#include "Speed.h"
-#include "Steam.h"
-#include "Vars.h"
+#include "../Core/Macros.h"
 
-#include "System/Actor.h"
-#include "System/Camera.h"
-#include "System/Event.h"
-#include "System/File.h"
-#include "System/Input.h"
-#include "System/Memory.h"
-#include "System/Window.h"
+import Windows;
 
-#include "Game/Arcade.h"
-#include "Game/Training.h"
+import Actor;
+import Arcade;
+import Config;
+import Event;
+import File;
+import Global;
+import Graphics;
+import Hooks;
+import Input;
+import Internal;
+import Speed;
+import Steam;
+import Training;
+import Vars;
+import Window;
 
-const char * Log_directory = "logs";
-const char * Log_file      = "Kyrie.txt";
+using namespace Windows;
 
-uint32 mainChunkSize = (64 * 1024 * 1024);
+#define debug false
 
-DWORD DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
+uint32 DllMain
+(
+	HINSTANCE instance,
+	uint32 reason,
+	LPVOID reserved
+)
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
-		Log_Init();
+		Core_Log_Init("logs", "Kyrie.txt");
+
 		Log("Session started.");
-		if (!Memory_Init())
+
+		if (!Core_Memory_Init())
 		{
+			Log("Core_Memory_Init failed.");
+
 			return 0;
 		}
-		Config_Init();
-		LoadConfig();
-		Hooks_Init();
-		Speed_Init();
-		Steam_Init();
 
-		System_Actor_Init();
-		System_Actor_ToggleSpawnExtension(Config.Game.Multiplayer.enable);
-		System_Actor_ToggleCharacterDataConverter(Config.Game.Multiplayer.enable);
-		System_Actor_ToggleCostumeFixes(Config.Game.Multiplayer.enable);
-		System_Actor_ToggleDisableIdleTimer(Config.System.Actor.disableIdleTimer);
-		System_Camera_Init();
-		System_Event_Init();
-		System_Event_ToggleSkipIntro(Config.System.Event.skipIntro);
-		System_File_Init();
-		System_File_ToggleLoadAssetsExtension(Config.Game.Multiplayer.enable);
-		System_Input_Init();
-		System_Input_ToggleExtension(Config.Game.Multiplayer.enable);
-		System_Memory_Init();
-		System_Memory_ToggleReplaceAllocationFunctions(Config.System.Memory.replaceAllocationFunctions);
-		System_Window_Init();
-		System_Window_ToggleForceFocus(Config.System.Window.forceFocus);
-
-		Game_Arcade_Init();
-		Game_Arcade_Toggle(Config.Game.Arcade.enable);
-		if (Config.Game.Training.enable)
+		if (!memoryData.InitData(64 * 1024 * 1024))
 		{
-			Game_Training_ToggleInfiniteHitPoints(Config.Game.Training.infiniteHitPoints);
-			Game_Training_ToggleInfiniteMagicPoints(Config.Game.Training.infiniteMagicPoints);
-			Game_Training_ToggleDisableTimer(Config.Game.Training.disableTimer);
+			Log("memoryData.InitData failed.");
+
+			return 0;
 		}
+
+		SetMemory
+		(
+			memoryData.dataAddr,
+			0xCC,
+			memoryData.dataSize
+		);
+
+		if (!protectionHelper.Init(4096))
+		{
+			Log("protectionHelper.Init failed.");
+
+			return 0;
+		}
+
+		if
+		(
+			!backupHelper.Init
+			(
+				(8 * 1024 * 1024),
+				(1 * 1024 * 1024)
+			)
+		)
+		{
+			Log("backupHelper.Init failed.");
+
+			return 0;
+		}
+
+
+
+
+
+
+
+
+
+
+		Config_Init("configs", "Kyrie.bin");
+
+		LoadConfig();
+
+
+
+
+
+
+
+
+		Internal_Init();
+
+
+
+
+
+		File::Toggle(false);
+		File::Toggle(true);
+
+
+
+
+
+		Actor::Toggle(false);
+		Actor::Toggle(activeConfig.Actor.enable);
+
+
+
+		Arcade::Toggle(false);
+		Arcade::Toggle(activeConfig.Arcade.enable);
+
+
+
+
+		ToggleSkipIntro(false);
+		ToggleSkipIntro(activeConfig.skipIntro);
+
+
+
+
+		UpdateFilters();
+
+
+
+		ToggleForceWindowFocus(false);
+		ToggleForceWindowFocus(activeConfig.forceWindowFocus);
+
+
+
+
+		ToggleInfiniteHitPoints(false);
+		ToggleInfiniteHitPoints(activeConfig.infiniteHitPoints);
+
+		ToggleInfiniteMagicPoints(false);
+		ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
+
+		ToggleDisableTimer(false);
+		ToggleDisableTimer(activeConfig.disableTimer);
+
+
+
+		Event::Toggle(false);
+		Event::Toggle(true);
+
+
+
+
+
+		Speed::Toggle(false);
+		Speed::Toggle(true);
+
+
+		if constexpr (debug)
+		{
+			ToggleDisableIdleTimer(false);
+			ToggleDisableIdleTimer(true);
+		}
+
+
+
+
+
+
+		Steam::Toggle(false);
+		Steam::Toggle(true);
+
+
+
+
+
+
+		Window::Toggle(false);
+		Window::Toggle(true);
+
+
+
+
+
+
+
+
+		Hooks::Init();
 	}
+
 	return 1;
 }

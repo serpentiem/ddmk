@@ -8,7 +8,7 @@ import Vars;
 
 
 
-namespaceStart(Training);
+//namespaceStart(Training);
 
 
 
@@ -242,4 +242,4 @@ export void ToggleInfiniteBullets(bool enable)
 
 
 
-namespaceEnd();
+//namespaceEnd();

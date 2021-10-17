@@ -1,15 +1,3 @@
-/*
-
-
-
-
-
-
-
-
-" \], \/\/ [A-Za-z0-9]
-*/
-
 const CHANNEL_SYSTEM       = 0;
 const CHANNEL_COMMON       = 1;
 const CHANNEL_STYLE_WEAPON = 2;

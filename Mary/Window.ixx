@@ -4,29 +4,93 @@ import Core;
 
 #include "../Core/Macros.h"
 
-import Core_ImGui;
-
 import Config;
 import Global;
 import Vars;
 
 
-// @Todo: Rename to ToggleForceWindowFocus.
-export namespace Window
+
+export void ToggleForceWindowFocus(bool enable)
 {
+	LogFunction(enable);
+
+	static bool run = false;
 
 
-	// @Update
-	void ToggleForceFocus(bool enable)
+
 	{
-		LogFunction(enable);
+		auto addr = (appBaseAddr + 0x487F6);
+		constexpr uint64 size = 6;
+		/*
+		dmc3.exe+487F6 - 0F85 8D000000     - jne dmc3.exe+48889
+		dmc3.exe+487FC - 48 8B 0D CD5B5900 - mov rcx,[dmc3.exe+5DE3D0]
+		*/
 
-		Write<byte16>((appBaseAddr + 0x487F6), (enable) ? 0xE990 : 0x850F);
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
 
-		// Enable Background Gamepad Input
-		WriteAddress((appBaseAddr + 0x41C0A), (enable) ? (appBaseAddr + 0x41C10) : (appBaseAddr + 0x42016), 6);
+		if (enable)
+		{
+			Write<byte16>(addr, 0xE990);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
+
+	// Force gamepad focus.
+	{
+		auto addr = (appBaseAddr + 0x41C0A);
+		auto dest = (appBaseAddr + 0x41C10);
+		constexpr uint64 size = 6;
+		/*
+		dmc3.exe+41C0A - 0F84 06040000 - je dmc3.exe+42016
+		dmc3.exe+41C10 - 8B 4B 04      - mov ecx,[rbx+04]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			WriteAddress(addr, dest, size);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	run = true;
 }
+
+
+// @Remove
+
+
+// // @Todo: Rename to ToggleForceWindowFocus.
+// export namespace Window
+// {
+
+
+// 	// @Update
+// 	void ToggleForceFocus(bool enable)
+// 	{
+// 		LogFunction(enable);
+
+// 		Write<byte16>((appBaseAddr + 0x487F6), (enable) ? 0xE990 : 0x850F);
+
+// 		// Enable Background Gamepad Input
+// 		WriteAddress((appBaseAddr + 0x41C0A), (enable) ? (appBaseAddr + 0x41C10) : (appBaseAddr + 0x42016), 6);
+// 	}
+// }
 
 
 

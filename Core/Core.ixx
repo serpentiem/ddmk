@@ -64,7 +64,7 @@ struct TypeMatch<T, T>
 	static constexpr bool value = true;
 };
 
-export template <uint64 T>
+export template <size_t T>
 struct TypeValue
 {
 	static constexpr auto value = T;
@@ -73,7 +73,7 @@ struct TypeValue
 export template
 <
 	typename T,
-	uint64 count
+	size_t count
 >
 constexpr auto countof(T (&)[count])
 {
@@ -303,7 +303,7 @@ export void SetMemory
 (
 	void * addr,
 	byte8 value,
-	uint64 size
+	size_t size
 )
 {
 	memset
@@ -318,7 +318,7 @@ export void CopyMemory
 (
 	void * destination,
 	const void * source,
-	uint64 size
+	size_t size
 )
 {
 	memcpy
@@ -362,7 +362,7 @@ T Align
 
 export byte8 * Alloc
 (
-	uint64 size,
+	size_t size,
 	byte8 * dest = 0
 )
 {
@@ -394,9 +394,9 @@ export byte8 * Alloc
 
 export byte8 * AllocEx
 (
-	uint64 size,
-	uint64 start,
-	uint64 end
+	size_t size,
+	off_t start,
+	off_t end
 )
 {
 	if constexpr (debug)
@@ -448,7 +448,7 @@ export byte8 * AllocEx
 				Log("state      %X", mbi.State);
 			}
 
-			auto remainder = Align<uint64>(pos, systemInfo.dwAllocationGranularity);
+			auto remainder = Align<off_t>(pos, systemInfo.dwAllocationGranularity);
 			if (!remainder)
 			{
 				match = true;
@@ -498,7 +498,7 @@ export byte8 * AllocEx
 	return addr;
 }
 
-export auto LowAlloc(uint64 size)
+export auto LowAlloc(size_t size)
 {
 	return AllocEx
 	(
@@ -508,13 +508,13 @@ export auto LowAlloc(uint64 size)
 	);
 }
 
-export auto HighAlloc(uint64 size)
+export auto HighAlloc(size_t size)
 {
 	return AllocEx
 	(
 		size,
-		reinterpret_cast<uint64>(appBaseAddr + appSize),
-		reinterpret_cast<uint64>(appBaseAddr + 0x7FFFFFFF)
+		reinterpret_cast<off_t>(appBaseAddr + appSize),
+		reinterpret_cast<off_t>(appBaseAddr + 0x7FFFFFFF)
 	);
 }
 
@@ -667,7 +667,11 @@ export bool CloseFile(HANDLE file)
 	return true;
 }
 
-export uint64 GetFileSize(HANDLE file)
+
+#ifdef _WIN64
+
+
+export size_t GetFileSize(HANDLE file)
 {
 	if constexpr (debug)
 	{
@@ -701,7 +705,7 @@ export uint64 GetFileSize(HANDLE file)
 		return 0;
 	}
 
-	uint64 size = 0;
+	size_t size = 0;
 
 	auto sizeAddr = reinterpret_cast<byte8 *>(&size);
 
@@ -722,12 +726,131 @@ export uint64 GetFileSize(HANDLE file)
 	return size;
 }
 
+
+
+
+#else
+
+
+export size_t GetFileSize(HANDLE file)
+{
+	if constexpr (debug)
+	{
+		// LogFunction();
+		// Log("file %llX", file);
+	}
+
+	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
+	{
+		return 0;
+	}
+
+	byte32 error = 0;
+	BY_HANDLE_FILE_INFORMATION fileInformation = {};
+
+	SetLastError(0);
+
+	if
+	(
+		!GetFileInformationByHandle
+		(
+			file,
+			&fileInformation
+		)
+	)
+	{
+		error = GetLastError();
+
+		char buffer[64];
+
+		snprintf
+		(
+			buffer,
+			sizeof(buffer),
+			"bruh %X",
+			error
+		);
+
+		MessageBoxA(0, buffer, 0, 0);
+
+		//Log("GetFileInformationByHandle failed. %X", error);
+
+		return 0;
+	}
+
+
+
+	return fileInformation.nFileSizeLow;
+
+
+	// size_t size = 0;
+
+	// auto sizeAddr = reinterpret_cast<byte8 *>(&size);
+
+	// CopyMemory
+	// (
+	// 	sizeAddr,
+	// 	&fileInformation.nFileSizeLow,
+	// 	4
+	// );
+
+	// CopyMemory
+	// (
+	// 	(sizeAddr + 4),
+	// 	&fileInformation.nFileSizeHigh,
+	// 	4
+	// );
+
+	// return size;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export bool LoadFile
 (
 	HANDLE file,
-	uint64 size,
+	size_t size,
 	void * dest,
-	uint64 start = 0
+	off_t start = 0
 )
 {
 	if constexpr (debug)
@@ -750,12 +873,12 @@ export bool LoadFile
 	}
 
 	byte32 error = 0;
-	constexpr uint64 bufferSize = (1 * 1024 * 1024);
-	uint64 pos = start;
+	constexpr size_t bufferSize = (1 * 1024 * 1024);
+	auto pos = start;
 	uint32 bytesRead = 0;
 	LARGE_INTEGER filePointer = {};
 
-	auto Function = [&](uint64 size2) -> bool
+	auto Function = [&](size_t size2) -> bool
 	{
 
 
@@ -837,8 +960,8 @@ export bool LoadFile
 export byte8 * LoadFile
 (
 	HANDLE file,
-	uint64 size,
-	uint64 start = 0
+	size_t size,
+	off_t start = 0
 )
 {
 	if constexpr (debug)
@@ -891,7 +1014,7 @@ export byte8 * LoadFile(const char * name)
 
 	byte32 error = 0;
 	HANDLE file = 0;
-	uint64 size = 0;
+	size_t size = 0;
 	byte8 * dest = 0;
 
 	file = OpenFile
@@ -938,7 +1061,7 @@ export bool SaveFile
 (
 	HANDLE file,
 	void * addr,
-	uint64 size
+	size_t size
 )
 {
 	if
@@ -951,12 +1074,12 @@ export bool SaveFile
 		return false;
 	}
 
-	constexpr uint64 bufferSize = (1 * 1024 * 1024);
-	uint64 pos = 0;
+	constexpr size_t bufferSize = (1 * 1024 * 1024);
+	off_t pos = 0;
 	uint32 bytesWritten = 0;
 	LARGE_INTEGER filePointer = {};
 
-	auto Function = [&](uint64 size2) -> bool
+	auto Function = [&](size_t size2) -> bool
 	{
 		if
 		(
@@ -1002,7 +1125,7 @@ export bool SaveFile
 (
 	const char * name,
 	void * addr,
-	uint64 size,
+	size_t size,
 	byte32 flags = FileFlags_Write
 )
 {
@@ -1103,9 +1226,19 @@ void LogFunctionHelper
 	T var
 )
 {
+	#ifdef _WIN64
+
 	const char * format =
 	(TypeMatch<T, byte8 *>::value) ? "%s %llX" :
 	"%s %u";
+
+	#else
+
+	const char * format =
+	(TypeMatch<T, byte8 *>::value) ? "%s %X" :
+	"%s %u";
+
+	#endif
 
 	Log(format, funcName, var);
 }
@@ -1197,39 +1330,51 @@ struct Container<>
 {
 	struct Metadata
 	{
-		uint64 off;
-		uint64 size;
+		off_t off;
+		size_t size;
 	};
 
 	byte8 * dataAddr;
-	uint64 dataSize;
+	size_t dataSize;
 
 	byte8 * metadataAddr;
-	uint64 metadataSize;
+	size_t metadataSize;
 
-	uint64 pos;
-	uint64 count;
+	off_t pos;
+	size_t count;
 
 	// @Todo: Add alloc func arg.
-	bool InitData(uint64 size);
-	bool InitMetadata(uint64 size);
+	bool InitData(size_t size);
+	bool InitMetadata(size_t size);
 	bool Init
 	(
-		uint64 dataSize2,
-		uint64 metadataSize2
+		size_t dataSize2,
+		size_t metadataSize2
 	);
 	void Clear();
-	byte8 * Next(uint64 size = 0);
+	byte8 * Next(size_t size = 0);
+
+
+	
+
+
 	void Push
 	(
 		void * addr,
-		uint64 size
+		size_t size
 	);
 	void Pop();
-	byte8 * operator[](uint64 index);
+	byte8 * operator[](size_t index);
+
+
+
+byte8 * Last();
+
+
+
 };
 
-bool Container<>::InitData(uint64 size)
+bool Container<>::InitData(size_t size)
 {
 	if (size == 0)
 	{
@@ -1247,7 +1392,7 @@ bool Container<>::InitData(uint64 size)
 	return true;
 }
 
-bool Container<>::InitMetadata(uint64 size)
+bool Container<>::InitMetadata(size_t size)
 {
 	if (size == 0)
 	{
@@ -1267,8 +1412,8 @@ bool Container<>::InitMetadata(uint64 size)
 
 bool Container<>::Init
 (
-	uint64 dataSize2,
-	uint64 metadataSize2
+	size_t dataSize2,
+	size_t metadataSize2
 )
 {
 	if
@@ -1311,7 +1456,7 @@ void Container<>::Clear()
 	count = 0;
 }
 
-byte8 * Container<>::Next(uint64 size)
+byte8 * Container<>::Next(size_t size)
 {
 	if
 	(
@@ -1327,10 +1472,18 @@ byte8 * Container<>::Next(uint64 size)
 	return (dataAddr + pos);
 }
 
+
+
+
+
+
+
+
+
 void Container<>::Push
 (
 	void * addr,
-	uint64 size
+	size_t size
 )
 {
 	if
@@ -1397,7 +1550,7 @@ void Container<>::Pop()
 	count--;
 }
 
-byte8 * Container<>::operator[](uint64 index)
+byte8 * Container<>::operator[](size_t index)
 {
 	if
 	(
@@ -1416,22 +1569,62 @@ byte8 * Container<>::operator[](uint64 index)
 
 
 
+byte8 * Container<>::Last()
+{
+	if
+	(
+		!dataAddr ||
+		(dataSize == 0) ||
+		!metadataAddr ||
+		(metadataSize == 0) ||
+		(count < 1)
+	)
+	{
+		return 0;
+	}
+
+	return (*this)[(count - 1)];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // @Todo: Add Extend.
 // @Todo: Add += and -- operator I guess.
 export template <typename T>
 struct Container<T>
 {
 	T * dataAddr;
-	uint64 dataSize;
-	uint64 count;
-	uint64 capacity;
+	size_t dataSize;
+	size_t count;
+	size_t capacity;
 
-	bool Init(uint64 size);
+	bool Init(size_t size);
 	void Push(const T & var);
 	void Pop();
 
 
-	void Remove(uint64 index)
+	void Remove(size_t index)
 	{
 		if
 		(
@@ -1479,11 +1672,11 @@ struct Container<T>
 
 
 	void Clear();
-	T & operator[](uint64 index);
+	T & operator[](size_t index);
 };
 
 template <typename T>
-bool Container<T>::Init(uint64 size)
+bool Container<T>::Init(size_t size)
 {
 	if (size == 0)
 	{
@@ -1554,7 +1747,7 @@ void Container<T>::Clear()
 }
 
 template <typename T>
-T & Container<T>::operator[](uint64 index)
+T & Container<T>::operator[](size_t index)
 {
 	return dataAddr[index];
 }
@@ -1572,22 +1765,22 @@ export template
 struct Container<T, T2>
 {
 	T dataAddr[T2::value];
-	uint64 dataSize;
-	uint64 count;
-	uint64 capacity;
+	size_t dataSize;
+	size_t count;
+	size_t capacity;
 
 	Container();
 
 	void Push(const T & var);
 	void Pop();
 	void Clear();
-	T & operator[](uint64 index);
+	T & operator[](size_t index);
 	// @Remove
 	template <typename U>
 	void ForEach
 	(
-		uint64 start,
-		uint64 end,
+		size_t start,
+		size_t end,
 		U & func
 	);
 	template <typename U>
@@ -1661,7 +1854,7 @@ template
 	typename T,
 	typename T2
 >
-T & Container<T, T2>::operator[](uint64 index)
+T & Container<T, T2>::operator[](size_t index)
 {
 	return dataAddr[index];
 }
@@ -1674,12 +1867,12 @@ template
 template <typename U>
 void Container<T, T2>::ForEach
 (
-	uint64 start,
-	uint64 end,
+	size_t start,
+	size_t end,
 	U & func
 )
 {
-	old_for_each(uint64, index, start, end)
+	for_each(index, start, end)
 	{
 		auto & data = dataAddr[index];
 
@@ -1706,7 +1899,7 @@ void Container<T, T2>::ForAll(U & func)
 export template
 <
 	typename T,
-	uint64 T2
+	size_t T2
 >
 using Array = Container<T, TypeValue<T2>>;
 
@@ -1721,7 +1914,7 @@ export Container memoryData = {};
 struct ProtectionHelperData
 {
 	void * addr;
-	uint64 size;
+	size_t size;
 	byte32 protection;
 };
 
@@ -1730,7 +1923,7 @@ struct ProtectionHelper : Container<ProtectionHelperData>
 	void Push
 	(
 		void * addr,
-		uint64 size
+		size_t size
 	);
 	void Pop();
 };
@@ -1738,7 +1931,7 @@ struct ProtectionHelper : Container<ProtectionHelperData>
 void ProtectionHelper::Push
 (
 	void * addr,
-	uint64 size
+	size_t size
 )
 {
 	if
@@ -1840,7 +2033,7 @@ export void SetMemory
 (
 	void * addr,
 	byte8 value,
-	uint64 size,
+	size_t size,
 	byte32 flags
 )
 {
@@ -1866,7 +2059,7 @@ export void CopyMemory
 (
 	void * destination,
 	const void * source,
-	uint64 size,
+	size_t size,
 	byte32 flags
 )
 {
@@ -1910,7 +2103,7 @@ struct BackupHelper : Container<>
 	void Save
 	(
 		void * addr,
-		uint64 size
+		size_t size
 	);
 	void Restore(void * addr);
 };
@@ -1918,7 +2111,7 @@ struct BackupHelper : Container<>
 void BackupHelper::Save
 (
 	void * addr,
-	uint64 size
+	size_t size
 )
 {
 	if
@@ -1954,7 +2147,7 @@ void BackupHelper::Save
 
 void BackupHelper::Restore(void * addr)
 {
-	old_for_all(uint64, index, count)
+	for_all(index, count)
 	{
 		auto & metadata = reinterpret_cast<Metadata *>(metadataAddr)[index];
 
@@ -1974,7 +2167,7 @@ void BackupHelper::Restore(void * addr)
 		return;
 	}
 
-	auto off = static_cast<uint64>(reinterpret_cast<byte8 *>(addr) - appBaseAddr);
+	auto off = static_cast<off_t>(reinterpret_cast<byte8 *>(addr) - appBaseAddr);
 
 	Log("%s failed.", FUNC_NAME);
 
@@ -2087,7 +2280,7 @@ export auto WriteShortJump
 export void WriteNop
 (
 	void * addr,
-	uint64 size
+	size_t size
 )
 {
 	SetMemory
@@ -2100,6 +2293,10 @@ export void WriteNop
 }
 
 
+
+#pragma region CreateFunction
+
+#ifdef _WIN64
 
 export struct Function
 {
@@ -2153,7 +2350,7 @@ export Function CreateFunction
 		pos += bufferSize;
 	};
 
-	Align<uint64>(memoryData.pos, 0x10);
+	Align<off_t>(memoryData.pos, 0x10);
 
 	func.addr = (memoryData.dataAddr + memoryData.pos);
 
@@ -2435,7 +2632,7 @@ export Function CreateFunction
 
 	if (cacheSize)
 	{
-		Align<uint64>(memoryData.pos, 0x10);
+		Align<off_t>(memoryData.pos, 0x10);
 
 		func.cache = reinterpret_cast<byte8 **>(memoryData.dataAddr + memoryData.pos);
 
@@ -2444,6 +2641,423 @@ export Function CreateFunction
 
 	return func;
 }
+
+#else
+
+
+
+
+
+
+
+
+export enum
+{
+	FunctionFlags_SaveRegisters = 1 << 0,
+	FunctionFlags_NoResult      = 1 << 1,
+	FunctionFlags_NoReturn      = 1 << 2,
+	FunctionFlags_Jump          = 1 << 3,
+};
+
+
+
+
+
+
+export struct Function
+{
+	byte8 *  addr;
+	byte8 *  sect0;
+	byte8 *  sect1;
+	byte8 *  sect2;
+	byte8 ** cache;
+};
+
+
+
+
+
+// @Update
+export Function CreateFunction
+(
+	void   * funcAddr  = 0,
+	byte8  * jumpAddr  = 0,
+	byte32   flags     = 0,
+	size_t   size0     = 0,
+	size_t   size1     = 0,
+	size_t   size2     = 0,
+	size_t   cacheSize = 0
+)
+{
+
+
+
+
+	// @Remove
+	const bool saveRegisters = (flags & FunctionFlags_SaveRegisters);
+	const bool noResult      = (flags & FunctionFlags_NoResult     );
+	const bool noReturn      = (flags & FunctionFlags_NoReturn     );
+
+
+
+
+
+
+
+
+	Function func = {};
+	off_t    pos  = 0;
+
+	auto Feed = [&]
+	(
+		const byte8 * buffer,
+		size_t        bufferSize,
+		bool          adjustPosition = true
+	)
+	{
+		CopyMemory
+		(
+			(func.addr + pos),
+			buffer,
+			bufferSize
+		);
+
+		if (!adjustPosition)
+		{
+			return;
+		}
+
+		pos += bufferSize;
+	};
+
+	Align<off_t>(memoryData.pos, 0x10);
+
+	func.addr = (memoryData.dataAddr + memoryData.pos);
+
+	func.sect0 = (func.addr + pos);
+	pos += size0;
+
+	if (saveRegisters)
+	{
+		if (noResult)
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x50, // push eax
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x51, // push ecx
+				0x52, // push edx
+				0x53, // push ebx
+				0x54, // push esp
+				0x55, // push ebp
+				0x56, // push esi
+				0x57, // push edi
+				0x9C, // pushfd
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x8B, 0xEC, // mov ebp,esp
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+
+		{
+
+
+constexpr byte8 buffer[] =
+{
+	0x81, 0xE4, 0xF0, 0xFF, 0xFF, 0xFF, // and esp,FFFFFFF0
+};
+
+
+
+
+			// constexpr byte8 buffer[] =
+			// {
+			// 	0x81, 0xE4, 0xF0, 0x00, 0x00, 0x00, // and esp,000000F0
+			// };
+			Feed(buffer, sizeof(buffer));
+		}
+	}
+
+	func.sect1 = (func.addr + pos);
+	pos += size1;
+
+	if (funcAddr)
+	{
+		constexpr byte8 buffer[] =
+		{
+			0xB8, 0x00, 0x00, 0x00, 0x00, // mov eax
+		};
+		Feed(buffer, sizeof(buffer), false);
+		*reinterpret_cast<void **>(func.addr + pos + 1) = funcAddr;
+		pos += sizeof(buffer);
+
+
+
+		if (flags & FunctionFlags_Jump)
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xFF, 0xE0, // jmp eax
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xFF, 0xD0, // call eax
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+
+
+
+
+
+
+
+		// // Not required!
+
+		// if (argCount)
+		// {
+		// 	constexpr byte8 buffer[] =
+		// 	{
+		// 		0x83, 0xC4, 0x00, // add esp
+		// 	};
+		// 	Feed(buffer, sizeof(buffer), false);
+		// 	*reinterpret_cast<uint8 *>(func.addr + pos + 2) = (argCount * 4);
+		// 	pos += sizeof(buffer);
+		// }
+	}
+
+	if (saveRegisters)
+	{
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x8B, 0xE5, // mov esp,ebp
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x9D, // popfd
+				0x5F, // pop edi
+				0x5E, // pop esi
+				0x5D, // pop ebp
+				0x5C, // pop esp
+				0x5B, // pop ebx
+				0x5A, // pop edx
+				0x59, // pop ecx
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+
+		if (noResult)
+		{
+			constexpr byte8 buffer[] =
+			{
+				0x58, // pop eax
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+	}
+
+	func.sect2 = (func.addr + pos);
+	pos += size2;
+
+	if (jumpAddr)
+	{
+		WriteJump((func.addr + pos), jumpAddr);
+
+		pos += 5;
+	}
+	else
+	{
+		if (!noReturn)
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xC3, // ret
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+	}
+
+	memoryData.pos += pos;
+
+	if (cacheSize)
+	{
+		Align<off_t>(memoryData.pos, 0x10);
+
+		func.cache = reinterpret_cast<byte8 **>(memoryData.dataAddr + memoryData.pos);
+
+		memoryData.pos += cacheSize;
+	}
+
+	return func;
+}
+
+
+
+
+// @Remove
+export __declspec(deprecated) Function OldCreateFunction
+(
+	void   * funcAddr      = 0,
+	byte8  * jumpAddr      = 0,
+	bool     saveRegisters = true,
+	bool     noResult      = true,
+	size_t   size0         = 0,
+	size_t   size1         = 0,
+	size_t   size2         = 0,
+	size_t   cacheSize     = 0,
+	bool     noReturn      = true
+)
+{
+	byte32 flags = 0;
+
+	if (saveRegisters)
+	{
+		flags |= FunctionFlags_SaveRegisters;
+	}
+
+	if (noResult)
+	{
+		flags |= FunctionFlags_NoResult;
+	}
+
+	if (noReturn)
+	{
+		flags |= FunctionFlags_NoReturn;
+	}
+
+	return CreateFunction
+	(
+		funcAddr,
+		jumpAddr,
+		flags,
+		size0,
+		size1,
+		size2,
+		cacheSize
+	);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// export Function CreateFunction
+// (
+// 	void   * funcAddr  = 0,
+// 	byte8  * jumpAddr  = 0,
+// 	byte32   flags     = FunctionFlags_Default,
+// 	size_t   size0     = 0,
+// 	size_t   size1     = 0,
+// 	size_t   size2     = 0,
+// 	size_t   cacheSize = 0
+// )
+// {
+// 	bool saveRegisters = (flags & FunctionFlags_SaveRegisters);
+// 	bool noResult      = (flags & FunctionFlags_NoResult     );
+// 	bool noReturn      = (flags & FunctionFlags_NoReturn     );
+
+// 	return CreateFunction
+// 	(
+// 		funcAddr,
+// 		jumpAddr,
+// 		saveRegisters,
+// 		noResult,
+// 		size0,
+// 		size1,
+// 		size2,
+// 		cacheSize,
+// 		noReturn,
+// 		flags
+// 	);
+// }
+
+
+/*
+
+function,
+jumpAddr,
+
+(
+	FunctionFlags::SaveRegisters |
+	FunctionFlags::NoResult |
+	FunctionFlags::NoReturn
+)
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+#endif
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 export bool Core_Memory_Init()
@@ -2475,6 +3089,74 @@ export bool Core_Memory_Init()
 
 
 #pragma endregion
+
+
+#pragma region String Stuff
+
+
+
+
+
+
+
+export int32 IndexOf
+(
+	const char * name,
+	const char * name2
+)
+{
+	auto count  = static_cast<int32>(strlen(name ));
+	auto count2 = static_cast<int32>(strlen(name2));
+
+	if
+	(
+		(count  < 1     ) ||
+		(count2 < 1     ) ||
+		(count  < count2)
+	)
+	{
+		return -1;
+	}
+
+
+
+	int32 pos = 0;
+
+	while (pos < count)
+	{
+		if ((count - pos) < count2)
+		{
+			break;
+		}
+
+		auto dest = (reinterpret_cast<byte8 *>(const_cast<char *>(name)) + pos);
+
+		if
+		(
+			memcmp
+			(
+				dest,
+				name2,
+				count2
+			) == 0
+		)
+		{
+			return pos;
+		}
+
+		pos++;
+	}
+
+
+
+	return -1;
+}
+
+
+
+
+#pragma endregion
+
 
 
 

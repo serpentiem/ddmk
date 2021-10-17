@@ -27,6 +27,7 @@ export func_2F0610_t func_2F0610 = 0; // (PlayerActorData & actorData)
 export void Internal_Init()
 {
 	LogFunction();
+
 	{
 		auto func = CreateFunction((appBaseAddr + 0x2C99C0));
 		func_2C99C0 = (func_2C99C0_t)func.addr;

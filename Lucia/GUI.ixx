@@ -1,5 +1,6 @@
 module;
 #include "../ImGui/imgui.h"
+#include "../ImGui/imgui_internal.h"
 
 #include <stdio.h>
 export module GUI;
@@ -7,6 +8,7 @@ export module GUI;
 import Core;
 
 #include "../Core/Macros.h"
+#include "../Global.h"
 
 import Vars;
 
@@ -33,186 +35,56 @@ using namespace D3D11;
 
 
 
+#pragma region Base
 
-
-
-
-
-
-
-
-#pragma region Common
-
-const char * Graphics_vSyncNames[] =
+namespaceStart(FONT);
+enum
 {
-	"Auto",
-	"Force Off",
-	"Force On",
+	DEFAULT,
+	MAIN,
+	OVERLAY_8,
+	OVERLAY_16,
+	OVERLAY_32,
+	OVERLAY_64,
+	OVERLAY_128,
 };
-
-// const char * buttonNames[] =
-// {
-// 	"Nothing",
-// 	"Left Trigger",
-// 	"Right Trigger",
-// 	"Left Shoulder",
-// 	"Right Shoulder",
-// 	"Y",
-// 	"B",
-// 	"A",
-// 	"X",
-// 	"Back",
-// 	"Left Thumb",
-// 	"Right Thumb",
-// 	"Start",
-// 	"Up",
-// 	"Right",
-// 	"Down",
-// 	"Left",
-// };
-
-// byte16 buttons[] =
-// {
-// 	0,
-// 	GAMEPAD::LEFT_TRIGGER,
-// 	GAMEPAD::RIGHT_TRIGGER,
-// 	GAMEPAD::LEFT_SHOULDER,
-// 	GAMEPAD::RIGHT_SHOULDER,
-// 	GAMEPAD::Y,
-// 	GAMEPAD::B,
-// 	GAMEPAD::A,
-// 	GAMEPAD::X,
-// 	GAMEPAD::BACK,
-// 	GAMEPAD::LEFT_THUMB,
-// 	GAMEPAD::RIGHT_THUMB,
-// 	GAMEPAD::START,
-// 	GAMEPAD::UP,
-// 	GAMEPAD::RIGHT,
-// 	GAMEPAD::DOWN,
-// 	GAMEPAD::LEFT,
-// };
-
-// const char * missionNames[] =
-// {
-// 	"Prologue",
-// 	"Mission 1",
-// 	"Mission 2",
-// 	"Mission 3",
-// 	"Mission 4",
-// 	"Mission 5",
-// 	"Mission 6",
-// 	"Mission 7",
-// 	"Mission 8",
-// 	"Mission 9",
-// 	"Mission 10",
-// 	"Mission 11",
-// 	"Mission 12",
-// 	"Mission 13",
-// 	"Mission 14",
-// 	"Mission 15",
-// 	"Mission 16",
-// 	"Mission 17",
-// 	"Mission 18",
-// 	"Mission 19",
-// 	"Mission 20",
-// 	"Mission 21",
-// 	"Mission 22",
-// 	"Mission 23",
-// 	"Mission 24",
-// };
-
-// const char * modeNames[] =
-// {
-// 	"Easy",
-// 	"Normal",
-// 	"Hard",
-// 	"Dante Must Die",
-// };
-
-// uint8 modes[] =
-// {
-// 	MODE::EASY,
-// 	MODE::NORMAL,
-// 	MODE::HARD,
-// 	MODE::DANTE_MUST_DIE,
-// };
-
-// const char * characterNames[] =
-// {
-// 	"Dante",
-// 	"LDK",
-// 	"Super Dante",
-// };
-
-// const char * meleeWeaponNames[] =
-// {
-// 	"Force Edge",
-// 	"Alastor",
-// 	"Ifrit",
-// 	"Sparda",
-// };
-
-// uint8 meleeWeapons[] =
-// {
-// 	WEAPON::FORCE_EDGE,
-// 	WEAPON::ALASTOR,
-// 	WEAPON::IFRIT,
-// 	WEAPON::SPARDA,
-// };
-
-// const char * meleeWeaponFormNames[] =
-// {
-// 	"Default",
-// 	"Sparda",
-// 	"Yamato",
-// };
-
-// const char * rangedWeaponNames[] =
-// {
-// 	"Handgun",
-// 	"Shotgun",
-// 	"Grenadegun",
-// 	"Nightmare Beta",
-// };
-
-// uint8 rangedWeapons[] =
-// {
-// 	WEAPON::HANDGUN,
-// 	WEAPON::SHOTGUN,
-// 	WEAPON::GRENADEGUN,
-// 	WEAPON::NIGHTMARE_BETA,
-// };
+namespaceEnd();
 
 
-
-// @Todo: Update.
-enum FONT_
-{
-	FONT_DEFAULT,
-	FONT_MAIN,
-	FONT_OVERLAY_8,
-	FONT_OVERLAY_16,
-	FONT_OVERLAY_32,
-	FONT_OVERLAY_64,
-	FONT_OVERLAY_128,
-};
 
 void BuildFonts()
 {
-	ImGuiIO & io = ImGui::GetIO();
+	auto & io = ImGui::GetIO();
+
 	io.Fonts->AddFontDefault();
+
 	char overlayFont[512];
+
 	{
 		char buffer[64];
-		GetWindowsDirectoryA(buffer, sizeof(buffer));
-		snprintf(overlayFont, sizeof(overlayFont), "%s\\Fonts\\consola.ttf", buffer);
+
+		GetWindowsDirectoryA
+		(
+			buffer,
+			sizeof(buffer)
+		);
+
+		snprintf
+		(
+			overlayFont,
+			sizeof(overlayFont),
+			"%s\\Fonts\\consola.ttf",
+			buffer
+		);
 	}
-	io.Fonts->AddFontFromFileTTF(overlayFont, 17);
-	io.Fonts->AddFontFromFileTTF(overlayFont, 8);
-	io.Fonts->AddFontFromFileTTF(overlayFont, 16);
-	io.Fonts->AddFontFromFileTTF(overlayFont, 32);
-	io.Fonts->AddFontFromFileTTF(overlayFont, 64);
+
+	io.Fonts->AddFontFromFileTTF(overlayFont, 17 );
+	io.Fonts->AddFontFromFileTTF(overlayFont, 8  );
+	io.Fonts->AddFontFromFileTTF(overlayFont, 16 );
+	io.Fonts->AddFontFromFileTTF(overlayFont, 32 );
+	io.Fonts->AddFontFromFileTTF(overlayFont, 64 );
 	io.Fonts->AddFontFromFileTTF(overlayFont, 128);
+
 	io.Fonts->Build();
 }
 
@@ -245,6 +117,204 @@ void DescriptionHelper
 	ImGui::PushTextWrapPos(width);
 	ImGui::Text(description);
 	ImGui::PopTextWrapPos();
+}
+
+void CenterText(const char * name)
+{
+	float nameWidth = ImGui::CalcTextSize(name).x;
+	float cursorPosX = ImGui::GetCursorPosX();
+	float newCursorPosX = (cursorPosX + ((ImGui::GetWindowSize().x - nameWidth) / 2));
+
+	ImGui::SetCursorPosX(newCursorPosX);
+
+	ImGui::Text(name);
+}
+
+#pragma endregion
+
+
+
+
+
+
+
+#pragma region Common
+
+const char * Graphics_vSyncNames[] =
+{
+	"Auto",
+	"Force Off",
+	"Force On",
+};
+
+
+
+
+
+
+
+#pragma endregion
+
+
+
+// @Todo: Move to GUI_Base or something.
+
+#pragma region Credits
+
+void CreditsWindow()
+{
+	if (!activeConfig.showCredits)
+	{
+		return;
+	}
+
+
+
+	static bool  run        = false;
+	static float scrollY    = 0;
+	static float maxScrollY = 0;
+
+
+
+	if (!run)
+	{
+		run = true;
+
+
+
+		ImGui::SetNextWindowSize
+		(
+			ImVec2
+			(
+				g_renderSize.x,
+				g_renderSize.y
+			)
+		);
+
+		ImGui::SetNextWindowPos
+		(
+			ImVec2
+			(
+				0,
+				0
+			)
+		);
+	}
+
+
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(0, 0));
+
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+
+	if
+	(
+		ImGui::Begin
+		(
+			"Credits",
+			&activeConfig.showCredits,
+			ImGuiWindowFlags_NoTitleBar  |
+			ImGuiWindowFlags_NoResize    |
+			ImGuiWindowFlags_NoMove      |
+			ImGuiWindowFlags_NoScrollbar
+		)
+	)
+	{
+		ImGui::Text("");
+
+
+		constexpr float scrollSpeedY = 1.0f;
+		constexpr size_t padding = 30;
+
+		auto & io = ImGui::GetIO();
+
+
+
+		{
+			auto window = ImGui::GetCurrentWindow();
+
+			ImGui::BringWindowToDisplayBack(window);
+		}
+
+
+
+		maxScrollY = ImGui::GetScrollMaxY();
+
+		if (scrollY < maxScrollY)
+		{
+			scrollY += (scrollSpeedY * g_frameRateMultiplier);
+		}
+		else
+		{
+			scrollY = 0;
+		}
+
+
+
+		ImGui::PushFont(io.Fonts->Fonts[FONT::OVERLAY_32]);
+
+
+
+		for_all(index, padding)
+		{
+			ImGui::Text("");
+		}
+
+
+
+		CenterText("Special Thanks");
+		ImGui::Text("");
+
+		for_all(index, countof(specialNames))
+		{
+			auto name = specialNames[index];
+
+			CenterText(name);
+		}
+
+		ImGui::Text("");
+		ImGui::Text("");
+		ImGui::Text("");
+
+
+
+		CenterText("Gold & Platinum Patrons");
+		CenterText("");
+
+		for_all(index, countof(goldPlatinumNames))
+		{
+			auto name = goldPlatinumNames[index];
+
+			CenterText(name);
+		}
+
+		ImGui::Text("");
+
+
+
+		for_all(index, padding)
+		{
+			ImGui::Text("");
+		}
+
+
+
+		ImGui::PopFont();
+
+
+
+		ImGui::Text("");
+	}
+
+	ImGui::SetScrollY(scrollY);
+
+	ImGui::End();
+
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar(4);
 }
 
 #pragma endregion
@@ -322,11 +392,11 @@ void OverlayFunction
 			lastX = x;
 			lastY = y;
 
-			GUI_save = true;
+			GUI::save = true;
 		}
 
 		auto & io = ImGui::GetIO();
-		ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_16]);
+		ImGui::PushFont(io.Fonts->Fonts[FONT::OVERLAY_16]);
 
 		ImGui::PushStyleColor
 		(
@@ -909,17 +979,18 @@ void Main()
 		}
 
 		//ImGuiIO & io = ImGui::GetIO();
-		//io.FontDefault = io.Fonts->Fonts[FONT_MAIN];
-		//ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_8 + activeConfig.Tools.Overlay.fontSizeIndex]);
+		//io.FontDefault = io.Fonts->Fonts[FONT::MAIN];
+		//ImGui::PushFont(io.Fonts->Fonts[FONT::OVERLAY_8 + activeConfig.Tools.Overlay.fontSizeIndex]);
 
-		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
+		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT::OVERLAY_8]);
 	}
 
 	if
 	(
 		ImGui::Begin
 		(
-			"DDMK 2.7 Lucia Nightly 5 September 2021",
+			DDMK_TITLE_LUCIA,
+			//"DDMK 2.7 Lucia Nightly 5 September 2021",
 			&g_show
 		)
 	)
@@ -953,13 +1024,7 @@ void Main()
 
 
 
-		ImGui::Text
-		(
-			"If you like my work and wish to support me, consider becoming my patron.\n"
-			"You can click on the button below to open my Patreon page.\n"
-			"\n"
-			"Cheers!"
-		);
+		ImGui::Text(PATREON_TEXT);
 		ImGui::Text("");
 
 		if (GUI_Button("Open Patreon Page"))
@@ -968,7 +1033,7 @@ void Main()
 			(
 				0,
 				"open",
-				"https://www.patreon.com/serpentiem",
+				PATREON_LINK,
 				0,
 				0,
 				SW_SHOW
@@ -982,6 +1047,16 @@ void Main()
 
 		Overlays();
 		System();
+
+		ImGui::Text("");
+
+		GUI_Checkbox2
+		(
+			"Show Credits",
+			activeConfig.showCredits,
+			queuedConfig.showCredits
+		);
+
 
 
 
@@ -1080,6 +1155,8 @@ export void GUI_Render()
 	{
 		Main();
 
+		CreditsWindow();
+
 		// if constexpr (debug)
 		// {
 
@@ -1096,8 +1173,8 @@ export void GUI_Render()
 
 	[&]()
 	{
-		auto & save        = GUI_save;
-		auto & saveTimeout = GUI_saveTimeout;
+		auto & save        = GUI::save;
+		auto & saveTimeout = GUI::saveTimeout;
 
 		if (saveTimeout > 0)
 		{
@@ -1131,11 +1208,11 @@ export void GUI_Init()
 {
 	LogFunction();
 
-	for_all(index, 21)
-	{
-		Log("%.4llu %llu", index, helper[index]);
-		//Log("%.4llu %llu", index, helper.data[index]);
-	}
+	// for_all(index, 21)
+	// {
+	// 	Log("%.4llu %llu", index, helper[index]);
+	// 	//Log("%.4llu %llu", index, helper.data[index]);
+	// }
 
 
 

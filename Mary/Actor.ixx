@@ -1,3 +1,4 @@
+// @Cleanup
 // @Todo: Remove File_dynamicFiles and update UpdateMotionArchives.
 
 module;
@@ -29,6 +30,9 @@ import Vars;
 #define debug false
 
 #include "Macros.h"
+
+
+#define g_enableLockOnFixes true
 
 
 
@@ -6111,6 +6115,7 @@ export void CharacterSwitchController()
 
 
 
+		// @Research: Consider Save instead.
 		auto UpdateHitMagicPoints = [&]()
 		{
 			IntroducePlayerCharacterNewActorData(playerIndex);
@@ -7982,7 +7987,7 @@ dmc3.exe+16CB77 - F3 0F10 05 8DE84000   - movss xmm0,[dmc3.exe+57B40C] { (1820.0
 		if (enable)
 		{
 			protectionHelper.Push(addr, size);
-			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags::Enemy;
+			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags_Enemy;
 			protectionHelper.Pop();
 		}
 		else
@@ -8008,7 +8013,7 @@ dmc3.exe+16CB77 - F3 0F10 05 8DE84000   - movss xmm0,[dmc3.exe+57B40C] { (1820.0
 		if (enable)
 		{
 			protectionHelper.Push(addr, size);
-			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags::Enemy;
+			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags_Enemy;
 			protectionHelper.Pop();
 		}
 		else
@@ -8034,7 +8039,7 @@ dmc3.exe+16CB77 - F3 0F10 05 8DE84000   - movss xmm0,[dmc3.exe+57B40C] { (1820.0
 		if (enable)
 		{
 			protectionHelper.Push(addr, size);
-			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags::Enemy;
+			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags_Enemy;
 			protectionHelper.Pop();
 		}
 		else
@@ -8060,7 +8065,7 @@ dmc3.exe+16CB77 - F3 0F10 05 8DE84000   - movss xmm0,[dmc3.exe+57B40C] { (1820.0
 		if (enable)
 		{
 			protectionHelper.Push(addr, size);
-			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags::Enemy;
+			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags_Enemy;
 			protectionHelper.Pop();
 		}
 		else
@@ -8086,7 +8091,7 @@ dmc3.exe+16CB77 - F3 0F10 05 8DE84000   - movss xmm0,[dmc3.exe+57B40C] { (1820.0
 		if (enable)
 		{
 			protectionHelper.Push(addr, size);
-			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags::Enemy;
+			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags_Enemy;
 			protectionHelper.Pop();
 		}
 		else
@@ -8632,7 +8637,7 @@ export void ToggleBossVergilFixes(bool enable)
 		if (enable)
 		{
 			protectionHelper.Push(addr, size);
-			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags::Enemy;
+			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags_Enemy;
 			protectionHelper.Pop();
 		}
 		else
@@ -8658,7 +8663,7 @@ export void ToggleBossVergilFixes(bool enable)
 		if (enable)
 		{
 			protectionHelper.Push(addr, size);
-			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags::Enemy;
+			*reinterpret_cast<byte32 *>(addr + 6) = CollisionFlags_Enemy;
 			protectionHelper.Pop();
 		}
 		else
@@ -8684,7 +8689,7 @@ export void ToggleBossVergilFixes(bool enable)
 		if (enable)
 		{
 			protectionHelper.Push(addr, size);
-			*reinterpret_cast<byte32 *>(addr + 3) = CollisionFlags::Enemy;
+			*reinterpret_cast<byte32 *>(addr + 3) = CollisionFlags_Enemy;
 			protectionHelper.Pop();
 		}
 		else
@@ -8710,7 +8715,7 @@ export void ToggleBossVergilFixes(bool enable)
 		if (enable)
 		{
 			protectionHelper.Push(addr, size);
-			*reinterpret_cast<byte32 *>(addr + 3) = CollisionFlags::Enemy;
+			*reinterpret_cast<byte32 *>(addr + 3) = CollisionFlags_Enemy;
 			protectionHelper.Pop();
 		}
 		else
@@ -8736,7 +8741,7 @@ export void ToggleBossVergilFixes(bool enable)
 		if (enable)
 		{
 			protectionHelper.Push(addr, size);
-			*reinterpret_cast<byte32 *>(addr + 3) = CollisionFlags::Enemy;
+			*reinterpret_cast<byte32 *>(addr + 3) = CollisionFlags_Enemy;
 			protectionHelper.Pop();
 		}
 		else
@@ -9174,7 +9179,7 @@ bool SetLockOnTargetPosition(byte8 * dest)
 
 
 
-	auto baseAddr = (dest - offsetof(PlayerActorData, targetPosition));
+	auto baseAddr = (dest - offsetof(PlayerActorData, lockOnData.targetPosition));
 
 	old_for_all(uint8, playerIndex   , activeConfig.Actor.playerCount){
 	old_for_all(uint8, characterIndex, CHARACTER_COUNT               ){
@@ -9221,7 +9226,7 @@ bool SetLockOnTargetPosition(byte8 * dest)
 
 				auto & data = *reinterpret_cast<vec4 *>(dataAddr + 0x30);
 
-				actorData.targetPosition = data;
+				actorData.lockOnData.targetPosition = data;
 			}();
 		}
 		else
@@ -9242,7 +9247,7 @@ bool SetLockOnTargetPosition(byte8 * dest)
 
 				auto & data = *reinterpret_cast<vec4 *>(dataAddr + 0x30);
 
-				actorData.targetPosition = data;
+				actorData.lockOnData.targetPosition = data;
 			}();
 		}
 
@@ -11998,6 +12003,7 @@ void ToggleMainActorFixes(bool enable)
 	*/
 }
 
+// @Update
 void ToggleStyleFixes(bool enable)
 {
 	// Disable Menu Controller
@@ -12503,7 +12509,7 @@ bool DotShadowCheck(byte8 * dest)
 		{
 			return true;
 		}
-		case DOT_SHADOW::DISABLE_ACTOR_ONLY:
+		case DOT_SHADOW::DISABLE_PLAYER_ACTORS_ONLY:
 		{
 			auto baseAddr = *reinterpret_cast<byte8 **>(dest + 0xC0);
 			if (!baseAddr)
@@ -13124,20 +13130,60 @@ bool DecreaseAltitude(byte8 * actorBaseAddr)
 
 
 
-void UpdateLockOns(byte8 * dest)
+void UpdateLockOns(byte8 * dataAddr)
 {
-	IntroduceMainActorData(actorBaseAddr, actorData, return);
-
-	old_for_all(uint32, actorIndex, g_playerActorBaseAddrs.count)
+	if (!activeConfig.updateLockOns)
 	{
-		IntroducePlayerActorData(actorBaseAddr2, g_playerActorBaseAddrs[actorIndex], actorData2, continue);
+		return;
+	}
 
-		if (actorBaseAddr2 == actorBaseAddr)
-		{
-			continue;
-		}
+	// IntroduceMainActorData(mainActorBaseAddr, mainActorData, return);
 
-		UpdateLockOn(actorBaseAddr2, dest);
+
+/*
+
+dmc3.exe+215ED5 - 83 BC 87 70CA0100 02  - cmp dword ptr [rdi+rax*4+0001CA70],02 { 2 }
+
+
+*/
+
+
+	// // Artemis Fix
+	// {
+	// 	auto & actorData = *reinterpret_cast<PlayerActorDataDante *>(mainActorBaseAddr);
+
+	// 	auto rangedWeapon = actorData.newWeapons[actorData.rangedWeaponIndex];
+
+	// 	if
+	// 	(
+	// 		(actorData.character == CHARACTER::DANTE) &&
+	// 		(rangedWeapon == WEAPON::ARTEMIS) &&
+	// 		(actorData.artemisStatus != 0)
+	// 		// (
+	// 		// 	(actorData.buttons[0] & GAMEPAD::X) ||
+	// 		// 	(
+	// 		// 		(actorData.style == STYLE::GUNSLINGER) &&
+	// 		// 		(actorData.buttons[0] & GAMEPAD::B)
+	// 		// 	)
+	// 		// )
+	// 	)
+	// 	{
+	// 		return;
+	// 	}
+	// }
+
+
+
+	for_all(actorIndex, g_playerActorBaseAddrs.count)
+	{
+		IntroducePlayerActorData(actorBaseAddr, g_playerActorBaseAddrs[actorIndex], actorData, continue);
+
+		// if (actorBaseAddr == mainActorBaseAddr)
+		// {
+		// 	continue;
+		// }
+
+		UpdateLockOn(actorBaseAddr, dataAddr);
 	}
 }
 
@@ -13375,7 +13421,7 @@ byte8 * SaveFix(byte8 * actorBaseAddr)
 
 
 
-
+// @Remove
 bool WriteVisibleFalse(byte8 * baseAddr)
 {
 	if (!baseAddr)
@@ -13396,6 +13442,7 @@ bool WriteVisibleFalse(byte8 * baseAddr)
 	return false;
 }
 
+// @Remove
 bool WriteVisibleTrue(byte8 * baseAddr)
 {
 	if (!baseAddr)
@@ -13773,7 +13820,10 @@ export void ToggleDergil(uint8 value)
 // $ActorToggleStart
 
 
-export void Actor_Toggle(bool enable)
+
+namespaceStart(Actor);
+
+export void Toggle(bool enable)
 {
 	LogFunction(enable);
 
@@ -15034,43 +15084,99 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 	}
 
 
-// @Todo: Add to Toggle.
 
-	// Reset Lock-On
+	
+
+
+
+
+	// New Reset Lock-On
 	{
 		static Function func = {};
 
 		constexpr byte8 sect0[] =
 		{
+			0x4C, 0x8D, 0x81, 0xC0, 0x41, 0x00, 0x00, // lea r8,[rcx+000041C0]
 			0x41, 0xB9, 0xFF, 0x00, 0x00, 0x00,       // mov r9d,000000FF
-			0x4C, 0x8D, 0x81, 0xC8, 0x41, 0x00, 0x00, // lea r8,[rcx+000041C8]
 			0xBA, 0x01, 0x00, 0x00, 0x00,             // mov edx,00000001
 			0x45, 0x33, 0xDB,                         // xor r11d,r11d
-			0x49, 0x8D, 0x40, 0x08,                   // lea rax,[r8+08]
-			0x4D, 0x89, 0x98, 0x08, 0x10, 0x00, 0x00, // mov [r8+00001008],r11
-			0x49, 0x89, 0x80, 0x10, 0x10, 0x00, 0x00, // mov [r8+00001010],rax
 			0x49, 0x8D, 0x40, 0x10,                   // lea rax,[r8+10]
-			0x48, 0x63, 0xCA,                         // movsxd rcx,edx
+			0x4D, 0x89, 0x98, 0x10, 0x10, 0x00, 0x00, // mov [r8+00001010],r11
+			0x49, 0x89, 0x80, 0x18, 0x10, 0x00, 0x00, // mov [r8+00001018],rax
+			0x49, 0x8D, 0x40, 0x18,                   // lea rax,[r8+18]
+			0x90,                                     // nop
+			0x90,                                     // nop
+			0x90,                                     // nop
+			0x90,                                     // nop
+			0x90,                                     // nop
+			0x48, 0x63, 0xCA,                         // movsxd  rcx,edx
 			0x48, 0x8D, 0x40, 0x10,                   // lea rax,[rax+10]
 			0x48, 0xC1, 0xE1, 0x04,                   // shl rcx,04
 			0xFF, 0xC2,                               // inc edx
-			0x48, 0x83, 0xC1, 0x08,                   // add rcx,08
+			0x48, 0x83, 0xC1, 0x10,                   // add rcx,10
 			0x49, 0x03, 0xC8,                         // add rcx,r8
 			0x48, 0x89, 0x48, 0xF0,                   // mov [rax-10],rcx
 			0x49, 0x83, 0xE9, 0x01,                   // sub r9,01
 			0x75, 0xE2,                               // jne short
-			0x4D, 0x89, 0x98, 0x00, 0x10, 0x00, 0x00, // mov [r8+00001000],r11
-			0x45, 0x89, 0x98, 0x40, 0x20, 0x00, 0x00, // mov [r8+00002040],r11d
+			0x4D, 0x89, 0x98, 0x08, 0x10, 0x00, 0x00, // mov [r8+00001008],r11
+			0x45, 0x89, 0x98, 0x48, 0x20, 0x00, 0x00, // mov [r8+00002048],r11d
 			0xC3,                                     // ret
 		};
 
 		if (!run)
 		{
+			//backupHelper.Save(addr, size);
 			func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			ResetLockOn = reinterpret_cast<ResetLockOn_t>(func.addr);
 		}
+
+		// if (enable)
+		// {
+		// 	WriteJump(addr, func.addr, (size - 5));
+		// }
+		// else
+		// {
+		// 	backupHelper.Restore(addr);
+		// }
 	}
+
+
+	// // Old Reset Lock-On
+	// {
+	// 	static Function func = {};
+
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x41, 0xB9, 0xFF, 0x00, 0x00, 0x00,       // mov r9d,000000FF
+	// 		0x4C, 0x8D, 0x81, 0xC8, 0x41, 0x00, 0x00, // lea r8,[rcx+000041C8]
+	// 		0xBA, 0x01, 0x00, 0x00, 0x00,             // mov edx,00000001
+	// 		0x45, 0x33, 0xDB,                         // xor r11d,r11d
+	// 		0x49, 0x8D, 0x40, 0x08,                   // lea rax,[r8+08]
+	// 		0x4D, 0x89, 0x98, 0x08, 0x10, 0x00, 0x00, // mov [r8+00001008],r11
+	// 		0x49, 0x89, 0x80, 0x10, 0x10, 0x00, 0x00, // mov [r8+00001010],rax
+	// 		0x49, 0x8D, 0x40, 0x10,                   // lea rax,[r8+10]
+	// 		0x48, 0x63, 0xCA,                         // movsxd rcx,edx
+	// 		0x48, 0x8D, 0x40, 0x10,                   // lea rax,[rax+10]
+	// 		0x48, 0xC1, 0xE1, 0x04,                   // shl rcx,04
+	// 		0xFF, 0xC2,                               // inc edx
+	// 		0x48, 0x83, 0xC1, 0x08,                   // add rcx,08
+	// 		0x49, 0x03, 0xC8,                         // add rcx,r8
+	// 		0x48, 0x89, 0x48, 0xF0,                   // mov [rax-10],rcx
+	// 		0x49, 0x83, 0xE9, 0x01,                   // sub r9,01
+	// 		0x75, 0xE2,                               // jne short
+	// 		0x4D, 0x89, 0x98, 0x00, 0x10, 0x00, 0x00, // mov [r8+00001000],r11
+	// 		0x45, 0x89, 0x98, 0x40, 0x20, 0x00, 0x00, // mov [r8+00002040],r11d
+	// 		0xC3,                                     // ret
+	// 	};
+
+	// 	if (!run)
+	// 	{
+	// 		func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
+	// 		CopyMemory(func.sect0, sect0, sizeof(sect0));
+	// 		ResetLockOn = reinterpret_cast<ResetLockOn_t>(func.addr);
+	// 	}
+	// }
 
 	// Reset Lock-On 2
 	{
@@ -15144,7 +15250,14 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		}
 	}
 
-	// Update Lock-On
+
+
+	#if g_enableLockOnFixes
+
+
+
+
+	// New Update Lock-On
 	{
 		static Function func = {};
 
@@ -15155,67 +15268,183 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 			0xFF, 0x81, 0x08, 0x62, 0x00, 0x00,       // inc [rcx+00006208]
 			0x48, 0x8B, 0x91, 0xD8, 0x51, 0x00, 0x00, // mov rdx,[rcx+000051D8]
 			0x48, 0x85, 0xD2,                         // test rdx,rdx
-			0x74, 0x24,                               // je short
+			0x74, 0x20,                               // je short
 			0x48, 0x8B, 0x42, 0x08,                   // mov rax,[rdx+08]
 			0x48, 0x89, 0x81, 0xD8, 0x51, 0x00, 0x00, // mov [rcx+000051D8],rax
 			0x48, 0x89, 0x1A,                         // mov [rdx],rbx
 			0x48, 0x8B, 0x81, 0xD0, 0x51, 0x00, 0x00, // mov rax,[rcx+000051D0]
 			0x48, 0x89, 0x42, 0x08,                   // mov [rdx+08],rax
 			0x48, 0x89, 0x91, 0xD0, 0x51, 0x00, 0x00, // mov [rcx+000051D0],rdx
-			0xB0, 0x01,                               // mov al,01
-			0x5B,                                     // pop rbx
-			0xC3,                                     // ret
-			0x30, 0xC0,                               // xor al,al
 			0x5B,                                     // pop rbx
 			0xC3,                                     // ret
 		};
 
 		if (!run)
 		{
-			func = CreateFunction(0, 0, false, false, sizeof(sect0), 0, 0, 0, 0, true);
+			func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			UpdateLockOn = reinterpret_cast<UpdateLockOn_t>(func.addr);
 		}
 	}
 
-	// Update Lock-On 2
+
+
+
+{
+	auto addr     = (appBaseAddr + 0x1BB77C);
+	auto jumpAddr = (appBaseAddr + 0x1BB781);
+	constexpr uint64 size = 5;
+	/*
+	dmc3.exe+1BB77C - 48 8B 5C 24 30 - mov rbx,[rsp+30]
+	dmc3.exe+1BB781 - 48 83 C4 20    - add rsp,20
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect1[] =
 	{
-		auto addr     = (appBaseAddr + 0x1BB6FC);
-		auto jumpAddr = (appBaseAddr + 0x1BB706);
-		constexpr uint32 size = 10;
-		/*
-		dmc3.exe+1BB6FC - 48 8B 47 18    - mov rax,[rdi+18]
-		dmc3.exe+1BB700 - FF 80 08620000 - inc [rax+00006208]
-		dmc3.exe+1BB706 - 48 8B 47 20    - mov rax,[rdi+20]
-		*/
+		mov_rcx_rbx,
+	};
 
-		static Function func = {};
-
-		constexpr byte8 sect1[] =
-		{
-			mov_rcx_rbx,
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateLockOns, jumpAddr, true, true, 0, sizeof(sect1), size);
-			CopyMemory(func.sect1, sect1, sizeof(sect1));
-			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(UpdateLockOns, jumpAddr, true, true, 0, sizeof(sect1), size);
+		CopyMemory(func.sect1, sect1, sizeof(sect1));
+		CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 	}
 
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+{
+	auto addr     = (appBaseAddr + 0x1BB789);
+	auto jumpAddr = (appBaseAddr + 0x1BB78E);
+	constexpr uint64 size = 5;
+	/*
+	dmc3.exe+1BB789 - 48 8B 5C 24 30 - mov rbx,[rsp+30]
+	dmc3.exe+1BB78E - 48 83 C4 20    - add rsp,20
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect1[] =
+	{
+		mov_rcx_rbx,
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(UpdateLockOns, jumpAddr, true, true, 0, sizeof(sect1), size);
+		CopyMemory(func.sect1, sect1, sizeof(sect1));
+		CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// // Old Update Lock-On
+	// {
+	// 	static Function func = {};
+
+	// 	constexpr byte8 sect0[] =
+	// 	{
+	// 		0x53,                                     // push rbx
+	// 		0x48, 0x8B, 0xDA,                         // mov rbx,rdx
+	// 		0xFF, 0x81, 0x08, 0x62, 0x00, 0x00,       // inc [rcx+00006208]
+	// 		0x48, 0x8B, 0x91, 0xD8, 0x51, 0x00, 0x00, // mov rdx,[rcx+000051D8]
+	// 		0x48, 0x85, 0xD2,                         // test rdx,rdx
+	// 		0x74, 0x24,                               // je short
+	// 		0x48, 0x8B, 0x42, 0x08,                   // mov rax,[rdx+08]
+	// 		0x48, 0x89, 0x81, 0xD8, 0x51, 0x00, 0x00, // mov [rcx+000051D8],rax
+	// 		0x48, 0x89, 0x1A,                         // mov [rdx],rbx
+	// 		0x48, 0x8B, 0x81, 0xD0, 0x51, 0x00, 0x00, // mov rax,[rcx+000051D0]
+	// 		0x48, 0x89, 0x42, 0x08,                   // mov [rdx+08],rax
+	// 		0x48, 0x89, 0x91, 0xD0, 0x51, 0x00, 0x00, // mov [rcx+000051D0],rdx
+	// 		0xB0, 0x01,                               // mov al,01
+	// 		0x5B,                                     // pop rbx
+	// 		0xC3,                                     // ret
+	// 		0x30, 0xC0,                               // xor al,al
+	// 		0x5B,                                     // pop rbx
+	// 		0xC3,                                     // ret
+	// 	};
+
+	// 	if (!run)
+	// 	{
+	// 		func = CreateFunction(0, 0, false, false, sizeof(sect0), 0, 0, 0, 0, true);
+	// 		CopyMemory(func.sect0, sect0, sizeof(sect0));
+	// 		UpdateLockOn = reinterpret_cast<UpdateLockOn_t>(func.addr);
+	// 	}
+	// }
+
+	// // Old Update Lock-On 2
+	// {
+	// 	auto addr     = (appBaseAddr + 0x1BB6FC);
+	// 	auto jumpAddr = (appBaseAddr + 0x1BB706);
+	// 	constexpr uint32 size = 10;
+	// 	/*
+	// 	dmc3.exe+1BB6FC - 48 8B 47 18    - mov rax,[rdi+18]
+	// 	dmc3.exe+1BB700 - FF 80 08620000 - inc [rax+00006208]
+	// 	dmc3.exe+1BB706 - 48 8B 47 20    - mov rax,[rdi+20]
+	// 	*/
+
+	// 	static Function func = {};
+
+	// 	constexpr byte8 sect1[] =
+	// 	{
+	// 		mov_rcx_rbx,
+	// 	};
+
+	// 	if (!run)
+	// 	{
+	// 		backupHelper.Save(addr, size);
+	// 		func = CreateFunction(UpdateLockOns, jumpAddr, true, true, 0, sizeof(sect1), size);
+	// 		CopyMemory(func.sect1, sect1, sizeof(sect1));
+	// 		CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(addr, func.addr, (size - 5));
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+
+	#endif
 
 
 
@@ -16520,6 +16749,8 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 
 	#pragma region PVP Fixes
 
+	#if g_enableLockOnFixes
+
 	// SetLockOnTargetPosition
 	{
 		auto addr     = (appBaseAddr + 0x1BAEBE);
@@ -16609,6 +16840,8 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 			backupHelper.Restore(addr);
 		}
 	}
+
+	#endif
 
 	// GetHitPoints
 	{
@@ -16855,6 +17088,8 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 
 	run = true;
 }
+
+namespaceEnd();
 
 // $ActorToggleEnd
 
@@ -17906,7 +18141,7 @@ export void SceneGame()
 
 
 
-	Actor_Toggle(activeConfig.Actor.enable);
+	Actor::Toggle(activeConfig.Actor.enable);
 
 
 

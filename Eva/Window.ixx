@@ -4,8 +4,6 @@ import Core;
 
 #include "../Core/Macros.h"
 
-import Core_ImGui;
-
 import Config;
 import Global;
 import Vars;
@@ -14,6 +12,8 @@ import Vars;
 
 export void ToggleForceWindowFocus(bool enable)
 {
+	LogFunction(enable);
+
 	static bool run = false;
 
 
@@ -40,8 +40,6 @@ export void ToggleForceWindowFocus(bool enable)
 			backupHelper.Restore(addr);
 		}
 	}
-
-
 
 	// Force gamepad focus.
 	{

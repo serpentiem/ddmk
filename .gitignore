@@ -7,8 +7,8 @@
 !dinput8/*
 !Eva
 !Eva/*
-# !Kyrie
-# !Kyrie/*
+!Kyrie
+!Kyrie/*
 !Lucia
 !Lucia/*
 !Mary
@@ -20,6 +20,7 @@
 !.gitattributes
 !.gitignore
 !.gitmodules
+!Global.h
 !LICENSE.txt
 !README.md
 */prep_*

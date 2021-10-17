@@ -13,7 +13,7 @@ using namespace Windows;
 
 import Vars;
 
-#define debug true
+#define debug false
 
 #include "Macros.h"
 
@@ -174,7 +174,7 @@ export struct Config
 
 
 
-	uint8 dotShadow = DOT_SHADOW::ENABLE;
+	uint8 dotShadow = DOT_SHADOW::DEFAULT;
 	struct
 	{
 		bool foursomeTime      = false;
@@ -569,8 +569,8 @@ export struct Config
 
 	bool preferLocalFiles = true;
 
-	double frameRate = 60.0;
-	uint8  vSync     = 0;
+	float frameRate = 60.0f;
+	uint8 vSync     = 0;
 
 	bool hideMouseCursor = (debug) ? false : true;
 
@@ -661,7 +661,7 @@ export struct Config
 	// To avoid surprises by using __declspec(align) we prefer _(n) and
 	// static_assert to get the correct alignment.
 
-	_(15);
+	_(3);
 	float kalinaAnnHookGrenadeHeight = 1280.0f;
 	_(12);
 	float kalinaAnnHookGrenadeTime = 90.0f;
@@ -765,6 +765,11 @@ export struct Config
 
 	bool forceSyncHitMagicPoints = false;
 
+	bool updateLockOns = true;
+
+
+	bool showCredits = true;
+
 
 
 };
@@ -772,8 +777,7 @@ export struct Config
 static_assert((offsetof(Config, kalinaAnnHookGrenadeHeight) % 0x10) == 0);
 static_assert((offsetof(Config, kalinaAnnHookGrenadeTime  ) % 0x10) == 0);
 static_assert((offsetof(Config, kalinaAnnHookMultiplier   ) % 0x10) == 0);
-
-static_assert((offsetof(Config, barsData   ) % 0x10) == 0);
+static_assert((offsetof(Config, barsData                  ) % 0x10) == 0);
 
 
 
@@ -973,6 +977,7 @@ CharacterData & GetCharacterData(T & actorData)
 		actorData.newEntityIndex
 	);
 }
+
 // $GetDataEnd
 
 export void ApplyDefaultCharacterData
@@ -1293,7 +1298,14 @@ export void Config_Init
 
 	CreateDirectoryA(directoryName, 0);
 
-	snprintf(g_path, sizeof(g_path), "%s\\%s", directoryName, filename);
+	snprintf
+	(
+		g_path,
+		sizeof(g_path),
+		"%s\\%s",
+		directoryName,
+		filename
+	);
 
 	old_for_all(uint8, playerIndex, PLAYER_COUNT)
 	{
@@ -1305,4 +1317,5 @@ export void Config_Init
 	DebugLog("kalinaAnnHookGrenadeHeight %llX", offsetof(Config, kalinaAnnHookGrenadeHeight));
 	DebugLog("kalinaAnnHookGrenadeTime   %llX", offsetof(Config, kalinaAnnHookGrenadeTime  ));
 	DebugLog("kalinaAnnHookMultiplier    %llX", offsetof(Config, kalinaAnnHookMultiplier   ));
+	DebugLog("barsData                   %llX", offsetof(Config, barsData                  ));
 }

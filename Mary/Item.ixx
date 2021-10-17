@@ -30,14 +30,14 @@ struct ItemHelper
 // @Research: Moving to Vars causes internal compiler error in MSVC.
 constexpr ItemHelper itemHelpers[] =
 {
-	{ ITEM_VITAL_STAR_SMALL, BUY_VITAL_STAR_SMALL, 30, itemVitalStarSmallPrices, static_cast<uint8>(countof(itemVitalStarSmallPrices)) },
-	{ ITEM_VITAL_STAR_LARGE, BUY_VITAL_STAR_LARGE, 30, itemVitalStarLargePrices, static_cast<uint8>(countof(itemVitalStarLargePrices)) },
-	{ ITEM_DEVIL_STAR      , BUY_DEVIL_STAR      , 10, itemDevilStarPrices     , static_cast<uint8>(countof(itemDevilStarPrices     )) },
-	{ ITEM_HOLY_WATER      , BUY_HOLY_WATER      , 30, itemHolyWaterPrices     , static_cast<uint8>(countof(itemHolyWaterPrices     )) },
-	{ ITEM_BLUE_ORB        , BUY_BLUE_ORB        , 6 , itemBlueOrbPrices       , static_cast<uint8>(countof(itemBlueOrbPrices       )) },
-	{ ITEM_PURPLE_ORB      , BUY_PURPLE_ORB      , 7 , itemPurpleOrbPrices     , static_cast<uint8>(countof(itemPurpleOrbPrices     )) },
-	{ ITEM_GOLD_ORB        , BUY_GOLD_ORB        , 3 , itemGoldOrbPrices       , static_cast<uint8>(countof(itemGoldOrbPrices       )) },
-	{ ITEM_YELLOW_ORB      , BUY_YELLOW_ORB      , 99, itemYellowOrbPrices     , static_cast<uint8>(countof(itemYellowOrbPrices     )) },
+	{ ITEM::VITAL_STAR_SMALL, BUY::VITAL_STAR_SMALL, 30, itemVitalStarSmallPrices, static_cast<uint8>(countof(itemVitalStarSmallPrices)) },
+	{ ITEM::VITAL_STAR_LARGE, BUY::VITAL_STAR_LARGE, 30, itemVitalStarLargePrices, static_cast<uint8>(countof(itemVitalStarLargePrices)) },
+	{ ITEM::DEVIL_STAR      , BUY::DEVIL_STAR      , 10, itemDevilStarPrices     , static_cast<uint8>(countof(itemDevilStarPrices     )) },
+	{ ITEM::HOLY_WATER      , BUY::HOLY_WATER      , 30, itemHolyWaterPrices     , static_cast<uint8>(countof(itemHolyWaterPrices     )) },
+	{ ITEM::BLUE_ORB        , BUY::BLUE_ORB        , 6 , itemBlueOrbPrices       , static_cast<uint8>(countof(itemBlueOrbPrices       )) },
+	{ ITEM::PURPLE_ORB      , BUY::PURPLE_ORB      , 7 , itemPurpleOrbPrices     , static_cast<uint8>(countof(itemPurpleOrbPrices     )) },
+	{ ITEM::GOLD_ORB        , BUY::GOLD_ORB        , 3 , itemGoldOrbPrices       , static_cast<uint8>(countof(itemGoldOrbPrices       )) },
+	{ ITEM::YELLOW_ORB      , BUY::YELLOW_ORB      , 99, itemYellowOrbPrices     , static_cast<uint8>(countof(itemYellowOrbPrices     )) },
 };
 
 
@@ -186,9 +186,9 @@ export void ItemWindow()
 		IntroduceMainActorData(mainActorData, return);
 		IntroduceData(g_playerActorBaseAddrs[0], defaultMainActorData, PlayerActorData, return);
 
-		if (itemHelper.itemIndex == ITEM_BLUE_ORB)
+		if (itemHelper.itemIndex == ITEM::BLUE_ORB)
 		{
-			auto value = (mainActorData.hitPoints + 1000.0f);
+			auto value = (mainActorData.maxHitPoints + 1000.0f);
 
 			mainActorData.hitPoints = value;
 			mainActorData.maxHitPoints = value;
@@ -196,9 +196,9 @@ export void ItemWindow()
 			defaultMainActorData.hitPoints = value;
 			defaultMainActorData.maxHitPoints = value;
 		}
-		else if (itemHelper.itemIndex == ITEM_PURPLE_ORB)
+		else if (itemHelper.itemIndex == ITEM::PURPLE_ORB)
 		{
-			auto value = (mainActorData.magicPoints + 1000.0f);
+			auto value = (mainActorData.maxMagicPoints + 1000.0f);
 
 			mainActorData.magicPoints = value;
 			mainActorData.maxMagicPoints = value;
@@ -521,7 +521,7 @@ export void ItemWindow()
 
 
 
-
+	// @Todo: Rename to itemShopWindow timeout or whatever.
 	if (g_timeout > 0)
 	{
 		g_timeout--;

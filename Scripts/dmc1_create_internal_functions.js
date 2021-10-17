@@ -1,21 +1,83 @@
+// #region
 
-
-// @Todo: Use reinterpret_cast please.
-
-
+"use strict";
 
 let fs = require("fs");
+let process = require("process");
 let vm = require("vm");
 
-vm.runInThisContext(fs.readFileSync("core.js", "utf8"));
+vm.runInThisContext
+(
+	fs.readFileSync("../core.js"  , "utf8") +
+	fs.readFileSync("dmc1_core.js", "utf8")
+);
+
+ClearAll();
+
+// #endregion
+
+
+
+let location = "../Eva/Internal.ixx";
+
+let file = fs.readFileSync(location, "utf8");
+
+
+
+let tagName = "Data";
+
+
 
 ClearAll();
 
 
 
-let c_typedefs = "";
-let c_vars = "";
-let c_init = "";
+let c_until = "";
+let c_after = "";
+let c_new   = "";
+
+let lines = GetLines(file);
+
+let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
+let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
+
+console.log(startName);
+console.log(endName);
+
+if
+(
+	!Tag_Init
+	(
+		lines,
+		startName,
+		endName
+	)
+)
+{
+	console.log("Tag_Init failed.");
+
+	process.exit(1);
+
+	return;
+}
+
+
+
+Tag_CopyUntil(lines);
+
+c_until = c;
+
+ClearAll();
+
+
+
+Tag_CopyAfter(lines);
+
+c_after = c;
+
+ClearAll();
+
+
 
 let items =
 [
@@ -23,87 +85,148 @@ let items =
 	[ 0x2C4A00, "void", "uint32 meleeWeaponForm"                   , "", "Update Melee Weapon Form" ],
 	[ 0x2C4C50, "void", "uint32 rangedWeapon"                      , "", "Update Ranged Weapon"     ],
 	[ 0x3C8DC0, "void", ""                                         , "", "Update Weapons"           ],
-
-
 	[ 0x2F0610, "void", "PlayerActorData & actorData", "", "Charge Update"           ],
-
-
-
-
-
 ];
 
-let filename = "../Eva/Internal.ixx"
 
-let file = fs.readFileSync(filename, "utf8");
 
-let lines = file.match(/[\S\s]*?\r\n/g);
+// Typedefs
+{
 
-if
-(
-	!Tag_Init
+for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
+{
+	let item = items[itemIndex];
+
+	let off                = item[0];
+	let returnType         = item[1];
+	let args               = item[2];
+	let createFunctionArgs = item[3];
+	let hint               = item[4];
+
+
+
+	let offName = PositionName
 	(
-		lines,
-		/\/\/ \$DataStart$/,
-		/\/\/ \$DataEnd$/
-	)
-)
-{
-	console.log("Tag_Init failed.");
-
-	return;
-}
-
-Tag_CopyUntil(lines);
+		off,
+		(PositionFlags_Hex | PositionFlags_NoPrefix)
+	);
 
 
 
-for (let index = 0; index < items.length; index++)
-{
-	let off                = items[index][0];
-	let returnType         = items[index][1];
-	let args               = items[index][2];
-	let createFunctionArgs = items[index][3];
-	let hint               = items[index][4];
-	
-	let offStr = off.toString(16).toUpperCase();
-	
-	c_typedefs += "export typedef " + returnType + "(__fastcall * func_" + offStr + "_t)(" + args + ");";
+	c += Tabs() + "export typedef " + returnType + "(__fastcall * func_" + offName + "_t)(" + args + ");";
+
 	if (hint != "")
 	{
-		c_typedefs += " // " + hint;
+		c += Tabs() + " // " + hint;
 	}
-	c_typedefs += "" + NEW_LINE;
 
-	c_vars += "export func_" + offStr + "_t func_" + offStr + " = 0; // (" + args + ")" + NEW_LINE;
-	
-	c_init += "\t{" + NEW_LINE;
-	c_init += "\t\tauto func = CreateFunction((appBaseAddr + 0x" + offStr + ")";
-	if (createFunctionArgs != "")
-	{
-		c_init += ", " + createFunctionArgs;
-	}
-	c_init += ");" + NEW_LINE;
-	c_init += "\t\tfunc_" + offStr + " = (func_" + offStr + "_t)func.addr;" + NEW_LINE;
-	c_init += "\t}" + NEW_LINE;
+	c += NEW_LINE;
 }
 
-c += c_typedefs;
 c += NEW_LINE;
 
-c += c_vars;
+}
+
+
+
+// Vars
+{
+
+for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
+{
+	let item = items[itemIndex];
+
+	let off                = item[0];
+	let returnType         = item[1];
+	let args               = item[2];
+	let createFunctionArgs = item[3];
+	let hint               = item[4];
+
+
+
+	let offName = PositionName
+	(
+		off,
+		(PositionFlags_Hex | PositionFlags_NoPrefix)
+	);
+
+
+
+	c += Tabs() + "export func_" + offName + "_t func_" + offName + " = 0; // (" + args + ")" + NEW_LINE;
+}
+
 c += NEW_LINE;
 
-c += "export void Internal_Init()" + NEW_LINE;
-c += "{" + NEW_LINE;
-c += "\tLogFunction();" + NEW_LINE;
-c += c_init;
-c += "}" + NEW_LINE;
+}
 
+
+
+// Init
+{
+
+c += Tabs() + "export void Internal_Init()" + NEW_LINE;
+
+ScopeStart();
+
+c += Tabs() + "LogFunction();" + NEW_LINE;
 c += NEW_LINE;
 
 
 
-Tag_CopyAfter(lines);
+for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
+{
+	let item = items[itemIndex];
 
-fs.writeFileSync(filename, c);
+	let off                = item[0];
+	let returnType         = item[1];
+	let args               = item[2];
+	let createFunctionArgs = item[3];
+	let hint               = item[4];
+
+
+
+	let offName = PositionName
+	(
+		off,
+		(PositionFlags_Hex | PositionFlags_NoPrefix)
+	);
+
+
+
+	ScopeStart();
+
+	c += Tabs() + "auto func = CreateFunction((appBaseAddr + 0x" + offName + ")";
+
+	if (createFunctionArgs != "")
+	{
+		c += ", " + createFunctionArgs;
+	}
+
+	c += ");" + NEW_LINE;
+
+	c += Tabs() + "func_" + offName + " = (func_" + offName + "_t)func.addr;" + NEW_LINE;
+
+	ScopeEnd();
+}
+
+ScopeEnd();
+
+c += NEW_LINE;
+
+}
+
+
+
+CleanStream();
+
+c_new = c;
+
+ClearAll();
+
+
+
+file = c_until + c_new + c_after;
+
+
+
+fs.writeFileSync(location, file);

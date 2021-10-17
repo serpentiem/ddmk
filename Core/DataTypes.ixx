@@ -1,26 +1,11 @@
-
-
-module;
-
-#include "Macros.h"
-
-// #include "Datatypes.h"
-// #include "Macros.h"
 export module DataTypes;
 
-
-
-
-
-
-
-
+#include "Macros.h"
 
 
 
 export
 {
-
 
 typedef unsigned char      bool8;
 typedef unsigned short     bool16;
@@ -45,6 +30,25 @@ typedef unsigned long long byte64;
 typedef float  float32;
 typedef double float64;
 
+
+
+#ifdef _WIN64
+
+typedef uint64 off_t;
+typedef uint64 size_t;
+
+#else
+
+typedef uint32 off_t;
+
+// @Busted
+// typedef uint32 size_t;
+
+#endif
+
+
+
+// @Todo: Simplify.
 template <typename ...>
 struct Tuple;
 
@@ -97,21 +101,4 @@ using vec2 = Tuple<float, float>;
 using vec3 = Tuple<float, float, float>;
 using vec4 = Tuple<float, float, float, float>;
 
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

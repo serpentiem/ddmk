@@ -1,38 +1,51 @@
-// #region Core
+// #region
 
-
+"use strict";
 
 let fs = require("fs");
 let process = require("process");
 let vm = require("vm");
 
-vm.runInThisContext(fs.readFileSync("core.js", "utf8"));
+vm.runInThisContext
+(
+	fs.readFileSync("../core.js"  , "utf8") +
+	fs.readFileSync("dmc1_core.js", "utf8")
+);
 
 ClearAll();
 
-
-
-const Flags_NoSave  = 1 << 0;
-const Flags_NoClear = 1 << 1;
+// #endregion
 
 
 
-function SaveStream(name)
+let location = "../Eva/Vars.ixx";
+
+let file = fs.readFileSync(location, "utf8");
+
+
+
+// #region Feed
+
+function FeedStruct
+(
+	name,
+	items,
+	size    = 0,
+	tagName = name
+)
 {
-	let c_new = c;
+	ClearAll();
 
-	c = "";
 
-	let filename = "../Eva/Vars.ixx";
 
-	let file = fs.readFileSync(filename, "utf8");
+	let c_until = "";
+	let c_after = "";
+	let c_new   = "";
 
 	let lines = GetLines(file);
 
-
-
-	let startName = new RegExp("\\/\\/ \\$" + name + "Start$");
-	let endName   = new RegExp("\\/\\/ \\$" + name + "End$"  );
+	let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
+	let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
 
 	console.log(startName);
 	console.log(endName);
@@ -54,48 +67,40 @@ function SaveStream(name)
 		return;
 	}
 
+
+
 	Tag_CopyUntil(lines);
 
-	c += c_new;
+	c_until = c;
+
+	ClearAll();
+
+
 
 	Tag_CopyAfter(lines);
 
-	fs.writeFileSync(filename, c);
-
-
+	c_after = c;
 
 	ClearAll();
-}
 
-function FeedTuple
-(
-	name,
-	items,
-	size = 0,
-	tagName = name,
-	flags = 0
-)
-{
-	CreateTuple
+
+
+	CreateStruct
 	(
 		name,
 		items,
 		size,
 		0,
-		TupleFlags_Export
+		StructFlags_Export
 	);
 
-
-
-	ClearAsserts();
-
-	CreateTupleAsserts
+	CreateStructAsserts
 	(
 		name,
 		items,
 		size,
 		0,
-		TupleFlags_NoTypeAssert
+		StructFlags_NoTypeAssert
 	);
 
 	MergeAsserts();
@@ -103,86 +108,98 @@ function FeedTuple
 
 	CleanStream();
 
-	if (!(flags & Flags_NoSave))
-	{
-		SaveStream(tagName);
-	}
+	c_new = c;
+
+	ClearAll();
+
+
+
+	file = c_until + c_new + c_after;
 }
 
 function FeedEnum
 (
 	name,
 	items,
-	tagName = name,
-	flags = 0
+	tagName = name
 )
 {
-	c += "export namespaceStart(" + name + ");" + NEW_LINE;
-	c += "enum" + NEW_LINE;
+	ClearAll();
 
-	ScopeStart();
 
-	let unknownIndex = 0;
 
-	for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
-	{
-		let item = items[itemIndex];
+	let c_until = "";
+	let c_after = "";
+	let c_new   = "";
 
-		let name = item[0];
-		let value = item[1];
+	let lines = GetLines(file);
 
-		if
+	let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
+	let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
+
+	console.log(startName);
+	console.log(endName);
+
+	if
+	(
+		!Tag_Init
 		(
-			(name == "") ||
-			name.match(/unknown/i)
+			lines,
+			startName,
+			endName
 		)
-		{
-			name = "UNKNOWN_" + unknownIndex;
+	)
+	{
+		console.log("Tag_Init failed.");
 
-			unknownIndex++;
-		}
+		process.exit(1);
 
-		name = ReplaceAll(name, "-", " ");
-
-		name = ReplaceAll(name, "&", "");
-
-		name = ReplaceAll(name, "  ", " ");
-
-		name = ReplaceAll(name, " ", "_");
-
-		name = ReplaceAll(name, "'", "");
-
-		name = name.toUpperCase();
-
-		c += Tabs() + name;
-
-		if (value != "")
-		{
-			c += " = " + value;
-		}
-
-		c += "," + NEW_LINE;
+		return;
 	}
 
-	ScopeEnd
+
+
+	Tag_CopyUntil(lines);
+
+	c_until = c;
+
+	ClearAll();
+
+
+
+	Tag_CopyAfter(lines);
+
+	c_after = c;
+
+	ClearAll();
+
+
+
+	c += "export namespaceStart(" + name + ");" + NEW_LINE;
+
+	CreateEnum
 	(
-		"}",
-		ScopeFlags_Semicolon
+		"",
+		items,
+		"",
+		EnumFlags_UpperCase
 	);
 
 	c += "namespaceEnd();" + NEW_LINE;
 	c += NEW_LINE;
 
+	CleanStream();
 
-	if (!(flags & Flags_NoSave))
-	{
-		SaveStream(tagName);
-	}
+	c_new = c;
+
+	ClearAll();
+
+
+
+	file = c_until + c_new + c_after;
 }
 
 // #endregion
-
-
 
 // #region SessionData
 {
@@ -214,7 +231,7 @@ let items =
 	[ "orbFlags"   , "byte32"  , [], 0x247C ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"SessionData",
 	items
@@ -222,8 +239,6 @@ FeedTuple
 
 }
 // #endregion
-
-
 
 // #region EventData
 {
@@ -236,7 +251,7 @@ let items =
 	[ "nextRoom" , "uint32", [], 0x28C ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"EventData",
 	items
@@ -244,8 +259,6 @@ FeedTuple
 
 }
 // #endregion
-
-
 
 // #region PlayerActorData
 {
@@ -268,7 +281,7 @@ let items =
 	[ "chargeTimers[2]"    , "int16" , [], 0x1C66 ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"PlayerActorData",
 	items
@@ -276,9 +289,6 @@ FeedTuple
 
 }
 // #endregion
-
-
-
 
 // #region WeaponData
 {
@@ -289,7 +299,7 @@ let items =
 	[ "updateMeleeWeapon" , "bool", [], 0xACA1 ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"WeaponData",
 	items
@@ -297,23 +307,6 @@ FeedTuple
 
 }
 // #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // #region Event
 {
@@ -333,9 +326,6 @@ FeedEnum
 
 }
 // #endregion
-
-
-
 
 // #region Mode
 {
@@ -358,8 +348,6 @@ FeedEnum
 }
 // #endregion
 
-
-
 // #region Character
 {
 
@@ -379,8 +367,6 @@ FeedEnum
 
 }
 // #endregion
-
-
 
 // #region Weapon
 {
@@ -410,7 +396,6 @@ FeedEnum
 }
 // #endregion
 
-
 // #region MeleeWeaponForm
 {
 
@@ -430,10 +415,6 @@ FeedEnum
 
 }
 // #endregion
-
-
-
-
 
 // #region Item0
 {
@@ -461,12 +442,6 @@ FeedEnum
 
 }
 // #endregion
-
-
-
-
-
-
 
 // #region Item1
 {
@@ -505,10 +480,6 @@ FeedEnum
 }
 // #endregion
 
-
-
-
-
 // #region Item2
 {
 
@@ -544,43 +515,6 @@ FeedEnum
 }
 // #endregion
 
-
-
-
-// // #region Item3
-// {
-
-// let items =
-// [
-// 	[ "", "" ],
-// ];
-
-// FeedEnum
-// (
-// 	"ITEM_3",
-// 	items,
-// 	"Item3"
-// );
-
-// }
-// // #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // #region Item4
 {
 
@@ -604,8 +538,6 @@ FeedEnum
 
 }
 // #endregion
-
-
 
 // #region Item5
 {
@@ -632,8 +564,6 @@ FeedEnum
 }
 // #endregion
 
-
-
 // #region Item6
 {
 
@@ -658,516 +588,6 @@ FeedEnum
 }
 // #endregion
 
-
-
-/*
-mission 1
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-mission 2
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-mission 3
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-
-
-mission 4
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-pride of lion
-4
-6
-1
-
-
-
-
-
-
-mission 5
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-melancholy soul
-4
-3
-1
-
-
-
-
-mission 6
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-
-
-mission 7
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-guiding light
-4
-5
-1
-
-
-
-
-
-mission 8
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-
-
-mission 9
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-
-
-
-mission 10
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-
-
-mission 11
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-
-mission 12
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-
-
-
-
-
-mission 13
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-
-
-
-
-mission 14
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-
-
-
-mission 15
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-
-emblem shield
-2
-17
-1
-
-
-
-
-mission 16
-
-vital star
-2
-10
-1
-
-staff of hermes
-2
-15
-1
-
-amulet
-2
-16
-1
-
-wheel of destiny
-5
-7
-1
-
-
-
-
-
-mission 17
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-
-
-
-
-mission 18
-
-vital star
-2
-10
-1
-
-amulet
-2
-16
-1
-
-
-
-
-
-
-mission 19
-
-vital star
-2
-10
-1
-
-perfect amulet
-6
-6
-1
-
-elixir
-6
-2
-1
-
-
-
-mission 20
-
-vital star
-2
-10
-1
-
-perfect amulet
-6
-6
-1
-
-
-
-mission 21
-
-vital star
-2
-10
-1
-
-perfect amulet
-6
-6
-1
-
-
-
-mission 22
-
-vital star
-2
-10
-1
-
-perfect amulet
-6
-6
-1
-
-
-mission 23
-
-vital star
-2
-10
-1
-
-perfect amulet
-6
-6
-1
-
-
-mission 24
-
-vital star
-2
-10
-1
-
-perfect amulet
-6
-6
-1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
 // #region ScreenEffectData
 {
 
@@ -1181,7 +601,7 @@ let items =
 	[ "status", "uint8" , [], 0x64 ],
 ];
 
-FeedTuple
+FeedStruct
 (
 	"ScreenEffectData",
 	items,
@@ -1198,14 +618,4 @@ dmc1.exe+262623 - 48 3B DD    - cmp rbx,rbp
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+fs.writeFileSync(location, file);

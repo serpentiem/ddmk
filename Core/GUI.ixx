@@ -36,8 +36,22 @@ using namespace D3D11;
 
 
 export int     GUI_id          = 0;
-export bool    GUI_save        = false;
-export float GUI_saveTimeout = 0;
+
+
+export namespaceStart(GUI);
+
+export bool  save        = false;
+export float saveTimeout = 0;
+
+namespaceEnd();
+
+
+// export bool    GUI_hide        = false;
+// export float   GUI_hideTimeout = 0;
+
+
+
+
 
 template <typename T>
 struct GetImGuiDataType
@@ -102,7 +116,7 @@ export bool GUI_ResetButton()
 
 	if (update)
 	{
-		GUI_save = true;
+		::GUI::save = true;
 	}
 
 	return update;
@@ -120,7 +134,7 @@ export bool GUI_Checkbox
 
 	if (update)
 	{
-		GUI_save = true;
+		::GUI::save = true;
 	}
 
 	return update;
@@ -173,7 +187,7 @@ bool GUI_Input
 
 	if (update)
 	{
-		GUI_save = true;
+		::GUI::save = true;
 	}
 
 	return update;
@@ -268,7 +282,7 @@ bool GUI_InputDefault
 
 	if (update)
 	{
-		GUI_save = true;
+		::GUI::save = true;
 	}
 
 	return update;
@@ -351,7 +365,7 @@ bool GUI_Slider
 
 	if (update)
 	{
-		GUI_save = true;
+		::GUI::save = true;
 	}
 
 	return update;
@@ -437,7 +451,7 @@ bool GUI_Combo
 
 	if (update)
 	{
-		GUI_save = true;
+		::GUI::save = true;
 	}
 
 	return update;
@@ -512,7 +526,7 @@ bool GUI_ComboMap
 
 	if (update)
 	{
-		GUI_save = true;
+		::GUI::save = true;
 	}
 
 	if constexpr (debug)
@@ -616,7 +630,7 @@ export bool GUI_ColorEdit4
 
 	if (update)
 	{
-		GUI_save = true;
+		::GUI::save = true;
 	}
 
 	if constexpr (debug)
@@ -780,7 +794,7 @@ export bool GUI_Color
 
 	if (update)
 	{
-		GUI_save = true;
+		::GUI::save = true;
 	}
 
 	if constexpr (debug)

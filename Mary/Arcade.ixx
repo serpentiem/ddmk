@@ -58,25 +58,25 @@ export void InitSession()
 
 
 
-	sessionData.itemCounts[ITEM_GOLD_ORB  ] = 3;
-	sessionData.itemCounts[ITEM_BLUE_ORB  ] = 6;
-	sessionData.itemCounts[ITEM_PURPLE_ORB] = 7;
+	sessionData.itemCounts[ITEM::GOLD_ORB  ] = 3;
+	sessionData.itemCounts[ITEM::BLUE_ORB  ] = 6;
+	sessionData.itemCounts[ITEM::PURPLE_ORB] = 7;
 
 	if constexpr (debug)
 	{
 		sessionData.redOrbs = 1500000;
 
-		sessionData.itemCounts[ITEM_BLUE_ORB  ] = 0;
-		sessionData.itemCounts[ITEM_PURPLE_ORB] = 0;
+		sessionData.itemCounts[ITEM::BLUE_ORB  ] = 0;
+		sessionData.itemCounts[ITEM::PURPLE_ORB] = 0;
 	}
 
 
 
 	SetMemory
 	(
-		sessionData.unlock,
+		sessionData.unlocks,
 		1,
-		sizeof(sessionData.unlock)
+		sizeof(sessionData.unlocks)
 	);
 
 	if (activeConfig.Arcade.character == CHARACTER::DANTE)

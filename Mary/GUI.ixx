@@ -1,5 +1,6 @@
 module;
 #include "../ImGui/imgui.h"
+#include "../ImGui/imgui_internal.h"
 
 #include <stdio.h>
 
@@ -9,6 +10,7 @@ export module GUI;
 import Core;
 
 #include "../Core/Macros.h"
+#include "../Global.h"
 
 import Vars;
 
@@ -44,7 +46,7 @@ using namespace Windows;
 using namespace DXGI;
 using namespace D3D11;
 
-#define debug true
+#define debug false
 
 #include "Macros.h"
 
@@ -132,6 +134,17 @@ void DescriptionHelper
 	ImGui::PushTextWrapPos(width);
 	ImGui::Text(description);
 	ImGui::PopTextWrapPos();
+}
+
+void CenterText(const char * name)
+{
+	float nameWidth = ImGui::CalcTextSize(name).x;
+	float cursorPosX = ImGui::GetCursorPosX();
+	float newCursorPosX = (cursorPosX + ((ImGui::GetWindowSize().x - nameWidth) / 2));
+
+	ImGui::SetCursorPosX(newCursorPosX);
+
+	ImGui::Text(name);
 }
 
 #pragma endregion
@@ -811,6 +824,168 @@ static_assert(countof(trackFilenames) == countof(trackNames));
 
 #pragma endregion
 
+// @Todo: Move to GUI_Base or something.
+
+#pragma region Credits
+
+void CreditsWindow()
+{
+	if (!activeConfig.showCredits)
+	{
+		return;
+	}
+
+
+
+	static bool  run        = false;
+	static float scrollY    = 0;
+	static float maxScrollY = 0;
+
+
+
+	if (!run)
+	{
+		run = true;
+
+
+
+		ImGui::SetNextWindowSize
+		(
+			ImVec2
+			(
+				g_renderSize.x,
+				g_renderSize.y
+			)
+		);
+
+		ImGui::SetNextWindowPos
+		(
+			ImVec2
+			(
+				0,
+				0
+			)
+		);
+	}
+
+
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(0, 0));
+
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+
+	if
+	(
+		ImGui::Begin
+		(
+			"Credits",
+			&activeConfig.showCredits,
+			ImGuiWindowFlags_NoTitleBar  |
+			ImGuiWindowFlags_NoResize    |
+			ImGuiWindowFlags_NoMove      |
+			ImGuiWindowFlags_NoScrollbar
+		)
+	)
+	{
+		ImGui::Text("");
+
+
+		constexpr float scrollSpeedY = 1.0f;
+		constexpr size_t padding = 30;
+
+		auto & io = ImGui::GetIO();
+
+
+
+		{
+			auto window = ImGui::GetCurrentWindow();
+
+			ImGui::BringWindowToDisplayBack(window);
+		}
+
+
+
+		maxScrollY = ImGui::GetScrollMaxY();
+
+		if (scrollY < maxScrollY)
+		{
+			scrollY += (scrollSpeedY * g_frameRateMultiplier);
+		}
+		else
+		{
+			scrollY = 0;
+		}
+
+
+
+		ImGui::PushFont(io.Fonts->Fonts[FONT::OVERLAY_32]);
+
+
+
+		for_all(index, padding)
+		{
+			ImGui::Text("");
+		}
+
+
+
+		CenterText("Special Thanks");
+		ImGui::Text("");
+
+		for_all(index, countof(specialNames))
+		{
+			auto name = specialNames[index];
+
+			CenterText(name);
+		}
+
+		ImGui::Text("");
+		ImGui::Text("");
+		ImGui::Text("");
+
+
+
+		CenterText("Gold & Platinum Patrons");
+		CenterText("");
+
+		for_all(index, countof(goldPlatinumNames))
+		{
+			auto name = goldPlatinumNames[index];
+
+			CenterText(name);
+		}
+
+		ImGui::Text("");
+
+
+
+		for_all(index, padding)
+		{
+			ImGui::Text("");
+		}
+
+
+
+		ImGui::PopFont();
+
+
+
+		ImGui::Text("");
+	}
+
+	ImGui::SetScrollY(scrollY);
+
+	ImGui::End();
+
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar(4);
+}
+
+#pragma endregion
+
 #pragma region Texture
 
 struct TextureData
@@ -898,7 +1073,7 @@ void TextureData::Render
 			lastX = x;
 			lastY = y;
 
-			GUI_save = true;
+			GUI::save = true;
 		}
 
 		ImGui::Image
@@ -1837,7 +2012,7 @@ void WeaponSwitchControllerSettings()
 
 		UpdateWeaponSwitchControllerTexturePositions();
 
-		GUI_save = true;
+		GUI::save = true;
 	}
 	ImGui::Text("");
 
@@ -2699,6 +2874,8 @@ void ActorSection()
 			ResetConfig(enablePVPFixes);
 
 			ResetConfig(forceSyncHitMagicPoints);
+
+			ResetConfig(updateLockOns);
 		}
 		ImGui::Text("");
 
@@ -2744,6 +2921,30 @@ void ActorSection()
 
 		GUI_SectionEnd();
 		ImGui::Text("");
+
+
+
+
+		GUI_Checkbox2
+		(
+			"Update Lock-Ons",
+			activeConfig.updateLockOns,
+			queuedConfig.updateLockOns
+		);
+
+
+
+
+		GUI_Checkbox2
+		(
+			"Force Sync Hit & Magic Points",
+			activeConfig.forceSyncHitMagicPoints,
+			queuedConfig.forceSyncHitMagicPoints
+		);
+
+
+		ImGui::Text("");
+
 
 
 
@@ -2796,14 +2997,7 @@ void ActorSection()
 			activeConfig.enablePVPFixes,
 			queuedConfig.enablePVPFixes
 		);
-		ImGui::Text("");
 
-		GUI_Checkbox2
-		(
-			"Force Sync Hit & Magic Points",
-			activeConfig.forceSyncHitMagicPoints,
-			queuedConfig.forceSyncHitMagicPoints
-		);
 
 
 
@@ -3160,7 +3354,7 @@ void BarsFunction
 			lastX = x;
 			lastY = y;
 
-			GUI_save = true;
+			GUI::save = true;
 		}
 
 
@@ -3328,7 +3522,10 @@ void Bars()
 	if
 	(
 		!showBars &&
-		!InGame()
+		!(
+			activeConfig.Actor.enable &&
+			InGame()
+		)
 	)
 	{
 		return;
@@ -3515,7 +3712,7 @@ const char * cameraAutoAdjustNames[] =
 };
 
 
-
+// @Remove
 export template <typename T>
 void GUI_InputDefault2Camera
 (
@@ -4367,12 +4564,35 @@ void Dante()
 
 #pragma region Debug
 
+// @Order
+
 bool showFileDataWindow    = false;
 bool showRegionDataWindow  = false;
 bool showSoundWindow       = false;
 bool showMissionDataWindow = false;
 bool showActorWindow       = false;
 bool showEventDataWindow   = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void MissionDataWindow()
 {
@@ -4446,7 +4666,7 @@ void MissionDataWindow()
 
 		ImGui::PushItemWidth(150);
 
-		old_for_all(uint8, itemIndex, ITEM_COUNT)
+		old_for_all(uint8, itemIndex, ITEM::COUNT)
 		{
 			ImGui::Text("%.4u %llX", itemIndex, &missionData.itemCounts[itemIndex]);
 			ImGui::SameLine();
@@ -4473,7 +4693,7 @@ void MissionDataWindow()
 
 		ImGui::PushItemWidth(150);
 
-		old_for_all(uint8, buyIndex, BUY_COUNT)
+		old_for_all(uint8, buyIndex, BUY::COUNT)
 		{
 			ImGui::Text("%.4u %llX", buyIndex, &missionData.buyCounts[buyIndex]);
 			ImGui::SameLine();
@@ -6853,9 +7073,9 @@ void Mobility()
 
 const char * dotShadowNames[] =
 {
-	"Enable",
+	"Default",
 	"Disable",
-	"Disable Actor Only"
+	"Disable Player Actors Only"
 };
 
 
@@ -7033,7 +7253,7 @@ void OverlayFunction
 			lastX = x;
 			lastY = y;
 
-			GUI_save = true;
+			GUI::save = true;
 		}
 
 		auto & io = ImGui::GetIO();
@@ -7224,6 +7444,16 @@ void MainOverlayWindow()
 			);
 		}
 
+		if
+		(
+			activeConfig.mainOverlayData.showFocus ||
+			activeConfig.mainOverlayData.showFPS ||
+			activeConfig.mainOverlayData.showSizes
+		)
+		{
+			ImGui::Text("");
+		}
+
 		if (activeConfig.mainOverlayData.showScene)
 		{
 			if (g_scene >= SCENE::COUNT)
@@ -7246,6 +7476,7 @@ void MainOverlayWindow()
 				}
 
 				IntroduceEventData(return);
+				IntroduceNextEventData(return);
 
 				if (eventData.event >= EVENT::COUNT)
 				{
@@ -7256,40 +7487,45 @@ void MainOverlayWindow()
 					ImGui::Text(eventNames[eventData.event]);
 				}
 
-				ImGui::Text("%u", eventData.room);
-				ImGui::Text("%u", eventData.position);
+				ImGui::Text("room         %u", eventData.room        );
+				ImGui::Text("position     %u", eventData.position    );
+				ImGui::Text("nextRoom     %u", nextEventData.room    );
+				ImGui::Text("nextPosition %u", nextEventData.position);
 			}();
+			ImGui::Text("");
 		}
 
 		if (activeConfig.mainOverlayData.showPosition)
 		{
 			[&]()
 			{
-				if (g_scene != SCENE::GAME)
-				{
-					return;
-				}
+				// if (g_scene != SCENE::GAME)
+				// {
+				// 	return;
+				// }
 
 				IntroduceMainActorData(actorData, return);
 
-				ImGui::Text("X %g", actorData.position.x);
-				ImGui::Text("Y %g", actorData.position.y);
-				ImGui::Text("Z %g", actorData.position.z);
+				ImGui::Text("X        %g", actorData.position.x);
+				ImGui::Text("Y        %g", actorData.position.y);
+				ImGui::Text("Z        %g", actorData.position.z);
+				ImGui::Text("Rotation %u", actorData.rotation  );
 			}();
-		}
-
-		if
-		(
-			activeConfig.mainOverlayData.showFocus ||
-			activeConfig.mainOverlayData.showFPS ||
-			activeConfig.mainOverlayData.showSizes ||
-			activeConfig.mainOverlayData.showScene ||
-			activeConfig.mainOverlayData.showEventData ||
-			activeConfig.mainOverlayData.showPosition
-		)
-		{
 			ImGui::Text("");
 		}
+
+		// if
+		// (
+		// 	activeConfig.mainOverlayData.showFocus ||
+		// 	activeConfig.mainOverlayData.showFPS ||
+		// 	activeConfig.mainOverlayData.showSizes ||
+		// 	activeConfig.mainOverlayData.showScene ||
+		// 	activeConfig.mainOverlayData.showEventData ||
+		// 	activeConfig.mainOverlayData.showPosition
+		// )
+		// {
+		// 	ImGui::Text("");
+		// }
 
 		if (activeConfig.mainOverlayData.showRegionData)
 		{
@@ -7405,7 +7641,7 @@ struct Overlay2Data : Config::OverlayData
 {
 	Overlay2Data()
 	{
-		enable = true;
+		enable = false;
 
 		pos.x = 250;
 	}
@@ -7592,7 +7828,8 @@ void MissionOverlayWindow()
 		auto timeData = TimeData
 		(
 			static_cast<float>(missionData.frameCount),
-			60.0f
+			activeConfig.frameRate
+			// 60.0f // @Update
 		);
 
 		ImGui::Text
@@ -8272,7 +8509,7 @@ void System()
 			ResetConfig(soundIgnoreEnemyData);
 
 			ResetConfig(forceWindowFocus);
-			Window::ToggleForceFocus(activeConfig.forceWindowFocus);
+			ToggleForceWindowFocus(activeConfig.forceWindowFocus);
 		}
 		GUI_SectionEnd();
 		ImGui::Text("");
@@ -8344,7 +8581,7 @@ void System()
 				activeConfig.frameRate,
 				queuedConfig.frameRate,
 				defaultConfig.frameRate,
-				1.0,
+				1.0f,
 				"%.2f",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			)
@@ -8501,7 +8738,7 @@ void System()
 			)
 		)
 		{
-			Window::ToggleForceFocus(activeConfig.forceWindowFocus);
+			ToggleForceWindowFocus(activeConfig.forceWindowFocus);
 		}
 
 		ImGui::Text("");
@@ -8585,16 +8822,16 @@ void TrainingSection()
 		if (GUI_ResetButton())
 		{
 			ResetConfig(infiniteHitPoints);
-			Training::ToggleInfiniteHitPoints(activeConfig.infiniteHitPoints);
+			ToggleInfiniteHitPoints(activeConfig.infiniteHitPoints);
 
 			ResetConfig(infiniteMagicPoints);
-			Training::ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
+			ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
 
 			ResetConfig(disableTimer);
-			Training::ToggleDisableTimer(activeConfig.disableTimer);
+			ToggleDisableTimer(activeConfig.disableTimer);
 
 			ResetConfig(infiniteBullets);
-			Training::ToggleInfiniteBullets(activeConfig.infiniteBullets);
+			ToggleInfiniteBullets(activeConfig.infiniteBullets);
 		}
 		ImGui::Text("");
 
@@ -8608,7 +8845,7 @@ void TrainingSection()
 			)
 		)
 		{
-			Training::ToggleInfiniteHitPoints(activeConfig.infiniteHitPoints);
+			ToggleInfiniteHitPoints(activeConfig.infiniteHitPoints);
 		}
 
 		if
@@ -8621,7 +8858,7 @@ void TrainingSection()
 			)
 		)
 		{
-			Training::ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
+			ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
 		}
 
 		if
@@ -8634,7 +8871,7 @@ void TrainingSection()
 			)
 		)
 		{
-			Training::ToggleDisableTimer(activeConfig.disableTimer);
+			ToggleDisableTimer(activeConfig.disableTimer);
 		}
 
 		if
@@ -8647,7 +8884,7 @@ void TrainingSection()
 			)
 		)
 		{
-			Training::ToggleInfiniteBullets(activeConfig.infiniteBullets);
+			ToggleInfiniteBullets(activeConfig.infiniteBullets);
 		}
 
 
@@ -8970,12 +9207,15 @@ void Main()
 	(
 		ImGui::Begin
 		(
-			"DDMK 2.7 Mary Nightly 5 September 2021",
+			DDMK_TITLE_MARY,
 			&g_show
 		)
 	)
 	{
 		ImGui::Text("");
+
+
+
 
 
 
@@ -9004,13 +9244,7 @@ void Main()
 
 
 
-		ImGui::Text
-		(
-			"If you like my work and wish to support me, consider becoming my patron.\n"
-			"You can click on the button below to open my Patreon page.\n"
-			"\n"
-			"Cheers!"
-		);
+		ImGui::Text(PATREON_TEXT);
 		ImGui::Text("");
 
 		if (GUI_Button("Open Patreon Page"))
@@ -9019,7 +9253,7 @@ void Main()
 			(
 				0,
 				"open",
-				"https://www.patreon.com/serpentiem",
+				PATREON_LINK,
 				0,
 				0,
 				SW_SHOW
@@ -9054,6 +9288,15 @@ void Main()
 		Textures();
 		TrainingSection();
 		Vergil();
+
+		ImGui::Text("");
+
+		GUI_Checkbox2
+		(
+			"Show Credits",
+			activeConfig.showCredits,
+			queuedConfig.showCredits
+		);
 
 
 
@@ -9109,7 +9352,17 @@ export void GUI_Render()
 
 	if (g_show)
 	{
+
+
+
+		CreditsWindow();
+
+
 		Main();
+
+
+
+
 
 		if constexpr (debug)
 		{
@@ -9127,8 +9380,8 @@ export void GUI_Render()
 
 	[&]()
 	{
-		auto & save        = GUI_save;
-		auto & saveTimeout = GUI_saveTimeout;
+		auto & save        = GUI::save;
+		auto & saveTimeout = GUI::saveTimeout;
 
 		if (saveTimeout > 0)
 		{

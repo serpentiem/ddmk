@@ -58,6 +58,8 @@ export struct Config
 	bool forceWindowFocus = true;
 
 	float globalScale = 1;
+
+	bool showCredits = true;
 };
 
 #pragma pack(pop)

@@ -19,6 +19,8 @@ using namespace DI8;
 //#include "Macros.h"
 
 
+export float g_frameRateMultiplier = 1.0f;
+
 
 export namespace DXGI
 {

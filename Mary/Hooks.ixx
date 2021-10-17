@@ -1,3 +1,9 @@
+
+// @Style: Prefer while().
+
+
+
+
 module;
 #include "../ImGui/imgui.h"
 export module Hooks;
@@ -1183,6 +1189,11 @@ HRESULT GetDeviceStateA
 
 	ToggleShow(state);
 
+
+
+
+
+
 	if (g_show)
 	{
 		SetMemory
@@ -1193,12 +1204,15 @@ HRESULT GetDeviceStateA
 		);
 	}
 
+
 	if constexpr (debug)
 	{
 		WindowSize1(state);
 		WindowSize2(state);
 		WindowSize3(state);
 	}
+
+
 
 	return 0;
 }

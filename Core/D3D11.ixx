@@ -40,6 +40,10 @@ using namespace DXGI;
 
 export namespaceStart(D3D11);
 
+#ifdef _WIN64
+
+#pragma region x86_64
+
 struct ID3D11DeviceChild;
 struct ID3D11DepthStencilState;
 struct ID3D11BlendState;
@@ -128,16 +132,28 @@ extern "C" const IID IID_ID3D11Device;
 extern "C" const IID IID_ID3D10Blob;
 extern "C" const IID IID_ID3DDestructionNotifier;
 
+// D3D11_RECT
+
 typedef RECT D3D11_RECT;
 
 static_assert(TypeMatch<D3D11_RECT, RECT>::value);
 
 static_assert(sizeof(D3D11_RECT) == 16);
 
+// APP_DEPRECATED_HRESULT
+
+typedef HRESULT APP_DEPRECATED_HRESULT;
+
+static_assert(TypeMatch<APP_DEPRECATED_HRESULT, HRESULT>::value);
+
+static_assert(sizeof(APP_DEPRECATED_HRESULT) == 4);
+
 enum
 {
 	D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE=16,
 };
+
+// D3D_DRIVER_TYPE
 
 enum D3D_DRIVER_TYPE
 {
@@ -149,7 +165,7 @@ enum D3D_DRIVER_TYPE
 	D3D_DRIVER_TYPE_WARP=(D3D_DRIVER_TYPE_SOFTWARE+1),
 };
 
-static_assert(sizeof(D3D_DRIVER_TYPE) == 4);
+// D3D_FEATURE_LEVEL
 
 enum D3D_FEATURE_LEVEL
 {
@@ -165,7 +181,7 @@ enum D3D_FEATURE_LEVEL
 	D3D_FEATURE_LEVEL_12_1=0xc100,
 };
 
-static_assert(sizeof(D3D_FEATURE_LEVEL) == 4);
+// D3D_PRIMITIVE_TOPOLOGY
 
 enum D3D_PRIMITIVE_TOPOLOGY
 {
@@ -213,7 +229,7 @@ enum D3D_PRIMITIVE_TOPOLOGY
 	D3D_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST=64,
 };
 
-static_assert(sizeof(D3D_PRIMITIVE_TOPOLOGY) == 4);
+// D3D10_PRIMITIVE_TOPOLOGY
 
 enum D3D10_PRIMITIVE_TOPOLOGY
 {
@@ -229,7 +245,7 @@ enum D3D10_PRIMITIVE_TOPOLOGY
 	D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ=D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ,
 };
 
-static_assert(sizeof(D3D10_PRIMITIVE_TOPOLOGY) == 4);
+// D3D11_PRIMITIVE_TOPOLOGY
 
 enum D3D11_PRIMITIVE_TOPOLOGY
 {
@@ -277,7 +293,7 @@ enum D3D11_PRIMITIVE_TOPOLOGY
 	D3D11_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST,
 };
 
-static_assert(sizeof(D3D11_PRIMITIVE_TOPOLOGY) == 4);
+// D3D11_RESOURCE_DIMENSION
 
 enum D3D11_RESOURCE_DIMENSION
 {
@@ -288,7 +304,7 @@ enum D3D11_RESOURCE_DIMENSION
 	D3D11_RESOURCE_DIMENSION_TEXTURE3D=4,
 };
 
-static_assert(sizeof(D3D11_RESOURCE_DIMENSION) == 4);
+// D3D11_DSV_DIMENSION
 
 enum D3D11_DSV_DIMENSION
 {
@@ -301,7 +317,7 @@ enum D3D11_DSV_DIMENSION
 	D3D11_DSV_DIMENSION_TEXTURE2DMSARRAY=6,
 };
 
-static_assert(sizeof(D3D11_DSV_DIMENSION) == 4);
+// D3D11_RTV_DIMENSION
 
 enum D3D11_RTV_DIMENSION
 {
@@ -316,7 +332,7 @@ enum D3D11_RTV_DIMENSION
 	D3D11_RTV_DIMENSION_TEXTURE3D=8,
 };
 
-static_assert(sizeof(D3D11_RTV_DIMENSION) == 4);
+// D3D11_UAV_DIMENSION
 
 enum D3D11_UAV_DIMENSION
 {
@@ -329,7 +345,7 @@ enum D3D11_UAV_DIMENSION
 	D3D11_UAV_DIMENSION_TEXTURE3D=8,
 };
 
-static_assert(sizeof(D3D11_UAV_DIMENSION) == 4);
+// D3D11_USAGE
 
 enum D3D11_USAGE
 {
@@ -339,7 +355,7 @@ enum D3D11_USAGE
 	D3D11_USAGE_STAGING=3,
 };
 
-static_assert(sizeof(D3D11_USAGE) == 4);
+// D3D_SRV_DIMENSION
 
 enum D3D_SRV_DIMENSION
 {
@@ -357,7 +373,7 @@ enum D3D_SRV_DIMENSION
 	D3D_SRV_DIMENSION_BUFFEREX=11,
 };
 
-static_assert(sizeof(D3D_SRV_DIMENSION) == 4);
+// D3D10_SRV_DIMENSION
 
 enum D3D10_SRV_DIMENSION
 {
@@ -373,7 +389,7 @@ enum D3D10_SRV_DIMENSION
 	D3D10_SRV_DIMENSION_TEXTURECUBE=D3D_SRV_DIMENSION_TEXTURECUBE,
 };
 
-static_assert(sizeof(D3D10_SRV_DIMENSION) == 4);
+// D3D10_1_SRV_DIMENSION
 
 enum D3D10_1_SRV_DIMENSION
 {
@@ -389,6 +405,8 @@ enum D3D10_1_SRV_DIMENSION
 	D3D10_1_SRV_DIMENSION_TEXTURECUBE=D3D_SRV_DIMENSION_TEXTURECUBE,
 	D3D10_1_SRV_DIMENSION_TEXTURECUBEARRAY=D3D_SRV_DIMENSION_TEXTURECUBEARRAY,
 };
+
+// D3D11_SRV_DIMENSION
 
 enum D3D11_SRV_DIMENSION
 {
@@ -406,7 +424,7 @@ enum D3D11_SRV_DIMENSION
 	D3D11_SRV_DIMENSION_BUFFEREX=D3D_SRV_DIMENSION_BUFFEREX,
 };
 
-static_assert(sizeof(D3D11_SRV_DIMENSION) == 4);
+// D3D11_INPUT_CLASSIFICATION
 
 enum D3D11_INPUT_CLASSIFICATION
 {
@@ -414,7 +432,7 @@ enum D3D11_INPUT_CLASSIFICATION
 	D3D11_INPUT_PER_INSTANCE_DATA=1,
 };
 
-static_assert(sizeof(D3D11_INPUT_CLASSIFICATION) == 4);
+// D3D11_BLEND
 
 enum D3D11_BLEND
 {
@@ -437,7 +455,7 @@ enum D3D11_BLEND
 	D3D11_BLEND_INV_SRC1_ALPHA=19,
 };
 
-static_assert(sizeof(D3D11_BLEND) == 4);
+// D3D11_BLEND_OP
 
 enum D3D11_BLEND_OP
 {
@@ -448,7 +466,7 @@ enum D3D11_BLEND_OP
 	D3D11_BLEND_OP_MAX=5,
 };
 
-static_assert(sizeof(D3D11_BLEND_OP) == 4);
+// D3D11_COMPARISON_FUNC
 
 enum D3D11_COMPARISON_FUNC
 {
@@ -462,7 +480,7 @@ enum D3D11_COMPARISON_FUNC
 	D3D11_COMPARISON_ALWAYS=8,
 };
 
-static_assert(sizeof(D3D11_COMPARISON_FUNC) == 4);
+// D3D11_DEPTH_WRITE_MASK
 
 enum D3D11_DEPTH_WRITE_MASK
 {
@@ -470,7 +488,7 @@ enum D3D11_DEPTH_WRITE_MASK
 	D3D11_DEPTH_WRITE_MASK_ALL=1,
 };
 
-static_assert(sizeof(D3D11_DEPTH_WRITE_MASK) == 4);
+// D3D11_STENCIL_OP
 
 enum D3D11_STENCIL_OP
 {
@@ -484,7 +502,7 @@ enum D3D11_STENCIL_OP
 	D3D11_STENCIL_OP_DECR=8,
 };
 
-static_assert(sizeof(D3D11_STENCIL_OP) == 4);
+// D3D11_FILL_MODE
 
 enum D3D11_FILL_MODE
 {
@@ -492,7 +510,7 @@ enum D3D11_FILL_MODE
 	D3D11_FILL_SOLID=3,
 };
 
-static_assert(sizeof(D3D11_FILL_MODE) == 4);
+// D3D11_CULL_MODE
 
 enum D3D11_CULL_MODE
 {
@@ -501,7 +519,7 @@ enum D3D11_CULL_MODE
 	D3D11_CULL_BACK=3,
 };
 
-static_assert(sizeof(D3D11_CULL_MODE) == 4);
+// D3D11_FILTER
 
 enum D3D11_FILTER
 {
@@ -543,7 +561,7 @@ enum D3D11_FILTER
 	D3D11_FILTER_MAXIMUM_ANISOTROPIC=0x1d5,
 };
 
-static_assert(sizeof(D3D11_FILTER) == 4);
+// D3D11_FILTER_TYPE
 
 enum D3D11_FILTER_TYPE
 {
@@ -551,7 +569,7 @@ enum D3D11_FILTER_TYPE
 	D3D11_FILTER_TYPE_LINEAR=1,
 };
 
-static_assert(sizeof(D3D11_FILTER_TYPE) == 4);
+// D3D11_FILTER_REDUCTION_TYPE
 
 enum D3D11_FILTER_REDUCTION_TYPE
 {
@@ -561,7 +579,7 @@ enum D3D11_FILTER_REDUCTION_TYPE
 	D3D11_FILTER_REDUCTION_TYPE_MAXIMUM=3,
 };
 
-static_assert(sizeof(D3D11_FILTER_REDUCTION_TYPE) == 4);
+// D3D11_TEXTURE_ADDRESS_MODE
 
 enum D3D11_TEXTURE_ADDRESS_MODE
 {
@@ -572,7 +590,7 @@ enum D3D11_TEXTURE_ADDRESS_MODE
 	D3D11_TEXTURE_ADDRESS_MIRROR_ONCE=5,
 };
 
-static_assert(sizeof(D3D11_TEXTURE_ADDRESS_MODE) == 4);
+// D3D11_QUERY
 
 enum D3D11_QUERY
 {
@@ -594,14 +612,14 @@ enum D3D11_QUERY
 	D3D11_QUERY_SO_OVERFLOW_PREDICATE_STREAM3=(D3D11_QUERY_SO_STATISTICS_STREAM3+1),
 };
 
-static_assert(sizeof(D3D11_QUERY) == 4);
+// D3D11_COUNTER
 
 enum D3D11_COUNTER
 {
 	D3D11_COUNTER_DEVICE_DEPENDENT_0=0x40000000,
 };
 
-static_assert(sizeof(D3D11_COUNTER) == 4);
+// D3D11_COUNTER_TYPE
 
 enum D3D11_COUNTER_TYPE
 {
@@ -611,7 +629,7 @@ enum D3D11_COUNTER_TYPE
 	D3D11_COUNTER_TYPE_UINT64=(D3D11_COUNTER_TYPE_UINT32+1),
 };
 
-static_assert(sizeof(D3D11_COUNTER_TYPE) == 4);
+// D3D11_FEATURE
 
 enum D3D11_FEATURE
 {
@@ -637,7 +655,7 @@ enum D3D11_FEATURE
 	D3D11_FEATURE_D3D11_OPTIONS5=(D3D11_FEATURE_SHADER_CACHE+1),
 };
 
-static_assert(sizeof(D3D11_FEATURE) == 4);
+// D3D11_MAP
 
 enum D3D11_MAP
 {
@@ -648,7 +666,7 @@ enum D3D11_MAP
 	D3D11_MAP_WRITE_NO_OVERWRITE=5,
 };
 
-static_assert(sizeof(D3D11_MAP) == 4);
+// D3D11_DEVICE_CONTEXT_TYPE
 
 enum D3D11_DEVICE_CONTEXT_TYPE
 {
@@ -656,7 +674,7 @@ enum D3D11_DEVICE_CONTEXT_TYPE
 	D3D11_DEVICE_CONTEXT_DEFERRED=(D3D11_DEVICE_CONTEXT_IMMEDIATE+1),
 };
 
-static_assert(sizeof(D3D11_DEVICE_CONTEXT_TYPE) == 4);
+// D3D11_VIDEO_FRAME_FORMAT
 
 enum D3D11_VIDEO_FRAME_FORMAT
 {
@@ -665,7 +683,7 @@ enum D3D11_VIDEO_FRAME_FORMAT
 	D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST=2,
 };
 
-static_assert(sizeof(D3D11_VIDEO_FRAME_FORMAT) == 4);
+// D3D11_VIDEO_USAGE
 
 enum D3D11_VIDEO_USAGE
 {
@@ -674,7 +692,7 @@ enum D3D11_VIDEO_USAGE
 	D3D11_VIDEO_USAGE_OPTIMAL_QUALITY=2,
 };
 
-static_assert(sizeof(D3D11_VIDEO_USAGE) == 4);
+// D3D11_VIDEO_PROCESSOR_FILTER
 
 enum D3D11_VIDEO_PROCESSOR_FILTER
 {
@@ -688,7 +706,7 @@ enum D3D11_VIDEO_PROCESSOR_FILTER
 	D3D11_VIDEO_PROCESSOR_FILTER_STEREO_ADJUSTMENT=7,
 };
 
-static_assert(sizeof(D3D11_VIDEO_PROCESSOR_FILTER) == 4);
+// D3D11_VDOV_DIMENSION
 
 enum D3D11_VDOV_DIMENSION
 {
@@ -696,7 +714,7 @@ enum D3D11_VDOV_DIMENSION
 	D3D11_VDOV_DIMENSION_TEXTURE2D=1,
 };
 
-static_assert(sizeof(D3D11_VDOV_DIMENSION) == 4);
+// D3D11_VPIV_DIMENSION
 
 enum D3D11_VPIV_DIMENSION
 {
@@ -704,7 +722,7 @@ enum D3D11_VPIV_DIMENSION
 	D3D11_VPIV_DIMENSION_TEXTURE2D=1,
 };
 
-static_assert(sizeof(D3D11_VPIV_DIMENSION) == 4);
+// D3D11_VPOV_DIMENSION
 
 enum D3D11_VPOV_DIMENSION
 {
@@ -713,7 +731,7 @@ enum D3D11_VPOV_DIMENSION
 	D3D11_VPOV_DIMENSION_TEXTURE2DARRAY=2,
 };
 
-static_assert(sizeof(D3D11_VPOV_DIMENSION) == 4);
+// D3D11_VIDEO_DECODER_BUFFER_TYPE
 
 enum D3D11_VIDEO_DECODER_BUFFER_TYPE
 {
@@ -728,7 +746,7 @@ enum D3D11_VIDEO_DECODER_BUFFER_TYPE
 	D3D11_VIDEO_DECODER_BUFFER_FILM_GRAIN=8,
 };
 
-static_assert(sizeof(D3D11_VIDEO_DECODER_BUFFER_TYPE) == 4);
+// D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE
 
 enum D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE
 {
@@ -738,7 +756,7 @@ enum D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE
 	D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE_SOURCE_STREAM=3,
 };
 
-static_assert(sizeof(D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE) == 4);
+// D3D11_VIDEO_PROCESSOR_OUTPUT_RATE
 
 enum D3D11_VIDEO_PROCESSOR_OUTPUT_RATE
 {
@@ -747,7 +765,7 @@ enum D3D11_VIDEO_PROCESSOR_OUTPUT_RATE
 	D3D11_VIDEO_PROCESSOR_OUTPUT_RATE_CUSTOM=2,
 };
 
-static_assert(sizeof(D3D11_VIDEO_PROCESSOR_OUTPUT_RATE) == 4);
+// D3D11_VIDEO_PROCESSOR_STEREO_FORMAT
 
 enum D3D11_VIDEO_PROCESSOR_STEREO_FORMAT
 {
@@ -761,7 +779,7 @@ enum D3D11_VIDEO_PROCESSOR_STEREO_FORMAT
 	D3D11_VIDEO_PROCESSOR_STEREO_FORMAT_CHECKERBOARD=7,
 };
 
-static_assert(sizeof(D3D11_VIDEO_PROCESSOR_STEREO_FORMAT) == 4);
+// D3D11_VIDEO_PROCESSOR_STEREO_FLIP_MODE
 
 enum D3D11_VIDEO_PROCESSOR_STEREO_FLIP_MODE
 {
@@ -770,7 +788,7 @@ enum D3D11_VIDEO_PROCESSOR_STEREO_FLIP_MODE
 	D3D11_VIDEO_PROCESSOR_STEREO_FLIP_FRAME1=2,
 };
 
-static_assert(sizeof(D3D11_VIDEO_PROCESSOR_STEREO_FLIP_MODE) == 4);
+// D3D11_VIDEO_PROCESSOR_ROTATION
 
 enum D3D11_VIDEO_PROCESSOR_ROTATION
 {
@@ -780,7 +798,7 @@ enum D3D11_VIDEO_PROCESSOR_ROTATION
 	D3D11_VIDEO_PROCESSOR_ROTATION_270=3,
 };
 
-static_assert(sizeof(D3D11_VIDEO_PROCESSOR_ROTATION) == 4);
+// D3D11_AUTHENTICATED_CHANNEL_TYPE
 
 enum D3D11_AUTHENTICATED_CHANNEL_TYPE
 {
@@ -789,7 +807,7 @@ enum D3D11_AUTHENTICATED_CHANNEL_TYPE
 	D3D11_AUTHENTICATED_CHANNEL_DRIVER_HARDWARE=3,
 };
 
-static_assert(sizeof(D3D11_AUTHENTICATED_CHANNEL_TYPE) == 4);
+// D3D11_BIND_FLAG
 
 enum D3D11_BIND_FLAG
 {
@@ -805,7 +823,7 @@ enum D3D11_BIND_FLAG
 	D3D11_BIND_VIDEO_ENCODER=0x400,
 };
 
-static_assert(sizeof(D3D11_BIND_FLAG) == 4);
+// D3D11_CPU_ACCESS_FLAG
 
 enum D3D11_CPU_ACCESS_FLAG
 {
@@ -813,7 +831,7 @@ enum D3D11_CPU_ACCESS_FLAG
 	D3D11_CPU_ACCESS_READ=0x20000,
 };
 
-static_assert(sizeof(D3D11_CPU_ACCESS_FLAG) == 4);
+// D3D11_COLOR_WRITE_ENABLE
 
 enum D3D11_COLOR_WRITE_ENABLE
 {
@@ -824,7 +842,7 @@ enum D3D11_COLOR_WRITE_ENABLE
 	D3D11_COLOR_WRITE_ENABLE_ALL=(((D3D11_COLOR_WRITE_ENABLE_RED|D3D11_COLOR_WRITE_ENABLE_GREEN)|D3D11_COLOR_WRITE_ENABLE_BLUE)|D3D11_COLOR_WRITE_ENABLE_ALPHA),
 };
 
-static_assert(sizeof(D3D11_COLOR_WRITE_ENABLE) == 4);
+// D3D_INCLUDE_TYPE
 
 enum D3D_INCLUDE_TYPE
 {
@@ -835,9 +853,9 @@ enum D3D_INCLUDE_TYPE
 	D3D_INCLUDE_FORCE_DWORD=0x7fffffff,
 };
 
-static_assert(sizeof(D3D_INCLUDE_TYPE) == 4);
-
 #pragma pack(push, 1)
+
+// D3D11_BUFFER_DESC
 
 struct D3D11_BUFFER_DESC
 {
@@ -865,6 +883,8 @@ static_assert(offsetof(D3D11_BUFFER_DESC, StructureByteStride) == 0x14);
 
 static_assert(sizeof(D3D11_BUFFER_DESC) == 24);
 
+// D3D11_SUBRESOURCE_DATA
+
 struct D3D11_SUBRESOURCE_DATA
 {
 	const void* pSysMem; // 0
@@ -881,6 +901,8 @@ static_assert(offsetof(D3D11_SUBRESOURCE_DATA, SysMemPitch) == 8);
 static_assert(offsetof(D3D11_SUBRESOURCE_DATA, SysMemSlicePitch) == 0xC);
 
 static_assert(sizeof(D3D11_SUBRESOURCE_DATA) == 16);
+
+// D3D11_TEXTURE1D_DESC
 
 struct D3D11_TEXTURE1D_DESC
 {
@@ -913,6 +935,8 @@ static_assert(offsetof(D3D11_TEXTURE1D_DESC, CPUAccessFlags) == 0x18);
 static_assert(offsetof(D3D11_TEXTURE1D_DESC, MiscFlags) == 0x1C);
 
 static_assert(sizeof(D3D11_TEXTURE1D_DESC) == 32);
+
+// D3D11_TEXTURE2D_DESC
 
 struct D3D11_TEXTURE2D_DESC
 {
@@ -952,6 +976,8 @@ static_assert(offsetof(D3D11_TEXTURE2D_DESC, MiscFlags) == 0x28);
 
 static_assert(sizeof(D3D11_TEXTURE2D_DESC) == 44);
 
+// D3D11_TEXTURE3D_DESC
+
 struct D3D11_TEXTURE3D_DESC
 {
 	UINT Width; // 0
@@ -987,6 +1013,8 @@ static_assert(offsetof(D3D11_TEXTURE3D_DESC, MiscFlags) == 0x20);
 
 static_assert(sizeof(D3D11_TEXTURE3D_DESC) == 36);
 
+// D3D11_BUFFER_SRV
+
 struct D3D11_BUFFER_SRV
 {
 	union
@@ -1013,6 +1041,8 @@ static_assert(offsetof(D3D11_BUFFER_SRV, ElementWidth) == 4);
 
 static_assert(sizeof(D3D11_BUFFER_SRV) == 8);
 
+// D3D11_BUFFEREX_SRV
+
 struct D3D11_BUFFEREX_SRV
 {
 	UINT FirstElement; // 0
@@ -1030,6 +1060,8 @@ static_assert(offsetof(D3D11_BUFFEREX_SRV, Flags) == 8);
 
 static_assert(sizeof(D3D11_BUFFEREX_SRV) == 12);
 
+// D3D11_TEX1D_SRV
+
 struct D3D11_TEX1D_SRV
 {
 	UINT MostDetailedMip; // 0
@@ -1043,6 +1075,8 @@ static_assert(offsetof(D3D11_TEX1D_SRV, MostDetailedMip) == 0);
 static_assert(offsetof(D3D11_TEX1D_SRV, MipLevels) == 4);
 
 static_assert(sizeof(D3D11_TEX1D_SRV) == 8);
+
+// D3D11_TEX1D_ARRAY_SRV
 
 struct D3D11_TEX1D_ARRAY_SRV
 {
@@ -1064,6 +1098,8 @@ static_assert(offsetof(D3D11_TEX1D_ARRAY_SRV, ArraySize) == 0xC);
 
 static_assert(sizeof(D3D11_TEX1D_ARRAY_SRV) == 16);
 
+// D3D11_TEX2D_SRV
+
 struct D3D11_TEX2D_SRV
 {
 	UINT MostDetailedMip; // 0
@@ -1077,6 +1113,8 @@ static_assert(offsetof(D3D11_TEX2D_SRV, MostDetailedMip) == 0);
 static_assert(offsetof(D3D11_TEX2D_SRV, MipLevels) == 4);
 
 static_assert(sizeof(D3D11_TEX2D_SRV) == 8);
+
+// D3D11_TEX2D_ARRAY_SRV
 
 struct D3D11_TEX2D_ARRAY_SRV
 {
@@ -1098,6 +1136,8 @@ static_assert(offsetof(D3D11_TEX2D_ARRAY_SRV, ArraySize) == 0xC);
 
 static_assert(sizeof(D3D11_TEX2D_ARRAY_SRV) == 16);
 
+// D3D11_TEX3D_SRV
+
 struct D3D11_TEX3D_SRV
 {
 	UINT MostDetailedMip; // 0
@@ -1112,6 +1152,8 @@ static_assert(offsetof(D3D11_TEX3D_SRV, MipLevels) == 4);
 
 static_assert(sizeof(D3D11_TEX3D_SRV) == 8);
 
+// D3D11_TEXCUBE_SRV
+
 struct D3D11_TEXCUBE_SRV
 {
 	UINT MostDetailedMip; // 0
@@ -1125,6 +1167,8 @@ static_assert(offsetof(D3D11_TEXCUBE_SRV, MostDetailedMip) == 0);
 static_assert(offsetof(D3D11_TEXCUBE_SRV, MipLevels) == 4);
 
 static_assert(sizeof(D3D11_TEXCUBE_SRV) == 8);
+
+// D3D11_TEXCUBE_ARRAY_SRV
 
 struct D3D11_TEXCUBE_ARRAY_SRV
 {
@@ -1146,6 +1190,8 @@ static_assert(offsetof(D3D11_TEXCUBE_ARRAY_SRV, NumCubes) == 0xC);
 
 static_assert(sizeof(D3D11_TEXCUBE_ARRAY_SRV) == 16);
 
+// D3D11_TEX2DMS_SRV
+
 struct D3D11_TEX2DMS_SRV
 {
 	UINT UnusedField_NothingToDefine; // 0
@@ -1156,6 +1202,8 @@ static_assert(TypeMatch<decltype(D3D11_TEX2DMS_SRV::UnusedField_NothingToDefine)
 static_assert(offsetof(D3D11_TEX2DMS_SRV, UnusedField_NothingToDefine) == 0);
 
 static_assert(sizeof(D3D11_TEX2DMS_SRV) == 4);
+
+// D3D11_TEX2DMS_ARRAY_SRV
 
 struct D3D11_TEX2DMS_ARRAY_SRV
 {
@@ -1170,6 +1218,8 @@ static_assert(offsetof(D3D11_TEX2DMS_ARRAY_SRV, FirstArraySlice) == 0);
 static_assert(offsetof(D3D11_TEX2DMS_ARRAY_SRV, ArraySize) == 4);
 
 static_assert(sizeof(D3D11_TEX2DMS_ARRAY_SRV) == 8);
+
+// D3D11_SHADER_RESOURCE_VIEW_DESC
 
 struct D3D11_SHADER_RESOURCE_VIEW_DESC
 {
@@ -1221,6 +1271,8 @@ static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, BufferEx) == 8);
 
 static_assert(sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC) == 24);
 
+// D3D11_BUFFER_UAV
+
 struct D3D11_BUFFER_UAV
 {
 	UINT FirstElement; // 0
@@ -1238,6 +1290,8 @@ static_assert(offsetof(D3D11_BUFFER_UAV, Flags) == 8);
 
 static_assert(sizeof(D3D11_BUFFER_UAV) == 12);
 
+// D3D11_TEX1D_UAV
+
 struct D3D11_TEX1D_UAV
 {
 	UINT MipSlice; // 0
@@ -1248,6 +1302,8 @@ static_assert(TypeMatch<decltype(D3D11_TEX1D_UAV::MipSlice), UINT>::value);
 static_assert(offsetof(D3D11_TEX1D_UAV, MipSlice) == 0);
 
 static_assert(sizeof(D3D11_TEX1D_UAV) == 4);
+
+// D3D11_TEX1D_ARRAY_UAV
 
 struct D3D11_TEX1D_ARRAY_UAV
 {
@@ -1266,6 +1322,8 @@ static_assert(offsetof(D3D11_TEX1D_ARRAY_UAV, ArraySize) == 8);
 
 static_assert(sizeof(D3D11_TEX1D_ARRAY_UAV) == 12);
 
+// D3D11_TEX2D_UAV
+
 struct D3D11_TEX2D_UAV
 {
 	UINT MipSlice; // 0
@@ -1276,6 +1334,8 @@ static_assert(TypeMatch<decltype(D3D11_TEX2D_UAV::MipSlice), UINT>::value);
 static_assert(offsetof(D3D11_TEX2D_UAV, MipSlice) == 0);
 
 static_assert(sizeof(D3D11_TEX2D_UAV) == 4);
+
+// D3D11_TEX2D_ARRAY_UAV
 
 struct D3D11_TEX2D_ARRAY_UAV
 {
@@ -1294,6 +1354,8 @@ static_assert(offsetof(D3D11_TEX2D_ARRAY_UAV, ArraySize) == 8);
 
 static_assert(sizeof(D3D11_TEX2D_ARRAY_UAV) == 12);
 
+// D3D11_TEX3D_UAV
+
 struct D3D11_TEX3D_UAV
 {
 	UINT MipSlice; // 0
@@ -1310,6 +1372,8 @@ static_assert(offsetof(D3D11_TEX3D_UAV, FirstWSlice) == 4);
 static_assert(offsetof(D3D11_TEX3D_UAV, WSize) == 8);
 
 static_assert(sizeof(D3D11_TEX3D_UAV) == 12);
+
+// D3D11_UNORDERED_ACCESS_VIEW_DESC
 
 struct D3D11_UNORDERED_ACCESS_VIEW_DESC
 {
@@ -1346,6 +1410,8 @@ static_assert(offsetof(D3D11_UNORDERED_ACCESS_VIEW_DESC, Texture3D) == 8);
 
 static_assert(sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC) == 20);
 
+// D3D11_BUFFER_RTV
+
 struct D3D11_BUFFER_RTV
 {
 	union
@@ -1372,6 +1438,8 @@ static_assert(offsetof(D3D11_BUFFER_RTV, ElementWidth) == 4);
 
 static_assert(sizeof(D3D11_BUFFER_RTV) == 8);
 
+// D3D11_TEX1D_RTV
+
 struct D3D11_TEX1D_RTV
 {
 	UINT MipSlice; // 0
@@ -1382,6 +1450,8 @@ static_assert(TypeMatch<decltype(D3D11_TEX1D_RTV::MipSlice), UINT>::value);
 static_assert(offsetof(D3D11_TEX1D_RTV, MipSlice) == 0);
 
 static_assert(sizeof(D3D11_TEX1D_RTV) == 4);
+
+// D3D11_TEX1D_ARRAY_RTV
 
 struct D3D11_TEX1D_ARRAY_RTV
 {
@@ -1400,6 +1470,8 @@ static_assert(offsetof(D3D11_TEX1D_ARRAY_RTV, ArraySize) == 8);
 
 static_assert(sizeof(D3D11_TEX1D_ARRAY_RTV) == 12);
 
+// D3D11_TEX2D_RTV
+
 struct D3D11_TEX2D_RTV
 {
 	UINT MipSlice; // 0
@@ -1411,6 +1483,8 @@ static_assert(offsetof(D3D11_TEX2D_RTV, MipSlice) == 0);
 
 static_assert(sizeof(D3D11_TEX2D_RTV) == 4);
 
+// D3D11_TEX2DMS_RTV
+
 struct D3D11_TEX2DMS_RTV
 {
 	UINT UnusedField_NothingToDefine; // 0
@@ -1421,6 +1495,8 @@ static_assert(TypeMatch<decltype(D3D11_TEX2DMS_RTV::UnusedField_NothingToDefine)
 static_assert(offsetof(D3D11_TEX2DMS_RTV, UnusedField_NothingToDefine) == 0);
 
 static_assert(sizeof(D3D11_TEX2DMS_RTV) == 4);
+
+// D3D11_TEX2D_ARRAY_RTV
 
 struct D3D11_TEX2D_ARRAY_RTV
 {
@@ -1439,6 +1515,8 @@ static_assert(offsetof(D3D11_TEX2D_ARRAY_RTV, ArraySize) == 8);
 
 static_assert(sizeof(D3D11_TEX2D_ARRAY_RTV) == 12);
 
+// D3D11_TEX2DMS_ARRAY_RTV
+
 struct D3D11_TEX2DMS_ARRAY_RTV
 {
 	UINT FirstArraySlice; // 0
@@ -1452,6 +1530,8 @@ static_assert(offsetof(D3D11_TEX2DMS_ARRAY_RTV, FirstArraySlice) == 0);
 static_assert(offsetof(D3D11_TEX2DMS_ARRAY_RTV, ArraySize) == 4);
 
 static_assert(sizeof(D3D11_TEX2DMS_ARRAY_RTV) == 8);
+
+// D3D11_TEX3D_RTV
 
 struct D3D11_TEX3D_RTV
 {
@@ -1469,6 +1549,8 @@ static_assert(offsetof(D3D11_TEX3D_RTV, FirstWSlice) == 4);
 static_assert(offsetof(D3D11_TEX3D_RTV, WSize) == 8);
 
 static_assert(sizeof(D3D11_TEX3D_RTV) == 12);
+
+// D3D11_RENDER_TARGET_VIEW_DESC
 
 struct D3D11_RENDER_TARGET_VIEW_DESC
 {
@@ -1511,6 +1593,8 @@ static_assert(offsetof(D3D11_RENDER_TARGET_VIEW_DESC, Texture3D) == 8);
 
 static_assert(sizeof(D3D11_RENDER_TARGET_VIEW_DESC) == 20);
 
+// D3D11_TEX1D_DSV
+
 struct D3D11_TEX1D_DSV
 {
 	UINT MipSlice; // 0
@@ -1521,6 +1605,8 @@ static_assert(TypeMatch<decltype(D3D11_TEX1D_DSV::MipSlice), UINT>::value);
 static_assert(offsetof(D3D11_TEX1D_DSV, MipSlice) == 0);
 
 static_assert(sizeof(D3D11_TEX1D_DSV) == 4);
+
+// D3D11_TEX1D_ARRAY_DSV
 
 struct D3D11_TEX1D_ARRAY_DSV
 {
@@ -1539,6 +1625,8 @@ static_assert(offsetof(D3D11_TEX1D_ARRAY_DSV, ArraySize) == 8);
 
 static_assert(sizeof(D3D11_TEX1D_ARRAY_DSV) == 12);
 
+// D3D11_TEX2D_DSV
+
 struct D3D11_TEX2D_DSV
 {
 	UINT MipSlice; // 0
@@ -1549,6 +1637,8 @@ static_assert(TypeMatch<decltype(D3D11_TEX2D_DSV::MipSlice), UINT>::value);
 static_assert(offsetof(D3D11_TEX2D_DSV, MipSlice) == 0);
 
 static_assert(sizeof(D3D11_TEX2D_DSV) == 4);
+
+// D3D11_TEX2D_ARRAY_DSV
 
 struct D3D11_TEX2D_ARRAY_DSV
 {
@@ -1567,6 +1657,8 @@ static_assert(offsetof(D3D11_TEX2D_ARRAY_DSV, ArraySize) == 8);
 
 static_assert(sizeof(D3D11_TEX2D_ARRAY_DSV) == 12);
 
+// D3D11_TEX2DMS_DSV
+
 struct D3D11_TEX2DMS_DSV
 {
 	UINT UnusedField_NothingToDefine; // 0
@@ -1577,6 +1669,8 @@ static_assert(TypeMatch<decltype(D3D11_TEX2DMS_DSV::UnusedField_NothingToDefine)
 static_assert(offsetof(D3D11_TEX2DMS_DSV, UnusedField_NothingToDefine) == 0);
 
 static_assert(sizeof(D3D11_TEX2DMS_DSV) == 4);
+
+// D3D11_TEX2DMS_ARRAY_DSV
 
 struct D3D11_TEX2DMS_ARRAY_DSV
 {
@@ -1591,6 +1685,8 @@ static_assert(offsetof(D3D11_TEX2DMS_ARRAY_DSV, FirstArraySlice) == 0);
 static_assert(offsetof(D3D11_TEX2DMS_ARRAY_DSV, ArraySize) == 4);
 
 static_assert(sizeof(D3D11_TEX2DMS_ARRAY_DSV) == 8);
+
+// D3D11_DEPTH_STENCIL_VIEW_DESC
 
 struct D3D11_DEPTH_STENCIL_VIEW_DESC
 {
@@ -1630,6 +1726,8 @@ static_assert(offsetof(D3D11_DEPTH_STENCIL_VIEW_DESC, Texture2DMSArray) == 0xC);
 
 static_assert(sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC) == 24);
 
+// D3D11_INPUT_ELEMENT_DESC
+
 struct D3D11_INPUT_ELEMENT_DESC
 {
 	LPCSTR SemanticName; // 0
@@ -1659,6 +1757,8 @@ static_assert(offsetof(D3D11_INPUT_ELEMENT_DESC, InstanceDataStepRate) == 0x1C);
 
 static_assert(sizeof(D3D11_INPUT_ELEMENT_DESC) == 32);
 
+// D3D11_SO_DECLARATION_ENTRY
+
 struct D3D11_SO_DECLARATION_ENTRY
 {
 	UINT Stream; // 0
@@ -1687,6 +1787,8 @@ static_assert(offsetof(D3D11_SO_DECLARATION_ENTRY, OutputSlot) == 0x16);
 
 static_assert(sizeof(D3D11_SO_DECLARATION_ENTRY) == 24);
 
+// D3D11_VIEWPORT
+
 struct D3D11_VIEWPORT
 {
 	FLOAT TopLeftX; // 0
@@ -1712,6 +1814,8 @@ static_assert(offsetof(D3D11_VIEWPORT, MinDepth) == 0x10);
 static_assert(offsetof(D3D11_VIEWPORT, MaxDepth) == 0x14);
 
 static_assert(sizeof(D3D11_VIEWPORT) == 24);
+
+// D3D11_RENDER_TARGET_BLEND_DESC
 
 struct D3D11_RENDER_TARGET_BLEND_DESC
 {
@@ -1746,6 +1850,8 @@ static_assert(offsetof(D3D11_RENDER_TARGET_BLEND_DESC, RenderTargetWriteMask) ==
 
 static_assert(sizeof(D3D11_RENDER_TARGET_BLEND_DESC) == 32);
 
+// D3D11_BLEND_DESC
+
 struct D3D11_BLEND_DESC
 {
 	BOOL AlphaToCoverageEnable; // 0
@@ -1762,6 +1868,8 @@ static_assert(offsetof(D3D11_BLEND_DESC, IndependentBlendEnable) == 4);
 static_assert(offsetof(D3D11_BLEND_DESC, RenderTarget) == 8);
 
 static_assert(sizeof(D3D11_BLEND_DESC) == 264);
+
+// D3D11_DEPTH_STENCILOP_DESC
 
 struct D3D11_DEPTH_STENCILOP_DESC
 {
@@ -1782,6 +1890,8 @@ static_assert(offsetof(D3D11_DEPTH_STENCILOP_DESC, StencilPassOp) == 8);
 static_assert(offsetof(D3D11_DEPTH_STENCILOP_DESC, StencilFunc) == 0xC);
 
 static_assert(sizeof(D3D11_DEPTH_STENCILOP_DESC) == 16);
+
+// D3D11_DEPTH_STENCIL_DESC
 
 struct D3D11_DEPTH_STENCIL_DESC
 {
@@ -1815,6 +1925,8 @@ static_assert(offsetof(D3D11_DEPTH_STENCIL_DESC, FrontFace) == 0x14);
 static_assert(offsetof(D3D11_DEPTH_STENCIL_DESC, BackFace) == 0x24);
 
 static_assert(sizeof(D3D11_DEPTH_STENCIL_DESC) == 52);
+
+// D3D11_RASTERIZER_DESC
 
 struct D3D11_RASTERIZER_DESC
 {
@@ -1854,6 +1966,8 @@ static_assert(offsetof(D3D11_RASTERIZER_DESC, AntialiasedLineEnable) == 0x24);
 
 static_assert(sizeof(D3D11_RASTERIZER_DESC) == 40);
 
+// D3D11_SAMPLER_DESC
+
 struct D3D11_SAMPLER_DESC
 {
 	D3D11_FILTER Filter; // 0
@@ -1892,6 +2006,8 @@ static_assert(offsetof(D3D11_SAMPLER_DESC, MaxLOD) == 0x30);
 
 static_assert(sizeof(D3D11_SAMPLER_DESC) == 52);
 
+// D3D11_QUERY_DESC
+
 struct D3D11_QUERY_DESC
 {
 	D3D11_QUERY Query; // 0
@@ -1906,6 +2022,8 @@ static_assert(offsetof(D3D11_QUERY_DESC, MiscFlags) == 4);
 
 static_assert(sizeof(D3D11_QUERY_DESC) == 8);
 
+// D3D11_COUNTER_DESC
+
 struct D3D11_COUNTER_DESC
 {
 	D3D11_COUNTER Counter; // 0
@@ -1919,6 +2037,8 @@ static_assert(offsetof(D3D11_COUNTER_DESC, Counter) == 0);
 static_assert(offsetof(D3D11_COUNTER_DESC, MiscFlags) == 4);
 
 static_assert(sizeof(D3D11_COUNTER_DESC) == 8);
+
+// D3D11_COUNTER_INFO
 
 struct D3D11_COUNTER_INFO
 {
@@ -1938,6 +2058,8 @@ static_assert(offsetof(D3D11_COUNTER_INFO, NumDetectableParallelUnits) == 8);
 
 static_assert(sizeof(D3D11_COUNTER_INFO) == 12);
 
+// D3D11_MAPPED_SUBRESOURCE
+
 struct D3D11_MAPPED_SUBRESOURCE
 {
 	void* pData; // 0
@@ -1954,6 +2076,8 @@ static_assert(offsetof(D3D11_MAPPED_SUBRESOURCE, RowPitch) == 8);
 static_assert(offsetof(D3D11_MAPPED_SUBRESOURCE, DepthPitch) == 0xC);
 
 static_assert(sizeof(D3D11_MAPPED_SUBRESOURCE) == 16);
+
+// D3D11_BOX
 
 struct D3D11_BOX
 {
@@ -1980,6 +2104,8 @@ static_assert(offsetof(D3D11_BOX, bottom) == 0x10);
 static_assert(offsetof(D3D11_BOX, back) == 0x14);
 
 static_assert(sizeof(D3D11_BOX) == 24);
+
+// D3D11_CLASS_INSTANCE_DESC
 
 struct D3D11_CLASS_INSTANCE_DESC
 {
@@ -2013,6 +2139,8 @@ static_assert(offsetof(D3D11_CLASS_INSTANCE_DESC, Created) == 0x1C);
 
 static_assert(sizeof(D3D11_CLASS_INSTANCE_DESC) == 32);
 
+// D3D11_VIDEO_DECODER_DESC
+
 struct D3D11_VIDEO_DECODER_DESC
 {
 	GUID Guid; // 0
@@ -2032,6 +2160,8 @@ static_assert(offsetof(D3D11_VIDEO_DECODER_DESC, SampleHeight) == 0x14);
 static_assert(offsetof(D3D11_VIDEO_DECODER_DESC, OutputFormat) == 0x18);
 
 static_assert(sizeof(D3D11_VIDEO_DECODER_DESC) == 28);
+
+// D3D11_VIDEO_PROCESSOR_CONTENT_DESC
 
 struct D3D11_VIDEO_PROCESSOR_CONTENT_DESC
 {
@@ -2064,6 +2194,8 @@ static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC, OutputHeight) == 0x20
 static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC, Usage) == 0x24);
 
 static_assert(sizeof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC) == 40);
+
+// D3D11_VIDEO_PROCESSOR_CAPS
 
 struct D3D11_VIDEO_PROCESSOR_CAPS
 {
@@ -2100,6 +2232,8 @@ static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CAPS, MaxStreamStates) == 0x20);
 
 static_assert(sizeof(D3D11_VIDEO_PROCESSOR_CAPS) == 36);
 
+// D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS
+
 struct D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS
 {
 	UINT PastFrames; // 0
@@ -2123,6 +2257,8 @@ static_assert(offsetof(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS, CustomRateCou
 
 static_assert(sizeof(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS) == 20);
 
+// D3D11_VIDEO_PROCESSOR_CUSTOM_RATE
+
 struct D3D11_VIDEO_PROCESSOR_CUSTOM_RATE
 {
 	DXGI_RATIONAL CustomRate; // 0
@@ -2142,6 +2278,8 @@ static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CUSTOM_RATE, InputInterlaced) == 0x
 static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CUSTOM_RATE, InputFramesOrFields) == 0x10);
 
 static_assert(sizeof(D3D11_VIDEO_PROCESSOR_CUSTOM_RATE) == 20);
+
+// D3D11_VIDEO_DECODER_CONFIG
 
 struct D3D11_VIDEO_DECODER_CONFIG
 {
@@ -2202,6 +2340,8 @@ static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigDecoderSpecific) == 0x6
 
 static_assert(sizeof(D3D11_VIDEO_DECODER_CONFIG) == 100);
 
+// D3D11_TEX2D_VDOV
+
 struct D3D11_TEX2D_VDOV
 {
 	UINT ArraySlice; // 0
@@ -2212,6 +2352,8 @@ static_assert(TypeMatch<decltype(D3D11_TEX2D_VDOV::ArraySlice), UINT>::value);
 static_assert(offsetof(D3D11_TEX2D_VDOV, ArraySlice) == 0);
 
 static_assert(sizeof(D3D11_TEX2D_VDOV) == 4);
+
+// D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC
 
 struct D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC
 {
@@ -2233,6 +2375,8 @@ static_assert(offsetof(D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC, Texture2D) == 0x14)
 
 static_assert(sizeof(D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC) == 24);
 
+// D3D11_TEX2D_VPIV
+
 struct D3D11_TEX2D_VPIV
 {
 	UINT MipSlice; // 0
@@ -2246,6 +2390,8 @@ static_assert(offsetof(D3D11_TEX2D_VPIV, MipSlice) == 0);
 static_assert(offsetof(D3D11_TEX2D_VPIV, ArraySlice) == 4);
 
 static_assert(sizeof(D3D11_TEX2D_VPIV) == 8);
+
+// D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC
 
 struct D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC
 {
@@ -2267,6 +2413,8 @@ static_assert(offsetof(D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC, Texture2D) == 8);
 
 static_assert(sizeof(D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC) == 16);
 
+// D3D11_VIDEO_PROCESSOR_FILTER_RANGE
+
 struct D3D11_VIDEO_PROCESSOR_FILTER_RANGE
 {
 	int Minimum; // 0
@@ -2287,6 +2435,8 @@ static_assert(offsetof(D3D11_VIDEO_PROCESSOR_FILTER_RANGE, Multiplier) == 0xC);
 
 static_assert(sizeof(D3D11_VIDEO_PROCESSOR_FILTER_RANGE) == 16);
 
+// D3D11_TEX2D_VPOV
+
 struct D3D11_TEX2D_VPOV
 {
 	UINT MipSlice; // 0
@@ -2297,6 +2447,8 @@ static_assert(TypeMatch<decltype(D3D11_TEX2D_VPOV::MipSlice), UINT>::value);
 static_assert(offsetof(D3D11_TEX2D_VPOV, MipSlice) == 0);
 
 static_assert(sizeof(D3D11_TEX2D_VPOV) == 4);
+
+// D3D11_TEX2D_ARRAY_VPOV
 
 struct D3D11_TEX2D_ARRAY_VPOV
 {
@@ -2314,6 +2466,8 @@ static_assert(offsetof(D3D11_TEX2D_ARRAY_VPOV, FirstArraySlice) == 4);
 static_assert(offsetof(D3D11_TEX2D_ARRAY_VPOV, ArraySize) == 8);
 
 static_assert(sizeof(D3D11_TEX2D_ARRAY_VPOV) == 12);
+
+// D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC
 
 struct D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC
 {
@@ -2335,6 +2489,8 @@ static_assert(offsetof(D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC, Texture2DArray) =
 
 static_assert(sizeof(D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC) == 16);
 
+// D3D11_ENCRYPTED_BLOCK_INFO
+
 struct D3D11_ENCRYPTED_BLOCK_INFO
 {
 	UINT NumEncryptedBytesAtBeginning; // 0
@@ -2351,6 +2507,8 @@ static_assert(offsetof(D3D11_ENCRYPTED_BLOCK_INFO, NumBytesInSkipPattern) == 4);
 static_assert(offsetof(D3D11_ENCRYPTED_BLOCK_INFO, NumBytesInEncryptPattern) == 8);
 
 static_assert(sizeof(D3D11_ENCRYPTED_BLOCK_INFO) == 12);
+
+// D3D11_VIDEO_DECODER_BUFFER_DESC
 
 struct D3D11_VIDEO_DECODER_BUFFER_DESC
 {
@@ -2403,6 +2561,8 @@ static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, EncryptedBlockInfo) == 0
 
 static_assert(sizeof(D3D11_VIDEO_DECODER_BUFFER_DESC) == 72);
 
+// D3D11_VIDEO_DECODER_EXTENSION
+
 struct D3D11_VIDEO_DECODER_EXTENSION
 {
 	UINT Function; // 0
@@ -2434,6 +2594,8 @@ static_assert(offsetof(D3D11_VIDEO_DECODER_EXTENSION, ppResourceList) == 0x28);
 
 static_assert(sizeof(D3D11_VIDEO_DECODER_EXTENSION) == 48);
 
+// D3D11_VIDEO_COLOR_RGBA
+
 struct D3D11_VIDEO_COLOR_RGBA
 {
 	float R; // 0
@@ -2453,6 +2615,8 @@ static_assert(offsetof(D3D11_VIDEO_COLOR_RGBA, B) == 8);
 static_assert(offsetof(D3D11_VIDEO_COLOR_RGBA, A) == 0xC);
 
 static_assert(sizeof(D3D11_VIDEO_COLOR_RGBA) == 16);
+
+// D3D11_VIDEO_COLOR_YCbCrA
 
 struct D3D11_VIDEO_COLOR_YCbCrA
 {
@@ -2474,6 +2638,8 @@ static_assert(offsetof(D3D11_VIDEO_COLOR_YCbCrA, A) == 0xC);
 
 static_assert(sizeof(D3D11_VIDEO_COLOR_YCbCrA) == 16);
 
+// D3D11_VIDEO_COLOR
+
 struct D3D11_VIDEO_COLOR
 {
 	union
@@ -2491,12 +2657,16 @@ static_assert(offsetof(D3D11_VIDEO_COLOR, RGBA) == 0);
 
 static_assert(sizeof(D3D11_VIDEO_COLOR) == 16);
 
+// D3D11_VIDEO_PROCESSOR_COLOR_SPACE
+
 struct D3D11_VIDEO_PROCESSOR_COLOR_SPACE
 {
 	_(4);
 };
 
 static_assert(sizeof(D3D11_VIDEO_PROCESSOR_COLOR_SPACE) == 4);
+
+// D3D11_VIDEO_PROCESSOR_STREAM
 
 struct D3D11_VIDEO_PROCESSOR_STREAM
 {
@@ -2540,6 +2710,8 @@ static_assert(offsetof(D3D11_VIDEO_PROCESSOR_STREAM, ppFutureSurfacesRight) == 0
 
 static_assert(sizeof(D3D11_VIDEO_PROCESSOR_STREAM) == 72);
 
+// D3D11_OMAC
+
 struct D3D11_OMAC
 {
 	BYTE Omac[16]; // 0
@@ -2550,6 +2722,8 @@ static_assert(TypeMatch<decltype(D3D11_OMAC::Omac), BYTE[16]>::value);
 static_assert(offsetof(D3D11_OMAC, Omac) == 0);
 
 static_assert(sizeof(D3D11_OMAC) == 16);
+
+// D3D11_AUTHENTICATED_CONFIGURE_OUTPUT
 
 struct D3D11_AUTHENTICATED_CONFIGURE_OUTPUT
 {
@@ -2574,6 +2748,8 @@ static_assert(offsetof(D3D11_AUTHENTICATED_CONFIGURE_OUTPUT, ReturnCode) == 0x2C
 
 static_assert(sizeof(D3D11_AUTHENTICATED_CONFIGURE_OUTPUT) == 48);
 
+// D3D11_VIDEO_CONTENT_PROTECTION_CAPS
+
 struct D3D11_VIDEO_CONTENT_PROTECTION_CAPS
 {
 	UINT Caps; // 0
@@ -2595,6 +2771,8 @@ static_assert(offsetof(D3D11_VIDEO_CONTENT_PROTECTION_CAPS, ProtectedMemorySize)
 
 static_assert(sizeof(D3D11_VIDEO_CONTENT_PROTECTION_CAPS) == 24);
 
+// D3D_SHADER_MACRO
+
 struct D3D_SHADER_MACRO
 {
 	LPCSTR Name; // 0
@@ -2609,20 +2787,15 @@ static_assert(offsetof(D3D_SHADER_MACRO, Definition) == 8);
 
 static_assert(sizeof(D3D_SHADER_MACRO) == 16);
 
-typedef D3D_SHADER_MACRO * LPD3D_SHADER_MACRO;
-static_assert(TypeMatch<LPD3D_SHADER_MACRO, D3D_SHADER_MACRO *>::value);
-
-static_assert(sizeof(LPD3D_SHADER_MACRO) == 8);
-
 #pragma pack(pop)
 
-extern "C"
-{
-}
+// PFN_DESTRUCTION_CALLBACK
 
-typedef void(__stdcall * PFN_DESTRUCTION_CALLBACK)(void* pData);
+typedef void(* PFN_DESTRUCTION_CALLBACK)(void* pData);
 
 static_assert(sizeof(PFN_DESTRUCTION_CALLBACK) == 8);
+
+// ID3D11DeviceChild
 
 struct __declspec(novtable) ID3D11DeviceChild : IUnknown
 {
@@ -2648,12 +2821,16 @@ struct __declspec(novtable) ID3D11DeviceChild : IUnknown
 
 static_assert(sizeof(ID3D11DeviceChild) == 8);
 
+// ID3D11DepthStencilState
+
 struct __declspec(novtable) ID3D11DepthStencilState : ID3D11DeviceChild
 {
 	virtual void GetDesc(D3D11_DEPTH_STENCIL_DESC* pDesc) = 0;
 };
 
 static_assert(sizeof(ID3D11DepthStencilState) == 8);
+
+// ID3D11BlendState
 
 struct __declspec(novtable) ID3D11BlendState : ID3D11DeviceChild
 {
@@ -2662,12 +2839,16 @@ struct __declspec(novtable) ID3D11BlendState : ID3D11DeviceChild
 
 static_assert(sizeof(ID3D11BlendState) == 8);
 
+// ID3D11RasterizerState
+
 struct __declspec(novtable) ID3D11RasterizerState : ID3D11DeviceChild
 {
 	virtual void GetDesc(D3D11_RASTERIZER_DESC* pDesc) = 0;
 };
 
 static_assert(sizeof(ID3D11RasterizerState) == 8);
+
+// ID3D11Resource
 
 struct __declspec(novtable) ID3D11Resource : ID3D11DeviceChild
 {
@@ -2678,12 +2859,16 @@ struct __declspec(novtable) ID3D11Resource : ID3D11DeviceChild
 
 static_assert(sizeof(ID3D11Resource) == 8);
 
+// ID3D11Buffer
+
 struct __declspec(novtable) ID3D11Buffer : ID3D11Resource
 {
 	virtual void GetDesc(D3D11_BUFFER_DESC* pDesc) = 0;
 };
 
 static_assert(sizeof(ID3D11Buffer) == 8);
+
+// ID3D11Texture1D
 
 struct __declspec(novtable) ID3D11Texture1D : ID3D11Resource
 {
@@ -2692,12 +2877,16 @@ struct __declspec(novtable) ID3D11Texture1D : ID3D11Resource
 
 static_assert(sizeof(ID3D11Texture1D) == 8);
 
+// ID3D11Texture2D
+
 struct __declspec(novtable) ID3D11Texture2D : ID3D11Resource
 {
 	virtual void GetDesc(D3D11_TEXTURE2D_DESC* pDesc) = 0;
 };
 
 static_assert(sizeof(ID3D11Texture2D) == 8);
+
+// ID3D11Texture3D
 
 struct __declspec(novtable) ID3D11Texture3D : ID3D11Resource
 {
@@ -2706,12 +2895,16 @@ struct __declspec(novtable) ID3D11Texture3D : ID3D11Resource
 
 static_assert(sizeof(ID3D11Texture3D) == 8);
 
+// ID3D11View
+
 struct __declspec(novtable) ID3D11View : ID3D11DeviceChild
 {
 	virtual void GetResource(ID3D11Resource** ppResource) = 0;
 };
 
 static_assert(sizeof(ID3D11View) == 8);
+
+// ID3D11ShaderResourceView
 
 struct __declspec(novtable) ID3D11ShaderResourceView : ID3D11View
 {
@@ -2720,12 +2913,16 @@ struct __declspec(novtable) ID3D11ShaderResourceView : ID3D11View
 
 static_assert(sizeof(ID3D11ShaderResourceView) == 8);
 
+// ID3D11RenderTargetView
+
 struct __declspec(novtable) ID3D11RenderTargetView : ID3D11View
 {
 	virtual void GetDesc(D3D11_RENDER_TARGET_VIEW_DESC* pDesc) = 0;
 };
 
 static_assert(sizeof(ID3D11RenderTargetView) == 8);
+
+// ID3D11DepthStencilView
 
 struct __declspec(novtable) ID3D11DepthStencilView : ID3D11View
 {
@@ -2734,6 +2931,8 @@ struct __declspec(novtable) ID3D11DepthStencilView : ID3D11View
 
 static_assert(sizeof(ID3D11DepthStencilView) == 8);
 
+// ID3D11UnorderedAccessView
+
 struct __declspec(novtable) ID3D11UnorderedAccessView : ID3D11View
 {
 	virtual void GetDesc(D3D11_UNORDERED_ACCESS_VIEW_DESC* pDesc) = 0;
@@ -2741,11 +2940,15 @@ struct __declspec(novtable) ID3D11UnorderedAccessView : ID3D11View
 
 static_assert(sizeof(ID3D11UnorderedAccessView) == 8);
 
+// ID3D11VertexShader
+
 struct __declspec(novtable) ID3D11VertexShader : ID3D11DeviceChild
 {
 };
 
 static_assert(sizeof(ID3D11VertexShader) == 8);
+
+// ID3D11HullShader
 
 struct __declspec(novtable) ID3D11HullShader : ID3D11DeviceChild
 {
@@ -2753,11 +2956,15 @@ struct __declspec(novtable) ID3D11HullShader : ID3D11DeviceChild
 
 static_assert(sizeof(ID3D11HullShader) == 8);
 
+// ID3D11DomainShader
+
 struct __declspec(novtable) ID3D11DomainShader : ID3D11DeviceChild
 {
 };
 
 static_assert(sizeof(ID3D11DomainShader) == 8);
+
+// ID3D11GeometryShader
 
 struct __declspec(novtable) ID3D11GeometryShader : ID3D11DeviceChild
 {
@@ -2765,11 +2972,15 @@ struct __declspec(novtable) ID3D11GeometryShader : ID3D11DeviceChild
 
 static_assert(sizeof(ID3D11GeometryShader) == 8);
 
+// ID3D11PixelShader
+
 struct __declspec(novtable) ID3D11PixelShader : ID3D11DeviceChild
 {
 };
 
 static_assert(sizeof(ID3D11PixelShader) == 8);
+
+// ID3D11ComputeShader
 
 struct __declspec(novtable) ID3D11ComputeShader : ID3D11DeviceChild
 {
@@ -2777,11 +2988,15 @@ struct __declspec(novtable) ID3D11ComputeShader : ID3D11DeviceChild
 
 static_assert(sizeof(ID3D11ComputeShader) == 8);
 
+// ID3D11InputLayout
+
 struct __declspec(novtable) ID3D11InputLayout : ID3D11DeviceChild
 {
 };
 
 static_assert(sizeof(ID3D11InputLayout) == 8);
+
+// ID3D11SamplerState
 
 struct __declspec(novtable) ID3D11SamplerState : ID3D11DeviceChild
 {
@@ -2790,12 +3005,16 @@ struct __declspec(novtable) ID3D11SamplerState : ID3D11DeviceChild
 
 static_assert(sizeof(ID3D11SamplerState) == 8);
 
+// ID3D11Asynchronous
+
 struct __declspec(novtable) ID3D11Asynchronous : ID3D11DeviceChild
 {
 	virtual UINT GetDataSize() = 0;
 };
 
 static_assert(sizeof(ID3D11Asynchronous) == 8);
+
+// ID3D11Query
 
 struct __declspec(novtable) ID3D11Query : ID3D11Asynchronous
 {
@@ -2804,11 +3023,15 @@ struct __declspec(novtable) ID3D11Query : ID3D11Asynchronous
 
 static_assert(sizeof(ID3D11Query) == 8);
 
+// ID3D11Predicate
+
 struct __declspec(novtable) ID3D11Predicate : ID3D11Query
 {
 };
 
 static_assert(sizeof(ID3D11Predicate) == 8);
+
+// ID3D11Counter
 
 struct __declspec(novtable) ID3D11Counter : ID3D11Asynchronous
 {
@@ -2816,6 +3039,8 @@ struct __declspec(novtable) ID3D11Counter : ID3D11Asynchronous
 };
 
 static_assert(sizeof(ID3D11Counter) == 8);
+
+// ID3D11ClassInstance
 
 struct __declspec(novtable) ID3D11ClassInstance : ID3D11DeviceChild
 {
@@ -2834,6 +3059,8 @@ struct __declspec(novtable) ID3D11ClassInstance : ID3D11DeviceChild
 };
 
 static_assert(sizeof(ID3D11ClassInstance) == 8);
+
+// ID3D11ClassLinkage
 
 struct __declspec(novtable) ID3D11ClassLinkage : ID3D11DeviceChild
 {
@@ -2856,12 +3083,16 @@ struct __declspec(novtable) ID3D11ClassLinkage : ID3D11DeviceChild
 
 static_assert(sizeof(ID3D11ClassLinkage) == 8);
 
+// ID3D11CommandList
+
 struct __declspec(novtable) ID3D11CommandList : ID3D11DeviceChild
 {
 	virtual UINT GetContextFlags() = 0;
 };
 
 static_assert(sizeof(ID3D11CommandList) == 8);
+
+// ID3D11DeviceContext
 
 struct __declspec(novtable) ID3D11DeviceContext : ID3D11DeviceChild
 {
@@ -3450,6 +3681,8 @@ struct __declspec(novtable) ID3D11DeviceContext : ID3D11DeviceChild
 
 static_assert(sizeof(ID3D11DeviceContext) == 8);
 
+// ID3D11VideoDecoder
+
 struct __declspec(novtable) ID3D11VideoDecoder : ID3D11DeviceChild
 {
 	virtual HRESULT GetCreationParameters
@@ -3461,6 +3694,8 @@ struct __declspec(novtable) ID3D11VideoDecoder : ID3D11DeviceChild
 };
 
 static_assert(sizeof(ID3D11VideoDecoder) == 8);
+
+// ID3D11VideoProcessorEnumerator
 
 struct __declspec(novtable) ID3D11VideoProcessorEnumerator : ID3D11DeviceChild
 {
@@ -3491,6 +3726,8 @@ struct __declspec(novtable) ID3D11VideoProcessorEnumerator : ID3D11DeviceChild
 
 static_assert(sizeof(ID3D11VideoProcessorEnumerator) == 8);
 
+// ID3D11VideoProcessor
+
 struct __declspec(novtable) ID3D11VideoProcessor : ID3D11DeviceChild
 {
 	virtual void GetContentDesc(D3D11_VIDEO_PROCESSOR_CONTENT_DESC* pDesc) = 0;
@@ -3498,6 +3735,8 @@ struct __declspec(novtable) ID3D11VideoProcessor : ID3D11DeviceChild
 };
 
 static_assert(sizeof(ID3D11VideoProcessor) == 8);
+
+// ID3D11AuthenticatedChannel
 
 struct __declspec(novtable) ID3D11AuthenticatedChannel : ID3D11DeviceChild
 {
@@ -3511,6 +3750,8 @@ struct __declspec(novtable) ID3D11AuthenticatedChannel : ID3D11DeviceChild
 };
 
 static_assert(sizeof(ID3D11AuthenticatedChannel) == 8);
+
+// ID3D11CryptoSession
 
 struct __declspec(novtable) ID3D11CryptoSession : ID3D11DeviceChild
 {
@@ -3527,12 +3768,16 @@ struct __declspec(novtable) ID3D11CryptoSession : ID3D11DeviceChild
 
 static_assert(sizeof(ID3D11CryptoSession) == 8);
 
+// ID3D11VideoDecoderOutputView
+
 struct __declspec(novtable) ID3D11VideoDecoderOutputView : ID3D11View
 {
 	virtual void GetDesc(D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC* pDesc) = 0;
 };
 
 static_assert(sizeof(ID3D11VideoDecoderOutputView) == 8);
+
+// ID3D11VideoProcessorInputView
 
 struct __declspec(novtable) ID3D11VideoProcessorInputView : ID3D11View
 {
@@ -3541,12 +3786,16 @@ struct __declspec(novtable) ID3D11VideoProcessorInputView : ID3D11View
 
 static_assert(sizeof(ID3D11VideoProcessorInputView) == 8);
 
+// ID3D11VideoProcessorOutputView
+
 struct __declspec(novtable) ID3D11VideoProcessorOutputView : ID3D11View
 {
 	virtual void GetDesc(D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC* pDesc) = 0;
 };
 
 static_assert(sizeof(ID3D11VideoProcessorOutputView) == 8);
+
+// ID3D11VideoContext
 
 struct __declspec(novtable) ID3D11VideoContext : ID3D11DeviceChild
 {
@@ -3942,6 +4191,8 @@ struct __declspec(novtable) ID3D11VideoContext : ID3D11DeviceChild
 
 static_assert(sizeof(ID3D11VideoContext) == 8);
 
+// ID3D11VideoDevice
+
 struct __declspec(novtable) ID3D11VideoDevice : IUnknown
 {
 	virtual HRESULT CreateVideoDecoder
@@ -4043,6 +4294,8 @@ struct __declspec(novtable) ID3D11VideoDevice : IUnknown
 };
 
 static_assert(sizeof(ID3D11VideoDevice) == 8);
+
+// ID3D11Device
 
 struct __declspec(novtable) ID3D11Device : IUnknown
 {
@@ -4260,6 +4513,8 @@ struct __declspec(novtable) ID3D11Device : IUnknown
 
 static_assert(sizeof(ID3D11Device) == 8);
 
+// ID3D10Blob
+
 struct __declspec(novtable) ID3D10Blob : IUnknown
 {
 	virtual LPVOID GetBufferPointer() = 0;
@@ -4268,11 +4523,7 @@ struct __declspec(novtable) ID3D10Blob : IUnknown
 
 static_assert(sizeof(ID3D10Blob) == 8);
 
-typedef ID3D10Blob ID3DBlob;
-
-static_assert(TypeMatch<ID3DBlob, ID3D10Blob>::value);
-
-static_assert(sizeof(ID3DBlob) == 8);
+// ID3DDestructionNotifier
 
 struct __declspec(novtable) ID3DDestructionNotifier : IUnknown
 {
@@ -4286,6 +4537,8 @@ struct __declspec(novtable) ID3DDestructionNotifier : IUnknown
 };
 
 static_assert(sizeof(ID3DDestructionNotifier) == 8);
+
+// ID3DInclude
 
 struct __declspec(novtable) ID3DInclude
 {
@@ -4301,6 +4554,14 @@ struct __declspec(novtable) ID3DInclude
 };
 
 static_assert(sizeof(ID3DInclude) == 8);
+
+// ID3DBlob
+
+typedef ID3D10Blob ID3DBlob;
+
+static_assert(TypeMatch<ID3DBlob, ID3D10Blob>::value);
+
+static_assert(sizeof(ID3DBlob) == 8);
 
 extern "C" HRESULT D3D11CreateDeviceAndSwapChain
 (
@@ -4331,5 +4592,4557 @@ extern "C" HRESULT D3DCompile
 	ID3DBlob** ppCode,
 	ID3DBlob** ppErrorMsgs
 );
+#pragma endregion
+
+#else
+
+#pragma region x86_32
+
+struct ID3D11DeviceChild;
+struct ID3D11DepthStencilState;
+struct ID3D11BlendState;
+struct ID3D11RasterizerState;
+struct ID3D11Resource;
+struct ID3D11Buffer;
+struct ID3D11Texture1D;
+struct ID3D11Texture2D;
+struct ID3D11Texture3D;
+struct ID3D11View;
+struct ID3D11ShaderResourceView;
+struct ID3D11RenderTargetView;
+struct ID3D11DepthStencilView;
+struct ID3D11UnorderedAccessView;
+struct ID3D11VertexShader;
+struct ID3D11HullShader;
+struct ID3D11DomainShader;
+struct ID3D11GeometryShader;
+struct ID3D11PixelShader;
+struct ID3D11ComputeShader;
+struct ID3D11InputLayout;
+struct ID3D11SamplerState;
+struct ID3D11Asynchronous;
+struct ID3D11Query;
+struct ID3D11Predicate;
+struct ID3D11Counter;
+struct ID3D11ClassInstance;
+struct ID3D11ClassLinkage;
+struct ID3D11CommandList;
+struct ID3D11DeviceContext;
+struct ID3D11VideoDecoder;
+struct ID3D11VideoProcessorEnumerator;
+struct ID3D11VideoProcessor;
+struct ID3D11AuthenticatedChannel;
+struct ID3D11CryptoSession;
+struct ID3D11VideoDecoderOutputView;
+struct ID3D11VideoProcessorInputView;
+struct ID3D11VideoProcessorOutputView;
+struct ID3D11VideoContext;
+struct ID3D11VideoDevice;
+struct ID3D11Device;
+struct ID3D10Blob;
+struct ID3DDestructionNotifier;
+
+extern "C" const IID IID_ID3D11DeviceChild;
+extern "C" const IID IID_ID3D11DepthStencilState;
+extern "C" const IID IID_ID3D11BlendState;
+extern "C" const IID IID_ID3D11RasterizerState;
+extern "C" const IID IID_ID3D11Resource;
+extern "C" const IID IID_ID3D11Buffer;
+extern "C" const IID IID_ID3D11Texture1D;
+extern "C" const IID IID_ID3D11Texture2D;
+extern "C" const IID IID_ID3D11Texture3D;
+extern "C" const IID IID_ID3D11View;
+extern "C" const IID IID_ID3D11ShaderResourceView;
+extern "C" const IID IID_ID3D11RenderTargetView;
+extern "C" const IID IID_ID3D11DepthStencilView;
+extern "C" const IID IID_ID3D11UnorderedAccessView;
+extern "C" const IID IID_ID3D11VertexShader;
+extern "C" const IID IID_ID3D11HullShader;
+extern "C" const IID IID_ID3D11DomainShader;
+extern "C" const IID IID_ID3D11GeometryShader;
+extern "C" const IID IID_ID3D11PixelShader;
+extern "C" const IID IID_ID3D11ComputeShader;
+extern "C" const IID IID_ID3D11InputLayout;
+extern "C" const IID IID_ID3D11SamplerState;
+extern "C" const IID IID_ID3D11Asynchronous;
+extern "C" const IID IID_ID3D11Query;
+extern "C" const IID IID_ID3D11Predicate;
+extern "C" const IID IID_ID3D11Counter;
+extern "C" const IID IID_ID3D11ClassInstance;
+extern "C" const IID IID_ID3D11ClassLinkage;
+extern "C" const IID IID_ID3D11CommandList;
+extern "C" const IID IID_ID3D11DeviceContext;
+extern "C" const IID IID_ID3D11VideoDecoder;
+extern "C" const IID IID_ID3D11VideoProcessorEnumerator;
+extern "C" const IID IID_ID3D11VideoProcessor;
+extern "C" const IID IID_ID3D11AuthenticatedChannel;
+extern "C" const IID IID_ID3D11CryptoSession;
+extern "C" const IID IID_ID3D11VideoDecoderOutputView;
+extern "C" const IID IID_ID3D11VideoProcessorInputView;
+extern "C" const IID IID_ID3D11VideoProcessorOutputView;
+extern "C" const IID IID_ID3D11VideoContext;
+extern "C" const IID IID_ID3D11VideoDevice;
+extern "C" const IID IID_ID3D11Device;
+extern "C" const IID IID_ID3D10Blob;
+extern "C" const IID IID_ID3DDestructionNotifier;
+
+// D3D11_RECT
+
+typedef RECT D3D11_RECT;
+
+static_assert(TypeMatch<D3D11_RECT, RECT>::value);
+
+static_assert(sizeof(D3D11_RECT) == 16);
+
+// APP_DEPRECATED_HRESULT
+
+typedef HRESULT APP_DEPRECATED_HRESULT;
+
+static_assert(TypeMatch<APP_DEPRECATED_HRESULT, HRESULT>::value);
+
+static_assert(sizeof(APP_DEPRECATED_HRESULT) == 4);
+
+enum
+{
+	D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE=16,
+};
+
+// D3D_DRIVER_TYPE
+
+enum D3D_DRIVER_TYPE
+{
+	D3D_DRIVER_TYPE_UNKNOWN=0,
+	D3D_DRIVER_TYPE_HARDWARE=(D3D_DRIVER_TYPE_UNKNOWN+1),
+	D3D_DRIVER_TYPE_REFERENCE=(D3D_DRIVER_TYPE_HARDWARE+1),
+	D3D_DRIVER_TYPE_NULL=(D3D_DRIVER_TYPE_REFERENCE+1),
+	D3D_DRIVER_TYPE_SOFTWARE=(D3D_DRIVER_TYPE_NULL+1),
+	D3D_DRIVER_TYPE_WARP=(D3D_DRIVER_TYPE_SOFTWARE+1),
+};
+
+// D3D_FEATURE_LEVEL
+
+enum D3D_FEATURE_LEVEL
+{
+	D3D_FEATURE_LEVEL_1_0_CORE=0x1000,
+	D3D_FEATURE_LEVEL_9_1=0x9100,
+	D3D_FEATURE_LEVEL_9_2=0x9200,
+	D3D_FEATURE_LEVEL_9_3=0x9300,
+	D3D_FEATURE_LEVEL_10_0=0xa000,
+	D3D_FEATURE_LEVEL_10_1=0xa100,
+	D3D_FEATURE_LEVEL_11_0=0xb000,
+	D3D_FEATURE_LEVEL_11_1=0xb100,
+	D3D_FEATURE_LEVEL_12_0=0xc000,
+	D3D_FEATURE_LEVEL_12_1=0xc100,
+};
+
+// D3D_PRIMITIVE_TOPOLOGY
+
+enum D3D_PRIMITIVE_TOPOLOGY
+{
+	D3D_PRIMITIVE_TOPOLOGY_UNDEFINED=0,
+	D3D_PRIMITIVE_TOPOLOGY_POINTLIST=1,
+	D3D_PRIMITIVE_TOPOLOGY_LINELIST=2,
+	D3D_PRIMITIVE_TOPOLOGY_LINESTRIP=3,
+	D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST=4,
+	D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP=5,
+	D3D_PRIMITIVE_TOPOLOGY_LINELIST_ADJ=10,
+	D3D_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ=11,
+	D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ=12,
+	D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ=13,
+	D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST=33,
+	D3D_PRIMITIVE_TOPOLOGY_2_CONTROL_POINT_PATCHLIST=34,
+	D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST=35,
+	D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST=36,
+	D3D_PRIMITIVE_TOPOLOGY_5_CONTROL_POINT_PATCHLIST=37,
+	D3D_PRIMITIVE_TOPOLOGY_6_CONTROL_POINT_PATCHLIST=38,
+	D3D_PRIMITIVE_TOPOLOGY_7_CONTROL_POINT_PATCHLIST=39,
+	D3D_PRIMITIVE_TOPOLOGY_8_CONTROL_POINT_PATCHLIST=40,
+	D3D_PRIMITIVE_TOPOLOGY_9_CONTROL_POINT_PATCHLIST=41,
+	D3D_PRIMITIVE_TOPOLOGY_10_CONTROL_POINT_PATCHLIST=42,
+	D3D_PRIMITIVE_TOPOLOGY_11_CONTROL_POINT_PATCHLIST=43,
+	D3D_PRIMITIVE_TOPOLOGY_12_CONTROL_POINT_PATCHLIST=44,
+	D3D_PRIMITIVE_TOPOLOGY_13_CONTROL_POINT_PATCHLIST=45,
+	D3D_PRIMITIVE_TOPOLOGY_14_CONTROL_POINT_PATCHLIST=46,
+	D3D_PRIMITIVE_TOPOLOGY_15_CONTROL_POINT_PATCHLIST=47,
+	D3D_PRIMITIVE_TOPOLOGY_16_CONTROL_POINT_PATCHLIST=48,
+	D3D_PRIMITIVE_TOPOLOGY_17_CONTROL_POINT_PATCHLIST=49,
+	D3D_PRIMITIVE_TOPOLOGY_18_CONTROL_POINT_PATCHLIST=50,
+	D3D_PRIMITIVE_TOPOLOGY_19_CONTROL_POINT_PATCHLIST=51,
+	D3D_PRIMITIVE_TOPOLOGY_20_CONTROL_POINT_PATCHLIST=52,
+	D3D_PRIMITIVE_TOPOLOGY_21_CONTROL_POINT_PATCHLIST=53,
+	D3D_PRIMITIVE_TOPOLOGY_22_CONTROL_POINT_PATCHLIST=54,
+	D3D_PRIMITIVE_TOPOLOGY_23_CONTROL_POINT_PATCHLIST=55,
+	D3D_PRIMITIVE_TOPOLOGY_24_CONTROL_POINT_PATCHLIST=56,
+	D3D_PRIMITIVE_TOPOLOGY_25_CONTROL_POINT_PATCHLIST=57,
+	D3D_PRIMITIVE_TOPOLOGY_26_CONTROL_POINT_PATCHLIST=58,
+	D3D_PRIMITIVE_TOPOLOGY_27_CONTROL_POINT_PATCHLIST=59,
+	D3D_PRIMITIVE_TOPOLOGY_28_CONTROL_POINT_PATCHLIST=60,
+	D3D_PRIMITIVE_TOPOLOGY_29_CONTROL_POINT_PATCHLIST=61,
+	D3D_PRIMITIVE_TOPOLOGY_30_CONTROL_POINT_PATCHLIST=62,
+	D3D_PRIMITIVE_TOPOLOGY_31_CONTROL_POINT_PATCHLIST=63,
+	D3D_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST=64,
+};
+
+// D3D10_PRIMITIVE_TOPOLOGY
+
+enum D3D10_PRIMITIVE_TOPOLOGY
+{
+	D3D10_PRIMITIVE_TOPOLOGY_UNDEFINED=D3D_PRIMITIVE_TOPOLOGY_UNDEFINED,
+	D3D10_PRIMITIVE_TOPOLOGY_POINTLIST=D3D_PRIMITIVE_TOPOLOGY_POINTLIST,
+	D3D10_PRIMITIVE_TOPOLOGY_LINELIST=D3D_PRIMITIVE_TOPOLOGY_LINELIST,
+	D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP=D3D_PRIMITIVE_TOPOLOGY_LINESTRIP,
+	D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST=D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+	D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP=D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP,
+	D3D10_PRIMITIVE_TOPOLOGY_LINELIST_ADJ=D3D_PRIMITIVE_TOPOLOGY_LINELIST_ADJ,
+	D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ=D3D_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ,
+	D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ=D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ,
+	D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ=D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ,
+};
+
+// D3D11_PRIMITIVE_TOPOLOGY
+
+enum D3D11_PRIMITIVE_TOPOLOGY
+{
+	D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED=D3D_PRIMITIVE_TOPOLOGY_UNDEFINED,
+	D3D11_PRIMITIVE_TOPOLOGY_POINTLIST=D3D_PRIMITIVE_TOPOLOGY_POINTLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_LINELIST=D3D_PRIMITIVE_TOPOLOGY_LINELIST,
+	D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP=D3D_PRIMITIVE_TOPOLOGY_LINESTRIP,
+	D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST=D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+	D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP=D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP,
+	D3D11_PRIMITIVE_TOPOLOGY_LINELIST_ADJ=D3D_PRIMITIVE_TOPOLOGY_LINELIST_ADJ,
+	D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ=D3D_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ,
+	D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ=D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ,
+	D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ=D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ,
+	D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_2_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_2_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_5_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_5_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_6_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_6_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_7_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_7_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_8_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_8_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_9_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_9_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_10_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_10_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_11_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_11_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_12_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_12_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_13_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_13_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_14_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_14_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_15_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_15_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_16_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_16_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_17_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_17_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_18_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_18_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_19_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_19_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_20_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_20_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_21_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_21_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_22_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_22_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_23_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_23_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_24_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_24_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_25_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_25_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_26_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_26_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_27_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_27_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_28_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_28_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_29_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_29_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_30_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_30_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_31_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_31_CONTROL_POINT_PATCHLIST,
+	D3D11_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST=D3D_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST,
+};
+
+// D3D11_RESOURCE_DIMENSION
+
+enum D3D11_RESOURCE_DIMENSION
+{
+	D3D11_RESOURCE_DIMENSION_UNKNOWN=0,
+	D3D11_RESOURCE_DIMENSION_BUFFER=1,
+	D3D11_RESOURCE_DIMENSION_TEXTURE1D=2,
+	D3D11_RESOURCE_DIMENSION_TEXTURE2D=3,
+	D3D11_RESOURCE_DIMENSION_TEXTURE3D=4,
+};
+
+// D3D11_DSV_DIMENSION
+
+enum D3D11_DSV_DIMENSION
+{
+	D3D11_DSV_DIMENSION_UNKNOWN=0,
+	D3D11_DSV_DIMENSION_TEXTURE1D=1,
+	D3D11_DSV_DIMENSION_TEXTURE1DARRAY=2,
+	D3D11_DSV_DIMENSION_TEXTURE2D=3,
+	D3D11_DSV_DIMENSION_TEXTURE2DARRAY=4,
+	D3D11_DSV_DIMENSION_TEXTURE2DMS=5,
+	D3D11_DSV_DIMENSION_TEXTURE2DMSARRAY=6,
+};
+
+// D3D11_RTV_DIMENSION
+
+enum D3D11_RTV_DIMENSION
+{
+	D3D11_RTV_DIMENSION_UNKNOWN=0,
+	D3D11_RTV_DIMENSION_BUFFER=1,
+	D3D11_RTV_DIMENSION_TEXTURE1D=2,
+	D3D11_RTV_DIMENSION_TEXTURE1DARRAY=3,
+	D3D11_RTV_DIMENSION_TEXTURE2D=4,
+	D3D11_RTV_DIMENSION_TEXTURE2DARRAY=5,
+	D3D11_RTV_DIMENSION_TEXTURE2DMS=6,
+	D3D11_RTV_DIMENSION_TEXTURE2DMSARRAY=7,
+	D3D11_RTV_DIMENSION_TEXTURE3D=8,
+};
+
+// D3D11_UAV_DIMENSION
+
+enum D3D11_UAV_DIMENSION
+{
+	D3D11_UAV_DIMENSION_UNKNOWN=0,
+	D3D11_UAV_DIMENSION_BUFFER=1,
+	D3D11_UAV_DIMENSION_TEXTURE1D=2,
+	D3D11_UAV_DIMENSION_TEXTURE1DARRAY=3,
+	D3D11_UAV_DIMENSION_TEXTURE2D=4,
+	D3D11_UAV_DIMENSION_TEXTURE2DARRAY=5,
+	D3D11_UAV_DIMENSION_TEXTURE3D=8,
+};
+
+// D3D11_USAGE
+
+enum D3D11_USAGE
+{
+	D3D11_USAGE_DEFAULT=0,
+	D3D11_USAGE_IMMUTABLE=1,
+	D3D11_USAGE_DYNAMIC=2,
+	D3D11_USAGE_STAGING=3,
+};
+
+// D3D_SRV_DIMENSION
+
+enum D3D_SRV_DIMENSION
+{
+	D3D_SRV_DIMENSION_UNKNOWN=0,
+	D3D_SRV_DIMENSION_BUFFER=1,
+	D3D_SRV_DIMENSION_TEXTURE1D=2,
+	D3D_SRV_DIMENSION_TEXTURE1DARRAY=3,
+	D3D_SRV_DIMENSION_TEXTURE2D=4,
+	D3D_SRV_DIMENSION_TEXTURE2DARRAY=5,
+	D3D_SRV_DIMENSION_TEXTURE2DMS=6,
+	D3D_SRV_DIMENSION_TEXTURE2DMSARRAY=7,
+	D3D_SRV_DIMENSION_TEXTURE3D=8,
+	D3D_SRV_DIMENSION_TEXTURECUBE=9,
+	D3D_SRV_DIMENSION_TEXTURECUBEARRAY=10,
+	D3D_SRV_DIMENSION_BUFFEREX=11,
+};
+
+// D3D10_SRV_DIMENSION
+
+enum D3D10_SRV_DIMENSION
+{
+	D3D10_SRV_DIMENSION_UNKNOWN=D3D_SRV_DIMENSION_UNKNOWN,
+	D3D10_SRV_DIMENSION_BUFFER=D3D_SRV_DIMENSION_BUFFER,
+	D3D10_SRV_DIMENSION_TEXTURE1D=D3D_SRV_DIMENSION_TEXTURE1D,
+	D3D10_SRV_DIMENSION_TEXTURE1DARRAY=D3D_SRV_DIMENSION_TEXTURE1DARRAY,
+	D3D10_SRV_DIMENSION_TEXTURE2D=D3D_SRV_DIMENSION_TEXTURE2D,
+	D3D10_SRV_DIMENSION_TEXTURE2DARRAY=D3D_SRV_DIMENSION_TEXTURE2DARRAY,
+	D3D10_SRV_DIMENSION_TEXTURE2DMS=D3D_SRV_DIMENSION_TEXTURE2DMS,
+	D3D10_SRV_DIMENSION_TEXTURE2DMSARRAY=D3D_SRV_DIMENSION_TEXTURE2DMSARRAY,
+	D3D10_SRV_DIMENSION_TEXTURE3D=D3D_SRV_DIMENSION_TEXTURE3D,
+	D3D10_SRV_DIMENSION_TEXTURECUBE=D3D_SRV_DIMENSION_TEXTURECUBE,
+};
+
+// D3D10_1_SRV_DIMENSION
+
+enum D3D10_1_SRV_DIMENSION
+{
+	D3D10_1_SRV_DIMENSION_UNKNOWN=D3D_SRV_DIMENSION_UNKNOWN,
+	D3D10_1_SRV_DIMENSION_BUFFER=D3D_SRV_DIMENSION_BUFFER,
+	D3D10_1_SRV_DIMENSION_TEXTURE1D=D3D_SRV_DIMENSION_TEXTURE1D,
+	D3D10_1_SRV_DIMENSION_TEXTURE1DARRAY=D3D_SRV_DIMENSION_TEXTURE1DARRAY,
+	D3D10_1_SRV_DIMENSION_TEXTURE2D=D3D_SRV_DIMENSION_TEXTURE2D,
+	D3D10_1_SRV_DIMENSION_TEXTURE2DARRAY=D3D_SRV_DIMENSION_TEXTURE2DARRAY,
+	D3D10_1_SRV_DIMENSION_TEXTURE2DMS=D3D_SRV_DIMENSION_TEXTURE2DMS,
+	D3D10_1_SRV_DIMENSION_TEXTURE2DMSARRAY=D3D_SRV_DIMENSION_TEXTURE2DMSARRAY,
+	D3D10_1_SRV_DIMENSION_TEXTURE3D=D3D_SRV_DIMENSION_TEXTURE3D,
+	D3D10_1_SRV_DIMENSION_TEXTURECUBE=D3D_SRV_DIMENSION_TEXTURECUBE,
+	D3D10_1_SRV_DIMENSION_TEXTURECUBEARRAY=D3D_SRV_DIMENSION_TEXTURECUBEARRAY,
+};
+
+// D3D11_SRV_DIMENSION
+
+enum D3D11_SRV_DIMENSION
+{
+	D3D11_SRV_DIMENSION_UNKNOWN=D3D_SRV_DIMENSION_UNKNOWN,
+	D3D11_SRV_DIMENSION_BUFFER=D3D_SRV_DIMENSION_BUFFER,
+	D3D11_SRV_DIMENSION_TEXTURE1D=D3D_SRV_DIMENSION_TEXTURE1D,
+	D3D11_SRV_DIMENSION_TEXTURE1DARRAY=D3D_SRV_DIMENSION_TEXTURE1DARRAY,
+	D3D11_SRV_DIMENSION_TEXTURE2D=D3D_SRV_DIMENSION_TEXTURE2D,
+	D3D11_SRV_DIMENSION_TEXTURE2DARRAY=D3D_SRV_DIMENSION_TEXTURE2DARRAY,
+	D3D11_SRV_DIMENSION_TEXTURE2DMS=D3D_SRV_DIMENSION_TEXTURE2DMS,
+	D3D11_SRV_DIMENSION_TEXTURE2DMSARRAY=D3D_SRV_DIMENSION_TEXTURE2DMSARRAY,
+	D3D11_SRV_DIMENSION_TEXTURE3D=D3D_SRV_DIMENSION_TEXTURE3D,
+	D3D11_SRV_DIMENSION_TEXTURECUBE=D3D_SRV_DIMENSION_TEXTURECUBE,
+	D3D11_SRV_DIMENSION_TEXTURECUBEARRAY=D3D_SRV_DIMENSION_TEXTURECUBEARRAY,
+	D3D11_SRV_DIMENSION_BUFFEREX=D3D_SRV_DIMENSION_BUFFEREX,
+};
+
+// D3D11_INPUT_CLASSIFICATION
+
+enum D3D11_INPUT_CLASSIFICATION
+{
+	D3D11_INPUT_PER_VERTEX_DATA=0,
+	D3D11_INPUT_PER_INSTANCE_DATA=1,
+};
+
+// D3D11_BLEND
+
+enum D3D11_BLEND
+{
+	D3D11_BLEND_ZERO=1,
+	D3D11_BLEND_ONE=2,
+	D3D11_BLEND_SRC_COLOR=3,
+	D3D11_BLEND_INV_SRC_COLOR=4,
+	D3D11_BLEND_SRC_ALPHA=5,
+	D3D11_BLEND_INV_SRC_ALPHA=6,
+	D3D11_BLEND_DEST_ALPHA=7,
+	D3D11_BLEND_INV_DEST_ALPHA=8,
+	D3D11_BLEND_DEST_COLOR=9,
+	D3D11_BLEND_INV_DEST_COLOR=10,
+	D3D11_BLEND_SRC_ALPHA_SAT=11,
+	D3D11_BLEND_BLEND_FACTOR=14,
+	D3D11_BLEND_INV_BLEND_FACTOR=15,
+	D3D11_BLEND_SRC1_COLOR=16,
+	D3D11_BLEND_INV_SRC1_COLOR=17,
+	D3D11_BLEND_SRC1_ALPHA=18,
+	D3D11_BLEND_INV_SRC1_ALPHA=19,
+};
+
+// D3D11_BLEND_OP
+
+enum D3D11_BLEND_OP
+{
+	D3D11_BLEND_OP_ADD=1,
+	D3D11_BLEND_OP_SUBTRACT=2,
+	D3D11_BLEND_OP_REV_SUBTRACT=3,
+	D3D11_BLEND_OP_MIN=4,
+	D3D11_BLEND_OP_MAX=5,
+};
+
+// D3D11_COMPARISON_FUNC
+
+enum D3D11_COMPARISON_FUNC
+{
+	D3D11_COMPARISON_NEVER=1,
+	D3D11_COMPARISON_LESS=2,
+	D3D11_COMPARISON_EQUAL=3,
+	D3D11_COMPARISON_LESS_EQUAL=4,
+	D3D11_COMPARISON_GREATER=5,
+	D3D11_COMPARISON_NOT_EQUAL=6,
+	D3D11_COMPARISON_GREATER_EQUAL=7,
+	D3D11_COMPARISON_ALWAYS=8,
+};
+
+// D3D11_DEPTH_WRITE_MASK
+
+enum D3D11_DEPTH_WRITE_MASK
+{
+	D3D11_DEPTH_WRITE_MASK_ZERO=0,
+	D3D11_DEPTH_WRITE_MASK_ALL=1,
+};
+
+// D3D11_STENCIL_OP
+
+enum D3D11_STENCIL_OP
+{
+	D3D11_STENCIL_OP_KEEP=1,
+	D3D11_STENCIL_OP_ZERO=2,
+	D3D11_STENCIL_OP_REPLACE=3,
+	D3D11_STENCIL_OP_INCR_SAT=4,
+	D3D11_STENCIL_OP_DECR_SAT=5,
+	D3D11_STENCIL_OP_INVERT=6,
+	D3D11_STENCIL_OP_INCR=7,
+	D3D11_STENCIL_OP_DECR=8,
+};
+
+// D3D11_FILL_MODE
+
+enum D3D11_FILL_MODE
+{
+	D3D11_FILL_WIREFRAME=2,
+	D3D11_FILL_SOLID=3,
+};
+
+// D3D11_CULL_MODE
+
+enum D3D11_CULL_MODE
+{
+	D3D11_CULL_NONE=1,
+	D3D11_CULL_FRONT=2,
+	D3D11_CULL_BACK=3,
+};
+
+// D3D11_FILTER
+
+enum D3D11_FILTER
+{
+	D3D11_FILTER_MIN_MAG_MIP_POINT=0,
+	D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR=0x1,
+	D3D11_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT=0x4,
+	D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR=0x5,
+	D3D11_FILTER_MIN_LINEAR_MAG_MIP_POINT=0x10,
+	D3D11_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR=0x11,
+	D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT=0x14,
+	D3D11_FILTER_MIN_MAG_MIP_LINEAR=0x15,
+	D3D11_FILTER_ANISOTROPIC=0x55,
+	D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT=0x80,
+	D3D11_FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR=0x81,
+	D3D11_FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT=0x84,
+	D3D11_FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR=0x85,
+	D3D11_FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT=0x90,
+	D3D11_FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR=0x91,
+	D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT=0x94,
+	D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR=0x95,
+	D3D11_FILTER_COMPARISON_ANISOTROPIC=0xd5,
+	D3D11_FILTER_MINIMUM_MIN_MAG_MIP_POINT=0x100,
+	D3D11_FILTER_MINIMUM_MIN_MAG_POINT_MIP_LINEAR=0x101,
+	D3D11_FILTER_MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT=0x104,
+	D3D11_FILTER_MINIMUM_MIN_POINT_MAG_MIP_LINEAR=0x105,
+	D3D11_FILTER_MINIMUM_MIN_LINEAR_MAG_MIP_POINT=0x110,
+	D3D11_FILTER_MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR=0x111,
+	D3D11_FILTER_MINIMUM_MIN_MAG_LINEAR_MIP_POINT=0x114,
+	D3D11_FILTER_MINIMUM_MIN_MAG_MIP_LINEAR=0x115,
+	D3D11_FILTER_MINIMUM_ANISOTROPIC=0x155,
+	D3D11_FILTER_MAXIMUM_MIN_MAG_MIP_POINT=0x180,
+	D3D11_FILTER_MAXIMUM_MIN_MAG_POINT_MIP_LINEAR=0x181,
+	D3D11_FILTER_MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT=0x184,
+	D3D11_FILTER_MAXIMUM_MIN_POINT_MAG_MIP_LINEAR=0x185,
+	D3D11_FILTER_MAXIMUM_MIN_LINEAR_MAG_MIP_POINT=0x190,
+	D3D11_FILTER_MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR=0x191,
+	D3D11_FILTER_MAXIMUM_MIN_MAG_LINEAR_MIP_POINT=0x194,
+	D3D11_FILTER_MAXIMUM_MIN_MAG_MIP_LINEAR=0x195,
+	D3D11_FILTER_MAXIMUM_ANISOTROPIC=0x1d5,
+};
+
+// D3D11_FILTER_TYPE
+
+enum D3D11_FILTER_TYPE
+{
+	D3D11_FILTER_TYPE_POINT=0,
+	D3D11_FILTER_TYPE_LINEAR=1,
+};
+
+// D3D11_FILTER_REDUCTION_TYPE
+
+enum D3D11_FILTER_REDUCTION_TYPE
+{
+	D3D11_FILTER_REDUCTION_TYPE_STANDARD=0,
+	D3D11_FILTER_REDUCTION_TYPE_COMPARISON=1,
+	D3D11_FILTER_REDUCTION_TYPE_MINIMUM=2,
+	D3D11_FILTER_REDUCTION_TYPE_MAXIMUM=3,
+};
+
+// D3D11_TEXTURE_ADDRESS_MODE
+
+enum D3D11_TEXTURE_ADDRESS_MODE
+{
+	D3D11_TEXTURE_ADDRESS_WRAP=1,
+	D3D11_TEXTURE_ADDRESS_MIRROR=2,
+	D3D11_TEXTURE_ADDRESS_CLAMP=3,
+	D3D11_TEXTURE_ADDRESS_BORDER=4,
+	D3D11_TEXTURE_ADDRESS_MIRROR_ONCE=5,
+};
+
+// D3D11_QUERY
+
+enum D3D11_QUERY
+{
+	D3D11_QUERY_EVENT=0,
+	D3D11_QUERY_OCCLUSION=(D3D11_QUERY_EVENT+1),
+	D3D11_QUERY_TIMESTAMP=(D3D11_QUERY_OCCLUSION+1),
+	D3D11_QUERY_TIMESTAMP_DISJOINT=(D3D11_QUERY_TIMESTAMP+1),
+	D3D11_QUERY_PIPELINE_STATISTICS=(D3D11_QUERY_TIMESTAMP_DISJOINT+1),
+	D3D11_QUERY_OCCLUSION_PREDICATE=(D3D11_QUERY_PIPELINE_STATISTICS+1),
+	D3D11_QUERY_SO_STATISTICS=(D3D11_QUERY_OCCLUSION_PREDICATE+1),
+	D3D11_QUERY_SO_OVERFLOW_PREDICATE=(D3D11_QUERY_SO_STATISTICS+1),
+	D3D11_QUERY_SO_STATISTICS_STREAM0=(D3D11_QUERY_SO_OVERFLOW_PREDICATE+1),
+	D3D11_QUERY_SO_OVERFLOW_PREDICATE_STREAM0=(D3D11_QUERY_SO_STATISTICS_STREAM0+1),
+	D3D11_QUERY_SO_STATISTICS_STREAM1=(D3D11_QUERY_SO_OVERFLOW_PREDICATE_STREAM0+1),
+	D3D11_QUERY_SO_OVERFLOW_PREDICATE_STREAM1=(D3D11_QUERY_SO_STATISTICS_STREAM1+1),
+	D3D11_QUERY_SO_STATISTICS_STREAM2=(D3D11_QUERY_SO_OVERFLOW_PREDICATE_STREAM1+1),
+	D3D11_QUERY_SO_OVERFLOW_PREDICATE_STREAM2=(D3D11_QUERY_SO_STATISTICS_STREAM2+1),
+	D3D11_QUERY_SO_STATISTICS_STREAM3=(D3D11_QUERY_SO_OVERFLOW_PREDICATE_STREAM2+1),
+	D3D11_QUERY_SO_OVERFLOW_PREDICATE_STREAM3=(D3D11_QUERY_SO_STATISTICS_STREAM3+1),
+};
+
+// D3D11_COUNTER
+
+enum D3D11_COUNTER
+{
+	D3D11_COUNTER_DEVICE_DEPENDENT_0=0x40000000,
+};
+
+// D3D11_COUNTER_TYPE
+
+enum D3D11_COUNTER_TYPE
+{
+	D3D11_COUNTER_TYPE_FLOAT32=0,
+	D3D11_COUNTER_TYPE_UINT16=(D3D11_COUNTER_TYPE_FLOAT32+1),
+	D3D11_COUNTER_TYPE_UINT32=(D3D11_COUNTER_TYPE_UINT16+1),
+	D3D11_COUNTER_TYPE_UINT64=(D3D11_COUNTER_TYPE_UINT32+1),
+};
+
+// D3D11_FEATURE
+
+enum D3D11_FEATURE
+{
+	D3D11_FEATURE_THREADING=0,
+	D3D11_FEATURE_DOUBLES=(D3D11_FEATURE_THREADING+1),
+	D3D11_FEATURE_FORMAT_SUPPORT=(D3D11_FEATURE_DOUBLES+1),
+	D3D11_FEATURE_FORMAT_SUPPORT2=(D3D11_FEATURE_FORMAT_SUPPORT+1),
+	D3D11_FEATURE_D3D10_X_HARDWARE_OPTIONS=(D3D11_FEATURE_FORMAT_SUPPORT2+1),
+	D3D11_FEATURE_D3D11_OPTIONS=(D3D11_FEATURE_D3D10_X_HARDWARE_OPTIONS+1),
+	D3D11_FEATURE_ARCHITECTURE_INFO=(D3D11_FEATURE_D3D11_OPTIONS+1),
+	D3D11_FEATURE_D3D9_OPTIONS=(D3D11_FEATURE_ARCHITECTURE_INFO+1),
+	D3D11_FEATURE_SHADER_MIN_PRECISION_SUPPORT=(D3D11_FEATURE_D3D9_OPTIONS+1),
+	D3D11_FEATURE_D3D9_SHADOW_SUPPORT=(D3D11_FEATURE_SHADER_MIN_PRECISION_SUPPORT+1),
+	D3D11_FEATURE_D3D11_OPTIONS1=(D3D11_FEATURE_D3D9_SHADOW_SUPPORT+1),
+	D3D11_FEATURE_D3D9_SIMPLE_INSTANCING_SUPPORT=(D3D11_FEATURE_D3D11_OPTIONS1+1),
+	D3D11_FEATURE_MARKER_SUPPORT=(D3D11_FEATURE_D3D9_SIMPLE_INSTANCING_SUPPORT+1),
+	D3D11_FEATURE_D3D9_OPTIONS1=(D3D11_FEATURE_MARKER_SUPPORT+1),
+	D3D11_FEATURE_D3D11_OPTIONS2=(D3D11_FEATURE_D3D9_OPTIONS1+1),
+	D3D11_FEATURE_D3D11_OPTIONS3=(D3D11_FEATURE_D3D11_OPTIONS2+1),
+	D3D11_FEATURE_GPU_VIRTUAL_ADDRESS_SUPPORT=(D3D11_FEATURE_D3D11_OPTIONS3+1),
+	D3D11_FEATURE_D3D11_OPTIONS4=(D3D11_FEATURE_GPU_VIRTUAL_ADDRESS_SUPPORT+1),
+	D3D11_FEATURE_SHADER_CACHE=(D3D11_FEATURE_D3D11_OPTIONS4+1),
+	D3D11_FEATURE_D3D11_OPTIONS5=(D3D11_FEATURE_SHADER_CACHE+1),
+};
+
+// D3D11_MAP
+
+enum D3D11_MAP
+{
+	D3D11_MAP_READ=1,
+	D3D11_MAP_WRITE=2,
+	D3D11_MAP_READ_WRITE=3,
+	D3D11_MAP_WRITE_DISCARD=4,
+	D3D11_MAP_WRITE_NO_OVERWRITE=5,
+};
+
+// D3D11_DEVICE_CONTEXT_TYPE
+
+enum D3D11_DEVICE_CONTEXT_TYPE
+{
+	D3D11_DEVICE_CONTEXT_IMMEDIATE=0,
+	D3D11_DEVICE_CONTEXT_DEFERRED=(D3D11_DEVICE_CONTEXT_IMMEDIATE+1),
+};
+
+// D3D11_VIDEO_FRAME_FORMAT
+
+enum D3D11_VIDEO_FRAME_FORMAT
+{
+	D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE=0,
+	D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST=1,
+	D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST=2,
+};
+
+// D3D11_VIDEO_USAGE
+
+enum D3D11_VIDEO_USAGE
+{
+	D3D11_VIDEO_USAGE_PLAYBACK_NORMAL=0,
+	D3D11_VIDEO_USAGE_OPTIMAL_SPEED=1,
+	D3D11_VIDEO_USAGE_OPTIMAL_QUALITY=2,
+};
+
+// D3D11_VIDEO_PROCESSOR_FILTER
+
+enum D3D11_VIDEO_PROCESSOR_FILTER
+{
+	D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS=0,
+	D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST=1,
+	D3D11_VIDEO_PROCESSOR_FILTER_HUE=2,
+	D3D11_VIDEO_PROCESSOR_FILTER_SATURATION=3,
+	D3D11_VIDEO_PROCESSOR_FILTER_NOISE_REDUCTION=4,
+	D3D11_VIDEO_PROCESSOR_FILTER_EDGE_ENHANCEMENT=5,
+	D3D11_VIDEO_PROCESSOR_FILTER_ANAMORPHIC_SCALING=6,
+	D3D11_VIDEO_PROCESSOR_FILTER_STEREO_ADJUSTMENT=7,
+};
+
+// D3D11_VDOV_DIMENSION
+
+enum D3D11_VDOV_DIMENSION
+{
+	D3D11_VDOV_DIMENSION_UNKNOWN=0,
+	D3D11_VDOV_DIMENSION_TEXTURE2D=1,
+};
+
+// D3D11_VPIV_DIMENSION
+
+enum D3D11_VPIV_DIMENSION
+{
+	D3D11_VPIV_DIMENSION_UNKNOWN=0,
+	D3D11_VPIV_DIMENSION_TEXTURE2D=1,
+};
+
+// D3D11_VPOV_DIMENSION
+
+enum D3D11_VPOV_DIMENSION
+{
+	D3D11_VPOV_DIMENSION_UNKNOWN=0,
+	D3D11_VPOV_DIMENSION_TEXTURE2D=1,
+	D3D11_VPOV_DIMENSION_TEXTURE2DARRAY=2,
+};
+
+// D3D11_VIDEO_DECODER_BUFFER_TYPE
+
+enum D3D11_VIDEO_DECODER_BUFFER_TYPE
+{
+	D3D11_VIDEO_DECODER_BUFFER_PICTURE_PARAMETERS=0,
+	D3D11_VIDEO_DECODER_BUFFER_MACROBLOCK_CONTROL=1,
+	D3D11_VIDEO_DECODER_BUFFER_RESIDUAL_DIFFERENCE=2,
+	D3D11_VIDEO_DECODER_BUFFER_DEBLOCKING_CONTROL=3,
+	D3D11_VIDEO_DECODER_BUFFER_INVERSE_QUANTIZATION_MATRIX=4,
+	D3D11_VIDEO_DECODER_BUFFER_SLICE_CONTROL=5,
+	D3D11_VIDEO_DECODER_BUFFER_BITSTREAM=6,
+	D3D11_VIDEO_DECODER_BUFFER_MOTION_VECTOR=7,
+	D3D11_VIDEO_DECODER_BUFFER_FILM_GRAIN=8,
+};
+
+// D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE
+
+enum D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE
+{
+	D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE_OPAQUE=0,
+	D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE_BACKGROUND=1,
+	D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE_DESTINATION=2,
+	D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE_SOURCE_STREAM=3,
+};
+
+// D3D11_VIDEO_PROCESSOR_OUTPUT_RATE
+
+enum D3D11_VIDEO_PROCESSOR_OUTPUT_RATE
+{
+	D3D11_VIDEO_PROCESSOR_OUTPUT_RATE_NORMAL=0,
+	D3D11_VIDEO_PROCESSOR_OUTPUT_RATE_HALF=1,
+	D3D11_VIDEO_PROCESSOR_OUTPUT_RATE_CUSTOM=2,
+};
+
+// D3D11_VIDEO_PROCESSOR_STEREO_FORMAT
+
+enum D3D11_VIDEO_PROCESSOR_STEREO_FORMAT
+{
+	D3D11_VIDEO_PROCESSOR_STEREO_FORMAT_MONO=0,
+	D3D11_VIDEO_PROCESSOR_STEREO_FORMAT_HORIZONTAL=1,
+	D3D11_VIDEO_PROCESSOR_STEREO_FORMAT_VERTICAL=2,
+	D3D11_VIDEO_PROCESSOR_STEREO_FORMAT_SEPARATE=3,
+	D3D11_VIDEO_PROCESSOR_STEREO_FORMAT_MONO_OFFSET=4,
+	D3D11_VIDEO_PROCESSOR_STEREO_FORMAT_ROW_INTERLEAVED=5,
+	D3D11_VIDEO_PROCESSOR_STEREO_FORMAT_COLUMN_INTERLEAVED=6,
+	D3D11_VIDEO_PROCESSOR_STEREO_FORMAT_CHECKERBOARD=7,
+};
+
+// D3D11_VIDEO_PROCESSOR_STEREO_FLIP_MODE
+
+enum D3D11_VIDEO_PROCESSOR_STEREO_FLIP_MODE
+{
+	D3D11_VIDEO_PROCESSOR_STEREO_FLIP_NONE=0,
+	D3D11_VIDEO_PROCESSOR_STEREO_FLIP_FRAME0=1,
+	D3D11_VIDEO_PROCESSOR_STEREO_FLIP_FRAME1=2,
+};
+
+// D3D11_VIDEO_PROCESSOR_ROTATION
+
+enum D3D11_VIDEO_PROCESSOR_ROTATION
+{
+	D3D11_VIDEO_PROCESSOR_ROTATION_IDENTITY=0,
+	D3D11_VIDEO_PROCESSOR_ROTATION_90=1,
+	D3D11_VIDEO_PROCESSOR_ROTATION_180=2,
+	D3D11_VIDEO_PROCESSOR_ROTATION_270=3,
+};
+
+// D3D11_AUTHENTICATED_CHANNEL_TYPE
+
+enum D3D11_AUTHENTICATED_CHANNEL_TYPE
+{
+	D3D11_AUTHENTICATED_CHANNEL_D3D11=1,
+	D3D11_AUTHENTICATED_CHANNEL_DRIVER_SOFTWARE=2,
+	D3D11_AUTHENTICATED_CHANNEL_DRIVER_HARDWARE=3,
+};
+
+// D3D11_BIND_FLAG
+
+enum D3D11_BIND_FLAG
+{
+	D3D11_BIND_VERTEX_BUFFER=0x1,
+	D3D11_BIND_INDEX_BUFFER=0x2,
+	D3D11_BIND_CONSTANT_BUFFER=0x4,
+	D3D11_BIND_SHADER_RESOURCE=0x8,
+	D3D11_BIND_STREAM_OUTPUT=0x10,
+	D3D11_BIND_RENDER_TARGET=0x20,
+	D3D11_BIND_DEPTH_STENCIL=0x40,
+	D3D11_BIND_UNORDERED_ACCESS=0x80,
+	D3D11_BIND_DECODER=0x200,
+	D3D11_BIND_VIDEO_ENCODER=0x400,
+};
+
+// D3D11_CPU_ACCESS_FLAG
+
+enum D3D11_CPU_ACCESS_FLAG
+{
+	D3D11_CPU_ACCESS_WRITE=0x10000,
+	D3D11_CPU_ACCESS_READ=0x20000,
+};
+
+// D3D11_COLOR_WRITE_ENABLE
+
+enum D3D11_COLOR_WRITE_ENABLE
+{
+	D3D11_COLOR_WRITE_ENABLE_RED=1,
+	D3D11_COLOR_WRITE_ENABLE_GREEN=2,
+	D3D11_COLOR_WRITE_ENABLE_BLUE=4,
+	D3D11_COLOR_WRITE_ENABLE_ALPHA=8,
+	D3D11_COLOR_WRITE_ENABLE_ALL=(((D3D11_COLOR_WRITE_ENABLE_RED|D3D11_COLOR_WRITE_ENABLE_GREEN)|D3D11_COLOR_WRITE_ENABLE_BLUE)|D3D11_COLOR_WRITE_ENABLE_ALPHA),
+};
+
+// D3D_INCLUDE_TYPE
+
+enum D3D_INCLUDE_TYPE
+{
+	D3D_INCLUDE_LOCAL=0,
+	D3D_INCLUDE_SYSTEM=(D3D_INCLUDE_LOCAL+1),
+	D3D10_INCLUDE_LOCAL=D3D_INCLUDE_LOCAL,
+	D3D10_INCLUDE_SYSTEM=D3D_INCLUDE_SYSTEM,
+	D3D_INCLUDE_FORCE_DWORD=0x7fffffff,
+};
+
+#pragma pack(push, 1)
+
+// D3D11_BUFFER_DESC
+
+struct D3D11_BUFFER_DESC
+{
+	UINT ByteWidth; // 0
+	D3D11_USAGE Usage; // 4
+	UINT BindFlags; // 8
+	UINT CPUAccessFlags; // 0xC
+	UINT MiscFlags; // 0x10
+	UINT StructureByteStride; // 0x14
+};
+
+static_assert(TypeMatch<decltype(D3D11_BUFFER_DESC::ByteWidth), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFER_DESC::Usage), D3D11_USAGE>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFER_DESC::BindFlags), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFER_DESC::CPUAccessFlags), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFER_DESC::MiscFlags), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFER_DESC::StructureByteStride), UINT>::value);
+
+static_assert(offsetof(D3D11_BUFFER_DESC, ByteWidth) == 0);
+static_assert(offsetof(D3D11_BUFFER_DESC, Usage) == 4);
+static_assert(offsetof(D3D11_BUFFER_DESC, BindFlags) == 8);
+static_assert(offsetof(D3D11_BUFFER_DESC, CPUAccessFlags) == 0xC);
+static_assert(offsetof(D3D11_BUFFER_DESC, MiscFlags) == 0x10);
+static_assert(offsetof(D3D11_BUFFER_DESC, StructureByteStride) == 0x14);
+
+static_assert(sizeof(D3D11_BUFFER_DESC) == 24);
+
+// D3D11_SUBRESOURCE_DATA
+
+struct D3D11_SUBRESOURCE_DATA
+{
+	const void* pSysMem; // 0
+	UINT SysMemPitch; // 4
+	UINT SysMemSlicePitch; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_SUBRESOURCE_DATA::pSysMem), const void*>::value);
+static_assert(TypeMatch<decltype(D3D11_SUBRESOURCE_DATA::SysMemPitch), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_SUBRESOURCE_DATA::SysMemSlicePitch), UINT>::value);
+
+static_assert(offsetof(D3D11_SUBRESOURCE_DATA, pSysMem) == 0);
+static_assert(offsetof(D3D11_SUBRESOURCE_DATA, SysMemPitch) == 4);
+static_assert(offsetof(D3D11_SUBRESOURCE_DATA, SysMemSlicePitch) == 8);
+
+static_assert(sizeof(D3D11_SUBRESOURCE_DATA) == 12);
+
+// D3D11_TEXTURE1D_DESC
+
+struct D3D11_TEXTURE1D_DESC
+{
+	UINT Width; // 0
+	UINT MipLevels; // 4
+	UINT ArraySize; // 8
+	DXGI_FORMAT Format; // 0xC
+	D3D11_USAGE Usage; // 0x10
+	UINT BindFlags; // 0x14
+	UINT CPUAccessFlags; // 0x18
+	UINT MiscFlags; // 0x1C
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEXTURE1D_DESC::Width), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE1D_DESC::MipLevels), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE1D_DESC::ArraySize), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE1D_DESC::Format), DXGI_FORMAT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE1D_DESC::Usage), D3D11_USAGE>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE1D_DESC::BindFlags), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE1D_DESC::CPUAccessFlags), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE1D_DESC::MiscFlags), UINT>::value);
+
+static_assert(offsetof(D3D11_TEXTURE1D_DESC, Width) == 0);
+static_assert(offsetof(D3D11_TEXTURE1D_DESC, MipLevels) == 4);
+static_assert(offsetof(D3D11_TEXTURE1D_DESC, ArraySize) == 8);
+static_assert(offsetof(D3D11_TEXTURE1D_DESC, Format) == 0xC);
+static_assert(offsetof(D3D11_TEXTURE1D_DESC, Usage) == 0x10);
+static_assert(offsetof(D3D11_TEXTURE1D_DESC, BindFlags) == 0x14);
+static_assert(offsetof(D3D11_TEXTURE1D_DESC, CPUAccessFlags) == 0x18);
+static_assert(offsetof(D3D11_TEXTURE1D_DESC, MiscFlags) == 0x1C);
+
+static_assert(sizeof(D3D11_TEXTURE1D_DESC) == 32);
+
+// D3D11_TEXTURE2D_DESC
+
+struct D3D11_TEXTURE2D_DESC
+{
+	UINT Width; // 0
+	UINT Height; // 4
+	UINT MipLevels; // 8
+	UINT ArraySize; // 0xC
+	DXGI_FORMAT Format; // 0x10
+	DXGI_SAMPLE_DESC SampleDesc; // 0x14
+	D3D11_USAGE Usage; // 0x1C
+	UINT BindFlags; // 0x20
+	UINT CPUAccessFlags; // 0x24
+	UINT MiscFlags; // 0x28
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEXTURE2D_DESC::Width), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE2D_DESC::Height), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE2D_DESC::MipLevels), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE2D_DESC::ArraySize), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE2D_DESC::Format), DXGI_FORMAT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE2D_DESC::SampleDesc), DXGI_SAMPLE_DESC>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE2D_DESC::Usage), D3D11_USAGE>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE2D_DESC::BindFlags), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE2D_DESC::CPUAccessFlags), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE2D_DESC::MiscFlags), UINT>::value);
+
+static_assert(offsetof(D3D11_TEXTURE2D_DESC, Width) == 0);
+static_assert(offsetof(D3D11_TEXTURE2D_DESC, Height) == 4);
+static_assert(offsetof(D3D11_TEXTURE2D_DESC, MipLevels) == 8);
+static_assert(offsetof(D3D11_TEXTURE2D_DESC, ArraySize) == 0xC);
+static_assert(offsetof(D3D11_TEXTURE2D_DESC, Format) == 0x10);
+static_assert(offsetof(D3D11_TEXTURE2D_DESC, SampleDesc) == 0x14);
+static_assert(offsetof(D3D11_TEXTURE2D_DESC, Usage) == 0x1C);
+static_assert(offsetof(D3D11_TEXTURE2D_DESC, BindFlags) == 0x20);
+static_assert(offsetof(D3D11_TEXTURE2D_DESC, CPUAccessFlags) == 0x24);
+static_assert(offsetof(D3D11_TEXTURE2D_DESC, MiscFlags) == 0x28);
+
+static_assert(sizeof(D3D11_TEXTURE2D_DESC) == 44);
+
+// D3D11_TEXTURE3D_DESC
+
+struct D3D11_TEXTURE3D_DESC
+{
+	UINT Width; // 0
+	UINT Height; // 4
+	UINT Depth; // 8
+	UINT MipLevels; // 0xC
+	DXGI_FORMAT Format; // 0x10
+	D3D11_USAGE Usage; // 0x14
+	UINT BindFlags; // 0x18
+	UINT CPUAccessFlags; // 0x1C
+	UINT MiscFlags; // 0x20
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEXTURE3D_DESC::Width), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE3D_DESC::Height), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE3D_DESC::Depth), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE3D_DESC::MipLevels), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE3D_DESC::Format), DXGI_FORMAT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE3D_DESC::Usage), D3D11_USAGE>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE3D_DESC::BindFlags), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE3D_DESC::CPUAccessFlags), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXTURE3D_DESC::MiscFlags), UINT>::value);
+
+static_assert(offsetof(D3D11_TEXTURE3D_DESC, Width) == 0);
+static_assert(offsetof(D3D11_TEXTURE3D_DESC, Height) == 4);
+static_assert(offsetof(D3D11_TEXTURE3D_DESC, Depth) == 8);
+static_assert(offsetof(D3D11_TEXTURE3D_DESC, MipLevels) == 0xC);
+static_assert(offsetof(D3D11_TEXTURE3D_DESC, Format) == 0x10);
+static_assert(offsetof(D3D11_TEXTURE3D_DESC, Usage) == 0x14);
+static_assert(offsetof(D3D11_TEXTURE3D_DESC, BindFlags) == 0x18);
+static_assert(offsetof(D3D11_TEXTURE3D_DESC, CPUAccessFlags) == 0x1C);
+static_assert(offsetof(D3D11_TEXTURE3D_DESC, MiscFlags) == 0x20);
+
+static_assert(sizeof(D3D11_TEXTURE3D_DESC) == 36);
+
+// D3D11_BUFFER_SRV
+
+struct D3D11_BUFFER_SRV
+{
+	union
+	{
+		UINT FirstElement; // 0
+		UINT ElementOffset; // 0
+	}; // 0
+	union
+	{
+		UINT NumElements; // 4
+		UINT ElementWidth; // 4
+	}; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D11_BUFFER_SRV::FirstElement), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFER_SRV::ElementOffset), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFER_SRV::NumElements), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFER_SRV::ElementWidth), UINT>::value);
+
+static_assert(offsetof(D3D11_BUFFER_SRV, FirstElement) == 0);
+static_assert(offsetof(D3D11_BUFFER_SRV, ElementOffset) == 0);
+static_assert(offsetof(D3D11_BUFFER_SRV, NumElements) == 4);
+static_assert(offsetof(D3D11_BUFFER_SRV, ElementWidth) == 4);
+
+static_assert(sizeof(D3D11_BUFFER_SRV) == 8);
+
+// D3D11_BUFFEREX_SRV
+
+struct D3D11_BUFFEREX_SRV
+{
+	UINT FirstElement; // 0
+	UINT NumElements; // 4
+	UINT Flags; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_BUFFEREX_SRV::FirstElement), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFEREX_SRV::NumElements), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFEREX_SRV::Flags), UINT>::value);
+
+static_assert(offsetof(D3D11_BUFFEREX_SRV, FirstElement) == 0);
+static_assert(offsetof(D3D11_BUFFEREX_SRV, NumElements) == 4);
+static_assert(offsetof(D3D11_BUFFEREX_SRV, Flags) == 8);
+
+static_assert(sizeof(D3D11_BUFFEREX_SRV) == 12);
+
+// D3D11_TEX1D_SRV
+
+struct D3D11_TEX1D_SRV
+{
+	UINT MostDetailedMip; // 0
+	UINT MipLevels; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX1D_SRV::MostDetailedMip), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX1D_SRV::MipLevels), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX1D_SRV, MostDetailedMip) == 0);
+static_assert(offsetof(D3D11_TEX1D_SRV, MipLevels) == 4);
+
+static_assert(sizeof(D3D11_TEX1D_SRV) == 8);
+
+// D3D11_TEX1D_ARRAY_SRV
+
+struct D3D11_TEX1D_ARRAY_SRV
+{
+	UINT MostDetailedMip; // 0
+	UINT MipLevels; // 4
+	UINT FirstArraySlice; // 8
+	UINT ArraySize; // 0xC
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX1D_ARRAY_SRV::MostDetailedMip), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX1D_ARRAY_SRV::MipLevels), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX1D_ARRAY_SRV::FirstArraySlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX1D_ARRAY_SRV::ArraySize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX1D_ARRAY_SRV, MostDetailedMip) == 0);
+static_assert(offsetof(D3D11_TEX1D_ARRAY_SRV, MipLevels) == 4);
+static_assert(offsetof(D3D11_TEX1D_ARRAY_SRV, FirstArraySlice) == 8);
+static_assert(offsetof(D3D11_TEX1D_ARRAY_SRV, ArraySize) == 0xC);
+
+static_assert(sizeof(D3D11_TEX1D_ARRAY_SRV) == 16);
+
+// D3D11_TEX2D_SRV
+
+struct D3D11_TEX2D_SRV
+{
+	UINT MostDetailedMip; // 0
+	UINT MipLevels; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2D_SRV::MostDetailedMip), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2D_SRV::MipLevels), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2D_SRV, MostDetailedMip) == 0);
+static_assert(offsetof(D3D11_TEX2D_SRV, MipLevels) == 4);
+
+static_assert(sizeof(D3D11_TEX2D_SRV) == 8);
+
+// D3D11_TEX2D_ARRAY_SRV
+
+struct D3D11_TEX2D_ARRAY_SRV
+{
+	UINT MostDetailedMip; // 0
+	UINT MipLevels; // 4
+	UINT FirstArraySlice; // 8
+	UINT ArraySize; // 0xC
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_SRV::MostDetailedMip), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_SRV::MipLevels), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_SRV::FirstArraySlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_SRV::ArraySize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2D_ARRAY_SRV, MostDetailedMip) == 0);
+static_assert(offsetof(D3D11_TEX2D_ARRAY_SRV, MipLevels) == 4);
+static_assert(offsetof(D3D11_TEX2D_ARRAY_SRV, FirstArraySlice) == 8);
+static_assert(offsetof(D3D11_TEX2D_ARRAY_SRV, ArraySize) == 0xC);
+
+static_assert(sizeof(D3D11_TEX2D_ARRAY_SRV) == 16);
+
+// D3D11_TEX3D_SRV
+
+struct D3D11_TEX3D_SRV
+{
+	UINT MostDetailedMip; // 0
+	UINT MipLevels; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX3D_SRV::MostDetailedMip), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX3D_SRV::MipLevels), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX3D_SRV, MostDetailedMip) == 0);
+static_assert(offsetof(D3D11_TEX3D_SRV, MipLevels) == 4);
+
+static_assert(sizeof(D3D11_TEX3D_SRV) == 8);
+
+// D3D11_TEXCUBE_SRV
+
+struct D3D11_TEXCUBE_SRV
+{
+	UINT MostDetailedMip; // 0
+	UINT MipLevels; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEXCUBE_SRV::MostDetailedMip), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXCUBE_SRV::MipLevels), UINT>::value);
+
+static_assert(offsetof(D3D11_TEXCUBE_SRV, MostDetailedMip) == 0);
+static_assert(offsetof(D3D11_TEXCUBE_SRV, MipLevels) == 4);
+
+static_assert(sizeof(D3D11_TEXCUBE_SRV) == 8);
+
+// D3D11_TEXCUBE_ARRAY_SRV
+
+struct D3D11_TEXCUBE_ARRAY_SRV
+{
+	UINT MostDetailedMip; // 0
+	UINT MipLevels; // 4
+	UINT First2DArrayFace; // 8
+	UINT NumCubes; // 0xC
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEXCUBE_ARRAY_SRV::MostDetailedMip), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXCUBE_ARRAY_SRV::MipLevels), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXCUBE_ARRAY_SRV::First2DArrayFace), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEXCUBE_ARRAY_SRV::NumCubes), UINT>::value);
+
+static_assert(offsetof(D3D11_TEXCUBE_ARRAY_SRV, MostDetailedMip) == 0);
+static_assert(offsetof(D3D11_TEXCUBE_ARRAY_SRV, MipLevels) == 4);
+static_assert(offsetof(D3D11_TEXCUBE_ARRAY_SRV, First2DArrayFace) == 8);
+static_assert(offsetof(D3D11_TEXCUBE_ARRAY_SRV, NumCubes) == 0xC);
+
+static_assert(sizeof(D3D11_TEXCUBE_ARRAY_SRV) == 16);
+
+// D3D11_TEX2DMS_SRV
+
+struct D3D11_TEX2DMS_SRV
+{
+	UINT UnusedField_NothingToDefine; // 0
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2DMS_SRV::UnusedField_NothingToDefine), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2DMS_SRV, UnusedField_NothingToDefine) == 0);
+
+static_assert(sizeof(D3D11_TEX2DMS_SRV) == 4);
+
+// D3D11_TEX2DMS_ARRAY_SRV
+
+struct D3D11_TEX2DMS_ARRAY_SRV
+{
+	UINT FirstArraySlice; // 0
+	UINT ArraySize; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2DMS_ARRAY_SRV::FirstArraySlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2DMS_ARRAY_SRV::ArraySize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2DMS_ARRAY_SRV, FirstArraySlice) == 0);
+static_assert(offsetof(D3D11_TEX2DMS_ARRAY_SRV, ArraySize) == 4);
+
+static_assert(sizeof(D3D11_TEX2DMS_ARRAY_SRV) == 8);
+
+// D3D11_SHADER_RESOURCE_VIEW_DESC
+
+struct D3D11_SHADER_RESOURCE_VIEW_DESC
+{
+	DXGI_FORMAT Format; // 0
+	D3D11_SRV_DIMENSION ViewDimension; // 4
+	union
+	{
+		D3D11_BUFFER_SRV Buffer; // 8
+		D3D11_TEX1D_SRV Texture1D; // 8
+		D3D11_TEX1D_ARRAY_SRV Texture1DArray; // 8
+		D3D11_TEX2D_SRV Texture2D; // 8
+		D3D11_TEX2D_ARRAY_SRV Texture2DArray; // 8
+		D3D11_TEX2DMS_SRV Texture2DMS; // 8
+		D3D11_TEX2DMS_ARRAY_SRV Texture2DMSArray; // 8
+		D3D11_TEX3D_SRV Texture3D; // 8
+		D3D11_TEXCUBE_SRV TextureCube; // 8
+		D3D11_TEXCUBE_ARRAY_SRV TextureCubeArray; // 8
+		D3D11_BUFFEREX_SRV BufferEx; // 8
+	}; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_SHADER_RESOURCE_VIEW_DESC::Format), DXGI_FORMAT>::value);
+static_assert(TypeMatch<decltype(D3D11_SHADER_RESOURCE_VIEW_DESC::ViewDimension), D3D11_SRV_DIMENSION>::value);
+static_assert(TypeMatch<decltype(D3D11_SHADER_RESOURCE_VIEW_DESC::Buffer), D3D11_BUFFER_SRV>::value);
+static_assert(TypeMatch<decltype(D3D11_SHADER_RESOURCE_VIEW_DESC::Texture1D), D3D11_TEX1D_SRV>::value);
+static_assert(TypeMatch<decltype(D3D11_SHADER_RESOURCE_VIEW_DESC::Texture1DArray), D3D11_TEX1D_ARRAY_SRV>::value);
+static_assert(TypeMatch<decltype(D3D11_SHADER_RESOURCE_VIEW_DESC::Texture2D), D3D11_TEX2D_SRV>::value);
+static_assert(TypeMatch<decltype(D3D11_SHADER_RESOURCE_VIEW_DESC::Texture2DArray), D3D11_TEX2D_ARRAY_SRV>::value);
+static_assert(TypeMatch<decltype(D3D11_SHADER_RESOURCE_VIEW_DESC::Texture2DMS), D3D11_TEX2DMS_SRV>::value);
+static_assert(TypeMatch<decltype(D3D11_SHADER_RESOURCE_VIEW_DESC::Texture2DMSArray), D3D11_TEX2DMS_ARRAY_SRV>::value);
+static_assert(TypeMatch<decltype(D3D11_SHADER_RESOURCE_VIEW_DESC::Texture3D), D3D11_TEX3D_SRV>::value);
+static_assert(TypeMatch<decltype(D3D11_SHADER_RESOURCE_VIEW_DESC::TextureCube), D3D11_TEXCUBE_SRV>::value);
+static_assert(TypeMatch<decltype(D3D11_SHADER_RESOURCE_VIEW_DESC::TextureCubeArray), D3D11_TEXCUBE_ARRAY_SRV>::value);
+static_assert(TypeMatch<decltype(D3D11_SHADER_RESOURCE_VIEW_DESC::BufferEx), D3D11_BUFFEREX_SRV>::value);
+
+static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, Format) == 0);
+static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, ViewDimension) == 4);
+static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, Buffer) == 8);
+static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, Texture1D) == 8);
+static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, Texture1DArray) == 8);
+static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, Texture2D) == 8);
+static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, Texture2DArray) == 8);
+static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, Texture2DMS) == 8);
+static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, Texture2DMSArray) == 8);
+static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, Texture3D) == 8);
+static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, TextureCube) == 8);
+static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, TextureCubeArray) == 8);
+static_assert(offsetof(D3D11_SHADER_RESOURCE_VIEW_DESC, BufferEx) == 8);
+
+static_assert(sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC) == 24);
+
+// D3D11_BUFFER_UAV
+
+struct D3D11_BUFFER_UAV
+{
+	UINT FirstElement; // 0
+	UINT NumElements; // 4
+	UINT Flags; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_BUFFER_UAV::FirstElement), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFER_UAV::NumElements), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFER_UAV::Flags), UINT>::value);
+
+static_assert(offsetof(D3D11_BUFFER_UAV, FirstElement) == 0);
+static_assert(offsetof(D3D11_BUFFER_UAV, NumElements) == 4);
+static_assert(offsetof(D3D11_BUFFER_UAV, Flags) == 8);
+
+static_assert(sizeof(D3D11_BUFFER_UAV) == 12);
+
+// D3D11_TEX1D_UAV
+
+struct D3D11_TEX1D_UAV
+{
+	UINT MipSlice; // 0
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX1D_UAV::MipSlice), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX1D_UAV, MipSlice) == 0);
+
+static_assert(sizeof(D3D11_TEX1D_UAV) == 4);
+
+// D3D11_TEX1D_ARRAY_UAV
+
+struct D3D11_TEX1D_ARRAY_UAV
+{
+	UINT MipSlice; // 0
+	UINT FirstArraySlice; // 4
+	UINT ArraySize; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX1D_ARRAY_UAV::MipSlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX1D_ARRAY_UAV::FirstArraySlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX1D_ARRAY_UAV::ArraySize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX1D_ARRAY_UAV, MipSlice) == 0);
+static_assert(offsetof(D3D11_TEX1D_ARRAY_UAV, FirstArraySlice) == 4);
+static_assert(offsetof(D3D11_TEX1D_ARRAY_UAV, ArraySize) == 8);
+
+static_assert(sizeof(D3D11_TEX1D_ARRAY_UAV) == 12);
+
+// D3D11_TEX2D_UAV
+
+struct D3D11_TEX2D_UAV
+{
+	UINT MipSlice; // 0
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2D_UAV::MipSlice), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2D_UAV, MipSlice) == 0);
+
+static_assert(sizeof(D3D11_TEX2D_UAV) == 4);
+
+// D3D11_TEX2D_ARRAY_UAV
+
+struct D3D11_TEX2D_ARRAY_UAV
+{
+	UINT MipSlice; // 0
+	UINT FirstArraySlice; // 4
+	UINT ArraySize; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_UAV::MipSlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_UAV::FirstArraySlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_UAV::ArraySize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2D_ARRAY_UAV, MipSlice) == 0);
+static_assert(offsetof(D3D11_TEX2D_ARRAY_UAV, FirstArraySlice) == 4);
+static_assert(offsetof(D3D11_TEX2D_ARRAY_UAV, ArraySize) == 8);
+
+static_assert(sizeof(D3D11_TEX2D_ARRAY_UAV) == 12);
+
+// D3D11_TEX3D_UAV
+
+struct D3D11_TEX3D_UAV
+{
+	UINT MipSlice; // 0
+	UINT FirstWSlice; // 4
+	UINT WSize; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX3D_UAV::MipSlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX3D_UAV::FirstWSlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX3D_UAV::WSize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX3D_UAV, MipSlice) == 0);
+static_assert(offsetof(D3D11_TEX3D_UAV, FirstWSlice) == 4);
+static_assert(offsetof(D3D11_TEX3D_UAV, WSize) == 8);
+
+static_assert(sizeof(D3D11_TEX3D_UAV) == 12);
+
+// D3D11_UNORDERED_ACCESS_VIEW_DESC
+
+struct D3D11_UNORDERED_ACCESS_VIEW_DESC
+{
+	DXGI_FORMAT Format; // 0
+	D3D11_UAV_DIMENSION ViewDimension; // 4
+	union
+	{
+		D3D11_BUFFER_UAV Buffer; // 8
+		D3D11_TEX1D_UAV Texture1D; // 8
+		D3D11_TEX1D_ARRAY_UAV Texture1DArray; // 8
+		D3D11_TEX2D_UAV Texture2D; // 8
+		D3D11_TEX2D_ARRAY_UAV Texture2DArray; // 8
+		D3D11_TEX3D_UAV Texture3D; // 8
+	}; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_UNORDERED_ACCESS_VIEW_DESC::Format), DXGI_FORMAT>::value);
+static_assert(TypeMatch<decltype(D3D11_UNORDERED_ACCESS_VIEW_DESC::ViewDimension), D3D11_UAV_DIMENSION>::value);
+static_assert(TypeMatch<decltype(D3D11_UNORDERED_ACCESS_VIEW_DESC::Buffer), D3D11_BUFFER_UAV>::value);
+static_assert(TypeMatch<decltype(D3D11_UNORDERED_ACCESS_VIEW_DESC::Texture1D), D3D11_TEX1D_UAV>::value);
+static_assert(TypeMatch<decltype(D3D11_UNORDERED_ACCESS_VIEW_DESC::Texture1DArray), D3D11_TEX1D_ARRAY_UAV>::value);
+static_assert(TypeMatch<decltype(D3D11_UNORDERED_ACCESS_VIEW_DESC::Texture2D), D3D11_TEX2D_UAV>::value);
+static_assert(TypeMatch<decltype(D3D11_UNORDERED_ACCESS_VIEW_DESC::Texture2DArray), D3D11_TEX2D_ARRAY_UAV>::value);
+static_assert(TypeMatch<decltype(D3D11_UNORDERED_ACCESS_VIEW_DESC::Texture3D), D3D11_TEX3D_UAV>::value);
+
+static_assert(offsetof(D3D11_UNORDERED_ACCESS_VIEW_DESC, Format) == 0);
+static_assert(offsetof(D3D11_UNORDERED_ACCESS_VIEW_DESC, ViewDimension) == 4);
+static_assert(offsetof(D3D11_UNORDERED_ACCESS_VIEW_DESC, Buffer) == 8);
+static_assert(offsetof(D3D11_UNORDERED_ACCESS_VIEW_DESC, Texture1D) == 8);
+static_assert(offsetof(D3D11_UNORDERED_ACCESS_VIEW_DESC, Texture1DArray) == 8);
+static_assert(offsetof(D3D11_UNORDERED_ACCESS_VIEW_DESC, Texture2D) == 8);
+static_assert(offsetof(D3D11_UNORDERED_ACCESS_VIEW_DESC, Texture2DArray) == 8);
+static_assert(offsetof(D3D11_UNORDERED_ACCESS_VIEW_DESC, Texture3D) == 8);
+
+static_assert(sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC) == 20);
+
+// D3D11_BUFFER_RTV
+
+struct D3D11_BUFFER_RTV
+{
+	union
+	{
+		UINT FirstElement; // 0
+		UINT ElementOffset; // 0
+	}; // 0
+	union
+	{
+		UINT NumElements; // 4
+		UINT ElementWidth; // 4
+	}; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D11_BUFFER_RTV::FirstElement), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFER_RTV::ElementOffset), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFER_RTV::NumElements), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BUFFER_RTV::ElementWidth), UINT>::value);
+
+static_assert(offsetof(D3D11_BUFFER_RTV, FirstElement) == 0);
+static_assert(offsetof(D3D11_BUFFER_RTV, ElementOffset) == 0);
+static_assert(offsetof(D3D11_BUFFER_RTV, NumElements) == 4);
+static_assert(offsetof(D3D11_BUFFER_RTV, ElementWidth) == 4);
+
+static_assert(sizeof(D3D11_BUFFER_RTV) == 8);
+
+// D3D11_TEX1D_RTV
+
+struct D3D11_TEX1D_RTV
+{
+	UINT MipSlice; // 0
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX1D_RTV::MipSlice), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX1D_RTV, MipSlice) == 0);
+
+static_assert(sizeof(D3D11_TEX1D_RTV) == 4);
+
+// D3D11_TEX1D_ARRAY_RTV
+
+struct D3D11_TEX1D_ARRAY_RTV
+{
+	UINT MipSlice; // 0
+	UINT FirstArraySlice; // 4
+	UINT ArraySize; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX1D_ARRAY_RTV::MipSlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX1D_ARRAY_RTV::FirstArraySlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX1D_ARRAY_RTV::ArraySize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX1D_ARRAY_RTV, MipSlice) == 0);
+static_assert(offsetof(D3D11_TEX1D_ARRAY_RTV, FirstArraySlice) == 4);
+static_assert(offsetof(D3D11_TEX1D_ARRAY_RTV, ArraySize) == 8);
+
+static_assert(sizeof(D3D11_TEX1D_ARRAY_RTV) == 12);
+
+// D3D11_TEX2D_RTV
+
+struct D3D11_TEX2D_RTV
+{
+	UINT MipSlice; // 0
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2D_RTV::MipSlice), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2D_RTV, MipSlice) == 0);
+
+static_assert(sizeof(D3D11_TEX2D_RTV) == 4);
+
+// D3D11_TEX2DMS_RTV
+
+struct D3D11_TEX2DMS_RTV
+{
+	UINT UnusedField_NothingToDefine; // 0
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2DMS_RTV::UnusedField_NothingToDefine), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2DMS_RTV, UnusedField_NothingToDefine) == 0);
+
+static_assert(sizeof(D3D11_TEX2DMS_RTV) == 4);
+
+// D3D11_TEX2D_ARRAY_RTV
+
+struct D3D11_TEX2D_ARRAY_RTV
+{
+	UINT MipSlice; // 0
+	UINT FirstArraySlice; // 4
+	UINT ArraySize; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_RTV::MipSlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_RTV::FirstArraySlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_RTV::ArraySize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2D_ARRAY_RTV, MipSlice) == 0);
+static_assert(offsetof(D3D11_TEX2D_ARRAY_RTV, FirstArraySlice) == 4);
+static_assert(offsetof(D3D11_TEX2D_ARRAY_RTV, ArraySize) == 8);
+
+static_assert(sizeof(D3D11_TEX2D_ARRAY_RTV) == 12);
+
+// D3D11_TEX2DMS_ARRAY_RTV
+
+struct D3D11_TEX2DMS_ARRAY_RTV
+{
+	UINT FirstArraySlice; // 0
+	UINT ArraySize; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2DMS_ARRAY_RTV::FirstArraySlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2DMS_ARRAY_RTV::ArraySize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2DMS_ARRAY_RTV, FirstArraySlice) == 0);
+static_assert(offsetof(D3D11_TEX2DMS_ARRAY_RTV, ArraySize) == 4);
+
+static_assert(sizeof(D3D11_TEX2DMS_ARRAY_RTV) == 8);
+
+// D3D11_TEX3D_RTV
+
+struct D3D11_TEX3D_RTV
+{
+	UINT MipSlice; // 0
+	UINT FirstWSlice; // 4
+	UINT WSize; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX3D_RTV::MipSlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX3D_RTV::FirstWSlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX3D_RTV::WSize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX3D_RTV, MipSlice) == 0);
+static_assert(offsetof(D3D11_TEX3D_RTV, FirstWSlice) == 4);
+static_assert(offsetof(D3D11_TEX3D_RTV, WSize) == 8);
+
+static_assert(sizeof(D3D11_TEX3D_RTV) == 12);
+
+// D3D11_RENDER_TARGET_VIEW_DESC
+
+struct D3D11_RENDER_TARGET_VIEW_DESC
+{
+	DXGI_FORMAT Format; // 0
+	D3D11_RTV_DIMENSION ViewDimension; // 4
+	union
+	{
+		D3D11_BUFFER_RTV Buffer; // 8
+		D3D11_TEX1D_RTV Texture1D; // 8
+		D3D11_TEX1D_ARRAY_RTV Texture1DArray; // 8
+		D3D11_TEX2D_RTV Texture2D; // 8
+		D3D11_TEX2D_ARRAY_RTV Texture2DArray; // 8
+		D3D11_TEX2DMS_RTV Texture2DMS; // 8
+		D3D11_TEX2DMS_ARRAY_RTV Texture2DMSArray; // 8
+		D3D11_TEX3D_RTV Texture3D; // 8
+	}; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_VIEW_DESC::Format), DXGI_FORMAT>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_VIEW_DESC::ViewDimension), D3D11_RTV_DIMENSION>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_VIEW_DESC::Buffer), D3D11_BUFFER_RTV>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_VIEW_DESC::Texture1D), D3D11_TEX1D_RTV>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_VIEW_DESC::Texture1DArray), D3D11_TEX1D_ARRAY_RTV>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_VIEW_DESC::Texture2D), D3D11_TEX2D_RTV>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_VIEW_DESC::Texture2DArray), D3D11_TEX2D_ARRAY_RTV>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_VIEW_DESC::Texture2DMS), D3D11_TEX2DMS_RTV>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_VIEW_DESC::Texture2DMSArray), D3D11_TEX2DMS_ARRAY_RTV>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_VIEW_DESC::Texture3D), D3D11_TEX3D_RTV>::value);
+
+static_assert(offsetof(D3D11_RENDER_TARGET_VIEW_DESC, Format) == 0);
+static_assert(offsetof(D3D11_RENDER_TARGET_VIEW_DESC, ViewDimension) == 4);
+static_assert(offsetof(D3D11_RENDER_TARGET_VIEW_DESC, Buffer) == 8);
+static_assert(offsetof(D3D11_RENDER_TARGET_VIEW_DESC, Texture1D) == 8);
+static_assert(offsetof(D3D11_RENDER_TARGET_VIEW_DESC, Texture1DArray) == 8);
+static_assert(offsetof(D3D11_RENDER_TARGET_VIEW_DESC, Texture2D) == 8);
+static_assert(offsetof(D3D11_RENDER_TARGET_VIEW_DESC, Texture2DArray) == 8);
+static_assert(offsetof(D3D11_RENDER_TARGET_VIEW_DESC, Texture2DMS) == 8);
+static_assert(offsetof(D3D11_RENDER_TARGET_VIEW_DESC, Texture2DMSArray) == 8);
+static_assert(offsetof(D3D11_RENDER_TARGET_VIEW_DESC, Texture3D) == 8);
+
+static_assert(sizeof(D3D11_RENDER_TARGET_VIEW_DESC) == 20);
+
+// D3D11_TEX1D_DSV
+
+struct D3D11_TEX1D_DSV
+{
+	UINT MipSlice; // 0
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX1D_DSV::MipSlice), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX1D_DSV, MipSlice) == 0);
+
+static_assert(sizeof(D3D11_TEX1D_DSV) == 4);
+
+// D3D11_TEX1D_ARRAY_DSV
+
+struct D3D11_TEX1D_ARRAY_DSV
+{
+	UINT MipSlice; // 0
+	UINT FirstArraySlice; // 4
+	UINT ArraySize; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX1D_ARRAY_DSV::MipSlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX1D_ARRAY_DSV::FirstArraySlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX1D_ARRAY_DSV::ArraySize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX1D_ARRAY_DSV, MipSlice) == 0);
+static_assert(offsetof(D3D11_TEX1D_ARRAY_DSV, FirstArraySlice) == 4);
+static_assert(offsetof(D3D11_TEX1D_ARRAY_DSV, ArraySize) == 8);
+
+static_assert(sizeof(D3D11_TEX1D_ARRAY_DSV) == 12);
+
+// D3D11_TEX2D_DSV
+
+struct D3D11_TEX2D_DSV
+{
+	UINT MipSlice; // 0
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2D_DSV::MipSlice), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2D_DSV, MipSlice) == 0);
+
+static_assert(sizeof(D3D11_TEX2D_DSV) == 4);
+
+// D3D11_TEX2D_ARRAY_DSV
+
+struct D3D11_TEX2D_ARRAY_DSV
+{
+	UINT MipSlice; // 0
+	UINT FirstArraySlice; // 4
+	UINT ArraySize; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_DSV::MipSlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_DSV::FirstArraySlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_DSV::ArraySize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2D_ARRAY_DSV, MipSlice) == 0);
+static_assert(offsetof(D3D11_TEX2D_ARRAY_DSV, FirstArraySlice) == 4);
+static_assert(offsetof(D3D11_TEX2D_ARRAY_DSV, ArraySize) == 8);
+
+static_assert(sizeof(D3D11_TEX2D_ARRAY_DSV) == 12);
+
+// D3D11_TEX2DMS_DSV
+
+struct D3D11_TEX2DMS_DSV
+{
+	UINT UnusedField_NothingToDefine; // 0
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2DMS_DSV::UnusedField_NothingToDefine), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2DMS_DSV, UnusedField_NothingToDefine) == 0);
+
+static_assert(sizeof(D3D11_TEX2DMS_DSV) == 4);
+
+// D3D11_TEX2DMS_ARRAY_DSV
+
+struct D3D11_TEX2DMS_ARRAY_DSV
+{
+	UINT FirstArraySlice; // 0
+	UINT ArraySize; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2DMS_ARRAY_DSV::FirstArraySlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2DMS_ARRAY_DSV::ArraySize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2DMS_ARRAY_DSV, FirstArraySlice) == 0);
+static_assert(offsetof(D3D11_TEX2DMS_ARRAY_DSV, ArraySize) == 4);
+
+static_assert(sizeof(D3D11_TEX2DMS_ARRAY_DSV) == 8);
+
+// D3D11_DEPTH_STENCIL_VIEW_DESC
+
+struct D3D11_DEPTH_STENCIL_VIEW_DESC
+{
+	DXGI_FORMAT Format; // 0
+	D3D11_DSV_DIMENSION ViewDimension; // 4
+	UINT Flags; // 8
+	union
+	{
+		D3D11_TEX1D_DSV Texture1D; // 0xC
+		D3D11_TEX1D_ARRAY_DSV Texture1DArray; // 0xC
+		D3D11_TEX2D_DSV Texture2D; // 0xC
+		D3D11_TEX2D_ARRAY_DSV Texture2DArray; // 0xC
+		D3D11_TEX2DMS_DSV Texture2DMS; // 0xC
+		D3D11_TEX2DMS_ARRAY_DSV Texture2DMSArray; // 0xC
+	}; // 0xC
+};
+
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_VIEW_DESC::Format), DXGI_FORMAT>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_VIEW_DESC::ViewDimension), D3D11_DSV_DIMENSION>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_VIEW_DESC::Flags), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_VIEW_DESC::Texture1D), D3D11_TEX1D_DSV>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_VIEW_DESC::Texture1DArray), D3D11_TEX1D_ARRAY_DSV>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_VIEW_DESC::Texture2D), D3D11_TEX2D_DSV>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_VIEW_DESC::Texture2DArray), D3D11_TEX2D_ARRAY_DSV>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_VIEW_DESC::Texture2DMS), D3D11_TEX2DMS_DSV>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_VIEW_DESC::Texture2DMSArray), D3D11_TEX2DMS_ARRAY_DSV>::value);
+
+static_assert(offsetof(D3D11_DEPTH_STENCIL_VIEW_DESC, Format) == 0);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_VIEW_DESC, ViewDimension) == 4);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_VIEW_DESC, Flags) == 8);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_VIEW_DESC, Texture1D) == 0xC);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_VIEW_DESC, Texture1DArray) == 0xC);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_VIEW_DESC, Texture2D) == 0xC);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_VIEW_DESC, Texture2DArray) == 0xC);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_VIEW_DESC, Texture2DMS) == 0xC);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_VIEW_DESC, Texture2DMSArray) == 0xC);
+
+static_assert(sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC) == 24);
+
+// D3D11_INPUT_ELEMENT_DESC
+
+struct D3D11_INPUT_ELEMENT_DESC
+{
+	LPCSTR SemanticName; // 0
+	UINT SemanticIndex; // 4
+	DXGI_FORMAT Format; // 8
+	UINT InputSlot; // 0xC
+	UINT AlignedByteOffset; // 0x10
+	D3D11_INPUT_CLASSIFICATION InputSlotClass; // 0x14
+	UINT InstanceDataStepRate; // 0x18
+};
+
+static_assert(TypeMatch<decltype(D3D11_INPUT_ELEMENT_DESC::SemanticName), LPCSTR>::value);
+static_assert(TypeMatch<decltype(D3D11_INPUT_ELEMENT_DESC::SemanticIndex), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_INPUT_ELEMENT_DESC::Format), DXGI_FORMAT>::value);
+static_assert(TypeMatch<decltype(D3D11_INPUT_ELEMENT_DESC::InputSlot), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_INPUT_ELEMENT_DESC::AlignedByteOffset), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_INPUT_ELEMENT_DESC::InputSlotClass), D3D11_INPUT_CLASSIFICATION>::value);
+static_assert(TypeMatch<decltype(D3D11_INPUT_ELEMENT_DESC::InstanceDataStepRate), UINT>::value);
+
+static_assert(offsetof(D3D11_INPUT_ELEMENT_DESC, SemanticName) == 0);
+static_assert(offsetof(D3D11_INPUT_ELEMENT_DESC, SemanticIndex) == 4);
+static_assert(offsetof(D3D11_INPUT_ELEMENT_DESC, Format) == 8);
+static_assert(offsetof(D3D11_INPUT_ELEMENT_DESC, InputSlot) == 0xC);
+static_assert(offsetof(D3D11_INPUT_ELEMENT_DESC, AlignedByteOffset) == 0x10);
+static_assert(offsetof(D3D11_INPUT_ELEMENT_DESC, InputSlotClass) == 0x14);
+static_assert(offsetof(D3D11_INPUT_ELEMENT_DESC, InstanceDataStepRate) == 0x18);
+
+static_assert(sizeof(D3D11_INPUT_ELEMENT_DESC) == 28);
+
+// D3D11_SO_DECLARATION_ENTRY
+
+struct D3D11_SO_DECLARATION_ENTRY
+{
+	UINT Stream; // 0
+	LPCSTR SemanticName; // 4
+	UINT SemanticIndex; // 8
+	BYTE StartComponent; // 0xC
+	BYTE ComponentCount; // 0xD
+	BYTE OutputSlot; // 0xE
+	_(1);
+};
+
+static_assert(TypeMatch<decltype(D3D11_SO_DECLARATION_ENTRY::Stream), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_SO_DECLARATION_ENTRY::SemanticName), LPCSTR>::value);
+static_assert(TypeMatch<decltype(D3D11_SO_DECLARATION_ENTRY::SemanticIndex), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_SO_DECLARATION_ENTRY::StartComponent), BYTE>::value);
+static_assert(TypeMatch<decltype(D3D11_SO_DECLARATION_ENTRY::ComponentCount), BYTE>::value);
+static_assert(TypeMatch<decltype(D3D11_SO_DECLARATION_ENTRY::OutputSlot), BYTE>::value);
+
+static_assert(offsetof(D3D11_SO_DECLARATION_ENTRY, Stream) == 0);
+static_assert(offsetof(D3D11_SO_DECLARATION_ENTRY, SemanticName) == 4);
+static_assert(offsetof(D3D11_SO_DECLARATION_ENTRY, SemanticIndex) == 8);
+static_assert(offsetof(D3D11_SO_DECLARATION_ENTRY, StartComponent) == 0xC);
+static_assert(offsetof(D3D11_SO_DECLARATION_ENTRY, ComponentCount) == 0xD);
+static_assert(offsetof(D3D11_SO_DECLARATION_ENTRY, OutputSlot) == 0xE);
+
+static_assert(sizeof(D3D11_SO_DECLARATION_ENTRY) == 16);
+
+// D3D11_VIEWPORT
+
+struct D3D11_VIEWPORT
+{
+	FLOAT TopLeftX; // 0
+	FLOAT TopLeftY; // 4
+	FLOAT Width; // 8
+	FLOAT Height; // 0xC
+	FLOAT MinDepth; // 0x10
+	FLOAT MaxDepth; // 0x14
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIEWPORT::TopLeftX), FLOAT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIEWPORT::TopLeftY), FLOAT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIEWPORT::Width), FLOAT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIEWPORT::Height), FLOAT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIEWPORT::MinDepth), FLOAT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIEWPORT::MaxDepth), FLOAT>::value);
+
+static_assert(offsetof(D3D11_VIEWPORT, TopLeftX) == 0);
+static_assert(offsetof(D3D11_VIEWPORT, TopLeftY) == 4);
+static_assert(offsetof(D3D11_VIEWPORT, Width) == 8);
+static_assert(offsetof(D3D11_VIEWPORT, Height) == 0xC);
+static_assert(offsetof(D3D11_VIEWPORT, MinDepth) == 0x10);
+static_assert(offsetof(D3D11_VIEWPORT, MaxDepth) == 0x14);
+
+static_assert(sizeof(D3D11_VIEWPORT) == 24);
+
+// D3D11_RENDER_TARGET_BLEND_DESC
+
+struct D3D11_RENDER_TARGET_BLEND_DESC
+{
+	BOOL BlendEnable; // 0
+	D3D11_BLEND SrcBlend; // 4
+	D3D11_BLEND DestBlend; // 8
+	D3D11_BLEND_OP BlendOp; // 0xC
+	D3D11_BLEND SrcBlendAlpha; // 0x10
+	D3D11_BLEND DestBlendAlpha; // 0x14
+	D3D11_BLEND_OP BlendOpAlpha; // 0x18
+	UINT8 RenderTargetWriteMask; // 0x1C
+	_(3);
+};
+
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_BLEND_DESC::BlendEnable), BOOL>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_BLEND_DESC::SrcBlend), D3D11_BLEND>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_BLEND_DESC::DestBlend), D3D11_BLEND>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_BLEND_DESC::BlendOp), D3D11_BLEND_OP>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_BLEND_DESC::SrcBlendAlpha), D3D11_BLEND>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_BLEND_DESC::DestBlendAlpha), D3D11_BLEND>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_BLEND_DESC::BlendOpAlpha), D3D11_BLEND_OP>::value);
+static_assert(TypeMatch<decltype(D3D11_RENDER_TARGET_BLEND_DESC::RenderTargetWriteMask), UINT8>::value);
+
+static_assert(offsetof(D3D11_RENDER_TARGET_BLEND_DESC, BlendEnable) == 0);
+static_assert(offsetof(D3D11_RENDER_TARGET_BLEND_DESC, SrcBlend) == 4);
+static_assert(offsetof(D3D11_RENDER_TARGET_BLEND_DESC, DestBlend) == 8);
+static_assert(offsetof(D3D11_RENDER_TARGET_BLEND_DESC, BlendOp) == 0xC);
+static_assert(offsetof(D3D11_RENDER_TARGET_BLEND_DESC, SrcBlendAlpha) == 0x10);
+static_assert(offsetof(D3D11_RENDER_TARGET_BLEND_DESC, DestBlendAlpha) == 0x14);
+static_assert(offsetof(D3D11_RENDER_TARGET_BLEND_DESC, BlendOpAlpha) == 0x18);
+static_assert(offsetof(D3D11_RENDER_TARGET_BLEND_DESC, RenderTargetWriteMask) == 0x1C);
+
+static_assert(sizeof(D3D11_RENDER_TARGET_BLEND_DESC) == 32);
+
+// D3D11_BLEND_DESC
+
+struct D3D11_BLEND_DESC
+{
+	BOOL AlphaToCoverageEnable; // 0
+	BOOL IndependentBlendEnable; // 4
+	D3D11_RENDER_TARGET_BLEND_DESC RenderTarget[8]; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_BLEND_DESC::AlphaToCoverageEnable), BOOL>::value);
+static_assert(TypeMatch<decltype(D3D11_BLEND_DESC::IndependentBlendEnable), BOOL>::value);
+static_assert(TypeMatch<decltype(D3D11_BLEND_DESC::RenderTarget), D3D11_RENDER_TARGET_BLEND_DESC[8]>::value);
+
+static_assert(offsetof(D3D11_BLEND_DESC, AlphaToCoverageEnable) == 0);
+static_assert(offsetof(D3D11_BLEND_DESC, IndependentBlendEnable) == 4);
+static_assert(offsetof(D3D11_BLEND_DESC, RenderTarget) == 8);
+
+static_assert(sizeof(D3D11_BLEND_DESC) == 264);
+
+// D3D11_DEPTH_STENCILOP_DESC
+
+struct D3D11_DEPTH_STENCILOP_DESC
+{
+	D3D11_STENCIL_OP StencilFailOp; // 0
+	D3D11_STENCIL_OP StencilDepthFailOp; // 4
+	D3D11_STENCIL_OP StencilPassOp; // 8
+	D3D11_COMPARISON_FUNC StencilFunc; // 0xC
+};
+
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCILOP_DESC::StencilFailOp), D3D11_STENCIL_OP>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCILOP_DESC::StencilDepthFailOp), D3D11_STENCIL_OP>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCILOP_DESC::StencilPassOp), D3D11_STENCIL_OP>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCILOP_DESC::StencilFunc), D3D11_COMPARISON_FUNC>::value);
+
+static_assert(offsetof(D3D11_DEPTH_STENCILOP_DESC, StencilFailOp) == 0);
+static_assert(offsetof(D3D11_DEPTH_STENCILOP_DESC, StencilDepthFailOp) == 4);
+static_assert(offsetof(D3D11_DEPTH_STENCILOP_DESC, StencilPassOp) == 8);
+static_assert(offsetof(D3D11_DEPTH_STENCILOP_DESC, StencilFunc) == 0xC);
+
+static_assert(sizeof(D3D11_DEPTH_STENCILOP_DESC) == 16);
+
+// D3D11_DEPTH_STENCIL_DESC
+
+struct D3D11_DEPTH_STENCIL_DESC
+{
+	BOOL DepthEnable; // 0
+	D3D11_DEPTH_WRITE_MASK DepthWriteMask; // 4
+	D3D11_COMPARISON_FUNC DepthFunc; // 8
+	BOOL StencilEnable; // 0xC
+	UINT8 StencilReadMask; // 0x10
+	UINT8 StencilWriteMask; // 0x11
+	_(2);
+	D3D11_DEPTH_STENCILOP_DESC FrontFace; // 0x14
+	D3D11_DEPTH_STENCILOP_DESC BackFace; // 0x24
+};
+
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_DESC::DepthEnable), BOOL>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_DESC::DepthWriteMask), D3D11_DEPTH_WRITE_MASK>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_DESC::DepthFunc), D3D11_COMPARISON_FUNC>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_DESC::StencilEnable), BOOL>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_DESC::StencilReadMask), UINT8>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_DESC::StencilWriteMask), UINT8>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_DESC::FrontFace), D3D11_DEPTH_STENCILOP_DESC>::value);
+static_assert(TypeMatch<decltype(D3D11_DEPTH_STENCIL_DESC::BackFace), D3D11_DEPTH_STENCILOP_DESC>::value);
+
+static_assert(offsetof(D3D11_DEPTH_STENCIL_DESC, DepthEnable) == 0);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_DESC, DepthWriteMask) == 4);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_DESC, DepthFunc) == 8);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_DESC, StencilEnable) == 0xC);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_DESC, StencilReadMask) == 0x10);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_DESC, StencilWriteMask) == 0x11);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_DESC, FrontFace) == 0x14);
+static_assert(offsetof(D3D11_DEPTH_STENCIL_DESC, BackFace) == 0x24);
+
+static_assert(sizeof(D3D11_DEPTH_STENCIL_DESC) == 52);
+
+// D3D11_RASTERIZER_DESC
+
+struct D3D11_RASTERIZER_DESC
+{
+	D3D11_FILL_MODE FillMode; // 0
+	D3D11_CULL_MODE CullMode; // 4
+	BOOL FrontCounterClockwise; // 8
+	INT DepthBias; // 0xC
+	FLOAT DepthBiasClamp; // 0x10
+	FLOAT SlopeScaledDepthBias; // 0x14
+	BOOL DepthClipEnable; // 0x18
+	BOOL ScissorEnable; // 0x1C
+	BOOL MultisampleEnable; // 0x20
+	BOOL AntialiasedLineEnable; // 0x24
+};
+
+static_assert(TypeMatch<decltype(D3D11_RASTERIZER_DESC::FillMode), D3D11_FILL_MODE>::value);
+static_assert(TypeMatch<decltype(D3D11_RASTERIZER_DESC::CullMode), D3D11_CULL_MODE>::value);
+static_assert(TypeMatch<decltype(D3D11_RASTERIZER_DESC::FrontCounterClockwise), BOOL>::value);
+static_assert(TypeMatch<decltype(D3D11_RASTERIZER_DESC::DepthBias), INT>::value);
+static_assert(TypeMatch<decltype(D3D11_RASTERIZER_DESC::DepthBiasClamp), FLOAT>::value);
+static_assert(TypeMatch<decltype(D3D11_RASTERIZER_DESC::SlopeScaledDepthBias), FLOAT>::value);
+static_assert(TypeMatch<decltype(D3D11_RASTERIZER_DESC::DepthClipEnable), BOOL>::value);
+static_assert(TypeMatch<decltype(D3D11_RASTERIZER_DESC::ScissorEnable), BOOL>::value);
+static_assert(TypeMatch<decltype(D3D11_RASTERIZER_DESC::MultisampleEnable), BOOL>::value);
+static_assert(TypeMatch<decltype(D3D11_RASTERIZER_DESC::AntialiasedLineEnable), BOOL>::value);
+
+static_assert(offsetof(D3D11_RASTERIZER_DESC, FillMode) == 0);
+static_assert(offsetof(D3D11_RASTERIZER_DESC, CullMode) == 4);
+static_assert(offsetof(D3D11_RASTERIZER_DESC, FrontCounterClockwise) == 8);
+static_assert(offsetof(D3D11_RASTERIZER_DESC, DepthBias) == 0xC);
+static_assert(offsetof(D3D11_RASTERIZER_DESC, DepthBiasClamp) == 0x10);
+static_assert(offsetof(D3D11_RASTERIZER_DESC, SlopeScaledDepthBias) == 0x14);
+static_assert(offsetof(D3D11_RASTERIZER_DESC, DepthClipEnable) == 0x18);
+static_assert(offsetof(D3D11_RASTERIZER_DESC, ScissorEnable) == 0x1C);
+static_assert(offsetof(D3D11_RASTERIZER_DESC, MultisampleEnable) == 0x20);
+static_assert(offsetof(D3D11_RASTERIZER_DESC, AntialiasedLineEnable) == 0x24);
+
+static_assert(sizeof(D3D11_RASTERIZER_DESC) == 40);
+
+// D3D11_SAMPLER_DESC
+
+struct D3D11_SAMPLER_DESC
+{
+	D3D11_FILTER Filter; // 0
+	D3D11_TEXTURE_ADDRESS_MODE AddressU; // 4
+	D3D11_TEXTURE_ADDRESS_MODE AddressV; // 8
+	D3D11_TEXTURE_ADDRESS_MODE AddressW; // 0xC
+	FLOAT MipLODBias; // 0x10
+	UINT MaxAnisotropy; // 0x14
+	D3D11_COMPARISON_FUNC ComparisonFunc; // 0x18
+	FLOAT BorderColor[4]; // 0x1C
+	FLOAT MinLOD; // 0x2C
+	FLOAT MaxLOD; // 0x30
+};
+
+static_assert(TypeMatch<decltype(D3D11_SAMPLER_DESC::Filter), D3D11_FILTER>::value);
+static_assert(TypeMatch<decltype(D3D11_SAMPLER_DESC::AddressU), D3D11_TEXTURE_ADDRESS_MODE>::value);
+static_assert(TypeMatch<decltype(D3D11_SAMPLER_DESC::AddressV), D3D11_TEXTURE_ADDRESS_MODE>::value);
+static_assert(TypeMatch<decltype(D3D11_SAMPLER_DESC::AddressW), D3D11_TEXTURE_ADDRESS_MODE>::value);
+static_assert(TypeMatch<decltype(D3D11_SAMPLER_DESC::MipLODBias), FLOAT>::value);
+static_assert(TypeMatch<decltype(D3D11_SAMPLER_DESC::MaxAnisotropy), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_SAMPLER_DESC::ComparisonFunc), D3D11_COMPARISON_FUNC>::value);
+static_assert(TypeMatch<decltype(D3D11_SAMPLER_DESC::BorderColor), FLOAT[4]>::value);
+static_assert(TypeMatch<decltype(D3D11_SAMPLER_DESC::MinLOD), FLOAT>::value);
+static_assert(TypeMatch<decltype(D3D11_SAMPLER_DESC::MaxLOD), FLOAT>::value);
+
+static_assert(offsetof(D3D11_SAMPLER_DESC, Filter) == 0);
+static_assert(offsetof(D3D11_SAMPLER_DESC, AddressU) == 4);
+static_assert(offsetof(D3D11_SAMPLER_DESC, AddressV) == 8);
+static_assert(offsetof(D3D11_SAMPLER_DESC, AddressW) == 0xC);
+static_assert(offsetof(D3D11_SAMPLER_DESC, MipLODBias) == 0x10);
+static_assert(offsetof(D3D11_SAMPLER_DESC, MaxAnisotropy) == 0x14);
+static_assert(offsetof(D3D11_SAMPLER_DESC, ComparisonFunc) == 0x18);
+static_assert(offsetof(D3D11_SAMPLER_DESC, BorderColor) == 0x1C);
+static_assert(offsetof(D3D11_SAMPLER_DESC, MinLOD) == 0x2C);
+static_assert(offsetof(D3D11_SAMPLER_DESC, MaxLOD) == 0x30);
+
+static_assert(sizeof(D3D11_SAMPLER_DESC) == 52);
+
+// D3D11_QUERY_DESC
+
+struct D3D11_QUERY_DESC
+{
+	D3D11_QUERY Query; // 0
+	UINT MiscFlags; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D11_QUERY_DESC::Query), D3D11_QUERY>::value);
+static_assert(TypeMatch<decltype(D3D11_QUERY_DESC::MiscFlags), UINT>::value);
+
+static_assert(offsetof(D3D11_QUERY_DESC, Query) == 0);
+static_assert(offsetof(D3D11_QUERY_DESC, MiscFlags) == 4);
+
+static_assert(sizeof(D3D11_QUERY_DESC) == 8);
+
+// D3D11_COUNTER_DESC
+
+struct D3D11_COUNTER_DESC
+{
+	D3D11_COUNTER Counter; // 0
+	UINT MiscFlags; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D11_COUNTER_DESC::Counter), D3D11_COUNTER>::value);
+static_assert(TypeMatch<decltype(D3D11_COUNTER_DESC::MiscFlags), UINT>::value);
+
+static_assert(offsetof(D3D11_COUNTER_DESC, Counter) == 0);
+static_assert(offsetof(D3D11_COUNTER_DESC, MiscFlags) == 4);
+
+static_assert(sizeof(D3D11_COUNTER_DESC) == 8);
+
+// D3D11_COUNTER_INFO
+
+struct D3D11_COUNTER_INFO
+{
+	D3D11_COUNTER LastDeviceDependentCounter; // 0
+	UINT NumSimultaneousCounters; // 4
+	UINT8 NumDetectableParallelUnits; // 8
+	_(3);
+};
+
+static_assert(TypeMatch<decltype(D3D11_COUNTER_INFO::LastDeviceDependentCounter), D3D11_COUNTER>::value);
+static_assert(TypeMatch<decltype(D3D11_COUNTER_INFO::NumSimultaneousCounters), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_COUNTER_INFO::NumDetectableParallelUnits), UINT8>::value);
+
+static_assert(offsetof(D3D11_COUNTER_INFO, LastDeviceDependentCounter) == 0);
+static_assert(offsetof(D3D11_COUNTER_INFO, NumSimultaneousCounters) == 4);
+static_assert(offsetof(D3D11_COUNTER_INFO, NumDetectableParallelUnits) == 8);
+
+static_assert(sizeof(D3D11_COUNTER_INFO) == 12);
+
+// D3D11_MAPPED_SUBRESOURCE
+
+struct D3D11_MAPPED_SUBRESOURCE
+{
+	void* pData; // 0
+	UINT RowPitch; // 4
+	UINT DepthPitch; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_MAPPED_SUBRESOURCE::pData), void*>::value);
+static_assert(TypeMatch<decltype(D3D11_MAPPED_SUBRESOURCE::RowPitch), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_MAPPED_SUBRESOURCE::DepthPitch), UINT>::value);
+
+static_assert(offsetof(D3D11_MAPPED_SUBRESOURCE, pData) == 0);
+static_assert(offsetof(D3D11_MAPPED_SUBRESOURCE, RowPitch) == 4);
+static_assert(offsetof(D3D11_MAPPED_SUBRESOURCE, DepthPitch) == 8);
+
+static_assert(sizeof(D3D11_MAPPED_SUBRESOURCE) == 12);
+
+// D3D11_BOX
+
+struct D3D11_BOX
+{
+	UINT left; // 0
+	UINT top; // 4
+	UINT front; // 8
+	UINT right; // 0xC
+	UINT bottom; // 0x10
+	UINT back; // 0x14
+};
+
+static_assert(TypeMatch<decltype(D3D11_BOX::left), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BOX::top), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BOX::front), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BOX::right), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BOX::bottom), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_BOX::back), UINT>::value);
+
+static_assert(offsetof(D3D11_BOX, left) == 0);
+static_assert(offsetof(D3D11_BOX, top) == 4);
+static_assert(offsetof(D3D11_BOX, front) == 8);
+static_assert(offsetof(D3D11_BOX, right) == 0xC);
+static_assert(offsetof(D3D11_BOX, bottom) == 0x10);
+static_assert(offsetof(D3D11_BOX, back) == 0x14);
+
+static_assert(sizeof(D3D11_BOX) == 24);
+
+// D3D11_CLASS_INSTANCE_DESC
+
+struct D3D11_CLASS_INSTANCE_DESC
+{
+	UINT InstanceId; // 0
+	UINT InstanceIndex; // 4
+	UINT TypeId; // 8
+	UINT ConstantBuffer; // 0xC
+	UINT BaseConstantBufferOffset; // 0x10
+	UINT BaseTexture; // 0x14
+	UINT BaseSampler; // 0x18
+	BOOL Created; // 0x1C
+};
+
+static_assert(TypeMatch<decltype(D3D11_CLASS_INSTANCE_DESC::InstanceId), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_CLASS_INSTANCE_DESC::InstanceIndex), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_CLASS_INSTANCE_DESC::TypeId), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_CLASS_INSTANCE_DESC::ConstantBuffer), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_CLASS_INSTANCE_DESC::BaseConstantBufferOffset), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_CLASS_INSTANCE_DESC::BaseTexture), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_CLASS_INSTANCE_DESC::BaseSampler), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_CLASS_INSTANCE_DESC::Created), BOOL>::value);
+
+static_assert(offsetof(D3D11_CLASS_INSTANCE_DESC, InstanceId) == 0);
+static_assert(offsetof(D3D11_CLASS_INSTANCE_DESC, InstanceIndex) == 4);
+static_assert(offsetof(D3D11_CLASS_INSTANCE_DESC, TypeId) == 8);
+static_assert(offsetof(D3D11_CLASS_INSTANCE_DESC, ConstantBuffer) == 0xC);
+static_assert(offsetof(D3D11_CLASS_INSTANCE_DESC, BaseConstantBufferOffset) == 0x10);
+static_assert(offsetof(D3D11_CLASS_INSTANCE_DESC, BaseTexture) == 0x14);
+static_assert(offsetof(D3D11_CLASS_INSTANCE_DESC, BaseSampler) == 0x18);
+static_assert(offsetof(D3D11_CLASS_INSTANCE_DESC, Created) == 0x1C);
+
+static_assert(sizeof(D3D11_CLASS_INSTANCE_DESC) == 32);
+
+// D3D11_VIDEO_DECODER_DESC
+
+struct D3D11_VIDEO_DECODER_DESC
+{
+	GUID Guid; // 0
+	UINT SampleWidth; // 0x10
+	UINT SampleHeight; // 0x14
+	DXGI_FORMAT OutputFormat; // 0x18
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_DESC::Guid), GUID>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_DESC::SampleWidth), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_DESC::SampleHeight), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_DESC::OutputFormat), DXGI_FORMAT>::value);
+
+static_assert(offsetof(D3D11_VIDEO_DECODER_DESC, Guid) == 0);
+static_assert(offsetof(D3D11_VIDEO_DECODER_DESC, SampleWidth) == 0x10);
+static_assert(offsetof(D3D11_VIDEO_DECODER_DESC, SampleHeight) == 0x14);
+static_assert(offsetof(D3D11_VIDEO_DECODER_DESC, OutputFormat) == 0x18);
+
+static_assert(sizeof(D3D11_VIDEO_DECODER_DESC) == 28);
+
+// D3D11_VIDEO_PROCESSOR_CONTENT_DESC
+
+struct D3D11_VIDEO_PROCESSOR_CONTENT_DESC
+{
+	D3D11_VIDEO_FRAME_FORMAT InputFrameFormat; // 0
+	DXGI_RATIONAL InputFrameRate; // 4
+	UINT InputWidth; // 0xC
+	UINT InputHeight; // 0x10
+	DXGI_RATIONAL OutputFrameRate; // 0x14
+	UINT OutputWidth; // 0x1C
+	UINT OutputHeight; // 0x20
+	D3D11_VIDEO_USAGE Usage; // 0x24
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CONTENT_DESC::InputFrameFormat), D3D11_VIDEO_FRAME_FORMAT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CONTENT_DESC::InputFrameRate), DXGI_RATIONAL>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CONTENT_DESC::InputWidth), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CONTENT_DESC::InputHeight), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CONTENT_DESC::OutputFrameRate), DXGI_RATIONAL>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CONTENT_DESC::OutputWidth), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CONTENT_DESC::OutputHeight), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CONTENT_DESC::Usage), D3D11_VIDEO_USAGE>::value);
+
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC, InputFrameFormat) == 0);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC, InputFrameRate) == 4);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC, InputWidth) == 0xC);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC, InputHeight) == 0x10);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC, OutputFrameRate) == 0x14);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC, OutputWidth) == 0x1C);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC, OutputHeight) == 0x20);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC, Usage) == 0x24);
+
+static_assert(sizeof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC) == 40);
+
+// D3D11_VIDEO_PROCESSOR_CAPS
+
+struct D3D11_VIDEO_PROCESSOR_CAPS
+{
+	UINT DeviceCaps; // 0
+	UINT FeatureCaps; // 4
+	UINT FilterCaps; // 8
+	UINT InputFormatCaps; // 0xC
+	UINT AutoStreamCaps; // 0x10
+	UINT StereoCaps; // 0x14
+	UINT RateConversionCapsCount; // 0x18
+	UINT MaxInputStreams; // 0x1C
+	UINT MaxStreamStates; // 0x20
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CAPS::DeviceCaps), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CAPS::FeatureCaps), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CAPS::FilterCaps), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CAPS::InputFormatCaps), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CAPS::AutoStreamCaps), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CAPS::StereoCaps), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CAPS::RateConversionCapsCount), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CAPS::MaxInputStreams), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CAPS::MaxStreamStates), UINT>::value);
+
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CAPS, DeviceCaps) == 0);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CAPS, FeatureCaps) == 4);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CAPS, FilterCaps) == 8);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CAPS, InputFormatCaps) == 0xC);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CAPS, AutoStreamCaps) == 0x10);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CAPS, StereoCaps) == 0x14);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CAPS, RateConversionCapsCount) == 0x18);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CAPS, MaxInputStreams) == 0x1C);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CAPS, MaxStreamStates) == 0x20);
+
+static_assert(sizeof(D3D11_VIDEO_PROCESSOR_CAPS) == 36);
+
+// D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS
+
+struct D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS
+{
+	UINT PastFrames; // 0
+	UINT FutureFrames; // 4
+	UINT ProcessorCaps; // 8
+	UINT ITelecineCaps; // 0xC
+	UINT CustomRateCount; // 0x10
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS::PastFrames), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS::FutureFrames), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS::ProcessorCaps), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS::ITelecineCaps), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS::CustomRateCount), UINT>::value);
+
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS, PastFrames) == 0);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS, FutureFrames) == 4);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS, ProcessorCaps) == 8);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS, ITelecineCaps) == 0xC);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS, CustomRateCount) == 0x10);
+
+static_assert(sizeof(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS) == 20);
+
+// D3D11_VIDEO_PROCESSOR_CUSTOM_RATE
+
+struct D3D11_VIDEO_PROCESSOR_CUSTOM_RATE
+{
+	DXGI_RATIONAL CustomRate; // 0
+	UINT OutputFrames; // 8
+	BOOL InputInterlaced; // 0xC
+	UINT InputFramesOrFields; // 0x10
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CUSTOM_RATE::CustomRate), DXGI_RATIONAL>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CUSTOM_RATE::OutputFrames), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CUSTOM_RATE::InputInterlaced), BOOL>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_CUSTOM_RATE::InputFramesOrFields), UINT>::value);
+
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CUSTOM_RATE, CustomRate) == 0);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CUSTOM_RATE, OutputFrames) == 8);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CUSTOM_RATE, InputInterlaced) == 0xC);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_CUSTOM_RATE, InputFramesOrFields) == 0x10);
+
+static_assert(sizeof(D3D11_VIDEO_PROCESSOR_CUSTOM_RATE) == 20);
+
+// D3D11_VIDEO_DECODER_CONFIG
+
+struct D3D11_VIDEO_DECODER_CONFIG
+{
+	GUID guidConfigBitstreamEncryption; // 0
+	GUID guidConfigMBcontrolEncryption; // 0x10
+	GUID guidConfigResidDiffEncryption; // 0x20
+	UINT ConfigBitstreamRaw; // 0x30
+	UINT ConfigMBcontrolRasterOrder; // 0x34
+	UINT ConfigResidDiffHost; // 0x38
+	UINT ConfigSpatialResid8; // 0x3C
+	UINT ConfigResid8Subtraction; // 0x40
+	UINT ConfigSpatialHost8or9Clipping; // 0x44
+	UINT ConfigSpatialResidInterleaved; // 0x48
+	UINT ConfigIntraResidUnsigned; // 0x4C
+	UINT ConfigResidDiffAccelerator; // 0x50
+	UINT ConfigHostInverseScan; // 0x54
+	UINT ConfigSpecificIDCT; // 0x58
+	UINT Config4GroupedCoefs; // 0x5C
+	USHORT ConfigMinRenderTargetBuffCount; // 0x60
+	USHORT ConfigDecoderSpecific; // 0x62
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::guidConfigBitstreamEncryption), GUID>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::guidConfigMBcontrolEncryption), GUID>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::guidConfigResidDiffEncryption), GUID>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::ConfigBitstreamRaw), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::ConfigMBcontrolRasterOrder), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::ConfigResidDiffHost), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::ConfigSpatialResid8), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::ConfigResid8Subtraction), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::ConfigSpatialHost8or9Clipping), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::ConfigSpatialResidInterleaved), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::ConfigIntraResidUnsigned), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::ConfigResidDiffAccelerator), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::ConfigHostInverseScan), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::ConfigSpecificIDCT), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::Config4GroupedCoefs), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::ConfigMinRenderTargetBuffCount), USHORT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_CONFIG::ConfigDecoderSpecific), USHORT>::value);
+
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, guidConfigBitstreamEncryption) == 0);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, guidConfigMBcontrolEncryption) == 0x10);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, guidConfigResidDiffEncryption) == 0x20);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigBitstreamRaw) == 0x30);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigMBcontrolRasterOrder) == 0x34);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigResidDiffHost) == 0x38);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigSpatialResid8) == 0x3C);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigResid8Subtraction) == 0x40);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigSpatialHost8or9Clipping) == 0x44);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigSpatialResidInterleaved) == 0x48);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigIntraResidUnsigned) == 0x4C);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigResidDiffAccelerator) == 0x50);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigHostInverseScan) == 0x54);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigSpecificIDCT) == 0x58);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, Config4GroupedCoefs) == 0x5C);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigMinRenderTargetBuffCount) == 0x60);
+static_assert(offsetof(D3D11_VIDEO_DECODER_CONFIG, ConfigDecoderSpecific) == 0x62);
+
+static_assert(sizeof(D3D11_VIDEO_DECODER_CONFIG) == 100);
+
+// D3D11_TEX2D_VDOV
+
+struct D3D11_TEX2D_VDOV
+{
+	UINT ArraySlice; // 0
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2D_VDOV::ArraySlice), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2D_VDOV, ArraySlice) == 0);
+
+static_assert(sizeof(D3D11_TEX2D_VDOV) == 4);
+
+// D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC
+
+struct D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC
+{
+	GUID DecodeProfile; // 0
+	D3D11_VDOV_DIMENSION ViewDimension; // 0x10
+	union
+	{
+		D3D11_TEX2D_VDOV Texture2D; // 0x14
+	}; // 0x14
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC::DecodeProfile), GUID>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC::ViewDimension), D3D11_VDOV_DIMENSION>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC::Texture2D), D3D11_TEX2D_VDOV>::value);
+
+static_assert(offsetof(D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC, DecodeProfile) == 0);
+static_assert(offsetof(D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC, ViewDimension) == 0x10);
+static_assert(offsetof(D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC, Texture2D) == 0x14);
+
+static_assert(sizeof(D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC) == 24);
+
+// D3D11_TEX2D_VPIV
+
+struct D3D11_TEX2D_VPIV
+{
+	UINT MipSlice; // 0
+	UINT ArraySlice; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2D_VPIV::MipSlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2D_VPIV::ArraySlice), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2D_VPIV, MipSlice) == 0);
+static_assert(offsetof(D3D11_TEX2D_VPIV, ArraySlice) == 4);
+
+static_assert(sizeof(D3D11_TEX2D_VPIV) == 8);
+
+// D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC
+
+struct D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC
+{
+	UINT FourCC; // 0
+	D3D11_VPIV_DIMENSION ViewDimension; // 4
+	union
+	{
+		D3D11_TEX2D_VPIV Texture2D; // 8
+	}; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC::FourCC), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC::ViewDimension), D3D11_VPIV_DIMENSION>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC::Texture2D), D3D11_TEX2D_VPIV>::value);
+
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC, FourCC) == 0);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC, ViewDimension) == 4);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC, Texture2D) == 8);
+
+static_assert(sizeof(D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC) == 16);
+
+// D3D11_VIDEO_PROCESSOR_FILTER_RANGE
+
+struct D3D11_VIDEO_PROCESSOR_FILTER_RANGE
+{
+	int Minimum; // 0
+	int Maximum; // 4
+	int Default; // 8
+	float Multiplier; // 0xC
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_FILTER_RANGE::Minimum), int>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_FILTER_RANGE::Maximum), int>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_FILTER_RANGE::Default), int>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_FILTER_RANGE::Multiplier), float>::value);
+
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_FILTER_RANGE, Minimum) == 0);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_FILTER_RANGE, Maximum) == 4);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_FILTER_RANGE, Default) == 8);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_FILTER_RANGE, Multiplier) == 0xC);
+
+static_assert(sizeof(D3D11_VIDEO_PROCESSOR_FILTER_RANGE) == 16);
+
+// D3D11_TEX2D_VPOV
+
+struct D3D11_TEX2D_VPOV
+{
+	UINT MipSlice; // 0
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2D_VPOV::MipSlice), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2D_VPOV, MipSlice) == 0);
+
+static_assert(sizeof(D3D11_TEX2D_VPOV) == 4);
+
+// D3D11_TEX2D_ARRAY_VPOV
+
+struct D3D11_TEX2D_ARRAY_VPOV
+{
+	UINT MipSlice; // 0
+	UINT FirstArraySlice; // 4
+	UINT ArraySize; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_VPOV::MipSlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_VPOV::FirstArraySlice), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_TEX2D_ARRAY_VPOV::ArraySize), UINT>::value);
+
+static_assert(offsetof(D3D11_TEX2D_ARRAY_VPOV, MipSlice) == 0);
+static_assert(offsetof(D3D11_TEX2D_ARRAY_VPOV, FirstArraySlice) == 4);
+static_assert(offsetof(D3D11_TEX2D_ARRAY_VPOV, ArraySize) == 8);
+
+static_assert(sizeof(D3D11_TEX2D_ARRAY_VPOV) == 12);
+
+// D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC
+
+struct D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC
+{
+	D3D11_VPOV_DIMENSION ViewDimension; // 0
+	union
+	{
+		D3D11_TEX2D_VPOV Texture2D; // 4
+		D3D11_TEX2D_ARRAY_VPOV Texture2DArray; // 4
+	}; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC::ViewDimension), D3D11_VPOV_DIMENSION>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC::Texture2D), D3D11_TEX2D_VPOV>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC::Texture2DArray), D3D11_TEX2D_ARRAY_VPOV>::value);
+
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC, ViewDimension) == 0);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC, Texture2D) == 4);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC, Texture2DArray) == 4);
+
+static_assert(sizeof(D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC) == 16);
+
+// D3D11_ENCRYPTED_BLOCK_INFO
+
+struct D3D11_ENCRYPTED_BLOCK_INFO
+{
+	UINT NumEncryptedBytesAtBeginning; // 0
+	UINT NumBytesInSkipPattern; // 4
+	UINT NumBytesInEncryptPattern; // 8
+};
+
+static_assert(TypeMatch<decltype(D3D11_ENCRYPTED_BLOCK_INFO::NumEncryptedBytesAtBeginning), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_ENCRYPTED_BLOCK_INFO::NumBytesInSkipPattern), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_ENCRYPTED_BLOCK_INFO::NumBytesInEncryptPattern), UINT>::value);
+
+static_assert(offsetof(D3D11_ENCRYPTED_BLOCK_INFO, NumEncryptedBytesAtBeginning) == 0);
+static_assert(offsetof(D3D11_ENCRYPTED_BLOCK_INFO, NumBytesInSkipPattern) == 4);
+static_assert(offsetof(D3D11_ENCRYPTED_BLOCK_INFO, NumBytesInEncryptPattern) == 8);
+
+static_assert(sizeof(D3D11_ENCRYPTED_BLOCK_INFO) == 12);
+
+// D3D11_VIDEO_DECODER_BUFFER_DESC
+
+struct D3D11_VIDEO_DECODER_BUFFER_DESC
+{
+	D3D11_VIDEO_DECODER_BUFFER_TYPE BufferType; // 0
+	UINT BufferIndex; // 4
+	UINT DataOffset; // 8
+	UINT DataSize; // 0xC
+	UINT FirstMBaddress; // 0x10
+	UINT NumMBsInBuffer; // 0x14
+	UINT Width; // 0x18
+	UINT Height; // 0x1C
+	UINT Stride; // 0x20
+	UINT ReservedBits; // 0x24
+	void* pIV; // 0x28
+	UINT IVSize; // 0x2C
+	BOOL PartialEncryption; // 0x30
+	D3D11_ENCRYPTED_BLOCK_INFO EncryptedBlockInfo; // 0x34
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::BufferType), D3D11_VIDEO_DECODER_BUFFER_TYPE>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::BufferIndex), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::DataOffset), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::DataSize), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::FirstMBaddress), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::NumMBsInBuffer), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::Width), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::Height), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::Stride), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::ReservedBits), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::pIV), void*>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::IVSize), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::PartialEncryption), BOOL>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_BUFFER_DESC::EncryptedBlockInfo), D3D11_ENCRYPTED_BLOCK_INFO>::value);
+
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, BufferType) == 0);
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, BufferIndex) == 4);
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, DataOffset) == 8);
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, DataSize) == 0xC);
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, FirstMBaddress) == 0x10);
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, NumMBsInBuffer) == 0x14);
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, Width) == 0x18);
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, Height) == 0x1C);
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, Stride) == 0x20);
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, ReservedBits) == 0x24);
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, pIV) == 0x28);
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, IVSize) == 0x2C);
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, PartialEncryption) == 0x30);
+static_assert(offsetof(D3D11_VIDEO_DECODER_BUFFER_DESC, EncryptedBlockInfo) == 0x34);
+
+static_assert(sizeof(D3D11_VIDEO_DECODER_BUFFER_DESC) == 64);
+
+// D3D11_VIDEO_DECODER_EXTENSION
+
+struct D3D11_VIDEO_DECODER_EXTENSION
+{
+	UINT Function; // 0
+	void* pPrivateInputData; // 4
+	UINT PrivateInputDataSize; // 8
+	void* pPrivateOutputData; // 0xC
+	UINT PrivateOutputDataSize; // 0x10
+	UINT ResourceCount; // 0x14
+	ID3D11Resource** ppResourceList; // 0x18
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_EXTENSION::Function), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_EXTENSION::pPrivateInputData), void*>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_EXTENSION::PrivateInputDataSize), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_EXTENSION::pPrivateOutputData), void*>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_EXTENSION::PrivateOutputDataSize), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_EXTENSION::ResourceCount), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_DECODER_EXTENSION::ppResourceList), ID3D11Resource**>::value);
+
+static_assert(offsetof(D3D11_VIDEO_DECODER_EXTENSION, Function) == 0);
+static_assert(offsetof(D3D11_VIDEO_DECODER_EXTENSION, pPrivateInputData) == 4);
+static_assert(offsetof(D3D11_VIDEO_DECODER_EXTENSION, PrivateInputDataSize) == 8);
+static_assert(offsetof(D3D11_VIDEO_DECODER_EXTENSION, pPrivateOutputData) == 0xC);
+static_assert(offsetof(D3D11_VIDEO_DECODER_EXTENSION, PrivateOutputDataSize) == 0x10);
+static_assert(offsetof(D3D11_VIDEO_DECODER_EXTENSION, ResourceCount) == 0x14);
+static_assert(offsetof(D3D11_VIDEO_DECODER_EXTENSION, ppResourceList) == 0x18);
+
+static_assert(sizeof(D3D11_VIDEO_DECODER_EXTENSION) == 28);
+
+// D3D11_VIDEO_COLOR_RGBA
+
+struct D3D11_VIDEO_COLOR_RGBA
+{
+	float R; // 0
+	float G; // 4
+	float B; // 8
+	float A; // 0xC
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_COLOR_RGBA::R), float>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_COLOR_RGBA::G), float>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_COLOR_RGBA::B), float>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_COLOR_RGBA::A), float>::value);
+
+static_assert(offsetof(D3D11_VIDEO_COLOR_RGBA, R) == 0);
+static_assert(offsetof(D3D11_VIDEO_COLOR_RGBA, G) == 4);
+static_assert(offsetof(D3D11_VIDEO_COLOR_RGBA, B) == 8);
+static_assert(offsetof(D3D11_VIDEO_COLOR_RGBA, A) == 0xC);
+
+static_assert(sizeof(D3D11_VIDEO_COLOR_RGBA) == 16);
+
+// D3D11_VIDEO_COLOR_YCbCrA
+
+struct D3D11_VIDEO_COLOR_YCbCrA
+{
+	float Y; // 0
+	float Cb; // 4
+	float Cr; // 8
+	float A; // 0xC
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_COLOR_YCbCrA::Y), float>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_COLOR_YCbCrA::Cb), float>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_COLOR_YCbCrA::Cr), float>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_COLOR_YCbCrA::A), float>::value);
+
+static_assert(offsetof(D3D11_VIDEO_COLOR_YCbCrA, Y) == 0);
+static_assert(offsetof(D3D11_VIDEO_COLOR_YCbCrA, Cb) == 4);
+static_assert(offsetof(D3D11_VIDEO_COLOR_YCbCrA, Cr) == 8);
+static_assert(offsetof(D3D11_VIDEO_COLOR_YCbCrA, A) == 0xC);
+
+static_assert(sizeof(D3D11_VIDEO_COLOR_YCbCrA) == 16);
+
+// D3D11_VIDEO_COLOR
+
+struct D3D11_VIDEO_COLOR
+{
+	union
+	{
+		D3D11_VIDEO_COLOR_YCbCrA YCbCr; // 0
+		D3D11_VIDEO_COLOR_RGBA RGBA; // 0
+	}; // 0
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_COLOR::YCbCr), D3D11_VIDEO_COLOR_YCbCrA>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_COLOR::RGBA), D3D11_VIDEO_COLOR_RGBA>::value);
+
+static_assert(offsetof(D3D11_VIDEO_COLOR, YCbCr) == 0);
+static_assert(offsetof(D3D11_VIDEO_COLOR, RGBA) == 0);
+
+static_assert(sizeof(D3D11_VIDEO_COLOR) == 16);
+
+// D3D11_VIDEO_PROCESSOR_COLOR_SPACE
+
+struct D3D11_VIDEO_PROCESSOR_COLOR_SPACE
+{
+	_(4);
+};
+
+static_assert(sizeof(D3D11_VIDEO_PROCESSOR_COLOR_SPACE) == 4);
+
+// D3D11_VIDEO_PROCESSOR_STREAM
+
+struct D3D11_VIDEO_PROCESSOR_STREAM
+{
+	BOOL Enable; // 0
+	UINT OutputIndex; // 4
+	UINT InputFrameOrField; // 8
+	UINT PastFrames; // 0xC
+	UINT FutureFrames; // 0x10
+	ID3D11VideoProcessorInputView** ppPastSurfaces; // 0x14
+	ID3D11VideoProcessorInputView* pInputSurface; // 0x18
+	ID3D11VideoProcessorInputView** ppFutureSurfaces; // 0x1C
+	ID3D11VideoProcessorInputView** ppPastSurfacesRight; // 0x20
+	ID3D11VideoProcessorInputView* pInputSurfaceRight; // 0x24
+	ID3D11VideoProcessorInputView** ppFutureSurfacesRight; // 0x28
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_STREAM::Enable), BOOL>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_STREAM::OutputIndex), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_STREAM::InputFrameOrField), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_STREAM::PastFrames), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_STREAM::FutureFrames), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_STREAM::ppPastSurfaces), ID3D11VideoProcessorInputView**>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_STREAM::pInputSurface), ID3D11VideoProcessorInputView*>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_STREAM::ppFutureSurfaces), ID3D11VideoProcessorInputView**>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_STREAM::ppPastSurfacesRight), ID3D11VideoProcessorInputView**>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_STREAM::pInputSurfaceRight), ID3D11VideoProcessorInputView*>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_PROCESSOR_STREAM::ppFutureSurfacesRight), ID3D11VideoProcessorInputView**>::value);
+
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_STREAM, Enable) == 0);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_STREAM, OutputIndex) == 4);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_STREAM, InputFrameOrField) == 8);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_STREAM, PastFrames) == 0xC);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_STREAM, FutureFrames) == 0x10);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_STREAM, ppPastSurfaces) == 0x14);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_STREAM, pInputSurface) == 0x18);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_STREAM, ppFutureSurfaces) == 0x1C);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_STREAM, ppPastSurfacesRight) == 0x20);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_STREAM, pInputSurfaceRight) == 0x24);
+static_assert(offsetof(D3D11_VIDEO_PROCESSOR_STREAM, ppFutureSurfacesRight) == 0x28);
+
+static_assert(sizeof(D3D11_VIDEO_PROCESSOR_STREAM) == 44);
+
+// D3D11_OMAC
+
+struct D3D11_OMAC
+{
+	BYTE Omac[16]; // 0
+};
+
+static_assert(TypeMatch<decltype(D3D11_OMAC::Omac), BYTE[16]>::value);
+
+static_assert(offsetof(D3D11_OMAC, Omac) == 0);
+
+static_assert(sizeof(D3D11_OMAC) == 16);
+
+// D3D11_AUTHENTICATED_CONFIGURE_OUTPUT
+
+struct D3D11_AUTHENTICATED_CONFIGURE_OUTPUT
+{
+	D3D11_OMAC omac; // 0
+	GUID ConfigureType; // 0x10
+	HANDLE hChannel; // 0x20
+	UINT SequenceNumber; // 0x24
+	HRESULT ReturnCode; // 0x28
+};
+
+static_assert(TypeMatch<decltype(D3D11_AUTHENTICATED_CONFIGURE_OUTPUT::omac), D3D11_OMAC>::value);
+static_assert(TypeMatch<decltype(D3D11_AUTHENTICATED_CONFIGURE_OUTPUT::ConfigureType), GUID>::value);
+static_assert(TypeMatch<decltype(D3D11_AUTHENTICATED_CONFIGURE_OUTPUT::hChannel), HANDLE>::value);
+static_assert(TypeMatch<decltype(D3D11_AUTHENTICATED_CONFIGURE_OUTPUT::SequenceNumber), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_AUTHENTICATED_CONFIGURE_OUTPUT::ReturnCode), HRESULT>::value);
+
+static_assert(offsetof(D3D11_AUTHENTICATED_CONFIGURE_OUTPUT, omac) == 0);
+static_assert(offsetof(D3D11_AUTHENTICATED_CONFIGURE_OUTPUT, ConfigureType) == 0x10);
+static_assert(offsetof(D3D11_AUTHENTICATED_CONFIGURE_OUTPUT, hChannel) == 0x20);
+static_assert(offsetof(D3D11_AUTHENTICATED_CONFIGURE_OUTPUT, SequenceNumber) == 0x24);
+static_assert(offsetof(D3D11_AUTHENTICATED_CONFIGURE_OUTPUT, ReturnCode) == 0x28);
+
+static_assert(sizeof(D3D11_AUTHENTICATED_CONFIGURE_OUTPUT) == 44);
+
+// D3D11_VIDEO_CONTENT_PROTECTION_CAPS
+
+struct D3D11_VIDEO_CONTENT_PROTECTION_CAPS
+{
+	UINT Caps; // 0
+	UINT KeyExchangeTypeCount; // 4
+	UINT BlockAlignmentSize; // 8
+	_(4);
+	ULONGLONG ProtectedMemorySize; // 0x10
+};
+
+static_assert(TypeMatch<decltype(D3D11_VIDEO_CONTENT_PROTECTION_CAPS::Caps), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_CONTENT_PROTECTION_CAPS::KeyExchangeTypeCount), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_CONTENT_PROTECTION_CAPS::BlockAlignmentSize), UINT>::value);
+static_assert(TypeMatch<decltype(D3D11_VIDEO_CONTENT_PROTECTION_CAPS::ProtectedMemorySize), ULONGLONG>::value);
+
+static_assert(offsetof(D3D11_VIDEO_CONTENT_PROTECTION_CAPS, Caps) == 0);
+static_assert(offsetof(D3D11_VIDEO_CONTENT_PROTECTION_CAPS, KeyExchangeTypeCount) == 4);
+static_assert(offsetof(D3D11_VIDEO_CONTENT_PROTECTION_CAPS, BlockAlignmentSize) == 8);
+static_assert(offsetof(D3D11_VIDEO_CONTENT_PROTECTION_CAPS, ProtectedMemorySize) == 0x10);
+
+static_assert(sizeof(D3D11_VIDEO_CONTENT_PROTECTION_CAPS) == 24);
+
+// D3D_SHADER_MACRO
+
+struct D3D_SHADER_MACRO
+{
+	LPCSTR Name; // 0
+	LPCSTR Definition; // 4
+};
+
+static_assert(TypeMatch<decltype(D3D_SHADER_MACRO::Name), LPCSTR>::value);
+static_assert(TypeMatch<decltype(D3D_SHADER_MACRO::Definition), LPCSTR>::value);
+
+static_assert(offsetof(D3D_SHADER_MACRO, Name) == 0);
+static_assert(offsetof(D3D_SHADER_MACRO, Definition) == 4);
+
+static_assert(sizeof(D3D_SHADER_MACRO) == 8);
+
+#pragma pack(pop)
+
+// PFN_DESTRUCTION_CALLBACK
+
+typedef void(__stdcall * PFN_DESTRUCTION_CALLBACK)(void* pData);
+
+static_assert(sizeof(PFN_DESTRUCTION_CALLBACK) == 4);
+
+// ID3D11DeviceChild
+
+struct __declspec(novtable) ID3D11DeviceChild : IUnknown
+{
+	virtual void __stdcall GetDevice(ID3D11Device** ppDevice) = 0;
+	virtual HRESULT __stdcall GetPrivateData
+	(
+		const GUID& guid,
+		UINT* pDataSize,
+		void* pData
+	) = 0;
+	virtual HRESULT __stdcall SetPrivateData
+	(
+		const GUID& guid,
+		UINT DataSize,
+		const void* pData
+	) = 0;
+	virtual HRESULT __stdcall SetPrivateDataInterface
+	(
+		const GUID& guid,
+		const IUnknown* pData
+	) = 0;
+};
+
+static_assert(sizeof(ID3D11DeviceChild) == 4);
+
+// ID3D11DepthStencilState
+
+struct __declspec(novtable) ID3D11DepthStencilState : ID3D11DeviceChild
+{
+	virtual void __stdcall GetDesc(D3D11_DEPTH_STENCIL_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11DepthStencilState) == 4);
+
+// ID3D11BlendState
+
+struct __declspec(novtable) ID3D11BlendState : ID3D11DeviceChild
+{
+	virtual void __stdcall GetDesc(D3D11_BLEND_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11BlendState) == 4);
+
+// ID3D11RasterizerState
+
+struct __declspec(novtable) ID3D11RasterizerState : ID3D11DeviceChild
+{
+	virtual void __stdcall GetDesc(D3D11_RASTERIZER_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11RasterizerState) == 4);
+
+// ID3D11Resource
+
+struct __declspec(novtable) ID3D11Resource : ID3D11DeviceChild
+{
+	virtual void __stdcall GetType(D3D11_RESOURCE_DIMENSION* pResourceDimension) = 0;
+	virtual void __stdcall SetEvictionPriority(UINT EvictionPriority) = 0;
+	virtual UINT __stdcall GetEvictionPriority() = 0;
+};
+
+static_assert(sizeof(ID3D11Resource) == 4);
+
+// ID3D11Buffer
+
+struct __declspec(novtable) ID3D11Buffer : ID3D11Resource
+{
+	virtual void __stdcall GetDesc(D3D11_BUFFER_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11Buffer) == 4);
+
+// ID3D11Texture1D
+
+struct __declspec(novtable) ID3D11Texture1D : ID3D11Resource
+{
+	virtual void __stdcall GetDesc(D3D11_TEXTURE1D_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11Texture1D) == 4);
+
+// ID3D11Texture2D
+
+struct __declspec(novtable) ID3D11Texture2D : ID3D11Resource
+{
+	virtual void __stdcall GetDesc(D3D11_TEXTURE2D_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11Texture2D) == 4);
+
+// ID3D11Texture3D
+
+struct __declspec(novtable) ID3D11Texture3D : ID3D11Resource
+{
+	virtual void __stdcall GetDesc(D3D11_TEXTURE3D_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11Texture3D) == 4);
+
+// ID3D11View
+
+struct __declspec(novtable) ID3D11View : ID3D11DeviceChild
+{
+	virtual void __stdcall GetResource(ID3D11Resource** ppResource) = 0;
+};
+
+static_assert(sizeof(ID3D11View) == 4);
+
+// ID3D11ShaderResourceView
+
+struct __declspec(novtable) ID3D11ShaderResourceView : ID3D11View
+{
+	virtual void __stdcall GetDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11ShaderResourceView) == 4);
+
+// ID3D11RenderTargetView
+
+struct __declspec(novtable) ID3D11RenderTargetView : ID3D11View
+{
+	virtual void __stdcall GetDesc(D3D11_RENDER_TARGET_VIEW_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11RenderTargetView) == 4);
+
+// ID3D11DepthStencilView
+
+struct __declspec(novtable) ID3D11DepthStencilView : ID3D11View
+{
+	virtual void __stdcall GetDesc(D3D11_DEPTH_STENCIL_VIEW_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11DepthStencilView) == 4);
+
+// ID3D11UnorderedAccessView
+
+struct __declspec(novtable) ID3D11UnorderedAccessView : ID3D11View
+{
+	virtual void __stdcall GetDesc(D3D11_UNORDERED_ACCESS_VIEW_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11UnorderedAccessView) == 4);
+
+// ID3D11VertexShader
+
+struct __declspec(novtable) ID3D11VertexShader : ID3D11DeviceChild
+{
+};
+
+static_assert(sizeof(ID3D11VertexShader) == 4);
+
+// ID3D11HullShader
+
+struct __declspec(novtable) ID3D11HullShader : ID3D11DeviceChild
+{
+};
+
+static_assert(sizeof(ID3D11HullShader) == 4);
+
+// ID3D11DomainShader
+
+struct __declspec(novtable) ID3D11DomainShader : ID3D11DeviceChild
+{
+};
+
+static_assert(sizeof(ID3D11DomainShader) == 4);
+
+// ID3D11GeometryShader
+
+struct __declspec(novtable) ID3D11GeometryShader : ID3D11DeviceChild
+{
+};
+
+static_assert(sizeof(ID3D11GeometryShader) == 4);
+
+// ID3D11PixelShader
+
+struct __declspec(novtable) ID3D11PixelShader : ID3D11DeviceChild
+{
+};
+
+static_assert(sizeof(ID3D11PixelShader) == 4);
+
+// ID3D11ComputeShader
+
+struct __declspec(novtable) ID3D11ComputeShader : ID3D11DeviceChild
+{
+};
+
+static_assert(sizeof(ID3D11ComputeShader) == 4);
+
+// ID3D11InputLayout
+
+struct __declspec(novtable) ID3D11InputLayout : ID3D11DeviceChild
+{
+};
+
+static_assert(sizeof(ID3D11InputLayout) == 4);
+
+// ID3D11SamplerState
+
+struct __declspec(novtable) ID3D11SamplerState : ID3D11DeviceChild
+{
+	virtual void __stdcall GetDesc(D3D11_SAMPLER_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11SamplerState) == 4);
+
+// ID3D11Asynchronous
+
+struct __declspec(novtable) ID3D11Asynchronous : ID3D11DeviceChild
+{
+	virtual UINT __stdcall GetDataSize() = 0;
+};
+
+static_assert(sizeof(ID3D11Asynchronous) == 4);
+
+// ID3D11Query
+
+struct __declspec(novtable) ID3D11Query : ID3D11Asynchronous
+{
+	virtual void __stdcall GetDesc(D3D11_QUERY_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11Query) == 4);
+
+// ID3D11Predicate
+
+struct __declspec(novtable) ID3D11Predicate : ID3D11Query
+{
+};
+
+static_assert(sizeof(ID3D11Predicate) == 4);
+
+// ID3D11Counter
+
+struct __declspec(novtable) ID3D11Counter : ID3D11Asynchronous
+{
+	virtual void __stdcall GetDesc(D3D11_COUNTER_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11Counter) == 4);
+
+// ID3D11ClassInstance
+
+struct __declspec(novtable) ID3D11ClassInstance : ID3D11DeviceChild
+{
+	virtual void __stdcall GetClassLinkage(ID3D11ClassLinkage** ppLinkage) = 0;
+	virtual void __stdcall GetDesc(D3D11_CLASS_INSTANCE_DESC* pDesc) = 0;
+	virtual void __stdcall GetInstanceName
+	(
+		LPSTR pInstanceName,
+		SIZE_T* pBufferLength
+	) = 0;
+	virtual void __stdcall GetTypeName
+	(
+		LPSTR pTypeName,
+		SIZE_T* pBufferLength
+	) = 0;
+};
+
+static_assert(sizeof(ID3D11ClassInstance) == 4);
+
+// ID3D11ClassLinkage
+
+struct __declspec(novtable) ID3D11ClassLinkage : ID3D11DeviceChild
+{
+	virtual HRESULT __stdcall GetClassInstance
+	(
+		LPCSTR pClassInstanceName,
+		UINT InstanceIndex,
+		ID3D11ClassInstance** ppInstance
+	) = 0;
+	virtual HRESULT __stdcall CreateClassInstance
+	(
+		LPCSTR pClassTypeName,
+		UINT ConstantBufferOffset,
+		UINT ConstantVectorOffset,
+		UINT TextureOffset,
+		UINT SamplerOffset,
+		ID3D11ClassInstance** ppInstance
+	) = 0;
+};
+
+static_assert(sizeof(ID3D11ClassLinkage) == 4);
+
+// ID3D11CommandList
+
+struct __declspec(novtable) ID3D11CommandList : ID3D11DeviceChild
+{
+	virtual UINT __stdcall GetContextFlags() = 0;
+};
+
+static_assert(sizeof(ID3D11CommandList) == 4);
+
+// ID3D11DeviceContext
+
+struct __declspec(novtable) ID3D11DeviceContext : ID3D11DeviceChild
+{
+	virtual void __stdcall VSSetConstantBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer*const* ppConstantBuffers
+	) = 0;
+	virtual void __stdcall PSSetShaderResources
+	(
+		UINT StartSlot,
+		UINT NumViews,
+		ID3D11ShaderResourceView*const* ppShaderResourceViews
+	) = 0;
+	virtual void __stdcall PSSetShader
+	(
+		ID3D11PixelShader* pPixelShader,
+		ID3D11ClassInstance*const* ppClassInstances,
+		UINT NumClassInstances
+	) = 0;
+	virtual void __stdcall PSSetSamplers
+	(
+		UINT StartSlot,
+		UINT NumSamplers,
+		ID3D11SamplerState*const* ppSamplers
+	) = 0;
+	virtual void __stdcall VSSetShader
+	(
+		ID3D11VertexShader* pVertexShader,
+		ID3D11ClassInstance*const* ppClassInstances,
+		UINT NumClassInstances
+	) = 0;
+	virtual void __stdcall DrawIndexed
+	(
+		UINT IndexCount,
+		UINT StartIndexLocation,
+		INT BaseVertexLocation
+	) = 0;
+	virtual void __stdcall Draw
+	(
+		UINT VertexCount,
+		UINT StartVertexLocation
+	) = 0;
+	virtual HRESULT __stdcall Map
+	(
+		ID3D11Resource* pResource,
+		UINT Subresource,
+		D3D11_MAP MapType,
+		UINT MapFlags,
+		D3D11_MAPPED_SUBRESOURCE* pMappedResource
+	) = 0;
+	virtual void __stdcall Unmap
+	(
+		ID3D11Resource* pResource,
+		UINT Subresource
+	) = 0;
+	virtual void __stdcall PSSetConstantBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer*const* ppConstantBuffers
+	) = 0;
+	virtual void __stdcall IASetInputLayout(ID3D11InputLayout* pInputLayout) = 0;
+	virtual void __stdcall IASetVertexBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer*const* ppVertexBuffers,
+		const UINT* pStrides,
+		const UINT* pOffsets
+	) = 0;
+	virtual void __stdcall IASetIndexBuffer
+	(
+		ID3D11Buffer* pIndexBuffer,
+		DXGI_FORMAT Format,
+		UINT Offset
+	) = 0;
+	virtual void __stdcall DrawIndexedInstanced
+	(
+		UINT IndexCountPerInstance,
+		UINT InstanceCount,
+		UINT StartIndexLocation,
+		INT BaseVertexLocation,
+		UINT StartInstanceLocation
+	) = 0;
+	virtual void __stdcall DrawInstanced
+	(
+		UINT VertexCountPerInstance,
+		UINT InstanceCount,
+		UINT StartVertexLocation,
+		UINT StartInstanceLocation
+	) = 0;
+	virtual void __stdcall GSSetConstantBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer*const* ppConstantBuffers
+	) = 0;
+	virtual void __stdcall GSSetShader
+	(
+		ID3D11GeometryShader* pShader,
+		ID3D11ClassInstance*const* ppClassInstances,
+		UINT NumClassInstances
+	) = 0;
+	virtual void __stdcall IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY Topology) = 0;
+	virtual void __stdcall VSSetShaderResources
+	(
+		UINT StartSlot,
+		UINT NumViews,
+		ID3D11ShaderResourceView*const* ppShaderResourceViews
+	) = 0;
+	virtual void __stdcall VSSetSamplers
+	(
+		UINT StartSlot,
+		UINT NumSamplers,
+		ID3D11SamplerState*const* ppSamplers
+	) = 0;
+	virtual void __stdcall Begin(ID3D11Asynchronous* pAsync) = 0;
+	virtual void __stdcall End(ID3D11Asynchronous* pAsync) = 0;
+	virtual HRESULT __stdcall GetData
+	(
+		ID3D11Asynchronous* pAsync,
+		void* pData,
+		UINT DataSize,
+		UINT GetDataFlags
+	) = 0;
+	virtual void __stdcall SetPredication
+	(
+		ID3D11Predicate* pPredicate,
+		BOOL PredicateValue
+	) = 0;
+	virtual void __stdcall GSSetShaderResources
+	(
+		UINT StartSlot,
+		UINT NumViews,
+		ID3D11ShaderResourceView*const* ppShaderResourceViews
+	) = 0;
+	virtual void __stdcall GSSetSamplers
+	(
+		UINT StartSlot,
+		UINT NumSamplers,
+		ID3D11SamplerState*const* ppSamplers
+	) = 0;
+	virtual void __stdcall OMSetRenderTargets
+	(
+		UINT NumViews,
+		ID3D11RenderTargetView*const* ppRenderTargetViews,
+		ID3D11DepthStencilView* pDepthStencilView
+	) = 0;
+	virtual void __stdcall OMSetRenderTargetsAndUnorderedAccessViews
+	(
+		UINT NumRTVs,
+		ID3D11RenderTargetView*const* ppRenderTargetViews,
+		ID3D11DepthStencilView* pDepthStencilView,
+		UINT UAVStartSlot,
+		UINT NumUAVs,
+		ID3D11UnorderedAccessView*const* ppUnorderedAccessViews,
+		const UINT* pUAVInitialCounts
+	) = 0;
+	virtual void __stdcall OMSetBlendState
+	(
+		ID3D11BlendState* pBlendState,
+		const FLOAT BlendFactor[4],
+		UINT SampleMask
+	) = 0;
+	virtual void __stdcall OMSetDepthStencilState
+	(
+		ID3D11DepthStencilState* pDepthStencilState,
+		UINT StencilRef
+	) = 0;
+	virtual void __stdcall SOSetTargets
+	(
+		UINT NumBuffers,
+		ID3D11Buffer*const* ppSOTargets,
+		const UINT* pOffsets
+	) = 0;
+	virtual void __stdcall DrawAuto() = 0;
+	virtual void __stdcall DrawIndexedInstancedIndirect
+	(
+		ID3D11Buffer* pBufferForArgs,
+		UINT AlignedByteOffsetForArgs
+	) = 0;
+	virtual void __stdcall DrawInstancedIndirect
+	(
+		ID3D11Buffer* pBufferForArgs,
+		UINT AlignedByteOffsetForArgs
+	) = 0;
+	virtual void __stdcall Dispatch
+	(
+		UINT ThreadGroupCountX,
+		UINT ThreadGroupCountY,
+		UINT ThreadGroupCountZ
+	) = 0;
+	virtual void __stdcall DispatchIndirect
+	(
+		ID3D11Buffer* pBufferForArgs,
+		UINT AlignedByteOffsetForArgs
+	) = 0;
+	virtual void __stdcall RSSetState(ID3D11RasterizerState* pRasterizerState) = 0;
+	virtual void __stdcall RSSetViewports
+	(
+		UINT NumViewports,
+		const D3D11_VIEWPORT* pViewports
+	) = 0;
+	virtual void __stdcall RSSetScissorRects
+	(
+		UINT NumRects,
+		const D3D11_RECT* pRects
+	) = 0;
+	virtual void __stdcall CopySubresourceRegion
+	(
+		ID3D11Resource* pDstResource,
+		UINT DstSubresource,
+		UINT DstX,
+		UINT DstY,
+		UINT DstZ,
+		ID3D11Resource* pSrcResource,
+		UINT SrcSubresource,
+		const D3D11_BOX* pSrcBox
+	) = 0;
+	virtual void __stdcall CopyResource
+	(
+		ID3D11Resource* pDstResource,
+		ID3D11Resource* pSrcResource
+	) = 0;
+	virtual void __stdcall UpdateSubresource
+	(
+		ID3D11Resource* pDstResource,
+		UINT DstSubresource,
+		const D3D11_BOX* pDstBox,
+		const void* pSrcData,
+		UINT SrcRowPitch,
+		UINT SrcDepthPitch
+	) = 0;
+	virtual void __stdcall CopyStructureCount
+	(
+		ID3D11Buffer* pDstBuffer,
+		UINT DstAlignedByteOffset,
+		ID3D11UnorderedAccessView* pSrcView
+	) = 0;
+	virtual void __stdcall ClearRenderTargetView
+	(
+		ID3D11RenderTargetView* pRenderTargetView,
+		const FLOAT ColorRGBA[4]
+	) = 0;
+	virtual void __stdcall ClearUnorderedAccessViewUint
+	(
+		ID3D11UnorderedAccessView* pUnorderedAccessView,
+		const UINT Values[4]
+	) = 0;
+	virtual void __stdcall ClearUnorderedAccessViewFloat
+	(
+		ID3D11UnorderedAccessView* pUnorderedAccessView,
+		const FLOAT Values[4]
+	) = 0;
+	virtual void __stdcall ClearDepthStencilView
+	(
+		ID3D11DepthStencilView* pDepthStencilView,
+		UINT ClearFlags,
+		FLOAT Depth,
+		UINT8 Stencil
+	) = 0;
+	virtual void __stdcall GenerateMips(ID3D11ShaderResourceView* pShaderResourceView) = 0;
+	virtual void __stdcall SetResourceMinLOD
+	(
+		ID3D11Resource* pResource,
+		FLOAT MinLOD
+	) = 0;
+	virtual FLOAT __stdcall GetResourceMinLOD(ID3D11Resource* pResource) = 0;
+	virtual void __stdcall ResolveSubresource
+	(
+		ID3D11Resource* pDstResource,
+		UINT DstSubresource,
+		ID3D11Resource* pSrcResource,
+		UINT SrcSubresource,
+		DXGI_FORMAT Format
+	) = 0;
+	virtual void __stdcall ExecuteCommandList
+	(
+		ID3D11CommandList* pCommandList,
+		BOOL RestoreContextState
+	) = 0;
+	virtual void __stdcall HSSetShaderResources
+	(
+		UINT StartSlot,
+		UINT NumViews,
+		ID3D11ShaderResourceView*const* ppShaderResourceViews
+	) = 0;
+	virtual void __stdcall HSSetShader
+	(
+		ID3D11HullShader* pHullShader,
+		ID3D11ClassInstance*const* ppClassInstances,
+		UINT NumClassInstances
+	) = 0;
+	virtual void __stdcall HSSetSamplers
+	(
+		UINT StartSlot,
+		UINT NumSamplers,
+		ID3D11SamplerState*const* ppSamplers
+	) = 0;
+	virtual void __stdcall HSSetConstantBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer*const* ppConstantBuffers
+	) = 0;
+	virtual void __stdcall DSSetShaderResources
+	(
+		UINT StartSlot,
+		UINT NumViews,
+		ID3D11ShaderResourceView*const* ppShaderResourceViews
+	) = 0;
+	virtual void __stdcall DSSetShader
+	(
+		ID3D11DomainShader* pDomainShader,
+		ID3D11ClassInstance*const* ppClassInstances,
+		UINT NumClassInstances
+	) = 0;
+	virtual void __stdcall DSSetSamplers
+	(
+		UINT StartSlot,
+		UINT NumSamplers,
+		ID3D11SamplerState*const* ppSamplers
+	) = 0;
+	virtual void __stdcall DSSetConstantBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer*const* ppConstantBuffers
+	) = 0;
+	virtual void __stdcall CSSetShaderResources
+	(
+		UINT StartSlot,
+		UINT NumViews,
+		ID3D11ShaderResourceView*const* ppShaderResourceViews
+	) = 0;
+	virtual void __stdcall CSSetUnorderedAccessViews
+	(
+		UINT StartSlot,
+		UINT NumUAVs,
+		ID3D11UnorderedAccessView*const* ppUnorderedAccessViews,
+		const UINT* pUAVInitialCounts
+	) = 0;
+	virtual void __stdcall CSSetShader
+	(
+		ID3D11ComputeShader* pComputeShader,
+		ID3D11ClassInstance*const* ppClassInstances,
+		UINT NumClassInstances
+	) = 0;
+	virtual void __stdcall CSSetSamplers
+	(
+		UINT StartSlot,
+		UINT NumSamplers,
+		ID3D11SamplerState*const* ppSamplers
+	) = 0;
+	virtual void __stdcall CSSetConstantBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer*const* ppConstantBuffers
+	) = 0;
+	virtual void __stdcall VSGetConstantBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer** ppConstantBuffers
+	) = 0;
+	virtual void __stdcall PSGetShaderResources
+	(
+		UINT StartSlot,
+		UINT NumViews,
+		ID3D11ShaderResourceView** ppShaderResourceViews
+	) = 0;
+	virtual void __stdcall PSGetShader
+	(
+		ID3D11PixelShader** ppPixelShader,
+		ID3D11ClassInstance** ppClassInstances,
+		UINT* pNumClassInstances
+	) = 0;
+	virtual void __stdcall PSGetSamplers
+	(
+		UINT StartSlot,
+		UINT NumSamplers,
+		ID3D11SamplerState** ppSamplers
+	) = 0;
+	virtual void __stdcall VSGetShader
+	(
+		ID3D11VertexShader** ppVertexShader,
+		ID3D11ClassInstance** ppClassInstances,
+		UINT* pNumClassInstances
+	) = 0;
+	virtual void __stdcall PSGetConstantBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer** ppConstantBuffers
+	) = 0;
+	virtual void __stdcall IAGetInputLayout(ID3D11InputLayout** ppInputLayout) = 0;
+	virtual void __stdcall IAGetVertexBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer** ppVertexBuffers,
+		UINT* pStrides,
+		UINT* pOffsets
+	) = 0;
+	virtual void __stdcall IAGetIndexBuffer
+	(
+		ID3D11Buffer** pIndexBuffer,
+		DXGI_FORMAT* Format,
+		UINT* Offset
+	) = 0;
+	virtual void __stdcall GSGetConstantBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer** ppConstantBuffers
+	) = 0;
+	virtual void __stdcall GSGetShader
+	(
+		ID3D11GeometryShader** ppGeometryShader,
+		ID3D11ClassInstance** ppClassInstances,
+		UINT* pNumClassInstances
+	) = 0;
+	virtual void __stdcall IAGetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY* pTopology) = 0;
+	virtual void __stdcall VSGetShaderResources
+	(
+		UINT StartSlot,
+		UINT NumViews,
+		ID3D11ShaderResourceView** ppShaderResourceViews
+	) = 0;
+	virtual void __stdcall VSGetSamplers
+	(
+		UINT StartSlot,
+		UINT NumSamplers,
+		ID3D11SamplerState** ppSamplers
+	) = 0;
+	virtual void __stdcall GetPredication
+	(
+		ID3D11Predicate** ppPredicate,
+		BOOL* pPredicateValue
+	) = 0;
+	virtual void __stdcall GSGetShaderResources
+	(
+		UINT StartSlot,
+		UINT NumViews,
+		ID3D11ShaderResourceView** ppShaderResourceViews
+	) = 0;
+	virtual void __stdcall GSGetSamplers
+	(
+		UINT StartSlot,
+		UINT NumSamplers,
+		ID3D11SamplerState** ppSamplers
+	) = 0;
+	virtual void __stdcall OMGetRenderTargets
+	(
+		UINT NumViews,
+		ID3D11RenderTargetView** ppRenderTargetViews,
+		ID3D11DepthStencilView** ppDepthStencilView
+	) = 0;
+	virtual void __stdcall OMGetRenderTargetsAndUnorderedAccessViews
+	(
+		UINT NumRTVs,
+		ID3D11RenderTargetView** ppRenderTargetViews,
+		ID3D11DepthStencilView** ppDepthStencilView,
+		UINT UAVStartSlot,
+		UINT NumUAVs,
+		ID3D11UnorderedAccessView** ppUnorderedAccessViews
+	) = 0;
+	virtual void __stdcall OMGetBlendState
+	(
+		ID3D11BlendState** ppBlendState,
+		FLOAT BlendFactor[4],
+		UINT* pSampleMask
+	) = 0;
+	virtual void __stdcall OMGetDepthStencilState
+	(
+		ID3D11DepthStencilState** ppDepthStencilState,
+		UINT* pStencilRef
+	) = 0;
+	virtual void __stdcall SOGetTargets
+	(
+		UINT NumBuffers,
+		ID3D11Buffer** ppSOTargets
+	) = 0;
+	virtual void __stdcall RSGetState(ID3D11RasterizerState** ppRasterizerState) = 0;
+	virtual void __stdcall RSGetViewports
+	(
+		UINT* pNumViewports,
+		D3D11_VIEWPORT* pViewports
+	) = 0;
+	virtual void __stdcall RSGetScissorRects
+	(
+		UINT* pNumRects,
+		D3D11_RECT* pRects
+	) = 0;
+	virtual void __stdcall HSGetShaderResources
+	(
+		UINT StartSlot,
+		UINT NumViews,
+		ID3D11ShaderResourceView** ppShaderResourceViews
+	) = 0;
+	virtual void __stdcall HSGetShader
+	(
+		ID3D11HullShader** ppHullShader,
+		ID3D11ClassInstance** ppClassInstances,
+		UINT* pNumClassInstances
+	) = 0;
+	virtual void __stdcall HSGetSamplers
+	(
+		UINT StartSlot,
+		UINT NumSamplers,
+		ID3D11SamplerState** ppSamplers
+	) = 0;
+	virtual void __stdcall HSGetConstantBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer** ppConstantBuffers
+	) = 0;
+	virtual void __stdcall DSGetShaderResources
+	(
+		UINT StartSlot,
+		UINT NumViews,
+		ID3D11ShaderResourceView** ppShaderResourceViews
+	) = 0;
+	virtual void __stdcall DSGetShader
+	(
+		ID3D11DomainShader** ppDomainShader,
+		ID3D11ClassInstance** ppClassInstances,
+		UINT* pNumClassInstances
+	) = 0;
+	virtual void __stdcall DSGetSamplers
+	(
+		UINT StartSlot,
+		UINT NumSamplers,
+		ID3D11SamplerState** ppSamplers
+	) = 0;
+	virtual void __stdcall DSGetConstantBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer** ppConstantBuffers
+	) = 0;
+	virtual void __stdcall CSGetShaderResources
+	(
+		UINT StartSlot,
+		UINT NumViews,
+		ID3D11ShaderResourceView** ppShaderResourceViews
+	) = 0;
+	virtual void __stdcall CSGetUnorderedAccessViews
+	(
+		UINT StartSlot,
+		UINT NumUAVs,
+		ID3D11UnorderedAccessView** ppUnorderedAccessViews
+	) = 0;
+	virtual void __stdcall CSGetShader
+	(
+		ID3D11ComputeShader** ppComputeShader,
+		ID3D11ClassInstance** ppClassInstances,
+		UINT* pNumClassInstances
+	) = 0;
+	virtual void __stdcall CSGetSamplers
+	(
+		UINT StartSlot,
+		UINT NumSamplers,
+		ID3D11SamplerState** ppSamplers
+	) = 0;
+	virtual void __stdcall CSGetConstantBuffers
+	(
+		UINT StartSlot,
+		UINT NumBuffers,
+		ID3D11Buffer** ppConstantBuffers
+	) = 0;
+	virtual void __stdcall ClearState() = 0;
+	virtual void __stdcall Flush() = 0;
+	virtual D3D11_DEVICE_CONTEXT_TYPE __stdcall GetType() = 0;
+	virtual UINT __stdcall GetContextFlags() = 0;
+	virtual HRESULT __stdcall FinishCommandList
+	(
+		BOOL RestoreDeferredContextState,
+		ID3D11CommandList** ppCommandList
+	) = 0;
+};
+
+static_assert(sizeof(ID3D11DeviceContext) == 4);
+
+// ID3D11VideoDecoder
+
+struct __declspec(novtable) ID3D11VideoDecoder : ID3D11DeviceChild
+{
+	virtual HRESULT __stdcall GetCreationParameters
+	(
+		D3D11_VIDEO_DECODER_DESC* pVideoDesc,
+		D3D11_VIDEO_DECODER_CONFIG* pConfig
+	) = 0;
+	virtual HRESULT __stdcall GetDriverHandle(HANDLE* pDriverHandle) = 0;
+};
+
+static_assert(sizeof(ID3D11VideoDecoder) == 4);
+
+// ID3D11VideoProcessorEnumerator
+
+struct __declspec(novtable) ID3D11VideoProcessorEnumerator : ID3D11DeviceChild
+{
+	virtual HRESULT __stdcall GetVideoProcessorContentDesc(D3D11_VIDEO_PROCESSOR_CONTENT_DESC* pContentDesc) = 0;
+	virtual HRESULT __stdcall CheckVideoProcessorFormat
+	(
+		DXGI_FORMAT Format,
+		UINT* pFlags
+	) = 0;
+	virtual HRESULT __stdcall GetVideoProcessorCaps(D3D11_VIDEO_PROCESSOR_CAPS* pCaps) = 0;
+	virtual HRESULT __stdcall GetVideoProcessorRateConversionCaps
+	(
+		UINT TypeIndex,
+		D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS* pCaps
+	) = 0;
+	virtual HRESULT __stdcall GetVideoProcessorCustomRate
+	(
+		UINT TypeIndex,
+		UINT CustomRateIndex,
+		D3D11_VIDEO_PROCESSOR_CUSTOM_RATE* pRate
+	) = 0;
+	virtual HRESULT __stdcall GetVideoProcessorFilterRange
+	(
+		D3D11_VIDEO_PROCESSOR_FILTER Filter,
+		D3D11_VIDEO_PROCESSOR_FILTER_RANGE* pRange
+	) = 0;
+};
+
+static_assert(sizeof(ID3D11VideoProcessorEnumerator) == 4);
+
+// ID3D11VideoProcessor
+
+struct __declspec(novtable) ID3D11VideoProcessor : ID3D11DeviceChild
+{
+	virtual void __stdcall GetContentDesc(D3D11_VIDEO_PROCESSOR_CONTENT_DESC* pDesc) = 0;
+	virtual void __stdcall GetRateConversionCaps(D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS* pCaps) = 0;
+};
+
+static_assert(sizeof(ID3D11VideoProcessor) == 4);
+
+// ID3D11AuthenticatedChannel
+
+struct __declspec(novtable) ID3D11AuthenticatedChannel : ID3D11DeviceChild
+{
+	virtual HRESULT __stdcall GetCertificateSize(UINT* pCertificateSize) = 0;
+	virtual HRESULT __stdcall GetCertificate
+	(
+		UINT CertificateSize,
+		BYTE* pCertificate
+	) = 0;
+	virtual void __stdcall GetChannelHandle(HANDLE* pChannelHandle) = 0;
+};
+
+static_assert(sizeof(ID3D11AuthenticatedChannel) == 4);
+
+// ID3D11CryptoSession
+
+struct __declspec(novtable) ID3D11CryptoSession : ID3D11DeviceChild
+{
+	virtual void __stdcall GetCryptoType(GUID* pCryptoType) = 0;
+	virtual void __stdcall GetDecoderProfile(GUID* pDecoderProfile) = 0;
+	virtual HRESULT __stdcall GetCertificateSize(UINT* pCertificateSize) = 0;
+	virtual HRESULT __stdcall GetCertificate
+	(
+		UINT CertificateSize,
+		BYTE* pCertificate
+	) = 0;
+	virtual void __stdcall GetCryptoSessionHandle(HANDLE* pCryptoSessionHandle) = 0;
+};
+
+static_assert(sizeof(ID3D11CryptoSession) == 4);
+
+// ID3D11VideoDecoderOutputView
+
+struct __declspec(novtable) ID3D11VideoDecoderOutputView : ID3D11View
+{
+	virtual void __stdcall GetDesc(D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11VideoDecoderOutputView) == 4);
+
+// ID3D11VideoProcessorInputView
+
+struct __declspec(novtable) ID3D11VideoProcessorInputView : ID3D11View
+{
+	virtual void __stdcall GetDesc(D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11VideoProcessorInputView) == 4);
+
+// ID3D11VideoProcessorOutputView
+
+struct __declspec(novtable) ID3D11VideoProcessorOutputView : ID3D11View
+{
+	virtual void __stdcall GetDesc(D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC* pDesc) = 0;
+};
+
+static_assert(sizeof(ID3D11VideoProcessorOutputView) == 4);
+
+// ID3D11VideoContext
+
+struct __declspec(novtable) ID3D11VideoContext : ID3D11DeviceChild
+{
+	virtual HRESULT __stdcall GetDecoderBuffer
+	(
+		ID3D11VideoDecoder* pDecoder,
+		D3D11_VIDEO_DECODER_BUFFER_TYPE Type,
+		UINT* pBufferSize,
+		void** ppBuffer
+	) = 0;
+	virtual HRESULT __stdcall ReleaseDecoderBuffer
+	(
+		ID3D11VideoDecoder* pDecoder,
+		D3D11_VIDEO_DECODER_BUFFER_TYPE Type
+	) = 0;
+	virtual HRESULT __stdcall DecoderBeginFrame
+	(
+		ID3D11VideoDecoder* pDecoder,
+		ID3D11VideoDecoderOutputView* pView,
+		UINT ContentKeySize,
+		const void* pContentKey
+	) = 0;
+	virtual HRESULT __stdcall DecoderEndFrame(ID3D11VideoDecoder* pDecoder) = 0;
+	virtual HRESULT __stdcall SubmitDecoderBuffers
+	(
+		ID3D11VideoDecoder* pDecoder,
+		UINT NumBuffers,
+		const D3D11_VIDEO_DECODER_BUFFER_DESC* pBufferDesc
+	) = 0;
+	virtual APP_DEPRECATED_HRESULT __stdcall DecoderExtension
+	(
+		ID3D11VideoDecoder* pDecoder,
+		const D3D11_VIDEO_DECODER_EXTENSION* pExtensionData
+	) = 0;
+	virtual void __stdcall VideoProcessorSetOutputTargetRect
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		BOOL Enable,
+		const RECT* pRect
+	) = 0;
+	virtual void __stdcall VideoProcessorSetOutputBackgroundColor
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		BOOL YCbCr,
+		const D3D11_VIDEO_COLOR* pColor
+	) = 0;
+	virtual void __stdcall VideoProcessorSetOutputColorSpace
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		const D3D11_VIDEO_PROCESSOR_COLOR_SPACE* pColorSpace
+	) = 0;
+	virtual void __stdcall VideoProcessorSetOutputAlphaFillMode
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE AlphaFillMode,
+		UINT StreamIndex
+	) = 0;
+	virtual void __stdcall VideoProcessorSetOutputConstriction
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		BOOL Enable,
+		SIZE Size
+	) = 0;
+	virtual void __stdcall VideoProcessorSetOutputStereoMode
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		BOOL Enable
+	) = 0;
+	virtual APP_DEPRECATED_HRESULT __stdcall VideoProcessorSetOutputExtension
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		const GUID* pExtensionGuid,
+		UINT DataSize,
+		void* pData
+	) = 0;
+	virtual void __stdcall VideoProcessorGetOutputTargetRect
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		BOOL* Enabled,
+		RECT* pRect
+	) = 0;
+	virtual void __stdcall VideoProcessorGetOutputBackgroundColor
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		BOOL* pYCbCr,
+		D3D11_VIDEO_COLOR* pColor
+	) = 0;
+	virtual void __stdcall VideoProcessorGetOutputColorSpace
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		D3D11_VIDEO_PROCESSOR_COLOR_SPACE* pColorSpace
+	) = 0;
+	virtual void __stdcall VideoProcessorGetOutputAlphaFillMode
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE* pAlphaFillMode,
+		UINT* pStreamIndex
+	) = 0;
+	virtual void __stdcall VideoProcessorGetOutputConstriction
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		BOOL* pEnabled,
+		SIZE* pSize
+	) = 0;
+	virtual void __stdcall VideoProcessorGetOutputStereoMode
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		BOOL* pEnabled
+	) = 0;
+	virtual APP_DEPRECATED_HRESULT __stdcall VideoProcessorGetOutputExtension
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		const GUID* pExtensionGuid,
+		UINT DataSize,
+		void* pData
+	) = 0;
+	virtual void __stdcall VideoProcessorSetStreamFrameFormat
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		D3D11_VIDEO_FRAME_FORMAT FrameFormat
+	) = 0;
+	virtual void __stdcall VideoProcessorSetStreamColorSpace
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		const D3D11_VIDEO_PROCESSOR_COLOR_SPACE* pColorSpace
+	) = 0;
+	virtual void __stdcall VideoProcessorSetStreamOutputRate
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		D3D11_VIDEO_PROCESSOR_OUTPUT_RATE OutputRate,
+		BOOL RepeatFrame,
+		const DXGI_RATIONAL* pCustomRate
+	) = 0;
+	virtual void __stdcall VideoProcessorSetStreamSourceRect
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL Enable,
+		const RECT* pRect
+	) = 0;
+	virtual void __stdcall VideoProcessorSetStreamDestRect
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL Enable,
+		const RECT* pRect
+	) = 0;
+	virtual void __stdcall VideoProcessorSetStreamAlpha
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL Enable,
+		FLOAT Alpha
+	) = 0;
+	virtual void __stdcall VideoProcessorSetStreamPalette
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		UINT Count,
+		const UINT* pEntries
+	) = 0;
+	virtual void __stdcall VideoProcessorSetStreamPixelAspectRatio
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL Enable,
+		const DXGI_RATIONAL* pSourceAspectRatio,
+		const DXGI_RATIONAL* pDestinationAspectRatio
+	) = 0;
+	virtual void __stdcall VideoProcessorSetStreamLumaKey
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL Enable,
+		FLOAT Lower,
+		FLOAT Upper
+	) = 0;
+	virtual void __stdcall VideoProcessorSetStreamStereoFormat
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL Enable,
+		D3D11_VIDEO_PROCESSOR_STEREO_FORMAT Format,
+		BOOL LeftViewFrame0,
+		BOOL BaseViewFrame0,
+		D3D11_VIDEO_PROCESSOR_STEREO_FLIP_MODE FlipMode,
+		int MonoOffset
+	) = 0;
+	virtual void __stdcall VideoProcessorSetStreamAutoProcessingMode
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL Enable
+	) = 0;
+	virtual void __stdcall VideoProcessorSetStreamFilter
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		D3D11_VIDEO_PROCESSOR_FILTER Filter,
+		BOOL Enable,
+		int Level
+	) = 0;
+	virtual APP_DEPRECATED_HRESULT __stdcall VideoProcessorSetStreamExtension
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		const GUID* pExtensionGuid,
+		UINT DataSize,
+		void* pData
+	) = 0;
+	virtual void __stdcall VideoProcessorGetStreamFrameFormat
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		D3D11_VIDEO_FRAME_FORMAT* pFrameFormat
+	) = 0;
+	virtual void __stdcall VideoProcessorGetStreamColorSpace
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		D3D11_VIDEO_PROCESSOR_COLOR_SPACE* pColorSpace
+	) = 0;
+	virtual void __stdcall VideoProcessorGetStreamOutputRate
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		D3D11_VIDEO_PROCESSOR_OUTPUT_RATE* pOutputRate,
+		BOOL* pRepeatFrame,
+		DXGI_RATIONAL* pCustomRate
+	) = 0;
+	virtual void __stdcall VideoProcessorGetStreamSourceRect
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL* pEnabled,
+		RECT* pRect
+	) = 0;
+	virtual void __stdcall VideoProcessorGetStreamDestRect
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL* pEnabled,
+		RECT* pRect
+	) = 0;
+	virtual void __stdcall VideoProcessorGetStreamAlpha
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL* pEnabled,
+		FLOAT* pAlpha
+	) = 0;
+	virtual void __stdcall VideoProcessorGetStreamPalette
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		UINT Count,
+		UINT* pEntries
+	) = 0;
+	virtual void __stdcall VideoProcessorGetStreamPixelAspectRatio
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL* pEnabled,
+		DXGI_RATIONAL* pSourceAspectRatio,
+		DXGI_RATIONAL* pDestinationAspectRatio
+	) = 0;
+	virtual void __stdcall VideoProcessorGetStreamLumaKey
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL* pEnabled,
+		FLOAT* pLower,
+		FLOAT* pUpper
+	) = 0;
+	virtual void __stdcall VideoProcessorGetStreamStereoFormat
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL* pEnable,
+		D3D11_VIDEO_PROCESSOR_STEREO_FORMAT* pFormat,
+		BOOL* pLeftViewFrame0,
+		BOOL* pBaseViewFrame0,
+		D3D11_VIDEO_PROCESSOR_STEREO_FLIP_MODE* pFlipMode,
+		int* MonoOffset
+	) = 0;
+	virtual void __stdcall VideoProcessorGetStreamAutoProcessingMode
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL* pEnabled
+	) = 0;
+	virtual void __stdcall VideoProcessorGetStreamFilter
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		D3D11_VIDEO_PROCESSOR_FILTER Filter,
+		BOOL* pEnabled,
+		int* pLevel
+	) = 0;
+	virtual APP_DEPRECATED_HRESULT __stdcall VideoProcessorGetStreamExtension
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		const GUID* pExtensionGuid,
+		UINT DataSize,
+		void* pData
+	) = 0;
+	virtual HRESULT __stdcall VideoProcessorBlt
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		ID3D11VideoProcessorOutputView* pView,
+		UINT OutputFrame,
+		UINT StreamCount,
+		const D3D11_VIDEO_PROCESSOR_STREAM* pStreams
+	) = 0;
+	virtual HRESULT __stdcall NegotiateCryptoSessionKeyExchange
+	(
+		ID3D11CryptoSession* pCryptoSession,
+		UINT DataSize,
+		void* pData
+	) = 0;
+	virtual void __stdcall EncryptionBlt
+	(
+		ID3D11CryptoSession* pCryptoSession,
+		ID3D11Texture2D* pSrcSurface,
+		ID3D11Texture2D* pDstSurface,
+		UINT IVSize,
+		void* pIV
+	) = 0;
+	virtual void __stdcall DecryptionBlt
+	(
+		ID3D11CryptoSession* pCryptoSession,
+		ID3D11Texture2D* pSrcSurface,
+		ID3D11Texture2D* pDstSurface,
+		D3D11_ENCRYPTED_BLOCK_INFO* pEncryptedBlockInfo,
+		UINT ContentKeySize,
+		const void* pContentKey,
+		UINT IVSize,
+		void* pIV
+	) = 0;
+	virtual void __stdcall StartSessionKeyRefresh
+	(
+		ID3D11CryptoSession* pCryptoSession,
+		UINT RandomNumberSize,
+		void* pRandomNumber
+	) = 0;
+	virtual void __stdcall FinishSessionKeyRefresh(ID3D11CryptoSession* pCryptoSession) = 0;
+	virtual HRESULT __stdcall GetEncryptionBltKey
+	(
+		ID3D11CryptoSession* pCryptoSession,
+		UINT KeySize,
+		void* pReadbackKey
+	) = 0;
+	virtual HRESULT __stdcall NegotiateAuthenticatedChannelKeyExchange
+	(
+		ID3D11AuthenticatedChannel* pChannel,
+		UINT DataSize,
+		void* pData
+	) = 0;
+	virtual HRESULT __stdcall QueryAuthenticatedChannel
+	(
+		ID3D11AuthenticatedChannel* pChannel,
+		UINT InputSize,
+		const void* pInput,
+		UINT OutputSize,
+		void* pOutput
+	) = 0;
+	virtual HRESULT __stdcall ConfigureAuthenticatedChannel
+	(
+		ID3D11AuthenticatedChannel* pChannel,
+		UINT InputSize,
+		const void* pInput,
+		D3D11_AUTHENTICATED_CONFIGURE_OUTPUT* pOutput
+	) = 0;
+	virtual void __stdcall VideoProcessorSetStreamRotation
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL Enable,
+		D3D11_VIDEO_PROCESSOR_ROTATION Rotation
+	) = 0;
+	virtual void __stdcall VideoProcessorGetStreamRotation
+	(
+		ID3D11VideoProcessor* pVideoProcessor,
+		UINT StreamIndex,
+		BOOL* pEnable,
+		D3D11_VIDEO_PROCESSOR_ROTATION* pRotation
+	) = 0;
+};
+
+static_assert(sizeof(ID3D11VideoContext) == 4);
+
+// ID3D11VideoDevice
+
+struct __declspec(novtable) ID3D11VideoDevice : IUnknown
+{
+	virtual HRESULT __stdcall CreateVideoDecoder
+	(
+		const D3D11_VIDEO_DECODER_DESC* pVideoDesc,
+		const D3D11_VIDEO_DECODER_CONFIG* pConfig,
+		ID3D11VideoDecoder** ppDecoder
+	) = 0;
+	virtual HRESULT __stdcall CreateVideoProcessor
+	(
+		ID3D11VideoProcessorEnumerator* pEnum,
+		UINT RateConversionIndex,
+		ID3D11VideoProcessor** ppVideoProcessor
+	) = 0;
+	virtual HRESULT __stdcall CreateAuthenticatedChannel
+	(
+		D3D11_AUTHENTICATED_CHANNEL_TYPE ChannelType,
+		ID3D11AuthenticatedChannel** ppAuthenticatedChannel
+	) = 0;
+	virtual HRESULT __stdcall CreateCryptoSession
+	(
+		const GUID* pCryptoType,
+		const GUID* pDecoderProfile,
+		const GUID* pKeyExchangeType,
+		ID3D11CryptoSession** ppCryptoSession
+	) = 0;
+	virtual HRESULT __stdcall CreateVideoDecoderOutputView
+	(
+		ID3D11Resource* pResource,
+		const D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC* pDesc,
+		ID3D11VideoDecoderOutputView** ppVDOVView
+	) = 0;
+	virtual HRESULT __stdcall CreateVideoProcessorInputView
+	(
+		ID3D11Resource* pResource,
+		ID3D11VideoProcessorEnumerator* pEnum,
+		const D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC* pDesc,
+		ID3D11VideoProcessorInputView** ppVPIView
+	) = 0;
+	virtual HRESULT __stdcall CreateVideoProcessorOutputView
+	(
+		ID3D11Resource* pResource,
+		ID3D11VideoProcessorEnumerator* pEnum,
+		const D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC* pDesc,
+		ID3D11VideoProcessorOutputView** ppVPOView
+	) = 0;
+	virtual HRESULT __stdcall CreateVideoProcessorEnumerator
+	(
+		const D3D11_VIDEO_PROCESSOR_CONTENT_DESC* pDesc,
+		ID3D11VideoProcessorEnumerator** ppEnum
+	) = 0;
+	virtual UINT __stdcall GetVideoDecoderProfileCount() = 0;
+	virtual HRESULT __stdcall GetVideoDecoderProfile
+	(
+		UINT Index,
+		GUID* pDecoderProfile
+	) = 0;
+	virtual HRESULT __stdcall CheckVideoDecoderFormat
+	(
+		const GUID* pDecoderProfile,
+		DXGI_FORMAT Format,
+		BOOL* pSupported
+	) = 0;
+	virtual HRESULT __stdcall GetVideoDecoderConfigCount
+	(
+		const D3D11_VIDEO_DECODER_DESC* pDesc,
+		UINT* pCount
+	) = 0;
+	virtual HRESULT __stdcall GetVideoDecoderConfig
+	(
+		const D3D11_VIDEO_DECODER_DESC* pDesc,
+		UINT Index,
+		D3D11_VIDEO_DECODER_CONFIG* pConfig
+	) = 0;
+	virtual HRESULT __stdcall GetContentProtectionCaps
+	(
+		const GUID* pCryptoType,
+		const GUID* pDecoderProfile,
+		D3D11_VIDEO_CONTENT_PROTECTION_CAPS* pCaps
+	) = 0;
+	virtual HRESULT __stdcall CheckCryptoKeyExchange
+	(
+		const GUID* pCryptoType,
+		const GUID* pDecoderProfile,
+		UINT Index,
+		GUID* pKeyExchangeType
+	) = 0;
+	virtual HRESULT __stdcall SetPrivateData
+	(
+		const GUID& guid,
+		UINT DataSize,
+		const void* pData
+	) = 0;
+	virtual HRESULT __stdcall SetPrivateDataInterface
+	(
+		const GUID& guid,
+		const IUnknown* pData
+	) = 0;
+};
+
+static_assert(sizeof(ID3D11VideoDevice) == 4);
+
+// ID3D11Device
+
+struct __declspec(novtable) ID3D11Device : IUnknown
+{
+	virtual HRESULT __stdcall CreateBuffer
+	(
+		const D3D11_BUFFER_DESC* pDesc,
+		const D3D11_SUBRESOURCE_DATA* pInitialData,
+		ID3D11Buffer** ppBuffer
+	) = 0;
+	virtual HRESULT __stdcall CreateTexture1D
+	(
+		const D3D11_TEXTURE1D_DESC* pDesc,
+		const D3D11_SUBRESOURCE_DATA* pInitialData,
+		ID3D11Texture1D** ppTexture1D
+	) = 0;
+	virtual HRESULT __stdcall CreateTexture2D
+	(
+		const D3D11_TEXTURE2D_DESC* pDesc,
+		const D3D11_SUBRESOURCE_DATA* pInitialData,
+		ID3D11Texture2D** ppTexture2D
+	) = 0;
+	virtual HRESULT __stdcall CreateTexture3D
+	(
+		const D3D11_TEXTURE3D_DESC* pDesc,
+		const D3D11_SUBRESOURCE_DATA* pInitialData,
+		ID3D11Texture3D** ppTexture3D
+	) = 0;
+	virtual HRESULT __stdcall CreateShaderResourceView
+	(
+		ID3D11Resource* pResource,
+		const D3D11_SHADER_RESOURCE_VIEW_DESC* pDesc,
+		ID3D11ShaderResourceView** ppSRView
+	) = 0;
+	virtual HRESULT __stdcall CreateUnorderedAccessView
+	(
+		ID3D11Resource* pResource,
+		const D3D11_UNORDERED_ACCESS_VIEW_DESC* pDesc,
+		ID3D11UnorderedAccessView** ppUAView
+	) = 0;
+	virtual HRESULT __stdcall CreateRenderTargetView
+	(
+		ID3D11Resource* pResource,
+		const D3D11_RENDER_TARGET_VIEW_DESC* pDesc,
+		ID3D11RenderTargetView** ppRTView
+	) = 0;
+	virtual HRESULT __stdcall CreateDepthStencilView
+	(
+		ID3D11Resource* pResource,
+		const D3D11_DEPTH_STENCIL_VIEW_DESC* pDesc,
+		ID3D11DepthStencilView** ppDepthStencilView
+	) = 0;
+	virtual HRESULT __stdcall CreateInputLayout
+	(
+		const D3D11_INPUT_ELEMENT_DESC* pInputElementDescs,
+		UINT NumElements,
+		const void* pShaderBytecodeWithInputSignature,
+		SIZE_T BytecodeLength,
+		ID3D11InputLayout** ppInputLayout
+	) = 0;
+	virtual HRESULT __stdcall CreateVertexShader
+	(
+		const void* pShaderBytecode,
+		SIZE_T BytecodeLength,
+		ID3D11ClassLinkage* pClassLinkage,
+		ID3D11VertexShader** ppVertexShader
+	) = 0;
+	virtual HRESULT __stdcall CreateGeometryShader
+	(
+		const void* pShaderBytecode,
+		SIZE_T BytecodeLength,
+		ID3D11ClassLinkage* pClassLinkage,
+		ID3D11GeometryShader** ppGeometryShader
+	) = 0;
+	virtual HRESULT __stdcall CreateGeometryShaderWithStreamOutput
+	(
+		const void* pShaderBytecode,
+		SIZE_T BytecodeLength,
+		const D3D11_SO_DECLARATION_ENTRY* pSODeclaration,
+		UINT NumEntries,
+		const UINT* pBufferStrides,
+		UINT NumStrides,
+		UINT RasterizedStream,
+		ID3D11ClassLinkage* pClassLinkage,
+		ID3D11GeometryShader** ppGeometryShader
+	) = 0;
+	virtual HRESULT __stdcall CreatePixelShader
+	(
+		const void* pShaderBytecode,
+		SIZE_T BytecodeLength,
+		ID3D11ClassLinkage* pClassLinkage,
+		ID3D11PixelShader** ppPixelShader
+	) = 0;
+	virtual HRESULT __stdcall CreateHullShader
+	(
+		const void* pShaderBytecode,
+		SIZE_T BytecodeLength,
+		ID3D11ClassLinkage* pClassLinkage,
+		ID3D11HullShader** ppHullShader
+	) = 0;
+	virtual HRESULT __stdcall CreateDomainShader
+	(
+		const void* pShaderBytecode,
+		SIZE_T BytecodeLength,
+		ID3D11ClassLinkage* pClassLinkage,
+		ID3D11DomainShader** ppDomainShader
+	) = 0;
+	virtual HRESULT __stdcall CreateComputeShader
+	(
+		const void* pShaderBytecode,
+		SIZE_T BytecodeLength,
+		ID3D11ClassLinkage* pClassLinkage,
+		ID3D11ComputeShader** ppComputeShader
+	) = 0;
+	virtual HRESULT __stdcall CreateClassLinkage(ID3D11ClassLinkage** ppLinkage) = 0;
+	virtual HRESULT __stdcall CreateBlendState
+	(
+		const D3D11_BLEND_DESC* pBlendStateDesc,
+		ID3D11BlendState** ppBlendState
+	) = 0;
+	virtual HRESULT __stdcall CreateDepthStencilState
+	(
+		const D3D11_DEPTH_STENCIL_DESC* pDepthStencilDesc,
+		ID3D11DepthStencilState** ppDepthStencilState
+	) = 0;
+	virtual HRESULT __stdcall CreateRasterizerState
+	(
+		const D3D11_RASTERIZER_DESC* pRasterizerDesc,
+		ID3D11RasterizerState** ppRasterizerState
+	) = 0;
+	virtual HRESULT __stdcall CreateSamplerState
+	(
+		const D3D11_SAMPLER_DESC* pSamplerDesc,
+		ID3D11SamplerState** ppSamplerState
+	) = 0;
+	virtual HRESULT __stdcall CreateQuery
+	(
+		const D3D11_QUERY_DESC* pQueryDesc,
+		ID3D11Query** ppQuery
+	) = 0;
+	virtual HRESULT __stdcall CreatePredicate
+	(
+		const D3D11_QUERY_DESC* pPredicateDesc,
+		ID3D11Predicate** ppPredicate
+	) = 0;
+	virtual HRESULT __stdcall CreateCounter
+	(
+		const D3D11_COUNTER_DESC* pCounterDesc,
+		ID3D11Counter** ppCounter
+	) = 0;
+	virtual HRESULT __stdcall CreateDeferredContext
+	(
+		UINT ContextFlags,
+		ID3D11DeviceContext** ppDeferredContext
+	) = 0;
+	virtual HRESULT __stdcall OpenSharedResource
+	(
+		HANDLE hResource,
+		const IID& ReturnedInterface,
+		void** ppResource
+	) = 0;
+	virtual HRESULT __stdcall CheckFormatSupport
+	(
+		DXGI_FORMAT Format,
+		UINT* pFormatSupport
+	) = 0;
+	virtual HRESULT __stdcall CheckMultisampleQualityLevels
+	(
+		DXGI_FORMAT Format,
+		UINT SampleCount,
+		UINT* pNumQualityLevels
+	) = 0;
+	virtual void __stdcall CheckCounterInfo(D3D11_COUNTER_INFO* pCounterInfo) = 0;
+	virtual HRESULT __stdcall CheckCounter
+	(
+		const D3D11_COUNTER_DESC* pDesc,
+		D3D11_COUNTER_TYPE* pType,
+		UINT* pActiveCounters,
+		LPSTR szName,
+		UINT* pNameLength,
+		LPSTR szUnits,
+		UINT* pUnitsLength,
+		LPSTR szDescription,
+		UINT* pDescriptionLength
+	) = 0;
+	virtual HRESULT __stdcall CheckFeatureSupport
+	(
+		D3D11_FEATURE Feature,
+		void* pFeatureSupportData,
+		UINT FeatureSupportDataSize
+	) = 0;
+	virtual HRESULT __stdcall GetPrivateData
+	(
+		const GUID& guid,
+		UINT* pDataSize,
+		void* pData
+	) = 0;
+	virtual HRESULT __stdcall SetPrivateData
+	(
+		const GUID& guid,
+		UINT DataSize,
+		const void* pData
+	) = 0;
+	virtual HRESULT __stdcall SetPrivateDataInterface
+	(
+		const GUID& guid,
+		const IUnknown* pData
+	) = 0;
+	virtual D3D_FEATURE_LEVEL __stdcall GetFeatureLevel() = 0;
+	virtual UINT __stdcall GetCreationFlags() = 0;
+	virtual HRESULT __stdcall GetDeviceRemovedReason() = 0;
+	virtual void __stdcall GetImmediateContext(ID3D11DeviceContext** ppImmediateContext) = 0;
+	virtual HRESULT __stdcall SetExceptionMode(UINT RaiseFlags) = 0;
+	virtual UINT __stdcall GetExceptionMode() = 0;
+};
+
+static_assert(sizeof(ID3D11Device) == 4);
+
+// ID3D10Blob
+
+struct __declspec(novtable) ID3D10Blob : IUnknown
+{
+	virtual LPVOID __stdcall GetBufferPointer() = 0;
+	virtual SIZE_T __stdcall GetBufferSize() = 0;
+};
+
+static_assert(sizeof(ID3D10Blob) == 4);
+
+// ID3DDestructionNotifier
+
+struct __declspec(novtable) ID3DDestructionNotifier : IUnknown
+{
+	virtual HRESULT __stdcall RegisterDestructionCallback
+	(
+		PFN_DESTRUCTION_CALLBACK callbackFn,
+		void* pData,
+		UINT* pCallbackID
+	) = 0;
+	virtual HRESULT __stdcall UnregisterDestructionCallback(UINT callbackID) = 0;
+};
+
+static_assert(sizeof(ID3DDestructionNotifier) == 4);
+
+// ID3DInclude
+
+struct __declspec(novtable) ID3DInclude
+{
+	virtual HRESULT __stdcall Open
+	(
+		D3D_INCLUDE_TYPE IncludeType,
+		LPCSTR pFileName,
+		LPCVOID pParentData,
+		LPCVOID* ppData,
+		UINT* pBytes
+	) = 0;
+	virtual HRESULT __stdcall Close(LPCVOID pData) = 0;
+};
+
+static_assert(sizeof(ID3DInclude) == 4);
+
+// ID3DBlob
+
+typedef ID3D10Blob ID3DBlob;
+
+static_assert(TypeMatch<ID3DBlob, ID3D10Blob>::value);
+
+static_assert(sizeof(ID3DBlob) == 4);
+
+extern "C" HRESULT __stdcall D3D11CreateDeviceAndSwapChain
+(
+	IDXGIAdapter* pAdapter,
+	D3D_DRIVER_TYPE DriverType,
+	HMODULE Software,
+	UINT Flags,
+	const D3D_FEATURE_LEVEL* pFeatureLevels,
+	UINT FeatureLevels,
+	UINT SDKVersion,
+	const DXGI_SWAP_CHAIN_DESC* pSwapChainDesc,
+	IDXGISwapChain** ppSwapChain,
+	ID3D11Device** ppDevice,
+	D3D_FEATURE_LEVEL* pFeatureLevel,
+	ID3D11DeviceContext** ppImmediateContext
+);
+extern "C" HRESULT __stdcall D3DCompile
+(
+	LPCVOID pSrcData,
+	SIZE_T SrcDataSize,
+	LPCSTR pSourceName,
+	const D3D_SHADER_MACRO* pDefines,
+	ID3DInclude* pInclude,
+	LPCSTR pEntrypoint,
+	LPCSTR pTarget,
+	UINT Flags1,
+	UINT Flags2,
+	ID3DBlob** ppCode,
+	ID3DBlob** ppErrorMsgs
+);
+#pragma endregion
+
+#endif
 
 namespaceEnd();

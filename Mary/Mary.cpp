@@ -37,7 +37,7 @@ import Window;
 
 using namespace Windows;
 
-#define debug true
+#define debug false
 
 #include "Macros.h"
 
@@ -177,12 +177,9 @@ uint32 DllMain
 		push the default data to backupHelper.
 		*/
 
-		Actor_Toggle(false);
+		Actor::Toggle(false);
+		Actor::Toggle(activeConfig.Actor.enable);
 
-		if (activeConfig.Actor.enable)
-		{
-			Actor_Toggle(activeConfig.Actor.enable);
-		}
 
 
 		ToggleBossLadyFixes(false);
@@ -250,7 +247,7 @@ uint32 DllMain
 
 
 
-
+		// @Update
 		Event_Toggle(false);
 		Event_Toggle(true);
 
@@ -263,7 +260,15 @@ uint32 DllMain
 		ToggleSkipIntro    (activeConfig.skipIntro    );
 		ToggleSkipCutscenes(activeConfig.skipCutscenes);
 
-		Graphics::Init();
+		//Graphics::Init();
+
+		Graphics::Toggle(false);
+		Graphics::Toggle(true);
+
+		// ToggleFrameRateFixes(false);
+		// ToggleFrameRateFixes(true);
+
+
 		UpdateFrameRate();
 
 		HUD_Init();
@@ -291,32 +296,23 @@ uint32 DllMain
 
 
 
-		// Speed_Init();
-		// UpdateSpeedValues();
 
-		Training::ToggleInfiniteHitPoints  (activeConfig.infiniteHitPoints  );
-		Training::ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
-		Training::ToggleDisableTimer       (activeConfig.disableTimer       );
-		Training::ToggleInfiniteBullets    (activeConfig.infiniteBullets    );
 
-		// @Update
-		Window::ToggleForceFocus(true);
+
+
+		ToggleInfiniteHitPoints  (activeConfig.infiniteHitPoints  );
+		ToggleInfiniteMagicPoints(activeConfig.infiniteMagicPoints);
+		ToggleDisableTimer       (activeConfig.disableTimer       );
+		ToggleInfiniteBullets    (activeConfig.infiniteBullets    );
+
+
+
+		ToggleForceWindowFocus(false);
+		ToggleForceWindowFocus(activeConfig.forceWindowFocus);
 
 		Hooks::Init();
 
 
-		Log("barsData %llX", offsetof(Config, barsData));
-
-
-
-
-
-		//Log("&leftStickDirection[0] %X", offsetof(ENGINE_GAMEPAD, leftStickDirection[0]));
-
-		//Log("&g_showItemWindow %llX", &g_show)
-
-
-		
 
 
 

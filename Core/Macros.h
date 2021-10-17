@@ -12,7 +12,7 @@
 
 
 
-#define for_each(name, start, end) for (uint64 name = start; name < end; name++)
+#define for_each(name, start, end) for (size_t name = start; name < end; name++)
 #define for_all(name, end) for_each(name, 0, end)
 
 

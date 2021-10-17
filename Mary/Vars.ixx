@@ -20,6 +20,7 @@ export enum
 	CreateEnemyActorFlags_Reset = 1 << 0,
 };
 
+// @Todo: Use new enum.
 export enum
 {
 	Visibility_Default,
@@ -187,14 +188,11 @@ enum
 };
 namespaceEnd();
 
-export namespaceStart(CollisionFlags);
 enum
 {
-	Zero   = 0,
-	Player = 0x30443, // dmc3.exe+173B5D - C7 86 D0020000 43040300 - mov [rsi+000002D0],00030443
-	Enemy  = 0x3050C, // dmc3.exe+173B76 - C7 86 D0020000 0C050300 - mov [rsi+000002D0],0003050C
+	CollisionFlags_Player = 0x30443, // dmc3.exe+173B5D - C7 86 D0020000 43040300 - mov [rsi+000002D0],00030443
+	CollisionFlags_Enemy  = 0x3050C, // dmc3.exe+173B76 - C7 86 D0020000 0C050300 - mov [rsi+000002D0],0003050C
 };
-namespaceEnd();
 
 export namespaceStart(PLAYER_ACTOR_DATA_SIZE);
 enum
@@ -983,9 +981,9 @@ namespaceEnd();
 export namespaceStart(DOT_SHADOW);
 enum
 {
-	ENABLE,
+	DEFAULT,
 	DISABLE,
-	DISABLE_ACTOR_ONLY,
+	DISABLE_PLAYER_ACTORS_ONLY,
 };
 namespaceEnd();
 
@@ -1612,47 +1610,116 @@ export constexpr uint32 motionArchivesOffs[] =
 
 // $ItemStart
 
+export namespaceStart(ITEM);
+enum
+{
+	UNKNOWN_0,
+	UNKNOWN_1,
+	UNKNOWN_2,
+	UNKNOWN_3,
+	UNKNOWN_4,
+	GOLD_ORB,
+	YELLOW_ORB,
+	BLUE_ORB,
+	PURPLE_ORB,
+	BLUE_ORB_FRAGMENT,
+	UNKNOWN_5,
+	UNKNOWN_6,
+	UNKNOWN_7,
+	UNKNOWN_8,
+	UNKNOWN_9,
+	UNKNOWN_10,
+	VITAL_STAR_LARGE,
+	VITAL_STAR_SMALL,
+	DEVIL_STAR,
+	HOLY_WATER,
+	UNKNOWN_11,
+	UNKNOWN_12,
+	UNKNOWN_13,
+	UNKNOWN_14,
+	UNKNOWN_15,
+	UNKNOWN_16,
+	UNKNOWN_17,
+	UNKNOWN_18,
+	UNKNOWN_19,
+	UNKNOWN_20,
+	UNKNOWN_21,
+	UNKNOWN_22,
+	UNKNOWN_23,
+	UNKNOWN_24,
+	UNKNOWN_25,
+	UNKNOWN_26,
+	ASTRONOMICAL_BOARD,
+	VAJURA,
+	UNKNOWN_27,
+	SOUL_OF_STEEL,
+	ESSENCE_OF_FIGHTING,
+	ESSENCE_OF_TECHNIQUE,
+	ESSENCE_OF_INTELLIGENCE,
+	ORIHALCON_FRAGMENT,
+	SIRENS_SHRIEK,
+	CRYSTAL_SKULL,
+	IGNIS_FATUUS,
+	AMBROSIA,
+	STONE_MASK,
+	NEO_GENERATOR,
+	HAYWIRE_NEO_GENERATOR,
+	ORIHALCON,
+	ORIHALCON_FRAGMENT_RIGHT,
+	ORIHALCON_FRAGMENT_BOTTOM,
+	ORIHALCON_FRAGMENT_LEFT,
+	GOLDEN_SUN,
+	ONYX_MOONSHARD,
+	SAMSARA,
+	UNKNOWN_28,
+	UNKNOWN_29,
+	UNKNOWN_30,
+	UNKNOWN_31,
+	COUNT,
+};
+namespaceEnd();
+
 export const char * itemNames[] =
 {
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
+	"",
+	"",
+	"",
+	"",
+	"",
 	"Gold Orb",
 	"Yellow Orb",
 	"Blue Orb",
 	"Purple Orb",
 	"Blue Orb Fragment",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
 	"Vital Star Large",
 	"Vital Star Small",
 	"Devil Star",
 	"Holy Water",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
 	"Astronomical Board",
 	"Vajura",
-	"Unknown",
+	"",
 	"Soul of Steel",
 	"Essence of Fighting",
 	"Essence of Technique",
@@ -1672,78 +1739,26 @@ export const char * itemNames[] =
 	"Golden Sun",
 	"Onyx Moonshard",
 	"Samsara",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
+	"",
+	"",
+	"",
+	"",
 };
 
-export enum
+export namespaceStart(BUY);
+enum
 {
-	ITEM_UNKNOWN_0,
-	ITEM_UNKNOWN_1,
-	ITEM_UNKNOWN_2,
-	ITEM_UNKNOWN_3,
-	ITEM_UNKNOWN_4,
-	ITEM_GOLD_ORB,
-	ITEM_YELLOW_ORB,
-	ITEM_BLUE_ORB,
-	ITEM_PURPLE_ORB,
-	ITEM_BLUE_ORB_FRAGMENT,
-	ITEM_UNKNOWN_5,
-	ITEM_UNKNOWN_6,
-	ITEM_UNKNOWN_7,
-	ITEM_UNKNOWN_8,
-	ITEM_UNKNOWN_9,
-	ITEM_UNKNOWN_10,
-	ITEM_VITAL_STAR_LARGE,
-	ITEM_VITAL_STAR_SMALL,
-	ITEM_DEVIL_STAR,
-	ITEM_HOLY_WATER,
-	ITEM_UNKNOWN_11,
-	ITEM_UNKNOWN_12,
-	ITEM_UNKNOWN_13,
-	ITEM_UNKNOWN_14,
-	ITEM_UNKNOWN_15,
-	ITEM_UNKNOWN_16,
-	ITEM_UNKNOWN_17,
-	ITEM_UNKNOWN_18,
-	ITEM_UNKNOWN_19,
-	ITEM_UNKNOWN_20,
-	ITEM_UNKNOWN_21,
-	ITEM_UNKNOWN_22,
-	ITEM_UNKNOWN_23,
-	ITEM_UNKNOWN_24,
-	ITEM_UNKNOWN_25,
-	ITEM_UNKNOWN_26,
-	ITEM_ASTRONOMICAL_BOARD,
-	ITEM_VAJURA,
-	ITEM_UNKNOWN_27,
-	ITEM_SOUL_OF_STEEL,
-	ITEM_ESSENCE_OF_FIGHTING,
-	ITEM_ESSENCE_OF_TECHNIQUE,
-	ITEM_ESSENCE_OF_INTELLIGENCE,
-	ITEM_ORIHALCON_FRAGMENT,
-	ITEM_SIRENS_SHRIEK,
-	ITEM_CRYSTAL_SKULL,
-	ITEM_IGNIS_FATUUS,
-	ITEM_AMBROSIA,
-	ITEM_STONE_MASK,
-	ITEM_NEO_GENERATOR,
-	ITEM_HAYWIRE_NEO_GENERATOR,
-	ITEM_ORIHALCON,
-	ITEM_ORIHALCON_FRAGMENT_RIGHT,
-	ITEM_ORIHALCON_FRAGMENT_BOTTOM,
-	ITEM_ORIHALCON_FRAGMENT_LEFT,
-	ITEM_GOLDEN_SUN,
-	ITEM_ONYX_MOONSHARD,
-	ITEM_SAMSARA,
-	ITEM_UNKNOWN_28,
-	ITEM_UNKNOWN_29,
-	ITEM_UNKNOWN_30,
-	ITEM_UNKNOWN_31,
-	ITEM_COUNT,
+	VITAL_STAR_SMALL,
+	VITAL_STAR_LARGE,
+	DEVIL_STAR,
+	HOLY_WATER,
+	BLUE_ORB,
+	PURPLE_ORB,
+	GOLD_ORB,
+	YELLOW_ORB,
+	COUNT,
 };
+namespaceEnd();
 
 export const char * buyNames[] =
 {
@@ -1755,19 +1770,6 @@ export const char * buyNames[] =
 	"Purple Orb",
 	"Gold Orb",
 	"Yellow Orb",
-};
-
-export enum
-{
-	BUY_VITAL_STAR_SMALL,
-	BUY_VITAL_STAR_LARGE,
-	BUY_DEVIL_STAR,
-	BUY_HOLY_WATER,
-	BUY_BLUE_ORB,
-	BUY_PURPLE_ORB,
-	BUY_GOLD_ORB,
-	BUY_YELLOW_ORB,
-	BUY_COUNT,
 };
 
 // $ItemEnd
@@ -2126,7 +2128,7 @@ export struct SessionData
 	uint32 redOrbs; // 0x2C
 	uint8 itemCounts[20]; // 0x30
 	_(2);
-	bool unlock[14]; // 0x46
+	bool unlocks[14]; // 0x46
 	_(48);
 	uint8 weapons[8]; // 0x84
 	_(20);
@@ -2154,7 +2156,7 @@ static_assert(offsetof(SessionData, character) == 0x14);
 static_assert(offsetof(SessionData, bloodyPalace) == 0x1C);
 static_assert(offsetof(SessionData, redOrbs) == 0x2C);
 static_assert(offsetof(SessionData, itemCounts) == 0x30);
-static_assert(offsetof(SessionData, unlock) == 0x46);
+static_assert(offsetof(SessionData, unlocks) == 0x46);
 static_assert(offsetof(SessionData, weapons) == 0x84);
 static_assert(offsetof(SessionData, rangedWeaponLevels) == 0xA0);
 static_assert(offsetof(SessionData, meleeWeaponIndex) == 0xC8);
@@ -2202,7 +2204,7 @@ static_assert(sizeof(MissionData) == 192);
 
 // $MissionDataEnd
 
-// $MissionActorDataStart
+// $QueuedMissionActorDataStart
 
 export struct QueuedMissionActorData
 {
@@ -2223,7 +2225,12 @@ static_assert(offsetof(QueuedMissionActorData, style) == 0x58);
 static_assert(offsetof(QueuedMissionActorData, styleLevel) == 0x5C);
 static_assert(offsetof(QueuedMissionActorData, styleExperience) == 0x74);
 static_assert(offsetof(QueuedMissionActorData, expertise) == 0x8C);
+
 static_assert(sizeof(QueuedMissionActorData) == 172);
+
+// $QueuedMissionActorDataEnd
+
+// $ActiveMissionActorDataStart
 
 export struct ActiveMissionActorData
 {
@@ -2248,9 +2255,10 @@ static_assert(offsetof(ActiveMissionActorData, hitPoints) == 0x64);
 static_assert(offsetof(ActiveMissionActorData, maxHitPoints) == 0x68);
 static_assert(offsetof(ActiveMissionActorData, magicPoints) == 0x6C);
 static_assert(offsetof(ActiveMissionActorData, maxMagicPoints) == 0x70);
+
 static_assert(sizeof(ActiveMissionActorData) == 116);
 
-// $MissionActorDataEnd
+// $ActiveMissionActorDataEnd
 
 // $StyleDataStart
 
@@ -2763,30 +2771,65 @@ export struct SummonedSwordsData
 
 static_assert(offsetof(SummonedSwordsData, actorBaseAddr) == 0x560);
 
+// export struct LockOnData
+// {
+// 	struct Item
+// 	{
+// 		byte8 * addr;
+// 		byte8 * nextAddr;
+// 	};
+
+// 	_(8);
+// 	Item items[255];
+// 	_(8);
+// 	byte8 * var_1000;
+// 	byte8 * var_1008;
+// 	Item * var_1010;
+// 	_(4136);
+// 	uint32 var_2040;
+// };
+
+// static_assert(offsetof(LockOnData, items) == 8);
+// static_assert(offsetof(LockOnData, var_1000) == 0x1000);
+// static_assert(offsetof(LockOnData, var_1008) == 0x1008);
+// static_assert(offsetof(LockOnData, var_1010) == 0x1010);
+// static_assert(offsetof(LockOnData, var_2040) == 0x2040);
+// static_assert(sizeof(LockOnData) == 8260);
+
+
+// $LockOnDataStart
+
 export struct LockOnData
 {
-	struct Item
-	{
-		byte8 * addr;
-		byte8 * nextAddr;
-	};
-
-	_(8);
-	Item items[255];
-	_(8);
-	byte8 * var_1000;
-	byte8 * var_1008;
-	Item * var_1010;
+	byte8 * var_0; // 0
+	_(4096);
+	byte8 * var_1008; // 0x1008
+	byte8 * var_1010; // 0x1010
+	byte8 * var_1018; // 0x1018
 	_(4136);
-	uint32 var_2040;
+	uint32 targetCount; // 0x2048
+	_(244);
+	vec4 targetPosition; // 0x2140
+	_(24);
+	byte8 * targetBaseAddr60; // 0x2168
+	byte8 * var_2170; // 0x2170
 };
 
-static_assert(offsetof(LockOnData, items) == 8);
-static_assert(offsetof(LockOnData, var_1000) == 0x1000);
+static_assert(offsetof(LockOnData, var_0) == 0);
 static_assert(offsetof(LockOnData, var_1008) == 0x1008);
 static_assert(offsetof(LockOnData, var_1010) == 0x1010);
-static_assert(offsetof(LockOnData, var_2040) == 0x2040);
-static_assert(sizeof(LockOnData) == 8260);
+static_assert(offsetof(LockOnData, var_1018) == 0x1018);
+static_assert(offsetof(LockOnData, targetCount) == 0x2048);
+static_assert(offsetof(LockOnData, targetPosition) == 0x2140);
+static_assert(offsetof(LockOnData, targetBaseAddr60) == 0x2168);
+static_assert(offsetof(LockOnData, var_2170) == 0x2170);
+
+static_assert(sizeof(LockOnData) == 8568);
+
+// $LockOnDataEnd
+
+
+
 
 // New data used by both player and enemy actors.
 
@@ -3000,11 +3043,8 @@ export struct PlayerActorDataBase : ActorDataBase
 	float maxHitPoints; // 0x40EC
 	_(44);
 	float hitPoints; // 0x411C
-	_(8672);
-	vec4 targetPosition; // 0x6300
-	_(24);
-	byte8 * targetBaseAddrPlus0x60; // 0x6328
-	_(8);
+	_(160);
+	LockOnData lockOnData; // 0x41C0
 	uint32 style; // 0x6338
 	uint32 wallHikeDirection; // 0x633C
 	uint32 var_6340; // 0x6340
@@ -3150,8 +3190,7 @@ static_assert(offsetof(PlayerActorDataBase, chainCount) == 0x3FAC);
 static_assert(offsetof(PlayerActorDataBase, expertise) == 0x3FEC);
 static_assert(offsetof(PlayerActorDataBase, maxHitPoints) == 0x40EC);
 static_assert(offsetof(PlayerActorDataBase, hitPoints) == 0x411C);
-static_assert(offsetof(PlayerActorDataBase, targetPosition) == 0x6300);
-static_assert(offsetof(PlayerActorDataBase, targetBaseAddrPlus0x60) == 0x6328);
+static_assert(offsetof(PlayerActorDataBase, lockOnData) == 0x41C0);
 static_assert(offsetof(PlayerActorDataBase, style) == 0x6338);
 static_assert(offsetof(PlayerActorDataBase, wallHikeDirection) == 0x633C);
 static_assert(offsetof(PlayerActorDataBase, var_6340) == 0x6340);
@@ -3332,10 +3371,13 @@ export struct PlayerActorDataDante : PlayerActorDataBase
 	_(15);
 	ModelMetadata modelMetadata[6]; // 0xB630
 	_(88);
-	float artemisChargeValue[2]; // 0xB868
-	_(12);
-	byte32 artemisChargeFlags[2]; // 0xB87C
-	_(60);
+	float artemisChargeValues[2]; // 0xB868
+	_(14);
+	uint8 artemisStatus; // 0xB87E
+	_(1);
+	bool artemisMultiLock; // 0xB880
+	bool artemisMultiLockCharged; // 0xB881
+	_(62);
 	uint32 newFirstVar; // 0xB8C0
 	_(12);
 	ModelData newModelData[6]; // 0xB8D0
@@ -3402,8 +3444,10 @@ static_assert(offsetof(PlayerActorDataDante, devilSubmodelPhysicsData) == 0xA540
 static_assert(offsetof(PlayerActorDataDante, devilSubmodelPhysicsLinkData) == 0xAA00);
 static_assert(offsetof(PlayerActorDataDante, devilModelMetadata) == 0xB600);
 static_assert(offsetof(PlayerActorDataDante, modelMetadata) == 0xB630);
-static_assert(offsetof(PlayerActorDataDante, artemisChargeValue) == 0xB868);
-static_assert(offsetof(PlayerActorDataDante, artemisChargeFlags) == 0xB87C);
+static_assert(offsetof(PlayerActorDataDante, artemisChargeValues) == 0xB868);
+static_assert(offsetof(PlayerActorDataDante, artemisStatus) == 0xB87E);
+static_assert(offsetof(PlayerActorDataDante, artemisMultiLock) == 0xB880);
+static_assert(offsetof(PlayerActorDataDante, artemisMultiLockCharged) == 0xB881);
 static_assert(offsetof(PlayerActorDataDante, newFirstVar) == 0xB8C0);
 static_assert(offsetof(PlayerActorDataDante, newModelData) == 0xB8D0);
 static_assert(offsetof(PlayerActorDataDante, newModelPhysicsMetadataPool) == 0xE5D0);
@@ -3905,6 +3949,7 @@ static_assert(offsetof(CreateEnemyActorData, position) == 0x10);
 static_assert(offsetof(CreateEnemyActorData, rotation) == 0x20);
 static_assert(offsetof(CreateEnemyActorData, spawnMethod) == 0x22);
 static_assert(offsetof(CreateEnemyActorData, variant) == 0x28);
+
 static_assert(sizeof(CreateEnemyActorData) == 128);
 
 // $CreateEnemyActorDataEnd

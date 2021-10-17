@@ -63,12 +63,10 @@ namespaceEnd();
 export namespaceStart(MODE);
 enum
 {
-	EASY,
-	NORMAL,
-	HARD,
-	VERY_HARD,
-	DANTE_MUST_DIE,
-	MAX,
+	EASY = 2,
+	NORMAL = 3,
+	HARD = 5,
+	DANTE_MUST_DIE = 6,
 };
 namespaceEnd();
 

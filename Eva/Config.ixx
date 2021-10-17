@@ -173,6 +173,9 @@ export struct Config
 	bool forceVisibleHUD           = false;
 
 	float globalScale = 1;
+
+
+	bool showCredits = true;
 };
 
 #pragma pack(pop)

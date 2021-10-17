@@ -1,5 +1,8 @@
 // @Cleanup
 
+// @Todo: Create ReloadRoom function to be consumed by new hooks wghatever right.
+// Use DI8 key codes and 3 slots, 0 should be fine, but we could skip it anyway.
+
 
 
 export module Global;
@@ -63,8 +66,12 @@ export bool  g_disableCameraRotation = false;
 export bool g_haywireNeoGenerator = false;
 
 
+export float g_frameRateMultiplier = 1.0f;
 
 
+
+
+// @Remove
 export bool g_resetBossVergil[PLAYER_COUNT] = {};
 
 
@@ -151,7 +158,7 @@ export float g_magicPoints[PLAYER_COUNT] = {};
 
 
 
-// @Todo: Remove.
+// @Remove
 export float g_timeout = 0;
 export bool g_visible = false;
 export float g_characterSwitchTimeout[4] = {};
@@ -242,66 +249,66 @@ export void ToggleSkipCutscenes(bool enable)
 
 
 
-
+// @Remove
 
 // @Todo: Re-evaluate reasons for these being in here.
-export template <typename T>
-void ActorForAll(T & func)
-{
-	old_for_all(uint64, actorIndex, g_playerActorBaseAddrs.count)
-	{
-		auto actorBaseAddr = g_playerActorBaseAddrs[actorIndex];
+// export template <typename T>
+// void ActorForAll(T & func)
+// {
+// 	old_for_all(uint64, actorIndex, g_playerActorBaseAddrs.count)
+// 	{
+// 		auto actorBaseAddr = g_playerActorBaseAddrs[actorIndex];
 
-		if (func(actorBaseAddr))
-		{
-			break;
-		}
-	}
-}
+// 		if (func(actorBaseAddr))
+// 		{
+// 			break;
+// 		}
+// 	}
+// }
 
-export template <typename T>
-void EnemyForAll(T & func)
-{
-	// Not necessary. Some enemies don't even use this. Gigapede for example.
+// export template <typename T>
+// void EnemyForAll(T & func)
+// {
+// 	// Not necessary. Some enemies don't even use this. Gigapede for example.
 
-	// auto firstBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2550);
-	// auto lastBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2750);
-	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
+// 	// auto firstBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2550);
+// 	// auto lastBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2750);
+// 	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
 
-	if
-	(
-		// !firstBaseAddr ||
-		// !lastBaseAddr ||
-		!pool ||
-		!pool[8]
-	)
-	{
-		return;
-	}
+// 	if
+// 	(
+// 		// !firstBaseAddr ||
+// 		// !lastBaseAddr ||
+// 		!pool ||
+// 		!pool[8]
+// 	)
+// 	{
+// 		return;
+// 	}
 
-	auto & count = *reinterpret_cast<uint32 *>(pool[8] + 0x28);
-	auto dataAddr = reinterpret_cast<EnemyVectorDataMetadata *>(pool[8] + 0x48);
+// 	auto & count = *reinterpret_cast<uint32 *>(pool[8] + 0x28);
+// 	auto dataAddr = reinterpret_cast<EnemyVectorDataMetadata *>(pool[8] + 0x48);
 
-	old_for_all(uint32, index, 50)
-	{
-		auto & data = dataAddr[index];
+// 	old_for_all(uint32, index, 50)
+// 	{
+// 		auto & data = dataAddr[index];
 
-		if
-		(
-			!data.baseAddr
-			// (data.baseAddr < firstBaseAddr) ||
-			// (data.baseAddr > lastBaseAddr)
-		)
-		{
-			continue;
-		}
+// 		if
+// 		(
+// 			!data.baseAddr
+// 			// (data.baseAddr < firstBaseAddr) ||
+// 			// (data.baseAddr > lastBaseAddr)
+// 		)
+// 		{
+// 			continue;
+// 		}
 
-		if (func(data.baseAddr))
-		{
-			break;
-		}
-	}
-}
+// 		if (func(data.baseAddr))
+// 		{
+// 			break;
+// 		}
+// 	}
+// }
 
 
 
@@ -322,7 +329,9 @@ export bool InGame()
 	return true;
 }
 
-// @Todo: Rename to IsTurbo.
+
+
+
 export auto & IsTurbo()
 {
 	return *reinterpret_cast<bool *>(appBaseAddr + 0xD6CEA9);
@@ -345,6 +354,8 @@ export bool InCredits()
 }
 
 
+// @Remove
+
 // export bool IsBorderless()
 // {
 // 	return *reinterpret_cast<bool *>(appBaseAddr + 0x5EA130 + 0x679);
@@ -356,19 +367,19 @@ export bool InCredits()
 
 
 // @Research: Consider SCENE::MISSION_START as well.
-export bool IsActorConfigScene()
-{
-	if
-	(
-		(g_scene == SCENE::MAIN          ) ||
-		(g_scene == SCENE::MISSION_SELECT)
-	)
-	{
-		return true;
-	}
+// export bool IsActorConfigScene()
+// {
+// 	if
+// 	(
+// 		(g_scene == SCENE::MAIN          ) ||
+// 		(g_scene == SCENE::MISSION_SELECT)
+// 	)
+// 	{
+// 		return true;
+// 	}
 
-	return false;
-}
+// 	return false;
+// }
 
 
 

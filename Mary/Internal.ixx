@@ -88,7 +88,7 @@ export typedef void(__fastcall * func_1F01F0_t)(byte8 * actorData, uint32 index)
 export typedef void(__fastcall * func_2F74E0_t)(byte8 * dest, uint32 index); // Show Model Partition
 export typedef void(__fastcall * func_2F7350_t)(byte8 * dest, uint32 index); // Hide Model Partition
 export typedef void(__fastcall * func_32BE20_t)(byte8 * dest); // Init Track
-export typedef void(__fastcall * func_32BA90_t)(byte8 * dest, const char * filename, uint32, uint32); // Set Track
+export typedef void(__fastcall * func_32BA90_t)(byte8 * dest, const char * location, uint32, uint32); // Set Track
 export typedef byte8 *(__fastcall * func_8A520_t)(ModelData & modelData);
 export typedef void(__fastcall * func_30E630_t)(byte8 * dest, uint32 index);
 
@@ -170,13 +170,14 @@ export func_1F01F0_t func_1F01F0 = 0; // (byte8 * actorData, uint32 index)
 export func_2F74E0_t func_2F74E0 = 0; // (byte8 * dest, uint32 index)
 export func_2F7350_t func_2F7350 = 0; // (byte8 * dest, uint32 index)
 export func_32BE20_t func_32BE20 = 0; // (byte8 * dest)
-export func_32BA90_t func_32BA90 = 0; // (byte8 * dest, const char * filename, uint32, uint32)
+export func_32BA90_t func_32BA90 = 0; // (byte8 * dest, const char * location, uint32, uint32)
 export func_8A520_t func_8A520 = 0; // (ModelData & modelData)
 export func_30E630_t func_30E630 = 0; // (byte8 * dest, uint32 index)
 
 export void Internal_Init()
 {
 	LogFunction();
+
 	{
 		auto func = CreateFunction((appBaseAddr + 0x897B0));
 		func_897B0 = (func_897B0_t)func.addr;

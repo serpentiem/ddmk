@@ -20,6 +20,9 @@ using namespace DI8;
 
 
 
+export float g_frameRateMultiplier = 1.0f;
+
+
 export namespace DXGI
 {
 	IDXGISwapChain * swapChain = 0;
