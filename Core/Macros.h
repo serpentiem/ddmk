@@ -8,7 +8,13 @@
 
 #define HoboBreak() MessageBoxA(0, "break1", 0, 0); MessageBoxA(0, "break2", 0, 0)
 
-#define FUNC_NAME __FUNCTION__
+
+#define FUNCTION_NAME __FUNCTION__
+#define DECORATED_FUNCTION_NAME __FUNCDNAME__
+
+
+
+
 
 
 
@@ -624,6 +630,8 @@ struct Size_##size\
 
 
 #pragma region Deprecated
+
+#define FUNC_NAME __FUNCTION__
 
 #define old_for_each(type, name, start, end, ...) for (type name = start; name < end; name++ __VA_OPT__(,) __VA_ARGS__)
 #define old_for_all(type, name, end, ...) old_for_each(type, name, 0, end __VA_OPT__(,) __VA_ARGS__)

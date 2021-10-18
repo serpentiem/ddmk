@@ -1,24 +1,79 @@
-// @Todo: Update.
+import Core;
 
-#include "../Core/Core.h"
+#include "../Core/Macros.h"
 
-typedef void(__fastcall * DirectInput8_Create_t)();
+import Windows;
+import DI8;
 
-DirectInput8_Create_t DirectInput8_Create = 0;
+using namespace Windows;
+using namespace DI8;
 
-extern "C" void Create()
+#include <stdio.h>
+#include <string.h>
+
+#define debug false
+
+
+
+namespaceStart(DI8);
+
+typedef decltype(DirectInput8Create) * DirectInput8Create_t;
+
+namespaceEnd();
+
+
+
+namespaceStart(Base::DI8);
+
+::DI8::DirectInput8Create_t DirectInput8Create = 0;
+
+namespaceEnd();
+
+
+
+namespaceStart(Hook::DI8);
+
+HRESULT DirectInput8Create
+(
+	HINSTANCE hinst,
+	DWORD dwVersion,
+	const IID& riidltf,
+	LPVOID* ppvOut,
+	LPUNKNOWN punkOuter
+)
 {
-	return DirectInput8_Create();
+	#pragma comment(linker, "/EXPORT:DirectInput8Create=" DECORATED_FUNCTION_NAME)
+
+
+
+	return ::Base::DI8::DirectInput8Create
+	(
+		hinst,
+		dwVersion,
+		riidltf,
+		ppvOut,
+		punkOuter
+	);
 }
 
-bool Init()
+namespaceEnd();
+
+
+
+void Init()
 {
 	LogFunction();
 
+
+
 	byte32 error = 0;
+
 	const char * libName = "dinput8.dll";
+
 	char directory[128];
-	char path[256];
+	char location[512];
+
+
 
 	GetSystemDirectoryA
 	(
@@ -28,52 +83,54 @@ bool Init()
 
 	snprintf
 	(
-		path,
-		sizeof(path),
+		location,
+		sizeof(location),
 		"%s\\%s",
 		directory,
 		libName
 	);
 
+
+
 	SetLastError(0);
 
-	auto lib = LoadLibraryA(path);
-
-	error = GetLastError();
-
+	auto lib = LoadLibraryA(location);
 	if (!lib)
 	{
-		Log("LoadLibraryA failed. %X", error);
+		error = GetLastError();
 
-		return false;
+		Log("LoadLibraryA failed. %s %X", location, error);
+
+		return;
 	}
 
-	// DirectInput8_Create
+	// DirectInput8Create
 	{
 		const char * funcName = "DirectInput8Create";
 
 		SetLastError(0);
 
 		auto funcAddr = GetProcAddress(lib, funcName);
-
-		error = GetLastError();
-
 		if (!funcAddr)
 		{
+			error = GetLastError();
+
 			Log("GetProcAddress failed. %s %X", funcName, error);
 
-			return false;
+			return;
 		}
 
-		DirectInput8_Create = reinterpret_cast<DirectInput8_Create_t>(funcAddr);
-	}
+		::Base::DI8::DirectInput8Create = reinterpret_cast<::DI8::DirectInput8Create_t>(funcAddr);
 
-	return true;
+		Log("DirectInput8Create %X", DirectInput8Create);
+	}
 }
 
 void Load()
 {
 	LogFunction();
+
+
 
 	byte32 error = 0;
 
@@ -87,6 +144,8 @@ void Load()
 	);
 
 	Module32First(snapshot, &me32);
+
+
 
 	const char * names[][2] =
 	{
@@ -103,44 +162,58 @@ void Load()
 			"Mary.dll",
 		},
 		{
+			#if debug
+			"dmc4.exe",
+			#else
 			"DevilMayCry4SpecialEdition.exe",
+			#endif
 			"Kyrie.dll",
 		}
 	};
 
-	for_all(uint8, index, countof(names))
+
+
+	for_all(index, countof(names))
 	{
-		auto moduleName = names[index][0];
-		auto libName    = names[index][1];
+		auto appName = names[index][0];
+		auto libName = names[index][1];
 
 		if
 		(
 			strncmp
 			(
 				me32.szModule,
-				moduleName,
-				sizeof(moduleName)
+				appName,
+				sizeof(appName)
 			) == 0
 		)
 		{
-			Log(moduleName);
-			Log(libName);
+			Log("%s %s", appName, libName);
+
+
 
 			SetLastError(0);
 
 			auto lib = LoadLibraryA(libName);
-
-			error = GetLastError();
-
 			if (!lib)
 			{
-				Log("LoadLibraryA failed. %X", error);
+				error = GetLastError();
+
+				Log("LoadLibraryA failed. %s %X", libName, error);
 			}
 
-			break;
+
+
+			return;
 		}
 	}
+
+
+
+	Log("No Match");
 }
+
+
 
 byte32 DllMain
 (
@@ -155,16 +228,9 @@ byte32 DllMain
 
 		Log("Session started.");
 
-		if (!Init())
-		{
-			return 0;
-		}
-
+		Init();
 		Load();
 	}
 
 	return 1;
 }
-
-#ifdef __GARBAGE__
-#endif

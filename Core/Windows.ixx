@@ -1822,6 +1822,16 @@ extern "C" BOOL MoveWindow
 	int nHeight,
 	BOOL bRepaint
 );
+extern "C" UINT GetSystemDirectoryA
+(
+	LPSTR lpBuffer,
+	UINT uSize
+);
+extern "C" UINT GetSystemDirectoryW
+(
+	LPWSTR lpBuffer,
+	UINT uSize
+);
 
 // IUnknown
 
@@ -3626,6 +3636,16 @@ extern "C" BOOL __stdcall MoveWindow
 	int nWidth,
 	int nHeight,
 	BOOL bRepaint
+);
+extern "C" UINT __stdcall GetSystemDirectoryA
+(
+	LPSTR lpBuffer,
+	UINT uSize
+);
+extern "C" UINT __stdcall GetSystemDirectoryW
+(
+	LPWSTR lpBuffer,
+	UINT uSize
 );
 
 // IUnknown
