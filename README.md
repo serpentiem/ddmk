@@ -2,9 +2,6 @@
 
 The compilation of my work on the Devil May Cry PC games. It contains various extensive gameplay mods, tools, fixes and training utilities. It also adds multiplayer capabilities to select entries.
 
-| [Installation](#Installation) [Create Savegame Backups](#Create-Savegame-Backups) [Credits](#Credits) |
-| :---: |
-
 
 
 # Installation
