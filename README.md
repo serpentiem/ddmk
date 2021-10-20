@@ -24,9 +24,7 @@ The following is required for Devil May Cry 3 if you want to use Quick Drive. Yo
 
 * After installing the mod, run Devil May Cry 3 at least once so the cache files are created.
 
-* Download the following archives and extract the specified files to
-
-    `C:\Program Files (x86)\Steam\steamapps\common\Devil May Cry HD Collection\data\dmc3\GData.afs`.
+* Download the following archives and extract the specified files to `C:\Program Files (x86)\Steam\steamapps\common\Devil May Cry HD Collection\data\dmc3\GData.afs`.
 
     | Archive                                                                                                    | File                      |
     | ---                                                                                                        | ---                       |
