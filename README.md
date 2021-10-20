@@ -56,7 +56,7 @@ The following is required to undo the latest patch. You only need to do this onc
 
 * Go to the savegame directory. By default this is `C:\Program Files (x86)\Steam\userdata\STEAM_ACCOUNT_ID\631510\remote`.
 
-If you don't know your STEAM_ACCOUNT_ID, here's how to get it without external tools:
+If you don't know your `STEAM_ACCOUNT_ID`, here's how to get it without external tools:
 
 * In Steam hover over your big username and click on `Profile`.
 * Right click somewhere in the middle of the window and left click on `View Source...`.
@@ -65,7 +65,7 @@ If you don't know your STEAM_ACCOUNT_ID, here's how to get it without external t
 
 * In the text editor, press CTRL+F and search for `data-miniprofile=`.
 
-    The number in the quotes, on the right side of the first search result, is your STEAM_ACCOUNT_ID.
+    The number in the quotes, on the right side of the first search result, is your `STEAM_ACCOUNT_ID`.
 
 Copy the following files to a secure and easily accessible location:
 
@@ -77,7 +77,7 @@ Copy the following files to a secure and easily accessible location:
 
 * Go to the savegame directory. By default this is `C:\Users\USER_NAME\Documents\CAPCOM\DEVILMAYCRY4SPECIALEDITION`.
 
-If you don't know your USER_NAME, give your tech-savvy grandchild a call.
+If you don't know your `USER_NAME`, give your tech-savvy grandchild a call.
 
 Copy `SavedGame00.DevilMayCry4SpecialEdition` to a secure and easily accessible location.
 

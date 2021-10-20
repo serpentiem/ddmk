@@ -381,7 +381,9 @@ export struct PlayerActorData
 	_(6568);
 	uint32 costume; // 0x19A8
 	uint32 character; // 0x19AC
-	_(336);
+	_(109);
+	bool enable; // 0x1A1D
+	_(226);
 	float hitPoints; // 0x1B00
 	float maxHitPoints; // 0x1B04
 	_(2556);
@@ -391,6 +393,7 @@ export struct PlayerActorData
 
 static_assert(offsetof(PlayerActorData, costume) == 0x19A8);
 static_assert(offsetof(PlayerActorData, character) == 0x19AC);
+static_assert(offsetof(PlayerActorData, enable) == 0x1A1D);
 static_assert(offsetof(PlayerActorData, hitPoints) == 0x1B00);
 static_assert(offsetof(PlayerActorData, maxHitPoints) == 0x1B04);
 static_assert(offsetof(PlayerActorData, magicPoints) == 0x2504);

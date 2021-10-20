@@ -1,7 +1,7 @@
 #pragma once
 
 #define DDMK_NAME "DDMK 2.7"
-#define DDMK_DATE "Nightly 18 October 2021"
+#define DDMK_DATE "Nightly 20 October 2021"
 
 #define DDMK_TITLE_EVA   DDMK_NAME " Eva "   DDMK_DATE
 #define DDMK_TITLE_LUCIA DDMK_NAME " Lucia " DDMK_DATE

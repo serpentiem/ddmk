@@ -181,6 +181,32 @@ void EventHandler()
 
 
 
+
+
+void EventCutsceneStart()
+{
+	LogFunction();
+
+	Actor::EventCutsceneStart();
+}
+
+void EventCutsceneEnd()
+{
+	LogFunction();
+
+	Actor::EventCutsceneEnd();
+}
+
+
+
+
+
+
+
+
+
+
+
 namespaceStart(Event);
 
 export void Toggle(bool enable)
@@ -361,6 +387,92 @@ export void Toggle(bool enable)
 		{
 			backupHelper.Save(addr, size);
 			func = CreateFunction(EventHandler, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// EventCutsceneStart
+	{
+		auto addr     = (appBaseAddr + 0x4C828B);
+		auto jumpAddr = (appBaseAddr + 0x4C8292);
+		constexpr size_t size = 7;
+		/*
+		dmc4.exe+4C828B - 66 89 9E 1D1A0000 - mov [esi+00001A1D],bx
+		dmc4.exe+4C8292 - 8B C6             - mov eax,esi
+		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(EventCutsceneStart, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	{
+		auto addr     = (appBaseAddr + 0x153A6A);
+		auto jumpAddr = (appBaseAddr + 0x153A73);
+		constexpr size_t size = 9;
+		/*
+		dmc4.exe+153A6A - 66 C7 80 1D1A0000 0000 - mov word ptr [eax+00001A1D],0000
+		dmc4.exe+153A73 - 83 43 04 02            - add dword ptr [ebx+04],02
+		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(EventCutsceneStart, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	// EventCutsceneEnd
+	{
+		auto addr     = (appBaseAddr + 0x153A98);
+		auto jumpAddr = (appBaseAddr + 0x153A9F);
+		constexpr size_t size = 7;
+		/*
+		dmc4.exe+153A98 - C6 80 1D1A0000 01 - mov byte ptr [eax+00001A1D],01
+		dmc4.exe+153A9F - 83 43 04 02       - add dword ptr [ebx+04],02
+		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(EventCutsceneEnd, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 

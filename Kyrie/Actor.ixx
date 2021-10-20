@@ -1166,6 +1166,48 @@ export void EventSpawnMainActor(byte8 * actorBaseAddr)
 	SpawnPlayerActors();
 }
 
+export void EventCutsceneStart()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+
+
+	for_all(playerIndex, activeConfig.Actor.playerCount)
+	{
+		auto & newActorData = g_newActorData[playerIndex];
+
+		IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
+
+		actorData.enable = false;
+	}
+}
+
+export void EventCutsceneEnd()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+
+
+	for_all(playerIndex, activeConfig.Actor.playerCount)
+	{
+		auto & newActorData = g_newActorData[playerIndex];
+
+		IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
+
+		actorData.enable = true;
+	}
+}
+
 namespaceEnd();
 
 #pragma endregion

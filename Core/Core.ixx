@@ -3076,8 +3076,17 @@ export bool Core_Memory_Init()
 
 	Log("%u %s", moduleEntry.th32ProcessID, moduleEntry.szModule);
 
+
+
+	#ifdef _WIN64
 	Log("appStart %llX", appBaseAddr);
 	Log("appEnd   %llX", (appBaseAddr + appSize));
+	#else
+	Log("appStart %X", appBaseAddr);
+	Log("appEnd   %X", (appBaseAddr + appSize));
+	#endif
+
+
 
 	Log("appSize %X", appSize);
 

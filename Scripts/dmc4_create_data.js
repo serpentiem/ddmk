@@ -520,6 +520,7 @@ let items =
 [
 	[ "costume"       , "uint32", [], 0x19A8 ],
 	[ "character"     , "uint32", [], 0x19AC ],
+	[ "enable"        , "bool"  , [], 0x1A1D ],
 	[ "hitPoints"     , "float" , [], 0x1B00 ],
 	[ "maxHitPoints"  , "float" , [], 0x1B04 ],
 	[ "magicPoints"   , "float" , [], 0x2504 ],
