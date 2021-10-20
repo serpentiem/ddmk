@@ -18,11 +18,7 @@ Be sure to [create backups of your savegames](#create-savegame-backups)!
 
 ## Devil May Cry HD Collection
 
-* Copy the contents of `HDC` to the Devil May Cry HD Collection root directory.
-
-    By default this is `C:\Program Files (x86)\Steam\steamapps\common\Devil May Cry HD Collection`.
-
-    If asked to replace, confirm all.
+* Copy the contents of `HDC` to the Devil May Cry HD Collection root directory. By default this is `C:\Program Files (x86)\Steam\steamapps\common\Devil May Cry HD Collection`. If asked to replace, confirm all.
 
 The following is required for Devil May Cry 3 if you want to use Quick Drive. You only need to do this once and not every time you update the mod.
 
@@ -39,11 +35,7 @@ The following is required for Devil May Cry 3 if you want to use Quick Drive. Yo
 
 ## Devil May Cry 4
 
-* Copy the contents of `4` to the Devil May Cry 4 root directory.
-
-    By default this is `C:\Program Files (x86)\Steam\steamapps\common\Special Edition`.
-
-    If asked to replace, confirm all.
+* Copy the contents of `4` to the Devil May Cry 4 root directory. By default this is `C:\Program Files (x86)\Steam\steamapps\common\Special Edition`. If asked to replace, confirm all.
 
 The following is required to undo the latest patch. You only need to do this once and not every time you update the mod.
 
