@@ -31,6 +31,9 @@ using namespace DI8;
 
 
 
+export uint32 g_position = 0;
+
+
 
 export auto ValidateCharacter(uint32 character)
 {
@@ -85,6 +88,8 @@ export auto ValidateCostume
 
 export uint8 g_scene                 = 0;
 
+export bool g_eventRun[EVENT::COUNT] = {};
+
 
 
 
@@ -99,14 +104,6 @@ export namespace D3D10
 	ID3D10RenderTargetView * renderTargetView = 0;
 }
 
-
-
-
-
-
-
-
-
 export namespace DI8
 {
 	IDirectInput8W       * deviceInterface = 0;
@@ -114,9 +111,6 @@ export namespace DI8
 	DIMOUSESTATE2          mouseState      = {};
 }
 
-export vec2 g_windowSize = {};
-export vec2 g_clientSize = {};
-export vec2 g_renderSize = {};
 
 
 
@@ -126,175 +120,8 @@ export vec2 g_renderSize = {};
 
 
 
-// @Todo: Add to Core.
-export POINT GetWindowSize(HWND windowHandle)
-{
-	POINT point = {};
-	RECT  rect  = {};
-
-	if (!windowHandle)
-	{
-		return point;
-	}
-
-	GetWindowRect
-	(
-		windowHandle,
-		&rect
-	);
-
-	point.x = (rect.right  - rect.left);
-	point.y = (rect.bottom - rect.top );
-
-	return point;
-}
-
-export POINT GetClientSize(HWND windowHandle)
-{
-	POINT point = {};
-	RECT  rect  = {};
-	RECT  rect2 = {};
-
-	if (!windowHandle)
-	{
-		return point;
-	}
-
-	GetWindowRect
-	(
-		appWindow,
-		&rect
-	);
-
-	auto style = GetWindowLongA
-	(
-		appWindow,
-		GWL_STYLE
-	);
-
-	AdjustWindowRect
-	(
-		&rect2,
-		style,
-		0
-	);
-
-	rect.left   -= rect2.left;
-	rect.top    -= rect2.top;
-	rect.right  -= rect2.right;
-	rect.bottom -= rect2.bottom;
-
-	point.x = (rect.right  - rect.left);
-	point.y = (rect.bottom - rect.top );
-
-	return point;
-}
 
 
-
-
-
-export void UpdateGlobalWindowSize()
-{
-	if (!appWindow)
-	{
-		return;
-	}
-
-	auto size = GetWindowSize(appWindow);
-
-	g_windowSize =
-	{
-		static_cast<float>(size.x),
-		static_cast<float>(size.y)
-	};
-
-	Log
-	(
-		"%s %g %g",
-		FUNC_NAME,
-		g_windowSize.x,
-		g_windowSize.y
-	);
-}
-
-export void UpdateGlobalClientSize()
-{
-	if (!appWindow)
-	{
-		return;
-	}
-
-	auto size = GetClientSize(appWindow);
-
-	g_clientSize =
-	{
-		static_cast<float>(size.x),
-		static_cast<float>(size.y)
-	};
-
-	Log
-	(
-		"%s %g %g",
-		FUNC_NAME,
-		g_clientSize.x,
-		g_clientSize.y
-	);
-}
-
-export void UpdateGlobalRenderSize
-(
-	uint32 width,
-	uint32 height
-)
-{
-	g_renderSize =
-	{
-		static_cast<float>(width),
-		static_cast<float>(height)
-	};
-
-	Log
-	(
-		"%s %g %g",
-		FUNC_NAME,
-		g_renderSize.x,
-		g_renderSize.y
-	);
-}
-
-
-
-export void GetWindowPos
-(
-	HWND window,
-	POINT & point
-)
-{
-	if (!window)
-	{
-		return;
-	}
-
-	RECT rect = {};
-
-	GetWindowRect
-	(
-		window,
-		&rect
-	);
-
-	point.x = rect.left;
-	point.y = rect.top;
-}
-
-
-
-
-
-
-
-export bool g_update3D = false;
 
 
 
@@ -339,7 +166,7 @@ export bool g_update3D = false;
 // export bool g_haywireNeoGenerator = false;
 
 
-export float g_frameRateMultiplier = 1.0f;
+
 
 
 

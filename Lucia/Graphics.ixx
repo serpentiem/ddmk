@@ -10,45 +10,41 @@ import Vars;
 
 #define debug false
 
-//#include "Macros.h"
 
 
-
-
-double g_defaultFrequency = 0;
-
-double * g_frequencyAddr = 0;
-
-
+double defaultFrequency = 0;
+double * frequencyAddr = 0;
 
 
 
 namespaceStart(Graphics);
 
-export void Init()
+export void Toggle(bool enable)
 {
-	LogFunction();
+	LogFunction(enable);
 
-	g_defaultFrequency = *reinterpret_cast<double *>(appBaseAddr + 0x5A58C8);
-	/*
-	dmc2.exe+25CAAE - F2 0F10 3D 128E3400    - movsd xmm7,[dmc2.exe+5A58C8]
-	dmc2.exe+25CAB6 - F3 44 0F10 05 89F70A00 - movss xmm8,[dmc2.exe+30C248]
-	*/
-
-	g_frequencyAddr = reinterpret_cast<double *>(HighAlloc(8));
-	if (!g_frequencyAddr)
-	{
-		Log("HighAlloc failed.");
-
-		return;
-	}
-
-	*g_frequencyAddr = g_defaultFrequency;
-
-
-
-	constexpr bool enable = true;
 	static bool run = false;
+
+
+
+	if (!run)
+	{
+		defaultFrequency = *reinterpret_cast<double *>(appBaseAddr + 0x5A58C8);
+		/*
+		dmc2.exe+25CAAE - F2 0F10 3D 128E3400    - movsd xmm7,[dmc2.exe+5A58C8]
+		dmc2.exe+25CAB6 - F3 44 0F10 05 89F70A00 - movss xmm8,[dmc2.exe+30C248]
+		*/
+
+		frequencyAddr = reinterpret_cast<double *>(HighAlloc(8));
+		if (!frequencyAddr)
+		{
+			Log("HighAlloc failed.");
+
+			return;
+		}
+
+		*frequencyAddr = defaultFrequency;
+	}
 
 
 
@@ -74,7 +70,7 @@ export void Init()
 			func = CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory((func.sect0 + sizeof(sect0)), addr, size, MemoryFlags_VirtualProtectSource);
-			WriteAddress(func.sect0, g_frequencyAddr, 8);
+			WriteAddress(func.sect0, frequencyAddr, 8);
 		}
 
 		if (enable)
@@ -100,9 +96,7 @@ export void UpdateFrameRate()
 {
 	LogFunction();
 
-	*g_frequencyAddr = (g_defaultFrequency * (60.0 / activeConfig.frameRate));
+	g_frameRateMultiplier = (60 / activeConfig.frameRate);
+
+	*frequencyAddr = (defaultFrequency * static_cast<double>(g_frameRateMultiplier));
 }
-
-
-
-

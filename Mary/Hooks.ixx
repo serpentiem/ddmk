@@ -1,5 +1,7 @@
 
-// @Style: Prefer while().
+
+
+
 
 
 
@@ -955,6 +957,15 @@ HRESULT D3D11CreateDeviceAndSwapChain
 
 	CreateRenderTarget();
 
+
+	Graphics::Toggle(false);
+	Graphics::Toggle(true);
+
+	UpdateFrameRate();
+
+
+
+
 	[&]()
 	{
 		if ((result != 0) || !ppSwapChain || !*ppSwapChain)
@@ -993,41 +1004,44 @@ namespaceEnd();
 
 #pragma endregion
 
-void ToggleShow(byte8 * state)
-{
-	static bool execute = true;
 
-	constexpr byte8 keys[] =
-	{
-		DIK_LCONTROL,
-		DIK_D,
-	};
 
-	uint8 keysDown = 0;
 
-	old_for_all(uint8, index, countof(keys))
-	{
-		auto & key = keys[index];
-		if (state[key] & 0x80)
-		{
-			keysDown++;
-		}
-	}
+// void ToggleShow(byte8 * state)
+// {
+// 	static bool execute = true;
 
-	if (keysDown == countof(keys))
-	{
-		if (execute)
-		{
-			g_show = !g_show;
+// 	constexpr byte8 keys[] =
+// 	{
+// 		DIK_LCONTROL,
+// 		DIK_D,
+// 	};
 
-			execute = false;
-		}
-	}
-	else
-	{
-		execute = true;
-	}
-}
+// 	uint8 keysDown = 0;
+
+// 	old_for_all(uint8, index, countof(keys))
+// 	{
+// 		auto & key = keys[index];
+// 		if (state[key] & 0x80)
+// 		{
+// 			keysDown++;
+// 		}
+// 	}
+
+// 	if (keysDown == countof(keys))
+// 	{
+// 		if (execute)
+// 		{
+// 			g_show = !g_show;
+
+// 			execute = false;
+// 		}
+// 	}
+// 	else
+// 	{
+// 		execute = true;
+// 	}
+// }
 
 void WindowSize1(byte8 * state)
 {
@@ -1185,9 +1199,21 @@ HRESULT GetDeviceStateA
 
 
 
+
+	for_all(index, countof(keyBindings))
+	{
+		auto & keyBinding = keyBindings[index];
+
+		keyBinding.UpdateKeyData(state);
+		keyBinding.Check(state);
+	}
+
+
+
+
 	ImGui::DI8::UpdateKeyboard(state);
 
-	ToggleShow(state);
+	//ToggleShow(state);
 
 
 

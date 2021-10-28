@@ -8,8 +8,10 @@ import Core;
 #include "../Core/Macros.h"
 
 import Windows;
+import DI8;
 
 using namespace Windows;
+using namespace DI8;
 
 import Vars;
 
@@ -34,17 +36,20 @@ export struct Config
 		PlayerData playerData[PLAYER_COUNT] = {};
 	}
 	Actor;
+
 	bool airHikeCoreAbility = false;
+
 	struct
 	{
 		bool   enable         = (debug) ? true : false;
 		uint32 mission        = 17;
-		uint32 mode           = MODE::NORMAL;
+		uint32 mode           = MODE::DANTE_MUST_DIE;
 		uint32 room           = 900;
-		uint32 position       = 0;
 		bool   ignoreRoom     = (debug) ? false : true;
+		uint32 position       = 0;
 		bool   ignorePosition = (debug) ? false : true;
 		uint8  floor          = 0;
+		uint16 level          = 0;
 		float  hitPoints      = 20000;
 		float  magicPoints    = 10000;
 		uint8  character      = CHARACTER::DANTE;
@@ -59,6 +64,30 @@ export struct Config
 		};
 	}
 	Arcade;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	struct
 	{
 		bool swapNormalShotAndMultiLock = false;
@@ -569,14 +598,16 @@ export struct Config
 
 	bool preferLocalFiles = true;
 
-	float frameRate = 60.0f;
+	float frameRate = 60;
 	uint8 vSync     = 0;
 
-	bool hideMouseCursor = (debug) ? false : true;
+	bool hideMouseCursor = false;
 
 
 
-	// @Update
+
+
+
 	bool forceWindowFocus = true;
 
 
@@ -612,13 +643,13 @@ export struct Config
 
 	struct MainOverlayData : OverlayData
 	{
-		bool showFocus = true;
-		bool showFPS = true;
-		bool showSizes = true;
-		bool showScene = true;
-		bool showEventData = true;
-		bool showPosition = true;
-		bool showRegionData = (debug) ? true : false;
+		bool showFocus               = true;
+		bool showFPS                 = true;
+		bool showSizes               = true;
+		bool showFrameRateMultiplier = true;
+		bool showEventData           = true;
+		bool showPosition            = true;
+		bool showRegionData          = false;
 
 		MainOverlayData()
 		{
@@ -661,7 +692,7 @@ export struct Config
 	// To avoid surprises by using __declspec(align) we prefer _(n) and
 	// static_assert to get the correct alignment.
 
-	_(3);
+	_(1);
 	float kalinaAnnHookGrenadeHeight = 1280.0f;
 	_(12);
 	float kalinaAnnHookGrenadeTime = 90.0f;
@@ -682,7 +713,7 @@ export struct Config
 	bool  cameraInvertX       = (debug) ? true : false;
 	uint8 cameraAutoAdjust    = 0;
 	bool  disableCenterCamera = (debug) ? true : false;
-	bool  disableBossCamera   = (debug) ? true : false;
+	bool  disableBossCamera   = false;
 
 
 
@@ -769,6 +800,26 @@ export struct Config
 
 
 	bool showCredits = true;
+
+
+
+
+
+	KeyData keyData[3] =
+	{
+		{
+			{
+				KEY::LEFT_CONTROL,
+				KEY::D
+			},
+			2
+		},
+		{},
+		{},
+	};
+
+
+
 
 
 

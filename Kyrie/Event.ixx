@@ -19,7 +19,7 @@ import Vars;
 
 
 
-bool Event_run[EVENT::COUNT] = {};
+//bool Event_run[EVENT::COUNT] = {};
 
 
 
@@ -50,7 +50,24 @@ void SetRoomPosition
 		dataAddr,
 		positionAddr
 	);
+
+	g_position = *positionAddr;
 }
+
+void SetBloodyPalaceLevel()
+{
+	LogFunction();
+
+	Arcade::SetBloodyPalaceLevel();
+}
+
+
+
+
+
+
+
+
 
 bool __fastcall SpawnMainActor
 (
@@ -68,9 +85,9 @@ bool __fastcall SpawnMainActor
 
 	SetMemory
 	(
-		Event_run,
+		g_eventRun,
 		0,
-		sizeof(Event_run)
+		sizeof(g_eventRun)
 	);
 
 
@@ -92,30 +109,34 @@ bool __fastcall SpawnMainActor
 
 
 
-void EventMain()
-{
-	LogFunction();
-}
 
-void EventPause()
-{
-	LogFunction();
-}
 
-void EventTeleport()
-{
-	LogFunction();
-}
 
-void EventItem()
+const char * eventFuncNames[] =
 {
-	LogFunction();
-}
+	"EventMain",
+	"EventPause",
+	"EventTeleport",
+	"EventItem",
+	"EventCutscene",
+};
 
-void EventCutscene()
+static_assert(countof(eventFuncNames) == EVENT::COUNT);
+
+const char * newEventFuncNames[] =
 {
-	LogFunction();
-}
+	"NewEventMain",
+	"NewEventPause",
+	"NewEventTeleport",
+	"NewEventItem",
+	"NewEventCutscene",
+};
+
+static_assert(countof(newEventFuncNames) == EVENT::COUNT);
+
+
+
+
 
 
 
@@ -125,77 +146,175 @@ void EventHandler()
 
 	using namespace EVENT;
 
+
+
+	auto event = eventData.event;
+	if (event >= COUNT)
+	{
+		static size_t count = 0;
+
+		if (count < 10)
+		{
+			Log("__UNKNOWN_EVENT__ %u", event);
+
+			count++;
+		}
+
+		return;
+	}
+
+
+
 	[&]()
 	{
-		auto event = eventData.event;
-		if (event >= COUNT)
+		auto funcName = eventFuncNames[event];
+
+		auto & run = g_eventRun[event];
+
+		if (!run)
 		{
-			return;
-		}
+			run = true;
 
-		auto & run = Event_run[event];
-		if (run)
-		{
-			return;
-		}
-
-		run = true;
-
-
-
-		switch (event)
-		{
-			case MAIN:
+			switch (event)
 			{
-				EventMain();
+				case MAIN:
+				{
+					Log(funcName);
 
-				break;
-			}
-			case PAUSE:
-			{
-				EventPause();
+					break;
+				}
+				case PAUSE:
+				{
+					Log(funcName);
 
-				break;
-			}
-			case TELEPORT:
-			{
-				EventTeleport();
+					break;
+				}
+				case TELEPORT:
+				{
+					Log(funcName);
 
-				break;
-			}
-			case ITEM:
-			{
-				EventItem();
+					break;
+				}
+				case ITEM:
+				{
+					Log(funcName);
 
-				break;
-			}
-			case CUTSCENE:
-			{
-				EventCutscene();
+					break;
+				}
+				case CUTSCENE:
+				{
+					Log(funcName);
 
-				break;
+					break;
+				}
 			}
 		}
 	}();
+
+
+
+	[&]()
+	{
+		auto funcName = newEventFuncNames[event];
+
+		static uint8 lastEvent = COUNT;
+
+		if (lastEvent != event)
+		{
+			lastEvent = event;
+
+
+
+			switch (event)
+			{
+				case MAIN:
+				{
+					Log(funcName);
+
+					Actor::NewEventMain();
+
+					break;
+				}
+				case PAUSE:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case TELEPORT:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case ITEM:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case CUTSCENE:
+				{
+					Log(funcName);
+
+					Actor::NewEventCutscene();
+
+					break;
+				}
+			}
+		}
+	}();
+
+
+
+	// switch (event)
+	// {
+	// 	case MAIN:
+	// 	{
+	// 		break;
+	// 	}
+	// 	case PAUSE:
+	// 	{
+	// 		break;
+	// 	}
+	// 	case TELEPORT:
+	// 	{
+	// 		break;
+	// 	}
+	// 	case ITEM:
+	// 	{
+	// 		break;
+	// 	}
+	// 	case CUTSCENE:
+	// 	{
+	// 		break;
+	// 	}
+	// }
 }
 
 
 
 
 
-void EventCutsceneStart()
-{
-	LogFunction();
 
-	Actor::EventCutsceneStart();
-}
 
-void EventCutsceneEnd()
-{
-	LogFunction();
 
-	Actor::EventCutsceneEnd();
-}
+
+
+
+// void EventCutsceneStart()
+// {
+// 	LogFunction();
+
+// 	Actor::EventCutsceneStart();
+// }
+
+// void EventCutsceneEnd()
+// {
+// 	LogFunction();
+
+// 	Actor::EventCutsceneEnd();
+// }
 
 
 
@@ -400,14 +519,101 @@ export void Toggle(bool enable)
 		}
 	}
 
-	// EventCutsceneStart
+	// // EventCutsceneStart
+	// {
+	// 	auto addr     = (appBaseAddr + 0x4C828B);
+	// 	auto jumpAddr = (appBaseAddr + 0x4C8292);
+	// 	constexpr size_t size = 7;
+	// 	/*
+	// 	dmc4.exe+4C828B - 66 89 9E 1D1A0000 - mov [esi+00001A1D],bx
+	// 	dmc4.exe+4C8292 - 8B C6             - mov eax,esi
+	// 	*/
+
+	// 	static Function func = {};
+
+	// 	if (!run)
+	// 	{
+	// 		backupHelper.Save(addr, size);
+	// 		func = CreateFunction(EventCutsceneStart, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+	// 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(addr, func.addr, (size - 5));
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+
+	// {
+	// 	auto addr     = (appBaseAddr + 0x153A6A);
+	// 	auto jumpAddr = (appBaseAddr + 0x153A73);
+	// 	constexpr size_t size = 9;
+	// 	/*
+	// 	dmc4.exe+153A6A - 66 C7 80 1D1A0000 0000 - mov word ptr [eax+00001A1D],0000
+	// 	dmc4.exe+153A73 - 83 43 04 02            - add dword ptr [ebx+04],02
+	// 	*/
+
+	// 	static Function func = {};
+
+	// 	if (!run)
+	// 	{
+	// 		backupHelper.Save(addr, size);
+	// 		func = CreateFunction(EventCutsceneStart, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+	// 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(addr, func.addr, (size - 5));
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+
+	// // EventCutsceneEnd
+	// {
+	// 	auto addr     = (appBaseAddr + 0x153A98);
+	// 	auto jumpAddr = (appBaseAddr + 0x153A9F);
+	// 	constexpr size_t size = 7;
+	// 	/*
+	// 	dmc4.exe+153A98 - C6 80 1D1A0000 01 - mov byte ptr [eax+00001A1D],01
+	// 	dmc4.exe+153A9F - 83 43 04 02       - add dword ptr [ebx+04],02
+	// 	*/
+
+	// 	static Function func = {};
+
+	// 	if (!run)
+	// 	{
+	// 		backupHelper.Save(addr, size);
+	// 		func = CreateFunction(EventCutsceneEnd, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+	// 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+	// 	}
+
+	// 	if (enable)
+	// 	{
+	// 		WriteJump(addr, func.addr, (size - 5));
+	// 	}
+	// 	else
+	// 	{
+	// 		backupHelper.Restore(addr);
+	// 	}
+	// }
+
+
+	// SetBloodyPalaceLevel
 	{
-		auto addr     = (appBaseAddr + 0x4C828B);
-		auto jumpAddr = (appBaseAddr + 0x4C8292);
-		constexpr size_t size = 7;
+		auto addr     = (appBaseAddr + 0x5E539A);
+		auto jumpAddr = (appBaseAddr + 0x5E53A4);
+		constexpr size_t size = 10;
 		/*
-		dmc4.exe+4C828B - 66 89 9E 1D1A0000 - mov [esi+00001A1D],bx
-		dmc4.exe+4C8292 - 8B C6             - mov eax,esi
+		dmc4.exe+5E539A - C7 80 90000000 01000000 - mov [eax+00000090],00000001
+		dmc4.exe+5E53A4 - A1 F49E3501             - mov eax,[dmc4.exe+F59EF4]
 		*/
 
 		static Function func = {};
@@ -415,7 +621,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(EventCutsceneStart, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+			func = CreateFunction(SetBloodyPalaceLevel, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 
@@ -429,62 +635,7 @@ export void Toggle(bool enable)
 		}
 	}
 
-	{
-		auto addr     = (appBaseAddr + 0x153A6A);
-		auto jumpAddr = (appBaseAddr + 0x153A73);
-		constexpr size_t size = 9;
-		/*
-		dmc4.exe+153A6A - 66 C7 80 1D1A0000 0000 - mov word ptr [eax+00001A1D],0000
-		dmc4.exe+153A73 - 83 43 04 02            - add dword ptr [ebx+04],02
-		*/
 
-		static Function func = {};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = CreateFunction(EventCutsceneStart, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
-			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-	// EventCutsceneEnd
-	{
-		auto addr     = (appBaseAddr + 0x153A98);
-		auto jumpAddr = (appBaseAddr + 0x153A9F);
-		constexpr size_t size = 7;
-		/*
-		dmc4.exe+153A98 - C6 80 1D1A0000 01 - mov byte ptr [eax+00001A1D],01
-		dmc4.exe+153A9F - 83 43 04 02       - add dword ptr [ebx+04],02
-		*/
-
-		static Function func = {};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = CreateFunction(EventCutsceneEnd, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
-			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
 
 
 
@@ -492,3 +643,107 @@ export void Toggle(bool enable)
 }
 
 namespaceEnd();
+
+
+
+
+
+
+
+#pragma region Hotkeys
+
+
+
+
+
+
+
+
+// void WindowSize1(byte8 * state)
+// {
+
+
+
+
+
+// 	static bool execute = true;
+
+
+
+
+// 	constexpr byte8 keys[] =
+// 	{
+// 		DIK_LCONTROL,
+// 		DIK_1,
+// 	};
+
+
+// 	uint8 keysDown = 0;
+
+
+
+// 	old_for_all(uint8, index, countof(keys))
+// 	{
+// 		auto & key = keys[index];
+// 		if (state[key] & 0x80)
+// 		{
+// 			keysDown++;
+// 		}
+// 	}
+
+
+
+
+// 	if (keysDown == countof(keys))
+// 	{
+// 		if (execute)
+// 		{
+// 			execute = false;
+// 			SetWindowPos
+// 			(
+// 				appWindow,
+// 				0,
+// 				0,
+// 				0,
+// 				640,
+// 				360,
+// 				0
+// 			);
+// 		}
+// 	}
+// 	else
+// 	{
+// 		execute = true;
+// 	}
+// }
+
+
+
+
+
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

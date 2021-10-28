@@ -6,6 +6,23 @@ import Core;
 
 
 
+
+export namespaceStart(MISSION);
+enum
+{
+	BLOODY_PALACE = 50,
+};
+namespaceEnd();
+
+
+export namespaceStart(FLOOR);
+enum
+{
+	COUNT = 11,
+};
+namespaceEnd();
+
+
 export namespaceStart(PLAYER);
 enum
 {
@@ -154,11 +171,41 @@ namespaceEnd();
 
 
 
-
-
 #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
 
 #pragma pack(push, 1)
+
+
+
+
+
+
+
+
+// export struct KeyData
+// {
+// 	bool enable;
+// 	size_t keys[4];
+// 	size_t keyCount;
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -378,7 +425,9 @@ static_assert(sizeof(SessionData) == 1272);
 
 export struct PlayerActorData
 {
-	_(6568);
+	_(64);
+	vec4 position; // 0x40
+	_(6488);
 	uint32 costume; // 0x19A8
 	uint32 character; // 0x19AC
 	_(109);
@@ -391,6 +440,7 @@ export struct PlayerActorData
 	float maxMagicPoints; // 0x2508
 };
 
+static_assert(offsetof(PlayerActorData, position) == 0x40);
 static_assert(offsetof(PlayerActorData, costume) == 0x19A8);
 static_assert(offsetof(PlayerActorData, character) == 0x19AC);
 static_assert(offsetof(PlayerActorData, enable) == 0x1A1D);
@@ -435,13 +485,15 @@ export struct NextEventData
 	uint32 useDoor; // 0x84
 	uint32 room; // 0x88
 	uint32 position; // 0x8C
-	_(16);
+	uint32 level; // 0x90
+	_(12);
 	bool usePosition; // 0xA0
 };
 
 static_assert(offsetof(NextEventData, useDoor) == 0x84);
 static_assert(offsetof(NextEventData, room) == 0x88);
 static_assert(offsetof(NextEventData, position) == 0x8C);
+static_assert(offsetof(NextEventData, level) == 0x90);
 static_assert(offsetof(NextEventData, usePosition) == 0xA0);
 
 static_assert(sizeof(NextEventData) == 161);

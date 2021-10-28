@@ -3304,21 +3304,842 @@ export void Windows_ToggleCursor(bool enable)
 
 
 
-export bool IsBorderless(HWND windowHandle)
+// export bool IsBorderless(HWND windowHandle)
+// {
+// 	auto style = GetWindowLongA
+// 	(
+// 		windowHandle,
+// 		GWL_STYLE
+// 	);
+
+// 	if (style & WS_BORDER)
+// 	{
+// 		return false;
+// 	}
+
+// 	return true;
+// }
+
+
+
+
+
+
+// @Todo: Update for RVO.
+export void GetWindowPos
+(
+	HWND window,
+	POINT & point
+)
 {
-	auto style = GetWindowLongA
+	if (!window)
+	{
+		return;
+	}
+
+	RECT rect = {};
+
+	GetWindowRect
+	(
+		window,
+		&rect
+	);
+
+	point.x = rect.left;
+	point.y = rect.top;
+}
+
+
+
+
+
+
+
+
+#pragma endregion
+
+
+
+
+
+
+export enum
+{
+	KeyFlags_AtLeastOneKey = 1 << 0,
+};
+
+
+
+export struct KeyData
+{
+	byte8 keys[4];
+	size_t keyCount;
+
+
+
+	void Clear()
+	{
+		SetMemory
+		(
+			keys,
+			0,
+			sizeof(keys)
+		);
+
+		keyCount = 0;
+	}
+
+	void AddKey(byte8 newKey)
+	{
+		if (keyCount >= countof(keys))
+		{
+			return;
+		}
+
+		for_all(keyIndex, keyCount)
+		{
+			if (keys[keyIndex] == newKey)
+			{
+				return;
+			}
+		}
+
+		keys[keyCount] = newKey;
+
+		keyCount++;
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+namespaceStart(DI8);
+
+// $KeyStart
+
+export namespaceStart(KEY);
+enum
+{
+	UNKNOWN_0,
+	ESCAPE,
+	ONE,
+	TWO,
+	THREE,
+	FOUR,
+	FIVE,
+	SIX,
+	SEVEN,
+	EIGHT,
+	NINE,
+	ZERO,
+	MINUS,
+	EQUALS,
+	BACKSPACE,
+	TAB,
+	Q,
+	W,
+	E,
+	R,
+	T,
+	Y,
+	U,
+	I,
+	O,
+	P,
+	LEFT_BRACKET,
+	RIGHT_BRACKET,
+	ENTER,
+	LEFT_CONTROL,
+	A,
+	S,
+	D,
+	F,
+	G,
+	H,
+	J,
+	K,
+	L,
+	SEMICOLON,
+	APOSTROPHE,
+	TILDE,
+	LEFT_SHIFT,
+	BACKSLASH,
+	Z,
+	X,
+	C,
+	V,
+	B,
+	N,
+	M,
+	COMMA,
+	PERIOD,
+	SLASH,
+	RIGHT_SHIFT,
+	NUMPAD_MULTIPLY,
+	LEFT_ALT,
+	SPACE,
+	CAPSLOCK,
+	F1,
+	F2,
+	F3,
+	F4,
+	F5,
+	F6,
+	F7,
+	F8,
+	F9,
+	F10,
+	NUMLOCK,
+	SCROLLLOCK,
+	NUMPAD_7,
+	NUMPAD_8,
+	NUMPAD_9,
+	NUMPAD_SUB,
+	NUMPAD_4,
+	NUMPAD_5,
+	NUMPAD_6,
+	NUMPAD_ADD,
+	NUMPAD_1,
+	NUMPAD_2,
+	NUMPAD_3,
+	NUMPAD_0,
+	NUMPAD_DECIMAL,
+	UNKNOWN_84,
+	UNKNOWN_85,
+	UNKNOWN_86,
+	F11,
+	F12,
+	UNKNOWN_89,
+	UNKNOWN_90,
+	UNKNOWN_91,
+	UNKNOWN_92,
+	UNKNOWN_93,
+	UNKNOWN_94,
+	UNKNOWN_95,
+	UNKNOWN_96,
+	UNKNOWN_97,
+	UNKNOWN_98,
+	UNKNOWN_99,
+	UNKNOWN_100,
+	UNKNOWN_101,
+	UNKNOWN_102,
+	UNKNOWN_103,
+	UNKNOWN_104,
+	UNKNOWN_105,
+	UNKNOWN_106,
+	UNKNOWN_107,
+	UNKNOWN_108,
+	UNKNOWN_109,
+	UNKNOWN_110,
+	UNKNOWN_111,
+	UNKNOWN_112,
+	UNKNOWN_113,
+	UNKNOWN_114,
+	UNKNOWN_115,
+	UNKNOWN_116,
+	UNKNOWN_117,
+	UNKNOWN_118,
+	UNKNOWN_119,
+	UNKNOWN_120,
+	UNKNOWN_121,
+	UNKNOWN_122,
+	UNKNOWN_123,
+	UNKNOWN_124,
+	UNKNOWN_125,
+	UNKNOWN_126,
+	UNKNOWN_127,
+	UNKNOWN_128,
+	UNKNOWN_129,
+	UNKNOWN_130,
+	UNKNOWN_131,
+	UNKNOWN_132,
+	UNKNOWN_133,
+	UNKNOWN_134,
+	UNKNOWN_135,
+	UNKNOWN_136,
+	UNKNOWN_137,
+	UNKNOWN_138,
+	UNKNOWN_139,
+	UNKNOWN_140,
+	UNKNOWN_141,
+	UNKNOWN_142,
+	UNKNOWN_143,
+	UNKNOWN_144,
+	UNKNOWN_145,
+	UNKNOWN_146,
+	UNKNOWN_147,
+	UNKNOWN_148,
+	UNKNOWN_149,
+	UNKNOWN_150,
+	UNKNOWN_151,
+	UNKNOWN_152,
+	UNKNOWN_153,
+	UNKNOWN_154,
+	UNKNOWN_155,
+	UNKNOWN_156,
+	RIGHT_CONTROL,
+	UNKNOWN_158,
+	UNKNOWN_159,
+	UNKNOWN_160,
+	UNKNOWN_161,
+	UNKNOWN_162,
+	UNKNOWN_163,
+	UNKNOWN_164,
+	UNKNOWN_165,
+	UNKNOWN_166,
+	UNKNOWN_167,
+	UNKNOWN_168,
+	UNKNOWN_169,
+	UNKNOWN_170,
+	UNKNOWN_171,
+	UNKNOWN_172,
+	UNKNOWN_173,
+	UNKNOWN_174,
+	UNKNOWN_175,
+	UNKNOWN_176,
+	UNKNOWN_177,
+	UNKNOWN_178,
+	UNKNOWN_179,
+	UNKNOWN_180,
+	NUMPAD_DIVIDE,
+	UNKNOWN_182,
+	PRINT,
+	RIGHT_ALT,
+	UNKNOWN_185,
+	UNKNOWN_186,
+	UNKNOWN_187,
+	UNKNOWN_188,
+	UNKNOWN_189,
+	UNKNOWN_190,
+	UNKNOWN_191,
+	UNKNOWN_192,
+	UNKNOWN_193,
+	UNKNOWN_194,
+	UNKNOWN_195,
+	UNKNOWN_196,
+	PAUSE,
+	UNKNOWN_198,
+	HOME,
+	UP,
+	PAGE_UP,
+	UNKNOWN_202,
+	LEFT,
+	UNKNOWN_204,
+	RIGHT,
+	UNKNOWN_206,
+	END,
+	DOWN,
+	PAGE_DOWN,
+	INSERT,
+	DELETE,
+	UNKNOWN_212,
+	UNKNOWN_213,
+	UNKNOWN_214,
+	UNKNOWN_215,
+	UNKNOWN_216,
+	UNKNOWN_217,
+	UNKNOWN_218,
+	WIN,
+	UNKNOWN_220,
+	UNKNOWN_221,
+	UNKNOWN_222,
+	UNKNOWN_223,
+	UNKNOWN_224,
+	UNKNOWN_225,
+	UNKNOWN_226,
+	UNKNOWN_227,
+	UNKNOWN_228,
+	UNKNOWN_229,
+	UNKNOWN_230,
+	UNKNOWN_231,
+	UNKNOWN_232,
+	UNKNOWN_233,
+	UNKNOWN_234,
+	UNKNOWN_235,
+	UNKNOWN_236,
+	UNKNOWN_237,
+	UNKNOWN_238,
+	UNKNOWN_239,
+	UNKNOWN_240,
+	UNKNOWN_241,
+	UNKNOWN_242,
+	UNKNOWN_243,
+	UNKNOWN_244,
+	UNKNOWN_245,
+	UNKNOWN_246,
+	UNKNOWN_247,
+	UNKNOWN_248,
+	UNKNOWN_249,
+	UNKNOWN_250,
+	UNKNOWN_251,
+	UNKNOWN_252,
+	UNKNOWN_253,
+	UNKNOWN_254,
+	UNKNOWN_255,
+	COUNT,
+};
+namespaceEnd();
+
+export const char * keyNames[] =
+{
+	"UNKNOWN_0",
+	"ESCAPE",
+	"1",
+	"2",
+	"3",
+	"4",
+	"5",
+	"6",
+	"7",
+	"8",
+	"9",
+	"0",
+	"MINUS",
+	"EQUALS",
+	"BACKSPACE",
+	"TAB",
+	"Q",
+	"W",
+	"E",
+	"R",
+	"T",
+	"Y",
+	"U",
+	"I",
+	"O",
+	"P",
+	"LEFT_BRACKET",
+	"RIGHT_BRACKET",
+	"ENTER",
+	"LEFT_CONTROL",
+	"A",
+	"S",
+	"D",
+	"F",
+	"G",
+	"H",
+	"J",
+	"K",
+	"L",
+	"SEMICOLON",
+	"APOSTROPHE",
+	"TILDE",
+	"LEFT_SHIFT",
+	"BACKSLASH",
+	"Z",
+	"X",
+	"C",
+	"V",
+	"B",
+	"N",
+	"M",
+	"COMMA",
+	"PERIOD",
+	"SLASH",
+	"RIGHT_SHIFT",
+	"NUMPAD_MULTIPLY",
+	"LEFT_ALT",
+	"SPACE",
+	"CAPSLOCK",
+	"F1",
+	"F2",
+	"F3",
+	"F4",
+	"F5",
+	"F6",
+	"F7",
+	"F8",
+	"F9",
+	"F10",
+	"NUMLOCK",
+	"SCROLLLOCK",
+	"NUMPAD_7",
+	"NUMPAD_8",
+	"NUMPAD_9",
+	"NUMPAD_SUB",
+	"NUMPAD_4",
+	"NUMPAD_5",
+	"NUMPAD_6",
+	"NUMPAD_ADD",
+	"NUMPAD_1",
+	"NUMPAD_2",
+	"NUMPAD_3",
+	"NUMPAD_0",
+	"NUMPAD_DECIMAL",
+	"UNKNOWN_84",
+	"UNKNOWN_85",
+	"UNKNOWN_86",
+	"F11",
+	"F12",
+	"UNKNOWN_89",
+	"UNKNOWN_90",
+	"UNKNOWN_91",
+	"UNKNOWN_92",
+	"UNKNOWN_93",
+	"UNKNOWN_94",
+	"UNKNOWN_95",
+	"UNKNOWN_96",
+	"UNKNOWN_97",
+	"UNKNOWN_98",
+	"UNKNOWN_99",
+	"UNKNOWN_100",
+	"UNKNOWN_101",
+	"UNKNOWN_102",
+	"UNKNOWN_103",
+	"UNKNOWN_104",
+	"UNKNOWN_105",
+	"UNKNOWN_106",
+	"UNKNOWN_107",
+	"UNKNOWN_108",
+	"UNKNOWN_109",
+	"UNKNOWN_110",
+	"UNKNOWN_111",
+	"UNKNOWN_112",
+	"UNKNOWN_113",
+	"UNKNOWN_114",
+	"UNKNOWN_115",
+	"UNKNOWN_116",
+	"UNKNOWN_117",
+	"UNKNOWN_118",
+	"UNKNOWN_119",
+	"UNKNOWN_120",
+	"UNKNOWN_121",
+	"UNKNOWN_122",
+	"UNKNOWN_123",
+	"UNKNOWN_124",
+	"UNKNOWN_125",
+	"UNKNOWN_126",
+	"UNKNOWN_127",
+	"UNKNOWN_128",
+	"UNKNOWN_129",
+	"UNKNOWN_130",
+	"UNKNOWN_131",
+	"UNKNOWN_132",
+	"UNKNOWN_133",
+	"UNKNOWN_134",
+	"UNKNOWN_135",
+	"UNKNOWN_136",
+	"UNKNOWN_137",
+	"UNKNOWN_138",
+	"UNKNOWN_139",
+	"UNKNOWN_140",
+	"UNKNOWN_141",
+	"UNKNOWN_142",
+	"UNKNOWN_143",
+	"UNKNOWN_144",
+	"UNKNOWN_145",
+	"UNKNOWN_146",
+	"UNKNOWN_147",
+	"UNKNOWN_148",
+	"UNKNOWN_149",
+	"UNKNOWN_150",
+	"UNKNOWN_151",
+	"UNKNOWN_152",
+	"UNKNOWN_153",
+	"UNKNOWN_154",
+	"UNKNOWN_155",
+	"UNKNOWN_156",
+	"RIGHT_CONTROL",
+	"UNKNOWN_158",
+	"UNKNOWN_159",
+	"UNKNOWN_160",
+	"UNKNOWN_161",
+	"UNKNOWN_162",
+	"UNKNOWN_163",
+	"UNKNOWN_164",
+	"UNKNOWN_165",
+	"UNKNOWN_166",
+	"UNKNOWN_167",
+	"UNKNOWN_168",
+	"UNKNOWN_169",
+	"UNKNOWN_170",
+	"UNKNOWN_171",
+	"UNKNOWN_172",
+	"UNKNOWN_173",
+	"UNKNOWN_174",
+	"UNKNOWN_175",
+	"UNKNOWN_176",
+	"UNKNOWN_177",
+	"UNKNOWN_178",
+	"UNKNOWN_179",
+	"UNKNOWN_180",
+	"NUMPAD_DIVIDE",
+	"UNKNOWN_182",
+	"PRINT",
+	"RIGHT_ALT",
+	"UNKNOWN_185",
+	"UNKNOWN_186",
+	"UNKNOWN_187",
+	"UNKNOWN_188",
+	"UNKNOWN_189",
+	"UNKNOWN_190",
+	"UNKNOWN_191",
+	"UNKNOWN_192",
+	"UNKNOWN_193",
+	"UNKNOWN_194",
+	"UNKNOWN_195",
+	"UNKNOWN_196",
+	"PAUSE",
+	"UNKNOWN_198",
+	"HOME",
+	"UP",
+	"PAGE_UP",
+	"UNKNOWN_202",
+	"LEFT",
+	"UNKNOWN_204",
+	"RIGHT",
+	"UNKNOWN_206",
+	"END",
+	"DOWN",
+	"PAGE_DOWN",
+	"INSERT",
+	"DELETE",
+	"UNKNOWN_212",
+	"UNKNOWN_213",
+	"UNKNOWN_214",
+	"UNKNOWN_215",
+	"UNKNOWN_216",
+	"UNKNOWN_217",
+	"UNKNOWN_218",
+	"WIN",
+	"UNKNOWN_220",
+	"UNKNOWN_221",
+	"UNKNOWN_222",
+	"UNKNOWN_223",
+	"UNKNOWN_224",
+	"UNKNOWN_225",
+	"UNKNOWN_226",
+	"UNKNOWN_227",
+	"UNKNOWN_228",
+	"UNKNOWN_229",
+	"UNKNOWN_230",
+	"UNKNOWN_231",
+	"UNKNOWN_232",
+	"UNKNOWN_233",
+	"UNKNOWN_234",
+	"UNKNOWN_235",
+	"UNKNOWN_236",
+	"UNKNOWN_237",
+	"UNKNOWN_238",
+	"UNKNOWN_239",
+	"UNKNOWN_240",
+	"UNKNOWN_241",
+	"UNKNOWN_242",
+	"UNKNOWN_243",
+	"UNKNOWN_244",
+	"UNKNOWN_245",
+	"UNKNOWN_246",
+	"UNKNOWN_247",
+	"UNKNOWN_248",
+	"UNKNOWN_249",
+	"UNKNOWN_250",
+	"UNKNOWN_251",
+	"UNKNOWN_252",
+	"UNKNOWN_253",
+	"UNKNOWN_254",
+	"UNKNOWN_255",
+};
+
+// $KeyEnd
+
+static_assert(KEY::COUNT == 256);
+
+
+
+
+
+
+
+
+
+export namespaceStart(BUFFER_SIZE);
+enum
+{
+	KEYBOARD = 256,
+};
+namespaceEnd();
+
+namespaceEnd();
+
+
+
+
+
+#pragma region Global
+
+
+
+export vec2 g_windowSize = {};
+export vec2 g_clientSize = {};
+export vec2 g_renderSize = {};
+
+
+
+export bool g_update3D = false;
+
+
+export float g_frameRateMultiplier = 1.0f;
+
+
+
+
+
+
+
+
+
+
+export POINT GetWindowSize(HWND windowHandle)
+{
+	POINT point = {};
+	RECT  rect  = {};
+
+	if (!windowHandle)
+	{
+		return point;
+	}
+
+	GetWindowRect
 	(
 		windowHandle,
+		&rect
+	);
+
+	point.x = (rect.right  - rect.left);
+	point.y = (rect.bottom - rect.top );
+
+	return point;
+}
+
+export POINT GetClientSize(HWND windowHandle)
+{
+	POINT point = {};
+	RECT  rect  = {};
+	RECT  rect2 = {};
+
+	if (!windowHandle)
+	{
+		return point;
+	}
+
+	GetWindowRect
+	(
+		appWindow,
+		&rect
+	);
+
+	auto style = GetWindowLongA
+	(
+		appWindow,
 		GWL_STYLE
 	);
 
-	if (style & WS_BORDER)
+	AdjustWindowRect
+	(
+		&rect2,
+		style,
+		0
+	);
+
+	rect.left   -= rect2.left;
+	rect.top    -= rect2.top;
+	rect.right  -= rect2.right;
+	rect.bottom -= rect2.bottom;
+
+	point.x = (rect.right  - rect.left);
+	point.y = (rect.bottom - rect.top );
+
+	return point;
+}
+
+
+
+
+
+export void UpdateGlobalWindowSize()
+{
+	if (!appWindow)
 	{
-		return false;
+		return;
 	}
 
-	return true;
+	auto size = GetWindowSize(appWindow);
+
+	g_windowSize =
+	{
+		static_cast<float>(size.x),
+		static_cast<float>(size.y)
+	};
+
+	Log
+	(
+		"%s %g %g",
+		FUNC_NAME,
+		g_windowSize.x,
+		g_windowSize.y
+	);
 }
+
+export void UpdateGlobalClientSize()
+{
+	if (!appWindow)
+	{
+		return;
+	}
+
+	auto size = GetClientSize(appWindow);
+
+	g_clientSize =
+	{
+		static_cast<float>(size.x),
+		static_cast<float>(size.y)
+	};
+
+	Log
+	(
+		"%s %g %g",
+		FUNC_NAME,
+		g_clientSize.x,
+		g_clientSize.y
+	);
+}
+
+export void UpdateGlobalRenderSize
+(
+	uint32 width,
+	uint32 height
+)
+{
+	g_renderSize =
+	{
+		static_cast<float>(width),
+		static_cast<float>(height)
+	};
+
+	Log
+	(
+		"%s %g %g",
+		FUNC_NAME,
+		g_renderSize.x,
+		g_renderSize.y
+	);
+}
+
+
+
+
 
 
 
@@ -3343,63 +4164,3 @@ export bool IsBorderless(HWND windowHandle)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#ifdef __GARBAGE__
-
-
-		// SetLastError(0);
-
-		// if
-		// (
-		// 	!SetFilePointerEx
-		// 	(
-		// 		file,
-		// 		*reinterpret_cast<LARGE_INTEGER *>(&pos),
-		// 		&filePointer,
-		// 		FILE_BEGIN
-		// 	)
-		// )
-		// {
-		// 	error = GetLastError();
-
-		// 	Log("SetFilePointerEx failed. %X", error);
-
-		// 	return false;
-		// }
-
-
-
-
-
-
-
-
-
-
-
-export struct ArbitraryContainer : ArbitraryContainerBase
-{
-
-
-
-
-
-};
-
-
-
-#endif

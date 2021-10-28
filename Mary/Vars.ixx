@@ -5,6 +5,15 @@ import Core;
 #include "../Core/Macros.h"
 
 
+export namespaceStart(MISSION);
+enum
+{
+	BLOODY_PALACE = 21,
+};
+namespaceEnd();
+
+
+
 
 #pragma region Enums
 
@@ -147,7 +156,7 @@ enum
 	STATUS,
 	OPTIONS,
 	DEATH,
-	GET_ITEM,
+	ITEM,
 	MESSAGE,
 	CUSTOMIZE,
 	SAVE,
@@ -175,7 +184,7 @@ enum
 	HARD,
 	VERY_HARD,
 	DANTE_MUST_DIE,
-	MAX,
+	COUNT,
 	HEAVEN_OR_HELL, // Does not exist! Just kept for convenience.
 };
 namespaceEnd();
@@ -2069,6 +2078,25 @@ IntroduceSizeStruct(192);
 IntroduceSizeStruct(240);
 IntroduceSizeStruct(288);
 IntroduceSizeStruct(768);
+
+
+
+// $BloodyPalaceDataStart
+
+export struct BloodyPalaceData
+{
+	_(2084);
+	uint16 level; // 0x824
+	uint16 lastLevel; // 0x826
+};
+
+static_assert(offsetof(BloodyPalaceData, level) == 0x824);
+static_assert(offsetof(BloodyPalaceData, lastLevel) == 0x826);
+
+static_assert(sizeof(BloodyPalaceData) == 2088);
+
+// $BloodyPalaceDataEnd
+
 
 // $EventDataStart
 

@@ -66,15 +66,10 @@ export void UpdateMouseCursor(HWND windowHandle)
 
 
 		#ifdef _WIN64
-
 		SetClassLongPtrA
-
 		#else
-
 		SetClassLongA
-
 		#endif
-
 		(
 			windowHandle,
 			GCLP_HCURSOR,

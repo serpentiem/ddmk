@@ -12,8 +12,10 @@ import Core_GUI;
 #include "../Global.h"
 
 import Windows;
+import DI8;
 
 using namespace Windows;
+using namespace DI8;
 
 import Actor;
 import Arcade;
@@ -82,51 +84,42 @@ void BuildFonts()
 	io.Fonts->Build();
 }
 
-// @Merge
-void TooltipHelper
-(
-	const char * name,
-	const char * description,
-	float x = 2048.0f
-)
+
+
+
+
+
+
+void UpdateGlobalScale()
 {
-	ImGui::TextDisabled(name);
+	auto & io = ImGui::GetIO();
 
-	if (ImGui::IsItemHovered())
-	{
-		ImGui::BeginTooltip();
-		ImGui::PushTextWrapPos(x);
-		ImGui::Text(description);
-		ImGui::PopTextWrapPos();
-		ImGui::EndTooltip();
-	}
-}
-
-void DescriptionHelper
-(
-	const char * description,
-	float width = 500.0f
-)
-{
-	ImGui::PushTextWrapPos(width);
-	ImGui::Text(description);
-	ImGui::PopTextWrapPos();
-}
-
-void CenterText(const char * name)
-{
-	float nameWidth = ImGui::CalcTextSize(name).x;
-	float cursorPosX = ImGui::GetCursorPosX();
-	float newCursorPosX = (cursorPosX + ((ImGui::GetWindowSize().x - nameWidth) / 2));
-
-	ImGui::SetCursorPosX(newCursorPosX);
-
-	ImGui::Text(name);
+	io.FontGlobalScale = activeConfig.globalScale;
 }
 
 #pragma endregion
 
 #pragma region Common
+
+const char * floorNames[] =
+{
+	"Floor 1",
+	"Berial",
+	"Floor 2",
+	"Bael",
+	"Floor 3",
+	"Echidna",
+	"Floor 4",
+	"Credo",
+	"Floor 5",
+	"Agnus",
+	"Dante",
+};
+
+static_assert(countof(floorNames) == 11);
+static_assert(countof(floorNames) == FLOOR::COUNT);
+
+
 
 
 const char * playerIndexNames[] =
@@ -287,6 +280,37 @@ const char * characterNames[] =
 
 
 #pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -517,6 +541,17 @@ void ActorSection()
 				Actor::Toggle(activeConfig.Actor.enable);
 			}
 		}
+
+		ImGui::SameLine();
+
+		TooltipHelper
+		(
+			"(?)",
+			"Requires restart to toggle input extensions."
+		);
+
+
+
 		ImGui::Text("");
 
 
@@ -705,11 +740,8 @@ void ArcadeSection()
 			ImGuiComboFlags_HeightLargest
 		);
 
-		if
-		(
-			(activeConfig.Arcade.mission >= 1 ) &&
-			(activeConfig.Arcade.mission <= 20)
-		)
+
+		if (activeConfig.Arcade.mission > 0)
 		{
 			GUI_ComboMap2
 			(
@@ -721,19 +753,32 @@ void ArcadeSection()
 				queuedConfig.Arcade.mode,
 				ImGuiComboFlags_HeightLargest
 			);
+		}
 
+
+
+
+		if
+		(
+			(activeConfig.Arcade.mission >= 1 ) &&
+			(activeConfig.Arcade.mission <= 20)
+		)
+		{
 			// Room
 			{
 				bool condition = activeConfig.Arcade.ignoreRoom;
 
 				GUI_PushDisable(condition);
 
-				GUI_InputDefault2
+				GUI_InputDefault2<uint32>
 				(
 					"Room",
 					activeConfig.Arcade.room,
 					queuedConfig.Arcade.room,
-					defaultConfig.Arcade.room
+					defaultConfig.Arcade.room,
+					1,
+					"%u",
+					ImGuiInputTextFlags_EnterReturnsTrue
 				);
 
 				GUI_PopDisable(condition);
@@ -754,12 +799,15 @@ void ArcadeSection()
 
 				GUI_PushDisable(condition);
 
-				GUI_InputDefault2
+				GUI_InputDefault2<uint32>
 				(
 					"Position",
 					activeConfig.Arcade.position,
 					queuedConfig.Arcade.position,
-					defaultConfig.Arcade.position
+					defaultConfig.Arcade.position,
+					1,
+					"%u",
+					ImGuiInputTextFlags_EnterReturnsTrue
 				);
 
 				GUI_PopDisable(condition);
@@ -775,26 +823,50 @@ void ArcadeSection()
 			}
 		}
 
+
+
+
+		if (activeConfig.Arcade.mission == MISSION::BLOODY_PALACE)
+		{
+			GUI_Combo2
+			(
+				"Floor",
+				floorNames,
+				activeConfig.Arcade.floor,
+				queuedConfig.Arcade.floor,
+				ImGuiComboFlags_HeightLarge
+			);
+		}
+
+
+
+
+
+
+
+
+
+
 		if (activeConfig.Arcade.mission > 0)
 		{
-			GUI_InputDefault2
+			GUI_InputDefault2<float>
 			(
 				"Hit Points",
 				activeConfig.Arcade.hitPoints,
 				queuedConfig.Arcade.hitPoints,
 				defaultConfig.Arcade.hitPoints,
-				1000.0f,
+				1000,
 				"%g",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			);
 
-			GUI_InputDefault2
+			GUI_InputDefault2<float>
 			(
 				"Magic Points",
 				activeConfig.Arcade.magicPoints,
 				queuedConfig.Arcade.magicPoints,
 				defaultConfig.Arcade.magicPoints,
-				1000.0f,
+				1000,
 				"%g",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			);
@@ -807,12 +879,15 @@ void ArcadeSection()
 				queuedConfig.Arcade.character
 			);
 
-			GUI_InputDefault2
+			GUI_InputDefault2<uint32>
 			(
 				"Costume",
 				activeConfig.Arcade.costume,
 				queuedConfig.Arcade.costume,
-				defaultConfig.Arcade.costume
+				defaultConfig.Arcade.costume,
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
 			);
 		}
 
@@ -1256,6 +1331,46 @@ void CameraSection()
 
 #pragma endregion
 
+
+
+#pragma region Debug
+
+static bool oneHitKill = false;
+
+void Debug()
+{
+	if (ImGui::CollapsingHeader("Debug"))
+	{
+		ImGui::Text("");
+
+		if
+		(
+			GUI_Checkbox
+			(
+				"One Hit Kill",
+				oneHitKill
+			)
+		)
+		{
+			ToggleOneHitKill(oneHitKill);
+		}
+
+		ImGui::Text("");
+	}
+}
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
 #pragma region Overlays
 
 template <typename T>
@@ -1474,7 +1589,7 @@ void MainOverlayWindow()
 	{
 		if (activeConfig.mainOverlayData.showFocus)
 		{
-			ImVec4 color = ImVec4(0, 1, 0, 1);
+			auto color = ImVec4(0, 1, 0, 1);
 			if (GetForegroundWindow() != appWindow)
 			{
 				color = ImVec4(1, 0, 0, 1);
@@ -1587,6 +1702,17 @@ void MainOverlayWindow()
 
 			ImGui::Text("");
 		}();
+
+
+		// auto & io = ImGui::GetIO();
+
+		// ImGui::Text("cursor x %g", io.MousePos.x);
+		// ImGui::Text("cursor y %g", io.MousePos.y);
+		// ImGui::Text("");
+
+
+
+		// ImGui::Text("g_position %u", g_position);
 	};
 
 	OverlayFunction
@@ -1819,13 +1945,13 @@ void System()
 
 		if
 		(
-			GUI_InputDefault2
+			GUI_InputDefault2<float>
 			(
 				"Base Frame Rate",
 				activeConfig.baseFrameRate,
 				queuedConfig.baseFrameRate,
 				defaultConfig.baseFrameRate,
-				1.0f,
+				1,
 				"%.2f",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			)
@@ -1836,13 +1962,13 @@ void System()
 
 		if
 		(
-			GUI_InputDefault2
+			GUI_InputDefault2<float>
 			(
 				"Target Frame Rate",
 				activeConfig.targetFrameRate,
 				queuedConfig.targetFrameRate,
 				defaultConfig.targetFrameRate,
-				1.0f,
+				1,
 				"%.2f",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			)
@@ -2039,51 +2165,112 @@ void TrainingSection()
 
 #pragma region Teleporter
 
-// @Update
-
 void Teleporter()
 {
 	if (ImGui::CollapsingHeader("Teleporter"))
 	{
 		ImGui::Text("");
 
-		auto Draw = []()
+
+
+		[&]()
 		{
+			IntroduceEventData(return);
+			IntroduceNextEventData(return);
+
+
+
 			if (!InGame())
 			{
-				return false;
-			}
-			IntroduceEventData(return false);
-			IntroduceNextEventData(return false);
+				ImGui::Text("Invalid Pointer");
 
-			constexpr float width = 150;
+				return;
+			}
+
+
+
+			if (GUI_Button("Clear"))
+			{
+				nextEventData.position = nextEventData.room = 0;
+			}
+			ImGui::SameLine();
+
+			if (GUI_Button("Current"))
+			{
+				nextEventData.room     = eventData.room;
+				nextEventData.position = g_position;
+			}
+			ImGui::Text("");
+
+
+
+			constexpr float width = 150.0f;
 
 			ImGui::PushItemWidth(width);
-			ImGui::Text("Current");
-			GUI_Input<uint32>("", eventData.room    , 0, "%u", ImGuiInputTextFlags_ReadOnly);
-			//GUI_Input<uint32>("", eventData.position, 0, "%u", ImGuiInputTextFlags_ReadOnly);
-			ImGui::Text("Next");
-			GUI_Input<uint32>("", nextEventData.room    , 1, "%u", 0);
-			GUI_Input<uint32>("", nextEventData.position, 1, "%u", 0);
-			if (GUI_Button("Teleport", ImVec2(width, ImGui::GetFrameHeight())))
-			{
 
+			ImGui::Text("Current");
+
+			GUI_Input<uint32>
+			(
+				"Room",
+				eventData.room,
+				0,
+				"%u",
+				ImGuiInputTextFlags_ReadOnly
+			);
+
+			GUI_Input<uint32>
+			(
+				"Position",
+				g_position,
+				0,
+				"%u",
+				ImGuiInputTextFlags_ReadOnly
+			);
+
+			ImGui::Text("Next");
+
+			GUI_Input<uint32>
+			(
+				"Room",
+				nextEventData.room,
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+
+			GUI_Input<uint32>
+			(
+				"Position",
+				nextEventData.position,
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+
+			if
+			(
+				GUI_Button
+				(
+					"Teleport",
+					ImVec2
+					(
+						width,
+						ImGui::GetFrameHeight()
+					)
+				)
+			)
+			{
 				nextEventData.useDoor = 1;
 				nextEventData.usePosition = true;
 
-
-
 				eventData.event = EVENT::TELEPORT;
 			}
+
 			ImGui::PopItemWidth();
+		}();
 
-			return true;
-		};
 
-		if (!Draw())
-		{
-			ImGui::Text("Invalid Pointer");
-		}
 
 		ImGui::Text("");
 	}
@@ -2097,18 +2284,70 @@ void Teleporter()
 
 
 
-#pragma region Main
 
 
 
+#pragma region Key Bindings
 
-// @Move
 
-void UpdateGlobalScale()
+
+void ToggleShow()
 {
-	auto & io = ImGui::GetIO();
+	g_show = !g_show;
+}
 
-	io.FontGlobalScale = activeConfig.globalScale;
+void ReloadRoom()
+{
+	if (!InGame())
+	{
+		return;
+	}
+
+	IntroduceEventData(return);
+	IntroduceNextEventData(return);
+
+
+
+	nextEventData.room = eventData.room;
+	nextEventData.position = g_position;
+
+
+	nextEventData.useDoor = 1;
+	nextEventData.usePosition = true;
+
+
+
+	eventData.event = EVENT::TELEPORT;
+
+
+
+
+}
+
+
+
+
+void MoveToMainActor()
+{
+	if
+	(
+		!activeConfig.Actor.enable ||
+		!InGame()
+	)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	IntroduceData(g_newActorData[0].baseAddr, mainActorData, PlayerActorData, return);
+
+	for_each(playerIndex, 1, activeConfig.Actor.playerCount)
+	{
+		IntroduceData(g_newActorData[playerIndex].baseAddr, actorData, PlayerActorData, continue);
+
+		actorData.position = mainActorData.position;
+	}
 }
 
 
@@ -2118,6 +2357,116 @@ void UpdateGlobalScale()
 
 
 
+export KeyBinding keyBindings[] =
+{
+	{
+		"Toggle Show",
+		activeConfig.keyData[0],
+		queuedConfig.keyData[0],
+		defaultConfig.keyData[0],
+		ToggleShow,
+		KeyFlags_AtLeastOneKey
+	},
+	{
+		"Reload Room",
+		activeConfig.keyData[1],
+		queuedConfig.keyData[1],
+		defaultConfig.keyData[1],
+		ReloadRoom
+	},
+	{
+		"Move To Main Actor",
+		activeConfig.keyData[2],
+		queuedConfig.keyData[2],
+		defaultConfig.keyData[2],
+		MoveToMainActor
+	},
+};
+
+
+
+void KeyBindings()
+{
+	if (ImGui::CollapsingHeader("Key Bindings"))
+	{
+		ImGui::Text("");
+
+		// DescriptionHelper("");
+		// ImGui::Text("");
+
+
+
+
+		bool condition = false;
+
+		for_all(index, countof(keyBindings))
+		{
+			auto & keyBinding = keyBindings[index];
+
+			if (keyBinding.showPopup)
+			{
+				condition = true;
+
+				break;
+			}
+		}
+
+		GUI_PushDisable(condition);
+
+		for_all(index, countof(keyBindings))
+		{
+			auto & keyBinding = keyBindings[index];
+
+			keyBinding.Main();
+		}
+
+		GUI_PopDisable(condition);
+
+
+
+
+
+
+		ImGui::Text("");
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma region Main
 
 
 
@@ -2132,11 +2481,35 @@ void Main()
 	{
 		run = true;
 
-		ImGui::SetNextWindowSize(ImVec2(600, 650));
+
+
+		constexpr float width  = 600;
+		constexpr float height = 650;
+
+
+
+
+		ImGui::SetNextWindowSize(ImVec2(width, height));
 
 		if constexpr (debug)
 		{
-			ImGui::SetNextWindowPos(ImVec2(950, 50));
+			//ImGui::SetNextWindowPos(ImVec2(950, 50));
+			// ImGui::SetNextWindowPos
+			// (
+			// 	ImVec2
+			// 	(
+			// 		(g_renderSize.x - width),
+			// 		0
+			// 	)
+			// );
+			ImGui::SetNextWindowPos
+			(
+				ImVec2
+				(
+					((g_renderSize.x - width) / 2),
+					50
+				)
+			);
 		}
 		else
 		{
@@ -2211,6 +2584,13 @@ void Main()
 		ArcadeSection();
 		BarsSection();
 		CameraSection();
+
+		if constexpr (debug)
+		{
+			Debug();
+		}
+
+		KeyBindings();
 		Overlays();
 		SpeedSection();
 		System();
@@ -2228,33 +2608,6 @@ void Main()
 
 
 
-
-
-
-
-
-
-		// ImGui::PushItemWidth(200.0f);
-
-		// GUI_Input
-		// (
-		// 	"scrollSpeedY",
-		// 	scrollSpeedY,
-		// 	0.1f,
-		// 	"%g"
-		// );
-
-		// ImGui::PopItemWidth();
-
-
-
-
-
-
-
-
-
-
 		ImGui::Text("");
 	}
 
@@ -2267,7 +2620,7 @@ void Main()
 
 export void GUI_Render()
 {
-	GUI_id = 0;
+	::GUI::id = 0;
 
 	MainOverlayWindow();
 
@@ -2276,13 +2629,34 @@ export void GUI_Render()
 
 
 
+
+
+
+
 	if (g_show)
 	{
 		Main();
 
-
 		CreditsWindow();
 	}
+
+	// keyBindingToggleShow.Popup();
+	// keyBindingReloadRoom.Popup();
+	// keyBindingMoveToMainActor.Popup();
+
+
+	for_all(index, countof(keyBindings))
+	{
+		auto & keyBinding = keyBindings[index];
+
+		keyBinding.Popup();
+	}
+
+
+
+
+
+
 
 
 
@@ -2329,6 +2703,27 @@ export void GUI_Init()
 	//Actor_UpdateIndices();
 	Arcade_UpdateIndices();
 	// MissionSelect_UpdateIndices();
+
+
+
+	{
+		Log("countof(keyNames) %u", countof(keyNames));
+
+		Log("keyNames[0] %s", keyNames[0]);
+
+		auto & newKeyNames = reinterpret_cast<const char *(&)[(countof(keyNames) - 1)]>(keyNames[1]);
+
+
+
+
+
+		Log("countof(newKeyNames) %u", countof(newKeyNames));
+
+		Log("newKeyNames[0] %s", newKeyNames[0]);
+	}
+
+
+
 }
 
 

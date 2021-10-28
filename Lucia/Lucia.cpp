@@ -78,8 +78,8 @@ uint32 DllMain
 
 
 
-		Graphics::Init();
-		UpdateFrameRate();
+		// Graphics::Init();
+		// UpdateFrameRate();
 
 		ToggleForceWindowFocus(false);
 		ToggleForceWindowFocus(activeConfig.forceWindowFocus);

@@ -2202,4 +2202,34 @@ FeedStruct
 
 
 
+
+
+// #region BloodyPalaceData
+{
+
+let items =
+[
+	[ "level"    , "uint16", [], 0x824 ],
+	[ "lastLevel", "uint16", [], 0x826 ],
+];
+
+FeedStruct
+(
+	"BloodyPalaceData",
+	items
+);
+
+}
+// #endregion
+
+
+
+
+
+
+
+
+
+
+
 fs.writeFileSync(location, file);

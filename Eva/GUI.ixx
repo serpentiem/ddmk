@@ -93,47 +93,47 @@ void BuildFonts()
 	io.Fonts->Build();
 }
 
-// @Merge
-void TooltipHelper
-(
-	const char * name,
-	const char * description,
-	float x = 2048.0f
-)
-{
-	ImGui::TextDisabled(name);
+// // @Merge
+// void TooltipHelper
+// (
+// 	const char * name,
+// 	const char * description,
+// 	float x = 2048.0f
+// )
+// {
+// 	ImGui::TextDisabled(name);
 
-	if (ImGui::IsItemHovered())
-	{
-		ImGui::BeginTooltip();
-		ImGui::PushTextWrapPos(x);
-		ImGui::Text(description);
-		ImGui::PopTextWrapPos();
-		ImGui::EndTooltip();
-	}
-}
+// 	if (ImGui::IsItemHovered())
+// 	{
+// 		ImGui::BeginTooltip();
+// 		ImGui::PushTextWrapPos(x);
+// 		ImGui::Text(description);
+// 		ImGui::PopTextWrapPos();
+// 		ImGui::EndTooltip();
+// 	}
+// }
 
-void DescriptionHelper
-(
-	const char * description,
-	float width = 500.0f
-)
-{
-	ImGui::PushTextWrapPos(width);
-	ImGui::Text(description);
-	ImGui::PopTextWrapPos();
-}
+// void DescriptionHelper
+// (
+// 	const char * description,
+// 	float width = 500.0f
+// )
+// {
+// 	ImGui::PushTextWrapPos(width);
+// 	ImGui::Text(description);
+// 	ImGui::PopTextWrapPos();
+// }
 
-void CenterText(const char * name)
-{
-	float nameWidth = ImGui::CalcTextSize(name).x;
-	float cursorPosX = ImGui::GetCursorPosX();
-	float newCursorPosX = (cursorPosX + ((ImGui::GetWindowSize().x - nameWidth) / 2));
+// void CenterText(const char * name)
+// {
+// 	float nameWidth = ImGui::CalcTextSize(name).x;
+// 	float cursorPosX = ImGui::GetCursorPosX();
+// 	float newCursorPosX = (cursorPosX + ((ImGui::GetWindowSize().x - nameWidth) / 2));
 
-	ImGui::SetCursorPosX(newCursorPosX);
+// 	ImGui::SetCursorPosX(newCursorPosX);
 
-	ImGui::Text(name);
-}
+// 	ImGui::Text(name);
+// }
 
 #pragma endregion
 
@@ -1262,13 +1262,7 @@ void ArcadeSection()
 			GUI_PopDisable(condition);
 		}
 
-		GUI_Combo2
-		(
-			"Character",
-			characterNames,
-			activeConfig.Arcade.character,
-			queuedConfig.Arcade.character
-		);
+
 		GUI_InputDefault2
 		(
 			"Hit Points",
@@ -1283,6 +1277,17 @@ void ArcadeSection()
 			queuedConfig.Arcade.magicPoints,
 			defaultConfig.Arcade.magicPoints
 		);
+
+
+		GUI_Combo2
+		(
+			"Character",
+			characterNames,
+			activeConfig.Arcade.character,
+			queuedConfig.Arcade.character
+		);
+
+
 		GUI_ComboMap2
 		(
 			"Melee Weapon",
@@ -1310,6 +1315,10 @@ void ArcadeSection()
 		);
 
 		ImGui::PopItemWidth();
+
+
+
+
 
 		ImGui::Text("");
 	}
@@ -1656,13 +1665,9 @@ void MainOverlayWindow()
 {
 	auto Function = [&]()
 	{
-
-		//ImGui::Text("Borderless %u", IsBorderless());
-
-
 		if (activeConfig.mainOverlayData.showFocus)
 		{
-			ImVec4 color = ImVec4(0, 1, 0, 1);
+			auto color = ImVec4(0, 1, 0, 1);
 			if (GetForegroundWindow() != appWindow)
 			{
 				color = ImVec4(1, 0, 0, 1);
@@ -1697,6 +1702,21 @@ void MainOverlayWindow()
 				g_renderSize.x,
 				g_renderSize.y
 			);
+		}
+
+		if (activeConfig.mainOverlayData.showFrameRateMultiplier)
+		{
+			ImGui::Text("g_frameRateMultiplier %g", g_frameRateMultiplier);
+		}
+
+		if
+		(
+			activeConfig.mainOverlayData.showFocus               ||
+			activeConfig.mainOverlayData.showFPS                 ||
+			activeConfig.mainOverlayData.showSizes               ||
+			activeConfig.mainOverlayData.showFrameRateMultiplier
+		)
+		{
 			ImGui::Text("");
 		}
 
@@ -1727,6 +1747,7 @@ void MainOverlayWindow()
 				ImGui::Text("Z        %g", actorData.position.z);
 				ImGui::Text("Rotation %g", actorData.rotation  );
 			}();
+
 			ImGui::Text("");
 		}
 
@@ -2025,13 +2046,13 @@ void System()
 
 		if
 		(
-			GUI_InputDefault2
+			GUI_InputDefault2<float>
 			(
 				"Frame Rate",
 				activeConfig.frameRate,
 				queuedConfig.frameRate,
 				defaultConfig.frameRate,
-				1.0,
+				1,
 				"%.2f",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			)
@@ -2782,13 +2803,17 @@ void Teleporter()
 	{
 		ImGui::Text("");
 
-		[]()
+
+
+		[&]()
 		{
 			IntroduceSessionData(return);
 			IntroduceEventData(return);
 			IntroduceMainActorData(actorData, return);
 
 			auto & nextPosition = *reinterpret_cast<vec4 *>(appBaseAddr + 0x27E82A0);
+
+
 
 			if (!InGame())
 			{
@@ -2799,12 +2824,7 @@ void Teleporter()
 
 
 
-
-
-
-
-
-			if (GUI_ResetButton())
+			if (GUI_Button("Clear"))
 			{
 				eventData.nextRoom = eventData.nextTrack = 0;
 
@@ -2814,6 +2834,18 @@ void Teleporter()
 					0,
 					sizeof(nextPosition)
 				);
+			}
+			ImGui::SameLine();
+
+			if (GUI_Button("Current"))
+			{
+				eventData.nextTrack = eventData.track;
+				eventData.nextRoom  = eventData.room;
+
+				nextPosition.x = actorData.position.x;
+				nextPosition.y = actorData.position.y;
+				nextPosition.z = actorData.position.z;
+				nextPosition.a = actorData.rotation;
 			}
 			ImGui::Text("");
 
@@ -2833,6 +2865,7 @@ void Teleporter()
 				"%u",
 				ImGuiInputTextFlags_ReadOnly
 			);
+
 			GUI_Input<uint32>
 			(
 				"Room",
@@ -2841,6 +2874,7 @@ void Teleporter()
 				"%u",
 				ImGuiInputTextFlags_ReadOnly
 			);
+
 			GUI_Input<float>
 			(
 				"X",
@@ -2849,6 +2883,7 @@ void Teleporter()
 				"%g",
 				ImGuiInputTextFlags_ReadOnly
 			);
+
 			GUI_Input<float>
 			(
 				"Y",
@@ -2857,6 +2892,7 @@ void Teleporter()
 				"%g",
 				ImGuiInputTextFlags_ReadOnly
 			);
+
 			GUI_Input<float>
 			(
 				"Z",
@@ -2865,6 +2901,7 @@ void Teleporter()
 				"%g",
 				ImGuiInputTextFlags_ReadOnly
 			);
+
 			GUI_Input<float>
 			(
 				"Rotation",
@@ -2874,77 +2911,80 @@ void Teleporter()
 				ImGuiInputTextFlags_ReadOnly
 			);
 
-
-
 			ImGui::Text("Next");
 
 			GUI_Input<uint32>
 			(
 				"Track",
-				eventData.nextTrack
+				eventData.nextTrack,
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
 			);
+
 			GUI_Input<uint32>
 			(
 				"Room",
-				eventData.nextRoom
+				eventData.nextRoom,
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
 			);
-			GUI_Input
+
+			GUI_Input<float>
 			(
 				"X",
 				nextPosition.x,
-				1.0f,
+				1,
 				"%g",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			);
-			GUI_Input
+
+			GUI_Input<float>
 			(
 				"Y",
 				nextPosition.y,
-				1.0f,
+				1,
 				"%g",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			);
-			GUI_Input
+
+			GUI_Input<float>
 			(
 				"Z",
 				nextPosition.z,
-				1.0f,
+				1,
 				"%g",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			);
-			GUI_Input
+
+			GUI_Input<float>
 			(
 				"Rotation",
 				nextPosition.a,
-				1.0f,
+				1,
 				"%g",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			);
 
-
-
-
-
-
-
-
-
-
-			if (GUI_Button("Teleport", ImVec2(width, ImGui::GetFrameHeight())))
+			if
+			(
+				GUI_Button
+				(
+					"Teleport",
+					ImVec2
+					(
+						width,
+						ImGui::GetFrameHeight()
+					)
+				)
+			)
 			{
 				sessionData.event |= EVENT::TELEPORT;
 			}
 
-
-
-
 			ImGui::PopItemWidth();
 		}();
-
-
-
-
-
 
 
 
@@ -2955,6 +2995,192 @@ void Teleporter()
 #pragma endregion
 
 
+
+
+
+
+
+#pragma region Key Bindings
+
+
+
+void ToggleShow()
+{
+	g_show = !g_show;
+}
+
+void ReloadRoom()
+{
+	if (!InGame())
+	{
+		return;
+	}
+
+
+
+	IntroduceSessionData(return);
+	IntroduceEventData(return);
+	IntroduceMainActorData(actorData, return);
+
+	auto & nextPosition = *reinterpret_cast<vec4 *>(appBaseAddr + 0x27E82A0);
+
+
+
+
+
+	eventData.nextTrack = eventData.track;
+	eventData.nextRoom  = eventData.room;
+
+	nextPosition.x = actorData.position.x;
+	nextPosition.y = actorData.position.y;
+	nextPosition.z = actorData.position.z;
+	nextPosition.a = actorData.rotation;
+
+
+	sessionData.event |= EVENT::TELEPORT;
+}
+
+
+
+
+// void MoveToMainActor()
+// {
+// 	if
+// 	(
+// 		!activeConfig.Actor.enable ||
+// 		!InGame()
+// 	)
+// 	{
+// 		return;
+// 	}
+
+// 	LogFunction();
+
+
+
+// 	byte8 * mainActorBaseAddr = 0;
+
+// 	{
+// 		IntroducePlayerCharacterNewActorData();
+
+// 		mainActorBaseAddr = activeNewActorData.baseAddr;
+// 	}
+
+// 	IntroduceData(mainActorBaseAddr, mainActorData, PlayerActorData, return);
+
+
+
+// 	old_for_each(uint8, playerIndex, 1, activeConfig.Actor.playerCount)
+// 	{
+// 		auto & playerData = GetActivePlayerData(playerIndex);
+
+// 		old_for_all(uint8, characterIndex, playerData.characterCount){
+// 		old_for_all(uint8, entityIndex   , ENTITY_COUNT             )
+// 		{
+// 			IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
+
+// 			IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
+
+// 			actorData.position = mainActorData.position;
+// 		}}
+// 	}
+// }
+
+
+
+
+
+
+
+
+export KeyBinding keyBindings[] =
+{
+	{
+		"Toggle Show",
+		activeConfig.keyData[0],
+		queuedConfig.keyData[0],
+		defaultConfig.keyData[0],
+		ToggleShow,
+		KeyFlags_AtLeastOneKey
+	},
+	{
+		"Reload Room",
+		activeConfig.keyData[1],
+		queuedConfig.keyData[1],
+		defaultConfig.keyData[1],
+		ReloadRoom
+	},
+	// {
+	// 	"Move To Main Actor",
+	// 	activeConfig.keyData[2],
+	// 	queuedConfig.keyData[2],
+	// 	defaultConfig.keyData[2],
+	// 	MoveToMainActor
+	// },
+};
+
+
+
+void KeyBindings()
+{
+	if (ImGui::CollapsingHeader("Key Bindings"))
+	{
+		ImGui::Text("");
+
+		// DescriptionHelper("");
+		// ImGui::Text("");
+
+
+
+
+		bool condition = false;
+
+		for_all(index, countof(keyBindings))
+		{
+			auto & keyBinding = keyBindings[index];
+
+			if (keyBinding.showPopup)
+			{
+				condition = true;
+
+				break;
+			}
+		}
+
+		GUI_PushDisable(condition);
+
+		for_all(index, countof(keyBindings))
+		{
+			auto & keyBinding = keyBindings[index];
+
+			keyBinding.Main();
+		}
+
+		GUI_PopDisable(condition);
+
+
+
+
+
+
+		ImGui::Text("");
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma endregion
 
 
 
@@ -3075,6 +3301,8 @@ void Main()
 			Debug();
 		}
 
+
+		KeyBindings();
 		MissionSelectSection();
 		Overlays();
 		System();
@@ -3148,7 +3376,7 @@ export void GUI_Render()
 		//CreateTextures();
 	}
 
-	GUI_id = 0;
+	::GUI::id = 0;
 
 	MainOverlayWindow();
 
@@ -3202,6 +3430,28 @@ export void GUI_Render()
 		// 	SoundWindow();
 		// }
 	}
+
+
+	for_all(index, countof(keyBindings))
+	{
+		auto & keyBinding = keyBindings[index];
+
+		keyBinding.Popup();
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	[&]()
 	{

@@ -1061,41 +1061,126 @@ namespaceEnd();
 
 #pragma endregion
 
-void ToggleShow(byte8 * state)
-{
-	static bool execute = true;
 
-	constexpr byte8 keys[] =
-	{
-		DIK_LCONTROL,
-		DIK_D,
-	};
 
-	uint8 keysDown = 0;
 
-	old_for_all(uint8, index, countof(keys))
-	{
-		auto & key = keys[index];
-		if (state[key] & 0x80)
-		{
-			keysDown++;
-		}
-	}
 
-	if (keysDown == countof(keys))
-	{
-		if (execute)
-		{
-			g_show = !g_show;
+// void ToggleShow(byte8 * state)
+// {
+// 	if (keyBindingToggleShow.showPopup)
+// 	{
+// 		return;
+// 	}
 
-			execute = false;
-		}
-	}
-	else
-	{
-		execute = true;
-	}
-}
+
+
+// 	static bool execute = false;
+
+// 	auto & keyData  = activeConfig.keyDataToggleShow;
+// 	auto & keys     = keyData.keys;
+// 	auto & keyCount = keyData.keyCount;
+
+// 	size_t keysDown = 0;
+
+// 	if (keyCount < 1)
+// 	{
+// 		return;
+// 	}
+
+// 	for_all(keyIndex, keyCount)
+// 	{
+// 		auto & key = keys[keyIndex];
+
+// 		if (state[key] & 0x80)
+// 		{
+// 			keysDown++;
+// 		}
+// 	}
+
+// 	if (keysDown == keyCount)
+// 	{
+// 		if (execute)
+// 		{
+// 			execute = false;
+
+// 			g_show = !g_show;
+// 		}
+// 	}
+// 	else
+// 	{
+// 		execute = true;
+// 	}
+// }
+
+
+
+// void ReloadRoom(byte8 * state)
+// {
+// 	if (keyBindingToggleShow.showPopup)
+// 	{
+// 		return;
+// 	}
+
+
+
+// 	static bool execute = false;
+
+// 	auto & keyData  = activeConfig.keyDataToggleShow;
+// 	auto & keys     = keyData.keys;
+// 	auto & keyCount = keyData.keyCount;
+
+// 	size_t keysDown = 0;
+
+// 	if (keyCount < 1)
+// 	{
+// 		return;
+// 	}
+
+// 	for_all(keyIndex, keyCount)
+// 	{
+// 		auto & key = keys[keyIndex];
+
+// 		if (state[key] & 0x80)
+// 		{
+// 			keysDown++;
+// 		}
+// 	}
+
+// 	if (keysDown == keyCount)
+// 	{
+// 		if (execute)
+// 		{
+// 			execute = false;
+
+// 			g_show = !g_show;
+// 		}
+// 	}
+// 	else
+// 	{
+// 		execute = true;
+// 	}
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void WindowSize1(byte8 * state)
 {
@@ -1264,15 +1349,48 @@ HRESULT GetDeviceStateAKeyboard
 	}
 
 
+	static size_t count = 0;
+
+	if (count < 10)
+	{
+		count++;
+
+		Log("%s %u", FUNC_NAME, BufferSize);
+	}
+
+
+
 
 
 	auto state = reinterpret_cast<byte8 *>(Buffer);
 
 
+	// keyBindingToggleShow.UpdateKeyData(state);
+	// keyBindingToggleShow.Check(state);
+
+	// keyBindingReloadRoom.UpdateKeyData(state);
+	// keyBindingReloadRoom.Check(state);
+
+	// keyBindingMoveToMainActor.UpdateKeyData(state);
+	// keyBindingMoveToMainActor.Check(state);
+
+
+	for_all(index, countof(keyBindings))
+	{
+		auto & keyBinding = keyBindings[index];
+
+		keyBinding.UpdateKeyData(state);
+		keyBinding.Check(state);
+	}
+
+
+
+
+
 
 	ImGui::DI8::UpdateKeyboard(state);
 
-	ToggleShow(state);
+	//ToggleShow(state);
 
 	if (g_show)
 	{

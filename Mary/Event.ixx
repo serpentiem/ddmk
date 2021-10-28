@@ -25,8 +25,8 @@ import Vars;
 
 
 
-bool Event_run[EVENT::COUNT] = {};
-bool MainLoopOnce_run     = false;
+// bool Event_run[EVENT::COUNT] = {};
+// bool MainLoopOnce_run     = false;
 
 
 
@@ -88,9 +88,9 @@ void CreateMainActor(byte8 * actorBaseAddr)
 
 	SetMemory
 	(
-		Event_run,
+		g_eventRun,
 		0,
-		sizeof(Event_run)
+		sizeof(g_eventRun)
 	);
 
 	Actor::EventCreateMainActor(actorBaseAddr);
@@ -115,88 +115,353 @@ void UpdateEnemyCount()
 
 
 
+
+
+const char * eventFuncNames[] =
+{
+	"EventInit",
+	"EventMain",
+	"EventTeleport",
+	"EventPause",
+	"EventStatus",
+	"EventOptions",
+	"EventDeath",
+	"EventItem",
+	"EventMessage",
+	"EventCustomize",
+	"EventSave",
+	"EventDelete",
+	"EventEnd",
+};
+
+static_assert(countof(eventFuncNames) == EVENT::COUNT);
+
+const char * newEventFuncNames[] =
+{
+	"NewEventInit",
+	"NewEventMain",
+	"NewEventTeleport",
+	"NewEventPause",
+	"NewEventStatus",
+	"NewEventOptions",
+	"NewEventDeath",
+	"NewEventItem",
+	"NewEventMessage",
+	"NewEventCustomize",
+	"NewEventSave",
+	"NewEventDelete",
+	"NewEventEnd",
+};
+
+static_assert(countof(newEventFuncNames) == EVENT::COUNT);
+
+
+
 void EventHandler(EventData & eventData)
 {
-
 	using namespace EVENT;
+
+
+
+	auto event = eventData.event;
+	if (event >= COUNT)
+	{
+		static size_t count = 0;
+
+		if (count < 10)
+		{
+			Log("__UNKNOWN_EVENT__ %u", event);
+
+			count++;
+		}
+
+		return;
+	}
+
 
 
 	[&]()
 	{
-		auto event = eventData.event;
-		if (event >= COUNT)
+		auto funcName = eventFuncNames[event];
+
+		auto & run = g_eventRun[event];
+
+		if (!run)
 		{
-			return;
-		}
+			run = true;
 
-		auto & run = Event_run[event];
-		if (run)
-		{
-			return;
-		}
 
-		run = true;
 
-		switch (eventData.event)
-		{
-			case MAIN:
+			switch (event)
 			{
-				Log("Main");
+				case INIT:
+				{
+					Log(funcName);
 
-				Actor::EventMain();
-				BossRush::EventMain();
-				Sound::EventMain();
+					break;
+				}
+				case MAIN:
+				{
+					Log(funcName);
 
-				break;
-			}
-			case TELEPORT:
-			{
-				Log("Teleport");
+					Actor::EventMain();
+					BossRush::EventMain();
+					Sound::EventMain();
 
-				break;
-			}
-			case DEATH:
-			{
-				Log("Death");
+					break;
+				}
+				case TELEPORT:
+				{
+					Log(funcName);
 
-				Actor::EventDeath();
+					break;
+				}
+				case PAUSE:
+				{
+					Log(funcName);
 
-				break;
-			}
-			case CUSTOMIZE:
-			{
-				Log("Customize");
+					break;
+				}
+				case STATUS:
+				{
+					Log(funcName);
 
-				break;
-			}
-			case DELETE:
-			{
-				Log("Delete %u", eventData.subevent);
+					break;
+				}
+				case OPTIONS:
+				{
+					Log(funcName);
 
-				Actor::EventDelete();
-				Item::EventDelete();
-				Sound::EventDelete();
+					break;
+				}
+				case DEATH:
+				{
+					Log(funcName);
 
-				break;
+					Actor::EventDeath();
+
+					break;
+				}
+				case EVENT::ITEM:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case MESSAGE:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case CUSTOMIZE:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case SAVE:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case DELETE:
+				{
+					Log(funcName);
+
+					Actor::EventDelete();
+					Item::EventDelete();
+					Sound::EventDelete();
+
+					break;
+				}
+				case END:
+				{
+					Log(funcName);
+
+					break;
+				}
 			}
 		}
 	}();
 
 
 
-	switch (eventData.event)
+	[&]()
 	{
+		auto funcName = newEventFuncNames[event];
+
+		static uint32 lastEvent = COUNT;
+
+		if (lastEvent != event)
+		{
+			lastEvent = event;
+
+
+
+			switch (event)
+			{
+				case INIT:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case MAIN:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case TELEPORT:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case PAUSE:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case STATUS:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case OPTIONS:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case DEATH:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case EVENT::ITEM:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case MESSAGE:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case CUSTOMIZE:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case SAVE:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case DELETE:
+				{
+					Log(funcName);
+
+					break;
+				}
+				case END:
+				{
+					Log(funcName);
+
+					break;
+				}
+			}
+		}
+	}();
+
+
+
+	switch (event)
+	{
+		case INIT:
+		{
+			break;
+		}
 		case MAIN:
 		{
 			CharacterSwitchController();
-
 			BossLadyController();
 			BossVergilController();
 
 			break;
 		}
+		case TELEPORT:
+		{
+			break;
+		}
+		case PAUSE:
+		{
+			break;
+		}
+		case STATUS:
+		{
+			break;
+		}
+		case OPTIONS:
+		{
+			break;
+		}
+		case DEATH:
+		{
+			break;
+		}
+		case EVENT::ITEM:
+		{
+			break;
+		}
+		case MESSAGE:
+		{
+			break;
+		}
+		case CUSTOMIZE:
+		{
+			break;
+		}
+		case SAVE:
+		{
+			break;
+		}
+		case DELETE:
+		{
+			break;
+		}
+		case END:
+		{
+			break;
+		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -225,7 +490,7 @@ void ContinueGoldOrb()
 {
 	LogFunction();
 
-	Event_run[EVENT::DEATH] = false;
+	g_eventRun[EVENT::DEATH] = false;
 }
 
 void Continue()

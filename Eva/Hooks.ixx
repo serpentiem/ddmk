@@ -18,6 +18,7 @@ import Core_ImGui;
 
 import Config;
 import Global;
+import Graphics;
 import GUI;
 import Input;
 import Vars;
@@ -927,6 +928,16 @@ HRESULT D3D11CreateDeviceAndSwapChain
 
 	CreateRenderTarget();
 
+
+	Graphics::Toggle(false);
+	Graphics::Toggle(true);
+
+	UpdateFrameRate();
+
+
+
+
+
 	[&]()
 	{
 		if ((result != 0) || !ppSwapChain || !*ppSwapChain)
@@ -1180,9 +1191,21 @@ HRESULT GetDeviceStateA
 
 	auto state = reinterpret_cast<byte8 *>(Buffer);
 
+
+
+	for_all(index, countof(keyBindings))
+	{
+		auto & keyBinding = keyBindings[index];
+
+		keyBinding.UpdateKeyData(state);
+		keyBinding.Check(state);
+	}
+
+
+
 	ImGui::DI8::UpdateKeyboard(state);
 
-	ToggleShow(state);
+	//ToggleShow(state);
 
 	if (g_show)
 	{

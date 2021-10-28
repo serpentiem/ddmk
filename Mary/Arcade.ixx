@@ -4,6 +4,11 @@ import Core;
 
 #include "../Core/Macros.h"
 
+import Windows;
+
+using namespace Windows;
+
+
 import Vars;
 
 import Config;
@@ -147,7 +152,7 @@ export void SetCharacter(byte8 * dest)
 
 export void SetRoom()
 {
-	if (!activeConfig.Arcade.enable || activeConfig.BossRush.enable)
+	if (!activeConfig.Arcade.enable)
 	{
 		return;
 	}
@@ -157,7 +162,14 @@ export void SetRoom()
 	IntroduceSessionData();
 	IntroduceNextEventData(return);
 
-	if ((sessionData.mission >= 1) && (sessionData.mission <= 20))
+
+
+	if
+	(
+		(sessionData.mission >= 1 ) &&
+		(sessionData.mission <= 20) &&
+		!activeConfig.BossRush.enable
+	)
 	{
 		if (!activeConfig.Arcade.ignoreRoom)
 		{
@@ -170,7 +182,7 @@ export void SetRoom()
 		}
 	}
 
-	if (sessionData.mission == 21)
+	if (sessionData.mission == MISSION::BLOODY_PALACE)
 	{
 		auto floor = activeConfig.Arcade.floor;
 		if (floor >= countof(floorHelpers))
@@ -178,8 +190,19 @@ export void SetRoom()
 			floor = 0;
 		}
 
-		nextEventData.room     = floorHelpers[floor].room;
-		nextEventData.position = floorHelpers[floor].position;
+		auto & floorHelper = floorHelpers[floor];
+
+		nextEventData.room     = floorHelper.room;
+		nextEventData.position = floorHelper.position;
+
+
+
+		[&]()
+		{
+			IntroduceBloodyPalaceData(return);
+
+			bloodyPalaceData.lastLevel = bloodyPalaceData.level = activeConfig.Arcade.level;
+		}();
 	}
 }
 
@@ -198,7 +221,7 @@ export void EventCreateMainActor(byte8 * baseAddr)
 		auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
 		if
 		(
-			!pool ||
+			!pool    ||
 			!pool[1] ||
 			!pool[6]
 		)
@@ -206,14 +229,14 @@ export void EventCreateMainActor(byte8 * baseAddr)
 			return;
 		}
 
-		SetMemory((pool[1] + 0x82), 0xFF, 11);
-		SetMemory((pool[1] + 0x8E), 0xFF, 1);
-		SetMemory((pool[6] + 0x7E4), 0xFF, 6);
+		SetMemory((pool[1] + 0x82 ), 0xFF, 11);
+		SetMemory((pool[1] + 0x8E ), 0xFF, 1 );
+		SetMemory((pool[6] + 0x7E4), 0xFF, 6 );
 	}();
 
-	auto & unlock = *reinterpret_cast<byte32(*)[4]>(appBaseAddr + 0x564594);
+	// auto & unlock = *reinterpret_cast<byte32(*)[4]>(appBaseAddr + 0x564594);
 
-	unlock[0] |= 1;
+	// unlock[0] |= 1;
 
 	/*
 	dmc3.exe+2AADD0 - 44 84 94 19 82000000 - test [rcx+rbx+00000082],r10l

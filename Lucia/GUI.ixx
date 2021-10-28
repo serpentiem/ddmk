@@ -544,13 +544,9 @@ void MainOverlayWindow()
 {
 	auto Function = [&]()
 	{
-
-		//ImGui::Text("Borderless %u", IsBorderless());
-
-
 		if (activeConfig.mainOverlayData.showFocus)
 		{
-			ImVec4 color = ImVec4(0, 1, 0, 1);
+			auto color = ImVec4(0, 1, 0, 1);
 			if (GetForegroundWindow() != appWindow)
 			{
 				color = ImVec4(1, 0, 0, 1);
@@ -585,78 +581,23 @@ void MainOverlayWindow()
 				g_renderSize.x,
 				g_renderSize.y
 			);
-			ImGui::Text("");
 		}
 
-		// if (activeConfig.mainOverlayData.showEventData)
-		// {
-		// 	[&]()
-		// 	{
-		// 		IntroduceSessionData(return);
-		// 		IntroduceEventData(return);
+		if (activeConfig.mainOverlayData.showFrameRateMultiplier)
+		{
+			ImGui::Text("g_frameRateMultiplier %g", g_frameRateMultiplier);
+		}
 
-		// 		ImGui::Text("event     %.8X", sessionData.event  );
-		// 		ImGui::Text("track     %u"  , eventData.track    );
-		// 		ImGui::Text("room      %u"  , eventData.room     );
-		// 		ImGui::Text("nextTrack %u"  , eventData.nextTrack);
-		// 		ImGui::Text("nextRoom  %u"  , eventData.nextRoom );
-		// 	}();
-		// 	ImGui::Text("");
-		// }
-
-		// if (activeConfig.mainOverlayData.showPosition)
-		// {
-		// 	[&]()
-		// 	{
-		// 		IntroduceMainActorData(actorData, return);
-
-		// 		ImGui::Text("X        %g", actorData.position.x);
-		// 		ImGui::Text("Y        %g", actorData.position.y);
-		// 		ImGui::Text("Z        %g", actorData.position.z);
-		// 		ImGui::Text("Rotation %g", actorData.rotation  );
-		// 	}();
-		// 	ImGui::Text("");
-		// }
-
-		// if constexpr (debug)
-		// {
-		// 	ImGui::Text("meleeWeaponIndex  %u", activeConfig.Actor.meleeWeaponIndex );
-		// 	ImGui::Text("rangedWeaponIndex %u", activeConfig.Actor.rangedWeaponIndex);
-		// 	ImGui::Text("");
-
-		// 	[&]()
-		// 	{
-		// 		IntroduceSessionData(return);
-		// 		IntroduceMainActorData(actorData, return);
-
-		// 		ImGui::Text("state %X", sessionData.state);
-		// 		ImGui::Text("");
-
-		// 		new_for_all(index, 8)
-		// 		{
-		// 			ImGui::Text("state[%u] %X", index, actorData.state[index]);
-		// 		}
-		// 		ImGui::Text("");
-
-		// 		ImGui::Text("state[1] %u", actorData.state[1]);
-		// 		ImGui::Text("");
-
-		// 		{
-		// 			auto color = ImVec4(0, 1, 0, 1);
-
-		// 			if (sessionData.state & 0x200)
-		// 			{
-		// 				color = ImVec4(1, 0, 0, 1);
-		// 			}
-
-		// 			ImGui::PushStyleColor(ImGuiCol_Text, color);
-
-		// 			ImGui::Text("Busy");
-
-		// 			ImGui::PopStyleColor();
-		// 		}
-		// 	}();
-		// }
+		if
+		(
+			activeConfig.mainOverlayData.showFocus               ||
+			activeConfig.mainOverlayData.showFPS                 ||
+			activeConfig.mainOverlayData.showSizes               ||
+			activeConfig.mainOverlayData.showFrameRateMultiplier
+		)
+		{
+			ImGui::Text("");
+		}
 	};
 
 	OverlayFunction
@@ -857,13 +798,13 @@ void System()
 
 		if
 		(
-			GUI_InputDefault2
+			GUI_InputDefault2<float>
 			(
 				"Frame Rate",
 				activeConfig.frameRate,
 				queuedConfig.frameRate,
 				defaultConfig.frameRate,
-				1.0,
+				1,
 				"%.2f",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			)
@@ -931,6 +872,172 @@ void System()
 }
 
 #pragma endregion
+
+
+
+
+
+
+#pragma region Key Bindings
+
+
+
+void ToggleShow()
+{
+	g_show = !g_show;
+}
+
+// void ReloadRoom()
+// {
+// 	if (!InGame())
+// 	{
+// 		return;
+// 	}
+
+// 	IntroduceEventData(return);
+// 	IntroduceNextEventData(return);
+
+
+
+// 	nextEventData.room = eventData.room;
+// 	nextEventData.position = g_position;
+
+
+// 	nextEventData.useDoor = 1;
+// 	nextEventData.usePosition = true;
+
+
+
+// 	eventData.event = EVENT::TELEPORT;
+
+
+
+
+// }
+
+
+
+
+// void MoveToMainActor()
+// {
+// 	if
+// 	(
+// 		!activeConfig.Actor.enable ||
+// 		!InGame()
+// 	)
+// 	{
+// 		return;
+// 	}
+
+// 	LogFunction();
+
+// 	IntroduceData(g_newActorData[0].baseAddr, mainActorData, PlayerActorData, return);
+
+// 	for_each(playerIndex, 1, activeConfig.Actor.playerCount)
+// 	{
+// 		IntroduceData(g_newActorData[playerIndex].baseAddr, actorData, PlayerActorData, continue);
+
+// 		actorData.position = mainActorData.position;
+// 	}
+// }
+
+
+
+
+
+
+
+
+export KeyBinding keyBindings[] =
+{
+	{
+		"Toggle Show",
+		activeConfig.keyData[0],
+		queuedConfig.keyData[0],
+		defaultConfig.keyData[0],
+		ToggleShow,
+		KeyFlags_AtLeastOneKey
+	},
+	// {
+	// 	"Reload Room",
+	// 	activeConfig.keyData[1],
+	// 	queuedConfig.keyData[1],
+	// 	defaultConfig.keyData[1],
+	// 	ReloadRoom
+	// },
+	// {
+	// 	"Move To Main Actor",
+	// 	activeConfig.keyData[2],
+	// 	queuedConfig.keyData[2],
+	// 	defaultConfig.keyData[2],
+	// 	MoveToMainActor
+	// },
+};
+
+
+
+void KeyBindings()
+{
+	if (ImGui::CollapsingHeader("Key Bindings"))
+	{
+		ImGui::Text("");
+
+		// DescriptionHelper("");
+		// ImGui::Text("");
+
+
+
+
+		bool condition = false;
+
+		for_all(index, countof(keyBindings))
+		{
+			auto & keyBinding = keyBindings[index];
+
+			if (keyBinding.showPopup)
+			{
+				condition = true;
+
+				break;
+			}
+		}
+
+		GUI_PushDisable(condition);
+
+		for_all(index, countof(keyBindings))
+		{
+			auto & keyBinding = keyBindings[index];
+
+			keyBinding.Main();
+		}
+
+		GUI_PopDisable(condition);
+
+
+
+
+
+
+		ImGui::Text("");
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma endregion
+
+
 
 
 
@@ -1044,7 +1151,7 @@ void Main()
 
 
 
-
+		KeyBindings();
 		Overlays();
 		System();
 
@@ -1105,18 +1212,18 @@ void Main()
 
 export void GUI_Render()
 {
-	static bool run = false;
+	// static bool run = false;
 
-	if (!run)
-	{
-		run = true;
+	// if (!run)
+	// {
+	// 	run = true;
 
-		// LogFunction();
+	// 	// LogFunction();
 
-		//CreateTextures();
-	}
+	// 	//CreateTextures();
+	// }
 
-	GUI_id = 0;
+	::GUI::id = 0;
 
 	MainOverlayWindow();
 
@@ -1170,6 +1277,21 @@ export void GUI_Render()
 		// 	SoundWindow();
 		// }
 	}
+
+
+	for_all(index, countof(keyBindings))
+	{
+		auto & keyBinding = keyBindings[index];
+
+		keyBinding.Popup();
+	}
+
+
+
+
+
+
+
 
 	[&]()
 	{

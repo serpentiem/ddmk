@@ -524,6 +524,40 @@ void ClearActorData()
 }
 
 
+// @Research: Consider EnableByMainActor.
+void ToggleActorsByMainActor()
+{
+	DebugLogFunction();
+
+
+
+	IntroduceData(g_newActorData[0].baseAddr, mainActorData, PlayerActorData, return);
+
+	DebugLog("%X %u", &mainActorData, mainActorData.enable);
+
+
+
+	for_each(playerIndex, 1, activeConfig.Actor.playerCount)
+	{
+		auto & newActorData = g_newActorData[playerIndex];
+
+		IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
+
+		actorData.enable = mainActorData.enable;
+
+		DebugLog("%X %u", &actorData, actorData.enable);
+	}
+}
+
+
+
+
+
+
+
+
+
+
 
 namespaceStart(Actor);
 
@@ -1075,7 +1109,7 @@ export void Toggle(bool enable)
 
 
 	File::ToggleLoadAssets(enable);
-	Input::ToggleExtensions(enable);
+	//Input::ToggleExtensions(enable);
 
 
 
@@ -1117,6 +1151,24 @@ export void ToggleDisableIdleTimer(bool enable)
 
 	run = true;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1166,7 +1218,17 @@ export void EventSpawnMainActor(byte8 * actorBaseAddr)
 	SpawnPlayerActors();
 }
 
-export void EventCutsceneStart()
+
+
+
+
+
+
+
+
+
+
+export void NewEventMain()
 {
 	if (!activeConfig.Actor.enable)
 	{
@@ -1175,19 +1237,10 @@ export void EventCutsceneStart()
 
 	LogFunction();
 
-
-
-	for_all(playerIndex, activeConfig.Actor.playerCount)
-	{
-		auto & newActorData = g_newActorData[playerIndex];
-
-		IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
-
-		actorData.enable = false;
-	}
+	ToggleActorsByMainActor();
 }
 
-export void EventCutsceneEnd()
+export void NewEventCutscene()
 {
 	if (!activeConfig.Actor.enable)
 	{
@@ -1196,18 +1249,94 @@ export void EventCutsceneEnd()
 
 	LogFunction();
 
-
-
-	for_all(playerIndex, activeConfig.Actor.playerCount)
-	{
-		auto & newActorData = g_newActorData[playerIndex];
-
-		IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
-
-		actorData.enable = true;
-	}
+	ToggleActorsByMainActor();
 }
+
+
+
+
+
+
+
+// export void EventCutsceneEnd()
+// {
+// 	if (!activeConfig.Actor.enable)
+// 	{
+// 		return;
+// 	}
+
+// 	LogFunction();
+
+
+
+// 	for_each(playerIndex, 1, activeConfig.Actor.playerCount)
+// 	{
+// 		auto & newActorData = g_newActorData[playerIndex];
+
+// 		IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
+
+// 		actorData.enable = true;
+// 	}
+// }
 
 namespaceEnd();
 
 #pragma endregion
+
+
+
+export void ToggleOneHitKill(bool enable)
+{
+	LogFunction(enable);
+
+	static bool run = false;
+
+	{
+		auto addr = (appBaseAddr + 0x22DDD4);
+		constexpr size_t size = 4;
+		/*
+		dmc4.exe+22DDD4 - F3 0F5C C1 - subss xmm0,xmm1
+		dmc4.exe+22DDD8 - 0F2F D0    - comiss xmm2,xmm0
+		*/
+
+		constexpr byte8 sect0[] =
+		{
+			0xF3, 0x0F, 0x5C, 0xC0, // subss xmm0,xmm0
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	run = true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

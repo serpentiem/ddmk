@@ -184,7 +184,7 @@ void Load()
 			(
 				me32.szModule,
 				appName,
-				sizeof(appName)
+				sizeof(appName) // @Research: Pretty sure that should be strlen. sizeof includes the terminating zero, strlen doesn't
 			) == 0
 		)
 		{

@@ -518,6 +518,7 @@ FeedStruct
 
 let items =
 [
+	[ "position"      , "vec4"  , [], 0x40   ],
 	[ "costume"       , "uint32", [], 0x19A8 ],
 	[ "character"     , "uint32", [], 0x19AC ],
 	[ "enable"        , "bool"  , [], 0x1A1D ],
@@ -569,6 +570,7 @@ let items =
 	[ "useDoor"    , "uint32", [], 0x84 ],
 	[ "room"       , "uint32", [], 0x88 ],
 	[ "position"   , "uint32", [], 0x8C ],
+	[ "level"   , "uint32", [], 0x90 ],
 	[ "usePosition", "bool"  , [], 0xA0 ],
 ];
 

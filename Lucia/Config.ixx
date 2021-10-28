@@ -8,8 +8,10 @@ import Core;
 #include "../Core/Macros.h"
 
 import Windows;
+import DI8;
 
 using namespace Windows;
+using namespace DI8;
 
 import Vars;
 
@@ -34,9 +36,10 @@ export struct Config
 
 	struct MainOverlayData : OverlayData
 	{
-		bool showFocus = true;
-		bool showFPS = true;
-		bool showSizes = true;
+		bool showFocus               = true;
+		bool showFPS                 = true;
+		bool showSizes               = true;
+		bool showFrameRateMultiplier = true;
 
 		MainOverlayData()
 		{
@@ -50,8 +53,8 @@ export struct Config
 
 	bool skipIntro = (debug) ? true : false;
 
-	double frameRate = (debug) ? 80 : 60;
-	uint8 vSync      = (debug) ? 1  : 0;
+	float frameRate = 60;
+	uint8 vSync     = 0;
 
 	bool hideMouseCursor = false;
 
@@ -60,6 +63,22 @@ export struct Config
 	float globalScale = 1;
 
 	bool showCredits = true;
+
+
+	KeyData keyData[1] =
+	{
+		{
+			{
+				KEY::LEFT_CONTROL,
+				KEY::D
+			},
+			2
+		},
+		// {},
+		// {},
+	};
+
+
 };
 
 #pragma pack(pop)

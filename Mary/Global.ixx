@@ -53,11 +53,28 @@ export namespace DI8
 	DIMOUSESTATE2          mouseState      = {};
 }
 
-export vec2 g_windowSize = {};
-export vec2 g_clientSize = {};
-export vec2 g_renderSize = {};
+// export vec2 g_windowSize = {};
+// export vec2 g_clientSize = {};
+// export vec2 g_renderSize = {};
+
+
+
 
 export uint8 g_scene                 = 0;
+
+export bool g_eventRun[EVENT::COUNT] = {};
+
+
+
+
+
+
+
+
+
+
+
+
 export bool  g_quicksilver           = false;
 export bool  g_disableCameraRotation = false;
 
@@ -66,13 +83,13 @@ export bool  g_disableCameraRotation = false;
 export bool g_haywireNeoGenerator = false;
 
 
-export float g_frameRateMultiplier = 1.0f;
+//export float g_frameRateMultiplier = 1.0f;
 
 
 
 
 // @Remove
-export bool g_resetBossVergil[PLAYER_COUNT] = {};
+//export bool g_resetBossVergil[PLAYER_COUNT] = {};
 
 
 

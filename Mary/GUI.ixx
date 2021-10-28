@@ -105,47 +105,47 @@ void BuildFonts()
 	io.Fonts->Build();
 }
 
-// @Merge
-void TooltipHelper
-(
-	const char * name,
-	const char * description,
-	float x = 2048.0f
-)
-{
-	ImGui::TextDisabled(name);
+// // @Merge
+// void TooltipHelper
+// (
+// 	const char * name,
+// 	const char * description,
+// 	float x = 2048.0f
+// )
+// {
+// 	ImGui::TextDisabled(name);
 
-	if (ImGui::IsItemHovered())
-	{
-		ImGui::BeginTooltip();
-		ImGui::PushTextWrapPos(x);
-		ImGui::Text(description);
-		ImGui::PopTextWrapPos();
-		ImGui::EndTooltip();
-	}
-}
+// 	if (ImGui::IsItemHovered())
+// 	{
+// 		ImGui::BeginTooltip();
+// 		ImGui::PushTextWrapPos(x);
+// 		ImGui::Text(description);
+// 		ImGui::PopTextWrapPos();
+// 		ImGui::EndTooltip();
+// 	}
+// }
 
-void DescriptionHelper
-(
-	const char * description,
-	float width = 500.0f
-)
-{
-	ImGui::PushTextWrapPos(width);
-	ImGui::Text(description);
-	ImGui::PopTextWrapPos();
-}
+// void DescriptionHelper
+// (
+// 	const char * description,
+// 	float width = 500.0f
+// )
+// {
+// 	ImGui::PushTextWrapPos(width);
+// 	ImGui::Text(description);
+// 	ImGui::PopTextWrapPos();
+// }
 
-void CenterText(const char * name)
-{
-	float nameWidth = ImGui::CalcTextSize(name).x;
-	float cursorPosX = ImGui::GetCursorPosX();
-	float newCursorPosX = (cursorPosX + ((ImGui::GetWindowSize().x - nameWidth) / 2));
+// void CenterText(const char * name)
+// {
+// 	float nameWidth = ImGui::CalcTextSize(name).x;
+// 	float cursorPosX = ImGui::GetCursorPosX();
+// 	float newCursorPosX = (cursorPosX + ((ImGui::GetWindowSize().x - nameWidth) / 2));
 
-	ImGui::SetCursorPosX(newCursorPosX);
+// 	ImGui::SetCursorPosX(newCursorPosX);
 
-	ImGui::Text(name);
-}
+// 	ImGui::Text(name);
+// }
 
 #pragma endregion
 
@@ -496,7 +496,7 @@ const char * eventNames[] =
 	"EVENT::STATUS",
 	"EVENT::OPTIONS",
 	"EVENT::DEATH",
-	"EVENT::GET_ITEM",
+	"EVENT::ITEM",
 	"EVENT::MESSAGE",
 	"EVENT::CUSTOMIZE",
 	"EVENT::SAVE",
@@ -3097,11 +3097,12 @@ void ArcadeSection()
 			ImGuiComboFlags_HeightLargest
 		);
 
-		if
-		(
-			(activeConfig.Arcade.mission >= 1 ) &&
-			(activeConfig.Arcade.mission <= 20)
-		)
+
+
+
+
+
+		if (activeConfig.Arcade.mission > 0)
 		{
 			GUI_ComboMap2
 			(
@@ -3112,19 +3113,42 @@ void ArcadeSection()
 				activeConfig.Arcade.mode,
 				queuedConfig.Arcade.mode
 			);
+		}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+		if
+		(
+			(activeConfig.Arcade.mission >= 1 ) &&
+			(activeConfig.Arcade.mission <= 20)
+		)
+		{
 			// Room
 			{
 				bool condition = activeConfig.Arcade.ignoreRoom;
 
 				GUI_PushDisable(condition);
 
-				GUI_InputDefault2
+				GUI_InputDefault2<uint32>
 				(
 					"Room",
 					activeConfig.Arcade.room,
 					queuedConfig.Arcade.room,
-					defaultConfig.Arcade.room
+					defaultConfig.Arcade.room,
+					1,
+					"%u",
+					ImGuiInputTextFlags_EnterReturnsTrue
 				);
 
 				GUI_PopDisable(condition);
@@ -3145,12 +3169,15 @@ void ArcadeSection()
 
 				GUI_PushDisable(condition);
 
-				GUI_InputDefault2
+				GUI_InputDefault2<uint32>
 				(
 					"Position",
 					activeConfig.Arcade.position,
 					queuedConfig.Arcade.position,
-					defaultConfig.Arcade.position
+					defaultConfig.Arcade.position,
+					1,
+					"%u",
+					ImGuiInputTextFlags_EnterReturnsTrue
 				);
 
 				GUI_PopDisable(condition);
@@ -3166,7 +3193,15 @@ void ArcadeSection()
 			}
 		}
 
-		if (activeConfig.Arcade.mission == 21)
+
+
+
+
+
+
+
+
+		if (activeConfig.Arcade.mission == MISSION::BLOODY_PALACE)
 		{
 			GUI_Combo2
 			(
@@ -3176,27 +3211,63 @@ void ArcadeSection()
 				queuedConfig.Arcade.floor,
 				ImGuiComboFlags_HeightLargest
 			);
+
+			GUI_InputDefault2<uint16>
+			(
+				"Level",
+				activeConfig.Arcade.level,
+				queuedConfig.Arcade.level,
+				defaultConfig.Arcade.level,
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
 		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		if (activeConfig.Arcade.mission > 0)
 		{
-			GUI_InputDefault2
+			GUI_InputDefault2<float>
 			(
 				"Hit Points",
 				activeConfig.Arcade.hitPoints,
 				queuedConfig.Arcade.hitPoints,
 				defaultConfig.Arcade.hitPoints,
-				1000.0f,
-				"%.0f"
+				1000,
+				"%g",
+				ImGuiInputTextFlags_EnterReturnsTrue
 			);
-			GUI_InputDefault2
+
+			GUI_InputDefault2<float>
 			(
 				"Magic Points",
 				activeConfig.Arcade.magicPoints,
 				queuedConfig.Arcade.magicPoints,
 				defaultConfig.Arcade.magicPoints,
-				1000.0f,
-				"%.0f"
+				1000,
+				"%g",
+				ImGuiInputTextFlags_EnterReturnsTrue
 			);
 		}
 
@@ -3207,13 +3278,28 @@ void ArcadeSection()
 			activeConfig.Arcade.character,
 			queuedConfig.Arcade.character
 		);
-		GUI_InputDefault2
-		(
-			"Costume",
-			activeConfig.Arcade.costume,
-			queuedConfig.Arcade.costume,
-			defaultConfig.Arcade.costume
-		);
+
+
+
+		if (activeConfig.Arcade.mission > 0)
+		{
+			GUI_InputDefault2<uint8>
+			(
+				"Costume",
+				activeConfig.Arcade.costume,
+				queuedConfig.Arcade.costume,
+				defaultConfig.Arcade.costume,
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+		}
+
+
+
+
+
+
 
 		if
 		(
@@ -7407,7 +7493,7 @@ void MainOverlayWindow()
 	{
 		if (activeConfig.mainOverlayData.showFocus)
 		{
-			ImVec4 color = ImVec4(0, 1, 0, 1);
+			auto color = ImVec4(0, 1, 0, 1);
 			if (GetForegroundWindow() != appWindow)
 			{
 				color = ImVec4(1, 0, 0, 1);
@@ -7444,17 +7530,23 @@ void MainOverlayWindow()
 			);
 		}
 
+		if (activeConfig.mainOverlayData.showFrameRateMultiplier)
+		{
+			ImGui::Text("g_frameRateMultiplier %g", g_frameRateMultiplier);
+		}
+
 		if
 		(
-			activeConfig.mainOverlayData.showFocus ||
-			activeConfig.mainOverlayData.showFPS ||
-			activeConfig.mainOverlayData.showSizes
+			activeConfig.mainOverlayData.showFocus               ||
+			activeConfig.mainOverlayData.showFPS                 ||
+			activeConfig.mainOverlayData.showSizes               ||
+			activeConfig.mainOverlayData.showFrameRateMultiplier
 		)
 		{
 			ImGui::Text("");
 		}
 
-		if (activeConfig.mainOverlayData.showScene)
+		if (activeConfig.mainOverlayData.showEventData)
 		{
 			if (g_scene >= SCENE::COUNT)
 			{
@@ -7464,10 +7556,7 @@ void MainOverlayWindow()
 			{
 				ImGui::Text(sceneNames[g_scene]);
 			}
-		}
 
-		if (activeConfig.mainOverlayData.showEventData)
-		{
 			[&]()
 			{
 				if (g_scene != SCENE::GAME)
@@ -7487,11 +7576,14 @@ void MainOverlayWindow()
 					ImGui::Text(eventNames[eventData.event]);
 				}
 
+				ImGui::Text("");
+
 				ImGui::Text("room         %u", eventData.room        );
 				ImGui::Text("position     %u", eventData.position    );
 				ImGui::Text("nextRoom     %u", nextEventData.room    );
 				ImGui::Text("nextPosition %u", nextEventData.position);
 			}();
+
 			ImGui::Text("");
 		}
 
@@ -7499,11 +7591,6 @@ void MainOverlayWindow()
 		{
 			[&]()
 			{
-				// if (g_scene != SCENE::GAME)
-				// {
-				// 	return;
-				// }
-
 				IntroduceMainActorData(actorData, return);
 
 				ImGui::Text("X        %g", actorData.position.x);
@@ -7511,8 +7598,29 @@ void MainOverlayWindow()
 				ImGui::Text("Z        %g", actorData.position.z);
 				ImGui::Text("Rotation %u", actorData.rotation  );
 			}();
+
 			ImGui::Text("");
 		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		// if
 		// (
@@ -7548,9 +7656,9 @@ void MainOverlayWindow()
 			dmc3.exe+2C61C6 - 44 8B C5          - mov r8d,ebp
 			*/
 
-			constexpr uint8 count = 3;
+			constexpr size_t count = 3;
 
-			old_for_all(uint8, index, count)
+			for_all(index, count)
 			{
 				auto & regionData = regionDataAddr[index];
 
@@ -7560,6 +7668,10 @@ void MainOverlayWindow()
 			}
 		}
 	};
+
+
+
+
 
 	OverlayFunction
 	(
@@ -7594,9 +7706,9 @@ void MainOverlaySettings()
 		);
 		GUI_Checkbox2
 		(
-			"Show Scene",
-			activeConfig.mainOverlayData.showScene,
-			queuedConfig.mainOverlayData.showScene
+			"Show Frame Rate Multiplier",
+			activeConfig.mainOverlayData.showFrameRateMultiplier,
+			queuedConfig.mainOverlayData.showFrameRateMultiplier
 		);
 		GUI_Checkbox2
 		(
@@ -7630,188 +7742,188 @@ void MainOverlaySettings()
 
 
 
-const char * overlay2Label = "Overlay2";
+// const char * overlay2Label = "Overlay2";
 
-bool showMemoryData = true;
-bool showBackupHelper = true;
-bool showActorData = true;
-bool showEnemyData = true;
+// bool showMemoryData = true;
+// bool showBackupHelper = true;
+// bool showActorData = true;
+// bool showEnemyData = true;
 
-struct Overlay2Data : Config::OverlayData
-{
-	Overlay2Data()
-	{
-		enable = false;
+// struct Overlay2Data : Config::OverlayData
+// {
+// 	Overlay2Data()
+// 	{
+// 		enable = false;
 
-		pos.x = 250;
-	}
-};
+// 		pos.x = 250;
+// 	}
+// };
 
-Overlay2Data activeOverlay2Data;
-Overlay2Data queuedOverlay2Data;
-Overlay2Data defaultOverlay2Data;
+// Overlay2Data activeOverlay2Data;
+// Overlay2Data queuedOverlay2Data;
+// Overlay2Data defaultOverlay2Data;
 
-void Overlay2Window()
-{
-	auto Function = [&]()
-	{
-		if (showMemoryData)
-		{
-			ImGui::Text("Memory Data");
-			ImGui::Text("pos   %u", memoryData.pos);
-			ImGui::Text("end   %u", memoryData.dataSize);
-			ImGui::Text("count %u", memoryData.count);
-			ImGui::Text("");
-		}
+// void Overlay2Window()
+// {
+// 	auto Function = [&]()
+// 	{
+// 		if (showMemoryData)
+// 		{
+// 			ImGui::Text("Memory Data");
+// 			ImGui::Text("pos   %u", memoryData.pos);
+// 			ImGui::Text("end   %u", memoryData.dataSize);
+// 			ImGui::Text("count %u", memoryData.count);
+// 			ImGui::Text("");
+// 		}
 
-		if (showBackupHelper)
-		{
-			ImGui::Text("Backup Helper");
-			ImGui::Text("pos   %u", backupHelper.pos);
-			ImGui::Text("end   %u", backupHelper.dataSize);
-			ImGui::Text("count %u", backupHelper.count);
-			ImGui::Text("");
-		}
+// 		if (showBackupHelper)
+// 		{
+// 			ImGui::Text("Backup Helper");
+// 			ImGui::Text("pos   %u", backupHelper.pos);
+// 			ImGui::Text("end   %u", backupHelper.dataSize);
+// 			ImGui::Text("count %u", backupHelper.count);
+// 			ImGui::Text("");
+// 		}
 
-		if (showActorData)
-		{
-			ImGui::Text("Actor");
-			ImGui::Text("");
+// 		if (showActorData)
+// 		{
+// 			ImGui::Text("Actor");
+// 			ImGui::Text("");
 
-			ImGui::Text("Player");
+// 			ImGui::Text("Player");
 
-			old_for_all(uint64, index, g_playerActorBaseAddrs.count)
-			{
-				ImGui::Text("%.4u %.16llX", index, g_playerActorBaseAddrs[index]);
-			}
+// 			old_for_all(uint64, index, g_playerActorBaseAddrs.count)
+// 			{
+// 				ImGui::Text("%.4u %.16llX", index, g_playerActorBaseAddrs[index]);
+// 			}
 
-			ImGui::Text("");
-		}
+// 			ImGui::Text("");
+// 		}
 
-		old_for_all(uint8, index, CHANNEL::MAX)
-		{
-			ImGui::Text("g_helperIndices[%u] %u", index, g_helperIndices[index]);
-		}
-		ImGui::Text("");
+// 		old_for_all(uint8, index, CHANNEL::MAX)
+// 		{
+// 			ImGui::Text("g_helperIndices[%u] %u", index, g_helperIndices[index]);
+// 		}
+// 		ImGui::Text("");
 
-		ImGui::Text("g_haywireNeoGenerator %u", g_haywireNeoGenerator);
-		ImGui::Text("");
-
-
-		old_for_all(uint8, playerIndex, PLAYER_COUNT)
-		{
-			ImGui::Text("%.4u %g", playerIndex, g_hitPoints[playerIndex]);
-		}
-		ImGui::Text("");
-
-		old_for_all(uint8, playerIndex, PLAYER_COUNT)
-		{
-			ImGui::Text("%.4u %g", playerIndex, g_magicPoints[playerIndex]);
-		}
-		ImGui::Text("");
+// 		ImGui::Text("g_haywireNeoGenerator %u", g_haywireNeoGenerator);
+// 		ImGui::Text("");
 
 
+// 		old_for_all(uint8, playerIndex, PLAYER_COUNT)
+// 		{
+// 			ImGui::Text("%.4u %g", playerIndex, g_hitPoints[playerIndex]);
+// 		}
+// 		ImGui::Text("");
+
+// 		old_for_all(uint8, playerIndex, PLAYER_COUNT)
+// 		{
+// 			ImGui::Text("%.4u %g", playerIndex, g_magicPoints[playerIndex]);
+// 		}
+// 		ImGui::Text("");
 
 
-		{
-			auto & gamepad = GetGamepad(0);
 
-			ImGui::Text("Gamepad");
-			ImGui::Text("");
 
-			old_for_all(uint8, buttonIndex, 4)
-			{
-				ImGui::Text("buttons[%u] %X", buttonIndex, gamepad.buttons[buttonIndex]);
-			}
-			ImGui::Text("");
-		}
+// 		{
+// 			auto & gamepad = GetGamepad(0);
 
-		[]()
-		{
-			auto & newActorData = GetNewActorData(0, 0, ENTITY::MAIN);
+// 			ImGui::Text("Gamepad");
+// 			ImGui::Text("");
 
-			IntroducePlayerActorData(newActorData.baseAddr, actorData, return);
+// 			old_for_all(uint8, buttonIndex, 4)
+// 			{
+// 				ImGui::Text("buttons[%u] %X", buttonIndex, gamepad.buttons[buttonIndex]);
+// 			}
+// 			ImGui::Text("");
+// 		}
 
-			ImGui::Text("IsActive %u", IsActive(actorData));
-		}();
+// 		[]()
+// 		{
+// 			auto & newActorData = GetNewActorData(0, 0, ENTITY::MAIN);
 
-		if (showEnemyData)
-		{
-			ImGui::Text("Enemy");
+// 			IntroducePlayerActorData(newActorData.baseAddr, actorData, return);
 
-			[&]()
-			{
-				IntroduceEnemyVectorData(return);
+// 			ImGui::Text("IsActive %u", IsActive(actorData));
+// 		}();
 
-				ImGui::Text("count %u", enemyVectorData.count);
-				ImGui::Text("");
+// 		if (showEnemyData)
+// 		{
+// 			ImGui::Text("Enemy");
 
-				old_for_all(uint32, index, enemyVectorData.count)
-				{
-					auto & metadata = enemyVectorData.metadata[index];
+// 			[&]()
+// 			{
+// 				IntroduceEnemyVectorData(return);
 
-					ImGui::Text("baseAddr %llX", metadata.baseAddr);
+// 				ImGui::Text("count %u", enemyVectorData.count);
+// 				ImGui::Text("");
 
-					IntroduceData(metadata.baseAddr, actorData, EnemyActorData, continue);
+// 				old_for_all(uint32, index, enemyVectorData.count)
+// 				{
+// 					auto & metadata = enemyVectorData.metadata[index];
 
-					ImGui::Text("speed           %g", actorData.speed          );
-					ImGui::Text("speedMultiplier %g", actorData.speedMultiplier);
-					ImGui::Text("enemy           %u", actorData.enemy          );
-					ImGui::Text("x               %g", actorData.position.x     );
-					ImGui::Text("y               %g", actorData.position.y     );
-					ImGui::Text("z               %g", actorData.position.z     );
-					ImGui::Text("a               %g", actorData.position.a     );
+// 					ImGui::Text("baseAddr %llX", metadata.baseAddr);
 
-					ImGui::Text("");
-				}
-			}();
-		}
-	};
+// 					IntroduceData(metadata.baseAddr, actorData, EnemyActorData, continue);
 
-	OverlayFunction
-	(
-		overlay2Label,
-		activeOverlay2Data,
-		queuedOverlay2Data,
-		Function
-	);
-}
+// 					ImGui::Text("speed           %g", actorData.speed          );
+// 					ImGui::Text("speedMultiplier %g", actorData.speedMultiplier);
+// 					ImGui::Text("enemy           %u", actorData.enemy          );
+// 					ImGui::Text("x               %g", actorData.position.x     );
+// 					ImGui::Text("y               %g", actorData.position.y     );
+// 					ImGui::Text("z               %g", actorData.position.z     );
+// 					ImGui::Text("a               %g", actorData.position.a     );
 
-void Overlay2Settings()
-{
-	auto Function = [&]()
-	{
-		GUI_Checkbox
-		(
-			"Show Memory Data",
-			showMemoryData
-		);
-		GUI_Checkbox
-		(
-			"Show Backup Helper",
-			showBackupHelper
-		);
-		GUI_Checkbox
-		(
-			"Show Actor Data",
-			showActorData
-		);
-		GUI_Checkbox
-		(
-			"Show Enemy Data",
-			showEnemyData
-		);
-	};
+// 					ImGui::Text("");
+// 				}
+// 			}();
+// 		}
+// 	};
 
-	OverlaySettings
-	(
-		overlay2Label,
-		activeOverlay2Data,
-		queuedOverlay2Data,
-		defaultOverlay2Data,
-		Function
-	);
-}
+// 	OverlayFunction
+// 	(
+// 		overlay2Label,
+// 		activeOverlay2Data,
+// 		queuedOverlay2Data,
+// 		Function
+// 	);
+// }
+
+// void Overlay2Settings()
+// {
+// 	auto Function = [&]()
+// 	{
+// 		GUI_Checkbox
+// 		(
+// 			"Show Memory Data",
+// 			showMemoryData
+// 		);
+// 		GUI_Checkbox
+// 		(
+// 			"Show Backup Helper",
+// 			showBackupHelper
+// 		);
+// 		GUI_Checkbox
+// 		(
+// 			"Show Actor Data",
+// 			showActorData
+// 		);
+// 		GUI_Checkbox
+// 		(
+// 			"Show Enemy Data",
+// 			showEnemyData
+// 		);
+// 	};
+
+// 	OverlaySettings
+// 	(
+// 		overlay2Label,
+// 		activeOverlay2Data,
+// 		queuedOverlay2Data,
+// 		defaultOverlay2Data,
+// 		Function
+// 	);
+// }
 
 
 
@@ -8102,15 +8214,15 @@ void Overlays()
 
 
 
-		if constexpr (debug)
-		{
-			GUI_SectionStart("2");
+		// if constexpr (debug)
+		// {
+		// 	GUI_SectionStart("2");
 
-			Overlay2Settings();
+		// 	Overlay2Settings();
 
-			GUI_SectionEnd();
-			ImGui::Text("");
-		}
+		// 	GUI_SectionEnd();
+		// 	ImGui::Text("");
+		// }
 
 
 
@@ -8575,13 +8687,13 @@ void System()
 
 		if
 		(
-			GUI_InputDefault2
+			GUI_InputDefault2<float>
 			(
 				"Frame Rate",
 				activeConfig.frameRate,
 				queuedConfig.frameRate,
 				defaultConfig.frameRate,
-				1.0f,
+				1,
 				"%.2f",
 				ImGuiInputTextFlags_EnterReturnsTrue
 			)
@@ -8755,37 +8867,105 @@ void Teleporter()
 	{
 		ImGui::Text("");
 
-		auto Draw = []()
+
+
+		[&]()
 		{
+			IntroduceEventData(return);
+			IntroduceNextEventData(return);
+
+
+
 			if (!InGame())
 			{
-				return false;
-			}
-			IntroduceEventData(return false);
-			IntroduceNextEventData(return false);
+				ImGui::Text("Invalid Pointer");
 
-			constexpr float width = 150;
+				return;
+			}
+
+
+
+			if (GUI_Button("Clear"))
+			{
+				nextEventData.position = nextEventData.room = 0;
+			}
+			ImGui::SameLine();
+
+			if (GUI_Button("Current"))
+			{
+				nextEventData.room     = static_cast<uint16>(eventData.room    );
+				nextEventData.position = static_cast<uint16>(eventData.position);
+			}
+			ImGui::Text("");
+
+
+
+			constexpr float width = 150.0f;
 
 			ImGui::PushItemWidth(width);
+
 			ImGui::Text("Current");
-			GUI_Input<uint32>("", eventData.room    , 0, "%u", ImGuiInputTextFlags_ReadOnly);
-			GUI_Input<uint32>("", eventData.position, 0, "%u", ImGuiInputTextFlags_ReadOnly);
+
+			GUI_Input<uint32>
+			(
+				"Room",
+				eventData.room,
+				0,
+				"%u",
+				ImGuiInputTextFlags_ReadOnly
+			);
+
+			GUI_Input<uint32>
+			(
+				"Position",
+				eventData.position,
+				0,
+				"%u",
+				ImGuiInputTextFlags_ReadOnly
+			);
+
 			ImGui::Text("Next");
-			GUI_Input<uint16>("", nextEventData.room    , 1, "%u", 0);
-			GUI_Input<uint16>("", nextEventData.position, 1, "%u", 0);
-			if (GUI_Button("Teleport", ImVec2(width, ImGui::GetFrameHeight())))
+
+			GUI_Input<uint16>
+			(
+				"Room",
+				nextEventData.room,
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+
+			GUI_Input<uint16>
+			(
+				"Position",
+				nextEventData.position,
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+
+			if
+			(
+				GUI_Button
+				(
+					"Teleport",
+					ImVec2
+					(
+						width,
+						ImGui::GetFrameHeight()
+					)
+				)
+			)
 			{
 				eventData.event = EVENT::TELEPORT;
 			}
+
 			ImGui::PopItemWidth();
+		}();
 
-			return true;
-		};
 
-		if (!Draw())
-		{
-			ImGui::Text("Invalid Pointer");
-		}
+
+
 
 		ImGui::Text("");
 	}
@@ -9166,6 +9346,201 @@ void Vergil()
 
 
 
+
+
+
+#pragma region Key Bindings
+
+
+
+void ToggleShow()
+{
+	g_show = !g_show;
+}
+
+void ReloadRoom()
+{
+	if (!InGame())
+	{
+		return;
+	}
+
+	IntroduceEventData(return);
+	IntroduceNextEventData(return);
+
+
+
+	nextEventData.room     = static_cast<uint16>(eventData.room    );
+	nextEventData.position = static_cast<uint16>(eventData.position);
+
+
+
+
+
+
+
+	eventData.event = EVENT::TELEPORT;
+
+
+
+
+}
+
+
+
+
+void MoveToMainActor()
+{
+	if
+	(
+		!activeConfig.Actor.enable ||
+		!InGame()
+	)
+	{
+		return;
+	}
+
+	LogFunction();
+
+
+
+	byte8 * mainActorBaseAddr = 0;
+
+	{
+		IntroducePlayerCharacterNewActorData();
+
+		mainActorBaseAddr = activeNewActorData.baseAddr;
+	}
+
+	IntroduceData(mainActorBaseAddr, mainActorData, PlayerActorData, return);
+
+
+
+	old_for_each(uint8, playerIndex, 1, activeConfig.Actor.playerCount)
+	{
+		auto & playerData = GetActivePlayerData(playerIndex);
+
+		old_for_all(uint8, characterIndex, playerData.characterCount){
+		old_for_all(uint8, entityIndex   , ENTITY_COUNT             )
+		{
+			IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
+
+			IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
+
+			actorData.position = mainActorData.position;
+		}}
+	}
+}
+
+
+
+
+
+
+
+
+export KeyBinding keyBindings[] =
+{
+	{
+		"Toggle Show",
+		activeConfig.keyData[0],
+		queuedConfig.keyData[0],
+		defaultConfig.keyData[0],
+		ToggleShow,
+		KeyFlags_AtLeastOneKey
+	},
+	{
+		"Reload Room",
+		activeConfig.keyData[1],
+		queuedConfig.keyData[1],
+		defaultConfig.keyData[1],
+		ReloadRoom
+	},
+	{
+		"Move To Main Actor",
+		activeConfig.keyData[2],
+		queuedConfig.keyData[2],
+		defaultConfig.keyData[2],
+		MoveToMainActor
+	},
+};
+
+
+
+void KeyBindings()
+{
+	if (ImGui::CollapsingHeader("Key Bindings"))
+	{
+		ImGui::Text("");
+
+		// DescriptionHelper("");
+		// ImGui::Text("");
+
+
+
+
+		bool condition = false;
+
+		for_all(index, countof(keyBindings))
+		{
+			auto & keyBinding = keyBindings[index];
+
+			if (keyBinding.showPopup)
+			{
+				condition = true;
+
+				break;
+			}
+		}
+
+		GUI_PushDisable(condition);
+
+		for_all(index, countof(keyBindings))
+		{
+			auto & keyBinding = keyBindings[index];
+
+			keyBinding.Main();
+		}
+
+		GUI_PopDisable(condition);
+
+
+
+
+
+
+		ImGui::Text("");
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #pragma region Main
 
 void UpdateGlobalScale()
@@ -9184,12 +9559,37 @@ void Main()
 		run = true;
 
 
+		constexpr float width  = 600;
+		constexpr float height = 650;
 
-		ImGui::SetNextWindowSize(ImVec2(600, 650));
+
+		ImGui::SetNextWindowSize(ImVec2(width, height));
 
 		if constexpr (debug)
 		{
-			ImGui::SetNextWindowPos(ImVec2(950, 50));
+			//ImGui::SetNextWindowPos(ImVec2(950, 50));
+
+			// ImGui::SetNextWindowPos
+			// (
+			// 	ImVec2
+			// 	(
+			// 		(g_renderSize.x - width - 50),
+			// 		50
+			// 	)
+			// );
+
+
+			ImGui::SetNextWindowPos
+			(
+				ImVec2
+				(
+					((g_renderSize.x - width) / 2),
+					100
+				)
+			);
+
+
+
 		}
 		else
 		{
@@ -9277,6 +9677,7 @@ void Main()
 
 		Enemy();
 		Jukebox();
+		KeyBindings();
 		Lady();
 		Mobility();
 		Other();
@@ -9321,14 +9722,14 @@ export void GUI_Render()
 		CreateTextures();
 	}
 
-	GUI_id = 0;
+	::GUI::id = 0;
 
 	MainOverlayWindow();
 
-	if constexpr (debug)
-	{
-		Overlay2Window();
-	}
+	// if constexpr (debug)
+	// {
+	// 	Overlay2Window();
+	// }
 
 	MissionOverlayWindow();
 
@@ -9355,11 +9756,14 @@ export void GUI_Render()
 
 
 
-		CreditsWindow();
+
+
 
 
 		Main();
 
+
+		CreditsWindow();
 
 
 
@@ -9377,6 +9781,31 @@ export void GUI_Render()
 			SoundWindow();
 		}
 	}
+
+
+	for_all(index, countof(keyBindings))
+	{
+		auto & keyBinding = keyBindings[index];
+
+		keyBinding.Popup();
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	[&]()
 	{

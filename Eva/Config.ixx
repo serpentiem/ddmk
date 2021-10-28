@@ -8,8 +8,10 @@ import Core;
 #include "../Core/Macros.h"
 
 import Windows;
+import DI8;
 
 using namespace Windows;
+using namespace DI8;
 
 import Vars;
 
@@ -99,9 +101,9 @@ export struct Config
 		bool   ignoreRoom      = true;
 		vec4   position        = {};
 		bool   ignorePosition  = true;
-		uint8  character       = CHARACTER::DANTE;
 		uint8  hitPoints       = 30;
 		uint8  magicPoints     = 10;
+		uint8  character       = CHARACTER::DANTE;
 		uint8  meleeWeapon     = WEAPON::FORCE_EDGE;
 		uint8  meleeWeaponForm = MELEE_WEAPON_FORM::DEFAULT;
 		uint8  rangedWeapon    = WEAPON::HANDGUN;
@@ -136,11 +138,12 @@ export struct Config
 
 	struct MainOverlayData : OverlayData
 	{
-		bool showFocus = true;
-		bool showFPS = true;
-		bool showSizes = true;
-		bool showEventData = true;
-		bool showPosition = true;
+		bool showFocus               = true;
+		bool showFPS                 = true;
+		bool showSizes               = true;
+		bool showFrameRateMultiplier = true;
+		bool showEventData           = true;
+		bool showPosition            = true;
 
 		MainOverlayData()
 		{
@@ -155,10 +158,10 @@ export struct Config
 	bool skipIntro                = (debug) ? true : false;
 	bool disablePauseRestrictions = (debug) ? true : false;
 
-	double frameRate = (debug) ? 80 : 60;
-	uint8 vSync      = (debug) ? 1  : 0;
+	float frameRate = (debug) ? 80 : 60;
+	uint8 vSync     = (debug) ? 1  : 0;
 
-	bool hideMouseCursor = (debug) ? false : true;
+	bool hideMouseCursor = false;
 
 	bool forceWindowFocus = true;
 
@@ -176,6 +179,23 @@ export struct Config
 
 
 	bool showCredits = true;
+
+
+	KeyData keyData[2] =
+	{
+		{
+			{
+				KEY::LEFT_CONTROL,
+				KEY::D
+			},
+			2
+		},
+		{},
+		//{},
+	};
+
+
+
 };
 
 #pragma pack(pop)

@@ -105,9 +105,14 @@ uint32 DllMain
 
 
 
+
+
 		File::Toggle(false);
 		File::Toggle(true);
 
+
+		Input::ToggleExtensions(false);
+		Input::ToggleExtensions(activeConfig.Actor.enable);
 
 
 

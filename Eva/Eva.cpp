@@ -122,8 +122,11 @@ uint32 DllMain
 		ToggleDisablePauseRestrictions(false);
 		ToggleDisablePauseRestrictions(activeConfig.disablePauseRestrictions);
 
-		Graphics::Init();
-		UpdateFrameRate();
+		// Graphics::Toggle(false);
+		// Graphics::Toggle(true);
+		// UpdateFrameRate();
+
+
 
 		ToggleForceWindowFocus(false);
 		ToggleForceWindowFocus(activeConfig.forceWindowFocus);

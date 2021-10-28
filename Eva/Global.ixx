@@ -20,7 +20,7 @@ using namespace DI8;
 
 
 
-export float g_frameRateMultiplier = 1.0f;
+// export float g_frameRateMultiplier = 1.0f;
 
 
 export namespace DXGI
@@ -42,9 +42,9 @@ export namespace DI8
 	DIMOUSESTATE2          mouseState      = {};
 }
 
-export vec2 g_windowSize = {};
-export vec2 g_clientSize = {};
-export vec2 g_renderSize = {};
+// export vec2 g_windowSize = {};
+// export vec2 g_clientSize = {};
+// export vec2 g_renderSize = {};
 
 
 export bool g_show               = false;

@@ -21,10 +21,12 @@ import Core;
 import Windows;
 import DXGI;
 import D3D11;
+import DI8;
 
 using namespace Windows;
 using namespace DXGI;
 using namespace D3D11;
+using namespace DI8;
 
 #define debug false
 
@@ -35,15 +37,22 @@ using namespace D3D11;
 
 
 
-export int     GUI_id          = 0;
 
 
-export namespaceStart(GUI);
 
+namespaceStart(GUI);
+
+export int   id          = 0;
 export bool  save        = false;
 export float saveTimeout = 0;
 
 namespaceEnd();
+
+
+
+
+
+
 
 
 // export bool    GUI_hide        = false;
@@ -89,8 +98,8 @@ export enum
 
 export inline void GUI_PushId()
 {
-	ImGui::PushID(GUI_id);
-	GUI_id++;
+	ImGui::PushID(::GUI::id);
+	::GUI::id++;
 }
 
 export inline void GUI_PopId()
@@ -923,6 +932,605 @@ export ID3D11ShaderResourceView * CreateTexture
 
 
 
+// @Research: Consider inline.
+export void TooltipHelper
+(
+	const char * name,
+	const char * description,
+	float x = 2048.0f
+)
+{
+	ImGui::TextDisabled(name);
+
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(x);
+		ImGui::Text(description);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
+
+export void DescriptionHelper
+(
+	const char * description,
+	float width = 500.0f
+)
+{
+	ImGui::PushTextWrapPos(width);
+	ImGui::Text(description);
+	ImGui::PopTextWrapPos();
+}
+
+export void CenterText(const char * name)
+{
+	float nameWidth = ImGui::CalcTextSize(name).x;
+	float cursorPosX = ImGui::GetCursorPosX();
+	float newCursorPosX = (cursorPosX + ((ImGui::GetWindowSize().x - nameWidth) / 2));
+
+	ImGui::SetCursorPosX(newCursorPosX);
+
+	ImGui::Text(name);
+}
+
+export void CenterCursorX(float width)
+{
+	float cursorPosX = ImGui::GetCursorPosX();
+	float newCursorPosX = (cursorPosX + ((ImGui::GetWindowSize().x - width) / 2));
+
+	ImGui::SetCursorPosX(newCursorPosX);
+}
+
+export bool ScrollbarY()
+{
+	auto window = ImGui::GetCurrentWindow();
+	if (!window)
+	{
+		return false;
+	}
+
+	return window->ScrollbarY;
+}
+
+
+
+
+
+
+
+#pragma region Key Bindings
+
+
+
+
+
+export struct KeyBinding
+{
+	struct Data
+	{
+		bool run = false;
+
+		char buffer[512] = {};
+		off_t pos = 0;
+
+		uint32 lastKeys32 = 0;
+	};
+
+
+	const char * name = "";
+
+	Data main  = {};
+	Data popup = {};
+
+	bool showPopup = false;
+
+	KeyData popupKeyData = {};
+
+	KeyData & activeKeyData;
+	KeyData & queuedKeyData;
+	KeyData & defaultKeyData;
+
+	bool executes [3  ] = {};
+	bool executes2[256] = {};
+	bool executes3[1  ] = {};
+
+	byte32 flags = 0;
+
+	typedef void(* func_t)();
+
+	func_t func = 0;
+
+
+
+	KeyBinding
+	(
+		const char * _name,
+		KeyData & _activeKeyData,
+		KeyData & _queuedKeyData,
+		KeyData & _defaultKeyData,
+		func_t    _func  = 0,
+		byte32    _flags = 0
+	) :
+		activeKeyData (_activeKeyData ),
+		queuedKeyData (_queuedKeyData ),
+		defaultKeyData(_defaultKeyData)
+	{
+		name  = _name;
+		func  = _func;
+		flags = _flags;
+	};
+
+	void UpdateBuffer
+	(
+		Data & data,
+		KeyData & keyData
+	)
+	{
+		auto   buffer   = data.buffer;
+		auto & pos      = data.pos;
+		auto & keys     = keyData.keys;
+		auto & keyCount = keyData.keyCount;
+
+
+
+		pos = 0;
+
+		if (keyCount < 1)
+		{
+			SetMemory
+			(
+				buffer,
+				0,
+				sizeof(buffer)
+			);
+		}
+		else
+		{
+			for_all(keyIndex, keyCount)
+			{
+				auto & key = keys[keyIndex];
+
+
+
+				if (keyIndex > 0)
+				{
+					auto dest = (buffer + pos);
+
+					const char * name = " + ";
+
+					auto size = strlen(name);
+
+					CopyMemory
+					(
+						dest,
+						name,
+						size
+					);
+
+					pos += size;
+				}
+
+
+
+				auto dest = (buffer + pos);
+
+				auto name = DI8::keyNames[key];
+
+				auto size = strlen(name);
+
+				CopyMemory
+				(
+					dest,
+					name,
+					size
+				);
+
+				pos += size;
+			}
+
+			buffer[pos] = 0;
+		}
+	};
+
+	void Main()
+	{
+		auto   keys32     = *reinterpret_cast<uint32 *>(activeKeyData.keys);
+		auto & lastKeys32 = main.lastKeys32;
+
+
+
+		if (!main.run)
+		{
+			main.run = true;
+
+			UpdateBuffer(main, activeKeyData);
+		}
+
+		if (lastKeys32 != keys32)
+		{
+			lastKeys32 = keys32;
+
+			UpdateBuffer(main, activeKeyData);
+		}
+
+
+		const auto buttonSize = ImVec2
+		{
+			150,
+			ImGui::GetFrameHeight()
+		};
+
+
+		if
+		(
+			GUI_Button
+			(
+				name,
+				buttonSize
+			)
+		)
+		{
+			popupKeyData.Clear();
+
+			showPopup = true;
+		}
+		ImGui::SameLine();
+
+
+
+		ImGui::Text(main.buffer);
+		ImGui::SameLine(500);
+
+
+
+		if (GUI_ResetButton())
+		{
+			CopyMemory
+			(
+				&queuedKeyData,
+				&defaultKeyData,
+				sizeof(queuedKeyData)
+			);
+			CopyMemory
+			(
+				&activeKeyData,
+				&queuedKeyData,
+				sizeof(activeKeyData)
+			);
+		}
+	};
+
+	void Popup()
+	{
+		if (!showPopup)
+		{
+			return;
+		}
+
+
+
+		auto   keys32     = *reinterpret_cast<uint32 *>(popupKeyData.keys);
+		auto & lastKeys32 = popup.lastKeys32;
+
+		constexpr float width  = 420;
+		constexpr float height = 128;
+
+
+
+		if (!popup.run)
+		{
+			popup.run = true;
+
+			ImGui::SetNextWindowSize
+			(
+				ImVec2
+				(
+					width,
+					height
+				)
+			);
+			ImGui::SetNextWindowPos
+			(
+				ImVec2
+				(
+					((g_renderSize.x - width) / 2),
+					((g_renderSize.y - height) / 2)
+				)
+			);
+		}
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding   , ImVec2(0, 0));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding  , 0           );
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0           );
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize   , ImVec2(0, 0));
+
+		if
+		(
+			ImGui::Begin
+			(
+				"KeyPopup",
+				&showPopup,
+				ImGuiWindowFlags_NoTitleBar |
+				ImGuiWindowFlags_NoResize   |
+				ImGuiWindowFlags_NoMove
+			)
+		)
+		{
+			ImGui::Text("");
+
+
+
+			if (lastKeys32 != keys32)
+			{
+				lastKeys32 = keys32;
+
+				UpdateBuffer(popup, popupKeyData);
+			}
+
+
+
+			CenterText(popup.buffer);
+			ImGui::Text("");
+
+
+
+			const auto buttonSize = ImVec2
+			{
+				64,
+				ImGui::GetFrameHeight()
+			};
+
+			auto & style = ImGui::GetStyle();
+
+			CenterCursorX((buttonSize.x * 3) + (style.ItemInnerSpacing.x * 2));
+
+
+
+			if (GUI_Button("Escape", buttonSize))
+			{
+				popupKeyData.AddKey(KEY::ESCAPE);
+			}
+			ImGui::SameLine();
+
+			if (GUI_Button("Delete", buttonSize))
+			{
+				popupKeyData.AddKey(KEY::DELETE);
+			}
+			ImGui::SameLine();
+
+			if (GUI_Button("Enter", buttonSize))
+			{
+				popupKeyData.AddKey(KEY::ENTER);
+			}
+			ImGui::Text("");
+
+
+
+			if (flags & KeyFlags_AtLeastOneKey)
+			{
+				CenterText("This binding requires at least one key.");
+			}
+
+
+
+			ImGui::Text("");
+		}
+
+		ImGui::End();
+
+		ImGui::PopStyleVar(4);
+	};
+
+	void UpdateKeyData(byte8 * state)
+	{
+		if (!showPopup)
+		{
+			return;
+		}
+
+
+
+		auto & keys     = popupKeyData.keys;
+		auto & keyCount = popupKeyData.keyCount;
+
+
+
+		// Discard
+		{
+			auto & execute = executes[0];
+
+			if (state[KEY::ESCAPE] & 0x80)
+			{
+				if (execute)
+				{
+					execute = false;
+
+					showPopup = false;
+				}
+			}
+			else
+			{
+				execute = true;
+			}
+		}
+
+
+
+		// Clear
+		{
+			auto & execute = executes[1];
+
+			if (state[KEY::DELETE] & 0x80)
+			{
+				if (execute)
+				{
+					execute = false;
+
+					popupKeyData.Clear();
+				}
+			}
+			else
+			{
+				execute = true;
+			}
+		}
+
+
+
+		// Apply
+		{
+			auto & execute = executes[2];
+
+			if (state[KEY::ENTER] & 0x80)
+			{
+				if (execute)
+				{
+					execute = false;
+
+					[&]()
+					{
+						if
+						(
+							(keyCount < 1) &&
+							(flags & KeyFlags_AtLeastOneKey)
+						)
+						{
+							return;
+						}
+
+						CopyMemory
+						(
+							activeKeyData.keys,
+							keys,
+							sizeof(activeKeyData.keys)
+						);
+
+						activeKeyData.keyCount = keyCount;
+
+
+						CopyMemory
+						(
+							queuedKeyData.keys,
+							keys,
+							sizeof(queuedKeyData.keys)
+						);
+
+						queuedKeyData.keyCount = keyCount;
+
+
+
+						showPopup = false;
+
+						GUI::save = true;
+					}();
+				}
+			}
+			else
+			{
+				execute = true;
+			}
+		}
+
+
+
+		constexpr size_t count = 256;
+
+		for_all(index, count)
+		{
+			auto & execute = executes[index];
+
+			if (keyCount >= countof(keys))
+			{
+				break;
+			}
+
+			if
+			(
+				(index == KEY::ESCAPE) ||
+				(index == KEY::DELETE) ||
+				(index == KEY::ENTER )
+			)
+			{
+				continue;
+			}
+
+			if (state[index] & 0x80)
+			{
+				if (execute)
+				{
+					execute = false;
+
+					popupKeyData.AddKey(static_cast<byte8>(index));
+				}
+			}
+			else
+			{
+				execute = true;
+			}
+		}
+	};
+
+
+
+
+	void Check(byte8 * state)
+	{
+		if (showPopup)
+		{
+			return;
+		}
+
+		auto & execute  = executes3[0];
+		auto & keys     = activeKeyData.keys;
+		auto & keyCount = activeKeyData.keyCount;
+
+		size_t keysDown = 0;
+
+		if (keyCount < 1)
+		{
+			return;
+		}
+
+		for_all(keyIndex, keyCount)
+		{
+			auto & key = keys[keyIndex];
+
+			if (state[key] & 0x80)
+			{
+				keysDown++;
+			}
+		}
+
+		if (keysDown == keyCount)
+		{
+			if (execute)
+			{
+				execute = false;
+
+				[&]()
+				{
+					if (!func)
+					{
+						return;
+					}
+
+					func();
+				}();
+			}
+		}
+		else
+		{
+			execute = true;
+		}
+	};
+};
+
+
+
+
+
+#pragma endregion
 
 
 
@@ -945,6 +1553,3 @@ export ID3D11ShaderResourceView * CreateTexture
 
 
 
-
-#ifdef __GARBAGE__
-#endif

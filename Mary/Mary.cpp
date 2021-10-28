@@ -262,14 +262,19 @@ uint32 DllMain
 
 		//Graphics::Init();
 
-		Graphics::Toggle(false);
-		Graphics::Toggle(true);
+		// Graphics::Toggle(false);
+		// Graphics::Toggle(true);
 
 		// ToggleFrameRateFixes(false);
 		// ToggleFrameRateFixes(true);
 
 
-		UpdateFrameRate();
+		//UpdateFrameRate();
+
+
+
+
+
 
 		HUD_Init();
 
@@ -320,6 +325,7 @@ uint32 DllMain
 
 		if constexpr (debug)
 		{
+			// @Todo: Move to Actor.
 			// Disable Idle Timer
 			SetMemory((appBaseAddr + 0x1F2A38), 0x90, 5, MemoryFlags_VirtualProtectDestination); // Dante
 			SetMemory((appBaseAddr + 0x1F29AE), 0x90, 5, MemoryFlags_VirtualProtectDestination); // Vergil

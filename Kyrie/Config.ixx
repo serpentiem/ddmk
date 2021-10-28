@@ -8,8 +8,10 @@ import Core;
 #include "../Core/Macros.h"
 
 import Windows;
+import DI8;
 
 using namespace Windows;
+using namespace DI8;
 
 import Vars;
 
@@ -44,6 +46,7 @@ export struct Config
 		bool   ignoreRoom     = (debug) ? false : true;
 		uint32 position       = 2;
 		bool   ignorePosition = (debug) ? false : true;
+		uint8  floor          = 0;
 		float  hitPoints      = 20000;
 		float  magicPoints    = 10000;
 		uint8  character      = CHARACTER::LADY;
@@ -78,12 +81,12 @@ export struct Config
 
 	struct MainOverlayData : OverlayData
 	{
-		bool showFocus = true;
-		bool showFPS = true;
-		bool showSizes = true;
+		bool showFocus               = true;
+		bool showFPS                 = true;
+		bool showSizes               = true;
 		bool showFrameRateMultiplier = true;
-		bool showEventData = true;
-		bool showSpeed = true;
+		bool showEventData           = true;
+		bool showSpeed               = true;
 
 		MainOverlayData()
 		{
@@ -107,8 +110,8 @@ export struct Config
 
 	bool hideMouseCursor = false;
 
-	float baseFrameRate   = 120.0f;
-	float targetFrameRate = 120.0f;
+	float baseFrameRate   = 60;
+	float targetFrameRate = 60;
 	uint8 vSync           = 0;
 
 	int32 windowPosX = 0;
@@ -139,6 +142,106 @@ export struct Config
 
 
 	bool showCredits = true;
+
+
+
+
+	KeyData keyData[3] =
+	{
+		{
+			{
+				KEY::LEFT_CONTROL,
+				KEY::D
+			},
+			2
+		},
+		{},
+		{},
+	};
+
+
+
+
+
+
+	// KeyData keyDataToggleShow =
+	// {
+	// 	{
+	// 		KEY::LEFT_CONTROL,
+	// 		KEY::D
+	// 	},
+	// 	2
+	// };
+
+	// KeyData keyDataReloadRoom =
+	// {
+	// 	// {
+	// 	// 	KEY::LEFT_CONTROL,
+	// 	// 	KEY::R
+	// 	// },
+	// 	// 2
+	// };
+
+	// KeyData keyDataMoveToMainActor =
+	// {
+	// 	// {
+	// 	// 	KEY::LEFT_CONTROL,
+	// 	// 	KEY::R
+	// 	// },
+	// 	// 2
+	// };
+
+
+
+
+
+
+	// KeyData keyDataToggleShow =
+	// {
+	// 	true,
+	// 	{
+	// 		DIK_LCONTROL,
+	// 		DIK_D,
+	// 	},
+	// 	2
+	// };
+
+	// KeyData keyDataReloadRoom =
+	// {
+	// 	false,
+	// 	{
+	// 		DIK_LCONTROL,
+	// 		DIK_LSHIFT,
+	// 		DIK_R,
+	// 	},
+	// 	3
+	// };
+
+
+
+
+
+
+
+	// size_t keysToggleShow[3] =
+	// {
+	// 	DIK_LCONTROL,
+	// 	DIK_D,
+	// };
+
+
+
+	// size_t keysReloadRoom[3] =
+	// {
+	// 	DIK_LCONTROL,
+	// 	DIK_LSHIFT,
+	// 	DIK_R,
+	// };
+
+
+
+
+
 
 
 };

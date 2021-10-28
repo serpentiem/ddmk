@@ -27,8 +27,29 @@ import Vars;
 
 
 
+struct FloorHelper
+{
+	uint32 level;
+	uint32 room;
+};
 
 
+FloorHelper floorHelpers[] =
+{
+	{ 1  , 705 },
+	{ 20 , 503 },
+	{ 21 , 704 },
+	{ 40 , 504 },
+	{ 41 , 703 },
+	{ 60 , 505 },
+	{ 61 , 701 },
+	{ 80 , 507 },
+	{ 81 , 702 },
+	{ 100, 506 },
+	{ 101, 700 },
+};
+
+static_assert(countof(floorHelpers) == 11);
 
 
 
@@ -233,6 +254,36 @@ export void SetRoomPosition
 
 
 
+	if (activeConfig.Arcade.mission == 50)
+	{
+
+		auto floor = activeConfig.Arcade.floor;
+		if (floor >= FLOOR::COUNT)
+		{
+			floor = 0;
+		}
+
+		auto & floorHelper = floorHelpers[floor];
+
+		char roomName[128];
+
+		snprintf
+		(
+			roomName,
+			sizeof(roomName),
+			"aRoom%03u",
+			floorHelper.room
+		);
+
+		*dataAddr = func_5F1540
+		(
+			roomName,
+			(appBaseAddr + 0xC9C000)
+		);
+
+		*positionAddr = 0;
+	}
+
 
 
 
@@ -245,7 +296,35 @@ export void SetRoomPosition
 
 
 
+export void SetBloodyPalaceLevel()
+{
+	if (!activeConfig.Arcade.enable)
+	{
+		return;
+	}
 
+	LogFunction();
+
+
+	IntroduceNextEventData(return);
+
+
+
+	auto floor = activeConfig.Arcade.floor;
+	if (floor >= FLOOR::COUNT)
+	{
+		floor = 0;
+	}
+
+	auto & floorHelper = floorHelpers[floor];
+
+
+	nextEventData.level = floorHelper.level;
+
+
+
+
+}
 
 
 
