@@ -12,239 +12,409 @@ import Vars;
 
 
 
-void SetScene
-(
-	uint8 scene,
-	bool updateConfig = false
-)
+const char * sceneFuncNames[] =
 {
-	g_scene = scene;
+	"SceneBoot",
+	"SceneIntro",
+	"SceneMain",
+	"SceneMissionSelect",
+	"SceneLoad",
+	"SceneGame",
+	"SceneCutscene",
+	"SceneMissionStart",
+	"SceneMissionResult",
+	"SceneGameOver",
+};
 
-	if (updateConfig)
+static_assert(countof(sceneFuncNames) == SCENE::COUNT);
+
+
+
+void SceneHandler()
+{
+	using namespace SCENE;
+
+	auto scene = g_scene;
+	if (scene >= COUNT)
 	{
-		CopyMemory
-		(
-			&activeConfig,
-			&queuedConfig,
-			sizeof(Config)
-		);
+		Log("__UNKNOWN_SCENE__ %u", scene);
+
+		return;
+	}
+
+	auto funcName = sceneFuncNames[scene];
+
+
+
+	switch (scene)
+	{
+		case MAIN:
+		case MISSION_SELECT:
+		case MISSION_START:
+		{
+			CopyMemory
+			(
+				&activeConfig,
+				&queuedConfig,
+				sizeof(activeConfig)
+			);
+
+			break;
+		}
+	}
+
+
+
+	switch (scene)
+	{
+		case BOOT:
+		{
+			Log(funcName);
+
+			break;
+		}
+		case INTRO:
+		{
+			Log(funcName);
+
+			break;
+		}
+		case MAIN:
+		{
+			Log(funcName);
+
+			Item::SceneMain();
+
+			break;
+		}
+		case MISSION_SELECT:
+		{
+			Log(funcName);
+
+			Item::SceneMissionSelect();
+
+			break;
+		}
+		case LOAD:
+		{
+			Log(funcName);
+
+			break;
+		}
+		case GAME:
+		{
+			Log(funcName);
+
+			Actor::SceneGame();
+
+			break;
+		}
+		case CUTSCENE:
+		{
+			Log(funcName);
+
+			break;
+		}
+		case MISSION_START:
+		{
+			Log(funcName);
+
+			Actor::SceneMissionStart();
+
+			Item::SceneMissionStart();
+
+			break;
+		}
+		case MISSION_RESULT:
+		{
+			Log(funcName);
+
+			break;
+		}
+		case GAME_OVER:
+		{
+			Log(funcName);
+
+			break;
+		}
 	}
 }
 
-void SceneMain()
+template<uint8 scene>
+void SetScene()
 {
-	LogFunction();
+	g_scene = scene;
 
-	SetScene(SCENE::MAIN, true);
-
-	Item::SceneMain();
-}
-
-void SceneMissionSelect()
-{
-	LogFunction();
-
-	SetScene(SCENE::MISSION_SELECT, true);
-
-	Item::SceneMissionSelect();
-}
-
-void SceneMissionStart()
-{
-	LogFunction();
-
-	SetScene(SCENE::MISSION_START, true);
-
-	Actor::SceneMissionStart();
-
-	Item::SceneMissionStart();
-}
-
-void SceneGame()
-{
-	LogFunction();
-
-	SetScene(SCENE::GAME);
-
-	Actor::SceneGame();
-}
-
-void SceneCutscene()
-{
-	LogFunction();
-
-	SetScene(SCENE::CUTSCENE);
-}
-
-void SceneMissionResult()
-{
-	LogFunction();
-
-	SetScene(SCENE::MISSION_RESULT);
+	SceneHandler();
 }
 
 
 
+namespaceStart(Scene);
 
-
-
-// @Todo: Update.
-export void Scene_Init()
+export void Toggle(bool enable)
 {
-	LogFunction();
+	LogFunction(enable);
+
+	static bool run = false;
+
+
 
 	{
-		constexpr byte8 sect0[] =
-		{
-			0xC7, 0x41, 0x38, 0x02, 0x00, 0x00, 0x00, // mov [rcx+38],00000002
-		};
-		auto func = CreateFunction(SceneMain, (appBaseAddr + 0x24058C), true, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		WriteJump((appBaseAddr + 0x240585), func.addr, 2);
+		auto addr     = (appBaseAddr + 0x240585);
+		auto jumpAddr = (appBaseAddr + 0x24058C);
+		constexpr size_t size = 7;
 		/*
 		dmc3.exe+240585 - C7 41 38 02000000 - mov [rcx+38],00000002
 		dmc3.exe+24058C - 33 C0             - xor eax,eax
 		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SetScene<2>, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
 
 	{
-		constexpr byte8 sect0[] =
-		{
-			0x41, 0xC7, 0x41, 0x38, 0x03, 0x00, 0x00, 0x00, // mov [r9+38],00000003
-		};
-		auto func = CreateFunction(SceneMissionSelect, (appBaseAddr + 0x2405F4), true, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		WriteJump((appBaseAddr + 0x2405EC), func.addr, 3);
+		auto addr     = (appBaseAddr + 0x2405EC);
+		auto jumpAddr = (appBaseAddr + 0x2405F4);
+		constexpr size_t size = 8;
 		/*
 		dmc3.exe+2405EC - 41 C7 41 38 03000000 - mov [r9+38],00000003
 		dmc3.exe+2405F4 - 33 C0                - xor eax,eax
 		*/
-	}
 
-// @Todo: Update!
+		static Function func = {};
 
-static bool run = false;
-
-constexpr bool enable = true;
-
-{
-	auto addr     = (appBaseAddr + 0x2405A7);
-	auto jumpAddr = (appBaseAddr + 0x2405AE);
-	constexpr uint32 size = 7;
-	/*
-	dmc3.exe+2405A7 - C7 41 38 03000000 - mov [rcx+38],00000003
-	dmc3.exe+2405AE - 33 C0             - xor eax,eax
-	*/
-
-	static Function func = {};
-
-	if (!run)
-	{
-		backupHelper.Save(addr, size);
-		func = CreateFunction(SceneMissionSelect, jumpAddr, true, true, size);
-		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-	}
-
-	if (enable)
-	{
-		WriteJump(addr, func.addr, (size - 5));
-	}
-	else
-	{
-		backupHelper.Restore(addr);
-	}
-}
-
-run = false;
-
-
-
-
-
-	{
-		constexpr byte8 sect0[] =
+		if (!run)
 		{
-			0xC7, 0x41, 0x38, 0x05, 0x00, 0x00, 0x00, // mov [rcx+38],00000005
-		};
-		auto func = CreateFunction(SceneGame, (appBaseAddr + 0x2404B5), true, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		WriteJump((appBaseAddr + 0x2404AE), func.addr, 2);
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SetScene<3>, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	{
+		auto addr     = (appBaseAddr + 0x2405A7);
+		auto jumpAddr = (appBaseAddr + 0x2405AE);
+		constexpr size_t size = 7;
+		/*
+		dmc3.exe+2405A7 - C7 41 38 03000000 - mov [rcx+38],00000003
+		dmc3.exe+2405AE - 33 C0             - xor eax,eax
+		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SetScene<3>, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	{
+		auto addr     = (appBaseAddr + 0x2404AE);
+		auto jumpAddr = (appBaseAddr + 0x2404B5);
+		constexpr size_t size = 7;
 		/*
 		dmc3.exe+2404AE - C7 41 38 05000000 - mov [rcx+38],00000005
 		dmc3.exe+2404B5 - 33 C0             - xor eax,eax
 		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SetScene<5>, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
 
 	{
-		constexpr byte8 sect0[] =
-		{
-			0xB8, 0x06, 0x00, 0x00, 0x00, // mov eax,00000006
-		};
-		auto func = CreateFunction(SceneCutscene, (appBaseAddr + 0x23A590), true, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		WriteJump((appBaseAddr + 0x23A58B), func.addr);
+		auto addr     = (appBaseAddr + 0x23A58B);
+		auto jumpAddr = (appBaseAddr + 0x23A590);
+		constexpr size_t size = 5;
 		/*
 		dmc3.exe+23A58B - B8 06000000 - mov eax,00000006
 		dmc3.exe+23A590 - 89 43 50    - mov [rbx+50],eax
 		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SetScene<6>, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
 
 	{
-		constexpr byte8 sect0[] =
-		{
-			0xC7, 0x41, 0x38, 0x06, 0x00, 0x00, 0x00, // mov [rcx+38],00000006
-		};
-		auto func = CreateFunction(SceneCutscene, (appBaseAddr + 0x2404E1), true, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		WriteJump((appBaseAddr + 0x2404DA), func.addr, 2);
+		auto addr     = (appBaseAddr + 0x2404DA);
+		auto jumpAddr = (appBaseAddr + 0x2404E1);
+		constexpr size_t size = 7;
 		/*
 		dmc3.exe+2404DA - C7 41 38 06000000 - mov [rcx+38],00000006
 		dmc3.exe+2404E1 - 33 C0             - xor eax,eax
 		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SetScene<6>, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
 
 	{
-		constexpr byte8 sect0[] =
-		{
-			0xC7, 0x43, 0x50, 0x07, 0x00, 0x00, 0x00, // mov [rbx+50],00000007
-		};
-		auto func = CreateFunction(SceneMissionStart, (appBaseAddr + 0x23A57C), true, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		WriteJump((appBaseAddr + 0x23A575), func.addr, 2);
+		auto addr     = (appBaseAddr + 0x23A575);
+		auto jumpAddr = (appBaseAddr + 0x23A57C);
+		constexpr size_t size = 7;
 		/*
 		dmc3.exe+23A575 - C7 43 50 07000000 - mov [rbx+50],00000007
 		dmc3.exe+23A57C - C6 05 8E90A600 00 - mov byte ptr [dmc3.exe+CA3611],00
 		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SetScene<7>, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
 
 	{
-		constexpr byte8 sect0[] =
-		{
-			0xC7, 0x41, 0x38, 0x07, 0x00, 0x00, 0x00, // mov [rcx+38],00000007
-		};
-		auto func = CreateFunction(SceneMissionStart, (appBaseAddr + 0x2404EB), true, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		WriteJump((appBaseAddr + 0x2404E4), func.addr, 2);
+		auto addr     = (appBaseAddr + 0x2404E4);
+		auto jumpAddr = (appBaseAddr + 0x2404EB);
+		constexpr size_t size = 7;
 		/*
 		dmc3.exe+2404E4 - C7 41 38 07000000 - mov [rcx+38],00000007
 		dmc3.exe+2404EB - 33 C0             - xor eax,eax
 		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SetScene<7>, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
 
 	{
-		constexpr byte8 sect0[] =
-		{
-			0xC7, 0x41, 0x38, 0x08, 0x00, 0x00, 0x00, // mov [rcx+38],00000008
-		};
-		auto func = CreateFunction(SceneMissionResult, (appBaseAddr + 0x24048F), true, true, sizeof(sect0));
-		CopyMemory(func.sect0, sect0, sizeof(sect0));
-		WriteJump((appBaseAddr + 0x240488), func.addr, 2);
+		auto addr     = (appBaseAddr + 0x240488);
+		auto jumpAddr = (appBaseAddr + 0x24048F);
+		constexpr size_t size = 7;
 		/*
 		dmc3.exe+240488 - C7 41 38 08000000 - mov [rcx+38],00000008
 		dmc3.exe+24048F - 33 C0             - xor eax,eax
 		*/
+
+		static Function func = {};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(SetScene<8>, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
 	}
+
+
+
+	run = true;
 }
 
-#ifdef __GARBAGE__
-#endif
+namespaceEnd();

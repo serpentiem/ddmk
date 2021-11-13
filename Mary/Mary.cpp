@@ -39,7 +39,7 @@ using namespace Windows;
 
 #define debug false
 
-#include "Macros.h"
+// #include "Macros.h"
 
 uint32 DllMain
 (
@@ -292,7 +292,10 @@ uint32 DllMain
 
 
 
-		Scene_Init();
+		//Scene_Init();
+
+		Scene::Toggle(false);
+		Scene::Toggle(true);
 
 
 

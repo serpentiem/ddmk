@@ -1,10 +1,3 @@
-
-
-// @Todo: Prefer sceneFuncNames.
-
-
-
-
 export module Scene;
 
 import Core;
@@ -38,48 +31,114 @@ SceneHelper sceneHelpers[] =
 
 
 
-void SceneMain()
+const char * sceneFuncNames[] =
 {
-	LogFunction();
+	"SceneMain",
+	"SceneMissionSelect",
+	"SceneCutsceneSelect",
+	"SceneMissionStart",
+	"SceneCutscene",
+	"SceneGame",
+	"SceneGameOver",
+	"SceneMissionResult",
+};
 
-	Actor::SceneMain();
-}
+static_assert(countof(sceneFuncNames) == SCENE::COUNT);
 
-void SceneMissionSelect()
+
+
+void SceneHandler()
 {
-	LogFunction();
+	using namespace SCENE;
 
-	Actor::SceneMissionSelect();
-}
+	auto scene = g_scene;
+	if (scene >= COUNT)
+	{
+		Log("__UNKNOWN_SCENE__ %u", scene);
 
-void SceneCutsceneSelect()
-{
-	LogFunction();
-}
+		return;
+	}
 
-void SceneMissionStart()
-{
-	LogFunction();
-}
+	auto funcName = sceneFuncNames[scene];
 
-void SceneCutscene()
-{
-	LogFunction();
-}
 
-void SceneGame()
-{
-	LogFunction();
-}
 
-void SceneGameOver()
-{
-	LogFunction();
-}
+	switch (scene)
+	{
+		case MAIN:
+		case MISSION_SELECT:
+		case MISSION_START:
+		{
+			CopyMemory
+			(
+				&activeConfig,
+				&queuedConfig,
+				sizeof(activeConfig)
+			);
 
-void SceneMissionResult()
-{
-	LogFunction();
+			break;
+		}
+	}
+
+
+
+	switch (scene)
+	{
+		case MAIN:
+		{
+			Log(funcName);
+
+			Actor::SceneMain();
+
+			break;
+		}
+		case MISSION_SELECT:
+		{
+			Log(funcName);
+
+			Actor::SceneMissionSelect();
+
+			break;
+		}
+		case CUTSCENE_SELECT:
+		{
+			Log(funcName);
+
+			break;
+		}
+		case MISSION_START:
+		{
+			Log(funcName);
+
+			Actor::SceneMissionStart();
+
+			break;
+		}
+		case CUTSCENE:
+		{
+			Log(funcName);
+
+			break;
+		}
+		case SCENE::GAME:
+		{
+			Log(funcName);
+
+			break;
+		}
+		case GAME_OVER:
+		{
+			Log(funcName);
+
+			break;
+		}
+		case MISSION_RESULT:
+		{
+			Log(funcName);
+
+			break;
+		}
+	}
 }
 
 
@@ -101,77 +160,7 @@ export void SetScene(const char * location)
 		{
 			g_scene = helper.scene;
 
-
-
-			switch (g_scene)
-			{
-				case SCENE::MAIN:
-				case SCENE::MISSION_SELECT:
-				{
-					CopyMemory
-					(
-						&activeConfig,
-						&queuedConfig,
-						sizeof(activeConfig)
-					);
-
-					break;
-				}
-			}
-
-			switch (g_scene)
-			{
-				case SCENE::MAIN:
-				{
-					SceneMain();
-
-					break;
-				}
-				case SCENE::MISSION_SELECT:
-				{
-					SceneMissionSelect();
-
-					break;
-				}
-				case SCENE::CUTSCENE_SELECT:
-				{
-					SceneCutsceneSelect();
-
-					break;
-				}
-				case SCENE::MISSION_START:
-				{
-					SceneMissionStart();
-
-					break;
-				}
-				case SCENE::CUTSCENE:
-				{
-					SceneCutscene();
-
-					break;
-				}
-				case SCENE::GAME:
-				{
-					SceneGame();
-
-					break;
-				}
-				case SCENE::GAME_OVER:
-				{
-					SceneGameOver();
-
-					break;
-				}
-				case SCENE::MISSION_RESULT:
-				{
-					SceneMissionResult();
-
-					break;
-				}
-			}
-
-
+			SceneHandler();
 
 			return;
 		}

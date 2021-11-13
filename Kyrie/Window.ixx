@@ -195,7 +195,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = OldCreateFunction(GunkOver, jumpAddr, true, true, size);
+			func = old_CreateFunction(GunkOver, jumpAddr, true, true, size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 

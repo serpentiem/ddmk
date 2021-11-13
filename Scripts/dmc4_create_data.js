@@ -183,18 +183,22 @@ function FeedEnum
 
 
 
-	c += "export namespaceStart(" + name + ");" + NEW_LINE;
+	//c += "export namespaceStart(" + name + ");" + NEW_LINE;
 
 	CreateEnum
 	(
 		"",
 		items,
 		"",
-		EnumFlags_UpperCase
+		(
+			EnumFlags_Export |
+			EnumFlags_Namespace |
+			EnumFlags_UpperCase
+		)
 	);
 
-	c += "namespaceEnd();" + NEW_LINE;
-	c += NEW_LINE;
+	// c += "namespaceEnd();" + NEW_LINE;
+	// c += NEW_LINE;
 
 	CleanStream();
 
@@ -518,12 +522,17 @@ FeedStruct
 
 let items =
 [
+	[ "event"         , "uint32", [], 0x10   ],
 	[ "position"      , "vec4"  , [], 0x40   ],
+	[ "size"          , "vec4"  , [], 0x60   ],
+	[ "buttons[4]"    , "byte32", [], 0x1920 ],
+	[ "directions[3]" , "uint32", [], 0x1938 ],
 	[ "costume"       , "uint32", [], 0x19A8 ],
 	[ "character"     , "uint32", [], 0x19AC ],
 	[ "enable"        , "bool"  , [], 0x1A1D ],
 	[ "hitPoints"     , "float" , [], 0x1B00 ],
 	[ "maxHitPoints"  , "float" , [], 0x1B04 ],
+	[ "rotation"      , "float" , [], 0x1C48 ],
 	[ "magicPoints"   , "float" , [], 0x2504 ],
 	[ "maxMagicPoints", "float" , [], 0x2508 ],
 ];
@@ -630,6 +639,118 @@ FeedStruct
 // #endregion
 
 
+
+
+
+
+
+
+
+// #region KeyboardData
+{
+
+let items =
+[
+	[ "flags[4]", "byte32", [], 0x120  ],
+];
+
+FeedStruct
+(
+	"KeyboardData",
+	items
+);
+
+}
+// #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const GAMEPAD_METADATA_SIZE = 0x2CC;
+const GAMEPAD_DATA_SIZE     = 0x200;
+
+
+
+// #region GamepadMetadata
+{
+
+let name = "GamepadMetadata";
+let size = GAMEPAD_METADATA_SIZE;
+
+let items =
+[
+	[ "playerIndex", "uint32", [], 0x10 ],
+	[ "flags[2]", "byte32", [], 0x15C ],
+];
+
+FeedStruct
+(
+	name,
+	items,
+	size
+);
+
+typeSizes.push([ name, size ]);
+
+}
+// #endregion
+
+// #region GamepadData
+{
+
+let name = "GamepadData";
+let size = GAMEPAD_DATA_SIZE;
+
+let items =
+[
+	[ "gamepadMetadataAddr", "GamepadMetadata *", [], 4 ],
+];
+
+FeedStruct
+(
+	name,
+	items,
+	size
+);
+
+typeSizes.push([ name, size ]);
+
+}
+// #endregion
+
+
+
+// #region GamepadManager
+{
+
+let items =
+[
+	[ "gamepadMetadata[4]", "GamepadMetadata", [], 0x3C  ],
+	[ "gamepadData[2]"    , "GamepadData",     [], 0xBC0 ],
+];
+
+FeedStruct
+(
+	"GamepadManager",
+	items
+);
+
+}
+// #endregion
 
 
 

@@ -1955,7 +1955,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -1996,7 +1996,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2034,7 +2034,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2072,7 +2072,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2113,7 +2113,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2151,7 +2151,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2189,7 +2189,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2230,7 +2230,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2268,7 +2268,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2306,7 +2306,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2347,7 +2347,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2385,7 +2385,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2426,7 +2426,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2464,7 +2464,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2505,7 +2505,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2543,7 +2543,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2584,7 +2584,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2622,7 +2622,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2663,7 +2663,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2701,7 +2701,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2742,7 +2742,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2780,7 +2780,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2821,7 +2821,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2859,7 +2859,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2900,7 +2900,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2938,7 +2938,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -2976,7 +2976,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3017,7 +3017,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3055,7 +3055,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3093,7 +3093,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3134,7 +3134,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x12) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3172,7 +3172,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3213,7 +3213,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3251,7 +3251,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3292,7 +3292,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3330,7 +3330,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3371,7 +3371,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3409,7 +3409,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3447,7 +3447,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3485,7 +3485,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3526,7 +3526,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3564,7 +3564,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3602,7 +3602,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3640,7 +3640,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3678,7 +3678,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3719,7 +3719,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3757,7 +3757,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3795,7 +3795,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3833,7 +3833,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3871,7 +3871,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3909,7 +3909,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3947,7 +3947,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -3988,7 +3988,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4026,7 +4026,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4064,7 +4064,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4102,7 +4102,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4140,7 +4140,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4178,7 +4178,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4219,7 +4219,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4257,7 +4257,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4298,7 +4298,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4336,7 +4336,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4377,7 +4377,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4415,7 +4415,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4456,7 +4456,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4494,7 +4494,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4532,7 +4532,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4570,7 +4570,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4611,7 +4611,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4649,7 +4649,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4687,7 +4687,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4725,7 +4725,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4763,7 +4763,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4801,7 +4801,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4839,7 +4839,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4877,7 +4877,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4915,7 +4915,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4956,7 +4956,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -4994,7 +4994,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5032,7 +5032,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5070,7 +5070,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5108,7 +5108,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5146,7 +5146,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5184,7 +5184,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5222,7 +5222,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5260,7 +5260,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5298,7 +5298,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5336,7 +5336,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5374,7 +5374,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5412,7 +5412,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5450,7 +5450,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5491,7 +5491,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5529,7 +5529,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5567,7 +5567,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5605,7 +5605,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5643,7 +5643,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5681,7 +5681,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5722,7 +5722,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5760,7 +5760,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5798,7 +5798,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5836,7 +5836,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5874,7 +5874,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5912,7 +5912,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5950,7 +5950,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -5988,7 +5988,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -6029,7 +6029,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -6067,7 +6067,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -6105,7 +6105,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -6146,7 +6146,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -6184,7 +6184,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -6222,7 +6222,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -6260,7 +6260,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -6301,7 +6301,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[0]);
@@ -6339,7 +6339,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[6]);
@@ -6380,7 +6380,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[6]);
@@ -6418,7 +6418,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xD) = offsetof(PlayerActorData, newEffectIndices[6]);
@@ -6459,7 +6459,7 @@ export void ToggleEffectRelocations(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, false, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 5), GetPlayerActorBaseAddressByEffectData);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0x11) = offsetof(PlayerActorData, newEffectIndices[6]);
@@ -12744,7 +12744,7 @@ export void ToggleFixDevilAura(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
+			func = old_CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory((func.sect0 + sizeof(sect0)), addr, size, MemoryFlags_VirtualProtectSource);
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);
@@ -12783,7 +12783,7 @@ export void ToggleFixDevilAura(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
+			func = old_CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory((func.sect0 + sizeof(sect0)), addr, size, MemoryFlags_VirtualProtectSource);
 			WriteCall((func.sect0 + 4), GetPlayerActorBaseAddressByEffectData);

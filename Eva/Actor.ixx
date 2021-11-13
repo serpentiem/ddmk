@@ -17,7 +17,7 @@ import Vars;
 
 #define debug false
 
-#include "Macros.h"
+// #include "Macros.h"
 
 
 
@@ -541,7 +541,7 @@ export void ToggleMeleeWeaponSwitchController(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(TauntController, jumpAddr, true, true, 0, 0, size);
+			func = old_CreateFunction(TauntController, jumpAddr, true, true, 0, 0, size);
 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 			WriteAddress(func.sect2, (appBaseAddr + 0x5EAB88), 7);
 		}
@@ -853,7 +853,7 @@ export void ToggleSpardaFixes(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(IsMundusPart2, 0, true, false, 0, 0, sizeof(sect2), 0, 0, true);
+			func = old_CreateFunction(IsMundusPart2, 0, true, false, 0, 0, sizeof(sect2), 0, 0, true);
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x748C0), 6);
 		}
@@ -886,7 +886,7 @@ export void ToggleSpardaFixes(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(IsMundusPart2, 0, true, false, 0, 0, sizeof(sect2), 0, 0, true);
+			func = old_CreateFunction(IsMundusPart2, 0, true, false, 0, 0, sizeof(sect2), 0, 0, true);
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x75AA0), 6);
 		}

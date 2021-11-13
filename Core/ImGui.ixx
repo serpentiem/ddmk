@@ -986,14 +986,20 @@ export vec2 mousePositionMultiplier =
 	1
 };
 
-// @Todo: Update only if foreground window is appWindow.
+
+
+
 export void UpdateMouse
 (
 	HWND windowHandle,
 	DIMOUSESTATE2 * state
 )
 {
-	if (!windowHandle)
+	if
+	(
+		!windowHandle ||
+		(GetForegroundWindow() != appWindow)
+	)
 	{
 		return;
 	}
@@ -1015,10 +1021,9 @@ export void UpdateMouse
 	io.MousePos.x *= mousePositionMultiplier.x;
 	io.MousePos.y *= mousePositionMultiplier.y;
 
-	old_for_all(uint8, index, 5)
+	for_all(index, countof(io.MouseDown))
 	{
-		// @Todo: Update.
-		io.MouseDown[index] = state->rgbButtons[index] ? true : false;
+		io.MouseDown[index] = (state->rgbButtons[index]) ? true : false;
 	}
 
 	io.MouseWheel += (static_cast<float>(state->lZ) / static_cast<float>(WHEEL_DELTA));

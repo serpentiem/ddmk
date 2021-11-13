@@ -29,12 +29,34 @@ export struct Config
 {
 	struct
 	{
-		bool enable = false;
-		size_t playerCount = 1;
+		bool enable = (debug) ? true : false;
+		size_t playerCount = (debug) ? 2 : 1;
 		PlayerData playerData[PLAYER::COUNT] = {};
-		size_t keyboard = 0;
 	}
 	Actor;
+
+	size_t keyboardPlayerIndex = 0;
+
+	bool enableCharacterSwitchController = (debug) ? true : false;
+	byte32 characterSwitchControllerButton = GAMEPAD::RIGHT_THUMB;
+
+
+
+	KeyData characterSwitchControllerKeyData =
+	{
+		{
+			KEY::P
+		},
+		1
+	};
+
+
+
+
+
+
+
+
 
 	struct
 	{
@@ -122,7 +144,7 @@ export struct Config
 
 
 	bool infiniteHitPoints   = false;
-	bool infiniteMagicPoints = false;
+	bool infiniteMagicPoints = (debug) ? true : false;
 	bool disableTimer        = false;
 
 
@@ -162,84 +184,7 @@ export struct Config
 
 
 
-
-
-	// KeyData keyDataToggleShow =
-	// {
-	// 	{
-	// 		KEY::LEFT_CONTROL,
-	// 		KEY::D
-	// 	},
-	// 	2
-	// };
-
-	// KeyData keyDataReloadRoom =
-	// {
-	// 	// {
-	// 	// 	KEY::LEFT_CONTROL,
-	// 	// 	KEY::R
-	// 	// },
-	// 	// 2
-	// };
-
-	// KeyData keyDataMoveToMainActor =
-	// {
-	// 	// {
-	// 	// 	KEY::LEFT_CONTROL,
-	// 	// 	KEY::R
-	// 	// },
-	// 	// 2
-	// };
-
-
-
-
-
-
-	// KeyData keyDataToggleShow =
-	// {
-	// 	true,
-	// 	{
-	// 		DIK_LCONTROL,
-	// 		DIK_D,
-	// 	},
-	// 	2
-	// };
-
-	// KeyData keyDataReloadRoom =
-	// {
-	// 	false,
-	// 	{
-	// 		DIK_LCONTROL,
-	// 		DIK_LSHIFT,
-	// 		DIK_R,
-	// 	},
-	// 	3
-	// };
-
-
-
-
-
-
-
-	// size_t keysToggleShow[3] =
-	// {
-	// 	DIK_LCONTROL,
-	// 	DIK_D,
-	// };
-
-
-
-	// size_t keysReloadRoom[3] =
-	// {
-	// 	DIK_LCONTROL,
-	// 	DIK_LSHIFT,
-	// 	DIK_R,
-	// };
-
-
-
+	bool disableCenterCamera = false;
 
 
 

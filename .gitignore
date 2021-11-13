@@ -3,8 +3,6 @@
 !.github/*
 !Core
 !Core/*
-!dinput8
-!dinput8/*
 !Eva
 !Eva/*
 !Kyrie
@@ -20,7 +18,10 @@
 !.gitattributes
 !.gitignore
 !.gitmodules
-!Global.h
+!dinput8.cpp
+!GlobalBase.ixx
+!GUIBase.ixx
+!HooksBase.ixx
 !LICENSE.txt
 !README.md
 */prep_*

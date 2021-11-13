@@ -8,16 +8,35 @@ import Core;
 
 import Config;
 import Global;
+//import Input;
 import Vars;
 
 #define debug false
 
-// #include "Macros.h"
+// // #include "Macros.h"
 
 
 
 void SetMainSpeed()
 {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	// @Todo: Add to prep.
 	auto addr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xF2429C); // dmc4.exe+5E9A64 - 8B 0D 9C423201 - mov ecx,[dmc4.exe+F2429C]
 	if (!addr)
@@ -74,6 +93,24 @@ void SetMainSpeed()
 			speed = activeConfig.cutsceneSpeed;
 		}
 	}();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 
@@ -103,7 +140,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = OldCreateFunction(SetMainSpeed, jumpAddr, true, true, 0, 0, size);
+			func = old_CreateFunction(SetMainSpeed, jumpAddr, true, true, 0, 0, size);
 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 

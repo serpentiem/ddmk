@@ -29,7 +29,7 @@ import Vars;
 
 #define debug false
 
-#include "Macros.h"
+// #include "Macros.h"
 
 
 #define g_enableLockOnFixes true
@@ -2852,7 +2852,7 @@ void ToggleIsWeaponReady(bool enable)
 	{
 		if (!run)
 		{
-			auto func = CreateFunction(static_cast<bool(__fastcall *)(WeaponData &)>(IsMeleeWeaponReady), 0, true, false);
+			auto func = old_CreateFunction(static_cast<bool(__fastcall *)(WeaponData &)>(IsMeleeWeaponReady), 0, true, false);
 			IsMeleeWeaponReadyAddr = func.addr;
 		}
 	}
@@ -2865,7 +2865,7 @@ void ToggleIsWeaponReady(bool enable)
 
 		if (!run)
 		{
-			auto func = CreateFunction(static_cast<bool(__fastcall *)(WeaponData &)>(IsMeleeWeaponReady), 0, true, false, 0, 0, sizeof(sect2));
+			auto func = old_CreateFunction(static_cast<bool(__fastcall *)(WeaponData &)>(IsMeleeWeaponReady), 0, true, false, 0, 0, sizeof(sect2));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1FDE10), 6);
 			IsMeleeWeaponReadyShowAddr = func.addr;
@@ -2876,7 +2876,7 @@ void ToggleIsWeaponReady(bool enable)
 	{
 		if (!run)
 		{
-			auto func = CreateFunction(static_cast<bool(__fastcall *)(WeaponData &)>(IsRangedWeaponReady), 0, true, false);
+			auto func = old_CreateFunction(static_cast<bool(__fastcall *)(WeaponData &)>(IsRangedWeaponReady), 0, true, false);
 			IsRangedWeaponReadyAddr = func.addr;
 		}
 	}
@@ -2889,7 +2889,7 @@ void ToggleIsWeaponReady(bool enable)
 
 		if (!run)
 		{
-			auto func = CreateFunction(static_cast<bool(__fastcall *)(WeaponData &)>(IsRangedWeaponReady), 0, true, false, 0, 0, sizeof(sect2));
+			auto func = old_CreateFunction(static_cast<bool(__fastcall *)(WeaponData &)>(IsRangedWeaponReady), 0, true, false, 0, 0, sizeof(sect2));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1FDE10), 6);
 			IsRangedWeaponReadyShowAddr = func.addr;
@@ -7344,7 +7344,7 @@ export void ToggleBossLadyFixes(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
 		}
@@ -7382,7 +7382,7 @@ export void ToggleBossLadyFixes(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
 			WriteAddress((func.sect0 + 0x12), (appBaseAddr + 0x244870), 5);
@@ -7421,7 +7421,7 @@ export void ToggleBossLadyFixes(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
 		}
@@ -8129,7 +8129,7 @@ dmc3.exe+16CB77 - F3 0F10 05 8DE84000   - movss xmm0,[dmc3.exe+57B40C] { (1820.0
 	if (!run)
 	{
 		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		WriteAddress(func.sect0, (appBaseAddr + 0x16F610), 5);
 		*reinterpret_cast<vec4 **>(func.sect0 + 0xE) = &activeConfig.kalinaAnnHookMultiplier;
@@ -8184,7 +8184,7 @@ dmc3.exe+16CB77 - F3 0F10 05 8DE84000   - movss xmm0,[dmc3.exe+57B40C] { (1820.0
 	if (!run)
 	{
 		backupHelper.Save(addr, size);
-		func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		WriteAddress(func.sect0, (appBaseAddr + 0x2F7350), 5);
 		*reinterpret_cast<float **>(func.sect0 + 0x19) = &activeConfig.kalinaAnnHookGrenadeHeight;
@@ -8386,7 +8386,7 @@ export void ToggleBossVergilFixes(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
 		}
@@ -8424,7 +8424,7 @@ export void ToggleBossVergilFixes(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
 		}
@@ -8463,7 +8463,7 @@ export void ToggleBossVergilFixes(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
 		}
@@ -8501,7 +8501,7 @@ export void ToggleBossVergilFixes(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteAddress(func.sect0, (appBaseAddr + 0xC90E28), 7);
 		}
@@ -9799,7 +9799,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(AirHike, jumpAddr, true, false, size0, size1, size2);
+			func = old_CreateFunction(AirHike, jumpAddr, true, false, size0, size1, size2);
 			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			CopyMemory(func.sect2, sect2, size2);
@@ -9850,7 +9850,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(KickJump, jumpAddr, true, false, size0, size1, size2);
+			func = old_CreateFunction(KickJump, jumpAddr, true, false, size0, size1, size2);
 			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			CopyMemory(func.sect2, sect2, size2);
@@ -9897,7 +9897,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(WallHike, jumpAddr, true, false, 0, 0, size2);
+			func = old_CreateFunction(WallHike, jumpAddr, true, false, 0, 0, size2);
 			CopyMemory(func.sect2, sect2, size2);
 			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E64A9), 6);
 			WriteCall((func.sect2 + 8), (appBaseAddr + 0x1E0740));
@@ -9931,7 +9931,7 @@ void ToggleMobility(bool enable)
 		};
 		constexpr uint32 size1 = sizeof(sect1);
 		constexpr uint32 size2 = sizeof(sect2);
-		auto func = CreateFunction(funcAddr, jumpAddr, true, false, 0, size1, size2);
+		auto func = old_CreateFunction(funcAddr, jumpAddr, true, false, 0, size1, size2);
 		CopyMemory(func.sect1, sect1, size1);
 		CopyMemory(func.sect2, sect2, size2);
 		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E64A9), 6);
@@ -10127,7 +10127,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(ResetDash, jumpAddr, true, true, size0, size1);
+			func = old_CreateFunction(ResetDash, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
@@ -10161,7 +10161,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(ResetDash, jumpAddr, true, true, size0, size1);
+			func = old_CreateFunction(ResetDash, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
@@ -10195,7 +10195,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(ResetDash, jumpAddr, true, true, size0, size1);
+			func = old_CreateFunction(ResetDash, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
@@ -10231,7 +10231,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
+			func = old_CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
@@ -10265,7 +10265,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
+			func = old_CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
@@ -10299,7 +10299,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
+			func = old_CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
@@ -10333,7 +10333,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
+			func = old_CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
@@ -10367,7 +10367,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
+			func = old_CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
@@ -10401,7 +10401,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
+			func = old_CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
@@ -10435,7 +10435,7 @@ void ToggleMobility(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
+			func = old_CreateFunction(ResetSkyStar, jumpAddr, true, true, size0, size1);
 			CopyMemory(func.sect0, addr, size0, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, size1);
 			backupHelper.Save(addr, size0);
@@ -10640,7 +10640,7 @@ void ToggleColor(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetAirHikeColor, 0, true, true, 0, sizeof(sect1));
+			func = old_CreateFunction(SetAirHikeColor, 0, true, true, 0, sizeof(sect1));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
 
@@ -10678,7 +10678,7 @@ void ToggleColor(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint8 **>(func.sect0 + 3) = activeConfig.Color.Trickster.skyStar;
 		}
@@ -10717,7 +10717,7 @@ void ToggleColor(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint8 **>(func.sect0 + 3) = activeConfig.Color.Royalguard.ultimate;
 		}
@@ -10756,7 +10756,7 @@ void ToggleColor(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint8 **>(func.sect0 + 3) = activeConfig.Color.Royalguard.ultimate;
 		}
@@ -10795,7 +10795,7 @@ void ToggleColor(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint8 **>(func.sect0 + 3) = activeConfig.Color.Doppelganger.clone;
 		}
@@ -10837,7 +10837,7 @@ void ToggleColor(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetDevilAuraColor, jumpAddr, true, true, sizeof(sect0), sizeof(sect1), size);
+			func = old_CreateFunction(SetDevilAuraColor, jumpAddr, true, true, sizeof(sect0), sizeof(sect1), size);
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
@@ -10881,7 +10881,7 @@ void ToggleColor(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetDevilAuraColor, jumpAddr, true, true, sizeof(sect0), sizeof(sect1), size);
+			func = old_CreateFunction(SetDevilAuraColor, jumpAddr, true, true, sizeof(sect0), sizeof(sect1), size);
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
@@ -11332,7 +11332,7 @@ void ToggleSpeed(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateActorSpeed, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(UpdateActorSpeed, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -11512,7 +11512,7 @@ void ToggleSpeed(bool enable)
 // 		if (!run)
 // 		{
 // 			backupHelper.Save(addr, size);
-// 			func = CreateFunction(UpdateGlobalCharacterCostumeByData<BodyPartData>, jumpAddr, true, true, 0, sizeof(sect1), size);
+// 			func = old_CreateFunction(UpdateGlobalCharacterCostumeByData<BodyPartData>, jumpAddr, true, true, 0, sizeof(sect1), size);
 // 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 // 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 // 			WriteCall(func.sect2, (appBaseAddr + 0x339320));
@@ -11548,7 +11548,7 @@ void ToggleSpeed(bool enable)
 // 		if (!run)
 // 		{
 // 			backupHelper.Save(addr, size);
-// 			func = CreateFunction(UpdateGlobalCharacterCostumeByData<BodyPartData>, jumpAddr, true, true, 0, sizeof(sect1), size);
+// 			func = old_CreateFunction(UpdateGlobalCharacterCostumeByData<BodyPartData>, jumpAddr, true, true, 0, sizeof(sect1), size);
 // 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 // 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 // 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
@@ -11584,7 +11584,7 @@ void ToggleSpeed(bool enable)
 // 		if (!run)
 // 		{
 // 			backupHelper.Save(addr, size);
-// 			func = CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
+// 			func = old_CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
 // 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 // 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 // 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
@@ -11620,7 +11620,7 @@ void ToggleSpeed(bool enable)
 // 		if (!run)
 // 		{
 // 			backupHelper.Save(addr, size);
-// 			func = CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
+// 			func = old_CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
 // 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 // 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 // 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
@@ -11656,7 +11656,7 @@ void ToggleSpeed(bool enable)
 // 		if (!run)
 // 		{
 // 			backupHelper.Save(addr, size);
-// 			func = CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
+// 			func = old_CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
 // 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 // 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 // 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
@@ -11692,7 +11692,7 @@ void ToggleSpeed(bool enable)
 // 		if (!run)
 // 		{
 // 			backupHelper.Save(addr, size);
-// 			func = CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
+// 			func = old_CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
 // 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 // 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 // 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
@@ -11728,7 +11728,7 @@ void ToggleSpeed(bool enable)
 // 		if (!run)
 // 		{
 // 			backupHelper.Save(addr, size);
-// 			func = CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
+// 			func = old_CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
 // 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 // 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 // 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
@@ -11764,7 +11764,7 @@ void ToggleSpeed(bool enable)
 // 		if (!run)
 // 		{
 // 			backupHelper.Save(addr, size);
-// 			func = CreateFunction(UpdateGlobalCharacterCostumeByData<SummonedSwordsData>, jumpAddr, true, true, 0, sizeof(sect1), size);
+// 			func = old_CreateFunction(UpdateGlobalCharacterCostumeByData<SummonedSwordsData>, jumpAddr, true, true, 0, sizeof(sect1), size);
 // 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 // 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 // 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
@@ -13117,7 +13117,7 @@ bool DecreaseAltitude(byte8 * actorBaseAddr)
 // 		{
 // 			0x48, 0x8B, 0x5C, 0x24, 0x50, // mov rbx,[rsp+50]
 // 		};
-// 		auto func = CreateFunction(ResetActorMode, (appBaseAddr + 0x1E14E6), true, true, sizeof(sect0));
+// 		auto func = old_CreateFunction(ResetActorMode, (appBaseAddr + 0x1E14E6), true, true, sizeof(sect0));
 // 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 // 		ResetActorModeAddr = func.addr;
 // 		/*
@@ -13217,7 +13217,7 @@ export void ToggleDeplete(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<float **>(func.sect0 + 2) = &activeConfig.depleteQuicksilver;
 		}
@@ -13253,7 +13253,7 @@ export void ToggleDeplete(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<float **>(func.sect0 + 2) = &activeConfig.depleteDoppelganger;
 		}
@@ -13289,7 +13289,7 @@ export void ToggleDeplete(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<float **>(func.sect0 + 2) = &activeConfig.depleteDevil;
 		}
@@ -13335,7 +13335,7 @@ export void ToggleOrbReach(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<float **>(func.sect0 + 3) = &activeConfig.orbReach;
 		}
@@ -13385,7 +13385,7 @@ export void ToggleDamage(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(ApplyDamage, jumpAddr, true, true, 0, sizeof(sect1), (sizeof(sect2) + size), 0, 0, true, true, false);
+			func = old_CreateFunction(ApplyDamage, jumpAddr, true, true, 0, sizeof(sect1), (sizeof(sect2) + size), 0, 0, true, true, false);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			CopyMemory((func.sect2 + sizeof(sect2)), addr, size, MemoryFlags_VirtualProtectSource);
@@ -13421,47 +13421,47 @@ byte8 * SaveFix(byte8 * actorBaseAddr)
 
 
 
-// @Remove
-bool WriteVisibleFalse(byte8 * baseAddr)
-{
-	if (!baseAddr)
-	{
-		return false;
-	}
+// // @Remove
+// bool WriteVisibleFalse(byte8 * baseAddr)
+// {
+// 	if (!baseAddr)
+// 	{
+// 		return false;
+// 	}
 
 
 
 
-	if (g_visible)
-	{
-		return true;
-	}
+// 	if (g_visible)
+// 	{
+// 		return true;
+// 	}
 
 
 
-	return false;
-}
+// 	return false;
+// }
 
-// @Remove
-bool WriteVisibleTrue(byte8 * baseAddr)
-{
-	if (!baseAddr)
-	{
-		return false;
-	}
-
-
+// // @Remove
+// bool WriteVisibleTrue(byte8 * baseAddr)
+// {
+// 	if (!baseAddr)
+// 	{
+// 		return false;
+// 	}
 
 
 
-	if (g_visible)
-	{
-		return true;
-	}
 
 
-	return false;
-}
+// 	if (g_visible)
+// 	{
+// 		return true;
+// 	}
+
+
+// 	return false;
+// }
 
 
 
@@ -13942,7 +13942,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateModel<PlayerActorDataDante>);
+			func = old_CreateFunction(UpdateModel<PlayerActorDataDante>);
 		}
 
 		if (enable)
@@ -13969,7 +13969,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateModel<PlayerActorDataVergil>);
+			func = old_CreateFunction(UpdateModel<PlayerActorDataVergil>);
 		}
 
 		if (enable)
@@ -14008,7 +14008,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(PlayerActorData, newForceFiles);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(PlayerActorData, newForceFilesCharacter);
@@ -14053,7 +14053,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(PlayerActorData, newForceFiles);
 			*reinterpret_cast<uint32 *>(func.sect0 + 0xB) = offsetof(PlayerActorData, newForceFilesCharacter);
@@ -14150,7 +14150,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
+			func = old_CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory((func.sect0 + sizeof(sect0)), addr, size, MemoryFlags_VirtualProtectSource);
 			*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(PlayerActorData, newForceFiles);
@@ -14188,7 +14188,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
+			func = old_CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory((func.sect0 + sizeof(sect0)), addr, size, MemoryFlags_VirtualProtectSource);
 			*reinterpret_cast<uint32 *>(func.sect0 + 2) = offsetof(PlayerActorData, newForceFiles);
@@ -14219,7 +14219,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(WeaponSwitchController<PlayerActorDataDante>, 0, true, false);
+			func = old_CreateFunction(WeaponSwitchController<PlayerActorDataDante>, 0, true, false);
 		}
 
 		if (enable)
@@ -14246,7 +14246,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(WeaponSwitchController<PlayerActorDataVergil>, 0, true, false);
+			func = old_CreateFunction(WeaponSwitchController<PlayerActorDataVergil>, 0, true, false);
 		}
 
 		if (enable)
@@ -14279,7 +14279,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(ActivateQuicksilver, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(ActivateQuicksilver, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -14314,7 +14314,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(DeactivateQuicksilver, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(DeactivateQuicksilver, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -14350,7 +14350,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(DeactivateQuicksilver, jumpAddr, true, true, size);
+			func = old_CreateFunction(DeactivateQuicksilver, jumpAddr, true, true, size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 
@@ -14385,7 +14385,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(ActivateDoppelganger, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(ActivateDoppelganger, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -14421,7 +14421,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(DeactivateDoppelganger, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(DeactivateDoppelganger, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -14457,7 +14457,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(DeactivateDoppelganger, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(DeactivateDoppelganger, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -14497,7 +14497,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 	if (!run)
 	{
 		backupHelper.Save(addr, size);
-		func = CreateFunction(DeactivateDoppelgangerDeathCheck, jumpAddr, true, false, 0, 0, sizeof(sect2));
+		func = old_CreateFunction(DeactivateDoppelgangerDeathCheck, jumpAddr, true, false, 0, 0, sizeof(sect2));
 		CopyMemory(func.sect2, sect2, sizeof(sect2));
 		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1E2B63), 6);
 	}
@@ -14577,7 +14577,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(DevilButtonCheck, jumpAddr, true, false, 0, sizeof(sect1), (sizeof(sect2) + size));
+			func = old_CreateFunction(DevilButtonCheck, jumpAddr, true, false, 0, sizeof(sect1), (sizeof(sect2) + size));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			CopyMemory((func.sect2 + sizeof(sect2)), addr, size, MemoryFlags_VirtualProtectSource);
@@ -14633,7 +14633,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(ActivateDevil);
+			func = old_CreateFunction(ActivateDevil);
 		}
 
 		if (enable)
@@ -14684,7 +14684,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(DeactivateDevil);
+			func = old_CreateFunction(DeactivateDevil);
 		}
 
 		if (enable)
@@ -14728,7 +14728,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(PlayerActorData, newGamepad);
 			WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC70));
@@ -14767,7 +14767,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(PlayerActorData, newGamepad);
 			WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC80));
@@ -14804,7 +14804,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
+			func = old_CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory((func.sect0 + sizeof(sect0)), addr, size, MemoryFlags_VirtualProtectSource);
 			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(PlayerActorData, newButtonMask);
@@ -14840,7 +14840,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
+			func = old_CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory((func.sect0 + sizeof(sect0)), addr, size, MemoryFlags_VirtualProtectSource);
 			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(PlayerActorData, newButtonMask);
@@ -14880,7 +14880,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(PlayerActorData, newGamepad);
 			WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC10));
@@ -14921,7 +14921,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(PlayerActorData, newGamepad);
 			WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC10));
@@ -14962,7 +14962,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(PlayerActorData, newGamepad);
 			WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC50));
@@ -15003,7 +15003,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint32 *>(func.sect0 + 3) = offsetof(PlayerActorData, newGamepad);
 			WriteCall((func.sect0 + 7), (appBaseAddr + 0x32CC50));
@@ -15059,7 +15059,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall(func.sect0, (appBaseAddr + 0x2ACD0));
 		}
@@ -15126,7 +15126,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			//backupHelper.Save(addr, size);
-			func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
+			func = old_CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			ResetLockOn = reinterpret_cast<ResetLockOn_t>(func.addr);
 		}
@@ -15172,7 +15172,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 
 	// 	if (!run)
 	// 	{
-	// 		func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
+	// 		func = old_CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
 	// 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 	// 		ResetLockOn = reinterpret_cast<ResetLockOn_t>(func.addr);
 	// 	}
@@ -15199,7 +15199,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 3), ResetLockOn);
 		}
@@ -15235,7 +15235,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteCall((func.sect0 + 3), ResetLockOn);
 		}
@@ -15281,7 +15281,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 
 		if (!run)
 		{
-			func = CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
+			func = old_CreateFunction(0, 0, false, true, sizeof(sect0), 0, 0, 0, 0, true);
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			UpdateLockOn = reinterpret_cast<UpdateLockOn_t>(func.addr);
 		}
@@ -15309,7 +15309,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 	if (!run)
 	{
 		backupHelper.Save(addr, size);
-		func = CreateFunction(UpdateLockOns, jumpAddr, true, true, 0, sizeof(sect1), size);
+		func = old_CreateFunction(UpdateLockOns, jumpAddr, true, true, 0, sizeof(sect1), size);
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 		CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 	}
@@ -15343,7 +15343,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 	if (!run)
 	{
 		backupHelper.Save(addr, size);
-		func = CreateFunction(UpdateLockOns, jumpAddr, true, true, 0, sizeof(sect1), size);
+		func = old_CreateFunction(UpdateLockOns, jumpAddr, true, true, 0, sizeof(sect1), size);
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 		CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 	}
@@ -15402,7 +15402,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 
 	// 	if (!run)
 	// 	{
-	// 		func = CreateFunction(0, 0, false, false, sizeof(sect0), 0, 0, 0, 0, true);
+	// 		func = old_CreateFunction(0, 0, false, false, sizeof(sect0), 0, 0, 0, 0, true);
 	// 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 	// 		UpdateLockOn = reinterpret_cast<UpdateLockOn_t>(func.addr);
 	// 	}
@@ -15429,7 +15429,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 	// 	if (!run)
 	// 	{
 	// 		backupHelper.Save(addr, size);
-	// 		func = CreateFunction(UpdateLockOns, jumpAddr, true, true, 0, sizeof(sect1), size);
+	// 		func = old_CreateFunction(UpdateLockOns, jumpAddr, true, true, 0, sizeof(sect1), size);
 	// 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 	// 		CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 	// 	}
@@ -15476,7 +15476,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(DotShadowCheck, jumpAddr, true, false, 0, 0, (sizeof(sect2) + size));
+			func = old_CreateFunction(DotShadowCheck, jumpAddr, true, false, 0, 0, (sizeof(sect2) + size));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			CopyMemory((func.sect2 + sizeof(sect2)), addr, size, MemoryFlags_VirtualProtectSource);
 		}
@@ -15524,7 +15524,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(ResetVisibility, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(ResetVisibility, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -15559,7 +15559,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(ResetVisibility, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(ResetVisibility, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -15601,7 +15601,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(PlayQuicksilverMotion, jumpAddr);
+			func = old_CreateFunction(PlayQuicksilverMotion, jumpAddr);
 		}
 
 		if (enable)
@@ -15629,7 +15629,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(PlayQuicksilverMotion, jumpAddr);
+			func = old_CreateFunction(PlayQuicksilverMotion, jumpAddr);
 		}
 
 		if (enable)
@@ -15690,7 +15690,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetAction, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(SetAction, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -15725,7 +15725,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetAction, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(SetAction, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -15760,7 +15760,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetAction, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(SetAction, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -15799,7 +15799,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(GetRebellionStingerDuration, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
+			func = old_CreateFunction(GetRebellionStingerDuration, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
@@ -15838,7 +15838,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(GetRebellionStingerRange, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
+			func = old_CreateFunction(GetRebellionStingerRange, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
@@ -15875,7 +15875,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, (size + sizeof(sect0)));
+			func = old_CreateFunction(0, jumpAddr, false, true, (size + sizeof(sect0)));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory((func.sect0 + size), sect0, sizeof(sect0));
 			*reinterpret_cast<byte32 *>(func.sect0 + size + 0xF) = 0xC08;
@@ -15915,7 +15915,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteAddress((func.sect0 + 7), (appBaseAddr + 0x2094A7), 6);
 			WriteAddress((func.sect0 + 0x14), (appBaseAddr + 0x2094A7), 6);
@@ -15956,7 +15956,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(GetYamatoJudgementCutCount, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
+			func = old_CreateFunction(GetYamatoJudgementCutCount, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
@@ -15995,7 +15995,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(GetYamatoForceEdgeStingerDuration, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
+			func = old_CreateFunction(GetYamatoForceEdgeStingerDuration, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
@@ -16034,7 +16034,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(GetYamatoForceEdgeStingerRange, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
+			func = old_CreateFunction(GetYamatoForceEdgeStingerRange, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
@@ -16071,7 +16071,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, (size + sizeof(sect0)));
+			func = old_CreateFunction(0, jumpAddr, false, true, (size + sizeof(sect0)));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory((func.sect0 + size), sect0, sizeof(sect0));
 			*reinterpret_cast<byte32 *>(func.sect0 + size + 0xF) = 0xC08;
@@ -16115,7 +16115,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, (size2 + sizeof(sect0)));
+			func = old_CreateFunction(0, jumpAddr, false, true, (size2 + sizeof(sect0)));
 			CopyMemory(func.sect0, addr2, size2, MemoryFlags_VirtualProtectSource);
 			CopyMemory((func.sect0 + size2), sect0, sizeof(sect0));
 			WriteAddress((func.sect0 + size2 + 7), (appBaseAddr + 0x21F827), 6);
@@ -16154,7 +16154,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(EndActionLedge, jumpAddr, true, false, 0, 0, sizeof(sect2));
+			func = old_CreateFunction(EndActionLedge, jumpAddr, true, false, 0, 0, sizeof(sect2));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			WriteCall((func.sect2 + 4), (appBaseAddr + 0x1DFDA0));
 		}
@@ -16194,7 +16194,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(DecreaseAltitude, jumpAddr, true, false, 0, sizeof(sect1), (sizeof(sect2) + size));
+			func = old_CreateFunction(DecreaseAltitude, jumpAddr, true, false, 0, sizeof(sect1), (sizeof(sect2) + size));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			CopyMemory((func.sect2 + sizeof(sect2)), addr, size, MemoryFlags_VirtualProtectSource);
@@ -16298,7 +16298,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SaveFix, jumpAddr, true, false, size, 0, sizeof(sect2));
+			func = old_CreateFunction(SaveFix, jumpAddr, true, false, size, 0, sizeof(sect2));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
@@ -16374,7 +16374,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(VisibilityCheck, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
+			func = old_CreateFunction(VisibilityCheck, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x326896), 6);
@@ -16423,7 +16423,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetVisible, jumpAddr, true, false, sizeof(sect0), sizeof(sect1), sizeof(sect2));
+			func = old_CreateFunction(SetVisible, jumpAddr, true, false, sizeof(sect0), sizeof(sect1), sizeof(sect2));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
@@ -16465,7 +16465,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(VerticalPullCheck, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
+			func = old_CreateFunction(VerticalPullCheck, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
@@ -16495,7 +16495,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetCollisionData, jumpAddr, true, true, size);
+			func = old_CreateFunction(SetCollisionData, jumpAddr, true, true, size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 
@@ -16531,7 +16531,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(CollisionCheck, jumpAddr, true, false, 0, 0, (sizeof(sect2) + size));
+			func = old_CreateFunction(CollisionCheck, jumpAddr, true, false, 0, 0, (sizeof(sect2) + size));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			CopyMemory((func.sect2 + sizeof(sect2)), addr, size, MemoryFlags_VirtualProtectSource);
 		}
@@ -16564,7 +16564,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetNewEventEnemy, jumpAddr, true, true, size);
+			func = old_CreateFunction(SetNewEventEnemy, jumpAddr, true, true, size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 
@@ -16603,7 +16603,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetNewEventBossLady, jumpAddr, true, true, 0, sizeof(sect1));
+			func = old_CreateFunction(SetNewEventBossLady, jumpAddr, true, true, 0, sizeof(sect1));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
 
@@ -16644,7 +16644,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetNewEventBossVergil, jumpAddr, true, true, 0, sizeof(sect1));
+			func = old_CreateFunction(SetNewEventBossVergil, jumpAddr, true, true, 0, sizeof(sect1));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
 
@@ -16686,7 +16686,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(BelongsToPlayer, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
+			func = old_CreateFunction(BelongsToPlayer, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
@@ -16730,7 +16730,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(BelongsToPlayer, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
+			func = old_CreateFunction(BelongsToPlayer, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
@@ -16780,7 +16780,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetLockOnTargetPosition, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
+			func = old_CreateFunction(SetLockOnTargetPosition, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1BAED6), 6);
@@ -16825,7 +16825,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetLockOnTargetPositionGUI, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
+			func = old_CreateFunction(SetLockOnTargetPositionGUI, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x1BB68E), 6);
@@ -16863,7 +16863,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(GetHitPoints, jumpAddr, true, false, size, sizeof(sect1));
+			func = old_CreateFunction(GetHitPoints, jumpAddr, true, false, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -16898,7 +16898,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(GetMaxHitPoints, jumpAddr, true, false, size, sizeof(sect1));
+			func = old_CreateFunction(GetMaxHitPoints, jumpAddr, true, false, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -16936,7 +16936,7 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(PlayMotionRebellionDrive, jumpAddr, true, false, 0, 0, sizeof(sect2));
+			func = old_CreateFunction(PlayMotionRebellionDrive, jumpAddr, true, false, 0, 0, sizeof(sect2));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			WriteAddress((func.sect2 + 3), (appBaseAddr + 0x1EFB90), 5);
 		}
@@ -17395,7 +17395,7 @@ export void ToggleEbonyIvoryInfiniteRainStorm(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(EbonyIvoryRainStormCheck, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
+			func = old_CreateFunction(EbonyIvoryRainStormCheck, jumpAddr, true, false, 0, sizeof(sect1), sizeof(sect2));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x20CC20), 6);
@@ -17505,7 +17505,7 @@ export void ToggleChronoSwords(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
+			func = old_CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<bool **>(func.sect0 + 2) = &g_quicksilver;
 			WriteAddress((func.sect0 + 0xE), (appBaseAddr + 0x1DB8FD), 6);

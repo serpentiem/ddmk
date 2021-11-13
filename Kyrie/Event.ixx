@@ -151,6 +151,7 @@ void EventHandler()
 	auto event = eventData.event;
 	if (event >= COUNT)
 	{
+		// @Adjust: Once is enough.
 		static size_t count = 0;
 
 		if (count < 10)
@@ -180,6 +181,8 @@ void EventHandler()
 				case MAIN:
 				{
 					Log(funcName);
+
+					Actor::EventMain();
 
 					break;
 				}
@@ -267,30 +270,34 @@ void EventHandler()
 
 
 
-	// switch (event)
-	// {
-	// 	case MAIN:
-	// 	{
-	// 		break;
-	// 	}
-	// 	case PAUSE:
-	// 	{
-	// 		break;
-	// 	}
-	// 	case TELEPORT:
-	// 	{
-	// 		break;
-	// 	}
-	// 	case ITEM:
-	// 	{
-	// 		break;
-	// 	}
-	// 	case CUTSCENE:
-	// 	{
-	// 		break;
-	// 	}
-	// }
+	switch (event)
+	{
+		case MAIN:
+		{
+			CharacterSwitchController();
+
+			break;
+		}
+		// case PAUSE:
+		// {
+		// 	break;
+		// }
+		// case TELEPORT:
+		// {
+		// 	break;
+		// }
+		// case ITEM:
+		// {
+		// 	break;
+		// }
+		// case CUTSCENE:
+		// {
+		// 	break;
+		// }
+	}
 }
+
+
 
 
 
@@ -318,7 +325,15 @@ void EventHandler()
 
 
 
+// void __fastcall SetActorEvent(byte8 * actorBaseAddr)
+// {
+// 	//Log("%s %X", FUNC_NAME, actorBaseAddr);
 
+
+// 	Actor::SetActorEvent(actorBaseAddr);
+
+
+// }
 
 
 
@@ -351,7 +366,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = OldCreateFunction(InitSession, jumpAddr, true, true, 0, 0, size);
+			func = old_CreateFunction(InitSession, jumpAddr, true, true, 0, 0, size);
 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 
@@ -380,7 +395,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = OldCreateFunction(SetCharacter, jumpAddr, true, true, 0, 0, size);
+			func = old_CreateFunction(SetCharacter, jumpAddr, true, true, 0, 0, size);
 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 
@@ -445,7 +460,7 @@ export void Toggle(bool enable)
 			if (!run)
 			{
 				backupHelper.Save(addr, size);
-				func = OldCreateFunction(SetRoomPosition, jumpAddr, true, true, size, sizeof(sect1));
+				func = old_CreateFunction(SetRoomPosition, jumpAddr, true, true, size, sizeof(sect1));
 				CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 				CopyMemory(func.sect1, sect1, sizeof(sect1));
 			}
@@ -634,6 +649,60 @@ export void Toggle(bool enable)
 			backupHelper.Restore(addr);
 		}
 	}
+
+
+
+
+
+// // SetActorEvent
+// {
+// 	auto addr = (appBaseAddr + 0x23C968);
+// 	constexpr size_t size = 6;
+// 	/*
+// 	dmc4.exe+23C968 - 89 41 10 - mov [ecx+10],eax
+// 	dmc4.exe+23C96B - C2 0400  - ret 0004
+// 	dmc4.exe+23C96E - CC       - int 3
+// 	*/
+
+// 	constexpr byte8 sect0[] =
+// 	{
+// 		0x89, 0x41, 0x10, // mov [ecx+10],eax
+// 	};
+// 	constexpr byte8 sect2[] =
+// 	{
+// 		0xC2, 0x04, 0x00, // ret 0004
+// 	};
+
+// 	static Function func = {};
+
+// 	if (!run)
+// 	{
+// 		backupHelper.Save(addr, size);
+// 		func = CreateFunction(SetActorEvent, 0, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult | FunctionFlags_NoReturn), sizeof(sect0), 0, sizeof(sect2));
+// 		CopyMemory(func.sect0, sect0, sizeof(sect0));
+// 		CopyMemory(func.sect2, sect2, sizeof(sect2));
+// 	}
+
+// 	if (enable)
+// 	{
+// 		WriteJump(addr, func.addr, (size - 5));
+// 	}
+// 	else
+// 	{
+// 		backupHelper.Restore(addr);
+// 	}
+// }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

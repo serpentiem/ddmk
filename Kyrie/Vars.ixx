@@ -32,12 +32,6 @@ namespaceEnd();
 
 
 
-// export enum
-// {
-// 	LoadFileFlags_Unknown,
-// 	LoadFileFlags_Force,
-// 	LoadFileFlags_Queue,
-// };
 
 
 
@@ -68,18 +62,7 @@ namespaceEnd();
 export namespaceStart(DLC);
 enum
 {
-
-
-LADY_TRISH_COSTUMES = 359496,
-
-
-/*
-https://steamdb.info/app/359496/
-*/
-
-
-
-
+	LADY_TRISH_COSTUMES = 359496,
 };
 namespaceEnd();
 
@@ -182,18 +165,6 @@ namespaceEnd();
 
 
 
-// export struct KeyData
-// {
-// 	bool enable;
-// 	size_t keys[4];
-// 	size_t keyCount;
-// };
-
-
-
-
-
-
 
 
 
@@ -234,32 +205,153 @@ static_assert(sizeof(CameraData) == 232);
 
 
 
-// export struct Gamepad
-// {
-// 	_(4);
-// 	void * addr;
-// };
 
-export struct Gamepad
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// $KeyboardDataStart
+
+export struct KeyboardData
+{
+	_(288);
+	byte32 flags[4]; // 0x120
+};
+
+static_assert(offsetof(KeyboardData, flags) == 0x120);
+
+static_assert(sizeof(KeyboardData) == 304);
+
+// $KeyboardDataEnd
+
+
+
+
+
+
+
+
+
+
+
+
+
+// $GamepadMetadataStart
+
+export struct GamepadMetadata
+{
+	_(16);
+	uint32 playerIndex; // 0x10
+	_(328);
+	byte32 flags[2]; // 0x15C
+	_(360);
+};
+
+static_assert(offsetof(GamepadMetadata, playerIndex) == 0x10);
+static_assert(offsetof(GamepadMetadata, flags) == 0x15C);
+
+static_assert(sizeof(GamepadMetadata) == 716);
+
+// $GamepadMetadataEnd
+
+
+
+// $GamepadDataStart
+
+export struct GamepadData
 {
 	_(4);
-	byte8 * addr;
+	GamepadMetadata * gamepadMetadataAddr; // 4
 	_(504);
 };
 
-static_assert(sizeof(Gamepad) == 0x200);
+static_assert(offsetof(GamepadData, gamepadMetadataAddr) == 4);
 
+static_assert(sizeof(GamepadData) == 512);
+
+// $GamepadDataEnd
+
+
+
+// $GamepadManagerStart
+
+export struct GamepadManager
+{
+	_(60);
+	GamepadMetadata gamepadMetadata[4]; // 0x3C
+	_(84);
+	GamepadData gamepadData[2]; // 0xBC0
+};
+
+static_assert(offsetof(GamepadManager, gamepadMetadata) == 0x3C);
+static_assert(offsetof(GamepadManager, gamepadData) == 0xBC0);
+
+static_assert(sizeof(GamepadManager) == 4032);
+
+// $GamepadManagerEnd
+
+
+
+
+
+export namespaceStart(GAMEPAD);
 enum
 {
-	KEYBOARD_SIZE = 2624,
+	BACK              = 0x1,
+	LEFT_THUMB        = 0x2,
+	RIGHT_THUMB       = 0x4,
+	START             = 0x8,
+	UP                = 0x10,
+	RIGHT             = 0x20,
+	DOWN              = 0x40,
+	LEFT              = 0x80,
+	LEFT_SHOULDER     = 0x100,
+	RIGHT_SHOULDER    = 0x200,
+	LEFT_TRIGGER      = 0x400,
+	RIGHT_TRIGGER     = 0x800,
+	Y                 = 0x1000,
+	B                 = 0x2000,
+	A                 = 0x4000,
+	X                 = 0x8000,
+	LEFT_STICK_UP     = 0x10000,
+	LEFT_STICK_RIGHT  = 0x20000,
+	LEFT_STICK_DOWN   = 0x40000,
+	LEFT_STICK_LEFT   = 0x80000,
+	RIGHT_STICK_UP    = 0x100000,
+	RIGHT_STICK_RIGHT = 0x200000,
+	RIGHT_STICK_DOWN  = 0x400000,
+	RIGHT_STICK_LEFT  = 0x800000,
 };
+namespaceEnd();
 
-static_assert(KEYBOARD_SIZE == 0xA40);
 
-export struct Keyboard
-{
-	_(2624);
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -425,9 +517,17 @@ static_assert(sizeof(SessionData) == 1272);
 
 export struct PlayerActorData
 {
-	_(64);
+	_(16);
+	uint32 event; // 0x10
+	_(44);
 	vec4 position; // 0x40
-	_(6488);
+	_(16);
+	vec4 size; // 0x60
+	_(6320);
+	byte32 buttons[4]; // 0x1920
+	_(8);
+	uint32 directions[3]; // 0x1938
+	_(100);
 	uint32 costume; // 0x19A8
 	uint32 character; // 0x19AC
 	_(109);
@@ -435,17 +535,24 @@ export struct PlayerActorData
 	_(226);
 	float hitPoints; // 0x1B00
 	float maxHitPoints; // 0x1B04
-	_(2556);
+	_(320);
+	float rotation; // 0x1C48
+	_(2232);
 	float magicPoints; // 0x2504
 	float maxMagicPoints; // 0x2508
 };
 
+static_assert(offsetof(PlayerActorData, event) == 0x10);
 static_assert(offsetof(PlayerActorData, position) == 0x40);
+static_assert(offsetof(PlayerActorData, size) == 0x60);
+static_assert(offsetof(PlayerActorData, buttons) == 0x1920);
+static_assert(offsetof(PlayerActorData, directions) == 0x1938);
 static_assert(offsetof(PlayerActorData, costume) == 0x19A8);
 static_assert(offsetof(PlayerActorData, character) == 0x19AC);
 static_assert(offsetof(PlayerActorData, enable) == 0x1A1D);
 static_assert(offsetof(PlayerActorData, hitPoints) == 0x1B00);
 static_assert(offsetof(PlayerActorData, maxHitPoints) == 0x1B04);
+static_assert(offsetof(PlayerActorData, rotation) == 0x1C48);
 static_assert(offsetof(PlayerActorData, magicPoints) == 0x2504);
 static_assert(offsetof(PlayerActorData, maxMagicPoints) == 0x2508);
 
@@ -529,7 +636,7 @@ static_assert(sizeof(SessionEventData) == 49);
 export struct FilterHelper
 {
 	const char * name;
-	uint64 off;
+	off_t off;
 };
 
 export constexpr FilterHelper filterHelpers[] =

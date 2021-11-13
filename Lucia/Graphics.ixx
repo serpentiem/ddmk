@@ -67,7 +67,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
+			func = old_CreateFunction(0, jumpAddr, false, true, (sizeof(sect0) + size));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory((func.sect0 + sizeof(sect0)), addr, size, MemoryFlags_VirtualProtectSource);
 			WriteAddress(func.sect0, frequencyAddr, 8);

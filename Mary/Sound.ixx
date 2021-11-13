@@ -17,7 +17,7 @@ import Internal;
 
 #define debug false
 
-#include "Macros.h"
+// #include "Macros.h"
 
 constexpr uint32 g_sectCount[HELPER_COUNT] =
 {
@@ -1857,7 +1857,7 @@ export bool Sound_Init()
 		dmc3.exe+32905 - CC - int 3
 		*/
 
-		auto func = CreateFunction(FMOD_InitComplete);
+		auto func = old_CreateFunction(FMOD_InitComplete);
 
 		WriteJump(addr, func.addr);
 	}
@@ -1902,7 +1902,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(GetDbstMetadataAddress, jumpAddr, true, false, sizeof(sect0), 0, sizeof(sect2));
+			func = old_CreateFunction(GetDbstMetadataAddress, jumpAddr, true, false, sizeof(sect0), 0, sizeof(sect2));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
@@ -1931,7 +1931,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(GetDbstItemAddress, 0, true, false);
+			func = old_CreateFunction(GetDbstItemAddress, 0, true, false);
 		}
 
 		if (enable)
@@ -1958,7 +1958,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(GetHeadMetadataAddress, 0, true, false);
+			func = old_CreateFunction(GetHeadMetadataAddress, 0, true, false);
 		}
 
 		if (enable)
@@ -1985,7 +1985,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(GetChannelOffset, 0, true, false);
+			func = old_CreateFunction(GetChannelOffset, 0, true, false);
 		}
 
 		if (enable)
@@ -2018,7 +2018,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(GetSoundDataCount, jumpAddr, true, false, 0, 0, sizeof(sect2));
+			func = old_CreateFunction(GetSoundDataCount, jumpAddr, true, false, 0, 0, sizeof(sect2));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
 
@@ -2058,7 +2058,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(GetSoundDataAddress, jumpAddr, true, false, sizeof(sect0), 0, sizeof(sect2));
+			func = old_CreateFunction(GetSoundDataAddress, jumpAddr, true, false, sizeof(sect0), 0, sizeof(sect2));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}

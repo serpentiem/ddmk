@@ -3,10 +3,9 @@ module;
 export module Item;
 
 import Core;
+import Core_GUI;
 
 #include "../Core/Macros.h"
-
-import Core_GUI;
 
 import Config;
 import Global;
@@ -16,7 +15,12 @@ import Vars;
 
 #define debug false
 
-#include "Macros.h"
+
+
+
+// @Rename
+export float g_timeout = 0;
+
 
 struct ItemHelper
 {

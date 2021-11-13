@@ -53,7 +53,7 @@ export bool Memory_Init()
 	Log("Memory_main %llX", Memory_main);
 
 	{
-		auto func = CreateFunction(GetMemoryAddress, (appBaseAddr + 0x3019E), true, false);
+		auto func = old_CreateFunction(GetMemoryAddress, (appBaseAddr + 0x3019E), true, false);
 		WriteJump((appBaseAddr + 0x30199), func.addr);
 		/*
 		dmc3.exe+30199 - E8 328F0100 - call dmc3.exe+490D0

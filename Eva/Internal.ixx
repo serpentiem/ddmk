@@ -8,7 +8,7 @@ import Core;
 
 import Vars;
 
-#include "Macros.h"
+// #include "Macros.h"
 
 // $DataStart
 
@@ -29,23 +29,23 @@ export void Internal_Init()
 	LogFunction();
 
 	{
-		auto func = CreateFunction((appBaseAddr + 0x2C99C0));
+		auto func = old_CreateFunction((appBaseAddr + 0x2C99C0));
 		func_2C99C0 = (func_2C99C0_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x2C4A00));
+		auto func = old_CreateFunction((appBaseAddr + 0x2C4A00));
 		func_2C4A00 = (func_2C4A00_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x2C4C50));
+		auto func = old_CreateFunction((appBaseAddr + 0x2C4C50));
 		func_2C4C50 = (func_2C4C50_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x3C8DC0));
+		auto func = old_CreateFunction((appBaseAddr + 0x3C8DC0));
 		func_3C8DC0 = (func_3C8DC0_t)func.addr;
 	}
 	{
-		auto func = CreateFunction((appBaseAddr + 0x2F0610));
+		auto func = old_CreateFunction((appBaseAddr + 0x2F0610));
 		func_2F0610 = (func_2F0610_t)func.addr;
 	}
 }

@@ -23,7 +23,7 @@ import Vars;
 
 #define debug false
 
-#include "Macros.h"
+// #include "Macros.h"
 
 
 
@@ -218,7 +218,7 @@ export void Toggle(bool enable)
 	if (!run)
 	{
 		backupHelper.Save(addr, size);
-		func = CreateFunction(MainLoop, jumpAddr, true, true, 0, 0, size);
+		func = old_CreateFunction(MainLoop, jumpAddr, true, true, 0, 0, size);
 		CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 	}
 
@@ -260,7 +260,7 @@ export void Toggle(bool enable)
 	// 	if (!run)
 	// 	{
 	// 		backupHelper.Save(addr, size);
-	// 		func = CreateFunction(Mission3CutsceneStart, jumpAddr, true, true, size);
+	// 		func = old_CreateFunction(Mission3CutsceneStart, jumpAddr, true, true, size);
 	// 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 	// 	}
 
@@ -299,7 +299,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(TextEnd, jumpAddr, true, true, size);
+			func = old_CreateFunction(TextEnd, jumpAddr, true, true, size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 
@@ -344,7 +344,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(InitSession, jumpAddr, true, true, size);
+			func = old_CreateFunction(InitSession, jumpAddr, true, true, size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 
@@ -373,7 +373,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(MissionStartSetIndex, jumpAddr, true, true, size);
+			func = old_CreateFunction(MissionStartSetIndex, jumpAddr, true, true, size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 
@@ -402,7 +402,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetRoomNewGame, jumpAddr, true, true, size);
+			func = old_CreateFunction(SetRoomNewGame, jumpAddr, true, true, size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			WriteAddress(func.sect0, (appBaseAddr + 0x27E82AC), 8);
 		}
@@ -432,7 +432,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetRoomMissionStart, jumpAddr, true, true, size);
+			func = old_CreateFunction(SetRoomMissionStart, jumpAddr, true, true, size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 
@@ -461,7 +461,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetRoomGeneric, jumpAddr, true, true, size);
+			func = old_CreateFunction(SetRoomGeneric, jumpAddr, true, true, size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 
@@ -492,7 +492,7 @@ export void Toggle(bool enable)
 	if (!run)
 	{
 		backupHelper.Save(addr, size);
-		func = CreateFunction(SetPositionMissionStart, jumpAddr, true, true, size);
+		func = old_CreateFunction(SetPositionMissionStart, jumpAddr, true, true, size);
 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		WriteAddress(func.sect0, (appBaseAddr + 0x27E82A0), 7);
 	}
@@ -541,7 +541,7 @@ export void Toggle(bool enable)
 // 	if (!run)
 // 	{
 // 		backupHelper.Save(addr, size);
-// 		func = CreateFunction(SetEquipmentNewGame, jumpAddr, true, true, size);
+// 		func = old_CreateFunction(SetEquipmentNewGame, jumpAddr, true, true, size);
 // 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 // 	}
 
@@ -571,7 +571,7 @@ export void Toggle(bool enable)
 // 	if (!run)
 // 	{
 // 		backupHelper.Save(addr, size);
-// 		func = CreateFunction(SetEquipmentLoadGame, jumpAddr, true, true, size);
+// 		func = old_CreateFunction(SetEquipmentLoadGame, jumpAddr, true, true, size);
 // 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 // 	}
 
@@ -602,7 +602,7 @@ export void Toggle(bool enable)
 // 	if (!run)
 // 	{
 // 		backupHelper.Save(addr, size);
-// 		func = CreateFunction(SetHitPoints, jumpAddr, true, true, 0, 0, size);
+// 		func = old_CreateFunction(SetHitPoints, jumpAddr, true, true, 0, 0, size);
 // 		CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
 // 	}
 
@@ -632,7 +632,7 @@ export void Toggle(bool enable)
 	if (!run)
 	{
 		backupHelper.Save(addr, size);
-		func = CreateFunction(SetExpertise, jumpAddr, true, true, size);
+		func = old_CreateFunction(SetExpertise, jumpAddr, true, true, size);
 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 	}
 
@@ -666,7 +666,7 @@ export void Toggle(bool enable)
 	if (!run)
 	{
 		backupHelper.Save(addr, size);
-		func = CreateFunction(LoadSaveFile, jumpAddr, true, true, size);
+		func = old_CreateFunction(LoadSaveFile, jumpAddr, true, true, size);
 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 	}
 

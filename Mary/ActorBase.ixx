@@ -8,7 +8,7 @@ import Vars;
 
 #define debug false
 
-#include "Macros.h"
+// #include "Macros.h"
 
 
 
@@ -40,7 +40,7 @@ export void ToggleBase(bool enable)
 
 		if (!run)
 		{
-			func = CreateFunction(0, 0, false, false, sizeof(sect0), 0, 0, 0, 0, true);
+			func = old_CreateFunction(0, 0, false, false, sizeof(sect0), 0, 0, 0, 0, true);
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			WriteAddress((func.sect0 + 0xC), (appBaseAddr + 0xC90E28), 7);
 			GetPlayerActorBaseAddressByEffectData = reinterpret_cast<GetPlayerActorBaseAddressByEffectData_t>(func.addr);

@@ -1,6 +1,6 @@
 import Core;
 
-#include "../Core/Macros.h"
+#include "Core/Macros.h"
 
 import Windows;
 import DI8;
@@ -162,11 +162,11 @@ void Load()
 			"Mary.dll",
 		},
 		{
-			#if debug
 			"dmc4.exe",
-			#else
+			"Kyrie.dll",
+		},
+		{
 			"DevilMayCry4SpecialEdition.exe",
-			#endif
 			"Kyrie.dll",
 		}
 	};
@@ -184,7 +184,7 @@ void Load()
 			(
 				me32.szModule,
 				appName,
-				sizeof(appName) // @Research: Pretty sure that should be strlen. sizeof includes the terminating zero, strlen doesn't
+				sizeof(appName) // @Research: Pretty sure that should be strlen. sizeof includes the terminating zero, strlen doesn't.
 			) == 0
 		)
 		{

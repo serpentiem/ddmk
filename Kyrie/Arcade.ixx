@@ -1,12 +1,5 @@
-
-
 module;
-
 #include <stdio.h>
-
-
-
-
 export module Arcade;
 
 import Core;
@@ -23,7 +16,8 @@ import Vars;
 
 #define debug false
 
-// #include "Macros.h"
+
+
 
 
 
@@ -188,8 +182,8 @@ export void InitSession()
 
 	// if constexpr (debug)
 	// {
-	// 	characterData.Dante.unlocks[1] = false;
-	// 	characterData.Lady.unlocks[1] = false;
+	// 	characterData.Dante.unlocks[3] = false;
+	// 	characterData.Lady.unlocks[3] = false;
 	// }
 
 
@@ -727,7 +721,7 @@ dmc4.exe+7B2C5 - 83 C4 08         - add esp,08
 	if (!run)
 	{
 		backupHelper.Save(addr, size);
-		func = OldCreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+		func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		*reinterpret_cast<byte8 **>(func.sect0 + 9) = (appBaseAddr + 0xF59F00);
 		*reinterpret_cast<byte8 **>(func.sect0 + 0x16) = (appBaseAddr + 0xF59F10);

@@ -6,6 +6,7 @@ import Windows;
 
 import Actor;
 import Arcade;
+import Camera;
 import Config;
 import Event;
 import File;
@@ -125,6 +126,10 @@ uint32 DllMain
 		Arcade::Toggle(false);
 		Arcade::Toggle(activeConfig.Arcade.enable);
 
+
+
+		ToggleDisableCenterCamera(false);
+		ToggleDisableCenterCamera(activeConfig.disableCenterCamera);
 
 
 

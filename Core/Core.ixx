@@ -2308,29 +2308,60 @@ export struct Function
 };
 
 // @Todo: Increase Memory Data count.
+
+
+
+
+
+export enum
+{
+	FunctionFlags_SaveRegisters    = 1 << 0,
+	FunctionFlags_NoResult         = 1 << 1,
+	FunctionFlags_NoReturn         = 1 << 2,
+	FunctionFlags_Jump             = 1 << 3,
+	FunctionFlags_SaveXMMRegisters = 1 << 4,
+	FunctionFlags_NoXMMResult      = 1 << 5,
+};
+
+
+
+
+
 export Function CreateFunction
 (
-	void   * funcAddr         = 0,
-	byte8  * jumpAddr         = 0,
-	bool     saveRegisters    = true,
-	bool     noResult         = true,
-	uint32   size0            = 0,
-	uint32   size1            = 0,
-	uint32   size2            = 0,
-	uint32   cacheSize        = 0,
-	uint32   count            = 0,
-	bool     noReturn         = false,
-	bool     saveXMMRegisters = false,
-	bool     noXMMResult      = true
+	void   * funcAddr  = 0,
+	byte8  * jumpAddr  = 0,
+	byte64   flags     = 0,
+	size_t   size0     = 0,
+	size_t   size1     = 0,
+	size_t   size2     = 0,
+	size_t   cacheSize = 0,
+	size_t   count     = 0
 )
 {
+
+
+
+	// @Remove
+	const bool saveRegisters    = (flags & FunctionFlags_SaveRegisters   );
+	const bool noResult         = (flags & FunctionFlags_NoResult        );
+	const bool noReturn         = (flags & FunctionFlags_NoReturn        );
+	const bool saveXMMRegisters = (flags & FunctionFlags_SaveXMMRegisters);
+	const bool noXMMResult      = (flags & FunctionFlags_NoXMMResult     );
+
+
+
+
+
+
+
 	Function func = {};
-	uint32   pos  = 0;
+	off_t   pos  = 0;
 
 	auto Feed = [&]
 	(
 		const byte8 * buffer,
-		uint32 bufferSize,
+		size_t bufferSize,
 		bool adjustPosition = true
 	)
 	{
@@ -2467,7 +2498,7 @@ export Function CreateFunction
 				0x48, 0x81, 0xEC, 0x20, 0x00, 0x00, 0x00, // sub rsp,00000020
 			};
 			Feed(buffer, sizeof(buffer), false);
-			*reinterpret_cast<uint32 *>(func.addr + pos + 3) += (count * 8);
+			*reinterpret_cast<uint32 *>(func.addr + pos + 3) += (static_cast<uint32>(count) * 8);
 			pos += sizeof(buffer);
 		}
 		else
@@ -2503,7 +2534,7 @@ export Function CreateFunction
 				0x59,                         // pop rcx
 			};
 			Feed(buffer, sizeof(buffer), false);
-			*reinterpret_cast<uint32 *>(func.addr + pos + 4) = count;
+			*reinterpret_cast<uint32 *>(func.addr + pos + 4) = static_cast<uint32>(count);
 			pos += sizeof(buffer);
 		}
 	}
@@ -2516,11 +2547,29 @@ export Function CreateFunction
 		constexpr byte8 buffer[] =
 		{
 			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax
-			0xFF, 0xD0,                                                 // call rax
 		};
 		Feed(buffer, sizeof(buffer), false);
 		*reinterpret_cast<void **>(func.addr + pos + 2) = funcAddr;
 		pos += sizeof(buffer);
+
+
+
+		if (flags & FunctionFlags_Jump)
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xFF, 0xE0, // jmp rax
+			};
+			Feed(buffer, sizeof(buffer));
+		}
+		else
+		{
+			constexpr byte8 buffer[] =
+			{
+				0xFF, 0xD0, // call rax
+			};
+			Feed(buffer, sizeof(buffer));
+		}
 	}
 
 	if (saveRegisters)
@@ -2641,6 +2690,82 @@ export Function CreateFunction
 
 	return func;
 }
+
+
+
+
+export __declspec(deprecated) Function old_CreateFunction
+(
+	void   * funcAddr         = 0,
+	byte8  * jumpAddr         = 0,
+	bool     saveRegisters    = true,
+	bool     noResult         = true,
+	size_t   size0            = 0,
+	size_t   size1            = 0,
+	size_t   size2            = 0,
+	size_t   cacheSize        = 0,
+	size_t   count            = 0,
+	bool     noReturn         = false,
+	bool     saveXMMRegisters = false,
+	bool     noXMMResult      = true
+)
+{
+	byte64 flags = 0;
+
+	if (saveRegisters)
+	{
+		flags |= FunctionFlags_SaveRegisters;
+	}
+
+	if (noResult)
+	{
+		flags |= FunctionFlags_NoResult;
+	}
+
+	if (noReturn)
+	{
+		flags |= FunctionFlags_NoReturn;
+	}
+
+	if (saveXMMRegisters)
+	{
+		flags |= FunctionFlags_SaveXMMRegisters;
+	}
+
+	if (noXMMResult)
+	{
+		flags |= FunctionFlags_NoXMMResult;
+	}
+
+	return CreateFunction
+	(
+		funcAddr,
+		jumpAddr,
+		flags,
+		size0,
+		size1,
+		size2,
+		cacheSize,
+		count
+	);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #else
 
@@ -2916,7 +3041,7 @@ constexpr byte8 buffer[] =
 
 
 // @Remove
-export __declspec(deprecated) Function OldCreateFunction
+export __declspec(deprecated) Function old_CreateFunction
 (
 	void   * funcAddr      = 0,
 	byte8  * jumpAddr      = 0,
@@ -2970,57 +3095,6 @@ export __declspec(deprecated) Function OldCreateFunction
 
 
 
-
-
-
-
-
-
-// export Function CreateFunction
-// (
-// 	void   * funcAddr  = 0,
-// 	byte8  * jumpAddr  = 0,
-// 	byte32   flags     = FunctionFlags_Default,
-// 	size_t   size0     = 0,
-// 	size_t   size1     = 0,
-// 	size_t   size2     = 0,
-// 	size_t   cacheSize = 0
-// )
-// {
-// 	bool saveRegisters = (flags & FunctionFlags_SaveRegisters);
-// 	bool noResult      = (flags & FunctionFlags_NoResult     );
-// 	bool noReturn      = (flags & FunctionFlags_NoReturn     );
-
-// 	return CreateFunction
-// 	(
-// 		funcAddr,
-// 		jumpAddr,
-// 		saveRegisters,
-// 		noResult,
-// 		size0,
-// 		size1,
-// 		size2,
-// 		cacheSize,
-// 		noReturn,
-// 		flags
-// 	);
-// }
-
-
-/*
-
-function,
-jumpAddr,
-
-(
-	FunctionFlags::SaveRegisters |
-	FunctionFlags::NoResult |
-	FunctionFlags::NoReturn
-)
-
-
-
-*/
 
 
 
@@ -3374,6 +3448,15 @@ export struct KeyData
 {
 	byte8 keys[4];
 	size_t keyCount;
+	bool execute;
+	//void * func;
+
+
+	typedef void(* func_t)();
+
+	func_t func;
+
+
 
 
 
@@ -3408,6 +3491,61 @@ export struct KeyData
 
 		keyCount++;
 	}
+
+
+
+
+
+	void Check(byte8 * state)
+	{
+		// if (showPopup)
+		// {
+		// 	return;
+		// }
+
+		// auto & execute  = executes3[0];
+		// auto & keys     = activeKeyData.keys;
+		// auto & keyCount = activeKeyData.keyCount;
+
+		size_t keysDown = 0;
+
+		if (keyCount < 1)
+		{
+			return;
+		}
+
+		for_all(keyIndex, keyCount)
+		{
+			auto & key = keys[keyIndex];
+
+			if (state[key] & 0x80)
+			{
+				keysDown++;
+			}
+		}
+
+		if (keysDown == keyCount)
+		{
+			if (execute)
+			{
+				execute = false;
+
+				[&]()
+				{
+					if (!func)
+					{
+						return;
+					}
+
+					func();
+				}();
+			}
+		}
+		else
+		{
+			execute = true;
+		}
+	}
 };
 
 
@@ -3426,6 +3564,14 @@ export struct KeyData
 
 
 namespaceStart(DI8);
+
+
+
+
+
+
+
+
 
 // $KeyStart
 
@@ -3979,25 +4125,11 @@ namespaceEnd();
 
 #pragma region Global
 
-
-
 export vec2 g_windowSize = {};
 export vec2 g_clientSize = {};
 export vec2 g_renderSize = {};
 
-
-
-export bool g_update3D = false;
-
-
 export float g_frameRateMultiplier = 1.0f;
-
-
-
-
-
-
-
 
 
 
@@ -4063,8 +4195,6 @@ export POINT GetClientSize(HWND windowHandle)
 
 	return point;
 }
-
-
 
 
 
@@ -4137,22 +4267,67 @@ export void UpdateGlobalRenderSize
 	);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #pragma endregion
+
+
+
+
+
+
+// @Research: Check triggers.
+
+namespaceStart(XI);
+
+// $GamepadStart
+
+export namespaceStart(GAMEPAD);
+enum
+{
+	UP             = 0x0001,
+	DOWN           = 0x0002,
+	LEFT           = 0x0004,
+	RIGHT          = 0x0008,
+	START          = 0x0010,
+	BACK           = 0x0020,
+	LEFT_THUMB     = 0x0040,
+	RIGHT_THUMB    = 0x0080,
+	LEFT_SHOULDER  = 0x0100,
+	RIGHT_SHOULDER = 0x0200,
+	A              = 0x1000,
+	B              = 0x2000,
+	X              = 0x4000,
+	Y              = 0x8000,
+};
+namespaceEnd();
+
+export const char * buttonNames[] =
+{
+	"Up",
+	"Down",
+	"Left",
+	"Right",
+	"Start",
+	"Back",
+	"Left Thumb",
+	"Right Thumb",
+	"Left Shoulder",
+	"Right Shoulder",
+	"A",
+	"B",
+	"X",
+	"Y",
+};
+
+// $GamepadEnd
+
+namespaceEnd();
+
+
+
+
+
+
+
 
 
 

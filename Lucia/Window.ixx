@@ -70,36 +70,6 @@ export void ToggleForceWindowFocus(bool enable)
 
 
 
-	// // Fix Mouse Cursor
-	// {
-	// 	auto addr = (appBaseAddr + 0x425CA);
-	// 	constexpr uint64 size = 6;
-	// 	/*
-	// 	dmc2.exe+425CA - FF 15 70506101 - call qword ptr [dmc2.exe+1657640]
-	// 	dmc2.exe+425D0 - 4C 8B CF       - mov r9,rdi
-	// 	*/
-
-	// 	if (!run)
-	// 	{
-	// 		backupHelper.Save(addr, size);
-	// 	}
-
-	// 	if (enable)
-	// 	{
-	// 		SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
-	// 	}
-	// 	else
-	// 	{
-	// 		backupHelper.Restore(addr);
-	// 	}
-	// }
-
-/*
-dmc2.exe+425C3 - C6 05 3901EE00 00     - mov byte ptr [dmc2.exe+F22703],00 { (1),0 }
-
-*/
-
-
 
 	run = true;
 }

@@ -9,19 +9,21 @@ import Core;
 import Core_GUI;
 
 #include "../Core/Macros.h"
-#include "../Global.h"
 
 import Windows;
-import DI8;
 
 using namespace Windows;
-using namespace DI8;
+
+import GlobalBase;
+import GUIBase;
 
 import Actor;
 import Arcade;
+import Camera;
 import Config;
 import Global;
 import Graphics;
+import Input;
 import Steam;
 import Training;
 import Vars;
@@ -31,75 +33,77 @@ import Window;
 
 
 
-#pragma region Base
-
-namespaceStart(FONT);
-enum
-{
-	DEFAULT,
-	MAIN,
-	OVERLAY_8,
-	OVERLAY_16,
-	OVERLAY_32,
-	OVERLAY_64,
-	OVERLAY_128,
-};
-namespaceEnd();
-
-
-
-void BuildFonts()
-{
-	auto & io = ImGui::GetIO();
-
-	io.Fonts->AddFontDefault();
-
-	char overlayFont[512];
-
-	{
-		char buffer[64];
-
-		GetWindowsDirectoryA
-		(
-			buffer,
-			sizeof(buffer)
-		);
-
-		snprintf
-		(
-			overlayFont,
-			sizeof(overlayFont),
-			"%s\\Fonts\\consola.ttf",
-			buffer
-		);
-	}
-
-	io.Fonts->AddFontFromFileTTF(overlayFont, 17 );
-	io.Fonts->AddFontFromFileTTF(overlayFont, 8  );
-	io.Fonts->AddFontFromFileTTF(overlayFont, 16 );
-	io.Fonts->AddFontFromFileTTF(overlayFont, 32 );
-	io.Fonts->AddFontFromFileTTF(overlayFont, 64 );
-	io.Fonts->AddFontFromFileTTF(overlayFont, 128);
-
-	io.Fonts->Build();
-}
-
-
-
-
-
-
-
-void UpdateGlobalScale()
-{
-	auto & io = ImGui::GetIO();
-
-	io.FontGlobalScale = activeConfig.globalScale;
-}
-
-#pragma endregion
-
 #pragma region Common
+
+const char * buttonNames[] =
+{
+	"Nothing",
+	"Back",
+	"Left Thumb",
+	"Right Thumb",
+	"Start",
+	"Up",
+	"Right",
+	"Down",
+	"Left",
+	"Left Shoulder",
+	"Right Shoulder",
+	"Left Trigger",
+	"Right Trigger",
+	"Y",
+	"B",
+	"A",
+	"X",
+	"Left Stick Up",
+	"Left Stick Right",
+	"Left Stick Down",
+	"Left Stick Left",
+	"Right Stick Up",
+	"Right Stick Right",
+	"Right Stick Down",
+	"Right Stick Left",
+};
+
+constexpr byte32 buttons[] =
+{
+	0,
+	GAMEPAD::BACK,
+	GAMEPAD::LEFT_THUMB,
+	GAMEPAD::RIGHT_THUMB,
+	GAMEPAD::START,
+	GAMEPAD::UP,
+	GAMEPAD::RIGHT,
+	GAMEPAD::DOWN,
+	GAMEPAD::LEFT,
+	GAMEPAD::LEFT_SHOULDER,
+	GAMEPAD::RIGHT_SHOULDER,
+	GAMEPAD::LEFT_TRIGGER,
+	GAMEPAD::RIGHT_TRIGGER,
+	GAMEPAD::Y,
+	GAMEPAD::B,
+	GAMEPAD::A,
+	GAMEPAD::X,
+	GAMEPAD::LEFT_STICK_UP,
+	GAMEPAD::LEFT_STICK_RIGHT,
+	GAMEPAD::LEFT_STICK_DOWN,
+	GAMEPAD::LEFT_STICK_LEFT,
+	GAMEPAD::RIGHT_STICK_UP,
+	GAMEPAD::RIGHT_STICK_RIGHT,
+	GAMEPAD::RIGHT_STICK_DOWN,
+	GAMEPAD::RIGHT_STICK_LEFT,
+};
+
+static_assert(countof(buttons) == countof(buttonNames));
+
+
+
+
+
+
+
+
+
+
 
 const char * floorNames[] =
 {
@@ -284,200 +288,6 @@ const char * characterNames[] =
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// @Todo: Move to GUI_Base or something.
-
-#pragma region Credits
-
-void CreditsWindow()
-{
-	if (!activeConfig.showCredits)
-	{
-		return;
-	}
-
-
-
-	static bool  run        = false;
-	static float scrollY    = 0;
-	static float maxScrollY = 0;
-
-
-
-	if (!run)
-	{
-		run = true;
-
-
-
-		ImGui::SetNextWindowSize
-		(
-			ImVec2
-			(
-				g_renderSize.x,
-				g_renderSize.y
-			)
-		);
-
-		ImGui::SetNextWindowPos
-		(
-			ImVec2
-			(
-				0,
-				0
-			)
-		);
-	}
-
-
-
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(0, 0));
-
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
-
-	if
-	(
-		ImGui::Begin
-		(
-			"Credits",
-			&activeConfig.showCredits,
-			ImGuiWindowFlags_NoTitleBar  |
-			ImGuiWindowFlags_NoResize    |
-			ImGuiWindowFlags_NoMove      |
-			ImGuiWindowFlags_NoScrollbar
-		)
-	)
-	{
-		ImGui::Text("");
-
-
-		constexpr float scrollSpeedY = 1.0f;
-		constexpr size_t padding = 30;
-
-		auto & io = ImGui::GetIO();
-
-
-
-		{
-			auto window = ImGui::GetCurrentWindow();
-
-			ImGui::BringWindowToDisplayBack(window);
-		}
-
-
-
-		maxScrollY = ImGui::GetScrollMaxY();
-
-		if (scrollY < maxScrollY)
-		{
-			scrollY += (scrollSpeedY * g_frameRateMultiplier);
-		}
-		else
-		{
-			scrollY = 0;
-		}
-
-
-
-		ImGui::PushFont(io.Fonts->Fonts[FONT::OVERLAY_32]);
-
-
-
-		for_all(index, padding)
-		{
-			ImGui::Text("");
-		}
-
-
-
-		CenterText("Special Thanks");
-		ImGui::Text("");
-
-		for_all(index, countof(specialNames))
-		{
-			auto name = specialNames[index];
-
-			CenterText(name);
-		}
-
-		ImGui::Text("");
-		ImGui::Text("");
-		ImGui::Text("");
-
-
-
-		CenterText("Gold & Platinum Patrons");
-		CenterText("");
-
-		for_all(index, countof(goldPlatinumNames))
-		{
-			auto name = goldPlatinumNames[index];
-
-			CenterText(name);
-		}
-
-		ImGui::Text("");
-
-
-
-		for_all(index, padding)
-		{
-			ImGui::Text("");
-		}
-
-
-
-		ImGui::PopFont();
-
-
-
-		ImGui::Text("");
-	}
-
-	ImGui::SetScrollY(scrollY);
-
-	ImGui::End();
-
-	ImGui::PopStyleColor();
-	ImGui::PopStyleVar(4);
-}
-
-#pragma endregion
-
-
-
 #pragma region Actor
 
 void Actor_PlayerTab(size_t playerIndex)
@@ -509,6 +319,43 @@ void Actor_PlayerTab(size_t playerIndex)
 
 	GUI_PopDisable(condition);
 }
+
+
+
+uint8 Actor_characterSwitchControllerButtonIndex = 0;
+
+
+void Actor_UpdateIndices()
+{
+	UpdateMapIndex
+	(
+		buttons,
+		Actor_characterSwitchControllerButtonIndex,
+		activeConfig.characterSwitchControllerButton
+	);
+}
+
+
+
+
+
+
+
+
+
+
+export KeyBinding characterSwitchControllerKeyBinding =
+{
+	"Key",
+	activeConfig.characterSwitchControllerKeyData,
+	queuedConfig.characterSwitchControllerKeyData,
+	defaultConfig.characterSwitchControllerKeyData
+};
+
+
+
+
+
 
 void ActorSection()
 {
@@ -581,8 +428,34 @@ void ActorSection()
 
 				Actor::Toggle(activeConfig.Actor.enable);
 			}
+
+			ResetConfig(keyboardPlayerIndex);
+
+
+
+
+
+			//queuedConfig.enableCharacterSwitchController = defaultConfig.enableCharacterSwitchController;
+
+			ResetQueuedConfig(enableCharacterSwitchController);
+
+			if
+			(
+				(g_scene == SCENE::MAIN          ) ||
+				(g_scene == SCENE::MISSION_SELECT)
+			)
+			{
+				//activeConfig.enableCharacterSwitchController = queuedConfig.enableCharacterSwitchController;
+
+				ResetActiveConfig(enableCharacterSwitchController);
+			}
+
+			ResetConfig(characterSwitchControllerButton);
+
+			Actor_UpdateIndices();
 		}
 		ImGui::Text("");
+
 
 
 
@@ -640,12 +513,79 @@ void ActorSection()
 		(
 			"Keyboard",
 			playerIndexNames,
-			activeConfig.Actor.keyboard,
-			queuedConfig.Actor.keyboard,
-			ImGuiComboFlags_HeightLargest
+			activeConfig.keyboardPlayerIndex,
+			queuedConfig.keyboardPlayerIndex,
+			ImGuiComboFlags_HeightLarge
 		);
+		ImGui::Text("");
 
 		ImGui::PopItemWidth();
+
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Enable Character Switch Controller",
+				activeConfig.enableCharacterSwitchController,
+				queuedConfig.enableCharacterSwitchController
+			)
+		)
+		{
+			CharacterSwitchController_Toggle(activeConfig.enableCharacterSwitchController);
+		}
+		ImGui::Text("");
+
+		{
+			bool condition = !activeConfig.enableCharacterSwitchController;
+
+			GUI_PushDisable(condition);
+
+			ImGui::PushItemWidth(200.0f);
+
+			GUI_ComboMap2
+			(
+				"Button",
+				buttonNames,
+				buttons,
+				Actor_characterSwitchControllerButtonIndex,
+				activeConfig.characterSwitchControllerButton,
+				queuedConfig.characterSwitchControllerButton,
+				ImGuiComboFlags_HeightLargest
+			);
+			ImGui::Text("");
+
+			ImGui::PopItemWidth();
+
+
+			{
+				bool condition = false;
+
+				auto & keyBinding = characterSwitchControllerKeyBinding;
+
+				if (keyBinding.showPopup)
+				{
+					condition = true;
+				}
+
+
+
+				GUI_PushDisable(condition);
+
+				keyBinding.Main();
+
+				GUI_PopDisable(condition);
+			}
+
+
+
+			GUI_PopDisable(condition);
+		}
+
+
+
+
+
 
 
 
@@ -1257,9 +1197,27 @@ void CameraSection()
 
 		if (GUI_ResetButton())
 		{
+			ResetConfig(disableCenterCamera);
 
-
+			ToggleDisableCenterCamera(activeConfig.disableCenterCamera);
 		}
+		ImGui::Text("");
+
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Disable Center Camera",
+				activeConfig.disableCenterCamera,
+				queuedConfig.disableCenterCamera
+			)
+		)
+		{
+			ToggleDisableCenterCamera(activeConfig.disableCenterCamera);
+		}
+
+		GUI_SectionEnd();
 		ImGui::Text("");
 
 
@@ -1268,8 +1226,10 @@ void CameraSection()
 
 		[&]()
 		{
-			if (g_scene != SCENE::GAME)
+			if (!InGame())
 			{
+				ImGui::Text("Invalid Pointer");
+
 				return;
 			}
 
@@ -1703,6 +1663,16 @@ void MainOverlayWindow()
 			ImGui::Text("");
 		}();
 
+
+
+		if constexpr (debug)
+		{
+			auto flags = GetGamepadFlags(activePlayerIndex);
+
+			ImGui::Text("flags %X", flags);
+
+			ImGui::Text("activePlayerIndex %u", activePlayerIndex);
+		}
 
 		// auto & io = ImGui::GetIO();
 
@@ -2175,17 +2145,15 @@ void Teleporter()
 
 		[&]()
 		{
-			IntroduceEventData(return);
-			IntroduceNextEventData(return);
-
-
-
 			if (!InGame())
 			{
 				ImGui::Text("Invalid Pointer");
 
 				return;
 			}
+
+			IntroduceEventData(return);
+			IntroduceNextEventData(return);
 
 
 
@@ -2326,7 +2294,7 @@ void ReloadRoom()
 
 
 
-
+// @Research: Prefer MoveToActivePlayerActor.
 void MoveToMainActor()
 {
 	if
@@ -2349,10 +2317,6 @@ void MoveToMainActor()
 		actorData.position = mainActorData.position;
 	}
 }
-
-
-
-
 
 
 
@@ -2653,7 +2617,11 @@ export void GUI_Render()
 	}
 
 
+	{
+		auto & keyBinding = characterSwitchControllerKeyBinding;
 
+		keyBinding.Popup();
+	}
 
 
 
@@ -2700,27 +2668,8 @@ export void GUI_Init()
 
 	UpdateGlobalScale();
 
-	//Actor_UpdateIndices();
+	Actor_UpdateIndices();
 	Arcade_UpdateIndices();
-	// MissionSelect_UpdateIndices();
-
-
-
-	{
-		Log("countof(keyNames) %u", countof(keyNames));
-
-		Log("keyNames[0] %s", keyNames[0]);
-
-		auto & newKeyNames = reinterpret_cast<const char *(&)[(countof(keyNames) - 1)]>(keyNames[1]);
-
-
-
-
-
-		Log("countof(newKeyNames) %u", countof(newKeyNames));
-
-		Log("newKeyNames[0] %s", newKeyNames[0]);
-	}
 
 
 

@@ -12,7 +12,7 @@ import Vars;
 
 #define debug false
 
-#include "Macros.h"
+// #include "Macros.h"
 
 
 
@@ -97,7 +97,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<float **>(func.sect0 + 2) = &activeConfig.Speed.turbo;
 		}
@@ -160,7 +160,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<float **>(func.sect0 + 2) = &activeConfig.Speed.quicksilverPlayerActor;
 			*reinterpret_cast<float **>(func.sect0 + 0xE + 2) = &activeConfig.Speed.quicksilverEnemyActor;

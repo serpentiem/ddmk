@@ -11,7 +11,7 @@ import Vars;
 
 #define debug false
 
-#include "Macros.h"
+// #include "Macros.h"
 
 
 namespaceStart(Camera);
@@ -50,7 +50,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<bool **>(func.sect0 + 2) = &g_disableCameraRotation;
 			WriteAddress((func.sect0 + 0xE), (appBaseAddr + 0x57740), 6);
@@ -93,7 +93,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<bool **>(func.sect0 + 2) = &g_disableCameraRotation;
 			WriteAddress((func.sect0 + 0xE), (appBaseAddr + 0x57795), 6);
@@ -141,7 +141,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<uint8 **>(func.sect0 + 2) = &activeConfig.cameraAutoAdjust;
 		}
@@ -181,7 +181,7 @@ export void Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
+			func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			*reinterpret_cast<bool **>(func.sect0 + 2) = &activeConfig.disableCenterCamera;
 			WriteAddress((func.sect0 + 0xE), (appBaseAddr + 0x577FF), 6);

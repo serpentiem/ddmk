@@ -17,7 +17,7 @@ import Vars;
 
 #define debug false
 
-#include "Macros.h"
+// #include "Macros.h"
 
 
 
@@ -607,7 +607,8 @@ export struct Config
 
 
 
-
+	int32 windowPosX = 0;
+	int32 windowPosY = 0;
 	bool forceWindowFocus = true;
 
 
@@ -692,7 +693,7 @@ export struct Config
 	// To avoid surprises by using __declspec(align) we prefer _(n) and
 	// static_assert to get the correct alignment.
 
-	_(1);
+	_(9);
 	float kalinaAnnHookGrenadeHeight = 1280.0f;
 	_(12);
 	float kalinaAnnHookGrenadeTime = 90.0f;

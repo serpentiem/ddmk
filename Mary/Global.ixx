@@ -1,7 +1,10 @@
+
+
 // @Cleanup
 
-// @Todo: Create ReloadRoom function to be consumed by new hooks wghatever right.
-// Use DI8 key codes and 3 slots, 0 should be fine, but we could skip it anyway.
+
+
+
 
 
 
@@ -11,20 +14,17 @@ import Core;
 
 #include "../Core/Macros.h"
 
+import Windows;
 import DXGI;
+import D3D10;
 import D3D11;
 import DI8;
 
+using namespace Windows;
+
 import Vars;
 
-using namespace DXGI;
-using namespace D3D11;
-using namespace DI8;
-
-
 #define debug false
-
-#include "Macros.h"
 
 
 
@@ -37,6 +37,12 @@ using namespace DI8;
 export namespace DXGI
 {
 	IDXGISwapChain * swapChain = 0;
+}
+
+export namespace D3D10
+{
+	ID3D10Device           * device           = 0;
+	ID3D10RenderTargetView * renderTargetView = 0;
 }
 
 export namespace D3D11
@@ -52,10 +58,6 @@ export namespace DI8
 	IDirectInputDevice8W * mouse           = 0;
 	DIMOUSESTATE2          mouseState      = {};
 }
-
-// export vec2 g_windowSize = {};
-// export vec2 g_clientSize = {};
-// export vec2 g_renderSize = {};
 
 
 
@@ -78,24 +80,26 @@ export bool g_eventRun[EVENT::COUNT] = {};
 export bool  g_quicksilver           = false;
 export bool  g_disableCameraRotation = false;
 
-//export uint32 g_actorMode = 0;
+
+
 
 export bool g_haywireNeoGenerator = false;
 
 
-//export float g_frameRateMultiplier = 1.0f;
 
 
 
 
-// @Remove
-//export bool g_resetBossVergil[PLAYER_COUNT] = {};
+
+
+
 
 
 
 
 export Vector<byte8 *> g_playerActorBaseAddrs = {};
-//export Vector<byte8 *> g_enemyActorBaseAddrs = {};
+
+
 
 
 export NewActorData g_defaultNewActorData[ENTITY_COUNT] = {};
@@ -107,7 +111,6 @@ export void ClearActorData()
 	LogFunction();
 
 	g_playerActorBaseAddrs.Clear();
-	//g_enemyActorBaseAddrs.Clear();
 
 	SetMemory
 	(
@@ -158,7 +161,8 @@ export bool g_lastShow           = false;
 export bool g_showItemWindow     = false;
 export bool g_lastShowItemWindow = false;
 
-// export bool g_pauseForceQuitMission     = false;
+
+
 export bool g_missionSelectForceConfirm = false;
 
 
@@ -175,24 +179,24 @@ export float g_magicPoints[PLAYER_COUNT] = {};
 
 
 
-// @Remove
-export float g_timeout = 0;
-export bool g_visible = false;
-export float g_characterSwitchTimeout[4] = {};
-export uint32 g_eventNevan = 0;
-export bool g_setEventNevan = false;
+// // @Remove
+
+// export bool g_visible = false;
+// export float g_characterSwitchTimeout[4] = {};
+// export uint32 g_eventNevan = 0;
+// export bool g_setEventNevan = false;
 
 
 
-export namespaceStart(BossVergil);
+// export namespaceStart(BossVergil);
 
-uint32 variant = 0;
+// uint32 variant = 0;
 
-namespaceEnd();
+// namespaceEnd();
 
 
-// uint32 g_bossVergilVariant = 0;
-// uint32 g_variantBossVergil = 0;
+// // uint32 g_bossVergilVariant = 0;
+// // uint32 g_variantBossVergil = 0;
 
 
 
@@ -266,67 +270,6 @@ export void ToggleSkipCutscenes(bool enable)
 
 
 
-// @Remove
-
-// @Todo: Re-evaluate reasons for these being in here.
-// export template <typename T>
-// void ActorForAll(T & func)
-// {
-// 	old_for_all(uint64, actorIndex, g_playerActorBaseAddrs.count)
-// 	{
-// 		auto actorBaseAddr = g_playerActorBaseAddrs[actorIndex];
-
-// 		if (func(actorBaseAddr))
-// 		{
-// 			break;
-// 		}
-// 	}
-// }
-
-// export template <typename T>
-// void EnemyForAll(T & func)
-// {
-// 	// Not necessary. Some enemies don't even use this. Gigapede for example.
-
-// 	// auto firstBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2550);
-// 	// auto lastBaseAddr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xCF2750);
-// 	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-
-// 	if
-// 	(
-// 		// !firstBaseAddr ||
-// 		// !lastBaseAddr ||
-// 		!pool ||
-// 		!pool[8]
-// 	)
-// 	{
-// 		return;
-// 	}
-
-// 	auto & count = *reinterpret_cast<uint32 *>(pool[8] + 0x28);
-// 	auto dataAddr = reinterpret_cast<EnemyVectorDataMetadata *>(pool[8] + 0x48);
-
-// 	old_for_all(uint32, index, 50)
-// 	{
-// 		auto & data = dataAddr[index];
-
-// 		if
-// 		(
-// 			!data.baseAddr
-// 			// (data.baseAddr < firstBaseAddr) ||
-// 			// (data.baseAddr > lastBaseAddr)
-// 		)
-// 		{
-// 			continue;
-// 		}
-
-// 		if (func(data.baseAddr))
-// 		{
-// 			break;
-// 		}
-// 	}
-// }
-
 
 
 export bool InGame()
@@ -369,35 +312,6 @@ export bool InCredits()
 
 	return *reinterpret_cast<bool *>(pool + 0x11);
 }
-
-
-// @Remove
-
-// export bool IsBorderless()
-// {
-// 	return *reinterpret_cast<bool *>(appBaseAddr + 0x5EA130 + 0x679);
-// 	/*
-// 	dmc3.exe+47DEA - 48 8D 0D 3F235A00 - lea rcx,[dmc3.exe+5EA130]
-// 	dmc3.exe+36E60 - 0FB6 81 79060000  - movzx eax,byte ptr [rcx+00000679]
-// 	*/
-// }
-
-
-// @Research: Consider SCENE::MISSION_START as well.
-// export bool IsActorConfigScene()
-// {
-// 	if
-// 	(
-// 		(g_scene == SCENE::MAIN          ) ||
-// 		(g_scene == SCENE::MISSION_SELECT)
-// 	)
-// 	{
-// 		return true;
-// 	}
-
-// 	return false;
-// }
-
 
 
 

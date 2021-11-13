@@ -3,24 +3,23 @@ module;
 #include "../ImGui/imgui_internal.h"
 
 #include <stdio.h>
-
 #include <xmmintrin.h>
 export module GUI;
 
 import Core;
-
-#include "../Core/Macros.h"
-#include "../Global.h"
-
-import Vars;
-
-import Windows;
-import DXGI;
-import D3D11;
-
 import Core_GUI;
 
-import ActorRelocations;
+#include "../Core/Macros.h"
+
+import Windows;
+import D3D11;
+
+using namespace Windows;
+using namespace D3D11;
+
+import GlobalBase;
+import GUIBase;
+
 import Actor;
 import Arcade;
 import Camera;
@@ -34,120 +33,16 @@ import HUD;
 import Input;
 import Internal;
 import Item;
-import Model;
 import Scene;
-import SoundRelocations;
 import Sound;
 import Speed;
 import Training;
+import Vars;
 import Window;
-
-using namespace Windows;
-using namespace DXGI;
-using namespace D3D11;
 
 #define debug false
 
-#include "Macros.h"
 
-
-
-#pragma region Base
-
-namespaceStart(FONT);
-enum
-{
-	DEFAULT,
-	MAIN,
-	OVERLAY_8,
-	OVERLAY_16,
-	OVERLAY_32,
-	OVERLAY_64,
-	OVERLAY_128,
-};
-namespaceEnd();
-
-
-
-void BuildFonts()
-{
-	auto & io = ImGui::GetIO();
-
-	io.Fonts->AddFontDefault();
-
-	char overlayFont[512];
-
-	{
-		char buffer[64];
-
-		GetWindowsDirectoryA
-		(
-			buffer,
-			sizeof(buffer)
-		);
-
-		snprintf
-		(
-			overlayFont,
-			sizeof(overlayFont),
-			"%s\\Fonts\\consola.ttf",
-			buffer
-		);
-	}
-
-	io.Fonts->AddFontFromFileTTF(overlayFont, 17 );
-	io.Fonts->AddFontFromFileTTF(overlayFont, 8  );
-	io.Fonts->AddFontFromFileTTF(overlayFont, 16 );
-	io.Fonts->AddFontFromFileTTF(overlayFont, 32 );
-	io.Fonts->AddFontFromFileTTF(overlayFont, 64 );
-	io.Fonts->AddFontFromFileTTF(overlayFont, 128);
-
-	io.Fonts->Build();
-}
-
-// // @Merge
-// void TooltipHelper
-// (
-// 	const char * name,
-// 	const char * description,
-// 	float x = 2048.0f
-// )
-// {
-// 	ImGui::TextDisabled(name);
-
-// 	if (ImGui::IsItemHovered())
-// 	{
-// 		ImGui::BeginTooltip();
-// 		ImGui::PushTextWrapPos(x);
-// 		ImGui::Text(description);
-// 		ImGui::PopTextWrapPos();
-// 		ImGui::EndTooltip();
-// 	}
-// }
-
-// void DescriptionHelper
-// (
-// 	const char * description,
-// 	float width = 500.0f
-// )
-// {
-// 	ImGui::PushTextWrapPos(width);
-// 	ImGui::Text(description);
-// 	ImGui::PopTextWrapPos();
-// }
-
-// void CenterText(const char * name)
-// {
-// 	float nameWidth = ImGui::CalcTextSize(name).x;
-// 	float cursorPosX = ImGui::GetCursorPosX();
-// 	float newCursorPosX = (cursorPosX + ((ImGui::GetWindowSize().x - nameWidth) / 2));
-
-// 	ImGui::SetCursorPosX(newCursorPosX);
-
-// 	ImGui::Text(name);
-// }
-
-#pragma endregion
 
 #pragma region Common
 
@@ -824,167 +719,9 @@ static_assert(countof(trackFilenames) == countof(trackNames));
 
 #pragma endregion
 
-// @Todo: Move to GUI_Base or something.
-
-#pragma region Credits
-
-void CreditsWindow()
-{
-	if (!activeConfig.showCredits)
-	{
-		return;
-	}
 
 
 
-	static bool  run        = false;
-	static float scrollY    = 0;
-	static float maxScrollY = 0;
-
-
-
-	if (!run)
-	{
-		run = true;
-
-
-
-		ImGui::SetNextWindowSize
-		(
-			ImVec2
-			(
-				g_renderSize.x,
-				g_renderSize.y
-			)
-		);
-
-		ImGui::SetNextWindowPos
-		(
-			ImVec2
-			(
-				0,
-				0
-			)
-		);
-	}
-
-
-
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(0, 0));
-
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
-
-	if
-	(
-		ImGui::Begin
-		(
-			"Credits",
-			&activeConfig.showCredits,
-			ImGuiWindowFlags_NoTitleBar  |
-			ImGuiWindowFlags_NoResize    |
-			ImGuiWindowFlags_NoMove      |
-			ImGuiWindowFlags_NoScrollbar
-		)
-	)
-	{
-		ImGui::Text("");
-
-
-		constexpr float scrollSpeedY = 1.0f;
-		constexpr size_t padding = 30;
-
-		auto & io = ImGui::GetIO();
-
-
-
-		{
-			auto window = ImGui::GetCurrentWindow();
-
-			ImGui::BringWindowToDisplayBack(window);
-		}
-
-
-
-		maxScrollY = ImGui::GetScrollMaxY();
-
-		if (scrollY < maxScrollY)
-		{
-			scrollY += (scrollSpeedY * g_frameRateMultiplier);
-		}
-		else
-		{
-			scrollY = 0;
-		}
-
-
-
-		ImGui::PushFont(io.Fonts->Fonts[FONT::OVERLAY_32]);
-
-
-
-		for_all(index, padding)
-		{
-			ImGui::Text("");
-		}
-
-
-
-		CenterText("Special Thanks");
-		ImGui::Text("");
-
-		for_all(index, countof(specialNames))
-		{
-			auto name = specialNames[index];
-
-			CenterText(name);
-		}
-
-		ImGui::Text("");
-		ImGui::Text("");
-		ImGui::Text("");
-
-
-
-		CenterText("Gold & Platinum Patrons");
-		CenterText("");
-
-		for_all(index, countof(goldPlatinumNames))
-		{
-			auto name = goldPlatinumNames[index];
-
-			CenterText(name);
-		}
-
-		ImGui::Text("");
-
-
-
-		for_all(index, padding)
-		{
-			ImGui::Text("");
-		}
-
-
-
-		ImGui::PopFont();
-
-
-
-		ImGui::Text("");
-	}
-
-	ImGui::SetScrollY(scrollY);
-
-	ImGui::End();
-
-	ImGui::PopStyleColor();
-	ImGui::PopStyleVar(4);
-}
-
-#pragma endregion
 
 #pragma region Texture
 
@@ -3799,47 +3536,47 @@ const char * cameraAutoAdjustNames[] =
 
 
 // @Remove
-export template <typename T>
-void GUI_InputDefault2Camera
-(
-	const char * label,
-	T & var,
-	T & var2,
-	T & var3,
-	T & defaultVar,
-	const T step = 1,
-	const char * format = 0,
-	ImGuiInputTextFlags flags = 0
-)
-{
-	ImGui::PushItemWidth(150);
-	GUI_Input
-	(
-		"",
-		var,
-		step,
-		format,
-		flags
-	);
-	ImGui::SameLine();
-	GUI_InputDefault2
-	(
-		label,
-		var2,
-		var3,
-		defaultVar,
-		step,
-		format,
-		flags
-	);
-	ImGui::PopItemWidth();
+// export template <typename T>
+// void GUI_InputDefault2Camera
+// (
+// 	const char * label,
+// 	T & var,
+// 	T & var2,
+// 	T & var3,
+// 	T & defaultVar,
+// 	const T step = 1,
+// 	const char * format = 0,
+// 	ImGuiInputTextFlags flags = 0
+// )
+// {
+// 	ImGui::PushItemWidth(150);
+// 	GUI_Input
+// 	(
+// 		"",
+// 		var,
+// 		step,
+// 		format,
+// 		flags
+// 	);
+// 	ImGui::SameLine();
+// 	GUI_InputDefault2
+// 	(
+// 		label,
+// 		var2,
+// 		var3,
+// 		defaultVar,
+// 		step,
+// 		format,
+// 		flags
+// 	);
+// 	ImGui::PopItemWidth();
 
-	if constexpr (debug)
-	{
-		ImGui::Text("%f", var );
-		ImGui::Text("%f", var2);
-	}
-}
+// 	if constexpr (debug)
+// 	{
+// 		ImGui::Text("%f", var );
+// 		ImGui::Text("%f", var2);
+// 	}
+// }
 
 void CameraSection()
 {
@@ -6890,9 +6627,9 @@ void Jukebox()
 	{
 		ImGui::Text("");
 
-		static char path[512];
-		static char filename[256];
-		static uint32 index = 0;
+		static char location[512];
+		static char fileName[256];
+		static size_t index = 0;
 		static bool run = false;
 
 		if (!run)
@@ -6901,8 +6638,8 @@ void Jukebox()
 
 			snprintf
 			(
-				filename,
-				sizeof(filename),
+				fileName,
+				sizeof(fileName),
 				"%s",
 				trackFilenames[index]
 			);
@@ -6913,8 +6650,8 @@ void Jukebox()
 		ImGui::InputText
 		(
 			"Filename",
-			filename,
-			sizeof(filename)
+			fileName,
+			sizeof(fileName)
 		);
 
 		if
@@ -6923,14 +6660,15 @@ void Jukebox()
 			(
 				"",
 				trackNames,
-				index
+				index,
+				ImGuiComboFlags_HeightLarge
 			)
 		)
 		{
 			snprintf
 			(
-				filename,
-				sizeof(filename),
+				fileName,
+				sizeof(fileName),
 				"%s",
 				trackFilenames[index]
 			);
@@ -6942,13 +6680,13 @@ void Jukebox()
 		{
 			snprintf
 			(
-				path,
-				sizeof(path),
+				location,
+				sizeof(location),
 				"afs/sound/%s",
-				filename
+				fileName
 			);
 
-			PlayTrack(path);
+			PlayTrack(location);
 		}
 
 		ImGui::Text("");
@@ -8620,6 +8358,8 @@ void System()
 			UpdateVolumes();
 			ResetConfig(soundIgnoreEnemyData);
 
+			ResetConfig(windowPosX);
+			ResetConfig(windowPosY);
 			ResetConfig(forceWindowFocus);
 			ToggleForceWindowFocus(activeConfig.forceWindowFocus);
 		}
@@ -8840,6 +8580,34 @@ void System()
 
 		GUI_SectionStart("Window");
 
+		ImGui::PushItemWidth(150);
+
+		GUI_InputDefault2<int32>
+		(
+			"X",
+			activeConfig.windowPosX,
+			queuedConfig.windowPosX,
+			defaultConfig.windowPosX,
+			1,
+			"%d",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+		GUI_InputDefault2<int32>
+		(
+			"Y",
+			activeConfig.windowPosY,
+			queuedConfig.windowPosY,
+			defaultConfig.windowPosY,
+			1,
+			"%d",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+
+		ImGui::PopItemWidth();
+
+		ImGui::Text("");
+
+
 		if
 		(
 			GUI_Checkbox2
@@ -8871,17 +8639,15 @@ void Teleporter()
 
 		[&]()
 		{
-			IntroduceEventData(return);
-			IntroduceNextEventData(return);
-
-
-
 			if (!InGame())
 			{
 				ImGui::Text("Invalid Pointer");
 
 				return;
 			}
+
+			IntroduceEventData(return);
+			IntroduceNextEventData(return);
 
 
 
@@ -9853,5 +9619,10 @@ export void GUI_Init()
 	Color_UpdateValues();
 }
 
-#ifdef __GARBAGE__
-#endif
+
+
+
+
+
+
+

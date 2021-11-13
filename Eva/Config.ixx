@@ -163,6 +163,9 @@ export struct Config
 
 	bool hideMouseCursor = false;
 
+
+	int32 windowPosX = 0;
+	int32 windowPosY = 0;
 	bool forceWindowFocus = true;
 
 	bool infiniteHitPoints   = false;

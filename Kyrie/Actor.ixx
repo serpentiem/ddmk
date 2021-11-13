@@ -19,6 +19,97 @@ import Vars;
 
 
 
+
+
+
+
+
+
+
+
+export void SetMainActor(byte8 * actorBaseAddr)
+{
+	auto addr = *reinterpret_cast<byte8 **>(appBaseAddr + 0xF59F00);
+	if (!addr)
+	{
+		return;
+	}
+	*reinterpret_cast<byte8 **>(addr + 0x24) = actorBaseAddr;
+}
+
+
+
+export void TogglePlayerActor
+(
+	PlayerActorData & actorData,
+	bool enable
+)
+{
+	actorData.enable = enable;
+}
+
+
+
+export void TogglePlayerActors(bool enable)
+{
+	for_all(playerIndex, activeConfig.Actor.playerCount)
+	{
+		IntroduceData(g_newActorData[playerIndex].baseAddr, actorData, PlayerActorData, continue);
+
+		TogglePlayerActor(actorData, enable);
+	}
+}
+
+
+
+
+
+export void TogglePlayerActorsByActivePlayerIndex()
+{
+	for_all(playerIndex, activeConfig.Actor.playerCount)
+	{
+		IntroduceData(g_newActorData[playerIndex].baseAddr, actorData, PlayerActorData, continue);
+
+		TogglePlayerActor(actorData, (playerIndex == activePlayerIndex));
+	}
+}
+
+export void TogglePlayerActorsByMainActor()
+{
+	IntroduceData(g_newActorData[0].baseAddr, mainActorData, PlayerActorData, return);
+
+	for_each(playerIndex, 1, activeConfig.Actor.playerCount)
+	{
+		IntroduceData(g_newActorData[playerIndex].baseAddr, actorData, PlayerActorData, continue);
+
+		TogglePlayerActor(actorData, mainActorData.enable);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 typedef byte8 *(* CreateActor_t)();
 
 CreateActor_t CreateActor[CHARACTER::COUNT] = {};
@@ -46,6 +137,39 @@ byte8 * CreatePlayerActor(size_t playerIndex)
 
 		return 0;
 	}
+	auto & actorData = *reinterpret_cast<PlayerActorData *>(actorBaseAddr);
+
+
+
+	bool enable = (playerIndex == activePlayerIndex);
+
+	TogglePlayerActor(actorData, enable);
+
+
+	// [&]()
+	// {
+	// 	if
+	// 	(
+	// 		!activeConfig.enableCharacterSwitchController ||
+	// 		(activePlayerIndex == playerIndex)
+	// 	)
+	// 	{
+	// 		//Log("somethin %u %u", playerIndex, activePlayerIndex);
+
+	// 		return;
+	// 	}
+
+	// 	SetMemory
+	// 	(
+	// 		&actorData.size,
+	// 		0,
+	// 		sizeof(actorData.size)
+	// 	);
+
+	// 	//actorData.event = 0;
+
+	// 	//Log("stuffed");
+	// }();
 
 
 
@@ -86,6 +210,11 @@ bool SpawnActor(byte8 * actorBaseAddr)
 void SpawnPlayerActor(size_t playerIndex)
 {
 	auto actorBaseAddr = CreatePlayerActor(playerIndex);
+
+
+	Log("%s %X", FUNC_NAME, actorBaseAddr);
+
+
 	if (!actorBaseAddr)
 	{
 		return;
@@ -524,30 +653,364 @@ void ClearActorData()
 }
 
 
-// @Research: Consider EnableByMainActor.
-void ToggleActorsByMainActor()
+
+
+
+
+
+
+// @Todo: Active in GUI as well for consistency.
+void MoveToActivePlayerActor()
 {
-	DebugLogFunction();
 
 
 
-	IntroduceData(g_newActorData[0].baseAddr, mainActorData, PlayerActorData, return);
-
-	DebugLog("%X %u", &mainActorData, mainActorData.enable);
 
 
 
-	for_each(playerIndex, 1, activeConfig.Actor.playerCount)
+	IntroduceData(g_newActorData[activePlayerIndex].baseAddr, activeActorData, PlayerActorData, return);
+
+
+
+
+	for_all(playerIndex, activeConfig.Actor.playerCount)
 	{
-		auto & newActorData = g_newActorData[playerIndex];
 
-		IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
+		IntroduceData(g_newActorData[playerIndex].baseAddr, actorData, PlayerActorData, continue);
 
-		actorData.enable = mainActorData.enable;
 
-		DebugLog("%X %u", &actorData, actorData.enable);
+
+
+		if (playerIndex == activePlayerIndex)
+		{
+			continue;
+		}
+
+		actorData.position = activeActorData.position;
+		actorData.rotation = activeActorData.rotation;
+
+	}
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+export void CharacterSwitchController_Reset()
+{
+	LogFunction();
+
+	activePlayerIndex = 0;
+
+	UpdateGamepadPlayerIndices();
+}
+
+
+export void CharacterSwitchController_Toggle(bool enable)
+{
+	LogFunction(enable);
+
+	CharacterSwitchController_Reset();
+
+	if (!InGame())
+	{
+		return;
+	}
+
+	if (enable)
+	{
+		TogglePlayerActorsByActivePlayerIndex();
+	}
+	else
+	{
+		IntroduceData(mainActorBaseAddr, g_newActorData[0].baseAddr, mainActorData, PlayerActorData, return);
+
+		SetMainActor(mainActorBaseAddr);
+
+		TogglePlayerActors(true);
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export void CharacterSwitchController_Update()
+{
+	MoveToActivePlayerActor();
+
+
+
+	activePlayerIndex++;
+
+	if (activePlayerIndex >= activeConfig.Actor.playerCount)
+	{
+		activePlayerIndex = 0;
+	}
+
+
+
+	IntroduceData(activeActorBaseAddr, g_newActorData[activePlayerIndex].baseAddr, activeActorData, PlayerActorData, return);
+
+	SetMainActor(activeActorBaseAddr);
+
+	//CharacterSwitchController_TogglePlayerActors();
+
+	TogglePlayerActorsByActivePlayerIndex();
+
+
+
+
+
+
+
+
+	// // Update Sizes
+	// {
+	// 	activeActorData.size.x = 1;
+	// 	activeActorData.size.y = 1;
+	// 	activeActorData.size.z = 1;
+	// 	activeActorData.size.a = 0;
+
+	// 	for_all(playerIndex, activeConfig.Actor.playerCount)
+	// 	{
+	// 		IntroduceData(g_newActorData[playerIndex].baseAddr, actorData, PlayerActorData, continue);
+
+	// 		if (playerIndex == activePlayerIndex)
+	// 		{
+	// 			continue;
+	// 		}
+
+	// 		SetMemory
+	// 		(
+	// 			&actorData.size,
+	// 			0,
+	// 			sizeof(actorData.size)
+	// 		);
+	// 	}
+	// }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export void CharacterSwitchController()
+{
+	if
+	(
+		!activeConfig.Actor.enable ||
+		!activeConfig.enableCharacterSwitchController
+	)
+	{
+		return;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	auto keyboardAddr = DI8::GetKeyboardAddr();
+	if (!keyboardAddr)
+	{
+		return;
+	}
+
+
+
+	static byte8 state[256] = {};
+
+
+	keyboardAddr->GetDeviceState
+	(
+		sizeof(state),
+		state
+	);
+
+
+
+
+
+	static bool executes[2] = {};
+
+
+
+	//constexpr size_t key = DI8::KEY::P;
+
+
+{
+
+	auto & activeKeyData = activeConfig.characterSwitchControllerKeyData;
+
+
+	auto & execute  = executes[0];
+	auto & keys     = activeKeyData.keys;
+	auto & keyCount = activeKeyData.keyCount;
+
+
+
+
+	size_t keysDown = 0;
+
+	if (keyCount < 1)
+	{
+		return;
+	}
+
+	for_all(keyIndex, keyCount)
+	{
+		auto & key = keys[keyIndex];
+
+		if (state[key] & 0x80)
+		{
+			keysDown++;
+		}
+	}
+
+	if (keysDown == keyCount)
+	{
+		if (execute)
+		{
+			execute = false;
+
+			CharacterSwitchController_Update();
+		}
+	}
+	else
+	{
+		execute = true;
+	}
+}
+
+
+
+
+
+
+
+	// {
+	// 	auto & execute = executes[0];
+
+	// 	if (state[key] & 0x80)
+	// 	{
+	// 		if (execute)
+	// 		{
+	// 			execute = false;
+
+	// 			CharacterSwitchController_Update();
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		execute = true;
+	// 	}
+	// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	{
+		auto & execute = executes[1];
+
+		auto flags = GetGamepadFlags(activePlayerIndex);
+
+
+
+		if (flags & activeConfig.characterSwitchControllerButton)
+		{
+			if (execute)
+			{
+				execute = false;
+
+				CharacterSwitchController_Update();
+			}
+		}
+		else
+		{
+			execute = true;
+		}
+	}
+
+
+
+
+}
+
+
+
+
+
+
 
 
 
@@ -1190,6 +1653,16 @@ export void SceneMissionSelect()
 	Actor::Toggle(activeConfig.Actor.enable);
 }
 
+export void SceneMissionStart()
+{
+	LogFunction();
+
+	activePlayerIndex = 0;
+}
+
+
+
+
 namespaceEnd();
 
 #pragma endregion
@@ -1222,7 +1695,17 @@ export void EventSpawnMainActor(byte8 * actorBaseAddr)
 
 
 
+export void EventMain()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
 
+	LogFunction();
+
+	CharacterSwitchController_Reset();
+}
 
 
 
@@ -1237,7 +1720,18 @@ export void NewEventMain()
 
 	LogFunction();
 
-	ToggleActorsByMainActor();
+	TogglePlayerActorsByMainActor();
+
+
+
+	//CharacterSwitchController_Reset();
+
+	if (!activeConfig.enableCharacterSwitchController)
+	{
+		return;
+	}
+
+	TogglePlayerActorsByActivePlayerIndex();
 }
 
 export void NewEventCutscene()
@@ -1249,35 +1743,23 @@ export void NewEventCutscene()
 
 	LogFunction();
 
-	ToggleActorsByMainActor();
+	TogglePlayerActorsByMainActor();
+
+
+
+	//CharacterSwitchController_Reset();
+
+	if (!activeConfig.enableCharacterSwitchController)
+	{
+		return;
+	}
+
+	TogglePlayerActorsByActivePlayerIndex();
 }
 
 
 
 
-
-
-
-// export void EventCutsceneEnd()
-// {
-// 	if (!activeConfig.Actor.enable)
-// 	{
-// 		return;
-// 	}
-
-// 	LogFunction();
-
-
-
-// 	for_each(playerIndex, 1, activeConfig.Actor.playerCount)
-// 	{
-// 		auto & newActorData = g_newActorData[playerIndex];
-
-// 		IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
-
-// 		actorData.enable = true;
-// 	}
-// }
 
 namespaceEnd();
 

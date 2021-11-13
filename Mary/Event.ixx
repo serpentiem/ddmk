@@ -21,7 +21,7 @@ import Vars;
 
 #define debug false
 
-#include "Macros.h"
+// #include "Macros.h"
 
 
 
@@ -597,7 +597,7 @@ export void Event_Toggle(bool enable)
 	if (!run)
 	{
 		backupHelper.Save(addr, size);
-		func = CreateFunction(SetActorModeMission12, jumpAddr, true, true, size, sizeof(sect1));
+		func = old_CreateFunction(SetActorModeMission12, jumpAddr, true, true, size, sizeof(sect1));
 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 	}
@@ -634,7 +634,7 @@ export void Event_Toggle(bool enable)
 	if (!run)
 	{
 		backupHelper.Save(addr, size);
-		func = CreateFunction(ClearActorModeMission12, jumpAddr, true, true, size, sizeof(sect1));
+		func = old_CreateFunction(ClearActorModeMission12, jumpAddr, true, true, size, sizeof(sect1));
 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 	}
@@ -686,7 +686,7 @@ export void Event_Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateEnemyCount, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(UpdateEnemyCount, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -720,7 +720,7 @@ export void Event_Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateEnemyCount, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(UpdateEnemyCount, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -754,7 +754,7 @@ export void Event_Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(UpdateEnemyCount, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(UpdateEnemyCount, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -784,7 +784,7 @@ export void Event_Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(TriggerCustomizeMenu, jumpAddr, true, true, size);
+			func = old_CreateFunction(TriggerCustomizeMenu, jumpAddr, true, true, size);
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 		}
 
@@ -815,7 +815,7 @@ export void Event_Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(MissionSelectCheckConfirm, jumpAddr, true, true, 0, 0, size);
+			func = old_CreateFunction(MissionSelectCheckConfirm, jumpAddr, true, true, 0, 0, size);
 			WriteCall(func.sect2, (appBaseAddr + 0x29A200));
 		}
 
@@ -856,7 +856,7 @@ export void Event_Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetNextScreen, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(SetNextScreen, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -891,7 +891,7 @@ export void Event_Toggle(bool enable)
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(SetNextScreen, jumpAddr, true, true, size, sizeof(sect1));
+			func = old_CreateFunction(SetNextScreen, jumpAddr, true, true, size, sizeof(sect1));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 		}
@@ -911,7 +911,7 @@ export void Event_Toggle(bool enable)
 
 	// Continue
 	{
-		auto func = CreateFunction(Continue, (appBaseAddr + 0x23BD66));
+		auto func = old_CreateFunction(Continue, (appBaseAddr + 0x23BD66));
 		WriteAddress((appBaseAddr + 0x23BCA0), func.addr, 6);
 		/*
 		dmc3.exe+23BCA0 - 0F84 C0000000 - je dmc3.exe+23BD66
@@ -937,7 +937,7 @@ export void Event_Toggle(bool enable)
 	if (!run)
 	{
 		backupHelper.Save(addr, size);
-		func = CreateFunction(ContinueGoldOrb, jumpAddr, true, true, size);
+		func = old_CreateFunction(ContinueGoldOrb, jumpAddr, true, true, size);
 		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 	}
 
@@ -993,7 +993,7 @@ export void Event_Init()
 		{
 			0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+212760
 		};
-		auto func = CreateFunction(InitSession, (appBaseAddr + 0x2432CB), true, true, sizeof(sect0));
+		auto func = old_CreateFunction(InitSession, (appBaseAddr + 0x2432CB), true, true, sizeof(sect0));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		WriteCall(func.sect0, (appBaseAddr + 0x212760));
 		WriteJump((appBaseAddr + 0x2432C6), func.addr);
@@ -1011,7 +1011,7 @@ export void Event_Init()
 		{
 			0x0F, 0xB6, 0x88, 0x65, 0x45, 0x00, 0x00, // movzx ecx,byte ptr [rax+00004565]
 		};
-		auto func = CreateFunction(SetCharacter, (appBaseAddr + 0x24350B), true, true, 0, sizeof(sect1), sizeof(sect2));
+		auto func = old_CreateFunction(SetCharacter, (appBaseAddr + 0x24350B), true, true, 0, sizeof(sect1), sizeof(sect2));
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 		CopyMemory(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x243504), func.addr, 2);
@@ -1029,7 +1029,7 @@ export void Event_Init()
 		{
 			0x48, 0x8B, 0xCA, //mov rcx,rdx
 		};
-		auto func = CreateFunction(SetRoom, (appBaseAddr + 0x1AA8CC), true, true, sizeof(sect0), sizeof(sect1));
+		auto func = old_CreateFunction(SetRoom, (appBaseAddr + 0x1AA8CC), true, true, sizeof(sect0), sizeof(sect1));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 		WriteJump((appBaseAddr + 0x1AA8C5), func.addr, 2);
@@ -1060,7 +1060,7 @@ export void Event_Init()
 		{
 			0x48, 0x8B, 0xC8, //mov rcx,rax
 		};
-		auto func = CreateFunction(SetNextRoom, (appBaseAddr + 0x1A6002), true, true, sizeof(sect0), sizeof(sect1));
+		auto func = old_CreateFunction(SetNextRoom, (appBaseAddr + 0x1A6002), true, true, sizeof(sect0), sizeof(sect1));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 		WriteJump((appBaseAddr + 0x1A5FFB), func.addr, 2);
@@ -1074,7 +1074,7 @@ export void Event_Init()
 		{
 			0x66, 0x89, 0x81, 0x66, 0x01, 0x00, 0x00, // mov [rcx+00000166],ax
 		};
-		auto func = CreateFunction(SetNextRoom, (appBaseAddr + 0x1A6114), true, true, sizeof(sect0));
+		auto func = old_CreateFunction(SetNextRoom, (appBaseAddr + 0x1A6114), true, true, sizeof(sect0));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		WriteJump((appBaseAddr + 0x1A610D), func.addr, 2);
 		/*
@@ -1091,7 +1091,7 @@ export void Event_Init()
 		{
 			mov_rcx_rsi,
 		};
-		auto func = CreateFunction(SetNextRoom, (appBaseAddr + 0x1A6687), true, true, sizeof(sect0), sizeof(sect1));
+		auto func = old_CreateFunction(SetNextRoom, (appBaseAddr + 0x1A6687), true, true, sizeof(sect0), sizeof(sect1));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 		WriteJump((appBaseAddr + 0x1A6680), func.addr, 2);
@@ -1121,7 +1121,7 @@ export void Event_Init()
 		{
 			0x66, 0x89, 0x81, 0x66, 0x01, 0x00, 0x00, // mov [rcx+00000166],ax
 		};
-		auto func = CreateFunction(SetContinueRoom, (appBaseAddr + 0x1AA3CC), true, true, sizeof(sect0));
+		auto func = old_CreateFunction(SetContinueRoom, (appBaseAddr + 0x1AA3CC), true, true, sizeof(sect0));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		WriteJump((appBaseAddr + 0x1AA3C5), func.addr, 2);
 		/*
@@ -1140,7 +1140,7 @@ export void Event_Init()
 			0x75, 0x01, // jne short
 			0xC3,       // ret
 		};
-		auto func = CreateFunction(SetTrack, (appBaseAddr + 0x32BA95), true, false, sizeof(sect0), 0, sizeof(sect2));
+		auto func = old_CreateFunction(SetTrack, (appBaseAddr + 0x32BA95), true, false, sizeof(sect0), 0, sizeof(sect2));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		CopyMemory(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x32BA90), func.addr);
@@ -1160,7 +1160,7 @@ export void Event_Init()
 		{
 			mov_rcx_rax,
 		};
-		auto func = CreateFunction(CreateMainActor, (appBaseAddr + 0x23C77E), true, true, sizeof(sect0), sizeof(sect1));
+		auto func = old_CreateFunction(CreateMainActor, (appBaseAddr + 0x23C77E), true, true, sizeof(sect0), sizeof(sect1));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 		WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
@@ -1181,7 +1181,7 @@ export void Event_Init()
 		{
 			mov_rcx_rax,
 		};
-		auto func = CreateFunction(CreateMainActor, (appBaseAddr + 0x23B7B8), true, true, sizeof(sect0), sizeof(sect1));
+		auto func = old_CreateFunction(CreateMainActor, (appBaseAddr + 0x23B7B8), true, true, sizeof(sect0), sizeof(sect1));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 		WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
@@ -1214,7 +1214,7 @@ export void Event_Init()
 		{
 			mov_rcx_rax,
 		};
-		auto func = CreateFunction(CreateCloneActor, (appBaseAddr + 0x211E88), true, true, sizeof(sect0), sizeof(sect1));
+		auto func = old_CreateFunction(CreateCloneActor, (appBaseAddr + 0x211E88), true, true, sizeof(sect0), sizeof(sect1));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 		WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
@@ -1235,7 +1235,7 @@ export void Event_Init()
 		{
 			mov_rcx_rax,
 		};
-		auto func = CreateFunction(CreateCloneActor, (appBaseAddr + 0x2134E3), true, true, sizeof(sect0), sizeof(sect1));
+		auto func = old_CreateFunction(CreateCloneActor, (appBaseAddr + 0x2134E3), true, true, sizeof(sect0), sizeof(sect1));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 		WriteCall(func.sect0, (appBaseAddr + 0x1DE820));
@@ -1278,7 +1278,7 @@ export void Event_Init()
 			0x48, 0x03, 0xCA, // add rcx,rdx
 			0xFF, 0xE1,       // jmp rcx
 		};
-		auto func = CreateFunction(EventHandler, 0, true, true, 0, sizeof(sect1), sizeof(sect2));
+		auto func = old_CreateFunction(EventHandler, 0, true, true, 0, sizeof(sect1), sizeof(sect2));
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 		CopyMemory(func.sect2, sect2, sizeof(sect2));
 		WriteJump((appBaseAddr + 0x23B41F), func.addr);
@@ -1302,7 +1302,7 @@ export void Event_Init()
 	// 	{
 	// 		0xE8, 0x00, 0x00, 0x00, 0x00, // call dmc3.exe+23D230
 	// 	};
-	// 	auto func = CreateFunction(MainLoop, (appBaseAddr + 0x23B43C), true, true, sizeof(sect0));
+	// 	auto func = old_CreateFunction(MainLoop, (appBaseAddr + 0x23B43C), true, true, sizeof(sect0));
 	// 	CopyMemory(func.sect0, sect0, sizeof(sect0));
 	// 	WriteCall(func.sect0, (appBaseAddr + 0x23D230));
 	// 	WriteJump((appBaseAddr + 0x23B437), func.addr);
@@ -1325,7 +1325,7 @@ export void Event_Init()
 		{
 			mov_rcx_rbx,
 		};
-		auto func = CreateFunction(PlayerActorLoop, (appBaseAddr + 0x1DFA9B), true, true, sizeof(sect0), sizeof(sect1));
+		auto func = old_CreateFunction(PlayerActorLoop, (appBaseAddr + 0x1DFA9B), true, true, sizeof(sect0), sizeof(sect1));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		CopyMemory(func.sect1, sect1, sizeof(sect1));
 		WriteCall(func.sect0, (appBaseAddr + 0x1F83A0));
@@ -1342,7 +1342,7 @@ export void Event_Init()
 		{
 			0xC6, 0x05, 0x00, 0x00, 0x00, 0x00, 0x01, // mov byte ptr [dmc3.exe+5D113D],01
 		};
-		auto func = CreateFunction(InGameCutsceneStart, (appBaseAddr + 0x23DD73), true, true, sizeof(sect0));
+		auto func = old_CreateFunction(InGameCutsceneStart, (appBaseAddr + 0x23DD73), true, true, sizeof(sect0));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		WriteAddress(func.sect0, (appBaseAddr + 0x5D113D), 7, 0, 0, 0, 1);
 		WriteJump((appBaseAddr + 0x23DD6C), func.addr, 2);
@@ -1356,7 +1356,7 @@ export void Event_Init()
 		{
 			0xC6, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, // mov byte ptr [dmc3.exe+5D113D],00
 		};
-		auto func = CreateFunction(InGameCutsceneEnd, (appBaseAddr + 0x23DEAA), true, true, sizeof(sect0));
+		auto func = old_CreateFunction(InGameCutsceneEnd, (appBaseAddr + 0x23DEAA), true, true, sizeof(sect0));
 		CopyMemory(func.sect0, sect0, sizeof(sect0));
 		WriteAddress(func.sect0, (appBaseAddr + 0x5D113D), 7, 0, 0, 0, 1);
 		WriteJump((appBaseAddr + 0x23DEA3), func.addr, 2);

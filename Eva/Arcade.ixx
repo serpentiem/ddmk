@@ -1,6 +1,8 @@
 
 
-// @Todo: Difficulty is not applied correctly.
+
+
+
 
 
 
@@ -18,14 +20,6 @@ import Global;
 import Vars;
 
 #define debug false
-
-#include "Macros.h"
-
-
-
-// @Todo: extend missionstartsetindex to update weapons.
-
-// for proper yamato and stuff
 
 
 
