@@ -1,3 +1,21 @@
+// #region
+
+ClearAll();
+
+let location = "Mary/SoundRelocations.ixx";
+
+file = fs.readFileSync(location, "utf8");
+
+let tagName = "RelocationData";
+
+// #endregion
+
+
+
+FeedStart(tagName);
+
+
+
 const CHANNEL_SYSTEM       = 0;
 const CHANNEL_COMMON       = 1;
 const CHANNEL_STYLE_WEAPON = 2;
@@ -15,18 +33,18 @@ const CHANNEL_GLOBAL       = 13;
 
 let channelNames =
 [
-	"CHANNEL_SYSTEM",
-	"CHANNEL_COMMON",
-	"CHANNEL_STYLE_WEAPON",
-	"CHANNEL_WEAPON1",
-	"CHANNEL_WEAPON2",
-	"CHANNEL_WEAPON3",
-	"CHANNEL_WEAPON4",
-	"CHANNEL_ENEMY",
-	"CHANNEL_ROOM",
-	"CHANNEL_MUSIC",
-	"CHANNEL_DEMO",
-	"MAX_CHANNEL",
+	"CHANNEL::SYSTEM",
+	"CHANNEL::COMMON",
+	"CHANNEL::STYLE_WEAPON",
+	"CHANNEL::WEAPON1",
+	"CHANNEL::WEAPON2",
+	"CHANNEL::WEAPON3",
+	"CHANNEL::WEAPON4",
+	"CHANNEL::ENEMY",
+	"CHANNEL::ROOM",
+	"CHANNEL::MUSIC",
+	"CHANNEL::DEMO",
+	"CHANNEL::COUNT",
 ];
 
 function GetChannelName(channelIndex)
@@ -48,9 +66,9 @@ const HELPER_COMMON_VERGIL_NERO_ANGELO       = 3;
 const HELPER_STYLE_WEAPON_DANTE              = 4;
 const HELPER_STYLE_WEAPON_VERGIL_DEFAULT     = 5;
 const HELPER_STYLE_WEAPON_VERGIL_NERO_ANGELO = 6;
-const HELPER_ENEMY_LESSER_ENEMIES                  = 7;
-const HELPER_ENEMY_LADY                            = 8;
-const HELPER_ENEMY_VERGIL                          = 9;
+const HELPER_ENEMY_LESSER_ENEMIES            = 7;
+const HELPER_ENEMY_LADY                      = 8;
+const HELPER_ENEMY_VERGIL                    = 9;
 const HELPER_COUNT                           = 10;
 
 let helperNames =
@@ -80,12 +98,8 @@ function GetHelperName(helperIndex)
 
 
 
-let fs = require("fs");
-let vm = require("vm");
 
-vm.runInThisContext(fs.readFileSync("dmc3_core.js", "utf8"));
 
-ClearAll();
 
 let c_debug = "";
 
@@ -1023,7 +1037,7 @@ for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
 		c += Tabs() + "if (!run)" + NEW_LINE;
 		ScopeStart();
 		c += Tabs() + "backupHelper.Save(addr, size);" + NEW_LINE;
-		c += Tabs() + "func = CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));" + NEW_LINE;
+		c += Tabs() + "func = old_CreateFunction(UpdateGlobalHelperIndices, jumpAddr, true, true, size, sizeof(sect1));" + NEW_LINE;
 		c += Tabs() + "CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);" + NEW_LINE;
 		c += Tabs() + "CopyMemory(func.sect1, sect1, sizeof(sect1));" + NEW_LINE;
 		c += Tabs() + "WriteAddress(func.sect0, (appBaseAddr + 0xD6DC90), 7);" + NEW_LINE;
@@ -1076,7 +1090,7 @@ for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
 	c += Tabs() + "if (!run)" + NEW_LINE;
 	ScopeStart();
 	c += Tabs() + "backupHelper.Save(addr, size);" + NEW_LINE;
-	c += Tabs() + "func = CreateFunction(0, jumpAddr, false, true, sizeof(sect0));" + NEW_LINE;
+	c += Tabs() + "func = old_CreateFunction(0, jumpAddr, false, true, sizeof(sect0));" + NEW_LINE;
 	c += Tabs() + "CopyMemory(func.sect0, sect0, sizeof(sect0));" + NEW_LINE;
 	c += Tabs() + "*reinterpret_cast<uint8 **>(func.sect0 + 2) = &g_helperIndices[" + GetChannelName(channelIndex) + "];" + NEW_LINE;
 	c += Tabs() + "*reinterpret_cast<uint8 *>(func.sect0 + 0xC) = " + GetHelperName(helperIndex) + ";"+ NEW_LINE;
@@ -1106,65 +1120,12 @@ c += NEW_LINE;
 
 
 
+CleanStream();
+
+FeedEnd();
 
 
 
-let c_new = c;
-
-c = "";
-
-let filename = "../Mary/Sound.ixx";
-
-let file = fs.readFileSync(filename, "utf8");
-
-let lines = GetLines(file);
-
-if
-(
-	!Tag_Init
-	(
-		lines,
-		/\/\/ \$RelocationDataStart$/,
-		/\/\/ \$RelocationDataEnd$/
-	)
-)
-{
-	console.log("Tag_Init failed.");
-
-	return;
-}
-
-Tag_CopyUntil(lines);
-
-c += c_new;
-
-Tag_CopyAfter(lines);
-
-fs.writeFileSync(filename, c);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+fs.writeFileSync(location, file);
 
 fs.writeFileSync("new_dbst_breakpoints.txt", c_debug);
-
-//fs.writeFileSync("new_dbst_funcs.txt", c);

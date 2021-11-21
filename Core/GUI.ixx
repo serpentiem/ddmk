@@ -7,11 +7,11 @@
 
 
 module;
-#include "../ImGui/imgui.h"
-#include "../ImGui/imgui_internal.h"
+#include "../ThirdParty/ImGui/imgui.h"
+#include "../ThirdParty/ImGui/imgui_internal.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "../stb/stb_image.h"
+#include "../ThirdParty/stb/stb_image.h"
 export module Core_GUI;
 
 import Core;

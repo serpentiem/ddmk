@@ -1,81 +1,18 @@
 // #region
 
-"use strict";
-
-let fs = require("fs");
-let process = require("process");
-let vm = require("vm");
-
-vm.runInThisContext
-(
-	fs.readFileSync("../core.js"  , "utf8") +
-	fs.readFileSync("dmc3_core.js", "utf8")
-);
-
 ClearAll();
+
+let location = "Mary/Internal.ixx";
+
+file = fs.readFileSync(location, "utf8");
+
+let tagName = "Data";
 
 // #endregion
 
 
 
-let location = "../Mary/Internal.ixx";
-
-let file = fs.readFileSync(location, "utf8");
-
-
-
-let tagName = "Data";
-
-
-
-ClearAll();
-
-
-
-let c_until = "";
-let c_after = "";
-let c_new   = "";
-
-let lines = GetLines(file);
-
-let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
-let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
-
-console.log(startName);
-console.log(endName);
-
-if
-(
-	!Tag_Init
-	(
-		lines,
-		startName,
-		endName
-	)
-)
-{
-	console.log("Tag_Init failed.");
-
-	process.exit(1);
-
-	return;
-}
-
-
-
-Tag_CopyUntil(lines);
-
-c_until = c;
-
-ClearAll();
-
-
-
-Tag_CopyAfter(lines);
-
-c_after = c;
-
-ClearAll();
+FeedStart(tagName);
 
 
 
@@ -184,7 +121,7 @@ for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
 	let offName = PositionName
 	(
 		off,
-		(PositionFlags_Hex | PositionFlags_NoPrefix)
+		(StringFlags_Hex | StringFlags_NoPrefix)
 	);
 
 
@@ -223,7 +160,7 @@ for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
 	let offName = PositionName
 	(
 		off,
-		(PositionFlags_Hex | PositionFlags_NoPrefix)
+		(StringFlags_Hex | StringFlags_NoPrefix)
 	);
 
 
@@ -264,14 +201,14 @@ for (let itemIndex = 0; itemIndex < items.length; itemIndex++)
 	let offName = PositionName
 	(
 		off,
-		(PositionFlags_Hex | PositionFlags_NoPrefix)
+		(StringFlags_Hex | StringFlags_NoPrefix)
 	);
 
 
 
 	ScopeStart();
 
-	c += Tabs() + "auto func = CreateFunction((appBaseAddr + 0x" + offName + ")";
+	c += Tabs() + "auto func = old_CreateFunction((appBaseAddr + 0x" + offName + ")";
 
 	if (createFunctionArgs != "")
 	{
@@ -295,13 +232,7 @@ c += NEW_LINE;
 
 CleanStream();
 
-c_new = c;
-
-ClearAll();
-
-
-
-file = c_until + c_new + c_after;
+FeedEnd();
 
 
 

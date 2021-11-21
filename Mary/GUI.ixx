@@ -1,6 +1,6 @@
 module;
-#include "../ImGui/imgui.h"
-#include "../ImGui/imgui_internal.h"
+#include "../ThirdParty/ImGui/imgui.h"
+#include "../ThirdParty/ImGui/imgui_internal.h"
 
 #include <stdio.h>
 #include <xmmintrin.h>
@@ -9602,8 +9602,8 @@ export void GUI_Render()
 		}
 	}();
 
-	// static bool enable = true;
-	// ImGui::ShowDemoWindow(&enable);
+	static bool enable = true;
+	ImGui::ShowDemoWindow(&enable);
 }
 
 export void GUI_Init()
@@ -9613,6 +9613,8 @@ export void GUI_Init()
 	BuildFonts();
 
 	UpdateGlobalScale();
+
+	GUI_UpdateStyle();
 
 	Actor_UpdateIndices();
 	Arcade_UpdateIndices();

@@ -1,85 +1,18 @@
 // #region
 
-"use strict";
-
-let fs = require("fs");
-let process = require("process");
-let vm = require("vm");
-
-vm.runInThisContext
-(
-	fs.readFileSync("../core.js"  , "utf8") +
-	fs.readFileSync("dmc4_core.js", "utf8")
-);
-
 ClearAll();
 
+let location = "Kyrie/Internal.ixx";
 
-
-let location = "../Kyrie/Internal.ixx";
-
-let file = fs.readFileSync(location, "utf8");
+file = fs.readFileSync(location, "utf8");
 
 let tagName = "Data";
-
-
-
-ClearAll();
-
-
-
-let c_until = "";
-let c_after = "";
-let c_new   = "";
-
-let lines = GetLines(file);
-
-let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
-let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
-
-console.log(startName);
-console.log(endName);
-
-if
-(
-	!Tag_Init
-	(
-		lines,
-		startName,
-		endName
-	)
-)
-{
-	console.log("Tag_Init failed.");
-
-	process.exit(1);
-
-	return;
-}
-
-
-
-Tag_CopyUntil(lines);
-
-c_until = c;
-
-ClearAll();
-
-
-
-Tag_CopyAfter(lines);
-
-c_after = c;
-
-ClearAll();
 
 // #endregion
 
 
 
-
-
-
+FeedStart(tagName);
 
 
 
@@ -475,13 +408,7 @@ c += NEW_LINE;
 
 CleanStream();
 
-c_new = c;
-
-ClearAll();
-
-
-
-file = c_until + c_new + c_after;
+FeedEnd();
 
 
 

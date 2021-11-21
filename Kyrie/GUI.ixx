@@ -1,6 +1,6 @@
 module;
-#include "../ImGui/imgui.h"
-#include "../ImGui/imgui_internal.h"
+#include "../ThirdParty/ImGui/imgui.h"
+#include "../ThirdParty/ImGui/imgui_internal.h"
 
 #include <stdio.h>
 export module GUI;

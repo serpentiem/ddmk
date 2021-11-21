@@ -1,203 +1,39 @@
 // #region
 
-"use strict";
-
-let fs = require("fs");
-let process = require("process");
-let vm = require("vm");
-
-vm.runInThisContext
-(
-	fs.readFileSync("../core.js"  , "utf8") +
-	fs.readFileSync("dmc3_core.js", "utf8")
-);
-
 ClearAll();
 
-// #endregion
-
-
-
-let location = "../Mary/Vars.ixx";
-
-let file = fs.readFileSync(location, "utf8");
-
-
-
-// #region Feed
-
-function FeedStruct
-(
-	name,
-	items,
-	size    = 0,
-	tagName = name
-)
-{
-	ClearAll();
-
-
-
-	let c_until = "";
-	let c_after = "";
-	let c_new   = "";
-
-	let lines = GetLines(file);
-
-	let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
-	let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
-
-	console.log(startName);
-	console.log(endName);
-
-	if
-	(
-		!Tag_Init
-		(
-			lines,
-			startName,
-			endName
-		)
-	)
-	{
-		console.log("Tag_Init failed.");
-
-		process.exit(1);
-
-		return;
-	}
-
-
-
-	Tag_CopyUntil(lines);
-
-	c_until = c;
-
-	ClearAll();
-
-
-
-	Tag_CopyAfter(lines);
-
-	c_after = c;
-
-	ClearAll();
-
-
-
-	CreateStruct
-	(
-		name,
-		items,
-		size,
-		0,
-		StructFlags_Export
-	);
-
-	CreateStructAsserts
-	(
-		name,
-		items,
-		size,
-		0,
-		StructFlags_NoTypeAssert
-	);
-
-	MergeAsserts();
-	FeedAsserts();
-
-	CleanStream();
-
-	c_new = c;
-
-	ClearAll();
-
-
-
-	file = c_until + c_new + c_after;
-}
-
-function FeedEnum
-(
-	name,
-	items,
-	tagName = name
-)
-{
-	ClearAll();
-
-
-
-	let c_until = "";
-	let c_after = "";
-	let c_new   = "";
-
-	let lines = GetLines(file);
-
-	let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
-	let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
-
-	console.log(startName);
-	console.log(endName);
-
-	if
-	(
-		!Tag_Init
-		(
-			lines,
-			startName,
-			endName
-		)
-	)
-	{
-		console.log("Tag_Init failed.");
-
-		process.exit(1);
-
-		return;
-	}
-
-
-
-	Tag_CopyUntil(lines);
-
-	c_until = c;
-
-	ClearAll();
-
-
-
-	Tag_CopyAfter(lines);
-
-	c_after = c;
-
-	ClearAll();
-
-
-
-	c += "export namespaceStart(" + name + ");" + NEW_LINE;
-
-	CreateEnum
-	(
-		"",
-		items,
-		"",
-		EnumFlags_UpperCase
-	);
-
-	c += "namespaceEnd();" + NEW_LINE;
-	c += NEW_LINE;
-
-	CleanStream();
-
-	c_new = c;
-
-	ClearAll();
-
-
-
-	file = c_until + c_new + c_after;
-}
+let dmc3_typeSizes =
+[
+	[ "InputData"              , 12   ],
+	[ "MotionData"             , 2    ],
+	[ "ActorEventData"         , 8    ],
+	[ "ModelMetadata"          , 80   ],
+	[ "ModelData"              , 1920 ],
+	[ "DevilModelMetadataDante", 33   ],
+	[ "ShadowData"             , 192  ],
+	[ "PhysicsData"            , 240  ],
+	[ "PhysicsMetadata"        , 320  ],
+	[ "PhysicsLinkData"        , 192  ],
+	[ "PhysicsLinkMetadata"    , 264  ],
+	[ "BodyPartData"           , 288  ],
+	[ "RecoveryData"           , 112  ],
+	[ "WeaponData"             , 296  ],
+	[ "PlayerData"             , 18   ],
+	[ "CameraData"             , 512  ],
+	[ "CollisionData"          , 656  ],
+	[ "StyleData"              , 352  ],
+	[ "EnemyVectorDataMetadata", 16   ],
+	[ "ItemData"               , 4    ],
+	[ "ModelPartitionData"     , 896  ],
+	[ "LockOnData"             , 8568 ],
+];
+
+typeSizes_Reset();
+typeSizes_Add(dmc3_typeSizes);
+
+let location = "Mary/Vars.ixx";
+
+file = fs.readFileSync(location, "utf8");
 
 // #endregion
 
@@ -602,52 +438,7 @@ let tagName = "ActorData";
 
 ClearAll();
 
-
-
-let c_until = "";
-let c_after = "";
-let c_new   = "";
-
-let lines = GetLines(file);
-
-let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
-let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
-
-console.log(startName);
-console.log(endName);
-
-if
-(
-	!Tag_Init
-	(
-		lines,
-		startName,
-		endName
-	)
-)
-{
-	console.log("Tag_Init failed.");
-
-	process.exit(1);
-
-	return;
-}
-
-
-
-Tag_CopyUntil(lines);
-
-c_until = c;
-
-ClearAll();
-
-
-
-Tag_CopyAfter(lines);
-
-c_after = c;
-
-ClearAll();
+FeedStart(tagName);
 
 
 
@@ -869,13 +660,7 @@ for (let index = 0; index < helpers.length; index++)
 
 CleanStream();
 
-c_new = c;
-
-ClearAll();
-
-
-
-file = c_until + c_new + c_after;
+FeedEnd();
 
 
 
@@ -1174,52 +959,7 @@ let tagName = "Enemy";
 
 ClearAll();
 
-
-
-let c_until = "";
-let c_after = "";
-let c_new   = "";
-
-let lines = GetLines(file);
-
-let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
-let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
-
-console.log(startName);
-console.log(endName);
-
-if
-(
-	!Tag_Init
-	(
-		lines,
-		startName,
-		endName
-	)
-)
-{
-	console.log("Tag_Init failed.");
-
-	process.exit(1);
-
-	return;
-}
-
-
-
-Tag_CopyUntil(lines);
-
-c_until = c;
-
-ClearAll();
-
-
-
-Tag_CopyAfter(lines);
-
-c_after = c;
-
-ClearAll();
+FeedStart(tagName);
 
 
 
@@ -1319,13 +1059,7 @@ c += NEW_LINE;
 
 CleanStream();
 
-c_new = c;
-
-ClearAll();
-
-
-
-file = c_until + c_new + c_after;
+FeedEnd();
 
 }
 // #endregion
@@ -1708,52 +1442,7 @@ let tagName = "CacheFile";
 
 ClearAll();
 
-
-
-let c_until = "";
-let c_after = "";
-let c_new   = "";
-
-let lines = GetLines(file);
-
-let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
-let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
-
-console.log(startName);
-console.log(endName);
-
-if
-(
-	!Tag_Init
-	(
-		lines,
-		startName,
-		endName
-	)
-)
-{
-	console.log("Tag_Init failed.");
-
-	process.exit(1);
-
-	return;
-}
-
-
-
-Tag_CopyUntil(lines);
-
-c_until = c;
-
-ClearAll();
-
-
-
-Tag_CopyAfter(lines);
-
-c_after = c;
-
-ClearAll();
+FeedStart(tagName);
 
 
 
@@ -1874,13 +1563,7 @@ c += NEW_LINE;
 
 CleanStream();
 
-c_new = c;
-
-ClearAll();
-
-
-
-file = c_until + c_new + c_after;
+FeedEnd();
 
 }
 // #endregion
@@ -1894,52 +1577,7 @@ let tagName = "Item";
 
 ClearAll();
 
-
-
-let c_until = "";
-let c_after = "";
-let c_new   = "";
-
-let lines = GetLines(file);
-
-let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
-let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
-
-console.log(startName);
-console.log(endName);
-
-if
-(
-	!Tag_Init
-	(
-		lines,
-		startName,
-		endName
-	)
-)
-{
-	console.log("Tag_Init failed.");
-
-	process.exit(1);
-
-	return;
-}
-
-
-
-Tag_CopyUntil(lines);
-
-c_until = c;
-
-ClearAll();
-
-
-
-Tag_CopyAfter(lines);
-
-c_after = c;
-
-ClearAll();
+FeedStart(tagName);
 
 
 
@@ -2141,13 +1779,7 @@ c += NEW_LINE;
 
 CleanStream();
 
-c_new = c;
-
-ClearAll();
-
-
-
-file = c_until + c_new + c_after;
+FeedEnd();
 
 }
 // #endregion

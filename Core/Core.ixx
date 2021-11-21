@@ -1,8 +1,3 @@
-// @Todo: Update logging.
-// @Todo: Create IsInvalidHandle function.
-// @Todo: Update Inits.
-// @Todo: Update LogFunctionHelpers.
-
 module;
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
@@ -21,6 +16,8 @@ import Windows;
 using namespace Windows;
 
 #define debug false
+
+
 
 export template <typename ... Args>
 void Log(const char * format, Args ... args);
@@ -1194,7 +1191,7 @@ void Log(const char * format, Args ... args)
 		)
 	)
 	{
-		OutputDebugStringA("Append failed.");
+		// OutputDebugStringA("Append failed.");
 
 		if
 		(
@@ -1207,7 +1204,7 @@ void Log(const char * format, Args ... args)
 			)
 		)
 		{
-			OutputDebugStringA("Write failed.");
+			// OutputDebugStringA("Write failed.");
 
 			return;
 		}

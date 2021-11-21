@@ -1,222 +1,23 @@
 // #region
 
-"use strict";
-
-let fs = require("fs");
-let process = require("process");
-let vm = require("vm");
-
-vm.runInThisContext
-(
-	fs.readFileSync("../core.js"  , "utf8") +
-	fs.readFileSync("dmc4_core.js", "utf8")
-);
-
-
-g_platformName = "x86_32";
+g_platform = "x86_32";
 g_pointerSize = 4;
-
-
-
-
 
 ClearAll();
 
-// #endregion
+let dmc4_typeSizes =
+[
+	[ "InputData", 12 ],
+];
 
+typeSizes_Reset();
+typeSizes_Add(dmc4_typeSizes);
 
+let location = "Kyrie/Vars.ixx";
 
-let location = "../Kyrie/Vars.ixx";
-
-let file = fs.readFileSync(location, "utf8");
-
-
-
-// #region Feed
-
-function FeedStruct
-(
-	name,
-	items,
-	size    = 0,
-	tagName = name
-)
-{
-	ClearAll();
-
-
-
-	let c_until = "";
-	let c_after = "";
-	let c_new   = "";
-
-	let lines = GetLines(file);
-
-	let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
-	let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
-
-	console.log(startName);
-	console.log(endName);
-
-	if
-	(
-		!Tag_Init
-		(
-			lines,
-			startName,
-			endName
-		)
-	)
-	{
-		console.log("Tag_Init failed.");
-
-		process.exit(1);
-
-		return;
-	}
-
-
-
-	Tag_CopyUntil(lines);
-
-	c_until = c;
-
-	ClearAll();
-
-
-
-	Tag_CopyAfter(lines);
-
-	c_after = c;
-
-	ClearAll();
-
-
-
-	CreateStruct
-	(
-		name,
-		items,
-		size,
-		0,
-		StructFlags_Export
-	);
-
-	CreateStructAsserts
-	(
-		name,
-		items,
-		size,
-		0,
-		StructFlags_NoTypeAssert
-	);
-
-	MergeAsserts();
-	FeedAsserts();
-
-	CleanStream();
-
-	c_new = c;
-
-	ClearAll();
-
-
-
-	file = c_until + c_new + c_after;
-}
-
-function FeedEnum
-(
-	name,
-	items,
-	tagName = name
-)
-{
-	ClearAll();
-
-
-
-	let c_until = "";
-	let c_after = "";
-	let c_new   = "";
-
-	let lines = GetLines(file);
-
-	let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
-	let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
-
-	console.log(startName);
-	console.log(endName);
-
-	if
-	(
-		!Tag_Init
-		(
-			lines,
-			startName,
-			endName
-		)
-	)
-	{
-		console.log("Tag_Init failed.");
-
-		process.exit(1);
-
-		return;
-	}
-
-
-
-	Tag_CopyUntil(lines);
-
-	c_until = c;
-
-	ClearAll();
-
-
-
-	Tag_CopyAfter(lines);
-
-	c_after = c;
-
-	ClearAll();
-
-
-
-	//c += "export namespaceStart(" + name + ");" + NEW_LINE;
-
-	CreateEnum
-	(
-		"",
-		items,
-		"",
-		(
-			EnumFlags_Export |
-			EnumFlags_Namespace |
-			EnumFlags_UpperCase
-		)
-	);
-
-	// c += "namespaceEnd();" + NEW_LINE;
-	// c += NEW_LINE;
-
-	CleanStream();
-
-	c_new = c;
-
-	ClearAll();
-
-
-
-	file = c_until + c_new + c_after;
-}
+file = fs.readFileSync(location, "utf8");
 
 // #endregion
-
-
-
-
-
 
 
 
@@ -268,52 +69,7 @@ let tagName = "CharacterData";
 
 ClearAll();
 
-
-
-let c_until = "";
-let c_after = "";
-let c_new   = "";
-
-let lines = GetLines(file);
-
-let startName = new RegExp("\\/\\/ \\$" + tagName + "Start$");
-let endName   = new RegExp("\\/\\/ \\$" + tagName + "End$"  );
-
-console.log(startName);
-console.log(endName);
-
-if
-(
-	!Tag_Init
-	(
-		lines,
-		startName,
-		endName
-	)
-)
-{
-	console.log("Tag_Init failed.");
-
-	process.exit(1);
-
-	return;
-}
-
-
-
-Tag_CopyUntil(lines);
-
-c_until = c;
-
-ClearAll();
-
-
-
-Tag_CopyAfter(lines);
-
-c_after = c;
-
-ClearAll();
+FeedStart(tagName);
 
 
 
@@ -476,13 +232,7 @@ FeedAsserts();
 
 CleanStream();
 
-c_new = c;
-
-ClearAll();
-
-
-
-file = c_until + c_new + c_after;
+FeedEnd();
 
 }
 // #endregion

@@ -1,6 +1,6 @@
 module;
-#include "../ImGui/imgui.h"
-#include "../ImGui/imgui_internal.h"
+#include "../ThirdParty/ImGui/imgui.h"
+#include "../ThirdParty/ImGui/imgui_internal.h"
 export module Core_ImGui;
 
 import Core;
@@ -932,27 +932,27 @@ export void Init()
 
 	auto & io = GetIO();
 
-	io.KeyMap[ImGuiKey_Tab       ] = DIK_TAB;
-	io.KeyMap[ImGuiKey_LeftArrow ] = DIK_LEFT;
-	io.KeyMap[ImGuiKey_RightArrow] = DIK_RIGHT;
-	io.KeyMap[ImGuiKey_UpArrow   ] = DIK_UP;
-	io.KeyMap[ImGuiKey_DownArrow ] = DIK_DOWN;
-	io.KeyMap[ImGuiKey_PageUp    ] = DIK_PRIOR;
-	io.KeyMap[ImGuiKey_PageDown  ] = DIK_NEXT;
-	io.KeyMap[ImGuiKey_Home      ] = DIK_HOME;
-	io.KeyMap[ImGuiKey_End       ] = DIK_END;
-	io.KeyMap[ImGuiKey_Insert    ] = DIK_INSERT;
-	io.KeyMap[ImGuiKey_Delete    ] = DIK_DELETE;
-	io.KeyMap[ImGuiKey_Backspace ] = DIK_BACK;
-	io.KeyMap[ImGuiKey_Space     ] = DIK_SPACE;
-	io.KeyMap[ImGuiKey_Enter     ] = DIK_RETURN;
-	io.KeyMap[ImGuiKey_Escape    ] = DIK_ESCAPE;
-	io.KeyMap[ImGuiKey_A         ] = DIK_A;
-	io.KeyMap[ImGuiKey_C         ] = DIK_C;
-	io.KeyMap[ImGuiKey_V         ] = DIK_V;
-	io.KeyMap[ImGuiKey_X         ] = DIK_X;
-	io.KeyMap[ImGuiKey_Y         ] = DIK_Y;
-	io.KeyMap[ImGuiKey_Z         ] = DIK_Z;
+	io.KeyMap[ImGuiKey_Tab       ] = KEY::TAB;
+	io.KeyMap[ImGuiKey_LeftArrow ] = KEY::LEFT;
+	io.KeyMap[ImGuiKey_RightArrow] = KEY::RIGHT;
+	io.KeyMap[ImGuiKey_UpArrow   ] = KEY::UP;
+	io.KeyMap[ImGuiKey_DownArrow ] = KEY::DOWN;
+	io.KeyMap[ImGuiKey_PageUp    ] = KEY::PAGE_UP;
+	io.KeyMap[ImGuiKey_PageDown  ] = KEY::PAGE_DOWN;
+	io.KeyMap[ImGuiKey_Home      ] = KEY::HOME;
+	io.KeyMap[ImGuiKey_End       ] = KEY::END;
+	io.KeyMap[ImGuiKey_Insert    ] = KEY::INSERT;
+	io.KeyMap[ImGuiKey_Delete    ] = KEY::DELETE;
+	io.KeyMap[ImGuiKey_Backspace ] = KEY::BACKSPACE;
+	io.KeyMap[ImGuiKey_Space     ] = KEY::SPACE;
+	io.KeyMap[ImGuiKey_Enter     ] = KEY::ENTER;
+	io.KeyMap[ImGuiKey_Escape    ] = KEY::ESCAPE;
+	io.KeyMap[ImGuiKey_A         ] = KEY::A;
+	io.KeyMap[ImGuiKey_C         ] = KEY::C;
+	io.KeyMap[ImGuiKey_V         ] = KEY::V;
+	io.KeyMap[ImGuiKey_X         ] = KEY::X;
+	io.KeyMap[ImGuiKey_Y         ] = KEY::Y;
+	io.KeyMap[ImGuiKey_Z         ] = KEY::Z;
 }
 
 // @Update
@@ -960,9 +960,9 @@ export void UpdateKeyboard(byte8 * state)
 {
 	auto & io = GetIO();
 
-	io.KeyCtrl  = ((state[DIK_LCONTROL] & 0x80) || (state[DIK_RCONTROL] & 0x80)) ? true : false;
-	io.KeyShift = ((state[DIK_LSHIFT  ] & 0x80) || (state[DIK_RSHIFT  ] & 0x80)) ? true : false;
-	io.KeyAlt   = ((state[DIK_LALT    ] & 0x80) || (state[DIK_RALT    ] & 0x80)) ? true : false;
+	io.KeyCtrl  = ((state[KEY::LEFT_CONTROL] & 0x80) || (state[KEY::RIGHT_CONTROL] & 0x80)) ? true : false;
+	io.KeyShift = ((state[KEY::LEFT_SHIFT  ] & 0x80) || (state[KEY::RIGHT_SHIFT  ] & 0x80)) ? true : false;
+	io.KeyAlt   = ((state[KEY::LEFT_ALT    ] & 0x80) || (state[KEY::RIGHT_ALT    ] & 0x80)) ? true : false;
 
 	SetMemory
 	(

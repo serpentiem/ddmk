@@ -1,6 +1,6 @@
 module;
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_internal.h"
+#include "ThirdParty/ImGui/imgui.h"
+#include "ThirdParty/ImGui/imgui_internal.h"
 
 #include <stdio.h>
 export module GUIBase;
@@ -25,7 +25,7 @@ export namespaceStart(FONT);
 enum
 {
 	DEFAULT,
-	MAIN,
+	//MAIN,
 	OVERLAY_8,
 	OVERLAY_16,
 	OVERLAY_32,
@@ -62,12 +62,51 @@ export void BuildFonts()
 		);
 	}
 
-	io.Fonts->AddFontFromFileTTF(overlayFont, 17 );
+	// io.Fonts->AddFontFromFileTTF(overlayFont, 13 );
+	// io.Fonts->AddFontFromFileTTF(overlayFont, 17 );
 	io.Fonts->AddFontFromFileTTF(overlayFont, 8  );
 	io.Fonts->AddFontFromFileTTF(overlayFont, 16 );
 	io.Fonts->AddFontFromFileTTF(overlayFont, 32 );
 	io.Fonts->AddFontFromFileTTF(overlayFont, 64 );
 	io.Fonts->AddFontFromFileTTF(overlayFont, 128);
+
+
+
+
+
+	// const char * locations[] =
+	// {
+	// 	"C:/Windows/Fonts/consola.ttf",
+	// 	"C:/Users/serpentiem/source/repos/ddmk/ThirdParty/ImGui/misc/fonts/Cousine-Regular.ttf",
+	// 	"C:/Users/serpentiem/source/repos/ddmk/ThirdParty/ImGui/misc/fonts/DroidSans.ttf",
+	// 	"C:/Users/serpentiem/source/repos/ddmk/ThirdParty/ImGui/misc/fonts/Karla-Regular.ttf",
+	// 	"C:/Users/serpentiem/source/repos/ddmk/ThirdParty/ImGui/misc/fonts/Roboto-Medium.ttf",
+	// };
+
+	// for_all(locationIndex, countof(locations))
+	// {
+	// 	auto location = locations[locationIndex];
+
+	// 	for_all(index, 10)
+	// 	{
+	// 		io.Fonts->AddFontFromFileTTF(location, static_cast<float>(13 + index));
+	// 	}
+	// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	io.Fonts->Build();
 }
@@ -80,6 +119,17 @@ export void UpdateGlobalScale()
 
 	io.FontGlobalScale = activeConfig.globalScale;
 }
+
+export void GUI_UpdateStyle()
+{
+	auto & style = ImGui::GetStyle();
+
+	style.WindowRounding    = 7.0f;
+	style.ScrollbarRounding = 9.0f;
+}
+
+
+
 
 
 
