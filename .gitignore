@@ -26,7 +26,7 @@
 !ThirdParty/libzip/LICENSE
 !ThirdParty/stb
 !ThirdParty/stb/*.h
-!ThirdParty/stb/LICENSE.txt
+!ThirdParty/stb/LICENSE
 !ThirdParty/zlib
 !ThirdParty/zlib/*.c
 !ThirdParty/zlib/*.h
