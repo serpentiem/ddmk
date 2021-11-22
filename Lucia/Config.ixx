@@ -27,6 +27,10 @@ import Vars;
 
 export struct Config
 {
+	bool welcome = true;
+
+
+
 	struct OverlayData
 	{
 		bool enable = false;
@@ -80,8 +84,6 @@ export struct Config
 		// {},
 		// {},
 	};
-
-
 };
 
 #pragma pack(pop)

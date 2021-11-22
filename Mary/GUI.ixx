@@ -2263,7 +2263,7 @@ void Actor_CharacterTab
 				TooltipHelper
 				(
 					"(?)",
-					"You can hold the taunt button during the switch to go back."
+					"Hold the taunt button during the switch to go back."
 				);
 
 				break;
@@ -5838,6 +5838,17 @@ void Debug()
 	{
 		ImGui::Text("");
 
+
+
+		GUI_Checkbox
+		(
+			"Welcome",
+			queuedConfig.welcome
+		);
+		ImGui::Text("");
+
+
+
 		if (GUI_Button("Actor"))
 		{
 			showActorWindow = true;
@@ -9304,9 +9315,6 @@ void KeyBindings()
 
 
 
-
-
-
 #pragma region Main
 
 void UpdateGlobalScale()
@@ -9427,6 +9435,13 @@ void Main()
 		}
 		ImGui::Text("");
 
+
+
+
+
+
+
+
 		ActorSection();
 		ArcadeSection();
 		BarsSection();
@@ -9489,6 +9504,8 @@ export void GUI_Render()
 	}
 
 	::GUI::id = 0;
+
+	Welcome();
 
 	MainOverlayWindow();
 
@@ -9602,8 +9619,8 @@ export void GUI_Render()
 		}
 	}();
 
-	static bool enable = true;
-	ImGui::ShowDemoWindow(&enable);
+	// static bool enable = true;
+	// ImGui::ShowDemoWindow(&enable);
 }
 
 export void GUI_Init()
@@ -9620,11 +9637,3 @@ export void GUI_Init()
 	Arcade_UpdateIndices();
 	Color_UpdateValues();
 }
-
-
-
-
-
-
-
-

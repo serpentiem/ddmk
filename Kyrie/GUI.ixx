@@ -2586,6 +2586,8 @@ export void GUI_Render()
 {
 	::GUI::id = 0;
 
+	Welcome();
+
 	MainOverlayWindow();
 
 	Bars();
@@ -2668,18 +2670,8 @@ export void GUI_Init()
 
 	UpdateGlobalScale();
 
+	GUI_UpdateStyle();
+
 	Actor_UpdateIndices();
 	Arcade_UpdateIndices();
-
-
-
 }
-
-
-
-
-
-
-
-
-

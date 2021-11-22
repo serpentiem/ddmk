@@ -25,7 +25,6 @@ export namespaceStart(FONT);
 enum
 {
 	DEFAULT,
-	//MAIN,
 	OVERLAY_8,
 	OVERLAY_16,
 	OVERLAY_32,
@@ -62,49 +61,13 @@ export void BuildFonts()
 		);
 	}
 
-	// io.Fonts->AddFontFromFileTTF(overlayFont, 13 );
-	// io.Fonts->AddFontFromFileTTF(overlayFont, 17 );
+
+
 	io.Fonts->AddFontFromFileTTF(overlayFont, 8  );
 	io.Fonts->AddFontFromFileTTF(overlayFont, 16 );
 	io.Fonts->AddFontFromFileTTF(overlayFont, 32 );
 	io.Fonts->AddFontFromFileTTF(overlayFont, 64 );
 	io.Fonts->AddFontFromFileTTF(overlayFont, 128);
-
-
-
-
-
-	// const char * locations[] =
-	// {
-	// 	"C:/Windows/Fonts/consola.ttf",
-	// 	"C:/Users/serpentiem/source/repos/ddmk/ThirdParty/ImGui/misc/fonts/Cousine-Regular.ttf",
-	// 	"C:/Users/serpentiem/source/repos/ddmk/ThirdParty/ImGui/misc/fonts/DroidSans.ttf",
-	// 	"C:/Users/serpentiem/source/repos/ddmk/ThirdParty/ImGui/misc/fonts/Karla-Regular.ttf",
-	// 	"C:/Users/serpentiem/source/repos/ddmk/ThirdParty/ImGui/misc/fonts/Roboto-Medium.ttf",
-	// };
-
-	// for_all(locationIndex, countof(locations))
-	// {
-	// 	auto location = locations[locationIndex];
-
-	// 	for_all(index, 10)
-	// 	{
-	// 		io.Fonts->AddFontFromFileTTF(location, static_cast<float>(13 + index));
-	// 	}
-	// }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -127,9 +90,6 @@ export void GUI_UpdateStyle()
 	style.WindowRounding    = 7.0f;
 	style.ScrollbarRounding = 9.0f;
 }
-
-
-
 
 
 
@@ -193,7 +153,8 @@ export void CreditsWindow()
 			ImGuiWindowFlags_NoMove            |
 			ImGuiWindowFlags_NoScrollbar       |
 			ImGuiWindowFlags_NoScrollWithMouse |
-			ImGuiWindowFlags_NoMouseInputs
+			ImGuiWindowFlags_NoMouseInputs     |
+			ImGuiWindowFlags_NoFocusOnAppearing
 		)
 	)
 	{
@@ -289,4 +250,71 @@ export void CreditsWindow()
 
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar(4);
+}
+
+
+
+export void Welcome()
+{
+	if (!queuedConfig.welcome)
+	{
+		return;
+	}
+
+
+
+	static bool run = false;
+
+	if (!run)
+	{
+		run = true;
+
+		constexpr float width  = 350;
+		constexpr float height = 130;
+
+		ImGui::SetNextWindowSize(ImVec2(width, height));
+
+		ImGui::SetNextWindowPos
+		(
+			ImVec2
+			(
+				((g_renderSize.x - width ) / 2),
+				((g_renderSize.y - height) / 2)
+			)
+		);
+	}
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+
+	if
+	(
+		ImGui::Begin
+		(
+			"Welcome",
+			&queuedConfig.welcome,
+			ImGuiWindowFlags_NoTitleBar |
+			ImGuiWindowFlags_NoResize   |
+			ImGuiWindowFlags_NoMove     |
+			ImGuiWindowFlags_NoScrollbar
+		)
+	)
+	{
+		ImGui::Text("");
+
+		CenterText(WELCOME_TEXT);
+		ImGui::Text("");
+
+		if (CenterButton("Close"))
+		{
+			activeConfig.welcome = queuedConfig.welcome = false;
+
+			SaveConfig();
+		}
+
+		ImGui::Text("");
+	}
+
+	ImGui::End();
+
+	ImGui::PopStyleVar();
 }

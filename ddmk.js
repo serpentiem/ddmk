@@ -1522,7 +1522,7 @@ compilerArgsImGui_x86_64 = AddFront
 let itemsImGui_x86_64 =
 [
 	[ PATH_IMGUI + "/imgui.cpp"        , "", false, [] ],
-	[ PATH_IMGUI + "/imgui_demo.cpp"   , "", false, [] ],
+	// [ PATH_IMGUI + "/imgui_demo.cpp"   , "", false, [] ],
 	[ PATH_IMGUI + "/imgui_draw.cpp"   , "", false, [] ],
 	[ PATH_IMGUI + "/imgui_tables.cpp" , "", false, [] ],
 	[ PATH_IMGUI + "/imgui_widgets.cpp", "", false, [] ],
@@ -1541,7 +1541,7 @@ compilerArgsImGui_x86_32 = AddFront
 let itemsImGui_x86_32 =
 [
 	[ PATH_IMGUI + "/imgui.cpp"        , "", false, [] ],
-	[ PATH_IMGUI + "/imgui_demo.cpp"   , "", false, [] ],
+	// [ PATH_IMGUI + "/imgui_demo.cpp"   , "", false, [] ],
 	[ PATH_IMGUI + "/imgui_draw.cpp"   , "", false, [] ],
 	[ PATH_IMGUI + "/imgui_tables.cpp" , "", false, [] ],
 	[ PATH_IMGUI + "/imgui_widgets.cpp", "", false, [] ],

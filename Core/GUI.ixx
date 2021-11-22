@@ -963,23 +963,29 @@ export void DescriptionHelper
 	ImGui::PopTextWrapPos();
 }
 
+export void CenterCursorX(float width)
+{
+	ImGui::SetCursorPosX((ImGui::GetWindowSize().x - width) / 2);
+}
+
 export void CenterText(const char * name)
 {
-	float nameWidth = ImGui::CalcTextSize(name).x;
-	float cursorPosX = ImGui::GetCursorPosX();
-	float newCursorPosX = (cursorPosX + ((ImGui::GetWindowSize().x - nameWidth) / 2));
+	float width = ImGui::CalcTextSize(name).x;
 
-	ImGui::SetCursorPosX(newCursorPosX);
+	CenterCursorX(width);
 
 	ImGui::Text(name);
 }
 
-export void CenterCursorX(float width)
+export auto CenterButton(const char * name)
 {
-	float cursorPosX = ImGui::GetCursorPosX();
-	float newCursorPosX = (cursorPosX + ((ImGui::GetWindowSize().x - width) / 2));
+	auto & style = ImGui::GetStyle();
 
-	ImGui::SetCursorPosX(newCursorPosX);
+	float width = (ImGui::CalcTextSize(name).x + (style.FramePadding.x * 2));
+
+	CenterCursorX(width);
+
+	return GUI_Button(name);
 }
 
 export bool ScrollbarY()

@@ -1357,8 +1357,9 @@ export byte32 UpdateMouseThread(LPVOID parameter)
 		(
 			appWindow &&
 			(
-				g_show ||
-				g_showItemWindow
+				g_show           ||
+				g_showItemWindow ||
+				queuedConfig.welcome
 			)
 		)
 		{

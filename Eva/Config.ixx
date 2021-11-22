@@ -27,6 +27,10 @@ import Vars;
 
 export struct Config
 {
+	bool welcome = true;
+
+
+
 	struct
 	{
 		uint8 meleeWeapons[MELEE_WEAPON_COUNT] =

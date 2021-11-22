@@ -993,6 +993,8 @@ export void GUI_Render()
 
 	::GUI::id = 0;
 
+	Welcome();
+
 	MainOverlayWindow();
 
 	// if constexpr (debug)
@@ -1098,23 +1100,9 @@ export void GUI_Init()
 {
 	LogFunction();
 
-	// for_all(index, 21)
-	// {
-	// 	Log("%.4llu %llu", index, helper[index]);
-	// 	//Log("%.4llu %llu", index, helper.data[index]);
-	// }
-
-
-
-
 	BuildFonts();
 
 	UpdateGlobalScale();
 
-	// Actor_UpdateIndices();
-	// Arcade_UpdateIndices();
-	// MissionSelect_UpdateIndices();
+	GUI_UpdateStyle();
 }
-
-#ifdef __GARBAGE__
-#endif

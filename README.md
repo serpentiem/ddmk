@@ -2,6 +2,8 @@
 
 The compilation of my work on the Devil May Cry PC games. It contains various extensive gameplay mods, tools, fixes and training utilities. It also adds multiplayer capabilities to select entries.
 
+See [Features](https://github.com/serpentiem/ddmk/wiki/Features) for a more detailed overview.
+
 
 
 # Installation
@@ -50,6 +52,12 @@ The following is required to undo the latest patch. You only need to do this onc
 
 
 
+If you've installed the mod successfully, you'll get a welcome message the next time you start the game (as in the actual game, not the launcher).
+
+![welcome](welcome.png)
+
+
+
 # Create Savegame Backups
 
 ## Devil May Cry HD Collection
@@ -85,10 +93,4 @@ Copy `SavedGame00.DevilMayCry4SpecialEdition` to a secure and easily accessible 
 
 # Credits
 
-Part of this project uses [Dear ImGui](https://github.com/ocornut/imgui).
-
-Part of this project uses [libzip](https://github.com/nih-at/libzip).
-
-Part of this project uses [zlib](https://github.com/madler/zlib).
-
-Part of this project uses [stb_image](https://github.com/nothings/stb).
+See [Third Party Libraries](ThirdParty) for a detailed overview of libraries used.

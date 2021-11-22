@@ -3105,6 +3105,8 @@ export void GUI_Render()
 
 	::GUI::id = 0;
 
+	Welcome();
+
 	MainOverlayWindow();
 
 	// if constexpr (debug)
@@ -3221,10 +3223,9 @@ export void GUI_Init()
 
 	UpdateGlobalScale();
 
+	GUI_UpdateStyle();
+
 	Actor_UpdateIndices();
 	Arcade_UpdateIndices();
 	MissionSelect_UpdateIndices();
 }
-
-#ifdef __GARBAGE__
-#endif

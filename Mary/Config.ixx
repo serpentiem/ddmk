@@ -17,8 +17,6 @@ import Vars;
 
 #define debug false
 
-// #include "Macros.h"
-
 
 
 #define _(size) struct { byte8 Prep_Merge(padding_, __LINE__)[size]; }
@@ -29,6 +27,10 @@ import Vars;
 
 export struct Config
 {
+	bool welcome = true;
+
+
+
 	struct
 	{
 		bool enable = (debug) ? true : false;
@@ -693,7 +695,7 @@ export struct Config
 	// To avoid surprises by using __declspec(align) we prefer _(n) and
 	// static_assert to get the correct alignment.
 
-	_(9);
+	_(8);
 	float kalinaAnnHookGrenadeHeight = 1280.0f;
 	_(12);
 	float kalinaAnnHookGrenadeTime = 90.0f;
@@ -818,12 +820,6 @@ export struct Config
 		{},
 		{},
 	};
-
-
-
-
-
-
 };
 
 static_assert((offsetof(Config, kalinaAnnHookGrenadeHeight) % 0x10) == 0);

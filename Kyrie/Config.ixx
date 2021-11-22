@@ -27,6 +27,10 @@ import Vars;
 
 export struct Config
 {
+	bool welcome = true;
+
+
+
 	struct
 	{
 		bool enable = (debug) ? true : false;
