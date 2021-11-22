@@ -93,4 +93,4 @@ Copy `SavedGame00.DevilMayCry4SpecialEdition` to a secure and easily accessible 
 
 # Credits
 
-See [Third Party Libraries](ThirdParty) for a detailed overview of libraries used.
+See [Third Party Libraries](https://github.com/serpentiem/ddmk/tree/master/ThirdParty) for a detailed overview of libraries used.
