@@ -30,6 +30,19 @@ Files used:
 
 
 
+## rapidjson
+
+* Source: https://github.com/Tencent/rapidjson
+* Version: 1.1.0 [f54b0e47a08782a6131cc3d60f94d038fa6e0a51](https://github.com/Tencent/rapidjson/commit/f54b0e47a08782a6131cc3d60f94d038fa6e0a51) 25 August 2016
+* License: MIT
+
+Files used:
+
+* All files and directories from `include/rapidjson`
+* `license.txt`
+
+
+
 ## stb
 
 * Source: https://github.com/nothings/stb

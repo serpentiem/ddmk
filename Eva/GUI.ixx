@@ -649,7 +649,15 @@ void ActorSection()
 			activeConfig.enableResetStateController,
 			queuedConfig.enableResetStateController
 		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Resets the actor's state which allows you to immediately follow up with another action."
+		);
 		ImGui::Text("");
+
+
 
 		{
 			bool condition = !activeConfig.enableResetStateController;
@@ -715,7 +723,15 @@ void ActorSection()
 		{
 			ToggleChargeFixes(activeConfig.enableChargeController);
 		}
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Allows you to charge ranged weapons while being active."
+		);
 		ImGui::Text("");
+
+
 
 		{
 			bool condition = !activeConfig.enableChargeController;
@@ -1030,7 +1046,7 @@ void ArcadeSection()
 
 void BossRushSection()
 {
-	if (ImGui::CollapsingHeader("BossRush"))
+	if (ImGui::CollapsingHeader("Boss Rush"))
 	{
 		ImGui::Text("");
 
@@ -1560,15 +1576,15 @@ void Overlays()
 			// ResetConfig(missionOverlayData           );
 			// ResetConfig(newMovesOverlayDataDante     );
 			// ResetConfig(newMovesOverlayDataVergil    );
-			// ResetConfig(newMovesOverlayDataBossLady  );
-			// ResetConfig(newMovesOverlayDataBossVergil);
+			// ResetConfig(bossLadyActionsOverlayData  );
+			// ResetConfig(bossVergilActionsOverlayData);
 
 			ImGui::SetWindowPos(mainOverlayLabel              , *reinterpret_cast<ImVec2*>(&activeConfig.mainOverlayData.pos              ));
 			// ImGui::SetWindowPos(missionOverlayLabel           , *reinterpret_cast<ImVec2*>(&activeConfig.missionOverlayData.pos           ));
 			// ImGui::SetWindowPos(newMovesOverlayLabelDante     , *reinterpret_cast<ImVec2*>(&activeConfig.newMovesOverlayDataDante.pos     ));
 			// ImGui::SetWindowPos(newMovesOverlayLabelVergil    , *reinterpret_cast<ImVec2*>(&activeConfig.newMovesOverlayDataVergil.pos    ));
-			// ImGui::SetWindowPos(newMovesOverlayLabelBossLady  , *reinterpret_cast<ImVec2*>(&activeConfig.newMovesOverlayDataBossLady.pos  ));
-			// ImGui::SetWindowPos(newMovesOverlayLabelBossVergil, *reinterpret_cast<ImVec2*>(&activeConfig.newMovesOverlayDataBossVergil.pos));
+			// ImGui::SetWindowPos(newMovesOverlayLabelBossLady  , *reinterpret_cast<ImVec2*>(&activeConfig.bossLadyActionsOverlayData.pos  ));
+			// ImGui::SetWindowPos(newMovesOverlayLabelBossVergil, *reinterpret_cast<ImVec2*>(&activeConfig.bossVergilActionsOverlayData.pos));
 		}
 
 		GUI_SectionEnd();

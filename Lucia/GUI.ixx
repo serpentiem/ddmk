@@ -392,15 +392,15 @@ void Overlays()
 			// ResetConfig(missionOverlayData           );
 			// ResetConfig(newMovesOverlayDataDante     );
 			// ResetConfig(newMovesOverlayDataVergil    );
-			// ResetConfig(newMovesOverlayDataBossLady  );
-			// ResetConfig(newMovesOverlayDataBossVergil);
+			// ResetConfig(bossLadyActionsOverlayData  );
+			// ResetConfig(bossVergilActionsOverlayData);
 
 			ImGui::SetWindowPos(mainOverlayLabel              , *reinterpret_cast<ImVec2*>(&activeConfig.mainOverlayData.pos              ));
 			// ImGui::SetWindowPos(missionOverlayLabel           , *reinterpret_cast<ImVec2*>(&activeConfig.missionOverlayData.pos           ));
 			// ImGui::SetWindowPos(newMovesOverlayLabelDante     , *reinterpret_cast<ImVec2*>(&activeConfig.newMovesOverlayDataDante.pos     ));
 			// ImGui::SetWindowPos(newMovesOverlayLabelVergil    , *reinterpret_cast<ImVec2*>(&activeConfig.newMovesOverlayDataVergil.pos    ));
-			// ImGui::SetWindowPos(newMovesOverlayLabelBossLady  , *reinterpret_cast<ImVec2*>(&activeConfig.newMovesOverlayDataBossLady.pos  ));
-			// ImGui::SetWindowPos(newMovesOverlayLabelBossVergil, *reinterpret_cast<ImVec2*>(&activeConfig.newMovesOverlayDataBossVergil.pos));
+			// ImGui::SetWindowPos(newMovesOverlayLabelBossLady  , *reinterpret_cast<ImVec2*>(&activeConfig.bossLadyActionsOverlayData.pos  ));
+			// ImGui::SetWindowPos(newMovesOverlayLabelBossVergil, *reinterpret_cast<ImVec2*>(&activeConfig.bossVergilActionsOverlayData.pos));
 		}
 
 		GUI_SectionEnd();

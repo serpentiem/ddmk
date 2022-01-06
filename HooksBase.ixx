@@ -1,9 +1,18 @@
+
+
+
+
+
+
+
+
 module;
 #include "ThirdParty/ImGui/imgui.h"
 export module HooksBase;
 
 import Core;
 import Core_ImGui;
+import Core_Input;
 
 #include "Core/Macros.h"
 
@@ -34,14 +43,16 @@ enum
 };
 namespaceEnd();
 
-export namespaceStart(DEVICE_TYPE);
-enum
-{
-	KEYBOARD,
-	MOUSE,
-	GAMEPAD,
-};
-namespaceEnd();
+
+// // @Remove
+// export namespaceStart(DEVICE_TYPE);
+// enum
+// {
+// 	KEYBOARD,
+// 	MOUSE,
+// 	GAMEPAD,
+// };
+// namespaceEnd();
 
 
 
@@ -74,6 +85,459 @@ export void UpdateMousePositionMultiplier()
 		mousePositionMultiplier.y
 	);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+//namespaceStart(DI8);
+
+void CreateKeyboard()
+{
+	LogFunction();
+
+	if (!keyboard.Create())
+	{
+		Log("keyboard.Create failed.");
+
+		return;
+	}
+}
+
+
+
+export typedef void(* UpdateKeyboard_func_t)(DI8::DIKEYBOARDSTATE * stateAddr);
+
+export UpdateKeyboard_func_t UpdateKeyboard_func = 0;
+
+
+
+export typedef void(* UpdateGamepad_func_t)(DI8::DIJOYSTATE * stateAddr);
+
+export UpdateGamepad_func_t UpdateGamepad_func = 0;
+
+
+
+
+
+
+
+
+
+
+#if debug
+
+void WindowSize1()
+{
+	LogFunction();
+
+	SetWindowPos
+	(
+		appWindow,
+		0,
+		0,
+		0,
+		640,
+		360,
+		0
+	);
+}
+
+void WindowSize2()
+{
+	LogFunction();
+
+	SetWindowPos
+	(
+		appWindow,
+		0,
+		0,
+		0,
+		1920,
+		1080,
+		0
+	);
+}
+
+void WindowSize3()
+{
+	LogFunction();
+
+	SetWindowPos
+	(
+		appWindow,
+		0,
+		1920,
+		0,
+		1920,
+		1080,
+		0
+	);
+}
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+void UpdateKeyboard()
+{
+	keyboard.Update();
+
+	ImGui::DI8::UpdateKeyboard(&keyboard.state);
+
+	[&]()
+	{
+		auto func = UpdateKeyboard_func;
+		if (!func)
+		{
+			return;
+		}
+
+		func(&keyboard.state);
+	}();
+
+
+
+
+
+
+
+
+
+
+
+
+
+	#if debug
+
+	static KeyData keyData[] =
+	{
+		{
+			{
+				::DI8::KEY::LEFT_CONTROL,
+				::DI8::KEY::ONE,
+			},
+			2,
+			false,
+			WindowSize1
+		},
+		{
+			{
+				::DI8::KEY::LEFT_CONTROL,
+				::DI8::KEY::TWO,
+			},
+			2,
+			false,
+			WindowSize2
+		},
+		{
+			{
+				::DI8::KEY::LEFT_CONTROL,
+				::DI8::KEY::THREE,
+			},
+			2,
+			false,
+			WindowSize3
+		},
+	};
+
+	for_all(index, countof(keyData))
+	{
+		keyData[index].Check(keyboard.state.keys);
+	}
+
+	#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+void CreateMouse()
+{
+	LogFunction();
+
+	if (!mouse.Create())
+	{
+		Log("mouse.Create failed.");
+
+		return;
+	}
+}
+
+void UpdateMouse()
+{
+	mouse.Update();
+
+	ImGui::DI8::UpdateMouse
+	(
+		appWindow,
+		&mouse.state
+	);
+}
+
+
+
+
+
+
+
+
+
+
+
+BOOL CreateGamepad_EnumFunction
+(
+	DI8::LPCDIDEVICEINSTANCEA deviceInstanceAddr,
+	LPVOID pvRef
+)
+{
+	DebugLogFunction();
+
+
+
+	if (!deviceInstanceAddr)
+	{
+		Log("!deviceInstanceAddr");
+
+		return DI8::DIENUM_CONTINUE;
+	}
+
+	auto & deviceInstance = *deviceInstanceAddr;
+
+
+
+
+	// Log    ("dwSize          %X", deviceInstance.dwSize                  );
+	// LogGUID("guidInstance    "  , deviceInstance.guidInstance            );
+	// LogGUID("guidProduct     "  , deviceInstance.guidProduct             );
+	// Log    ("dwDevType       %X", deviceInstance.dwDevType               );
+	// Log    ("dwDevType[0]    %X", (deviceInstance.dwDevType & 0xFF));
+	// Log    ("dwDevType[1]    %X", ((deviceInstance.dwDevType >> 8) & 0xFF));
+
+
+
+	// Log    ("tszInstanceName %s", deviceInstance.tszInstanceName         );
+	// Log    ("tszProductName  %s", deviceInstance.tszProductName          );
+	// LogGUID("guidFFDriver    "  , deviceInstance.guidFFDriver            );
+	// Log    ("wUsagePage      %X", deviceInstance.wUsagePage              );
+	// Log    ("wUsage          %X", deviceInstance.wUsage                  );
+
+
+	// Log<false>("");
+
+
+
+
+
+	if
+	(
+		strcmp
+		(
+			deviceInstance.tszInstanceName,
+			activeConfig.gamepadName
+		) != 0
+	)
+	{
+		// Log("No Match $%s$ $%s$", deviceInstance.tszInstanceName, activeConfig.gamepadName);
+		// Log<false>("");
+
+		return DI8::DIENUM_CONTINUE;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	CopyMemory
+	(
+		&gamepad.deviceInstance,
+		&deviceInstance,
+		sizeof(gamepad.deviceInstance)
+	);
+
+
+
+	gamepad.match = true;
+
+
+	return DI8::DIENUM_STOP;
+}
+
+void CreateGamepad()
+{
+	LogFunction();
+
+	gamepad.enumFunc = CreateGamepad_EnumFunction;
+
+	if (!gamepad.Create())
+	{
+		Log("gamepad.Create failed.");
+
+		return;
+	}
+}
+
+void UpdateGamepad()
+{
+
+
+
+/*
+
+flags = 0;
+
+if activeConfig.forceFocus
+
+
+byte32 flags = 0
+
+*/
+
+
+	// byte32 flags = 0;
+
+	// if (activeConfig.forceWindowFocus)
+	// {
+	// 	flags |= InputFlags_ForceFocus;
+	// }
+
+
+
+	if
+	(
+		(GetForegroundWindow() != appWindow) &&
+		!activeConfig.forceWindowFocus
+	)
+	{
+		return;
+	}
+
+
+
+
+
+
+	gamepad.Update();
+
+
+
+	[&]()
+	{
+		auto func = UpdateGamepad_func;
+		if (!func)
+		{
+			return;
+		}
+
+		func(&gamepad.state);
+	}();
+
+
+
+}
+
+//namespaceEnd();
+
+
+
+
+
+
+namespaceStart(XI);
+
+export void UpdateGamepad()
+{
+
+
+	// @Merge
+	if
+	(
+		(GetForegroundWindow() != appWindow) &&
+		!activeConfig.forceWindowFocus
+	)
+	{
+		return;
+	}
+
+	if (!g_show)
+	{
+		return;
+	}
+
+
+
+	XInputGetState
+	(
+		0,
+		&state
+	);
+
+
+
+	::ImGui::XI::UpdateGamepad(&state);
+
+
+
+
+}
+
+
+
+namespaceEnd();
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -252,6 +716,29 @@ export LRESULT WindowProc
 	return result;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export ATOM RegisterClassExW(const WNDCLASSEXW * windowClassAddr)
 {
 	Log
@@ -290,9 +777,27 @@ export ATOM RegisterClassExW(const WNDCLASSEXW * windowClassAddr)
 
 			io.IniFilename = 0;
 
+
+			io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+
+			io.BackendFlags |= ImGuiBackendFlags_HasGamepad;
+
+
+
 			ImGui::DI8::Init();
 
 			GUI_Init();
+
+
+
+
+
+
+
+
+
+
+
 
 			::Base::Windows::WindowProc = windowClass.lpfnWndProc;
 
@@ -375,7 +880,7 @@ export HWND CreateWindowExW
 		lpParam
 	);
 
-	ToggleCursor();
+	ToggleCursor(); // CreateWindowExW
 
 	return ::Base::Windows::CreateWindowExW
 	(
@@ -465,15 +970,27 @@ namespaceEnd();
 
 
 
-export void UpdateShow()
+void UpdateShow()
 {
+	g_show =
+	(
+		g_showMain ||
+		g_showShop
+	);
+
 	if (g_lastShow != g_show)
 	{
 		g_lastShow = g_show;
 
-		ToggleCursor();
+		ToggleCursor(); // g_show
 	}
 }
+
+
+
+
+
+
 
 export template <size_t api>
 void CreateRenderTarget()
@@ -644,6 +1161,32 @@ HRESULT Present
 	}
 
 	UpdateShow();
+
+
+
+
+
+	UpdateKeyboard();
+	UpdateMouse();
+	UpdateGamepad();
+
+	XI::UpdateGamepad();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1148,6 +1691,17 @@ export HRESULT D3D11CreateDeviceAndSwapChain
 
 
 
+
+
+
+CreateKeyboard();
+CreateMouse();
+CreateGamepad();
+
+
+
+
+
 	SetLastError(error);
 
 	return result;
@@ -1157,59 +1711,6 @@ namespaceEnd();
 
 #pragma endregion
 
-
-
-#if debug
-
-void WindowSize1()
-{
-	LogFunction();
-
-	SetWindowPos
-	(
-		appWindow,
-		0,
-		0,
-		0,
-		640,
-		360,
-		0
-	);
-}
-
-void WindowSize2()
-{
-	LogFunction();
-
-	SetWindowPos
-	(
-		appWindow,
-		0,
-		0,
-		0,
-		1920,
-		1080,
-		0
-	);
-}
-
-void WindowSize3()
-{
-	LogFunction();
-
-	SetWindowPos
-	(
-		appWindow,
-		0,
-		1920,
-		0,
-		1920,
-		1080,
-		0
-	);
-}
-
-#endif
 
 
 
@@ -1238,91 +1739,37 @@ namespaceEnd();
 
 namespaceStart(Hook::DI8);
 
-export typedef void(* GetDeviceStateA_func_t)(byte8 * state);
 
-export GetDeviceStateA_func_t GetDeviceStateA_func = 0;
 
-export template <size_t deviceType>
-HRESULT GetDeviceStateA
+
+
+
+export HRESULT GetDeviceStateA
 (
 	::DI8::IDirectInputDevice8A * pDevice,
 	DWORD BufferSize,
 	LPVOID Buffer
 )
 {
-	if (GetForegroundWindow() != appWindow)
-	{
-		SetMemory
-		(
-			Buffer,
-			0,
-			BufferSize
-		);
-
-		return 0;
-	}
-
-	if constexpr (deviceType == DEVICE_TYPE::KEYBOARD)
-	{
-		auto state = reinterpret_cast<byte8 *>(Buffer);
-
-		ImGui::DI8::UpdateKeyboard(state);
 
 
 
-		[&]()
-		{
-			auto func = GetDeviceStateA_func;
-			if (!func)
-			{
-				return;
-			}
-
-			func(state);
-		}();
 
 
 
-		#if debug
+	// // @Research: Maybe still required for dmc1.
+	// if (GetForegroundWindow() != appWindow)
+	// {
+	// 	SetMemory
+	// 	(
+	// 		Buffer,
+	// 		0,
+	// 		BufferSize
+	// 	);
 
-		static KeyData keyData[] =
-		{
-			{
-				{
-					::DI8::KEY::LEFT_CONTROL,
-					::DI8::KEY::ONE,
-				},
-				2,
-				false,
-				WindowSize1
-			},
-			{
-				{
-					::DI8::KEY::LEFT_CONTROL,
-					::DI8::KEY::TWO,
-				},
-				2,
-				false,
-				WindowSize2
-			},
-			{
-				{
-					::DI8::KEY::LEFT_CONTROL,
-					::DI8::KEY::THREE,
-				},
-				2,
-				false,
-				WindowSize3
-			},
-		};
+	// 	return 0;
+	// }
 
-		for_all(index, countof(keyData))
-		{
-			keyData[index].Check(state);
-		}
-
-		#endif
-	}
 
 
 
@@ -1345,206 +1792,7 @@ namespaceEnd();
 
 
 
-namespaceStart(DI8);
 
-export byte32 UpdateMouseThread(LPVOID parameter)
-{
-	LogFunction();
-
-	while (true)
-	{
-		if
-		(
-			appWindow &&
-			(
-				g_show           ||
-				g_showItemWindow ||
-				queuedConfig.welcome
-			)
-		)
-		{
-			::DI8::mouse->GetDeviceState
-			(
-				sizeof(DIMOUSESTATE2),
-				&::DI8::mouseState
-			);
-
-			ImGui::DI8::UpdateMouse
-			(
-				appWindow,
-				&::DI8::mouseState
-			);
-		}
-
-		Sleep(10);
-	}
-
-	return 1;
-}
-
-export byte32 AcquireMouseThread(LPVOID parameter)
-{
-	while (true)
-	{
-		[&]()
-		{
-			if (GetForegroundWindow() != appWindow)
-			{
-				return;
-			}
-
-			if (!::DI8::mouse)
-			{
-				return;
-			}
-
-			::DI8::mouse->Acquire();
-		}();
-
-		Sleep(100);
-	}
-
-	return 1;
-}
-
-export byte32 CreateMouseThread(LPVOID parameter)
-{
-	while (true)
-	{
-		if (appWindow)
-		{
-			break;
-		}
-
-		Sleep(100);
-	}
-
-	LogFunction();
-
-	HRESULT result = 0;
-	byte32 error = 0;
-
-	result = ::DI8::DirectInput8Create
-	(
-		reinterpret_cast<HINSTANCE>(appBaseAddr),
-		0x800,
-		IID_IDirectInput8W,
-		reinterpret_cast<void **>(&::DI8::deviceInterface),
-		0
-	);
-	if (result != DI_OK)
-	{
-		error = GetLastError();
-
-		Log
-		(
-			#ifdef _WIN64
-			"Create %llX %X",
-			#else
-			"Create %X %X",
-			#endif
-			result,
-			error
-		);
-
-		goto Return;
-	}
-
-	result = ::DI8::deviceInterface->CreateDevice
-	(
-		GUID_SysMouse,
-		&::DI8::mouse,
-		0
-	);
-	if (result != DI_OK)
-	{
-		error = GetLastError();
-
-		Log
-		(
-			#ifdef _WIN64
-			"CreateDevice %llX %X",
-			#else
-			"CreateDevice %X %X",
-			#endif
-			result,
-			error
-		);
-
-		goto Return;
-	}
-
-	result = ::DI8::mouse->SetCooperativeLevel
-	(
-		appWindow,
-		DISCL_NONEXCLUSIVE |
-		DISCL_FOREGROUND
-	);
-	if (result != DI_OK)
-	{
-		error = GetLastError();
-
-		Log
-		(
-			#ifdef _WIN64
-			"SetCooperativeLevel %llX %X",
-			#else
-			"SetCooperativeLevel %X %X",
-			#endif
-			result,
-			error
-		);
-
-		goto Return;
-	}
-
-	result = ::DI8::mouse->SetDataFormat(&c_dfDIMouse2);
-	if (result != DI_OK)
-	{
-		error = GetLastError();
-
-		Log
-		(
-			#ifdef _WIN64
-			"SetDataFormat %llX %X",
-			#else
-			"SetDataFormat %X %X",
-			#endif
-			result,
-			error
-		);
-
-		goto Return;
-	}
-
-	result = ::DI8::mouse->Acquire();
-
-	CreateThread
-	(
-		0,
-		4096,
-		::DI8::UpdateMouseThread,
-		0,
-		0,
-		0
-	);
-
-	CreateThread
-	(
-		0,
-		4096,
-		::DI8::AcquireMouseThread,
-		0,
-		0,
-		0
-	);
-
-	Return:
-
-	return 1;
-}
-
-namespaceEnd();
 
 #pragma endregion
 

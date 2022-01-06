@@ -4,42 +4,43 @@ export module DataTypes;
 
 
 
-export
-{
+export typedef char      int8;
+export typedef short     int16;
+export typedef long      int32;
+export typedef long long int64;
 
-typedef unsigned char      bool8;
-typedef unsigned short     bool16;
-typedef unsigned long      bool32;
-typedef unsigned long long bool64;
+export typedef unsigned char      uint8;
+export typedef unsigned short     uint16;
+export typedef unsigned long      uint32;
+export typedef unsigned long long uint64;
 
-typedef char      int8;
-typedef short     int16;
-typedef long      int32;
-typedef long long int64;
+export typedef uint8  bool8;
+export typedef uint16 bool16;
+export typedef uint32 bool32;
+export typedef uint64 bool64;
 
-typedef unsigned char      uint8;
-typedef unsigned short     uint16;
-typedef unsigned long      uint32;
-typedef unsigned long long uint64;
+export typedef uint8  byte8;
+export typedef uint16 byte16;
+export typedef uint32 byte32;
+export typedef uint64 byte64;
 
-typedef unsigned char      byte8;
-typedef unsigned short     byte16;
-typedef unsigned long      byte32;
-typedef unsigned long long byte64;
-
-typedef float  float32;
-typedef double float64;
+export typedef float  float32;
+export typedef double float64;
 
 
+
+// @Research: Signed and unsigned versions of these should be useful.
+// For example for string functions like LastIndexOf to return -1.
+// Consider new_ prefix until prep is mature enough.
 
 #ifdef _WIN64
 
-typedef uint64 off_t;
-typedef uint64 size_t;
+export typedef uint64 off_t;
+export typedef uint64 size_t;
 
 #else
 
-typedef uint32 off_t;
+export typedef uint32 off_t;
 
 // @Busted
 // typedef uint32 size_t;
@@ -48,57 +49,28 @@ typedef uint32 off_t;
 
 
 
-// @Todo: Simplify.
-template <typename ...>
-struct Tuple;
-
-template <typename T>
-struct Tuple<T>
+export struct vec2
 {
-	T x;
+	float x;
+	float y;
 };
 
-template
-<
-	typename T,
-	typename T2
->
-struct Tuple<T, T2>
+export struct vec3
 {
-	T x;
-	T2 y;
+	float x;
+	float y;
+	float z;
 };
 
-template
-<
-	typename T,
-	typename T2,
-	typename T3
->
-struct Tuple<T, T2, T3>
+export struct vec4
 {
-	T x;
-	T2 y;
-	T3 z;
+	float x;
+	float y;
+	float z;
+	float a;
 };
 
-template
-<
-	typename T,
-	typename T2,
-	typename T3,
-	typename T4
->
-struct Tuple<T, T2, T3, T4>
-{
-	T x;
-	T2 y;
-	T3 z;
-	T4 a;
-};
 
-using vec2 = Tuple<float, float>;
-using vec3 = Tuple<float, float, float>;
-using vec4 = Tuple<float, float, float, float>;
 
-}
+export struct struct_t {};
+export struct array_t  {};

@@ -7,8 +7,63 @@ import Core;
 import Actor;
 import Config;
 import Global;
-import Item;
 import Vars;
+
+
+
+#pragma region Item
+
+namespaceStart(Item);
+
+void SceneMain()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	IntroduceSessionData();
+
+	g_haywireNeoGenerator = false;
+}
+
+void SceneMissionSelect()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	IntroduceSessionData();
+
+	g_haywireNeoGenerator = false;
+}
+
+void SceneMissionStart()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	IntroduceSessionData();
+
+	g_haywireNeoGenerator =
+	(
+		(sessionData.mission == 12) &&
+		!activeConfig.BossRush.enable
+	) ? true : false;
+}
+
+namespaceEnd();
+
+#pragma endregion
 
 
 

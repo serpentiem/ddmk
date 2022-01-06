@@ -8,14 +8,17 @@ import Windows;
 
 using namespace Windows;
 
-
-import Vars;
-
 import Config;
+import Vars;
 
 #define debug false
 
-// #include "Macros.h"
+
+
+bool Enable()
+{
+	return activeConfig.Arcade.enable;
+}
 
 
 
@@ -23,7 +26,7 @@ namespaceStart(Arcade);
 
 export void InitSession()
 {
-	if (!activeConfig.Arcade.enable)
+	if (!Enable())
 	{
 		return;
 	}
@@ -32,9 +35,15 @@ export void InitSession()
 
 	IntroduceSessionData();
 
+
+
 	sessionData.mission = activeConfig.Arcade.mission;
 
-	if ((sessionData.mission >= 1) && (sessionData.mission <= 20))
+	if
+	(
+		(sessionData.mission >= 1 ) &&
+		(sessionData.mission <= 20)
+	)
 	{
 		using namespace MODE;
 
@@ -53,13 +62,15 @@ export void InitSession()
 		sessionData.oneHitKill = oneHitKill;
 	}
 
-	sessionData.enableTutorial = true;
-	sessionData.useGoldOrb = true;
-
-	if (activeConfig.Arcade.mission == 21)
+	if (sessionData.mission == MISSION::BLOODY_PALACE)
 	{
 		sessionData.bloodyPalace = true;
 	}
+
+
+
+	sessionData.enableTutorial = true;
+	sessionData.useGoldOrb     = true;
 
 
 
@@ -84,8 +95,19 @@ export void InitSession()
 		sizeof(sessionData.unlocks)
 	);
 
+
+
+	sessionData.costume            = activeConfig.Arcade.costume;
+	sessionData.unlockDevilTrigger = true;
+	sessionData.hitPoints          = activeConfig.Arcade.hitPoints;
+	sessionData.magicPoints        = activeConfig.Arcade.magicPoints;
+
+
+
 	if (activeConfig.Arcade.character == CHARACTER::DANTE)
 	{
+		sessionData.style = activeConfig.Arcade.style;
+
 		CopyMemory
 		(
 			sessionData.weapons,
@@ -94,40 +116,37 @@ export void InitSession()
 		);
 	}
 
-	sessionData.rangedWeaponLevels[0] = 2;
-	sessionData.rangedWeaponLevels[1] = 2;
-	sessionData.rangedWeaponLevels[2] = 2;
-	sessionData.rangedWeaponLevels[3] = 2;
-	sessionData.rangedWeaponLevels[4] = 2;
 
-	sessionData.costume = activeConfig.Arcade.costume;
-	sessionData.unlockDevilTrigger = true;
-	sessionData.hitPoints = activeConfig.Arcade.hitPoints;
-	sessionData.magicPoints = activeConfig.Arcade.magicPoints;
+
+	SetMemory
+	(
+		sessionData.styleLevels,
+		0,
+		sizeof(sessionData.styleLevels)
+	);
 
 	if (activeConfig.Arcade.character == CHARACTER::DANTE)
 	{
-		sessionData.style = activeConfig.Arcade.style;
+		for_all(index, 4)
+		{
+			sessionData.styleLevels[index] = 2;
+		}
+	}
+	else if (activeConfig.Arcade.character == CHARACTER::VERGIL)
+	{
+		sessionData.styleLevels[STYLE::DARK_SLAYER] = 2;
 	}
 
-	SetMemory
-	(
-		sessionData.styleLevel,
-		0,
-		sizeof(sessionData.styleLevel)
-	);
 
-	sessionData.styleLevel[0] = 2;
-	sessionData.styleLevel[1] = 2;
-	sessionData.styleLevel[2] = 2;
-	sessionData.styleLevel[3] = 2;
 
 	SetMemory
 	(
-		sessionData.styleExperience,
+		sessionData.styleExpPoints,
 		0,
-		sizeof(sessionData.styleExperience)
+		sizeof(sessionData.styleExpPoints)
 	);
+
+
 
 	SetMemory
 	(
@@ -136,23 +155,47 @@ export void InitSession()
 		sizeof(sessionData.expertise)
 	);
 
+
+
+	SetMemory
+	(
+		sessionData.rangedWeaponLevels,
+		0,
+		sizeof(sessionData.rangedWeaponLevels)
+	);
+
+	if (activeConfig.Arcade.character == CHARACTER::DANTE)
+	{
+		for_all(index, 5)
+		{
+			sessionData.rangedWeaponLevels[index] = 2;
+		}
+	}
+
+
+
 	auto & controllerMagic = *reinterpret_cast<uint32 *>(appBaseAddr + 0x553000) = 0;
 }
 
+
+
 export void SetCharacter(byte8 * dest)
 {
-	if (!activeConfig.Arcade.enable)
+	if (!Enable())
 	{
 		return;
 	}
 
 	LogFunction(dest);
+
 	auto & character = *reinterpret_cast<uint8 *>(dest + 0x4565) = activeConfig.Arcade.character;
 }
 
+
+
 export void SetRoom()
 {
-	if (!activeConfig.Arcade.enable)
+	if (!Enable())
 	{
 		return;
 	}
@@ -206,9 +249,11 @@ export void SetRoom()
 	}
 }
 
+
+
 export void EventCreateMainActor(byte8 * baseAddr)
 {
-	if (!activeConfig.Arcade.enable)
+	if (!Enable())
 	{
 		return;
 	}
@@ -248,43 +293,170 @@ export void EventCreateMainActor(byte8 * baseAddr)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-// @Todo: Update.
 export void Toggle(bool enable)
 {
 	LogFunction(enable);
-	Write<byte8>((appBaseAddr + 0x2433FB), (enable) ? 0xEB : 0x74); // Force new game.
-	Write<byte8>((appBaseAddr + 0x243299), (enable) ? 0xEB : 0x74); // Skip mission select menu.
-	Write<byte8>((appBaseAddr + 0x2411F5), (enable) ? 0xEB : 0x74); // Force start mission.
-	// Force costume.
-	WriteAddress((appBaseAddr + 0x217991), (enable) ? (appBaseAddr + 0x217993) : (appBaseAddr + 0x2179A2), 2);
-	WriteAddress((appBaseAddr + 0x21799A), (enable) ? (appBaseAddr + 0x21799C) : (appBaseAddr + 0x2179A2), 2);
-	// @Todo: Lazy solution, update proper vars!
-	Write<byte8>((appBaseAddr + 0x1AA791), (enable) ? 0xEB : 0x75); // Skip orb notifications.
+
+	static bool run = false;
+
+
+
+	// Force New Game
+	{
+		auto addr = (appBaseAddr + 0x2433FB);
+		constexpr size_t size = 2;
+		/*
+		dmc3.exe+2433FB - 74 55    - je dmc3.exe+243452
+		dmc3.exe+2433FD - 80 F9 01 - cmp cl,01
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			Write<byte8>(addr, 0xEB);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	// Skip Mission Select
+	{
+		auto addr = (appBaseAddr + 0x243299);
+		constexpr size_t size = 2;
+		/*
+		dmc3.exe+243299 - 74 13                   - je dmc3.exe+2432AE
+		dmc3.exe+24329B - C7 05 83143500 01000000 - mov [dmc3.exe+594728],00000001
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			Write<byte8>(addr, 0xEB);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	// Force Mission Start
+	{
+		auto addr = (appBaseAddr + 0x2411F5);
+		constexpr size_t size = 2;
+		/*
+		dmc3.exe+2411F5 - 74 4F    - je dmc3.exe+241246
+		dmc3.exe+2411F7 - 83 F8 01 - cmp eax,01
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			Write<byte8>(addr, 0xEB);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	// Force Costume
+	{
+		auto addr = (appBaseAddr + 0x217991);
+		auto dest = (appBaseAddr + 0x217993);
+		constexpr size_t size = 2;
+		/*
+		dmc3.exe+217991 - 74 0F         - je dmc3.exe+2179A2
+		dmc3.exe+217993 - 41 0FB6 43 4C - movzx eax,byte ptr [r11+4C]
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			WriteAddress(addr, dest, size);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	{
+		auto addr = (appBaseAddr + 0x21799A);
+		auto dest = (appBaseAddr + 0x21799C);
+		constexpr size_t size = 2;
+		/*
+		dmc3.exe+21799A - 74 06       - je dmc3.exe+2179A2
+		dmc3.exe+21799C - 41 88 41 34 - mov [r9+34],al
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			WriteAddress(addr, dest, size);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	// Skip Orb Notifications
+	{
+		auto addr = (appBaseAddr + 0x1AA791);
+		constexpr size_t size = 2;
+		/*
+		dmc3.exe+1AA791 - 75 18          - jne dmc3.exe+1AA7AB
+		dmc3.exe+1AA793 - 41 B8 01000000 - mov r8d,00000001
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			Write<byte8>(addr, 0xEB);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	run = true;
 }
 
-
-
 namespaceEnd();
-
-
-
-
-
-
-
-
-
-
-

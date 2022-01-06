@@ -54,8 +54,8 @@ The following is required to undo the latest patch. You only need to do this onc
 
 If you've installed the mod successfully, you'll get a welcome message the next time you start the game (as in the actual game, not the launcher).
 
-![welcome](welcome.png)
-
+<!-- ![welcome](welcome.png) -->
+![welcome](https://user-images.githubusercontent.com/38213025/144748682-48dcba6a-f98e-4789-9570-4264f3858254.png)
 
 
 # Create Savegame Backups
@@ -88,6 +88,25 @@ Copy the following files to a secure and easily accessible location:
 If you don't know your `USER_NAME`, give your tech-savvy grandchild a call.
 
 Copy `SavedGame00.DevilMayCry4SpecialEdition` to a secure and easily accessible location.
+
+
+
+# Build
+
+| Download & Install                                             |
+| ---                                                            |
+| [Visual Studio](https://visualstudio.microsoft.com/downloads/) |
+| [Node](https://nodejs.org/en/download/)                        |
+
+When installing Visual Studio make sure `Desktop development with C++` is checked to get the `MSVC Compiler` and the `Windows SDK`.
+
+Edit the paths & locations in `ddmk.js` if necessary. You can find them at the top and in the `Env` region.
+
+Open a terminal, navigate to the project directory and run:
+
+```
+node run ddmk buildAll
+```
 
 
 

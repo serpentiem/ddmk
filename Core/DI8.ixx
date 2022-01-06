@@ -119,12 +119,70 @@ static_assert(sizeof(D3DCOLOR) == 4);
 
 enum
 {
+	DI_OK=0,
 	DISCL_EXCLUSIVE=0x00000001,
 	DISCL_NONEXCLUSIVE=0x00000002,
 	DISCL_FOREGROUND=0x00000004,
 	DISCL_BACKGROUND=0x00000008,
 	DISCL_NOWINKEY=0x00000010,
-	DI_OK=S_OK,
+	DIERR_OLDDIRECTINPUTVERSION=0x8007047E,
+	DIERR_BETADIRECTINPUTVERSION=0x80070481,
+	DIERR_BADDRIVERVER=0x80070077,
+	DIERR_DEVICENOTREG=0x80040154,
+	DIERR_NOTFOUND=0x80070002,
+	DIERR_OBJECTNOTFOUND=0x80070002,
+	DIERR_INVALIDPARAM=0x80070057,
+	DIERR_NOINTERFACE=0x80004002,
+	DIERR_GENERIC=0x80004005,
+	DIERR_OUTOFMEMORY=0x8007000E,
+	DIERR_UNSUPPORTED=0x80004001,
+	DIERR_NOTINITIALIZED=0x80070015,
+	DIERR_ALREADYINITIALIZED=0x800704DF,
+	DIERR_NOAGGREGATION=0x80040110,
+	DIERR_OTHERAPPHASPRIO=0x80070005,
+	DIERR_INPUTLOST=0x8007001E,
+	DIERR_ACQUIRED=0x800700AA,
+	DIERR_NOTACQUIRED=0x8007000C,
+	DIERR_READONLY=0x80070005,
+	DIERR_HANDLEEXISTS=0x80070005,
+	DIERR_INSUFFICIENTPRIVS=0x80040200,
+	DIERR_DEVICEFULL=0x80040201,
+	DIERR_MOREDATA=0x80040202,
+	DIERR_NOTDOWNLOADED=0x80040203,
+	DIERR_HASEFFECTS=0x80040204,
+	DIERR_NOTEXCLUSIVEACQUIRED=0x80040205,
+	DIERR_INCOMPLETEEFFECT=0x80040206,
+	DIERR_NOTBUFFERED=0x80040207,
+	DIERR_EFFECTPLAYING=0x80040208,
+	DIERR_UNPLUGGED=0x80040209,
+	DIERR_REPORTFULL=0x8004020A,
+	DIERR_MAPFILEFAIL=0x8004020B,
+	DIDEVTYPE_HID=0x10000,
+	DI8DEVCLASS_ALL=0,
+	DI8DEVCLASS_DEVICE=1,
+	DI8DEVCLASS_POINTER=2,
+	DI8DEVCLASS_KEYBOARD=3,
+	DI8DEVCLASS_GAMECTRL=4,
+	DI8DEVTYPE_DEVICE=0x11,
+	DI8DEVTYPE_MOUSE=0x12,
+	DI8DEVTYPE_KEYBOARD=0x13,
+	DI8DEVTYPE_JOYSTICK=0x14,
+	DI8DEVTYPE_GAMEPAD=0x15,
+	DI8DEVTYPE_DRIVING=0x16,
+	DI8DEVTYPE_FLIGHT=0x17,
+	DI8DEVTYPE_1STPERSON=0x18,
+	DI8DEVTYPE_DEVICECTRL=0x19,
+	DI8DEVTYPE_SCREENPOINTER=0x1A,
+	DI8DEVTYPE_REMOTE=0x1B,
+	DI8DEVTYPE_SUPPLEMENTAL=0x1C,
+	DIEDFL_ALLDEVICES=0x00000000,
+	DIEDFL_ATTACHEDONLY=0x00000001,
+	DIEDFL_FORCEFEEDBACK=0x00000100,
+	DIEDFL_INCLUDEALIASES=0x00010000,
+	DIEDFL_INCLUDEPHANTOMS=0x00020000,
+	DIEDFL_INCLUDEHIDDEN=0x00040000,
+	DIENUM_STOP=0,
+	DIENUM_CONTINUE=1,
 };
 
 #pragma pack(push, 1)
@@ -1364,6 +1422,155 @@ static_assert(TypeMatch<LPCDICONFIGUREDEVICESPARAMSW, const DICONFIGUREDEVICESPA
 static_assert(sizeof(LPDICONFIGUREDEVICESPARAMSW) == 8);
 static_assert(sizeof(LPCDICONFIGUREDEVICESPARAMSW) == 8);
 
+// DIJOYSTATE
+
+struct DIJOYSTATE
+{
+	LONG lX; // 0
+	LONG lY; // 4
+	LONG lZ; // 8
+	LONG lRx; // 0xC
+	LONG lRy; // 0x10
+	LONG lRz; // 0x14
+	LONG rglSlider[2]; // 0x18
+	DWORD rgdwPOV[4]; // 0x20
+	BYTE rgbButtons[32]; // 0x30
+};
+
+static_assert(TypeMatch<decltype(DIJOYSTATE::lX), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::lY), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::lZ), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::lRx), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::lRy), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::lRz), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::rglSlider), LONG[2]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::rgdwPOV), DWORD[4]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::rgbButtons), BYTE[32]>::value);
+
+static_assert(offsetof(DIJOYSTATE, lX) == 0);
+static_assert(offsetof(DIJOYSTATE, lY) == 4);
+static_assert(offsetof(DIJOYSTATE, lZ) == 8);
+static_assert(offsetof(DIJOYSTATE, lRx) == 0xC);
+static_assert(offsetof(DIJOYSTATE, lRy) == 0x10);
+static_assert(offsetof(DIJOYSTATE, lRz) == 0x14);
+static_assert(offsetof(DIJOYSTATE, rglSlider) == 0x18);
+static_assert(offsetof(DIJOYSTATE, rgdwPOV) == 0x20);
+static_assert(offsetof(DIJOYSTATE, rgbButtons) == 0x30);
+
+static_assert(sizeof(DIJOYSTATE) == 80);
+
+typedef DIJOYSTATE * LPDIJOYSTATE;
+
+static_assert(TypeMatch<LPDIJOYSTATE, DIJOYSTATE *>::value);
+
+static_assert(sizeof(LPDIJOYSTATE) == 8);
+
+// DIJOYSTATE2
+
+struct DIJOYSTATE2
+{
+	LONG lX; // 0
+	LONG lY; // 4
+	LONG lZ; // 8
+	LONG lRx; // 0xC
+	LONG lRy; // 0x10
+	LONG lRz; // 0x14
+	LONG rglSlider[2]; // 0x18
+	DWORD rgdwPOV[4]; // 0x20
+	BYTE rgbButtons[128]; // 0x30
+	LONG lVX; // 0xB0
+	LONG lVY; // 0xB4
+	LONG lVZ; // 0xB8
+	LONG lVRx; // 0xBC
+	LONG lVRy; // 0xC0
+	LONG lVRz; // 0xC4
+	LONG rglVSlider[2]; // 0xC8
+	LONG lAX; // 0xD0
+	LONG lAY; // 0xD4
+	LONG lAZ; // 0xD8
+	LONG lARx; // 0xDC
+	LONG lARy; // 0xE0
+	LONG lARz; // 0xE4
+	LONG rglASlider[2]; // 0xE8
+	LONG lFX; // 0xF0
+	LONG lFY; // 0xF4
+	LONG lFZ; // 0xF8
+	LONG lFRx; // 0xFC
+	LONG lFRy; // 0x100
+	LONG lFRz; // 0x104
+	LONG rglFSlider[2]; // 0x108
+};
+
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lX), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lY), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lZ), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lRx), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lRy), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lRz), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::rglSlider), LONG[2]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::rgdwPOV), DWORD[4]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::rgbButtons), BYTE[128]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lVX), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lVY), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lVZ), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lVRx), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lVRy), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lVRz), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::rglVSlider), LONG[2]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lAX), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lAY), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lAZ), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lARx), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lARy), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lARz), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::rglASlider), LONG[2]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lFX), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lFY), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lFZ), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lFRx), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lFRy), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lFRz), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::rglFSlider), LONG[2]>::value);
+
+static_assert(offsetof(DIJOYSTATE2, lX) == 0);
+static_assert(offsetof(DIJOYSTATE2, lY) == 4);
+static_assert(offsetof(DIJOYSTATE2, lZ) == 8);
+static_assert(offsetof(DIJOYSTATE2, lRx) == 0xC);
+static_assert(offsetof(DIJOYSTATE2, lRy) == 0x10);
+static_assert(offsetof(DIJOYSTATE2, lRz) == 0x14);
+static_assert(offsetof(DIJOYSTATE2, rglSlider) == 0x18);
+static_assert(offsetof(DIJOYSTATE2, rgdwPOV) == 0x20);
+static_assert(offsetof(DIJOYSTATE2, rgbButtons) == 0x30);
+static_assert(offsetof(DIJOYSTATE2, lVX) == 0xB0);
+static_assert(offsetof(DIJOYSTATE2, lVY) == 0xB4);
+static_assert(offsetof(DIJOYSTATE2, lVZ) == 0xB8);
+static_assert(offsetof(DIJOYSTATE2, lVRx) == 0xBC);
+static_assert(offsetof(DIJOYSTATE2, lVRy) == 0xC0);
+static_assert(offsetof(DIJOYSTATE2, lVRz) == 0xC4);
+static_assert(offsetof(DIJOYSTATE2, rglVSlider) == 0xC8);
+static_assert(offsetof(DIJOYSTATE2, lAX) == 0xD0);
+static_assert(offsetof(DIJOYSTATE2, lAY) == 0xD4);
+static_assert(offsetof(DIJOYSTATE2, lAZ) == 0xD8);
+static_assert(offsetof(DIJOYSTATE2, lARx) == 0xDC);
+static_assert(offsetof(DIJOYSTATE2, lARy) == 0xE0);
+static_assert(offsetof(DIJOYSTATE2, lARz) == 0xE4);
+static_assert(offsetof(DIJOYSTATE2, rglASlider) == 0xE8);
+static_assert(offsetof(DIJOYSTATE2, lFX) == 0xF0);
+static_assert(offsetof(DIJOYSTATE2, lFY) == 0xF4);
+static_assert(offsetof(DIJOYSTATE2, lFZ) == 0xF8);
+static_assert(offsetof(DIJOYSTATE2, lFRx) == 0xFC);
+static_assert(offsetof(DIJOYSTATE2, lFRy) == 0x100);
+static_assert(offsetof(DIJOYSTATE2, lFRz) == 0x104);
+static_assert(offsetof(DIJOYSTATE2, rglFSlider) == 0x108);
+
+static_assert(sizeof(DIJOYSTATE2) == 272);
+
+typedef DIJOYSTATE2 * LPDIJOYSTATE2;
+
+static_assert(TypeMatch<LPDIJOYSTATE2, DIJOYSTATE2 *>::value);
+
+static_assert(sizeof(LPDIJOYSTATE2) == 8);
+
 #pragma pack(pop)
 
 extern "C" const DIDATAFORMAT c_dfDIMouse;
@@ -1972,12 +2179,70 @@ static_assert(sizeof(D3DCOLOR) == 4);
 
 enum
 {
+	DI_OK=0,
 	DISCL_EXCLUSIVE=0x00000001,
 	DISCL_NONEXCLUSIVE=0x00000002,
 	DISCL_FOREGROUND=0x00000004,
 	DISCL_BACKGROUND=0x00000008,
 	DISCL_NOWINKEY=0x00000010,
-	DI_OK=S_OK,
+	DIERR_OLDDIRECTINPUTVERSION=0x8007047E,
+	DIERR_BETADIRECTINPUTVERSION=0x80070481,
+	DIERR_BADDRIVERVER=0x80070077,
+	DIERR_DEVICENOTREG=0x80040154,
+	DIERR_NOTFOUND=0x80070002,
+	DIERR_OBJECTNOTFOUND=0x80070002,
+	DIERR_INVALIDPARAM=0x80070057,
+	DIERR_NOINTERFACE=0x80004002,
+	DIERR_GENERIC=0x80004005,
+	DIERR_OUTOFMEMORY=0x8007000E,
+	DIERR_UNSUPPORTED=0x80004001,
+	DIERR_NOTINITIALIZED=0x80070015,
+	DIERR_ALREADYINITIALIZED=0x800704DF,
+	DIERR_NOAGGREGATION=0x80040110,
+	DIERR_OTHERAPPHASPRIO=0x80070005,
+	DIERR_INPUTLOST=0x8007001E,
+	DIERR_ACQUIRED=0x800700AA,
+	DIERR_NOTACQUIRED=0x8007000C,
+	DIERR_READONLY=0x80070005,
+	DIERR_HANDLEEXISTS=0x80070005,
+	DIERR_INSUFFICIENTPRIVS=0x80040200,
+	DIERR_DEVICEFULL=0x80040201,
+	DIERR_MOREDATA=0x80040202,
+	DIERR_NOTDOWNLOADED=0x80040203,
+	DIERR_HASEFFECTS=0x80040204,
+	DIERR_NOTEXCLUSIVEACQUIRED=0x80040205,
+	DIERR_INCOMPLETEEFFECT=0x80040206,
+	DIERR_NOTBUFFERED=0x80040207,
+	DIERR_EFFECTPLAYING=0x80040208,
+	DIERR_UNPLUGGED=0x80040209,
+	DIERR_REPORTFULL=0x8004020A,
+	DIERR_MAPFILEFAIL=0x8004020B,
+	DIDEVTYPE_HID=0x10000,
+	DI8DEVCLASS_ALL=0,
+	DI8DEVCLASS_DEVICE=1,
+	DI8DEVCLASS_POINTER=2,
+	DI8DEVCLASS_KEYBOARD=3,
+	DI8DEVCLASS_GAMECTRL=4,
+	DI8DEVTYPE_DEVICE=0x11,
+	DI8DEVTYPE_MOUSE=0x12,
+	DI8DEVTYPE_KEYBOARD=0x13,
+	DI8DEVTYPE_JOYSTICK=0x14,
+	DI8DEVTYPE_GAMEPAD=0x15,
+	DI8DEVTYPE_DRIVING=0x16,
+	DI8DEVTYPE_FLIGHT=0x17,
+	DI8DEVTYPE_1STPERSON=0x18,
+	DI8DEVTYPE_DEVICECTRL=0x19,
+	DI8DEVTYPE_SCREENPOINTER=0x1A,
+	DI8DEVTYPE_REMOTE=0x1B,
+	DI8DEVTYPE_SUPPLEMENTAL=0x1C,
+	DIEDFL_ALLDEVICES=0x00000000,
+	DIEDFL_ATTACHEDONLY=0x00000001,
+	DIEDFL_FORCEFEEDBACK=0x00000100,
+	DIEDFL_INCLUDEALIASES=0x00010000,
+	DIEDFL_INCLUDEPHANTOMS=0x00020000,
+	DIEDFL_INCLUDEHIDDEN=0x00040000,
+	DIENUM_STOP=0,
+	DIENUM_CONTINUE=1,
 };
 
 #pragma pack(push, 1)
@@ -3203,6 +3468,155 @@ static_assert(TypeMatch<LPCDICONFIGUREDEVICESPARAMSW, const DICONFIGUREDEVICESPA
 
 static_assert(sizeof(LPDICONFIGUREDEVICESPARAMSW) == 4);
 static_assert(sizeof(LPCDICONFIGUREDEVICESPARAMSW) == 4);
+
+// DIJOYSTATE
+
+struct DIJOYSTATE
+{
+	LONG lX; // 0
+	LONG lY; // 4
+	LONG lZ; // 8
+	LONG lRx; // 0xC
+	LONG lRy; // 0x10
+	LONG lRz; // 0x14
+	LONG rglSlider[2]; // 0x18
+	DWORD rgdwPOV[4]; // 0x20
+	BYTE rgbButtons[32]; // 0x30
+};
+
+static_assert(TypeMatch<decltype(DIJOYSTATE::lX), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::lY), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::lZ), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::lRx), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::lRy), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::lRz), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::rglSlider), LONG[2]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::rgdwPOV), DWORD[4]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE::rgbButtons), BYTE[32]>::value);
+
+static_assert(offsetof(DIJOYSTATE, lX) == 0);
+static_assert(offsetof(DIJOYSTATE, lY) == 4);
+static_assert(offsetof(DIJOYSTATE, lZ) == 8);
+static_assert(offsetof(DIJOYSTATE, lRx) == 0xC);
+static_assert(offsetof(DIJOYSTATE, lRy) == 0x10);
+static_assert(offsetof(DIJOYSTATE, lRz) == 0x14);
+static_assert(offsetof(DIJOYSTATE, rglSlider) == 0x18);
+static_assert(offsetof(DIJOYSTATE, rgdwPOV) == 0x20);
+static_assert(offsetof(DIJOYSTATE, rgbButtons) == 0x30);
+
+static_assert(sizeof(DIJOYSTATE) == 80);
+
+typedef DIJOYSTATE * LPDIJOYSTATE;
+
+static_assert(TypeMatch<LPDIJOYSTATE, DIJOYSTATE *>::value);
+
+static_assert(sizeof(LPDIJOYSTATE) == 4);
+
+// DIJOYSTATE2
+
+struct DIJOYSTATE2
+{
+	LONG lX; // 0
+	LONG lY; // 4
+	LONG lZ; // 8
+	LONG lRx; // 0xC
+	LONG lRy; // 0x10
+	LONG lRz; // 0x14
+	LONG rglSlider[2]; // 0x18
+	DWORD rgdwPOV[4]; // 0x20
+	BYTE rgbButtons[128]; // 0x30
+	LONG lVX; // 0xB0
+	LONG lVY; // 0xB4
+	LONG lVZ; // 0xB8
+	LONG lVRx; // 0xBC
+	LONG lVRy; // 0xC0
+	LONG lVRz; // 0xC4
+	LONG rglVSlider[2]; // 0xC8
+	LONG lAX; // 0xD0
+	LONG lAY; // 0xD4
+	LONG lAZ; // 0xD8
+	LONG lARx; // 0xDC
+	LONG lARy; // 0xE0
+	LONG lARz; // 0xE4
+	LONG rglASlider[2]; // 0xE8
+	LONG lFX; // 0xF0
+	LONG lFY; // 0xF4
+	LONG lFZ; // 0xF8
+	LONG lFRx; // 0xFC
+	LONG lFRy; // 0x100
+	LONG lFRz; // 0x104
+	LONG rglFSlider[2]; // 0x108
+};
+
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lX), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lY), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lZ), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lRx), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lRy), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lRz), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::rglSlider), LONG[2]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::rgdwPOV), DWORD[4]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::rgbButtons), BYTE[128]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lVX), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lVY), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lVZ), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lVRx), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lVRy), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lVRz), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::rglVSlider), LONG[2]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lAX), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lAY), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lAZ), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lARx), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lARy), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lARz), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::rglASlider), LONG[2]>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lFX), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lFY), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lFZ), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lFRx), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lFRy), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::lFRz), LONG>::value);
+static_assert(TypeMatch<decltype(DIJOYSTATE2::rglFSlider), LONG[2]>::value);
+
+static_assert(offsetof(DIJOYSTATE2, lX) == 0);
+static_assert(offsetof(DIJOYSTATE2, lY) == 4);
+static_assert(offsetof(DIJOYSTATE2, lZ) == 8);
+static_assert(offsetof(DIJOYSTATE2, lRx) == 0xC);
+static_assert(offsetof(DIJOYSTATE2, lRy) == 0x10);
+static_assert(offsetof(DIJOYSTATE2, lRz) == 0x14);
+static_assert(offsetof(DIJOYSTATE2, rglSlider) == 0x18);
+static_assert(offsetof(DIJOYSTATE2, rgdwPOV) == 0x20);
+static_assert(offsetof(DIJOYSTATE2, rgbButtons) == 0x30);
+static_assert(offsetof(DIJOYSTATE2, lVX) == 0xB0);
+static_assert(offsetof(DIJOYSTATE2, lVY) == 0xB4);
+static_assert(offsetof(DIJOYSTATE2, lVZ) == 0xB8);
+static_assert(offsetof(DIJOYSTATE2, lVRx) == 0xBC);
+static_assert(offsetof(DIJOYSTATE2, lVRy) == 0xC0);
+static_assert(offsetof(DIJOYSTATE2, lVRz) == 0xC4);
+static_assert(offsetof(DIJOYSTATE2, rglVSlider) == 0xC8);
+static_assert(offsetof(DIJOYSTATE2, lAX) == 0xD0);
+static_assert(offsetof(DIJOYSTATE2, lAY) == 0xD4);
+static_assert(offsetof(DIJOYSTATE2, lAZ) == 0xD8);
+static_assert(offsetof(DIJOYSTATE2, lARx) == 0xDC);
+static_assert(offsetof(DIJOYSTATE2, lARy) == 0xE0);
+static_assert(offsetof(DIJOYSTATE2, lARz) == 0xE4);
+static_assert(offsetof(DIJOYSTATE2, rglASlider) == 0xE8);
+static_assert(offsetof(DIJOYSTATE2, lFX) == 0xF0);
+static_assert(offsetof(DIJOYSTATE2, lFY) == 0xF4);
+static_assert(offsetof(DIJOYSTATE2, lFZ) == 0xF8);
+static_assert(offsetof(DIJOYSTATE2, lFRx) == 0xFC);
+static_assert(offsetof(DIJOYSTATE2, lFRy) == 0x100);
+static_assert(offsetof(DIJOYSTATE2, lFRz) == 0x104);
+static_assert(offsetof(DIJOYSTATE2, rglFSlider) == 0x108);
+
+static_assert(sizeof(DIJOYSTATE2) == 272);
+
+typedef DIJOYSTATE2 * LPDIJOYSTATE2;
+
+static_assert(TypeMatch<LPDIJOYSTATE2, DIJOYSTATE2 *>::value);
+
+static_assert(sizeof(LPDIJOYSTATE2) == 4);
 
 #pragma pack(pop)
 

@@ -16,6 +16,7 @@ using namespace Windows;
 
 import Config;
 import GlobalBase;
+import Global;
 
 #define debug false
 
@@ -95,7 +96,11 @@ export void GUI_UpdateStyle()
 
 export void CreditsWindow()
 {
-	if (!activeConfig.showCredits)
+	if
+	(
+		!g_showMain ||
+		!activeConfig.showCredits
+	)
 	{
 		return;
 	}

@@ -24,7 +24,7 @@ import HooksBase;
 import Config;
 import Global;
 import Graphics; // Toggle, UpdateFrameRate
-import GUI;      // keyBindings
+import GUI;      // keyBindings, ToggleShowMain
 import Vars;
 
 #define debug false
@@ -45,20 +45,88 @@ namespaceEnd();
 
 
 
-namespaceStart(Hook::DI8);
 
-void GetDeviceStateA_Function(byte8 * state)
+
+
+//namespaceStart(DI8);
+
+void UpdateKeyboard_Function(DI8::DIKEYBOARDSTATE * stateAddr)
 {
+
+	if (!stateAddr)
+	{
+		return;
+	}
+
+	auto & state = *stateAddr;
+
+
+
 	for_all(index, countof(keyBindings))
 	{
 		auto & keyBinding = keyBindings[index];
 
-		keyBinding.UpdateKeyData(state);
-		keyBinding.Check(state);
+		keyBinding.UpdateKeyData(state.keys);
+		keyBinding.Check(state.keys);
 	}
 }
 
-namespaceEnd();
+
+
+
+void UpdateGamepad_Function(DI8::DIJOYSTATE * stateAddr)
+{
+	if (!stateAddr)
+	{
+		return;
+	}
+	auto & state = *stateAddr;
+
+
+	auto button = activeConfig.gamepadButton;
+	if (button > countof(state.rgbButtons))
+	{
+		button = 0;
+	}
+
+	static bool execute = false;
+
+	if (state.rgbButtons[button])
+	{
+		if (execute)
+		{
+			execute = false;
+
+			ToggleShowMain();
+		}
+	}
+	else
+	{
+		execute = true;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//namespaceEnd();
+
+
+
 
 
 
@@ -93,7 +161,10 @@ export void Init()
 		::Hook::D3D11::D3D11CreateDeviceAndSwapChain
 	);
 
-	::Hook::DI8::GetDeviceStateA_func = ::Hook::DI8::GetDeviceStateA_Function;
+
+
+	UpdateKeyboard_func = UpdateKeyboard_Function;
+	UpdateGamepad_func = UpdateGamepad_Function;
 
 
 
@@ -144,7 +215,7 @@ export void Init()
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA<DEVICE_TYPE::KEYBOARD>, jumpAddr, false, true, (size2 + sizeof(sect0)), 0, sizeof(sect2));
+			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA, jumpAddr, false, true, (size2 + sizeof(sect0)), 0, sizeof(sect2));
 			CopyMemory(func.sect0, addr, size2, MemoryFlags_VirtualProtectSource);
 			CopyMemory((func.sect0 + size2), sect0, sizeof(sect0));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
@@ -201,7 +272,7 @@ export void Init()
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA<DEVICE_TYPE::KEYBOARD>, jumpAddr, false, true, (size + sizeof(sect0)), 0, sizeof(sect2));
+			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA, jumpAddr, false, true, (size + sizeof(sect0)), 0, sizeof(sect2));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory((func.sect0 + size), sect0, sizeof(sect0));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
@@ -219,7 +290,7 @@ export void Init()
 
 
 
-	CreateThread(0, 4096, ::DI8::CreateMouseThread, 0, 0, 0);
+
 
 
 

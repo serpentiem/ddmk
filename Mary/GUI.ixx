@@ -1,18 +1,29 @@
+
+
+// @Todo: Add missing move descriptions.
+// @Todo: Move GamepadClose calls to end of window.
+// @Clean
+
+
+
 module;
 #include "../ThirdParty/ImGui/imgui.h"
 #include "../ThirdParty/ImGui/imgui_internal.h"
 
 #include <stdio.h>
-#include <xmmintrin.h>
+#include <intrin.h>
 export module GUI;
 
 import Core;
 import Core_GUI;
+import Core_ImGui;
 
 #include "../Core/Macros.h"
 
 import Windows;
 import D3D11;
+import DI8;
+import XI;
 
 using namespace Windows;
 using namespace D3D11;
@@ -24,7 +35,8 @@ import Actor;
 import Arcade;
 import Camera;
 import Config;
-import Event;
+import Event; // CloseShop
+import Exp;
 import File;
 import FMOD;
 import Global;
@@ -32,7 +44,7 @@ import Graphics;
 import HUD;
 import Input;
 import Internal;
-import Item;
+// import Item;
 import Scene;
 import Sound;
 import Speed;
@@ -44,7 +56,421 @@ import Window;
 
 
 
+
+
+
+void ResetNavId()
+{
+	auto contextAddr = ImGui::GetCurrentContext();
+	if (!contextAddr)
+	{
+		return;
+	}
+	auto & context = *contextAddr;
+
+	context.NavId = 0;
+}
+
+
+
+
+
+
+
+
+// @Move: GUIBase
+typedef void(* GamepadClose_func_t)();
+
+void GamepadClose
+(
+	bool & visible,
+	bool & lastVisible,
+	GamepadClose_func_t func
+)
+{
+	auto & io = ImGui::GetIO();
+
+
+
+	if (!ImGui::IsWindowFocused())
+	{
+		visible = false;
+
+		return;
+	}
+
+
+
+	visible = io.NavVisible;
+
+	if (lastVisible != visible)
+	{
+		if (io.NavInputs[ImGuiNavInput_Cancel] > 0)
+		{
+			return;
+		}
+
+		lastVisible = visible;
+	}
+
+	if
+	(
+		visible ||
+		lastVisible
+	)
+	{
+		return;
+	}
+
+
+
+	static bool execute = false; // Should be fine here, since only 1 window can be active at all times.
+
+	if (io.NavInputs[ImGuiNavInput_Cancel] > 0)
+	{
+		if (execute)
+		{
+			execute = false;
+
+			func();
+		}
+	}
+	else
+	{
+		execute = true;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// @Todo: Add to Core.
+void GUI_TextDecimal
+(
+	char * buffer,
+	size_t bufferSize,
+	uint32 value
+)
+{
+	// 4294967295
+	// 4,294,967,295
+	constexpr size_t size = 16;
+
+	if
+	(
+		!buffer,
+		(bufferSize < size)
+	)
+	{
+		return;
+	}
+
+
+
+	char buffer2[size];
+
+	snprintf
+	(
+		buffer2,
+		sizeof(buffer2),
+		"%u",
+		value
+	);
+
+	buffer[0] = buffer2[0];
+	buffer[1] = 0;
+
+
+
+	size_t pos  = 1;
+	size_t pos2 = 1;
+
+	size_t end2 = strlen(buffer2);
+
+
+
+	while(pos2 < end2)
+	{
+		size_t remaining = (end2 - pos2);
+
+		size_t remainder = (remaining % 3);
+		if (!remainder)
+		{
+			buffer[pos] = ' ';
+			pos++;
+		}
+
+
+
+		buffer[pos] = buffer2[pos2];
+
+		pos++;
+		pos2++;
+	}
+
+	buffer[pos] = 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// @Move
+
+//#define SINGLE
+
+#ifdef SINGLE
+
+bool visible     = false;
+bool lastVisible = false;
+
+#else
+
+bool visibleMain     = false;
+bool lastVisibleMain = false;
+
+bool visibleShop     = false;
+bool lastVisibleShop = false;
+
+#endif
+
+
+
+void OpenMain()
+{
+	DebugLogFunction();
+
+	g_showMain = true;
+
+
+
+	// Required here since g_show could be false, but we still need the data.
+	// Otherwise the menu could auto-close.
+
+	using namespace XI;
+
+	XInputGetState
+	(
+		0,
+		&state
+	);
+
+	::ImGui::XI::UpdateGamepad(&state);
+}
+
+void CloseMain()
+{
+	DebugLogFunction();
+
+	g_showMain = false;
+}
+
+export void ToggleShowMain()
+{
+	DebugLogFunction();
+
+	if (!g_showMain)
+	{
+		OpenMain();
+	}
+	else
+	{
+		CloseMain();
+	}
+}
+
+
+
+
+
 #pragma region Common
+
+
+
+
+
+
+
+
+
+
+
+
+
+const char * saveNamesDante[] =
+{
+	"Dante 0000",
+	"Dante 0001",
+	"Dante 0002",
+	"Dante 0003",
+	"Dante 0004",
+	"Dante 0005",
+	"Dante 0006",
+	"Dante 0007",
+	"Dante 0008",
+	"Dante 0009",
+};
+
+
+const char * saveNamesVergil[] =
+{
+	"Vergil 0000",
+	"Vergil 0001",
+	"Vergil 0002",
+	"Vergil 0003",
+	"Vergil 0004",
+	"Vergil 0005",
+	"Vergil 0006",
+	"Vergil 0007",
+	"Vergil 0008",
+	"Vergil 0009",
+};
+
+
+
+
+
+
+
+
+const char * indexNames[] =
+{
+	"0000",
+	"0001",
+	"0002",
+	"0003",
+	"0004",
+	"0005",
+	"0006",
+	"0007",
+	"0008",
+	"0009",
+	"0010",
+	"0011",
+	"0012",
+	"0013",
+	"0014",
+	"0015",
+	"0016",
+	"0017",
+	"0018",
+	"0019",
+	"0020",
+	"0021",
+	"0022",
+	"0023",
+	"0024",
+	"0025",
+	"0026",
+	"0027",
+	"0028",
+	"0029",
+	"0030",
+	"0031",
+	"0032",
+	"0033",
+	"0034",
+	"0035",
+	"0036",
+	"0037",
+	"0038",
+	"0039",
+	"0040",
+	"0041",
+	"0042",
+	"0043",
+	"0044",
+	"0045",
+	"0046",
+	"0047",
+	"0048",
+	"0049",
+	"0050",
+	"0051",
+	"0052",
+	"0053",
+	"0054",
+	"0055",
+	"0056",
+	"0057",
+	"0058",
+	"0059",
+	"0060",
+	"0061",
+	"0062",
+	"0063",
+	"0064",
+	"0065",
+	"0066",
+	"0067",
+	"0068",
+	"0069",
+	"0070",
+	"0071",
+	"0072",
+	"0073",
+	"0074",
+	"0075",
+	"0076",
+	"0077",
+	"0078",
+	"0079",
+	"0080",
+	"0081",
+	"0082",
+	"0083",
+	"0084",
+	"0085",
+	"0086",
+	"0087",
+	"0088",
+	"0089",
+	"0090",
+	"0091",
+	"0092",
+	"0093",
+	"0094",
+	"0095",
+	"0096",
+	"0097",
+	"0098",
+	"0099",
+};
+
+
+
+
 
 const char * buttonIndexNames[] =
 {
@@ -2105,12 +2531,24 @@ void Actor_CharacterTab
 			"Ignore",
 			queuedCharacterData.ignoreCostume
 		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Ignores your setting and uses the global value."
+		);
 	}
 
 	GUI_Checkbox
 	(
 		"Force Files",
 		queuedCharacterData.forceFiles
+	);
+	ImGui::SameLine();
+	TooltipHelper
+	(
+		"(?)",
+		"Forces specific model and textures."
 	);
 
 	{
@@ -2601,18 +3039,17 @@ void ActorSection()
 
 			Actor_UpdateIndices();
 
+			ResetConfig(updateLockOns);
+			ResetConfig(forceSyncHitMagicPoints);
 			ResetConfig(resetPermissions);
 
 			ResetConfig(enableBossLadyFixes);
 			ResetConfig(enableBossVergilFixes);
-			ToggleBossLadyFixes  (activeConfig.enableBossLadyFixes  );
+			ResetConfig(enablePVPFixes);
+			ToggleBossLadyFixes(activeConfig.enableBossLadyFixes);
 			ToggleBossVergilFixes(activeConfig.enableBossVergilFixes);
 
-			ResetConfig(enablePVPFixes);
-
-			ResetConfig(forceSyncHitMagicPoints);
-
-			ResetConfig(updateLockOns);
+			ResetConfig(absoluteUnit);
 		}
 		ImGui::Text("");
 
@@ -2661,7 +3098,6 @@ void ActorSection()
 
 
 
-
 		GUI_Checkbox2
 		(
 			"Update Lock-Ons",
@@ -2669,19 +3105,13 @@ void ActorSection()
 			queuedConfig.updateLockOns
 		);
 
-
-
-
 		GUI_Checkbox2
 		(
 			"Force Sync Hit & Magic Points",
 			activeConfig.forceSyncHitMagicPoints,
 			queuedConfig.forceSyncHitMagicPoints
 		);
-
-
 		ImGui::Text("");
-
 
 
 
@@ -2734,7 +3164,28 @@ void ActorSection()
 			activeConfig.enablePVPFixes,
 			queuedConfig.enablePVPFixes
 		);
+		ImGui::Text("");
 
+
+
+		GUI_Checkbox2
+		(
+			"Absolute Unit",
+			activeConfig.absoluteUnit,
+			queuedConfig.absoluteUnit
+		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"I mastered the art of jump-cancelling before I was born.\n"
+			"I beat the game 5000+ times.\n"
+			"Star-raving on 3x turbo amuses me.\n"
+			"Other \"players\" complaining about wrist pain makes me cringe.\n"
+			"I'm a GROWN, ASS, MAN.\n"
+			"I can absolutely, positively, under no circumstances be bothered with leveling up again.",
+			500
+		);
 
 
 
@@ -3979,8 +4430,8 @@ void Damage()
 
 		if (GUI_ResetButton())
 		{
-			ResetConfig(damageActorMultiplier);
-			ResetConfig(damageEnemyMultiplier);
+			ResetConfig(damagePlayerActorMultiplier);
+			ResetConfig(damageEnemyActorMultiplier);
 			ResetConfig(damageStyleRank);
 		}
 		ImGui::Text("");
@@ -4005,15 +4456,15 @@ void Damage()
 				{
 					toggled = true;
 
-					activeConfig.damageActorMultiplier = queuedConfig.damageActorMultiplier = 1.0f;
-					activeConfig.damageEnemyMultiplier = queuedConfig.damageEnemyMultiplier = 100.0f;
+					activeConfig.damagePlayerActorMultiplier = queuedConfig.damagePlayerActorMultiplier = 1.0f;
+					activeConfig.damageEnemyActorMultiplier = queuedConfig.damageEnemyActorMultiplier = 100.0f;
 				}
 				else
 				{
 					toggled = false;
 
-					activeConfig.damageActorMultiplier = queuedConfig.damageActorMultiplier = 0;
-					activeConfig.damageEnemyMultiplier = queuedConfig.damageEnemyMultiplier = 0;
+					activeConfig.damagePlayerActorMultiplier = queuedConfig.damagePlayerActorMultiplier = 0;
+					activeConfig.damageEnemyActorMultiplier = queuedConfig.damageEnemyActorMultiplier = 0;
 				}
 			}
 		}
@@ -4024,10 +4475,10 @@ void Damage()
 
 		GUI_InputDefault2
 		(
-			"Actor Multiplier",
-			activeConfig.damageActorMultiplier,
-			queuedConfig.damageActorMultiplier,
-			defaultConfig.damageActorMultiplier,
+			"Player Actor Multiplier",
+			activeConfig.damagePlayerActorMultiplier,
+			queuedConfig.damagePlayerActorMultiplier,
+			defaultConfig.damagePlayerActorMultiplier,
 			0.1f,
 			"%g",
 			ImGuiInputTextFlags_EnterReturnsTrue
@@ -4035,10 +4486,10 @@ void Damage()
 
 		GUI_InputDefault2
 		(
-			"Enemy Multiplier",
-			activeConfig.damageEnemyMultiplier,
-			queuedConfig.damageEnemyMultiplier,
-			defaultConfig.damageEnemyMultiplier,
+			"Enemy Actor Multiplier",
+			activeConfig.damageEnemyActorMultiplier,
+			queuedConfig.damageEnemyActorMultiplier,
+			defaultConfig.damageEnemyActorMultiplier,
 			0.1f,
 			"%g",
 			ImGuiInputTextFlags_EnterReturnsTrue
@@ -4394,7 +4845,1283 @@ bool showRegionDataWindow  = false;
 bool showSoundWindow       = false;
 bool showMissionDataWindow = false;
 bool showActorWindow       = false;
+bool showExpWindow       = true;
 bool showEventDataWindow   = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+export namespaceStart(TAB);
+enum
+{
+	ITEMS,
+	DANTE,
+	VERGIL,
+	COUNT,
+};
+namespaceEnd();
+
+const char * tabNames[] =
+{
+	"Items",
+	"Dante",
+	"Vergil",
+};
+
+
+
+// @Research: Shop namespace
+
+
+// @Rename: ShopExperienceHelper
+
+struct ShopHelper
+{
+	const char * name;
+	uint32 price;
+	int64 last;
+	int64 next;
+};
+
+ShopHelper shopHelpersDante[] =
+{
+	{ "Rebellion Stinger Level 1"      , 2500 , -1                                         , UNLOCK_DANTE::REBELLION_STINGER_LEVEL_2     },
+	{ "Rebellion Stinger Level 2"      , 10000, UNLOCK_DANTE::REBELLION_STINGER_LEVEL_1    , -1                                          },
+	{ "Rebellion Drive"                , 10000, -1                                         , -1                                          },
+	{ "Rebellion Air Hike"             , 20000, -1                                         , -1                                          },
+	{ "Cerberus Revolver Level 2"      , 15000, -1                                         , -1                                          },
+	{ "Cerberus Windmill"              , 7500 , -1                                         , -1                                          },
+	{ "Agni & Rudra Jet-Stream Level 2", 10000, -1                                         , UNLOCK_DANTE::AGNI_RUDRA_JET_STREAM_LEVEL_3 },
+	{ "Agni & Rudra Jet-Stream Level 3", 15000, UNLOCK_DANTE::AGNI_RUDRA_JET_STREAM_LEVEL_2, -1                                          },
+	{ "Agni & Rudra Whirlwind"         , 7500 , -1                                         , -1                                          },
+	{ "Agni & Rudra Air Hike"          , 20000, -1                                         , -1                                          },
+	{ "Nevan Reverb Shock Level 1"     , 7500 , -1                                         , UNLOCK_DANTE::NEVAN_REVERB_SHOCK_LEVEL_2    },
+	{ "Nevan Reverb Shock Level 2"     , 15000, UNLOCK_DANTE::NEVAN_REVERB_SHOCK_LEVEL_1   , -1                                          },
+	{ "Nevan Bat Rift Level 2"         , 10000, -1                                         , -1                                          },
+	{ "Nevan Air Raid"                 , 20000, -1                                         , -1                                          },
+	{ "Nevan Volume Up"                , 20000, -1                                         , -1                                          },
+	{ "Beowulf Straight Level 2"       , 10000, -1                                         , -1                                          },
+	{ "Beowulf Beast Uppercut"         , 7500 , -1                                         , UNLOCK_DANTE::BEOWULF_RISING_DRAGON         },
+	{ "Beowulf Rising Dragon"          , 15000, UNLOCK_DANTE::BEOWULF_BEAST_UPPERCUT       , -1                                          },
+	{ "Beowulf Air Hike"               , 20000, -1                                         , -1                                          },
+	{ "Ebony & Ivory Level 2"          , 5000 , -1                                         , UNLOCK_DANTE::EBONY_IVORY_LEVEL_3           },
+	{ "Ebony & Ivory Level 3"          , 10000, UNLOCK_DANTE::EBONY_IVORY_LEVEL_2          , -1                                          },
+	{ "Shotgun Level 2"                , 10000, -1                                         , UNLOCK_DANTE::SHOTGUN_LEVEL_3               },
+	{ "Shotgun Level 3"                , 20000, UNLOCK_DANTE::SHOTGUN_LEVEL_2              , -1                                          },
+	{ "Artemis Level 2"                , 10000, -1                                         , UNLOCK_DANTE::ARTEMIS_LEVEL_3               },
+	{ "Artemis Level 3"                , 20000, UNLOCK_DANTE::ARTEMIS_LEVEL_2              , -1                                          },
+	{ "Spiral Level 2"                 , 7500 , -1                                         , UNLOCK_DANTE::SPIRAL_LEVEL_3                },
+	{ "Spiral Level 3"                 , 15000, UNLOCK_DANTE::SPIRAL_LEVEL_2               , -1                                          },
+	{ "Kalina Ann Level 2"             , 5000 , -1                                         , UNLOCK_DANTE::KALINA_ANN_LEVEL_3            },
+	{ "Kalina Ann Level 3"             , 10000, UNLOCK_DANTE::KALINA_ANN_LEVEL_2           , -1                                          },
+};
+
+ShopHelper shopHelpersVergil[] =
+{
+	{ "Yamato Rapid Slash Level 1"              , 5000 , -1                                              , UNLOCK_VERGIL::YAMATO_RAPID_SLASH_LEVEL_2        },
+	{ "Yamato Rapid Slash Level 2"              , 15000, UNLOCK_VERGIL::YAMATO_RAPID_SLASH_LEVEL_1       , -1                                               },
+	{ "Yamato Judgement Cut Level 1"            , 10000, -1                                              , UNLOCK_VERGIL::YAMATO_JUDGEMENT_CUT_LEVEL_2      },
+	{ "Yamato Judgement Cut Level 2"            , 20000, UNLOCK_VERGIL::YAMATO_JUDGEMENT_CUT_LEVEL_1     , -1                                               },
+	{ "Beowulf Starfall Level 2"                , 7500 , -1                                              , -1                                               },
+	{ "Beowulf Rising Sun"                      , 5000 , -1                                              , -1                                               },
+	{ "Beowulf Lunar Phase Level 2"             , 15000, -1                                              , -1                                               },
+	{ "Yamato & Force Edge Helm Breaker Level 2", 13000, -1                                              , -1                                               },
+	{ "Yamato & Force Edge Stinger Level 1"     , 5000 , -1                                              , UNLOCK_VERGIL::YAMATO_FORCE_EDGE_STINGER_LEVEL_2 },
+	{ "Yamato & Force Edge Stinger Level 2"     , 10000, UNLOCK_VERGIL::YAMATO_FORCE_EDGE_STINGER_LEVEL_1, -1                                               },
+	{ "Yamato & Force Edge Round Trip"          , 10000, -1                                              , -1                                               },
+	{ "Summoned Swords Level 2"                 , 7500 , -1                                              , UNLOCK_VERGIL::SUMMONED_SWORDS_LEVEL_3           },
+	{ "Summoned Swords Level 3"                 , 15000, UNLOCK_VERGIL::SUMMONED_SWORDS_LEVEL_2          , -1                                               },
+	{ "Spiral Swords"                           , 20000, -1                                              , -1                                               },
+};
+
+
+
+
+
+// @Rename: ShopItemHelper.
+struct ItemHelper
+{
+	const uint8    itemIndex;
+	const uint8    buyIndex;
+	const uint8    itemCount;
+	const uint32 * prices;
+	const uint8    priceCount;
+};
+
+// @Research: Moving to Vars causes internal compiler error in MSVC.
+constexpr ItemHelper itemHelpers[] =
+{
+	{ ITEM::VITAL_STAR_SMALL, BUY::VITAL_STAR_SMALL, 30, itemVitalStarSmallPrices, static_cast<uint8>(countof(itemVitalStarSmallPrices)) },
+	{ ITEM::VITAL_STAR_LARGE, BUY::VITAL_STAR_LARGE, 30, itemVitalStarLargePrices, static_cast<uint8>(countof(itemVitalStarLargePrices)) },
+	{ ITEM::DEVIL_STAR      , BUY::DEVIL_STAR      , 10, itemDevilStarPrices     , static_cast<uint8>(countof(itemDevilStarPrices     )) },
+	{ ITEM::HOLY_WATER      , BUY::HOLY_WATER      , 30, itemHolyWaterPrices     , static_cast<uint8>(countof(itemHolyWaterPrices     )) },
+	{ ITEM::BLUE_ORB        , BUY::BLUE_ORB        , 6 , itemBlueOrbPrices       , static_cast<uint8>(countof(itemBlueOrbPrices       )) },
+	{ ITEM::PURPLE_ORB      , BUY::PURPLE_ORB      , 7 , itemPurpleOrbPrices     , static_cast<uint8>(countof(itemPurpleOrbPrices     )) },
+	{ ITEM::GOLD_ORB        , BUY::GOLD_ORB        , 3 , itemGoldOrbPrices       , static_cast<uint8>(countof(itemGoldOrbPrices       )) },
+	{ ITEM::YELLOW_ORB      , BUY::YELLOW_ORB      , 99, itemYellowOrbPrices     , static_cast<uint8>(countof(itemYellowOrbPrices     )) },
+};
+
+
+//ITEM_HELPER_INDICES_
+
+
+namespaceStart(ITEM_HELPER);
+enum
+{
+	BLUE_ORB = 4,
+	PURPLE_ORB,
+};
+namespaceEnd();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void ShopWindow()
+{
+
+
+	if (!g_showShop)
+	{
+		return;
+	}
+
+
+
+
+
+	IntroduceMissionData(return);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+
+
+
+
+
+
+		constexpr float width  = 700; // 900
+		constexpr float height = 700; // 500
+
+
+
+		ImGui::SetNextWindowSize
+		(
+			ImVec2
+			(
+				width,
+				height
+			)
+		);
+		ImGui::SetNextWindowPos
+		(
+			ImVec2
+			(
+				((g_renderSize.x - width ) / 2),
+				((g_renderSize.y - height) / 2)
+			)
+		);
+
+
+
+
+
+	}
+
+
+
+
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+
+
+
+
+
+	if
+	(
+		ImGui::Begin
+		(
+			"ShopWindow",
+			0,
+			ImGuiWindowFlags_NoTitleBar |
+			ImGuiWindowFlags_NoResize
+		)
+	)
+	{
+
+
+		if (GUI_Button("Close"))
+		{
+			CloseShop();
+		}
+		ImGui::Text("");
+
+
+
+
+
+
+
+		ImGui::Text("%u Red Orbs", missionData.redOrbs);
+		ImGui::Text("");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		if (ImGui::BeginTabBar("ShopTabs"))
+		{
+			
+
+
+
+			for_all(tabIndex, TAB::COUNT)
+			{
+				if (ImGui::BeginTabItem(tabNames[tabIndex]))
+				{
+					
+
+ImGui::Text("");
+
+
+
+
+auto Function = [&]
+(
+
+
+
+	ExpData & expData,
+
+	ShopHelper * helpers,
+	size_t helperCount
+)
+{
+	for_all(helperIndex, helperCount)
+	{
+		auto & helper = helpers[helperIndex];
+
+
+
+		auto Buy = [&]()
+		{
+			if (missionData.redOrbs < helper.price)
+			{
+				PlaySound
+				(
+					0,
+					19
+				);
+
+				return;
+			}
+
+			missionData.redOrbs -= helper.price;
+
+			PlaySound
+			(
+				0,
+				18
+			);
+
+			expData.unlocks[helperIndex] = true;
+
+			UpdatePlayerActorExps();
+		};
+
+		auto Sell = [&]()
+		{
+			missionData.redOrbs += helper.price;
+
+			PlaySound
+			(
+				0,
+				18
+			);
+
+			expData.unlocks[helperIndex] = false;
+
+			UpdatePlayerActorExps();
+		};
+
+
+
+		{
+			// Already unlocked or previous action required and not unlocked yet.
+			bool condition =
+			(
+				expData.unlocks[helperIndex] ||
+				(
+					(helper.last > -1) &&
+					!expData.unlocks[helper.last]
+				)
+			);
+
+			GUI_PushDisable(condition);
+
+			ImGui::Text(helper.name);
+			ImGui::SameLine(300);
+
+			ImGui::Text("%u", helper.price);
+
+			GUI_PopDisable(condition);
+		}
+
+
+
+		ImGui::SameLine(400);
+
+
+		if (!expData.unlocks[helperIndex])
+		{
+			// Previous action required and not unlocked yet.
+			bool condition =
+			(
+				(helper.last > -1) &&
+				!expData.unlocks[helper.last]
+			);
+
+			GUI_PushDisable(condition);
+
+			if (GUI_Button("Buy"))
+			{
+				Buy();
+			}
+
+			GUI_PopDisable(condition);
+		}
+		else
+		{
+			// Next action available and still unlocked.
+			bool condition =
+			(
+				(helper.next > -1) &&
+				expData.unlocks[helper.next]
+			);
+
+			GUI_PushDisable(condition);
+
+			if (GUI_Button("Sell"))
+			{
+				Sell();
+			}
+
+			GUI_PopDisable(condition);
+		}
+	}
+};
+
+
+
+
+
+
+
+
+	// auto saveIndex = g_saveIndex;
+	// if (saveIndex >= SAVE_COUNT)
+	// {
+	// 	saveIndex = 0;
+	// }
+
+
+
+
+
+
+
+if (tabIndex == TAB::ITEMS)
+{
+
+
+
+
+	auto GetItemCount = [&](const ItemHelper & itemHelper) -> uint8 &
+	{
+		return missionData.itemCounts[itemHelper.itemIndex];
+	};
+
+	auto GetBuyCount = [&](const ItemHelper & itemHelper) -> uint8 &
+	{
+		return missionData.buyCounts[itemHelper.buyIndex];
+	};
+
+	auto GetPrice = [&](const ItemHelper & itemHelper)
+	{
+		uint32 price = 0;
+
+		auto & buyCount = GetBuyCount(itemHelper);
+
+		if (buyCount >= itemHelper.priceCount)
+		{
+			price = itemHelper.prices[(itemHelper.priceCount - 1)];
+		}
+		else
+		{
+			price = itemHelper.prices[buyCount];
+		}
+
+		return price;
+	};
+
+	auto BuyItem = [&](uint8 itemHelperIndex)
+	{
+		auto & itemHelper = itemHelpers[itemHelperIndex];
+
+		auto & itemCount = GetItemCount(itemHelper);
+		auto & buyCount = GetBuyCount(itemHelper);
+		auto price = GetPrice(itemHelper);
+
+		if
+		(
+			(itemCount >= itemHelper.itemCount) ||
+			(missionData.redOrbs < price)
+		)
+		{
+			PlaySound
+			(
+				0,
+				19
+			);
+
+			return;
+		}
+
+		itemCount++;
+		buyCount++;
+
+		if (buyCount > 254)
+		{
+			buyCount = 254;
+		}
+
+		missionData.redOrbs -= price;
+
+		PlaySound
+		(
+			0,
+			18
+		);
+
+
+
+		IntroduceMainActorData(mainActorData, return);
+		IntroduceData(g_playerActorBaseAddrs[0], defaultMainActorData, PlayerActorData, return);
+
+		if (itemHelper.itemIndex == ITEM::BLUE_ORB)
+		{
+			auto value = (mainActorData.maxHitPoints + 1000.0f);
+
+			mainActorData.hitPoints = value;
+			mainActorData.maxHitPoints = value;
+
+			defaultMainActorData.hitPoints = value;
+			defaultMainActorData.maxHitPoints = value;
+		}
+		else if (itemHelper.itemIndex == ITEM::PURPLE_ORB)
+		{
+			auto value = (mainActorData.maxMagicPoints + 1000.0f);
+
+			mainActorData.magicPoints = value;
+			mainActorData.maxMagicPoints = value;
+
+			defaultMainActorData.magicPoints = value;
+			defaultMainActorData.maxMagicPoints = value;
+		}
+	};
+
+
+
+
+	auto SellItem = [&](uint8 itemHelperIndex)
+	{
+		auto & itemHelper = itemHelpers[itemHelperIndex];
+
+		auto & itemCount = GetItemCount(itemHelper);
+		auto & buyCount = GetBuyCount(itemHelper);
+		uint32 price = 0;
+
+
+
+
+
+		itemCount--;
+
+
+		if (buyCount > 0)
+		{
+			buyCount--;
+		}
+
+
+		price = GetPrice(itemHelper);
+
+
+		missionData.redOrbs += price;
+
+		PlaySound
+		(
+			0,
+			18
+		);
+
+
+
+
+
+
+
+
+	};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Content
+
+
+
+
+
+		old_for_all(uint8, itemHelperIndex, countof(itemHelpers))
+		{
+			auto & itemHelper = itemHelpers[itemHelperIndex];
+
+			auto & itemCount = GetItemCount(itemHelper);
+			auto & buyCount = GetBuyCount(itemHelper);
+			auto price = GetPrice(itemHelper);
+
+
+
+			ImGui::Text("%s", itemNames[itemHelper.itemIndex]);
+			ImGui::SameLine(200);
+
+
+			ImGui::Text("%.2u / %.2u", itemCount, itemHelper.itemCount);
+			ImGui::SameLine(300);
+
+
+
+
+			ImGui::Text("%u", price);
+			ImGui::SameLine(400);
+
+
+
+
+
+
+			#define conditionExpr itemCount >= itemHelper.itemCount
+
+			bool condition = (conditionExpr);
+
+			GUI_PushDisable(condition);
+
+			if (GUI_Button("Buy"))
+			{
+				BuyItem(itemHelperIndex);
+
+				if (conditionExpr)
+				{
+					ResetNavId();
+				}
+			}
+
+			GUI_PopDisable(condition);
+
+			#undef conditionExpr
+
+
+
+
+
+
+
+
+		[&]()
+		{
+
+
+			if
+			(
+				(itemHelperIndex == ITEM_HELPER::BLUE_ORB  ) ||
+				(itemHelperIndex == ITEM_HELPER::PURPLE_ORB)
+			)
+			{
+				return;
+			}
+
+
+
+ImGui::SameLine();
+
+
+
+			#define conditionExpr itemCount < 1
+
+			bool condition = (conditionExpr);
+
+			GUI_PushDisable(condition);
+
+			if (GUI_Button("Sell"))
+			{
+				SellItem(itemHelperIndex);
+
+				if (conditionExpr)
+				{
+					ResetNavId();
+				}
+			}
+
+			GUI_PopDisable(condition);
+
+			#undef conditionExpr
+
+
+
+
+
+		}();
+
+
+
+
+
+			if constexpr (debug)
+			{
+				ImGui::SameLine(500);
+				ImGui::Text("buyCount %u", buyCount);
+			}
+
+
+
+
+
+
+
+
+		}
+		ImGui::Text("");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+else if (tabIndex == TAB::DANTE)
+{
+
+
+
+
+	Function
+	(
+		expDataDante,
+		shopHelpersDante,
+		countof(shopHelpersDante)
+	);
+
+
+
+}
+else if (tabIndex == TAB::VERGIL)
+{
+
+	Function
+	(
+		expDataVergil,
+		shopHelpersVergil,
+		countof(shopHelpersVergil)
+	);
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					ImGui::EndTabItem();
+				}
+				
+			}
+
+			ImGui::EndTabBar();
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+		GamepadClose
+		(
+			visibleShop,
+			lastVisibleShop,
+			CloseShop
+		);
+
+
+
+
+
+
+
+
+		ImGui::Text("");
+	}
+
+	ImGui::End();
+
+
+	ImGui::PopStyleVar(1);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void ExpWindow()
+{
+	if (!showExpWindow)
+	{
+		return;
+	}
+
+
+
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+
+
+		constexpr float width  = 700;
+		constexpr float height = 700;
+
+
+
+		ImGui::SetNextWindowSize
+		(
+			ImVec2
+			(
+				width,
+				height
+			)
+		);
+		ImGui::SetNextWindowPos
+		(
+			ImVec2
+			(
+				((g_renderSize.x - width ) / 2),
+				((g_renderSize.y - height) / 2)
+			)
+		);
+	}
+
+
+
+	if
+	(
+		ImGui::Begin
+		(
+			"Exp Stuff",
+			&showExpWindow
+		)
+	)
+	{
+		ImGui::Text("");
+
+
+
+		if (GUI_Button("Save"))
+		{
+			SaveExp();
+		}
+		ImGui::SameLine();
+
+		if (GUI_Button("Load"))
+		{
+			LoadExp();
+		}
+		ImGui::Text("");
+
+
+
+		ImGui::PushItemWidth(150);
+
+		GUI_Input<size_t>
+		(
+			"g_saveIndex",
+			g_saveIndex,
+			1,
+			"%llu",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+		ImGui::Text("");
+
+		ImGui::PopItemWidth();
+
+
+
+
+
+		if (GUI_Button("SavePlayerActorExp"))
+		{
+			SavePlayerActorExp();
+		}
+		ImGui::SameLine();
+
+		if (GUI_Button("UpdatePlayerActorExps"))
+		{
+			UpdatePlayerActorExps();
+		}
+		ImGui::Text("");
+
+
+
+
+		auto FunctionOnce = [&]
+		(
+			ExpData & expData,
+			const char * name,
+			ShopHelper * shopHelpers,
+			size_t count
+		)
+		{
+			if (!ImGui::CollapsingHeader(name))
+			{
+				return;
+			}
+			ImGui::Text("");
+
+			ImGui::PushItemWidth(200);
+
+
+
+			ImGui::Text("styleLevels");
+			for_all(styleIndex, STYLE::MAX)
+			{
+				GUI_Input<uint32>
+				(
+					indexNames[styleIndex],
+					expData.styleLevels[styleIndex],
+					1,
+					"%u",
+					ImGuiInputTextFlags_EnterReturnsTrue
+				);
+			}
+			ImGui::Text("");
+
+
+
+			ImGui::Text("styleExpPoints");
+			for_all(styleIndex, STYLE::MAX)
+			{
+				GUI_Input<float>
+				(
+					indexNames[styleIndex],
+					expData.styleExpPoints[styleIndex],
+					1,
+					"%g",
+					ImGuiInputTextFlags_EnterReturnsTrue
+				);
+			}
+			ImGui::Text("");
+
+
+
+			ImGui::Text("unlocks");
+			for_all(index, count)
+			{
+				GUI_Checkbox
+				(
+					shopHelpers[index].name,
+					expData.unlocks[index]
+				);
+			}
+			ImGui::Text("");
+
+
+
+			ImGui::PopItemWidth();
+		};
+
+
+
+
+
+		auto FunctionLoop = [&]
+		(
+			ExpData * expDataAddr,
+			const char ** saveNames,
+			ShopHelper * shopHelpers,
+			size_t count
+		)
+		{
+			for_all(saveIndex, SAVE_COUNT)
+			{
+				auto & expData = expDataAddr[saveIndex];
+
+				FunctionOnce
+				(
+					expData,
+					saveNames[saveIndex],
+					shopHelpers,
+					count
+				);
+			}
+		};
+
+
+
+		FunctionOnce
+		(
+			expDataDante,
+			"Dante Active",
+			shopHelpersDante,
+			countof(shopHelpersDante)
+		);
+		//ImGui::Text("");
+
+
+
+		FunctionLoop
+		(
+			savedExpDataDante,
+			saveNamesDante,
+			shopHelpersDante,
+			countof(shopHelpersDante)
+		);
+		ImGui::Text("");
+
+
+
+
+		FunctionOnce
+		(
+			expDataVergil,
+			"Vergil Active",
+			shopHelpersVergil,
+			countof(shopHelpersVergil)
+		);
+		//ImGui::Text("");
+
+
+		FunctionLoop
+		(
+			savedExpDataVergil,
+			saveNamesVergil,
+			shopHelpersVergil,
+			countof(shopHelpersVergil)
+		);
+		ImGui::Text("");
+
+
+
+		auto Content = [&](PlayerActorData & actorData)
+		{
+			ImGui::PushItemWidth(200);
+
+			GUI_Input<uint32>
+			(
+				"character",
+				actorData.character,
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+
+
+			GUI_Input<uint32>
+			(
+				"style",
+				actorData.style,
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+
+
+
+			GUI_Input<uint32>
+			(
+				"styleLevel",
+				actorData.styleLevel,
+				1,
+				"%u",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+
+			GUI_Input<float>
+			(
+				"styleExpPoints",
+				actorData.styleExpPoints,
+				1,
+				"%g",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+
+
+			ImGui::Text("activeExpertise");
+			for_all(index, countof(actorData.activeExpertise))
+			{
+				GUI_Input<byte32>
+				(
+					indexNames[index],
+					actorData.activeExpertise[index],
+					1,
+					"%X",
+					ImGuiInputTextFlags_EnterReturnsTrue |
+					ImGuiInputTextFlags_CharsHexadecimal
+				);
+			}
+
+
+
+
+
+
+			ImGui::Text("newWeaponLevels");
+			for_all(index, countof(actorData.newWeaponLevels))
+			{
+				GUI_Input<uint32>
+				(
+					indexNames[index],
+					actorData.newWeaponLevels[index],
+					1,
+					"%u",
+					ImGuiInputTextFlags_EnterReturnsTrue |
+					ImGuiInputTextFlags_CharsHexadecimal
+				);
+			}
+
+
+
+
+
+			ImGui::PopItemWidth();
+		};
+
+
+
+		[&]()
+		{
+			if (!ImGui::CollapsingHeader("Default"))
+			{
+				return;
+			}
+			ImGui::Text("");
+
+			//IntroduceMainActorData(actorData, return);
+
+			IntroduceData(g_defaultNewActorData[0].baseAddr, actorData, PlayerActorData, return);
+
+
+
+			Content(actorData);
+			ImGui::Text("");
+		}();
+
+
+
+		old_for_all(uint8, playerIndex, PLAYER_COUNT)
+		{
+			if (!ImGui::CollapsingHeader(playerIndexNames[playerIndex]))
+			{
+				continue;
+			}
+
+			ImGui::Indent(20);
+
+
+
+			old_for_all(uint8, characterIndex, CHARACTER_COUNT)
+			{
+				if (!ImGui::CollapsingHeader(characterIndexNames[characterIndex]))
+				{
+					continue;
+				}
+				ImGui::Text("");
+
+
+
+				old_for_all(uint8, entityIndex, ENTITY_COUNT)
+				{
+					IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
+
+					IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
+
+					ImGui::Text(entityNames[entityIndex]);
+					Content(actorData);
+					ImGui::Text("");
+				}
+			}
+
+
+
+			ImGui::Unindent(20);
+		}
+
+
+
+		ImGui::Text("");
+	}
+
+	ImGui::End();
+}
+
+
+
+
+
 
 
 
@@ -4556,6 +6283,20 @@ void MissionDataWindow()
 
 	ImGui::End();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5840,12 +7581,120 @@ void Debug()
 
 
 
+
+		GUI_Checkbox
+		(
+			"g_showShop",
+			g_showShop
+		);
+
+		GUI_Input<float>
+		(
+			"saveTimeout",
+			GUI::saveTimeout,
+			1.0f,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+
+
+
+		{
+			static int32 group = 0;
+			static int32 index = 0;
+
+			ImGui::PushItemWidth(150);
+			GUI_Input<int32>
+			(
+				"group",
+				group,
+				1,
+				"%d",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+			GUI_Input<int32>
+			(
+				"index",
+				index,
+				1,
+				"%d",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+			ImGui::PopItemWidth();
+			ImGui::Text("");
+
+			if (GUI_Button("Play Sound"))
+			{
+				PlaySound(group, index);
+			}
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		GUI_SectionEnd();
+		ImGui::Text("");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		GUI_Checkbox
 		(
 			"Welcome",
 			queuedConfig.welcome
 		);
 		ImGui::Text("");
+
+
+
+
 
 
 
@@ -5858,6 +7707,12 @@ void Debug()
 		if (GUI_Button("EventData"))
 		{
 			showEventDataWindow = true;
+		}
+		ImGui::SameLine();
+
+		if (GUI_Button("Exp Stuff"))
+		{
+			showExpWindow = true;
 		}
 		ImGui::SameLine();
 
@@ -5889,6 +7744,7 @@ void Debug()
 		{
 			showActorWindow       = false;
 			showEventDataWindow   = false;
+			showExpWindow         = false;
 			showFileDataWindow    = false;
 			showMissionDataWindow = false;
 			showRegionDataWindow  = false;
@@ -5921,6 +7777,21 @@ void Debug()
 			ToggleForceVisibleHUD(activeConfig.forceVisibleHUD);
 		}
 		ImGui::Text("");
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Disable Player Actor Idle Timer",
+				activeConfig.disablePlayerActorIdleTimer,
+				queuedConfig.disablePlayerActorIdleTimer
+			)
+		)
+		{
+			ToggleDisablePlayerActorIdleTimer(activeConfig.disablePlayerActorIdleTimer);
+		}
+		ImGui::Text("");
+
 
 
 
@@ -6524,7 +8395,7 @@ void Enemy()
 			auto & activeConfigCreateEnemyActorData = activeConfig.configCreateEnemyActorData[index];
 			auto & queuedConfigCreateEnemyActorData = queuedConfig.configCreateEnemyActorData[index];
 
-			ImGui::Text("%.4u", index);
+			ImGui::Text("%u", index);
 
 
 
@@ -6533,7 +8404,8 @@ void Enemy()
 				"Enemy",
 				enemyNames,
 				activeConfigCreateEnemyActorData.enemy,
-				queuedConfigCreateEnemyActorData.enemy
+				queuedConfigCreateEnemyActorData.enemy,
+				ImGuiComboFlags_HeightLarge
 			);
 
 			GUI_Input2<uint32>
@@ -6687,7 +8559,7 @@ void Jukebox()
 
 		ImGui::PopItemWidth();
 
-		if (GUI_Button("Play Track"))
+		if (GUI_Button("Play"))
 		{
 			snprintf
 			(
@@ -6698,6 +8570,11 @@ void Jukebox()
 			);
 
 			PlayTrack(location);
+		}
+
+		if (GUI_Button("Stop"))
+		{
+			PlayTrack("");
 		}
 
 		ImGui::Text("");
@@ -6830,7 +8707,8 @@ void Mobility()
 			"(?)",
 			"Requires enabled Actor module.\n"
 			"\n"
-			"Left: Human Right: Devil"
+			"Left : Human\n"
+			"Right: Devil"
 		);
 		ImGui::Text("");
 
@@ -7026,6 +8904,8 @@ void Other()
 
 #pragma region Overlays
 
+// @Move
+
 template <typename T>
 void OverlayFunction
 (
@@ -7070,7 +8950,9 @@ void OverlayFunction
 		(
 			label,
 			&activeData.enable,
-			ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize
+			ImGuiWindowFlags_NoTitleBar         |
+			ImGuiWindowFlags_AlwaysAutoResize   |
+			ImGuiWindowFlags_NoFocusOnAppearing
 		)
 	)
 	{
@@ -7371,18 +9253,7 @@ void MainOverlayWindow()
 
 
 
-		// if
-		// (
-		// 	activeConfig.mainOverlayData.showFocus ||
-		// 	activeConfig.mainOverlayData.showFPS ||
-		// 	activeConfig.mainOverlayData.showSizes ||
-		// 	activeConfig.mainOverlayData.showScene ||
-		// 	activeConfig.mainOverlayData.showEventData ||
-		// 	activeConfig.mainOverlayData.showPosition
-		// )
-		// {
-		// 	ImGui::Text("");
-		// }
+
 
 		if (activeConfig.mainOverlayData.showRegionData)
 		{
@@ -7416,6 +9287,79 @@ void MainOverlayWindow()
 				ImGui::Text("");
 			}
 		}
+
+
+
+		if constexpr (!debug)
+		{
+			return;
+		}
+
+		ImGui::Text("g_saveIndex     %llu", g_saveIndex    );
+		ImGui::Text("g_lastSaveIndex %llu", g_lastSaveIndex);
+		ImGui::Text("");
+
+		ImGui::Text("g_show     %u", g_show    );
+		ImGui::Text("g_lastShow %u", g_lastShow);
+		ImGui::Text("g_showMain %u", g_showMain);
+		ImGui::Text("g_showShop %u", g_showShop);
+
+
+
+		{
+			auto & io = ImGui::GetIO();
+
+			ImGui::Text("io.NavActive  %u", io.NavActive );
+			ImGui::Text("io.NavVisible %u", io.NavVisible);
+
+
+			[&]()
+			{
+				auto contextAddr = ImGui::GetCurrentContext();
+				if (!contextAddr)
+				{
+					return;
+				}
+				auto & context = *contextAddr;
+
+				ImGui::Text("context.NavId %X", context.NavId);
+			}();
+
+
+
+
+
+		}
+
+
+		#ifdef SINGLE
+
+		ImGui::Text("visible     %u", visible    );
+		ImGui::Text("lastVisible %u", lastVisible);
+		#else
+
+
+		ImGui::Text("visibleMain     %u", visibleMain    );
+		ImGui::Text("lastVisibleMain %u", lastVisibleMain);
+
+		ImGui::Text("visibleShop     %u", visibleShop    );
+		ImGui::Text("lastVisibleShop %u", lastVisibleShop);
+
+		#endif
+
+
+		[&]()
+		{
+			IntroduceMainActorData(actorData, return);
+
+			ImGui::Text("action %u", actorData.action);
+		}();
+
+		ImGui::Text("g_shopTimer   %g", g_shopTimer  );
+		ImGui::Text("g_shopTimeout %g", g_shopTimeout);
+
+
+
 	};
 
 
@@ -7491,190 +9435,6 @@ void MainOverlaySettings()
 
 
 
-// const char * overlay2Label = "Overlay2";
-
-// bool showMemoryData = true;
-// bool showBackupHelper = true;
-// bool showActorData = true;
-// bool showEnemyData = true;
-
-// struct Overlay2Data : Config::OverlayData
-// {
-// 	Overlay2Data()
-// 	{
-// 		enable = false;
-
-// 		pos.x = 250;
-// 	}
-// };
-
-// Overlay2Data activeOverlay2Data;
-// Overlay2Data queuedOverlay2Data;
-// Overlay2Data defaultOverlay2Data;
-
-// void Overlay2Window()
-// {
-// 	auto Function = [&]()
-// 	{
-// 		if (showMemoryData)
-// 		{
-// 			ImGui::Text("Memory Data");
-// 			ImGui::Text("pos   %u", memoryData.pos);
-// 			ImGui::Text("end   %u", memoryData.dataSize);
-// 			ImGui::Text("count %u", memoryData.count);
-// 			ImGui::Text("");
-// 		}
-
-// 		if (showBackupHelper)
-// 		{
-// 			ImGui::Text("Backup Helper");
-// 			ImGui::Text("pos   %u", backupHelper.pos);
-// 			ImGui::Text("end   %u", backupHelper.dataSize);
-// 			ImGui::Text("count %u", backupHelper.count);
-// 			ImGui::Text("");
-// 		}
-
-// 		if (showActorData)
-// 		{
-// 			ImGui::Text("Actor");
-// 			ImGui::Text("");
-
-// 			ImGui::Text("Player");
-
-// 			old_for_all(uint64, index, g_playerActorBaseAddrs.count)
-// 			{
-// 				ImGui::Text("%.4u %.16llX", index, g_playerActorBaseAddrs[index]);
-// 			}
-
-// 			ImGui::Text("");
-// 		}
-
-// 		old_for_all(uint8, index, CHANNEL::MAX)
-// 		{
-// 			ImGui::Text("g_helperIndices[%u] %u", index, g_helperIndices[index]);
-// 		}
-// 		ImGui::Text("");
-
-// 		ImGui::Text("g_haywireNeoGenerator %u", g_haywireNeoGenerator);
-// 		ImGui::Text("");
-
-
-// 		old_for_all(uint8, playerIndex, PLAYER_COUNT)
-// 		{
-// 			ImGui::Text("%.4u %g", playerIndex, g_hitPoints[playerIndex]);
-// 		}
-// 		ImGui::Text("");
-
-// 		old_for_all(uint8, playerIndex, PLAYER_COUNT)
-// 		{
-// 			ImGui::Text("%.4u %g", playerIndex, g_magicPoints[playerIndex]);
-// 		}
-// 		ImGui::Text("");
-
-
-
-
-// 		{
-// 			auto & gamepad = GetGamepad(0);
-
-// 			ImGui::Text("Gamepad");
-// 			ImGui::Text("");
-
-// 			old_for_all(uint8, buttonIndex, 4)
-// 			{
-// 				ImGui::Text("buttons[%u] %X", buttonIndex, gamepad.buttons[buttonIndex]);
-// 			}
-// 			ImGui::Text("");
-// 		}
-
-// 		[]()
-// 		{
-// 			auto & newActorData = GetNewActorData(0, 0, ENTITY::MAIN);
-
-// 			IntroducePlayerActorData(newActorData.baseAddr, actorData, return);
-
-// 			ImGui::Text("IsActive %u", IsActive(actorData));
-// 		}();
-
-// 		if (showEnemyData)
-// 		{
-// 			ImGui::Text("Enemy");
-
-// 			[&]()
-// 			{
-// 				IntroduceEnemyVectorData(return);
-
-// 				ImGui::Text("count %u", enemyVectorData.count);
-// 				ImGui::Text("");
-
-// 				old_for_all(uint32, index, enemyVectorData.count)
-// 				{
-// 					auto & metadata = enemyVectorData.metadata[index];
-
-// 					ImGui::Text("baseAddr %llX", metadata.baseAddr);
-
-// 					IntroduceData(metadata.baseAddr, actorData, EnemyActorData, continue);
-
-// 					ImGui::Text("speed           %g", actorData.speed          );
-// 					ImGui::Text("speedMultiplier %g", actorData.speedMultiplier);
-// 					ImGui::Text("enemy           %u", actorData.enemy          );
-// 					ImGui::Text("x               %g", actorData.position.x     );
-// 					ImGui::Text("y               %g", actorData.position.y     );
-// 					ImGui::Text("z               %g", actorData.position.z     );
-// 					ImGui::Text("a               %g", actorData.position.a     );
-
-// 					ImGui::Text("");
-// 				}
-// 			}();
-// 		}
-// 	};
-
-// 	OverlayFunction
-// 	(
-// 		overlay2Label,
-// 		activeOverlay2Data,
-// 		queuedOverlay2Data,
-// 		Function
-// 	);
-// }
-
-// void Overlay2Settings()
-// {
-// 	auto Function = [&]()
-// 	{
-// 		GUI_Checkbox
-// 		(
-// 			"Show Memory Data",
-// 			showMemoryData
-// 		);
-// 		GUI_Checkbox
-// 		(
-// 			"Show Backup Helper",
-// 			showBackupHelper
-// 		);
-// 		GUI_Checkbox
-// 		(
-// 			"Show Actor Data",
-// 			showActorData
-// 		);
-// 		GUI_Checkbox
-// 		(
-// 			"Show Enemy Data",
-// 			showEnemyData
-// 		);
-// 	};
-
-// 	OverlaySettings
-// 	(
-// 		overlay2Label,
-// 		activeOverlay2Data,
-// 		queuedOverlay2Data,
-// 		defaultOverlay2Data,
-// 		Function
-// 	);
-// }
-
-
 
 const char * missionOverlayLabel = "MissionOverlay";
 
@@ -7735,107 +9495,21 @@ void MissionOverlaySettings()
 
 
 
-const char * newMovesOverlayLabelDante = "NewMovesOverlayDante";
 
-void NewMovesOverlayWindowDante()
+
+
+
+
+
+const char * bossLadyActionsOverlayLabel = "BossLadyActionsOverlay";
+
+void BossLadyActionsOverlayWindow()
 {
 	auto Function = [&]()
 	{
 		ImGui::Text
 		(
-			"New Moves Dante\n"
-			"\n"
-			"Rebellion\n"
-			"\n"
-			"While Swordmaster is active hold B and press Y, Y: Quick Drive\n"
-			"Lock-On + Left + Y: Drive\n"
-			"While in air Lock-On + Forward + Y: Air Stinger\n"
-			"\n"
-			"Nevan\n"
-			"\n"
-			"While in devil form and in air No Lock-On + Any Direction + Y: Quick Vortex\n"
-		);
-	};
-
-	OverlayFunction
-	(
-		newMovesOverlayLabelDante,
-		activeConfig.newMovesOverlayDataDante,
-		queuedConfig.newMovesOverlayDataDante,
-		Function
-	);
-}
-
-void NewMovesOverlaySettingsDante()
-{
-	OverlaySettings
-	(
-		newMovesOverlayLabelDante,
-		activeConfig.newMovesOverlayDataDante,
-		queuedConfig.newMovesOverlayDataDante,
-		defaultConfig.newMovesOverlayDataDante
-	);
-}
-
-
-
-const char * newMovesOverlayLabelVergil = "NewMovesOverlayVergil";
-
-void NewMovesOverlayWindowVergil()
-{
-	auto Function = [&]()
-	{
-		ImGui::Text
-		(
-			"New Moves Vergil\n"
-			"\n"
-			"Yamato\n"
-			"\n"
-			"Lock-On + Left + Y: Judgement Cut\n"
-			"\n"
-			"Beowulf\n"
-			"\n"
-			"While in air Lock-On + Forward + Y: Air Lunar Phase\n"
-			"\n"
-			"Yamato & Force Edge\n"
-			"\n"
-			"Lock-On + Left  + Y: Round Trip\n"
-			"Lock-On + Right + Y: Combo Part 4\n"
-			"While in air Lock-On + Forward + Y: Air Stinger\n"
-		);
-	};
-
-	OverlayFunction
-	(
-		newMovesOverlayLabelVergil,
-		activeConfig.newMovesOverlayDataVergil,
-		queuedConfig.newMovesOverlayDataVergil,
-		Function
-	);
-}
-
-void NewMovesOverlaySettingsVergil()
-{
-	OverlaySettings
-	(
-		newMovesOverlayLabelVergil,
-		activeConfig.newMovesOverlayDataVergil,
-		queuedConfig.newMovesOverlayDataVergil,
-		defaultConfig.newMovesOverlayDataVergil
-	);
-}
-
-
-
-const char * newMovesOverlayLabelBossLady = "NewMovesOverlayBossLady";
-
-void NewMovesOverlayWindowBossLady()
-{
-	auto Function = [&]()
-	{
-		ImGui::Text
-		(
-			"New Moves Boss Lady\n"
+			"Boss Lady Actions\n"
 			"\n"
 			"Lock-On + Forward + A: Trooper Roll\n"
 			"Lock-On + Right   + A: Wheel Right\n"
@@ -7845,7 +9519,7 @@ void NewMovesOverlayWindowBossLady()
 			"Right Trigger: Reload Pistol\n"
 			"Left  Trigger: Reload SMG\n"
 			"\n"
-			"Lock-On + Back + X: Pistol Fall Back Shoot (Hold for crossbow)\n"
+			"Lock-On + Back + X: Pistol Fall Back Shoot (hold for crossbow)\n"
 			"\n"
 			"B: SMG Roundhouse\n"
 			"\n"
@@ -7859,35 +9533,39 @@ void NewMovesOverlayWindowBossLady()
 
 	OverlayFunction
 	(
-		newMovesOverlayLabelBossLady,
-		activeConfig.newMovesOverlayDataBossLady,
-		queuedConfig.newMovesOverlayDataBossLady,
+		bossLadyActionsOverlayLabel,
+		activeConfig.bossLadyActionsOverlayData,
+		queuedConfig.bossLadyActionsOverlayData,
 		Function
 	);
 }
 
-void NewMovesOverlaySettingsBossLady()
+void BossLadyActionsOverlaySettings()
 {
 	OverlaySettings
 	(
-		newMovesOverlayLabelBossLady,
-		activeConfig.newMovesOverlayDataBossLady,
-		queuedConfig.newMovesOverlayDataBossLady,
-		defaultConfig.newMovesOverlayDataBossLady
+		bossLadyActionsOverlayLabel,
+		activeConfig.bossLadyActionsOverlayData,
+		queuedConfig.bossLadyActionsOverlayData,
+		defaultConfig.bossLadyActionsOverlayData
 	);
 }
 
 
 
-const char * newMovesOverlayLabelBossVergil = "NewMovesOverlayBossVergil";
 
-void NewMovesOverlayWindowBossVergil()
+
+
+
+const char * bossVergilActionsOverlayLabel = "BossVergilActionsOverlay";
+
+void BossVergilActionsOverlayWindow()
 {
 	auto Function = [&]()
 	{
 		ImGui::Text
 		(
-			"New Moves Boss Vergil\n"
+			"Boss Vergil Actions\n"
 			"\n"
 			"                    Y: Yamato Deflect\n"
 			"Lock-On + Forward + Y: Yamato Super Judgement Cut Follow\n"
@@ -7908,21 +9586,21 @@ void NewMovesOverlayWindowBossVergil()
 
 	OverlayFunction
 	(
-		newMovesOverlayLabelBossVergil,
-		activeConfig.newMovesOverlayDataBossVergil,
-		queuedConfig.newMovesOverlayDataBossVergil,
+		bossVergilActionsOverlayLabel,
+		activeConfig.bossVergilActionsOverlayData,
+		queuedConfig.bossVergilActionsOverlayData,
 		Function
 	);
 }
 
-void NewMovesOverlaySettingsBossVergil()
+void BossVergilActionsOverlaySettings()
 {
 	OverlaySettings
 	(
-		newMovesOverlayLabelBossVergil,
-		activeConfig.newMovesOverlayDataBossVergil,
-		queuedConfig.newMovesOverlayDataBossVergil,
-		defaultConfig.newMovesOverlayDataBossVergil
+		bossVergilActionsOverlayLabel,
+		activeConfig.bossVergilActionsOverlayData,
+		queuedConfig.bossVergilActionsOverlayData,
+		defaultConfig.bossVergilActionsOverlayData
 	);
 }
 
@@ -7936,19 +9614,15 @@ void Overlays()
 
 		if (GUI_ResetButton())
 		{
-			ResetConfig(mainOverlayData              );
-			ResetConfig(missionOverlayData           );
-			ResetConfig(newMovesOverlayDataDante     );
-			ResetConfig(newMovesOverlayDataVergil    );
-			ResetConfig(newMovesOverlayDataBossLady  );
-			ResetConfig(newMovesOverlayDataBossVergil);
+			ResetConfig(mainOverlayData             );
+			ResetConfig(missionOverlayData          );
+			ResetConfig(bossLadyActionsOverlayData  );
+			ResetConfig(bossVergilActionsOverlayData);
 
-			ImGui::SetWindowPos(mainOverlayLabel              , *reinterpret_cast<ImVec2*>(&activeConfig.mainOverlayData.pos              ));
-			ImGui::SetWindowPos(missionOverlayLabel           , *reinterpret_cast<ImVec2*>(&activeConfig.missionOverlayData.pos           ));
-			ImGui::SetWindowPos(newMovesOverlayLabelDante     , *reinterpret_cast<ImVec2*>(&activeConfig.newMovesOverlayDataDante.pos     ));
-			ImGui::SetWindowPos(newMovesOverlayLabelVergil    , *reinterpret_cast<ImVec2*>(&activeConfig.newMovesOverlayDataVergil.pos    ));
-			ImGui::SetWindowPos(newMovesOverlayLabelBossLady  , *reinterpret_cast<ImVec2*>(&activeConfig.newMovesOverlayDataBossLady.pos  ));
-			ImGui::SetWindowPos(newMovesOverlayLabelBossVergil, *reinterpret_cast<ImVec2*>(&activeConfig.newMovesOverlayDataBossVergil.pos));
+			ImGui::SetWindowPos(mainOverlayLabel             , *reinterpret_cast<ImVec2 *>(&activeConfig.mainOverlayData.pos             ));
+			ImGui::SetWindowPos(missionOverlayLabel          , *reinterpret_cast<ImVec2 *>(&activeConfig.missionOverlayData.pos          ));
+			ImGui::SetWindowPos(bossLadyActionsOverlayLabel  , *reinterpret_cast<ImVec2 *>(&activeConfig.bossLadyActionsOverlayData.pos  ));
+			ImGui::SetWindowPos(bossVergilActionsOverlayLabel, *reinterpret_cast<ImVec2 *>(&activeConfig.bossVergilActionsOverlayData.pos));
 		}
 
 		GUI_SectionEnd();
@@ -7963,18 +9637,6 @@ void Overlays()
 
 
 
-		// if constexpr (debug)
-		// {
-		// 	GUI_SectionStart("2");
-
-		// 	Overlay2Settings();
-
-		// 	GUI_SectionEnd();
-		// 	ImGui::Text("");
-		// }
-
-
-
 		GUI_SectionStart("Mission");
 
 		MissionOverlaySettings();
@@ -7984,36 +9646,19 @@ void Overlays()
 
 
 
-		GUI_SectionStart("New Moves Dante");
 
-		NewMovesOverlaySettingsDante();
+		GUI_SectionStart("Boss Lady Actions");
 
-		GUI_SectionEnd();
-		ImGui::Text("");
-
-
-
-		GUI_SectionStart("New Moves Vergil");
-
-		NewMovesOverlaySettingsVergil();
+		BossLadyActionsOverlaySettings();
 
 		GUI_SectionEnd();
 		ImGui::Text("");
 
 
 
-		GUI_SectionStart("New Moves Boss Lady");
+		GUI_SectionStart("Boss Vergil Actions");
 
-		NewMovesOverlaySettingsBossLady();
-
-		GUI_SectionEnd();
-		ImGui::Text("");
-
-
-
-		GUI_SectionStart("New Moves Boss Vergil");
-
-		NewMovesOverlaySettingsBossVergil();
+		BossVergilActionsOverlaySettings();
 
 
 
@@ -8364,6 +10009,8 @@ void System()
 			ToggleHideBossHUD(activeConfig.hideBossHUD);
 
 			ResetConfig(hideMouseCursor);
+			ResetConfig(gamepadName);
+			ResetConfig(gamepadButton);
 
 			ResetConfig(channelVolumes);
 			UpdateVolumes();
@@ -8522,6 +10169,44 @@ void System()
 			activeConfig.hideMouseCursor,
 			queuedConfig.hideMouseCursor
 		);
+		ImGui::Text("");
+
+
+
+		ImGui::PushItemWidth(300);
+
+
+
+		if
+		(
+			ImGui::InputText
+			(
+				"Gamepad Name",
+				queuedConfig.gamepadName,
+				sizeof(queuedConfig.gamepadName),
+				ImGuiInputTextFlags_EnterReturnsTrue
+			)
+		)
+		{
+			::GUI::save = true;
+		}
+		//ImGui::PopItemWidth();
+
+		//ImGui::PushItemWidth(150);
+		GUI_Input2<byte8>
+		(
+			"Gamepad Button",
+			activeConfig.gamepadButton,
+			queuedConfig.gamepadButton,
+			1,
+			"%u",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+
+		ImGui::PopItemWidth();
+
+
+
 
 		GUI_SectionEnd();
 		ImGui::Text("");
@@ -8901,7 +10586,8 @@ void Vergil()
 			"(?)",
 			"Requires enabled Actor module.\n"
 			"\n"
-			"Left: Human Right: Devil"
+			"Left : Human\n"
+			"Right: Devil"
 		);
 		ImGui::Text("");
 
@@ -8910,6 +10596,12 @@ void Vergil()
 			"Enable New Judgement Cut",
 			activeConfig.enableYamatoVergilNewJudgementCut,
 			queuedConfig.enableYamatoVergilNewJudgementCut
+		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Press Lock-On + Left + Melee Attack."
 		);
 		ImGui::Text("");
 
@@ -8972,7 +10664,8 @@ void Vergil()
 			"(?)",
 			"Requires enabled Actor module.\n"
 			"\n"
-			"Left: Human Right: Devil"
+			"Left : Human\n"
+			"Right: Devil"
 		);
 		ImGui::Text("");
 
@@ -8996,6 +10689,12 @@ void Vergil()
 			activeConfig.enableYamatoForceEdgeNewComboPart4,
 			queuedConfig.enableYamatoForceEdgeNewComboPart4
 		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Press Lock-On + Right + Melee Attack."
+		);
 		GUI_Checkbox2
 		(
 			"Enable Air Stinger",
@@ -9007,6 +10706,12 @@ void Vergil()
 			"Enable New Round Trip",
 			activeConfig.enableYamatoForceEdgeNewRoundTrip,
 			queuedConfig.enableYamatoForceEdgeNewRoundTrip
+		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Press Lock-On + Left + Melee Attack."
 		);
 		ImGui::Text("");
 
@@ -9130,10 +10835,37 @@ void Vergil()
 
 
 
-void ToggleShow()
-{
-	g_show = !g_show;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// @Move
 
 void ReloadRoom()
 {
@@ -9223,7 +10955,7 @@ export KeyBinding keyBindings[] =
 		activeConfig.keyData[0],
 		queuedConfig.keyData[0],
 		defaultConfig.keyData[0],
-		ToggleShow,
+		ToggleShowMain,
 		KeyFlags_AtLeastOneKey
 	},
 	{
@@ -9250,8 +10982,7 @@ void KeyBindings()
 	{
 		ImGui::Text("");
 
-		// DescriptionHelper("");
-		// ImGui::Text("");
+
 
 
 
@@ -9326,6 +11057,16 @@ void UpdateGlobalScale()
 
 void Main()
 {
+
+
+
+	if (!g_showMain)
+	{
+		return;
+	}
+
+
+
 	static bool run = false;
 
 	if (!run)
@@ -9339,33 +11080,33 @@ void Main()
 
 		ImGui::SetNextWindowSize(ImVec2(width, height));
 
-		if constexpr (debug)
-		{
-			//ImGui::SetNextWindowPos(ImVec2(950, 50));
+		// if constexpr (debug)
+		// {
+		// 	//ImGui::SetNextWindowPos(ImVec2(950, 50));
 
-			// ImGui::SetNextWindowPos
-			// (
-			// 	ImVec2
-			// 	(
-			// 		(g_renderSize.x - width - 50),
-			// 		50
-			// 	)
-			// );
-
-
-			ImGui::SetNextWindowPos
-			(
-				ImVec2
-				(
-					((g_renderSize.x - width) / 2),
-					100
-				)
-			);
+		// 	// ImGui::SetNextWindowPos
+		// 	// (
+		// 	// 	ImVec2
+		// 	// 	(
+		// 	// 		(g_renderSize.x - width - 50),
+		// 	// 		50
+		// 	// 	)
+		// 	// );
 
 
+		// 	ImGui::SetNextWindowPos
+		// 	(
+		// 		ImVec2
+		// 		(
+		// 			((g_renderSize.x - width) / 2),
+		// 			100
+		// 		)
+		// 	);
 
-		}
-		else
+
+
+		// }
+		// else
 		{
 			ImGui::SetNextWindowPos(ImVec2(0, 0));
 		}
@@ -9382,11 +11123,27 @@ void Main()
 		ImGui::Begin
 		(
 			DDMK_TITLE_MARY,
-			&g_show
+			&g_showMain
 		)
 	)
 	{
 		ImGui::Text("");
+
+
+
+
+
+
+
+
+		GamepadClose
+		(
+			visibleMain,
+			lastVisibleMain,
+			CloseMain
+		);
+
+
 
 
 
@@ -9434,6 +11191,12 @@ void Main()
 			);
 		}
 		ImGui::Text("");
+
+
+
+
+
+
 
 
 
@@ -9498,72 +11261,45 @@ export void GUI_Render()
 	{
 		run = true;
 
-		// LogFunction();
-
 		CreateTextures();
 	}
 
+
+
 	::GUI::id = 0;
 
+
+
 	Welcome();
+	Main();
+	CreditsWindow();
+	ShopWindow();
 
-	MainOverlayWindow();
 
-	// if constexpr (debug)
-	// {
-	// 	Overlay2Window();
-	// }
 
-	MissionOverlayWindow();
-
-	NewMovesOverlayWindowDante();
-	NewMovesOverlayWindowVergil();
-	NewMovesOverlayWindowBossLady();
-	NewMovesOverlayWindowBossVergil();
-
-	WeaponSwitchController();
-
-	ItemWindow();
-
-	if (showActorWindow)
+	if constexpr (debug)
 	{
 		ActorWindow();
+		EventDataWindow();
+		ExpWindow();
+		FileDataWindow();
+		MissionDataWindow();
+		RegionDataWindow();
+		SoundWindow();
 	}
+
+
+
+	MainOverlayWindow();
+	MissionOverlayWindow();
+	BossLadyActionsOverlayWindow();
+	BossVergilActionsOverlayWindow();
+
+
 
 	Bars();
+	WeaponSwitchController();
 
-
-
-	if (g_show)
-	{
-
-
-
-
-
-
-
-		Main();
-
-
-		CreditsWindow();
-
-
-
-
-		if constexpr (debug)
-		{
-
-			MissionDataWindow();
-
-
-			FileDataWindow();
-			
-			EventDataWindow();
-			RegionDataWindow();
-			SoundWindow();
-		}
-	}
 
 
 	for_all(index, countof(keyBindings))
@@ -9575,45 +11311,35 @@ export void GUI_Render()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+	if (g_shopTimer > 0)
+	{
+		g_shopTimer -= 1.0f;
+	}
 
 
 
 	[&]()
 	{
-		auto & save        = GUI::save;
-		auto & saveTimeout = GUI::saveTimeout;
+		using namespace GUI;
 
-		if (saveTimeout > 0)
+
+
+		if (saveTimer > 0)
 		{
-			saveTimeout -= 1.0f;
+			saveTimer -= 1.0f;
+
+			return;
 		}
-		else if (saveTimeout < 0)
-		{
-			saveTimeout = 0;
-		}
+
+		saveTimer = (activeConfig.frameRate * (saveTimeout / 1000));
+
+		// Log("__GUI__");
+
+
 
 		if (save)
 		{
-			if (saveTimeout > 0)
-			{
-				return;
-			}
-
 			save = false;
-
-			saveTimeout = 6;
 
 			SaveConfig();
 		}

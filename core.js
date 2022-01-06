@@ -59,6 +59,7 @@ const EnumFlags_Export           = 1 << 0;
 const EnumFlags_Namespace        = 1 << 1;
 const EnumFlags_UnknownItemIndex = 1 << 2;
 const EnumFlags_UpperCase        = 1 << 3;
+const EnumFlags_NoUnknown        = 1 << 4;
 
 // #endregion
 
@@ -974,7 +975,7 @@ function FeedEnd()
 }
 
 
-
+// @Move
 function FeedStruct
 (
 	name,
@@ -2217,25 +2218,28 @@ function CreateEnum
 		let name2 = item[0];
 		let value = item[1];
 
-		if
-		(
-			(name2 == "") ||
-			name2.match(/unknown/i)
-		)
-		{
-			if (flags & EnumFlags_UnknownItemIndex)
-			{
-				name2 = "unknown_" + itemIndex;
-			}
-			else
-			{
-				name2 = "unknown_" + unknownIndex;
 
-				unknownIndex++;
+
+		if (!(flags & EnumFlags_NoUnknown))
+		{
+			if
+			(
+				(name2 == "") ||
+				name2.match(/unknown/i)
+			)
+			{
+				if (flags & EnumFlags_UnknownItemIndex)
+				{
+					name2 = "unknown_" + itemIndex;
+				}
+				else
+				{
+					name2 = "unknown_" + unknownIndex;
+
+					unknownIndex++;
+				}
 			}
 		}
-
-
 
 
 
@@ -2257,7 +2261,9 @@ function CreateEnum
 
 		if (value != "")
 		{
-			c += " = " + value;
+			// @Restore
+			// c += " = " + value;
+			c += "=" + value;
 		}
 
 		c += "," + NEW_LINE;
@@ -2276,6 +2282,14 @@ function CreateEnum
 		c += "namespaceEnd();" + NEW_LINE;
 	}
 }
+
+
+
+
+
+
+
+
 
 // #endregion
 

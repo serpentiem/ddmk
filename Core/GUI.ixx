@@ -44,9 +44,16 @@ namespaceStart(GUI);
 
 export int   id          = 0;
 export bool  save        = false;
-export float saveTimeout = 0;
+export float saveTimer   = 0;
+
+
+// @Todo: constexpr
+
+export float saveTimeout = 1000; // in ms
 
 namespaceEnd();
+
+
 
 
 

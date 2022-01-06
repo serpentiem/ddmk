@@ -17,6 +17,7 @@ import BossRush;
 import Camera;
 import Config;
 import Event;
+import Exp;
 import File;
 import FMOD;
 import Global;
@@ -39,7 +40,7 @@ using namespace Windows;
 
 #define debug false
 
-// #include "Macros.h"
+
 
 uint32 DllMain
 (
@@ -50,7 +51,7 @@ uint32 DllMain
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
-		Core_Log_Init("logs", "Mary.txt");
+		InitLog("logs", "Mary.txt");
 
 		Log("Session started.");
 
@@ -84,7 +85,6 @@ uint32 DllMain
 
 
 
-
 		if
 		(
 			!backupHelper.Init
@@ -99,9 +99,15 @@ uint32 DllMain
 			return 0;
 		}
 
-		Config_Init("configs", "Mary.bin");
 
+
+		InitConfig();
 		LoadConfig();
+
+
+
+		InitExp();
+		LoadExp();
 
 
 
@@ -240,6 +246,7 @@ uint32 DllMain
 
 
 
+		Arcade::Toggle(false);
 		Arcade::Toggle(activeConfig.Arcade.enable);
 
 
@@ -323,51 +330,24 @@ uint32 DllMain
 
 
 
-
-		SetMemory((appBaseAddr + 0x5505B5), 0, 23, MemoryFlags_VirtualProtectDestination); // Remove FMODGetCodecDescription label.
-
-		if constexpr (debug)
-		{
-			// @Todo: Move to Actor.
-			// Disable Idle Timer
-			SetMemory((appBaseAddr + 0x1F2A38), 0x90, 5, MemoryFlags_VirtualProtectDestination); // Dante
-			SetMemory((appBaseAddr + 0x1F29AE), 0x90, 5, MemoryFlags_VirtualProtectDestination); // Vergil
-
+		// Remove FMODGetCodecDescription Label
+		SetMemory
+		(
+			(appBaseAddr + 0x5505B5),
+			0,
+			23,
+			MemoryFlags_VirtualProtectDestination
+		);
 
 
-// Disable Set Boss Camera
 
-// SetMemory
-// (
-// 	(appBaseAddr + 0x55FD2),
-// 	0x90,
-// 	7,
-// 	MemoryFlags_VirtualProtectDestination
-// );
-
-/*
-dmc3.exe+55FD2 - 48 89 83 98040000 - mov [rbx+00000498],rax
-dmc3.exe+55FD9 - 4C 89 A3 B0040000 - mov [rbx+000004B0],r12
-*/
+		ToggleDisablePlayerActorIdleTimer(false);
+		ToggleDisablePlayerActorIdleTimer(activeConfig.disablePlayerActorIdleTimer);
 
 
 
 
 
-
-
-
-	// // Disable Style Rank Sub
-	// SetMemory((appBaseAddr + 0x27A39C), 0x90, 5, MemoryFlags_VirtualProtectDestination);
-
-	// // Force Collect Orbs
-	// WriteAddress((appBaseAddr + 0x1B6597), (appBaseAddr + 0x1B6599), 2);
-
-
-
-		}
-
-		//HoboBreak();
 	}
 
 	return 1;

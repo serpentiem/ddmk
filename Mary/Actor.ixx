@@ -1,8 +1,18 @@
-// @Cleanup
-// @Todo: Remove File_dynamicFiles and update UpdateMotionArchives.
 
-module;
-#include <stdio.h>
+
+
+
+
+
+
+
+
+// @Clean
+// @Remove: File_dynamicFiles
+
+
+
+
 export module Actor;
 
 import Core;
@@ -16,6 +26,7 @@ using namespace Windows;
 import ActorBase;
 import ActorRelocations;
 import Config;
+import Exp;
 import File;
 import Global;
 import HUD;
@@ -29,29 +40,22 @@ import Vars;
 
 #define debug false
 
-// #include "Macros.h"
 
 
+
+
+// @Remove
 #define g_enableLockOnFixes true
 
 
 
 
-
+// @Remove
 #define Break(name) MessageBoxA(0, name, 0, 0)
 
 
 bool lastEnable = false;
 bool updateConfig = false;
-
-
-
-// float lastHitPoints  [PLAYER_COUNT] = {};
-// float lastMagicPoints[PLAYER_COUNT] = {};
-
-
-//float hitPoints[PLAYER_COUNT] = {};
-
 
 
 
@@ -251,262 +255,6 @@ export byte8 * CreateEnemyActor
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-// export byte8 * CreateEnemyActor(Config::CreateEnemyActorData & configCreateEnemyActorData)
-// {
-// 	if constexpr (debug)
-// 	{
-// 		LogFunction();
-// 	}
-
-// 	IntroduceMainActorData(mainActorData, return 0);
-
-// 	CreateEnemyActorData createEnemyActorData = {};
-
-// 	createEnemyActorData.enemy = configCreateEnemyActorData.enemy;
-// 	createEnemyActorData.position = (configCreateEnemyActorData.useMainActorData) ? mainActorData.position : configCreateEnemyActorData.position;
-// 	createEnemyActorData.position.a = 1.0f;
-// 	createEnemyActorData.rotation = (configCreateEnemyActorData.useMainActorData) ? mainActorData.rotation : configCreateEnemyActorData.rotation;
-// 	createEnemyActorData.spawnMethod = configCreateEnemyActorData.spawnMethod;
-// 	createEnemyActorData.variant = configCreateEnemyActorData.variant;
-
-
-
-// 	return CreateEnemyActor(createEnemyActorData);
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// @Todo: Remove.
-// export void KillEnemy(uint8 index)
-// {
-// 	if
-// 	(
-// 		(index >= CREATE_ENEMY_COUNT) ||
-// 		!InGame()
-// 	)
-// 	{
-// 		return;
-// 	}
-
-// 	// @Todo: Introduce Enemy Data.
-// 	auto enemyBaseAddr = Enemy_enemyBaseAddr[index];
-// 	if (!enemyBaseAddr)
-// 	{
-// 		return;
-// 	}
-// 	auto & enemyData = *reinterpret_cast<EnemyActorData *>(enemyBaseAddr);
-
-// 	switch (enemyData.enemy)
-// 	{
-// 		case ENEMY::LADY:
-// 		{
-// 			// @Todo: Enemy Data Lady.
-// 			auto & event = *reinterpret_cast<uint32 *>(enemyBaseAddr + 0x180 + 0x5808);
-// 			auto & isFriend = *reinterpret_cast<bool *>(enemyBaseAddr + 0x180 + 0x58AE);
-
-// 			isFriend = false;
-// 			event = 20;
-
-// 			break;
-// 		}
-// 	}
-// }
-
-
-
-
-// namespaceStart(Actor);
-
-// // @Remove
-// export void Watchdog()
-// {
-
-
-// 	//bool yes = false;
-
-
-// 	// old_for_all(uint64, index, g_enemyActorBaseAddrs.count)
-// 	// {
-// 	// 	LoopStart:;
-
-// 	// 	{
-// 	// 		IntroduceData(g_enemyActorBaseAddrs[index], actorData, EnemyActorData, continue);
-
-
-// 	// 		// if (yes)
-// 	// 		// {
-// 	// 		// 	yes = false;
-
-// 	// 		// 	char buffer[128];
-
-// 	// 		// 	snprintf
-// 	// 		// 	(
-// 	// 		// 		buffer,
-// 	// 		// 		sizeof(buffer),
-// 	// 		// 		"Continuing with %llu %llX",
-// 	// 		// 		index,
-// 	// 		// 		reinterpret_cast<byte8 *>(&actorData)
-// 	// 		// 	);
-
-// 	// 		// 	Log(buffer);
-// 	// 		// }
-
-
-
-// 	// 		if (!actorData.baseAddr)
-// 	// 		{
-// 	// 			// if constexpr (debug)
-// 	// 			// {
-// 	// 			// 	char buffer[128];
-
-// 	// 			// 	snprintf
-// 	// 			// 	(
-// 	// 			// 		buffer,
-// 	// 			// 		sizeof(buffer),
-// 	// 			// 		"Remove %llu %llX",
-// 	// 			// 		index,
-// 	// 			// 		reinterpret_cast<byte8 *>(&actorData)
-// 	// 			// 	);
-
-// 	// 			// 	Log(buffer);
-
-// 	// 			// 	yes = true;
-// 	// 			// }
-
-
-
-// 	// 			Log("Remove %llu", index);
-// 	// 			g_enemyActorBaseAddrs.Remove(index);
-
-
-
-
-
-
-
-
-
-
-
-// 	// 			goto LoopStart;
-// 	// 		}
-
-// 	// 		//continue;
-// 	// 	}
-
-// 	// 	//goto LoopStart;
-// 	// }
-// }
-
-
-
-// namespaceEnd();
-
-
-
-
-// void EnemyWatchdog()
-// {
-
-// 	// static bool run = false;
-// 	// if (!run)
-// 	// {
-// 	// 	run = true;
-
-// 	// 	HoboBreak();
-
-// 	// 	LogFunction();
-// 	// }
-
-
-
-// 	auto Function = [&](auto & enemyBaseAddr)
-// 	{
-// 		// @Todo: IntroduceEnemyDataNoBaseAddress.
-// 		if (!enemyBaseAddr)
-// 		{
-// 			return;
-// 		}
-// 		auto & enemyData = *reinterpret_cast<EnemyActorData *>(enemyBaseAddr);
-
-// 		if (!enemyData.baseAddr)
-// 		{
-// 			enemyBaseAddr = 0;
-// 		}
-
-
-
-
-// 	};
-
-// 	Enemy_enemyBaseAddr.ForEach
-// 	(
-// 		0,
-// 		CREATE_ENEMY_COUNT,
-// 		Function
-// 	);
-// }
-
-
-
-
-
-
-
-
-
-
-// export void Enemy_Main()
-// {
-// 	EnemyWatchdog();
-// }
-
-// // @Research: Check if both are still required.
-// export void Enemy_CreateMainActor(byte8 * actorBaseAddr)
-// {
-// 	Enemy_enemyBaseAddr.Clear();
-// }
-
-// export void Enemy_Delete()
-// {
-// 	Enemy_enemyBaseAddr.Clear();
-// }
-
-
-
-
-
-
 #pragma endregion
 
 
@@ -574,13 +322,6 @@ export byte8 * CreateEnemyActor
 
 
 
-
-//export Vector<byte8 *> g_playerActorBaseAddrs = {};
-
-
-
-
-
 typedef void(__fastcall * ResetLockOn_t)(PlayerActorData & actorData);
 
 ResetLockOn_t ResetLockOn = 0;
@@ -620,29 +361,6 @@ RegisterWeapon_t RegisterWeapon[WEAPON::MAX] = {};
 
 
 
-
-
-// template <typename T>
-// void SetStyleData(T & actorData)
-// {
-// 	auto pool = *reinterpret_cast<byte8 ***>(appBaseAddr + 0xC90E28);
-// 	if
-// 	(
-// 		!pool ||
-// 		!pool[12]
-// 	)
-// 	{
-// 		return;
-// 	}
-// 	auto dest = *reinterpret_cast<byte8 **>(pool[12]);
-// 	if (!dest)
-// 	{
-// 		return;
-// 	}
-// 	*reinterpret_cast<StyleData **>(dest + 0x3D10) = &actorData.styleData;
-
-// 	DebugLog("Updated Style Data");
-// }
 
 
 
@@ -920,7 +638,7 @@ void CopyState
 
 
 
-	// @Todo: Update.
+	// @Update
 	// [&]()
 	// {
 	// 	IntroducePlayerActorData(actorBaseAddr, g_playerActorBaseAddrs[2], actorData, return);
@@ -3082,7 +2800,7 @@ void ToggleIsWeaponReady(bool enable)
 
 
 
-// @Todo: Remove.
+// @Remove
 template <typename T>
 bool SystemButtonCheck(T & actorData)
 {
@@ -3367,7 +3085,7 @@ void InitModel
 
 	// Dante file is different.
 
-	auto file = File_staticFiles[pl000][5]; // @Todo: Update.
+	auto file = File_staticFiles[pl000][5]; // @Update
 
 	func_594B0
 	(
@@ -3604,7 +3322,7 @@ void UpdateDevilModel
 	uint8 modelPhysicsMetadataIndex = 0;
 	uint8 devilModelPhysicsMetadataIndex = 0;
 
-	// @Todo: Update.
+	// @Update
 	auto LinkModelPhysicsData = [&]
 	(
 		uint8 _devilSubmodelPhysicsLinkDataIndex,
@@ -4400,7 +4118,7 @@ void UpdateForm(T & actorData)
 	}
 }
 
-// @Todo: Update.
+// @Update
 template <typename T>
 void UpdateMotionArchives(T & actorData)
 {
@@ -4446,7 +4164,7 @@ void UpdateMotionArchives(T & actorData)
 // 	}
 // }
 
-// @Todo: Update.
+// @Update
 template <typename T>
 void InitWeapons(T & actorData)
 {
@@ -4543,6 +4261,28 @@ auto GetRangedWeapon(T & actorData)
 
 
 
+bool IsActiveActor(byte8 * actorBaseAddr)
+{
+	if (!actorBaseAddr)
+	{
+		return false;
+	}
+
+
+
+	auto & playerData = GetPlayerData(0);
+	auto & activeNewActorData = GetNewActorData(0, playerData.activeCharacterIndex, ENTITY::MAIN);
+
+	auto activeActorBaseAddr = activeNewActorData.baseAddr;
+	if (!activeActorBaseAddr)
+	{
+		return false;
+	}
+
+
+
+	return (actorBaseAddr == activeActorBaseAddr);
+}
 
 
 
@@ -4552,17 +4292,16 @@ auto GetRangedWeapon(T & actorData)
 template <typename T>
 void UpdateStyle(T & actorData)
 {
-	if constexpr (debug)
-	{
-		LogFunction(actorData.operator byte8 *());
-	}
-	
-	// auto & characterData = GetCharacterData(actorData);
+	DebugLogFunction(actorData.operator byte8 *());
 
-	// auto & styleIndex = characterData.styleIndices[characterData.styleButtonIndex];
-	// auto & style = characterData.styles[characterData.styleButtonIndex][styleIndex];
+	if (IsActiveActor(actorData))
+	{
+		SavePlayerActorExp();
+	}
 
 	actorData.style = GetStyle(actorData);
+
+	UpdatePlayerActorExp(actorData);
 }
 
 template <typename T>
@@ -4646,19 +4385,6 @@ byte8 * CreatePlayerActor
 	uint8 entityIndex
 )
 {
-
-
-	//HoboBreak();
-
-
-
-	// LogFunction
-	// (
-	// 	playerIndex,
-	// 	characterIndex,
-	// 	entityIndex
-	// );
-
 	auto & playerData = GetPlayerData(playerIndex);
 	auto & characterData = GetCharacterData
 	(
@@ -4666,17 +4392,6 @@ byte8 * CreatePlayerActor
 		characterIndex,
 		entityIndex
 	);
-
-	// auto & newActorData = GetNewActorData
-	// (
-	// 	playerIndex,
-	// 	characterIndex,
-	// 	entityIndex
-	// );
-
-
-
-
 
 	IntroduceSessionData();
 	IntroduceMissionActorData(return 0);
@@ -4687,6 +4402,8 @@ byte8 * CreatePlayerActor
 		return 0;
 	}
 	auto & actorData = *reinterpret_cast<T *>(actorBaseAddr);
+
+
 
 	UpdateFileData(actorData);
 
@@ -4713,7 +4430,7 @@ byte8 * CreatePlayerActor
 		}
 	}
 
-	// @Todo: Update.
+	// @Update
 	{
 		bool value = false;
 
@@ -4810,22 +4527,11 @@ byte8 * CreatePlayerActor
 
 	UpdateWeapons(actorData);
 
-	SetMemory
-	(
-		actorData.expertise,
-		0xFF,
-		sizeof(actorData.expertise)
-	);
 
-	actorData.styleLevel = 2;
 
-	if constexpr (TypeMatch<T, PlayerActorDataDante>::value)
-	{
-		old_for_each(uint8, weaponIndex, WEAPON::EBONY_IVORY, WEAPON_COUNT_DANTE)
-		{
-			actorData.newWeaponLevels[weaponIndex] = 2;
-		}
-	}
+	UpdatePlayerActorExp(actorData);
+
+
 
 	if (entityIndex == ENTITY::CLONE)
 	{
@@ -9029,35 +8735,6 @@ export void ToggleBossVergilFixes(bool enable)
 
 
 
-// @Todo: If boss set characterIndex to 0.
-
-
-
-// void SetCutsceneMotionArchive
-// (
-// 	byte8 * mainActorBaseAddr,
-// 	byte8 * archive
-// )
-// {
-// 	LogFunction();
-
-// 	IntroduceData(g_playerActorBaseAddrs[0], mainActorData, PlayerActorData, return);
-
-// 	using namespace MOTION_GROUP;
-
-// 	old_for_each(uint64, actorIndex, 2, g_playerActorBaseAddrs.count)
-// 	{
-// 		IntroduceData(g_playerActorBaseAddrs[actorIndex], actorData, PlayerActorData, continue);
-
-// 		actorData.motionArchives[CUTSCENE] = mainActorData.motionArchives[CUTSCENE];
-// 	}
-// }
-
-
-
-
-
-
 
 bool BelongsToPlayer(byte8 * baseAddr)
 {
@@ -9155,7 +8832,7 @@ dmc3.exe+1BADA0 - 48 8B D9 - mov rbx,rcx
 
 
 
-// @Todo: Update.
+// @Update
 
 
 // @Research: Maybe prefer ModelData position.
@@ -9376,17 +9053,6 @@ uint32 GetMaxHitPoints(uint32 value)
 }
 
 
-/*
-257E3800
-2573800
-
-
-
-*/
-
-
-
-
 
 uint32 PlayMotionRebellionDrive
 (
@@ -9476,13 +9142,21 @@ bool WallHike(PlayerActorData & actorData)
 	);
 }
 
+
+
+
+
+
+
+
+
 template <uint32 event>
 uint32 MobilityFunction
 (
 	PlayerActorData & actorData,
 	uint8 action,
 	uint8 & var,
-	uint8(&array)[2]
+	uint8 * array
 )
 {
 	uint8 index = (actorData.devil) ? 1 : 0;
@@ -9509,27 +9183,40 @@ uint32 MobilityFunction
 	return event;
 }
 
-auto Dash
+uint32 Dash
 (
 	PlayerActorData & actorData,
 	uint8 action
 )
 {
+	static uint8 dashCount0[2] = { 1, 1 };
+	static uint8 dashCount1[2] = { 2, 2 };
+
+	uint8 * dashCount =
+	(actorData.styleLevel == 0) ? dashCount0 :
+	(actorData.styleLevel == 1) ? dashCount1 :
+	activeConfig.dashCount;
+
 	return MobilityFunction<ACTOR_EVENT::TRICKSTER_DASH>
 	(
 		actorData,
 		action,
 		actorData.newDashCount,
-		activeConfig.dashCount
+		dashCount
 	);
 }
 
-auto SkyStar
+uint32 SkyStar
 (
 	PlayerActorData & actorData,
 	uint8 action
 )
 {
+	if (actorData.styleLevel < 1)
+	{
+		return 0;
+	}
+
 	return MobilityFunction<ACTOR_EVENT::TRICKSTER_SKY_STAR>
 	(
 		actorData,
@@ -9539,12 +9226,17 @@ auto SkyStar
 	);
 }
 
-auto AirTrickDante
+uint32 AirTrickDante
 (
 	PlayerActorData & actorData,
 	uint8 action
 )
 {
+	if (actorData.styleLevel < 2)
+	{
+		return 0;
+	}
+
 	actorData.var_3E10[26] = (actorData.state & STATE::ON_FLOOR) ? 1 : 0;
 
 	return MobilityFunction<ACTOR_EVENT::TRICKSTER_AIR_TRICK>
@@ -9556,7 +9248,7 @@ auto AirTrickDante
 	);
 }
 
-auto AirTrickVergil
+uint32 AirTrickVergil
 (
 	PlayerActorData & actorData,
 	uint8 action
@@ -9571,12 +9263,17 @@ auto AirTrickVergil
 	);
 }
 
-auto TrickUp
+uint32 TrickUp
 (
 	PlayerActorData & actorData,
 	uint8 action
 )
 {
+	if (actorData.styleLevel < 1)
+	{
+		return 0;
+	}
+
 	return MobilityFunction<ACTOR_EVENT::DARK_SLAYER_TRICK_UP>
 	(
 		actorData,
@@ -9586,12 +9283,17 @@ auto TrickUp
 	);
 }
 
-auto TrickDown
+uint32 TrickDown
 (
 	PlayerActorData & actorData,
 	uint8 action
 )
 {
+	if (actorData.styleLevel < 2)
+	{
+		return 0;
+	}
+
 	return MobilityFunction<ACTOR_EVENT::DARK_SLAYER_TRICK_DOWN>
 	(
 		actorData,
@@ -11240,50 +10942,6 @@ void UpdateActorSpeed(byte8 * baseAddr)
 
 
 
-
-
-	// // EnemyVectorData
-
-	// IntroduceEnemyVectorData(return);
-
-	// old_for_all(uint32, enemyIndex, countof(enemyVectorData.metadata))
-	// {
-	// 	auto & metadata = enemyVectorData.metadata[enemyIndex];
-
-	// 	if (baseAddr != metadata.baseAddr)
-	// 	{
-	// 		continue;
-	// 	}
-
-	// 	IntroduceData(metadata.baseAddr, actorData, EnemyActorData, continue);
-
-	// 	auto value = (IsTurbo()) ? activeConfig.Speed.turbo : activeConfig.Speed.main;
-
-
-
-	// 	using namespace QUICKSILVER_STAGE;
-
-	// 	if (quicksilverStage == TO_ON)
-	// 	{
-	// 		value = 0;
-	// 	}
-	// 	else if
-	// 	(
-	// 		quicksilver &&
-	// 		(quicksilverStage == ON)
-	// 	)
-	// 	{
-	// 		value *= activeConfig.Speed.quicksilverEnemyActor;
-	// 	}
-
-
-
-	// 	value *= activeConfig.Speed.enemy;
-
-	// 	actorData.speed = value;
-
-	// 	return;
-	// }
 }
 
 
@@ -11402,441 +11060,10 @@ void ToggleSpeed(bool enable)
 
 #pragma endregion
 
-#pragma region Sound
 
 
 
 
-
-
-// @Todo: Add missing ids.
-// constexpr uint32 g_bodyPartDataOffs[] =
-// {
-
-
-// 	offsetof(PlayerActorData, newBodyPartData[0][0]),
-// 	offsetof(PlayerActorData, newBodyPartData[0][1]),
-
-// 	offsetof(PlayerActorData, newBodyPartData[1][0]),
-// 	offsetof(PlayerActorData, newBodyPartData[1][1]),
-
-// 	offsetof(PlayerActorData, newBodyPartData[2][0]),
-// 	offsetof(PlayerActorData, newBodyPartData[2][1]),
-
-// 	offsetof(PlayerActorData, newBodyPartData[3][0]),
-// 	offsetof(PlayerActorData, newBodyPartData[3][1]),
-
-// 	offsetof(PlayerActorData, newBodyPartData[4][0]),
-// 	offsetof(PlayerActorData, newBodyPartData[4][1]),
-
-// 	offsetof(PlayerActorData, newBodyPartData[5][0]),
-// 	offsetof(PlayerActorData, newBodyPartData[5][1]),
-
-// 	offsetof(PlayerActorData, newBodyPartData[6][0]),
-// 	offsetof(PlayerActorData, newBodyPartData[6][1]),
-
-
-
-// 	// Boss Lady Base
-// 	(0x5070 + (sizeof(BodyPartData) * 0)),
-// 	(0x5070 + (sizeof(BodyPartData) * 1)),
-// 	(0x5070 + (sizeof(BodyPartData) * 2)),
-
-
-// 	// Boss Vergil Base
-// 	(0xDE80 + (sizeof(BodyPartData) * 0)),
-// 	(0xDE80 + (sizeof(BodyPartData) * 1)),
-// 	(0xDE80 + (sizeof(BodyPartData) * 2)),
-// 	(0xDE80 + (sizeof(BodyPartData) * 3)),
-// };
-
-// inline void UpdateGlobalCharacterCostume(byte8 * actorBaseAddr)
-// {
-// 	if (!actorBaseAddr)
-// 	{
-// 		return;
-// 	}
-// 	auto & actorData = *reinterpret_cast<PlayerActorData *>(actorBaseAddr);
-
-// 	g_character = static_cast<uint8>(actorData.character);
-// 	g_costume = actorData.costume;
-// }
-
-// template <typename T>
-// void UpdateGlobalCharacterCostumeByData(byte8 * dataAddr)
-// {
-// 	if (!dataAddr)
-// 	{
-// 		return;
-// 	}
-
-// 	byte8 * actorBaseAddr = 0;
-
-// 	if constexpr (TypeMatch<T, BodyPartData>::value)
-// 	{
-// 		auto & bodyPartData = *reinterpret_cast<BodyPartData *>(dataAddr);
-
-// 		actorBaseAddr = (reinterpret_cast<byte8 *>(bodyPartData.motionArchives) - offsetof(PlayerActorData, motionArchives));
-// 	}
-// 	else if constexpr (TypeMatch<T, SummonedSwordsData>::value)
-// 	{
-// 		auto & summonedSwordsData = *reinterpret_cast<SummonedSwordsData *>(dataAddr);
-
-// 		actorBaseAddr = summonedSwordsData.actorBaseAddr;
-// 	}
-
-// 	UpdateGlobalCharacterCostume(actorBaseAddr);
-// }
-
-// void ToggleSound(bool enable)
-// {
-// 	static bool run = false;
-
-// 	// Taunt & Style
-// 	{
-// 		auto addr     = (appBaseAddr + 0x59DFB);
-// 		auto jumpAddr = (appBaseAddr + 0x59E00);
-// 		constexpr uint32 size = 5;
-// 		/*
-// 		dmc3.exe+59DFB - E8 20F52D00       - call dmc3.exe+339320
-// 		dmc3.exe+59E00 - C6 83 08010000 01 - mov byte ptr [rbx+00000108],01
-// 		*/
-
-// 		static Function func = {};
-
-// 		constexpr byte8 sect1[] =
-// 		{
-// 			mov_rcx_rbx,
-// 		};
-
-// 		if (!run)
-// 		{
-// 			backupHelper.Save(addr, size);
-// 			func = old_CreateFunction(UpdateGlobalCharacterCostumeByData<BodyPartData>, jumpAddr, true, true, 0, sizeof(sect1), size);
-// 			CopyMemory(func.sect1, sect1, sizeof(sect1));
-// 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
-// 			WriteCall(func.sect2, (appBaseAddr + 0x339320));
-// 		}
-
-// 		if (enable)
-// 		{
-// 			WriteJump(addr, func.addr, (size - 5));
-// 		}
-// 		else
-// 		{
-// 			backupHelper.Restore(addr);
-// 		}
-// 	}
-
-// 	// Melee Weapon
-// 	{
-// 		auto addr     = (appBaseAddr + 0x59E3B);
-// 		auto jumpAddr = (appBaseAddr + 0x59E40);
-// 		constexpr uint32 size = 5;
-// 		/*
-// 		dmc3.exe+59E3B - E8 F0FA2D00       - call dmc3.exe+339930
-// 		dmc3.exe+59E40 - C6 83 09010000 01 - mov byte ptr [rbx+00000109],01
-// 		*/
-
-// 		static Function func = {};
-
-// 		constexpr byte8 sect1[] =
-// 		{
-// 			mov_rcx_rbx,
-// 		};
-
-// 		if (!run)
-// 		{
-// 			backupHelper.Save(addr, size);
-// 			func = old_CreateFunction(UpdateGlobalCharacterCostumeByData<BodyPartData>, jumpAddr, true, true, 0, sizeof(sect1), size);
-// 			CopyMemory(func.sect1, sect1, sizeof(sect1));
-// 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
-// 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
-// 		}
-
-// 		if (enable)
-// 		{
-// 			WriteJump(addr, func.addr, (size - 5));
-// 		}
-// 		else
-// 		{
-// 			backupHelper.Restore(addr);
-// 		}
-// 	}
-
-// 	// Ebony & Ivory
-// 	{
-// 		auto addr     = (appBaseAddr + 0x216CC3);
-// 		auto jumpAddr = (appBaseAddr + 0x216CC8);
-// 		constexpr uint32 size = 5;
-// 		/*
-// 		dmc3.exe+216CC3 - E8 682C1200 - call dmc3.exe+339930
-// 		dmc3.exe+216CC8 - 83 FB 09    - cmp ebx,09
-// 		*/
-
-// 		static Function func = {};
-
-// 		constexpr byte8 sect1[] =
-// 		{
-// 			mov_rcx_rdi,
-// 		};
-
-// 		if (!run)
-// 		{
-// 			backupHelper.Save(addr, size);
-// 			func = old_CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
-// 			CopyMemory(func.sect1, sect1, sizeof(sect1));
-// 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
-// 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
-// 		}
-
-// 		if (enable)
-// 		{
-// 			WriteJump(addr, func.addr, (size - 5));
-// 		}
-// 		else
-// 		{
-// 			backupHelper.Restore(addr);
-// 		}
-// 	}
-
-// 	// Shotgun
-// 	{
-// 		auto addr     = (appBaseAddr + 0x218212);
-// 		auto jumpAddr = (appBaseAddr + 0x218217);
-// 		constexpr uint32 size = 5;
-// 		/*
-// 		dmc3.exe+218212 - E8 19171200 - call dmc3.exe+339930
-// 		dmc3.exe+218217 - 40 0FB6 C6  - movzx eax,sil
-// 		*/
-
-// 		static Function func = {};
-
-// 		constexpr byte8 sect1[] =
-// 		{
-// 			mov_rcx_rbx,
-// 		};
-
-// 		if (!run)
-// 		{
-// 			backupHelper.Save(addr, size);
-// 			func = old_CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
-// 			CopyMemory(func.sect1, sect1, sizeof(sect1));
-// 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
-// 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
-// 		}
-
-// 		if (enable)
-// 		{
-// 			WriteJump(addr, func.addr, (size - 5));
-// 		}
-// 		else
-// 		{
-// 			backupHelper.Restore(addr);
-// 		}
-// 	}
-
-// 	// Artemis
-// 	{
-// 		auto addr     = (appBaseAddr + 0x216042);
-// 		auto jumpAddr = (appBaseAddr + 0x216047);
-// 		constexpr uint32 size = 5;
-// 		/*
-// 		dmc3.exe+216042 - E8 E9381200    - call dmc3.exe+339930
-// 		dmc3.exe+216047 - FE 87 7EB80000 - inc byte ptr [rdi+0000B87E]
-// 		*/
-
-// 		static Function func = {};
-
-// 		constexpr byte8 sect1[] =
-// 		{
-// 			mov_rcx_rdi,
-// 		};
-
-// 		if (!run)
-// 		{
-// 			backupHelper.Save(addr, size);
-// 			func = old_CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
-// 			CopyMemory(func.sect1, sect1, sizeof(sect1));
-// 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
-// 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
-// 		}
-
-// 		if (enable)
-// 		{
-// 			WriteJump(addr, func.addr, (size - 5));
-// 		}
-// 		else
-// 		{
-// 			backupHelper.Restore(addr);
-// 		}
-// 	}
-
-// 	// Spiral
-// 	{
-// 		auto addr     = (appBaseAddr + 0x20877F);
-// 		auto jumpAddr = (appBaseAddr + 0x208784);
-// 		constexpr uint32 size = 5;
-// 		/*
-// 		dmc3.exe+20877F - E8 AC111300    - call dmc3.exe+339930
-// 		dmc3.exe+208784 - FE 83 153E0000 - inc byte ptr [rbx+00003E15]
-// 		*/
-
-// 		static Function func = {};
-
-// 		constexpr byte8 sect1[] =
-// 		{
-// 			mov_rcx_rbx,
-// 		};
-
-// 		if (!run)
-// 		{
-// 			backupHelper.Save(addr, size);
-// 			func = old_CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
-// 			CopyMemory(func.sect1, sect1, sizeof(sect1));
-// 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
-// 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
-// 		}
-
-// 		if (enable)
-// 		{
-// 			WriteJump(addr, func.addr, (size - 5));
-// 		}
-// 		else
-// 		{
-// 			backupHelper.Restore(addr);
-// 		}
-// 	}
-
-// 	// Kalina Ann
-// 	{
-// 		auto addr     = (appBaseAddr + 0x206212);
-// 		auto jumpAddr = (appBaseAddr + 0x206217);
-// 		constexpr uint32 size = 5;
-// 		/*
-// 		dmc3.exe+206212 - E8 19371300    - call dmc3.exe+339930
-// 		dmc3.exe+206217 - FE 83 153E0000 - inc byte ptr [rbx+00003E15]
-// 		*/
-
-// 		static Function func = {};
-
-// 		constexpr byte8 sect1[] =
-// 		{
-// 			mov_rcx_rbx,
-// 		};
-
-// 		if (!run)
-// 		{
-// 			backupHelper.Save(addr, size);
-// 			func = old_CreateFunction(UpdateGlobalCharacterCostume, jumpAddr, true, true, 0, sizeof(sect1), size);
-// 			CopyMemory(func.sect1, sect1, sizeof(sect1));
-// 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
-// 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
-// 		}
-
-// 		if (enable)
-// 		{
-// 			WriteJump(addr, func.addr, (size - 5));
-// 		}
-// 		else
-// 		{
-// 			backupHelper.Restore(addr);
-// 		}
-// 	}
-
-// 	// Summoned Swords
-// 	{
-// 		auto addr     = (appBaseAddr + 0x1DBA94);
-// 		auto jumpAddr = (appBaseAddr + 0x1DBA99);
-// 		constexpr uint32 size = 5;
-// 		/*
-// 		dmc3.exe+1DBA94 - E8 97DE1500      - call dmc3.exe+339930
-// 		dmc3.exe+1DBA99 - 0FB6 8B F20D0000 - movzx ecx,byte ptr [rbx+00000DF2]
-// 		*/
-
-// 		static Function func = {};
-
-// 		constexpr byte8 sect1[] =
-// 		{
-// 			mov_rcx_rbx,
-// 		};
-
-// 		if (!run)
-// 		{
-// 			backupHelper.Save(addr, size);
-// 			func = old_CreateFunction(UpdateGlobalCharacterCostumeByData<SummonedSwordsData>, jumpAddr, true, true, 0, sizeof(sect1), size);
-// 			CopyMemory(func.sect1, sect1, sizeof(sect1));
-// 			CopyMemory(func.sect2, addr, size, MemoryFlags_VirtualProtectSource);
-// 			WriteCall(func.sect2, (appBaseAddr + 0x339930));
-// 		}
-
-// 		if (enable)
-// 		{
-// 			WriteJump(addr, func.addr, (size - 5));
-// 		}
-// 		else
-// 		{
-// 			backupHelper.Restore(addr);
-// 		}
-// 	}
-
-// 	run = true;
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#pragma endregion
 
 #pragma region Damage
 
@@ -11867,7 +11094,7 @@ float ApplyDamage
 		{
 			match = true;
 
-			value *= activeConfig.damageActorMultiplier;
+			value *= activeConfig.damagePlayerActorMultiplier;
 		}
 	}();
 
@@ -11885,7 +11112,7 @@ float ApplyDamage
 
 			match = true;
 
-			value *= activeConfig.damageActorMultiplier;
+			value *= activeConfig.damagePlayerActorMultiplier;
 
 			break;
 		}
@@ -11894,7 +11121,7 @@ float ApplyDamage
 	// Enemy
 	if (!match)
 	{
-		value *= activeConfig.damageEnemyMultiplier;
+		value *= activeConfig.damageEnemyActorMultiplier;
 
 		IntroduceMainActorData(actorData, return value);
 
@@ -11906,17 +11133,6 @@ float ApplyDamage
 
 	return value;
 }
-
-/*
-rsp 0000006277AFFA80
-rsp 0000006277AFF9F8
-rsp 0000006277AFF8F8
-
-rsp 0000006277AFF8F8
-rsp 0000006277AFF9F8
-rsp 0000006277AFFA80
-*/
-
 
 
 
@@ -12100,7 +11316,7 @@ bool DevilButtonCheck(PlayerActorData & actorData)
 	return true;
 }
 
-// @Todo: Update.
+// @Update
 void ActivateDevil(PlayerActorData & actorData)
 {
 	switch (actorData.character)
@@ -12284,37 +11500,6 @@ void ActivateQuicksilver(byte8 * actorBaseAddr)
 		actorBaseAddr,
 		true
 	);
-
-
-	// [&]()
-	// {
-	// 	if (actorBaseAddr != g_playerActorBaseAddrs[2])
-	// 	{
-	// 		return;
-	// 	}
-
-	// 	IntroduceData(g_playerActorBaseAddrs[2], actorData, PlayerActorData, return);
-
-	// 	auto dest = reinterpret_cast<byte8 *>(actorData.newModelPhysicsMetadataPool[0][3]);
-
-	// 	dest = *reinterpret_cast<byte8 **>(dest + 0x110);
-
-	// 	dest += 0x30;
-
-	// 	func_27AA90
-	// 	(
-	// 		&actorData.var_63D0,
-	// 		0,
-	// 		dest,
-	// 		60.0f
-	// 	);
-	// 	/*
-	// 	dmc3.exe+1E9489 - E8 02160900 - call dmc3.exe+27AA90
-	// 	dmc3.exe+1E948E - 3C 01       - cmp al,01
-	// 	*/
-	// }();
-
-
 
 
 
@@ -16254,30 +15439,6 @@ dmc3.exe+1F8AEE - C7 87 20010000 01000000 - mov [rdi+00000120],00000001 { 1 }
 
 
 
-	// Disable Trigger Customize Menu
-	{
-		auto addr = (appBaseAddr + 0x1A9619);
-		constexpr uint32 size = 5;
-		/*
-		dmc3.exe+1A9619 - E8 F21B0900 - call dmc3.exe+23B210
-		dmc3.exe+1A961E - EB B0       - jmp dmc3.exe+1A95D0
-		*/
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-		}
-
-		if (enable)
-		{
-			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
 	// Save Fix
 	{
 		auto addr     = (appBaseAddr + 0x32B0DF);
@@ -17198,7 +16359,7 @@ export void ToggleRoyalguardForceJustFrameRelease(bool enable)
 
 
 
-// @Todo: Update.
+// @Update
 export void ToggleRebellionInfiniteSwordPierce(bool enable)
 {
 	LogFunction(enable);
@@ -17531,7 +16692,68 @@ export void ToggleChronoSwords(bool enable)
 
 
 
+export void ToggleDisablePlayerActorIdleTimer(bool enable)
+{
+	LogFunction(enable);
 
+	static bool run = false;
+
+
+
+	// Dante
+	{
+		auto addr = (appBaseAddr + 0x1F2A38);
+		constexpr size_t size = 5;
+		/*
+		dmc3.exe+1F2A38 - F3 0F5C 4B 14 - subss xmm1,[rbx+14]
+		dmc3.exe+1F2A3D - 0F2F C1       - comiss xmm0,xmm1
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	// Vergil
+	{
+		auto addr = (appBaseAddr + 0x1F29AE);
+		constexpr size_t size = 5;
+		/*
+		dmc3.exe+1F29AE - F3 0F5C 4B 14 - subss xmm1,[rbx+14]
+		dmc3.exe+1F29B3 - 0F2F C1       - comiss xmm0,xmm1
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
+	run = true;
+}
 
 
 
@@ -17670,8 +16892,7 @@ export void EventDelete()
 
 
 
-	// @Todo: Create test scenario.
-	// 2 rooms, one toggles false, the other true.
+
 
 
 
@@ -18161,5 +17382,8 @@ namespaceEnd();
 
 #pragma endregion
 
-#ifdef __GARBAGE__
-#endif
+
+
+
+
+

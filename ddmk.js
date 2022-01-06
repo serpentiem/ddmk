@@ -1,7 +1,16 @@
+
+// @Todo: default libs.
+
+
+
+
 // #region
 
 ClearAll();
 
+
+
+const PrepFlags_IgnoreSemicolon = 1 << 0;
 
 
 const LinkFlags_Static = 1 << 0;
@@ -105,9 +114,10 @@ const VISUAL_STUDIO_PATH    = "C:/Program Files (x86)/Microsoft Visual Studio/" 
 14.28.29333
 14.29.29917
 14.29.30037
+14.29.30133
 */
 
-const MSVC_VERSION      = "14.29.30037";
+const MSVC_VERSION      = "14.29.30133";
 const MSVC_PATH         = VISUAL_STUDIO_PATH + "/VC/Tools/MSVC";
 const MSVC_INCLUDE_PATH = MSVC_PATH + "/" + MSVC_VERSION + "/include";
 const MSVC_LIB_PATH     = MSVC_PATH + "/" + MSVC_VERSION + "/lib";
@@ -127,14 +137,14 @@ const WSDK_LIB_PATH     = WSDK_PATH + "/Lib/"     + WSDK_VERSION;
 
 
 
-let paths_x86_64 =
+let pathLocations_x86_64 =
 [
 	"C:/Windows",
 	"C:/Windows/System32",
 	MSVC_PATH + "/" + MSVC_VERSION + "/bin/Hostx64/x64",
 ];
 
-let includes_x86_64 =
+let includeLocations_x86_64 =
 [
 	MSVC_INCLUDE_PATH,
 	WSDK_INCLUDE_PATH + "/shared",
@@ -143,7 +153,7 @@ let includes_x86_64 =
 	WSDK_INCLUDE_PATH + "/winrt",
 ];
 
-let libs_x86_64 =
+let libLocations_x86_64 =
 [
 	MSVC_LIB_PATH + "/x64",
 	WSDK_LIB_PATH + "/ucrt/x64",
@@ -152,14 +162,14 @@ let libs_x86_64 =
 
 
 
-let paths_x86_32 =
+let pathLocations_x86_32 =
 [
 	"C:/Windows",
 	"C:/Windows/System32",
 	MSVC_PATH + "/" + MSVC_VERSION + "/bin/Hostx64/x86",
 ];
 
-let includes_x86_32 =
+let includeLocations_x86_32 =
 [
 	MSVC_INCLUDE_PATH,
 	WSDK_INCLUDE_PATH + "/shared",
@@ -168,7 +178,7 @@ let includes_x86_32 =
 	WSDK_INCLUDE_PATH + "/winrt",
 ];
 
-let libs_x86_32 =
+let libLocations_x86_32 =
 [
 	MSVC_LIB_PATH + "/x86",
 	WSDK_LIB_PATH + "/ucrt/x86",
@@ -205,15 +215,15 @@ function SetEnv(name)
 
 	if (name == "x86_64")
 	{
-		path    = SetEnv_Feed(paths_x86_64   );
-		include = SetEnv_Feed(includes_x86_64);
-		lib     = SetEnv_Feed(libs_x86_64    );
+		path    = SetEnv_Feed(pathLocations_x86_64   );
+		include = SetEnv_Feed(includeLocations_x86_64);
+		lib     = SetEnv_Feed(libLocations_x86_64    );
 	}
 	else if (name == "x86_32")
 	{
-		path    = SetEnv_Feed(paths_x86_32   );
-		include = SetEnv_Feed(includes_x86_32);
-		lib     = SetEnv_Feed(libs_x86_32    );
+		path    = SetEnv_Feed(pathLocations_x86_32   );
+		include = SetEnv_Feed(includeLocations_x86_32);
+		lib     = SetEnv_Feed(libLocations_x86_32    );
 	}
 
 
@@ -441,6 +451,40 @@ let helpersAll =
 
 	return false;
 }],
+
+
+["Prep_arg", (args) =>
+{
+	// Prep_arg(name);
+
+	if (PrepHelper_Check(1, 1))
+	{
+		return true;
+	}
+
+	let argCount = PrepHelper_argCount;
+
+	let name = args[0];
+
+	c += name + "_";
+
+	return false;
+},
+PrepFlags_IgnoreSemicolon
+],
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ];
 
@@ -676,7 +720,8 @@ this.GetLineIndex = function()
 function ReplaceFunctionOnce
 (
 	tag,
-	func
+	func,
+	flags = 0
 )
 {
 	DebugLog(GetFunctionName() + " Start");
@@ -887,7 +932,11 @@ function ReplaceFunctionOnce
 		{
 			endArgs = pos;
 
-			if (nextName == ";")
+			if
+			(
+				!(flags & PrepFlags_IgnoreSemicolon) &&
+				nextName == ";"
+			)
 			{
 				pos += 2;
 			}
@@ -1043,7 +1092,8 @@ function ReplaceFunctionOnce
 function ReplaceFunctionLoop
 (
 	tag,
-	func
+	func,
+	flags = 0
 )
 {
 	while (pos < bufferSize)
@@ -1053,7 +1103,8 @@ function ReplaceFunctionLoop
 			ReplaceFunctionOnce
 			(
 				tag,
-				func
+				func,
+				flags
 			)
 		)
 		{
@@ -1067,7 +1118,8 @@ function ReplaceFunctionLoop
 function ReplaceFunction
 (
 	tag,
-	func
+	func,
+	flags = 0
 )
 {
 	ClearAll();
@@ -1079,7 +1131,8 @@ function ReplaceFunction
 		ReplaceFunctionLoop
 		(
 			tag,
-			func
+			func,
+			flags
 		)
 	)
 	{
@@ -1112,15 +1165,17 @@ this.Main = function
 	{
 		let helper = helpersAll[helperIndex];
 
-		let tag  = helper[0];
-		let func = helper[1];
+		let tag   = helper[0];
+		let func  = helper[1];
+		let flags = helper[2];
 
 		if
 		(
 			ReplaceFunction
 			(
 				tag,
-				func
+				func,
+				flags
 			)
 		)
 		{
@@ -1134,15 +1189,17 @@ this.Main = function
 	{
 		let helper = helpers[helperIndex];
 
-		let tag  = helper[0];
-		let func = helper[1];
+		let tag   = helper[0];
+		let func  = helper[1];
+		let flags = helper[2];
 
 		if
 		(
 			ReplaceFunction
 			(
 				tag,
-				func
+				func,
+				flags
 			)
 		)
 		{
@@ -1400,6 +1457,7 @@ let compilerArgs_x86_64 =
 	"/wd4005", // macro redefinition
 	"/wd4996", // was declared deprecated
 	"/wd5105", // macro expansion producing 'defined' has undefined behavior
+	// "/wd5202", // a global module fragment can only contain preprocessor directives
 	"/O2",
 	"/Oi",
 	"/Gy",
@@ -1423,6 +1481,7 @@ let compilerArgs_x86_32 =
 	"/wd4005", // macro redefinition
 	"/wd4996", // was declared deprecated
 	"/wd5105", // macro expansion producing 'defined' has undefined behavior
+	// "/wd5202", // a global module fragment can only contain preprocessor directives
 	"/O2",
 	"/Oi",
 	"/Gy",
@@ -1430,6 +1489,68 @@ let compilerArgs_x86_32 =
 	"/EHsc",
 	"/Gz", // __stdcall
 ];
+
+
+
+let libs_x86_64 =
+[
+	"msvcrt.lib",
+	"vcruntime.lib",
+	"ucrt.lib",
+	"libcpmt.lib",
+	"kernel32.lib",
+	"user32.lib",
+	"shell32.lib",
+	"imm32.lib",
+	"advapi32.lib",
+	"d3d11.lib",
+	"d3dcompiler.lib",
+	"dinput8.lib",
+	"dxguid.lib",
+	//"xinput.lib",
+	"Xinput9_1_0.lib",
+];
+
+let libs_x86_32 =
+[
+	"msvcrt.lib",
+	"vcruntime.lib",
+	"ucrt.lib",
+	"libcpmt.lib",
+	"kernel32.lib",
+	"user32.lib",
+	"shell32.lib",
+	"imm32.lib",
+	"advapi32.lib",
+	"d3d11.lib",
+	"d3dcompiler.lib",
+	"dinput8.lib",
+	"dxguid.lib",
+	//"xinput.lib",
+	"Xinput9_1_0.lib",
+];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1455,6 +1576,7 @@ let itemsCore_x86_64 =
 	[ "Core/Core.ixx"     , ""              , false, [] ],
 	[ "Core/GUI.ixx"      , "Core_GUI.obj"  , false, [] ],
 	[ "Core/ImGui.ixx"    , "Core_ImGui.obj", false, [] ],
+	[ "Core/Input.ixx"    , "Core_Input.obj", false, [] ],
 ];
 
 let itemsCoreNoGUI_x86_64 =
@@ -1491,6 +1613,7 @@ let itemsCore_x86_32 =
 	[ "Core/Core.ixx"     , ""              , false, [] ],
 	[ "Core/GUI.ixx"      , "Core_GUI.obj"  , false, [] ],
 	[ "Core/ImGui.ixx"    , "Core_ImGui.obj", false, [] ],
+	[ "Core/Input.ixx"    , "Core_Input.obj", false, [] ],
 ];
 
 let itemsCoreNoGUI_x86_32 =
@@ -2887,6 +3010,65 @@ let helpersMary =
 	return false;
 }],
 
+
+
+
+
+["IntroducePlayerActorExpData", (args) =>
+{
+	// IntroducePlayerActorExpData(actorData, return);
+
+	if (PrepHelper_Check(2, 2))
+	{
+		return true;
+	}
+
+	let funcName  = PrepHelper_funcName;
+	let lineIndex = PrepHelper_lineIndex;
+	let argCount  = PrepHelper_argCount;
+
+
+
+	let actorData = args[0];
+	let returnal  = args[1];
+
+
+
+	c += Tabs() + "auto character = " + actorData + ".character;" + NEW_LINE;
+	c += Tabs() + "if (character >= CHARACTER::MAX)" + NEW_LINE;
+	ScopeStart();
+	c += Tabs() + returnal + ";" + NEW_LINE;
+	ScopeEnd();
+	c += NEW_LINE;
+
+	c += Tabs() + "auto style = " + actorData + ".style;" + NEW_LINE;
+	c += Tabs() + "if (style >= STYLE::MAX)" + NEW_LINE;
+	ScopeStart();
+	c += Tabs() + returnal + ";" + NEW_LINE;
+	ScopeEnd();
+	c += NEW_LINE;
+
+	c += Tabs() + "ExpData * expDataAddr =" + NEW_LINE;
+	c += Tabs() + "(character == CHARACTER::DANTE ) ? &expDataDante  :" + NEW_LINE;
+	c += Tabs() + "(character == CHARACTER::VERGIL) ? &expDataVergil :" + NEW_LINE;
+	c += Tabs() + "0;" + NEW_LINE;
+	c += NEW_LINE;
+
+	c += Tabs() + "if (!expDataAddr)" + NEW_LINE;
+	ScopeStart();
+	c += Tabs() + returnal + ";" + NEW_LINE;
+	ScopeEnd();
+	c += NEW_LINE;
+
+	c += Tabs() + "auto & expData = *expDataAddr;";
+
+
+
+	return false;
+}],
+
+
+
 ];
 
 let itemsMary =
@@ -2894,7 +3076,7 @@ let itemsMary =
 	[ "Mary/Vars.ixx"            , "", true , [] ],
 	[ "Mary/Internal.ixx"        , "", false, [] ],
 	[ "Mary/Global.ixx"          , "", true , [] ],
-	[ "Mary/Config.ixx"          , "", false, [] ],
+	[ "Mary/Config.ixx"          , "", true , [] ],
 	[ "Mary/Memory.ixx"          , "", false, [] ],
 	[ "Mary/File.ixx"            , "", false, [] ],
 	[ "Mary/FMOD.ixx"            , "", false, [] ],
@@ -2904,6 +3086,7 @@ let itemsMary =
 	[ "Mary/HUD.ixx"             , "", true , [] ],
 	[ "Mary/SoundRelocations.ixx", "", true , [] ],
 	[ "Mary/Sound.ixx"           , "", true , [] ],
+	[ "Mary/Exp.ixx"             , "", true , [] ],
 	[ "Mary/ActorBase.ixx"       , "", true , [] ],
 	[ "Mary/ActorRelocations.ixx", "", true , [] ],
 	[ "Mary/Actor.ixx"           , "", true , [] ],
@@ -2913,9 +3096,9 @@ let itemsMary =
 	[ "Mary/Speed.ixx"           , "", false, [] ],
 	[ "Mary/Training.ixx"        , "", false, [] ],
 	[ "Mary/Window.ixx"          , "", false, [] ],
-	[ "Mary/Item.ixx"            , "", true , [] ],
+	// [ "Mary/Item.ixx"            , "", true , [] ],
 	[ "Mary/Event.ixx"           , "", true , [] ],
-	[ "Mary/Scene.ixx"           , "", false, [] ],
+	[ "Mary/Scene.ixx"           , "", true, [] ],
 	[ "GlobalBase.ixx"           , "", false, [] ],
 	[ "GUIBase.ixx"              , "", false, [] ],
 	[ "Mary/GUI.ixx"             , "", true , [] ],
@@ -2926,7 +3109,8 @@ let itemsMary =
 
 let itemsMaryActor =
 [
-	[ "Mary/Actor.ixx", "", true, [] ],
+	[ "Mary/Exp.ixx", "", true, [] ],
+	[ "Mary/Mary.cpp", "", false, [] ],
 ];
 
 let itemsMaryGUI =
@@ -2952,22 +3136,19 @@ let linkerArgsMary =
 
 let libsMary =
 [
-	"msvcrt.lib",
-	"vcruntime.lib",
-	"ucrt.lib",
-	"kernel32.lib",
-	"user32.lib",
-	"shell32.lib",
-	"imm32.lib",
-	"advapi32.lib",
-	"d3d11.lib",
-	"d3dcompiler.lib",
-	"dinput8.lib",
-	"dxguid.lib",
-	"xinput.lib",
 	LOCATION_ZLIB,
 	LOCATION_LIBZIP,
 ];
+
+libsMary = AddFront
+(
+	libsMary,
+	libs_x86_64
+);
+
+
+
+
 
 // #endregion
 
@@ -3355,22 +3536,13 @@ let libsKyrie =
 
 // #region Verify
 
-let compilerArgsVerify =
-[
-	"/nologo",
-	"/c",
-	"/std:c++latest",
-	"/permissive-",
-	"/experimental:module",
-	"/Zc:forScope",
-	"/Zc:inline",
-	"/Zc:preprocessor",
-	"/Zc:wchar_t",
-	"/Zc:externC-",
-	"/W3",
-	"/O2",
-	"/Oi",
-];
+let compilerArgsVerify = [];
+
+compilerArgsVerify = AddFront
+(
+	compilerArgsVerify,
+	compilerArgs_x86_64
+);
 
 let itemsVerify =
 [
@@ -4354,8 +4526,8 @@ let items =
 					"/Zc:wchar_t",
 					"/Zc:externC-",
 					"/W3",
-					"/wd4005",
-					"/wd5105",
+					// "/wd4005",
+					// "/wd5105",
 					"/O2",
 					"/Oi",
 					"/Gy",

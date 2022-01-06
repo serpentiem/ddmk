@@ -23,7 +23,7 @@ import Window;
 
 using namespace Windows;
 
-#define debug false
+#define debug true
 
 uint32 DllMain
 (

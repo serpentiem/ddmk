@@ -184,7 +184,7 @@ export void SetVolume
 	float volume
 )
 {
-	LogFunction(channelIndex, volume);
+	Log("%s %u %g", FUNC_NAME, channelIndex, volume);
 
 	if (!FMOD_init)
 	{
@@ -313,7 +313,7 @@ struct DbstHelper
 
 bool DbstHelper::Init(uint32 dataSize)
 {
-	LogFunction();
+	DebugLogFunction();
 
 	dataAddr = Alloc(dataSize);
 	if (!dataAddr)
@@ -368,7 +368,7 @@ struct HeadHelper
 
 bool HeadHelper::Init(uint32 dataSize)
 {
-	LogFunction();
+	DebugLogFunction();
 
 	dataAddr = Alloc(dataSize);
 	if (!dataAddr)
@@ -457,7 +457,7 @@ bool ProgHelper::Init
 	uint32 sectCount
 )
 {
-	LogFunction();
+	DebugLogFunction();
 
 	dataAddr = Alloc(dataSize);
 	if (!dataAddr)
@@ -561,7 +561,7 @@ struct SmplHelper
 
 bool SmplHelper::Init(uint32 dataSize)
 {
-	LogFunction();
+	DebugLogFunction();
 
 	dataAddr = Alloc(dataSize);
 	if (!dataAddr)
@@ -639,7 +639,7 @@ struct VagiHelper
 
 bool VagiHelper::Init(uint32 dataSize)
 {
-	LogFunction();
+	DebugLogFunction();
 
 	dataAddr = Alloc(dataSize);
 	if (!dataAddr)
@@ -753,7 +753,7 @@ bool WaveHelper::Init
 	uint32 metadataSize
 )
 {
-	LogFunction();
+	DebugLogFunction();
 
 	dataAddr = Alloc(dataSize);
 	if (!dataAddr)
@@ -822,7 +822,7 @@ struct SoundHelper
 
 bool SoundHelper::Init(uint32 dataSize)
 {
-	LogFunction();
+	DebugLogFunction();
 
 	dataAddr = Alloc(dataSize);
 	if (!dataAddr)
@@ -883,7 +883,7 @@ void Decompile
 	uint8 helperIndex
 )
 {
-	LogFunction();
+	DebugLogFunction();
 
 	IntroduceHelpers(helperIndex);
 
@@ -1125,7 +1125,7 @@ void Decompile
 
 void Compile(uint8 helperIndex)
 {
-	LogFunction();
+	DebugLogFunction();
 
 	IntroduceHelpers(helperIndex);
 
@@ -1230,7 +1230,7 @@ inline void Single
 	const uint8 fileIndex
 )
 {
-	Log(message);
+	DebugLog(message);
 
 	IntroduceHelpers(helperIndex);
 
@@ -1251,7 +1251,7 @@ void Multi
 	const uint8(&fileIndices)[count]
 )
 {
-	Log(message);
+	DebugLog(message);
 
 	IntroduceHelpers(helperIndex);
 
@@ -1776,7 +1776,7 @@ export bool Sound_Init()
 
 	old_for_all(uint8, helperIndex, HELPER_COUNT)
 	{
-		Log("helperIndex %u", helperIndex);
+		DebugLog("helperIndex %u", helperIndex);
 
 		// auto & headHelper  = g_headHelper [helperIndex];
 		// auto & progHelper  = g_progHelper [helperIndex];

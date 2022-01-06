@@ -11,14 +11,19 @@
 export module Global;
 
 import Core;
+import Core_Input;
 
 #include "../Core/Macros.h"
+
+
+
 
 import Windows;
 import DXGI;
 import D3D10;
 import D3D11;
 import DI8;
+import XI;
 
 using namespace Windows;
 
@@ -32,32 +37,55 @@ import Vars;
 
 
 
+namespaceStart(DXGI);
+
+export IDXGISwapChain * swapChain = 0;
+
+namespaceEnd();
 
 
-export namespace DXGI
-{
-	IDXGISwapChain * swapChain = 0;
-}
 
-export namespace D3D10
-{
-	ID3D10Device           * device           = 0;
-	ID3D10RenderTargetView * renderTargetView = 0;
-}
+namespaceStart(D3D10);
 
-export namespace D3D11
-{
-	ID3D11Device           * device           = 0;
-	ID3D11DeviceContext    * deviceContext    = 0;
-	ID3D11RenderTargetView * renderTargetView = 0;
-}
+export ID3D10Device           * device           = 0;
+export ID3D10RenderTargetView * renderTargetView = 0;
 
-export namespace DI8
-{
-	IDirectInput8W       * deviceInterface = 0;
-	IDirectInputDevice8W * mouse           = 0;
-	DIMOUSESTATE2          mouseState      = {};
-}
+namespaceEnd();
+
+
+
+namespaceStart(D3D11);
+
+export ID3D11Device           * device           = 0;
+export ID3D11DeviceContext    * deviceContext    = 0;
+export ID3D11RenderTargetView * renderTargetView = 0;
+
+namespaceEnd();
+
+
+
+export Keyboard keyboard = {};
+export Mouse    mouse    = {};
+export Gamepad  gamepad  = {};
+
+
+
+
+
+
+
+
+
+
+export namespaceStart(XI);
+
+XINPUT_STATE state = {};
+
+namespaceEnd();
+
+
+
+
 
 
 
@@ -77,6 +105,17 @@ export bool g_eventRun[EVENT::COUNT] = {};
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 export bool  g_quicksilver           = false;
 export bool  g_disableCameraRotation = false;
 
@@ -84,10 +123,6 @@ export bool  g_disableCameraRotation = false;
 
 
 export bool g_haywireNeoGenerator = false;
-
-
-
-
 
 
 
@@ -156,10 +191,25 @@ export auto & GetNewActorData
 
 export uint8 g_helperIndices[CHANNEL::MAX] = {};
 
-export bool g_show               = false;
-export bool g_lastShow           = false;
-export bool g_showItemWindow     = false;
-export bool g_lastShowItemWindow = false;
+
+
+
+
+export bool g_show     = false;
+export bool g_lastShow = false;
+export bool g_showMain = false;
+export bool g_showShop = false;
+
+
+
+
+
+export float g_shopTimer   = 0;
+export float g_shopTimeout = 100; // in ms
+
+
+
+
 
 
 
@@ -175,28 +225,6 @@ export float g_magicPoints[PLAYER_COUNT] = {};
 
 
 
-
-
-
-
-// // @Remove
-
-// export bool g_visible = false;
-// export float g_characterSwitchTimeout[4] = {};
-// export uint32 g_eventNevan = 0;
-// export bool g_setEventNevan = false;
-
-
-
-// export namespaceStart(BossVergil);
-
-// uint32 variant = 0;
-
-// namespaceEnd();
-
-
-// // uint32 g_bossVergilVariant = 0;
-// // uint32 g_variantBossVergil = 0;
 
 
 
@@ -315,6 +343,30 @@ export bool InCredits()
 
 
 
+
+export size_t g_saveIndex     = 0;
+export size_t g_lastSaveIndex = 0;
+
+
+
+
+/*
+
+active
+queued
+
+saved
+
+expData
+savedExpData
+
+activeExpData
+queuedExpData
+
+
+
+
+*/
 
 
 

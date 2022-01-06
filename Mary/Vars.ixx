@@ -5,13 +5,88 @@ import Core;
 #include "../Core/Macros.h"
 
 
+
+export namespaceStart(UNLOCK_DANTE);
+enum
+{
+	REBELLION_STINGER_LEVEL_1,
+	REBELLION_STINGER_LEVEL_2,
+	REBELLION_DRIVE,
+	REBELLION_AIR_HIKE,
+
+	CERBERUS_REVOLVER_LEVEL_2,
+	CERBERUS_WINDMILL,
+
+	AGNI_RUDRA_JET_STREAM_LEVEL_2,
+	AGNI_RUDRA_JET_STREAM_LEVEL_3,
+	AGNI_RUDRA_WHIRLWIND,
+	AGNI_RUDRA_AIR_HIKE,
+
+	NEVAN_REVERB_SHOCK_LEVEL_1,
+	NEVAN_REVERB_SHOCK_LEVEL_2,
+	NEVAN_BAT_RIFT_LEVEL_2,
+	NEVAN_AIR_RAID,
+	NEVAN_VOLUME_UP,
+
+	BEOWULF_STRAIGHT_LEVEL_2,
+	BEOWULF_BEAST_UPPERCUT,
+	BEOWULF_RISING_DRAGON,
+	BEOWULF_AIR_HIKE,
+
+	EBONY_IVORY_LEVEL_2,
+	EBONY_IVORY_LEVEL_3,
+
+	SHOTGUN_LEVEL_2,
+	SHOTGUN_LEVEL_3,
+
+	ARTEMIS_LEVEL_2,
+	ARTEMIS_LEVEL_3,
+
+	SPIRAL_LEVEL_2,
+	SPIRAL_LEVEL_3,
+
+	KALINA_ANN_LEVEL_2,
+	KALINA_ANN_LEVEL_3,
+
+	COUNT,
+};
+namespaceEnd();
+
+
+
+export namespaceStart(UNLOCK_VERGIL);
+enum
+{
+	YAMATO_RAPID_SLASH_LEVEL_1,
+	YAMATO_RAPID_SLASH_LEVEL_2,
+	YAMATO_JUDGEMENT_CUT_LEVEL_1,
+	YAMATO_JUDGEMENT_CUT_LEVEL_2,
+
+	BEOWULF_STARFALL_LEVEL_2,
+	BEOWULF_RISING_SUN,
+	BEOWULF_LUNAR_PHASE_LEVEL_2,
+
+	YAMATO_FORCE_EDGE_HELM_BREAKER_LEVEL_2,
+	YAMATO_FORCE_EDGE_STINGER_LEVEL_1,
+	YAMATO_FORCE_EDGE_STINGER_LEVEL_2,
+	YAMATO_FORCE_EDGE_ROUND_TRIP,
+
+	SUMMONED_SWORDS_LEVEL_2,
+	SUMMONED_SWORDS_LEVEL_3,
+	SPIRAL_SWORDS,
+
+	COUNT,
+};
+namespaceEnd();
+
+
+
 export namespaceStart(MISSION);
 enum
 {
 	BLOODY_PALACE = 21,
 };
 namespaceEnd();
-
 
 
 
@@ -59,12 +134,13 @@ export enum
 	MELEE_WEAPON_COUNT_VERGIL = 3,
 	RANGED_WEAPON_COUNT = 5,
 	RANGED_WEAPON_COUNT_DANTE = 5,
+	CREATE_ENEMY_COUNT = 30,
+	SAVE_COUNT = 10,
 };
 
-export enum
-{
-	CREATE_ENEMY_COUNT = 30,
-};
+
+
+
 
 export enum
 {
@@ -2138,6 +2214,7 @@ static_assert(sizeof(NextEventData) == 360);
 
 // $NextEventDataEnd
 
+// @Todo: Update names.
 // $SessionDataStart
 
 export struct SessionData
@@ -2170,8 +2247,8 @@ export struct SessionData
 	float hitPoints; // 0xD4
 	float magicPoints; // 0xD8
 	uint32 style; // 0xDC
-	uint32 styleLevel[6]; // 0xE0
-	float styleExperience[6]; // 0xF8
+	uint32 styleLevels[6]; // 0xE0
+	float styleExpPoints[6]; // 0xF8
 	byte32 expertise[8]; // 0x110
 };
 
@@ -2194,8 +2271,8 @@ static_assert(offsetof(SessionData, unlockDevilTrigger) == 0xD1);
 static_assert(offsetof(SessionData, hitPoints) == 0xD4);
 static_assert(offsetof(SessionData, magicPoints) == 0xD8);
 static_assert(offsetof(SessionData, style) == 0xDC);
-static_assert(offsetof(SessionData, styleLevel) == 0xE0);
-static_assert(offsetof(SessionData, styleExperience) == 0xF8);
+static_assert(offsetof(SessionData, styleLevels) == 0xE0);
+static_assert(offsetof(SessionData, styleExpPoints) == 0xF8);
 static_assert(offsetof(SessionData, expertise) == 0x110);
 
 static_assert(sizeof(SessionData) == 304);
@@ -2241,8 +2318,8 @@ export struct QueuedMissionActorData
 	float hitPoints; // 0x50
 	float magicPoints; // 0x54
 	uint32 style; // 0x58
-	uint32 styleLevel[6]; // 0x5C
-	float styleExperience[6]; // 0x74
+	uint32 styleLevels[6]; // 0x5C
+	float styleExpPoints[6]; // 0x74
 	byte32 expertise[8]; // 0x8C
 };
 
@@ -2250,8 +2327,8 @@ static_assert(offsetof(QueuedMissionActorData, weapons) == 0);
 static_assert(offsetof(QueuedMissionActorData, hitPoints) == 0x50);
 static_assert(offsetof(QueuedMissionActorData, magicPoints) == 0x54);
 static_assert(offsetof(QueuedMissionActorData, style) == 0x58);
-static_assert(offsetof(QueuedMissionActorData, styleLevel) == 0x5C);
-static_assert(offsetof(QueuedMissionActorData, styleExperience) == 0x74);
+static_assert(offsetof(QueuedMissionActorData, styleLevels) == 0x5C);
+static_assert(offsetof(QueuedMissionActorData, styleExpPoints) == 0x74);
 static_assert(offsetof(QueuedMissionActorData, expertise) == 0x8C);
 
 static_assert(sizeof(QueuedMissionActorData) == 172);
@@ -2267,7 +2344,7 @@ export struct ActiveMissionActorData
 	uint32 style; // 0x38
 	uint32 styleLevel; // 0x3C
 	byte32 expertise[8]; // 0x40
-	float styleExperience; // 0x60
+	float styleExpPoints; // 0x60
 	float hitPoints; // 0x64
 	float maxHitPoints; // 0x68
 	float magicPoints; // 0x6C
@@ -2278,7 +2355,7 @@ static_assert(offsetof(ActiveMissionActorData, weapons) == 0);
 static_assert(offsetof(ActiveMissionActorData, style) == 0x38);
 static_assert(offsetof(ActiveMissionActorData, styleLevel) == 0x3C);
 static_assert(offsetof(ActiveMissionActorData, expertise) == 0x40);
-static_assert(offsetof(ActiveMissionActorData, styleExperience) == 0x60);
+static_assert(offsetof(ActiveMissionActorData, styleExpPoints) == 0x60);
 static_assert(offsetof(ActiveMissionActorData, hitPoints) == 0x64);
 static_assert(offsetof(ActiveMissionActorData, maxHitPoints) == 0x68);
 static_assert(offsetof(ActiveMissionActorData, magicPoints) == 0x6C);
@@ -3066,8 +3143,10 @@ export struct PlayerActorDataBase : ActorDataBase
 	_(3);
 	uint8 chainCount; // 0x3FAC
 	_(63);
-	byte32 expertise[16]; // 0x3FEC
-	_(192);
+	byte32 activeExpertise[8]; // 0x3FEC
+	_(32);
+	byte32 queuedExpertise[8]; // 0x402C
+	_(160);
 	float maxHitPoints; // 0x40EC
 	_(44);
 	float hitPoints; // 0x411C
@@ -3086,7 +3165,7 @@ export struct PlayerActorDataBase : ActorDataBase
 	bool quicksilver; // 0x6361
 	bool doppelganger; // 0x6362
 	_(1);
-	float styleExperience; // 0x6364
+	float styleExpPoints; // 0x6364
 	_(8);
 	uint32 royalguardBlockType; // 0x6370
 	_(12);
@@ -3215,7 +3294,8 @@ static_assert(offsetof(PlayerActorDataBase, action) == 0x3FA4);
 static_assert(offsetof(PlayerActorDataBase, lastAction) == 0x3FA5);
 static_assert(offsetof(PlayerActorDataBase, bufferedAction) == 0x3FA8);
 static_assert(offsetof(PlayerActorDataBase, chainCount) == 0x3FAC);
-static_assert(offsetof(PlayerActorDataBase, expertise) == 0x3FEC);
+static_assert(offsetof(PlayerActorDataBase, activeExpertise) == 0x3FEC);
+static_assert(offsetof(PlayerActorDataBase, queuedExpertise) == 0x402C);
 static_assert(offsetof(PlayerActorDataBase, maxHitPoints) == 0x40EC);
 static_assert(offsetof(PlayerActorDataBase, hitPoints) == 0x411C);
 static_assert(offsetof(PlayerActorDataBase, lockOnData) == 0x41C0);
@@ -3230,7 +3310,7 @@ static_assert(offsetof(PlayerActorDataBase, trickUpCount) == 0x635F);
 static_assert(offsetof(PlayerActorDataBase, trickDownCount) == 0x6360);
 static_assert(offsetof(PlayerActorDataBase, quicksilver) == 0x6361);
 static_assert(offsetof(PlayerActorDataBase, doppelganger) == 0x6362);
-static_assert(offsetof(PlayerActorDataBase, styleExperience) == 0x6364);
+static_assert(offsetof(PlayerActorDataBase, styleExpPoints) == 0x6364);
 static_assert(offsetof(PlayerActorDataBase, royalguardBlockType) == 0x6370);
 static_assert(offsetof(PlayerActorDataBase, royalguardReleaseLevel) == 0x6380);
 static_assert(offsetof(PlayerActorDataBase, royalguardReleaseEffectIndex) == 0x6381);
@@ -4015,6 +4095,37 @@ static_assert(offsetof(EnemyVectorData, nextMetadataAddr) == 0x1050);
 static_assert(sizeof(EnemyVectorData) == 4184);
 
 // $EnemyVectorDataEnd
+
+
+
+
+
+
+
+
+
+// export struct ExperienceData
+// {
+
+
+// 	Data Dante;
+// 	Data Vergil;
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #pragma pack(pop)
 

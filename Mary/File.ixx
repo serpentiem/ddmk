@@ -416,7 +416,8 @@ byte8 * FileManager::Push
 		(
 			file,
 			size,
-			dest
+			dest,
+			0
 		)
 	)
 	{

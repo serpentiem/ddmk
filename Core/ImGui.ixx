@@ -12,10 +12,12 @@ import DXGI;
 import D3D10;
 import D3D11;
 import DI8;
+import XI;
 
 using namespace Windows;
 using namespace DXGI;
 using namespace DI8;
+using namespace XI;
 
 #define debug false
 
@@ -25,15 +27,15 @@ namespaceStart(ImGui);
 
 LPSTR cursorMap[ImGuiMouseCursor_COUNT] =
 {
-	reinterpret_cast<LPSTR>(IDC_ARROW),
-	reinterpret_cast<LPSTR>(IDC_IBEAM),
-	reinterpret_cast<LPSTR>(IDC_SIZEALL),
-	reinterpret_cast<LPSTR>(IDC_SIZENS),
-	reinterpret_cast<LPSTR>(IDC_SIZEWE),
-	reinterpret_cast<LPSTR>(IDC_SIZENESW),
-	reinterpret_cast<LPSTR>(IDC_SIZENWSE),
-	reinterpret_cast<LPSTR>(IDC_HAND),
-	reinterpret_cast<LPSTR>(IDC_NO),
+	IDC_ARROW,
+	IDC_IBEAM,
+	IDC_SIZEALL,
+	IDC_SIZENS,
+	IDC_SIZEWE,
+	IDC_SIZENESW,
+	IDC_SIZENWSE,
+	IDC_HAND,
+	IDC_NO,
 };
 
 constexpr uint32 cursorMapItemCount = static_cast<uint32>(countof(cursorMap));
@@ -955,14 +957,26 @@ export void Init()
 	io.KeyMap[ImGuiKey_Z         ] = KEY::Z;
 }
 
-// @Update
-export void UpdateKeyboard(byte8 * state)
+
+
+export void UpdateKeyboard(DIKEYBOARDSTATE * stateAddr)
 {
+
+
+	if (!stateAddr)
+	{
+		return;
+	}
+
+	auto & state = *stateAddr;
+
+
+
 	auto & io = GetIO();
 
-	io.KeyCtrl  = ((state[KEY::LEFT_CONTROL] & 0x80) || (state[KEY::RIGHT_CONTROL] & 0x80)) ? true : false;
-	io.KeyShift = ((state[KEY::LEFT_SHIFT  ] & 0x80) || (state[KEY::RIGHT_SHIFT  ] & 0x80)) ? true : false;
-	io.KeyAlt   = ((state[KEY::LEFT_ALT    ] & 0x80) || (state[KEY::RIGHT_ALT    ] & 0x80)) ? true : false;
+	io.KeyCtrl  = ((state.keys[KEY::LEFT_CONTROL] & 0x80) || (state.keys[KEY::RIGHT_CONTROL] & 0x80)) ? true : false;
+	io.KeyShift = ((state.keys[KEY::LEFT_SHIFT  ] & 0x80) || (state.keys[KEY::RIGHT_SHIFT  ] & 0x80)) ? true : false;
+	io.KeyAlt   = ((state.keys[KEY::LEFT_ALT    ] & 0x80) || (state.keys[KEY::RIGHT_ALT    ] & 0x80)) ? true : false;
 
 	SetMemory
 	(
@@ -971,9 +985,9 @@ export void UpdateKeyboard(byte8 * state)
 		256
 	);
 
-	old_for_all(uint32, index, 256)
+	for_all(index, 256)
 	{
-		if (state[index] & 0x80)
+		if (state.keys[index] & 0x80)
 		{
 			io.KeysDown[index] = true;
 		}
@@ -989,10 +1003,12 @@ export vec2 mousePositionMultiplier =
 
 
 
+
+
 export void UpdateMouse
 (
 	HWND windowHandle,
-	DIMOUSESTATE2 * state
+	DIMOUSESTATE2 * stateAddr
 )
 {
 	if
@@ -1003,6 +1019,15 @@ export void UpdateMouse
 	{
 		return;
 	}
+
+
+
+	if (!stateAddr)
+	{
+		return;
+	}
+
+	auto & state = *stateAddr;
 
 	auto & io = GetIO();
 
@@ -1023,15 +1048,161 @@ export void UpdateMouse
 
 	for_all(index, countof(io.MouseDown))
 	{
-		io.MouseDown[index] = (state->rgbButtons[index]) ? true : false;
+		io.MouseDown[index] = (state.rgbButtons[index]) ? true : false;
 	}
 
-	io.MouseWheel += (static_cast<float>(state->lZ) / static_cast<float>(WHEEL_DELTA));
+	io.MouseWheel += (static_cast<float>(state.lZ) / static_cast<float>(WHEEL_DELTA));
 }
 
 namespaceEnd();
 
 #pragma endregion
+
+
+
+
+
+
+namespaceStart(XI);
+
+
+
+
+
+
+
+
+struct ButtonHelper
+{
+	int id;
+	byte32 flag;
+};
+
+
+ButtonHelper buttonHelpers[] =
+{
+	{ ImGuiNavInput_Activate , GAMEPAD::A              },
+	{ ImGuiNavInput_Cancel   , GAMEPAD::B              },
+	{ ImGuiNavInput_Menu     , GAMEPAD::X              },
+	{ ImGuiNavInput_Input    , GAMEPAD::Y              },
+	{ ImGuiNavInput_DpadLeft , GAMEPAD::LEFT           },
+	{ ImGuiNavInput_DpadRight, GAMEPAD::RIGHT          },
+	{ ImGuiNavInput_DpadUp   , GAMEPAD::UP             },
+	{ ImGuiNavInput_DpadDown , GAMEPAD::DOWN           },
+	{ ImGuiNavInput_FocusPrev, GAMEPAD::LEFT_SHOULDER  },
+	{ ImGuiNavInput_FocusNext, GAMEPAD::RIGHT_SHOULDER },
+	{ ImGuiNavInput_TweakSlow, GAMEPAD::LEFT_SHOULDER  },
+	{ ImGuiNavInput_TweakFast, GAMEPAD::RIGHT_SHOULDER },
+};
+
+
+
+export void UpdateGamepad(XINPUT_STATE * stateAddr)
+{
+
+
+	if (!stateAddr)
+	{
+		return;
+	}
+
+
+	auto & state = *stateAddr;
+
+
+
+
+
+	auto & io = ImGui::GetIO();
+
+
+
+	SetMemory
+	(
+		io.NavInputs,
+		0,
+		sizeof(io.NavInputs)
+	);
+
+
+
+
+
+	XInputGetState
+	(
+		0,
+		&state
+	);
+
+
+	for_all(helperIndex, countof(buttonHelpers))
+	{
+		auto & helper = buttonHelpers[helperIndex];
+
+		io.NavInputs[helper.id] = (state.Gamepad.wButtons & helper.flag) ? 1.0f : 0;
+	}
+
+
+
+
+	auto Update = [&]
+	(
+		int NAV_NO,
+		float VALUE,
+		float V0,
+		float V1
+	)
+	{
+		float vn = (float)(VALUE - V0) / (float)(V1 - V0);
+
+		if (vn > 1.0f)
+		{
+			vn = 1.0f;
+		}
+
+		if
+		(
+			(vn > 0.0f) &&
+			(io.NavInputs[NAV_NO] < vn)
+		)
+		{
+			io.NavInputs[NAV_NO] = vn;
+		}
+	};
+
+	Update(ImGuiNavInput_LStickLeft , state.Gamepad.sThumbLX, -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, -32768);
+	Update(ImGuiNavInput_LStickRight, state.Gamepad.sThumbLX, +XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, +32767);
+	Update(ImGuiNavInput_LStickUp   , state.Gamepad.sThumbLY, +XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, +32767);
+	Update(ImGuiNavInput_LStickDown , state.Gamepad.sThumbLY, -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, -32767);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+namespaceEnd();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export void UpdateDisplaySize
 (

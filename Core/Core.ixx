@@ -1,3 +1,5 @@
+// @Review
+
 module;
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
@@ -19,8 +21,18 @@ using namespace Windows;
 
 
 
-export template <typename ... Args>
-void Log(const char * format, Args ... args);
+export bool noLog = false;
+
+
+
+export template
+<
+	bool timestamp = true,
+	typename... Args
+>
+void Log(const char * format, Args... args);
+
+
 
 export void LogFunctionHelper(const char * funcName);
 
@@ -28,20 +40,10 @@ export template <typename T>
 void LogFunctionHelper
 (
 	const char * funcName,
-	T var
+	T value
 );
 
-export template
-<
-	typename T,
-	typename T2
->
-void LogFunctionHelper
-(
-	const char * funcName,
-	T var,
-	T2 var2
-);
+
 
 #pragma region Utility
 
@@ -550,7 +552,11 @@ export bool Free(byte8 * addr)
 
 #pragma region File
 
-// @Todo: Remove logging.
+
+// @Research: bufferSize should be uint32.
+
+
+
 
 export enum
 {
@@ -559,29 +565,19 @@ export enum
 	FileFlags_Append = 1 << 2,
 };
 
+
+
 export HANDLE OpenFile
 (
-	const char * name,
+	const char * location,
 	byte32 flags
 )
 {
-	if constexpr (debug)
-	{
-		// LogFunction();
-		// Log("name  %s", name);
-		// Log("flags %X", flags);
-	}
-
-	byte32 error = 0;
-	HANDLE file = 0;
-
-	SetLastError(0);
-
 	if (flags & FileFlags_Read)
 	{
-		file = CreateFileA
+		return CreateFileA
 		(
-			name,
+			location,
 			GENERIC_READ,
 			0,
 			0,
@@ -592,9 +588,9 @@ export HANDLE OpenFile
 	}
 	else if (flags & FileFlags_Write)
 	{
-		file = CreateFileA
+		return CreateFileA
 		(
-			name,
+			location,
 			GENERIC_WRITE,
 			0,
 			0,
@@ -605,9 +601,9 @@ export HANDLE OpenFile
 	}
 	else if (flags & FileFlags_Append)
 	{
-		file = CreateFileA
+		return CreateFileA
 		(
-			name,
+			location,
 			FILE_APPEND_DATA,
 			0,
 			0,
@@ -617,90 +613,46 @@ export HANDLE OpenFile
 		);
 	}
 
-	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
-	{
-		error = GetLastError();
 
-		// Log
-		// (
-		// 	"CreateFile failed. %X %s %X",
-		// 	error,
-		// 	name,
-		// 	flags
-		// );
 
-		return reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE);
-	}
-
-	return file;
+	return INVALID_HANDLE_VALUE;
 }
 
-export bool CloseFile(HANDLE file)
-{
-	if constexpr (debug)
-	{
-		// LogFunction();
-		// Log("file %llX", file);
-	}
 
-	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
+
+export bool CloseFile(HANDLE fileHandle)
+{
+	return (CloseHandle(fileHandle) != 0);
+}
+
+
+
+export size_t GetFileSize(HANDLE fileHandle)
+{
+	if (fileHandle == INVALID_HANDLE_VALUE)
 	{
 		return 0;
 	}
 
-	byte32 error = 0;
-
-	SetLastError(0);
-
-	if (!CloseHandle(file))
-	{
-		error = GetLastError();
-
-		//Log("CloseHandle failed. %X", error);
-
-		return false;
-	}
-
-	return true;
-}
 
 
-#ifdef _WIN64
-
-
-export size_t GetFileSize(HANDLE file)
-{
-	if constexpr (debug)
-	{
-		// LogFunction();
-		// Log("file %llX", file);
-	}
-
-	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
-	{
-		return 0;
-	}
-
-	byte32 error = 0;
 	BY_HANDLE_FILE_INFORMATION fileInformation = {};
-
-	SetLastError(0);
 
 	if
 	(
 		!GetFileInformationByHandle
 		(
-			file,
+			fileHandle,
 			&fileInformation
 		)
 	)
 	{
-		error = GetLastError();
-
-		//Log("GetFileInformationByHandle failed. %X", error);
-
 		return 0;
 	}
+
+
+
+	#ifdef _WIN64
 
 	size_t size = 0;
 
@@ -721,198 +673,67 @@ export size_t GetFileSize(HANDLE file)
 	);
 
 	return size;
-}
 
 
 
-
-#else
-
-
-export size_t GetFileSize(HANDLE file)
-{
-	if constexpr (debug)
-	{
-		// LogFunction();
-		// Log("file %llX", file);
-	}
-
-	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
-	{
-		return 0;
-	}
-
-	byte32 error = 0;
-	BY_HANDLE_FILE_INFORMATION fileInformation = {};
-
-	SetLastError(0);
-
-	if
-	(
-		!GetFileInformationByHandle
-		(
-			file,
-			&fileInformation
-		)
-	)
-	{
-		error = GetLastError();
-
-		char buffer[64];
-
-		snprintf
-		(
-			buffer,
-			sizeof(buffer),
-			"bruh %X",
-			error
-		);
-
-		MessageBoxA(0, buffer, 0, 0);
-
-		//Log("GetFileInformationByHandle failed. %X", error);
-
-		return 0;
-	}
-
-
+	#else
 
 	return fileInformation.nFileSizeLow;
 
-
-	// size_t size = 0;
-
-	// auto sizeAddr = reinterpret_cast<byte8 *>(&size);
-
-	// CopyMemory
-	// (
-	// 	sizeAddr,
-	// 	&fileInformation.nFileSizeLow,
-	// 	4
-	// );
-
-	// CopyMemory
-	// (
-	// 	(sizeAddr + 4),
-	// 	&fileInformation.nFileSizeHigh,
-	// 	4
-	// );
-
-	// return size;
+	#endif
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 export bool LoadFile
 (
-	HANDLE file,
+	HANDLE fileHandle,
 	size_t size,
 	void * dest,
-	off_t start = 0
+	off_t start // Default value unnecessarily complicates overload resolution.
 )
 {
-	if constexpr (debug)
-	{
-		// LogFunction();
-		// Log("file  %llX", file);
-		// Log("size  %llu", size);
-		// Log("dest  %llX", dest);
-		// Log("start %llX", start);
-	}
-
 	if
 	(
-		(file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE)) ||
-		(size == 0) ||
+		(fileHandle == INVALID_HANDLE_VALUE) ||
 		!dest
 	)
 	{
 		return false;
 	}
 
-	byte32 error = 0;
-	constexpr size_t bufferSize = (1 * 1024 * 1024);
+
+
+	constexpr size_t bufferSize = (1 * 1024 * 1024); // @Research: Consider global bufferSize.
 	auto pos = start;
 	uint32 bytesRead = 0;
 	LARGE_INTEGER filePointer = {};
 
+
+
 	auto Function = [&](size_t size2) -> bool
 	{
-
-
-
-		SetLastError(0);
-
 		if
 		(
 			!SetFilePointerEx
 			(
-				file,
+				fileHandle,
 				*reinterpret_cast<LARGE_INTEGER *>(&pos),
 				&filePointer,
 				FILE_BEGIN
 			)
 		)
 		{
-			error = GetLastError();
-
-			//Log("SetFilePointerEx failed. %X", error);
-
 			return false;
 		}
 
 
 
-
-
-
-
-		SetLastError(0);
-
 		if
 		(
 			!ReadFile
 			(
-				file,
+				fileHandle,
 				(reinterpret_cast<byte8 *>(dest) + pos),
 				static_cast<uint32>(size2),
 				&bytesRead,
@@ -920,12 +741,10 @@ export bool LoadFile
 			)
 		)
 		{
-			error = GetLastError();
-
-			//Log("ReadFile failed. %X", error);
-
 			return false;
 		}
+
+
 
 		pos += size2;
 		size -= size2;
@@ -935,6 +754,8 @@ export bool LoadFile
 		return true;
 	};
 
+
+
 	while (size > bufferSize)
 	{
 		if (!Function(bufferSize))
@@ -942,6 +763,8 @@ export bool LoadFile
 			return false;
 		}
 	}
+
+
 
 	if (size > 0)
 	{
@@ -951,104 +774,109 @@ export bool LoadFile
 		}
 	}
 
+
+
 	return true;
 }
 
+
+
 export byte8 * LoadFile
 (
-	HANDLE file,
+	HANDLE fileHandle,
 	size_t size,
-	off_t start = 0
+	off_t start // Default value unnecessarily complicates overload resolution.
 )
 {
-	if constexpr (debug)
-	{
-		// LogFunction();
-		// Log("file  %llX", file);
-		// Log("size  %llu", size);
-		// Log("start %llX", start);
-	}
-
 	auto dest = Alloc(size);
 	if (!dest)
 	{
 		return 0;
 	}
 
+
+
 	if
 	(
 		!LoadFile
 		(
-			file,
+			fileHandle,
 			size,
 			dest,
 			start
 		)
 	)
 	{
-		//Log("LoadFile failed.");
-
 		Free(dest);
 
 		return 0;
 	}
 
+
+
 	return dest;
 }
 
-export byte8 * LoadFile(const char * name)
-{
-	if constexpr (debug)
-	{
-		// LogFunction();
-		// Log("name %s", name);
-	}
 
-	if (!name)
+
+export byte8 * LoadFile(const char * location)
+{
+	if (!location)
 	{
 		return 0;
 	}
 
+
 	byte32 error = 0;
-	HANDLE file = 0;
+	HANDLE fileHandle = 0;
 	size_t size = 0;
 	byte8 * dest = 0;
 
-	file = OpenFile
+
+
+	fileHandle = OpenFile
 	(
-		name,
+		location,
 		FileFlags_Read
 	);
-	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
-	{
-		//Log("OpenFile failed. %s", name);
-
-		return 0;
-	}
-
-	size = GetFileSize(file);
-	if (size == 0)
+	if (fileHandle == INVALID_HANDLE_VALUE)
 	{
 		return 0;
 	}
+
+
+
+	SetLastError(0);
+
+	size = GetFileSize(fileHandle); // File can exist, but be empty.
+
+	error = GetLastError(); // @Research: Not sure if error checking is necessary here.
+
+	if (error)
+	{
+		return 0;
+	}
+
+
 
 	dest = LoadFile
 	(
-		file,
-		size
+		fileHandle,
+		size, // Size is rounded up to next page boundary.
+		0
 	);
-	if (!dest)
-	{
-		return 0;
-	}
 
-	if (!CloseFile(file))
-	{
-		//Log("CloseFile failed. %s", name);
-	}
+
+
+	CloseFile(fileHandle);
+
+
 
 	return dest;
 }
+
+
+
 
 
 
@@ -1056,25 +884,28 @@ export byte8 * LoadFile(const char * name)
 
 export bool SaveFile
 (
-	HANDLE file,
-	void * addr,
+	HANDLE fileHandle,
+	const void * addr,
 	size_t size
 )
 {
 	if
 	(
-		(file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE)) ||
-		!addr ||
-		(size == 0)
+		(fileHandle == INVALID_HANDLE_VALUE) ||
+		!addr
 	)
 	{
 		return false;
 	}
 
+
+
 	constexpr size_t bufferSize = (1 * 1024 * 1024);
 	off_t pos = 0;
 	uint32 bytesWritten = 0;
 	LARGE_INTEGER filePointer = {};
+
+
 
 	auto Function = [&](size_t size2) -> bool
 	{
@@ -1082,8 +913,8 @@ export bool SaveFile
 		(
 			!WriteFile
 			(
-				file,
-				(reinterpret_cast<byte8 *>(addr) + pos),
+				fileHandle,
+				(reinterpret_cast<byte8 *>(const_cast<void *>(addr)) + pos),
 				static_cast<uint32>(size2),
 				&bytesWritten,
 				0
@@ -1099,6 +930,8 @@ export bool SaveFile
 		return true;
 	};
 
+
+
 	while (size > bufferSize)
 	{
 		if (!Function(bufferSize))
@@ -1106,6 +939,8 @@ export bool SaveFile
 			return false;
 		}
 	}
+
+
 
 	if (size > 0)
 	{
@@ -1115,101 +950,205 @@ export bool SaveFile
 		}
 	}
 
+
+
 	return true;
 }
 
+
+
+
+
+
 export bool SaveFile
 (
-	const char * name,
-	void * addr,
+	const char * location,
+	const void * addr,
 	size_t size,
 	byte32 flags = FileFlags_Write
 )
 {
 	if
 	(
-		!name ||
-		!addr ||
-		(size == 0)
+		!location ||
+		!addr
 	)
 	{
 		return false;
 	}
 
-	HANDLE file = 0;
 
-	file = OpenFile
+
+	HANDLE fileHandle = 0;
+
+
+
+	fileHandle = OpenFile
 	(
-		name,
+		location,
 		flags
 	);
-	if (file == reinterpret_cast<HANDLE>(INVALID_HANDLE_VALUE))
+	if (fileHandle == INVALID_HANDLE_VALUE)
 	{
 		return false;
 	}
 
+
+
 	SaveFile
 	(
-		file,
+		fileHandle,
 		addr,
 		size
 	);
 
-	return CloseFile(file);
+
+
+	CloseFile(fileHandle);
+
+
+
+	return true;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #pragma endregion
 
+
+
+
+
+
 #pragma region Log
 
-bool logInit = false;
+// @Research: Solution for situations where the file system is not available.
+// Consider accumulation and later emit or fallback like OutputDebugStringA.
 
-char logPath[64] = {};
 
-template <typename ... Args>
-void Log(const char * format, Args ... args)
+
+char logLocation[64] = {};
+
+
+
+template
+<
+	bool timestamp,
+	typename... Args
+>
+void Log(const char * format, Args... args)
 {
-	char timestamp[64];
-	SYSTEMTIME st = {};
-	GetLocalTime(&st);
-	snprintf(timestamp, sizeof(timestamp), "%.2u:%.2u:%.2u.%.3u", st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+	if (noLog)
+	{
+		return;
+	}
 
-	char message[512];
-	snprintf(message, sizeof(message), format, args ...);
+
 
 	char buffer[2048];
-	snprintf(buffer, sizeof(buffer), "%s %s\n", timestamp, message);
+	constexpr size_t bufferSize = sizeof(buffer);
+	off_t pos = 0;
+
+
+
+	auto BufferDest = [&]()
+	{
+		return (buffer + pos);
+	};
+
+	auto RemainingBufferSize = [&]()
+	{
+		return (bufferSize - pos);
+	};
+
+
+
+	if (timestamp)
+	{
+		SYSTEMTIME st = {};
+
+		GetLocalTime(&st);
+
+		snprintf
+		(
+			BufferDest(),
+			RemainingBufferSize(),
+			"%.2u:%.2u:%.2u.%.3u ",
+			st.wHour,
+			st.wMinute,
+			st.wSecond,
+			st.wMilliseconds
+		);
+
+		pos = strlen(buffer);
+	}
+
+
+
+	snprintf
+	(
+		BufferDest(),
+		RemainingBufferSize(),
+		format,
+		args...
+	);
+
+	pos = strlen(buffer);
+
+	/*
+	At this point pos is less than bufferSize.
+
+	snprintf guarantees that we don't overflow and that the buffer is zero terminated.
+
+	strlen excludes the zero.
+
+	So pos can at most be (bufferSize - 1).
+
+	We don't need the zero when saving the file. So we can use the full buffer.
+	*/
+
+	buffer[pos] = 0xA;
+	pos++;
+
+
 
 	if
 	(
 		!SaveFile
 		(
-			logPath,
+			logLocation,
 			buffer,
-			strlen(buffer),
+			pos,
 			FileFlags_Append
 		)
 	)
 	{
-		// OutputDebugStringA("Append failed.");
-
-		if
+		SaveFile
 		(
-			!SaveFile
-			(
-				logPath,
-				buffer,
-				strlen(buffer),
-				FileFlags_Write
-			)
-		)
-		{
-			// OutputDebugStringA("Write failed.");
-
-			return;
-		}
+			logLocation,
+			buffer,
+			pos,
+			FileFlags_Write
+		);
 	}
 }
+
+
 
 void LogFunctionHelper(const char * funcName)
 {
@@ -1217,103 +1156,59 @@ void LogFunctionHelper(const char * funcName)
 }
 
 template <typename T>
+const char * LogFunctionHelper_GetFormat()
+{
+	     if constexpr (TypeMatch<T, bool >::value){ return "%s %u"; }
+	else if constexpr (TypeMatch<T, uint8>::value){ return "%s %u"; }
+	else if constexpr
+	(
+		TypeMatch<T, void  *>::value ||
+		TypeMatch<T, byte8 *>::value
+	)
+	{
+		#ifdef _WIN64
+		return "%s %llX";
+		#else
+		return "%s %X";
+		#endif
+	}
+}
+
+template <typename T>
 void LogFunctionHelper
 (
 	const char * funcName,
-	T var
+	T value
 )
 {
-	#ifdef _WIN64
-
-	const char * format =
-	(TypeMatch<T, byte8 *>::value) ? "%s %llX" :
-	"%s %u";
-
-	#else
-
-	const char * format =
-	(TypeMatch<T, byte8 *>::value) ? "%s %X" :
-	"%s %u";
-
-	#endif
-
-	Log(format, funcName, var);
+	Log(LogFunctionHelper_GetFormat<T>(), funcName, value);
 }
 
-template
-<
-	typename T,
-	typename T2
->
-void LogFunctionHelper
-(
-	const char * funcName,
-	T var,
-	T2 var2
-)
-{
-	char format[128] = {};
-	uint32 pos = 0;
 
-	auto Feed = [&](const char * name)
-	{
-		auto size = static_cast<uint32>(strlen(name));
 
-		memcpy
-		(
-			(format + pos),
-			name,
-			size
-		);
-
-		pos += size;
-	};
-
-	Feed("%s ");
-
-	if constexpr (TypeMatch<T, byte8 *>::value)
-	{
-		Feed("%llX ");
-	}
-	else if constexpr (TypeMatch<T, float>::value)
-	{
-		Feed("%g ");
-	}
-	else
-	{
-		Feed("%u ");
-	}
-
-	if constexpr (TypeMatch<T2, byte8 *>::value)
-	{
-		Feed("%llX");
-	}
-	else if constexpr (TypeMatch<T2, float>::value)
-	{
-		Feed("%g");
-	}
-	else
-	{
-		Feed("%u");
-	}
-
-	Log(format, funcName, var, var2);
-}
-
-export void Core_Log_Init
+export void InitLog
 (
 	const char * directoryName,
-	const char * filename
+	const char * fileName
 )
 {
 	CreateDirectoryA(directoryName, 0);
-	snprintf(logPath, sizeof(logPath), "%s\\%s", directoryName, filename);
-	DeleteFileA(logPath);
 
-	logInit = true;
+	snprintf
+	(
+		logLocation,
+		sizeof(logLocation),
+		"%s/%s",
+		directoryName,
+		fileName
+	);
+
+	DeleteFileA(logLocation);
 }
 
 #pragma endregion
+
+
 
 #pragma region Containers
 
@@ -3492,7 +3387,7 @@ export struct KeyData
 
 
 
-
+	// @Todo: Use KEYBOARDSTATE.
 	void Check(byte8 * state)
 	{
 		// if (showPopup)
@@ -3557,6 +3452,8 @@ export struct KeyData
 
 
 
+// @Research: New module
+
 
 
 
@@ -3564,6 +3461,12 @@ namespaceStart(DI8);
 
 
 
+
+// @Todo: Add to create_modules as new.
+export struct DIKEYBOARDSTATE
+{
+	byte8 keys[256];
+};
 
 
 
@@ -4106,7 +4009,7 @@ static_assert(KEY::COUNT == 256);
 
 
 
-
+// @Remove
 export namespaceStart(BUFFER_SIZE);
 enum
 {
@@ -4275,21 +4178,20 @@ export void UpdateGlobalRenderSize
 
 namespaceStart(XI);
 
-// $GamepadStart
 
 export namespaceStart(GAMEPAD);
 enum
 {
-	UP             = 0x0001,
-	DOWN           = 0x0002,
-	LEFT           = 0x0004,
-	RIGHT          = 0x0008,
-	START          = 0x0010,
-	BACK           = 0x0020,
-	LEFT_THUMB     = 0x0040,
-	RIGHT_THUMB    = 0x0080,
-	LEFT_SHOULDER  = 0x0100,
-	RIGHT_SHOULDER = 0x0200,
+	UP             = 0x1,
+	DOWN           = 0x2,
+	LEFT           = 0x4,
+	RIGHT          = 0x8,
+	START          = 0x10,
+	BACK           = 0x20,
+	LEFT_THUMB     = 0x40,
+	RIGHT_THUMB    = 0x80,
+	LEFT_SHOULDER  = 0x100,
+	RIGHT_SHOULDER = 0x200,
 	A              = 0x1000,
 	B              = 0x2000,
 	X              = 0x4000,
@@ -4297,27 +4199,83 @@ enum
 };
 namespaceEnd();
 
-export const char * buttonNames[] =
-{
-	"Up",
-	"Down",
-	"Left",
-	"Right",
-	"Start",
-	"Back",
-	"Left Thumb",
-	"Right Thumb",
-	"Left Shoulder",
-	"Right Shoulder",
-	"A",
-	"B",
-	"X",
-	"Y",
-};
 
-// $GamepadEnd
+
+
+
+
+
+
+
+
+// // $GamepadStart
+
+// export namespaceStart(GAMEPAD);
+// enum
+// {
+// 	UP             = 0x0001,
+// 	DOWN           = 0x0002,
+// 	LEFT           = 0x0004,
+// 	RIGHT          = 0x0008,
+// 	START          = 0x0010,
+// 	BACK           = 0x0020,
+// 	LEFT_THUMB     = 0x0040,
+// 	RIGHT_THUMB    = 0x0080,
+// 	LEFT_SHOULDER  = 0x0100,
+// 	RIGHT_SHOULDER = 0x0200,
+// 	A              = 0x1000,
+// 	B              = 0x2000,
+// 	X              = 0x4000,
+// 	Y              = 0x8000,
+// };
+// namespaceEnd();
+
+// export const char * buttonNames[] =
+// {
+// 	"Up",
+// 	"Down",
+// 	"Left",
+// 	"Right",
+// 	"Start",
+// 	"Back",
+// 	"Left Thumb",
+// 	"Right Thumb",
+// 	"Left Shoulder",
+// 	"Right Shoulder",
+// 	"A",
+// 	"B",
+// 	"X",
+// 	"Y",
+// };
+
+// // $GamepadEnd
 
 namespaceEnd();
+
+
+
+
+
+
+// Input
+
+
+
+
+
+
+
+
+
+
+
+
+//};
+
+
+
+
+
 
 
 

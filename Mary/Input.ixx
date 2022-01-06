@@ -38,8 +38,8 @@ export void ToggleCursor()
 {
 	if
 	(
-		g_show ||
-		g_showItemWindow
+		g_showMain ||
+		g_showShop
 	)
 	{
 		Windows_ToggleCursor(true);
@@ -49,6 +49,12 @@ export void ToggleCursor()
 		Windows_ToggleCursor(!activeConfig.hideMouseCursor);
 	}
 }
+
+
+
+
+
+
 
 export inline ENGINE_GAMEPAD & GetGamepad(uint8 index)
 {

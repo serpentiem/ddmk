@@ -1,5 +1,5 @@
 module;
-#include <xmmintrin.h>
+#include <intrin.h>
 export module Internal;
 
 import Core;

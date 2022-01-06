@@ -12,22 +12,81 @@ import Actor;
 import Arcade;
 import BossRush;
 import Config;
+import Exp;
 import File;
 import Global;
-import Item;
 import Model;
 import Sound;
 import Vars;
 
 #define debug false
 
-// #include "Macros.h"
 
 
 
-// bool Event_run[EVENT::COUNT] = {};
-// bool MainLoopOnce_run     = false;
 
+
+
+#pragma region Shop
+
+export void OpenShop()
+{
+	DebugLogFunction();
+
+	g_showShop = true;
+
+	PlaySound(0, 4);
+}
+
+export void CloseShop()
+{
+	DebugLogFunction();
+
+	if (g_showShop)
+	{
+		PlaySound(0, 3);
+	}
+
+	g_showShop = false;
+
+	g_shopTimer = (activeConfig.frameRate * (g_shopTimeout / 1000));
+}
+
+
+
+namespaceStart(Shop);
+
+void EventDelete()
+{
+	if (!activeConfig.Actor.enable)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	CloseShop();
+}
+
+void TriggerCustomizeMenu()
+{
+	if
+	(
+		!activeConfig.Actor.enable ||
+		(g_shopTimer > 0)
+	)
+	{
+		return;
+	}
+
+	LogFunction();
+
+	OpenShop();
+}
+
+namespaceEnd();
+
+#pragma endregion
 
 
 
@@ -36,6 +95,7 @@ void InitSession()
 	LogFunction();
 
 	Arcade::InitSession();
+	Exp::InitSession();
 }
 
 void SetCharacter(byte8 * dest)
@@ -112,8 +172,6 @@ void UpdateEnemyCount()
 
 	Sound::UpdateEnemyCount();
 }
-
-
 
 
 
@@ -218,7 +276,7 @@ void EventHandler(EventData & eventData)
 				}
 				case PAUSE:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
@@ -271,7 +329,7 @@ void EventHandler(EventData & eventData)
 					Log(funcName);
 
 					Actor::EventDelete();
-					Item::EventDelete();
+					Shop::EventDelete();
 					Sound::EventDelete();
 
 					break;
@@ -304,79 +362,79 @@ void EventHandler(EventData & eventData)
 			{
 				case INIT:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
 				case MAIN:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
 				case TELEPORT:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
 				case PAUSE:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
 				case STATUS:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
 				case OPTIONS:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
 				case DEATH:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
 				case EVENT::ITEM:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
 				case MESSAGE:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
 				case CUSTOMIZE:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
 				case SAVE:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
 				case DELETE:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
 				case END:
 				{
-					Log(funcName);
+					DebugLog(funcName);
 
 					break;
 				}
@@ -449,22 +507,6 @@ void EventHandler(EventData & eventData)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void PlayerActorLoop(byte8 * actorBaseAddr)
 {
 	Actor::PlayerActorLoop(actorBaseAddr);
@@ -500,11 +542,36 @@ void Continue()
 
 
 
-void TriggerCustomizeMenu()
+bool TriggerCustomizeMenu()
 {
 	LogFunction();
 
-	Item::TriggerCustomizeMenu();
+	if (!activeConfig.Actor.enable)
+	{
+		return false;
+	}
+
+	Shop::TriggerCustomizeMenu();
+
+	return true;
+}
+
+
+
+bool MissionStartTriggerCustomizeMenu(byte8 * addr)
+{
+	LogFunction();
+
+	if (!activeConfig.Actor.enable)
+	{
+		return false;
+	}
+
+	*reinterpret_cast<byte8 *>(addr + 8) = 2;
+
+	Shop::TriggerCustomizeMenu();
+
+	return true;
 }
 
 
@@ -562,6 +629,111 @@ void ClearActorModeMission12(byte8 * actorBaseAddr)
 
 
 
+// @Merge
+auto GetSaveIndex()
+{
+	return *reinterpret_cast<uint32 *>(appBaseAddr + 0xCF3310 + 0x18);
+	/*
+	dmc3.exe+1BDB08 - 48 8D 0D 0158B300 - lea rcx,[dmc3.exe+CF3310]
+	dmc3.exe+32A885 - 8B 53 18          - mov edx,[rbx+18]
+	dmc3.exe+32A79D - 8B 53 18          - mov edx,[rbx+18]
+	*/
+}
+
+void UpdateGlobalSaveIndex()
+{
+	{
+		auto saveIndex = GetSaveIndex();
+		if (saveIndex >= SAVE_COUNT)
+		{
+			saveIndex = 0;
+		}
+
+		g_saveIndex = saveIndex;
+	}
+
+
+
+	// auto & saveIndex     = g_saveIndex;
+	// auto & lastSaveIndex = g_lastSaveIndex;
+
+	// if (lastSaveIndex != saveIndex)
+	// {
+	// 	// Dante
+	// 	{
+	// 		auto & expData     = g_expDataDante[saveIndex];
+	// 		auto & lastExpData = g_expDataDante[lastSaveIndex];
+
+	// 		CopyMemory
+	// 		(
+	// 			&expData,
+	// 			&lastExpData,
+	// 			sizeof(expData)
+	// 		);
+	// 	}
+
+	// 	// Vergil
+	// 	{
+	// 		auto & expData     = g_expDataVergil[saveIndex];
+	// 		auto & lastExpData = g_expDataVergil[lastSaveIndex];
+
+	// 		CopyMemory
+	// 		(
+	// 			&expData,
+	// 			&lastExpData,
+	// 			sizeof(expData)
+	// 		);
+	// 	}
+
+	// 	lastSaveIndex = saveIndex;
+	// }
+}
+
+
+
+
+
+
+
+
+
+
+void Save()
+{
+	LogFunction();
+
+	UpdateGlobalSaveIndex();
+
+	SaveExp();
+}
+
+void Load()
+{
+	LogFunction();
+
+	UpdateGlobalSaveIndex();
+
+	LoadExp();
+}
+
+
+
+void IncStyleExpPoints(byte8 * actorBaseAddr)
+{
+	LogFunction(actorBaseAddr);
+
+	SavePlayerActorExp();
+
+	IntroduceData(actorBaseAddr, actorData, PlayerActorData, return);
+
+	Log("styleExpPoints %g", actorData.styleExpPoints);
+}
+
+
+
+
+
+
 
 
 // @Merge
@@ -570,6 +742,181 @@ export void Event_Toggle(bool enable)
 	LogFunction(enable);
 
 	static bool run = false;
+
+
+
+
+
+
+// IncStyleExpPoints
+{
+	auto addr     = (appBaseAddr + 0x1FA2D5);
+	auto jumpAddr = (appBaseAddr + 0x1FA2DD);
+	constexpr size_t size = 8;
+	/*
+	dmc3.exe+1FA2D5 - F3 0F11 89 64630000 - movss [rcx+00006364],xmm1
+	dmc3.exe+1FA2DD - 8B 89 58630000      - mov ecx,[rcx+00006358]
+	*/
+
+	static Function func = {};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction
+		(
+			IncStyleExpPoints,
+			jumpAddr,
+			(
+				FunctionFlags_SaveRegisters    |
+				FunctionFlags_NoResult         |
+				FunctionFlags_SaveXMMRegisters |
+				FunctionFlags_NoXMMResult
+			),
+			size
+		);
+		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+{
+	auto addr     = (appBaseAddr + 0x1FA3F2);
+	auto jumpAddr = (appBaseAddr + 0x1FA3FA);
+	constexpr size_t size = 8;
+	/*
+	dmc3.exe+1FA3F2 - F3 0F11 8B 64630000 - movss [rbx+00006364],xmm1
+	dmc3.exe+1FA3FA - FF 50 48            - call qword ptr [rax+48]
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect1[] =
+	{
+		mov_rcx_rbx,
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction
+		(
+			IncStyleExpPoints,
+			jumpAddr,
+			(
+				FunctionFlags_SaveRegisters    |
+				FunctionFlags_NoResult         |
+				FunctionFlags_SaveXMMRegisters |
+				FunctionFlags_NoXMMResult
+			),
+			size,
+			sizeof(sect1)
+		);
+		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		CopyMemory(func.sect1, sect1, sizeof(sect1));
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Save
+{
+	auto addr     = (appBaseAddr + 0x32A88B);
+	auto jumpAddr = (appBaseAddr + 0x32A890);
+	constexpr size_t size = 5;
+	/*
+	dmc3.exe+32A88B - E8 F0070000 - call dmc3.exe+32B080
+	dmc3.exe+32A890 - EB 07       - jmp dmc3.exe+32A899
+	*/
+
+	static Function func = {};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(Save, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		WriteCall(func.sect0, (appBaseAddr + 0x32B080));
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+// Load
+{
+	auto addr     = (appBaseAddr + 0x32A7A3);
+	auto jumpAddr = (appBaseAddr + 0x32A7A8);
+	constexpr size_t size = 5;
+	/*
+	dmc3.exe+32A7A3 - E8 38F0FFFF             - call dmc3.exe+3297E0
+	dmc3.exe+32A7A8 - C7 83 E0020000 01000000 - mov [rbx+000002E0],00000001
+	*/
+
+	static Function func = {};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(Load, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size);
+		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		WriteCall(func.sect0, (appBaseAddr + 0x3297E0));
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -769,34 +1116,104 @@ export void Event_Toggle(bool enable)
 		}
 	}
 
-	// Trigger Customize Menu
+
+
+
+
+
+
+
+// TriggerCustomizeMenu
+{
+	auto addr     = (appBaseAddr + 0x23B210);
+	auto jumpAddr = (appBaseAddr + 0x23B216);
+	constexpr size_t size = 6;
+	/*
+	dmc3.exe+23B210 - 89 91 C0B50100    - mov [rcx+0001B5C0],edx
+	dmc3.exe+23B216 - C7 41 20 09000000 - mov [rcx+20],00000009
+	dmc3.exe+23B221 - C3                - ret
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect2[] =
 	{
-		auto addr     = (appBaseAddr + 0x1A9609);
-		auto jumpAddr = (appBaseAddr + 0x1A9610);
-		constexpr uint32 size = 7;
-		/*
-		dmc3.exe+1A9609 - 48 8B 8B B00A0000 - mov rcx,[rbx+00000AB0]
-		dmc3.exe+1A9610 - 33 D2             - xor edx,edx
-		*/
+		0x84, 0xC0,                         // test al,al
+		0x0F, 0x85, 0x00, 0x00, 0x00, 0x00, // jne dmc3.exe+23B221
+	};
 
-		static Function func = {};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-			func = old_CreateFunction(TriggerCustomizeMenu, jumpAddr, true, true, size);
-			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
-		}
-
-		if (enable)
-		{
-			WriteJump(addr, func.addr, (size - 5));
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(TriggerCustomizeMenu, jumpAddr, FunctionFlags_SaveRegisters, 0, 0, (sizeof(sect2) + size));
+		CopyMemory(func.sect2, sect2, sizeof(sect2));
+		CopyMemory((func.sect2 + sizeof(sect2)), addr, size, MemoryFlags_VirtualProtectSource);
+		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x23B221), 6);
 	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+// MissionStartTriggerCustomizeMenu
+{
+	auto addr     = (appBaseAddr + 0x29BD78);
+	auto jumpAddr = (appBaseAddr + 0x29BD7F);
+	constexpr size_t size = 7;
+	/*
+	dmc3.exe+29BD78 - 45 33 C9    - xor r9d,r9d
+	dmc3.exe+29BD7B - 89 6C 24 20 - mov [rsp+20],ebp
+	dmc3.exe+29BD7F - 33 D2       - xor edx,edx
+	dmc3.exe+29BD91 - 48 8B D6    - mov rdx,rsi
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect1[] =
+	{
+		mov_rcx_rsi,
+	};
+	constexpr byte8 sect2[] =
+	{
+		0x84, 0xC0,                         // test al,al
+		0x0F, 0x85, 0x00, 0x00, 0x00, 0x00, // jne dmc3.exe+29BD91
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(MissionStartTriggerCustomizeMenu, jumpAddr, FunctionFlags_SaveRegisters, 0, sizeof(sect1), (sizeof(sect2) + size));
+		CopyMemory(func.sect1, sect1, sizeof(sect1));
+		CopyMemory(func.sect2, sect2, sizeof(sect2));
+		CopyMemory((func.sect2 + sizeof(sect2)), addr, size, MemoryFlags_VirtualProtectSource);
+		WriteAddress((func.sect2 + 2), (appBaseAddr + 0x29BD91), 6);
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1378,9 +1795,12 @@ export void Event_Init()
 
 
 
+
+
 }
 
 
 
-#ifdef __GARBAGE__
-#endif
+
+
+

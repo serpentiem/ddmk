@@ -22,16 +22,39 @@
 #define for_all(name, end) for_each(name, 0, end)
 
 
-
+#define LogFunctionStart() Log(FUNC_NAME " Start")
+#define LogFunctionEnd() Log(FUNC_NAME " End")
 
 
 
 
 #define LogFunction(...) LogFunctionHelper(FUNC_NAME __VA_OPT__(,) __VA_ARGS__)
 
+// #define LogFail(name, ...) LogFunctionHelper(name " failed." __VA_OPT__(,) __VA_ARGS__)
+
+
+
+
+
+
+
+
+
+
 #define DebugLog(...) if constexpr (debug) { Log(__VA_ARGS__); }
 
 #define DebugLogFunction(...) if constexpr (debug) { LogFunctionHelper(FUNC_NAME __VA_OPT__(,) __VA_ARGS__); }
+
+#define LogGUID(name, var)\
+Log\
+(\
+	name "%X-%X-%X-%llX",\
+	var.Data1,\
+	var.Data2,\
+	var.Data3,\
+	var.Data4\
+)
+
 
 
 
@@ -43,6 +66,10 @@
 
 #define _Prep_String(a) #a
 #define Prep_String(a) _Prep_String(a)
+
+
+
+
 
 
 

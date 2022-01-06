@@ -649,25 +649,6 @@ enum
 	TH32CS_SNAPMODULE=8,
 	TH32CS_SNAPMODULE32=0x10,
 	TH32CS_INHERIT=0x80000000,
-	INVALID_HANDLE_VALUE=-1,
-	IDC_ARROW=32512,
-	IDC_IBEAM=32513,
-	IDC_WAIT=32514,
-	IDC_CROSS=32515,
-	IDC_UPARROW=32516,
-	IDC_SIZE=32640,
-	IDC_ICON=32641,
-	IDC_SIZENWSE=32642,
-	IDC_SIZENESW=32643,
-	IDC_SIZEWE=32644,
-	IDC_SIZENS=32645,
-	IDC_SIZEALL=32646,
-	IDC_NO=32648,
-	IDC_HAND=32649,
-	IDC_APPSTARTING=32650,
-	IDC_HELP=32651,
-	IDC_PIN=32671,
-	IDC_PERSON=32672,
 	GWL_STYLE=-16,
 	GWL_EXSTYLE=-20,
 	GWL_ID=-12,
@@ -745,6 +726,26 @@ enum
 	WM_DISPLAYCHANGE=0x007E,
 	WM_SHOWWINDOW=0x0018,
 };
+
+const auto INVALID_HANDLE_VALUE = reinterpret_cast<HANDLE>(-1);
+const auto IDC_ARROW = reinterpret_cast<LPSTR>(32512);
+const auto IDC_IBEAM = reinterpret_cast<LPSTR>(32513);
+const auto IDC_WAIT = reinterpret_cast<LPSTR>(32514);
+const auto IDC_CROSS = reinterpret_cast<LPSTR>(32515);
+const auto IDC_UPARROW = reinterpret_cast<LPSTR>(32516);
+const auto IDC_SIZE = reinterpret_cast<LPSTR>(32640);
+const auto IDC_ICON = reinterpret_cast<LPSTR>(32641);
+const auto IDC_SIZENWSE = reinterpret_cast<LPSTR>(32642);
+const auto IDC_SIZENESW = reinterpret_cast<LPSTR>(32643);
+const auto IDC_SIZEWE = reinterpret_cast<LPSTR>(32644);
+const auto IDC_SIZENS = reinterpret_cast<LPSTR>(32645);
+const auto IDC_SIZEALL = reinterpret_cast<LPSTR>(32646);
+const auto IDC_NO = reinterpret_cast<LPSTR>(32648);
+const auto IDC_HAND = reinterpret_cast<LPSTR>(32649);
+const auto IDC_APPSTARTING = reinterpret_cast<LPSTR>(32650);
+const auto IDC_HELP = reinterpret_cast<LPSTR>(32651);
+const auto IDC_PIN = reinterpret_cast<LPSTR>(32671);
+const auto IDC_PERSON = reinterpret_cast<LPSTR>(32672);
 
 #pragma pack(push, 1)
 
@@ -2473,25 +2474,6 @@ enum
 	TH32CS_SNAPMODULE=8,
 	TH32CS_SNAPMODULE32=0x10,
 	TH32CS_INHERIT=0x80000000,
-	INVALID_HANDLE_VALUE=-1,
-	IDC_ARROW=32512,
-	IDC_IBEAM=32513,
-	IDC_WAIT=32514,
-	IDC_CROSS=32515,
-	IDC_UPARROW=32516,
-	IDC_SIZE=32640,
-	IDC_ICON=32641,
-	IDC_SIZENWSE=32642,
-	IDC_SIZENESW=32643,
-	IDC_SIZEWE=32644,
-	IDC_SIZENS=32645,
-	IDC_SIZEALL=32646,
-	IDC_NO=32648,
-	IDC_HAND=32649,
-	IDC_APPSTARTING=32650,
-	IDC_HELP=32651,
-	IDC_PIN=32671,
-	IDC_PERSON=32672,
 	GWL_STYLE=-16,
 	GWL_EXSTYLE=-20,
 	GWL_ID=-12,
@@ -2569,6 +2551,26 @@ enum
 	WM_DISPLAYCHANGE=0x007E,
 	WM_SHOWWINDOW=0x0018,
 };
+
+const auto INVALID_HANDLE_VALUE = reinterpret_cast<HANDLE>(-1);
+const auto IDC_ARROW = reinterpret_cast<LPSTR>(32512);
+const auto IDC_IBEAM = reinterpret_cast<LPSTR>(32513);
+const auto IDC_WAIT = reinterpret_cast<LPSTR>(32514);
+const auto IDC_CROSS = reinterpret_cast<LPSTR>(32515);
+const auto IDC_UPARROW = reinterpret_cast<LPSTR>(32516);
+const auto IDC_SIZE = reinterpret_cast<LPSTR>(32640);
+const auto IDC_ICON = reinterpret_cast<LPSTR>(32641);
+const auto IDC_SIZENWSE = reinterpret_cast<LPSTR>(32642);
+const auto IDC_SIZENESW = reinterpret_cast<LPSTR>(32643);
+const auto IDC_SIZEWE = reinterpret_cast<LPSTR>(32644);
+const auto IDC_SIZENS = reinterpret_cast<LPSTR>(32645);
+const auto IDC_SIZEALL = reinterpret_cast<LPSTR>(32646);
+const auto IDC_NO = reinterpret_cast<LPSTR>(32648);
+const auto IDC_HAND = reinterpret_cast<LPSTR>(32649);
+const auto IDC_APPSTARTING = reinterpret_cast<LPSTR>(32650);
+const auto IDC_HELP = reinterpret_cast<LPSTR>(32651);
+const auto IDC_PIN = reinterpret_cast<LPSTR>(32671);
+const auto IDC_PERSON = reinterpret_cast<LPSTR>(32672);
 
 #pragma pack(push, 1)
 
