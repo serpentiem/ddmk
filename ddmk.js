@@ -3049,8 +3049,8 @@ let helpersMary =
 	c += NEW_LINE;
 
 	c += Tabs() + "ExpData * expDataAddr =" + NEW_LINE;
-	c += Tabs() + "(character == CHARACTER::DANTE ) ? &expDataDante  :" + NEW_LINE;
-	c += Tabs() + "(character == CHARACTER::VERGIL) ? &expDataVergil :" + NEW_LINE;
+	c += Tabs() + "(character == CHARACTER::DANTE ) ? &missionExpDataDante  :" + NEW_LINE;
+	c += Tabs() + "(character == CHARACTER::VERGIL) ? &missionExpDataVergil :" + NEW_LINE;
 	c += Tabs() + "0;" + NEW_LINE;
 	c += NEW_LINE;
 

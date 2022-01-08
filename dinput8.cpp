@@ -224,7 +224,7 @@ byte32 DllMain
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
-		Core_Log_Init("logs", "dinput8.txt");
+		InitLog("logs", "dinput8.txt");
 
 		Log("Session started.");
 

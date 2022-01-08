@@ -1,5 +1,6 @@
 
 
+// @Todo: g_showWelcome or just make g_show consider activeConfig.welcome
 // @Todo: Add missing move descriptions.
 // @Todo: Move GamepadClose calls to end of window.
 // @Clean
@@ -5614,7 +5615,7 @@ else if (tabIndex == TAB::DANTE)
 
 	Function
 	(
-		expDataDante,
+		missionExpDataDante,
 		shopHelpersDante,
 		countof(shopHelpersDante)
 	);
@@ -5627,7 +5628,7 @@ else if (tabIndex == TAB::VERGIL)
 
 	Function
 	(
-		expDataVergil,
+		missionExpDataVergil,
 		shopHelpersVergil,
 		countof(shopHelpersVergil)
 	);
@@ -5756,12 +5757,24 @@ void ExpWindow()
 				height
 			)
 		);
+
+		// // Center
+		// ImGui::SetNextWindowPos
+		// (
+		// 	ImVec2
+		// 	(
+		// 		((g_renderSize.x - width ) / 2),
+		// 		((g_renderSize.y - height) / 2)
+		// 	)
+		// );
+
+		// Top Right
 		ImGui::SetNextWindowPos
 		(
 			ImVec2
 			(
-				((g_renderSize.x - width ) / 2),
-				((g_renderSize.y - height) / 2)
+				(g_renderSize.x - width),
+				0
 			)
 		);
 	}
@@ -5924,15 +5937,18 @@ void ExpWindow()
 
 		FunctionOnce
 		(
-			expDataDante,
-			"Dante Active",
+			missionExpDataDante,
+			"Dante Mission",
 			shopHelpersDante,
 			countof(shopHelpersDante)
 		);
-		//ImGui::Text("");
-
-
-
+		FunctionOnce
+		(
+			sessionExpDataDante,
+			"Dante Session",
+			shopHelpersDante,
+			countof(shopHelpersDante)
+		);
 		FunctionLoop
 		(
 			savedExpDataDante,
@@ -5944,17 +5960,20 @@ void ExpWindow()
 
 
 
-
 		FunctionOnce
 		(
-			expDataVergil,
-			"Vergil Active",
+			missionExpDataVergil,
+			"Vergil Mission",
 			shopHelpersVergil,
 			countof(shopHelpersVergil)
 		);
-		//ImGui::Text("");
-
-
+		FunctionOnce
+		(
+			sessionExpDataVergil,
+			"Vergil Session",
+			shopHelpersVergil,
+			countof(shopHelpersVergil)
+		);
 		FunctionLoop
 		(
 			savedExpDataVergil,
@@ -5963,6 +5982,13 @@ void ExpWindow()
 			countof(shopHelpersVergil)
 		);
 		ImGui::Text("");
+
+
+
+
+
+
+
 
 
 

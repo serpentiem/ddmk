@@ -6,6 +6,7 @@ import Core;
 
 import Actor;
 import Config;
+import Exp;
 import Global;
 import Vars;
 
@@ -14,6 +15,8 @@ import Vars;
 #pragma region Item
 
 namespaceStart(Item);
+
+// @Research: Main & MissionSelect seem redundant.
 
 void SceneMain()
 {
@@ -175,7 +178,7 @@ void SceneHandler()
 			Log(funcName);
 
 			Actor::SceneMissionStart();
-
+			Exp::SceneMissionStart();
 			Item::SceneMissionStart();
 
 			break;
@@ -183,6 +186,8 @@ void SceneHandler()
 		case MISSION_RESULT:
 		{
 			Log(funcName);
+
+			Exp::SceneMissionResult();
 
 			break;
 		}

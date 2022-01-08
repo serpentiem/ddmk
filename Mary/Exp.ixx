@@ -2,6 +2,8 @@ module;
 #include <string.h> // snprintf
 
 #include "../Core/RapidJSON.h"
+
+#include <initializer_list>
 export module Exp;
 
 import Core;
@@ -50,63 +52,33 @@ export struct ExpData
 
 		return *this;
 	}
+
+	ExpData & operator=(const std::initializer_list<int> &)
+	{
+		Log("Reset");
+
+		SetMemory
+		(
+			this,
+			0,
+			sizeof(*this)
+		);
+
+		return *this;
+	}
 };
 
-export ExpData expDataDante                  = {};
+export ExpData missionExpDataDante           = {};
+export ExpData sessionExpDataDante           = {};
 export ExpData savedExpDataDante[SAVE_COUNT] = {};
 
-export ExpData expDataVergil                  = {};
+export ExpData missionExpDataVergil           = {};
+export ExpData sessionExpDataVergil           = {};
 export ExpData savedExpDataVergil[SAVE_COUNT] = {};
 
 
 
-void CopySavedToActive()
-{
-	auto saveIndex = g_saveIndex;
-	if (saveIndex >= SAVE_COUNT)
-	{
-		return;
-	}
 
-	expDataDante  = savedExpDataDante [saveIndex];
-	expDataVergil = savedExpDataVergil[saveIndex];
-}
-
-
-
-void CopyActiveToSaved()
-{
-	auto saveIndex = g_saveIndex;
-	if (saveIndex >= SAVE_COUNT)
-	{
-		return;
-	}
-
-	savedExpDataDante [saveIndex] = expDataDante;
-	savedExpDataVergil[saveIndex] = expDataVergil;
-}
-
-
-
-
-void ResetExpData()
-{
-	LogFunction();
-
-	SetMemory
-	(
-		&expDataDante,
-		0,
-		sizeof(ExpData)
-	);
-
-	SetMemory
-	(
-		&expDataVergil,
-		0,
-		sizeof(ExpData)
-	);
-}
 
 namespaceStart(Exp);
 
@@ -114,7 +86,24 @@ export void InitSession()
 {
 	LogFunction();
 
-	ResetExpData();
+	sessionExpDataDante  = {};
+	sessionExpDataVergil = {};
+}
+
+export void SceneMissionStart()
+{
+	LogFunction();
+
+	missionExpDataDante  = sessionExpDataDante;
+	missionExpDataVergil = sessionExpDataVergil;
+}
+
+export void SceneMissionResult()
+{
+	LogFunction();
+
+	sessionExpDataDante  = missionExpDataDante;
+	sessionExpDataVergil = missionExpDataVergil;
 }
 
 namespaceEnd();
@@ -148,6 +137,10 @@ bool Max()
 	);
 }
 
+
+
+
+#pragma region JSON
 
 
 namespaceStart(JSON);
@@ -254,6 +247,12 @@ void ToExp()
 
 namespaceEnd();
 
+#pragma endregion
+
+
+
+
+
 
 
 export void SaveExp()
@@ -267,7 +266,20 @@ export void SaveExp()
 
 
 
-	CopyActiveToSaved();
+	auto saveIndex = g_saveIndex;
+	if (saveIndex >= SAVE_COUNT)
+	{
+		return;
+	}
+
+	if (g_scene == SCENE::GAME)
+	{
+		sessionExpDataDante  = missionExpDataDante;
+		sessionExpDataVergil = missionExpDataVergil;
+	}
+
+	savedExpDataDante [saveIndex] = sessionExpDataDante;
+	savedExpDataVergil[saveIndex] = sessionExpDataVergil;
 
 
 
@@ -354,7 +366,14 @@ export void LoadExp()
 
 
 
-	CopySavedToActive();
+	auto saveIndex = g_saveIndex;
+	if (saveIndex >= SAVE_COUNT)
+	{
+		return;
+	}
+
+	sessionExpDataDante  = savedExpDataDante [saveIndex];
+	sessionExpDataVergil = savedExpDataVergil[saveIndex];
 }
 
 
