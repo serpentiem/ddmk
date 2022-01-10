@@ -1,5 +1,11 @@
 
 
+// @Todo: Consider sessionData.unlockDevilTrigger when buying purple orbs.
+
+// @Todo: Find purple and blue orb level count. It's not buyCount as far as I can tell.
+
+
+
 // @Todo: g_showWelcome or just make g_show consider activeConfig.welcome
 // @Todo: Add missing move descriptions.
 // @Todo: Move GamepadClose calls to end of window.
@@ -4972,7 +4978,8 @@ constexpr ItemHelper itemHelpers[] =
 };
 
 
-//ITEM_HELPER_INDICES_
+
+
 
 
 namespaceStart(ITEM_HELPER);
@@ -5019,10 +5026,14 @@ void ShopWindow()
 
 
 
+
+
 	IntroduceMissionData(return);
+	IntroduceMissionActorData(return);
 
 
 
+	bool unlockDevilTrigger = (activeMissionActorData.maxMagicPoints >= 3000);
 
 
 
@@ -5306,6 +5317,13 @@ if (tabIndex == TAB::ITEMS)
 
 
 
+	if constexpr (debug)
+	{
+		ImGui::Text("unlockDevilTrigger %u", unlockDevilTrigger);
+		ImGui::Text("");
+	}
+
+
 
 	auto GetItemCount = [&](const ItemHelper & itemHelper) -> uint8 &
 	{
@@ -5376,29 +5394,72 @@ if (tabIndex == TAB::ITEMS)
 
 
 
-		IntroduceMainActorData(mainActorData, return);
-		IntroduceData(g_playerActorBaseAddrs[0], defaultMainActorData, PlayerActorData, return);
 
-		if (itemHelper.itemIndex == ITEM::BLUE_ORB)
-		{
-			auto value = (mainActorData.maxHitPoints + 1000.0f);
+if (itemHelper.itemIndex == ITEM::BLUE_ORB)
+{
+	float value = (activeMissionActorData.maxHitPoints + 1000);
 
-			mainActorData.hitPoints = value;
-			mainActorData.maxHitPoints = value;
+	[&]()
+	{
+		IntroduceData(g_defaultNewActorData[0].baseAddr, actorData, PlayerActorData, return);
 
-			defaultMainActorData.hitPoints = value;
-			defaultMainActorData.maxHitPoints = value;
-		}
-		else if (itemHelper.itemIndex == ITEM::PURPLE_ORB)
-		{
-			auto value = (mainActorData.maxMagicPoints + 1000.0f);
+		value = (actorData.maxHitPoints + 1000);
 
-			mainActorData.magicPoints = value;
-			mainActorData.maxMagicPoints = value;
+		actorData.hitPoints = actorData.maxHitPoints = value;
+	}();
 
-			defaultMainActorData.magicPoints = value;
-			defaultMainActorData.maxMagicPoints = value;
-		}
+	activeMissionActorData.hitPoints = activeMissionActorData.maxHitPoints = value;
+
+
+
+	old_for_all(uint8, playerIndex   , PLAYER_COUNT   ){
+	old_for_all(uint8, characterIndex, CHARACTER_COUNT){
+	old_for_all(uint8, entityIndex   , ENTITY_COUNT   )
+	{
+		IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
+
+		IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
+
+		actorData.hitPoints = actorData.maxHitPoints = value;
+	}}}
+}
+else if (itemHelper.itemIndex == ITEM::PURPLE_ORB)
+{
+	float value = (activeMissionActorData.maxMagicPoints + 1000);
+
+	[&]()
+	{
+		IntroduceData(g_defaultNewActorData[0].baseAddr, actorData, PlayerActorData, return);
+
+		value = (actorData.maxMagicPoints + 1000);
+
+		actorData.magicPoints = actorData.maxMagicPoints = value;
+	}();
+
+	activeMissionActorData.magicPoints = activeMissionActorData.maxMagicPoints = value;
+
+
+
+	old_for_all(uint8, playerIndex   , PLAYER_COUNT   ){
+	old_for_all(uint8, characterIndex, CHARACTER_COUNT){
+	old_for_all(uint8, entityIndex   , ENTITY_COUNT   )
+	{
+		IntroducePlayerCharacterNewActorData(playerIndex, characterIndex, entityIndex);
+
+		IntroduceData(newActorData.baseAddr, actorData, PlayerActorData, continue);
+
+		actorData.magicPoints = actorData.maxMagicPoints = value;
+	}}}
+}
+
+
+
+
+
+
+
+
+
 	};
 
 
@@ -5468,6 +5529,9 @@ if (tabIndex == TAB::ITEMS)
 
 
 
+
+
+
 		old_for_all(uint8, itemHelperIndex, countof(itemHelpers))
 		{
 			auto & itemHelper = itemHelpers[itemHelperIndex];
@@ -5475,6 +5539,21 @@ if (tabIndex == TAB::ITEMS)
 			auto & itemCount = GetItemCount(itemHelper);
 			auto & buyCount = GetBuyCount(itemHelper);
 			auto price = GetPrice(itemHelper);
+
+
+
+
+
+
+			bool mainCondition =
+			(
+				(itemHelperIndex == ITEM_HELPER::PURPLE_ORB) &&
+				!unlockDevilTrigger
+			);
+
+			GUI_PushDisable(mainCondition);
+
+
 
 
 
@@ -5579,7 +5658,7 @@ ImGui::SameLine();
 			}
 
 
-
+GUI_PopDisable(mainCondition);
 
 
 
@@ -6181,6 +6260,8 @@ void MissionDataWindow()
 
 	IntroduceEventData(return);
 
+	IntroduceSessionData();
+
 
 
 	static bool run = false;
@@ -6193,7 +6274,7 @@ void MissionDataWindow()
 			ImVec2
 			(
 				500,
-				900
+				700
 			)
 		);
 		ImGui::SetNextWindowPos
@@ -6201,7 +6282,7 @@ void MissionDataWindow()
 			ImVec2
 			(
 				0,
-				0
+				200
 			)
 		);
 	}
@@ -6230,9 +6311,105 @@ void MissionDataWindow()
 
 		ImGui::PopItemWidth();
 
-
-
 		ImGui::Text("");
+
+
+		GUI_Checkbox
+		(
+			"unlockDevilTrigger",
+			sessionData.unlockDevilTrigger
+		);
+		ImGui::Text("");
+
+
+
+
+		[&]()
+		{
+			IntroduceMissionActorData(return);
+
+			ImGui::PushItemWidth(200);
+
+			ImGui::Text("Active");
+			GUI_Input<float>
+			(
+				"hitPoints",
+				activeMissionActorData.hitPoints,
+				1000,
+				"%g",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+			GUI_Input<float>
+			(
+				"maxHitPoints",
+				activeMissionActorData.maxHitPoints,
+				1000,
+				"%g",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+			GUI_Input<float>
+			(
+				"magicPoints",
+				activeMissionActorData.magicPoints,
+				1000,
+				"%g",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+			GUI_Input<float>
+			(
+				"maxMagicPoints",
+				activeMissionActorData.maxMagicPoints,
+				1000,
+				"%g",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+			ImGui::Text("");
+
+			ImGui::Text("Queued");
+			GUI_Input<float>
+			(
+				"hitPoints",
+				queuedMissionActorData.hitPoints,
+				1000,
+				"%g",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+			GUI_Input<float>
+			(
+				"magicPoints",
+				queuedMissionActorData.magicPoints,
+				1000,
+				"%g",
+				ImGuiInputTextFlags_EnterReturnsTrue
+			);
+
+			ImGui::PopItemWidth();
+
+			ImGui::Text("");
+		}();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7608,6 +7785,12 @@ void Debug()
 
 
 
+
+
+
+
+
+
 		GUI_Checkbox
 		(
 			"g_showShop",
@@ -7785,6 +7968,12 @@ void Debug()
 		GUI_Checkbox("One Hit Kill", sessionData.oneHitKill);
 		ImGui::Text("");
 
+		GUI_Checkbox
+		(
+			"unlockDevilTrigger",
+			sessionData.unlockDevilTrigger
+		);
+		ImGui::Text("");
 
 
 
