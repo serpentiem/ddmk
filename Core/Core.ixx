@@ -63,7 +63,7 @@ struct TypeMatch<T, T>
 	static constexpr bool value = true;
 };
 
-export template <size_t T>
+export template <new_size_t T>
 struct TypeValue
 {
 	static constexpr auto value = T;
@@ -72,7 +72,7 @@ struct TypeValue
 export template
 <
 	typename T,
-	size_t count
+	new_size_t count
 >
 constexpr auto countof(T (&)[count])
 {
@@ -302,7 +302,7 @@ export void SetMemory
 (
 	void * addr,
 	byte8 value,
-	size_t size
+	new_size_t size
 )
 {
 	memset
@@ -317,7 +317,7 @@ export void CopyMemory
 (
 	void * destination,
 	const void * source,
-	size_t size
+	new_size_t size
 )
 {
 	memcpy
@@ -361,7 +361,7 @@ T Align
 
 export byte8 * Alloc
 (
-	size_t size,
+	new_size_t size,
 	byte8 * dest = 0
 )
 {
@@ -393,7 +393,7 @@ export byte8 * Alloc
 
 export byte8 * AllocEx
 (
-	size_t size,
+	new_size_t size,
 	off_t start,
 	off_t end
 )
@@ -497,7 +497,7 @@ export byte8 * AllocEx
 	return addr;
 }
 
-export auto LowAlloc(size_t size)
+export auto LowAlloc(new_size_t size)
 {
 	return AllocEx
 	(
@@ -507,7 +507,7 @@ export auto LowAlloc(size_t size)
 	);
 }
 
-export auto HighAlloc(size_t size)
+export auto HighAlloc(new_size_t size)
 {
 	return AllocEx
 	(
@@ -627,7 +627,7 @@ export bool CloseFile(HANDLE fileHandle)
 
 
 
-export size_t GetFileSize(HANDLE fileHandle)
+export new_size_t GetFileSize(HANDLE fileHandle)
 {
 	if (fileHandle == INVALID_HANDLE_VALUE)
 	{
@@ -654,7 +654,7 @@ export size_t GetFileSize(HANDLE fileHandle)
 
 	#ifdef _WIN64
 
-	size_t size = 0;
+	new_size_t size = 0;
 
 	auto sizeAddr = reinterpret_cast<byte8 *>(&size);
 
@@ -688,7 +688,7 @@ export size_t GetFileSize(HANDLE fileHandle)
 export bool LoadFile
 (
 	HANDLE fileHandle,
-	size_t size,
+	new_size_t size,
 	void * dest,
 	off_t start // Default value unnecessarily complicates overload resolution.
 )
@@ -704,21 +704,27 @@ export bool LoadFile
 
 
 
-	constexpr size_t bufferSize = (1 * 1024 * 1024); // @Research: Consider global bufferSize.
+	constexpr new_size_t bufferSize = (1 * 1024 * 1024); // @Research: Consider global bufferSize.
 	auto pos = start;
 	uint32 bytesRead = 0;
 	LARGE_INTEGER filePointer = {};
 
 
 
-	auto Function = [&](size_t size2) -> bool
+	auto Function = [&](new_size_t size2) -> bool
 	{
+		LARGE_INTEGER newPos = {};
+
+		*reinterpret_cast<off_t *>(&newPos) = pos;
+
+
+
 		if
 		(
 			!SetFilePointerEx
 			(
 				fileHandle,
-				*reinterpret_cast<LARGE_INTEGER *>(&pos),
+				newPos,
 				&filePointer,
 				FILE_BEGIN
 			)
@@ -784,7 +790,7 @@ export bool LoadFile
 export byte8 * LoadFile
 (
 	HANDLE fileHandle,
-	size_t size,
+	new_size_t size,
 	off_t start // Default value unnecessarily complicates overload resolution.
 )
 {
@@ -829,7 +835,7 @@ export byte8 * LoadFile(const char * location)
 
 	byte32 error = 0;
 	HANDLE fileHandle = 0;
-	size_t size = 0;
+	new_size_t size = 0;
 	byte8 * dest = 0;
 
 
@@ -886,7 +892,7 @@ export bool SaveFile
 (
 	HANDLE fileHandle,
 	const void * addr,
-	size_t size
+	new_size_t size
 )
 {
 	if
@@ -900,14 +906,14 @@ export bool SaveFile
 
 
 
-	constexpr size_t bufferSize = (1 * 1024 * 1024);
+	constexpr new_size_t bufferSize = (1 * 1024 * 1024);
 	off_t pos = 0;
 	uint32 bytesWritten = 0;
 	LARGE_INTEGER filePointer = {};
 
 
 
-	auto Function = [&](size_t size2) -> bool
+	auto Function = [&](new_size_t size2) -> bool
 	{
 		if
 		(
@@ -964,7 +970,7 @@ export bool SaveFile
 (
 	const char * location,
 	const void * addr,
-	size_t size,
+	new_size_t size,
 	byte32 flags = FileFlags_Write
 )
 {
@@ -1061,7 +1067,7 @@ void Log(const char * format, Args... args)
 
 
 	char buffer[2048];
-	constexpr size_t bufferSize = sizeof(buffer);
+	constexpr new_size_t bufferSize = sizeof(buffer);
 	off_t pos = 0;
 
 
@@ -1223,28 +1229,28 @@ struct Container<>
 	struct Metadata
 	{
 		off_t off;
-		size_t size;
+		new_size_t size;
 	};
 
 	byte8 * dataAddr;
-	size_t dataSize;
+	new_size_t dataSize;
 
 	byte8 * metadataAddr;
-	size_t metadataSize;
+	new_size_t metadataSize;
 
 	off_t pos;
-	size_t count;
+	new_size_t count;
 
 	// @Todo: Add alloc func arg.
-	bool InitData(size_t size);
-	bool InitMetadata(size_t size);
+	bool InitData(new_size_t size);
+	bool InitMetadata(new_size_t size);
 	bool Init
 	(
-		size_t dataSize2,
-		size_t metadataSize2
+		new_size_t dataSize2,
+		new_size_t metadataSize2
 	);
 	void Clear();
-	byte8 * Next(size_t size = 0);
+	byte8 * Next(new_size_t size = 0);
 
 
 	
@@ -1253,10 +1259,10 @@ struct Container<>
 	void Push
 	(
 		void * addr,
-		size_t size
+		new_size_t size
 	);
 	void Pop();
-	byte8 * operator[](size_t index);
+	byte8 * operator[](new_size_t index);
 
 
 
@@ -1266,7 +1272,7 @@ byte8 * Last();
 
 };
 
-bool Container<>::InitData(size_t size)
+bool Container<>::InitData(new_size_t size)
 {
 	if (size == 0)
 	{
@@ -1284,7 +1290,7 @@ bool Container<>::InitData(size_t size)
 	return true;
 }
 
-bool Container<>::InitMetadata(size_t size)
+bool Container<>::InitMetadata(new_size_t size)
 {
 	if (size == 0)
 	{
@@ -1304,8 +1310,8 @@ bool Container<>::InitMetadata(size_t size)
 
 bool Container<>::Init
 (
-	size_t dataSize2,
-	size_t metadataSize2
+	new_size_t dataSize2,
+	new_size_t metadataSize2
 )
 {
 	if
@@ -1348,7 +1354,7 @@ void Container<>::Clear()
 	count = 0;
 }
 
-byte8 * Container<>::Next(size_t size)
+byte8 * Container<>::Next(new_size_t size)
 {
 	if
 	(
@@ -1375,7 +1381,7 @@ byte8 * Container<>::Next(size_t size)
 void Container<>::Push
 (
 	void * addr,
-	size_t size
+	new_size_t size
 )
 {
 	if
@@ -1442,7 +1448,7 @@ void Container<>::Pop()
 	count--;
 }
 
-byte8 * Container<>::operator[](size_t index)
+byte8 * Container<>::operator[](new_size_t index)
 {
 	if
 	(
@@ -1507,16 +1513,16 @@ export template <typename T>
 struct Container<T>
 {
 	T * dataAddr;
-	size_t dataSize;
-	size_t count;
-	size_t capacity;
+	new_size_t dataSize;
+	new_size_t count;
+	new_size_t capacity;
 
-	bool Init(size_t size);
+	bool Init(new_size_t size);
 	void Push(const T & var);
 	void Pop();
 
 
-	void Remove(size_t index)
+	void Remove(new_size_t index)
 	{
 		if
 		(
@@ -1564,11 +1570,11 @@ struct Container<T>
 
 
 	void Clear();
-	T & operator[](size_t index);
+	T & operator[](new_size_t index);
 };
 
 template <typename T>
-bool Container<T>::Init(size_t size)
+bool Container<T>::Init(new_size_t size)
 {
 	if (size == 0)
 	{
@@ -1639,7 +1645,7 @@ void Container<T>::Clear()
 }
 
 template <typename T>
-T & Container<T>::operator[](size_t index)
+T & Container<T>::operator[](new_size_t index)
 {
 	return dataAddr[index];
 }
@@ -1657,22 +1663,22 @@ export template
 struct Container<T, T2>
 {
 	T dataAddr[T2::value];
-	size_t dataSize;
-	size_t count;
-	size_t capacity;
+	new_size_t dataSize;
+	new_size_t count;
+	new_size_t capacity;
 
 	Container();
 
 	void Push(const T & var);
 	void Pop();
 	void Clear();
-	T & operator[](size_t index);
+	T & operator[](new_size_t index);
 	// @Remove
 	template <typename U>
 	void ForEach
 	(
-		size_t start,
-		size_t end,
+		new_size_t start,
+		new_size_t end,
 		U & func
 	);
 	template <typename U>
@@ -1746,7 +1752,7 @@ template
 	typename T,
 	typename T2
 >
-T & Container<T, T2>::operator[](size_t index)
+T & Container<T, T2>::operator[](new_size_t index)
 {
 	return dataAddr[index];
 }
@@ -1759,8 +1765,8 @@ template
 template <typename U>
 void Container<T, T2>::ForEach
 (
-	size_t start,
-	size_t end,
+	new_size_t start,
+	new_size_t end,
 	U & func
 )
 {
@@ -1791,7 +1797,7 @@ void Container<T, T2>::ForAll(U & func)
 export template
 <
 	typename T,
-	size_t T2
+	new_size_t T2
 >
 using Array = Container<T, TypeValue<T2>>;
 
@@ -1806,7 +1812,7 @@ export Container memoryData = {};
 struct ProtectionHelperData
 {
 	void * addr;
-	size_t size;
+	new_size_t size;
 	byte32 protection;
 };
 
@@ -1815,7 +1821,7 @@ struct ProtectionHelper : Container<ProtectionHelperData>
 	void Push
 	(
 		void * addr,
-		size_t size
+		new_size_t size
 	);
 	void Pop();
 };
@@ -1823,7 +1829,7 @@ struct ProtectionHelper : Container<ProtectionHelperData>
 void ProtectionHelper::Push
 (
 	void * addr,
-	size_t size
+	new_size_t size
 )
 {
 	if
@@ -1925,7 +1931,7 @@ export void SetMemory
 (
 	void * addr,
 	byte8 value,
-	size_t size,
+	new_size_t size,
 	byte32 flags
 )
 {
@@ -1951,7 +1957,7 @@ export void CopyMemory
 (
 	void * destination,
 	const void * source,
-	size_t size,
+	new_size_t size,
 	byte32 flags
 )
 {
@@ -1995,7 +2001,7 @@ struct BackupHelper : Container<>
 	void Save
 	(
 		void * addr,
-		size_t size
+		new_size_t size
 	);
 	void Restore(void * addr);
 };
@@ -2003,7 +2009,7 @@ struct BackupHelper : Container<>
 void BackupHelper::Save
 (
 	void * addr,
-	size_t size
+	new_size_t size
 )
 {
 	if
@@ -2172,7 +2178,7 @@ export auto WriteShortJump
 export void WriteNop
 (
 	void * addr,
-	size_t size
+	new_size_t size
 )
 {
 	SetMemory
@@ -2224,11 +2230,11 @@ export Function CreateFunction
 	void   * funcAddr  = 0,
 	byte8  * jumpAddr  = 0,
 	byte64   flags     = 0,
-	size_t   size0     = 0,
-	size_t   size1     = 0,
-	size_t   size2     = 0,
-	size_t   cacheSize = 0,
-	size_t   count     = 0
+	new_size_t   size0     = 0,
+	new_size_t   size1     = 0,
+	new_size_t   size2     = 0,
+	new_size_t   cacheSize = 0,
+	new_size_t   count     = 0
 )
 {
 
@@ -2253,7 +2259,7 @@ export Function CreateFunction
 	auto Feed = [&]
 	(
 		const byte8 * buffer,
-		size_t bufferSize,
+		new_size_t bufferSize,
 		bool adjustPosition = true
 	)
 	{
@@ -2592,11 +2598,11 @@ export __declspec(deprecated) Function old_CreateFunction
 	byte8  * jumpAddr         = 0,
 	bool     saveRegisters    = true,
 	bool     noResult         = true,
-	size_t   size0            = 0,
-	size_t   size1            = 0,
-	size_t   size2            = 0,
-	size_t   cacheSize        = 0,
-	size_t   count            = 0,
+	new_size_t   size0            = 0,
+	new_size_t   size1            = 0,
+	new_size_t   size2            = 0,
+	new_size_t   cacheSize        = 0,
+	new_size_t   count            = 0,
 	bool     noReturn         = false,
 	bool     saveXMMRegisters = false,
 	bool     noXMMResult      = true
@@ -2700,10 +2706,10 @@ export Function CreateFunction
 	void   * funcAddr  = 0,
 	byte8  * jumpAddr  = 0,
 	byte32   flags     = 0,
-	size_t   size0     = 0,
-	size_t   size1     = 0,
-	size_t   size2     = 0,
-	size_t   cacheSize = 0
+	new_size_t   size0     = 0,
+	new_size_t   size1     = 0,
+	new_size_t   size2     = 0,
+	new_size_t   cacheSize = 0
 )
 {
 
@@ -2728,7 +2734,7 @@ export Function CreateFunction
 	auto Feed = [&]
 	(
 		const byte8 * buffer,
-		size_t        bufferSize,
+		new_size_t        bufferSize,
 		bool          adjustPosition = true
 	)
 	{
@@ -2939,10 +2945,10 @@ export __declspec(deprecated) Function old_CreateFunction
 	byte8  * jumpAddr      = 0,
 	bool     saveRegisters = true,
 	bool     noResult      = true,
-	size_t   size0         = 0,
-	size_t   size1         = 0,
-	size_t   size2         = 0,
-	size_t   cacheSize     = 0,
+	new_size_t   size0         = 0,
+	new_size_t   size1         = 0,
+	new_size_t   size2         = 0,
+	new_size_t   cacheSize     = 0,
 	bool     noReturn      = true
 )
 {
@@ -3339,7 +3345,7 @@ export enum
 export struct KeyData
 {
 	byte8 keys[4];
-	size_t keyCount;
+	new_size_t keyCount;
 	bool execute;
 	//void * func;
 
@@ -3399,7 +3405,7 @@ export struct KeyData
 		// auto & keys     = activeKeyData.keys;
 		// auto & keyCount = activeKeyData.keyCount;
 
-		size_t keysDown = 0;
+		new_size_t keysDown = 0;
 
 		if (keyCount < 1)
 		{
@@ -4172,105 +4178,6 @@ export void UpdateGlobalRenderSize
 
 
 
-
-
-// @Research: Check triggers.
-
-namespaceStart(XI);
-
-
-export namespaceStart(GAMEPAD);
-enum
-{
-	UP             = 0x1,
-	DOWN           = 0x2,
-	LEFT           = 0x4,
-	RIGHT          = 0x8,
-	START          = 0x10,
-	BACK           = 0x20,
-	LEFT_THUMB     = 0x40,
-	RIGHT_THUMB    = 0x80,
-	LEFT_SHOULDER  = 0x100,
-	RIGHT_SHOULDER = 0x200,
-	A              = 0x1000,
-	B              = 0x2000,
-	X              = 0x4000,
-	Y              = 0x8000,
-};
-namespaceEnd();
-
-
-
-
-
-
-
-
-
-
-// // $GamepadStart
-
-// export namespaceStart(GAMEPAD);
-// enum
-// {
-// 	UP             = 0x0001,
-// 	DOWN           = 0x0002,
-// 	LEFT           = 0x0004,
-// 	RIGHT          = 0x0008,
-// 	START          = 0x0010,
-// 	BACK           = 0x0020,
-// 	LEFT_THUMB     = 0x0040,
-// 	RIGHT_THUMB    = 0x0080,
-// 	LEFT_SHOULDER  = 0x0100,
-// 	RIGHT_SHOULDER = 0x0200,
-// 	A              = 0x1000,
-// 	B              = 0x2000,
-// 	X              = 0x4000,
-// 	Y              = 0x8000,
-// };
-// namespaceEnd();
-
-// export const char * buttonNames[] =
-// {
-// 	"Up",
-// 	"Down",
-// 	"Left",
-// 	"Right",
-// 	"Start",
-// 	"Back",
-// 	"Left Thumb",
-// 	"Right Thumb",
-// 	"Left Shoulder",
-// 	"Right Shoulder",
-// 	"A",
-// 	"B",
-// 	"X",
-// 	"Y",
-// };
-
-// // $GamepadEnd
-
-namespaceEnd();
-
-
-
-
-
-
-// Input
-
-
-
-
-
-
-
-
-
-
-
-
-//};
 
 
 

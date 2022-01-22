@@ -5,7 +5,7 @@
 
 
 
-
+// @Todo: Create Enable.
 
 // @Clean
 // @Remove: File_dynamicFiles
@@ -16703,7 +16703,7 @@ export void ToggleDisablePlayerActorIdleTimer(bool enable)
 	// Dante
 	{
 		auto addr = (appBaseAddr + 0x1F2A38);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc3.exe+1F2A38 - F3 0F5C 4B 14 - subss xmm1,[rbx+14]
 		dmc3.exe+1F2A3D - 0F2F C1       - comiss xmm0,xmm1
@@ -16729,7 +16729,7 @@ export void ToggleDisablePlayerActorIdleTimer(bool enable)
 	// Vergil
 	{
 		auto addr = (appBaseAddr + 0x1F29AE);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc3.exe+1F29AE - F3 0F5C 4B 14 - subss xmm1,[rbx+14]
 		dmc3.exe+1F29B3 - 0F2F C1       - comiss xmm0,xmm1
@@ -17154,18 +17154,17 @@ export void SetNextScreen(EventData & eventData)
 
 	LogFunction();
 
-	switch (eventData.nextScreen)
+
+
+	using namespace SCREEN;
+
+	if (eventData.nextScreen == MISSION_START)
 	{
-		case SCREEN::MISSION_START:
-		{
-			eventData.nextScreen = SCREEN::MISSION_SELECT;
+		eventData.nextScreen = MISSION_SELECT;
 
-			g_missionSelectForceConfirm = true;
+		g_missionSelectForceConfirm = true;
 
-			ToggleSkipCutscenes(true);
-
-			break;
-		}
+		ToggleSkipCutscenes(true);
 	}
 }
 

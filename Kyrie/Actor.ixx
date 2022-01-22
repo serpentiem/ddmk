@@ -116,7 +116,7 @@ CreateActor_t CreateActor[CHARACTER::COUNT] = {};
 
 
 
-byte8 * CreatePlayerActor(size_t playerIndex)
+byte8 * CreatePlayerActor(new_size_t playerIndex)
 {
 	byte8 * actorBaseAddr = 0;
 
@@ -207,7 +207,7 @@ bool SpawnActor(byte8 * actorBaseAddr)
 	*/
 }
 
-void SpawnPlayerActor(size_t playerIndex)
+void SpawnPlayerActor(new_size_t playerIndex)
 {
 	auto actorBaseAddr = CreatePlayerActor(playerIndex);
 
@@ -250,7 +250,7 @@ byte8 * __fastcall GetCharacterData
 	byte8 * dest
 )
 {
-	constexpr size_t size = sizeof(CharacterDataBase);
+	constexpr new_size_t size = sizeof(CharacterDataBase);
 
 
 
@@ -328,7 +328,7 @@ byte8 * __fastcall GetCharacterDataDanteTrish
 	byte8 * dest
 )
 {
-	constexpr size_t size = 32;
+	constexpr new_size_t size = 32;
 
 
 
@@ -406,7 +406,7 @@ byte8 * __fastcall GetCharacterDataLady
 	byte8 * dest
 )
 {
-	constexpr size_t size = 16;
+	constexpr new_size_t size = 16;
 
 
 
@@ -484,7 +484,7 @@ byte8 * __fastcall GetCharacterDataNero
 	byte8 * dest
 )
 {
-	constexpr size_t size = 7;
+	constexpr new_size_t size = 7;
 
 
 
@@ -891,7 +891,7 @@ export void CharacterSwitchController()
 
 
 
-	//constexpr size_t key = DI8::KEY::P;
+	//constexpr new_size_t key = DI8::KEY::P;
 
 
 {
@@ -906,7 +906,7 @@ export void CharacterSwitchController()
 
 
 
-	size_t keysDown = 0;
+	new_size_t keysDown = 0;
 
 	if (keyCount < 1)
 	{
@@ -1052,7 +1052,7 @@ export void Toggle(bool enable)
 			auto Feed = [&]
 			(
 				const void * addr,
-				size_t size
+				new_size_t size
 			)
 			{
 				CopyMemory
@@ -1119,7 +1119,7 @@ export void Toggle(bool enable)
 	// GetCharacterData
 	{
 		auto addr     = (appBaseAddr + 0xB4090);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+B4090 - 55       - push ebp
 		dmc4.exe+B4091 - 8B EC    - mov ebp,esp
@@ -1148,7 +1148,7 @@ export void Toggle(bool enable)
 	// GetCharacterDataDanteTrish
 	{
 		auto addr     = (appBaseAddr + 0xB40D0);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+B40D0 - 55             - push ebp
 		dmc4.exe+B40D1 - 8B EC          - mov ebp,esp
@@ -1177,7 +1177,7 @@ export void Toggle(bool enable)
 	// GetCharacterDataLady
 	{
 		auto addr     = (appBaseAddr + 0x9E040);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+9E040 - 55             - push ebp
 		dmc4.exe+9E041 - 8B EC          - mov ebp,esp
@@ -1206,7 +1206,7 @@ export void Toggle(bool enable)
 	// GetCharacterDataNero
 	{
 		auto addr     = (appBaseAddr + 0x50FD30);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+50FD30 - 55             - push ebp
 		dmc4.exe+50FD31 - 8B EC          - mov ebp,esp
@@ -1238,7 +1238,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x4D4675);
 		auto jumpAddr = (appBaseAddr + 0x4D467B);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+4D4675 - 8B 80 A0010000 - mov eax,[eax+000001A0]
 		dmc4.exe+4D467B - 56             - push esi
@@ -1266,7 +1266,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x5108C5);
 		auto jumpAddr = (appBaseAddr + 0x5108CB);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+5108C5 - 8B 80 A8020000 - mov eax,[eax+000002A8]
 		dmc4.exe+5108CB - 56             - push esi
@@ -1294,7 +1294,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0xD8745);
 		auto jumpAddr = (appBaseAddr + 0xD874B);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+D8745 - 8B 80 98030000 - mov eax,[eax+00000398]
 		dmc4.exe+D874B - 89 81 A8190000 - mov [ecx+000019A8],eax
@@ -1322,7 +1322,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0xB2C95);
 		auto jumpAddr = (appBaseAddr + 0xB2C9B);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+B2C95 - 8B 80 94040000 - mov eax,[eax+00000494]
 		dmc4.exe+B2C9B - 56             - push esi
@@ -1350,7 +1350,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x9BFE5);
 		auto jumpAddr = (appBaseAddr + 0x9BFEB);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+9BFE5 - 8B 80 9C050000 - mov eax,[eax+0000059C]
 		dmc4.exe+9BFEB - 53             - push ebx
@@ -1378,7 +1378,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x9C2DD);
 		auto jumpAddr = (appBaseAddr + 0x9C2E3);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+9C2DD - 89 86 C0060100 - mov [esi+000106C0],eax
 		dmc4.exe+9C2E3 - C3             - ret
@@ -1416,7 +1416,7 @@ export void Toggle(bool enable)
 {
 	auto addr     = (appBaseAddr + 0x53A45F);
 	auto jumpAddr = (appBaseAddr + 0x53A464);
-	constexpr size_t size = 5;
+	constexpr new_size_t size = 5;
 	/*
 	dmc4.exe+53A45F - E8 FCBDC7FF - call dmc4.exe+1B6260
 	dmc4.exe+53A464 - 3C 01       - cmp al,01
@@ -1453,7 +1453,7 @@ export void Toggle(bool enable)
 {
 	auto addr     = (appBaseAddr + 0x53A491);
 	auto jumpAddr = (appBaseAddr + 0x53A496);
-	constexpr size_t size = 5;
+	constexpr new_size_t size = 5;
 	/*
 	dmc4.exe+53A491 - E8 CABDC7FF - call dmc4.exe+1B6260
 	dmc4.exe+53A496 - 3C 01       - cmp al,01
@@ -1489,7 +1489,7 @@ export void Toggle(bool enable)
 
 {
 	auto addr = (appBaseAddr + 0x1B636C);
-	constexpr size_t size = 8;
+	constexpr new_size_t size = 8;
 	/*
 	dmc4.exe+1B636C - A1 009F3501 - mov eax,[dmc4.exe+F59F00]
 	dmc4.exe+1B6371 - 8B 40 24    - mov eax,[eax+24]
@@ -1519,7 +1519,7 @@ export void Toggle(bool enable)
 
 {
 	auto addr = (appBaseAddr + 0x1B6456);
-	constexpr size_t size = 3;
+	constexpr new_size_t size = 3;
 	/*
 	dmc4.exe+1B6456 - C2 0400 - ret 0004
 	dmc4.exe+1B6459 - 5F      - pop edi
@@ -1542,7 +1542,7 @@ export void Toggle(bool enable)
 
 {
 	auto addr = (appBaseAddr + 0x1B645F);
-	constexpr size_t size = 3;
+	constexpr new_size_t size = 3;
 	/*
 	dmc4.exe+1B645F - C2 0400 - ret 0004
 	dmc4.exe+1B6462 - CC      - int 3
@@ -1583,7 +1583,7 @@ namespaceEnd();
 
 
 
-export void ToggleDisableIdleTimer(bool enable)
+export void ToggleDisablePlayerActorIdleTimer(bool enable)
 {
 	LogFunction(enable);
 
@@ -1591,7 +1591,7 @@ export void ToggleDisableIdleTimer(bool enable)
 
 	{
 		auto addr = (appBaseAddr + 0x5573C1);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc4.exe+5573C1 - F3 0F5C 46 1C - subss xmm0,[esi+1C]
 		dmc4.exe+5573C6 - 0F2F C8       - comiss xmm1,xmm0
@@ -1775,7 +1775,7 @@ export void ToggleOneHitKill(bool enable)
 
 	{
 		auto addr = (appBaseAddr + 0x22DDD4);
-		constexpr size_t size = 4;
+		constexpr new_size_t size = 4;
 		/*
 		dmc4.exe+22DDD4 - F3 0F5C C1 - subss xmm0,xmm1
 		dmc4.exe+22DDD8 - 0F2F D0    - comiss xmm2,xmm0

@@ -4,36 +4,111 @@
 
 
 
+
+
 export module Global;
 
 import Core;
+import Core_Input;
 
 #include "../Core/Macros.h"
+
+
+
 
 import Windows;
 import DXGI;
 import D3D10;
 import D3D11;
 import DI8;
+import XI;
+
+using namespace Windows;
 
 import Steam;
 import Vars;
 
-using namespace Windows;
-// using namespace DXGI;
-// using namespace D3D10;
-// using namespace DI8;
-
-
 #define debug false
 
-// // #include "Macros.h"
+
+
+
+
+
+
+namespaceStart(DXGI);
+
+export IDXGISwapChain * swapChain = 0;
+
+namespaceEnd();
+
+
+
+namespaceStart(D3D10);
+
+export ID3D10Device           * device           = 0;
+export ID3D10RenderTargetView * renderTargetView = 0;
+
+namespaceEnd();
+
+
+
+namespaceStart(D3D11);
+
+export ID3D11Device           * device           = 0;
+export ID3D11DeviceContext    * deviceContext    = 0;
+export ID3D11RenderTargetView * renderTargetView = 0;
+
+namespaceEnd();
+
+
+
+export Keyboard keyboard = {};
+export Mouse    mouse    = {};
+export Gamepad  gamepad  = {};
+
+
+
+
+
+
+
+
+
+
+export namespaceStart(XI);
+
+XINPUT_STATE state = {};
+
+namespaceEnd();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 export bool g_update3D = false;
 
 
-export size_t activePlayerIndex = 0;
+export new_size_t activePlayerIndex = 0;
 
 
 
@@ -94,30 +169,30 @@ export bool g_eventRun[EVENT::COUNT] = {};
 
 
 
-export namespace DXGI
-{
-	IDXGISwapChain * swapChain = 0;
-}
+// export namespace DXGI
+// {
+// 	IDXGISwapChain * swapChain = 0;
+// }
 
-export namespace D3D10
-{
-	ID3D10Device           * device           = 0;
-	ID3D10RenderTargetView * renderTargetView = 0;
-}
+// export namespace D3D10
+// {
+// 	ID3D10Device           * device           = 0;
+// 	ID3D10RenderTargetView * renderTargetView = 0;
+// }
 
-export namespace D3D11
-{
-	ID3D11Device           * device           = 0;
-	ID3D11DeviceContext    * deviceContext    = 0;
-	ID3D11RenderTargetView * renderTargetView = 0;
-}
+// export namespace D3D11
+// {
+// 	ID3D11Device           * device           = 0;
+// 	ID3D11DeviceContext    * deviceContext    = 0;
+// 	ID3D11RenderTargetView * renderTargetView = 0;
+// }
 
-export namespace DI8
-{
-	IDirectInput8W       * deviceInterface = 0;
-	IDirectInputDevice8W * mouse           = 0;
-	DIMOUSESTATE2          mouseState      = {};
-}
+// export namespace DI8
+// {
+// 	IDirectInput8W       * deviceInterface = 0;
+// 	IDirectInputDevice8W * mouse           = 0;
+// 	DIMOUSESTATE2          mouseState      = {};
+// }
 
 
 
@@ -128,10 +203,19 @@ export NewActorData g_newActorData[PLAYER::COUNT] = {};
 
 
 
-export bool g_show               = false;
-export bool g_lastShow           = false;
-export bool g_showItemWindow     = false;
-export bool g_lastShowItemWindow = false;
+// export bool g_show               = false;
+// export bool g_lastShow           = false;
+// export bool g_showItemWindow     = false;
+// export bool g_lastShowItemWindow = false;
+
+export bool g_show     = false;
+export bool g_lastShow = false;
+export bool g_showMain = false;
+export bool g_showShop = false;
+
+
+
+
 
 
 
@@ -147,7 +231,7 @@ export void ToggleSkipIntro(bool enable)
 	// Force main menu scene instead of autosave scene.
 	{
 		auto addr = (appBaseAddr + 0x10B1E0);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+10B1E0 - C7 06 20FF0101 - mov [esi],dmc4.exe+C1FF20
 		dmc4.exe+10B1E6 - E8 A54F4F00    - call dmc4.exe+600190
@@ -169,7 +253,7 @@ export void ToggleSkipIntro(bool enable)
 	}
 	{
 		auto addr = (appBaseAddr + 0x10B246);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+10B246 - C7 06 20FF0101 - mov [esi],dmc4.exe+C1FF20
 		dmc4.exe+10B24C - 85 C9          - test ecx,ecx

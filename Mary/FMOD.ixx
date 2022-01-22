@@ -1,23 +1,31 @@
-module;
-
-#include "../Core/Macros.h" //
-// #include "../Core/Core.h"
-
-// #include "Vars.h"
 export module FMOD;
 
 import Core;
 
-
-
-import Vars;
-
+#include "../Core/Macros.h"
 
 import Windows;
 
+using namespace Windows;
+
+import Vars;
+
 #define debug false
 
-// #include "Macros.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export bool FMOD_init = false;
 

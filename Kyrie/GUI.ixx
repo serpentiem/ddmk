@@ -7,10 +7,12 @@ export module GUI;
 
 import Core;
 import Core_GUI;
+import Core_ImGui;
 
 #include "../Core/Macros.h"
 
 import Windows;
+import XI;
 
 using namespace Windows;
 
@@ -29,7 +31,12 @@ import Training;
 import Vars;
 import Window;
 
-#define debug false
+#define debug true
+
+
+
+bool visibleMain     = false;
+bool lastVisibleMain = false;
 
 
 
@@ -290,7 +297,7 @@ const char * characterNames[] =
 
 #pragma region Actor
 
-void Actor_PlayerTab(size_t playerIndex)
+void Actor_PlayerTab(new_size_t playerIndex)
 {
 	auto & activePlayerData = activeConfig.Actor.playerData[playerIndex];
 	auto & queuedPlayerData = queuedConfig.Actor.playerData[playerIndex];
@@ -467,7 +474,7 @@ void ActorSection()
 
 		ImGui::PushItemWidth(200.0f);
 
-		GUI_Slider<size_t>
+		GUI_Slider<new_size_t>
 		(
 			"Player Count",
 			queuedConfig.Actor.playerCount,
@@ -1099,7 +1106,7 @@ void Bars()
 		return;
 	}
 
-	size_t playerCount = (showBars) ? PLAYER::COUNT : activeConfig.Actor.playerCount;
+	new_size_t playerCount = (showBars) ? PLAYER::COUNT : activeConfig.Actor.playerCount;
 
 	for_all(playerIndex, playerCount)
 	{
@@ -1303,6 +1310,22 @@ void Debug()
 	{
 		ImGui::Text("");
 
+
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Disable Player Actor Idle Timer",
+				activeConfig.disablePlayerActorIdleTimer,
+				queuedConfig.disablePlayerActorIdleTimer
+			)
+		)
+		{
+			ToggleDisablePlayerActorIdleTimer(activeConfig.disablePlayerActorIdleTimer);
+		}
+		ImGui::Text("");
+
 		if
 		(
 			GUI_Checkbox
@@ -1314,6 +1337,8 @@ void Debug()
 		{
 			ToggleOneHitKill(oneHitKill);
 		}
+
+
 
 		ImGui::Text("");
 	}
@@ -1332,212 +1357,6 @@ void Debug()
 
 
 #pragma region Overlays
-
-template <typename T>
-void OverlayFunction
-(
-	const char * label,
-	Config::OverlayData & activeData,
-	Config::OverlayData & queuedData,
-	T & func
-)
-{
-	if (!activeData.enable)
-	{
-		return;
-	}
-
-	auto & activePos = *reinterpret_cast<ImVec2 *>(&activeData.pos);
-	auto & queuedPos = *reinterpret_cast<ImVec2 *>(&queuedData.pos);
-
-	static uint32 lastX = 0;
-	static uint32 lastY = 0;
-
-	static bool run = false;
-	if (!run)
-	{
-		run = true;
-
-		ImGui::SetNextWindowPos(activePos);
-
-		lastX = static_cast<uint32>(activeData.pos.x);
-		lastY = static_cast<uint32>(activeData.pos.y);
-	}
-
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(0, 0));
-
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
-
-	if
-	(
-		ImGui::Begin
-		(
-			label,
-			&activeData.enable,
-			ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize
-		)
-	)
-	{
-		activePos = queuedPos = ImGui::GetWindowPos();
-
-		uint32 x = static_cast<uint32>(activeData.pos.x);
-		uint32 y = static_cast<uint32>(activeData.pos.y);
-
-		if
-		(
-			(lastX != x) ||
-			(lastY != y)
-		)
-		{
-			lastX = x;
-			lastY = y;
-
-			GUI::save = true;
-		}
-
-		auto & io = ImGui::GetIO();
-		ImGui::PushFont(io.Fonts->Fonts[FONT::OVERLAY_16]);
-
-		ImGui::PushStyleColor
-		(
-			ImGuiCol_Text,
-			*reinterpret_cast<ImVec4 *>(&activeData.color)
-		);
-
-		func();
-
-		ImGui::PopStyleColor();
-		ImGui::PopFont();
-	}
-
-	ImGui::End();
-	ImGui::PopStyleColor();
-	ImGui::PopStyleVar(4);
-}
-
-template
-<
-	typename T,
-	typename T2
->
-void OverlaySettings
-(
-	const char * label,
-	T & activeData,
-	T & queuedData,
-	T & defaultData,
-	T2 & func
-)
-{
-	auto & activePos = *reinterpret_cast<ImVec2 *>(&activeData.pos);
-	auto & queuedPos = *reinterpret_cast<ImVec2 *>(&queuedData.pos);
-	auto & defaultPos = *reinterpret_cast<ImVec2 *>(&defaultData.pos);
-
-	GUI_Checkbox2
-	(
-		"Enable",
-		activeData.enable,
-		queuedData.enable
-	);
-	ImGui::Text("");
-
-	if (GUI_ResetButton())
-	{
-		CopyMemory
-		(
-			&queuedData,
-			&defaultData,
-			sizeof(queuedData)
-		);
-		CopyMemory
-		(
-			&activeData,
-			&queuedData,
-			sizeof(activeData)
-		);
-
-		ImGui::SetWindowPos(label, activePos);
-	}
-	ImGui::Text("");
-
-	bool condition = !activeData.enable;
-
-	GUI_PushDisable(condition);
-
-	GUI_Color2
-	(
-		"Color",
-		activeData.color,
-		queuedData.color,
-		ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaPreview
-	);
-	ImGui::Text("");
-
-	ImGui::PushItemWidth(150);
-
-	if
-	(
-		GUI_InputDefault2<float>
-		(
-			"X",
-			activePos.x,
-			queuedPos.x,
-			defaultPos.x,
-			1,
-			"%g",
-			ImGuiInputTextFlags_EnterReturnsTrue
-		)
-	)
-	{
-		ImGui::SetWindowPos(label, activePos);
-	}
-	if
-	(
-		GUI_InputDefault2<float>
-		(
-			"Y",
-			activePos.y,
-			queuedPos.y,
-			defaultPos.y,
-			1,
-			"%g",
-			ImGuiInputTextFlags_EnterReturnsTrue
-		)
-	)
-	{
-		ImGui::SetWindowPos(label, activePos);
-	}
-
-	ImGui::PopItemWidth();
-
-	func();
-
-	GUI_PopDisable(condition);
-}
-
-template <typename T>
-void OverlaySettings
-(
-	const char * label,
-	T & activeData,
-	T & queuedData,
-	T & defaultData
-)
-{
-	auto Function = [](){};
-
-	return OverlaySettings
-	(
-		label,
-		activeData,
-		queuedData,
-		defaultData,
-		Function
-	);
-}
 
 
 
@@ -1673,6 +1492,30 @@ void MainOverlayWindow()
 
 			ImGui::Text("activePlayerIndex %u", activePlayerIndex);
 		}
+		ImGui::Text("");
+
+
+		ImGui::Text("g_show     %u", g_show    );
+		ImGui::Text("g_showMain %u", g_showMain);
+		ImGui::Text("");
+
+
+
+
+
+		{
+			ImGui::Text("wButtons %X", ::XI::state.Gamepad.wButtons);
+		}
+
+
+
+
+
+
+
+
+
+
 
 		// auto & io = ImGui::GetIO();
 
@@ -2259,10 +2102,10 @@ void Teleporter()
 
 
 
-void ToggleShow()
-{
-	g_show = !g_show;
-}
+// void ToggleShow()
+// {
+// 	g_show = !g_show;
+// }
 
 void ReloadRoom()
 {
@@ -2328,7 +2171,7 @@ export KeyBinding keyBindings[] =
 		activeConfig.keyData[0],
 		queuedConfig.keyData[0],
 		defaultConfig.keyData[0],
-		ToggleShow,
+		ToggleShowMain,
 		KeyFlags_AtLeastOneKey
 	},
 	{
@@ -2439,6 +2282,14 @@ void KeyBindings()
 
 void Main()
 {
+
+
+	if (!g_showMain)
+	{
+		return;
+	}
+
+
 	static bool run = false;
 
 	if (!run)
@@ -2492,11 +2343,24 @@ void Main()
 		ImGui::Begin
 		(
 			DDMK_TITLE_KYRIE,
-			&g_show
+			&g_showMain
 		)
 	)
 	{
 		ImGui::Text("");
+
+
+
+
+
+		GamepadClose
+		(
+			visibleMain,
+			lastVisibleMain,
+			CloseMain
+		);
+
+
 
 
 
@@ -2586,7 +2450,17 @@ export void GUI_Render()
 {
 	::GUI::id = 0;
 
+
 	Welcome();
+	Main();
+	CreditsWindow();
+
+
+
+
+
+
+
 
 	MainOverlayWindow();
 
@@ -2599,24 +2473,31 @@ export void GUI_Render()
 
 
 
-	if (g_show)
-	{
-		Main();
+	// if (g_show)
+	// {
+	// 	Main();
 
-		CreditsWindow();
-	}
+	// 	CreditsWindow();
+	// }
 
 	// keyBindingToggleShow.Popup();
 	// keyBindingReloadRoom.Popup();
 	// keyBindingMoveToMainActor.Popup();
 
 
-	for_all(index, countof(keyBindings))
-	{
-		auto & keyBinding = keyBindings[index];
+	// for_all(index, countof(keyBindings))
+	// {
+	// 	auto & keyBinding = keyBindings[index];
 
-		keyBinding.Popup();
-	}
+	// 	keyBinding.Popup();
+	// }
+
+	HandleKeyBindings
+	(
+		keyBindings,
+		countof(keyBindings)
+	);
+
 
 
 	{
@@ -2626,37 +2507,68 @@ export void GUI_Render()
 	}
 
 
+	HandleSaveTimer(activeConfig.targetFrameRate);
+
+
+	// // @Todo: Make function with frameRate arg.
+	// [&]()
+	// {
+	// 	using namespace GUI;
+
+
+
+	// 	if (saveTimer > 0)
+	// 	{
+	// 		saveTimer -= 1.0f;
+
+	// 		return;
+	// 	}
+
+	// 	saveTimer = (activeConfig.targetFrameRate * (saveTimeout / 1000));
+	// 	//saveTimer = (activeConfig.frameRate * (saveTimeout / 1000));
+
+	// 	// Log("__GUI__");
+
+
+
+	// 	if (save)
+	// 	{
+	// 		save = false;
+
+	// 		SaveConfig();
+	// 	}
+	// }();
 
 
 
 
-	[&]()
-	{
-		using namespace GUI;
+	// [&]()
+	// {
+	// 	using namespace GUI;
 
-		if (saveTimeout > 0)
-		{
-			saveTimeout -= 1.0f;
-		}
-		else if (saveTimeout < 0)
-		{
-			saveTimeout = 0;
-		}
+	// 	if (saveTimeout > 0)
+	// 	{
+	// 		saveTimeout -= 1.0f;
+	// 	}
+	// 	else if (saveTimeout < 0)
+	// 	{
+	// 		saveTimeout = 0;
+	// 	}
 
-		if (save)
-		{
-			if (saveTimeout > 0)
-			{
-				return;
-			}
+	// 	if (save)
+	// 	{
+	// 		if (saveTimeout > 0)
+	// 		{
+	// 			return;
+	// 		}
 
-			save = false;
+	// 		save = false;
 
-			saveTimeout = 6;
+	// 		saveTimeout = 6;
 
-			SaveConfig();
-		}
-	}();
+	// 		SaveConfig();
+	// 	}
+	// }();
 
 	// static bool enable = true;
 	// ImGui::ShowDemoWindow(&enable);

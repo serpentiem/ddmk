@@ -1,8 +1,11 @@
 import Core;
+import Core_Input;
 
 #include "../Core/Macros.h"
 
 import Windows;
+
+using namespace Windows;
 
 import Config;
 import Global;
@@ -11,9 +14,9 @@ import Hooks;
 import Vars;
 import Window;
 
-using namespace Windows;
-
 #define debug false
+
+
 
 uint32 DllMain
 (
@@ -24,7 +27,7 @@ uint32 DllMain
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
-		Core_Log_Init("logs", "Lucia.txt");
+		InitLog("logs", "Lucia.txt");
 
 		Log("Session started.");
 
@@ -70,37 +73,19 @@ uint32 DllMain
 			return 0;
 		}
 
-		Config_Init("configs", "Lucia.bin");
 
+
+		InitConfig();
 		LoadConfig();
 
 
-
-
-
-		// Graphics::Init();
-		// UpdateFrameRate();
 
 		ToggleForceWindowFocus(false);
 		ToggleForceWindowFocus(activeConfig.forceWindowFocus);
 
 
 
-
-
-
-
-
-
-
-		// // Remove labels.
-		// SetMemory
-		// (
-		// 	(appBaseAddr + 0x50CDE6),
-		// 	0,
-		// 	35,
-		// 	MemoryFlags_VirtualProtectDestination
-		// );
+		XI::new_Init("xinput9_1_0.dll");
 
 		Hooks::Init();
 	}

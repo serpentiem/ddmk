@@ -31,19 +31,16 @@ export typedef double float64;
 
 // @Research: Signed and unsigned versions of these should be useful.
 // For example for string functions like LastIndexOf to return -1.
-// Consider new_ prefix until prep is mature enough.
 
 #ifdef _WIN64
 
 export typedef uint64 off_t;
-export typedef uint64 size_t;
+export typedef uint64 new_size_t;
 
 #else
 
 export typedef uint32 off_t;
-
-// @Busted
-// typedef uint32 size_t;
+export typedef uint32 new_size_t;
 
 #endif
 

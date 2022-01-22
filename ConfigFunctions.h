@@ -74,9 +74,24 @@ export void LoadConfig()
 
 	auto name = const_cast<const char *>(reinterpret_cast<char *>(file));
 
-	if (root.Parse(name).HasParseError())
+	auto & result = root.Parse(name);
+
+	if (result.HasParseError())
 	{
-		Log("Parse failed.");
+		auto code = result.GetParseError();
+		auto off = result.GetErrorOffset();
+
+		Log
+		(
+			"Parse failed. "
+			#ifdef _WIN64
+			"%u %llu",
+			#else
+			"%u %u",
+			#endif
+			code,
+			off
+		);
 
 		return;
 	}

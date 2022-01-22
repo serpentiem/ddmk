@@ -7,6 +7,7 @@ export module GUI;
 
 import Core;
 import Core_GUI;
+import Core_ImGui;
 
 #include "../Core/Macros.h"
 
@@ -30,7 +31,12 @@ import Training;
 import Vars;
 import Window;
 
-#define debug false
+#define debug true
+
+
+
+bool visibleMain     = false;
+bool lastVisibleMain = false;
 
 
 
@@ -1167,211 +1173,6 @@ void MissionSelectSection()
 
 
 
-template <typename T>
-void OverlayFunction
-(
-	const char * label,
-	Config::OverlayData & activeData,
-	Config::OverlayData & queuedData,
-	T & func
-)
-{
-	if (!activeData.enable)
-	{
-		return;
-	}
-
-	auto & activePos = *reinterpret_cast<ImVec2 *>(&activeData.pos);
-	auto & queuedPos = *reinterpret_cast<ImVec2 *>(&queuedData.pos);
-
-	static uint32 lastX = 0;
-	static uint32 lastY = 0;
-
-	static bool run = false;
-	if (!run)
-	{
-		run = true;
-
-		ImGui::SetNextWindowPos(activePos);
-
-		lastX = static_cast<uint32>(activeData.pos.x);
-		lastY = static_cast<uint32>(activeData.pos.y);
-	}
-
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(0, 0));
-
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
-
-	if
-	(
-		ImGui::Begin
-		(
-			label,
-			&activeData.enable,
-			ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize
-		)
-	)
-	{
-		activePos = queuedPos = ImGui::GetWindowPos();
-
-		uint32 x = static_cast<uint32>(activeData.pos.x);
-		uint32 y = static_cast<uint32>(activeData.pos.y);
-
-		if
-		(
-			(lastX != x) ||
-			(lastY != y)
-		)
-		{
-			lastX = x;
-			lastY = y;
-
-			GUI::save = true;
-		}
-
-		auto & io = ImGui::GetIO();
-		ImGui::PushFont(io.Fonts->Fonts[FONT::OVERLAY_16]);
-
-		ImGui::PushStyleColor
-		(
-			ImGuiCol_Text,
-			*reinterpret_cast<ImVec4 *>(&activeData.color)
-		);
-
-		func();
-
-		ImGui::PopStyleColor();
-		ImGui::PopFont();
-	}
-
-	ImGui::End();
-	ImGui::PopStyleColor();
-	ImGui::PopStyleVar(4);
-}
-
-template
-<
-	typename T,
-	typename T2
->
-void OverlaySettings
-(
-	const char * label,
-	T & activeData,
-	T & queuedData,
-	T & defaultData,
-	T2 & func
-)
-{
-	auto & activePos = *reinterpret_cast<ImVec2 *>(&activeData.pos);
-	auto & queuedPos = *reinterpret_cast<ImVec2 *>(&queuedData.pos);
-	auto & defaultPos = *reinterpret_cast<ImVec2 *>(&defaultData.pos);
-
-	GUI_Checkbox2
-	(
-		"Enable",
-		activeData.enable,
-		queuedData.enable
-	);
-	ImGui::Text("");
-
-	if (GUI_ResetButton())
-	{
-		CopyMemory
-		(
-			&queuedData,
-			&defaultData,
-			sizeof(queuedData)
-		);
-		CopyMemory
-		(
-			&activeData,
-			&queuedData,
-			sizeof(activeData)
-		);
-
-		ImGui::SetWindowPos(label, activePos);
-	}
-	ImGui::Text("");
-
-	bool condition = !activeData.enable;
-
-	GUI_PushDisable(condition);
-
-	GUI_Color2
-	(
-		"Color",
-		activeData.color,
-		queuedData.color,
-		ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaPreview
-	);
-	ImGui::Text("");
-
-	ImGui::PushItemWidth(150);
-
-	if
-	(
-		GUI_InputDefault2<float>
-		(
-			"X",
-			activePos.x,
-			queuedPos.x,
-			defaultPos.x,
-			1,
-			"%g",
-			ImGuiInputTextFlags_EnterReturnsTrue
-		)
-	)
-	{
-		ImGui::SetWindowPos(label, activePos);
-	}
-	if
-	(
-		GUI_InputDefault2<float>
-		(
-			"Y",
-			activePos.y,
-			queuedPos.y,
-			defaultPos.y,
-			1,
-			"%g",
-			ImGuiInputTextFlags_EnterReturnsTrue
-		)
-	)
-	{
-		ImGui::SetWindowPos(label, activePos);
-	}
-
-	ImGui::PopItemWidth();
-
-	func();
-
-	GUI_PopDisable(condition);
-}
-
-template <typename T>
-void OverlaySettings
-(
-	const char * label,
-	T & activeData,
-	T & queuedData,
-	T & defaultData
-)
-{
-	auto Function = [](){};
-
-	return OverlaySettings
-	(
-		label,
-		activeData,
-		queuedData,
-		defaultData,
-		Function
-	);
-}
 
 
 
@@ -2472,13 +2273,13 @@ void Debug()
 		(
 			GUI_Checkbox2
 			(
-				"Disable Idle Timer",
-				activeConfig.disableIdleTimer,
-				queuedConfig.disableIdleTimer
+				"Disable Player Actor Idle Timer",
+				activeConfig.disablePlayerActorIdleTimer,
+				queuedConfig.disablePlayerActorIdleTimer
 			)
 		)
 		{
-			ToggleDisableIdleTimer(activeConfig.disableIdleTimer);
+			ToggleDisablePlayerActorIdleTimer(activeConfig.disablePlayerActorIdleTimer);
 		}
 		ImGui::Text("");
 
@@ -2747,10 +2548,8 @@ void Teleporter()
 
 
 
-void ToggleShow()
-{
-	g_show = !g_show;
-}
+
+
 
 void ReloadRoom()
 {
@@ -2843,7 +2642,7 @@ export KeyBinding keyBindings[] =
 		activeConfig.keyData[0],
 		queuedConfig.keyData[0],
 		defaultConfig.keyData[0],
-		ToggleShow,
+		ToggleShowMain,
 		KeyFlags_AtLeastOneKey
 	},
 	{
@@ -2953,6 +2752,17 @@ void KeyBindings()
 
 void Main()
 {
+
+
+
+	if (!g_showMain)
+	{
+		return;
+	}
+
+
+
+
 	static bool run = false;
 
 	if (!run)
@@ -2982,12 +2792,24 @@ void Main()
 		ImGui::Begin
 		(
 			DDMK_TITLE_EVA,
-			//"DDMK 2.7 Eva Nightly 5 September 2021",
-			&g_show
+			&g_showMain
 		)
 	)
 	{
 		ImGui::Text("");
+
+
+
+
+
+
+		GamepadClose
+		(
+			visibleMain,
+			lastVisibleMain,
+			CloseMain
+		);
+
 
 
 
@@ -3108,124 +2930,52 @@ void Main()
 
 export void GUI_Render()
 {
-	static bool run = false;
 
-	if (!run)
-	{
-		run = true;
 
-		// LogFunction();
 
-		//CreateTextures();
-	}
 
 	::GUI::id = 0;
 
+
+
 	Welcome();
+	Main();
+	CreditsWindow();
+
+
+
+	if constexpr (debug)
+	{
+		ActorWindow();
+		ItemWindow();
+	}
+
+
+
 
 	MainOverlayWindow();
 
-	// if constexpr (debug)
-	// {
-	// 	Overlay2Window();
-	// }
-
-	// MissionOverlayWindow();
-
-	// NewMovesOverlayWindowDante();
-	// NewMovesOverlayWindowVergil();
-	// NewMovesOverlayWindowBossLady();
-	// NewMovesOverlayWindowBossVergil();
 
 
 
 
 
-	//BossVergilOverlayWindow();
-
-	// WeaponSwitchController();
-
-	ActorWindow();
-	ItemWindow();
-
-
-	// if (showActorWindow)
-	// {
-	// 	ActorWindow();
-	// }
-
-
-
-	if (g_show)
-	{
-		Main();
-
-		CreditsWindow();
-
-		// if constexpr (debug)
-		// {
-
-		// 	MissionDataWindow();
-
-
-		// 	FileDataWindow();
-			
-		// 	EventDataWindow();
-		// 	RegionDataWindow();
-		// 	SoundWindow();
-		// }
-	}
-
-
-	for_all(index, countof(keyBindings))
-	{
-		auto & keyBinding = keyBindings[index];
-
-		keyBinding.Popup();
-	}
+	HandleKeyBindings
+	(
+		keyBindings,
+		countof(keyBindings)
+	);
 
 
 
 
 
+	HandleSaveTimer(activeConfig.frameRate);
 
 
 
 
 
-
-
-
-
-
-	[&]()
-	{
-		auto & save        = GUI::save;
-		auto & saveTimeout = GUI::saveTimeout;
-
-		if (saveTimeout > 0)
-		{
-			saveTimeout -= 1.0f;
-		}
-		else if (saveTimeout < 0)
-		{
-			saveTimeout = 0;
-		}
-
-		if (save)
-		{
-			if (saveTimeout > 0)
-			{
-				return;
-			}
-
-			save = false;
-
-			saveTimeout = 6;
-
-			SaveConfig();
-		}
-	}();
 
 	// static bool enable = true;
 	// ImGui::ShowDemoWindow(&enable);

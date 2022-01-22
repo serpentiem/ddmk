@@ -17,7 +17,7 @@ import Vars;
 
 #define debug false
 
-// #include "Macros.h"
+
 
 
 
@@ -995,7 +995,7 @@ export void ToggleYamatoFixes(bool enable)
 	run = true;
 }
 
-export void ToggleDisableIdleTimer(bool enable)
+export void ToggleDisablePlayerActorIdleTimer(bool enable)
 {
 	LogFunction(enable);
 

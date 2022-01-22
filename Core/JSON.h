@@ -1,4 +1,13 @@
 
+
+
+// @Todo: Check array item count at compile-time.
+// @Todo: Check Get type.
+
+
+
+
+
 // Inconsistent value and value-less versions, because we can't have nice things.
 
 rapidjson::Document root = {};
@@ -27,7 +36,7 @@ bool IsString(rapidjson::Value & member)
 void GetString
 (
 	char * buffer,
-	size_t bufferSize,
+	new_size_t bufferSize,
 	rapidjson::Value & member
 )
 {
@@ -65,7 +74,7 @@ void SetString
 template
 <
 	typename T,
-	size_t length
+	new_size_t length
 >
 rapidjson::Value & CreateString
 (
@@ -101,31 +110,6 @@ rapidjson::Value & CreateString
 
 	return member2;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// @Todo: Remove string stuff from other templates.
-
 
 
 
@@ -193,7 +177,7 @@ T Get(rapidjson::Value & member)
 template
 <
 	typename T,
-	size_t count
+	new_size_t count
 >
 void GetArray
 (
@@ -215,8 +199,8 @@ void GetArray
 template
 <
 	typename T,
-	size_t count,
-	size_t count2
+	new_size_t count,
+	new_size_t count2
 >
 void GetArray2
 (
@@ -239,9 +223,9 @@ void GetArray2
 template
 <
 	typename T,
-	size_t count,
-	size_t count2,
-	size_t count3
+	new_size_t count,
+	new_size_t count2,
+	new_size_t count3
 >
 void GetArray3
 (
@@ -310,7 +294,7 @@ void Set
 template
 <
 	typename T,
-	size_t count
+	new_size_t count
 >
 void SetArray
 (
@@ -332,8 +316,8 @@ void SetArray
 template
 <
 	typename T,
-	size_t count,
-	size_t count2
+	new_size_t count,
+	new_size_t count2
 >
 void SetArray2
 (
@@ -356,9 +340,9 @@ void SetArray2
 template
 <
 	typename T,
-	size_t count,
-	size_t count2,
-	size_t count3
+	new_size_t count,
+	new_size_t count2,
+	new_size_t count3
 >
 void SetArray3
 (
@@ -383,18 +367,21 @@ void SetArray3
 
 #pragma region Create
 
+
+
+
+// The 2 separate versions are required for proper compile-time type checking.
+
 template
 <
 	typename T,
 	typename T2,
-	size_t length,
-	typename... Args
+	new_size_t length
 >
 rapidjson::Value & Create
 (
 	rapidjson::Value & member,
-	T2 (&name)[length],
-	Args... args
+	T2 (&name)[length]
 )
 {
 	auto & allocator = *g_allocator;
@@ -417,20 +404,9 @@ rapidjson::Value & Create
 
 	if (!Is<T>(member2))
 	{
-		constexpr size_t argCount = sizeof...(args);
+		Log("value-less !Is %s", name);
 
-		if constexpr (argCount == 0)
-		{
-			Log("value-less !Is %s", name);
-		}
-		else
-		{
-			Log("value !Is %s", name);
-		}
-
-
-
-		Set<T>(member2, args...);
+		Set<T>(member2);
 	}
 
 	return member2;
@@ -438,10 +414,113 @@ rapidjson::Value & Create
 
 
 
+
+
+
+
+
+template
+<
+	typename T,
+	typename T2,
+	new_size_t length
+>
+rapidjson::Value & Create
+(
+	rapidjson::Value & member,
+	T2 (&name)[length],
+	T & value
+)
+{
+	auto & allocator = *g_allocator;
+
+	if (!member.HasMember(name))
+	{
+		rapidjson::Value newMember = {};
+
+		member.AddMember
+		(
+			name,
+			newMember,
+			allocator
+		);
+	}
+
+
+
+	auto & member2 = member[name];
+
+	if (!Is<T>(member2))
+	{
+		Log("value !Is %s", name);
+
+		Set<T>(member2, value);
+	}
+
+	return member2;
+}
+
+
+
+// template
+// <
+// 	typename T,
+// 	typename T2,
+// 	new_size_t length,
+// 	typename... Args
+// >
+// rapidjson::Value & Create
+// (
+// 	rapidjson::Value & member,
+// 	T2 (&name)[length],
+// 	Args... args
+// )
+// {
+// 	auto & allocator = *g_allocator;
+
+// 	if (!member.HasMember(name))
+// 	{
+// 		rapidjson::Value newMember = {};
+
+// 		member.AddMember
+// 		(
+// 			name,
+// 			newMember,
+// 			allocator
+// 		);
+// 	}
+
+
+
+// 	auto & member2 = member[name];
+
+// 	if (!Is<T>(member2))
+// 	{
+// 		constexpr new_size_t argCount = sizeof...(args);
+
+// 		if constexpr (argCount == 0)
+// 		{
+// 			Log("value-less !Is %s", name);
+// 		}
+// 		else
+// 		{
+// 			Log("value !Is %s", name);
+// 		}
+
+
+
+// 		Set<T>(member2, args...);
+// 	}
+
+// 	return member2;
+// }
+
+
+
 void UpdateCount
 (
 	rapidjson::Value & member,
-	size_t count
+	new_size_t count
 )
 {
 	if (!member.IsArray())
@@ -501,9 +580,9 @@ Successful calls to CreateArray guarantee that:
 template
 <
 	typename T,
-	size_t count,
+	new_size_t count,
 	typename T2,
-	size_t length
+	new_size_t length
 >
 rapidjson::Value & CreateArray
 (
@@ -533,10 +612,10 @@ rapidjson::Value & CreateArray
 template
 <
 	typename T,
-	size_t count,
-	size_t count2,
+	new_size_t count,
+	new_size_t count2,
 	typename T2,
-	size_t length
+	new_size_t length
 >
 rapidjson::Value & CreateArray2
 (
@@ -572,11 +651,11 @@ rapidjson::Value & CreateArray2
 template
 <
 	typename T,
-	size_t count,
-	size_t count2,
-	size_t count3,
+	new_size_t count,
+	new_size_t count2,
+	new_size_t count3,
 	typename T2,
-	size_t length
+	new_size_t length
 >
 rapidjson::Value & CreateArray3
 (
@@ -616,9 +695,9 @@ rapidjson::Value & CreateArray3
 template
 <
 	typename T,
-	size_t count,
+	new_size_t count,
 	typename T2,
-	size_t length
+	new_size_t length
 >
 rapidjson::Value & CreateArray
 (
@@ -650,10 +729,10 @@ rapidjson::Value & CreateArray
 template
 <
 	typename T,
-	size_t count,
-	size_t count2,
+	new_size_t count,
+	new_size_t count2,
 	typename T2,
-	size_t length
+	new_size_t length
 >
 rapidjson::Value & CreateArray2
 (
@@ -691,11 +770,11 @@ rapidjson::Value & CreateArray2
 template
 <
 	typename T,
-	size_t count,
-	size_t count2,
-	size_t count3,
+	new_size_t count,
+	new_size_t count2,
+	new_size_t count3,
 	typename T2,
-	size_t length
+	new_size_t length
 >
 rapidjson::Value & CreateArray3
 (

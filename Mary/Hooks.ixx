@@ -50,61 +50,61 @@ namespaceEnd();
 
 //namespaceStart(DI8);
 
-void UpdateKeyboard_Function(DI8::DIKEYBOARDSTATE * stateAddr)
-{
+// void UpdateKeyboard_Function(DI8::DIKEYBOARDSTATE * stateAddr)
+// {
 
-	if (!stateAddr)
-	{
-		return;
-	}
+// 	if (!stateAddr)
+// 	{
+// 		return;
+// 	}
 
-	auto & state = *stateAddr;
-
-
-
-	for_all(index, countof(keyBindings))
-	{
-		auto & keyBinding = keyBindings[index];
-
-		keyBinding.UpdateKeyData(state.keys);
-		keyBinding.Check(state.keys);
-	}
-}
+// 	auto & state = *stateAddr;
 
 
 
+// 	for_all(index, countof(keyBindings))
+// 	{
+// 		auto & keyBinding = keyBindings[index];
 
-void UpdateGamepad_Function(DI8::DIJOYSTATE * stateAddr)
-{
-	if (!stateAddr)
-	{
-		return;
-	}
-	auto & state = *stateAddr;
+// 		keyBinding.UpdateKeyData(state.keys);
+// 		keyBinding.Check(state.keys);
+// 	}
+// }
 
 
-	auto button = activeConfig.gamepadButton;
-	if (button > countof(state.rgbButtons))
-	{
-		button = 0;
-	}
 
-	static bool execute = false;
 
-	if (state.rgbButtons[button])
-	{
-		if (execute)
-		{
-			execute = false;
+// void UpdateGamepad_Function(DI8::DIJOYSTATE * stateAddr)
+// {
+// 	if (!stateAddr)
+// 	{
+// 		return;
+// 	}
+// 	auto & state = *stateAddr;
 
-			ToggleShowMain();
-		}
-	}
-	else
-	{
-		execute = true;
-	}
-}
+
+// 	auto button = activeConfig.gamepadButton;
+// 	if (button > countof(state.rgbButtons))
+// 	{
+// 		button = 0;
+// 	}
+
+// 	static bool execute = false;
+
+// 	if (state.rgbButtons[button])
+// 	{
+// 		if (execute)
+// 		{
+// 			execute = false;
+
+// 			ToggleShowMain();
+// 		}
+// 	}
+// 	else
+// 	{
+// 		execute = true;
+// 	}
+// }
 
 
 
@@ -163,8 +163,8 @@ export void Init()
 
 
 
-	UpdateKeyboard_func = UpdateKeyboard_Function;
-	UpdateGamepad_func = UpdateGamepad_Function;
+	// UpdateKeyboard_func = UpdateKeyboard_Function;
+	// UpdateGamepad_func = UpdateGamepad_Function;
 
 
 

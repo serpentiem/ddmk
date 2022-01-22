@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 module;
 #include "ThirdParty/ImGui/imgui.h"
 export module HooksBase;
@@ -25,6 +17,8 @@ import XI;
 
 using namespace Windows;
 
+import GUIBase;
+
 import Config;
 import Global;
 import GUI;   // Init, Render
@@ -42,17 +36,6 @@ enum
 	D3D11,
 };
 namespaceEnd();
-
-
-// // @Remove
-// export namespaceStart(DEVICE_TYPE);
-// enum
-// {
-// 	KEYBOARD,
-// 	MOUSE,
-// 	GAMEPAD,
-// };
-// namespaceEnd();
 
 
 
@@ -193,14 +176,33 @@ void WindowSize3()
 
 
 
-
-
+// @Update
 
 void UpdateKeyboard()
 {
 	keyboard.Update();
 
 	ImGui::DI8::UpdateKeyboard(&keyboard.state);
+
+
+
+	auto & state = keyboard.state;
+
+
+
+
+
+	for_all(index, countof(keyBindings))
+	{
+		auto & keyBinding = keyBindings[index];
+
+		keyBinding.UpdateKeyData(state.keys);
+		keyBinding.Check(state.keys);
+	}
+
+
+
+	// @Move
 
 	[&]()
 	{
@@ -423,25 +425,6 @@ void UpdateGamepad()
 
 
 
-/*
-
-flags = 0;
-
-if activeConfig.forceFocus
-
-
-byte32 flags = 0
-
-*/
-
-
-	// byte32 flags = 0;
-
-	// if (activeConfig.forceWindowFocus)
-	// {
-	// 	flags |= InputFlags_ForceFocus;
-	// }
-
 
 
 	if
@@ -459,6 +442,41 @@ byte32 flags = 0
 
 
 	gamepad.Update();
+
+
+
+
+	auto & state = gamepad.state;
+
+
+
+
+	auto button = activeConfig.gamepadButton;
+	if (button > countof(state.rgbButtons))
+	{
+		button = 0;
+	}
+
+	static bool execute = false;
+
+	if (state.rgbButtons[button])
+	{
+		if (execute)
+		{
+			execute = false;
+
+			ToggleShowMain();
+		}
+	}
+	else
+	{
+		execute = true;
+	}
+
+
+
+
+
 
 
 
@@ -507,7 +525,7 @@ export void UpdateGamepad()
 
 
 
-	XInputGetState
+	new_XInputGetState
 	(
 		0,
 		&state
@@ -974,6 +992,7 @@ void UpdateShow()
 {
 	g_show =
 	(
+		// activeConfig.welcome ||
 		g_showMain ||
 		g_showShop
 	);
@@ -992,7 +1011,7 @@ void UpdateShow()
 
 
 
-export template <size_t api>
+export template <new_size_t api>
 void CreateRenderTarget()
 {
 	LogFunction();
@@ -1028,7 +1047,7 @@ void CreateRenderTarget()
 	}
 }
 
-export template <size_t api>
+export template <new_size_t api>
 void RemoveRenderTarget()
 {
 	LogFunction();
@@ -1122,7 +1141,7 @@ export typedef void(* Present_func_t)();
 
 export Present_func_t Present_func = 0;
 
-export template <size_t api>
+export template <new_size_t api>
 HRESULT Present
 (
 	::DXGI::IDXGISwapChain * SwapChain,
@@ -1171,11 +1190,6 @@ HRESULT Present
 	UpdateGamepad();
 
 	XI::UpdateGamepad();
-
-
-
-
-
 
 
 
@@ -1257,7 +1271,7 @@ HRESULT Present
 	);
 }
 
-export template <size_t api>
+export template <new_size_t api>
 HRESULT ResizeBuffers
 (
 	::DXGI::IDXGISwapChain * SwapChain,
@@ -1493,6 +1507,11 @@ export HRESULT D3D10CreateDeviceAndSwapChain
 			::Hook::DXGI::ResizeBuffers<API::D3D10>
 		);
 	}();
+
+
+CreateKeyboard();
+CreateMouse();
+CreateGamepad();
 
 
 
@@ -1739,11 +1758,6 @@ namespaceEnd();
 
 namespaceStart(Hook::DI8);
 
-
-
-
-
-
 export HRESULT GetDeviceStateA
 (
 	::DI8::IDirectInputDevice8A * pDevice,
@@ -1751,28 +1765,6 @@ export HRESULT GetDeviceStateA
 	LPVOID Buffer
 )
 {
-
-
-
-
-
-
-	// // @Research: Maybe still required for dmc1.
-	// if (GetForegroundWindow() != appWindow)
-	// {
-	// 	SetMemory
-	// 	(
-	// 		Buffer,
-	// 		0,
-	// 		BufferSize
-	// 	);
-
-	// 	return 0;
-	// }
-
-
-
-
 	if (g_show)
 	{
 		SetMemory
@@ -1783,14 +1775,10 @@ export HRESULT GetDeviceStateA
 		);
 	}
 
-
-
 	return 0;
 }
 
 namespaceEnd();
-
-
 
 
 

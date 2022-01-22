@@ -216,7 +216,7 @@ export void ToggleLoadAssets(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x10C894);
 		auto jumpAddr = (appBaseAddr + 0x10C89A);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+10C894 - 0FB6 4E 30     - movzx ecx,byte ptr [esi+30]
 		dmc4.exe+10C898 - 2B CB          - sub ecx,ebx

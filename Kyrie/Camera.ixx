@@ -22,7 +22,7 @@ export void ToggleDisableCenterCamera(bool enable)
 
 	{
 		auto addr = (appBaseAddr + 0x12BEB4);
-		constexpr size_t size = 8;
+		constexpr new_size_t size = 8;
 		/*
 		dmc4.exe+12BEB4 - F3 0F11 86 28020000 - movss [esi+00000228],xmm0
 		dmc4.exe+12BEBC - 0F57 C0             - xorps xmm0,xmm0
@@ -45,7 +45,7 @@ export void ToggleDisableCenterCamera(bool enable)
 
 	{
 		auto addr = (appBaseAddr + 0x12BEBF);
-		constexpr size_t size = 24;
+		constexpr new_size_t size = 24;
 		/*
 		dmc4.exe+12BEBF - F3 0F11 96 20020000 - movss [esi+00000220],xmm2
 		dmc4.exe+12BEC7 - F3 0F11 8E 24020000 - movss [esi+00000224],xmm1

@@ -33,6 +33,16 @@ const LOCATION_LUCIA         = LOCATION_HDC + "/Lucia.dll";
 const LOCATION_MARY          = LOCATION_HDC + "/Mary.dll";
 const LOCATION_KYRIE         = LOCATION_4   + "/Kyrie.dll";
 
+const LOCATION_EVA_PDB   = LOCATION_HDC + "/Eva.pdb";
+const LOCATION_LUCIA_PDB = LOCATION_HDC + "/Lucia.pdb";
+const LOCATION_MARY_PDB  = LOCATION_HDC + "/Mary.pdb";
+const LOCATION_KYRIE_PDB = LOCATION_4   + "/Kyrie.pdb";
+
+
+
+
+
+
 
 
 const debug = false;
@@ -1514,20 +1524,36 @@ let libs_x86_64 =
 let libs_x86_32 =
 [
 	"msvcrt.lib",
+	// "msvcprt.lib",
+	// "msvcprtd.lib",
 	"vcruntime.lib",
 	"ucrt.lib",
 	"libcpmt.lib",
+	// "mmc.lib",
+	// "libcpmt1.lib",
+	// "libcpmtd.lib",
+	// "libcpmtd0.lib",
+	// "libcpmtd1.lib",
+	// "libconcrt.lib",
+	// "libconcrt1.lib",
+	// "libconcrtd.lib",
+	// "libconcrtd0.lib",
+	// "libconcrtd1.lib",
 	"kernel32.lib",
 	"user32.lib",
 	"shell32.lib",
 	"imm32.lib",
 	"advapi32.lib",
-	"d3d11.lib",
+	"d3d10.lib",
 	"d3dcompiler.lib",
 	"dinput8.lib",
 	"dxguid.lib",
-	//"xinput.lib",
-	"Xinput9_1_0.lib",
+	"xinput.lib",
+	//"Xinput9_1_0.lib",
+
+
+
+
 ];
 
 
@@ -1575,8 +1601,8 @@ let itemsCore_x86_64 =
 	[ "Core/XI.ixx"       , ""              , false, [] ],
 	[ "Core/Core.ixx"     , ""              , false, [] ],
 	[ "Core/GUI.ixx"      , "Core_GUI.obj"  , false, [] ],
-	[ "Core/ImGui.ixx"    , "Core_ImGui.obj", false, [] ],
 	[ "Core/Input.ixx"    , "Core_Input.obj", false, [] ],
+	[ "Core/ImGui.ixx"    , "Core_ImGui.obj", false, [] ],
 ];
 
 let itemsCoreNoGUI_x86_64 =
@@ -1612,8 +1638,8 @@ let itemsCore_x86_32 =
 	[ "Core/XI.ixx"       , ""              , false, [] ],
 	[ "Core/Core.ixx"     , ""              , false, [] ],
 	[ "Core/GUI.ixx"      , "Core_GUI.obj"  , false, [] ],
-	[ "Core/ImGui.ixx"    , "Core_ImGui.obj", false, [] ],
 	[ "Core/Input.ixx"    , "Core_Input.obj", false, [] ],
+	[ "Core/ImGui.ixx"    , "Core_ImGui.obj", false, [] ],
 ];
 
 let itemsCoreNoGUI_x86_32 =
@@ -2183,7 +2209,7 @@ let helpersEva =
 let itemsEva =
 [
 	[ "Eva/Vars.ixx"    , "", false , [] ],
-	[ "Eva/Config.ixx"  , "", false , [] ],
+	[ "Eva/Config.ixx"  , "", true , [] ],
 	[ "Eva/Global.ixx"  , "", true  , [] ],
 	[ "Eva/Internal.ixx", "", false , [] ],
 	[ "Eva/Arcade.ixx"  , "", true  , [] ],
@@ -2229,22 +2255,13 @@ let linkerArgsEva =
 	"/NODEFAULTLIB",
 ];
 
-let libsEva =
-[
-	"msvcrt.lib",
-	"vcruntime.lib",
-	"ucrt.lib",
-	"kernel32.lib",
-	"user32.lib",
-	"shell32.lib",
-	"imm32.lib",
-	"advapi32.lib",
-	"d3d11.lib",
-	"d3dcompiler.lib",
-	"dinput8.lib",
-	"dxguid.lib",
-	"xinput.lib",
-];
+let libsEva = [];
+
+libsEva = AddFront
+(
+	libsEva,
+	libs_x86_64
+);
 
 // #endregion
 
@@ -2265,7 +2282,7 @@ let helpersLucia = [];
 let itemsLucia =
 [
 	[ "Lucia/Vars.ixx"    , "", false, [] ],
-	[ "Lucia/Config.ixx"  , "", false, [] ],
+	[ "Lucia/Config.ixx"  , "", true, [] ],
 	[ "Lucia/Global.ixx"  , "", false, [] ],
 	[ "Lucia/Input.ixx"   , "", false, [] ],
 	[ "Lucia/Window.ixx"  , "", false, [] ],
@@ -2290,22 +2307,13 @@ let linkerArgsLucia =
 	"/NODEFAULTLIB",
 ];
 
-let libsLucia =
-[
-	"msvcrt.lib",
-	"vcruntime.lib",
-	"ucrt.lib",
-	"kernel32.lib",
-	"user32.lib",
-	"shell32.lib",
-	"imm32.lib",
-	"advapi32.lib",
-	"d3d11.lib",
-	"d3dcompiler.lib",
-	"dinput8.lib",
-	"dxguid.lib",
-	"xinput.lib",
-];
+let libsLucia = [];
+
+libsLucia = AddFront
+(
+	libsLucia,
+	libs_x86_64
+);
 
 // #endregion
 
@@ -3467,7 +3475,7 @@ let itemsKyrie =
 	[ "Kyrie/Internal.ixx", "", false, [] ],
 	[ "Kyrie/Steam.ixx"   , "", false, [] ],
 	[ "Kyrie/Global.ixx"  , "", true , [] ],
-	[ "Kyrie/Config.ixx"  , "", false, [] ],
+	[ "Kyrie/Config.ixx"  , "", true, [] ],
 	[ "Kyrie/File.ixx"    , "", false, [] ],
 	[ "Kyrie/Graphics.ixx", "", false, [] ],
 	[ "Kyrie/Input.ixx"   , "", false, [] ],
@@ -3513,22 +3521,13 @@ let linkerArgsKyrie =
 	"/NODEFAULTLIB",
 ];
 
-let libsKyrie =
-[
-	"msvcrt.lib",
-	"vcruntime.lib",
-	"ucrt.lib",
-	"kernel32.lib",
-	"user32.lib",
-	"shell32.lib",
-	"imm32.lib",
-	"advapi32.lib",
-	"d3d10.lib",
-	"d3dcompiler.lib",
-	"dinput8.lib",
-	"dxguid.lib",
-	"xinput.lib",
-];
+let libsKyrie = [];
+
+libsKyrie = AddFront
+(
+	libsKyrie,
+	libs_x86_32
+);
 
 // #endregion
 
@@ -3555,6 +3554,128 @@ let itemsVerify =
 ];
 
 // #endregion
+
+
+
+
+
+
+// #region CleanPDB
+
+let compilerArgsCleanPDB = [];
+
+compilerArgsCleanPDB = AddFront
+(
+	compilerArgsCleanPDB,
+	compilerArgs_x86_64
+);
+
+
+
+let itemsCleanPDB =
+[
+	[ "CleanPDB.cpp", "", false, [] ],
+];
+
+let linkerArgsCleanPDB =
+[
+	"/NOLOGO",
+	"/MACHINE:X64",
+	"/SUBSYSTEM:CONSOLE",
+	"/DYNAMICBASE",
+	"/DEBUG:FULL",
+	"/OPT:REF",
+	"/OPT:ICF",
+	"/NODEFAULTLIB",
+];
+
+let libsCleanPDB = [];
+
+libsCleanPDB = AddFront
+(
+	libsCleanPDB,
+	libs_x86_64
+);
+
+
+
+// #endregion
+
+
+
+
+
+function CleanPDB(location)
+{
+	ClearAll();
+
+	c += "CleanPDB.exe \"" + location + "\"";
+
+	try
+	{
+		child_process.execSync
+		(
+			c,
+			{
+				stdio: "inherit",
+				encoding: "utf8"
+			}
+		);
+	}
+	catch(error)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3897,6 +4018,11 @@ function BuildEvaFull()
 	return LinkEva();
 }
 
+function CleanPDBEva()
+{
+	return CleanPDB(LOCATION_EVA_PDB);
+}
+
 function CompileLucia()
 {
 	return CompileLoop
@@ -3950,6 +4076,11 @@ function BuildLuciaFull()
 	}
 
 	return LinkLucia();
+}
+
+function CleanPDBLucia()
+{
+	return CleanPDB(LOCATION_LUCIA_PDB);
 }
 
 function CompileMary()
@@ -4067,6 +4198,11 @@ function BuildMaryFull()
 	return LinkMary();
 }
 
+function CleanPDBMary()
+{
+	return CleanPDB(LOCATION_MARY_PDB);
+}
+
 function CompileKyrie()
 {
 	return CompileLoop
@@ -4182,6 +4318,11 @@ function BuildKyrieFull()
 	return LinkKyrie();
 }
 
+function CleanPDBKyrie()
+{
+	return CleanPDB(LOCATION_KYRIE_PDB);
+}
+
 function CompileVerify()
 {
 	return CompileLoop
@@ -4190,6 +4331,56 @@ function CompileVerify()
 		[],
 		itemsVerify
 	);
+}
+
+function CompileCleanPDB()
+{
+	return CompileLoop
+	(
+		compilerArgsCleanPDB,
+		[],
+		itemsCleanPDB
+	);
+}
+
+function CompileCleanPDBFull()
+{
+	if (CompileCoreNoGUI_x86_64())
+	{
+		return true;
+	}
+
+	return CompileCleanPDB();
+}
+
+function LinkCleanPDB()
+{
+	return Link
+	(
+		linkerArgsCleanPDB,
+		libsCleanPDB,
+		"CleanPDB.exe"
+	);
+}
+
+function BuildCleanPDB()
+{
+	if (CompileCleanPDB())
+	{
+		return true;
+	}
+
+	return LinkCleanPDB();
+}
+
+function BuildCleanPDBFull()
+{
+	if (CompileCleanPDBFull())
+	{
+		return true;
+	}
+
+	return LinkCleanPDB();
 }
 
 // $FunctionDataEnd
@@ -4369,6 +4560,10 @@ let items =
 		BuildEvaFull
 	],
 	[
+		"cleanPDBEva",
+		CleanPDBEva
+	],
+	[
 		"compileLucia",
 		CompileLucia
 	],
@@ -4387,6 +4582,10 @@ let items =
 	[
 		"buildLuciaFull",
 		BuildLuciaFull
+	],
+	[
+		"cleanPDBLucia",
+		CleanPDBLucia
 	],
 	[
 		"compileMary",
@@ -4433,6 +4632,10 @@ let items =
 		BuildMaryFull
 	],
 	[
+		"cleanPDBMary",
+		CleanPDBMary
+	],
+	[
 		"compileKyrie",
 		CompileKyrie
 	],
@@ -4477,8 +4680,32 @@ let items =
 		BuildKyrieFull
 	],
 	[
+		"cleanPDBKyrie",
+		CleanPDBKyrie
+	],
+	[
 		"compileVerify",
 		CompileVerify
+	],
+	[
+		"compileCleanPDB",
+		CompileCleanPDB
+	],
+	[
+		"compileCleanPDBFull",
+		CompileCleanPDBFull
+	],
+	[
+		"linkCleanPDB",
+		LinkCleanPDB
+	],
+	[
+		"buildCleanPDB",
+		BuildCleanPDB
+	],
+	[
+		"buildCleanPDBFull",
+		BuildCleanPDBFull
 	],
 
 	// $ActionDataEnd
@@ -4608,7 +4835,8 @@ let items =
 			(
 				[
 					"/NOLOGO",
-					"/MACHINE:X64",
+					//"/MACHINE:X64",
+					"/MACHINE:X86",
 					"/SUBSYSTEM:CONSOLE",
 					"/DYNAMICBASE",
 					"/DEBUG:FULL",

@@ -13,7 +13,7 @@ import Vars;
 
 #define debug false
 
-// // #include "Macros.h"
+
 
 
 
@@ -129,7 +129,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x6E8621);
 		auto jumpAddr = (appBaseAddr + 0x6E8626);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc4.exe+6E8621 - F3 0F10 46 7C - movss xmm0,[esi+7C]
 		dmc4.exe+6E8626 - F3 0F59 46 70 - mulss xmm0,[esi+70]

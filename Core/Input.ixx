@@ -14,9 +14,11 @@ import Core;
 
 import Windows;
 import DI8;
+import XI;
 
 using namespace Windows;
 using namespace DI8;
+using namespace XI;
 
 #define debug false
 
@@ -345,3 +347,147 @@ export struct Gamepad : InputDevice
 		);
 	};
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+namespaceStart(XI);
+
+
+export namespaceStart(GAMEPAD);
+enum
+{
+	UP             = 0x1,
+	DOWN           = 0x2,
+	LEFT           = 0x4,
+	RIGHT          = 0x8,
+	START          = 0x10,
+	BACK           = 0x20,
+	LEFT_THUMB     = 0x40,
+	RIGHT_THUMB    = 0x80,
+	LEFT_SHOULDER  = 0x100,
+	RIGHT_SHOULDER = 0x200,
+	A              = 0x1000,
+	B              = 0x2000,
+	X              = 0x4000,
+	Y              = 0x8000,
+};
+namespaceEnd();
+
+
+
+
+
+
+
+
+
+export typedef DWORD(* new_XInputGetState_t)
+(
+	DWORD,
+	XINPUT_STATE *
+);
+
+export new_XInputGetState_t new_XInputGetState = 0;
+
+
+
+export void new_Init(const char * libName)
+{
+	LogFunction();
+
+
+
+	byte32 error = 0;
+
+
+
+	SetLastError(0);
+
+	auto lib = LoadLibraryA(libName);
+	if (!lib)
+	{
+		error = GetLastError();
+
+		Log("LoadLibraryA failed. %s %X", libName, error);
+
+		return;
+	}
+
+
+
+	// XInputGetState
+	{
+		const char * funcName = "XInputGetState";
+
+		SetLastError(0);
+
+		auto funcAddr = GetProcAddress(lib, funcName);
+		if (!funcAddr)
+		{
+			error = GetLastError();
+
+			Log("GetProcAddress failed. %s %X", funcName, error);
+
+			return;
+		}
+
+		new_XInputGetState = reinterpret_cast<new_XInputGetState_t>(funcAddr);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+namespaceEnd();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

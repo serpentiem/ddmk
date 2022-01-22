@@ -10,7 +10,7 @@ import Core;
 
 #include "../Core/Macros.h"
 
-import Windows;
+import Windows; // CreateDirectoryA
 
 using namespace Windows;
 
@@ -26,12 +26,6 @@ const char * directoryName = "configs";
 const char * fileName      = "Mary_Exp.json";
 
 char location[64] = {};
-
-
-
-
-
-
 
 
 
@@ -80,53 +74,11 @@ export ExpData savedExpDataVergil[SAVE_COUNT] = {};
 
 
 
-namespaceStart(Exp);
 
-export void InitSession()
+bool Enable()
 {
-	LogFunction();
-
-	sessionExpDataDante  = {};
-	sessionExpDataVergil = {};
+	return activeConfig.Actor.enable;
 }
-
-export void SceneMissionStart()
-{
-	LogFunction();
-
-	missionExpDataDante  = sessionExpDataDante;
-	missionExpDataVergil = sessionExpDataVergil;
-}
-
-export void SceneMissionResult()
-{
-	LogFunction();
-
-	sessionExpDataDante  = missionExpDataDante;
-	sessionExpDataVergil = missionExpDataVergil;
-}
-
-namespaceEnd();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 bool Max()
 {
@@ -140,8 +92,20 @@ bool Max()
 
 
 
-#pragma region JSON
 
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma region JSON
 
 namespaceStart(JSON);
 
@@ -245,6 +209,8 @@ void ToExp()
 
 #pragma endregion
 
+
+
 namespaceEnd();
 
 #pragma endregion
@@ -254,10 +220,13 @@ namespaceEnd();
 
 
 
-
 export void SaveExp()
 {
-	if (Max())
+	if
+	(
+		!Enable() ||
+		Max()
+	)
 	{
 		return;
 	}
@@ -405,7 +374,7 @@ export void InitExp()
 
 struct ExpertiseHelper
 {
-	size_t index;
+	new_size_t index;
 	byte32 flags;
 };
 
@@ -495,7 +464,7 @@ ExpertiseHelper expertiseHelpersVergil[] =
 
 struct LevelHelper
 {
-	size_t index;
+	new_size_t index;
 	uint32 level;
 };
 
@@ -517,7 +486,11 @@ LevelHelper levelHelpers[] =
 
 export void SavePlayerActorExp()
 {
-	if (Max())
+	if
+	(
+		!Enable() ||
+		Max()
+	)
 	{
 		return;
 	}
@@ -533,16 +506,23 @@ export void SavePlayerActorExp()
 
 	IntroducePlayerActorExpData(activeActorData, return);
 
+	DebugLogFunction();
+
 	expData.styleLevels   [style] = activeActorData.styleLevel;
 	expData.styleExpPoints[style] = activeActorData.styleExpPoints;
-
-	DebugLogFunction();
 }
 
 
 
 export void UpdatePlayerActorExp(byte8 * actorBaseAddr)
 {
+	if (!Enable())
+	{
+		return;
+	}
+
+
+
 	IntroduceData(actorBaseAddr, actorData, PlayerActorData, return);
 
 	IntroducePlayerActorExpData(actorData, return);
@@ -631,7 +611,7 @@ export void UpdatePlayerActorExp(byte8 * actorBaseAddr)
 	auto UpdateLoop = [&]
 	(
 		ExpertiseHelper * helpers,
-		size_t helperCount
+		new_size_t helperCount
 	)
 	{
 		for_all(helperIndex, helperCount)
@@ -752,6 +732,13 @@ export void UpdatePlayerActorExp(byte8 * actorBaseAddr)
 
 export void UpdatePlayerActorExps()
 {
+	if (!Enable())
+	{
+		return;
+	}
+
+
+
 	DebugLogFunction();
 
 	old_for_all(uint8, playerIndex   , PLAYER_COUNT   ){
@@ -765,3 +752,88 @@ export void UpdatePlayerActorExps()
 		UpdatePlayerActorExp(actorData);
 	}}}
 }
+
+
+
+
+
+
+
+
+namespaceStart(Exp);
+
+export void InitSession()
+{
+	if (!Enable())
+	{
+		return;
+	}
+
+	LogFunction();
+
+	sessionExpDataDante  = {};
+	sessionExpDataVergil = {};
+}
+
+export void SceneMissionStart()
+{
+	if (!Enable())
+	{
+		return;
+	}
+
+	LogFunction();
+
+	missionExpDataDante  = sessionExpDataDante;
+	missionExpDataVergil = sessionExpDataVergil;
+}
+
+export void SceneMissionResult()
+{
+	if (!Enable())
+	{
+		return;
+	}
+
+	LogFunction();
+
+	sessionExpDataDante  = missionExpDataDante;
+	sessionExpDataVergil = missionExpDataVergil;
+}
+
+export void IncStyleExpPoints(byte8 * actorBaseAddr)
+{
+	if (!Enable())
+	{
+		return;
+	}
+
+	DebugLogFunction(actorBaseAddr);
+
+	SavePlayerActorExp();
+}
+
+namespaceEnd();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

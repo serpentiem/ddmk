@@ -1,18 +1,3 @@
-
-
-// @Todo: Consider sessionData.unlockDevilTrigger when buying purple orbs.
-
-// @Todo: Find purple and blue orb level count. It's not buyCount as far as I can tell.
-
-
-
-// @Todo: g_showWelcome or just make g_show consider activeConfig.welcome
-// @Todo: Add missing move descriptions.
-// @Todo: Move GamepadClose calls to end of window.
-// @Clean
-
-
-
 module;
 #include "../ThirdParty/ImGui/imgui.h"
 #include "../ThirdParty/ImGui/imgui_internal.h"
@@ -29,8 +14,6 @@ import Core_ImGui;
 
 import Windows;
 import D3D11;
-import DI8;
-import XI;
 
 using namespace Windows;
 using namespace D3D11;
@@ -51,7 +34,6 @@ import Graphics;
 import HUD;
 import Input;
 import Internal;
-// import Item;
 import Scene;
 import Sound;
 import Speed;
@@ -59,210 +41,9 @@ import Training;
 import Vars;
 import Window;
 
-#define debug false
+#define debug true
 
 
-
-
-
-
-void ResetNavId()
-{
-	auto contextAddr = ImGui::GetCurrentContext();
-	if (!contextAddr)
-	{
-		return;
-	}
-	auto & context = *contextAddr;
-
-	context.NavId = 0;
-}
-
-
-
-
-
-
-
-
-// @Move: GUIBase
-typedef void(* GamepadClose_func_t)();
-
-void GamepadClose
-(
-	bool & visible,
-	bool & lastVisible,
-	GamepadClose_func_t func
-)
-{
-	auto & io = ImGui::GetIO();
-
-
-
-	if (!ImGui::IsWindowFocused())
-	{
-		visible = false;
-
-		return;
-	}
-
-
-
-	visible = io.NavVisible;
-
-	if (lastVisible != visible)
-	{
-		if (io.NavInputs[ImGuiNavInput_Cancel] > 0)
-		{
-			return;
-		}
-
-		lastVisible = visible;
-	}
-
-	if
-	(
-		visible ||
-		lastVisible
-	)
-	{
-		return;
-	}
-
-
-
-	static bool execute = false; // Should be fine here, since only 1 window can be active at all times.
-
-	if (io.NavInputs[ImGuiNavInput_Cancel] > 0)
-	{
-		if (execute)
-		{
-			execute = false;
-
-			func();
-		}
-	}
-	else
-	{
-		execute = true;
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// @Todo: Add to Core.
-void GUI_TextDecimal
-(
-	char * buffer,
-	size_t bufferSize,
-	uint32 value
-)
-{
-	// 4294967295
-	// 4,294,967,295
-	constexpr size_t size = 16;
-
-	if
-	(
-		!buffer,
-		(bufferSize < size)
-	)
-	{
-		return;
-	}
-
-
-
-	char buffer2[size];
-
-	snprintf
-	(
-		buffer2,
-		sizeof(buffer2),
-		"%u",
-		value
-	);
-
-	buffer[0] = buffer2[0];
-	buffer[1] = 0;
-
-
-
-	size_t pos  = 1;
-	size_t pos2 = 1;
-
-	size_t end2 = strlen(buffer2);
-
-
-
-	while(pos2 < end2)
-	{
-		size_t remaining = (end2 - pos2);
-
-		size_t remainder = (remaining % 3);
-		if (!remainder)
-		{
-			buffer[pos] = ' ';
-			pos++;
-		}
-
-
-
-		buffer[pos] = buffer2[pos2];
-
-		pos++;
-		pos2++;
-	}
-
-	buffer[pos] = 0;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// @Move
-
-//#define SINGLE
-
-#ifdef SINGLE
-
-bool visible     = false;
-bool lastVisible = false;
-
-#else
 
 bool visibleMain     = false;
 bool lastVisibleMain = false;
@@ -270,70 +51,9 @@ bool lastVisibleMain = false;
 bool visibleShop     = false;
 bool lastVisibleShop = false;
 
-#endif
-
-
-
-void OpenMain()
-{
-	DebugLogFunction();
-
-	g_showMain = true;
-
-
-
-	// Required here since g_show could be false, but we still need the data.
-	// Otherwise the menu could auto-close.
-
-	using namespace XI;
-
-	XInputGetState
-	(
-		0,
-		&state
-	);
-
-	::ImGui::XI::UpdateGamepad(&state);
-}
-
-void CloseMain()
-{
-	DebugLogFunction();
-
-	g_showMain = false;
-}
-
-export void ToggleShowMain()
-{
-	DebugLogFunction();
-
-	if (!g_showMain)
-	{
-		OpenMain();
-	}
-	else
-	{
-		CloseMain();
-	}
-}
-
-
-
 
 
 #pragma region Common
-
-
-
-
-
-
-
-
-
-
-
-
 
 const char * saveNamesDante[] =
 {
@@ -4645,7 +4365,8 @@ void Dante()
 			"(?)",
 			"Requires enabled Actor module.\n"
 			"\n"
-			"Left: Human Right: Devil"
+			"Left : Human\n"
+			"Right: Devil"
 		);
 		ImGui::Text("");
 
@@ -4677,13 +4398,27 @@ void Dante()
 			activeConfig.enableRebellionNewDrive,
 			queuedConfig.enableRebellionNewDrive
 		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Press Lock-On + Left + Melee Attack."
+		);
+
 		GUI_Checkbox2
 		(
 			"Enable Quick Drive",
 			activeConfig.enableRebellionQuickDrive,
 			queuedConfig.enableRebellionQuickDrive
 		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"In Swordmaster hold Style Action and press Melee Attack twice."
+		);
 		ImGui::Text("");
+
 
 
 
@@ -4772,6 +4507,12 @@ void Dante()
 			activeConfig.enableNevanNewVortex,
 			queuedConfig.enableNevanNewVortex
 		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"While in devil form press Any Direction + Melee Attack."
+		);
 
 		GUI_SectionEnd();
 		ImGui::Text("");
@@ -4792,6 +4533,12 @@ void Dante()
 		{
 			ToggleEbonyIvoryFoursomeTime(activeConfig.EbonyIvory.foursomeTime);
 		}
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Twosome Time fires 2 additional shots."
+		);
 
 		if
 		(
@@ -4852,7 +4599,7 @@ bool showRegionDataWindow  = false;
 bool showSoundWindow       = false;
 bool showMissionDataWindow = false;
 bool showActorWindow       = false;
-bool showExpWindow       = true;
+bool showExpWindow         = false;
 bool showEventDataWindow   = false;
 
 
@@ -5176,7 +4923,7 @@ auto Function = [&]
 	ExpData & expData,
 
 	ShopHelper * helpers,
-	size_t helperCount
+	new_size_t helperCount
 )
 {
 	for_all(helperIndex, helperCount)
@@ -5889,7 +5636,7 @@ void ExpWindow()
 
 		ImGui::PushItemWidth(150);
 
-		GUI_Input<size_t>
+		GUI_Input<new_size_t>
 		(
 			"g_saveIndex",
 			g_saveIndex,
@@ -5925,7 +5672,7 @@ void ExpWindow()
 			ExpData & expData,
 			const char * name,
 			ShopHelper * shopHelpers,
-			size_t count
+			new_size_t count
 		)
 		{
 			if (!ImGui::CollapsingHeader(name))
@@ -5995,7 +5742,7 @@ void ExpWindow()
 			ExpData * expDataAddr,
 			const char ** saveNames,
 			ShopHelper * shopHelpers,
-			size_t count
+			new_size_t count
 		)
 		{
 			for_all(saveIndex, SAVE_COUNT)
@@ -7786,6 +7533,11 @@ void Debug()
 
 
 
+		GUI_Checkbox
+		(
+			"g_noTeleport",
+			g_noTeleport
+		);
 
 
 
@@ -7894,9 +7646,10 @@ void Debug()
 
 
 
-		GUI_Checkbox
+		GUI_Checkbox2
 		(
 			"Welcome",
+			activeConfig.welcome,
 			queuedConfig.welcome
 		);
 		ImGui::Text("");
@@ -8727,7 +8480,7 @@ void Jukebox()
 
 		static char location[512];
 		static char fileName[256];
-		static size_t index = 0;
+		static new_size_t index = 0;
 		static bool run = false;
 
 		if (!run)
@@ -9119,215 +8872,7 @@ void Other()
 
 #pragma region Overlays
 
-// @Move
 
-template <typename T>
-void OverlayFunction
-(
-	const char * label,
-	Config::OverlayData & activeData,
-	Config::OverlayData & queuedData,
-	T & func
-)
-{
-	if (!activeData.enable)
-	{
-		return;
-	}
-
-	auto & activePos = *reinterpret_cast<ImVec2 *>(&activeData.pos);
-	auto & queuedPos = *reinterpret_cast<ImVec2 *>(&queuedData.pos);
-
-	static uint32 lastX = 0;
-	static uint32 lastY = 0;
-
-	static bool run = false;
-	if (!run)
-	{
-		run = true;
-
-		ImGui::SetNextWindowPos(activePos);
-
-		lastX = static_cast<uint32>(activeData.pos.x);
-		lastY = static_cast<uint32>(activeData.pos.y);
-	}
-
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(0, 0));
-
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
-
-	if
-	(
-		ImGui::Begin
-		(
-			label,
-			&activeData.enable,
-			ImGuiWindowFlags_NoTitleBar         |
-			ImGuiWindowFlags_AlwaysAutoResize   |
-			ImGuiWindowFlags_NoFocusOnAppearing
-		)
-	)
-	{
-		activePos = queuedPos = ImGui::GetWindowPos();
-
-		uint32 x = static_cast<uint32>(activeData.pos.x);
-		uint32 y = static_cast<uint32>(activeData.pos.y);
-
-		if
-		(
-			(lastX != x) ||
-			(lastY != y)
-		)
-		{
-			lastX = x;
-			lastY = y;
-
-			GUI::save = true;
-		}
-
-		auto & io = ImGui::GetIO();
-		ImGui::PushFont(io.Fonts->Fonts[FONT::OVERLAY_16]);
-
-		ImGui::PushStyleColor
-		(
-			ImGuiCol_Text,
-			*reinterpret_cast<ImVec4 *>(&activeData.color)
-		);
-
-		func();
-
-		ImGui::PopStyleColor();
-		ImGui::PopFont();
-	}
-
-	ImGui::End();
-	ImGui::PopStyleColor();
-	ImGui::PopStyleVar(4);
-}
-
-template
-<
-	typename T,
-	typename T2
->
-void OverlaySettings
-(
-	const char * label,
-	T & activeData,
-	T & queuedData,
-	T & defaultData,
-	T2 & func
-)
-{
-	auto & activePos = *reinterpret_cast<ImVec2 *>(&activeData.pos);
-	auto & queuedPos = *reinterpret_cast<ImVec2 *>(&queuedData.pos);
-	auto & defaultPos = *reinterpret_cast<ImVec2 *>(&defaultData.pos);
-
-	GUI_Checkbox2
-	(
-		"Enable",
-		activeData.enable,
-		queuedData.enable
-	);
-	ImGui::Text("");
-
-	if (GUI_ResetButton())
-	{
-		CopyMemory
-		(
-			&queuedData,
-			&defaultData,
-			sizeof(queuedData)
-		);
-		CopyMemory
-		(
-			&activeData,
-			&queuedData,
-			sizeof(activeData)
-		);
-
-		ImGui::SetWindowPos(label, activePos);
-	}
-	ImGui::Text("");
-
-	bool condition = !activeData.enable;
-
-	GUI_PushDisable(condition);
-
-	GUI_Color2
-	(
-		"Color",
-		activeData.color,
-		queuedData.color,
-		ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaPreview
-	);
-	ImGui::Text("");
-
-	ImGui::PushItemWidth(150);
-
-	if
-	(
-		GUI_InputDefault2<float>
-		(
-			"X",
-			activePos.x,
-			queuedPos.x,
-			defaultPos.x,
-			1,
-			"%g",
-			ImGuiInputTextFlags_EnterReturnsTrue
-		)
-	)
-	{
-		ImGui::SetWindowPos(label, activePos);
-	}
-	if
-	(
-		GUI_InputDefault2<float>
-		(
-			"Y",
-			activePos.y,
-			queuedPos.y,
-			defaultPos.y,
-			1,
-			"%g",
-			ImGuiInputTextFlags_EnterReturnsTrue
-		)
-	)
-	{
-		ImGui::SetWindowPos(label, activePos);
-	}
-
-	ImGui::PopItemWidth();
-
-	func();
-
-	GUI_PopDisable(condition);
-}
-
-template <typename T>
-void OverlaySettings
-(
-	const char * label,
-	T & activeData,
-	T & queuedData,
-	T & defaultData
-)
-{
-	auto Function = [](){};
-
-	return OverlaySettings
-	(
-		label,
-		activeData,
-		queuedData,
-		defaultData,
-		Function
-	);
-}
 
 
 
@@ -9470,6 +9015,7 @@ void MainOverlayWindow()
 
 
 
+
 		if (activeConfig.mainOverlayData.showRegionData)
 		{
 			ImGui::Text("Region Data");
@@ -9491,7 +9037,7 @@ void MainOverlayWindow()
 			dmc3.exe+2C61C6 - 44 8B C5          - mov r8d,ebp
 			*/
 
-			constexpr size_t count = 3;
+			constexpr new_size_t count = 3;
 
 			for_all(index, count)
 			{
@@ -9572,10 +9118,33 @@ void MainOverlayWindow()
 
 		ImGui::Text("g_shopTimer   %g", g_shopTimer  );
 		ImGui::Text("g_shopTimeout %g", g_shopTimeout);
+		ImGui::Text("");
+
+
+		ImGui::Text("g_secretMission %u", g_secretMission);
+
+
+
+		// [&]()
+		// {
+		// 	if (g_scene != SCENE::GAME)
+		// 	{
+		// 		return;
+		// 	}
+
+		// 	IntroduceEventData(return);
+		// 	IntroduceNextEventData(return);
+
+		// 	ImGui::Text("room          %u", eventData.room        );
+		// 	ImGui::Text("position      %u", eventData.position    );
+		// 	ImGui::Text("next room     %u", nextEventData.room    );
+		// 	ImGui::Text("next position %u", nextEventData.position);
+		// }();
 
 
 
 	};
+
 
 
 
@@ -10743,6 +10312,12 @@ void TrainingSection()
 		{
 			ToggleInfiniteBullets(activeConfig.infiniteBullets);
 		}
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"For Boss Lady."
+		);
 
 
 
@@ -11007,7 +10582,9 @@ void Vergil()
 		TooltipHelper
 		(
 			"(?)",
-			"Requires enabled Actor module."
+			"Requires enabled Actor module.\n"
+			"\n"
+			"Summoned Swords will continue to levitate as long as Quicksilver is active."
 		);
 
 		GUI_SectionEnd();
@@ -11263,12 +10840,9 @@ void KeyBindings()
 
 #pragma region Main
 
-void UpdateGlobalScale()
-{
-	auto & io = ImGui::GetIO();
+// @Move: GUIBase
 
-	io.FontGlobalScale = activeConfig.globalScale;
-}
+
 
 void Main()
 {
@@ -11490,8 +11064,6 @@ export void GUI_Render()
 	CreditsWindow();
 	ShopWindow();
 
-
-
 	if constexpr (debug)
 	{
 		ActorWindow();
@@ -11517,12 +11089,11 @@ export void GUI_Render()
 
 
 
-	for_all(index, countof(keyBindings))
-	{
-		auto & keyBinding = keyBindings[index];
-
-		keyBinding.Popup();
-	}
+	HandleKeyBindings
+	(
+		keyBindings,
+		countof(keyBindings)
+	);
 
 
 
@@ -11531,34 +11102,9 @@ export void GUI_Render()
 		g_shopTimer -= 1.0f;
 	}
 
+	HandleSaveTimer(activeConfig.frameRate);
 
 
-	[&]()
-	{
-		using namespace GUI;
-
-
-
-		if (saveTimer > 0)
-		{
-			saveTimer -= 1.0f;
-
-			return;
-		}
-
-		saveTimer = (activeConfig.frameRate * (saveTimeout / 1000));
-
-		// Log("__GUI__");
-
-
-
-		if (save)
-		{
-			save = false;
-
-			SaveConfig();
-		}
-	}();
 
 	// static bool enable = true;
 	// ImGui::ShowDemoWindow(&enable);

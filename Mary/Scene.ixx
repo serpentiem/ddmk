@@ -4,6 +4,10 @@ import Core;
 
 #include "../Core/Macros.h"
 
+import Windows;
+
+using namespace Windows;
+
 import Actor;
 import Config;
 import Exp;
@@ -67,6 +71,50 @@ void SceneMissionStart()
 namespaceEnd();
 
 #pragma endregion
+
+
+
+#pragma region SecretMission
+
+namespaceStart(SecretMission);
+
+
+
+void SceneMain()
+{
+	LogFunction();
+
+	ClearGlobalSecretMission();
+}
+
+void SceneMissionSelect()
+{
+	LogFunction();
+
+	ClearGlobalSecretMission();
+}
+
+void SceneMissionResult()
+{
+	LogFunction();
+
+	ClearGlobalSecretMission();
+}
+
+
+
+namespaceEnd();
+
+#pragma endregion
+
+
+
+
+
+
+
+
+
 
 
 
@@ -142,6 +190,7 @@ void SceneHandler()
 			Log(funcName);
 
 			Item::SceneMain();
+			SecretMission::SceneMain();
 
 			break;
 		}
@@ -150,6 +199,7 @@ void SceneHandler()
 			Log(funcName);
 
 			Item::SceneMissionSelect();
+			SecretMission::SceneMissionSelect();
 
 			break;
 		}
@@ -177,9 +227,14 @@ void SceneHandler()
 		{
 			Log(funcName);
 
-			Actor::SceneMissionStart();
-			Exp::SceneMissionStart();
-			Item::SceneMissionStart();
+			Log("g_secretMission %u", g_secretMission);
+
+			if (!g_secretMission)
+			{
+				Actor::SceneMissionStart();
+				Exp::SceneMissionStart();
+				Item::SceneMissionStart();
+			}
 
 			break;
 		}
@@ -188,6 +243,7 @@ void SceneHandler()
 			Log(funcName);
 
 			Exp::SceneMissionResult();
+			SecretMission::SceneMissionResult();
 
 			break;
 		}
@@ -223,7 +279,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x240585);
 		auto jumpAddr = (appBaseAddr + 0x24058C);
-		constexpr size_t size = 7;
+		constexpr new_size_t size = 7;
 		/*
 		dmc3.exe+240585 - C7 41 38 02000000 - mov [rcx+38],00000002
 		dmc3.exe+24058C - 33 C0             - xor eax,eax
@@ -251,7 +307,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x2405EC);
 		auto jumpAddr = (appBaseAddr + 0x2405F4);
-		constexpr size_t size = 8;
+		constexpr new_size_t size = 8;
 		/*
 		dmc3.exe+2405EC - 41 C7 41 38 03000000 - mov [r9+38],00000003
 		dmc3.exe+2405F4 - 33 C0                - xor eax,eax
@@ -279,7 +335,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x2405A7);
 		auto jumpAddr = (appBaseAddr + 0x2405AE);
-		constexpr size_t size = 7;
+		constexpr new_size_t size = 7;
 		/*
 		dmc3.exe+2405A7 - C7 41 38 03000000 - mov [rcx+38],00000003
 		dmc3.exe+2405AE - 33 C0             - xor eax,eax
@@ -307,7 +363,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x2404AE);
 		auto jumpAddr = (appBaseAddr + 0x2404B5);
-		constexpr size_t size = 7;
+		constexpr new_size_t size = 7;
 		/*
 		dmc3.exe+2404AE - C7 41 38 05000000 - mov [rcx+38],00000005
 		dmc3.exe+2404B5 - 33 C0             - xor eax,eax
@@ -335,7 +391,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x23A58B);
 		auto jumpAddr = (appBaseAddr + 0x23A590);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc3.exe+23A58B - B8 06000000 - mov eax,00000006
 		dmc3.exe+23A590 - 89 43 50    - mov [rbx+50],eax
@@ -363,7 +419,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x2404DA);
 		auto jumpAddr = (appBaseAddr + 0x2404E1);
-		constexpr size_t size = 7;
+		constexpr new_size_t size = 7;
 		/*
 		dmc3.exe+2404DA - C7 41 38 06000000 - mov [rcx+38],00000006
 		dmc3.exe+2404E1 - 33 C0             - xor eax,eax
@@ -391,7 +447,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x23A575);
 		auto jumpAddr = (appBaseAddr + 0x23A57C);
-		constexpr size_t size = 7;
+		constexpr new_size_t size = 7;
 		/*
 		dmc3.exe+23A575 - C7 43 50 07000000 - mov [rbx+50],00000007
 		dmc3.exe+23A57C - C6 05 8E90A600 00 - mov byte ptr [dmc3.exe+CA3611],00
@@ -419,7 +475,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x2404E4);
 		auto jumpAddr = (appBaseAddr + 0x2404EB);
-		constexpr size_t size = 7;
+		constexpr new_size_t size = 7;
 		/*
 		dmc3.exe+2404E4 - C7 41 38 07000000 - mov [rcx+38],00000007
 		dmc3.exe+2404EB - 33 C0             - xor eax,eax
@@ -447,7 +503,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x240488);
 		auto jumpAddr = (appBaseAddr + 0x24048F);
-		constexpr size_t size = 7;
+		constexpr new_size_t size = 7;
 		/*
 		dmc3.exe+240488 - C7 41 38 08000000 - mov [rcx+38],00000008
 		dmc3.exe+24048F - 33 C0             - xor eax,eax

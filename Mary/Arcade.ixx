@@ -304,7 +304,7 @@ export void Toggle(bool enable)
 	// Force New Game
 	{
 		auto addr = (appBaseAddr + 0x2433FB);
-		constexpr size_t size = 2;
+		constexpr new_size_t size = 2;
 		/*
 		dmc3.exe+2433FB - 74 55    - je dmc3.exe+243452
 		dmc3.exe+2433FD - 80 F9 01 - cmp cl,01
@@ -330,7 +330,7 @@ export void Toggle(bool enable)
 	// Skip Mission Select
 	{
 		auto addr = (appBaseAddr + 0x243299);
-		constexpr size_t size = 2;
+		constexpr new_size_t size = 2;
 		/*
 		dmc3.exe+243299 - 74 13                   - je dmc3.exe+2432AE
 		dmc3.exe+24329B - C7 05 83143500 01000000 - mov [dmc3.exe+594728],00000001
@@ -356,7 +356,7 @@ export void Toggle(bool enable)
 	// Force Mission Start
 	{
 		auto addr = (appBaseAddr + 0x2411F5);
-		constexpr size_t size = 2;
+		constexpr new_size_t size = 2;
 		/*
 		dmc3.exe+2411F5 - 74 4F    - je dmc3.exe+241246
 		dmc3.exe+2411F7 - 83 F8 01 - cmp eax,01
@@ -383,7 +383,7 @@ export void Toggle(bool enable)
 	{
 		auto addr = (appBaseAddr + 0x217991);
 		auto dest = (appBaseAddr + 0x217993);
-		constexpr size_t size = 2;
+		constexpr new_size_t size = 2;
 		/*
 		dmc3.exe+217991 - 74 0F         - je dmc3.exe+2179A2
 		dmc3.exe+217993 - 41 0FB6 43 4C - movzx eax,byte ptr [r11+4C]
@@ -407,7 +407,7 @@ export void Toggle(bool enable)
 	{
 		auto addr = (appBaseAddr + 0x21799A);
 		auto dest = (appBaseAddr + 0x21799C);
-		constexpr size_t size = 2;
+		constexpr new_size_t size = 2;
 		/*
 		dmc3.exe+21799A - 74 06       - je dmc3.exe+2179A2
 		dmc3.exe+21799C - 41 88 41 34 - mov [r9+34],al
@@ -433,7 +433,7 @@ export void Toggle(bool enable)
 	// Skip Orb Notifications
 	{
 		auto addr = (appBaseAddr + 0x1AA791);
-		constexpr size_t size = 2;
+		constexpr new_size_t size = 2;
 		/*
 		dmc3.exe+1AA791 - 75 18          - jne dmc3.exe+1AA7AB
 		dmc3.exe+1AA793 - 41 B8 01000000 - mov r8d,00000001

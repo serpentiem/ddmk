@@ -19,7 +19,41 @@ import Model;
 import Sound;
 import Vars;
 
-#define debug false
+#define debug true
+
+
+
+
+
+
+#pragma region SecretMission
+
+namespaceStart(SecretMission);
+
+
+
+void SetNextScreen(EventData & eventData)
+{
+	LogFunction();
+
+	using namespace SCREEN;
+
+	if (eventData.nextScreen == MISSION_START)
+	{
+		ClearGlobalSecretMission();
+	}
+}
+
+
+
+namespaceEnd();
+
+#pragma endregion
+
+
+
+
+
 
 
 
@@ -175,6 +209,13 @@ void UpdateEnemyCount()
 
 
 
+
+
+
+
+
+
+
 const char * eventFuncNames[] =
 {
 	"EventInit",
@@ -224,7 +265,7 @@ void EventHandler(EventData & eventData)
 	auto event = eventData.event;
 	if (event >= COUNT)
 	{
-		static size_t count = 0;
+		static new_size_t count = 0;
 
 		if (count < 10)
 		{
@@ -235,6 +276,19 @@ void EventHandler(EventData & eventData)
 
 		return;
 	}
+
+
+	if
+	(
+		(event == EVENT::TELEPORT) &&
+		g_noTeleport
+	)
+	{
+		eventData.event = MAIN;
+	}
+
+
+
 
 
 
@@ -271,6 +325,8 @@ void EventHandler(EventData & eventData)
 				case TELEPORT:
 				{
 					Log(funcName);
+
+					SetGlobalSecretMission();
 
 					break;
 				}
@@ -581,6 +637,7 @@ void SetNextScreen(EventData & eventData)
 	Log("%s %u", FUNC_NAME, eventData.nextScreen);
 
 	Actor::SetNextScreen(eventData);
+	SecretMission::SetNextScreen(eventData);
 }
 
 
@@ -720,14 +777,15 @@ void Load()
 
 void IncStyleExpPoints(byte8 * actorBaseAddr)
 {
-	LogFunction(actorBaseAddr);
-
-	SavePlayerActorExp();
-
 	IntroduceData(actorBaseAddr, actorData, PlayerActorData, return);
 
-	Log("styleExpPoints %g", actorData.styleExpPoints);
+	DebugLog("%s %llX %g", FUNC_NAME, actorBaseAddr, actorData.styleExpPoints);
+
+	Exp::IncStyleExpPoints(actorBaseAddr);
 }
+
+
+
 
 
 
@@ -752,7 +810,7 @@ export void Event_Toggle(bool enable)
 {
 	auto addr     = (appBaseAddr + 0x1FA2D5);
 	auto jumpAddr = (appBaseAddr + 0x1FA2DD);
-	constexpr size_t size = 8;
+	constexpr new_size_t size = 8;
 	/*
 	dmc3.exe+1FA2D5 - F3 0F11 89 64630000 - movss [rcx+00006364],xmm1
 	dmc3.exe+1FA2DD - 8B 89 58630000      - mov ecx,[rcx+00006358]
@@ -791,7 +849,7 @@ export void Event_Toggle(bool enable)
 {
 	auto addr     = (appBaseAddr + 0x1FA3F2);
 	auto jumpAddr = (appBaseAddr + 0x1FA3FA);
-	constexpr size_t size = 8;
+	constexpr new_size_t size = 8;
 	/*
 	dmc3.exe+1FA3F2 - F3 0F11 8B 64630000 - movss [rbx+00006364],xmm1
 	dmc3.exe+1FA3FA - FF 50 48            - call qword ptr [rax+48]
@@ -854,7 +912,7 @@ export void Event_Toggle(bool enable)
 {
 	auto addr     = (appBaseAddr + 0x32A88B);
 	auto jumpAddr = (appBaseAddr + 0x32A890);
-	constexpr size_t size = 5;
+	constexpr new_size_t size = 5;
 	/*
 	dmc3.exe+32A88B - E8 F0070000 - call dmc3.exe+32B080
 	dmc3.exe+32A890 - EB 07       - jmp dmc3.exe+32A899
@@ -884,7 +942,7 @@ export void Event_Toggle(bool enable)
 {
 	auto addr     = (appBaseAddr + 0x32A7A3);
 	auto jumpAddr = (appBaseAddr + 0x32A7A8);
-	constexpr size_t size = 5;
+	constexpr new_size_t size = 5;
 	/*
 	dmc3.exe+32A7A3 - E8 38F0FFFF             - call dmc3.exe+3297E0
 	dmc3.exe+32A7A8 - C7 83 E0020000 01000000 - mov [rbx+000002E0],00000001
@@ -1127,7 +1185,7 @@ export void Event_Toggle(bool enable)
 {
 	auto addr     = (appBaseAddr + 0x23B210);
 	auto jumpAddr = (appBaseAddr + 0x23B216);
-	constexpr size_t size = 6;
+	constexpr new_size_t size = 6;
 	/*
 	dmc3.exe+23B210 - 89 91 C0B50100    - mov [rcx+0001B5C0],edx
 	dmc3.exe+23B216 - C7 41 20 09000000 - mov [rcx+20],00000009
@@ -1165,7 +1223,7 @@ export void Event_Toggle(bool enable)
 {
 	auto addr     = (appBaseAddr + 0x29BD78);
 	auto jumpAddr = (appBaseAddr + 0x29BD7F);
-	constexpr size_t size = 7;
+	constexpr new_size_t size = 7;
 	/*
 	dmc3.exe+29BD78 - 45 33 C9    - xor r9d,r9d
 	dmc3.exe+29BD7B - 89 6C 24 20 - mov [rsp+20],ebp
@@ -1322,6 +1380,53 @@ export void Event_Toggle(bool enable)
 			backupHelper.Restore(addr);
 		}
 	}
+
+
+
+// Pause Quit Mission
+{
+	auto addr     = (appBaseAddr + 0x23D7C2);
+	auto jumpAddr = (appBaseAddr + 0x23D7C9);
+	constexpr new_size_t size = 7;
+	/*
+	dmc3.exe+23D7C2 - C7 43 2C 08000000 - mov [rbx+2C],00000008
+	dmc3.exe+23D7C9 - 48 8D 0D C004B300 - lea rcx,[dmc3.exe+D6DC90]
+	*/
+
+	static Function func = {};
+
+	constexpr byte8 sect1[] =
+	{
+		mov_rcx_rbx,
+	};
+
+	if (!run)
+	{
+		backupHelper.Save(addr, size);
+		func = CreateFunction(SetNextScreen, jumpAddr, (FunctionFlags_SaveRegisters | FunctionFlags_NoResult), size, sizeof(sect1));
+		CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
+		CopyMemory(func.sect1, sect1, sizeof(sect1));
+	}
+
+	if (enable)
+	{
+		WriteJump(addr, func.addr, (size - 5));
+	}
+	else
+	{
+		backupHelper.Restore(addr);
+	}
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -18,7 +18,7 @@
 
 
 
-#define for_each(name, start, end) for (size_t name = start; name < end; name++)
+#define for_each(name, start, end) for (new_size_t name = start; name < end; name++)
 #define for_all(name, end) for_each(name, 0, end)
 
 
@@ -67,6 +67,14 @@ Log\
 #define _Prep_String(a) #a
 #define Prep_String(a) _Prep_String(a)
 
+
+
+
+
+
+// Blacklist
+
+#define size_t __OLD_BUSTED_AF_SIZE_T__
 
 
 
@@ -673,5 +681,5 @@ struct Size_##size\
 
 
 
-#ifdef __GARBAGE__
-#endif
+
+

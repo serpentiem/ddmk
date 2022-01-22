@@ -1,13 +1,7 @@
-
-
-
-
-#include "Macros.h"
-
-
 #define RAPIDJSON_NO_SIZETYPEDEFINE
 
-namespaceStart(rapidjson);
+namespace rapidjson
+{
 
 #ifdef _WIN64
 typedef unsigned long long SizeType;
@@ -15,7 +9,7 @@ typedef unsigned long long SizeType;
 typedef unsigned long      SizeType;
 #endif
 
-namespaceEnd();
+}
 
 
 
@@ -23,18 +17,5 @@ namespaceEnd();
 
 
 
-
 #include "../ThirdParty/rapidjson/document.h"
 #include "../ThirdParty/rapidjson/prettywriter.h"
-
-
-
-
-
-
-
-
-
-
-
-

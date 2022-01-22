@@ -152,7 +152,7 @@ void EventHandler()
 	if (event >= COUNT)
 	{
 		// @Adjust: Once is enough.
-		static size_t count = 0;
+		static new_size_t count = 0;
 
 		if (count < 10)
 		{
@@ -355,7 +355,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x7B425);
 		auto jumpAddr = (appBaseAddr + 0x7B42C);
-		constexpr size_t size = 7;
+		constexpr new_size_t size = 7;
 		/*
 		dmc4.exe+7B425 - 80 BE 83060000 00 - cmp byte ptr [esi+00000683],00
 		dmc4.exe+7B42C - 74 7E             - je dmc4.exe+7B4AC
@@ -384,7 +384,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x10C1F9);
 		auto jumpAddr = (appBaseAddr + 0x10C1FE);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc4.exe+10C1F9 - 68 FFFF0000 - push 0000FFFF
 		dmc4.exe+10C1FE - 68 AC930001 - push dmc4.exe+C093AC
@@ -444,7 +444,7 @@ export void Toggle(bool enable)
 
 			auto addr     = (appBaseAddr + off);
 			auto jumpAddr = (appBaseAddr + off + 5);
-			constexpr size_t size = 5;
+			constexpr new_size_t size = 5;
 
 			auto & func = funcs[index];
 
@@ -480,7 +480,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x116600);
 		auto jumpAddr = (appBaseAddr + 0x116605);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc4.exe+116600 - E8 DBCC5A00 - call dmc4.exe+6C32E0
 		dmc4.exe+116605 - 68 10C53501 - push dmc4.exe+F5C510
@@ -508,7 +508,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x1131E1);
 		auto jumpAddr = (appBaseAddr + 0x1131E6);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc4.exe+1131E1 - 0FB6 46 04 - movzx eax,byte ptr [esi+04]
 		dmc4.exe+1131E5 - 48         - dec eax
@@ -538,7 +538,7 @@ export void Toggle(bool enable)
 	// {
 	// 	auto addr     = (appBaseAddr + 0x4C828B);
 	// 	auto jumpAddr = (appBaseAddr + 0x4C8292);
-	// 	constexpr size_t size = 7;
+	// 	constexpr new_size_t size = 7;
 	// 	/*
 	// 	dmc4.exe+4C828B - 66 89 9E 1D1A0000 - mov [esi+00001A1D],bx
 	// 	dmc4.exe+4C8292 - 8B C6             - mov eax,esi
@@ -566,7 +566,7 @@ export void Toggle(bool enable)
 	// {
 	// 	auto addr     = (appBaseAddr + 0x153A6A);
 	// 	auto jumpAddr = (appBaseAddr + 0x153A73);
-	// 	constexpr size_t size = 9;
+	// 	constexpr new_size_t size = 9;
 	// 	/*
 	// 	dmc4.exe+153A6A - 66 C7 80 1D1A0000 0000 - mov word ptr [eax+00001A1D],0000
 	// 	dmc4.exe+153A73 - 83 43 04 02            - add dword ptr [ebx+04],02
@@ -595,7 +595,7 @@ export void Toggle(bool enable)
 	// {
 	// 	auto addr     = (appBaseAddr + 0x153A98);
 	// 	auto jumpAddr = (appBaseAddr + 0x153A9F);
-	// 	constexpr size_t size = 7;
+	// 	constexpr new_size_t size = 7;
 	// 	/*
 	// 	dmc4.exe+153A98 - C6 80 1D1A0000 01 - mov byte ptr [eax+00001A1D],01
 	// 	dmc4.exe+153A9F - 83 43 04 02       - add dword ptr [ebx+04],02
@@ -625,7 +625,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x5E539A);
 		auto jumpAddr = (appBaseAddr + 0x5E53A4);
-		constexpr size_t size = 10;
+		constexpr new_size_t size = 10;
 		/*
 		dmc4.exe+5E539A - C7 80 90000000 01000000 - mov [eax+00000090],00000001
 		dmc4.exe+5E53A4 - A1 F49E3501             - mov eax,[dmc4.exe+F59EF4]
@@ -657,7 +657,7 @@ export void Toggle(bool enable)
 // // SetActorEvent
 // {
 // 	auto addr = (appBaseAddr + 0x23C968);
-// 	constexpr size_t size = 6;
+// 	constexpr new_size_t size = 6;
 // 	/*
 // 	dmc4.exe+23C968 - 89 41 10 - mov [ecx+10],eax
 // 	dmc4.exe+23C96B - C2 0400  - ret 0004

@@ -18,7 +18,7 @@ export void ToggleInfiniteHitPoints(bool enable)
 
 	{
 		auto addr = (appBaseAddr + 0x22DDD4);
-		constexpr size_t size = 4;
+		constexpr new_size_t size = 4;
 		/*
 		dmc4.exe+22DDD4 - F3 0F5C C1 - subss xmm0,xmm1
 		dmc4.exe+22DDD8 - 0F2F D0    - comiss xmm2,xmm0
@@ -55,7 +55,7 @@ export void ToggleInfiniteMagicPoints(bool enable)
 	// Devil Flux
 	{
 		auto addr = (appBaseAddr + 0x4C87A9);
-		constexpr size_t size = 8;
+		constexpr new_size_t size = 8;
 		/*
 		dmc4.exe+4C87A9 - F3 0F11 86 04250000 - movss [esi+00002504],xmm0
 		dmc4.exe+4C87B1 - 76 08               - jna dmc4.exe+4C87BB
@@ -79,7 +79,7 @@ export void ToggleInfiniteMagicPoints(bool enable)
 	// Devil Tick
 	{
 		auto addr = (appBaseAddr + 0x4C889E);
-		constexpr size_t size = 8;
+		constexpr new_size_t size = 8;
 		/*
 		dmc4.exe+4C889E - F3 0F11 86 04250000 - movss [esi+00002504],xmm0
 		dmc4.exe+4C88A6 - 76 08               - jna dmc4.exe+4C88B0
@@ -103,7 +103,7 @@ export void ToggleInfiniteMagicPoints(bool enable)
 	// Stinger, Kick 13, Lunar Phase, Rising Sun
 	{
 		auto addr = (appBaseAddr + 0x4D004B);
-		constexpr size_t size = 8;
+		constexpr new_size_t size = 8;
 		/*
 		dmc4.exe+4D004B - F3 0F11 86 04250000 - movss [esi+00002504],xmm0
 		dmc4.exe+4D0053 - 76 08               - jna dmc4.exe+4D005D
@@ -127,7 +127,7 @@ export void ToggleInfiniteMagicPoints(bool enable)
 	// Pin-Up
 	{
 		auto addr = (appBaseAddr + 0x5028FC);
-		constexpr size_t size = 8;
+		constexpr new_size_t size = 8;
 		/*
 		dmc4.exe+5028FC - F3 0F11 86 04250000 - movss [esi+00002504],xmm0
 		dmc4.exe+502904 - 76 08               - jna dmc4.exe+50290E
@@ -151,7 +151,7 @@ export void ToggleInfiniteMagicPoints(bool enable)
 	// Burst Attack
 	{
 		auto addr = (appBaseAddr + 0x8E42C);
-		constexpr size_t size = 8;
+		constexpr new_size_t size = 8;
 		/*
 		dmc4.exe+8E42C - F3 0F11 86 04250000 - movss [esi+00002504],xmm0
 		dmc4.exe+8E434 - 76 08               - jna dmc4.exe+8E43E
@@ -175,7 +175,7 @@ export void ToggleInfiniteMagicPoints(bool enable)
 	// Burst Attack Reset
 	{
 		auto addr = (appBaseAddr + 0x8E436);
-		constexpr size_t size = 8;
+		constexpr new_size_t size = 8;
 		/*
 		dmc4.exe+8E436 - F3 0F11 8E 04250000 - movss [esi+00002504],xmm1
 		dmc4.exe+8E43E - F3 0F10 86 08250000 - movss xmm0,[esi+00002508]
@@ -199,7 +199,7 @@ export void ToggleInfiniteMagicPoints(bool enable)
 	// Burst Attack Air
 	{
 		auto addr = (appBaseAddr + 0x8E9FB);
-		constexpr size_t size = 8;
+		constexpr new_size_t size = 8;
 		/*
 		dmc4.exe+8E9FB - F3 0F11 86 04250000 - movss [esi+00002504],xmm0
 		dmc4.exe+8EA03 - 76 08               - jna dmc4.exe+8EA0D
@@ -223,7 +223,7 @@ export void ToggleInfiniteMagicPoints(bool enable)
 	// Burst Attack Reset Air
 	{
 		auto addr = (appBaseAddr + 0x8EA05);
-		constexpr size_t size = 8;
+		constexpr new_size_t size = 8;
 		/*
 		dmc4.exe+8EA05 - F3 0F11 8E 04250000 - movss [esi+00002504],xmm1
 		dmc4.exe+8EA0D - F3 0F10 86 08250000 - movss xmm0,[esi+00002508]
@@ -259,7 +259,7 @@ export void ToggleDisableTimer(bool enable)
 
 	{
 		auto addr = (appBaseAddr + 0x1540E1);
-		constexpr size_t size = 2;
+		constexpr new_size_t size = 2;
 		/*
 		dmc4.exe+1540E1 - 74 05       - je dmc4.exe+1540E8
 		dmc4.exe+1540E3 - E8 98750400 - call dmc4.exe+19B680

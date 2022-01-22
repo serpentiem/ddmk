@@ -1,20 +1,44 @@
-module;
-
-#include "../Core/Macros.h" //
-
-// #include "../Core/Core.h"
-
-// #include "Vars.h"
 export module Model;
-
 
 import Core;
 
+#include "../Core/Macros.h"
 
+import Windows;
 
-import Vars;
+using namespace Windows;
 
 import Internal;
+import Vars;
+
+#define debug false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export void RegisterModel
 (
@@ -84,6 +108,3 @@ export void ResetModel(ModelData & modelData)
 	SetMemory(&modelData, 0, sizeof(ModelData));
 	func_89270(modelData);
 }
-
-#ifdef __GARBAGE__
-#endif

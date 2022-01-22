@@ -1,8 +1,11 @@
 import Core;
+import Core_Input;
 
 #include "../Core/Macros.h"
 
 import Windows;
+
+using namespace Windows;
 
 import Actor;
 import Arcade;
@@ -21,9 +24,9 @@ import Training;
 import Vars;
 import Window;
 
-using namespace Windows;
-
 #define debug false
+
+
 
 uint32 DllMain
 (
@@ -34,7 +37,7 @@ uint32 DllMain
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
-		Core_Log_Init("logs", "Kyrie.txt");
+		InitLog("logs", "Kyrie.txt");
 
 		Log("Session started.");
 
@@ -82,21 +85,8 @@ uint32 DllMain
 
 
 
-
-
-
-
-
-
-
-		Config_Init("configs", "Kyrie.bin");
-
+		InitConfig();
 		LoadConfig();
-
-
-
-
-
 
 
 
@@ -104,38 +94,23 @@ uint32 DllMain
 
 
 
-
-
-
-
 		File::Toggle(false);
 		File::Toggle(true);
-
 
 		Input::ToggleExtensions(false);
 		Input::ToggleExtensions(activeConfig.Actor.enable);
 
-
-
-
 		Actor::Toggle(false);
 		Actor::Toggle(activeConfig.Actor.enable);
-
-
 
 		Arcade::Toggle(false);
 		Arcade::Toggle(activeConfig.Arcade.enable);
 
-
-
 		ToggleDisableCenterCamera(false);
 		ToggleDisableCenterCamera(activeConfig.disableCenterCamera);
 
-
-
 		ToggleSkipIntro(false);
 		ToggleSkipIntro(activeConfig.skipIntro);
-
 
 
 
@@ -145,9 +120,6 @@ uint32 DllMain
 
 		ToggleForceWindowFocus(false);
 		ToggleForceWindowFocus(activeConfig.forceWindowFocus);
-
-
-
 
 		ToggleInfiniteHitPoints(false);
 		ToggleInfiniteHitPoints(activeConfig.infiniteHitPoints);
@@ -163,42 +135,25 @@ uint32 DllMain
 		Event::Toggle(false);
 		Event::Toggle(true);
 
-
-
-
-
 		Speed::Toggle(false);
 		Speed::Toggle(true);
 
 
-		if constexpr (debug)
-		{
-			ToggleDisableIdleTimer(false);
-			ToggleDisableIdleTimer(true);
-		}
 
-
-
+		ToggleDisablePlayerActorIdleTimer(false);
+		ToggleDisablePlayerActorIdleTimer(activeConfig.disablePlayerActorIdleTimer);
 
 
 
 		Steam::Toggle(false);
 		Steam::Toggle(true);
 
-
-
-
-
-
 		Window::Toggle(false);
 		Window::Toggle(true);
 
 
 
-
-
-
-
+		XI::new_Init("xinput1_3.dll");
 
 		Hooks::Init();
 	}

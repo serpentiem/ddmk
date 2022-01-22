@@ -1,10 +1,3 @@
-
-
-// @Todo: Remove redundant JSON members like indices.
-
-
-
-
 module;
 #include <stdio.h>
 #include <string.h>
@@ -23,11 +16,7 @@ using namespace DI8;
 
 import Vars;
 
-#define debug false
-
-
-
-
+#define debug true
 
 
 
@@ -303,13 +292,6 @@ export struct Config
 
 
 
-
-
-
-
-
-
-
 	uint8 airHikeCount       [2] = { 1, 1 };
 	uint8 kickJumpCount      [2] = { 1, 1 };
 	uint8 wallHikeCount      [2] = { 1, 1 };
@@ -319,7 +301,6 @@ export struct Config
 	uint8 airTrickCountVergil[2] = { 1, 1 };
 	uint8 trickUpCount       [2] = { 1, 1 };
 	uint8 trickDownCount     [2] = { 1, 1 };
-
 
 
 
@@ -337,10 +318,6 @@ export struct Config
 		1.0f,
 		1.0f,
 	};
-
-
-
-
 
 
 
@@ -506,13 +483,8 @@ export struct Config
 	};
 
 
+
 	bool forceIconFocus = false;
-
-
-
-
-
-
 
 
 
@@ -534,12 +506,9 @@ export struct Config
 
 
 
-
-
 	int32 windowPosX = 0;
 	int32 windowPosY = 0;
 	bool forceWindowFocus = true;
-
 
 
 
@@ -547,20 +516,10 @@ export struct Config
 
 
 
-
-
-
 	uint8 enemyCount = 1;
 	ConfigCreateEnemyActorData configCreateEnemyActorData[30] = {};
 
 	bool enemyAutoSpawn = false;
-
-
-
-
-
-
-
 
 
 
@@ -592,20 +551,8 @@ export struct Config
 	mainOverlayData;
 
 	OverlayData missionOverlayData;
-
-
-
-
-
-
-
 	OverlayData bossLadyActionsOverlayData;
 	OverlayData bossVergilActionsOverlayData;
-
-
-
-
-
 
 
 
@@ -627,18 +574,10 @@ export struct Config
 
 
 
-
-
-
 	bool  cameraInvertX       = (debug) ? true : false;
 	uint8 cameraAutoAdjust    = 0;
 	bool  disableCenterCamera = (debug) ? true : false;
 	bool  disableBossCamera   = false;
-
-
-
-
-
 
 
 
@@ -647,24 +586,14 @@ export struct Config
 	bool enablePVPFixes        = false;
 
 
+
 	bool hideMainHUD = false;
-	bool hideLockOn = false;
+	bool hideLockOn  = false;
 	bool hideBossHUD = false;
 
 
 
-
-
-
-
-
-
-
 	bool soundIgnoreEnemyData = false;
-
-
-
-
 
 
 
@@ -683,18 +612,17 @@ export struct Config
 
 
 
-
-
 	uint8 dergil = 0;
+
 
 
 	uint8 beowulfVergilAirRisingSunCount[2] = { 1, 1 };
 
 
+
 	bool forceVisibleHUD = false;
 
 	_(6);
-
 
 
 
@@ -718,10 +646,7 @@ export struct Config
 
 	bool updateLockOns = true;
 
-
 	bool showCredits = (debug) ? false : true;
-
-
 
 
 
@@ -750,11 +675,6 @@ export struct Config
 
 
 	bool disablePlayerActorIdleTimer = false;
-
-
-
-
-
 };
 
 static_assert((offsetof(Config, kalinaAnnHookGrenadeHeight) % 0x10) == 0);
@@ -773,14 +693,6 @@ static_assert((offsetof(Config, barsData                  ) % 0x10) == 0);
 export Config defaultConfig;
 export Config queuedConfig;
 export Config activeConfig;
-
-
-
-
-
-
-
-
 
 
 
@@ -923,6 +835,8 @@ CharacterData & GetCharacterData(T & actorData)
 }
 
 // $GetDataEnd
+
+
 
 export void ApplyDefaultCharacterData
 (
@@ -1202,7 +1116,7 @@ void CreateMembers_PlayerDataContent
 template
 <
 	typename T,
-	size_t length
+	new_size_t length
 >
 rapidjson::Value & CreateMembers_Vec2
 (
@@ -1222,7 +1136,7 @@ rapidjson::Value & CreateMembers_Vec2
 template
 <
 	typename T,
-	size_t length
+	new_size_t length
 >
 rapidjson::Value & CreateMembers_Vec4
 (
@@ -1256,7 +1170,7 @@ void CreateMembers_TextureDataContent
 template
 <
 	typename T,
-	size_t length
+	new_size_t length
 >
 rapidjson::Value & CreateMembers_TextureData
 (
@@ -1275,7 +1189,7 @@ rapidjson::Value & CreateMembers_TextureData
 template
 <
 	typename T,
-	size_t length
+	new_size_t length
 >
 rapidjson::Value & CreateMembers_TextureDataArray
 (
@@ -1302,7 +1216,7 @@ rapidjson::Value & CreateMembers_TextureDataArray
 template
 <
 	typename T,
-	size_t length
+	new_size_t length
 >
 rapidjson::Value & CreateMembers_WeaponSwitchControllerTextureData
 (
@@ -1379,7 +1293,7 @@ void CreateMembers_KeyDataContent
 {
 	CreateArray<byte8, 4>(member, "keys", config.keys);
 
-	Create<size_t>(member, "keyCount", config.keyCount);
+	Create<new_size_t>(member, "keyCount", config.keyCount);
 }
 
 
@@ -1609,22 +1523,22 @@ void CreateMembers(Config & Prep_arg(config))
 	auto & member = root;
 	auto & config = Prep_arg(config);
 
-	Create<bool>(member, "welcome", config.welcome);
-	Create<bool>(member, "hideBeowulfDante", config.hideBeowulfDante);
-	Create<bool>(member, "hideBeowulfVergil", config.hideBeowulfVergil);
-	Create<bool>(member, "airHikeCoreAbility", config.airHikeCoreAbility);
+	Create<bool >(member, "welcome"                  , config.welcome                  );
+	Create<bool >(member, "hideBeowulfDante"         , config.hideBeowulfDante         );
+	Create<bool >(member, "hideBeowulfVergil"        , config.hideBeowulfVergil        );
+	Create<bool >(member, "airHikeCoreAbility"       , config.airHikeCoreAbility       );
 	Create<uint8>(member, "crazyComboLevelMultiplier", config.crazyComboLevelMultiplier);
-	Create<uint8>(member, "dotShadow", config.dotShadow);
-	Create<float>(member, "depleteQuicksilver", config.depleteQuicksilver);
-	Create<float>(member, "depleteDoppelganger", config.depleteDoppelganger);
-	Create<float>(member, "depleteDevil", config.depleteDevil);
-	Create<bool>(member, "noDevilForm", config.noDevilForm);
-	Create<float>(member, "orbReach", config.orbReach);
-	Create<bool>(member, "resetPermissions", config.resetPermissions);
-	Create<bool>(member, "infiniteHitPoints", config.infiniteHitPoints);
-	Create<bool>(member, "infiniteMagicPoints", config.infiniteMagicPoints);
-	Create<bool>(member, "disableTimer", config.disableTimer);
-	Create<bool>(member, "infiniteBullets", config.infiniteBullets);
+	Create<uint8>(member, "dotShadow"                , config.dotShadow                );
+	Create<float>(member, "depleteQuicksilver"       , config.depleteQuicksilver       );
+	Create<float>(member, "depleteDoppelganger"      , config.depleteDoppelganger      );
+	Create<float>(member, "depleteDevil"             , config.depleteDevil             );
+	Create<bool >(member, "noDevilForm"              , config.noDevilForm              );
+	Create<float>(member, "orbReach"                 , config.orbReach                 );
+	Create<bool >(member, "resetPermissions"         , config.resetPermissions         );
+	Create<bool >(member, "infiniteHitPoints"        , config.infiniteHitPoints        );
+	Create<bool >(member, "infiniteMagicPoints"      , config.infiniteMagicPoints      );
+	Create<bool >(member, "disableTimer"             , config.disableTimer             );
+	Create<bool >(member, "infiniteBullets"          , config.infiniteBullets          );
 	Create<float>(member, "linearWeaponSwitchTimeout", config.linearWeaponSwitchTimeout);
 
 	CreateArray<uint8, 2>(member, "airHikeCount"       , config.airHikeCount       );
@@ -1638,8 +1552,6 @@ void CreateMembers(Config & Prep_arg(config))
 	CreateArray<uint8, 2>(member, "trickDownCount"     , config.trickDownCount     );
 
 	CreateArray<float, CHANNEL::MAX>(member, "channelVolumes", config.channelVolumes);
-
-	CreateMembers_Vec2(member, "size", config.meleeWeaponSwitchControllerTextureData.arrow.size);
 
 	CreateMembers_WeaponSwitchControllerTextureData(member, "meleeWeaponSwitchControllerTextureData" , config.meleeWeaponSwitchControllerTextureData );
 	CreateMembers_WeaponSwitchControllerTextureData(member, "rangedWeaponSwitchControllerTextureData", config.rangedWeaponSwitchControllerTextureData);
@@ -1659,16 +1571,20 @@ void CreateMembers(Config & Prep_arg(config))
 	Create<bool  >(member, "forceWindowFocus"           , config.forceWindowFocus           );
 	Create<float >(member, "globalScale"                , config.globalScale                );
 
+
+
 	Create<uint8>(member, "enemyCount", config.enemyCount);
 
-	auto & configCreateEnemyActorData = CreateArray<struct_t, 30>(member, "configCreateEnemyActorData");
-
-	for_all(index, 30)
 	{
-		auto & member2 = configCreateEnemyActorData[index];
-		auto & config2 = config.configCreateEnemyActorData[index];
+		auto & newMember = CreateArray<struct_t, 30>(member, "configCreateEnemyActorData");
 
-		CreateMembers_ConfigCreateEnemyActorDataContent(member2, config2);
+		for_all(index, 30)
+		{
+			auto & member2 = newMember[index];
+			auto & config2 = config.configCreateEnemyActorData[index];
+
+			CreateMembers_ConfigCreateEnemyActorDataContent(member2, config2);
+		}
 	}
 
 	Create<bool>(member, "enemyAutoSpawn", config.enemyAutoSpawn);
@@ -1713,6 +1629,8 @@ void CreateMembers(Config & Prep_arg(config))
 		CreateMembers_OverlayDataContent(member2, config2);
 	}
 
+
+
 	Create<float>     (member, "kalinaAnnHookGrenadeHeight", config.kalinaAnnHookGrenadeHeight);
 	Create<float>     (member, "kalinaAnnHookGrenadeTime"  , config.kalinaAnnHookGrenadeTime  );
 	CreateMembers_Vec4(member, "kalinaAnnHookMultiplier"   , config.kalinaAnnHookMultiplier   );
@@ -1747,6 +1665,8 @@ void CreateMembers(Config & Prep_arg(config))
 
 	Create<bool>(member, "forceVisibleHUD", config.forceVisibleHUD);
 
+
+
 	{
 		auto & member = CreateArray<struct_t, PLAYER_COUNT>(root, "barsData");
 		auto & config = Prep_arg(config).barsData;
@@ -1759,6 +1679,8 @@ void CreateMembers(Config & Prep_arg(config))
 			CreateMembers_BarsDataContent(member2, config2);
 		}
 	}
+
+
 
 	Create<bool>(member, "forceSyncHitMagicPoints", config.forceSyncHitMagicPoints);
 	Create<bool>(member, "updateLockOns"          , config.updateLockOns          );
@@ -1938,14 +1860,12 @@ void ToJSON_ConfigCreateEnemyActorData
 	ConfigCreateEnemyActorData & config
 )
 {
-	Set<uint32>(member["enemy"], config.enemy);
-	Set<uint32>(member["variant"], config.variant);
-
-	ToJSON_Vec4(member["position"], config.position);
-
-	Set<uint16>(member["rotation"], config.rotation);
-	Set<bool>(member["useMainActorData"], config.useMainActorData);
-	Set<uint16>(member["spawnMethod"], config.spawnMethod);
+	Set<uint32>(member["enemy"           ], config.enemy           );
+	Set<uint32>(member["variant"         ], config.variant         );
+	ToJSON_Vec4(member["position"        ], config.position        );
+	Set<uint16>(member["rotation"        ], config.rotation        );
+	Set<bool  >(member["useMainActorData"], config.useMainActorData);
+	Set<uint16>(member["spawnMethod"     ], config.spawnMethod     );
 }
 
 
@@ -1971,13 +1891,13 @@ void ToJSON_MainOverlayData
 {
 	ToJSON_OverlayData(member, config);
 
-	Set<bool>(member["showFocus"], config.showFocus);
-	Set<bool>(member["showFPS"], config.showFPS);
-	Set<bool>(member["showSizes"], config.showSizes);
+	Set<bool>(member["showFocus"              ], config.showFocus              );
+	Set<bool>(member["showFPS"                ], config.showFPS                );
+	Set<bool>(member["showSizes"              ], config.showSizes              );
 	Set<bool>(member["showFrameRateMultiplier"], config.showFrameRateMultiplier);
-	Set<bool>(member["showEventData"], config.showEventData);
-	Set<bool>(member["showPosition"], config.showPosition);
-	Set<bool>(member["showRegionData"], config.showRegionData);
+	Set<bool>(member["showEventData"          ], config.showEventData          );
+	Set<bool>(member["showPosition"           ], config.showPosition           );
+	Set<bool>(member["showRegionData"         ], config.showRegionData         );
 }
 
 
@@ -2011,17 +1931,13 @@ void ToJSON_KeyData
 {
 	SetArray<byte8, 4>(member["keys"], config.keys);
 
-	Set<size_t>(member["keyCount"], config.keyCount);
+	Set<new_size_t>(member["keyCount"], config.keyCount);
 }
 
 
 
 void ToJSON(Config & Prep_arg(config))
 {
-	//LogFunctionStart();
-
-
-
 	{
 		auto & member = root["Actor"];
 		auto & config = Prep_arg(config).Actor;
@@ -2371,10 +2287,6 @@ void ToJSON(Config & Prep_arg(config))
 	SetString (member["gamepadName"                ], config.gamepadName                );
 	Set<byte8>(member["gamepadButton"              ], config.gamepadButton              );
 	Set<bool >(member["disablePlayerActorIdleTimer"], config.disablePlayerActorIdleTimer);
-
-
-
-	//LogFunctionEnd();
 }
 
 #pragma endregion
@@ -2605,17 +2517,13 @@ void ToConfig_KeyData
 {
 	GetArray<byte8, 4>(config.keys, member["keys"]);
 
-	config.keyCount = Get<size_t>(member["keyCount"]);
+	config.keyCount = Get<new_size_t>(member["keyCount"]);
 }
 
 
 
 void ToConfig(Config & Prep_arg(config))
 {
-	//LogFunctionStart();
-
-
-
 	{
 		auto & config = Prep_arg(config).Actor;
 		auto & member = root["Actor"];
@@ -2969,8 +2877,6 @@ void ToConfig(Config & Prep_arg(config))
 
 	config.gamepadButton               = Get<byte8>(member["gamepadButton"              ]);
 	config.disablePlayerActorIdleTimer = Get<bool >(member["disablePlayerActorIdleTimer"]);
-
-	//LogFunctionEnd();
 }
 
 #pragma endregion

@@ -74,28 +74,97 @@ namespaceEnd();
 
 
 
-namespaceStart(Hook::DI8);
+// namespaceStart(Hook::DI8);
 
-void GetDeviceStateA_Function(byte8 * state)
-{
-	for_all(index, countof(keyBindings))
-	{
-		auto & keyBinding = keyBindings[index];
+// void GetDeviceStateA_Function(byte8 * state)
+// {
+// 	for_all(index, countof(keyBindings))
+// 	{
+// 		auto & keyBinding = keyBindings[index];
 
-		keyBinding.UpdateKeyData(state);
-		keyBinding.Check(state);
-	}
+// 		keyBinding.UpdateKeyData(state);
+// 		keyBinding.Check(state);
+// 	}
 
 
-	{
-		auto & keyBinding = characterSwitchControllerKeyBinding;
+// 	{
+// 		auto & keyBinding = characterSwitchControllerKeyBinding;
 
-		keyBinding.UpdateKeyData(state);
-		//keyBinding.Check(state);
-	}
-}
+// 		keyBinding.UpdateKeyData(state);
+// 		//keyBinding.Check(state);
+// 	}
+// }
 
-namespaceEnd();
+// namespaceEnd();
+
+
+
+
+//namespaceStart(DI8);
+
+// void UpdateKeyboard_Function(DI8::DIKEYBOARDSTATE * stateAddr)
+// {
+
+// 	if (!stateAddr)
+// 	{
+// 		return;
+// 	}
+
+// 	auto & state = *stateAddr;
+
+
+
+// 	for_all(index, countof(keyBindings))
+// 	{
+// 		auto & keyBinding = keyBindings[index];
+
+// 		keyBinding.UpdateKeyData(state.keys);
+// 		keyBinding.Check(state.keys);
+// 	}
+// }
+
+
+
+
+// void UpdateGamepad_Function(DI8::DIJOYSTATE * stateAddr)
+// {
+// 	if (!stateAddr)
+// 	{
+// 		return;
+// 	}
+// 	auto & state = *stateAddr;
+
+
+// 	auto button = activeConfig.gamepadButton;
+// 	if (button > countof(state.rgbButtons))
+// 	{
+// 		button = 0;
+// 	}
+
+// 	static bool execute = false;
+
+// 	if (state.rgbButtons[button])
+// 	{
+// 		if (execute)
+// 		{
+// 			execute = false;
+
+// 			ToggleShowMain();
+// 		}
+// 	}
+// 	else
+// 	{
+// 		execute = true;
+// 	}
+// }
+
+
+
+
+
+
+
+
 
 
 
@@ -148,7 +217,7 @@ export void Init()
 		::Hook::D3D10::D3D10CreateDeviceAndSwapChain
 	);
 
-	::Hook::DI8::GetDeviceStateA_func = ::Hook::DI8::GetDeviceStateA_Function;
+	// ::Hook::DI8::GetDeviceStateA_func = ::Hook::DI8::GetDeviceStateA_Function;
 
 
 
@@ -161,7 +230,7 @@ export void Init()
 	{
 		auto addr     = (appBaseAddr + 0x6E9E50);
 		auto jumpAddr = (appBaseAddr + 0x6E9E55);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc4.exe+6E9E50 - 8B 41 24 - mov eax,[ecx+24]
 		dmc4.exe+6E9E53 - FF D0    - call eax
@@ -200,7 +269,7 @@ export void Init()
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA<DEVICE_TYPE::KEYBOARD>, jumpAddr, false, true, sizeof(sect0), 0, sizeof(sect2));
+			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA, jumpAddr, false, true, sizeof(sect0), 0, sizeof(sect2));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
@@ -219,7 +288,7 @@ export void Init()
 	{
 		auto addr     = (appBaseAddr + 0x6EA709);
 		auto jumpAddr = (appBaseAddr + 0x6EA70E);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc4.exe+6EA709 - 8B 41 24 - mov eax,[ecx+24]
 		dmc4.exe+6EA70C - FF D0    - call eax
@@ -258,7 +327,7 @@ export void Init()
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA<DEVICE_TYPE::MOUSE>, jumpAddr, false, true, sizeof(sect0), 0, sizeof(sect2));
+			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA, jumpAddr, false, true, sizeof(sect0), 0, sizeof(sect2));
 			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
 		}
@@ -277,7 +346,7 @@ export void Init()
 	{
 		auto addr     = (appBaseAddr + 0x6EE146);
 		auto jumpAddr = (appBaseAddr + 0x6EE14E);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+6EE146 - 68 10010000 - push 00000110
 		dmc4.exe+6EE14B - 57          - push edi
@@ -316,7 +385,7 @@ export void Init()
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA<DEVICE_TYPE::GAMEPAD>, jumpAddr, false, true, (size + sizeof(sect0)), 0, sizeof(sect2));
+			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA, jumpAddr, false, true, (size + sizeof(sect0)), 0, sizeof(sect2));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory((func.sect0 + size), sect0, sizeof(sect0));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
@@ -334,7 +403,7 @@ export void Init()
 
 
 
-	CreateThread(0, 4096, ::DI8::CreateMouseThread, 0, 0, 0);
+	//CreateThread(0, 4096, ::DI8::CreateMouseThread, 0, 0, 0);
 
 
 
@@ -416,7 +485,7 @@ export void Init()
 	{
 		auto addr     = (appBaseAddr + 0x6EB4DF);
 		auto jumpAddr = (appBaseAddr + 0x6EB4E4);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc4.exe+6EB4DF - E8 B46D3D00 - call dmc4.exe+AC2298
 		dmc4.exe+6EB4E4 - 85 C0       - test eax,eax
@@ -472,7 +541,7 @@ export void Init()
 	{
 		auto addr     = (appBaseAddr + 0x6EC996);
 		auto jumpAddr = (appBaseAddr + 0x6EC99B);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc4.exe+6EC996 - E8 FD583D00 - call dmc4.exe+AC2298
 		dmc4.exe+6EC99B - 85 C0       - test eax,eax
@@ -528,7 +597,7 @@ export void Init()
 	{
 		auto addr     = (appBaseAddr + 0x6EDE33);
 		auto jumpAddr = (appBaseAddr + 0x6EDE38);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc4.exe+6EDE33 - E8 60443D00 - call dmc4.exe+AC2298
 		dmc4.exe+6EDE38 - 85 C0       - test eax,eax
@@ -584,7 +653,7 @@ export void Init()
 	{
 		auto addr     = (appBaseAddr + 0x6EDF64);
 		auto jumpAddr = (appBaseAddr + 0x6EDF69);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc4.exe+6EDF64 - E8 2F433D00 - call dmc4.exe+AC2298
 		dmc4.exe+6EDF69 - 85 C0       - test eax,eax
@@ -640,7 +709,7 @@ export void Init()
 	{
 		auto addr     = (appBaseAddr + 0x6EE0A2);
 		auto jumpAddr = (appBaseAddr + 0x6EE0A7);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc4.exe+6EE0A2 - E8 F1413D00 - call dmc4.exe+AC2298
 		dmc4.exe+6EE0A7 - 85 C0       - test eax,eax

@@ -1,8 +1,11 @@
 import Core;
+import Core_Input;
 
 #include "../Core/Macros.h"
 
 import Windows;
+
+using namespace Windows;
 
 import Actor;
 import Arcade;
@@ -17,9 +20,9 @@ import Training;
 import Vars;
 import Window;
 
-using namespace Windows;
-
 #define debug false
+
+
 
 uint32 DllMain
 (
@@ -30,7 +33,7 @@ uint32 DllMain
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
-		Core_Log_Init("logs", "Eva.txt");
+		InitLog("logs", "Eva.txt");
 
 		Log("Session started.");
 
@@ -76,14 +79,14 @@ uint32 DllMain
 			return 0;
 		}
 
-		Config_Init("configs", "Eva.bin");
 
+
+		InitConfig();
 		LoadConfig();
 
 
 
 		Internal_Init();
-
 
 
 
@@ -122,10 +125,6 @@ uint32 DllMain
 		ToggleDisablePauseRestrictions(false);
 		ToggleDisablePauseRestrictions(activeConfig.disablePauseRestrictions);
 
-		// Graphics::Toggle(false);
-		// Graphics::Toggle(true);
-		// UpdateFrameRate();
-
 
 
 		ToggleForceWindowFocus(false);
@@ -150,21 +149,24 @@ uint32 DllMain
 
 
 
-		if constexpr (debug)
-		{
-			ToggleDisableIdleTimer(false);
-			ToggleDisableIdleTimer(activeConfig.disableIdleTimer);
+		ToggleDisablePlayerActorIdleTimer(false);
+		ToggleDisablePlayerActorIdleTimer(activeConfig.disablePlayerActorIdleTimer);
 
-			ToggleScreenEffectForceMaxTimer(false);
-			ToggleScreenEffectForceMaxTimer(activeConfig.screenEffectForceMaxTimer);
+		ToggleScreenEffectForceMaxTimer(false);
+		ToggleScreenEffectForceMaxTimer(activeConfig.screenEffectForceMaxTimer);
 
-			ToggleForceVisibleHUD(false);
-			ToggleForceVisibleHUD(activeConfig.forceVisibleHUD);
-		}
+		ToggleForceVisibleHUD(false);
+		ToggleForceVisibleHUD(activeConfig.forceVisibleHUD);
 
 
 
-		// Remove labels.
+		XI::new_Init("xinput9_1_0.dll");
+
+		Hooks::Init();
+
+
+
+		// Remove Labels
 		SetMemory
 		(
 			(appBaseAddr + 0x50CDE6),
@@ -172,8 +174,6 @@ uint32 DllMain
 			35,
 			MemoryFlags_VirtualProtectDestination
 		);
-
-		Hooks::Init();
 	}
 
 	return 1;

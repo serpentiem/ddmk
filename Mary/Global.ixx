@@ -344,25 +344,182 @@ export bool InCredits()
 
 
 
-export size_t g_saveIndex     = 0;
-export size_t g_lastSaveIndex = 0;
+export new_size_t g_saveIndex     = 0;
+export new_size_t g_lastSaveIndex = 0;
+
+
+
+export uint32 g_secretMission = 0;
+
+
+
+export void ClearGlobalSecretMission()
+{
+	LogFunction();
+
+	g_secretMission = 0;
+}
+
+export void SetGlobalSecretMission()
+{
+	IntroduceEventData(return);
+	IntroduceMainActorData(actorData, return);
+
+	LogFunction();
+
+
+
+	auto & room = eventData.room;
+	auto & x    = actorData.position.x;
+	auto & y    = actorData.position.y;
+	auto & z    = actorData.position.z;
+
+
+
+	g_secretMission =
+	(
+		(room == 5) &&
+		(x >= 5300) &&
+		(x <= 5500) &&
+		(z >= 2700) &&
+		(z <= 3000)
+	) ? 1 :
+	(
+		(room == 113) &&
+		(x >= 2700) &&
+		(x <= 3000) &&
+		(z >= 1500) &&
+		(z <= 1700)
+	) ? 2 :
+	(
+		(room == 127) &&
+		(x >= 2900) &&
+		(x <= 3100) &&
+		(z >= 1200) &&
+		(z <= 1400)
+	) ? 3 :
+	(
+		(room == 300) &&
+		(x >= 5100) &&
+		(x <= 5300) &&
+		(z >= -200) &&
+		(z <= 0)
+	) ? 4 :
+	(
+		(room == 209) &&
+		(x >= 1800) &&
+		(x <= 2200) &&
+		(z >= 2600) &&
+		(z <= 3000)
+	) ? 5 :
+	(
+		(room == 206) &&
+		(x >= 10200) &&
+		(x <= 10400) &&
+		(z >= 7000) &&
+		(z <= 7200)
+	) ? 6 :
+	(
+		(room == 212) &&
+		(x >= 2200) &&
+		(x <= 2500) &&
+		(z >= 3000) &&
+		(z <= 3300)
+	) ? 7 :
+	(
+		(room == 230) &&
+		(x >= 3500) &&
+		(x <= 3800) &&
+		(z >= 3400) &&
+		(z <= 3600)
+	) ? 8 :
+	(
+		(room == 233) &&
+		(x >= 2800) &&
+		(x <= 3100) &&
+		(z >= 1000) &&
+		(z <= 1300)
+	) ? 9 :
+	(
+		(room == 146) &&
+		(x >= 3500) &&
+		(x <= 4000) &&
+		(z >= 2400) &&
+		(z <= 2600)
+	) ? 10 :
+	(
+		(room == 140) &&
+		(x >= 2300) &&
+		(x <= 2600) &&
+		(z >= 2300) &&
+		(z <= 2600)
+	) ? 11 :
+	(
+		(room == 402) &&
+		(x >= 2200) &&
+		(x <= 2500) &&
+		(z >= -3300) &&
+		(z <= -3000)
+	) ? 12 :
+	0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// export bool g_isSecretMission = false;
+
+
+export bool g_noTeleport = false;
 
 
 
 
 /*
 
-active
-queued
+((mission == 4) && (nextRoom == 5)) ? 1 :
+((mission == 4) && (nextRoom == 5)) ? 2 :
+((mission == 4) && (nextRoom == 5)) ? 3 :
+0;
 
-saved
+g_isSecretMission =
+((mission == 4) && (nextRoom == 5)) ||
+((mission == 4) && (nextRoom == 5)) ||
+((mission == 4) && (nextRoom == 5));
 
-expData
-savedExpData
 
-activeExpData
-queuedExpData
-
+(
+	(mission == 4) &&
+	(nextRoom == 5)
+) ||
 
 
 

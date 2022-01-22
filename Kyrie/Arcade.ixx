@@ -676,7 +676,7 @@ dmc4.exe+7B2C5 - 83 C4 08         - add esp,08
 {
 	auto addr     = (appBaseAddr + 0x7B1A0);
 	auto jumpAddr = (appBaseAddr + 0x7B2C9);
-	constexpr size_t size = 6;
+	constexpr new_size_t size = 6;
 	/*
 	dmc4.exe+7B1A0 - 83 EC 08         - sub esp,08
 	dmc4.exe+7B1A3 - 56               - push esi
@@ -743,7 +743,7 @@ dmc4.exe+7B2C5 - 83 C4 08         - add esp,08
 {
 	auto addr = (appBaseAddr + 0x77DED);
 	auto dest = (appBaseAddr + 0x77DF3);
-	constexpr size_t size = 6;
+	constexpr new_size_t size = 6;
 	/*
 	dmc4.exe+77DED - 0F84 F1000000  - je dmc4.exe+77EE4
 	dmc4.exe+77DF3 - 39 B5 80020000 - cmp [ebp+00000280],esi
@@ -769,7 +769,7 @@ dmc4.exe+7B2C5 - 83 C4 08         - add esp,08
 {
 	auto addr = (appBaseAddr + 0x46C32);
 	auto dest = (appBaseAddr + 0x46C38);
-	constexpr size_t size = 6;
+	constexpr new_size_t size = 6;
 	/*
 	dmc4.exe+46C32 - 0F84 B4000000     - je dmc4.exe+46CEC
 	dmc4.exe+46C38 - 83 BF 80020000 02 - cmp dword ptr [edi+00000280],02

@@ -346,7 +346,7 @@ GamepadManager * __fastcall GetGamepadManagerAddrByActorInputDataAddr(byte8 * ac
 
 
 
-export byte32 GetGamepadFlags(size_t playerIndex = 0)
+export byte32 GetGamepadFlags(new_size_t playerIndex = 0)
 {
 	auto gamepadManagerAddr = GetGamepadManagerAddr();
 	if (!gamepadManagerAddr)
@@ -389,7 +389,7 @@ export void ToggleExtensions(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x4D0FC3);
 		auto jumpAddr = (appBaseAddr + 0x4D0FC9);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+4D0FC3 - 8B 15 E4423201 - mov edx,[dmc4.exe+F242E4]
 		dmc4.exe+4D0FC9 - 8B C8          - mov ecx,eax
@@ -435,7 +435,7 @@ export void ToggleExtensions(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x4D10C8);
 		auto jumpAddr = (appBaseAddr + 0x4D10CE);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+4D10C8 - 8B 15 E4423201 - mov edx,[dmc4.exe+F242E4]
 		dmc4.exe+4D10CE - 8B C8          - mov ecx,eax
@@ -481,7 +481,7 @@ export void ToggleExtensions(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x4CA179);
 		auto jumpAddr = (appBaseAddr + 0x4CA17F);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+4CA179 - 8B 35 E4423201 - mov esi,[dmc4.exe+F242E4]
 		dmc4.exe+4CA17F - 85 F6          - test esi,esi
@@ -528,7 +528,7 @@ export void ToggleExtensions(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x6EF90B);
 		auto jumpAddr = (appBaseAddr + 0x6EF911);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+6EF90B - 89 35 2C433201 - mov [dmc4.exe+F2432C],esi
 		dmc4.exe+6EF911 - 53             - push ebx
@@ -563,7 +563,7 @@ export void ToggleExtensions(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x18CEDF);
 		auto jumpAddr = (appBaseAddr + 0x18CEEA);
-		constexpr size_t size = 11;
+		constexpr new_size_t size = 11;
 		/*
 		dmc4.exe+18CEDF - 8D B7 C00B0000 - lea esi,[edi+00000BC0]
 		dmc4.exe+18CEE5 - E8 560B0000    - call dmc4.exe+18DA40
@@ -587,8 +587,8 @@ export void ToggleExtensions(bool enable)
 
 
 
-		//constexpr size_t size0 = (sizeof(sect0) * PLAYER::COUNT);
-		constexpr size_t size1 = (sizeof(sect1) * (PLAYER::COUNT - 1));
+		//constexpr new_size_t size0 = (sizeof(sect0) * PLAYER::COUNT);
+		constexpr new_size_t size1 = (sizeof(sect1) * (PLAYER::COUNT - 1));
 
 		if (!run)
 		{
@@ -641,7 +641,7 @@ export void ToggleExtensions(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x4D0DC9);
 		auto jumpAddr = (appBaseAddr + 0x4D0DCE);
-		constexpr size_t size = 5;
+		constexpr new_size_t size = 5;
 		/*
 		dmc4.exe+4D0DC9 - A1 2C433201         - mov eax,[dmc4.exe+F2432C]
 		dmc4.exe+4D0DCE - F3 0F7E 80 D40B0000 - movq xmm0,[eax+00000BD4]

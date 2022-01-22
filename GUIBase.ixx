@@ -7,10 +7,15 @@ export module GUIBase;
 
 import Core;
 import Core_GUI;
+import Core_ImGui;
+import Core_Input;
 
 #include "Core/Macros.h"
 
 import Windows;
+import D3D10;
+import DI8;
+import XI;
 
 using namespace Windows;
 
@@ -167,7 +172,7 @@ export void CreditsWindow()
 
 
 		constexpr float scrollSpeedY = 1.0f;
-		constexpr size_t padding = 30;
+		constexpr new_size_t padding = 30;
 
 		auto & io = ImGui::GetIO();
 
@@ -261,7 +266,7 @@ export void CreditsWindow()
 
 export void Welcome()
 {
-	if (!queuedConfig.welcome)
+	if (!activeConfig.welcome)
 	{
 		return;
 	}
@@ -296,7 +301,7 @@ export void Welcome()
 		ImGui::Begin
 		(
 			"Welcome",
-			&queuedConfig.welcome,
+			&activeConfig.welcome,
 			ImGuiWindowFlags_NoTitleBar |
 			ImGuiWindowFlags_NoResize   |
 			ImGuiWindowFlags_NoMove     |
@@ -323,3 +328,442 @@ export void Welcome()
 
 	ImGui::PopStyleVar();
 }
+
+
+
+
+
+
+
+
+
+
+
+// @Order
+
+export void ResetNavId()
+{
+	auto contextAddr = ImGui::GetCurrentContext();
+	if (!contextAddr)
+	{
+		return;
+	}
+	auto & context = *contextAddr;
+
+	context.NavId = 0;
+}
+
+
+
+
+
+
+export typedef void(* GamepadClose_func_t)();
+
+export void GamepadClose
+(
+	bool & visible,
+	bool & lastVisible,
+	GamepadClose_func_t func
+)
+{
+	auto & io = ImGui::GetIO();
+
+
+
+	if (!ImGui::IsWindowFocused())
+	{
+		visible = false;
+
+		return;
+	}
+
+
+
+	visible = io.NavVisible;
+
+	if (lastVisible != visible)
+	{
+		if (io.NavInputs[ImGuiNavInput_Cancel] > 0)
+		{
+			return;
+		}
+
+		lastVisible = visible;
+	}
+
+	if
+	(
+		visible ||
+		lastVisible
+	)
+	{
+		return;
+	}
+
+
+
+	static bool execute = false; // Should be fine here, since only 1 window can be active at all times.
+
+	if (io.NavInputs[ImGuiNavInput_Cancel] > 0)
+	{
+		if (execute)
+		{
+			execute = false;
+
+			func();
+		}
+	}
+	else
+	{
+		execute = true;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export void OpenMain()
+{
+	DebugLogFunction();
+
+	g_showMain = true;
+
+
+
+	// Required here since g_show could be false, but we still need the data.
+	// Otherwise the menu could auto-close.
+
+	using namespace XI;
+
+	new_XInputGetState
+	(
+		0,
+		&state
+	);
+
+	::ImGui::XI::UpdateGamepad(&state);
+}
+
+export void CloseMain()
+{
+	DebugLogFunction();
+
+	g_showMain = false;
+}
+
+export void ToggleShowMain()
+{
+	DebugLogFunction();
+
+	if (!g_showMain)
+	{
+		OpenMain();
+	}
+	else
+	{
+		CloseMain();
+	}
+}
+
+
+
+
+
+
+
+export template <typename T>
+void OverlayFunction
+(
+	const char * label,
+	Config::OverlayData & activeData,
+	Config::OverlayData & queuedData,
+	T & func
+)
+{
+	if (!activeData.enable)
+	{
+		return;
+	}
+
+	auto & activePos = *reinterpret_cast<ImVec2 *>(&activeData.pos);
+	auto & queuedPos = *reinterpret_cast<ImVec2 *>(&queuedData.pos);
+
+	static uint32 lastX = 0;
+	static uint32 lastY = 0;
+
+	static bool run = false;
+	if (!run)
+	{
+		run = true;
+
+		ImGui::SetNextWindowPos(activePos);
+
+		lastX = static_cast<uint32>(activeData.pos.x);
+		lastY = static_cast<uint32>(activeData.pos.y);
+	}
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(0, 0));
+
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+
+	if
+	(
+		ImGui::Begin
+		(
+			label,
+			&activeData.enable,
+			ImGuiWindowFlags_NoTitleBar         |
+			ImGuiWindowFlags_AlwaysAutoResize   |
+			ImGuiWindowFlags_NoFocusOnAppearing
+		)
+	)
+	{
+		activePos = queuedPos = ImGui::GetWindowPos();
+
+		uint32 x = static_cast<uint32>(activeData.pos.x);
+		uint32 y = static_cast<uint32>(activeData.pos.y);
+
+		if
+		(
+			(lastX != x) ||
+			(lastY != y)
+		)
+		{
+			lastX = x;
+			lastY = y;
+
+			GUI::save = true;
+		}
+
+		auto & io = ImGui::GetIO();
+		ImGui::PushFont(io.Fonts->Fonts[FONT::OVERLAY_16]);
+
+		ImGui::PushStyleColor
+		(
+			ImGuiCol_Text,
+			*reinterpret_cast<ImVec4 *>(&activeData.color)
+		);
+
+		func();
+
+		ImGui::PopStyleColor();
+		ImGui::PopFont();
+	}
+
+	ImGui::End();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar(4);
+}
+
+
+
+export template
+<
+	typename T,
+	typename T2
+>
+void OverlaySettings
+(
+	const char * label,
+	T & activeData,
+	T & queuedData,
+	T & defaultData,
+	T2 & func
+)
+{
+	auto & activePos = *reinterpret_cast<ImVec2 *>(&activeData.pos);
+	auto & queuedPos = *reinterpret_cast<ImVec2 *>(&queuedData.pos);
+	auto & defaultPos = *reinterpret_cast<ImVec2 *>(&defaultData.pos);
+
+	GUI_Checkbox2
+	(
+		"Enable",
+		activeData.enable,
+		queuedData.enable
+	);
+	ImGui::Text("");
+
+	if (GUI_ResetButton())
+	{
+		CopyMemory
+		(
+			&queuedData,
+			&defaultData,
+			sizeof(queuedData)
+		);
+		CopyMemory
+		(
+			&activeData,
+			&queuedData,
+			sizeof(activeData)
+		);
+
+		ImGui::SetWindowPos(label, activePos);
+	}
+	ImGui::Text("");
+
+	bool condition = !activeData.enable;
+
+	GUI_PushDisable(condition);
+
+	GUI_Color2
+	(
+		"Color",
+		activeData.color,
+		queuedData.color,
+		ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaPreview
+	);
+	ImGui::Text("");
+
+	ImGui::PushItemWidth(150);
+
+	if
+	(
+		GUI_InputDefault2<float>
+		(
+			"X",
+			activePos.x,
+			queuedPos.x,
+			defaultPos.x,
+			1,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		)
+	)
+	{
+		ImGui::SetWindowPos(label, activePos);
+	}
+	if
+	(
+		GUI_InputDefault2<float>
+		(
+			"Y",
+			activePos.y,
+			queuedPos.y,
+			defaultPos.y,
+			1,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		)
+	)
+	{
+		ImGui::SetWindowPos(label, activePos);
+	}
+
+	ImGui::PopItemWidth();
+
+	func();
+
+	GUI_PopDisable(condition);
+}
+
+
+
+export template <typename T>
+void OverlaySettings
+(
+	const char * label,
+	T & activeData,
+	T & queuedData,
+	T & defaultData
+)
+{
+	auto Function = [](){};
+
+	return OverlaySettings
+	(
+		label,
+		activeData,
+		queuedData,
+		defaultData,
+		Function
+	);
+}
+
+
+
+
+
+
+
+
+export void HandleSaveTimer(float frameRate)
+{
+
+
+	using namespace GUI;
+
+
+
+	if (saveTimer > 0)
+	{
+		saveTimer -= 1.0f;
+
+		return;
+	}
+
+	saveTimer = (frameRate * (saveTimeout / 1000));
+
+	// Log("__GUI__");
+
+
+
+	if (save)
+	{
+		save = false;
+
+		SaveConfig();
+	}
+
+
+
+}
+
+
+export void HandleKeyBindings
+(
+	KeyBinding * keyBindings,
+	new_size_t count
+)
+{
+	for_all(index, count)
+	{
+		auto & keyBinding = keyBindings[index];
+
+		keyBinding.Popup();
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

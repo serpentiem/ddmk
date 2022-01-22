@@ -110,305 +110,305 @@ export inline uint8 GetRelativeTiltDirection(PlayerActorData & actorData)
 	return TILT_DIRECTION::NEUTRAL;
 }
 
-export void ToggleDisableGetInput(bool enable)
-{
-	LogFunction(enable);
+// export void ToggleDisableGetInput(bool enable)
+// {
+// 	LogFunction(enable);
 
-	static bool run = false;
-
-
-
-	{
-		auto addr = (appBaseAddr + 0x32CC20);
-		constexpr uint32 size = 9;
-		/*
-		dmc3.exe+32CC20 - 42 0FB7 84 C0 68050000 - movzx eax,word ptr [rax+r8*8+00000568]
-		dmc3.exe+32CC29 - C3                     - ret
-		*/
-
-		constexpr byte8 sect0[] =
-		{
-			0x31, 0xC0, // xor eax,eax
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-		}
-
-		if (enable)
-		{
-			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
-			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-	{
-		auto addr = (appBaseAddr + 0x32CC40);
-		constexpr uint32 size = 9;
-		/*
-		dmc3.exe+32CC40 - 42 0FB7 84 C0 5C050000 - movzx eax,word ptr [rax+r8*8+0000055C]
-		dmc3.exe+32CC49 - C3                     - ret
-		*/
-
-		constexpr byte8 sect0[] =
-		{
-			0x31, 0xC0, // xor eax,eax
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-		}
-
-		if (enable)
-		{
-			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
-			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-	{
-		auto addr = (appBaseAddr + 0x32CC60);
-		constexpr uint32 size = 9;
-		/*
-		dmc3.exe+32CC60 - 42 0FB7 84 C0 6A050000 - movzx eax,word ptr [rax+r8*8+0000056A]
-		dmc3.exe+32CC69 - C3                     - ret
-		*/
-
-		constexpr byte8 sect0[] =
-		{
-			0x31, 0xC0, // xor eax,eax
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-		}
-
-		if (enable)
-		{
-			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
-			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-	{
-		auto addr = (appBaseAddr + 0x32CC77);
-		constexpr uint32 size = 8;
-		/*
-		dmc3.exe+32CC77 - 0FB7 84 0A 50050000 - movzx eax,word ptr [rdx+rcx+00000550]
-		dmc3.exe+32CC7F - C3                  - ret
-		*/
-
-		constexpr byte8 sect0[] =
-		{
-			0x31, 0xC0, // xor eax,eax
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-		}
-
-		if (enable)
-		{
-			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
-			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-	{
-		auto addr = (appBaseAddr + 0x32CC87);
-		constexpr uint32 size = 8;
-		/*
-		dmc3.exe+32CC87 - 0FB7 84 0A 52050000 - movzx eax,word ptr [rdx+rcx+00000552]
-		dmc3.exe+32CC8F - C3                  - ret
-		*/
-
-		constexpr byte8 sect0[] =
-		{
-			0x31, 0xC0, // xor eax,eax
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-		}
-
-		if (enable)
-		{
-			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
-			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-	{
-		auto addr = (appBaseAddr + 0x32CC9B);
-		constexpr uint32 size = 4;
-		/*
-		dmc3.exe+32CC9B - 0FB7 04 08 - movzx eax,word ptr [rax+rcx]
-		dmc3.exe+32CC9F - C3         - ret
-		*/
-
-		constexpr byte8 sect0[] =
-		{
-			0x31, 0xC0, // xor eax,eax
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-		}
-
-		if (enable)
-		{
-			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
-			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-	{
-		auto addr = (appBaseAddr + 0x32CCA7);
-		constexpr uint32 size = 8;
-		/*
-		dmc3.exe+32CCA7 - 0FB7 84 0A 58050000 - movzx eax,word ptr [rdx+rcx+00000558]
-		dmc3.exe+32CCAF - C3                  - ret
-		*/
-
-		constexpr byte8 sect0[] =
-		{
-			0x31, 0xC0, // xor eax,eax
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-		}
-
-		if (enable)
-		{
-			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
-			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-	{
-		auto addr = (appBaseAddr + 0x32CCC7);
-		constexpr uint32 size = 2;
-		/*
-		dmc3.exe+32CCC7 - 0B C1 - or eax,ecx
-		dmc3.exe+32CCC9 - C3    - ret
-		*/
-
-		constexpr byte8 sect0[] =
-		{
-			0x31, 0xC0, // xor eax,eax
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-		}
-
-		if (enable)
-		{
-			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
-			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-	{
-		auto addr = (appBaseAddr + 0x32CCEB);
-		constexpr uint32 size = 2;
-		/*
-		dmc3.exe+32CCEB - 0B C1 - or eax,ecx
-		dmc3.exe+32CCED - C3    - ret
-		*/
-
-		constexpr byte8 sect0[] =
-		{
-			0x31, 0xC0, // xor eax,eax
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-		}
-
-		if (enable)
-		{
-			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
-			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
-
-	{
-		auto addr = (appBaseAddr + 0x32CD22);
-		constexpr uint32 size = 2;
-		/*
-		dmc3.exe+32CD22 - 0B C1 - or eax,ecx
-		dmc3.exe+32CD24 - C3    - ret
-		*/
-
-		constexpr byte8 sect0[] =
-		{
-			0x31, 0xC0, // xor eax,eax
-		};
-
-		if (!run)
-		{
-			backupHelper.Save(addr, size);
-		}
-
-		if (enable)
-		{
-			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
-			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
-		}
-		else
-		{
-			backupHelper.Restore(addr);
-		}
-	}
+// 	static bool run = false;
 
 
 
-	run = true;
-}
+// 	{
+// 		auto addr = (appBaseAddr + 0x32CC20);
+// 		constexpr uint32 size = 9;
+// 		/*
+// 		dmc3.exe+32CC20 - 42 0FB7 84 C0 68050000 - movzx eax,word ptr [rax+r8*8+00000568]
+// 		dmc3.exe+32CC29 - C3                     - ret
+// 		*/
+
+// 		constexpr byte8 sect0[] =
+// 		{
+// 			0x31, 0xC0, // xor eax,eax
+// 		};
+
+// 		if (!run)
+// 		{
+// 			backupHelper.Save(addr, size);
+// 		}
+
+// 		if (enable)
+// 		{
+// 			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+// 			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+// 		}
+// 		else
+// 		{
+// 			backupHelper.Restore(addr);
+// 		}
+// 	}
+
+// 	{
+// 		auto addr = (appBaseAddr + 0x32CC40);
+// 		constexpr uint32 size = 9;
+// 		/*
+// 		dmc3.exe+32CC40 - 42 0FB7 84 C0 5C050000 - movzx eax,word ptr [rax+r8*8+0000055C]
+// 		dmc3.exe+32CC49 - C3                     - ret
+// 		*/
+
+// 		constexpr byte8 sect0[] =
+// 		{
+// 			0x31, 0xC0, // xor eax,eax
+// 		};
+
+// 		if (!run)
+// 		{
+// 			backupHelper.Save(addr, size);
+// 		}
+
+// 		if (enable)
+// 		{
+// 			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+// 			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+// 		}
+// 		else
+// 		{
+// 			backupHelper.Restore(addr);
+// 		}
+// 	}
+
+// 	{
+// 		auto addr = (appBaseAddr + 0x32CC60);
+// 		constexpr uint32 size = 9;
+// 		/*
+// 		dmc3.exe+32CC60 - 42 0FB7 84 C0 6A050000 - movzx eax,word ptr [rax+r8*8+0000056A]
+// 		dmc3.exe+32CC69 - C3                     - ret
+// 		*/
+
+// 		constexpr byte8 sect0[] =
+// 		{
+// 			0x31, 0xC0, // xor eax,eax
+// 		};
+
+// 		if (!run)
+// 		{
+// 			backupHelper.Save(addr, size);
+// 		}
+
+// 		if (enable)
+// 		{
+// 			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+// 			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+// 		}
+// 		else
+// 		{
+// 			backupHelper.Restore(addr);
+// 		}
+// 	}
+
+// 	{
+// 		auto addr = (appBaseAddr + 0x32CC77);
+// 		constexpr uint32 size = 8;
+// 		/*
+// 		dmc3.exe+32CC77 - 0FB7 84 0A 50050000 - movzx eax,word ptr [rdx+rcx+00000550]
+// 		dmc3.exe+32CC7F - C3                  - ret
+// 		*/
+
+// 		constexpr byte8 sect0[] =
+// 		{
+// 			0x31, 0xC0, // xor eax,eax
+// 		};
+
+// 		if (!run)
+// 		{
+// 			backupHelper.Save(addr, size);
+// 		}
+
+// 		if (enable)
+// 		{
+// 			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+// 			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+// 		}
+// 		else
+// 		{
+// 			backupHelper.Restore(addr);
+// 		}
+// 	}
+
+// 	{
+// 		auto addr = (appBaseAddr + 0x32CC87);
+// 		constexpr uint32 size = 8;
+// 		/*
+// 		dmc3.exe+32CC87 - 0FB7 84 0A 52050000 - movzx eax,word ptr [rdx+rcx+00000552]
+// 		dmc3.exe+32CC8F - C3                  - ret
+// 		*/
+
+// 		constexpr byte8 sect0[] =
+// 		{
+// 			0x31, 0xC0, // xor eax,eax
+// 		};
+
+// 		if (!run)
+// 		{
+// 			backupHelper.Save(addr, size);
+// 		}
+
+// 		if (enable)
+// 		{
+// 			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+// 			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+// 		}
+// 		else
+// 		{
+// 			backupHelper.Restore(addr);
+// 		}
+// 	}
+
+// 	{
+// 		auto addr = (appBaseAddr + 0x32CC9B);
+// 		constexpr uint32 size = 4;
+// 		/*
+// 		dmc3.exe+32CC9B - 0FB7 04 08 - movzx eax,word ptr [rax+rcx]
+// 		dmc3.exe+32CC9F - C3         - ret
+// 		*/
+
+// 		constexpr byte8 sect0[] =
+// 		{
+// 			0x31, 0xC0, // xor eax,eax
+// 		};
+
+// 		if (!run)
+// 		{
+// 			backupHelper.Save(addr, size);
+// 		}
+
+// 		if (enable)
+// 		{
+// 			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+// 			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+// 		}
+// 		else
+// 		{
+// 			backupHelper.Restore(addr);
+// 		}
+// 	}
+
+// 	{
+// 		auto addr = (appBaseAddr + 0x32CCA7);
+// 		constexpr uint32 size = 8;
+// 		/*
+// 		dmc3.exe+32CCA7 - 0FB7 84 0A 58050000 - movzx eax,word ptr [rdx+rcx+00000558]
+// 		dmc3.exe+32CCAF - C3                  - ret
+// 		*/
+
+// 		constexpr byte8 sect0[] =
+// 		{
+// 			0x31, 0xC0, // xor eax,eax
+// 		};
+
+// 		if (!run)
+// 		{
+// 			backupHelper.Save(addr, size);
+// 		}
+
+// 		if (enable)
+// 		{
+// 			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+// 			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+// 		}
+// 		else
+// 		{
+// 			backupHelper.Restore(addr);
+// 		}
+// 	}
+
+// 	{
+// 		auto addr = (appBaseAddr + 0x32CCC7);
+// 		constexpr uint32 size = 2;
+// 		/*
+// 		dmc3.exe+32CCC7 - 0B C1 - or eax,ecx
+// 		dmc3.exe+32CCC9 - C3    - ret
+// 		*/
+
+// 		constexpr byte8 sect0[] =
+// 		{
+// 			0x31, 0xC0, // xor eax,eax
+// 		};
+
+// 		if (!run)
+// 		{
+// 			backupHelper.Save(addr, size);
+// 		}
+
+// 		if (enable)
+// 		{
+// 			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+// 			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+// 		}
+// 		else
+// 		{
+// 			backupHelper.Restore(addr);
+// 		}
+// 	}
+
+// 	{
+// 		auto addr = (appBaseAddr + 0x32CCEB);
+// 		constexpr uint32 size = 2;
+// 		/*
+// 		dmc3.exe+32CCEB - 0B C1 - or eax,ecx
+// 		dmc3.exe+32CCED - C3    - ret
+// 		*/
+
+// 		constexpr byte8 sect0[] =
+// 		{
+// 			0x31, 0xC0, // xor eax,eax
+// 		};
+
+// 		if (!run)
+// 		{
+// 			backupHelper.Save(addr, size);
+// 		}
+
+// 		if (enable)
+// 		{
+// 			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+// 			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+// 		}
+// 		else
+// 		{
+// 			backupHelper.Restore(addr);
+// 		}
+// 	}
+
+// 	{
+// 		auto addr = (appBaseAddr + 0x32CD22);
+// 		constexpr uint32 size = 2;
+// 		/*
+// 		dmc3.exe+32CD22 - 0B C1 - or eax,ecx
+// 		dmc3.exe+32CD24 - C3    - ret
+// 		*/
+
+// 		constexpr byte8 sect0[] =
+// 		{
+// 			0x31, 0xC0, // xor eax,eax
+// 		};
+
+// 		if (!run)
+// 		{
+// 			backupHelper.Save(addr, size);
+// 		}
+
+// 		if (enable)
+// 		{
+// 			SetMemory(addr, 0x90, size, MemoryFlags_VirtualProtectDestination);
+// 			CopyMemory(addr, sect0, sizeof(sect0), MemoryFlags_VirtualProtectDestination);
+// 		}
+// 		else
+// 		{
+// 			backupHelper.Restore(addr);
+// 		}
+// 	}
+
+
+
+// 	run = true;
+// }

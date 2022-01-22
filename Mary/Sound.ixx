@@ -7,17 +7,16 @@ import Core;
 
 #include "../Core/Macros.h"
 
-import Vars;
-
 import Config;
 import File;
 import FMOD;
 import Global;
 import Internal;
+import Vars;
 
 #define debug false
 
-// #include "Macros.h"
+
 
 constexpr uint32 g_sectCount[HELPER_COUNT] =
 {
@@ -2132,15 +2131,7 @@ export void UpdateEnemyCount()
 	{
 		auto & metadata = enemyVectorData.metadata[enemyIndex];
 
-		// if (!metadata.baseAddr)
-		// {
-		// 	continue;
-		// }
-
 		IntroduceData(metadata.baseAddr, actorData, EnemyActorData, continue);
-
-		// @Research: actorData.baseAddr could be 0.
-		// @Todo: Check if metadata.baseAddr is properly set to zero.
 
 		if (!actorData.baseAddr)
 		{
@@ -2163,6 +2154,3 @@ export void UpdateEnemyCount()
 }
 
 namespaceEnd();
-
-#ifdef __GARBAGE__
-#endif

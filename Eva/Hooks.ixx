@@ -45,20 +45,20 @@ namespaceEnd();
 
 
 
-namespaceStart(Hook::DI8);
+// namespaceStart(Hook::DI8);
 
-void GetDeviceStateA_Function(byte8 * state)
-{
-	for_all(index, countof(keyBindings))
-	{
-		auto & keyBinding = keyBindings[index];
+// void GetDeviceStateA_Function(byte8 * state)
+// {
+// 	for_all(index, countof(keyBindings))
+// 	{
+// 		auto & keyBinding = keyBindings[index];
 
-		keyBinding.UpdateKeyData(state);
-		keyBinding.Check(state);
-	}
-}
+// 		keyBinding.UpdateKeyData(state);
+// 		keyBinding.Check(state);
+// 	}
+// }
 
-namespaceEnd();
+// namespaceEnd();
 
 
 
@@ -93,7 +93,7 @@ export void Init()
 		::Hook::D3D11::D3D11CreateDeviceAndSwapChain
 	);
 
-	::Hook::DI8::GetDeviceStateA_func = ::Hook::DI8::GetDeviceStateA_Function;
+	//::Hook::DI8::GetDeviceStateA_func = ::Hook::DI8::GetDeviceStateA_Function;
 
 
 
@@ -143,7 +143,7 @@ export void Init()
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA<DEVICE_TYPE::KEYBOARD>, jumpAddr, false, true, (size + sizeof(sect0)), 0, sizeof(sect2));
+			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA, jumpAddr, false, true, (size + sizeof(sect0)), 0, sizeof(sect2));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory((func.sect0 + size), sect0, sizeof(sect0));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
@@ -200,7 +200,7 @@ export void Init()
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA<DEVICE_TYPE::KEYBOARD>, jumpAddr, false, true, (size + sizeof(sect0)), 0, sizeof(sect2));
+			func = old_CreateFunction(::Hook::DI8::GetDeviceStateA, jumpAddr, false, true, (size + sizeof(sect0)), 0, sizeof(sect2));
 			CopyMemory(func.sect0, addr, size, MemoryFlags_VirtualProtectSource);
 			CopyMemory((func.sect0 + size), sect0, sizeof(sect0));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
@@ -218,7 +218,7 @@ export void Init()
 
 
 
-	CreateThread(0, 4096, ::DI8::CreateMouseThread, 0, 0, 0);
+	//CreateThread(0, 4096, ::DI8::CreateMouseThread, 0, 0, 0);
 
 
 

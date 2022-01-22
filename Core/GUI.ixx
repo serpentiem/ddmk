@@ -1447,7 +1447,7 @@ export struct KeyBinding
 
 
 
-		constexpr size_t count = 256;
+		constexpr new_size_t count = 256;
 
 		for_all(index, count)
 		{
@@ -1498,7 +1498,7 @@ export struct KeyBinding
 		auto & keys     = activeKeyData.keys;
 		auto & keyCount = activeKeyData.keyCount;
 
-		size_t keysDown = 0;
+		new_size_t keysDown = 0;
 
 		if (keyCount < 1)
 		{

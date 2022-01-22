@@ -1,13 +1,11 @@
-// @Todo: Update imports.
-// @Todo: Update inits.
-
 import Core;
+import Core_Input;
 
 #include "../Core/Macros.h"
 
 import Windows;
 
-import Vars;
+using namespace Windows;
 
 import ActorBase;
 import ActorRelocations;
@@ -34,9 +32,8 @@ import SoundRelocations;
 import Sound;
 import Speed;
 import Training;
+import Vars;
 import Window;
-
-using namespace Windows;
 
 #define debug false
 
@@ -136,24 +133,6 @@ uint32 DllMain
 			return 0;
 		}
 
-
-
-		ToggleDisableGetInput(false);
-
-
-
-		// Global_Toggle(false);
-		// Global_Toggle(true);
-
-
-		// ActorBase::Toggle(false);
-		// ActorBase::Toggle(true);
-
-
-
-		//Actor_Init();
-
-		// @Todo: Re-evaluate.
 		if (!Sound_Init())
 		{
 			Log("Sound_Init failed.");
@@ -211,13 +190,8 @@ uint32 DllMain
 
 
 
-
-
-
-
 		ToggleNoDevilForm(false);
 		ToggleNoDevilForm(activeConfig.noDevilForm);
-
 
 
 
@@ -251,35 +225,16 @@ uint32 DllMain
 
 
 
-
-
-
-		// @Update
+		// @Merge
 		Event_Toggle(false);
 		Event_Toggle(true);
 
-		// @Remove
 		Event_Init();
-
 
 
 
 		ToggleSkipIntro    (activeConfig.skipIntro    );
 		ToggleSkipCutscenes(activeConfig.skipCutscenes);
-
-		//Graphics::Init();
-
-		// Graphics::Toggle(false);
-		// Graphics::Toggle(true);
-
-		// ToggleFrameRateFixes(false);
-		// ToggleFrameRateFixes(true);
-
-
-		//UpdateFrameRate();
-
-
-
 
 
 
@@ -299,19 +254,11 @@ uint32 DllMain
 
 
 
-		//Scene_Init();
-
 		Scene::Toggle(false);
 		Scene::Toggle(true);
 
-
-
 		Speed::Toggle(false);
 		Speed::Toggle(true);
-
-
-
-
 
 
 
@@ -325,8 +272,16 @@ uint32 DllMain
 		ToggleForceWindowFocus(false);
 		ToggleForceWindowFocus(activeConfig.forceWindowFocus);
 
-		Hooks::Init();
 
+
+		ToggleDisablePlayerActorIdleTimer(false);
+		ToggleDisablePlayerActorIdleTimer(activeConfig.disablePlayerActorIdleTimer);
+
+
+
+		XI::new_Init("xinput9_1_0.dll");
+
+		Hooks::Init();
 
 
 
@@ -338,16 +293,6 @@ uint32 DllMain
 			23,
 			MemoryFlags_VirtualProtectDestination
 		);
-
-
-
-		ToggleDisablePlayerActorIdleTimer(false);
-		ToggleDisablePlayerActorIdleTimer(activeConfig.disablePlayerActorIdleTimer);
-
-
-
-
-
 	}
 
 	return 1;

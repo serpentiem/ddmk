@@ -30,7 +30,7 @@ export void ToggleForceWindowFocus(bool enable)
 
 	{
 		auto addr = (appBaseAddr + 0x6E322B);
-		constexpr size_t size = 7;
+		constexpr new_size_t size = 7;
 		/*
 		dmc4.exe+6E322B - C6 81 51250000 00 - mov byte ptr [ecx+00002551],00
 		dmc4.exe+6E3232 - 8B 0D 2C433201    - mov ecx,[dmc4.exe+F2432C]
@@ -184,7 +184,7 @@ export void Toggle(bool enable)
 	{
 		auto addr     = (appBaseAddr + 0x69C50C);
 		auto jumpAddr = (appBaseAddr + 0x69C512);
-		constexpr size_t size = 6;
+		constexpr new_size_t size = 6;
 		/*
 		dmc4.exe+69C50C - 89 96 B8000000 - mov [esi+000000B8],edx
 		dmc4.exe+69C512 - 5F             - pop edi
