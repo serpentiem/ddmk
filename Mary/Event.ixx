@@ -278,6 +278,7 @@ void EventHandler(EventData & eventData)
 	}
 
 
+
 	if
 	(
 		(event == EVENT::TELEPORT) &&
@@ -286,9 +287,6 @@ void EventHandler(EventData & eventData)
 	{
 		eventData.event = MAIN;
 	}
-
-
-
 
 
 

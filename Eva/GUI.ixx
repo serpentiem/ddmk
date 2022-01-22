@@ -2938,8 +2938,6 @@ export void GUI_Render()
 	Main();
 	CreditsWindow();
 
-
-
 	if constexpr (debug)
 	{
 		ActorWindow();

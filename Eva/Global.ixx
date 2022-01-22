@@ -1,24 +1,9 @@
-
-
-
-// @Clean
-
-
-
-
-
-
-
-
 export module Global;
 
 import Core;
 import Core_Input;
 
 #include "../Core/Macros.h"
-
-
-
 
 import Windows;
 import DXGI;
@@ -32,10 +17,6 @@ using namespace Windows;
 import Vars;
 
 #define debug false
-
-
-
-
 
 
 
@@ -72,13 +53,6 @@ export Gamepad  gamepad  = {};
 
 
 
-
-
-
-
-
-
-
 export namespaceStart(XI);
 
 XINPUT_STATE state = {};
@@ -87,136 +61,10 @@ namespaceEnd();
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export module Global;
-
-// import Core;
-
-// #include "../Core/Macros.h"
-
-// // import DXGI;
-// // import D3D10;
-// // import D3D11;
-// // import DI8;
-
-// // import Vars;
-
-// // using namespace DXGI;
-// // using namespace D3D11;
-// // using namespace DI8;
-
-// // #define debug false
-
-
-
-
-// import Windows;
-// import DXGI;
-// import D3D10;
-// import D3D11;
-// import DI8;
-
-// using namespace Windows;
-// // using namespace DXGI;
-// // using namespace D3D10;
-// // using namespace DI8;
-
-// // import Steam;
-// import Vars;
-
-
-// export namespace DXGI
-// {
-// 	IDXGISwapChain * swapChain = 0;
-// }
-
-// export namespace D3D10
-// {
-// 	ID3D10Device           * device           = 0;
-// 	ID3D10RenderTargetView * renderTargetView = 0;
-// }
-
-// export namespace D3D11
-// {
-// 	ID3D11Device           * device           = 0;
-// 	ID3D11DeviceContext    * deviceContext    = 0;
-// 	ID3D11RenderTargetView * renderTargetView = 0;
-// }
-
-// export namespace DI8
-// {
-// 	IDirectInput8W       * deviceInterface = 0;
-// 	IDirectInputDevice8W * mouse           = 0;
-// 	DIMOUSESTATE2          mouseState      = {};
-// }
-
-
-
-// export float g_frameRateMultiplier = 1.0f;
-
-
-// export namespace DXGI
-// {
-// 	IDXGISwapChain * swapChain = 0;
-// }
-
-// export namespace D3D11
-// {
-// 	ID3D11Device           * device           = 0;
-// 	ID3D11DeviceContext    * deviceContext    = 0;
-// 	ID3D11RenderTargetView * renderTargetView = 0;
-// }
-
-// export namespace DI8
-// {
-// 	IDirectInput8W       * deviceInterface = 0;
-// 	IDirectInputDevice8W * mouse           = 0;
-// 	DIMOUSESTATE2          mouseState      = {};
-// }
-
-// export vec2 g_windowSize = {};
-// export vec2 g_clientSize = {};
-// export vec2 g_renderSize = {};
-
-
-
 export bool g_show     = false;
 export bool g_lastShow = false;
 export bool g_showMain = false;
 export bool g_showShop = false;
-
-
-
-
-// export bool g_show               = false;
-// export bool g_lastShow           = false;
-// export bool g_showItemWindow     = false;
-// export bool g_lastShowItemWindow = false;
-// export bool g_showItemWindow     = false;
-// export bool g_lastShowItemWindow = false;
-
-// export bool g_setRoom = false;
-
-
-//export bool g_skipBlackout = false;
-
-
-
-
-
-
 
 
 
@@ -229,15 +77,9 @@ export bool InGame()
 
 
 
-
-
-
-
 export void ToggleSkipText(bool enable)
 {
 	LogFunction(enable);
-
-
 
 	static bool run = false;
 
@@ -325,13 +167,6 @@ export void ToggleSkipText(bool enable)
 
 
 
-
-
-
-
-
-
-
 export void ToggleAutoExamine(bool enable)
 {
 	LogFunction(enable);
@@ -363,10 +198,6 @@ export void ToggleAutoExamine(bool enable)
 
 	run = true;
 }
-
-
-
-
 
 
 
@@ -411,7 +242,6 @@ export void AddUniqueItem(ItemData & newItem)
 
 	itemIndex++;
 }
-
 
 
 
@@ -500,14 +330,3 @@ export void ToggleSkipIntro(bool enable)
 
 	run = true;
 }
-
-
-
-
-
-
-
-
-
-
-

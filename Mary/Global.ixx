@@ -1,22 +1,9 @@
-
-
-// @Cleanup
-
-
-
-
-
-
-
 export module Global;
 
 import Core;
 import Core_Input;
 
 #include "../Core/Macros.h"
-
-
-
 
 import Windows;
 import DXGI;
@@ -30,10 +17,6 @@ using namespace Windows;
 import Vars;
 
 #define debug false
-
-
-
-
 
 
 
@@ -70,13 +53,6 @@ export Gamepad  gamepad  = {};
 
 
 
-
-
-
-
-
-
-
 export namespaceStart(XI);
 
 XINPUT_STATE state = {};
@@ -85,60 +61,31 @@ namespaceEnd();
 
 
 
+export bool g_show     = false;
+export bool g_lastShow = false;
+export bool g_showMain = false;
+export bool g_showShop = false;
 
 
 
-
-
-export uint8 g_scene                 = 0;
+export uint8 g_scene = 0;
 
 export bool g_eventRun[EVENT::COUNT] = {};
 
+export bool g_quicksilver           = false;
+export bool g_disableCameraRotation = false;
+export bool g_haywireNeoGenerator   = false;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export bool  g_quicksilver           = false;
-export bool  g_disableCameraRotation = false;
-
-
-
-
-export bool g_haywireNeoGenerator = false;
-
-
-
-
-
-
-
-
+#pragma region Actor
 
 export Vector<byte8 *> g_playerActorBaseAddrs = {};
 
-
-
-
 export NewActorData g_defaultNewActorData[ENTITY_COUNT] = {};
+
 export NewActorData g_newActorData[PLAYER_COUNT][CHARACTER_COUNT][ENTITY_COUNT] = {};
+
 
 
 export void ClearActorData()
@@ -164,14 +111,6 @@ export void ClearActorData()
 
 
 
-
-
-
-
-
-
-
-// @Research: Could add out of range handling.
 export auto & GetNewActorData
 (
 	uint8 playerIndex,
@@ -182,60 +121,23 @@ export auto & GetNewActorData
 	return g_newActorData[playerIndex][characterIndex][entityIndex];
 }
 
-
-
-
-
+#pragma endregion
 
 
 
 export uint8 g_helperIndices[CHANNEL::MAX] = {};
 
-
-
-
-
-export bool g_show     = false;
-export bool g_lastShow = false;
-export bool g_showMain = false;
-export bool g_showShop = false;
-
-
-
-
-
 export float g_shopTimer   = 0;
 export float g_shopTimeout = 100; // in ms
 
-
-
-
-
-
-
 export bool g_missionSelectForceConfirm = false;
-
-
-
 
 export float g_hitPoints  [PLAYER_COUNT] = {};
 export float g_magicPoints[PLAYER_COUNT] = {};
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-// @Todo: Update.
+// @Update
 export void ToggleSkipIntro(bool enable)
 {
 	LogFunction(enable);
@@ -293,13 +195,6 @@ export void ToggleSkipCutscenes(bool enable)
 
 
 
-
-
-
-
-
-
-
 export bool InGame()
 {
 	if (g_scene != SCENE::GAME)
@@ -316,9 +211,6 @@ export bool InGame()
 
 	return true;
 }
-
-
-
 
 export auto & IsTurbo()
 {
@@ -343,11 +235,14 @@ export bool InCredits()
 
 
 
-
 export new_size_t g_saveIndex     = 0;
 export new_size_t g_lastSaveIndex = 0;
 
+export bool g_noTeleport = false;
 
+
+
+#pragma region SecretMission
 
 export uint32 g_secretMission = 0;
 
@@ -464,68 +359,4 @@ export void SetGlobalSecretMission()
 	0;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export bool g_isSecretMission = false;
-
-
-export bool g_noTeleport = false;
-
-
-
-
-/*
-
-((mission == 4) && (nextRoom == 5)) ? 1 :
-((mission == 4) && (nextRoom == 5)) ? 2 :
-((mission == 4) && (nextRoom == 5)) ? 3 :
-0;
-
-g_isSecretMission =
-((mission == 4) && (nextRoom == 5)) ||
-((mission == 4) && (nextRoom == 5)) ||
-((mission == 4) && (nextRoom == 5));
-
-
-(
-	(mission == 4) &&
-	(nextRoom == 5)
-) ||
-
-
-
-*/
-
-
-
-
-
+#pragma endregion
