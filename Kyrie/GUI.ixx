@@ -2451,14 +2451,10 @@ export void GUI_Render()
 	::GUI::id = 0;
 
 
+
 	Welcome();
 	Main();
 	CreditsWindow();
-
-
-
-
-
 
 
 
@@ -2467,30 +2463,6 @@ export void GUI_Render()
 	Bars();
 
 
-
-
-
-
-
-
-	// if (g_show)
-	// {
-	// 	Main();
-
-	// 	CreditsWindow();
-	// }
-
-	// keyBindingToggleShow.Popup();
-	// keyBindingReloadRoom.Popup();
-	// keyBindingMoveToMainActor.Popup();
-
-
-	// for_all(index, countof(keyBindings))
-	// {
-	// 	auto & keyBinding = keyBindings[index];
-
-	// 	keyBinding.Popup();
-	// }
 
 	HandleKeyBindings
 	(
@@ -2507,68 +2479,10 @@ export void GUI_Render()
 	}
 
 
+
 	HandleSaveTimer(activeConfig.targetFrameRate);
 
 
-	// // @Todo: Make function with frameRate arg.
-	// [&]()
-	// {
-	// 	using namespace GUI;
-
-
-
-	// 	if (saveTimer > 0)
-	// 	{
-	// 		saveTimer -= 1.0f;
-
-	// 		return;
-	// 	}
-
-	// 	saveTimer = (activeConfig.targetFrameRate * (saveTimeout / 1000));
-	// 	//saveTimer = (activeConfig.frameRate * (saveTimeout / 1000));
-
-	// 	// Log("__GUI__");
-
-
-
-	// 	if (save)
-	// 	{
-	// 		save = false;
-
-	// 		SaveConfig();
-	// 	}
-	// }();
-
-
-
-
-	// [&]()
-	// {
-	// 	using namespace GUI;
-
-	// 	if (saveTimeout > 0)
-	// 	{
-	// 		saveTimeout -= 1.0f;
-	// 	}
-	// 	else if (saveTimeout < 0)
-	// 	{
-	// 		saveTimeout = 0;
-	// 	}
-
-	// 	if (save)
-	// 	{
-	// 		if (saveTimeout > 0)
-	// 		{
-	// 			return;
-	// 		}
-
-	// 		save = false;
-
-	// 		saveTimeout = 6;
-
-	// 		SaveConfig();
-	// 	}
-	// }();
 
 	// static bool enable = true;
 	// ImGui::ShowDemoWindow(&enable);

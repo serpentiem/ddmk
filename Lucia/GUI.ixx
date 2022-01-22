@@ -758,44 +758,8 @@ void Main()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export void GUI_Render()
 {
-
-
-
 	::GUI::id = 0;
 
 
@@ -810,7 +774,6 @@ export void GUI_Render()
 
 
 
-
 	HandleKeyBindings
 	(
 		keyBindings,
@@ -819,10 +782,7 @@ export void GUI_Render()
 
 
 
-
 	HandleSaveTimer(activeConfig.frameRate);
-
-
 
 
 
