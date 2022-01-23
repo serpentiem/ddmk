@@ -157,6 +157,12 @@ void MainOverlaySettings()
 			activeConfig.mainOverlayData.showSizes,
 			queuedConfig.mainOverlayData.showSizes
 		);
+		GUI_Checkbox2
+		(
+			"Show Frame Rate Multiplier",
+			activeConfig.mainOverlayData.showFrameRateMultiplier,
+			queuedConfig.mainOverlayData.showFrameRateMultiplier
+		);
 	};
 
 	OverlaySettings

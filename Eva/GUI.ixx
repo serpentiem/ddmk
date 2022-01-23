@@ -1342,6 +1342,12 @@ void MainOverlaySettings()
 		);
 		GUI_Checkbox2
 		(
+			"Show Frame Rate Multiplier",
+			activeConfig.mainOverlayData.showFrameRateMultiplier,
+			queuedConfig.mainOverlayData.showFrameRateMultiplier
+		);
+		GUI_Checkbox2
+		(
 			"Show Event Data",
 			activeConfig.mainOverlayData.showEventData,
 			queuedConfig.mainOverlayData.showEventData
