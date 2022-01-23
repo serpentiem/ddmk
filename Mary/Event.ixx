@@ -19,7 +19,7 @@ import Model;
 import Sound;
 import Vars;
 
-#define debug true
+#define debug false
 
 
 

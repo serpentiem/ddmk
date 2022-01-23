@@ -41,7 +41,7 @@ import Training;
 import Vars;
 import Window;
 
-#define debug true
+#define debug false
 
 
 
@@ -9982,6 +9982,12 @@ void System()
 			"%u",
 			ImGuiInputTextFlags_EnterReturnsTrue
 		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Toggle Show Main"
+		);
 
 		ImGui::PopItemWidth();
 
@@ -10738,7 +10744,7 @@ void MoveToMainActor()
 export KeyBinding keyBindings[] =
 {
 	{
-		"Toggle Show",
+		"Toggle Show Main",
 		activeConfig.keyData[0],
 		queuedConfig.keyData[0],
 		defaultConfig.keyData[0],
@@ -10835,15 +10841,8 @@ void KeyBindings()
 
 #pragma region Main
 
-// @Move: GUIBase
-
-
-
 void Main()
 {
-
-
-
 	if (!g_showMain)
 	{
 		return;
@@ -10857,40 +10856,23 @@ void Main()
 	{
 		run = true;
 
-
 		constexpr float width  = 600;
 		constexpr float height = 650;
 
-
 		ImGui::SetNextWindowSize(ImVec2(width, height));
 
-		// if constexpr (debug)
-		// {
-		// 	//ImGui::SetNextWindowPos(ImVec2(950, 50));
-
-		// 	// ImGui::SetNextWindowPos
-		// 	// (
-		// 	// 	ImVec2
-		// 	// 	(
-		// 	// 		(g_renderSize.x - width - 50),
-		// 	// 		50
-		// 	// 	)
-		// 	// );
-
-
-		// 	ImGui::SetNextWindowPos
-		// 	(
-		// 		ImVec2
-		// 		(
-		// 			((g_renderSize.x - width) / 2),
-		// 			100
-		// 		)
-		// 	);
-
-
-
-		// }
-		// else
+		if constexpr (debug)
+		{
+			ImGui::SetNextWindowPos
+			(
+				ImVec2
+				(
+					((g_renderSize.x - width) / 2),
+					100
+				)
+			);
+		}
+		else
 		{
 			ImGui::SetNextWindowPos(ImVec2(0, 0));
 		}

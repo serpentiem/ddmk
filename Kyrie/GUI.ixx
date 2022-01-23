@@ -31,7 +31,7 @@ import Training;
 import Vars;
 import Window;
 
-#define debug true
+#define debug false
 
 
 
@@ -1484,14 +1484,20 @@ void MainOverlayWindow()
 
 
 
-		if constexpr (debug)
+		if constexpr (!debug)
+		{
+			return;
+		}
+
+
+
 		{
 			auto flags = GetGamepadFlags(activePlayerIndex);
 
 			ImGui::Text("flags %X", flags);
-
-			ImGui::Text("activePlayerIndex %u", activePlayerIndex);
 		}
+
+		ImGui::Text("activePlayerIndex %u", activePlayerIndex);
 		ImGui::Text("");
 
 
@@ -1499,33 +1505,8 @@ void MainOverlayWindow()
 		ImGui::Text("g_showMain %u", g_showMain);
 		ImGui::Text("");
 
-
-
-
-
-		{
-			ImGui::Text("wButtons %X", ::XI::state.Gamepad.wButtons);
-		}
-
-
-
-
-
-
-
-
-
-
-
-		// auto & io = ImGui::GetIO();
-
-		// ImGui::Text("cursor x %g", io.MousePos.x);
-		// ImGui::Text("cursor y %g", io.MousePos.y);
-		// ImGui::Text("");
-
-
-
-		// ImGui::Text("g_position %u", g_position);
+		ImGui::Text("wButtons %X", ::XI::state.Gamepad.wButtons);
+		ImGui::Text("");
 	};
 
 	OverlayFunction
@@ -1866,6 +1847,12 @@ void System()
 			"%u",
 			ImGuiInputTextFlags_EnterReturnsTrue
 		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Toggle Show Main"
+		);
 
 		ImGui::PopItemWidth();
 
@@ -2202,7 +2189,7 @@ void MoveToMainActor()
 export KeyBinding keyBindings[] =
 {
 	{
-		"Toggle Show",
+		"Toggle Show Main",
 		activeConfig.keyData[0],
 		queuedConfig.keyData[0],
 		defaultConfig.keyData[0],
@@ -2317,12 +2304,11 @@ void KeyBindings()
 
 void Main()
 {
-
-
 	if (!g_showMain)
 	{
 		return;
 	}
+
 
 
 	static bool run = false;
@@ -2331,33 +2317,19 @@ void Main()
 	{
 		run = true;
 
-
-
 		constexpr float width  = 600;
 		constexpr float height = 650;
-
-
-
 
 		ImGui::SetNextWindowSize(ImVec2(width, height));
 
 		if constexpr (debug)
 		{
-			//ImGui::SetNextWindowPos(ImVec2(950, 50));
-			// ImGui::SetNextWindowPos
-			// (
-			// 	ImVec2
-			// 	(
-			// 		(g_renderSize.x - width),
-			// 		0
-			// 	)
-			// );
 			ImGui::SetNextWindowPos
 			(
 				ImVec2
 				(
 					((g_renderSize.x - width) / 2),
-					50
+					100
 				)
 			);
 		}
@@ -2367,10 +2339,10 @@ void Main()
 		}
 
 		//ImGuiIO & io = ImGui::GetIO();
-		//io.FontDefault = io.Fonts->Fonts[FONT_MAIN];
-		//ImGui::PushFont(io.Fonts->Fonts[FONT_OVERLAY_8 + activeConfig.Tools.Overlay.fontSizeIndex]);
+		//io.FontDefault = io.Fonts->Fonts[FONT::MAIN];
+		//ImGui::PushFont(io.Fonts->Fonts[FONT::OVERLAY_8 + activeConfig.Tools.Overlay.fontSizeIndex]);
 
-		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT_OVERLAY_8]);
+		//ImGui::SetCurrentFont(io.Fonts->Fonts[FONT::OVERLAY_8]);
 	}
 
 	if

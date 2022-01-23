@@ -31,7 +31,7 @@ import Training;
 import Vars;
 import Window;
 
-#define debug true
+#define debug false
 
 
 
@@ -1638,6 +1638,12 @@ void System()
 			"%u",
 			ImGuiInputTextFlags_EnterReturnsTrue
 		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Toggle Show Main"
+		);
 
 		ImGui::PopItemWidth();
 
@@ -2673,7 +2679,7 @@ void ReloadRoom()
 export KeyBinding keyBindings[] =
 {
 	{
-		"Toggle Show",
+		"Toggle Show Main",
 		activeConfig.keyData[0],
 		queuedConfig.keyData[0],
 		defaultConfig.keyData[0],
@@ -2787,14 +2793,10 @@ void KeyBindings()
 
 void Main()
 {
-
-
-
 	if (!g_showMain)
 	{
 		return;
 	}
-
 
 
 
@@ -2804,11 +2806,21 @@ void Main()
 	{
 		run = true;
 
-		ImGui::SetNextWindowSize(ImVec2(600, 650));
+		constexpr float width  = 600;
+		constexpr float height = 650;
+
+		ImGui::SetNextWindowSize(ImVec2(width, height));
 
 		if constexpr (debug)
 		{
-			ImGui::SetNextWindowPos(ImVec2(950, 50));
+			ImGui::SetNextWindowPos
+			(
+				ImVec2
+				(
+					((g_renderSize.x - width) / 2),
+					100
+				)
+			);
 		}
 		else
 		{

@@ -16,7 +16,7 @@ using namespace DI8;
 
 import Vars;
 
-#define debug true
+#define debug false
 
 
 

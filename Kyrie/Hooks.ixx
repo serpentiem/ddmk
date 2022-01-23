@@ -74,97 +74,21 @@ namespaceEnd();
 
 
 
-// namespaceStart(Hook::DI8);
-
-// void GetDeviceStateA_Function(byte8 * state)
-// {
-// 	for_all(index, countof(keyBindings))
-// 	{
-// 		auto & keyBinding = keyBindings[index];
-
-// 		keyBinding.UpdateKeyData(state);
-// 		keyBinding.Check(state);
-// 	}
-
-
-// 	{
-// 		auto & keyBinding = characterSwitchControllerKeyBinding;
-
-// 		keyBinding.UpdateKeyData(state);
-// 		//keyBinding.Check(state);
-// 	}
-// }
-
-// namespaceEnd();
+void UpdateKeyboard_Function(DI8::DIKEYBOARDSTATE * stateAddr)
+{
+	if (!stateAddr)
+	{
+		return;
+	}
+	auto & state = *stateAddr;
 
 
 
+	auto & keyBinding = characterSwitchControllerKeyBinding;
 
-//namespaceStart(DI8);
-
-// void UpdateKeyboard_Function(DI8::DIKEYBOARDSTATE * stateAddr)
-// {
-
-// 	if (!stateAddr)
-// 	{
-// 		return;
-// 	}
-
-// 	auto & state = *stateAddr;
-
-
-
-// 	for_all(index, countof(keyBindings))
-// 	{
-// 		auto & keyBinding = keyBindings[index];
-
-// 		keyBinding.UpdateKeyData(state.keys);
-// 		keyBinding.Check(state.keys);
-// 	}
-// }
-
-
-
-
-// void UpdateGamepad_Function(DI8::DIJOYSTATE * stateAddr)
-// {
-// 	if (!stateAddr)
-// 	{
-// 		return;
-// 	}
-// 	auto & state = *stateAddr;
-
-
-// 	auto button = activeConfig.gamepadButton;
-// 	if (button > countof(state.rgbButtons))
-// 	{
-// 		button = 0;
-// 	}
-
-// 	static bool execute = false;
-
-// 	if (state.rgbButtons[button])
-// 	{
-// 		if (execute)
-// 		{
-// 			execute = false;
-
-// 			ToggleShowMain();
-// 		}
-// 	}
-// 	else
-// 	{
-// 		execute = true;
-// 	}
-// }
-
-
-
-
-
-
-
-
+	keyBinding.UpdateKeyData(state.keys);
+	keyBinding.Check(state.keys);
+}
 
 
 
@@ -217,7 +141,7 @@ export void Init()
 		::Hook::D3D10::D3D10CreateDeviceAndSwapChain
 	);
 
-	// ::Hook::DI8::GetDeviceStateA_func = ::Hook::DI8::GetDeviceStateA_Function;
+	UpdateKeyboard_func = UpdateKeyboard_Function;
 
 
 

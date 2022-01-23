@@ -18,7 +18,7 @@ import Config;
 import Global;
 import Vars;
 
-#define debug true
+#define debug false
 
 
 
