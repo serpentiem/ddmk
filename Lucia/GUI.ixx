@@ -291,21 +291,14 @@ void System()
 			UpdateFrameRate();
 
 			ResetConfig(hideMouseCursor);
+			ResetConfig(gamepadName);
+			ResetConfig(gamepadButton);
 
 			ResetConfig(windowPosX);
 			ResetConfig(windowPosY);
 			ResetConfig(forceWindowFocus);
 			ToggleForceWindowFocus(activeConfig.forceWindowFocus);
 		}
-		// GUI_SectionEnd();
-		// ImGui::Text("");
-
-
-
-
-
-
-
 		GUI_SectionEnd();
 		ImGui::Text("");
 
@@ -368,15 +361,42 @@ void System()
 			activeConfig.hideMouseCursor,
 			queuedConfig.hideMouseCursor
 		);
-
-		GUI_SectionEnd();
 		ImGui::Text("");
 
 
 
+		ImGui::PushItemWidth(300);
+
+		if
+		(
+			ImGui::InputText
+			(
+				"Gamepad Name",
+				queuedConfig.gamepadName,
+				sizeof(queuedConfig.gamepadName),
+				ImGuiInputTextFlags_EnterReturnsTrue
+			)
+		)
+		{
+			::GUI::save = true;
+		}
+
+		GUI_Input2<byte8>
+		(
+			"Gamepad Button",
+			activeConfig.gamepadButton,
+			queuedConfig.gamepadButton,
+			1,
+			"%u",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
+
+		ImGui::PopItemWidth();
 
 
 
+		GUI_SectionEnd();
+		ImGui::Text("");
 
 
 

@@ -116,7 +116,7 @@ export struct Config
 
 
 
-	bool welcome = true;
+	bool welcome = (debug) ? false : true;
 
 	bool enableForceEdgeFixes = (debug) ? true : false;
 	bool enableSpardaFixes    = (debug) ? true : false;
@@ -317,6 +317,8 @@ void CreateMembers_KeyDataContent
 
 void CreateMembers(Config & Prep_arg(config))
 {
+	DebugLogFunction();
+
 	{
 		auto & member = Create<struct_t>(root, "Actor");
 		auto & config = Prep_arg(config).Actor;
@@ -547,6 +549,8 @@ void ToJSON_KeyData
 
 void ToJSON(Config & Prep_arg(config))
 {
+	DebugLogFunction();
+
 	{
 		auto & member = root["Actor"];
 		auto & config = Prep_arg(config).Actor;
@@ -751,6 +755,8 @@ void ToConfig_KeyData
 
 void ToConfig(Config & Prep_arg(config))
 {
+	DebugLogFunction();
+
 	{
 		auto & config = Prep_arg(config).Actor;
 		auto & member = root["Actor"];

@@ -35,7 +35,7 @@ char location[64] = {};
 
 export struct Config
 {
-	bool welcome = true;
+	bool welcome = (debug) ? false : true;
 
 
 
@@ -78,7 +78,7 @@ export struct Config
 
 	float globalScale = 1;
 
-	bool showCredits = true;
+	bool showCredits = (debug) ? false : true;
 
 
 
@@ -193,6 +193,8 @@ void CreateMembers_KeyDataContent
 
 void CreateMembers(Config & Prep_arg(config))
 {
+	DebugLogFunction();
+
 	auto & member = root;
 	auto & config = Prep_arg(config);
 
@@ -318,6 +320,8 @@ void ToJSON_KeyData
 
 void ToJSON(Config & Prep_arg(config))
 {
+	DebugLogFunction();
+
 	auto & member = root;
 	auto & config = Prep_arg(config);
 
@@ -425,6 +429,8 @@ void ToConfig_KeyData
 
 void ToConfig(Config & Prep_arg(config))
 {
+	DebugLogFunction();
+
 	auto & config = Prep_arg(config);
 	auto & member = root;
 

@@ -18,7 +18,7 @@ import Config;
 import Global;
 import Vars;
 
-#define debug false
+#define debug true
 
 
 
@@ -134,15 +134,13 @@ void CreateMembers_ExpData
 
 void CreateMembers()
 {
-	LogFunctionStart();
+	DebugLogFunction();
 
 	CreateArray<struct_t, SAVE_COUNT>(root, "Dante");
 	CreateMembers_ExpData(root["Dante"], savedExpDataDante);
 
 	CreateArray<struct_t, SAVE_COUNT>(root, "Vergil");
 	CreateMembers_ExpData(root["Vergil"], savedExpDataVergil);
-
-	LogFunctionEnd();
 }
 
 #pragma endregion
@@ -170,7 +168,7 @@ void ToJSON_ExpData
 
 void ToJSON()
 {
-	LogFunction();
+	DebugLogFunction();
 
 	ToJSON_ExpData(root["Dante" ], savedExpDataDante );
 	ToJSON_ExpData(root["Vergil"], savedExpDataVergil);
@@ -201,7 +199,7 @@ void ToExp_ExpData
 
 void ToExp()
 {
-	LogFunction();
+	DebugLogFunction();
 
 	ToExp_ExpData(savedExpDataDante , root["Dante" ]);
 	ToExp_ExpData(savedExpDataVergil, root["Vergil"]);
@@ -814,26 +812,3 @@ export void IncStyleExpPoints(byte8 * actorBaseAddr)
 }
 
 namespaceEnd();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -9959,8 +9959,6 @@ void System()
 
 		ImGui::PushItemWidth(300);
 
-
-
 		if
 		(
 			ImGui::InputText
@@ -9974,9 +9972,7 @@ void System()
 		{
 			::GUI::save = true;
 		}
-		//ImGui::PopItemWidth();
 
-		//ImGui::PushItemWidth(150);
 		GUI_Input2<byte8>
 		(
 			"Gamepad Button",
@@ -9988,7 +9984,6 @@ void System()
 		);
 
 		ImGui::PopItemWidth();
-
 
 
 
