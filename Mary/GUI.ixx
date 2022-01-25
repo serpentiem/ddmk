@@ -4266,8 +4266,21 @@ void Dante()
 			ResetConfig(Royalguard);
 			ToggleRoyalguardForceJustFrameRelease(activeConfig.Royalguard.forceJustFrameRelease);
 
-			ResetConfig(Rebellion);
+			ResetConfig(rebellionInfiniteShredder);
+			ResetConfig(Rebellion                );
+			ToggleRebellionInfiniteShredder   (activeConfig.rebellionInfiniteShredder    );
 			ToggleRebellionInfiniteSwordPierce(activeConfig.Rebellion.infiniteSwordPierce);
+
+			ResetConfig(enableRebellionAirStinger);
+			ResetConfig(enableRebellionNewDrive  );
+			ResetConfig(enableRebellionQuickDrive);
+
+			ResetConfig(rebellionHoldDrive);
+			ToggleRebellionHoldDrive(activeConfig.rebellionHoldDrive);
+
+			ResetConfig(enableCerberusAirRevolver);
+
+			ResetConfig(enableNevanNewVortex);
 
 			ResetConfig(EbonyIvory);
 			ToggleEbonyIvoryFoursomeTime     (activeConfig.EbonyIvory.foursomeTime     );
@@ -4276,12 +4289,6 @@ void Dante()
 			ResetConfig(Artemis);
 			ToggleArtemisSwapNormalShotAndMultiLock(activeConfig.Artemis.swapNormalShotAndMultiLock);
 			ToggleArtemisInstantFullCharge         (activeConfig.Artemis.instantFullCharge         );
-
-			ResetConfig(enableRebellionAirStinger);
-			ResetConfig(enableRebellionNewDrive  );
-			ResetConfig(enableRebellionQuickDrive);
-			ResetConfig(enableCerberusAirRevolver);
-			ResetConfig(enableNevanNewVortex     );
 		}
 
 		GUI_SectionEnd();
@@ -4329,17 +4336,23 @@ void Dante()
 		GUI_SectionEnd();
 		ImGui::Text("");
 
+
+
 		ImGui::Text("Rebellion");
-		ImGui::SameLine();
-		TooltipHelper
-		(
-			"(?)",
-			"Requires enabled Actor module.\n"
-			"\n"
-			"Left : Human\n"
-			"Right: Devil"
-		);
 		ImGui::Text("");
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Infinite Shredder",
+				activeConfig.rebellionInfiniteShredder,
+				queuedConfig.rebellionInfiniteShredder
+			)
+		)
+		{
+			ToggleRebellionInfiniteShredder(activeConfig.rebellionInfiniteShredder);
+		}
 
 		if
 		(
@@ -4353,9 +4366,6 @@ void Dante()
 		{
 			ToggleRebellionInfiniteSwordPierce(activeConfig.Rebellion.infiniteSwordPierce);
 		}
-		ImGui::Text("");
-
-
 
 		GUI_Checkbox2
 		(
@@ -4363,6 +4373,13 @@ void Dante()
 			activeConfig.enableRebellionAirStinger,
 			queuedConfig.enableRebellionAirStinger
 		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module."
+		);
+
 		GUI_Checkbox2
 		(
 			"Enable New Drive",
@@ -4373,6 +4390,8 @@ void Dante()
 		TooltipHelper
 		(
 			"(?)",
+			"Requires enabled Actor module.\n"
+			"\n"
 			"Press Lock-On + Left + Melee Attack."
 		);
 
@@ -4386,13 +4405,36 @@ void Dante()
 		TooltipHelper
 		(
 			"(?)",
+			"Requires enabled Actor module.\n"
+			"\n"
 			"In Swordmaster hold Style Action and press Melee Attack twice."
 		);
+
+		if
+		(
+			GUI_Checkbox2
+			(
+				"Hold Drive",
+				activeConfig.rebellionHoldDrive,
+				queuedConfig.rebellionHoldDrive
+			)
+		)
+		{
+			ToggleRebellionHoldDrive(activeConfig.rebellionHoldDrive);
+		}
 		ImGui::Text("");
 
 
 
-
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module.\n"
+			"\n"
+			"Left : Human\n"
+			"Right: Devil"
+		);
+		ImGui::Text("");
 
 		ActionData
 		(
@@ -4412,7 +4454,6 @@ void Dante()
 			10.0f,
 			"%g"
 		);
-
 
 
 
@@ -4451,6 +4492,7 @@ void Dante()
 		}
 
 
+
 		GUI_SectionEnd();
 		ImGui::Text("");
 
@@ -4463,6 +4505,12 @@ void Dante()
 			"Enable Air Revolver",
 			activeConfig.enableCerberusAirRevolver,
 			queuedConfig.enableCerberusAirRevolver
+		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module."
 		);
 
 		GUI_SectionEnd();
@@ -4482,6 +4530,8 @@ void Dante()
 		TooltipHelper
 		(
 			"(?)",
+			"Requires enabled Actor module.\n"
+			"\n"
 			"While in devil form press Any Direction + Melee Attack."
 		);
 
@@ -10341,16 +10391,9 @@ void Vergil()
 		GUI_SectionEnd();
 		ImGui::Text("");
 
+
+
 		ImGui::Text("Yamato");
-		ImGui::SameLine();
-		TooltipHelper
-		(
-			"(?)",
-			"Requires enabled Actor module.\n"
-			"\n"
-			"Left : Human\n"
-			"Right: Devil"
-		);
 		ImGui::Text("");
 
 		GUI_Checkbox2
@@ -10363,7 +10406,21 @@ void Vergil()
 		TooltipHelper
 		(
 			"(?)",
+			"Requires enabled Actor module.\n"
+			"\n"
 			"Press Lock-On + Left + Melee Attack."
+		);
+		ImGui::Text("");
+
+
+
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module.\n"
+			"\n"
+			"Left : Human\n"
+			"Right: Devil"
 		);
 		ImGui::Text("");
 
@@ -10387,6 +10444,24 @@ void Vergil()
 			"Enable Air Rising Sun",
 			activeConfig.enableBeowulfVergilAirRisingSun,
 			queuedConfig.enableBeowulfVergilAirRisingSun
+		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module."
+		);
+		ImGui::Text("");
+
+
+
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module.\n"
+			"\n"
+			"Left : Human\n"
+			"Right: Devil"
 		);
 		ImGui::Text("");
 
@@ -10413,6 +10488,12 @@ void Vergil()
 			activeConfig.enableBeowulfVergilAirLunarPhase,
 			queuedConfig.enableBeowulfVergilAirLunarPhase
 		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module."
+		);
 
 		GUI_SectionEnd();
 		ImGui::Text("");
@@ -10420,15 +10501,6 @@ void Vergil()
 
 
 		ImGui::Text("Yamato & Force Edge");
-		ImGui::SameLine();
-		TooltipHelper
-		(
-			"(?)",
-			"Requires enabled Actor module.\n"
-			"\n"
-			"Left : Human\n"
-			"Right: Devil"
-		);
 		ImGui::Text("");
 
 		if
@@ -10443,7 +10515,6 @@ void Vergil()
 		{
 			ToggleYamatoForceEdgeInfiniteRoundTrip(activeConfig.YamatoForceEdge.infiniteRoundTrip);
 		}
-		ImGui::Text("");
 
 		GUI_Checkbox2
 		(
@@ -10455,14 +10526,24 @@ void Vergil()
 		TooltipHelper
 		(
 			"(?)",
+			"Requires enabled Actor module.\n"
+			"\n"
 			"Press Lock-On + Right + Melee Attack."
 		);
+
 		GUI_Checkbox2
 		(
 			"Enable Air Stinger",
 			activeConfig.enableYamatoForceEdgeAirStinger,
 			queuedConfig.enableYamatoForceEdgeAirStinger
 		);
+		ImGui::SameLine();
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module."
+		);
+
 		GUI_Checkbox2
 		(
 			"Enable New Round Trip",
@@ -10473,7 +10554,21 @@ void Vergil()
 		TooltipHelper
 		(
 			"(?)",
+			"Requires enabled Actor module.\n"
+			"\n"
 			"Press Lock-On + Left + Melee Attack."
+		);
+		ImGui::Text("");
+
+
+
+		TooltipHelper
+		(
+			"(?)",
+			"Requires enabled Actor module.\n"
+			"\n"
+			"Left : Human\n"
+			"Right: Devil"
 		);
 		ImGui::Text("");
 
@@ -10531,10 +10626,10 @@ void Vergil()
 			GUI_PopDisable(condition);
 		}
 
-
-
 		GUI_SectionEnd();
 		ImGui::Text("");
+
+
 
 		GUI_SectionStart("Summoned Swords");
 
@@ -10596,38 +10691,6 @@ void Vergil()
 
 
 #pragma region Key Bindings
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // @Move
 

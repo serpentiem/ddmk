@@ -277,6 +277,12 @@ uint32 DllMain
 		ToggleDisablePlayerActorIdleTimer(false);
 		ToggleDisablePlayerActorIdleTimer(activeConfig.disablePlayerActorIdleTimer);
 
+		ToggleRebellionInfiniteShredder(false);
+		ToggleRebellionInfiniteShredder(activeConfig.rebellionInfiniteShredder);
+
+		ToggleRebellionHoldDrive(false);
+		ToggleRebellionHoldDrive(activeConfig.rebellionHoldDrive);
+
 
 
 		XI::new_Init("xinput9_1_0.dll");

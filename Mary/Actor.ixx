@@ -16757,9 +16757,104 @@ export void ToggleDisablePlayerActorIdleTimer(bool enable)
 
 
 
+bool RebellionShredderCheck(PlayerActorData & actorData)
+{
+	return (actorData.buttons[0] & GetBinding(BINDING::STYLE_ACTION));
+}
+
+export void ToggleRebellionInfiniteShredder(bool enable)
+{
+	LogFunction(enable);
+
+	static bool run = false;
+
+	{
+		auto addr     = (appBaseAddr + 0x211D02);
+		auto jumpAddr = (appBaseAddr + 0x211D0C);
+		constexpr new_size_t size = 5;
+		/*
+		dmc3.exe+211D02 - 0FA3 C1                - bt ecx,eax
+		dmc3.exe+211D05 - 73 41                  - jae dmc3.exe+211D48
+		dmc3.exe+211D07 - 0F2F D1                - comiss xmm2,xmm1
+		dmc3.exe+211D0A - 77 3C                  - ja dmc3.exe+211D48
+		dmc3.exe+211D0C - F3 41 0F10 80 9CB80000 - movss xmm0,[r8+0000B89C]
+		*/
+
+		static Function func = {};
+
+		constexpr byte64 flags =
+		(
+			FunctionFlags_SaveRegisters    |
+			FunctionFlags_SaveXMMRegisters |
+			FunctionFlags_NoXMMResult
+		);
+
+		constexpr byte8 sect1[] =
+		{
+			mov_rcx_r8, // dmc3.exe+211C80 - 4C 8B C1 - mov r8,rcx
+		};
+		constexpr byte8 sect2[] =
+		{
+			0x84, 0xC0,                         // test al,al
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, // je dmc3.exe+211D48
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(RebellionShredderCheck, jumpAddr, flags, 0, sizeof(sect1), sizeof(sect2));
+			CopyMemory(func.sect1, sect1, sizeof(sect1));
+			CopyMemory(func.sect2, sect2, sizeof(sect2));
+			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x211D48), 6);
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	run = true;
+}
 
 
 
+export void ToggleRebellionHoldDrive(bool enable)
+{
+	LogFunction(enable);
+
+	static bool run = false;
+
+	{
+		auto addr = (appBaseAddr + 0x211581);
+		auto dest = (appBaseAddr + 0x211583);
+		constexpr new_size_t size = 2;
+		/*
+		dmc3.exe+211581 - 74 15             - je dmc3.exe+211598
+		dmc3.exe+211583 - 80 BE 133E0000 00 - cmp byte ptr [rsi+00003E13],00
+		*/
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+		}
+
+		if (enable)
+		{
+			WriteAddress(addr, dest, size);
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+	run = true;
+}
 
 
 

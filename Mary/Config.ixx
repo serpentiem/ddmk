@@ -597,11 +597,11 @@ export struct Config
 
 
 
-	bool enableRebellionAirStinger          = (debug) ? true : false;
-	bool enableRebellionNewDrive            = (debug) ? true : false;
-	bool enableRebellionQuickDrive          = (debug) ? true : false;
-	bool enableCerberusAirRevolver          = (debug) ? true : false;
-	bool enableNevanNewVortex               = (debug) ? true : false;
+	bool enableRebellionAirStinger = (debug) ? true : false;
+	bool enableRebellionNewDrive   = (debug) ? true : false;
+	bool enableRebellionQuickDrive = (debug) ? true : false;
+	bool enableCerberusAirRevolver = (debug) ? true : false;
+	bool enableNevanNewVortex      = (debug) ? true : false;
 
 	bool enableYamatoVergilNewJudgementCut  = (debug) ? true : false;
 	bool enableBeowulfVergilAirRisingSun    = (debug) ? true : false;
@@ -677,6 +677,9 @@ export struct Config
 	bool disablePlayerActorIdleTimer = false;
 
 	float fovMultiplier = 1;
+
+	bool rebellionInfiniteShredder = false;
+	bool rebellionHoldDrive        = false;
 };
 
 static_assert((offsetof(Config, kalinaAnnHookGrenadeHeight) % 0x10) == 0);
@@ -1710,6 +1713,8 @@ void CreateMembers(Config & Prep_arg(config))
 	Create<byte8>(member, "gamepadButton"              , config.gamepadButton              );
 	Create<bool >(member, "disablePlayerActorIdleTimer", config.disablePlayerActorIdleTimer);
 	Create<float>(member, "fovMultiplier"              , config.fovMultiplier              );
+	Create<bool >(member, "rebellionInfiniteShredder"  , config.rebellionInfiniteShredder  );
+	Create<bool >(member, "rebellionHoldDrive"         , config.rebellionHoldDrive         );
 }
 
 #pragma endregion
@@ -2295,6 +2300,8 @@ void ToJSON(Config & Prep_arg(config))
 	Set<byte8>(member["gamepadButton"              ], config.gamepadButton              );
 	Set<bool >(member["disablePlayerActorIdleTimer"], config.disablePlayerActorIdleTimer);
 	Set<float>(member["fovMultiplier"              ], config.fovMultiplier              );
+	Set<bool >(member["rebellionInfiniteShredder"  ], config.rebellionInfiniteShredder  );
+	Set<bool >(member["rebellionHoldDrive"         ], config.rebellionHoldDrive         );
 }
 
 #pragma endregion
@@ -2888,6 +2895,8 @@ void ToConfig(Config & Prep_arg(config))
 	config.gamepadButton               = Get<byte8>(member["gamepadButton"              ]);
 	config.disablePlayerActorIdleTimer = Get<bool >(member["disablePlayerActorIdleTimer"]);
 	config.fovMultiplier               = Get<float>(member["fovMultiplier"              ]);
+	config.rebellionInfiniteShredder   = Get<bool >(member["rebellionInfiniteShredder"  ]);
+	config.rebellionHoldDrive          = Get<bool >(member["rebellionHoldDrive"         ]);
 }
 
 #pragma endregion

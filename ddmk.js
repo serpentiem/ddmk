@@ -3117,7 +3117,7 @@ let itemsMary =
 
 let itemsMaryActor =
 [
-	[ "Mary/Exp.ixx", "", true, [] ],
+	[ "Mary/Actor.ixx", "", true, [] ],
 	[ "Mary/Mary.cpp", "", false, [] ],
 ];
 
