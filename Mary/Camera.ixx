@@ -200,6 +200,49 @@ export void Toggle(bool enable)
 
 
 
+	// Apply FOV Multiplier
+	{
+		auto addr     = (appBaseAddr + 0x56112);
+		auto jumpAddr = (appBaseAddr + 0x56118);
+		constexpr new_size_t size = 6;
+		/*
+		dmc3.exe+56112 - 8B 41 20   - mov eax,[rcx+20]
+		dmc3.exe+56115 - 89 43 20   - mov [rbx+20],eax
+		dmc3.exe+56118 - 8B 41 24   - mov eax,[rcx+24]
+		dmc3.exe+5611B - 89 43 24   - mov [rbx+24],eax
+		dmc3.exe+5611E - 0F28 41 70 - movaps xmm0,[rcx+70]
+		*/
+
+		static Function func = {};
+
+		constexpr byte8 sect0[] =
+		{
+			0xF3, 0x0F, 0x10, 0x41, 0x20,                               // movss xmm0,[rcx+20]
+			0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax,0
+			0xF3, 0x0F, 0x59, 0x00,                                     // mulss xmm0,[rax]
+			0xF3, 0x0F, 0x11, 0x43, 0x20,                               // movss [rbx+20],xmm0
+		};
+
+		if (!run)
+		{
+			backupHelper.Save(addr, size);
+			func = CreateFunction(0, jumpAddr, 0, sizeof(sect0));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
+			*reinterpret_cast<float **>(func.sect0 + 7) = &activeConfig.fovMultiplier;
+		}
+
+		if (enable)
+		{
+			WriteJump(addr, func.addr, (size - 5));
+		}
+		else
+		{
+			backupHelper.Restore(addr);
+		}
+	}
+
+
+
 	run = true;
 }
 

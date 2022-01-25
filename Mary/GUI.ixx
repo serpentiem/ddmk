@@ -3713,48 +3713,6 @@ const char * cameraAutoAdjustNames[] =
 };
 
 
-// @Remove
-// export template <typename T>
-// void GUI_InputDefault2Camera
-// (
-// 	const char * label,
-// 	T & var,
-// 	T & var2,
-// 	T & var3,
-// 	T & defaultVar,
-// 	const T step = 1,
-// 	const char * format = 0,
-// 	ImGuiInputTextFlags flags = 0
-// )
-// {
-// 	ImGui::PushItemWidth(150);
-// 	GUI_Input
-// 	(
-// 		"",
-// 		var,
-// 		step,
-// 		format,
-// 		flags
-// 	);
-// 	ImGui::SameLine();
-// 	GUI_InputDefault2
-// 	(
-// 		label,
-// 		var2,
-// 		var3,
-// 		defaultVar,
-// 		step,
-// 		format,
-// 		flags
-// 	);
-// 	ImGui::PopItemWidth();
-
-// 	if constexpr (debug)
-// 	{
-// 		ImGui::Text("%f", var );
-// 		ImGui::Text("%f", var2);
-// 	}
-// }
 
 void CameraSection()
 {
@@ -3768,6 +3726,7 @@ void CameraSection()
 			ResetConfig(cameraAutoAdjust   );
 			ResetConfig(disableCenterCamera);
 			ResetConfig(disableBossCamera  );
+			ResetConfig(fovMultiplier      );
 
 			Camera::ToggleInvertX          (activeConfig.cameraInvertX    );
 			Camera::ToggleDisableBossCamera(activeConfig.disableBossCamera);
@@ -3818,6 +3777,18 @@ void CameraSection()
 		{
 			Camera::ToggleDisableBossCamera(activeConfig.disableBossCamera);
 		}
+		ImGui::Text("");
+
+		GUI_InputDefault2
+		(
+			"FOV Multiplier",
+			activeConfig.fovMultiplier,
+			queuedConfig.fovMultiplier,
+			defaultConfig.fovMultiplier,
+			0.1f,
+			"%g",
+			ImGuiInputTextFlags_EnterReturnsTrue
+		);
 
 		GUI_SectionEnd();
 		ImGui::Text("");

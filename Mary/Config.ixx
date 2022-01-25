@@ -675,6 +675,8 @@ export struct Config
 
 
 	bool disablePlayerActorIdleTimer = false;
+
+	float fovMultiplier = 1;
 };
 
 static_assert((offsetof(Config, kalinaAnnHookGrenadeHeight) % 0x10) == 0);
@@ -1707,6 +1709,7 @@ void CreateMembers(Config & Prep_arg(config))
 	CreateString (member, "gamepadName"                , config.gamepadName                );
 	Create<byte8>(member, "gamepadButton"              , config.gamepadButton              );
 	Create<bool >(member, "disablePlayerActorIdleTimer", config.disablePlayerActorIdleTimer);
+	Create<float>(member, "fovMultiplier"              , config.fovMultiplier              );
 }
 
 #pragma endregion
@@ -2291,6 +2294,7 @@ void ToJSON(Config & Prep_arg(config))
 	SetString (member["gamepadName"                ], config.gamepadName                );
 	Set<byte8>(member["gamepadButton"              ], config.gamepadButton              );
 	Set<bool >(member["disablePlayerActorIdleTimer"], config.disablePlayerActorIdleTimer);
+	Set<float>(member["fovMultiplier"              ], config.fovMultiplier              );
 }
 
 #pragma endregion
@@ -2883,6 +2887,7 @@ void ToConfig(Config & Prep_arg(config))
 
 	config.gamepadButton               = Get<byte8>(member["gamepadButton"              ]);
 	config.disablePlayerActorIdleTimer = Get<bool >(member["disablePlayerActorIdleTimer"]);
+	config.fovMultiplier               = Get<float>(member["fovMultiplier"              ]);
 }
 
 #pragma endregion
