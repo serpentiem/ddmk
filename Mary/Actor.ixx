@@ -1139,7 +1139,7 @@ uint8 GetNextStyleAction
 				}
 				else
 				{
-					action = REBELLION_PROP_SHREDDER_1;
+					action = REBELLION_PROP;
 
 					if (lockOn)
 					{
@@ -16757,9 +16757,14 @@ export void ToggleDisablePlayerActorIdleTimer(bool enable)
 
 
 
-bool RebellionShredderCheck(PlayerActorData & actorData)
+uint8 RebellionShredderCheck(PlayerActorData & actorData)
 {
-	return (actorData.buttons[0] & GetBinding(BINDING::STYLE_ACTION));
+	if (actorData.action == ACTION_DANTE::REBELLION_SHREDDER)
+	{
+		return (actorData.buttons[0] & GetBinding(BINDING::STYLE_ACTION)) ? 1 : 2;
+	}
+
+	return 0;
 }
 
 export void ToggleRebellionInfiniteShredder(bool enable)
@@ -16770,7 +16775,7 @@ export void ToggleRebellionInfiniteShredder(bool enable)
 
 	{
 		auto addr     = (appBaseAddr + 0x211D02);
-		auto jumpAddr = (appBaseAddr + 0x211D0C);
+		auto jumpAddr = (appBaseAddr + 0x211D07);
 		constexpr new_size_t size = 5;
 		/*
 		dmc3.exe+211D02 - 0FA3 C1                - bt ecx,eax
@@ -16789,23 +16794,35 @@ export void ToggleRebellionInfiniteShredder(bool enable)
 			FunctionFlags_NoXMMResult
 		);
 
+		constexpr byte8 sect0[] =
+		{
+			mov_edx_eax,
+		};
 		constexpr byte8 sect1[] =
 		{
 			mov_rcx_r8, // dmc3.exe+211C80 - 4C 8B C1 - mov r8,rcx
 		};
 		constexpr byte8 sect2[] =
 		{
-			0x84, 0xC0,                         // test al,al
+			0x3C, 0x01,                         // cmp al,01
+			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, // je dmc3.exe+211D0C
+			0x3C, 0x02,                         // cmp al,02
 			0x0F, 0x84, 0x00, 0x00, 0x00, 0x00, // je dmc3.exe+211D48
+			0x8B, 0xC2,                         // mov eax,edx
+			0x0F, 0xA3, 0xC1,                   // bt ecx,eax
+			0x0F, 0x83, 0x00, 0x00, 0x00, 0x00, // jae dmc3.exe+211D48
 		};
 
 		if (!run)
 		{
 			backupHelper.Save(addr, size);
-			func = CreateFunction(RebellionShredderCheck, jumpAddr, flags, 0, sizeof(sect1), sizeof(sect2));
+			func = CreateFunction(RebellionShredderCheck, jumpAddr, flags, sizeof(sect0), sizeof(sect1), sizeof(sect2));
+			CopyMemory(func.sect0, sect0, sizeof(sect0));
 			CopyMemory(func.sect1, sect1, sizeof(sect1));
 			CopyMemory(func.sect2, sect2, sizeof(sect2));
-			WriteAddress((func.sect2 + 2), (appBaseAddr + 0x211D48), 6);
+			WriteAddress((func.sect2 + 2   ), (appBaseAddr + 0x211D0C), 6);
+			WriteAddress((func.sect2 + 0xA ), (appBaseAddr + 0x211D48), 6);
+			WriteAddress((func.sect2 + 0x15), (appBaseAddr + 0x211D48), 6);
 		}
 
 		if (enable)
