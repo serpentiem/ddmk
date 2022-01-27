@@ -1,7 +1,7 @@
 export module GlobalBase;
 
-#define DDMK_NAME "DDMK 2.7.2"
-#define DDMK_DATE "26 January 2022"
+#define DDMK_NAME "DDMK 2.7.3"
+#define DDMK_DATE "27 January 2022"
 
 export const char * DDMK_TITLE_EVA   = DDMK_NAME " Eva "   DDMK_DATE;
 export const char * DDMK_TITLE_LUCIA = DDMK_NAME " Lucia " DDMK_DATE;
