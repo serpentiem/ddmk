@@ -22,6 +22,17 @@ Be sure to [create backups of your savegames](#create-savegame-backups)!
 
 * Copy the contents of `HDC` to the Devil May Cry HD Collection root directory. By default this is `C:\Program Files (x86)\Steam\steamapps\common\Devil May Cry HD Collection`. If asked to replace, confirm all.
 
+The following is required to undo the latest patch. You only need to do this once and not every time you update the mod.
+
+* Download the following archives and extract the specified files to the Devil May Cry HD Collection root directory.
+
+    | Archive                                                                                                    | File                      |
+    | ---                                                                                                        | ---                       |
+    | [xdelta3](https://www.romhacking.net/download/utilities/928/)                                              | xdelta3-3.0.11-x86_64.exe |
+    | [hdc_patches](https://github.com/serpentiem/ddmk/releases/download/2.7.3release/hdc_patches.zip)           | All Files                 |
+
+* Run `apply_patch.bat`.
+
 The following is required for Devil May Cry 3 if you want to use Quick Drive. You only need to do this once and not every time you update the mod.
 
 * After installing the mod, run Devil May Cry 3 at least once so the cache files are created.
@@ -41,14 +52,14 @@ The following is required for Devil May Cry 3 if you want to use Quick Drive. Yo
 
 The following is required to undo the latest patch. You only need to do this once and not every time you update the mod.
 
-* Download the following archives and extract the specified files to `C:\Program Files (x86)\Steam\steamapps\common\Special Edition`.
+* Download the following archives and extract the specified files to the Devil May Cry 4 root directory.
 
-    | Archive                                                                                                | File                      |
-    | ---                                                                                                    | ---                       |
-    | [xdelta3](https://www.romhacking.net/download/utilities/928/)                                          | xdelta3-3.0.11-x86_64.exe |
-    | [dmc4_downgrade](https://github.com/serpentiem/ddmk/releases/download/2.7nightly16/dmc4_downgrade.zip) | All Files                 |
+    | Archive                                                                                                    | File                      |
+    | ---                                                                                                        | ---                       |
+    | [xdelta3](https://www.romhacking.net/download/utilities/928/)                                              | xdelta3-3.0.11-x86_64.exe |
+    | [4_patches](https://github.com/serpentiem/ddmk/releases/download/2.7.3release/4_patches.zip)               | All Files                 |
 
-* Run `apply_patches.bat`.
+* Run `apply_patch.bat`.
 
 
 
